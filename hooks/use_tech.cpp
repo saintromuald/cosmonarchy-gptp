@@ -1,0 +1,368 @@
+#include "use_tech.h"
+#include "SCBW/scbwdata.h"
+#include "SCBW/api.h"
+#include "hook_tools.h"
+
+//getStatTxt from stimpack.cpp
+const u32 Func_get_statTxt_Str_0 = 0x0048EF30;
+u32 get_statTxt_Str_0(CUnit* unit, u32 playerId, char* message) {
+
+	static u32 return_value;
+	__asm {
+		PUSHAD
+		MOV EAX, message
+		MOV ECX, playerId
+		MOV EDX, unit
+		CALL Func_get_statTxt_Str_0
+		MOV EAX, return_value
+		POPAD
+	}
+	return return_value;
+}
+;
+//
+//Func_CreateUnit from wpnspell
+const u32 Func_CreateUnit = 0x004A09D0;
+CUnit* CreateUnit2(u32 unitId, int x, int y, u32 playerId) {
+	static CUnit* unit_created;
+	__asm {
+		PUSHAD
+		PUSH playerId
+		PUSH y
+		MOV ECX, unitId
+		MOV EAX, x
+		CALL Func_CreateUnit
+		MOV unit_created, EAX
+		POPAD
+	}
+	return unit_created;
+}
+;
+
+
+extern const u32 Func_TriTargetOrder = 0x0048CAF0;
+const void IssueTriTargetOrder(u8 order1, u8 order2, u8 order3)
+{
+	if (order2 == 0)
+	{
+		_asm
+		{
+			PUSHAD
+			MOV DL, order1
+			MOV CL, DL
+			MOV AL, DL
+			CALL Func_TriTargetOrder
+			POPAD
+		}
+	}
+	else
+	{
+		if (order3 == 0)
+		{
+			_asm
+			{
+				PUSHAD
+				MOV CL, order1
+				MOV DL, order2
+				MOV AL, CL
+				CALL Func_TriTargetOrder
+				POPAD
+			}
+		}
+		else
+		{
+			_asm
+			{
+				PUSHAD
+				MOV DL, order1
+				MOV CL, order2
+				MOV AL, order3
+				CALL Func_TriTargetOrder
+				POPAD
+			}
+		}
+	}
+}
+
+namespace hooks 
+{
+	void BTNSACT_UseTech(u16 tech, GrpHead* head)
+	{
+		//replacement for proc 0x00423660
+		bool TechCapableUnit = false;
+		CUnit* currentClientSelectionUnit;
+		/*
+		char buffer[32];
+		sprintf(buffer,"Tech: %d, energy test, cost: %d ",tech,techdata_dat::EnergyCost[tech]);
+		scbw::printText(buffer);
+		*/
+
+
+/*		for (int i = 0; i < SELECTION_ARRAY_LENGTH && !TechCapableUnit; i++)
+		{
+			currentClientSelectionUnit = clientSelectionGroup->unit[i];
+			if (currentClientSelectionUnit != NULL)
+			{
+				if (techdata_dat::EnergyCost[tech] * 256 <= currentClientSelectionUnit->energy)
+				{
+					TechCapableUnit = true;
+				}
+			}
+		}*/
+
+
+		for (int i = 0; i < SELECTION_ARRAY_LENGTH && !TechCapableUnit; i++)
+		{
+			currentClientSelectionUnit = playersSelections->unit[*ACTIVE_NATION_ID][i];
+			//if still desync, try ACTIVE_PLAYER_ID
+			if (currentClientSelectionUnit != NULL)
+			{
+				if (techdata_dat::EnergyCost[tech] * 256 <= currentClientSelectionUnit->energy)
+				{
+					TechCapableUnit = true;
+				}
+			}
+		}
+
+		//*activePortraitUnit presumable causes desync
+		CUnit* firstInList = playersSelections->unit[*ACTIVE_NATION_ID][0];
+		if (firstInList != NULL) {
+			if (firstInList->_padding_0x132 & 0x8) {
+				TechCapableUnit = true;
+			}
+		}
+		if (!TechCapableUnit)
+		{
+			char* message = (char*)statTxtTbl->getString(864);
+			CUnit* portrait_unit =  playersSelections->unit[*ACTIVE_NATION_ID][0];
+			get_statTxt_Str_0(*activePortraitUnit, (*activePortraitUnit)->playerId, message);
+			return;
+		}
+		switch (tech)
+		{
+		case TechId::ScannerSweep:
+			IssueTriTargetOrder(OrderId::PlaceScanner, 0, 0);
+			break;
+		case TechId::SpiderMines:
+			IssueTriTargetOrder(OrderId::PlaceMine, 0, 0);
+			break;
+		case TechId::YamatoGun:
+			IssueTriTargetOrder(OrderId::FireYamatoGun1, OrderId::FireYamatoGun2, 0);
+			break;
+		case TechId::Lockdown:
+			IssueTriTargetOrder(OrderId::MagnaPulse, 0, 0);
+			break;
+		case TechId::Recall:
+			IssueTriTargetOrder(OrderId::Teleport, 0, 0);
+			break;
+		case TechId::DefensiveMatrix:
+			IssueTriTargetOrder(OrderId::DefensiveMatrix, 0, 0);
+			break;
+		case TechId::SpawnBroodlings:
+			IssueTriTargetOrder(OrderId::SummonBroodlings, 0, 0);
+			break;
+		case TechId::Parasite:
+			IssueTriTargetOrder(OrderId::CastParasite, 0, 0);
+			break;
+		case TechId::Infestation:
+			IssueTriTargetOrder(OrderId::InfestMine3, OrderId::Move, OrderId::InfestMine2);
+			break;
+		case TechId::EMPShockwave:
+			IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
+			break;
+		case TechId::Irradiate:
+			IssueTriTargetOrder(OrderId::Irradiate, 0, 0);
+			break;
+		case TechId::Ensnare:
+			IssueTriTargetOrder(OrderId::Ensnare, 0, 0);
+			break;
+		case TechId::StasisField:
+			IssueTriTargetOrder(OrderId::StasisField, 0, 0);
+			break;
+		case TechId::DarkSwarm:
+			IssueTriTargetOrder(OrderId::DarkSwarm, 0, 0);
+			break;
+		case TechId::Plague:
+			IssueTriTargetOrder(OrderId::Plague, 0, 0);
+			break;
+		case TechId::Consume:
+			IssueTriTargetOrder(OrderId::Consume, 0, 0);
+			break;
+		case TechId::PsionicStorm:
+			IssueTriTargetOrder(OrderId::PsiStorm, 0, 0);
+			break;
+		case TechId::Hallucination:
+			IssueTriTargetOrder(OrderId::Hallucianation1, 0, 0);
+			break;
+		case TechId::Restoration:
+		{
+			//			IssueTriTargetOrder(OrderId::Restoration, 0, 0);
+			//0 - deploy
+			//1 - stop
+			if (firstInList != NULL) {				
+				u8 action = 0;
+				if (firstInList->_padding_0x132 & 0x8) {
+					action = 1;
+				}
+				
+				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+				buf[0] = 0x99;//new general command
+				buf[1] = NewGameCommand::ShamanAction;
+				buf[2] = action;
+				buf[3] = *ACTIVE_PLAYER_ID;
+				scbw::SendCommand(buf, 0xc);
+				
+
+				/*
+				for (int i = 0; i < SELECTION_ARRAY_LENGTH; i++) {
+					//CUnit* u = clientSelectionGroup->unit[i];
+					CUnit* u = playersSelections->unit[*ACTIVE_NATION_ID][i];
+					if (u != NULL)
+					{
+						if (u->id == UnitId::civilian) {
+							scbw::sendGPTP_aise_cmd(u, NULL, GptpId::SendFakeCommand, NewGameCommand::ShamanAction,
+								action, 0);
+						}
+						
+					}
+				}*/
+				/*
+				scbw::sendGPTP_aise_cmd(firstInList, NULL, GptpId::SendFakeCommand, NewGameCommand::ShamanAction,
+					action, *ACTIVE_PLAYER_ID);*/
+
+				/*
+				char buf[3] = { 0x36, NewGameCommand::ShamanAction, (char)action };
+				SendCommand(buf, 3);
+
+				char bf[32];
+				sprintf(bf, "Send command %d %d", NewGameCommand::ShamanAction, action);
+				scbw::printText(bf);*/
+				/*
+				for (int i = 0; i < SELECTION_ARRAY_LENGTH; i++) {
+					//CUnit* u = clientSelectionGroup->unit[i];
+					
+					CUnit* u = playersSelections->unit[*ACTIVE_NATION_ID][i];
+					if (u != NULL)
+					{
+						if (u->id == UnitId::civilian) {//shaman
+							char buf[2] = { NewGameCommand::ShamanAction, (char)action };
+							SendCommand(buf, 2);
+							if (action == 0) {
+								
+								
+								u->_padding_0x132 |= 0x8;
+								u->_padding_0x133 = 24;
+								u->updateSpeed();
+								u->spendUnitEnergy(techdata_dat::EnergyCost[tech] * 256);								
+								scbw::refreshConsole();
+							}
+							else {
+								
+								u->_padding_0x132 &= ~0x8;
+								u->updateSpeed();
+								scbw::refreshConsole();
+							}
+						}
+					}
+				}*/
+			}		
+			break;
+		}
+		case TechId::UnusedTech26://Cyprian Safety Off/Safety On
+		{
+			//0 - off (enable splash mode)
+			//1 - on (disable splash mode)
+			if (firstInList != NULL) {
+				int action = 0;//enable
+
+				if (scbw::get_aise_value(firstInList,NULL,AiseId::SendCyprianValue,0,0)==1) {
+					action = 1;//disable
+				}
+				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+				buf[0] = 0x99;//new general command
+				buf[1] = NewGameCommand::CyprianAction;
+				buf[2] = action;
+				buf[3] = *ACTIVE_PLAYER_ID;
+				scbw::SendCommand(buf, 0xc);
+				/*
+				for (int i = 0; i < SELECTION_ARRAY_LENGTH; i++) {
+					//CUnit* u = clientSelectionGroup->unit[i];
+					CUnit* u = playersSelections->unit[*ACTIVE_NATION_ID][i];
+					if (u != NULL)
+					{
+						if (u->id == 92) {//cyprian
+							if (action == 0) {
+								scbw::sendGPTP_aise_cmd(u,NULL,GptpId::SetCyprianStatus,1,0,0);
+								u->updateSpeed();
+								scbw::refreshConsole();
+							}
+							else {
+								scbw::sendGPTP_aise_cmd(u,NULL,GptpId::SetCyprianStatus,0,0,0);
+								u->updateSpeed();
+								scbw::refreshConsole();
+							}
+						}
+					}
+				   }*/
+				}			
+			break;
+		}
+		case TechId::UnusedTech38:
+		{
+			//Equip - Empower hero with relic
+			scbw::printText("Try use Tech38");
+			if(firstInList != NULL){
+				if(firstInList->id == 175){//reliquary
+					u8 relic_type = 0;
+					u32 button_number = head->frameCount;
+					u32 relic = 0;
+					relic = scbw::get_aise_value(firstInList,NULL,AiseId::GetRelicByIndex,button_number,0);
+					char buf[64];
+					sprintf(buf,"Relic id: %d", relic);
+					scbw::printText(buf);
+					
+					if (relic != 0) {
+						if(relic==202){
+							scbw::printText("Blind Judge");
+						}
+						scbw::sendGPTP_aise_cmd(firstInList,NULL,GptpId::EmpowerHero,relic,0,0);
+						if (scbw::get_aise_value(firstInList,NULL,AiseId::HasRelic,UpgradeId::BlindJudge,0)==1) {
+							scbw::printText("Found relic");
+						}
+						else {
+							scbw::printText("No relic!");
+						}
+						scbw::refreshConsole();
+					}
+				}
+				else {
+					char buf[64];
+					sprintf(buf,"Incorrect reliquary id %d",firstInList->id);
+					scbw::printText(buf);
+				}
+			}
+			else {
+				scbw::printText("No selected units");
+			}
+			break;
+		}
+		case TechId::DisruptionWeb:
+			IssueTriTargetOrder(OrderId::CastDisruptionWeb, 0, 0);
+			break;
+		case TechId::MindControl:
+			IssueTriTargetOrder(OrderId::CastMindControl, 0, 0);
+			break;
+		case TechId::Feedback:
+			IssueTriTargetOrder(OrderId::CastFeedback, 0, 0);
+			break;
+		case TechId::OpticalFlare:
+			IssueTriTargetOrder(OrderId::CastOpticalFlare, 0, 0);
+			break;
+		case TechId::Maelstrom:
+			IssueTriTargetOrder(OrderId::CastMaelstrom, 0, 0);
+			break;
+		default:
+			break;
+		};
+	}
+}

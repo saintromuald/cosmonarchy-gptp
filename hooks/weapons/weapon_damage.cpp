@@ -1,0 +1,535 @@
+#include "weapon_damage.h"
+#include "../../SCBW/api.h"
+#include <algorithm>
+
+namespace {
+	//Helper functions
+	void createShieldOverlay(CUnit* unit, u32 attackDirection);
+	u16 getUnitStrength(CUnit* unit, bool useGroundStrength);
+
+	/// Definition of damage factors (explosive, concussive, etc.)
+	struct {
+		s32 damageType;
+		s32 unitSizeFactor[4];	 //Order: {independent, small, medium, large}
+	} const damageFactor[5] = {
+		{0, 0, 0, 0, 0},				//Independent
+		{1, 0, 128, 192, 256},	//Explosive
+		{2, 0, 256, 128, 64},	 //Concussive
+		{3, 0, 256, 256, 256},	//Normal
+		{4, 0, 256, 256, 256}	 //IgnoreArmor
+	};
+
+} //unnamed namespace
+
+//copied from wpnspellhit and renamed
+const u32 Func_displayLastNetErrForPlayer = 0x0049E530;
+void displayneterr_49E530(u32 playerId) {
+	__asm {
+		PUSHAD
+		PUSH playerId
+		CALL Func_displayLastNetErrForPlayer
+		POPAD
+	}
+}
+;
+const u32 Func_UpdateUnitStrength = 0x0049FA40;
+void updateStrength_49FA40(CUnit* unit) {
+
+	__asm {
+		PUSHAD
+		MOV EAX, unit
+		CALL Func_UpdateUnitStrength
+		POPAD
+	}
+
+}
+
+;
+
+const u32 Func_Sub4A01F0 = 0x004A01F0;
+void function_004A01F0_copy(CUnit* unit) {
+
+	__asm {
+		PUSHAD
+		MOV EAX, unit
+		CALL Func_Sub4A01F0
+		POPAD
+	}
+
+}
+;
+
+const u32 Func_AI_TrainingUnit = 0x004A2830;
+void AI_Train_4A2830(CUnit* unit_creator, CUnit* created_unit) {
+	__asm {
+		PUSHAD
+		MOV EAX, created_unit
+		MOV ECX, unit_creator
+		CALL Func_AI_TrainingUnit
+		POPAD
+	}
+}
+
+;
+
+const u32 Func_CreateUnit = 0x004A09D0;
+CUnit* CreateUnit_09D0(u32 unitId, int x, int y, u32 playerId) {
+	static CUnit* unit_created;
+
+	__asm {
+		PUSHAD
+		PUSH playerId
+		PUSH y
+		MOV ECX, unitId
+		MOV EAX, x
+		CALL Func_CreateUnit
+		MOV unit_created, EAX
+		POPAD
+	}
+
+	return unit_created;
+
+}
+
+;
+
+
+
+//copied from recall_spell, replace later
+const u32 Func_CreateThingy = 0x00488210;
+CThingy* function_00488210(u32 spriteId, s16 x, s16 y, u32 playerId) {
+
+	static CThingy* thingy;
+	s32 x_ = x;
+	__asm {
+		PUSHAD
+		PUSH playerId
+		MOVSX EDI, y
+		PUSH x_
+		PUSH spriteId
+		CALL Func_CreateThingy
+		MOV thingy, EAX
+		POPAD
+	}
+	return thingy;
+}
+;
+const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
+bool function_004878f0(CThingy* thingy) {
+
+	static Bool32 bPreResult;
+
+	__asm {
+		PUSHAD
+		MOV ESI, thingy
+		CALL Func_SetThingyVisibilityFlags
+		MOV bPreResult, EAX
+		POPAD
+	}
+
+	return (bPreResult != 0);
+
+}
+
+;
+
+const u32 Func_Sub498D70 = 0x00498D70;
+void imgul(CSprite* sprite, u32 imageId, u32 unk1, u32 unk2, u32 unk3) {
+
+	__asm {
+		PUSHAD
+		MOV EAX, sprite
+		MOV ESI, imageId
+		PUSH unk1
+		PUSH unk2
+		PUSH unk3
+		CALL Func_Sub498D70
+		POPAD
+	}
+
+}
+;
+
+//
+#include "SCBW\UnitFinder.h"
+class ascendancyProc : public scbw::UnitFinderCallbackProcInterface
+{
+
+private:
+public:
+	void proc(CUnit* unit)
+	{
+		if (unit->id != UnitId::high_templar) {
+			return;
+		}
+		if (
+			unit->status & UnitStatus::DoodadStatesThing ||
+			unit->lockdownTimer != 0 ||
+			unit->stasisTimer != 0 ||
+			unit->maelstromTimer != 0
+			) {
+			return;
+		}
+		if (!(scbw::getUpgradeLevel(unit->playerId,
+			UpgradeId::PsiMastery))) {
+			return;
+		}
+		bool show = true;
+		if (unit->energy == unit->getMaxEnergy()) {
+			show = false;
+		}
+		if (unit->energy + 5 * 256 >= unit->getMaxEnergy()) {
+			unit->energy = unit->getMaxEnergy();
+		}
+		else {
+			unit->energy += 5 * 256;
+		}
+		if (show) {
+			imgul(unit->sprite, 425, 0, 0, 0);
+			/*
+			CThingy* visual_effect;
+			visual_effect = function_00488210(316,unit->sprite->position.x,unit->sprite->position.y,0);
+
+			if (visual_effect != NULL) {
+				visual_effect->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
+				function_004878f0(visual_effect);
+			}*/
+		}
+	}
+};
+class astralaegisProc : public scbw::UnitFinderCallbackProcInterface
+{
+
+private:
+public:
+	void proc(CUnit* unit)
+	{
+		if (!units_dat::ShieldsEnabled[unit->id]) {
+			return;
+		}
+		u32 value = 50 * 256;
+		if (unit->shields + value >= (u32)units_dat::MaxShieldPoints[unit->id] * 256)
+			unit->shields = units_dat::MaxShieldPoints[unit->id] * 256;
+		else
+			unit->shields += value;
+	}
+};
+
+namespace hooks {
+
+	/// Hooks into the CUnit::damageWith() function.
+	void weaponDamageHook(s32		damage,
+		CUnit* target,
+		u8		weaponId,
+		CUnit* attacker,
+		u8		attackingPlayerId,
+		s8		direction,
+		u8		dmgDivisor
+	)
+	{
+
+		//the unit must neither be already dead nor invincible
+
+		if (target->hitPoints != 0 && !(target->status & UnitStatus::Invincible)) {
+
+			u8 damageType;
+
+			if (scbw::isCheatEnabled(CheatFlags::PowerOverwhelming) &&			//If Power Overwhelming is enabled
+				playerTable[attackingPlayerId].type != PlayerType::Human)		//and the attacker is not a human player
+				damage = 0;
+			/*
+					if (target->status & UnitStatus::IsHallucination)
+						damage *= 2;*/
+
+			damage = damage / dmgDivisor + (target->acidSporeCount * 256);
+
+			if (attacker != NULL) {
+				if (attacker->status & UnitStatus::IsHallucination) {
+					damage /= 2;
+				}
+			}
+			if (damage < 128)
+				damage = 128;
+			if (attacker != NULL) {
+				if (attacker->id == UnitId::broodling && scbw::hasTechResearched(attacker->playerId,
+					TechId::Ensnare) && !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
+					u32 overlayImageId;
+					if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay)
+						overlayImageId = ImageId::EnsnareOverlay_Medium;
+					else
+						if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay)
+							overlayImageId = ImageId::EnsnareOverlay_Large;
+						else
+							overlayImageId = ImageId::EnsnareOverlay_Small;
+					if (!target->getOverlay(overlayImageId)) {
+						target->sprite->createTopOverlay(overlayImageId,
+							0, 0, 0);
+					}
+					target->ensnareTimer = 30;
+					target->updateSpeed();
+				}
+			}
+			//Reduce Defensive Matrix
+			if (target->defensiveMatrixHp != 0) {
+
+				s32 d_matrix_reduceAmount;
+
+				if (target->defensiveMatrixHp > damage)
+					d_matrix_reduceAmount = damage;
+				else
+					d_matrix_reduceAmount = target->defensiveMatrixHp;
+
+
+				damage -= d_matrix_reduceAmount;
+				target->reduceDefensiveMatrixHp(d_matrix_reduceAmount);
+
+			}
+
+			damageType = weapons_dat::DamageType[weaponId];
+
+			//Reduce Plasma Shields...but not just yet
+			s32 shieldReduceAmount = 0;
+			if (units_dat::ShieldsEnabled[target->id] && target->shields >= 256) {
+
+				if (damageType != DamageType::IgnoreArmor) {
+
+					s32 plasmaShieldUpg = scbw::getUpgradeLevel(target->playerId,
+						UpgradeId::ProtossPlasmaShields) * 256;
+					if (target->id == UnitId::dragoon || target->id == UnitId::tassadar_zeratul) {
+						if (scbw::getUpgradeLevel(target->playerId, UpgradeId::TaldarinsGrace)) {//taldarin's grace
+							plasmaShieldUpg += 256;
+						}
+					}
+					if (target->id == UnitId::photon_cannon) {
+						if (scbw::getUpgradeLevel(target->playerId, UpgradeId::PrismaticShield)) {//taldarin's grace
+							plasmaShieldUpg += 512;
+						}
+					}
+					if (damage > plasmaShieldUpg) //Weird logic, Blizzard dev must have been sleepy
+						damage -= plasmaShieldUpg;
+					else
+						damage = 128;
+
+				}
+				shieldReduceAmount = std::min(damage, target->shields);
+				if (attacker != NULL && target != NULL) {
+					if (attacker->id == UnitId::ultralisk && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::SaberSiphon)) {
+						u32 lifesteal = shieldReduceAmount / 2;
+						attacker->setHp(attacker->hitPoints + lifesteal);
+					}
+				}
+
+				damage -= shieldReduceAmount;
+
+			}
+
+			//Apply armor
+			bool shield_overlay = false;
+			if (damageType != DamageType::IgnoreArmor) {
+
+				s32 armorTotal = target->getArmor() * 256;
+				if (attacker != NULL && target != NULL) {
+					if (scbw::getUpgradeLevel(target->playerId, UpgradeId::AdrenalinePacks) > 0) {
+						if (scbw::get_aise_value(target, NULL, AiseId::GenericTimer, ValueId::Adrenaline, 0) > 0) {
+							armorTotal += 512;
+						}
+					}
+					if (target->id == UnitId::battlecruiser && scbw::getUpgradeLevel(target->playerId, UpgradeId::ForeCastle)) {
+						u16 angle = scbw::getAngle(target->position.x, target->position.y,
+							attacker->position.x, attacker->position.y);
+						u16 unit_angle = target->velocityDirection1;
+						int arc = (double)45 / 1.40625;
+						//90 degrees
+						int delta = unit_angle - angle;
+						delta = abs((delta + 128) % 256 - 128);
+						if (delta <= arc) {
+							armorTotal += 512;
+							shield_overlay = true;
+							//scbw::printText("Fore Castle works");
+						}
+					}
+				}
+
+				damage -= std::min(damage, armorTotal);
+			}
+
+			//Apply damage type/unit size factor (not checked by UndeadStar, I will hope it work)
+			s32 damage_factor = damageFactor[damageType].unitSizeFactor[units_dat::SizeType[target->id]];
+			if (attacker != NULL) {
+				if (attacker->id == UnitId::firebat && scbw::getUpgradeLevel(attacker->playerId, 50)) {
+					if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
+						damage_factor = 256;
+					}
+				}
+			}
+			if (weaponId == WeaponId::YamatoGun) {
+				//scbw::printText("YamatoGunHit!");
+				if (scbw::getUpgradeLevel(attackingPlayerId, UpgradeId::UmojanBatteries)) {
+					//scbw::printText("Umojan Batteries!");
+					damage += 256 * 50;
+				}
+			}
+			if (weaponId == WeaponId::NuclearMissile) {
+				if (scbw::getUpgradeLevel(attackingPlayerId, UpgradeId::AugustgradsRevenge)) {
+					damage += 256 * 250;
+				}
+			}
+			damage = (damage * damage_factor) / 256;
+			if (attacker != NULL && target != NULL) {
+				if (attacker->id == UnitId::ultralisk && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::SaberSiphon)) {
+					u32 lifesteal = damage / 2;
+					attacker->setHp(attacker->hitPoints + lifesteal);
+				}
+			}
+			if (shieldReduceAmount == 0 && damage < 128)
+				damage = 128;
+			if (weaponId == WeaponId::Missiles_Unused) {
+				if (scbw::getUpgradeLevel(attackingPlayerId, 48)) {
+					//scbw::printText("Set overcharge timer");
+					target->unusedTimer = 6;
+					target->updateSpeed();
+				}
+			}
+			if (attacker != NULL && target != NULL) {
+				if (damage > target->hitPoints
+					&& units_dat::BaseProperty[attacker->id] & UnitProperty::Hero) {
+					//relic death effect
+					//scbw::printText("Check relic");
+					if (scbw::get_aise_value(attacker, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1
+						&& (units_dat::BaseProperty[target->id] & UnitProperty::Organic)
+						&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
+
+						scbw::sendGPTP_aise_cmd(attacker, target, GptpId::BlindJudgeTimedEffect, target->energy, 0, 0);
+						/*
+						u32 energy = target->energy;
+						Point16 pos = target->position;
+						CUnit* resurrected_unit;
+						//fixTargetLocation(&pos, target->id);
+						resurrected_unit = CreateUnit_09D0(target->id, pos.x, pos.y, attacker->playerId);
+						if (resurrected_unit == NULL) {
+							displayneterr_49E530(attacker->playerId);
+						}
+						else {
+							function_004A01F0_copy(resurrected_unit);
+							updateStrength_49FA40(resurrected_unit);
+							resurrected_unit->removeTimer = 360;
+							resurrected_unit->energy = energy;
+							resurrected_unit->setHp(units_dat::MaxHitPoints[resurrected_unit->id]);
+							if (attacker->pAI != NULL)
+								AI_Train_4A2830(attacker, resurrected_unit);
+						}
+	*/
+					}
+				}
+			}
+			//Deal damage to target HP, killing it if possible
+			bool Halluc = false;
+			if (attacker != NULL) {
+				if (attacker->status & UnitStatus::IsHallucination) {
+					Halluc = true;
+				}
+			}
+			if (damage >= target->hitPoints) {
+				if (target->id == UnitId::archon) {
+					if (scbw::getUpgradeLevel(target->playerId, UpgradeId::AstralAegis)) {
+						astralaegisProc Aegis = astralaegisProc();
+						scbw::UnitFinder unitFinder(target->getX() - 96,
+							target->getY() - 96,
+							target->getX() + 96,
+							target->getY() + 96);
+						unitFinder.forEach(Aegis);
+					}
+				}
+				if (weaponId == WeaponId::PsiStorm || Halluc) {
+					//psi mastery effect
+					ascendancyProc PsiMastery = ascendancyProc();
+					scbw::UnitFinder unitFinder(target->getX() - 192,
+						target->getY() - 192,
+						target->getX() + 192,
+						target->getY() + 192);
+					unitFinder.forEach(PsiMastery);
+
+				}
+			}
+			if (attacker != NULL && target != NULL) {
+				if (attacker->id == UnitId::ultralisk && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::KaiserRampage) &&
+					damage >= target->hitPoints) {
+					//ultralisk kills target
+					scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::KaiserRampage, 1 + (2 * 24), 0);
+				}
+			}
+			if (weaponId == WeaponId::SubterraneanTentacle && target != NULL) {
+				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::Amitosis, 0) == 1) {
+					damage /= 2;
+					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::Amitosis, 0, 0);
+				}
+			}
+			target->damageHp(damage, attacker, attackingPlayerId,
+				weaponId != WeaponId::Irradiate);		//Prevent Science Vessels from being continuously revealed to the irradiated target
+
+//Reduce shields (finally)
+			if (shieldReduceAmount != 0) {
+
+				target->shields -= shieldReduceAmount;
+
+				if (damageType != DamageType::Independent && target->shields != 0)
+				{
+					shield_overlay = true;
+				}
+
+			}
+			if (shield_overlay) {
+				createShieldOverlay(target, direction);
+			}
+
+			//Update unit strength data (?)
+			target->airStrength = getUnitStrength(target, false);
+			target->groundStrength = getUnitStrength(target, true);
+
+		}
+
+	}
+
+} //hooks
+
+namespace {
+
+	/**** Definitions of helper functions. Do NOT modify anything below! ****/
+
+	//Creates the Plasma Shield flickering effect.
+	//Identical to function @ 0x004E6140
+	void createShieldOverlay(CUnit* unit, u32 attackDirection) {
+
+		const LO_Header* shield_lo = shieldOverlays[unit->sprite->mainGraphic->id];
+
+		u32 frameAngle = (attackDirection - 124) / 8 % 32;
+
+		Point8 offset = shield_lo->getOffset(unit->sprite->mainGraphic->direction, frameAngle);
+
+		unit->sprite->createOverlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
+
+	}
+
+	//Somehow related to AI stuff; details unknown.
+	const u32 Helper_GetUnitStrength = 0x00431800;
+	u16 getUnitStrength(CUnit* unit, bool useGroundStrength) {
+
+		static u16 strength;
+		static u32 useGroundStrength_;
+
+		useGroundStrength_ = useGroundStrength ? 1 : 0;
+
+		__asm {
+			PUSHAD
+			PUSH useGroundStrength_
+			MOV EAX, unit
+			CALL Helper_GetUnitStrength
+			MOV strength, AX
+			POPAD
+		}
+
+		return strength;
+
+	}
+
+} //unnamed namespace
