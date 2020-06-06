@@ -221,7 +221,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer *lpMPQDraftServer) {
 	memoryPatch(0x004247C4 + 3, patchLastUnit, 1);
 	memoryPatch(0x004014C6 + 2, patchLastUnit, 1);
 	memoryPatch(0x0040149A + 2, patchLastUnit, 1);
-
+	//dark archon - energy of mcontrolled dark archons no longer set to 0
+	memoryPatch(0x004F6938 + 4, patchLastUnit, 1);
 	//iquare, end
 
 	//FaRTy1billion, start
