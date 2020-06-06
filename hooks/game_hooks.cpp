@@ -324,7 +324,7 @@ namespace hooks {
 					}
 				}*/
 
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::MaledictionSlow, 0) == 1 && unit->maelstromTimer == 0) {
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::MaledictionSlow, 0) == 1) {
 					u32 overlayImageId;
 					if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
 						overlayImageId = ImageId::MaelstromOverlay_Medium;
@@ -336,7 +336,6 @@ namespace hooks {
 					while (unit->sprite->getOverlay(overlayImageId)) {
 						unit->sprite->removeOverlay(overlayImageId);
 					}
-
 					unit->updateSpeed();
 				}
 				if (unit->id == UnitId::civilian) {
