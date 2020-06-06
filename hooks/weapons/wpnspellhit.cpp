@@ -851,9 +851,10 @@ namespace hooks {
 
 			target->giveTo(attacker->playerId);
 
+			/*
 			if(target->id == UnitId::ProtossDarkArchon)
 				target->energy = 0;
-
+			*/
 		}
 
 	} //void MindControlHit(CUnit* attacker, CUnit* target)
