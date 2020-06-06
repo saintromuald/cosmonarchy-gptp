@@ -15,7 +15,7 @@ namespace {
   //copied from recall_spell, replace later
 /*
 const u32 Func_DoWeaponDamage = 0x00479930;
-void func_479930(CUnit* attacker, CUnit* target, u32 base_damage,
+void func_479930(CUnit* attacker, CUnit* target, u32 base_damage, 
 				u32 direction, u32 dmg_divide, u32 weapon_id, u32 player) {
 	_asm {
 		PUSHAD
@@ -58,7 +58,7 @@ namespace hooks {
 	/// Equivalent to function sub_4EB4B0 @ 0x004EB4B0
 
 	void updateUnitEnergy(CUnit* unit) {
-
+		
 		//was hardcoded instead of function calling in original code
 		if (
 			unit->isValidCaster() &&				//If the unit is hallucination or not a spellcaster, don't regenerate energy
@@ -107,6 +107,13 @@ namespace hooks {
 				if (!bStopHere)	//the function prevent energy consumption if THE GATHERING enabled
 					unit->spendUnitEnergy(cloakingEnergyCost);
 
+			}
+			else if (unit->id == UnitId::dark_archon && scbw::get_aise_value(unit,NULL,AiseId::SumMindControlCost,0,0)>0) {
+				auto sum = scbw::get_aise_value(unit, NULL, AiseId::SumMindControlCost, 0, 0)/2;
+				unit->energy -= std::min(unit->energy, (u16)(16 * sum));
+				if (unit->energy == 0) {
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::FreeMindControlled, 0, 0, 0);
+				}
 			}
 			else { //EB526
 
@@ -193,6 +200,8 @@ namespace hooks {
 	void updateUnitStateHook(CUnit* unit) {
 
 		//Timers
+
+
 		if (unit->mainOrderTimer)
 			unit->mainOrderTimer--;
 		if (unit->groundWeaponCooldown)
@@ -205,7 +214,7 @@ namespace hooks {
 			CUnit* scarab = unit->carrier.inHangarChild;
 			while (scarab != NULL) {
 				if (scarab->id == UnitId::scarab) {
-					if (scbw::getUpgradeLevel(unit->playerId, 57) &&
+					if (scbw::getUpgradeLevel(unit->playerId, 57) && 
 						!(scarab->status & UnitStatus::InAir)) {
 						//scarab->status |= UnitStatus::InAir;
 						scarab->sprite->elevationLevel = 12;
@@ -246,20 +255,9 @@ namespace hooks {
 				else
 					overlayImageId = ImageId::MaelstromOverlay_Small;
 			if (!unit->getOverlay(overlayImageId)) {
-
 				unit->sprite->createTopOverlay(overlayImageId,
 					0, 0, 0);
-				//				if (!scbw::getUpgradeLevel(unit->playerId, UpgradeId::SignifyMalice)) {//signify: malice
-				if (!scbw::get_aise_value(unit, NULL, AiseId::HasMalice, 0, 0) == 1) {
-					/*scbw::printText("Blue remap");
-					char buf[64];
-					sprintf(buf, "Upgrades of player %d: 55 - %d, 54 - %d, 53 - %d, 52 - %d",
-						unit->playerId,
-						scbw::getUpgradeLevel(unit->playerId, 55),
-						scbw::getUpgradeLevel(unit->playerId, 54),
-						scbw::getUpgradeLevel(unit->playerId, 53),
-						scbw::getUpgradeLevel(unit->playerId, 52));
-					scbw::printText(buf);*/
+				if (!scbw::get_aise_value(unit, NULL, AiseId::HasMalice, 0, 0) == 1){
 					unit->sprite->images.head->setRemapping(ColorRemapping::BExpl);
 				}
 			}
@@ -279,7 +277,7 @@ namespace hooks {
 			}
 		}
 
-		if (unit->_padding_0x132 & 0x20 && unit == playersSelections->unit[*ACTIVE_NATION_ID][0]) {
+		if (unit->_padding_0x132 & 0x20 && unit==playersSelections->unit[*ACTIVE_NATION_ID][0]) {
 			unit->_padding_0x132 &= ~0x20;
 			scbw::refreshConsole();
 		}
@@ -287,23 +285,23 @@ namespace hooks {
 
 		if (unit->id == UnitId::mineral_field_1 ||
 			unit->id == UnitId::mineral_field_2 ||
-			unit->id == UnitId::mineral_field_3 ||
+			unit->id == UnitId::mineral_field_3 || 
 			unit->id == UnitId::ResourceVespeneGeyser) {
 
-			if (unit->unusedTimer > 0) {
-				unit->unusedTimer--;
-			}
-			if (unit->_unknown_0x066 > 0) {
-				unit->_unknown_0x066--;
-			}
-			else {
 				if (unit->unusedTimer > 0) {
-					unit->_unknown_0x066 = 24 * 3;
+					unit->unusedTimer--;
+				}
+				if (unit->_unknown_0x066 > 0) {
+				unit->_unknown_0x066--;
+				}
+				else {
+				if(unit->unusedTimer>0){
+					unit->_unknown_0x066 = 24*3;
 				}
 				else {
 					unit->_unknown_0x066 = 36;
 				}
-
+				
 				//resource regeneration
 				bool update_image = true;
 				if (unit->building.resource.resourceAmount < 5000 && unit->id == UnitId::ResourceVespeneGeyser) {
@@ -312,9 +310,9 @@ namespace hooks {
 					scbw::refreshConsole();
 				}
 				else if (unit->building.resource.resourceAmount < 1500) {
-					unit->building.resource.resourceAmount++;
+					unit->building.resource.resourceAmount++;		
 					updateMineralPatchImage(unit);
-
+	
 					scbw::refreshConsole();
 				}
 			}
@@ -325,16 +323,16 @@ namespace hooks {
 
 			s32 maxShields = (s32)(units_dat::MaxShieldPoints[unit->id]) * 256;
 
-			if (unit->shields != maxShields && unit->id != UnitId::scarab) {
+			if (unit->shields != maxShields && unit->id!=UnitId::scarab) {
 
 				unit->shields += 7;
-				if ((units_dat::BaseProperty[unit->id] & UnitProperty::Building) &&
+				if ( (units_dat::BaseProperty[unit->id] & UnitProperty::Building) &&
 					(unit->status & UnitStatus::Completed) &&
-					scbw::getUpgradeLevel(unit->playerId, UpgradeId::PowerFlux)) {//power flux
+					scbw::getUpgradeLevel(unit->playerId,UpgradeId::PowerFlux)) {//power flux
 					if (unit->id != UnitId::pylon) {
 						if (!(unit->status & UnitStatus::DoodadStatesThing)) {//powered
-							u32 pylons = 0;
-							for (CUnit* u = *firstVisibleUnit; u; u = u->link.next) {
+							u32 pylons=0;
+							for (CUnit *u = *firstVisibleUnit; u; u = u->link.next) {
 								if (unit->playerId == u->playerId) {
 									if (u->id == UnitId::pylon &&
 										u->status & UnitStatus::Completed) {
@@ -419,13 +417,13 @@ namespace hooks {
 				}
 
 			}
-
+			
 			if (unit->id == UnitId::scout) {
 				if (unit->mainOrderId == OrderId::Move) {
 					if (scbw::get_aise_value(unit, NULL, AiseId::IsSuicidingScout, 0, 0)) {
-
-						if (scbw::getDistanceFast(unit->position.x, unit->position.y,
-							unit->orderTarget.pt.x, unit->orderTarget.pt.y) <= 8) {
+						
+						if (scbw::getDistanceFast(unit->position.x, unit->position.y, 
+								unit->orderTarget.pt.x, unit->orderTarget.pt.y) <= 8) {
 							scbw::printText("Explode!");
 							//scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::PrepareToExplode, 0, 0, 0);
 							//unit->_padding_0x132 |= HydraFlags1::ScoutBlowing;

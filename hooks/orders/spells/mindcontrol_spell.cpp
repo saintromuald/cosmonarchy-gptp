@@ -75,16 +75,17 @@ namespace hooks {
 							target->subunit->sprite->createTopOverlay(overlayId, 0, 0, 0);
 						else
 							target->sprite->createTopOverlay(overlayId, 0, 0, 0);
-
+						scbw::sendGPTP_aise_cmd(unit, target, GptpId::SetMindControlLink, 0, 0, 0);
 						MindControlHit(unit, target);
-
+						//scbw::printText("Set...");
+						
 						target->orderToIdle();
 
 					}
 
 					//F6A42
 
-					unit->shields = 0;
+//					unit->shields = 0;
 
 					if( !(*CHEAT_STATE & CheatFlags::TheGathering) )
 						unit->energy -= techEnergyCost;

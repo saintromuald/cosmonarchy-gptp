@@ -352,8 +352,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer *lpMPQDraftServer) {
 	hooks::injectSelectLarvaHooks();*/
 	hooks::injectRepairOrderHook();/*
 	hooks::injectStatsPanelDisplayHook();
-	hooks::injectUtilsHooks();
-	hooks::injectMindControlSpellHook();
+	hooks::injectUtilsHooks();*/
+	hooks::injectMindControlSpellHook();/*
 	hooks::injectCMDRECV_BuildHooks();
 	*/
 	hooks::injectApplyUpgradeFlags();
