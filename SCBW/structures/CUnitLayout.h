@@ -89,7 +89,7 @@ namespace AiseId {
 		HasClarionLink,
 		GenericTimer=16,
 		SumMindControlCost,
-
+		GetLegionnaireMarks,
 	};
 }
 
