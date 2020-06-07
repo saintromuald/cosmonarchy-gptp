@@ -6,6 +6,8 @@
 #include <SCBW/enumerations.h>
 #include "../../graphics/graphics.h"
 
+struct CFlingy;
+
 //Wrapper structure that provides methods for the CUnit structure.
 struct CUnit: public CUnitLayout {
 
