@@ -6,6 +6,12 @@
 #include <SCBW/enumerations.h>
 
 namespace scbw {
+
+
+bool teleport(CUnit* u, Point16 target, u16 spriteAnimation=0, bool preserveOrder=false);
+CFlingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y);
+CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);
+
 void SendCommand(u8* params, u32 param_length);
 /// @name Output functions
 //////////////////////////////////////////////////////////////// @{

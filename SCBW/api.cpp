@@ -15,6 +15,137 @@ class DarkSwarmFinderProc : public scbw::UnitFinderCallbackMatchInterface {
 };
 
 namespace scbw {
+
+
+/*
+00496460 = CreateFlingy(), arg 1 flingy_id, eax player, ecx x, edx y
+
+*/
+
+const u32 Func_Sub4EBAE0 = 0x004EBAE0;
+void function_004EBAE0(CUnit* unit, s32 x, s32 y) {
+	__asm {
+		PUSHAD
+		MOV EDX, unit
+		MOV EAX, x
+		MOV ECX, y
+		CALL Func_Sub4EBAE0
+		POPAD
+	}
+}
+;
+
+const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
+bool setThingyVisibilityFlags(CThingy* thingy) {
+	static Bool32 bPreResult;
+	__asm {
+		PUSHAD
+		MOV ESI, thingy
+		CALL Func_SetThingyVisibilityFlags
+		MOV bPreResult, EAX
+		POPAD
+	}
+	return (bPreResult != 0);
+}
+;
+
+
+bool teleport(CUnit* u, Point16 target, u16 spriteAnimation, bool preserveOrder) {
+	Point16 previous_pos, new_pos;
+	bool result = false;
+	previous_pos.x = u->sprite->position.x;
+	previous_pos.y = u->sprite->position.y;
+
+	//identical code to setUnitPosition() but for some reason, is
+	//using another function to do exactly the same thing
+	function_004EBAE0(u, target.x,target.y);
+
+	if (!scbw::checkUnitCollisionPos(u, &(u->sprite->position), &new_pos, NULL, false, 0))
+		//collision detected, cancel the movement
+		scbw::setUnitPosition(u, previous_pos.x, previous_pos.y);
+	else {
+		result = true;
+		CThingy* recall_effect_sprite;
+
+		//finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
+		scbw::prepareUnitMove(u, false);
+		if (!preserveOrder) {
+			u->orderTarget.unit = NULL;
+		}
+		scbw::setUnitPosition(u, new_pos.x, new_pos.y);
+		scbw::refreshUnitAfterMove(u);
+		
+		//stop some currently active orders
+		if (u->id != UnitId::ZergCocoon && !preserveOrder)
+			u->orderComputerCL(units_dat::ReturnToIdleOrder[u->id]);
+
+		//create the Recall animation over the unit
+		if (spriteAnimation) {
+			recall_effect_sprite = createThingy(spriteAnimation, new_pos.x, new_pos.y, 0);
+			if (recall_effect_sprite != NULL) {
+				recall_effect_sprite->sprite->elevationLevel = u->sprite->elevationLevel + 1;
+				setThingyVisibilityFlags(recall_effect_sprite);
+			}
+
+		}
+
+		//disconnect a nuke from a ghost using it
+		if (
+			u->id == UnitId::TerranGhost ||
+			u->id == UnitId::Hero_SarahKerrigan ||
+			u->id == UnitId::Hero_AlexeiStukov ||
+			u->id == UnitId::Hero_SamirDuran ||
+			u->id == UnitId::Hero_InfestedDuran
+			)
+		{
+			if (
+				u->connectedUnit != NULL &&
+				u->connectedUnit->id == UnitId::TerranNuclearMissile
+				)
+			{
+				(u->connectedUnit)->connectedUnit = NULL;
+				u->connectedUnit = NULL;
+			}
+		}
+	}
+	return result;
+}
+const u32 Func_CreateFlingy = 0x00496460;
+CFlingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y) {
+	static CFlingy* flingy;
+	__asm {
+		PUSHAD
+		MOV EAX,playerId
+		MOV ECX,x
+		MOV EDX,y
+		PUSH flingyId
+		CALL Func_CreateFlingy
+		MOV flingy,EAX
+		POPAD
+	}
+	return flingy;
+}
+
+
+const u32 Func_CreateThingy = 0x00488210;
+CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId) {
+
+	static CThingy* thingy;
+	s32 x_ = x;
+	__asm {
+		PUSHAD
+		PUSH playerId
+		MOVSX EDI, y
+		PUSH x_
+		PUSH spriteId
+		CALL Func_CreateThingy
+		MOV thingy, EAX
+		POPAD
+	}
+	return thingy;
+}
+;
+
 const u32 Func_SendCommand = 0x00485BD0;
 void SendCommand(u8* params, u32 param_length) {
 

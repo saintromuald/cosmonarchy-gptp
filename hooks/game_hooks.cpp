@@ -246,6 +246,24 @@ public:
 		}*/
 	}
 };
+
+const u32 Func_Sub4EBAE0 = 0x004EBAE0;
+void function_004EBAE0(CUnit* unit, s32 x, s32 y) {
+
+	__asm {
+		PUSHAD
+		MOV EDX, unit
+		MOV EAX, x
+		MOV ECX, y
+		CALL Func_Sub4EBAE0
+		POPAD
+	}
+
+}
+
+;
+
+
 #include "logger.h"
 
 namespace hooks {
@@ -286,6 +304,23 @@ namespace hooks {
 			//Loop through all visible units in the game.
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
 
+				if (unit->id == UnitId::ProtossLegionnaire && scbw::getUpgradeLevel(unit->playerId,UpgradeId::BattleHarmony)) {
+					//teleport jump
+
+					if (unit->orderTarget.unit != NULL && (unit->mainOrderId==OrderId::Attack1 || unit->mainOrderId==OrderId::AttackUnit)) {
+						auto target = unit->orderTarget.unit;
+						auto distance = unit->getDistanceToTarget(target);
+						
+						if (distance > 15 && distance<=96) {
+							if (scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0) {
+								bool teleport = scbw::teleport(unit, target->sprite->position, 0, true);
+								if (!unit->getOverlay(971) && teleport) {
+									unit->sprite->createTopOverlay(971);
+								}
+							}
+						}
+					}
+				}
 				/*
 				if (unit->id == UnitId::observer) {
 					u16 tileid = scbw::getTileIdAt(unit->position.x, unit->position.y);
