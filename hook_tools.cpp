@@ -14,6 +14,10 @@ void callPatch(const void* target, void* position, const unsigned int nops) {
   memoryPatch(position, data, 5 + nops);
   delete [] data;
 }
+void nops(const u32 address, u32 number) {
+	u8 nop = 0x90;
+	for (int i = 0; i<number; i++) { memoryPatch((void*)(address + i), &nop, sizeof(u8)); }
+}
 
 //Injects a relative JMP to [target] at the [position].
 //Original function from BWAPI by Kovarex; Modified by pastelmind
