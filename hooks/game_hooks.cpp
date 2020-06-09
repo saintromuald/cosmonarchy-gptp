@@ -195,17 +195,17 @@ public:
 		}
 		if (unit == shaman) {
 			return;
-		}
+		}/*
 		if (unit->isBeingHealed) {
 			return;
-		}
+		}*/
 		if (unit->parasiteFlags) {
 			return;
 		}
 
 		u32 dist = scbw::getDistanceFast(unit->position.x, unit->position.y,
 			shaman->position.x, shaman->position.y);
-		unit->isBeingHealed = true;
+		//unit->isBeingHealed = true;
 		bool reqHeal = false;
 
 		if (unit->hitPoints < units_dat::MaxHitPoints[unit->id]) {
@@ -389,13 +389,13 @@ namespace hooks {
 						if (unit->_padding_0x133 == 0) {
 							if (unit->_padding_0x132 & 0x8) {
 								unit->_padding_0x133 = 24;
-								unit->spendUnitEnergy(2560);
+								unit->spendUnitEnergy(1280);
 								unit->sprite->playIscriptAnim(IscriptAnimation::CastSpell);
 								shamanProc Heal = shamanProc(unit);
-								scbw::UnitFinder unitFinder(unit->getX() - 96,
-									unit->getY() - 96,
-									unit->getX() + 96,
-									unit->getY() + 96);
+								scbw::UnitFinder unitFinder(unit->getX() - 128,
+									unit->getY() - 128,
+									unit->getX() + 128,
+									unit->getY() + 128);
 								unitFinder.forEach(Heal);
 							}
 						}
