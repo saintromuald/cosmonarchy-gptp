@@ -224,6 +224,10 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer *lpMPQDraftServer) {
 	//dark archon - energy of mcontrolled dark archons no longer set to 0
 //	memoryPatch(0x004F6938 + 4, patchLastUnit, 1);
 	nops(0x0049EEBD, 0xa);//disable beacon collision hardcode
+	u8 p8a = { 0x8a };
+	u8 ff = { 0xff };
+	memoryPatch(0x00497764 + 3, &p8a, sizeof(u8));//
+	memoryPatch(0x00497784 + 3, &ff, sizeof(u8));//disable burrow hardcode for image ids: Flag, Young Chrysalis, Uraj, Khalis
 
 	//iquare, end
 
@@ -341,8 +345,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer *lpMPQDraftServer) {
 	hooks::injectHallucinationSpellHook();
 	hooks::injectFeedbackSpellHook();
 	hooks::injectBtnsCondHook();
-	hooks::injectRecvCmdHook();*/
-	hooks::injectCreateInitUnitsHooks();/*
+	hooks::injectRecvCmdHook();
+	hooks::injectCreateInitUnitsHooks();
 	hooks::injectGiveUnitHook();
 	hooks::injectTrainCmdRecvHooks();
 	hooks::injectCMDRECV_SiegeTankHooks();
