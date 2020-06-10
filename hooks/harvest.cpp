@@ -124,8 +124,18 @@ void transferResourceToWorkerHook(CUnit* worker, CUnit* resource) {
 				}
 				//AI cheat
 				if (playerTable[worker->playerId].type == 1 || playerTable[worker->playerId].type == 5) {
-					//+125%
-					resourceAmount += (resourceAmount / 4);
+					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::AIMiningEfficiency) == 1) {
+						//+125%					
+						resourceAmount += (resourceAmount / 4);
+					}
+					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::AIMiningEfficiency) == 2) {
+						//+125%					
+						resourceAmount += (resourceAmount / 3);
+					}
+					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::AIMiningEfficiency) == 3) {
+						//+125%					
+						resourceAmount += (resourceAmount / 2);
+					}
 				}
 				//
 				setResourceAmountCarried(worker, resourceAmount, chunkImageId, isMineral);
