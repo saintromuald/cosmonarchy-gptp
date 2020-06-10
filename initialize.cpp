@@ -107,7 +107,7 @@ namespace
 		}//KYSXD W-Mode end
 	}
 }
-BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer *lpMPQDraftServer) {
+BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	runWMode();
 	//StarCraft.exe version check
 	char exePath[300];
@@ -124,7 +124,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer *lpMPQDraftServer) {
 
 	//iquare, start
 	//medic hardcode patches
-	
+
 	const u8 none = 0xE4;
 	const u8 moveaxpatch[5] = { 0xb8,  0x00, 0x00, 0x00, 0x00 };
 	/*
@@ -145,8 +145,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer *lpMPQDraftServer) {
 	memoryPatch(0x004A2854 + 4, &none, sizeof(u8));//disable inheritai2 medic hardcode
 	memoryPatch(0x0043F92A + 4, &none, sizeof(u8));//disable ai react to hit hardcode
 	*/
-        memoryPatch(0x004357FB + 2, &none, sizeof(u8));//disable placing units near bunkers
-	memoryPatch(0x0043583F+ 1, &none, sizeof(u8));//disable placing units near missile turrets
+	memoryPatch(0x004357FB + 2, &none, sizeof(u8));//disable placing units near bunkers
+	memoryPatch(0x0043583F + 1, &none, sizeof(u8));//disable placing units near missile turrets
 	memoryPatch((void*)0x00487C93, moveaxpatch, sizeof(moveaxpatch));//disable unit selectable check in placement function
 
 	//disable terran structure building transport condition
@@ -243,7 +243,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer *lpMPQDraftServer) {
 	memoryPatch((void*)(0x004A4424 + 2), &b74, sizeof(u8));
 	memoryPatch((void*)0x004A4584, swtab, sizeof(swtab));
 	memoryPatch((void*)0x004A441B, nop3, sizeof(nop3));
-	
+
 	//allow display of extended tile groups
 	const u8 nop = 0x90;
 	const u8 nop6[6] = { 0x8d,0xb6,0x00,0x00,0x00,0x00 };
@@ -251,7 +251,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer *lpMPQDraftServer) {
 	const u8 b0F = 0x0F;
 	const u8 b00 = 0x00; // easy workaround
 	const u8 b01 = 0x01;
-	
+
 	memoryPatch((void*)(0x0047E347 + 3), &b0F, sizeof(u8));
 	memoryPatch((void*)(0x0047E38F + 2), &b0F, sizeof(u8));
 	memoryPatch((void*)(0x0049C563 + 3), &b0F, sizeof(u8));
@@ -260,12 +260,12 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer *lpMPQDraftServer) {
 	memoryPatch((void*)(0x004BD13F + 3), &b0F, sizeof(u8));
 	memoryPatch((void*)(0x0049C595 + 3), &bFF, sizeof(u8));
 	memoryPatch((void*)(0x0049C6DA + 3), &bFF, sizeof(u8));
-	
+
 	memoryPatch((void*)0x0047E3BA, nop6, sizeof(nop6));
 	memoryPatch((void*)0x0049C580, nop6, sizeof(nop6));
 	memoryPatch((void*)0x0049C6C9, nop6, sizeof(nop6));
 	memoryPatch((void*)0x004BCF1E, nop6, sizeof(nop6));
-	
+
 	//allow building on extended tile groups
 	memoryPatch((void*)(0x004BCF34 + 4), &b00, sizeof(u8));
 	memoryPatch((void*)(0x00413F38 + 2), &bFF, sizeof(u8));
@@ -290,7 +290,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer *lpMPQDraftServer) {
 	memoryPatch((void*)(0x0047E045 + 3), &bFF, sizeof(u8));
 	//FaRTy1billion, end
 	//
-	
+
 
 	//h
 	hooks::injectGameHooks();
@@ -335,7 +335,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer *lpMPQDraftServer) {
 	hooks::injectBuildingProtossHooks();*/
 	hooks::injectUnitTrainHooks();
 
-	
+
 	hooks::injectLoadUnloadProcHooks();/*
 	hooks::injectLoadUnloadOrdersHooks();
 	hooks::injectNukeOrdersHooks();
@@ -345,8 +345,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer *lpMPQDraftServer) {
 	hooks::injectHallucinationSpellHook();
 	hooks::injectFeedbackSpellHook();
 	hooks::injectBtnsCondHook();
-	hooks::injectRecvCmdHook();
-	hooks::injectCreateInitUnitsHooks();
+	hooks::injectRecvCmdHook();*/
+	hooks::injectCreateInitUnitsHooks();/*
 	hooks::injectGiveUnitHook();
 	hooks::injectTrainCmdRecvHooks();
 	hooks::injectCMDRECV_SiegeTankHooks();
@@ -376,9 +376,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer *lpMPQDraftServer) {
 	hooks::injectHarvestResource();
 	/*
 	hooks::injectRallyHooks();*/
-	
+
 	hooks::injectRechargeShieldsHooks();
-	
+
 	/*
 	hooks::injectSpiderMineHooks();
 	hooks::injectStimPacksHooks();*/
@@ -389,9 +389,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer *lpMPQDraftServer) {
 	hooks::injectUpdateUnitState();
 	hooks::injectWeaponCooldownHook();
 	hooks::injectWeaponDamageHook();
-	
+
 	hooks::injectWeaponFireHooks();
-	
+
 
 	hooks::injectUnitDestructorSpecial();//hydra
 
@@ -404,9 +404,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer *lpMPQDraftServer) {
 	hooks::injectSightRangeHook();
 	hooks::injectUnitMaxEnergyHook();
 	hooks::injectWeaponRangeHooks();
-	
+
 	hooks::injectUnitTooltipHook();
-	
+
 
 	//hooks::injectSpellcasterAI();
 
