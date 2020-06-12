@@ -123,6 +123,9 @@ void freeResourceContainer(CUnit* resource) {
 
 }
 
+
+
+
 const u32 Func_CreateThingy = 0x00488210;
 CThingy* createThingyFunc(u32 spriteId, s16 x, s16 y, u32 playerId) {
 
@@ -272,17 +275,16 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	{*/
 	if (unit->id == UnitId::scout && scbw::get_aise_value(unit,NULL,AiseId::IsBlowingUp,0,0))
 	{
-		scbw::printText("BlowingUp");
-		
 		createBulletProc(121, unit, unit->position.x, unit->position.y, unit->playerId,
 			unit->currentDirection1);
 		
+		/*
 		CThingy* explosion;
 		explosion = createThingyFunc(354, unit->position.x, unit->position.y, 0);
 		if (explosion != NULL) {
 			explosion->sprite->elevationLevel = 1; //0x13
 			setThingyVisibilityFlagsFunc(explosion);
-		}
+		}*/
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ErasePersistingUnit, 0, 0, 0);
 	}
 	if(unit->irradiateTimer > 0){

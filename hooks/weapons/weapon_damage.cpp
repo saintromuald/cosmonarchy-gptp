@@ -215,6 +215,35 @@ public:
 	}
 };
 
+class lastordersProc2 : public scbw::UnitFinderCallbackMatchInterface {
+
+	CUnit* scout;
+
+public:
+	//Check if @p unit is a suitable target for the @p spiderMine.
+	bool match(CUnit* target) {
+
+		//Don't attack friendly / allied units
+		if (target->playerId == scout->playerId) {
+			return false;
+		}
+		if (scbw::isAlliedTo(target->playerId, scout->playerId)) {
+			return false;
+		}
+		if (target->status & UnitStatus::Invincible) {
+			return false;
+		}
+		if (target->status & UnitStatus::InAir) {
+			return false;
+		}
+		return true;
+
+	}
+
+	//Constructor
+	lastordersProc2(CUnit* scout) : scout(scout) {}
+};
+
 namespace hooks {
 
 	/// Hooks into the CUnit::damageWith() function.
@@ -391,11 +420,37 @@ namespace hooks {
 				}
 			}
 			if (attacker != NULL && target != NULL) {
-				if (damage > target->hitPoints
-					&& units_dat::BaseProperty[attacker->id] & UnitProperty::Hero) {
+				if (damage > target->hitPoints) {
 					//relic death effect
 					//scbw::printText("Check relic");
-					if (scbw::get_aise_value(attacker, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1
+
+					if (damage > target->hitPoints) {//death
+						if (target->id == UnitId::scout && scbw::getUpgradeLevel(target->playerId, UpgradeId::LastOrders)) {
+							if (!scbw::get_aise_value(target, NULL, AiseId::IsSuicidingScout, 0, 0)) {
+								scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetLastOrders, 0, 0, 0);
+								lastordersProc2 Orders = lastordersProc2(target);
+								scbw::UnitFinder unitFinder(target->getX() - 288,
+									target->getY() - 288,
+									target->getX() + 288,
+									target->getY() + 288);
+								CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
+								if (nearest != NULL) {
+									//								scbw::printText("Target found");
+									damage = 0;
+									target->setHp(50 * 256);
+									target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
+									target->status |= UnitStatus::CanNotReceiveOrders;
+
+								}
+
+							}
+						}
+
+					}
+
+					
+					if (units_dat::BaseProperty[attacker->id] & UnitProperty::Hero && 
+						scbw::get_aise_value(attacker, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1
 						&& (units_dat::BaseProperty[target->id] & UnitProperty::Organic)
 						&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
 
