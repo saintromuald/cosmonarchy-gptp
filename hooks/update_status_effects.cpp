@@ -164,7 +164,60 @@ bool setThingyVisibilityFlagsFunc(CThingy* thingy) {
 }
 ;
 
+//00469B60 = DoUnitsCollide(), ecx Unit *first, eax Unit *second
 
+const u32 Func_DoUnitsCollide = 0x00469B60;
+bool func_dounitscollide(CUnit* first, CUnit* second){
+	static u32 result = 0;
+	__asm {
+		PUSHAD
+		MOV EAX,first
+		MOV ECX,second
+		CALL Func_DoUnitsCollide
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+
+class safetyUnburrow : public scbw::UnitFinderCallbackMatchInterface {
+
+	CUnit* burrower;
+
+public:
+	//Check if @p unit is suitable unburrow target.
+	bool match(CUnit* target) {
+		if (target->status & UnitStatus::GroundedBuilding == 0) {
+			return false;
+		}
+		if (target == burrower) {
+			return false;
+		}
+		if (!func_dounitscollide(burrower, target)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	//Constructor
+	safetyUnburrow(CUnit* burrower) : burrower(burrower) {}
+};
+
+const u32 Func_Sub_4E97C0 = 0x004E97C0;
+void unburrow(CUnit* unit) {
+
+	__asm {
+		PUSHAD
+		MOV EAX, unit
+		CALL Func_Sub_4E97C0
+		POPAD
+	}
+
+}
+
+;
 void updateStatusEffects(CUnit* unit) {
 
 	if (unit->stasisTimer != 0) {
@@ -175,6 +228,31 @@ void updateStatusEffects(CUnit* unit) {
 			unit->removeStasisField();
 
 	}
+	if (unit->status & UnitStatus::Burrowed) {
+		auto tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
+		if (tile.currentlyOccupied) {
+			safetyUnburrow Unburrow = safetyUnburrow(unit);
+			CUnit* nearest = scbw::UnitFinder::getNearestTarget(unit->getLeft()-32,
+				unit->getTop()-32,
+				unit->getRight()+32,
+				unit->getBottom()+32, unit, Unburrow);
+			if (nearest != NULL) {
+				unburrow(unit);
+			}
+		}
+		/*
+		safetyUnburrow Unburrow = safetyUnburrow(unit);
+		CUnit* nearest = scbw::UnitFinder::getNearestTarget(unit->getLeft(),
+			unit->getTop(),
+			unit->getRight(),
+			unit->getBottom(),unit, Unburrow);
+		if (nearest != NULL) {
+			scbw::printText("Match");
+			unburrow(unit);
+
+		}*/
+	}
+
 	if (unit->id == UnitId::ghost) {
 		if (
 			!(unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)))
