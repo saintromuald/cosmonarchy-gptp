@@ -257,8 +257,15 @@ namespace hooks {
 			if (!unit->getOverlay(overlayImageId)) {
 				unit->sprite->createTopOverlay(overlayImageId,
 					0, 0, 0);
+				
 				if (!scbw::get_aise_value(unit, NULL, AiseId::HasMalice, 0, 0) == 1){
-					unit->sprite->images.head->setRemapping(ColorRemapping::BExpl);
+					//unit->sprite->images.head->setRemapping(ColorRemapping::BExpl);
+					//new maelstrom visual code
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetMaelstromOffset, 75, 0, 0);
+				}
+				else {
+					//new maelstrom visual code
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetMaelstromOffset, 50, 0, 0);
 				}
 			}
 		}

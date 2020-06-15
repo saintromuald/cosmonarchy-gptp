@@ -191,6 +191,9 @@ public:
 		if (target->status & UnitStatus::GroundedBuilding == 0) {
 			return false;
 		}
+		if (target->id == UnitId::BasiliskCreeper) {
+			return false;
+		}
 		if (target == burrower) {
 			return false;
 		}
@@ -240,17 +243,7 @@ void updateStatusEffects(CUnit* unit) {
 				unburrow(unit);
 			}
 		}
-		/*
-		safetyUnburrow Unburrow = safetyUnburrow(unit);
-		CUnit* nearest = scbw::UnitFinder::getNearestTarget(unit->getLeft(),
-			unit->getTop(),
-			unit->getRight(),
-			unit->getBottom(),unit, Unburrow);
-		if (nearest != NULL) {
-			scbw::printText("Match");
-			unburrow(unit);
-
-		}*/
+		
 	}
 
 	if (unit->id == UnitId::ghost) {
@@ -427,7 +420,9 @@ void updateStatusEffects(CUnit* unit) {
 						overlayImageId = ImageId::MaelstromOverlay_Small;
 				unit->sprite->createTopOverlay(overlayImageId,
 					0, 0, 0);
-				unit->sprite->images.head->setRemapping(ColorRemapping::GFire);
+				//new maelstrom visual code
+				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetMaelstromOffset, 25, 0, 0);
+//				unit->sprite->images.head->setRemapping(ColorRemapping::GFire);
 			}
 			unit->updateSpeed();
 		}

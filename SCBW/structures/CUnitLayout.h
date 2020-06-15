@@ -63,7 +63,7 @@ namespace GptpId {
 		SetGenericTimer = 18,
 		FreeMindControlled,
 		SetMindControlLink,
-
+		SetMaelstromOffset,
 		Void = 10005,
 	};
 }
@@ -90,9 +90,17 @@ namespace AiseId {
 		GenericTimer=16,
 		SumMindControlCost,
 		GetLegionnaireMarks,
+
 	};
 }
-
+namespace OverlayOffset {
+	enum {
+		Orange = 0,
+		Green = 25,
+		Red = 50,
+		Blue = 75,
+	};
+}
 
 namespace ValueId {
 	enum {

@@ -125,7 +125,7 @@ void spawnCreeper(CUnit* unit) {
 	int height = mapTileSize->height * 32;
 	if (unit->position.y >= 64 && unit->position.x >= 64 &&
 		unit->position.y < height - 64 && unit->position.x < width - 64) {
-		CUnit* creep_spawned = CreateUnit(UnitId::UnusedCaveIn,
+		CUnit* creep_spawned = CreateUnit(UnitId::BasiliskCreeper,
 			unit->position.x, unit->position.y,
 			unit->playerId);
 		if (creep_spawned == NULL) {
