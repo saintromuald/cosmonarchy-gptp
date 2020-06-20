@@ -36,7 +36,9 @@ namespace NewGameCommand {
 		CreateUnit = 0x07,
 		KhaydarinControl = 0x08,
 		CarrierPrebuild = 0x09,
+		GenericSwitchAbility = 0x0D,
 		OverlordDamageField = 0x10,
+		
 	};
 }
 
@@ -117,9 +119,19 @@ namespace ValueId {
 		Malediction=10,
 		MaledictionSlow=11,
 		WyvernSlow=12,
-	};
-	
+		ReverseThrust=13,
+		SublimeShepherd=14,
+		DisruptionWeb=15,
+	};	
 }
+#include "SCBW\enumerations\TechId.h"
+const u32 first_generic_toggle_ability = ValueId::ReverseThrust;
+const u32 last_generic_toggle_ability = ValueId::DisruptionWeb;
+const u32 string_toggle_on[3] = {1703, 1807, 1265};
+const u32 string_toggle_off[3] = {1113, 1114, 1634};
+const u32 button_toggle_on[3] = { 374, 319, 369 };
+const u32 button_toggle_off[3] = { 236, 236, 236 };
+const u32 toggle_abilities[3] = {TechId::EMPShockwave,TechId::UnusedTech40,TechId::UnusedTech39};
 
 namespace HydraFlags1 {
 	enum {
