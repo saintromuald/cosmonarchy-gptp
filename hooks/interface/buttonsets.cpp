@@ -1596,37 +1596,37 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								if ((*activePortraitUnit)->id == UnitId::broodling && //Broodling Ensnare passive : disabled
-									scbw::hasTechResearched((*activePortraitUnit)->playerId, TechId::Ensnare) == 0 &&
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, 84) == 0 &&
 									current_button->iconID == 267)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::broodling &&  //Broodling Ensnare passive : enabled 
-									scbw::hasTechResearched((*activePortraitUnit)->playerId, TechId::Ensnare) == 1 &&
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, 84) == 1 &&
 									current_button->iconID == 267)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::broodling &&  //Broodling Ensnare passive : unavailable
-									scbw::hasTechAvailable((*activePortraitUnit)->playerId, TechId::Ensnare) == 0 &&
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, 84) == 0 &&
 									current_button->iconID == 267)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								if ((*activePortraitUnit)->id == UnitId::infested_terran && //Infested Terran Ensnare passive : disabled
-									scbw::hasTechResearched((*activePortraitUnit)->playerId, TechId::Ensnare) == 0 &&
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, 84) == 0 &&
 									current_button->iconID == 267)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::infested_terran &&  //Infested Terran Ensnare passive : enabled 
-									scbw::hasTechResearched((*activePortraitUnit)->playerId, TechId::Ensnare) == 1 &&
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, 84) == 1 &&
 									current_button->iconID == 267)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::infested_terran &&  //Infested Terran Ensnare passive : unavailable
-									scbw::hasTechAvailable((*activePortraitUnit)->playerId, TechId::Ensnare) == 0 &&
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, 84) == 0 &&
 									current_button->iconID == 267)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
@@ -1635,24 +1635,6 @@ namespace hooks {
 									current_button->iconID == 307)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::ZergQueen && //Queen Ensnare passive : disabled
-									scbw::hasTechResearched((*activePortraitUnit)->playerId, TechId::Ensnare) == 0 &&
-									current_button->iconID == 267)
-								{
-									current_button_state = BUTTON_STATE::Disabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::ZergQueen &&  //Queen Ensnare passive : enabled 
-									scbw::hasTechResearched((*activePortraitUnit)->playerId, TechId::Ensnare) == 1 &&
-									current_button->iconID == 267)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::ZergQueen &&  //Queen Ensnare passive : unavailable
-									scbw::hasTechAvailable((*activePortraitUnit)->playerId, TechId::Ensnare) == 0 &&
-									current_button->iconID == 267)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
 								}
 								if ((*activePortraitUnit)->id == UnitId::archon && //Archon Aegis passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AstralAegis) == 0 &&
@@ -1735,60 +1717,6 @@ namespace hooks {
 									current_button->iconID == 350)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::TerranDropship && //Dropship-Hotdrop passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::Hotdrop) == 0 &&
-									current_button->iconID == 283)
-								{
-									current_button_state = BUTTON_STATE::Disabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::TerranDropship &&  //Dropship-Hotdrop passive : enabled 
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::Hotdrop) == 1 &&
-									current_button->iconID == 283)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::TerranDropship &&  //Dropship-Hotdrop passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::Hotdrop) == 0 &&
-									current_button->iconID == 283)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								if ((*activePortraitUnit)->id == UnitId::TerranDropship && //Dropship-Passenger Insurance passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::PassengerInsurance) == 0 &&
-									current_button->iconID == 291)
-								{
-									current_button_state = BUTTON_STATE::Disabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::TerranDropship &&  //Dropship-Passenger Insurance passive : enabled 
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::PassengerInsurance) == 1 &&
-									current_button->iconID == 291)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::TerranDropship &&  //Dropship-Passenger Insurance passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::PassengerInsurance) == 0 &&
-									current_button->iconID == 291)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossShuttle && //Shuttle-Expanded Hull passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ExpandedHull) == 0 &&
-									current_button->iconID == 304)
-								{
-									current_button_state = BUTTON_STATE::Disabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::ProtossShuttle &&  //Shuttle-Expanded Hull passive : enabled 
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ExpandedHull) == 1 &&
-									current_button->iconID == 304)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::ProtossShuttle &&  //Shuttle-Expanded Hull passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::ExpandedHull) == 0 &&
-									current_button->iconID == 304)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
 								}
 
 							}

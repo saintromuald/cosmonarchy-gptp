@@ -280,8 +280,8 @@ namespace hooks {
 			if (damage < 128)
 				damage = 128;
 			if (attacker != NULL) {
-				if (attacker->id == UnitId::broodling && scbw::hasTechResearched(attacker->playerId,
-					TechId::Ensnare) && !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
+				if (attacker->id == UnitId::broodling && scbw::getUpgradeLevel(attacker->playerId,84) 
+					&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
 					u32 overlayImageId;
 					if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay)
 						overlayImageId = ImageId::EnsnareOverlay_Medium;

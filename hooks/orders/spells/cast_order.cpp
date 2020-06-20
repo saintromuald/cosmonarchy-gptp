@@ -23,7 +23,12 @@ void orders_Spell(CUnit* unit) {
 	s32 spellCost;
 	u8 orderWeaponId = orders_dat::OrderWeaponId[unit->mainOrderId];
 	CUnit* target = unit->orderTarget.unit;
-
+	if (unit->id == UnitId::TerranWyvern) {
+		if (unit->orderSignal & 0x80) {
+			unit->orderSignal &= ~0x80;
+			unit->orderTo(OrderId::CTFCOPInit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+		}
+	}
 	if(unit->mainOrderState == 2) {
 
 		if(unit->orderSignal & 2) {

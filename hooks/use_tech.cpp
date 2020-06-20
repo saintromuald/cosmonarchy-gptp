@@ -174,7 +174,9 @@ namespace hooks
 			IssueTriTargetOrder(OrderId::Irradiate, 0, 0);
 			break;
 		case TechId::Ensnare:
-			IssueTriTargetOrder(OrderId::Ensnare, 0, 0);
+//			IssueTriTargetOrder(OrderId::Ensnare, 0, 0);
+			//land grab
+			IssueTriTargetOrder(OrderId::CTFCOPInit, 0, 0);
 			break;
 		case TechId::StasisField:
 			IssueTriTargetOrder(OrderId::StasisField, 0, 0);
