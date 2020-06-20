@@ -59,7 +59,7 @@ namespace hooks {
 			if (unit->id == UnitId::scout || unit->id == UnitId::Hero_Mojo || unit->id == UnitId::Hero_Artanis)
 				speed = 1707;
 			else {
-				for (int i = 0; i < increase; i++) {
+				for (int i = 0; i<increase; i++) {
 					speed += (speed / 2);
 				}
 				if (speed < 853)
@@ -67,12 +67,16 @@ namespace hooks {
 			}
 		}
 		if (decrease > 0) {
-			for (int i = 0; i < decrease; i++) {
+			for (int i = 0; i<decrease; i++) {
 				speed /= 2;
 			}
 		}
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::MaledictionSlow, 0) > 1) {
 			speed /= 2;
+		}
+		if (unit->id == UnitId::TerranWyvern && scbw::getUpgradeLevel(unit->playerId, UpgradeId::ReverseThrust)) {
+			if(scbw::get_aise_value(unit,NULL,AiseId::GenericTimer,ValueId::WyvernSlow,0)>1)
+				speed /= 2;
 		}
 		if (unit->id == UnitId::Powerup_UrajCrystal) {//vorvaling
 			vorvalingProc Accelerate = vorvalingProc(unit);
@@ -133,11 +137,11 @@ namespace hooks {
 			u32 lair_count = unitCountTable[UnitId::lair].player[unit->playerId];
 			u32 hive_count = unitCountTable[UnitId::hive].player[unit->playerId];
 			if (hive_count) {
-				speed *= 5;
+				speed *= 6;
 
 			}
 			else if (lair_count) {
-				speed *= 3;
+				speed *= 4;
 			}
 		}
 

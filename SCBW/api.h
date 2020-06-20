@@ -8,6 +8,10 @@
 namespace scbw {
 
 
+
+void artificalBulletFrom(u8 weaponId, u8 playerId, CUnit* source, CUnit* target, Point16 target_pt);
+void artificalBulletFrom(u8 weaponId, u8 playerId, CUnit* source, CUnit* target, u16 x, u16 y);
+
 bool teleport(CUnit* u, Point16 target, u16 spriteAnimation=0, bool preserveOrder=false);
 CFlingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y);
 CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);

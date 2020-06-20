@@ -50,7 +50,43 @@ CThingy* function_createthingy(u32 spriteId, s16 x, s16 y, u32 playerId) {
 }
 ;
 */
+const u32 Func_RemoveOverlays2 = 0x00492370;
+void removeoverlays2(u32 from, u32 to, CUnit* unit) {
+	__asm {
+		PUSHAD
+		MOV EAX,from
+		MOV EBX,unit
+		PUSH to
+		CALL Func_RemoveOverlays2
+		POPAD
+	}
+}
+#include "SCBW\UnitFinder.h"
+#include "SCBW\api.h"
+class wyvernMatch : public scbw::UnitFinderCallbackMatchInterface {
+private:
+	CUnit* gunship;
+public:
+	wyvernMatch(CUnit* gunship)
+		: gunship(gunship) {}
 
+	bool match(CUnit* unit) {
+		if (unit == gunship) {
+			return false;
+		}
+		if (unit->status & UnitStatus::InAir) {
+			return false;
+		}
+		if (scbw::isAlliedTo(gunship->playerId, unit->playerId)) {
+			return false;
+		}
+		if (scbw::getDistanceFast(unit->sprite->position.x, unit->sprite->position.y,
+			gunship->sprite->position.x, gunship->sprite->position.y) > weapons_dat::MaxRange[WeaponId::WyvernWeapon]) {
+			return false;
+		}
+		return true;
+	}
+};
 namespace hooks {
 
 	/// This function regenerates energy for spellcasters and drains energy for
@@ -210,6 +246,37 @@ namespace hooks {
 			unit->airWeaponCooldown--;
 		if (unit->spellCooldown)
 			unit->spellCooldown--;
+		if (unit->id == UnitId::TerranWyvern && scbw::getUpgradeLevel(unit->playerId,UpgradeId::ReverseThrust) 
+			&& unit->groundWeaponCooldown==0) {
+
+			bool can_free_fire = true;
+			if (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::Attack2) {
+				if (unit->orderTarget.unit != NULL) {
+					can_free_fire = false;
+				}
+			}
+			if (can_free_fire) {
+				auto range = weapons_dat::MaxRange[WeaponId::WyvernWeapon];
+				auto a = scbw::UnitFinder::getNearestTarget(
+					unit->getX() - range, unit->getY() - range,
+					unit->getX() + range, unit->getY() + range,
+					unit, wyvernMatch(unit)
+				);
+				if (a != NULL) {
+					s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernWeapon];
+					auto x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
+					auto y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1);
+					auto direction = scbw::getAngle(x, y, a->getX(), a->getY());
+					unit->groundWeaponCooldown = weapons_dat::Cooldown[WeaponId::WyvernWeapon];
+					scbw::artificalBulletFrom(WeaponId::WyvernWeapon, unit->playerId, unit, a, a->position);
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::WyvernSlow, unit->groundWeaponCooldown+1, 0);
+					unit->updateSpeed();
+				}
+				
+			}
+
+		}
+
 		if (unit->id == UnitId::reaver) {
 			CUnit* scarab = unit->carrier.inHangarChild;
 			while (scarab != NULL) {
@@ -257,7 +324,6 @@ namespace hooks {
 			if (!unit->getOverlay(overlayImageId)) {
 				unit->sprite->createTopOverlay(overlayImageId,
 					0, 0, 0);
-				
 				if (!scbw::get_aise_value(unit, NULL, AiseId::HasMalice, 0, 0) == 1){
 					//unit->sprite->images.head->setRemapping(ColorRemapping::BExpl);
 					//new maelstrom visual code
@@ -269,6 +335,7 @@ namespace hooks {
 				}
 			}
 		}
+		
 		if (unit->_unknown_0x08C & 0x2) {
 			unit->_unknown_0x08C &= ~0x2;
 			u32 overlayImageId;

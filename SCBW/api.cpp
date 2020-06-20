@@ -15,12 +15,54 @@ class DarkSwarmFinderProc : public scbw::UnitFinderCallbackMatchInterface {
 };
 
 namespace scbw {
+	const u32 Helper_CreateBullet = 0x0048C260;
+	void createBullet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction) {
 
+		static u32 attackingPlayer_;
+		static u32 direction_;
+		static s32 x_;
+		static s32 y_;
 
-/*
-00496460 = CreateFlingy(), arg 1 flingy_id, eax player, ecx x, edx y
+		attackingPlayer_ = attackingPlayer;
+		direction_ = direction;
+		x_ = x; y_ = y;
 
-*/
+		__asm {
+			PUSHAD
+			PUSH direction_
+			PUSH attackingPlayer_
+			PUSH y_
+			PUSH x_
+			MOV EAX, source
+			MOVZX ECX, weaponId
+			CALL Helper_CreateBullet
+			POPAD
+		}
+
+	}
+	void artificalBulletFrom(u8 weaponId, u8 playerId, CUnit* source, CUnit* target, Point16 target_pt) {
+		auto target_unit = source->orderTarget.unit;
+		auto target_pos = source->orderTarget.pt;
+		source->orderTarget.unit = target;
+		source->orderTarget.pt = target_pt;
+		Point16 pick;
+		if (target == NULL) {
+			source->orderTarget.pt = target_unit->sprite->position;
+		}
+		else {
+			source->orderTarget.pt = target_pt;
+		}
+		createBullet(weaponId, source, source->sprite->position.x, source->sprite->position.y, playerId,
+			getAngle(source->position.x, source->position.y, source->orderTarget.pt.x, source->orderTarget.pt.y));
+		source->orderTarget.unit = target_unit;
+		source->orderTarget.pt = target_pos;
+	}
+	void artificalBulletFrom(u8 weaponId, u8 playerId, CUnit* source, CUnit* target, u16 x, u16 y) {
+		Point16 tgt;
+		tgt.x = x;
+		tgt.y = y;
+		artificalBulletFrom(weaponId, playerId, source, target, tgt);
+	}
 
 const u32 Func_Sub4EBAE0 = 0x004EBAE0;
 void function_004EBAE0(CUnit* unit, s32 x, s32 y) {

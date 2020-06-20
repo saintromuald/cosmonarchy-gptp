@@ -116,6 +116,7 @@ namespace ValueId {
 		SomaticImplants=9,
 		Malediction=10,
 		MaledictionSlow=11,
+		WyvernSlow=12,
 	};
 	
 }

@@ -247,23 +247,6 @@ public:
 	}
 };
 
-const u32 Func_Sub4EBAE0 = 0x004EBAE0;
-void function_004EBAE0(CUnit* unit, s32 x, s32 y) {
-
-	__asm {
-		PUSHAD
-		MOV EDX, unit
-		MOV EAX, x
-		MOV ECX, y
-		CALL Func_Sub4EBAE0
-		POPAD
-	}
-
-}
-
-;
-
-
 #include "logger.h"
 
 namespace hooks {
@@ -303,7 +286,7 @@ namespace hooks {
 
 			//Loop through all visible units in the game.
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
-
+				
 				if (unit->id == UnitId::ProtossLegionnaire && scbw::getUpgradeLevel(unit->playerId,UpgradeId::BattleHarmony)) {
 					//teleport jump
 
@@ -421,12 +404,21 @@ namespace hooks {
 											unit->_padding_0x132 &= ~HydraFlags1::BasiliskBurrowed;*/
 					}
 				}
+				if (unit->id == UnitId::TerranWyvern && scbw::getUpgradeLevel(unit->playerId, UpgradeId::ReverseThrust)) {
+					if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::WyvernSlow, 0) == 1) {
+						unit->updateSpeed();
+					}
+				}
 				if (unit->id == UnitId::Powerup_KhalisCrystal && unit->orderSignal & 0x20) {
 					unit->orderSignal &= ~0x20;
 					unit->playIscriptAnim(IscriptAnimation::Unused1);
-				}if (unit->id == UnitId::ZergLurker && unit->orderSignal & 0x80 && scbw::getUpgradeLevel(unit->playerId, UpgradeId::TectonicClaws) == 1) {
+				}
+				if (unit->id == UnitId::ZergLurker && unit->orderSignal & 0x80) {
 					unit->orderSignal &= ~0x80;
-					unit->playIscriptAnim(IscriptAnimation::Unused3);
+					if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::TectonicClaws) == 1) {
+						unit->playIscriptAnim(IscriptAnimation::Unused3);
+					}
+					
 				}
 			}
 			scbw::setInGameLoopState(false);
