@@ -168,7 +168,21 @@ namespace hooks
 			IssueTriTargetOrder(OrderId::InfestMine3, OrderId::Move, OrderId::InfestMine2);
 			break;
 		case TechId::EMPShockwave:
-			IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
+//			IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
+			//reverse thrust switch
+			if (firstInList != NULL) {
+				int action = 1;//on
+				if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::ReverseThrust, 0) == 1) {
+					action = 0;//off
+				}
+				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+				buf[0] = 0x99;//new general command
+				buf[1] = NewGameCommand::GenericSwitchAbility;
+				buf[2] = action;
+				buf[3] = *ACTIVE_PLAYER_ID;
+				buf[4] = ValueId::ReverseThrust;
+				scbw::SendCommand(buf, 0xc);
+			}
 			break;
 		case TechId::Irradiate:
 			IssueTriTargetOrder(OrderId::Irradiate, 0, 0);

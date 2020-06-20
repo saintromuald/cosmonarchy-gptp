@@ -229,6 +229,13 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x00497764 + 3, &p8a, sizeof(u8));//
 	memoryPatch(0x00497784 + 3, &ff, sizeof(u8));//disable burrow hardcode for image ids: Flag, Young Chrysalis, Uraj, Khalis
 
+	//ctf orders
+	u8 patchCTF1[] = { 0xE9, 0xCC, 0x02, 0x00, 0x00 };
+	memoryPatch(0x004EC80A, patchCTF1, sizeof patchCTF1);//CTFCOPInit //wyvern?
+	u8 patchCTF2[] = { 0xE9, 0xC2, 0x02, 0x00, 0x00 };
+	memoryPatch(0x004EC814, patchCTF2, sizeof patchCTF2);//CTFCOP1 //full toilet - conduit 
+	//
+
 	//iquare, end
 
 	//FaRTy1billion, start

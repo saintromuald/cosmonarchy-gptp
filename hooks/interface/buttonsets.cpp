@@ -1742,7 +1742,17 @@ namespace hooks {
 									current_button->iconID = 374;
 								}
 							}
-
+							int dif = last_generic_toggle_ability - first_generic_toggle_ability;
+							for (int i = 0; i <= dif; i++) {
+								if (current_button->actVar == toggle_abilities[i]) {
+									if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::GenericValue,first_generic_toggle_ability+i, 0) == 1) {
+										current_button->iconID = button_toggle_off[i];
+									}
+									else {
+										current_button->iconID = button_toggle_on[i];
+									}
+								}
+							}
 						}
 
 						if (current_button_state == BUTTON_STATE::Invisible) {

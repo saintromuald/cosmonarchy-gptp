@@ -180,11 +180,21 @@ void __declspec(naked) get_stattxt_string_Wrapper() {
 	}
 	if (stringId == 1684) {
 		if (scbw::get_aise_value(NULL, NULL, AiseId::RecvEscalationValue,
-			*ACTIVE_PLAYER_ID, UnitId::medic) == UnitId::civilian) {//shaman
+			*ACTIVE_PLAYER_ID, UnitId::medic) == UnitId::civilian) {//
+
 			//add firebat
 			stringId = 1685;
 		}
 	}
+	static int dif = last_generic_toggle_ability - first_generic_toggle_ability;
+	for (int i = 0; i <= dif; i++) {
+		if (stringId == string_toggle_on[i]) {
+			if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::GenericValue, first_generic_toggle_ability + i, 0) == 1) {
+				stringId = string_toggle_off[i];
+			}
+		}
+	}
+
 	if (stringId == 1633) {
 		if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
 			stringId = 1634;

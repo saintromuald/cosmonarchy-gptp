@@ -246,7 +246,7 @@ namespace hooks {
 			unit->airWeaponCooldown--;
 		if (unit->spellCooldown)
 			unit->spellCooldown--;
-		if (unit->id == UnitId::TerranWyvern && scbw::getUpgradeLevel(unit->playerId,UpgradeId::ReverseThrust) 
+		if (unit->id == UnitId::TerranWyvern && scbw::get_aise_value(unit,NULL,AiseId::GenericValue,ValueId::ReverseThrust,0)==1
 			&& unit->groundWeaponCooldown==0) {
 
 			bool can_free_fire = true;
@@ -269,7 +269,6 @@ namespace hooks {
 					auto direction = scbw::getAngle(x, y, a->getX(), a->getY());
 					unit->groundWeaponCooldown = weapons_dat::Cooldown[WeaponId::WyvernWeapon];
 					scbw::artificalBulletFrom(WeaponId::WyvernWeapon, unit->playerId, unit, a, a->position);
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::WyvernSlow, unit->groundWeaponCooldown+1, 0);
 					unit->updateSpeed();
 				}
 				

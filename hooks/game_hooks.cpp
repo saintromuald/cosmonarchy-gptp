@@ -395,18 +395,14 @@ namespace hooks {
 					}
 					else {
 						/*
-											if (unit->_padding_0x132 & HydraFlags1::BasiliskBurrowed) {
-												if (unit->connectedUnit != NULL) {
-													unit->connectedUnit->userActionFlags |= 0x4;
-													unit->connectedUnit->remove();
-												}
-											}
-											unit->_padding_0x132 &= ~HydraFlags1::BasiliskBurrowed;*/
-					}
-				}
-				if (unit->id == UnitId::TerranWyvern && scbw::getUpgradeLevel(unit->playerId, UpgradeId::ReverseThrust)) {
-					if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::WyvernSlow, 0) == 1) {
-						unit->updateSpeed();
+						if (unit->_padding_0x132 & HydraFlags1::BasiliskBurrowed) {
+							if (unit->connectedUnit != NULL) {
+								unit->connectedUnit->userActionFlags |= 0x4;
+								unit->connectedUnit->remove();
+							}
+						}
+						unit->_padding_0x132 &= ~HydraFlags1::BasiliskBurrowed;
+											*/
 					}
 				}
 				if (unit->id == UnitId::Powerup_KhalisCrystal && unit->orderSignal & 0x20) {
@@ -418,7 +414,6 @@ namespace hooks {
 					if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::TectonicClaws) == 1) {
 						unit->playIscriptAnim(IscriptAnimation::Unused3);
 					}
-					
 				}
 			}
 			scbw::setInGameLoopState(false);
