@@ -497,7 +497,7 @@ namespace hooks {
 						
 						if (scbw::getDistanceFast(unit->position.x, unit->position.y, 
 								unit->orderTarget.pt.x, unit->orderTarget.pt.y) <= 8) {
-							scbw::printText("Explode!");
+							//scbw::printText("Explode!");
 							//scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::PrepareToExplode, 0, 0, 0);
 							//unit->_padding_0x132 |= HydraFlags1::ScoutBlowing;
 							scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::PrepareToExplode, 0, 0, 0);
