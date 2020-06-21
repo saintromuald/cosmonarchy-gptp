@@ -122,6 +122,9 @@ namespace ValueId {
 		ReverseThrust=13,
 		SublimeShepherd=14,
 		DisruptionWeb=15,
+		WyvernReverseLandgrabOn=16,
+		WyvernReverseLandgrabX=17,
+		WyvernReverseLandgrabY=18,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

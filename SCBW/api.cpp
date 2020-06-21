@@ -46,7 +46,7 @@ namespace scbw {
 		source->orderTarget.unit = target;
 		source->orderTarget.pt = target_pt;
 		Point16 pick;
-		if (target == NULL) {
+		if (target != NULL && target_unit!=NULL) {
 			source->orderTarget.pt = target_unit->sprite->position;
 		}
 		else {

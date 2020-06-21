@@ -24,6 +24,17 @@ void orders_Spell(CUnit* unit) {
 	u8 orderWeaponId = orders_dat::OrderWeaponId[unit->mainOrderId];
 	CUnit* target = unit->orderTarget.unit;
 	if (unit->id == UnitId::TerranWyvern) {
+		if (unit->orderSignal & 0x40) {
+			unit->orderSignal &= ~0x40;
+			if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::ReverseThrust, 0) == 1) {
+				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::WyvernReverseLandgrabOn, 1, 0);
+				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::WyvernReverseLandgrabX, unit->orderTarget.pt.x, 0);
+				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::WyvernReverseLandgrabY, unit->orderTarget.pt.y, 0);
+			}
+			else {
+				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::WyvernReverseLandgrabOn, 0, 0);
+			}
+		}
 		if (unit->orderSignal & 0x80) {
 			unit->orderSignal &= ~0x80;
 			unit->orderTo(OrderId::CTFCOPInit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);

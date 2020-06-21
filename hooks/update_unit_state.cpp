@@ -257,21 +257,36 @@ namespace hooks {
 			}
 			if (can_free_fire) {
 				auto range = weapons_dat::MaxRange[WeaponId::WyvernWeapon];
-				auto a = scbw::UnitFinder::getNearestTarget(
-					unit->getX() - range, unit->getY() - range,
-					unit->getX() + range, unit->getY() + range,
-					unit, wyvernMatch(unit)
-				);
-				if (a != NULL) {
-					s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernWeapon];
-					auto x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
-					auto y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1);
-					auto direction = scbw::getAngle(x, y, a->getX(), a->getY());
-					unit->groundWeaponCooldown = weapons_dat::Cooldown[WeaponId::WyvernWeapon];
-					scbw::artificalBulletFrom(WeaponId::WyvernWeapon, unit->playerId, unit, a, a->position);
-					unit->updateSpeed();
-				}
+				s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernWeapon];
+				auto x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
+				auto y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1);
 				
+				unit->groundWeaponCooldown = weapons_dat::Cooldown[WeaponId::WyvernWeapon];
+				bool seek_unit = true;
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabOn, 0)==1) {
+					auto targ_x = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabX, 0);
+					auto targ_y = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabY, 0);
+					auto direction = scbw::getAngle(x, y, targ_x, targ_y);
+					if (scbw::getDistanceFast(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
+						seek_unit = false;
+						scbw::artificalBulletFrom(WeaponId::WyvernWeapon, unit->playerId, unit, NULL, targ_x, targ_y);
+					}
+					else {
+						scbw::sendGPTP_aise_cmd(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabOn, 0, 0);
+					}
+				}
+				if(seek_unit) {
+					auto a = scbw::UnitFinder::getNearestTarget(
+						unit->getX() - range, unit->getY() - range,
+						unit->getX() + range, unit->getY() + range,
+						unit, wyvernMatch(unit)
+					);
+					if (a != NULL) {
+						auto direction = scbw::getAngle(x, y, a->getX(), a->getY());
+						scbw::artificalBulletFrom(WeaponId::WyvernWeapon, unit->playerId, unit, a, a->position);						
+					}
+				}
+				unit->updateSpeed();
 			}
 
 		}
