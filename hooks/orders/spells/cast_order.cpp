@@ -34,6 +34,7 @@ void orders_Spell(CUnit* unit) {
 			else {
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::WyvernReverseLandgrabOn, 0, 0);
 			}
+			
 		}
 		if (unit->orderSignal & 0x80) {
 			unit->orderSignal &= ~0x80;

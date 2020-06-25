@@ -125,6 +125,7 @@ namespace ValueId {
 		WyvernReverseLandgrabOn=16,
 		WyvernReverseLandgrabX=17,
 		WyvernReverseLandgrabY=18,
+		LandGrabStart=19,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
