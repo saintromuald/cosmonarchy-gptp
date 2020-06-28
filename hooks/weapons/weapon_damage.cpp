@@ -380,6 +380,8 @@ namespace hooks {
 				}
 
 				damage -= std::min(damage, armorTotal);
+				auto rend = 256 * scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0);
+				damage += rend;
 			}
 
 			//Apply damage type/unit size factor (not checked by UndeadStar, I will hope it work)

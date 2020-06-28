@@ -170,6 +170,31 @@ void spawnCreeper(CUnit* unit) {
 
 
 #include "SCBW\UnitFinder.h"
+
+class observanceMatch : public scbw::UnitFinderCallbackMatchInterface {
+private:
+	CUnit* observed;
+public:
+	observanceMatch(CUnit* observed)
+		: observed(observed) {}
+
+	bool match(CUnit* unit) {
+		
+		if (unit == observed) {
+			return false;
+		}
+		if (scbw::isAlliedTo(observed->playerId, unit->playerId)) {
+			return false;
+		}
+		if (unit->id != UnitId::science_vessel) {
+			return false;
+		}
+		
+		return true;
+	}
+};
+
+
 class shamanProc : public scbw::UnitFinderCallbackProcInterface
 {
 
@@ -342,6 +367,25 @@ namespace hooks {
 					}
 				}*/
 
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ObservanceTimerDebuff, 0) == 1) {
+					auto range = 160;
+					auto observance = observanceMatch(unit);
+					auto a = scbw::UnitFinder::getNearestTarget(
+						unit->getX() - range, unit->getY() - range,
+						unit->getX() + range, unit->getY() + range,
+						unit, observance
+					);
+
+					if (a != NULL) {
+						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::ObservanceTimerDebuff, (5 * 24) + 1, 0);
+						if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0) < 5) {
+							scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::ObservanceRend, 1, 0);
+						}	
+					}
+					else {
+						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::ObservanceRend, 0, 0);
+					}
+				}
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::MaledictionSlow, 0) == 1) {
 					u32 overlayImageId;
 					if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
@@ -356,6 +400,13 @@ namespace hooks {
 					}
 					unit->updateSpeed();
 				}
+
+
+				
+
+				//(*unit)._dc132 |= 0x8;
+				//(*unit)._dc133 = 24;
+
 				if (unit->id == UnitId::civilian) {
 					if (unit->_padding_0x132 & 0x8) {
 						unit->groundWeaponCooldown = 8;
@@ -363,28 +414,20 @@ namespace hooks {
 					if (unit->_padding_0x133 > 0) {
 						unit->_padding_0x133--;
 					}
-					if (unit->energy < 2560 && (unit->_padding_0x132 & 0x8)) {
-						unit->_padding_0x132 &= ~0x8;
-						unit->_padding_0x133 = 24;
-					}
-					else if (unit->energy >= 2560)
-					{
-						if (unit->_padding_0x133 == 0) {
-							if (unit->_padding_0x132 & 0x8) {
-								unit->_padding_0x133 = 24;
-								unit->spendUnitEnergy(1280);
-								unit->sprite->playIscriptAnim(IscriptAnimation::CastSpell);
-								shamanProc Heal = shamanProc(unit);
-								scbw::UnitFinder unitFinder(unit->getX() - 128,
-									unit->getY() - 128,
-									unit->getX() + 128,
-									unit->getY() + 128);
-								unitFinder.forEach(Heal);
-							}
+					if (unit->_padding_0x133 == 0) {
+						if (unit->_padding_0x132 & 0x8) {
+							unit->_padding_0x133 = 24;
+							unit->sprite->playIscriptAnim(IscriptAnimation::CastSpell);
+							shamanProc Heal = shamanProc(unit);
+							scbw::UnitFinder unitFinder(unit->getX() - 128,
+								unit->getY() - 128,
+								unit->getX() + 128,
+								unit->getY() + 128);
+							unitFinder.forEach(Heal);
 						}
 					}
 				}
-				if (unit->id == UnitId::Powerup_KhalisCrystal)//basilisk
+				if (unit->id == UnitId::Powerup_KhalisCrystal) //basilisk
 				{
 					if (unit->status & UnitStatus::Burrowed) {
 						if (!(unit->_padding_0x132 & HydraFlags1::BasiliskBurrowed))

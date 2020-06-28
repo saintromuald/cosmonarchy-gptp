@@ -84,19 +84,33 @@ const void IssueTriTargetOrder(u8 order1, u8 order2, u8 order3)
 	}
 }
 
+
+
+const int techUseFunc = 0x00423660;
+int Ui_CheckEnergyForTechUse(int tech_id) {
+	static int result;
+	__asm {
+		PUSHAD
+		MOV EAX,tech_id
+		CALL techUseFunc
+		MOV result,EAX
+		POPAD
+	}
+	return result;
+}
 namespace hooks 
 {
 	void BTNSACT_UseTech(u16 tech, GrpHead* head)
 	{
 		//replacement for proc 0x00423660
 		bool TechCapableUnit = false;
-		CUnit* currentClientSelectionUnit;
-		/*
+		/*CUnit* currentClientSelectionUnit;
+		
 		char buffer[32];
 		sprintf(buffer,"Tech: %d, energy test, cost: %d ",tech,techdata_dat::EnergyCost[tech]);
 		scbw::printText(buffer);
 		*/
-
+		
 
 /*		for (int i = 0; i < SELECTION_ARRAY_LENGTH && !TechCapableUnit; i++)
 		{
@@ -110,7 +124,7 @@ namespace hooks
 			}
 		}*/
 
-
+			/*
 		for (int i = 0; i < SELECTION_ARRAY_LENGTH && !TechCapableUnit; i++)
 		{
 			currentClientSelectionUnit = playersSelections->unit[*ACTIVE_NATION_ID][i];
@@ -122,8 +136,11 @@ namespace hooks
 					TechCapableUnit = true;
 				}
 			}
-		}
+		}*/
 
+		if (Ui_CheckEnergyForTechUse(tech)) {
+			TechCapableUnit = true;
+		}
 		//*activePortraitUnit presumable causes desync
 		CUnit* firstInList = playersSelections->unit[*ACTIVE_NATION_ID][0];
 		if (firstInList != NULL) {
@@ -362,6 +379,20 @@ namespace hooks
 			}
 			break;
 		}
+		case TechId::UnusedTech39://observance
+			if (firstInList != NULL) {
+				int action = 0;//enable
+				if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::Observance, 0) == 1) {
+					action = 1;//disable
+				}
+				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+				buf[0] = 0x99;//new general command
+				buf[1] = NewGameCommand::Observance;
+				buf[2] = action;
+				buf[3] = *ACTIVE_PLAYER_ID;
+				scbw::SendCommand(buf, 0xc);
+			}
+			break;
 		case TechId::DisruptionWeb:
 			IssueTriTargetOrder(OrderId::CastDisruptionWeb, 0, 0);
 			break;

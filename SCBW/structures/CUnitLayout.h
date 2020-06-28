@@ -36,9 +36,17 @@ namespace NewGameCommand {
 		CreateUnit = 0x07,
 		KhaydarinControl = 0x08,
 		CarrierPrebuild = 0x09,
+		Observance = 0xE,
+
+		OverlordDamageField = 0xA,
+		OverlordTurbomode=0xB,
+		OverlordCustomStim=0xC,
+
+
 		GenericSwitchAbility = 0x0D,
-		OverlordDamageField = 0x10,
-		
+
+
+
 	};
 }
 
@@ -126,6 +134,9 @@ namespace ValueId {
 		WyvernReverseLandgrabX=17,
 		WyvernReverseLandgrabY=18,
 		LandGrabStart=19,
+		Observance=20,
+		ObservanceTimerDebuff=21,
+		ObservanceRend=21,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
@@ -135,7 +146,7 @@ const u32 string_toggle_on[3] = {1703, 1807, 1265};
 const u32 string_toggle_off[3] = {1113, 1114, 1634};
 const u32 button_toggle_on[3] = { 374, 319, 369 };
 const u32 button_toggle_off[3] = { 236, 236, 236 };
-const u32 toggle_abilities[3] = {TechId::EMPShockwave,TechId::UnusedTech40,TechId::UnusedTech39};
+const u32 toggle_abilities[3] = {TechId::EMPShockwave,TechId::UnusedTech40,TechId::DisruptionWeb};
 
 namespace HydraFlags1 {
 	enum {
