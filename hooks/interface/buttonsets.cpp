@@ -895,24 +895,6 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::civilian && //Shaman-Reactor passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AsclepiusReactor) == 0
-									&& current_button->iconID == 384)
-								{
-									current_button_state = BUTTON_STATE::Disabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::civilian && //Shaman-Reactor passive : enabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AsclepiusReactor) == 1
-									&& current_button->iconID == 384)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::civilian && //Shaman-Reactor passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::AsclepiusReactor) == 0 &&
-									current_button->iconID == 384)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
 								if ((*activePortraitUnit)->id == UnitId::civilian && //Shaman Adrenaline passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AdrenalinePacks) == 0 &&
 									current_button->iconID == 292)

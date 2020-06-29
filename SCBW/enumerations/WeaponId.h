@@ -136,5 +136,6 @@ enum Enum {
   GaussRifle13_Unused                       = 0x81,
   None                                      = 0x82,
   WyvernWeapon = 125,
+  ObservanceWeapon = 122,
 };
 }

@@ -74,6 +74,7 @@ namespace GptpId {
 		FreeMindControlled,
 		SetMindControlLink,
 		SetMaelstromOffset,
+		SetMatrixCaster,
 		Void = 10005,
 	};
 }
@@ -100,6 +101,7 @@ namespace AiseId {
 		GenericTimer=16,
 		SumMindControlCost,
 		GetLegionnaireMarks,
+		GetMatrixCasterPlayer,
 
 	};
 }
@@ -137,6 +139,7 @@ namespace ValueId {
 		Observance=20,
 		ObservanceTimerDebuff=21,
 		ObservanceRend=21,
+		UpgradeBoost=22,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

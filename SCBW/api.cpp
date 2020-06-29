@@ -279,6 +279,7 @@ bool canWeaponTargetUnit(u8 weaponId, CUnit* target, CUnit* attacker) {
 
 	if (!target)
 		return weapons_dat::TargetFlags[weaponId].terrain;
+	
 
 	if (target->status & UnitStatus::Invincible)
 		return false;
@@ -319,6 +320,19 @@ bool isUnderDarkSwarm(CUnit* unit) {
 	CUnit* darkSwarm = darkSwarmFinder.getFirst(DarkSwarmFinderProc());
 	return darkSwarm != NULL;
 
+}
+
+
+bool isProtossMorph(u16 unitId) {
+	if (unitId == UnitId::ProtossPrincipality || unitId == UnitId::ProtossWarpAnchor ||
+		unitId == UnitId::ProtossRoboticsAuthority ||
+		unitId == UnitId::ProtossArgosy || unitId == UnitId::ProtossStarfield) {//183
+		return true;
+	}
+	if (unitId == UnitId::gateway || unitId == UnitId::robotics_facility || unitId == UnitId::stargate) {
+		return true;
+	}
+	return false;
 }
 
 CUnit* getDarkSwarm(u16 x, u16 y, u16 radius) {
