@@ -274,6 +274,9 @@ namespace hooks {
 							hpGain *= 16;
 
 						//the function can fix overHP
+						if (scbw::getUpgradeLevel(target->playerId, UpgradeId::FusionSealer)) {
+							hpGain += hpGain/2;
+						}
 						target->setHp(target->hitPoints + hpGain);
 						
 					
