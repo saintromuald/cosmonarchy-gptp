@@ -307,7 +307,7 @@ namespace hooks {
 					d_matrix_reduceAmount = damage;
 				else
 					d_matrix_reduceAmount = target->defensiveMatrixHp;
-
+				
 
 				damage -= d_matrix_reduceAmount;
 				target->reduceDefensiveMatrixHp(d_matrix_reduceAmount);
@@ -405,6 +405,7 @@ namespace hooks {
 					damage += 256 * 250;
 				}
 			}
+
 			damage = (damage * damage_factor) / 256;
 			if (attacker != NULL && target != NULL) {
 				if (attacker->id == UnitId::ultralisk && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::SaberSiphon)) {
@@ -421,6 +422,7 @@ namespace hooks {
 					target->updateSpeed();
 				}
 			}
+			
 			if (attacker != NULL && target != NULL) {
 				if (damage > target->hitPoints) {
 					//relic death effect
@@ -500,15 +502,22 @@ namespace hooks {
 				if (weaponId == WeaponId::PsiStorm || Halluc) {
 					//psi mastery effect
 					ascendancyProc PsiMastery = ascendancyProc();
-					scbw::UnitFinder unitFinder(target->getX() - 192,
-						target->getY() - 192,
-						target->getX() + 192,
-						target->getY() + 192);
+					scbw::UnitFinder unitFinder(target->getX() - 288,
+						target->getY() - 288,
+						target->getX() + 288,
+						target->getY() + 288);
 					unitFinder.forEach(PsiMastery);
 
 				}
 			}
 			if (attacker != NULL && target != NULL) {
+				if (weaponId == WeaponId::ObservanceWeapon) {
+					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::ObservanceTimerDebuff, 1 + (5 * 24), 0);
+					int rend = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0);
+					if (rend < 5) {
+						scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::ObservanceRend, 1, 0);
+					}
+				}
 				if (attacker->id == UnitId::ultralisk && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::KaiserRampage) &&
 					damage >= target->hitPoints) {
 					//ultralisk kills target
