@@ -56,10 +56,6 @@ u16 getUnitMaxEnergyHook(CUnit* const unit) {
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::CaduceusReactor))
 				return ENERGY_INGAME_250;
 			break;
-		case UnitId::civilian:
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::AsclepiusReactor))
-				return ENERGY_INGAME_250;
-			break;
 		case UnitId::comsat_station:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::OdysseusReactor))
 				return ENERGY_INGAME_250;

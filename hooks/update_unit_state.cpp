@@ -416,7 +416,7 @@ namespace hooks {
 				unit->shields += 7;
 				if ( (units_dat::BaseProperty[unit->id] & UnitProperty::Building) &&
 					(unit->status & UnitStatus::Completed) &&
-					scbw::getUpgradeLevel(unit->playerId,UpgradeId::PowerFlux)) {//power flux
+					scbw::getUpgradeLevel(unit->playerId,UpgradeId::TemporalBatteries)) {//power flux
 					if (unit->id != UnitId::pylon) {
 						if (!(unit->status & UnitStatus::DoodadStatesThing)) {//powered
 							u32 pylons=0;
@@ -485,6 +485,21 @@ namespace hooks {
 				!unit->parasiteFlags
 				)
 				unit->setHp(unit->hitPoints + 4);
+			if (unit->defensiveMatrixHp != 0) {			
+				if (
+					unit->hitPoints > 0 &&
+					unit->hitPoints != units_dat::MaxHitPoints[unit->id]
+					) 
+				{
+					auto caster = scbw::get_aise_value(unit, NULL, AiseId::GetMatrixCasterPlayer, 0, 0);
+					if (caster < 8) {
+						if (scbw::getUpgradeLevel(caster, UpgradeId::InnervatingMatrices)) {
+							unit->setHp(unit->hitPoints + 53);//256 * 5 / 24 = 53.333..
+						}
+					}
+				}
+
+			}
 
 			//Update unit energy (energy regen/drain)
 			//call StarCraft.exe+EB4B0		//sub_4EB4B0
