@@ -237,67 +237,12 @@ namespace hooks
 				if (firstInList->_padding_0x132 & 0x8) {
 					action = 1;
 				}
-				
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
 				buf[0] = 0x99;//new general command
 				buf[1] = NewGameCommand::ShamanAction;
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				scbw::SendCommand(buf, 0xc);
-				
-
-				/*
-				for (int i = 0; i < SELECTION_ARRAY_LENGTH; i++) {
-					//CUnit* u = clientSelectionGroup->unit[i];
-					CUnit* u = playersSelections->unit[*ACTIVE_NATION_ID][i];
-					if (u != NULL)
-					{
-						if (u->id == UnitId::civilian) {
-							scbw::sendGPTP_aise_cmd(u, NULL, GptpId::SendFakeCommand, NewGameCommand::ShamanAction,
-								action, 0);
-						}
-						
-					}
-				}*/
-				/*
-				scbw::sendGPTP_aise_cmd(firstInList, NULL, GptpId::SendFakeCommand, NewGameCommand::ShamanAction,
-					action, *ACTIVE_PLAYER_ID);*/
-
-				/*
-				char buf[3] = { 0x36, NewGameCommand::ShamanAction, (char)action };
-				SendCommand(buf, 3);
-
-				char bf[32];
-				sprintf(bf, "Send command %d %d", NewGameCommand::ShamanAction, action);
-				scbw::printText(bf);*/
-				/*
-				for (int i = 0; i < SELECTION_ARRAY_LENGTH; i++) {
-					//CUnit* u = clientSelectionGroup->unit[i];
-					
-					CUnit* u = playersSelections->unit[*ACTIVE_NATION_ID][i];
-					if (u != NULL)
-					{
-						if (u->id == UnitId::civilian) {//shaman
-							char buf[2] = { NewGameCommand::ShamanAction, (char)action };
-							SendCommand(buf, 2);
-							if (action == 0) {
-								
-								
-								u->_padding_0x132 |= 0x8;
-								u->_padding_0x133 = 24;
-								u->updateSpeed();
-								u->spendUnitEnergy(techdata_dat::EnergyCost[tech] * 256);								
-								scbw::refreshConsole();
-							}
-							else {
-								
-								u->_padding_0x132 &= ~0x8;
-								u->updateSpeed();
-								scbw::refreshConsole();
-							}
-						}
-					}
-				}*/
 			}		
 			break;
 		}
@@ -317,27 +262,7 @@ namespace hooks
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				scbw::SendCommand(buf, 0xc);
-				/*
-				for (int i = 0; i < SELECTION_ARRAY_LENGTH; i++) {
-					//CUnit* u = clientSelectionGroup->unit[i];
-					CUnit* u = playersSelections->unit[*ACTIVE_NATION_ID][i];
-					if (u != NULL)
-					{
-						if (u->id == 92) {//cyprian
-							if (action == 0) {
-								scbw::sendGPTP_aise_cmd(u,NULL,GptpId::SetCyprianStatus,1,0,0);
-								u->updateSpeed();
-								scbw::refreshConsole();
-							}
-							else {
-								scbw::sendGPTP_aise_cmd(u,NULL,GptpId::SetCyprianStatus,0,0,0);
-								u->updateSpeed();
-								scbw::refreshConsole();
-							}
-						}
-					}
-				   }*/
-				}			
+			}			
 			break;
 		}
 		case TechId::UnusedTech38:
@@ -380,6 +305,8 @@ namespace hooks
 			break;
 		}
 		case TechId::UnusedTech39://observance
+			IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
+			/*
 			if (firstInList != NULL) {
 				int action = 0;//enable
 				if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::Observance, 0) == 1) {
@@ -391,7 +318,7 @@ namespace hooks
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				scbw::SendCommand(buf, 0xc);
-			}
+			}*/
 			break;
 		case TechId::DisruptionWeb:
 			IssueTriTargetOrder(OrderId::CastDisruptionWeb, 0, 0);

@@ -140,6 +140,10 @@ void orders_Spell(CUnit* unit) {
 
 				if(unit->mainOrderState == 0)
 					unit->mainOrderState = 1;
+				bool gcd_condition = true;
+				if (unit->id == UnitId::TerranWyvern && unit->groundWeaponCooldown > 0) {
+					gcd_condition = false;//new
+				}
 
 				if(result_00492620 == 0) {
 
@@ -151,6 +155,7 @@ void orders_Spell(CUnit* unit) {
 
 					if(
 						unit->spellCooldown == 0 &&
+						gcd_condition && //new
 						function_00476640(unit,orderWeaponId) && //is ready to fire weapon (angle,range...) maybe?
 						!(unit->movementFlags & MovementFlags::Accelerating) &&
 						unit->getMovableState() != 0
@@ -213,6 +218,9 @@ void orders_Spell(CUnit* unit) {
 							u32 random_value;
 
 							unit->spendUnitEnergy(spellCost);
+							if (unit != NULL && target != NULL && techUsed == TechId::DefensiveMatrix) {
+								scbw::sendGPTP_aise_cmd(unit, target, GptpId::SetMatrixCaster, 0, 0, 0);
+							}
 							cooldown = getUpgradedWpnCooldown(unit,orderWeaponId);
 
 							//a complicated way to add between -1 and 2 to the cooldown
@@ -220,6 +228,10 @@ void orders_Spell(CUnit* unit) {
 							cooldown += ( ((u8)random_value) & 3 ) - 1;
 
 							unit->spellCooldown = cooldown;
+							if (unit->id == UnitId::TerranWyvern) {
+								unit->groundWeaponCooldown = cooldown;//new
+							}
+							
 
 							//disable flag 2 if enabled, else has no effect
 							unit->orderSignal &= ~2;	//&= -3
