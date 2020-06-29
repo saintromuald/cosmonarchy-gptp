@@ -978,17 +978,17 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								if ((*activePortraitUnit)->id == UnitId::pylon && //Pylon passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::PowerFlux) == 0)
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::TemporalBatteries) == 0)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::pylon && //Pylon passive : enabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::PowerFlux) == 1)
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::TemporalBatteries) == 1)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::pylon && //Pylon passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::PowerFlux) == 0)
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::TemporalBatteries) == 0)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
