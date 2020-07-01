@@ -145,17 +145,17 @@ namespace hooks {
 			else if (lair_count) {
 				speed *= 4;
 			}
-		}
+		}/*
 		else if (unit->id == UnitId::ZergInfestedTerran) {
 			u32 health = unit->hitPoints / 256;
 			u32 maxHealth = unit->getMaxHpInGame();
 			double multiplier = MathUtils::map(health, maxHealth, maxHealth / 2, 1.0, 1.5, true);
 			speed *= multiplier;
-			// GPTP::logger << "Infested Terran Health: " << health << '\n';
-			// GPTP::logger << "Infested Terran Max Health: " << maxHealth << '\n';
-			// GPTP::logger << "Infested Terran Multiplier: " << multiplier << '\n';
-			// GPTP::logger << "Infested Terran Speed: " << speed << '\n';
-		}
+			//GPTP::logger << "Infested Terran Health: " << health << '\n';
+			//GPTP::logger << "Infested Terran Max Health: " << maxHealth << '\n';
+			//GPTP::logger << "Infested Terran Multiplier: " << multiplier << '\n';
+			//GPTP::logger << "Infested Terran Speed: " << speed << '\n';
+		}*/
 
 		/*
 		if (unit->id == UnitId::probe) {
