@@ -24,8 +24,8 @@ namespace hooks {
 			nydusExit != NULL &&
 			(nydusExit->status & UnitStatus::Completed) &&
 			(unit->playerId == nydusCanal->playerId || scbw::isAlliedTo(unit->playerId, nydusCanal->playerId)) &&
-			!(unit->status & UnitStatus::InAir) &&
-			unit->getRace() == RaceId::Zerg;
+			!(unit->status & UnitStatus::InAir); //&&
+			//unit->getRace() == RaceId::Zerg;
 
 		return bReturnValue;
 
