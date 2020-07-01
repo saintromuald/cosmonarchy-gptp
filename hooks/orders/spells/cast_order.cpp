@@ -218,9 +218,6 @@ void orders_Spell(CUnit* unit) {
 							u32 random_value;
 
 							unit->spendUnitEnergy(spellCost);
-							if (unit != NULL && target != NULL && techUsed == TechId::DefensiveMatrix) {
-								scbw::sendGPTP_aise_cmd(unit, target, GptpId::SetMatrixCaster, 0, 0, 0);
-							}
 							cooldown = getUpgradedWpnCooldown(unit,orderWeaponId);
 
 							//a complicated way to add between -1 and 2 to the cooldown

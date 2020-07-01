@@ -492,8 +492,10 @@ namespace hooks {
 					) 
 				{
 					auto caster = scbw::get_aise_value(unit, NULL, AiseId::GetMatrixCasterPlayer, 0, 0);
+					
 					if (caster < 8) {
 						if (scbw::getUpgradeLevel(caster, UpgradeId::InnervatingMatrices)) {
+							
 							unit->setHp(unit->hitPoints + 53);//256 * 5 / 24 = 53.333..
 						}
 					}
