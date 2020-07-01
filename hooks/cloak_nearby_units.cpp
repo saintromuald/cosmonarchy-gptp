@@ -45,15 +45,16 @@ void cloakNearbyUnitsHook(CUnit* cloaker) {
 	while(current_unit != NULL) {
 
 		if (
-			current_unit->id != UnitId::ProtossArbiter &&
-			current_unit->id != UnitId::Hero_Danimoth &&
-			!(units_dat::BaseProperty[current_unit->id] & UnitProperty::Building) &&			//Don't cloak buildings
-			!(current_unit->status & UnitStatus::IsHallucination) &&							//Don't cloak hallucinations
-			!(units_dat::BaseProperty[current_unit->id] & UnitProperty::NeutralAccessories) &&	//Don't cloak items
-			current_unit->id != UnitId::TerranNuclearMissile &&									//Don't cloak nukes
-			current_unit->mainOrderId != OrderId::Warpin &&										//Don't cloak units doing order WarpIn
-			cloaker->playerId == current_unit->playerId	&&										//Unit owner must be Cloaker owner
-			cloaker->isTargetWithinMinRange(current_unit,cloakRadius)							//Check again if unit in range of cloaking
+			current_unit->id != UnitId::ProtossArbiter
+			&& current_unit->id != UnitId::Hero_Danimoth
+			&& !(units_dat::BaseProperty[current_unit->id] & UnitProperty::Building)				// Don't cloak buildings
+//			&& !(current_unit->status & UnitStatus::IsHallucination)								// Don't cloak hallucinations
+			&& !(units_dat::BaseProperty[current_unit->id] & UnitProperty::NeutralAccessories)		// Don't cloak items
+			&& current_unit->id != UnitId::TerranNuclearMissile										// Don't cloak nukes
+			&& current_unit->mainOrderId != OrderId::Warpin											// Don't cloak units doing order WarpIn
+			&& (cloaker->playerId == current_unit->playerId											// Unit owner must be Cloaker owner
+				|| scbw::isAlliedTo(current_unit->playerId, cloaker->playerId))						// (or allied to Cloaker owner)
+			&& cloaker->isTargetWithinMinRange(current_unit, cloakRadius)							// Check again if unit in range of cloaking
 		)
 		{
 			secondaryOrder_Cloak(current_unit);
