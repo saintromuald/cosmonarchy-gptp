@@ -98,7 +98,7 @@ namespace hooks {
 
 		if(
 			!(target->sprite->flags & CSprite_Flags::Hidden) &&
-			target->playerId == caster->playerId &&
+			(target->playerId == caster->playerId || scbw::isAlliedTo(target->playerId, caster->playerId)) &&
 			!(units_dat::BaseProperty[target->id] & UnitProperty::Building) &&
 			!(target->status & UnitStatus::Invincible) &&
 			!(target->status & UnitStatus::Burrowed) &&

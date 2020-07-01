@@ -325,8 +325,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	/*
 	hooks::injectLiftLandHooks();*//*
 	hooks::injectAttackOrdersHooks();
-	hooks::injectStopHoldPosOrdersHooks();
-	hooks::injectRecallSpellHooks();*/
+	hooks::injectStopHoldPosOrdersHooks();*/
+	hooks::injectRecallSpellHooks();
 	hooks::injectEnterNydusHooks();/*
 
 	hooks::injectCastOrderHooks();*/
@@ -376,8 +376,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectApplyUpgradeFlags();
 	hooks::injectAttackPriorityHooks();
 	/*
-	hooks::injectBunkerHooks();
-	hooks::injectCloakNearbyUnits();
+	hooks::injectBunkerHooks();*/
+//	hooks::injectCloakNearbyUnits();
+	/*
 	hooks::injectCloakingTechHooks();
 	hooks::injectDetectorHooks();*/
 	hooks::injectHarvestResource();

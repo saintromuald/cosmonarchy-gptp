@@ -16,7 +16,7 @@ class RecallTargetFinderProc: public scbw::UnitFinderCallbackMatchInterface {
 
 	bool match(CUnit* target) {
 
-		if (target->playerId != caster->playerId)
+		if (target->playerId != caster->playerId && !scbw::isAlliedTo(target->playerId, caster->playerId))
 		  return false;
 
 		if (!target->orderTarget.unit)
