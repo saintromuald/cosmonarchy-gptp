@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29318.209
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GPTP", "GPTP.vcxproj", "{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HYDRA-GPTP-Test", "..\GPTP-HYDRA-TEST\GPTP-HYDRA-TEST.vcxproj", "{3B4468D8-94EC-4218-A29D-6FC8737E3D83}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,6 +21,14 @@ Global
 		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Release|Win32.ActiveCfg = Release|Win32
 		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Release|Win32.Build.0 = Release|Win32
 		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Release|x64.ActiveCfg = Release|Win32
+		{3B4468D8-94EC-4218-A29D-6FC8737E3D83}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3B4468D8-94EC-4218-A29D-6FC8737E3D83}.Debug|Win32.Build.0 = Debug|Win32
+		{3B4468D8-94EC-4218-A29D-6FC8737E3D83}.Debug|x64.ActiveCfg = Debug|x64
+		{3B4468D8-94EC-4218-A29D-6FC8737E3D83}.Debug|x64.Build.0 = Debug|x64
+		{3B4468D8-94EC-4218-A29D-6FC8737E3D83}.Release|Win32.ActiveCfg = Release|Win32
+		{3B4468D8-94EC-4218-A29D-6FC8737E3D83}.Release|Win32.Build.0 = Release|Win32
+		{3B4468D8-94EC-4218-A29D-6FC8737E3D83}.Release|x64.ActiveCfg = Release|x64
+		{3B4468D8-94EC-4218-A29D-6FC8737E3D83}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

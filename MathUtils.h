@@ -1,4 +1,5 @@
 #pragma once
+#include "logger.h"
 
 static struct MathUtils {
 	template<typename T>
@@ -22,8 +23,7 @@ T MathUtils::clamp(T value, T min, T max) {
 
 template<typename T>
 double MathUtils::normalize(T value, T min, T max, bool doClamp) {
-	double returnValue = (double)(value - min) / (double)(max - min);
-	if (doClamp) returnValue = MathUtils::clamp(returnValue, 0.0, 1.0);
+	double returnValue = ((double)value - (double)min) / ((double)max - (double)min);
 	return returnValue;
 }
 
@@ -36,6 +36,6 @@ T MathUtils::lerp(double fraction, T min, T max, bool doClamp) {
 
 template<typename sourceType, typename targetType>
 targetType MathUtils::map(sourceType value, sourceType sourceMin, sourceType sourceMax, targetType targetMin, targetType targetMax, bool doClamp) {
-	return (targetType)MathUtils::lerp(MathUtils::normalize(value, sourceMin, sourceMax, doClamp), targetMin, targetMax);
+	return (targetType) MathUtils::lerp(MathUtils::normalize(value, sourceMin, sourceMax, doClamp), targetMin, targetMax);
 }
 

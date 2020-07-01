@@ -150,11 +150,12 @@ namespace hooks {
 			u32 health = unit->hitPoints / 256;
 			u32 maxHealth = unit->getMaxHpInGame();
 			double multiplier = MathUtils::map(health, maxHealth, maxHealth / 2, 1.0, 1.5, true);
-			speed *= multiplier;
-			// GPTP::logger << "Infested Terran Health: " << health << '\n';
-			// GPTP::logger << "Infested Terran Max Health: " << maxHealth << '\n';
-			// GPTP::logger << "Infested Terran Multiplier: " << multiplier << '\n';
-			// GPTP::logger << "Infested Terran Speed: " << speed << '\n';
+			speed = (u32) ((double)speed * multiplier);
+			// GPTP::logger << "Death March: " << '\n';
+			// GPTP::logger << "Health: " << health << '\n';
+			// GPTP::logger << "Max Health: " << maxHealth << '\n';
+			// GPTP::logger << "Multiplier: " << multiplier << '\n';
+			// GPTP::logger << "Speed: " << speed << '\n' << '\n';
 		}
 
 		/*
