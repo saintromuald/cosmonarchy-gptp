@@ -103,7 +103,6 @@ namespace hooks {
 		{
 
 			bool bStopHere = false;
-
 			//Spend energy for cloaked units
 			if (
 				unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection) &&	//If the unit is cloaked
@@ -149,6 +148,12 @@ namespace hooks {
 				unit->energy -= std::min(unit->energy, (u16)(16 * sum));
 				if (unit->energy == 0) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::FreeMindControlled, 0, 0, 0);
+				}
+			}
+			else if (unit->id == UnitId::TerranAzazel && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
+				unit->energy -= std::min(unit->energy, (u16)13);
+				if (unit->energy == 0) {
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SublimeShepherd, 0, 0);
 				}
 			}
 			else { //EB526

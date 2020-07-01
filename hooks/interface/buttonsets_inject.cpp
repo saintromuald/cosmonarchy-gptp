@@ -186,10 +186,9 @@ void __declspec(naked) get_stattxt_string_Wrapper() {
 			stringId = 1685;
 		}
 	}
-	static int dif = last_generic_toggle_ability - first_generic_toggle_ability;
-	for (int i = 0; i <= dif; i++) {
+	for (int i = 0; i < generictoggles; i++) {
 		if (stringId == string_toggle_on[i]) {
-			if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::GenericValue, first_generic_toggle_ability + i, 0) == 1) {
+			if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::GenericValue, toggle_values[i], 0) == 1) {
 				stringId = string_toggle_off[i];
 			}
 		}

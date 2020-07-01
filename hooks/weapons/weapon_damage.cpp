@@ -357,7 +357,9 @@ namespace hooks {
 			if (damageType != DamageType::IgnoreArmor) {
 
 				s32 armorTotal = target->getArmor() * 256;
+
 				if (attacker != NULL && target != NULL) {
+					armorTotal += scbw::get_aise_value(target, NULL, AiseId::GetShepherds, 0, 0) * 256;
 					if (scbw::getUpgradeLevel(target->playerId, UpgradeId::AdrenalinePacks) > 0) {
 						if (scbw::get_aise_value(target, NULL, AiseId::GenericTimer, ValueId::Adrenaline, 0) > 0) {
 							armorTotal += 512;

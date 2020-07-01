@@ -978,17 +978,17 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								if ((*activePortraitUnit)->id == UnitId::pylon && //Pylon passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::TemporalBatteries) == 0)
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::PowerFlux) == 0)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::pylon && //Pylon passive : enabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::TemporalBatteries) == 1)
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::PowerFlux) == 1)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::pylon && //Pylon passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::TemporalBatteries) == 0)
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::PowerFlux) == 0)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -1724,10 +1724,9 @@ namespace hooks {
 									current_button->iconID = 374;
 								}
 							}
-							int dif = last_generic_toggle_ability - first_generic_toggle_ability;
-							for (int i = 0; i <= dif; i++) {
+							for (int i = 0; i < 3; i++) {
 								if (current_button->actVar == toggle_abilities[i]) {
-									if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::GenericValue,first_generic_toggle_ability+i, 0) == 1) {
+									if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::GenericValue, toggle_values[i], 0) == 1) {
 										current_button->iconID = button_toggle_off[i];
 									}
 									else {

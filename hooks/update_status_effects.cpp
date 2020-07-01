@@ -46,6 +46,28 @@ class irradiateProc : public scbw::UnitFinderCallbackProcInterface {
 		}
 };
 
+
+class sublimeShepherdProc : public scbw::UnitFinderCallbackProcInterface {
+
+private:
+	CUnit* shepherd;
+
+public:
+	sublimeShepherdProc(CUnit* shepherd)
+		: shepherd(shepherd) {}
+
+	void proc(CUnit* unit) {
+		if (unit == shepherd) {
+			return;
+		}
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
+			return;
+		scbw::sendGPTP_aise_cmd(shepherd, unit, GptpId::SetSublimeShepherd, 1, 0, 0);
+	}
+};
+
+
+
 namespace hooks {
 
 //Applies Irradiate effects for @p unit (which is Irradiated)
@@ -245,7 +267,16 @@ void updateStatusEffects(CUnit* unit) {
 		}
 		
 	}
-
+	if (unit->id == UnitId::TerranAzazel) {
+		if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
+			sublimeShepherdProc Heal = sublimeShepherdProc(unit);
+			scbw::UnitFinder unitFinder(unit->getX() - 96,
+				unit->getY() - 96,
+				unit->getX() + 96,
+				unit->getY() + 96);
+			unitFinder.forEach(Heal);
+		}
+	}
 	if (unit->id == UnitId::ghost) {
 		if (
 			!(unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)))
@@ -421,7 +452,7 @@ void updateStatusEffects(CUnit* unit) {
 				unit->sprite->createTopOverlay(overlayImageId,
 					0, 0, 0);
 				//new maelstrom visual code
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetMaelstromOffset, 25, 0, 0);
+				//scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetMaelstromOffset, 25, 0, 0);
 //				unit->sprite->images.head->setRemapping(ColorRemapping::GFire);
 			}
 			unit->updateSpeed();

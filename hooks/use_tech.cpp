@@ -185,8 +185,8 @@ namespace hooks
 			IssueTriTargetOrder(OrderId::InfestMine3, OrderId::Move, OrderId::InfestMine2);
 			break;
 		case TechId::EMPShockwave:
-//			IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
-			//reverse thrust switch
+			//			IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
+						//reverse thrust switch
 			if (firstInList != NULL) {
 				int action = 1;//on
 				if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::ReverseThrust, 0) == 1) {
@@ -205,8 +205,8 @@ namespace hooks
 			IssueTriTargetOrder(OrderId::Irradiate, 0, 0);
 			break;
 		case TechId::Ensnare:
-//			IssueTriTargetOrder(OrderId::Ensnare, 0, 0);
-			//land grab
+			//			IssueTriTargetOrder(OrderId::Ensnare, 0, 0);
+						//land grab
 			IssueTriTargetOrder(OrderId::CTFCOPInit, 0, 0);
 			break;
 		case TechId::StasisField:
@@ -232,7 +232,7 @@ namespace hooks
 			//			IssueTriTargetOrder(OrderId::Restoration, 0, 0);
 			//0 - deploy
 			//1 - stop
-			if (firstInList != NULL) {				
+			if (firstInList != NULL) {
 				u8 action = 0;
 				if (firstInList->_padding_0x132 & 0x8) {
 					action = 1;
@@ -243,7 +243,7 @@ namespace hooks
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				scbw::SendCommand(buf, 0xc);
-			}		
+			}
 			break;
 		}
 		case TechId::UnusedTech26://Cyprian Safety Off/Safety On
@@ -253,7 +253,7 @@ namespace hooks
 			if (firstInList != NULL) {
 				int action = 0;//enable
 
-				if (scbw::get_aise_value(firstInList,NULL,AiseId::SendCyprianValue,0,0)==1) {
+				if (scbw::get_aise_value(firstInList, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
 					action = 1;//disable
 				}
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
@@ -262,29 +262,29 @@ namespace hooks
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				scbw::SendCommand(buf, 0xc);
-			}			
+			}
 			break;
 		}
 		case TechId::UnusedTech38:
 		{
 			//Equip - Empower hero with relic
 			scbw::printText("Try use Tech38");
-			if(firstInList != NULL){
-				if(firstInList->id == 175){//reliquary
+			if (firstInList != NULL) {
+				if (firstInList->id == 175) {//reliquary
 					u8 relic_type = 0;
 					u32 button_number = head->frameCount;
 					u32 relic = 0;
-					relic = scbw::get_aise_value(firstInList,NULL,AiseId::GetRelicByIndex,button_number,0);
+					relic = scbw::get_aise_value(firstInList, NULL, AiseId::GetRelicByIndex, button_number, 0);
 					char buf[64];
-					sprintf(buf,"Relic id: %d", relic);
+					sprintf(buf, "Relic id: %d", relic);
 					scbw::printText(buf);
-					
+
 					if (relic != 0) {
-						if(relic==202){
+						if (relic == 202) {
 							scbw::printText("Blind Judge");
 						}
-						scbw::sendGPTP_aise_cmd(firstInList,NULL,GptpId::EmpowerHero,relic,0,0);
-						if (scbw::get_aise_value(firstInList,NULL,AiseId::HasRelic,UpgradeId::BlindJudge,0)==1) {
+						scbw::sendGPTP_aise_cmd(firstInList, NULL, GptpId::EmpowerHero, relic, 0, 0);
+						if (scbw::get_aise_value(firstInList, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1) {
 							scbw::printText("Found relic");
 						}
 						else {
@@ -295,7 +295,7 @@ namespace hooks
 				}
 				else {
 					char buf[64];
-					sprintf(buf,"Incorrect reliquary id %d",firstInList->id);
+					sprintf(buf, "Incorrect reliquary id %d", firstInList->id);
 					scbw::printText(buf);
 				}
 			}
@@ -320,6 +320,21 @@ namespace hooks
 				scbw::SendCommand(buf, 0xc);
 			}*/
 			break;
+		case TechId::UnusedTech40://sublime shepherd
+		{
+			int action = 1;//on
+			if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
+				action = 0;//off
+			}
+			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+			buf[0] = 0x99;//new general command
+			buf[1] = NewGameCommand::GenericSwitchAbility;
+			buf[2] = action;
+			buf[3] = *ACTIVE_PLAYER_ID;
+			buf[4] = ValueId::SublimeShepherd;
+			scbw::SendCommand(buf, 0xc);
+			break;
+		}
 		case TechId::DisruptionWeb:
 			IssueTriTargetOrder(OrderId::CastDisruptionWeb, 0, 0);
 			break;
