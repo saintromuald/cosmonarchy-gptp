@@ -50,7 +50,7 @@ namespace hooks {
 		+ (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);*/
 		int increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 		int decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
-		if (unit->id == UnitId::ultralisk && scbw::getUpgradeLevel(unit->playerId, UpgradeId::KaiserRampage)) {
+		if (unit->id == UnitId::ZergUltralisk && scbw::getUpgradeLevel(unit->playerId, UpgradeId::KaiserRampage)) {
 			if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
 
 				speed += speed;
@@ -58,7 +58,7 @@ namespace hooks {
 		}
 		if (increase > 0) {
 
-			if (unit->id == UnitId::scout || unit->id == UnitId::Hero_Mojo || unit->id == UnitId::Hero_Artanis)
+			if (unit->id == UnitId::ProtossScout || unit->id == UnitId::Hero_Mojo || unit->id == UnitId::Hero_Artanis)
 				speed = 1707;
 			else {
 				for (int i = 0; i<increase; i++) {
@@ -80,7 +80,7 @@ namespace hooks {
 			if(scbw::get_aise_value(unit,NULL,AiseId::GenericValue,ValueId::ReverseThrust,0)==1)
 				speed /= 2;
 		}
-		if (unit->id == UnitId::Powerup_UrajCrystal) {//vorvaling
+		if (unit->id == UnitId::ZergVorvaling) {//vorvaling
 			vorvalingProc Accelerate = vorvalingProc(unit);
 			u32 range = unit->getSightRange(false) * 32;
 			scbw::UnitFinder unitFinder(unit->getX() - range,
@@ -101,7 +101,7 @@ namespace hooks {
 			}
 
 		}
-		if (unit->id == UnitId::ghost) {
+		else if (unit->id == UnitId::TerranGhost) {
 			if (
 				unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))
 			{
@@ -111,12 +111,12 @@ namespace hooks {
 				}
 			}
 		}
-		if (unit->id == UnitId::Hero_DarkTemplar) { //legionnaire 1.5x speed from Leg Enhancements
+		else if (unit->id == UnitId::ProtossLegionnaire) { // Legionnaire 1.5x speed from Leg Enhancements
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::LegEnhancements)) {
 				speed += speed / 4;
 			}
 		}
-		if (unit->id == UnitId::ProtossDarkTemplar) { //dark templar 1.5x speed from Leg Enhancements
+		else if (unit->id == UnitId::ProtossDarkTemplar) { // Dark Templar 1.5x speed from Leg Enhancements
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::LegEnhancements)) {
 				speed += speed / 4;
 			}
@@ -126,18 +126,18 @@ namespace hooks {
 				speed /= 2;
 			}
 		}
-		else if (unit->id == 92) {//cyprian
+		else if (unit->id == UnitId::TerranCyprian) { // cyprian
 			if (scbw::get_aise_value(unit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
-				speed -= (speed / 3);//safety off
+				speed -= (speed / 3); // safety off
 
 			}
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::PlasteelServos)) {
 				speed += (speed / 4);
 			}
 		}
-		else if (unit->id == UnitId::overlord) {
-			u32 lair_count = unitCountTable[UnitId::lair].player[unit->playerId];
-			u32 hive_count = unitCountTable[UnitId::hive].player[unit->playerId];
+		else if (unit->id == UnitId::ZergOverlord) {
+			u32 lair_count = unitCountTable[UnitId::ZergLair].player[unit->playerId];
+			u32 hive_count = unitCountTable[UnitId::ZergHive].player[unit->playerId];
 			if (hive_count) {
 				speed *= 6;
 
@@ -146,7 +146,7 @@ namespace hooks {
 				speed *= 4;
 			}
 		}
-		else if (unit->id == UnitId::infested_terran) {
+		else if (unit->id == UnitId::ZergInfestedTerran) {
 			u32 health = unit->hitPoints;
 			u32 maxHealth = unit->getMaxHpInGame();
 			double multiplier = MathUtils::map(health, maxHealth, maxHealth / 2, 1.0, 1.5, true);
