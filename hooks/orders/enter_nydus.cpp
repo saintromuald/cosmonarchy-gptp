@@ -93,8 +93,8 @@ namespace hooks {
 			nydusCanal->building.nydusExit == NULL ||
 			!((nydusCanal->building.nydusExit)->status & UnitStatus::Completed) ||
 			(!scbw::isAlliedTo(unit->playerId, nydusCanal->playerId)) ||
-			unit->status & UnitStatus::InAir ||
-			unit->getRace() != RaceId::Zerg
+			unit->status & UnitStatus::InAir
+		//	unit->getRace() != RaceId::Zerg
 		)
 		{ //EA478
 
