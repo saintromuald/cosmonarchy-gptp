@@ -8,6 +8,8 @@
 #include "SCBW/api.h"
 #include "logger.h"
 
+#include "MathUtils.h"
+
 class vorvalingProc : public scbw::UnitFinderCallbackProcInterface
 {
 private:
@@ -143,6 +145,14 @@ namespace hooks {
 			else if (lair_count) {
 				speed *= 4;
 			}
+		}
+		else if (unit->id == UnitId::infested_terran) {
+			u32 health = unit->hitPoints;
+			u32 maxHealth = unit->getMaxHpInGame();
+			double multiplier = MathUtils::map(health, maxHealth, maxHealth / 2, 1.0, 1.5, true);
+			speed *= multiplier;
+			GPTP::logger << "Infested Terran Speed: " << speed << '\n';
+			GPTP::logger << "Infested Terran Multiplier: " << multiplier << '\n';
 		}
 
 		/*

@@ -328,6 +328,7 @@
     <ClInclude Include="hooks\orders\spells\feedback_spell.h" />
     <ClInclude Include="hooks\use_tech.h" />
     <ClInclude Include="hooks\weapon_effect.h" />
+    <ClInclude Include="MathUtils.h" />
     <ClInclude Include="SCBW\enumerations\FlingyId.h" />
     <ClInclude Include="hooks\give_unit.h" />
     <ClInclude Include="hooks\orders\spells\hallucination_spell.h" />
