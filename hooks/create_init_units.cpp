@@ -1,5 +1,5 @@
 #include "create_init_units.h"
-#include "ExtendedUnitFlags.h"
+#include "CUnitExtended.h"
 #include <SCBW/api.h>
 
 //helper functions def
@@ -429,7 +429,6 @@ CUnit* createUnit(u32 unitId, int x, int y, u32 playerId) {
 		POPAD
 	}
 
-	ExtendedUnitFlags::get(unit_created);
 	return unit_created;
 
 }

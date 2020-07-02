@@ -104,7 +104,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ExtendedUnitFlags.cpp" />
+    <ClCompile Include="CUnitExtended.cpp" />
     <ClCompile Include="hooks\orders\base_orders\attack_orders.cpp" />
     <ClCompile Include="hooks\orders\base_orders\attack_orders_inject.cpp" />
     <ClCompile Include="hooks\interface\btns_cond.cpp" />
@@ -307,7 +307,7 @@
     <ClCompile Include="AI\spells\yamato_gun.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ExtendedUnitFlags.h" />
+    <ClInclude Include="CUnitExtended.h" />
     <ClInclude Include="hooks\orders\spells\recall_spell.h" />
     <ClInclude Include="hooks\orders\base_orders\attack_orders.h" />
     <ClInclude Include="hooks\interface\btns_cond.h" />
