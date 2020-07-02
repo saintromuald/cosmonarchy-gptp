@@ -1,7 +1,8 @@
 #include "weapon_damage.h"
 #include "../../SCBW/api.h"
 #include <algorithm>
-#include "CUnitExtended.h"
+//#include "ExtendedUnitFlags.h"
+#include "logger.h"
 
 namespace {
 	//Helper functions
@@ -245,6 +246,18 @@ public:
 	lastordersProc2(CUnit* scout) : scout(scout) {}
 };
 
+
+bool irratiateTarget(CUnit* unit) {
+
+	if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
+		return false;
+
+	if (unit->id == UnitId::larva || unit->id == UnitId::egg || unit->id == UnitId::lurker_egg)
+		return false;
+
+	return true;
+}
+
 namespace hooks {
 
 	/// Hooks into the CUnit::damageWith() function.
@@ -258,11 +271,12 @@ namespace hooks {
 	)
 	{
 		// 
+		/*
 		if (attacker->id == UnitId::ProtossDarkTemplar) {
-			CUnitExtended* flags = CUnitExtended::get(attacker);
+			ExtendedUnitFlags* flags = ExtendedUnitFlags::get(attacker);
 			flags->timerSpecial1 = 42;
 		}
-
+		*/
 		//the unit must neither be already dead nor invincible
 
 		if (target->hitPoints != 0 && !(target->status & UnitStatus::Invincible)) {
@@ -536,6 +550,11 @@ namespace hooks {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::Amitosis, 0) == 1) {
 					damage /= 2;
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::Amitosis, 0, 0);
+				}
+			}
+			if (weaponId == WeaponId::NuclearMissile && target->hitPoints > damage) {
+				if (attacker != NULL && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::GroundZero) && irratiateTarget(target)) {
+					hooks::IrradiateHit(attacker, target, attacker->playerId);
 				}
 			}
 			target->damageHp(damage, attacker, attackingPlayerId,

@@ -58,10 +58,8 @@ namespace hooks {
 
 		//if not already irradiated and not burrowed, add the irradiate overlay
 		if(target->irradiateTimer == 0 && !(target->status & UnitStatus::Burrowed)) {
-
 			u32 irradiateImageId;
 			CUnit* unitWithOverlay;
-
 			if(units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay)
 				irradiateImageId = ImageId::Irradiate_Medium;
 			else
@@ -69,30 +67,22 @@ namespace hooks {
 				irradiateImageId = ImageId::Irradiate_Large;
 			else
 				irradiateImageId = ImageId::Irradiate_Small;
-
 			if(target->subunit != NULL)
 				unitWithOverlay = target->subunit;
 			else
 				unitWithOverlay = target;
-
 			(unitWithOverlay->sprite)->createTopOverlay(irradiateImageId,0,0,0);
 		}
 		if(attacker!=NULL){
 			if(scbw::getUpgradeLevel(attacker->playerId, UpgradeId::RadiationShockwave)){
 				target->_unknown_0x026 |= 0x2;
-				//scbw::printText("Radiation shockwave researched!");
-			}
-			else {
-				//scbw::printText("Radiation shockwave is not researched!");
 			}
 		}
-		//target->irradiateTimer = weapons_dat::Cooldown[WeaponId::Irradiate];
 		target->irradiateTimer = 8*3;
 		target->irradiatedBy = attacker;
 		target->irradiatePlayerId = attackingPlayerId;	
 
-	} //void IrradiateHit(CUnit* attacker, CUnit* target, u8 attackingPlayerId)
-
+	}
 	;
 
 	//bullet is not normally part of the function, so if the function is called

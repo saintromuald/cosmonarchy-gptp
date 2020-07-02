@@ -5,6 +5,9 @@
 #include <SCBW/scbwdata.h>
 #include <SCBW/enumerations.h>
 
+namespace hooks {
+	void IrradiateHit(CUnit* attacker, CUnit* target, u8 attackingPlayerId);
+}
 namespace scbw {
 
 
