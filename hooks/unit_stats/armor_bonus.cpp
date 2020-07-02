@@ -19,10 +19,11 @@ u8 getArmorBonusHook(CUnit* unit) {
 		}
 		
 	}
+	/*
 	if (unit->id == UnitId::TerranDropship && scbw::getUpgradeLevel(unit->playerId, UpgradeId::PassengerInsurance)) {
 		armorUpg = 2;
 	}
-	
+	*/
 	return armorUpg + scbw::getUpgradeLevel(unit->playerId, units_dat::ArmorUpgrade[unit->id]);
 }
 
