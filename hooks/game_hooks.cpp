@@ -6,7 +6,7 @@
 #include <SCBW/ExtendSightLimit.h>
 #include "psi_field.h"
 #include <cstdio>
-#include "ExtendedUnitFlags.h"
+#include "CUnitExtended.h"
 
 
 const int hyperTrigger = 0x006509A0;
@@ -312,6 +312,8 @@ namespace hooks {
 
 			//Loop through all visible units in the game.
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
+				CUnitExtended::get(unit)->tick();
+
 				if (unit->id == UnitId::ProtossLegionnaire && scbw::getUpgradeLevel(unit->playerId,UpgradeId::BladeVortex)) {
 					//teleport jump
 					if (unit->orderTarget.unit != NULL && (unit->mainOrderId==OrderId::Attack1 || unit->mainOrderId==OrderId::AttackUnit)) {
@@ -458,7 +460,6 @@ namespace hooks {
 					}
 				}
 			}
-			ExtendedUnitFlags::tick();
 			scbw::setInGameLoopState(false);
 		}
 		return true;

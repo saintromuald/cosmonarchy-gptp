@@ -1,7 +1,7 @@
 #include "weapon_damage.h"
 #include "../../SCBW/api.h"
 #include <algorithm>
-#include "ExtendedUnitFlags.h"
+#include "CUnitExtended.h"
 #include "logger.h"
 
 namespace {
@@ -260,7 +260,7 @@ namespace hooks {
 	{
 		// 
 		if (attacker->id == UnitId::ProtossDarkTemplar) {
-			ExtendedUnitFlags* flags = ExtendedUnitFlags::get(attacker);
+			CUnitExtended* flags = CUnitExtended::get(attacker);
 			flags->timerSpecial1 = 42;
 		}
 

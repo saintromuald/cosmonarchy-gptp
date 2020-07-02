@@ -1,6 +1,6 @@
 #include "die_order.h"
 #include <SCBW/api.h>
-#include "ExtendedUnitFlags.h"
+#include "CUnitExtended.h"
 
 
 //helper functions def
@@ -22,7 +22,7 @@ void orders_Die(CUnit* unit) {
 
 	bool jump_to_795AB = false;
 
-	ExtendedUnitFlags::unitDie(unit);
+	CUnitExtended::unitDie(unit);
 
 	if(unit->userActionFlags & 4)
 		hideAndDisableUnit(unit);

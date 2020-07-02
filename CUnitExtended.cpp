@@ -1,15 +1,15 @@
-#include "ExtendedUnitFlags.h"
+#include "CUnitExtended.h"
 
-std::map<CUnit*, ExtendedUnitFlags> ExtendedUnitFlags::flags;
+std::map<CUnit*, CUnitExtended*> CUnitExtended::flags;
 
 
-void SpecialTimer1::init() {
+void TimerSpecial1::init() {
 	if (flags->unit->id == UnitId::ProtossDarkTemplar) {
 		// init code for dts if needed
 	}
 }
 
-void SpecialTimer1::tick() {
+void TimerSpecial1::tick() {
 	Timer::tick();
 
 	if (flags->unit->id == UnitId::ProtossDarkTemplar && (*timer) > 0) {
