@@ -12,9 +12,12 @@ void TimerSpecial1::init() {
 void TimerSpecial1::tick() {
 	Timer::tick();
 
-	if (flags->unit->id == UnitId::ProtossDarkTemplar && (*timer) > 0) {
-		// decloaked
-	} else {
-		// cloaked
+	if (flags->unit->id == UnitId::ProtossDarkTemplar) {
+		if ((*timer) > 0) {
+			// decloaked
+			flags->unit->shields += 128;
+		} else {
+			// cloaked
+		}
 	}
 }
