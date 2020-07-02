@@ -270,17 +270,16 @@ namespace hooks {
 		u8		dmgDivisor
 	)
 	{
-		// 
-		/*
-		if (attacker->id == UnitId::ProtossDarkTemplar) {
-			ExtendedUnitFlags* flags = ExtendedUnitFlags::get(attacker);
-			flags->timerSpecial1 = 42;
-		}
-		*/
 		//the unit must neither be already dead nor invincible
 
 		if (target->hitPoints != 0 && !(target->status & UnitStatus::Invincible)) {
 
+			//if (attacker != nullptr) {
+			//	if (attacker->id == UnitId::ProtossDarkTemplar) {
+			//		CUnitExtended* flags = CUnitExtended::get(attacker);
+			//		flags->timerSpecial1 = 42;
+			//	}
+			//}
 			u8 damageType;
 
 			if (scbw::isCheatEnabled(CheatFlags::PowerOverwhelming) &&			//If Power Overwhelming is enabled
