@@ -196,7 +196,7 @@ namespace hooks {
 		if (decrease > 0)
 			acceleration = acceleration - (acceleration / 4);
 		if (unit->id == UnitId::TerranDropship && scbw::getUpgradeLevel(unit->playerId, UpgradeId::PassengerInsurance)) {
-			acceleration *= 2;
+			acceleration *= 3;
 		}
 		return acceleration;
 

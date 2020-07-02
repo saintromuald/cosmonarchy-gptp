@@ -253,6 +253,9 @@ void updateStatusEffects(CUnit* unit) {
 			unit->removeStasisField();
 
 	}
+	if (unit->id == UnitId::dropship && scbw::getUpgradeLevel(unit->playerId, UpgradeId::PassengerInsurance)) {
+		unit->updateSpeed();
+	}
 	if (unit->status & UnitStatus::Burrowed) {
 		auto tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
 		if (tile.currentlyOccupied) {
