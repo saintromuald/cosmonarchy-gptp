@@ -377,7 +377,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectAttackPriorityHooks();
 	/*
 	hooks::injectBunkerHooks();*/
-//	hooks::injectCloakNearbyUnits();
+	hooks::injectCloakNearbyUnits();
 	/*
 	hooks::injectCloakingTechHooks();
 	hooks::injectDetectorHooks();*/
