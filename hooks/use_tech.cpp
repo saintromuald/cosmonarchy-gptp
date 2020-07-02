@@ -3,7 +3,7 @@
 #include "SCBW/api.h"
 #include "hook_tools.h"
 
-//getStatTxt from stimpack.cpp
+
 const u32 Func_get_statTxt_Str_0 = 0x0048EF30;
 u32 get_statTxt_Str_0(CUnit* unit, u32 playerId, char* message) {
 
@@ -137,30 +137,35 @@ namespace hooks
 				}
 			}
 		}*/
-
-		if (Ui_CheckEnergyForTechUse(tech)) {
-			TechCapableUnit = true;
-		}
-		//*activePortraitUnit presumable causes desync
 		CUnit* firstInList = playersSelections->unit[*ACTIVE_NATION_ID][0];
 		if (firstInList != NULL) {
+			//initial check for energy-based switch abilities
 			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel &&
 				scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
-					TechCapableUnit = true;
-
-			}
-			
-			
-			if (firstInList->_padding_0x132 & 0x8) {
 				TechCapableUnit = true;
+				
 			}
 		}
-		if (!TechCapableUnit)
-		{
-			char* message = (char*)statTxtTbl->getString(864);
-			CUnit* portrait_unit =  playersSelections->unit[*ACTIVE_NATION_ID][0];
-			get_statTxt_Str_0(*activePortraitUnit, (*activePortraitUnit)->playerId, message);
-			return;
+		if(!TechCapableUnit){
+			if (Ui_CheckEnergyForTechUse(tech)) {
+				TechCapableUnit = true;
+			}
+			if (firstInList != NULL) {
+				if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel &&
+					scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
+					TechCapableUnit = true;
+				}
+				if (firstInList->_padding_0x132 & 0x8) {
+					TechCapableUnit = true;
+				}
+			}
+			if (!TechCapableUnit)
+			{
+				char* message = (char*)statTxtTbl->getString(864);
+				CUnit* portrait_unit =  playersSelections->unit[*ACTIVE_NATION_ID][0];
+				get_statTxt_Str_0(*activePortraitUnit, (*activePortraitUnit)->playerId, message);
+				return;
+			}
 		}
 		switch (tech)
 		{
@@ -313,7 +318,7 @@ namespace hooks
 		}
 		case TechId::UnusedTech39://observance
 			IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
-			/*
+			
 			if (firstInList != NULL) {
 				int action = 0;//enable
 				if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::Observance, 0) == 1) {
@@ -325,7 +330,7 @@ namespace hooks
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				scbw::SendCommand(buf, 0xc);
-			}*/
+			}
 			break;
 		case TechId::UnusedTech40://sublime shepherd
 		{
