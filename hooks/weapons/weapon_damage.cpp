@@ -173,7 +173,7 @@ public:
 			return;
 		}
 		if (!(scbw::getUpgradeLevel(unit->playerId,
-			UpgradeId::PsiMastery))) {
+			UpgradeId::Ascendancy))) {
 			return;
 		}
 		bool show = true;
@@ -510,12 +510,12 @@ namespace hooks {
 				}
 				if (weaponId == WeaponId::PsiStorm || Halluc) {
 					//psi mastery effect
-					ascendancyProc PsiMastery = ascendancyProc();
+					ascendancyProc Ascendancy = ascendancyProc();
 					scbw::UnitFinder unitFinder(target->getX() - 288,
 						target->getY() - 288,
 						target->getX() + 288,
 						target->getY() + 288);
-					unitFinder.forEach(PsiMastery);
+					unitFinder.forEach(Ascendancy);
 
 				}
 			}

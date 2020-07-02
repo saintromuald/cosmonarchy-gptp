@@ -87,7 +87,7 @@ namespace UpgradeId {
 		EscalatePaladin = 78,
 		EscalateSentryTurret = 79,
 		SequesterPods = 80,
-		AnimusCoolant = 81,
+		Reservations = 81,
 		RadiationShockwave = 82,
 		ExpandedHull = 83,
 		ForeCastle = 89,
@@ -102,8 +102,8 @@ namespace UpgradeId {
 		CausticFission = 98,
 		TaldarinsGrace = 99,
 		EphemeralBlades = 100,
-		PsiMastery = 101,
-		Extended102 = 102, // was Shaman Mana
+		Ascendancy = 101,
+		GroundZero = 102,
 		AdrenalinePacks = 103,
 		GraviticAttenuator = 104,
 		EscalateAspect = 105,
@@ -119,7 +119,7 @@ namespace UpgradeId {
 		Hotdrop = 115,
 		Malediction = 116,
 		//relics
-		Relic_Tempest = 200,
+		Tempest = 200,
 		Penance = 201,
 		BlindJudge = 202,
 		Emperor = 203,
