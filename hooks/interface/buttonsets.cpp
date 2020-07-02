@@ -770,42 +770,60 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::Powerup_UrajCrystal && //Vorvaling-Adrenal passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ZergZergling && //Zergling-Adrenal passive : disabled
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AdrenalGlands) == 0 &&
+									current_button->iconID == 264)
+								{
+									current_button_state = BUTTON_STATE::Disabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ZergZergling &&  //Zergling-Adrenal passive : enabled 
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AdrenalGlands) == 1 &&
+									current_button->iconID == 264)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ZergZergling &&  //Zergling-Adrenal passive : unavailable
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::AdrenalGlands) == 0 &&
+									current_button->iconID == 264)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergVorvaling && //Vorvaling-Adrenal passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AdrenalSurge) == 0 &&
 									current_button->iconID == 263)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::Powerup_UrajCrystal && //Vorvaling-Adrenal passive : enabled
+								else if ((*activePortraitUnit)->id == UnitId::ZergVorvaling && //Vorvaling-Adrenal passive : enabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AdrenalSurge) == 1 &&
 									current_button->iconID == 263)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::Powerup_UrajCrystal && //Vorvaling-Adrenal passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ZergVorvaling && //Vorvaling-Adrenal passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::AdrenalSurge) == 0 &&
 									current_button->iconID == 263)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::Powerup_KhalisCrystal && //Basilisk-Genesis passive
+								if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk-Genesis passive
 									current_button->iconID == 258)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::Powerup_KhalisCrystal && //Basilisk-Dispersion passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk-Dispersion passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::CorrosiveDispersion) == 0 &&
 									current_button->iconID == 301)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::Powerup_KhalisCrystal && //Basilisk-Dispersion passive : enabled
+								else if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk-Dispersion passive : enabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::CorrosiveDispersion) == 1 &&
 									current_button->iconID == 301)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::Powerup_KhalisCrystal && //Basilisk-Dispersion passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk-Dispersion passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::CorrosiveDispersion) == 0 &&
 									current_button->iconID == 301)
 								{
@@ -847,828 +865,792 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::firebat && //Firebat passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::TerranFirebat && //Firebat passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ApollyoidAdhesive) == 0)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::firebat && //Firebat passive : enabled
+								else if ((*activePortraitUnit)->id == UnitId::TerranFirebat && //Firebat passive : enabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ApollyoidAdhesive) == 1)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::marine && //Marine passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::U_238Shells) == 0)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								if ((*activePortraitUnit)->id == UnitId::marine && //Marine passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::U_238Shells) == 0)
-								{
-									current_button_state = BUTTON_STATE::Disabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::marine && //Marine passive : enabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::U_238Shells) == 1)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::firebat && //Firebat passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranFirebat && //Firebat passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::ApollyoidAdhesive) == 0)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::civilian && //Shaman-Overcharge passive : disabled
+								else if ((*activePortraitUnit)->id == UnitId::TerranMarine && //Marine passive : unavailable
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::U_238Shells) == 0)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranMarine && //Marine passive : disabled
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::U_238Shells) == 0)
+								{
+									current_button_state = BUTTON_STATE::Disabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::TerranMarine && //Marine passive : enabled
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::U_238Shells) == 1)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranShaman && //Shaman-Overcharge passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::Overcharge) == 0 &&
 									current_button->iconID == 308)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::civilian && //Shaman-Overcharge passive : enabled
+								else if ((*activePortraitUnit)->id == UnitId::TerranShaman && //Shaman-Overcharge passive : enabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::Overcharge) == 1 &&
 									current_button->iconID == 308)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::civilian && //Shaman-Overcharge passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranShaman && //Shaman-Overcharge passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::Overcharge) == 0 &&
 									current_button->iconID == 308)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::civilian && //Shaman Adrenaline passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::TerranShaman && //Shaman Adrenaline passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AdrenalinePacks) == 0 &&
 									current_button->iconID == 292)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::civilian &&  //Shaman Adrenaline passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::TerranShaman &&  //Shaman Adrenaline passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AdrenalinePacks) == 1 &&
 									current_button->iconID == 292)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::civilian &&  //Shaman Adrenaline passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranShaman &&  //Shaman Adrenaline passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::AdrenalinePacks) == 0 &&
 									current_button->iconID == 292)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::dark_templar_hero && //Legionnaire passive
+								if ((*activePortraitUnit)->id == UnitId::ProtossLegionnaire && //Legionnaire passive
 									current_button->iconID == 305)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::Hero_TassadarZeratulArchon && //Hierophant-Cowardice passive
+								if ((*activePortraitUnit)->id == UnitId::ProtossLegionnaire && //Legionnaire Blade Vortex passive : disabled
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::BladeVortex) == 0 &&
+									current_button->iconID == 355)
+								{
+									current_button_state = BUTTON_STATE::Disabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ProtossLegionnaire &&  //Legionnaire Blade Vortex passive : enabled 
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::BladeVortex) == 1 &&
+									current_button->iconID == 355)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossLegionnaire && //Legionnaire Leg passive : disabled
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::LegEnhancements) == 0 &&
+									current_button->iconID == 307)
+								{
+									current_button_state = BUTTON_STATE::Disabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ProtossLegionnaire &&  //Legionnaire Leg passive : enabled 
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::LegEnhancements) == 1 &&
+									current_button->iconID == 307)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ProtossLegionnaire &&  //Legionnaire Leg passive : unavailable
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::LegEnhancements) == 0 &&
+									current_button->iconID == 307)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ProtossLegionnaire &&  //Legionnaire Blade Vortex passive : unavailable
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::BladeVortex) == 0 &&
+									current_button->iconID == 355)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossHierophant && //Hierophant-Cowardice passive
 									current_button->iconID == 362)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::Hero_TassadarZeratulArchon && //Hierophant-Malice passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossHierophant && //Hierophant-Malice passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::SignifyMalice) == 0
 									&& current_button->iconID == 360)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::Hero_TassadarZeratulArchon && //Hierophant-Malice passive : enabled
+								else if ((*activePortraitUnit)->id == UnitId::ProtossHierophant && //Hierophant-Malice passive : enabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::SignifyMalice) == 1
 									&& current_button->iconID == 360)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::Hero_TassadarZeratulArchon && //Hierophant-Malice passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ProtossHierophant && //Hierophant-Malice passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::SignifyMalice) == 0 &&
 									current_button->iconID == 360)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::Hero_TassadarZeratulArchon && //Hierophant Taldarin passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossHierophant && //Hierophant Taldarin passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::TaldarinsGrace) == 0 &&
 									current_button->iconID == 310)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::Hero_TassadarZeratulArchon && //Hierophant Taldarin passive : enabled
+								else if ((*activePortraitUnit)->id == UnitId::ProtossHierophant && //Hierophant Taldarin passive : enabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::TaldarinsGrace) == 1 &&
 									current_button->iconID == 310)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::Hero_TassadarZeratulArchon && //Hierophant Taldarin passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ProtossHierophant && //Hierophant Taldarin passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::TaldarinsGrace) == 0 &&
 									current_button->iconID == 310)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::dragoon && //Dragoon Taldarin passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossHierophant && //Hierophant Singularity passive : disabled
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::SingularityCharge) == 0 &&
+									current_button->iconID == 281)
+								{
+									current_button_state = BUTTON_STATE::Disabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ProtossHierophant &&  //Hierophant Singularity passive : enabled 
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::SingularityCharge) == 1 &&
+									current_button->iconID == 281)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ProtossHierophant &&  //Hierophant Singularity passive : unavailable
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::SingularityCharge) == 0 &&
+									current_button->iconID == 281)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossDragoon && //Dragoon Taldarin passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::TaldarinsGrace) == 0 &&
 									current_button->iconID == 310)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::dragoon && //Dragoon Taldarin passive : enabled
+								else if ((*activePortraitUnit)->id == UnitId::ProtossDragoon && //Dragoon Taldarin passive : enabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::TaldarinsGrace) == 1 &&
 									current_button->iconID == 310)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::dragoon && //Dragoon Taldarin passive : unavailable 
+								else if ((*activePortraitUnit)->id == UnitId::ProtossDragoon && //Dragoon Taldarin passive : unavailable 
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::TaldarinsGrace) == 0 &&
 									current_button->iconID == 310)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::pylon && //Pylon passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossDragoon && //Dragoon Singularity passive : disabled
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::SingularityCharge) == 0 &&
+									current_button->iconID == 281)
+								{
+									current_button_state = BUTTON_STATE::Disabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ProtossDragoon &&  //Dragoon Singularity passive : enabled 
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::SingularityCharge) == 1 &&
+									current_button->iconID == 281)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ProtossDragoon &&  //Dragoon Singularity passive : unavailable
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::SingularityCharge) == 0 &&
+									current_button->iconID == 281)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossPylon && //Pylon passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::PowerFlux) == 0)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::pylon && //Pylon passive : enabled
+								else if ((*activePortraitUnit)->id == UnitId::ProtossPylon && //Pylon passive : enabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::PowerFlux) == 1)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::pylon && //Pylon passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ProtossPylon && //Pylon passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::PowerFlux) == 0)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if (((*activePortraitUnit)->id == UnitId::shield_battery || //Shield Battery or Bulwark passive : disabled
+								if (((*activePortraitUnit)->id == UnitId::ProtossShieldBattery || //Shield Battery or Bulwark passive : disabled
 									(*activePortraitUnit)->id == UnitId::scantid) &&
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::KhaydarinGenerator) == 0)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if (((*activePortraitUnit)->id == UnitId::shield_battery || //Shield Battery or Bulwark passive : enabled
+								else if (((*activePortraitUnit)->id == UnitId::ProtossShieldBattery || //Shield Battery or Bulwark passive : enabled
 									(*activePortraitUnit)->id == UnitId::scantid) &&
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::KhaydarinGenerator) == 1)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if (((*activePortraitUnit)->id == UnitId::shield_battery || //Shield Battery or Bulwark passive : unavailable
+								else if (((*activePortraitUnit)->id == UnitId::ProtossShieldBattery || //Shield Battery or Bulwark passive : unavailable
 									(*activePortraitUnit)->id == UnitId::scantid) &&
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::KhaydarinGenerator) == 0)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::reaver && //Reaver Reinforced Scarabs passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossReaver && //Reaver Reinforced Scarabs passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ScarabDamage) == 0)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::reaver &&  //Reaver Reinforced Scarabs passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ProtossReaver &&  //Reaver Reinforced Scarabs passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ScarabDamage) == 1)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::reaver &&  //Reaver Reinforced Scarabs passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ProtossReaver &&  //Reaver Reinforced Scarabs passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::ScarabDamage) == 0)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::reaver && //Reaver Relocators passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossReaver && //Reaver Relocators passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::Relocators) == 0)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::reaver &&  //Reaver Relocators passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ProtossReaver &&  //Reaver Relocators passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::Relocators) == 1)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::reaver &&  //Reaver Relocators passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ProtossReaver &&  //Reaver Relocators passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::Relocators) == 0)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::shuttle && //Shuttle passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossShuttle && //Shuttle passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::GraviticDrive) == 0)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::shuttle &&  //Shuttle passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ProtossShuttle &&  //Shuttle passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::GraviticDrive) == 1)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::shuttle &&  //Shuttle passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ProtossShuttle &&  //Shuttle passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::GraviticDrive) == 0)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::dragoon && //Dragoon Singularity passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::SingularityCharge) == 0 &&
-									current_button->iconID == 281)
-								{
-									current_button_state = BUTTON_STATE::Disabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::dragoon &&  //Dragoon Singularity passive : enabled 
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::SingularityCharge) == 1 &&
-									current_button->iconID == 281)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::dragoon &&  //Dragoon Singularity passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::SingularityCharge) == 0 &&
-									current_button->iconID == 281)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								if ((*activePortraitUnit)->id == UnitId::Hero_TassadarZeratulArchon && //Hierophant Singularity passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::SingularityCharge) == 0 &&
-									current_button->iconID == 281)
-								{
-									current_button_state = BUTTON_STATE::Disabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::Hero_TassadarZeratulArchon &&  //Hierophant Singularity passive : enabled 
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::SingularityCharge) == 1 &&
-									current_button->iconID == 281)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::Hero_TassadarZeratulArchon &&  //Hierophant Singularity passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::SingularityCharge) == 0 &&
-									current_button->iconID == 281)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								if ((*activePortraitUnit)->id == UnitId::ghost && //Ghost Moebius passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::TerranGhost && //Ghost Moebius passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::MoebiusReactor) == 0 &&
 									current_button->iconID == 256)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::ghost &&  //Ghost Moebius passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::TerranGhost &&  //Ghost Moebius passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::MoebiusReactor) == 1 &&
 									current_button->iconID == 256)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::ghost &&  //Ghost Moebius passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranGhost &&  //Ghost Moebius passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::MoebiusReactor) == 0 &&
 									current_button->iconID == 256)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::vulture && //Vulture Ion passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::TerranVulture && //Vulture Ion passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::IonThrusters) == 0 &&
 									current_button->iconID == 287)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::vulture &&  //Vulture Ion passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::TerranVulture &&  //Vulture Ion passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::IonThrusters) == 1 &&
 									current_button->iconID == 287)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::vulture &&  //Vulture Ion passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranVulture &&  //Vulture Ion passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::IonThrusters) == 0 &&
 									current_button->iconID == 287)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::wraith && //Wraith Capacitors passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::TerranWraith && //Wraith Capacitors passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::Capacitors) == 0 &&
 									current_button->iconID == 332)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::wraith &&  //Wraith Capacitors passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::TerranWraith &&  //Wraith Capacitors passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::Capacitors) == 1 &&
 									current_button->iconID == 332)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::wraith &&  //Wraith Capacitors passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranWraith &&  //Wraith Capacitors passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::Capacitors) == 0 &&
 									current_button->iconID == 332)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::wraith && //Wraith Apollo passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::TerranWraith && //Wraith Apollo passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ApolloReactor) == 0 &&
 									current_button->iconID == 284)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::wraith &&  //Wraith Apollo passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::TerranWraith &&  //Wraith Apollo passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ApolloReactor) == 1 &&
 									current_button->iconID == 284)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::wraith &&  //Wraith Apollo passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranWraith &&  //Wraith Apollo passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::ApolloReactor) == 0 &&
 									current_button->iconID == 284)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::science_vessel && //Science Vessel EMP passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::TerranScienceVessel && //Science Vessel EMP passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::RadiationShockwave) == 0 &&
 									current_button->iconID == 241)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::science_vessel &&  //Science Vessel EMP passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::TerranScienceVessel &&  //Science Vessel EMP passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::RadiationShockwave) == 1 &&
 									current_button->iconID == 241)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::science_vessel &&  //Science Vessel EMP passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranScienceVessel &&  //Science Vessel EMP passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::RadiationShockwave) == 0 &&
 									current_button->iconID == 241)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::science_vessel && //Science Vessel Titan passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::TerranScienceVessel && //Science Vessel Titan passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::TitanReactor) == 0 &&
 									current_button->iconID == 248)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::science_vessel &&  //Science Vessel Titan passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::TerranScienceVessel &&  //Science Vessel Titan passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::TitanReactor) == 1 &&
 									current_button->iconID == 248)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::science_vessel &&  //Science Vessel Titan passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranScienceVessel &&  //Science Vessel Titan passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::TitanReactor) == 0 &&
 									current_button->iconID == 248)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::battlecruiser && //Battlecruiser Umojan passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser && //Battlecruiser Umojan passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::UmojanBatteries) == 0 &&
 									current_button->iconID == 322)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::battlecruiser &&  //Battlecruiser Umojan passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser &&  //Battlecruiser Umojan passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::UmojanBatteries) == 1 &&
 									current_button->iconID == 322)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::battlecruiser &&  //Battlecruiser Umojan passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser &&  //Battlecruiser Umojan passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::UmojanBatteries) == 0 &&
 									current_button->iconID == 322)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::battlecruiser && //Battlecruiser Fore Castle passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser && //Battlecruiser Fore Castle passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ForeCastle) == 0 &&
 									current_button->iconID == 291)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::battlecruiser &&  //Battlecruiser Fore Castle passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser &&  //Battlecruiser Fore Castle passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ForeCastle) == 1 &&
 									current_button->iconID == 291)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::battlecruiser &&  //Battlecruiser Fore Castle passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser &&  //Battlecruiser Fore Castle passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::ForeCastle) == 0 &&
 									current_button->iconID == 291)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::battlecruiser && //Battlecruiser Colossus passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser && //Battlecruiser Colossus passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ColossusReactor) == 0 &&
 									current_button->iconID == 285)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::battlecruiser &&  //Battlecruiser Colossus passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser &&  //Battlecruiser Colossus passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ColossusReactor) == 1 &&
 									current_button->iconID == 285)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::battlecruiser &&  //Battlecruiser Colossus passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser &&  //Battlecruiser Colossus passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::ColossusReactor) == 0 &&
 									current_button->iconID == 285)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::nuclear_silo && //Nuclear Silo Revenge passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::TerranNuclearSilo && //Nuclear Silo Revenge passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AugustgradsRevenge) == 0 &&
 									current_button->iconID == 311)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::nuclear_silo &&  //Nuclear Silo Revenge passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::TerranNuclearSilo &&  //Nuclear Silo Revenge passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AugustgradsRevenge) == 1 &&
 									current_button->iconID == 311)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::nuclear_silo &&  //Nuclear Silo Revenge passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranNuclearSilo &&  //Nuclear Silo Revenge passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::AugustgradsRevenge) == 0 &&
 									current_button->iconID == 311)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::high_templar && //High Templar Ephemeral passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossHighTemplar && //High Templar Ephemeral passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::EphemeralBlades) == 0 &&
 									current_button->iconID == 305)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::high_templar &&  //High Templar Ephemeral passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ProtossHighTemplar &&  //High Templar Ephemeral passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::EphemeralBlades) == 1 &&
 									current_button->iconID == 305)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::high_templar &&  //High Templar Ephemeral passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ProtossHighTemplar &&  //High Templar Ephemeral passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::EphemeralBlades) == 0 &&
 									current_button->iconID == 305)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::carrier && //Carrier Auxilliary passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossCarrier && //Carrier Auxilliary passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::CarrierCapacity) == 0 &&
 									current_button->iconID == 321)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::carrier &&  //Carrier Auxilliary passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ProtossCarrier &&  //Carrier Auxilliary passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::CarrierCapacity) == 1 &&
 									current_button->iconID == 321)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::carrier &&  //Carrier Auxilliary passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ProtossCarrier &&  //Carrier Auxilliary passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::CarrierCapacity) == 0 &&
 									current_button->iconID == 321)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::reaver && //Reaver Reinforced passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ScarabDamage) == 0 &&
-									current_button->iconID == 315)
-								{
-									current_button_state = BUTTON_STATE::Disabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::reaver &&  //Reaver Reinforced passive : enabled 
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ScarabDamage) == 1 &&
-									current_button->iconID == 315)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::reaver &&  //Reaver Reinforced passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::ScarabDamage) == 0 &&
-									current_button->iconID == 315)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								if ((*activePortraitUnit)->id == UnitId::reaver && //Reaver Relocators passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::Relocators) == 0 &&
-									current_button->iconID == 319)
-								{
-									current_button_state = BUTTON_STATE::Disabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::reaver &&  //Reaver Relocators passive : enabled 
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::Relocators) == 1 &&
-									current_button->iconID == 319)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::reaver &&  //Reaver Relocators passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::Relocators) == 0 &&
-									current_button->iconID == 319)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								if ((*activePortraitUnit)->id == UnitId::arbiter && //Arbiter Core passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossArbiter && //Arbiter Core passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::KhaydarinCore) == 0 &&
 									current_button->iconID == 322)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::arbiter &&  //Arbiter Core passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ProtossArbiter &&  //Arbiter Core passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::KhaydarinCore) == 1 &&
 									current_button->iconID == 322)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::arbiter &&  //Arbiter Core passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ProtossArbiter &&  //Arbiter Core passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::KhaydarinCore) == 0 &&
 									current_button->iconID == 322)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::comsat_station && //Comsat Odysseus passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::TerranComsatStation && //Comsat Odysseus passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::OdysseusReactor) == 0 &&
 									current_button->iconID == 107)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::comsat_station &&  //Comsat Odysseus passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::TerranComsatStation &&  //Comsat Odysseus passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::OdysseusReactor) == 1 &&
 									current_button->iconID == 107)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::comsat_station &&  //Comsat Odysseus passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranComsatStation &&  //Comsat Odysseus passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::OdysseusReactor) == 0 &&
 									current_button->iconID == 107)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::missile_turret && //Missile Turret Sequester passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::TerranMissileTurret && //Missile Turret Sequester passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::SequesterPods) == 0 &&
 									current_button->iconID == 337)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::missile_turret &&  //Missile Turret Sequester passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::TerranMissileTurret &&  //Missile Turret Sequester passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::SequesterPods) == 1 &&
 									current_button->iconID == 337)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::missile_turret &&  //Missile Turret Sequester passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranMissileTurret &&  //Missile Turret Sequester passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::SequesterPods) == 0 &&
 									current_button->iconID == 337)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::zealot && //Zealot Leg passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossZealot && //Zealot Leg passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::LegEnhancements) == 0 &&
 									current_button->iconID == 307)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::zealot &&  //Zealot Leg passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ProtossZealot &&  //Zealot Leg passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::LegEnhancements) == 1 &&
 									current_button->iconID == 307)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::zealot &&  //Zealot Leg passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ProtossZealot &&  //Zealot Leg passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::LegEnhancements) == 0 &&
 									current_button->iconID == 307)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::Hero_DarkTemplar && //Legionnaire Leg passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::LegEnhancements) == 0 &&
-									current_button->iconID == 307)
-								{
-									current_button_state = BUTTON_STATE::Disabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::Hero_DarkTemplar &&  //Legionnaire Leg passive : enabled 
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::LegEnhancements) == 1 &&
-									current_button->iconID == 307)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::Hero_DarkTemplar &&  //Legionnaire Leg passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::LegEnhancements) == 0 &&
-									current_button->iconID == 307)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								if ((*activePortraitUnit)->id == UnitId::observer && //Observer Sensor passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossObserver && //Observer Sensor passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::SensorArray) == 0 &&
 									current_button->iconID == 317)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::observer &&  //Observer Sensor passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ProtossObserver &&  //Observer Sensor passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::SensorArray) == 1 &&
 									current_button->iconID == 317)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::observer &&  //Observer Sensor passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ProtossObserver &&  //Observer Sensor passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::SensorArray) == 0 &&
 									current_button->iconID == 317)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::observer && //Observer Booster passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossObserver && //Observer Booster passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::GraviticBoosters) == 0 &&
 									current_button->iconID == 276)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::observer &&  //Observer Booster passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ProtossObserver &&  //Observer Booster passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::GraviticBoosters) == 1 &&
 									current_button->iconID == 276)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::observer &&  //Observer Booster passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ProtossObserver &&  //Observer Booster passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::GraviticBoosters) == 0 &&
 									current_button->iconID == 276)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::scout && //Scout Thruster passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossScout && //Scout Thruster passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::GraviticThrusters) == 0 &&
 									current_button->iconID == 320)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::scout &&  //Scout Thruster passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ProtossScout &&  //Scout Thruster passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::GraviticThrusters) == 1 &&
 									current_button->iconID == 320)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::scout &&  //Scout Thruster passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ProtossScout &&  //Scout Thruster passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::GraviticThrusters) == 0 &&
 									current_button->iconID == 320)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::scout && //Scout Last Orders passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossScout && //Scout Last Orders passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::LastOrders) == 0 &&
 									current_button->iconID == 70)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::scout &&  //Scout Last Orders passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ProtossScout &&  //Scout Last Orders passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::LastOrders) == 1 &&
 									current_button->iconID == 70)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::scout &&  //Scout Last Orders passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ProtossScout &&  //Scout Last Orders passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::LastOrders) == 0 &&
 									current_button->iconID == 70)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ultralisk && //Ultralisk Siphon passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ZergUltralisk && //Ultralisk Siphon passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::SaberSiphon) == 0 &&
 									current_button->iconID == 340)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::ultralisk &&  //Ultralisk Siphon passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ZergUltralisk &&  //Ultralisk Siphon passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::SaberSiphon) == 1 &&
 									current_button->iconID == 340)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::ultralisk &&  //Ultralisk Siphon passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ZergUltralisk &&  //Ultralisk Siphon passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::SaberSiphon) == 0 &&
 									current_button->iconID == 340)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ultralisk && //Ultralisk Kaiser passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ZergUltralisk && //Ultralisk Kaiser passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::KaiserRampage) == 0 &&
 									current_button->iconID == 378)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::ultralisk &&  //Ultralisk Kaiser passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ZergUltralisk &&  //Ultralisk Kaiser passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::KaiserRampage) == 1 &&
 									current_button->iconID == 378)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::ultralisk &&  //Ultralisk Kaiser passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ZergUltralisk &&  //Ultralisk Kaiser passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::KaiserRampage) == 0 &&
 									current_button->iconID == 378)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::medic && //Medic Adrenaline passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::TerranMedic && //Medic Adrenaline passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AdrenalinePacks) == 0 &&
 									current_button->iconID == 292)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::medic &&  //Medic Adrenaline passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::TerranMedic &&  //Medic Adrenaline passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AdrenalinePacks) == 1 &&
 									current_button->iconID == 292)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::medic &&  //Medic Adrenaline passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranMedic &&  //Medic Adrenaline passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::AdrenalinePacks) == 0 &&
 									current_button->iconID == 292)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::medic && //Medic Caduceus passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::TerranMedic && //Medic Caduceus passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::CaduceusReactor) == 0 &&
 									current_button->iconID == 384)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::medic &&  //Medic Caduceus passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::TerranMedic &&  //Medic Caduceus passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::CaduceusReactor) == 1 &&
 									current_button->iconID == 384)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::medic &&  //Medic Caduceus passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranMedic &&  //Medic Caduceus passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::CaduceusReactor) == 0 &&
 									current_button->iconID == 384)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::broodling && //Broodling Ensnare passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ZergBroodling && //Broodling Ensnare passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, 84) == 0 &&
 									current_button->iconID == 267)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::broodling &&  //Broodling Ensnare passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ZergBroodling &&  //Broodling Ensnare passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, 84) == 1 &&
 									current_button->iconID == 267)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::broodling &&  //Broodling Ensnare passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ZergBroodling &&  //Broodling Ensnare passive : unavailable
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, 84) == 0 &&
 									current_button->iconID == 267)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::infested_terran && //Infested Terran Ensnare passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ZergInfestedTerran && //Infested Terran Ensnare passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, 84) == 0 &&
 									current_button->iconID == 267)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::infested_terran &&  //Infested Terran Ensnare passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ZergInfestedTerran &&  //Infested Terran Ensnare passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, 84) == 1 &&
 									current_button->iconID == 267)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::infested_terran &&  //Infested Terran Ensnare passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ZergInfestedTerran &&  //Infested Terran Ensnare passive : unavailable
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, 84) == 0 &&
 									current_button->iconID == 267)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::infested_terran &&  //Infested Terran Death March passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ZergInfestedTerran &&  //Infested Terran Death March passive : enabled 
 									current_button->iconID == 307)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::archon && //Archon Aegis passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossArchon && //Archon Aegis passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AstralAegis) == 0 &&
 									current_button->iconID == 308)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::archon &&  //Archon Aegis passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ProtossArchon &&  //Archon Aegis passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AstralAegis) == 1 &&
 									current_button->iconID == 308)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::archon &&  //Archon Aegis passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ProtossArchon &&  //Archon Aegis passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::AstralAegis) == 0 &&
 									current_button->iconID == 308)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::mercenary_gunship && //Cyprian Servos passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::TerranCyprian && //Cyprian Servos passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::PlasteelServos) == 0 &&
 									current_button->iconID == 307)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::mercenary_gunship &&  //Cyprian Servos passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::TerranCyprian &&  //Cyprian Servos passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::PlasteelServos) == 1 &&
 									current_button->iconID == 307)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::mercenary_gunship &&  //Cyprian Servos passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::TerranCyprian &&  //Cyprian Servos passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::PlasteelServos) == 0 &&
 									current_button->iconID == 307)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								if ((*activePortraitUnit)->id == UnitId::ZergZergling && //Zergling-Adrenal passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AdrenalGlands) == 0 &&
-									current_button->iconID == 264)
-								{
-									current_button_state = BUTTON_STATE::Disabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::ZergZergling &&  //Zergling-Adrenal passive : enabled 
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AdrenalGlands) == 1 &&
-									current_button->iconID == 264)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::ZergZergling &&  //Zergling-Adrenal passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::AdrenalGlands) == 0 &&
-									current_button->iconID == 264)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
