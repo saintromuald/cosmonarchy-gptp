@@ -59,17 +59,17 @@ Bool32 unitCanRechargeShieldsHook(CUnit* target, CUnit* battery) {
 	Bool32 result;
 
 	//Check target conditions
-	if (	!scbw::isAlliedTo(target->playerId, battery->playerId) ||				//Is not owned by the player (NEW: or the player's allies)
-			!(units_dat::ShieldsEnabled[target->id]) ||								//Does not have shields
-			!(target->status & UnitStatus::Completed) ||							//Is incomplete?
-//			!(target->status & UnitStatus::IsBuilding) ||							//Is building (like archon build self)?
-//			target->status & UnitStatus::GroundedBuilding ||						//Is a building
-			target->getRace() != RaceId::Protoss ||									//Check target race
-			target->shields >= (units_dat::MaxShieldPoints[target->id] * 256) ||	//Already has max shields
-			!(battery->status & UnitStatus::Completed) ||
-			battery->energy == 0 ||
-			battery->isFrozen() ||
-			isHangarUnit(target)
+	if (	!scbw::isAlliedTo(target->playerId, battery->playerId)					//Is not owned by the player (NEW: or the player's allies)
+			|| !(units_dat::ShieldsEnabled[target->id])								//Does not have shields
+			|| !(target->status & UnitStatus::Completed)							//Is incomplete?
+//			|| !(target->status & UnitStatus::IsBuilding)							//Is building (like archon build self)?
+//			|| target->status & UnitStatus::GroundedBuilding						//Is a building
+//			|| target->getRace() != RaceId::Protoss									//Check target race
+			|| target->shields >= (units_dat::MaxShieldPoints[target->id] * 256)	//Already has max shields
+			|| !(battery->status & UnitStatus::Completed)
+			|| battery->energy == 0
+			|| battery->isFrozen()
+			|| isHangarUnit(target)
 	  )                       
 		result = 0;
 	else
