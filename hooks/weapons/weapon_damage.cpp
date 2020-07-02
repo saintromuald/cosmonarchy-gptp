@@ -1,6 +1,8 @@
 #include "weapon_damage.h"
 #include "../../SCBW/api.h"
 #include <algorithm>
+#include "ExtendedUnitFlags.h"
+#include "logger.h"
 
 namespace {
 	//Helper functions
@@ -256,6 +258,11 @@ namespace hooks {
 		u8		dmgDivisor
 	)
 	{
+		// 
+		if (attacker->id == UnitId::ProtossDarkTemplar) {
+			ExtendedUnitFlags* flags = ExtendedUnitFlags::get(attacker);
+			flags->timerSpecial1 = 42;
+		}
 
 		//the unit must neither be already dead nor invincible
 

@@ -6,6 +6,7 @@
 #include <SCBW/ExtendSightLimit.h>
 #include "psi_field.h"
 #include <cstdio>
+#include "ExtendedUnitFlags.h"
 
 
 const int hyperTrigger = 0x006509A0;
@@ -457,6 +458,7 @@ namespace hooks {
 					}
 				}
 			}
+			ExtendedUnitFlags::tick();
 			scbw::setInGameLoopState(false);
 		}
 		return true;

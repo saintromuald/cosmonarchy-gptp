@@ -1,5 +1,7 @@
 #include "die_order.h"
 #include <SCBW/api.h>
+#include "ExtendedUnitFlags.h"
+
 
 //helper functions def
 
@@ -20,6 +22,8 @@ void orders_Die(CUnit* unit) {
 
 	bool jump_to_795AB = false;
 
+	ExtendedUnitFlags::unitDie(unit);
+
 	if(unit->userActionFlags & 4)
 		hideAndDisableUnit(unit);
 
@@ -34,6 +38,7 @@ void orders_Die(CUnit* unit) {
 				unit->subunit->subunit = NULL;
 			}
 
+			
 			_UnitDestructor(unit->subunit);
 			unit->subunit->sprite->free();
 
