@@ -144,6 +144,13 @@ namespace hooks
 		//*activePortraitUnit presumable causes desync
 		CUnit* firstInList = playersSelections->unit[*ACTIVE_NATION_ID][0];
 		if (firstInList != NULL) {
+			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel &&
+				scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
+					TechCapableUnit = true;
+
+			}
+			
+			
 			if (firstInList->_padding_0x132 & 0x8) {
 				TechCapableUnit = true;
 			}
@@ -322,6 +329,7 @@ namespace hooks
 			break;
 		case TechId::UnusedTech40://sublime shepherd
 		{
+			
 			int action = 1;//on
 			if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
 				action = 0;//off
