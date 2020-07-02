@@ -280,7 +280,7 @@ struct CUnitLayout {
 /*0x093*/ u8        userActionFlags;      // some flags that change when the user interacts with the unit
                                           // 2 = issued an order, 3 = interrupted an order, 4 = hide self before death (self-destruct?)
 /*0x094*/ u16       currentButtonSet;     // The u16 is a guess, used to be u8
-/*0x096*/ bool      isCloaked;
+/*0x096*/ u8        isCloaked;
 /*0x097*/ u8        movementState;        // A value based on conditions related to pathing, see BWAPI Path.h or UnitMovement.cs for info
 /*0x098*/ u16       buildQueue[5];        //++train queue for buildings and carrier/reaver (stores the unitid) / zerg eggs stores the id of the morphing unit in queue[0]
 										  //Note that it doesn't begin with index 0, but with #buildQueueSlot index.
