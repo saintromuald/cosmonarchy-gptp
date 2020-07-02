@@ -5,7 +5,7 @@ std::map<CUnit*, ExtendedUnitFlags> ExtendedUnitFlags::flags;
 
 void SpecialTimer1::init() {
 	if (flags->unit->id == UnitId::ProtossDarkTemplar) {
-		flags->unit->status |= UnitStatus::CloakingForFree;
+		// init code for dts if needed
 	}
 }
 
