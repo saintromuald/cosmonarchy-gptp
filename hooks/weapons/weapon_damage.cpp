@@ -1,8 +1,7 @@
 #include "weapon_damage.h"
 #include "../../SCBW/api.h"
 #include <algorithm>
-//#include "ExtendedUnitFlags.h"
-#include "logger.h"
+#include "CUnitExtended.h"
 
 namespace {
 	//Helper functions
@@ -248,9 +247,6 @@ public:
 
 
 bool irratiateTarget(CUnit* unit) {
-
-	if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
-		return false;
 
 	if (unit->id == UnitId::larva || unit->id == UnitId::egg || unit->id == UnitId::lurker_egg)
 		return false;
