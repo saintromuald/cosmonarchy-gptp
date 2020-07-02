@@ -2,7 +2,6 @@
 #include <map>
 #include <vector>
 #include <SCBW/structures/CUnit.h>
-#include "logger.h"
 
 struct CUnitExtended;
 

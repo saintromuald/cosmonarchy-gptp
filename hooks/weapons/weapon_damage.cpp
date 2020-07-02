@@ -2,7 +2,6 @@
 #include "../../SCBW/api.h"
 #include <algorithm>
 #include "CUnitExtended.h"
-#include "logger.h"
 
 namespace {
 	//Helper functions
