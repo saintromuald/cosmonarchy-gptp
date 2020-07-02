@@ -9,7 +9,10 @@ CUnit** getAllUnitsInBounds(Box16* coords);		//0x0042FF80
 
 namespace hooks {
 
-//Cloak all units near @p cloaker.
+	//Cloak all units near @p cloaker.
+
+
+	// 1
 void cloakNearbyUnitsHook(CUnit* cloaker) {
 
 	bool needsRefresh = false;
@@ -41,9 +44,7 @@ void cloakNearbyUnitsHook(CUnit* cloaker) {
 	unitsInAreaOfEffect = getAllUnitsInBounds(&area_of_effect);
 
 	current_unit = *unitsInAreaOfEffect;
-
 	while(current_unit != NULL) {
-
 		if (
 			current_unit->id != UnitId::ProtossArbiter
 			&& current_unit->id != UnitId::Hero_Danimoth
@@ -52,8 +53,7 @@ void cloakNearbyUnitsHook(CUnit* cloaker) {
 			&& !(units_dat::BaseProperty[current_unit->id] & UnitProperty::NeutralAccessories)		// Don't cloak items
 			&& current_unit->id != UnitId::TerranNuclearMissile										// Don't cloak nukes
 			&& current_unit->mainOrderId != OrderId::Warpin											// Don't cloak units doing order WarpIn
-			&& (cloaker->playerId == current_unit->playerId											// Unit owner must be Cloaker owner
-				|| scbw::isAlliedTo(current_unit->playerId, cloaker->playerId))						// (or allied to Cloaker owner)
+			&& scbw::isAlliedTo(current_unit->playerId, cloaker->playerId)						// (or allied to Cloaker owner)
 			&& cloaker->isTargetWithinMinRange(current_unit, cloakRadius)							// Check again if unit in range of cloaking
 		)
 		{
@@ -85,7 +85,6 @@ namespace {
 
 //Equivalent to secondaryOrd_Cloak @ 0x00491790
 void secondaryOrder_Cloak(CUnit* unit) {
-
 	static CUnit** const firstBurrowedUnit = (CUnit**) 0x0063FF5C;
 
 	unit->isCloaked++;
@@ -94,7 +93,7 @@ void secondaryOrder_Cloak(CUnit* unit) {
 		unit->isCloaked == 1 &&
 		!(unit->status & UnitStatus::RequiresDetection) &&
 		unit->burrow_link.next == NULL
-	)
+		)
 	{
 
 		unit->burrow_link.next = *firstBurrowedUnit;
@@ -108,7 +107,7 @@ void secondaryOrder_Cloak(CUnit* unit) {
 		scbw::refreshConsole();
 
 	}
-
+	
 }
 
 ;
