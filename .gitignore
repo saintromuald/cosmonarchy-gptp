@@ -2,3 +2,5 @@
 Debug/
 Release/
 GPTP.vcxproj.user
+post_build_release.bat
+post_build_debug.bat
