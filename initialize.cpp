@@ -348,8 +348,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectNukeOrdersHooks();
 	hooks::injectBurrowTechHooks();
 	hooks::injectResearchUpgradeOrdersHooks();*/
-	hooks::injectMedicOrdersHooks();/*
-	hooks::injectHallucinationSpellHook();
+	hooks::injectMedicOrdersHooks();
+	hooks::injectHallucinationSpellHook();/*
 	hooks::injectFeedbackSpellHook();
 	hooks::injectBtnsCondHook();
 	hooks::injectRecvCmdHook();*/

@@ -30,7 +30,7 @@ namespace hooks {
 		)
 		{
 
-			int counter = 2;
+			int counter = 1;
 
 			while(counter > 0) {
 
