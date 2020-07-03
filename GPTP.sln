@@ -9,8 +9,6 @@ Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
-		Hydra|Win32 = Hydra|Win32
-		Hydra|x64 = Hydra|x64
 		Release|Win32 = Release|Win32
 		Release|x64 = Release|x64
 	EndGlobalSection
@@ -18,9 +16,6 @@ Global
 		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Debug|Win32.ActiveCfg = Debug|Win32
 		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Debug|Win32.Build.0 = Debug|Win32
 		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Debug|x64.ActiveCfg = Debug|Win32
-		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Hydra|Win32.ActiveCfg = Hydra|Win32
-		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Hydra|Win32.Build.0 = Hydra|Win32
-		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Hydra|x64.ActiveCfg = Hydra|Win32
 		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Release|Win32.ActiveCfg = Release|Win32
 		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Release|Win32.Build.0 = Release|Win32
 		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.Release|x64.ActiveCfg = Release|Win32
