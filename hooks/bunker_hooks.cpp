@@ -20,15 +20,21 @@ namespace hooks {
 void unitAttackFromInsideBunkerHook(CUnit* unit) {
 
 	if (
-		unit->id == UnitId::TerranMarine ||
-		unit->id == UnitId::Hero_JimRaynorMarine ||
-		unit->id == UnitId::TerranGhost ||
-		unit->id == UnitId::Hero_SarahKerrigan ||
-		unit->id == UnitId::Hero_AlexeiStukov ||
-		unit->id == UnitId::Hero_SamirDuran ||
-		unit->id == UnitId::Hero_InfestedDuran ||
-		unit->id == UnitId::TerranFirebat ||
-		unit->id == UnitId::Hero_GuiMontag
+			unit->id == UnitId::TerranMarine
+		||	unit->id == UnitId::Hero_JimRaynorMarine
+		||	unit->id == UnitId::TerranGhost
+		||	unit->id == UnitId::Hero_SarahKerrigan
+		||	unit->id == UnitId::Hero_AlexeiStukov
+		||	unit->id == UnitId::Hero_SamirDuran
+		||	unit->id == UnitId::Hero_InfestedDuran
+		||	unit->id == UnitId::TerranFirebat
+		||	unit->id == UnitId::Hero_GuiMontag
+		||	unit->id == UnitId::TerranCyprian
+		||	unit->id == UnitId::TerranSavant
+		||	unit->id == UnitId::ZergHydralisk
+		||	unit->id == UnitId::ZergBasilisk
+//		||	unit->id == UnitId::InfestedTemplar
+//		||	unit->id == UnitId::ChampionTemplar
 	)
 	{
 

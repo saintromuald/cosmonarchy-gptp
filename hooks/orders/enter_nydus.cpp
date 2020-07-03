@@ -20,12 +20,13 @@ namespace hooks {
 		CUnit* const nydusExit = nydusCanal->building.nydusExit;
 
 		bReturnValue =
-			(nydusCanal->status & UnitStatus::Completed) &&
-			nydusExit != NULL &&
-			(nydusExit->status & UnitStatus::Completed) &&
-			(unit->playerId == nydusCanal->playerId || scbw::isAlliedTo(unit->playerId, nydusCanal->playerId)) &&
-			!(unit->status & UnitStatus::InAir); //&&
-			//unit->getRace() == RaceId::Zerg;
+			(nydusCanal->status & UnitStatus::Completed)
+			&& nydusExit != NULL
+			&& (nydusExit->status & UnitStatus::Completed)
+			&& (unit->playerId == nydusCanal->playerId
+				|| scbw::isAlliedTo(unit->playerId, nydusCanal->playerId))
+			&& !(unit->status & UnitStatus::InAir);
+//			&& unit->getRace() == RaceId::Zerg;
 
 		return bReturnValue;
 
