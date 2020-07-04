@@ -60,6 +60,21 @@ void function_004A01F0_copy(CUnit* unit) {
 }
 ;
 
+
+const u32 Func_497ED0 = 0x00497ED0;
+void makeSpriteVisible(CSprite* sprite) {
+
+	__asm {
+		PUSHAD
+		MOV EAX, sprite
+		CALL Func_497ED0
+		POPAD
+	}
+
+}
+;
+
+
 const u32 Func_AI_TrainingUnit = 0x004A2830;
 void AI_Train_4A2830(CUnit* unit_creator, CUnit* created_unit) {
 	__asm {
@@ -254,6 +269,8 @@ bool irratiateTarget(CUnit* unit) {
 	return true;
 }
 
+
+
 namespace hooks {
 
 	/// Hooks into the CUnit::damageWith() function.
@@ -276,6 +293,8 @@ namespace hooks {
 			//		flags->timerSpecial1 = 42;
 			//	}
 			//}
+		
+
 			u8 damageType;
 
 			if (scbw::isCheatEnabled(CheatFlags::PowerOverwhelming) &&			//If Power Overwhelming is enabled
@@ -441,6 +460,18 @@ namespace hooks {
 			}
 			
 			if (attacker != NULL && target != NULL) {
+				if (attacker->id == UnitId::dark_templar && attacker->playerId) {
+					bool silent_kill = false;
+					if (damage >= target->hitPoints && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::SilentStrikes)) {
+						silent_kill = true;
+					}
+					if (!silent_kill) {
+						attacker->visibilityStatus |= (1 << target->playerId);
+						makeSpriteVisible(attacker->sprite);
+						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer,ValueId::DarkTemplarTimer, 24 + 1, 0);
+					}
+				}
+				
 				if (weaponId == WeaponId::NuclearMissile && target->hitPoints > damage) {
 					if (attacker != NULL && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::GroundZero) && irratiateTarget(target)) {
 						hooks::IrradiateHit(attacker, target, attacker->playerId);

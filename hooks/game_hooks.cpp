@@ -24,6 +24,23 @@ void function_004A01F0g(CUnit* unit) {
 
 ;
 
+
+
+const u32 Func_98A10= 0x00498A10;
+void makeSpriteInvisible(CSprite* sprite) {
+
+	__asm {
+		PUSHAD
+		MOV EAX, sprite
+		CALL Func_98A10
+		POPAD
+	}
+
+}
+;
+
+
+
 const u32 Func_UpdateUnitStrength = 0x0049FA40;
 void updateUnitStrengthg(CUnit* unit) {
 
@@ -367,7 +384,18 @@ namespace hooks {
 						scbw::sendGPTP_aise_cmd(unit,NULL,2,1,0,0);
 					}
 				}*/
-
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DarkTemplarTimer, 0) == 1) {
+					bool uncover = false;
+					for (int i = 0; i < 8; i++) {
+						if (!scbw::isAlliedTo(i, unit->playerId)) {
+							if (unit->visibilityStatus & (1 << i)) {
+								unit->visibilityStatus &= ~(1 << i);
+								uncover = true;
+							}
+						}
+					}
+					
+				}
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ObservanceTimerDebuff, 0) == 1) {
 					auto range = 160;
 					auto observance = observanceMatch(unit);
