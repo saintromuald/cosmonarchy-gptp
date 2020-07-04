@@ -20,6 +20,10 @@ u16 getUnitMaxEnergyHook(CUnit* const unit) {
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::TitanReactor))
 				return ENERGY_INGAME_250;
 			break;
+		case UnitId::TerranAzazel:
+			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::AchernusReactor))
+				return ENERGY_INGAME_250;
+			break;
 		case UnitId::ghost:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::MoebiusReactor))
 				return ENERGY_INGAME_250;
