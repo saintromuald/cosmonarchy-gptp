@@ -655,9 +655,7 @@ namespace hooks {
 		if (!(target->status & UnitStatus::IsHallucination)) {
 			int current_x = target->sprite->position.x - 2;
 			int current_y = target->sprite->position.y - 2;
-			
-			
-			if ((target->hitPoints + shields) <= weapons_dat::DamageAmount[WeaponId::SpawnBroodlings] * 256) {
+			if (target->hitPoints+shields <= weapons_dat::DamageAmount[WeaponId::SpawnBroodlings] * 256) {
 				kill_target = true;
 			}
 			u32 broodlings_to_spawn = 2;
@@ -752,7 +750,19 @@ namespace hooks {
 		} //if(!(target->status & UnitStatus::IsHallucination))
 
 			//F4A9F
-		target->damageHp(weapons_dat::DamageAmount[WeaponId::SpawnBroodlings] * 256,NULL,-1,true);
+		auto dmg = weapons_dat::DamageAmount[WeaponId::SpawnBroodlings] * 256;
+		if (dmg >= shields) {
+			dmg -= target->shields;
+			target->shields = 0;
+		}
+		else {
+			target->shields -= dmg;
+			dmg = 0;
+		}
+
+		target->damageHp(dmg, NULL, -1, true);
+		
+		
 
 		if (kill_target) {
 			//give the target death as a kill to the queen

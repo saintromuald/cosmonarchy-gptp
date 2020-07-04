@@ -441,6 +441,11 @@ namespace hooks {
 			}
 			
 			if (attacker != NULL && target != NULL) {
+				if (weaponId == WeaponId::NuclearMissile && target->hitPoints > damage) {
+					if (attacker != NULL && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::GroundZero) && irratiateTarget(target)) {
+						hooks::IrradiateHit(attacker, target, attacker->playerId);
+					}
+				}
 				if (damage > target->hitPoints) {
 					//relic death effect
 					//scbw::printText("Check relic");
@@ -547,11 +552,7 @@ namespace hooks {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::Amitosis, 0, 0);
 				}
 			}
-			if (weaponId == WeaponId::NuclearMissile && target->hitPoints > damage) {
-				if (attacker != NULL && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::GroundZero) && irratiateTarget(target)) {
-					hooks::IrradiateHit(attacker, target, attacker->playerId);
-				}
-			}
+
 			target->damageHp(damage, attacker, attackingPlayerId,
 				weaponId != WeaponId::Irradiate);		//Prevent Science Vessels from being continuously revealed to the irradiated target
 
