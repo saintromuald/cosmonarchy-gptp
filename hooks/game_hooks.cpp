@@ -384,16 +384,20 @@ namespace hooks {
 						scbw::sendGPTP_aise_cmd(unit,NULL,2,1,0,0);
 					}
 				}*/
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DarkTemplarTimer, 0) == 1) {
-					bool uncover = false;
-					for (int i = 0; i < 8; i++) {
-						if (!scbw::isAlliedTo(i, unit->playerId)) {
-							if (unit->visibilityStatus & (1 << i)) {
-								unit->visibilityStatus &= ~(1 << i);
-								uncover = true;
+				if (unit->id==UnitId::dark_templar) {
+					auto timer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DarkTemplarTimer, 0);
+					if (timer == 1) {
+						for (int i = 0; i < 8; i++) {
+							if (!scbw::isAlliedTo(i, unit->playerId)) {
+								if (unit->visibilityStatus & (1 << i)) {
+									unit->visibilityStatus &= ~(1 << i);
+								}
 							}
 						}
 					}
+					
+					
+					
 					
 				}
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ObservanceTimerDebuff, 0) == 1) {
