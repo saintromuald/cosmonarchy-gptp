@@ -57,7 +57,11 @@ bool checkAttackableTarget(CUnit* unit, CUnit* target, u32 seekRange, u32 minRan
 	  }
   }
   //Check if the target is an enemy
-  if (!unit->isTargetEnemy(target))
+  bool is_enemy = unit->isTargetEnemy(target);
+  if (unit->isBlind) {
+	  is_enemy = true;
+  }
+  if (!is_enemy)
     return false;
 
   //Check if the target is within the minimum weapon range
