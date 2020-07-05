@@ -52,7 +52,13 @@ namespace hooks {
 	    }
    }
 
-  void friendlySplash(CBullet* bullet, u32 weaponId, u8 splash){
+  void friendlySplash(CBullet* bullet, u32 weaponId, u8 splash_type){
+	  int splash = splash_type;
+	 if (bullet->sourceUnit != NULL) {
+		 if (bullet->sourceUnit->isBlind) {
+			 splash = SplashType::Radial;
+		 }
+	}
     s16 x,y,r;
     x = bullet->sprite->position.x;
     y = bullet->sprite->position.y;
