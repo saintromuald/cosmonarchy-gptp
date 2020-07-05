@@ -159,9 +159,15 @@ const u32 generictoggles = 3;
 namespace HydraFlags1 {
 	enum {
 		BasiliskBurrowed=1<<0,
-		ScoutBlowing=1<<1,
+		VorvalingProc=1<<1,
+		VorvalingEgg=1<<2,
+		ShamanDeployment=1<<3,
+		HierophantSignifyUpdateSpeed=1<<4,
+		UpdateConsoleNewParasite=1<<5,
+		WarpFlash=1<<6,
+		//Infestation=1<<7,
 	};
-}
+}					
 
 namespace MovementFlags
 {
@@ -401,7 +407,7 @@ struct CUnitLayout {
 /*0x122*/ u8        cycleCounter;       // counts/cycles up from 0 to 7 (inclusive). See also 0x85.
 /*0x123*/ u8        isBlind;			// is bool in BWAPI
 /*0x124*/ u8        maelstromTimer;
-/*0x125*/ u8        unusedTimer;        // ?? Might be afterburner timer or ultralisk roar timer
+/*0x125*/ u8        unusedTimer;        // Used on resources for regeneration delay, and for overcharge
 					//custom slow timer
 /*0x126*/ u8        acidSporeCount;
 /*0x127*/ u8        acidSporeTime[9];

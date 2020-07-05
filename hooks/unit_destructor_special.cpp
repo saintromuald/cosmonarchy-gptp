@@ -263,28 +263,10 @@ void createBulletProc(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlay
 
 //Hooked down there instead of a specific inject.cpp
 void unitDestructorSpecialHook(CUnit* unit) {
-	/*if (unit->id == UnitId::Powerup_KhalisCrystal) {
-		if (unit->connectedUnit != NULL) {
-			unit->connectedUnit->userActionFlags |= 0x4;
-			GPTP::logger << "unitdestr - remove basilisk, unit id: " << unit->connectedUnit->id << " " << unit->connectedUnit->position.x << "  " << unit->connectedUnit->position.y << std::endl;
-			unit->connectedUnit->remove();
-		}
-	}*/
-	/*
-	if (unit->id==UnitId::scout && (unit->_padding_0x132 & HydraFlags1::ScoutBlowing)) 
-	{*/
 	if (unit->id == UnitId::scout && scbw::get_aise_value(unit,NULL,AiseId::IsBlowingUp,0,0))
 	{
 		createBulletProc(121, unit, unit->position.x, unit->position.y, unit->playerId,
 			unit->currentDirection1);
-		
-		/*
-		CThingy* explosion;
-		explosion = createThingyFunc(354, unit->position.x, unit->position.y, 0);
-		if (explosion != NULL) {
-			explosion->sprite->elevationLevel = 1; //0x13
-			setThingyVisibilityFlagsFunc(explosion);
-		}*/
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ErasePersistingUnit, 0, 0, 0);
 	}
 	if(unit->irradiateTimer > 0){
