@@ -465,7 +465,7 @@ namespace hooks {
 					if (damage >= target->hitPoints && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::SilentStrikes)) {
 						silent_kill = true;
 					}
-					if (!silent_kill) {
+					if (!silent_kill && !(attacker->visibilityStatus & 1<<target->playerId)) {
 						attacker->visibilityStatus |= (1 << target->playerId);
 						makeSpriteVisible(attacker->sprite);
 						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer,ValueId::DarkTemplarTimer, 24+1, 0);
