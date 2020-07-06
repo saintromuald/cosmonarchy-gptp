@@ -72,7 +72,7 @@ namespace UpgradeId {
 		PlasteelServos = 63,
 		OdysseusReactor = 64,
 		Capacitors = 65,
-		Ext66 = 66,
+		AblativeWurm = 66,
 		EscalateAzazel = 67,
 		InnervatingMatrices = 68,
 		AchernusReactor = 69,
@@ -118,6 +118,7 @@ namespace UpgradeId {
 		SomaticImplants = 114,
 		Hotdrop = 115,
 		Malediction = 116,
+		LitheOrganelle = 117,
 		//relics
 		Tempest = 200,
 		Penance = 201,
