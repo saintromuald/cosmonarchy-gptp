@@ -105,25 +105,25 @@ namespace hooks {
 			bool bStopHere = false;
 			//Spend energy for cloaked units
 			if (
-				unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection) &&	//If the unit is cloaked
-				!(unit->status & UnitStatus::CloakingForFree)						//...and must consume energy to stay cloaked (i.e. not under an Arbiter)
+				unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)	//If the unit is cloaked
+			&&	!(unit->status & UnitStatus::CloakingForFree)							//...and must consume energy to stay cloaked (i.e. not under an Arbiter)
 				)
 			{
 
 				u16 cloakingEnergyCost;
 
 				//Equivalent to getCloakingEnergyConsumption @ 0x00491A90
-				if (unit->id == UnitId::TerranGhost ||
-					unit->id == UnitId::Hero_SarahKerrigan ||
-					unit->id == UnitId::Hero_InfestedKerrigan ||
-					unit->id == UnitId::Hero_SamirDuran ||
-					unit->id == UnitId::Hero_InfestedDuran ||
-					unit->id == UnitId::Hero_AlexeiStukov
+				if (unit->id == UnitId::TerranGhost
+				|| unit->id == UnitId::Hero_SarahKerrigan
+				|| unit->id == UnitId::Hero_InfestedKerrigan
+				|| unit->id == UnitId::Hero_SamirDuran
+				|| unit->id == UnitId::Hero_InfestedDuran
+				|| unit->id == UnitId::Hero_AlexeiStukov
 					)
 					cloakingEnergyCost = 10;
 				else
-					if (unit->id == UnitId::TerranWraith ||
-						unit->id == UnitId::Hero_TomKazansky
+					if (unit->id == UnitId::TerranWraith
+					|| unit->id == UnitId::Hero_TomKazansky
 						)
 						cloakingEnergyCost = 13;
 					else
