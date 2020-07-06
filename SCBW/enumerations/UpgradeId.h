@@ -106,7 +106,7 @@ namespace UpgradeId {
 		GroundZero = 102,
 		AdrenalinePacks = 103,
 		GraviticAttenuator = 104,
-		EscalateAspect = 105,
+		PeerReviewedDestruction = 105,
 		PassengerInsurance = 106,
 		EscalateShaman = 107,
 		AstralAegis = 108,

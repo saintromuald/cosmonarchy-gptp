@@ -746,7 +746,13 @@ namespace hooks {
 							}
 						}
 
-
+						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Nuke_Available) {
+							if ((*activePortraitUnit)->id == UnitId::science_vessel) {
+								if (scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::PeerReviewedDestruction) == 0) {
+									current_button_state = BUTTON_STATE::Disabled;
+								}
+							}
+						}
 						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Spell_Researched)
 						{
 							if (current_button->reqVar == TechId::Healing && current_button->iconID != 365)
