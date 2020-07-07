@@ -429,76 +429,77 @@ enum Enum {
 /*0xF8*/	Buttons_ReplayPaused = 248,
 /*0xF9*/	Buttons_ReplayPlaying = 249,
   
-	//HYDRA
+//HYDRA
 
-	//Terran-Unit
-TerranCyprian		= 92,
-TerranShaman		= 15,
-TerranPaladin		= 186,
-TerranWyvern		= 91,
-TerranSavant		= 187,
-TerranAzazel		= 98,
+//Terran-Unit
+	TerranCyprian				= 92,
+	TerranShaman				= 15,
+//	TerranMadrigal				=
+	TerranPaladin				= 186,
+	TerranWyvern				= 91,
+	TerranSavant				= 187,
+	TerranAzazel				= 98,
 
-	//Terran-Building
-TerranMedbay		= 119,
-TerranSentryTurret	= 185,
-TerranFutureStation	= 192,
-TerranCaptaincy		= 121,
-TerranQuarry		= 220,
+//Terran-Building
+	TerranMedbay				= 119,
+	TerranSentryTurret			= 185,
+	TerranFutureStation			= 192,
+	TerranCaptaincy				= 121,
+	TerranQuarry				= 220,
 
-	//Protoss-Unit
-ProtossLegionnaire			= 74,
-ProtossHierophant			= 76,
-ProtossClarion				= 81,
-ProtossWarpRelay			= 90,
-ProtossBulwark				= 93,
-ProtossExemplar				= 94,
-ProtossStarcaller			= 80,
+//Protoss-Unit
+	ProtossLegionnaire			= 74,
+	ProtossHierophant			= 76,
+	ProtossClarion				= 81,
+	ProtossWarpRelay			= 90,
+	ProtossBulwark				= 93,
+	ProtossExemplar				= 94,
+	ProtossStarSovereign		= 80,
 
-	//Protoss-Building
-ProtossPrincipality			= 158,
-ProtossWarpAnchor			= 161,
-ProtossReliquary			= 175,
-ProtossPennat				= 221,
-ProtossRoboticsAuthority	= 182,
-ProtossArgosy				= 183,
-ProtossStarfield			= 184,
+//Protoss-Building
+	ProtossPrincipality			= 158,
+	ProtossVicarage				= 161,
+	ProtossReliquary			= 175,
+	ProtossPennant				= 221,
+	ProtossRoboticsAuthority	= 182,
+	ProtossArgosy				= 183,
+	ProtossStarfield			= 184,
 
-	//Zerg-Unit
-ZergVorvaling				= 128,
-ZergBasilisk				= 129,
-ZergIroleth					= 222,
-ZergGorgoleth				= 56,
-ZergKasanScreamer			= 96,
+//Zerg-Unit
+	ZergVorvaling				= 128,
+	ZergBasilisk				= 129,
+	ZergIroleth					= 222,
+	ZergGorgoleth				= 56,
+	ZergKasanScreamer			= 96,
 
-	//Zerg-Elite
-AberrantNathrokor			= 54,
-AberrantKonvimoth			= 53,
-AberrantAkistrigon			= 55,
-AberrantBastethir			= 49,
-AberrantOsteroth			= 48,
-AberrantMaktisthuk			= 52,
+//Zerg-Elite
+	AberrantNathrokor			= 54,
+	AberrantKonvimoth			= 53,
+	AberrantAkistrigon			= 55,
+	AberrantBastethir			= 49,
+	AberrantOsteroth			= 48,
+	AberrantMaktisthuk			= 52,
 
-	//Zerg-Egg
-EggVorvaling				= 216,
-EggBasilisk					= 198,
-EggIroleth					= 193,
-EggGorgoleth				= 179,
-EggScreamer					= 199,
-EggDevourer					= 173,
+//Zerg-Egg
+	EggVorvaling				= 216,
+	EggBasilisk					= 198,
+	EggIroleth					= 193,
+	EggGorgoleth				= 179,
+	EggScreamer					= 199,
+	EggDevourer					= 173,
 
-	//Zerg-Misc
-BasiliskCreeper				= 180,
+//Zerg-Misc
+	BasiliskCreeper				= 180,
 
-	//Zerg-Building
-ZergChasmalColony			= 201,
-ZergMutationPit				= 145,
-ZergBasiliskDen				= 153,
-ZergLurkerDen				= 191,
-ZergGorgolethApiary			= 148,
-ZergDevourerHaunt			= 197,
-ZergNydusArtery				= 181,
-ZergChrysalis				= 150,
+//Zerg-Building
+	ZergChasmalColony			= 201,
+	ZergMutationPit				= 145,
+	ZergBasiliskDen				= 153,
+	ZergLurkerDen				= 191,
+	ZergGorgolethApiary			= 148,
+	ZergDevourerHaunt			= 197,
+	ZergNydusArtery				= 181,
+	ZergChrysalis				= 150,
 
 };
 }

@@ -1029,17 +1029,17 @@ namespace hooks {
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergMutationPit, ignoreIncomplete);
 			break;
 
-		case UnitId::gateway:
-			unitCount += getNumberOfUnitType(unit, 158, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, 161, ignoreIncomplete);
+		case UnitId::ProtossGateway:
+			unitCount += getNumberOfUnitType(unit, UnitId::ProtossPrincipality, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ProtossVicarage, ignoreIncomplete);
 
 			break;
-		case UnitId::robotics_facility:
-			unitCount += getNumberOfUnitType(unit, 182, ignoreIncomplete);
+		case UnitId::ProtossRoboticsFacility:
+			unitCount += getNumberOfUnitType(unit, UnitId::ProtossRoboticsAuthority, ignoreIncomplete);
 			break;
-		case UnitId::stargate:
-			unitCount += getNumberOfUnitType(unit, 183, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, 184, ignoreIncomplete);
+		case UnitId::ProtossStargate:
+			unitCount += getNumberOfUnitType(unit, UnitId::ProtossArgosy, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ProtossStarfield, ignoreIncomplete);
 
 			break;
 
