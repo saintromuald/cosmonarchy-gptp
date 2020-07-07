@@ -470,7 +470,7 @@ enum Enum {
 	ZergBasilisk				= 129,
 	ZergIroleth					= 222,
 	ZergGorgoleth				= 56,
-	ZergKasanScreamer			= 96,
+	ZergKeskathalor				= 96,
 
 //Zerg-Elite
 	AberrantNathrokor			= 54,

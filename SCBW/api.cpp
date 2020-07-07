@@ -324,7 +324,7 @@ bool isUnderDarkSwarm(CUnit* unit) {
 
 
 bool isProtossMorph(u16 unitId) {
-	if (unitId == UnitId::ProtossPrincipality || unitId == UnitId::ProtossWarpAnchor ||
+	if (unitId == UnitId::ProtossPrincipality || unitId == UnitId::ProtossVicarage ||
 		unitId == UnitId::ProtossRoboticsAuthority ||
 		unitId == UnitId::ProtossArgosy || unitId == UnitId::ProtossStarfield) {//183
 		return true;
