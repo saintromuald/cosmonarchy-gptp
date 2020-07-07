@@ -1259,7 +1259,7 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranScienceVessel && //Science Vessel Nuke : disabled
+/*								if ((*activePortraitUnit)->id == UnitId::TerranScienceVessel && //Science Vessel Nuke : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::PeerReviewedDestruction) == 0 &&
 									current_button->iconID == 311)
 								{
@@ -1277,7 +1277,7 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser && //Battlecruiser Umojan passive : disabled
+*/								if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser && //Battlecruiser Umojan passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::UmojanBatteries) == 0 &&
 									current_button->iconID == 322)
 								{
