@@ -175,7 +175,7 @@ enum Enum {
 	Hive = 168,
 	Lair = 169,
 	Sunken_Colony = 170,
-	Greater_Spire = 171,
+	ZergGuardianRoost = 171,
 	Defiler_Mound = 172,
 	Queens_Nest = 173,
 	Nydus_Canal = 174,

@@ -141,7 +141,7 @@ enum Enum {
 /*0086*/	Nydus_Canal,
 /*0087*/	Hydralisk_Den,
 /*0088*/	Defiler_Mound,
-/*0089*/	Greater_Spire,
+/*0089*/	ZergGuardianRoost,
 /*008A*/	Queens_Nest,
 /*008B*/	Evolution_Chamber,
 /*008C*/	Ultralisk_Cavern,

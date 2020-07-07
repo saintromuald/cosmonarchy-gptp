@@ -1298,7 +1298,7 @@ namespace DeathSoundId {
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergNydusCanal
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergHydraliskDen
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergDefilerMound
-		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergGreaterSpire
+		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergGuardianRoost
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergQueensNest
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergEvolutionChamber
 		{ SoundId::Zerg_Bldg_ZBldgDth_WAV,  SoundId::Zerg_Bldg_ZBldgDth_WAV }, 						//ZergUltraliskCavern

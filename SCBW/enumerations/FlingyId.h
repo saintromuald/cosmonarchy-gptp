@@ -30,7 +30,7 @@ enum Enum {
 	Hive,
 	Lair,
 	Sunken_Colony,
-	Greater_Spire,
+	ZergGuardianRoost,
 	Defiler_Mound,
 	Queens_Nest,
 	Nydus_Canal,
