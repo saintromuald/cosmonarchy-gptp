@@ -117,15 +117,16 @@ namespace hooks {
 		buildingId = building->buildQueue[building->buildQueueSlot];
 
 		if (
-			buildingId != UnitId::ZergHive &&
-			buildingId != UnitId::ZergLair &&
-			buildingId != UnitId::ZergGreaterSpire &&
-			buildingId != UnitId::ZergDevourerHaunt &&
-			buildingId != UnitId::ZergSporeColony &&
-			buildingId != UnitId::ZergSunkenColony &&
-			buildingId != UnitId::ZergLurkerDen &&
-			buildingId != UnitId::ZergBasiliskDen &&
-			!isProtossMorph(buildingId)
+			   buildingId != UnitId::ZergHive
+			&& buildingId != UnitId::ZergLair
+			&& buildingId != UnitId::ZergGuardianRoost
+			&& buildingId != UnitId::ZergDevourerHaunt
+			&& buildingId != UnitId::ZergSporeColony
+			&& buildingId != UnitId::ZergSunkenColony
+			&& buildingId != UnitId::ZergLurkerDen
+			&& buildingId != UnitId::ZergBasiliskDen
+			&& buildingId != UnitId::ZergMutationPit
+			&& !isProtossMorph(buildingId)
 			)
 			buildingId = building->id;
 
@@ -427,15 +428,16 @@ namespace hooks {
 			jump_to_5D720 = false;
 
 			if (
-				buildingId != UnitId::ZergHive &&
-				buildingId != UnitId::ZergLair &&
-				buildingId != UnitId::ZergGreaterSpire &&
-				buildingId != UnitId::ZergDevourerHaunt &&
-				buildingId != UnitId::ZergSporeColony &&
-				buildingId != UnitId::ZergSunkenColony &&
-				buildingId != UnitId::ZergBasiliskDen &&
-				buildingId != UnitId::ZergLurkerDen &&
-				!isProtossMorph(buildingId)
+				   buildingId != UnitId::ZergHive
+				&& buildingId != UnitId::ZergLair
+				&& buildingId != UnitId::ZergGuardianRoost
+				&& buildingId != UnitId::ZergDevourerHaunt
+				&& buildingId != UnitId::ZergSporeColony
+				&& buildingId != UnitId::ZergSunkenColony
+				&& buildingId != UnitId::ZergBasiliskDen
+				&& buildingId != UnitId::ZergLurkerDen
+				&& buildingId != UnitId::ZergMutationPit
+				&& !isProtossMorph(buildingId)
 				)
 			{
 
@@ -701,15 +703,16 @@ namespace {
 		bool result;
 
 		if (
-			buildingId == UnitId::ZergHive ||
-			buildingId == UnitId::ZergLair ||
-			buildingId == UnitId::ZergGreaterSpire ||
-			buildingId == UnitId::ZergDevourerHaunt ||
-			buildingId == UnitId::ZergLurkerDen ||
-			buildingId == UnitId::ZergBasiliskDen ||
-			buildingId == UnitId::ZergSporeColony ||
-			buildingId == UnitId::ZergSunkenColony ||
-			hooks::isProtossMorph(buildingId)
+			   buildingId == UnitId::ZergHive
+			|| buildingId == UnitId::ZergLair
+			|| buildingId == UnitId::ZergGuardianRoost
+			|| buildingId == UnitId::ZergDevourerHaunt
+			|| buildingId == UnitId::ZergLurkerDen
+			|| buildingId == UnitId::ZergBasiliskDen
+			|| buildingId == UnitId::ZergSporeColony
+			|| buildingId == UnitId::ZergSunkenColony
+			|| buildingId != UnitId::ZergMutationPit
+			|| hooks::isProtossMorph(buildingId)
 
 			)
 			result = true;
@@ -975,14 +978,15 @@ namespace hooks {
 	bool isMorphedBuildingHook(u16 unitId) {
 		//Default StarCraft behavior
 
-		if (unitId == UnitId::lair
-			|| unitId == UnitId::hive
-			|| unitId == UnitId::greater_spire
+		if (unitId == UnitId::ZergLair
+			|| unitId == UnitId::ZergHive
+			|| unitId == UnitId::ZergGuardianRoost
 			|| unitId == UnitId::ZergDevourerHaunt
 			|| unitId == UnitId::ZergLurkerDen
 			|| unitId == UnitId::ZergBasiliskDen
-			|| unitId == UnitId::sunken_colony
-			|| unitId == UnitId::spore_colony
+			|| unitId == UnitId::ZergSunkenColony
+			|| unitId == UnitId::ZergSporeColony
+			|| unitId == UnitId::ZergMutationPit
 			|| isProtossMorph(unitId))
 			return true;
 
@@ -999,24 +1003,30 @@ namespace hooks {
 		int unitCount = getNumberOfUnitType(unit, unitId, ignoreIncomplete);
 
 		switch (unitId) {
-		case UnitId::hatchery:
-			unitCount += getNumberOfUnitType(unit, UnitId::lair, ignoreIncomplete);
+		case UnitId::ZergHatchery:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergLair, ignoreIncomplete);
 		case UnitId::lair:
-			unitCount += getNumberOfUnitType(unit, UnitId::hive, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergHive, ignoreIncomplete);
 			break;
 
-		case UnitId::creep_colony:
-			unitCount += getNumberOfUnitType(unit, UnitId::sunken_colony, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::spore_colony, ignoreIncomplete);
+		case UnitId::ZergCreepColony:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergSunkenColony, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergSporeColony, ignoreIncomplete);
 			break;
 
-		case UnitId::spire:
-			unitCount += getNumberOfUnitType(unit, UnitId::greater_spire, ignoreIncomplete);
+		case UnitId::ZergSpire:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergGuardianRoost, ignoreIncomplete);
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergDevourerHaunt, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergGorgolethApiary, ignoreIncomplete);
 			break;
-		case UnitId::hydralisk_den:
+
+		case UnitId::ZergHydraliskDen:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergBasiliskDen, ignoreIncomplete);
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergLurkerDen, ignoreIncomplete);
+			break;
+
+		case UnitId::ZergEvolutionChamber:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergMutationPit, ignoreIncomplete);
 			break;
 
 		case UnitId::gateway:
