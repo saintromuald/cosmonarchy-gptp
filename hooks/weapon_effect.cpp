@@ -231,8 +231,37 @@ bool isUnsafeCyprianBullet(CBullet* bullet, u32 weaponId){
 		}
 	}
 	if(bounces){
+		
+		//2 remaining Bounces - full damage
+		//1 remaining Bounces - 1/6
+		//0 remaining bounces - 1/3
 		if(mutalisk) {
-			for (int i = 2 - bullet->remainingBounces; i != 0; i--) divisor *= 3;
+			//2 bounces - 9
+			//1 bounces - 3
+			//0 bounces - 1
+			/*
+			switch (bullet->remainingBounces) {
+			case 1:
+				divisor = 2;
+				break;
+			case 0:
+				divisor = 4;
+				break;
+			default:
+				break;
+			}*/
+			
+			int bounceCount = 2;
+			if (bullet->sourceUnit != NULL && scbw::getUpgradeLevel(bullet->sourceUnit->playerId, UpgradeId::LitheOrganelle)) {
+				bounceCount++;
+			}
+			divisor = bounceCount - bullet->remainingBounces;
+			/*
+			for (int i = 2 - bullet->remainingBounces; i != 0; i--) {
+				divisor *= 3;
+			}*/
+			//1-3-9  2-1-0 - old
+			//1-2-3  2-1-0 - new
 		}
 		else {
 			divisor *= 3;

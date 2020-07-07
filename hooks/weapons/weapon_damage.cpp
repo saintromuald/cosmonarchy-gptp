@@ -304,7 +304,36 @@ namespace hooks {
 					if (target->status & UnitStatus::IsHallucination)
 						damage *= 2;*/
 
-			damage = damage / dmgDivisor + (target->acidSporeCount * 256);
+			if (weaponId == WeaponId::GlaveWurm || weaponId == WeaponId::GlaveWurm_Kukulza_Mutalisk) {
+				double mul = 1.0;
+				switch (dmgDivisor) {
+				case 0:
+					mul = 1.0;
+					break;
+				case 1:
+					mul = 2.0/3.0;//glave wurm 1st bounce
+					break;
+				case 2:
+					mul = 1.0/3.0;
+					break;
+				default:
+					mul = 1.0/9.0;//glave wurm 2nd bounce
+					break;
+				};
+				if (mul != 1 && attacker!=NULL && scbw::getUpgradeLevel(attacker->playerId,UpgradeId::AblativeWurm)) {
+					mul *= 1.5;
+				}
+				int dmg = ((double)damage*mul);
+				/*
+				char buf[64];
+				sprintf(buf, "Mutalisk: damage %d divisor %d mul %lf result %d", damage, dmgDivisor, mul, dmg);
+				scbw::printText(buf);*/
+				damage = dmg + (target->acidSporeCount * 256);
+			}
+			else {
+				damage = damage / dmgDivisor + (target->acidSporeCount * 256);
+			}
+			
 
 			if (attacker != NULL) {
 				if (attacker->status & UnitStatus::IsHallucination) {
