@@ -119,6 +119,9 @@ namespace UpgradeId {
 		Hotdrop = 115,
 		Malediction = 116,
 		LitheOrganelle = 117,
+		CriticalMass = 118,
+		AcridDisplacement = 119,
+		SeismicSpines = 120,
 		//relics
 		Tempest = 200,
 		Penance = 201,
