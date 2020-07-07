@@ -311,10 +311,10 @@ namespace hooks {
 					mul = 1.0;
 					break;
 				case 1:
-					mul = 2.0/3.0;//glave wurm 1st bounce
+					mul = 1.0/3.0;//glave wurm 1st bounce
 					break;
 				case 2:
-					mul = 1.0/3.0;
+					mul = 1.0/6.0;
 					break;
 				default:
 					mul = 1.0/9.0;//glave wurm 2nd bounce
