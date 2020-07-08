@@ -532,6 +532,10 @@ void sendGPTP_aise_cmd(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2, 
 	}
 }
 
+u32 getFlingyData(u32 entry, u32 index) {
+	return get_aise_value(NULL, NULL, AiseId::GetFlingyData, entry, index);
+}
+
 const u32 Func_CanTargetSpell = 0x00492020;
 u32 get_aise_value(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2){
 	u32 result = 0;

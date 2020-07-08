@@ -183,7 +183,8 @@ namespace hooks {
 	u32 getModifiedUnitAccelerationHook(CUnit* unit) {
 
 
-		u32 acceleration = flingy_dat::Acceleration[units_dat::Graphic[unit->id]];
+		//u32 acceleration = flingy_dat::Acceleration[units_dat::Graphic[unit->id]];
+		u32 acceleration = scbw::getFlingyData(FlingyDatEntries::Acceleration, units_dat::Graphic[unit->id]);
 		/*
 		int modifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
 		+ (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);*/
@@ -210,7 +211,8 @@ namespace hooks {
 	u32 getModifiedUnitTurnSpeedHook(CUnit* unit) {
 
 
-		u32 turnSpeed = flingy_dat::TurnSpeed[units_dat::Graphic[unit->id]];
+		//u32 turnSpeed = flingy_dat::TurnSpeed[units_dat::Graphic[unit->id]];
+		u32 turnSpeed = scbw::getFlingyData(FlingyDatEntries::TurnRadius, units_dat::Graphic[unit->id]);
 		/*
 		int modifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
 		+ (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);*/

@@ -146,7 +146,7 @@ inline bool isUnitEnemy(u8 playerId, CUnit* unit) {
 /// the @p playerId, using @p raceId to determine the appropriate race to use.
 /// This is affected by the "Food For Thought" cheat flag.
 s32 getSupplyRemaining(u8 playerId, u8 raceId);
-
+u32 getFlingyData(u32 entry, u32 index);
 u32 get_aise_value(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2);
 void sendGPTP_aise_cmd(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2, u32 v3);
 /// Checks whether the @p playerId has the @p techId researched.
