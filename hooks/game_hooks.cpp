@@ -223,9 +223,6 @@ public:
 		: victim(victim) {}
 	void proc(CUnit* unit)
 	{
-		if (victim->acidSporeCount == 0) {
-			return;
-		}
 		if (unit == victim) {
 			return;
 		}
@@ -236,9 +233,8 @@ public:
 			return;
 		}
 //		scbw::printText("Spend");
-		int used = std::min((u8)2, victim->acidSporeCount);
-		victim->acidSporeCount -= used;
-		for (int i = 0; i < used; i++) {
+		auto count = std::min(4, (int)unit->acidSporeCount);
+		for (int i = 0; i < count; i++) {
 			if (unit->acidSporeCount < 9) {
 				scbw::ApplySpores(unit);
 			}
