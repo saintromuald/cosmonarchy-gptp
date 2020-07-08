@@ -450,6 +450,9 @@ namespace hooks {
 					}
 					unit->inflictDamage(30 * 256, NULL,-1, false, true);		
 				}
+				if (unit->id == UnitId::lurker && scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::LurkerETA, 0) == 1) {
+					//placeholder for seismic spines
+				}
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ObservanceTimerDebuff, 0) == 1) {
 					auto range = 160;
 					auto observance = observanceMatch(unit);

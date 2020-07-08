@@ -144,6 +144,9 @@ namespace ValueId {
 		UpgradeBoost=22,
 		DarkTemplarTimer=23,
 		CorrosiveSporeDelay=24,
+		LurkerETA=25,
+		SpineX=26,
+		SpineY=27,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

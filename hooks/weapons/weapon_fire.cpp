@@ -77,6 +77,11 @@ namespace hooks {
 				if (unit->id==UnitId::TerranWyvern && unit->sprite->mainGraphic->animation==IscriptAnimation::CastSpell && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabOn, 0) == 1) {
 					good = false;
 				}
+				if (weaponId == WeaponId::SubterraneanSpines) {
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::LurkerETA, 12+1, 0);
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SpineX,x,0);
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SpineY,y,0);
+				}
 				if(good)
 					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 
