@@ -711,7 +711,7 @@ namespace {
 			|| buildingId == UnitId::ZergBasiliskDen
 			|| buildingId == UnitId::ZergSporeColony
 			|| buildingId == UnitId::ZergSunkenColony
-			|| buildingId != UnitId::ZergMutationPit
+			|| buildingId == UnitId::ZergMutationPit
 			|| hooks::isProtossMorph(buildingId)
 
 			)
