@@ -105,8 +105,15 @@ namespace AiseId {
 		GetMatrixCasterPlayer,
 		GetShepherds,
 
+		GetFlingyData,
+
+//		GetSpriteData,
+//		GetImageData,
 	};
 }
+
+
+
 namespace OverlayOffset {
 	enum {
 		Orange = 0,
@@ -147,8 +154,16 @@ namespace ValueId {
 		LurkerETA=25,
 		SpineX=26,
 		SpineY=27,
+
+		FTopSpeed=28,
+		FAcceleration=29,
+		FTurnRadius=30,
+		FMovementType=31,
+		FSpriteId=32,
+		FHaltDistance=33,
 	};	
 }
+
 #include "SCBW\enumerations\TechId.h"
 //const u32 first_generic_toggle_ability = ValueId::ReverseThrust;
 //const u32 last_generic_toggle_ability = ValueId::DisruptionWeb;
