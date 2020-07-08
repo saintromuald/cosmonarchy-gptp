@@ -70,11 +70,15 @@ u16 getUnitMaxEnergyHook(CUnit* const unit) {
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::KhaydarinGenerator))
 				return ENERGY_INGAME_250;
 			break;
-			
+		case UnitId::ZergChasmalColony:
+			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SynapticGrowth))
+				return ENERGY_INGAME_250;
+			break;
 		case UnitId::dark_archon:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::ArgusTalisman))
 				return ENERGY_INGAME_250;
 			break;
+			
 	}
 
 	return ENERGY_INGAME_200;
