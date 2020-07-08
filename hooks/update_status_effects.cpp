@@ -168,23 +168,7 @@ void setAllImageGroupFlagsPal11(CSprite* sprite) {
 
 ;
 
-const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
-bool setThingyVisibilityFlagsFunc(CThingy* thingy) {
 
-	static Bool32 bPreResult;
-
-	__asm {
-		PUSHAD
-		MOV ESI, thingy
-		CALL Func_SetThingyVisibilityFlags
-		MOV bPreResult, EAX
-		POPAD
-	}
-
-	return (bPreResult != 0);
-
-}
-;
 
 //00469B60 = DoUnitsCollide(), ecx Unit *first, eax Unit *second
 
@@ -355,7 +339,7 @@ void updateStatusEffects(CUnit* unit) {
 				emp_sprite = createThingyFunc(371, unit->position.x, unit->position.y, 0);
 				if (emp_sprite != NULL) {
 					emp_sprite->sprite->elevationLevel = 19; //0x13
-					setThingyVisibilityFlagsFunc(emp_sprite);
+					scbw::setThingyVisibilityFlags(emp_sprite);
 				}				
 
 				static u16* const maxBoxRightValue =			(u16*) 0x00628450;

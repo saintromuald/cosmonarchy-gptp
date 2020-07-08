@@ -212,6 +212,40 @@ public:
 	}
 };
 
+class corrosiveSporeProc : public scbw::UnitFinderCallbackProcInterface
+{
+
+private:
+	CUnit* victim;
+	
+public:
+	corrosiveSporeProc(CUnit* victim)
+		: victim(victim) {}
+	void proc(CUnit* unit)
+	{
+		if (victim->acidSporeCount == 0) {
+			return;
+		}
+		if (unit == victim) {
+			return;
+		}
+		if (unit->status & UnitStatus::Burrowed) {
+			return;
+		}
+		if (unit->status & UnitStatus::Invincible) {
+			return;
+		}
+//		scbw::printText("Spend");
+		int used = std::min((u8)2, victim->acidSporeCount);
+		victim->acidSporeCount -= used;
+		for (int i = 0; i < used; i++) {
+			if (unit->acidSporeCount < 9) {
+				scbw::ApplySpores(unit);
+			}
+//			scbw::printText("SetSpores");
+		}
+	}
+};
 
 class shamanProc : public scbw::UnitFinderCallbackProcInterface
 {
@@ -394,11 +428,27 @@ namespace hooks {
 								}
 							}
 						}
+					}	
+				}
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::CorrosiveSporeDelay, 0)==1) {
+					//scbw::printText("Try");
+					int count = unit->acidSporeCount;
+					unit->acidSporeCount -= 2;
+					int range = 160;
+					auto spores = corrosiveSporeProc(unit);
+					scbw::UnitFinder unitFinder(unit->getX() - 96,
+						unit->getY() - 96,
+						unit->getX() + 96,
+						unit->getY() + 96);
+					unitFinder.forEach(spores);
+					unit->acidSporeCount = count;
+					unit->removeAcidSpores();
+					CThingy* thingy = scbw::createThingy(SpriteId::Corrosive_Acid_Hit, unit->getX(), unit->getY(), 11);
+					if (thingy != NULL) {
+						thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
+						scbw::setThingyVisibilityFlags(thingy);
 					}
-					
-					
-					
-					
+					unit->inflictDamage(30 * 256, NULL,-1, false, true);		
 				}
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ObservanceTimerDebuff, 0) == 1) {
 					auto range = 160;

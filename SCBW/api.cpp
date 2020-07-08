@@ -15,6 +15,35 @@ class DarkSwarmFinderProc : public scbw::UnitFinderCallbackMatchInterface {
 };
 
 namespace scbw {
+
+	const u32 Func_ApplySpores = 0x004F4480;
+	void ApplySpores(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV EBX, unit
+			CALL Func_ApplySpores
+			POPAD
+		}
+	}
+
+	const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
+	bool setThingyVisibilityFlags(CThingy* thingy) {
+
+		static Bool32 bPreResult;
+
+		__asm {
+			PUSHAD
+			MOV ESI, thingy
+			CALL Func_SetThingyVisibilityFlags
+			MOV bPreResult, EAX
+			POPAD
+		}
+
+		return (bPreResult != 0);
+
+	}
+	;
+
 	const u32 Helper_CreateBullet = 0x0048C260;
 	void createBullet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction) {
 
@@ -77,20 +106,6 @@ void function_004EBAE0(CUnit* unit, s32 x, s32 y) {
 }
 ;
 
-const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
-bool setThingyVisibilityFlags(CThingy* thingy) {
-	static Bool32 bPreResult;
-	__asm {
-		PUSHAD
-		MOV ESI, thingy
-		CALL Func_SetThingyVisibilityFlags
-		MOV bPreResult, EAX
-		POPAD
-	}
-	return (bPreResult != 0);
-}
-;
-
 
 bool teleport(CUnit* u, Point16 target, u16 spriteAnimation, bool preserveOrder) {
 	Point16 previous_pos, new_pos;
@@ -126,7 +141,7 @@ bool teleport(CUnit* u, Point16 target, u16 spriteAnimation, bool preserveOrder)
 			recall_effect_sprite = createThingy(spriteAnimation, new_pos.x, new_pos.y, 0);
 			if (recall_effect_sprite != NULL) {
 				recall_effect_sprite->sprite->elevationLevel = u->sprite->elevationLevel + 1;
-				setThingyVisibilityFlags(recall_effect_sprite);
+				scbw::setThingyVisibilityFlags(recall_effect_sprite);
 			}
 
 		}

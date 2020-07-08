@@ -11,7 +11,8 @@ namespace hooks {
 namespace scbw {
 
 
-
+void ApplySpores(CUnit* unit);
+bool setThingyVisibilityFlags(CThingy* thingy);
 void artificalBulletFrom(u8 weaponId, u8 playerId, CUnit* source, CUnit* target, Point16 target_pt);
 void artificalBulletFrom(u8 weaponId, u8 playerId, CUnit* source, CUnit* target, u16 x, u16 y);
 

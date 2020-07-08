@@ -16,7 +16,6 @@ namespace {
 	void zergPlaceBuildingCntd(CUnit* unit);							//5D410
 	void function_0047D770(CUnit* unit);								//7D770
 	void function_0047DE40(CSprite* sprite, u32 unitId, int x, int y);	//7DE40
-	bool setThingyVisibilityFlags(CThingy* thingy);						//878F0
 	CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);	//88210
 	void incrementUnitScoresEx(CUnit* building, s32 unk1, s32 unk2);	//88D50
 	void playBuildingCompleteSound(CUnit* building);					//8F310
@@ -605,7 +604,7 @@ namespace hooks {
 
 				if (thingy != NULL) {
 					thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
-					setThingyVisibilityFlags(thingy);
+					scbw::setThingyVisibilityFlags(thingy);
 				}
 
 				scbw::playSound(SoundId::Misc_ZBldgPlc_wav_1, unit);
@@ -780,27 +779,6 @@ namespace {
 			CALL Func_Sub47DE40
 			POPAD
 		}
-
-	}
-
-	;
-
-	//original referenced name was sub_4878F0, but using
-	//the name from bunker_hooks.cpp since it got meaning
-	const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
-	bool setThingyVisibilityFlags(CThingy* thingy) {
-
-		static Bool32 bPreResult;
-
-		__asm {
-			PUSHAD
-			MOV ESI, thingy
-			CALL Func_SetThingyVisibilityFlags
-			MOV bPreResult, EAX
-			POPAD
-		}
-
-		return (bPreResult != 0);
 
 	}
 

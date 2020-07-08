@@ -489,6 +489,7 @@ namespace hooks {
 
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
+
 	void CorrosiveAcidHit(u32 attackingPlayerId, int x, int y, CBullet* bullet) {
 
 		Box16 coords;
@@ -498,8 +499,20 @@ namespace hooks {
 		coords.top = y - 64;
 		coords.right = x + 64;
 
-		IterateUnitsAtLocationTargetProc_CorrosiveAcid(attackingPlayerId,&coords);
-		
+		//IterateUnitsAtLocationTargetProc_CorrosiveAcid(attackingPlayerId,&coords);
+		//spreads originally
+		if (bullet->attackTarget.unit != NULL) {
+			scbw::ApplySpores(bullet->attackTarget.unit);
+			
+			if (bullet->attackTarget.unit->acidSporeCount >= 6 && scbw::getUpgradeLevel(bullet->srcPlayer,UpgradeId::CriticalMass)>0
+				&& scbw::get_aise_value(bullet->attackTarget.unit,NULL,AiseId::GenericTimer,ValueId::CorrosiveSporeDelay,0)==0) {
+				//scbw::printText("Critical count");
+				scbw::sendGPTP_aise_cmd(bullet->attackTarget.unit, NULL, GptpId::SetGenericTimer, ValueId::CorrosiveSporeDelay, 25, 0);
+				
+			}
+		}
+
+
 	} //void CorrosiveAcidHit(u32 attackingPlayerId, int x, int y, CBullet* bullet)
 
 	;

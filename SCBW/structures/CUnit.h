@@ -2,6 +2,7 @@
 //For the structure layout, see CUnitLayout.h
 
 #pragma once
+#include <algorithm>
 #include "CUnitLayout.h"
 #include <SCBW/enumerations.h>
 #include "../../graphics/graphics.h"
@@ -159,6 +160,11 @@ struct CUnit: public CUnitLayout {
   /// Deals damage directly to unit HP, killing it if possible.
   void damageHp(s32 damage, CUnit* attacker = NULL,
                 s32 attackingPlayer = -1, bool notify = true);
+
+	/// Deals damage to shields and hp
+  void inflictDamage(s32 damage, CUnit* attacker = NULL,
+	  s32 attackingPlayer = -1, bool notify = true, bool shield_overlay = false, int direction = 0);
+  
 
   /// Reduces Defensive Matrix by @p amount, removing it if possible.
   void reduceDefensiveMatrixHp(s32 amount);

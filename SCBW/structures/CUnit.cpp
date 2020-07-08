@@ -384,6 +384,25 @@ void CUnit::damageWith(s32 damage, u8 weaponId, CUnit* attacker,
 	}
 }
 
+void CUnit::inflictDamage(s32 dmg, CUnit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, int direction) {
+	auto damage = dmg;
+	s32 shieldReduceAmount = 0;
+	shieldReduceAmount = std::min(damage, this->shields);
+	damage -= shieldReduceAmount;
+	if (shieldReduceAmount == 0 && damage < 128)
+		damage = 128;
+	if (shieldReduceAmount != 0) {
+		this->shields -= shieldReduceAmount;
+	}
+	if (shield_overlay && this->shields != 0) {
+		const LO_Header* shield_lo = shieldOverlays[this->sprite->mainGraphic->id];
+		u32 frameAngle = (direction - 124) / 8 % 32;
+		Point8 offset = shield_lo->getOffset(this->sprite->mainGraphic->direction, frameAngle);
+		this->sprite->createOverlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
+	}
+	damageHp(damage, attacker, attackingPlayer, notify);
+}
+
 const u32 Func_DamageUnitHp = 0x004797B0;
 void CUnit::damageHp(s32 damage, CUnit* attacker, s32 attackingPlayer, bool notify) {
 	assert(this);

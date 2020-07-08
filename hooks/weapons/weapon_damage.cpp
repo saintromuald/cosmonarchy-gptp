@@ -202,14 +202,6 @@ public:
 		}
 		if (show) {
 			imgul(unit->sprite, 425, 0, 0, 0);
-			/*
-			CThingy* visual_effect;
-			visual_effect = function_00488210(316,unit->sprite->position.x,unit->sprite->position.y,0);
-
-			if (visual_effect != NULL) {
-				visual_effect->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
-				function_004878f0(visual_effect);
-			}*/
 		}
 	}
 };
@@ -528,7 +520,6 @@ namespace hooks {
 									target->status |= UnitStatus::CanNotReceiveOrders;
 
 								}
-
 							}
 						}
 

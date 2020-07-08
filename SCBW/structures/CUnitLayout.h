@@ -143,6 +143,7 @@ namespace ValueId {
 		ObservanceRend=21,
 		UpgradeBoost=22,
 		DarkTemplarTimer=23,
+		CorrosiveSporeDelay=24,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
