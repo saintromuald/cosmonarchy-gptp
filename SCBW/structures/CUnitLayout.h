@@ -154,14 +154,17 @@ namespace ValueId {
 		LurkerETA=25,
 		SpineX=26,
 		SpineY=27,
-
-		FTopSpeed=28,
-		FAcceleration=29,
-		FTurnRadius=30,
-		FMovementType=31,
-		FSpriteId=32,
-		FHaltDistance=33,
 	};	
+}
+namespace FlingyDatEntries {
+	enum {
+		TopSpeed = 28,
+		Acceleration = 29,
+		TurnRadius = 30,
+		MovementType = 31,
+		SpriteId = 32,
+		HaltDistance = 33,
+	};
 }
 
 #include "SCBW\enumerations\TechId.h"
