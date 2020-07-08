@@ -31,6 +31,9 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 		weaponId==WeaponId::BurstLasers && (unit->status & UnitStatus::Cloaked)){
 		cooldown -= cooldown / 5;
 	}
+	if (unit->id==UnitId::ZergGorgoleth && scbw::getUpgradeLevel(unit->playerId, UpgradeId::RaveningMandible)) {
+		cooldown /= 2;
+	}
 	if (cooldownModifier > 0)
 		cooldown /= 2;
 	else 
