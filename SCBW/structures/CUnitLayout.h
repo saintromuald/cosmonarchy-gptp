@@ -158,12 +158,13 @@ namespace ValueId {
 }
 namespace FlingyDatEntries {
 	enum {
-		TopSpeed = 28,
-		Acceleration = 29,
-		TurnRadius = 30,
-		MovementType = 31,
-		SpriteId = 32,
-		HaltDistance = 33,
+		TopSpeed,
+		Acceleration,
+		TurnRadius,
+		MovementType,
+		SpriteId,
+		HaltDistance,
+		IscriptMask,
 	};
 }
 
