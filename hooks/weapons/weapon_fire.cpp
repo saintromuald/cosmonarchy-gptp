@@ -77,10 +77,14 @@ namespace hooks {
 				if (unit->id==UnitId::TerranWyvern && unit->sprite->mainGraphic->animation==IscriptAnimation::CastSpell && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabOn, 0) == 1) {
 					good = false;
 				}
-				if (weaponId == WeaponId::SubterraneanSpines) {
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::LurkerETA, 12+1, 0);
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SpineX,x,0);
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SpineY,y,0);
+				if (weaponId == WeaponId::SubterraneanSpines && scbw::getUpgradeLevel(unit->playerId,UpgradeId::SeismicSpines)>0) {
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::LurkerETA, 17, 0);
+					auto range = weapons_dat::MaxRange[weaponId]+16;
+					int angle = scbw::getAngle(unit->getX(), unit->getY(), unit->orderTarget.unit->getX(), unit->orderTarget.unit->getY());
+					int targ_x = unit->getX() + scbw::getPolarX(range, angle);
+					int targ_y = unit->getY() + scbw::getPolarY(range, angle);
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SpineX, targ_x,0);
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SpineY, targ_y,0);
 				}
 				if(good)
 					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);

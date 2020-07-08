@@ -450,8 +450,19 @@ namespace hooks {
 					}
 					unit->inflictDamage(30 * 256, NULL,-1, false, true);		
 				}
-				if (unit->id == UnitId::lurker && scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::LurkerETA, 0) == 1) {
+				if (unit->id == UnitId::lurker && unit->sprite!=NULL && unit->mainOrderId!=OrderId::Die 
+					&& scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::LurkerETA, 0) == 1) {
 					//placeholder for seismic spines
+					auto position = unit->position;//new target
+					auto spr_position = unit->sprite->position;
+					Point16 pos;
+					pos.x = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SpineX, 0);
+					pos.y = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SpineY, 0);
+					unit->position = pos;
+					unit->sprite->position = pos;
+					scbw::artificalBulletFrom(WeaponId::SubterraneanSpines, unit->playerId, unit, NULL, spr_position);
+					unit->position = position;
+					unit->sprite->position = spr_position;
 				}
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ObservanceTimerDebuff, 0) == 1) {
 					auto range = 160;
