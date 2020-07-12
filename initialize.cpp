@@ -1,5 +1,5 @@
 #include "definitions.h"
-#include "Plugin.h"
+#include "Plugin.h""
 #include "globals.h"
 #include "hook_tools.h"
 
@@ -7,6 +7,7 @@
 #include "hooks/game_hooks.h"
 #include "graphics/draw_hook.h"
 
+#include "hooks/maxhp.h"
 #include "hooks/apply_upgrade_flags.h"
 #include "hooks/attack_priority.h"
 #include "hooks/bunker_hooks.h"
@@ -416,7 +417,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectWeaponRangeHooks();
 
 	hooks::injectUnitTooltipHook();
-
+	hooks::injectMaxHpHooks();
 
 	//hooks::injectSpellcasterAI();
 

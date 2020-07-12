@@ -1,0 +1,5 @@
+namespace hooks {
+	void injectMaxHpHooks() {
+	
+	}
+}
