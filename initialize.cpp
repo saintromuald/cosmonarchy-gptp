@@ -1,5 +1,6 @@
 #include "definitions.h"
 #include "Plugin.h"
+#include "globals.h"
 #include "hook_tools.h"
 
 //Hook header files
@@ -295,6 +296,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch((void*)(0x0047DC99 + 2), &bFF, sizeof(u8));
 	memoryPatch((void*)(0x0047DED5 + 3), &bFF, sizeof(u8));
 	memoryPatch((void*)(0x0047E045 + 3), &bFF, sizeof(u8));
+	//
 	//FaRTy1billion, end
 	//
 
@@ -405,8 +407,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
 	hooks::injectWeaponEffectHook();
 	hooks::injectUseTechHooks();
-	/*
-	hooks::injectPsiFieldHooks();*/
+	
+	//hooks::injectPsiFieldHooks();
 
 	hooks::injectArmorBonusHook();
 	hooks::injectSightRangeHook();
