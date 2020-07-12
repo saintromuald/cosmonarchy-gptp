@@ -125,6 +125,7 @@ namespace hooks {
 			&& buildingId != UnitId::ZergLurkerDen
 			&& buildingId != UnitId::ZergBasiliskDen
 			&& buildingId != UnitId::ZergMutationPit
+			&& buildingId != UnitId::ZergVorvalPond
 			&& !isProtossMorph(buildingId)
 			)
 			buildingId = building->id;
@@ -436,6 +437,7 @@ namespace hooks {
 				&& buildingId != UnitId::ZergBasiliskDen
 				&& buildingId != UnitId::ZergLurkerDen
 				&& buildingId != UnitId::ZergMutationPit
+				&& buildingId != UnitId::ZergVorvalPond
 				&& !isProtossMorph(buildingId)
 				)
 			{
@@ -711,6 +713,7 @@ namespace {
 			|| buildingId == UnitId::ZergSporeColony
 			|| buildingId == UnitId::ZergSunkenColony
 			|| buildingId == UnitId::ZergMutationPit
+			|| buildingId == UnitId::ZergVorvalPond
 			|| hooks::isProtossMorph(buildingId)
 
 			)
@@ -983,13 +986,17 @@ namespace hooks {
 		switch (unitId) {
 		case UnitId::ZergHatchery:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergLair, ignoreIncomplete);
-		case UnitId::lair:
+		case UnitId::ZergLair:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergHive, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergCreepColony:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergSunkenColony, ignoreIncomplete);
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergSporeColony, ignoreIncomplete);
+			break;
+
+		case UnitId::ZergSpawningPool:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergVorvalPond, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergSpire:

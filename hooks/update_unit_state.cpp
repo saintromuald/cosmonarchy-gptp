@@ -421,7 +421,7 @@ namespace hooks {
 				unit->shields += 7;
 				if ( (units_dat::BaseProperty[unit->id] & UnitProperty::Building) &&
 					(unit->status & UnitStatus::Completed) &&
-					scbw::getUpgradeLevel(unit->playerId,UpgradeId::TemporalBatteries)) {//power flux
+					scbw::getUpgradeLevel(unit->playerId,UpgradeId::TemporalBatteries)) {
 					if (unit->id != UnitId::pylon) {
 						if (!(unit->status & UnitStatus::DoodadStatesThing)) {//powered
 							u32 pylons=0;

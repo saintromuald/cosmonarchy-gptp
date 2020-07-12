@@ -373,7 +373,7 @@ enum Enum {
 /*0xC9*/	Special_OvermindCocoon          = 201,
 /*0xCA*/	Spell_DarkSwarm                 = 202,
 /*0xCB*/	Special_FloorMissileTrap        = 203,
-/*0xCC*/	Special_FloorHatch              = 204,
+/*0xCC*/	ZergVorvalPond              = 204,
 /*0xCD*/	Special_UpperLevelDoor          = 205,
 /*0xCE*/	Special_RightUpperLevelDoor     = 206,
 /*0xCF*/	Special_PitDoor                 = 207,

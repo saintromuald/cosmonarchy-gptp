@@ -1074,17 +1074,20 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossPylon && //Pylon passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::PowerFlux) == 0)
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::TemporalBatteries) &&
+									current_button->iconID == 362 == 0)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::ProtossPylon && //Pylon passive : enabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::PowerFlux) == 1)
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::TemporalBatteries) == 1 &&
+									current_button->iconID == 362)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::ProtossPylon && //Pylon passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::PowerFlux) == 0)
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::TemporalBatteries) == 0 &&
+									current_button->iconID == 362)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -1107,32 +1110,38 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossReaver && //Reaver Reinforced Scarabs passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ScarabDamage) == 0)
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ScarabDamage) == 0 &&
+									current_button->iconID == 315)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::ProtossReaver &&  //Reaver Reinforced Scarabs passive : enabled 
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ScarabDamage) == 1)
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ScarabDamage) == 1 &&
+									current_button->iconID == 315)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::ProtossReaver &&  //Reaver Reinforced Scarabs passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::ScarabDamage) == 0)
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::ScarabDamage) == 0 &&
+									current_button->iconID == 315)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossReaver && //Reaver Relocators passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::Relocators) == 0)
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::Relocators) == 0 &&
+									current_button->iconID == 319)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::ProtossReaver &&  //Reaver Relocators passive : enabled 
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::Relocators) == 1)
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::Relocators) == 1 &&
+									current_button->iconID == 319)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::ProtossReaver &&  //Reaver Relocators passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::Relocators) == 0)
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::Relocators) == 0 &&
+									current_button->iconID == 319)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
