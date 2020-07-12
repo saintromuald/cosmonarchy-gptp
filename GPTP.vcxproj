@@ -110,6 +110,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="globals.cpp" />
     <ClCompile Include="CUnitExtended.cpp" />
     <ClCompile Include="hooks\orders\base_orders\attack_orders.cpp" />
     <ClCompile Include="hooks\orders\base_orders\attack_orders_inject.cpp" />
@@ -313,6 +314,7 @@
     <ClCompile Include="AI\spells\yamato_gun.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="globals.h" />
     <ClInclude Include="CUnitExtended.h" />
     <ClInclude Include="hooks\orders\spells\recall_spell.h" />
     <ClInclude Include="hooks\orders\base_orders\attack_orders.h" />
