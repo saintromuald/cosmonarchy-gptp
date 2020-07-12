@@ -486,14 +486,14 @@ namespace hooks {
 			if (
 				units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP &&
 				unit->hitPoints > 0 &&
-				unit->hitPoints != units_dat::MaxHitPoints[unit->id] &&
+				unit->hitPoints != unit->getMaxHpInGame() &&
 				!unit->parasiteFlags
 				)
 				unit->setHp(unit->hitPoints + 4);
 			if (unit->defensiveMatrixHp != 0) {			
 				if (
 					unit->hitPoints > 0 &&
-					unit->hitPoints != units_dat::MaxHitPoints[unit->id]
+					unit->hitPoints != unit->getMaxHpInGame()
 					) 
 				{
 					auto caster = scbw::get_aise_value(unit, NULL, AiseId::GetMatrixCasterPlayer, 0, 0);

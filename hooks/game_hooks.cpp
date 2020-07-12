@@ -281,7 +281,7 @@ public:
 		//unit->isBeingHealed = true;
 		bool reqHeal = false;
 
-		if (unit->hitPoints < units_dat::MaxHitPoints[unit->id]) {
+		if (unit->hitPoints < unit->getMaxHpInGame()) {
 			reqHeal = true;
 			u32 overlayImageId;
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
@@ -297,7 +297,7 @@ public:
 
 		}
 		unit->setHp(unit->hitPoints + (6 * 256));
-		if (unit->hitPoints == units_dat::MaxHitPoints[unit->id] && reqHeal) {
+		if (unit->hitPoints == unit->getMaxHpInGame() && reqHeal) {
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::AdrenalinePacks) > 0) {
 				if (!unit->getOverlay(971)) {
 					unit->sprite->createTopOverlay(971);
