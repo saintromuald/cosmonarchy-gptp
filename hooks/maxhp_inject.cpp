@@ -1,11 +1,56 @@
 #include "SCBW\api.h"
 #include "SCBW\scbwdata.h"
 #include "hook_tools.h"
+
+int maxhp(int id, int playerId) {
+	int result = units_dat::MaxHitPoints[id];
+	/*
+	if(scbw::getUpgradeLevel(playerId,UpgradeId::Heatshield)){
+		result+=15*256;
+	}
+	*/
+	return result;
+}
+const u32 _0140b = 0x0040140B;
 namespace hooks {
+	//getMaxHpWrapper
+	void __declspec(naked) getMaxHpWrapper() {
+		static u32 id;
+		static CUnit* unit;
+		static u32 hp;
+		__asm {
+			MOV id,EAX
+			MOV unit,ECX
+			PUSHAD
+		}
+		hp = maxhp(id, unit->playerId);
+		__asm {
+			POPAD
+			MOV EAX,hp
+			JMP _0140b
+		}
+	}
+	void __declspec(naked) isOnYellowHealthWrapper() {
+		static u32 id;
+		static CUnit* unit;
+		static u32 hp;
+		__asm {
+			MOV id, EAX
+			MOV unit, EDX
+			PUSHAD
+		}
+		hp = maxhp(id, unit->playerId);
+		__asm {
+			POPAD
+			MOV EAX, hp
+			JMP _0140b
+		}
+	}
 	void injectMaxHpHooks() {
-		/*
-		jmpPatch(getMaxHpWrapper, 0x00401404, 2);//eax is id, eax is result
-		jmpPatch(isOnYellowHealthWrapper, 0x00402274, 2);//eax is id, eax is result
+		
+		/*jmpPatch(getMaxHpWrapper, 0x00401404, 2);//done
+		jmpPatch(isOnYellowHealthWrapper, 0x00402274, 2);//done
+														
 		jmpPatch(isOnBurningHealthWrapper, 0x004022C4, 2);//eax - eax
 		jmpPatch(getMaxHealthWrapper, 0x0040272A, 2);//eax - eax
 		jmpPatch(ssDrawHpEnergyWrapper, 0x004263F0, 2);//edi is id, eax is result
