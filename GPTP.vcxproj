@@ -314,7 +314,7 @@
     <ClCompile Include="AI\spells\yamato_gun.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="globals.h" />
+    <ClInclude Include="globals.h" />
     <ClInclude Include="CUnitExtended.h" />
     <ClInclude Include="hooks\orders\spells\recall_spell.h" />
     <ClInclude Include="hooks\orders\base_orders\attack_orders.h" />
