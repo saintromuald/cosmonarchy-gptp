@@ -336,8 +336,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectWpnSpellHitHooks();
 
 	hooks::injectBuildingMorphHooks();
-	/*
-	hooks::injectMakeNydusExitHook();*/
+	
+	hooks::injectMakeNydusExitHook();
 	hooks::injectUnitMorphHooks();/*
 	hooks::injectWireframeHook();
 	hooks::injectDieOrderHook();
