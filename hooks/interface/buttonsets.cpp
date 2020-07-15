@@ -1705,6 +1705,42 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranAzazel && //Azazel-Matrices passive : disabled
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::InnervatingMatrices) == 0 &&
+									current_button->iconID == 367)
+								{
+									current_button_state = BUTTON_STATE::Disabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::TerranAzazel &&  //Azazel-Matrices passive : enabled 
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::InnervatingMatrices) == 1 &&
+									current_button->iconID == 367)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::TerranAzazel &&  //Azazel-Matrices passive : unavailable
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::InnervatingMatrices) == 0 &&
+									current_button->iconID == 367)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranAzazel && //Azazel-Reactor passive : disabled
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AchernusReactor) == 0 &&
+									current_button->iconID == 248)
+								{
+									current_button_state = BUTTON_STATE::Disabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::TerranAzazel &&  //Azazel-Reactor passive : enabled 
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AchernusReactor) == 1 &&
+									current_button->iconID == 248)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::TerranAzazel &&  //Azazel-Reactor passive : unavailable
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::AchernusReactor) == 0 &&
+									current_button->iconID == 248)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
 								if ((*activePortraitUnit)->id == UnitId::ZergLair &&  //Lair-Collective Integration passive :: available
 									current_button->iconID == 350)
 								{
