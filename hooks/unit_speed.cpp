@@ -101,6 +101,14 @@ namespace hooks {
 			}
 
 		}
+		else if (unit->id == UnitId::vulture) {
+			auto tile = scbw::getActiveTileAt(unit->getX(), unit->getY());
+			if (tile.isUnwalkable || !tile.isWalkable) {
+				if (scbw::getUpgradeLevel(unit->playerId,UpgradeId::IonPropulsion)) {
+					speed /= 2;
+				}
+			}
+		}
 		else if (unit->id == UnitId::TerranGhost) {
 			if (
 				unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))

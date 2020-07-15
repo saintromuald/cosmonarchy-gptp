@@ -240,6 +240,9 @@ void updateStatusEffects(CUnit* unit) {
 	if (unit->id == UnitId::dropship && scbw::getUpgradeLevel(unit->playerId, UpgradeId::PassengerInsurance)) {
 		unit->updateSpeed();
 	}
+	else if (unit->id == UnitId::vulture && scbw::getUpgradeLevel(unit->playerId, UpgradeId::IonPropulsion)) {
+		unit->updateSpeed();
+	}
 	if (unit->status & UnitStatus::Burrowed) {
 		auto tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
 		if (tile.currentlyOccupied) {
