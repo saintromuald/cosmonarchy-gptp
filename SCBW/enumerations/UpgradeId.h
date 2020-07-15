@@ -122,6 +122,11 @@ namespace UpgradeId {
 		CriticalMass = 118,
 		AcridDisplacement = 119,
 		SeismicSpines = 120,
+		Incubators = 121,
+		Autovitality = 122,
+		IonPropulsion = 123,
+		TempoChange = 123,
+		RequiemAfterburners = 124,
 		//relics
 		Tempest = 200,
 		Penance = 201,
