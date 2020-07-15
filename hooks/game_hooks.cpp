@@ -233,7 +233,7 @@ public:
 			return;
 		}
 //		scbw::printText("Spend");
-		auto count = std::min(4, (int)unit->acidSporeCount);
+		auto count = std::min(4, (int)victim->acidSporeCount);
 		for (int i = 0; i < count; i++) {
 			if (unit->acidSporeCount < 9) {
 				scbw::ApplySpores(unit);
