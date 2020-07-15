@@ -506,7 +506,6 @@ namespace hooks {
 			
 			if (bullet->attackTarget.unit->acidSporeCount >= 6 && scbw::getUpgradeLevel(bullet->srcPlayer,UpgradeId::CriticalMass)>0
 				&& scbw::get_aise_value(bullet->attackTarget.unit,NULL,AiseId::GenericTimer,ValueId::CorrosiveSporeDelay,0)==0) {
-				//scbw::printText("Critical count");
 				scbw::sendGPTP_aise_cmd(bullet->attackTarget.unit, NULL, GptpId::SetGenericTimer, ValueId::CorrosiveSporeDelay, 25, 0);
 				
 			}
