@@ -31,7 +31,7 @@ void __declspec(naked) getTechUseErrorMessageWrapper() {
 		POP EBP
 		RETN 4
 	}
-
+	
 }
 
 } //Unnamed namespace
