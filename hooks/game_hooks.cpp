@@ -370,8 +370,8 @@ namespace hooks {
 						if (distance > 15 && distance<=96) {
 							if (scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0) {
 								bool teleport = scbw::teleport(unit, target->sprite->position, 0, true);
-								if (!unit->getOverlay(971) && teleport) {
-									unit->sprite->createTopOverlay(971);
+								if (!unit->getOverlay(276) && teleport) {
+									unit->sprite->createTopOverlay(276);
 								}
 							}
 						}
