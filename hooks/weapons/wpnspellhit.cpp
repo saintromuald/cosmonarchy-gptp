@@ -542,9 +542,9 @@ namespace hooks {
 				//scbw::printText("Target is Invincible!");
 			}
 			if(getSpellStatString(target,TechId::Consume,attacker->playerId) !=0){
-				char buf[32];
+				//char buf[32];
 				//ebx/bl  = player id, arg 1 = 0x10, eax = edi (target)
-				sprintf(buf,"Spell error: %d",getSpellStatString(target,TechId::Consume,attacker->playerId) );
+				//sprintf(buf,"Spell error: %d",getSpellStatString(target,TechId::Consume,attacker->playerId) );
 				//scbw::printText(buf);
 
 			}
@@ -575,7 +575,10 @@ namespace hooks {
 				if(power > diff ) {
 					attacker->energy = energyMax;
 					power -= diff;
-					attacker->setHp(attacker->hitPoints+power);
+					if (attacker->parasiteFlags == 0) {
+						attacker->setHp(attacker->hitPoints + power);
+					}
+					
 				}
 				else {
 					attacker->energy += power;

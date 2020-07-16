@@ -106,9 +106,8 @@ namespace AiseId {
 		GetShepherds,
 
 		GetFlingyData,
-
-//		GetSpriteData,
-//		GetImageData,
+		GetSpriteData,
+		GetImageData,
 	};
 }
 

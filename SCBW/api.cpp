@@ -106,7 +106,6 @@ void function_004EBAE0(CUnit* unit, s32 x, s32 y) {
 }
 ;
 
-
 bool teleport(CUnit* u, Point16 target, u16 spriteAnimation, bool preserveOrder) {
 	Point16 previous_pos, new_pos;
 	bool result = false;
@@ -535,7 +534,12 @@ void sendGPTP_aise_cmd(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2, 
 u32 getFlingyData(u32 entry, u32 index) {
 	return get_aise_value(NULL, NULL, AiseId::GetFlingyData, entry, index);
 }
-
+u32 getSpriteData(u32 entry, u32 index) {
+	return get_aise_value(NULL, NULL, AiseId::GetSpriteData, entry, index);
+}
+u32 getImageData(u32 entry, u32 index) {
+	return get_aise_value(NULL, NULL, AiseId::GetImageData, entry, index);
+}
 const u32 Func_CanTargetSpell = 0x00492020;
 u32 get_aise_value(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2){
 	u32 result = 0;
