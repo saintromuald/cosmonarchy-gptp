@@ -465,7 +465,7 @@ namespace hooks {
 
 			damage = (damage * damage_factor) / 256;
 			if (attacker != NULL && target != NULL) {
-				if (attacker->id == UnitId::ultralisk && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::SaberSiphon)) {
+				if (attacker->id == UnitId::ultralisk && attacker->parasiteFlags==0 && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::SaberSiphon)) {
 					u32 lifesteal = damage / 2;
 					attacker->setHp(attacker->hitPoints + lifesteal);
 				}
