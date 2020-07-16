@@ -300,7 +300,7 @@ namespace hooks {
 			CUnit* scarab = unit->carrier.inHangarChild;
 			while (scarab != NULL) {
 				if (scarab->id == UnitId::scarab) {
-					if (scbw::getUpgradeLevel(unit->playerId, 57) && 
+					if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::Relocators) && 
 						!(scarab->status & UnitStatus::InAir)) {
 						//scarab->status |= UnitStatus::InAir;
 						scarab->sprite->elevationLevel = 12;

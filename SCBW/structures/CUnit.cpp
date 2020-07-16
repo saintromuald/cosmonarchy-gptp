@@ -101,7 +101,6 @@ u32 CUnit::getMaxHpInGame() const {
 	/*if (this->id == UnitId::firebat && scbw::getUpgradeLevel(playerId,UpgradeId::Heatshield)) {
 		maxHp += 15 * 256;
 	}*/
-
 	if (maxHp == 0) {
 		maxHp = this->getCurrentHpInGame();
 		if (maxHp == 0)
@@ -109,9 +108,22 @@ u32 CUnit::getMaxHpInGame() const {
 	}
 	else
 		maxHp = maxHp >> 8;
-
 	return maxHp;
 }
+u32 CUnit::getMaxHpInGameRaw() const {
+	assert(this);
+	u32 maxHp = units_dat::MaxHitPoints[this->id];
+	/*if (this->id == UnitId::firebat && scbw::getUpgradeLevel(playerId,UpgradeId::Heatshield)) {
+	maxHp += 15 * 256;
+	}*/
+	if (maxHp == 0) {
+		maxHp = this->getCurrentHpInGame();
+		if (maxHp == 0)
+			maxHp = 256;
+	}
+	return maxHp;
+}
+
 
 extern const u32 Func_GetMaxWeaponRange = 0x00475870;
 u32 CUnit::getMaxWeaponRange(u8 weaponId) const {

@@ -13,6 +13,12 @@ static struct MathUtils {
 
 	template<typename sourceType, typename targetType>
 	static targetType map(sourceType value, sourceType sourceMin, sourceType soureMax, targetType targetMin, targetType targetMax, bool doClamp = false);
+
+	template<typename T>
+	static T sat_add(T n);
+
+	template<typename T>
+	static T sat_sub(T n);
 };
 
 template<typename T>
@@ -39,3 +45,18 @@ targetType MathUtils::map(sourceType value, sourceType sourceMin, sourceType sou
 	return (targetType) MathUtils::lerp(MathUtils::normalize(value, sourceMin, sourceMax, doClamp), targetMin, targetMax);
 }
 
+template<typename T>
+static T MathUtils::sat_add(T n) {
+	if (*this + n > std::numeric_limits<T>::max()){
+		return std::numeric_limits<T>::max();
+	}
+	return *this + n;
+}
+
+template<typename T>
+static T MathUtils::sat_sub(T n) {
+	if (*this>value) {
+		return 0;
+	}
+	return *this - n;
+}

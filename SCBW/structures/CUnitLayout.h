@@ -188,7 +188,7 @@ namespace HydraFlags1 {
 		HierophantSignifyUpdateSpeed=1<<4,
 		UpdateConsoleNewParasite=1<<5,
 		WarpFlash=1<<6,
-		//Infestation=1<<7,
+		Infestation=1<<7,
 	};
 }					
 
