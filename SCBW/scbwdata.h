@@ -342,7 +342,7 @@ SCBW_DATA(const u8*,  IsTurnable,   imagesDat[1].address);	//0066E860
 SCBW_DATA(const u8*,  IsClickable,  imagesDat[2].address);	//0066C150
 //SCBW_DATA(const u8*,  ???,		imagesDat[3].address);	//0066D4D8 //"Use Full Iscript" according to EUDDB
 //SCBW_DATA(const u8*,  ???,		imagesDat[4].address);	//00667718 //"Draw If Cloaked" according to EUDDB
-SCBW_DATA(const u8*,  RLE_Function, imagesDat[5].address);	//00669E28
+SCBW_DATA(const u8*,  RLE_Function, imagesDat[5].address);	//00669E28 // DrawFunc
 SCBW_DATA(const u8*,  Remapping,    imagesDat[6].address);	//00669A40
 //SCBW_DATA(const u32*,  ???,		imagesDat[7].address);	//0066EC48 //"Iscript ID" according to EUDDB
 //SCBW_DATA(const u32*,  ???,		imagesDat[8].address);	//0066C538 //"Shields Overlay" according to EUDDB

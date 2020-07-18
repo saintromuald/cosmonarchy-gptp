@@ -155,18 +155,6 @@ namespace ValueId {
 		SpineY=27,
 	};	
 }
-namespace FlingyDatEntries {
-	enum {
-		TopSpeed,
-		Acceleration,
-		TurnRadius,
-		MovementType,
-		SpriteId,
-		HaltDistance,
-		IscriptMask,
-	};
-}
-
 #include "SCBW\enumerations\TechId.h"
 //const u32 first_generic_toggle_ability = ValueId::ReverseThrust;
 //const u32 last_generic_toggle_ability = ValueId::DisruptionWeb;

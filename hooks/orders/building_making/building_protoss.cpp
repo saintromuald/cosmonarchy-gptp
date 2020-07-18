@@ -203,7 +203,8 @@ namespace hooks {
 
 				replaceSpriteImages(
 					building->sprite,
-					sprites_dat::ImageId[building->sprite->spriteId],
+//					sprites_dat::ImageId[building->sprite->spriteId],
+					scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId),
 					0
 				);
 
@@ -225,7 +226,8 @@ namespace hooks {
 
 				replaceSpriteImages(
 					building->sprite,
-					sprites_dat::ImageId[building->sprite->spriteId],
+//					sprites_dat::ImageId[building->sprite->spriteId],
+					scbw::getSpriteData(SpritesDatEntries::ImageId,building->sprite->spriteId),
 					0
 				);
 

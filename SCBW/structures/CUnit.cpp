@@ -399,7 +399,6 @@ void CUnit::damageWith(s32 damage, u8 weaponId, CUnit* attacker,
 		POPAD		
 	}
 }
-
 void CUnit::inflictDamage(s32 dmg, CUnit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, int direction) {
 	auto damage = dmg;
 	s32 shieldReduceAmount = 0;
@@ -411,7 +410,10 @@ void CUnit::inflictDamage(s32 dmg, CUnit* attacker, s32 attackingPlayer, bool no
 		this->shields -= shieldReduceAmount;
 	}
 	if (shield_overlay && this->shields != 0) {
-		const LO_Header* shield_lo = shieldOverlays[this->sprite->mainGraphic->id];
+		//const LO_Header* shield_lo = shieldOverlays[this->sprite->mainGraphic->id];
+
+		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayShieldPtr,
+																					this->sprite->mainGraphic->id));
 		u32 frameAngle = (direction - 124) / 8 % 32;
 		Point8 offset = shield_lo->getOffset(this->sprite->mainGraphic->direction, frameAngle);
 		this->sprite->createOverlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);

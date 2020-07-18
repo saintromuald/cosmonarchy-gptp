@@ -184,6 +184,7 @@ struct LO_Header {
   u32 overlayCount;
   u32 frameOffsets[1];
 
+
   Point8 getOffset(int frameNum, int overlayNum) const {
     return ((Point8*)(this->frameOffsets[frameNum] + (u32)this))[overlayNum];
   }

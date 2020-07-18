@@ -8,7 +8,6 @@
 #include <cstdio>
 #include "CUnitExtended.h"
 
-
 const int hyperTrigger = 0x006509A0;
 const u32 Func_Sub4A01F0 = 0x004A01F0;
 void function_004A01F0g(CUnit* unit) {
@@ -275,7 +274,7 @@ public:
 		if (unit->parasiteFlags!=0) {
 			return;
 		}
-		
+
 		u32 dist = scbw::getDistanceFast(unit->position.x, unit->position.y,
 			shaman->position.x, shaman->position.y);
 		//unit->isBeingHealed = true;
@@ -338,6 +337,7 @@ namespace hooks {
 			if (*elapsedTimeFrames == 0) {
 				//Write your code here
 			}
+
 			/*
 			if ((*activePortraitUnit) != NULL) {
 				char buf[32];

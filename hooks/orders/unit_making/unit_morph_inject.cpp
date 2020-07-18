@@ -230,8 +230,10 @@ namespace {
 			/*replaceSpriteImages(unit->sprite,
 				sprites_dat::ImageId[flingy_dat::SpriteID[units_dat::Graphic[unit->previousUnitType]]], 0);*/
 			auto index = units_dat::Graphic[unit->previousUnitType];
-			replaceSpriteImages(unit->sprite, sprites_dat::ImageId[scbw::getFlingyData(FlingyDatEntries::SpriteId, index)], 0);
-
+//			replaceSpriteImages(unit->sprite, sprites_dat::ImageId[scbw::getFlingyData(FlingyDatEntries::SpriteId, index)], 0);
+			auto fl_sId = scbw::getFlingyData(FlingyDatEntries::SpriteId, index);
+			//scbw::getSpriteData(SpritesDatEntries::ImageId,building->sprite->spriteId),
+			replaceSpriteImages(unit->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, fl_sId), 0);
 			unit->orderSignal &= ~0x4;
 			
 			if (unit->id == UnitId::zergling) {

@@ -1,7 +1,8 @@
 #include "bunker_hooks.h"
 #include <SCBW/scbwdata.h>
+#include <SCBW\api.h>
 #include "../SCBW/enumerations.h"
-
+#include "../SCBW/structures.h"
 //Helper function declarations. Do NOT modify!
 namespace {
 
@@ -79,7 +80,6 @@ void unitAttackFromInsideBunkerHook(CUnit* unit) {
 }
 
 ;
-
 //not checked against original code by UndeadStar
 void createBunkerAttackThingyHook(CUnit* unit) {
 
@@ -87,10 +87,12 @@ void createBunkerAttackThingyHook(CUnit* unit) {
 
 	u8 frameDirection = (unit->currentDirection1 + 16) / 32 % 8;
 
-	const LO_Header *loFile = lo_files->attackOverlays[bunkerImage->id];
+//	const LO_Header *loFile = lo_files->attackOverlays[bunkerImage->id];
 
+	const LO_Header *loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayAttackPtr, bunkerImage->id));
 	Point8 offset = loFile->getOffset(bunkerImage->frameIndex, frameDirection);
-	
+
+
 	if (bunkerImage->flags & CImage_Flags::Mirrored) //Is inverted
 		offset.x = -offset.x;
 

@@ -631,7 +631,6 @@ namespace hooks {
 	}
 
 } //hooks
-
 namespace {
 
 	/**** Definitions of helper functions. Do NOT modify anything below! ****/
@@ -640,8 +639,9 @@ namespace {
 	//Identical to function @ 0x004E6140
 	void createShieldOverlay(CUnit* unit, u32 attackDirection) {
 
-		const LO_Header* shield_lo = shieldOverlays[unit->sprite->mainGraphic->id];
-
+//		const LO_Header* shield_lo = shieldOverlays[unit->sprite->mainGraphic->id];
+		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayShieldPtr,
+			unit->sprite->mainGraphic->id));
 		u32 frameAngle = (attackDirection - 124) / 8 % 32;
 
 		Point8 offset = shield_lo->getOffset(unit->sprite->mainGraphic->direction, frameAngle);

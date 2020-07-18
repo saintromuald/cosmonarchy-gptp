@@ -255,7 +255,8 @@ namespace hooks {
 										}
 										replaceSpriteImages_copy(
 											building->sprite,
-											sprites_dat::ImageId[building->sprite->spriteId],
+//											sprites_dat::ImageId[building->sprite->spriteId],
+											scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId),
 											0
 										);
 										char buf[32];

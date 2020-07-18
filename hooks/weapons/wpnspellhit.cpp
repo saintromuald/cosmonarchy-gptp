@@ -578,7 +578,6 @@ namespace hooks {
 					if (attacker->parasiteFlags == 0) {
 						attacker->setHp(attacker->hitPoints + power);
 					}
-					
 				}
 				else {
 					attacker->energy += power;

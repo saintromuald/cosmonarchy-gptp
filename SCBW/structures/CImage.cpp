@@ -46,13 +46,16 @@ void CImage::setRemapping(ColorRemapping::Enum remapping) {
 	assert(this);
 	this->coloringData = colorShift[remapping].data;
 }
-
 //Identical to function @ 0x004D5A50
 void CImage::initializeData(CSprite *parent, u16 imageId, s8 x, s8 y) {
 	assert(this);
 	this->id = imageId;
-	this->grpOffset = imageGrpGraphics[imageId];
-	this->flags = ((images_dat::IsTurnable[imageId] & 1) << 3) | ((images_dat::IsClickable[imageId] & 1) << 5);
+
+//	this->grpOffset = imageGrpGraphics[imageId];
+	this->grpOffset = reinterpret_cast<GrpHead*>(scbw::getImageData(ImagesDatEntries::ImagePtr, imageId));
+//	this->flags = ((images_dat::IsTurnable[imageId] & 1) << 3) | ((images_dat::IsClickable[imageId] & 1) << 5);
+	this->flags = ((scbw::getImageData(ImagesDatEntries::Turnable, imageId) & 1) << 3) |
+		((scbw::getImageData(ImagesDatEntries::Clickable, imageId) & 1) << 5);
 	this->frameSet = 0;
 	this->direction = 0;
 	this->frameIndex = 0;
@@ -68,11 +71,16 @@ void CImage::initializeData(CSprite *parent, u16 imageId, s8 x, s8 y) {
 	this->unknown14 = 0;
 	this->animation = IscriptAnimation::Init;
 	this->wait = 0;
-
+	/*
 	if (images_dat::RLE_Function[imageId] == PaletteType::RLE_PLAYER_SIDE)
 		*(u32*)(&this->coloringData) = parent->playerId;
 	if (images_dat::RLE_Function[imageId] == PaletteType::RLE_EFFECT)
-		this->coloringData = colorShift[images_dat::Remapping[imageId]].data;
+		this->coloringData = colorShift[images_dat::Remapping[imageId]].data;*/
+
+	if (scbw::getImageData(ImagesDatEntries::DrawFunc,imageId) == PaletteType::RLE_PLAYER_SIDE)
+		*(u32*)(&this->coloringData) = parent->playerId;
+	if (scbw::getImageData(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_EFFECT)
+		this->coloringData = colorShift[scbw::getImageData(ImagesDatEntries::DrawRemap,imageId)].data;
 }
 
 GrpFrame* CImage::getCurrentFrame() const {

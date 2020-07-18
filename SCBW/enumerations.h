@@ -15,6 +15,58 @@
 #include "enumerations/SoundId.h"
 #include "enumerations/IconId.h"
 
+
+namespace FlingyDatEntries {
+	enum {
+		TopSpeed,
+		Acceleration,
+		TurnRadius,
+		MovementType,
+		SpriteId,
+		HaltDistance,
+		IscriptMask,
+	};
+}
+
+namespace SpritesDatEntries {
+	enum {
+		IncludeInVision,
+		StartAsVisible,
+		ImageId,
+		SelectionCircle,
+		SelectImagepos,
+		Healthbar,
+	};
+}
+
+namespace ImagesDatEntries {
+	enum {
+		GrpId,
+		Turnable,
+		Clickable,
+		UseFullIscript,
+		DrawIfCloaked,
+		DrawFunc,
+		DrawRemap,
+		IscriptId,
+		OverlayShield,
+		OverlayAttack,
+		OverlayDamage,
+		OverlaySpecial,
+		OverlayLanding,
+		OverlayLiftoff,
+		OverlayShieldPtr,
+		OverlayAttackPtr,
+		OverlayDamagePtr,
+		OverlaySpecialPtr,
+		OverlayLandingPtr,
+		OverlayLiftoffPtr,
+		ImagePtr,
+		BuildingOverlayStateMax,
+	};
+}
+
+
 namespace RaceId {
 enum Enum : u8 {
   Zerg    = 0,

@@ -6,7 +6,6 @@
 
 #include <SCBW/UnitFinder.h>
 #include "SCBW/api.h"
-#include "logger.h"
 
 #include "MathUtils.h"
 
