@@ -63,9 +63,12 @@ namespace hooks {
     x = bullet->sprite->position.x;
     y = bullet->sprite->position.y;
     r = weapons_dat::OuterSplashRadius[weaponId];
+	if (weaponId == WeaponId::ArcliteShockCannon && scbw::getUpgradeLevel(bullet->srcPlayer, UpgradeId::HammerfallShells)) {
+		r += r / 3;
+	}
     if(isUnsafeCyprianBullet(bullet,weaponId)){
 		//scbw::printText("Cyprian Bullet");
-	r = 40;
+		r = 40;
     }
 
     // Get units within the outer splash radius
@@ -92,6 +95,9 @@ namespace hooks {
       
       // We found units in a square around the target, but is the target within the splash radius?
       s16 outer = weapons_dat::OuterSplashRadius[bullet->weaponType];
+	  if (weaponId == WeaponId::ArcliteShockCannon && scbw::getUpgradeLevel(bullet->srcPlayer, UpgradeId::HammerfallShells)) {
+		  outer += outer / 3;
+	  }
       if(isUnsafeCyprianBullet(bullet,weaponId)){
 	 outer = 40;
       }
@@ -105,6 +111,9 @@ namespace hooks {
       
       // Inner radius 
       s16 inner = weapons_dat::InnerSplashRadius[bullet->weaponType];
+	  if (weaponId == WeaponId::ArcliteShockCannon && scbw::getUpgradeLevel(bullet->srcPlayer, UpgradeId::HammerfallShells)) {
+		  inner += inner / 3;
+	  }
       if(isUnsafeCyprianBullet(bullet,weaponId)){
 	 inner = 15;
       }
@@ -120,6 +129,9 @@ namespace hooks {
       
       // Medium radius
       s16 medium = weapons_dat::MediumSplashRadius[bullet->weaponType];
+	  if (weaponId == WeaponId::ArcliteShockCannon && scbw::getUpgradeLevel(bullet->srcPlayer, UpgradeId::HammerfallShells)) {
+		  medium += medium / 3;
+	  }
       if(isUnsafeCyprianBullet(bullet,weaponId)){
 	 medium = 25;
       }      
