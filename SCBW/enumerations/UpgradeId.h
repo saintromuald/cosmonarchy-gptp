@@ -125,8 +125,9 @@ namespace UpgradeId {
 		Incubators = 121,
 		Autovitality = 122,
 		IonPropulsion = 123,
-		TempoChange = 123,
-		RequiemAfterburners = 124,
+		TempoChange = 124,
+		RequiemAfterburners = 125,
+		HammerfallShells = 126,
 		//relics
 		Tempest = 200,
 		Penance = 201,
