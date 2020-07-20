@@ -181,6 +181,7 @@ namespace hooks {
 
 				//5D5D0
 				if (!(isProtossMorph(buildingId))) {
+
 					building->sprite->playIscriptAnim(IscriptAnimation::SpecialState1, true);
 				}
 
@@ -253,6 +254,7 @@ namespace hooks {
 										if (building->getOverlay(ImageId::WarpAnchor)) {
 											building->removeOverlay(ImageId::WarpAnchor);
 										}
+
 										replaceSpriteImages_copy(
 											building->sprite,
 //											sprites_dat::ImageId[building->sprite->spriteId],
@@ -1033,6 +1035,15 @@ namespace hooks {
 		return unitCount;
 	}
 
+	void SetSpecialState1(CSprite* sprite) {
+		CImage* current_image = sprite->images.head;
+		while (current_image != NULL) {
+			if (current_image->id != ImageId::StargateOverlay) {
+				current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
+			}
+			current_image = current_image->link.next;
+		}
+	}
 } //hooks
 
 

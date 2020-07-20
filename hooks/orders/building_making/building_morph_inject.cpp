@@ -130,7 +130,7 @@ namespace {
 				|| !hooks::isMorphedBuildingHook(unitId))
 				unitId = unit->id;
 
-			if (unitId == UnitId::gateway || unitId==UnitId::stargate || unitId == UnitId::stargate)
+			if (unitId == UnitId::gateway || unitId == UnitId::stargate || unitId == UnitId::stargate)
 				tblErrorMessage = 771;  //Morphing<0>, Building<0>, Opening Warp Gate<0>
 			else
 				tblErrorMessage = 774;  //Morphing<0>, Building<0>, Building<0>
@@ -371,6 +371,21 @@ namespace {
 	//-------- AI_ManageBases --------//
 
 	//Inject @ 0x00436439
+
+	const u32 Hook_MorphSpecialStateContinue = 0x0045D2B1;
+	void __declspec(naked) MorphSpecialStateSetup_Wrapper() {
+		static CSprite* sprite;
+		__asm {
+			PUSHAD
+			MOV sprite,ECX
+		}
+		hooks::SetSpecialState1(sprite);
+		__asm {
+			POPAD
+			JMP Hook_MorphSpecialStateContinue
+		}
+	}
+
 	const u32 Hook_AI_ManageBases_Return = 0x004364F7;
 	void __declspec(naked) getMorphBuildingTypeCountWrapper_AI_ManageBases() {
 		static CUnit *unit;
@@ -417,6 +432,8 @@ namespace hooks {
 		jmpPatch(getMorphBuildingTypeCountWrapper_AI_GetWaitBuildUnitCount, 0x00433286);
 		jmpPatch(getMorphBuildingTypeCountWrapper_AI_GetUnitCount, 0x004334D9);
 		jmpPatch(getMorphBuildingTypeCountWrapper_AI_ManageBases, 0x00436439);
+
+		jmpPatch(MorphSpecialStateSetup_Wrapper, 0x0045D2A1);
 	}
 
 }; //hooks

@@ -10,5 +10,5 @@ namespace hooks {
 	bool isMorphedBuildingHook(u16 unitId);
 	int getMorphBuildingTypeCountHook(const CUnit *unit, u16 unitId, bool ignoreIncomplete);
 	void injectBuildingMorphHooks();
-
+	void SetSpecialState1(CSprite* sprite);
 } //hooks
