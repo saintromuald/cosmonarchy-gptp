@@ -140,6 +140,10 @@ void transferResourceToWorkerHook(CUnit* worker, CUnit* resource) {
 						//+175%, mapcrap only				
 						resourceAmount += ((resourceAmount / 4) + (resourceAmount / 4) + (resourceAmount / 4));
 					}
+					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::AIMiningEfficiency) == 5) {
+						//+200%, mapcrap only				
+						resourceAmount *= 2;
+					}
 				}
 				//
 				setResourceAmountCarried(worker, resourceAmount, chunkImageId, isMineral);
