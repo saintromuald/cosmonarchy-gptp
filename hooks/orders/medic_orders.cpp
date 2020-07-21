@@ -51,7 +51,7 @@ void orders_HealMove(CUnit* unit) {
 	CUnit* oldTarget = unit->orderTarget.unit;
 
 	if(target != NULL) {
-		if(target->parasiteFlags==0 && AI_OrderHeal(unit,target) != 0) {
+		if(/*target->parasiteFlags==0 &&*/ AI_OrderHeal(unit,target) != 0) {
 			unit->orderComputerCL(OrderId::MedicHeal1);
 			unit->orderTarget.unit = target;
 			unit->orderTarget.pt.x = target->sprite->position.x;
@@ -90,7 +90,7 @@ void orders_HealMove(CUnit* unit) {
 				
 				newTarget = MedicHeal_TargetAcquire(unit);
 
-				if(newTarget != NULL && newTarget->parasiteFlags==0) {
+				if(newTarget != NULL/* && newTarget->parasiteFlags==0*/) {
 
 					oldPos.x = unit->orderTarget.pt.x;
 					oldPos.y = unit->orderTarget.pt.y;
@@ -135,7 +135,7 @@ void orders_Medic(CUnit* unit) {
 
 		CUnit* target = MedicHeal_TargetAcquire(unit);
 
-		if(target != NULL && target->parasiteFlags==0) {
+		if(target != NULL/* && target->parasiteFlags==0*/) {
 
 			unit->userActionFlags |= 1;
 
@@ -212,14 +212,17 @@ void orders_MedicHeal1(CUnit* unit) {
 	u32 doMedicHeal_result=0;
 	auto a = unit->hitPoints;
 	bool reqHeal = true;
+	/*
 	if (target != NULL) {
 		if (target->parasiteFlags!=0) {
 			reqHeal = false;
 		}
-	}
-	if (reqHeal) {
+	}*/
+/*	if (reqHeal) {
 		doMedicHeal_result = doMedicHeal(unit, target);
-	}
+	}*/
+	doMedicHeal_result = doMedicHeal(unit, target);
+
 	if (target != NULL) {
 		if (target->hitPoints/256 == unit->getMaxHpInGame() && reqHeal) {
 			if (scbw::getUpgradeLevel(target->playerId, UpgradeId::AdrenalinePacks) > 0) {
