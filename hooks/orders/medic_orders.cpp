@@ -310,6 +310,31 @@ void orders_MedicHeal1(CUnit* unit) {
 
 ;
 
+bool AI_AcquireHealTarget(CUnit* a1, CUnit* a2) {
+	if (!a2 || a2 == a1 || a1->status & 0x40000000) {
+		return 0;
+	}
+	int type = a2->id;
+	int abilityFlags = units_dat::BaseProperty[type];
+	int enemyCheck;
+	bool result;
+	if (!(abilityFlags & 0x10000)
+		|| abilityFlags & 1
+		|| a2->status & 4
+		|| !scbw::isAlliedTo(a1->playerId, a2->playerId)
+		|| a2->playerId >= 8u
+		|| a1->playerId >= 8u
+		|| a2->hitPoints >= units_dat::MaxHitPoints[type]) {
+		result = 0;
+	}
+	else {
+		result = a2->isFrozen() == 0;
+	}
+	return result;
+}
+
+;
+
 } //namespace hooks
 
 ;
@@ -583,10 +608,7 @@ bool function_004EB900(CUnit* unit, CUnit* target) {
 
 	return (bPreResult != 0);
 
-}
-
-;
-
+};
 } //Unnamed namespace
 
 //End of helper functions

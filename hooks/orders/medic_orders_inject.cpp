@@ -92,15 +92,35 @@ namespace {
 
 	;
 
+	void __declspec(naked) AI_AcquireHealTarget_Wrapper()
+	{
+		static CUnit* a1;
+		static CUnit* a2;
+		static u32 result;
+		__asm
+		{
+			MOV a1, EBX
+			MOV a2, ESI
+			PUSHAD
+		}
+		result = hooks::AI_AcquireHealTarget(a1, a2);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }//unnamed namespace
 
 namespace hooks {
 
 void injectMedicOrdersHooks() {
-	jmpPatch(orders_MedicHeal2Wrapper,	0x00463740, 1);
-	jmpPatch(orders_HealMoveWrapper,	0x004637B0, 1);
-	jmpPatch(orders_MedicWrapper,		0x00463900, 1);
-	jmpPatch(orders_MedicHeal1Wrapper,	0x00464180, 1);
+	jmpPatch(orders_MedicHeal2Wrapper,		0x00463740, 1);
+	jmpPatch(orders_HealMoveWrapper,		0x004637B0, 1);
+	jmpPatch(orders_MedicWrapper,			0x00463900, 1);
+	jmpPatch(orders_MedicHeal1Wrapper,		0x00464180, 1);
+	jmpPatch(AI_AcquireHealTarget_Wrapper,	0x00463530, 1);
 }
 
 } //hooks

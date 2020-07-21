@@ -160,6 +160,7 @@ bool hasTechResearched(u8 playerId, u16 techId);
 
 u8 getUpgradeMaxLevel(u8 playerId, u8 upgradeId);
 bool hasTechAvailable(u8 playerId, u16 techId);
+//u32 techUseAllowed(CUnit* unit, u16 techId, u32 playerId);
 /// Sets the player's tech research state for @p techId to @p isResearched.
 /// Note: This uses TechId::Enum, instead of ScTech::Enum and BwTech::Enum.
 void setTechResearchState(u8 playerId, u16 techId, bool isResearched);
