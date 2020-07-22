@@ -310,27 +310,26 @@ void orders_MedicHeal1(CUnit* unit) {
 
 ;
 
-bool AI_AcquireHealTarget(CUnit* a1, CUnit* a2) {
-	if (!a2 || a2 == a1 || a1->status & 0x40000000) {
+bool AI_AcquireHealTarget(CUnit* medic, CUnit* target) {
+	if (target==NULL || target == medic || medic->status & UnitStatus::IsHallucination) {
 		return 0;
 	}
-	int type = a2->id;
+	int type = target->id;
 	int abilityFlags = units_dat::BaseProperty[type];
 	int enemyCheck;
 	bool result;
-	if (!(abilityFlags & 0x10000)
-		|| abilityFlags & 1
-		|| a2->status & 4
-		|| !scbw::isAlliedTo(a1->playerId, a2->playerId)
-		|| a2->playerId >= 8u
-		|| a1->playerId >= 8u
-		|| a2->hitPoints >= units_dat::MaxHitPoints[type]) {
-		result = 0;
+	if (!(abilityFlags & UnitProperty::Organic)
+		|| abilityFlags & UnitProperty::Building
+		|| target->status & UnitStatus::InAir
+		|| !scbw::isAlliedTo(medic->playerId, target->playerId)
+		|| target->playerId >= 8
+		|| medic->playerId >= 8
+		|| target->parasiteFlags!=0 //new
+		|| target->hitPoints >= units_dat::MaxHitPoints[type]
+		|| target->isFrozen()) {
+		return 0;
 	}
-	else {
-		result = a2->isFrozen() == 0;
-	}
-	return result;
+	return true;
 }
 
 ;
