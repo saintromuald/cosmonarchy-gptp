@@ -45,13 +45,12 @@ void orders_MedicHeal2(CUnit* unit) {
 ;
 
 void orders_HealMove(CUnit* unit) {
-
 	bool bStopThere = false;
 	CUnit* target = unit->orderTarget.unit;
 	CUnit* oldTarget = unit->orderTarget.unit;
 
 	if(target != NULL) {
-		if(/*target->parasiteFlags==0 &&*/ AI_OrderHeal(unit,target) != 0) {
+		if(AI_OrderHeal(unit,target) != 0) {
 			unit->orderComputerCL(OrderId::MedicHeal1);
 			unit->orderTarget.unit = target;
 			unit->orderTarget.pt.x = target->sprite->position.x;
@@ -90,7 +89,7 @@ void orders_HealMove(CUnit* unit) {
 				
 				newTarget = MedicHeal_TargetAcquire(unit);
 
-				if(newTarget != NULL/* && newTarget->parasiteFlags==0*/) {
+				if(newTarget != NULL) {
 
 					oldPos.x = unit->orderTarget.pt.x;
 					oldPos.y = unit->orderTarget.pt.y;
@@ -130,12 +129,11 @@ void orders_Medic(CUnit* unit) {
 
 	if(unit->pAI != NULL && AI_CastSpellBehaviour(unit,NULL) != 0)
 		bStopThere = true;
-
 	if(!bStopThere) {
 
 		CUnit* target = MedicHeal_TargetAcquire(unit);
 
-		if(target != NULL/* && target->parasiteFlags==0*/) {
+		if(target != NULL) {
 
 			unit->userActionFlags |= 1;
 
@@ -211,27 +209,19 @@ void orders_MedicHeal1(CUnit* unit) {
 	CUnit* target = unit->orderTarget.unit;
 	u32 doMedicHeal_result=0;
 	auto a = unit->hitPoints;
-	bool reqHeal = true;
-	/*
-	if (target != NULL) {
-		if (target->parasiteFlags!=0) {
-			reqHeal = false;
-		}
-	}*/
-/*	if (reqHeal) {
-		doMedicHeal_result = doMedicHeal(unit, target);
-	}*/
+	bool reqHeal = false;
+	if (target!=NULL && target->hitPoints < units_dat::MaxHitPoints[target->id]) {
+		reqHeal = true;
+	}
 	doMedicHeal_result = doMedicHeal(unit, target);
-
-	if (target != NULL) {
-		if (target->hitPoints/256 == unit->getMaxHpInGame() && reqHeal) {
+	if (target != NULL && target->sprite!=NULL) {
+		if (target->hitPoints >= units_dat::MaxHitPoints[target->id] && reqHeal) {
 			if (scbw::getUpgradeLevel(target->playerId, UpgradeId::AdrenalinePacks) > 0) {
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::Adrenaline, 1 + (2 * 24), 0);
 				if (!target->getOverlay(971)) {
 					target->sprite->createTopOverlay(971);
 				}
 			}
-			return;
 		}
 	}
 	if (doMedicHeal_result == 0) {
