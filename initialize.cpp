@@ -56,6 +56,7 @@
 #include "hooks/orders/base_orders/die_order.h"
 #include "hooks/orders/enter_nydus.h"
 #include "hooks/orders/spells/feedback_spell.h"
+#include "hooks/interface/mainmenu/glucustom.h"
 #include "hooks/give_unit.h"
 #include "hooks/orders/spells/hallucination_spell.h"
 #include "hooks/orders/infestation.h"
@@ -420,6 +421,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectMaxHpHooks();
 
 	//hooks::injectSpellcasterAI();
-
+	//hooks::injectGlucustom();
 	return TRUE;
 }
