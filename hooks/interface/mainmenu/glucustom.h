@@ -3,8 +3,8 @@
 
 namespace hooks {
 
-	void raceDropdown(BinDlg** dialog, int);										//004ADF20
+	void raceDropdown(BinDlg** dialog);												//004ADF20
 	int initSingleplayerCustom(BinDlg** dialog);									//004AD850
-	int initGameLoad(int, char);													//004EF100
+	int initGameLoad(int a1, char a2);												//004EF100
 	void injectGlucustomHooks();
 }

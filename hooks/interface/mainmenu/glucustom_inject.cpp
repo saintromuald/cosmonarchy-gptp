@@ -5,13 +5,11 @@ namespace {
 
 	void __declspec(naked) raceDropdown_Wrapper() { //004ADF20
 		static BinDlg** dialog;
-		static u32 a2;
 		__asm {
 			MOV ESI, dialog
-			MOV EBX, a2
 			PUSHAD
 		}
-		hooks::raceDropdown(dialog, a2);
+		hooks::raceDropdown(dialog);
 		__asm {
 			POPAD
 			RETN
