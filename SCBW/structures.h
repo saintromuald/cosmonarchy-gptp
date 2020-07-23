@@ -28,13 +28,24 @@ const int IMAGE_TYPE_COUNT		= 999;
 #pragma pack(1)
 
 struct bStringMap {
-	u8		value;
-	u8		id;
+	u8		value;				// 0x0
+	u8		id;					// 0x1
 };
 
 struct wStringMap {
-	u16		tblstring;
-	u16		index;
+	u16		tblstring;			// 0x0
+	u16		index;				// 0x2
+};
+
+struct dlgEvent {
+	u32		user;				// 0x0
+	u16		field_4;			// 0x4
+	u16		field_6;			// 0x6
+	u16		wVirtKey;			// 0x8
+	u16		wVirtKeyMod;		// 0xA
+	u16		no;					// 0xC
+	u32		current;			// 0xE
+	u16		field_12;			// 0x12
 };
 
 struct UNITDEATHS {

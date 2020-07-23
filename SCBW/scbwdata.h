@@ -150,9 +150,17 @@ SCBW_DATA(const char*,	  CurrentMapFileName,	0x0057FD3C);
 SCBW_DATA(const char*,	  CurrentMapName,		0x0057FE40);
 SCBW_DATA(const _uavail*, UnitAvailability,		0x0057F27C);
 
-SCBW_DATA(bStringMap*,	singleRaceSelect,		0x0051AAA0);
-SCBW_DATA(wStringMap*,	singleTypeSelect,		0x0051AAA8);
-SCBW_DATA(__int16,		networkTable,			0x006D1220);
+// Added by Pr0nogo
+// For raceDropdown
+SCBW_DATA(bStringMap*,	singleRaceSelect,			0x0051AAA0);
+SCBW_DATA(wStringMap*,	singleTypeSelect,			0x0051AAA8);
+SCBW_DATA(__int16,		networkTable,				0x006D1220);
+
+// For initSingleplayerCustom
+SCBW_DATA(int,			selectedGameType,			0x0059BA64);
+SCBW_DATA(__int16,		selectedGameTypeParam,		0x0059BA5C);
+SCBW_DATA(char,			selectedSingleplayerRace,	0x0057F266);
+SCBW_DATA(char,			customSingleplayer,			0x0057F1E3);
 
 //////////////////////////////////////////////////////////////// @}
 
