@@ -8,6 +8,11 @@ namespace {
 		static CUnit* unit;
 
 		__asm {
+			PUSH ESI
+			PUSH EBX
+			SUB ESP, 14
+			PUSH EBP
+			MOV EBP, ESP
 			MOV unit, EDI
 			PUSHAD
 		}
