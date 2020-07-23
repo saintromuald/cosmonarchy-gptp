@@ -27,6 +27,16 @@ const int IMAGE_TYPE_COUNT		= 999;
 
 #pragma pack(1)
 
+struct bStringMap {
+	u8		value;
+	u8		id;
+};
+
+struct wStringMap {
+	u16		tblstring;
+	u16		index;
+};
+
 struct UNITDEATHS {
   u32        player[12];
 };

@@ -150,6 +150,10 @@ SCBW_DATA(const char*,	  CurrentMapFileName,	0x0057FD3C);
 SCBW_DATA(const char*,	  CurrentMapName,		0x0057FE40);
 SCBW_DATA(const _uavail*, UnitAvailability,		0x0057F27C);
 
+SCBW_DATA(bStringMap*,	singleRaceSelect,		0x0051AAA0);
+SCBW_DATA(wStringMap*,	singleTypeSelect,		0x0051AAA8);
+SCBW_DATA(__int16,		networkTable,			0x006D1220);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data
