@@ -455,6 +455,7 @@ enum Enum {
 	ProtossBulwark				= 93,
 	ProtossExemplar				= 94,
 	ProtossStarSovereign		= 80,
+	ProtossAugur                = 102,
 
 //Protoss-Building
 	ProtossPrincipality			= 158,

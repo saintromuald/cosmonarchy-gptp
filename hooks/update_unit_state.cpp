@@ -417,8 +417,18 @@ namespace hooks {
 			s32 maxShields = (s32)(units_dat::MaxShieldPoints[unit->id]) * 256;
 
 			if (unit->shields != maxShields && unit->id!=UnitId::scarab) {
+				if (unit->id == UnitId::ProtossAugur) {
+					unit->shields -= std::min(7,unit->shields);
+					if (unit->shields == 0) {
+						unit->remove();
+					}
+				}
+				else {
+					unit->shields += 7;
+				}
+				
 
-				unit->shields += 7;
+
 				if ( (units_dat::BaseProperty[unit->id] & UnitProperty::Building) &&
 					(unit->status & UnitStatus::Completed) &&
 					scbw::getUpgradeLevel(unit->playerId,UpgradeId::TemporalBatteries)) {
@@ -518,6 +528,11 @@ namespace hooks {
 				unit->recentOrderTimer--;
 
 			//Self-destruct timer
+			if (unit->id == UnitId::ProtossAugur && unit->shields == 0) {
+				unit->remove();
+				//add final hour code later
+				bStopHere = true;
+			}
 			if (unit->removeTimer != 0) {
 
 				unit->removeTimer--;
