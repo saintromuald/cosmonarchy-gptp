@@ -34,6 +34,12 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 	if (unit->id==UnitId::ZergGorgoleth && scbw::getUpgradeLevel(unit->playerId, UpgradeId::RaveningMandible)) {
 		cooldown /= 2;
 	}
+	if (unit->id == UnitId::ZergUltralisk && scbw::getUpgradeLevel(unit->playerId, UpgradeId::KaiserRampage)) {
+		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
+			cooldown /= 2;
+		}
+	}
+
 	if (cooldownModifier > 0)
 		cooldown /= 2;
 	else 
