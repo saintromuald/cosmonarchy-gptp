@@ -50,10 +50,25 @@ namespace hooks {
 		}
 	}
 
-
+	//Ai_GetDefaultWorkerFromRace
+	void __declspec(naked) Ai_GetDefaultWorkerFromRace() {
+		static u32 unit_id;
+		static u32 race;
+		__asm {
+			MOV race,EAX
+			PUSHAD
+		}
+		unit_id = get_worker_from_race(race);
+		__asm {
+			POPAD
+			MOV EAX,unit_id
+			RETN
+		}
+	}
 	void injectWorkerHooks() {
 		jmpPatch(Ai_ProgressSpendingQueue_JmpWrapper, 0x00434C31);
 		jmpPatch(Ai_BuildSupplies_Wrapper, 0x00433730);
+		jmpPatch(Ai_GetDefaultWorkerFromRace, 0x00432130);
 	}
 	void injectTownhallHooks() {
 
@@ -63,10 +78,10 @@ namespace hooks {
 		injectWorkerHooks();
 
 		//worker code
-		//0043378C, 0043214B
+		//0043214B
+
 		//town hall
 		injectTownhallHooks();
-		//townhall code
 		//00433f62, 0043A100, 004365f6, 00433EB5, 0044387B, 00446230, 
 
 	}

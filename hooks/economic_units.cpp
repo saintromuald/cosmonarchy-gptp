@@ -89,7 +89,7 @@ namespace hooks {
 		};
 		return order;
 	}
-	u16 get_townhall_from_race(u32 race) {
+	u32 get_townhall_from_race(u32 race) {
 		u32 id = 0xe4;
 		switch (race) {
 		case RaceId::Terran:
@@ -106,7 +106,7 @@ namespace hooks {
 		}
 		return id;
 	}
-	u16 get_worker_from_race(u32 race) {
+	u32 get_worker_from_race(u32 race) {
 		u32 id = 0xe4;
 		switch (race) {
 		case RaceId::Terran:
@@ -123,7 +123,7 @@ namespace hooks {
 		}
 		return id;
 	}
-	u16 get_supply_structure_from_race(u32 race) {
+	u32 get_supply_structure_from_race(u32 race) {
 		u32 id = 0xe4;
 		switch (race) {
 		case RaceId::Terran:
@@ -186,6 +186,8 @@ namespace hooks {
 				{
 					Ai_AddTownSpendReq(v18, v19 > 8 ? 120 : 140, v10, (void*)a1);
 				}
+				//used variables: v17, v9, v3, v10, v18, v19, a1
+
 				return;
 			}
 			if (v7 < 13)
