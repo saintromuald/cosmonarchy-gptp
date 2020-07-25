@@ -226,6 +226,32 @@ C_ASSERT(sizeof(ColorShiftData) == 20);
 //static_assert(sizeof(ColorShiftData) == 20, "The size of the ColorShiftData structure is invalid");
 
 //-------- Flag structures --------//
+struct TownReq {
+	u8 flags_and_count;
+	u8 priority;
+	u16 id;
+};
+struct AiTown {
+	CLink<AiTown> link;
+	void* free_workers;//replace later
+	void* workers;//replace later
+	void* free_buildings;//replace later
+	void* buildings;//replace later
+	u8 player;
+	u8 inited;
+	u8 worker_count;
+	u8 worker_limit;
+	u8 resource_area;
+	u8 resource_area_not_set;
+	u8 in_battle;
+	u8 unk1f;
+	Point16 position;
+	CUnit* main_building;
+	CUnit* building_scv;
+	CUnit* mineral;
+	CUnit* gas_buildings[3];
+	TownReq town_units[0x64];
+};
 
 //Based on BWAPI's Offsets.h
 struct ActiveTile {
