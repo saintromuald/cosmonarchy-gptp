@@ -28,39 +28,32 @@ namespace hooks {
 		}
 	}
 
-		/*
-		//probably is going to be hook instead
-		void __declspec(naked) Ai_BuildSupplies_JmpWrapper() {
+		
+	//probably is going to be hook instead
+	void __declspec(naked) Ai_BuildSupplies_Wrapper() {
+		static AiTown* town;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV town, EAX
+			POP EAX
+			PUSHAD
 		}
-		00433753  |.  3C 01         CMP AL,1
-00433755  |.  8975 F4       MOV DWORD PTR SS:[EBP-C],ESI
-00433758  |.  75 09         JNZ SHORT 00433763
-0043375A  |.  C745 FC 6D000>MOV DWORD PTR SS:[EBP-4],6D
-00433761  |.  EB 0D         JMP SHORT 00433770
-00433763  |>  F6D8          NEG AL
-00433765  |.  1BC0          SBB EAX,EAX
-00433767  |.  83E0 72       AND EAX,72
-0043376A  |.  83C0 2A       ADD EAX,2A
-0043376D  |.  8945 FC       MOV DWORD PTR SS:[EBP-4],EAX
-00433770  |>  8D0CF6        LEA ECX,DWORD PTR DS:[ESI+ESI*8]
-00433773  |.  8A048D E9EE57>MOV AL,BYTE PTR DS:[ECX*4+57EEE9]
-0043377A  |.  3C 01         CMP AL,1
-0043377C  |.  75 07         JNZ SHORT 00433785
-0043377E  |.  B8 07000000   MOV EAX,7
-00433783  |.  EB 0A         JMP SHORT 0043378F
-00433785  |>  F6D8          NEG AL
-00433787  |.  1BC0          SBB EAX,EAX
-00433789  |.  83E0 17       AND EAX,17
-0043378C  |.  83C0 29       ADD EAX,29
-0043378F  |>  57            PUSH EDI
-00433790  |.  8BF8          MOV EDI,EAX
-00433792  |.  E8 39520500   CALL 004889D0
-		*/
-	
+		Ai_BuildSupplies(town);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
+		}
+	}
+
 
 	void injectWorkerHooks() {
 		jmpPatch(Ai_ProgressSpendingQueue_JmpWrapper, 0x00434C31);
-		//jmpPatch(Ai_BuildSupplies_JmpWrapper, 0x00433753);
+		jmpPatch(Ai_BuildSupplies_Wrapper, 0x00433730);
 	}
 	void injectTownhallHooks() {
 
