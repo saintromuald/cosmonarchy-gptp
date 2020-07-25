@@ -112,6 +112,8 @@
   <ItemGroup>
     <ClCompile Include="CUnitExtended.cpp" />
     <ClCompile Include="globals.cpp" />
+    <ClCompile Include="hooks\economic_units.cpp" />
+    <ClCompile Include="hooks\economic_units_inject.cpp" />
     <ClCompile Include="hooks\maxhp.cpp" />
     <ClCompile Include="hooks\maxhp_inject.cpp" />
     <ClCompile Include="hooks\orders\base_orders\attack_orders.cpp" />
@@ -318,6 +320,7 @@
   <ItemGroup>
     <ClInclude Include="CUnitExtended.h" />
     <ClInclude Include="globals.h" />
+    <ClInclude Include="hooks\economic_units.h" />
     <ClInclude Include="hooks\maxhp.h" />
     <ClInclude Include="hooks\orders\spells\recall_spell.h" />
     <ClInclude Include="hooks\orders\base_orders\attack_orders.h" />
