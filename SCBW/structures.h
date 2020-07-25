@@ -253,6 +253,51 @@ struct AiTown {
 	TownReq town_units[0x64];
 };
 
+struct AiSpendingRequest {
+	u8 priority;
+	u8 type;
+	u16 unit_id;
+	void* val;
+};
+struct PlayerAiData {
+	u32 mineral_need;
+	u32 gas_need;
+	u32 supply_need;
+	u32 minerals_available;
+	u32 gas_available;
+	u32 supply_available;
+	AiSpendingRequest requests[0x3f];
+	u8 request_count;
+	u8 currently_building_bunkers;
+	u8 dc211[0x6];
+	u16 flags;
+	u8 panic_block[0x4];
+	u16 attack_grouping_region;
+	u16 train_unit_id;
+	u8 default_min_strength_for_regions;
+	u8 defense_priority_base;
+	u32 previous_building_hit_second;
+	u32 last_attack_second;
+	u8 strategic_suicide_mission_cooldown;
+	u8 spell_cooldown;
+	u8 attack_failed;
+	u8 difficulty;
+	u16 attack_force[0x3f];
+	u16 attack_force_terminator;
+	u16 gg_build_def[0x14];
+	u16 ga_build_def[0x14];
+	u16 ag_build_def[0x14];
+	u16 aa_build_def[0x14];
+	u16 gg_use_def[0x14];
+	u16 ga_use_def[0x14];
+	u16 ag_use_def[0x14];
+	u16 aa_use_def[0x14];
+	u8 build_limits[0xe4];
+	CUnit* free_medic;
+	u8 dc4e8[0x10];
+};
+C_ASSERT(sizeof(PlayerAiData) == 0x4e8);
+
 //Based on BWAPI's Offsets.h
 struct ActiveTile {
 /*00*/  u8 visibilityFlags;//0xff
@@ -504,7 +549,7 @@ struct AI_Main {
 C_ASSERT(sizeof(AI_Main) == 1256); /*0x4E8*/
 //static_assert(sizeof(AI_Main) == 1256, "The size of the AI_Main structure is invalid");
 
-struct AiCaptain {
+struct AiCaptain {//AiRegion
 /*00*/  u16 region;
 /*02*/  u16 unknown_0x2;
 /*04*/  u8  playerId;
