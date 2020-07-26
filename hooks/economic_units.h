@@ -6,4 +6,6 @@ namespace hooks {
 	void injectEconomicUnitHooks();
 	void Ai_BuildSupplies(AiTown* town);
 	u32 get_worker_from_race(u32 race);
+	u32 get_townhall_from_race(u32 race);
+	bool is_townhall(u32 unit_id);
 }

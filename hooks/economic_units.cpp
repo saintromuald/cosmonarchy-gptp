@@ -106,6 +106,17 @@ namespace hooks {
 		}
 		return id;
 	}
+	bool is_townhall(u32 unit_id) {
+		switch (unit_id) {
+		case UnitId::command_center:
+		case UnitId::nexus:
+		case UnitId::hatchery://lairs and hives are not required
+			return true;
+		default:
+			break;
+		};
+		return false;
+	}
 	u32 get_worker_from_race(u32 race) {
 		u32 id = 0xe4;
 		switch (race) {
