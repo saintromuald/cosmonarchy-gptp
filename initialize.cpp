@@ -56,7 +56,6 @@
 #include "hooks/orders/base_orders/die_order.h"
 #include "hooks/orders/enter_nydus.h"
 #include "hooks/orders/spells/feedback_spell.h"
-#include "hooks/interface/mainmenu/glucustom.h"
 #include "hooks/give_unit.h"
 #include "hooks/orders/spells/hallucination_spell.h"
 #include "hooks/orders/infestation.h"
@@ -160,8 +159,26 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
 
 
-	//kakaru/exemplar hardcode
+	//town hall code
+
+	//worker code
+	//00434C36, 0043378C, 0043214B
+	//townhall code
+	//00433f62, 0043A100, 004365f6, 00433EB5, 0044387B, 00446230, 
+
+	//hatchery-lair-hive code, required later to patch that for sire/brood
+	//00401cf0,0043A146,004A1F8B (partial, id check is for zerg only)
+	//00402C24, 0042850A, 0042974B,00444D51,004E8C04,004EA88C(hook exists, larva)
+	//hatchery-only code 00434B2F,00436380,
+
+
 	u8 patchLastUnit[] = { 0xE4 };
+	//allow pissed/yes sounds for >= Command Center
+//	memoryPatch(0x0048EA20 + 2, patchLastUnit, 2);
+	//hook required
+	memoryPatch(0x0048EAB0 + 2, patchLastUnit, 2);
+
+	//kakaru/exemplar hardcode
 	memoryPatch(0x00431586 + 2, patchLastUnit, 1);
 	memoryPatch(0x00431B49 + 2, patchLastUnit, 1);
 	memoryPatch(0x00437E1D + 2, patchLastUnit, 1);
@@ -421,6 +438,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectMaxHpHooks();
 
 	//hooks::injectSpellcasterAI();
-	//hooks::injectGlucustom();
+
 	return TRUE;
 }
