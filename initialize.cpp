@@ -174,9 +174,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
 	u8 patchLastUnit[] = { 0xE4 };
 	//allow pissed/yes sounds for >= Command Center
-//	memoryPatch(0x0048EA20 + 2, patchLastUnit, 2);
+//	memoryPatch(0x0048EA20 + 2, patchLastUnit, 1);
 	//hook required
-	memoryPatch(0x0048EAB0 + 2, patchLastUnit, 2);
+	memoryPatch(0x0048EAB0 + 2, patchLastUnit, 1);
 
 	//kakaru/exemplar hardcode
 	memoryPatch(0x00431586 + 2, patchLastUnit, 1);
