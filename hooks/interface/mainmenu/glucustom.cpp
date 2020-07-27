@@ -15,6 +15,40 @@ namespace {
 	PLAYER randomizePlayerSlot();
 
 	//For initGameLoad
+	HANDLE stopMusic();
+	FILE loadReplayFile(int a1, int a2, int a3);
+	signed int levelCheatCreate(char a1, int a2);
+	signed int loadGameCreate(int a1, char a2);
+	signed int gameCreateSomething(char a1);
+	signed int singleplayerMeleeCreate();
+	int getSystemTime(LPSYSTEMTIME* a1);
+	void initScreenLayer();
+	int subTwoCheckTwo(void a1, int a2);
+	void loadGameFonts();
+	void srand(unsigned int a1);
+	dwPOINT initPathArray();
+	signed int appAddExit(int a1);
+	char multiplayerChatSomething();
+	void getPlayerStructs(void a1);
+	PLAYER initStartingRacesAndTypes();
+	char initMultiplayerSavePlayers();
+	FILE initPlayers();
+	void setVisionIndex();
+	void initAiPlayerNames();
+	__int16 loadRaceUI();
+	bool hotkeyRemapping();
+	signed int gameInit(a1);
+	int getPlayerColors(int a1);
+	signed int randomizePlayerColors();
+	int authorizeMap(int a1, int a2, int a3, int a4);
+	char bigPacketError(int a1, char 2, int a3, int a4, int a5);
+	signed int loadGameCore(int a1);
+	void chooseTriggerTemplate(int a1, char a2, int a3);
+	int initPlayerNames();
+	int tickCounterInit();
+	int CMDRECV_SetReplaySpeed(int a1, unsigned __int8 a2, unsigned int a3);
+	void copyPlayerStructsToReplay(void a1, void a2);
+	signed int allocReplayCommands();
 }
 
 namespace hooks {
@@ -94,19 +128,19 @@ namespace hooks {
 			//label 6
 			pDropdown = 0;
 		}
-		result = isMeleeGame(SBYTE1(selectedGameType), selectedGameTypeParam, selectedGameType);
+		result = isMeleeGame(SBYTE1(scbw::selectedGameType), scbw::selectedGameTypeParam, scbw::selectedGameType);
 		if (result) {
-			selectedSingleplayerRace[1] = 0x7070707;
+			scbw::selectedSingleplayerRace[1] = 0x7070707;
 			customSingleplayer[0] = 1;
-			selectedSingleplayerRace[5] = 0x7070707;
+			scbw::selectedSingleplayerRace[5] = 0x7070707;
 			if (pDropDown + 70) {
 				pDropdownBig = pDropdown + 72;
 				if (pDropdownBig != -1) {
-					selectedSingleplayerRace[0] = (pDropdown + 66) + 4 * pDropdownBig;
+					scbw::selectedSingleplayerRace[0] = (pDropdown + 66) + 4 * pDropdownBig;
 				}
 				result = pDropdown;
 				if (pDropdown) {
-					spRace = selectedSingleplayerRace[1];
+					spRace = scbw::selectedSingleplayerRace[1];
 					do {
 						if (result->name[13] & 8) {
 							if (result[1].name[23]) {
@@ -122,26 +156,163 @@ namespace hooks {
 			}
 			else if (pDropdown[6] & 8) {
 				if ((pDropdown + 70) && (al = (pDropdown + 72), al != -1)) {
-					playerTable[LOCAL_NATION_ID].race = (pDropdown + 66) + 4 * al;
-					IS_IN_GAME_LOOP = 1;
+					scbw::playerTable[scbw::LOCAL_NATION_ID].race = (pDropdown + 66) + 4 * al;
+					scbw::IS_IN_GAME_LOOP = 1;
 					result = randomizePlayerSlot();
-					IS_IN_GAME_LOOP = 0;
+					scbw::IS_IN_GAME_LOOP = 0;
 				}
 				else {
-					playerTable[LOCAL_NATION_ID].race = 6;
-					IS_IN_GAME_LOOP = 1;
+					scbw::playerTable[scbw::LOCAL_NATION_ID].race = 6;
+					scbw::IS_IN_GAME_LOOP = 1;
 					result = randomizePlayerSlot();
-					IS_IN_GAME_LOOP = 0;
+					scbw::IS_IN_GAME_LOOP = 0;
 				}
 			}
 		}
 		return result;
 	};
-	/*
+	
 	int initGameLoad(int a1, char a2) { // 004EF100 -- https://pastebin.com/raw/szn0Z6sp
-		
+		int v2; // ecx
+		int v3; // eax
+		int v5; // esi
+		char* v6; // esi
+		int v7; // edx
+		_DWORD* v8; // eax
+		int v9; // ecx
+		char v10; // [esp+8h] [ebp-4h]
+
+		stopMusic();
+		if (scbw::IS_IN_REPLAY)
+		{
+			if (!scbw::scenarioChk)
+			{
+				a2 = 0;
+				loadReplayFile((int)scbw::CurrentMapFileName, v2, 0);
+			}
+			if (scbw::IS_IN_REPLAY)
+			{
+				*(_DWORD*)scbw::playerForce = *(_DWORD*)scbw::playerForceSomethingReplay;
+				*(_DWORD*)&scbw::playerForce[4] = *(_DWORD*)&scbw::playerForceSomethingReplay[4];
+			}
+		}
+		if (!scbw::loadGameFileHandle)
+			scbw::elapsedTimeFrames = 0;
+		if (!scbw::multiPlayerMode)
+		{
+			v3 = levelCheatCreate(a2, a1);
+			if (!v3 || !loadGameCreate(v3, a2) || !gameCreateSomething(a2) || !singleplayerMeleeCreate())
+				return 0;
+			if (scbw::IS_IN_REPLAY)
+			{
+				scbw::initialSeed = scbw::replaySeed;
+			}
+			else
+			{
+				scbw::initialSeed = getSystemTime(0);
+				scbw::replaySeed = scbw::initialSeed;
+			}
+		}
+		initScreenLayer();
+		scbw::mouseOverCallback = (int(__stdcall*)(_DWORD))subTwoCheckTwo;
+		loadGameFonts();
+		memset(scbw::randomCounts, 0, sizeof(scbw::randomCounts));
+		scbw::randomCountsTotal = 0;
+		scbw::lastRandomNumber = scbw::initialSeed;
+		srand(scbw::initialSeed);
+		initPathArray();
+		appAddExit((int)NullCallback);
+		if (!scbw::loadGameFileHandle)
+			multiplayerChatSomething();
+		randomizePlayerSlot();
+		v5 = scbw::IS_IN_REPLAY;
+		if (scbw::IS_IN_REPLAY)
+			getPlayerStructs(scbw::playerTable);
+		initStartingRacesAndTypes();
+		if (!v5)
+		{
+			if (scbw::loadGameFileHandle)
+				initMultiplayerSavePlayers();
+			else
+				initPlayers();
+		}
+		setVisionIndex();
+		initAiPlayerNames();
+		memset(scbw::randomCounts, 0, sizeof(scbw::randomCounts));
+		scbw::randomCountsTotal = 0;
+		scbw::lastRandomNumber = scbw::initialSeed;
+		srand(scbw::initialSeed);
+		loadRaceUI();
+		hotkeyRemapping();
+		if (!gameInit(v5))
+			return 0;
+		v6 = (char*)scbw::IS_IN_REPLAY;
+		if (scbw::IS_IN_REPLAY)
+			getPlayerColors(scbw::factionsColorsOrdering);
+		if (!scbw::loadGameFileHandle)
+			randomizePlayerColors();
+		if (!v6 && !scbw::campaignIndex)
+		{
+			v6 = scbw::CurrentMapFileName;
+			if (!authorizeMap((unsigned int)scbw::CurrentMapFileName, (int)&v10, 1, (int)scbw::mapArchiveHandle)
+				&& !scbw::gameData.bVictoryCondition // 0x75
+				&& !scbw::gameData.bStartingUnits // 0x79
+				&& !scbw::gameData.bTournamentModeEnabled) // 0x7F
+			{
+				if (scbw::loadGameFileHandle)
+				{
+					bigPacketError(99, scbw::CurrentMapFileName, 0, 0, 1);
+					return 0;
+				}
+				bigPacketError(97, 0, 0, 0, 1);
+				return 0;
+			}
+		}
+		scbw::CHEAT_STATE &= 0x28000200u;
+		if (!loadGameCore((int)v6))
+			return 0;
+		if (!scbw::mapStarted)
+		{
+			if (!chooseTriggerTemplate(v7, (char*)&scbw::randomCounts[256], (int)v6))
+			{
+				bigPacketError(93, 0, 0, 0, 1);
+				return 0;
+			}
+			if (!scbw::mapStarted)
+			{
+				*(_DWORD*)scbw::playerHasLeft = 0;
+				scbw::lossType = 0;
+				*(_DWORD*)&scbw::unkVictoryVariable = 0;
+			}
+		}
+		initPlayerNames();
+		if (!scbw::multiPlayerMode)
+			tickCounterInit();
+		scbw::saveLoadSuccess = (unsigned __int8)scbw::mapStarted;
+		scbw::elapstedTimeModifier = scbw::mapStarted != 0 ? scbw::savedElapsedSeconds : 0;
+		CMDRECV_SetReplaySpeed(optionList.speed, 0, 1u);
+		if (scbw::IS_IN_REPLAY)
+		{
+			copyPlayerStructsToReplay(scbw::playerTable, &scbw::gameData);
+			v8 = scbw::replayData;
+			dword_6D5BF0 = 0;
+			v9 = *((_DWORD*)scbw::replayData + 2);
+			*(_DWORD*)scbw::replayData = 0;
+			v8[1] = 1;
+			v8[7] = v9;
+			scbw::replayVisions = 255;
+			scbw::playerVisions = 255;
+			scbw::replayShowEntireMap = 0;
+			scbw::nextReplayCommandFrame = -1;
+			scbw::playerExploredVisions = 0xFF00;
+		}
+		else
+		{
+			allocReplayCommands();
+		}
+		return 1;
 	};
-	*/
+	
 } //namespace hooks
 
 ;
@@ -157,11 +328,11 @@ namespace {
 
 		__asm {
 			PUSHAD
-			MOV EAX, pszString
-			MOV ECX, pDlg
+			MOV pszString, EAX
+			MOV pDlg, ECX
 			CALL Func_addItemToListing
-			MOV result, EAX
 			POPAD
+			MOV EAX, result
 		}
 		return result;
 	};
@@ -170,7 +341,7 @@ namespace {
 	void createDialogDropdown(BinDlg** a1) {
 		__asm {
 			PUSHAD
-			MOV EAX, a1
+			MOV a1, EAX
 			CALL Func_createDialogDropdown
 			POPAD
 		}
@@ -180,8 +351,8 @@ namespace {
 	void dlgSetSelected(unsigned __int8 a1, BinDlg** a2) {
 		__asm {
 			PUSHAD
-			MOVZX EBX, a1
-			MOV ESI, a2
+			MOVZX a1, BX
+			MOV a2, ESI
 			CALL Func_dlgSetSelected
 			POPAD
 		}
@@ -197,12 +368,12 @@ namespace {
 
 		__asm {
 			PUSHAD
-			MOVZX DL,a1
-			MOVZX CX,a2
-			MOVZX BL,a3
+			MOVZX a1, DL
+			MOVZX a2, CX
+			MOVZX a3, BL
 			CALL Func_isMeleeGame
-			MOV result, EAX
 			POPAD
+			MOV EAX, result
 		}
 		return result;
 	};
@@ -214,8 +385,8 @@ namespace {
 		__asm {
 			PUSHAD
 			CALL Func_randomizePlayerSlot
-			MOV result, EAX
 			POPAD
+			MOV EAX, result
 		}
 		return result;
 	};
