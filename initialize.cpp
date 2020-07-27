@@ -57,6 +57,7 @@
 #include "hooks/orders/enter_nydus.h"
 #include "hooks/orders/spells/feedback_spell.h"
 #include "hooks/give_unit.h"
+#include "hooks/interface/mainmenu/glucustom.h"
 #include "hooks/orders/spells/hallucination_spell.h"
 #include "hooks/orders/infestation.h"
 #include "hooks/orders/larva_creep_spawn.h"
@@ -74,6 +75,7 @@
 #include "hooks/orders/research_upgrade_orders.h"
 #include "hooks/interface/select_larva.h"
 #include "hooks/interface/selection.h"
+#include "hooks/audiovisuals/sfxhooks.h"
 #include "hooks/orders/siege_transform.h"
 #include "hooks/interface/stats_panel_display.h"
 #include "hooks/orders/base_orders/stopholdpos_orders.h"
@@ -428,6 +430,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectUseTechHooks();
 	
 	//hooks::injectPsiFieldHooks();
+	//hooks::injectSpellcasterAI();
 
 	hooks::injectArmorBonusHook();
 	hooks::injectSightRangeHook();
@@ -436,8 +439,10 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
 	hooks::injectUnitTooltipHook();
 	hooks::injectMaxHpHooks();
-
-	//hooks::injectSpellcasterAI();
+	/*
+	hooks::injectGlucustomHooks();
+	hooks::injectSfxHooks();
+	*/
 
 	return TRUE;
 }
