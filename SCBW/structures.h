@@ -48,6 +48,82 @@ struct dlgEvent {
 	u16		field_12;			// 0x12
 };
 
+struct GameData { // taken from IDA and from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
+	u32		saveTime;					// 0x0
+	char	gameName[0x18];				// 0x4
+	u32		saveTimestamp;				// 0x1C
+	u16		mapWidthTiles;				// 0x20
+	u16		mapHeightTiles;				// 0x22
+	u8		activePlayercount;			// 0x24
+	u8		maxPlayerCount;				// 0x25
+	u8		gameSpeed;					// 0x26
+	u8		gameState;					// 0x27
+	u16		gameType;					// 0x28
+	u16		gameSubtype;				// 0x2A
+	u32		cdkeyHash;					// 0x2C
+	u16		tileset;					// 0x30
+	u8		isReplay;					// 0x32
+	u8		computerPlayerCount;		// 0x33
+	u8		hostName[0x19];				// 0x34
+	char	mapTitle[0x20];				// 0x4D
+	u16		gotGameType;				// 0x6D
+	u16		gotGameSubtype;				// 0x6F
+	u16		gotGameSubtypeDisplay;		// 0x71
+	u16		gotGameSubtypeLabel;		// 0x73
+	u8		victoryCondition;			// 0x75
+	u8		resourceType;				// 0x76
+	u8		useStandardUnitStats;		// 0x77
+	u8		fogOfWar;					// 0x78
+	u8		startingUnits;				// 0x79
+	u8		useFixedPositions;			// 0x7A
+	u8		restrictionFlags;			// 0x7B
+	u8		alliesEnabled;				// 0x7C
+	u8		teamsEnabled;				// 0x7D
+	u8		cheatsEnabled;				// 0x7E
+	u8		tournamentModeEnabled;		// 0x7F
+	u32		victoryConditionValue;		// 0x80
+	u32		resourceMineralValue;		// 0x84
+	u32		resourceGasValue;			// 0x88
+};
+C_ASSERT(sizeof(GameData) == 0x8C);
+
+struct ReplayData { // taken from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
+	u32		replayDataStart;			// 0x0
+	u32		boolUnk;					// 0x4
+	u32		replayFrameBegin;			// 0x8
+	u32		length[0x2];				// 0xC
+	u32		replayFrameEnd;				// 0x14
+	u32		latestCommandFrame;			// 0x18
+	u32		replayFramePos;				// 0x1C
+};
+C_ASSERT(sizeof(ReplayData) == 0x20);
+
+struct ReplayFrame { // taken from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
+	u32		frame;						// 0x0
+	u8		dataLength;					// 0x4
+	u8		storm;						// 0x5 | { byte storm_player, byte cmd[...] }[...]
+};
+C_ASSERT(sizeof(ReplayFrame) == 0x6);
+
+struct Options { // taken from IDA
+	u32		speed;						// 0x0
+	u32		mouseScroll;				// 0x4
+	u32		keyboardScroll;				// 0x8
+	u32		music;						// 0xC
+	u32		sfx;						// 0x10
+	u32		tipNumber;					// 0x14
+	u32		flags;						// 0x18
+	u32		m_mouseScroll;				// 0x1C
+	u32		m_keyboardScroll;			// 0x20
+	u32		useChatColors;				// 0x24
+	u32		null;						// 0x28
+};
+C_ASSERT(sizeof(Options) == 0x2C);
+
+struct PlayerName {
+	char	playerName[0x19];			// 0x0
+};
+
 struct UNITDEATHS {
   u32        player[12];
 };

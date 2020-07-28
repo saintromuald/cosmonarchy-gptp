@@ -125,7 +125,7 @@ SCBW_DATA(u32*,			MoveToX,				0x0062848C);
 SCBW_DATA(u32*,			MoveToY,				0x006284A8);
 
 /// Contains various information (names, player types, race types, and associated forces) of each player in the current game
-SCBW_DATA(const PLAYER*,  playerTable,          0x0057EEE0);
+SCBW_DATA(PLAYER*,  playerTable,          0x0057EEE0);
 
 struct SupplyData {
   u32 provided[PLAYER_COUNT];
@@ -170,12 +170,12 @@ SCBW_DATA(const FILE*,			loadGameFileHandle,			0x006D1218);
 SCBW_DATA(const u8*,			multiPlayerMode,			0x0057F0B4);
 SCBW_DATA(const u32*,			initialSeed,				0x0051CA10);
 SCBW_DATA(const u32*,			replaySeed,					0x006D0F38);
-//SCBW_DATA(const func*,			mouseOverCallback,			0x006D5EAC); // how to set functions?
+//SCBW_DATA(const func*,			mouseOverCallback,			0x006D5EAC); // how to define a func?
 SCBW_DATA(const u32*,			randomCounts,				0x0051C610); // size of 0x400, array?
 SCBW_DATA(const u32*,			randomCountsTotal,			0x0051CA18);
 SCBW_DATA(const u16*,			campaignIndex,				0x0057F244);
 SCBW_DATA(const void*,			mapArchiveHandle,			0x00596BC4);
-//SCBW_DATA(const GameData*,		gameData,					0x005967F8); // how to add GameData?
+SCBW_DATA(const GameData*,		gameData,					0x005967F8);
 SCBW_DATA(const u8*,			mapStarted,					0x006D121C);
 SCBW_DATA(const u8*,			playerHasLeft,				0x00581D62); // array of 0x8
 SCBW_DATA(const u8*,			lossType,					0x00581D61);
@@ -183,17 +183,37 @@ SCBW_DATA(const u8*,			unkVictoryVariable,			0x00581D66);
 SCBW_DATA(const u32*,			saveLoadSuccess,			0x006D5A68);
 SCBW_DATA(const u32*,			elapstedTimeModifier,		0x006D5BCC);
 SCBW_DATA(const u32*,			savedElapsedSeconds,		0x0057F240);
-//SCBW_DATA(const OPTIONS*,		optionsList,				0x006CDFD4); // how to add options?
-//SCBW_DATA(const ReplayData*,	replayData,				0x00596BBC); // how to add ReplayData?
+SCBW_DATA(const Options*,		optionsList,				0x006CDFD4);
+SCBW_DATA(const ReplayData*,	replayData,					0x00596BBC);
 SCBW_DATA(const u32*,			replayVisions,				0x006D0F18);
 SCBW_DATA(const u32*,			playerVisions,				0x0057F0B0);
 SCBW_DATA(const u32*,			replayShowEntireMap,		0x006D0F1C); // dword bool...?
 SCBW_DATA(const u32*,			nextReplayCommandFrame,		0x005136C8);
 SCBW_DATA(const u32*,			playerExploredVisions,		0x0057EEB8);
+SCBW_DATA(		int*,			subTwoCheckTwo,				0x004EE0F0);
 
 // For getResponseSfx
-SCBW_DATA(const u32*,		selectionSoundCounter,		0x00640548);
-SCBW_DATA(const char*,		lastRandSFX,				0x006D5BE0);
+SCBW_DATA(const u32*,			selectionSoundCounter,		0x00640548);
+SCBW_DATA(		char*,			lastRandSFX,				0x006D5BE0);
+
+// For loadRaceUI
+SCBW_DATA(		u8*,			consoleIndex,				0x0057F1E2);
+SCBW_DATA(		u16*,			currentMusicId,				0x0057F1DE);
+SCBW_DATA(const char*,			xCampaignFirstMission,		0x005122C0);
+SCBW_DATA(const char*,			campaignFirstMission,		0x005122BC);
+SCBW_DATA(const u32*,			consoleRaceSpecific,		0x0051A3B4);
+
+// For loadGameCreate
+SCBW_DATA(		u32*,			isHost,						0x00596888);
+SCBW_DATA(		u8*,			outOfGame,					0x006D5A10);
+SCBW_DATA(const u32*,			scMainState,				0x00596904);
+SCBW_DATA(		u8*,			gameActive,					0x006D11EC);
+SCBW_DATA(		u16*,			nextSCMainState,			0x0051CE90);
+SCBW_DATA(		u32*,			replayEndFrame,				0x006D0F31);
+
+// For levelCheatCreate
+SCBW_DATA(		u32*,			levelCheatUnlocked,			0x006D11C0);
+SCBW_DATA(		PlayerName*,	playerName;					0x0057EEB5);
 
 //////////////////////////////////////////////////////////////// @}
 
