@@ -6,7 +6,7 @@ namespace {
 	void __declspec(naked) raceDropdown_Wrapper() { //004ADF20
 		static BinDlg** dialog;
 		__asm {
-			MOV ESI, dialog
+			MOV dialog, EAX
 			PUSHAD
 		}
 		hooks::raceDropdown(dialog);
@@ -14,31 +14,37 @@ namespace {
 			POPAD
 			RETN
 		}
-	}
-	;
-	void __declspec(naked) initSingleplayerCustom_Wrapper() { //004AD850
+	};
+	int __declspec(naked) initSingleplayerCustom_Wrapper() { //004AD850
 		static BinDlg** dialog;
+		static int result;
 		__asm {
-
+			MOV dialog, EAX
+			PUSHAD
 		}
-		hooks::initSingleplayerCustom(dialog);
+		result = hooks::initSingleplayerCustom(dialog);
 		__asm {
-
+			POPAD
+			MOV EAX, result
+			RETN
 		}
-	}
-	;
+	};
 	void __declspec(naked) initGameLoad_Wrapper() { //004EF100
 		static u32 a1;
 		static char a2;
+		static int result;
 		__asm {
-
+			MOV a1, ESI
+			MOV a2, EDI
+			PUSHAD
 		}
-		hooks::initGameLoad(a1, a2);
+		result = hooks::initGameLoad(a1, a2);
 		__asm {
-
+			POPAD
+			MOV EAX, result
+			RETN
 		}
-	}
-	;
+	};
 }
 
 namespace hooks {
