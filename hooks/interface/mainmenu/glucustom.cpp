@@ -86,7 +86,7 @@ namespace hooks {
 			}
 			value = (unsigned __int8)dlgVar->value;
 			dlgVar++;
-			*(_DWORD*)(*(_DWORD*)&dlgVar->*childrenDlg + 4 * listing) = value;
+			*(int*)(*(int*)&dlgVar->*childrenDlg + 4 * listing) = value;
 		} while race < type;
 		flags = dialog->flags;
 		if (flags < 0) {
@@ -128,19 +128,19 @@ namespace hooks {
 			//label 6
 			pDropdown = 0;
 		}
-		result = isMeleeGame(SBYTE1(scbw::selectedGameType), scbw::selectedGameTypeParam, scbw::selectedGameType);
+		result = isMeleeGame(SBYTE1(selectedGameType), selectedGameTypeParam, selectedGameType);
 		if (result) {
-			scbw::selectedSingleplayerRace[1] = 0x7070707;
+			selectedSingleplayerRace[1] = 0x7070707;
 			customSingleplayer[0] = 1;
-			scbw::selectedSingleplayerRace[5] = 0x7070707;
+			selectedSingleplayerRace[5] = 0x7070707;
 			if (pDropDown + 70) {
 				pDropdownBig = pDropdown + 72;
 				if (pDropdownBig != -1) {
-					scbw::selectedSingleplayerRace[0] = (pDropdown + 66) + 4 * pDropdownBig;
+					selectedSingleplayerRace[0] = (pDropdown + 66) + 4 * pDropdownBig;
 				}
 				result = pDropdown;
 				if (pDropdown) {
-					spRace = scbw::selectedSingleplayerRace[1];
+					spRace = selectedSingleplayerRace[1];
 					do {
 						if (result->name[13] & 8) {
 							if (result[1].name[23]) {
@@ -156,16 +156,16 @@ namespace hooks {
 			}
 			else if (pDropdown[6] & 8) {
 				if ((pDropdown + 70) && (al = (pDropdown + 72), al != -1)) {
-					scbw::playerTable[scbw::LOCAL_NATION_ID].race = (pDropdown + 66) + 4 * al;
-					scbw::IS_IN_GAME_LOOP = 1;
+					playerTable[LOCAL_NATION_ID].race = (pDropdown + 66) + 4 * al;
+					IS_IN_GAME_LOOP = 1;
 					result = randomizePlayerSlot();
-					scbw::IS_IN_GAME_LOOP = 0;
+					IS_IN_GAME_LOOP = 0;
 				}
 				else {
-					scbw::playerTable[scbw::LOCAL_NATION_ID].race = 6;
-					scbw::IS_IN_GAME_LOOP = 1;
+					playerTable[LOCAL_NATION_ID].race = 6;
+					IS_IN_GAME_LOOP = 1;
 					result = randomizePlayerSlot();
-					scbw::IS_IN_GAME_LOOP = 0;
+					IS_IN_GAME_LOOP = 0;
 				}
 			}
 		}
@@ -178,133 +178,133 @@ namespace hooks {
 		int v5; // esi
 		char* v6; // esi
 		int v7; // edx
-		_DWORD* v8; // eax
+		int* v8; // eax
 		int v9; // ecx
 		char v10; // [esp+8h] [ebp-4h]
 
 		stopMusic();
-		if (scbw::IS_IN_REPLAY)
+		if (IS_IN_REPLAY)
 		{
-			if (!scbw::scenarioChk)
+			if (!scenarioChk)
 			{
 				a2 = 0;
-				loadReplayFile((int)scbw::CurrentMapFileName, v2, 0);
+				loadReplayFile((int)CurrentMapFileName, v2, 0);
 			}
-			if (scbw::IS_IN_REPLAY)
+			if (IS_IN_REPLAY)
 			{
-				*(_DWORD*)scbw::playerForce = *(_DWORD*)scbw::playerForceSomethingReplay;
-				*(_DWORD*)&scbw::playerForce[4] = *(_DWORD*)&scbw::playerForceSomethingReplay[4];
+				*(int*)playerForce = *(int*)playerForceSomethingReplay;
+				*(int*)&playerForce[4] = *(int*)&playerForceSomethingReplay[4];
 			}
 		}
-		if (!scbw::loadGameFileHandle)
-			scbw::elapsedTimeFrames = 0;
-		if (!scbw::multiPlayerMode)
+		if (!loadGameFileHandle)
+			elapsedTimeFrames = 0;
+		if (!multiPlayerMode)
 		{
 			v3 = levelCheatCreate(a2, a1);
 			if (!v3 || !loadGameCreate(v3, a2) || !gameCreateSomething(a2) || !singleplayerMeleeCreate())
 				return 0;
-			if (scbw::IS_IN_REPLAY)
+			if (IS_IN_REPLAY)
 			{
-				scbw::initialSeed = scbw::replaySeed;
+				initialSeed = replaySeed;
 			}
 			else
 			{
-				scbw::initialSeed = getSystemTime(0);
-				scbw::replaySeed = scbw::initialSeed;
+				initialSeed = getSystemTime(0);
+				replaySeed = initialSeed;
 			}
 		}
 		initScreenLayer();
-		scbw::mouseOverCallback = (int(__stdcall*)(_DWORD))subTwoCheckTwo;
+		auto mouseOverCallback = (int(__stdcall*)(int))subTwoCheckTwo;
 		loadGameFonts();
-		memset(scbw::randomCounts, 0, sizeof(scbw::randomCounts));
-		scbw::randomCountsTotal = 0;
-		scbw::lastRandomNumber = scbw::initialSeed;
-		srand(scbw::initialSeed);
+		memset(randomCounts, 0, sizeof(randomCounts));
+		randomCountsTotal = 0;
+		lastRandomNumber = initialSeed;
+		srand(initialSeed);
 		initPathArray();
-		appAddExit((int)NullCallback);
-		if (!scbw::loadGameFileHandle)
+		appAddExit((int)initGameLoad(a1, a2));
+		if (!loadGameFileHandle)
 			multiplayerChatSomething();
 		randomizePlayerSlot();
-		v5 = scbw::IS_IN_REPLAY;
-		if (scbw::IS_IN_REPLAY)
-			getPlayerStructs(scbw::playerTable);
+		v5 = IS_IN_REPLAY;
+		if (IS_IN_REPLAY)
+			getPlayerStructs(playerTable);
 		initStartingRacesAndTypes();
 		if (!v5)
 		{
-			if (scbw::loadGameFileHandle)
+			if (loadGameFileHandle)
 				initMultiplayerSavePlayers();
 			else
 				initPlayers();
 		}
 		setVisionIndex();
 		initAiPlayerNames();
-		memset(scbw::randomCounts, 0, sizeof(scbw::randomCounts));
-		scbw::randomCountsTotal = 0;
-		scbw::lastRandomNumber = scbw::initialSeed;
-		srand(scbw::initialSeed);
+		memset(randomCounts, 0, sizeof(randomCounts));
+		randomCountsTotal = 0;
+		lastRandomNumber = initialSeed;
+		srand(initialSeed);
 		loadRaceUI();
 		hotkeyRemapping();
 		if (!gameInit(v5))
 			return 0;
-		v6 = (char*)scbw::IS_IN_REPLAY;
-		if (scbw::IS_IN_REPLAY)
-			getPlayerColors(scbw::factionsColorsOrdering);
-		if (!scbw::loadGameFileHandle)
+		v6 = (char*)IS_IN_REPLAY;
+		if (IS_IN_REPLAY)
+			getPlayerColors(factionsColorsOrdering);
+		if (!loadGameFileHandle)
 			randomizePlayerColors();
-		if (!v6 && !scbw::campaignIndex)
+		if (!v6 && !campaignIndex)
 		{
-			v6 = scbw::CurrentMapFileName;
-			if (!authorizeMap((unsigned int)scbw::CurrentMapFileName, (int)&v10, 1, (int)scbw::mapArchiveHandle)
-				&& !scbw::gameData.bVictoryCondition // 0x75
-				&& !scbw::gameData.bStartingUnits // 0x79
-				&& !scbw::gameData.bTournamentModeEnabled) // 0x7F
+			v6 = CurrentMapFileName;
+			if (!authorizeMap((unsigned int)CurrentMapFileName, (int)&v10, 1, (int)mapArchiveHandle)
+				&& !gameData.bVictoryCondition // 0x75
+				&& !gameData.bStartingUnits // 0x79
+				&& !gameData.bTournamentModeEnabled) // 0x7F
 			{
-				if (scbw::loadGameFileHandle)
+				if (loadGameFileHandle)
 				{
-					bigPacketError(99, scbw::CurrentMapFileName, 0, 0, 1);
+					bigPacketError(99, CurrentMapFileName, 0, 0, 1);
 					return 0;
 				}
 				bigPacketError(97, 0, 0, 0, 1);
 				return 0;
 			}
 		}
-		scbw::CHEAT_STATE &= 0x28000200u;
+		CHEAT_STATE &= 0x28000200u;
 		if (!loadGameCore((int)v6))
 			return 0;
-		if (!scbw::mapStarted)
+		if (!mapStarted)
 		{
-			if (!chooseTriggerTemplate(v7, (char*)&scbw::randomCounts[256], (int)v6))
+			if (!chooseTriggerTemplate(v7, (char*)&randomCounts[256], (int)v6))
 			{
 				bigPacketError(93, 0, 0, 0, 1);
 				return 0;
 			}
-			if (!scbw::mapStarted)
+			if (!mapStarted)
 			{
-				*(_DWORD*)scbw::playerHasLeft = 0;
-				scbw::lossType = 0;
-				*(_DWORD*)&scbw::unkVictoryVariable = 0;
+				*(int*)playerHasLeft = 0;
+				lossType = 0;
+				*(int*)&unkVictoryVariable = 0;
 			}
 		}
 		initPlayerNames();
-		if (!scbw::multiPlayerMode)
+		if (!multiPlayerMode)
 			tickCounterInit();
-		scbw::saveLoadSuccess = (unsigned __int8)scbw::mapStarted;
-		scbw::elapstedTimeModifier = scbw::mapStarted != 0 ? scbw::savedElapsedSeconds : 0;
+		saveLoadSuccess = (unsigned __int8)mapStarted;
+		elapstedTimeModifier = mapStarted != 0 ? savedElapsedSeconds : 0;
 		CMDRECV_SetReplaySpeed(optionList.speed, 0, 1u);
-		if (scbw::IS_IN_REPLAY)
+		if (IS_IN_REPLAY)
 		{
-			copyPlayerStructsToReplay(scbw::playerTable, &scbw::gameData);
-			v8 = scbw::replayData;
+			copyPlayerStructsToReplay(playerTable, &gameData);
+			v8 = replayData;
 			dword_6D5BF0 = 0;
-			v9 = *((_DWORD*)scbw::replayData + 2);
-			*(_DWORD*)scbw::replayData = 0;
+			v9 = *((int*)replayData + 2);
+			*(int*)replayData = 0;
 			v8[1] = 1;
 			v8[7] = v9;
-			scbw::replayVisions = 255;
-			scbw::playerVisions = 255;
-			scbw::replayShowEntireMap = 0;
-			scbw::nextReplayCommandFrame = -1;
-			scbw::playerExploredVisions = 0xFF00;
+			replayVisions = 255;
+			playerVisions = 255;
+			replayShowEntireMap = 0;
+			nextReplayCommandFrame = -1;
+			playerExploredVisions = 0xFF00;
 		}
 		else
 		{
@@ -770,6 +770,7 @@ namespace {
 			MOV EAX, result
 			POPAD
 		}
+		return result;
 	};
 
 	const u32 Func_CMDRECV_SetReplaySpeed = 0x004DEB90;
@@ -812,5 +813,6 @@ namespace {
 			MOV EAX, RESULT
 			POPAD
 		}
+		return result;
 	};
 }
