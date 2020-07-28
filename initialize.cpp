@@ -52,6 +52,8 @@
 #include "hooks/recv_commands/CMDRECV_Morph.h"
 #include "hooks/recv_commands/CMDRECV_SiegeTank.h"
 #include "hooks/recv_commands/CMDRECV_Stop.h"
+#include "hooks/interface/console.h"
+#include "hooks/game/creategame.h"
 #include "hooks/create_init_units.h"
 #include "hooks/orders/base_orders/die_order.h"
 #include "hooks/orders/enter_nydus.h"
@@ -442,6 +444,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	/*
 	hooks::injectGlucustomHooks();
 	hooks::injectSfxHooks();
+	hooks::injectConsoleHooks();
+	hooks::injectCreategameHooks();
 	*/
 
 	return TRUE;
