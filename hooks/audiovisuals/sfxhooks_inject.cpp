@@ -3,7 +3,7 @@
 
 namespace {
 
-	void __declspec(naked) getResponseSfx_Wrapper() { //0048EA20
+	int __declspec(naked) getResponseSfx_Wrapper() { //0048EA20
 		static int a1;
 		static int a2;
 		static int result;
@@ -18,8 +18,7 @@ namespace {
 			MOV result, EAX
 			RETN
 		}
-	}
-	;
+	};
 }
 
 namespace hooks {
