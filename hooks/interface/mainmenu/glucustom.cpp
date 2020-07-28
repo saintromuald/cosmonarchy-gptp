@@ -6,49 +6,49 @@
 namespace {
 
 	//For raceDropdown
-	char addItemToListing(char pszString, BinDlg** pDlg, __int8 bFlags);
-	void createDialogDropdown(BinDlg** a1);
-	void dlgSetSelected(unsigned __int8 a1, BinDlg** a2);
+	char addItemToListing(char pszString, BinDlg** pDlg, __int8 bFlags);		//0041B760
+	void createDialogDropdown(BinDlg** a1);										//0041B410
+	void dlgSetSelected(unsigned __int8 a1, BinDlg** a2);						//0041A600
 	
 	//For initSingleplayerCustom
-	bool isMeleeGame(char a1, __int16 a2, char a3);
-	PLAYER randomizePlayerSlot();
+	bool isMeleeGame(char a1, __int16 a2, char a3);								//004AD850
+	PLAYER randomizePlayerSlot();												//004A9A30
 
 	//For initGameLoad
-	HANDLE stopMusic();
-	FILE loadReplayFile(int a1, int a2, int a3);
-	signed int levelCheatCreate(char a1, int a2);
-	signed int loadGameCreate(int a1, char a2);
-	signed int gameCreateSomething(char a1);
-	signed int singleplayerMeleeCreate();
-	int getSystemTime(LPSYSTEMTIME* a1);
-	void initScreenLayer();
-	int subTwoCheckTwo(void a1, int a2);
-	void loadGameFonts();
-	void srand(unsigned int a1);
-	dwPOINT initPathArray();
-	signed int appAddExit(int a1);
-	char multiplayerChatSomething();
-	void getPlayerStructs(void a1);
-	PLAYER initStartingRacesAndTypes();
-	char initMultiplayerSavePlayers();
-	FILE initPlayers();
-	void setVisionIndex();
-	void initAiPlayerNames();
-	__int16 loadRaceUI();
-	bool hotkeyRemapping();
-	signed int gameInit(a1);
-	int getPlayerColors(int a1);
-	signed int randomizePlayerColors();
-	int authorizeMap(int a1, int a2, int a3, int a4);
-	char bigPacketError(int a1, char 2, int a3, int a4, int a5);
-	signed int loadGameCore(int a1);
-	void chooseTriggerTemplate(int a1, char a2, int a3);
-	int initPlayerNames();
-	int tickCounterInit();
-	int CMDRECV_SetReplaySpeed(int a1, unsigned __int8 a2, unsigned int a3);
-	void copyPlayerStructsToReplay(void a1, void a2);
-	signed int allocReplayCommands();
+	HANDLE stopMusic();															//004A5F50
+	FILE loadReplayFile(int a1, int a2, int a3);								//004DF570
+	signed int levelCheatCreate(char a1, int a2);								//004EE5B0
+	signed int loadGameCreate(int a1, char a2);									//004EE520
+	signed int gameCreateSomething(char a1);									//004EE3D0
+	signed int singleplayerMeleeCreate();										//004EE110
+	int getSystemTime(LPSYSTEMTIME* a1);										//0040C7DF
+	void initScreenLayer();														//0041A030
+	int subTwoCheckTwo(void a1, int a2);										//004EE0F0
+	void loadGameFonts();														//004DAE50
+	void srand(unsigned int a1);												//0040C7B0
+	dwPOINT initPathArray();													//0042F4F0
+	signed int appAddExit(int a1);												//004F6100
+	char multiplayerChatSomething();											//0049B500
+	void getPlayerStructs(void a1);												//004DE9A0
+	PLAYER initStartingRacesAndTypes();											//0049CC40
+	char initMultiplayerSavePlayers();											//004A9250
+	FILE initPlayers();															//004A9D80
+	void setVisionIndex();														//004EE180
+	void initAiPlayerNames();													//004ED2B0
+	__int16 loadRaceUI();														//004EE2D0
+	bool hotkeyRemapping();														//004EEC30
+	signed int gameInit(int a1);												//004EEE00
+	int getPlayerColors(int a1);												//004DE950
+	signed int randomizePlayerColors();											//0049B060
+	int authorizeMap(int a1, int a2, int a3, int a4);							//004CC110
+	char bigPacketError(int a1, char 2, int a3, int a4, int a5);				//004BB430
+	signed int loadGameCore(int a1);											//004EED10
+	void chooseTriggerTemplate(int a1, char a2, int a3);						//004ABAF0
+	int initPlayerNames();														//004B2DF0
+	int tickCounterInit();														//004A2BF0
+	int CMDRECV_SetReplaySpeed(int a1, unsigned __int8 a2, unsigned int a3);	//004DEB90
+	void copyPlayerStructsToReplay(void a1, void a2);							//004DE9D0
+	signed int allocReplayCommands();											//004CE280
 }
 
 namespace hooks {
@@ -392,5 +392,425 @@ namespace {
 	};
 
 	//For initGameLoad
+	const u32 Func_stopMusic = 0x004A5F50;
+	bool stopMusic() {
+		static bool result;
+		__asm {
+			PUSHAD
+			CALL Func_stopMusic
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
 
+	const u32 Func_loadReplayFile = 0x004DF570;
+	FILE loadReplayFile(int a1, int a2, int a3) {
+		static int a1;
+		static int a2;
+		static int a3;
+		static FILE result;
+		__asm {
+			PUSHAD
+			MOV a1, EAX
+			MOV a2, ECX
+			MOV a3, EDI
+			CALL Func_loadReplayFile
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_levelCheatCreate = 0x004EE5B0; 
+	signed int levelCheatCreate(char a1, int a2) {
+		static char a1;
+		static int a2;
+		static signed int result;
+		__asm {
+			PUSHAD
+			MOV a1, EDI
+			MOV a2, ESI
+			CALL Func_levelCheatCreate
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_loadGameCreate = 0x004EE520;
+	signed int loadGameCreate(int a1, char a2) {
+		static int a1;
+		static char a2;
+		static signed int result;
+		__asm {
+			PUSHAD
+			MOV a1, EAX
+			MOV a2, EDI
+			CALL Func_loadGameCreate
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_gameCreateSomething = 0x004EE3D0;
+	signed int gameCreateSomething(char a1) {
+		static char a1;
+		static signed int result;
+		__asm {
+			PUSHAD
+			MOV a1, EDI
+			CALL Func_gameCreateSomething
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_singleplayerMeleeCreate = 0x004EE110;
+	signed int singleplayerMeleeCreate() {
+		__asm {
+			PUSHAD
+			CALL Func_singleplayerMeleeCreate
+			POPAD
+		}
+	};
+
+	const u32 Func_getSystemTime = 0x0040C7DF;
+	int getSystemTime(LPSYSTEMTIME a1) {
+		static LPSYSTEMTIME a1;
+		static int result;
+		__asm {
+			PUSHAD
+			CALL Func_getSystemTime
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_initScreenLayer = 0x0041A030;
+	void initScreenLayer() {
+		__asm {
+			PUSHAD
+			CALL Func_initScreenLayer
+			POPAD
+		}
+	};
+
+	const u32 Func_subTwoCheckTwo = 0x004EE0F0;
+	int subTwoCheckTwo(void a1, int a2) {
+		static void a1;
+		static int a2;
+		static int result;
+		__asm {
+			PUSHAD
+			CALL Func_subTwoCheckTwo
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_loadGameFonts = 0x004DAE50;
+	void loadGameFonts() {
+		__asm {
+			PUSHAD
+			CALL Func_loadGameFonts
+			POPAD
+		}
+	};
+
+	const u32 Func_srand = 0x0040C7B0;
+	void srand(unsigned int a1) {
+		static int a1;
+		__asm {
+			PUSHAD
+			CALL Func_srand
+			POPAD
+		}
+	};
+
+	const u32 Func_initPathArray = 0x0042F4F0;
+	dwPOINT initPathArray() {
+		static dwPOINT result;
+		__asm {
+			PUSHAD
+			CALL Func_initPathArray
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_appAddExit = 0x004F6100;
+	signed int appAddExit(int a1) {
+		static int a1;
+		static signed int result;
+		__asm {
+			PUSHAD
+			MOV a1, EBX
+			CALL Func_appAddExit
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_multiplayerChatSomething = 0x0049B500;
+	bool multiplayerChatSomething() {
+		static bool result;
+		__asm {
+			PUSHAD
+			CALL Func_multiplayerChatSomething
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_getPlayerStructs = 0x004DE9A0;
+	void getPlayerStructs(void a1) {
+		static void a1;
+		__asm {
+			PUSHAD
+			MOV a1, EAX
+			CALL Func_getPlayerStructs
+			POPAD
+		}
+	};
+
+	const u32 Func_initStartingRacesAndTypes = 0x0049CC40;
+	PLAYER initStartingRacesAndTypes() {
+		static PLAYER result;
+		__asm {
+			PUSHAD
+			CALL Func_initStartingRacesAndTypes
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_initMultiplayerSavePlayers = 0x004A9250;
+	char initMultiplayerSavePlayers() {
+		static char result;
+		__asm {
+			PUSHAD
+			CALL Func_initMultiplayerSavePlayers
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_initPlayers = 0x004A9D80;
+	FILE initPlayers() {
+		static FILE result;
+		__asm {
+			PUSHAD
+			CALL Func_initPlayers
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_setVisionIndex = 0x004EE180;
+	void setVisionIndex() {
+		__asm {
+			PUSHAD
+			CALL Func_setVisionIndex
+			POPAD
+		}
+	};
+
+	const u32 Func_initAiPlayerNames = 0x004ED2B0;
+	void initAiPlayerNames() {
+		__asm {
+			PUSHAD
+			CALL Func_initAiPlayerNames
+			POPAD
+		}
+	};
+
+	const u32 Func_loadRaceUI = 0x004EE2D0;
+	__int16 loadRaceUI() {
+		static __int16 result;
+		__asm {
+			PUSHAD
+			CALL Func_loadRaceUI
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_hotkeyRemapping = 0x004EEC30;
+	bool hotkeyRemapping() {
+		static bool result;
+		__asm {
+			PUSHAD
+			CALL Func_hotkeyRemapping
+			MOV EAX, result
+			POPAD
+		}
+	};
+
+	const u32 Func_gameInit = 0x004EEE00;
+	signed int gameInit(int a1) {
+		static int a1;
+		static signed int result;
+		__asm {
+			PUSHAD
+			MOV a1, ESI
+			CALL Func_gameInit
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_getPlayerColors = 0x004DE950;
+	int getPlayerColors(int a1) {
+		static int a1;
+		static int result;
+		__asm {
+			PUSHAD
+			MOV a1, EAX
+			CALL Func_getPlayerColors
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_authorizeMap = 0x004CC110;
+	int authorizeMap(int a1, int a2, int a3, int a4) {
+		static int a1;
+		static int a2;
+		static int a3;
+		static int a4;
+		static int result;
+		__asm {
+			PUSHAD
+			MOV a1, ESI
+			CALL Func_authorizeMap
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_bigPacketError = 0x004BB430;
+	char bigPacketError(int a1, char a2, int a3, int a4, int a5) {
+		static int a1;
+		static char a2;
+		static int a3;
+		static int a4;
+		static int a5;
+		static char result;
+		__asm {
+			PUSHAD
+			MOV a1, ECX
+			CALL Func_bigPacketError
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_loadGameCore = 0x004EED10;
+	signed int loadGameCore(int a1) {
+		static int a1;
+		static signed int result;
+		__asm {
+			PUSHAD
+			MOV a1, ESI
+			CALL Func_loadGameCore
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_chooseTriggerTemplate = 0x004ABAF0;
+	void chooseTriggerTemplate(int a1, char a2, int a3) {
+		static int a1;
+		static char a2;
+		static int a3;
+		__asm {
+			PUSHAD
+			MOV a1, EDX
+			MOV a2, EDI
+			MOV a3, ESI
+			CALL Func_chooseTriggerTemplate
+			POPAD
+		}
+	};
+
+	const u32 Func_initPlayerNames = 0x004B2DF0;
+	int initPlayerNames() {
+		const int result;
+		__asm {
+			PUSHAD
+			CALL Func_initPlayerNames
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_tickCounterInit = 0x004A2BF0;
+	int tickCounterInit() {
+		static int result;
+		__asm {
+			PUSHAD
+			CALL Func_tickCounterInit
+			MOV EAX, result
+			POPAD
+		}
+	};
+
+	const u32 Func_CMDRECV_SetReplaySpeed = 0x004DEB90;
+	int CMDRECV_SetReplaySpeed(int a1, unsigned __int8 a2, unsigned int a3) {
+		static int a1;
+		static unsigned int8 a2;
+		static unsigned int a3;
+		static int result;
+		__asm {
+			PUSHAD
+			MOV a1, EAX
+			MOVZX a2, DL
+			MOV a3, ECX
+			CALL Func_CMDRECV_SetReplaySpeed
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	};
+
+	const u32 Func_copyPlayerStructsToReplay = 0x004DE9D0;
+	void copyPlayerStructsToReplay(void a1, void a2) {
+		static void a1;
+		static void a2;
+		__asm {
+			PUSHAD
+			MOV a1, EAX
+			MOV a2, EDX
+			CALL Func_copyPlayerStructsToReplay
+			POPAD
+		}
+	};
+
+	const u32 Func_allocReplayCommands = 0x004CE280;
+	signed int allocReplayCommands() {
+		static signed int result;
+		__asm {
+			PUSHAD
+			CALL Func_allocReplayCommands
+			MOV EAX, RESULT
+			POPAD
+		}
+	};
 }
