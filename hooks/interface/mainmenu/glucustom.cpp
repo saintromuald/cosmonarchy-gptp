@@ -6,9 +6,9 @@
 namespace {
 
 	//For raceDropdown
-	char addItemToListing(char pszString, BinDlg** pDlg, __int8 bFlags);		//0041B760
-	void createDialogDropdown(BinDlg** a1);										//0041B410
-	void dlgSetSelected(unsigned __int8 a1, BinDlg** a2);						//0041A600
+	char addItemToListing(char pszString, BinDlg* pDlg, __int8 bFlags);		//0041B760
+	void createDialogDropdown(BinDlg* a1);										//0041B410
+	void dlgSetSelected(unsigned __int8 a1, BinDlg* a2);						//0041A600
 	
 	//For initSingleplayerCustom
 	bool isMeleeGame(char a1, __int16 a2, char a3);								//004AD850
@@ -53,11 +53,11 @@ namespace {
 
 namespace hooks {
 
-	void raceDropdown(BinDlg** a1) { // 004ADF20 -- https://pastebin.com/raw/rXq01xR5
+	void raceDropdown(BinDlg* a1) { // 004ADF20 -- https://pastebin.com/raw/rXq01xR5
 		bStringMap* v2; // edi
-		BinDlg** dlgDropdown; // esi
+		BinDlg* dlgDropdown; // esi
 		__int16 v4; // ax
-		char* pszRaceStr; // eax
+		char pszRaceStr; // eax
 		unsigned __int8 v6; // al
 		int v7; // ecx
 		int v8; // eax
@@ -95,12 +95,12 @@ namespace hooks {
 			dlgDropdown->flags = v8 & 0x7FFFFFFF;
 			createDialogDropdown(dlgDropdown);
 		}
-		if (dlgDropdown->unk46 > 3u)
+		if (dlgDropdown->alternateVersion0x46 > 3u)
 		{
 			v11 = 14;
 			v9 = 11;
 			v10 = 3;
-			dlgDropdown->*fxnInteract(dlgDropdown, (dlgEvent*)&v9);
+			dlgDropdown->fxnInteract(dlgDropdown, (dlgEvent*)&v9);
 			dlgSetSelected(3u, dlgDropdown);
 		}
 	};
@@ -326,7 +326,7 @@ namespace {
 
 	//For raceDropdown
 	const u32 Func_addItemToListing = 0x0041B760;
-	char addItemToListing(char pszString, BinDlg** pDlg, __int8 bFlags) {
+	char addItemToListing(char pszString, BinDlg* pDlg, __int8 bFlags) {
 		static char result;
 
 		__asm {
@@ -341,7 +341,7 @@ namespace {
 	};
 
 	const u32 Func_createDialogDropdown = 0x0041B410;
-	void createDialogDropdown(BinDlg** a1) {
+	void createDialogDropdown(BinDlg* a1) {
 		__asm {
 			PUSHAD
 			MOV a1, EAX
@@ -351,7 +351,7 @@ namespace {
 	};
 
 	const u32 Func_dlgSetSelected = 0x0041A600;
-	void dlgSetSelected(unsigned __int8 a1, BinDlg** a2) {
+	void dlgSetSelected(unsigned __int8 a1, BinDlg* a2) {
 		__asm {
 			PUSHAD
 			MOVZX a1, BX
