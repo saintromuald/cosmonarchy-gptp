@@ -26,19 +26,9 @@ public:
 	SaveState aise_save();
 	void aise_load(const char* ptr, u32 len);
 	globals() {
-		example_placeholder = 1030;
+		example_placeholder = 3;
 	}
 };
-
-template<typename T>
-std::ostream& operator<<(std::ostream& out, const std::vector<T>& v) {
-	unsigned long long len = v.size();
-	out.write(reinterpret_cast<const char*>(&len), sizeof(len));
-	for (auto a : v) {
-		out << a;
-	}
-	return out;
-}
 
 void injectGlobalsHooks();
 
