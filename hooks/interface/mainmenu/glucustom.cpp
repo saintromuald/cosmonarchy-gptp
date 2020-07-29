@@ -107,7 +107,7 @@ namespace hooks {
 
 	int initSingleplayerCustom(BinDlg** dialog) { // 004AD850 -- https://pastebin.com/raw/SQJXUWtG
 		int eax;							//v1
-		int pDropdown;
+		BinDlg** pDropdown;
 		PLAYER result;
 		unsigned __int8 al;					//v4
 		unsigned __int8 pDropdownBig;		//v5
