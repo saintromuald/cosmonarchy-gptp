@@ -53,52 +53,55 @@ namespace {
 
 namespace hooks {
 
-	void raceDropdown(BinDlg** dialog) { // 004ADF20 -- https://pastebin.com/raw/rXq01xR5
-		BinDlg** dlgVar = dialog;		//v2
-		bStringMap* race = 0x0051AAA0;	//singleRaceSelect
-		wStringMap* type = 0x0051AAA8;	//singleTypeSelect
-		__int16 stringId;				//v4
-		char pszRaceStr;				//v5
-		unsigned __int8 listing;		//v6
-		int value;						//v7
-		int flags;						//v8
-		int dlgEvent;					//v9
-		int unused1;					//v10
-		__int16 unused2;				//v11
+	void raceDropdown(BinDlg** a1) { // 004ADF20 -- https://pastebin.com/raw/rXq01xR5
+		bStringMap* v2; // edi
+		BinDlg** dlgDropdown; // esi
+		__int16 v4; // ax
+		char* pszRaceStr; // eax
+		unsigned __int8 v6; // al
+		int v7; // ecx
+		int v8; // eax
+		int v9; // [esp+Ch] [ebp-14h]
+		int v10; // [esp+10h] [ebp-10h]
+		__int16 v11; // [esp+18h] [ebp-8h]
 
-		dialog->flags |= 0x80000000;
-		do {
-			stringId = race->id - 1;
-			if (race->id) {
-				if (stringId < *networkTable) {
-					pszRaceStr = (char*)networkTable + (char*)(networkTable[v4 + 1]);
-				}
-				else {
+		dlgDropdown = a1;
+		a1->flags |= 0x80000000;
+		v2 = &singleRaceSelect;
+		do
+		{
+			v4 = (unsigned __int8)v2->id - 1;
+			if (v2->id)
+			{
+				if (v4 < *networkTable)
+					pszRaceStr = (char*)networkTable + networkTable[v4 + 1];
+				else
 					pszRaceStr = "";
-				}
 			}
-			else {
+			else
+			{
 				pszRaceStr = 0;
 			}
-			listing = addItemToListing(pszRaceStr, dialog, 0);
-			if (listing == -1) {
+			v6 = addItemToListing(pszRaceStr, dlgDropdown, 0);
+			if (v6 == -1)
 				break;
-			}
-			value = (unsigned __int8)dlgVar->value;
-			dlgVar++;
-			*(int*)(*(int*)&dlgVar->*childrenDlg + 4 * listing) = value;
-		} while race < type;
-		flags = dialog->flags;
-		if (flags < 0) {
-			dlgVar->flags = flags & 0x7FFFFFFF;
-			createDialogDropdown(dlgVar);
+			v7 = (unsigned __int8)v2->value;
+			++v2;
+			*(int*)(*(int*)&dlgDropdown->childrenDlg + 4 * v6) = v7;
+		} while ((signed int)v2 < (signed int)&singleTypeSelect);
+		v8 = dlgDropdown->flags;
+		if (v8 < 0)
+		{
+			dlgDropdown->flags = v8 & 0x7FFFFFFF;
+			createDialogDropdown(dlgDropdown);
 		}
-		if (dlgVar->field_46 > 3u) {
-			unused2 = 14;
-			dlgEvent = 11;
-			unused1 = 3;
-			dlgVar->*fxnInteract(dlgVar, (dlgEvent*)&dlgEvent);
-			dlgSetSelected(3u, dlgVar);
+		if (dlgDropdown->unk46 > 3u)
+		{
+			v11 = 14;
+			v9 = 11;
+			v10 = 3;
+			dlgDropdown->*fxnInteract(dlgDropdown, (dlgEvent*)&v9);
+			dlgSetSelected(3u, dlgDropdown);
 		}
 	};
 
@@ -295,7 +298,7 @@ namespace hooks {
 		{
 			copyPlayerStructsToReplay(playerTable, &gameData);
 			v8 = replayData;
-			dword_6D5BF0 = 0;
+			d__int16_6D5BF0 = 0;
 			v9 = *((int*)replayData + 2);
 			*(int*)replayData = 0;
 			v8[1] = 1;
