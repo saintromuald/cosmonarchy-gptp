@@ -112,8 +112,16 @@
   <ItemGroup>
     <ClCompile Include="CUnitExtended.cpp" />
     <ClCompile Include="globals.cpp" />
+    <ClCompile Include="hooks\audiovisuals\sfxhooks.cpp" />
+    <ClCompile Include="hooks\audiovisuals\sfxhooks_inject.cpp" />
     <ClCompile Include="hooks\economic_units.cpp" />
     <ClCompile Include="hooks\economic_units_inject.cpp" />
+    <ClCompile Include="hooks\game\creategame.cpp" />
+    <ClCompile Include="hooks\game\creategame_inject.cpp" />
+    <ClCompile Include="hooks\interface\console.cpp" />
+    <ClCompile Include="hooks\interface\console_inject.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glucustom.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\glucustom_inject.cpp" />
     <ClCompile Include="hooks\maxhp.cpp" />
     <ClCompile Include="hooks\maxhp_inject.cpp" />
     <ClCompile Include="hooks\orders\base_orders\attack_orders.cpp" />
@@ -320,7 +328,11 @@
   <ItemGroup>
     <ClInclude Include="CUnitExtended.h" />
     <ClInclude Include="globals.h" />
+    <ClInclude Include="hooks\audiovisuals\sfxhooks.h" />
     <ClInclude Include="hooks\economic_units.h" />
+    <ClInclude Include="hooks\game\creategame.h" />
+    <ClInclude Include="hooks\interface\console.h" />
+    <ClInclude Include="hooks\interface\mainmenu\glucustom.h" />
     <ClInclude Include="hooks\maxhp.h" />
     <ClInclude Include="hooks\orders\spells\recall_spell.h" />
     <ClInclude Include="hooks\orders\base_orders\attack_orders.h" />
