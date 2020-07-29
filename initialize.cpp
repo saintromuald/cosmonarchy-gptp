@@ -52,14 +52,11 @@
 #include "hooks/recv_commands/CMDRECV_Morph.h"
 #include "hooks/recv_commands/CMDRECV_SiegeTank.h"
 #include "hooks/recv_commands/CMDRECV_Stop.h"
-#include "hooks/interface/console.h"
-#include "hooks/game/creategame.h"
 #include "hooks/create_init_units.h"
 #include "hooks/orders/base_orders/die_order.h"
 #include "hooks/orders/enter_nydus.h"
 #include "hooks/orders/spells/feedback_spell.h"
 #include "hooks/give_unit.h"
-#include "hooks/interface/mainmenu/glucustom.h"
 #include "hooks/orders/spells/hallucination_spell.h"
 #include "hooks/orders/infestation.h"
 #include "hooks/orders/larva_creep_spawn.h"
@@ -77,7 +74,6 @@
 #include "hooks/orders/research_upgrade_orders.h"
 #include "hooks/interface/select_larva.h"
 #include "hooks/interface/selection.h"
-#include "hooks/audiovisuals/sfxhooks.h"
 #include "hooks/orders/siege_transform.h"
 #include "hooks/interface/stats_panel_display.h"
 #include "hooks/orders/base_orders/stopholdpos_orders.h"
@@ -163,6 +159,14 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
 
 
+	//test for globals
+//	nops(0x004AAF23, 5);
+//	const u8 retn = 0xc3;
+//	memoryPatch(0x004AAF23 + 5, &retn, 1);
+	injectGlobalsHooks();
+	//
+
+
 	//town hall code
 
 	//worker code
@@ -171,7 +175,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	//00433f62, 0043A100, 004365f6, 00433EB5, 0044387B, 00446230, 
 
 	//hatchery-lair-hive code, required later to patch that for sire/brood
-	//00401cf0,0043A146,004A1F8B (partial, id check is for zerg only)
+	//0043A100,00433EB5,00401cf0,0043A146,004A1F8B (partial, id check is for zerg only)
 	//00402C24, 0042850A, 0042974B,00444D51,004E8C04,004EA88C(hook exists, larva)
 	//hatchery-only code 00434B2F,00436380,
 
@@ -398,6 +402,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectMindControlSpellHook();/*
 	hooks::injectCMDRECV_BuildHooks();
 	*/
+
 	hooks::injectApplyUpgradeFlags();
 	hooks::injectAttackPriorityHooks();
 	
@@ -432,7 +437,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectUseTechHooks();
 	
 	//hooks::injectPsiFieldHooks();
-	//hooks::injectSpellcasterAI();
 
 	hooks::injectArmorBonusHook();
 	hooks::injectSightRangeHook();
@@ -441,12 +445,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
 	hooks::injectUnitTooltipHook();
 	hooks::injectMaxHpHooks();
-	/*
-	hooks::injectGlucustomHooks();
-	hooks::injectSfxHooks();
-	hooks::injectConsoleHooks();
-	hooks::injectCreategameHooks();
-	*/
+
+	//hooks::injectSpellcasterAI();
 
 	return TRUE;
 }
