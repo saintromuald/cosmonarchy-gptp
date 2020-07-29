@@ -2,7 +2,7 @@
 #include <SCBW/api.h>
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
-
+/*
 namespace {
 
 	//For raceDropdown
@@ -818,4 +818,4 @@ namespace {
 		}
 		return result;
 	};
-}
+}*/

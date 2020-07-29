@@ -1,6 +1,6 @@
 #include "creategame.h"
 #include <hook_tools.h>
-
+/*
 namespace {
 	__int16 __declspec(naked) singleplayerMeleeCreate_Wrapper() { //004EE110
 		static __int16 result;
@@ -57,4 +57,4 @@ namespace hooks {
 		jmpPatch(loadGameCreate_Wrapper, 0x004EE520, 1);
 		jmpPatch(levelCheatCreate_Wrapper, 0x004EE5B0, 1);
 	}
-}
+}*/

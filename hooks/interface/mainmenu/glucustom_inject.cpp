@@ -1,6 +1,6 @@
 #include "glucustom.h"
 #include <hook_tools.h>
-
+/*
 namespace {
 
 	void __declspec(naked) raceDropdown_Wrapper() { //004ADF20
@@ -54,4 +54,4 @@ namespace hooks {
 		jmpPatch(initSingleplayerCustom_Wrapper, 0x004AD850, 1);
 		jmpPatch(initGameLoad_Wrapper, 0x004EF100, 1);
 	}
-}
+}*/

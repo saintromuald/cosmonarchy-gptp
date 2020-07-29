@@ -3,7 +3,7 @@
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
 
-namespace {
+namespace {/*
 	// For singleplayerMeleeCreate
 	void switchComputerToOpen(); //004DBBE0
 	bool setLastOpenSlotToComputer(char a1); //004DBB70
@@ -16,11 +16,11 @@ namespace {
 	char setNetTblError(int a1, int a2, int a3, char a4, int a5); // 004BB300
 	bool nextLeaveGameMenu(void *a1); // 004DCC50
 	int sStrCopy(char a1, const char *a2, int a3); // 0041008E
-	signed int readMapData(int a1, const char *a2, int *a3, int a4); // 004BF5D0
+	signed int readMapData(int a1, const char *a2, int *a3, int a4); // 004BF5D0*/
 }
 
 namespace hooks {
-	signed int singleplayerMeleeCreate() {
+	/*signed int singleplayerMeleeCreate() {
 		signed int v1; // esi
 
 		if (multiPlayerMode)
@@ -219,10 +219,10 @@ namespace hooks {
 		nextLeaveGameMenu(v9);
 		}
 		return 0;
-		};
+		};*/
 }
 
-namespace {
+namespace {/*
 	const u32 Func_switchComputerToOpen = 0x004DBBE0;
 	void switchComputerToOpen() {
 		__asm {
@@ -243,5 +243,5 @@ namespace {
 			POPAD
 		}
 		return result;
-	};
+	};*/
 }

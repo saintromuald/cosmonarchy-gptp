@@ -1,6 +1,6 @@
 #include "sfxhooks.h"
 #include <hook_tools.h>
-
+/*
 namespace {
 
 	int __declspec(naked) getResponseSfx_Wrapper() { //0048EA20
@@ -26,4 +26,4 @@ namespace hooks {
 	void injectSfxHooks() {
 		jmpPatch(getResponseSfx_Wrapper, 0x0048EA20, 1);
 	}
-}
+}*/

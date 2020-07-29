@@ -3,7 +3,7 @@
 #include <SCBW/api.h>
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
-
+/*
 namespace {
 	void getRaceSoundList(char a1); //0048FB40
 	int dialogGrpConstruct(int a1, int a2, int a3, int (__fastcall *a4)(int, int, int, int)); // 004197B0
@@ -128,4 +128,4 @@ namespace {
 			POPAD
 		}
 	};
-}
+}*/

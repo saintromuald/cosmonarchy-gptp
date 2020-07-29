@@ -8,7 +8,7 @@ namespace {
 }
 
 namespace hooks {
-	int getResponseSfx(int unitId, int a2) {
+	/*int getResponseSfx(int unitId, int a2) {
 		int sound;				//v2
 		int whatStart;			//v3
 		int whatEnd;			//v4
@@ -43,7 +43,7 @@ namespace hooks {
 			result = rand;
 		}
 		return result;
-	}
+	}*/
 };
 
 namespace {
