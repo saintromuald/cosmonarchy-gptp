@@ -14,9 +14,6 @@ SaveState globals::aise_save() {
 	}
 	state.ptr = output.c_str();
 	state.len = output.size();
-//	char buff[64];
-//	sprintf(buff, "State: %d %d, bytes: %d %d %d %d", state.ptr, state.len, buf[0],buf[1],buf[2],buf[3]);
-//	scbw::printText(buff);
 	return state;
 }
 void globals::aise_load(const char* ptr, u32 len){
