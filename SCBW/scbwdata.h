@@ -213,8 +213,9 @@ SCBW_DATA(		u32*,			replayEndFrame,				0x006D0F31);
 
 // For levelCheatCreate
 SCBW_DATA(		u32*,			levelCheatUnlocked,			0x006D11C0);
-SCBW_DATA(		PlayerName*,	playerName;					0x0057EEB5);
+//SCBW_DATA(		PlayerName*,	playerName;					0x0057EEB5);
 
+SCBW_DATA(const char*, playerName, 0x0057EEB5);
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data
