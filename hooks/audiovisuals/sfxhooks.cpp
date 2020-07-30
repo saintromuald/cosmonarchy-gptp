@@ -4,11 +4,11 @@
 #include <SCBW/scbwdata.h>
 
 namespace {
-
+	
 }
 
 namespace hooks {
-	/*int getResponseSfx(int unitId, int a2) {
+	int getResponseSfx(int unitId, int a2) { // 0048EA20
 		int sound;				//v2
 		int whatStart;			//v3
 		int whatEnd;			//v4
@@ -16,34 +16,34 @@ namespace hooks {
 		int result;				
 
 		if (units_dat::GroupFlags[unitId].isBuilding) {		// original check was unitId <= 0x69, now checks for building flag
-			sound = scbw::SoundAnnoyedFirst[unitId];
+			sound = units_dat::SoundAnnoyedFirst[unitId];
 			if (sound) {
-				if (a2 <= scbw::SoundAnnoyedLast[unitId] - sound + 1) {
+				if (a2 <= units_dat::SoundAnnoyedLast[unitId] - sound + 1) {
 					if (a2) {
 						return sound + a2 - 1;
 					}
 					else {
-						scbw::selectionSoundCounter = 0;
+						selectionSoundCounter = 0;
 					}
 				}
 			}
 		}
-		whatStart = scbw::SoundWhatFirst[unitId];
-		whatEnd = scbw::SoundWhatLast[unitId];
+		whatStart = units_dat::SoundWhatFirst[unitId];
+		whatEnd = units_dat::SoundWhatLast[unitId];
 		if (whatStart == whatEnd) {
-			scbw::lastRandSFX = scbw::SoundWhatFirst[unitId];
+			lastRandSFX = units_dat::SoundWhatFirst[unitId];
 			result = whatStart;
 		}
 		else {
 			rand = scbw::randBetween(whatStart, whatEnd);
-			if (rand == scbw::lastRandSFX && ++rand > whatEnd) {
+			if (rand == (int)lastRandSFX && ++rand > whatEnd) {
 				rand = whatStart;
 			}
-			scbw::lastRandSFX = rand;
+			lastRandSFX = rand;
 			result = rand;
 		}
 		return result;
-	}*/
+	}
 };
 
 namespace {
