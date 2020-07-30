@@ -23,7 +23,7 @@ namespace hooks {
 						return sound + a2 - 1;
 					}
 					else {
-						selectionSoundCounter = 0;
+						*selectionSoundCounter = 0;
 					}
 				}
 			}
@@ -31,7 +31,7 @@ namespace hooks {
 		whatStart = units_dat::SoundWhatFirst[unitId];
 		whatEnd = units_dat::SoundWhatLast[unitId];
 		if (whatStart == whatEnd) {
-			lastRandSFX = units_dat::SoundWhatFirst[unitId];
+			*lastRandSFX = units_dat::SoundWhatFirst[unitId];
 			result = whatStart;
 		}
 		else {
@@ -39,7 +39,7 @@ namespace hooks {
 			if (rand == (int)lastRandSFX && ++rand > whatEnd) {
 				rand = whatStart;
 			}
-			lastRandSFX = rand;
+			*lastRandSFX = rand;
 			result = rand;
 		}
 		return result;
