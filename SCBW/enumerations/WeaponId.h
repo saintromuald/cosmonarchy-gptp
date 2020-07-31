@@ -137,5 +137,6 @@ enum Enum {
   None                                      = 0x82,
   WyvernWeapon = 125,
   ObservanceWeapon = 122,
+  EcclesiastWeapon = 110,
 };
 }

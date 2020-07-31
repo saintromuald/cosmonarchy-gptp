@@ -284,6 +284,7 @@ struct CUnitLayout {
 /*0x08C*/ u16       _unknown_0x08C;       // HYDRA
 										  // 0x1 - Hierophant Detect Add Maelstrom Overlay
 										  // 0x2 - Hierophant Detect Remove Maelstrom Overlay
+										  // 0x3->0x7 - Ecclesiast stacks (Deliverance)
 
 /*0x08E*/ u8        rankIncrease;		  // Adds this value to the unit's base rank
 /*0x08F*/ u8        killCount;
