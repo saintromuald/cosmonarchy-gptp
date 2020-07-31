@@ -272,7 +272,7 @@ public:
 
 	void proc(CUnit* unit) {
 		if (!units_dat::ShieldsEnabled[unit->id]) return;
-		if (!scbw::isAlliedTo(_playerID, unit->playerId)) return;
+		if (_playerID != unit->playerId && !scbw::isAlliedTo(_playerID, unit->playerId)) return;
 		unit->shields = std::min(unit->shields + _healValue, units_dat::MaxShieldPoints[unit->id] * 256);
 	}
 };
