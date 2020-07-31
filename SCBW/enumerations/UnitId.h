@@ -428,7 +428,30 @@ enum Enum {
 /*0xF7*/	Buttons_GroupBurrower = 247,
 /*0xF8*/	Buttons_ReplayPaused = 248,
 /*0xF9*/	Buttons_ReplayPlaying = 249,
-  
+
+//DELIVERANCE
+
+//Terran-Hero
+	QuentinChase				= 16,
+	ArnoldLannigan				= 17,
+
+//Protoss-Unit
+	ProtossEcclesiast			= 79,
+
+//Protoss-Building
+	ProtossPrelacy				= 223,	
+
+//Protoss-Hero
+	Sashalok					= 75,
+	Torros						= 77,
+	Asalamir					= 78,
+	Damos						= 86,
+	Nerazan						= 87,
+	Keszalon					= 88,
+
+//Zerg-Hero
+	Gothroki					= 151,
+ 
 //HYDRA
 
 //Terran-Unit
