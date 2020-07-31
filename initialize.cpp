@@ -74,6 +74,7 @@
 #include "hooks/orders/research_upgrade_orders.h"
 #include "hooks/interface/select_larva.h"
 #include "hooks/interface/selection.h"
+#include "hooks/audiovisuals/sfxhooks.h"
 #include "hooks/orders/siege_transform.h"
 #include "hooks/interface/stats_panel_display.h"
 #include "hooks/orders/base_orders/stopholdpos_orders.h"
@@ -447,6 +448,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectMaxHpHooks();
 
 	//hooks::injectSpellcasterAI();
+
+	hooks::injectSfxHooks();
 
 	return TRUE;
 }
