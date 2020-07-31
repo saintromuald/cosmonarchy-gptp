@@ -191,27 +191,24 @@ public:
 			return;
 		}
 		bool show = true;
-		if (unit->energy == unit->getMaxEnergy()) {
-			show = false;
-		}
-		if (unit->energy + 5 * 256 >= unit->getMaxEnergy()) {
-			unit->energy = unit->getMaxEnergy();
-		}
-		else {
-			unit->energy += 5 * 256;
-		}
-		if (show) {
-			imgul(unit->sprite, 425, 0, 0, 0);
-		}
+if (unit->energy == unit->getMaxEnergy()) {
+	show = false;
+}
+if (unit->energy + 5 * 256 >= unit->getMaxEnergy()) {
+	unit->energy = unit->getMaxEnergy();
+} else {
+	unit->energy += 5 * 256;
+}
+if (show) {
+	imgul(unit->sprite, 425, 0, 0, 0);
+}
 	}
 };
-class astralaegisProc : public scbw::UnitFinderCallbackProcInterface
-{
+class astralaegisProc : public scbw::UnitFinderCallbackProcInterface {
 
 private:
 public:
-	void proc(CUnit* unit)
-	{
+	void proc(CUnit* unit) {
 		if (!units_dat::ShieldsEnabled[unit->id]) {
 			return;
 		}
@@ -264,6 +261,25 @@ bool irratiateTarget(CUnit* unit) {
 
 
 namespace hooks {
+	class ecclesiastProc : public scbw::UnitFinderCallbackProcInterface {
+	private:
+		int _healValue = 0;
+
+	public:
+		ecclesiastProc(int stacks) {
+			int _healValue = (5 * stacks) * 256;
+		}
+
+		void proc(CUnit* unit) {
+			if (!units_dat::ShieldsEnabled[unit->id]) {
+				return;
+			}
+			if (unit->shields + _healValue >= (u32)units_dat::MaxShieldPoints[unit->id] * 256)
+				unit->shields = units_dat::MaxShieldPoints[unit->id] * 256;
+			else
+				unit->shields += _healValue;
+		}
+	};
 
 	/// Hooks into the CUnit::damageWith() function.
 	void weaponDamageHook(s32		damage,
@@ -273,11 +289,22 @@ namespace hooks {
 		u8		attackingPlayerId,
 		s8		direction,
 		u8		dmgDivisor
-	)
-	{
-		//the unit must neither be already dead nor invincible
+	) {
+		// procs for killed units
+		if (target->hitPoints == 0) { 
 
-		if (target->hitPoints != 0 && !(target->status & UnitStatus::Invincible)) {
+			// ecclesiastProc
+			int stacks = (target->_unknown_0x08C & 0x11100) >> 2;
+			const int range = 32;
+
+			scbw::UnitFinder unitFinder(target->getX() - range,
+				target->getY() - range,
+				target->getX() + range,
+				target->getY() + range);
+			unitFinder.forEach(ecclesiastProc(stacks));
+		}
+		//the unit must neither be already dead nor invincible
+		else if (target->hitPoints != 0 && !(target->status & UnitStatus::Invincible)) {
 
 			//if (attacker != nullptr) {
 			//	if (attacker->id == UnitId::ProtossDarkTemplar) {

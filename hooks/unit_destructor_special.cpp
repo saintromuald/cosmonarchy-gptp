@@ -9,25 +9,6 @@
 //Identical to 00466170  sub_466170
 //Not hooked but used by hooked unitDestructorSpecialHook
 #include <SCBW/UnitFinder.h>
-/*
-class ecclesiastProc : public scbw::UnitFinderCallbackProcInterface
-{
-
-private:
-public:
-	void proc(CUnit* unit)
-	{
-		if (!units_dat::ShieldsEnabled[unit->id]) {
-			return;
-		}
-		int stacks = (unit->_unknown_0x08C & 0x11100) >> 2;
-		u32 value = (5*stacks) * 256;
-		if (unit->shields + value >= (u32)units_dat::MaxShieldPoints[unit->id] * 256)
-			unit->shields = units_dat::MaxShieldPoints[unit->id] * 256;
-		else
-			unit->shields += value;
-	}
-};*/
 
 class customPlagueProc_2 : public scbw::UnitFinderCallbackProcInterface
 	{
