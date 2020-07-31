@@ -9,6 +9,25 @@
 //Identical to 00466170  sub_466170
 //Not hooked but used by hooked unitDestructorSpecialHook
 #include <SCBW/UnitFinder.h>
+/*
+class ecclesiastProc : public scbw::UnitFinderCallbackProcInterface
+{
+
+private:
+public:
+	void proc(CUnit* unit)
+	{
+		if (!units_dat::ShieldsEnabled[unit->id]) {
+			return;
+		}
+		int stacks = (unit->_unknown_0x08C & 0x11100) >> 2;
+		u32 value = (5*stacks) * 256;
+		if (unit->shields + value >= (u32)units_dat::MaxShieldPoints[unit->id] * 256)
+			unit->shields = units_dat::MaxShieldPoints[unit->id] * 256;
+		else
+			unit->shields += value;
+	}
+};*/
 
 class customPlagueProc_2 : public scbw::UnitFinderCallbackProcInterface
 	{
@@ -344,7 +363,19 @@ void unitDestructorSpecialHook(CUnit* unit) {
 				//scbw::printText("Radiation Shockwave is not detected");
 		}
 	}
-	
+
+	{
+		int stacks = (unit->_unknown_0x08C & 0x11100) >> 2; // Deliverance: Ecclesiast stacks
+		if (stacks) {
+			Box16 coords;
+			coords.left = unit->position.x - 32;
+			coords.bottom = unit->position.y + 32;
+			coords.top = unit->position.y - 32;
+			coords.right = unit->position.x + 32;
+			//CImage* effect_sprite;
+
+		}
+	}
 	
 	if (unit->id == UnitId::broodling || unit->id==UnitId::infested_terran) {
 		if (scbw::getUpgradeLevel(unit->playerId, 84)) {
@@ -362,10 +393,8 @@ void unitDestructorSpecialHook(CUnit* unit) {
 			IterateUnitsAtLocationTargetProc_EnsnareFunc(unit, &coords);
 		}
 	}
-	
 
 	//defiler plague upgrade (unknown id), add condition later
-	
 	if ((unit->_unknown_0x026 & 0x4) && unit->plagueTimer>0) {
 		createBulletProc(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->playerId, 
 			unit->currentDirection1);	
@@ -534,7 +563,6 @@ void unitDestructorSpecialHook(CUnit* unit) {
 			}
 		}
 	}
-
 }
 
 //-------- Actual hooking --------//

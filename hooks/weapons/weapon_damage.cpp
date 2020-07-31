@@ -14,10 +14,10 @@ namespace {
 		s32 unitSizeFactor[4];	 //Order: {independent, small, medium, large}
 	} const damageFactor[5] = {
 		{0, 0, 0, 0, 0},				//Independent
-		{1, 0, 128, 192, 256},	//Explosive
-		{2, 0, 256, 128, 64},	 //Concussive
-		{3, 0, 256, 256, 256},	//Normal
-		{4, 0, 256, 256, 256}	 //IgnoreArmor
+		{1, 0, 128, 192, 256},			//Explosive
+		{2, 0, 256, 128, 64},			//Concussive
+		{3, 0, 256, 256, 256},			//Normal
+		{4, 0, 256, 256, 256}			//IgnoreArmor
 	};
 
 } //unnamed namespace
@@ -296,7 +296,10 @@ namespace hooks {
 					if (target->status & UnitStatus::IsHallucination)
 						damage *= 2;*/
 
-			if (weaponId == WeaponId::GlaveWurm || weaponId == WeaponId::GlaveWurm_Kukulza_Mutalisk) {
+			if (weaponId == WeaponId::EcclesiastWeapon) {
+				target->_unknown_0x08C = target->_unknown_0x08C | std::min((((target->_unknown_0x08C & 0x11100) >> 2) + 1) << 2, 10);
+			}
+			else if (weaponId == WeaponId::GlaveWurm || weaponId == WeaponId::GlaveWurm_Kukulza_Mutalisk) {
 				double mul = 1.0;
 				switch (dmgDivisor) {
 				case 0:
