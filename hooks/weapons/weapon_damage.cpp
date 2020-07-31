@@ -268,12 +268,16 @@ public:
 	ecclesiastProc(int stacks, int playerID) {
 		_healValue = (5 * stacks) * 256;
 		_playerID = playerID;
+		char buf[32];
+		sprintf(buf, "heal value: %i", _healValue);
+		scbw::printText(buf);
 	}
 
 	void proc(CUnit* unit) {
-		if (!units_dat::ShieldsEnabled[unit->id]) return;
-		if (_playerID != unit->playerId && !scbw::isAlliedTo(_playerID, unit->playerId)) return;
+		if (!units_dat::ShieldsEnabled[unit->id]) { scbw::printText("shields not enabled"); return; }
+		if (_playerID != unit->playerId && !scbw::isAlliedTo(_playerID, unit->playerId)) { scbw::printText("not allied or own unit"); return; }
 		unit->shields = std::min(unit->shields + _healValue, units_dat::MaxShieldPoints[unit->id] * 256);
+		scbw::printText("heal shields");
 	}
 };
 
@@ -311,6 +315,7 @@ namespace hooks {
 
 			if (weaponId == WeaponId::EcclesiastWeapon && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::EcclesiastStacks)) {
 				target->_unknown_0x08C = target->_unknown_0x08C | std::min((((target->_unknown_0x08C & 0x11100) >> 2) + 1) << 2, 10);
+				scbw::printText("increment stack");
 			}
 			else if (weaponId == WeaponId::GlaveWurm || weaponId == WeaponId::GlaveWurm_Kukulza_Mutalisk) {
 				double mul = 1.0;
@@ -651,7 +656,12 @@ namespace hooks {
 			// ecclesiastProc
 			int stacks = (target->_unknown_0x08C & 0x11100) >> 2;
 			const int range = 32;
-
+			char buf[32];
+			sprintf(buf, "stack count: %i", stacks);
+			scbw::printText(buf);
+			sprintf(buf, "unknown value: %i", target->_unknown_0x08C);
+			scbw::printText(buf);
+			//scbw::printText("unit finder");
 			scbw::UnitFinder unitFinder(target->getX() - range,
 				target->getY() - range,
 				target->getX() + range,
