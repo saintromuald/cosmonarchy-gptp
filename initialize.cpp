@@ -449,7 +449,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
 	//hooks::injectSpellcasterAI();
 
-	hooks::injectSfxHooks();
+	//hooks::injectSfxHooks();
 
 	return TRUE;
 }
