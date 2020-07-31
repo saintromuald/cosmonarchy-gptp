@@ -344,19 +344,6 @@ void unitDestructorSpecialHook(CUnit* unit) {
 				//scbw::printText("Radiation Shockwave is not detected");
 		}
 	}
-
-	{
-		int stacks = (unit->_unknown_0x08C & 0x11100) >> 2; // Deliverance: Ecclesiast stacks
-		if (stacks) {
-			Box16 coords;
-			coords.left = unit->position.x - 32;
-			coords.bottom = unit->position.y + 32;
-			coords.top = unit->position.y - 32;
-			coords.right = unit->position.x + 32;
-			//CImage* effect_sprite;
-
-		}
-	}
 	
 	if (unit->id == UnitId::broodling || unit->id==UnitId::infested_terran) {
 		if (scbw::getUpgradeLevel(unit->playerId, 84)) {
