@@ -170,6 +170,10 @@ namespace UpgradeId {
 		Augment18 = 238,
 		Augment19 = 239,
 		Augment20 = 240,
+
+		//DELIVERANCE
+		
+		EcclesiastStacks = 127,
 	};
 }
 
