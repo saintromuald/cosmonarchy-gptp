@@ -259,27 +259,26 @@ bool irratiateTarget(CUnit* unit) {
 }
 
 
+class ecclesiastProc : public scbw::UnitFinderCallbackProcInterface {
+private:
+	int _healValue = 0;
+	int _playerID = 0;
+
+public:
+	ecclesiastProc(int stacks, int playerID) {
+		_healValue = (5 * stacks) * 256;
+		_playerID = playerID;
+	}
+
+	void proc(CUnit* unit) {
+		if (!units_dat::ShieldsEnabled[unit->id]) return;
+		if (!scbw::isAlliedTo(_playerID, unit->playerId)) return;
+		unit->shields = std::min(unit->shields + _healValue, units_dat::MaxShieldPoints[unit->id] * 256);
+	}
+};
+
 
 namespace hooks {
-	class ecclesiastProc : public scbw::UnitFinderCallbackProcInterface {
-	private:
-		int _healValue = 0;
-
-	public:
-		ecclesiastProc(int stacks) {
-			int _healValue = (5 * stacks) * 256;
-		}
-
-		void proc(CUnit* unit) {
-			if (!units_dat::ShieldsEnabled[unit->id]) {
-				return;
-			}
-			if (unit->shields + _healValue >= (u32)units_dat::MaxShieldPoints[unit->id] * 256)
-				unit->shields = units_dat::MaxShieldPoints[unit->id] * 256;
-			else
-				unit->shields += _healValue;
-		}
-	};
 
 	/// Hooks into the CUnit::damageWith() function.
 	void weaponDamageHook(s32		damage,
@@ -290,21 +289,8 @@ namespace hooks {
 		s8		direction,
 		u8		dmgDivisor
 	) {
-		// procs for killed units
-		if (target->hitPoints == 0) { 
-
-			// ecclesiastProc
-			int stacks = (target->_unknown_0x08C & 0x11100) >> 2;
-			const int range = 32;
-
-			scbw::UnitFinder unitFinder(target->getX() - range,
-				target->getY() - range,
-				target->getX() + range,
-				target->getY() + range);
-			unitFinder.forEach(ecclesiastProc(stacks));
-		}
 		//the unit must neither be already dead nor invincible
-		else if (target->hitPoints != 0 && !(target->status & UnitStatus::Invincible)) {
+		if (target->hitPoints != 0 && !(target->status & UnitStatus::Invincible)) {
 
 			//if (attacker != nullptr) {
 			//	if (attacker->id == UnitId::ProtossDarkTemplar) {
@@ -656,6 +642,21 @@ namespace hooks {
 			target->airStrength = getUnitStrength(target, false);
 			target->groundStrength = getUnitStrength(target, true);
 
+		}
+
+
+		// procs for killed units
+		if (target->hitPoints == 0) {
+
+			// ecclesiastProc
+			int stacks = (target->_unknown_0x08C & 0x11100) >> 2;
+			const int range = 32;
+
+			scbw::UnitFinder unitFinder(target->getX() - range,
+				target->getY() - range,
+				target->getX() + range,
+				target->getY() + range);
+			unitFinder.forEach(ecclesiastProc(stacks, attacker->playerId));
 		}
 
 	}
