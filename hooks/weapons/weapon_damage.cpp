@@ -323,7 +323,7 @@ namespace hooks {
 					if (target->status & UnitStatus::IsHallucination)
 						damage *= 2;*/
 
-			if (weaponId == WeaponId::EcclesiastWeapon) {
+			if (weaponId == WeaponId::EcclesiastWeapon && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::EcclesiastStacks)) {
 				target->_unknown_0x08C = target->_unknown_0x08C | std::min((((target->_unknown_0x08C & 0x11100) >> 2) + 1) << 2, 10);
 			}
 			else if (weaponId == WeaponId::GlaveWurm || weaponId == WeaponId::GlaveWurm_Kukulza_Mutalisk) {
