@@ -629,7 +629,7 @@ namespace hooks {
 				// ecclesiastProc
 				int stacks = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0);
 				int player = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastPlayer, 0);
-				const int range = 32;
+				const int range = 64;
 				scbw::UnitFinder unitFinder(target->getX() - range,
 					target->getY() - range,
 					target->getX() + range,
