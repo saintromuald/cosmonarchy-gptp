@@ -13,9 +13,9 @@ namespace {
 		s32 damageType;
 		s32 unitSizeFactor[4];	 //Order: {independent, small, medium, large}
 	} const damageFactor[5] = {
-		{0, 0, 0, 0, 0},				//Independent
+		{0, 0, 0,	0,	 0},			//Independent
 		{1, 0, 128, 192, 256},			//Explosive
-		{2, 0, 256, 128, 64},			//Concussive
+		{2, 0, 256, 192, 128},			//Concussive
 		{3, 0, 256, 256, 256},			//Normal
 		{4, 0, 256, 256, 256}			//IgnoreArmor
 	};
@@ -286,9 +286,9 @@ namespace hooks {
 
 	/// Hooks into the CUnit::damageWith() function.
 	void weaponDamageHook(s32		damage,
-		CUnit* target,
+		CUnit*	target,
 		u8		weaponId,
-		CUnit* attacker,
+		CUnit*	attacker,
 		u8		attackingPlayerId,
 		s8		direction,
 		u8		dmgDivisor
