@@ -1,7 +1,8 @@
 #include "load_unload_orders.h"
 #include <SCBW/api.h>
 #include <logger.h>
-
+#include "globals.h"
+#include "hooks\limits\ccmu.h"
 #define WRITE_TO_LOG(x)GPTP::logger<<x<<std::endl
 
 //helper functions def
@@ -507,6 +508,11 @@ namespace hooks {
 
 		static CUnit* unitTable_0059CB58 = (CUnit*)(0x0059CB58);
 		static CUnit* unitTable_0059CB64 = (CUnit*)(0x0059CB64);
+		if (Globals.extended_unit_table == 1) {
+			const u32 index_start = reinterpret_cast<u32>(&new_unit_table.units[0]);
+			unitTable_0059CB58 = (CUnit*)index_start;
+			unitTable_0059CB64 = (CUnit*)(index_start + 12);
+		}
 
 		if(
 			unit->status & UnitStatus::GroundedBuilding ||

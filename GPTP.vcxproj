@@ -116,6 +116,8 @@
     <ClCompile Include="hooks\audiovisuals\sfxhooks_inject.cpp" />
     <ClCompile Include="hooks\economic_units.cpp" />
     <ClCompile Include="hooks\economic_units_inject.cpp" />
+    <ClCompile Include="hooks\limits\ccmu_inject.cpp" />
+    <ClCompile Include="hooks\limits\extender.cpp" />
     <ClCompile Include="hooks\game\creategame.cpp" />
     <ClCompile Include="hooks\game\creategame_inject.cpp" />
     <ClCompile Include="hooks\interface\console.cpp" />
@@ -329,6 +331,8 @@
     <ClInclude Include="CUnitExtended.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="hooks\audiovisuals\sfxhooks.h" />
+    <ClInclude Include="hooks\limits\ccmu.h" />
+    <ClInclude Include="hooks\limits\extender.h" />
     <ClInclude Include="hooks\economic_units.h" />
     <ClInclude Include="hooks\game\creategame.h" />
     <ClInclude Include="hooks\interface\console.h" />

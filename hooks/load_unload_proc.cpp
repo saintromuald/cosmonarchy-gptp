@@ -1,6 +1,7 @@
 #include "load_unload_proc.h"
 #include <SCBW/api.h>
-
+#include "globals.h"
+#include "hooks\limits\ccmu.h"
 //helper functions def
 
 namespace {
@@ -22,9 +23,16 @@ namespace hooks {
 		u8 unitRaceId;
 		u32 loaded_index;
 		int counter = 0;
-
-		static const CUnit* unitTable_0059CB58 = (CUnit*)0x0059CB58;
-		static const CUnit* unitTable_0059CB64 = (CUnit*)0x0059CB64;
+		//before CCMU extender change
+//		static const CUnit* unitTable_0059CB58 = (CUnit*)0x0059CB58;
+//		static const CUnit* unitTable_0059CB64 = (CUnit*)0x0059CB64;
+		static CUnit* unitTable_0059CB58 = (CUnit*)0x0059CB58;
+		static CUnit* unitTable_0059CB64 = (CUnit*)0x0059CB64;
+		if (Globals.extended_unit_table == 1) {
+			const u32 index_start = reinterpret_cast<u32>(&new_unit_table.units[0]);
+			unitTable_0059CB58 = (CUnit*)index_start;
+			unitTable_0059CB64 = (CUnit*)(index_start+12);
+		}
 		static u32* u32_0x006BEE84 = (u32*)(0x006BEE84);
 		static u32* u32_0x006BEE8C = (u32*)(0x006BEE8C);
 
@@ -101,12 +109,18 @@ namespace hooks {
 			}
 
 		}
-
+		//new - CCMU extender
+		auto new_table = unitTable;
+		if (Globals.extended_unit_table == 1) {
+			new_table = (CUnit*)&new_unit_table.units[0];
+		}
+		//
 		//e79a3
 		__asm {
 			PUSHAD
 			MOV ECX, unitToLoad
-			SUB ECX, unitTable
+//			SUB ECX, unitTable
+			SUB ECX, new_table
 			MOV EAX, 0x86186187
 			MUL ECX
 			SUB ECX, EDX

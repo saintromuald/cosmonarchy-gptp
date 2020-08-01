@@ -86,6 +86,7 @@
 #include "hooks/weapons/wpnspellhit.h"
 #include "hooks/weapon_effect.h"
 #include "hooks/use_tech.h"
+#include "hooks/limits/ccmu.h"
 //#include "AI/spellcasting.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
@@ -165,6 +166,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 //	const u8 retn = 0xc3;
 //	memoryPatch(0x004AAF23 + 5, &retn, 1);
 	injectGlobalsHooks();
+//	hooks::injectLimitHooks();
 	//
 
 
@@ -186,6 +188,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 //	memoryPatch(0x0048EA20 + 2, patchLastUnit, 1);
 	//hook required
 	memoryPatch(0x0048EAB0 + 2, patchLastUnit, 1);
+
+
 
 	//kakaru/exemplar hardcode
 	memoryPatch(0x00431586 + 2, patchLastUnit, 1);
@@ -334,6 +338,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	//h
 	hooks::injectDrawHook();
 
+	
+
 	//in order of creation
 	/*
 	hooks::injectInfestationHooks();
@@ -446,10 +452,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
 	hooks::injectUnitTooltipHook();
 	hooks::injectMaxHpHooks();
-
+	//hooks::injectSfxHooks();
 	//hooks::injectSpellcasterAI();
-
-	hooks::injectSfxHooks();
 
 	return TRUE;
 }

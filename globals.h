@@ -21,12 +21,12 @@ struct SaveState {
 class globals {
 	std::string output;
 public:
-	int example_placeholder;
-	int example_test[5];
+	u32 extended_unit_table;
+
 	SaveState aise_save();
 	void aise_load(const char* ptr, u32 len);
 	globals() {
-		example_placeholder = 3;
+		extended_unit_table = 0;
 	}
 };
 
