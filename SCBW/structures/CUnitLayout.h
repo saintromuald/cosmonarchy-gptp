@@ -155,6 +155,7 @@ namespace ValueId {
 		SpineY=27,
 		EcclesiastStack=28,
 		EcclesiastTimer=29,
+		EcclesiastPlayer=30,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

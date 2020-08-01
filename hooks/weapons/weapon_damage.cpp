@@ -268,16 +268,12 @@ public:
 	ecclesiastProc(int stacks, int playerID) {
 		_healValue = (5 * (stacks + 1)) * 256;
 		_playerID = playerID;
-		/*char buf[32];
-		sprintf(buf, "heal value: %i", _healValue);
-		scbw::printText(buf);*/
 	}
 
 	void proc(CUnit* unit) {
 		if (!units_dat::ShieldsEnabled[unit->id]) return;
 		if (_playerID != unit->playerId && !scbw::isAlliedTo(_playerID, unit->playerId)) return;
 		unit->shields = std::min(unit->shields + _healValue, units_dat::MaxShieldPoints[unit->id] * 256);
-		//scbw::printText("heal shields");
 	}
 };
 
@@ -313,14 +309,15 @@ namespace hooks {
 					if (target->status & UnitStatus::IsHallucination)
 						damage *= 2;*/
 
-			if (weaponId == WeaponId::EcclesiastWeapon && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::EcclesiastStacks)) {
+			if (attacker != NULL && weaponId == WeaponId::EcclesiastWeapon && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::EcclesiastStacks)) {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0) < 10) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::EcclesiastStack, 1, 0);
 				}
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::EcclesiastTimer, 49, 0); //49 is 2 seconds (48) + 1
+				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::EcclesiastPlayer, attacker->playerId, 0);
 				//scbw::printText("increment stack");
 			}
-			else if (weaponId == WeaponId::GlaveWurm || weaponId == WeaponId::GlaveWurm_Kukulza_Mutalisk) {
+			if (weaponId == WeaponId::GlaveWurm || weaponId == WeaponId::GlaveWurm_Kukulza_Mutalisk) {
 				double mul = 1.0;
 				switch (dmgDivisor) {
 				case 0:
@@ -631,12 +628,13 @@ namespace hooks {
 
 				// ecclesiastProc
 				int stacks = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0);
+				int player = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastPlayer, 0);
 				const int range = 32;
 				scbw::UnitFinder unitFinder(target->getX() - range,
 					target->getY() - range,
 					target->getX() + range,
 					target->getY() + range);
-				unitFinder.forEach(ecclesiastProc(stacks, attacker->playerId));
+				unitFinder.forEach(ecclesiastProc(stacks, player));
 			}
 
 			target->damageHp(damage, attacker, attackingPlayerId,
