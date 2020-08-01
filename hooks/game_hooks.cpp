@@ -493,7 +493,9 @@ namespace hooks {
 					}
 					unit->updateSpeed();
 				}
-
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::EcclesiastTimer, 0) == 1) {
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::EcclesiastStack, 0, 0);
+				}
 
 				
 

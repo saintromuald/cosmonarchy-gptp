@@ -266,18 +266,18 @@ private:
 
 public:
 	ecclesiastProc(int stacks, int playerID) {
-		_healValue = (5 * stacks) * 256;
+		_healValue = (5 * (stacks + 1)) * 256;
 		_playerID = playerID;
-		char buf[32];
+		/*char buf[32];
 		sprintf(buf, "heal value: %i", _healValue);
-		scbw::printText(buf);
+		scbw::printText(buf);*/
 	}
 
 	void proc(CUnit* unit) {
-		if (!units_dat::ShieldsEnabled[unit->id]) { scbw::printText("shields not enabled"); return; }
-		if (_playerID != unit->playerId && !scbw::isAlliedTo(_playerID, unit->playerId)) { scbw::printText("not allied or own unit"); return; }
+		if (!units_dat::ShieldsEnabled[unit->id]) return;
+		if (_playerID != unit->playerId && !scbw::isAlliedTo(_playerID, unit->playerId)) return;
 		unit->shields = std::min(unit->shields + _healValue, units_dat::MaxShieldPoints[unit->id] * 256);
-		scbw::printText("heal shields");
+		//scbw::printText("heal shields");
 	}
 };
 
@@ -314,8 +314,11 @@ namespace hooks {
 						damage *= 2;*/
 
 			if (weaponId == WeaponId::EcclesiastWeapon && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::EcclesiastStacks)) {
-				target->_unknown_0x08C = target->_unknown_0x08C | std::min((((target->_unknown_0x08C & 0x11100) >> 2) + 1) << 2, 10);
-				scbw::printText("increment stack");
+				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0) < 10) {
+					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::EcclesiastStack, 1, 0);
+				}
+				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::EcclesiastTimer, 49, 0); //49 is 2 seconds (48) + 1
+				//scbw::printText("increment stack");
 			}
 			else if (weaponId == WeaponId::GlaveWurm || weaponId == WeaponId::GlaveWurm_Kukulza_Mutalisk) {
 				double mul = 1.0;
@@ -624,6 +627,17 @@ namespace hooks {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::Amitosis, 0, 0);
 				}
 			}
+			if (damage >= target->hitPoints) {
+
+				// ecclesiastProc
+				int stacks = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0);
+				const int range = 32;
+				scbw::UnitFinder unitFinder(target->getX() - range,
+					target->getY() - range,
+					target->getX() + range,
+					target->getY() + range);
+				unitFinder.forEach(ecclesiastProc(stacks, attacker->playerId));
+			}
 
 			target->damageHp(damage, attacker, attackingPlayerId,
 				weaponId != WeaponId::Irradiate);		//Prevent Science Vessels from being continuously revealed to the irradiated target
@@ -647,26 +661,6 @@ namespace hooks {
 			target->airStrength = getUnitStrength(target, false);
 			target->groundStrength = getUnitStrength(target, true);
 
-		}
-
-
-		// procs for killed units
-		if (target->hitPoints == 0) {
-
-			// ecclesiastProc
-			int stacks = (target->_unknown_0x08C & 0x11100) >> 2;
-			const int range = 32;
-			char buf[32];
-			sprintf(buf, "stack count: %i", stacks);
-			scbw::printText(buf);
-			sprintf(buf, "unknown value: %i", target->_unknown_0x08C);
-			scbw::printText(buf);
-			//scbw::printText("unit finder");
-			scbw::UnitFinder unitFinder(target->getX() - range,
-				target->getY() - range,
-				target->getX() + range,
-				target->getY() + range);
-			unitFinder.forEach(ecclesiastProc(stacks, attacker->playerId));
 		}
 
 	}

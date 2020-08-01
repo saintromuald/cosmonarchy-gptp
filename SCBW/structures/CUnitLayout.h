@@ -153,6 +153,8 @@ namespace ValueId {
 		LurkerETA=25,
 		SpineX=26,
 		SpineY=27,
+		EcclesiastStack=28,
+		EcclesiastTimer=29,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
@@ -284,7 +286,6 @@ struct CUnitLayout {
 /*0x08C*/ u16       _unknown_0x08C;       // HYDRA
 										  // 0x1 - Hierophant Detect Add Maelstrom Overlay
 										  // 0x2 - Hierophant Detect Remove Maelstrom Overlay
-										  // 0x4->0x20 - Ecclesiast stacks (Deliverance)
 
 /*0x08E*/ u8        rankIncrease;		  // Adds this value to the unit's base rank
 /*0x08F*/ u8        killCount;

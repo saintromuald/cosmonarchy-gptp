@@ -96,8 +96,15 @@ namespace hooks {
 
 
 	bool isProtossMorph(u16 unitId) {
-		if (unitId == 158 || unitId == 161 || unitId == 182 || unitId == 183 || unitId == 184 || // morphs
-			unitId == 160 || unitId == 167 || unitId == 155 // original structures
+		if (unitId == UnitId::ProtossPrincipality		// morphs begin
+		|| unitId == UnitId::ProtossVicarage
+		|| unitId == UnitId::ProtossPrelacy
+		|| unitId == UnitId::ProtossRoboticsAuthority
+		|| unitId == UnitId::ProtossArgosy
+		|| unitId == UnitId::ProtossStarfield			// morphs end
+		|| unitId == UnitId::ProtossGateway				// original structures begin
+		|| unitId == UnitId::ProtossStargate
+		|| unitId == UnitId::ProtossRoboticsFacility	// original structures end
 			) {
 			return true;
 		}
