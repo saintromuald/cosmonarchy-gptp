@@ -250,7 +250,7 @@ public:
 };
 
 
-bool irratiateTarget(CUnit* unit) {
+bool irradiateTarget(CUnit* unit) {
 
 	if (unit->id == UnitId::larva || unit->id == UnitId::egg || unit->id == UnitId::lurker_egg)
 		return false;
@@ -274,6 +274,7 @@ public:
 		if (!units_dat::ShieldsEnabled[unit->id]) return;
 		if (_playerID != unit->playerId && !scbw::isAlliedTo(_playerID, unit->playerId)) return;
 		unit->shields = std::min(unit->shields + _healValue, units_dat::MaxShieldPoints[unit->id] * 256);
+		imgul(unit->sprite, 425, 0, 0, 0);
 	}
 };
 
@@ -515,7 +516,7 @@ namespace hooks {
 				}
 				
 				if (weaponId == WeaponId::NuclearMissile && target->hitPoints > damage) {
-					if (attacker != NULL && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::GroundZero) && irratiateTarget(target)) {
+					if (attacker != NULL && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::GroundZero) && irradiateTarget(target)) {
 						hooks::IrradiateHit(attacker, target, attacker->playerId);
 					}
 				}
