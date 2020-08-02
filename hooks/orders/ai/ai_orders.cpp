@@ -164,8 +164,8 @@ namespace hooks {
 
 namespace {
 	const u32 Func_getAllUnitsInBounds = 0x0042FF80;
-	CUnit** getAllUnitsInBounds(Box32 a1) {
-		static Box32 a1;
+	CUnit** getAllUnitsInBounds(Box32* a1) {
+		static Box32* a1;
 		static CUnit** result;
 
 		__asm {
