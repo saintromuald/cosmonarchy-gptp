@@ -494,8 +494,18 @@ namespace hooks {
 					unit->updateSpeed();
 				}
 
-
-				
+				// Workers do not provide collision while harvesting, moving to harvest, or moving to return resources
+				if (unit->mainOrderId == OrderId::Harvest1
+					|| unit->mainOrderId == OrderId::HarvestGas1
+					|| unit->mainOrderId == OrderId::ReturnMinerals
+					|| unit->mainOrderId == OrderId::ReturnGas) {
+					if (unit->status & UnitStatus::IsGathering) {
+						unit->status |= UnitStatus::NoCollide;
+					}
+					else {
+						unit->status &= ~UnitStatus::NoCollide;
+					}
+				}
 
 				//(*unit)._dc132 |= 0x8;
 				//(*unit)._dc133 = 24;
