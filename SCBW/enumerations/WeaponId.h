@@ -138,5 +138,6 @@ enum Enum {
   WyvernWeapon = 125,
   ObservanceWeapon = 122,
   EcclesiastWeapon = 110,
+  TerminusWeapon = 111,
 };
 }

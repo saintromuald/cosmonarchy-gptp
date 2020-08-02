@@ -429,30 +429,32 @@ enum Enum {
 /*0xF8*/	Buttons_ReplayPaused = 248,
 /*0xF9*/	Buttons_ReplayPlaying = 249,
 
-//DELIVERANCE
+	//DELIVERANCE\\
 
 //Terran-Hero
-	QuentinChase				= 16,
-	ArnoldLannigan				= 17,
+	QuentinChase				= 16,		// Sarah Kerrigan
+	ArnoldLannigan				= 17,		// Alan Schezar
 
 //Protoss-Unit
-	ProtossEcclesiast			= 79,
+	ProtossEcclesiast			= 79,		// Tassadar
+	ProtossTerminus				= 99,		// Samir Duran
 
 //Protoss-Building
-	ProtossPrelacy				= 223,	
+	ProtossPrelacy				= 223,		// Gas Orb 2
+	ProtossCrucible				= 227,		// Gas Tank 2
 
 //Protoss-Hero
-	Sashalok					= 75,
-	Torros						= 77,
-	Asalamir					= 78,
-	Damos						= 86,
-	Nerazan						= 87,
-	Keszalon					= 88,
+	Sashalok					= 75,		// Zeratul
+	Torros						= 77,		// Fenix Zealot
+	Asalamir					= 78,		// Fenix Dragoon
+	Damos						= 86,		// Danimoth
+	Nerazan						= 87,		// Aldaris
+	Keszalon					= 88,		// Artanis
 
 //Zerg-Hero
-	Gothroki					= 151,
+	Gothroki					= 151,		// Cerebrate
  
-//HYDRA
+	//HYDRA\\
 
 //Terran-Unit
 	TerranCyprian				= 92,

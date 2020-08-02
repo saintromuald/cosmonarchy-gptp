@@ -27,17 +27,25 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 
 	int cooldownModifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
 							+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
+	// Capacitors upgrade: gains increased attack speed while cloaked
 	if( scbw::getUpgradeLevel(unit->playerId, UpgradeId::Capacitors) && unit->id==UnitId::wraith &&
 		weaponId==WeaponId::BurstLasers && (unit->status & UnitStatus::Cloaked)){
 		cooldown -= cooldown / 5;
 	}
+	// Ravening Mandibule upgrade: gains increased attack speed
 	if (unit->id==UnitId::ZergGorgoleth && scbw::getUpgradeLevel(unit->playerId, UpgradeId::RaveningMandible)) {
 		cooldown /= 2;
 	}
+	// Kaiser Rampage upgrade: gains double attack speed for 1 second
 	if (unit->id == UnitId::ZergUltralisk && scbw::getUpgradeLevel(unit->playerId, UpgradeId::KaiserRampage)) {
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
 			cooldown /= 2;
 		}
+	}
+	// Terminus passive: gains attack speed with each upgrade
+	if (unit->id == UnitId::ProtossTerminus && scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossGroundWeapons)) {
+		int terminusUpg = scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossGroundWeapons);
+		cooldown -= cooldown * (0.1 * terminusUpg);
 	}
 
 	if (cooldownModifier > 0)
