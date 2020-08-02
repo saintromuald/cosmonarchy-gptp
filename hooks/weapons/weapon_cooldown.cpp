@@ -28,7 +28,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 	int cooldownModifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
 							+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
 	// Capacitors upgrade: gains increased attack speed while cloaked
-	if( scbw::getUpgradeLevel(unit->playerId, UpgradeId::Capacitors) && unit->id==UnitId::wraith &&
+	if(scbw::getUpgradeLevel(unit->playerId, UpgradeId::Capacitors) && unit->id==UnitId::wraith &&
 		weaponId==WeaponId::BurstLasers && (unit->status & UnitStatus::Cloaked)){
 		cooldown -= cooldown / 5;
 	}
