@@ -23,7 +23,7 @@ namespace {
 		if ( !isTargetVisible(a2, a1) )
 		return 1;
 		finalUnit = _unit->subunit;
-		if ( !finalUnit || !(units_dat::GroupFlags[(unsigned __int16)finalUnit->id] & 0x10) )
+		if ( !finalUnit || !(units_dat::GroupFlags[(unsigned __int16)finalUnit->id].isBuilding) )
 		finalUnit = _unit;
 		if ( a2->status & UnitStatus::InAir )
 		{
