@@ -38,6 +38,7 @@
 #include "hooks/interface/weapon_armor_tooltip.h"
 
 //in alphabetical order
+#include "hooks/orders/ai/ai_orders.h"
 #include "hooks/orders/base_orders/attack_orders.h"
 #include "hooks/interface/btns_cond.h"
 #include "hooks/orders/building_making/building_morph.h"
@@ -67,6 +68,7 @@
 #include "hooks/orders/medic_orders.h"
 #include "hooks/orders/merge_units.h"
 #include "hooks/orders/spells/mindcontrol_spell.h"
+#include "hooks/miss_chance.h"
 #include "hooks/orders/spells/nuke_orders.h"
 #include "hooks/orders/spells/recall_spell.h"
 #include "hooks/recv_commands/receive_command.h"
@@ -455,6 +457,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
 	//hooks::injectSfxHooks();
 	//hooks::injectSpellcasterAI();
+	//hooks::injectAIOrdersHooks();
+	//hooks::injectMissChanceHooks();
 
 	return TRUE;
 }
