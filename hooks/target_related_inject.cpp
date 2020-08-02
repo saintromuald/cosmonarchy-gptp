@@ -7,41 +7,13 @@
 0043FFD0 = Ai_StimIfNeeded?()
 00462EA0 = Ai_TryReturnHome()
 00465F60 = Order_Interceptor
-00476870 = IsInAttackRange()
 00477980 = Order_AttackUnit_Subunit()
 00478540 = Order_AttackUnit_Main()
 00478B40 = AttackAtPoint()
 00491C20 = Order_CloakingNearby()
 */
 
-/*
-orders_StrafeUnit proc near             ; CODE XREF: ordersEntries+5AB?j
-
-target          = dword ptr -4
-
-                push    ebp
-                mov     ebp, esp
-                push    ecx
-                push    esi
-                mov     esi, eax        ; unit
-                mov     eax, [esi+0C0h]
-                test    eax, eax        ; Logical Compare
-                jz      short loc_465F91 ; Jump if Zero (ZF=1)
-                movzx   eax, guwUnitShields+92h ; 26
-                mov     ecx, [esi+60h]
-                shl     eax, 8          ; Shift Logical Left
-                sar     eax, 2          ; Shift Arithmetic Right
-                cmp     ecx, eax        ; Compare Two Operands
-                jge     short loc_465F91 ; Jump if Greater or Equal (SF=OF)
-                mov     cl, 45h         ; orderID
-                call    orderComputer_cl ; 175
-                pop     esi
-                mov     esp, ebp
-                pop     ebp
-                retn                    ; Return Near from Procedure
-*/
-
-namespace hooks {
+/*namespace hooks {
 
     bool isUnitInWeaponRange(CUnit* a1, CUnit* a2) {
         
@@ -140,7 +112,7 @@ namespace hooks {
             pop     ebp
             retn    4
         }
-    }
+    }*/
 
 
 	void injectTargetHooks() {
