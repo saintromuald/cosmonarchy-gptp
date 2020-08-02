@@ -7,16 +7,11 @@
 0043FFD0 = Ai_StimIfNeeded?()
 00462EA0 = Ai_TryReturnHome()
 00465F60 = Order_Interceptor
-00476430 = IsOutOfRange() // WILL HOOK
-00476640 = IsReadyToAttack()
 00476870 = IsInAttackRange()
 00477980 = Order_AttackUnit_Subunit()
 00478540 = Order_AttackUnit_Main()
 00478B40 = AttackAtPoint()
-orders_WatchTarget 0047BAB0
-orders_StayInRange 0047C4F0
 00491C20 = Order_CloakingNearby()
-00491DB0 = CanCastOrderedSpellNow()
 */
 
 /*
