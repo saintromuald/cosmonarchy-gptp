@@ -126,6 +126,10 @@
     <ClCompile Include="hooks\interface\mainmenu\glucustom_inject.cpp" />
     <ClCompile Include="hooks\maxhp.cpp" />
     <ClCompile Include="hooks\maxhp_inject.cpp" />
+    <ClCompile Include="hooks\miss_chance.cpp" />
+    <ClCompile Include="hooks\miss_chance_inject.cpp" />
+    <ClCompile Include="hooks\orders\ai\ai_orders.cpp" />
+    <ClCompile Include="hooks\orders\ai\ai_orders_inject.cpp" />
     <ClCompile Include="hooks\orders\base_orders\attack_orders.cpp" />
     <ClCompile Include="hooks\orders\base_orders\attack_orders_inject.cpp" />
     <ClCompile Include="hooks\interface\btns_cond.cpp" />
@@ -338,6 +342,8 @@
     <ClInclude Include="hooks\interface\console.h" />
     <ClInclude Include="hooks\interface\mainmenu\glucustom.h" />
     <ClInclude Include="hooks\maxhp.h" />
+    <ClInclude Include="hooks\miss_chance.h" />
+    <ClInclude Include="hooks\orders\ai\ai_orders.h" />
     <ClInclude Include="hooks\orders\spells\recall_spell.h" />
     <ClInclude Include="hooks\orders\base_orders\attack_orders.h" />
     <ClInclude Include="hooks\interface\btns_cond.h" />
