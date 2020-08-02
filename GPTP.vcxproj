@@ -171,6 +171,8 @@
     <ClCompile Include="hooks\give_unit_inject.cpp" />
     <ClCompile Include="hooks\orders\spells\hallucination_spell.cpp" />
     <ClCompile Include="hooks\orders\spells\hallucination_spell_inject.cpp" />
+    <ClCompile Include="hooks\target_related.cpp" />
+    <ClCompile Include="hooks\target_related_inject.cpp" />
     <ClCompile Include="hooks\use_tech.cpp" />
     <ClCompile Include="hooks\use_tech_inject.cpp" />
     <ClCompile Include="hooks\weapon_effect.cpp" />
@@ -364,6 +366,7 @@
     <ClInclude Include="hooks\orders\base_orders\die_order.h" />
     <ClInclude Include="hooks\orders\enter_nydus.h" />
     <ClInclude Include="hooks\orders\spells\feedback_spell.h" />
+    <ClInclude Include="hooks\target_related.h" />
     <ClInclude Include="hooks\use_tech.h" />
     <ClInclude Include="hooks\weapon_effect.h" />
     <ClInclude Include="MathUtils.h" />
