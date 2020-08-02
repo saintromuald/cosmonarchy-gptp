@@ -1,5 +1,6 @@
-#include "target_related.h"
+﻿#include "target_related.h"
 #include "hook_tools.h"
+#include "SCBW/structures.h"
 
 /* TO WRAP
 0043ADA0 = Ai_AskForHelp()
@@ -47,6 +48,104 @@ target          = dword ptr -4
 
 namespace hooks {
 
+    bool isUnitInWeaponRange(CUnit* a1, CUnit* a2) {
+        
+        __asm {
+            PUSHAD
+            push    ebp
+            mov     ebp, esp
+            push    ebx
+            mov     ebx, [ebp + a2]
+            push    edi
+            mov     edi, eax
+            test    edi, edi
+            jnz     short loc_476890
+            mov     edi, [ebx + 5Ch]
+            test    edi, edi
+            jnz     short loc_476890
+            pop     edi
+            mov     eax, 1
+            pop     ebx
+            pop     ebp
+            retn    4
+
+            loc_476890 :
+            push    esi
+            mov     eax, edi
+            mov     esi, ebx
+            call    isTargetVisible
+            test    eax, eax
+            jnz     short loc_4768A7
+
+            loc_47689E:
+            pop     esi
+            pop     edi
+            xor eax, eax
+            pop     ebx
+            pop     ebp
+            retn    4
+
+            loc_4768A7:
+            mov     esi, [ebx + 70h]
+            test    esi, esi
+            mov     cl, 10h
+            jz      short loc_4768BD
+            movzx   eax, word ptr[esi + 64h]
+            test    byte ptr unitsdat_SpecialAbilityFlags[eax * 4], cl
+            jnz     short loc_4768BF
+
+            loc_4768BD:
+            mov     esi, ebx
+
+            loc_4768BF :
+            test    byte ptr[edi + 0DCh], 4
+            jz      short loc_4768D4
+            movzx   ecx, word ptr[esi + 64h]
+            mov     bl, unitsdat_AirWeapon[ecx]
+            jmp     short loc_4768F3
+
+            loc_4768D4:
+            mov     ax, [esi + 64h]
+            cmp     ax, 67h
+            jnz     short loc_4768EA
+            test[esi + 0DCh], cl
+            jnz     short loc_4768EA
+            mov     bl, 82h
+            jmp     short loc_4768F3
+
+
+            loc_4768EA:
+            movzx   edx, ax
+            mov     bl, unitsdat_GroundWeapon[edx]
+
+            loc_4768F3 :
+            cmp     bl, 82h
+            jnb     short loc_47689E
+            movzx   eax, bl
+            mov     eax, weaponsdat_minRange[eax * 4]
+            test    eax, eax
+            jz      short loc_476913
+            push    edi
+            push    eax
+            mov     ecx, esi
+            call    isTargetWithinMinRange
+            test    eax, eax
+            jnz     short loc_47689E
+
+            loc_476913:
+            mov     eax, [ebp + a2]
+            call    getUnitMaxWpnRange
+            mov     ecx, eax
+            mov     eax, edi
+            mov     edi, esi
+            call    isTargetWithinMinMovementRange
+            pop     esi
+            pop     edi
+            pop     ebx
+            pop     ebp
+            retn    4
+        }
+    }
 
 
 	void injectTargetHooks() {
