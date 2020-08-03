@@ -5,17 +5,58 @@
 
 void CCMUExtender::extend() {
 	const u32 lim_ext = NEW_ARRAY_LENGTH + 1;
-	const u32 index_start = reinterpret_cast<u32>(&new_unit_table.units[0]);
-	const u32 table_start = reinterpret_cast<u32>(&new_unit_table.units[1]);
+	const u32 index_start = reinterpret_cast<u32>(&new_unit_table.units[0])-336;
+	const u32 table_start = reinterpret_cast<u32>(&new_unit_table.units[0]);
 	const u32 table_end = table_start + 336*NEW_ARRAY_LENGTH;
 	Globals.extended_unit_table = 1;
 	memoryPatch(0x00402FD2 + 2, index_start);
 	memoryPatch(0x0042FEE5+1, lim_ext);
 	memoryPatch(0x0042FEF1+1, lim_ext);
+	memoryPatch(0x004EABC4 + 3, table_start+0x64);//unit Id of first unit
+	memoryPatch(0x00430082 + 2, index_start+0x148);//unit sorting
+	//
+	//0x00cb5864 (+0xc)
+
 	uplink(get_size_list(), NEW_ARRAY_LENGTH);
 	uplink(table_start_list(), table_start);
 	uplink(get_address_list(), index_start);
 	uplink(table_end_list(), table_end);
+	uplink(sprite_offset_list(), table_start + 0xc);
+}
+
+std::vector<u32> CCMUExtender::sprite_offset_list() {
+	return { 0x00424C3E + 2,
+0x00424E6F + 2,
+0x00424FFD + 2,
+0x0042504D + 2,
+0x0042509E + 2,
+0x004250F0 + 2,
+0x0045F895 + 2,
+0x0046B05C + 2,
+0x0046BC51 + 2,
+0x0046BCE1 + 2,
+0x0047B241 + 2,
+0x0048A8EE + 2,
+0x0048A931 + 2,
+0x00496619 + 2,
+0x00496888 + 2,
+0x00496A0C + 2,
+0x004C261D + 2,
+0x004C27A8 + 2,
+0x004C7EDD + 2,
+0x004CEDC3 + 2,
+0x004D5665 + 2,
+0x004E6CC4 + 2,
+0x004E7137 + 2,
+0x004E71A6 + 2,
+0x004E71F1 + 2,
+0x004E723D + 2,
+0x004E7289 + 2,
+0x004E791B + 2,
+0x004E811C + 2,
+0x004EB1E7 + 2,
+0x004EB388 + 2
+	};
 }
 
 std::vector<u32> CCMUExtender::get_size_list(){
@@ -252,7 +293,7 @@ std::vector<u32> CCMUExtender::get_address_list() {//for -1, start
 		0x00448325 + 2,
 		0x00448348 + 2,
 		0x0044836B + 2,
-		0x0045CE75 + 2,
+		//0x0045CE75 + 2,
 		0x0045F89D + 2,
 		0x00469C32 + 2,
 		0x00469CA2 + 2,
@@ -268,7 +309,7 @@ std::vector<u32> CCMUExtender::get_address_list() {//for -1, start
 		0x00479EA5 + 2,
 		0x0047B21F + 2,
 		0x0047B249 + 2,
-		0x0047D96B + 2,
+		//0x0047D96B + 2,
 		0x0048A8F6 + 2,
 		0x0048A939 + 2,
 		0x0048C78B + 2,
@@ -281,13 +322,13 @@ std::vector<u32> CCMUExtender::get_address_list() {//for -1, start
 		0x00496890 + 2,
 		0x00496A14 + 2,
 		0x00496BAA + 2,
-		0x0049C60F + 2,
-		0x0049C767 + 2,
+		//0x0049C60F + 2,
+		//0x0049C767 + 2,
 		0x0049FE57 + 2,
-		0x004A3790 + 2,
-		0x004A4E36 + 2,
-		0x004A4EFB + 2,
-		0x004A4FCF + 2,
+		//0x004A3790 + 2,
+		//0x004A4E36 + 2,
+		//0x004A4EFB + 2,
+		//0x004A4FCF + 2,
 		0x004BFB88 + 2,
 		0x004C2506 + 2,
 		0x004C2625 + 2,
@@ -342,9 +383,9 @@ std::vector<u32> CCMUExtender::get_address_list() {//for -1, start
 		0x004E8576 + 2,
 		0x004EB1EF + 2,
 		0x004EB390 + 2,
-		0x004A4E00+1,
-		0x004A4E74+1,
-		0x004A4F48+1,
+		//0x004A4E00+1,
+		//0x004A4E74+1,
+		//0x004A4F48+1,
 	};
 }
 

@@ -981,7 +981,7 @@ CUnit* CUnit::getFromIndex(u16 index) {
 	if (Globals.extended_unit_table == 1) {
 		if (1 <= index && index <= NEW_ARRAY_LENGTH)
 		{
-			return (CUnit*)&new_unit_table.units[index];
+			return (CUnit*)&new_unit_table.units[index-1];
 		}
 		return NULL;
 	}
@@ -992,7 +992,7 @@ CUnit* CUnit::getFromIndex(u16 index) {
 
 u16 CUnit::getIndex() const {
 	if (Globals.extended_unit_table == 1) {
-		return this - (CUnit*)&new_unit_table.units[1] + 1;
+		return this - (CUnit*)&new_unit_table.units[0] + 1;
 	}
 	return this - unitTable + 1;
 }

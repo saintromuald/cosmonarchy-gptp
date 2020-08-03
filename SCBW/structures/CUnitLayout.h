@@ -287,8 +287,6 @@ struct CUnitLayout {
 
 /*0x08E*/ u8        rankIncrease;		  // Adds this value to the unit's base rank
 /*0x08F*/ u8        killCount;
-//later kill count and rankincrease will be transfered to aise unit struct
-//0x08C-0x08F will be reserved as u32* pointer to unit struct of aise
 
 
 /*0x090*/ u8        lastAttackingPlayer;  // the player that last attacked this unit
