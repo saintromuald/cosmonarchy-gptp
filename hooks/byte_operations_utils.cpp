@@ -1,52 +1,43 @@
 #include "byte_operations_utils.h"
-#include <windows.h>
 
 
 namespace ByteOperations {
-	template <typename Y>
-	INT8& SetLowByte<INT8, Y>(INT8& lvalue, Y value) {
+	INT8& SetLowByte(INT8& lvalue, INT8 value) {
 		lvalue = LOBYTE(value);
 		return lvalue;
 	}
 
-	template <typename Y>
-	UINT8& SetLowByte<UINT8, Y>(UINT8& lvalue, Y value) {
+	UINT8& SetLowByte(UINT8& lvalue, UINT8 value) {
 		lvalue = LOBYTE(value);
 		return lvalue;
 	}
 
-	template <typename Y>
-	INT16& SetLowByte<INT16, Y>(INT16& lvalue, Y value) {
+	INT16& SetLowByte(INT16& lvalue, INT8 value) {
 		lvalue = LOBYTE(value) | HIBYTE(lvalue);
 		return lvalue;
 	}
 
-	template <typename Y>
-	UINT16& SetLowByte<UINT16, Y>(UINT16& lvalue, Y value) {
-		lvalue = LOBYTE(value) | HIBYTE(lvalue);
+	UINT16& SetHighByte(UINT16& lvalue, UINT8 value) {
+		lvalue = HIBYTE(value) | LOBYTE(lvalue);
 		return lvalue;
 	}
 
-	template <typename Y>
-	INT32& SetLowByte<INT32, Y>(INT32& lvalue, Y value) {
+	INT32& SetLowByte(INT32& lvalue, INT8 value) {
 		lvalue = LOBYTE(value) | HIBYTE(lvalue) | HIWORD(lvalue);
 		return lvalue;
 	}
 
-	template <typename Y>
-	UINT32& SetHighByte<UINT32, Y>(UINT32& lvalue, Y value) {
+	UINT32& SetHighByte(UINT32& lvalue, UINT8 value) {
 		lvalue = HIBYTE(value) | LOBYTE(lvalue) | HIWORD(lvalue);
 		return lvalue;
 	}
 
-	template <typename Y>
-	INT32& SetLowWord<INT32, Y>(INT32& lvalue, Y value) {
+	INT32& SetLowWord(INT32& lvalue, INT16 value) {
 		lvalue = LOWORD(value) | HIWORD(lvalue);
 		return lvalue;
 	}
 
-	template <typename Y>
-	UINT32& SetHighWord<UINT32, Y>(UINT32& lvalue, Y value) {
+	UINT32& SetHighWord(UINT32& lvalue, UINT16 value) {
 		lvalue = HIWORD(value) | LOWORD(lvalue);
 		return lvalue;
 	}

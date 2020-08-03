@@ -1,15 +1,16 @@
 #pragma once
+#include <windows.h>
 
 namespace ByteOperations {
-	template <typename T, typename Y>
-	extern T& SetLowByte(T& lvalue, Y value);
+	extern INT8& SetLowByte(INT8& lvalue, INT8 value);
+	extern UINT8& SetLowByte(UINT8& lvalue, UINT8 value);
 
-	template <typename T, typename Y>
-	extern T& SetHighByte(T& lvalue, Y value);
+	extern INT16& SetLowByte(INT16& lvalue, INT8 value);
+	extern UINT16& SetHighByte(UINT16& lvalue, UINT8 value);
 
-	template <typename T, typename Y>
-	extern T& SetLowWord(T& lvalue, Y value);
+	extern INT32& SetLowByte(INT32& lvalue, INT8 value);
+	extern UINT32& SetHighByte(UINT32& lvalue, UINT8 value);
 
-	template <typename T, typename Y>
-	extern T& SetHighWord(T& lvalue, Y value);
+	extern INT32& SetLowWord(INT32& lvalue, INT16 value);
+	extern UINT32& SetHighWord(UINT32& lvalue, UINT16 value);
 }

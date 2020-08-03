@@ -170,7 +170,7 @@ namespace hooks {
 						LABEL_14:
 					v4 += getFlingyHaltDistance((int)v1) >> 8;
 				}
-				ByteOperations::SetLowByte(v2, isTargetWithinMinRange(v1, v4, v3));
+				//ByteOperations::SetLowByte((UINT32)v2, (UINT8)isTargetWithinMinRange(v1, v4, v3));
 			}
 			else {
 				v6 = v1->orderTarget.pt.y;
