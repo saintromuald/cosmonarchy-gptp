@@ -13,8 +13,8 @@
 00491C20 = Order_CloakingNearby()
 */
 
-/*namespace hooks {
-
+namespace hooks {
+	/*
     bool isUnitInWeaponRange(CUnit* a1, CUnit* a2) {
         
         __asm {
@@ -114,7 +114,7 @@
         }
     }*/
 
-
+/*
 	void injectTargetHooks() {
 		// reference hooks
 		//jmpPatch(Ai_ProgressSpendingQueue_JmpWrapper, 0x00434C31);
@@ -123,7 +123,7 @@
 	}
 	void injectTargetRelatedHooks() {
 		injectTargetHooks();
-	}
+	}*/
 }
 
 /*

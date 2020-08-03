@@ -1,6 +1,6 @@
 #include "ai_orders.h"
 #include <hook_tools.h>
-
+/*
 namespace {
 
 	int __declspec(naked) askForHelp_AI_Wrapper() { // 0043ADA0
@@ -25,4 +25,4 @@ namespace hooks {
 	void injectAIOrdersHooks() {
 		jmpPatch(askForHelp_AI_Wrapper, 0x0043ADA0, 1);
 	}
-}
+}*/

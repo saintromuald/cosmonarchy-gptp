@@ -2,7 +2,7 @@
 #include <SCBW/api.h>
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
-#include "byte_operations_utils.h"
+#include "byte_operations_utils.h"/*
 
 namespace {
 	// for isUnitTargetOutOfMaxRange
@@ -764,3 +764,4 @@ namespace {
 		}
 	}
 }
+*/

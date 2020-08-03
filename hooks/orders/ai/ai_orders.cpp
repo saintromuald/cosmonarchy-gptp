@@ -3,7 +3,7 @@
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
 #include <windows.h>
-
+/*
 namespace {
 	CUnit** getAllUnitsInBounds(Box32* a1);
 	bool unitCanAttackTarget(CUnit* a1, CUnit* a2, int a3);
@@ -13,7 +13,7 @@ namespace {
 }
 
 namespace hooks {
-	/*
+	
 	int askForHelp_AI(CUnit* a1, CUnit* a2, int a3) { // 0043ADA0
 		CUnit* v3; // esi
 		signed __int16 v4; // ax
@@ -159,7 +159,7 @@ namespace hooks {
 		result = tempUnitsListArraysCountsListLastIndex[0] - 1;
 		tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
 		return result;
-	}*/
+	}
 }
 
 namespace {
@@ -250,4 +250,4 @@ namespace {
 		}
 		return result;
 	}
-}
+}*/
