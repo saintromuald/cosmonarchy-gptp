@@ -28,7 +28,7 @@ namespace hooks {
 			}
 		}
 		return (activeTileHandle[_pUnit->sprite->position.x / 32 + mapTileSize->width * (_pUnit->sprite->position.y / 32)] & 0x100000) != 0 ? 119 : 0;
-	}
+	};
 
 	int canHitTargetCheck(CUnit* a1, CUnit* a2) {	// 004765B0
 		int darkSwarmOrd; // ebx
@@ -51,7 +51,7 @@ namespace hooks {
 			result = darkSwarmOrd;
 		}
 		return result;
-	}
+	};
 }
 
 namespace { // helper definitions

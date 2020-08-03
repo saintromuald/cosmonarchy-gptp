@@ -49,30 +49,30 @@ namespace hooks {
 		int v8; // eax
 
 		_unit = a1;
-		if ( !isTargetVisible(a2, a1) )
-		return 1;
+		if (!isTargetVisible(a2, a1))
+			return 1;
 		finalUnit = _unit->subunit;
-		if ( !finalUnit || !(units_dat::GroupFlags[(unsigned __int16)finalUnit->id].isBuilding) )
-		finalUnit = _unit;
-		if ( a2->status & UnitStatus::InAir )
+		if (!finalUnit || !(units_dat::GroupFlags[(unsigned __int16)finalUnit->id].isBuilding))
+			finalUnit = _unit;
+		if (a2->status & UnitStatus::InAir)
 		{
-		_wpn = units_dat::AirWeapon[(unsigned __int16)finalUnit->id];
+			_wpn = units_dat::AirWeapon[(unsigned __int16)finalUnit->id];
 		}
 		else
 		{
-		_id = finalUnit->id;
-		if ( _id != UnitId::ZergLurker || finalUnit->status & 0x10 )
-			_wpn = units_dat::GroundWeapon[_id];
-		else
-			_wpn = -126;
+			_id = finalUnit->id;
+			if (_id != UnitId::ZergLurker || finalUnit->status & 0x10)
+				_wpn = units_dat::GroundWeapon[_id];
+			else
+				_wpn = -126;
 		}
-		if ( _wpn == -126 )
-		return 0;
+		if (_wpn == -126)
+			return 0;
 		_maxRange = getUnitMaxWeaponRange(_unit, _wpn);
 
 		ByteOperations::SetLowByte(v8, isTargetWithinMinMovementRange(a2, _maxRange, finalUnit));
 		return v8 == 0;
-	}
+	};
 
 	signed int isReadyToAttack(CUnit* a1, unsigned __int8 a2) { // 00476640
 		CUnit* v2; // esi
@@ -96,13 +96,13 @@ namespace hooks {
 			return 0;
 		v8 = v2->nextTargetWaypoint.x;
 		if ((v8 != v2->position.x || v2->nextTargetWaypoint.y != v2->position.y)
-			&& !isAngleInAttackAngle(v2->nextTargetWaypoint.y, v8, v2, a2))	{
+			&& !isAngleInAttackAngle(v2->nextTargetWaypoint.y, v8, v2, a2)) {
 			v2->orderQueueTimer = 0;
 			return 0;
 		}
 		return 1;
-	}
-
+	};
+	
 	bool isUnitInWeaponRange(CUnit* a1, CUnit* a2) { // 00476870
 		CUnit* v2; // edi
 		CUnit* v4; // esi
@@ -135,13 +135,13 @@ namespace hooks {
 		if (v5 >= (unsigned __int8)0x82)
 			return 0;
 		v7 = weapons_dat::MinRange[v5];
-		if (v7)	{
+		if (v7) {
 			if (isTargetWithinMinRange(v4, v7, v2))
 				return 0;
 		}
 		v8 = getUnitMaxWeaponRange(a2, v5);
 		return isTargetWithinMinMovementRange(v2, v8, v4);
-	}
+	};
 
 	char canCastOrderedSpellNow(CUnit* a1) { // 00491DB0
 		CUnit* v1; // esi
@@ -156,7 +156,7 @@ namespace hooks {
 
 		v1 = a1;
 		v2 = isUnitVisible(a1);
-		if (v2)	{
+		if (v2) {
 			v3 = v1->orderTarget.unit;
 			if (v3) {
 				v4 = getUnitMaxWeaponRange(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->mainOrderId]);
@@ -181,10 +181,9 @@ namespace hooks {
 			}
 		}
 		return v2;
-	}
+	};
 
-	void ordersWatchTarget(CUnit* a1) // 0047BAB0
-	{
+	void ordersWatchTarget(CUnit* a1) { // 0047BAB0
 		CUnit* v1; // esi
 		CUnit* v2; // ebx
 		int v3; // eax
@@ -206,13 +205,13 @@ namespace hooks {
 			goto LABEL_22;
 		v4 = v1->orderTarget.unit;
 		target = v1->orderTarget.unit;
-		if (v4)	{
+		if (v4) {
 			if (!isTargetVisible(v4, v1))
 				goto LABEL_23;
 			v5 = v1->subunit;
 			if (!v5 || !(units_dat::GroupFlags[(unsigned __int16)v5->id].isBuilding))
 				v5 = v1;
-			if (v4->status & 4)	{
+			if (v4->status & 4) {
 				v6 = units_dat::AirWeapon[(unsigned __int16)v5->id];
 			}
 			else {
@@ -227,11 +226,11 @@ namespace hooks {
 				|| (v9 = getUnitMaxWeaponRange(v1, v6), ByteOperations::SetLowByte(v10, (isTargetWithinMinMovementRange(target, v9, v5), !v10)))) {
 			LABEL_23:
 				if (getRightClickActionOrder(v1) == 3)
-					LABEL_22:
+					LABEL_22 :
 					unknownOrdersFunc((int)v1, v1->orderTarget.pt.x, v1->orderTarget.pt.y);
 			}
 		}
-	}
+	};
 
 	void ordersStayInRange(CUnit* a1) { // 0047C4F0
 		CUnit* v1; // esi
@@ -365,7 +364,7 @@ namespace hooks {
 				orderComputerClear(v1, units_dat::ReturnToIdleOrder[(unsigned __int16)v1->id]);
 			}
 		}
-	}
+	};
 }
 
 namespace {
