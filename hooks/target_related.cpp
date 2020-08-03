@@ -2,7 +2,7 @@
 #include <SCBW/api.h>
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
-#include "byte_operations_utils.h"/*
+#include "byte_operations_utils.h"
 
 namespace {
 	// for isUnitTargetOutOfMaxRange
@@ -373,8 +373,6 @@ namespace {
 
 	const u32 Func_isTargetVisible = 0x004E5E30;
 	unsigned int isTargetVisible(CUnit* a1, CUnit* a2) {
-		static CUnit* a1;
-		static CUnit* a2;
 		static unsigned int result;
 
 		__asm {
@@ -386,12 +384,10 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
+	};
 
 	const u32 Func_getUnitMaxWeaponRange = 0x00475870;
 	int getUnitMaxWeaponRange(CUnit* a1, unsigned __int8 a2) {
-		static CUnit* a1;
-		static unsigned __int8 a2;
 		static int result;
 
 		__asm {
@@ -403,14 +399,12 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
+	};
 
 	const u32 Func_isTargetWithinMinMovementRange = 0x004763D0;
 	bool isTargetWithinMinMovementRange(CUnit* a1, unsigned int a2, CUnit* a3) {
-		static CUnit* a1;
-		static unsigned int a2;
-		static CUnit* a3;
-		static bool result;
+		static int result;
+		static bool result2;
 
 		__asm {
 			PUSHAD
@@ -421,15 +415,13 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return result;
-	}
+		return result2 = (bool)result;
+	};
 
 	// For isReadyToAttack
 
 	const u32 Func_getDistanceToUnit = 0x00430D30;
 	unsigned int getDistanceToUnit(CUnit* a1, CUnit* a2) {
-		static CUnit* a1;
-		static CUnit* a2;
 		static unsigned int result;
 
 		__asm {
@@ -441,13 +433,10 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
+	};
 
 	const u32 Func_distanceFromDboxCorner = 0x0043E50;
 	unsigned int distanceFromDboxCorner(CUnit* a1, __int16 a2, __int16 a3) {
-		static CUnit* a1;
-		static __int16 a2;
-		static __int16 a3;
 		static unsigned int result;
 
 		__asm {
@@ -460,15 +449,12 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
+	};
 
-	const u32 Func_isAngleInAttackAngle;
+	const u32 Func_isAngleInAttackAngle = 0x00475BE0;
 	bool isAngleInAttackAngle(int a1, int a2, CUnit* a3, unsigned __int8 a4) {
-		static int a1;
-		static int a2;
-		static CUnit* a3;
-		static unsigned __int8 a4;
-		static bool result;
+		static int result;
+		static bool result2;
 
 		__asm {
 			PUSHAD
@@ -480,13 +466,12 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return result;
-	}
+		return result2 = (bool)result;
+	};
 
 	// for canCastOrderedSpellNow
 	const u32 Func_isUnitVisible = 0x004E5DB0;
 	int isUnitVisible(CUnit* a1) {
-		static CUnit* a1;
 		static int result;
 
 		__asm {
@@ -497,14 +482,12 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
+	};
 
 	const u32 Func_isTargetWithinMinRange = 0x00430F10;
 	bool isTargetWithinMinRange(CUnit* a1, unsigned int a2, CUnit* a3) {
-		static CUnit* a1;
-		static unsigned int a2;
-		static CUnit* a3;
-		static bool result;
+		static int result;
+		static bool result2;
 
 		__asm {
 			PUSHAD
@@ -515,12 +498,11 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return result;
-	}
+		return result = (bool)result;
+	};
 
 	const u32 Func_getFlingyHaltDistaince = 0x00494F90;
 	int getFlingyHaltDistance(int a1) {
-		static int a1;
 		static int result;
 		__asm {
 			PUSHAD
@@ -530,14 +512,10 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
+	};
 
 	const u32 Func_getDistanceFast = 0x0040C360;
 	unsigned int getDistanceFast(int a1, int a2, int a3, int a4) {
-		static int a1;
-		static int a2;
-		static int a3;
-		static int a4;
 		static unsigned int result;
 
 		__asm {
@@ -551,16 +529,14 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
+	};
 
 	// for ordersWatchTarget
 
 	const u32 Func_unitCanAttackTarget = 0x00476730;
 	bool unitCanAttackTarget(CUnit* a1, CUnit* a2, int a3) {
-		static CUnit* a1;
-		static CUnit* a2;
-		static int a3;
-		static bool result;
+		static int result;
+		static bool result2;
 
 		__asm {
 			PUSHAD
@@ -571,13 +547,13 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return result;
-	}
+		return result2 = (bool)result;
+	};
 
 	const u32 Func_getRightClickActionOrder = 0x004E5EA0;
 	char getRightClickActionOrder(CUnit* a1) {
-		static CUnit* a1;
-		static char result;
+		static int result;
+		static char result2;
 
 		__asm {
 			PUSHAD
@@ -586,14 +562,11 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return result;
-	}
+		return result2 = (char)result;
+	};
 
 	const u32 Func_unknownOrdersFunc = 0x00475350;
 	void unknownOrdersFunc(int a1, __int16 a2, __int16 a3) {
-		static int a1;
-		static __int16 a2;
-		static __int16 a3;
 
 		__asm {
 			PUSHAD
@@ -603,15 +576,11 @@ namespace {
 			CALL Func_unknownOrdersFunc
 			POPAD
 		}
-	}
+	};
 	
 	// for ordersStayInRange
 	const u32 Func_prependOrderTargetingGround = 0x00474A20;
 	void prependOrderTargetingGround(__int8 a1, __int16 a2, __int16 a3, int a4) {
-		static __int8 a1;
-		static __int16 a2;
-		static __int16 a3;
-		static int a4;
 
 		__asm {
 			PUSHAD
@@ -622,11 +591,10 @@ namespace {
 			CALL Func_prependOrderTargetingGround
 			POPAD
 		}
-	}
+	};
 	
 	const u32 Func_toIdle = 0x004753A0;
 	void toIdle(CUnit* a1) {
-		static CUnit* a1;
 
 		__asm {
 			PUSHAD
@@ -634,12 +602,10 @@ namespace {
 			CALL Func_toIdle
 			POPAD
 		}
-	}
+	};
 
 	const u32 Func_moveTowards = 0x004EB900;
 	signed int moveTowards(CUnit* a1, CUnit* a2) {
-		static CUnit* a1;
-		static CUnit* a2;
 		static signed int result;
 
 		__asm {
@@ -651,11 +617,10 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
+	};
 
 	const u32 Func_ordersHoldPositionSuicidal = 0x004EB5B0;
 	int ordersHoldPositionSuicidal(CUnit* a1) {
-		static CUnit* a1;
 		static int result;
 
 		__asm {
@@ -666,12 +631,10 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
+	};
 
 	const u32 Func_moveToTarget = 0x004EB720;
 	signed int moveToTarget(CUnit* a1, CUnit* a2) {
-		static CUnit* a1;
-		static CUnit* a2;
 		static signed int result;
 
 		__asm {
@@ -683,13 +646,10 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
+	};
+
 	const u32 Func_getDirectionFromPoints = 0x00495300;
 	int getDirectionFromPoints(int a1, int a2, int a3, int a4) {
-		static int a1;
-		static int a2;
-		static int a3;
-		static int a4;
 		static int result;
 		__asm {
 			PUSHAD
@@ -702,13 +662,10 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
+	};
 
 	const u32 Func_setSecondaryWaypoint = 0x00494BB0;
 	CUnit* setSecondaryWaypoint(CUnit* a1, int a2, int a3) {
-		static CUnit* a1;
-		static int a2;
-		static int a3;
 		static CUnit* result;
 
 		__asm {
@@ -721,12 +678,12 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
+	};
 
 	const u32 Func_setResourceTarget = 0x004EB290;
 	Point32 setResourceTarget(CUnit* a1) {
-		static CUnit* a1;
-		static Point32 result;
+		static __int32 result;
+		static Point32 resultPoint;
 
 		__asm {
 			PUSHAD
@@ -735,12 +692,11 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return result;
-	}
+		return resultPoint = *(Point32*)&result;
+	};
 
 	const u32 Func_ordersNothing2 = 0x00475000;
 	void ordersNothing2(CUnit* a1) {
-		static CUnit* a1;
 
 		__asm {
 			PUSHAD
@@ -748,12 +704,10 @@ namespace {
 			CALL Func_ordersNothing2
 			POPAD
 		}
-	}
+	};
 
 	const u32 Func_orderComputerClear = 0x00475310;
 	void orderComputerClear(CUnit* a1, __int8 a2) {
-		static CUnit* a1;
-		static __int8 a2;
 
 		__asm {
 			PUSHAD
@@ -762,6 +716,5 @@ namespace {
 			CALL Func_orderComputerClear
 			POPAD
 		}
-	}
+	};
 }
-*/

@@ -2,7 +2,7 @@
 #include <SCBW/api.h>
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
-/*
+
 namespace { // helper declarations
 	void getAbsoluteUnitBounds(CUnit* a1, Box32* a2);
 	CUnit* findBestUnit(Box32* a1, int a2, int (__fastcall *a3)(int, int));
@@ -57,8 +57,6 @@ namespace hooks {
 namespace { // helper definitions
 	const u32 Func_getAbsoluteUnitBounds = 0x00402020;
 	void getAbsoluteUnitBounds(CUnit* a1, Box32* a2) {
-		static CUnit* a1;
-		static Box32* a2;
 
 		__asm {
 			PUSHAD
@@ -67,13 +65,10 @@ namespace { // helper definitions
 			CALL Func_getAbsoluteUnitBounds
 			POPAD
 		}
-	}
+	};
 
 	const u32 Func_findBestUnit = 0x004E8830;
-	CUnit* findBestUnit(Box32* a1, int a2, int(__fastcall *a3)(int, int)) {
-		static Box32* a1;
-		static int a2;
-		static int(__fastcall *a3)(int, int);
+	CUnit* findBestUnit(Box32* a1, int a2, int(__fastcall* a3)(int, int)) {
 		static CUnit* result;
 
 		__asm {
@@ -86,13 +81,12 @@ namespace { // helper definitions
 			POPAD
 		}
 		return result;
-	}
+	};
 
 	const u32 Func_compareUnitToUnitType = 0x004402A0;
 	bool compareUnitToUnitType(CUnit* a1, __int16 a2) {
-		static CUnit* a1;
-		static __int16 a2;
-		static bool result;
+		static int result;
+		static bool result2;
 
 		__asm {
 			PUSHAD
@@ -102,13 +96,11 @@ namespace { // helper definitions
 			MOV result, EAX
 			POPAD
 		}
-		return result;
-	}
+		return result2 = (bool)result;
+	};
 
 	const u32 Func_getGroundHeightAtPx = 0x004BD0F0;
 	unsigned int getGroundHeightAtPx(signed int a1, signed int a2) {
-		static signed int a1;
-		static signed int a2;
 		static unsigned int result;
 
 		__asm {
@@ -120,5 +112,5 @@ namespace { // helper definitions
 			POPAD
 		}
 		return result;
-	}
-}*/
+	};
+}

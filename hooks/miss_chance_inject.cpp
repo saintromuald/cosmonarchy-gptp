@@ -1,6 +1,6 @@
 #include "miss_chance.h"
 #include <hook_tools.h>
-/*
+
 namespace {
 
 	int __declspec(naked) isUnderDarkSwarm_Wrapper() { // 00476210
@@ -42,4 +42,4 @@ namespace hooks {
 		jmpPatch(isUnderDarkSwarm_Wrapper, 0x00476210, 1);
 		jmpPatch(canHitTargetCheck_Wrapper, 0x004765B0, 1);
 	}
-}*/
+}
