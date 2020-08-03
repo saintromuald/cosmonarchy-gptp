@@ -2,7 +2,7 @@
 #include <windows.h>
 
 
-namespace ByteOperations {
+namespace ByteOperations {/*
 	template <typename T, typename Y>
 	void SetLowByte<INT8>(T& lvalue, Y value) {
 		lvalue = LOBYTE(value);
@@ -41,5 +41,5 @@ namespace ByteOperations {
 	template <typename T, typename Y>
 	void SetHighWord<UINT32>(int& lvalue, Y value) {
 		lvalue = HIWORD(value) | LOWORD(lvalue);
-	}
+	}*/
 }

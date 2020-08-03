@@ -3,7 +3,7 @@
 #include "SCBW\structures.h"
 #include "extender.h"
 #include <vector>
-const int NEW_ARRAY_LENGTH = 1700;
+const int NEW_ARRAY_LENGTH = 16000;
 
 struct CCMUExtender : public Extender {
 	virtual std::vector<u32> get_address_list();

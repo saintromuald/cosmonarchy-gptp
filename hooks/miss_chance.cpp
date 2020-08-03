@@ -2,7 +2,7 @@
 #include <SCBW/api.h>
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
-
+/*
 namespace { // helper declarations
 	void getAbsoluteUnitBounds(CUnit* a1, Box32* a2);
 	CUnit* findBestUnit(Box32* a1, int a2, int (__fastcall *a3)(int, int));
@@ -58,7 +58,7 @@ namespace { // helper definitions
 	const u32 Func_getAbsoluteUnitBounds = 0x00402020;
 	void getAbsoluteUnitBounds(CUnit* a1, Box32* a2) {
 		static CUnit* a1;
-		static Box32 a2;
+		static Box32* a2;
 
 		__asm {
 			PUSHAD
@@ -121,4 +121,4 @@ namespace { // helper definitions
 		}
 		return result;
 	}
-}
+}*/
