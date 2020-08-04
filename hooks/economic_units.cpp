@@ -204,10 +204,10 @@ namespace hooks {
 			if (v7 < 13)
 			{
 				u8 v6byte;
-				if (units_dat::GroupFlags[supplyUnit].isBuilding)
+				if (units_dat::GroupFlags[supplyUnit].isZerg)
 					v6byte = 0;
 				else
-					v6byte = v11 & 2 ? 1 : (v11 & 4) != 0 ? 2 : 4;
+					v6byte = units_dat::GroupFlags[supplyUnit].isTerran ? 1 : (units_dat::GroupFlags[supplyUnit].isProtoss & 4) != 0 ? 2 : 4;
 				v6 |= v6byte;
 
 				v14 = getSuppliesUsed(v6, v2);
