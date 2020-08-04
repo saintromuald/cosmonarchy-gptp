@@ -157,6 +157,31 @@ namespace hooks {
 			}
 		}
 	}
+	const u32 jmp_920 = 0x00434920;
+	const u32 jmp_c80 = 0x00434C80;
+	void __declspec(naked) Ai_TryProgressSpendingQueue_Worker() {
+		static u16 unit_id;
+		__asm {
+			PUSH EAX
+			MOV AX,[ECX+0x68FF02]
+			MOV unit_id,AX
+			POP EAX
+			PUSHAD
+		}
+		if (is_terran_supply(unit_id)) {
+			__asm {
+				POPAD
+				JMP jmp_920
+			}
+
+		}
+		else {
+			__asm {
+				POPAD
+				JMP jmp_c80
+			}
+		}
+	}
 	void injectWorkerHooks() {
 		jmpPatch(Ai_ProgressSpendingQueue_JmpWrapper, 0x00434C31);
 		jmpPatch(Ai_BuildSupplies_Wrapper, 0x00433730);
@@ -168,9 +193,18 @@ namespace hooks {
 		jmpPatch(Ai_RemoveDangerousRegions_JmpWrapper, 0x00443876);
 		jmpPatch(Ai_GetBuildLocation_JmpWrapper, 0x0044622B);
 	}
+	void injectSupplyDepotHooks() {
+		jmpPatch(Ai_TryProgressSpendingQueue_Worker, 0x00434912, 3);
+	}
 	void injectEconomicUnitHooks() {
 		injectWorkerHooks();
 		//town hall
 		injectTownhallHooks();
+		injectSupplyDepotHooks();//besides Ai_SupplyDepot which is part of worker hooks, there's no other hardcode related to supply
+		//add later:
+		//supplies
+		//00434912 | .  66:83B9 02FF6 > CMP WORD PTR DS : [ECX + 68FF02] , 6D
+
+		//
 	}
 }

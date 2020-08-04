@@ -117,6 +117,12 @@ namespace hooks {
 		};
 		return false;
 	}
+	bool is_terran_supply(u16 unit_id) {
+		if (unit_id == UnitId::TerranSupplyDepot) {
+			return true;
+		}
+		return false;
+	}
 	u32 get_worker_from_race(u32 race) {
 		u32 id = 0xe4;
 		switch (race) {
