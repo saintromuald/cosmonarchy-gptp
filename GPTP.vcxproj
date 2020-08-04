@@ -110,6 +110,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AIScripter\AICore.cpp" />
+    <ClCompile Include="AIScripter\AIParser.cpp" />
     <ClCompile Include="CUnitExtended.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="hooks\audiovisuals\sfxhooks.cpp" />
@@ -335,6 +337,9 @@
     <ClCompile Include="AI\spells\yamato_gun.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AIScripter\AICore.h" />
+    <ClInclude Include="AIScripter\AIParser.h" />
+    <ClInclude Include="AISystem\AIThread.h" />
     <ClInclude Include="CUnitExtended.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="hooks\audiovisuals\sfxhooks.h" />
