@@ -159,7 +159,7 @@ namespace hooks {
 	}
 	const u32 jmp_920 = 0x00434920;
 	const u32 jmp_c80 = 0x00434C80;
-	void __declspec(naked) Ai_TryProgressSpendingQueue_Worker() {
+	void __declspec(naked) Ai_TryProgressSpendingQueue_WorkerJmpWrapper() {
 		static u16 unit_id;
 		__asm {
 			PUSH EAX
@@ -194,7 +194,7 @@ namespace hooks {
 		jmpPatch(Ai_GetBuildLocation_JmpWrapper, 0x0044622B);
 	}
 	void injectSupplyDepotHooks() {
-		jmpPatch(Ai_TryProgressSpendingQueue_Worker, 0x00434912, 3);
+		jmpPatch(Ai_TryProgressSpendingQueue_WorkerJmpWrapper, 0x00434912, 3);
 	}
 	void injectEconomicUnitHooks() {
 		injectWorkerHooks();
