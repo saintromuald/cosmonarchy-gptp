@@ -3,15 +3,18 @@
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
 #include <windows.h>
-/*
+#include "hooks\byte_operations_utils.h"
+
 namespace {
+	// for askForHelp_AI
 	CUnit** getAllUnitsInBounds(Box32* a1);
 	bool unitCanAttackTarget(CUnit* a1, CUnit* a2, int a3);
 	void wpnHit(CUnit* a1, CUnit* a2, int a3, int a4);
 	unsigned int getDistanceFast(int a1, int a2, int a3, int a4);
 	byte getGroundWeapon(CUnit* a1);
+	int getUnitMaxWeaponRange(CUnit* a1, unsigned __int8 a2);
 }
-
+/*
 namespace hooks {
 	
 	int askForHelp_AI(CUnit* a1, CUnit* a2, int a3) { // 0043ADA0
@@ -58,8 +61,8 @@ namespace hooks {
 			v4 = (AIScriptController[(unsigned __int8)a1->playerId].AI_Flags & 0x20) != 0 ? 96 : 288;	// 0x20 = CONTROLLER_IS_CAMPAIGN
 		v7 = a1->sprite;
 		v9 = v7->position.y;
-		v7 = (2^17-1) & v7->position.x | v7 & ((2^17-1) << 16);  // LOWORD(v7)
-		v32 = ((2 ^ 17-1) & v4 + v9) << 16 | (v32 & (2 ^ 17-1)); // HIWORD(v32)
+		ByteOperations::SetLowWord(v7, v7->position.x);
+		ByteOperations::SetHighWord(v32, v4 + v9);
 		v31 = v9 - v4;
 		a1 = (__int16)v7 - v4;
 		v32 = (2 ^ 17-1) & (v4 + (__int16)v7) | v32 & ((2^17-1) << 16); // LOWORD(v32)
@@ -88,15 +91,14 @@ namespace hooks {
 					{
 						if (v13 != UnitId::ProtossArbiter)
 						{
-							v15 = unitCanAttackTarget(a2, v12, 1) & (2^9-1) | v15 & ((2^25-1) << 8); // LOBYTE(v15)
-							if (v15 || (v16 = (unitCanAttackTarget(v12, a2, 1) | v16 & ((2^25-1) << 8), v16) && !(v12->status & UnitStatus::Burrowed)) // LOBYTE(v16)
-							{
+							ByteOperations::SetLowByte(v15, unitCanAttackTarget(a2, v12, 1));
+							if (v15 || (ByteOperations::SetLowByte(v16, (unitCanAttackTarget(v12, a2, 1), v16)) && !(v12->status & UnitStatus::Burrowed))) {
 								if (!a3)
 								{
 									v19 = a2;
 									goto LABEL_32;
 								}
-								v17 = v12->CAIControl;
+								v17 = v12->pAI;
 								if (v17)
 								{
 									if (v17->controlType == 4)
@@ -107,7 +109,7 @@ namespace hooks {
 											v19 = a2;
 											wpnHit(v12, a2, 0, 1);
 										LABEL_32:
-											v20 = v12->CAIControl;
+											v20 = v12->pAI;
 											if (!v20)
 												goto LABEL_47;
 											if (v20->controlType != 1)
@@ -130,7 +132,7 @@ namespace hooks {
 											v27 = v12->status & UnitStatus::InAir ? units_dat::AirWeapon[(unsigned __int16)v22->id] : getGroundWeapon(v22);
 											if (v27 != -126)
 											{
-												v28 = getUnitMaxWpnRange(x2, v27);
+												v28 = getUnitMaxWeaponRange(x2, v27);
 												if (v32 <= v28 + 192)
 													LABEL_47:
 												wpnHit(v12, v19, 0, 1);
@@ -176,7 +178,7 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
+	};
 
 	const u32 Func_unitCanAttackTarget = 0x00476730;
 	bool unitCanAttackTarget(CUnit* a1, CUnit* a2, int a3) {
@@ -195,7 +197,7 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
+	};
 
 	const u32 Func_wpnHit = 0x0043F320;
 	void wpnHit(CUnit* a1, CUnit* a2, int a3, int a4) {
@@ -203,7 +205,7 @@ namespace {
 		static CUnit* a2;
 		static int a3;
 		static int a4;
-		
+
 		__asm {
 			PUSHAD
 			PUSH a4
@@ -213,7 +215,7 @@ namespace {
 			CALL Func_wpnHit
 			POPAD
 		}
-	}
+	};
 
 	const u32 Func_getDistanceFast = 0x0040C360;
 	unsigned int getDistanceFast(int a1, int a2, int a3, int a4) {
@@ -234,7 +236,7 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
+	};
 
 	const u32 Func_getGroundWeapon = 0x00475AD0;
 	byte getGroundWeapon(CUnit* a1) {
@@ -249,5 +251,20 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
+	};
+
+	const u32 Func_getUnitMaxWeaponRange = 0x00475870;
+	int getUnitMaxWeaponRange(CUnit* a1, unsigned __int8 a2) {
+		static int result;
+
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			MOVZX BL, a2
+			CALL Func_getUnitMaxWeaponRange
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	};
 }*/
