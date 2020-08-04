@@ -1751,6 +1751,24 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossEcclesiast && //Ecclesiast-Blessing passive : disabled
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AstralBlessing) == 0 &&
+									current_button->iconID == 353)
+								{
+									current_button_state = BUTTON_STATE::Disabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ProtossEcclesiast &&  //Ecclesiast-Blessing passive : enabled 
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AstralBlessing) == 1 &&
+									current_button->iconID == 353)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ProtossEcclesiast &&  //Ecclesiast-Blessing passive : unavailable
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::AstralBlessing) == 0 &&
+									current_button->iconID == 353)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
 
 							}
 						}

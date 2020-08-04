@@ -173,7 +173,9 @@ namespace UpgradeId {
 
 		//DELIVERANCE
 		
-		EcclesiastStacks = 127,
+		AstralBlessing = 127,
+		AstralTempest = 128,
+		DeathlessProcession = 129,
 	};
 }
 
