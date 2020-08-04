@@ -273,6 +273,7 @@ public:
 	void proc(CUnit* unit) {
 		if (!units_dat::ShieldsEnabled[unit->id]) return;
 		if (_playerID != unit->playerId && !scbw::isAlliedTo(_playerID, unit->playerId)) return;
+		if (unit->shields >= units_dat::MaxShieldPoints[unit->id] * 256) return;
 		unit->shields = std::min(unit->shields + _healValue, units_dat::MaxShieldPoints[unit->id] * 256);
 		imgul(unit->sprite, 425, 0, 0, 0);
 	}
@@ -310,7 +311,7 @@ namespace hooks {
 					if (target->status & UnitStatus::IsHallucination)
 						damage *= 2;*/
 
-			if (attacker != NULL && weaponId == WeaponId::EcclesiastWeapon && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::EcclesiastStacks)) {
+			if (attacker != NULL && weaponId == WeaponId::EcclesiastWeapon && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::AstralBlessing)) {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0) < 10) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::EcclesiastStack, 1, 0);
 				}
