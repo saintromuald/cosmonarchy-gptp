@@ -117,7 +117,8 @@ namespace hooks {
 		};
 		return false;
 	}
-	bool is_terran_supply(u16 unit_id) {
+	bool is_terran_supply(u16 unit_id, CUnit* worker) {
+		//worker is not used originally in regards of supply, but may be required for custom race support
 		if (unit_id == UnitId::TerranSupplyDepot) {
 			return true;
 		}
@@ -140,8 +141,9 @@ namespace hooks {
 		}
 		return id;
 	}
-	u32 get_supply_structure_from_race(u32 race) {
+	u32 get_supply_structure_from_race(u32 race, u8 player) {
 		u32 id = 0xe4;
+		//player is not used originally but may be required for custom race support
 		switch (race) {
 		case RaceId::Terran:
 			id = UnitId::supply_depot;
@@ -186,7 +188,7 @@ namespace hooks {
 			v3 = v2;
 			race = playerTable[v2].race;
 			v18 = v2;
-			supplyUnit = get_supply_structure_from_race(race);
+			supplyUnit = get_supply_structure_from_race(race,v2);
 			workerUnit = get_worker_from_race(race);
 			v8 = getSuppliesRemaining(v2, workerUnit);
 			v7 = v8;

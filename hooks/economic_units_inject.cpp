@@ -161,14 +161,16 @@ namespace hooks {
 	const u32 jmp_c80 = 0x00434C80;
 	void __declspec(naked) Ai_TryProgressSpendingQueue_WorkerJmpWrapper() {
 		static u16 unit_id;
+		static CUnit* worker;
 		__asm {
+			MOV worker,EDI
 			PUSH EAX
 			MOV AX,[ECX+0x68FF02]
 			MOV unit_id,AX
 			POP EAX
 			PUSHAD
 		}
-		if (is_terran_supply(unit_id)) {
+		if (is_terran_supply(unit_id,worker)) {
 			__asm {
 				POPAD
 				JMP jmp_920
