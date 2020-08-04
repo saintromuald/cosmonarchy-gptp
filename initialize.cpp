@@ -53,7 +53,6 @@
 #include "hooks/recv_commands/CMDRECV_Morph.h"
 #include "hooks/recv_commands/CMDRECV_SiegeTank.h"
 #include "hooks/recv_commands/CMDRECV_Stop.h"
-#include "hooks/limits/ccmu.h"
 #include "hooks/create_init_units.h"
 #include "hooks/orders/base_orders/die_order.h"
 #include "hooks/orders/enter_nydus.h"
@@ -89,6 +88,8 @@
 #include "hooks/weapons/wpnspellhit.h"
 #include "hooks/weapon_effect.h"
 #include "hooks/use_tech.h"
+#include "hooks/limits/ccmu.h"
+#include "hooks/economic_units.h"
 //#include "AI/spellcasting.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
@@ -162,13 +163,13 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x004E6E7C, &jnz, sizeof(u8));
 
 
-
+	//hooks::injectEconomicUnitHooks();
 	//test for globals
 //	nops(0x004AAF23, 5);
 //	const u8 retn = 0xc3;
 //	memoryPatch(0x004AAF23 + 5, &retn, 1);
 	injectGlobalsHooks();
-	hooks::injectLimitHooks();
+	//hooks::injectLimitHooks();
 	//
 
 
