@@ -339,7 +339,6 @@
   <ItemGroup>
     <ClInclude Include="AIScripter\AICore.h" />
     <ClInclude Include="AIScripter\AIParser.h" />
-    <ClInclude Include="AISystem\AIThread.h" />
     <ClInclude Include="CUnitExtended.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="hooks\audiovisuals\sfxhooks.h" />
