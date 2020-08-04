@@ -204,12 +204,15 @@ namespace hooks {
 			if (v7 < 13)
 			{
 				u8 v6byte;
-				if (units_dat::GroupFlags[supplyUnit].isZerg)
-					v6byte = 0;
-				else
-					v6byte = units_dat::GroupFlags[supplyUnit].isTerran ? 1 : (units_dat::GroupFlags[supplyUnit].isProtoss & 4) != 0 ? 2 : 4;
-				v6 |= v6byte;
-
+				if (units_dat::GroupFlags[supplyUnit].isZerg) {
+					v6byte = RaceId::Zerg;
+				}
+				else if(units_dat::GroupFlags[supplyUnit].isTerran){
+					v6byte = RaceId::Terran;
+				}
+				else if (units_dat::GroupFlags[supplyUnit].isProtoss) {//original code don't had explicit protoss check
+					v6byte = RaceId::Protoss;
+				}
 				v14 = getSuppliesUsed(v6, v2);
 				v13 = playerTable[v2].race;
 				v12 = v14 + 13;
