@@ -66,8 +66,9 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_33F7E = 0x00433F7E;
-	const u32 jmp_33FD1_ret = 0x00433FD1;
+//	const u32 jmp_33F7E = 0x00433F7E;
+//	const u32 jmp_33FD1_ret = 0x00433FD1;
+	const u32 jmp_33F7A = 0x00433F7A;
 	void __declspec(naked) AddUnitAi_JmpWrapper() {
 		static u8 race;
 		static u16 unit_id;
@@ -78,6 +79,14 @@ namespace hooks {
 			PUSHAD
 		}
 		cmp_id = get_townhall_from_race(race);
+		__asm {
+			POPAD
+			MOV EAX,cmp_id
+			JMP jmp_33F7A
+			//ECX is orig
+			//EAX is new
+		}
+		/*
 		if (unit_id == cmp_id) {
 			__asm {
 				POPAD
@@ -93,7 +102,7 @@ namespace hooks {
 				MOVZX ECX, CX
 				JMP jmp_33FD1_ret
 			}
-		}
+		}*/
 	}
 	const u32 jmp_3660D = 0x0043660D;
 	void __declspec(naked) Ai_UpgradesFinished_JmpWrapper() {
