@@ -66,6 +66,24 @@ public:
 	}
 };
 
+class resourceBoostProc : public scbw::UnitFinderCallbackProcInterface {
+
+private:
+	CUnit* booster;
+
+public:
+	resourceBoostProc(CUnit* booster)
+		: booster(booster) {}
+
+	void proc(CUnit* unit) {
+		if (booster == unit) {
+			return;
+		}
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::ResourceContainer) {
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, 24, 0, 0);
+		}
+	}
+};
 
 
 namespace hooks {
@@ -266,6 +284,15 @@ void updateStatusEffects(CUnit* unit) {
 				unit->getY() + 96);
 			unitFinder.forEach(Heal);
 		}
+	}
+	if (unit->id == UnitId::TerranQuarry || unit->id == UnitId::ZergIroleth) {
+		u32 radius = unit->id == UnitId::TerranQuarry ? 320 : 224;
+		resourceBoostProc Boost = resourceBoostProc(unit);
+		scbw::UnitFinder unitFinder(unit->getX() - radius,
+			unit->getY() - radius,
+			unit->getX() + radius,
+			unit->getY() + radius);
+		unitFinder.forEach(Boost);
 	}
 	if (unit->id == UnitId::ghost) {
 		if (

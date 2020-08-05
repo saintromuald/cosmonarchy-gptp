@@ -169,18 +169,16 @@ namespace hooks {
 						}
 						break;
 					case UnitId::zergling:
-						eggId = UnitId::Powerup_YoungChrysalis;
+						eggId = UnitId::EggVorvaling;
 						break;
 					case UnitId::mutalisk:
 						eggId = UnitId::cocoon;
-
-
 						break;
 					case UnitId::ultralisk:
-						eggId = 102;
+						eggId = UnitId::EggScreamer;
 						break;
 					case UnitId::overlord:
-						eggId = 223;
+						eggId = UnitId::EggIroleth;
 						break;
 					default:
 						bStopThere = true;
@@ -306,8 +304,8 @@ namespace hooks {
 		if (unitId == UnitId::egg
 			|| unitId == UnitId::cocoon
 			|| unitId == UnitId::lurker_egg ||
-			unitId == 198 ||
-			unitId == UnitId::Powerup_YoungChrysalis || unitId == 223 || unitId == 102 || unitId == 179)
+			unitId == UnitId::EggBasilisk ||
+			unitId == UnitId::EggVorvaling || unitId == UnitId::EggGorgoleth || unitId == UnitId::EggScreamer || unitId == UnitId::EggDevourer)
 			return true;
 
 		return false;
@@ -317,7 +315,9 @@ namespace hooks {
 	bool isRallyableEggUnitHook(u16 unitId) {
 		//Default StarCraft behavior
 
-		if (unitId == UnitId::cocoon || unitId == UnitId::lurker_egg || unitId == 198 || unitId == UnitId::Powerup_YoungChrysalis || unitId == 223 || unitId == 102 || unitId == 179)
+		if (unitId == UnitId::cocoon || unitId == UnitId::lurker_egg ||
+			unitId == UnitId::EggBasilisk ||
+			unitId == UnitId::EggVorvaling || unitId == UnitId::EggGorgoleth || unitId == UnitId::EggScreamer || unitId == UnitId::EggDevourer)
 			return false;
 
 		return true;
@@ -345,11 +345,11 @@ namespace hooks {
 
 		}
 		if (unitId == UnitId::zergling)
-			return UnitId::Powerup_YoungChrysalis;
+			return UnitId::EggVorvaling;
 		if (unitId == UnitId::ultralisk)
-			return 102;
+			return UnitId::EggScreamer;
 		if (unitId == UnitId::overlord)
-			return 223;
+			return UnitId::EggIroleth;
 
 
 		return UnitId::None;
@@ -367,21 +367,21 @@ namespace hooks {
 		{
 			return UnitId::hydralisk;
 		}
-		if (eggUnit->id == 198)
+		if (eggUnit->id == UnitId::EggBasilisk)
 		{
 			return UnitId::hydralisk;
 		}
-		if (eggUnit->id == UnitId::Powerup_YoungChrysalis)
+		if (eggUnit->id == UnitId::EggVorvaling)
 		{
 			//return UnitId::devouring_one;
 			return UnitId::zergling;
 			//replace for different unit, vorv morph
 		}
-		if (eggUnit->id == 222)
+		if (eggUnit->id == UnitId::EggIroleth)
 		{
 			return UnitId::overlord;
 		}
-		if (eggUnit->id == 102)
+		if (eggUnit->id == UnitId::EggScreamer)
 		{
 			return UnitId::ultralisk;
 		}

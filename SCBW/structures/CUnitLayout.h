@@ -153,6 +153,7 @@ namespace ValueId {
 		LurkerETA=25,
 		SpineX=26,
 		SpineY=27,
+		MineralSpecialRegenTimer=28,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
