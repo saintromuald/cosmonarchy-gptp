@@ -3,8 +3,8 @@
 
 namespace {
 
-	int __declspec(naked) getResponseSfx_Wrapper() { //0048EA20
-		static int a1;
+	int __declspec(naked) getResponseSfx_Wrapper() { // 0048EA20
+		static signed int a1;
 		static int a2;
 		static int result;
 		__asm {
@@ -19,11 +19,27 @@ namespace {
 			RETN
 		}
 	};
+
+	int __declspec(naked) getRandYesSFX_Wrapper() { // 0048EAB0
+		static signed int a1;
+		static int result;
+		__asm {
+			PUSH a1
+			PUSHAD
+		}
+		result = hooks::getRandYesSFX(a1);
+		__asm {
+			POPAD
+			MOV result, EAX
+			RETN
+		}
+	};
 }
 
 namespace hooks {
 
 	void injectSfxHooks() {
 		jmpPatch(getResponseSfx_Wrapper, 0x0048EA20, 1);
+		jmpPatch(getRandYesSFX_Wrapper, 0x0048EAB0, 1);
 	}
 }

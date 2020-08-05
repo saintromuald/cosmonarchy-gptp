@@ -190,7 +190,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	//allow pissed/yes sounds for >= Command Center
 //	memoryPatch(0x0048EA20 + 2, patchLastUnit, 1);
 	//hook required
-	nops(0x0048EAB0, 5);
+//	nops(0x0048EAB0, 5);
 
 
 	//kakaru/exemplar hardcode
@@ -455,10 +455,10 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectUnitTooltipHook();
 	hooks::injectMaxHpHooks();
 
-	//hooks::injectSfxHooks();
-	//hooks::injectSpellcasterAI();
-	//hooks::injectAIOrdersHooks();
-	//hooks::injectMissChanceHooks();
+//	hooks::injectSfxHooks();
+//	hooks::injectSpellcasterAI();
+//	hooks::injectAIOrdersHooks();
+//	hooks::injectMissChanceHooks();
 
 	return TRUE;
 }
