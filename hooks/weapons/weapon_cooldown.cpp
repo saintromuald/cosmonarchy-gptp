@@ -47,12 +47,14 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 		cooldown += cooldown /4;
 		
 	}
+	if (unit->stimTimer) {
+		cooldown += 2;
+	}
 	if (cooldown > 250)
 		cooldown = 250;
 	else 
 	if (cooldown < 5) 
 		cooldown = 5;
-
 	return cooldown;
 
 }
