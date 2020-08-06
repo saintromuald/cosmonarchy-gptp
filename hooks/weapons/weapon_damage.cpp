@@ -378,7 +378,12 @@ namespace hooks {
 			}
 			if (weaponId == 51 && attacker != NULL) {
 				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
-					attacker->energy = std::min(attacker->energy + std::min(50 * 256, (int)target->energy), (int)attacker->getMaxEnergy());
+					u32 amount = 50 * 256;
+					if (target->energy < amount) {
+						amount = target->energy;
+					}
+					attacker->energy += amount;
+					target->energy -= amount;
 				}
 			}
 
