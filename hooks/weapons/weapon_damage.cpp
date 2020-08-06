@@ -296,6 +296,24 @@ namespace hooks {
 					if (target->status & UnitStatus::IsHallucination)
 						damage *= 2;*/
 
+			if (attacker != NULL && weaponId == WeaponId::Claws && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::AdrenalGlands)) {
+				if (scbw::get_aise_value(attacker, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0) < 5) {
+					scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::AddGenericValue, ValueId::AdrenalStacks, 1, 0);
+				}
+				scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::AdrenalTimer, 49, 0); //49 is 2 seconds (48) + 1
+			}
+
+			// DELIVERANCE -- Ecclesiast Astral Blessing
+			/*
+			if (attacker != NULL && weaponId == WeaponId::EcclesiastWeapon && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::AstralBlessing)) {
+				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0) < 10) {
+					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::EcclesiastStack, 1, 0);
+				}
+				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::EcclesiastTimer, 49, 0); //49 is 2 seconds (48) + 1
+				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::EcclesiastPlayer, attacker->playerId, 0);
+				//scbw::printText("increment stack");
+			}*/
+
 			if (weaponId == WeaponId::GlaveWurm || weaponId == WeaponId::GlaveWurm_Kukulza_Mutalisk) {
 				double mul = 1.0;
 				switch (dmgDivisor) {

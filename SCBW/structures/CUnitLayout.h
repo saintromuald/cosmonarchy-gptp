@@ -154,6 +154,8 @@ namespace ValueId {
 		SpineX=26,
 		SpineY=27,
 		MineralSpecialRegenTimer=28,
+		AdrenalStacks=29,
+		AdrenalTimer=30,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
