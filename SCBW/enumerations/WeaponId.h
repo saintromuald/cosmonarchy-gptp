@@ -135,7 +135,12 @@ enum Enum {
   GaussRifle12_Unused                       = 0x80,
   GaussRifle13_Unused                       = 0x81,
   None                                      = 0x82,
+
+  //HYDRA\\
+
   WyvernWeapon = 125,
   ObservanceWeapon = 122,
+
+  GorgolethMelee = 57,
 };
 }
