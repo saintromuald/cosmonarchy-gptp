@@ -291,7 +291,6 @@ namespace hooks {
 		s8		direction,
 		u8		dmgDivisor
 	) {
-		u8 damageType;
 		//the unit must neither be already dead nor invincible
 		if (target->hitPoints != 0 && !(target->status & UnitStatus::Invincible)) {
 
@@ -301,8 +300,8 @@ namespace hooks {
 			//		flags->timerSpecial1 = 42;
 			//	}
 			//}
-		
 
+			u8 damageType;
 
 			if (scbw::isCheatEnabled(CheatFlags::PowerOverwhelming) &&			//If Power Overwhelming is enabled
 				playerTable[attackingPlayerId].type != PlayerType::Human)		//and the attacker is not a human player
