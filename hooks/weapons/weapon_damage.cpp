@@ -662,7 +662,11 @@ namespace hooks {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::Amitosis, 0, 0);
 				}
 			}
-			if (damage >= target->hitPoints) {
+
+			target->damageHp(damage, attacker, attackingPlayerId,
+				weaponId != WeaponId::Irradiate);		//Prevent Science Vessels from being continuously revealed to the irradiated target
+
+			if (target->hitPoints == 0) {
 
 				// ecclesiastProc
 				int stacks = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0);
@@ -674,10 +678,6 @@ namespace hooks {
 					target->getY() + range);
 				unitFinder.forEach(ecclesiastProc(stacks, player));
 			}
-
-			target->damageHp(damage, attacker, attackingPlayerId,
-				weaponId != WeaponId::Irradiate);		//Prevent Science Vessels from being continuously revealed to the irradiated target
-
 //Reduce shields (finally)
 			if (shieldReduceAmount != 0) {
 
