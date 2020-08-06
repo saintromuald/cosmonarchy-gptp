@@ -70,6 +70,9 @@ namespace hooks {
 		//scbw::printText("Cyprian Bullet");
 		r = 40;
     }
+    if (isChargedGorgolethBullet(bullet, weaponId)) {
+        r = 40;
+    }
 
     // Get units within the outer splash radius
     scbw::UnitFinder unitsInSplash(x-r, y-r, x+r, y+r);
@@ -99,7 +102,10 @@ namespace hooks {
 		  outer += outer / 3;
 	  }
       if(isUnsafeCyprianBullet(bullet,weaponId)){
-	 outer = 40;
+	     outer = 40;
+      }
+      if (isChargedGorgolethBullet(bullet, weaponId)) {
+          outer = 40;
       }
       if(!isUnitDistanceWithin(target, bullet, outer)) continue;
       
@@ -115,7 +121,10 @@ namespace hooks {
 		  inner += inner / 3;
 	  }
       if(isUnsafeCyprianBullet(bullet,weaponId)){
-	 inner = 15;
+	     inner = 15;
+      }
+      if (isChargedGorgolethBullet(bullet, weaponId)) {
+          inner = 10;
       }
 
 
@@ -135,6 +144,9 @@ namespace hooks {
       if(isUnsafeCyprianBullet(bullet,weaponId)){
 	 medium = 25;
       }      
+      if (isChargedGorgolethBullet(bullet, weaponId)) {
+          medium = 20;
+      }
       if(isUnitDistanceWithin(target, bullet, medium)){
         weaponBulletShot(target, bullet, 2); // 50% damage
         continue;
@@ -197,6 +209,17 @@ namespace hooks {
     }
   }
 
+
+  bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId) {
+      if (weaponId == 46) {
+          if (bullet != NULL && bullet->sourceUnit != NULL && bullet->sourceUnit->id==UnitId::ZergGorgoleth) {
+              if (bullet->sourceUnit->energy >= 5 * 256) {
+                  return true;
+              }
+          }
+      }
+      return false;
+}
 bool isUnsafeCyprianBullet(CBullet* bullet, u32 weaponId){
     if(weaponId==26){
 		if(bullet!=NULL){
@@ -218,6 +241,10 @@ bool isUnsafeCyprianBullet(CBullet* bullet, u32 weaponId){
 		friendlySplash(bullet, weaponId, SplashType::Radial);
 		//scbw::printText("Cyprian - Execute splash instead of normal");
 		return;
+    }
+    if (isChargedGorgolethBullet(bullet, weaponId)) {
+        friendlySplash(bullet, weaponId, SplashType::Radial);
+        return;
     }
     CUnit* target = bullet->attackTarget.unit;
     if (target == NULL) return;
