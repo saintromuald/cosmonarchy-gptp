@@ -18,5 +18,7 @@ namespace hooks {
   void normalDamage(CBullet* bullet, u32 weaponId);
   void yamatoDamage(CBullet* bullet, u32 weaponId);
 //project hydra
+
+  bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId);
   bool isUnsafeCyprianBullet(CBullet* bullet, u32 weaponId);
 } //hooks

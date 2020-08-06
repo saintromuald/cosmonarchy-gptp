@@ -348,6 +348,9 @@ namespace hooks
 			scbw::SendCommand(buf, 0xc);
 			break;
 		}
+		case TechId::EssenceDrain:
+			IssueTriTargetOrder(OrderId::CTFCOP1, 0, 0);
+			break;
 		case TechId::DisruptionWeb:
 			IssueTriTargetOrder(OrderId::CastDisruptionWeb, 0, 0);
 			break;

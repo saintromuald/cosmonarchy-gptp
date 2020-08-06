@@ -37,7 +37,7 @@ void applyUpgradeFlagsToNewUnitHook(CUnit* unit) {
 		else
 		if(unit->id == UnitId::ZergZergling) {
 			bSpeedUpgrade = UpgradesSc->currentLevel[unit->playerId][ScUpgrade::MetabolicBoost];
-			bCooldownUpgrade = UpgradesSc->currentLevel[unit->playerId][ScUpgrade::AdrenalGlands];
+			//bCooldownUpgrade = UpgradesSc->currentLevel[unit->playerId][ScUpgrade::AdrenalGlands];
 		}
 		else
 		if(unit->id == UnitId::Hero_DevouringOne) {
@@ -128,12 +128,12 @@ void applyUpgradeFlagsToExistingUnitsHook(CUnit* unit, u8 upgradeId) {
 			Func_UpgradeRestrictionProc = UnitUpgradeRestrictionProc;
 			unitTypeUpgradedId = UnitId::ZergZergling;
 		}else
-		if(upgradeId == UpgradeId::AdrenalGlands) {
+		/*if(upgradeId == UpgradeId::AdrenalGlands) {
 			Func_UpgradeRestrictionProc = UnitUpgradeRestrictionProc;
 			unitTypeUpgradedId = UnitId::ZergZergling;
 			bCooldownUpgrade = true;
 			bSpeedUpgrade = false;
-		}else
+		}else*/
 		if(upgradeId == UpgradeId::MuscularAugments) {
 			Func_UpgradeRestrictionProc = UnitUpgradeRestrictionProc;
 			unitTypeUpgradedId = UnitId::ZergHydralisk;

@@ -291,6 +291,7 @@ namespace hooks {
 		s8		direction,
 		u8		dmgDivisor
 	) {
+		u8 damageType;
 		//the unit must neither be already dead nor invincible
 		if (target->hitPoints != 0 && !(target->status & UnitStatus::Invincible)) {
 
@@ -302,7 +303,6 @@ namespace hooks {
 			//}
 		
 
-			u8 damageType;
 
 			if (scbw::isCheatEnabled(CheatFlags::PowerOverwhelming) &&			//If Power Overwhelming is enabled
 				playerTable[attackingPlayerId].type != PlayerType::Human)		//and the attacker is not a human player
@@ -311,6 +311,14 @@ namespace hooks {
 					if (target->status & UnitStatus::IsHallucination)
 						damage *= 2;*/
 
+			if (attacker != NULL && weaponId == WeaponId::Claws && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::AdrenalGlands)) {
+				if (scbw::get_aise_value(attacker, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0) < 5) {
+					scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::AddGenericValue, ValueId::AdrenalStacks, 1, 0);
+				}
+				scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::AdrenalTimer, 49, 0); //49 is 2 seconds (48) + 1
+			}
+
+			// DELIVERANCE -- Ecclesiast Astral Blessing
 			if (attacker != NULL && weaponId == WeaponId::EcclesiastWeapon && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::AstralBlessing)) {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0) < 10) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::EcclesiastStack, 1, 0);
@@ -318,7 +326,9 @@ namespace hooks {
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::EcclesiastTimer, 49, 0); //49 is 2 seconds (48) + 1
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::EcclesiastPlayer, attacker->playerId, 0);
 				//scbw::printText("increment stack");
+				}
 			}
+
 			if (weaponId == WeaponId::GlaveWurm || weaponId == WeaponId::GlaveWurm_Kukulza_Mutalisk) {
 				double mul = 1.0;
 				switch (dmgDivisor) {
@@ -394,6 +404,33 @@ namespace hooks {
 
 			damageType = weapons_dat::DamageType[weaponId];
 
+			if (attacker != NULL && attacker->id == UnitId::ZergGorgoleth && weaponId == 46) {
+				attacker->spendUnitEnergy(std::min((int)attacker->energy, 10 * 256));
+				damageType = DamageType::Normal;
+				//spend gorgoleth energy 
+			}
+			if (weaponId == 51 && attacker != NULL) {
+				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
+					u32 amount = 50 * 256;
+					if (target->energy < amount) {
+						amount = target->energy;
+					}
+					attacker->energy += amount;
+					target->energy -= amount;
+				}
+			}
+
+
+			if (attacker != NULL && attacker->id == UnitId::ZergGorgoleth && weaponId == 46) {
+				attacker->spendUnitEnergy(std::min((int)attacker->energy, 10 * 256));
+				damageType = DamageType::Normal;
+				//spend gorgoleth energy 
+			}
+			if (weaponId == 51 && attacker != NULL) {
+				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
+					attacker->energy = std::min(attacker->energy + std::min(50 * 256, (int)target->energy), (int)attacker->getMaxEnergy());
+				}
+			}
 			//Reduce Plasma Shields...but not just yet
 			s32 shieldReduceAmount = 0;
 			if (units_dat::ShieldsEnabled[target->id] && target->shields >= 256) {
@@ -664,7 +701,6 @@ namespace hooks {
 		}
 
 	}
-
 } //hooks
 namespace {
 

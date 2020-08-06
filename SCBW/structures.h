@@ -26,6 +26,23 @@ const int IMAGE_TYPE_COUNT		= 999;
 #include "structures/Player.h" //made into external file to have .cpp
 
 #pragma pack(1)
+/*
+struct UnitAi {
+	u32		prev;				// 0x0
+	u32		next;				// 0x4
+	u8		type;				// 0x8 \\ 0x1 = Guard, 0x2 = Worker, 0x3 = Building / Available to scripts, 0x4 = Military
+	u8		deaths;				// 0x9 \\ if >= 3, no build
+	u8		fieldA;				// 0xA
+	u8		timer;				// 0xB
+	u32		parent;				// 0xC
+	u32		unitId;				// 0x10
+	u32		town;				// 0x14
+	u32		field18;			// 0x18
+	u32		field1C;			// 0x1C
+	u32		field20;			// 0x20
+	u32		field24;			// 0x24
+	u32		field28;			// 0x28
+};*/
 
 struct bStringMap {
 	u8		value;				// 0x0

@@ -153,9 +153,12 @@ namespace ValueId {
 		LurkerETA=25,
 		SpineX=26,
 		SpineY=27,
-		EcclesiastStack=28,
-		EcclesiastTimer=29,
-		EcclesiastPlayer=30,
+		MineralSpecialRegenTimer=28,
+		AdrenalStacks=29,
+		AdrenalTimer=30,
+		EcclesiastStack = 100,
+		EcclesiastTimer = 101,
+		EcclesiastPlayer = 102,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
@@ -290,8 +293,6 @@ struct CUnitLayout {
 
 /*0x08E*/ u8        rankIncrease;		  // Adds this value to the unit's base rank
 /*0x08F*/ u8        killCount;
-//later kill count and rankincrease will be transfered to aise unit struct
-//0x08C-0x08F will be reserved as u32* pointer to unit struct of aise
 
 
 /*0x090*/ u8        lastAttackingPlayer;  // the player that last attacked this unit

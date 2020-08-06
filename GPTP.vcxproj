@@ -51,7 +51,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;GPTP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WINDOWS_IGNORE_PACKING_MISMATCH;WIN32;_DEBUG;_WINDOWS;_USRDLL;GPTP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -84,7 +84,7 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;GPTP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WINDOWS_IGNORE_PACKING_MISMATCH;WIN32;NDEBUG;_WINDOWS;_USRDLL;GPTP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -110,12 +110,17 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AIScripter\AICore.cpp" />
+    <ClCompile Include="AIScripter\AIParser.cpp" />
     <ClCompile Include="CUnitExtended.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="hooks\audiovisuals\sfxhooks.cpp" />
     <ClCompile Include="hooks\audiovisuals\sfxhooks_inject.cpp" />
+    <ClCompile Include="hooks\byte_operations_utils.cpp" />
     <ClCompile Include="hooks\economic_units.cpp" />
     <ClCompile Include="hooks\economic_units_inject.cpp" />
+    <ClCompile Include="hooks\limits\ccmu_inject.cpp" />
+    <ClCompile Include="hooks\limits\extender.cpp" />
     <ClCompile Include="hooks\game\creategame.cpp" />
     <ClCompile Include="hooks\game\creategame_inject.cpp" />
     <ClCompile Include="hooks\interface\console.cpp" />
@@ -124,6 +129,10 @@
     <ClCompile Include="hooks\interface\mainmenu\glucustom_inject.cpp" />
     <ClCompile Include="hooks\maxhp.cpp" />
     <ClCompile Include="hooks\maxhp_inject.cpp" />
+    <ClCompile Include="hooks\miss_chance.cpp" />
+    <ClCompile Include="hooks\miss_chance_inject.cpp" />
+    <ClCompile Include="hooks\orders\ai\ai_orders.cpp" />
+    <ClCompile Include="hooks\orders\ai\ai_orders_inject.cpp" />
     <ClCompile Include="hooks\orders\base_orders\attack_orders.cpp" />
     <ClCompile Include="hooks\orders\base_orders\attack_orders_inject.cpp" />
     <ClCompile Include="hooks\interface\btns_cond.cpp" />
@@ -165,6 +174,8 @@
     <ClCompile Include="hooks\give_unit_inject.cpp" />
     <ClCompile Include="hooks\orders\spells\hallucination_spell.cpp" />
     <ClCompile Include="hooks\orders\spells\hallucination_spell_inject.cpp" />
+    <ClCompile Include="hooks\target_related.cpp" />
+    <ClCompile Include="hooks\target_related_inject.cpp" />
     <ClCompile Include="hooks\use_tech.cpp" />
     <ClCompile Include="hooks\use_tech_inject.cpp" />
     <ClCompile Include="hooks\weapon_effect.cpp" />
@@ -326,14 +337,21 @@
     <ClCompile Include="AI\spells\yamato_gun.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AIScripter\AICore.h" />
+    <ClInclude Include="AIScripter\AIParser.h" />
     <ClInclude Include="CUnitExtended.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="hooks\audiovisuals\sfxhooks.h" />
+    <ClInclude Include="hooks\byte_operations_utils.h" />
+    <ClInclude Include="hooks\limits\ccmu.h" />
+    <ClInclude Include="hooks\limits\extender.h" />
     <ClInclude Include="hooks\economic_units.h" />
     <ClInclude Include="hooks\game\creategame.h" />
     <ClInclude Include="hooks\interface\console.h" />
     <ClInclude Include="hooks\interface\mainmenu\glucustom.h" />
     <ClInclude Include="hooks\maxhp.h" />
+    <ClInclude Include="hooks\miss_chance.h" />
+    <ClInclude Include="hooks\orders\ai\ai_orders.h" />
     <ClInclude Include="hooks\orders\spells\recall_spell.h" />
     <ClInclude Include="hooks\orders\base_orders\attack_orders.h" />
     <ClInclude Include="hooks\interface\btns_cond.h" />
@@ -354,6 +372,7 @@
     <ClInclude Include="hooks\orders\base_orders\die_order.h" />
     <ClInclude Include="hooks\orders\enter_nydus.h" />
     <ClInclude Include="hooks\orders\spells\feedback_spell.h" />
+    <ClInclude Include="hooks\target_related.h" />
     <ClInclude Include="hooks\use_tech.h" />
     <ClInclude Include="hooks\weapon_effect.h" />
     <ClInclude Include="MathUtils.h" />

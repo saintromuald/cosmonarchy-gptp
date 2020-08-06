@@ -13,6 +13,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 
 
 	u32 cooldown = weapons_dat::Cooldown[weaponId];
+	u32 adrenalStacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0);
 
 	if (unit->acidSporeCount != 0) {
 
@@ -24,7 +25,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 		cooldown += increaseAmt * unit->acidSporeCount;
 
 	}
-
+	
 	int cooldownModifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
 							+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
 	// Capacitors upgrade: gains increased attack speed while cloaked
@@ -52,15 +53,20 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 		cooldown /= 2;
 	else 
 	if (cooldownModifier < 0 ){
-		cooldown += cooldown /4;
+		cooldown += cooldown / 4;
 		
+	}
+	if (unit->stimTimer) {
+		cooldown += 2;		// Fixes AICE Stimpack issue
+	}
+	if (adrenalStacks) {
+		cooldown -= adrenalStacks;
 	}
 	if (cooldown > 250)
 		cooldown = 250;
 	else 
-	if (cooldown < 5) 
-		cooldown = 5;
-
+	if (cooldown < 3) 
+		cooldown = 3;
 	return cooldown;
 
 }

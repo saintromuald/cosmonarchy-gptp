@@ -1,5 +1,5 @@
 #include "definitions.h"
-#include "Plugin.h""
+#include "Plugin.h"
 #include "globals.h"
 #include "hook_tools.h"
 
@@ -38,6 +38,7 @@
 #include "hooks/interface/weapon_armor_tooltip.h"
 
 //in alphabetical order
+#include "hooks/orders/ai/ai_orders.h"
 #include "hooks/orders/base_orders/attack_orders.h"
 #include "hooks/interface/btns_cond.h"
 #include "hooks/orders/building_making/building_morph.h"
@@ -67,6 +68,7 @@
 #include "hooks/orders/medic_orders.h"
 #include "hooks/orders/merge_units.h"
 #include "hooks/orders/spells/mindcontrol_spell.h"
+#include "hooks/miss_chance.h"
 #include "hooks/orders/spells/nuke_orders.h"
 #include "hooks/orders/spells/recall_spell.h"
 #include "hooks/recv_commands/receive_command.h"
@@ -86,6 +88,8 @@
 #include "hooks/weapons/wpnspellhit.h"
 #include "hooks/weapon_effect.h"
 #include "hooks/use_tech.h"
+#include "hooks/limits/ccmu.h"
+#include "hooks/economic_units.h"
 //#include "AI/spellcasting.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
@@ -159,12 +163,13 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x004E6E7C, &jnz, sizeof(u8));
 
 
-
+	//hooks::injectEconomicUnitHooks();
 	//test for globals
 //	nops(0x004AAF23, 5);
 //	const u8 retn = 0xc3;
 //	memoryPatch(0x004AAF23 + 5, &retn, 1);
 	injectGlobalsHooks();
+	//hooks::injectLimitHooks();
 	//
 
 
@@ -185,7 +190,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	//allow pissed/yes sounds for >= Command Center
 //	memoryPatch(0x0048EA20 + 2, patchLastUnit, 1);
 	//hook required
-	memoryPatch(0x0048EAB0 + 2, patchLastUnit, 1);
+//	nops(0x0048EAB0, 5);
+
 
 	//kakaru/exemplar hardcode
 	memoryPatch(0x00431586 + 2, patchLastUnit, 1);
@@ -262,7 +268,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	u8 patchCTF1[] = { 0xE9, 0xCC, 0x02, 0x00, 0x00 };
 	memoryPatch(0x004EC80A, patchCTF1, sizeof patchCTF1);//CTFCOPInit //wyvern?
 	u8 patchCTF2[] = { 0xE9, 0xC2, 0x02, 0x00, 0x00 };
-	memoryPatch(0x004EC814, patchCTF2, sizeof patchCTF2);//CTFCOP1 //full toilet - conduit 
+	memoryPatch(0x004EC814, patchCTF2, sizeof patchCTF2);//CTFCOP1 //essence drain
 	//
 
 	//iquare, end
@@ -333,6 +339,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectGameHooks();
 	//h
 	hooks::injectDrawHook();
+
+	
 
 	//in order of creation
 	/*
@@ -447,9 +455,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectUnitTooltipHook();
 	hooks::injectMaxHpHooks();
 
-	//hooks::injectSpellcasterAI();
-
-	//hooks::injectSfxHooks();
+//	hooks::injectSpellcasterAI();
+//	hooks::injectAIOrdersHooks();
+//	hooks::injectMissChanceHooks();
 
 	return TRUE;
 }

@@ -117,6 +117,13 @@ namespace hooks {
 		};
 		return false;
 	}
+	bool is_terran_supply(u16 unit_id, CUnit* worker) {
+		//worker is not used originally in regards of supply, but may be required for custom race support
+		if (unit_id == UnitId::TerranSupplyDepot) {
+			return true;
+		}
+		return false;
+	}
 	u32 get_worker_from_race(u32 race) {
 		u32 id = 0xe4;
 		switch (race) {
@@ -134,8 +141,9 @@ namespace hooks {
 		}
 		return id;
 	}
-	u32 get_supply_structure_from_race(u32 race) {
+	u32 get_supply_structure_from_race(u32 race, u8 player) {
 		u32 id = 0xe4;
+		//player is not used originally but may be required for custom race support
 		switch (race) {
 		case RaceId::Terran:
 			id = UnitId::supply_depot;
@@ -180,7 +188,7 @@ namespace hooks {
 			v3 = v2;
 			race = playerTable[v2].race;
 			v18 = v2;
-			supplyUnit = get_supply_structure_from_race(race);
+			supplyUnit = get_supply_structure_from_race(race,v2);
 			workerUnit = get_worker_from_race(race);
 			v8 = getSuppliesRemaining(v2, workerUnit);
 			v7 = v8;
@@ -204,12 +212,15 @@ namespace hooks {
 			if (v7 < 13)
 			{
 				u8 v6byte;
-				if (units_dat::GroupFlags[supplyUnit].isBuilding)
-					v6byte = 0;
-				else
-					v6byte = v11 & 2 ? 1 : (v11 & 4) != 0 ? 2 : 4;
-				v6 |= v6byte;
-
+				if (units_dat::GroupFlags[supplyUnit].isZerg) {
+					v6byte = RaceId::Zerg;
+				}
+				else if(units_dat::GroupFlags[supplyUnit].isTerran){
+					v6byte = RaceId::Terran;
+				}
+				else if (units_dat::GroupFlags[supplyUnit].isProtoss) {//original code don't had explicit protoss check
+					v6byte = RaceId::Protoss;
+				}
 				v14 = getSuppliesUsed(v6, v2);
 				v13 = playerTable[v2].race;
 				v12 = v14 + 13;

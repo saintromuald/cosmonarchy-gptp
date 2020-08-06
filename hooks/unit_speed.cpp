@@ -142,7 +142,7 @@ namespace hooks {
 				speed += (speed / 4);
 			}
 		}
-		else if (unit->id == UnitId::ZergOverlord) {
+		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth) {
 			u32 lair_count = unitCountTable[UnitId::ZergLair].player[unit->playerId];
 			u32 hive_count = unitCountTable[UnitId::ZergHive].player[unit->playerId];
 			if (hive_count) {

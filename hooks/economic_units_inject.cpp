@@ -66,8 +66,9 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_33F7E = 0x00433F7E;
-	const u32 jmp_33FD1_ret = 0x00433FD1;
+//	const u32 jmp_33F7E = 0x00433F7E;
+//	const u32 jmp_33FD1_ret = 0x00433FD1;
+	const u32 jmp_33F7A = 0x00433F7A;
 	void __declspec(naked) AddUnitAi_JmpWrapper() {
 		static u8 race;
 		static u16 unit_id;
@@ -78,6 +79,14 @@ namespace hooks {
 			PUSHAD
 		}
 		cmp_id = get_townhall_from_race(race);
+		__asm {
+			POPAD
+			MOV EAX,cmp_id
+			JMP jmp_33F7A
+			//ECX is orig
+			//EAX is new
+		}
+		/*
 		if (unit_id == cmp_id) {
 			__asm {
 				POPAD
@@ -93,7 +102,7 @@ namespace hooks {
 				MOVZX ECX, CX
 				JMP jmp_33FD1_ret
 			}
-		}
+		}*/
 	}
 	const u32 jmp_3660D = 0x0043660D;
 	void __declspec(naked) Ai_UpgradesFinished_JmpWrapper() {
@@ -157,6 +166,33 @@ namespace hooks {
 			}
 		}
 	}
+	const u32 jmp_920 = 0x00434920;
+	const u32 jmp_c80 = 0x00434C80;
+	void __declspec(naked) Ai_TryProgressSpendingQueue_WorkerJmpWrapper() {
+		static u16 unit_id;
+		static CUnit* worker;
+		__asm {
+			MOV worker,EDI
+			PUSH EAX
+			MOV AX,[ECX+0x68FF02]
+			MOV unit_id,AX
+			POP EAX
+			PUSHAD
+		}
+		if (is_terran_supply(unit_id,worker)) {
+			__asm {
+				POPAD
+				JMP jmp_920
+			}
+
+		}
+		else {
+			__asm {
+				POPAD
+				JMP jmp_c80
+			}
+		}
+	}
 	void injectWorkerHooks() {
 		jmpPatch(Ai_ProgressSpendingQueue_JmpWrapper, 0x00434C31);
 		jmpPatch(Ai_BuildSupplies_Wrapper, 0x00433730);
@@ -168,9 +204,18 @@ namespace hooks {
 		jmpPatch(Ai_RemoveDangerousRegions_JmpWrapper, 0x00443876);
 		jmpPatch(Ai_GetBuildLocation_JmpWrapper, 0x0044622B);
 	}
+	void injectSupplyDepotHooks() {
+		jmpPatch(Ai_TryProgressSpendingQueue_WorkerJmpWrapper, 0x00434912, 3);
+	}
 	void injectEconomicUnitHooks() {
 		injectWorkerHooks();
 		//town hall
 		injectTownhallHooks();
+		injectSupplyDepotHooks();//besides Ai_SupplyDepot which is part of worker hooks, there's no other hardcode related to supply
+		//add later:
+		//supplies
+		//00434912 | .  66:83B9 02FF6 > CMP WORD PTR DS : [ECX + 68FF02] , 6D
+
+		//
 	}
 }
