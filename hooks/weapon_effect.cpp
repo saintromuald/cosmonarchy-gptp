@@ -211,9 +211,9 @@ namespace hooks {
 
 
   bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId) {
-      if (weaponId == 46) {
+      if (weaponId == WeaponId::GorgolethMelee) {
           if (bullet != NULL && bullet->sourceUnit != NULL && bullet->sourceUnit->id==UnitId::ZergGorgoleth) {
-              if (bullet->sourceUnit->energy >= 5 * 256) {
+              if (bullet->sourceUnit->energy >= 10 * 256) {
                   return true;
               }
           }
