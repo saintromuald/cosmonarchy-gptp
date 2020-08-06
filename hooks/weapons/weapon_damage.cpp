@@ -371,6 +371,28 @@ namespace hooks {
 
 			damageType = weapons_dat::DamageType[weaponId];
 
+			if (attacker != NULL && attacker->id == UnitId::ZergGorgoleth && weaponId == 46) {
+				attacker->spendUnitEnergy(std::min((int)attacker->energy, 10 * 256));
+				damageType = DamageType::Normal;
+				//spend gorgoleth energy 
+			}
+			if (weaponId == 51 && attacker != NULL) {
+				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
+					attacker->energy = std::min(attacker->energy + std::min(50 * 256, (int)target->energy), (int)attacker->getMaxEnergy());
+				}
+			}
+
+
+			if (attacker != NULL && attacker->id == UnitId::ZergGorgoleth && weaponId == 46) {
+				attacker->spendUnitEnergy(std::min((int)attacker->energy, 10 * 256));
+				damageType = DamageType::Normal;
+				//spend gorgoleth energy 
+			}
+			if (weaponId == 51 && attacker != NULL) {
+				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
+					attacker->energy = std::min(attacker->energy + std::min(50 * 256, (int)target->energy), (int)attacker->getMaxEnergy());
+				}
+			}
 			//Reduce Plasma Shields...but not just yet
 			s32 shieldReduceAmount = 0;
 			if (units_dat::ShieldsEnabled[target->id] && target->shields >= 256) {

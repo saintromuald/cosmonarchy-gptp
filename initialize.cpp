@@ -268,7 +268,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	u8 patchCTF1[] = { 0xE9, 0xCC, 0x02, 0x00, 0x00 };
 	memoryPatch(0x004EC80A, patchCTF1, sizeof patchCTF1);//CTFCOPInit //wyvern?
 	u8 patchCTF2[] = { 0xE9, 0xC2, 0x02, 0x00, 0x00 };
-	memoryPatch(0x004EC814, patchCTF2, sizeof patchCTF2);//CTFCOP1 //full toilet - conduit 
+	memoryPatch(0x004EC814, patchCTF2, sizeof patchCTF2);//CTFCOP1 //essence drain
 	//
 
 	//iquare, end
