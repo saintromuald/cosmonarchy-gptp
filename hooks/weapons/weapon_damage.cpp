@@ -532,6 +532,7 @@ namespace hooks {
 			}
 			
 			if (attacker != NULL && target != NULL) {
+			#if HYDRA_ONLY
 				if (attacker->id == UnitId::dark_templar && attacker->playerId) {
 					bool silent_kill = false;
 					if (damage >= target->hitPoints && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::SilentStrikes)) {
@@ -543,6 +544,7 @@ namespace hooks {
 						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer,ValueId::DarkTemplarTimer, 24+1, 0);
 					}
 				}
+			#endif
 				
 				if (weaponId == WeaponId::NuclearMissile && target->hitPoints > damage) {
 					if (attacker != NULL && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::GroundZero) && irradiateTarget(target)) {
