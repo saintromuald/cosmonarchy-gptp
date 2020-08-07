@@ -130,7 +130,7 @@ namespace hooks {
 				unit->id == UnitId::ZergLarva ||
 				unit->id == UnitId::ZergHydralisk ||
 				unit->id == UnitId::ZergMutalisk ||
-				unit->id == UnitId::zergling
+				unit->id == UnitId::ZergZergling
 				)
 			{
 
@@ -160,9 +160,9 @@ namespace hooks {
 					case UnitId::larva:
 						eggId = UnitId::ZergEgg;
 						break;
-					case UnitId::hydralisk:
-						if (unit->buildQueue[unit->buildQueueSlot] == UnitId::lurker) {
-							eggId = UnitId::lurker_egg;
+					case UnitId::ZergHydralisk:
+						if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergLurker) {
+							eggId = UnitId::ZergLurkerEgg;
 						}
 						else {
 							eggId = 198;
@@ -266,30 +266,30 @@ namespace hooks {
 	bool unitCanMorphHook(CUnit* unit, u16 morphUnitId) {
 		//Default StarCraft behavior
 
-		if (unit->id == UnitId::hydralisk) {
+		if (unit->id == UnitId::ZergHydralisk) {
 			/*
 			if (morphUnitId == UnitId::lurker
 			&& unit->canUseTech(TechId::LurkerAspect, *ACTIVE_NATION_ID) == 1) {
 			return true;
 			}*/
-			if (morphUnitId == UnitId::Powerup_KhalisCrystal) {
+			if (morphUnitId == UnitId::ZergBasilisk) {
 				return true;
 			}
-			if (morphUnitId == UnitId::lurker) {
+			if (morphUnitId == UnitId::ZergLurker) {
 				return true;
 			}
 		}
 
 
-		if (unit->id == UnitId::zergling) {
-			if (morphUnitId == UnitId::Powerup_UrajCrystal) {
+		if (unit->id == UnitId::ZergZergling) {
+			if (morphUnitId == UnitId::ZergVorvaling) {
 				return true;
 			}/*
 			if (morphUnitId == UnitId::devouring_one) {//vorv morph
 				return true;
 			}*/
 		}
-		if (unit->id == UnitId::larva || unit->id == UnitId::mutalisk) {
+		if (unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergMutalisk) {
 			if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1) {
 				return true;
 			}
@@ -301,11 +301,14 @@ namespace hooks {
 	bool isEggUnitHook(u16 unitId) {
 		//Default StarCraft behavior
 
-		if (unitId == UnitId::egg
-			|| unitId == UnitId::cocoon
-			|| unitId == UnitId::lurker_egg ||
-			unitId == UnitId::EggBasilisk ||
-			unitId == UnitId::EggVorvaling || unitId == UnitId::EggGorgoleth || unitId == UnitId::EggScreamer || unitId == UnitId::EggDevourer)
+		if (unitId == UnitId::ZergEgg
+			|| unitId == UnitId::ZergCocoon
+			|| unitId == UnitId::ZergLurkerEgg
+			|| unitId == UnitId::EggBasilisk
+			|| unitId == UnitId::EggVorvaling
+			|| unitId == UnitId::EggGorgoleth
+			|| unitId == UnitId::EggScreamer
+			|| unitId == UnitId::EggDevourer)
 			return true;
 
 		return false;
@@ -315,9 +318,13 @@ namespace hooks {
 	bool isRallyableEggUnitHook(u16 unitId) {
 		//Default StarCraft behavior
 
-		if (unitId == UnitId::cocoon || unitId == UnitId::lurker_egg ||
-			unitId == UnitId::EggBasilisk ||
-			unitId == UnitId::EggVorvaling || unitId == UnitId::EggGorgoleth || unitId == UnitId::EggScreamer || unitId == UnitId::EggDevourer)
+		if (unitId == UnitId::ZergCocoon
+			|| unitId == UnitId::ZergLurkerEgg
+			|| unitId == UnitId::EggBasilisk
+			|| unitId == UnitId::EggVorvaling
+			|| unitId == UnitId::EggGorgoleth
+			|| unitId == UnitId::EggScreamer
+			|| unitId == UnitId::EggDevourer)
 			return false;
 
 		return true;
@@ -327,28 +334,30 @@ namespace hooks {
 	//If the unit cannot morph, return UnitId::None.
 	u16 getUnitMorphEggTypeHook(u16 unitId, CUnit* unit, u16 resultId) {
 		//Default StarCraft behavior
-		if (unitId == UnitId::larva)
-			return UnitId::egg;
+		if (unitId == UnitId::ZergLarva)
+			return UnitId::ZergEgg;
 
-		if (unitId == UnitId::mutalisk) {
-			if (resultId == UnitId::devourer)
-				return 179;
+		if (unitId == UnitId::ZergMutalisk) {
+			if (resultId == UnitId::ZergDevourer)
+				return UnitId::EggDevourer;
+			else if (resultId == UnitId::ZergGorgoleth)
+				return UnitId::EggGorgoleth;
 			else
-				return UnitId::cocoon;
+				return UnitId::ZergCocoon;
 		}
 
-		if (unitId == UnitId::hydralisk) {
-			if (resultId == UnitId::lurker) {
-				return UnitId::lurker_egg;
+		if (unitId == UnitId::ZergHydralisk) {
+			if (resultId == UnitId::ZergLurker) {
+				return UnitId::ZergLurkerEgg;
 			}
-			return 198;
+			return UnitId::EggBasilisk;
 
 		}
-		if (unitId == UnitId::zergling)
+		if (unitId == UnitId::ZergZergling)
 			return UnitId::EggVorvaling;
-		if (unitId == UnitId::ultralisk)
+		if (unitId == UnitId::ZergUltralisk)
 			return UnitId::EggScreamer;
-		if (unitId == UnitId::overlord)
+		if (unitId == UnitId::ZergOverlord)
 			return UnitId::EggIroleth;
 
 
