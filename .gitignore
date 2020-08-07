@@ -3,7 +3,3 @@
 *Release/
 _Build/
 GPTP.vcxproj.user
-post_build_debug_hyd.bat
-post_build_release_hyd.bat
-post_build_debug_dlv.bat
-post_build_release_dlv.bat
