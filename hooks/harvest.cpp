@@ -124,23 +124,23 @@ void transferResourceToWorkerHook(CUnit* worker, CUnit* resource) {
 				}
 				//AI cheat
 				//if (playerTable[worker->playerId].type == 1 || playerTable[worker->playerId].type == 5) {
-					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::AIMiningEfficiency) == 1) {
+					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 1) {
 						//+125%					
 						resourceAmount += (resourceAmount / 4);
 					}
-					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::AIMiningEfficiency) == 2) {
+					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 2) {
 						//+133%					
 						resourceAmount += (resourceAmount / 3);
 					}
-					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::AIMiningEfficiency) == 3) {
+					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 3) {
 						//+150%					
 						resourceAmount += (resourceAmount / 2);
 					}
-					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::AIMiningEfficiency) == 4) {
+					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 4) {
 						//+175%, mapcrap only				
 						resourceAmount += ((resourceAmount / 4) + (resourceAmount / 4) + (resourceAmount / 4));
 					}
-					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::AIMiningEfficiency) == 5) {
+					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 5) {
 						//+200%, mapcrap only				
 						resourceAmount *= 2;
 					}

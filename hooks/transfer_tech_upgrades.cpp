@@ -52,7 +52,7 @@ struct UpgradeTransferData {
 
 const UpgradeTransferData upgradeTransferData[] = {
   //Terran
-  {UnitId::marine, UpgradeId::U_238Shells, UpgradeId::None},
+  {UnitId::marine, UpgradeId::U238Shells, UpgradeId::None},
   {UnitId::ghost, UpgradeId::OcularImplants, UpgradeId::MoebiusReactor, UpgradeId::None},
   {UnitId::medic, UpgradeId::CaduceusReactor, UpgradeId::None},
   {UnitId::vulture, UpgradeId::IonThrusters, UpgradeId::None},
@@ -74,7 +74,7 @@ const UpgradeTransferData upgradeTransferData[] = {
   {UnitId::dragoon, UpgradeId::SingularityCharge, UpgradeId::None},
   {UnitId::high_templar, UpgradeId::KhaydarinAmulet, UpgradeId::None},
   {UnitId::dark_archon, UpgradeId::ArgusTalisman, UpgradeId::None},
-  {UnitId::reaver, UpgradeId::ScarabDamage, UpgradeId::ReaverCapacity, UpgradeId::None},
+  {UnitId::reaver, UpgradeId::ReinforcedScarabs, UpgradeId::ReaverCapacity, UpgradeId::None},
   {UnitId::shuttle, UpgradeId::GraviticDrive, UpgradeId::None},
   {UnitId::observer, UpgradeId::SensorArray, UpgradeId::GraviticBoosters, UpgradeId::None},
   {UnitId::scout, UpgradeId::ApialSensors, UpgradeId::GraviticThrusters, UpgradeId::None},

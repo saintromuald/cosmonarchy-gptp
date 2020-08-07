@@ -47,7 +47,7 @@ u8 getSeekRangeHook(CUnit* unit) {
 				break;
 			}
 			case UnitId::TerranMarine:
-				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::U_238Shells))
+				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::U238Shells))
 					bonusAmount = 1;
 				break;
 			case UnitId::missile_turret:
@@ -119,7 +119,7 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 			}
 			break;
 		case UnitId::marine:
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::U_238Shells))
+			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::U238Shells))
 				bonusAmount += 32;
 			break;
 		case UnitId::hydralisk:

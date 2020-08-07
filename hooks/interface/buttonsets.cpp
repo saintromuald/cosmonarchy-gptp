@@ -887,17 +887,17 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::TerranMarine && //Marine passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::U_238Shells) == 0)
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::U238Shells) == 0)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								if ((*activePortraitUnit)->id == UnitId::TerranMarine && //Marine passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::U_238Shells) == 0)
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::U238Shells) == 0)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::TerranMarine && //Marine passive : enabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::U_238Shells) == 1)
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::U238Shells) == 1)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
@@ -1110,19 +1110,19 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossReaver && //Reaver Reinforced Scarabs passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ScarabDamage) == 0 &&
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ReinforcedScarabs) == 0 &&
 									current_button->iconID == 315)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::ProtossReaver &&  //Reaver Reinforced Scarabs passive : enabled 
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ScarabDamage) == 1 &&
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::ReinforcedScarabs) == 1 &&
 									current_button->iconID == 315)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::ProtossReaver &&  //Reaver Reinforced Scarabs passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::ScarabDamage) == 0 &&
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::ReinforcedScarabs) == 0 &&
 									current_button->iconID == 315)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
