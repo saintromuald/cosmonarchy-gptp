@@ -52,7 +52,7 @@ namespace hooks {
 		int increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 		int decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
 
-		// Kaiser Rampage upgrade: gains double movespeed on kill for 1 second
+		// Kaiser Rampage upgrade: gains 150% movespeed on kill for 1 second
 		if (unit->id == UnitId::ZergUltralisk && scbw::getUpgradeLevel(unit->playerId, UpgradeId::KaiserRampage)) {
 			if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
 
@@ -92,7 +92,7 @@ namespace hooks {
 				speed /= 2;
 		}
 
-		// Adrenal Surge upgrade: gains triple movespeed when moving towards enemies
+		// Adrenal Surge upgrade: gains double movespeed when moving towards enemies
 		if (unit->id == UnitId::ZergVorvaling) {
 			vorvalingProc Accelerate = vorvalingProc(unit);
 			u32 range = unit->getSightRange(false) * 32;
@@ -114,7 +114,7 @@ namespace hooks {
 			}
 		}
 
-		// Ion Propulsion upgrade: gains hover-mover status
+		// Ion Propulsion upgrade: reduce movespeed, gains hover-mover status
 		else if (unit->id == UnitId::TerranVulture) {
 			auto tile = scbw::getActiveTileAt(unit->getX(), unit->getY());
 			if (tile.isUnwalkable || !tile.isWalkable) {
@@ -124,7 +124,7 @@ namespace hooks {
 			}
 		}
 
-		// Somatic Implants upgrade: gains double movespeed while cloaked
+		// Somatic Implants upgrade: gains 150% movespeed while cloaked
 		else if (unit->id == UnitId::TerranGhost) {
 			if (
 				unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))
@@ -136,14 +136,14 @@ namespace hooks {
 			}
 		}
 
-		// Leg Enhancements upgrade (Legionnaire): gains 150% movespeed
+		// Leg Enhancements upgrade (Legionnaire): gains 125% movespeed
 		else if (unit->id == UnitId::ProtossLegionnaire) {
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::LegEnhancements)) {
 				speed += speed / 4;
 			}
 		}
 
-		// Leg Enhancements upgrade (Dark Templar): gains 150% movespeed
+		// Leg Enhancements upgrade (Dark Templar): gains 125% movespeed
 		else if (unit->id == UnitId::ProtossDarkTemplar) {
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::LegEnhancements)) {
 				speed += speed / 4;
@@ -168,7 +168,6 @@ namespace hooks {
 			}
 		}
 
-		// TODO: Increase acceleration (Collective Integration)
 		// Collective Integration passive: gains increased movespeed based on tech level
 		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth) {
 			u32 lairCountSpeed = unitCountTable[UnitId::ZergLair].player[unit->playerId];
@@ -188,13 +187,17 @@ namespace hooks {
 			u32 maxHealth = unit->getMaxHpInGame();
 			double multiplier = MathUtils::map(health, maxHealth, maxHealth / 2, 1.0, 1.5, true);
 			speed = (u32) ((double)speed * multiplier);
-			// GPTP::logger << "Death March: " << '\n';
-			// GPTP::logger << "Health: " << health << '\n';
-			// GPTP::logger << "Max Health: " << maxHealth << '\n';
-			// GPTP::logger << "Multiplier: " << multiplier << '\n';
-			// GPTP::logger << "Speed: " << speed << '\n' << '\n';
 		}
 
+	#ifdef DELIVERANCE
+		// Deathless Procession upgrade: gains 125% movespeed, increasing to 175% when above 50% shields
+		if (unit->id == UnitId::ProtossAmaranth && scbw::getUpgradeLevel(unit->playerId, UpgradeId::DeathlessProcession)) {
+			if (unit->getCurrentShieldsInGame() <= units_dat::MaxShieldPoints[unit->id] / 2)
+				speed += speed / 4;
+			else
+				speed += (speed / 2) + speed / 4;
+		}
+	#endif
 
 		// DEBUG
 		// Speed logger
@@ -229,7 +232,7 @@ namespace hooks {
 		int modifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
 		+ (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);*/
 
-		// 
+		// Set additives based on status effects and movespeed upgrades
 		int increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 		int decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
 
