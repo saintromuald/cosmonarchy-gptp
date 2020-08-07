@@ -71,7 +71,7 @@ namespace hooks {
 		r = 40;
     }
     if (isChargedGorgolethBullet(bullet, weaponId)) {
-        r = 40;
+        r = 45;
     }
 
     // Get units within the outer splash radius
@@ -145,7 +145,7 @@ namespace hooks {
 			medium = 25;
         }      
         if (isChargedGorgolethBullet(bullet, weaponId)) {
-            medium = 40;
+            medium = 37;
         }
         if(isUnitDistanceWithin(target, bullet, medium)){
         weaponBulletShot(target, bullet, 2); // 50% damage

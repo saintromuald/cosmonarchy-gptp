@@ -120,6 +120,7 @@ namespace hooks {
 			&& buildingId != UnitId::ZergLair
 			&& buildingId != UnitId::ZergGuardianRoost
 			&& buildingId != UnitId::ZergDevourerHaunt
+			&& buildingId != UnitId::ZergGorgolethApiary
 			&& buildingId != UnitId::ZergSporeColony
 			&& buildingId != UnitId::ZergSunkenColony
 			&& buildingId != UnitId::ZergLurkerDen
@@ -435,6 +436,7 @@ namespace hooks {
 				&& buildingId != UnitId::ZergLair
 				&& buildingId != UnitId::ZergGuardianRoost
 				&& buildingId != UnitId::ZergDevourerHaunt
+				&& buildingId != UnitId::ZergGorgolethApiary
 				&& buildingId != UnitId::ZergSporeColony
 				&& buildingId != UnitId::ZergSunkenColony
 				&& buildingId != UnitId::ZergBasiliskDen
@@ -711,6 +713,7 @@ namespace {
 			|| buildingId == UnitId::ZergLair
 			|| buildingId == UnitId::ZergGuardianRoost
 			|| buildingId == UnitId::ZergDevourerHaunt
+			|| buildingId == UnitId::ZergGorgolethApiary
 			|| buildingId == UnitId::ZergLurkerDen
 			|| buildingId == UnitId::ZergBasiliskDen
 			|| buildingId == UnitId::ZergSporeColony
@@ -966,6 +969,7 @@ namespace hooks {
 			|| unitId == UnitId::ZergHive
 			|| unitId == UnitId::ZergGuardianRoost
 			|| unitId == UnitId::ZergDevourerHaunt
+			|| unitId == UnitId::ZergGorgolethApiary
 			|| unitId == UnitId::ZergLurkerDen
 			|| unitId == UnitId::ZergBasiliskDen
 			|| unitId == UnitId::ZergSunkenColony

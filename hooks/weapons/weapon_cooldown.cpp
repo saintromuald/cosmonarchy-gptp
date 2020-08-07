@@ -35,12 +35,14 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 		weaponId==WeaponId::BurstLasers && (unit->status & UnitStatus::Cloaked)){
 		cooldown -= cooldown / 5;
 	}
+
 	// Ravening Mandible upgrade: gains increased attack speed based on current energy
 	if (unit->id==UnitId::ZergGorgoleth && scbw::getUpgradeLevel(unit->playerId, UpgradeId::RaveningMandible)) {
 		cooldown *= 0.75;
 		double value = MathUtils::map(unit->energy / 256, 100, 250, 1.0, 0.5, true);
 		cooldown *= value;
 	}
+
 	// Kaiser Rampage upgrade: gains double attack speed for 1 second
 	if (unit->id == UnitId::ZergUltralisk && scbw::getUpgradeLevel(unit->playerId, UpgradeId::KaiserRampage)) {
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
