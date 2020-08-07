@@ -98,7 +98,9 @@ namespace hooks {
 	bool isProtossMorph(u16 unitId) {
 		if (unitId == UnitId::ProtossPrincipality		// morphs begin
 		|| unitId == UnitId::ProtossVicarage
+	#ifdef DELIVERANCE
 		|| unitId == UnitId::ProtossPrelacy
+	#endif
 		|| unitId == UnitId::ProtossRoboticsAuthority
 		|| unitId == UnitId::ProtossArgosy
 		|| unitId == UnitId::ProtossStarfield			// morphs end
