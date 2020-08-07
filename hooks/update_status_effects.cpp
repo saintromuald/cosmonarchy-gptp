@@ -285,7 +285,8 @@ void updateStatusEffects(CUnit* unit) {
 			unitFinder.forEach(Heal);
 		}
 	}
-	if (unit->id == UnitId::TerranQuarry || unit->id == UnitId::ZergIroleth) {
+	if (unit->sprite!=NULL && unit->mainOrderId!=OrderId::Die && (unit->id == UnitId::TerranQuarry || unit->id == UnitId::ZergIroleth)) {
+		
 		u32 radius = unit->id == UnitId::TerranQuarry ? 320 : 224;
 		resourceBoostProc Boost = resourceBoostProc(unit);
 		scbw::UnitFinder unitFinder(unit->getX() - radius,
