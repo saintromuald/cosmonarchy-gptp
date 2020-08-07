@@ -26,7 +26,7 @@ char ( &_ArraySizeHelper( T (&array)[N] ))[N];
 #define PLUGIN_ID 0x1B4D69B6
 
 //What is the plugin's name (and version)?
-#if DELIVERANCE_ONLY
+#ifdef DELIVERANCE
 #define PLUGIN_NAME "Deliverance"
 #elif HYDRA_ONLY
 #define PLUGIN_NAME "Project: HYDRA"
