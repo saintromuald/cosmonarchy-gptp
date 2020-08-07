@@ -52,7 +52,10 @@ enum Enum {
   None              = 0x2C,
   NuclearStrike		  = 0x2D, //based on bwapi/BWMemoryEdit/Enums/TechType.cs
   UnknownLastEntry  = 0x2E,	//based on bwapi/BWMemoryEdit/Enums/TechType.cs
-  EssenceDrain = 35,
+
+  // HYDRA \\
+
+  EssenceDrain = 35,		// Gorgoleth ability
 };
 }
 
