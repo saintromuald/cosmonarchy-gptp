@@ -139,7 +139,7 @@ enum Enum {
   ObservanceWeapon							= 122,
   EcclesiastWeapon							= 110,
   TerminusWeapon							= 112,
-  SerratedCleavers							= 47,
-  EssenceDrain								= 51,
+  SerratedCleavers							= 47,		// Gorgoleth weapon
+  EssenceDrain								= 51,		// Gorgoleth ability
 };
 }

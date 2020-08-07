@@ -436,6 +436,7 @@ enum Enum {
 	ArnoldLannigan				= 17,		// Alan Schezar
 
 //Protoss-Unit
+	ProtossAmaranth				= 61,		// Dark Templar Unit
 	ProtossEcclesiast			= 79,		// Tassadar
 	ProtossTerminus				= 99,		// Samir Duran
 
