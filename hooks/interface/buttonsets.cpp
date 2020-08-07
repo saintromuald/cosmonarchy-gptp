@@ -1687,24 +1687,6 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossDarkTemplar && //DarkTemplar-Leg Enhancements passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::LegEnhancements) == 0 &&
-									current_button->iconID == 307)
-								{
-									current_button_state = BUTTON_STATE::Disabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::ProtossDarkTemplar &&  //DarkTemplar-Leg Enhancements passive : enabled 
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::LegEnhancements) == 1 &&
-									current_button->iconID == 307)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								else if ((*activePortraitUnit)->id == UnitId::ProtossDarkTemplar &&  //DarkTemplar-Leg Enhancements passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::LegEnhancements) == 0 &&
-									current_button->iconID == 307)
-								{
-									current_button_state = BUTTON_STATE::Invisible;
-								}
 								if ((*activePortraitUnit)->id == UnitId::TerranAzazel && //Azazel-Matrices passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::InnervatingMatrices) == 0 &&
 									current_button->iconID == 367)
@@ -1756,6 +1738,48 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+
+								#if HYDRA_ONLY
+								if ((*activePortraitUnit)->id == UnitId::ProtossDarkTemplar && //DarkTemplar-Leg Enhancements passive : disabled
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::LegEnhancements) == 0 &&
+									current_button->iconID == 307)
+								{
+									current_button_state = BUTTON_STATE::Disabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ProtossDarkTemplar &&  //DarkTemplar-Leg Enhancements passive : enabled 
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::LegEnhancements) == 1 &&
+									current_button->iconID == 307)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ProtossDarkTemplar &&  //DarkTemplar-Leg Enhancements passive : unavailable
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::LegEnhancements) == 0 &&
+									current_button->iconID == 307)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								#endif
+
+								#if DELIVERANCE_ONLY
+								if ((*activePortraitUnit)->id == UnitId::ProtossEcclesiast && //Ecclesiast-Astral Blessing passive : disabled
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AstralBlessing) == 0 &&
+									current_button->iconID == 307)
+								{
+									current_button_state = BUTTON_STATE::Disabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ProtossEcclesiast &&  //Ecclesiast-Astral Blessing passive : enabled 
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AstralBlessing) == 1 &&
+									current_button->iconID == 307)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ProtossEcclesiast &&  //Ecclesiast-Astral Blessing passive : unavailable
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::AstralBlessing) == 0 &&
+									current_button->iconID == 307)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								#endif
 
 							}
 						}

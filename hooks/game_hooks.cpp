@@ -396,25 +396,9 @@ namespace hooks {
 						);
 					scbw::printText(buf);
 				}
-
 				*/
-				/*
-				//debug test for cyprians
-				if(unit->id==UnitId::ultralisk && (*elapsedTimeFrames)%18 == 0){
-					//cyprian back-forth test
-					u32 result = scbw::get_aise_value(unit,NULL,1,0,0);
-					char buf[32];
-					sprintf(buf,"Get aise value: %d",result);
-					scbw::printText(buf);
-					if(result == 1){
-						scbw::printText("Cyprian state is set");
-					}
-					else {
-						scbw::printText("Cyprian state do not exist or not set, send aise cmd");
-						scbw::sendGPTP_aise_cmd(unit,NULL,2,1,0,0);
-					}
-				}*/
-				if (unit->id==UnitId::dark_templar) {
+			#if HYDRA_ONLY
+				if (unit->id==UnitId::ProtossDarkTemplar) {
 					auto timer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DarkTemplarTimer, 0);
 					if (timer == 1) {
 						for (int i = 0; i < 8; i++) {
@@ -426,6 +410,7 @@ namespace hooks {
 						}
 					}	
 				}
+			#endif
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::CorrosiveSporeDelay, 0)==1) {
 					//scbw::printText("Try");
 					int count = unit->acidSporeCount;
@@ -494,10 +479,12 @@ namespace hooks {
 					unit->updateSpeed();
 				}
 
+			#if DELIVERANCE_ONLY
 				// Apply Ecclesiast - Astral Blessing stacks and timer
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::EcclesiastTimer, 0) == 1) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::EcclesiastStack, 0, 0);
 				}
+			#endif
 
 				// Apply Zergling - Adrenal Glands stacks
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::AdrenalTimer, 0) == 1) {

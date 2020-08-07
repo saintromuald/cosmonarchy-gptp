@@ -12,7 +12,6 @@ namespace hooks {
 /// @return		The modified cooldown value.
 u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 
-
 	u32 cooldown = weapons_dat::Cooldown[weaponId];
 	u32 adrenalStacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0);
 
@@ -24,17 +23,17 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 			increaseAmt = 3;
 
 		cooldown += increaseAmt * unit->acidSporeCount;
-
 	}
 	
 	int cooldownModifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
 							+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
+
 	// Capacitors upgrade: gains increased attack speed while cloaked
 	if(scbw::getUpgradeLevel(unit->playerId, UpgradeId::Capacitors) && unit->id==UnitId::wraith &&
 		weaponId==WeaponId::BurstLasers && (unit->status & UnitStatus::Cloaked)){
 		cooldown -= cooldown / 5;
 	}
-	// Ravening Mandibule upgrade: gains increased attack speed
+	// Ravening Mandible upgrade: gains increased attack speed based on current energy
 	if (unit->id==UnitId::ZergGorgoleth && scbw::getUpgradeLevel(unit->playerId, UpgradeId::RaveningMandible)) {
 		cooldown *= 0.75;
 		double value = MathUtils::map(unit->energy / 256, 100, 250, 1.0, 0.5, true);
@@ -46,29 +45,32 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 			cooldown /= 2;
 		}
 	}
+
+#if DELIVERANCE_ONLY
 	// Terminus passive: gains attack speed with each upgrade
 	if (unit->id == UnitId::ProtossTerminus && scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossGroundWeapons)) {
 		int terminusUpg = scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossGroundWeapons);
 		cooldown -= cooldown * (0.1 * terminusUpg);
 	}
+#endif
 
-	if (cooldownModifier > 0)
+	if (cooldownModifier > 0)	// Lame hardcode for attackspeed upgrades
 		cooldown /= 2;
 	else 
-	if (cooldownModifier < 0 ){
+	if (cooldownModifier < 0 ){	// Presumably, lame hardcode for some slow
 		cooldown += cooldown / 4;
 		
 	}
 	if (unit->stimTimer) {
-		cooldown += 2;		// Fixes AICE Stimpack issue
+		cooldown += 2;		// Fixes aice-related Stimpack issue
 	}
 	if (adrenalStacks) {
 		cooldown -= adrenalStacks;
 	}
-	if (cooldown > 250)
+	if (cooldown > 250)		// Max cutoff
 		cooldown = 250;
 	else 
-	if (cooldown < 3) 
+	if (cooldown < 3)		// Min cutoff (previously 5)
 		cooldown = 3;
 	return cooldown;
 

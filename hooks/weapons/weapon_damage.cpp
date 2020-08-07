@@ -2,6 +2,7 @@
 #include "../../SCBW/api.h"
 #include <algorithm>
 #include "CUnitExtended.h"
+#include "MathUtils.h"
 
 namespace {
 	//Helper functions
@@ -258,7 +259,7 @@ bool irradiateTarget(CUnit* unit) {
 	return true;
 }
 
-
+#if DELIVERANCE_ONLY
 class ecclesiastProc : public scbw::UnitFinderCallbackProcInterface {
 private:
 	int _healValue = 0;
@@ -278,7 +279,7 @@ public:
 		imgul(unit->sprite, 425, 0, 0, 0);
 	}
 };
-
+#endif
 
 namespace hooks {
 
@@ -317,7 +318,8 @@ namespace hooks {
 				scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::AdrenalTimer, 49, 0); //49 is 2 seconds (48) + 1
 			}
 
-			// DELIVERANCE -- Ecclesiast Astral Blessing
+			#if DELIVERANCE_ONLY
+			// Ecclesiast Astral Blessing
 			if (attacker != NULL && weaponId == WeaponId::EcclesiastWeapon && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::AstralBlessing)) {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0) < 10) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::EcclesiastStack, 1, 0);
@@ -326,6 +328,13 @@ namespace hooks {
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::EcclesiastPlayer, attacker->playerId, 0);
 				//scbw::printText("increment stack");
 			}
+
+			// Amaranth - Deathless Procession shield recharge per missing HP
+			if (attacker != NULL && attacker->id == UnitId::ProtossAmaranth && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::DeathlessProcession)) {
+				double shieldStealRate = MathUtils::map(attacker->hitPoints / 256, (int)attacker->getMaxHpInGame() / 4, (int)attacker->getMaxHpInGame(), 1.0, 0.0, true);
+				attacker->shields = std::min((s32)(attacker->shields + damage * shieldStealRate), (s32)units_dat::MaxShieldPoints[attacker->id] * 256);
+			}
+			#endif
 
 			if (weaponId == WeaponId::GlaveWurm || weaponId == WeaponId::GlaveWurm_Kukulza_Mutalisk) {
 				double mul = 1.0;
@@ -653,7 +662,8 @@ namespace hooks {
 
 			if (target->hitPoints == 0) {
 
-				// ecclesiastProc
+			#if DELIVERANCE_ONLY
+				// Ecclesiast - Astral Blessing proc
 				int stacks = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0);
 				int player = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastPlayer, 0);
 				const int range = 64;
@@ -662,6 +672,7 @@ namespace hooks {
 					target->getX() + range,
 					target->getY() + range);
 				unitFinder.forEach(ecclesiastProc(stacks, player));
+			#endif
 			}
 
 			// Reduce shields (finally)
