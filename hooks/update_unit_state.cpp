@@ -390,13 +390,17 @@ namespace hooks {
 				else {
 				if(unit->unusedTimer>0){
 					unit->_unknown_0x066 = 72;
+					if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::MineralSpecialRegenTimer, 0) > 0) {
+						unit->_unknown_0x066 = 36;
+					}
 				}
 				else {
 					unit->_unknown_0x066 = 36;
+					if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::MineralSpecialRegenTimer, 0) > 0) {
+						unit->_unknown_0x066 = 18;
+					}
 				}
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::MineralSpecialRegenTimer, 0) > 0) {
-					unit->_unknown_0x066 /= 2;
-				}
+				
 				
 				//resource regeneration
 				bool update_image = true;
