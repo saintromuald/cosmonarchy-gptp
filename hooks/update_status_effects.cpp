@@ -247,20 +247,26 @@ void unburrow(CUnit* unit) {
 ;
 void updateStatusEffects(CUnit* unit) {
 
+	// Decrement Stasis Field timer (and remove effect if 0)
 	if (unit->stasisTimer != 0) {
 
 		unit->stasisTimer--;
 
 		if (unit->stasisTimer == 0)
 			unit->removeStasisField();
+	}
 
-	}
-	if (unit->id == UnitId::dropship && scbw::getUpgradeLevel(unit->playerId, UpgradeId::PassengerInsurance)) {
+	// 
+	if (unit->id == UnitId::TerranDropship && scbw::getUpgradeLevel(unit->playerId, UpgradeId::PassengerInsurance)) {
 		unit->updateSpeed();
 	}
-	else if (unit->id == UnitId::vulture && scbw::getUpgradeLevel(unit->playerId, UpgradeId::IonPropulsion)) {
+
+	// 
+	else if (unit->id == UnitId::TerranVulture && scbw::getUpgradeLevel(unit->playerId, UpgradeId::IonPropulsion)) {
 		unit->updateSpeed();
 	}
+
+	// Forcibly unburrow units that collide with buildings
 	if (unit->status & UnitStatus::Burrowed) {
 		auto tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
 		if (tile.currentlyOccupied) {
@@ -272,9 +278,10 @@ void updateStatusEffects(CUnit* unit) {
 			if (nearest != NULL) {
 				unburrow(unit);
 			}
-		}
-		
+		}		
 	}
+
+	// Azazel - Sublime Shepherd ability
 	if (unit->id == UnitId::TerranAzazel) {
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
 			sublimeShepherdProc Heal = sublimeShepherdProc(unit);
@@ -285,7 +292,9 @@ void updateStatusEffects(CUnit* unit) {
 			unitFinder.forEach(Heal);
 		}
 	}
-	if (unit->sprite!=NULL && unit->mainOrderId!=OrderId::Die && (unit->id == UnitId::TerranQuarry || unit->id == UnitId::ZergIroleth)) {
+
+	// Quarry and Iroleth resource regeneration aura
+/*	if (unit->sprite!=NULL && unit->mainOrderId!=OrderId::Die && (unit->id == UnitId::TerranQuarry || unit->id == UnitId::ZergIroleth)) {
 		
 		u32 radius = unit->id == UnitId::TerranQuarry ? 320 : 224;
 		resourceBoostProc Boost = resourceBoostProc(unit);
@@ -294,8 +303,10 @@ void updateStatusEffects(CUnit* unit) {
 			unit->getX() + radius,
 			unit->getY() + radius);
 		unitFinder.forEach(Boost);
-	}
-	if (unit->id == UnitId::ghost) {
+	}*/
+
+	// Ghost - Somatic Implants upgrade
+	if (unit->id == UnitId::TerranGhost) {
 		if (
 			!(unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)))
 		{
@@ -307,17 +318,22 @@ void updateStatusEffects(CUnit* unit) {
 			}
 		}
 	}
+
+	// 
 	if (unit->stimTimer != 0) {
 
 		unit->stimTimer--;
 
 		if (unit->stimTimer == 0)
 			unit->updateSpeed();
-
 	}
-	if (unit->id == UnitId::Powerup_UrajCrystal || unit->id==UnitId::civilian || unit->id==UnitId::overlord) {
+
+	// 
+	if (unit->id == UnitId::ZergVorvaling || unit->id==UnitId::TerranShaman || unit->id==UnitId::ZergOverlord) {
 		unit->updateSpeed();
 	}
+
+	// Decrement Ensnare timer (and remove effect if 0)
 	if (unit->ensnareTimer != 0) {
 
 		unit->ensnareTimer--;
@@ -328,6 +344,8 @@ void updateStatusEffects(CUnit* unit) {
 		}
 
 	}
+
+	// Shaman - Overcharge upgrade
 	if (unit->unusedTimer != 0) {
 		//overcharge timer
 		unit->unusedTimer--;
@@ -336,6 +354,8 @@ void updateStatusEffects(CUnit* unit) {
 		}
 
 	}
+
+	// Decrement Defensive Matrix timer (and remove effect if 0)
 	if (unit->defensiveMatrixTimer != 0) {
 
 		unit->defensiveMatrixTimer--;
@@ -344,6 +364,8 @@ void updateStatusEffects(CUnit* unit) {
 			unit->reduceDefensiveMatrixHp(unit->defensiveMatrixHp);
 
 	}
+
+	// Redraw console/UI elements
 	if (unit == *activePortraitUnit) {
 		if (unit->isValidCaster()) {
 			if (!scbw::isAlliedTo(*LOCAL_NATION_ID, unit->playerId)) {
@@ -352,9 +374,10 @@ void updateStatusEffects(CUnit* unit) {
 		}
 	}
 	
+	// Irradiate ability and Radiation Shockwave upgrade
 	if (unit->irradiateTimer != 0) {
 		char buf[32];
-		sprintf(buf,"Irradiate timer: %d",unit->irradiateTimer);
+		//sprintf(buf,"Irradiate timer: %d",unit->irradiateTimer);
 		//scbw::printText(buf);
 		unit->irradiateTimer--;
 
