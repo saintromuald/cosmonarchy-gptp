@@ -681,7 +681,7 @@ namespace hooks {
 
 				bool jump_to_end_of_loop = false; //F4A82
 
-													//check various conditions before attempting to create a broodling
+				//check various conditions before attempting to create a broodling
 				if (function_0042D810(current_x, current_y, UnitId::ZergBroodling)) {
 
 					Point16 inPos, outPos;
@@ -724,6 +724,7 @@ namespace hooks {
 						jump_to_end_of_loop = true;
 					}
 					else { //F4A26
+						scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, created_broodling);
 
 						u32 timerBeforeDisappearance;
 

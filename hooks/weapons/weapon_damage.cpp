@@ -262,21 +262,37 @@ bool irradiateTarget(CUnit* unit) {
 #ifdef DELIVERANCE
 class ecclesiastProc : public scbw::UnitFinderCallbackProcInterface {
 private:
-	int _healValue = 0;
+	int _stacks = 0;
 	int _playerID = 0;
 
 public:
 	ecclesiastProc(int stacks, int playerID) {
-		_healValue = (5 * (stacks + 1)) * 256;
+		_stacks = stacks;
 		_playerID = playerID;
 	}
 
 	void proc(CUnit* unit) {
-		if (!units_dat::ShieldsEnabled[unit->id]) return;
+		bool astral_tempest_researched = scbw::getUpgradeLevel(unit->playerId, UpgradeId::AstralTempest) != 0;
+		if (!units_dat::ShieldsEnabled[unit->id] && !astral_tempest_researched) return;
 		if (_playerID != unit->playerId && !scbw::isAlliedTo(_playerID, unit->playerId)) return;
-		if (unit->shields >= units_dat::MaxShieldPoints[unit->id] * 256) return;
-		unit->shields = std::min(unit->shields + _healValue, units_dat::MaxShieldPoints[unit->id] * 256);
-		imgul(unit->sprite, 425, 0, 0, 0);
+		if (astral_tempest_researched) {
+			imgul(unit->sprite, 1520, 0, 0, 0);
+		} if (unit->shields < units_dat::MaxShieldPoints[unit->id] * 256) {
+			imgul(unit->sprite, 425, 0, 0, 0);
+		} else {
+			return;
+		}
+		scbw::printText("c");
+		int healAmount = (5 * (_stacks + 1)) * 256;
+		unit->shields = std::min(unit->shields + healAmount, units_dat::MaxShieldPoints[unit->id] * 256);
+		if (astral_tempest_researched) {
+			scbw::printText("d");
+			if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AstralTempestStacks, 0) < _stacks) {
+				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::AstralTempestStacks, _stacks, 0);
+				scbw::printText("e");
+			}
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::AstralTempestTimer, _stacks, 49);
+		}
 	}
 };
 #endif
@@ -639,6 +655,7 @@ namespace hooks {
 						scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::ObservanceRend, 1, 0);
 					}
 				}
+				// TODO: This might not work properly, if a unit has shields it may still satisfy the condition, when target unit would still be alive
 				if (attacker->id == UnitId::ultralisk && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::KaiserRampage) &&
 					damage >= target->hitPoints) {
 					//ultralisk kills target
@@ -658,6 +675,29 @@ namespace hooks {
 			}
 
 			if (target->hitPoints == 0) {
+
+				if (attacker->id == UnitId::ZergBroodling && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::Incubators)) {
+					for (int i = 0; i < 2; i++) {
+						CUnit* unit = scbw::createUnitAtPos(UnitId::ZergBroodling, attacker->playerId, target->position.x, target->position.y);
+						if (unit != nullptr) {
+							scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
+
+							u32 removeTimer = attacker->removeTimer;
+							//if (unit->status & UnitStatus::IsHallucination) {
+							//	removeTimer = 1350;	//probably old unremoved code
+							//} else if (unit->id == UnitId::ZergBroodling) {
+							//	removeTimer = 1800;	//0x708
+							//} else {
+							//	removeTimer = 0;
+							//}
+
+							if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
+								unit->removeTimer = removeTimer;
+							}
+						}
+					}
+					
+				}
 
 			#ifdef DELIVERANCE
 				// Ecclesiast - Astral Blessing proc

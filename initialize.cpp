@@ -275,11 +275,20 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 //	memoryPatch(0x004F6938 + 4, patchLastUnit, 1);
 	nops(0x0049EEBD, 0xa);//disable beacon collision hardcode
 //	u8 p8a = { 0x8a };
-	const u8 signff[2] = { 0xff,0x7f };
-	memoryPatch(0x004981C4 + 3, signff, 2);
-	memoryPatch(0x00497764 + 3, signff, 2);//lardcode
-	memoryPatch(0x004F3944 + 3, signff, 2);//lardcode
-	memoryPatch(0x00497784 + 3, signff, 2);//disable burrow hardcode for image ids: Flag, Young Chrysalis, Uraj, Khalis
+
+	// TODO: Resolve this bug
+	// This code has a bug, that makes workers not remove their resource chunks properly 
+	//const u8 signff[2] = { 0xff,0x7f };
+	//memoryPatch(0x004981C4 + 3, signff, 2);
+	//memoryPatch(0x00497764 + 3, signff, 2);//lardcode
+	//memoryPatch(0x004F3944 + 3, signff, 2);//lardcode
+	//memoryPatch(0x00497784 + 3, signff, 2);//disable burrow hardcode for image ids: Flag, Young Chrysalis, Uraj, Khalis
+	
+	// This code is a replacement for the code above, that does not work properly
+	u8 p8a = { 0x8a };
+	u8 ff = { 0xff };
+	memoryPatch(0x00497764 + 3, &p8a, sizeof(u8));//
+	memoryPatch(0x00497784 + 3, &ff, sizeof(u8));//disable burrow hardcode for image ids: Flag, Young Chrysalis, Uraj, Khalis
 
 	//ctf orders
 	u8 patchCTF1[] = { 0xE9, 0xCC, 0x02, 0x00, 0x00 };
