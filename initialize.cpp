@@ -129,6 +129,21 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 		return FALSE;
 
 
+	//disable powerup hardcod
+	// FLAG id only
+	const u8 maxunsigned_2[5] = {0xff, 0xff };
+	memoryPatch(0x0044095D+4, maxunsigned_2, 2);//flag
+	memoryPatch(0x0045FE5C+1, maxunsigned_2, 2);//flag
+	memoryPatch(0x00460902+ 1, maxunsigned_2, 2);//flag
+	memoryPatch(0x0049F145 + 4, maxunsigned_2, 2);//flag
+	memoryPatch(0x004E4153 + 4, maxunsigned_2, 2);//flag
+	memoryPatch(0x004E416E + 4, maxunsigned_2, 2);//flag
+//	memoryPatch(0x004E426B + 1, maxunsigned_2, 2);//ctf create flag, this code don't runs at all because CTF are spell orders now
+	memoryPatch(0x004E5F68 + 3, maxunsigned_2, 2);
+	memoryPatch(0x004E70E4 + 4, maxunsigned_2, 2);
+	memoryPatch(0x004F3A9C + 4, maxunsigned_2, 2);
+	memoryPatch(0x004F3C26 + 4, maxunsigned_2, 2);
+	memoryPatch(0x004F3CD5 + 4, maxunsigned_2, 2);
 	//iquare, start
 	//medic hardcode patches
 
@@ -259,10 +274,12 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	//dark archon - energy of mcontrolled dark archons no longer set to 0
 //	memoryPatch(0x004F6938 + 4, patchLastUnit, 1);
 	nops(0x0049EEBD, 0xa);//disable beacon collision hardcode
-	u8 p8a = { 0x8a };
-	u8 ff = { 0xff };
-	memoryPatch(0x00497764 + 3, &p8a, sizeof(u8));//
-	memoryPatch(0x00497784 + 3, &ff, sizeof(u8));//disable burrow hardcode for image ids: Flag, Young Chrysalis, Uraj, Khalis
+//	u8 p8a = { 0x8a };
+	const u8 signff[2] = { 0xff,0x7f };
+	memoryPatch(0x004981C4 + 3, signff, 2);
+	memoryPatch(0x00497764 + 3, signff, 2);//lardcode
+	memoryPatch(0x004F3944 + 3, signff, 2);//lardcode
+	memoryPatch(0x00497784 + 3, signff, 2);//disable burrow hardcode for image ids: Flag, Young Chrysalis, Uraj, Khalis
 
 	//ctf orders
 	u8 patchCTF1[] = { 0xE9, 0xCC, 0x02, 0x00, 0x00 };
