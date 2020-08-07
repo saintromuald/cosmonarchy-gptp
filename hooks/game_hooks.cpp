@@ -408,7 +408,7 @@ namespace hooks {
 								}
 							}
 						}
-					}	
+					}
 				}
 			#endif
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::CorrosiveSporeDelay, 0)==1) {

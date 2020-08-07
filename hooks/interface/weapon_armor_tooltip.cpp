@@ -56,7 +56,7 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	switch (weaponId) {
 
 	case WeaponId::GaussRifle:
-		if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::U_238Shells))
+		if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::U238Shells))
 			bonusRange = 1;
 		break;
 	case WeaponId::NeedleSpines:
