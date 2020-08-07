@@ -81,7 +81,7 @@ namespace UpgradeId {
 		AugustgradsRevenge = 72,
 		TendrilAmitosis = 73,
 		NydalTransfusion = 74,
-		VitalEncephalon = 75,
+		VitalEncephalon = 75, // Gorgoleth Energy
 		RaveningMandible = 76,
 		Metastasis = 77,
 		Heatshield = 78,

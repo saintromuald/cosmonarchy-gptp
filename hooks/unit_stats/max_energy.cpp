@@ -78,6 +78,10 @@ u16 getUnitMaxEnergyHook(CUnit* const unit) {
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::ArgusTalisman))
 				return ENERGY_INGAME_250;
 			break;
+		case UnitId::ZergGorgoleth:
+			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::VitalEncephalon))
+				return ENERGY_INGAME_250;
+			break;
 			
 	}
 

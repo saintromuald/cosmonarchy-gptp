@@ -37,7 +37,8 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 	// Ravening Mandibule upgrade: gains increased attack speed
 	if (unit->id==UnitId::ZergGorgoleth && scbw::getUpgradeLevel(unit->playerId, UpgradeId::RaveningMandible)) {
 		cooldown *= 0.75;
-		cooldown *= MathUtils::map(unit->energy, (u16)100, (u16)250, 1.0, 0.5, true);
+		double value = MathUtils::map(unit->energy / 256, 100, 250, 1.0, 0.5, true);
+		cooldown *= value;
 	}
 	// Kaiser Rampage upgrade: gains double attack speed for 1 second
 	if (unit->id == UnitId::ZergUltralisk && scbw::getUpgradeLevel(unit->playerId, UpgradeId::KaiserRampage)) {

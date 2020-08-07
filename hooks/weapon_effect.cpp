@@ -53,11 +53,11 @@ namespace hooks {
    }
 
   void friendlySplash(CBullet* bullet, u32 weaponId, u8 splash_type){
-	  int splash = splash_type;
-	 if (bullet->sourceUnit != NULL) {
-		 if (bullet->sourceUnit->isBlind) {
-			 splash = SplashType::Radial;
-		 }
+	int splash = splash_type;
+	if (bullet->sourceUnit != NULL) {
+		    if (bullet->sourceUnit->isBlind) {
+			    splash = SplashType::Radial;
+		    }
 	}
     s16 x,y,r;
     x = bullet->sprite->position.x;
@@ -66,7 +66,7 @@ namespace hooks {
 	if (weaponId == WeaponId::ArcliteShockCannon && scbw::getUpgradeLevel(bullet->srcPlayer, UpgradeId::HammerfallShells)) {
 		r += r / 3;
 	}
-    if(isUnsafeCyprianBullet(bullet,weaponId)){
+    if (isUnsafeCyprianBullet(bullet,weaponId)){
 		//scbw::printText("Cyprian Bullet");
 		r = 40;
     }
@@ -79,83 +79,83 @@ namespace hooks {
     //
     darkSwarmDamage(x,y,r,bullet,weaponId);
     //
-    for(int i = 0; i < unitsInSplash.getUnitCount(); i++){
-      CUnit* target = unitsInSplash.getUnit(i);
-      // Units can't splash themselves -- except psi storm
-      if(target == bullet->sourceUnit && bullet->weaponType != WeaponId::PsiStorm) continue;
+    for (int i = 0; i < unitsInSplash.getUnitCount(); i++){
+        CUnit* target = unitsInSplash.getUnit(i);
+        // Units can't splash themselves -- except psi storm
+        if (target == bullet->sourceUnit && bullet->weaponType != WeaponId::PsiStorm) continue;
       
-      // Don't hit allied units -- normally just checks target->playerId == bullet->srcPlayer (also checks if type is 'splash enemy' or 'nuclear missile')
+        // Don't hit allied units -- normally just checks target->playerId == bullet->srcPlayer (also checks if type is 'splash enemy' or 'nuclear missile')
 //      if(scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
-	if(splash==SplashType::Enemy){
+	if (splash==SplashType::Enemy){
 		if(bullet->srcPlayer==target->playerId && target != bullet->attackTarget.unit) continue;
 	}
-	else if(splash==SplashType::FriendlyNew){
+	else if (splash==SplashType::FriendlyNew){
 		if(scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
 	}    
 
-      // Can the unit be targetted?
-      if(!scbw::canWeaponTargetUnit(bullet->weaponType, target, target)) continue;
+        // Can the unit be targetted?
+        if(!scbw::canWeaponTargetUnit(bullet->weaponType, target, target)) continue;
       
-      // We found units in a square around the target, but is the target within the splash radius?
-      s16 outer = weapons_dat::OuterSplashRadius[bullet->weaponType];
-	  if (weaponId == WeaponId::ArcliteShockCannon && scbw::getUpgradeLevel(bullet->srcPlayer, UpgradeId::HammerfallShells)) {
-		  outer += outer / 3;
-	  }
-      if(isUnsafeCyprianBullet(bullet,weaponId)){
-	     outer = 40;
-      }
-      if (isChargedGorgolethBullet(bullet, weaponId)) {
-          outer = 40;
-      }
-      if(!isUnitDistanceWithin(target, bullet, outer)) continue;
+        // We found units in a square around the target, but is the target within the splash radius?
+        s16 outer = weapons_dat::OuterSplashRadius[bullet->weaponType];
+	    if (weaponId == WeaponId::ArcliteShockCannon && scbw::getUpgradeLevel(bullet->srcPlayer, UpgradeId::HammerfallShells)) {
+		    outer += outer / 3;
+	    }
+        if(isUnsafeCyprianBullet(bullet,weaponId)){
+	        outer = 40;
+        }
+        if (isChargedGorgolethBullet(bullet, weaponId)) {
+            outer = 45;
+        }
+        if(!isUnitDistanceWithin(target, bullet, outer)) continue;
       
-      // Don't storm a unit that's already being stormed
-      if(bullet->weaponType == WeaponId::PsiStorm){
+        // Don't storm a unit that's already being stormed
+        if(bullet->weaponType == WeaponId::PsiStorm){
         if(target->isUnderStorm) continue;
         target->isUnderStorm = 1;
-      }
+        }
       
-      // Inner radius 
-      s16 inner = weapons_dat::InnerSplashRadius[bullet->weaponType];
-	  if (weaponId == WeaponId::ArcliteShockCannon && scbw::getUpgradeLevel(bullet->srcPlayer, UpgradeId::HammerfallShells)) {
-		  inner += inner / 3;
-	  }
-      if(isUnsafeCyprianBullet(bullet,weaponId)){
-	     inner = 15;
-      }
-      if (isChargedGorgolethBullet(bullet, weaponId)) {
-          inner = 10;
-      }
+        // Inner radius 
+        s16 inner = weapons_dat::InnerSplashRadius[bullet->weaponType];
+	    if (weaponId == WeaponId::ArcliteShockCannon && scbw::getUpgradeLevel(bullet->srcPlayer, UpgradeId::HammerfallShells)) {
+		    inner += inner / 3;
+	    }
+        if (isUnsafeCyprianBullet(bullet,weaponId)){
+	        inner = 15;
+        }
+        if (isChargedGorgolethBullet(bullet, weaponId)) {
+            inner = 15;
+        }
 
 
-      if(isUnitDistanceWithin(target, bullet, inner)){
+        if(isUnitDistanceWithin(target, bullet, inner)){
         weaponBulletShot(target, bullet, 1); // 100% damage
         continue;
-      }
+        }
       
-      // Burrowed units can only be hit by inner radius
-      if(target->status & UnitStatus::Burrowed) continue;
+        // Burrowed units can only be hit by inner radius
+        if(target->status & UnitStatus::Burrowed) continue;
       
-      // Medium radius
-      s16 medium = weapons_dat::MediumSplashRadius[bullet->weaponType];
-	  if (weaponId == WeaponId::ArcliteShockCannon && scbw::getUpgradeLevel(bullet->srcPlayer, UpgradeId::HammerfallShells)) {
-		  medium += medium / 3;
-	  }
-      if(isUnsafeCyprianBullet(bullet,weaponId)){
-	 medium = 25;
-      }      
-      if (isChargedGorgolethBullet(bullet, weaponId)) {
-          medium = 20;
-      }
-      if(isUnitDistanceWithin(target, bullet, medium)){
+        // Medium radius
+        s16 medium = weapons_dat::MediumSplashRadius[bullet->weaponType];
+	    if (weaponId == WeaponId::ArcliteShockCannon && scbw::getUpgradeLevel(bullet->srcPlayer, UpgradeId::HammerfallShells)) {
+		    medium += medium / 3;
+	    }
+        if(isUnsafeCyprianBullet(bullet,weaponId)){
+	    medium = 25;
+        }      
+        if (isChargedGorgolethBullet(bullet, weaponId)) {
+            medium = 25;
+        }
+        if(isUnitDistanceWithin(target, bullet, medium)){
         weaponBulletShot(target, bullet, 2); // 50% damage
         continue;
-      }
+        }
       
-      // Outer radius
-      weaponBulletShot(target, bullet, 4); // 25% damage
+        // Outer radius
+        weaponBulletShot(target, bullet, 4); // 25% damage
     }
-  }
+}
 
   void friendlyLurkerSplash(CBullet* bullet, u32 weaponId, u8 splash) {
     s16 x, y, r;
@@ -211,7 +211,7 @@ namespace hooks {
 
 
   bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId) {
-      if (weaponId == WeaponId::GorgolethMelee) {
+      if (weaponId == WeaponId::SerratedCleavers) {
           if (bullet != NULL && bullet->sourceUnit != NULL && bullet->sourceUnit->id==UnitId::ZergGorgoleth) {
               if (bullet->sourceUnit->energy >= 10 * 256) {
                   return true;
@@ -243,7 +243,8 @@ bool isUnsafeCyprianBullet(CBullet* bullet, u32 weaponId){
 		return;
     }
     if (isChargedGorgolethBullet(bullet, weaponId)) {
-        friendlySplash(bullet, weaponId, SplashType::Radial);
+        bullet->sourceUnit->energy -= 10 * 256;
+        friendlySplash(bullet, weaponId, SplashType::FriendlyNew);
         return;
     }
     CUnit* target = bullet->attackTarget.unit;

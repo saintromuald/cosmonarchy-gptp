@@ -139,6 +139,7 @@ enum Enum {
   ObservanceWeapon							= 122,
   EcclesiastWeapon							= 110,
   TerminusWeapon							= 112,
-  GorgolethMelee							= 57,
+  SerratedCleavers							= 47,
+  EssenceDrain								= 51,
 };
 }
