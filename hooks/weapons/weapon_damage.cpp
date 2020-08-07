@@ -322,10 +322,9 @@ namespace hooks {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0) < 10) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::EcclesiastStack, 1, 0);
 				}
-				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::EcclesiastTimer, 49, 0); //49 is 2 seconds (48) + 1
+				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::EcclesiastTimer, 49, 0); //49 is 2 seconds (48) + 1
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::EcclesiastPlayer, attacker->playerId, 0);
 				//scbw::printText("increment stack");
-				}
 			}
 
 			if (weaponId == WeaponId::GlaveWurm || weaponId == WeaponId::GlaveWurm_Kukulza_Mutalisk) {
@@ -678,7 +677,8 @@ namespace hooks {
 					target->getY() + range);
 				unitFinder.forEach(ecclesiastProc(stacks, player));
 			}
-//Reduce shields (finally)
+
+			// Reduce shields (finally)
 			if (shieldReduceAmount != 0) {
 
 				target->shields -= shieldReduceAmount;
