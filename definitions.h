@@ -28,6 +28,6 @@ char ( &_ArraySizeHelper( T (&array)[N] ))[N];
 //What is the plugin's name (and version)?
 #ifdef DELIVERANCE
 #define PLUGIN_NAME "Deliverance"
-#elif HYDRA_ONLY
+#elif HYDRA
 #define PLUGIN_NAME "Project: HYDRA"
 #endif
