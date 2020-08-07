@@ -1751,6 +1751,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ZergGorgoleth &&  //Gorgoleth-Probing Incisors passive :: available
+									current_button->iconID == 340)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 
 							}
 						}
