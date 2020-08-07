@@ -73,11 +73,7 @@ namespace hooks {
 			bIsMorphing = false;
 
 		return bIsMorphing;
-
-	}
-
-	;
-
+	};
 
 	const u32 Func_Sub499BB0 = 0x00499BB0;
 	void replaceSpriteImages_copy(CSprite* sprite, u32 imageId, u32 imageDirection) {
@@ -89,24 +85,20 @@ namespace hooks {
 			CALL Func_Sub499BB0
 			POPAD
 		}
-	}
-
-	;
-
-
+	};
 
 	bool isProtossMorph(u16 unitId) {
-		if (unitId == UnitId::ProtossPrincipality		// morphs begin
-		|| unitId == UnitId::ProtossVicarage
-	#ifdef DELIVERANCE
-		|| unitId == UnitId::ProtossPrelacy
-	#endif
-		|| unitId == UnitId::ProtossRoboticsAuthority
-		|| unitId == UnitId::ProtossArgosy
-		|| unitId == UnitId::ProtossStarfield			// morphs end
-		|| unitId == UnitId::ProtossGateway				// original structures begin
-		|| unitId == UnitId::ProtossStargate
-		|| unitId == UnitId::ProtossRoboticsFacility	// original structures end
+		if (   unitId == UnitId::ProtossPrincipality		// morphs begin
+	    	|| unitId == UnitId::ProtossVicarage
+	    #ifdef DELIVERANCE
+	    	|| unitId == UnitId::ProtossPrelacy
+	    #endif
+	    	|| unitId == UnitId::ProtossRoboticsAuthority
+	    	|| unitId == UnitId::ProtossArgosy
+	    	|| unitId == UnitId::ProtossStarfield			// morphs end
+	    	|| unitId == UnitId::ProtossGateway				// original structures begin
+	    	|| unitId == UnitId::ProtossStargate
+	    	|| unitId == UnitId::ProtossRoboticsFacility	// original structures end
 			) {
 			return true;
 		}
@@ -124,8 +116,7 @@ namespace hooks {
 
 		buildingId = building->buildQueue[building->buildQueueSlot];
 
-		if (
-			   buildingId != UnitId::ZergHive
+		if (   buildingId != UnitId::ZergHive
 			&& buildingId != UnitId::ZergLair
 			&& buildingId != UnitId::ZergGuardianRoost
 			&& buildingId != UnitId::ZergDevourerHaunt
