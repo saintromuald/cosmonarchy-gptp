@@ -171,13 +171,13 @@ namespace hooks {
 		// TODO: Increase acceleration (Collective Integration)
 		// Collective Integration passive: gains increased movespeed based on tech level
 		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth) {
-			u32 lair_count = unitCountTable[UnitId::ZergLair].player[unit->playerId];
-			u32 hive_count = unitCountTable[UnitId::ZergHive].player[unit->playerId];
-			if (hive_count) {
+			u32 lairCountSpeed = unitCountTable[UnitId::ZergLair].player[unit->playerId];
+			u32 hiveCountSpeed = unitCountTable[UnitId::ZergHive].player[unit->playerId];
+			if (hiveCountSpeed) {
 				speed *= 6;
 
 			}
-			else if (lair_count) {
+			else if (lairCountSpeed) {
 				speed *= 4;
 			}
 		}
@@ -245,6 +245,19 @@ namespace hooks {
 		// Passenger Insurance upgrade: gains triple acceleration
 		if (unit->id == UnitId::TerranDropship && scbw::getUpgradeLevel(unit->playerId, UpgradeId::PassengerInsurance)) {
 			acceleration *= 3;
+		}
+
+		// Collective Integration passive: gains increased acceleration based on tech level
+		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth) {
+			u32 lairCountAccel = unitCountTable[UnitId::ZergLair].player[unit->playerId];
+			u32 hiveCountAccel = unitCountTable[UnitId::ZergHive].player[unit->playerId];
+			if (hiveCountAccel) {
+				acceleration *= 4;
+
+			}
+			else if (lairCountAccel) {
+				acceleration *= 2;
+			}
 		}
 		return acceleration;
 
