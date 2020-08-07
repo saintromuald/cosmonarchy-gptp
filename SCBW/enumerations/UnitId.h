@@ -429,20 +429,19 @@ enum Enum {
 /*0xF8*/	Buttons_ReplayPaused = 248,
 /*0xF9*/	Buttons_ReplayPlaying = 249,
 
-	//DELIVERANCE\\
-
+#ifdef DELIVERANCE
 //Terran-Hero
 	QuentinChase				= 16,		// Sarah Kerrigan
 	ArnoldLannigan				= 17,		// Alan Schezar
 
 //Protoss-Unit
-	ProtossAmaranth				= 61,		// Dark Templar Unit
-	ProtossEcclesiast			= 79,		// Tassadar
-	ProtossTerminus				= 99,		// Samir Duran
+	ProtossAmaranth				= 61,		// Conclave heavy skirmisher			| Dark Templar Unit
+	ProtossEcclesiast			= 79,		// Conclave ranged psion				| Tassadar
+	ProtossTerminus				= 99,		// Cimmerian heavy strider				| Samir Duran
 
 //Protoss-Building
-	ProtossPrelacy				= 223,		// Gas Orb 2
-	ProtossCrucible				= 227,		// Gas Tank 2
+	ProtossPrelacy				= 223,		// Ecclesiast production				| Gas Orb 2
+	ProtossCrucible				= 227,		// Terminus production					| Gas Tank 2
 
 //Protoss-Hero
 	Sashalok					= 75,		// Zeratul
@@ -454,6 +453,7 @@ enum Enum {
 
 //Zerg-Hero
 	Gothroki					= 151,		// Cerebrate
+#endif
  
 	//HYDRA\\
 
