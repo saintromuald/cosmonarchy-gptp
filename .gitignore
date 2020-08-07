@@ -1,6 +1,7 @@
 .vs/
 *Debug/
 *Release/
+_Build/
 GPTP.vcxproj.user
 post_build_release.bat
 post_build_debug.bat
