@@ -124,7 +124,7 @@ namespace hooks {
 	        inner = 15;
         }
         if (isChargedGorgolethBullet(bullet, weaponId)) {
-            inner = 15;
+            inner = 30;
         }
 
 
@@ -142,10 +142,10 @@ namespace hooks {
 		    medium += medium / 3;
 	    }
         if(isUnsafeCyprianBullet(bullet,weaponId)){
-	    medium = 25;
+			medium = 25;
         }      
         if (isChargedGorgolethBullet(bullet, weaponId)) {
-            medium = 25;
+            medium = 40;
         }
         if(isUnitDistanceWithin(target, bullet, medium)){
         weaponBulletShot(target, bullet, 2); // 50% damage
