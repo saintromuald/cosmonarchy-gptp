@@ -15,6 +15,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 	u32 cooldown = weapons_dat::Cooldown[weaponId];
 	u32 adrenalStacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0);
 
+	// Devourer - Corrosive Spores: lower attack speed of victim
 	if (unit->acidSporeCount != 0) {
 
 		u32 increaseAmt = cooldown / 8;
@@ -25,6 +26,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 		cooldown += increaseAmt * unit->acidSporeCount;
 	}
 	
+	// Set modifier based on Stim (increase), Ensnare (decrease), and attackspeed upgrades (increase)
 	int cooldownModifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
 							+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
 
@@ -61,16 +63,16 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 		cooldown += cooldown / 4;
 		
 	}
-	if (unit->stimTimer) {
-		cooldown += 2;		// Fixes aice-related Stimpack issue
+	if (unit->stimTimer) {		// Fixes aice-related Stimpack issue
+		cooldown += 2;
 	}
 	if (adrenalStacks) {
 		cooldown -= adrenalStacks;
 	}
-	if (cooldown > 250)		// Max cutoff
+	if (cooldown > 250)			// Max cutoff
 		cooldown = 250;
 	else 
-	if (cooldown < 3)		// Min cutoff (previously 5)
+	if (cooldown < 3)			// Min cutoff (previously 5)
 		cooldown = 3;
 	return cooldown;
 

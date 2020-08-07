@@ -47,14 +47,20 @@ namespace hooks {
 		/*
 		int speedModifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)-(unit->unusedTimer ? 1 : 0)
 		+ (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);*/
+
+		// Set additives based on status effects and movespeed upgrades
 		int increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 		int decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
+
+		// Kaiser Rampage upgrade: gains double movespeed on kill for 1 second
 		if (unit->id == UnitId::ZergUltralisk && scbw::getUpgradeLevel(unit->playerId, UpgradeId::KaiserRampage)) {
 			if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
 
 				speed += speed;
 			}
 		}
+
+		// Flingy-related code
 		if (increase > 0) {
 
 			if (unit->id == UnitId::ProtossScout || unit->id == UnitId::Hero_Mojo || unit->id == UnitId::Hero_Artanis)
@@ -67,19 +73,27 @@ namespace hooks {
 					speed = 853;
 			}
 		}
+
+
 		if (decrease > 0) {
 			for (int i = 0; i<decrease; i++) {
 				speed /= 2;
 			}
 		}
+
+		// Malediction upgrade: Apply movespeed slow to Maelstrom victims once stun wears off
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::MaledictionSlow, 0) > 1) {
 			speed /= 2;
 		}
+
+		// Reverse Thrust ability: reduce movespeed
 		if (unit->id == UnitId::TerranWyvern && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::ReverseThrust, 0) == 1) {
 			if(scbw::get_aise_value(unit,NULL,AiseId::GenericValue,ValueId::ReverseThrust,0)==1)
 				speed /= 2;
 		}
-		if (unit->id == UnitId::ZergVorvaling) {//vorvaling
+
+		// Adrenal Surge upgrade: gains triple movespeed when moving towards enemies
+		if (unit->id == UnitId::ZergVorvaling) {
 			vorvalingProc Accelerate = vorvalingProc(unit);
 			u32 range = unit->getSightRange(false) * 32;
 			scbw::UnitFinder unitFinder(unit->getX() - range,
@@ -98,9 +112,10 @@ namespace hooks {
 					//speed += (speed / 4);
 				}
 			}
-
 		}
-		else if (unit->id == UnitId::vulture) {
+
+		// Ion Propulsion upgrade: gains hover-mover status
+		else if (unit->id == UnitId::TerranVulture) {
 			auto tile = scbw::getActiveTileAt(unit->getX(), unit->getY());
 			if (tile.isUnwalkable || !tile.isWalkable) {
 				if (scbw::getUpgradeLevel(unit->playerId,UpgradeId::IonPropulsion)) {
@@ -108,6 +123,8 @@ namespace hooks {
 				}
 			}
 		}
+
+		// Somatic Implants upgrade: gains double movespeed while cloaked
 		else if (unit->id == UnitId::TerranGhost) {
 			if (
 				unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))
@@ -118,21 +135,29 @@ namespace hooks {
 				}
 			}
 		}
-		else if (unit->id == UnitId::ProtossLegionnaire) { // Legionnaire 1.5x speed from Leg Enhancements
+
+		// Leg Enhancements upgrade (Legionnaire): gains 150% movespeed
+		else if (unit->id == UnitId::ProtossLegionnaire) {
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::LegEnhancements)) {
 				speed += speed / 4;
 			}
 		}
-		else if (unit->id == UnitId::ProtossDarkTemplar) { // Dark Templar 1.5x speed from Leg Enhancements
+
+		// Leg Enhancements upgrade (Dark Templar): gains 150% movespeed
+		else if (unit->id == UnitId::ProtossDarkTemplar) {
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::LegEnhancements)) {
 				speed += speed / 4;
 			}
 		}
-		else if (unit->id == UnitId::civilian) {
+
+		// Activate Medstims ability: reduce movespeed
+		else if (unit->id == UnitId::TerranShaman) {
 			if (unit->_padding_0x132 & 0x8) {
 				speed /= 2;
 			}
 		}
+
+		// Safety Off ability: reduce movespeed
 		else if (unit->id == UnitId::TerranCyprian) { // cyprian
 			if (scbw::get_aise_value(unit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
 				speed -= (speed / 3); // safety off
@@ -142,6 +167,9 @@ namespace hooks {
 				speed += (speed / 4);
 			}
 		}
+
+		// TODO: Increase acceleration (Collective Integration)
+		// Collective Integration passive: gains increased movespeed based on tech level
 		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth) {
 			u32 lair_count = unitCountTable[UnitId::ZergLair].player[unit->playerId];
 			u32 hive_count = unitCountTable[UnitId::ZergHive].player[unit->playerId];
@@ -153,6 +181,8 @@ namespace hooks {
 				speed *= 4;
 			}
 		}
+
+		// Death March passive: gains increased movespeed based on missing health
 		else if (unit->id == UnitId::ZergInfestedTerran) {
 			u32 health = unit->hitPoints / 256;
 			u32 maxHealth = unit->getMaxHpInGame();
@@ -165,6 +195,9 @@ namespace hooks {
 			// GPTP::logger << "Speed: " << speed << '\n' << '\n';
 		}
 
+
+		// DEBUG
+		// Speed logger
 		/*
 		if (unit->id == UnitId::probe) {
 			GPTP::logger << "Speed comparison: " << baseSpeed << " - " << speed << ", Unit Id: " << unit->id << ", increase: " << increase << ", decrease: " << decrease << std::endl;
@@ -195,14 +228,21 @@ namespace hooks {
 		/*
 		int modifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
 		+ (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);*/
+
+		// 
 		int increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 		int decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
 
+		// 
 		if (increase > 0)
 			acceleration *= 2;
+
 		//else
+		//
 		if (decrease > 0)
 			acceleration = acceleration - (acceleration / 4);
+
+		// Passenger Insurance upgrade: gains triple acceleration
 		if (unit->id == UnitId::TerranDropship && scbw::getUpgradeLevel(unit->playerId, UpgradeId::PassengerInsurance)) {
 			acceleration *= 3;
 		}
