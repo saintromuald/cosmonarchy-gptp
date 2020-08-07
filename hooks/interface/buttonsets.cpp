@@ -734,9 +734,6 @@ namespace hooks {
 							if (current_button->reqVar == UnitId::firebat) {
 								if (scbw::get_aise_value(NULL, NULL, AiseId::RecvEscalationValue, (*activePortraitUnit)->playerId, UnitId::firebat) != UnitId::firebat) {
 									current_button_state = BUTTON_STATE::Invisible;
-									/*char buf[32];
-									sprintf(buf,"Escalation Current Id: %d",scbw::get_aise_value(NULL,NULL,AiseId::RecvEscalationValue,(*activePortraitUnit)->playerId,UnitId::firebat));
-									scbw::printText(buf);*/
 								}
 							}
 							else if (current_button->reqVar == 92) {
@@ -747,7 +744,7 @@ namespace hooks {
 						}
 
 						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Nuke_Available) {
-							if ((*activePortraitUnit)->id == UnitId::science_vessel) {
+							if ((*activePortraitUnit)->id == UnitId::TerranScienceVessel) {
 								if (scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::PeerReviewedDestruction) == 0) {
 									current_button_state = BUTTON_STATE::Disabled;
 								}
