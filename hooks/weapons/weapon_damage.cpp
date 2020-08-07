@@ -471,18 +471,16 @@ namespace hooks {
 							armorTotal += 512;
 						}
 					}
-					if (target->id == UnitId::battlecruiser && scbw::getUpgradeLevel(target->playerId, UpgradeId::ForeCastle)) {
+					if (target->id == UnitId::TerranBattlecruiser && scbw::getUpgradeLevel(target->playerId, UpgradeId::ForeCastle)) {
 						u16 angle = scbw::getAngle(target->position.x, target->position.y,
 							attacker->position.x, attacker->position.y);
 						u16 unit_angle = target->velocityDirection1;
-						int arc = (double)45 / 1.40625;
-						//90 degrees
+						int arc = (double)45 / 1.40625;	//90 degrees
 						int delta = unit_angle - angle;
 						delta = abs((delta + 128) % 256 - 128);
 						if (delta <= arc) {
 							armorTotal += 512;
 							shield_overlay = true;
-							//scbw::printText("Fore Castle works");
 						}
 					}
 				}
@@ -501,10 +499,8 @@ namespace hooks {
 					}
 				}
 			}
-			if (weaponId == WeaponId::YamatoGun) {
-				//scbw::printText("YamatoGunHit!");
-				if (scbw::getUpgradeLevel(attackingPlayerId, UpgradeId::UmojanBatteries)) {
-					//scbw::printText("Umojan Batteries!");
+			if (weaponId == WeaponId::YamatoGun) {				
+				if (scbw::getUpgradeLevel(attackingPlayerId, UpgradeId::UmojanBatteries)) {					
 					damage += 256 * 50;
 				}
 			}
@@ -525,7 +521,6 @@ namespace hooks {
 				damage = 128;
 			if (weaponId == WeaponId::Missiles_Unused) {
 				if (scbw::getUpgradeLevel(attackingPlayerId, 48)) {
-					//scbw::printText("Set overcharge timer");
 					target->unusedTimer = 6;
 					target->updateSpeed();
 				}
