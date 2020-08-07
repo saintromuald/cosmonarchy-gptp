@@ -156,9 +156,9 @@ namespace ValueId {
 		MineralSpecialRegenTimer=28,
 		AdrenalStacks=29,
 		AdrenalTimer=30,
-		EcclesiastStack = 100,
-		EcclesiastTimer = 101,
-		EcclesiastPlayer = 102,
+		EcclesiastStack=100,
+		EcclesiastTimer=101,
+		EcclesiastPlayer=102,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

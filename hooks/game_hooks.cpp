@@ -505,11 +505,6 @@ namespace hooks {
 
 				}
 
-				// Apply Ecclesiast - Astral Blessing stacks and timer
-				/*if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::EcclesiastTimer, 0) == 1) {
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::EcclesiastStack, 0, 0);
-				}*/
-
 				// Workers do not provide collision while harvesting, moving to harvest, or moving to return resources
 				if (unit->mainOrderId == OrderId::Harvest1
 					|| unit->mainOrderId == OrderId::HarvestGas1
