@@ -156,9 +156,21 @@ namespace ValueId {
 		MineralSpecialRegenTimer=28,
 		AdrenalStacks=29,
 		AdrenalTimer=30,
+
+		DedicationSwitch1=31,
+		DedicationSwitch2=32,
+		DedicationSwitch3=33,
+		DedicationSwitch4=34,
+		DedicationSwitch5=35,
+
+	#if DELIVERANCE
 		EcclesiastStack=100,
 		EcclesiastTimer=101,
 		EcclesiastPlayer=102,
+
+		AstralTempestStacks=103,
+		AstralTempestTimer=104,
+	#endif
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

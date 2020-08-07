@@ -56,6 +56,11 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 		int terminusUpg = scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossGroundWeapons);
 		cooldown -= cooldown * (0.1 * terminusUpg);
 	}
+
+	u32 astral_tempest_stacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AstralTempestStacks, 0);
+	if (astral_tempest_stacks) {
+		cooldown *= 1 - astral_tempest_stacks * 0.05;
+	}
 #endif
 
 	if (cooldownModifier > 0)	// Lame hardcode for attackspeed upgrades

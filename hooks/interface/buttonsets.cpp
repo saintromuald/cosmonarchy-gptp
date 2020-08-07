@@ -1590,6 +1590,19 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								if ((*activePortraitUnit)->id == UnitId::ZergBroodling && //Broodling Ensnare passive : disabled
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::Incubators) == 0 &&
+									current_button->iconID == 269) {
+									current_button_state = BUTTON_STATE::Disabled;
+								} else if ((*activePortraitUnit)->id == UnitId::ZergBroodling &&  //Broodling Ensnare passive : enabled 
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::Incubators) == 1 &&
+									current_button->iconID == 269) {
+									current_button_state = BUTTON_STATE::Enabled;
+								} else if ((*activePortraitUnit)->id == UnitId::ZergBroodling &&  //Broodling Ensnare passive : unavailable
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::Incubators) == 0 &&
+									current_button->iconID == 269) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergBroodling && //Broodling Ensnare passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, 84) == 0 &&
 									current_button->iconID == 267)
 								{
@@ -1602,7 +1615,7 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::ZergBroodling &&  //Broodling Ensnare passive : unavailable
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, 84) == 0 &&
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, 84) == 0 &&
 									current_button->iconID == 267)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
@@ -1742,19 +1755,39 @@ namespace hooks {
 								#ifdef DELIVERANCE
 								if ((*activePortraitUnit)->id == UnitId::ProtossEcclesiast && //Ecclesiast-Astral Blessing passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AstralBlessing) == 0 &&
-									current_button->iconID == 307)
+									current_button->iconID == 308)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::ProtossEcclesiast &&  //Ecclesiast-Astral Blessing passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AstralBlessing) == 1 &&
-									current_button->iconID == 307)
+									current_button->iconID == 308)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::ProtossEcclesiast &&  //Ecclesiast-Astral Blessing passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::AstralBlessing) == 0 &&
-									current_button->iconID == 307)
+									current_button->iconID == 308)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+
+								// TODO: This does not work, make it so it disables Astral Tempest research when Astral Blessing is not researched
+								if ((*activePortraitUnit)->id == UnitId::ProtossCitadelofAdun && //Ecclesiast-Astral Tempest research : disabled
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AstralBlessing) == 0 &&
+									current_button->iconID == 308)
+								{
+									current_button_state = BUTTON_STATE::Disabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ProtossCitadelofAdun &&  //Ecclesiast-Astral Tempest research : enabled 
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AstralBlessing) == 1 &&
+									current_button->iconID == 308)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								else if ((*activePortraitUnit)->id == UnitId::ProtossCitadelofAdun &&  //Ecclesiast-Astral Tempest research : unavailable
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::AstralBlessing) == 0 &&
+									current_button->iconID == 308)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
