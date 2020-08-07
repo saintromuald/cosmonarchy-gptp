@@ -80,7 +80,7 @@ public:
 			return;
 		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::ResourceContainer) {
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, 24, 0, 0);
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer,ValueId::MineralSpecialRegenTimer, 24, 0);
 		}
 	}
 };

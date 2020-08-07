@@ -381,38 +381,41 @@ namespace hooks {
 			unit->id == UnitId::mineral_field_3 || 
 			unit->id == UnitId::ResourceVespeneGeyser) {
 
-				if (unit->unusedTimer > 0) {
-					unit->unusedTimer--;
-				}
-				if (unit->_unknown_0x066 > 0) {
+			if (unit->unusedTimer > 0) {
+				unit->unusedTimer--;
+			}
+			if (unit->_unknown_0x066 > 0) {
 				unit->_unknown_0x066--;
-				}
-				else {
-				if(unit->unusedTimer>0){
-					unit->_unknown_0x066 = 72;
-				}
-				else {
-					unit->_unknown_0x066 = 36;
-				}
+			}
+			else if(unit->unusedTimer>0){
+				unit->_unknown_0x066 = 72;
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::MineralSpecialRegenTimer, 0) > 0) {
 					unit->_unknown_0x066 /= 2;
 				}
-				
-				//resource regeneration
-				bool update_image = true;
-				if (unit->building.resource.resourceAmount < 5000 && unit->id == UnitId::ResourceVespeneGeyser) {
-					unit->building.resource.resourceAmount++;
-					//scbw::printText("update vespene");
-					scbw::refreshConsole();
-				}
-				else if (unit->building.resource.resourceAmount < 1500) {
-					unit->building.resource.resourceAmount++;		
-					updateMineralPatchImage(unit);
-	
-					scbw::refreshConsole();
+			}
+			else {
+				unit->_unknown_0x066 = 36;
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::MineralSpecialRegenTimer, 0) > 0) {
+					unit->_unknown_0x066 /= 2;
 				}
 			}
+			
+				
+			//resource regeneration
+			bool update_image = true;
+			if (unit->building.resource.resourceAmount < 5000 && unit->id == UnitId::ResourceVespeneGeyser) {
+				unit->building.resource.resourceAmount++;
+				//scbw::printText("update vespene");
+				scbw::refreshConsole();
+			}
+			else if (unit->building.resource.resourceAmount < 1500) {
+				unit->building.resource.resourceAmount++;		
+				updateMineralPatchImage(unit);
+	
+				scbw::refreshConsole();
+			}
 		}
+		
 
 		//Shield regeneration
 		if (units_dat::ShieldsEnabled[unit->id] != 0) {
