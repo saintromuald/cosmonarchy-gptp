@@ -143,12 +143,14 @@ namespace hooks {
 			}
 		}
 
+	#ifdef HYDRA
 		// Leg Enhancements upgrade (Dark Templar): gains 125% movespeed
 		else if (unit->id == UnitId::ProtossDarkTemplar) {
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::LegEnhancements)) {
 				speed += speed / 4;
 			}
 		}
+	#endif
 
 		// Activate Medstims ability: reduce movespeed
 		else if (unit->id == UnitId::TerranShaman) {
