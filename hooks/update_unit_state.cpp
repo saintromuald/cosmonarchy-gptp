@@ -429,8 +429,6 @@ namespace hooks {
 				else {
 					unit->shields += 7;
 				}
-				
-
 
 				if ( (units_dat::BaseProperty[unit->id] & UnitProperty::Building) &&
 					(unit->status & UnitStatus::Completed) &&
