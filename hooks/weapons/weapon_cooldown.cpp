@@ -2,6 +2,7 @@
 #include "../../SCBW/scbwdata.h"
 #include "../../SCBW/enumerations.h"
 #include "../../SCBW/api.h"
+#include "../../MathUtils.h"
 
 
 namespace hooks {
@@ -33,7 +34,8 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 		cooldown -= cooldown / 5;
 	}
 	if (unit->id==UnitId::ZergGorgoleth && scbw::getUpgradeLevel(unit->playerId, UpgradeId::RaveningMandible)) {
-		cooldown /= 2;
+		cooldown *= 0.75;
+		cooldown *= MathUtils::map(unit->energy, (u16)100, (u16)250, 1.0, 0.5, true);
 	}
 	if (unit->id == UnitId::ZergUltralisk && scbw::getUpgradeLevel(unit->playerId, UpgradeId::KaiserRampage)) {
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
