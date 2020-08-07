@@ -46,7 +46,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 		}
 	}
 
-#if DELIVERANCE_ONLY
+#ifdef DELIVERANCE
 	// Terminus passive: gains attack speed with each upgrade
 	if (unit->id == UnitId::ProtossTerminus && scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossGroundWeapons)) {
 		int terminusUpg = scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossGroundWeapons);

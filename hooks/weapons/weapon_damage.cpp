@@ -259,7 +259,7 @@ bool irradiateTarget(CUnit* unit) {
 	return true;
 }
 
-#if DELIVERANCE_ONLY
+#ifdef DELIVERANCE
 class ecclesiastProc : public scbw::UnitFinderCallbackProcInterface {
 private:
 	int _healValue = 0;
@@ -318,7 +318,7 @@ namespace hooks {
 				scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::AdrenalTimer, 49, 0); //49 is 2 seconds (48) + 1
 			}
 
-			#if DELIVERANCE_ONLY
+			#ifdef DELIVERANCE
 			// Ecclesiast Astral Blessing
 			if (attacker != NULL && weaponId == WeaponId::EcclesiastWeapon && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::AstralBlessing)) {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0) < 10) {
@@ -527,7 +527,7 @@ namespace hooks {
 			}
 			
 			if (attacker != NULL && target != NULL) {
-			#if HYDRA_ONLY
+			#ifdef HYDRA
 				if (attacker->id == UnitId::dark_templar && attacker->playerId) {
 					bool silent_kill = false;
 					if (damage >= target->hitPoints && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::SilentStrikes)) {
@@ -659,7 +659,7 @@ namespace hooks {
 
 			if (target->hitPoints == 0) {
 
-			#if DELIVERANCE_ONLY
+			#ifdef DELIVERANCE
 				// Ecclesiast - Astral Blessing proc
 				int stacks = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0);
 				int player = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastPlayer, 0);

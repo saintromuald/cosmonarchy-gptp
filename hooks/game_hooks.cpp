@@ -338,16 +338,16 @@ namespace hooks {
 				//Write your code here
 			}
 
-			/*
-			if ((*activePortraitUnit) != NULL) {
+			// Order debugger
+/*			if ((*activePortraitUnit) != NULL) {
 				char buf[32];
 				sprintf(buf, "Current index: %d, order: %d",(*activePortraitUnit)->getIndex(),
 					(*activePortraitUnit)->mainOrderId);
 				scbw::printText(buf);
 			}*/
 
-			/*
-			char b[32];
+			// Tileset debugger
+/*			char b[32];
 			sprintf(b, "Tiles: %d %d %d %d %d", (*tileGroup + 0x2)[1].megatiles[0],
 												(*tileGroup + 0x2)[1].megatiles[1],
 				(*tileGroup + 0x2)[1].megatiles[2],
@@ -357,10 +357,11 @@ namespace hooks {
 				);
 			scbw::printText(b);*/
 
-			//Loop through all visible units in the game.
+			// Loop through all visible units in the game.
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
 				CUnitExtended::get(unit)->tick();
 
+				// Legionnaire - Blade Vortex
 				if (unit->id == UnitId::ProtossLegionnaire && scbw::getUpgradeLevel(unit->playerId,UpgradeId::BladeVortex)) {
 					//teleport jump
 					if (unit->orderTarget.unit != NULL && (unit->mainOrderId==OrderId::Attack1 || unit->mainOrderId==OrderId::AttackUnit)) {
@@ -377,6 +378,8 @@ namespace hooks {
 						}
 					}
 				}
+
+				// Tileset debugger
 				/*
 				if (unit->id == UnitId::observer) {
 					u16 tileid = scbw::getTileIdAt(unit->position.x, unit->position.y);
@@ -397,22 +400,9 @@ namespace hooks {
 					scbw::printText(buf);
 				}
 				*/
-			#if HYDRA_ONLY
-				if (unit->id==UnitId::ProtossDarkTemplar) {
-					auto timer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DarkTemplarTimer, 0);
-					if (timer == 1) {
-						for (int i = 0; i < 8; i++) {
-							if (!scbw::isAlliedTo(i, unit->playerId)) {
-								if (unit->visibilityStatus & (1 << i)) {
-									unit->visibilityStatus &= ~(1 << i);
-								}
-							}
-						}
-					}
-				}
-			#endif
+
+				// Devourer - Critical Mass
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::CorrosiveSporeDelay, 0)==1) {
-					//scbw::printText("Try");
 					int count = unit->acidSporeCount;
 					unit->acidSporeCount -= 2;
 					int range = 160;
@@ -431,6 +421,8 @@ namespace hooks {
 					}
 					unit->inflictDamage(30 * 256, NULL,-1, false, true);		
 				}
+
+				// Lurker - Seismic Spines
 				if (unit->id == UnitId::lurker && unit->sprite!=NULL && unit->mainOrderId!=OrderId::Die 
 					&& scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::LurkerETA, 0) == 1) {
 					//placeholder for seismic spines
@@ -445,6 +437,8 @@ namespace hooks {
 					unit->position = position;
 					unit->sprite->position = spr_position;
 				}
+
+				// Science Vessel - Observance ability
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ObservanceTimerDebuff, 0) == 1) {
 					auto range = 160;
 					auto observance = observanceMatch(unit);
@@ -464,6 +458,8 @@ namespace hooks {
 						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::ObservanceRend, 0, 0);
 					}
 				}
+
+				// Dark Archon - Malediction (Maelstrom)
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::MaledictionSlow, 0) == 1) {
 					u32 overlayImageId;
 					if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
@@ -479,19 +475,13 @@ namespace hooks {
 					unit->updateSpeed();
 				}
 
-			#if DELIVERANCE_ONLY
-				// Apply Ecclesiast - Astral Blessing stacks and timer
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::EcclesiastTimer, 0) == 1) {
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::EcclesiastStack, 0, 0);
-				}
-			#endif
-
 				// Apply Zergling - Adrenal Glands stacks
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::AdrenalTimer, 0) == 1) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::AdrenalStacks, 0, 0);
 
 				}
 
+				// GAME RULE
 				// Workers do not provide collision while harvesting, moving to harvest, or moving to return resources
 				if (unit->mainOrderId == OrderId::Harvest1
 					|| unit->mainOrderId == OrderId::HarvestGas1
@@ -505,10 +495,13 @@ namespace hooks {
 					}
 				}
 
+				// TODO: Cleanup
+				// Orphaned?
 				//(*unit)._dc132 |= 0x8;
 				//(*unit)._dc133 = 24;
 
-				if (unit->id == UnitId::civilian) {
+				// Shaman - Administer Medstims ability
+				if (unit->id == UnitId::TerranShaman) {
 					if (unit->_padding_0x132 & 0x8) {
 						unit->groundWeaponCooldown = 8;
 					}
@@ -528,8 +521,9 @@ namespace hooks {
 						}
 					}
 				}
-				if (unit->id == UnitId::Powerup_KhalisCrystal) //basilisk
-				{
+
+				// Basilisk - Biogenesis
+				if (unit->id == UnitId::ZergBasilisk) {
 					if (unit->status & UnitStatus::Burrowed) {
 						if (!(unit->_padding_0x132 & HydraFlags1::BasiliskBurrowed))
 						{
@@ -538,6 +532,7 @@ namespace hooks {
 						}
 					}
 					else {
+						// TODO: Cleanup
 						/*
 						if (unit->_padding_0x132 & HydraFlags1::BasiliskBurrowed) {
 							if (unit->connectedUnit != NULL) {
@@ -549,16 +544,45 @@ namespace hooks {
 											*/
 					}
 				}
-				if (unit->id == UnitId::Powerup_KhalisCrystal && unit->orderSignal & 0x20) {
+
+				// TODO: Give Basilisk unique iscript entry
+				// Basilisk - Attack animation
+				if (unit->id == UnitId::ZergBasilisk && unit->orderSignal & 0x20) {
 					unit->orderSignal &= ~0x20;
 					unit->playIscriptAnim(IscriptAnimation::Unused1);
 				}
+
+				// Lurker - Tectonic Claws animation
 				if (unit->id == UnitId::ZergLurker && unit->orderSignal & 0x80) {
 					unit->orderSignal &= ~0x80;
 					if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::TectonicClaws) == 1) {
 						unit->playIscriptAnim(IscriptAnimation::Unused3);
 					}
 				}
+
+			#ifdef HYDRA
+				// Dark Templar - Decloak on attack
+				if (unit->id == UnitId::ProtossDarkTemplar) {
+					auto timer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DarkTemplarTimer, 0);
+					if (timer == 1) {
+						for (int i = 0; i < 8; i++) {
+							if (!scbw::isAlliedTo(i, unit->playerId)) {
+								if (unit->visibilityStatus & (1 << i)) {
+									unit->visibilityStatus &= ~(1 << i);
+								}
+							}
+						}
+					}
+				}
+			#endif
+
+			#ifdef DELIVERANCE
+				// Apply Ecclesiast - Astral Blessing stacks and timer
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::EcclesiastTimer, 0) == 1) {
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::EcclesiastStack, 0, 0);
+				}
+			#endif
+
 			}
 			scbw::setInGameLoopState(false);
 		}

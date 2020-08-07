@@ -1739,7 +1739,7 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 
-								#if HYDRA_ONLY
+								#ifdef HYDRA
 								if ((*activePortraitUnit)->id == UnitId::ProtossDarkTemplar && //DarkTemplar-Leg Enhancements passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::LegEnhancements) == 0 &&
 									current_button->iconID == 307)
@@ -1760,7 +1760,7 @@ namespace hooks {
 								}
 								#endif
 
-								#if DELIVERANCE_ONLY
+								#ifdef DELIVERANCE
 								if ((*activePortraitUnit)->id == UnitId::ProtossEcclesiast && //Ecclesiast-Astral Blessing passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AstralBlessing) == 0 &&
 									current_button->iconID == 307)
