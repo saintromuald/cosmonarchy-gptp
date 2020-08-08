@@ -1481,37 +1481,37 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossScout && //Scout Thruster passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossPanoptus && //Scout Thruster passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::GraviticThrusters) == 0 &&
 									current_button->iconID == IconId::GraviticThrusters)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::ProtossScout &&  //Scout Thruster passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ProtossPanoptus &&  //Scout Thruster passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::GraviticThrusters) == 1 &&
 									current_button->iconID == IconId::GraviticThrusters)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::ProtossScout &&  //Scout Thruster passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ProtossPanoptus &&  //Scout Thruster passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::GraviticThrusters) == 0 &&
 									current_button->iconID == IconId::GraviticThrusters)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossScout && //Scout Last Orders passive : disabled
+								if ((*activePortraitUnit)->id == UnitId::ProtossPanoptus && //Scout Last Orders passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::LastOrders) == 0 &&
 									current_button->iconID == IconId::Scout)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::ProtossScout &&  //Scout Last Orders passive : enabled 
+								else if ((*activePortraitUnit)->id == UnitId::ProtossPanoptus &&  //Scout Last Orders passive : enabled 
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::LastOrders) == 1 &&
 									current_button->iconID == IconId::Scout)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								else if ((*activePortraitUnit)->id == UnitId::ProtossScout &&  //Scout Last Orders passive : unavailable
+								else if ((*activePortraitUnit)->id == UnitId::ProtossPanoptus &&  //Scout Last Orders passive : unavailable
 									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::LastOrders) == 0 &&
 									current_button->iconID == IconId::Scout)
 								{

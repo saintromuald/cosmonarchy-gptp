@@ -50,7 +50,7 @@ u32 getSightRangeHook(CUnit* unit, bool isForSpellCasting) {
 			sightRange = MAX_SIGHT_RANGE;
 		else
 		if(
-			unit->id == UnitId::ProtossScout && 
+			unit->id == UnitId::ProtossPanoptus && 
 			UpgradesSc->currentLevel[unit->playerId][UpgradeId::ApialSensors] != 0
 		)
 			sightRange = MAX_SIGHT_RANGE;

@@ -239,7 +239,7 @@ enum Enum {
 /*0x43*/	ProtossHighTemplar              = 67,
 /*0x44*/	ProtossArchon                   = 68,
 /*0x45*/	ProtossShuttle                  = 69,
-/*0x46*/	ProtossScout                    = 70,
+/*0x46*/	ProtossPanoptus                 = 70,
 /*0x47*/	ProtossArbiter                  = 71,
 /*0x48*/	ProtossCarrier                  = 72,
 /*0x49*/	ProtossInterceptor              = 73,
@@ -476,11 +476,11 @@ enum Enum {
 //Protoss-Unit
 	ProtossLegionnaire						= 74,
 	ProtossHierophant						= 76,
+	ProtossAurora							= 80,
 	ProtossClarion							= 81,
 	ProtossWarpRelay						= 90,
 	ProtossBulwark							= 93,
 	ProtossExemplar							= 94,
-	ProtossStarSovereign					= 80,
 	ProtossAugur							= 102,
 
 //Protoss-Building

@@ -63,7 +63,7 @@ namespace hooks {
 		// Flingy-related code
 		if (increase > 0) {
 
-			if (unit->id == UnitId::ProtossScout || unit->id == UnitId::Hero_Mojo || unit->id == UnitId::Hero_Artanis)
+			if (unit->id == UnitId::ProtossPanoptus || unit->id == UnitId::Hero_Mojo || unit->id == UnitId::Hero_Artanis)
 				speed = 1707;
 			else {
 				for (int i = 0; i<increase; i++) {

@@ -1231,7 +1231,7 @@ namespace DeathSoundId {
 		{ SoundId::Protoss_TEMPLAR_PTeDth00_WAV, SoundId::Protoss_TEMPLAR_PTeDth00_WAV },			//ProtossHighTemplar
 		{ SoundId::Misc_ExploLrg_wav, SoundId::Misc_ExploLrg_wav },									//ProtossArchon
 		{ SoundId::Protoss_SHUTTLE_PShDth00_WAV,  SoundId::Protoss_SHUTTLE_PShDth00_WAV }, 			//ProtossShuttle
-		{ SoundId::Protoss_Scout_PScDth00_WAV,  SoundId::Protoss_Scout_PScDth00_WAV },				//ProtossScout
+		{ SoundId::Protoss_Scout_PScDth00_WAV,  SoundId::Protoss_Scout_PScDth00_WAV },				//ProtossPanoptus
 		{ SoundId::Misc_ExploLrg_wav,  SoundId::Misc_ExploLrg_wav }, 								//ProtossArbiter
 		{ SoundId::Protoss_Carrier_PCaDth00_WAV,  SoundId::Protoss_Carrier_PCaDth01_WAV }, 			//ProtossCarrier
 		{ SoundId::Misc_ExploMed_wav,  SoundId::Misc_ExploMed_wav }, 								//ProtossInterceptor

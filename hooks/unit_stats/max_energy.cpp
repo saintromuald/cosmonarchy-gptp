@@ -16,7 +16,7 @@ u16 getUnitMaxEnergyHook(CUnit* const unit) {
 		return ENERGY_INGAME_250;
 
 	switch (unit->id) {
-		case UnitId::science_vessel:
+		case UnitId::TerranScienceVessel:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::TitanReactor))
 				return ENERGY_INGAME_250;
 			break;
@@ -24,49 +24,48 @@ u16 getUnitMaxEnergyHook(CUnit* const unit) {
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::AchernusReactor))
 				return ENERGY_INGAME_250;
 			break;
-		case UnitId::ghost:
+		case UnitId::TerranGhost:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::MoebiusReactor))
 				return ENERGY_INGAME_250;
 			break;
-		case UnitId::wraith:
+		case UnitId::TerranWraith:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::ApolloReactor))
 				return ENERGY_INGAME_250;
 			break;
-		case UnitId::battlecruiser:
+		case UnitId::TerranBattlecruiser:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::ColossusReactor))
 				return ENERGY_INGAME_250;
 			break;
-		case UnitId::queen:
+		case UnitId::ZergQueen:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::GameteMeiosis))
 				return ENERGY_INGAME_250;
 			break;
-		case UnitId::defiler:
+		case UnitId::ZergDefiler:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::MetasynapticNode))
 				return ENERGY_INGAME_250;
 			break;
-		case UnitId::high_templar:
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::KhaydarinAmulet))
+		case UnitId::ProtossHighTemplar:
+			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::Ascendancy))
 				return ENERGY_INGAME_250;
 			break;
-		case UnitId::arbiter:
+		case UnitId::ProtossArbiter:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::KhaydarinCore))
 				return ENERGY_INGAME_250;
 			break;
-		case UnitId::corsair:
+		case UnitId::ProtossCorsair:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::ArgusJewel))
 				return ENERGY_INGAME_250;
 			break;
-		case UnitId::medic:
+		case UnitId::TerranMedic:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::CaduceusReactor))
 				return ENERGY_INGAME_250;
 			break;
-		case UnitId::comsat_station:
+		case UnitId::TerranComsatStation:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::OdysseusReactor))
 				return ENERGY_INGAME_250;
 			break;
-
-		case UnitId::shield_battery:
-		case UnitId::scantid://bulwark
+		case UnitId::ProtossShieldBattery:
+		case UnitId::ProtossBulwark:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::KhaydarinGenerator))
 				return ENERGY_INGAME_250;
 			break;
@@ -74,15 +73,14 @@ u16 getUnitMaxEnergyHook(CUnit* const unit) {
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SynapticGrowth))
 				return ENERGY_INGAME_250;
 			break;
-		case UnitId::dark_archon:
+		case UnitId::ProtossDarkArchon:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::ArgusTalisman))
 				return ENERGY_INGAME_250;
 			break;
 		case UnitId::ZergGorgoleth:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::VitalEncephalon))
 				return ENERGY_INGAME_250;
-			break;
-			
+			break;			
 	}
 
 	return ENERGY_INGAME_200;

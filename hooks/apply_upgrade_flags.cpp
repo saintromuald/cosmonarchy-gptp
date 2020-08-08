@@ -51,7 +51,7 @@ void applyUpgradeFlagsToNewUnitHook(CUnit* unit) {
 		if(unit->id == UnitId::ProtossZealot)
 			bSpeedUpgrade = UpgradesSc->currentLevel[unit->playerId][ScUpgrade::LegEnhancements];
 		else
-		if(unit->id == UnitId::ProtossScout)
+		if(unit->id == UnitId::ProtossPanoptus)
 			bSpeedUpgrade = UpgradesSc->currentLevel[unit->playerId][ScUpgrade::GraviticThrusters];
 		else
 		if(unit->id == UnitId::ProtossShuttle)
@@ -144,7 +144,7 @@ void applyUpgradeFlagsToExistingUnitsHook(CUnit* unit, u8 upgradeId) {
 		}else
 		if(upgradeId == UpgradeId::GraviticThrusters) {
 			Func_UpgradeRestrictionProc = UnitUpgradeRestrictionProc;
-			unitTypeUpgradedId = UnitId::ProtossScout;
+			unitTypeUpgradedId = UnitId::ProtossPanoptus;
 		}else
 		if(upgradeId == UpgradeId::GraviticDrive) {
 			Func_UpgradeRestrictionProc = UnitUpgradeRestrictionProc;
