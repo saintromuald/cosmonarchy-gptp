@@ -644,11 +644,9 @@ namespace hooks {
 			function_004A01F0(dark_swarm_unit);
 			updateUnitStrength(dark_swarm_unit);
 
-			if(
-				dark_swarm_unit->removeTimer == 0 ||
-				dark_swarm_unit->removeTimer > 900
-			)
-				dark_swarm_unit->removeTimer = 900;	//0x0384
+			if(	dark_swarm_unit->removeTimer == 0
+			||  dark_swarm_unit->removeTimer > 900)
+					dark_swarm_unit->removeTimer = 900;	//0x0384
 
 		}
 
@@ -662,14 +660,10 @@ namespace hooks {
 		//if (target->hitPoints <= weapons_dat::DamageAmount[WeaponId::SpawnBroodlings]*256) {
 		//scbw::printText("Broodling hit");
 		bool kill_target = false;
-		int shields = 0;
-		if (units_dat::ShieldsEnabled[target->id]) {
-			shields = target->shields;
-		}
 		if (!(target->status & UnitStatus::IsHallucination)) {
 			int current_x = target->sprite->position.x - 2;
 			int current_y = target->sprite->position.y - 2;
-			if (target->hitPoints+shields <= weapons_dat::DamageAmount[WeaponId::SpawnBroodlings] * 256) {
+			if (target->getCurrentLifeInGame() <= weapons_dat::DamageAmount[WeaponId::SpawnBroodlings]) {
 				kill_target = true;
 			}
 			u32 broodlings_to_spawn = 2;
@@ -766,16 +760,7 @@ namespace hooks {
 
 			//F4A9F
 		auto dmg = weapons_dat::DamageAmount[WeaponId::SpawnBroodlings] * 256;
-		if (dmg >= shields) {
-			dmg -= target->shields;
-			target->shields = 0;
-		}
-		else {
-			target->shields -= dmg;
-			dmg = 0;
-		}
-
-		target->damageHp(dmg, NULL, -1, true);
+		target->inflictDamage(dmg, NULL, -1, true);
 		
 		
 
