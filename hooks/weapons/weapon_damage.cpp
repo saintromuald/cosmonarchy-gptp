@@ -296,6 +296,19 @@ public:
 };
 #endif
 
+void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer=1800) {
+	for (int i = 0; i < count; i++) {
+		CUnit* unit = scbw::createUnitAtPos(UnitId::ZergBroodling, playerId, x, y);
+		if (unit != nullptr) {
+			scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
+
+			if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
+				unit->removeTimer = removeTimer;
+			}
+		}
+	}
+}
+
 namespace hooks {
 
 	/// Hooks into the CUnit::damageWith() function.
@@ -565,6 +578,7 @@ namespace hooks {
 					//relic death effect
 					//scbw::printText("Check relic");
 
+
 					// Last Orders - Aurora upgrade
 					if (damage > target->getCurrentLifeInGame()) { //death
 						if (target->id == UnitId::scout && scbw::getUpgradeLevel(target->playerId, UpgradeId::LastOrders)) {
@@ -667,7 +681,8 @@ namespace hooks {
 			}
 
 			if (attacker != NULL && target != NULL) {
-				if (target->hitPoints == 0) {
+				if (target->hitPoints == 0) { // <- keep this as hitPoints, because only health decide if a unit is dead or not, shields don't matter
+
 
 					// Kaiser Rampage - Ultralisk upgrade
 					if (attacker->id == UnitId::ZergUltralisk
@@ -675,21 +690,21 @@ namespace hooks {
 						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::KaiserRampage, 1 + (2 * 24), 0);
 					}
 
-					// Incubators - Broodling upgrade
-					if (attacker->id == UnitId::ZergBroodling && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::Incubators)) {
-						for (int i = 0; i < 2; i++) {
-							CUnit* unit = scbw::createUnitAtPos(UnitId::ZergBroodling, attacker->playerId, target->position.x, target->position.y);
-							if (unit != nullptr) {
-								scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
+					// Parasite - spawning broodlings on kill
+					if (attacker->parasiteFlags) {
+						for (int player = 0; player < PLAYER_COUNT; player++) {
+							bool isParasited = attacker->parasiteFlags & (1 << player);
+							int supplyCount = units_dat::SupplyRequired[target->id] + units_dat::SupplyProvided[target->id] / 2;
 
-								u32 removeTimer = attacker->removeTimer;
-
-								if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
-									unit->removeTimer = removeTimer;
-								}
+							if (isParasited) {
+								spawnBroodlings(supplyCount, player, target->position.x, target->position.y);
 							}
 						}
+					}
 
+					// Incubators - Broodling upgrade
+					if (attacker->id == UnitId::ZergBroodling && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::Incubators)) {
+						spawnBroodlings(2, attacker->playerId, target->position.x, target->position.y, attacker->removeTimer);
 					}
 
 				#ifdef DELIVERANCE
