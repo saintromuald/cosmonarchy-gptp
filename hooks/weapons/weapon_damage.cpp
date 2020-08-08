@@ -565,6 +565,7 @@ namespace hooks {
 					//relic death effect
 					//scbw::printText("Check relic");
 
+					// Last Orders - Aurora upgrade
 					if (damage > target->getCurrentLifeInGame()) { //death
 						if (target->id == UnitId::scout && scbw::getUpgradeLevel(target->playerId, UpgradeId::LastOrders)) {
 							if (!scbw::get_aise_value(target, NULL, AiseId::IsSuicidingScout, 0, 0)) {
@@ -585,10 +586,8 @@ namespace hooks {
 								}
 							}
 						}
-
 					}
 
-					
 					if (units_dat::BaseProperty[attacker->id] & UnitProperty::Hero && 
 						scbw::get_aise_value(attacker, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1
 						&& (units_dat::BaseProperty[target->id] & UnitProperty::Organic)
