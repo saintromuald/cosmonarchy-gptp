@@ -653,11 +653,6 @@ namespace hooks {
 						scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::ObservanceRend, 1, 0);
 					}
 				}
-
-				if (attacker->id == UnitId::ultralisk && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::KaiserRampage) &&
-					damage > target->getCurrentLifeInGame()) { //ultralisk kills target
-					scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::KaiserRampage, 1 + (2 * 24), 0);
-				}
 			}
 			if (weaponId == WeaponId::SubterraneanTentacle && target != NULL) {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::Amitosis, 0) == 1) {
@@ -671,42 +666,44 @@ namespace hooks {
 					weaponId != WeaponId::Irradiate);		//Prevent Science Vessels from being continuously revealed to the irradiated target
 			}
 
-			if (target->hitPoints == 0) {
+			if (attacker != NULL && target != NULL) {
+				if (target->hitPoints == 0) {
 
-				if (attacker->id == UnitId::ZergBroodling && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::Incubators)) {
-					for (int i = 0; i < 2; i++) {
-						CUnit* unit = scbw::createUnitAtPos(UnitId::ZergBroodling, attacker->playerId, target->position.x, target->position.y);
-						if (unit != nullptr) {
-							scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
+					// Kaiser Rampage - Ultralisk upgrade
+					if (attacker->id == UnitId::ZergUltralisk
+						&& scbw::getUpgradeLevel(attacker->playerId, UpgradeId::KaiserRampage)) {
+						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::KaiserRampage, 1 + (2 * 24), 0);
+					}
 
-							u32 removeTimer = attacker->removeTimer;
-							//if (unit->status & UnitStatus::IsHallucination) {
-							//	removeTimer = 1350;	//probably old unremoved code
-							//} else if (unit->id == UnitId::ZergBroodling) {
-							//	removeTimer = 1800;	//0x708
-							//} else {
-							//	removeTimer = 0;
-							//}
+					// Incubators - Broodling upgrade
+					if (attacker->id == UnitId::ZergBroodling && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::Incubators)) {
+						for (int i = 0; i < 2; i++) {
+							CUnit* unit = scbw::createUnitAtPos(UnitId::ZergBroodling, attacker->playerId, target->position.x, target->position.y);
+							if (unit != nullptr) {
+								scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
 
-							if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
-								unit->removeTimer = removeTimer;
+								u32 removeTimer = attacker->removeTimer;
+
+								if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
+									unit->removeTimer = removeTimer;
+								}
 							}
 						}
-					}
-					
-				}
 
-			#ifdef DELIVERANCE
-				// Ecclesiast - Astral Blessing proc
-				int stacks = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0);
-				int player = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastPlayer, 0);
-				const int range = 64;
-				scbw::UnitFinder unitFinder(target->getX() - range,
-					target->getY() - range,
-					target->getX() + range,
-					target->getY() + range);
-				unitFinder.forEach(ecclesiastProc(stacks, player));
-			#endif
+					}
+
+				#ifdef DELIVERANCE
+					// Ecclesiast - Astral Blessing proc
+					int stacks = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0);
+					int player = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastPlayer, 0);
+					const int range = 64;
+					scbw::UnitFinder unitFinder(target->getX() - range,
+						target->getY() - range,
+						target->getX() + range,
+						target->getY() + range);
+					unitFinder.forEach(ecclesiastProc(stacks, player));
+				#endif
+				}
 			}
 
 			// Reduce shields (finally)
