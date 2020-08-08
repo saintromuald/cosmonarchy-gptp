@@ -395,8 +395,10 @@ void CUnit::damageWith(s32 damage, u8 weaponId, CUnit* attacker,
 void CUnit::inflictDamage(s32 dmg, CUnit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, int direction) {
 	auto damage = dmg;
 	s32 shieldReduceAmount = 0;
-	shieldReduceAmount = std::min(damage, this->shields);
-	damage -= shieldReduceAmount;
+	if (units_dat::ShieldsEnabled[this->id]) {
+		shieldReduceAmount = std::min(damage, this->shields);
+		damage -= shieldReduceAmount;
+	}
 	if (shieldReduceAmount == 0 && damage < 128)
 		damage = 128;
 	if (shieldReduceAmount != 0) {
