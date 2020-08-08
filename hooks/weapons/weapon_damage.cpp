@@ -286,17 +286,11 @@ public:
 		if (units_dat::ShieldsEnabled[unit->id]) { // Shield Heal
 			unit->shields = std::min(unit->shields + healAmount, units_dat::MaxShieldPoints[unit->id] * 256);
 		}
-		scbw::printText("a");
 		if (astral_tempest_researched) { // Astral Tempest Buff
 			if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AstralTempestStacks, 0) < _stacks) {
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::AstralTempestStacks, _stacks, 0);
 			}
 			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::AstralTempestTimer, 49, 0);
-
-			scbw::printText("b");
-			char buf[32];
-			sprintf(buf, "%i", scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AstralTempestStacks, 0));
-			scbw::printText(buf);
 		}
 	}
 };
