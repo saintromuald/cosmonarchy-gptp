@@ -273,25 +273,30 @@ public:
 
 	void proc(CUnit* unit) {
 		bool astral_tempest_researched = scbw::getUpgradeLevel(unit->playerId, UpgradeId::AstralTempest) != 0;
-		if (!units_dat::ShieldsEnabled[unit->id] && !astral_tempest_researched) return;
-		if (_playerID != unit->playerId && !scbw::isAlliedTo(_playerID, unit->playerId)) return;
-		if (astral_tempest_researched) {
-			imgul(unit->sprite, 1520, 0, 0, 0);
-		} if (unit->shields < units_dat::MaxShieldPoints[unit->id] * 256) {
+		if (_playerID != unit->playerId && !scbw::isAlliedTo(_playerID, unit->playerId)) return; // Ally Check
+		if (astral_tempest_researched) { // Astral Tempest Check
+			//imgul(unit->sprite, 1520, 0, 0, 0);
 			imgul(unit->sprite, 425, 0, 0, 0);
-		} else {
+		} else if (units_dat::ShieldsEnabled[unit->id] && unit->shields < units_dat::MaxShieldPoints[unit->id] * 256) { // Shield Check for default behavior
+			imgul(unit->sprite, 425, 0, 0, 0);
+		} else { // Return if both checks failed
 			return;
 		}
-		scbw::printText("c");
 		int healAmount = (5 * (_stacks + 1)) * 256;
-		unit->shields = std::min(unit->shields + healAmount, units_dat::MaxShieldPoints[unit->id] * 256);
-		if (astral_tempest_researched) {
-			scbw::printText("d");
+		if (units_dat::ShieldsEnabled[unit->id]) { // Shield Heal
+			unit->shields = std::min(unit->shields + healAmount, units_dat::MaxShieldPoints[unit->id] * 256);
+		}
+		scbw::printText("a");
+		if (astral_tempest_researched) { // Astral Tempest Buff
 			if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AstralTempestStacks, 0) < _stacks) {
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::AstralTempestStacks, _stacks, 0);
-				scbw::printText("e");
 			}
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::AstralTempestTimer, _stacks, 49);
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::AstralTempestTimer, 49, 0);
+
+			scbw::printText("b");
+			char buf[32];
+			sprintf(buf, "%i", scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AstralTempestStacks, 0));
+			scbw::printText(buf);
 		}
 	}
 };

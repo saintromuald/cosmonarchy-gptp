@@ -269,6 +269,7 @@ namespace hooks {
 				acceleration *= 2;
 			}
 		}
+
 		return acceleration;
 
 
