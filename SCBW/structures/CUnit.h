@@ -52,7 +52,7 @@ struct CUnit: public CUnitLayout {
   /// Returns the maximum HP amount displayed in-game. This is equal to
   /// units_dat::MaxHitPoints[unit->id] >> 8 (minimum value is 1).
   u32 getMaxHpInGame() const;
-  u32 getMaxHpInGameRaw() const;
+  u32 getMaxHpRaw() const;
   
   /// Returns the maximum range of a weapon in pixels. The weapon is assumed to
   /// be attached to this unit for calculating upgrade effects.

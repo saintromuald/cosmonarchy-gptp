@@ -112,18 +112,9 @@ u32 CUnit::getMaxHpInGame() const {
 		maxHp = maxHp >> 8;
 	return maxHp;
 }
-u32 CUnit::getMaxHpInGameRaw() const {
+u32 CUnit::getMaxHpRaw() const {
 	assert(this);
-	u32 maxHp = units_dat::MaxHitPoints[this->id];
-	/*if (this->id == UnitId::firebat && scbw::getUpgradeLevel(playerId,UpgradeId::Heatshield)) {
-	maxHp += 15 * 256;
-	}*/
-	if (maxHp == 0) {
-		maxHp = this->getCurrentHpInGame();
-		if (maxHp == 0)
-			maxHp = 256;
-	}
-	return maxHp;
+	return units_dat::MaxHitPoints[this->id];
 }
 
 
