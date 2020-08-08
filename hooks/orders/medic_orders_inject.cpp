@@ -111,6 +111,28 @@ namespace {
 			RETN
 		}
 	}
+	void __declspec(naked) doMedicHeal_Wrapper() {
+		static CUnit* medic;
+		static CUnit* target;
+		static u32 result;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV medic,EAX
+			MOV EAX,[EBP+0x08]
+			MOV target,EAX
+			PUSHAD
+		}
+		result = hooks::doMedicHeal_Func(medic, target);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+
+	}
 }//unnamed namespace
 
 namespace hooks {
@@ -121,6 +143,7 @@ void injectMedicOrdersHooks() {
 	jmpPatch(orders_MedicWrapper,			0x00463900, 1);
 	jmpPatch(orders_MedicHeal1Wrapper,		0x00464180, 1);
 	jmpPatch(AI_AcquireHealTarget_Wrapper,	0x00463530, 1);
+//	jmpPatch(doMedicHeal_Wrapper, 0x00463C40, 1);
 }
 
 } //hooks

@@ -1,5 +1,6 @@
 #include "medic_orders.h"
 #include <SCBW/api.h>
+#include "hooks/byte_operations_utils.h"
 
 //helper functions def
 
@@ -203,6 +204,46 @@ void orders_Medic(CUnit* unit) {
 //in base_orders/stopholdpos_orders.cpp
 
 ;
+
+
+u32 doMedicHeal_Func(CUnit* medic, CUnit* target) {
+	auto v3 = medic;
+	auto result = medic->canUseTech(TechId::Healing, medic->playerId);
+	if (result)
+	{
+		auto v4 = target;
+		if (target && AI_OrderHeal(v3, target))
+		{
+			if (!target->isBeingHealed)
+				goto LABEL_7;
+			auto v5 = MedicHeal_TargetAcquire(v3);
+			auto v6 = v5;
+			if (v5)
+			{
+				unitOrderMoveToTargetUnit(v3, v5);
+				moveToTarget(v6, v3);
+				v4 = v6	;
+			LABEL_7:
+				if (!medic->isTargetWithinMinRange(v4, 30))
+					return 3;
+				auto v7 = units_dat::MaxHitPoints[target->hitPoints] - target->hitPoints;
+				if (v7 > 200)
+					v7 = 200;
+				auto v8 = v7 >> 1;
+				if (medic->hasEnergy(v7 >> 1))
+					return 2;
+				medic->spendUnitEnergy(v8);
+				target->setHp(target->hitPoints + v7);
+				result = 1;
+				target->isBeingHealed = 1;
+				return result;
+			}
+		}
+		result = 0;
+	}
+	return result;			
+}
+
 
 void orders_MedicHeal1(CUnit* unit) {
 
