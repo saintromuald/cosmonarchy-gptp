@@ -223,17 +223,17 @@ public:
 
 class lastordersProc2 : public scbw::UnitFinderCallbackMatchInterface {
 
-	CUnit* scout;
+	CUnit* martyr;
 
 public:
 	//Check if @p unit is a suitable target for the @p spiderMine.
 	bool match(CUnit* target) {
 
 		//Don't attack friendly / allied units
-		if (target->playerId == scout->playerId) {
+		if (target->playerId == martyr->playerId) {
 			return false;
 		}
-		if (scbw::isAlliedTo(target->playerId, scout->playerId)) {
+		if (scbw::isAlliedTo(target->playerId, martyr->playerId)) {
 			return false;
 		}
 		if (target->status & UnitStatus::Invincible) {
@@ -247,7 +247,7 @@ public:
 	}
 
 	//Constructor
-	lastordersProc2(CUnit* scout) : scout(scout) {}
+	lastordersProc2(CUnit* martyr) : martyr(martyr) {}
 };
 
 
@@ -561,11 +561,11 @@ namespace hooks {
 						hooks::IrradiateHit(attacker, target, attacker->playerId);
 					}
 				}
-				if (damage > target->hitPoints) {
+				if (damage > target->getCurrentLifeInGame()) {
 					//relic death effect
 					//scbw::printText("Check relic");
 
-					if (damage > target->hitPoints) {//death
+					if (damage > target->getCurrentLifeInGame()) { //death
 						if (target->id == UnitId::scout && scbw::getUpgradeLevel(target->playerId, UpgradeId::LastOrders)) {
 							if (!scbw::get_aise_value(target, NULL, AiseId::IsSuicidingScout, 0, 0)) {
 								scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetLastOrders, 0, 0, 0);
@@ -576,7 +576,7 @@ namespace hooks {
 									target->getY() + 288);
 								CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
 								if (nearest != NULL) {
-									//								scbw::printText("Target found");
+									//scbw::printText("Target found");
 									damage = 0;
 									target->setHp(50 * 256);
 									target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
@@ -654,10 +654,9 @@ namespace hooks {
 						scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::ObservanceRend, 1, 0);
 					}
 				}
-				// TODO: This might not work properly, if a unit has shields it may still satisfy the condition, when target unit would still be alive
+
 				if (attacker->id == UnitId::ultralisk && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::KaiserRampage) &&
-					damage >= target->hitPoints) {
-					//ultralisk kills target
+					damage > target->getCurrentLifeInGame()) { //ultralisk kills target
 					scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::KaiserRampage, 1 + (2 * 24), 0);
 				}
 			}
