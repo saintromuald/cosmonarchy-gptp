@@ -834,7 +834,7 @@ CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* attacker) 
 	CUnit* unit;
 	pos.x = x;
 	pos.y = y;
-	fixTargetLocation(&pos, UnitId::ZergBroodling);
+	fixTargetLocation(&pos, unitId);
 	unit = CreateUnit(unitId, pos.x, pos.y, playerId);
 	if (unit == NULL) {
 		displayLastNetErrForPlayer(attacker->playerId);
