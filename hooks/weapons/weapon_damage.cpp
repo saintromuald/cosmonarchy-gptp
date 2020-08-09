@@ -308,6 +308,11 @@ void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer=1800
 	}
 }
 
+int getBroodlingCountFromSupply(CUnit* unit) {
+	if (units_dat::GroupFlags[unit->id].isBuilding) return 0;
+	return units_dat::SupplyRequired[unit->id] + units_dat::SupplyProvided[unit->id] / 2;
+}
+
 namespace hooks {
 
 	/// Hooks into the CUnit::damageWith() function.
@@ -686,18 +691,20 @@ namespace hooks {
 						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::KaiserRampage, 1 + (2 * 24), 0);
 					}
 
-					if (scbw::getUpgradeLevel(attacker->playerId, UpgradeId::Incubators)) {
-						int supplyCount = units_dat::SupplyRequired[target->id] + units_dat::SupplyProvided[target->id] / 2;
-						// Parasite - spawning broodlings on kill
-						if (attacker->parasiteFlags) {
-							for (int player = 0; player < PLAYER_COUNT; player++) {
-								if (attacker->parasiteFlags & (1 << player)) {
-									spawnBroodlings(supplyCount, player, target->position.x, target->position.y); // no creator should be specified, attacker may be an enemy unit
-								}
+					
+					// Parasite - spawning broodlings on kill
+					if (attacker->parasiteFlags) {
+						int supplyCount = getBroodlingCountFromSupply(target);
+						for (int player = 0; player < PLAYER_COUNT; player++) {
+							if (attacker->parasiteFlags & (1 << player) && scbw::getUpgradeLevel(player, UpgradeId::Incubators)) {
+								spawnBroodlings(supplyCount, player, target->position.x, target->position.y); // no creator should be specified, attacker may be an enemy unit
 							}
 						}
+					}
 
-						// Incubators - Broodling upgrade
+					// Incubators - Broodling upgrade
+					if (scbw::getUpgradeLevel(attacker->playerId, UpgradeId::Incubators)) {
+						int supplyCount = getBroodlingCountFromSupply(target);
 						if (attacker->id == UnitId::ZergBroodling) {
 							spawnBroodlings(supplyCount, attacker->playerId, target->position.x, target->position.y, attacker->removeTimer, attacker);
 						}
