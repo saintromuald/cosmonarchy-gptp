@@ -48,7 +48,7 @@ namespace {
 	void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker,Box16* coords);				//0x004E8280
 	void IterateUnitsAtLocationTargetProc_Maelstrom(CUnit* attacker,Box16* coords);				//0x004E8280
 	void IterateUnitsAtLocationTargetProc_StasisField(CUnit* attacker,Box16* coords);			//0x004E8280
-	void createEnsnareOverlay(int a1);															//0x004F45E0
+	void createEnsnareOverlay(CUnit* a1);															//0x004F45E0
 
 } //unnamed namespace
 
@@ -612,20 +612,20 @@ namespace hooks {
 		coords.left = x - 64;
 		coords.bottom = y + 64;
 		
-		ensnareProc(attacker,&coords);
+		
+		IterateUnitsAtLocationTargetProc_Ensnare(attacker, &coords);
 
 	} //void EnsnareHit(CUnit* attacker, int x, int y, CBullet* bullet)
 		
 	;
 
-	int ensnareProc(CUnit* a1, Box16* a2)
+	int ensnareProc(CUnit* target, CUnit* attacker)
 	{
-		int v2; // eax
-
-		if (!(units_dat::GroupFlags[a1->id].isBuilding)) {
-			v2 = *(int*)(a1 + 220);
-			if (!(v2 & 0x4000000) && !(v2 & 0x10))
-				createEnsnareOverlay((int)a1);
+		if (target != attacker && !(units_dat::BaseProperty[target->id] & UnitProperty::Building))
+		{
+			auto v2 = target->status;
+			if (!(target->status & UnitStatus::Invincible) && !(target->status & UnitStatus::Burrowed))
+				createEnsnareOverlay(target);
 		}
 		return 0;
 	}
@@ -1348,7 +1348,7 @@ namespace {
 	}
 
 	const u32 Func_createEnsnareOverlay = 0x004F45E0;
-	void createEnsnareOverlay(int a1) {
+	void createEnsnareOverlay(CUnit* a1) {
 		__asm {
 			PUSHAD
 			MOV EDI, a1

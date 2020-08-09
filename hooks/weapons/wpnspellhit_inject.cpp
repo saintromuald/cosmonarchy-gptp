@@ -576,20 +576,21 @@ namespace {
 
 	int __declspec(naked) ensnareProcWrapper() {
 
-		static CUnit* a1;
-		static Box16* a2;
+		static CUnit* target;
+		static CUnit* attacker;
 		static int result;
 
 		__asm {
-			PUSH a1
-			PUSH a2
+			MOV target,ECX
+			MOV attacker,EDX
+			PUSHAD
 		}
-		hooks::ensnareProc(a1, a2);
+		hooks::ensnareProc(target, attacker);
 		__asm {
 			POPAD
-			MOV result, EAX
+			MOV EAX, result
+			RETN
 		}
-		//return result;
 	}
 
 }//unnamed namespace
