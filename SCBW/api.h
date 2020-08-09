@@ -227,6 +227,9 @@ void refreshUnitAfterMove(CUnit* unit);
 /// @name Utility functions
 //////////////////////////////////////////////////////////////// @{
 
+
+void createBullet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
+
 /// Attempts to create a unit at the specified coordinates. If the unit cannot
 /// be created (e.g. there is no space), this function displays an error message
 /// and returns NULL instead. This function is the same one used for creating

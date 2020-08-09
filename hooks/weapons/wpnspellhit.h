@@ -22,6 +22,7 @@ namespace hooks {
 	void MindControlHit(CUnit* attacker, CUnit* target);							//004F6910
 	void StasisFieldHit(CUnit* attacker, int x, int y, CBullet* bullet);			//004F6A80
 	void DisruptionWebHit(u32 attackingPlayerId, int x, int y, CBullet* bullet);	//004F6AF0
+	int ensnareProc(CUnit* a1, Box16* a2);											//004F46C0
 
 	//The injector function for this hook module.
 	void injectWpnSpellHitHooks();
