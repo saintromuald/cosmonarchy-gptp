@@ -231,6 +231,28 @@ void playSound(u32 sfxId, CUnit* sourceUnit) {
 
 }
 
+void printFormattedText(const char* format, ...) {
+	char buf[256];
+
+	va_list _ArgList;
+	__crt_va_start(_ArgList, format);
+	vsprintf(buf, format, _ArgList);
+	__crt_va_end(_ArgList);
+
+	printText(buf);
+}
+
+void printFormattedColoredText(const char* format, u32 color, ...) {
+	char buf[256];
+
+	va_list _ArgList;
+	__crt_va_start(_ArgList, format);
+	vsprintf(buf, format, _ArgList);
+	__crt_va_end(_ArgList);
+
+	printText(buf, color);
+}
+
 const u32 Func_PrintText = 0x0048CD30;
 void printText(const char* text, u32 color) {
 

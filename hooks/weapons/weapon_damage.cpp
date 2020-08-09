@@ -657,7 +657,7 @@ namespace hooks {
 
 				}
 			}
-			if (attacker != NULL && target != NULL) {
+			if (attacker != NULL) {
 				if (weaponId == WeaponId::ObservanceWeapon) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::ObservanceTimerDebuff, 1 + (5 * 24), 0);
 					int rend = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0);
@@ -673,14 +673,8 @@ namespace hooks {
 				}
 			}
 
-			// Deal Damage, except for Independent damage, which always deals 0
-			if (weapons_dat::DamageType[weaponId] != DamageType::Independent) {
-				target->damageHp(damage, attacker, attackingPlayerId, weaponId != WeaponId::Irradiate);
-				// Prevent Science Vessels from being continuously revealed to the irradiated target
-			}
-
-			if (attacker != NULL && target != NULL) {
-				if (target->hitPoints == 0) { // <- keep this as hitPoints, because only health decide if a unit is dead or not, shields don't matter
+			if (attacker != NULL) { // looks like target will always be alive if this function was called?
+				if (damage >= target->hitPoints) { // <- keep this as hitPoints, because the damage is already calculated to include armor, shields and damage factor calculations
 
 
 					// Kaiser Rampage - Ultralisk upgrade
@@ -689,13 +683,13 @@ namespace hooks {
 						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::KaiserRampage, 1 + (2 * 24), 0);
 					}
 
-
 					// Parasite - spawning broodlings on kill
-					if (attacker->parasiteFlags) {
+					if (attacker->parasiteFlags || (attacker->interceptor.parent != NULL && attacker->interceptor.parent->parasiteFlags)) {
 						int supplyCount = getBroodlingCountFromSupply(target);
 						for (int player = 0; player < PLAYER_COUNT; player++) {
-							if (attacker->parasiteFlags & (1 << player) /*&& scbw::getUpgradeLevel(player, UpgradeId::Incubators)*/) {
-								spawnBroodlings(supplyCount, player, target->position.x, target->position.y); // no creator should be specified, attacker may be an enemy unit
+							if ((attacker->parasiteFlags & (1 << player)
+								|| (attacker->interceptor.parent != NULL && attacker->interceptor.parent->parasiteFlags & (1 << player)))) {
+								spawnBroodlings(supplyCount, player, target->position.x, target->position.y); // no creator should be specified, because attacker may be an enemy unit
 							}
 						}
 					}
@@ -720,6 +714,12 @@ namespace hooks {
 					unitFinder.forEach(ecclesiastProc(stacks, player));
 				#endif
 				}
+			}
+
+			// Deal Damage, except for Independent damage, which always deals 0
+			if (weapons_dat::DamageType[weaponId] != DamageType::Independent && target->defensiveMatrixHp == 0) {
+				target->damageHp(damage, attacker, attackingPlayerId, weaponId != WeaponId::Irradiate);
+				// Prevent Science Vessels from being continuously revealed to the irradiated target
 			}
 
 			// Reduce shields (finally)

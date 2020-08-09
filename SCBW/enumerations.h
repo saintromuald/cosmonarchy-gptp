@@ -274,7 +274,7 @@ enum Enum {
   None                   = 0,
   BlackSheepWall         = 1 <<  0,		/*0x00000001*/
   OperationCwal          = 1 <<  1,		/*0x00000002*/
-  PowerOverwhelming       = 1 <<  2,	/*0x00000004*/
+  PowerOverwhelming      = 1 <<  2,		/*0x00000004*/
   SomethingForNothing    = 1 <<  3,		/*0x00000008*/
   ShowMeTheMoney         = 1 <<  4,		/*0x00000010*/
   GameOverMan            = 1 <<  6,		/*0x00000040*/
