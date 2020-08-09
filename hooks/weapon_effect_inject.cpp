@@ -119,7 +119,7 @@ namespace {
 			MOV bullet, EBX
 			MOV weaponId, ECX
 		}
-		hooks::parasite(bullet,weaponId);
+		hooks::parasite(bullet, weaponId);
 		__asm {
 			POP EDI
 			POP ESI
@@ -144,7 +144,7 @@ namespace {
    enemySplashWrapper,     //  3 - Splash (Enemy)
    (void*)0x0048B910,      //  4 - Lockdown
    (void*)0x0048B8B9,      //  5 - Nuclear Missile
-   (void*)0x0048B969,      //  6 - Parasite
+   parasiteWrapper,        //  6 - Parasite
    (void*)0x0048B9C8,      //  7 - Broodlings
    (void*)0x0048BA0F,      //  8 - EMP Shockwave
    (void*)0x0048BA67,      //  9 - Irradiate

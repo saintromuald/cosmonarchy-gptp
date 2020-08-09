@@ -302,9 +302,31 @@ bool isUnsafeCyprianBullet(CBullet* bullet, u32 weaponId){
 	weaponBulletShot(bullet->attackTarget.unit, bullet, 1);
   }
 
+  class parasiteProc : public scbw::UnitFinderCallbackProcInterface {
+  private:
+      u8 _playerID;
+  public:
+      parasiteProc(u8 playerID) {
+          _playerID = playerID;
+      }
+
+      void proc(CUnit* unit) {
+          unit->parasiteFlags |= 1 << _playerID;
+          constexpr int defaultParasiteTimer = (24 * 10) + 1;
+          if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ParasiteTimer, 0) < defaultParasiteTimer) { // <- Prevent overwriting bigger timers
+              scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::ParasiteTimer, defaultParasiteTimer, 0);
+          }
+      }
+  };
+
   void parasite(CBullet* bullet, u32 weaponId) {
 	  if (bullet->attackTarget.unit == NULL || bullet->sourceUnit == NULL) return;
-
+      constexpr int radius = 96;
+      int left = bullet->position.x - radius / 2;
+      int right = bullet->position.x + radius / 2;
+      int top = bullet->position.y - radius / 2;
+      int bottom = bullet->position.y + radius / 2;
+      scbw::UnitFinder(left, top, right, bottom).forEach(parasiteProc(bullet->sourceUnit->playerId));
   }
   
 

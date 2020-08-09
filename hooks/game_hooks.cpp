@@ -576,6 +576,9 @@ namespace hooks {
 				}
 			#endif
 
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ParasiteTimer, 0) == 1) {
+					unit->parasiteFlags = 0;
+				}
 			#ifdef DELIVERANCE
 				// Apply Ecclesiast - Astral Blessing stacks and timer
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::EcclesiastTimer, 0) == 1) {

@@ -21,6 +21,6 @@ namespace hooks {
 	// HYDRA-specific
 	bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId);
 	bool isUnsafeCyprianBullet(CBullet* bullet, u32 weaponId);
-	void parasite(CBullet bullet, u32 weaponId);
+	void parasite(CBullet* bullet, u32 weaponId);
 
 } //hooks
