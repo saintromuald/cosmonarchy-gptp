@@ -267,12 +267,6 @@ public:
 		}
 		if (unit == shaman) {
 			return;
-		}/*
-		if (unit->isBeingHealed) {
-			return;
-		}*/
-		if (unit->parasiteFlags!=0) {
-			return;
 		}
 
 		u32 dist = scbw::getDistanceFast(unit->position.x, unit->position.y,

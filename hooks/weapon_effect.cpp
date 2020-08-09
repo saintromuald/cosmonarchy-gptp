@@ -342,12 +342,13 @@ namespace hooks {
           constexpr int defaultParasiteTimer = (24 * 10) + 1;
           if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ParasiteTimer, 0) < defaultParasiteTimer) { // <- Prevent overwriting bigger timers
               scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::ParasiteTimer, defaultParasiteTimer, 0);
+			  (unit->sprite)->createTopOverlay(1031, 0, 0, 0);
           }
       }
   };
 
   void parasite(CBullet* bullet, u32 weaponId) {
-	  if (bullet->attackTarget.unit == NULL || bullet->sourceUnit == NULL) return;
+	  if (bullet->sourceUnit == NULL || units_dat::BaseProperty[bullet->attackTarget.unit->id] & UnitProperty::Building) return;
       constexpr int radius = 96;
       int left = bullet->position.x - radius / 2;
       int right = bullet->position.x + radius / 2;

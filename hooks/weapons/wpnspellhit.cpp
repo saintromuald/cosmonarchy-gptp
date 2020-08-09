@@ -577,9 +577,7 @@ namespace hooks {
 				if(power > diff ) {
 					attacker->energy = energyMax;
 					power -= diff;
-					if (attacker->parasiteFlags == 0) {
-						attacker->setHp(attacker->hitPoints + power);
-					}
+					attacker->setHp(attacker->hitPoints + power);
 				}
 				else {
 					attacker->energy += power;
