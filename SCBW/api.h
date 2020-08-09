@@ -32,6 +32,8 @@ void playSound(u32 sfxId, CUnit* sourceUnit = NULL);
 
 /// Prints text to the screen, optionally using the given text color.
 void printText(const char* text, u32 color = GameTextColor::White);
+void printFormattedText(const char* format, ...);
+void printFormattedColoredText(const char* format, u32 color, ...);
 
 /// Displays an error message and plays a sound for the player.
 ///
