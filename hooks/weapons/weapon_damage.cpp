@@ -694,9 +694,7 @@ namespace hooks {
 						// Parasite - spawning broodlings on kill
 						if (attacker->parasiteFlags) {
 							for (int player = 0; player < PLAYER_COUNT; player++) {
-								bool isParasited = attacker->parasiteFlags & (1 << player);
-
-								if (isParasited) {
+								if (attacker->parasiteFlags & (1 << player)) {
 									spawnBroodlings(supplyCount, player, target->position.x, target->position.y); // no creator should be specified, attacker may be an enemy unit
 								}
 							}
