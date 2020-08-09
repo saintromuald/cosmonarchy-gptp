@@ -696,7 +696,7 @@ namespace hooks {
 					if (attacker->parasiteFlags) {
 						int supplyCount = getBroodlingCountFromSupply(target);
 						for (int player = 0; player < PLAYER_COUNT; player++) {
-							if (attacker->parasiteFlags & (1 << player) && scbw::getUpgradeLevel(player, UpgradeId::Incubators)) {
+							if (attacker->parasiteFlags & (1 << player) /*&& scbw::getUpgradeLevel(player, UpgradeId::Incubators)*/) {
 								spawnBroodlings(supplyCount, player, target->position.x, target->position.y); // no creator should be specified, attacker may be an enemy unit
 							}
 						}
