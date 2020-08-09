@@ -264,6 +264,7 @@ namespace hooks {
 
 	;
 
+	// TODO: Cleanup
 	//was called "Shot" instead of "Hit", changed due to the context
 /*
 	CUnit* swarmsearch(CUnit* hitunit){
