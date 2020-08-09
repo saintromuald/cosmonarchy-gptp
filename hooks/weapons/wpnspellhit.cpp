@@ -623,7 +623,6 @@ namespace hooks {
 	{
 		if (target != attacker && !(units_dat::BaseProperty[target->id] & UnitProperty::Building))
 		{
-			auto v2 = target->status;
 			if (!(target->status & UnitStatus::Invincible) && !(target->status & UnitStatus::Burrowed))
 				createEnsnareOverlay(target);
 		}
