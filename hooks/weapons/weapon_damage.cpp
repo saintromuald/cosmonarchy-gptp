@@ -578,10 +578,10 @@ namespace hooks {
 						hooks::IrradiateHit(attacker, target, attacker->playerId);
 					}
 				}
+
 				if (damage > target->getCurrentLifeInGame()) {
 					//relic death effect
 					//scbw::printText("Check relic");
-
 
 					// Last Orders - Aurora upgrade
 					if (target->id == UnitId::ProtossAurora && scbw::getUpgradeLevel(target->playerId, UpgradeId::LastOrders)) {
@@ -601,7 +601,6 @@ namespace hooks {
 							}
 						}
 					}
-					
 
 					if (units_dat::BaseProperty[attacker->id] & UnitProperty::Hero && 
 						scbw::get_aise_value(attacker, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1
@@ -609,6 +608,8 @@ namespace hooks {
 						&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
 
 						scbw::sendGPTP_aise_cmd(attacker, target, GptpId::BlindJudgeTimedEffect, target->energy, 0, 0);
+
+						// TODO: Cleanup
 						/*
 						u32 energy = target->energy;
 						Point16 pos = target->position;
