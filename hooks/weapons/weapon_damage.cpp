@@ -253,7 +253,7 @@ public:
 
 bool irradiateTarget(CUnit* unit) {
 
-	if (unit->id == UnitId::larva || unit->id == UnitId::egg || unit->id == UnitId::lurker_egg)
+	if (unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergLurkerEgg)
 		return false;
 
 	return true;
