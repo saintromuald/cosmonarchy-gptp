@@ -773,6 +773,89 @@ CUnit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y) {
 	return unit;
 }
 
+const u32 Func_fixTargetLocation = 0x00401FA0;
+void fixTargetLocation(Point16* coords, u32 unitId) {
+
+	__asm {
+		PUSHAD
+		MOV EAX, unitId
+		MOV EDX, coords
+		CALL Func_fixTargetLocation
+		POPAD
+	}
+}
+
+const u32 Func_CreateUnit = 0x004A09D0;
+CUnit* CreateUnit(u32 unitId, int x, int y, u32 playerId) {
+	static CUnit* unit_created;
+	__asm {
+		PUSHAD
+		PUSH playerId
+		PUSH y
+		MOV ECX, unitId
+		MOV EAX, x
+		CALL Func_CreateUnit
+		MOV unit_created, EAX
+		POPAD
+	}
+	return unit_created;
+}
+const u32 Func_Sub4A01F0 = 0x004A01F0;
+void FinishUnit_Pre(CUnit* unit) {
+
+	__asm {
+		PUSHAD
+		MOV EAX, unit
+		CALL Func_Sub4A01F0
+		POPAD
+	}
+}
+const u32 Func_UpdateUnitStrength = 0x0049FA40;
+void updateUnitStrength(CUnit* unit) {
+	__asm {
+		PUSHAD
+		MOV EAX, unit
+		CALL Func_UpdateUnitStrength
+		POPAD
+	}
+}
+const u32 Func_AI_TrainingUnit = 0x004A2830;
+void InheritAI2(CUnit* unit_creator, CUnit* created_unit) {
+	__asm {
+		PUSHAD
+		MOV EAX, created_unit
+		MOV ECX, unit_creator
+		CALL Func_AI_TrainingUnit
+		POPAD
+	}
+};
+CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* attacker) {
+	Point16 pos;
+	CUnit* unit;
+	pos.x = x;
+	pos.y = y;
+	fixTargetLocation(&pos, UnitId::ZergBroodling);
+	unit = CreateUnit(unitId, pos.x, pos.y, playerId);
+	if (unit == NULL) {
+		displayLastNetErrForPlayer(attacker->playerId);
+	}
+	else {
+		FinishUnit_Pre(unit);
+		updateUnitStrength(unit);
+		if (attacker!=NULL && attacker->pAI != NULL)
+			InheritAI2(attacker, unit);
+	}
+	return unit;
+}
+const u32 Func_displayLastNetErrForPlayer = 0x0049E530;
+void displayLastNetErrForPlayer(u32 playerId) {
+	__asm {
+		PUSHAD
+		PUSH playerId
+		CALL Func_displayLastNetErrForPlayer
+		POPAD
+	}
+}
 u32 getUnitOverlayAdjustment(CUnit* const unit) {
 	if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
 		return 1;

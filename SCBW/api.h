@@ -234,7 +234,15 @@ void refreshUnitAfterMove(CUnit* unit);
 ///
 /// @return           The created unit or NULL if the unit cannot be created.
 CUnit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y);
-
+//function used for broodlings and similar stuff
+CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y,CUnit* attacker=NULL);
+//additional function calls
+void fixTargetLocation(Point16* coords, u32 unitId);
+CUnit* CreateUnit(u32 unitId, int x, int y, u32 playerId);
+void displayLastNetErrForPlayer(u32 playerId);
+void FinishUnit_Pre(CUnit* unit);
+void updateUnitStrength(CUnit* unit);
+void InheritAI2(CUnit* unit_creator, CUnit* created_unit);
 /// Calculates the images.dat overlay adjustment for the given unit.
 /// This piece of code is used throughout StarCraft.exe for various status
 /// effects, such as Ensnare, Plague, and Defensive Matrix.

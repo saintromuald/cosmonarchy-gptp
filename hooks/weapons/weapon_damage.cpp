@@ -296,12 +296,11 @@ public:
 };
 #endif
 
-void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer=1800) {
+void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer=1800, CUnit* attacker=NULL) {
 	for (int i = 0; i < count; i++) {
-		CUnit* unit = scbw::createUnitAtPos(UnitId::ZergBroodling, playerId, x, y);
+		CUnit* unit = scbw::createUnitIngame(UnitId::ZergBroodling, playerId, x, y,attacker);
 		if (unit != nullptr) {
 			scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
-
 			if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
 				unit->removeTimer = removeTimer;
 			}
@@ -697,14 +696,14 @@ namespace hooks {
 							int supplyCount = units_dat::SupplyRequired[target->id] + units_dat::SupplyProvided[target->id] / 2;
 
 							if (isParasited) {
-								spawnBroodlings(supplyCount, player, target->position.x, target->position.y);
+								spawnBroodlings(supplyCount, player, target->position.x, target->position.y,1800,attacker);
 							}
 						}
 					}
 
 					// Incubators - Broodling upgrade
 					if (attacker->id == UnitId::ZergBroodling && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::Incubators)) {
-						spawnBroodlings(2, attacker->playerId, target->position.x, target->position.y, attacker->removeTimer);
+						spawnBroodlings(2, attacker->playerId, target->position.x, target->position.y, attacker->removeTimer,attacker);
 					}
 
 				#ifdef DELIVERANCE
