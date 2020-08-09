@@ -622,8 +622,7 @@ namespace hooks {
 	{
 		int v2; // eax
 
-		if (!(units_dat::GroupFlags[a1->id].isBuilding))
-		{
+		if (!(units_dat::GroupFlags[a1->id].isBuilding)) {
 			v2 = *(int*)(a1 + 220);
 			if (!(v2 & 0x4000000) && !(v2 & 0x10))
 				createEnsnareOverlay((int)a1);

@@ -574,6 +574,24 @@ namespace {
 
 	;
 
+	int __declspec(naked) ensnareProcWrapper() {
+
+		static CUnit* a1;
+		static Box16* a2;
+		static int result;
+
+		__asm {
+			PUSH a1
+			PUSH a2
+		}
+		hooks::ensnareProc(a1, a2);
+		__asm {
+			POPAD
+			MOV result, EAX
+		}
+		return result;
+	}
+
 }//unnamed namespace
 
 namespace hooks {
@@ -596,6 +614,7 @@ namespace hooks {
 		jmpPatch(MindControlHitWrapper,		0x004F6910, 8);
 		jmpPatch(StasisFieldHitWrapper,		0x004F6A80, 1);
 		jmpPatch(DisruptionWebHitWrapper,	0x004F6AF0, 2);
+		jmpPatch(ensnareProcWrapper,		0x004F46C0, 1);
 	}
 
 } //hooks
