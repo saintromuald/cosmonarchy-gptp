@@ -301,6 +301,11 @@ bool isUnsafeCyprianBullet(CBullet* bullet, u32 weaponId){
     darkSwarmDamage(bullet->attackTarget.unit->position.x,bullet->attackTarget.unit->position.y,1,bullet,weaponId);
 	weaponBulletShot(bullet->attackTarget.unit, bullet, 1);
   }
+
+  void parasite(CBullet* bullet, u32 weaponId) {
+	  if (bullet->attackTarget.unit == NULL || bullet->sourceUnit == NULL) return;
+
+  }
   
 
 }//hooks

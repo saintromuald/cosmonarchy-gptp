@@ -11,14 +11,16 @@ namespace SplashType {
 
 namespace hooks {
   
-  void friendlySplash(CBullet* bullet, u32 weaponId, u8 splash);
-  void friendlyLurkerSplash(CBullet* bullet, u32 weaponId, u8 splash);
+	void friendlySplash(CBullet* bullet, u32 weaponId, u8 splash);
+	void friendlyLurkerSplash(CBullet* bullet, u32 weaponId, u8 splash);
 
-  void injectWeaponEffectHook();
-  void normalDamage(CBullet* bullet, u32 weaponId);
-  void yamatoDamage(CBullet* bullet, u32 weaponId);
-//project hydra
+	void injectWeaponEffectHook();
+	void normalDamage(CBullet* bullet, u32 weaponId);
+	void yamatoDamage(CBullet* bullet, u32 weaponId);
 
-  bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId);
-  bool isUnsafeCyprianBullet(CBullet* bullet, u32 weaponId);
+	// HYDRA-specific
+	bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId);
+	bool isUnsafeCyprianBullet(CBullet* bullet, u32 weaponId);
+	void parasite(CBullet bullet, u32 weaponId);
+
 } //hooks
