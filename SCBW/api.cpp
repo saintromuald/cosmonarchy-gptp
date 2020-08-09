@@ -293,7 +293,7 @@ bool canWeaponTargetUnit(u8 weaponId, CUnit* target, CUnit* attacker) {
 
 	if (!target)
 		return weapons_dat::TargetFlags[weaponId].terrain;
-	
+
 
 	if (target->status & UnitStatus::Invincible)
 		return false;
@@ -338,14 +338,24 @@ bool isUnderDarkSwarm(CUnit* unit) {
 
 
 bool isProtossMorph(u16 unitId) {
-	if (unitId == UnitId::ProtossPrincipality || unitId == UnitId::ProtossVicarage ||
-		unitId == UnitId::ProtossRoboticsAuthority ||
-		unitId == UnitId::ProtossArgosy || unitId == UnitId::ProtossStarfield) {//183
+	if (unitId == UnitId::ProtossPrincipality
+		|| unitId == UnitId::ProtossVicarage
+		|| unitId == UnitId::ProtossRoboticsAuthority
+		|| unitId == UnitId::ProtossArgosy
+		|| unitId == UnitId::ProtossStarfield) {
 		return true;
 	}
-	if (unitId == UnitId::gateway || unitId == UnitId::robotics_facility || unitId == UnitId::stargate) {
+	if (unitId == UnitId::ProtossGateway
+		|| unitId == UnitId::ProtossRoboticsFacility
+		|| unitId == UnitId::ProtossStargate) {
 		return true;
 	}
+#ifdef DELIVERANCE
+	if (unitId == UnitId::ProtossPrelacy
+		|| unitId == UnitId::ProtossCrucible) {
+		return true;
+	}
+#endif
 	return false;
 }
 
