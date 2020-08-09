@@ -579,27 +579,24 @@ namespace hooks {
 
 
 					// Last Orders - Aurora upgrade
-					if (damage > target->getCurrentLifeInGame()) { //death
-						if (target->id == UnitId::scout && scbw::getUpgradeLevel(target->playerId, UpgradeId::LastOrders)) {
-							if (!scbw::get_aise_value(target, NULL, AiseId::IsSuicidingScout, 0, 0)) {
-								scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetLastOrders, 0, 0, 0);
-								lastordersProc2 Orders = lastordersProc2(target);
-								scbw::UnitFinder unitFinder(target->getX() - 288,
-									target->getY() - 288,
-									target->getX() + 288,
-									target->getY() + 288);
-								CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
-								if (nearest != NULL) {
-									//scbw::printText("Target found");
-									damage = 0;
-									target->setHp(50 * 256);
-									target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
-									target->status |= UnitStatus::CanNotReceiveOrders;
-
-								}
+					if (target->id == UnitId::ProtossAurora && scbw::getUpgradeLevel(target->playerId, UpgradeId::LastOrders)) {
+						if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::LastOrdersInit, 0)==0) {
+							scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue,ValueId::LastOrdersInit, 1, 0);
+							lastordersProc2 Orders = lastordersProc2(target);
+							scbw::UnitFinder unitFinder(target->getX() - 288,
+								target->getY() - 288,
+								target->getX() + 288,
+								target->getY() + 288);
+							CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
+							if (nearest != NULL) {
+								damage = 0;
+								target->setHp(50 * 256);
+								target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
+								target->status |= UnitStatus::CanNotReceiveOrders;
 							}
 						}
 					}
+					
 
 					if (units_dat::BaseProperty[attacker->id] & UnitProperty::Hero && 
 						scbw::get_aise_value(attacker, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1

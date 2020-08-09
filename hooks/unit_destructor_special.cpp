@@ -235,40 +235,9 @@ void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords) {
 
 }
 
-const u32 Helper_CreateBullet = 0x0048C260;
-void createBulletProc(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction) {
-
-	static u32 attackingPlayer_;
-	static u32 direction_;
-	static s32 x_;
-	static s32 y_;
-
-	attackingPlayer_ = attackingPlayer;
-	direction_ = direction;
-	x_ = x; y_ = y;
-
-	__asm {
-		PUSHAD
-		PUSH direction_
-		PUSH attackingPlayer_
-		PUSH y_
-		PUSH x_
-		MOV EAX, source
-		MOVZX ECX, weaponId
-		CALL Helper_CreateBullet
-		POPAD
-	}
-
-}
 
 //Hooked down there instead of a specific inject.cpp
 void unitDestructorSpecialHook(CUnit* unit) {
-	if (unit->id == UnitId::scout && scbw::get_aise_value(unit,NULL,AiseId::IsBlowingUp,0,0))
-	{
-		createBulletProc(121, unit, unit->position.x, unit->position.y, unit->playerId,
-			unit->currentDirection1);
-		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ErasePersistingUnit, 0, 0, 0);
-	}
 	if(unit->irradiateTimer > 0){
 		if(unit->_unknown_0x026 & 0x2){
 				//scbw::printText("Radiation Shockwave detected");
@@ -364,7 +333,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 
 	//defiler plague upgrade (unknown id), add condition later
 	if ((unit->_unknown_0x026 & 0x4) && unit->plagueTimer>0) {
-		createBulletProc(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->playerId, 
+		scbw::createBullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->playerId, 
 			unit->currentDirection1);	
 		Box16 coords;
 		coords.left = unit->position.x - 48;

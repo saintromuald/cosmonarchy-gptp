@@ -549,17 +549,17 @@ namespace hooks {
 
 			}
 			
-			if (unit->id == UnitId::scout) {
-				if (unit->mainOrderId == OrderId::Move) {
-					if (scbw::get_aise_value(unit, NULL, AiseId::IsSuicidingScout, 0, 0)) {
-						
-						if (scbw::getDistanceFast(unit->position.x, unit->position.y, 
-								unit->orderTarget.pt.x, unit->orderTarget.pt.y) <= 8) {
-							scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::PrepareToExplode, 0, 0, 0);
-							unit->remove();
-						}
+			if (unit->id == UnitId::ProtossAurora) {
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::LastOrdersInit, 0)==1) {
+					auto distance = scbw::getDistanceFast(unit->position.x, unit->position.y,
+						unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+					if (distance<32) {
+						scbw::createBullet(121, unit, unit->position.x, unit->position.y, unit->playerId,
+							unit->currentDirection1);
+						unit->remove();
 					}
 				}
+				
 			}
 
 			//Terran building burn-down
