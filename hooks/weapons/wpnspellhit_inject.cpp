@@ -589,7 +589,7 @@ namespace {
 			POPAD
 			MOV result, EAX
 		}
-		return result;
+		//return result;
 	}
 
 }//unnamed namespace

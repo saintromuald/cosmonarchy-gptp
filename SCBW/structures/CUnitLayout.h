@@ -165,6 +165,8 @@ namespace ValueId {
 		DedicationSwitch4 = 35,
 		DedicationSwitch5 = 36,
 
+		LastOrdersInit = 37,
+
 	#if DELIVERANCE
 		EcclesiastStack = 100,
 		EcclesiastTimer = 101,
