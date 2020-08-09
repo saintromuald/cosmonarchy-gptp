@@ -348,7 +348,7 @@ namespace hooks {
   };
 
   void parasite(CBullet* bullet, u32 weaponId) {
-	  if (bullet->attackTarget.unit == NULL || bullet->sourceUnit == NULL) return;
+	  if (bullet->sourceUnit == NULL || units_dat::BaseProperty[bullet->attackTarget.unit->id] & UnitProperty::Building) return;
       constexpr int radius = 96;
       int left = bullet->position.x - radius / 2;
       int right = bullet->position.x + radius / 2;
