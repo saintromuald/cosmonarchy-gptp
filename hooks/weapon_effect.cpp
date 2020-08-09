@@ -329,26 +329,27 @@ namespace hooks {
 	weaponBulletShot(bullet->attackTarget.unit, bullet, 1);
   }
 
-  class parasiteProc : public scbw::UnitFinderCallbackProcInterface {
-  private:
-      u8 _playerID;
-  public:
-      parasiteProc(u8 playerID) {
-          _playerID = playerID;
-      }
+	class parasiteProc : public scbw::UnitFinderCallbackProcInterface {
+	private:
+		u8 _playerID;
+	public:
+		parasiteProc(u8 playerID) {
+			_playerID = playerID;
+		}
 
-      void proc(CUnit* unit) {
-          unit->parasiteFlags |= 1 << _playerID;
-          constexpr int defaultParasiteTimer = (24 * 10) + 1;
-          if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ParasiteTimer, 0) < defaultParasiteTimer) { // <- Prevent overwriting bigger timers
-              scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::ParasiteTimer, defaultParasiteTimer, 0);
-			  (unit->sprite)->createTopOverlay(1031, 0, 0, 0);
-          }
-      }
-  };
+		void proc(CUnit* unit) {
+			unit->parasiteFlags |= 1 << _playerID;
+			constexpr int defaultParasiteTimer = (24 * 10) + 1;
+			if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ParasiteTimer, 0) < defaultParasiteTimer // <- Prevent overwriting bigger timers
+			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building)) {
+				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::ParasiteTimer, defaultParasiteTimer, 0);
+				(unit->sprite)->createOverlay(1031, 0, 0, 0);
+			}
+		}
+	};
 
   void parasite(CBullet* bullet, u32 weaponId) {
-	  if (bullet->sourceUnit == NULL || units_dat::BaseProperty[bullet->attackTarget.unit->id] & UnitProperty::Building) return;
+	  if (bullet->sourceUnit == NULL) return;
       constexpr int radius = 96;
       int left = bullet->position.x - radius / 2;
       int right = bullet->position.x + radius / 2;
