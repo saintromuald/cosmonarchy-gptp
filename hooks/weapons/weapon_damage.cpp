@@ -350,7 +350,7 @@ namespace hooks {
 				scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::AdrenalTimer, 49, 0); //49 is 2 seconds (48) + 1
 			}
 
-			#ifdef DELIVERANCE
+		#ifdef DELIVERANCE
 			// Ecclesiast Astral Blessing
 			if (attacker != NULL && weaponId == WeaponId::EcclesiastWeapon && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::AstralBlessing)) {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0) < 10) {
@@ -366,7 +366,7 @@ namespace hooks {
 				double shieldStealRate = MathUtils::map(attacker->hitPoints / 256, (int)attacker->getMaxHpInGame() / 4, (int)attacker->getMaxHpInGame(), 0.75, 0.0, true);
 				attacker->shields = std::min((s32)(attacker->shields + damage * shieldStealRate), (s32)units_dat::MaxShieldPoints[attacker->id] * 256);
 			}
-			#endif
+		#endif
 
 			if (weaponId == WeaponId::GlaveWurm || weaponId == WeaponId::GlaveWurm_Kukulza_Mutalisk) {
 				double mul = 1.0;
@@ -375,19 +375,19 @@ namespace hooks {
 					mul = 1.0;
 					break;
 				case 1:
-					mul = 1.0/3.0;//glave wurm 1st bounce
+					mul = 1.0 / 3.0;//glave wurm 1st bounce
 					break;
 				case 2:
-					mul = 1.0/6.0;
+					mul = 1.0 / 6.0;
 					break;
 				default:
-					mul = 1.0/9.0;//glave wurm 2nd bounce
+					mul = 1.0 / 9.0;//glave wurm 2nd bounce
 					break;
 				};
-				if (mul != 1 && attacker!=NULL && scbw::getUpgradeLevel(attacker->playerId,UpgradeId::AblativeWurm)) {
+				if (mul != 1 && attacker != NULL && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::AblativeWurm)) {
 					mul *= 1.5;
 				}
-				int dmg = ((double)damage*mul);
+				int dmg = ((double)damage * mul);
 				/*
 				char buf[64];
 				sprintf(buf, "Mutalisk: damage %d divisor %d mul %lf result %d", damage, dmgDivisor, mul, dmg);
@@ -397,7 +397,7 @@ namespace hooks {
 			else {
 				damage = damage / dmgDivisor + (target->acidSporeCount * 256);
 			}
-			
+
 
 			if (attacker != NULL) {
 				if (attacker->status & UnitStatus::IsHallucination) {
@@ -407,7 +407,7 @@ namespace hooks {
 			if (damage < 128)
 				damage = 128;
 			if (attacker != NULL) {
-				if (attacker->id == UnitId::broodling && scbw::getUpgradeLevel(attacker->playerId,84) 
+				if (attacker->id == UnitId::broodling && scbw::getUpgradeLevel(attacker->playerId, 84)
 					&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
 					u32 overlayImageId;
 					if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay)
@@ -434,7 +434,7 @@ namespace hooks {
 					d_matrix_reduceAmount = damage;
 				else
 					d_matrix_reduceAmount = target->defensiveMatrixHp;
-				
+
 
 				damage -= d_matrix_reduceAmount;
 				target->reduceDefensiveMatrixHp(d_matrix_reduceAmount);
@@ -480,7 +480,7 @@ namespace hooks {
 				}
 				shieldReduceAmount = std::min(damage, target->shields);
 				if (attacker != NULL && target != NULL) {
-					if (attacker->id == UnitId::ultralisk && attacker->parasiteFlags==0 && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::SaberSiphon)) {
+					if (attacker->id == UnitId::ultralisk && attacker->parasiteFlags == 0 && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::SaberSiphon)) {
 						u32 lifesteal = shieldReduceAmount / 2;
 						attacker->setHp(attacker->hitPoints + lifesteal);
 					}
@@ -531,8 +531,8 @@ namespace hooks {
 					}
 				}
 			}
-			if (weaponId == WeaponId::YamatoGun) {				
-				if (scbw::getUpgradeLevel(attackingPlayerId, UpgradeId::UmojanBatteries)) {					
+			if (weaponId == WeaponId::YamatoGun) {
+				if (scbw::getUpgradeLevel(attackingPlayerId, UpgradeId::UmojanBatteries)) {
 					damage += 256 * 50;
 				}
 			}
@@ -544,7 +544,7 @@ namespace hooks {
 
 			damage = (damage * damage_factor) / 256;
 			if (attacker != NULL && target != NULL) {
-				if (attacker->id == UnitId::ultralisk && attacker->parasiteFlags==0 && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::SaberSiphon)) {
+				if (attacker->id == UnitId::ultralisk && attacker->parasiteFlags == 0 && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::SaberSiphon)) {
 					u32 lifesteal = damage / 2;
 					attacker->setHp(attacker->hitPoints + lifesteal);
 				}
@@ -557,7 +557,7 @@ namespace hooks {
 					target->updateSpeed();
 				}
 			}
-			
+
 			if (attacker != NULL && target != NULL) {
 			#ifdef HYDRA
 				if (attacker->id == UnitId::dark_templar && attacker->playerId) {
@@ -565,14 +565,14 @@ namespace hooks {
 					if (damage >= target->hitPoints && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::SilentStrikes)) {
 						silent_kill = true;
 					}
-					if (!silent_kill && !(attacker->visibilityStatus & 1<<target->playerId)) {
+					if (!silent_kill && !(attacker->visibilityStatus & 1 << target->playerId)) {
 						attacker->visibilityStatus |= (1 << target->playerId);
 						makeSpriteVisible(attacker->sprite);
-						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer,ValueId::DarkTemplarTimer, 24+1, 0);
+						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::DarkTemplarTimer, 24 + 1, 0);
 					}
 				}
 			#endif
-				
+
 				if (weaponId == WeaponId::NuclearMissile && target->hitPoints > damage) {
 					if (attacker != NULL && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::GroundZero) && irradiateTarget(target)) {
 						hooks::IrradiateHit(attacker, target, attacker->playerId);
@@ -583,26 +583,7 @@ namespace hooks {
 					//relic death effect
 					//scbw::printText("Check relic");
 
-					// Last Orders - Aurora upgrade
-					if (target->id == UnitId::ProtossAurora && scbw::getUpgradeLevel(target->playerId, UpgradeId::LastOrders)) {
-						if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::LastOrdersInit, 0)==0) {
-							scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue,ValueId::LastOrdersInit, 1, 0);
-							lastordersProc2 Orders = lastordersProc2(target);
-							scbw::UnitFinder unitFinder(target->getX() - 288,
-								target->getY() - 288,
-								target->getX() + 288,
-								target->getY() + 288);
-							CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
-							if (nearest != NULL) {
-								damage = 0;
-								target->setHp(50 * 256);
-								target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
-								target->status |= UnitStatus::CanNotReceiveOrders;
-							}
-						}
-					}
-
-					if (units_dat::BaseProperty[attacker->id] & UnitProperty::Hero && 
+					if (units_dat::BaseProperty[attacker->id] & UnitProperty::Hero &&
 						scbw::get_aise_value(attacker, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1
 						&& (units_dat::BaseProperty[target->id] & UnitProperty::Organic)
 						&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
@@ -632,6 +613,7 @@ namespace hooks {
 					}
 				}
 			}
+
 			//Deal damage to target HP, killing it if possible
 			bool Halluc = false;
 			if (attacker != NULL) {
@@ -639,113 +621,131 @@ namespace hooks {
 					Halluc = true;
 				}
 			}
-			if (damage >= target->hitPoints) {
-				if (target->id == UnitId::archon) {
-					if (scbw::getUpgradeLevel(target->playerId, UpgradeId::AstralAegis)) {
-						astralaegisProc Aegis = astralaegisProc();
-						scbw::UnitFinder unitFinder(target->getX() - 96,
-							target->getY() - 96,
-							target->getX() + 96,
-							target->getY() + 96);
-						unitFinder.forEach(Aegis);
-					}
-				}
-				if (weaponId == WeaponId::PsiStorm || Halluc) {
-					//psi mastery effect
-					ascendancyProc Ascendancy = ascendancyProc();
-					scbw::UnitFinder unitFinder(target->getX() - 288,
-						target->getY() - 288,
-						target->getX() + 288,
-						target->getY() + 288);
-					unitFinder.forEach(Ascendancy);
-
-				}
-			}
 			if (attacker != NULL && target != NULL) {
-				if (weaponId == WeaponId::ObservanceWeapon) {
-					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::ObservanceTimerDebuff, 1 + (5 * 24), 0);
-					int rend = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0);
-					if (rend < 5) {
-						scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::ObservanceRend, 1, 0);
-					}
-				}
-			}
-			if (weaponId == WeaponId::SubterraneanTentacle && target != NULL) {
-				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::Amitosis, 0) == 1) {
-					damage /= 2;
-					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::Amitosis, 0, 0);
-				}
-			}
+				if (damage >= target->hitPoints) {
 
-			if (weaponId != WeaponId::EssenceDrain) { // TODO: Find a way around this stupid workaround
-				target->damageHp(damage, attacker, attackingPlayerId,
-					weaponId != WeaponId::Irradiate);		//Prevent Science Vessels from being continuously revealed to the irradiated target
-			}
-
-			if (attacker != NULL && target != NULL) {
-				if (target->hitPoints == 0) { // <- keep this as hitPoints, because only health decide if a unit is dead or not, shields don't matter
-
-
-					// Kaiser Rampage - Ultralisk upgrade
-					if (attacker->id == UnitId::ZergUltralisk
-						&& scbw::getUpgradeLevel(attacker->playerId, UpgradeId::KaiserRampage)) {
-						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::KaiserRampage, 1 + (2 * 24), 0);
-					}
-
-					
-					// Parasite - spawning broodlings on kill
-					if (attacker->parasiteFlags) {
-						int supplyCount = getBroodlingCountFromSupply(target);
-						for (int player = 0; player < PLAYER_COUNT; player++) {
-							if (attacker->parasiteFlags & (1 << player) /*&& scbw::getUpgradeLevel(player, UpgradeId::Incubators)*/) {
-								spawnBroodlings(supplyCount, player, target->position.x, target->position.y); // no creator should be specified, attacker may be an enemy unit
-							}
+					// Astral Aegis - Archon upgrade
+					if (target->id == UnitId::archon) {
+						if (scbw::getUpgradeLevel(target->playerId, UpgradeId::AstralAegis)) {
+							astralaegisProc Aegis = astralaegisProc();
+							scbw::UnitFinder unitFinder(target->getX() - 96,
+								target->getY() - 96,
+								target->getX() + 96,
+								target->getY() + 96);
+							unitFinder.forEach(Aegis);
 						}
 					}
 
-					// Incubators - Broodling upgrade
-					if (scbw::getUpgradeLevel(attacker->playerId, UpgradeId::Incubators)) {
-						int supplyCount = getBroodlingCountFromSupply(target);
-						if (attacker->id == UnitId::ZergBroodling) {
-							spawnBroodlings(supplyCount, attacker->playerId, target->position.x, target->position.y, attacker->removeTimer, attacker);
+					// Ascendancy - High Templar upgrade
+					if (weaponId == WeaponId::PsiStorm || Halluc) {
+						ascendancyProc Ascendancy = ascendancyProc();
+						scbw::UnitFinder unitFinder(target->getX() - 288,
+							target->getY() - 288,
+							target->getX() + 288,
+							target->getY() + 288);
+						unitFinder.forEach(Ascendancy);
+
+					}
+				}
+
+				// Observance - Science Vessel ability
+				if (attacker != NULL && target != NULL) {
+					if (weaponId == WeaponId::ObservanceWeapon) {
+						scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::ObservanceTimerDebuff, 1 + (5 * 24), 0);
+						int rend = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0);
+						if (rend < 5) {
+							scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::ObservanceRend, 1, 0);
 						}
 					}
-
-				#ifdef DELIVERANCE
-					// Ecclesiast - Astral Blessing proc
-					int stacks = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0);
-					int player = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastPlayer, 0);
-					const int range = 64;
-					scbw::UnitFinder unitFinder(target->getX() - range,
-						target->getY() - range,
-						target->getX() + range,
-						target->getY() + range);
-					unitFinder.forEach(ecclesiastProc(stacks, player));
-				#endif
-				}
-			}
-
-			// Reduce shields (finally)
-			if (shieldReduceAmount != 0) {
-
-				target->shields -= shieldReduceAmount;
-
-				if (damageType != DamageType::Independent && target->shields != 0)
-				{
-					shield_overlay = true;
 				}
 
-			}
-			if (shield_overlay) {
-				createShieldOverlay(target, direction);
-			}
+				// Tendril Amitosis - Sunken Colony upgrade
+				if (weaponId == WeaponId::SubterraneanTentacle && target != NULL) {
+					if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::Amitosis, 0) == 1) {
+						damage /= 2;
+						scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::Amitosis, 0, 0);
+					}
+				}
 
-			//Update unit strength data (?)
-			target->airStrength = getUnitStrength(target, false);
-			target->groundStrength = getUnitStrength(target, true);
+				// Essence Drain - Gorgoleth ability
+				if (weaponId != WeaponId::EssenceDrain) { // TODO: Find a way around this stupid workaround
+					target->damageHp(damage, attacker, attackingPlayerId,
+						weaponId != WeaponId::Irradiate);		//Prevent Science Vessels from being continuously revealed to the irradiated target
+				}
 
+				// Kaiser Rampage - Ultralisk upgrade
+				if (attacker->id == UnitId::ZergUltralisk
+					&& scbw::getUpgradeLevel(attacker->playerId, UpgradeId::KaiserRampage)) {
+					scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::KaiserRampage, 1 + (2 * 24), 0);
+				}
+
+				// Parasite - spawning broodlings on kill
+				if (attacker->parasiteFlags) {
+					int supplyCount = getBroodlingCountFromSupply(target);
+					for (int player = 0; player < PLAYER_COUNT; player++) {
+						if (attacker->parasiteFlags & (1 << player) /*&& scbw::getUpgradeLevel(player, UpgradeId::Incubators)*/) {
+							spawnBroodlings(supplyCount, player, target->position.x, target->position.y); // no creator should be specified, attacker may be an enemy unit
+						}
+					}
+				}
+
+				// Incubators - Broodling upgrade
+				if (scbw::getUpgradeLevel(attacker->playerId, UpgradeId::Incubators)) {
+					int supplyCount = getBroodlingCountFromSupply(target);
+					if (attacker->id == UnitId::ZergBroodling) {
+						spawnBroodlings(supplyCount, attacker->playerId, target->position.x, target->position.y, attacker->removeTimer, attacker);
+					}
+				}
+
+				// Last Orders - Aurora upgrade
+				if (target->id == UnitId::ProtossAurora && scbw::getUpgradeLevel(target->playerId, UpgradeId::LastOrders)) {
+					if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::LastOrdersInit, 0) == 0) {
+						scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::LastOrdersInit, 1, 0);
+						lastordersProc2 Orders = lastordersProc2(target);
+						scbw::UnitFinder unitFinder(target->getX() - 288,
+							target->getY() - 288,
+							target->getX() + 288,
+							target->getY() + 288);
+						CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
+						if (nearest != NULL) {
+							damage = 0;
+							target->setHp(50 * 256);
+							target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
+							target->status |= UnitStatus::CanNotReceiveOrders;
+						}
+					}
+				}
+
+			#ifdef DELIVERANCE
+				// Ecclesiast - Astral Blessing proc
+				int stacks = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0);
+				int player = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastPlayer, 0);
+				const int range = 64;
+				scbw::UnitFinder unitFinder(target->getX() - range,
+					target->getY() - range,
+					target->getX() + range,
+					target->getY() + range);
+				unitFinder.forEach(ecclesiastProc(stacks, player));
+			#endif
+
+				// Reduce shields (finally)
+				if (shieldReduceAmount != 0) {
+					target->shields -= shieldReduceAmount;
+					if (damageType != DamageType::Independent && target->shields != 0) {
+						shield_overlay = true;
+					}
+				}
+
+				if (shield_overlay) {
+					createShieldOverlay(target, direction);
+				}
+
+				//Update unit strength data (?)
+				target->airStrength = getUnitStrength(target, false);
+				target->groundStrength = getUnitStrength(target, true);
+
+			}
 		}
-
 	}
 } //hooks
 namespace {
