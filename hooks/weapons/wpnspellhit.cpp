@@ -621,7 +621,10 @@ namespace hooks {
 
 	int ensnareProc(CUnit* target, CUnit* attacker)
 	{
-		if (target != attacker && !(units_dat::BaseProperty[target->id] & UnitProperty::Building))
+		if (target != attacker
+		&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)
+		&& target->id != UnitId::ZergBroodling									// Ensnaring Brood units are
+		&& target->id != UnitId::ZergInfestedTerran)							// impervious to Ensnare
 		{
 			if (!(target->status & UnitStatus::Invincible) && !(target->status & UnitStatus::Burrowed))
 				createEnsnareOverlay(target);
