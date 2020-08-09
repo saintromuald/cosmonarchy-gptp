@@ -671,22 +671,20 @@ namespace hooks {
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
 	void BroodlingHit(CUnit* attacker, CUnit* target, CBullet* bullet) {
-		//if (target->hitPoints <= weapons_dat::DamageAmount[WeaponId::SpawnBroodlings]*256) {
-		//scbw::printText("Broodling hit");
-		bool kill_target = false;
+/*		bool kill_target = false;
 		if (!(target->status & UnitStatus::IsHallucination)) {
-			int current_x = target->sprite->position.x - 2;
-			int current_y = target->sprite->position.y - 2;
 			if (target->getCurrentLifeInGame() <= weapons_dat::DamageAmount[WeaponId::SpawnBroodlings]) {
 				kill_target = true;
 			}
-			u32 broodlings_to_spawn = 2;
 			if (kill_target) {
 				broodlings_to_spawn = 4;
-			}
+			}*/
 
+			u32 broodlings_to_spawn = 2;
 			do {
 
+				int current_x = bullet->sprite->position.x - 2;
+				int current_y = bullet->sprite->position.y - 2;
 				bool jump_to_end_of_loop = false; //F4A82
 
 				//check various conditions before attempting to create a broodling
@@ -769,7 +767,7 @@ namespace hooks {
 				broodlings_to_spawn--;
 
 			} while (broodlings_to_spawn > 0);
-
+/*
 		} //if(!(target->status & UnitStatus::IsHallucination))
 
 			//F4A9F
@@ -797,7 +795,7 @@ namespace hooks {
 				)
 				incrementUnitKillCount(attacker->interceptor.parent);
 		}
-		
+		*/
 		
 
 
