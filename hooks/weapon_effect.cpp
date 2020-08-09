@@ -342,6 +342,7 @@ namespace hooks {
           constexpr int defaultParasiteTimer = (24 * 10) + 1;
           if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ParasiteTimer, 0) < defaultParasiteTimer) { // <- Prevent overwriting bigger timers
               scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::ParasiteTimer, defaultParasiteTimer, 0);
+			  (unit->sprite)->createTopOverlay(1031, 0, 0, 0);
           }
       }
   };
