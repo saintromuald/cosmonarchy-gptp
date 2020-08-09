@@ -296,9 +296,9 @@ public:
 };
 #endif
 
-void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer=1800, CUnit* attacker=NULL) {
+void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer=1800, CUnit* creator=NULL) {
 	for (int i = 0; i < count; i++) {
-		CUnit* unit = scbw::createUnitIngame(UnitId::ZergBroodling, playerId, x, y,attacker);
+		CUnit* unit = scbw::createUnitIngame(UnitId::ZergBroodling, playerId, x, y, creator);
 		if (unit != nullptr) {
 			scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
 			if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
@@ -689,21 +689,23 @@ namespace hooks {
 						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::KaiserRampage, 1 + (2 * 24), 0);
 					}
 
-					// Parasite - spawning broodlings on kill
-					if (attacker->parasiteFlags) {
-						for (int player = 0; player < PLAYER_COUNT; player++) {
-							bool isParasited = attacker->parasiteFlags & (1 << player);
-							int supplyCount = units_dat::SupplyRequired[target->id] + units_dat::SupplyProvided[target->id] / 2;
+					if (scbw::getUpgradeLevel(attacker->playerId, UpgradeId::Incubators)) {
+						int supplyCount = units_dat::SupplyRequired[target->id] + units_dat::SupplyProvided[target->id] / 2;
+						// Parasite - spawning broodlings on kill
+						if (attacker->parasiteFlags) {
+							for (int player = 0; player < PLAYER_COUNT; player++) {
+								bool isParasited = attacker->parasiteFlags & (1 << player);
 
-							if (isParasited) {
-								spawnBroodlings(supplyCount, player, target->position.x, target->position.y,1800,attacker);
+								if (isParasited) {
+									spawnBroodlings(supplyCount, player, target->position.x, target->position.y); // no creator should be specified, attacker may be an enemy unit
+								}
 							}
 						}
-					}
 
-					// Incubators - Broodling upgrade
-					if (attacker->id == UnitId::ZergBroodling && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::Incubators)) {
-						spawnBroodlings(2, attacker->playerId, target->position.x, target->position.y, attacker->removeTimer,attacker);
+						// Incubators - Broodling upgrade
+						if (attacker->id == UnitId::ZergBroodling) {
+							spawnBroodlings(supplyCount, attacker->playerId, target->position.x, target->position.y, attacker->removeTimer, attacker);
+						}
 					}
 
 				#ifdef DELIVERANCE

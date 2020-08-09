@@ -829,7 +829,7 @@ void InheritAI2(CUnit* unit_creator, CUnit* created_unit) {
 		POPAD
 	}
 };
-CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* attacker) {
+CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* creator) {
 	Point16 pos;
 	CUnit* unit;
 	pos.x = x;
@@ -837,13 +837,13 @@ CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* attacker) 
 	fixTargetLocation(&pos, unitId);
 	unit = CreateUnit(unitId, pos.x, pos.y, playerId);
 	if (unit == NULL) {
-		displayLastNetErrForPlayer(attacker->playerId);
+		displayLastNetErrForPlayer(creator->playerId);
 	}
 	else {
 		FinishUnit_Pre(unit);
 		updateUnitStrength(unit);
-		if (attacker!=NULL && attacker->pAI != NULL)
-			InheritAI2(attacker, unit);
+		if (creator !=NULL && creator->pAI != NULL)
+			InheritAI2(creator, unit);
 	}
 	return unit;
 }
