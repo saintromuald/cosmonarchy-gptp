@@ -554,6 +554,7 @@ namespace hooks {
 					auto distance = scbw::getDistanceFast(unit->position.x, unit->position.y,
 						unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					if (distance<32) {
+						unit->status |= UnitStatus::Invincible;
 						scbw::createBullet(121, unit, unit->position.x, unit->position.y, unit->playerId,
 							unit->currentDirection1);
 						unit->remove();
