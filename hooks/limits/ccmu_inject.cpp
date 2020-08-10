@@ -2,7 +2,6 @@
 #include "extender.h"
 #include "globals.h"
 
-
 void CCMUExtender::extend() {
 	const u32 lim_ext = NEW_ARRAY_LENGTH + 1;
 	const u32 index_start = reinterpret_cast<u32>(&new_unit_table.units[0])-336;
@@ -14,9 +13,7 @@ void CCMUExtender::extend() {
 	memoryPatch(0x0042FEF1+1, lim_ext);
 	memoryPatch(0x004EABC4 + 3, table_start+0x64);//unit Id of first unit
 	memoryPatch(0x00430082 + 2, index_start+0x148);//unit sorting
-	//
 	//0x00cb5864 (+0xc)
-
 	uplink(get_size_list(), NEW_ARRAY_LENGTH);
 	uplink(table_start_list(), table_start);
 	uplink(get_address_list(), index_start);
@@ -397,7 +394,7 @@ namespace hooks {
 		//plugin code transfer notice: CCMU Extender also require CUnit.cpp (index) and load_unload_orders/load_unload_proc (0059cb58)
 		//changes
 	}
-	void injectLimitHooks() {
+	void injectCCMUHooks() {
 		CCMUExtender();
 	}
 }

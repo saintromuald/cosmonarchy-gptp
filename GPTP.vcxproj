@@ -220,6 +220,8 @@
     <ClCompile Include="hooks\interface\console_inject.cpp" />
     <ClCompile Include="hooks\interface\mainmenu\glucustom.cpp" />
     <ClCompile Include="hooks\interface\mainmenu\glucustom_inject.cpp" />
+    <ClCompile Include="hooks\limits\extender_inject.cpp" />
+    <ClCompile Include="hooks\limits\sfx_extender_inject.cpp" />
     <ClCompile Include="hooks\maxhp.cpp" />
     <ClCompile Include="hooks\maxhp_inject.cpp" />
     <ClCompile Include="hooks\miss_chance.cpp" />
@@ -450,6 +452,7 @@
     <ClInclude Include="hooks\game\creategame.h" />
     <ClInclude Include="hooks\interface\console.h" />
     <ClInclude Include="hooks\interface\mainmenu\glucustom.h" />
+    <ClInclude Include="hooks\limits\sfx_extender.h" />
     <ClInclude Include="hooks\maxhp.h" />
     <ClInclude Include="hooks\miss_chance.h" />
     <ClInclude Include="hooks\orders\ai\ai_orders.h" />

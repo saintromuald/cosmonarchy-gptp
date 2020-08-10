@@ -17,7 +17,7 @@ public:
 };
 
 namespace hooks {
-	void injectLimitHooks();
+	void injectCCMUHooks();
 }
 
 extern CCMUExtender new_unit_table;
