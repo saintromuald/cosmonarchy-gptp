@@ -592,7 +592,7 @@ namespace hooks {
 							CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
 							if (nearest != NULL) {
 								damage = 0;
-								target->setHp(50 * 256);
+								target->setHp(units_dat::MaxHitPoints[target->id]/2);
 								target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
 								target->status |= UnitStatus::CanNotReceiveOrders;
 							}
