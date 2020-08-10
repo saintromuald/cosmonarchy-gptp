@@ -104,10 +104,11 @@ namespace AiseId {
 		GetLegionnaireMarks,
 		GetMatrixCasterPlayer,
 		GetShepherds,
-
 		GetFlingyData,
 		GetSpriteData,
 		GetImageData,
+		ReadSamaseFile,
+
 	};
 }
 

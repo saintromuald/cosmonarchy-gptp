@@ -231,6 +231,7 @@ void playSound(u32 sfxId, CUnit* sourceUnit) {
 
 }
 
+
 void printFormattedText(const char* format, ...) {
 	char buf[256];
 

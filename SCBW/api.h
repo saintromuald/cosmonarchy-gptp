@@ -5,6 +5,7 @@
 #include <SCBW/scbwdata.h>
 #include <SCBW/enumerations.h>
 
+
 namespace hooks {
 	void IrradiateHit(CUnit* attacker, CUnit* target, u8 attackingPlayerId);
 }
@@ -29,7 +30,6 @@ void SendCommand(u8* params, u32 param_length);
 /// Plays the given sound from sfxdata.dat. If @p sourceUnit is provided, it is
 /// used as the source of the sound.
 void playSound(u32 sfxId, CUnit* sourceUnit = NULL);
-
 /// Prints text to the screen, optionally using the given text color.
 void printText(const char* text, u32 color = GameTextColor::White);
 void printFormattedText(const char* format, ...);
