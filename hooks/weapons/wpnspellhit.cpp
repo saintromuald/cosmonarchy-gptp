@@ -680,11 +680,11 @@ namespace hooks {
 				broodlings_to_spawn = 4;
 			}*/
 
+			int current_x = bullet->sprite->position.x - 2;
+			int current_y = bullet->sprite->position.y - 2;
 			u32 broodlings_to_spawn = 2;
 			do {
 
-				int current_x = bullet->sprite->position.x - 2;
-				int current_y = bullet->sprite->position.y - 2;
 				bool jump_to_end_of_loop = false; //F4A82
 
 				//check various conditions before attempting to create a broodling
