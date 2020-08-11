@@ -277,7 +277,7 @@ namespace hooks
 			}
 			break;
 		}
-		case TechId::UnusedTech38:
+/*		case TechId::UnusedTech38:
 		{
 			//Equip - Empower hero with relic
 			scbw::printText("Try use Tech38");
@@ -315,7 +315,20 @@ namespace hooks
 				scbw::printText("No selected units");
 			}
 			break;
-		}
+		}*/
+		case TechId::ChasmalColonySwitch:
+			int action = ChasmalId::ConnectToUnits;//on
+			if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::ChasmalColonyStatus, 0) == 1) {
+				action = ChasmalId::ConnectToBuildings;//off
+			}
+			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+			buf[0] = 0x99;//new general command
+			buf[1] = NewGameCommand::GenericSwitchAbility;
+			buf[2] = action;
+			buf[3] = *ACTIVE_PLAYER_ID;
+			buf[4] = ValueId::ChasmalColonyStatus;
+			scbw::SendCommand(buf, 0xc);
+			break;
 		case TechId::UnusedTech39://observance
 			IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
 			

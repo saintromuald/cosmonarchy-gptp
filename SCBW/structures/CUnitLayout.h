@@ -126,7 +126,12 @@ namespace OverlayOffset {
 		Blue = 75,
 	};
 }
-
+namespace ChasmalId {
+	enum {
+		ConnectToBuildings,
+		ConnectToUnits,
+	};
+}
 namespace ValueId {
 	enum {
 		ArmorReduce = 0,
@@ -171,7 +176,7 @@ namespace ValueId {
 		DedicationSwitch5 = 36,
 
 		LastOrdersInit = 37,
-
+		ChasmalColonyStatus = 38,
 	#if DELIVERANCE
 		EcclesiastStack = 100,
 		EcclesiastTimer = 101,
