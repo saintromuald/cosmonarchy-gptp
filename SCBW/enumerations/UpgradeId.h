@@ -128,6 +128,8 @@ namespace UpgradeId {
 		TempoChange = 124,				// Madrigal weapon switch
 		RequiemAfterburners = 125,		// Madrigal missile speed
 		HammerfallShells = 126,			// Siege Tank splash radius
+		FragmentaryPayloud = 127,		// Centaur secondary explosion
+		KnockoutDrivers = 128,			// Southpaw speed slow
 
 		// relics \\
 
@@ -174,8 +176,8 @@ namespace UpgradeId {
 		Augment20 = 240,				// 
 
 	#ifdef HYDRA
-		SilentStrikes = 79,			// Dark Templar attack speed on kill
-		Malediction = 116,			// Maelstrom Feedback and slow
+		SilentStrikes = 79,				// Dark Templar attack speed on kill
+		Malediction = 116,				// Maelstrom Feedback and slow
 	#endif
 		
 	#ifdef DELIVERANCE
