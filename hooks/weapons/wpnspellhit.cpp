@@ -682,7 +682,10 @@ namespace hooks {
 
 			int current_x = bullet->sprite->position.x - 2;
 			int current_y = bullet->sprite->position.y - 2;
-			u32 broodlings_to_spawn = 2;
+			u32 broodlings_to_spawn = 3;
+			//if () { // <- check if unit is on creep
+			//	broodlings_to_spawn = 6;
+			//}
 			while (broodlings_to_spawn > 0) {
 
 				bool jump_to_end_of_loop = false; //F4A82
