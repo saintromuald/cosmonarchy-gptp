@@ -331,23 +331,19 @@ namespace hooks {
 			if (*elapsedTimeFrames == 0) {
 				//Write your code here
 			}
-			/*
+			
 			//framework example, rework and use later
-			if (*elapsedTimeFrames == 1) {
-				
+			/*if (*elapsedTimeFrames == 1) {
 				char* name = "samase\\sprites_ext.txt";
 				const char* data = NULL;
 				u32 len = 0;
-				//name,data,len
 				auto data_ptr = &data;
 				auto len_ptr = &len;
-				scbw::printFormattedText("Try %d %d", data_ptr,len_ptr);
 				u32 val = reinterpret_cast<u32>(name);
-				// gptp: 19e2ec 19e2e8
-				auto result = scbw::get_aise_value(NULL, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));
-				scbw::printFormattedText("File is: ptr %d len %d, pointers %d %d, result is %", *data_ptr,*len_ptr,data_ptr,len_ptr,result);
-			}
-			*/
+				auto result = scbw::get_aise_value(NULL, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));				
+				auto result2 = scbw::get_aise_value(NULL, NULL, AiseId::ReadSamaseFile_Ptr, 0, 0);
+			}*/
+			
 			// Order debugger
 /*			if ((*activePortraitUnit) != NULL) {
 				char buf[32];
