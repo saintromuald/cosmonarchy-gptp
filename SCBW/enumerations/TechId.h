@@ -56,6 +56,8 @@ enum Enum {
   // HYDRA \\
 
   EssenceDrain = 35,		// Gorgoleth ability
+  //extended
+  ChasmalColonySwitch = 47, // Chasmal Colony - Adaptive Barrier / Adrenal Secretion
 };
 }
 
