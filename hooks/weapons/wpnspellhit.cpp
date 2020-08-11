@@ -724,6 +724,10 @@ namespace hooks {
 
 					//create the broodling
 					created_broodling = CreateUnit(UnitId::ZergBroodling, pos.x, pos.y, attacker->playerId);
+					scbw::sendGPTP_aise_cmd(created_broodling, NULL, GptpId::SetGenericUnit, ValueId::BroodlingMother, (u32)attacker, 0);
+					if (attacker != NULL && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::GameteMeiosis)) {
+						attacker->energy = std::min((u16)(attacker->energy + (u16)5*256), attacker->getMaxEnergy()); // Spawn Broodling
+					}
 
 					if (created_broodling == NULL) {
 						displayLastNetErrForPlayer(attacker->playerId);

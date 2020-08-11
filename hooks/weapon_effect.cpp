@@ -332,9 +332,11 @@ namespace hooks {
 	class parasiteProc : public scbw::UnitFinderCallbackProcInterface {
 	private:
 		u8 _playerID;
+		CUnit* _queen;
 	public:
-		parasiteProc(u8 playerID) {
+		parasiteProc(u8 playerID, CUnit* queen) {
 			_playerID = playerID;
+			_queen = queen;
 		}
 
 		void proc(CUnit* unit) {
@@ -345,6 +347,7 @@ namespace hooks {
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::ParasiteArmTimer, defaultArmParasiteTimer, 0);
 				unit->sprite->createOverlay(1031, 0, 0, 0);
 			}
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericUnit, ValueId::ParasiteSource, (u32)_queen, 0);
 			unit->parasiteFlags = playerFlag; // Parasite now overwrites other players' parasite
 			scbw::refreshConsole();
 		}
@@ -357,7 +360,7 @@ namespace hooks {
       int right = bullet->position.x + radius / 2;
       int top = bullet->position.y - radius / 2;
       int bottom = bullet->position.y + radius / 2;
-      scbw::UnitFinder(left, top, right, bottom).forEach(parasiteProc(bullet->sourceUnit->playerId));
+      scbw::UnitFinder(left, top, right, bottom).forEach(parasiteProc(bullet->sourceUnit->playerId, bullet->sourceUnit));
   }
   
 

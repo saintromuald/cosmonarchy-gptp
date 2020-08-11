@@ -327,9 +327,10 @@ inline bool setInGameLoopState(bool newState) {
   return previousState != 0;
 }
 
-int getBroodlingCountFromSupply(CUnit* unit);
-void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, CUnit* creator = NULL);
-
 //////////////////////////////////////////////////////////////// @}
+
+int getBroodlingCountFromSupply(CUnit* unit);
+void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, CUnit* attacker = NULL);
+CUnit** getSourceQueens(CUnit* unit);
 
 } //scbw

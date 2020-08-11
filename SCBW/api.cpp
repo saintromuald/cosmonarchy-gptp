@@ -1026,6 +1026,11 @@ void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer, CUn
 			if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
 				unit->removeTimer = removeTimer;
 			}
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericUnit, ValueId::BroodlingMother, (u32)creator, 0);
+
+			if (scbw::getUpgradeLevel(playerId, UpgradeId::GameteMeiosis)) {
+				if (creator != NULL) creator->energy = std::min((u16)(creator->energy + (u16)5 * (u16)256), creator->getMaxEnergy()); // Parasite and Incubators
+			}
 		}
 	}
 }
@@ -1034,6 +1039,14 @@ int getBroodlingCountFromSupply(CUnit* unit) {
 	if (units_dat::GroupFlags[unit->id].isBuilding) return 0;
 	if (units_dat::SupplyProvided[unit->id] > 0) return 0;
 	return std::max((int)units_dat::SupplyRequired[unit->id], 1);
+}
+
+CUnit** getSourceQueens(CUnit* unit) {
+	CUnit* queens[2] = { NULL };
+	if (unit == NULL) return queens; // <- prevents crash from incubators, but does not fix the issue
+	queens[0] = (CUnit*)scbw::get_aise_value(unit, NULL, AiseId::GenericUnit, ValueId::BroodlingMother, 0);
+	queens[1] = (CUnit*)scbw::get_aise_value(unit, NULL, AiseId::GenericUnit, ValueId::ParasiteSource, 0);
+	return queens;
 }
 
 } //scbw

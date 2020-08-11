@@ -171,6 +171,8 @@ namespace ValueId {
 		DedicationSwitch5 = 36,
 
 		LastOrdersInit = 37,
+		BroodlingMother = 38,
+		ParasiteSource = 39,
 
 	#if DELIVERANCE
 		EcclesiastStack = 100,
