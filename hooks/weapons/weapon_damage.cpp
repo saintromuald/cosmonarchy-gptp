@@ -670,7 +670,7 @@ namespace hooks {
 					if (scbw::getUpgradeLevel(attacker->playerId, UpgradeId::Incubators)) {
 						int supplyCount = scbw::getBroodlingCountFromSupply(target);
 						if (attacker->id == UnitId::ZergBroodling) {
-							scbw::spawnBroodlings(supplyCount, attacker->playerId, target->position.x, target->position.y, attacker->removeTimer, attacker);
+							scbw::spawnBroodlings(supplyCount, attacker->playerId, target->position.x, target->position.y, attacker->removeTimer, scbw::getSourceQueens(attacker)[0]);
 						}
 					}
 
