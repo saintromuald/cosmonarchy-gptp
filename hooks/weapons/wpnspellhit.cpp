@@ -671,6 +671,7 @@ namespace hooks {
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
 	void BroodlingHit(CUnit* attacker, CUnit* target, CBullet* bullet) {
+		scbw::printText("broodling hit");
 /*		bool kill_target = false;
 		if (!(target->status & UnitStatus::IsHallucination)) {
 			if (target->getCurrentLifeInGame() <= weapons_dat::DamageAmount[WeaponId::SpawnBroodlings]) {
@@ -683,7 +684,7 @@ namespace hooks {
 			int current_x = bullet->sprite->position.x - 2;
 			int current_y = bullet->sprite->position.y - 2;
 			u32 broodlings_to_spawn = 2;
-			do {
+			while (broodlings_to_spawn > 0) {
 
 				bool jump_to_end_of_loop = false; //F4A82
 
@@ -770,7 +771,7 @@ namespace hooks {
 				current_x += 4;
 				broodlings_to_spawn--;
 
-			} while (broodlings_to_spawn > 0);
+			}
 /*
 		} //if(!(target->status & UnitStatus::IsHallucination))
 
