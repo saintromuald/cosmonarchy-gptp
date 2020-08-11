@@ -331,6 +331,14 @@ namespace hooks {
 				scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::AdrenalTimer, 49, 0); //49 is 2 seconds (48) + 1
 			}
 
+			// Southpaw - Knockout Drivers
+			if (attacker != NULL && weaponId == WeaponId::UppercutLaser && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::KnockoutDrivers)) {
+				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0) < 20) {
+					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::KnockoutDriversValue, 1, 0);
+				}
+				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::KnockoutDriversTimer, 49, 0); //49 is 2 seconds (48) + 1
+			}
+
 		#ifdef DELIVERANCE
 			// Ecclesiast Astral Blessing
 			if (attacker != NULL && weaponId == WeaponId::EcclesiastWeapon && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::AstralBlessing)) {
@@ -339,7 +347,6 @@ namespace hooks {
 				}
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::EcclesiastTimer, 49, 0); //49 is 2 seconds (48) + 1
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::EcclesiastPlayer, attacker->playerId, 0);
-				//scbw::printText("increment stack");
 			}
 
 			// Amaranth - shield recharge per missing HP

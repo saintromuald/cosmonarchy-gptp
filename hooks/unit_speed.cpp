@@ -191,6 +191,12 @@ namespace hooks {
 			speed = (u32) ((double)speed * multiplier);
 		}
 
+		// Knockout Drivers upgrade: reduce attack speed by 5% for every stack
+		if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0) > 0) {
+			u32 knockoutValue = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0);
+			speed -= speed * (0.05 * knockoutValue);
+		}
+
 	#ifdef DELIVERANCE
 		// Deathless Procession upgrade: gains 125% movespeed, increasing to 175% when above 50% shields
 		if (unit->id == UnitId::ProtossAmaranth && scbw::getUpgradeLevel(unit->playerId, UpgradeId::DeathlessProcession)) {

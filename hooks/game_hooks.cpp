@@ -571,6 +571,11 @@ namespace hooks {
 					unit->sprite->createOverlay(1031, 0, 0, 0);
 				}
 
+				// Southpaw - Knockout Drivers upgrade
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KnockoutDriversTimer, 0) == 1) {
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::KnockoutDriversTimer, 0, 0);
+				}
+
 			#ifdef HYDRA
 				// Dark Templar - Decloak on attack
 				if (unit->id == UnitId::ProtossDarkTemplar) {
