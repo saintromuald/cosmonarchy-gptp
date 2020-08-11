@@ -573,6 +573,12 @@ u32 getSpriteData(u32 entry, u32 index) {
 u32 getImageData(u32 entry, u32 index) {
 	return get_aise_value(NULL, NULL, AiseId::GetImageData, entry, index);
 }
+
+CUnit* get_generic_unit(CUnit* unit, u32 id){
+	u32 val = get_aise_value(unit, NULL, AiseId::GenericUnit, id, 0);
+	return reinterpret_cast<CUnit*>(val);
+}
+
 const u32 Func_CanTargetSpell = 0x00492020;
 u32 get_aise_value(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2){
 	u32 result = 0;

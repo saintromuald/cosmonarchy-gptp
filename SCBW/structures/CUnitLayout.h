@@ -76,6 +76,9 @@ namespace GptpId {
 		SetMaelstromOffset,
 		SetMatrixCaster,
 		SetSublimeShepherd,
+		SetGenericUnit,
+
+
 		Void = 10005,
 	};
 }
@@ -108,7 +111,8 @@ namespace AiseId {
 		GetSpriteData,
 		GetImageData,
 		ReadSamaseFile,
-
+		ReadSamaseFile_Ptr,
+		GenericUnit,
 	};
 }
 
