@@ -14,6 +14,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 
 	u32 cooldown = weapons_dat::Cooldown[weaponId];
 	u32 adrenalStacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0);
+	u32 knockoutValue = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0);
 
 	// Devourer - Corrosive Spores: lower attack speed of victim
 	if (unit->acidSporeCount != 0) {
@@ -48,6 +49,11 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
 			cooldown /= 2;
 		}
+	}
+
+	// Knockout Drivers upgrade: reduce attack speed by 5% for every stack
+	if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0) > 0) {
+		cooldown += cooldown * (0.05 * knockoutValue);
 	}
 
 #ifdef DELIVERANCE
