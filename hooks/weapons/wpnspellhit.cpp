@@ -671,140 +671,102 @@ namespace hooks {
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
 	void BroodlingHit(CUnit* attacker, CUnit* target, CBullet* bullet) {
-/*		bool kill_target = false;
-		if (!(target->status & UnitStatus::IsHallucination)) {
-			if (target->getCurrentLifeInGame() <= weapons_dat::DamageAmount[WeaponId::SpawnBroodlings]) {
-				kill_target = true;
+
+		u32 broodlings_to_spawn = 3;
+		if (scbw::getActiveTileAt(bullet->sprite->position.x, bullet->sprite->position.y).hasCreep) {
+			broodlings_to_spawn = 5;
+		}
+
+		int current_x = bullet->sprite->position.x - 2;
+		int current_y = bullet->sprite->position.y - 2;
+		while (broodlings_to_spawn > 0) {
+
+			bool jump_to_end_of_loop = false; //F4A82
+
+			//check various conditions before attempting to create a broodling
+			if (function_0042D810(current_x, current_y, UnitId::ZergBroodling)) {
+				Point16 inPos, outPos;
+				Box16 moveArea;
+
+				inPos.y = current_y;
+				moveArea.top = current_y - 32;
+				moveArea.bottom = current_y + 32;
+				moveArea.left = current_x - 32;
+				inPos.x = current_x;
+				moveArea.right = current_x + 32;
+
+				//if impossible to avoid a collision even within moveArea,
+				//skip the broodling creation code for the current position
+				jump_to_end_of_loop = !scbw::checkUnitCollisionPos(attacker, &inPos, &outPos, &moveArea, false, 0);
+
+				if (!jump_to_end_of_loop) {
+					current_y = outPos.y;
+					current_x = outPos.x;
+				}
+
 			}
-			if (kill_target) {
-				broodlings_to_spawn = 4;
-			}*/
 
-			int current_x = bullet->sprite->position.x - 2;
-			int current_y = bullet->sprite->position.y - 2;
-			u32 broodlings_to_spawn = 3;
-			//if () { // <- check if unit is on creep
-			//	broodlings_to_spawn = 6;
-			//}
-			while (broodlings_to_spawn > 0) {
+			jump_to_end_of_loop = false; // <- allows to target air units, and presumably terrain, if only the function would actually be called
+			if (!jump_to_end_of_loop) { //F49E2
 
-				bool jump_to_end_of_loop = false; //F4A82
+				Point16 pos;
+				CUnit* created_broodling;
 
-				//check various conditions before attempting to create a broodling
-				if (function_0042D810(current_x, current_y, UnitId::ZergBroodling)) {
-					Point16 inPos, outPos;
-					Box16 moveArea;
+				pos.x = current_x;
+				pos.y = current_y;
 
-					inPos.y = current_y;
-					moveArea.top = current_y - 32;
-					moveArea.bottom = current_y + 32;
-					moveArea.left = current_x - 32;
-					inPos.x = current_x;
-					moveArea.right = current_x + 32;
+				//adjust the position to welcome the unit...I think
+				fixTargetLocation(&pos, UnitId::ZergBroodling);
 
-					//if impossible to avoid a collision even within moveArea,
-					//skip the broodling creation code for the current position
-					jump_to_end_of_loop = !scbw::checkUnitCollisionPos(attacker, &inPos, &outPos, &moveArea, false, 0);
+				//create the broodling
+				created_broodling = CreateUnit(UnitId::ZergBroodling, pos.x, pos.y, attacker->playerId);
+				scbw::sendGPTP_aise_cmd(created_broodling, NULL, GptpId::SetGenericUnit, ValueId::BroodlingMother, (u32)attacker, 0);
+				if (attacker != NULL && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::GameteMeiosis)) {
+					attacker->energy = std::min((u16)(attacker->energy + (u16)5*256), attacker->getMaxEnergy()); // Spawn Broodling
+				}
 
-					if (!jump_to_end_of_loop) {
-						current_y = outPos.y;
-						current_x = outPos.x;
-					}
+				if (created_broodling == NULL) {
+					displayLastNetErrForPlayer(attacker->playerId);
+					jump_to_end_of_loop = true;
+				}
+				else { //F4A26
+					scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, created_broodling);
+
+					u32 timerBeforeDisappearance;
+
+					//update various stuff (set hp, set shield...) not finished on CreateUnit
+					function_004A01F0(created_broodling);
+					updateUnitStrength(created_broodling);
+
+					if (created_broodling->status & UnitStatus::IsHallucination)
+						timerBeforeDisappearance = 1350;	//probably old unremoved code
+					else
+						if (created_broodling->id == UnitId::ZergBroodling)
+							timerBeforeDisappearance = 1800;	//0x708
+						else
+							timerBeforeDisappearance = 0;
+
+					if (
+						created_broodling->removeTimer == 0 ||
+						created_broodling->removeTimer > timerBeforeDisappearance
+						)
+						created_broodling->removeTimer = timerBeforeDisappearance;
+
+					//AI stuff (may establish relationship between queen and broodling and/or
+					//be about supplies management, or something else?
+					if (attacker->pAI != NULL)
+						AI_TrainingUnit(attacker, created_broodling);
 
 				}
 
-				jump_to_end_of_loop = false; // <- allows to target air units, and presumably terrain, if only the function would actually be called
-				if (!jump_to_end_of_loop) { //F49E2
+			} //if(!jump_to_end_of_loop)
 
-					Point16 pos;
-					CUnit* created_broodling;
+				//F4A82 (end of loop)
+			current_y += 4;
+			current_x += 4;
+			broodlings_to_spawn--;
 
-					pos.x = current_x;
-					pos.y = current_y;
-
-					//adjust the position to welcome the unit...I think
-					fixTargetLocation(&pos, UnitId::ZergBroodling);
-
-					//create the broodling
-					created_broodling = CreateUnit(UnitId::ZergBroodling, pos.x, pos.y, attacker->playerId);
-					scbw::sendGPTP_aise_cmd(created_broodling, NULL, GptpId::SetGenericUnit, ValueId::BroodlingMother, (u32)attacker, 0);
-					if (attacker != NULL && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::GameteMeiosis)) {
-						attacker->energy = std::min((u16)(attacker->energy + (u16)5*256), attacker->getMaxEnergy()); // Spawn Broodling
-					}
-
-					if (created_broodling == NULL) {
-						displayLastNetErrForPlayer(attacker->playerId);
-						jump_to_end_of_loop = true;
-					}
-					else { //F4A26
-						scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, created_broodling);
-
-						u32 timerBeforeDisappearance;
-
-						//update various stuff (set hp, set shield...) not finished on CreateUnit
-						function_004A01F0(created_broodling);
-						updateUnitStrength(created_broodling);
-
-						if (created_broodling->status & UnitStatus::IsHallucination)
-							timerBeforeDisappearance = 1350;	//probably old unremoved code
-						else
-							if (created_broodling->id == UnitId::ZergBroodling)
-								timerBeforeDisappearance = 1800;	//0x708
-							else
-								timerBeforeDisappearance = 0;
-
-						if (
-							created_broodling->removeTimer == 0 ||
-							created_broodling->removeTimer > timerBeforeDisappearance
-							)
-							created_broodling->removeTimer = timerBeforeDisappearance;
-
-						//AI stuff (may establish relationship between queen and broodling and/or
-						//be about supplies management, or something else?
-						if (attacker->pAI != NULL)
-							AI_TrainingUnit(attacker, created_broodling);
-
-					}
-
-				} //if(!jump_to_end_of_loop)
-
-					//F4A82 (end of loop)
-				current_y += 4;
-				current_x += 4;
-				broodlings_to_spawn--;
-
-			}
-/*
-		} //if(!(target->status & UnitStatus::IsHallucination))
-
-			//F4A9F
-		auto dmg = weapons_dat::DamageAmount[WeaponId::SpawnBroodlings] * 256;
-		target->inflictDamage(dmg, NULL, -1, true);
-		
-		
-
-		if (kill_target) {
-			//give the target death as a kill to the queen
-			incrementUnitDeathScores(attacker, attacker->playerId);
-
-			//kill the target
-			target->remove();
-
-			if (attacker->killCount < 255)
-				attacker->killCount++;
-
-			//code for the case where interceptors would be firing
-			//the broodling-generating weapon, to give +1 kill to the
-			//carrier owning the interceptor making the kill
-			if (
-				attacker->id == UnitId::ProtossInterceptor &&
-				attacker->interceptor.parent != NULL
-				)
-				incrementUnitKillCount(attacker->interceptor.parent);
 		}
-		*/
-		
-
 
 	} //void BroodlingHit(CUnit* attacker, CUnit* target, CBullet* bullet)
 
