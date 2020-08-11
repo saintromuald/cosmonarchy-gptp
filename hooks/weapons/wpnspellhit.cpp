@@ -671,7 +671,6 @@ namespace hooks {
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
 	void BroodlingHit(CUnit* attacker, CUnit* target, CBullet* bullet) {
-		scbw::printText("broodling hit");
 /*		bool kill_target = false;
 		if (!(target->status & UnitStatus::IsHallucination)) {
 			if (target->getCurrentLifeInGame() <= weapons_dat::DamageAmount[WeaponId::SpawnBroodlings]) {
@@ -690,7 +689,6 @@ namespace hooks {
 
 				//check various conditions before attempting to create a broodling
 				if (function_0042D810(current_x, current_y, UnitId::ZergBroodling)) {
-
 					Point16 inPos, outPos;
 					Box16 moveArea;
 
@@ -712,6 +710,7 @@ namespace hooks {
 
 				}
 
+				jump_to_end_of_loop = false; // <- allows to target air units, and presumably terrain, if only the function would actually be called
 				if (!jump_to_end_of_loop) { //F49E2
 
 					Point16 pos;
