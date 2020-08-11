@@ -1026,6 +1026,7 @@ void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer, CUn
 
 int getBroodlingCountFromSupply(CUnit* unit) {
 	if (units_dat::GroupFlags[unit->id].isBuilding) return 0;
+	if (units_dat::SupplyProvided[unit->id] > 0) return 0;
 	return std::max((int)units_dat::SupplyRequired[unit->id], 1);
 }
 
