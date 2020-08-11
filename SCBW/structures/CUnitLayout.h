@@ -77,8 +77,7 @@ namespace GptpId {
 		SetMatrixCaster,
 		SetSublimeShepherd,
 		SetGenericUnit,
-		FillChasmalConnectors,
-		ResetChasmalConnectors,
+
 
 		Void = 10005,
 	};
@@ -114,8 +113,6 @@ namespace AiseId {
 		ReadSamaseFile,
 		ReadSamaseFile_Ptr,
 		GenericUnit,
-		GetChasmalConnectors,
-		HasChasmalConnector,
 	};
 }
 
