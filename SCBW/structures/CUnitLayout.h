@@ -157,7 +157,7 @@ namespace ValueId {
 		MineralSpecialRegenTimer = 28,
 		AdrenalStacks = 29,
 		AdrenalTimer = 30,
-		ParasiteTimer = 31,
+		ParasiteArmTimer = 31,
 
 		// New Production Structure mechanic for Protoss
 		DedicationSwitch1 = 32,

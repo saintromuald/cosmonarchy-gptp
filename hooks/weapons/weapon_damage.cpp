@@ -294,23 +294,6 @@ public:
 };
 #endif
 
-void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, CUnit* creator = NULL) {
-	for (int i = 0; i < count; i++) {
-		CUnit* unit = scbw::createUnitIngame(UnitId::ZergBroodling, playerId, x, y, creator);
-		if (unit != nullptr) {
-			scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
-			if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
-				unit->removeTimer = removeTimer;
-			}
-		}
-	}
-}
-
-int getBroodlingCountFromSupply(CUnit* unit) {
-	if (units_dat::GroupFlags[unit->id].isBuilding) return 0;
-	return units_dat::SupplyRequired[unit->id] + units_dat::SupplyProvided[unit->id] / 2;
-}
-
 namespace hooks {
 
 	/// Hooks into the CUnit::damageWith() function.
@@ -683,22 +666,11 @@ namespace hooks {
 						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::KaiserRampage, 1 + (2 * 24), 0);
 					}
 
-					// Parasite - spawning broodlings on kill
-					if (attacker->parasiteFlags || (attacker->interceptor.parent != NULL && attacker->interceptor.parent->parasiteFlags)) {
-						int supplyCount = getBroodlingCountFromSupply(target);
-						for (int player = 0; player < PLAYER_COUNT; player++) {
-							if ((attacker->parasiteFlags & (1 << player)
-								|| (attacker->interceptor.parent != NULL && attacker->interceptor.parent->parasiteFlags & (1 << player)))) {
-								spawnBroodlings(supplyCount, player, target->position.x, target->position.y); // no creator should be specified, because attacker may be an enemy unit
-							}
-						}
-					}
-
 					// Incubators - Broodling upgrade
 					if (scbw::getUpgradeLevel(attacker->playerId, UpgradeId::Incubators)) {
-						int supplyCount = getBroodlingCountFromSupply(target);
+						int supplyCount = scbw::getBroodlingCountFromSupply(target);
 						if (attacker->id == UnitId::ZergBroodling) {
-							spawnBroodlings(supplyCount, attacker->playerId, target->position.x, target->position.y, attacker->removeTimer, attacker);
+							scbw::spawnBroodlings(supplyCount, attacker->playerId, target->position.x, target->position.y, attacker->removeTimer, attacker);
 						}
 					}
 

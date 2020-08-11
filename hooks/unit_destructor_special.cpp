@@ -313,6 +313,16 @@ void unitDestructorSpecialHook(CUnit* unit) {
 				//scbw::printText("Radiation Shockwave is not detected");
 		}
 	}
+
+	// Parasite - spawning broodlings on death
+	if (unit->parasiteFlags != 0) {
+		int supplyCount = scbw::getBroodlingCountFromSupply(unit);
+		for (int player = 0; player < PLAYER_COUNT; player++) {
+			if (unit->parasiteFlags & (1 << player) && scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ParasiteArmTimer, 0) <= 1) {
+				scbw::spawnBroodlings(supplyCount, player, unit->position.x, unit->position.y); // TODO: specify queen as last arg, after adding queen pointer to CUnitLayout (needs GenericUnitPointer)
+			}
+		}
+	}
 	
 	if (unit->id == UnitId::broodling || unit->id==UnitId::infested_terran) {
 		if (scbw::getUpgradeLevel(unit->playerId, 84)) {
@@ -447,6 +457,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 
 		}
 		else
+
 
 
 		//Is a Nuclear Missile

@@ -338,13 +338,15 @@ namespace hooks {
 		}
 
 		void proc(CUnit* unit) {
-			unit->parasiteFlags |= 1 << _playerID;
-			constexpr int defaultParasiteTimer = (24 * 10) + 1;
-			if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ParasiteTimer, 0) < defaultParasiteTimer // <- Prevent overwriting bigger timers
-			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building)) {
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::ParasiteTimer, defaultParasiteTimer, 0);
-				(unit->sprite)->createOverlay(1031, 0, 0, 0);
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::Building) return;
+			int playerFlag = 1 << _playerID;
+			constexpr int defaultArmParasiteTimer = (24 * 2) + 1;
+			if (unit->parasiteFlags != playerFlag) { // <- Prevent overwriting timer for already parasited units by same player
+				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::ParasiteArmTimer, defaultArmParasiteTimer, 0);
+				unit->sprite->createOverlay(1031, 0, 0, 0);
 			}
+			unit->parasiteFlags = playerFlag; // Parasite now overwrites other players' parasite
+			scbw::refreshConsole();
 		}
 	};
 

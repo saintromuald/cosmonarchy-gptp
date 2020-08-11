@@ -1012,4 +1012,21 @@ void minimapPing(u32 x, u32 y, s32 color, u32 playerId) {
 
 }
 
+void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer, CUnit* creator) {
+	for (int i = 0; i < count; i++) {
+		CUnit* unit = scbw::createUnitIngame(UnitId::ZergBroodling, playerId, x, y, creator);
+		if (unit != nullptr) {
+			scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
+			if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
+				unit->removeTimer = removeTimer;
+			}
+		}
+	}
+}
+
+int getBroodlingCountFromSupply(CUnit* unit) {
+	if (units_dat::GroupFlags[unit->id].isBuilding) return 0;
+	return std::max((int)units_dat::SupplyRequired[unit->id], 1);
+}
+
 } //scbw
