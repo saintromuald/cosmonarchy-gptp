@@ -331,23 +331,19 @@ namespace hooks {
 			if (*elapsedTimeFrames == 0) {
 				//Write your code here
 			}
-			/*
+			
 			//framework example, rework and use later
-			if (*elapsedTimeFrames == 1) {
-				
+			/*if (*elapsedTimeFrames == 1) {
 				char* name = "samase\\sprites_ext.txt";
 				const char* data = NULL;
 				u32 len = 0;
-				//name,data,len
 				auto data_ptr = &data;
 				auto len_ptr = &len;
-				scbw::printFormattedText("Try %d %d", data_ptr,len_ptr);
 				u32 val = reinterpret_cast<u32>(name);
-				// gptp: 19e2ec 19e2e8
-				auto result = scbw::get_aise_value(NULL, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));
-				scbw::printFormattedText("File is: ptr %d len %d, pointers %d %d, result is %", *data_ptr,*len_ptr,data_ptr,len_ptr,result);
-			}
-			*/
+				auto result = scbw::get_aise_value(NULL, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));				
+				auto result2 = scbw::get_aise_value(NULL, NULL, AiseId::ReadSamaseFile_Ptr, 0, 0);
+			}*/
+			
 			// Order debugger
 /*			if ((*activePortraitUnit) != NULL) {
 				char buf[32];
@@ -372,6 +368,18 @@ namespace hooks {
 				CUnitExtended::get(unit)->tick();
 
 				// Legionnaire - Blade Vortex
+				if (unit->id == UnitId::ZergChasmalColony) {
+					int connectors = 5;
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ResetChasmalConnectors, 0, 0, 0);
+					//loop connectors, if too far - remove connector from colony, remove connector status from unit, remove overlay
+					if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::ChasmalColonyStatus, 0) == ChasmalId::ConnectToUnits) {
+						connectors = 10;
+					}
+					if (scbw::get_aise_value(unit, NULL, AiseId::GetChasmalConnectors, 0, 0) < connectors) {
+						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::FillChasmalConnectors, 0, 0, 0);
+						//loop units in range, if good -> set connector status to unit, add connector to colony, add overlay
+					}
+				}
 				if (unit->id == UnitId::ProtossLegionnaire && scbw::getUpgradeLevel(unit->playerId,UpgradeId::BladeVortex)) {
 					//teleport jump
 					if (unit->orderTarget.unit != NULL && (unit->mainOrderId==OrderId::Attack1 || unit->mainOrderId==OrderId::AttackUnit)) {
