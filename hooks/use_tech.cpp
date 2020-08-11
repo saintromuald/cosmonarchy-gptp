@@ -317,7 +317,6 @@ namespace hooks
 			break;
 		}*/
 		case TechId::ChasmalColonySwitch:
-		{
 			int action = ChasmalId::ConnectToUnits;//on
 			if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::ChasmalColonyStatus, 0) == 1) {
 				action = ChasmalId::ConnectToBuildings;//off
@@ -330,7 +329,6 @@ namespace hooks
 			buf[4] = ValueId::ChasmalColonyStatus;
 			scbw::SendCommand(buf, 0xc);
 			break;
-		}
 		case TechId::UnusedTech39://observance
 			IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
 			
@@ -347,7 +345,6 @@ namespace hooks
 				scbw::SendCommand(buf, 0xc);
 			}
 			break;
-		
 		case TechId::UnusedTech40://sublime shepherd
 		{
 			
