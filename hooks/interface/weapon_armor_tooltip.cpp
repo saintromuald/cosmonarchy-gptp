@@ -12,15 +12,15 @@ u8 getDamageFactorForTooltip(u8 weaponId, CUnit* unit) {
 
 	//Default StarCraft behavior
 	if (
-		unit->id == UnitId::firebat ||
-		unit->id == UnitId::gui_montag ||
-		unit->id == UnitId::zealot ||
-		unit->id == UnitId::fenix_zealot ||
-		unit->id == UnitId::dark_templar_hero //Legionnaire
+		unit->id == UnitId::TerranFirebat ||
+		unit->id == UnitId::Hero_GuiMontag ||
+		unit->id == UnitId::ProtossZealot ||
+		unit->id == UnitId::Hero_FenixZealot ||
+		unit->id == UnitId::ProtossLegionnaire //Legionnaire
 		)
 		return 2;
 
-	if (unit->id == UnitId::valkyrie)
+	if (unit->id == UnitId::TerranValkyrie)
 		return 1;
 
 	return weapons_dat::DamageFactor[weaponId];
@@ -34,8 +34,8 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 
 	//get strings
 	const char* entryName = statTxtTbl->getString(entryStrIndex);
-	const char* damageStr = statTxtTbl->getString(777);					 //"Damage:"
-	const char* perRocketStr = statTxtTbl->getString(1301);	 //"per rocket"
+	const char* damageStr = statTxtTbl->getString(777);					//"Damage:"
+	const char* perRocketStr = statTxtTbl->getString(1301);				//"per rocket"
 	const char* type = "Type:";
 	const char* typeName = "";
 	const char* rangeText = "Range:";
@@ -243,13 +243,13 @@ namespace hooks {
 		const char* shieldStr = statTxtTbl->getString(779);					 //"Shields:"
 
 		u8 shieldUpgradeLevel = scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossPlasmaShields);
-		if (unit->id == UnitId::dragoon || unit->id == UnitId::tassadar_zeratul) {
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::TaldarinsGrace)) {//taldarin's grace
+		if (unit->id == UnitId::ProtossDragoon || unit->id == UnitId::ProtossHierophant) {
+			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::TaldarinsGrace)) {
 				shieldUpgradeLevel++;
 			}
 		}
-		if (unit->id == UnitId::photon_cannon) {
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::PrismaticShield)) {//taldarin's grace
+		if (unit->id == UnitId::ProtossPhotonCannon) {
+			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::PrismaticShield)) {
 				shieldUpgradeLevel += 2;
 			}
 		}
@@ -273,10 +273,10 @@ namespace hooks {
 			return getDamageTooltipString(WeaponId::PulseCannon, unit, 791);		//"Interceptors"
 
 		if (iconUnitId == UnitId::scarab)
-			return getDamageTooltipString(WeaponId::Scarab, unit, 792);				 //"Scarabs"
+			return getDamageTooltipString(WeaponId::Scarab, unit, 792);				//"Scarabs"
 
 		if (iconUnitId == UnitId::nuclear_missile)
-			return statTxtTbl->getString(793);																	//"Nukes"
+			return statTxtTbl->getString(793);										//"Nukes"
 
 		if (iconUnitId == UnitId::spider_mine)
 			return getDamageTooltipString(WeaponId::SpiderMines, unit, 794);		//"Spider Mines"
