@@ -192,14 +192,14 @@ namespace hooks {
 		}
 
 		// Knockout Drivers upgrade: reduce attack speed by 5% for every stack
-		if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0) > 0) {
+		else if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0) > 0) {
 			u32 knockoutValue = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0);
 			speed -= speed * (0.05 * knockoutValue);
 		}
 
 	#ifdef DELIVERANCE
 		// Deathless Procession upgrade: gains 125% movespeed, increasing to 175% when above 50% shields
-		if (unit->id == UnitId::ProtossAmaranth && scbw::getUpgradeLevel(unit->playerId, UpgradeId::DeathlessProcession)) {
+		else if unit->id == UnitId::ProtossAmaranth && scbw::getUpgradeLevel(unit->playerId, UpgradeId::DeathlessProcession)) {
 			if (unit->getCurrentShieldsInGame() <= units_dat::MaxShieldPoints[unit->id] / 2)
 				speed += speed / 4;
 			else
@@ -207,7 +207,7 @@ namespace hooks {
 		}
 
 		u32 astral_tempest_stacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AstralTempestStacks, 0);
-		if (astral_tempest_stacks) {
+		else if (astral_tempest_stacks) {
 			speed *= 1 + astral_tempest_stacks * 0.05;
 		}
 	#endif
