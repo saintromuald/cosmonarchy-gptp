@@ -173,7 +173,8 @@ namespace ValueId {
 		LastOrdersInit								= 37,
 		BroodlingMother								= 38,
 		ParasiteSource								= 39,
-		KnockoutDrivers								= 40,
+		KnockoutDriversValue						= 40,
+		KnockoutDriversTimer						= 41,
 
 	#if DELIVERANCE
 		EcclesiastStack								= 100,
