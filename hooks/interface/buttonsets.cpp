@@ -717,28 +717,141 @@ namespace hooks {
 
 						current_button_state = req_check((u32)current_button->reqFunc, (u8)current_button->reqVar, (u8)*LOCAL_NATION_ID, *activePortraitUnit);
 						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Upgrade_Not_At_Max_Level) {
-							if (current_button->actVar == UpgradeId::EscalateCyprian) {
+
+							// Escalation upgrade handling
+/*							if (current_button->actVar == UpgradeId::EscalateCyprian) {
 								if (scbw::get_aise_value(NULL, NULL, AiseId::RecvEscalationValue, (*activePortraitUnit)->playerId,
-									UnitId::firebat) == UnitId::mercenary_gunship) {
-									current_button->iconID = UnitId::firebat;
+									UnitId::TerranFirebat) == UnitId::TerranCyprian) {
+									current_button->iconID = UnitId::TerranFirebat;
 								}
 							}
 							if (current_button->actVar == UpgradeId::EscalateShaman) {
 								if (scbw::get_aise_value(NULL, NULL, AiseId::RecvEscalationValue, (*activePortraitUnit)->playerId,
-									UnitId::medic) == UnitId::civilian) {
-									current_button->iconID = UnitId::medic;
+									UnitId::TerranMedic) == UnitId::TerranShaman) {
+									current_button->iconID = UnitId::TerranMedic;
 								}
 							}
+							if (current_button->actVar == UpgradeId::EscalateAzazel) {
+								if (scbw::get_aise_value(NULL, NULL, AiseId::RecvEscalationValue, (*activePortraitUnit)->playerId,
+									UnitId::TerranScienceVessel) == UnitId::TerranAzazel) {
+									current_button->iconID = UnitId::TerranAzazel;
+								}
+							}*/
 						}
+
 						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Can_Create_UnitorBuilding) {
-							if (current_button->reqVar == UnitId::firebat) {
-								if (scbw::get_aise_value(NULL, NULL, AiseId::RecvEscalationValue, (*activePortraitUnit)->playerId, UnitId::firebat) != UnitId::firebat) {
+
+							// Escalation unit handling
+/*							if (current_button->reqVar == UnitId::TerranFirebat) {
+								if (scbw::get_aise_value(NULL, NULL, AiseId::RecvEscalationValue, (*activePortraitUnit)->playerId, UnitId::TerranFirebat) != UnitId::TerranFirebat) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 							}
-							else if (current_button->reqVar == 92) {
-								if (scbw::get_aise_value(NULL, NULL, AiseId::RecvEscalationValue, (*activePortraitUnit)->playerId, UnitId::firebat) != 92) {
+							else if (current_button->reqVar == UnitId::TerranCyprian) {
+								if (scbw::get_aise_value(NULL, NULL, AiseId::RecvEscalationValue, (*activePortraitUnit)->playerId, UnitId::TerranFirebat) != UnitId::TerranCyprian) {
 									current_button_state = BUTTON_STATE::Invisible;
+								}
+							}*/
+
+							// Barracks buttonset handling
+							if (current_button->reqVar == UnitId::TerranFirebat
+								|| current_button->reqVar == UnitId::TerranCyprian) {
+								if ((*activePortraitUnit)->building.addon == NULL) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranGallery) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else {
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+							}
+							else
+							if (current_button->reqVar == UnitId::TerranMedic
+								|| current_button->reqVar == UnitId::TerranShaman) {
+								if ((*activePortraitUnit)->building.addon == NULL) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMedbay) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else {
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+							}
+							else
+							if (current_button->reqVar == UnitId::TerranGhost
+								|| current_button->reqVar == UnitId::TerranSavant) {
+								if ((*activePortraitUnit)->building.addon == NULL) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranCovertOps) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else {
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+							}
+
+							// Factory buttonset handling
+							if (current_button->reqVar == UnitId::TerranSiegeTankTankMode
+								|| current_button->reqVar == UnitId::TerranGoliath) {
+								if ((*activePortraitUnit)->building.addon == NULL) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMachineShop) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else {
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+							}
+							else
+							if (current_button->reqVar == UnitId::TerranMadrigal
+								|| current_button->reqVar == UnitId::TerranPaladin) {
+								if ((*activePortraitUnit)->building.addon == NULL) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranSalvoYard) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else {
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+							}
+
+							// Starport buttonset handling
+							if (current_button->reqVar == UnitId::TerranBattlecruiser
+							|| current_button->reqVar == UnitId::TerranCentaur
+							|| current_button->reqVar == UnitId::TerranScienceVessel) {
+								if ((*activePortraitUnit)->building.addon == NULL) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranPhysicsLab) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else {
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+							}
+							else
+							if (current_button->reqVar == UnitId::TerranDropship
+							|| current_button->reqVar == UnitId::TerranAzazel
+							|| current_button->reqVar == UnitId::TerranWyvern
+							|| current_button->reqVar == UnitId::TerranValkyrie) {
+								if ((*activePortraitUnit)->building.addon == NULL) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranControlTower) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								// TODO: Add Science Facility ownership check for Wyvern requirement
+							/*	else if (current_button->iconID == IconId::Lurker_Cargo_Ship_Unused
+									&& scbw:: (*activePortraitUnit)->player_id {
+									current_button_state = BUTTON_STATE::Disabled;
+								}*/
+								else {
+									current_button_state = BUTTON_STATE::Enabled;
 								}
 							}
 						}
@@ -750,10 +863,10 @@ namespace hooks {
 								}
 							}
 						}
-						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Spell_Researched)
-						{
-							if (current_button->reqVar == TechId::Healing && current_button->iconID != 365)
-							{
+
+						// Passive icons (yes, it's quite ugly)
+						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Spell_Researched)	{
+							if (current_button->reqVar == TechId::Healing && current_button->iconID != 365)	{
 								current_button_state = BUTTON_STATE::Disabled;
 								if ((*activePortraitUnit)->id == UnitId::ZergZergling && //Zergling-Metabolic passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::MetabolicBoost) == 0 &&
@@ -1731,14 +1844,7 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 
-								if ((*activePortraitUnit)->id == UnitId::ZergGorgoleth &&  //Gorgoleth-Essence Drain ability :: upgraded
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::VitalEncephalon) == 1 &&
-									current_button->iconID == IconId::Consume)
-								{
-									current_button->actStringID = 1515; // Upgraded string
-								}
-
-								#ifdef HYDRA
+							#ifdef HYDRA
 								if ((*activePortraitUnit)->id == UnitId::ProtossDarkTemplar && //DarkTemplar-Leg Enhancements passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::LegEnhancements) == 0 &&
 									current_button->iconID == IconId::LegEnhancements)
@@ -1757,9 +1863,9 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								#endif
+							#endif
 
-								#ifdef DELIVERANCE
+							#ifdef DELIVERANCE
 								if ((*activePortraitUnit)->id == UnitId::ProtossEcclesiast && //Ecclesiast-Astral Blessing passive : disabled
 									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AstralBlessing) == 0 &&
 									current_button->iconID == IconId::ProtossGroundWeapons)
@@ -1778,10 +1884,14 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								#endif
+							#endif
+
+								// Passive icons: END \\
 
 							}
 						}
+
+						// Form switch/mode change?
 						if (current_button->actFunc == (ACT_FUNC*)ButtonActions::Use_Technology) {
 							if (current_button->actVar == TechId::Restoration) {
 								if ((*activePortraitUnit)->_padding_0x132 & 0x8) {

@@ -460,17 +460,20 @@ enum Enum {
 //Terran-Unit
 	TerranCyprian							= 92,
 	TerranShaman							= 15,
-//	TerranMadrigal							=
+	TerranSouthpaw							= 19,
+	TerranMadrigal							= 27,
 	TerranPaladin							= 186,
 	TerranWyvern							= 91,
 	TerranSavant							= 187,
 	TerranAzazel							= 98,
+	TerranCentaur							= 28,
 
 //Terran-Building
 	TerranMedbay							= 119,
-	TerranSentryTurret						= 185,
+	TerranGallery							= 185,
 	TerranFutureStation						= 192,
 	TerranCaptaincy							= 121,
+	TerranSalvoYard							= 189,
 	TerranQuarry							= 220,
 
 //Protoss-Unit
