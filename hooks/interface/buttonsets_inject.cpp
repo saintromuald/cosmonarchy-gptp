@@ -170,7 +170,8 @@ void __declspec(naked) get_stattxt_string_Wrapper() {
 		MOV stringId, CX
 		PUSHAD
 	}
-	
+
+	/*
 	if (stringId == 1637 ) {
 		if (scbw::get_aise_value(NULL, NULL, AiseId::RecvEscalationValue,
 			*ACTIVE_PLAYER_ID, UnitId::firebat) == UnitId::mercenary_gunship) {
@@ -186,19 +187,6 @@ void __declspec(naked) get_stattxt_string_Wrapper() {
 			stringId = 1685;
 		}
 	}
-	for (int i = 0; i < generictoggles; i++) {
-		if (stringId == string_toggle_on[i]) {
-			if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::GenericValue, toggle_values[i], 0) == 1) {
-				stringId = string_toggle_off[i];
-			}
-		}
-	}
-
-	if (stringId == 1633) {
-		if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
-			stringId = 1634;
-		}
-	}
 	if (stringId == 1563) {
 		if (scbw::get_aise_value(NULL, NULL, AiseId::RecvEscalationValue,
 			*ACTIVE_PLAYER_ID, UnitId::firebat) == UnitId::mercenary_gunship) {
@@ -211,6 +199,21 @@ void __declspec(naked) get_stattxt_string_Wrapper() {
 			*ACTIVE_PLAYER_ID, UnitId::medic) == UnitId::civilian) {
 			//add firebat
 			stringId = 1783;
+		}
+	}
+	*/
+
+	for (int i = 0; i < generictoggles; i++) {
+		if (stringId == string_toggle_on[i]) {
+			if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::GenericValue, toggle_values[i], 0) == 1) {
+				stringId = string_toggle_off[i];
+			}
+		}
+	}
+
+	if (stringId == 1633) {
+		if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
+			stringId = 1634;
 		}
 	}
 
