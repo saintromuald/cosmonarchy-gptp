@@ -196,13 +196,13 @@ namespace ValueId {
 #include "SCBW\enumerations\TechId.h"
 //const u32 first_generic_toggle_ability = ValueId::ReverseThrust;
 //const u32 last_generic_toggle_ability = ValueId::DisruptionWeb;
-const u32 string_toggle_on[3] = {1703, 1807, 1265};
-const u32 string_toggle_off[3] = {1113, 1114, 1634};
-const u32 button_toggle_on[3] = { 374, 319, 369 };
-const u32 button_toggle_off[3] = { 236, 236, 236 };
-const u32 toggle_values[3] = {ValueId::ReverseThrust, ValueId::SublimeShepherd, ValueId::DisruptionWeb};
-const u32 toggle_abilities[3] = {TechId::EMPShockwave,TechId::UnusedTech40,TechId::DisruptionWeb};
-const u32 generictoggles = 3;
+const u32 string_toggle_on[4] = {1703, 1807, 1265, 1232};
+const u32 string_toggle_off[4] = {1113, 1114, 1634, 1233};
+const u32 button_toggle_on[4] = { 374, 319, 369, 374};
+const u32 button_toggle_off[4] = { 236, 236, 236, 375};
+const u32 toggle_values[4] = {ValueId::ReverseThrust, ValueId::SublimeShepherd, ValueId::DisruptionWeb, ValueId::TempoChange};
+const u32 toggle_abilities[4] = {TechId::EMPShockwave, TechId::UnusedTech40, TechId::DisruptionWeb, TechId::TempoChange};
+const u32 generictoggles = 4;
 
 namespace HydraFlags1 {
 	enum {
