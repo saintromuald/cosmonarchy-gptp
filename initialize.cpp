@@ -90,6 +90,7 @@
 #include "hooks/use_tech.h"
 #include "hooks/limits/ccmu.h"
 #include "hooks/economic_units.h"
+#include "hooks/limits/extender.h"
 //#include "AI/spellcasting.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
