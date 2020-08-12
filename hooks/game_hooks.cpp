@@ -566,6 +566,25 @@ namespace hooks {
 					}
 				}
 
+				// Hallucinating Visual Effect
+				u32 hallucinatingTimer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0);
+				if (hallucinatingTimer % 24 == 1) {
+					CSprite* sprite;
+					if (unit->subunit != NULL) {
+						sprite = unit->subunit->sprite;
+					} else {
+						sprite = unit->sprite;
+					}
+
+					if (hallucinatingTimer % 72 == 1) {
+						sprite->createOverlay(ImageId::HallucinationDeath1, 0, 0, 0);
+					} else if (hallucinatingTimer % 72 == 25) {
+						sprite->createOverlay(ImageId::HallucinationDeath2, 0, 0, 0);
+					} else if (hallucinatingTimer % 72 == 49) {
+						sprite->createOverlay(ImageId::HallucinationDeath3, 0, 0, 0);
+					}
+				}
+
 				// Southpaw - Knockout Drivers upgrade
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KnockoutDriversTimer, 0) == 1) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::KnockoutDriversValue, 0, 0);

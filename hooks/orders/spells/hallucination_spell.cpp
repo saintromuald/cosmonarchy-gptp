@@ -8,7 +8,7 @@ namespace {
 bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 sightRange,u32 error_message_index);	//926D0
 void UnitDestructor(CUnit* unit);																					//A0990
 bool function_004F66D0(CUnit* unit);																				//F66D0
-CUnit* createHallucinationUnit(CUnit* target, u32 playerId);														//F6B90
+//CUnit* createHallucinationUnit(CUnit* target, u32 playerId);														//F6B90
 
 } //unnamed namespace
 
@@ -31,32 +31,35 @@ namespace hooks {
 		{
 
 			int counter = 1;
-
-			while(counter > 0) {
-
-				counter--;
-
-				CUnit* hal_unit = createHallucinationUnit(unit->orderTarget.unit,unit->playerId);
-
-				if(hal_unit == NULL)
-					counter = 0;
-				else
-				if(!function_004F66D0(hal_unit)) {
-					counter = 0;
-					UnitDestructor(hal_unit);
-				}
-
-			}
+			
+			//while(counter > 0) {
+			//
+			//	counter--;
+			//
+			//	CUnit* hal_unit = hallucinationHelpers::createHallucinationUnit(unit->orderTarget.unit,unit->playerId);
+			//
+			//	if(hal_unit == NULL)
+			//		counter = 0;
+			//	else
+			//	if(!hallucinationHelpers::function_004F66D0(hal_unit)) {
+			//		counter = 0;
+			//		hallucinationHelpers::UnitDestructor(hal_unit);
+			//	}
+			//
+			//}
+			CUnit* target = unit->orderTarget.unit;
+			scbw::sendGPTP_aise_cmd(target, 0, GptpId::SetGenericValue, ValueId::HallucinatingSourcePlayer, unit->playerId, 0);
+			scbw::sendGPTP_aise_cmd(target, 0, GptpId::SetGenericTimer, ValueId::HallucinatingTimer, (30 * 24) + 1, 0);
 
 			if(!(*CHEAT_STATE & CheatFlags::TheGathering))
 				unit->energy -= techCost;
 
-			scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV,unit->orderTarget.unit);
+			scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, target);
 
 			if(unit->orderTarget.unit->subunit != NULL)
-				unit->orderTarget.unit->subunit->sprite->createOverlay(ImageId::HallucinationHit,0,0,0);
+				target->subunit->sprite->createOverlay(ImageId::HallucinationHit,0,0,0);
 			else
-				unit->orderTarget.unit->sprite->createOverlay(ImageId::HallucinationHit,0,0,0);
+				target->sprite->createOverlay(ImageId::HallucinationHit,0,0,0);
 
 			if(unit->orderQueueHead != NULL) {
 				unit->userActionFlags |= 1;
@@ -105,6 +108,11 @@ bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 si
 
 ;
 
+
+} //Unnamed namespace
+
+namespace hallucinationHelpers {
+
 const u32 Func_UnitDestructor = 0x004A0990;
 void UnitDestructor(CUnit* unit) {
 
@@ -136,8 +144,6 @@ bool function_004F66D0(CUnit* unit) {
 
 }
 
-;
-
 const u32 Func_sub_4F6B90 = 0x004F6B90;
 CUnit* createHallucinationUnit(CUnit* target, u32 playerId) {
 
@@ -156,9 +162,6 @@ CUnit* createHallucinationUnit(CUnit* target, u32 playerId) {
 
 }
 
-;
-
-
-} //Unnamed namespace
+}
 
 //End of helper functions

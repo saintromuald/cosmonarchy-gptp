@@ -176,6 +176,10 @@ namespace ValueId {
 		KnockoutDriversValue						= 40,
 		KnockoutDriversTimer						= 41,
 
+		HallucinatingSourcePlayer					= 42,
+		HallucinatingTimer							= 43,
+		HallucinationPointer						= 44,
+
 	#if DELIVERANCE
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,

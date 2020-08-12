@@ -7,4 +7,11 @@ namespace hooks {
 
 	void injectHallucinationSpellHook();
 
+
 } //hooks
+
+namespace hallucinationHelpers {
+	void UnitDestructor(CUnit* unit);
+	bool function_004F66D0(CUnit* unit);
+	CUnit* createHallucinationUnit(CUnit* target, u32 playerId);
+}
