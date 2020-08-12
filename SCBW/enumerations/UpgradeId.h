@@ -125,7 +125,7 @@ namespace UpgradeId {
 		Incubators = 121,				// Broodling Broodspawn on kill
 		Autovitality = 122,				// Robotic unit shield capacity
 		IonPropulsion = 123,			// Vulture "fly" behavior
-		TempoChange = 124,				// Madrigal weapon switch
+		TempoChange = 124,				// Madrigal weapon switch // UNUSED
 		RequiemAfterburners = 125,		// Madrigal missile speed
 		HammerfallShells = 126,			// Siege Tank splash radius
 		FragmentaryPayloud = 127,		// Centaur secondary explosion
