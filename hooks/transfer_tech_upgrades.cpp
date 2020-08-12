@@ -78,7 +78,7 @@ const UpgradeTransferData upgradeTransferData[] = {
   {UnitId::shuttle, UpgradeId::GraviticDrive, UpgradeId::None},
   {UnitId::observer, UpgradeId::SensorArray, UpgradeId::GraviticBoosters, UpgradeId::None},
   {UnitId::scout, UpgradeId::ApialSensors, UpgradeId::GraviticThrusters, UpgradeId::None},
-  {UnitId::carrier, UpgradeId::CarrierCapacity, UpgradeId::None},
+  {UnitId::carrier, UpgradeId::AuxilliaryHangars, UpgradeId::None},
   {UnitId::arbiter, UpgradeId::KhaydarinCore, UpgradeId::None},
   {UnitId::corsair, UpgradeId::ArgusJewel, UpgradeId::None},
 };

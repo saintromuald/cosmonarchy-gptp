@@ -1469,19 +1469,19 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossCarrier && //Carrier Auxilliary passive : disabled
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::CarrierCapacity) == 0 &&
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AuxilliaryHangars) == 0 &&
 									current_button->iconID == IconId::CarrierCapacity)
 								{
 									current_button_state = BUTTON_STATE::Disabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::ProtossCarrier &&  //Carrier Auxilliary passive : enabled 
-									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::CarrierCapacity) == 1 &&
+									scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::AuxilliaryHangars) == 1 &&
 									current_button->iconID == IconId::CarrierCapacity)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								else if ((*activePortraitUnit)->id == UnitId::ProtossCarrier &&  //Carrier Auxilliary passive : unavailable
-									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::CarrierCapacity) == 0 &&
+									scbw::getUpgradeMaxLevel((*activePortraitUnit)->playerId, UpgradeId::AuxilliaryHangars) == 0 &&
 									current_button->iconID == IconId::CarrierCapacity)
 								{
 									current_button_state = BUTTON_STATE::Invisible;

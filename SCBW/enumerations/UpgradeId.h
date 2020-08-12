@@ -41,14 +41,14 @@ namespace UpgradeId {
 		SingularityCharge = 0x21,		// Strider attack range
 		LegEnhancements = 0x22,			// Zealot movespeed
 		ReinforcedScarabs = 0x23,		// Scarab armor and damage
-		ReaverCapacity = 0x24,			// 
+		ReaverCapacity = 0x24,			// Reaver Scarab capacity
 		GraviticDrive = 0x25,			// Shuttle movespeed
 		SensorArray = 0x26,				// Observer sight range
 		GraviticBoosters = 0x27,		// Observer movespeed
 		KhaydarinAmulet = 0x28,			// High Templar energy
 		ApialSensors = 0x29,			// Scout sight range
 		GraviticThrusters = 0x2A,		// Scout movespeed
-		CarrierCapacity = 0x2B,			// 
+		AuxilliaryHangars = 0x2B,		// Carrier Interceptor capacity
 		KhaydarinCore = 0x2C,			// Arbiter energy
 		RapidReconstitution = 0x2D,		// Colony HP regeneration rate
 		PrismaticShield = 0x2E,			// Photon Cannon shield armor
@@ -234,7 +234,7 @@ namespace ScUpgrade {
 		KhaydarinAmulet = 40, // (HT +50)
 		ApialSensors = 41,
 		GraviticThrusters = 42,
-		CarrierCapacity = 43,
+		AuxilliaryHangars = 43,
 		KhaydarinCore = 44, // (Arbiter +50)
 		UnusedUpgrade45 = 45,
 	};
