@@ -190,6 +190,8 @@ namespace hooks {
 			double multiplier = MathUtils::map(health, maxHealth, maxHealth / 2, 1.0, 1.5, true);
 			speed = (u32) ((double)speed * multiplier);
 		}
+
+		// Knockout Drivers upgrade: reduces movement speed by 5% per stack
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0) > 0) {
 			u32 knockoutValue = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0);
 			speed -= speed * (0.05 * knockoutValue);
