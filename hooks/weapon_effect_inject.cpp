@@ -128,7 +128,24 @@ namespace {
 			POP EBP
 			RETN 4
 		}
- }
+	}
+	void __declspec(naked) broodlingsWrapper() {
+		static CBullet* bullet;
+		static u32 weaponId;
+		__asm {
+			MOV bullet, EBX
+			MOV weaponId, ECX
+		}
+		hooks::broodlings(bullet, weaponId);
+		__asm {
+			POP EDI
+			POP ESI
+			POP EBX
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+	}
 
   
  //    (void*)0x0048B797,                //  1 - Normal
@@ -136,6 +153,7 @@ namespace {
  //    (void*)0x0048B8B9,                //  2 - Splash (Radial)
  //    (void*)0x0048B8B9,                //  3 - Splash (Enemy)
  //    (void*)0x0048B969,                //  6 - Parasite
+//	(void*)0x0048B9C8,					 //  7 - Broodlings
 
  const void* WeaponEffects_SwitchTable[] = {
    (void*)0x0048BBF6,      //  0 - None
@@ -145,7 +163,7 @@ namespace {
    (void*)0x0048B910,      //  4 - Lockdown
    (void*)0x0048B8B9,      //  5 - Nuclear Missile
    parasiteWrapper,        //  6 - Parasite
-   (void*)0x0048B9C8,      //  7 - Broodlings
+   broodlingsWrapper,      //  7 - Broodlings
    (void*)0x0048BA0F,      //  8 - EMP Shockwave
    (void*)0x0048BA67,      //  9 - Irradiate
    (void*)0x0048BAAB,      // 10 - Ensnare
