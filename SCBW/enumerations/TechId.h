@@ -50,14 +50,16 @@ enum Enum {
   UnusedTech42      = 0x2A, // (unused)
   UnusedTech43      = 0x2B, // (unused)
   None              = 0x2C,
-  NuclearStrike		  = 0x2D, //based on bwapi/BWMemoryEdit/Enums/TechType.cs
+  NuclearStrike		= 0x2D, //based on bwapi/BWMemoryEdit/Enums/TechType.cs
   UnknownLastEntry  = 0x2E,	//based on bwapi/BWMemoryEdit/Enums/TechType.cs
 
   // HYDRA \\
 
-  EssenceDrain = 35,		// Gorgoleth ability
+  EssenceDrain		= 35,		// Gorgoleth energy steal ability
+  TempoChange		= 36,		// Madrigal weapon switch ability
+  Skyfall			= 37,		// Paladin missile salvo ability
   //extended
-  ChasmalColonySwitch = 47, // Chasmal Colony - Adaptive Barrier / Adrenal Secretion
+  //ChasmalColonySwitch = 47, // Chasmal Colony - Adaptive Barrier / Adrenal Secretion
 };
 }
 
