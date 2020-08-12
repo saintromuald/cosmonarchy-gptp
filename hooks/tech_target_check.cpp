@@ -61,10 +61,13 @@ u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayerId, u16 techId) {
 		else
 		if(techId == TechId::Hallucination) {
 			if(target->id == UnitId::ProtossInterceptor)
-				stringId = 876; //Invalid target.<0>
+				stringId = 876; // Invalid target.<0>
 			else
 			if(units_dat::BaseProperty[target->id] & UnitProperty::Building)
-				stringId = 877; //Unable to target structure.<0>
+				stringId = 877; // Unable to target structure.<0>
+			else
+			if(scbw::isAlliedTo(target->playerId, castingPlayerId) || target->playerId == castingPlayerId)
+				stringId = 1327; // Must target enemy units<0>
 			else
 				stringId = 0; //valid target
 		}
