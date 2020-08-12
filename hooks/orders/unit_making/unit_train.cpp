@@ -267,11 +267,16 @@ void function_00468420(CUnit* unit) {
 				jump_to_685D8 = true;			
 
 			if(jump_to_685D8) {
-				if (builtUnit!=NULL && builtUnit->id == UnitId::carrier) {
+				if (builtUnit!=NULL && builtUnit->id == UnitId::ProtossCarrier) {
+					int interceptors = 4;
+					if (scbw::getUpgradeLevel(builtUnit->playerId, UpgradeId::CarrierCapacity)) {
+						interceptors = 8;
+					}
+
 					u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
 					buf[0] = 0x99;//new general command
 					buf[1] = NewGameCommand::CarrierPrebuild;
-					buf[2] = 4;
+					buf[2] = interceptors;
 					buf[3] = *ACTIVE_PLAYER_ID;
 					memcpy(&buf[4], &builtUnit, 4);
 
