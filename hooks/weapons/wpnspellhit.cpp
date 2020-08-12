@@ -704,6 +704,26 @@ namespace hooks {
 
 			}
 
+			if (target != NULL) {
+				if (scbw::getUpgradeLevel(attacker->playerId, UpgradeId::EnsnaringBrood)
+				&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
+					u32 overlayImageId;
+					if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay)
+						overlayImageId = ImageId::EnsnareOverlay_Medium;
+					else
+						if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay)
+							overlayImageId = ImageId::EnsnareOverlay_Large;
+						else
+							overlayImageId = ImageId::EnsnareOverlay_Small;
+
+					if (!target->getOverlay(overlayImageId)) {
+						target->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
+					}
+					target->ensnareTimer = 10 * 24;
+					target->updateSpeed();
+				}
+			}
+
 			jump_to_end_of_loop = false; // <- allows to target air units, and presumably terrain, if only the function would actually be called
 			if (!jump_to_end_of_loop) { //F49E2
 

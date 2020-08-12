@@ -400,7 +400,7 @@ namespace hooks {
 			if (damage < 128)
 				damage = 128;
 			if (attacker != NULL) {
-				if (attacker->id == UnitId::broodling && scbw::getUpgradeLevel(attacker->playerId, 84)
+				if (attacker->id == UnitId::ZergBroodling && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::EnsnaringBrood)
 					&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
 					u32 overlayImageId;
 					if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay)
@@ -414,7 +414,7 @@ namespace hooks {
 						target->sprite->createTopOverlay(overlayImageId,
 							0, 0, 0);
 					}
-					target->ensnareTimer = 30;
+					target->ensnareTimer = 10 * 24;
 					target->updateSpeed();
 				}
 			}
