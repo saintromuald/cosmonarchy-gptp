@@ -69,6 +69,7 @@ namespace UpgradeId {
 		None = 0x3D,
 
 		// extended upgrades \\
+		// REPLACE UNUSED ENTRIES FIRST
 
 		EscalateCyprian = 62,			// 
 		PlasteelServos = 63,			// Cyprian movement speed
