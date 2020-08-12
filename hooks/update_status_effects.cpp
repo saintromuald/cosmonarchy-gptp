@@ -260,12 +260,17 @@ void updateStatusEffects(CUnit* unit) {
 	if (unit->id == UnitId::TerranDropship && scbw::getUpgradeLevel(unit->playerId, UpgradeId::PassengerInsurance)) {
 		unit->updateSpeed();
 	}
-
-	// 
 	else if (unit->id == UnitId::TerranVulture && scbw::getUpgradeLevel(unit->playerId, UpgradeId::IonPropulsion)) {
 		unit->updateSpeed();
 	}
-
+	else if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0) > 0) {
+		unit->updateSpeed();
+	}
+#ifdef DELIVERANCE
+	else if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AstralTempestStacks, 0) > 0) {
+		unit->updateSpeed();
+	}
+#endif
 	// Forcibly unburrow units that collide with buildings
 	if (unit->status & UnitStatus::Burrowed) {
 		auto tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
