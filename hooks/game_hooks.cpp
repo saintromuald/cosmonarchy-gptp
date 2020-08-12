@@ -575,14 +575,7 @@ namespace hooks {
 					} else {
 						sprite = unit->sprite;
 					}
-
-					if (hallucinatingTimer % 72 == 1) {
-						sprite->createOverlay(ImageId::HallucinationDeath1, 0, 0, 0);
-					} else if (hallucinatingTimer % 72 == 25) {
-						sprite->createOverlay(ImageId::HallucinationDeath2, 0, 0, 0);
-					} else if (hallucinatingTimer % 72 == 49) {
-						sprite->createOverlay(ImageId::HallucinationDeath3, 0, 0, 0);
-					}
+					sprite->createOverlay(1035, 0, 0, 0);
 				}
 
 				// Southpaw - Knockout Drivers upgrade
