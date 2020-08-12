@@ -341,6 +341,7 @@ namespace hooks {
 
 		void proc(CUnit* unit) {
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::Building) return;
+			if (unit->status & UnitStatus::Burrowed) return;
 			int playerFlag = 1 << _playerID;
 			constexpr int defaultArmParasiteTimer = (24 * 2) + 1;
 			if (unit->parasiteFlags != playerFlag) { // <- Prevent overwriting timer for already parasited units by same player

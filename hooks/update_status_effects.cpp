@@ -255,7 +255,7 @@ void updateStatusEffects(CUnit* unit) {
 		if (unit->stasisTimer == 0)
 			unit->removeStasisField();
 	}
-
+	
 	// 
 	if (unit->id == UnitId::TerranDropship && scbw::getUpgradeLevel(unit->playerId, UpgradeId::PassengerInsurance)) {
 		unit->updateSpeed();

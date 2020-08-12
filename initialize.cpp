@@ -418,8 +418,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectFeedbackSpellHook();
 	hooks::injectBtnsCondHook();
 	hooks::injectRecvCmdHook();*/
-	hooks::injectCreateInitUnitsHooks();/*
-	hooks::injectGiveUnitHook();*/
+	hooks::injectCreateInitUnitsHooks();
+//	hooks::injectGiveUnitHook();
 	hooks::injectTrainCmdRecvHooks();/*
 	hooks::injectCMDRECV_SiegeTankHooks();
 	hooks::injectCMDRECV_MergeArchonHooks();*/

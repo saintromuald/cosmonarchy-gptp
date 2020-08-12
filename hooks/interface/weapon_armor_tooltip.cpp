@@ -79,10 +79,10 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 		if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::CharonBooster))
 			bonusRange = 3;
 		break;
-	case WeaponId::HellfireMissilePack_AlanSchezar:
+	/*case WeaponId::HellfireMissilePack_AlanSchezar:
 		if (scbw::isBroodWarMode())
 			bonusRange = 3;
-		break;
+		break;*/
 	default:
 		bonusRange = 0;
 
