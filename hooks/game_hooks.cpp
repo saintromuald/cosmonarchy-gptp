@@ -572,16 +572,28 @@ namespace hooks {
 					}
 				}
 
+				// Centaur - Sunchaser Missiles animation
+				if (unit->id == UnitId::TerranCentaur && unit->orderSignal & 0x20) {
+					unit->orderSignal &= ~0x20;
+						if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SunchaserMissiles) == 1
+						&& unit->getDistanceToTarget(unit->orderTarget.unit) <= 128) {
+							unit->playIscriptAnim(IscriptAnimation::Unused1);
+					}
+				}
+
 				// Hallucinating Visual Effect
 				u32 hallucinatingTimer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0);
-				if (hallucinatingTimer % 24 == 1) {
-					CSprite* sprite;
-					if (unit->subunit != NULL) {
-						sprite = unit->subunit->sprite;
-					} else {
-						sprite = unit->sprite;
+				if (unit != NULL && unit->sprite != NULL) {
+					if (hallucinatingTimer % 24 == 1) {
+						CSprite* sprite;
+						if (unit->subunit != NULL) {
+							sprite = unit->subunit->sprite;
+						}
+						else {
+							sprite = unit->sprite;
+						}
+						sprite->createOverlay(1035, 0, 0, 0);
 					}
-					sprite->createOverlay(1035, 0, 0, 0);
 				}
 
 				// Southpaw - Knockout Drivers upgrade
