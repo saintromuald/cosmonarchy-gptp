@@ -1044,8 +1044,8 @@ int getBroodlingCountFromSupply(CUnit* unit) {
 CUnit** getSourceQueens(CUnit* unit) {
 	CUnit* queens[2] = { NULL };
 	if (unit == NULL) return queens; // <- prevents crash from incubators, but does not fix the issue
-	queens[0] = (CUnit*)scbw::get_aise_value(unit, NULL, AiseId::GenericUnit, ValueId::BroodlingMother, 0);
-	queens[1] = (CUnit*)scbw::get_aise_value(unit, NULL, AiseId::GenericUnit, ValueId::ParasiteSource, 0);
+	queens[0] = scbw::get_generic_unit(unit, ValueId::BroodlingMother);
+	queens[1] = scbw::get_generic_unit(unit, ValueId::ParasiteSource);
 	return queens;
 }
 
