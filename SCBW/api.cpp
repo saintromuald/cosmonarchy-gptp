@@ -1023,15 +1023,19 @@ void minimapPing(u32 x, u32 y, s32 color, u32 playerId) {
 void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer, CUnit* creator) {
 	for (int i = 0; i < count; i++) {
 		CUnit* unit = scbw::createUnitIngame(UnitId::ZergBroodling, playerId, x, y, creator);
-		if (unit != nullptr) {
+		if (unit != NULL) {
 			scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
 			if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
 				unit->removeTimer = removeTimer;
 			}
-			scbw::sendGPTP_aise_cmd(unit, creator, GptpId::SetGenericUnit, ValueId::BroodlingMother, 0, 0);
+			if (creator != NULL) {
+				scbw::sendGPTP_aise_cmd(unit, creator, GptpId::SetGenericUnit, ValueId::BroodlingMother, 0, 0);
+			}
 
 			if (scbw::getUpgradeLevel(playerId, UpgradeId::GameteMeiosis)) {
-				if (creator != NULL) creator->energy = std::min((u16)(creator->energy + (u16)5 * (u16)256), creator->getMaxEnergy()); // Parasite and Incubators
+				if (creator != NULL) {
+					creator->energy = std::min((u16)(creator->energy + (u16)5 * (u16)256), creator->getMaxEnergy()); // Parasite and Incubators
+				}
 			}
 		}
 	}
