@@ -256,21 +256,30 @@ void updateStatusEffects(CUnit* unit) {
 			unit->removeStasisField();
 	}
 	
-	// 
+	// Update speed based on upgrades or status effects
+
+	// Passenger Insurance: Dropship acceleration
 	if (unit->id == UnitId::TerranDropship && scbw::getUpgradeLevel(unit->playerId, UpgradeId::PassengerInsurance)) {
 		unit->updateSpeed();
 	}
+
+	// Ion Propulsion: Vulture slow while over impassable terrain
 	else if (unit->id == UnitId::TerranVulture && scbw::getUpgradeLevel(unit->playerId, UpgradeId::IonPropulsion)) {
 		unit->updateSpeed();
 	}
+
+	// Knockout Drivers: Southpaw slow per stack
 	else if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0) > 0) {
 		unit->updateSpeed();
 	}
+
 #ifdef DELIVERANCE
+	// Astral Tempest: Ecclesiast movespeed on Astral Blessing proc
 	else if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AstralTempestStacks, 0) > 0) {
 		unit->updateSpeed();
 	}
 #endif
+
 	// Forcibly unburrow units that collide with buildings
 	if (unit->status & UnitStatus::Burrowed) {
 		auto tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
