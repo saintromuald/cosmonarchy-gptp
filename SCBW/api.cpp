@@ -875,14 +875,16 @@ CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* creator) {
 	pos.y = y;
 	fixTargetLocation(&pos, unitId);
 	unit = CreateUnit(unitId, pos.x, pos.y, playerId);
-	if (unit == NULL) {
+	if (unit == NULL && creator != NULL) {
 		displayLastNetErrForPlayer(creator->playerId);
-	}
-	else {
+	} else {
 		FinishUnit_Pre(unit);
 		updateUnitStrength(unit);
-		if (creator !=NULL && creator->pAI != NULL)
-			InheritAI2(creator, unit);
+		if (creator != NULL) {
+			if (creator->pAI != NULL){
+				InheritAI2(creator, unit);
+			}
+		}
 	}
 	return unit;
 }
