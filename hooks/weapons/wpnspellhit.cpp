@@ -760,7 +760,7 @@ namespace hooks {
 						timerBeforeDisappearance = 1350;	//probably old unremoved code
 					else
 						if (created_broodling->id == UnitId::ZergBroodling)
-							timerBeforeDisappearance = 1800;	//0x708
+							timerBeforeDisappearance = 720;	//0x708
 						else
 							timerBeforeDisappearance = 0;
 
