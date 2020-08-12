@@ -334,7 +334,7 @@ namespace hooks {
 			}
 			if (weaponId == 22 && attacker!=NULL) {
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::DirgeImpale, 24 + 1, 0);
-				scbw::sendGPTP_aise_cmd(target, attacker, GptpId::SetGenericUnit, ValueId::DirgeAttacker, 0);
+				scbw::sendGPTP_aise_cmd(target, attacker, GptpId::SetGenericUnit, ValueId::DirgeAttacker, 0, 0);
 			}
 
 			// Southpaw - Knockout Drivers
