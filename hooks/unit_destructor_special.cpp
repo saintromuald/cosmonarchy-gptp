@@ -319,7 +319,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		int supplyCount = scbw::getBroodlingCountFromSupply(unit);
 		for (int player = 0; player < PLAYER_COUNT; player++) {
 			if (unit->parasiteFlags & (1 << player) && scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ParasiteArmTimer, 0) <= 1) {
-				scbw::spawnBroodlings(supplyCount, player, unit->position.x, unit->position.y, 1800, scbw::getSourceQueens(unit)[1]);
+				scbw::spawnBroodlings(supplyCount, player, unit->position.x, unit->position.y, 720, scbw::getSourceQueens(unit)[1]);
 			}
 		}
 	}
