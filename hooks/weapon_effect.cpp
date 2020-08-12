@@ -348,7 +348,7 @@ namespace hooks {
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::ParasiteArmTimer, defaultArmParasiteTimer, 0);
 				unit->sprite->createOverlay(1031, 0, 0, 0);
 			}
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericUnit, ValueId::ParasiteSource, (u32)_queen, 0);
+			scbw::sendGPTP_aise_cmd(unit, _queen, GptpId::SetGenericUnit, ValueId::ParasiteSource, 0, 0);
 			unit->parasiteFlags = playerFlag; // Parasite now overwrites other players' parasite
 			scbw::refreshConsole();
 		}
