@@ -566,11 +566,6 @@ namespace hooks {
 					}
 				}
 
-				// Parasite Armed Effect -- temporary
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ParasiteArmTimer, 0) == 1) {
-					unit->sprite->createOverlay(1031, 0, 0, 0);
-				}
-
 				// Southpaw - Knockout Drivers upgrade
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KnockoutDriversTimer, 0) == 1) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::KnockoutDriversValue, 0, 0);
