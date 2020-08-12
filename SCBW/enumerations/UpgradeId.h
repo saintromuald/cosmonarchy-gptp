@@ -128,7 +128,7 @@ namespace UpgradeId {
 		TempoChange = 124,				// Madrigal weapon switch // UNUSED
 		RequiemAfterburners = 125,		// Madrigal missile speed
 		HammerfallShells = 126,			// Siege Tank splash radius
-		FragmentaryPayloud = 127,		// Centaur secondary explosion
+		SunchaserMissiles = 127,		// Centaur secondary explosion
 		KnockoutDrivers = 128,			// Southpaw speed slow
 		BabylonPlating = 129,			// Siege Tank armor bonus in tank mode
 
