@@ -307,6 +307,7 @@ namespace hooks {
 		u8		dmgDivisor
 	) {
 		//the unit must neither be already dead nor invincible
+
 		if (target->hitPoints != 0 && !(target->status & UnitStatus::Invincible)) {
 
 			//if (attacker != nullptr) {
@@ -330,6 +331,10 @@ namespace hooks {
 					scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::AddGenericValue, ValueId::AdrenalStacks, 1, 0);
 				}
 				scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::AdrenalTimer, 49, 0); //49 is 2 seconds (48) + 1
+			}
+			if (weaponId == 22 && attacker!=NULL) {
+				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::DirgeImpale, 24 + 1, 0);
+				scbw::sendGPTP_aise_cmd(target, attacker, GptpId::SetGenericUnit, ValueId::DirgeAttacker, 0);
 			}
 
 			// Southpaw - Knockout Drivers

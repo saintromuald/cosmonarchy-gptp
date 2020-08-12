@@ -408,6 +408,12 @@ namespace hooks {
 				*/
 
 				// Devourer - Critical Mass
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DirgeImpale, 0) == 1) {
+					auto attacker = scbw::get_generic_unit(unit,ValueId::DirgeAttacker);
+					if (attacker != NULL) {
+						scbw::createBullet(123, attacker, unit->getX(), unit->getY(), attacker->playerId, 0);
+					}
+				}
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::CorrosiveSporeDelay, 0)==1) {
 					int count = unit->acidSporeCount;
 					unit->acidSporeCount -= 2;
@@ -566,16 +572,28 @@ namespace hooks {
 					}
 				}
 
+				// Centaur - Sunchaser Missiles animation
+				if (unit->id == UnitId::TerranCentaur && unit->orderSignal & 0x20) {
+					unit->orderSignal &= ~0x20;
+						if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SunchaserMissiles) == 1
+						&& unit->getDistanceToTarget(unit->orderTarget.unit) <= 128) {
+							unit->playIscriptAnim(IscriptAnimation::Unused1);
+					}
+				}
+
 				// Hallucinating Visual Effect
 				u32 hallucinatingTimer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0);
-				if (hallucinatingTimer % 24 == 1) {
-					CSprite* sprite;
-					if (unit->subunit != NULL) {
-						sprite = unit->subunit->sprite;
-					} else {
-						sprite = unit->sprite;
+				if (unit != NULL && unit->sprite != NULL) {
+					if (hallucinatingTimer % 24 == 1) {
+						CSprite* sprite;
+						if (unit->subunit != NULL) {
+							sprite = unit->subunit->sprite;
+						}
+						else {
+							sprite = unit->sprite;
+						}
+						sprite->createOverlay(1035, 0, 0, 0);
 					}
-					sprite->createOverlay(1035, 0, 0, 0);
 				}
 
 				// Southpaw - Knockout Drivers upgrade
