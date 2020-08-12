@@ -180,6 +180,9 @@ namespace ValueId {
 		HallucinatingTimer							= 43,
 		HallucinationPointer						= 44,
 
+		TempoChange = 45,
+		DirgeImpale = 46,
+		DirgeAttacker = 47,
 	#if DELIVERANCE
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,
