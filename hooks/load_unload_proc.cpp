@@ -133,7 +133,10 @@ namespace hooks {
 		}
 
 		unitToLoad->connectedUnit = unit;
-
+		/*int unit_array_length = UNIT_ARRAY_LENGTH;
+		if (Globals.extended_unit_table == 1) {
+			unit_array_length = NEW_ARRAY_LENGTH;
+		}*/
 		if (loaded_index < UNIT_ARRAY_LENGTH) {
 			unit->loadedUnit[counter].index = loaded_index;
 			unit->loadedUnit[counter].unitId = unitToLoad->targetOrderSpecial;

@@ -24,3 +24,6 @@ public:
 //	file entry count
 };
 
+namespace hooks {
+	void injectLimitHooks();
+}
