@@ -667,8 +667,10 @@ namespace hooks {
 			if (attacker != NULL) { // looks like target will always be alive if this function was called?
 				if (scbw::get_aise_value(target, 0, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0) >= 1
 					&& scbw::get_generic_unit(attacker, ValueId::HallucinationPointer) == NULL) {
+					u32 haluPlayer = scbw::get_aise_value(target, 0, AiseId::GenericValue, ValueId::HallucinatingSourcePlayer, 0);
+					if (haluPlayer != attacker->playerId && !scbw::isAlliedTo(haluPlayer, attacker->playerId)) return;
 
-					CUnit* hal_unit = hallucinationHelpers::createHallucinationUnit(attacker, scbw::get_aise_value(target, 0, AiseId::GenericValue, ValueId::HallucinatingSourcePlayer, 0));
+					CUnit* hal_unit = hallucinationHelpers::createHallucinationUnit(attacker, haluPlayer);
 					if (hal_unit != NULL) {
 						hal_unit->sprite->createOverlay(ImageId::HallucinationDeath3);
 						scbw::sendGPTP_aise_cmd(attacker, hal_unit, GptpId::SetGenericUnit, ValueId::HallucinationPointer, 0, 0);
