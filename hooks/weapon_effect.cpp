@@ -3,11 +3,13 @@
 #include <SCBW/UnitFinder.h>
 #include <SCBW/enumerations.h>
 #include <SCBW/api.h>
+#include "hooks/weapons/wpnspellhit.h"
 
 namespace {
   bool isUnitDistanceWithin(CUnit* target, CBullet* bullet, u32 radius);
   void weaponBulletShot(CUnit* target, CBullet* bullet, u32 dmgDivisor);
   void doWeaponHit(CUnit* target, CUnit* attacker, u8 dmgDivisor);
+  void Ai_UnitWasHit(u32 main_target_reaction, u32 dont_call_help, CUnit* attacker, CUnit* target);
 
   // SC internal data for lurker spines
   struct SpineHitTable {
@@ -364,11 +366,33 @@ namespace hooks {
       scbw::UnitFinder(left, top, right, bottom).forEach(parasiteProc(bullet->sourceUnit->playerId, bullet->sourceUnit));
   }
   
-
+  void broodlings(CBullet* bullet, u32 weaponId) {
+	  if (bullet->sourceUnit == NULL) return;
+	  CUnit* target = bullet->attackTarget.unit;
+	// if (target != NULL) {
+	//	  if (!target->isDead()) {
+//			  Ai_UnitWasHit(1, 0, bullet->sourceUnit, target);
+			 // BroodlingHit(bullet->sourceUnit, target,bullet);
+	  hooks::BroodlingHit(bullet->sourceUnit, target, bullet);
+	//	  }
+	//  }
+  }
 }//hooks
 
 namespace {
    /*** helper functions that I couldn't find in gptp ***/
+	const u32 Func_0043F320 = 0x0043F320;
+	void Ai_UnitWasHit(u32 main_target_reaction, u32 dont_call_help, CUnit* attacker, CUnit* target) {
+		__asm {
+			PUSHAD
+			PUSH main_target_reaction
+			PUSH dont_call_help
+			MOV ECX,target
+			MOV EDX,attacker
+			CALL Func_0043F320
+			POPAD
+		}
+	}
 
   // checks if the distance between target and bullet's positions is < radius
   const u32 Helper_IsUnitDistanceWithin = 0x0048ADB0;

@@ -65,21 +65,22 @@ namespace UpgradeId {
 		Relocators = 0x39,				// Scarab "fly" behavior
 		MiningEfficiency = 0x3A,		// Income multiplier
 		KhaydarinDrive = 0x3B,			// Starcaller energy
-		GlobalUpgrade60 = 0x3C,			// Unused 60
+		GlobalUpgrade60 = 0x3C,			// Unused 60 // DO NOT USE
 		None = 0x3D,
 
 		// extended upgrades \\
+		// REPLACE UNUSED ENTRIES FIRST
 
 		EscalateCyprian = 62,			// 
 		PlasteelServos = 63,			// Cyprian movement speed
 		OdysseusReactor = 64,			// Comsat Station energy
 		Capacitors = 65,				// Wraith cloaked attack speed
 		AblativeWurm = 66,				// Mutalisk bounce damage
-		EscalateAzazel = 67,			// 
+		EscalateAzazel = 67,			// UNUSED
 		InnervatingMatrices = 68,		// Defensive Matrix heal
 		AchernusReactor = 69,			// Azazel energy
 		UmojanBatteries = 70,			// Yamato Gun damage
-		EscalateSavant = 71,			// 
+		EscalateSavant = 71,			// UNUSED
 		AugustgradsRevenge = 72,		// Nuclear Missile damage and temp unbuildable terrain
 		TendrilAmitosis = 73,			// Sunken Colony extra attack
 		NydalTransfusion = 74,			// Nydus Canal place off creep
@@ -109,7 +110,7 @@ namespace UpgradeId {
 		GraviticAttenuator = 104,		// Unused upgrade
 		PeerReviewedDestruction = 105,	// Science Vessel paint nuke target
 		PassengerInsurance = 106,		// Dropship acceleration
-		EscalateShaman = 107,			// 
+		EscalateShaman = 107,			// UNUSED
 		AstralAegis = 108,				// Archon support-shield on death
 		Skyforge = 109,					// Interceptor build time
 		AdrenalSurge = 110,				// Vorvaling movement speed and homing
@@ -125,10 +126,10 @@ namespace UpgradeId {
 		Incubators = 121,				// Broodling Broodspawn on kill
 		Autovitality = 122,				// Robotic unit shield capacity
 		IonPropulsion = 123,			// Vulture "fly" behavior
-		TempoChange = 124,				// Madrigal weapon switch
+		TempoChange = 124,				// Madrigal weapon switch // UNUSED
 		RequiemAfterburners = 125,		// Madrigal missile speed
 		HammerfallShells = 126,			// Siege Tank splash radius
-		FragmentaryPayloud = 127,		// Centaur secondary explosion
+		SunchaserMissiles = 127,		// Centaur secondary explosion
 		KnockoutDrivers = 128,			// Southpaw speed slow
 		BabylonPlating = 129,			// Siege Tank armor bonus in tank mode
 

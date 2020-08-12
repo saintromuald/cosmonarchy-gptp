@@ -671,7 +671,6 @@ namespace hooks {
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
 	void BroodlingHit(CUnit* attacker, CUnit* target, CBullet* bullet) {
-
 		u32 broodlings_to_spawn = 3;
 		if (scbw::getActiveTileAt(bullet->sprite->position.x, bullet->sprite->position.y).hasCreep) {
 			broodlings_to_spawn = 5;
@@ -680,7 +679,6 @@ namespace hooks {
 		int current_x = bullet->sprite->position.x - 2;
 		int current_y = bullet->sprite->position.y - 2;
 		while (broodlings_to_spawn > 0) {
-
 			bool jump_to_end_of_loop = false; //F4A82
 
 			//check various conditions before attempting to create a broodling
