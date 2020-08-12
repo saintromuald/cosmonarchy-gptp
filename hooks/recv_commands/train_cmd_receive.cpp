@@ -79,8 +79,8 @@ void CMDRECV_Train(u16 wUnitType) {
 
 	if(builder != NULL && getActivePlayerNextSelection() == NULL) {
 
-		if(builder->canMakeUnit(wUnitType,*ACTIVE_NATION_ID) == 1 &&
-			wUnitType <= UnitId::Spell_DisruptionWeb //id before buildings id
+		if(builder->canMakeUnit(wUnitType,*ACTIVE_NATION_ID) == 1 /*&&
+			wUnitType <= UnitId::Spell_DisruptionWeb*/ //id before buildings id //must be disabled for paladins
 		)
 		{
 			if(HasMoneyCanMake(builder,wUnitType)) //add unit to build queue if successful

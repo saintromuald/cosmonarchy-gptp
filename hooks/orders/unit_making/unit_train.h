@@ -7,5 +7,5 @@ namespace hooks {
 	void function_00468420(CUnit* unit);			//00468420
 
 	void injectUnitTrainHooks();
-
+	int isQueueSlotActive(CUnit* unit, u32 slot);
 } //hooks

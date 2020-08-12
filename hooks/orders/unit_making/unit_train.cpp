@@ -29,7 +29,10 @@ void hideAndDisableUnit(CUnit* unit);										//E6340
 
 
 namespace hooks {
-
+	int isQueueSlotActive(CUnit* unit, u32 slot) {
+		//return unit->buildQueue[(slot + unit->buildQueueSlot) % 5] <= UnitId::Spell_DisruptionWeb;
+		return unit->buildQueue[(slot + unit->buildQueueSlot) % 5] < UnitId::None;
+	}
 void secondaryOrd_TrainFighter(CUnit* unit) {
 
 	if(

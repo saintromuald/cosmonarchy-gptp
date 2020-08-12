@@ -43,9 +43,27 @@ void __declspec(naked) function_00468420Wrapper() {
 
 }; //unnamed namespace
 
+void __declspec(naked) queueSlotActiveWrapper() {
+	static CUnit* unit;
+	static u32 slot;
+	static u32 result;
+	__asm {
+		MOV unit,ECX
+		MOV slot,EDX
+		PUSHAD
+	}
+	result = hooks::isQueueSlotActive(unit, slot);
+	__asm {
+		POPAD
+		MOV EAX, result
+		RETN
+	}
+}
+
 namespace hooks {
 
 	void injectUnitTrainHooks() {
+		jmpPatch(queueSlotActiveWrapper, 0x00401E70, 2);
 		jmpPatch(secondaryOrd_TrainFighterWrapper,	0x00466790, 2);
 		jmpPatch(function_00468420Wrapper,			0x00468420, 4);
 	}
