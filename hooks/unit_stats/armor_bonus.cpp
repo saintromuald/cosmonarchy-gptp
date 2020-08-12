@@ -11,10 +11,15 @@ u8 getArmorBonusHook(CUnit* unit) {
 
 	if (scbw::isBroodWarMode()) {
 		
-		if (unit->id == UnitId::Hero_Torrasque || unit->id == UnitId::ultralisk) {
+		if (unit->id == UnitId::Hero_Torrasque || unit->id == UnitId::ZergUltralisk) {
 			if ((units_dat::BaseProperty[unit->id] & UnitProperty::Hero)
 			|| scbw::getUpgradeLevel(unit->playerId, UpgradeId::ChitinousPlating)) {
 				armorUpg = 2;
+			}
+		}
+		if (unit->id == UnitId::TerranSiegeTankTankMode) {
+			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::BabylonPlating)) {
+				armorUpg = 1;
 			}
 		}
 		
