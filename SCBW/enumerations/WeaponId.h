@@ -136,11 +136,12 @@ enum Enum {
 	GaussRifle13_Unused						  = 0x81,
 	None									  = 0x82,
 
-	WyvernWeapon							  = 125,
-	ObservanceWeapon						  = 122,
+	UppercutLaser							  = 5,			// Southpaw weapon
+	CrusaderMissiles						  = 10,			// Paladin weapon
 	SerratedCleavers						  = 47,			// Gorgoleth weapon
 	EssenceDrain							  = 51,			// Gorgoleth ability
-	UppercutLaser							  = 5,			// Southpaw weapon
+	ObservanceWeapon						  = 122,
+	WyvernWeapon							  = 125,
 
 	#ifdef DELIVERANCE
 		EcclesiastWeapon = 110,
