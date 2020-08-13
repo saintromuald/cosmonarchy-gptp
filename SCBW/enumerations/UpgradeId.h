@@ -78,7 +78,7 @@ namespace UpgradeId {
 		AblativeWurm = 66,				// Mutalisk bounce damage
 		WardensMark = 67,				// Clarion weapon debuff for allied shieldsteal
 		InnervatingMatrices = 68,		// Defensive Matrix heal
-		AchernusReactor = 69,			// Azazel energy
+		AchernusReactor = 69,			// Azazel energy and energy vent passive
 		UmojanBatteries = 70,			// Yamato Gun damage
 		RammingSpeed = 71,				// Terran structure liftoff speed at the cost of HP
 		AugustgradsRevenge = 72,		// Nuclear Missile damage and temp unbuildable terrain
@@ -93,8 +93,8 @@ namespace UpgradeId {
 		RadiationShockwave = 82,		// Irradiate EMP on death
 		ExpandedHull = 83,				// Shuttle transport capacity
 		EnsnaringBrood = 84,			// Broodling/Infested Terran ensnare on attack/death
-		Unused85 = 85,					// UNUSED
-		Unused86 = 86,					// UNUSED
+		KaumodakiReactor = 85,			// Savant energy and ability area increase
+		EntropyGauntlets = 86,			// Savant Energy Decay area damage
 		Unused87 = 87,					// UNUSED
 		Unused88 = 88,					// UNUSED
 		ForeCastle = 89,				// Battlecruiser forward-facing armor
