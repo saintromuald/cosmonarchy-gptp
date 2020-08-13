@@ -25,36 +25,36 @@ namespace {
 
 namespace hooks {
 
-   void darkSwarmDamage(u16 x, u16 y, u16 r, CBullet* bullet, u32 weaponId){
+   void darkSwarmDamage(u16 x, u16 y, u16 r, CBullet* bullet, u32 weaponId) {
 	    CUnit* dsw = scbw::getDarkSwarm(x,y,r);
 	    if(dsw!=NULL){
-		//scbw::printText("Dark swarm detected");
-		u32 damage = (weapons_dat::DamageAmount[weaponId]*256)+
+			//scbw::printText("Dark swarm detected");
+			u32 damage = (weapons_dat::DamageAmount[weaponId]*256)+
 					(weapons_dat::DamageBonus[weaponId]*256*scbw::getUpgradeLevel(bullet->srcPlayer,weapons_dat::DamageUpgrade[weaponId]));
-		if(bullet->hitFlags & 2){
-			//hallucination
-			if(scbw::getUpgradeLevel(bullet->srcPlayer,UpgradeId::EphemeralBlades)){
-				damage/=2;
+			if(bullet->hitFlags & 2){
+				//hallucination
+				if(scbw::getUpgradeLevel(bullet->srcPlayer,UpgradeId::EphemeralBlades)){
+					damage /= 2;
+				}
+				else {
+					damage = 0;
+				}
+			}
+			if(damage>=dsw->hitPoints){
+				dsw->remove();
+				//scbw::printText("Destroy dark swarm");
 			}
 			else {
-				damage = 0;
+				u32 old = dsw->hitPoints;
+				dsw->hitPoints-=damage;
+				//char buf[64];
+				//sprintf(buf,"Dark swarm hit: %d --> %d",old,dsw->hitPoints);
+				//scbw::printText(buf);
 			}
-		}
-		if(damage>=dsw->hitPoints){
-			dsw->remove();
-			//scbw::printText("Destroy dark swarm");
-		}
-		else {
-			u32 old = dsw->hitPoints;
-			dsw->hitPoints-=damage;
-			//char buf[64];
-			//sprintf(buf,"Dark swarm hit: %d --> %d",old,dsw->hitPoints);
-			//scbw::printText(buf);
-		}
 	    }
    }
 
-	void friendlySplash(CBullet* bullet, u32 weaponId, u8 splash_type){
+	void friendlySplash(CBullet* bullet, u32 weaponId, u8 splash_type, CUnit* guaranteed_hit){
 		int splash = splash_type;
 		if (bullet->sourceUnit != NULL) {
 				if (bullet->sourceUnit->isBlind) {
@@ -84,10 +84,19 @@ namespace hooks {
 		// Get units within the outer splash radius
 		scbw::UnitFinder unitsInSplash(x-r, y-r, x+r, y+r);
 		//
-		darkSwarmDamage(x,y,r,bullet,weaponId);
+		darkSwarmDamage(x, y, r, bullet, weaponId);
 		//
+
+		bool hasGuaranteedHitUnit = guaranteed_hit != NULL;
+		if (hasGuaranteedHitUnit) {
+			weaponBulletShot(guaranteed_hit, bullet, 1);
+		}
+
 		for (int i = 0; i < unitsInSplash.getUnitCount(); i++){
 			CUnit* target = unitsInSplash.getUnit(i);
+			if (hasGuaranteedHitUnit && target == guaranteed_hit) { // skips target check if hasGuaranteedHitUnit is unset, just for little bit of performance
+				continue; // guaranteed hit unit was already damaged before splash!
+			}
 
 			// Units can't splash themselves -- except psi storm
 			if (target == bullet->sourceUnit && bullet->weaponType != WeaponId::PsiStorm) continue;
@@ -128,8 +137,8 @@ namespace hooks {
       
 			// Don't storm a unit that's already being stormed
 			if(bullet->weaponType == WeaponId::PsiStorm){
-			if(target->isUnderStorm) continue;
-			target->isUnderStorm = 1;
+				if(target->isUnderStorm) continue;
+				target->isUnderStorm = 1;
 			}
       
 			// Inner radius 
@@ -178,8 +187,8 @@ namespace hooks {
 			}
 
 			if(isUnitDistanceWithin(target, bullet, medium)){
-			weaponBulletShot(target, bullet, 2); // 50% damage
-			continue;
+				weaponBulletShot(target, bullet, 2); // 50% damage
+				continue;
 			}
       
 			// Outer radius
@@ -273,7 +282,7 @@ namespace hooks {
     }
     if (isChargedGorgolethBullet(bullet, weaponId)) {
         bullet->sourceUnit->energy -= 10 * 256;
-        friendlySplash(bullet, weaponId, SplashType::FriendlyNew);
+        friendlySplash(bullet, weaponId, SplashType::FriendlyNew, bullet->attackTarget.unit);
         return;
     }
     CUnit* target = bullet->attackTarget.unit;
