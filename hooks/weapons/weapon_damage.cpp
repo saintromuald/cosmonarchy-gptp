@@ -332,7 +332,7 @@ namespace hooks {
 				}
 				scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::AdrenalTimer, 49, 0); //49 is 2 seconds (48) + 1
 			}
-			if (weaponId == 22 && attacker!=NULL) {			
+			if (weaponId == 22 && attacker != NULL) {			
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericTimer, ValueId::DirgeImpale, 0) == 0) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::DirgeImpale, 24 + 1, 0);
 				}
@@ -403,7 +403,9 @@ namespace hooks {
 				damage = 128;
 			if (attacker != NULL) {
 				if (attacker->id == UnitId::ZergBroodling && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::EnsnaringBrood)
-					&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
+					&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)
+					&& target->id != UnitId::ZergBroodling
+					&& target->id != UnitId::ZergInfestedTerran) {
 					u32 overlayImageId;
 					if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay)
 						overlayImageId = ImageId::EnsnareOverlay_Medium;
@@ -416,7 +418,7 @@ namespace hooks {
 						target->sprite->createTopOverlay(overlayImageId,
 							0, 0, 0);
 					}
-					target->ensnareTimer = 10 * 24;
+					target->ensnareTimer = 30;
 					target->updateSpeed();
 				}
 			}

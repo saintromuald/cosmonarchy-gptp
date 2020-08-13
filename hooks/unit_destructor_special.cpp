@@ -325,7 +325,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	}
 	
 	if (unit->id == UnitId::broodling || unit->id==UnitId::infested_terran) {
-		if (scbw::getUpgradeLevel(unit->playerId, 84)) {
+		if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::EnsnaringBrood)) {
 			Box16 coords;
 			CThingy* ensnare_effect_sprite;
 			ensnare_effect_sprite = createThingyFunc(SpriteId::Ensnare, unit->position.x, unit->position.y, 0);
