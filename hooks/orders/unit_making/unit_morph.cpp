@@ -41,7 +41,7 @@ namespace hooks {
 
 			unit->orderSignal -= 4;
 			bool vorvaling = false;
-			if (unit->previousUnitType == 128 || unit->previousUnitType == 216) {
+			if (unit->previousUnitType == UnitId::ZergVorvaling || unit->previousUnitType == UnitId::EggVorvaling) {
 				vorvaling = true;
 			}
 
@@ -98,11 +98,11 @@ namespace hooks {
 			if (
 				unit->previousUnitType != UnitId::ZergCocoon &&
 				unit->previousUnitType != UnitId::ZergLurkerEgg &&
-				unit->previousUnitType != 198 &&
-				unit->previousUnitType != 179 &&
-				unit->previousUnitType != 216 &&
-				unit->previousUnitType != 102 &&
-				unit->previousUnitType != 223
+				unit->previousUnitType != UnitId::EggBasilisk &&
+				unit->previousUnitType != UnitId::EggGorgoleth &&
+				unit->previousUnitType != UnitId::EggVorvaling &&
+				unit->previousUnitType != UnitId::Hero_GerardDuGalle &&			// What are these?
+				unit->previousUnitType != UnitId::Powerup_ProtossGasOrbType2	// Some old placeholder?
 
 				)
 			{
@@ -157,7 +157,7 @@ namespace hooks {
 						unit->status -= UnitStatus::Completed;
 
 					switch (unit->id) {
-					case UnitId::larva:
+					case UnitId::ZergLarva:
 						eggId = UnitId::ZergEgg;
 						break;
 					case UnitId::ZergHydralisk:
@@ -192,7 +192,7 @@ namespace hooks {
 						unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 
 						unit->mainOrderState = 1;
-						if (unit->id == UnitId::Powerup_YoungChrysalis) {
+						if (unit->id == UnitId::EggVorvaling) {
 							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
 						}
 					}
@@ -377,7 +377,7 @@ namespace hooks {
 		if (eggUnit->id == UnitId::cocoon || eggUnit->id == UnitId::UnusedCave)
 			return UnitId::ZergMutalisk;
 
-		if (eggUnit->id == UnitId::lurker_egg)
+		if (eggUnit->id == UnitId::ZergLurkerEgg)
 		{
 			return UnitId::ZergHydralisk;
 		}
@@ -413,7 +413,7 @@ namespace hooks {
 			return 0;
 
 		//No offset, since the morphed unit should stay where it is
-		if (unit->previousUnitType == UnitId::cocoon)
+		if (unit->previousUnitType == UnitId::ZergCocoon)
 			return 0;
 
 		//Hovering units (?) float 7 pixels above ground
