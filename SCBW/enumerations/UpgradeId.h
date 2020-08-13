@@ -92,7 +92,7 @@ namespace UpgradeId {
 		Reservations = 81,				// Terran Building extra addon spot
 		RadiationShockwave = 82,		// Irradiate EMP on death
 		ExpandedHull = 83,				// Shuttle transport capacity
-		EnsnaringBrood = 84,			// Ns now Nsnare ;)
+		EnsnaringBrood = 84,			// Broodling/Infested Terran ensnare on attack/death
 		ForeCastle = 89,				// Battlecruiser forward-facing armor
 		TectonicClaws = 90,				// Lurker burrow speed
 		SaberSiphon = 91,				// Ultralisk lifesteal
