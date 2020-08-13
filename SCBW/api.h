@@ -4,7 +4,7 @@
 #pragma once
 #include <SCBW/scbwdata.h>
 #include <SCBW/enumerations.h>
-
+#include <string>
 
 namespace hooks {
 	void IrradiateHit(CUnit* attacker, CUnit* target, u8 attackingPlayerId);
@@ -18,7 +18,7 @@ void ApplySpores(CUnit* unit);
 bool setThingyVisibilityFlags(CThingy* thingy);
 void artificalBulletFrom(u8 weaponId, u8 playerId, CUnit* source, CUnit* target, Point16 target_pt);
 void artificalBulletFrom(u8 weaponId, u8 playerId, CUnit* source, CUnit* target, u16 x, u16 y);
-
+std::string readSamaseFile(char* name);
 bool teleport(CUnit* u, Point16 target, u16 spriteAnimation=0, bool preserveOrder=false);
 CFlingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y);
 CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);
@@ -330,7 +330,7 @@ inline bool setInGameLoopState(bool newState) {
 //////////////////////////////////////////////////////////////// @}
 
 int getBroodlingCountFromSupply(CUnit* unit);
-void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer = 720, CUnit* attacker = NULL);
+void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, CUnit* attacker = NULL);
 CUnit** getSourceQueens(CUnit* unit);
 
 } //scbw

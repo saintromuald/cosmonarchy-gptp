@@ -28,6 +28,16 @@ namespace FlingyDatEntries {
 	};
 }
 
+namespace SfxDatEntries {
+	enum {
+		Race,
+		MinVolume,
+		Flags,
+		Priority,
+		SoundFilePtrs=1000,//unlike sfxdata, uses pointers instead of ids
+	};
+}
+
 namespace SpritesDatEntries {
 	enum {
 		IncludeInVision,

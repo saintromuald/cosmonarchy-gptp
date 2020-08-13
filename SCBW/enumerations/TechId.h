@@ -53,11 +53,11 @@ enum Enum {
   NuclearStrike		= 0x2D, //based on bwapi/BWMemoryEdit/Enums/TechType.cs
   UnknownLastEntry  = 0x2E,	//based on bwapi/BWMemoryEdit/Enums/TechType.cs
 
-  // HYDRA \\
-
+  // HYDRA 
   EssenceDrain		= 35,		// Gorgoleth energy steal ability
   TempoChange		= 36,		// Madrigal weapon switch ability
   Skyfall			= 37,		// Paladin missile salvo ability
+
   //extended
   //ChasmalColonySwitch = 47, // Chasmal Colony - Adaptive Barrier / Adrenal Secretion
 };

@@ -3,6 +3,25 @@
 std::vector<u32> SFXExtender::get_address_list(){
 	return {};
 }
+int SFXExtender::identifier(std::string str) {
+    if (str == "sound_file") {
+        return SfxDatEntries::SoundFilePtrs;
+    }
+    else if (str == "volume" || str == "min_volume") {
+        return SfxDatEntries::MinVolume;
+    }
+    else if (str == "flags") {
+        return SfxDatEntries::Flags;
+    }
+    else if (str == "priority" || str == "unknown1") {
+        return SfxDatEntries::Priority;
+    }
+    else if (str == "race") {
+        return SfxDatEntries::Race;
+    }
+    return NO_IDENTIFIER;
+}
+
 std::vector<u32> SFXExtender::get_size_list(){
 	return {
         0x0045F042,

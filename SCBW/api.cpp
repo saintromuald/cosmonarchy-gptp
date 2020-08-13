@@ -574,6 +574,24 @@ u32 getImageData(u32 entry, u32 index) {
 	return get_aise_value(NULL, NULL, AiseId::GetImageData, entry, index);
 }
 
+std::string readSamaseFile(char* name) {
+	const char* data = NULL;
+	u32 len = 0;
+	auto data_ptr = &data;
+	auto len_ptr = &len;
+	u32 val = reinterpret_cast<u32>(name);
+	auto buf = scbw::get_aise_value(NULL, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));
+	auto length = scbw::get_aise_value(NULL, NULL, AiseId::ReadSamaseFile_Ptr, 0, 0);
+	std::string str;
+	if (length == 0) {
+		return str;
+	}
+	else {
+		str = std::string(buf, length);
+	}
+	return str;
+}
+
 CUnit* get_generic_unit(CUnit* unit, u32 id){
 	u32 val = get_aise_value(unit, NULL, AiseId::GenericUnit, id, 0);
 	return reinterpret_cast<CUnit*>(val);
@@ -692,7 +710,6 @@ u32 getGroundHeightAtPos(s32 x, s32 y) {
 //-------- Moving Units --------//
 
 bool moveUnit(CUnit* unit, s16 x, s16 y) {
-
 	Point16 targetPos = {x, y};
 	Point16 actualPos;
 	Point16 prevPos = unit->sprite->position;
@@ -875,16 +892,14 @@ CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* creator) {
 	pos.y = y;
 	fixTargetLocation(&pos, unitId);
 	unit = CreateUnit(unitId, pos.x, pos.y, playerId);
-	if (unit == NULL && creator != NULL) {
+	if (unit == NULL) {
 		displayLastNetErrForPlayer(creator->playerId);
-	} else {
+	}
+	else {
 		FinishUnit_Pre(unit);
 		updateUnitStrength(unit);
-		if (creator != NULL) {
-			if (creator->pAI != NULL){
-				InheritAI2(creator, unit);
-			}
-		}
+		if (creator !=NULL && creator->pAI != NULL)
+			InheritAI2(creator, unit);
 	}
 	return unit;
 }
@@ -1023,19 +1038,15 @@ void minimapPing(u32 x, u32 y, s32 color, u32 playerId) {
 void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer, CUnit* creator) {
 	for (int i = 0; i < count; i++) {
 		CUnit* unit = scbw::createUnitIngame(UnitId::ZergBroodling, playerId, x, y, creator);
-		if (unit != NULL) {
+		if (unit != nullptr) {
 			scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
 			if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
 				unit->removeTimer = removeTimer;
 			}
-			if (creator != NULL) {
-				scbw::sendGPTP_aise_cmd(unit, creator, GptpId::SetGenericUnit, ValueId::BroodlingMother, 0, 0);
-			}
+			scbw::sendGPTP_aise_cmd(unit, creator, GptpId::SetGenericUnit, ValueId::BroodlingMother, 0, 0);
 
 			if (scbw::getUpgradeLevel(playerId, UpgradeId::GameteMeiosis)) {
-				if (creator != NULL) {
-					creator->energy = std::min((u16)(creator->energy + (u16)5 * (u16)256), creator->getMaxEnergy()); // Parasite and Incubators
-				}
+				if (creator != NULL) creator->energy = std::min((u16)(creator->energy + (u16)5 * (u16)256), creator->getMaxEnergy()); // Parasite and Incubators
 			}
 		}
 	}

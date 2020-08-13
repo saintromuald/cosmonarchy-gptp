@@ -1,7 +1,9 @@
 #include "ccmu.h"
 #include "extender.h"
 #include "globals.h"
-
+int CCMUExtender::identifier(std::string str) {
+	return NO_IDENTIFIER;
+}
 void CCMUExtender::extend() {
 //	const u32 lim_ext = NEW_ARRAY_LENGTH + 1;
 	const u32 lim_ext = UNIT_ARRAY_LENGTH + 1;

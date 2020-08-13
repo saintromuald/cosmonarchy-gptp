@@ -17,8 +17,6 @@ struct SoundData {
 struct SFXExtender : public Extender {
 	virtual std::vector<u32> get_address_list();
 	virtual std::vector<u32> get_size_list();
-	
-
 public:
 	std::vector<u16> race;
 	std::vector<u8> min_volume;
@@ -28,7 +26,7 @@ public:
 	std::vector<SoundData> unk;
 	SoundData* ptr;
 	std::vector<u32> get_flags_list();
-	std::vector<u32> get_race_list();
+	virtual int identifier(std::string str);
 	virtual void extend();
 };
 
