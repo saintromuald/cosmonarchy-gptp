@@ -28,6 +28,7 @@ public:
 	std::vector<u32> get_flags_list();
 	virtual int identifier(std::string str);
 	virtual void extend();
+	virtual u32 parse_entry_value(std::string str, int id);
 };
 
 

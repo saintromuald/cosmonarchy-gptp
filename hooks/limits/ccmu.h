@@ -24,6 +24,8 @@ public:
 	CUnit* position_search_units[UNIT_ARRAY_LENGTH + 1];
 	u32 position_search_temp[UNIT_ARRAY_LENGTH + 1];
 	virtual void extend();
+	virtual int identifier(std::string str);
+	virtual u32 parse_entry_value(std::string str, int id);
 };
 
 namespace hooks {

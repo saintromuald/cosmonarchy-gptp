@@ -4,6 +4,9 @@
 int CCMUExtender::identifier(std::string str) {
 	return NO_IDENTIFIER;
 }
+u32 CCMUExtender::parse_entry_value(std::string str, int id) {
+	return std::stoi(str);
+}
 void CCMUExtender::extend() {
 //	const u32 lim_ext = NEW_ARRAY_LENGTH + 1;
 	const u32 lim_ext = UNIT_ARRAY_LENGTH + 1;

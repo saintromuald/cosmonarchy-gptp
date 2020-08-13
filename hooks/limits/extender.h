@@ -13,6 +13,11 @@ const int SFX_Default_Length = 1144;
 std::vector<std::string> split_by(std::string line, char delimiter);
 bool starts_with(std::string line, char c);
 std::string to_lowercase(std::string line);
+
+static inline void ltrim(std::string& s);
+static inline void rtrim(std::string& s);
+static inline void trim(std::string& s);
+
 class Extender {
 	virtual std::vector<u32> get_address_list() = 0;
 	virtual std::vector<u32> get_size_list() = 0;
@@ -20,7 +25,9 @@ public:
 	virtual void extend() = 0;
 	virtual int identifier(std::string str) = 0;
 	void uplink(std::vector<u32> address_list, u32 address);
-	int get_file_entry_count(char* name, int entries);
+	int get_file_entry_count(char* name, u32 entries);
+	void parse_set(char* name, u32 default_max_limit, u32 entries);
+	virtual u32 parse_entry_value(std::string str,int id) = 0;
 	
 //	identifier
 //	get

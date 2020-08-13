@@ -3,6 +3,9 @@
 std::vector<u32> SFXExtender::get_address_list(){
 	return {};
 }
+u32 SFXExtender::parse_entry_value(std::string str, int id) {
+    return std::stoi(str);
+}
 int SFXExtender::identifier(std::string str) {
     if (str == "sound_file") {
         return SfxDatEntries::SoundFilePtrs;
@@ -69,8 +72,6 @@ void SFXExtender::extend() {
         flags.resize(new_count);
         sound_file_ptrs.resize(new_count);
         uplink(get_size_list(), new_count);
-
-
         memoryPatch(0x004BBCA5, new_count - 1);
         memoryPatch(0x004BBEB7, new_count - 1);
         memoryPatch(0x0046102C+1, &sound_file_ptrs[0] + 0x58);
