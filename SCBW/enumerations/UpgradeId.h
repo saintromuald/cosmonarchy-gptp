@@ -93,6 +93,10 @@ namespace UpgradeId {
 		RadiationShockwave = 82,		// Irradiate EMP on death
 		ExpandedHull = 83,				// Shuttle transport capacity
 		EnsnaringBrood = 84,			// Broodling/Infested Terran ensnare on attack/death
+		Unused85 = 85,					// UNUSED
+		Unused86 = 86,					// UNUSED
+		Unused87 = 87,					// UNUSED
+		Unused88 = 88,					// UNUSED
 		ForeCastle = 89,				// Battlecruiser forward-facing armor
 		TectonicClaws = 90,				// Lurker burrow speed
 		SaberSiphon = 91,				// Ultralisk lifesteal
