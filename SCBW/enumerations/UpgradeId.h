@@ -69,7 +69,6 @@ namespace UpgradeId {
 		None = 0x3D,
 
 		// extended upgrades \\
-		// REPLACE UNUSED ENTRIES FIRST
 
 		RestorativeNanites = 62,		// Shaman mech restore on full repair
 		PlasteelServos = 63,			// Cyprian movement speed
@@ -78,7 +77,7 @@ namespace UpgradeId {
 		AblativeWurm = 66,				// Mutalisk bounce damage
 		WardensMark = 67,				// Clarion weapon debuff for allied shieldsteal
 		InnervatingMatrices = 68,		// Defensive Matrix heal
-		AchernusReactor = 69,			// Azazel energy
+		AchernusReactor = 69,			// Azazel energy and energy vent passive
 		UmojanBatteries = 70,			// Yamato Gun damage
 		RammingSpeed = 71,				// Terran structure liftoff speed at the cost of HP
 		AugustgradsRevenge = 72,		// Nuclear Missile damage and temp unbuildable terrain
@@ -93,10 +92,10 @@ namespace UpgradeId {
 		RadiationShockwave = 82,		// Irradiate EMP on death
 		ExpandedHull = 83,				// Shuttle transport capacity
 		EnsnaringBrood = 84,			// Broodling/Infested Terran ensnare on attack/death
-		Unused85 = 85,					// UNUSED
-		Unused86 = 86,					// UNUSED
-		Unused87 = 87,					// UNUSED
-		Unused88 = 88,					// UNUSED
+		KaumodakiReactor = 85,			// Savant energy and ability area increase
+		EntropyGauntlets = 86,			// Savant Energy Decay area damage
+		ChaosMatter = 87,				// Exemplar bounce during Khaydarin Eclipse
+		FinalHour = 88,					// Augur projectile death
 		ForeCastle = 89,				// Battlecruiser forward-facing armor
 		TectonicClaws = 90,				// Lurker burrow speed
 		SaberSiphon = 91,				// Ultralisk lifesteal
