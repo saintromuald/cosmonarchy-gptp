@@ -95,7 +95,7 @@ namespace UpgradeId {
 		EnsnaringBrood = 84,			// Broodling/Infested Terran ensnare on attack/death
 		KaumodakiReactor = 85,			// Savant energy and ability area increase
 		EntropyGauntlets = 86,			// Savant Energy Decay area damage
-		Unused87 = 87,					// UNUSED
+		ChaosMatter = 87,				// Exemplar bounce during Khaydarin Eclipse
 		Unused88 = 88,					// UNUSED
 		ForeCastle = 89,				// Battlecruiser forward-facing armor
 		TectonicClaws = 90,				// Lurker burrow speed

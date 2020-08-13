@@ -477,6 +477,7 @@ enum Enum {
 	TerranQuarry							= 220,
 
 //Protoss-Unit
+	ProtossStarSovereign					= 21,
 	ProtossLegionnaire						= 74,
 	ProtossHierophant						= 76,
 	ProtossAurora							= 80,
