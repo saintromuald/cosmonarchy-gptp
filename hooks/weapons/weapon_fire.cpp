@@ -138,7 +138,49 @@ namespace {
 
 		attackingPlayer_ = attackingPlayer;
 		direction_ = direction;
-		x_ = x; y_ = y;
+		if (weaponId == WeaponId::CrusaderMissiles) {
+			if (source->sprite->mainGraphic->frameIndex == 0
+			|| source->sprite->mainGraphic->frameIndex == 1
+			|| source->sprite->mainGraphic->frameIndex == 2
+			|| source->sprite->mainGraphic->frameIndex == 3) {
+				x = 6;
+				y = -45;
+			}
+			else if (source->sprite->mainGraphic->frameIndex == 4
+			|| source->sprite->mainGraphic->frameIndex == 5) {
+				x = 4;
+				y = -44;
+			}
+			else if (source->sprite->mainGraphic->frameIndex == 6
+			|| source->sprite->mainGraphic->frameIndex == 7
+			|| source->sprite->mainGraphic->frameIndex == 8
+			|| source->sprite->mainGraphic->frameIndex == 9) {
+				x = 1;
+				y = -43;
+			}
+			else if (source->sprite->mainGraphic->frameIndex == 10
+			|| source->sprite->mainGraphic->frameIndex == 11) {
+				x = -3;
+				y = -42;
+			}
+			else if (source->sprite->mainGraphic->frameIndex == 12
+			|| source->sprite->mainGraphic->frameIndex == 13) {
+				x = -6;
+				y = -41;
+			}
+			else if (source->sprite->mainGraphic->frameIndex == 14
+			|| source->sprite->mainGraphic->frameIndex == 15) {
+				x = -8;
+				y = -44;
+			}
+			else if (source->sprite->mainGraphic->frameIndex == 16) {
+				x = -8;
+				y = -48;
+			}
+		}
+		else {
+			x_ = x; y_ = y;
+		}
 
 		__asm {
 			PUSHAD
