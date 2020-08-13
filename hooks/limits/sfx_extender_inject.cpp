@@ -4,7 +4,18 @@ std::vector<u32> SFXExtender::get_address_list(){
 	return {};
 }
 std::vector<u32> SFXExtender::get_size_list(){
-	return {};
+	return {
+        0x0045F042,
+        0x004BBC2D,
+        0x004BCA98,
+        0x004BCD2A,
+        0x004DB0FA,
+        0x005154A0,
+        0x005154AC,
+        0x005154B8,
+        0x005154C4,
+        0x005154D0,
+    };
 }
 
 std::vector<u32> SFXExtender::get_flags_list() {
@@ -39,6 +50,10 @@ void SFXExtender::extend() {
         flags.resize(new_count);
         sound_file_ptrs.resize(new_count);
         uplink(get_size_list(), new_count);
+
+
+        memoryPatch(0x004BBCA5, new_count - 1);
+        memoryPatch(0x004BBEB7, new_count - 1);
         memoryPatch(0x0046102C+1, &sound_file_ptrs[0] + 0x58);
         memoryPatch(0x0046116C+1, &sound_file_ptrs[0] + 0x54);
         memoryPatch(0x004BC68D+3, &sound_file_ptrs[0]);
