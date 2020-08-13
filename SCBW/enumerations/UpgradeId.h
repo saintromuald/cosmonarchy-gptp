@@ -69,7 +69,6 @@ namespace UpgradeId {
 		None = 0x3D,
 
 		// extended upgrades \\
-		// REPLACE UNUSED ENTRIES FIRST
 
 		RestorativeNanites = 62,		// Shaman mech restore on full repair
 		PlasteelServos = 63,			// Cyprian movement speed
@@ -96,7 +95,7 @@ namespace UpgradeId {
 		KaumodakiReactor = 85,			// Savant energy and ability area increase
 		EntropyGauntlets = 86,			// Savant Energy Decay area damage
 		ChaosMatter = 87,				// Exemplar bounce during Khaydarin Eclipse
-		Unused88 = 88,					// UNUSED
+		FinalHour = 88,					// Augur projectile death
 		ForeCastle = 89,				// Battlecruiser forward-facing armor
 		TectonicClaws = 90,				// Lurker burrow speed
 		SaberSiphon = 91,				// Ultralisk lifesteal
