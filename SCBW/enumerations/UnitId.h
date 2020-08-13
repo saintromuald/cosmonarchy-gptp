@@ -373,7 +373,7 @@ enum Enum {
 /*0xC9*/	Special_OvermindCocoon          = 201,
 /*0xCA*/	Spell_DarkSwarm                 = 202,
 /*0xCB*/	Special_FloorMissileTrap        = 203,
-/*0xCC*/	ZergVorvalPond					= 204,
+/*0xCC*/	FloorHatch						= 204,
 /*0xCD*/	Special_UpperLevelDoor          = 205,
 /*0xCE*/	Special_RightUpperLevelDoor     = 206,
 /*0xCF*/	Special_PitDoor                 = 207,
@@ -458,22 +458,22 @@ enum Enum {
 	//HYDRA\\
 
 //Terran-Unit
-	TerranCyprian							= 92,
 	TerranShaman							= 15,
 	TerranSouthpaw							= 19,
 	TerranMadrigal							= 27,
-	TerranPaladin							= 186,
-	TerranWyvern							= 91,
-	TerranSavant							= 187,
-	TerranAzazel							= 98,
 	TerranCentaur							= 28,
+	TerranWyvern							= 91,
+	TerranCyprian							= 92,
+	TerranAzazel							= 98,
+	TerranPaladin							= 186,
+	TerranSavant							= 187,
 
 //Terran-Building
 	TerranMedbay							= 119,
-	TerranGallery							= 185,
-	TerranFutureStation						= 192,
 	TerranCaptaincy							= 121,
+	TerranGallery							= 185,
 	TerranSalvoYard							= 189,
+	TerranFutureStation						= 192,
 	TerranQuarry							= 220,
 
 //Protoss-Unit
@@ -491,46 +491,48 @@ enum Enum {
 	ProtossPrincipality						= 158,
 	ProtossVicarage							= 161,
 	ProtossReliquary						= 175,
-	ProtossPennant							= 221,
 	ProtossRoboticsAuthority				= 182,
 	ProtossArgosy							= 183,
 	ProtossStarfield						= 184,
+	ProtossPennant							= 221,
 
 //Zerg-Unit
+	ZergGorgoleth							= 56,
+	ZergKeskathalor							= 96,
 	ZergVorvaling							= 128,
 	ZergBasilisk							= 129,
 	ZergIroleth								= 222,
-	ZergGorgoleth							= 56,
-	ZergKeskathalor							= 96,
 
 //Zerg-Elite
-	AberrantNathrokor						= 54,
-	AberrantKonvimoth						= 53,
-	AberrantAkistrigon						= 55,
-	AberrantBastethir						= 49,
 	AberrantOsteroth						= 48,
+	AberrantBastethir						= 49,
 	AberrantMaktisthuk						= 52,
+	AberrantKonvimoth						= 53,
+	AberrantNathrokor						= 54,
+	AberrantAkistrigon						= 55,
 
 //Zerg-Egg
-	EggVorvaling							= 216,
-	EggBasilisk								= 198,
-	EggIroleth								= 193,
-	EggGorgoleth							= 179,
-	EggScreamer								= 199,
 	EggDevourer								= 173,
+	EggGorgoleth							= 179,
+	EggIroleth								= 193,
+	EggBasilisk								= 198,
+	EggKeskathalor							= 199,
+	EggVorvaling							= 216,
 
 //Zerg-Misc
 	BasiliskCreeper							= 180,
 
 //Zerg-Building
-	ZergChasmalColony						= 201,
 	ZergMutationPit							= 145,
-	ZergBasiliskDen							= 153,
-	ZergLurkerDen							= 191,
 	ZergGorgolethApiary						= 148,
-	ZergDevourerHaunt						= 197,
-	ZergNydusArtery							= 181,
 	ZergChrysalis							= 150,
+	ZergIrolethQuay							= 152,
+	ZergBasiliskDen							= 153,
+	ZergNydusArtery							= 181,
+	ZergLurkerDen							= 191,
+	ZergDevourerHaunt						= 197,
+	ZergChasmalColony						= 201,
+	ZergVorvalPond							= 204,
 
 };
 }

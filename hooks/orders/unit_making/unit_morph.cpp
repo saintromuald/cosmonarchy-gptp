@@ -165,19 +165,19 @@ namespace hooks {
 							eggId = UnitId::ZergLurkerEgg;
 						}
 						else {
-							eggId = 198;
+							eggId = UnitId::EggBasilisk;
 						}
 						break;
-					case UnitId::zergling:
+					case UnitId::ZergZergling:
 						eggId = UnitId::EggVorvaling;
 						break;
-					case UnitId::mutalisk:
+					case UnitId::ZergMutalisk:
 						eggId = UnitId::cocoon;
 						break;
-					case UnitId::ultralisk:
-						eggId = UnitId::EggScreamer;
+					case UnitId::ZergUltralisk:
+						eggId = UnitId::EggKeskathalor;
 						break;
-					case UnitId::overlord:
+					case UnitId::ZergOverlord:
 						eggId = UnitId::EggIroleth;
 						break;
 					default:
@@ -280,15 +280,18 @@ namespace hooks {
 			}
 		}
 
-
 		if (unit->id == UnitId::ZergZergling) {
 			if (morphUnitId == UnitId::ZergVorvaling) {
 				return true;
-			}/*
-			if (morphUnitId == UnitId::devouring_one) {//vorv morph
-				return true;
-			}*/
+			}
 		}
+
+		if (unit->id == UnitId::ZergOverlord) {
+			if (morphUnitId == UnitId::ZergIroleth) {
+				return true;
+			}
+		}
+
 		if (unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergMutalisk) {
 			if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1) {
 				return true;
@@ -307,8 +310,9 @@ namespace hooks {
 			|| unitId == UnitId::EggBasilisk
 			|| unitId == UnitId::EggVorvaling
 			|| unitId == UnitId::EggGorgoleth
-			|| unitId == UnitId::EggScreamer
-			|| unitId == UnitId::EggDevourer)
+			|| unitId == UnitId::EggKeskathalor
+			|| unitId == UnitId::EggDevourer
+			|| unitId == UnitId::EggIroleth)
 			return true;
 
 		return false;
@@ -323,8 +327,9 @@ namespace hooks {
 			|| unitId == UnitId::EggBasilisk
 			|| unitId == UnitId::EggVorvaling
 			|| unitId == UnitId::EggGorgoleth
-			|| unitId == UnitId::EggScreamer
-			|| unitId == UnitId::EggDevourer)
+			|| unitId == UnitId::EggKeskathalor
+			|| unitId == UnitId::EggDevourer
+			|| unitId == UnitId::EggIroleth)
 			return false;
 
 		return true;
@@ -356,7 +361,7 @@ namespace hooks {
 		if (unitId == UnitId::ZergZergling)
 			return UnitId::EggVorvaling;
 		if (unitId == UnitId::ZergUltralisk)
-			return UnitId::EggScreamer;
+			return UnitId::EggKeskathalor;
 		if (unitId == UnitId::ZergOverlord)
 			return UnitId::EggIroleth;
 
@@ -370,29 +375,27 @@ namespace hooks {
 		//Default StarCraft behavior
 
 		if (eggUnit->id == UnitId::cocoon || eggUnit->id == UnitId::UnusedCave)
-			return UnitId::mutalisk;
+			return UnitId::ZergMutalisk;
 
 		if (eggUnit->id == UnitId::lurker_egg)
 		{
-			return UnitId::hydralisk;
+			return UnitId::ZergHydralisk;
 		}
 		if (eggUnit->id == UnitId::EggBasilisk)
 		{
-			return UnitId::hydralisk;
+			return UnitId::ZergHydralisk;
 		}
 		if (eggUnit->id == UnitId::EggVorvaling)
 		{
-			//return UnitId::devouring_one;
-			return UnitId::zergling;
-			//replace for different unit, vorv morph
+			return UnitId::ZergZergling;
 		}
 		if (eggUnit->id == UnitId::EggIroleth)
 		{
-			return UnitId::overlord;
+			return UnitId::ZergOverlord;
 		}
-		if (eggUnit->id == UnitId::EggScreamer)
+		if (eggUnit->id == UnitId::EggKeskathalor)
 		{
-			return UnitId::ultralisk;
+			return UnitId::ZergUltralisk;
 		}
 
 

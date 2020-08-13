@@ -103,7 +103,7 @@ u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayerId, u16 techId) {
 			||	target->id == UnitId::EggDevourer
 			||	target->id == UnitId::EggGorgoleth
 			||	target->id == UnitId::EggIroleth
-			||	target->id == UnitId::EggScreamer
+			||	target->id == UnitId::EggKeskathalor
 			||	target->id == UnitId::EggVorvaling
 			)
 				stringId = 876; //Invalid target.<0>
