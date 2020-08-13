@@ -83,26 +83,26 @@ void SFXExtender::extend() {
         memoryPatch(0x004BC813, &priority[0]);
         memoryPatch(0x005154A4, &priority[0]);
         auto snd_pointer = (u32)this->ptr;
-        memoryPatch(0x004BB8E8, SFXDAT_Unknown);
-        memoryPatch(0x004BBC47, SFXDAT_Unknown);
-        memoryPatch(0x004BC077, SFXDAT_Unknown);
-        memoryPatch(0x004BC674, SFXDAT_Unknown);
-        memoryPatch(0x004BCAA6, SFXDAT_Unknown);
-        memoryPatch(0x0045EF66, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F11D, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F1FA, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F2DE, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F3CA, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F498, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F56A, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F5FF, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F68F, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F72A, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F81A, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048FAE3, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F8DA, ((u32)SFXDAT_Unknown) + 0x828);
-        memoryPatch(0x0048F36F, ((u32)SFXDAT_Unknown) + 0x878);
-        memoryPatch(0x0048F412, ((u32)SFXDAT_Unknown) + 0x878);
+        memoryPatch(0x004BB8E8, snd_pointer);
+        memoryPatch(0x004BBC47, snd_pointer);
+        memoryPatch(0x004BC077, snd_pointer);
+        memoryPatch(0x004BC674, snd_pointer);
+        memoryPatch(0x004BCAA6, snd_pointer);
+        memoryPatch(0x0045EF66, ((u32)snd_pointer) + 8);
+        memoryPatch(0x0048F11D, ((u32)snd_pointer) + 8);
+        memoryPatch(0x0048F1FA, ((u32)snd_pointer) + 8);
+        memoryPatch(0x0048F2DE, ((u32)snd_pointer) + 8);
+        memoryPatch(0x0048F3CA, ((u32)snd_pointer) + 8);
+        memoryPatch(0x0048F498, ((u32)snd_pointer) + 8);
+        memoryPatch(0x0048F56A, ((u32)snd_pointer) + 8);
+        memoryPatch(0x0048F5FF, ((u32)snd_pointer) + 8);
+        memoryPatch(0x0048F68F, ((u32)snd_pointer) + 8);
+        memoryPatch(0x0048F72A, ((u32)snd_pointer) + 8);
+        memoryPatch(0x0048F81A, ((u32)snd_pointer) + 8);
+        memoryPatch(0x0048FAE3, ((u32)snd_pointer) + 8);
+        memoryPatch(0x0048F8DA, ((u32)snd_pointer) + 0x828);
+        memoryPatch(0x0048F36F, ((u32)snd_pointer) + 0x878);
+        memoryPatch(0x0048F412, ((u32)snd_pointer) + 0x878);
 	}
 }
 
