@@ -6,33 +6,103 @@ std::vector<u32> SFXExtender::get_address_list(){
 std::vector<u32> SFXExtender::get_size_list(){
 	return {};
 }
+
+std::vector<u32> SFXExtender::get_flags_list() {
+    return {
+0x004BB972,
+0x004BBC54,
+0x004BBC67,
+0x004BBF17,
+0x004BBF20,
+0x004BBFF3,
+0x004BC06C,
+0x004BC0C0,
+0x004BC7AE,
+0x004BC80A,
+0x004BC846,
+0x004BCAD6,
+0x004BCAF3,
+0x004BCB0B,
+0x004BCD44,
+//0x005154B0,
+    };
+}
 void SFXExtender::extend() {
+    
     int extra_entries = get_file_entry_count("samase\\sfx_ext.txt", SFX_Entries);
 	if (extra_entries>0) {
-		/*
-		int sfxdata_r[] = {
-        // sound 
-        0, 0x004BC5E9 + 3, 0x004BC68D + 3, 0x004BCA04 + 1, 0x004BCA39 + 3, 0x004DB0E5 + 1, 0,
-    60, 0x004BCB29 + 1, 0,
-    84, 0x0046116C + 1, 0,
-    88, 0x0046102C + 1, 0,
-    0,
-    // unk1  
-    0, 0x004BBEC1 + 2, 0x004BC0D1 + 2, 0x004BC811 + 2, 0, 0,
-    // unk2   
-    0, 0x004BB970 + 2, 0x004BBC52 + 2, 0x004BBC65 + 2, 0x004BBF15 + 2, 0x004BBF1E + 2, 0x004BBFF1 + 2, 0x004BC06A + 2, 0x004BC0BE + 2, 0x004BC7AC + 2, 0x004BC808 + 2, 0x004BC844 + 2, 0x004BCAD4 + 2, 0x004BCAF1 + 2, 0x004BCB09 + 2, 0x004BCD42 + 2, 0, 0,
-    // unk3   
-    0, 0x0048F123 + 4, 0x0048F200 + 4, 0x0048F2E7 + 4, 0x0048F3CE + 4, 0x0048F49C + 4, 0x0048F56E + 4, 0x0048F603 + 4, 0x0048F693 + 4, 0x0048F72E + 4, 0x0048F81E + 4, 0x0048FAE7 + 4, 0,
-    260, 0x0048F8E0 + 3, 0,
-    270, 0x0048F373 + 3, 0x0048F418 + 3, 0,
-    0,
-    // unk4
-    0, 0x00455BD9 + 3, 0x0048ECEA + 3, 0x0048EDD4 + 3, 0x0048EE59 + 3, 0x0048EFA2 + 3, 0x0048F025 + 3, 0x0048F0C7 + 3, 0x0048F1A4 + 3, 0x004E3EB2 + 3, 0x004E3F52 + 3, 0,
-    2, 0x0048D169 + 3, 0,
-    23, 0x0048D0ED + 3, 0x0048D406 + 3, 0,
-    0, 0
-    };
-		*/
+        int new_count = extra_entries + SOUND_TYPE_COUNT;
+        unk.resize(new_count);
+        ptr = &unk[0];
+        race.resize(new_count);
+        min_volume.resize(new_count);
+        flags.resize(new_count);
+        sound_file_ptrs.resize(new_count);
+        uplink(get_size_list(), new_count);
+        memoryPatch(0x0046102C+1, &sound_file_ptrs[0] + 0x58);
+        memoryPatch(0x0046116C+1, &sound_file_ptrs[0] + 0x54);
+        memoryPatch(0x004BC68D+3, &sound_file_ptrs[0]);
+        memoryPatch(0x004BCA39+3, &sound_file_ptrs[0]);
+        memoryPatch(0x004BCB29+1, &sound_file_ptrs[0] + 0x3C);
+        memoryPatch(0x004DB0E5+1, &sound_file_ptrs[0]);
+        memoryPatch(0x004BC5E9+3, &sound_file_ptrs[0]);//
+        memoryPatch(0x004BCA04+1, &sound_file_ptrs[0]);//
+        //memoryPatch(0x00515498, &sound_file_ptrs[0]);
+        memoryPatch(0x00455BD9+3, &min_volume[0]);
+        memoryPatch(0x0048D0ED+3, &min_volume[0] + 0x17);
+        memoryPatch(0x0048D169+3, &min_volume[0] + 2);
+        memoryPatch(0x0048D406+3, &min_volume[0] + 0x17);
+        memoryPatch(0x0048ECEA+3, &min_volume[0]);
+        memoryPatch(0x0048EDD4+3, &min_volume[0]);
+        memoryPatch(0x0048EE59+3, &min_volume[0]);
+        memoryPatch(0x0048EFA2+3, &min_volume[0]);
+        memoryPatch(0x0048F025+3, &min_volume[0]);
+        memoryPatch(0x0048F0C7+3, &min_volume[0]);
+        memoryPatch(0x0048F1A4+3, &min_volume[0]);
+        memoryPatch(0x004E3EB2+3, &min_volume[0]);
+        memoryPatch(0x004E3F52+3, &min_volume[0]);
+        //memoryPatch(0x005154C8, &min_volume[0]);
+        uplink(get_flags_list(), (u32)&flags[0]);
+        memoryPatch(0x0048F123+4, &race[0]);//unk3 in farty's list
+        memoryPatch(0x0048F200+4, &race[0]);
+        memoryPatch(0x0048F2EB, &race[0]);
+        memoryPatch(0x0048F376, ((u32)&race[0]) + 0x10E);
+        memoryPatch(0x0048F3D2, &race[0]);
+        memoryPatch(0x0048F41B, ((u32)&race[0]) + 0x10E);
+        memoryPatch(0x0048F4A0, &race[0]);
+        memoryPatch(0x0048F572, &race[0]);
+        memoryPatch(0x0048F603+4, &race[0]);
+        memoryPatch(0x0048F697, &race[0]);
+        memoryPatch(0x0048F732, &race[0]);
+        memoryPatch(0x0048F822, &race[0]);
+        memoryPatch(0x0048F8E3, ((u32)&race[0]) + 0x104);
+        memoryPatch(0x0048FAE7+1, &race[0]);
+        //memoryPatch(0x005154BC, &race[0]);
+        memoryPatch(0x004BBEC3, &priority[0]);
+        memoryPatch(0x004BC0D3, &priority[0]);
+        memoryPatch(0x004BC813, &priority[0]);
+        memoryPatch(0x005154A4, &priority[0]);
+        auto snd_pointer = (u32)this->ptr;
+        memoryPatch(0x004BB8E8, SFXDAT_Unknown);
+        memoryPatch(0x004BBC47, SFXDAT_Unknown);
+        memoryPatch(0x004BC077, SFXDAT_Unknown);
+        memoryPatch(0x004BC674, SFXDAT_Unknown);
+        memoryPatch(0x004BCAA6, SFXDAT_Unknown);
+        memoryPatch(0x0045EF66, ((u32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F11D, ((u32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F1FA, ((u32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F2DE, ((u32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F3CA, ((u32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F498, ((u32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F56A, ((u32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F5FF, ((u32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F68F, ((u32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F72A, ((u32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F81A, ((u32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048FAE3, ((u32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F8DA, ((u32)SFXDAT_Unknown) + 0x828);
+        memoryPatch(0x0048F36F, ((u32)SFXDAT_Unknown) + 0x878);
+        memoryPatch(0x0048F412, ((u32)SFXDAT_Unknown) + 0x878);
 	}
 }
 
