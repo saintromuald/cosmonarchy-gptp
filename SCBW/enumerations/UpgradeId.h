@@ -71,16 +71,16 @@ namespace UpgradeId {
 		// extended upgrades \\
 		// REPLACE UNUSED ENTRIES FIRST
 
-		EscalateCyprian = 62,			// 
+		RestorativeNanites = 62,		// Shaman mech restore on full repair
 		PlasteelServos = 63,			// Cyprian movement speed
 		OdysseusReactor = 64,			// Comsat Station energy
 		Capacitors = 65,				// Wraith cloaked attack speed
 		AblativeWurm = 66,				// Mutalisk bounce damage
-		EscalateAzazel = 67,			// UNUSED
+		WardensMark = 67,				// Clarion weapon debuff for allied shieldsteal
 		InnervatingMatrices = 68,		// Defensive Matrix heal
 		AchernusReactor = 69,			// Azazel energy
 		UmojanBatteries = 70,			// Yamato Gun damage
-		EscalateSavant = 71,			// UNUSED
+		RammingSpeed = 71,				// Terran structure liftoff speed at the cost of HP
 		AugustgradsRevenge = 72,		// Nuclear Missile damage and temp unbuildable terrain
 		TendrilAmitosis = 73,			// Sunken Colony extra attack
 		NydalTransfusion = 74,			// Nydus Canal place off creep
@@ -111,7 +111,7 @@ namespace UpgradeId {
 		GraviticAttenuator = 104,		// Unused upgrade
 		PeerReviewedDestruction = 105,	// Science Vessel paint nuke target
 		PassengerInsurance = 106,		// Dropship acceleration
-		EscalateShaman = 107,			// UNUSED
+		DivineClarity = 107,			// Clarion +1 shield armor while above 50% shields
 		AstralAegis = 108,				// Archon support-shield on death
 		Skyforge = 109,					// Interceptor build time
 		AdrenalSurge = 110,				// Vorvaling movement speed and homing
