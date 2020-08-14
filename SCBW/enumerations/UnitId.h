@@ -477,7 +477,6 @@ enum Enum {
 	TerranTreasury							= 215,
 	TerranQuarry							= 220,
 	TerranQuantumInstitute					= 223,
-	TerranMunitionsBay						= 224,
 	TerranDrydock							= 225,
 
 //Protoss-Unit
@@ -503,6 +502,7 @@ enum Enum {
 
 //Zerg-Unit
 	ZergGorgoleth							= 56,
+	ZergOthstoleth							= 57,
 	ZergKeskathalor							= 96,
 	ZergVorvaling							= 128,
 	ZergBasilisk							= 129,
@@ -517,6 +517,7 @@ enum Enum {
 	AberrantAkistrigon						= 55,
 
 //Zerg-Egg
+	EggOthstoleth							= 95,
 	EggDevourer								= 173,
 	EggGorgoleth							= 179,
 	EggIroleth								= 193,
@@ -533,7 +534,7 @@ enum Enum {
 	ZergChrysalis							= 150,
 	ZergIrolethQuay							= 152,
 	ZergBasiliskDen							= 153,
-	ZergNydusArtery							= 181,
+	ZergOthstolethBerth						= 181,
 	ZergLurkerDen							= 191,
 	ZergDevourerHaunt						= 197,
 	ZergChasmalColony						= 201,
@@ -541,8 +542,5 @@ enum Enum {
 	ZergKeskathCavern						= 219,
 	ZergSire								= 227,
 
-	ZergOthstoleth							= 57,
-//placeholders, replace later with normal ids
-	EggOthstoleth							= 501,
 	};
 }
