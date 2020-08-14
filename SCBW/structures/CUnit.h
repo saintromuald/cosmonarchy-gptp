@@ -370,6 +370,8 @@ struct CUnit: public CUnitLayout {
   void updateSpeed();
 
   //////////////////////////////////////////////////////////////// @}
+
+  void setSupplyProvided(u8 amount);
 };
 
 C_ASSERT(sizeof(CUnit) == sizeof(CUnitLayout));

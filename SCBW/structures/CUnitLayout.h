@@ -185,6 +185,7 @@ namespace ValueId {
 		DirgeAttacker = 47,
 		EggBoostTimer = 48,
 		RemainingBuildTimeCopy = 49,
+		TreasuryStacks = 50,
 	#if DELIVERANCE
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,
