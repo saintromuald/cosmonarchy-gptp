@@ -17,7 +17,7 @@ std::string to_lowercase(std::string line);
 static inline void ltrim(std::string& s);
 static inline void rtrim(std::string& s);
 static inline void trim(std::string& s);
-
+bool last_char(std::string s, char c);
 class Extender {
 	virtual std::vector<u32> get_address_list() = 0;
 	virtual std::vector<u32> get_size_list() = 0;

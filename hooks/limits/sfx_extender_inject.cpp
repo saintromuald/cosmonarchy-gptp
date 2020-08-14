@@ -27,6 +27,23 @@ int SFXExtender::identifier(std::string str) {
 
 void SFXExtender::set_value(int entry, int id, std::string str) {
     switch (entry) {
+    case SfxDatEntries::SoundFilePtrs:
+    {
+        if (id < SFX_Default_Length) {
+            break;
+        }
+        std::string new_str = str;
+        if (!last_char(new_str, '\0')) {
+            str += '\0';
+        }
+        for (auto& a : new_str) {
+            if (a == '/') {
+                a = '\\';
+            }
+        }
+        this->extra_strings[id - 1177] = new_str;
+        break;
+    }
     default:
         break;
     }
@@ -100,6 +117,7 @@ void SFXExtender::extend() {
         race.resize(new_count);
         min_volume.resize(new_count);
         flags.resize(new_count);
+        extra_strings.resize(extra_entries);
         sound_file_ptrs.resize(new_count);
         uplink(get_size_list(), new_count);
         memoryPatch(0x004BBCA5, new_count - 1);
