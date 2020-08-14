@@ -62,9 +62,9 @@ void __declspec(naked) incrementUnitScoresEx_Wrapper() { // 0x00488D50
 namespace hooks {
 
 void injectUpdateUnitState() {
-	jmpPatch(updateUnitEnergy,			0x004EB4B0, 0);
-	jmpPatch(updateUnitStateWrapper,	0x004EC290, 1);
-	jmpPatch(updateUnitStateWrapper,	0x00488D50, 1);
+	jmpPatch(updateUnitEnergy,				0x004EB4B0, 0);
+	jmpPatch(updateUnitStateWrapper,		0x004EC290, 1);
+	//jmpPatch(incrementUnitScoresEx_Wrapper, 0x00488D50, 1);
 }
 
 } //hooks
