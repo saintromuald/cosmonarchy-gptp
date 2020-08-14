@@ -1,5 +1,5 @@
 #include "hooks/limits/sfx_extender.h"
-
+#include "globals.h"
 std::vector<u32> SFXExtender::get_address_list(){
 	return {};
 }
@@ -24,7 +24,48 @@ int SFXExtender::identifier(std::string str) {
     }
     return NO_IDENTIFIER;
 }
-
+void SFXExtender::set_extended_data() {
+    parse_set("samase\\sfx_ext.txt", SFX_Default_Length, 5);
+}
+void SFXExtender::set_value(int entry, int id, std::string str) {
+    switch (entry) {
+    case SfxDatEntries::SoundFilePtrs:
+    {
+        if (id < SFX_Default_Length) {
+            break;
+        }
+        std::string new_str = str;
+        if (!last_char(new_str, '\0')) {
+            str += '\0';
+        }
+        for (auto& a : new_str) {
+            if (a == '/') {
+                a = '\\';
+            }
+        }
+        this->extra_strings[id - 1177] = new_str;
+        break;
+    }
+    default:
+        break;
+    }
+}
+void SFXExtender::set_value(int entry, int id, int val) {
+    switch (entry) {
+    case SfxDatEntries::MinVolume:
+        min_volume[entry] = val;
+        break;
+    case SfxDatEntries::Flags:
+        flags[entry] = val;
+        break;
+    case SfxDatEntries::Priority:
+        priority[entry] = val;
+    case SfxDatEntries::Race:
+        race[entry] = val;
+    default:
+        break;
+    }
+}
 std::vector<u32> SFXExtender::get_size_list(){
 	return {
         0x0045F042,
@@ -60,6 +101,14 @@ std::vector<u32> SFXExtender::get_flags_list() {
 //0x005154B0,
     };
 }
+
+bool SFXExtender::is_string_id(int id) {
+    if (id == SfxDatEntries::SoundFilePtrs) {
+        return true;
+    }
+    return false;
+}
+
 void SFXExtender::extend() {
     
     int extra_entries = get_file_entry_count("samase\\sfx_ext.txt", SFX_Entries);
@@ -70,6 +119,7 @@ void SFXExtender::extend() {
         race.resize(new_count);
         min_volume.resize(new_count);
         flags.resize(new_count);
+        extra_strings.resize(extra_entries);
         sound_file_ptrs.resize(new_count);
         uplink(get_size_list(), new_count);
         memoryPatch(0x004BBCA5, new_count - 1);
@@ -142,8 +192,19 @@ void SFXExtender::extend() {
 }
 
 namespace hooks {
+    void LoadSfxDataWrapper() {
+        __asm {
+            PUSHAD
+        }
+        new_sfxdata.set_extended_data();
+        __asm {
+            POPAD
+            RETN
+        }
+    }
 	void sfxExtender() {
 		new_sfxdata.extend();
+        jmpPatch(LoadSfxDataWrapper, 0x004AAFE3);//patched empty bytes, called from aise
 	}
 }
 

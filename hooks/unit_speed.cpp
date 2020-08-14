@@ -171,7 +171,7 @@ namespace hooks {
 		}
 
 		// Collective Integration passive: gains increased movespeed based on tech level
-		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth) {
+		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth || unit->id==UnitId::ZergOthstoleth) {
 			u32 lairCountSpeed = unitCountTable[UnitId::ZergLair].player[unit->playerId];
 			u32 hiveCountSpeed = unitCountTable[UnitId::ZergHive].player[unit->playerId];
 			if (hiveCountSpeed) {

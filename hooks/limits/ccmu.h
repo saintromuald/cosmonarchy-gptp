@@ -26,6 +26,10 @@ public:
 	virtual void extend();
 	virtual int identifier(std::string str);
 	virtual u32 parse_entry_value(std::string str, int id);
+	virtual bool is_string_id(int id);
+	virtual void set_value(int entry, int id, std::string str);
+	virtual void set_value(int entry, int id, int val);
+	virtual void set_extended_data();
 };
 
 namespace hooks {

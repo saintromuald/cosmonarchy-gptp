@@ -22,13 +22,18 @@ public:
 	std::vector<u8> min_volume;
 	std::vector<u8> flags;
 	std::vector<u8> priority;
-	std::vector<char*> sound_file_ptrs;
+	std::vector<u32> sound_file_ptrs;
+	std::vector<std::string> extra_strings;//past 1144
 	std::vector<SoundData> unk;
 	SoundData* ptr;
 	std::vector<u32> get_flags_list();
 	virtual int identifier(std::string str);
 	virtual void extend();
 	virtual u32 parse_entry_value(std::string str, int id);
+	virtual bool is_string_id(int id);
+	virtual void set_value(int entry, int id, std::string str);
+	virtual void set_value(int entry, int id, int val);
+	virtual void set_extended_data();
 };
 
 

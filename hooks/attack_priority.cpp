@@ -111,11 +111,7 @@ u32 getAttackPriorityHook(CUnit* target, CUnit* attacker) {
 
   
   //Units that are not important
-  if (target->id == UnitId::larva
-      || target->id == UnitId::egg
-      || target->id == UnitId::cocoon
-      || target->id == UnitId::lurker_egg ||
-	  target->id==UnitId::Powerup_YoungChrysalis || target->id==223 || target->id==102 || target->id==179)
+  if (scbw::isZergEgg(target->id))
     return 5;
 
   //Normal units

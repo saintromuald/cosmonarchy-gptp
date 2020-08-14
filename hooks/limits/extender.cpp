@@ -71,6 +71,12 @@ static inline void trim(std::string& s) {
 	ltrim(s);
 	rtrim(s);
 }
+bool last_char(std::string s, char c) {
+	if (s.size() > 0 && s[s.size() - 1] == c) {
+		return true;
+	}
+	return false;
+}
 void Extender::parse_set(char* name, u32 default_max_limit, u32 entries) {
 	std::string str = scbw::readSamaseFile(name);
 	std::vector<std::string> lines = split_by(str, '\n');
@@ -88,12 +94,15 @@ void Extender::parse_set(char* name, u32 default_max_limit, u32 entries) {
 		auto value_string = command_list[1];
 		trim(entry_name);
 		trim(value_string);
-
 		auto id = identifier(to_lowercase(entry_name));
 		if (id != NO_IDENTIFIER) {
-			u32 value = parse_entry_value(value_string, id);
-			//
-			//
+			if (is_string_id(id)) {
+				set_value(current_entry, id, value_string);
+			}
+			else {
+				u32 val = parse_entry_value(value_string, id);
+				set_value(current_entry, id, val);
+			}
 			entry_count += 1;
 			if (entry_count == entries) {
 				entry_count = 0;

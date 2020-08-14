@@ -183,6 +183,8 @@ namespace ValueId {
 		TempoChange = 45,
 		DirgeImpale = 46,
 		DirgeAttacker = 47,
+		EggBoostTimer = 48,
+		RemainingBuildTimeCopy = 49,
 	#if DELIVERANCE
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,
