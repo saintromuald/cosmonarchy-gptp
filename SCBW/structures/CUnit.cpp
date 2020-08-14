@@ -1077,5 +1077,6 @@ void CUnit::updateSpeed() {
 }
 
 void CUnit::setSupplyProvided(u8 amount) {
-	//TODO: Implement me
+	scbw::sendGPTP_aise_cmd(this, NULL, GptpId::SetGenericSwitch, ValueId::SupplyProvidedOverwritten, true, 0);
+	scbw::sendGPTP_aise_cmd(this, NULL, GptpId::SetGenericValue, ValueId::SupplyProvidedValue, amount, 0);
 }

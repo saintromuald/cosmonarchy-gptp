@@ -322,8 +322,8 @@ public:
 	}
 
 	void proc(CUnit* unit) {
+		if (units_dat::SupplyProvided[unit->id] == 0) return;
 		if (unit->playerId != _playerId && !scbw::isAlliedTo(_playerId, unit->playerId)) return;
-		if (unit->id != UnitId::TerranSupplyDepot) return;
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::TreasuryStacks, 1, 0);
 		unit->setSupplyProvided(8 + scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TreasuryStacks, 0));
 	}
