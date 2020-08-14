@@ -595,47 +595,50 @@ namespace hooks {
 
 	void incrementUnitScoresEx(int count, CUnit* unit, int updateMorphMergeUnitScore) { // 0x00488D50
 		unsigned __int16 v3; // dx
-		int v4; // dl
-		int v5; // esi
+		GroupFlag groupFlag; // dl
+		int unitId = unit->id; // esi
 		int v6; // edx
-		int* v7; // eax
+		u32* v7; // eax
 		int v8; // [esp+0h] [ebp-8h]
 		unsigned __int8 playerID; // [esp+7h] [ebp-1h]
 
 		if (!(unit->status & UnitStatus::IsHallucination)) {
-			v3 = unit->id;
 			if (!(unit->isSubunit())) {
-
-				v5 = v3;
 				playerID = unit->playerId;
 				v6 = playerID + 12 * v3;
-				v8 = v6;
-				completed_unit_counts[0][v6] += count;
-				v4 = *(int*)&units_dat::GroupFlags[(unsigned __int16)unit->id];
+				completed_unit_counts[0].player[v6] += count;
+				groupFlag = units_dat::GroupFlags[(unsigned __int16)unit->id];
 
-				if (v4 & GroupFlag::isZerg) {
-					suppliesAvailableZerg[playerID] += count * units_dat::SupplyProvided[v5];
+				u8 supply_provided_amount;
+				//if (scbw::get_aise_value(unit, NULL, AiseId::GenericSwitch, ValueId::SupplyProvidedOverwritten, 0)) {
+				//	supply_provided_amount = count * scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SupplyProvidedValue, 0);
+				//} else {
+					supply_provided_amount = count * units_dat::SupplyProvided[unitId];
+				//}
+
+				if (groupFlag.isZerg) {
+					suppliesAvailableZerg[playerID] += supply_provided_amount;
 				}
-				else if (v4 & GroupFlag::isTerran) {
-					suppliesAvailableTerran[playerID] += count * units_dat::SupplyProvided[v5];
+				else if (groupFlag.isTerran) {
+					suppliesAvailableTerran[playerID] += supply_provided_amount;
 				}
-				else if (v4 & GroupFlag::isProtoss) {
-					suppliesAvailableProtoss[playerID] += count * units_dat::SupplyProvided[v5];
+				else if (groupFlag.isProtoss) {
+					suppliesAvailableProtoss[playerID] += supply_provided_amount;
 				}
-				if (v4 & GroupFlag::isFactory)
+				if (groupFlag.isFactory)
 					factoriesOwned[playerID] += count;
-				if (v4 & GroupFlag::isMen) {
+				if (groupFlag.isMen) {
 					unitsProduced[playerID] += count;
 				}
-				else if (v4 & GroupFlag::isBuilding) {
+				else if (groupFlag.isBuilding) {
 					structuresBuilt[playerID] += count;
 				}
 				if (updateMorphMergeUnitScore) {
 					if (playerID != 11)
 					{
-						if (v4 & GroupFlag::isMen)
+						if (groupFlag.isMen)
 						{
-							switch (v5)
+							switch (unitId)
 							{
 							case UnitId::ZergGuardian:
 							case UnitId::ZergDevourer:
@@ -647,12 +650,13 @@ namespace hooks {
 							default:
 								unitsOwned[playerID] += count;
 								v7 = &unitScore[playerID];
-								goto LABEL_25;
+								*v7 += count * (unsigned __int16)units_dat::BuildScore[(unsigned __int16)unit->id];
+								break;
 							}
 						}
-						else if (v4 & GroupFlag::isBuilding)
+						else if (groupFlag.isBuilding)
 						{
-							switch (v5)
+							switch (unitId)
 							{
 							case UnitId::ZergLair:
 							case UnitId::ZergHive:
@@ -664,15 +668,14 @@ namespace hooks {
 							default:
 								buildingsOwned[playerID] += count;
 								v7 = &buildingScore[playerID];
-							LABEL_25:
 								*v7 += count * (unsigned __int16)units_dat::BuildScore[(unsigned __int16)unit->id];
 								break;
 							}
 						}
 					}
 				}
-				if ((completed_unit_counts[0][v8] & 0x80000000) != 0)
-					completed_unit_counts[0][v8] = 0;
+				if ((completed_unit_counts[0].player[v6] & 0x80000000) != 0)
+					completed_unit_counts[0].player[v6] = 0;
 			}
 		}
 	}
