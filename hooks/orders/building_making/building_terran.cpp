@@ -37,6 +37,7 @@ bool SetMoveTarget_xy(CUnit* unit, int x, int y);									//EB820
 bool orderToMoveToTarget(CUnit* unit, CUnit* target);								//EB980
 bool function_004EB9C0(CUnit* unit, int x, int y);									//EB9C0
 Bool32 function_004F1870(CUnit* unit, int x, int y);								//F1870
+signed int canBuildOnTileLocation(CUnit* a1, int a2, int a3, int a4, int unitType, int a6, int a7, int a8, int a9);												// 00473FB0
 
 } //unnamed namespace
 
@@ -633,6 +634,39 @@ void orders_SCVBuild(CUnit* unit) {
 
 ;
 
+signed int updatePlacementStateForPlacementBox() // 0x0048DCE0
+{
+	signed int v0; // esi
+	signed int result; // eax
+
+	v0 = canBuildOnTileLocation(
+		*activePortraitUnit,
+		(unsigned __int8)unk_placementRelated,
+		(unsigned __int16)placeBuildingX,
+		(unsigned __int16)placeBuildingY,
+		(int)placeBuildingUnitType,
+		1,
+		1,
+		0,
+		0);
+	if (!isPlacingAddon
+		|| (result = canBuildOnTileLocation(
+			*activePortraitUnit,
+			(unsigned __int8)unk_placementRelated,
+			(unsigned __int16)placeBuildingX - *(int*)&units_dat::AddonPlacement[2 * (int)placeBuildingUnitType - 212] / 32,
+			(unsigned __int16)(placeBuildingY - *(int*)&units_dat::AddonPlacement[2 * (int)placeBuildingUnitType - 211] / 32),
+			(unsigned __int16)placeBuildingBaseType,
+			0,
+			1,
+			0,
+			0),
+			v0))
+	{
+		result = v0;
+	}
+	return result;
+}
+
 } //namespace hooks
 
 //-------- Helper function definitions. Do NOT modify! --------//
@@ -1057,6 +1091,29 @@ Bool32 function_004F1870(CUnit* unit, int x, int y) {
 }
 	
 ;
+
+const u32 Func_canBuildOnTileLocation = 0x00473FB0;
+signed int canBuildOnTileLocation(CUnit* a1, int a2, int a3, int a4, int unitType, int a6, int a7, int a8, int a9) {
+	static signed int result;
+
+	__asm {
+		PUSHAD
+		PUSH a1
+		PUSH a2
+		PUSH a3
+		PUSH a4
+		PUSH unitType
+		PUSH a6
+		PUSH a7
+		PUSH a8
+		PUSH a9
+		CALL Func_canBuildOnTileLocation
+		MOV result, EAX
+		POPAD
+	}
+
+	return result;
+}
 
 } //Unnamed namespace
 

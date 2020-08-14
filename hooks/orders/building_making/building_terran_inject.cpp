@@ -76,14 +76,28 @@ void __declspec(naked) orders_SCVBuildWrapper() {
 
 ;
 
+void __declspec(naked) updatePlacementStateForPlacementBox_Wrapper() {
+	static signed int result;
+
+	__asm {
+		PUSHAD
+	}
+	result = hooks::updatePlacementStateForPlacementBox();
+	__asm {
+		POPAD
+		RETN
+	}
+}
+
 }//unnamed namespace
 
 namespace hooks {
 
 void injectBuildingTerranHook() {
-	jmpPatch(orders_TerranBuildSelfWrapper, 0x00467760, 2);
-	jmpPatch(orders_SCVBuild2Wrapper,		0x00467A70, 1);
-	jmpPatch(orders_SCVBuildWrapper,		0x00467FD0, 0);
+	jmpPatch(orders_TerranBuildSelfWrapper,					0x00467760, 2);
+	jmpPatch(orders_SCVBuild2Wrapper,						0x00467A70, 1);
+	jmpPatch(orders_SCVBuildWrapper,						0x00467FD0, 0);
+//	jmpPatch(updatePlacementStateForPlacementBox_Wrapper,	0x0048DCE0, 1);
 }
 
 } //hooks

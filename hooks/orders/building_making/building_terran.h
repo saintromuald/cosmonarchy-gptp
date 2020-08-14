@@ -6,6 +6,7 @@ namespace hooks {
 void orders_TerranBuildSelf(CUnit* building);		//00467760
 void orders_SCVBuild2(CUnit* unit);					//00467A70
 void orders_SCVBuild(CUnit* unit);					//00467FD0
+signed int updatePlacementStateForPlacementBox();	//0048DCE0
 
 void injectBuildingTerranHook();
 

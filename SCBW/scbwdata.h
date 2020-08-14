@@ -218,6 +218,14 @@ SCBW_DATA(const char*, playerName, 0x0057EEB5);
 // For isUnderDarkSwarm
 SCBW_DATA(		u32*,			activeTileHandle,			0x006D1260)
 
+// For updatePlacementStateForPlacementBox
+SCBW_DATA(		u8*,			unk_placementRelated,		0x0064088C);
+SCBW_DATA(		u32*,			placeBuildingX,				0x0048DD12);
+SCBW_DATA(		u32*,			placeBuildingY,				0x0048DD0B);
+SCBW_DATA(		u16*,			placeBuildingUnitType,		0x0048DD03);
+SCBW_DATA(		u32*,			isPlacingAddon,				0x00640884);
+SCBW_DATA(		u32*,			placeBuildingBaseType,		0x0048DD4B);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data
