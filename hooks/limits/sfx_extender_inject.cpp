@@ -27,7 +27,8 @@ int SFXExtender::identifier(std::string str) {
 
 void SFXExtender::set_value(int entry, int id, std::string str) {
     switch (entry) {
-
+    default:
+        break;
     }
 }
 void SFXExtender::set_value(int entry, int id, int val) {
