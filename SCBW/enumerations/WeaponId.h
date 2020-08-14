@@ -140,6 +140,7 @@ enum Enum {
 	CrusaderMissiles						  = 10,			// Paladin weapon
 	SerratedCleavers						  = 47,			// Gorgoleth weapon
 	EssenceDrain							  = 51,			// Gorgoleth ability
+	AugurWeapon								  = 75,			// Augur weapon
 	ObservanceWeapon						  = 122,
 	WyvernWeapon							  = 125,
 
