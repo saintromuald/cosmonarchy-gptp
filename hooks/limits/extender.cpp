@@ -91,7 +91,12 @@ void Extender::parse_set(char* name, u32 default_max_limit, u32 entries) {
 
 		auto id = identifier(to_lowercase(entry_name));
 		if (id != NO_IDENTIFIER) {
-			u32 value = parse_entry_value(value_string, id);
+			if (is_string_id(id)) {
+				
+			}
+			else {
+				u32 value = parse_entry_value(value_string, id);
+			}
 			//
 			//
 			entry_count += 1;

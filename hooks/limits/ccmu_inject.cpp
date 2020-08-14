@@ -7,6 +7,12 @@ int CCMUExtender::identifier(std::string str) {
 u32 CCMUExtender::parse_entry_value(std::string str, int id) {
 	return std::stoi(str);
 }
+bool CCMUExtender::is_string_id(int id) {
+	return false;
+}
+
+void CCMUExtender::set_value(int entry, int id, std::string str){}
+void CCMUExtender::set_value(int entry, int id, int val) {}
 void CCMUExtender::extend() {
 //	const u32 lim_ext = NEW_ARRAY_LENGTH + 1;
 	const u32 lim_ext = UNIT_ARRAY_LENGTH + 1;

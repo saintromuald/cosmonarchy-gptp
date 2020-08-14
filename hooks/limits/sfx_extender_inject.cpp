@@ -25,6 +25,25 @@ int SFXExtender::identifier(std::string str) {
     return NO_IDENTIFIER;
 }
 
+void SFXExtender::set_value(int entry, int id, std::string str) {
+    
+}
+void SFXExtender::set_value(int entry, int id, int val) {
+    switch (val) {
+    case SfxDatEntries::MinVolume:
+        min_volume[entry] = val;
+        break;
+    case SfxDatEntries::Flags:
+        flags[entry] = val;
+        break;
+    case SfxDatEntries::Priority:
+        priority[entry] = val;
+    case SfxDatEntries::Race:
+        race[entry] = val;
+    default:
+        break;
+    }
+}
 std::vector<u32> SFXExtender::get_size_list(){
 	return {
         0x0045F042,
@@ -60,6 +79,14 @@ std::vector<u32> SFXExtender::get_flags_list() {
 //0x005154B0,
     };
 }
+
+bool SFXExtender::is_string_id(int id) {
+    if (id == SfxDatEntries::SoundFilePtrs) {
+        return true;
+    }
+    return false;
+}
+
 void SFXExtender::extend() {
     
     int extra_entries = get_file_entry_count("samase\\sfx_ext.txt", SFX_Entries);

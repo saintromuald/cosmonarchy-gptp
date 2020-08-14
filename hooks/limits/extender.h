@@ -28,13 +28,9 @@ public:
 	int get_file_entry_count(char* name, u32 entries);
 	void parse_set(char* name, u32 default_max_limit, u32 entries);
 	virtual u32 parse_entry_value(std::string str,int id) = 0;
-	
-//	identifier
-//	get
-//  parse entry value
-//  parse - define here
-//	parse-set (?)
-//	file entry count
+	virtual bool is_string_id(int id) = 0;
+	virtual void set_value(int entry, int id, std::string str) = 0;
+	virtual void set_value(int entry, int id, int val) = 0;
 };
 
 
