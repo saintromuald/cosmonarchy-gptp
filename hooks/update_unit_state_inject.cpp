@@ -47,7 +47,10 @@ void __declspec(naked) incrementUnitScoresEx_Wrapper() { // 0x00488D50
 	__asm {
 		MOV count, ECX
 		MOV unit, EDI
-		PUSH updateMorphMergeUnitScore
+		PUSH EAX
+		MOV EAX, [EBP + 0x08]
+		MOV updateMorphMergeUnitScore, EAX
+		POP EAX
 		PUSHAD
 	}
 	hooks::incrementUnitScoresEx(count, unit, updateMorphMergeUnitScore);

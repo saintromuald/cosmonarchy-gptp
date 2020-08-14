@@ -603,6 +603,7 @@ namespace hooks {
 		unsigned __int8 playerID; // [esp+7h] [ebp-1h]
 
 		if (!(unit->status & UnitStatus::IsHallucination)) {
+			v3 = unitId;
 			if (!(unit->isSubunit())) {
 				playerID = unit->playerId;
 				v6 = playerID + 12 * v3;
