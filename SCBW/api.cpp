@@ -1089,12 +1089,16 @@ CUnit** getSourceQueens(CUnit* unit) {
 }
 
 bool canUseCliffAdventage(CUnit* unit, u8 weapon) {
+	if (unit == NULL)
+		return false;
 	return (!(unit->status & UnitStatus::InAir)
 	&& (unit->id != UnitId::ProtossScarab)
 	&& (weapon == NULL || weapons_dat::MaxRange[weapon] > 32));
 }
 
 s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
+	if (unit == NULL)
+		return 0;
 	if (!canUseCliffAdventage(unit, weapon))
 		return 0;
 	u32 cliffAdvantage = 0;
