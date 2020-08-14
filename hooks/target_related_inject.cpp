@@ -7,11 +7,30 @@
 0043FFD0 = Ai_StimIfNeeded?()
 00462EA0 = Ai_TryReturnHome()
 00465F60 = Order_Interceptor
-00477980 = Order_AttackUnit_Subunit()
+00477980 = Order_AttackUnit_Subunit() - multiple cases
 00478540 = Order_AttackUnit_Main()
 00478B40 = AttackAtPoint()
 00491C20 = Order_CloakingNearby()
 */
+
+//iquare: full list of all range-related start
+//SEEK:
+//442FC0 hook or wrapper required (globals are supposed to be used)
+//44302E hook required
+//443080 = GetAutoTarget(), eax Unit *unit - hook or wrapper required
+//004665D0 - hook or wrapper required
+//WEAPON:
+//0043ADA0 (Ai_AskForHelp) - wrapper is advisable
+//0044010D - hook/wrapper
+//00462EA0 - wrapper is advisable
+//00476430 - isUnitTargetOutOfMaxRange
+//00476640 - IsReadyToAttack
+//00476870 - isUnitInWeaponRange
+//00478b40 - applyCooldown
+//0047bab0 - watchTarget
+//0047c4f0 - stayInRange
+//00491C00 - getDarkArchonEnergy
+//00491DB0 = CanCastOrderedSpellNow(), eax Unit *unit
 
 namespace hooks {
 	/*
