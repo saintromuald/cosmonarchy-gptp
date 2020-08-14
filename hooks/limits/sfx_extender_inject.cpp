@@ -1,5 +1,5 @@
 #include "hooks/limits/sfx_extender.h"
-
+#include "globals.h"
 std::vector<u32> SFXExtender::get_address_list(){
 	return {};
 }
@@ -24,7 +24,9 @@ int SFXExtender::identifier(std::string str) {
     }
     return NO_IDENTIFIER;
 }
-
+void SFXExtender::set_extended_data() {
+    parse_set("samase\\sfx_ext.txt", SFX_Default_Length, 5);
+}
 void SFXExtender::set_value(int entry, int id, std::string str) {
     switch (entry) {
     case SfxDatEntries::SoundFilePtrs:
@@ -190,8 +192,19 @@ void SFXExtender::extend() {
 }
 
 namespace hooks {
+    void LoadSfxDataWrapper() {
+        __asm {
+            PUSHAD
+        }
+        new_sfxdata.set_extended_data();
+        __asm {
+            POPAD
+            RETN
+        }
+    }
 	void sfxExtender() {
 		new_sfxdata.extend();
+        jmpPatch(LoadSfxDataWrapper, 0x004AAFE3);//patched empty bytes, called from aise
 	}
 }
 

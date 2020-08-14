@@ -30,7 +30,8 @@ public:
 	virtual u32 parse_entry_value(std::string str,int id) = 0;
 	virtual bool is_string_id(int id) = 0;
 	virtual void set_value(int entry, int id, std::string str) = 0;
-	virtual void set_value(int entry, int id, int val) = 0;
+	virtual void set_value(int entry, int id, int str) = 0;
+	virtual void set_extended_data() = 0;
 };
 
 

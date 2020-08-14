@@ -10,7 +10,7 @@ u32 CCMUExtender::parse_entry_value(std::string str, int id) {
 bool CCMUExtender::is_string_id(int id) {
 	return false;
 }
-
+void CCMUExtender::set_extended_data(){}
 void CCMUExtender::set_value(int entry, int id, std::string str){}
 void CCMUExtender::set_value(int entry, int id, int val) {}
 void CCMUExtender::extend() {
