@@ -484,7 +484,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
 //	hooks::injectSpellcasterAI();
 //	hooks::injectAIOrdersHooks();
-//	hooks::injectMissChanceHooks();
+	hooks::injectMissChanceHooks();
 
 	return TRUE;
 }

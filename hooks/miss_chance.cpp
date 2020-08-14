@@ -2,11 +2,12 @@
 #include <SCBW/api.h>
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
+#include "SCBW/api.h"
 
 namespace { // helper declarations
 	void getAbsoluteUnitBounds(CUnit* a1, Box32* a2);
-	CUnit* findBestUnit(Box32* a1, int a2, int (__fastcall *a3)(int, int));
-	bool compareUnitToUnitType(CUnit* a1, __int16 a2);
+	CUnit* findBestUnit(Box32* a1, int a2, bool(__fastcall *a3)(CUnit*, s16));
+	bool compareUnitToUnitType(CUnit* a1, s16 a2);
 	unsigned int getGroundHeightAtPx(signed int a1, signed int a2);
 }
 
@@ -18,12 +19,12 @@ namespace hooks {
 		_pUnit = a1;
 		if (a1->status & UnitStatus::InAir)
 			return 0;
-		if (!(units_dat::GroupFlags[(unsigned __int16)a1->id].isBuilding))
+		if (!(units_dat::GroupFlags[(u16)a1->id].isBuilding))
 		{
 			if (unitCountTable[10].player[155])
 			{
 				getAbsoluteUnitBounds(a1, &bounds);
-				if (findBestUnit(&bounds, UnitId::Spell_DarkSwarm, (int(__fastcall*)(int, int))compareUnitToUnitType))
+				if (findBestUnit(&bounds, UnitId::Spell_DarkSwarm, (bool(__fastcall*)(CUnit*, s16))compareUnitToUnitType))
 					return 255;
 			}
 		}
@@ -40,17 +41,21 @@ namespace hooks {
 
 		_targ = a1;
 		_unit = a2;
-		darkSwarmOrd = isUnderDarkSwarm(a1);
-		if (_unit->status & UnitStatus::InAir
-			|| _targ->status & UnitStatus::InAir
-			|| (_pSprite = _targ->sprite,
-				_grndHeight = getGroundHeightAtPx(_unit->sprite->position.y, _unit->sprite->position.x),
-				_grndHeight >= getGroundHeightAtPx(_pSprite->position.y, _pSprite->position.x))
-			|| (result = 119, darkSwarmOrd > 119))
-		{
-			result = darkSwarmOrd;
-		}
-		return result;
+
+		if (scbw::isUnderDarkSwarm(a1)) return 255;
+		return 0;
+
+		//darkSwarmOrd = isUnderDarkSwarm(a1);
+		//if (_unit->status & UnitStatus::InAir
+		//	|| _targ->status & UnitStatus::InAir
+		//	|| (_pSprite = _targ->sprite,
+		//		_grndHeight = getGroundHeightAtPx(_unit->sprite->position.y, _unit->sprite->position.x),
+		//		_grndHeight >= getGroundHeightAtPx(_pSprite->position.y, _pSprite->position.x))
+		//	|| (result = 119, darkSwarmOrd > 119))
+		//{
+		//	result = darkSwarmOrd;
+		//}
+		//return result;
 	};
 }
 
@@ -68,7 +73,7 @@ namespace { // helper definitions
 	};
 
 	const u32 Func_findBestUnit = 0x004E8830;
-	CUnit* findBestUnit(Box32* a1, int a2, int(__fastcall* a3)(int, int)) {
+	CUnit* findBestUnit(Box32* a1, int a2, bool(__fastcall* a3)(CUnit*, s16)) {
 		static CUnit* result;
 
 		__asm {
