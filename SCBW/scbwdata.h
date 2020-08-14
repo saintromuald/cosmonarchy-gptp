@@ -146,21 +146,21 @@ SCBW_DATA(const u8*,      CURRENT_TILESET,      0x00596828);  //Tileset of curre
 ////possible values were 0057F1DC and [00596828]
 
 // Added from BWAPI Offsets.h, but made const since it would not be safe to modify those
-SCBW_DATA(const char*,	  CurrentMapFileName,	0x0057FD3C);
-SCBW_DATA(const char*,	  CurrentMapName,		0x0057FE40);
-SCBW_DATA(const _uavail*, UnitAvailability,		0x0057F27C);
+SCBW_DATA(const char*,			 CurrentMapFileName,		0x0057FD3C);
+SCBW_DATA(const char*,			 CurrentMapName,			0x0057FE40);
+SCBW_DATA(const _uavail*,		 UnitAvailability,			0x0057F27C);
 
 // Added by Pr0nogo
 // For raceDropdown
-SCBW_DATA(bStringMap*,		singleRaceSelect,			0x0051AAA0);
-SCBW_DATA(wStringMap*,		singleTypeSelect,			0x0051AAA8);
-SCBW_DATA(const u16*,		networkTable,				0x006D1220);
+SCBW_DATA(bStringMap*,			singleRaceSelect,			0x0051AAA0);
+SCBW_DATA(wStringMap*,			singleTypeSelect,			0x0051AAA8);
+SCBW_DATA(const u16*,			networkTable,				0x006D1220);
 
 // For initSingleplayerCustom
-SCBW_DATA(const u32*,		selectedGameType,			0x0059BA64);
-SCBW_DATA(const u16*,		selectedGameTypeParam,		0x0059BA5C);
-SCBW_DATA(const char*,		selectedSingleplayerRace,	0x0057F266);
-SCBW_DATA(const char*,		customSingleplayer,			0x0057F1E3);
+SCBW_DATA(const u32*,			selectedGameType,			0x0059BA64);
+SCBW_DATA(const u16*,			selectedGameTypeParam,		0x0059BA5C);
+SCBW_DATA(const char*,			selectedSingleplayerRace,	0x0057F266);
+SCBW_DATA(const char*,			customSingleplayer,			0x0057F1E3);
 
 // For initGameLoad
 SCBW_DATA(const void*,			scenarioChk,				0x006D0F24);
@@ -193,12 +193,12 @@ SCBW_DATA(const u32*,			playerExploredVisions,		0x0057EEB8);
 SCBW_DATA(		int*,			subTwoCheckTwo,				0x004EE0F0);
 
 // For getResponseSfx
-SCBW_DATA(u32*,	selectionSoundCounter,		0x00640548);
-SCBW_DATA(u32*,	lastRandSFX,	0x006D5BE0);
+SCBW_DATA(u32*,					selectionSoundCounter,		0x00640548);
+SCBW_DATA(u32*,					lastRandSFX,				0x006D5BE0);
 
 // For loadRaceUI
-SCBW_DATA(u8*,	consoleIndex,	0x0057F1E2);
-SCBW_DATA(u16*,	currentMusicId,		0x0057F1DE);
+SCBW_DATA(u8*,					consoleIndex,				0x0057F1E2);
+SCBW_DATA(u16*,					currentMusicId,				0x0057F1DE);
 SCBW_DATA(const char*,			xCampaignFirstMission,		0x005122C0);
 SCBW_DATA(const char*,			campaignFirstMission,		0x005122BC);
 SCBW_DATA(const u32*,			consoleRaceSpecific,		0x0051A3B4);
@@ -213,10 +213,30 @@ SCBW_DATA(		u32*,			replayEndFrame,				0x006D0F31);
 
 // For levelCheatCreate
 SCBW_DATA(		u32*,			levelCheatUnlocked,			0x006D11C0);
-SCBW_DATA(const char*, playerName, 0x0057EEB5);
+SCBW_DATA(const char*,			playerName,					0x0057EEB5);
 
 // For isUnderDarkSwarm
 SCBW_DATA(		u32*,			activeTileHandle,			0x006D1260)
+
+// For updatePlacementStateForPlacementBox
+SCBW_DATA(		u8*,			unk_placementRelated,		0x0064088C);
+SCBW_DATA(		u32*,			placeBuildingX,				0x0048DD12);
+SCBW_DATA(		u32*,			placeBuildingY,				0x0048DD0B);
+SCBW_DATA(		u16*,			placeBuildingUnitType,		0x0048DD03);
+SCBW_DATA(		u32*,			isPlacingAddon,				0x00640884);
+SCBW_DATA(		u32*,			placeBuildingBaseType,		0x0048DD4B);
+
+// For incrementUnitScoresEx
+SCBW_DATA(		u32*,			suppliesAvailableZerg,		0x00488DBB); // Array of 12
+SCBW_DATA(		u32*,			suppliesAvailableTerran,	0x00488DD3); // Array of 12
+SCBW_DATA(		u32*,			suppliesAvailableProtoss,	0x00488DEB); // Array of 12
+SCBW_DATA(		u32*,			factoriesOwned,				0x00488DF7); // Array of 12
+SCBW_DATA(		u32*,			unitsProduced,				0x00488E08); // Array of 12
+SCBW_DATA(		u32*,			structuresBuilt,			0x00488E03); // Array of 12
+SCBW_DATA(		u32*,			unitScore,					0x00488E6E); // Array of 12
+SCBW_DATA(		u32*,			buildingScore,				0x00488EB4); // Array of 12
+SCBW_DATA(		u32*,			unitsOwned,					0x00488E67); // Array of 12
+SCBW_DATA(		u32*,			buildingsOwned,				0x00488EAD); // Array of 12
 
 //////////////////////////////////////////////////////////////// @}
 
@@ -304,17 +324,6 @@ SCBW_DATA(u8*,  TurnSpeed,          flingyDat[4].address);	//006C9E20 Incorrectl
 //SCBW_DATA(u8*, ???,				flingyDat[5].address);	//006CA240
 SCBW_DATA(u8*,  MovementControl,    flingyDat[6].address);	//006C9858
 } //flingy_dat (last entry at 0x00515A80)
-
-
-namespace sfx_dat {
-	SCBW_DATA(const DatLoad*, sfxDat, 0x00515498);
-
-	SCBW_DATA(u8*, Volume, sfxDat[0].address);
-	SCBW_DATA(u8*, Flags, sfxDat[1].address);
-	SCBW_DATA(u16*, Race, sfxDat[2].address);
-	SCBW_DATA(u8*, Priority, sfxDat[3].address);
-	SCBW_DATA(u32*, SoundPtr, sfxDat[4].address);
-}
 
 namespace weapons_dat {
 SCBW_DATA(const DatLoad*, weaponsDat, 0x00513868);
