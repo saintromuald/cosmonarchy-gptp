@@ -154,15 +154,21 @@ namespace hooks {
 			}
 		}
 	}
-
+    
+namespace hooks {
     void __declspec(naked) Ai_AskForHelp_Wrapper() { // 0043ADA0
         static CUnit* a1;
         static CUnit* a2;
         static int a3;
         __asm {
-            PUSH a1
-            PUSH a2
-            PUSH a3
+            PUSH EAX
+            MOV EAX,[EBP+0x08]
+            MOV a1,EAX
+            MOV EAX,[EBP+0x0C]
+            MOV a2,EAX
+            MOV EAX,[EBP+0x10]
+            MOV a3,EAX
+            POP EAX
             PUSHAD
         }
         result = Ai_AskForHelp(a1, a2, a3);
@@ -172,5 +178,4 @@ namespace hooks {
             RETN
         }
     }
-
-*/
+}*/
