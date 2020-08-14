@@ -325,6 +325,17 @@ SCBW_DATA(u8*,  TurnSpeed,          flingyDat[4].address);	//006C9E20 Incorrectl
 SCBW_DATA(u8*,  MovementControl,    flingyDat[6].address);	//006C9858
 } //flingy_dat (last entry at 0x00515A80)
 
+namespace sfx_dat {
+	SCBW_DATA(const DatLoad*, sfxDat, 0x00515498);
+
+	SCBW_DATA(u8*, Volume, sfxDat[0].address);
+	SCBW_DATA(u8*, Flags, sfxDat[1].address);
+	SCBW_DATA(u16*, Race, sfxDat[2].address);
+	SCBW_DATA(u8*, Priority, sfxDat[3].address);
+	SCBW_DATA(u32*, SoundPtr, sfxDat[4].address);
+}
+
+
 namespace weapons_dat {
 SCBW_DATA(const DatLoad*, weaponsDat, 0x00513868);
 

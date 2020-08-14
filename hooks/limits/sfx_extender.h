@@ -34,6 +34,7 @@ public:
 	virtual void set_value(int entry, int id, std::string str);
 	virtual void set_value(int entry, int id, int val);
 	virtual void set_extended_data();
+	void copyArrays();
 };
 
 

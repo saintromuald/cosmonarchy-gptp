@@ -3,8 +3,8 @@
 #include "hooks/limits/sfx_extender.h"
 namespace hooks {
 	void injectLimitHooks() {
-		hooks::injectCCMUHooks();
-//		hooks::sfxExtender();
+//		hooks::injectCCMUHooks();
+		hooks::sfxExtender();
 
 	}
 }

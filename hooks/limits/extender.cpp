@@ -34,21 +34,46 @@ std::string to_lowercase(std::string line) {
 	}
 	return str;
 }
-
+#include <logger.h>
 int Extender::get_file_entry_count(char* name, u32 entries) {
-	std::string str = scbw::readSamaseFile(name);
+//	std::string str = scbw::readSamaseFile(name);
+	const char* data = NULL;
+	u32 len = 0;
+	auto data_ptr = &data;
+	auto len_ptr = &len;
+	u32 val = reinterpret_cast<u32>(name);
+	GPTP::logger << "log1...\n";
+	auto length = scbw::get_aise_value(NULL, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));
+	char* buf = (char*)scbw::get_aise_value(NULL, NULL, AiseId::ReadSamaseFile_Ptr, 0, 0);
+	
+	GPTP::logger << "log2...\n";
+	GPTP::logger << "Read samase file: " << (u32)buf << " " << length << '\n';
+	std::string str;
+	str = std::string(buf, length);
+	//
+	GPTP::logger << "Read samase file: " << str << '\n';
+
+
+
 	std::vector<std::string> lines = split_by(str, '\n');
+	GPTP::logger << "Str size: " << str.size() << ", Line size: " << lines.size() << '\n';
+	if (str.size() > 0) {
+		GPTP::logger << str << '\n';
+	}
 	u32 count = 0;
 	for (auto line : lines) {
 		if (starts_with(line, '#') || starts_with(line, ';') || line.length() == 0) {
+			GPTP::logger << "bad line, continue" << '\n';
 			continue;
 		}
 		std::vector<std::string> command_list = split_by(line, ':');
+		GPTP::logger << "split length: " << command_list.size() << '\n';
 		if (command_list.size() != 2) {
 			continue;
 		}
 		auto entry_name = command_list[0];
 		auto id = identifier(to_lowercase(entry_name));
+		GPTP::logger << "identifier: " << id << '\n';
 		if (id != NO_IDENTIFIER) {
 			count++;
 		}
