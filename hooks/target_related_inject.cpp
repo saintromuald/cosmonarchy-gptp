@@ -155,4 +155,22 @@ namespace hooks {
 		}
 	}
 
+    void __declspec(naked) Ai_AskForHelp_Wrapper() { // 0043ADA0
+        static CUnit* a1;
+        static CUnit* a2;
+        static int a3;
+        __asm {
+            PUSH a1
+            PUSH a2
+            PUSH a3
+            PUSHAD
+        }
+        result = Ai_AskForHelp(a1, a2, a3);
+        __asm {
+            POPAD
+            MOV EAX, result
+            RETN
+        }
+    }
+
 */
