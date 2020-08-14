@@ -53,13 +53,13 @@ enum Enum {
 	NuclearStrike			= 0x2D, //based on bwapi/BWMemoryEdit/Enums/TechType.cs
 	UnknownLastEntry		= 0x2E,	//based on bwapi/BWMemoryEdit/Enums/TechType.cs
 
-	// HYDRA 
+	// HYDRA \\
+
+//Terran
+	ReverseThrust			= 2,  // Wyvern fire while moving switch
 	LandGrab				= 17, // Wyvern target ground ability
 	AdministerMedstims		= 24, // Shaman organic heal ability
 	SafetyOff				= 26, // Cyprian weapon switch ability
-	ReverseThrust			= 29, // Wyvern fire while moving switch
-	PhaseLink				= 33, // Clarion shield damage distribution ability
-	EssenceDrain			= 35, // Gorgoleth energy steal ability
 	TempoChange				= 36, // Madrigal weapon switch ability
 	Skyfall					= 37, // Paladin missile salvo ability
 	NaniteField				= 38, // Shaman mech repair ability
@@ -67,6 +67,13 @@ enum Enum {
 	SublimeShepherd			= 40, // Azazel cloud cover ability
 	PowerTransfer			= 41, // Savant energy transfer ability
 	EnergyDecay				= 42, // Savant energy damage ability
+
+//Protoss
+	PlanetCracker			= 29, // Star Sovereign damage ability
+	PhaseLink				= 33, // Clarion shield damage distribution ability
+
+//Zerg
+	EssenceDrain			= 35, // Gorgoleth energy steal ability
 
 	//extended
 	//ChasmalColonySwitch = 47,	// Chasmal Colony - Adaptive Barrier / Adrenal Secretion
