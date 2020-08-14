@@ -138,48 +138,46 @@ namespace {
 
 		attackingPlayer_ = attackingPlayer;
 		direction_ = direction;
+		x_ = x; y_ = y;
 		if (weaponId == WeaponId::CrusaderMissiles) {
-			if (source->sprite->mainGraphic->frameIndex == 0
-			|| source->sprite->mainGraphic->frameIndex == 1
-			|| source->sprite->mainGraphic->frameIndex == 2
-			|| source->sprite->mainGraphic->frameIndex == 3) {
-				x = 6;
-				y = -45;
+			if (source->sprite->mainGraphic->direction == 0
+			|| source->sprite->mainGraphic->direction == 1
+			|| source->sprite->mainGraphic->direction == 2
+			|| source->sprite->mainGraphic->direction == 3) {
+				x_ = source->sprite->position.x + 6;
+				y_ = source->sprite->position.y - 45;
 			}
-			else if (source->sprite->mainGraphic->frameIndex == 4
-			|| source->sprite->mainGraphic->frameIndex == 5) {
-				x = 4;
-				y = -44;
+			else if (source->sprite->mainGraphic->direction == 4
+			|| source->sprite->mainGraphic->direction == 5) {
+				x_ = source->sprite->position.x + 4;
+				y_ = source->sprite->position.y - 44;
 			}
-			else if (source->sprite->mainGraphic->frameIndex == 6
-			|| source->sprite->mainGraphic->frameIndex == 7
-			|| source->sprite->mainGraphic->frameIndex == 8
-			|| source->sprite->mainGraphic->frameIndex == 9) {
-				x = 1;
-				y = -43;
+			else if (source->sprite->mainGraphic->direction == 6
+			|| source->sprite->mainGraphic->direction == 7
+			|| source->sprite->mainGraphic->direction == 8
+			|| source->sprite->mainGraphic->direction == 9) {
+				x_ = source->sprite->position.x + 1;
+				y_ = source->sprite->position.y - 43;
 			}
-			else if (source->sprite->mainGraphic->frameIndex == 10
-			|| source->sprite->mainGraphic->frameIndex == 11) {
-				x = -3;
-				y = -42;
+			else if (source->sprite->mainGraphic->direction == 10
+			|| source->sprite->mainGraphic->direction == 11) {
+				x_ = source->sprite->position.x - 3;
+				y_ = source->sprite->position.y - 42;
 			}
-			else if (source->sprite->mainGraphic->frameIndex == 12
-			|| source->sprite->mainGraphic->frameIndex == 13) {
-				x = -6;
-				y = -41;
+			else if (source->sprite->mainGraphic->direction == 12
+			|| source->sprite->mainGraphic->direction == 13) {
+				x_ = source->sprite->position.x - 6;
+				y_ = source->sprite->position.y - 41;
 			}
-			else if (source->sprite->mainGraphic->frameIndex == 14
-			|| source->sprite->mainGraphic->frameIndex == 15) {
-				x = -8;
-				y = -44;
+			else if (source->sprite->mainGraphic->direction == 14
+			|| source->sprite->mainGraphic->direction == 15) {
+				x_ = source->sprite->position.x - 8;
+				y_ = source->sprite->position.y - 44;
 			}
-			else if (source->sprite->mainGraphic->frameIndex == 16) {
-				x = -8;
-				y = -48;
+			else if (source->sprite->mainGraphic->direction == 16) {
+				x_ = source->sprite->position.x - 8;
+				y_ = source->sprite->position.y - 48;
 			}
-		}
-		else {
-			x_ = x; y_ = y;
 		}
 
 		__asm {

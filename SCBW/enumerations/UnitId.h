@@ -474,7 +474,11 @@ enum Enum {
 	TerranGallery							= 185,
 	TerranSalvoYard							= 189,
 	TerranFutureStation						= 192,
+	TerranTreasury							= 215,
 	TerranQuarry							= 220,
+	TerranQuantumInstitute					= 223,
+	TerranMunitionsBay						= 224,
+	TerranDrydock							= 225,
 
 //Protoss-Unit
 	ProtossStarSovereign					= 21,
@@ -495,6 +499,7 @@ enum Enum {
 	ProtossArgosy							= 183,
 	ProtossStarfield						= 184,
 	ProtossPennant							= 221,
+	ProtossGrandLibrary						= 226,
 
 //Zerg-Unit
 	ZergGorgoleth							= 56,
@@ -533,6 +538,8 @@ enum Enum {
 	ZergDevourerHaunt						= 197,
 	ZergChasmalColony						= 201,
 	ZergVorvalPond							= 204,
+	ZergKeskathCavern						= 219,
+	ZergSire								= 227,
 
-};
+	};
 }
