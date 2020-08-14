@@ -541,5 +541,8 @@ enum Enum {
 	ZergKeskathCavern						= 219,
 	ZergSire								= 227,
 
+	ZergOthstoleth							= 57,
+//placeholders, replace later with normal ids
+	EggOthstoleth							= 501,
 	};
 }

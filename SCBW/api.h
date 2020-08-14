@@ -12,7 +12,7 @@ namespace hooks {
 namespace scbw {
 
 
-
+bool isZergEgg(u16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
 void createBullet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
 void ApplySpores(CUnit* unit);
 bool setThingyVisibilityFlags(CThingy* thingy);

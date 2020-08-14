@@ -25,7 +25,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-
+		
 		return result != 0;
 
 	}
@@ -100,7 +100,7 @@ namespace {
 
 		unit->status &= ~(UnitStatus::Completed);
 		morphEggType = hooks::getUnitMorphEggTypeHook(unit->id, unit,unit->buildQueue[0]);
-		assert(hooks::isEggUnitHook(morphEggType));
+		assert(scbw::isZergEgg(morphEggType,true,false));
 		__asm {
 			POPAD
 			PUSH morphEggType
@@ -199,7 +199,7 @@ namespace {
 
 			u16 refundUnitId;
 
-			if (hooks::isEggUnitHook(unit->id))
+			if (scbw::isZergEgg(unit->id,true,false))
 				refundUnitId = unit->buildQueue[unit->buildQueueSlot % 5];
 			else
 				refundUnitId = unit->id;
@@ -251,7 +251,7 @@ namespace {
 
 	s32 getRemainingBuildTimePctHook(CUnit* unit) {
 		u16 unitId = unit->id;
-		if (hooks::isEggUnitHook(unitId) || unit->isRemorphingBuilding())
+		if (scbw::isZergEgg(unitId,true,false) || unit->isRemorphingBuilding())
 			unitId = unit->buildQueue[unit->buildQueueSlot];
 
 		return 100 * (units_dat::TimeCost[unitId] - unit->remainingBuildTime) / units_dat::TimeCost[unitId];

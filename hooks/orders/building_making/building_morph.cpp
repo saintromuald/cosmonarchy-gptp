@@ -1105,7 +1105,7 @@ namespace {
 				return 0;
 		}
 
-		if (hooks::isEggUnitHook(unit->id)
+		if (scbw::isZergEgg(unit->id,true,false)
 			|| unit->mainOrderId == OrderId::Morph2
 			|| unit->mainOrderId == OrderId::ZergBuildSelf)
 			return (unit->buildQueue[unit->buildQueueSlot % 5] == unitId) ? 1 : 0;

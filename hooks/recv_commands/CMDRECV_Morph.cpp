@@ -40,7 +40,6 @@ namespace hooks {
 	void CMDRECV_UnitMorph(u16 wUnitType) {
 		CUnit* current_unit;
 		*selectionIndexStart = 0;
-
 		current_unit = getActivePlayerNextSelection();
 		while (current_unit != NULL) {
 
@@ -56,12 +55,17 @@ namespace hooks {
 				current_unit->id == UnitId::ZergMutalisk ||
 				current_unit->id == UnitId::hydralisk ||
 				current_unit->id == UnitId::zergling ||
-				current_unit->id == UnitId::ultralisk
-				)
-				bAllowMorph = current_unit->canMakeUnit(wUnitType, *ACTIVE_NATION_ID) == 1;
-			else
-				bAllowMorph = false;
+				current_unit->id == UnitId::ultralisk ||
+				current_unit->id == UnitId::overlord ||
+				current_unit->id == UnitId::ZergIroleth ||
+				current_unit->id == UnitId::ZergOthstoleth
+				) {
 
+				bAllowMorph = current_unit->canMakeUnit(wUnitType, *ACTIVE_NATION_ID) == 1;
+			}
+			else {
+				bAllowMorph = false;
+			}
 			if (
 				bAllowMorph &&
 				current_unit->mainOrderId != OrderId::Morph1 &&

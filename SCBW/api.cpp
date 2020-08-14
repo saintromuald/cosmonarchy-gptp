@@ -573,7 +573,29 @@ u32 getSpriteData(u32 entry, u32 index) {
 u32 getImageData(u32 entry, u32 index) {
 	return get_aise_value(NULL, NULL, AiseId::GetImageData, entry, index);
 }
-
+bool isZergEgg(u16 id, bool allow_normal_eggs, bool allow_larvae) {
+	switch (id) {
+	case UnitId::cocoon:
+	case UnitId::lurker_egg:
+	case UnitId::EggVorvaling:
+	case UnitId::EggBasilisk:
+	case UnitId::EggKeskathalor:
+	case UnitId::EggIroleth:
+	case UnitId::EggGorgoleth:
+	case UnitId::EggDevourer:
+	case UnitId::EggOthstoleth:
+		return true;
+	default:
+		break;
+	}
+	if (id == UnitId::larva && allow_larvae) {
+		return true;
+	}
+	if (id == UnitId::egg && allow_normal_eggs) {
+		return true;
+	}
+	return false;
+}
 std::string readSamaseFile(char* name) {
 	const char* data = NULL;
 	u32 len = 0;

@@ -6,7 +6,6 @@ namespace hooks {
 	void orders_ZergBirth(CUnit* unit);	//0x0045DD60
 	void orders_Morph1(CUnit* unit);	//0x0045DEA0
 	bool unitCanMorphHook(CUnit* unit, u16 morphUnitId);
-	bool isEggUnitHook(u16 unitId);
 	bool isRallyableEggUnitHook(u16 unitId);
 	u16 getUnitMorphEggTypeHook(u16 unitId, CUnit* unit, u16 resultId);
 	u16 getCancelMorphRevertTypeHook(CUnit* eggUnit);

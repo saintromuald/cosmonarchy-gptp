@@ -96,14 +96,7 @@ namespace hooks {
 				scbw::setUnitPosition(unit, pos.x, pos.y);
 
 			if (
-				unit->previousUnitType != UnitId::ZergCocoon &&
-				unit->previousUnitType != UnitId::ZergLurkerEgg &&
-				unit->previousUnitType != UnitId::EggBasilisk &&
-				unit->previousUnitType != UnitId::EggGorgoleth &&
-				unit->previousUnitType != UnitId::EggVorvaling &&
-				unit->previousUnitType != UnitId::Hero_GerardDuGalle &&			// What are these?
-				unit->previousUnitType != UnitId::Powerup_ProtossGasOrbType2	// Some old placeholder?
-
+				!scbw::isZergEgg(unit->previousUnitType,false,false)
 				)
 			{
 
@@ -130,7 +123,10 @@ namespace hooks {
 				unit->id == UnitId::ZergLarva ||
 				unit->id == UnitId::ZergHydralisk ||
 				unit->id == UnitId::ZergMutalisk ||
-				unit->id == UnitId::ZergZergling
+				unit->id == UnitId::ZergZergling ||
+				unit->id == UnitId::ultralisk ||
+				unit->id == UnitId::overlord ||
+				unit->id == UnitId::ZergIroleth
 				)
 			{
 
@@ -179,6 +175,9 @@ namespace hooks {
 						break;
 					case UnitId::ZergOverlord:
 						eggId = UnitId::EggIroleth;
+						break;
+					case UnitId::ZergIroleth:
+						eggId = UnitId::EggOthstoleth;
 						break;
 					default:
 						bStopThere = true;
@@ -265,13 +264,7 @@ namespace hooks {
 	//Check if @p unit can morph into @p morphUnitId.
 	bool unitCanMorphHook(CUnit* unit, u16 morphUnitId) {
 		//Default StarCraft behavior
-
 		if (unit->id == UnitId::ZergHydralisk) {
-			/*
-			if (morphUnitId == UnitId::lurker
-			&& unit->canUseTech(TechId::LurkerAspect, *ACTIVE_NATION_ID) == 1) {
-			return true;
-			}*/
 			if (morphUnitId == UnitId::ZergBasilisk) {
 				return true;
 			}
@@ -300,36 +293,10 @@ namespace hooks {
 		return false;
 	}
 
-	//Check if @p unitId is an egg unit.
-	bool isEggUnitHook(u16 unitId) {
-		//Default StarCraft behavior
-
-		if (unitId == UnitId::ZergEgg
-			|| unitId == UnitId::ZergCocoon
-			|| unitId == UnitId::ZergLurkerEgg
-			|| unitId == UnitId::EggBasilisk
-			|| unitId == UnitId::EggVorvaling
-			|| unitId == UnitId::EggGorgoleth
-			|| unitId == UnitId::EggKeskathalor
-			|| unitId == UnitId::EggDevourer
-			|| unitId == UnitId::EggIroleth)
-			return true;
-
-		return false;
-	}
-
 	//Check if @p unitId is an egg unit that can be rallied
 	bool isRallyableEggUnitHook(u16 unitId) {
 		//Default StarCraft behavior
-
-		if (unitId == UnitId::ZergCocoon
-			|| unitId == UnitId::ZergLurkerEgg
-			|| unitId == UnitId::EggBasilisk
-			|| unitId == UnitId::EggVorvaling
-			|| unitId == UnitId::EggGorgoleth
-			|| unitId == UnitId::EggKeskathalor
-			|| unitId == UnitId::EggDevourer
-			|| unitId == UnitId::EggIroleth)
+		if (scbw::isZergEgg(unitId,false,false))
 			return false;
 
 		return true;
@@ -364,6 +331,9 @@ namespace hooks {
 			return UnitId::EggKeskathalor;
 		if (unitId == UnitId::ZergOverlord)
 			return UnitId::EggIroleth;
+		if (unitId == UnitId::ZergIroleth) {
+			return UnitId::ZergOthstoleth;
+		}
 
 
 		return UnitId::None;
@@ -392,6 +362,10 @@ namespace hooks {
 		if (eggUnit->id == UnitId::EggIroleth)
 		{
 			return UnitId::ZergOverlord;
+		}
+		if (eggUnit->id == UnitId::EggOthstoleth)
+		{
+			return UnitId::ZergIroleth;
 		}
 		if (eggUnit->id == UnitId::EggKeskathalor)
 		{
