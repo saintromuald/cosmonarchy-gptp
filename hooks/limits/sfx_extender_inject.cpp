@@ -26,10 +26,12 @@ int SFXExtender::identifier(std::string str) {
 }
 
 void SFXExtender::set_value(int entry, int id, std::string str) {
-    
+    switch (entry) {
+
+    }
 }
 void SFXExtender::set_value(int entry, int id, int val) {
-    switch (val) {
+    switch (entry) {
     case SfxDatEntries::MinVolume:
         min_volume[entry] = val;
         break;
