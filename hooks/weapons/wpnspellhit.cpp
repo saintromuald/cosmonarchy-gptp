@@ -672,7 +672,8 @@ namespace hooks {
 	//in an unexpected way, it may not contain the correct value.
 	void BroodlingHit(CUnit* attacker, CUnit* target, CBullet* bullet) {
 		u32 broodlings_to_spawn = 3;
-		if (scbw::getActiveTileAt(bullet->sprite->position.x, bullet->sprite->position.y).hasCreep) {
+		ActiveTile tile = scbw::getActiveTileAt(bullet->sprite->position.x, bullet->sprite->position.y);
+		if (tile.hasCreep || tile.creepReceeding) {
 			broodlings_to_spawn = 5;
 		}
 

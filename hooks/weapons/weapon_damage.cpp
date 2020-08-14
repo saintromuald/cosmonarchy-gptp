@@ -295,28 +295,6 @@ public:
 };
 #endif
 
-u32 getCliffAdvantageArmor(CUnit* unit) {
-	u32 cliffAdvantage = 0;
-	CUnit* targetUnit = unit->orderTarget.unit;
-	if (targetUnit != NULL) {
-		if (!(unit->status & UnitStatus::InAir)
-			&& !(targetUnit->status & UnitStatus::InAir)
-			&& unit->id != UnitId::ProtossScarab
-			&& weapons_dat::MaxRange[unit->getGroundWeapon()] > 32) {
-			u8 sourceHeight = scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight;
-			u8 targetHeight = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).groundHeight;
-			if (targetHeight > sourceHeight) {
-				u8 diff = (targetHeight - sourceHeight) / 2;
-				for (; diff > 0; diff--) {
-					cliffAdvantage += 1; // +1 armor per cliff adventage
-				}
-			}
-		}
-	}
-	return cliffAdvantage;
-}
-
-
 namespace hooks {
 	/// Hooks into the CUnit::damageWith() function.
 	void weaponDamageHook(s32		damage,
@@ -512,7 +490,7 @@ namespace hooks {
 			bool shield_overlay = false;
 			if (damageType != DamageType::IgnoreArmor) {
 
-				damage -= getCliffAdvantageArmor(attacker) * 256;
+				damage -= std::min(scbw::getCliffAdvantage(attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
 
 				s32 armorTotal = target->getArmor() * 256;
 

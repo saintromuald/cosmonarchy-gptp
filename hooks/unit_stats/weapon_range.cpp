@@ -5,27 +5,6 @@
 
 namespace hooks {
 
-u32 getCliffAdvantageRange(CUnit* unit) {
-	u32 cliffAdvantage = 0;
-	CUnit* targetUnit = unit->orderTarget.unit;
-	if (targetUnit != NULL) {
-		if (!(unit->status & UnitStatus::InAir)
-			&& !(targetUnit->status & UnitStatus::InAir)
-			&& unit->id != UnitId::ProtossScarab
-			&& weapons_dat::MaxRange[unit->getGroundWeapon()] > 32) {
-			u8 sourceHeight = scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight;
-			u8 targetHeight = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).groundHeight;
-			if (sourceHeight > targetHeight) {
-				u8 diff = (sourceHeight - targetHeight) / 2;
-				for (; diff > 0; diff--) {
-					cliffAdvantage += 64; // +2 range per cliff adventage
-				}
-			}
-		}
-	}
-	return cliffAdvantage;
-}
-
 /// Returns the modified seek range (AKA target acquisition range) for the unit.
 /// Note: Seek ranges are measured in matrices (1 matrix = 32 pixels).
 /// This hook affects the behavior of CUnit::getSeekRange().
@@ -57,7 +36,7 @@ u8 getSeekRangeHook(CUnit* unit) {
 
 		//Equivalent to original code
 		switch (unitId) {
-			case UnitId::Powerup_KhalisCrystal://basilisk
+			case UnitId::ZergBasilisk://basilisk
 			{
 				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::CorrosiveDispersion)) {
 					ActiveTile tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
@@ -71,11 +50,10 @@ u8 getSeekRangeHook(CUnit* unit) {
 				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::U238Shells))
 					bonusAmount = 1;
 				break;
-			case UnitId::missile_turret:
+			case UnitId::TerranMissileTurret:
 				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SequesterPods))
 					bonusAmount = 1;
 				break;
-
 			case UnitId::ZergHydralisk:
 				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::GroovedSpines))
 					bonusAmount = 1;
@@ -83,6 +61,10 @@ u8 getSeekRangeHook(CUnit* unit) {
 			case UnitId::ProtossDragoon:
 				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SingularityCharge))
 					bonusAmount = 2;
+				break;
+			case UnitId::ProtossHierophant:
+				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SingularityCharge))
+					bonusAmount = 1;
 				break;
 			case UnitId::Hero_FenixDragoon:
 				if (scbw::isBroodWarMode())
@@ -107,7 +89,12 @@ u8 getSeekRangeHook(CUnit* unit) {
 
 	}
 
-	return seekRange + getCliffAdvantageRange(unit);
+	if (scbw::canUseCliffAdventage(unit)) {
+		seekRange += 2;
+		seekRange -= (2 - std::max(scbw::getCliffAdvantage(unit), 0)); // ideally we would pass weapon id
+	}
+
+	return seekRange;
 
 }
 
@@ -179,7 +166,12 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 			break;
 	}
 
-	return weapons_dat::MaxRange[weaponId] + bonusAmount + getCliffAdvantageRange(unit);
+	if (scbw::canUseCliffAdventage(unit, weaponId)) {
+		bonusAmount += 128;
+		bonusAmount -= (2 - std::max(scbw::getCliffAdvantage(unit), 0)) * 64;
+	}
+
+	return weapons_dat::MaxRange[weaponId] + bonusAmount;
 
 }
 

@@ -333,4 +333,7 @@ int getBroodlingCountFromSupply(CUnit* unit);
 void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, CUnit* attacker = NULL);
 CUnit** getSourceQueens(CUnit* unit);
 
+bool canUseCliffAdventage(CUnit* unit, u8 weapon = NULL);
+s32 getCliffAdvantage(CUnit* unit, u8 weapon = NULL);
+
 } //scbw

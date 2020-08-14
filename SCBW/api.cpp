@@ -1066,4 +1066,26 @@ CUnit** getSourceQueens(CUnit* unit) {
 	return queens;
 }
 
+bool canUseCliffAdventage(CUnit* unit, u8 weapon) {
+	return (!(unit->status & UnitStatus::InAir)
+	&& (unit->id != UnitId::ProtossScarab)
+	&& (weapon == NULL || weapons_dat::MaxRange[weapon] > 32));
+}
+
+s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
+	if (!canUseCliffAdventage(unit, weapon))
+		return 0;
+	u32 cliffAdvantage = 0;
+	Point16 targetPoint;
+	CUnit* targetUnit = unit->orderTarget.unit;
+	if (targetUnit != NULL && !(targetUnit->status & UnitStatus::InAir)) {
+		targetPoint = targetUnit->position;
+	} else {
+		targetPoint = unit->orderTarget.pt;
+	}
+	s32 sourceHeight = scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight;
+	s32 targetHeight = scbw::getActiveTileAt(targetPoint.x, targetPoint.y).groundHeight;
+	return (sourceHeight - targetHeight) / 2;
+}
+
 } //scbw
