@@ -104,6 +104,7 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 
 	u32 bonusAmount = 0;
 
+
 	//Give bonus range to units inside Bunkers
 	if (unit->status & UnitStatus::InBuilding)
 		bonusAmount = 64;
@@ -157,7 +158,26 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 			break;
 	}
 
-	return weapons_dat::MaxRange[weaponId] + bonusAmount;
+	u32 cliffAdventage = 0;
+	CUnit* targetUnit = unit->orderTarget.unit;
+	if (targetUnit != NULL) {
+		if (!(unit->status & UnitStatus::InAir)
+			&& !(targetUnit->status & UnitStatus::InAir)
+			&& unit->id != UnitId::ProtossScarab
+			&& weapons_dat::MaxRange[unit->getGroundWeapon()] > 32) {
+				u8 sourceHeight = scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight;
+				u8 targetHeight = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).groundHeight;
+				if (sourceHeight > targetHeight) {
+					u8 diff = (sourceHeight - targetHeight) / 2;
+					for (; diff > 0; diff--) {
+						cliffAdventage += 64; // +2 range per cliff adventage
+					}
+				}
+		}
+	}
+	
+
+	return weapons_dat::MaxRange[weaponId] + bonusAmount + cliffAdventage;
 
 }
 
