@@ -593,7 +593,7 @@ namespace hooks {
 
 	;
 
-	void incrementUnitScoresEx(int count, CUnit* unit, int updateMorphMergeUnitScore) {
+	void incrementUnitScoresEx(int count, CUnit* unit, int updateMorphMergeUnitScore) { // 0x00488D50
 		unsigned __int16 v3; // dx
 		int v4; // dl
 		int v5; // esi

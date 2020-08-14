@@ -5,6 +5,7 @@ namespace hooks {
 
 void updateUnitEnergy(CUnit* unit);		//0x004EB4B0
 void updateUnitStateHook(CUnit* unit);	//0x004EC290
+void incrementUnitScoresEx(int count, CUnit* unit, int updateMorphMergeUnitScore); // 0x00488D50
 
 void injectUpdateUnitState();
 
