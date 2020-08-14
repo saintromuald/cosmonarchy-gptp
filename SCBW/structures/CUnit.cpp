@@ -1075,3 +1075,7 @@ void CUnit::updateSpeed() {
 		POPAD
 	}
 }
+
+void CUnit::setSupplyProvided(u8 amount) {
+	//TODO: Implement me
+}
