@@ -450,6 +450,10 @@ namespace hooks {
 				}
 			}
 
+			if (damageType != DamageType::IgnoreArmor) {
+				damage -= std::min(scbw::getCliffAdvantage(attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
+			}
+
 			//Reduce Plasma Shields...but not just yet
 			s32 shieldReduceAmount = 0;
 			if (units_dat::ShieldsEnabled[target->id] && target->shields >= 256) {
@@ -489,8 +493,6 @@ namespace hooks {
 			//Apply armor
 			bool shield_overlay = false;
 			if (damageType != DamageType::IgnoreArmor) {
-
-				damage -= std::min(scbw::getCliffAdvantage(attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
 
 				s32 armorTotal = target->getArmor() * 256;
 
