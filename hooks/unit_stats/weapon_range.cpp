@@ -5,6 +5,27 @@
 
 namespace hooks {
 
+u32 getCliffAdvantageRange(CUnit* unit) {
+	u32 cliffAdvantage = 0;
+	CUnit* targetUnit = unit->orderTarget.unit;
+	if (targetUnit != NULL) {
+		if (!(unit->status & UnitStatus::InAir)
+			&& !(targetUnit->status & UnitStatus::InAir)
+			&& unit->id != UnitId::ProtossScarab
+			&& weapons_dat::MaxRange[unit->getGroundWeapon()] > 32) {
+			u8 sourceHeight = scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight;
+			u8 targetHeight = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).groundHeight;
+			if (sourceHeight > targetHeight) {
+				u8 diff = (sourceHeight - targetHeight) / 2;
+				for (; diff > 0; diff--) {
+					cliffAdvantage += 64; // +2 range per cliff adventage
+				}
+			}
+		}
+	}
+	return cliffAdvantage;
+}
+
 /// Returns the modified seek range (AKA target acquisition range) for the unit.
 /// Note: Seek ranges are measured in matrices (1 matrix = 32 pixels).
 /// This hook affects the behavior of CUnit::getSeekRange().
@@ -86,7 +107,7 @@ u8 getSeekRangeHook(CUnit* unit) {
 
 	}
 
-	return seekRange;
+	return seekRange + getCliffAdvantageRange(unit);
 
 }
 
@@ -158,26 +179,7 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 			break;
 	}
 
-	u32 cliffAdventage = 0;
-	CUnit* targetUnit = unit->orderTarget.unit;
-	if (targetUnit != NULL) {
-		if (!(unit->status & UnitStatus::InAir)
-			&& !(targetUnit->status & UnitStatus::InAir)
-			&& unit->id != UnitId::ProtossScarab
-			&& weapons_dat::MaxRange[unit->getGroundWeapon()] > 32) {
-				u8 sourceHeight = scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight;
-				u8 targetHeight = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).groundHeight;
-				if (sourceHeight > targetHeight) {
-					u8 diff = (sourceHeight - targetHeight) / 2;
-					for (; diff > 0; diff--) {
-						cliffAdventage += 64; // +2 range per cliff adventage
-					}
-				}
-		}
-	}
-	
-
-	return weapons_dat::MaxRange[weaponId] + bonusAmount + cliffAdventage;
+	return weapons_dat::MaxRange[weaponId] + bonusAmount + getCliffAdvantageRange(unit);
 
 }
 
