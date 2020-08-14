@@ -205,6 +205,8 @@
   <ItemGroup>
     <ClCompile Include="AIScripter\AICore.cpp" />
     <ClCompile Include="AIScripter\AIParser.cpp" />
+    <ClCompile Include="hooks\build_time.cpp" />
+    <ClCompile Include="hooks\build_time_inject.cpp" />
     <ClCompile Include="CUnitExtended.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="hooks\audiovisuals\sfxhooks.cpp" />
@@ -442,6 +444,7 @@
   <ItemGroup>
     <ClInclude Include="AIScripter\AICore.h" />
     <ClInclude Include="AIScripter\AIParser.h" />
+    <ClInclude Include="hooks\build_time.h" />
     <ClInclude Include="CUnitExtended.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="hooks\audiovisuals\sfxhooks.h" />
