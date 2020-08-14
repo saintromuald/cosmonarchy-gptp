@@ -189,7 +189,8 @@ namespace hooks {
 						changeUnitButtonSet_Sub4E5D60(unit, unit->id);
 
 						unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
-
+						/*scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, 
+								ValueId::RemainingBuildTimeCopy, unit->remainingBuildTime,0);*/
 						unit->mainOrderState = 1;
 						if (unit->id == UnitId::EggVorvaling) {
 							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
@@ -203,6 +204,7 @@ namespace hooks {
 		}
 		else
 			if (unit->mainOrderState == 1) {
+				//advance
 				if (advanceRemainingBuildTime_Sub466940(unit)) {
 					unit->sprite->playIscriptAnim(IscriptAnimation::SpecialState1, true);
 					unit->mainOrderState = 2;
