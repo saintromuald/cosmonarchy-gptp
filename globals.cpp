@@ -7,6 +7,7 @@ SaveState globals::aise_save() {
 	output.clear();
 	std::ostringstream stream(std::stringstream::out|std::stringstream::binary);
 	stream.write(reinterpret_cast<const char*>(&extended_unit_table), sizeof(extended_unit_table));
+	stream.write(reinterpret_cast<const char*>(&extended_sfx), sizeof(extended_sfx));
 	output = stream.rdbuf()->str();
 	if (output.length() == 0) {
 		return state;
@@ -24,6 +25,8 @@ void globals::aise_load(const char* ptr, u32 len){
 	std::string str(ptr, len);
 	stream << str;
 	stream.read(reinterpret_cast<char*>(&extended_unit_table), sizeof(extended_unit_table));
+	stream.read(reinterpret_cast<char*>(&extended_sfx), sizeof(extended_sfx));
+
 }
 void __declspec(naked) Globals_SaveStateWrapper() {
 	static SaveState* state;
