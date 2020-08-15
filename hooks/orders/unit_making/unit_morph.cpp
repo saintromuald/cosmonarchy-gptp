@@ -343,7 +343,7 @@ namespace hooks {
 	u16 getCancelMorphRevertTypeHook(CUnit* eggUnit) {
 		//Default StarCraft behavior
 
-		if (eggUnit->id == UnitId::cocoon || eggUnit->id == UnitId::UnusedCave)
+		if (eggUnit->id == UnitId::cocoon || eggUnit->id == UnitId::EggGorgoleth)
 			return UnitId::ZergMutalisk;
 
 		if (eggUnit->id == UnitId::ZergLurkerEgg)
