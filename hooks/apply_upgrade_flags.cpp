@@ -29,7 +29,7 @@ void applyUpgradeFlagsToNewUnitHook(CUnit* unit) {
 		//and update of speed to do everything at once after the checks
 		//Note that updateSpeed() is called once even without upgrades
 
-		if(unit->id == UnitId::TerranVulture || unit->id == UnitId::Hero_JimRaynorVulture)
+		if(unit->id == UnitId::TerranVulture)
 			bSpeedUpgrade = UpgradesSc->currentLevel[unit->playerId][ScUpgrade::IonThrusters];
 		else
 		if(unit->id == UnitId::ZergOverlord)
