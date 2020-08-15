@@ -6,7 +6,13 @@ namespace hooks {
 	std::vector<u32> offset_list() {
 		return {
 			0x004234F6 + 2,
+			//004234FC  |.  66:8139 6903  CMP WORD PTR DS:[ECX],369
+			//0042350A  |>  0FB781 D40600>MOVZX EAX,WORD PTR DS:[ECX+6D4]
 			0x00425B7E + 2,
+			//00425B84  |.  66:8139 3F03  CMP WORD PTR DS:[ECX],33F
+			//00425B94  |.  B9 ECFFFFFF   MOV ECX,-14          //????????
+			//func 004258B0 (called from previous func)
+			//004258C5  |>  66:3948 20    /CMP WORD PTR DS:[EAX+20],CX
 			0x00425C51 + 2,
 			0x00425CAE + 2,
 			0x00425D02 + 2,
