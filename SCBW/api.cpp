@@ -668,7 +668,21 @@ bool isZergBuildingMorphResult(u16 id){
 	return false;
 }
 bool isZergBuildingMorphSource(u16 id){
-
+	switch (id) {
+	case UnitId::ZergHive:
+	case UnitId::ZergLair:
+	case UnitId::ZergHatchery:
+	case UnitId::ZergSpire:
+	case UnitId::ZergCreepColony:
+	case UnitId::ZergHydraliskDen:
+	case UnitId::ZergSpawningPool:
+	case UnitId::ZergOverlordIris:
+	case UnitId::ZergIrolethQuay:
+		return true;
+	default:
+		break;
+	}
+	return false;
 }
 
 std::string readSamaseFile(char* name) {
