@@ -91,6 +91,7 @@
 #include "hooks/limits/ccmu.h"
 #include "hooks/economic_units.h"
 #include "hooks/limits/extender.h"
+#include "hooks/build_time.h"
 //#include "AI/spellcasting.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
@@ -408,8 +409,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectUnitTrainHooks();
 
 
-	hooks::injectLoadUnloadProcHooks();/*
-	hooks::injectLoadUnloadOrdersHooks();
+	hooks::injectLoadUnloadProcHooks();
+	hooks::injectLoadUnloadOrdersHooks();/*
 	hooks::injectNukeOrdersHooks();
 	hooks::injectBurrowTechHooks();
 	hooks::injectResearchUpgradeOrdersHooks();*/
@@ -485,6 +486,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 //	hooks::injectSpellcasterAI();
 //	hooks::injectAIOrdersHooks();
 	hooks::injectMissChanceHooks();
+	hooks::injectBuildTimeHooks();
 
 	return TRUE;
 }

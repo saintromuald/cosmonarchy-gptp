@@ -146,10 +146,33 @@ namespace hooks {
 			unit->loadedUnit[counter].unitId = 0;
 		}
 
+		if (unit->id == UnitId::ZergCreepColony
+		|| unit->id == UnitId::ZergSunkenColony
+		|| unit->id == UnitId::ZergSporeColony
+		|| unit->id == UnitId::ZergChasmalColony) {
+			// TODO: inform creep about missing colony?
+		} else if (unit->id == UnitId::ProtossPylon) {
+			// TODO: enable nearby disabled structures, update energy sprite position
+		} else if (unit->id == UnitId::TerranBunker) {
+			for (int i = 0; i < 8; i++) {
+				CUnit* cargoUnit = unit->getLoadedUnit(i);
+				if (cargoUnit == NULL) continue;
+				// TODO: enable and update cargo units position
+				//scbw::setUnitPosition(cargoUnit, pos.x, pos.y); // <- does not work
+			}
+		}
+
 		unitToLoad->status |= UnitStatus::InTransport;
 		hideAndDisableUnit(unitToLoad);
-
 		unitToLoad->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
+
+		if (unit->id == UnitId::TerranBunker) {
+			for (int i = 0; i < 8; i++) {
+				CUnit* cargoUnit = unit->getLoadedUnit(i);
+				if (cargoUnit == NULL) continue;
+				// TODO: Disable cargo units
+			}
+		}
 
 		scbw::refreshConsole();
 
@@ -239,14 +262,11 @@ namespace hooks {
 
 			CUnit* transport = unit->connectedUnit;
 
-			if (
-				(transport->mainOrderTimer == 0 ||
-					transport->status & UnitStatus::GroundedBuilding) &&
-				!(transport->status & UnitStatus::DoodadStatesThing) &&
-				transport->lockdownTimer == 0 &&
-				transport->stasisTimer == 0 &&
-				transport->maelstromTimer == 0
-				)
+			if ((transport->mainOrderTimer == 0 || transport->status & UnitStatus::GroundedBuilding)
+			 && !(transport->status & UnitStatus::DoodadStatesThing)
+			 && transport->lockdownTimer == 0
+			 && transport->stasisTimer == 0
+			 && transport->maelstromTimer == 0)
 			{ //E7FDC
 
 				Point16 pos = { 0,0 };
@@ -259,6 +279,36 @@ namespace hooks {
 						transport->mainOrderTimer = 6;
 					}
 
+					if ((unit->status & UnitStatus::IsBuilding) == 0) {
+						u16* coords[2] = {&pos.x, &pos.y};
+						double corrections[2] = {32.0, 32.0};
+
+						if (unit->id == UnitId::TerranBunker) {
+							corrections[0] = 48.0;
+						}
+
+						for (int i = 0; i < 2; i++) {
+							*coords[i] = std::round(((double)*coords[i]) / corrections[i]) * corrections[i];
+						}
+
+						if (unit->id == UnitId::ZergCreepColony
+						|| unit->id == UnitId::ZergSunkenColony
+						|| unit->id == UnitId::ZergSporeColony
+						|| unit->id == UnitId::ZergChasmalColony) {
+							// TODO: spawn creep
+						} else if (unit->id == UnitId::ProtossPhotonCannon) {
+							// TODO: check if pylon power is around, enable or disable the structure
+						} else if (unit->id == UnitId::ProtossPylon) {
+							// TODO: enable nearby disabled structures, update energy sprite position
+						} else if (unit->id == UnitId::TerranBunker) {
+							for (int i = 0; i < 8; i++) {
+								CUnit* cargoUnit = unit->getLoadedUnit(i);
+								if (cargoUnit == NULL) continue;
+								// TODO: enable and update cargo units position
+								//scbw::setUnitPosition(cargoUnit, pos.x, pos.y); // <- does now work
+							}
+						}
+					}
 					scbw::setUnitPosition(unit, pos.x, pos.y);
 
 					if (unit->subunit != NULL)
