@@ -32,14 +32,7 @@ namespace hooks {
 			multiplier = 16;
 		}
 
-		bool othstolethFound = false;
-		int radius = 224 / 2;
-		if (scbw::UnitFinder(unit->position.x - radius, unit->position.y - radius,
-			unit->position.x + radius, unit->position.y + radius).getFirst(othstolethMatch(unit->playerId)) != NULL) {
-			othstolethFound = true;
-		}
-
-		if (othstolethFound && *elapsedTimeFrames % 2 == 0) {
+		if (scbw::get_aise_value(unit, 0, AiseId::GenericTimer, ValueId::EggBoostTimer, 0) % 2 == 1) {
 			unit->remainingBuildTime = remainingBuildTime - 2 * multiplier;
 		} else {
 			unit->remainingBuildTime = remainingBuildTime - 1 * multiplier;
