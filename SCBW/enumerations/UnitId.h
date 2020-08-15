@@ -540,6 +540,7 @@ enum Enum {
 	ZergChasmalColony						= 201,
 	ZergVorvalPond							= 204,
 	ZergKeskathCavern						= 219,
+	ZergOverlordIris						= 224,
 	ZergSire								= 227,
 
 	};
