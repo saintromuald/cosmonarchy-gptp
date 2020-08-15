@@ -23,11 +23,13 @@ class globals {
 public:
 	u32 extended_unit_table;
 	u32 extended_sfx;
+	bool tbl_extender;
 	SaveState aise_save();
 	void aise_load(const char* ptr, u32 len);
 	globals() {
 		extended_unit_table = 0;
 		extended_sfx = 0;
+		tbl_extender = false;
 	}
 };
 
