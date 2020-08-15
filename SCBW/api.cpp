@@ -596,6 +596,81 @@ bool isZergEgg(u16 id, bool allow_normal_eggs, bool allow_larvae) {
 	}
 	return false;
 }
+bool isConventionalUnitMorphResult(u16 id) {
+	switch (id) {
+	case UnitId::ZergGuardian:
+	case UnitId::ZergDevourer:
+	case UnitId::ZergLurker:
+	case UnitId::ZergVorvaling:
+	case UnitId::ZergBasilisk:
+	case UnitId::ZergKeskathalor:
+	case UnitId::ZergIroleth:
+	case UnitId::ZergOthstoleth:
+	case UnitId::ProtossAugur:
+		return true;
+	default:
+		break;
+	}
+	return false;
+}
+
+bool isAnyMorphMorphResult(u16 id) {
+	if (isConventionalUnitMorphResult(id)) {
+		return true;
+	}
+	switch (id) {
+	case UnitId::ProtossArchon:
+	case UnitId::ProtossDarkArchon:
+		return true;
+	default:
+		break;
+	}
+	return false;
+}
+bool isConventionalUnitMorphSource(u16 id, bool allow_larvae) {
+	switch (id) {
+	case UnitId::ZergMutalisk:
+	case UnitId::ZergHydralisk:
+	case UnitId::ZergZergling:
+	case UnitId::ZergUltralisk:
+	case UnitId::ZergOverlord:
+	case UnitId::ZergIroleth:
+	case UnitId::ProtossHighTemplar:
+		return true;
+	default:
+		break;
+	}
+	if (id == UnitId::larva && allow_larvae) {
+		return true;
+	}
+	return false;
+}
+bool isZergBuildingMorphResult(u16 id){
+	switch (id) {
+	case UnitId::ZergSire:
+	case UnitId::ZergHive:
+	case UnitId::ZergLair:
+	case UnitId::ZergGuardianRoost:
+	case UnitId::ZergDevourerHaunt:
+	case UnitId::ZergGorgolethApiary:
+	case UnitId::ZergSporeColony:
+	case UnitId::ZergSunkenColony:
+	case UnitId::ZergChasmalColony:
+	case UnitId::ZergBasiliskDen:
+	case UnitId::ZergVorvalPond:
+	case UnitId::ZergOverlordIris:
+	case UnitId::ZergIrolethQuay:
+	case UnitId::ZergOthstolethBerth:
+		return true;
+	default:
+		break;
+	}
+	return false;
+}
+bool isZergBuildingMorphSource(u16 id){
+
+}
+
 std::string readSamaseFile(char* name) {
 	const char* data = NULL;
 	u32 len = 0;

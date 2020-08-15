@@ -36,8 +36,8 @@ SCBW_DATA(UNITDEATHS*,  deathTable,   0x0058A364);
 SCBW_DATA(UNITDEATHS*,  unit_deaths,  deathTable);
 SCBW_DATA(CSprite*,     spriteTable,  0x00629D98);
 
-SCBW_DATA(UNITDEATHS*, unitCountTable, 0x00584DE4);
-SCBW_DATA(UNITDEATHS*, completed_unit_counts, unitCountTable);
+SCBW_DATA(UNITSCORES_I*, unitCountTable, 0x00584DE4);
+SCBW_DATA(UNITSCORES_I*, completed_unit_counts, unitCountTable);
 
 //From locations.cpp
 SCBW_DATA(const MapSize*, mapTileSize,    0x0057F1D4);

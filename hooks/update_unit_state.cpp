@@ -593,15 +593,50 @@ namespace hooks {
 
 	;
 
-	void incrementUnitScoresEx(int count, CUnit* unit, int updateMorphMergeUnitScore) { // 0x00488D50
-		unsigned __int16 v3; // dx
+	void incrementUnitScoresEx(int count, CUnit* unit, int increment_scores /*int updateMorphMergeUnitScore*/) { // 0x00488D50
+		if (unit->status & UnitStatus::IsHallucination) {
+			return;
+		}
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
+			return;
+		}
+		completed_unit_counts[unit->id].player[unit->playerId] += count;
+		int race = unit->getRace();
+		raceSupply[race].provided[unit->playerId] += count * units_dat::SupplyProvided[unit->id];
+		if (units_dat::GroupFlags[unit->id].isFactory) {
+			factoriesOwned[unit->playerId] += count;
+		}
+		if (units_dat::GroupFlags[unit->id].isBuilding) {
+			buildingsOwned[unit->playerId] += count;
+		}
+		if (units_dat::GroupFlags[unit->id].isMen) {
+			unitsProduced[unit->playerId] += count;
+		}
+		if (increment_scores!=0) {
+			if (units_dat::GroupFlags[unit->id].isMen) {
+				if (!scbw::isAnyMorphMorphResult(unit->id)) {
+					unitsOwned[unit->playerId] += count;
+				}
+				unitScore[unit->playerId] += count;	
+			}
+			else if (units_dat::GroupFlags[unit->id].isBuilding) {
+				if (!scbw::isZergBuildingMorphResult(unit->id)) {
+					buildingsOwned[unit->playerId] += count;
+				}
+				buildingScore[unit->playerId] += count * units_dat::BuildScore[unit->id];
+			}
+		}
+		if (completed_unit_counts[unit->id].player[unit->playerId] < 0) {
+			completed_unit_counts[unit->id].player[unit->playerId] = 0;
+		}
+		/*unsigned __int16 v3; // dx
 		GroupFlag groupFlag; // dl
 		int unitId = unit->id; // esi
 		int v6; // edx
 		u32* v7; // eax
 		int v8; // [esp+0h] [ebp-8h]
 		unsigned __int8 playerID; // [esp+7h] [ebp-1h]
-
+		
 		if (!(unit->status & UnitStatus::IsHallucination)) {
 			v3 = unitId;
 			if (!(unit->isSubunit())) {
@@ -678,7 +713,7 @@ namespace hooks {
 				if ((completed_unit_counts[0].player[v6] & 0x80000000) != 0)
 					completed_unit_counts[0].player[v6] = 0;
 			}
-		}
+		}*/
 	}
 } //hooks
 

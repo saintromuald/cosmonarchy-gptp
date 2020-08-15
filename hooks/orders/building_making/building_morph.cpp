@@ -59,7 +59,7 @@ void iscript_OpcodeCases_copy(CImage* image, u32 offset_, u32 unk1, u32 unk2) {
 }
 
 ;
-
+#include "SCBW/api.h"
 namespace hooks {
 
 	bool isMorphing(CUnit* building) {
@@ -116,17 +116,7 @@ namespace hooks {
 
 		buildingId = building->buildQueue[building->buildQueueSlot];
 
-		if (   buildingId != UnitId::ZergHive
-			&& buildingId != UnitId::ZergLair
-			&& buildingId != UnitId::ZergGuardianRoost
-			&& buildingId != UnitId::ZergDevourerHaunt
-			&& buildingId != UnitId::ZergGorgolethApiary
-			&& buildingId != UnitId::ZergSporeColony
-			&& buildingId != UnitId::ZergSunkenColony
-			&& buildingId != UnitId::ZergLurkerDen
-			&& buildingId != UnitId::ZergBasiliskDen
-			&& buildingId != UnitId::ZergMutationPit
-			&& buildingId != UnitId::ZergVorvalPond
+		if (   !scbw::isZergBuildingMorphResult(buildingId)
 			&& !isProtossMorph(buildingId)
 			)
 			buildingId = building->id;
@@ -432,17 +422,7 @@ namespace hooks {
 			jump_to_5D720 = false;
 
 			if (
-				   buildingId != UnitId::ZergHive
-				&& buildingId != UnitId::ZergLair
-				&& buildingId != UnitId::ZergGuardianRoost
-				&& buildingId != UnitId::ZergDevourerHaunt
-				&& buildingId != UnitId::ZergGorgolethApiary
-				&& buildingId != UnitId::ZergSporeColony
-				&& buildingId != UnitId::ZergSunkenColony
-				&& buildingId != UnitId::ZergBasiliskDen
-				&& buildingId != UnitId::ZergLurkerDen
-				&& buildingId != UnitId::ZergMutationPit
-				&& buildingId != UnitId::ZergVorvalPond
+				   !scbw::isZergBuildingMorphResult(buildingId)
 				&& !isProtossMorph(buildingId)
 				)
 			{
@@ -671,7 +651,7 @@ namespace hooks {
 ;
 
 //-------- Helper function definitions. Do NOT modify! --------//
-
+#include "SCBW/api.h"
 namespace {
 
 	const u32 Func_refundBuildingCost = 0x0042CE70;
@@ -709,17 +689,7 @@ namespace {
 		bool result;
 
 		if (
-			   buildingId == UnitId::ZergHive
-			|| buildingId == UnitId::ZergLair
-			|| buildingId == UnitId::ZergGuardianRoost
-			|| buildingId == UnitId::ZergDevourerHaunt
-			|| buildingId == UnitId::ZergGorgolethApiary
-			|| buildingId == UnitId::ZergLurkerDen
-			|| buildingId == UnitId::ZergBasiliskDen
-			|| buildingId == UnitId::ZergSporeColony
-			|| buildingId == UnitId::ZergSunkenColony
-			|| buildingId == UnitId::ZergMutationPit
-			|| buildingId == UnitId::ZergVorvalPond
+			   scbw::isZergBuildingMorphResult(buildingId)
 			|| hooks::isProtossMorph(buildingId)
 
 			)
@@ -965,16 +935,7 @@ namespace hooks {
 	bool isMorphedBuildingHook(u16 unitId) {
 		//Default StarCraft behavior
 
-		if (unitId == UnitId::ZergLair
-			|| unitId == UnitId::ZergHive
-			|| unitId == UnitId::ZergGuardianRoost
-			|| unitId == UnitId::ZergDevourerHaunt
-			|| unitId == UnitId::ZergGorgolethApiary
-			|| unitId == UnitId::ZergLurkerDen
-			|| unitId == UnitId::ZergBasiliskDen
-			|| unitId == UnitId::ZergSunkenColony
-			|| unitId == UnitId::ZergSporeColony
-			|| unitId == UnitId::ZergMutationPit
+		if (scbw::isZergBuildingMorphResult(unitId)
 			|| isProtossMorph(unitId))
 			return true;
 
@@ -995,6 +956,8 @@ namespace hooks {
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergLair, ignoreIncomplete);
 		case UnitId::ZergLair:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergHive, ignoreIncomplete);
+		case UnitId::ZergHive:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergCreepColony:
@@ -1004,6 +967,11 @@ namespace hooks {
 
 		case UnitId::ZergSpawningPool:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergVorvalPond, ignoreIncomplete);
+			break;
+		case UnitId::ZergOverlordIris:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergIrolethQuay, ignoreIncomplete);
+		case UnitId::ZergIrolethQuay:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergOthstolethBerth, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergSpire:

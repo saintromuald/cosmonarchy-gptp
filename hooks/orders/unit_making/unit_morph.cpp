@@ -28,7 +28,6 @@ namespace {
 	void function_004E65E0(CUnit* unit, Bool32 flag);								//E65E0
 
 } //unnamed namespace
-
 namespace hooks {
 
 	void orders_ZergBirth(CUnit* unit) {
@@ -119,14 +118,8 @@ namespace hooks {
 
 		if (unit->mainOrderState == 0) {
 
-			if (
-				unit->id == UnitId::ZergLarva ||
-				unit->id == UnitId::ZergHydralisk ||
-				unit->id == UnitId::ZergMutalisk ||
-				unit->id == UnitId::ZergZergling ||
-				unit->id == UnitId::ultralisk ||
-				unit->id == UnitId::overlord ||
-				unit->id == UnitId::ZergIroleth
+			if (scbw::isConventionalUnitMorphSource(unit->id,true)
+				
 				)
 			{
 
@@ -286,7 +279,11 @@ namespace hooks {
 				return true;
 			}
 		}
-
+		if (unit->id == UnitId::ZergIroleth) {
+			if (morphUnitId == UnitId::ZergOthstoleth) {
+				return true;
+			}
+		}
 		if (unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergMutalisk) {
 			if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1) {
 				return true;

@@ -177,9 +177,7 @@ namespace {
 			return;
 
 		//Don't bother if unit has finished morphing
-		if (unit->id == UnitId::guardian
-			|| unit->id == UnitId::devourer
-			|| unit->id == UnitId::lurker || unit->id==128 || unit->id==129)
+		if (scbw::isConventionalUnitMorphResult(unit->id))
 			return;
 		if (unit->status & UnitStatus::GroundedBuilding) {
 			if (unit->getRace() == RaceId::Zerg || 
