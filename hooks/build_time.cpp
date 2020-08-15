@@ -5,8 +5,7 @@
 namespace hooks {
 
 	s32 decrementRemainingBuildTime(CUnit* unit) { // 0x00466940
-		int remainingBuildTime = unit->remainingBuildTime;
-		if (!remainingBuildTime) {
+		if (!unit->remainingBuildTime) {
 			return 1;
 		}
 		u16 multiplier = 1;
