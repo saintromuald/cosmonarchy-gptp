@@ -122,7 +122,7 @@ namespace hooks {
 				v7 = getMaxHP(v1);
 				v8 = (v1->hitPoints + 255) >> 8;
 				v9 = getLastQueueSlotType(v1);
-				sprintf_s("", 32, "%d/%d %c%d/%d", v1->shields >> 8, MaxShieldPoints[v9], v5, v8, v7);
+				sprintf_s("", 32, "%d/%d %c%d/%d", v1->shields >> 8, units_dat::MaxShieldPoints[v9], v5, v8, v7);
 			}
 			else
 			{
