@@ -45,6 +45,8 @@ void __declspec(naked) incrementUnitScoresEx_Wrapper() { // 0x00488D50
 	static CUnit* unit;
 	static int updateMorphMergeUnitScore;
 	__asm {
+		PUSH EBP
+		MOV EBP,ESP
 		MOV count, ECX
 		MOV unit, EDI
 		PUSH EAX
@@ -56,7 +58,9 @@ void __declspec(naked) incrementUnitScoresEx_Wrapper() { // 0x00488D50
 	hooks::incrementUnitScoresEx(count, unit, updateMorphMergeUnitScore);
 	__asm {
 		POPAD
-		RETN
+		MOV ESP,EBP
+		POP EBP
+		RETN 4
 	}
 }
 
@@ -67,7 +71,7 @@ namespace hooks {
 void injectUpdateUnitState() {
 	jmpPatch(updateUnitEnergy,				0x004EB4B0, 0);
 	jmpPatch(updateUnitStateWrapper,		0x004EC290, 1);
-	//jmpPatch(incrementUnitScoresEx_Wrapper, 0x00488D50, 1);
+	jmpPatch(incrementUnitScoresEx_Wrapper, 0x00488D50, 1);
 }
 
 } //hooks

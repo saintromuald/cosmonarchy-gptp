@@ -227,16 +227,13 @@ SCBW_DATA(		u32*,			isPlacingAddon,				0x00640884);
 SCBW_DATA(		u32*,			placeBuildingBaseType,		0x0048DD4B);
 
 // For incrementUnitScoresEx
-SCBW_DATA(		u32*,			suppliesAvailableZerg,		0x00488DBB); // Array of 12
-SCBW_DATA(		u32*,			suppliesAvailableTerran,	0x00488DD3); // Array of 12
-SCBW_DATA(		u32*,			suppliesAvailableProtoss,	0x00488DEB); // Array of 12
-SCBW_DATA(		u32*,			factoriesOwned,				0x00488DF7); // Array of 12
-SCBW_DATA(		u32*,			unitsProduced,				0x00488E08); // Array of 12
-SCBW_DATA(		u32*,			structuresBuilt,			0x00488E03); // Array of 12
-SCBW_DATA(		u32*,			unitScore,					0x00488E6E); // Array of 12
-SCBW_DATA(		u32*,			buildingScore,				0x00488EB4); // Array of 12
-SCBW_DATA(		u32*,			unitsOwned,					0x00488E67); // Array of 12
-SCBW_DATA(		u32*,			buildingsOwned,				0x00488EAD); // Array of 12
+SCBW_DATA(		u32*,			factoriesOwned,				0x005820B4); // Array of 12
+SCBW_DATA(		u32*,			unitsProduced,				0x00581E14); // Array of 12
+SCBW_DATA(		u32*,			structuresBuilt,			0x00581F64); // Array of 12
+SCBW_DATA(		u32*,			unitScore,					0x00581ED4); // Array of 12
+SCBW_DATA(		u32*,			buildingScore,			    0x00582024); // Array of 12
+SCBW_DATA(		u32*,			unitsOwned,					0x00581E44); // Array of 12
+SCBW_DATA(		u32*,			buildingsOwned,				0x00582024); // Array of 12
 
 //////////////////////////////////////////////////////////////// @}
 
