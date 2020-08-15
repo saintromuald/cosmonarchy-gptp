@@ -139,10 +139,10 @@ namespace hooks {
 namespace {
 
 	// For loadRaceUI
-
+	/*
 	const u32 Func_getRaceSoundList = 0x0048FB40;
 	void getRaceSoundList(char a1) {
-		static char a1;
+
 		__asm {
 			PUSHAD
 			CALL Func_getRaceSoundList
@@ -152,10 +152,7 @@ namespace {
 
 	const u32 Func_dialogGrpConstruct = 0x004197B0;
 	int dialogGrpConstruct(int a1, int a2, int a3, int(__fastcall* a4)(int, int, int, int)) {
-		static int a1;
-		static int a2;
-		static int a3;
-		static int(__fastcall * a4)(int, int, int, int);
+
 		static int result;
 		__asm {
 			PUSHAD
@@ -170,27 +167,24 @@ namespace {
 
 	const u32 Func_loadGraphic = 0x004D2B30;
 	void loadGraphic(char a1, int a2, int a3, char a4, int a5) {
-		static char a1;
-		static int a2;
-		static int a3;
-		static char a4;
-		static int a5;
+
 		__asm {
 			PUSHAD
-			MOV a1, ECX
-			MOV a2, EDX
-			MOV a3, ESI
+			MOV ECX, a1
+			MOV EDX, a2
+			MOV ESI, a3
 			CALL Func_loadGraphic
 			MOV EAX, result
 			POPAD
 		}
-	};
+	};*/
 
 	// For setTextStr
 
 	const u32 Func_unitHPBelow33Percent = 0x004022C0;
 	bool unitHPbelow33_percent(CUnit* a1) {
-		static bool result;
+		static int result;
+
 		__asm {
 			PUSHAD
 			MOV ECX, a1
@@ -198,26 +192,28 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return result;
+		return (bool)result;
 	}
 
-	const u32 Func_unitHPBetween3366Percent = 0x00402270;
+	const u32 Func_unitHPBetween33_66Percent = 0x00402270;
 	bool unitHPbetween33_66_percent(int a1, CUnit * a2) {
-		static bool result;
+		static int result;
+
 		__asm {
 			PUSHAD
 			MOV ECX, a1
 			MOV EDX, a2
-			CALL Func_unitHPBetween3366Percent
+			CALL Func_unitHPBetween33_66Percent
 			MOV result, EAX
 			POPAD
 		}
-		return result;
+		return (bool)result;
 	}
 
 	const u32 Func_getMaxHP = 0x00401400;
 	int getMaxHP(CUnit* a1) {
 		static int result;
+
 		__asm {
 			PUSHAD
 			MOV ECX, a1
@@ -230,7 +226,8 @@ namespace {
 
 	const u32 Func_getLastQueueSlotType = 0x0047B270;
 	unsigned __int16 getLastQueueSlotType(CUnit* a1) {
-		static unsigned __int16 result;
+		static int result;
+
 		__asm {
 			POPAD
 			MOV EDX, a1
@@ -238,7 +235,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return result;
+		return (unsigned __int16)result;
 
 	}
 

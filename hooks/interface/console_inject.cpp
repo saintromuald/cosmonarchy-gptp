@@ -1,7 +1,7 @@
 #include "console.h"
 #include <hook_tools.h>
 
-namespace {
+namespace {/*
 	__int16 __declspec(naked) loadRaceUI_Wrapper() { // 004EE2D0
 		static int result;
 		__asm {
@@ -13,7 +13,7 @@ namespace {
 			MOV result, EAX
 			RETN
 		}
-	};
+	};*/
 
 	void __declspec(naked) setTextStr_Wrapper() { // 004263E0
 		static int a1;
