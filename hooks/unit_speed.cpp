@@ -172,13 +172,18 @@ namespace hooks {
 
 		// Collective Integration passive: gains increased movespeed based on tech level
 		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth || unit->id==UnitId::ZergOthstoleth) {
-			u32 lairCountSpeed = unitCountTable[UnitId::ZergLair].player[unit->playerId];
-			u32 hiveCountSpeed = unitCountTable[UnitId::ZergHive].player[unit->playerId];
-			if (hiveCountSpeed) {
+			u32 irisCountSpeed = unitCountTable[UnitId::ZergOverlordIris].player[unit->playerId];
+			u32 quayCountSpeed = unitCountTable[UnitId::ZergIrolethQuay].player[unit->playerId];
+			u32 berthCountSpeed = unitCountTable[UnitId::ZergOthstolethBerth].player[unit->playerId];
+			if (berthCountSpeed) {
 				speed *= 6;
 
 			}
-			else if (lairCountSpeed) {
+			if (quayCountSpeed) {
+				speed *= 5;
+
+			}
+			else if (irisCountSpeed) {
 				speed *= 4;
 			}
 		}
@@ -265,13 +270,18 @@ namespace hooks {
 
 		// Collective Integration passive: gains increased acceleration based on tech level
 		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth) {
-			u32 lairCountAccel = unitCountTable[UnitId::ZergLair].player[unit->playerId];
-			u32 hiveCountAccel = unitCountTable[UnitId::ZergHive].player[unit->playerId];
-			if (hiveCountAccel) {
+			u32 irisCountAccel = unitCountTable[UnitId::ZergOverlordIris].player[unit->playerId];
+			u32 quayCountAccel = unitCountTable[UnitId::ZergIrolethQuay].player[unit->playerId];
+			u32 berthCountAccel = unitCountTable[UnitId::ZergOthstolethBerth].player[unit->playerId];
+			if (berthCountAccel) {
 				acceleration *= 4;
 
 			}
-			else if (lairCountAccel) {
+			if (quayCountAccel) {
+				acceleration *= 3;
+
+			}
+			else if (irisCountAccel) {
 				acceleration *= 2;
 			}
 		}
