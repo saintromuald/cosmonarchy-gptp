@@ -157,7 +157,7 @@ namespace hooks {
 			for (int i = 0; i < 8; i++) {
 				CUnit* cargoUnit = unit->getLoadedUnit(i);
 				if (cargoUnit == NULL) continue;
-				// TODO: enable and update cargo units position
+				// TODO: disable cargo units
 				//scbw::setUnitPosition(cargoUnit, pos.x, pos.y); // <- does not work
 			}
 		}
@@ -304,8 +304,8 @@ namespace hooks {
 							for (int i = 0; i < 8; i++) {
 								CUnit* cargoUnit = unit->getLoadedUnit(i);
 								if (cargoUnit == NULL) continue;
-								// TODO: enable and update cargo units position
-								//scbw::setUnitPosition(cargoUnit, pos.x, pos.y); // <- does now work
+								// TODO: enable and update cargo units and their position
+								//scbw::setUnitPosition(cargoUnit, pos.x, pos.y); // <- does not work
 							}
 						}
 					}
