@@ -422,54 +422,48 @@ namespace hooks {
 		if (units_dat::ShieldsEnabled[unit->id] != 0) {
 
 			s32 maxShields = (s32)(units_dat::MaxShieldPoints[unit->id]) * 256;
-
-			if (unit->shields != maxShields && unit->id!=UnitId::scarab) {
-				if (unit->id == UnitId::ProtossAugur) {
-					unit->shields -= std::min(7,unit->shields);
-					if (unit->shields == 0) {
-						unit->remove();
-					}
-				}
-				else {
+			if (unit->id == UnitId::ProtossAugur) {
+				unit->shields -= std::min(7, unit->shields);
+			}
+			else {
+				if (unit->shields != maxShields && unit->id != UnitId::scarab) {
 					unit->shields += 7;
-				}
-
-				if ( (units_dat::BaseProperty[unit->id] & UnitProperty::Building) &&
-					(unit->status & UnitStatus::Completed) &&
-					scbw::getUpgradeLevel(unit->playerId,UpgradeId::TemporalBatteries)) {
-					if (unit->id != UnitId::pylon) {
-						if (!(unit->status & UnitStatus::DoodadStatesThing)) {//powered
-							u32 pylons=0;
-							for (CUnit *u = *firstVisibleUnit; u; u = u->link.next) {
-								if (unit->playerId == u->playerId) {
-									if (u->id == UnitId::pylon &&
-										u->status & UnitStatus::Completed) {
-										u32 x_tile_dist = abs((int)u->position.x - (int)unit->position.x) / 32;
-										u32 y_tile_dist = abs((int)u->position.y - (int)unit->position.y) / 32;
-										if (x_tile_dist <= 8 && y_tile_dist <= 5) {
-											pylons++;
+					if ((units_dat::BaseProperty[unit->id] & UnitProperty::Building) &&
+						(unit->status & UnitStatus::Completed) &&
+						scbw::getUpgradeLevel(unit->playerId, UpgradeId::TemporalBatteries)) {
+						if (unit->id != UnitId::pylon) {
+							if (!(unit->status & UnitStatus::DoodadStatesThing)) {//powered
+								u32 pylons = 0;
+								for (CUnit* u = *firstVisibleUnit; u; u = u->link.next) {
+									if (unit->playerId == u->playerId) {
+										if (u->id == UnitId::pylon &&
+											u->status & UnitStatus::Completed) {
+											u32 x_tile_dist = abs((int)u->position.x - (int)unit->position.x) / 32;
+											u32 y_tile_dist = abs((int)u->position.y - (int)unit->position.y) / 32;
+											if (x_tile_dist <= 8 && y_tile_dist <= 5) {
+												pylons++;
+											}
 										}
+									}
+									if (pylons >= 2) {
+										break;
 									}
 								}
 								if (pylons >= 2) {
-									break;
+									unit->shields += 3;
 								}
-							}
-							if (pylons >= 2) {
-								unit->shields += 3;
 							}
 						}
 					}
+
+					if (unit->shields > maxShields)
+						unit->shields = maxShields;
+
+					if (unit->sprite->flags & CSprite_Flags::Selected)  //If the unit is currently selected, redraw its graphics
+						setAllImageGroupFlagsPal11(unit->sprite);
+
 				}
-
-				if (unit->shields > maxShields)
-					unit->shields = maxShields;
-
-				if (unit->sprite->flags & CSprite_Flags::Selected)  //If the unit is currently selected, redraw its graphics
-					setAllImageGroupFlagsPal11(unit->sprite);
-
 			}
-
 		}
 
 		//Supposedly, allows Zerglings to attack after unburrowing without delay.
