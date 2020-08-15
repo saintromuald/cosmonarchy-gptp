@@ -95,7 +95,7 @@ public:
 		if (booster == unit) {
 			return;
 		}
-		if (scbw::isAlliedTo(unit->id, booster->id) && scbw::isZergEgg(unit->id)) {
+		if (scbw::isAlliedTo(unit->playerId, booster->playerId) && scbw::isZergEgg(unit->id,true,false)) {
 			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::EggBoostTimer, 24, 0);
 		}
 	}
