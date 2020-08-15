@@ -186,9 +186,7 @@ namespace ValueId {
 		EggBoostTimer = 48,
 		RemainingBuildTimeCopy = 49,
 		TreasuryStacks = 50,
-
-		SupplyProvidedOverwritten = 51,
-		SupplyProvidedValue = 52,
+		SupplyProvidedValue = 51,
 	#if DELIVERANCE
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,

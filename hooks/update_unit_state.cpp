@@ -596,7 +596,9 @@ namespace hooks {
 		}
 		completed_unit_counts[unit->id].player[unit->playerId] += count;
 		int race = unit->getRace();
-		raceSupply[race].provided[unit->playerId] += count * units_dat::SupplyProvided[unit->id];
+		int supply = units_dat::SupplyProvided[unit->id];
+		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SupplyProvidedValue, supply, 0);
+		raceSupply[race].provided[unit->playerId] += count * supply;
 		if (units_dat::GroupFlags[unit->id].isFactory) {
 			factoriesOwned[unit->playerId] += count;
 		}
