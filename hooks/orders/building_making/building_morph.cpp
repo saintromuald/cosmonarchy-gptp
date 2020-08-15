@@ -968,6 +968,7 @@ namespace hooks {
 		case UnitId::ZergSpawningPool:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergVorvalPond, ignoreIncomplete);
 			break;
+
 		case UnitId::ZergOverlordIris:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergIrolethQuay, ignoreIncomplete);
 		case UnitId::ZergIrolethQuay:
