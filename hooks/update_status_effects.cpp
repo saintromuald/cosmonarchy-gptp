@@ -323,7 +323,7 @@ void updateStatusEffects(CUnit* unit) {
 	}
 
 	// Quarry and Iroleth resource regeneration aura
-/*	if (unit->sprite!=NULL && unit->mainOrderId!=OrderId::Die 
+	if (unit->sprite!=NULL && unit->mainOrderId!=OrderId::Die 
 		&& (unit->id == UnitId::TerranQuarry || unit->id == UnitId::ZergIroleth || unit->id==UnitId::ZergOthstoleth)) {
 		
 		u32 radius = unit->id == UnitId::TerranQuarry ? 320 : 224;
@@ -333,7 +333,7 @@ void updateStatusEffects(CUnit* unit) {
 			unit->getX() + radius,
 			unit->getY() + radius);
 		unitFinder.forEach(Boost);
-	}*/
+	}
 	if (unit->id == UnitId::ZergOthstoleth) {
 		u32 radius = 224;
 		othstolethProc eggBoost = othstolethProc(unit);
