@@ -658,7 +658,6 @@ bool isZergBuildingMorphResult(u16 id){
 	case UnitId::ZergChasmalColony:
 	case UnitId::ZergBasiliskDen:
 	case UnitId::ZergVorvalPond:
-	case UnitId::ZergOverlordIris:
 	case UnitId::ZergIrolethQuay:
 	case UnitId::ZergOthstolethBerth:
 		return true;
@@ -691,8 +690,8 @@ std::string readSamaseFile(char* name) {
 	auto data_ptr = &data;
 	auto len_ptr = &len;
 	u32 val = reinterpret_cast<u32>(name);
-	auto buf = scbw::get_aise_value(NULL, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));
-	auto length = scbw::get_aise_value(NULL, NULL, AiseId::ReadSamaseFile_Ptr, 0, 0);
+	auto length = scbw::get_aise_value(NULL, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));
+	char* buf = (char*)scbw::get_aise_value(NULL, NULL, AiseId::ReadSamaseFile_Ptr, 0, 0);
 	std::string str;
 	if (length == 0) {
 		return str;
