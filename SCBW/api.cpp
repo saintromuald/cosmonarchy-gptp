@@ -575,8 +575,8 @@ u32 getImageData(u32 entry, u32 index) {
 }
 bool isZergEgg(u16 id, bool allow_normal_eggs, bool allow_larvae) {
 	switch (id) {
-	case UnitId::cocoon:
-	case UnitId::lurker_egg:
+	case UnitId::ZergCocoon:
+	case UnitId::ZergLurkerEgg:
 	case UnitId::EggVorvaling:
 	case UnitId::EggBasilisk:
 	case UnitId::EggKeskathalor:
@@ -640,7 +640,7 @@ bool isConventionalUnitMorphSource(u16 id, bool allow_larvae) {
 	default:
 		break;
 	}
-	if (id == UnitId::larva && allow_larvae) {
+	if (id == UnitId::ZergLarva && allow_larvae) {
 		return true;
 	}
 	return false;
