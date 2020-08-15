@@ -14,6 +14,8 @@ namespace hooks {
 			//func 004258B0 (called from previous func)
 			//004258C5  |>  66:3948 20    /CMP WORD PTR DS:[EAX+20],CX
 			0x00425C51 + 2,
+			//00425C57  |.  66:813A 1305  CMP WORD PTR DS:[EDX],513
+			//00425C65  |>  0FB782 280A00>MOVZX EAX,WORD PTR DS:[EDX+A28]
 			0x00425CAE + 2,
 			0x00425D02 + 2,
 			0x00425D52 + 2,
