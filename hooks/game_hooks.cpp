@@ -330,7 +330,8 @@ public:
 };
 
 #include "logger.h"
-
+#include "limits/sfx_extender.h"
+#include "globals.h"
 namespace hooks {
 
 	/// This hook is called every frame; most of your plugin's logic goes here.
@@ -346,6 +347,10 @@ namespace hooks {
 			//This block is executed once every game.
 			if (*elapsedTimeFrames == 0) {
 				//Write your code here
+				if (Globals.extended_sfx) {
+					new_sfxdata.extend();
+					new_sfxdata.set_extended_data();
+				}
 			}
 			
 			//framework example, rework and use later
