@@ -835,8 +835,7 @@ namespace hooks {
 								}
 							}
 							else
-							if (current_button->reqVar == UnitId::TerranDropship
-							|| current_button->reqVar == UnitId::TerranAzazel
+							if (current_button->reqVar == UnitId::TerranAzazel
 							|| current_button->reqVar == UnitId::TerranWyvern
 							|| current_button->reqVar == UnitId::TerranValkyrie) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
@@ -845,11 +844,6 @@ namespace hooks {
 								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranControlTower) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								// TODO: Add Science Facility ownership check for Wyvern requirement
-							/*	else if (current_button->iconID == IconId::Lurker_Cargo_Ship_Unused
-									&& scbw:: (*activePortraitUnit)->player_id {
-									current_button_state = BUTTON_STATE::Disabled;
-								}*/
 								else {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
