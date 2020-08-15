@@ -104,9 +104,9 @@ namespace hooks {
 
 		v1 = *activePortraitUnit;
 		v2 = v1->id;
-		v3 = MaxHitPoints[v2] >> 8;
+		v3 = units_dat::MaxHitPoints[v2] >> 8;
 		if ((v3 || (v3 = (v1->hitPoints + 255) >> 8) != 0) && v3 > 9999
-			|| MaxShieldPoints[v2] > 0x270Fu
+			|| units_dat::MaxShieldPoints[v2] > 0x270Fu
 			|| v1->status & UnitStatus::IsHallucination)
 		{
 			v10 = 0;
