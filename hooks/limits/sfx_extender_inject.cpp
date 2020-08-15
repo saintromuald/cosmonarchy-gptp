@@ -24,19 +24,27 @@ int SFXExtender::identifier(std::string str) {
     }
     return NO_IDENTIFIER;
 }
+#include "logger.h"
 void SFXExtender::set_extended_data() {
     parse_set("samase\\sfx_ext.txt", SFX_Default_Length, 5);
     if (this->extra_strings.size() > 0) {
-        for (int i = SFX_Default_Length; i <= sound_file_ptrs.size(); i++) {
-            this->sound_file_ptrs[i] = (u32)extra_strings[i - SFX_Default_Length].c_str();
+        GPTP::logger << SFX_Default_Length << " " << sound_file_ptrs.size() << " " << extra_strings.size() << '\n';
+        for (int i = SFX_Default_Length; i < sound_file_ptrs.size(); i++) {
+           // GPTP::logger << extra_strings.size() << " " << i - SFX_Default_Length << '\n';
+
+           u32 ptr = reinterpret_cast<u32>(extra_strings[i - SFX_Default_Length].c_str());
+           sound_file_ptrs[i] = ptr;
+          // GPTP::logger << extra_strings[i - SFX_Default_Length] << " " << std::hex << ptr << '\n';
+           scbw::printFormattedText("Format: %s %X", extra_strings[i - SFX_Default_Length].c_str(), ptr);
         }
     }
 }
 void SFXExtender::set_value(int entry, int id, std::string str) {
-    switch (entry) {
+    switch (id) {
     case SfxDatEntries::SoundFilePtrs:
     {
-        if (id < SFX_Default_Length) {
+        GPTP::logger << "Text entry: " << entry << " " << id << " " << str << '\n';
+        if (entry < SFX_Default_Length) {
             break;
         }
         std::string new_str = str;
@@ -48,7 +56,8 @@ void SFXExtender::set_value(int entry, int id, std::string str) {
                 a = '\\';
             }
         }
-        this->extra_strings[id - 1177] = new_str;
+        GPTP::logger << "New str: " << entry-SFX_Default_Length << " " << extra_strings.size() << '\n';
+        this->extra_strings[entry - SFX_Default_Length] = new_str;
         break;
     }
     default:
@@ -56,7 +65,7 @@ void SFXExtender::set_value(int entry, int id, std::string str) {
     }
 }
 void SFXExtender::set_value(int entry, int id, int val) {
-    switch (entry) {
+    switch (id) {
     case SfxDatEntries::MinVolume:
         min_volume[entry] = val;
         break;
@@ -114,32 +123,38 @@ bool SFXExtender::is_string_id(int id) {
     return false;
 }
 #include "logger.h"
+
+const u32* sfx_sound_ptrs = (u32*)0x0068DAA0;
+const u16* sfx_race = (u16*)0x0068CD38;
+const u8* sfx_volume = (u8*)0x0068C448;
+const u8* sfx_flags = (u8*)0x0068C8C0;
+const u8* sfx_priority = (u8*)0x0068D628;
+
 void SFXExtender::copyArrays() {
     for (int i = 0; i < SOUND_TYPE_COUNT;i++) {
-        sound_file_ptrs[i] = sfx_dat::SoundPtr[i];
-        priority[i] = sfx_dat::Priority[i];
-        flags[i] = sfx_dat::Flags[i];
-        race[i] = sfx_dat::Race[i];
-        min_volume[i] = sfx_dat::Volume[i];
+        sound_file_ptrs[i] = sfx_sound_ptrs[i];
+        priority[i] = sfx_priority[i];
+        flags[i] = sfx_flags[i];
+        race[i] = sfx_race[i];
+        min_volume[i] = sfx_volume[i];
     }
 }
 void SFXExtender::extend() {
     
     int extra_entries = get_file_entry_count("samase\\sfx_ext.txt", SFX_Entries);
-    GPTP::logger << "Entries: " << extra_entries << '\n';
+    //GPTP::logger << "Entries: " << extra_entries << '\n';
 	if (extra_entries>0) {
         int new_count = extra_entries + SOUND_TYPE_COUNT;
-        GPTP::logger << "New count: " << new_count << '\n';
+        //GPTP::logger << "New count: " << new_count << '\n';
         unk.resize(new_count);
         ptr = &unk[0];
-        
         min_volume.resize(new_count);
         race.resize(new_count);
         flags.resize(new_count);
         priority.resize(new_count);
         extra_strings.resize(extra_entries);
         sound_file_ptrs.resize(new_count);
-        GPTP::logger << "Uplink, resize..." << '\n';
+        //GPTP::logger << "Uplink, resize..." << '\n';
         uplink(get_size_list(), new_count);
         memoryPatch(0x004BBCA5, new_count - 1);
         memoryPatch(0x004BBEB7, new_count - 1);
@@ -149,9 +164,8 @@ void SFXExtender::extend() {
         memoryPatch(0x004BCA39+3, &sound_file_ptrs[0]);
         memoryPatch(0x004BCB29+1, &sound_file_ptrs[0] + 0x3C);
         memoryPatch(0x004DB0E5+1, &sound_file_ptrs[0]);
-        memoryPatch(0x004BC5E9+3, &sound_file_ptrs[0]);//
-        memoryPatch(0x004BCA04+1, &sound_file_ptrs[0]);//
-        //memoryPatch(0x00515498, &sound_file_ptrs[0]);
+        memoryPatch(0x004BC5E9+3, &sound_file_ptrs[0]);
+        memoryPatch(0x004BCA04+1, &sound_file_ptrs[0]);
         memoryPatch(0x00455BD9+3, &min_volume[0]);
         memoryPatch(0x0048D0ED+3, &min_volume[0] + 0x17);
         memoryPatch(0x0048D169+3, &min_volume[0] + 2);
@@ -186,7 +200,9 @@ void SFXExtender::extend() {
         memoryPatch(0x004BC0D3, &priority[0]);
         memoryPatch(0x004BC813, &priority[0]);
         memoryPatch(0x005154A4, &priority[0]);
-        auto snd_pointer = (u32)this->ptr;
+        /*auto snd_pointer = (u32)this->ptr;
+
+
         memoryPatch(0x004BB8E8, snd_pointer);
         memoryPatch(0x004BBC47, snd_pointer);
         memoryPatch(0x004BC077, snd_pointer);
@@ -206,7 +222,7 @@ void SFXExtender::extend() {
         memoryPatch(0x0048FAE3, ((u32)snd_pointer) + 8);
         memoryPatch(0x0048F8DA, ((u32)snd_pointer) + 0x828);
         memoryPatch(0x0048F36F, ((u32)snd_pointer) + 0x878);
-        memoryPatch(0x0048F412, ((u32)snd_pointer) + 0x878);
+        memoryPatch(0x0048F412, ((u32)snd_pointer) + 0x878);*/
         copyArrays();
 	}
    
