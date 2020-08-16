@@ -23,7 +23,7 @@ namespace hooks {
 
 //		hooks::injectCCMUHooks();
 //		hooks::sfxExtender();
-		jmpPatch(preInitDataWrapper, 0x004DAF31);
+//		jmpPatch(preInitDataWrapper, 0x004DAF31);
 		/*
 		auto str = scbw::readSamaseFile("samase\\sfx_ext.txt");
 		GPTP::logger << "Read Test Len: " << str.size() << '\n';*/
