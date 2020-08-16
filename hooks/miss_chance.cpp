@@ -21,7 +21,7 @@ namespace hooks {
 			return 0;
 		if (!(units_dat::GroupFlags[(u16)a1->id].isBuilding))
 		{
-			if (unitCountTable[10].player[155])
+			if(unitCountTable[UnitId::Spell_DarkSwarm].player[11])
 			{
 				getAbsoluteUnitBounds(a1, &bounds);
 				if (findBestUnit(&bounds, UnitId::Spell_DarkSwarm, (bool(__fastcall*)(CUnit*, s16))compareUnitToUnitType))
