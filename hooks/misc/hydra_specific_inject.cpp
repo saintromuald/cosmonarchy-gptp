@@ -4,7 +4,7 @@
 namespace hooks {
     const u32 jmp_00494FC3 = 0x00494FC3;
     const u32 jmp_00494FAC = 0x00494FAC;
-    void __declspec(naked) getFlingyHaltDistance_94FA2_JmpWrapper() {
+    void __declspec(naked) getFlingyHaltDistance_94F9E_JmpWrapper() {
         //patched 2 instructions before 94fa3 to avoid aise extender conflict
         static u32 current_speed;
         static u32 flingy_id;
@@ -48,5 +48,9 @@ namespace hooks {
             MOV ECX, topSpeed
             JMP jmp_00496385
         }
+    }
+    void injectHydraSpecific() {
+        jmpPatch(getFlingyHaltDistance_94F9E_JmpWrapper, 0x00494F9E);
+        jmpPatch(initializeFlingy_96377_JmpWrapper, 0x00494F9E,2);
     }
 }
