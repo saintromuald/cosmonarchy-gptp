@@ -51,14 +51,7 @@ namespace hooks {
 			)
 				bAllowMorph = current_unit->canUseTech(TechId::LurkerAspect,*ACTIVE_NATION_ID) == 1;
 			else*/
-			if (current_unit->id == UnitId::ZergLarva ||
-				current_unit->id == UnitId::ZergMutalisk ||
-				current_unit->id == UnitId::hydralisk ||
-				current_unit->id == UnitId::zergling ||
-				current_unit->id == UnitId::ultralisk ||
-				current_unit->id == UnitId::overlord ||
-				current_unit->id == UnitId::ZergIroleth ||
-				current_unit->id == UnitId::ZergOthstoleth
+			if ((current_unit->id,true)
 				) {
 
 				bAllowMorph = current_unit->canMakeUnit(wUnitType, *ACTIVE_NATION_ID) == 1;

@@ -479,7 +479,6 @@ struct CUnitLayout {
 /*0x14D*/ u8        repulseAngle;       // updated only when air unit is being pushed
 /*0x14E*/ Point8    driftPos;           // (mapsizex / 1.5 max)
 };
-
 C_ASSERT(sizeof(CUnitLayout) == 336);
 //static_assert(sizeof(CUnitLayout) == 336, "The size of the CUnitLayout structure is invalid");
 

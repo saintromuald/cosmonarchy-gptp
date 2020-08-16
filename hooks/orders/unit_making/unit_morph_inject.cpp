@@ -173,9 +173,9 @@ namespace {
 			return;
 
 		//Don't bother if unit is not morphed yet
-		if (unit->id == UnitId::mutalisk || unit->id == UnitId::hydralisk || unit->id == UnitId::zergling)
+		if (scbw::isConventionalUnitMorphSource(unit->id, false)) {
 			return;
-
+		}
 		//Don't bother if unit has finished morphing
 		if (scbw::isConventionalUnitMorphResult(unit->id))
 			return;
@@ -184,31 +184,22 @@ namespace {
 				((unit->id==UnitId::gateway || unit->id==UnitId::robotics_facility || unit->id==UnitId::stargate)
 					&& hooks::isMorphing(unit))) {
 				cancelZergBuilding(unit);
-				
-
 				return;
 			}
-
 			resources->minerals[unit->playerId] += units_dat::MineralCost[unit->id] * 3 / 4;
 			resources->gas[unit->playerId] += units_dat::GasCost[unit->id] * 3 / 4;
-
 		}
 		else {
-
 			u16 refundUnitId;
-
 			if (scbw::isZergEgg(unit->id,true,false))
 				refundUnitId = unit->buildQueue[unit->buildQueueSlot % 5];
 			else
 				refundUnitId = unit->id;
-
 			resources->minerals[unit->playerId] += units_dat::MineralCost[refundUnitId];
 			resources->gas[unit->playerId] += units_dat::GasCost[refundUnitId];
-
 		}
 
 		u16 cancelChangeUnitId = hooks::getCancelMorphRevertTypeHook(unit);
-
 		if (cancelChangeUnitId == UnitId::None) {
 			//scbw::printText("Remove the unit");
 			if (unit->id == UnitId::nuclear_missile) {

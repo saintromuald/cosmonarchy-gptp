@@ -9,6 +9,22 @@
 //
 //helper functions def
 
+
+u32 Func_Sub46A820 = 0x0046A820;
+u8 setArchonPathing(CUnit* unit) {
+	static u8 result;
+	__asm {
+		PUSHAD
+		MOV EAX, unit
+		CALL Func_Sub46A820
+		MOV result, AL
+		POPAD
+	}
+	return result;
+	//
+}
+;
+
 namespace {
 
 	void fixTargetLocation(Point16* coords, u32 unitId);							//01FA0
@@ -115,14 +131,14 @@ namespace hooks {
 	;
 
 	void orders_Morph1(CUnit* unit) {
-
+		scbw::printText("Morph...");
 		if (unit->mainOrderState == 0) {
 
 			if (scbw::isConventionalUnitMorphSource(unit->id,true)
 				
 				)
 			{
-
+				scbw::printText("Is Conventional");
 				if (!hasSuppliesForUnit(
 					unit->buildQueue[unit->buildQueueSlot],
 					unit->playerId,
@@ -134,7 +150,7 @@ namespace hooks {
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 				else {
-
+					scbw::printText("Setup egg");
 					bool bStopThere = false;
 					u16 eggId;
 
@@ -173,17 +189,38 @@ namespace hooks {
 						eggId = UnitId::EggOthstoleth;
 						break;
 					default:
-						bStopThere = true;
+						if (unit->id != UnitId::ProtossHighTemplar) {
+							bStopThere = true;
+						}
+						
 						break;
 					}
-
+					scbw::printFormattedText("Stop status: %d", (int)bStopThere);
 					if (!bStopThere) {
-						replaceUnitWithType(unit, eggId);
+						if (unit->id == UnitId::ProtossHighTemplar) {
+							scbw::printText("Augur morph");
+							replaceUnitWithType(unit, UnitId::ProtossAugur);
+							unit->sprite->flags &= ~CSprite_Flags::IscriptCode;
+							if(unit->sprite->images.head != NULL) {
+								CImage* current_image = unit->sprite->images.head;
+								do {
+									current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
+									current_image = current_image->link.next;
+								}while (current_image != NULL);
+							}
+							changeUnitButtonSet_Sub4E5D60(unit,UnitId::None);
+							scbw::refreshConsole();
+							unit->status &= ~UnitStatus::IsBuilding; //disable the flag if set
+							setArchonPathing(unit);
+							unit->orderComputerCL(OrderId::CompletingArchonSummon);
+							return;
+						}
+						else {
+							replaceUnitWithType(unit, eggId);
+						}
+						
 						changeUnitButtonSet_Sub4E5D60(unit, unit->id);
-
 						unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
-						/*scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, 
-								ValueId::RemainingBuildTimeCopy, unit->remainingBuildTime,0);*/
 						unit->mainOrderState = 1;
 						if (unit->id == UnitId::EggVorvaling) {
 							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
@@ -281,6 +318,11 @@ namespace hooks {
 		}
 		if (unit->id == UnitId::ZergIroleth) {
 			if (morphUnitId == UnitId::ZergOthstoleth) {
+				return true;
+			}
+		}
+		if (unit->id == UnitId::high_templar) {
+			if (morphUnitId == UnitId::ProtossAugur) {
 				return true;
 			}
 		}
