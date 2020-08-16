@@ -693,7 +693,7 @@ void orders_SCVBuild(CUnit* unit) {
 				unk_buildingPlacementRelated(1, (int)&v6);
 				if (isPlacingAddon)
 				{
-					v4 = (int)(placeBuildingUnitType - UnitId::TerranCommandCenter);
+					v4 = (int)(placeBuildingUnitId - UnitId::TerranCommandCenter);
 					v6.x = units_dat::AddonPlacement[v4].x;
 					v6.y = units_dat::AddonPlacement[v4].y;
 					unk_buildingPlacementRelated(0, (int)&v6);
