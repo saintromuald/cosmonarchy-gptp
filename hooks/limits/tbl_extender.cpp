@@ -28,6 +28,7 @@ namespace hooks {
 			//00425E4E  |>  0FB781 F80500>MOVZX EAX,WORD PTR DS:[ECX+5F8]
 			0x0042607D + 2,
 			//00426083  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
+			//0042609E  |.  0FB74441 02   MOVZX EAX,WORD PTR DS:[ECX+EAX*2+2]
 			//
 			/*
 			0042609B  |>  0FB7C0        MOVZX EAX,AX
@@ -74,7 +75,9 @@ namespace hooks {
 			//00427681  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
 			//00427690  |.  0FB77451 02   MOVZX ESI,WORD PTR DS:[ECX+EDX*2+2]
 			0x004276EF + 2,
-
+			//004276F5  |.  66:3B0A       CMP CX,WORD PTR DS:[EDX]
+			//00427701  |>  0FB7C9        MOVZX ECX,CX
+			//00427704  |.  0FB7744A 02   MOVZX ESI,WORD PTR DS:[EDX+ECX*2+2]
 			0x0042779A + 2,
 			0x00427ACF + 2,
 			0x00427BCD + 2,
@@ -112,6 +115,8 @@ namespace hooks {
 			0x00475538 + 2,
 			0x0047557C + 2,
 			0x0047B0CB + 2,
+			//
+
 			0x0048D959 + 2,
 			0x0048E509 + 2,
 			0x0048E65F + 2,
