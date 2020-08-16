@@ -13,4 +13,14 @@ namespace hooks {
 		}*/
 		return speed;
 	}
+	bool is_high_templar_conduit(u16 unitId) {
+		switch (unitId) {
+		case UnitId::ProtossArchon:
+		case UnitId::ProtossAugur:
+			return true;
+		default:
+			break;
+		}
+		return false;
+	}
 }

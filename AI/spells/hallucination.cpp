@@ -28,7 +28,8 @@ class HallucinationTargetFinderProc: public scbw::UnitFinderCallbackMatchInterfa
 		if (target->id == UnitId::carrier
 			|| target->id == UnitId::scout
 			|| target->id == UnitId::arbiter
-			|| target->id == UnitId::archon)
+			|| target->id == UnitId::archon
+			|| target->id == UnitId::ProtossAugur)
 		  return true;
 
 		return false;
