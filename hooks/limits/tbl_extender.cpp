@@ -189,20 +189,53 @@ namespace hooks {
 				//0048D96B  |>  0FB7D0        MOVZX EDX,AX
 				//0048D96E  |.  0FB74451 02   MOVZX EAX,WORD PTR DS:[ECX+EDX*2+2]
 			0x0048E509 + 2,
+				//0048E50F  |.  66:8139 5E03  CMP WORD PTR DS:[ECX],35E
+				//0048E51D  |>  0FB781 BE0600>MOVZX EAX,WORD PTR DS:[ECX+6BE]
 			0x0048E65F + 2,
+				//0048E665  |.  66:8139 5E03  CMP WORD PTR DS:[ECX],35E
+				//0048E673  |>  0FB781 BE0600>MOVZX EAX,WORD PTR DS:[ECX+6BE]
 			0x0048EEAB + 2,
+				//0048EEB1   .  66:3B01       CMP AX,WORD PTR DS:[ECX]
+				/*
+				0048EEBD   >  0FB7D0        MOVZX EDX,AX
+				0048EEC0   .  0FB74451 02   MOVZX EAX,WORD PTR DS:[ECX+EDX*2+2]
+				*/
 			0x0048F760 + 2,
+				//0048F766  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
+				//0048F775  |.  0FB74441 02   MOVZX EAX,WORD PTR DS:[ECX+EAX*2+2]
 			0x0048F850 + 2,
+				//0048F856  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
+				//0048F862  |>  0FB7C0        MOVZX EAX,AX
+				//0048F865  |.  0FB74441 02   MOVZX EAX,WORD PTR DS:[ECX+EAX*2+2]
 			0x004927CD + 2,
+				//004927D3  |.  66:3B0E       CMP CX,WORD PTR DS:[ESI]
+				//004927DF  |>  0FB7C1        MOVZX EAX,CX
+				//004927E2  |.  0FB74446 02   MOVZX EAX,WORD PTR DS:[ESI+EAX*2+2]
 			0x004928DB + 2,
+				//004928E1  |.  66:8139 6B03  CMP WORD PTR DS:[ECX],36B
+				//004928F2  |>  0FB781 D80600>MOVZX EAX,WORD PTR DS:[ECX+6D8]
 			0x0049456D + 2,
+				//00494573  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
+				//00494582  |.  0FB74451 02   MOVZX EAX,WORD PTR DS:[ECX+EDX*2+2]
 			0x004A4C47 + 2,
+				//004A4C50  |.  66:813A 2903  CMP WORD PTR DS:[EDX],329
+				//004A4C5E  |>  0FB782 540600>MOVZX EAX,WORD PTR DS:[EDX+654]
 			0x004A5131 + 2,
+				//004A5150   >  66:813A 2B03  CMP WORD PTR DS:[EDX],32B
+				//004A5157   .  0FB782 580600>MOVZX EAX,WORD PTR DS:[EDX+658]
 			0x004A5182 + 2,
+			//004A5188   .  66:813A 2C03  CMP WORD PTR DS:[EDX],32C
+			//004A5196   >  0FB782 5A0600>MOVZX EAX,WORD PTR DS:[EDX+65A]
 			0x004C36FB + 2,
+			//004C3701  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
+			//004C370C  |>  0FB7C0        MOVZX EAX,AX
+			//004C370F | .  0FB74441 02   MOVZX EAX, WORD PTR DS : [ECX+EAX*2+2]
 			0x004C373B + 2,
+			//#403 (SMemFree), no patches
 			0x004C3885 + 2,
+			//#403 (SMemFree), no patches
 			0x004C3AE4 + 2,
+			//#253 (Close File), no patches
 			0x004E996C + 2,
 			//004E9972   .  66:8139 6503  CMP WORD PTR DS:[ECX],365
 			//004E9994   >  0FB781 CC0600>MOVZX EAX,WORD PTR DS:[ECX+6CC]
@@ -215,7 +248,7 @@ namespace hooks {
 			0x004C3720+1,
 			//smemfree, no patches
 			0x004C3866+1,
-			//smemfree
+			//smemfree, no patches
 		};
 	}
 	void injectTblExtender() {
@@ -228,7 +261,14 @@ namespace hooks {
 		//TODO: FIND ALL +2 offsets
 		//TODO: REPLACE USAGE OF WORD IN REGARDS OF TBL TO DWORD
 		*/
-		//006D1238
+		//[6D1238]
+		//004C3A6A   .  68 5C2A5000   PUSH 00502A5C                            ;  ASCII "rez\stat_txt.tbl"
+		//004C3A2E   .  68 5C2A5000   PUSH 00502A5C                            ;  ASCII "rez\stat_txt.tbl"
+		//SFileOpenEx
+		//
+
+		//004C3AF4   .  68 5C2A5000   PUSH 00502A5C                            ;  ASCII "rez\stat_txt.tbl"
+
 	}
 }
 tblExtender extendedTbl;
