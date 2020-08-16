@@ -1,5 +1,6 @@
 #include "building_terran.h"
 #include <SCBW/api.h>
+#include "..\..\byte_operations_utils.h"
 
 #ifndef FALSE
 #define FALSE 0
@@ -13,31 +14,39 @@
 
 namespace {
 
-bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, u32 distance);	//01240
-void fixTargetLocation(Point16* coords, u32 unitId);								//01FA0
-bool isUnitPositions2Equal(CUnit* unit);											//02160
-void AI_TrainingOverlord(CUnit* main_unit, CUnit* created_unit);					//35770
-bool function_00467030(CUnit* unit);												//67030
-CUnit* function_004678A0(CUnit* unit, u32 unitId);									//678A0
-Bool32 buildingAddon(CUnit* unit, u32 hpGain, Bool32 canBeAborted);					//679A0
-void function_00474760(CUnit* unit, COrder* order, u8 orderId);						//74760
-void function_004749A0(CUnit* unit, COrder* order, u8 orderId);						//749A0
-void refreshLayer3And4();															//8D9A0
-bool function_0048DDA0();															//8DDA0
-void function_0048E310();															//8E310
-void playBuildingCompleteSound(CUnit* building);									//8F310
-void function_00494BB0(CUnit* unit,int x, int y);									//94BB0
-void displayLastNetErrForPlayer(u32 playerId);										//9E530
-CUnit* createUnit(u32 unitId, int x, int y, u32 playerId);							//A09D0
-u32 RandomizeShort(u32 unknown_index);												//DC4A0
-u32 RandBetween(u32 min, u32 max, u32 someIndex);									//DC550
-void function_004E65E0(CUnit* unit, Bool32 flag);									//E65E0
-void setNextWaypoint_Sub4EB290(CUnit* unit);										//EB290
-bool SetMoveTarget_xy(CUnit* unit, int x, int y);									//EB820
-bool orderToMoveToTarget(CUnit* unit, CUnit* target);								//EB980
-bool function_004EB9C0(CUnit* unit, int x, int y);									//EB9C0
-Bool32 function_004F1870(CUnit* unit, int x, int y);								//F1870
-signed int canBuildOnTileLocation(CUnit* a1, int a2, int a3, int a4, int unitType, int a6, int a7, int a8, int a9);												// 00473FB0
+	bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, u32 distance);	//01240
+	void fixTargetLocation(Point16* coords, u32 unitId);								//01FA0
+	bool isUnitPositions2Equal(CUnit* unit);											//02160
+	void AI_TrainingOverlord(CUnit* main_unit, CUnit* created_unit);					//35770
+	bool function_00467030(CUnit* unit);												//67030
+	CUnit* function_004678A0(CUnit* unit, u32 unitId);									//678A0
+	Bool32 buildingAddon(CUnit* unit, u32 hpGain, Bool32 canBeAborted);					//679A0
+	void function_00474760(CUnit* unit, COrder* order, u8 orderId);						//74760
+	void function_004749A0(CUnit* unit, COrder* order, u8 orderId);						//749A0
+	char refreshLayer3And4();															//8D9A0
+	bool function_0048DDA0();															//8DDA0
+	void function_0048E310();															//8E310
+	void playBuildingCompleteSound(CUnit* building);									//8F310
+	void function_00494BB0(CUnit* unit,int x, int y);									//94BB0
+	void displayLastNetErrForPlayer(u32 playerId);										//9E530
+	CUnit* createUnit(u32 unitId, int x, int y, u32 playerId);							//A09D0
+	u32 RandomizeShort(u32 unknown_index);												//DC4A0
+	u32 RandBetween(u32 min, u32 max, u32 someIndex);									//DC550
+	void function_004E65E0(CUnit* unit, Bool32 flag);									//E65E0
+	void setNextWaypoint_Sub4EB290(CUnit* unit);										//EB290
+	bool SetMoveTarget_xy(CUnit* unit, int x, int y);									//EB820
+	bool orderToMoveToTarget(CUnit* unit, CUnit* target);								//EB980
+	bool function_004EB9C0(CUnit* unit, int x, int y);									//EB9C0
+	Bool32 function_004F1870(CUnit* unit, int x, int y);								//F1870
+
+	// For updatePlacementStateForPlacementBox
+	signed int canBuildOnTileLocation(CUnit* a1, int a2, int a3, int a4, int unitType, int a6, int a7, int a8, int a9);												// 00473FB0
+
+	// For refreshScreen
+	signed int updatePlacementStateForPlacementBox(); // 0048DCE0
+	int unk_buildingPlacementRelated(int a1, int a2); // 0048D7F0
+	signed int initPlacementBoxPos(int a1, Point16* a2); // 0048D660
+	char unk_buildingPlacementRelatedMouse(int a1, int a2); // 0048D7B0
 
 } //unnamed namespace
 
@@ -628,492 +637,540 @@ void orders_SCVBuild(CUnit* unit) {
 		if(bMoveTargetResult)
 			unit->mainOrderState = 1;
 
-	}
+		}
 
-}
+	};
 
-;
+	signed int updatePlacementStateForPlacementBox() { // 0x0048DCE0
+		signed int v0; // esi
+		signed int result; // eax
 
-signed int updatePlacementStateForPlacementBox() // 0x0048DCE0
-{
-	signed int v0; // esi
-	signed int result; // eax
-
-	v0 = canBuildOnTileLocation(
-		*activePortraitUnit,
-		(unsigned __int8)unk_placementRelated,
-		(unsigned __int16)placeBuildingX,
-		(unsigned __int16)placeBuildingY,
-		(int)placeBuildingUnitType,
-		1,
-		1,
-		0,
-		0);
-	if (!isPlacingAddon
-		|| (result = canBuildOnTileLocation(
+		v0 = canBuildOnTileLocation(
 			*activePortraitUnit,
 			(unsigned __int8)unk_placementRelated,
-			(unsigned __int16)placeBuildingX - *(int*)&units_dat::AddonPlacement[2 * (int)placeBuildingUnitType - 212] / 32,
-			(unsigned __int16)(placeBuildingY - *(int*)&units_dat::AddonPlacement[2 * (int)placeBuildingUnitType - 211] / 32),
-			(unsigned __int16)placeBuildingBaseType,
-			0,
+			(unsigned __int16)placeBuildingX,
+			(unsigned __int16)placeBuildingY,
+			(int)placeBuildingUnitType,
+			1,
 			1,
 			0,
-			0),
-			v0))
-	{
-		result = v0;
+			0);
+		if (!isPlacingAddon
+			|| (result = canBuildOnTileLocation(
+				*activePortraitUnit,
+				(unsigned __int8)unk_placementRelated,
+				(unsigned __int16)placeBuildingX - *(int*)&units_dat::AddonPlacement[2 * (int)placeBuildingUnitType - 212] / 32,
+				(unsigned __int16)(placeBuildingY - *(int*)&units_dat::AddonPlacement[2 * (int)placeBuildingUnitType - 211] / 32),
+				(unsigned __int16)placeBuildingBaseType,
+				0,
+				1,
+				0,
+				0),
+				v0)) {
+			result = v0;
+		}
+		return result;
 	}
-	return result;
-}
 
+	char refreshScreen(int ecx0) { // 0048DDC0
+		char result;
+		int v2;
+		int v3;
+		int v4;
+		Point16 v6;
+
+		v6 = *(Point16*)&ecx0;
+		result = (char)IS_PLACING_BUILDING;
+		if (IS_PLACING_BUILDING)
+		{
+			ByteOperations::SetLowWord(ecx0, mouse->y);
+			v6.x = mouse->x;
+			v6.y = mouse->y;
+			if (initPlacementBoxPos(ecx0, &v6))
+			{
+				*placeBuildingMessageId = updatePlacementStateForPlacementBox();
+				refreshLayer3And4();
+				unk_buildingPlacementRelated(1, (int)&v6);
+				if (isPlacingAddon)
+				{
+					v4 = (int)(placeBuildingUnitType - UnitId::TerranCommandCenter);
+					v6.x = units_dat::AddonPlacement[v4].x;
+					v6.y = units_dat::AddonPlacement[v4].y;
+					unk_buildingPlacementRelated(0, (int)&v6);
+				}
+				result = refreshLayer3And4();
+			}
+			else
+			{
+				unk_buildingPlacementRelatedMouse(v2, 1);
+				result = unk_buildingPlacementRelatedMouse(v3, 0);
+			}
+		}
+		return result;
+	}
 } //namespace hooks
 
 //-------- Helper function definitions. Do NOT modify! --------//
 
 namespace {
 
-const u32 Func_isDistanceGreaterThanHaltDistance = 0x00401240;
-bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, u32 distance) {
+	const u32 Func_isDistanceGreaterThanHaltDistance = 0x00401240;
+	bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, u32 distance) {
 
-	static Bool32 bPreResult;
+		static Bool32 bPreResult;
 
-	__asm {
-		PUSHAD
-		PUSH x
-		PUSH distance
-		MOV EAX, y
-		MOV ECX, unit
-		CALL Func_isDistanceGreaterThanHaltDistance
-		MOV bPreResult, EAX
-		POPAD
-	}
+		__asm {
+			PUSHAD
+			PUSH x
+			PUSH distance
+			MOV EAX, y
+			MOV ECX, unit
+			CALL Func_isDistanceGreaterThanHaltDistance
+			MOV bPreResult, EAX
+			POPAD
+		}
 
-	return (bPreResult != 0);
+		return (bPreResult != 0);
 
-}
+	};
 
-;
+	const u32 Func_fixTargetLocation = 0x00401FA0;
+	void fixTargetLocation(Point16* coords, u32 unitId) {
 
-const u32 Func_fixTargetLocation = 0x00401FA0;
-void fixTargetLocation(Point16* coords, u32 unitId) {
+		__asm {
+			PUSHAD
+			MOV EAX, unitId
+			MOV EDX, coords
+			CALL Func_fixTargetLocation
+			POPAD
+		}
 
-	__asm {
-		PUSHAD
-		MOV EAX, unitId
-		MOV EDX, coords
-		CALL Func_fixTargetLocation
-		POPAD
-	}
+	};
 
-}
+	//Equivalent to function @ 0x00402160
+	bool isUnitPositions2Equal(CUnit* unit) {
 
-;
+		return (
+			unit->nextTargetWaypoint.x == unit->position.x &&
+			unit->nextTargetWaypoint.y == unit->position.y
+		);
 
-//Equivalent to function @ 0x00402160
-bool isUnitPositions2Equal(CUnit* unit) {
 
-	return (
-		unit->nextTargetWaypoint.x == unit->position.x &&
-		unit->nextTargetWaypoint.y == unit->position.y
-	);
+	};
 
+	const u32 Func_AI_TrainingOverlord = 0x00435770;
+	void AI_TrainingOverlord(CUnit* main_unit, CUnit* created_unit) {
 
-}
+		__asm {
+			PUSHAD
+			MOV EAX, created_unit
+			MOV ECX, main_unit
+			CALL Func_AI_TrainingOverlord
+			POPAD
+		}
+
+	};
+
+	const u32 Func_Sub467030 = 0x00467030;
+	bool function_00467030(CUnit* unit) {
 
-;
+		static Bool32 bPreResult;
+
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_Sub467030
+			MOV bPreResult, EAX
+			POPAD
+		}
+
+		return (bPreResult != 0);
 
-const u32 Func_AI_TrainingOverlord = 0x00435770;
-void AI_TrainingOverlord(CUnit* main_unit, CUnit* created_unit) {
+	};
 
-	__asm {
-		PUSHAD
-		MOV EAX, created_unit
-		MOV ECX, main_unit
-		CALL Func_AI_TrainingOverlord
-		POPAD
-	}
+	const u32 Func_Sub4678A0 = 0x004678A0;
+	CUnit* function_004678A0(CUnit* unit, u32 unitId) {
 
-}
+		static CUnit* newUnit;
+
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			PUSH unitId
+			CALL Func_Sub4678A0
+			MOV newUnit, EAX
+			POPAD
+		}
 
-;
+		return newUnit;
+
+	};
 
-const u32 Func_Sub467030 = 0x00467030;
-bool function_00467030(CUnit* unit) {
+	const u32 Func_buildingAddon = 0x004679A0;
+	//if canBeAborted is TRUE, the unit can be aborted because there's
+	//no room around the constructing building
+	Bool32 buildingAddon(CUnit* unit, u32 hpGain, Bool32 canBeAborted) {
 
-	static Bool32 bPreResult;
+		static Bool32 bResult;
 
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_Sub467030
-		MOV bPreResult, EAX
-		POPAD
-	}
-
-	return (bPreResult != 0);
-
-}
-
-;
-
-const u32 Func_Sub4678A0 = 0x004678A0;
-CUnit* function_004678A0(CUnit* unit, u32 unitId) {
-
-	static CUnit* newUnit;
-
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		PUSH unitId
-		CALL Func_Sub4678A0
-		MOV newUnit, EAX
-		POPAD
-	}
-
-	return newUnit;
-
-}
-
-;
-
-const u32 Func_buildingAddon = 0x004679A0;
-//if canBeAborted is TRUE, the unit can be aborted because there's
-//no room around the constructing building
-Bool32 buildingAddon(CUnit* unit, u32 hpGain, Bool32 canBeAborted) {
-
-	static Bool32 bResult;
-
-	__asm {
-		PUSHAD
-		MOV EDX, hpGain
-		MOV EAX, unit
-		PUSH canBeAborted
-		CALL Func_buildingAddon
-		MOV bResult, EAX
-		POPAD
-	}
-
-	return bResult;
-
-}
-
-;
-
-const u32 Func_Sub474760 = 0x00474760;
-void function_00474760(CUnit* unit, COrder* order, u8 orderId) {
-
-	__asm {
-		PUSHAD
-		MOV ESI, unit
-		MOV EDI, order
-		MOV BL, orderId
-		CALL Func_Sub474760
-		POPAD
-	}
-
-}
-
-;
-
-const u32 Func_Sub4749A0 = 0x004749A0;
-void function_004749A0(CUnit* unit, COrder* order, u8 orderId) {
-
-	__asm {
-		PUSHAD
-		MOV BL, orderId
-		MOV ESI, unit
-		MOV EDI, order
-		CALL Func_Sub4749A0
-		POPAD
-	}
-
-}
-
-;
-
-const u32 Func_RefreshLayer3And4 = 0x0048D9A0;
-void refreshLayer3And4() {
-
-	__asm {
-		PUSHAD
-		CALL Func_RefreshLayer3And4
-		POPAD
-	}
-
-}
-
-;
-
-const u32 Func_Sub48DDA0 = 0x0048DDA0;
-bool function_0048DDA0() {
-
-	Bool32 pre_return_value;
-
-	__asm {
-		PUSHAD
-		CALL Func_Sub48DDA0
-		MOV pre_return_value, EAX
-		POPAD
-	}
-
-	return (pre_return_value != 0);
-
-}
-
-;
-
-const u32 Func_Sub48E310 = 0x0048E310;
-void function_0048E310() {
-
-	__asm {
-		PUSHAD
-		CALL Func_Sub48E310
-		POPAD
-	}
-
-}
-
-;
-
-const u32 Func_PlayBuildingCompleteSound = 0x0048F310;
-void playBuildingCompleteSound(CUnit* building) {
-
-	__asm {
-		PUSHAD
-		MOV EAX, building
-		CALL Func_PlayBuildingCompleteSound
-		POPAD
-	}
-
-}
-
-;
-
-const u32 Func_Sub494BB0 = 0x00494BB0;
-void function_00494BB0(CUnit* unit,int x, int y) {
-
-	__asm {
-		PUSHAD
-		MOV ECX, y
-		MOV EDX, x
-		MOV EAX, unit
-		CALL Func_Sub494BB0
-		POPAD
-	}
-
-}
-
-;
-
-const u32 Func_displayLastNetErrForPlayer = 0x0049E530;
-void displayLastNetErrForPlayer(u32 playerId) {
-	__asm {
-		PUSHAD
-		PUSH playerId
-		CALL Func_displayLastNetErrForPlayer
-		POPAD
-	}
-}
-
-;
-
-const u32 Func_CreateUnit = 0x004A09D0;
-CUnit* createUnit(u32 unitId, int x, int y, u32 playerId) {
-
-	static CUnit* unit_created;
-
-	__asm {
-		PUSHAD
-		PUSH playerId
-		PUSH y
-		MOV ECX, unitId
-		MOV EAX, x
-		CALL Func_CreateUnit
-		MOV unit_created, EAX
-		POPAD
-	}
-
-	return unit_created;
-
-}
-
-;
-
-const u32 Func_RandomizeShort = 0x004DC4A0;
-u32 RandomizeShort(u32 unknown_index) {
-
-	static u32 return_value;
-
-	__asm {
-		PUSHAD
-		MOV EAX, unknown_index
-		CALL Func_RandomizeShort
-		MOV return_value, EAX
-		POPAD
-	}
-
-	return return_value;
-
-}
-
-;
-
-const u32 Func_RandBetween = 0x004DC550;
-u32 RandBetween(u32 min, u32 max, u32 someIndex) {
-
-	static u32 return_value;
-
-	__asm {
-		PUSHAD
-		PUSH max
-		MOV EAX, someIndex
-		MOV EDX, min
-		CALL Func_RandBetween
-		MOV return_value, EAX
-		POPAD
-	}
-
-	return return_value;
-
-}
-
-;
-
-const u32 Func_Sub4E65E0 = 0x004E65E0;
-void function_004E65E0(CUnit* unit, Bool32 flag) {
-
-	__asm {
-		PUSHAD
-		MOV EDI, unit
-		PUSH flag
-		CALL Func_Sub4E65E0
-		POPAD
-	}
-
-}
-
-;
-
-//Related to path/movement decision
-const u32 Func_sub_4EB290 = 0x004EB290;
-void setNextWaypoint_Sub4EB290(CUnit* unit) {
-
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_sub_4EB290
-		POPAD
-	}
-}
-
-;
-
-const u32 Func_SetMoveTarget_xy = 0x004EB820;
-bool SetMoveTarget_xy(CUnit* unit, int x, int y) {
-
-	static Bool32 bPreResult;
-
-	__asm {
-		PUSHAD
-		MOV ESI, unit
-		MOV EBX, x
-		MOV EDI, y
-		CALL Func_SetMoveTarget_xy
-		MOV bPreResult, EAX
-		POPAD
-	}
-
-	return (bPreResult != 0);
-
-}
-
-;
-
-const u32 Func__moveToTarget = 0x004EB980;
-bool orderToMoveToTarget(CUnit* unit, CUnit* target) {
-
-	static Bool32 bPreResult;
+		__asm {
+			PUSHAD
+			MOV EDX, hpGain
+			MOV EAX, unit
+			PUSH canBeAborted
+			CALL Func_buildingAddon
+			MOV bResult, EAX
+			POPAD
+		}
+
+		return bResult;
+
+	};
+
+	const u32 Func_Sub474760 = 0x00474760;
+	void function_00474760(CUnit* unit, COrder* order, u8 orderId) {
+
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			MOV EDI, order
+			MOV BL, orderId
+			CALL Func_Sub474760
+			POPAD
+		}
+
+	};
+
+	const u32 Func_Sub4749A0 = 0x004749A0;
+	void function_004749A0(CUnit* unit, COrder* order, u8 orderId) {
+
+		__asm {
+			PUSHAD
+			MOV BL, orderId
+			MOV ESI, unit
+			MOV EDI, order
+			CALL Func_Sub4749A0
+			POPAD
+		}
+
+	};
+
+	const u32 Func_RefreshLayer3And4 = 0x0048D9A0;
+	char refreshLayer3And4() {
+		static int result;
+
+		__asm {
+			PUSHAD
+			CALL Func_RefreshLayer3And4
+			MOV result, EAX
+			POPAD
+		}
+		return (char)result;
+	};
+
+	const u32 Func_Sub48DDA0 = 0x0048DDA0;
+	bool function_0048DDA0() {
+
+		Bool32 pre_return_value;
+
+		__asm {
+			PUSHAD
+			CALL Func_Sub48DDA0
+			MOV pre_return_value, EAX
+			POPAD
+		}
+
+		return (pre_return_value != 0);
+
+	};
+
+	const u32 Func_Sub48E310 = 0x0048E310;
+	void function_0048E310() {
+
+		__asm {
+			PUSHAD
+			CALL Func_Sub48E310
+			POPAD
+		}
+
+	};
+
+	const u32 Func_PlayBuildingCompleteSound = 0x0048F310;
+	void playBuildingCompleteSound(CUnit* building) {
+
+		__asm {
+			PUSHAD
+			MOV EAX, building
+			CALL Func_PlayBuildingCompleteSound
+			POPAD
+		}
+
+	};
+
+	const u32 Func_Sub494BB0 = 0x00494BB0;
+	void function_00494BB0(CUnit* unit,int x, int y) {
+
+		__asm {
+			PUSHAD
+			MOV ECX, y
+			MOV EDX, x
+			MOV EAX, unit
+			CALL Func_Sub494BB0
+			POPAD
+		}
+
+	};
+
+	const u32 Func_displayLastNetErrForPlayer = 0x0049E530;
+	void displayLastNetErrForPlayer(u32 playerId) {
+		__asm {
+			PUSHAD
+			PUSH playerId
+			CALL Func_displayLastNetErrForPlayer
+			POPAD
+		}
+	};
+
+	const u32 Func_CreateUnit = 0x004A09D0;
+	CUnit* createUnit(u32 unitId, int x, int y, u32 playerId) {
+
+		static CUnit* unit_created;
+
+		__asm {
+			PUSHAD
+			PUSH playerId
+			PUSH y
+			MOV ECX, unitId
+			MOV EAX, x
+			CALL Func_CreateUnit
+			MOV unit_created, EAX
+			POPAD
+		}
+
+		return unit_created;
+
+	};
+
+	const u32 Func_RandomizeShort = 0x004DC4A0;
+	u32 RandomizeShort(u32 unknown_index) {
+
+		static u32 return_value;
+
+		__asm {
+			PUSHAD
+			MOV EAX, unknown_index
+			CALL Func_RandomizeShort
+			MOV return_value, EAX
+			POPAD
+		}
+
+		return return_value;
+
+	};
+
+	const u32 Func_RandBetween = 0x004DC550;
+	u32 RandBetween(u32 min, u32 max, u32 someIndex) {
+
+		static u32 return_value;
+
+		__asm {
+			PUSHAD
+			PUSH max
+			MOV EAX, someIndex
+			MOV EDX, min
+			CALL Func_RandBetween
+			MOV return_value, EAX
+			POPAD
+		}
+
+		return return_value;
+
+	};
+
+	const u32 Func_Sub4E65E0 = 0x004E65E0;
+	void function_004E65E0(CUnit* unit, Bool32 flag) {
+
+		__asm {
+			PUSHAD
+			MOV EDI, unit
+			PUSH flag
+			CALL Func_Sub4E65E0
+			POPAD
+		}
+
+	};
+
+	//Related to path/movement decision
+	const u32 Func_sub_4EB290 = 0x004EB290;
+	void setNextWaypoint_Sub4EB290(CUnit* unit) {
+
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_sub_4EB290
+			POPAD
+		}
+	};
+
+	const u32 Func_SetMoveTarget_xy = 0x004EB820;
+	bool SetMoveTarget_xy(CUnit* unit, int x, int y) {
+
+		static Bool32 bPreResult;
+
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			MOV EBX, x
+			MOV EDI, y
+			CALL Func_SetMoveTarget_xy
+			MOV bPreResult, EAX
+			POPAD
+		}
+
+		return (bPreResult != 0);
+
+	};
+
+	const u32 Func__moveToTarget = 0x004EB980;
+	bool orderToMoveToTarget(CUnit* unit, CUnit* target) {
+
+		static Bool32 bPreResult;
   
-	__asm {
-		PUSHAD
-		MOV EAX, target
-		MOV ECX, unit
-		CALL Func__moveToTarget
-		MOV bPreResult, EAX
-		POPAD
+		__asm {
+			PUSHAD
+			MOV EAX, target
+			MOV ECX, unit
+			CALL Func__moveToTarget
+			MOV bPreResult, EAX
+			POPAD
+		}
+
+		return bPreResult != 0;
+
+	};
+
+	const u32 Func_Sub4EB9C0 = 0x004EB9C0;
+	bool function_004EB9C0(CUnit* unit, int x, int y) {
+
+		static Bool32 bPreResult;
+
+		__asm {
+			PUSHAD
+			MOV EDX, unit
+			MOV ECX, x
+			MOV EAX, y
+			CALL Func_Sub4EB9C0
+			MOV bPreResult, EAX
+			POPAD
+		}
+
+		return (bPreResult != 0);
+
+	};
+
+	const u32 Func_Sub4F1870 = 0x004F1870;
+	Bool32 function_004F1870(CUnit* unit, int x, int y) {
+
+		static Bool32 rValue;
+
+		__asm {
+			PUSHAD
+			PUSH y
+			PUSH x
+			MOV EAX, unit
+			CALL Func_Sub4F1870
+			MOV rValue, EAX
+			POPAD
+		}
+
+		return rValue;
+
+	};
+
+	// For updatePlacementStateForPlacementBox
+
+	const u32 Func_canBuildOnTileLocation = 0x00473FB0;
+	signed int canBuildOnTileLocation(CUnit* a1, int a2, int a3, int a4, int unitType, int a6, int a7, int a8, int a9) {
+		static signed int result;
+
+		__asm {
+			PUSHAD
+			PUSH a1
+			PUSH a2
+			PUSH a3
+			PUSH a4
+			PUSH unitType
+			PUSH a6
+			PUSH a7
+			PUSH a8
+			PUSH a9
+			CALL Func_canBuildOnTileLocation
+			MOV result, EAX
+			POPAD
+		}
+
+		return result;
+	};
+
+	// For refreshScreen
+
+	const u32 Func_updatePlacementStateForPlacementBox = 0x0048DCE0;
+	signed int updatePlacementStateForPlacementBox() {
+		static signed int result;
+
+		__asm {
+			PUSHAD
+			CALL Func_updatePlacementStateForPlacementBox
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 
-	return bPreResult != 0;
+	const u32 Func_unk_buildingPlacementRelated = 0x0048D7F0;
+	int unk_buildingPlacementRelated(int a1, int a2) {
+		static int result;
 
-}
-
-;
-
-const u32 Func_Sub4EB9C0 = 0x004EB9C0;
-bool function_004EB9C0(CUnit* unit, int x, int y) {
-
-	static Bool32 bPreResult;
-
-	__asm {
-		PUSHAD
-		MOV EDX, unit
-		MOV ECX, x
-		MOV EAX, y
-		CALL Func_Sub4EB9C0
-		MOV bPreResult, EAX
-		POPAD
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			PUSH a2
+			CALL Func_unk_buildingPlacementRelated
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 
-	return (bPreResult != 0);
+	const u32 Func_initPlacementBoxPos = 0x0048D660;
+	signed int initPlacementBoxPos(int a1, Point16* a2) {
+		static signed int result;
 
-}
-
-;
-
-const u32 Func_Sub4F1870 = 0x004F1870;
-Bool32 function_004F1870(CUnit* unit, int x, int y) {
-
-	static Bool32 rValue;
-
-	__asm {
-		PUSHAD
-		PUSH y
-		PUSH x
-		MOV EAX, unit
-		CALL Func_Sub4F1870
-		MOV rValue, EAX
-		POPAD
+		__asm {
+			PUSHAD
+			MOV ECX, a1
+			MOV EDX, a2
+			CALL Func_initPlacementBoxPos
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 
-	return rValue;
+	const u32 Func_unk_buildingPlacementRelatedMouse = 0x0048D7B0;
+	char unk_buildingPlacementRelatedMouse(int a1, int a2) {
+		static int result;
 
-}
-	
-;
-
-const u32 Func_canBuildOnTileLocation = 0x00473FB0;
-signed int canBuildOnTileLocation(CUnit* a1, int a2, int a3, int a4, int unitType, int a6, int a7, int a8, int a9) {
-	static signed int result;
-
-	__asm {
-		PUSHAD
-		PUSH a1
-		PUSH a2
-		PUSH a3
-		PUSH a4
-		PUSH unitType
-		PUSH a6
-		PUSH a7
-		PUSH a8
-		PUSH a9
-		CALL Func_canBuildOnTileLocation
-		MOV result, EAX
-		POPAD
+		__asm {
+			PUSHAD
+			MOV ECX, a1
+			MOV EDX, a2
+			CALL Func_unk_buildingPlacementRelatedMouse
+			MOV result, EAX
+			POPAD
+		}
+		return (char)result;
 	}
-
-	return result;
-}
 
 } //Unnamed namespace
 
