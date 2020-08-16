@@ -28,12 +28,8 @@ namespace hooks {
 			//00425E4E  |>  0FB781 F80500>MOVZX EAX,WORD PTR DS:[ECX+5F8]
 			0x0042607D + 2,
 			//00426083  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
+			//0042609B  |>  0FB7C0        MOVZX EAX,AX
 			//0042609E  |.  0FB74441 02   MOVZX EAX,WORD PTR DS:[ECX+EAX*2+2]
-			//
-			/*
-			0042609B  |>  0FB7C0        MOVZX EAX,AX
-			0042609E  |.  0FB74441 02   MOVZX EAX,WORD PTR DS:[ECX+EAX*2+2]
-			*/
 			0x0042614E + 2,
 			//00426154  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
 			/*
@@ -258,7 +254,6 @@ namespace hooks {
 		for (int i = 0; i < ptr_list.size(); i++) {
 			memoryPatch(ptr_list[i], (u32)&extendedTbl);
 		}
-		//TODO: FIND ALL +2 offsets
 		//TODO: REPLACE USAGE OF WORD IN REGARDS OF TBL TO DWORD
 		*/
 		//[6D1238]
