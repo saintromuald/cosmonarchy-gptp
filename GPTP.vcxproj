@@ -227,6 +227,8 @@
     <ClCompile Include="hooks\limits\tbl_extender.cpp" />
     <ClCompile Include="hooks\maxhp.cpp" />
     <ClCompile Include="hooks\maxhp_inject.cpp" />
+    <ClCompile Include="hooks\misc\hydra_specific.cpp" />
+    <ClCompile Include="hooks\misc\hydra_specific_inject.cpp" />
     <ClCompile Include="hooks\miss_chance.cpp" />
     <ClCompile Include="hooks\miss_chance_inject.cpp" />
     <ClCompile Include="hooks\orders\ai\ai_orders.cpp" />
@@ -459,6 +461,7 @@
     <ClInclude Include="hooks\limits\sfx_extender.h" />
     <ClInclude Include="hooks\limits\tbl_extender.h" />
     <ClInclude Include="hooks\maxhp.h" />
+    <ClInclude Include="hooks\misc\hydra_specific.h" />
     <ClInclude Include="hooks\miss_chance.h" />
     <ClInclude Include="hooks\orders\ai\ai_orders.h" />
     <ClInclude Include="hooks\orders\spells\recall_spell.h" />
