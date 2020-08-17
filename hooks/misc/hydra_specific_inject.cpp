@@ -51,15 +51,6 @@ namespace hooks {
             MOV ECX, topSpeed
             JMP jmp_00496385
         }
-        /*
-        
-00496377 flingy->next_speed = 0;
-0049637E ecx = topSpeed[EAX]
-00496385 flingy->top_speed = ecx;
-00496388  |.  66:8B0C45 789>MOV CX,WORD PTR DS:[EAX*2+6C9C78]
-00496390  |.  8A5D 10       MOV BL,BYTE PTR SS:[EBP+10]
-00496393  |.  66:894E 48    MOV WORD PTR DS:[ESI+48],CX
-        */
     }
     void flingySpeedPatches() {//for madrigals
         jmpPatch(getFlingyHaltDistance_94F9E_JmpWrapper, 0x00494F9E);
