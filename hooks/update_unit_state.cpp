@@ -450,7 +450,8 @@ namespace hooks {
 						scbw::getUpgradeLevel(unit->playerId, UpgradeId::TemporalBatteries)) {
 						if (unit->id != UnitId::pylon) {
 							if (!(unit->status & UnitStatus::DoodadStatesThing)) {//powered
-								u32 pylons = scbw::UnitFinder(unit->position.x - 4, unit->position.y - 4, unit->position.x + 4, unit->position.y + 4).getUnitCount(matchPylon(unit->playerId));
+								u32 pylons = scbw::UnitFinder(unit->position.x - 256, unit->position.y - 160, 
+									unit->position.x + 256, unit->position.y + 160).getUnitCount(matchPylon(unit->playerId));
 								if (pylons >= 2) {
 									unit->shields += 3;
 								}
