@@ -1,6 +1,6 @@
 //
 #include "hooks/misc/hydra_specific.h"
-
+#include "globals.h"
 namespace hooks {
     const u32 jmp_00494FC3 = 0x00494FC3;
     const u32 jmp_00494FAC = 0x00494FAC;
@@ -46,15 +46,35 @@ namespace hooks {
             PUSHAD
         }
         topSpeed = hooks::realTopSpeed(flingy, flingy_id);
+        Globals.flingy_init_bullet_id = -1;
         __asm {
             POPAD
             MOV ECX, topSpeed
             JMP jmp_00496385
         }
     }
+    const u32 jmp_8BEDE = 0x0048BEDE;
+    void __declspec(naked) initializeBullet_8BED7_JmpWrapper() {
+        static u32 weapon_id;
+        static u32 player_id;
+        static u32 result;
+        __asm {
+            MOV weapon_id,EAX
+            MOV player_id,EBX
+            PUSHAD
+        }
+        result = weapon_flingy(weapon_id, player_id);
+        __asm {
+            POPAD
+            MOV EAX, result
+            JMP jmp_8BEDE;
+        }
+    }
+
     void flingySpeedPatches() {//for madrigals
         jmpPatch(getFlingyHaltDistance_94F9E_JmpWrapper, 0x00494F9E);
         jmpPatch(initializeFlingy_96377_JmpWrapper, 0x00496377, 2);
+        jmpPatch(initializeBullet_8BED7_JmpWrapper, 0x0048BED7, 2);
     }
 
     const u32 jmp_004295F8 = 0x004295F8;
@@ -87,7 +107,7 @@ namespace hooks {
     }
     void injectHydraSpecific() {
         flingySpeedPatches();
-        archonHardcodePatches();
+        //archonHardcodePatches();
     }
 }
 
