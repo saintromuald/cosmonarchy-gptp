@@ -26,6 +26,9 @@ public:
 	u32 extended_sfx;
 	bool tbl_extender;
 	//non-serializable data (exists only temporarily in memory in wrapper/hook flow)
+	int flingy_init_bullet_id;
+	u8 flingy_init_player_id;
+	//
 
 	SaveState aise_save();
 	void aise_load(const char* ptr, u32 len);
@@ -33,6 +36,7 @@ public:
 		extended_unit_table = 0;
 		extended_sfx = 0;
 		tbl_extender = false;
+		//
 	}
 };
 
