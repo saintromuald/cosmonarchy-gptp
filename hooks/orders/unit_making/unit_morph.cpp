@@ -131,14 +131,14 @@ namespace hooks {
 	;
 
 	void orders_Morph1(CUnit* unit) {
-		scbw::printText("Morph...");
+		//scbw::printText("Morph...");
 		if (unit->mainOrderState == 0) {
 
 			if (scbw::isConventionalUnitMorphSource(unit->id,true)
 				
 				)
 			{
-				scbw::printText("Is Conventional");
+				//scbw::printText("Is Conventional");
 				if (!hasSuppliesForUnit(
 					unit->buildQueue[unit->buildQueueSlot],
 					unit->playerId,
@@ -150,7 +150,7 @@ namespace hooks {
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 				else {
-					scbw::printText("Setup egg");
+					//scbw::printText("Setup egg");
 					bool bStopThere = false;
 					u16 eggId;
 
@@ -195,10 +195,10 @@ namespace hooks {
 						
 						break;
 					}
-					scbw::printFormattedText("Stop status: %d", (int)bStopThere);
+					//scbw::printFormattedText("Stop status: %d", (int)bStopThere);
 					if (!bStopThere) {
 						if (unit->id == UnitId::ProtossHighTemplar) {
-							scbw::printText("Augur morph");
+							//scbw::printText("Augur morph");
 							replaceUnitWithType(unit, UnitId::ProtossAugur);
 							unit->sprite->flags &= ~CSprite_Flags::IscriptCode;
 							if(unit->sprite->images.head != NULL) {
