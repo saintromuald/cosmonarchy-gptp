@@ -180,6 +180,7 @@ namespace hooks {
 			MOV EAX, hp
 			JMP jmp
 		}
+	}
 
 	void _declspec(naked) unkWireRandomDraw567C0_Wrapper() {
 		const u32 jmp = 0x004567EE;
