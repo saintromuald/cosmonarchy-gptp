@@ -521,6 +521,8 @@ enum Enum {
 	Maelstrom_Hit = 514,
 	Uraj = 515,
 	Khalis = 516,
-	None = 517
+	None = 517,
+
+	MadrigalMissile2 = 549,
 };
 }

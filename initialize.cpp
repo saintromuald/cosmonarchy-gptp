@@ -92,6 +92,7 @@
 #include "hooks/economic_units.h"
 #include "hooks/limits/extender.h"
 #include "hooks/build_time.h"
+#include "hooks/misc/hydra_specific.h"
 //#include "AI/spellcasting.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
@@ -186,6 +187,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 //	const u8 retn = 0xc3;
 //	memoryPatch(0x004AAF23 + 5, &retn, 1);
 	injectGlobalsHooks();
+	hooks::injectHydraSpecific();
 	//hooks::injectLimitHooks();
 	//
 

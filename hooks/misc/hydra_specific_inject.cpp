@@ -7,13 +7,13 @@ namespace hooks {
     void __declspec(naked) getFlingyHaltDistance_94F9E_JmpWrapper() {
         //patched 2 instructions before 94fa3 to avoid aise extender conflict
         static u32 current_speed;
-        static u32 flingy_id;
+        static u16 flingy_id;
         static CFlingy* flingy;
         __asm {
             MOVZX EDX, [ECX + 0x24]
             PUSH ESI
             MOV current_speed, EAX
-            MOV flingy_id, EDX
+            MOV flingy_id, DX
             MOV flingy, ECX
             PUSHAD
         }
@@ -37,7 +37,10 @@ namespace hooks {
         static u32 flingy_id;
         static CFlingy* flingy;
         __asm {
-            MOV[ESI + 0x3C], 0
+            PUSH EBX
+            XOR EBX,EBX
+            MOV[ESI + 0x3C],EBX
+            POP EBX
             MOV flingy_id, EAX
             MOV flingy, ESI
             PUSHAD
@@ -51,7 +54,7 @@ namespace hooks {
     }
     void flingySpeedPatches() {//for madrigals
         jmpPatch(getFlingyHaltDistance_94F9E_JmpWrapper, 0x00494F9E);
-        jmpPatch(initializeFlingy_96377_JmpWrapper, 0x00494F9E, 2);
+        jmpPatch(initializeFlingy_96377_JmpWrapper, 0x00496377, 2);
     }
 
     const u32 jmp_004295F8 = 0x004295F8;
