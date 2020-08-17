@@ -21,9 +21,12 @@ struct SaveState {
 class globals {
 	std::string output;
 public:
+	//serializable data
 	u32 extended_unit_table;
 	u32 extended_sfx;
 	bool tbl_extender;
+	//non-serializable data (exists only temporarily in memory in wrapper/hook flow)
+
 	SaveState aise_save();
 	void aise_load(const char* ptr, u32 len);
 	globals() {
