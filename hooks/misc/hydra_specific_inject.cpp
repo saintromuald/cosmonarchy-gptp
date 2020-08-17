@@ -2,39 +2,27 @@
 #include "hooks/misc/hydra_specific.h"
 #include "globals.h"
 namespace hooks {
-    const u32 jmp_00494FC3 = 0x00494FC3;
-    const u32 jmp_00494FAC = 0x00494FAC;
-    void __declspec(naked) getFlingyHaltDistance_94F9E_JmpWrapper() {
-        //patched 2 instructions before 94fa3 to avoid aise extender conflict
-        static u32 current_speed;
-        static u16 flingy_id;
+
+    void __declspec(naked) getFlingyHaltDistanceHookWrapper() {
         static CFlingy* flingy;
+        static u32 result;
         __asm {
-            MOVZX EDX, [ECX + 0x24]
-            PUSH ESI
-            MOV current_speed, EAX
-            MOV flingy_id, DX
-            MOV flingy, ECX
+            MOV flingy,ECX
             PUSHAD
         }
-        if (hooks::realTopSpeed(flingy, flingy_id) != current_speed) {
-            __asm {
-                POPAD
-                JMP jmp_00494FC3
-            }
-        }
-        else {
-            __asm {
-                POPAD
-                JMP jmp_00494FAC
-            }
+        result = hooks::getFlingyHaltDistance(flingy);
+        __asm {
+            POPAD
+            MOV EAX,result
+            RETN
         }
     }
 
-    const u32 jmp_00496385 = 0x00496385;
+    const u32 jmp_00496390 = 0x00496390;
     void __declspec(naked) initializeFlingy_96377_JmpWrapper() {
         static u32 topSpeed;
         static u32 flingy_id;
+        static u16 acceleration;
         static CFlingy* flingy;
         __asm {
             PUSH EBX
@@ -46,11 +34,14 @@ namespace hooks {
             PUSHAD
         }
         topSpeed = hooks::realTopSpeed(flingy, flingy_id);
+        acceleration = hooks::realAcceleration(flingy, flingy_id);
         Globals.flingy_init_bullet_id = -1;
         __asm {
             POPAD
             MOV ECX, topSpeed
-            JMP jmp_00496385
+            MOV [ESI+0x34], ECX
+            MOV CX, acceleration
+            JMP jmp_00496390
         }
     }
     const u32 jmp_8BEDE = 0x0048BEDE;
@@ -72,7 +63,7 @@ namespace hooks {
     }
 
     void flingySpeedPatches() {//for madrigals
-        jmpPatch(getFlingyHaltDistance_94F9E_JmpWrapper, 0x00494F9E);
+        jmpPatch(getFlingyHaltDistanceHookWrapper, 0x00494F90);
         jmpPatch(initializeFlingy_96377_JmpWrapper, 0x00496377, 2);
         jmpPatch(initializeBullet_8BED7_JmpWrapper, 0x0048BED7, 2);
     }
