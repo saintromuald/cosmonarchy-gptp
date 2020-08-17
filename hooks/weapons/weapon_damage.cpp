@@ -332,9 +332,10 @@ namespace hooks {
 				scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::AdrenalTimer, 49, 0); //49 is 2 seconds (48) + 1
 			}
 			if (weaponId == 22 && attacker != NULL) {			
-				if (scbw::get_aise_value(target, NULL, AiseId::GenericTimer, ValueId::DirgeImpale, 0) == 0) {
+				/*if (scbw::get_aise_value(target, NULL, AiseId::GenericTimer, ValueId::DirgeImpale, 0) == 0) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::DirgeImpale, 24 + 1, 0);
-				}
+				}*/
+				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::DirgeImpale, 24, 0, 0);
 				scbw::sendGPTP_aise_cmd(target, attacker, GptpId::SetGenericUnit, ValueId::DirgeAttacker, 0, 0);
 			}
 

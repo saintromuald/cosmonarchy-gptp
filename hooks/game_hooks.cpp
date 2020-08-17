@@ -438,13 +438,14 @@ namespace hooks {
 				}
 				*/
 
-				// Devourer - Critical Mass
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DirgeImpale, 0) == 1) {
+				// Madrigal Impale
+				/*if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DirgeImpale, 0) == 1) {
 					auto attacker = scbw::get_generic_unit(unit,ValueId::DirgeAttacker);
 					if (attacker != NULL) {
 						scbw::createBullet(123, attacker, unit->getX(), unit->getY(), attacker->playerId, 0);
 					}
-				}
+				}*/
+				// Devourer - Critical Mass
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::CorrosiveSporeDelay, 0)==1) {
 					int count = unit->acidSporeCount;
 					unit->acidSporeCount -= 2;
