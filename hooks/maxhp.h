@@ -2,5 +2,6 @@
 
 namespace hooks {
 	void injectMaxHpHooks();
-	int maxhp(int id, int playerId);
+	u32 maxhp(int id, int playerId);
+	u32 maxshields(int id, int playerId);
 }
