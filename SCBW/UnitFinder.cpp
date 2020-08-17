@@ -18,6 +18,14 @@ int UnitFinder::getUnitCount() const {
   return this->unitCount;
 }
 
+int UnitFinder::getUnitCount(UnitFinderCallbackMatchInterface& callback) const {
+    int count = 0;
+    for (CUnit* unit : units) {
+        if (callback.match(unit)) count++;
+    }
+    return count;
+}
+
 CUnit* UnitFinder::getUnit(int index) const {
   if (0 <= index && index <= this->unitCount)
     return this->units[index];

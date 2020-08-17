@@ -58,6 +58,7 @@ class UnitFinder {
     /// Returns the number of units found by UnitFinder::search() call.
     /// If no searches have been conducted, returns 0.
     int getUnitCount() const;
+    int UnitFinder::getUnitCount(UnitFinderCallbackMatchInterface& matchInterface) const;
 
     /// Returns the unit at the given index. Invalid index returns NULL instead.
     CUnit* getUnit(int index) const;

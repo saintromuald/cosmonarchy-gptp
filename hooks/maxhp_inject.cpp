@@ -2,8 +2,8 @@
 #include "SCBW\api.h"
 
 namespace hooks {
+	const u32 jmp_0x0040140B = 0x0040140B;
 	void __declspec(naked) getMaxHpWrapper() {
-		const u32 jmp = 0x0040140B;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -16,12 +16,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, hp
-			JMP jmp
+			JMP jmp_0x0040140B
 		}
 	}
 
+	const u32 jmp_0x0040227B = 0x0040227B;
 	void __declspec(naked) isOnYellowHealthWrapper() {
-		const u32 jmp = 0x0040227B;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -34,12 +34,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, hp
-			JMP jmp
+			JMP jmp_0x0040227B
 		}
 	}
 
+	const u32 jmp_0x004022CB = 0x004022CB;
 	void _declspec(naked) isOnBurningHealthWrapper() {
-		const u32 jmp = 0x004022CB;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -52,12 +52,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, hp
-			JMP jmp
+			JMP jmp_0x004022CB
 		}
 	}
 
+	const u32 jmp_0x00402731 = 0x00402731;
 	void _declspec(naked) getMaxHealthWrapper() {
-		const u32 jmp = 0x00402731;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -70,12 +70,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, hp
-			JMP jmp
+			JMP jmp_0x00402731
 		}
 	}
 
+	const u32 jmp_0x004263F7 = 0x004263F7;
 	void _declspec(naked) ssDrawHpEnergyWrapper() {
-		const u32 jmp = 0x004263F7;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -88,12 +88,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, hp
-			JMP jmp
+			JMP jmp_0x004263F7
 		}
 	}
 
+	const u32 jmp_0x00431291 = 0x00431291;
 	void _declspec(naked) calculateBaseStrengthWrapper() {
-		const u32 jmp = 0x00431291;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -106,12 +106,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, hp
-			JMP jmp
+			JMP jmp_0x00431291
 		}
 	}
 
+	const u32 jmp_0x00433CBA = 0x00433CBA;
 	void _declspec(naked) aiRepairSomethingWrapper() {
-		const u32 jmp = 0x00433CBA;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -124,13 +124,13 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, hp
-			JMP jmp
+			JMP jmp_0x00433CBA
 		}
 	}
 
+	const u32 jmp_0x00440037 = 0x00440037;
 	void _declspec(naked) aiStimIfNeededWrapper() {
-		const u32 jmp = 0x00440037;
-		static u32 id;
+		static u16 id;
 		static CUnit* unit;
 		static u32 hp;
 		__asm {
@@ -142,12 +142,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, hp
-			JMP jmp
+			JMP jmp_0x00440037
 		}
 	}
 
+	const u32 jmp_0x0045673B = 0x0045673B;
 	void _declspec(naked) unkWireRandomDraw56730_Wrapper() {
-		const u32 jmp = 0x0045673B;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -160,30 +160,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, hp
-			JMP jmp
+			JMP jmp_0x0045673B
 		}
 	}
 
-	void _declspec(naked) unkWireRandomDraw56730_Wrapper() {
-		const u32 jmp = 0x0045673B;
-		static u32 id;
-		static CUnit* unit;
-		static u32 hp;
-		__asm {
-			MOV id, EAX
-			MOV unit, ECX
-			PUSHAD
-		}
-		hp = maxhp(id, unit->playerId);
-		__asm {
-			POPAD
-			MOV EAX, hp
-			JMP jmp
-		}
-	}
-
+	const u32 jmp_0x004567EE = 0x004567EE;
 	void _declspec(naked) unkWireRandomDraw567C0_Wrapper() {
-		const u32 jmp = 0x004567EE;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -196,12 +178,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, hp
-			JMP jmp
+			JMP jmp_0x004567EE
 		}
 	}
 
+	const u32 jmp_0x00463CCF = 0x00463CCF;
 	void _declspec(naked) doMedicWrapper() {
-		const u32 jmp = 0x00463CCF;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -214,12 +196,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EDX, hp
-			JMP jmp
+			JMP jmp_0x00463CCF
 		}
 	}
 
+	const u32 jmp_0x00466D73 = 0x00466D73;
 	void _declspec(naked) getRepairInfoWrapper() {
-		const u32 jmp = 0x00466D73;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -232,12 +214,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EDI, hp
-			JMP jmp
+			JMP jmp_0x00466D73
 		}
 	}
 
+	const u32 jmp_0x00467351 = 0x00467351;
 	void _declspec(naked) setHpWrapper() {
-		const u32 jmp = 0x00466D73;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -250,30 +232,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, hp
-			JMP jmp
+			JMP jmp_0x00467351
 		}
 	}
 
-	void _declspec(naked) setHpWrapper() {
-		const u32 jmp = 0x00466D73;
-		static u32 id;
-		static CUnit* unit;
-		static u32 hp;
-		__asm {
-			MOV id, EAX
-			MOV unit, ESI
-			PUSHAD
-		}
-		hp = maxhp(id, unit->playerId);
-		__asm {
-			POPAD
-			MOV EAX, hp
-			JMP jmp
-		}
-	}
-
+	const u32 jmp_0x0047A87E = 0x0047A87E;
 	void _declspec(naked) DrawImage_HpBar_Wrapper() {
-		const u32 jmp = 0x0047A87E;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -286,12 +250,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, hp
-			JMP jmp
+			JMP jmp_0x0047A87E
 		}
 	}
 
+	const u32 jmp_0x0047A90D = 0x0047A90D;
 	void _declspec(naked) DrawImage_HpBar_Wrapper2() {
-		const u32 jmp = 0x0047A90D;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -304,12 +268,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, hp
-			JMP jmp
+			JMP jmp_0x0047A90D
 		}
 	}
 
+	const u32 jmp_0x0047A913 = 0x0047A913;
 	void _declspec(naked) setBuildHpWrapper() {
-		const u32 jmp = 0x0047A913;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -322,12 +286,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV ECX, hp
-			JMP jmp
+			JMP jmp_0x0047A913
 		}
 	}
 
+	const u32 jmp_0x0047C814 = 0x0047C814;
 	void _declspec(naked) orderFollowWrapper() {
-		const u32 jmp = 0x0047C814;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -340,12 +304,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, hp
-			JMP jmp
+			JMP jmp_0x0047C814
 		}
 	}
 
+	const u32 jmp_0x0048AD44 = 0x0048AD44;
 	void _declspec(naked) getUnitBulletDamageWrapper() {
-		const u32 jmp = 0x0048AD44;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -358,12 +322,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, hp
-			JMP jmp
+			JMP jmp_0x0048AD44
 		}
 	}
 
+	const u32 jmp_0x0049ECC6 = 0x0049ECC6;
 	void _declspec(naked) showFinishedUnitWrapper() {
-		const u32 jmp = 0x0049ECC6;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -376,12 +340,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EDX, hp
-			JMP jmp
+			JMP jmp_0x0049ECC6
 		}
 	}
 
+	const u32 jmp_0x0049F22F = 0x0049F22F;
 	void _declspec(naked) transformUnit_Main_Wrapper() {
-		const u32 jmp = 0x0049F22F;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -394,12 +358,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, hp
-			JMP jmp
+			JMP jmp_0x0049F22F
 		}
 	}
 
+	const u32 jmp_0x0049F242 = 0x0049F242;
 	void _declspec(naked) transformUnit_Main_Wrapper2() {
-		const u32 jmp = 0x0049F242;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -412,12 +376,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV ECX, hp
-			JMP jmp
+			JMP jmp_0x0049F242
 		}
 	}
 
+	const u32 jmp_0x004A019E = 0x004A019E;
 	void _declspec(naked) unk_ai_subunit_Destructor_Wrapper() {
-		const u32 jmp = 0x004A019E;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -430,12 +394,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EDX, hp
-			JMP jmp
+			JMP jmp_0x004A019E
 		}
 	}
 
+	const u32 jmp_0x004A020A = 0x004A020A;
 	void _declspec(naked) updateUnitStatsFinishBuilding_Wrapper() {
-		const u32 jmp = 0x004A020A;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -448,12 +412,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV ECX, hp
-			JMP jmp
+			JMP jmp_0x004A020A
 		}
 	}
 
+	const u32 jmp_0x004C7B84 = 0x004C7B84;
 	void _declspec(naked) modifyUnitHp_Wrapper() {
-		const u32 jmp = 0x004C7B84;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -466,12 +430,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV ECX, hp
-			JMP jmp
+			JMP jmp_0x004C7B84
 		}
 	}
 
+	const u32 jmp_0x004E609D = 0x004E609D;
 	void _declspec(naked) updateUnitDamageOverlay_Wrapper() {
-		const u32 jmp = 0x004E609D;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -484,13 +448,13 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EDI, hp
-			JMP jmp
+			JMP jmp_0x004E609D
 		}
 	}
 
+	const u32 jmp_0x004E6F8F = 0x004E6F8F;
 	void _declspec(naked) ai_findTransport_Wrapper() {
-		const u32 jmp = 0x004E6F8F;
-		static u32 id;
+		static u16 id;
 		static CUnit* unit;
 		static u32 hp;
 		__asm {
@@ -502,30 +466,12 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, hp
-			JMP jmp
+			JMP jmp_0x004E6F8F
 		}
 	}
 
-	void _declspec(naked) ai_findTransport_Wrapper() {
-		const u32 jmp = 0x004E6F8F;
-		static u32 id;
-		static CUnit* unit;
-		static u32 hp;
-		__asm {
-			MOV id, AX
-			MOV unit, ESI
-			PUSHAD
-		}
-		hp = maxhp(id, unit->playerId);
-		__asm {
-			POPAD
-			MOV EAX, hp
-			JMP jmp
-		}
-	}
-
+	const u32 jmp_0x004F61EE = 0x004F61EE;
 	void _declspec(naked) ConvertToHallucination_Wrapper() {
-		const u32 jmp = 0x004F61EE;
 		static u32 id;
 		static CUnit* unit;
 		static u32 hp;
@@ -538,7 +484,7 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV ECX, hp
-			JMP jmp
+			JMP jmp_0x004F61EE
 		}
 	}
 

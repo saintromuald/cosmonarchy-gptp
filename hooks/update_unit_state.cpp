@@ -235,6 +235,23 @@ namespace hooks {
 	}
 	;
 
+	class matchPylon : public scbw::UnitFinderCallbackMatchInterface {
+		u8 _playerId;
+	public:
+		matchPylon(u8 playerId) {
+			playerId = _playerId;
+		}
+
+		bool match(CUnit* unit) {
+			if (unit->playerId == _playerId
+				&& unit->id == UnitId::pylon
+				&& unit->status & UnitStatus::Completed) {
+				return true;
+			}
+			return false;
+		}
+	};
+
 
 	/// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
 	/// Identical to function @ 0x004EC290
@@ -433,22 +450,8 @@ namespace hooks {
 						scbw::getUpgradeLevel(unit->playerId, UpgradeId::TemporalBatteries)) {
 						if (unit->id != UnitId::pylon) {
 							if (!(unit->status & UnitStatus::DoodadStatesThing)) {//powered
-								u32 pylons = 0;
-								for (CUnit* u = *firstVisibleUnit; u; u = u->link.next) {
-									if (unit->playerId == u->playerId) {
-										if (u->id == UnitId::pylon &&
-											u->status & UnitStatus::Completed) {
-											u32 x_tile_dist = abs((int)u->position.x - (int)unit->position.x) / 32;
-											u32 y_tile_dist = abs((int)u->position.y - (int)unit->position.y) / 32;
-											if (x_tile_dist <= 8 && y_tile_dist <= 5) {
-												pylons++;
-											}
-										}
-									}
-									if (pylons >= 2) {
-										break;
-									}
-								}
+								u32 pylons = scbw::UnitFinder(unit->position.x - 256, unit->position.y - 160, 
+									unit->position.x + 256, unit->position.y + 160).getUnitCount(matchPylon(unit->playerId));
 								if (pylons >= 2) {
 									unit->shields += 3;
 								}
