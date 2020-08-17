@@ -138,6 +138,8 @@ enum Enum {
 
 	UppercutLaser							  = 5,			// Southpaw weapon
 	CrusaderMissiles						  = 10,			// Paladin weapon
+	FuriaMissiles							  = 21,			// Madrigal weapon 1
+	ImperiosoMissiles						  = 22,			// Madrigal weapon 2
 	SerratedCleavers						  = 47,			// Gorgoleth weapon
 	EssenceDrain							  = 51,			// Gorgoleth ability
 	AugurWeapon								  = 75,			// Augur weapon
