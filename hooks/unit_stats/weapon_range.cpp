@@ -17,8 +17,8 @@ u8 getSeekRangeHook(CUnit* unit) {
 	//Cloaked ghosts do not voluntarily attack enemy units
 	if 
 	(
-		(		unitId == UnitId::ghost
-			 || unitId == UnitId::sarah_kerrigan
+		(		unitId == UnitId::TerranGhost
+			 || unitId == UnitId::Hero_SarahKerrigan
 			 || unitId == UnitId::Hero_AlexeiStukov
 			 || unitId == UnitId::Hero_SamirDuran
 			 || unitId == UnitId::Hero_InfestedDuran
@@ -117,7 +117,7 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 
 	switch (unit->id) {
 
-		case UnitId::Powerup_KhalisCrystal://basilisk
+		case UnitId::ZergBasilisk:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::CorrosiveDispersion)) {
 				ActiveTile tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
 				if (tile.hasCreep || tile.creepReceeding) {
@@ -125,42 +125,40 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 				}
 			}
 			break;
-		case UnitId::marine:
+		case UnitId::TerranMarine:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::U238Shells))
 				bonusAmount += 32;
 			break;
-		case UnitId::hydralisk:
+		case UnitId::ZergHydralisk:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::GroovedSpines))
 				bonusAmount += 32;
 			break;
-		case UnitId::missile_turret:
+		case UnitId::TerranMissileTurret:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SequesterPods))
 				bonusAmount += 32;
 			break;
-		case UnitId::dragoon:
+		case UnitId::ProtossDragoon:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SingularityCharge))
 				bonusAmount += 64;
 			break;
 
-		case UnitId::tassadar_zeratul://hierophant
+		case UnitId::ProtossHierophant:
 			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SingularityCharge))
 				bonusAmount += 32;
 			break;
-		case UnitId::fenix_dragoon:
+		case UnitId::Hero_FenixDragoon:
 			if (scbw::isBroodWarMode())
 				bonusAmount += 64;
 			break;
-		case UnitId::goliath:
-		case UnitId::goliath_turret:
+		case UnitId::TerranGoliath:
+		case UnitId::TerranGoliathTurret:
 			if (weaponId == WeaponId::HellfireMissilePack
 					&& scbw::getUpgradeLevel(unit->playerId, UpgradeId::CharonBooster))
 				bonusAmount += 96;
 			break;
-		case UnitId::alan_schezar:
-		case UnitId::alan_schezar_turret:
-			if (weaponId == WeaponId::HellfireMissilePack_AlanSchezar
-					&& scbw::isBroodWarMode())
-				bonusAmount += 96;
+		case UnitId::TerranSouthpaw:
+			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::HaymakerBattery))
+				bonusAmount += 32;
 			break;
 	}
 
