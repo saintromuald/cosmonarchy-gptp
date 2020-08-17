@@ -14,7 +14,7 @@ namespace hooks {
 
 	u32 maxshields(int id, int playerId) {
 		u32 result = units_dat::MaxShieldPoints[id];
-		if (scbw::getUpgradeLevel(playerId, UpgradeId::Autovitality)) {
+		if (scbw::getUpgradeLevel(playerId, UpgradeId::Autovitality) && units_dat::BaseProperty[id] & UnitProperty::RoboticUnit) {
 			result += result / 2;
 		}
 		return result;
