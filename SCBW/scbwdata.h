@@ -235,6 +235,10 @@ SCBW_DATA(		u32*,			buildingScore,			    0x00582024); // Array of 12
 SCBW_DATA(		u32*,			unitsOwned,					0x00581E44); // Array of 12
 SCBW_DATA(		u32*,			buildingsOwned,				0x00582024); // Array of 12
 
+// For refreshScreen
+SCBW_DATA(		u32*,			placeBuildingMessageId,		0x00640958);
+SCBW_DATA(		u16*,			placeBuildingUnitId,		0x0064088A);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data

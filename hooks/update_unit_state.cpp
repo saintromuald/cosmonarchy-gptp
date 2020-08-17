@@ -583,9 +583,7 @@ namespace hooks {
 
 		} //if (unit->status & UnitStatus::Completed) {
 
-	}
-
-	;
+	};
 
 	void incrementUnitScoresEx(int count, CUnit* unit, int increment_scores /*int updateMorphMergeUnitScore*/) { // 0x00488D50
 		if (unit->status & UnitStatus::IsHallucination) {
