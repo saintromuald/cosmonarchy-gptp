@@ -638,7 +638,8 @@ namespace hooks {
 					unit->setSupplyProvided((7 + nexusCount) * 2);
 				}
 				
-				if (unit->id == UnitId::TerranTreasury) {
+				if (unit->id == UnitId::TerranTreasury
+					&& (unit->status & UnitStatus::Completed)) {
 					Point16 pos = unit->position;
 					int radius = (8 * 32) / 2;
 					scbw::UnitFinder(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius).forEach(treasuryProc(unit->playerId));
