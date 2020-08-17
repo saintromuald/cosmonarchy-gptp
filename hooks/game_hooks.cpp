@@ -324,8 +324,10 @@ public:
 	void proc(CUnit* unit) {
 		if (units_dat::SupplyProvided[unit->id] == 0) return;
 		if (unit->playerId != _playerId && !scbw::isAlliedTo(_playerId, unit->playerId)) return;
+		if (!(unit->status & UnitStatus::Completed)) return;
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::TreasuryStacks, 1, 0);
-		unit->setSupplyProvided(8 + scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TreasuryStacks, 0));
+		int supply = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SupplyProvidedValue, 0);
+		unit->setSupplyProvided(supply + 2);
 	}
 };
 
@@ -386,7 +388,10 @@ namespace hooks {
 
 			// Reset Treasury Stacks, before unit loop
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
+				int supply = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SupplyProvidedValue, 0);
+				int stacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TreasuryStacks, 0);
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::TreasuryStacks, 0, 0);
+				unit->setSupplyProvided(supply - stacks * 2);
 			}
 
 			// Loop through all visible units in the game.
@@ -627,12 +632,14 @@ namespace hooks {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::KnockoutDriversValue, 0, 0);
 				}
 
-				if (unit->id == UnitId::ProtossPylon) {
+				if (unit->id == UnitId::ProtossPylon
+					&& (unit->status & UnitStatus::Completed)) {
 					u32 nexusCount = unitCountTable[UnitId::ProtossNexus].player[unit->playerId];
-					unit->setSupplyProvided(7 + nexusCount);
+					unit->setSupplyProvided((7 + nexusCount) * 2);
 				}
 				
-				if (unit->id == UnitId::TerranTreasury) {
+				if (unit->id == UnitId::TerranTreasury
+					&& (unit->status & UnitStatus::Completed)) {
 					Point16 pos = unit->position;
 					int radius = (8 * 32) / 2;
 					scbw::UnitFinder(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius).forEach(treasuryProc(unit->playerId));
