@@ -75,6 +75,7 @@ std::istream& operator>>(std::istream& stream, T const** arr) {
 			arr[i][j++] = *(T*)&str;
 		} while (str != "");
 		i++;
+		j = 0;
 	} while (str != "");
 	return stream;
 }
