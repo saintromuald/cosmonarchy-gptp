@@ -523,8 +523,6 @@ enum Enum {
 	Khalis = 516,
 	None = 517,
 
-	// HYDRA \\
-
 	MadrigalMissile2 = 549,
 };
 }

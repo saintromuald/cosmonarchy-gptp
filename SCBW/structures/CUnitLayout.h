@@ -77,7 +77,7 @@ namespace GptpId {
 		SetMatrixCaster,
 		SetSublimeShepherd,
 		SetGenericUnit,
-
+		DirgeImpale,
 
 		Void = 10005,
 	};
@@ -181,7 +181,7 @@ namespace ValueId {
 		HallucinationPointer						= 44,
 
 		TempoChange = 45,
-		DirgeImpale = 46,
+//		DirgeImpale_Unused = 46,
 		DirgeAttacker = 47,
 		EggBoostTimer = 48,
 		RemainingBuildTimeCopy = 49,

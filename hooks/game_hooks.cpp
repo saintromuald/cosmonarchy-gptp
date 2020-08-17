@@ -438,13 +438,14 @@ namespace hooks {
 				}
 				*/
 
-				// Devourer - Critical Mass
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DirgeImpale, 0) == 1) {
+				// Madrigal Impale
+				/*if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DirgeImpale, 0) == 1) {
 					auto attacker = scbw::get_generic_unit(unit,ValueId::DirgeAttacker);
 					if (attacker != NULL) {
 						scbw::createBullet(123, attacker, unit->getX(), unit->getY(), attacker->playerId, 0);
 					}
-				}
+				}*/
+				// Devourer - Critical Mass
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::CorrosiveSporeDelay, 0)==1) {
 					int count = unit->acidSporeCount;
 					unit->acidSporeCount -= 2;
@@ -638,7 +639,8 @@ namespace hooks {
 					unit->setSupplyProvided((7 + nexusCount) * 2);
 				}
 				
-				if (unit->id == UnitId::TerranTreasury) {
+				if (unit->id == UnitId::TerranTreasury
+					&& (unit->status & UnitStatus::Completed)) {
 					Point16 pos = unit->position;
 					int radius = (9 * 32) / 2;
 					scbw::UnitFinder(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius).forEach(treasuryProc(unit->playerId));
