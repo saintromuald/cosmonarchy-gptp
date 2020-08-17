@@ -598,12 +598,13 @@ bool isZergEgg(u16 id, bool allow_normal_eggs, bool allow_larvae) {
 }
 bool isConventionalUnitMorphResult(u16 id) {
 	switch (id) {
+	case UnitId::ZergKeskathalor:
 	case UnitId::ZergGuardian:
 	case UnitId::ZergDevourer:
-	case UnitId::ZergLurker:
+	case UnitId::ZergGorgoleth:
 	case UnitId::ZergVorvaling:
 	case UnitId::ZergBasilisk:
-	case UnitId::ZergKeskathalor:
+	case UnitId::ZergLurker:
 	case UnitId::ZergIroleth:
 	case UnitId::ZergOthstoleth:
 	case UnitId::ProtossAugur:
@@ -629,12 +630,12 @@ bool isAnyMorphMorphResult(u16 id) {
 }
 bool isConventionalUnitMorphSource(u16 id, bool allow_larvae) {
 	switch (id) {
+	case UnitId::ZergUltralisk:
 	case UnitId::ZergMutalisk:
 	case UnitId::ZergHydralisk:
 	case UnitId::ZergZergling:
-	case UnitId::ZergUltralisk:
-	case UnitId::ZergOverlord:
 	case UnitId::ZergIroleth:
+	case UnitId::ZergOverlord:
 	case UnitId::ProtossHighTemplar:
 		return true;
 	default:
@@ -650,6 +651,7 @@ bool isZergBuildingMorphResult(u16 id){
 	case UnitId::ZergSire:
 	case UnitId::ZergHive:
 	case UnitId::ZergLair:
+	case UnitId::ZergKeskathCavern:
 	case UnitId::ZergGuardianRoost:
 	case UnitId::ZergDevourerHaunt:
 	case UnitId::ZergGorgolethApiary:
@@ -657,6 +659,7 @@ bool isZergBuildingMorphResult(u16 id){
 	case UnitId::ZergSunkenColony:
 	case UnitId::ZergChasmalColony:
 	case UnitId::ZergBasiliskDen:
+	case UnitId::ZergLurkerDen:
 	case UnitId::ZergVorvalPond:
 	case UnitId::ZergIrolethQuay:
 	case UnitId::ZergOthstolethBerth:
@@ -671,6 +674,7 @@ bool isZergBuildingMorphSource(u16 id){
 	case UnitId::ZergHive:
 	case UnitId::ZergLair:
 	case UnitId::ZergHatchery:
+	case UnitId::ZergUltraliskCavern:
 	case UnitId::ZergSpire:
 	case UnitId::ZergCreepColony:
 	case UnitId::ZergHydraliskDen:
