@@ -22,7 +22,7 @@ std::ostream& operator<<(std::ostream& stream, T arr[][]) {
 		for (int j = 0; j < LENGTH(arr[i]); j++) {
 			stream << arr[i][j] << "\0";
 		}
-		stream << arr[i][j] << "\0";
+		stream << "\0";
 	}
 	stream << "\0";
 	return stream;
