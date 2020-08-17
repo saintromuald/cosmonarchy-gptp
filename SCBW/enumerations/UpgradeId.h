@@ -134,7 +134,7 @@ namespace UpgradeId {
 		RequiemAfterburners = 125,		// Madrigal missile speed
 		HammerfallShells = 126,			// Siege Tank splash radius
 		SunchaserMissiles = 127,		// Centaur secondary explosion
-		KnockoutDrivers = 128,			// Southpaw speed slow
+		HaymakerBattery = 128,			// Southpaw weapon range
 		BabylonPlating = 129,			// Siege Tank armor bonus in tank mode
 
 		// relics \\

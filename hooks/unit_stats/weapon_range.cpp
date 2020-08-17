@@ -75,11 +75,9 @@ u8 getSeekRangeHook(CUnit* unit) {
 				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::CharonBooster))
 					bonusAmount = 3;
 				break;
-			case UnitId::Hero_AlanSchezar:
-			case UnitId::Hero_AlanSchezarTurret:
-				if (scbw::isBroodWarMode())
-					bonusAmount = 3;
-				break;
+			case UnitId::TerranSouthpaw:
+				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::HaymakerBattery))
+					bonusAmount = 1;
 			default:
 				bonusAmount = 0;
 

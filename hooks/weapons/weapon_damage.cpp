@@ -340,7 +340,7 @@ namespace hooks {
 			}
 
 			// Southpaw - Knockout Drivers
-			if (attacker != NULL && weaponId == WeaponId::UppercutLaser && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::KnockoutDrivers)) {
+			if (attacker != NULL && weaponId == WeaponId::UppercutLaser) {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0) < 20) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::KnockoutDriversValue, 1, 0);
 				}
