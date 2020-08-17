@@ -1,5 +1,5 @@
 #pragma once
-
+#include "SCBW/api.h"
 namespace hooks {
 	void injectMaxHpHooks();
 	u32 maxhp(int id, int playerId);
