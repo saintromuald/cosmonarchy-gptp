@@ -345,6 +345,7 @@ namespace hooks {
 			scbw::setInGameLoopState(true); //Needed for scbw::random() to work
 			graphics::resetAllGraphics();
 			hooks::updatePsiFieldProviders();
+			hooks::handle_screenHotkeys();
 			*(int*)hyperTrigger = 0; // Single frame hypertriggers
 
 			//This block is executed once every game.

@@ -62,21 +62,6 @@ namespace {
 			JMP loc_484B24
 		}
 	}
-
-	void _declspec(naked) input_Game_UserKeyPress_Wrapper() {
-		static dlgEvent* dlg;
-		static int result;
-		_asm {
-			MOV dlg, ECX
-			PUSHAD
-		}
-		result = hooks::input_Game_UserKeyPress(dlg);
-		_asm {
-			POPAD
-			MOV EAX, result
-			RETN
-		}
-	}
 }
 
 namespace hooks {
@@ -86,6 +71,5 @@ namespace hooks {
 		jmpPatch(recallScreenLocation_Wrapper,		0x00484500, 0);
 		jmpPatch(helpMenuCall_Wrapper,				0x00484770, 0);
 		jmpPatch(screenLocationSwitchCase_Wrapper,	0x0048478A, 0);
-		jmpPatch(input_Game_UserKeyPress_Wrapper,	0x004846B0, 0);
 	}
 }
