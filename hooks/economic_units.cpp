@@ -75,15 +75,15 @@ namespace hooks {
 	u32 get_order_from_unit_id(u32 unit_id) {
 		u32 order = 0;
 		switch (unit_id) {
-		case UnitId::scv://0x7
+		case UnitId::TerranSCV://0x7
 /*		case UnitId::mole:
 		case UnitId::engineer:*/
 			order = OrderId::BuildTerran;
 			break;
-		case UnitId::drone://0x29
+		case UnitId::ZergDrone://0x29
 			order = OrderId::DroneStartBuild;
 			break;
-		case UnitId::probe://0x40
+		case UnitId::ProtossProbe://0x40
 			order = OrderId::BuildProtoss1;
 			break;
 		default:
@@ -95,16 +95,16 @@ namespace hooks {
 		u32 id = 0xe4;
 		switch (race) {
 		case RaceId::Terran:
-			id = UnitId::command_center;
+			id = UnitId::TerranCommandCenter;
 			break;
 		case RaceId::Protoss:
-			id = UnitId::nexus;
+			id = UnitId::ProtossNexus;
 			break;
 		case RaceId::Zerg:
-			id = UnitId::hatchery;
+			id = UnitId::ZergHatchery;
 			break;
 		default:
-			id = UnitId::hatchery;
+			id = UnitId::ZergHatchery;
 			break;
 		}
 		return id;
@@ -112,12 +112,12 @@ namespace hooks {
 	bool unit_is_correct_townhall(u32 unit_id, u32 cmp_id, CUnit* unit) {
 		//unit is unused. this is function is supposed to be used for custom faction workers
 		switch (unit_id) {
-		case UnitId::command_center:
+		case UnitId::TerranCommandCenter:
 //		case UnitId::KelmorianTacticalCenter:
 //		case UnitId::UmojanGarrison:
 //		case UnitId::KelmorianMiningStation:		
-		case UnitId::nexus:
-		case UnitId::hatchery:
+		case UnitId::ProtossNexus:
+		case UnitId::ZergHatchery:
 			return true;
 		default:
 			break;
@@ -128,9 +128,9 @@ namespace hooks {
 
 	bool is_townhall(u32 unit_id) {
 		switch (unit_id) {
-		case UnitId::command_center:
-		case UnitId::nexus:
-		case UnitId::hatchery://lairs and hives are not required
+		case UnitId::TerranCommandCenter:
+		case UnitId::ProtossNexus:
+		case UnitId::ZergHatchery://lairs and hives are not required
 			return true;
 		default:
 			break;
@@ -147,9 +147,9 @@ namespace hooks {
 
 	bool is_vespene_top_structure(u16 unit_id) {
 		switch (unit_id) {
-		case UnitId::refinery:
-		case UnitId::assimilator:
-		case UnitId::extractor:
+		case UnitId::TerranRefinery:
+		case UnitId::ProtossAssimilator:
+		case UnitId::ZergExtractor:
 			return true;
 		default:
 			break;
@@ -157,9 +157,9 @@ namespace hooks {
 	}
 	bool is_gasholder_structure(u16 unit_id){
 		switch (unit_id) {
-		case UnitId::refinery:
-		case UnitId::assimilator:
-		case UnitId::extractor:
+		case UnitId::TerranRefinery:
+		case UnitId::ProtossAssimilator:
+		case UnitId::ZergExtractor:
 //		case UnitId::KelMorianGasPump:
 			return true;
 		default:
@@ -170,16 +170,16 @@ namespace hooks {
 		u32 id = 0xe4;
 		switch (race) {
 		case RaceId::Terran:
-			id = UnitId::scv;
+			id = UnitId::TerranSCV;
 			break;
 		case RaceId::Protoss:
-			id = UnitId::probe;
+			id = UnitId::ProtossProbe;
 			break;
 		case RaceId::Zerg:
-			id = UnitId::drone;
+			id = UnitId::ZergDrone;
 			break;
 		default:
-			id = UnitId::drone;
+			id = UnitId::ZergDrone;
 			break;
 		}
 		return id;
@@ -189,16 +189,16 @@ namespace hooks {
 		//player is not used originally but may be required for custom race support
 		switch (race) {
 		case RaceId::Terran:
-			id = UnitId::supply_depot;
+			id = UnitId::TerranSupplyDepot;
 			break;
 		case RaceId::Protoss:
-			id = UnitId::pylon;
+			id = UnitId::ProtossPylon;
 			break;
 		case RaceId::Zerg:
-			id = UnitId::overlord;
+			id = UnitId::ZergOverlord;
 			break;
 		default:
-			id = UnitId::overlord;
+			id = UnitId::ZergOverlord;
 			break;
 		}
 		return id;
