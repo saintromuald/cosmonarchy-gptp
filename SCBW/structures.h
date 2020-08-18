@@ -44,6 +44,53 @@ struct UnitAi {
 	u32		field28;			// 0x28
 };*/
 
+struct pathing {
+	u16 regionCount;
+	u16 unk1;
+	u16 unk2;
+	SplitRegion unkSplit;
+	u16 mapTileRegions[0x100];
+	u32 splitRegions[0x927c];
+	AiCaptain regions[0x1388];
+	u16 manyNeighborIds[0x2710];
+	ContourData contourData;
+};
+C_ASSERT(sizeof(pathing) == 0x97a20);
+
+struct SplitRegion {
+	u16 minitileFlags;
+	u16 regionFalse;
+	u16 regionTrue;
+};
+C_ASSERT(sizeof(SplitRegion) == 6);
+
+struct ContourData {
+	Contour topContours;
+	Contour rightContours;
+	Contour botContours;
+	Contour leftContours;
+	u16 topContourCount;
+	u16 rightContourCount;
+	u16 botContourCount;
+	u16 leftContourCount;
+	u16 bottom;
+	u16 left;
+	u16 top;
+	u16 right;
+	u16 bottomPlus1;
+	u16 leftMinus1;
+	u16 topMinus1;
+	u16 rightPlus1;
+};
+C_ASSERT(sizeof(ContourData) == 0x38);
+
+struct Contour {
+	u16 pos[3];
+	u8 type; // Top, Right, Bottom, Left
+	u8 flags; // 0x3 = first_dodge, 0xc = last_dodge, 0x30 = 2bit _50x20 pos2_index, 0xc0 = 2bit _50x20 pos3_index
+};
+C_ASSERT(sizeof(Contour) == 8);
+
 struct bStringMap {
 	u8		value;				// 0x0
 	u8		id;					// 0x1
@@ -538,6 +585,13 @@ C_ASSERT(sizeof(GuiOverlay) == 44); //0x2C
 //static_assert(sizeof(GuiOverlay) == 44, "The size of the GuiOverlay structure is invalid");
 
 //-------- AI related stuff --------//
+
+struct UnitAi {
+	u32	AiNext;
+	u32 AiPrev;
+	u8 type;
+};
+C_ASSERT(sizeof(UnitAi) == 9);
 
 struct AI_Main {
 /*000*/  s32 oreCollection;
