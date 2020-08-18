@@ -111,7 +111,7 @@ namespace UpgradeId {
 		Ascendancy = 101,				// High Templar energy and bonus energy on spell kill
 		GroundZero = 102,				// Nuclear Missile radiation
 		AdrenalinePacks = 103,			// Medic and Shaman support-armor on heal
-		GraviticAttenuator = 104,		// Unused upgrade
+		CaptivatingClaws = 104,			// Vorvaling 25% movespeed slow
 		PeerReviewedDestruction = 105,	// Science Vessel paint nuke target
 		PassengerInsurance = 106,		// Dropship acceleration
 		DivineClarity = 107,			// Clarion +1 shield armor while above 50% shields

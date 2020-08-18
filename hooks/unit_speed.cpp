@@ -202,6 +202,12 @@ namespace hooks {
 			speed -= speed * (0.05 * knockoutValue);
 		}
 
+		// Captivating Claws upgrade: reduces movement speed by 25% per unique attacker
+		if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::CaptivatingClawsStacks, 0) > 0) {
+			u32 captiveValue = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::CaptivatingClawsStacks, 0);
+			speed -= speed * (0.25 * captiveValue);
+		}
+
 	#ifdef DELIVERANCE
 		// Deathless Procession upgrade: gains 125% movespeed, increasing to 175% when above 50% shields
 		if unit->id == UnitId::ProtossAmaranth && scbw::getUpgradeLevel(unit->playerId, UpgradeId::DeathlessProcession)) {

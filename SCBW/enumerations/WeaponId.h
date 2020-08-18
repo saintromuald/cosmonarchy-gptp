@@ -140,6 +140,7 @@ enum Enum {
 	CrusaderMissiles						  = 10,			// Paladin weapon
 	FuriaMissiles							  = 21,			// Madrigal weapon 1
 	ImperiosoMissiles						  = 22,			// Madrigal weapon 2
+	VorvalClaws								  = 36,			// Vorvaling weapon
 	SerratedCleavers						  = 47,			// Gorgoleth weapon
 	EssenceDrain							  = 51,			// Gorgoleth ability
 	AugurWeapon								  = 75,			// Augur weapon

@@ -347,6 +347,14 @@ namespace hooks {
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::KnockoutDriversTimer, 49, 0); //49 is 2 seconds (48) + 1
 			}
 
+			// Vorvaling - Captivating Claws
+			if (attacker != NULL && weaponId == WeaponId::VorvalClaws && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::CaptivatingClaws) == 1) {
+				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::CaptivatingClawsStacks, 0) < 4) {
+					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::CaptivatingClawsStacks, 1, 0);
+				}
+				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::CaptivatingClawsTimer, 25, 0);
+			}
+
 		#ifdef DELIVERANCE
 			// Ecclesiast Astral Blessing
 			if (attacker != NULL && weaponId == WeaponId::EcclesiastWeapon && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::AstralBlessing)) {

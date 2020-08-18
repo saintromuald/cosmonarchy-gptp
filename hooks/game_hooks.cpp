@@ -595,10 +595,14 @@ namespace hooks {
 					unit->updateSpeed();
 				}
 
-				// Apply Zergling - Adrenal Glands stacks
+				// Zergling - Adrenal Glands
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::AdrenalTimer, 0) == 1) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::AdrenalStacks, 0, 0);
+				}
 
+				// Vorvaling - Captivating Claws
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::CaptivatingClawsTimer, 0) == 1) {
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::CaptivatingClawsStacks, 0, 0);
 				}
 
 				// GAME RULE
