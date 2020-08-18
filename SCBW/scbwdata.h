@@ -220,11 +220,11 @@ SCBW_DATA(		u32*,			activeTileHandle,			0x006D1260)
 
 // For updatePlacementStateForPlacementBox
 SCBW_DATA(		u8*,			unk_placementRelated,		0x0064088C);
-SCBW_DATA(		u32*,			placeBuildingX,				0x0048DD12);
-SCBW_DATA(		u32*,			placeBuildingY,				0x0048DD0B);
-SCBW_DATA(		u16*,			placeBuildingUnitType,		0x0048DD03);
+SCBW_DATA(		u32*,			placeBuildingX,				0x00640890);
+SCBW_DATA(		u32*,			placeBuildingY,				0x00640892);
 SCBW_DATA(		u32*,			isPlacingAddon,				0x00640884);
-SCBW_DATA(		u32*,			placeBuildingBaseType,		0x0048DD4B);
+SCBW_DATA(		u16*,		    placeBuildingUnitType,		0x0064088A);
+SCBW_DATA(u32*, placeBuildBaseType, 0x00640888);
 
 // For incrementUnitScoresEx
 SCBW_DATA(		u32*,			factoriesOwned,				0x005820B4); // Array of 12
@@ -295,7 +295,7 @@ SCBW_DATA(u16*,		SoundAnnoyedLast,		unitsDat[33].address);	//00661EE8
 SCBW_DATA(u16*,		SoundYesFirst,			unitsDat[34].address);	//00663C10
 SCBW_DATA(u16*,		SoundYesLast,			unitsDat[35].address);	//00661440
 SCBW_DATA(Point16*,	BuildingDimensions,		unitsDat[36].address);	//00662860
-SCBW_DATA(Point16*,	AddonPlacement,			unitsDat[37].address);	//006626E0
+SCBW_DATA(Point16*,	AddonPlacement,			unitsDat[37].address);	//006626E0 
 SCBW_DATA(Box16*,	UnitBounds,				unitsDat[38].address);	//006617C8
 //SCBW_DATA(u16*,	???,					unitsDat[39].address);	//00662F88 //Portrait according to EUDDB
 SCBW_DATA(u16*,		MineralCost,			unitsDat[40].address);	//00663888

@@ -647,21 +647,22 @@ void orders_SCVBuild(CUnit* unit) {
 
 		v0 = canBuildOnTileLocation(
 			*activePortraitUnit,
-			(unsigned __int8)unk_placementRelated,
-			(unsigned __int16)placeBuildingX,
-			(unsigned __int16)placeBuildingY,
-			(int)placeBuildingUnitType,
+			*unk_placementRelated,
+			*placeBuildingX,
+			*placeBuildingY,
+			*placeBuildingUnitType,
 			1,
 			1,
 			0,
 			0);
+		u32 source = *placeBuildingUnitType;
 		if (!isPlacingAddon
 			|| (result = canBuildOnTileLocation(
 				*activePortraitUnit,
-				(unsigned __int8)unk_placementRelated,
-				(unsigned __int16)placeBuildingX - *(int*)&units_dat::AddonPlacement[2 * (int)placeBuildingUnitType - 212] / 32,
-				(unsigned __int16)(placeBuildingY - *(int*)&units_dat::AddonPlacement[2 * (int)placeBuildingUnitType - 211] / 32),
-				(unsigned __int16)placeBuildingBaseType,
+				*unk_placementRelated,
+				*placeBuildingX - units_dat::AddonPlacement[*placeBuildingUnitType-UnitId::TerranCommandCenter].x,
+				*placeBuildingY - units_dat::AddonPlacement[*placeBuildingUnitType-UnitId::TerranCommandCenter].y,
+				*placeBuildBaseType,
 				0,
 				1,
 				0,
