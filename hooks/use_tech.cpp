@@ -368,6 +368,9 @@ namespace hooks
 			scbw::SendCommand(buf, 0xc);
 			break;
 		}
+		case TechId::Skyfall:
+			IssueTriTargetOrder(OrderId::Skyfall, 0, 0);
+			break;
 		case TechId::EssenceDrain:
 			IssueTriTargetOrder(OrderId::CTFCOP1, 0, 0);
 			break;
