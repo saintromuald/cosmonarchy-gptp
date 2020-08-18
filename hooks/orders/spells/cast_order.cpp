@@ -23,6 +23,21 @@ void orders_Spell(CUnit* unit) {
 	s32 spellCost;
 	u8 orderWeaponId = orders_dat::OrderWeaponId[unit->mainOrderId];
 	CUnit* target = unit->orderTarget.unit;
+	if (unit->id == UnitId::TerranPaladin) {
+		if (unit->orderSignal & 0x20) {
+			unit->orderSignal &= ~0x20;
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::SkyfallTimer, 3, 0);
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SkyfallStacks, 0, 0);
+			auto pt = unit->orderTarget.pt;
+			if (unit->orderTarget.unit != NULL) {
+				pt = unit->orderTarget.unit->position;
+				unit->orderTarget.unit = NULL;
+			}
+			scbw::printFormattedText("Fire skyfall %d %d -> %d %d",unit->getX(),unit->getY(),pt.x,pt.y);
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SkyfallX, unit->orderTarget.pt.x, 0);
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SkyfallY, unit->orderTarget.pt.y, 0);
+		}
+	}
 	if (unit->id == UnitId::TerranWyvern) {
 		if (unit->orderSignal & 0x40) {
 			unit->orderSignal &= ~0x40;

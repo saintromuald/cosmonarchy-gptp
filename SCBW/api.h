@@ -5,7 +5,7 @@
 #include <SCBW/scbwdata.h>
 #include <SCBW/enumerations.h>
 #include <string>
-
+#include <math.h>
 namespace hooks {
 	void IrradiateHit(CUnit* attacker, CUnit* target, u8 attackingPlayerId);
 }
@@ -25,6 +25,7 @@ std::string readSamaseFile(char* name);
 bool teleport(CUnit* u, Point16 target, u16 spriteAnimation=0, bool preserveOrder=false);
 CFlingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y);
 CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);
+Point32 rotate_point(Point32 anchor, Point32 point, double angle_degrees);
 
 void SendCommand(u8* params, u32 param_length);
 /// @name Output functions
@@ -89,6 +90,7 @@ u16 getTechUseErrorMessage(CUnit* target, u8 castingPlayer, u16 techId);
 /// (xStart, yStart) and ends at (xEnd, yEnd).
 s32 getAngle(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd);
 
+double bw_angle_to_normal(s32 bw_angle);
 /// StarCraft's internal function used to quickly calculate distances between
 /// two points (x1, y1) and (x2, y2).
 /// Warning: This function is inaccurate for long distances.

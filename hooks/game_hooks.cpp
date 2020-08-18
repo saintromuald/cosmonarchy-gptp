@@ -448,6 +448,40 @@ namespace hooks {
 						scbw::createBullet(123, attacker, unit->getX(), unit->getY(), attacker->playerId, 0);
 					}
 				}*/
+				
+				// Paladin - Skyfall
+				if (unit->id == UnitId::TerranPaladin 
+					&& scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::SkyfallTimer, 0) == 1 &&
+					!unit->isFrozen()) {
+					u8 missile = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SkyfallStacks, 0);
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::SkyfallStacks, 1, 0);				
+					if (missile == 20) {
+						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SkyfallStacks, 0, 0);
+					}
+					else {
+						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::SkyfallTimer, 2+1, 0);
+						u32 tgt_x = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SkyfallX, 0);
+						u32 tgt_y = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SkyfallY, 0);
+						
+						auto row = missile / 4;
+						auto column = missile % 4;
+						s16 x1 = 64 - scbw::getDistanceFast(unit->getX(), unit->getY(), tgt_x, tgt_y);//anchor
+						s16 y1 = 80;
+						s16 x2 = 16 + (row * 32)-x1;
+						s16 y2 = 16 + (column * 32)-y1;
+						auto angle = scbw::bw_angle_to_normal(scbw::getAngle(unit->getX(), unit->getY(), tgt_x, tgt_y));
+						auto result_pt = scbw::rotate_point(Point32{ x1,y1 }, Point32{ x2,y2 }, angle);
+						Point16 target_pt;
+						target_pt.x = unit->getX() + result_pt.x;
+						target_pt.y = unit->getY() + result_pt.y;
+						unit->orderTarget.pt = target_pt;
+						s32 forwardOffset = weapons_dat::ForwardOffset[10];
+						auto source_x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
+						auto source_y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1)
+							- weapons_dat::VerticalOffset[10];
+						scbw::createBullet(10, unit, source_x, source_y, unit->playerId, unit->currentDirection1);
+					}
+				}
 				// Devourer - Critical Mass
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::CorrosiveSporeDelay, 0)==1) {
 					int count = unit->acidSporeCount;

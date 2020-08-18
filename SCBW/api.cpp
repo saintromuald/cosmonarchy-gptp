@@ -491,6 +491,26 @@ s32 getAngle(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd) {
 
 }
 
+Point32 rotate_point(Point32 anchor, Point32 point, double angle_degrees) {
+	double x1 = point.x - anchor.x;
+	double y1 = point.y - anchor.y;
+	auto radians = angle_degrees / 57.296;
+	double x2 = x1 * cos(radians) - y1 * sin(radians);
+	double y2 = x1 * sin(radians) + y1 * cos(radians);
+	Point32 product;
+	product.x = x2 + anchor.x;
+	product.y = y2 + anchor.y;
+	return product;
+}
+
+
+double bw_angle_to_normal(s32 bw_angle) {
+	double angle = (double)(bw_angle*1.40625);
+	if (angle < 0) {
+		angle += 360;
+	}
+	return angle;
+}
 s32 getPolarX(s32 distance, u8 angle) {
 	return distance * angleDistance[angle].x >> 8;
 }
