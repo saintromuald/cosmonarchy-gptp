@@ -30,7 +30,7 @@ namespace hooks {
 			MOV unit, EDX
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId) / 3 * 2;
+		hp = maxhp(id, unit->playerId);
 		__asm {
 			POPAD
 			MOV EAX, hp
@@ -48,7 +48,7 @@ namespace hooks {
 			MOV unit, ECX
 			PUSHAD
 		}
-		hp = maxhp(id, unit->playerId) / 3;
+		hp = maxhp(id, unit->playerId);
 		__asm {
 			POPAD
 			MOV EAX, hp
