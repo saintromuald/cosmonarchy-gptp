@@ -76,8 +76,10 @@ namespace hooks {
 		u32 order = 0;
 		switch (unit_id) {
 		case UnitId::scv://0x7
+/*		case UnitId::mole:
+		case UnitId::engineer:
 			order = OrderId::BuildTerran;
-			break;
+			break;*/
 		case UnitId::drone://0x29
 			order = OrderId::DroneStartBuild;
 			break;
@@ -102,10 +104,28 @@ namespace hooks {
 			id = UnitId::hatchery;
 			break;
 		default:
+			id = UnitId::hatchery;
 			break;
 		}
 		return id;
 	}
+	bool unit_is_correct_townhall(u32 unit_id, u32 cmp_id, CUnit* unit) {
+		//unit is unused. this is function is supposed to be used for custom faction workers
+		switch (unit_id) {
+		case UnitId::command_center:
+//		case UnitId::KelmorianTacticalCenter:
+//		case UnitId::UmojanGarrison:
+//		case UnitId::KelmorianMiningStation:		
+		case UnitId::nexus:
+		case UnitId::hatchery:
+			return true;
+		default:
+			break;
+		}
+		return false;
+		//return (unit_id == cmp_id);
+	}
+
 	bool is_townhall(u32 unit_id) {
 		switch (unit_id) {
 		case UnitId::command_center:
@@ -124,6 +144,28 @@ namespace hooks {
 		}
 		return false;
 	}
+
+	bool is_vespene_top_structure(u16 unit_id) {
+		switch (unit_id) {
+		case UnitId::refinery:
+		case UnitId::assimilator:
+		case UnitId::extractor:
+			return true;
+		default:
+			break;
+		}
+	}
+	bool is_gasholder_structure(u16 unit_id){
+		switch (unit_id) {
+		case UnitId::refinery:
+		case UnitId::assimilator:
+		case UnitId::extractor:
+//		case UnitId::KelMorianGasPump:
+			return true;
+		default:
+			break;
+		}
+	}
 	u32 get_worker_from_race(u32 race) {
 		u32 id = 0xe4;
 		switch (race) {
@@ -137,6 +179,7 @@ namespace hooks {
 			id = UnitId::drone;
 			break;
 		default:
+			id = UnitId::drone;
 			break;
 		}
 		return id;
@@ -155,6 +198,7 @@ namespace hooks {
 			id = UnitId::overlord;
 			break;
 		default:
+			id = UnitId::overlord;
 			break;
 		}
 		return id;
@@ -188,8 +232,21 @@ namespace hooks {
 			v3 = v2;
 			race = playerTable[v2].race;
 			v18 = v2;
-			supplyUnit = get_supply_structure_from_race(race,v2);
+			//
+			/*u32 faction = OverlordFaction::OmegaSquadron;
+			if (a1->main_building != NULL) {
+				faction = scbw::get_aise_value(a1->main_building, NULL, AiseId::GetCurrentFaction, 0, 0);
+			}*/
+			//
+			supplyUnit = get_supply_structure_from_race(race,v2);		
+			/*if (!((faction >= OverlordFaction::AlphaSquadron && faction <= OverlordFaction::OmegaSquadron)
+				|| faction == OverlordFaction::Umojans || faction == OverlordFaction::Cerberus)) {			
+				supplyUnit = UnitId::scrap_processor;
+			}*/
 			workerUnit = get_worker_from_race(race);
+			/*if (faction == OverlordFaction::Miners) {
+				workerUnit = UnitId::mole;
+			}*/
 			v8 = getSuppliesRemaining(v2, workerUnit);
 			v7 = v8;
 			v19 = v8;
@@ -203,23 +260,25 @@ namespace hooks {
 				if ((!v19 || !(AIScriptController[v3].AI_Flags.isFarmsNotimingOn) || Ai_HasBuildingsNeedingPower(v3))
 					&& v17 > Ai_CountEconomyUnits(v3, v10))
 				{
-					Ai_AddTownSpendReq(v18, v19 > 8 ? 120 : 140, v10, (void*)a1);
+					Ai_AddTownSpendReq(v18, v19 > 8 ? 120 : 140, v10, (void*)a1);//???machine shop and ultralisk cavern
 				}
 				//used variables: v17, v9, v3, v10, v18, v19, a1
-
 				return;
 			}
 			if (v7 < 13)
 			{
-				u8 v6byte;
-				if (units_dat::GroupFlags[supplyUnit].isZerg) {
-					v6byte = RaceId::Zerg;
+				auto flags = units_dat::GroupFlags[supplyUnit];
+				if (flags.isZerg) {
+					v6 = RaceId::Zerg;
 				}
-				else if(units_dat::GroupFlags[supplyUnit].isTerran){
-					v6byte = RaceId::Terran;
+				else if(flags.isTerran){
+					v6 = RaceId::Terran;
 				}
-				else if (units_dat::GroupFlags[supplyUnit].isProtoss) {//original code don't had explicit protoss check
-					v6byte = RaceId::Protoss;
+				else if (units_dat::GroupFlags[supplyUnit].isProtoss) {
+					v6 = RaceId::Protoss;
+				}
+				else {
+					v6 = RaceId::Neutral;
 				}
 				v14 = getSuppliesUsed(v6, v2);
 				v13 = playerTable[v2].race;
@@ -234,5 +293,13 @@ namespace hooks {
 				}
 			}
 		}
+	}
+	u32 orders_isGeyserTopUnitHook(CUnit* unit) {
+		if (unit->status & UnitStatus::Completed) {
+			if (is_vespene_top_structure(unit->id)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
