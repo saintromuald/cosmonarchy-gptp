@@ -211,7 +211,27 @@ public:
 		return true;
 	}
 };
+class skyfallMatch : public scbw::UnitFinderCallbackMatchInterface {
+private:
+	CUnit* paladin;
+public:
+	skyfallMatch(CUnit* paladin)
+		: paladin(paladin) {}
 
+	bool match(CUnit* unit) {
+
+		if (unit == paladin) {
+			return false;
+		}
+		if (scbw::isAlliedTo(paladin->playerId, unit->playerId)) {
+			return false;
+		}
+		if (unit->status & UnitStatus::Invincible) {
+			return false;
+		}
+		return true;
+	}
+};
 class corrosiveSporeProc : public scbw::UnitFinderCallbackProcInterface
 {
 
@@ -486,10 +506,18 @@ namespace hooks {
 							- weapons_dat::VerticalOffset[10];
 						unit->orderTarget.unit = NULL;
 						unit->orderTarget.pt = missile_target;
-						auto acquisition_range = 80;
+						auto range = 64;
 						//scbw::printFormattedText("Target? %d %d", tgt_x, tgt_y);
+						auto skyfall = skyfallMatch(unit);
+						auto targ = scbw::UnitFinder::getNearestTarget(
+							unit->getX() - range, unit->getY() - range,
+							unit->getX() + range, unit->getY() + range,
+							unit, skyfall
+						);
+						if (targ != NULL) {
+							unit->orderTarget.unit = targ;
+						}
 						scbw::createBullet(10, unit, source_x, source_y, unit->playerId, unit->currentDirection1);
-
 
 					}
 				}
