@@ -655,13 +655,30 @@ void orders_SCVBuild(CUnit* unit) {
 			1,
 			0,
 			0);
-		u32 source = *placeBuildingUnitType;
+		u32 source = *placeBuildBaseType;
+		u32 target = *placeBuildingUnitType;
+		int addon_x = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
+		int addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
+		if (target == UnitId::TerranFutureStation) {
+			if (source == UnitId::academy || source == UnitId::armory) {
+				addon_x = 96;
+				addon_y = 0;
+			}
+			else if (source == UnitId::TerranDrydock) {
+				addon_x = 96;
+				addon_y = 48;
+			}
+		}
+		else if (target == UnitId::TerranQuarry) {
+			addon_x = 128;
+			addon_y=32;
+		}
 		if (!isPlacingAddon
 			|| (result = canBuildOnTileLocation(
 				*activePortraitUnit,
 				*unk_placementRelated,
-				*placeBuildingX - units_dat::AddonPlacement[*placeBuildingUnitType-UnitId::TerranCommandCenter].x,
-				*placeBuildingY - units_dat::AddonPlacement[*placeBuildingUnitType-UnitId::TerranCommandCenter].y,
+				*placeBuildingX - addon_x,
+				*placeBuildingY - addon_y,
 				*placeBuildBaseType,
 				0,
 				1,
@@ -672,6 +689,9 @@ void orders_SCVBuild(CUnit* unit) {
 		}
 		return result;
 	}
+
+
+
 
 	char refreshScreen(int ecx0) { // 0048DDC0
 		char result;
@@ -697,6 +717,20 @@ void orders_SCVBuild(CUnit* unit) {
 					v4 = (int)(placeBuildingUnitId - UnitId::TerranCommandCenter);
 					v6.x = units_dat::AddonPlacement[v4].x;
 					v6.y = units_dat::AddonPlacement[v4].y;
+					if (*placeBuildingUnitId == UnitId::TerranFutureStation) {
+						if (*placeBuildBaseType == UnitId::academy || *placeBuildBaseType == UnitId::armory) {
+							v6.x = 96;
+							v6.y = 0;
+						}
+						else if (*placeBuildBaseType == UnitId::TerranDrydock) {
+							v6.x = 96;
+							v6.y = 48;
+						}
+					}
+					else if (*placeBuildingUnitId == UnitId::TerranQuarry) {
+						v6.x = 128;
+						v6.y = 32;
+					}
 					unk_buildingPlacementRelated(0, (int)&v6);
 				}
 				result = refreshLayer3And4();

@@ -133,6 +133,19 @@ void cmdRECV_PlaceBuildingAddon(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
 	if(result_function_00473FB0 == 0) {
 
 		addonPlaceX = (s16)units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].x;
+		if (builtUnitId == UnitId::TerranFutureStation) {
+			if (builder->id == UnitId::academy || builder->id == UnitId::armory) {
+				addonPlaceX = 96;
+			}
+			else if (builder->id == UnitId::TerranDrydock) {
+				addonPlaceX = 96;
+			}
+		}
+		else if (builtUnitId == UnitId::TerranQuarry) {
+			addonPlaceX = 128;
+		}
+		
+
 
 		if(addonPlaceX < 0)
 			addonPlaceX += 31;
@@ -142,7 +155,17 @@ void cmdRECV_PlaceBuildingAddon(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
 		addonPlaceX = x - addonPlaceX;
 
 		addonPlaceY = (s16)units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].y;
-
+		if (builtUnitId == UnitId::TerranFutureStation) {
+			if (builder->id == UnitId::academy || builder->id == UnitId::armory) {
+				addonPlaceY = 0;
+			}
+			else if (builder->id == UnitId::TerranDrydock) {
+				addonPlaceY = 48;
+			}
+		}
+		else if (builtUnitId == UnitId::TerranQuarry) {
+			addonPlaceY = 32;
+		}
 		if(addonPlaceY < 0)
 			addonPlaceY += 31;
 

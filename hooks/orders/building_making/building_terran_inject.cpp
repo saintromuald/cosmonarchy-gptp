@@ -88,8 +88,8 @@ namespace {
 		static char result;
 
 		__asm {
-			PUSHAD
 			MOV ecx0, ECX
+			PUSHAD
 		}
 		result = hooks::refreshScreen(ecx0);
 		__asm {
@@ -106,8 +106,8 @@ void injectBuildingTerranHook() {
 	jmpPatch(orders_TerranBuildSelfWrapper,					0x00467760, 2);
 	jmpPatch(orders_SCVBuild2Wrapper,						0x00467A70, 1);
 	jmpPatch(orders_SCVBuildWrapper,						0x00467FD0, 0);
-	jmpPatch(updatePlacementStateForPlacementBox_Wrapper,	0x0048DCE0, 1);
-	jmpPatch(refreshScreen_Wrapper,							0x0048DDC0, 1);
+	//jmpPatch(updatePlacementStateForPlacementBox_Wrapper,	0x0048DCE0, 1);
+	//jmpPatch(refreshScreen_Wrapper,							0x0048DDC0, 1);
 }
 
 } //hooks
