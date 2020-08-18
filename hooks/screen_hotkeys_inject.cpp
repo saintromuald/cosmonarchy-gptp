@@ -68,8 +68,8 @@ namespace hooks {
 
 	void injectScreenHotkeysHooks() {
 		jmpPatch(saveScreenLocation_Wrapper,		0x00484360, 0);
-		jmpPatch(recallScreenLocation_Wrapper,		0x00484500, 0);
+		jmpPatch(recallScreenLocation_Wrapper,		0x00484500, 1);
 		jmpPatch(helpMenuCall_Wrapper,				0x00484770, 0);
-		jmpPatch(screenLocationSwitchCase_Wrapper,	0x0048478A, 0);
+		jmpPatch(screenLocationSwitchCase_Wrapper,	0x0048478A, 1);
 	}
 }
