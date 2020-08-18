@@ -5,8 +5,8 @@ namespace hooks {
 	void initializeScreenLocations();
 	int saveScreenLocation(int id);
 	int recallScreenLocation(int id);
-	int moveScreen(int x, int y);
 	bool screenLocationSwitchCase(int n);
+	u8 input_Game_UserKeyPress(dlgEvent* dlg);
 
 	void injectScreenHotkeysHooks();
 	extern Point16 screen_hotkeys[8];

@@ -1,6 +1,5 @@
 #include "screen_hotkeys.h"
 #include "../hook_tools.h"
-#include "../SCBW/scbwdata.h"
 
 namespace {
 	void _declspec(naked) saveScreenLocation_Wrapper() {
@@ -57,34 +56,36 @@ namespace {
 					JMP screenLocationSwitchCase_jmp
 				}
 			}
-			
 		}
 		_asm { // return
 			POPAD
 			JMP loc_484B24
 		}
 	}
+
+	void _declspec(naked) input_Game_UserKeyPress_Wrapper() {
+		static dlgEvent* dlg;
+		static int result;
+		_asm {
+			MOV dlg, ECX
+			PUSHAD
+		}
+		result = hooks::input_Game_UserKeyPress(dlg);
+		_asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks {
-	const u32 moveScreen_function = 0x0049C440;
-	int moveScreen(int x, int y) {
-		static int result;
-		_asm {
-			PUSHAD
-			MOV EAX, x
-			MOV ECX, y
-			CALL moveScreen_function
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
 
 	void injectScreenHotkeysHooks() {
-		jmpPatch(saveScreenLocation_Wrapper, 0x00484360, 4);
-		jmpPatch(recallScreenLocation_Wrapper, 0x00484500, 2);
-		jmpPatch(helpMenuCall_Wrapper, 0x00484770, 1);
-		jmpPatch(screenLocationSwitchCase_Wrapper, 0x0048478A, 1);
+		jmpPatch(saveScreenLocation_Wrapper,		0x00484360, 0);
+		jmpPatch(recallScreenLocation_Wrapper,		0x00484500, 0);
+		jmpPatch(helpMenuCall_Wrapper,				0x00484770, 0);
+		jmpPatch(screenLocationSwitchCase_Wrapper,	0x0048478A, 0);
+		jmpPatch(input_Game_UserKeyPress_Wrapper,	0x004846B0, 0);
 	}
 }
