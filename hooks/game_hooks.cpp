@@ -510,12 +510,13 @@ namespace hooks {
 						//scbw::printFormattedText("Target? %d %d", tgt_x, tgt_y);
 						auto skyfall = skyfallMatch(unit);
 						auto targ = scbw::UnitFinder::getNearestTarget(
-							unit->getX() - range, unit->getY() - range,
-							unit->getX() + range, unit->getY() + range,
+							missile_target.x - range, missile_target.y - range,
+							missile_target.x + range, missile_target.y + range,
 							unit, skyfall
 						);
 						if (targ != NULL) {
 							unit->orderTarget.unit = targ;
+							scbw::printText("Acquired");
 						}
 						scbw::createBullet(10, unit, source_x, source_y, unit->playerId, unit->currentDirection1);
 
