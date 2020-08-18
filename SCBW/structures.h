@@ -48,12 +48,12 @@ struct pathing {
 	u16 regionCount;
 	u16 unk1;
 	u16 unk2;
-	SplitRegion unkSplit;
+	SplitRegion* unkSplit;
 	u16 mapTileRegions[0x100];
 	u32 splitRegions[0x927c];
-	AiCaptain regions[0x1388];
+	AiCaptain* regions[0x1388];
 	u16 manyNeighborIds[0x2710];
-	ContourData contourData;
+	ContourData* contourData;
 };
 C_ASSERT(sizeof(pathing) == 0x97a20);
 
@@ -65,10 +65,10 @@ struct SplitRegion {
 C_ASSERT(sizeof(SplitRegion) == 6);
 
 struct ContourData {
-	Contour topContours;
-	Contour rightContours;
-	Contour botContours;
-	Contour leftContours;
+	Contour* topContours;
+	Contour* rightContours;
+	Contour* botContours;
+	Contour* leftContours;
 	u16 topContourCount;
 	u16 rightContourCount;
 	u16 botContourCount;
@@ -586,12 +586,30 @@ C_ASSERT(sizeof(GuiOverlay) == 44); //0x2C
 
 //-------- AI related stuff --------//
 
-struct UnitAi {
-	u32	AiNext;
-	u32 AiPrev;
+struct UnitAiPtr {
+	UnitAiPtr* next;
+	UnitAiPtr* prev;
 	u8 type;
 };
-C_ASSERT(sizeof(UnitAi) == 9);
+C_ASSERT(sizeof(UnitAiPtr) == 9);
+
+struct UnitAi {
+	UnitAi* next;
+	UnitAi* prev;
+	u8 type;
+	u8 unk9;
+	u8 unkA;
+	u8 timer;
+	CUnit* unit;
+	AiCaptain* region;
+	AiTown* town;
+	u32 unk18;
+	u32 unk1C;
+	u32 unk20;
+	u32 unk24;
+	u32 unk28;
+};
+C_ASSERT(sizeof(UnitAi) == 0x2C);
 
 struct AI_Main {
 /*000*/  s32 oreCollection;
