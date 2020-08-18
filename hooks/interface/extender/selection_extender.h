@@ -8,6 +8,24 @@ namespace hooks {
 }
 
 /*
+Notes:
+	We need to replace THREE arrays with extended ones, we are aiming for 18,
+	but it should be possible to try pseudo "unlimited" selection once we are done.
+	Easiest thing to do, without need for hooks and ultimate overhead of changing entire game logic,
+	would be to have the arrays with fixed size and don't bother with dynamic arrays (vectors).
+	Then most of the work would be to memorypatch pointer addresses with addresses of new arrays,
+	I don't think there is need for hooks in most cases, making those would probably take ages
+	we must also make sure that conditions check for 18 instead 12, so the new array is
+	properly iterated on.
+	
+	I am not sure 100% sure about `All Player Selection Groups`, it is serialized within the
+	game's logic, and that controls loading the selection, we should probably leave those
+	(last few addresses in 3rd block) as they are, and serialize the extended ones using aise
+	or forthcoming globals serializer.
+	- Veeq7
+*/
+
+/*
 	Current Selection Groups
 
 	Line 138572: 0x0045D04D  |.  BE B8846200   MOV ESI,006284B8
