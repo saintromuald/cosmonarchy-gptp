@@ -4,7 +4,7 @@
 namespace hooks {
 	u32 realTopSpeed(CFlingy* flingy, u32 flingyId) {
 		u32 speed = scbw::getFlingyData(FlingyDatEntries::TopSpeed, flingyId);
-		if (Globals.flingy_init_bullet_id == WeaponId::FuriaMissiles || Globals.flingy_init_bullet_id == WeaponId::ImperiosoMissiles) {
+		if (Globals.flingy_init_bullet_id == 22) {
 			if (scbw::getUpgradeLevel(Globals.flingy_init_player_id, UpgradeId::RequiemAfterburners)) {
 				speed += speed / 2;
 			}
@@ -16,7 +16,6 @@ namespace hooks {
 		if (Globals.flingy_init_bullet_id == 22) {
 			if (scbw::getUpgradeLevel(Globals.flingy_init_player_id, UpgradeId::RequiemAfterburners)) {
 				acceleration += acceleration / 2;
-				scbw::printText("Accelerate!");
 			}
 		}
 		return acceleration;
@@ -48,5 +47,18 @@ namespace hooks {
 		else {
 			return scbw::getFlingyData(FlingyDatEntries::HaltDistance, flingy_id);
 		}
+	}
+	bool is_unused_order(u8 orderId) {
+		switch (orderId) {
+		case OrderId::GuardianAspect:
+		case OrderId::Skyfall://OrderId::AttackTile
+		case OrderId::Hover:
+		case OrderId::Warpin:
+		case OrderId::CTFCOP2:
+			return true;
+		default:
+			break;
+		}
+		return false;
 	}
 }

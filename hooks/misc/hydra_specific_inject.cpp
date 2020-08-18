@@ -92,12 +92,46 @@ namespace hooks {
         }
  
     }
-
+    const u32 func_getTargetSomething = 0x0043FF90;
+    const u32 progressOrderSwitch_e71b = 0x004EC71B;
+    const u32 spellOrderCases = 0x004ECADB;
+    void __declspec(naked) unusedOrderPatchWrapper() {
+        
+        static u8 orderId;
+        __asm {
+            MOV [ESI+0x85], 0x8
+            CALL func_getTargetSomething
+            MOV AL,[ESI+0x4D]
+            MOV orderId, AL
+            MOVZX EAX,AL
+            PUSHAD
+        }
+        if (hooks::is_unused_order(orderId)) {
+            __asm {
+                POPAD
+                JMP spellOrderCases
+            }
+        }
+        else {
+            __asm {
+                POPAD
+                JMP progressOrderSwitch_e71b
+            }
+        }
+    }
+    void unusedOrderPatches() {
+        jmpPatch(unusedOrderPatchWrapper, 0x004EC70B, 7);//turns unused orders to spell orders
+        //later add jump patches to make CTFCop2 and WarpIn useless
+    }
     void archonHardcodePatches(){//for augurs
         jmpPatch(wrapper_295EB, 0x004295EB, 1);
     }
     void injectHydraSpecific() {
         flingySpeedPatches();
+        //start of spell order code
+        //default case of switch 004EC4FF
+        unusedOrderPatches();
+        //disables CTFCop2 functionality, makes it useless
         //archonHardcodePatches();
     }
 }
