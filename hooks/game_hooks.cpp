@@ -456,36 +456,41 @@ namespace hooks {
 				}*/
 				
 				// Paladin - Skyfall
-				if (unit->id == UnitId::TerranPaladin 
+				if (unit->id == UnitId::TerranPaladin
 					&& scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::SkyfallTimer, 0) == 1 &&
 					!unit->isFrozen()) {
 					u8 missile = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SkyfallStacks, 0);
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::SkyfallStacks, 1, 0);				
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::SkyfallStacks, 1, 0);
 					if (missile == 20) {
 						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SkyfallStacks, 0, 0);
 					}
 					else {
-						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::SkyfallTimer, 2+1, 0);
+						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::SkyfallTimer, 2 + 1, 0);
 						u32 tgt_x = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SkyfallX, 0);
 						u32 tgt_y = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SkyfallY, 0);
-						
-						auto row = missile / 4;
-						auto column = missile % 4;
-						s16 x1 = 64 - scbw::getDistanceFast(unit->getX(), unit->getY(), tgt_x, tgt_y);//anchor
-						s16 y1 = 80;
-						s16 x2 = 16 + (row * 32)-x1;
-						s16 y2 = 16 + (column * 32)-y1;
+						//scbw::printFormattedText("Read X Y %d %d [a]", tgt_x, tgt_y);
+						auto column = missile / 4;
+						auto row = missile % 4;
+						auto distance = scbw::getDistanceFast(unit->getX(), unit->getY(), tgt_x, tgt_y);
 						auto angle = scbw::bw_angle_to_normal(scbw::getAngle(unit->getX(), unit->getY(), tgt_x, tgt_y));
-						auto result_pt = scbw::rotate_point(Point32{ x1,y1 }, Point32{ x2,y2 }, angle);
-						Point16 target_pt;
-						target_pt.x = unit->getX() + result_pt.x;
-						target_pt.y = unit->getY() + result_pt.y;
-						unit->orderTarget.pt = target_pt;
+						Point32 rotation_pt = Point32{ 0,0 };
+						rotation_pt.x += 16 + (row - 2) * 32;
+						rotation_pt.y -= (column - 2) * 32;
+						auto product = scbw::rotate_point(Point32{ 0,0 }, rotation_pt, angle);
+						Point16 missile_target;
+						missile_target.x = tgt_x + product.x;
+						missile_target.y = tgt_y + product.y;
 						s32 forwardOffset = weapons_dat::ForwardOffset[10];
 						auto source_x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
 						auto source_y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1)
 							- weapons_dat::VerticalOffset[10];
+						unit->orderTarget.unit = NULL;
+						unit->orderTarget.pt = missile_target;
+						auto acquisition_range = 80;
+						//scbw::printFormattedText("Target? %d %d", tgt_x, tgt_y);
 						scbw::createBullet(10, unit, source_x, source_y, unit->playerId, unit->currentDirection1);
+
+
 					}
 				}
 				// Devourer - Critical Mass

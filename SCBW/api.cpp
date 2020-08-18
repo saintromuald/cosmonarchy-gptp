@@ -505,10 +505,7 @@ Point32 rotate_point(Point32 anchor, Point32 point, double angle_degrees) {
 
 
 double bw_angle_to_normal(s32 bw_angle) {
-	double angle = (double)(bw_angle*1.40625);
-	if (angle < 0) {
-		angle += 360;
-	}
+	double angle = (double)bw_angle*1.40625;
 	return angle;
 }
 s32 getPolarX(s32 distance, u8 angle) {
