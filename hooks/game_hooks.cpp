@@ -328,7 +328,7 @@ public:
 		if (!(unit->status & UnitStatus::Completed)) return;
 
 		u32 stacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TreasuryStacks, 0);
-		if (*elapsedTimeFrames % 24 == 0 && stacks == 0) {
+		if (*elapsedTimeFrames % 18 == 0 && stacks == 0) {
 			unit->sprite->createUnderlay(1060, 0, 0, 0);
 		}
 
