@@ -77,9 +77,9 @@ namespace hooks {
 		switch (unit_id) {
 		case UnitId::scv://0x7
 /*		case UnitId::mole:
-		case UnitId::engineer:
+		case UnitId::engineer:*/
 			order = OrderId::BuildTerran;
-			break;*/
+			break;
 		case UnitId::drone://0x29
 			order = OrderId::DroneStartBuild;
 			break;
