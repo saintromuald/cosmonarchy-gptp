@@ -480,8 +480,8 @@ struct CUnitLayout {
 					//0x10 - hierophant signify update speed flag
 					//0x20 - update console - new parasite 
 					//0x40 - warp flash
-/*-133-*/ u8        _padding_0x133;//shaman timer
-/*0x134*/ UnitAiPtr* pAI;
+/*-133-*/ u8        _padding_0x133; //shaman timer
+/*0x134*/ void*		pAI;
 /*0x138*/ u16       airStrength;
 /*0x13A*/ u16       groundStrength;
 /*0x13C*/ struct { u32 left, right, top, bottom; } finderIndex;  // Ordering for unit boundries in unit finder for binary search

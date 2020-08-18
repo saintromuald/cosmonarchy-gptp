@@ -43,27 +43,27 @@ struct UnitAi {
 	u32		field24;			// 0x24
 	u32		field28;			// 0x28
 };*/
-
+/*
 struct pathing {
 	u16 regionCount;
 	u16 unk1;
 	u16 unk2;
 	SplitRegion* unkSplit;
-	u16 mapTileRegions[0x100];
-	u32 splitRegions[0x927c];
-	AiCaptain* regions[0x1388];
-	u16 manyNeighborIds[0x2710];
+	u16 mapTileRegions[256];
+	u32 splitRegions[37500];
+	AiCaptain* regions[5000];
+	u16 manyNeighborIds[10000];
 	ContourData* contourData;
 };
-C_ASSERT(sizeof(pathing) == 0x97a20);
-
+C_ASSERT(sizeof(pathing) == 621088); // 0x97a20
+*//*
 struct SplitRegion {
 	u16 minitileFlags;
 	u16 regionFalse;
 	u16 regionTrue;
 };
-C_ASSERT(sizeof(SplitRegion) == 6);
-
+C_ASSERT(sizeof(SplitRegion) == 6);*/
+/*
 struct ContourData {
 	Contour* topContours;
 	Contour* rightContours;
@@ -82,15 +82,15 @@ struct ContourData {
 	u16 topMinus1;
 	u16 rightPlus1;
 };
-C_ASSERT(sizeof(ContourData) == 0x38);
-
+C_ASSERT(sizeof(ContourData) == 56); // 0x38
+*//*
 struct Contour {
 	u16 pos[3];
 	u8 type; // Top, Right, Bottom, Left
 	u8 flags; // 0x3 = first_dodge, 0xc = last_dodge, 0x30 = 2bit _50x20 pos2_index, 0xc0 = 2bit _50x20 pos3_index
 };
 C_ASSERT(sizeof(Contour) == 8);
-
+*/
 struct bStringMap {
 	u8		value;				// 0x0
 	u8		id;					// 0x1
@@ -585,32 +585,64 @@ C_ASSERT(sizeof(GuiOverlay) == 44); //0x2C
 //static_assert(sizeof(GuiOverlay) == 44, "The size of the GuiOverlay structure is invalid");
 
 //-------- AI related stuff --------//
-
-struct UnitAiPtr {
-	UnitAiPtr* next;
-	UnitAiPtr* prev;
-	u8 type;
-};
-C_ASSERT(sizeof(UnitAiPtr) == 9);
-
+/*
 struct UnitAi {
 	UnitAi* next;
 	UnitAi* prev;
 	u8 type;
+};
+C_ASSERT(sizeof(UnitAi) == 9);
+
+struct GuardAi {
+	GuardAi* next;
+	GuardAi* prev;
+	u8 type;
+	u8 timesDied;
+	u8 unkA[2];
+	CUnit* parent;
+	u16 id;
+	Point16 home;
+	Point16 unkPos;
+	u8 unk1A[2];
+	u32 previousUpdate;
+};
+C_ASSERT(sizeof(GuardAi) == 32); // 0x20
+
+struct WorkerAi {
+	WorkerAi* next;
+	WorkerAi* prev;
+	u8 type;
 	u8 unk9;
 	u8 unkA;
-	u8 timer;
-	CUnit* unit;
-	AiCaptain* region;
+	u8 waitTimer;
+	u32 unkCount;
+	CUnit* parent;
 	AiTown* town;
-	u32 unk18;
-	u32 unk1C;
-	u32 unk20;
-	u32 unk24;
-	u32 unk28;
 };
-C_ASSERT(sizeof(UnitAi) == 0x2C);
+C_ASSERT(sizeof(WorkerAi) == 24); // 0x18
 
+struct BuildingAi {
+	BuildingAi* next;
+	BuildingAi* prev;
+	u8 type;
+	u8 trainQueueTypes[5];
+	u8 unkE[2];
+	CUnit* parent;
+	AiTown* town;
+	void* trainQueueValues[5];
+};
+C_ASSERT(sizeof(BuildingAi) == 44); // 0x2C
+
+struct MilitaryAi {
+	MilitaryAi* next;
+	MilitaryAi* prev;
+	u8 type;
+	u8 padding[3];
+	CUnit* parent;
+	AiCaptain* region;
+};
+C_ASSERT(sizeof(MilitaryAi) == 20); // 0x14
+*/
 struct AI_Main {
 /*000*/  s32 oreCollection;
 /*004*/  s32 gasCollection;
