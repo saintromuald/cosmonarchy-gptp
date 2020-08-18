@@ -187,6 +187,11 @@ namespace ValueId {
 		RemainingBuildTimeCopy = 49,
 		TreasuryStacks = 50,
 		SupplyProvidedValue = 51,
+
+		SkyfallTimer = 52,
+		SkyfallStacks = 53,
+		SkyfallX = 54,
+		SkyfallY = 55,
 	#if DELIVERANCE
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,
