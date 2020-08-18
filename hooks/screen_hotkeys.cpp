@@ -62,7 +62,6 @@ namespace hooks {
 				}
 			}
 		}
-		
 	}
 
 	Point16 screen_hotkeys[8] = { {0, 0} };
