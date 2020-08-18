@@ -42,7 +42,7 @@ namespace hooks {
 		bool bEndThere = false;
 
 		CUnit* target = unit->orderTarget.unit;
-		bool parasite = false;
+		//bool parasite = false;
 		if(target == NULL)
 			jump_to_676C4 = true;
 		else
@@ -60,11 +60,11 @@ namespace hooks {
 		else
 		if(!(units_dat::BaseProperty[target->id] & UnitProperty::Mechanical))
 			jump_to_676C4 = true;
-		else
+		/*else
 		if (target->parasiteFlags){
 			parasite = true;
 			jump_to_676C4 = true;
-		}
+		}*/
 		else
 		if(!(target->status & UnitStatus::Completed))
 			jump_to_676C4 = true;
@@ -74,8 +74,8 @@ namespace hooks {
 			if(
 				units_dat::GroupFlags[target->id].isZerg || 
 				units_dat::GroupFlags[target->id].isProtoss ||
-				!(units_dat::GroupFlags[target->id].isTerran ||
-					target->parasiteFlags)
+				!(units_dat::GroupFlags[target->id].isTerran /*||
+					target->parasiteFlags*/)
 			)
 			{
 				unit->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle,true);
@@ -294,11 +294,11 @@ namespace hooks {
 			} //if(!jump_to_676C4)
 
 			if(!bEndThere) { //jump_to_676C4 CASE
-
+				/*
 				if (parasite && unit->playerId == *LOCAL_NATION_ID && *activePortraitUnit!=NULL) {
 					char* message = (char*)statTxtTbl->getString(1101);
 					get_statTxt_Str_Func(*activePortraitUnit, *LOCAL_NATION_ID, message);
-				}
+				}*/
 
 				CImage* current_image = unit->sprite->images.head;
 

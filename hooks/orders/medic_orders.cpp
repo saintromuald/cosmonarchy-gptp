@@ -355,7 +355,6 @@ bool AI_AcquireHealTarget(CUnit* medic, CUnit* target) {
 		|| !scbw::isAlliedTo(medic->playerId, target->playerId)
 		|| target->playerId >= 8
 		|| medic->playerId >= 8
-		|| target->parasiteFlags!=0 //new
 		|| target->hitPoints >= units_dat::MaxHitPoints[type]
 		|| target->isFrozen()) {
 		return 0;
