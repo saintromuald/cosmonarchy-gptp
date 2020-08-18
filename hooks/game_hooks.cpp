@@ -7,6 +7,7 @@
 #include "psi_field.h"
 #include <cstdio>
 #include "CUnitExtended.h"
+#include "hooks/screen_hotkeys.h"
 
 const int hyperTrigger = 0x006509A0;
 const u32 Func_Sub4A01F0 = 0x004A01F0;
@@ -349,6 +350,7 @@ namespace hooks {
 			//This block is executed once every game.
 			if (*elapsedTimeFrames == 0) {
 				//Write your code here
+				hooks::initializeScreenLocations();
 				if (Globals.extended_sfx) {
 					new_sfxdata.extend();
 					new_sfxdata.set_extended_data();
