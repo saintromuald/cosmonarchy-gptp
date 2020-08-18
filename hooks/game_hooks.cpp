@@ -326,6 +326,12 @@ public:
 		if (units_dat::SupplyProvided[unit->id] == 0) return;
 		if (unit->playerId != _playerId && !scbw::isAlliedTo(_playerId, unit->playerId)) return;
 		if (!(unit->status & UnitStatus::Completed)) return;
+
+		u32 stacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TreasuryStacks, 0);
+		if (*elapsedTimeFrames % 24 == 0 && stacks == 0) {
+			unit->sprite->createUnderlay(1060, 0, 0, 0);
+		}
+
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::TreasuryStacks, 1, 0);
 		int supply = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SupplyProvidedValue, 0);
 		unit->setSupplyProvided(supply + 2);

@@ -135,26 +135,26 @@ CImage* CSprite::createOverlay(u32 imageId, s8 x, s8 y, u32 direction) {
 	}
 	return overlay;
 }
-/*
-CImage* CSprite::createOverlay(u32 imageId, s8 x, s8 y, u32 direction) {
-  assert(this);
-  CImage *overlay = unusedImages.popHead();
 
-  if (overlay) {
-	if (this->images.head)
-	  this->images.insertBefore<&CImage::link>(overlay, this->mainGraphic);
-	else {
-	  this->mainGraphic = overlay;
-	  this->images.insertAfterHead<&CImage::link>(overlay);
+CImage* CSprite::createUnderlay(u32 imageId, s8 x, s8 y, u32 direction) {
+	assert(this);
+	CImage* underlay = unusedImages.popHead();
+
+	if (underlay) {
+		if (this->images.head)
+			this->images.insertAfter<&CImage::link>(underlay, this->mainGraphic);
+		else {
+			this->mainGraphic = underlay;
+			this->images.insertBeforeHead<&CImage::link>(underlay);
+		}
+
+		underlay->initializeData(this, imageId, x, y);
+		createUpdateImageSomething(underlay);
+		updateImageDirection(underlay, direction);
 	}
-
-	overlay->initializeData(this, imageId, x, y);
-	createUpdateImageSomething(overlay);
-	updateImageDirection(overlay, direction);
-  }
-  return overlay;
+	return underlay;
 }
-*/
+
 //Identical to function @ 0x00498EA0
 CImage* CSprite::createTopOverlay(u32 imageId, s8 x, s8 y, u32 direction) {
 	assert(this);
@@ -173,6 +173,24 @@ CImage* CSprite::createTopOverlay(u32 imageId, s8 x, s8 y, u32 direction) {
 		updateImageDirection(overlay, direction);
 	}
 	return overlay;
+}
+CImage* CSprite::createTopUnderlay(u32 imageId, s8 x, s8 y, u32 direction) {
+	assert(this);
+	CImage* underlay = unusedImages.popHead();
+
+	if (underlay) {
+		if (this->images.head)
+			this->images.insertAfterHead<&CImage::link>(underlay);
+		else {
+			this->mainGraphic = underlay;
+			this->images.insertBeforeHead<&CImage::link>(underlay);
+		}
+
+		underlay->initializeData(this, imageId, x, y);
+		createUpdateImageSomething(underlay);
+		updateImageDirection(underlay, direction);
+	}
+	return underlay;
 }
 
 

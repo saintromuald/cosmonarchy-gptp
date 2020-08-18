@@ -43,9 +43,11 @@ struct CSprite {
 
 	/// Creates an image overlay over the main image of this sprite.
 	CImage* createOverlay(u32 imageId, s8 x = 0, s8 y = 0, u32 direction = 0);
+	CImage* createUnderlay(u32 imageId, s8 x = 0, s8 y = 0, u32 direction = 0);
 
 	/// Creates an image overlay on top of all other images of this sprite.
 	CImage* createTopOverlay(u32 imageId, s8 x = 0, s8 y = 0, u32 direction = 0);
+	CImage* createTopUnderlay(u32 imageId, s8 x = 0, s8 y = 0, u32 direction = 0);
 
 	void playForOverlay(u32 imageId, u8 anim);
 	/// Removes the first image overlay with an ID value between @p imageIdStart
