@@ -274,7 +274,7 @@ void updateStatusEffects(CUnit* unit) {
 	// Update speed based on upgrades or status effects
 
 	// Passenger Insurance: Dropship acceleration
-	if (unit->id == UnitId::TerranDropship && scbw::getUpgradeLevel(unit->playerId, UpgradeId::PassengerInsurance)) {
+	if (unit->id == UnitId::TerranDropship) {
 		unit->updateSpeed();
 	}
 
@@ -349,8 +349,7 @@ void updateStatusEffects(CUnit* unit) {
 		if (
 			!(unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)))
 		{
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SomaticImplants) && 
-				scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SomaticImplants, 0) == 1) {
+			if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SomaticImplants, 0) == 1) {
 
 				unit->updateSpeed();
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SomaticImplants, 0, 0);

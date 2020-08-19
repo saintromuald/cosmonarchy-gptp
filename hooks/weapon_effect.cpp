@@ -33,12 +33,7 @@ namespace hooks {
 					(weapons_dat::DamageBonus[weaponId]*256*scbw::getUpgradeLevel(bullet->srcPlayer,weapons_dat::DamageUpgrade[weaponId]));
 			if(bullet->hitFlags & 2){
 				//hallucination
-				if(scbw::getUpgradeLevel(bullet->srcPlayer,UpgradeId::EphemeralBlades)){
-					damage /= 2;
-				}
-				else {
-					damage = 0;
-				}
+				damage /= 2;
 			}
 			if(damage>=dsw->hitPoints){
 				dsw->remove();
@@ -311,9 +306,6 @@ namespace hooks {
 	if(bounces){
 		if(mutalisk) {
 			int bounceCount = 2;
-			if (bullet->sourceUnit != NULL && scbw::getUpgradeLevel(bullet->sourceUnit->playerId, UpgradeId::LitheOrganelle)) {
-				bounceCount++;
-			}
 			divisor = bounceCount - bullet->remainingBounces;
 			/*
 			for (int i = 2 - bullet->remainingBounces; i != 0; i--) {

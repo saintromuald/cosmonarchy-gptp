@@ -99,10 +99,7 @@ namespace hooks {
 	;
 
 	u32 adjustFlags(u32 flags, u32 player) {
-		if (scbw::getUpgradeLevel(player, UpgradeId::NydalTransfusion)) {
-			return 0xffffffff;//don't check any creep tile flags for nydus placement
-		}
-		return flags;
+		return 0xffffffff;//don't check any creep tile flags for nydus placement
 	}
 }
 ;

@@ -271,10 +271,7 @@ void function_00468420(CUnit* unit) {
 
 			if(jump_to_685D8) {
 				if (builtUnit!=NULL && builtUnit->id == UnitId::ProtossCarrier) {
-					int interceptors = 4;
-					if (scbw::getUpgradeLevel(builtUnit->playerId, UpgradeId::AuxilliaryHangars)) {
-						interceptors = 8;
-					}
+					int interceptors = 8;
 
 					u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
 					buf[0] = 0x99;//new general command

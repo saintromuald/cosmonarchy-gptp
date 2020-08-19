@@ -1176,9 +1176,7 @@ void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer, CUn
 			}
 			scbw::sendGPTP_aise_cmd(unit, creator, GptpId::SetGenericUnit, ValueId::BroodlingMother, 0, 0);
 
-			if (scbw::getUpgradeLevel(playerId, UpgradeId::GameteMeiosis)) {
-				if (creator != NULL) creator->energy = std::min((u16)(creator->energy + (u16)5 * (u16)256), creator->getMaxEnergy()); // Parasite and Incubators
-			}
+			if (creator != NULL) creator->energy = std::min((u16)(creator->energy + (u16)5 * (u16)256), creator->getMaxEnergy()); // Parasite and Incubators
 		}
 	}
 }

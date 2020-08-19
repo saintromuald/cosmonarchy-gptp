@@ -324,21 +324,19 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		}
 	}
 	
-	if (unit->id == UnitId::broodling || unit->id==UnitId::infested_terran) {
-		if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::EnsnaringBrood)) {
-			Box16 coords;
-			CThingy* ensnare_effect_sprite;
-			ensnare_effect_sprite = createThingyFunc(SpriteId::Ensnare, unit->position.x, unit->position.y, 0);
-			if (ensnare_effect_sprite != NULL) {
-				ensnare_effect_sprite->sprite->elevationLevel = 19; //0x13
-				setThingyVisibilityFlagsFunc(ensnare_effect_sprite);
-			}
-			coords.top = unit->position.y - 64;
-			coords.right = unit->position.x + 64;
-			coords.left = unit->position.x - 64;
-			coords.bottom = unit->position.y + 64;
-			IterateUnitsAtLocationTargetProc_EnsnareFunc(unit, &coords);
+	if (unit->id==UnitId::infested_terran) {
+		Box16 coords;
+		CThingy* ensnare_effect_sprite;
+		ensnare_effect_sprite = createThingyFunc(SpriteId::Ensnare, unit->position.x, unit->position.y, 0);
+		if (ensnare_effect_sprite != NULL) {
+			ensnare_effect_sprite->sprite->elevationLevel = 19; //0x13
+			setThingyVisibilityFlagsFunc(ensnare_effect_sprite);
 		}
+		coords.top = unit->position.y - 64;
+		coords.right = unit->position.x + 64;
+		coords.left = unit->position.x - 64;
+		coords.bottom = unit->position.y + 64;
+		IterateUnitsAtLocationTargetProc_EnsnareFunc(unit, &coords);
 	}
 
 	//defiler plague upgrade (unknown id), add condition later
