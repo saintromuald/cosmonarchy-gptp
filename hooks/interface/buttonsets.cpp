@@ -717,41 +717,10 @@ namespace hooks {
 
 						current_button_state = req_check((u32)current_button->reqFunc, (u8)current_button->reqVar, (u8)*LOCAL_NATION_ID, *activePortraitUnit);
 						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Upgrade_Not_At_Max_Level) {
-
-							// Escalation upgrade handling
-/*							if (current_button->actVar == UpgradeId::EscalateCyprian) {
-								if (scbw::get_aise_value(NULL, NULL, AiseId::RecvEscalationValue, (*activePortraitUnit)->playerId,
-									UnitId::TerranFirebat) == UnitId::TerranCyprian) {
-									current_button->iconID = UnitId::TerranFirebat;
-								}
-							}
-							if (current_button->actVar == UpgradeId::EscalateShaman) {
-								if (scbw::get_aise_value(NULL, NULL, AiseId::RecvEscalationValue, (*activePortraitUnit)->playerId,
-									UnitId::TerranMedic) == UnitId::TerranShaman) {
-									current_button->iconID = UnitId::TerranMedic;
-								}
-							}
-							if (current_button->actVar == UpgradeId::EscalateAzazel) {
-								if (scbw::get_aise_value(NULL, NULL, AiseId::RecvEscalationValue, (*activePortraitUnit)->playerId,
-									UnitId::TerranScienceVessel) == UnitId::TerranAzazel) {
-									current_button->iconID = UnitId::TerranAzazel;
-								}
-							}*/
+							// Escalations were here
 						}
 
 						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Can_Create_UnitorBuilding) {
-
-							// Escalation unit handling
-/*							if (current_button->reqVar == UnitId::TerranFirebat) {
-								if (scbw::get_aise_value(NULL, NULL, AiseId::RecvEscalationValue, (*activePortraitUnit)->playerId, UnitId::TerranFirebat) != UnitId::TerranFirebat) {
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-							}
-							else if (current_button->reqVar == UnitId::TerranCyprian) {
-								if (scbw::get_aise_value(NULL, NULL, AiseId::RecvEscalationValue, (*activePortraitUnit)->playerId, UnitId::TerranFirebat) != UnitId::TerranCyprian) {
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-							}*/
 
 							// Barracks buttonset handling
 							if (current_button->reqVar == UnitId::TerranFirebat
