@@ -726,7 +726,7 @@ namespace hooks {
 					auto timer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DarkTemplarTimer, 0);
 					if (timer == 1) {
 						for (int i = 0; i < 8; i++) {
-							if (!scbw::isAlliedTo(i, unit->playerId)) {
+							if (!scbw::isAlliedTo(unit->playerId, i)) {
 								if (unit->visibilityStatus & (1 << i)) {
 									unit->visibilityStatus &= ~(1 << i);
 								}
