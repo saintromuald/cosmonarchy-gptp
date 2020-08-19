@@ -275,7 +275,7 @@ namespace hooks {
 				if (function_004E76C0(transport, unit, &pos) != 0) {
 
 					transport->mainOrderTimer = 15;
-					if (scbw::getUpgradeLevel(transport->playerId, UpgradeId::Hotdrop)) {
+					if (transport->id == UnitId::TerranDropship) {
 						transport->mainOrderTimer = 6;
 					}
 
