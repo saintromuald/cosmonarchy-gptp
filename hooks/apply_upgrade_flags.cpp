@@ -38,7 +38,7 @@ void applyUpgradeFlagsToExistingUnitsHook(CUnit* unit, u8 upgradeId) {
 
 	bool bCooldownUpgrade = false;	//[EBP-01]
 	bool bSpeedUpgrade = true;		//[EBP-02]
-	/*if (unit->id == UnitId::vulture) {
+	/*if (unit->id == UnitId::TerranVulture) {
 		if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::IonPropulsion) && unit->sprite != NULL) {
 			unit->sprite->elevationLevel = 12;
 		}
