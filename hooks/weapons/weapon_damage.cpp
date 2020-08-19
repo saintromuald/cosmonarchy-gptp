@@ -515,7 +515,7 @@ namespace hooks {
 
 			if (attacker != NULL && target != NULL) {
 			#ifdef HYDRA
-				if (attacker->id == UnitId::dark_templar && attacker->playerId) {
+				if (attacker->id == UnitId::ProtossDarkTemplar && attacker->playerId) {
 					bool silent_kill = false;
 					if (damage >= target->hitPoints) {
 						silent_kill = true;
