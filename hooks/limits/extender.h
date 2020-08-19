@@ -65,7 +65,7 @@ namespace TblPatchType {
 		RegisterPointerMov,
 		RegisterCmp,
 		RegisterWriting,
-
+		NopPatch,
 
 		
 	};

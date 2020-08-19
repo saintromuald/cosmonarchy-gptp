@@ -298,9 +298,9 @@ namespace hooks {
 			0,
 			0,
 
-			//
-			// GIANT PROBLEM: Ptr Comparison increase 
-			//
+//
+// GIANT PROBLEM: Ptr Comparison increase 
+//
 			TblPatchType::PtrWriting,
 			Reg::_EAX,Reg::_ECX,
 			0x0042350A,0x6d4,
@@ -397,8 +397,90 @@ namespace hooks {
 //
 // 1 nop
 //
+			TblPatchType::RegisterPointerCmp,
+			Reg::L_AX,Reg::_ECX,
+			0x00426083,
+			0x00426154,
+			0x004266B1,
+			0x00426894,
+			0x00426BB5,
+			0x0042718E,
+			0x00427392,
+			0x00427681,
+			0x00455C45,
+			0x00457BB1,
+			0x00464EB1,
+			0x0046F8A6,
+			0x0046F98D,
+			0x0047B0D1,
+			0x0048D95F,
+			0x0048EEB1,
+			0x0048F766,
+			0x0048F856,
+			0x00494573,
+			0x004C3701,
+			0,
+			Reg::L_CX,Reg::_EDX,0x004276F5,0,
+			Reg::L_AX,Reg::_EDX,0x004277A0,0,
+			Reg::L_CX,Reg::_ESI,0x004927D3,0,
+			Reg::L_AX,Reg::_ESI,0x0042762A,
+			0,
+			0,
+//
+//	1 nop
+//
+			TblPatchType::RegisterPointerMov,
+			Reg::L_DI,Reg::_ECX,
+			0x004575C4,
+			0x00457602,
+			0x0045773F,
+			0,
 
-
+			Reg::L_DX,Reg::_ECX,
+			0x004577B7,
+			0x00457934,
+			0x00457993,
+			0x00457A2B,
+			0,
+			0,
+// 1 nop
+			TblPatchType::RegisterCmp,
+			Reg::L_DX,
+			0x004577BA, 0x514,
+			0x00457937, 0x308,
+			0x0045794E, 0x316,
+			0x00457996, 0x308,
+			0x00457A2E, 0x308,
+			0,
+			Reg::L_DI,
+			0x004575C7, 0x324,
+			0x00457605, 0x325,
+			0x00457742, 0x514,
+			0,
+			0,
+//SERIOUS PROBLEM - 1 extra byte
+			TblPatchType::RegisterWriting,
+			Reg::_EDX,Reg::L_AX,
+			0x00455C51,
+			0x00464EBD,
+			0x0046F8B2,
+			0x0047B0DC,
+			0x0048D96B,
+			0x0048EEBD,
+			0,
+			0,
+			TblPatchType::NopPatch,3,
+			0x0042609B,
+			0x0042616C,
+			0x00427636,
+			0x004C370C,
+			0x004277AC,
+			0x0048F862,
+			0x0046F9A8,
+			0x00457BBD,
+			0x00427701,
+			0,
+			0,
 		};
 	}
 	void injectTblExtender() {
@@ -408,76 +490,10 @@ namespace hooks {
 		for (int i = 0; i < ptr_list.size(); i++) {
 			memoryPatch(ptr_list[i], (u32)&extendedTbl);
 		}
-		
-		// Pointer writing with math \\
-		//
-		//
-		
-		// Register-pointer comparisons \\
-
-		//00426083  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//00426154  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//004266B1  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//00426894  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//00426BB5  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//0042718E  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//00427392   .  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//0042762A  |.  66:3B06       CMP AX,WORD PTR DS:[ESI]
-		//00427681  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//004276F5  |.  66:3B0A       CMP CX,WORD PTR DS:[EDX]
-		//004277A0 | .  66:3B02       CMP AX,WORD PTR DS:[EDX]
-		//00455C45  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
-				//00457BB1  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//00464EB1  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//0046F8A6  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//0046F98D  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//0047B0D1  |>  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//0048D95F  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//0048EEB1   .  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//0048F766  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//0048F856  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//004927D3  |.  66:3B0E       CMP CX,WORD PTR DS:[ESI]
-		//00494573  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
-		//004C3701  |.  66:3B01       CMP AX,WORD PTR DS:[ECX]
-
-		//Register-pointer movements
-		//004575C4  |.  66:8B39       MOV DI,WORD PTR DS:[ECX]
-		//00457602  |.  66:8B39       MOV DI,WORD PTR DS:[ECX]
-		//0045773F  |.  66:8B3A       MOV DI,WORD PTR DS:[EDX]
-		//004577B7  |.  66:8B11       MOV DX,WORD PTR DS:[ECX]
-		//00457934  |.  66:8B11       MOV DX,WORD PTR DS:[ECX]
-		//00457993	| .  66:8B11      MOV DX,WORD PTR DS:[ECX]
-		//00457A2B  |.  66:8B11       MOV DX,WORD PTR DS:[ECX]
 
 
-		// Register comparisons \\
-		//004575C7  |.  66:81FF 2403  CMP DI,324
-		//00457605  |.  66:81FF 2503  CMP DI,325
-		//00457742  |.  66:81FF 1405  CMP DI,514
-		//004577BA  |.  66:81FA 1405  CMP DX,514
-		//00457937	| . 66:81FA 0803  CMP DX,308
-		//0045794E  |>  66:81FA 1603  CMP DX,316
-		//00457996	| . 66:81FA 0803  CMP DX,308
-		//00457A2E  |.  66:81FA 0803  CMP DX,308
-
-		// Register writing \\
-		//0042609B  |>  0FB7C0        MOVZX EAX,AX
-		//0042616C  |>  0FB7C0        MOVZX EAX,AX
-		//00427636  |>  0FB7C0        MOVZX EAX,AX
-		//00427701  |>  0FB7C9        MOVZX ECX,CX
-		//004277AC	| >	0FB7C0        MOVZX EAX,AX			
-		//00455C51  |>  0FB7D0        MOVZX EDX,AX
-		//00457BBD  |>  0FB7C0        MOVZX EAX,AX
-		//00464EBD  |>  0FB7D0        MOVZX EDX,AX
-		//0046F8B2  |>  0FB7D0        MOVZX EDX,AX
-		//0046F9A8  |>  0FB7C0        MOVZX EAX,AX
-		//0047B0DC  |>  0FB7D0        MOVZX EDX,AX
-		//0048D96B  |>  0FB7D0        MOVZX EDX,AX
-		//0048EEBD   >  0FB7D0        MOVZX EDX,AX
-		//0048F862  |>  0FB7C0        MOVZX EAX,AX
 		//004927DF  |>  0FB7C1        MOVZX EAX,CX
-		//004C370C  |>  0FB7C0        MOVZX EAX,AX
-
+		//
 		/*
 		//TODO: REPLACE USAGE OF WORD IN REGARDS OF TBL TO DWORD
 		*/
