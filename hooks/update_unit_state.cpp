@@ -143,7 +143,7 @@ namespace hooks {
 					unit->spendUnitEnergy(cloakingEnergyCost);
 
 			}
-			else if (unit->id == UnitId::dark_archon && scbw::get_aise_value(unit,NULL,AiseId::SumMindControlCost,0,0)>0) {
+			else if (unit->id == UnitId::ProtossDarkArchon && scbw::get_aise_value(unit,NULL,AiseId::SumMindControlCost,0,0)>0) {
 				auto sum = scbw::get_aise_value(unit, NULL, AiseId::SumMindControlCost, 0, 0)/2;
 				unit->energy -= std::min(unit->energy, (u16)(16 * sum));
 				if (unit->energy == 0) {
@@ -313,13 +313,12 @@ namespace hooks {
 
 		}
 
-		if (unit->id == UnitId::reaver) {
+		if (unit->id == UnitId::ProtossReaver) {
 			CUnit* scarab = unit->carrier.inHangarChild;
 			while (scarab != NULL) {
-				if (scarab->id == UnitId::scarab) {
+				if (scarab->id == UnitId::ProtossScarab) {
 					if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::Relocators) && 
 						!(scarab->status & UnitStatus::InAir)) {
-						//scarab->status |= UnitStatus::InAir;
 						scarab->sprite->elevationLevel = 12;
 					}
 					scarab->shields = unit->shields;
@@ -333,16 +332,6 @@ namespace hooks {
 				unit->orderTarget.unit->unusedTimer = 180;
 			}
 		}
-		/*
-		if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::AdrenalinePacks) > 0) {
-			if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::Adrenaline, 0) == 1) {
-				scbw::printText("adrenaline timer stops");
-				if (unit->getOverlay(971)) {
-					scbw::printText("overlay detected, remove overlay");
-					unit->sprite->playForOverlay(971, IscriptAnimation::GndAttkInit);
-				}
-			}
-		}*/
 		if (unit->_padding_0x132 & 0x10) {//signify/shaman update speed flag
 			unit->_padding_0x132 &= ~0x10;
 			unit->updateSpeed();
@@ -496,11 +485,8 @@ namespace hooks {
 				{
 					auto caster = scbw::get_aise_value(unit, NULL, AiseId::GetMatrixCasterPlayer, 0, 0);
 					
-					if (caster < 8) {
-						if (scbw::getUpgradeLevel(caster, UpgradeId::InnervatingMatrices)) {
-							
-							unit->setHp(unit->hitPoints + 53);//256 * 5 / 24 = 53.333..
-						}
+					if (caster < 8) {						
+						unit->setHp(unit->hitPoints + 53);//256 * 5 / 24 = 53.333..
 					}
 				}
 
