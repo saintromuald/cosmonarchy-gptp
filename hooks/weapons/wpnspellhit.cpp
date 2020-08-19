@@ -6,12 +6,11 @@
 //Helper functions definitions
 
 
-class customPlagueProc : public scbw::UnitFinderCallbackProcInterface
-	{
-	private:
+class customPlagueProc : public scbw::UnitFinderCallbackProcInterface {
+private:
 	CUnit* defiler;
 
-	public:
+public:
 	customPlagueProc(CUnit* defiler)
 		: defiler(defiler) {}
 	void proc(CUnit* unit)
@@ -74,7 +73,7 @@ namespace hooks {
 				unitWithOverlay = target;
 			(unitWithOverlay->sprite)->createTopOverlay(irradiateImageId,0,0,0);
 		}
-		if(attacker!=NULL){{
+		if(attacker!=NULL){
 			target->_unknown_0x026 |= 0x2;
 		}
 		target->irradiateTimer = 8*3;
