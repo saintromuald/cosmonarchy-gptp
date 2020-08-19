@@ -4,20 +4,10 @@
 namespace hooks {
 	u32 realTopSpeed(CFlingy* flingy, u32 flingyId) {
 		u32 speed = scbw::getFlingyData(FlingyDatEntries::TopSpeed, flingyId);
-		if (Globals.flingy_init_bullet_id == 22) {
-			if (scbw::getUpgradeLevel(Globals.flingy_init_player_id, UpgradeId::RequiemAfterburners)) {
-				speed += speed / 2;
-			}
-		}
 		return speed;
 	}
 	u16 realAcceleration(CFlingy* flingy, u32 flingyId) {
 		u16 acceleration = scbw::getFlingyData(FlingyDatEntries::Acceleration, flingyId);
-		if (Globals.flingy_init_bullet_id == 22) {
-			if (scbw::getUpgradeLevel(Globals.flingy_init_player_id, UpgradeId::RequiemAfterburners)) {
-				acceleration += acceleration / 2;
-			}
-		}
 		return acceleration;
 	}
 	bool is_high_templar_conduit(u16 unitId) {
