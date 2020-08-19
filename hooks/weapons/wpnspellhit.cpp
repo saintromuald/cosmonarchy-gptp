@@ -74,9 +74,8 @@ namespace hooks {
 				unitWithOverlay = target;
 			(unitWithOverlay->sprite)->createTopOverlay(irradiateImageId,0,0,0);
 		}
-		if(attacker!=NULL){{
+		if(attacker!=NULL)
 			target->_unknown_0x026 |= 0x2;
-		}
 		target->irradiateTimer = 8*3;
 		target->irradiatedBy = attacker;
 		target->irradiatePlayerId = attackingPlayerId;	
