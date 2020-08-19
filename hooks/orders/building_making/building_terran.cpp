@@ -718,7 +718,7 @@ void orders_SCVBuild(CUnit* unit) {
 					v6.x = units_dat::AddonPlacement[v4].x;
 					v6.y = units_dat::AddonPlacement[v4].y;
 					if (*placeBuildingUnitId == UnitId::TerranFutureStation) {
-						if (*placeBuildBaseType == UnitId::academy || *placeBuildBaseType == UnitId::armory) {
+						if (*placeBuildBaseType == UnitId::TerranAcademy || *placeBuildBaseType == UnitId::TerranArmory) {
 							v6.x = 96;
 							v6.y = 0;
 						}
