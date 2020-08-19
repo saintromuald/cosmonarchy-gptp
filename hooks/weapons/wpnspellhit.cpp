@@ -73,14 +73,12 @@ namespace hooks {
 				unitWithOverlay = target;
 			(unitWithOverlay->sprite)->createTopOverlay(irradiateImageId,0,0,0);
 		}
-		if(attacker!=NULL){
+		if(attacker!=NULL)
 			target->_unknown_0x026 |= 0x2;
 		target->irradiateTimer = 8*3;
 		target->irradiatedBy = attacker;
-		target->irradiatePlayerId = attackingPlayerId;	
-
-	}
-	;
+		target->irradiatePlayerId = attackingPlayerId;
+	};
 
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
