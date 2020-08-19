@@ -928,6 +928,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ZergInfestedTerran &&  //Infested Terran Death March passive 
+									current_button->iconID == IconId::LegEnhancements)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossArchon &&  //Archon Aegis passive
 									current_button->iconID == IconId::RechargeShields)
 								{
@@ -944,6 +949,11 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								if ((*activePortraitUnit)->id == UnitId::ZergHive &&  //Hive-Collective Integration passive
+									current_button->iconID == IconId::Suicide_Scourge)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergSire &&  //Sire-Collective Integration passive
 									current_button->iconID == IconId::Suicide_Scourge)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
