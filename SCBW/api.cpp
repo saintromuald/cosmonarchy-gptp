@@ -668,6 +668,7 @@ bool isZergBuildingMorphResult(u16 id){
 	case UnitId::ZergSire:
 	case UnitId::ZergHive:
 	case UnitId::ZergLair:
+	case UnitId::ZergMutationPit:
 	case UnitId::ZergKeskathCavern:
 	case UnitId::ZergGuardianRoost:
 	case UnitId::ZergDevourerHaunt:
@@ -691,6 +692,7 @@ bool isZergBuildingMorphSource(u16 id){
 	case UnitId::ZergHive:
 	case UnitId::ZergLair:
 	case UnitId::ZergHatchery:
+	case UnitId::ZergEvolutionChamber:
 	case UnitId::ZergUltraliskCavern:
 	case UnitId::ZergSpire:
 	case UnitId::ZergCreepColony:
