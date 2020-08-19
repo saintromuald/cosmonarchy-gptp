@@ -828,32 +828,32 @@ namespace hooks {
 						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Spell_Researched)	{
 							if (current_button->reqVar == TechId::Healing && current_button->iconID != 365)	{
 								current_button_state = BUTTON_STATE::Disabled;
-								if ((*activePortraitUnit)->id == UnitId::ZergZergling &&  //Zergling-Adrenal passive
+								if ((*activePortraitUnit)->id == UnitId::ZergZergling &&  //Zergling Adrenal passive
 									current_button->iconID == IconId::AdrenalGlands)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergVorvaling && //Vorvaling-Adrenal passive
+								if ((*activePortraitUnit)->id == UnitId::ZergVorvaling && //Vorvaling Adrenal passive
 									current_button->iconID == IconId::MetabolicBoost)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk-Genesis passive
+								if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk Genesis passive
 									current_button->iconID == IconId::ZergAdvancedBuildings)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk-Dispersion passive
+								if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk Dispersion passive
 									current_button->iconID == IconId::ZergFlyerAttacks)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranFirebat && //Firebat passive
-									current_button->iconID == IconId::ZergFlyerAttacks)
+								if ((*activePortraitUnit)->id == UnitId::TerranFirebat && //Firebat Apollyoid passive
+									current_button->iconID == IconId::Flyer_Attack)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranShaman && //Shaman-Overcharge passive
+								if ((*activePortraitUnit)->id == UnitId::TerranShaman && //Shaman Overcharge passive
 									current_button->iconID == IconId::RechargeShields)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
