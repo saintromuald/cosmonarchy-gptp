@@ -535,7 +535,7 @@ namespace hooks {
 						hooks::IrradiateHit(attacker, target, attacker->playerId);
 					}
 				}
-				if (damage > target->getCurrentLifeInGame()) {
+				if (damage > target->hitPoints) {
 					//relic death effect
 					//scbw::printText("Check relic");
 
