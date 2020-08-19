@@ -131,15 +131,20 @@ namespace hooks {
 			}
 		}
 
-		// Leg Enhancements upgrade (Legionnaire): gains 125% movespeed
+		// Leg Enhancements upgrade (Zealot): gains 125% movespeed
+		else if (unit->id == UnitId::ProtossZealot) {
+			speed += speed / 2;
+		}
+
+		// Leg Enhancements upgrade (Legionnaire): gains 150% movespeed
 		else if (unit->id == UnitId::ProtossLegionnaire) {
-			speed += speed / 4;
+			speed += speed / 2;
 		}
 
 	#ifdef HYDRA
-		// Leg Enhancements upgrade (Dark Templar): gains 125% movespeed
+		// Leg Enhancements upgrade (Dark Templar): gains 120% movespeed
 		else if (unit->id == UnitId::ProtossDarkTemplar) {
-			speed += speed / 4;
+			speed += speed / 5;
 		}
 	#endif
 
@@ -151,7 +156,7 @@ namespace hooks {
 		}
 
 		// Safety Off ability: reduce movespeed
-		else if (unit->id == UnitId::TerranCyprian) { // cyprian
+		else if (unit->id == UnitId::TerranCyprian) {
 			if (scbw::get_aise_value(unit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
 				speed -= (speed / 3); // safety off
 			}
