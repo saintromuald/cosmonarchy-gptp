@@ -802,17 +802,14 @@ namespace hooks {
 
 		IterateUnitsAtLocationTargetProc_Plague(attacker,&coords);
 		if(attacker!=NULL){
-			if(scbw::getUpgradeLevel(attacker->playerId, UpgradeId::Metastasis)){
-				//scbw::printText("Plague Metastasis is researched");
-				customPlagueProc UpgPlague = customPlagueProc(attacker);
-				u32 range = 64;
-				scbw::UnitFinder unitFinder(x - range,
-					y - range,
-					x + range,
-					y + range);
-				unitFinder.forEach(UpgPlague);
-			}
-
+			//scbw::printText("Plague Metastasis is researched");
+			customPlagueProc UpgPlague = customPlagueProc(attacker);
+			u32 range = 64;
+			scbw::UnitFinder unitFinder(x - range,
+				y - range,
+				x + range,
+				y + range);
+			unitFinder.forEach(UpgPlague);
 		}
 
 	} //void PlagueHit(CUnit* attacker, int x, int y, CBullet* bullet)
