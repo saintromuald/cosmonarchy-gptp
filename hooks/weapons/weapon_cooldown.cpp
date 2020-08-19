@@ -13,7 +13,6 @@ namespace hooks {
 u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 
 	u32 cooldown = weapons_dat::Cooldown[weaponId];
-	u32 adrenalStacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0);
 
 	// Devourer - Corrosive Spores: lower attack speed of victim
 	if (unit->acidSporeCount != 0) {
@@ -31,20 +30,19 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 							+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
 
 	// Capacitors upgrade: gains increased attack speed while cloaked
-	if(scbw::getUpgradeLevel(unit->playerId, UpgradeId::Capacitors) && unit->id==UnitId::wraith &&
-		weaponId==WeaponId::BurstLasers && (unit->status & UnitStatus::Cloaked)){
+	if(unit->id==UnitId::wraith && weaponId==WeaponId::BurstLasers && (unit->status & UnitStatus::Cloaked)){
 		cooldown -= cooldown / 5;
 	}
 
 	// Ravening Mandible upgrade: gains increased attack speed based on current energy
-	if (unit->id==UnitId::ZergGorgoleth && scbw::getUpgradeLevel(unit->playerId, UpgradeId::RaveningMandible)) {
+	if (unit->id==UnitId::ZergGorgoleth) {
 		cooldown *= 0.75;
 		double value = MathUtils::map(unit->energy / 256, 100, 250, 1.0, 0.5, true);
 		cooldown *= value;
 	}
 
 	// Kaiser Rampage upgrade: gains double attack speed for 1 second
-	if (unit->id == UnitId::ZergUltralisk && scbw::getUpgradeLevel(unit->playerId, UpgradeId::KaiserRampage)) {
+	if (unit->id == UnitId::ZergUltralisk) {
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
 			cooldown /= 2;
 		}
@@ -73,8 +71,9 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 	if (unit->stimTimer) {		// Fixes aice-related Stimpack issue
 		cooldown += 2;
 	}
+	u32 adrenalStacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0);
 	if (adrenalStacks) {
-		cooldown -= adrenalStacks;
+		cooldown -= adrenalStacks / 2;
 	}
 	if (cooldown > 250)			// Max cutoff
 		cooldown = 250;

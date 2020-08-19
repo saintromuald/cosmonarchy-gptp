@@ -77,7 +77,7 @@ namespace hooks {
 			if (unit->id == UnitId::TerranWyvern && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabOn, 0) == 1) {
 				good = false;
 			}
-			if (weaponId == WeaponId::SubterraneanSpines && scbw::getUpgradeLevel(unit->playerId, UpgradeId::SeismicSpines) > 0) {
+			if (weaponId == WeaponId::SubterraneanSpines) {
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::LurkerETA, 17, 0);
 				auto range = weapons_dat::MaxRange[weaponId] + 16;
 				int angle = scbw::getAngle(unit->getX(), unit->getY(), unit->orderTarget.unit->getX(), unit->orderTarget.unit->getY());
@@ -93,8 +93,7 @@ namespace hooks {
 				createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 			}
 
-			if (weaponId == WeaponId::SubterraneanTentacle && scbw::getUpgradeLevel(unit->playerId, UpgradeId::TendrilAmitosis) &&
-				unit->orderTarget.unit != NULL) {
+			if (weaponId == WeaponId::SubterraneanTentacle && unit->orderTarget.unit != NULL) {
 				auto range = weapons_dat::MaxRange[WeaponId::SubterraneanTentacle];
 				auto a = scbw::UnitFinder::getNearestTarget(
 					unit->getX() - range, unit->getY() - range,

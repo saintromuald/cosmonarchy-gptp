@@ -8,6 +8,7 @@
 #include <cstdio>
 #include "CUnitExtended.h"
 #include "hooks/screen_hotkeys.h"
+#include "Utils/captivating_claws.h"
 
 const int hyperTrigger = 0x006509A0;
 const u32 Func_Sub4A01F0 = 0x004A01F0;
@@ -312,12 +313,10 @@ public:
 		}
 		unit->setHp(unit->hitPoints + (6 * 256));
 		if (unit->getCurrentHpInGame() == unit->getMaxHpInGame() && reqHeal) {
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::AdrenalinePacks) > 0) {
-				if (!unit->getOverlay(971)) {
-					unit->sprite->createTopOverlay(971);
-				}
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::Adrenaline, 1 + (2 * 24), 0);
+			if (!unit->getOverlay(971)) {
+				unit->sprite->createTopOverlay(971);
 			}
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::Adrenaline, 1 + (2 * 24), 0);
 			return;
 		}
 
@@ -428,7 +427,7 @@ namespace hooks {
 				CUnitExtended::get(unit)->tick();
 
 				// Legionnaire - Blade Vortex
-				if (unit->id == UnitId::ProtossLegionnaire && scbw::getUpgradeLevel(unit->playerId,UpgradeId::BladeVortex)) {
+				if (unit->id == UnitId::ProtossLegionnaire) {
 					//teleport jump
 					if (unit->orderTarget.unit != NULL && (unit->mainOrderId==OrderId::Attack1 || unit->mainOrderId==OrderId::AttackUnit)) {
 						auto target = unit->orderTarget.unit;
@@ -603,7 +602,7 @@ namespace hooks {
 
 				// Vorvaling - Captivating Claws
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::CaptivatingClawsTimer, 0) == 1) {
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::CaptivatingClawsStacks, 0, 0);
+					captivating_claws::clearCaptivatingClawsSources(unit);
 				}
 
 				// GAME RULE
@@ -677,19 +676,10 @@ namespace hooks {
 					unit->playIscriptAnim(IscriptAnimation::Unused1);
 				}
 
-				// Lurker - Tectonic Claws animation
-				if (unit->id == UnitId::ZergLurker && unit->orderSignal & 0x80) {
-					unit->orderSignal &= ~0x80;
-					if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::TectonicClaws) == 1) {
-						unit->playIscriptAnim(IscriptAnimation::Unused3);
-					}
-				}
-
 				// Centaur - Sunchaser Missiles animation
 				if (unit->id == UnitId::TerranCentaur && unit->orderSignal & 0x20) {
 					unit->orderSignal &= ~0x20;
-						if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SunchaserMissiles) == 1
-						&& unit->getDistanceToTarget(unit->orderTarget.unit) <= 128) {
+						if (unit->getDistanceToTarget(unit->orderTarget.unit) <= 128) {
 							unit->playIscriptAnim(IscriptAnimation::Unused1);
 					}
 				}

@@ -4,6 +4,7 @@
 #include "CUnitExtended.h"
 #include "MathUtils.h"
 #include "../orders/spells/hallucination_spell.h"
+#include "Utils/captivating_claws.h"
 
 namespace {
 	//Helper functions
@@ -186,10 +187,6 @@ public:
 			) {
 			return;
 		}
-		if (!(scbw::getUpgradeLevel(unit->playerId,
-			UpgradeId::Ascendancy))) {
-			return;
-		}
 		bool show = true;
 		if (unit->energy == unit->getMaxEnergy()) {
 			show = false;
@@ -271,7 +268,6 @@ public:
 	}
 
 	void proc(CUnit* unit) {
-		bool astral_tempest_researched = scbw::getUpgradeLevel(unit->playerId, UpgradeId::AstralTempest) != 0;
 		if (_playerID != unit->playerId && !scbw::isAlliedTo(_playerID, unit->playerId)) return; // Ally Check
 		if (astral_tempest_researched) { // Astral Tempest Check
 			//imgul(unit->sprite, 1520, 0, 0, 0);
@@ -325,8 +321,8 @@ namespace hooks {
 					if (target->status & UnitStatus::IsHallucination)
 						damage *= 2;*/
 
-			if (attacker != NULL && weaponId == WeaponId::Claws && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::AdrenalGlands)) {
-				if (scbw::get_aise_value(attacker, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0) < 5) {
+			if (attacker != NULL && weaponId == WeaponId::Claws) {
+				if (scbw::get_aise_value(attacker, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0) < 4) {
 					scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::AddGenericValue, ValueId::AdrenalStacks, 1, 0);
 				}
 				scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::AdrenalTimer, 49, 0); //49 is 2 seconds (48) + 1
@@ -348,16 +344,15 @@ namespace hooks {
 			}
 
 			// Vorvaling - Captivating Claws
-			if (attacker != NULL && weaponId == WeaponId::VorvalClaws && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::CaptivatingClaws) == 1) {
-				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::CaptivatingClawsStacks, 0) < 4) {
-					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::CaptivatingClawsStacks, 1, 0);
+			if (attacker != NULL && weaponId == WeaponId::VorvalClaws) {
+				if (captivating_claws::canApplyCaptivatingClaws(attacker, target)) {
+					captivating_claws::addCaptivatingClawsSource(attacker, target);
 				}
-				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::CaptivatingClawsTimer, 25, 0);
 			}
 
 		#ifdef DELIVERANCE
 			// Ecclesiast Astral Blessing
-			if (attacker != NULL && weaponId == WeaponId::EcclesiastWeapon && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::AstralBlessing)) {
+			if (attacker != NULL && weaponId == WeaponId::EcclesiastWeapon) {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0) < 10) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::EcclesiastStack, 1, 0);
 				}
@@ -379,18 +374,15 @@ namespace hooks {
 					mul = 1.0;
 					break;
 				case 1:
-					mul = 1.0 / 3.0;//glave wurm 1st bounce
+					mul = 1.0 / 3.0; // glave wurm 1st bounce
 					break;
 				case 2:
 					mul = 1.0 / 6.0;
 					break;
 				default:
-					mul = 1.0 / 9.0;//glave wurm 2nd bounce
+					mul = 1.0 / 9.0; // glave wurm 4th bounce
 					break;
 				};
-				if (mul != 1 && attacker != NULL && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::AblativeWurm)) {
-					mul *= 1.5;
-				}
 				int dmg = ((double)damage * mul);
 				/*
 				char buf[64];
@@ -409,27 +401,7 @@ namespace hooks {
 			}
 			if (damage < 128)
 				damage = 128;
-			if (attacker != NULL) {
-				if (attacker->id == UnitId::ZergBroodling && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::EnsnaringBrood)
-					&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)
-					&& target->id != UnitId::ZergBroodling
-					&& target->id != UnitId::ZergInfestedTerran) {
-					u32 overlayImageId;
-					if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay)
-						overlayImageId = ImageId::EnsnareOverlay_Medium;
-					else
-						if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay)
-							overlayImageId = ImageId::EnsnareOverlay_Large;
-						else
-							overlayImageId = ImageId::EnsnareOverlay_Small;
-					if (!target->getOverlay(overlayImageId)) {
-						target->sprite->createTopOverlay(overlayImageId,
-							0, 0, 0);
-					}
-					target->ensnareTimer = 30;
-					target->updateSpeed();
-				}
-			}
+
 			//Reduce Defensive Matrix
 			if (target->defensiveMatrixHp != 0) {
 
@@ -450,7 +422,7 @@ namespace hooks {
 
 			if (weaponId == WeaponId::EssenceDrain && attacker != NULL) {
 				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
-					u32 amount = scbw::getUpgradeLevel(attacker->playerId, UpgradeId::VitalEncephalon) ? 75 * 256 : 50 * 256;
+					u32 amount = 75 * 256;
 					if (target->energy < amount) {
 						amount = target->energy;
 					}
@@ -469,18 +441,7 @@ namespace hooks {
 
 				if (damageType != DamageType::IgnoreArmor) {
 
-					s32 plasmaShieldUpg = scbw::getUpgradeLevel(target->playerId,
-						UpgradeId::ProtossPlasmaShields) * 256;
-					if (target->id == UnitId::dragoon || target->id == UnitId::tassadar_zeratul) {
-						if (scbw::getUpgradeLevel(target->playerId, UpgradeId::TaldarinsGrace)) {//taldarin's grace
-							plasmaShieldUpg += 256;
-						}
-					}
-					if (target->id == UnitId::photon_cannon) {
-						if (scbw::getUpgradeLevel(target->playerId, UpgradeId::PrismaticShield)) {//taldarin's grace
-							plasmaShieldUpg += 512;
-						}
-					}
+					s32 plasmaShieldUpg = scbw::getUpgradeLevel(target->playerId, UpgradeId::ProtossPlasmaShields) * 256;
 					if (damage > plasmaShieldUpg) //Weird logic, Blizzard dev must have been sleepy
 						damage -= plasmaShieldUpg;
 					else
@@ -489,7 +450,7 @@ namespace hooks {
 				}
 				shieldReduceAmount = std::min(damage, target->shields);
 				if (attacker != NULL && target != NULL) {
-					if (attacker->id == UnitId::ZergUltralisk && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::SaberSiphon)) {
+					if (attacker->id == UnitId::ZergUltralisk) {
 						u32 lifesteal = shieldReduceAmount / 2;
 						attacker->setHp(attacker->hitPoints + lifesteal);
 					}
@@ -507,12 +468,10 @@ namespace hooks {
 
 				if (attacker != NULL && target != NULL) {
 					armorTotal += scbw::get_aise_value(target, NULL, AiseId::GetShepherds, 0, 0) * 256;
-					if (scbw::getUpgradeLevel(target->playerId, UpgradeId::AdrenalinePacks) > 0) {
-						if (scbw::get_aise_value(target, NULL, AiseId::GenericTimer, ValueId::Adrenaline, 0) > 0) {
-							armorTotal += 512;
-						}
+					if (scbw::get_aise_value(target, NULL, AiseId::GenericTimer, ValueId::Adrenaline, 0) > 0) {
+						armorTotal += 512;
 					}
-					if (target->id == UnitId::TerranBattlecruiser && scbw::getUpgradeLevel(target->playerId, UpgradeId::ForeCastle)) {
+					if (target->id == UnitId::TerranBattlecruiser) {
 						u16 angle = scbw::getAngle(target->position.x, target->position.y,
 							attacker->position.x, attacker->position.y);
 						u16 unit_angle = target->velocityDirection1;
@@ -534,44 +493,33 @@ namespace hooks {
 			//Apply damage type/unit size factor (not checked by UndeadStar, I will hope it work)
 			s32 damage_factor = damageFactor[damageType].unitSizeFactor[units_dat::SizeType[target->id]];
 			if (attacker != NULL) {
-				if (attacker->id == UnitId::firebat && scbw::getUpgradeLevel(attacker->playerId, 50)) {
+				if (attacker->id == UnitId::firebat) {
 					if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
 						damage_factor = 256;
 					}
 				}
 			}
-			if (weaponId == WeaponId::YamatoGun) {
-				if (scbw::getUpgradeLevel(attackingPlayerId, UpgradeId::UmojanBatteries)) {
-					damage += 256 * 50;
-				}
-			}
-			if (weaponId == WeaponId::NuclearMissile) {
-				if (scbw::getUpgradeLevel(attackingPlayerId, UpgradeId::AugustgradsRevenge)) {
-					damage += 256 * 250;
-				}
-			}
 
 			damage = (damage * damage_factor) / 256;
 			if (attacker != NULL && target != NULL) {
-				if (attacker->id == UnitId::ZergUltralisk && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::SaberSiphon)) {
+				if (attacker->id == UnitId::ZergUltralisk) {
 					u32 lifesteal = damage / 2;
 					attacker->setHp(attacker->hitPoints + lifesteal);
 				}
 			}
 			if (shieldReduceAmount == 0 && damage < 128)
 				damage = 128;
+			// Overcharge - Shaman upgrade
 			if (weaponId == WeaponId::Missiles_Unused) {
-				if (scbw::getUpgradeLevel(attackingPlayerId, 48)) {
-					target->unusedTimer = 6;
-					target->updateSpeed();
-				}
+				target->unusedTimer = 6;
+				target->updateSpeed();
 			}
 
 			if (attacker != NULL && target != NULL) {
 			#ifdef HYDRA
 				if (attacker->id == UnitId::dark_templar && attacker->playerId) {
 					bool silent_kill = false;
-					if (damage >= target->hitPoints && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::SilentStrikes)) {
+					if (damage >= target->hitPoints) {
 						silent_kill = true;
 					}
 					if (!silent_kill && !(attacker->visibilityStatus & 1 << target->playerId)) {
@@ -583,7 +531,7 @@ namespace hooks {
 			#endif
 
 				if (weaponId == WeaponId::NuclearMissile && target->hitPoints > damage) {
-					if (attacker != NULL && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::GroundZero) && irradiateTarget(target)) {
+					if (attacker != NULL && irradiateTarget(target)) {
 						hooks::IrradiateHit(attacker, target, attacker->playerId);
 					}
 				}
@@ -593,7 +541,7 @@ namespace hooks {
 
 
 					// Last Orders - Aurora upgrade
-					if (target->id == UnitId::ProtossAurora && scbw::getUpgradeLevel(target->playerId, UpgradeId::LastOrders)) {
+					if (target->id == UnitId::ProtossAurora) {
 						if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::LastOrdersInit, 0) == 0) {
 							scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::LastOrdersInit, 1, 0);
 							lastordersProc2 Orders = lastordersProc2(target);
@@ -649,24 +597,20 @@ namespace hooks {
 			}
 			if (damage >= target->hitPoints) {
 				if (target->id == UnitId::archon) {
-					if (scbw::getUpgradeLevel(target->playerId, UpgradeId::AstralAegis)) {
-						astralaegisProc Aegis = astralaegisProc();
-						scbw::UnitFinder unitFinder(target->getX() - 96,
-							target->getY() - 96,
-							target->getX() + 96,
-							target->getY() + 96);
-						unitFinder.forEach(Aegis);
-					}
+					astralaegisProc Aegis = astralaegisProc();
+					scbw::UnitFinder unitFinder(target->getX() - 96,
+						target->getY() - 96,
+						target->getX() + 96,
+						target->getY() + 96);
+					unitFinder.forEach(Aegis);
 				}
 				if (weaponId == WeaponId::PsiStorm || Halluc) {
 					//psi mastery effect
-					ascendancyProc Ascendancy = ascendancyProc();
 					scbw::UnitFinder unitFinder(target->getX() - 288,
 						target->getY() - 288,
 						target->getX() + 288,
 						target->getY() + 288);
-					unitFinder.forEach(Ascendancy);
-
+					unitFinder.forEach(ascendancyProc());
 				}
 			}
 			if (attacker != NULL) {
@@ -706,17 +650,14 @@ namespace hooks {
 
 
 					// Kaiser Rampage - Ultralisk upgrade
-					if (attacker->id == UnitId::ZergUltralisk
-						&& scbw::getUpgradeLevel(attacker->playerId, UpgradeId::KaiserRampage)) {
+					if (attacker->id == UnitId::ZergUltralisk) {
 						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::KaiserRampage, 1 + (2 * 24), 0);
 					}
 
 					// Incubators - Broodling upgrade
-					if (scbw::getUpgradeLevel(attacker->playerId, UpgradeId::Incubators)) {
-						int supplyCount = scbw::getBroodlingCountFromSupply(target);
-						if (attacker->id == UnitId::ZergBroodling) {
-							scbw::spawnBroodlings(supplyCount, attacker->playerId, target->position.x, target->position.y, 720, scbw::getSourceQueens(attacker)[0]);
-						}
+					int supplyCount = scbw::getBroodlingCountFromSupply(target);
+					if (attacker->id == UnitId::ZergBroodling) {
+						scbw::spawnBroodlings(supplyCount, attacker->playerId, target->position.x, target->position.y, 720, scbw::getSourceQueens(attacker)[0]);
 					}
 
 				#ifdef DELIVERANCE
@@ -724,11 +665,8 @@ namespace hooks {
 					int stacks = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0);
 					int player = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastPlayer, 0);
 					const int range = 64;
-					scbw::UnitFinder unitFinder(target->getX() - range,
-						target->getY() - range,
-						target->getX() + range,
-						target->getY() + range);
-					unitFinder.forEach(ecclesiastProc(stacks, player));
+					scbw::UnitFinder unitFinder(target->getX() - range, target->getY() - range,
+						target->getX() + range, target->getY() + range).forEach(ecclesiastProc(stacks, player));
 				#endif
 				}
 			}

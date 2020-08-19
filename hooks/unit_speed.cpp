@@ -8,6 +8,7 @@
 #include "SCBW/api.h"
 
 #include "MathUtils.h"
+#include "Utils/captivating_claws.h"
 
 class vorvalingProc : public scbw::UnitFinderCallbackProcInterface
 {
@@ -19,7 +20,7 @@ public:
 		: vorvaling(vorvaling) {}
 	void proc(CUnit* unit)
 	{
-		if (scbw::isAlliedTo(unit->playerId, vorvaling->playerId)) {
+		if (scbw::isAlliedTo(vorvaling->playerId, unit->playerId)) {
 			return;
 		}
 		u16 angle = scbw::getAngle(vorvaling->position.x, vorvaling->position.y,
@@ -53,7 +54,7 @@ namespace hooks {
 		int decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
 
 		// Kaiser Rampage upgrade: gains 150% movespeed on kill for 1 second
-		if (unit->id == UnitId::ZergUltralisk && scbw::getUpgradeLevel(unit->playerId, UpgradeId::KaiserRampage)) {
+		if (unit->id == UnitId::ZergUltralisk) {
 			if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
 
 				speed += speed;
@@ -94,23 +95,19 @@ namespace hooks {
 
 		// Adrenal Surge upgrade: gains double movespeed when moving towards enemies
 		if (unit->id == UnitId::ZergVorvaling) {
-			vorvalingProc Accelerate = vorvalingProc(unit);
 			u32 range = unit->getSightRange(false) * 32;
 			scbw::UnitFinder unitFinder(unit->getX() - range,
 				unit->getY() - range,
 				unit->getX() + range,
 				unit->getY() + range);
-			unitFinder.forEach(Accelerate);
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::AdrenalSurge)) {
-
-				if (unit->_padding_0x132 & 0x2) {
-					//speed += (speed / 2);
-					speed *= 2;
-					unit->_padding_0x132 &= ~0x2;
-				}
-				else {
-					//speed += (speed / 4);
-				}
+			unitFinder.forEach(vorvalingProc(unit));
+			if (unit->_padding_0x132 & 0x2) {
+				//speed += (speed / 2);
+				speed *= 2;
+				unit->_padding_0x132 &= ~0x2;
+			}
+			else {
+				//speed += (speed / 4);
 			}
 		}
 
@@ -124,31 +121,25 @@ namespace hooks {
 			}
 		}
 
-		// Somatic Implants upgrade: gains 150% movespeed while cloaked
+		// Somatic Implants: gains 125% movespeed while cloaked
 		else if (unit->id == UnitId::TerranGhost) {
 			if (
 				unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))
 			{
-				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SomaticImplants)) {
-					speed += speed / 2;
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SomaticImplants, 1, 0);
-				}
+				speed += speed / 4;
+				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SomaticImplants, 1, 0);
 			}
 		}
 
 		// Leg Enhancements upgrade (Legionnaire): gains 125% movespeed
 		else if (unit->id == UnitId::ProtossLegionnaire) {
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::LegEnhancements)) {
-				speed += speed / 4;
-			}
+			speed += speed / 4;
 		}
 
 	#ifdef HYDRA
 		// Leg Enhancements upgrade (Dark Templar): gains 125% movespeed
 		else if (unit->id == UnitId::ProtossDarkTemplar) {
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::LegEnhancements)) {
-				speed += speed / 4;
-			}
+			speed += speed / 4;
 		}
 	#endif
 
@@ -163,10 +154,6 @@ namespace hooks {
 		else if (unit->id == UnitId::TerranCyprian) { // cyprian
 			if (scbw::get_aise_value(unit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
 				speed -= (speed / 3); // safety off
-
-			}
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::PlasteelServos)) {
-				speed += (speed / 4);
 			}
 		}
 
@@ -203,14 +190,14 @@ namespace hooks {
 		}
 
 		// Captivating Claws upgrade: reduces movement speed by 25% per unique attacker
-		if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::CaptivatingClawsStacks, 0) > 0) {
-			u32 captiveValue = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::CaptivatingClawsStacks, 0);
-			speed -= speed * (0.25 * captiveValue);
+		u32 captivatingClawsStacks = captivating_claws::getCaptivatingClawsStacks(unit);
+		if (captivatingClawsStacks > 0) {
+			speed -= speed * (0.25 * captivatingClawsStacks);
 		}
 
 	#ifdef DELIVERANCE
 		// Deathless Procession upgrade: gains 125% movespeed, increasing to 175% when above 50% shields
-		if unit->id == UnitId::ProtossAmaranth && scbw::getUpgradeLevel(unit->playerId, UpgradeId::DeathlessProcession)) {
+		if unit->id == UnitId::ProtossAmaranth) {
 			if (unit->getCurrentShieldsInGame() <= units_dat::MaxShieldPoints[unit->id] / 2)
 				speed += speed / 4;
 			else
@@ -268,11 +255,6 @@ namespace hooks {
 		//
 		if (decrease > 0)
 			acceleration = acceleration - (acceleration / 4);
-
-		// Passenger Insurance upgrade: gains triple acceleration
-		if (unit->id == UnitId::TerranDropship && scbw::getUpgradeLevel(unit->playerId, UpgradeId::PassengerInsurance)) {
-			acceleration *= 3;
-		}
 
 		// Collective Integration passive: gains increased acceleration based on tech level
 		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth) {

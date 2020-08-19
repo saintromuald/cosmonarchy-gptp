@@ -255,16 +255,6 @@ void orders_MedicHeal1(CUnit* unit) {
 		reqHeal = true;
 	}
 	doMedicHeal_result = doMedicHeal(unit, target);
-	if (target != NULL && target->sprite!=NULL) {
-		if (target->hitPoints >= units_dat::MaxHitPoints[target->id] && reqHeal) {
-			if (scbw::getUpgradeLevel(target->playerId, UpgradeId::AdrenalinePacks) > 0) {
-				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::Adrenaline, 1 + (2 * 24), 0);
-				if (!target->getOverlay(971)) {
-					target->sprite->createTopOverlay(971);
-				}
-			}
-		}
-	}
 	if (doMedicHeal_result == 0) {
 
 		setNextWaypoint_Sub4EB290(unit);

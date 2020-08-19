@@ -214,6 +214,8 @@
     <ClCompile Include="hooks\byte_operations_utils.cpp" />
     <ClCompile Include="hooks\economic_units.cpp" />
     <ClCompile Include="hooks\economic_units_inject.cpp" />
+    <ClCompile Include="hooks\interface\extender\selection_extender.cpp" />
+    <ClCompile Include="hooks\interface\extender\selection_extender_inject.cpp" />
     <ClCompile Include="hooks\limits\ccmu_inject.cpp" />
     <ClCompile Include="hooks\limits\extender.cpp" />
     <ClCompile Include="hooks\game\creategame.cpp" />
@@ -445,15 +447,19 @@
     <ClCompile Include="hooks\unit_stats\weapon_range.cpp" />
     <ClCompile Include="hooks\unit_stats\weapon_range_inject.cpp" />
     <ClCompile Include="AI\spells\yamato_gun.cpp" />
+    <ClCompile Include="Utils\captivating_claws.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AIScripter\AICore.h" />
     <ClInclude Include="AIScripter\AIParser.h" />
+    <ClInclude Include="globals_serialization.h" />
     <ClInclude Include="hooks\build_time.h" />
     <ClInclude Include="CUnitExtended.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="hooks\audiovisuals\sfxhooks.h" />
     <ClInclude Include="hooks\byte_operations_utils.h" />
+    <ClInclude Include="Utils\captivating_claws.h" />
+    <ClInclude Include="hooks\interface\extender\selection_extender.h" />
     <ClInclude Include="hooks\limits\ccmu.h" />
     <ClInclude Include="hooks\limits\extender.h" />
     <ClInclude Include="hooks\economic_units.h" />

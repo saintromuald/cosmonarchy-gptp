@@ -621,8 +621,7 @@ namespace hooks {
 	{
 		if (target != attacker
 		&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)
-		&& target->id != UnitId::ZergBroodling									// Ensnaring Brood units are
-		&& target->id != UnitId::ZergInfestedTerran)							// impervious to Ensnare
+		&& target->id != UnitId::ZergInfestedTerran)							// Ensnaring Brood units are impervious to Ensnare
 		{
 			if (!(target->status & UnitStatus::Invincible) && !(target->status & UnitStatus::Burrowed))
 				createEnsnareOverlay(target);
@@ -708,7 +707,6 @@ namespace hooks {
 			if (target != NULL) {
 				if (scbw::getUpgradeLevel(attacker->playerId, UpgradeId::EnsnaringBrood)
 				&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)
-				&& target->id != UnitId::ZergBroodling
 				&& target->id != UnitId::ZergInfestedTerran) {
 					u32 overlayImageId;
 					if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay)

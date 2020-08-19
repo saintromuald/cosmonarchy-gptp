@@ -852,9 +852,7 @@ namespace hooks {
 
 						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Nuke_Available) {
 							if ((*activePortraitUnit)->id == UnitId::TerranScienceVessel) {
-								if (scbw::getUpgradeLevel((*activePortraitUnit)->playerId, UpgradeId::PeerReviewedDestruction) == 0) {
-									current_button_state = BUTTON_STATE::Disabled;
-								}
+								current_button_state = BUTTON_STATE::Disabled;
 							}
 						}
 

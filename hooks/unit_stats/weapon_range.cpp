@@ -46,38 +46,6 @@ u8 getSeekRangeHook(CUnit* unit) {
 				}
 				break;
 			}
-			case UnitId::TerranMarine:
-				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::U238Shells))
-					bonusAmount = 1;
-				break;
-			case UnitId::TerranMissileTurret:
-				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SequesterPods))
-					bonusAmount = 1;
-				break;
-			case UnitId::ZergHydralisk:
-				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::GroovedSpines))
-					bonusAmount = 1;
-				break;
-			case UnitId::ProtossDragoon:
-				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SingularityCharge))
-					bonusAmount = 2;
-				break;
-			case UnitId::ProtossHierophant:
-				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SingularityCharge))
-					bonusAmount = 1;
-				break;
-			case UnitId::Hero_FenixDragoon:
-				if (scbw::isBroodWarMode())
-					bonusAmount = 2;
-				break;
-			case UnitId::TerranGoliath:
-			case UnitId::TerranGoliathTurret:
-				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::CharonBooster))
-					bonusAmount = 3;
-				break;
-			case UnitId::TerranSouthpaw:
-				if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::HaymakerBattery))
-					bonusAmount = 1;
 			default:
 				bonusAmount = 0;
 
@@ -124,41 +92,6 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 					bonusAmount += 64;
 				}
 			}
-			break;
-		case UnitId::TerranMarine:
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::U238Shells))
-				bonusAmount += 32;
-			break;
-		case UnitId::ZergHydralisk:
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::GroovedSpines))
-				bonusAmount += 32;
-			break;
-		case UnitId::TerranMissileTurret:
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SequesterPods))
-				bonusAmount += 32;
-			break;
-		case UnitId::ProtossDragoon:
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SingularityCharge))
-				bonusAmount += 64;
-			break;
-
-		case UnitId::ProtossHierophant:
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SingularityCharge))
-				bonusAmount += 32;
-			break;
-		case UnitId::Hero_FenixDragoon:
-			if (scbw::isBroodWarMode())
-				bonusAmount += 64;
-			break;
-		case UnitId::TerranGoliath:
-		case UnitId::TerranGoliathTurret:
-			if (weaponId == WeaponId::HellfireMissilePack
-					&& scbw::getUpgradeLevel(unit->playerId, UpgradeId::CharonBooster))
-				bonusAmount += 96;
-			break;
-		case UnitId::TerranSouthpaw:
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::HaymakerBattery))
-				bonusAmount += 32;
 			break;
 	}
 

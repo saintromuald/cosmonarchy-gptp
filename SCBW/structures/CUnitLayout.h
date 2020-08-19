@@ -193,9 +193,12 @@ namespace ValueId {
 		SkyfallX									= 54,
 		SkyfallY									= 55,
 
-		CaptivatingClawsStacks						= 56,
-		CaptivatingClawsSource						= 57,
-		CaptivatingClawsTimer						= 58,
+		CaptivatingClawsSource1						= 56,
+		CaptivatingClawsSource2						= 57,
+		CaptivatingClawsSource3						= 58,
+		CaptivatingClawsSource4						= 59,
+		CaptivatingClawsTimer						= 60,
+		CaptivatingClawsIndex						= 61,
 
 	#if DELIVERANCE
 		EcclesiastStack								= 100,

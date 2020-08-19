@@ -27,37 +27,7 @@ u32 getSightRangeHook(CUnit* unit, bool isForSpellCasting) {
 	if (!isForSpellCasting && unit->isBlind)
 		sightRange = BLIND_SIGHT_RANGE;
 	else
-	if(unit->id < UnitId::TerranGhost || unit->id > UnitId::ProtossObserver)
 		sightRange = units_dat::SightRange[unit->id];
-	else {
-		
-		if(
-			unit->id == UnitId::TerranGhost && 
-			UpgradesSc->currentLevel[unit->playerId][UpgradeId::OcularImplants] != 0
-		)
-			sightRange = MAX_SIGHT_RANGE;
-		else
-		if(
-			unit->id == UnitId::ZergOverlord && 
-			UpgradesSc->currentLevel[unit->playerId][UpgradeId::Antennae] != 0
-		)
-			sightRange = MAX_SIGHT_RANGE;
-		else
-		if(
-			unit->id == UnitId::ProtossObserver && 
-			UpgradesSc->currentLevel[unit->playerId][UpgradeId::SensorArray] != 0
-		)
-			sightRange = MAX_SIGHT_RANGE;
-		else
-		if(
-			unit->id == UnitId::ProtossPanoptus && 
-			UpgradesSc->currentLevel[unit->playerId][UpgradeId::ApialSensors] != 0
-		)
-			sightRange = MAX_SIGHT_RANGE;
-		else
-			sightRange = units_dat::SightRange[unit->id];
-
-	}
 
 	return sightRange;
 
