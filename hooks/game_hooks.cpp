@@ -8,6 +8,7 @@
 #include <cstdio>
 #include "CUnitExtended.h"
 #include "hooks/screen_hotkeys.h"
+#include "hooks/interface/hpbars/hpbars.h"
 #include "Utils/captivating_claws.h"
 
 const int hyperTrigger = 0x006509A0;
@@ -425,6 +426,8 @@ namespace hooks {
 			// Loop through all visible units in the game.
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
 				CUnitExtended::get(unit)->tick();
+
+				//hooks::ShowHealthBar(unit);
 
 				// Legionnaire - Blade Vortex
 				if (unit->id == UnitId::ProtossLegionnaire) {

@@ -407,7 +407,7 @@ SCBW_DATA(const DatLoad*, ordersDat, 0x00513EC8);
 SCBW_DATA(u16*,		Label,              ordersDat[0].address);	//00665280
 SCBW_DATA(u8*,		UseWeaponTargeting, ordersDat[1].address);	//00664B00
 //SCBW_DATA(u8*,	???,				ordersDat[2].address);	//00665940 //May be "secondary order" used for debug/assert only / "Order goes in bSecondaryOrderID instead of bMainOrderID." according to EUDDB
-//SCBW_DATA(u8*,	???,				ordersDat[3].address);	//00665A00 //May be "Non-subunit" used for debug only
+SCBW_DATA(u8*,		Unused3,				ordersDat[3].address);	//00665A00 //May be "Non-subunit" used for debug only
 //SCBW_DATA(u8*,	???,				ordersDat[4].address);	//00664A40
 //SCBW_DATA(u8*,	???,				ordersDat[5].address);	//006657C0 //May be "Subunit can use" used for debug only
 SCBW_DATA(Bool8*,	CanBeInterrupted,	ordersDat[6].address);	//00665040
@@ -472,6 +472,8 @@ SCBW_DATA(GetActivePlayerNextSelectionFunc, getActivePlayerNextSelection, 0x0049
 /// Selections of all players
 struct PlayersSel { CUnit* unit[PLAYABLE_PLAYER_COUNT][SELECTION_ARRAY_LENGTH]; };
 SCBW_DATA(const PlayersSel*, playersSelections, 0x006284E8);
+struct PlayerSel { CUnit* unit[SELECTION_ARRAY_LENGTH]; };
+SCBW_DATA(const PlayerSel*, CurrentUnitSelection, 0x006284B8);
 
 typedef void (__fastcall *PrepareForNextOrderFunc)(CUnit*);
 SCBW_DATA(PrepareForNextOrderFunc, prepareForNextOrder, 0x00475000);

@@ -216,6 +216,8 @@
     <ClCompile Include="hooks\economic_units_inject.cpp" />
     <ClCompile Include="hooks\interface\extender\selection_extender.cpp" />
     <ClCompile Include="hooks\interface\extender\selection_extender_inject.cpp" />
+    <ClCompile Include="hooks\interface\hpbars\hpbars.cpp" />
+    <ClCompile Include="hooks\interface\hpbars\hpbars_inject.cpp" />
     <ClCompile Include="hooks\limits\ccmu_inject.cpp" />
     <ClCompile Include="hooks\limits\extender.cpp" />
     <ClCompile Include="hooks\game\creategame.cpp" />
@@ -458,6 +460,7 @@
     <ClInclude Include="globals.h" />
     <ClInclude Include="hooks\audiovisuals\sfxhooks.h" />
     <ClInclude Include="hooks\byte_operations_utils.h" />
+    <ClInclude Include="hooks\interface\hpbars\hpbars.h" />
     <ClInclude Include="Utils\captivating_claws.h" />
     <ClInclude Include="hooks\interface\extender\selection_extender.h" />
     <ClInclude Include="hooks\limits\ccmu.h" />
