@@ -446,7 +446,7 @@ namespace hooks {
 		}
 
 		//Supposedly, allows Zerglings to attack after unburrowing without delay.
-		if (unit->id == UnitId::zergling || unit->id == UnitId::Hero_DevouringOne)
+		if (unit->id == UnitId::ZergZergling || unit->id == UnitId::Hero_DevouringOne)
 			if (unit->groundWeaponCooldown == 0)
 				unit->orderQueueTimer = 0;
 
