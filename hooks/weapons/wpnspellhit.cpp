@@ -75,7 +75,6 @@ namespace hooks {
 		}
 		if(attacker!=NULL){
 			target->_unknown_0x026 |= 0x2;
-		}
 		target->irradiateTimer = 8*3;
 		target->irradiatedBy = attacker;
 		target->irradiatePlayerId = attackingPlayerId;	
