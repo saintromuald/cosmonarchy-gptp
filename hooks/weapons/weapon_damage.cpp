@@ -345,9 +345,7 @@ namespace hooks {
 
 			// Vorvaling - Captivating Claws
 			if (attacker != NULL && weaponId == WeaponId::VorvalClaws) {
-				if (captivating_claws::canApplyCaptivatingClaws(attacker, target)) {
-					captivating_claws::addCaptivatingClawsSource(attacker, target);
-				}
+				captivating_claws::applyCaptivatingClaws(attacker, target);
 			}
 
 		#ifdef DELIVERANCE

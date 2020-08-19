@@ -199,6 +199,7 @@ namespace ValueId {
 		CaptivatingClawsSource4						= 59,
 		CaptivatingClawsTimer						= 60,
 		CaptivatingClawsIndex						= 61,
+		CaptivatingClawsStacks						= 62,
 
 	#if DELIVERANCE
 		EcclesiastStack								= 100,

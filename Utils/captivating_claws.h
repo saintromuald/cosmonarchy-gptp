@@ -4,7 +4,6 @@
 
 namespace captivating_claws {
 	u32 getCaptivatingClawsStacks(CUnit* target);
-	void addCaptivatingClawsSource(CUnit* source, CUnit* target);
-	bool canApplyCaptivatingClaws(CUnit* source, CUnit* target);
-	void clearCaptivatingClawsSources(CUnit* target);
+	void applyCaptivatingClaws(CUnit* source, CUnit* target);
+	void clearCaptivatingClaws(CUnit* target);
 }

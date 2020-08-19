@@ -602,7 +602,7 @@ namespace hooks {
 
 				// Vorvaling - Captivating Claws
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::CaptivatingClawsTimer, 0) == 1) {
-					captivating_claws::clearCaptivatingClawsSources(unit);
+					captivating_claws::clearCaptivatingClaws(unit);
 				}
 
 				// GAME RULE
