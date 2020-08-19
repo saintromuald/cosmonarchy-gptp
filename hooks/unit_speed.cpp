@@ -142,7 +142,7 @@ namespace hooks {
 
 		// Leg Enhancements upgrade (Zealot): gains 125% movespeed
 		else if (unit->id == UnitId::ProtossZealot) {
-			speed += speed / 2;
+			speed += speed / 4;
 		}
 
 		// Leg Enhancements upgrade (Legionnaire): gains 150% movespeed
