@@ -55,34 +55,14 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	//find range bonus for weapon
 	switch (weaponId) {
 
-	case WeaponId::GaussRifle:
-		if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::U238Shells))
-			bonusRange = 1;
-		break;
-	case WeaponId::NeedleSpines:
-		if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::GroovedSpines))
-			bonusRange = 1;
-		break;
-	case WeaponId::PhaseDisruptor:
-		if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SingularityCharge))
+	case UnitId::ZergBasilisk:
+	{
+		ActiveTile tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
+		if (tile.hasCreep || tile.creepReceeding) {
 			bonusRange = 2;
+		}
 		break;
-	case WeaponId::Unknown72:
-		if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::SingularityCharge))
-			bonusRange = 1;
-		break;
-	case WeaponId::PhaseDisruptor_Fenix_Dragoon:
-		if (scbw::isBroodWarMode())
-			bonusRange = 2;
-		break;
-	case WeaponId::HellfireMissilePack:
-		if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::CharonBooster))
-			bonusRange = 3;
-		break;
-	/*case WeaponId::HellfireMissilePack_AlanSchezar:
-		if (scbw::isBroodWarMode())
-			bonusRange = 3;
-		break;*/
+	}
 	default:
 		bonusRange = 0;
 
@@ -243,16 +223,6 @@ namespace hooks {
 		const char* shieldStr = statTxtTbl->getString(779);					 //"Shields:"
 
 		u8 shieldUpgradeLevel = scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossPlasmaShields);
-		if (unit->id == UnitId::ProtossDragoon || unit->id == UnitId::ProtossHierophant) {
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::TaldarinsGrace)) {
-				shieldUpgradeLevel++;
-			}
-		}
-		if (unit->id == UnitId::ProtossPhotonCannon) {
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::PrismaticShield)) {
-				shieldUpgradeLevel += 2;
-			}
-		}
 		if (shieldUpgradeLevel > 0)
 			sprintf_s(buffer, sizeof(buffer), "\004%s\002\n%s %d+%d",
 				shieldUpgradeName, shieldStr, 0, shieldUpgradeLevel);
