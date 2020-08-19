@@ -131,6 +131,15 @@ namespace hooks {
 			}
 		}
 
+		// Panoptus Upgrade
+		else if (unit->id == UnitId::ProtossPanoptus || unit->id == UnitId::Hero_Mojo || unit->id == UnitId::Hero_Artanis)
+			speed = 1707;
+
+		// Muscular Augment upgrade (Hydralisk): gains 150% movespeed
+		else if (unit->id == UnitId::ZergHydralisk) {
+			speed += speed / 2;
+		}
+
 		// Leg Enhancements upgrade (Zealot): gains 125% movespeed
 		else if (unit->id == UnitId::ProtossZealot) {
 			speed += speed / 2;

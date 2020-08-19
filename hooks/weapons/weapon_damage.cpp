@@ -629,7 +629,8 @@ namespace hooks {
 
 			if (attacker != NULL) { // looks like target will always be alive if this function was called?
 				if (scbw::get_aise_value(target, 0, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0) >= 1
-					&& scbw::get_generic_unit(attacker, ValueId::HallucinationPointer) == NULL) {
+					&& scbw::get_generic_unit(attacker, ValueId::HallucinationPointer) == NULL
+					&& !(attacker->status & UnitStatus::IsHallucination)) {
 					u32 haluPlayer = scbw::get_aise_value(target, 0, AiseId::GenericValue, ValueId::HallucinatingSourcePlayer, 0);
 					if (haluPlayer != attacker->playerId && !scbw::isAlliedTo(haluPlayer, attacker->playerId)) return;
 

@@ -287,9 +287,7 @@ namespace hooks {
 			//bullet doing no damage (shot from hallucination)
 			bool ephemeralBlades = false;
 			if(bullet->sourceUnit!=NULL){
-				if(scbw::getUpgradeLevel(bullet->sourceUnit->playerId, UpgradeId::EphemeralBlades)){
-					ephemeralBlades = true;
-				}
+				ephemeralBlades = true;
 			}
 			if(ephemeralBlades){
 				u32 base_damage = GetUnitBulletDamage(bullet,target);
@@ -362,9 +360,7 @@ namespace hooks {
 			if(attacker->status & UnitStatus::IsHallucination){
 				bool ephemeralBlades = false;
 				if(attacker!=NULL){
-					if(scbw::getUpgradeLevel(attacker->playerId, UpgradeId::EphemeralBlades)){
-						ephemeralBlades = true;
-					}
+					ephemeralBlades = true;
 				}
 				if(ephemeralBlades){
 					u32 damage = getUnitDamageBonus(attacker,weaponId);
@@ -698,27 +694,6 @@ namespace hooks {
 
 			}
 
-			if (target != NULL) {
-				if (scbw::getUpgradeLevel(attacker->playerId, UpgradeId::EnsnaringBrood)
-				&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)
-				&& target->id != UnitId::ZergInfestedTerran) {
-					u32 overlayImageId;
-					if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay)
-						overlayImageId = ImageId::EnsnareOverlay_Medium;
-					else
-						if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay)
-							overlayImageId = ImageId::EnsnareOverlay_Large;
-						else
-							overlayImageId = ImageId::EnsnareOverlay_Small;
-
-					if (!target->getOverlay(overlayImageId)) {
-						target->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
-					}
-					target->ensnareTimer = 30;
-					target->updateSpeed();
-				}
-			}
-
 			jump_to_end_of_loop = false; // <- allows to target air units, and presumably terrain, if only the function would actually be called
 			if (!jump_to_end_of_loop) { //F49E2
 
@@ -734,7 +709,7 @@ namespace hooks {
 				//create the broodling
 				created_broodling = CreateUnit(UnitId::ZergBroodling, pos.x, pos.y, attacker->playerId);
 				scbw::sendGPTP_aise_cmd(created_broodling, attacker, GptpId::SetGenericUnit, ValueId::BroodlingMother, 0, 0);
-				if (attacker != NULL && scbw::getUpgradeLevel(attacker->playerId, UpgradeId::GameteMeiosis)) {
+				if (attacker != NULL) {
 					attacker->energy = std::min((u16)(attacker->energy + (u16)5*256), attacker->getMaxEnergy()); // Spawn Broodling
 				}
 
