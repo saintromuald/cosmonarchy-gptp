@@ -32,7 +32,7 @@ namespace AI {
 			  return true;
 
 			if (!(target->status & UnitStatus::IsHallucination)
-				&& (target->id != UnitId::overlord || scbw::getUpgradeLevel(target->playerId, UpgradeId::VentralSacs))
+				&& (target->id != UnitId::ZergOverlord || scbw::getUpgradeLevel(target->playerId, UpgradeId::VentralSacs))
 				&& units_dat::SpaceProvided[target->id] > 0)
 			  return true;
 
