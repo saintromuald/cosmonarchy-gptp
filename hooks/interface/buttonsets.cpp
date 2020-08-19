@@ -767,8 +767,7 @@ namespace hooks {
 								}
 							}
 							else
-							if (current_button->reqVar == UnitId::TerranMedic
-								|| current_button->reqVar == UnitId::TerranShaman) {
+							if (current_button->reqVar == UnitId::TerranShaman) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
