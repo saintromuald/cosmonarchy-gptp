@@ -610,7 +610,8 @@ namespace hooks {
 				if (unit->mainOrderId == OrderId::Harvest1
 					|| unit->mainOrderId == OrderId::HarvestGas1
 					|| unit->mainOrderId == OrderId::ReturnMinerals
-					|| unit->mainOrderId == OrderId::ReturnGas) {
+					|| unit->mainOrderId == OrderId::ReturnGas)
+				{
 					if (unit->status & UnitStatus::IsGathering) {
 						unit->status |= UnitStatus::NoCollide;
 					}
@@ -618,6 +619,8 @@ namespace hooks {
 						unit->status &= ~UnitStatus::NoCollide;
 					}
 				}
+
+				// TODO: Reavers remain at full stocks
 
 				// TODO: Cleanup
 				// Orphaned?
