@@ -74,10 +74,8 @@ namespace hooks {
 				unitWithOverlay = target;
 			(unitWithOverlay->sprite)->createTopOverlay(irradiateImageId,0,0,0);
 		}
-		if(attacker!=NULL){
-			if(scbw::getUpgradeLevel(attacker->playerId, UpgradeId::RadiationShockwave)){
-				target->_unknown_0x026 |= 0x2;
-			}
+		if(attacker!=NULL){{
+			target->_unknown_0x026 |= 0x2;
 		}
 		target->irradiateTimer = 8*3;
 		target->irradiatedBy = attacker;
@@ -506,7 +504,7 @@ namespace hooks {
 		if (bullet->attackTarget.unit != NULL) {
 			scbw::ApplySpores(bullet->attackTarget.unit);
 			
-			if (bullet->attackTarget.unit->acidSporeCount >= 6 && scbw::getUpgradeLevel(bullet->srcPlayer,UpgradeId::CriticalMass)>0
+			if (bullet->attackTarget.unit->acidSporeCount >= 6
 				&& scbw::get_aise_value(bullet->attackTarget.unit,NULL,AiseId::GenericTimer,ValueId::CorrosiveSporeDelay,0)==0) {
 				scbw::sendGPTP_aise_cmd(bullet->attackTarget.unit, NULL, GptpId::SetGenericTimer, ValueId::CorrosiveSporeDelay, 25, 0);
 				
@@ -804,17 +802,14 @@ namespace hooks {
 
 		IterateUnitsAtLocationTargetProc_Plague(attacker,&coords);
 		if(attacker!=NULL){
-			if(scbw::getUpgradeLevel(attacker->playerId, UpgradeId::Metastasis)){
-				//scbw::printText("Plague Metastasis is researched");
-				customPlagueProc UpgPlague = customPlagueProc(attacker);
-				u32 range = 64;
-				scbw::UnitFinder unitFinder(x - range,
-					y - range,
-					x + range,
-					y + range);
-				unitFinder.forEach(UpgPlague);
-			}
-
+			//scbw::printText("Plague Metastasis is researched");
+			customPlagueProc UpgPlague = customPlagueProc(attacker);
+			u32 range = 64;
+			scbw::UnitFinder unitFinder(x - range,
+				y - range,
+				x + range,
+				y + range);
+			unitFinder.forEach(UpgPlague);
 		}
 
 	} //void PlagueHit(CUnit* attacker, int x, int y, CBullet* bullet)
