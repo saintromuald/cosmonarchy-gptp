@@ -256,7 +256,7 @@ namespace hooks {
 	}
 	std::vector<u32> patch_convention() {
 		return {
-			TblPatchType::CmpPatch,0,Reg::_ECX,
+			TblPatchType::CmpPatch,Reg::_ECX,
 			0x004234FC,0x369,
 			0x00425B84,0x33f,
 			0x00425CB4,0x512,
