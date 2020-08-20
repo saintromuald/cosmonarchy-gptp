@@ -156,6 +156,12 @@ namespace hooks {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SublimeShepherd, 0, 0);
 				}
 			}
+			else if (unit->id == UnitId::corsair && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0)) {
+				unit->energy -= std::min(unit->energy, (u16)13);
+				if (unit->energy == 0) {
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::DisruptionWeb, 0, 0);
+				}
+			}
 			else { //EB526
 
 				int maxEnergy;

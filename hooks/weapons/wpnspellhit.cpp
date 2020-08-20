@@ -856,8 +856,7 @@ namespace hooks {
 
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
-	void DisruptionWebHit(u32 attackingPlayerId, int x, int y, CBullet* bullet) {
-
+	CUnit* createDisruptionWeb(u32 attackingPlayerId, int x, int y) {
 		Point16 coords;
 		CUnit* disruption_web_unit;
 
@@ -866,12 +865,9 @@ namespace hooks {
 
 		//adjust location where Disruption Web will be created
 		//if necessary (by modifying coords)
-		fixTargetLocation(&coords,UnitId::Spell_DisruptionWeb);
-
-		//create the Disruption Web unit for neutral player 11
-		disruption_web_unit = CreateUnit(UnitId::Spell_DisruptionWeb,coords.x,coords.y,11);
-
-		if(disruption_web_unit == NULL)
+		fixTargetLocation(&coords, UnitId::Spell_DisruptionWeb);
+		disruption_web_unit = CreateUnit(UnitId::Spell_DisruptionWeb, coords.x, coords.y, 11);
+		if (disruption_web_unit == NULL)
 			displayLastNetErrForPlayer(attackingPlayerId);
 		else {
 
@@ -882,13 +878,18 @@ namespace hooks {
 			function_004A01F0(disruption_web_unit);
 			updateUnitStrength(disruption_web_unit);
 
-			if(
+			if (
 				disruption_web_unit->removeTimer == 0 ||
 				disruption_web_unit->removeTimer > 360
-			)
+				)
 				disruption_web_unit->removeTimer = 360; //0x0168
 
 		}
+		return disruption_web_unit;
+	}
+	void DisruptionWebHit(u32 attackingPlayerId, int x, int y, CBullet* bullet) {
+
+		auto unit = createDisruptionWeb(attackingPlayerId, x, y);
 
 	} //void DisruptionWebHit(u32 attackingPlayerId, int x, int y, CBullet* bullet)
 

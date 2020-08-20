@@ -145,6 +145,11 @@ namespace hooks
 				TechCapableUnit = true;
 				
 			}
+			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossCorsair &&
+				scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0) == 1) {
+				TechCapableUnit = true;
+
+			}
 		}
 		if(!TechCapableUnit){
 			if (Ui_CheckEnergyForTechUse(tech)) {
@@ -318,7 +323,7 @@ namespace hooks
 		}
 		case TechId::UnusedTech39://observance
 			IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
-			
+
 			if (firstInList != NULL) {
 				int action = 0;//enable
 				if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::Observance, 0) == 1) {
@@ -334,7 +339,7 @@ namespace hooks
 			break;
 		case TechId::UnusedTech40://sublime shepherd
 		{
-			
+
 			int action = 1;//on
 			if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
 				action = 0;//off
@@ -354,11 +359,7 @@ namespace hooks
 			int action = 1;//on
 			if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::TempoChange, 0) == 1) {
 				action = 0;//off
-//				scbw::printText("Madrigal status: 1");
 			}
-/*			else {
-				scbw::printText("Madrigal status: 0");
-			}*/
 			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
 			buf[0] = 0x99;//new general command
 			buf[1] = NewGameCommand::GenericSwitchAbility;
@@ -375,8 +376,21 @@ namespace hooks
 			IssueTriTargetOrder(OrderId::CTFCOP1, 0, 0);
 			break;
 		case TechId::DisruptionWeb:
-			IssueTriTargetOrder(OrderId::CastDisruptionWeb, 0, 0);
+		{
+			int action = 1;//on
+			if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0) == 1) {
+				action = 0;//off
+			}
+			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+			buf[0] = 0x99;//new general command
+			buf[1] = NewGameCommand::GenericSwitchAbility;
+			buf[2] = action;
+			buf[3] = *ACTIVE_PLAYER_ID;
+			buf[4] = ValueId::DisruptionWeb;
+			scbw::SendCommand(buf, 0xc);
+			//			IssueTriTargetOrder(OrderId::CastDisruptionWeb, 0, 0);
 			break;
+		}
 		case TechId::MindControl:
 			IssueTriTargetOrder(OrderId::CastMindControl, 0, 0);
 			break;

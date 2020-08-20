@@ -360,6 +360,7 @@ public:
 
 #include "logger.h"
 #include "limits/sfx_extender.h"
+#include "hooks/weapons/wpnspellhit.h"
 #include "globals.h"
 namespace hooks {
 
@@ -428,7 +429,33 @@ namespace hooks {
 				CUnitExtended::get(unit)->tick();
 
 				//hooks::ShowHealthBar(unit);
-
+				if (unit->id == UnitId::corsair) {
+					auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
+					if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0)) {
+						
+						if (web == NULL) {
+							web = hooks::createDisruptionWeb(unit->playerId, unit->getX(), unit->getY());
+							if (web == NULL) {
+								//CCMU case
+								scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::DisruptionWeb, 0, 0);
+							}
+							else {
+								scbw::sendGPTP_aise_cmd(unit, web, GptpId::SetGenericUnit, ValueId::AttachedDisruptionWeb, 0, 0);
+							}
+						}
+						else {
+							//web attached
+							scbw::moveUnit(web, unit->getX(), unit->getY());
+						}
+					}
+					else {
+						if (web != NULL) {
+							web->remove();
+						}
+					}
+					
+				}
+				
 				// Legionnaire - Blade Vortex
 				if (unit->id == UnitId::ProtossLegionnaire) {
 					//teleport jump
@@ -572,6 +599,7 @@ namespace hooks {
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::AdrenalTimer, 0) == 1) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::AdrenalStacks, 0, 0);
 				}
+				
 
 				// Vorvaling - Captivating Claws
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::CaptivatingClawsTimer, 0) == 1) {
