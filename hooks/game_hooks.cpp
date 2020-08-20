@@ -446,36 +446,6 @@ namespace hooks {
 						}
 					}
 				}
-
-				// Tileset debugger
-				/*
-				if (unit->id == UnitId::observer) {
-					u16 tileid = scbw::getTileIdAt(unit->position.x, unit->position.y);
-					char buf[64];
-					u32 offset = (unit->position.x/ 32) + mapTileSize->width*(unit->position.y/ 32);
-					u32 offset_val = 0x005993C4 + (2 * offset);
-	//				sprintf(buf, "Tile: %d, p%d %d, offset %02X", tileid, unit->position.x / 32, unit->position.y / 32, offset_val);
-	//				scbw::printText(buf);
-					u16 megatile = (*megatileArray)[(unit->position.x / 32) + mapTileSize->width*(unit->position.y / 32)];
-					u16 tile_id = (*tileIdArray)[(unit->position.x / 32) + mapTileSize->width*(unit->position.y / 32)];
-					u16 gval = (tile_id >> 0x4) & 0x07ff;
-					u16 hval = gval * 0x2a;//half of new struct
-					ActiveTile A = scbw::getActiveTileAt(unit->position.x, unit->position.y);
-					sprintf(buf, "tile flags: %d %d %d %d",
-
-						A.exploredFlags,A.groundHeight,A.hasCreep,A.hasDoodadCover
-						);
-					scbw::printText(buf);
-				}
-				*/
-
-				// Madrigal Impale
-				/*if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DirgeImpale, 0) == 1) {
-					auto attacker = scbw::get_generic_unit(unit,ValueId::DirgeAttacker);
-					if (attacker != NULL) {
-						scbw::createBullet(123, attacker, unit->getX(), unit->getY(), attacker->playerId, 0);
-					}
-				}*/
 				
 				// Paladin - Skyfall
 				if (unit->id == UnitId::TerranPaladin
@@ -685,8 +655,10 @@ namespace hooks {
 				// Centaur - Sunchaser Missiles animation
 				if (unit->id == UnitId::TerranCentaur && unit->orderSignal & 0x20) {
 					unit->orderSignal &= ~0x20;
+					if (unit->orderTarget.unit != NULL) {
 						if (unit->getDistanceToTarget(unit->orderTarget.unit) <= 128) {
 							unit->playIscriptAnim(IscriptAnimation::Unused1);
+						}
 					}
 				}
 
