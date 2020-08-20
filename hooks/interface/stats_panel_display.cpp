@@ -14,6 +14,10 @@ namespace {
 	bool StatSpidermineCount(BinDlg* dialog, u32 index);			//26300
 	u16 getLastQueueSlotType(CUnit* unit);							//7B270
 
+	// For getUnitRankString
+	__int8 unitGetRace(CUnit* a1);									//0047B150
+	char* getStatTxtString(__int16 a1);								//004C36F0
+
 } //unnamed namespace
 
 namespace hooks {
@@ -221,6 +225,38 @@ namespace hooks {
 
 	;
 
+	char* getUnitRankString(CUnit* a2) { // 0042F370
+		unsigned __int16 _type; // ax
+		int v2; // ecx
+		int v4; // edx
+
+		_type = a2->id;
+		v2 = units_dat::BaseProperty[_type];
+		if (v2 & 0x800 || _type == UnitId::TerranCivilian || _type == UnitId::TerranVultureSpiderMine)
+			return 0;
+		if (_type == UnitId::Hero_Gantrithor)
+		{
+			if (!units_dat::MapStringId[82])          // Gantrithor
+			{
+				if (*statTxtTbl > 571u)
+					return (char*)statTxtTbl + statTxtTbl[572];
+				return "";
+			}
+			return 0;
+		}
+		if (_type != UnitId::TerranBattlecruiser && _type != UnitId::Hero_NoradII && _type != UnitId::Hero_Hyperion
+			|| !(v2 & UnitProperty::Hero)
+			|| !units_dat::MapStringId[_type])
+		{
+			if (unitGetRace(a2) == 1)                 // Terran
+				return getStatTxtString((unsigned __int8)(a2->rankIncrease + units_dat::Rank[v4]) + 1302);
+			return 0;
+		}
+		if (*statTxtTbl <= 570u)
+			return "";
+		return (char*)statTxtTbl + statTxtTbl[571]; // "Admiral"
+	}
+
 } //namespace hooks
 
 //-------- Helper function definitions. Do NOT modify! --------//
@@ -333,9 +369,7 @@ namespace {
 
 		return (bPreResult != 0);
 
-	}
-
-	;
+	};
 
 	//Identical to function at 0x0047B270
 	//EDX = unit
@@ -353,13 +387,20 @@ namespace {
 
 			unitId = unit->buildQueue[unit->buildQueueSlot];
 
-			if (
-				unitId != UnitId::ZergHive &&
-				unitId != UnitId::ZergLair &&
-				unitId != UnitId::ZergGuardianRoost &&
-				unitId != UnitId::ZergSporeColony &&
-				unitId != UnitId::ZergSunkenColony &&
-				unitId != 191
+			if (unitId != UnitId::ZergHive
+			&&	unitId != UnitId::ZergLair
+			&&	unitId != UnitId::ZergSire
+			&&	unitId != UnitId::ZergVorvalPond
+			&&	unitId != UnitId::ZergMutationPit
+			&&	unitId != UnitId::ZergBasiliskDen
+			&&	unitId != UnitId::ZergLurkerDen
+			&&	unitId != UnitId::ZergSporeColony
+			&&	unitId != UnitId::ZergSunkenColony
+			&&	unitId != UnitId::ZergGuardianRoost
+			&&	unitId != UnitId::ZergDevourerHaunt
+			&&	unitId != UnitId::ZergGorgolethApiary
+			&&	unitId != UnitId::ZergIrolethQuay
+			&&	unitId != UnitId::ZergOthstolethBerth
 				)
 				unitId = unit->id;
 
@@ -367,9 +408,36 @@ namespace {
 
 		return unitId;
 
+	};
+
+	// For getUnitRankString
+
+	const u32 Func_unitGetRace = 0x0047B150;
+	__int8 unitGetRace(CUnit* a1) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_unitGetRace
+			MOV result, EAX
+			POPAD
+		}
+		return (__int8)result;
 	}
 
-	;
+	const u32 Func_getStatTxtString = 0x004C36F0;
+	char* getStatTxtString(__int16 a1) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOVZX CX, a1
+			CALL Func_getStatTxtString
+			MOV result, EAX
+			POPAD
+		}
+		return (char*)result;
+	}
+
 
 } //unnamed namespace
 
