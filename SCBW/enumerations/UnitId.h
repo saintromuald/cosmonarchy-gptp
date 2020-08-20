@@ -458,6 +458,7 @@ enum Enum {
 	//HYDRA\\
 
 //Terran-Unit
+	TerranApostle							= 10,
 	TerranShaman							= 15,
 	TerranSouthpaw							= 19,
 	TerranMadrigal							= 27,
@@ -470,7 +471,7 @@ enum Enum {
 
 //Terran-Building
 	TerranMedbay							= 119,
-	TerranCaptaincy							= 121,
+	TerranMunitionsBay						= 121,
 	TerranGallery							= 185,
 	TerranSalvoYard							= 189,
 	TerranFutureStation						= 192,
