@@ -2,7 +2,7 @@
 #include "SCBW/scbwdata.h"
 #include "SCBW/api.h"
 #include "hook_tools.h"
-
+#include "SCBW/stat_txt_spec.h"
 
 const u32 Func_get_statTxt_Str_0 = 0x0048EF30;
 u32 get_statTxt_Str_0(CUnit* unit, u32 playerId, char* message) {
@@ -161,7 +161,7 @@ namespace hooks
 			}
 			if (!TechCapableUnit)
 			{
-				char* message = (char*)statTxtTbl->getString(864);
+				char* message = (char*)statTxtTblNew->getString(864);
 				CUnit* portrait_unit =  playersSelections->unit[*ACTIVE_NATION_ID][0];
 				get_statTxt_Str_0(*activePortraitUnit, (*activePortraitUnit)->playerId, message);
 				return;

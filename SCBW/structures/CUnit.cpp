@@ -141,7 +141,7 @@ const char* CUnit::getName() const {
 	assert(this);
 	return getName(this->id);
 }
-
+#include "SCBW/stat_txt_spec.h"
 //Based on function @ 0x0047B090
 const char* CUnit::getName(u16 unitId) {
 	assert(unitId < UNIT_TYPE_COUNT);
@@ -149,7 +149,7 @@ const char* CUnit::getName(u16 unitId) {
 	if (units_dat::MapStringId[unitId])
 		return mapStringTbl->getString(units_dat::MapStringId[unitId]);
 	else
-		return statTxtTbl->getString(unitId + 1);
+		return statTxtTblNew->getString(unitId + 1);
 }
 
 RaceId::Enum CUnit::getRace() const {

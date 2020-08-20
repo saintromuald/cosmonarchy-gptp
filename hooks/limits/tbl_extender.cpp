@@ -257,7 +257,7 @@ namespace hooks {
 	std::vector<u32> patch_convention() {
 		return {
 			/*
-			HEADER FOR PATCH CONVENTIONS
+			HEADER FOR PATCH CONVENTION TYPES
 
 			TblPatchType::CmpPatch, 1, 2, 4, 24, 8, 1, 2,
 
@@ -265,8 +265,7 @@ namespace hooks {
 			1 - number of variables
 			2 - number of arguments
 			4 - number of sequences
-			24,8,1,2 - sequence length
-
+			24,8,1,2 - lengths of the sequences
 			*/
 			TblPatchType::CmpPatch, 1, 2, 4, 24, 8, 1, 2,
 			Reg::_ECX,
@@ -447,7 +446,7 @@ namespace hooks {
 			0x00457605, 0x325,
 			0x00457742, 0x514,
 			//SERIOUS PROBLEM - 1 extra byte
-			TblPatchType::RegisterWriting,2,1,1,6,
+			TblPatchType::RegisterWriting,2,1,2,6,1,
 			Reg::_EDX,Reg::L_AX,
 			0x00455C51,
 			0x00464EBD,
@@ -455,6 +454,10 @@ namespace hooks {
 			0x0047B0DC,
 			0x0048D96B,
 			0x0048EEBD,
+			Reg::_ECX,Reg::L_AX,
+			0x00427701,
+
+
 			TblPatchType::NopPatch, 1, 1, 1, 9, //3 nops
 			Reg::__NOP,
 			0x0042609B,
@@ -475,9 +478,13 @@ namespace hooks {
 			ReadArgs,
 		};
 	}
+	void memoryPatchVec(u32 address, std::vector<u8> &patch) {
+		for (int i = 0; i < patch.size();i++) {
+			memoryPatch(address+i, patch[i]);
+		}
+	}
 	void patchTblList() {
 		int read_status = ConvReadStatus::ReadHeader;
-		int current_header = -1;
 		std::vector<u32> args;
 		std::vector<u32> vars;
 		int varCount = 0;
@@ -494,10 +501,6 @@ namespace hooks {
 				sequence_lengths.clear();
 				vars.clear();
 				currentHeader = patch_list[i];
-				if (currentHeader == TblPatchType::NopPatch) {
-
-					break;
-				}
 				currentVarCount = patch_list[i + 1];
 				currentArgCount = patch_list[i + 2];
 				currentSequenceCount = patch_list[i + 3];
@@ -520,11 +523,13 @@ namespace hooks {
 							i++;
 						}*/
 						patch.clear();
+						u32 address = patch_list[i];
 						if (currentHeader == TblPatchType::CmpPatch) {
 							//will be handled with wrappers
+							
 						}
 						else if (currentHeader == TblPatchType::PtrWriting) {
-							u32 address = patch_list[i];
+							
 							u16 string_id = patch_list[i + 1];
 							u8 bl = patch_list[i + 1] & 0xff;
 							u8 bu = (patch_list[i + 1] & 0xff00) >> 8;
@@ -624,16 +629,21 @@ namespace hooks {
 						}
 						else if (currentHeader == TblPatchType::RegisterCmp) {
 							//require wrappers
+							//reads cmp
 						}
 						else if (currentHeader == TblPatchType::RegisterWriting) {
 							patch = { 0x89, 0xc2, 0x90 };
+							if (vars[0] == Reg::_ECX) {
+								patch[1] = 0xc1;
+							}
 						}
 						else if (currentHeader == TblPatchType::NopPatch) {
 							patch = { 0x90,0x90,0x90 };
 						}
-						//
-						// apply patch
-						//
+						if (!(currentHeader == TblPatchType::CmpPatch || currentHeader == TblPatchType::RegisterCmp)) {
+							memoryPatchVec(address, patch);
+							//don't patch if wrapper offset
+						}
 						i += currentArgCount;
 					}
 				}
@@ -646,23 +656,14 @@ namespace hooks {
 		Globals.tbl_extender = true;
 		auto ptr_list = offset_list();
 		//DATA MUST BE INITIALIZED
-		for (int i = 0; i < ptr_list.size(); i++) {
+		/*for (int i = 0; i < ptr_list.size(); i++) {
 			memoryPatch(ptr_list[i], (u32)&extendedTbl);
-		}
-
-
-		//004927DF  |>  0FB7C1        MOVZX EAX,CX
-		//
-		/*
-		//TODO: REPLACE USAGE OF WORD IN REGARDS OF TBL TO DWORD
-		*/
-		//[6D1238]
-		//004C3A6A   .  68 5C2A5000   PUSH 00502A5C                            ;  ASCII "rez\stat_txt.tbl"
-		//004C3A2E   .  68 5C2A5000   PUSH 00502A5C                            ;  ASCII "rez\stat_txt.tbl"
-		//SFileOpenEx
-
-		//004C3AF4   .  68 5C2A5000   PUSH 00502A5C                            ;  ASCII "rez\stat_txt.tbl"
-
+		}*/
+		patchTblList();
+		memoryPatch(0x004C3A6A + 1, &tblNew);
+		memoryPatch(0x004C3A2E + 1, &tblNew);
+		memoryPatch(0x004C3AF4 + 1, &tblNew);
 	}
 }
-tblExtender extendedTbl;
+
+//tblExtender extendedTbl;
