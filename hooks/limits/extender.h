@@ -38,27 +38,27 @@ public:
 namespace hooks {
 	void injectLimitHooks();
 }
-
 namespace Reg {
 	enum {
-		_EAX=1,
+		_EAX = 1,
 		_EBX,
 		_ECX,
 		_EDX,
 		_ESI,
 		_EDI,
-		
+
 		L_AX,
 		L_BX,
 		L_CX,
 		L_DX,
 		L_SI,
 		L_DI,
+		__NOP,
 	};
 }
 namespace TblPatchType {
 	enum {
-		CmpPatch=1,
+		CmpPatch = 1,
 		PtrWriting,
 		PtrMathWriting,
 		RegisterPointerCmp,
@@ -67,6 +67,11 @@ namespace TblPatchType {
 		RegisterWriting,
 		NopPatch,
 
-		
+
+	};
+}
+namespace JumpType {
+	enum {
+		JA,
 	};
 }

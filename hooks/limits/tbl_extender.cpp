@@ -256,7 +256,20 @@ namespace hooks {
 	}
 	std::vector<u32> patch_convention() {
 		return {
-			TblPatchType::CmpPatch,Reg::_ECX,
+			/*
+			HEADER FOR PATCH CONVENTIONS
+
+			TblPatchType::CmpPatch, 1, 2, 4, 24, 8, 1, 2,
+
+			TblPatchType::CmpPatch - patch type
+			1 - number of variables
+			2 - number of arguments
+			4 - number of sequences
+			24,8,1,2 - sequence length
+
+			*/
+			TblPatchType::CmpPatch, 1, 2, 4, 24, 8, 1, 2,
+			Reg::_ECX,
 			0x004234FC,0x369,
 			0x00425B84,0x33f,
 			0x00425CB4,0x512,
@@ -281,7 +294,7 @@ namespace hooks {
 			0x004928E1,0x36b,
 			0x004E9972,0x365,
 			0x004F4F76,0x32d,
-			0,Reg::_EDX,
+			Reg::_EDX,
 			0x00425C57,0x513,
 			0x00426213,0x31b,
 			0x0042624D,0x31c,
@@ -290,18 +303,16 @@ namespace hooks {
 			0x004A4C50,0x329,
 			0x004A5150,0x32b,
 			0x004A5188,0x32c,
-			0,Reg::_EAX,
+			Reg::_EAX,
 			0x00457C2E,0x327,
-			0,Reg::_ESI,
+			Reg::_ESI,
 			0x0045783A,0x309,
 			0x0045789F,0x30A,
-			0,
-			0,
+			//
+			// GIANT PROBLEM: Ptr Comparison increase 
+			//
+			TblPatchType::PtrWriting, 2, 2, 8, 25, 7, 1, 1, 2, 1, 2, 1,
 
-//
-// GIANT PROBLEM: Ptr Comparison increase 
-//
-			TblPatchType::PtrWriting,
 			Reg::_EAX,Reg::_ECX,
 			0x0042350A,0x6d4,
 			0x00425BA4,0x680,
@@ -328,7 +339,6 @@ namespace hooks {
 			0x004928F2,0x6d8,
 			0x004E9994,0x6cc,
 			0x004F4F84,0x65c,
-			0,
 			Reg::_EAX,Reg::_EDX,
 			0x0045917E,0x636,
 			0x00425C65,0xa28,
@@ -337,67 +347,51 @@ namespace hooks {
 			0x004A4C5E,0x654,
 			0x004A5157,0x658,
 			0x004A5196,0x65a,
-			0,
 			Reg::_EAX,Reg::_ESI,
 			0x004578AD,0x616,
-			0,
 			Reg::_ECX,Reg::_ESI,
 			0x00457848,0x614,
-			0,
 			Reg::_ECX,Reg::_EDX,
 			0x00457750,0xa2a,
 			0x004579F1,0x632,
-			0,
 			Reg::_EDI,Reg::_ECX,
 			0x00457700,0x612,
-			0,
 			Reg::_EBX,Reg::_ECX,
 			0x004579A4,0x612,
 			0x00457A3C,0x612,
-			0,
 			Reg::_ESI,Reg::_EAX,
 			0x00457C41,0x650,
-			0,
-			0,
-//
-// only 1 nop
-//
-			TblPatchType::PtrMathWriting,
-			Reg::_EAX,Reg::_ECX,Reg::_EAX,
-			0x0042609E,
-			0x0042616F,
-			0x0046F9AB,
-			0x0048F775,
-			0x0048F865,
-			0x004C370F,
-			0x004271B2,
-			0,
-			Reg::_EAX,Reg::_ECX,Reg::_EDX,
-			0x004266D1,
-			0x004268B3,
-			0x00464EC0,
-			0x0047B0DF,
-			0x0046F8B5,
-			0x0048D96E,
-			0x0048EEC0,
-			0x00494582,
-			0x004273A1,
-			0x00455C54,
-			0,
-			Reg::_EAX,Reg::_ESI,Reg::_EAX,  0x004927E2, 0,
-			Reg::_EAX, Reg::_EDX,Reg::_EAX,0x004277AF,0,
-			Reg::_EDX,Reg::_ECX,Reg::_EDX,0x00426BC4,0,
-			Reg::_ECX,Reg::_ESI,Reg::_EAX,0x00427639,0,
-			Reg::_ESI,Reg::_ECX,Reg::_EDX,0x00427690,0,
-			Reg::_ESI,Reg::_EDX,Reg::_ECX,0x00427704,0,
-			Reg::_ESI,Reg::_ECX,Reg::_EAX,
-			0x00457BC0,
-			0,
-			0,
-//
-// 1 nop
-//
-			TblPatchType::RegisterPointerCmp,
+		TblPatchType::PtrMathWriting, 3, 1, 9, 7, 10, 1,1,1,1,1,1,1,
+		Reg::_EAX,Reg::_ECX,Reg::_EAX,
+		0x0042609E,
+		0x0042616F,
+		0x0046F9AB,
+		0x0048F775,
+		0x0048F865,
+		0x004C370F,
+		0x004271B2,
+		Reg::_EAX,Reg::_ECX,Reg::_EDX,
+		0x004266D1,
+		0x004268B3,
+		0x00464EC0,
+		0x0047B0DF,
+		0x0046F8B5,
+		0x0048D96E,
+		0x0048EEC0,
+		0x00494582,
+		0x004273A1,
+		0x00455C54,
+		Reg::_EAX,Reg::_ESI,Reg::_EAX,0x004927E2,
+		Reg::_EAX, Reg::_EDX,Reg::_EAX,0x004277AF,
+		Reg::_EDX,Reg::_ECX,Reg::_EDX,0x00426BC4,
+		Reg::_ECX,Reg::_ESI,Reg::_EAX,0x00427639,
+		Reg::_ESI,Reg::_ECX,Reg::_EDX,0x00427690,
+		Reg::_ESI,Reg::_EDX,Reg::_ECX,0x00427704,
+		Reg::_ESI,Reg::_ECX,Reg::_EAX,0x00457BC0,
+		//
+		// 1 nop
+		//
+			TblPatchType::RegisterPointerCmp,2,1,5,20,1,1,1,1,
 			Reg::L_AX,Reg::_ECX,
 			0x00426083,
 			0x00426154,
@@ -419,47 +413,41 @@ namespace hooks {
 			0x0048F856,
 			0x00494573,
 			0x004C3701,
-			0,
-			Reg::L_CX,Reg::_EDX,0x004276F5,0,
-			Reg::L_AX,Reg::_EDX,0x004277A0,0,
-			Reg::L_CX,Reg::_ESI,0x004927D3,0,
-			Reg::L_AX,Reg::_ESI,0x0042762A,
-			0,
-			0,
-//
-//	1 nop
-//
-			TblPatchType::RegisterPointerMov,
+			Reg::L_CX,Reg::_EDX,
+			0x004276F5,
+			Reg::L_AX,Reg::_EDX,
+			0x004277A0,
+			Reg::L_CX,Reg::_ESI,
+			0x004927D3,
+			Reg::L_AX,Reg::_ESI,
+			0x0042762A,
+			//
+			//	1 nop
+			//
+			TblPatchType::RegisterPointerMov,2,1,2,3,4,
 			Reg::L_DI,Reg::_ECX,
 			0x004575C4,
 			0x00457602,
 			0x0045773F,
-			0,
-
 			Reg::L_DX,Reg::_ECX,
 			0x004577B7,
 			0x00457934,
 			0x00457993,
 			0x00457A2B,
-			0,
-			0,
-// 1 nop
-			TblPatchType::RegisterCmp,
+			// 1 nop
+			TblPatchType::RegisterCmp,1,2,2,5,3,
 			Reg::L_DX,
 			0x004577BA, 0x514,
 			0x00457937, 0x308,
 			0x0045794E, 0x316,
 			0x00457996, 0x308,
 			0x00457A2E, 0x308,
-			0,
 			Reg::L_DI,
 			0x004575C7, 0x324,
 			0x00457605, 0x325,
 			0x00457742, 0x514,
-			0,
-			0,
-//SERIOUS PROBLEM - 1 extra byte
-			TblPatchType::RegisterWriting,
+			//SERIOUS PROBLEM - 1 extra byte
+			TblPatchType::RegisterWriting,2,1,1,6,
 			Reg::_EDX,Reg::L_AX,
 			0x00455C51,
 			0x00464EBD,
@@ -467,9 +455,8 @@ namespace hooks {
 			0x0047B0DC,
 			0x0048D96B,
 			0x0048EEBD,
-			0,
-			0,
-			TblPatchType::NopPatch,3,
+			TblPatchType::NopPatch, 1, 1, 1, 9, //3 nops
+			Reg::__NOP,
 			0x0042609B,
 			0x0042616C,
 			0x00427636,
@@ -479,9 +466,181 @@ namespace hooks {
 			0x0046F9A8,
 			0x00457BBD,
 			0x00427701,
-			0,
-			0,
 		};
+	}
+	namespace ConvReadStatus {
+		enum {
+			ReadHeader,
+			ReadVars,
+			ReadArgs,
+		};
+	}
+	void patchTblList() {
+		int read_status = ConvReadStatus::ReadHeader;
+		int current_header = -1;
+		std::vector<u32> args;
+		std::vector<u32> vars;
+		int varCount = 0;
+		int argCount = 0;
+		int currentVarCount = 0;
+		int currentArgCount = 0;
+		int currentSequenceCount = 0;
+		int currentHeader = -1;
+		auto patch_list = patch_convention();
+		std::vector<u8> patch;
+		std::vector<u32> sequence_lengths;
+		for (int i = 0; i < patch_list.size(); i++) {
+			if (read_status == ConvReadStatus::ReadHeader) {
+				sequence_lengths.clear();
+				vars.clear();
+				currentHeader = patch_list[i];
+				if (currentHeader == TblPatchType::NopPatch) {
+
+					break;
+				}
+				currentVarCount = patch_list[i + 1];
+				currentArgCount = patch_list[i + 2];
+				currentSequenceCount = patch_list[i + 3];
+				for (int j = 0; j < currentSequenceCount; j++) {
+					sequence_lengths.push_back(patch_list[i + 4 + j]);
+				}
+				i += 3 + currentSequenceCount;
+				read_status = ConvReadStatus::ReadArgs;
+			}
+			else if (read_status == ConvReadStatus::ReadArgs) {
+				for (int a = 0; a < currentSequenceCount; a++) {
+					vars.clear();
+					for (int j = 0; j < currentVarCount; j++) {
+						vars.push_back(patch_list[i]);
+						i++;
+					}
+					for (int b = 0; b < sequence_lengths[a]; b++) {
+						auto& elem = patch_list[i];
+						/*for (int arg = 0; arg < currentArgCount; arg++) {
+							i++;
+						}*/
+						patch.clear();
+						if (currentHeader == TblPatchType::CmpPatch) {
+							//will be handled with wrappers
+						}
+						else if (currentHeader == TblPatchType::PtrWriting) {
+							u32 address = patch_list[i];
+							u16 string_id = patch_list[i + 1];
+							u8 bl = patch_list[i + 1] & 0xff;
+							u8 bu = (patch_list[i + 1] & 0xff00) >> 8;
+							patch = { 0x8b,0x82,bl,bu,0x00,0x00,0x90 };
+							if (vars[0] == Reg::_EAX) {
+								if (vars[1] == Reg::_ECX) {
+									patch[1] = 0x81;
+								}
+								else if (vars[1] == Reg::_EDX) {
+									patch[1] = 0x82;
+								}
+								else if (vars[1] == Reg::_ESI) {
+									patch[1] = 0x86;
+								}
+							}
+							else if (vars[0] == Reg::_ECX) {
+								if (vars[1] == Reg::_ESI) {
+									patch[1] = 0x8e;
+								}
+								else if (vars[1] == Reg::_EDX) {
+									patch[1] = 0x8a;
+								}
+							}
+							else if (vars[0] == Reg::_EDI && vars[1] == Reg::_ECX) {
+								patch[1] = 0xb9;
+							}
+							else if (vars[0] == Reg::_EBX && vars[1] == Reg::_ECX) {
+								patch[1] = 0x99;
+							}
+							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_EAX) {
+								patch[1] = 0xb0;
+							}
+						}
+						else if (currentHeader == TblPatchType::PtrMathWriting) {
+							patch = { 0x8b, 0x44, 0x81, 0x04, 0x90 };
+							if (vars[0] == Reg::_EAX && vars[1] == Reg::_ECX && vars[2] == Reg::_EAX) {
+								//0x81
+							}
+							else if (vars[0] == Reg::_EAX && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
+								patch[2] = 0x91;
+							}
+							else if (vars[0] == Reg::_EAX && vars[1] == Reg::_ESI && vars[2] == Reg::_EAX) {
+								patch[2] = 0x86;
+							}
+							else if (vars[0] == Reg::_EAX && vars[1] == Reg::_EDX && vars[2] == Reg::_EAX) {
+								patch[2] = 0x82;
+							}
+							else if (vars[0] == Reg::_EDX && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
+								patch[1] = 0x54;
+								patch[2] = 0x91;
+							}
+							else if (vars[0] == Reg::_ECX && vars[1] == Reg::_ESI && vars[2] == Reg::_EAX) {
+								patch[1] = 0x4c;
+								patch[2] = 0x86;
+							}
+							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
+								patch[1] = 0x74;
+								patch[2] = 0x91;
+							}
+							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_EDX && vars[2] == Reg::_ECX) {
+								patch[1] = 0x74;
+								patch[2] = 0x8a;
+								//
+							}
+							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_ECX && vars[2] == Reg::_EAX) {
+								patch[1] = 0x74;
+								patch[2] = 0x81;
+							}
+						}
+						else if (currentHeader == TblPatchType::RegisterPointerCmp) {
+							patch = { 0x3b, 0x01, 0x90 };
+							if (vars[0] == Reg::L_AX) {
+								if (vars[1] == Reg::_ECX) {
+									//0x01
+								}
+								else if (vars[1] == Reg::_ESI) {
+									patch[1] = 0x06;
+								}
+								else if (vars[1] == Reg::_EDX) {
+									patch[1] = 0x02;
+								}
+							}
+							else if (vars[0] == Reg::L_CX) {
+								if (vars[1] == Reg::_ECX) {
+									patch[1] = 0x0a;
+								}
+								else if (vars[1] == Reg::_ESI) {
+									patch[1] = 0x0e;
+								}
+							}
+						}
+						else if (currentHeader == TblPatchType::RegisterPointerMov) {
+							patch = { 0x8b, 0x39, 0x90 };//DI, ECX
+							if (vars[0] == Reg::L_DX && vars[1] == Reg::_ECX) {
+								patch[1] = 0x11;
+							}
+						}
+						else if (currentHeader == TblPatchType::RegisterCmp) {
+							//require wrappers
+						}
+						else if (currentHeader == TblPatchType::RegisterWriting) {
+							patch = { 0x89, 0xc2, 0x90 };
+						}
+						else if (currentHeader == TblPatchType::NopPatch) {
+							patch = { 0x90,0x90,0x90 };
+						}
+						//
+						// apply patch
+						//
+						i += currentArgCount;
+					}
+				}
+				i--;
+				read_status = ConvReadStatus::ReadHeader;
+			}
+		}
 	}
 	void injectTblExtender() {
 		Globals.tbl_extender = true;
