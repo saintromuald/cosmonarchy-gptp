@@ -515,7 +515,6 @@ namespace hooks {
 						);
 						if (targ != NULL) {
 							unit->orderTarget.unit = targ;
-							scbw::printText("Acquired");
 						}
 						scbw::createBullet(10, unit, source_x, source_y, unit->playerId, unit->currentDirection1);
 
