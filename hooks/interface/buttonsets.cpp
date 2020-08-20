@@ -873,8 +873,18 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranSiegeTankSiegeMode &&  //Siege Tank Babylon Plating passive
+									current_button->iconID == IconId::TerranVehiclePlating)
+								{
+									current_button_state = BUTTON_STATE::Disabled; // Disable while sieged
+								}
 								if ((*activePortraitUnit)->id == UnitId::TerranWraith &&  //Wraith Capacitors passive
 									current_button->iconID == IconId::BurstLasers)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranDropship &&  //Dropship Hotdrop passive
+									current_button->iconID == IconId::Land)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
@@ -921,13 +931,25 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossHighTemplar &&  //High Templar Ephemeral passive
+								if ((*activePortraitUnit)->id == UnitId::ProtossHighTemplar &&  //High Templar Ascendancy passive
+									current_button->iconID == IconId::MindControlUnused)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossHighTemplar &&  //High Templar Ephemeral Blades passive
 									current_button->iconID == IconId::ProtossGroundWeapons)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+							#ifdef HYDRA
+								if ((*activePortraitUnit)->id == UnitId::ProtossDarkTemplar &&  //Dark Templar Silent Strikes passive
+									current_button->iconID == IconId::ProtossGroundWeapons)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+							#endif
 								if ((*activePortraitUnit)->id == UnitId::ProtossAurora &&  //Aurora Last Orders passive
-									current_button->iconID == IconId::Scout)
+									current_button->iconID == IconId::MojoScout)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
@@ -939,13 +961,18 @@ namespace hooks {
 
 								// ZERG \\
 								
-								if ((*activePortraitUnit)->id == UnitId::ZergZergling &&  //Zergling Adrenal passive
+								if ((*activePortraitUnit)->id == UnitId::ZergZergling &&  //Zergling Adrenal Glands passive
 									current_button->iconID == IconId::AdrenalGlands)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergVorvaling && //Vorvaling Adrenal passive
+								if ((*activePortraitUnit)->id == UnitId::ZergVorvaling && //Vorvaling Adrenal Surge passive
 									current_button->iconID == IconId::MetabolicBoost)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergVorvaling && //Vorvaling Captivating Claws passive
+									current_button->iconID == IconId::Claws)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
@@ -954,23 +981,38 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk Dispersion passive
+								if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk Corrosive Dispersion passive
 									current_button->iconID == IconId::ZergFlyerAttacks)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}								
-								if ((*activePortraitUnit)->id == UnitId::ZergUltralisk &&  //Ultralisk Siphon passive
+								if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk Caustic Fission passive
+									current_button->iconID == IconId::AcidSpore)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergLurker && //Lurker Seismic Spines passive
+									current_button->iconID == IconId::SubterraneanSpines)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergDevourer &&  //Devourer Critical Mass passive
+									current_button->iconID == IconId::VenomUnused)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergGorgoleth &&  //Gorgoleth Probing Incisors passive
 									current_button->iconID == IconId::KaiserBlades)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergUltralisk &&  //Ultralisk Kaiser passive
-									current_button->iconID == IconId::AnabolicSynthesis)
+								if ((*activePortraitUnit)->id == UnitId::ZergGorgoleth &&  //Gorgoleth Ravening Mandible passive
+									current_button->iconID == IconId::RoarUnused)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								if ((*activePortraitUnit)->id == UnitId::ZergBroodling &&  //Broodling Incubators passive
-									current_button->iconID == 269)
+									current_button->iconID == IconId::RoarUnused)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
@@ -984,30 +1026,34 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergLair &&  //Lair-Collective Integration passive
-									current_button->iconID == IconId::Suicide_Scourge)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::ZergHive &&  //Hive-Collective Integration passive
-									current_button->iconID == IconId::Suicide_Scourge)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::ZergSire &&  //Sire-Collective Integration passive
-									current_button->iconID == IconId::Suicide_Scourge)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::ZergGorgoleth &&  //Gorgoleth-Probing Incisors passive
+								if ((*activePortraitUnit)->id == UnitId::ZergUltralisk &&  //Ultralisk Siphon passive
 									current_button->iconID == IconId::KaiserBlades)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-
-							#ifdef HYDRA
-
-							#endif
+								if ((*activePortraitUnit)->id == UnitId::ZergUltralisk &&  //Ultralisk Kaiser passive
+									current_button->iconID == IconId::AnabolicSynthesis)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if (((*activePortraitUnit)->id == UnitId::ZergIroleth
+								|| (*activePortraitUnit)->id == UnitId::ZergOthstoleth) &&  //Iroleth, Othstoleth Endomorphic Accelerant passive
+									current_button->iconID == IconId::ZergBasicBuildings)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergOthstoleth &&  //Othstoleth Ectomorphic Accelerant passive
+									current_button->iconID == IconId::ZergAdvancedBuildings)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if (((*activePortraitUnit)->id == UnitId::ZergLair
+								||	(*activePortraitUnit)->id == UnitId::ZergHive
+								||	(*activePortraitUnit)->id == UnitId::ZergSire) &&  //Lair, Hive, Sire Collective Integration passive
+									current_button->iconID == IconId::Suicide_Scourge)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 
 							#ifdef DELIVERANCE
 								if ((*activePortraitUnit)->id == UnitId::ProtossEcclesiast &&  //Ecclesiast-Astral Blessing passive : enabled 
