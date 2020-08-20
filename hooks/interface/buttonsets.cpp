@@ -840,27 +840,10 @@ namespace hooks {
 						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Spell_Researched)	{
 							if (current_button->reqVar == TechId::Healing && current_button->iconID != 365)	{
 								current_button_state = BUTTON_STATE::Disabled;
-								if ((*activePortraitUnit)->id == UnitId::ZergZergling &&  //Zergling Adrenal passive
-									current_button->iconID == IconId::AdrenalGlands)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::ZergVorvaling && //Vorvaling Adrenal passive
-									current_button->iconID == IconId::MetabolicBoost)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk Genesis passive
-									current_button->iconID == IconId::ZergAdvancedBuildings)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk Dispersion passive
-									current_button->iconID == IconId::ZergFlyerAttacks)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::TerranFirebat && //Firebat Apollyoid passive
+
+								// TERRAN \\
+
+								if ((*activePortraitUnit)->id == UnitId::TerranFirebat && //Firebat Apollyoid Adhesive passive
 									current_button->iconID == IconId::Flyer_Attack)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -870,11 +853,54 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranShaman &&  //Shaman Adrenaline passive
+								if ((*activePortraitUnit)->id == UnitId::TerranShaman &&  //Shaman Adrenaline Packs passive
 									current_button->iconID == IconId::TerranInfantryArmor)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranGhost &&  //Ghost Somatic Implants passive
+									current_button->iconID == IconId::OcularImplants)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranSouthpaw &&  //Southpaw Knockout Drivers passive
+									current_button->iconID == IconId::BurstLasers)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranSiegeTankTankMode &&  //Siege Tank Babylon Plating passive
+									current_button->iconID == IconId::TerranVehiclePlating)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranWraith &&  //Wraith Capacitors passive
+									current_button->iconID == IconId::BurstLasers)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranAzazel &&  //Azazel Innervating Matrices passive
+									current_button->iconID == IconId::Restoration_Research)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranScienceVessel &&  //Science Vessel Radiation Shockwave passive
+									current_button->iconID == IconId::EMPShockwave)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranCentaur &&  //Centaur Sunchaser Missiles passive
+									current_button->iconID == IconId::GeminiMissiles)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser &&  //Battlecruiser Fore Castle passive 
+									current_button->iconID == IconId::TerranShipPlating)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+
+								// PROTOSS \\
+
 								if ((*activePortraitUnit)->id == UnitId::ProtossLegionnaire && //Legionnaire Unified Strikes passive
 									current_button->iconID == IconId::ProtossGroundWeapons)
 								{
@@ -895,21 +921,6 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranWraith &&  //Wraith Capacitors passive
-									current_button->iconID == IconId::BurstLasers)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::TerranScienceVessel &&  //Science Vessel EMP passive
-									current_button->iconID == IconId::EMPShockwave)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser &&  //Battlecruiser Fore Castle passive 
-									current_button->iconID == IconId::TerranShipPlating)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossHighTemplar &&  //High Templar Ephemeral passive
 									current_button->iconID == IconId::ProtossGroundWeapons)
 								{
@@ -920,6 +931,34 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossArchon &&  //Archon Aegis passive
+									current_button->iconID == IconId::RechargeShields)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+
+								// ZERG \\
+								
+								if ((*activePortraitUnit)->id == UnitId::ZergZergling &&  //Zergling Adrenal passive
+									current_button->iconID == IconId::AdrenalGlands)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergVorvaling && //Vorvaling Adrenal passive
+									current_button->iconID == IconId::MetabolicBoost)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk Genesis passive
+									current_button->iconID == IconId::ZergAdvancedBuildings)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk Dispersion passive
+									current_button->iconID == IconId::ZergFlyerAttacks)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}								
 								if ((*activePortraitUnit)->id == UnitId::ZergUltralisk &&  //Ultralisk Siphon passive
 									current_button->iconID == IconId::KaiserBlades)
 								{
@@ -942,16 +981,6 @@ namespace hooks {
 								}
 								if ((*activePortraitUnit)->id == UnitId::ZergInfestedTerran &&  //Infested Terran Death March passive 
 									current_button->iconID == IconId::LegEnhancements)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossArchon &&  //Archon Aegis passive
-									current_button->iconID == IconId::RechargeShields)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::TerranAzazel &&  //Azazel-Matrices passive
-									current_button->iconID == IconId::Restoration_Research)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
