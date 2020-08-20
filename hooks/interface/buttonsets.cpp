@@ -736,7 +736,8 @@ namespace hooks {
 								}
 							}
 							else
-							if (current_button->reqVar == UnitId::TerranShaman) {
+							if (current_button->reqVar == UnitId::TerranShaman
+							||	current_button->reqVar == UnitId::TerranApostle) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -749,7 +750,7 @@ namespace hooks {
 							}
 							else
 							if (current_button->reqVar == UnitId::TerranGhost
-								|| current_button->reqVar == UnitId::TerranSavant) {
+							||	current_button->reqVar == UnitId::TerranSavant) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -763,7 +764,7 @@ namespace hooks {
 
 							// Factory buttonset handling
 							if (current_button->reqVar == UnitId::TerranSiegeTankTankMode
-								|| current_button->reqVar == UnitId::TerranGoliath) {
+							||	current_button->reqVar == UnitId::TerranGoliath) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -776,7 +777,7 @@ namespace hooks {
 							}
 							else
 							if (current_button->reqVar == UnitId::TerranMadrigal
-								|| current_button->reqVar == UnitId::TerranPaladin) {
+							||	current_button->reqVar == UnitId::TerranPaladin) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -790,8 +791,7 @@ namespace hooks {
 
 							// Starport buttonset handling
 							if (current_button->reqVar == UnitId::TerranBattlecruiser
-							|| current_button->reqVar == UnitId::TerranCentaur
-							|| current_button->reqVar == UnitId::TerranScienceVessel) {
+							||	current_button->reqVar == UnitId::TerranCentaur) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -804,12 +804,24 @@ namespace hooks {
 							}
 							else
 							if (current_button->reqVar == UnitId::TerranAzazel
-							|| current_button->reqVar == UnitId::TerranWyvern
-							|| current_button->reqVar == UnitId::TerranValkyrie) {
+							||	current_button->reqVar == UnitId::TerranScienceVessel) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranControlTower) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else {
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+							}
+							else
+							if (current_button->reqVar == UnitId::TerranWyvern
+							||	current_button->reqVar == UnitId::TerranValkyrie) {
+								if ((*activePortraitUnit)->building.addon == NULL) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMunitionsBay) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								else {
