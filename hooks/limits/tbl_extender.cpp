@@ -263,50 +263,53 @@ namespace hooks {
 
 			TblPatchType::CmpPatch - patch type
 			1 - number of variables
-			2 - number of arguments
+			4 - number of arguments
 			4 - number of sequences
 			24,8,1,2 - lengths of the sequences
 			*/
-			TblPatchType::CmpPatch, 1, 2, 4, 24, 8, 1, 2,
+			TblPatchType::CmpPatch, 1, 4, 4, 24, 8, 1, 2,
 			Reg::_ECX,
-			0x004234FC,0x369,
-			0x00425B84,0x33f,
-			0x00425CB4,0x512,
-			0x00425D08,0x33a,
-			0x00425D58,0x33e,
-			0x00425E40,0x2fb,
-			0x00426289,0x31d,
-			0x0042744F,0x315,
-			0x00427ADD,0x608,
-			0x00427BD3,0x609,
-			0x0042F3B5,0x23b,
-			0x0042F3EE,0x23a,
-			0x004576F2,0x308,
-			0x00457D87,0x328,
-			0x004647BA,0x416,
-			0x00474573,0x367,
-			0x0047460C,0x367,
-			0x0047553E,0x366,
-			0x00475582,0x368,
-			0x0048E50F,0x35e,
-			0x0048E665,0x35e,
-			0x004928E1,0x36b,
-			0x004E9972,0x365,
-			0x004F4F76,0x32d,
+			0x004234FC,0x369,0x00423501, Jmp::JA,
+			0x00425B84,0x33f,0x00425B89, Jmp::JA,
+			0x00425CB4,0x512,0x00425CB9, Jmp::JA,
+			0x00425D08,0x33a,0x00425D0D, Jmp::JA,
+			0x00425D58,0x33e,0x00425D5D, Jmp::JA,
+			0x00425E40,0x2fb,0x00425E40, Jmp::JA,
+			0x00426289,0x31d,0x00425E45, Jmp::JA,
+			0x0042744F,0x315,0x0042744F, Jmp::JA,
+			0x00427ADD,0x608,0x00427AE2, Jmp::JA,
+			0x00427BD3,0x609,0x00427BD8, Jmp::JA,
+			0x0042F3B5,0x23b,0x0042F3BA, Jmp::JBE,
+			0x0042F3EE,0x23a,0x0042F3F3, Jmp::JA,
+			0x004576F2,0x308,0x004576F7, Jmp::JA,
+			0x00457D87,0x328,0x00457D8c, Jmp::JA,
+			0x004647BA,0x416,0x004647BF, Jmp::JA,
+			0x00474573,0x367,0x0047457B, Jmp::JA,
+			0x0047460C,0x367,0x00474614, Jmp::JA,
+			0x0047553E,0x366,0x00475546, Jmp::JA,
+			0x00475582,0x368,0x0047558A, Jmp::JA,
+			0x0048E50F,0x35e,0x0048E514, Jmp::JA,
+			0x0048E665,0x35e,0x0048E66A, Jmp::JA,
+			0x004928E1,0x36b,0x004928E9, Jmp::JA,
+			0x004E9972,0x365,0x004E997A, Jmp::JA,
+			0x004F4F76,0x32d,0x004F4F7B, Jmp::JA,
+			//
+			//
 			Reg::_EDX,
-			0x00425C57,0x513,
-			0x00426213,0x31b,
-			0x0042624D,0x31c,
-			0x004579D6,0x318,
-			0x00459170,0x31a,
-			0x004A4C50,0x329,
-			0x004A5150,0x32b,
-			0x004A5188,0x32c,
+			0x00425C57,0x513,0x00425C5C, Jmp::JA,
+			0x00426213,0x31b,0x0042621F, Jmp::JA,
+			0x0042624D,0x31c,0x00426252, Jmp::JA,
+			0x004579D6,0x318,0x004579DB, Jmp::JA,
+			0x00459170,0x31a,0x00459175, Jmp::JA,
+			0x004A4C50,0x329,0x004A4C55, Jmp::JA,
+			0x004A5150,0x32b,0x004A5155, Jmp::JBE,
+			0x004A5188,0x32c,0x004A518D, Jmp::JA,
 			Reg::_EAX,
-			0x00457C2E,0x327,
+			0x00457C2E,0x327,0x00457C38, Jmp::JA,
 			Reg::_ESI,
-			0x0045783A,0x309,
-			0x0045789F,0x30A,
+			0x0045783A,0x309,0x0045783f, Jmp::JA,
+			0x0045789F,0x30A,0x004578a4, Jmp::JA,
+
 			//
 			// GIANT PROBLEM: Ptr Comparison increase 
 			//
@@ -360,6 +363,13 @@ namespace hooks {
 			0x00457A3C,0x612,
 			Reg::_ESI,Reg::_EAX,
 			0x00457C41,0x650,
+
+
+
+
+
+
+
 		TblPatchType::PtrMathWriting, 3, 1, 9, 7, 10, 1,1,1,1,1,1,1,
 		Reg::_EAX,Reg::_ECX,Reg::_EAX,
 		0x0042609E,
@@ -434,17 +444,17 @@ namespace hooks {
 			0x00457993,
 			0x00457A2B,
 			// 1 nop
-			TblPatchType::RegisterCmp,1,2,2,5,3,
+			TblPatchType::RegisterCmp,1,4,2,5,3,
 			Reg::L_DX,
-			0x004577BA, 0x514,
-			0x00457937, 0x308,
-			0x0045794E, 0x316,
-			0x00457996, 0x308,
-			0x00457A2E, 0x308,
+			0x004577BA, 0x514, 0x004577BF, Jmp::JA,
+			0x00457937, 0x308, 0x0045793C, Jmp::JA,
+			0x0045794E, 0x316, 0x00457953, Jmp::JA,
+			0x00457996, 0x308, 0x0045799B, Jmp::JA,
+			0x00457A2E, 0x308, 0x00457A33, Jmp::JA,
 			Reg::L_DI,
-			0x004575C7, 0x324,
-			0x00457605, 0x325,
-			0x00457742, 0x514,
+			0x004575C7, 0x324, 0x004575CC, Jmp::JA,
+			0x00457605, 0x325, 0x0045760A, Jmp::JA,
+			0x00457742, 0x514, 0x00457747, Jmp::JA,	
 			//SERIOUS PROBLEM - 1 extra byte
 			TblPatchType::RegisterWriting,2,1,2,6,1,
 			Reg::_EDX,Reg::L_AX,
@@ -470,9 +480,72 @@ namespace hooks {
 			0x00457BBD,
 			0x00427701,
 
-			TblPatchType::DecPatch,1,1,1,1,
+			TblPatchType::AddPatch,1,1,2,13,1,
 			Reg::_EAX,
 			0x0047B0BE,
+			0x00426063,
+			0x00426134,
+			0x00426BA1,
+			0x00427165,
+			0x0042737E,
+			0x00427616,
+			0x0042766D,
+			0x0042778C,
+			0x00457B9D,
+			0x00464EA1,
+			0x0048D94F,
+			0x00494563,
+			Reg::_ECX,
+			0x004276E0,
+/*
+			TblPatchType::JmpPatch, 1, 2, 1, 35,//for Cmp patches
+			Reg::__NOP,
+			0x00423501, Jmp::JA,
+			0x00425B89, Jmp::JA,
+			0x00425CB9, Jmp::JA,
+			0x00425D0D, Jmp::JA,
+			0x00425D5D, Jmp::JA,
+			0x00425E40, Jmp::JA,
+			0x00425E45, Jmp::JA,
+			0x0042744F, Jmp::JA,
+			0x00427AE2, Jmp::JA,
+			0x00427BD8, Jmp::JA,
+			0x0042F3BA, Jmp::JBE,
+			0x0042F3F3, Jmp::JA,
+			0x004576F7, Jmp::JA,
+			0x00457D8c, Jmp::JA,
+			0x004647BF, Jmp::JA,
+			0x0047457B, Jmp::JA,
+			0x00474614, Jmp::JA,
+			0x00475546, Jmp::JA,
+			0x0047558A, Jmp::JA,
+			0x0048E514, Jmp::JA,
+			0x0048E66A, Jmp::JA,
+			0x004928E9, Jmp::JA,
+			0x004E997A, Jmp::JA,
+			0x004F4F7B, Jmp::JA,
+			0x00425C5C, Jmp::JA,
+			0x0042621F, Jmp::JA,
+			0x00426252, Jmp::JA,
+			0x004579DB, Jmp::JA,
+			0x00459175, Jmp::JA,
+			0x004A4C55, Jmp::JA,
+			0x004A5155, Jmp::JBE,
+			0x004A518D, Jmp::JA,
+			0x00457C38, Jmp::JA,
+			0x0045783f, Jmp::JA,
+			0x004578a4, Jmp::JA,
+
+			TblPatchType::JmpPatch, 1, 2, 1, 8,//for register cmp
+			Reg::__NOP,
+			0x004577BF, Jmp::JA,
+			0x0045793C, Jmp::JA,
+			0x00457953, Jmp::JA,
+			0x0045799B, Jmp::JA,
+			0x00457A33, Jmp::JA,
+			0x004575CC, Jmp::JA,
+			0x0045760A, Jmp::JA,
+			0x00457747, Jmp::JA,*/
 		};
 	}
 	namespace ConvReadStatus {
@@ -487,6 +560,100 @@ namespace hooks {
 			memoryPatch(address+i, patch[i]);
 		}
 	}
+
+//0x004234FC, 0x369, 0x00423501, Jmp::JA,
+/*
+
+004234FC  |.  66:8139 6903  CMP WORD PTR DS:[ECX],369
+00423501  |.  77 07         JA SHORT 0042350A
+00423503  |.  B8 7D1B5000   MOV EAX,00501B7D
+
+
+static u32 wrapJumpAddressIf;
+static u32 wrapJumpAddressAfter;
+static u32 wrapComparison; (0x369 for example)
+static char tblNew[] = "rez\\stat_txt.tblex";
+*/
+	/*void __declspec(naked) ecx_callset() {
+		static u32 currentWrap;
+		static u32 currentAddressIf;
+		static u32 currentAddressAfter;
+		__asm {
+			PUSHAD
+		}
+		currentWrap = wrapComparison[currentWrapPatch];
+		currentAddressIf = wrapJumpAddressIf[currentWrapPatch];
+		currentAddressAfter = wrapJumpAddressAfter[currentWrapPatch];
+		__asm {
+			POPAD
+			PUSH EAX
+			MOV EAX, currentWrap
+			CMP[ECX], EAX
+			POP EAX
+			JA SHORT currentAddressIf
+			JMP currentAddressAfter
+		}
+	}
+	void __declspec(naked) ecx_jbe_callset() {
+		static u32 currentWrap;
+		static u32 currentAddressIf;
+		static u32 currentAddressAfter;
+		__asm {
+			PUSHAD
+		}
+		currentWrap = wrapComparison[currentWrapPatch];
+		currentAddressIf = wrapJumpAddressIf[currentWrapPatch];
+		currentAddressAfter = wrapJumpAddressAfter[currentWrapPatch];
+		__asm {
+			POPAD
+			PUSH EAX
+			MOV EAX, currentWrap
+			CMP[ECX], EAX
+			POP EAX
+			JBE SHORT currentAddressIf
+			JMP currentAddressAfter
+		}
+	}
+	void __declspec(naked) eax_callset() {
+		__asm {
+			PUSH ESI
+			MOV ESI, wrapComparison[currentWrapPatch]
+			CMP[EAX], ESI
+			POP ESI
+			JA SHORT wrapJumpAddressIf[currentWrapPatch]
+			JMP wrapJumpAddressAfter[currentWrapPatch]
+		}
+	}
+	void __declspec(naked) edx_callset() {
+		__asm {
+			PUSH EAX
+			MOV EAX, wrapComparison[currentWrapPatch]
+			CMP [EDX], EAX
+			POP EAX
+			JA SHORT wrapJumpAddressIf[currentWrapPatch]
+			JMP wrapJumpAddressAfter[currentWrapPatch]
+		}
+	}
+	void __declspec(naked) edx_jbe_callset() {
+		__asm {
+			PUSH EAX
+			MOV EAX, wrapComparison[currentWrapPatch]
+			CMP[EDX], EAX
+			POP EAX
+			JBE SHORT wrapJumpAddressIf[currentWrapPatch]
+			JMP wrapJumpAddressAfter[currentWrapPatch]
+		}
+	}
+	void __declspec(naked) esi_callset() {
+		__asm {
+			PUSH EAX
+			MOV EAX, wrapComparison[currentWrapPatch]
+			CMP[ESI], EAX
+			POP EAX
+			JA SHORT wrapJumpAddressIf[currentWrapPatch]
+			JMP wrapJumpAddressAfter[currentWrapPatch]
+		}
+	}*/
 	void patchTblList() {
 		int read_status = ConvReadStatus::ReadHeader;
 		std::vector<u32> args;
@@ -497,6 +664,7 @@ namespace hooks {
 		int currentArgCount = 0;
 		int currentSequenceCount = 0;
 		int currentHeader = -1;
+		
 		auto patch_list = patch_convention();
 		std::vector<u8> patch;
 		std::vector<u32> sequence_lengths;
@@ -528,9 +696,71 @@ namespace hooks {
 						}*/
 						patch.clear();
 						u32 address = patch_list[i];
-						if (currentHeader == TblPatchType::CmpPatch) {
-							//will be handled with wrappers
-							
+						if (currentHeader == TblPatchType::CmpPatch/* && currentWrapPatch < wrapPatchMax*/) {
+							u8 byte_off = *reinterpret_cast<u8*>((patch_list[i + 2] + 1));
+							auto address_if = byte_off + patch_list[i + 2];
+							auto address_else = patch_list[i + 2] + 0x2;
+							auto comparison = patch_list[i + 1];
+							/*
+0:  50                      push   eax
+1:  b8 69 03 00 00          mov    eax,0x369
+6:  39 01                   cmp    DWORD PTR [ecx],eax
+8:  58                      pop    eax
+9:  0f 87 fc ff ff ff       ja     b <_main+0xb>
+f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
+							*/
+							//unsafe!	
+							//probably must be handled with class extender to delete the allocated memory on exit
+							//u8* const byte_wrapper = new u8[20];
+							// SET WRAPPER STUFF
+							// MODIFY WRAPPER
+							// INJECT WRAPPER
+							// STORE WRAPPER DATA
+							// FREE DATA IN TBLEXTENDER DESTRUCTOR
+
+
+							//in whack:
+							/*
+								let executable = exe.exec_alloc(code.len());
+								//
+									pub fn exec_alloc(&mut self, size: usize) -> &'static mut [u8] {
+										let mem = self.parent.state.exec_heap.allocate(size);
+										unsafe { ::std::slice::from_raw_parts_mut(mem, size) }
+									}
+								//
+								if nops>0 {
+									exe.nop(nop_address, nops);
+								}
+								executable.copy_from_slice(&code);
+								let diff = (executable.as_ptr() as u32).wrapping_sub(address as u32+5);
+								exe.replace_val(address+1, diff);
+								exe.replace_val(address, 0xe8 as u8);
+							*/
+
+
+							/*u8 byte_off = *reinterpret_cast<u8*>((patch_list[i + 2]+1));
+							wrapJumpAddressIf[currentWrapPatch] = byte_off + patch_list[i + 2];
+							wrapJumpAddressAfter[currentWrapPatch] = patch_list[i + 2] + 0x2;
+							wrapComparison[currentWrapPatch] = patch_list[i + 1];
+							if (vars[0] == Reg::_ECX && patch_list[i + 3] == Jmp::JA) {
+								jmpPatch(ecx_callset,address);
+							}
+							if (vars[0] == Reg::_ECX && patch_list[i + 3] == Jmp::JBE) {
+								jmpPatch(ecx_jbe_callset, address);
+							}
+/*							if (vars[0] == Reg::_EDX && patch_list[i + 3] == Jmp::JA) {
+								jmpPatch(edx_callset, address);
+							}
+							if (vars[0] == Reg::_EDX && patch_list[i + 3] == Jmp::JBE) {
+								jmpPatch(edx_jbe_callset, address);
+							}
+							if (vars[0] == Reg::_EAX) {
+								jmpPatch(eax_callset, address);
+							}
+							if (vars[0] == Reg::_ESI) {
+								jmpPatch(esi_callset, address);
+							}
+							currentWrapPatch++;*/
 						}
 						else if (currentHeader == TblPatchType::PtrWriting) {
 							
@@ -644,17 +874,33 @@ namespace hooks {
 						else if (currentHeader == TblPatchType::NopPatch) {
 							patch = { 0x90,0x90,0x90 };
 						}
-						else if (currentHeader == TblPatchType::DecPatch) {
+						else if (currentHeader == TblPatchType::AddPatch) {
+							patch = { 0x83, 0xC0, 0xFF, 0x90, 0x90};
+							if (vars[0] == Reg::_EAX) {
+
+							}
+							else if(vars[0]=Reg::_ECX) {
+								patch[1]=0xc1;
+							}
+						}
+						else if (currentHeader == TblPatchType::JmpPatch) {
+							u8 jump = patch_list[i + 1];
+							patch = { 0xeb };
+							if (jump == Jmp::JBE) {
+								patch = { 0x90,0x90 };
+							}
+						}
+/*						else if (currentHeader == TblPatchType::DecPatch) {
 							if (vars[0] == Reg::_EAX) {
 								patch = { 0x48,0x90,0x90,0x90,0x90 };
 							}
-						}
+						}*/
 
 
-						if (!(currentHeader == TblPatchType::CmpPatch || currentHeader == TblPatchType::RegisterCmp)) {
-							memoryPatchVec(address, patch);
+						
+						memoryPatchVec(address, patch);
 							//don't patch if wrapper offset
-						}
+						
 						i += currentArgCount;
 					}
 				}
@@ -680,8 +926,8 @@ namespace hooks {
 		//NOT EVERYTHING IS RELATED TO TBLS, ONLY STAT_TXT STUFF MUST BE SORTED OUT
 		//loadTbl must be hooked
 
-	Line 31477: 00415C73   .  05 FFFF0000   ADD EAX,0FFFF
-	Line 31543: 00415CED  |.  81C1 FFFF0000 |ADD ECX,0FFFF
+	////Line 31543: 00415CED  |.  81C1 FFFF0000 |ADD ECX,0FFFF
+
 	Line 56377: 00426063  |.  05 FFFF0000   ADD EAX,0FFFF
 	Line 56452: 00426134  |.  05 FFFF0000   ADD EAX,0FFFF
 	Line 57285: 00426BA1  |.  05 FFFF0000   ADD EAX,0FFFF
@@ -691,65 +937,10 @@ namespace hooks {
 	Line 58170: 0042766D  |.  05 FFFF0000   ADD EAX,0FFFF
 	Line 58203: 004276E0  |.  81C1 FFFF0000 ADD ECX,0FFFF
 	Line 58254: 0042778C  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 58902: 00427F24   .  05 FFFF0000   ADD EAX,0FFFF
-	Line 58978: 00427FD8  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 59028: 00428078  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 59107: 00428147   .  05 FFFF0000   ADD EAX,0FFFF
-	Line 118364: 0044F1EC   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 118380: 0044F223   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 118396: 0044F25A   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 118412: 0044F291   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 118428: 0044F2C8   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 118444: 0044F2FF   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 118460: 0044F336   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 118476: 0044F36D   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 118492: 0044F3A4   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 118508: 0044F3DB   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 120291: 00450685  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 120674: 00450B48   .  05 FFFF0000   ADD EAX,0FFFF
 	Line 130989: 00457B9D  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 135565: 0045AC73  |.  05 FFFF0000   |ADD EAX,0FFFF
-	Line 135581: 0045ACA1  |.  05 FFFF0000   |ADD EAX,0FFFF
-	Line 141683: 0045F3DC   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 141699: 0045F413   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 141715: 0045F44A   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 141731: 0045F481   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 141747: 0045F4B8   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 141763: 0045F4EF   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 141779: 0045F526   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 141795: 0045F55D   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 141811: 0045F594   .  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 141827: 0045F5CB   .  81C1 FFFF0000 ADD ECX,0FFFF
 	Line 150062: 00464EA1  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 161568: 0046CD80   .  05 FFFF0000   ADD EAX,0FFFF
-	Line 182984: 0047AC35  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 183088: 0047AD45  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 183450: 0047B0B1  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 183454: 0047B0BE  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 198270: 004850FA  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 199573: 00485E93  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 199590: 00485ECF  |>  05 FFFF0000   ADD EAX,0FFFF
-	Line 205611: 00489ED5  |.  05 FFFF0000   ADD EAX,0FFFF
 	Line 211113: 0048D94F  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 214759: 00490277  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 215490: 00490AD7  |.  05 FFFF0000   |ADD EAX,0FFFF
 	Line 220930: 00494563  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 259073: 004ADF48  |.  05 FFFF0000   |ADD EAX,0FFFF
-	Line 265757: 004B27BE  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 266351: 004B2E93  |.  05 FFFF0000   |ADD EAX,0FFFF
-	Line 269415: 004B512E  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 271738: 004B699B  |.  05 FFFF0000   |ADD EAX,0FFFF
-	Line 284752: 004BF747  |>  05 FFFF0000   ADD EAX,0FFFF
-	Line 292704: 004C4E6C  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 292970: 004C50FA   .  05 FFFF0000   ADD EAX,0FFFF
-	Line 293674: 004C57B5   .  05 FFFF0000   ADD EAX,0FFFF
-	Line 338571: 004E3E19  |.  05 FFFF0000   ADD EAX,0FFFF
-	Line 353106: 004ED318  |.  05 FFFF0000   |ADD EAX,0FFFF
-	Line 361223: 004F2F52  |.  81C1 FFFF0000 ADD ECX,0FFFF
-	Line 371336: 004F9B9E  |.  81C7 FFFF0000 |ADD EDI,0FFFF
-	Line 373269: 004FB227  |.  8145 EC FFFF0>|ADD DWORD PTR SS:[EBP-14],0FFFF
-	Line 374498: 004FBFDB  |.  8145 08 FFFF0>|ADD DWORD PTR SS:[EBP+8],0FFFF
-	Line 374504: 004FBFF1  |>  8145 08 FFFF0>ADD DWORD PTR SS:[EBP+8],0FFFF
 		*/
 	}
 }

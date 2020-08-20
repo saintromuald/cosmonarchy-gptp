@@ -1,6 +1,7 @@
 #include "hooks/limits/extender.h"
 #include "hooks/limits/ccmu.h"
 #include "hooks/limits/sfx_extender.h"
+#include "hooks/limits/tbl_extender.h"
 #include "logger.h"
 #include "globals.h"
 namespace hooks {
@@ -23,6 +24,8 @@ namespace hooks {
 
 //		hooks::injectCCMUHooks();
 //		hooks::sfxExtender();
+		hooks::injectTblExtender();
+		
 //		jmpPatch(preInitDataWrapper, 0x004DAF31);
 		/*
 		auto str = scbw::readSamaseFile("samase\\sfx_ext.txt");

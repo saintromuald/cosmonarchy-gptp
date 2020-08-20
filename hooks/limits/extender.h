@@ -66,12 +66,16 @@ namespace TblPatchType {
 		RegisterCmp,
 		RegisterWriting,
 		NopPatch,
+		AddPatch,
+		//DecPatch,
+		JmpPatch,
 
 
 	};
 }
-namespace JumpType {
+namespace Jmp {
 	enum {
 		JA,
+		JBE,
 	};
 }

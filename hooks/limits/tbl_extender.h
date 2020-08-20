@@ -22,5 +22,6 @@ public:
 namespace hooks {
     void injectTblExtender();
 }
+//static u32
 static char tblNew[] = "rez\\stat_txt.tblex";
 //extern tblExtender extendedTbl;
