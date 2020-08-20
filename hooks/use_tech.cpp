@@ -375,6 +375,12 @@ namespace hooks
 		case TechId::EssenceDrain:
 			IssueTriTargetOrder(OrderId::CTFCOP1, 0, 0);
 			break;
+		case TechId::PowerTransfer:
+			IssueTriTargetOrder(OrderId::CastDisruptionWeb, 0, 0);
+			break;
+		case TechId::EnergyDecay:
+			IssueTriTargetOrder(OrderId::GuardianAspect, 0, 0);
+			break;
 		case TechId::DisruptionWeb:
 		{
 			int action = 1;//on
