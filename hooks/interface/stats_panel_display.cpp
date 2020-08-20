@@ -1,5 +1,6 @@
 #include "stats_panel_display.h"
 #include <SCBW/api.h>
+#include "SCBW/stat_txt_spec.h"
 
 //Helper functions declaration
 
@@ -238,8 +239,8 @@ namespace hooks {
 		{
 			if (!units_dat::MapStringId[82])          // Gantrithor
 			{
-				if (*statTxtTbl > 571u)
-					return (char*)statTxtTbl + statTxtTbl[572];
+				if (*statTxtTbl->getString(572))
+					return (char*)*statTxtTbl->getString(572);
 				return "";
 			}
 			return 0;
@@ -252,9 +253,9 @@ namespace hooks {
 				return getStatTxtString((unsigned __int8)(a2->rankIncrease + units_dat::Rank[v4]) + 1302);
 			return 0;
 		}
-		if (*statTxtTbl <= 570u)
+		if (*statTxtTbl->getString(570))
 			return "";
-		return (char*)statTxtTbl + statTxtTbl[571]; // "Admiral"
+		return (char*)*statTxtTbl->getString(571); // "Admiral"
 	}
 
 } //namespace hooks
