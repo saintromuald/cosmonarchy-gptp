@@ -140,6 +140,7 @@ enum Enum {
 
 	// Terran \\
 
+	ApostleWeapon								= 3,			// Apostle weapon
 	UppercutLaser								= 5,			// Southpaw weapon
 	CrusaderMissiles							= 10,			// Paladin weapon
 	FuriaMissiles								= 21,			// Madrigal weapon 1
@@ -148,6 +149,7 @@ enum Enum {
 	SunchaserMissiles							= 24,			// Centaur weapon 2
 	TwinRailguns								= 26,			// Cyprian weapon
 	Defibrilators								= 87,			// Shaman weapon
+	SavantWeapon								= 88,			// Savant weapon
 	Observance									= 122,			// Ability targeting - Science Vessel
 	Dirge										= 123,			// Madrigal Dirge damage
 	JacksonCannon								= 125,			// Wyvern weapon + ability targeting - Wyvern
