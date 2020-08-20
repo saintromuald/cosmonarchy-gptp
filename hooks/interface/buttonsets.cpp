@@ -1015,7 +1015,7 @@ namespace hooks {
 									current_button->iconID = 374;
 								}
 							}
-							for (int i = 0; i < 3; i++) {
+							for (int i = 0; i < generictoggles; i++) {
 								if (current_button->actVar == toggle_abilities[i]) {
 									if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::GenericValue, toggle_values[i], 0) == 1) {
 										current_button->iconID = button_toggle_off[i];
