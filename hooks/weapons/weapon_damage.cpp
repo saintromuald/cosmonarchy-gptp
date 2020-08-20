@@ -586,6 +586,7 @@ namespace hooks {
 					}
 				}
 			}
+
 			//Deal damage to target HP, killing it if possible
 			bool Halluc = false;
 			if (attacker != NULL) {
@@ -593,6 +594,7 @@ namespace hooks {
 					Halluc = true;
 				}
 			}
+
 			if (damage >= target->hitPoints) {
 				if (target->id == UnitId::archon) {
 					astralaegisProc Aegis = astralaegisProc();
@@ -611,8 +613,9 @@ namespace hooks {
 					unitFinder.forEach(ascendancyProc());
 				}
 			}
+
 			if (attacker != NULL) {
-				if (weaponId == WeaponId::ObservanceWeapon) {
+				if (weaponId == WeaponId::Observance) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::ObservanceTimerDebuff, 1 + (5 * 24), 0);
 					int rend = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0);
 					if (rend < 5) {
@@ -620,6 +623,7 @@ namespace hooks {
 					}
 				}
 			}
+
 			if (weaponId == WeaponId::SubterraneanTentacle && target != NULL) {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::Amitosis, 0) == 1) {
 					damage /= 2;
