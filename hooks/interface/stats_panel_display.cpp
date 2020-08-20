@@ -233,7 +233,9 @@ namespace hooks {
 
 		_type = a2->id;
 		v2 = units_dat::BaseProperty[_type];
-		if (v2 & 0x800 || _type == UnitId::TerranCivilian || _type == UnitId::TerranVultureSpiderMine)
+		if (v2 & UnitProperty::NeutralAccessories
+//		|| _type == UnitId::TerranCivilian				// Disabled to display rank for Shaman
+		|| _type == UnitId::TerranVultureSpiderMine) 
 			return 0;
 		if (_type == UnitId::Hero_Gantrithor)
 		{
