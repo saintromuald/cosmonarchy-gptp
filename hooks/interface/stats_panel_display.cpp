@@ -384,26 +384,9 @@ namespace {
 		if (unit->status & UnitStatus::Completed)
 			unitId = unit->id;
 		else {
-
 			unitId = unit->buildQueue[unit->buildQueueSlot];
-
-			if (unitId != UnitId::ZergHive
-			&&	unitId != UnitId::ZergLair
-			&&	unitId != UnitId::ZergSire
-			&&	unitId != UnitId::ZergVorvalPond
-			&&	unitId != UnitId::ZergMutationPit
-			&&	unitId != UnitId::ZergBasiliskDen
-			&&	unitId != UnitId::ZergLurkerDen
-			&&	unitId != UnitId::ZergSporeColony
-			&&	unitId != UnitId::ZergSunkenColony
-			&&	unitId != UnitId::ZergGuardianRoost
-			&&	unitId != UnitId::ZergDevourerHaunt
-			&&	unitId != UnitId::ZergGorgolethApiary
-			&&	unitId != UnitId::ZergIrolethQuay
-			&&	unitId != UnitId::ZergOthstolethBerth
-				)
+			if (!(scbw::isZergBuildingMorphResult))
 				unitId = unit->id;
-
 		}
 
 		return unitId;
