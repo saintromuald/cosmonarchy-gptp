@@ -505,10 +505,12 @@ namespace hooks {
 					attacker->setHp(attacker->hitPoints + lifesteal);
 				}
 			}
+
 			if (shieldReduceAmount == 0 && damage < 128)
 				damage = 128;
+
 			// Overcharge - Shaman upgrade
-			if (weaponId == WeaponId::Missiles_Unused) {
+			if (weaponId == WeaponId::Defibrilators) {
 				target->unusedTimer = 6;
 				target->updateSpeed();
 			}
@@ -596,7 +598,7 @@ namespace hooks {
 			}
 
 			if (damage >= target->hitPoints) {
-				if (target->id == UnitId::archon) {
+				if (target->id == UnitId::ProtossArchon) {
 					astralaegisProc Aegis = astralaegisProc();
 					scbw::UnitFinder unitFinder(target->getX() - 96,
 						target->getY() - 96,
