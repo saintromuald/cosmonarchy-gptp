@@ -237,7 +237,7 @@ void printFormattedText(const char* format, ...) {
 
 	va_list _ArgList;
 	__crt_va_start(_ArgList, format);
-	vsprintf(buf, format, _ArgList);
+	vsnprintf(buf, sizeof(buf), format, _ArgList);
 	__crt_va_end(_ArgList);
 
 	printText(buf);
@@ -248,7 +248,7 @@ void printFormattedColoredText(const char* format, u32 color, ...) {
 
 	va_list _ArgList;
 	__crt_va_start(_ArgList, format);
-	vsprintf(buf, format, _ArgList);
+	vsnprintf(buf, sizeof(buf), format, _ArgList);
 	__crt_va_end(_ArgList);
 
 	printText(buf, color);
