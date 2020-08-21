@@ -41,7 +41,7 @@ namespace hooks {
 	}
 
 	void drawUIFeatures() {
-		std::string time = "Time: " + getFormattedTime(*elapsedTimeFrames / 24);
+		std::string time = getFormattedTime(*elapsedTimeFrames / 24);
 		drawText(time.c_str(), 10, 3, 100, 20, 7);
 
 		//std::string apm = "APM: " + 0;
