@@ -23,9 +23,6 @@ namespace {
 
 namespace hooks {
 
-	//Renamed from sub_426C60
-	//Attempting to be true to the original result
-	//in badly unoptimized code
 	bool StatLobotomyMineCount(BinDlg* dialog, u32 index) {
 		auto v2 = *activePortraitUnit;
 		auto v3 = dialog;
@@ -56,7 +53,7 @@ namespace hooks {
 		scbw::disableDialog(v5);
 		auto statData = v5->statButtonUser;
 		auto v7 = *cmdicons_grp;
-		v5->graphic = UnitId::LobotomyMine - 1;
+		v5->graphic = UnitId::LobotomyMine - 1;//or set icon id
 		statData->button_grp = v7;
 		statData->grp_frame = UnitId::LobotomyMine;
 		statData->type = 3;
@@ -71,6 +68,9 @@ namespace hooks {
 		return 1;
 	}
 
+	//Renamed from sub_426C60
+	//Attempting to be true to the original result
+	//in badly unoptimized code
 	void stats_panel_display(BinDlg* dialog) {
 
 		BinDlg* current_dialog;
