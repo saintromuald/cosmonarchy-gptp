@@ -162,6 +162,10 @@ SCBW_DATA(const u16*,			selectedGameTypeParam,		0x0059BA5C);
 SCBW_DATA(const char*,			selectedSingleplayerRace,	0x0057F266);
 SCBW_DATA(const char*,			customSingleplayer,			0x0057F1E3);
 
+//for lobotomy mine hook
+SCBW_DATA(char**, statusscreen_infobtn, 0x00519F40);
+SCBW_DATA(GrpHead**, cmdicons_grp, 0x0068C1E0);
+
 // For initGameLoad
 SCBW_DATA(const void*,			scenarioChk,				0x006D0F24);
 SCBW_DATA(const u8*,			playerForce,				0x0059BDA8); // array of 0x8
@@ -238,6 +242,7 @@ SCBW_DATA(		u32*,			buildingsOwned,				0x00582024); // Array of 12
 // For refreshScreen
 SCBW_DATA(		u32*,			placeBuildingMessageId,		0x00640958);
 SCBW_DATA(		u16*,			placeBuildingUnitId,		0x0064088A);
+
 
 //////////////////////////////////////////////////////////////// @}
 

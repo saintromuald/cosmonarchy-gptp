@@ -1,15 +1,12 @@
 #include "buttonsets.h"
+#include "SCBW/api.h"
 
 //Helper functions
 
 namespace {
 
 	void registerUserDialogAction(BinDlg* dialog, u32 array_of_fxnInteractFunc, u32 sizeOfArray);	//18100
-	void disableDialog(BinDlg* dialog);															//18640
-	void showDialog(BinDlg* dialog);															//186A0
-	void hideDialog(BinDlg* dialog);															//18700
 	void function_418E00(BinDlg* dialog);														//18E00
-	void updateDialog(BinDlg* dialog);															//1C400
 	void replayStatBtns(BinDlg* dialog);														//27A80
 	void function_4591D0();																		//591D0
 	void function_459770();																		//59770
@@ -380,7 +377,7 @@ namespace hooks {
 
 			if (!(currentButtonDlg->flags & BinDlgFlags::Unknown0)) {
 				currentButtonDlg->flags |= BinDlgFlags::Unknown0;
-				updateDialog(currentButtonDlg);
+				scbw::updateDialog(currentButtonDlg);
 			}
 
 			*BUTTONSET_MAINBUTTONGRAPHIC = usedButtonIcon;
@@ -1150,7 +1147,7 @@ namespace hooks {
 
 							if (!(current_dialog->flags & BinDlgFlags::Unknown0)) {
 								current_dialog->flags |= BinDlgFlags::Unknown0;
-								updateDialog(current_dialog);
+								scbw::updateDialog(current_dialog);
 							}
 
 							stack_placeholder.not_allocated = 0;
@@ -1171,11 +1168,11 @@ namespace hooks {
 						}
 
 						//5930B
-						showDialog(current_dialog);
+						scbw::showDialog(current_dialog);
 
 						if (current_button_state == BUTTON_STATE::Disabled) {
 
-							disableDialog(current_dialog);
+							scbw::disableDialog(current_dialog);
 
 							//5931C
 							if (*unknown_0066FF60 == 0x15) {
@@ -1208,7 +1205,7 @@ namespace hooks {
 
 			if (!bStopThere && !jumpto5934E) {
 				//5933C
-				hideDialog(current_dialog);
+				scbw::hideDialog(current_dialog);
 				current_dialog->graphic = 0xFFFF;
 				current_dialog->buttonUser = NULL;
 			}
@@ -1276,48 +1273,6 @@ namespace {
 
 	;
 
-	const u32 Func_DisableDialog = 0x00418640;
-	void disableDialog(BinDlg* dialog) {
-
-		__asm {
-			PUSHAD
-			MOV ESI, dialog
-			CALL Func_DisableDialog
-			POPAD
-		}
-
-	}
-
-	;
-
-	const u32 Func_ShowDialog = 0x004186A0;
-	void showDialog(BinDlg* dialog) {
-
-		__asm {
-			PUSHAD
-			MOV ESI, dialog
-			CALL Func_ShowDialog
-			POPAD
-		}
-
-	}
-
-	;
-
-	const u32 Func_HideDialog = 0x00418700;
-	void hideDialog(BinDlg* dialog) {
-
-		__asm {
-			PUSHAD
-			MOV ESI, dialog
-			CALL Func_HideDialog
-			POPAD
-		}
-
-	}
-
-	;
-
 	const u32 Func_Sub418E00 = 0x00418E00;
 	void function_418E00(BinDlg* dialog) {
 
@@ -1328,18 +1283,6 @@ namespace {
 			POPAD
 		}
 
-	}
-
-	;
-
-	const u32 Func_UpdateDialog = 0x0041C400;
-	void updateDialog(BinDlg* dialog) {
-		__asm {
-			PUSHAD
-			MOV EAX, dialog
-			CALL Func_UpdateDialog
-			POPAD
-		}
 	}
 
 	;

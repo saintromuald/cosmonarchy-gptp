@@ -1,7 +1,7 @@
 #include "stats_panel_display.h"
 #include <SCBW/api.h>
 #include "SCBW/stat_txt_spec.h"
-
+#include "hooks/interface/buttonsets.h"
 //Helper functions declaration
 
 namespace {
@@ -26,6 +26,51 @@ namespace hooks {
 	//Renamed from sub_426C60
 	//Attempting to be true to the original result
 	//in badly unoptimized code
+	bool StatLobotomyMineCount(BinDlg* dialog, u32 index) {
+		auto v2 = *activePortraitUnit;
+		auto v3 = dialog;
+		if (scbw::hasTechResearched(v2->playerId, TechId::LobotomyMine) == 0) {
+			return false;
+		}
+		sprintf_s(statusscreen_infobtn[index], 8, "%d ", v2->vulture.spiderMineCount);
+		if (v3->controlType)
+			v3 = v3->parent;
+		auto v5 = v3->childrenDlg;
+		bool jump = false;
+		if (v5)
+		{
+			while (v5->index != index + 9)
+			{
+				v5 = v5->next;
+				if (!v5) {
+					v5 = NULL;
+					break;
+				}
+			}
+		}
+		else
+		{
+			v5 = NULL;
+		}
+		scbw::showDialog(v5);
+		scbw::disableDialog(v5);
+		auto statData = v5->statButtonUser;
+		auto v7 = *cmdicons_grp;
+		v5->graphic = UnitId::LobotomyMine - 1;
+		statData->button_grp = v7;
+		statData->grp_frame = UnitId::LobotomyMine;
+		statData->type = 3;
+		statData->id = UnitId::LobotomyMine;
+		auto v8 = v5->flags;
+		v5->pszText = statusscreen_infobtn[index];
+		if (!(v8 & 1))
+		{
+			v5->flags = v8 | 1;
+			scbw::updateDialog(v5);
+		}
+		return 1;
+	}
+
 	void stats_panel_display(BinDlg* dialog) {
 
 		BinDlg* current_dialog;
@@ -183,14 +228,22 @@ namespace hooks {
 			}
 
 			if (
-				activeUnit->id == UnitId::TerranVulture ||
-				activeUnit->id == UnitId::Hero_JimRaynorVulture
+				activeUnit->id == UnitId::TerranVulture /*||
+				activeUnit->id == UnitId::Hero_JimRaynorVulture*/	//disable hardcode for southpaws, 
+																	//though without mines it shouldn't show in any case
 				)
 			{
 				if (StatSpidermineCount(dialog, index))
 					index++; //don't increase the index if not displaying
 			}
-
+			/*
+			if (activeUnit->id == UnitId::ghost) {
+				if (StatLobotomyMineCount(dialog, index)) {
+					index++;
+				}
+			}
+			//placeholder code, disabled for now
+			*/
 			unitId = getLastQueueSlotType(activeUnit);
 
 			if (unitId == UnitId::TerranNuclearSilo) {

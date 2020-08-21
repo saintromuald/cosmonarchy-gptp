@@ -552,5 +552,6 @@ enum Enum {
 	ZergOverlordIris								= 224,
 	ZergSire										= 227,
 
+	LobotomyMine = 89,//placeholder, replace with something else later
 	};
 }

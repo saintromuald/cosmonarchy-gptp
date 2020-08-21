@@ -840,6 +840,74 @@ bool moveUnit(CUnit* unit, s16 x, s16 y) {
 
 }
 
+const u32 Func_DisableDialog = 0x00418640;
+void disableDialog(BinDlg* dialog) {
+
+	__asm {
+		PUSHAD
+		MOV ESI, dialog
+		CALL Func_DisableDialog
+		POPAD
+	}
+
+}
+
+;
+
+const u32 Func_ShowDialog = 0x004186A0;
+void showDialog(BinDlg* dialog) {
+
+	__asm {
+		PUSHAD
+		MOV ESI, dialog
+		CALL Func_ShowDialog
+		POPAD
+	}
+
+}
+
+;
+
+const u32 Func_HideDialog = 0x00418700;
+void hideDialog(BinDlg* dialog) {
+
+	__asm {
+		PUSHAD
+		MOV ESI, dialog
+		CALL Func_HideDialog
+		POPAD
+	}
+
+}
+
+;
+
+const u32 Func_Sub418E00 = 0x00418E00;
+void function_418E00(BinDlg* dialog) {
+
+	__asm {
+		PUSHAD
+		MOV ESI, dialog
+		CALL Func_Sub418E00
+		POPAD
+	}
+
+}
+
+;
+
+const u32 Func_UpdateDialog = 0x0041C400;
+void updateDialog(BinDlg* dialog) {
+	__asm {
+		PUSHAD
+		MOV EAX, dialog
+		CALL Func_UpdateDialog
+		POPAD
+	}
+}
+
+;
+
 const u32 Func_PrepareUnitMoveClearRefs = 0x00493CA0;
 void prepareUnitMove(CUnit* unit, bool hideUnit) {
 

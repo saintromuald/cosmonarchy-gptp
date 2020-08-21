@@ -283,6 +283,13 @@ struct BUTTON {
 /*12*/  u16       actStringID;
 };
 
+struct StatusScreenState {
+	GrpHead* button_grp;
+	u16 grp_frame;//0x4
+	u16 type;//0x6
+	u8 id;//0x8	
+};
+
 struct BUTTON_SET {
   u32     buttonsInSet;
   BUTTON  *firstButton;
@@ -480,6 +487,7 @@ union {
 /*0x26*/  CUnit	  *unitUser;
 /*0x26*/  BinDlg  *dlgUser;
 /*0x26*/  BUTTON  *buttonUser;
+		  StatusScreenState* statButtonUser;//iquare
 /*0x26*/  u32     nonUserValue;
 };
 
