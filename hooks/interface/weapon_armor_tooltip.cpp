@@ -250,6 +250,12 @@ namespace hooks {
 
 		if (iconUnitId == UnitId::spider_mine)
 			return getDamageTooltipString(WeaponId::SpiderMines, unit, 794);		//"Spider Mines"
+		/*
+		if(iconUnitId==UnitId::lobotomy_mine){
+			return getDamageTooltipString(WeaponId::LobotomyMine, unit, ?);
+		}
+		*/
+
 
 		//Should never reach here
 		return "";
