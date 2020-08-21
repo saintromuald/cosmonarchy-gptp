@@ -150,6 +150,7 @@ enum Enum {
 	TwinRailguns								= 26,			// Cyprian weapon
 	Defibrilators								= 87,			// Shaman weapon
 	SavantWeapon								= 88,			// Savant weapon
+	PowerSiphon									= 101,			// Ability targeting - Savant
 	Observance									= 122,			// Ability targeting - Science Vessel
 	Dirge										= 123,			// Madrigal Dirge damage
 	JacksonCannon								= 125,			// Wyvern weapon + ability targeting - Wyvern
