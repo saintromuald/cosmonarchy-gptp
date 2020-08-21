@@ -238,6 +238,13 @@ void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords) {
 
 //Hooked down there instead of a specific inject.cpp
 void unitDestructorSpecialHook(CUnit* unit) {
+
+	if (unit->id == UnitId::corsair) {
+		auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
+		if (web != NULL) {
+			web->removeTimer = 5 * 24;
+		}
+	}
 	if(unit->irradiateTimer > 0){
 		if(unit->_unknown_0x026 & 0x2){
 				//scbw::printText("Radiation Shockwave detected");
