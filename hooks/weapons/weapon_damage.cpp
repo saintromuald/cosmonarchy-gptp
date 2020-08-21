@@ -616,6 +616,7 @@ namespace hooks {
 				}
 			}
 
+			// Observance - Science Vessel ability
 			if (attacker != NULL) {
 				if (weaponId == WeaponId::Observance) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::ObservanceTimerDebuff, 1 + (5 * 24), 0);
@@ -625,13 +626,14 @@ namespace hooks {
 					}
 				}
 			}
-
-			if (weaponId == WeaponId::SubterraneanTentacle && target != NULL) {
+			
+			// Tendril Amitosis - Sunken Colony upgrade
+			/*if (weaponId == WeaponId::SubterraneanTentacle && target != NULL) {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::Amitosis, 0) == 1) {
 					damage /= 2;
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::Amitosis, 0, 0);
 				}
-			}
+			}*/
 
 			if (attacker != NULL) { // looks like target will always be alive if this function was called?
 				if (scbw::get_aise_value(target, 0, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0) >= 1) {
