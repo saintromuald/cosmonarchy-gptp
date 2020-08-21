@@ -1,6 +1,6 @@
 #include "stim_packs.h"
 #include "../SCBW/api.h"
-
+#include "SCBW/stat_txt_spec.h"
 //helper functions def
 namespace {
 
@@ -43,7 +43,7 @@ void CMDACT_Stimpack() {
 
 	}
 	else {
-		char* message = (char*)statTxtTbl->getString(874); //not enough life remaining
+		char* message = (char*)statTxtTblNew->getString(874); //not enough life remaining
 		get_statTxt_Str_0(*activePortraitUnit,*LOCAL_NATION_ID,message);
 	}
 

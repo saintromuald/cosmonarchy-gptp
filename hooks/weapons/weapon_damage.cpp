@@ -505,10 +505,12 @@ namespace hooks {
 					attacker->setHp(attacker->hitPoints + lifesteal);
 				}
 			}
+
 			if (shieldReduceAmount == 0 && damage < 128)
 				damage = 128;
+
 			// Overcharge - Shaman upgrade
-			if (weaponId == WeaponId::Missiles_Unused) {
+			if (weaponId == WeaponId::Defibrilators) {
 				target->unusedTimer = 6;
 				target->updateSpeed();
 			}
@@ -586,6 +588,7 @@ namespace hooks {
 					}
 				}
 			}
+
 			//Deal damage to target HP, killing it if possible
 			bool Halluc = false;
 			if (attacker != NULL) {
@@ -593,8 +596,9 @@ namespace hooks {
 					Halluc = true;
 				}
 			}
+
 			if (damage >= target->hitPoints) {
-				if (target->id == UnitId::archon) {
+				if (target->id == UnitId::ProtossArchon) {
 					astralaegisProc Aegis = astralaegisProc();
 					scbw::UnitFinder unitFinder(target->getX() - 96,
 						target->getY() - 96,
@@ -611,8 +615,10 @@ namespace hooks {
 					unitFinder.forEach(ascendancyProc());
 				}
 			}
+
+			// Observance - Science Vessel ability
 			if (attacker != NULL) {
-				if (weaponId == WeaponId::ObservanceWeapon) {
+				if (weaponId == WeaponId::Observance) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::ObservanceTimerDebuff, 1 + (5 * 24), 0);
 					int rend = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0);
 					if (rend < 5) {
@@ -620,12 +626,14 @@ namespace hooks {
 					}
 				}
 			}
-			if (weaponId == WeaponId::SubterraneanTentacle && target != NULL) {
+			
+			// Tendril Amitosis - Sunken Colony upgrade
+			/*if (weaponId == WeaponId::SubterraneanTentacle && target != NULL) {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::Amitosis, 0) == 1) {
 					damage /= 2;
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::Amitosis, 0, 0);
 				}
-			}
+			}*/
 
 			if (attacker != NULL) { // looks like target will always be alive if this function was called?
 				if (scbw::get_aise_value(target, 0, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0) >= 1) {

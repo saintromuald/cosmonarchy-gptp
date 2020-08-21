@@ -360,6 +360,7 @@ public:
 
 #include "logger.h"
 #include "limits/sfx_extender.h"
+#include "hooks/weapons/wpnspellhit.h"
 #include "globals.h"
 namespace hooks {
 
@@ -431,7 +432,33 @@ namespace hooks {
 				CUnitExtended::get(unit)->tick();
 
 				//hooks::ShowHealthBar(unit);
-
+				if (unit->id == UnitId::corsair) {
+					auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
+					if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0)) {
+						
+						if (web == NULL) {
+							web = hooks::createDisruptionWeb(unit->playerId, unit->getX(), unit->getY());
+							if (web == NULL) {
+								//CCMU case
+								scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::DisruptionWeb, 0, 0);
+							}
+							else {
+								scbw::sendGPTP_aise_cmd(unit, web, GptpId::SetGenericUnit, ValueId::AttachedDisruptionWeb, 0, 0);
+							}
+						}
+						else {
+							//web attached
+							scbw::moveUnit(web, unit->getX(), unit->getY());
+						}
+					}
+					else {
+						if (web != NULL) {
+							web->remove();
+						}
+					}
+					
+				}
+				
 				// Legionnaire - Blade Vortex
 				if (unit->id == UnitId::ProtossLegionnaire) {
 					//teleport jump
@@ -449,36 +476,6 @@ namespace hooks {
 						}
 					}
 				}
-
-				// Tileset debugger
-				/*
-				if (unit->id == UnitId::observer) {
-					u16 tileid = scbw::getTileIdAt(unit->position.x, unit->position.y);
-					char buf[64];
-					u32 offset = (unit->position.x/ 32) + mapTileSize->width*(unit->position.y/ 32);
-					u32 offset_val = 0x005993C4 + (2 * offset);
-	//				sprintf(buf, "Tile: %d, p%d %d, offset %02X", tileid, unit->position.x / 32, unit->position.y / 32, offset_val);
-	//				scbw::printText(buf);
-					u16 megatile = (*megatileArray)[(unit->position.x / 32) + mapTileSize->width*(unit->position.y / 32)];
-					u16 tile_id = (*tileIdArray)[(unit->position.x / 32) + mapTileSize->width*(unit->position.y / 32)];
-					u16 gval = (tile_id >> 0x4) & 0x07ff;
-					u16 hval = gval * 0x2a;//half of new struct
-					ActiveTile A = scbw::getActiveTileAt(unit->position.x, unit->position.y);
-					sprintf(buf, "tile flags: %d %d %d %d",
-
-						A.exploredFlags,A.groundHeight,A.hasCreep,A.hasDoodadCover
-						);
-					scbw::printText(buf);
-				}
-				*/
-
-				// Madrigal Impale
-				/*if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DirgeImpale, 0) == 1) {
-					auto attacker = scbw::get_generic_unit(unit,ValueId::DirgeAttacker);
-					if (attacker != NULL) {
-						scbw::createBullet(123, attacker, unit->getX(), unit->getY(), attacker->playerId, 0);
-					}
-				}*/
 				
 				// Paladin - Skyfall
 				if (unit->id == UnitId::TerranPaladin
@@ -521,7 +518,6 @@ namespace hooks {
 						);
 						if (targ != NULL) {
 							unit->orderTarget.unit = targ;
-							scbw::printText("Acquired");
 						}
 						scbw::createBullet(10, unit, source_x, source_y, unit->playerId, unit->currentDirection1);
 
@@ -605,6 +601,7 @@ namespace hooks {
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::AdrenalTimer, 0) == 1) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::AdrenalStacks, 0, 0);
 				}
+				
 
 				// Vorvaling - Captivating Claws
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::CaptivatingClawsTimer, 0) == 1) {
@@ -688,8 +685,10 @@ namespace hooks {
 				// Centaur - Sunchaser Missiles animation
 				if (unit->id == UnitId::TerranCentaur && unit->orderSignal & 0x20) {
 					unit->orderSignal &= ~0x20;
+					if (unit->orderTarget.unit != NULL) {
 						if (unit->getDistanceToTarget(unit->orderTarget.unit) <= 128) {
 							unit->playIscriptAnim(IscriptAnimation::Unused1);
+						}
 					}
 				}
 

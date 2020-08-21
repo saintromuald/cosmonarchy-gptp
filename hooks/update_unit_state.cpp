@@ -81,7 +81,7 @@ public:
 			return false;
 		}
 		if (scbw::getDistanceFast(unit->sprite->position.x, unit->sprite->position.y,
-			gunship->sprite->position.x, gunship->sprite->position.y) > weapons_dat::MaxRange[WeaponId::WyvernWeapon]) {
+			gunship->sprite->position.x, gunship->sprite->position.y) > weapons_dat::MaxRange[WeaponId::JacksonCannon]) {
 			return false;
 		}
 		return true;
@@ -154,6 +154,12 @@ namespace hooks {
 				unit->energy -= std::min(unit->energy, (u16)13);
 				if (unit->energy == 0) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SublimeShepherd, 0, 0);
+				}
+			}
+			else if (unit->id == UnitId::corsair && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0)) {
+				unit->energy -= std::min(unit->energy, (u16)13);
+				if (unit->energy == 0) {
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::DisruptionWeb, 0, 0);
 				}
 			}
 			else { //EB526
@@ -278,12 +284,12 @@ namespace hooks {
 				}
 			}
 			if (can_free_fire) {
-				auto range = weapons_dat::MaxRange[WeaponId::WyvernWeapon];
-				s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernWeapon];
+				auto range = weapons_dat::MaxRange[WeaponId::JacksonCannon];
+				s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::JacksonCannon];
 				auto x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
 				auto y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1);
 				
-				unit->groundWeaponCooldown = weapons_dat::Cooldown[WeaponId::WyvernWeapon];
+				unit->groundWeaponCooldown = weapons_dat::Cooldown[WeaponId::JacksonCannon];
 				bool seek_unit = true;
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabOn, 0)==1) {
 					auto targ_x = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabX, 0);
@@ -291,7 +297,7 @@ namespace hooks {
 					auto direction = scbw::getAngle(x, y, targ_x, targ_y);
 					if (scbw::getDistanceFast(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
 						seek_unit = false;
-						scbw::artificalBulletFrom(WeaponId::WyvernWeapon, unit->playerId, unit, NULL, targ_x, targ_y);
+						scbw::artificalBulletFrom(WeaponId::JacksonCannon, unit->playerId, unit, NULL, targ_x, targ_y);
 					}
 					else {
 						scbw::sendGPTP_aise_cmd(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabOn, 0, 0);
@@ -305,7 +311,7 @@ namespace hooks {
 					);
 					if (a != NULL) {
 						auto direction = scbw::getAngle(x, y, a->getX(), a->getY());
-						scbw::artificalBulletFrom(WeaponId::WyvernWeapon, unit->playerId, unit, a, a->position);						
+						scbw::artificalBulletFrom(WeaponId::JacksonCannon, unit->playerId, unit, a, a->position);
 					}
 				}
 				unit->updateSpeed();

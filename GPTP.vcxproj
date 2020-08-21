@@ -464,6 +464,7 @@
     <ClInclude Include="hooks\byte_operations_utils.h" />
     <ClInclude Include="hooks\interface\hpbars\hpbars.h" />
     <ClInclude Include="hooks\interface\uifeatures\uifeatures.h" />
+    <ClInclude Include="SCBW\stat_txt_spec.h" />
     <ClInclude Include="Utils\captivating_claws.h" />
     <ClInclude Include="hooks\interface\extender\selection_extender.h" />
     <ClInclude Include="hooks\limits\ccmu.h" />

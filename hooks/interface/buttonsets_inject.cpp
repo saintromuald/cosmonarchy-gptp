@@ -1,6 +1,7 @@
 #include "buttonsets.h"
 #include <hook_tools.h>
 
+#include "SCBW/stat_txt_spec.h"
 namespace {
 
 //Originally 00458BC0  updateButtonSetEx
@@ -217,7 +218,7 @@ void __declspec(naked) get_stattxt_string_Wrapper() {
 		}
 	}
 
-	message = (char*)statTxtTbl->getString(stringId);
+	message = (char*)statTxtTblNew->getString(stringId);
 
 	__asm {
 		POPAD

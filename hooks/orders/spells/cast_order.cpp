@@ -1,6 +1,6 @@
 #include "cast_order.h"
 #include <SCBW/api.h>
-
+#include "SCBW/stat_txt_spec.h"
 //helper functions def
 
 namespace {
@@ -87,7 +87,7 @@ void orders_Spell(CUnit* unit) {
 
 		if(!canCastSpell_0(unit)) {
 
-			char* message = (char*)statTxtTbl->getString(876); //Invalid Target
+			char* message = (char*)statTxtTblNew->getString(876); //Invalid Target
 			
 			//do the actual transmission corresponding to the message
 			get_statTxt_Str_0(unit,unit->playerId,message);
@@ -126,7 +126,7 @@ void orders_Spell(CUnit* unit) {
 				else
 					raceId = RaceId::Neutral;
 
-				message = (char*)statTxtTbl->getString(864 + raceId); //Not Enough Energy
+				message = (char*)statTxtTblNew->getString(864 + raceId); //Not Enough Energy
 
 				if(message != NULL) {
 

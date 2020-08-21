@@ -1,5 +1,6 @@
 #include "recall_spell.h"
 #include <SCBW/api.h>
+#include "SCBW/stat_txt_spec.h"
 
 //helper functions def
 
@@ -178,7 +179,7 @@ namespace hooks {
 				else
 					raceId = RaceId::Neutral;
 
-				message = (char*)statTxtTbl->getString(864 + raceId);	//"Not enough energy" text
+				message = (char*)statTxtTblNew->getString(864 + raceId);	//"Not enough energy" text
 
 				if(
 					message != NULL &&

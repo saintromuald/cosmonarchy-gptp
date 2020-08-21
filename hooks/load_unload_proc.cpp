@@ -274,9 +274,16 @@ namespace hooks {
 				//probably check where unit can be spawned
 				if (function_004E76C0(transport, unit, &pos) != 0) {
 
-					transport->mainOrderTimer = 15;
 					if (transport->id == UnitId::TerranDropship) {
-						transport->mainOrderTimer = 6;
+						if (transport->getCurrentLifeInGame() <= (transport->getMaxHpInGame() * 0.5)) {
+							transport->mainOrderTimer = 7;
+						}
+						else {
+							transport->mainOrderTimer = 10;
+						}
+					}
+					else {
+						transport->mainOrderTimer = 15;
 					}
 
 					if ((unit->status & UnitStatus::IsBuilding) == 0) {

@@ -1,7 +1,9 @@
 #pragma once
 #include "hooks\limits\extender.h"
 
-class tblExtender {
+
+
+/*class tblExtender {
 public:
 	u32* buffer;
 
@@ -16,5 +18,10 @@ public:
             return (const char*)0x00501B7D;
     }
 
-};
-extern tblExtender extendedTbl;
+};*/
+namespace hooks {
+    void injectTblExtender();
+}
+//static u32
+static char tblNew[] = "rez\\stat_txt.tblex";
+//extern tblExtender extendedTbl;

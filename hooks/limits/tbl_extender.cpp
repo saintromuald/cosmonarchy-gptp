@@ -256,52 +256,65 @@ namespace hooks {
 	}
 	std::vector<u32> patch_convention() {
 		return {
-			TblPatchType::CmpPatch,Reg::_ECX,
-			0x004234FC,0x369,
-			0x00425B84,0x33f,
-			0x00425CB4,0x512,
-			0x00425D08,0x33a,
-			0x00425D58,0x33e,
-			0x00425E40,0x2fb,
-			0x00426289,0x31d,
-			0x0042744F,0x315,
-			0x00427ADD,0x608,
-			0x00427BD3,0x609,
-			0x0042F3B5,0x23b,
-			0x0042F3EE,0x23a,
-			0x004576F2,0x308,
-			0x00457D87,0x328,
-			0x004647BA,0x416,
-			0x00474573,0x367,
-			0x0047460C,0x367,
-			0x0047553E,0x366,
-			0x00475582,0x368,
-			0x0048E50F,0x35e,
-			0x0048E665,0x35e,
-			0x004928E1,0x36b,
-			0x004E9972,0x365,
-			0x004F4F76,0x32d,
-			0,Reg::_EDX,
-			0x00425C57,0x513,
-			0x00426213,0x31b,
-			0x0042624D,0x31c,
-			0x004579D6,0x318,
-			0x00459170,0x31a,
-			0x004A4C50,0x329,
-			0x004A5150,0x32b,
-			0x004A5188,0x32c,
-			0,Reg::_EAX,
-			0x00457C2E,0x327,
-			0,Reg::_ESI,
-			0x0045783A,0x309,
-			0x0045789F,0x30A,
-			0,
-			0,
+			/*
+			HEADER FOR PATCH CONVENTION TYPES
 
-//
-// GIANT PROBLEM: Ptr Comparison increase 
-//
-			TblPatchType::PtrWriting,
+			TblPatchType::CmpPatch, 1, 2, 4, 24, 8, 1, 2,
+
+			TblPatchType::CmpPatch - patch type
+			1 - number of variables
+			4 - number of arguments
+			4 - number of sequences
+			24,8,1,2 - lengths of the sequences
+			*/
+			TblPatchType::CmpPatch, 1, 4, 4, 24, 8, 1, 2,
+			Reg::_ECX,
+			0x004234FC,0x369,0x00423501, Jmp::JA,
+			0x00425B84,0x33f,0x00425B89, Jmp::JA,
+			0x00425CB4,0x512,0x00425CB9, Jmp::JA,
+			0x00425D08,0x33a,0x00425D0D, Jmp::JA,
+			0x00425D58,0x33e,0x00425D5D, Jmp::JA,
+			0x00425E40,0x2fb,0x00425E40, Jmp::JA,
+			0x00426289,0x31d,0x00425E45, Jmp::JA,
+			0x0042744F,0x315,0x0042744F, Jmp::JA,
+			0x00427ADD,0x608,0x00427AE2, Jmp::JA,
+			0x00427BD3,0x609,0x00427BD8, Jmp::JA,
+			0x0042F3B5,0x23b,0x0042F3BA, Jmp::JBE,
+			0x0042F3EE,0x23a,0x0042F3F3, Jmp::JA,
+			0x004576F2,0x308,0x004576F7, Jmp::JA,
+			0x00457D87,0x328,0x00457D8c, Jmp::JA,
+			0x004647BA,0x416,0x004647BF, Jmp::JA,
+			0x00474573,0x367,0x0047457B, Jmp::JA,
+			0x0047460C,0x367,0x00474614, Jmp::JA,
+			0x0047553E,0x366,0x00475546, Jmp::JA,
+			0x00475582,0x368,0x0047558A, Jmp::JA,
+			0x0048E50F,0x35e,0x0048E514, Jmp::JA,
+			0x0048E665,0x35e,0x0048E66A, Jmp::JA,
+			0x004928E1,0x36b,0x004928E9, Jmp::JA,
+			0x004E9972,0x365,0x004E997A, Jmp::JA,
+			0x004F4F76,0x32d,0x004F4F7B, Jmp::JA,
+			//
+			//
+			Reg::_EDX,
+			0x00425C57,0x513,0x00425C5C, Jmp::JA,
+			0x00426213,0x31b,0x0042621F, Jmp::JA,
+			0x0042624D,0x31c,0x00426252, Jmp::JA,
+			0x004579D6,0x318,0x004579DB, Jmp::JA,
+			0x00459170,0x31a,0x00459175, Jmp::JA,
+			0x004A4C50,0x329,0x004A4C55, Jmp::JA,
+			0x004A5150,0x32b,0x004A5155, Jmp::JBE,
+			0x004A5188,0x32c,0x004A518D, Jmp::JA,
+			Reg::_EAX,
+			0x00457C2E,0x327,0x00457C38, Jmp::JA,
+			Reg::_ESI,
+			0x0045783A,0x309,0x0045783f, Jmp::JA,
+			0x0045789F,0x30A,0x004578a4, Jmp::JA,
+
+			//
+			// GIANT PROBLEM: Ptr Comparison increase 
+			//
+			TblPatchType::PtrWriting, 2, 2, 8, 25, 7, 1, 1, 2, 1, 2, 1,
+
 			Reg::_EAX,Reg::_ECX,
 			0x0042350A,0x6d4,
 			0x00425BA4,0x680,
@@ -328,7 +341,6 @@ namespace hooks {
 			0x004928F2,0x6d8,
 			0x004E9994,0x6cc,
 			0x004F4F84,0x65c,
-			0,
 			Reg::_EAX,Reg::_EDX,
 			0x0045917E,0x636,
 			0x00425C65,0xa28,
@@ -337,67 +349,58 @@ namespace hooks {
 			0x004A4C5E,0x654,
 			0x004A5157,0x658,
 			0x004A5196,0x65a,
-			0,
 			Reg::_EAX,Reg::_ESI,
 			0x004578AD,0x616,
-			0,
 			Reg::_ECX,Reg::_ESI,
 			0x00457848,0x614,
-			0,
 			Reg::_ECX,Reg::_EDX,
 			0x00457750,0xa2a,
 			0x004579F1,0x632,
-			0,
 			Reg::_EDI,Reg::_ECX,
 			0x00457700,0x612,
-			0,
 			Reg::_EBX,Reg::_ECX,
 			0x004579A4,0x612,
 			0x00457A3C,0x612,
-			0,
 			Reg::_ESI,Reg::_EAX,
 			0x00457C41,0x650,
-			0,
-			0,
-//
-// only 1 nop
-//
-			TblPatchType::PtrMathWriting,
-			Reg::_EAX,Reg::_ECX,Reg::_EAX,
-			0x0042609E,
-			0x0042616F,
-			0x0046F9AB,
-			0x0048F775,
-			0x0048F865,
-			0x004C370F,
-			0x004271B2,
-			0,
-			Reg::_EAX,Reg::_ECX,Reg::_EDX,
-			0x004266D1,
-			0x004268B3,
-			0x00464EC0,
-			0x0047B0DF,
-			0x0046F8B5,
-			0x0048D96E,
-			0x0048EEC0,
-			0x00494582,
-			0x004273A1,
-			0x00455C54,
-			0,
-			Reg::_EAX,Reg::_ESI,Reg::_EAX,  0x004927E2, 0,
-			Reg::_EAX, Reg::_EDX,Reg::_EAX,0x004277AF,0,
-			Reg::_EDX,Reg::_ECX,Reg::_EDX,0x00426BC4,0,
-			Reg::_ECX,Reg::_ESI,Reg::_EAX,0x00427639,0,
-			Reg::_ESI,Reg::_ECX,Reg::_EDX,0x00427690,0,
-			Reg::_ESI,Reg::_EDX,Reg::_ECX,0x00427704,0,
-			Reg::_ESI,Reg::_ECX,Reg::_EAX,
-			0x00457BC0,
-			0,
-			0,
-//
-// 1 nop
-//
-			TblPatchType::RegisterPointerCmp,
+
+
+
+
+
+
+
+		TblPatchType::PtrMathWriting, 3, 1, 9, 7, 10, 1,1,1,1,1,1,1,
+		Reg::_EAX,Reg::_ECX,Reg::_EAX,
+		0x0042609E,
+		0x0042616F,
+		0x0046F9AB,
+		0x0048F775,
+		0x0048F865,
+		0x004C370F,
+		0x004271B2,
+		Reg::_EAX,Reg::_ECX,Reg::_EDX,
+		0x004266D1,
+		0x004268B3,
+		0x00464EC0,
+		0x0047B0DF,
+		0x0046F8B5,
+		0x0048D96E,
+		0x0048EEC0,
+		0x00494582,
+		0x004273A1,
+		0x00455C54,
+		Reg::_EAX,Reg::_ESI,Reg::_EAX,0x004927E2,
+		Reg::_EAX, Reg::_EDX,Reg::_EAX,0x004277AF,
+		Reg::_EDX,Reg::_ECX,Reg::_EDX,0x00426BC4,
+		Reg::_ECX,Reg::_ESI,Reg::_EAX,0x00427639,
+		Reg::_ESI,Reg::_ECX,Reg::_EDX,0x00427690,
+		Reg::_ESI,Reg::_EDX,Reg::_ECX,0x00427704,
+		Reg::_ESI,Reg::_ECX,Reg::_EAX,0x00457BC0,
+		//
+		// 1 nop
+		//
+			TblPatchType::RegisterPointerCmp,2,1,5,20,1,1,1,1,
 			Reg::L_AX,Reg::_ECX,
 			0x00426083,
 			0x00426154,
@@ -419,47 +422,41 @@ namespace hooks {
 			0x0048F856,
 			0x00494573,
 			0x004C3701,
-			0,
-			Reg::L_CX,Reg::_EDX,0x004276F5,0,
-			Reg::L_AX,Reg::_EDX,0x004277A0,0,
-			Reg::L_CX,Reg::_ESI,0x004927D3,0,
-			Reg::L_AX,Reg::_ESI,0x0042762A,
-			0,
-			0,
-//
-//	1 nop
-//
-			TblPatchType::RegisterPointerMov,
+			Reg::L_CX,Reg::_EDX,
+			0x004276F5,
+			Reg::L_AX,Reg::_EDX,
+			0x004277A0,
+			Reg::L_CX,Reg::_ESI,
+			0x004927D3,
+			Reg::L_AX,Reg::_ESI,
+			0x0042762A,
+			//
+			//	1 nop
+			//
+			TblPatchType::RegisterPointerMov,2,1,2,3,4,
 			Reg::L_DI,Reg::_ECX,
 			0x004575C4,
 			0x00457602,
 			0x0045773F,
-			0,
-
 			Reg::L_DX,Reg::_ECX,
 			0x004577B7,
 			0x00457934,
 			0x00457993,
 			0x00457A2B,
-			0,
-			0,
-// 1 nop
-			TblPatchType::RegisterCmp,
+			// 1 nop
+			TblPatchType::RegisterCmp,1,4,2,5,3,
 			Reg::L_DX,
-			0x004577BA, 0x514,
-			0x00457937, 0x308,
-			0x0045794E, 0x316,
-			0x00457996, 0x308,
-			0x00457A2E, 0x308,
-			0,
+			0x004577BA, 0x514, 0x004577BF, Jmp::JA,
+			0x00457937, 0x308, 0x0045793C, Jmp::JA,
+			0x0045794E, 0x316, 0x00457953, Jmp::JA,
+			0x00457996, 0x308, 0x0045799B, Jmp::JA,
+			0x00457A2E, 0x308, 0x00457A33, Jmp::JA,
 			Reg::L_DI,
-			0x004575C7, 0x324,
-			0x00457605, 0x325,
-			0x00457742, 0x514,
-			0,
-			0,
-//SERIOUS PROBLEM - 1 extra byte
-			TblPatchType::RegisterWriting,
+			0x004575C7, 0x324, 0x004575CC, Jmp::JA,
+			0x00457605, 0x325, 0x0045760A, Jmp::JA,
+			0x00457742, 0x514, 0x00457747, Jmp::JA,	
+			//SERIOUS PROBLEM - 1 extra byte
+			TblPatchType::RegisterWriting,2,1,2,6,1,
 			Reg::_EDX,Reg::L_AX,
 			0x00455C51,
 			0x00464EBD,
@@ -467,9 +464,12 @@ namespace hooks {
 			0x0047B0DC,
 			0x0048D96B,
 			0x0048EEBD,
-			0,
-			0,
-			TblPatchType::NopPatch,3,
+			Reg::_ECX,Reg::L_AX,
+			0x00427701,
+
+
+			TblPatchType::NopPatch, 1, 1, 1, 9, //3 nops
+			Reg::__NOP,
 			0x0042609B,
 			0x0042616C,
 			0x00427636,
@@ -479,31 +479,470 @@ namespace hooks {
 			0x0046F9A8,
 			0x00457BBD,
 			0x00427701,
-			0,
-			0,
+
+			TblPatchType::AddPatch,1,1,2,13,1,
+			Reg::_EAX,
+			0x0047B0BE,
+			0x00426063,
+			0x00426134,
+			0x00426BA1,
+			0x00427165,
+			0x0042737E,
+			0x00427616,
+			0x0042766D,
+			0x0042778C,
+			0x00457B9D,
+			0x00464EA1,
+			0x0048D94F,
+			0x00494563,
+			Reg::_ECX,
+			0x004276E0,
+/*
+			TblPatchType::JmpPatch, 1, 2, 1, 35,//for Cmp patches
+			Reg::__NOP,
+			0x00423501, Jmp::JA,
+			0x00425B89, Jmp::JA,
+			0x00425CB9, Jmp::JA,
+			0x00425D0D, Jmp::JA,
+			0x00425D5D, Jmp::JA,
+			0x00425E40, Jmp::JA,
+			0x00425E45, Jmp::JA,
+			0x0042744F, Jmp::JA,
+			0x00427AE2, Jmp::JA,
+			0x00427BD8, Jmp::JA,
+			0x0042F3BA, Jmp::JBE,
+			0x0042F3F3, Jmp::JA,
+			0x004576F7, Jmp::JA,
+			0x00457D8c, Jmp::JA,
+			0x004647BF, Jmp::JA,
+			0x0047457B, Jmp::JA,
+			0x00474614, Jmp::JA,
+			0x00475546, Jmp::JA,
+			0x0047558A, Jmp::JA,
+			0x0048E514, Jmp::JA,
+			0x0048E66A, Jmp::JA,
+			0x004928E9, Jmp::JA,
+			0x004E997A, Jmp::JA,
+			0x004F4F7B, Jmp::JA,
+			0x00425C5C, Jmp::JA,
+			0x0042621F, Jmp::JA,
+			0x00426252, Jmp::JA,
+			0x004579DB, Jmp::JA,
+			0x00459175, Jmp::JA,
+			0x004A4C55, Jmp::JA,
+			0x004A5155, Jmp::JBE,
+			0x004A518D, Jmp::JA,
+			0x00457C38, Jmp::JA,
+			0x0045783f, Jmp::JA,
+			0x004578a4, Jmp::JA,
+
+			TblPatchType::JmpPatch, 1, 2, 1, 8,//for register cmp
+			Reg::__NOP,
+			0x004577BF, Jmp::JA,
+			0x0045793C, Jmp::JA,
+			0x00457953, Jmp::JA,
+			0x0045799B, Jmp::JA,
+			0x00457A33, Jmp::JA,
+			0x004575CC, Jmp::JA,
+			0x0045760A, Jmp::JA,
+			0x00457747, Jmp::JA,*/
 		};
+	}
+	namespace ConvReadStatus {
+		enum {
+			ReadHeader,
+			ReadVars,
+			ReadArgs,
+		};
+	}
+	void memoryPatchVec(u32 address, std::vector<u8> &patch) {
+		for (int i = 0; i < patch.size();i++) {
+			memoryPatch(address+i, patch[i]);
+		}
+	}
+
+//0x004234FC, 0x369, 0x00423501, Jmp::JA,
+/*
+
+004234FC  |.  66:8139 6903  CMP WORD PTR DS:[ECX],369
+00423501  |.  77 07         JA SHORT 0042350A
+00423503  |.  B8 7D1B5000   MOV EAX,00501B7D
+
+
+static u32 wrapJumpAddressIf;
+static u32 wrapJumpAddressAfter;
+static u32 wrapComparison; (0x369 for example)
+static char tblNew[] = "rez\\stat_txt.tblex";
+*/
+	/*void __declspec(naked) ecx_callset() {
+		static u32 currentWrap;
+		static u32 currentAddressIf;
+		static u32 currentAddressAfter;
+		__asm {
+			PUSHAD
+		}
+		currentWrap = wrapComparison[currentWrapPatch];
+		currentAddressIf = wrapJumpAddressIf[currentWrapPatch];
+		currentAddressAfter = wrapJumpAddressAfter[currentWrapPatch];
+		__asm {
+			POPAD
+			PUSH EAX
+			MOV EAX, currentWrap
+			CMP[ECX], EAX
+			POP EAX
+			JA SHORT currentAddressIf
+			JMP currentAddressAfter
+		}
+	}
+	void __declspec(naked) ecx_jbe_callset() {
+		static u32 currentWrap;
+		static u32 currentAddressIf;
+		static u32 currentAddressAfter;
+		__asm {
+			PUSHAD
+		}
+		currentWrap = wrapComparison[currentWrapPatch];
+		currentAddressIf = wrapJumpAddressIf[currentWrapPatch];
+		currentAddressAfter = wrapJumpAddressAfter[currentWrapPatch];
+		__asm {
+			POPAD
+			PUSH EAX
+			MOV EAX, currentWrap
+			CMP[ECX], EAX
+			POP EAX
+			JBE SHORT currentAddressIf
+			JMP currentAddressAfter
+		}
+	}
+	void __declspec(naked) eax_callset() {
+		__asm {
+			PUSH ESI
+			MOV ESI, wrapComparison[currentWrapPatch]
+			CMP[EAX], ESI
+			POP ESI
+			JA SHORT wrapJumpAddressIf[currentWrapPatch]
+			JMP wrapJumpAddressAfter[currentWrapPatch]
+		}
+	}
+	void __declspec(naked) edx_callset() {
+		__asm {
+			PUSH EAX
+			MOV EAX, wrapComparison[currentWrapPatch]
+			CMP [EDX], EAX
+			POP EAX
+			JA SHORT wrapJumpAddressIf[currentWrapPatch]
+			JMP wrapJumpAddressAfter[currentWrapPatch]
+		}
+	}
+	void __declspec(naked) edx_jbe_callset() {
+		__asm {
+			PUSH EAX
+			MOV EAX, wrapComparison[currentWrapPatch]
+			CMP[EDX], EAX
+			POP EAX
+			JBE SHORT wrapJumpAddressIf[currentWrapPatch]
+			JMP wrapJumpAddressAfter[currentWrapPatch]
+		}
+	}
+	void __declspec(naked) esi_callset() {
+		__asm {
+			PUSH EAX
+			MOV EAX, wrapComparison[currentWrapPatch]
+			CMP[ESI], EAX
+			POP EAX
+			JA SHORT wrapJumpAddressIf[currentWrapPatch]
+			JMP wrapJumpAddressAfter[currentWrapPatch]
+		}
+	}*/
+	void patchTblList() {
+		int read_status = ConvReadStatus::ReadHeader;
+		std::vector<u32> args;
+		std::vector<u32> vars;
+		int varCount = 0;
+		int argCount = 0;
+		int currentVarCount = 0;
+		int currentArgCount = 0;
+		int currentSequenceCount = 0;
+		int currentHeader = -1;
+		
+		auto patch_list = patch_convention();
+		std::vector<u8> patch;
+		std::vector<u32> sequence_lengths;
+		for (int i = 0; i < patch_list.size(); i++) {
+			if (read_status == ConvReadStatus::ReadHeader) {
+				sequence_lengths.clear();
+				vars.clear();
+				currentHeader = patch_list[i];
+				currentVarCount = patch_list[i + 1];
+				currentArgCount = patch_list[i + 2];
+				currentSequenceCount = patch_list[i + 3];
+				for (int j = 0; j < currentSequenceCount; j++) {
+					sequence_lengths.push_back(patch_list[i + 4 + j]);
+				}
+				i += 3 + currentSequenceCount;
+				read_status = ConvReadStatus::ReadArgs;
+			}
+			else if (read_status == ConvReadStatus::ReadArgs) {
+				for (int a = 0; a < currentSequenceCount; a++) {
+					vars.clear();
+					for (int j = 0; j < currentVarCount; j++) {
+						vars.push_back(patch_list[i]);
+						i++;
+					}
+					for (int b = 0; b < sequence_lengths[a]; b++) {
+						auto& elem = patch_list[i];
+						/*for (int arg = 0; arg < currentArgCount; arg++) {
+							i++;
+						}*/
+						patch.clear();
+						u32 address = patch_list[i];
+						if (currentHeader == TblPatchType::CmpPatch/* && currentWrapPatch < wrapPatchMax*/) {
+							u8 byte_off = *reinterpret_cast<u8*>((patch_list[i + 2] + 1));
+							auto address_if = byte_off + patch_list[i + 2];
+							auto address_else = patch_list[i + 2] + 0x2;
+							auto comparison = patch_list[i + 1];
+							/*
+0:  50                      push   eax
+1:  b8 69 03 00 00          mov    eax,0x369
+6:  39 01                   cmp    DWORD PTR [ecx],eax
+8:  58                      pop    eax
+9:  0f 87 fc ff ff ff       ja     b <_main+0xb>
+f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
+							*/
+							//unsafe!	
+							//probably must be handled with class extender to delete the allocated memory on exit
+							//u8* const byte_wrapper = new u8[20];
+							// SET WRAPPER STUFF
+							// MODIFY WRAPPER
+							// INJECT WRAPPER
+							// STORE WRAPPER DATA
+							// FREE DATA IN TBLEXTENDER DESTRUCTOR
+
+
+							//in whack:
+							/*
+								let executable = exe.exec_alloc(code.len());
+								//
+									pub fn exec_alloc(&mut self, size: usize) -> &'static mut [u8] {
+										let mem = self.parent.state.exec_heap.allocate(size);
+										unsafe { ::std::slice::from_raw_parts_mut(mem, size) }
+									}
+								//
+								if nops>0 {
+									exe.nop(nop_address, nops);
+								}
+								executable.copy_from_slice(&code);
+								let diff = (executable.as_ptr() as u32).wrapping_sub(address as u32+5);
+								exe.replace_val(address+1, diff);
+								exe.replace_val(address, 0xe8 as u8);
+							*/
+
+
+							/*u8 byte_off = *reinterpret_cast<u8*>((patch_list[i + 2]+1));
+							wrapJumpAddressIf[currentWrapPatch] = byte_off + patch_list[i + 2];
+							wrapJumpAddressAfter[currentWrapPatch] = patch_list[i + 2] + 0x2;
+							wrapComparison[currentWrapPatch] = patch_list[i + 1];
+							if (vars[0] == Reg::_ECX && patch_list[i + 3] == Jmp::JA) {
+								jmpPatch(ecx_callset,address);
+							}
+							if (vars[0] == Reg::_ECX && patch_list[i + 3] == Jmp::JBE) {
+								jmpPatch(ecx_jbe_callset, address);
+							}
+/*							if (vars[0] == Reg::_EDX && patch_list[i + 3] == Jmp::JA) {
+								jmpPatch(edx_callset, address);
+							}
+							if (vars[0] == Reg::_EDX && patch_list[i + 3] == Jmp::JBE) {
+								jmpPatch(edx_jbe_callset, address);
+							}
+							if (vars[0] == Reg::_EAX) {
+								jmpPatch(eax_callset, address);
+							}
+							if (vars[0] == Reg::_ESI) {
+								jmpPatch(esi_callset, address);
+							}
+							currentWrapPatch++;*/
+						}
+						else if (currentHeader == TblPatchType::PtrWriting) {
+							
+							u16 string_id = patch_list[i + 1];
+							u8 bl = patch_list[i + 1] & 0xff;
+							u8 bu = (patch_list[i + 1] & 0xff00) >> 8;
+							patch = { 0x8b,0x82,bl,bu,0x00,0x00,0x90 };
+							if (vars[0] == Reg::_EAX) {
+								if (vars[1] == Reg::_ECX) {
+									patch[1] = 0x81;
+								}
+								else if (vars[1] == Reg::_EDX) {
+									patch[1] = 0x82;
+								}
+								else if (vars[1] == Reg::_ESI) {
+									patch[1] = 0x86;
+								}
+							}
+							else if (vars[0] == Reg::_ECX) {
+								if (vars[1] == Reg::_ESI) {
+									patch[1] = 0x8e;
+								}
+								else if (vars[1] == Reg::_EDX) {
+									patch[1] = 0x8a;
+								}
+							}
+							else if (vars[0] == Reg::_EDI && vars[1] == Reg::_ECX) {
+								patch[1] = 0xb9;
+							}
+							else if (vars[0] == Reg::_EBX && vars[1] == Reg::_ECX) {
+								patch[1] = 0x99;
+							}
+							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_EAX) {
+								patch[1] = 0xb0;
+							}
+						}
+						else if (currentHeader == TblPatchType::PtrMathWriting) {
+							patch = { 0x8b, 0x44, 0x81, 0x04, 0x90 };
+							if (vars[0] == Reg::_EAX && vars[1] == Reg::_ECX && vars[2] == Reg::_EAX) {
+								//0x81
+							}
+							else if (vars[0] == Reg::_EAX && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
+								patch[2] = 0x91;
+							}
+							else if (vars[0] == Reg::_EAX && vars[1] == Reg::_ESI && vars[2] == Reg::_EAX) {
+								patch[2] = 0x86;
+							}
+							else if (vars[0] == Reg::_EAX && vars[1] == Reg::_EDX && vars[2] == Reg::_EAX) {
+								patch[2] = 0x82;
+							}
+							else if (vars[0] == Reg::_EDX && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
+								patch[1] = 0x54;
+								patch[2] = 0x91;
+							}
+							else if (vars[0] == Reg::_ECX && vars[1] == Reg::_ESI && vars[2] == Reg::_EAX) {
+								patch[1] = 0x4c;
+								patch[2] = 0x86;
+							}
+							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
+								patch[1] = 0x74;
+								patch[2] = 0x91;
+							}
+							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_EDX && vars[2] == Reg::_ECX) {
+								patch[1] = 0x74;
+								patch[2] = 0x8a;
+								//
+							}
+							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_ECX && vars[2] == Reg::_EAX) {
+								patch[1] = 0x74;
+								patch[2] = 0x81;
+							}
+						}
+						else if (currentHeader == TblPatchType::RegisterPointerCmp) {
+							patch = { 0x3b, 0x01, 0x90 };
+							if (vars[0] == Reg::L_AX) {
+								if (vars[1] == Reg::_ECX) {
+									//0x01
+								}
+								else if (vars[1] == Reg::_ESI) {
+									patch[1] = 0x06;
+								}
+								else if (vars[1] == Reg::_EDX) {
+									patch[1] = 0x02;
+								}
+							}
+							else if (vars[0] == Reg::L_CX) {
+								if (vars[1] == Reg::_ECX) {
+									patch[1] = 0x0a;
+								}
+								else if (vars[1] == Reg::_ESI) {
+									patch[1] = 0x0e;
+								}
+							}
+						}
+						else if (currentHeader == TblPatchType::RegisterPointerMov) {
+							patch = { 0x8b, 0x39, 0x90 };//DI, ECX
+							if (vars[0] == Reg::L_DX && vars[1] == Reg::_ECX) {
+								patch[1] = 0x11;
+							}
+						}
+						else if (currentHeader == TblPatchType::RegisterCmp) {
+							//require wrappers
+							//reads cmp
+						}
+						else if (currentHeader == TblPatchType::RegisterWriting) {
+							patch = { 0x89, 0xc2, 0x90 };
+							if (vars[0] == Reg::_ECX) {
+								patch[1] = 0xc1;
+							}
+						}
+						else if (currentHeader == TblPatchType::NopPatch) {
+							patch = { 0x90,0x90,0x90 };
+						}
+						else if (currentHeader == TblPatchType::AddPatch) {
+							patch = { 0x83, 0xC0, 0xFF, 0x90, 0x90};
+							if (vars[0] == Reg::_EAX) {
+
+							}
+							else if(vars[0]=Reg::_ECX) {
+								patch[1]=0xc1;
+							}
+						}
+						else if (currentHeader == TblPatchType::JmpPatch) {
+							u8 jump = patch_list[i + 1];
+							patch = { 0xeb };
+							if (jump == Jmp::JBE) {
+								patch = { 0x90,0x90 };
+							}
+						}
+/*						else if (currentHeader == TblPatchType::DecPatch) {
+							if (vars[0] == Reg::_EAX) {
+								patch = { 0x48,0x90,0x90,0x90,0x90 };
+							}
+						}*/
+
+
+						
+						memoryPatchVec(address, patch);
+							//don't patch if wrapper offset
+						
+						i += currentArgCount;
+					}
+				}
+				i--;
+				read_status = ConvReadStatus::ReadHeader;
+			}
+		}
 	}
 	void injectTblExtender() {
 		Globals.tbl_extender = true;
 		auto ptr_list = offset_list();
 		//DATA MUST BE INITIALIZED
-		for (int i = 0; i < ptr_list.size(); i++) {
+		/*for (int i = 0; i < ptr_list.size(); i++) {
 			memoryPatch(ptr_list[i], (u32)&extendedTbl);
-		}
+		}*/
+		patchTblList();
+		memoryPatch(0x004C3A6A + 1, &tblNew);
+		memoryPatch(0x004C3A2E + 1, &tblNew);
+		memoryPatch(0x004C3AF4 + 1, &tblNew);
 
-
-		//004927DF  |>  0FB7C1        MOVZX EAX,CX
-		//
 		/*
-		//TODO: REPLACE USAGE OF WORD IN REGARDS OF TBL TO DWORD
+
+		//NOT EVERYTHING IS RELATED TO TBLS, ONLY STAT_TXT STUFF MUST BE SORTED OUT
+		//loadTbl must be hooked
+
+	////Line 31543: 00415CED  |.  81C1 FFFF0000 |ADD ECX,0FFFF
+
+	Line 56377: 00426063  |.  05 FFFF0000   ADD EAX,0FFFF
+	Line 56452: 00426134  |.  05 FFFF0000   ADD EAX,0FFFF
+	Line 57285: 00426BA1  |.  05 FFFF0000   ADD EAX,0FFFF
+	Line 57765: 00427165  |.  05 FFFF0000   ADD EAX,0FFFF
+	Line 57936: 0042737E   .  05 FFFF0000   ADD EAX,0FFFF
+	Line 58142: 00427616  |.  05 FFFF0000   ADD EAX,0FFFF
+	Line 58170: 0042766D  |.  05 FFFF0000   ADD EAX,0FFFF
+	Line 58203: 004276E0  |.  81C1 FFFF0000 ADD ECX,0FFFF
+	Line 58254: 0042778C  |.  05 FFFF0000   ADD EAX,0FFFF
+	Line 130989: 00457B9D  |.  05 FFFF0000   ADD EAX,0FFFF
+	Line 150062: 00464EA1  |.  05 FFFF0000   ADD EAX,0FFFF
+	Line 211113: 0048D94F  |.  05 FFFF0000   ADD EAX,0FFFF
+	Line 220930: 00494563  |.  05 FFFF0000   ADD EAX,0FFFF
 		*/
-		//[6D1238]
-		//004C3A6A   .  68 5C2A5000   PUSH 00502A5C                            ;  ASCII "rez\stat_txt.tbl"
-		//004C3A2E   .  68 5C2A5000   PUSH 00502A5C                            ;  ASCII "rez\stat_txt.tbl"
-		//SFileOpenEx
-
-		//004C3AF4   .  68 5C2A5000   PUSH 00502A5C                            ;  ASCII "rez\stat_txt.tbl"
-
 	}
 }
-tblExtender extendedTbl;
+
+//tblExtender extendedTbl;
