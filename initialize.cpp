@@ -94,6 +94,7 @@
 #include "hooks/build_time.h"
 #include "hooks/misc/hydra_specific.h"
 #include "hooks/screen_hotkeys.h"
+#include "hooks/interface/uifeatures/uifeatures.h"
 //#include "AI/spellcasting.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
@@ -494,6 +495,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectBuildTimeHooks();
 	hooks::injectScreenHotkeysHooks();
 //	hooks::injectHpBarsHooks();
+	hooks::injectUIFeaturesHooks();
 
 	return TRUE;
 }

@@ -49,7 +49,7 @@ namespace hooks {
 		return true;
 	}
 
-	void handle_screenHotkeys() { // a hacky workaround, checked every frame
+	void handleScreenHotkeys() { // a hacky workaround, checked every frame
 		for (int i = 0; i < 8; i++) {
 			int key = VK_F1 + i;
 			if (GetKeyState(key) & 0x8000) {

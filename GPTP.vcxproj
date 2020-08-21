@@ -218,6 +218,8 @@
     <ClCompile Include="hooks\interface\extender\selection_extender_inject.cpp" />
     <ClCompile Include="hooks\interface\hpbars\hpbars.cpp" />
     <ClCompile Include="hooks\interface\hpbars\hpbars_inject.cpp" />
+    <ClCompile Include="hooks\interface\uifeatures\uifeatures.cpp" />
+    <ClCompile Include="hooks\interface\uifeatures\uifeatures_inject.cpp" />
     <ClCompile Include="hooks\limits\ccmu_inject.cpp" />
     <ClCompile Include="hooks\limits\extender.cpp" />
     <ClCompile Include="hooks\game\creategame.cpp" />
@@ -461,6 +463,7 @@
     <ClInclude Include="hooks\audiovisuals\sfxhooks.h" />
     <ClInclude Include="hooks\byte_operations_utils.h" />
     <ClInclude Include="hooks\interface\hpbars\hpbars.h" />
+    <ClInclude Include="hooks\interface\uifeatures\uifeatures.h" />
     <ClInclude Include="Utils\captivating_claws.h" />
     <ClInclude Include="hooks\interface\extender\selection_extender.h" />
     <ClInclude Include="hooks\limits\ccmu.h" />

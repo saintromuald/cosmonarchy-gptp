@@ -8,7 +8,7 @@ namespace hooks {
 	int recallScreenLocation(int id);
 	bool screenLocationSwitchCase(int n);
 
-	void handle_screenHotkeys();
+	void handleScreenHotkeys();
 
 	void injectScreenHotkeysHooks();
 	extern Point16 screen_hotkeys[8];

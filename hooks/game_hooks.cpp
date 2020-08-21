@@ -365,13 +365,16 @@ namespace hooks {
 
 	/// This hook is called every frame; most of your plugin's logic goes here.
 	bool nextFrame() {
+		if (*elapsedTimeFrames % 24 == 0) {
+			scbw::refreshScreen(); // refreshes screen, needed for game clock to update every second
+		}
 
 		if (!scbw::isGamePaused()) { //If the game is not paused
 
 			scbw::setInGameLoopState(true); //Needed for scbw::random() to work
 			graphics::resetAllGraphics();
 			hooks::updatePsiFieldProviders();
-			hooks::handle_screenHotkeys();
+			hooks::handleScreenHotkeys();
 			*(int*)hyperTrigger = 0; // Single frame hypertriggers
 
 			//This block is executed once every game.
