@@ -87,24 +87,6 @@ namespace hooks {
 		}
 	};
 
-	bool isProtossMorph(u16 unitId) {
-		if (   unitId == UnitId::ProtossPrincipality		// morphs begin
-	    	|| unitId == UnitId::ProtossVicarage
-	    #ifdef DELIVERANCE
-	    	|| unitId == UnitId::ProtossPrelacy
-	    #endif
-	    	|| unitId == UnitId::ProtossRoboticsAuthority
-	    	|| unitId == UnitId::ProtossArgosy
-	    	|| unitId == UnitId::ProtossStarfield			// morphs end
-	    	|| unitId == UnitId::ProtossGateway				// original structures begin
-	    	|| unitId == UnitId::ProtossStargate
-	    	|| unitId == UnitId::ProtossRoboticsFacility	// original structures end
-			) {
-			return true;
-		}
-		return false;
-	}
-
 	void orders_ZergBuildSelf(CUnit* building) {
 
 		const int OPCWAL_PROGRESS_INCREASE = 16;
@@ -116,20 +98,13 @@ namespace hooks {
 
 		buildingId = building->buildQueue[building->buildQueueSlot];
 
-		if (   !scbw::isZergBuildingMorphResult(buildingId)
-			&& !isProtossMorph(buildingId)
-			)
+		if (   !scbw::isZergBuildingMorphResult(buildingId))
 			buildingId = building->id;
 
 		if (building->mainOrderState == 0) {
 			//scbw::printText("State 0...");
 			if (building->remainingBuildTime < (units_dat::TimeCost[buildingId] * 3 / 4))
 				building->mainOrderState = 1;
-			if (isProtossMorph(buildingId)) {
-				if (!building->getOverlay(ImageId::WarpAnchor)) {
-					building->sprite->createTopOverlay(ImageId::WarpAnchor);
-				}
-			}
 
 			jump_to_5D56C = true;
 
@@ -170,12 +145,6 @@ namespace hooks {
 
 				}
 
-				//5D5D0
-				if (!(isProtossMorph(buildingId))) {
-
-					building->sprite->playIscriptAnim(IscriptAnimation::SpecialState1, true);
-				}
-
 				building->mainOrderState = 2;
 				//scbw::printText("Set order state 2");
 				jump_to_5D56C = true;
@@ -195,9 +164,6 @@ namespace hooks {
 					if (building->mainOrderState == 3) { //5D603
 
 
-						if (!(isProtossMorph(buildingId))) {
-							building->sprite->playIscriptAnim(IscriptAnimation::SpecialState2, true);
-						}
 						building->mainOrderState = 4;
 						//scbw::printText("Set order state 4");
 						jump_to_5D56C = true;
@@ -207,23 +173,7 @@ namespace hooks {
 						if (building->mainOrderState == 4) { //5D618
 
 							if (building->remainingBuildTime == 0) {
-								//scbw::printText("Set order state 5");
-
-								if (isProtossMorph(buildingId)) {
-									CImage* current_image = building->sprite->images.head;
-									while (current_image != NULL) {
-										if (current_image->flags & CImage_Flags::Flag04) {
-											const u32* u32_006D1200 = (u32*)0x006D1200;
-											current_image->animation = IscriptAnimation::SpecialState1;
-											current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x22);
-											current_image->wait = 0;
-											current_image->unknown14 = 0;
-											iscript_OpcodeCases_copy(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
-										}
-										current_image = current_image->link.next;
-
-									}
-								}
+								//scbw::printText("Set order state 5");								
 
 								building->mainOrderState = 5;
 							}
@@ -233,31 +183,24 @@ namespace hooks {
 						else
 							if (building->mainOrderState == 5) { //5D62F
 								bool sEnd = false;
-								if (!(isProtossMorph(buildingId))) {
-
-									building->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
-									sEnd = true;
-								}
-								else {
-									if (building->orderSignal & 0x1) {
-										//scbw::printText("Special state order signal 0x1");
-										building->orderSignal -= 1;
-										if (building->getOverlay(ImageId::WarpAnchor)) {
-											building->removeOverlay(ImageId::WarpAnchor);
-										}
-
-										replaceSpriteImages_copy(
-											building->sprite,
-//											sprites_dat::ImageId[building->sprite->spriteId],
-											scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId),
-											0
-										);
-										char buf[32];
-										sprintf(buf, "Sprite id is %d", building->sprite->spriteId);
-										//scbw::printText(buf);
-										function_004D8500_copy(building->sprite->mainGraphic);
-										sEnd = true;
+								if (building->orderSignal & 0x1) {
+									//scbw::printText("Special state order signal 0x1");
+									building->orderSignal -= 1;
+									if (building->getOverlay(ImageId::WarpAnchor)) {
+										building->removeOverlay(ImageId::WarpAnchor);
 									}
+
+									replaceSpriteImages_copy(
+										building->sprite,
+//											sprites_dat::ImageId[building->sprite->spriteId],
+										scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId),
+										0
+									);
+									char buf[32];
+									sprintf(buf, "Sprite id is %d", building->sprite->spriteId);
+									//scbw::printText(buf);
+									function_004D8500_copy(building->sprite->mainGraphic);
+									sEnd = true;
 								}
 								if (sEnd) {
 									building->mainOrderState = 6;
@@ -269,15 +212,8 @@ namespace hooks {
 								if (building->mainOrderState == 6) { //5D64Bs
 
 									bool ordCondition = false;
-									if (isProtossMorph(buildingId)) {
-										if (building->orderSignal & 0x1) {
-											ordCondition = true;
-										}
-									}
-									else {
-										if (building->orderSignal & 0x4) {
-											ordCondition = true;
-										}
+									if (building->orderSignal & 0x4) {
+										ordCondition = true;
 									}
 									if (((building->orderSignal & 4) && building->getRace() == RaceId::Zerg) || (building->orderSignal & 0x1)) {
 										//scbw::printText("Get order signal");
@@ -306,9 +242,6 @@ namespace hooks {
 												units_dat::MaxHitPoints[buildingId] -
 												units_dat::MaxHitPoints[building->previousUnitType] +
 												hpAfterMorph;
-											if (isProtossMorph(buildingId)) {
-												building->shields = save_shields;
-											}
 											if (hpAfterMorph < 256)
 												hpAfterMorph = 256;
 
@@ -332,18 +265,6 @@ namespace hooks {
 										while (current_image != NULL) {
 											if (building->getRace() == RaceId::Zerg) {
 												current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
-											}
-											if (isProtossMorph(buildingId)) {
-												if (current_image->flags & CImage_Flags::Flag04) {
-													const u32* u32_006D1200 = (u32*)0x006D1200;
-													current_image->animation = IscriptAnimation::WarpIn;
-													current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x32);
-													current_image->wait = 0;
-													current_image->unknown14 = 0;
-													iscript_OpcodeCases_copy(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
-													scbw::playSound(SoundId::Protoss_SHUTTLE_pshBld03_wav, building);
-													//scbw::printText("Play Warp Flash (or at least attempt to)");
-												}
 											}
 											current_image = current_image->link.next;
 										}
@@ -377,13 +298,6 @@ namespace hooks {
 									}
 									else {
 										//scbw::printText("Wait for order signal");
-									}
-									if (isProtossMorph(buildingId)) {
-										//scbw::printText("protoss morph!");
-										if (!(building->_unknown_0x026 & 0x1)) {
-											building->orderSignal |= 0x4;
-											building->_unknown_0x026 |= 0x1;
-										}
 									}
 
 
@@ -421,10 +335,7 @@ namespace hooks {
 
 			jump_to_5D720 = false;
 
-			if (
-				   !scbw::isZergBuildingMorphResult(buildingId)
-				&& !isProtossMorph(buildingId)
-				)
+			if (!scbw::isZergBuildingMorphResult(buildingId))
 			{
 
 				s32 hpGain = building->buildRepairHpGain;
@@ -688,11 +599,7 @@ namespace {
 
 		bool result;
 
-		if (
-			   scbw::isZergBuildingMorphResult(buildingId)
-			|| hooks::isProtossMorph(buildingId)
-
-			)
+		if (scbw::isZergBuildingMorphResult(buildingId))
 			result = true;
 		else
 			result = false;
@@ -935,8 +842,7 @@ namespace hooks {
 	bool isMorphedBuildingHook(u16 unitId) {
 		//Default StarCraft behavior
 
-		if (scbw::isZergBuildingMorphResult(unitId)
-			|| isProtossMorph(unitId))
+		if (scbw::isZergBuildingMorphResult(unitId))
 			return true;
 
 		return false;
@@ -989,18 +895,6 @@ namespace hooks {
 		case UnitId::ZergEvolutionChamber:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergMutationPit, ignoreIncomplete);
 			break;
-
-		case UnitId::ProtossGateway:
-			unitCount += getNumberOfUnitType(unit, UnitId::ProtossPrincipality, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ProtossVicarage, ignoreIncomplete);
-
-			break;
-		case UnitId::ProtossRoboticsFacility:
-			unitCount += getNumberOfUnitType(unit, UnitId::ProtossRoboticsAuthority, ignoreIncomplete);
-			break;
-		case UnitId::ProtossStargate:
-			unitCount += getNumberOfUnitType(unit, UnitId::ProtossArgosy, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ProtossStarfield, ignoreIncomplete);
 
 			break;
 

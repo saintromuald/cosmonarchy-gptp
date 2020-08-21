@@ -359,29 +359,6 @@ bool isUnderDarkSwarm(CUnit* unit) {
 
 }
 
-
-bool isProtossMorph(u16 unitId) {
-	if (unitId == UnitId::ProtossPrincipality
-		|| unitId == UnitId::ProtossVicarage
-		|| unitId == UnitId::ProtossRoboticsAuthority
-		|| unitId == UnitId::ProtossArgosy
-		|| unitId == UnitId::ProtossStarfield) {
-		return true;
-	}
-	if (unitId == UnitId::ProtossGateway
-		|| unitId == UnitId::ProtossRoboticsFacility
-		|| unitId == UnitId::ProtossStargate) {
-		return true;
-	}
-#ifdef DELIVERANCE
-	if (unitId == UnitId::ProtossPrelacy
-		|| unitId == UnitId::ProtossCrucible) {
-		return true;
-	}
-#endif
-	return false;
-}
-
 CUnit* getDarkSwarm(u16 x, u16 y, u16 radius) {
 	UnitFinder darkSwarmFinder;
 	darkSwarmFinder.search(x-radius,y-radius,x+radius,y+radius);
