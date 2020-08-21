@@ -232,8 +232,8 @@ namespace hooks {
 		int v4; // edx
 
 		_type = a2->id;
-		v2 = units_dat::BaseProperty[_type];
-		if (v2 & 0x800 || _type == UnitId::TerranCivilian || _type == UnitId::TerranVultureSpiderMine)
+		if (units_dat::BaseProperty[_type] & UnitProperty::NeutralAccessories || _type == UnitId::TerranCivilian ||
+			_type == UnitId::TerranVultureSpiderMine)
 			return 0;
 		if (_type == UnitId::Hero_Gantrithor)
 		{
