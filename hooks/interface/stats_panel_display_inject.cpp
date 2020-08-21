@@ -36,6 +36,7 @@ namespace {
 		result = hooks::getUnitRankString(a1);
 		__asm {
 			POPAD
+			MOV EAX,result
 			RETN
 		}
 	}
