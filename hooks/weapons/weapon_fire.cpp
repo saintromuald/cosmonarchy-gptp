@@ -29,6 +29,49 @@ public:
 	}
 };
 
+class powerSiphonCollectMatch : public scbw::UnitFinderCallbackMatchInterface {
+private:
+	CUnit* savant;
+public:
+	powerSiphonCollectMatch(CUnit* savant)
+		: savant(savant) {}
+
+	bool match(CUnit* unit) {
+		if (unit == savant) {
+			return false;
+		}
+		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster)) {
+			return false;
+		}
+		if (unit->energy == 0) {
+			return false;
+		}
+	}
+};
+class powerSiphonDistributeMatch : public scbw::UnitFinderCallbackMatchInterface {
+private:
+	CUnit* savant;
+public:
+	powerSiphonDistributeMatch(CUnit* savant)
+		: savant(savant) {}
+
+	bool match(CUnit* unit) {
+		if (unit == savant) {
+			return false;
+		}
+		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster)) {
+			return false;
+		}
+		if (!scbw::isAlliedTo(savant->playerId, unit->playerId)) {
+			return false;
+		}
+		if (unit->energy == unit->getMaxEnergy()) {
+			return false;
+		}
+	}
+};
+
+
 namespace {
 	typedef void(__stdcall* GetWeaponHitPosFunc)(CUnit* unit, s32* x, s32* y);
 	GetWeaponHitPosFunc const getWeaponHitPos = (GetWeaponHitPosFunc)0x004762C0;
@@ -89,6 +132,20 @@ namespace hooks {
 			if (good) {
 				if (weaponId==WeaponId::FuriaMissiles && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TempoChange,0)==1) {
 					weaponId = WeaponId::ImperiosoMissiles;
+				}
+				if (weaponId == WeaponId::PowerSiphon) {
+				/*	u32 energy = 0;
+					powerSiphonCollectMatch Orders = powerSiphonCollectMatch(unit);
+					u32 range = weapons_dat::OuterSplashRadius[WeaponId::PowerSiphon];
+					auto pos = unit->orderTarget.pt;
+					if (unit->orderTarget.unit != NULL) {
+						pos = unit->orderTarget.unit->position;
+					}
+					scbw::UnitFinder unitFinder(pos.x - range,
+						pos.y - range,
+						pos.x + range,
+						pos.y + range);
+					auto a = unitFinder.s;*/
 				}
 				createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 			}
