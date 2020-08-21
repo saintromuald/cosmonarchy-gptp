@@ -87,8 +87,8 @@ namespace hooks {
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SpineY, targ_y, 0);
 			}
 			if (good) {
-				if (weaponId==21 && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TempoChange,0)==1) {
-					weaponId = 22;
+				if (weaponId==WeaponId::FuriaMissiles && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TempoChange,0)==1) {
+					weaponId = WeaponId::ImperiosoMissiles;
 				}
 				createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 			}
