@@ -26,9 +26,9 @@ namespace hooks {
 	bool StatLobotomyMineCount(BinDlg* dialog, u32 index) {
 		auto v2 = *activePortraitUnit;
 		auto v3 = dialog;
-		if (scbw::hasTechResearched(v2->playerId, TechId::LobotomyMine) == 0) {
+		/*if (scbw::hasTechResearched(v2->playerId, TechId::LobotomyMine) == 0) {
 			return false;
-		}
+		}*/
 		sprintf_s(statusscreen_infobtn[index], 8, "%d ", v2->vulture.spiderMineCount);
 		if (v3->controlType)
 			v3 = v3->parent;
@@ -55,9 +55,11 @@ namespace hooks {
 		auto v7 = *cmdicons_grp;
 		v5->graphic = UnitId::LobotomyMine - 1;//or set icon id
 		statData->button_grp = v7;
-		statData->grp_frame = UnitId::LobotomyMine;
+//		statData->grp_frame = UnitId::LobotomyMine;
+		statData->grp_frame = 13;
 		statData->type = 3;
-		statData->id = UnitId::LobotomyMine;
+//		statData->id = UnitId::LobotomyMine;
+		statData->id = 13;
 		auto v8 = v5->flags;
 		v5->pszText = statusscreen_infobtn[index];
 		if (!(v8 & 1))
@@ -236,14 +238,14 @@ namespace hooks {
 				if (StatSpidermineCount(dialog, index))
 					index++; //don't increase the index if not displaying
 			}
-			/*
+			
 			if (activeUnit->id == UnitId::ghost) {
 				if (StatLobotomyMineCount(dialog, index)) {
 					index++;
 				}
 			}
 			//placeholder code, disabled for now
-			*/
+			
 			unitId = getLastQueueSlotType(activeUnit);
 
 			if (unitId == UnitId::TerranNuclearSilo) {

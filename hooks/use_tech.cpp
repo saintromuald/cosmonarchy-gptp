@@ -150,6 +150,10 @@ namespace hooks
 				TechCapableUnit = true;
 
 			}
+			if (tech == TechId::LobotomyMine) {
+				TechCapableUnit = true;
+			}
+			
 		}
 		if(!TechCapableUnit){
 			if (Ui_CheckEnergyForTechUse(tech)) {
@@ -184,7 +188,8 @@ namespace hooks
 			IssueTriTargetOrder(OrderId::FireYamatoGun1, OrderId::FireYamatoGun2, 0);
 			break;
 		case TechId::Lockdown:
-			IssueTriTargetOrder(OrderId::MagnaPulse, 0, 0);
+			IssueTriTargetOrder(OrderId::PlaceMine, 0, 0);
+//			IssueTriTargetOrder(OrderId::MagnaPulse, 0, 0);
 			break;
 		case TechId::Recall:
 			IssueTriTargetOrder(OrderId::Teleport, 0, 0);

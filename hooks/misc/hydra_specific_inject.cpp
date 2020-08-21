@@ -119,6 +119,53 @@ namespace hooks {
             }
         }
     }
+    const u32 jmp_004A0682 = 0x004A0682;
+    void __declspec(naked) lobotomyMineJmpWrapper() {
+        CUnit* unit;
+        __asm {
+            MOV unit,ESI
+            PUSHAD
+        }
+        setupSpiderMines(unit);
+        __asm {
+            POPAD
+            JMP jmp_004A0682
+        }
+
+    }
+
+    const u32 jmp_0046512B = 0x0046512B;
+    void orders_PlaceMine_JmpWrapper() {
+        CUnit* unit;
+        u32 result;
+        __asm {
+            MOV unit,ESI
+            PUSHAD
+        }
+        result = hooks::get_mine_id(unit);
+        __asm {
+            POPAD
+            MOV EAX,result
+            JMP jmp_0046512B
+        }
+    }
+
+    const u32 jmp_0046514A = 0x0046514A;
+    void orders_PlaceMine_JmpWrapper2() {
+        CUnit* unit;
+        u32 result;
+        __asm {
+            MOV unit, ESI
+            PUSHAD
+        }
+        result = hooks::get_mine_id(unit);
+        __asm {
+            POPAD
+            MOV ECX, result
+            JMP jmp_0046514A
+        }
+    }
+
     void unusedOrderPatches() {
         jmpPatch(unusedOrderPatchWrapper, 0x004EC70B, 7);//turns unused orders to spell orders
         //later add jump patches to make CTFCop2 and WarpIn useless
@@ -126,11 +173,22 @@ namespace hooks {
     void archonHardcodePatches(){//for augurs
         jmpPatch(wrapper_295EB, 0x004295EB, 1);
     }
+
+
+    void lobotomyMinePatches() {
+      
+        jmpPatch(lobotomyMineJmpWrapper, 0x004A066B, 3);  /*
+        jmpPatch(orders_PlaceMine_JmpWrapper, 0x00465126, 0);
+        jmpPatch(orders_PlaceMine_JmpWrapper2, 0x00465145, 0);
+        nops(0x00465088, 8);//remove tech requirement for any mines
+        */
+    }
     void injectHydraSpecific() {
         flingySpeedPatches();
         //start of spell order code
         //default case of switch 004EC4FF
         unusedOrderPatches();
+        lobotomyMinePatches();
         //disables CTFCop2 functionality, makes it useless
         //archonHardcodePatches();
     }
