@@ -6,10 +6,12 @@ namespace hooks {
 		u32 speed = scbw::getFlingyData(FlingyDatEntries::TopSpeed, flingyId);
 		return speed;
 	}
+
 	u16 realAcceleration(CFlingy* flingy, u32 flingyId) {
 		u16 acceleration = scbw::getFlingyData(FlingyDatEntries::Acceleration, flingyId);
 		return acceleration;
 	}
+
 	bool is_high_templar_conduit(u16 unitId) {
 		switch (unitId) {
 		case UnitId::ProtossArchon:
@@ -20,11 +22,13 @@ namespace hooks {
 		}
 		return false;
 	}
+
 	u32 weapon_flingy(u32 weaponId, u8 player_id) {
 		Globals.flingy_init_bullet_id = weaponId;
 		Globals.flingy_init_player_id = player_id;
 		return weapons_dat::FlingyId[weaponId];
 	}
+
 	u32 getFlingyHaltDistance(CFlingy* flingy) {
 		auto speed = flingy->current_speed2;
 		if (speed == 0 || flingy->flingyMovementType != 0) {
@@ -38,6 +42,7 @@ namespace hooks {
 			return scbw::getFlingyData(FlingyDatEntries::HaltDistance, flingy_id);
 		}
 	}
+
 	bool is_unused_order(u8 orderId) {
 		switch (orderId) {
 		case OrderId::GuardianAspect:
@@ -51,19 +56,22 @@ namespace hooks {
 		}
 		return false;
 	}
+
 	void setupSpiderMines(CUnit* unit) {
-		if (unit->id == UnitId::vulture) {
+		if (unit->id == UnitId::TerranVulture) {
 			unit->vulture.spiderMineCount = 3;
 		}
-		else if (unit->id == UnitId::ghost) {
+		else if (unit->id == UnitId::TerranGhost) {
 			unit->vulture.spiderMineCount = 2;
 		}
 	}
+
 	u32 get_mine_id(CUnit* unit) {
-		if (unit->id == UnitId::ghost) {
+		if (unit->id == UnitId::TerranGhost) {
 			return UnitId::LobotomyMine;
 		}
 		return UnitId::TerranVultureSpiderMine;
 	}
+
 }
 	

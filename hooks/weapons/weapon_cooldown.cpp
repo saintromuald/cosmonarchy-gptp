@@ -33,6 +33,8 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 	if(unit->id==UnitId::wraith && weaponId==WeaponId::BurstLasers && (unit->status & UnitStatus::Cloaked)){
 		cooldown -= cooldown / 5;
 	}
+
+	// Simulacrum behavior: increase weapon speed when any nearby Simulacrum dies
 	if (unit->id == UnitId::ProtossSimulacrum) {
 		double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10);
 		if (stacks > 0) {
