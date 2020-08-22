@@ -33,7 +33,13 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 	if(unit->id==UnitId::wraith && weaponId==WeaponId::BurstLasers && (unit->status & UnitStatus::Cloaked)){
 		cooldown -= cooldown / 5;
 	}
-
+	if (unit->id == UnitId::ProtossSimulacrum) {
+		double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10);
+		if (stacks > 0) {
+			double newCooldown = (double)cooldown * (1.0 - stacks / 20.0);
+			cooldown = newCooldown;
+		}
+	}
 	// Ravening Mandible upgrade: gains increased attack speed based on current energy
 	if (unit->id==UnitId::ZergGorgoleth) {
 		cooldown *= 0.75;
