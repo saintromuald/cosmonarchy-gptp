@@ -337,6 +337,32 @@ namespace hooks {
 
 	;
 
+	u16 GetUnitWidth(CUnit* unit) {
+		return unit->getLeft() - unit->getRight();
+	}
+	u16 GetUnitHeight(CUnit* unit) {
+		return unit->getTop() - unit->getBottom();
+	}
+
+	bool IsInRange(CUnit* source, CUnit* target, u32 range) {
+		u16 sourceX = source->position.x;
+		u16 sourceY = source->position.y;
+		u16 targetX = target->position.x;
+		u16 targetY = target->position.y;
+
+		u16 horizontalDifference = abs(sourceX - targetX);
+		u16 verticalDifference = abs(sourceY - targetY);
+		u16 horizontalRange = range + GetUnitWidth(source) / 2 + GetUnitWidth(target) / 2;
+		u16 verticalRange = range + GetUnitHeight(source) / 2 + GetUnitHeight(target) / 2;
+
+		if (horizontalDifference > horizontalRange
+		|| verticalDifference > verticalRange) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 	//original name was ISCRIPT_AttackMelee @ 00479B40
 	//Changed due to the context
 	void MeleeAttackHit(CUnit* attacker) {
@@ -356,6 +382,9 @@ namespace hooks {
 				weaponId = units_dat::GroundWeapon[attacker->id];
 			else
 				weaponId = WeaponId::None;
+
+			if (!IsInRange(attacker, target, weapons_dat::MaxRange[weaponId]))
+				return;
 
 			if(attacker->status & UnitStatus::IsHallucination){
 				bool ephemeralBlades = false;
