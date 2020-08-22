@@ -292,7 +292,12 @@ namespace hooks {
 				acceleration *= 2;
 			}
 		}
-
+		else if (unit->id == UnitId::ProtossSimulacrum) {
+			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10);
+			if (stacks > 0) {
+				acceleration = (double)acceleration * ((10.0 + stacks) / 10.0);
+			}
+		}
 		return acceleration;
 
 
