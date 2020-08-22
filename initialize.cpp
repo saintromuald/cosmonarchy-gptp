@@ -176,6 +176,18 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	*/
 	memoryPatch(0x004357FB + 2, &none, sizeof(u8));//disable placing units near bunkers
 	memoryPatch(0x0043583F + 1, &none, sizeof(u8));//disable placing units near missile turrets
+
+	//rhynadon-simulacrum patches
+	memoryPatch(0x0042E352 + 1, &none, sizeof(u8));
+	memoryPatch(0x00431574 + 2, &none, sizeof(u8));
+	memoryPatch(0x00431B37 + 2, &none, sizeof(u8));
+	memoryPatch(0x00437E0B + 2, &none, sizeof(u8));
+	memoryPatch(0x00437E3A + 2, &none, sizeof(u8));
+	memoryPatch(0x0047B454 + 2, &none, sizeof(u8));
+	memoryPatch(0x0047B7C9 + 2, &none, sizeof(u8));
+	memoryPatch(0x004CBE49 + 2, &none, sizeof(u8));
+
+
 	memoryPatch((void*)0x00487C93, moveaxpatch, sizeof(moveaxpatch));//disable unit selectable check in placement function
 
 	//disable terran structure building transport condition
@@ -440,7 +452,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectCMDRECV_CancelHooks();/*
 	hooks::injectSelectLarvaHooks();*/
 	hooks::injectRepairOrderHook();
-//	hooks::injectStatsPanelDisplayHook(); // TODO: Fix getUnitRankString hook
+	hooks::injectStatsPanelDisplayHook(); // TODO: Fix getUnitRankString hook
 //	hooks::injectUtilsHooks();
 	hooks::injectMindControlSpellHook();
 	hooks::injectCMDRECV_BuildHooks();
