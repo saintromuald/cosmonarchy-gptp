@@ -352,9 +352,6 @@ namespace hooks {
 
 		u16 horizontalDifference = abs(sourceX - targetX);
 		u16 verticalDifference = abs(sourceY - targetY);	
-=======
-		u16 verticalDifference = abs(sourceY - targetY);	
->>>>>>> master
 		u16 horizontalRange = range + GetUnitWidth(source) / 2 + GetUnitWidth(target) / 2 + 1;
 		u16 verticalRange = range + GetUnitHeight(source) / 2 + GetUnitHeight(target) / 2 + 1;
 
