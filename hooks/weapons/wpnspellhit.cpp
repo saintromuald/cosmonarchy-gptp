@@ -351,14 +351,18 @@ namespace hooks {
 		u16 targetY = target->position.y;
 
 		u16 horizontalDifference = abs(sourceX - targetX);
-		u16 verticalDifference = abs(sourceY - targetY);
-		u16 horizontalRange = range + GetUnitWidth(source) / 2 + GetUnitWidth(target) / 2;
-		u16 verticalRange = range + GetUnitHeight(source) / 2 + GetUnitHeight(target) / 2;
+		u16 verticalDifference = abs(sourceY - targetY);	
+		u16 horizontalRange = range + GetUnitWidth(source) / 2 + GetUnitWidth(target) / 2 + 1;
+		u16 verticalRange = range + GetUnitHeight(source) / 2 + GetUnitHeight(target) / 2 + 1;
 
+		//scbw::printFormattedText("Difference: %i, %i", horizontalDifference, verticalDifference);
+		//scbw::printFormattedText("Range: %i, %i", horizontalRange, verticalRange);
 		if (horizontalDifference > horizontalRange
 		|| verticalDifference > verticalRange) {
+			//scbw::printText("Out of range");
 			return false;
 		} else {
+			//scbw::printText("In range");
 			return true;
 		}
 	}
