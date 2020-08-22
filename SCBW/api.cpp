@@ -647,6 +647,7 @@ bool isZergBuildingMorphResult(u16 id){
 	case UnitId::ZergLair:
 	case UnitId::ZergMutationPit:
 	case UnitId::ZergKeskathCavern:
+	case UnitId::ZergOstothCavern:
 	case UnitId::ZergGuardianRoost:
 	case UnitId::ZergDevourerHaunt:
 	case UnitId::ZergGorgolethApiary:
@@ -656,6 +657,7 @@ bool isZergBuildingMorphResult(u16 id){
 	case UnitId::ZergBasiliskDen:
 	case UnitId::ZergLurkerDen:
 	case UnitId::ZergVorvalPond:
+	case UnitId::ZergNathrokLake:
 	case UnitId::ZergIrolethQuay:
 	case UnitId::ZergOthstolethBerth:
 		return true;
