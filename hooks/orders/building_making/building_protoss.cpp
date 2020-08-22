@@ -252,6 +252,7 @@ namespace hooks {
 				}
 
 				building->mainOrderState = 3;
+				building->orderSignal |= 1;
 
 			}
 
