@@ -1,6 +1,10 @@
 #pragma once
 #include <SCBW/api.h>
 
+
+	
+
+
 namespace hooks {
 
 void updateButtonSetEx();						//00458BC0  updateButtonSetEx

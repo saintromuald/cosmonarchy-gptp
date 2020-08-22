@@ -47,7 +47,10 @@ void printFormattedColoredText(const char* format, u32 color, ...);
 void showErrorMessageWithSfx(u32 playerId, u32 statTxtId, u32 sfxId);
 
 //////////////////////////////////////////////////////////////// @}
-
+void disableDialog(BinDlg* dialog);															//18640
+void showDialog(BinDlg* dialog);															//186A0
+void hideDialog(BinDlg* dialog);															//18700
+void updateDialog(BinDlg* dialog);															//1C400
 /// @name Unit checks
 //////////////////////////////////////////////////////////////// @{
 

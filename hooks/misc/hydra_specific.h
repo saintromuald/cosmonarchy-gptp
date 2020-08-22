@@ -12,6 +12,8 @@ namespace hooks {
 	u32 weapon_flingy(u32 weaponId, u8 playerId);
 	u32 getFlingyHaltDistance(CFlingy* flingy);
 	bool is_unused_order(u8 orderId);
+	void setupSpiderMines(CUnit* unit);
+	u32 get_mine_id(CUnit* unit);
 }
 
 namespace hooks {

@@ -201,6 +201,8 @@ namespace ValueId {
 		CaptivatingClawsIndex						= 61,
 		CaptivatingClawsStacks						= 62,
 
+		EnergyDecay									= 63,
+
 	#if DELIVERANCE
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,

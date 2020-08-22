@@ -36,6 +36,7 @@ namespace {
 		result = hooks::getUnitRankString(a1);
 		__asm {
 			POPAD
+			MOV EAX,result
 			RETN
 		}
 	}
@@ -46,7 +47,7 @@ namespace hooks {
 
 	void injectStatsPanelDisplayHook() {
 		jmpPatch(stats_panel_display_Wrapper, 0x00426C60, 1);
-		jmpPatch(getUnitRankString_Wrapper, 0x0042F370, 1);
+		//jmpPatch(getUnitRankString_Wrapper, 0x0042F370, 1);
 	}
 
 } //hooks

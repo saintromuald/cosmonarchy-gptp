@@ -56,6 +56,7 @@ enum Enum {
 	// HYDRA \\
 
 //Terran
+	LobotomyMine			= 1,
 	ReverseThrust			= 2,  // Wyvern fire while moving switch
 	LandGrab				= 17, // Wyvern target ground ability
 	AdministerMedstims		= 24, // Shaman organic heal ability

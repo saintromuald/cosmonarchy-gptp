@@ -31,7 +31,7 @@ namespace hooks {
 			return 0;
 		}
 		auto flingy_id = flingy->flingyId;
-		if (speed != realTopSpeed(flingy, flingy_id) || flingy->flingyAcceleration != realAcceleration(flingy,flingy_id)) {
+		if (speed != realTopSpeed(flingy, flingy_id) || flingy->flingyAcceleration != realAcceleration(flingy, flingy_id)) {
 			return speed * speed / (2 * (u16)flingy->flingyAcceleration);
 		}
 		else {
@@ -51,4 +51,19 @@ namespace hooks {
 		}
 		return false;
 	}
+	void setupSpiderMines(CUnit* unit) {
+		if (unit->id == UnitId::vulture) {
+			unit->vulture.spiderMineCount = 3;
+		}
+		else if (unit->id == UnitId::ghost) {
+			unit->vulture.spiderMineCount = 2;
+		}
+	}
+	u32 get_mine_id(CUnit* unit) {
+		if (unit->id == UnitId::ghost) {
+			return UnitId::LobotomyMine;
+		}
+		return UnitId::TerranVultureSpiderMine;
+	}
 }
+	

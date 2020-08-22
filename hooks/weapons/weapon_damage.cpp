@@ -320,7 +320,9 @@ namespace hooks {
 			/*
 					if (target->status & UnitStatus::IsHallucination)
 						damage *= 2;*/
-
+			if (attacker != NULL && weaponId == WeaponId::EnergyDecay) {
+				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::EnergyDecay, 240 + 1, 0);
+			}
 			if (attacker != NULL && weaponId == WeaponId::Claws) {
 				if (scbw::get_aise_value(attacker, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0) < 4) {
 					scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::AddGenericValue, ValueId::AdrenalStacks, 1, 0);

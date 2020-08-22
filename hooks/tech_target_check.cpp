@@ -12,16 +12,19 @@ namespace hooks {
 
 //Should be equivalent to getSpellStatString @ 0x00491E80
 u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayerId, u16 techId) {
+
+
 	u16 stringId;
+	scbw::printFormattedText("Try: %d %d", castingPlayerId, techId);//41
 	if(target->stasisTimer != 0)
 		stringId = 900; //Units in stasis can't be targeted.<0>
 	else
-	if(techId!=TechId::UnusedTech39 && (techId < TechId::DefensiveMatrix || techId > TechId::OpticalFlare))
+	if(techId!=TechId::PowerTransfer && techId!=TechId::PowerTransfer && (techId < TechId::DefensiveMatrix || techId > TechId::OpticalFlare))
 		stringId = 876; //Invalid target.<0>
 	else {
 
 		//originally handled by switchs and internal arrays of id
-
+		//TechId::DisruptionWeb
 		if(techId == TechId::Feedback) {
 
 			if(units_dat::BaseProperty[target->id] & UnitProperty::Building)
@@ -31,6 +34,7 @@ u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayerId, u16 techId) {
 				stringId = 1330; //Must target units with energy.<0>
 			else
 				stringId = 0; //valid target
+
 
 		}
 		else
@@ -102,6 +106,9 @@ u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayerId, u16 techId) {
 			else
 				stringId = 0; //valid target
 
+		}
+		else if (techId == TechId::PowerTransfer) {
+			stringId = 0;
 		}
 		else
 			stringId = 876; //Invalid target.<0>
