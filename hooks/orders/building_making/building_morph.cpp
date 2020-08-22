@@ -174,18 +174,19 @@ namespace hooks {
 
 		} else if (building->mainOrderState == 5) { //5D62F
 			bool sEnd = false;
-			if (building->orderSignal & 0x1) {
-				building->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
-				sEnd = true;
+			//if (building->orderSignal & 0x1) {
+			building->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
+			sEnd = true;
 
-				replaceSpriteImages_copy(building->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
-				char buf[32];
-				sprintf(buf, "Sprite id is %d", building->sprite->spriteId);
-				//scbw::printText(buf);
-				function_004D8500_copy(building->sprite->mainGraphic);
-				sEnd = true;
-			}
+			replaceSpriteImages_copy(building->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
+			char buf[32];
+			sprintf(buf, "Sprite id is %d", building->sprite->spriteId);
+			//scbw::printText(buf);
+			function_004D8500_copy(building->sprite->mainGraphic);
+			//}
 			if (sEnd) {
+				scbw::printText("Set order state 6");
+				building->orderSignal |= 4;
 				building->mainOrderState = 6;
 				playBuildingCompleteSound(building);
 			}
@@ -197,7 +198,7 @@ namespace hooks {
 				ordCondition = true;
 			}
 			if (building->orderSignal & 4) {
-				//scbw::printText("Get order signal");
+				scbw::printText("Get order signal");
 				if (building->orderSignal & 4) {
 					//scbw::printText("sigorder 4 found");
 				}
@@ -241,9 +242,7 @@ namespace hooks {
 
 				current_image = building->sprite->images.head;
 				while (current_image != NULL) {
-					if (building->getRace() == RaceId::Zerg) {
-						current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
-					}
+					current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
 					current_image = current_image->link.next;
 				}
 				//scbw::printText("Creep!");
