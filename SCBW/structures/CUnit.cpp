@@ -5,6 +5,7 @@
 #include "globals.h"
 #include "hooks\limits\ccmu.h"
 
+#include "MathUtils.h"
 //-------- Unit stats and properties --------//
 
 extern const u32 Func_CanDetect = 0x00403430; //unitHasNoStatusAilments
@@ -552,6 +553,15 @@ void CUnit::removeAcidSpores() {
 void	CUnit::spendUnitEnergy(u32 energy) {
 	if(!(*CHEAT_STATE & CheatFlags::TheGathering))
 		this->energy -= energy;
+	if (scbw::get_aise_value(this, NULL, AiseId::GenericTimer, ValueId::EnergyDecay, 0) > 1) {
+		this->inflictDamage(energy, scbw::get_generic_unit(this,ValueId::DecaySavant), -1, false, true);
+	}
+}
+void CUnit::addUnitEnergy(u32 energy) {
+	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, this->getMaxEnergy());
+}
+void CUnit::addUnitEnergy(u32 energy, u32 energyMax) {
+	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, energyMax);
 }
 
 //-------- Unit orders --------//

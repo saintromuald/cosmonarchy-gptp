@@ -47,6 +47,9 @@ void printFormattedColoredText(const char* format, u32 color, ...);
 void showErrorMessageWithSfx(u32 playerId, u32 statTxtId, u32 sfxId);
 
 //////////////////////////////////////////////////////////////// @}
+
+u8 hasOverlay(CUnit* unit);
+
 void disableDialog(BinDlg* dialog);															//18640
 void showDialog(BinDlg* dialog);															//186A0
 void hideDialog(BinDlg* dialog);															//18700

@@ -276,7 +276,7 @@ namespace hooks {
 		return;
     }
     if (isChargedGorgolethBullet(bullet, weaponId)) {
-        bullet->sourceUnit->energy -= 10 * 256;
+		bullet->sourceUnit->spendUnitEnergy(10 * 256);
         friendlySplash(bullet, weaponId, SplashType::FriendlyNew, bullet->attackTarget.unit);
         return;
     }

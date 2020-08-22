@@ -105,7 +105,7 @@ void applyCloakingOrderHook(CUnit* unit) {
 	if (scbw::isCheatEnabled(CheatFlags::TheGathering) || unit->energy >= energyCost) {
 
 		if (!scbw::isCheatEnabled(CheatFlags::TheGathering))
-			unit->energy -= energyCost;
+			unit->spendUnitEnergy(energyCost);
 
 		//original code is hardcoded instead of using a function like setSecondaryOrder
 		unit->setSecondaryOrder(OrderId::Cloak);

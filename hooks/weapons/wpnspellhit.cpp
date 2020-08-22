@@ -338,10 +338,10 @@ namespace hooks {
 	;
 
 	u16 GetUnitWidth(CUnit* unit) {
-		return unit->getLeft() - unit->getRight();
+		return unit->getRight() - unit->getLeft();
 	}
 	u16 GetUnitHeight(CUnit* unit) {
-		return unit->getTop() - unit->getBottom();
+		return unit->getBottom() - unit->getTop();
 	}
 
 	bool IsInRange(CUnit* source, CUnit* target, u32 range) {
@@ -352,8 +352,8 @@ namespace hooks {
 
 		u16 horizontalDifference = abs(sourceX - targetX);
 		u16 verticalDifference = abs(sourceY - targetY);
-		u16 horizontalRange = range + GetUnitWidth(source) / 2 + GetUnitWidth(target) / 2;
-		u16 verticalRange = range + GetUnitHeight(source) / 2 + GetUnitHeight(target) / 2;
+		u16 horizontalRange = range + GetUnitWidth(source) / 2 + GetUnitWidth(target) / 2 + 1;
+		u16 verticalRange = range + GetUnitHeight(source) / 2 + GetUnitHeight(target) / 2 + 1;
 
 		if (horizontalDifference > horizontalRange
 		|| verticalDifference > verticalRange) {
@@ -591,6 +591,8 @@ namespace hooks {
 					attacker->energy = energyMax;
 				else
 					attacker->energy += 12800;*/
+		
+
 				u32 energyMax =  attacker->getMaxEnergy();
 				u32 diff = energyMax-attacker->energy;
 				if(power > diff ) {

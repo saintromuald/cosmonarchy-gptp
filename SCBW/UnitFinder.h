@@ -46,6 +46,15 @@ class UnitFinder {
     /// unit.
     void forEach(UnitFinderCallbackProcInterface &callback) const;
 
+    template<typename Func>
+    void forEachInMatch(UnitFinderCallbackMatchInterface &callback, Func f) {
+        for (int i = 0; i < this->getUnitCount(); ++i) {
+            if (callback.match(this->getUnit(i))) {
+                f(this->getUnit(i));
+            }
+        }
+    }
+    int getMatchUnitCount(UnitFinderCallbackMatchInterface& callback);
     /// Returns the first unit for which callback.match() returns true.
     /// If there are no matches, returns NULL.
     CUnit* getFirst(UnitFinderCallbackMatchInterface &callback) const;

@@ -4,8 +4,7 @@
 //helper functions def
 
 namespace {
-
-u8 hasOverlay(CUnit* unit);																							//7B720
+																				//7B720
 bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 sightRange,u32 error_message_index);	//926D0
 void replaceFeedbackSprite(CUnit* unit, u32 spriteId);																//F6350
 
@@ -39,7 +38,7 @@ void orders_Feedback(CUnit* unit) {
 		{
 
 			if(target->status & UnitStatus::IsHallucination) {
-				u8 overlaySize = hasOverlay(target);
+				u8 overlaySize = scbw::hasOverlay(target);
 				replaceFeedbackSprite(target,overlaySize + SpriteId::Feedback_Hit_Small);
 				unit->spendUnitEnergy(techCost);
 				target->remove();
@@ -58,7 +57,7 @@ void orders_Feedback(CUnit* unit) {
 
 					if(!target->isDead()) {
 
-						u8 overlaySize = hasOverlay(target);
+						u8 overlaySize = scbw::hasOverlay(target);
 
 						if(target->subunit != NULL)
 							target->subunit->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small,0,0,0);
@@ -69,7 +68,7 @@ void orders_Feedback(CUnit* unit) {
 
 					}
 					else { //F6E6D
-						u8 overlaySize = hasOverlay(target);
+						u8 overlaySize = scbw::hasOverlay(target);
 						replaceFeedbackSprite(target,overlaySize + SpriteId::Feedback_Hit_Small);
 						unit->orderToIdle();
 					}
@@ -106,24 +105,6 @@ void orders_Feedback(CUnit* unit) {
 
 namespace {
 
-const u32 Func_hasOverlay = 0x0047B720;
-u8 hasOverlay(CUnit* unit) {
-
-	static u8 result;
-
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_hasOverlay
-		MOV result, AL
-		POPAD
-	}
-
-	return result;
-
-}
-
-;
 
 const u32 Func_Sub_4926D0 = 0x004926D0;
 bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 sightRange,u32 error_message_index) {

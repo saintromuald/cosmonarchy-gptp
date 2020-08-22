@@ -202,6 +202,7 @@ namespace ValueId {
 		CaptivatingClawsStacks						= 62,
 
 		EnergyDecay									= 63,
+		DecaySavant									= 67,
 
 	#if DELIVERANCE
 		EcclesiastStack								= 100,

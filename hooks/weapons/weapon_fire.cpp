@@ -5,7 +5,7 @@
 #include <SCBW/enumerations.h>
 #include <SCBW/api.h>
 #include "SCBW/UnitFinder.h"
-
+#include "MathUtils.h"
 //-------- Helper function declarations. Do NOT modify! ---------//
 
 
@@ -29,25 +29,42 @@ public:
 	}
 };
 
-class powerSiphonCollectMatch : public scbw::UnitFinderCallbackMatchInterface {
+class powerSiphonCollectProc : public scbw::UnitFinderCallbackProcInterface {
 private:
 	CUnit* savant;
+	u32& energyCollected;
+	
 public:
-	powerSiphonCollectMatch(CUnit* savant)
-		: savant(savant) {}
+	powerSiphonCollectProc(CUnit* savant, u32& energyCollected)
+		: savant(savant), energyCollected(energyCollected) {}
 
-	bool match(CUnit* unit) {
+	void proc(CUnit* unit) {
+		constexpr u32 ENERGY_PROC_MAX = 50 * 256;
+		if (energyCollected == ENERGY_PROC_MAX) {
+			return;
+		}
 		if (unit == savant) {
-			return false;
+			return;
 		}
 		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster)) {
-			return false;
+			return;
 		}
 		if (unit->energy == 0) {
-			return false;
+			return;
 		}
+		u32 energyLeft = ENERGY_PROC_MAX - energyCollected;
+		u32 drain = MathUtils::clamp<u32>(unit->energy, 0, energyLeft);
+		energyCollected += drain;
+		unit->spendUnitEnergy(drain);
+		u8 overlaySize = scbw::hasOverlay(unit);
+		if (unit->subunit != NULL)
+			unit->subunit->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
+		else
+			unit->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
 	}
 };
+
+
 class powerSiphonDistributeMatch : public scbw::UnitFinderCallbackMatchInterface {
 private:
 	CUnit* savant;
@@ -68,6 +85,7 @@ public:
 		if (unit->energy == unit->getMaxEnergy()) {
 			return false;
 		}
+		return true;
 	}
 };
 
@@ -91,16 +109,18 @@ namespace hooks {
 		u8 weaponId = wId;
 		//Retrieve the spawning position for the bullet.
 		s32 x, y;
-
-		if (weapons_dat::Behavior[weaponId] == WeaponBehavior::AppearOnTargetUnit) {
-
-			if (unit->orderTarget.unit == NULL)
+		u8 behavior = weapons_dat::Behavior[weaponId];
+		if (weaponId == WeaponId::PowerSiphon || weaponId==WeaponId::EnergyDecay) {
+			behavior = WeaponBehavior::AppearOnTargetSite;
+		}
+		if (behavior == WeaponBehavior::AppearOnTargetUnit) {
+			if (unit->orderTarget.unit == NULL) {
 				return;
-
+			}
 			getWeaponHitPos(unit, &x, &y);
 
 		}
-		else if (weapons_dat::Behavior[weaponId] == WeaponBehavior::AppearOnTargetSite) {
+		else if (behavior == WeaponBehavior::AppearOnTargetSite) {
 			x = unit->orderTarget.pt.x;
 			y = unit->orderTarget.pt.y;
 		}
@@ -112,8 +132,6 @@ namespace hooks {
 			y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1)
 				- weapons_dat::VerticalOffset[weaponId];
 		}
-
-
 		if (weapons_dat::FlingyId[weaponId] != 0) {
 			bool good = true;
 			if (unit->id == UnitId::TerranWyvern && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabOn, 0) == 1) {
@@ -133,18 +151,44 @@ namespace hooks {
 					weaponId = WeaponId::ImperiosoMissiles;
 				}
 				if (weaponId == WeaponId::PowerSiphon) {
-				/*	u32 energy = 0;
-					powerSiphonCollectMatch Orders = powerSiphonCollectMatch(unit);
+					u32 energy = 0;
+					powerSiphonCollectProc collectProc = powerSiphonCollectProc(unit,energy);
 					u32 range = weapons_dat::OuterSplashRadius[WeaponId::PowerSiphon];
-					auto pos = unit->orderTarget.pt;
-					if (unit->orderTarget.unit != NULL) {
-						pos = unit->orderTarget.unit->position;
+					scbw::UnitFinder unitFinder_collect(x - range,
+						y - range,
+						x + range,
+						y + range);
+					unitFinder_collect.forEach(collectProc);
+					range = 4 * 32;
+					powerSiphonDistributeMatch distrMatch = powerSiphonDistributeMatch(unit);
+					scbw::UnitFinder unitFinder_distribute(unit->getX() - range,
+						unit->getY() - range,
+						unit->getX() + range,
+						unit->getY() + range);
+					u32 matchCount = unitFinder_distribute.getMatchUnitCount(distrMatch);
+					if (matchCount != 0 && energy>0) {
+						u32 perEach = energy / matchCount;
+						u32 extra = energy % matchCount;
+						unitFinder_distribute.getFirst(distrMatch)->addUnitEnergy(extra);
+						u32 unspent = 0;
+						unitFinder_distribute.forEachInMatch(distrMatch, [&](CUnit* u) {
+							u->addUnitEnergy(unspent);
+							energy -= unspent;
+							unspent = 0;
+							u32 howMuch = MathUtils::clamp<u32>(perEach, 0, u->getMaxEnergy() - u->energy);
+							u->energy += howMuch;
+							energy -= howMuch;
+							u8 overlaySize = scbw::hasOverlay(u);
+							if (u->subunit != NULL)
+								u->subunit->sprite->createTopOverlay(overlaySize + ImageId::MindControlHit_Small, 0, 0, 0);
+							else
+								u->sprite->createTopOverlay(overlaySize + ImageId::MindControlHit_Small, 0, 0, 0);
+							unspent = perEach - howMuch;
+						});
+						if (energy > 0) {
+							unitFinder_distribute.getFirst(distrMatch)->addUnitEnergy(energy);
+						}
 					}
-					scbw::UnitFinder unitFinder(pos.x - range,
-						pos.y - range,
-						pos.x + range,
-						pos.y + range);
-					auto a = unitFinder.s;*/
 				}
 				createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 			}

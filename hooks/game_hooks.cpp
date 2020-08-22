@@ -544,6 +544,11 @@ namespace hooks {
 					unit->inflictDamage(30 * 256, NULL,-1, false, true);		
 				}
 
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::EnergyDecay, 0) == 1) {
+					//
+					// add later: remove persistent overlay (set in weapon_damage)
+					//
+				}
 				// Lurker - Seismic Spines
 				if (unit->id == UnitId::lurker && unit->sprite!=NULL && unit->mainOrderId!=OrderId::Die 
 					&& scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::LurkerETA, 0) == 1) {

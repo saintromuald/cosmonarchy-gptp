@@ -52,7 +52,7 @@ namespace hooks {
 			scbw::sendGPTP_aise_cmd(target, 0, GptpId::SetGenericTimer, ValueId::HallucinatingTimer, (30 * 24) + 1, 0);
 
 			if(!(*CHEAT_STATE & CheatFlags::TheGathering))
-				unit->energy -= techCost;
+				unit->spendUnitEnergy(techCost);
 
 			scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, target);
 

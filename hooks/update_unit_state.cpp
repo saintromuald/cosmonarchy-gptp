@@ -145,19 +145,19 @@ namespace hooks {
 			}
 			else if (unit->id == UnitId::ProtossDarkArchon && scbw::get_aise_value(unit,NULL,AiseId::SumMindControlCost,0,0)>0) {
 				auto sum = scbw::get_aise_value(unit, NULL, AiseId::SumMindControlCost, 0, 0)/2;
-				unit->energy -= std::min(unit->energy, (u16)(16 * sum));
+				unit->spendUnitEnergy(std::min(unit->energy, (u16)(16 * sum)));
 				if (unit->energy == 0) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::FreeMindControlled, 0, 0, 0);
 				}
 			}
 			else if (unit->id == UnitId::TerranAzazel && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
-				unit->energy -= std::min(unit->energy, (u16)13);
+				unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
 				if (unit->energy == 0) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SublimeShepherd, 0, 0);
 				}
 			}
 			else if (unit->id == UnitId::corsair && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0)) {
-				unit->energy -= std::min(unit->energy, (u16)13);
+				unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
 				if (unit->energy == 0) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::DisruptionWeb, 0, 0);
 				}
@@ -178,7 +178,7 @@ namespace hooks {
 					bStopHere = true;
 				else {
 
-					unit->energy += 8;
+					//unit->energy += 8;
 
 					//Omitting hardcoded recalculation of maxEnergy
 
@@ -187,9 +187,9 @@ namespace hooks {
 					//calculate maxEnergy the same way the previous
 					//code did, and nothing could have changed the
 					//parameters used since the calculation
-					if (unit->energy > maxEnergy)
-						unit->energy = maxEnergy;
-
+					/*if (unit->energy > maxEnergy)
+						unit->energy = maxEnergy;*/
+					unit->addUnitEnergy(8,maxEnergy);
 				}
 
 			}

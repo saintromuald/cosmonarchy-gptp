@@ -6,7 +6,6 @@
 #include "CUnitLayout.h"
 #include <SCBW/enumerations.h>
 #include "../../graphics/graphics.h"
-
 struct CFlingy {
     /*0x000*/ CLink<CUnit> link;
     /*0x008*/ s32       value;                ///for unit it's hitpoints
@@ -214,7 +213,9 @@ struct CUnit: public CUnitLayout {
   
   /// Spend an amount of energy, if no THE GATHERING cheat.
   void spendUnitEnergy(u32 energy);
-  
+  void addUnitEnergy(u32 energy);
+  void addUnitEnergy(u32 energy, u32 max);
+
   //////////////////////////////////////////////////////////////// @}
 
   /// @name Unit Orders

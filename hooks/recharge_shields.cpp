@@ -43,7 +43,7 @@ void rechargeShieldsProc(CUnit* target, CUnit* battery) {
 		target->shields = maxShields;
 
 	if (!scbw::isCheatEnabled(CheatFlags::TheGathering))
-		battery->energy -= energySpent;
+		battery->spendUnitEnergy(energySpent);
 
 }
 

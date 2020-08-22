@@ -1213,6 +1213,24 @@ void minimapPing(u32 x, u32 y, s32 color, u32 playerId) {
 
 }
 
+const u32 Func_hasOverlay = 0x0047B720;
+u8 hasOverlay(CUnit* unit) {
+
+	static u8 result;
+
+	__asm {
+		PUSHAD
+		MOV EAX, unit
+		CALL Func_hasOverlay
+		MOV result, AL
+		POPAD
+	}
+
+	return result;
+
+}
+
+;
 void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer, CUnit* creator) {
 	for (int i = 0; i < count; i++) {
 		CUnit* unit = scbw::createUnitIngame(UnitId::ZergBroodling, playerId, x, y, creator);

@@ -279,11 +279,20 @@ CUnit* UnitFinder::getNearestTarget(CUnit* sourceUnit, UnitFinderCallbackMatchIn
 }
 
 //-------- Template member function definitions --------//
-
+int UnitFinder::getMatchUnitCount(UnitFinderCallbackMatchInterface& callback) {
+    int count = 0;
+    for (int i = 0; i < this->getUnitCount(); ++i) {
+        if (callback.match(this->getUnit(i))){
+            count++;
+        }
+    }
+    return count;
+}
 void UnitFinder::forEach(scbw::UnitFinderCallbackProcInterface &callback) const {
   for (int i = 0; i < this->getUnitCount(); ++i)
     callback.proc(this->getUnit(i));
 }
+
 
 CUnit* UnitFinder::getFirst(UnitFinderCallbackMatchInterface &callback) const {
 

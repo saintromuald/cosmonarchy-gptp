@@ -191,11 +191,7 @@ public:
 		if (unit->energy == unit->getMaxEnergy()) {
 			show = false;
 		}
-		if (unit->energy + 5 * 256 >= unit->getMaxEnergy()) {
-			unit->energy = unit->getMaxEnergy();
-		} else {
-			unit->energy += 5 * 256;
-		}
+		unit->addUnitEnergy(5 * 256);
 		if (show) {
 			imgul(unit->sprite, 425, 0, 0, 0);
 		}
@@ -321,7 +317,16 @@ namespace hooks {
 					if (target->status & UnitStatus::IsHallucination)
 						damage *= 2;*/
 			if (attacker != NULL && weaponId == WeaponId::EnergyDecay) {
-				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::EnergyDecay, 240 + 1, 0);
+				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::EnergyDecay, 240+1, 0);
+				scbw::sendGPTP_aise_cmd(target, attacker, GptpId::SetGenericUnit, ValueId::DecaySavant, 0, 0);
+				u8 overlaySize = scbw::hasOverlay(target);
+				if (target->subunit != NULL)
+					target->subunit->sprite->createTopOverlay(overlaySize + ImageId::MindControlHit_Small, 0, 0, 0);
+				else
+					target->sprite->createTopOverlay(overlaySize + ImageId::MindControlHit_Small, 0, 0, 0);
+				//
+				// replace later with persistent overlay
+				//
 			}
 			if (attacker != NULL && weaponId == WeaponId::Claws) {
 				if (scbw::get_aise_value(attacker, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0) < 4) {
@@ -427,7 +432,7 @@ namespace hooks {
 						amount = target->energy;
 					}
 					attacker->energy = std::min(attacker->energy + amount, (u32)attacker->getMaxEnergy());
-					target->energy -= amount;
+					target->spendUnitEnergy(amount);
 				}
 			}
 

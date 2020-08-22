@@ -4,8 +4,7 @@
 //helper functions def
 
 namespace {
-
-u8 hasOverlay(CUnit* unit);																							//7B720
+	//7B720
 bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 sightRange,u32 error_message_index);	//926D0
 void MindControlHit(CUnit* attacker, CUnit* target);																//F6910
 
@@ -59,7 +58,7 @@ namespace hooks {
 					else {
 
 						//overlayId = overlaySize (0,1,2) + MinimumSizeImageId
-						u32 overlayId = hasOverlay(target) + ImageId::MindControlHit_Small;
+						u32 overlayId = scbw::hasOverlay(target) + ImageId::MindControlHit_Small;
 
 						////F6A08 (direct implementation of 0x00047B720 hasOverlay)
 
@@ -87,9 +86,9 @@ namespace hooks {
 
 //					unit->shields = 0;
 
-					if( !(*CHEAT_STATE & CheatFlags::TheGathering) )
-						unit->energy -= techEnergyCost;
-
+					if (!(*CHEAT_STATE & CheatFlags::TheGathering)) {
+						unit->spendUnitEnergy(techEnergyCost);
+					}
 					//F6A5E
 					scbw::playSound(SoundId::Protoss_Darchon_mind_wav, target);
 
@@ -112,25 +111,6 @@ namespace hooks {
 //-------- Helper function definitions. Do NOT modify! --------//
 
 namespace {
-
-const u32 Func_hasOverlay = 0x0047B720;
-u8 hasOverlay(CUnit* unit) {
-
-	static u8 result;
-
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_hasOverlay
-		MOV result, AL
-		POPAD
-	}
-
-	return result;
-
-}
-
-;
 
 const u32 Func_Sub_4926D0 = 0x004926D0;
 bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 sightRange,u32 error_message_index) {

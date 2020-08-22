@@ -15,7 +15,6 @@ u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayerId, u16 techId) {
 
 
 	u16 stringId;
-	scbw::printFormattedText("Try: %d %d", castingPlayerId, techId);//41
 	if(target->stasisTimer != 0)
 		stringId = 900; //Units in stasis can't be targeted.<0>
 	else
