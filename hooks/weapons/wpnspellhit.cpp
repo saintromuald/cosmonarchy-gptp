@@ -387,8 +387,8 @@ namespace hooks {
 			else
 				weaponId = WeaponId::None;
 
-			if (!IsInRange(attacker, target, weapons_dat::MaxRange[weaponId]))
-				return;
+			//if (!IsInRange(attacker, target, weapons_dat::MaxRange[weaponId]))
+			//	return;
 
 			if(attacker->status & UnitStatus::IsHallucination){
 				bool ephemeralBlades = false;
