@@ -366,9 +366,7 @@ namespace hooks {
 
 	/// This hook is called every frame; most of your plugin's logic goes here.
 	bool nextFrame() {
-		if (*elapsedTimeFrames % 24 == 0) {
-			scbw::refreshScreen(); // refreshes screen, needed for game clock to update every second
-		}
+		scbw::refreshScreen(); // refreshes screen, needed for game clock and apm timer to update every frame
 
 		if (!scbw::isGamePaused()) { //If the game is not paused
 

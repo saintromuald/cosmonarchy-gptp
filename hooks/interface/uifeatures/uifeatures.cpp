@@ -1,10 +1,11 @@
 #include "uifeatures.h"
 #include <string>
 #include <sstream>
+#include <vector>
+#include <algorithm>
 
 namespace {
 	s32 BWFXN_PrintXY(const char* text, s32 x, s32 y);
-	//void SetFontHandle(s32* font);
 	int GetColorHandle(u8 color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
 
 	s32* const fonts = (s32*)0x006CE0F4;
@@ -13,8 +14,15 @@ namespace {
 	void* const currentSurface = (void*)0x006CF4A8;
 }
 
-namespace hooks {
+namespace {
+	struct Action {
+		u32 frame; // timestamp
+	};
 
+	std::vector<Action> actions;
+}
+
+namespace hooks {
 	void drawText(const char* text, s32 x, s32 y, s32 width, s32 height, char color = 2) {
 		GetColorHandle(color);
 		*printXYAlignment = 0x11;
@@ -40,12 +48,23 @@ namespace hooks {
 		return numberWithLeadingZero(hrs) + std::string(":") + numberWithLeadingZero(min) + std::string(":") + numberWithLeadingZero(sec);
 	}
 
+	void noteAction() {
+		actions.push_back(Action{*elapsedTimeFrames});
+	}
+
+	void cleanActions() {
+		std::remove_if(actions.begin(), actions.end(), [](const Action& action) {
+			return *elapsedTimeFrames - action.frame > 24 * 60; // remove actions older than one minute
+		});
+	}
+
 	void drawUIFeatures() {
 		std::string time = getFormattedTime(*elapsedTimeFrames / 24);
 		drawText(time.c_str(), 10, 3, 100, 20, 7);
 
-		//std::string apm = "APM: " + 0;
-		//drawText(apm.c_str(), 10, 23, 100, 20, 7);
+		hooks::cleanActions();
+		std::string apm = "APM: " + std::to_string(actions.size());
+		drawText(apm.c_str(), 10, 23, 100, 20, 7);
 	}
 }
 
@@ -64,18 +83,6 @@ namespace {
 		}
 		return result;
 	}
-
-	/*
-	const u32 SetFontHandle_function = 0x0041FB30;
-	void SetFontHandle(s32* font) {
-		_asm {
-			PUSHAD
-			MOV ECX, font
-			CALL SetFontHandle_function
-			POPAD
-		}
-	}
-	*/
 
 	const u32 GetColorHandle_function = 0x0041F610;
 	int GetColorHandle(u8 color) {

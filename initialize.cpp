@@ -95,6 +95,7 @@
 #include "hooks/misc/hydra_specific.h"
 #include "hooks/screen_hotkeys.h"
 #include "hooks/interface/uifeatures/uifeatures.h"
+#include "hooks/trap_hooks.h"
 //#include "AI/spellcasting.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
@@ -508,6 +509,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectScreenHotkeysHooks();
 //	hooks::injectHpBarsHooks();
 	hooks::injectUIFeaturesHooks();
+	hooks::injectTrapHooks();
 
 	return TRUE;
 }

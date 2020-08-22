@@ -5,4 +5,6 @@ namespace hooks {
 	void drawUIFeatures();
 
 	void injectUIFeaturesHooks();
+
+	void noteAction();
 }
