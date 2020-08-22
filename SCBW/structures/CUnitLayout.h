@@ -203,6 +203,7 @@ namespace ValueId {
 
 		EnergyDecay									= 63,
 		DecaySavant									= 67,
+		SimulacrumStacks							= 68,
 
 	#if DELIVERANCE
 		EcclesiastStack								= 100,

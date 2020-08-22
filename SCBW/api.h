@@ -166,6 +166,9 @@ u32 getFlingyData(u32 entry, u32 index);
 u32 getSpriteData(u32 entry, u32 index);
 u32 getImageData(u32 entry, u32 index);
 CUnit* get_generic_unit(CUnit* unit, u32 id);
+
+u32 get_generic_value(CUnit* u, u32 val);
+u32 get_generic_timer(CUnit* u, u32 val);
 u32 get_aise_value(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2);
 void sendGPTP_aise_cmd(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2, u32 v3);
 /// Checks whether the @p playerId has the @p techId researched.

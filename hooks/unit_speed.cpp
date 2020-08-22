@@ -170,7 +170,12 @@ namespace hooks {
 				speed -= (speed / 3); // safety off
 			}
 		}
-
+		else if (unit->id == UnitId::ProtossSimulacrum) {
+			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10);
+			if (stacks > 0) {
+				speed = (double)speed * ((10.0 + stacks) / 10.0);
+			}
+		}
 		// Collective Integration passive: gains increased movespeed based on tech level
 		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth || unit->id==UnitId::ZergOthstoleth) {
 			u32 irisCountSpeed = unitCountTable[UnitId::ZergOverlordIris].player[unit->playerId];

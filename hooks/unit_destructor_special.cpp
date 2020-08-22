@@ -25,6 +25,25 @@ class customPlagueProc_2 : public scbw::UnitFinderCallbackProcInterface
 		}
 	}
 };
+class simulacrumProc : public scbw::UnitFinderCallbackProcInterface
+{
+private:
+	CUnit* simulacrum;
+
+public:
+	simulacrumProc(CUnit* simulacrum)
+		: simulacrum(simulacrum) {}
+	void proc(CUnit* unit)
+	{
+		if (unit->id != UnitId::ProtossSimulacrum) {
+			return;
+		}
+		if (!scbw::isAlliedTo(simulacrum->playerId, unit->playerId)) {
+			return;
+		}
+		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::SimulacrumStacks, 1, 0);
+	}
+};
 
 
 void killAllHangarUnits(CUnit* unit) {
@@ -244,6 +263,15 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		if (web != NULL) {
 			web->removeTimer = 5 * 24;
 		}
+	}
+	if (unit->id == UnitId::ProtossSimulacrum) {
+		simulacrumProc simulacrum = simulacrumProc(unit);
+		u32 range = 5*32;
+		scbw::UnitFinder unitFinder(unit->getX() - range,
+			unit->getY() - range,
+			unit->getX() + range,
+			unit->getY() + range);
+		unitFinder.forEach(simulacrum);
 	}
 	if(unit->irradiateTimer > 0){
 		if(unit->_unknown_0x026 & 0x2){
