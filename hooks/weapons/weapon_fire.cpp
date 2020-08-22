@@ -57,19 +57,18 @@ namespace hooks {
 			getWeaponHitPos(unit, &x, &y);
 
 		}
+		else if (weapons_dat::Behavior[weaponId] == WeaponBehavior::AppearOnTargetSite) {
+			x = unit->orderTarget.pt.x;
+			y = unit->orderTarget.pt.y;
+		}
 		else
-			if (weapons_dat::Behavior[weaponId] == WeaponBehavior::AppearOnTargetSite) {
-				x = unit->orderTarget.pt.x;
-				y = unit->orderTarget.pt.y;
-			}
-			else
-			{
-				s32 forwardOffset = weapons_dat::ForwardOffset[weaponId];
+		{
+			s32 forwardOffset = weapons_dat::ForwardOffset[weaponId];
 
-				x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
-				y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1)
-					- weapons_dat::VerticalOffset[weaponId];
-			}
+			x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
+			y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1)
+				- weapons_dat::VerticalOffset[weaponId];
+		}
 
 
 		if (weapons_dat::FlingyId[weaponId] != 0) {
