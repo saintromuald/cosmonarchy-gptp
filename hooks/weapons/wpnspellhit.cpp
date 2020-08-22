@@ -351,8 +351,7 @@ namespace hooks {
 		u16 targetY = target->position.y;
 
 		u16 horizontalDifference = abs(sourceX - targetX);
-<<<<<<< HEAD
-		u16 verticalDifference = abs(sourceY - targetY);
+		u16 verticalDifference = abs(sourceY - targetY);	
 =======
 		u16 verticalDifference = abs(sourceY - targetY);	
 >>>>>>> master
