@@ -140,7 +140,7 @@ enum Enum {
 
 	// Terran \\
 
-	ApostleWeapon								= 3,			// Apostle weapon
+	PerditionRifle								= 3,			// Apostle weapon
 	UppercutLaser								= 5,			// Southpaw weapon
 	CrusaderMissiles							= 10,			// Paladin weapon
 	FuriaMissiles								= 21,			// Madrigal weapon 1
@@ -149,17 +149,19 @@ enum Enum {
 	SunchaserMissiles							= 24,			// Centaur weapon 2
 	TwinRailguns								= 26,			// Cyprian weapon
 	Defibrilators								= 87,			// Shaman weapon
-	SavantWeapon								= 88,			// Savant weapon
+	DiscoidRailgun								= 88,			// Savant weapon
+    LobotomyMine								= 89,			// Mine
 	PowerSiphon									= 101,			// Ability targeting - Savant
 	Observance									= 122,			// Ability targeting - Science Vessel
 	Dirge										= 123,			// Madrigal Dirge damage
 	JacksonCannon								= 125,			// Wyvern weapon + ability targeting - Wyvern
 	Skyfall										= 126,			// Ability targeting - Paladin
-	EnergyDecay									= 127,			// Ability targeting + damage - Savant
+	EnergyDecay									= 127,			// Ability targeting - Savant
 	IonCannon									= 129,			// Ion Cannon weapon
 
 	// Protoss \\
 		
+	PhaseCannon									= 68,			// Simulacrum weapon
 	PhaseSignifier								= 72,			// Hierophant weapon
 	AuroraPhotonBlasters						= 73,			// Aurora weapon
 	PanoptusAntiMatterMissiles					= 74,			// Panoptus weapon
@@ -175,7 +177,6 @@ enum Enum {
 	BasiliskCorrosiveAcid						= 50,			// Basilisk weapon
 	EssenceDrain								= 51,			// Ability targeting - Gorgoleth
 
-    LobotomyMine								= 89,			// Mine
 
 	#ifdef DELIVERANCE
 		EcclesiastWeapon = 110,
