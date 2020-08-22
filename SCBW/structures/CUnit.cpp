@@ -405,7 +405,7 @@ void CUnit::inflictDamage(s32 dmg, CUnit* attacker, s32 attackingPlayer, bool no
 	if (shieldReduceAmount != 0) {
 		this->shields -= shieldReduceAmount;
 	}
-	if (shield_overlay && this->shields != 0) {
+	if (shield_overlay && units_dat::ShieldsEnabled[this->id] && this->shields != 0) {
 		//const LO_Header* shield_lo = shieldOverlays[this->sprite->mainGraphic->id];
 
 		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayShieldPtr,
