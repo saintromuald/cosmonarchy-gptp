@@ -185,7 +185,7 @@ namespace hooks {
 			function_004D8500_copy(building->sprite->mainGraphic);
 			//}
 			if (sEnd) {
-				scbw::printText("Set order state 6");
+				//scbw::printText("Set order state 6");
 				building->orderSignal |= 4;
 				building->mainOrderState = 6;
 				playBuildingCompleteSound(building);
@@ -198,7 +198,7 @@ namespace hooks {
 				ordCondition = true;
 			}
 			if (building->orderSignal & 4) {
-				scbw::printText("Get order signal");
+				//scbw::printText("Get order signal");
 				if (building->orderSignal & 4) {
 					//scbw::printText("sigorder 4 found");
 				}
