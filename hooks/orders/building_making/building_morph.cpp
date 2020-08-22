@@ -132,176 +132,130 @@ namespace hooks {
 					jump_to_5D720 = true;
 
 				}
-		}
-		else
-			if (building->mainOrderState == 1) { //5D5AE
+		} else if (building->mainOrderState == 1) { //5D5AE
 
-				if (building->id == UnitId::ZergExtractor) {
+			if (building->id == UnitId::ZergExtractor) {
 
-					CImage* overlay = building->sprite->getOverlay(ImageId::VespeneGeyser2);
+				CImage* overlay = building->sprite->getOverlay(ImageId::VespeneGeyser2);
 
-					if (overlay != NULL)
-						overlay->free();
-
-				}
-
-				building->mainOrderState = 2;
-				//scbw::printText("Set order state 2");
-				jump_to_5D56C = true;
+				if (overlay != NULL)
+					overlay->free();
 
 			}
-			else
-				if (building->mainOrderState == 2) { //5D5E2
+				
+			building->sprite->playIscriptAnim(IscriptAnimation::SpecialState1, true);
+			building->mainOrderState = 2;
+			//scbw::printText("Set order state 2");
+			jump_to_5D56C = true;
 
-					if (building->remainingBuildTime < units_dat::TimeCost[buildingId] / 2) {
-						//scbw::printText("Set order state 3");
-						building->mainOrderState = 3;
-					}
-					jump_to_5D56C = true;
+		}  else  if (building->mainOrderState == 2) { //5D5E2
+
+				if (building->remainingBuildTime < units_dat::TimeCost[buildingId] / 2) {
+					//scbw::printText("Set order state 3");
+					building->mainOrderState = 3;
+				}
+				jump_to_5D56C = true;
+
+		} else if (building->mainOrderState == 3) { //5D603
+
+				building->sprite->playIscriptAnim(IscriptAnimation::SpecialState2, true);
+				building->mainOrderState = 4;
+				//scbw::printText("Set order state 4");
+				jump_to_5D56C = true;
+
+		} else if (building->mainOrderState == 4) { //5D618
+
+			if (building->remainingBuildTime == 0) {
+				//scbw::printText("Set order state 5");								
+
+				building->mainOrderState = 5;
+			}
+			jump_to_5D56C = true;
+
+		} else if (building->mainOrderState == 5) { //5D62F
+			bool sEnd = false;
+			if (building->orderSignal & 0x1) {
+				building->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
+				sEnd = true;
+
+				replaceSpriteImages_copy(building->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
+				char buf[32];
+				sprintf(buf, "Sprite id is %d", building->sprite->spriteId);
+				//scbw::printText(buf);
+				function_004D8500_copy(building->sprite->mainGraphic);
+				sEnd = true;
+			}
+			if (sEnd) {
+				building->mainOrderState = 6;
+				playBuildingCompleteSound(building);
+			}
+			jump_to_5D56C = true;
+		} else if (building->mainOrderState == 6) { //5D64Bs
+
+			bool ordCondition = false;
+			if (building->orderSignal & 0x4) {
+				ordCondition = true;
+			}
+			if (building->orderSignal & 4) {
+				//scbw::printText("Get order signal");
+				if (building->orderSignal & 4) {
+					//scbw::printText("sigorder 4 found");
+				}
+				if (building->orderSignal & 1) {
+					//scbw::printText("sigorder 1 found");
+				}
+				s32 hpAfterMorph;
+				CImage* current_image;
+				building->orderSignal -= 4;
+				if (isValidMorph(buildingId)) {
+					//save hp before some functions modify them
+					hpAfterMorph = building->hitPoints;
+					u32 save_shields = building->shields;
+					//update score
+					building->status |= UnitStatus::Completed;
+					incrementUnitScoresEx(building, -1, 0);
+
+					//do the building change
+					building->status -= UnitStatus::Completed;
+					replaceUnitWithType(building, buildingId);
+					//newHp = newHpMax - oldHpMax + oldHp
+					hpAfterMorph =
+						units_dat::MaxHitPoints[buildingId] -
+						units_dat::MaxHitPoints[building->previousUnitType] +
+						hpAfterMorph;
+					if (hpAfterMorph < 256)
+						hpAfterMorph = 256;
+
+					building->setHp(hpAfterMorph);
+					building->remainingBuildTime = 0;
 
 				}
-				else
-					if (building->mainOrderState == 3) { //5D603
+				//5d6cd
+				//update various stuff (set hp, set shield...) not finished on Morph
+				function_004A01F0(building);
+				updateUnitStrength(building);
+				//relate to building placement / taking room around?
+				function_0047D770(building);
 
 
-						building->mainOrderState = 4;
-						//scbw::printText("Set order state 4");
-						jump_to_5D56C = true;
 
+				current_image = building->sprite->images.head;
+				while (current_image != NULL) {
+					if (building->getRace() == RaceId::Zerg) {
+						current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
 					}
-					else
-						if (building->mainOrderState == 4) { //5D618
+					current_image = current_image->link.next;
+				}
+				//scbw::printText("Creep!");
+				updateNewUnitVision(buildingId, building->sprite->position.x, building->sprite->position.y);
 
-							if (building->remainingBuildTime == 0) {
-								//scbw::printText("Set order state 5");								
-
-								building->mainOrderState = 5;
-							}
-							jump_to_5D56C = true;
-
-						}
-						else
-							if (building->mainOrderState == 5) { //5D62F
-								bool sEnd = false;
-								if (building->orderSignal & 0x1) {
-									//scbw::printText("Special state order signal 0x1");
-									building->orderSignal -= 1;
-									if (building->getOverlay(ImageId::WarpAnchor)) {
-										building->removeOverlay(ImageId::WarpAnchor);
-									}
-
-									replaceSpriteImages_copy(
-										building->sprite,
-//											sprites_dat::ImageId[building->sprite->spriteId],
-										scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId),
-										0
-									);
-									char buf[32];
-									sprintf(buf, "Sprite id is %d", building->sprite->spriteId);
-									//scbw::printText(buf);
-									function_004D8500_copy(building->sprite->mainGraphic);
-									sEnd = true;
-								}
-								if (sEnd) {
-									building->mainOrderState = 6;
-									playBuildingCompleteSound(building);
-								}
-								jump_to_5D56C = true;
-							}
-							else
-								if (building->mainOrderState == 6) { //5D64Bs
-
-									bool ordCondition = false;
-									if (building->orderSignal & 0x4) {
-										ordCondition = true;
-									}
-									if (((building->orderSignal & 4) && building->getRace() == RaceId::Zerg) || (building->orderSignal & 0x1)) {
-										//scbw::printText("Get order signal");
-										if (building->orderSignal & 4) {
-											//scbw::printText("sigorder 4 found");
-										}
-										if (building->orderSignal & 1) {
-											//scbw::printText("sigorder 1 found");
-										}
-										s32 hpAfterMorph;
-										CImage* current_image;
-										building->orderSignal -= 4;
-										if (isValidMorph(buildingId)) {
-											//save hp before some functions modify them
-											hpAfterMorph = building->hitPoints;
-											u32 save_shields = building->shields;
-											//update score
-											building->status |= UnitStatus::Completed;
-											incrementUnitScoresEx(building, -1, 0);
-
-											//do the building change
-											building->status -= UnitStatus::Completed;
-											replaceUnitWithType(building, buildingId);
-											//newHp = newHpMax - oldHpMax + oldHp
-											hpAfterMorph =
-												units_dat::MaxHitPoints[buildingId] -
-												units_dat::MaxHitPoints[building->previousUnitType] +
-												hpAfterMorph;
-											if (hpAfterMorph < 256)
-												hpAfterMorph = 256;
-
-											building->setHp(hpAfterMorph);
-											building->remainingBuildTime = 0;
-
-										}
-										else {
-											//scbw::printText("Invalid morph");
-										}
-										//5d6cd
-										//update various stuff (set hp, set shield...) not finished on Morph
-										function_004A01F0(building);
-										updateUnitStrength(building);
-										//relate to building placement / taking room around?
-										function_0047D770(building);
+			}
+			else {
+				//scbw::printText("Wait for order signal");
+			}
 
 
-
-										current_image = building->sprite->images.head;
-										while (current_image != NULL) {
-											if (building->getRace() == RaceId::Zerg) {
-												current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
-											}
-											current_image = current_image->link.next;
-										}
-										if (building->getRace() == RaceId::Zerg) {
-											//scbw::printText("Creep!");
-											updateNewUnitVision(buildingId, building->sprite->position.x, building->sprite->position.y);
-										}
-										else {
-											//function_004D8500_copy(building->sprite->mainGraphic);
-											//scbw::printText("Warp overlay 2");
-											/*
-											CImage* anchor = building->getOverlay(ImageId::WarpAnchor);
-											if (anchor==NULL) {
-												scbw::printText("End - No anchor");
-												building->sprite->createTopOverlay(970);
-												anchor = building->getOverlay(970);
-												if(anchor!=NULL){
-													scbw::printText("Anchor2");
-													anchor->playIscriptAnim(IscriptAnimation::Death);
-												}
-												else {
-													scbw::printText("Anchor Error");
-												}
-
-											}
-											else {
-												scbw::printText("Bug: Anchor still exists");
-											}*/
-										}
-
-									}
-									else {
-										//scbw::printText("Wait for order signal");
-									}
-
-
-								}
+		}
 
 		if (jump_to_5D56C) { //5D56C
 
