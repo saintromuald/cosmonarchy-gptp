@@ -15,6 +15,36 @@ namespace {
 			JMP drawUIFeatures_jmp
 		}
 	}
+
+	void __declspec(naked) targetedOrder_Wrapper() {
+		static __int16 a1;
+		static int a2;
+		static CUnit* a3;
+		static __int16 a4;
+		static int a5;
+		static int a6;
+		static char a7;
+		static int a8;
+		static int a9;
+		static int a10;
+
+		__asm {
+			PUSHAD
+			MOVZX DX, a1
+			MOV EBX, a2
+			MOV ESI, a3
+			MOVZX AX, a4
+			PUSH a5
+			PUSH a6
+			PUSH a7
+			PUSH a8
+			PUSH a9
+		}
+		hooks::targetedOrder(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
+		__asm {
+			POPAD
+		}
+	}
 }
 
 namespace hooks {

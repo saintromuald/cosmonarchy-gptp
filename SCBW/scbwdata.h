@@ -243,6 +243,9 @@ SCBW_DATA(		u32*,			buildingsOwned,				0x00582024); // Array of 12
 SCBW_DATA(		u32*,			placeBuildingMessageId,		0x00640958);
 SCBW_DATA(		u16*,			placeBuildingUnitId,		0x0064088A);
 
+// For targetedOrder
+SCBW_DATA(		u32*,			COrderCount,				0x00641698);
+
 
 //////////////////////////////////////////////////////////////// @}
 
@@ -417,7 +420,7 @@ SCBW_DATA(u8*,		Unused3,				ordersDat[3].address);	//00665A00 //May be "Non-subu
 //SCBW_DATA(u8*,	???,				ordersDat[5].address);	//006657C0 //May be "Subunit can use" used for debug only
 SCBW_DATA(Bool8*,	CanBeInterrupted,	ordersDat[6].address);	//00665040
 //SCBW_DATA(u8*,	???,				ordersDat[7].address);	//00665100
-//SCBW_DATA(u8*,	???,				ordersDat[8].address);	//00665700 //"Can Be Queued" according to EUDDB
+SCBW_DATA(u8*,		CanBeQueued,		ordersDat[8].address);	//00665700 //"Can Be Queued" according to EUDDB
 //SCBW_DATA(u8*,	???,				ordersDat[9].address);	//006651C0
 SCBW_DATA(u8*,		CanBeObstructed,	ordersDat[10].address);	//006654C0 //"Can Be Obstructed?" according to EUDDB
 //SCBW_DATA(u8*,	???,				ordersDat[11].address);	//00664C80
