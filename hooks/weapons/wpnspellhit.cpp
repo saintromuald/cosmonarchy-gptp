@@ -338,10 +338,10 @@ namespace hooks {
 	;
 
 	u16 GetUnitWidth(CUnit* unit) {
-		return unit->getLeft() - unit->getRight();
+		return unit->getRight() - unit->getLeft();
 	}
 	u16 GetUnitHeight(CUnit* unit) {
-		return unit->getTop() - unit->getBottom();
+		return unit->getBottom() - unit->getTop();
 	}
 
 	bool IsInRange(CUnit* source, CUnit* target, u32 range) {
