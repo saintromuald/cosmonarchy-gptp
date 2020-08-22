@@ -48,7 +48,7 @@ namespace hooks {
 		return numberWithLeadingZero(hrs) + std::string(":") + numberWithLeadingZero(min) + std::string(":") + numberWithLeadingZero(sec);
 	}
 
-	void noteAction() {
+	void registerAction() {
 		actions.push_back(Action{*elapsedTimeFrames});
 	}
 
