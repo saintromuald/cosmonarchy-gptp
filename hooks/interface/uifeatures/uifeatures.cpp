@@ -4,7 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <Windows.h>
-
+/*
 namespace {
 	s32 BWFXN_PrintXY(const char* text, s32 x, s32 y);
 	s32 GetColorHandle(u8 color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
@@ -62,7 +62,6 @@ namespace hooks {
 		return numberWithLeadingZero(hrs) + std::string(":") + numberWithLeadingZero(min) + std::string(":") + numberWithLeadingZero(sec);
 	}
 
-	/*
 		Currently works for:
 		- Most Orders
 		- Shift, Shift+Box, Double Click
@@ -72,7 +71,7 @@ namespace hooks {
 		- Lift off, land orders
 		- Single unit selection, drag selection, select larva
 		- Invoking control groups
-	*/
+
 	void registerAction() {
 		actions.push_back(Action{*elapsedTimeFrames});
 	}
@@ -331,4 +330,4 @@ namespace {
 		}
 		return result;
 	}
-}
+}*/

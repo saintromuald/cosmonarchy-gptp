@@ -379,7 +379,7 @@ namespace hooks {
 			if (*elapsedTimeFrames == 0) {
 				//Write your code here
 				hooks::initializeScreenLocations();
-				hooks::clearActions();
+				//hooks::clearActions();
 				if (Globals.extended_sfx) {
 					new_sfxdata.extend();
 					new_sfxdata.set_extended_data();

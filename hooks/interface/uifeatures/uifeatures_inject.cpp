@@ -1,6 +1,6 @@
 #include "uifeatures.h"
 #include "hook_tools.h"
-
+/*
 namespace {
 	const u32 SetFontHandle = 0x0041F610;
 	const u32 drawUIFeatures_jmp = 0x0048D0AE;
@@ -112,4 +112,4 @@ namespace hooks {
 		//jmpPatch(selectUnits_Wrapper, 0x0046FA00, 1);
 		jmpPatch(QueueGameCommand_wrapper, 0x00485BD0, 4);
 	}
-}
+}*/
