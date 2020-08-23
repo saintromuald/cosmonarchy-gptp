@@ -24,6 +24,7 @@ u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayerId, u16 techId) {
 
 		//originally handled by switchs and internal arrays of id
 		//TechId::DisruptionWeb
+		
 		if(techId == TechId::Feedback) {
 
 			if(units_dat::BaseProperty[target->id] & UnitProperty::Building)
@@ -49,6 +50,7 @@ u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayerId, u16 techId) {
 				stringId = 0; //valid target
 			else
 			if(	target->id == UnitId::TerranVultureSpiderMine ||
+				target->id == UnitId::LobotomyMine ||
 				target->id == UnitId::ZergLarva ||
 				target->id == UnitId::ZergEgg ||
 				target->id == UnitId::ZergCocoon ||
@@ -115,6 +117,9 @@ u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayerId, u16 techId) {
 	}
 	if (techId == TechId::UnusedTech39) {
 		stringId = 0;
+	}
+	if (techId == TechId::Lockdown) {
+		
 	}
 	return stringId;
 
