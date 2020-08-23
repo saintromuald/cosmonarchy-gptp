@@ -18,7 +18,9 @@ SCBW_DATA(CUnit**,      firstVisibleUnit,       0x00628430);
 /// Includes units in transports/bunkers, workers inside gas buildings, nukes in
 /// silos, queens inside command centers, and units in production.
 SCBW_DATA(CUnit**,      firstHiddenUnit,        0x006283EC);
+SCBW_DATA(CUnit**,      lastHiddenUnit,         0x00628428);
 SCBW_DATA(CUnit**,      firstScannerSweep,      0x006283F4);
+SCBW_DATA(CUnit**,      lastScannerSweep,       0x00628434);
 SCBW_DATA(CUnit**,      firstPsiFieldProvider,  0x0063FF54);
 SCBW_DATA(CBullet**,    firstBullet,            0x0064DEC4);
 
@@ -125,7 +127,7 @@ SCBW_DATA(u32*,			MoveToX,				0x0062848C);
 SCBW_DATA(u32*,			MoveToY,				0x006284A8);
 
 /// Contains various information (names, player types, race types, and associated forces) of each player in the current game
-SCBW_DATA(PLAYER*,  playerTable,          0x0057EEE0);
+SCBW_DATA(PLAYER*,		playerTable,			0x0057EEE0);
 
 struct SupplyData {
   u32 provided[PLAYER_COUNT];
@@ -137,12 +139,12 @@ SCBW_DATA(SupplyData*,    raceSupply,           0x00582144);  //Array; Use CUnit
 SCBW_DATA(const u32*,	elapsedTimeFrames,		0x0057F23C);  //Elapsed game time in frames
 SCBW_DATA(const u32*,	CountdownTimer,			0x0058D6F4);  //Countdown Timer (in seconds) (From BWAPI Offsets.h)
 SCBW_DATA(const u32*,	elapsedTimeSeconds,		0x0058D6F8);  //Elapsed game time in seconds
-SCBW_DATA(const u8*,	AME_TYPE,				0x00596820);  //Part of a larger structure; Compare with GameType::Enum.
+SCBW_DATA(const u8*,	GAME_TYPE,				0x00596820);  //Part of a larger structure; Compare with GameType::Enum.
 SCBW_DATA(const s32*,	ACTIVE_NATION_ID,		0x00512678);  //AKA g_ActiveNationID
 SCBW_DATA(const s32*,	ACTIVE_PLAYER_ID,		0x0051267C);  //Used by GetActivePlayerNextSelectionFunc
 SCBW_DATA(const s32*,	LOCAL_NATION_ID,		0x00512684);  //AKA g_LocalNationID; Actually stores the player ID.
 SCBW_DATA(const s32*,	LOCAL_HUMAN_ID,			0x00512688);  //AKA g_LocalHumanID; Invalid in replay games.
-SCBW_DATA(const u8*,	URRENT_TILESET,			0x00596828);  //Tileset of current map. Compare with TilesetType::Enum
+SCBW_DATA(const u8*,	CURRENT_TILESET,		0x00596828);  //Tileset of current map. Compare with TilesetType::Enum
 SCBW_DATA(const s32*,	provider_MaxBuffer,		0x0057F0D8);
 SCBW_DATA(const u32*,	provider_LatencyCalls,	0x0057F090);
 SCBW_DATA(u32*,			sgdwBytesInCmdQueue,	0x00654AA0);
