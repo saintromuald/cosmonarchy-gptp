@@ -61,18 +61,15 @@ namespace hooks {
 		actions.push_back(Action{*elapsedTimeFrames});
 	}
 
-	void cleanActions() {
-		std::remove_if(actions.begin(), actions.end(), [](const Action& action) {
-			return *elapsedTimeFrames - action.frame > 24 * 60; // remove actions older than one minute
-		});
+	int getAPM() {
+
 	}
 
 	void drawUIFeatures() {
 		std::string time = getFormattedTime(*elapsedTimeFrames / 24);
 		drawText(time.c_str(), 10, 3, 100, 20, 7);
 
-		hooks::cleanActions();
-		std::string apm = "APM: " + std::to_string(actions.size());
+		std::string apm = "APM: " + std::to_string(getAPM());
 		drawText(apm.c_str(), 10, 23, 100, 20, 7);
 	}
 
@@ -184,14 +181,14 @@ namespace {
 		__asm {
 			PUSHAD
 			MOV EAX, a1
-			MOVZX DX, a2
-			MOVZX CX, a3
-			PUSH a4
-			PUSH a5
-			PUSH a6
-			PUSH a7
-			PUSH a8
+			MOV DX, a2
+			MOV CX, a3
 			PUSH a9
+			PUSH a8
+			PUSH a7
+			PUSH a6
+			PUSH a5
+			PUSH a4
 			CALL Func_queueNewOrder
 			MOV result, EAX
 			POPAD
@@ -217,15 +214,15 @@ namespace {
 	void setOrderTarget(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, CUnit* a6, s32 a7, Point32* a8, CUnit* a9) {
 		__asm {
 			PUSHAD
-			MOVZX CL, a1
-			MOVZX DX, a2
-			MOVZX AX, a3
+			MOV CL, a1
+			MOV DX, a2
+			MOV AX, a3
 			MOV EDI, a4
-			PUSH a5
-			PUSH a6
-			PUSH a7
-			PUSH a8
 			PUSH a9
+			PUSH a8
+			PUSH a7
+			PUSH a6
+			PUSH a5
 			CALL Func_setOrderTarget
 			POPAD
 		}
@@ -264,10 +261,10 @@ namespace {
 		static s32 result;
 		__asm {
 			PUSHAD
-			PUSH a1
-			PUSH a2
-			PUSH a3
 			PUSH a4
+			PUSH a3
+			PUSH a2
+			PUSH a1
 			CALL Func_selectMultipleUnitsFromUnitList
 			MOV result, EAX
 			POPAD
