@@ -30,7 +30,6 @@ namespace {
 			POPAD
 			RETN
 		}
-		return result;
 	}
 
 	void __declspec(naked) targetedOrder_Wrapper() {
