@@ -905,6 +905,10 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ghost && current_button->iconID == IconId::Lockdown
+										&& (*activePortraitUnit)->vulture.spiderMineCount==0) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
 
 								// PROTOSS \\
 
