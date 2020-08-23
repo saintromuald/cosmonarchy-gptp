@@ -40,7 +40,8 @@ namespace {
 		result = hooks::disableUnit(a1);
 		__asm {
 			POPAD
-			RETN 4
+			MOVZX EAX, result
+			RETN
 		}
 	}
 
@@ -54,7 +55,8 @@ namespace {
 		result = hooks::updateUnitStrengthAndApplyDefaultOrders(a1);
 		__asm {
 			POPAD
-			RETN 4
+			MOV EAX, result
+			RETN
 		}
 	}
 }
