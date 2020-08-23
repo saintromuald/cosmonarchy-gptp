@@ -17,53 +17,64 @@ namespace {
 	}
 
 	void __declspec(naked) targetedOrder_Wrapper() {
-		static __int16 a1;
-		static int a2;
+		static s16 a1;
+		static s32 a2;
 		static CUnit* a3;
-		static __int16 a4;
-		static int a5;
-		static int a6;
-		static char a7;
-		static int a8;
-		static int a9;
-		static int a10;
+		static s16 a4;
+		static s32 a5;
+		static s32 a6;
+		static s32 a7;
+		static s32 a8;
+		static s32 a9;
+		static s32 a10;
 
 		__asm {
 			PUSHAD
-			MOVZX DX, a1
-			MOV EBX, a2
-			MOV ESI, a3
-			MOVZX AX, a4
-			PUSH a5
-			PUSH a6
-			PUSH a7
-			PUSH a8
-			PUSH a9
+			MOV a1, DX
+			MOV a2, EBX
+			MOV a3, ESI
+			MOV a4, AX
+			PUSH EAX
+			MOV EAX, [EBP + 0x8]
+			MOV a5, EAX
+			MOV EAX, [EBP + 0xC]
+			MOV a6, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV a7, EAX
+			MOV EAX, [EBP + 0x14]
+			MOV a8, EAX
+			MOV EAX, [EBP + 0x1C]
+			MOV a9, EAX
+			POP EAX
 		}
 		hooks::targetedOrder(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
 		__asm {
 			POPAD
+			RETN 0x18
 		}
 	}
 
 	void __declspec(naked) selectUnits_Wrapper() {
 		static CUnit** a1;
-		static int a2;
-		static char a3;
-		static int a4;
-		static signed int result;
+		static s32 a2;
+		static s32 a3;
+		static s32 a4;
 
 		__asm {
 			PUSHAD
-			PUSH a1
-			PUSH a2
-			PUSH a3
-			PUSH a4
+			MOV a1, EBX
+			MOV a2, EDI
+			PUSH EAX
+			MOV EAX, [EBP + 0x8]
+			MOV a3, EAX
+			MOV EAX, [EBP + 0xC]
+			MOV a4, EAX
+			POP EAX
 		}
-		result = hooks::selectUnits(a1, a2, a3, a4);
+		hooks::selectUnits(a1, a2, a3, a4);
 		__asm {
 			POPAD
-			RETN
+			RETN 0x8
 		}
 	}
 }
@@ -71,7 +82,7 @@ namespace {
 namespace hooks {
 	void injectUIFeaturesHooks() {
 		jmpPatch(drawUIFeatures_wrapper, 0x0048D0A9, 0);
-		jmpPatch(targetedOrder_Wrapper, 0x0048D0A9, 0);
-		jmpPatch(selectUnits_Wrapper, 0x0048D0A9, 0);
+		//jmpPatch(targetedOrder_Wrapper, 0x004754F0, 0);
+		//jmpPatch(selectUnits_Wrapper, 0x0046FA00, 0);
 	}
 }

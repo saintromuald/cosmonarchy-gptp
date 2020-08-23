@@ -88,7 +88,7 @@ struct cv5 {
 SCBW_DATA(cv5**, tileGroup, 0x006D5EC8);
 
 /// TBL files
-SCBW_DATA(const StringTbl*, statTxtTbl,         0x006D1238);
+SCBW_DATA(const u16*,		statTxtTbl,         0x006D1238);
 SCBW_DATA(const StringTbl*, mapStringTbl,       0x005993D4);
 
 SCBW_DATA(const char*,	  StringEmpty,			0x00501B7D);

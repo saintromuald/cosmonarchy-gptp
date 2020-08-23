@@ -3,8 +3,8 @@
 
 namespace hooks {
 	void drawUIFeatures();
-	void targetedOrder(__int16 a1, int a2, CUnit* a3, __int16 a4, int a5, int a6, char a7, int a8, int a9, int a10);
-	signed int selectUnits(CUnit** a1, int a2, char a3, int a4);
+	void targetedOrder(s16 a1, s32 a2, CUnit* a3, s16 a4, s32 a5, s32 a6, u8 a7, s32 a8, s32 a9, s32 a10);
+	s32 selectUnits(CUnit** a1, s32 a2, u8 a3, s32 a4);
 
 	void injectUIFeaturesHooks();
 
