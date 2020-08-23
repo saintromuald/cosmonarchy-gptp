@@ -113,7 +113,6 @@ namespace hooks {
 		}
 
 		if(unit->mainOrderState == 2) {
-
 			if(!(unit->orderSignal & 4)) {
 
 				if(!(unit->status & UnitStatus::IsHallucination)) {
@@ -128,7 +127,6 @@ namespace hooks {
 		}
 
 		if(unit->mainOrderState == 3) {
-
 			CUnit* target = SpiderMine_AcquireTarget(unit);
 
 			if(target != NULL) {
@@ -176,7 +174,6 @@ namespace hooks {
 
 		else //unlike the previous states, going directly from state 4 to 5 in the same frame is impossible
 		if(unit->mainOrderState == 5) {
-
 			bool bIsCompletelyInRange = false;
 			bool bEndThere = false;
 
@@ -214,9 +211,12 @@ namespace hooks {
 				unit->orderTarget.pt.y = unit->sprite->position.y;
 
 				current_image = unit->sprite->images.head;
-
+				IscriptAnimation::Enum anim = IscriptAnimation::SpecialState1;
+				if (unit->id == UnitId::LobotomyMine) {
+					anim = IscriptAnimation::Unused1;
+				}
 				while(current_image != NULL) {
-					current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
+					current_image->playIscriptAnim(anim);
 					current_image = current_image->link.next;
 				}
 
@@ -254,6 +254,7 @@ namespace hooks {
 		CUnit* v14; // edi
 		Point32 a2; // [esp+Ch] [ebp-4h]
 
+		scbw::printText("Try place mine");
 		v1 = a1;
 		if (a1->mainOrderState)
 		{
@@ -262,13 +263,17 @@ namespace hooks {
 					|| v1->moveTarget.pt.y != v11->position.y
 					|| ((v1->status & UnitStatus::Unmovable) != 0) != 1))
 			{
+				scbw::printFormattedText("distance %X %X", (getDistanceFast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00),
+					0x1400);
 				if ((getDistanceFast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00) <= 0x1400)
 				{
+					scbw::printText("hold");
 					orders_HoldPosSuicidal(v1);
 					v12 = v1->orderTarget.pt.y;
 					a2.x = v1->orderTarget.pt.x;
 					a2.y = v12;
 					fixTargetLocation(0xDu, &a2);
+					scbw::printFormattedText("create at %d %d, order target is %d %d", a2.x, a2.y,v1->orderTarget.pt.x,v1->orderTarget.pt.y);
 					v13 = createUnit(0xDu, a2.x, a2.y, (unsigned __int8)v1->playerId);
 					v14 = v13;
 					if (v13)

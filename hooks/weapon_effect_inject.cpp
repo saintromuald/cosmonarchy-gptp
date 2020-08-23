@@ -146,12 +146,29 @@ namespace {
 			RETN 4
 		}
 	}
-
+	void __declspec(naked) lockdownWrapper() {
+		static CBullet* bullet;
+		static u32 weaponId;
+		__asm {
+			MOV bullet, EBX
+			MOV weaponId, ECX
+		}
+		hooks::lockdown(bullet, weaponId);
+		__asm {
+			POP EDI
+			POP ESI
+			POP EBX
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+	}
   
  //    (void*)0x0048B797,                //  1 - Normal
  //    (void*)0x0048B80B,                // 15 - Yamato Gun
  //    (void*)0x0048B8B9,                //  2 - Splash (Radial)
  //    (void*)0x0048B8B9,                //  3 - Splash (Enemy)
+//		 (void*)0x0048B910				 //  4 - Lockdown
  //    (void*)0x0048B969,                //  6 - Parasite
 //	(void*)0x0048B9C8,					 //  7 - Broodlings
 
@@ -160,7 +177,7 @@ namespace {
    normalWrapper,          //  1 - Normal
    radialSplashWrapper,    //  2 - Splash (Radial)
    enemySplashWrapper,     //  3 - Splash (Enemy)
-   (void*)0x0048B910,      //  4 - Lockdown
+   lockdownWrapper,      //  4 - Lockdown
    (void*)0x0048B8B9,      //  5 - Nuclear Missile
    parasiteWrapper,        //  6 - Parasite
    broodlingsWrapper,      //  7 - Broodlings

@@ -23,5 +23,6 @@ namespace hooks {
 	bool isUnsafeCyprianBullet(CBullet* bullet, u32 weaponId);
 	void parasite(CBullet* bullet, u32 weaponId);
 	void broodlings(CBullet* bullet, u32 weaponId);
+	void lockdown(CBullet* bullet, u32 weaponId);
 
 } //hooks

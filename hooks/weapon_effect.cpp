@@ -378,6 +378,29 @@ namespace hooks {
 	//	  }
 	//  }
   }
+  void lockdown(CBullet* bullet, u32 weaponId) {
+	 /* CUnit* target = bullet->attackTarget.unit;
+	  
+	  //original code
+	  
+	  if (target) {
+		  if (!target->isDead()) {
+			  hooks::LockdownHit(target,0x83,bullet);
+		  }
+	  }*/
+	  auto targPos = bullet->targetPosition;
+	  s16 x, y, r;
+	  x = bullet->sprite->position.x;
+	  y = bullet->sprite->position.y;
+	  r = weapons_dat::OuterSplashRadius[WeaponId::LobotomyMine];
+	  scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
+	  for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
+		  CUnit* target = unitsInSplash.getUnit(i);
+		  if (!target->isDead() && !(target->status & UnitStatus::InAir)) {
+			  hooks::LockdownHit(target, 0x83, bullet);
+		  }
+	  }
+  }
 }//hooks
 
 namespace {
