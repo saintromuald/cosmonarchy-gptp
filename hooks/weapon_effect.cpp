@@ -412,8 +412,15 @@ namespace hooks {
 	  scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
 	  for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 		  CUnit* target = unitsInSplash.getUnit(i);
-		  if (!target->isDead() && !units_dat::GroupFlags[target->id].isBuilding) {
-			  hooks::LockdownHit(target, 0x83, bullet);
+		  if (!target->isDead() && !units_dat::GroupFlags[target->id].isBuilding 
+			  && target->id!=UnitId::spider_mine && target->id!=UnitId::LobotomyMine) {
+			  if (units_dat::BaseProperty[target->id] & UnitProperty::Organic) {
+				  scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::LobotomySlow, 6 * 24, 0);
+			  }
+			  else {
+				  hooks::LockdownHit(target, 0x83, bullet);
+			  }
+			  
 		  }
 	  }
   }
