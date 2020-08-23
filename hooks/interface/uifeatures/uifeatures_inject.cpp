@@ -109,8 +109,8 @@ namespace {
 namespace hooks {
 	void injectUIFeaturesHooks() {
 		jmpPatch(drawUIFeatures_wrapper, 0x0048D0A9, 0);
-		//jmpPatch(targetedOrder_Wrapper, 0x004754F0, 0);
-		//jmpPatch(selectUnits_Wrapper, 0x0046FA00, 0);
+		//jmpPatch(targetedOrder_Wrapper, 0x004754F0, 1);
+		//jmpPatch(selectUnits_Wrapper, 0x0046FA00, 1);
 		jmpPatch(QueueGameCommand_wrapper, 0x00485BD0, 4);
 	}
 }
