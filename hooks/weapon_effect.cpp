@@ -412,7 +412,7 @@ namespace hooks {
 	  scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
 	  for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 		  CUnit* target = unitsInSplash.getUnit(i);
-		  if (!target->isDead()) {
+		  if (!target->isDead() && !units_dat::GroupFlags[target->id].isBuilding) {
 			  hooks::LockdownHit(target, 0x83, bullet);
 		  }
 	  }
