@@ -835,6 +835,10 @@ namespace hooks {
 
 						// Passive icons (yes, it's quite ugly)
 						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Spell_Researched)	{
+							if (current_button->iconID == IconId::Lockdown
+								&& (*activePortraitUnit)->vulture.spiderMineCount == 0) {
+								current_button_state = BUTTON_STATE::Invisible;
+							}
 							if (current_button->reqVar == TechId::Healing && current_button->iconID != 365)	{
 								current_button_state = BUTTON_STATE::Disabled;
 
@@ -905,10 +909,7 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ghost && current_button->iconID == IconId::Lockdown
-										&& (*activePortraitUnit)->vulture.spiderMineCount==0) {
-									current_button_state = BUTTON_STATE::Invisible;
-								}
+								
 
 								// PROTOSS \\
 

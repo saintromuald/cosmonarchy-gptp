@@ -188,7 +188,6 @@ namespace hooks
 			IssueTriTargetOrder(OrderId::FireYamatoGun1, OrderId::FireYamatoGun2, 0);
 			break;
 		case TechId::Lockdown:
-//			IssueTriTargetOrder(OrderId::PlaceMine, 0, 0);
 			IssueTriTargetOrder(OrderId::MagnaPulse, 0, 0);
 			break;
 		case TechId::Recall:

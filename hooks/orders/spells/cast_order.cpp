@@ -254,7 +254,9 @@ void orders_Spell(CUnit* unit) {
 
 								CImage* current_image = unit->sprite->images.head;
 								IscriptAnimation::Enum anim = (IscriptAnimation::Enum)orders_dat::OrderIscriptAnim[unit->mainOrderId];
-
+								if (techUsed == TechId::Lockdown && unit->vulture.spiderMineCount > 0) {
+									unit->vulture.spiderMineCount--;
+								}
 								while(current_image != NULL) {
 									current_image->playIscriptAnim(anim);
 									current_image = current_image->link.next;

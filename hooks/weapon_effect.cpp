@@ -266,9 +266,25 @@ namespace hooks {
 		}
 		return false;
 	}
-
+	const u32 Func_turnUnit = 0x00495F20;
+	void turnUnit(CUnit* a1, char a2) {
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			MOVZX BL, a2
+			CALL Func_turnUnit
+			POPAD
+		}
+	}
   // clone of 'Normal' damage for reference
   void normalDamage(CBullet* bullet, u32 weaponId) {
+	if (bullet->sourceUnit!=NULL && weaponId == WeaponId::Lockdown) {
+		CUnit* mine = scbw::createUnitIngame(UnitId::LobotomyMine, bullet->srcPlayer, bullet->position.x, bullet->position.y);
+		if (mine != NULL)
+		{
+			turnUnit(mine, bullet->sourceUnit->currentDirection1);
+		}
+	}
     //re-route cyprian bullet
     if(isUnsafeCyprianBullet(bullet,weaponId)) {
 		friendlySplash(bullet, weaponId, SplashType::Radial);
