@@ -3,6 +3,7 @@
 #include <sstream>
 #include <vector>
 #include <algorithm>
+#include <Windows.h>
 
 namespace {
 	s32 BWFXN_PrintXY(const char* text, s32 x, s32 y);
@@ -21,6 +22,10 @@ namespace {
 	u32 CUnitToUnitID(CUnit* a1); //0047B1D0
 	s32 selectSingleUnitFromID(s32 a1); //00496D30
 	s32 selectMultipleUnitsFromUnitList(s32 a1, CUnit** a2, u8 a3, s32 a4); //0049AEF0
+	s32 SNetGetTurnsInTransit(u32* turns);
+	u8 sendTurn();
+	s32 SErrGetLastError();
+	u8 packetErrHandle(s32 result, s32 a1, const char* a3, s32 a4, s32 a5);
 }
 
 namespace {
@@ -57,12 +62,30 @@ namespace hooks {
 		return numberWithLeadingZero(hrs) + std::string(":") + numberWithLeadingZero(min) + std::string(":") + numberWithLeadingZero(sec);
 	}
 
+	/*
+		Currently works for:
+		- Most Orders
+		- Shift, Shift+Box, Double Click
+
+		Needs hooks for:
+		- Morph, training and building orders
+		- Lift off, land orders
+		- Single unit selection, drag selection, select larva
+		- Invoking control groups
+	*/
 	void registerAction() {
 		actions.push_back(Action{*elapsedTimeFrames});
 	}
 
-	int getAPM() {
+	void clearActions() { // Called on map start
+		actions.clear();
+	}
 
+	u32 getAPM() {
+		u32 actionCount = actions.size();
+		double divider = (*elapsedTimeFrames) / 24.0 / 60.0;
+
+		return actionCount / divider;
 	}
 
 	void drawUIFeatures() {
@@ -77,9 +100,46 @@ namespace hooks {
 		for (int i = 0; i < 12; i++) {
 			if (CurrentUnitSelection->unit[i] == unit) {
 				return true;
+			} else if (CurrentUnitSelection->unit[i] != NULL) {
+				return false;
 			}
 		}
 		return false;
+	}
+
+	u8 QueueGameCommand(const void* a1, u32 a2) {
+		u32 v2; // eax
+		u32 len; // ebx
+		const void* buffer; // esi
+		s32 v5; // eax
+		u32 _sgdwBytesInCmdQueue; // eax
+		u32 turns; // [esp+8h] [ebp-4h]
+
+		len = a2;
+		buffer = a1;
+		v2 = LOWORD(a2 + *sgdwBytesInCmdQueue) | HIWORD(v2);
+		if (a2 + *sgdwBytesInCmdQueue <= *provider_MaxBuffer)
+			goto LABEL_8;
+		if (*scMainState == 4)
+			return v2;
+		if (SNetGetTurnsInTransit(&turns)) {
+			v2 = LOBYTE(turns) | HIBYTE(v2);
+			if (turns >= 16 - *provider_LatencyCalls)
+				return v2;
+			sendTurn();
+		LABEL_8:
+			_sgdwBytesInCmdQueue = *sgdwBytesInCmdQueue;
+			memcpy((void*)&TurnBuffer[*sgdwBytesInCmdQueue], buffer, len);
+			v2 = len + _sgdwBytesInCmdQueue;
+			*sgdwBytesInCmdQueue = v2;
+			return v2;
+		}
+		v2 = LOBYTE(outOfGame) | HIBYTE(v2);
+		if (!outOfGame) {
+			v5 = SErrGetLastError();
+			v2 = packetErrHandle(v5, 81, "Starcraft\\SWAR\\lang\\net_mgr.cpp", 225, 1) | HIBYTE(v2);
+		}
+		return v2;
 	}
 
 	void targetedOrder(s16 a1, s32 a2, CUnit* a3, s16 a4, s32 a5, s32 a6, u8 a7, s32 a8, s32 a9, s32 a10)

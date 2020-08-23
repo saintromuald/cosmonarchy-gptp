@@ -8,6 +8,7 @@
 #include <cstdio>
 #include "CUnitExtended.h"
 #include "hooks/interface/uifeatures/screen_hotkeys.h"
+#include "hooks/interface/uifeatures/uifeatures.h"
 #include "hooks/interface/hpbars/hpbars.h"
 #include "Utils/captivating_claws.h"
 
@@ -366,25 +367,26 @@ namespace hooks {
 
 	/// This hook is called every frame; most of your plugin's logic goes here.
 	bool nextFrame() {
-		scbw::refreshScreen(); // refreshes screen, needed for game clock and apm timer to update every frame
 
 		if (!scbw::isGamePaused()) { //If the game is not paused
 
 			scbw::setInGameLoopState(true); //Needed for scbw::random() to work
 			graphics::resetAllGraphics();
 			hooks::updatePsiFieldProviders();
-			hooks::handleScreenHotkeys();
 			*(int*)hyperTrigger = 0; // Single frame hypertriggers
 
 			//This block is executed once every game.
 			if (*elapsedTimeFrames == 0) {
 				//Write your code here
 				hooks::initializeScreenLocations();
+				hooks::clearActions();
 				if (Globals.extended_sfx) {
 					new_sfxdata.extend();
 					new_sfxdata.set_extended_data();
 				}
 			}
+			hooks::handleScreenHotkeys();
+			scbw::refreshScreen(); // refreshes screen, needed for game clock and apm timer to update every frame
 			
 			//framework example, rework and use later
 			/*if (*elapsedTimeFrames == 1) {
