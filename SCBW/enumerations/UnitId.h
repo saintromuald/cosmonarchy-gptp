@@ -458,100 +458,100 @@ enum Enum {
 	//HYDRA\\
 
 //Terran-Unit
-	TerranApostle									= 10,
-	TerranShaman									= 15,
-	TerranSouthpaw									= 19,
-	TerranMadrigal									= 27,
-	TerranCentaur									= 28,
-	TerranWyvern									= 91,
-	TerranCyprian									= 92,
-	TerranAzazel									= 98,
-	TerranPaladin									= 186,
-	TerranSavant									= 187,
+	TerranApostle									= 10,		// Gui Montag
+	TerranShaman									= 15,		// Civilian
+	TerranSouthpaw									= 19,		// Raynor Vulture
+	TerranMadrigal									= 27,		// Mengsk Battlecruiser
+	TerranCentaur									= 28,		// Hyperion
+	TerranWyvern									= 91,		// Cargo Ship
+	TerranCyprian									= 92,		// Mercenary Gunship
+	TerranAzazel									= 98,		// Raszagal Corsair
+	TerranPaladin									= 186,		// Ruins
+	TerranSavant									= 187,		// Kyadarin Crystal Formation
+	LobotomyMine									= 209,		// Floor Gun Trap
 
 //Terran-Building
-	TerranMedbay									= 119,
-	TerranMunitionsBay								= 121,
-	TerranGallery									= 185,
-	TerranSalvoYard									= 189,
-	TerranFutureStation								= 192,
-	TerranTreasury									= 215,
-	TerranQuarry									= 220,
-	TerranQuantumInstitute							= 223,
-	TerranDrydock									= 225,
+	TerranMedbay									= 119,		// Starbase / Terran Unused 1
+	TerranMunitionsBay								= 121,		// Repair Bay / Terran Unused 2
+	TerranGallery									= 185,		// Independent Jump Gate
+	TerranSalvoYard									= 189,		// Warp Gate
+	TerranFutureStation								= 192,		// Terran Marker
+	TerranTreasury									= 215,		// Flag
+	TerranQuarry									= 220,		// Mineral Cluster Type 1
+	TerranQuantumInstitute							= 223,		// Protoss Gas Orb Type 2
+	TerranDrydock									= 225,		// Zerg Gas Sac Type 2
 
 //Protoss-Unit
-	ProtossStarSovereign							= 21,
-	ProtossLegionnaire								= 74,
-	ProtossHierophant								= 76,
-	ProtossAurora									= 80,
-	ProtossClarion									= 81,
-	ProtossEmpyrean									= 82,
-	ProtossSimulacrum								= 89,
-	ProtossWarpRelay								= 90,
-	ProtossBulwark									= 93,
-	ProtossExemplar									= 94,
-	ProtossAugur									= 102,
+	ProtossStarSovereign							= 21,		// Tom Kazansky
+	ProtossLegionnaire								= 74,		// Dark Templar Hero
+	ProtossHierophant								= 76,		// Tassadar/Zeratul Archon
+	ProtossAurora									= 80,		// Mojo Scout
+	ProtossClarion									= 81,		// Warbringer
+	ProtossEmpyrean									= 82,		// Gantrithor
+	ProtossSimulacrum								= 89,		// Rhynadon
+	ProtossWarpRelay								= 90,		// Bengalaas
+	ProtossBulwark									= 93,		// Scantid
+	ProtossExemplar									= 94,		// Kakaru
+	ProtossAugur									= 102,		// Gerard DuGalle
 
 //Protoss-Building
-	ProtossAutomatonRegister						= 158,	// Simulacrum requirement
-	ProtossBlazingEffigy							= 161,	// Hierophant requirement
-	ProtossReliquary								= 175,
-	ProtossStridentStratum							= 182,	// Clarion requirement
-	ProtossStellarIcon								= 183,	// Panoptus requirement
-	ProtossAstralOmen								= 184,	// Corsair requirement
-	ProtossExaltedAshlar							= 211,	// Exemplar requirement
-	ProtossCosmicAltar								= 213,	// Empyrean requirement
-	ProtossPennant									= 221,
-	ProtossGrandLibrary								= 226,	// Archon requirement
+	ProtossAutomatonRegister						= 158,		// Unused Protoss 1				| Simulacrum requirement
+	ProtossBlazingEffigy							= 161,		// Unused Protoss 2				| Hierophant requirement
+	ProtossReliquary								= 175,		// Xel'Naga Temple
+	ProtossStridentStratum							= 182,		// Mining Platform				| Clarion requirement
+	ProtossStellarIcon								= 183,		// Independent Command Center	| Panoptus requirement
+	ProtossAstralOmen								= 184,		// Independent Starport			| Corsair requirement
+	ProtossExaltedAshlar							= 211,		// Left Wall Flame Trap			| Exemplar requirement
+	ProtossCosmicAltar								= 213,		// Right Wall Flame Trap		| Empyrean requirement
+	ProtossPennant									= 221,		// Mineral Cluster Type 2
+	ProtossGrandLibrary								= 226,		// Terran Gas Tank Type 1		| Archon requirement
 
 //Zerg-Unit
-	ZergOsteroth									= 48,
-	ZergNathrokor									= 54,
-	ZergGorgoleth									= 56,
-	ZergOthstoleth									= 57,
-	ZergKeskathalor									= 96,
-	ZergVorvaling									= 128,
-	ZergBasilisk									= 129,
-	ZergIroleth										= 222,
+	ZergOsteroth									= 48,		// Torrasque
+	ZergNathrokor									= 54,		// Devouring One
+	ZergGorgoleth									= 56,		// Kukulza Guardian
+	ZergOthstoleth									= 57,		// Yggdrasil
+	ZergKeskathalor									= 96,		// Ursadon
+	ZergVorvaling									= 128,		// Uraj
+	ZergBasilisk									= 129,		// Khalis
+	ZergIroleth										= 222,		// Protoss Gas Orb Type 1
 
 //Zerg-Elite
-	AberrantBastethir								= 49,
-	AberrantMaktisthuk								= 52,
-	AberrantKonvimoth								= 53,
-	AberrantAkistrigon								= 55,
+	AberrantBastethir								= 49,		// Matriarch
+	AberrantMaktisthuk								= 52,		// Unclean One
+	AberrantKonvimoth								= 53,		// Hunter Killer
+	AberrantAkistrigon								= 55,		// Kukulza Mutalisk
 
 //Zerg-Egg
-	EggOthstoleth									= 95,
-	EggDevourer										= 173,
-	EggGorgoleth									= 179,
-	EggIroleth										= 193,
-	EggBasilisk										= 198,
-	EggKeskathalor									= 199,
-	EggVorvaling									= 216,
-	EggNathrokor									= 217,
-	EggOsteroth										= 218,
+	EggOthstoleth									= 95,		// Ragnasaur
+	EggDevourer										= 173,		// Khaydarin Crystal Formation
+	EggGorgoleth									= 179,		// Cave
+	EggIroleth										= 193,		// Protoss Marker
+	EggBasilisk										= 198,		// Terran Flag Beacon
+	EggKeskathalor									= 199,		// Protoss Flag Beacon
+	EggVorvaling									= 216,		// Young Chrysalis
+	EggNathrokor									= 217,		// Psi Emitter
+	EggOsteroth										= 218,		// Data Disc
 
 //Zerg-Misc
-	BasiliskCreeper									= 180,
+	BasiliskCreeper									= 180,		// Cave-in
 
 //Zerg-Building
-	ZergMutationPit									= 145,
-	ZergGorgolethApiary								= 148,
-	ZergChrysalis									= 150,
-	ZergIrolethQuay									= 152,
-	ZergBasiliskDen									= 153,
-	ZergOthstolethBerth								= 181,
-	ZergLurkerDen									= 191,
-	ZergDevourerHaunt								= 197,
-	ZergChasmalColony								= 201,
-	ZergVorvalPond									= 204,
-	ZergNathrokLake									= 210,
-	ZergOstothCavern								= 212,
-	ZergKeskathCavern								= 219,
-	ZergOverlordIris								= 224,
-	ZergSire										= 227,
+	ZergMutationPit									= 145,		// Unused Zerg 1
+	ZergGorgolethApiary								= 148,		// Zerg Overmind
+	ZergChrysalis									= 150,		// Mature Chrysalis
+	ZergIrolethQuay									= 152,		// Cerebrate Daggoth
+	ZergBasiliskDen									= 153,		// Unused Zerg 2
+	ZergOthstolethBerth								= 181,		// Cantina
+	ZergLurkerDen									= 191,		// Zerg Marker
+	ZergDevourerHaunt								= 197,		// Zerg Flag Beacon
+	ZergChasmalColony								= 201,		// Overmind Cocoon
+	ZergVorvalPond									= 204,		// Floor Hatch
+	ZergNathrokLake									= 210,		// Left Wall Missile Trap
+	ZergOstothCavern								= 212,		// Right Wall Missile Trap
+	ZergKeskathCavern								= 219,		// Khaydarin Crystal
+	ZergOverlordIris								= 224,		// Zerg Gas Sac Type 1
+	ZergSire										= 227,		// Terran Gas Tank Type 2
 
-	LobotomyMine = 209,//placeholder, replace with something else later
 	};
 }
