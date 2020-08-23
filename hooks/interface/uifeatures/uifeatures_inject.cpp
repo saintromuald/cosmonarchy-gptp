@@ -45,10 +45,33 @@ namespace {
 			POPAD
 		}
 	}
+
+	void __declspec(naked) selectUnits_Wrapper() {
+		static CUnit** a1;
+		static int a2;
+		static char a3;
+		static int a4;
+		static signed int result;
+
+		__asm {
+			PUSHAD
+			PUSH a1
+			PUSH a2
+			PUSH a3
+			PUSH a4
+		}
+		result = hooks::selectUnits(a1, a2, a3, a4);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks {
 	void injectUIFeaturesHooks() {
 		jmpPatch(drawUIFeatures_wrapper, 0x0048D0A9, 0);
+		jmpPatch(targetedOrder_Wrapper, 0x0048D0A9, 0);
+		jmpPatch(selectUnits_Wrapper, 0x0048D0A9, 0);
 	}
 }

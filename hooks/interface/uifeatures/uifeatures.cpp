@@ -17,6 +17,11 @@ namespace {
 	COrder* queueNewOrder(COrder* a1, __int16 a2, __int16 a3, CUnit* a4, unsigned __int8 a5, int a6, __int16 a7, Point32* a8, CUnit* a9);	//00474B90
 	int showStatTxtToPlayer(int a1, int a2); //0048CF00
 	void setOrderTarget(char a1, __int16 a2, __int16 a3, int a4, int a5, CUnit* a6, int a7, Point32* a8, CUnit* a9); //00475470
+
+	// For selectUnits
+	unsigned int CUnitToUnitID(CUnit* a1); //0047B1D0
+	signed int selectSingleUnitFromID(int a1); //00496D30
+	signed int selectMultipleUnitsFromUnitList(int a1, CUnit** a2, char a3, int a4); //0049AEF0
 }
 
 namespace {
@@ -121,6 +126,15 @@ namespace hooks {
 			setOrderTarget(a7, a1, a4, a5, (int)a3, (CUnit*)a8, (unsigned __int16)a2, (Point32*)a9, (CUnit*)a10);
 		}
 	}
+
+	signed int selectUnits(CUnit** a1, int a2, char a3, int a4) {
+		int v4; // eax
+		signed int result; // eax
+
+		if (a2 != 1 || !IS_KEYCODE_USED[18] || (v4 = CUnitToUnitID(*a1), (result = selectSingleUnitFromID(v4)) == 0))
+			result = selectMultipleUnitsFromUnitList(a2, a1, a3, a4);
+		return result;
+	}
 }
 
 namespace {
@@ -207,4 +221,47 @@ namespace {
 		}
 	}
 
+	// For selectUnits
+
+	const u32 Func_CUnitToUnitId = 0x0047B1D0;
+	unsigned int CUnitToUnitID(CUnit* a1) {
+		static unsigned int result;
+		__asm {
+			PUSHAD
+			MOV ESI, a1
+			CALL Func_CUnitToUnitId
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_selectSingleUnitFromID = 0x00496D30;
+	signed int selectSingleUnitFromID(int a1) {
+		static signed int result;
+		__asm {
+			PUSHAD
+			PUSH a1
+			CALL Func_selectSingleUnitFromID
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_selectMultipleUnitsFromUnitList = 0x0049AEF0;
+	signed int selectMultipleUnitsFromUnitList(int a1, CUnit** a2, char a3, int a4) {
+		static signed int result;
+		__asm {
+			PUSHAD
+			PUSH a1
+			PUSH a2
+			PUSH a3
+			PUSH a4
+			CALL Func_selectMultipleUnitsFromUnitList
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }
