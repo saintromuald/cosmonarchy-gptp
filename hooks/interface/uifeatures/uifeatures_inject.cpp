@@ -29,12 +29,12 @@ namespace {
 		static s32 a10;
 
 		__asm {
+			PUSH EBP
+			MOV EBP, ESP
 			MOV a1, DX
 			MOV a2, EBX
 			MOV a3, ESI
 			MOV a4, AX
-			PUSH EBP
-			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x8]
 			MOV a5, EAX
@@ -67,10 +67,10 @@ namespace {
 		static s32 a4;
 
 		__asm {
-			MOV a1, EBX
-			MOV a2, EDI
 			PUSH EBP
 			MOV EBP, ESP
+			MOV a1, EBX
+			MOV a2, EDI
 			PUSH EAX
 			MOV EAX, [EBP + 0x8]
 			MOV a3, EAX
