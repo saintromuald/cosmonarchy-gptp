@@ -38,7 +38,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 	if (unit->id == UnitId::ProtossSimulacrum) {
 		double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10);
 		if (stacks > 0) {
-			double newCooldown = (double)cooldown * (1.0 - stacks / 20.0);
+			double newCooldown = (double)cooldown * (1.0 - stacks / 13.333);
 			cooldown = newCooldown;
 		}
 	}

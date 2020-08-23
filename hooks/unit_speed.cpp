@@ -173,7 +173,7 @@ namespace hooks {
 
 		// Simulacrum behavior: increase movespeed when any nearby Simulacrum dies
 		else if (unit->id == UnitId::ProtossSimulacrum) {
-			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10);
+			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10)*1.5;
 			if (stacks > 0) {
 				speed = (double)speed * ((10.0 + stacks) / 10.0);
 			}
@@ -295,7 +295,7 @@ namespace hooks {
 			}
 		}
 		else if (unit->id == UnitId::ProtossSimulacrum) {
-			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10);
+			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10)*1.5;
 			if (stacks > 0) {
 				acceleration = (double)acceleration * ((10.0 + stacks) / 10.0);
 			}
