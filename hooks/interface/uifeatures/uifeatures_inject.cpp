@@ -29,7 +29,6 @@ namespace {
 		static s32 a10;
 
 		__asm {
-			PUSHAD
 			MOV a1, DX
 			MOV a2, EBX
 			MOV a3, ESI
@@ -46,6 +45,7 @@ namespace {
 			MOV EAX, [EBP + 0x1C]
 			MOV a9, EAX
 			POP EAX
+			PUSHAD
 		}
 		hooks::targetedOrder(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
 		__asm {
@@ -61,7 +61,6 @@ namespace {
 		static s32 a4;
 
 		__asm {
-			PUSHAD
 			MOV a1, EBX
 			MOV a2, EDI
 			PUSH EAX
@@ -70,6 +69,7 @@ namespace {
 			MOV EAX, [EBP + 0xC]
 			MOV a4, EAX
 			POP EAX
+			PUSHAD
 		}
 		hooks::selectUnits(a1, a2, a3, a4);
 		__asm {
@@ -82,7 +82,7 @@ namespace {
 namespace hooks {
 	void injectUIFeaturesHooks() {
 		jmpPatch(drawUIFeatures_wrapper, 0x0048D0A9, 0);
-		//jmpPatch(targetedOrder_Wrapper, 0x004754F0, 0);
-		//jmpPatch(selectUnits_Wrapper, 0x0046FA00, 0);
+		jmpPatch(targetedOrder_Wrapper, 0x004754F0, 0);
+		jmpPatch(selectUnits_Wrapper, 0x0046FA00, 0);
 	}
 }
