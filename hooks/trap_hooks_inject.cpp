@@ -40,7 +40,7 @@ namespace {
 		result = hooks::disableUnit(a1);
 		__asm {
 			POPAD
-			MOV EAX, result
+			MOVZX EAX, result
 			RETN
 		}
 	}
