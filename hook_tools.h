@@ -5,7 +5,8 @@
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-
+#include <memory>
+#include <vector>
 /// Injects a JMP to [target] at the [position], optionally overwriting [nops]
 /// bytes with NOPs.
 ///
@@ -59,3 +60,19 @@ void memoryPatch(void* const address, const u8* data, const size_t size);
 inline void memoryPatch(const u32 address, const u8* data, const size_t size) {
   memoryPatch((void*)address, data, size);
 }
+
+void wrapperPatch(const u8* code, u32 len, const u32 position, unsigned int nops = 0);
+
+struct WrapperPatch {
+	u32 address;
+	u32 size;
+};
+
+class ByteWrapperMemory {
+public:
+	std::vector<std::shared_ptr<u8[]>> wrapper_memory;
+
+	u8* exec_alloc(u32 len);
+};
+
+extern ByteWrapperMemory wrapperMemory;

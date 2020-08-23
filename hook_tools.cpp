@@ -32,10 +32,32 @@ void jmpPatch(const void* target, void* position, unsigned int nops) {
   delete [] data;
 }
 
+void wrapperPatch(const u8* code, u32 len, const u32 address, unsigned int nop) {
+	//function address
+	auto exe = wrapperMemory.exec_alloc(len);
+	if (nop > 0) {
+		nops(address + 0x5, nop);
+	}
+	for (int i = 0; i < len; i++) {
+		exe[i] = code[i];
+	}
+	u32 diff = (u32)exe - (address + 0x5);
+	memoryPatch(address + 0x1, diff);
+	memoryPatch(address, (u8)0xe8);
+}
+
 //Inject an array of bytes, using the given length.
 void memoryPatch(void* const address, const u8* data, const size_t size) {
 	DWORD oldProt = 0;
 	VirtualProtect(address, size, PAGE_EXECUTE_READWRITE, &oldProt);
 	memcpy(address, data, size);
 	VirtualProtect(address, size, oldProt, &oldProt);
+}
+
+ByteWrapperMemory wrapperMemory;
+u8* ByteWrapperMemory::exec_alloc(u32 len) {
+	std::shared_ptr<u8[]> wrapper(new u8[len]);
+	wrapper_memory.push_back(wrapper);
+	auto offset = &wrapper[0];
+	return offset;
 }
