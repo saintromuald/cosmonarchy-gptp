@@ -96,8 +96,8 @@ namespace hooks {
 		std::string time = getFormattedTime(*elapsedTimeFrames / 24);
 		drawText(time.c_str(), 10, 3, 100, 15, 7);
 
-		std::string apm = "APM: " + std::to_string(getAPM());
-		drawText(apm.c_str(), 10, 15, 100, 15, 7);
+		//std::string apm = "APM: " + std::to_string(getAPM());
+		//drawText(apm.c_str(), 10, 15, 100, 15, 7);
 	}
 
 	bool isFirstSelectedUnitOfCurrentPlayer(CUnit* unit) {
