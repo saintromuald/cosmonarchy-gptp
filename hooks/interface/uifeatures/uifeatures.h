@@ -6,5 +6,5 @@ namespace hooks {
 
 	void injectUIFeaturesHooks();
 
-	void noteAction();
+	void registerAction();
 }

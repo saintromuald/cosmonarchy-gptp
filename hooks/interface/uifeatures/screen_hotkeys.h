@@ -1,6 +1,6 @@
 #pragma once
-#include "../SCBW/scbwdata.h"
-#include "../logger.h"
+#include "SCBW/scbwdata.h"
+#include "logger.h"
 
 namespace hooks {
 	void initializeScreenLocations();

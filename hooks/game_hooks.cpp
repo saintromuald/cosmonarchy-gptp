@@ -7,7 +7,7 @@
 #include "psi_field.h"
 #include <cstdio>
 #include "CUnitExtended.h"
-#include "hooks/screen_hotkeys.h"
+#include "hooks/interface/uifeatures/screen_hotkeys.h"
 #include "hooks/interface/hpbars/hpbars.h"
 #include "Utils/captivating_claws.h"
 

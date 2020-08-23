@@ -1,5 +1,5 @@
 #include "screen_hotkeys.h"
-#include "../hook_tools.h"
+#include "hook_tools.h"
 
 namespace {
 	void _declspec(naked) saveScreenLocation_Wrapper() {

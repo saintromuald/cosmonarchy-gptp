@@ -218,6 +218,8 @@
     <ClCompile Include="hooks\interface\extender\selection_extender_inject.cpp" />
     <ClCompile Include="hooks\interface\hpbars\hpbars.cpp" />
     <ClCompile Include="hooks\interface\hpbars\hpbars_inject.cpp" />
+    <ClCompile Include="hooks\interface\uifeatures\screen_hotkeys.cpp" />
+    <ClCompile Include="hooks\interface\uifeatures\screen_hotkeys_inject.cpp" />
     <ClCompile Include="hooks\interface\uifeatures\uifeatures.cpp" />
     <ClCompile Include="hooks\interface\uifeatures\uifeatures_inject.cpp" />
     <ClCompile Include="hooks\limits\ccmu_inject.cpp" />
@@ -280,8 +282,6 @@
     <ClCompile Include="hooks\give_unit_inject.cpp" />
     <ClCompile Include="hooks\orders\spells\hallucination_spell.cpp" />
     <ClCompile Include="hooks\orders\spells\hallucination_spell_inject.cpp" />
-    <ClCompile Include="hooks\screen_hotkeys.cpp" />
-    <ClCompile Include="hooks\screen_hotkeys_inject.cpp" />
     <ClCompile Include="hooks\target_related.cpp" />
     <ClCompile Include="hooks\target_related_inject.cpp" />
     <ClCompile Include="hooks\trap_hooks.cpp" />
@@ -465,6 +465,7 @@
     <ClInclude Include="hooks\audiovisuals\sfxhooks.h" />
     <ClInclude Include="hooks\byte_operations_utils.h" />
     <ClInclude Include="hooks\interface\hpbars\hpbars.h" />
+    <ClInclude Include="hooks\interface\uifeatures\screen_hotkeys.h" />
     <ClInclude Include="hooks\interface\uifeatures\uifeatures.h" />
     <ClInclude Include="hooks\trap_hooks.h" />
     <ClInclude Include="SCBW\stat_txt_spec.h" />
@@ -502,7 +503,6 @@
     <ClInclude Include="hooks\orders\base_orders\die_order.h" />
     <ClInclude Include="hooks\orders\enter_nydus.h" />
     <ClInclude Include="hooks\orders\spells\feedback_spell.h" />
-    <ClInclude Include="hooks\screen_hotkeys.h" />
     <ClInclude Include="hooks\target_related.h" />
     <ClInclude Include="hooks\use_tech.h" />
     <ClInclude Include="hooks\weapon_effect.h" />

@@ -93,7 +93,7 @@
 #include "hooks/limits/extender.h"
 #include "hooks/build_time.h"
 #include "hooks/misc/hydra_specific.h"
-#include "hooks/screen_hotkeys.h"
+#include "hooks/interface/uifeatures/screen_hotkeys.h"
 #include "hooks/interface/uifeatures/uifeatures.h"
 #include "hooks/trap_hooks.h"
 //#include "AI/spellcasting.h"

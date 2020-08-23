@@ -4,6 +4,8 @@
 
 namespace {
 	int moveScreen(int x, int y);
+	void centerviewUnitGroup(u8 a1);
+	int selectUnitGroup(u8 a2);
 }
 
 namespace hooks {
@@ -76,6 +78,30 @@ namespace {
 			MOV EAX, x
 			MOV ECX, y
 			CALL moveScreen_function
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+
+	const u32 centerviewUnitGroup_function = 0x004967E0;
+	void centerviewUnitGroup(u8 a1) {
+		_asm {
+			PUSHAD
+			PUSH a1
+			CALL centerviewUnitGroup_function
+			POPAD
+		}
+	}
+
+	const u32 selectUnitGroup_function = 0x00496B40;
+	int selectUnitGroup(u8 a2) {
+		static int result;
+		_asm {
+			PUSHAD
+			PUSH a2
+			CALL selectUnitGroup_function
 			MOV result, EAX
 			POPAD
 		}
