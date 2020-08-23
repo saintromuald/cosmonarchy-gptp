@@ -386,8 +386,17 @@ enum Enum {
 
     // HYDRA \\
 
-    Skyfall                = 12,
-    PowerSiphon            = 13,
+    // Terran
+    Skyfall                 = 12,   // Attack Tile              | Paladin missile barrage ability
+    PowerSiphon             = 13,   // Hover                    | Savant energy siphon ability
+    EnergyDecay             = 104,  // Guardian Aspect          | Savant anti-specialist ability
+    Observance              = 122,  // EMP Shockwave            | Science Vessel armor rend ability
+
+    // Protoss
+    KhaydarinEclipse        = 155,  // CTF COP 2                | Exemplar form switch
+
+    // Zerg
+    EssenceDrain            = 154,  // Idle CTF COP             | Gorgoleth energy drain ability
 
     };
 }
