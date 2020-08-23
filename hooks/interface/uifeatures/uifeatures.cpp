@@ -105,24 +105,24 @@ namespace hooks {
 					{
 						if (isFirstSelectedUnitOfCurrentPlayer(a3))
 							hooks::registerAction();
-						queueNewOrder((COrder*)a5, a1, a4, a3, a7, a2, a8, (Point32*)a9, (CUnit*)a10);
+						queueNewOrder((COrder*)a5, a1, a4, a3, a7, a8, a2, (Point32*)a9, (CUnit*)a10);
 					}
 					else
 					{
-						//u8 v11 = a3->playerId;
-						//if (*statTxtTbl > 0x368u)
-						//	showStatTxtToPlayer(*statTxtTbl + statTxtTbl[873], v11);
-						//else
-						//	showStatTxtToPlayer((s32)"", v11);
+						u8 v11 = a3->playerId;
+						if (*statTxtTbl > 0x368u)
+							showStatTxtToPlayer(*statTxtTbl + statTxtTbl[873], v11);
+						else
+							showStatTxtToPlayer((s32)"", v11);
 					}
 				}
 				else
 				{
-					//u8 v10 = a3->playerId;
-					//if (*statTxtTbl > 0x366u)
-					//	showStatTxtToPlayer(*statTxtTbl + statTxtTbl[871], v10);
-					//else
-					//	showStatTxtToPlayer((s32)"", v10);
+					u8 v10 = a3->playerId;
+					if (*statTxtTbl > 0x366u)
+						showStatTxtToPlayer(*statTxtTbl + statTxtTbl[871], v10);
+					else
+						showStatTxtToPlayer((s32)"", v10);
 				}
 				break;
 			}

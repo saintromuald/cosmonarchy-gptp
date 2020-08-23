@@ -33,6 +33,8 @@ namespace {
 			MOV a2, EBX
 			MOV a3, ESI
 			MOV a4, AX
+			PUSH EBP
+			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x8]
 			MOV a5, EAX
@@ -42,14 +44,18 @@ namespace {
 			MOV a7, EAX
 			MOV EAX, [EBP + 0x14]
 			MOV a8, EAX
-			MOV EAX, [EBP + 0x1C]
+			MOV EAX, [EBP + 0x18]
 			MOV a9, EAX
+			MOV EAX, [EBP + 0x1C]
+			MOV a10, EAX
 			POP EAX
 			PUSHAD
 		}
 		hooks::targetedOrder(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
 		__asm {
 			POPAD
+			MOV ESP, EBP
+			POP EBP
 			RETN 0x18
 		}
 	}
@@ -63,6 +69,8 @@ namespace {
 		__asm {
 			MOV a1, EBX
 			MOV a2, EDI
+			PUSH EBP
+			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x8]
 			MOV a3, EAX
@@ -74,6 +82,8 @@ namespace {
 		hooks::selectUnits(a1, a2, a3, a4);
 		__asm {
 			POPAD
+			MOV ESP, EBP
+			POP EBP
 			RETN 0x8
 		}
 	}
@@ -82,7 +92,7 @@ namespace {
 namespace hooks {
 	void injectUIFeaturesHooks() {
 		jmpPatch(drawUIFeatures_wrapper, 0x0048D0A9, 0);
-		jmpPatch(targetedOrder_Wrapper, 0x004754F0, 0);
-		jmpPatch(selectUnits_Wrapper, 0x0046FA00, 0);
+		//jmpPatch(targetedOrder_Wrapper, 0x004754F0, 0);
+		//jmpPatch(selectUnits_Wrapper, 0x0046FA00, 0);
 	}
 }
