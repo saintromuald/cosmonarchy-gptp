@@ -1,6 +1,6 @@
 #include "uifeatures.h"
 #include "hook_tools.h"
-/*
+
 namespace {
 	const u32 SetFontHandle = 0x0041F610;
 	const u32 drawUIFeatures_jmp = 0x0048D0AE;
@@ -16,7 +16,7 @@ namespace {
 		}
 	}
 
-	u8 _declspec(naked) QueueGameCommand_wrapper() {
+	void _declspec(naked) QueueGameCommand_wrapper() {
 		static const void* a1;
 		static u32 a2;
 		static u8 result;
@@ -25,8 +25,9 @@ namespace {
 			MOV a2, EDX
 			PUSHAD
 		}
-		hooks::QueueGameCommand(a1, a2);
+		result = hooks::QueueGameCommand(a1, a2);
 		_asm {
+			MOVZX EAX, result
 			POPAD
 			RETN
 		}
@@ -112,4 +113,4 @@ namespace hooks {
 		//jmpPatch(selectUnits_Wrapper, 0x0046FA00, 1);
 		jmpPatch(QueueGameCommand_wrapper, 0x00485BD0, 4);
 	}
-}*/
+}

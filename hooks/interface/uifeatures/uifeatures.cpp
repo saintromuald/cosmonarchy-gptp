@@ -4,7 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <Windows.h>
-/*
+
 namespace {
 	s32 BWFXN_PrintXY(const char* text, s32 x, s32 y);
 	s32 GetColorHandle(u8 color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
@@ -29,11 +29,13 @@ namespace {
 }
 
 namespace {
-	struct Action {
-		u32 frame; // timestamp
-	};
+	//struct Action {
+	//	u32 frame; // timestamp
+	//};
+	//
+	//std::vector<Action> actions;
 
-	std::vector<Action> actions;
+	uint64_t totalActions;
 }
 
 namespace hooks {
@@ -61,27 +63,30 @@ namespace hooks {
 		u32 hrs = seconds / 60 / 60;
 		return numberWithLeadingZero(hrs) + std::string(":") + numberWithLeadingZero(min) + std::string(":") + numberWithLeadingZero(sec);
 	}
-
-		Currently works for:
+	/*
+		We have hooks for:
 		- Most Orders
 		- Shift, Shift+Box, Double Click
+		- Queue Game Command
 
-		Needs hooks for:
+		We need hooks for*:
 		- Morph, training and building orders
 		- Lift off, land orders
 		- Single unit selection, drag selection, select larva
 		- Invoking control groups
-
+	*/
 	void registerAction() {
-		actions.push_back(Action{*elapsedTimeFrames});
+		//actions.push_back(Action{*elapsedTimeFrames});
+		totalActions++;
 	}
 
 	void clearActions() { // Called on map start
-		actions.clear();
+		//actions.clear();
+		totalActions = 0;
 	}
 
 	u32 getAPM() {
-		u32 actionCount = actions.size();
+		u32 actionCount = totalActions;//actions.size();
 		double divider = (*elapsedTimeFrames) / 24.0 / 60.0;
 
 		return actionCount / divider;
@@ -89,10 +94,10 @@ namespace hooks {
 
 	void drawUIFeatures() {
 		std::string time = getFormattedTime(*elapsedTimeFrames / 24);
-		drawText(time.c_str(), 10, 3, 100, 20, 7);
+		drawText(time.c_str(), 10, 3, 100, 15, 7);
 
 		std::string apm = "APM: " + std::to_string(getAPM());
-		drawText(apm.c_str(), 10, 23, 100, 20, 7);
+		drawText(apm.c_str(), 10, 15, 100, 15, 7);
 	}
 
 	bool isFirstSelectedUnitOfCurrentPlayer(CUnit* unit) {
@@ -126,7 +131,7 @@ namespace hooks {
 			if (turns >= 16 - *provider_LatencyCalls)
 				return v2;
 			sendTurn();
-		LABEL_8:
+LABEL_8:
 			_sgdwBytesInCmdQueue = *sgdwBytesInCmdQueue;
 			memcpy((void*)&TurnBuffer[*sgdwBytesInCmdQueue], buffer, len);
 			v2 = len + _sgdwBytesInCmdQueue;
@@ -159,8 +164,6 @@ namespace hooks {
 				{
 					if (*COrderCount < 1800)
 					{
-						if (isFirstSelectedUnitOfCurrentPlayer(a3))
-							hooks::registerAction();
 						queueNewOrder((COrder*)a5, a1, a4, a3, a7, a8, a2, (Point32*)a9, (CUnit*)a10);
 					}
 					else
@@ -186,14 +189,11 @@ namespace hooks {
 		else
 		{
 		LABEL_15:
-			if (isFirstSelectedUnitOfCurrentPlayer(a3))
-				hooks::registerAction();
 			setOrderTarget(a7, a1, a4, a5, (s32)a3, (CUnit*)a8, (u16)a2, (Point32*)a9, (CUnit*)a10);
 		}
 	}
 
 	s32 selectUnits(CUnit** a1, s32 a2, u8 a3, s32 a4) {
-		hooks::registerAction();
 		s32 v4 = CUnitToUnitID(*a1);
 		s32 result = selectSingleUnitFromID(v4); // eax
 
@@ -303,8 +303,8 @@ namespace {
 	}
 
 	const u32 Func_selectSingleUnitFromID = 0x00496D30;
-	signed int selectSingleUnitFromID(s32 a1) {
-		static signed int result;
+	s32 selectSingleUnitFromID(s32 a1) {
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a1
@@ -330,4 +330,58 @@ namespace {
 		}
 		return result;
 	}
-}*/
+
+	const u32 SNetGetTurnsInTransit_function = 0x00410275;
+	s32 SNetGetTurnsInTransit(u32* turns) {
+		static s32 result;
+		_asm {
+			PUSHAD
+			PUSH turns
+			CALL SNetGetTurnsInTransit_function
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 sendTurn_function = 0x00485A40;
+	u8 sendTurn() {
+		static u32 result;
+		_asm {
+			PUSHAD
+			CALL sendTurn_function
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 SErrGetLastError_function = 0x004100FA;
+	s32 SErrGetLastError() {
+		static s32 result;
+		_asm {
+			PUSHAD
+			CALL SErrGetLastError_function
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 packetErrHandle_function = 0x004BB0B0;
+	u8 packetErrHandle(s32 result_arg, s32 a1, const char* a3, s32 a4, s32 a5) {
+		static u32 result;
+		_asm {
+			PUSHAD
+			MOV EAX, result_arg
+			PUSH a5
+			PUSH a4
+			PUSH a3
+			PUSH a1
+			CALL packetErrHandle_function
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+}

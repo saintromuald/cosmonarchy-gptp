@@ -1,6 +1,6 @@
 #include "SCBW/scbwdata.h"
 #include "SCBW/api.h"
-/*
+
 namespace hooks {
 	void drawUIFeatures();
 	void targetedOrder(s16 a1, s32 a2, CUnit* a3, s16 a4, s32 a5, s32 a6, u8 a7, s32 a8, s32 a9, s32 a10);
@@ -11,4 +11,4 @@ namespace hooks {
 
 	void registerAction();
 	void clearActions();
-}*/
+}
