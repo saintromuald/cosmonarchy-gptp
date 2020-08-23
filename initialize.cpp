@@ -508,8 +508,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectBuildTimeHooks();
 	hooks::injectScreenHotkeysHooks();
 //	hooks::injectHpBarsHooks();
-	hooks::injectUIFeaturesHooks();
-	hooks::injectTrapHooks();
+//	hooks::injectUIFeaturesHooks();
+//	hooks::injectTrapHooks();
 
 	return TRUE;
 }
