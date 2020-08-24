@@ -234,7 +234,7 @@ namespace hooks {
             JMP jmp_004922E1
         }
     }
-    void savantTargetingPatches() {
+    void lobotomyMineTargetingPatches() {
         jmpPatch(getOrderTargetErrorString_JmpWrapper, 0x004920D9);
         jmpPatch(ShouldStopOrderedSpell_JmpWrapper, 0x004922DC);
     }
@@ -291,7 +291,7 @@ namespace hooks {
         unusedOrderPatches();
         lobotomyMinePatches();
         //trapJumpWrappers();
-        //savantTargetingPatches();
+        //lobotomyMineTargetingPatches();
         //disables CTFCop2 functionality, makes it useless
         //archonHardcodePatches();
     }
