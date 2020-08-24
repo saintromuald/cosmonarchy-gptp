@@ -277,7 +277,7 @@ namespace {
 				x_ = source->sprite->position.x - 8;
 				y_ = source->sprite->position.y - 48;
 			}
-		}
+		}/*
 		else if (weaponId == WeaponId::EmpyreanMissiles) {
 			if (source->sprite->mainGraphic->direction == 0) {
 				x_ = source->sprite->position.x + 0;
@@ -347,7 +347,7 @@ namespace {
 				x_ = source->sprite->position.x - 1;
 				y_ = source->sprite->position.y + 30;
 			}
-		}
+		}*/
 
 		__asm {
 			PUSHAD
