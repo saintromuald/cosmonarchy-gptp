@@ -239,12 +239,59 @@ namespace hooks {
         jmpPatch(getOrderTargetErrorString_JmpWrapper, 0x004920D9);
         jmpPatch(ShouldStopOrderedSpell_JmpWrapper, 0x004922DC);
     }
+    void trapJumpWrappers() {
+        memoryPatch(0x00401438, (u8)0xEB);//change to jump
+        u8 patchb030[] = {0x33, 0xc0, 0x90, 0x90};
+        memoryPatch(0x0047B030, patchb030);//xor eax, eax; nop; nop
+        memoryPatch(0x0047B070, patchb030);//xor eax, eax; nop; nop
+        //
+        memoryPatch(0x004EBE99, (u8)0xEB);
+        memoryPatch(0x004A4B4D, (u8)0xEB);
+        memoryPatch(0x004A491B, (u8)0xEB);
+        memoryPatch(0x004A4829, (u8)0xEB);
+        memoryPatch(0x004A46CA, (u8)0xEB);
+        memoryPatch(0x004A0307, (u8)0xEB);
+        memoryPatch(0x004A3E04, (u8)0xEB);
+        //
+        u8 jmpp[] = {0xEB, 0x3f};
+        memoryPatch(0x0049FAEF, jmpp);
+
+//        memoryPatch(0x0049FAEF, (u8)0x75);//JNZ
+        //
+        memoryPatch(0x0047C05D+2, (u8)0xFF);//floor gun trap
+        memoryPatch(0x0047C069+2, (u8)0xFF);//floor missile trap
+        
+
+        u8 jmpp2[] = { 0xeb,0x2f };
+        memoryPatch(0x0047BEE7, jmpp2);//JNZ
+
+        memoryPatch(0x0047B516, patchb030);
+        u8 jmpToEnd[] = { 0xC3,0x90,0x90,0x90};//RETN, NOP (3)
+        memoryPatch(0x0047B556, jmpToEnd);
+        //
+        memoryPatch(0x0047B7B1 + 2, (u8)0xE4);
+        nops(0x0047B7B7, 6);
+        //
+        //0047BDCB
+        u8 jmpp3[] = { 0xeb,0x27 };
+        memoryPatch(0x0047BDCB, jmpp3);//JNZ
+        
+
+        //
+
+
+        /*
+        
+	Line 184719: 0047BDC7   .  66:3D CB00    CMP AX,0CB
+        */
+    }
     void injectHydraSpecific() {
         flingySpeedPatches();
         //start of spell order code
         //default case of switch 004EC4FF
         unusedOrderPatches();
         lobotomyMinePatches();
+        trapJumpWrappers();
         //savantTargetingPatches();
         //disables CTFCop2 functionality, makes it useless
         //archonHardcodePatches();
