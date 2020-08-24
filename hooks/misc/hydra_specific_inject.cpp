@@ -174,14 +174,70 @@ namespace hooks {
         jmpPatch(wrapper_295EB, 0x004295EB, 1);
     }
 
-
+  
     void lobotomyMinePatches() {
       
         jmpPatch(lobotomyMineJmpWrapper, 0x004A066B, 3);  /*
         jmpPatch(orders_PlaceMine_JmpWrapper, 0x00465126, 0);
         jmpPatch(orders_PlaceMine_JmpWrapper2, 0x00465145, 0);
-        nops(0x00465088, 8);//remove tech requirement for any mines
-        */
+        nops(0x00465088, 8);//remove tech requirement for any mines */
+    }
+    const u32 func_techTargetSpellCheck = 0x00491E80;
+    const u32 jmp_004920E3 = 0x004920E3;
+    void __declspec(naked) getOrderTargetErrorString_JmpWrapper() {
+        static CUnit* caster;
+        static u8 playerId;
+        static u32 techId;
+        static CUnit* target;
+        static u32 func_result;
+        static u32 extended_result;
+        __asm {
+            MOV caster,EAX
+            MOV BL,[EAX+0x4c]   //
+            MOV EAX,EDI //
+            MOV target,EAX
+            MOV playerId,BL
+            CALL func_techTargetSpellCheck
+            MOV func_result, EAX
+            PUSHAD
+        }
+        extended_result = hooks::extend_tech_target_check(func_result, caster, target, techId);
+        __asm {
+            POPAD
+            MOV EAX,extended_result
+            JMP jmp_004920E3
+        }
+    }
+    const u32 jmp_004922E1 = 0x004922E1;
+    void __declspec(naked) ShouldStopOrderedSpell_JmpWrapper() {
+        static CUnit* caster;
+        static u8 playerId;
+        static u32 techId;
+        static CUnit* target;
+        static u32 func_result;
+        static u32 extended_result;
+        __asm {
+            PUSH EAX
+            MOV EAX,[EBP+0x08]
+            MOV techId,EAX
+            POP EAX
+            MOV playerId,BL
+            MOV target,EAX
+            MOV caster,EDI
+            CALL func_techTargetSpellCheck
+            MOV func_result,EAX
+            PUSHAD
+        }
+        extended_result = hooks::extend_tech_target_check(func_result, caster, target, techId);
+        __asm {
+            POPAD
+            MOV EAX, extended_result
+            JMP jmp_004922E1
+        }
+    }
+    void savantTargetingPatches() {
+        jmpPatch(getOrderTargetErrorString_JmpWrapper, 0x004920D9);
+        jmpPatch(ShouldStopOrderedSpell_JmpWrapper, 0x004922DC);
     }
     void injectHydraSpecific() {
         flingySpeedPatches();
@@ -189,6 +245,7 @@ namespace hooks {
         //default case of switch 004EC4FF
         unusedOrderPatches();
         lobotomyMinePatches();
+        savantTargetingPatches();
         //disables CTFCop2 functionality, makes it useless
         //archonHardcodePatches();
     }

@@ -72,6 +72,15 @@ namespace hooks {
 		}
 		return UnitId::TerranVultureSpiderMine;
 	}
+	u32 extend_tech_target_check(u32 orig_result, CUnit* caster, CUnit* target, u8 techId) {
+		if (orig_result == 0) {//Valid Target
+			scbw::printText("Can cast");
+			if (techId == TechId::Lockdown) {
+				scbw::printFormattedText("Lockdown %d %d", caster->orderTarget.pt.x, caster->orderTarget.pt.y);
+			}
+		}
+		return orig_result;
+	}
 
 }
 	

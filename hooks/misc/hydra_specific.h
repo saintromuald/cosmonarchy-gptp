@@ -14,6 +14,7 @@ namespace hooks {
 	bool is_unused_order(u8 orderId);
 	void setupSpiderMines(CUnit* unit);
 	u32 get_mine_id(CUnit* unit);
+	u32 extend_tech_target_check(u32 orig_result, CUnit* caster, CUnit* target, u8 techId);
 }
 
 namespace hooks {
