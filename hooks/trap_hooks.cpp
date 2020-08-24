@@ -98,8 +98,9 @@ namespace hooks {
         }
 
         incrementUnitScoresEx(1, v1, 1);
-        if (units_dat::BaseProperty[(u16)v1->id] & UnitProperty::PermanentCloak)
+        if (units_dat::BaseProperty[(u16)v1->id] & UnitProperty::PermanentCloak) {
             playSoundFromDirection(v1, 273);
+        }
 
         v3 = v1->id;
         if (v3 == UnitId::Spell_ScannerSweep || v3 == UnitId::Special_MapRevealer) {
@@ -133,8 +134,9 @@ namespace hooks {
             }
         }
         else if (v1->sprite->flags & 0x20) {
-            if (v3 != UnitId::ProtossInterceptor && v3 != UnitId::ProtossScarab)
+            if (v3 != UnitId::ProtossInterceptor && v3 != UnitId::ProtossScarab) {
                 initUnitTrapDoodad(v1);
+            }
         }
         v4 = v1->id;/*
         if (v4 == UnitId::Special_FloorMissileTrap
@@ -288,10 +290,10 @@ namespace { // helper wrappers
         static COrder* result;
         __asm {
             PUSHAD
-            MOV EBX, a1
+            MOVZX BL, a1
             MOV EDI, a2
             MOV ESI, a3
-            MOV EDX, a4
+            MOVZX DX, a4
             PUSH a5
             PUSH a6
             CALL Func_performAnotherOrder
@@ -316,7 +318,7 @@ namespace { // helper wrappers
         __asm {
             PUSHAD
             MOV ESI, a1
-            MOV ECX, a2
+            MOVZX CL, a2
             CALL Func_orderComputerClear
             POPAD
         }
@@ -328,7 +330,7 @@ namespace { // helper wrappers
             PUSHAD
             MOV EAX, a1
             MOV EDX, a2
-            MOV ECX, a3
+            MOVZX CL, a3
             PUSH a4
             PUSH a5
             PUSH a6
