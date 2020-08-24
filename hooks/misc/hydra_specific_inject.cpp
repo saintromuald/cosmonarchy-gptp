@@ -1,4 +1,3 @@
-//
 #include "hooks/misc/hydra_specific.h"
 #include "globals.h"
 namespace hooks {
@@ -174,13 +173,115 @@ namespace hooks {
         jmpPatch(wrapper_295EB, 0x004295EB, 1);
     }
 
-
+  
     void lobotomyMinePatches() {
       
         jmpPatch(lobotomyMineJmpWrapper, 0x004A066B, 3);  /*
         jmpPatch(orders_PlaceMine_JmpWrapper, 0x00465126, 0);
         jmpPatch(orders_PlaceMine_JmpWrapper2, 0x00465145, 0);
-        nops(0x00465088, 8);//remove tech requirement for any mines
+        nops(0x00465088, 8);//remove tech requirement for any mines */
+    }
+    const u32 func_techTargetSpellCheck = 0x00491E80;
+    const u32 jmp_004920E3 = 0x004920E3;
+    void __declspec(naked) getOrderTargetErrorString_JmpWrapper() {
+        static CUnit* caster;
+        static u8 playerId;
+        static u32 techId;
+        static CUnit* target;
+        static u32 func_result;
+        static u32 extended_result;
+        __asm {
+            MOV caster,EAX
+            MOV BL,[EAX+0x4c]   //
+            MOV EAX,EDI //
+            MOV target,EAX
+            MOV playerId,BL
+            CALL func_techTargetSpellCheck
+            MOV func_result, EAX
+            PUSHAD
+        }
+        extended_result = hooks::extend_tech_target_check(func_result, caster, target, techId);
+        __asm {
+            POPAD
+            MOV EAX,extended_result
+            JMP jmp_004920E3
+        }
+    }
+    const u32 jmp_004922E1 = 0x004922E1;
+    void __declspec(naked) ShouldStopOrderedSpell_JmpWrapper() {
+        static CUnit* caster;
+        static u8 playerId;
+        static u32 techId;
+        static CUnit* target;
+        static u32 func_result;
+        static u32 extended_result;
+        __asm {
+            PUSH EAX
+            MOV EAX,[EBP+0x08]
+            MOV techId,EAX
+            POP EAX
+            MOV playerId,BL
+            MOV target,EAX
+            MOV caster,EDI
+            CALL func_techTargetSpellCheck
+            MOV func_result,EAX
+            PUSHAD
+        }
+        extended_result = hooks::extend_tech_target_check(func_result, caster, target, techId);
+        __asm {
+            POPAD
+            MOV EAX, extended_result
+            JMP jmp_004922E1
+        }
+    }
+    void lobotomyMineTargetingPatches() {
+        jmpPatch(getOrderTargetErrorString_JmpWrapper, 0x004920D9);
+        jmpPatch(ShouldStopOrderedSpell_JmpWrapper, 0x004922DC);
+    }
+    void trapJumpWrappers() {
+        memoryPatch(0x00401438, (u8)0xEB);//change to jump
+        u8 patchb030[] = {0x33, 0xc0, 0x90, 0x90};
+        memoryPatch(0x0047B030, patchb030);//xor eax, eax; nop; nop
+        memoryPatch(0x0047B070, patchb030);//xor eax, eax; nop; nop
+        //
+        memoryPatch(0x004EBE99, (u8)0xEB);
+        memoryPatch(0x004A4B4D, (u8)0xEB);
+        memoryPatch(0x004A491B, (u8)0xEB);
+        memoryPatch(0x004A4829, (u8)0xEB);
+        memoryPatch(0x004A46CA, (u8)0xEB);
+        memoryPatch(0x004A0307, (u8)0xEB);
+        memoryPatch(0x004A3E04, (u8)0xEB);
+        //
+        u8 jmpp[] = {0xEB, 0x3f};
+        memoryPatch(0x0049FAEF, jmpp);
+
+//        memoryPatch(0x0049FAEF, (u8)0x75);//JNZ
+        //
+        memoryPatch(0x0047C05D+2, (u8)0xFF);//floor gun trap
+        memoryPatch(0x0047C069+2, (u8)0xFF);//floor missile trap
+        
+
+        u8 jmpp2[] = { 0xeb,0x2f };
+        memoryPatch(0x0047BEE7, jmpp2);//JNZ
+
+        memoryPatch(0x0047B516, patchb030);
+        u8 jmpToEnd[] = { 0xC3,0x90,0x90,0x90};//RETN, NOP (3)
+        memoryPatch(0x0047B556, jmpToEnd);
+        //
+        memoryPatch(0x0047B7B1 + 2, (u8)0xE4);
+        nops(0x0047B7B7, 6);
+        //
+        //0047BDCB
+        u8 jmpp3[] = { 0xeb,0x27 };
+        memoryPatch(0x0047BDCB, jmpp3);//JNZ
+        
+
+        //
+
+
+        /*
+        
+	Line 184719: 0047BDC7   .  66:3D CB00    CMP AX,0CB
         */
     }
     void injectHydraSpecific() {
@@ -189,6 +290,8 @@ namespace hooks {
         //default case of switch 004EC4FF
         unusedOrderPatches();
         lobotomyMinePatches();
+        //trapJumpWrappers();
+        //lobotomyMineTargetingPatches();
         //disables CTFCop2 functionality, makes it useless
         //archonHardcodePatches();
     }

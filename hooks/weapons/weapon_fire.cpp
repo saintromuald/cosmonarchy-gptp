@@ -277,7 +277,77 @@ namespace {
 				x_ = source->sprite->position.x - 8;
 				y_ = source->sprite->position.y - 48;
 			}
-		}
+		}/*
+		else if (weaponId == WeaponId::EmpyreanMissiles) {
+			if (source->sprite->mainGraphic->direction == 0) {
+				x_ = source->sprite->position.x + 0;
+				y_ = source->sprite->position.y - 27;
+			}
+			else if (source->sprite->mainGraphic->direction == 1) {
+				x_ = source->sprite->position.x + 8;
+				y_ = source->sprite->position.y - 30;
+			}
+			else if (source->sprite->mainGraphic->direction == 2) {
+				x_ = source->sprite->position.x + 13;
+				y_ = source->sprite->position.y - 28;
+			}
+			else if (source->sprite->mainGraphic->direction == 3) {
+				x_ = source->sprite->position.x + 29;
+				y_ = source->sprite->position.y - 34;
+			}
+			else if (source->sprite->mainGraphic->direction == 4) {
+				x_ = source->sprite->position.x + 36;
+				y_ = source->sprite->position.y - 33;
+			}
+			else if (source->sprite->mainGraphic->direction == 5) {
+				x_ = source->sprite->position.x + 38;
+				y_ = source->sprite->position.y - 27;
+			}
+			else if (source->sprite->mainGraphic->direction == 6) {
+				x_ = source->sprite->position.x + 47;
+				y_ = source->sprite->position.y - 25;
+			}
+			else if (source->sprite->mainGraphic->direction == 7) {
+				x_ = source->sprite->position.x + 51;
+				y_ = source->sprite->position.y - 20;
+			}
+			else if (source->sprite->mainGraphic->direction == 8) {
+				x_ = source->sprite->position.x + 53;
+				y_ = source->sprite->position.y - 17;
+			}
+			else if (source->sprite->mainGraphic->direction == 9) {
+				x_ = source->sprite->position.x + 56;
+				y_ = source->sprite->position.y - 4;
+			}
+			else if (source->sprite->mainGraphic->direction == 10) {
+				x_ = source->sprite->position.x + 53;
+				y_ = source->sprite->position.y + 8;
+			}
+			else if (source->sprite->mainGraphic->direction == 11) {
+				x_ = source->sprite->position.x + 45;
+				y_ = source->sprite->position.y + 16;
+			}
+			else if (source->sprite->mainGraphic->direction == 12) {
+				x_ = source->sprite->position.x + 39;
+				y_ = source->sprite->position.y + 20;
+			}
+			else if (source->sprite->mainGraphic->direction == 13) {
+				x_ = source->sprite->position.x + 28;
+				y_ = source->sprite->position.y + 24;
+			}
+			else if (source->sprite->mainGraphic->direction == 14) {
+				x_ = source->sprite->position.x + 22;
+				y_ = source->sprite->position.y + 30;
+			}
+			else if (source->sprite->mainGraphic->direction == 15) {
+				x_ = source->sprite->position.x + 14;
+				y_ = source->sprite->position.y + 30;
+			}
+			else if (source->sprite->mainGraphic->direction == 16) {
+				x_ = source->sprite->position.x - 1;
+				y_ = source->sprite->position.y + 30;
+			}
+		}*/
 
 		__asm {
 			PUSHAD

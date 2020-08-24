@@ -162,6 +162,7 @@ enum Enum {
 	// Protoss \\
 		
 	PhaseCannon									= 68,			// Simulacrum weapon
+	EmpyreanMissiles							= 71,			// Empyrean weapon
 	PhaseSignifier								= 72,			// Hierophant weapon
 	AuroraPhotonBlasters						= 73,			// Aurora weapon
 	PanoptusAntiMatterMissiles					= 74,			// Panoptus weapon
@@ -172,6 +173,7 @@ enum Enum {
 	// Zerg \\
 
 	VorvalClaws									= 36,			// Vorvaling weapon
+	PlasmidBreath								= 37,			// Nathrokor weapon
 	KesthakWeapon								= 41,			// Keskathalor weapon
 	SerratedCleavers							= 47,			// Gorgoleth weapon
 	BasiliskCorrosiveAcid						= 50,			// Basilisk weapon

@@ -219,10 +219,10 @@ namespace hooks {
 
 			//26E31
 			if (
-				activeUnit->id == UnitId::ProtossCarrier ||
-				activeUnit->id == UnitId::Hero_Gantrithor ||
-				activeUnit->id == UnitId::ProtossReaver ||
-				activeUnit->id == UnitId::Hero_Warbringer
+				activeUnit->id == UnitId::ProtossCarrier
+//				||	activeUnit->id == UnitId::Hero_Gantrithor
+				||	activeUnit->id == UnitId::ProtossReaver
+//				||	activeUnit->id == UnitId::Hero_Warbringer
 				)
 			{
 				StatHangerCount(dialog, index);
@@ -231,7 +231,7 @@ namespace hooks {
 
 			if (
 				activeUnit->id == UnitId::TerranVulture /*||
-				activeUnit->id == UnitId::Hero_JimRaynorVulture*/	//disable hardcode for southpaws, 
+				activeUnit->id == UnitId::Hero_JimRaynorVulture*/	//disable hardcode for Southpaws, 
 																	//though without mines it shouldn't show in any case
 				)
 			{
@@ -287,10 +287,11 @@ namespace hooks {
 		int v4; // edx
 
 		_type = a2->id;
-		if (units_dat::BaseProperty[_type] & UnitProperty::NeutralAccessories || _type == UnitId::TerranCivilian ||
-			_type == UnitId::TerranVultureSpiderMine)
+		if (units_dat::BaseProperty[_type] & UnitProperty::NeutralAccessories
+//		|| _type == UnitId::TerranCivilian
+		|| _type == UnitId::TerranVultureSpiderMine)
 			return 0;
-		if (_type == UnitId::Hero_Gantrithor)
+/*		if (_type == UnitId::Hero_Gantrithor)
 		{
 			if (!units_dat::MapStringId[82])          // Gantrithor
 			{
@@ -299,7 +300,7 @@ namespace hooks {
 				return "";
 			}
 			return 0;
-		}
+		}*/
 		if (_type != UnitId::TerranBattlecruiser && _type != UnitId::Hero_NoradII && _type != UnitId::Hero_Hyperion
 			|| !(v2 & UnitProperty::Hero)
 			|| !units_dat::MapStringId[_type])
