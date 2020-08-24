@@ -25,7 +25,7 @@ namespace {
 
 	void __declspec(naked) disableUnit_Wrapper() {
 		static CUnit* a1;
-		static __int16 result;
+		static s16 result;
 		__asm {
 			MOV a1, EDI
 			PUSHAD
