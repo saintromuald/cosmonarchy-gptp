@@ -65,8 +65,8 @@ namespace hooks {
 	void injectTrapHooks() {
 		jmpPatch(ReturnFalse_Wrapper, 0x00401430, 3);
 		jmpPatch(ReturnFalse_Wrapper, 0x0047B070, 3);
-		jmpPatch(unitIsFloorTrap_Wrapper, 0x0047B070, 1);
+		jmpPatch(unitIsFloorTrap_Wrapper, 0x0047B070, 3);
 		jmpPatch(disableUnit_Wrapper, 0x0047B4B0, 1);
-		jmpPatch(updateUnitStrengthAndApplyDefaultOrders_Wrapper, 0x000049FA40, 1);
+		jmpPatch(updateUnitStrengthAndApplyDefaultOrders_Wrapper, 0x0049FA40, 1);
 	}
 }
