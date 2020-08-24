@@ -245,7 +245,7 @@ namespace hooks {
         //default case of switch 004EC4FF
         unusedOrderPatches();
         lobotomyMinePatches();
-        savantTargetingPatches();
+        //savantTargetingPatches();
         //disables CTFCop2 functionality, makes it useless
         //archonHardcodePatches();
     }
