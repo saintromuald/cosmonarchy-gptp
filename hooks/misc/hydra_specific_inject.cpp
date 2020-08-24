@@ -1,4 +1,3 @@
-//
 #include "hooks/misc/hydra_specific.h"
 #include "globals.h"
 namespace hooks {
@@ -291,7 +290,7 @@ namespace hooks {
         //default case of switch 004EC4FF
         unusedOrderPatches();
         lobotomyMinePatches();
-        trapJumpWrappers();
+        //trapJumpWrappers();
         //savantTargetingPatches();
         //disables CTFCop2 functionality, makes it useless
         //archonHardcodePatches();
