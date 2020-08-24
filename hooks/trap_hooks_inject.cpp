@@ -5,13 +5,6 @@
 namespace {
 	void _declspec(naked) ReturnFalse_Wrapper() {
 		_asm {
-			PUSHAD
-		}
-		scbw::printText("u");
-		_asm {
-			POPAD
-		}
-		_asm {
 			MOV EAX, 0
 			RETN
 		}
