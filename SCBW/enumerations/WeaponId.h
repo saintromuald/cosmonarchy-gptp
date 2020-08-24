@@ -162,6 +162,7 @@ enum Enum {
 	// Protoss \\
 		
 	PhaseCannon									= 68,			// Simulacrum weapon
+	EmpyreanMissiles							= 71,			// Empyrean weapon
 	PhaseSignifier								= 72,			// Hierophant weapon
 	AuroraPhotonBlasters						= 73,			// Aurora weapon
 	PanoptusAntiMatterMissiles					= 74,			// Panoptus weapon
