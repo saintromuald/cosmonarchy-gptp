@@ -483,6 +483,13 @@ namespace hooks {
 
 			bool bStopHere = false;
 
+			// TODO: Finish Defensive Matrix changes
+			/*
+			if (unit->defensiveMatrixTimer == 69) {
+				// TODO: Replace with a call to Restore?
+				removeAllStatusEffects(unit);
+			}*/
+
 			//HP regeneration
 			if (
 				units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP &&
@@ -722,8 +729,6 @@ namespace {
 		return result != 0;
 	}
 
-	;
-
 	//hooked by hooks\update_status_effects.cpp
 	const u32 Func_RestoreAllUnitStats = 0x00492F70;
 	void RestoreAllUnitStats(CUnit* unit) {
@@ -736,8 +741,6 @@ namespace {
 		}
 
 	}
-
-	;
 
 	//Identical to setAllImageGroupFlagsPal11 @ 0x00497430;
 	void setAllImageGroupFlagsPal11(CSprite* sprite) {
@@ -754,7 +757,22 @@ namespace {
 
 	}
 
-	;
+	// \\
+
+	void removeAllStatusEffects(CUnit* unit) {
+		unit->removeAcidSpores();
+		unit->removeLockdown();
+		unit->removeMaelstrom();
+		unit->removeStasisField();
+		/*
+		unit->ensnareTimer = 0;
+		unit->irradiateTimer = 0;
+		unit->isBlind = 0;
+		unit->parasiteFlags = 0;
+		unit->plagueTimer = 0;
+		unit->stimTimer = 0;
+		unit->unusedTimer = 0;*/
+	}
 
 }
 
