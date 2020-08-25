@@ -40,12 +40,12 @@ namespace {
 	Bool32 function_004F1870(CUnit* unit, int x, int y);								//F1870
 
 	// For updatePlacementStateForPlacementBox
-	signed int canBuildOnTileLocation(CUnit* a1, int a2, int a3, int a4, int unitType, int a6, int a7, int a8, int a9);												// 00473FB0
+	s32 canBuildOnTileLocation(CUnit* a1, int a2, int a3, int a4, int unitType, int a6, int a7, int a8, int a9);												// 00473FB0
 
 	// For refreshScreen
-	signed int updatePlacementStateForPlacementBox(); // 0048DCE0
+	s32 updatePlacementStateForPlacementBox(); // 0048DCE0
 	int unk_buildingPlacementRelated(int a1, int a2); // 0048D7F0
-	signed int initPlacementBoxPos(int a1, Point16* a2); // 0048D660
+	s32 initPlacementBoxPos(int a1, Point16* a2); // 0048D660
 	char unk_buildingPlacementRelatedMouse(int a1, int a2); // 0048D7B0
 
 } //unnamed namespace
@@ -641,9 +641,9 @@ void orders_SCVBuild(CUnit* unit) {
 
 	};
 
-	signed int updatePlacementStateForPlacementBox() { // 0x0048DCE0
-		signed int v0; // esi
-		signed int result; // eax
+	s32 updatePlacementStateForPlacementBox() { // 0x0048DCE0
+		s32 v0; // esi
+		s32 result; // eax
 
 		v0 = canBuildOnTileLocation(
 			*activePortraitUnit,
@@ -660,7 +660,7 @@ void orders_SCVBuild(CUnit* unit) {
 		int addon_x = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
 		int addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
 		if (target == UnitId::TerranFutureStation) {
-			if (source == UnitId::academy || source == UnitId::armory) {
+			if (source == UnitId::TerranAcademy || source == UnitId::TerranArmory) {
 				addon_x = 96;
 				addon_y = 0;
 			}
@@ -690,9 +690,6 @@ void orders_SCVBuild(CUnit* unit) {
 		return result;
 	}
 
-
-
-
 	char refreshScreen(int ecx0) { // 0048DDC0
 		char result;
 		int v2;
@@ -707,14 +704,12 @@ void orders_SCVBuild(CUnit* unit) {
 			ByteOperations::SetLowWord(ecx0, mouse->y);
 			v6.x = mouse->x;
 			v6.y = mouse->y;
-			if (initPlacementBoxPos(ecx0, &v6))
-			{
+			if (initPlacementBoxPos(ecx0, &v6)) {
 				*placeBuildingMessageId = updatePlacementStateForPlacementBox();
 				refreshLayer3And4();
 				unk_buildingPlacementRelated(1, (int)&v6);
-				if (isPlacingAddon)
-				{
-					v4 = (int)(placeBuildingUnitId - UnitId::TerranCommandCenter);
+				if (isPlacingAddon) {
+					v4 = *placeBuildingUnitId - UnitId::TerranCommandCenter;
 					v6.x = units_dat::AddonPlacement[v4].x;
 					v6.y = units_dat::AddonPlacement[v4].y;
 					if (*placeBuildingUnitId == UnitId::TerranFutureStation) {
@@ -735,8 +730,7 @@ void orders_SCVBuild(CUnit* unit) {
 				}
 				result = refreshLayer3And4();
 			}
-			else
-			{
+			else {
 				unk_buildingPlacementRelatedMouse(v2, 1);
 				result = unk_buildingPlacementRelatedMouse(v3, 0);
 			}
@@ -1125,8 +1119,8 @@ namespace {
 	// For updatePlacementStateForPlacementBox
 
 	const u32 Func_canBuildOnTileLocation = 0x00473FB0;
-	signed int canBuildOnTileLocation(CUnit* a1, int a2, int a3, int a4, int unitType, int a6, int a7, int a8, int a9) {
-		static signed int result;
+	s32 canBuildOnTileLocation(CUnit* a1, int a2, int a3, int a4, int unitType, int a6, int a7, int a8, int a9) {
+		static s32 result;
 
 		__asm {
 			PUSHAD
@@ -1150,8 +1144,8 @@ namespace {
 	// For refreshScreen
 
 	const u32 Func_updatePlacementStateForPlacementBox = 0x0048DCE0;
-	signed int updatePlacementStateForPlacementBox() {
-		static signed int result;
+	s32 updatePlacementStateForPlacementBox() {
+		static s32 result;
 
 		__asm {
 			PUSHAD
@@ -1178,8 +1172,8 @@ namespace {
 	}
 
 	const u32 Func_initPlacementBoxPos = 0x0048D660;
-	signed int initPlacementBoxPos(int a1, Point16* a2) {
-		static signed int result;
+	s32 initPlacementBoxPos(int a1, Point16* a2) {
+		static s32 result;
 
 		__asm {
 			PUSHAD
