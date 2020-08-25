@@ -252,16 +252,16 @@ namespace hooks {
         memoryPatch(0x004A0307, (u8)0xEB);
         memoryPatch(0x004A3E04, (u8)0xEB);
         //
-        u8 jmpp[] = {0xEB, 0x3f};
+        u8 jmpp[] = {0xEB, 0x3d};
         memoryPatch(0x0049FAEF, jmpp);
 
 //        memoryPatch(0x0049FAEF, (u8)0x75);//JNZ
         //
-        memoryPatch(0x0047C05D+2, (u8)0xFF);//floor gun trap
-        memoryPatch(0x0047C069+2, (u8)0xFF);//floor missile trap
+        memoryPatch(0x0047C05D+2, (u8)0xe4);//floor gun trap
+        memoryPatch(0x0047C069+2, (u8)0xe4);//floor missile trap
         
 
-        u8 jmpp2[] = { 0xeb,0x2f };
+        u8 jmpp2[] = { 0xeb,0x2c };
         memoryPatch(0x0047BEE7, jmpp2);//JNZ
 
         memoryPatch(0x0047B516, patchb030);
@@ -272,7 +272,7 @@ namespace hooks {
         nops(0x0047B7B7, 6);
         //
         //0047BDCB
-        u8 jmpp3[] = { 0xeb,0x27 };
+        u8 jmpp3[] = { 0xeb,0x25 };
         memoryPatch(0x0047BDCB, jmpp3);//JNZ
         
 
@@ -290,10 +290,12 @@ namespace hooks {
         //default case of switch 004EC4FF
         unusedOrderPatches();
         lobotomyMinePatches();
-        //trapJumpWrappers();
+        trapJumpWrappers();
         //lobotomyMineTargetingPatches();
-        //disables CTFCop2 functionality, makes it useless
-        //archonHardcodePatches();
+        
+        //add later: disable CTFCop2/WarpIn functionality, make it useless
+        
+        archonHardcodePatches();
     }
 }
 
