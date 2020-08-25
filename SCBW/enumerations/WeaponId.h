@@ -169,6 +169,7 @@ enum Enum {
 	AugurWeapon									= 75,			// Augur weapon
 	ExemplarWeapon								= 76,			// Exemplar weapon
 	PsiSabers									= 86,			// Legionnaire weapon
+	WardensMark									= 110,			// Clarion weapon
 
 	// Zerg \\
 
