@@ -170,6 +170,10 @@ CUnit* get_generic_unit(CUnit* unit, u32 id);
 u32 get_generic_value(CUnit* u, u32 val);
 u32 get_generic_timer(CUnit* u, u32 val);
 u32 get_aise_value(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2);
+void set_generic_unit(CUnit* unit, u32 id, CUnit* targ);
+void set_generic_value(CUnit* u, u32 id, u32 val);
+void set_generic_timer(CUnit* u, u32 id, u32 val);
+
 void sendGPTP_aise_cmd(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2, u32 v3);
 /// Checks whether the @p playerId has the @p techId researched.
 /// Note: This uses TechId::Enum, instead of ScTech::Enum and BwTech::Enum.

@@ -709,6 +709,17 @@ CUnit* get_generic_unit(CUnit* unit, u32 id){
 	return reinterpret_cast<CUnit*>(val);
 }
 
+
+void set_generic_unit(CUnit* unit, u32 id, CUnit* targ) {
+	scbw::sendGPTP_aise_cmd(unit, targ, GptpId::SetGenericUnit, 0, 0, 0);
+}
+void set_generic_value(CUnit* u, u32 id, u32 val) {
+	scbw::sendGPTP_aise_cmd(u, NULL, GptpId::SetGenericValue, id, val, 0);
+}
+void set_generic_timer(CUnit* u, u32 id, u32 val) {
+	scbw::sendGPTP_aise_cmd(u, NULL, GptpId::SetGenericTimer, id, val, 0);
+}
+
 const u32 Func_CanTargetSpell = 0x00492020;
 u32 get_aise_value(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2){
 	u32 result = 0;

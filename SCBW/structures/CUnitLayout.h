@@ -36,14 +36,17 @@ namespace NewGameCommand {
 		CreateUnit = 0x07,
 		KhaydarinControl = 0x08,
 		CarrierPrebuild = 0x09,
-		Observance = 0xE,
 
 		OverlordDamageField = 0xA,
 		OverlordTurbomode=0xB,
 		OverlordCustomStim=0xC,
-
-
 		GenericSwitchAbility = 0x0D,
+		Observance=0xE,
+		OverlordBombardment = 0xF,
+		OverlordAltitudeChange = 0x10,
+
+
+		
 
 
 
@@ -78,6 +81,7 @@ namespace GptpId {
 		SetSublimeShepherd,
 		SetGenericUnit,
 		DirgeImpale,
+		ClearClarionLinks,
 
 		Void = 10005,
 	};
