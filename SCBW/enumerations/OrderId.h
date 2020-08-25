@@ -393,7 +393,7 @@ enum Enum {
     Observance              = 122,  // EMP Shockwave            | Science Vessel armor rend ability
 
     // Protoss
-    KhaydarinEclipse        = 155,  // CTF COP 2                | Exemplar form switch
+    KhaydarinEclipse        = 155,  // CTF COP 2                | Exemplar form switch, also used for Clarion Phase Link
 
     // Zerg
     EssenceDrain            = 154,  // Idle CTF COP             | Gorgoleth energy drain ability
