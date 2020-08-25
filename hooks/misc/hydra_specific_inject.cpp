@@ -284,16 +284,33 @@ namespace hooks {
 	Line 184719: 0047BDC7   .  66:3D CB00    CMP AX,0CB
         */
     }
+    const u32 progressOrder_jmp = 0x004EC6F1;
+    void __declspec(naked) PhaseLinkOrder_Wrapper() {
+        static CUnit* unit;
+        __asm {
+            MOV unit,ESI
+            PUSHAD
+        }
+        hooks::order_PhaseLink(unit);
+        __asm {
+            POPAD
+            JMP progressOrder_jmp
+        }
+    }
+    void phaseLinkPatches() {
+        jmpPatch(PhaseLinkOrder_Wrapper, 0x004EC629, 2);
+    }
     void injectHydraSpecific() {
         flingySpeedPatches();
         //start of spell order code
         //default case of switch 004EC4FF
         unusedOrderPatches();
+        phaseLinkPatches();//replaces CTFCop2 order
         lobotomyMinePatches();
         trapJumpWrappers();
         //lobotomyMineTargetingPatches();
         
-        //add later: disable CTFCop2/WarpIn functionality, make it useless
+        //add later: disable WarpIn functionality, make it useless
         
         archonHardcodePatches();
     }

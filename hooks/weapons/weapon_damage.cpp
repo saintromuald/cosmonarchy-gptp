@@ -699,13 +699,15 @@ namespace hooks {
 
 			// Reduce shields (finally)
 			if (shieldReduceAmount != 0) {
-
-				target->shields -= shieldReduceAmount;
-
-				if (damageType != DamageType::Independent && target->shields != 0) {
-					shield_overlay = true;
+				if (scbw::get_aise_value(target, NULL, AiseId::HasClarionLink, 0, 0)) {
+					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SpreadClarionDamage, shieldReduceAmount, damageType, direction);
 				}
-
+				else {
+					target->shields -= shieldReduceAmount;
+					if (damageType != DamageType::Independent && target->shields != 0) {
+						shield_overlay = true;
+					}
+				}
 			}
 			if (shield_overlay) {
 				createShieldOverlay(target, direction);

@@ -162,6 +162,13 @@ namespace hooks {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::DisruptionWeb, 0, 0);
 				}
 			}
+			else if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {			
+				unit->spendUnitEnergy(13);
+				if(unit->energy==0) {
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 0, 0, 0);
+				}
+			}
+
 			else { //EB526
 
 				int maxEnergy;

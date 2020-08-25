@@ -81,6 +81,18 @@ namespace hooks {
 		}
 		return orig_result;
 	}
-
+	//replaces CTFCop2 order
+	void order_PhaseLink(CUnit* unit) {
+		//replaces CTFCop2
+		if (scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 1, 0, 0);
+		}
+		else {
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 0, 0, 0);
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ClearClarionLinks, 0, 0, 0);
+		}
+		//no animation
+		unit->orderToIdle();
+	}
 }
 	
