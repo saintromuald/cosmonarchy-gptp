@@ -210,6 +210,7 @@ namespace ValueId {
 		DecaySavant									= 67,
 		SimulacrumStacks							= 68,
 		LobotomySlow								= 69,
+		EmpyreanMissilePos							= 70,
 
 	#if DELIVERANCE
 		EcclesiastStack								= 100,

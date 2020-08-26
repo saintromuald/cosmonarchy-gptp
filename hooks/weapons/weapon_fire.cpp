@@ -190,7 +190,30 @@ namespace hooks {
 						}
 					}
 				}
-				createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+				if (weaponId == WeaponId::EmpyreanMissiles) {
+					auto rotate = scbw::get_generic_value(unit, ValueId::EmpyreanMissilePos);
+					const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayAttackPtr, 
+											unit->sprite->mainGraphic->id));
+					u8 frameDirection = unit->sprite->mainGraphic->direction;
+					Point8 offset = loFile->getOffset(frameDirection, rotate);
+					if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
+						offset.x = -offset.x;
+					}
+//					scbw::printFormattedText("Empyrean Pos: %d, frameDir %d, direct %d, %d %d", rotate, frameDirection, unit->currentDirection1, offset.x, offset.y);
+					rotate++;
+					if (rotate > 3) {
+						rotate = 0;
+					}
+					scbw::set_generic_value(unit, ValueId::EmpyreanMissilePos, rotate);
+					auto X = x + offset.x;
+					auto Y = y + offset.y;
+					createBullet(weaponId, unit, X,Y, unit->playerId, scbw::getAngle(X,Y,
+						unit->orderTarget.unit->position.x,unit->orderTarget.unit->position.y));
+				}
+				else {
+					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+				}
+				
 			}
 
 			if (weaponId == WeaponId::SubterraneanTentacle && unit->orderTarget.unit != NULL) {
