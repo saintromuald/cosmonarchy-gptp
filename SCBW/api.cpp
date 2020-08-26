@@ -708,7 +708,13 @@ CUnit* get_generic_unit(CUnit* unit, u32 id){
 	u32 val = get_aise_value(unit, NULL, AiseId::GenericUnit, id, 0);
 	return reinterpret_cast<CUnit*>(val);
 }
-
+CSprite* get_generic_sprite(CUnit* unit, u32 id) {
+	u32 val = get_aise_value(unit, NULL, AiseId::GenericSprite, id, 0);
+	return reinterpret_cast<CSprite*>(val);
+}
+void set_generic_sprite(CUnit* u, u32 id, CSprite* val) {
+	scbw::sendGPTP_aise_cmd(u, NULL, GptpId::SetGenericValue, id, reinterpret_cast<u32>(val), 0);
+}
 
 void set_generic_unit(CUnit* unit, u32 id, CUnit* targ) {
 	scbw::sendGPTP_aise_cmd(unit, targ, GptpId::SetGenericUnit, 0, 0, 0);
