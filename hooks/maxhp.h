@@ -8,4 +8,5 @@ namespace hooks {
 	void drawUnitInfo(BinDlg* a1);
 	void drawSupplyUnitInfo(int a1);						// 00427540
 	char drawWireframeShield(int a1, CUnit* a2);			// 004566B0
+	bool AI_TargetEnemyProc(CUnit* a1, CUnit* a2);			// 00440A20
 }

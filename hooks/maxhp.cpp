@@ -53,6 +53,9 @@ namespace {
 	u32 getSuppliesAvailable(u8 a1, int a2);							// 00488900
 	void drawArmor(int a1, int a2, u16 a3);								// 00425600
 	void unitStatAct_Standard(void* a1);								// 00426F50
+
+	// For AI_TargetEnemyProc
+	bool AI_UnitCanAttack(CUnit* a1);									// 00476180
 }
 
 namespace hooks {
@@ -342,6 +345,25 @@ namespace hooks {
 		}
 		return result;
 	}
+
+	bool AI_TargetEnemyProc(CUnit* a1, CUnit* a2) { // 00440A20
+		s8 v2; // dl
+		s8 v3; // bl
+		int v4; // eax
+		s8 result; // eax
+
+		result = 0;
+		if (a1 != a2) {
+			v2 = a2->playerId;
+			v3 = a1->playerId == 11 ? a1->sprite->playerId : a1->playerId;
+			if (!scbw::isAlliedTo(v2, v3)) {
+				ByteOperations::SetLowByte(v4, AI_UnitCanAttack(a1));
+				if (v4)
+					result = 1;
+			}
+		}
+		return result;
+	}
 }
 
 namespace { // Helpers
@@ -464,5 +486,20 @@ namespace { // Helpers
 			CALL Func_unitStatAct_Standard
 			POPAD
 		}
+	}
+
+	// For AI_TargetEnemyProc
+
+	const u32 Func_AI_UnitCanAttack = 0x00476180;
+	bool AI_UnitCanAttack(CUnit* a1) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV ECX, a1
+			CALL Func_AI_UnitCanAttack
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
 	}
 }

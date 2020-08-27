@@ -547,10 +547,29 @@ namespace hooks {
 		}
 	}
 
+	void __declspec(naked) AI_TargetEnemyProc_Wrapper() {
+		static CUnit* a1;
+		static CUnit* a2;
+		static bool result;
+		__asm {
+			MOV a1, ECX
+			MOV a2, EDX
+			PUSHAD
+		}
+		result = hooks::AI_TargetEnemyProc(a1, a2);
+		__asm {
+			POPAD
+			MOVZX EAX, result
+			RETN
+		}
+	}
+
 	void injectMaxHpHooks() {
 		jmpPatch(getTotalHitPointsPlusShields_Wrapper, 0x00402710, 5);
 		jmpPatch(drawUnitInfo_Wrapper, 0x00426190, 3);
 		jmpPatch(drawSupplyUnitInfo_Wrapper, 0x00427540, 1);
+		jmpPatch(drawWireframeShield_Wrapper, 0x004566B0, 5);
+		jmpPatch(AI_TargetEnemyProc_Wrapper, 0x00440A20, 2);
 		
 		//required for Heatshield
 		/*jmpPatch(getMaxHpWrapper, 0x00401404, 2);//done
