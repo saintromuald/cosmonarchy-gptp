@@ -292,7 +292,7 @@ namespace hooks {
 		u8 time = bullet->time_remaining--;
 		bool bEnd = false;
 		
-		if (bullet->weaponType==WeaponId::EmpyreanMissiles) {
+		if (bullet->weaponType == WeaponId::EmpyreanMissiles) {
 			u8 time_current = 255 - time;
 			if (time_current == 8) {
 				bullet->flingyTopSpeed *= 2;
@@ -304,13 +304,13 @@ namespace hooks {
 		}
 		else if (bullet->weaponType == WeaponId::EmpyreanMissiles) {
 			u32 range = 128;
-			auto a = scbw::UnitFinder::getNearestTarget(
+			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
 				bullet->position.x - range, bullet->position.y - range,
 				bullet->position.x + range, bullet->position.y + range,
 				bullet, empyreanMissileMatch(bullet)
 			);
-			if (a != NULL) {
-				bullet->attackTarget.unit = a;
+			if (collisionTarget != NULL) {
+				bullet->attackTarget.unit = collisionTarget;
 				bEnd = true;
 			}
 		}
