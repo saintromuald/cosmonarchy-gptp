@@ -272,6 +272,12 @@ SCBW_DATA(		char*,			byteShieldStr,				0x0068C20A); // count of 22
 SCBW_DATA(		char*,			wireframeConstants,			0x00515280); // count of 40
 SCBW_DATA(		char*,			imgDrawPaletteIndex,		0x0050CEC1); // count of 256
 
+// For drawBuildingInfo
+SCBW_DATA(		s32*,			selectionGroupHP,			0x006CA94C);
+SCBW_DATA(		s16*,			userInterfaceEnergy,		0x006CAC0C);
+SCBW_DATA(		s32*,			userInterfaceShields,		0x006CA9EC);
+SCBW_DATA(		char*,			redrawTransportUI,			0x006CA9F0);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data

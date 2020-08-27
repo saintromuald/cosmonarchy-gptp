@@ -20,9 +20,9 @@
 	Line 58295: 0042781F  |.  8A8A B0476600 MOV CL,BYTE PTR DS:[EDX+6647B0] -- 0x00427540 -- Ss_DrawSupplyUnitStatus -- HOOKED
 	Line 129037: 004566B4  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004566B0 -- drawWireframeShield -- HOOKED
 	Line 95955: 00440A9A   .  8A90 B0476600 MOV DL,BYTE PTR DS:[EAX+6647B0] -- 0x00440A20 -- AI_TargetEnemyProc -- HOOKED
+	Line 58440: 004279F3   .  8A83 B0476600 MOV AL,BYTE PTR DS:[EBX+6647B0] -- 0x00427890 -- drawBuildingInfo -- HOOKED
 
 	// Not hooked yet
-	Line 58440: 004279F3   .  8A83 B0476600 MOV AL,BYTE PTR DS:[EBX+6647B0] -- 0x00427890 -- DrawGenericBuildingStatus
 	Line 72970: 00431274  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00431270 -- CalculateBaseStrength
 	Line 73606: 00431865  |.  8A86 B0476600 MOV AL,BYTE PTR DS:[ESI+6647B0] -- 0x00431800 -- CalculateStrength
 	Line 95686: 00440800   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004407E0 -- AI_RestorationRequirementsProc
@@ -56,6 +56,28 @@ namespace {
 
 	// For AI_TargetEnemyProc
 	bool AI_UnitCanAttack(CUnit* a1);									// 00476180
+
+	// For drawBuildingInfo
+	int needRedrawUI();													// 00424A10
+	CUnit* genericStatusUpdateDrawnValues();							// 004248F0
+	void drawProgressBar(int a1);										// 004260C0
+	void drawNukeSiloInfo(int a1);										// 00426FF0
+	bool unitIsActiveTransport(CUnit* a1);								// 004E6BA0
+	bool isQueueSlotActive(CUnit* a1, int a2);							// 00401E70
+	void drawTrainingProgress(BinDlg* a1);								// 004268D0
+	bool isConstructingAddon(CUnit* a1);								// 004E66B0
+	bool isAttemptingProtossBuild(CUnit* a1);							// 004E4C40
+	void drawAddonProgress(int a1);										// 00425F30
+	void drawTechProgress(int a1);										// 004266F0
+	void drawUpgradeProgress(BinDlg* a1);								// 00426500
+	bool unitIsGeyser(CUnit* a1);										// 004688B0
+	void drawGasQuantity(BinDlg* a1);									// 00426190
+	s8 unitGetGroundWeapon(CUnit* a1);									// 00475AD0
+	void drawDisplayButtons(int a1);									// 00426C60
+	BinDlg* getControlFromIndex(BinDlg* a1, s16 a2);					// 00418080
+	void setTextStr(int a1);											// 004263E0
+	void setUnitStatusStrText(int a1);									// 00425B50
+	int unitGetName(CUnit* a1);											// 0047B5A0
 }
 
 namespace hooks {
@@ -364,6 +386,92 @@ namespace hooks {
 		}
 		return result;
 	}
+
+	void drawBuildingInfo(void* dlg) { // 00427890
+		CUnit* v1; // esi
+		BinDlg* v2; // edi
+		int v3; // edx
+		int v4; // ebx
+		int v5; // eax
+		int v6; // eax
+		BinDlg* v7; // eax
+		int v8; // eax
+
+		v1 = *activePortraitUnit;
+		selectionGroupHP[0] = (*activePortraitUnit)->hitPoints;
+		v2 = (BinDlg*)dlg;
+		v3 = (*activePortraitUnit)->shields >> 8;
+		*userInterfaceEnergy = (*activePortraitUnit)->energy;
+		*userInterfaceShields = v3;
+		*redrawTransportUI = needRedrawUI();
+		genericStatusUpdateDrawnValues();
+		ByteOperations::SetLowWord(v4, v1->id);
+		if ((u16)v4 >= 0xB0u && (u16)v4 <= 0xB2u || (s16)v4 == 188)
+			goto LABEL_35;
+		if (!IS_IN_REPLAY && (unsigned __int8)v1->id != *LOCAL_NATION_ID)
+			goto LABEL_6;
+		if (!(v1->status & 1)) {
+			drawProgressBar((int)v2);
+			goto LABEL_32;
+		}
+		if ((s16)v4 == 108) {
+			drawNukeSiloInfo((int)v2);
+			goto LABEL_32;
+		}
+		if (unitIsActiveTransport(v1))
+			goto LABEL_6;
+		ByteOperations::SetLowByte(v5, isQueueSlotActive(v1, 0));
+		if (v5) {
+			drawTrainingProgress(v2);
+			goto LABEL_32;
+		}
+		if (isConstructingAddon(v1) || isAttemptingProtossBuild(v1)) {
+			drawAddonProgress((int)v2);
+			goto LABEL_32;
+		}
+		if (v1->building.techType != 44) {
+			drawTechProgress((int)v2);
+			goto LABEL_32;
+		}
+		if (v1->building.upgradeType != 61) {
+			drawUpgradeProgress(v2);
+			goto LABEL_32;
+		}
+		v4 = (u16)v4;
+		if (units_dat::SupplyProvided[(u16)v4]) {
+			drawSupplyUnitInfo((int)v2);
+			goto LABEL_32;
+		}
+		ByteOperations::SetLowByte(v6, unitIsGeyser(v1));
+		if (v6) {
+		LABEL_35:
+			drawGasQuantity(v2);
+			goto LABEL_32;
+		}
+		if (units_dat::AirWeapon[getLastQueueSlotType(v1)] == -126
+			&& unitGetGroundWeapon(v1) == -126
+			&& !units_dat::ShieldsEnabled[v4]) {
+		LABEL_6:
+			if (*statusScreenFunc != 4) {
+				hideOptionalStatusScreenControls(v2);
+				*statusScreenFunc = 4;
+			}
+			goto LABEL_32;
+		}
+		if (*statusScreenFunc != 3) {
+			hideOptionalStatusScreenControls(v2);
+			showControlGroup(v2, -20, 12);
+			*statusScreenFunc = 3;
+		}
+		drawDisplayButtons((int)v2);
+		v7 = getControlFromIndex(v2, -21);
+		hideDialog(v7);
+	LABEL_32:
+		setTextStr((int)v2);
+		setUnitStatusStrText((int)v2);
+		v8 = unitGetName(*activePortraitUnit);
+		addTextToDialog((int)v2, -5, v8);
+	}
 }
 
 namespace { // Helpers
@@ -501,5 +609,237 @@ namespace { // Helpers
 			POPAD
 		}
 		return (bool)result;
+	}
+
+	// For drawBuildingInfo
+
+	const u32 Func_needRedrawUI = 0x00424A10;
+	int needRedrawUI() {
+		static int result;
+		__asm {
+			PUSHAD
+			CALL Func_needRedrawUI
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+	
+	const u32 Func_genericStatusUpdateDrawnValues = 0x004248F0;
+	CUnit* genericStatusUpdateDrawnValues() {
+		static CUnit* result;
+		__asm {
+			PUSHAD
+			CALL Func_genericStatusUpdateDrawnValues
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_drawProgressBar = 0x004260C0;
+	void drawProgressBar(int a1) {
+		__asm {
+			PUSHAD
+			MOV EDI, a1
+			CALL Func_drawProgressBar
+			POPAD
+		}
+	}
+
+	const u32 Func_drawNukeSiloInfo = 0x00426FF0;
+	void drawNukeSiloInfo(int a1) {
+		__asm {
+			PUSHAD
+			PUSH a1
+			CALL Func_drawNukeSiloInfo
+			POPAD
+		}
+	}
+
+	const u32 Func_unitIsActiveTransport = 0x004E6BA0;
+	bool unitIsActiveTransport(CUnit* a1) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV ECX, a1
+			CALL Func_unitIsActiveTransport
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_isQueueSlotActive = 0x00401E70;
+	bool isQueueSlotActive(CUnit* a1, int a2) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV ECX, a1
+			MOV EDX, a2
+			CALL Func_isQueueSlotActive
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_drawTrainingProgress = 0x004268D0;
+	void drawTrainingProgress(BinDlg* a1) {
+		__asm {
+			PUSHAD
+			PUSH a1
+			CALL Func_drawTrainingProgress
+			POPAD
+		}
+	}
+
+	const u32 Func_isConstructingAddon = 0x004E66B0;
+	bool isConstructingAddon(CUnit* a1) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_isConstructingAddon
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_isAttemptingProtossBuild = 0x004E4C40;
+	bool isAttemptingProtossBuild(CUnit* a1) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_isAttemptingProtossBuild
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_drawAddonProgress = 0x00425F30;
+	void drawAddonProgress(int a1) {
+		__asm {
+			PUSHAD
+			MOV EDI, a1
+			CALL Func_drawAddonProgress
+			POPAD
+		}
+	}
+
+	const u32 Func_drawTechProgress = 0x004266F0;
+	void drawTechProgress(int a1) {
+		__asm {
+			PUSHAD
+			PUSH a1
+			CALL Func_drawTechProgress
+			POPAD
+		}
+	}
+
+	const u32 Func_drawUpgradeProgress = 0x00426500;
+	void drawUpgradeProgress(BinDlg* a1) {
+		__asm {
+			PUSHAD
+			PUSH a1
+			CALL Func_drawUpgradeProgress
+			POPAD
+		}
+	}
+
+	const u32 Func_unitIsGeyser = 0x004688B0;
+	bool unitIsGeyser(CUnit* a1) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_unitIsGeyser
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_drawGasQuantity = 0x00426190;
+	void drawGasQuantity(BinDlg* a1) {
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_drawGasQuantity
+			POPAD
+		}
+	}
+
+	const u32 Func_unitGetGroundWeapon = 0x00475AD0;
+	s8 unitGetGroundWeapon(CUnit* a1) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV ECX, a1
+			CALL Func_unitGetGroundWeapon
+			MOV result, EAX
+			POPAD
+		}
+		return (s8)result;
+	}
+
+	const u32 Func_drawDisplayButtons = 0x00426C60;
+	void drawDisplayButtons(int a1) {
+		__asm {
+			PUSHAD
+			PUSH a1
+			CALL Func_drawDisplayButtons
+			POPAD
+		}
+	}
+
+	const u32 Func_getControlFromIndex = 0x00418080;
+	BinDlg* getControlFromIndex(BinDlg* a1, s16 a2) {
+		static BinDlg* result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			MOVZX CX, a2
+			CALL Func_getControlFromIndex
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_setTextStr = 0x004263E0;
+	void setTextStr(int a1) {
+		__asm {
+			PUSHAD
+			PUSH a1
+			CALL Func_setTextStr
+			POPAD
+		}
+	}
+
+	const u32 Func_setUnitStatusStrText = 0x00425B50;
+	void setUnitStatusStrText(int a1) {
+		__asm {
+			PUSHAD
+			PUSH a1
+			CALL Func_setUnitStatusStrText
+			POPAD
+		}
+	}
+	
+	const u32 Func_unitGetName = 0x0047B5A0;
+	int unitGetName(CUnit* a1) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV ECX, a1
+			CALL Func_unitGetName
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }

@@ -564,12 +564,26 @@ namespace hooks {
 		}
 	}
 
+	void __declspec(naked) drawBuildingInfo_Wrapper() {
+		static void* a1;
+		__asm {
+			MOV a1, ECX
+			PUSHAD
+		}
+		hooks::drawBuildingInfo(a1);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 	void injectMaxHpHooks() {
 		jmpPatch(getTotalHitPointsPlusShields_Wrapper, 0x00402710, 5);
 		//jmpPatch(drawUnitInfo_Wrapper, 0x00426190, 3);
 		//jmpPatch(drawSupplyUnitInfo_Wrapper, 0x00427540, 1);
 		//jmpPatch(drawWireframeShield_Wrapper, 0x004566B0, 5);
 		jmpPatch(AI_TargetEnemyProc_Wrapper, 0x00440A20, 2);
+		jmpPatch(drawBuildingInfo_Wrapper, 0x00427890, 3);
 		
 		//required for Heatshield
 		/*jmpPatch(getMaxHpWrapper, 0x00401404, 2);//done
