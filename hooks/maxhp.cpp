@@ -210,10 +210,10 @@ namespace hooks {
 			}
 			v4 = v2->playerId;
 			if (v21) { // !RACE_Zerg
-				if (v21 == 1) { // RACE_Terran
+				if (v21 == RaceId::Terran) {
 					v5 = raceSupply[RaceId::Terran].used[v4];
 				}
-				else if (v21 == 2) { // RACE_Protoss
+				else if (v21 == RaceId::Protoss) {
 					v5 = raceSupply[RaceId::Protoss].used[v4];
 				}
 				else {
