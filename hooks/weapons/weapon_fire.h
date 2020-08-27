@@ -3,8 +3,9 @@
 
 namespace hooks {
 
-void fireWeaponHook(CUnit* unit, u8 weaponId);
+	void fireWeaponHook(CUnit* unit, u8 weaponId);
+	void progressBulletFlight(CSprite* a1);
 
-void injectWeaponFireHooks();
+	void injectWeaponFireHooks();
 
 } //hooks

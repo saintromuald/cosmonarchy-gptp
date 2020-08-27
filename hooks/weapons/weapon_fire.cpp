@@ -6,6 +6,7 @@
 #include <SCBW/api.h>
 #include "SCBW/UnitFinder.h"
 #include "MathUtils.h"
+#include "hooks/byte_operations_utils.h"
 //-------- Helper function declarations. Do NOT modify! ---------//
 
 
@@ -94,6 +95,10 @@ namespace {
 	typedef void(__stdcall* GetWeaponHitPosFunc)(CUnit* unit, s32* x, s32* y);
 	GetWeaponHitPosFunc const getWeaponHitPos = (GetWeaponHitPosFunc)0x004762C0;
 	void createBullet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
+
+	// For progressBulletFlight
+	void progressBulletMovement(CBullet* a1); // 0048B250
+	void playImageIscript(CImage* a1, char a2); // 004D8470
 } //unnamed namespace
 
 
@@ -243,6 +248,37 @@ namespace hooks {
 		}
 	}
 
+	void progressBulletFlight(CSprite* a1) { // 0048B3B0
+		CBullet* v1; // esi
+		char v2; // al
+		CUnit* v3; // eax
+		CSprite* v4; // edx
+		CImage* i; // esi
+
+		v1 = (CBullet*)a1;
+		progressBulletMovement((CBullet*)a1);
+		v2 = v1->time_remaining--;
+		if (!v2 || v1->moveTarget.pt.x == v1->position.x && v1->moveTarget.pt.y == v1->position.y)
+		{
+			v3 = v1->attackTarget.unit;
+			v1->behaviourTypeInternal = 5;
+			if (v3)
+			{
+				v1->attackTarget.pt.x = v3->sprite->position.x;
+				v1->attackTarget.pt.y = v3->sprite->position.y;
+			}
+			else
+			{
+				v1->attackTarget.unit = 0;
+			}
+			v4 = v1->sprite;
+			v1->unknown_0x4E = 0;
+			v1->someUnitType = 228;
+			for (i = v4->images.head; i; i = i->link.next)
+				playImageIscript(i, 1);
+		}
+	}
+
 } //hooks
 
 
@@ -300,78 +336,7 @@ namespace {
 				x_ = source->sprite->position.x - 8;
 				y_ = source->sprite->position.y - 48;
 			}
-		}/*
-		else if (weaponId == WeaponId::EmpyreanMissiles) {
-			if (source->sprite->mainGraphic->direction == 0) {
-				x_ = source->sprite->position.x + 0;
-				y_ = source->sprite->position.y - 27;
-			}
-			else if (source->sprite->mainGraphic->direction == 1) {
-				x_ = source->sprite->position.x + 8;
-				y_ = source->sprite->position.y - 30;
-			}
-			else if (source->sprite->mainGraphic->direction == 2) {
-				x_ = source->sprite->position.x + 13;
-				y_ = source->sprite->position.y - 28;
-			}
-			else if (source->sprite->mainGraphic->direction == 3) {
-				x_ = source->sprite->position.x + 29;
-				y_ = source->sprite->position.y - 34;
-			}
-			else if (source->sprite->mainGraphic->direction == 4) {
-				x_ = source->sprite->position.x + 36;
-				y_ = source->sprite->position.y - 33;
-			}
-			else if (source->sprite->mainGraphic->direction == 5) {
-				x_ = source->sprite->position.x + 38;
-				y_ = source->sprite->position.y - 27;
-			}
-			else if (source->sprite->mainGraphic->direction == 6) {
-				x_ = source->sprite->position.x + 47;
-				y_ = source->sprite->position.y - 25;
-			}
-			else if (source->sprite->mainGraphic->direction == 7) {
-				x_ = source->sprite->position.x + 51;
-				y_ = source->sprite->position.y - 20;
-			}
-			else if (source->sprite->mainGraphic->direction == 8) {
-				x_ = source->sprite->position.x + 53;
-				y_ = source->sprite->position.y - 17;
-			}
-			else if (source->sprite->mainGraphic->direction == 9) {
-				x_ = source->sprite->position.x + 56;
-				y_ = source->sprite->position.y - 4;
-			}
-			else if (source->sprite->mainGraphic->direction == 10) {
-				x_ = source->sprite->position.x + 53;
-				y_ = source->sprite->position.y + 8;
-			}
-			else if (source->sprite->mainGraphic->direction == 11) {
-				x_ = source->sprite->position.x + 45;
-				y_ = source->sprite->position.y + 16;
-			}
-			else if (source->sprite->mainGraphic->direction == 12) {
-				x_ = source->sprite->position.x + 39;
-				y_ = source->sprite->position.y + 20;
-			}
-			else if (source->sprite->mainGraphic->direction == 13) {
-				x_ = source->sprite->position.x + 28;
-				y_ = source->sprite->position.y + 24;
-			}
-			else if (source->sprite->mainGraphic->direction == 14) {
-				x_ = source->sprite->position.x + 22;
-				y_ = source->sprite->position.y + 30;
-			}
-			else if (source->sprite->mainGraphic->direction == 15) {
-				x_ = source->sprite->position.x + 14;
-				y_ = source->sprite->position.y + 30;
-			}
-			else if (source->sprite->mainGraphic->direction == 16) {
-				x_ = source->sprite->position.x - 1;
-				y_ = source->sprite->position.y + 30;
-			}
-		}*/
-
+		}
 		__asm {
 			PUSHAD
 			PUSH direction_
@@ -384,6 +349,29 @@ namespace {
 			POPAD
 		}
 
+	}
+
+	// For progressBulletMovement
+
+	const u32 Func_progressBulletMovement = 0x0048B250;
+	void progressBulletMovement(CBullet* a1) {
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_progressBulletMovement
+			POPAD
+		}
+	}
+
+	const u32 Func_playImageIscript = 0x004D8470;
+	void playImageIscript(CImage* a1, char a2) {
+		__asm {
+			PUSHAD
+			MOV ECX, a1
+			PUSH a2
+			CALL Func_playImageIscript
+			POPAD
+		}
 	}
 
 } //unnamed namespace
