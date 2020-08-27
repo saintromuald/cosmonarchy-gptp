@@ -234,7 +234,7 @@ SCBW_DATA(		u32*,			placeBuildingX,				0x00640890);
 SCBW_DATA(		u32*,			placeBuildingY,				0x00640892);
 SCBW_DATA(		u32*,			isPlacingAddon,				0x00640884);
 SCBW_DATA(		u16*,		    placeBuildingUnitType,		0x0064088A);
-SCBW_DATA(u32*, placeBuildBaseType, 0x00640888);
+SCBW_DATA(		u32*,			placeBuildBaseType,			0x00640888);
 
 // For incrementUnitScoresEx
 SCBW_DATA(		u32*,			factoriesOwned,				0x005820B4); // Array of 12
@@ -266,6 +266,11 @@ SCBW_DATA(		BufferStr*,		struct_Char,				0x006CA9F8);
 SCBW_DATA(		BufferStr*,		struct_Char2,				0x006CAB08);
 SCBW_DATA(		char*,			unkString_Char,				0x006CA668);
 
+// For drawWireframeShield
+SCBW_DATA(		char*,			charBuffer,					0x0068C208);
+SCBW_DATA(		char*,			byteShieldStr,				0x0068C20A); // count of 22
+SCBW_DATA(		char*,			wireframeConstants,			0x00515280); // count of 40
+SCBW_DATA(		char*,			imgDrawPaletteIndex,		0x0050CEC1); // count of 256
 
 //////////////////////////////////////////////////////////////// @}
 

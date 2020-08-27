@@ -530,6 +530,23 @@ namespace hooks {
 		}
 	}
 
+	void __declspec(naked) drawWireframeShield_Wrapper() {
+		static int a1;
+		static CUnit* a2;
+		static char result;
+		__asm {
+			MOV a1, ECX
+			MOV a2, EDX
+			PUSHAD
+		}
+		result = hooks::drawWireframeShield(a1, a2);
+		__asm {
+			POPAD
+			MOV result, EAX
+			RETN
+		}
+	}
+
 	void injectMaxHpHooks() {
 		jmpPatch(getTotalHitPointsPlusShields_Wrapper, 0x00402710, 5);
 		jmpPatch(drawUnitInfo_Wrapper, 0x00426190, 3);

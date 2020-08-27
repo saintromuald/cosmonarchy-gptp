@@ -17,9 +17,9 @@
 	// Hooked in this file
 	Line 2486: 00402714  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00402710 -- GetMaxHealth -- HOOKED
 	Line 56570: 004262B7  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00426190 -- drawUnitInfo -- HOOKED
+	Line 58295: 0042781F  |.  8A8A B0476600 MOV CL,BYTE PTR DS:[EDX+6647B0] -- 0x00427540 -- Ss_DrawSupplyUnitStatus -- HOOKED
 
 	// Not hooked yet
-	Line 58295: 0042781F  |.  8A8A B0476600 MOV CL,BYTE PTR DS:[EDX+6647B0] -- 0x00427540 -- Ss_DrawSupplyUnitStatus
 	Line 58440: 004279F3   .  8A83 B0476600 MOV AL,BYTE PTR DS:[EBX+6647B0] -- 0x00427890 -- DrawGenericBuildingStatus
 	Line 72970: 00431274  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00431270 -- CalculateBaseStrength
 	Line 73606: 00431865  |.  8A86 B0476600 MOV AL,BYTE PTR DS:[ESI+6647B0] -- 0x00431800 -- CalculateStrength
@@ -317,6 +317,30 @@ namespace hooks {
 		else {
 			unitStatAct_Standard((void*)a1);
 		}
+	}
+
+	char drawWireframeShield(int a1, CUnit* a2) { // 004566B0
+		CUnit* v2; // edx
+		u16 v3; // ax
+		char result; // al
+		CUnit* v5; // edx
+		int v6; // eax
+		char v7; // cl
+
+		if (units_dat::ShieldsEnabled[(u16)a2->id] && units_dat::MaxShieldPoints[getLastQueueSlotType(a2)]) {
+			v3 = getLastQueueSlotType(v2);
+			v6 = 7 * (v5->shields >> 8) / units_dat::MaxShieldPoints[v3];
+			v7 = charBuffer[(u8)wireframeConstants[2 * v6]];
+			result = charBuffer[(u8)wireframeConstants[2 * v6 + 1]];
+			imgDrawPaletteIndex[192] = v7;
+			imgDrawPaletteIndex[193] = result;
+		}
+		else {
+			result = byteShieldStr[0];
+			imgDrawPaletteIndex[192] = byteShieldStr[0];
+			imgDrawPaletteIndex[193] = byteShieldStr[0];
+		}
+		return result;
 	}
 }
 

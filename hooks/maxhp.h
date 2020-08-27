@@ -7,4 +7,5 @@ namespace hooks {
 	u32 getTotalHitPointsPlusShields(CUnit* a1);
 	void drawUnitInfo(BinDlg* a1);
 	void drawSupplyUnitInfo(int a1);						// 00427540
+	char drawWireframeShield(int a1, CUnit* a2);			// 004566B0
 }
