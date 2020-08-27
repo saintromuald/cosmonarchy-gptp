@@ -252,6 +252,11 @@ SCBW_DATA(		u16*,			placeBuildingUnitId,		0x0064088A);
 // For targetedOrder
 SCBW_DATA(		u32*,			COrderCount,				0x00641698);
 
+// For drawUnitInfo
+SCBW_DATA(		u16*,			suppliesAvailableTemp,		0x006CA93C);
+SCBW_DATA(		u8*,			statusScreenFunc,			0x0068C1E5);
+SCBW_DATA(		char*,			struct_Char,				0x006CA9F8); // sizeof 260
+
 
 //////////////////////////////////////////////////////////////// @}
 
