@@ -175,8 +175,10 @@ enum Enum {
 
 	VorvalClaws									= 36,			// Vorvaling weapon
 	PlasmidBreath								= 37,			// Nathrokor weapon
-	KesthakWeapon								= 41,			// Keskathalor weapon
+	KesthathWeapon								= 41,			// Keskathalor weapon
+	AlkajWeapon									= 45,			// Alkajelisk weapon
 	SerratedCleavers							= 47,			// Gorgoleth weapon
+	AlkajSpore									= 49,			// Alkajelisk behavior weapon
 	BasiliskCorrosiveAcid						= 50,			// Basilisk weapon
 	EssenceDrain								= 51,			// Ability targeting - Gorgoleth
 
