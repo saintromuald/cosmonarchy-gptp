@@ -78,7 +78,9 @@ class UnitFinder {
     /// This does not use unit collision boxes for calculating distances.
     static CUnit* getNearestTarget(int left, int top, int right, int bottom,
                                    CUnit* sourceUnit, UnitFinderCallbackMatchInterface& match);
-    
+    static CUnit* getNearestTarget(int left, int top, int right, int bottom,
+        CBullet* sourceBullet, UnitFinderCallbackMatchInterface& match);
+
     /// Searches the entire map, returning the nearest unit to @p sourceUnit
     /// for which match(unit) evaluates to true. If there are no matches,
     /// returns NULL.
@@ -93,7 +95,11 @@ class UnitFinder {
       UnitFinderData* left,  UnitFinderData* top,
       UnitFinderData* right, UnitFinderData* bottom,
       UnitFinderCallbackMatchInterface &match, CUnit* sourceUnit);
-    
+    static CUnit* getNearest(int x, int y,
+        int boundsLeft, int boundsTop, int boundsRight, int boundsBottom,
+        UnitFinderData* left, UnitFinderData* top,
+        UnitFinderData* right, UnitFinderData* bottom,
+        UnitFinderCallbackMatchInterface& match, CBullet* sourceBullet);
     static UnitFinderData* getStartX();
     static UnitFinderData* getStartY();
     static UnitFinderData* getEndX();

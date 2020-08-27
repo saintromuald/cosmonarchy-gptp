@@ -245,6 +245,130 @@ CUnit* UnitFinder::getNearest(int x, int y,
   return bestUnit;
 }
 
+//
+// for bullets
+//
+CUnit* UnitFinder::getNearest(int x, int y,
+    int boundsLeft, int boundsTop, int boundsRight, int boundsBottom,
+    UnitFinderData* left, UnitFinderData* top,
+    UnitFinderData* right, UnitFinderData* bottom,
+    UnitFinderCallbackMatchInterface& match, CBullet* sourceBullet)
+{
+
+    int bestDistance = scbw::getDistanceFast(0, 0,
+        std::max(x - boundsLeft, boundsRight - x),
+        std::max(y - boundsTop, boundsBottom - y));
+
+    CUnit* bestUnit = NULL;
+    bool canContinueSearch, hasFoundBestUnit;
+
+    do {
+        canContinueSearch = false;
+        hasFoundBestUnit = false;
+
+        //Search to the left
+        if (getStartX() <= left) {
+            CUnit* unit = CUnit::getFromIndex(left->unitIndex);
+
+            if (boundsLeft <= unit->getX()) {
+                if (boundsTop <= unit->getY() && unit->getY() < boundsBottom) {
+                    if (match.match(unit)) {
+                        int distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+                        if (distance < bestDistance) {
+                            bestDistance = distance;
+                            bestUnit = unit;
+                            hasFoundBestUnit = true;
+                        }
+                    }
+                }
+            }
+            else
+                left = getStartX() - 1;
+
+            canContinueSearch = true;
+            --left;
+        }
+
+        //Search to the right
+        if (right < getEndX()) {
+            CUnit* unit = CUnit::getFromIndex(right->unitIndex);
+
+            if (unit->getX() < boundsRight) {
+                if (boundsTop <= unit->getY() && unit->getY() < boundsBottom) {
+                    if (match.match(unit)) {
+                        int distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+                        if (distance < bestDistance) {
+                            bestDistance = distance;
+                            bestUnit = unit;
+                            hasFoundBestUnit = true;
+                        }
+                    }
+                }
+            }
+            else
+                right = getEndX();
+
+            canContinueSearch = true;
+            ++right;
+        }
+
+        //Search upwards
+        if (getStartY() <= top) {
+            CUnit* unit = CUnit::getFromIndex(top->unitIndex);
+
+            if (boundsTop <= unit->getY()) {
+                if (boundsLeft <= unit->getX() && unit->getX() < boundsRight) {
+                    if (match.match(unit)) {
+                        int distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+                        if (distance < bestDistance) {
+                            bestDistance = distance;
+                            bestUnit = unit;
+                            hasFoundBestUnit = true;
+                        }
+                    }
+                }
+            }
+            else
+                top = getStartY() - 1;
+
+            canContinueSearch = true;
+            --top;
+        }
+
+        //Search downwards
+        if (bottom < getEndY()) {
+            CUnit* unit = CUnit::getFromIndex(bottom->unitIndex);
+
+            if (unit->getY() < boundsBottom) {
+                if (boundsLeft <= unit->getX() && unit->getX() < boundsRight) {
+                    if (match.match(unit)) {
+                        int distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+                        if (distance < bestDistance) {
+                            bestDistance = distance;
+                            bestUnit = unit;
+                            hasFoundBestUnit = true;
+                        }
+                    }
+                }
+            }
+            else
+                bottom = getEndY();
+
+            canContinueSearch = true;
+            ++bottom;
+        }
+
+        //Reduce the search bounds
+        if (hasFoundBestUnit) {
+            boundsLeft = std::max(boundsLeft, x - bestDistance);
+            boundsRight = std::min(boundsRight, x + bestDistance);
+            boundsTop = std::max(boundsTop, y - bestDistance);
+            boundsBottom = std::max(boundsBottom, y + bestDistance);
+        }
+    } while (canContinueSearch);
+
+    return bestUnit;
+}
 CUnit* UnitFinder::getNearestTarget(int left, int top, int right, int bottom,
   CUnit* sourceUnit, UnitFinderCallbackMatchInterface& match)
 {
@@ -271,6 +395,26 @@ CUnit* UnitFinder::getNearestTarget(int left, int top, int right, int bottom,
     left, top, right, bottom,
     searchLeft, searchTop, searchRight, searchBottom,
     match, sourceUnit);
+}
+CUnit* UnitFinder::getNearestTarget(int left, int top, int right, int bottom,
+    CBullet* sourceBullet, UnitFinderCallbackMatchInterface& match)
+{
+    UnitFinderData* searchLeft, * searchTop, * searchRight, * searchBottom;
+
+    //If the unit sprite is hidden
+    UnitFinderData temp;
+    temp.position = sourceBullet->position.x;
+    searchRight = std::lower_bound(getStartX(), getEndX(), temp);
+    searchLeft = searchRight - 1;
+    temp.position = sourceBullet->position.y;
+    searchBottom = std::lower_bound(getStartY(), getEndY(), temp);
+    searchTop = searchBottom - 1;
+    
+
+    return getNearest(sourceBullet->position.x, sourceBullet->position.y,
+        left, top, right, bottom,
+        searchLeft, searchTop, searchRight, searchBottom,
+        match, sourceBullet);
 }
 
 CUnit* UnitFinder::getNearestTarget(CUnit* sourceUnit, UnitFinderCallbackMatchInterface& match) {

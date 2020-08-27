@@ -1,7 +1,7 @@
 //Injector source file for the Weapon Fire hook module.
 #include "weapon_fire.h"
 #include <hook_tools.h>
-
+#include <SCBW/UnitFinder.h>
 namespace {
 
 	void __declspec(naked) fireWeaponWrapper() {
@@ -28,13 +28,37 @@ namespace {
 		}
 	}
 
+	class empyreanInterceptionMatch : public scbw::UnitFinderCallbackMatchInterface {
+	private:
+		CBullet* missile;
+	public:
+		empyreanInterceptionMatch(CBullet* missile)
+			: missile(missile) {}
+
+		bool match(CUnit* unit) {
+			/*if (unit == savant) {
+				return false;
+			}
+			if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster)) {
+				return false;
+			}
+			if (!scbw::isAlliedTo(savant->playerId, unit->playerId)) {
+				return false;
+			}
+			if (unit->energy == unit->getMaxEnergy()) {
+				return false;
+			}*/
+			return false;
+		}
+	};
+
 	void __declspec(naked) progressBulletFlight_Wrapper() {
-		static CSprite* a1;
+		static CBullet* bullet;
 		__asm {
-			MOV a1, EAX
+			MOV bullet, EAX
 			PUSHAD
 		}
-		hooks::progressBulletFlight(a1);
+		hooks::progressBulletFlight(bullet);
 		__asm {
 			POPAD
 			RETN

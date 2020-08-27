@@ -30,6 +30,41 @@ public:
 	}
 };
 
+class empyreanMissileMatch : public scbw::UnitFinderCallbackMatchInterface {
+private:
+	CBullet* missile;
+public:
+	empyreanMissileMatch(CBullet* missile)
+		: missile(missile) {}
+
+	bool match(CUnit* unit) {
+		if (!(unit->status & UnitStatus::InAir)) {
+			return false;
+		}
+		if (unit->status & UnitStatus::Invincible) {
+			return false;
+		}
+		if (scbw::isAlliedTo(missile->srcPlayer, unit->playerId)) {
+			return false;
+		}
+		auto box = units_dat::UnitBounds[unit->id];
+		if (missile->position.x < unit->getLeft()) {
+			return false;
+		}
+		if (missile->position.x > unit->getRight()) {
+			return false;
+		}
+		if (missile->position.y < unit->getTop()) {
+			return false;
+		}
+		if (missile->position.y > unit->getBottom()) {
+			return false;
+		}
+		return true;
+	}
+};
+
+
 class powerSiphonCollectProc : public scbw::UnitFinderCallbackProcInterface {
 private:
 	CUnit* savant;
@@ -248,32 +283,45 @@ namespace hooks {
 		}
 	}
 
-	void progressBulletFlight(CSprite* a1) { // 0048B3B0
+	void progressBulletFlight(CBullet* bullet) { // 0048B3B0
 		CBullet* v1; // esi
-		char v2; // al
-		CUnit* v3; // eax
+		CUnit* target; // eax
 		CSprite* v4; // edx
 		CImage* i; // esi
-
-		v1 = (CBullet*)a1;
-		progressBulletMovement((CBullet*)a1);
-		v2 = v1->time_remaining--;
-		if (!v2 || v1->moveTarget.pt.x == v1->position.x && v1->moveTarget.pt.y == v1->position.y)
+		progressBulletMovement(bullet);
+		u8 time = bullet->time_remaining--;
+		bool bEnd = false;
+		if (time == 0 || bullet->moveTarget.pt.x == bullet->position.x && bullet->moveTarget.pt.y == bullet->position.y) {
+			bEnd = true;
+		}
+		else if (bullet->weaponType == WeaponId::EmpyreanMissiles) {
+			u32 range = 128;
+			auto a = scbw::UnitFinder::getNearestTarget(
+				bullet->position.x - range, bullet->position.y - range,
+				bullet->position.x + range, bullet->position.y + range,
+				bullet, empyreanMissileMatch(bullet)
+			);
+			if (a != NULL) {
+				bullet->attackTarget.unit = a;
+				bEnd = true;
+			}
+		}
+		if (bEnd)
 		{
-			v3 = v1->attackTarget.unit;
-			v1->behaviourTypeInternal = 5;
-			if (v3)
+			target = bullet->attackTarget.unit;
+			bullet->behaviourTypeInternal = 5;
+			if (target != NULL)
 			{
-				v1->attackTarget.pt.x = v3->sprite->position.x;
-				v1->attackTarget.pt.y = v3->sprite->position.y;
+				bullet->attackTarget.pt.x = target->sprite->position.x;
+				bullet->attackTarget.pt.y = target->sprite->position.y;
 			}
 			else
 			{
-				v1->attackTarget.unit = 0;
+				bullet->attackTarget.unit = 0;
 			}
-			v4 = v1->sprite;
-			v1->unknown_0x4E = 0;
-			v1->someUnitType = 228;
+			v4 = bullet->sprite;
+			bullet->unknown_0x4E = 0;
+			bullet->someUnitType = 228;
 			for (i = v4->images.head; i; i = i->link.next)
 				playImageIscript(i, 1);
 		}
