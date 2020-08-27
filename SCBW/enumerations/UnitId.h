@@ -507,7 +507,7 @@ enum Enum {
 	ProtossGrandLibrary								= 226,		// Terran Gas Tank Type 1		| Archon requirement
 
 //Zerg-Unit
-	ZergOsteroth									= 48,		// Torrasque
+	ZergAlkajelisk									= 48,		// Torrasque
 	ZergNathrokor									= 54,		// Devouring One
 	ZergGorgoleth									= 56,		// Kukulza Guardian
 	ZergOthstoleth									= 57,		// Yggdrasil
@@ -531,7 +531,7 @@ enum Enum {
 	EggKeskathalor									= 199,		// Protoss Flag Beacon
 	EggVorvaling									= 216,		// Young Chrysalis
 	EggNathrokor									= 217,		// Psi Emitter
-	EggOsteroth										= 218,		// Data Disc
+	EggAlkajelisk									= 218,		// Data Disc
 
 //Zerg-Misc
 	BasiliskCreeper									= 180,		// Cave-in
@@ -548,7 +548,7 @@ enum Enum {
 	ZergChasmalColony								= 201,		// Overmind Cocoon
 	ZergVorvalPond									= 204,		// Floor Hatch
 	ZergNathrokLake									= 210,		// Left Wall Missile Trap
-	ZergOstothCavern								= 212,		// Right Wall Missile Trap
+	ZergAlkajCavern									= 212,		// Right Wall Missile Trap
 	ZergKeskathCavern								= 219,		// Khaydarin Crystal
 	ZergOverlordIris								= 224,		// Zerg Gas Sac Type 1
 	ZergSire										= 227,		// Terran Gas Tank Type 2
