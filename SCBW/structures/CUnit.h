@@ -6,6 +6,7 @@
 #include "CUnitLayout.h"
 #include <SCBW/enumerations.h>
 #include "../../graphics/graphics.h"
+
 struct CFlingy {
     /*0x000*/ CLink<CUnit> link;
     /*0x008*/ s32       value;                ///for unit it's hitpoints
@@ -19,7 +20,7 @@ struct CFlingy {
     /*0x022*/ u8        flingyTurnSpeed;      //AKA flingy turn radius
     /*0x023*/ u8        velocityDirection1;	  
     /*0x024*/ u16       flingyId;
-    /*0x026*/ u8        _unknown_0x026;		
+    /*0x026*/ u8        _unknown_0x026;            		
     /*0x027*/ u8        flingyMovementType;
     /*0x028*/ Point16   position;			  
     /*0x02C*/ Point32   halt;

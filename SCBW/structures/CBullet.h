@@ -25,7 +25,7 @@ struct CBullet {
   /*0x22*/ u8           flingyTurnRadius;
   /*0x23*/ u8           direction2;
   /*0x24*/ u16          type;
-  /*0x26*/ u8           unknown_0x26;
+  /*0x26*/ u8           unknown_0x26;       
   /*0x27*/ u8           flingyMoveControl;
   /*0x28*/ Point16      position;
   /*0x2C*/ Point32      halt; // (xHalt >> 4) == xHalt
@@ -46,7 +46,7 @@ struct CBullet {
                                                // 6 = attack target area
   /*0x4E*/ u16          unknown_0x4E;
   /*0x50*/ u16          someUnitType; // usually holds UnitType::None (Unknown unit type stuff?)
-  /*0x52*/ u16          unknown_0x52; // possibly padding
+  /*0x52*/ u16          unknown_0x52; 
   /*0x54*/ s32          unknown_0x54; // usually holds 0
   /*0x58*/ Target       attackTarget;
 // ^-- POSSIBLE SHARED CBullet/CUnit STRUCTURE END

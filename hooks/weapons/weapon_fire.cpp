@@ -283,7 +283,7 @@ namespace hooks {
 		}
 	}
 
-	void progressBulletFlight(CBullet* bullet) { // 0048B3B0
+	void progressBulletFlight(CBullet* bullet) { //		
 		CBullet* v1; // esi
 		CUnit* target; // eax
 		CSprite* v4; // edx
@@ -291,6 +291,14 @@ namespace hooks {
 		progressBulletMovement(bullet);
 		u8 time = bullet->time_remaining--;
 		bool bEnd = false;
+		
+		if (bullet->weaponType==WeaponId::EmpyreanMissiles) {
+			u8 time_current = 255 - time;
+			if (time_current == 8) {
+				bullet->flingyTopSpeed *= 2;
+				bullet->flingyAcceleration *= 2;
+			}
+		}
 		if (time == 0 || bullet->moveTarget.pt.x == bullet->position.x && bullet->moveTarget.pt.y == bullet->position.y) {
 			bEnd = true;
 		}
