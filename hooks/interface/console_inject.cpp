@@ -40,6 +40,6 @@ namespace hooks {
 
 	void injectConsoleHooks() {
 //		jmpPatch(loadRaceUI_Wrapper, 0x004EE2D0, 1);
-		jmpPatch(setTextStr_Wrapper, 0x004263E0, 1);
+		jmpPatch(setTextStr_Wrapper, 0x004263E0, 0);
 	}
 }
