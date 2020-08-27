@@ -182,7 +182,6 @@ enum Enum {
 	BasiliskCorrosiveAcid						= 50,			// Basilisk weapon
 	EssenceDrain								= 51,			// Ability targeting - Gorgoleth
 
-
 	#ifdef DELIVERANCE
 		EcclesiastWeapon = 110,
 		TerminusWeapon = 112,
