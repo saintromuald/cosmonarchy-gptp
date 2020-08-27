@@ -542,7 +542,7 @@ namespace hooks {
 		result = hooks::drawWireframeShield(a1, a2);
 		__asm {
 			POPAD
-			MOV result, EAX
+			MOVZX EAX, result
 			RETN
 		}
 	}
