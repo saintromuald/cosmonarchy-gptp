@@ -107,7 +107,7 @@ namespace hooks {
 				if(scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
 			}    
 
-			// Can the unit be targetted?
+			// Can the unit be targeted?
 			if(!scbw::canWeaponTargetUnit(bullet->weaponType, target, target)) continue;
       
 			// We found units in a square around the target, but is the target within the splash radius?
@@ -153,7 +153,6 @@ namespace hooks {
 			if (isChargedGorgolethBullet(bullet, weaponId)) {
 				inner = 30;
 			}
-
 
 			if(isUnitDistanceWithin(target, bullet, inner)){
 			weaponBulletShot(target, bullet, 1); // 100% damage
