@@ -2,6 +2,7 @@
 #include "SCBW\api.h"
 #include "SCBW\scbwdata.h"
 #include "hook_tools.h"
+#include "byte_operations_utils.h"
 
 /*
 	// Hooked elsewhere
@@ -15,9 +16,9 @@
 
 	// Hooked in this file
 	Line 2486: 00402714  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00402710 -- GetMaxHealth -- HOOKED
+	Line 56570: 004262B7  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00426190 -- drawUnitInfo -- HOOKED
 
 	// Not hooked yet
-	Line 56570: 004262B7  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00426190 -- drawUnitInfo
 	Line 58295: 0042781F  |.  8A8A B0476600 MOV CL,BYTE PTR DS:[EDX+6647B0] -- 0x00427540 -- Ss_DrawSupplyUnitStatus
 	Line 58440: 004279F3   .  8A83 B0476600 MOV AL,BYTE PTR DS:[EBX+6647B0] -- 0x00427890 -- DrawGenericBuildingStatus
 	Line 72970: 00431274  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00431270 -- CalculateBaseStrength
@@ -40,11 +41,18 @@
 namespace {
 
 	// For drawUnitInfo
-	void hideOptionalStatusScreenControls(BinDlg* a1); // 00457310
-	void showControlGroup(BinDlg* a1, s16 a2, s16 a3); // 00457250
-	void addTextToDialog(int a1, s16 a2, int a3); // 004258B0
-	void drawShieldUpgrade(int a1, u16 a2); // 00425510
-	void hideDialog(BinDlg* a1); // 00418700
+	void hideOptionalStatusScreenControls(BinDlg* a1);					// 00457310
+	void showControlGroup(BinDlg* a1, s16 a2, s16 a3);					// 00457250
+	void addTextToDialog(int a1, s16 a2, int a3);						// 004258B0
+	void drawShieldUpgrade(int a1, u16 a2);								// 00425510
+	void hideDialog(BinDlg* a1);										// 00418700
+
+	// For drawSupplyUnitInfo
+	int getSuppliesUsed();												// 00424732
+	u16 getLastQueueSlotType(CUnit* a1);								// 0047B270
+	u32 getSuppliesAvailable(u8 a1, int a2);							// 00488900
+	void drawArmor(int a1, int a2, u16 a3);								// 00425600
+	void unitStatAct_Standard(void* a1);								// 00426F50
 }
 
 namespace hooks {
@@ -69,7 +77,7 @@ namespace hooks {
 		int v2; // ecx
 		int v3; // eax
 
-		v1 = (unsigned __int16)a1->id;
+		v1 = (u16)a1->id;
 		if (units_dat::ShieldsEnabled[v1])
 			v2 = units_dat::MaxShieldPoints[v1];
 		else
@@ -91,7 +99,7 @@ namespace hooks {
 		const char* v5; // eax
 		BinDlg* v6; // eax
 		int v7; // [esp-8h] [ebp-10h]
-		char* v8; // [esp-8h] [ebp-10h]
+		BufferStr* v8; // [esp-8h] [ebp-10h]
 
 		v1 = a1;
 		*suppliesAvailableTemp = (*activePortraitUnit)->building.resource.resourceAmount;
@@ -111,7 +119,7 @@ namespace hooks {
 				v3 = "";
 			v7 = (u16)(*activePortraitUnit)->building.resource.resourceAmount;
 		LABEL_14:
-			sprintf_s(struct_Char, 260, "%s %d", v3, v7);
+			sprintf_s(struct_Char->buf, 260, "%s %d", v3, v7);
 			v8 = struct_Char;
 			goto LABEL_19;
 		}
@@ -128,7 +136,7 @@ namespace hooks {
 			v5 = (char*)statTxtTbl + statTxtTbl[798];
 		else
 			v5 = "";
-		v8 = (char*)v5;
+		v8 = (BufferStr*)v5;
 	LABEL_19:
 		addTextToDialog((int)v1, -11, (int)v8);
 		if (units_dat::ShieldsEnabled[(*activePortraitUnit)->id]) {
@@ -150,6 +158,164 @@ namespace hooks {
 				v6 = 0;
 			}
 			hideDialog(v6);
+		}
+	}
+
+	void drawSupplyUnitInfo(int a1) { // 00427540
+		BinDlg* v1; // ebx
+		CUnit* v2; // esi
+		GroupFlag v3; // al
+		u8 v4; // cl
+		int v5; // edx
+		s16 v6; // ax
+		const char* v7; // ecx
+		s16 v8; // ax
+		const char* v9; // esi
+		u16 v10; // ax
+		int v11; // ecx
+		const char* v12; // esi
+		int v13; // eax
+		GroupFlag v14; // al
+		int v15; // ecx
+		s16 v16; // ax
+		const char* v17; // eax
+		u16 v18; // ax
+		BinDlg* v19; // eax
+		int v20; // [esp+0h] [ebp-8h]
+		u8 v21; // [esp+7h] [ebp-1h]
+		u8 v22; // [esp+7h] [ebp-1h]
+
+		v1 = (BinDlg*)a1;
+		v2 = *activePortraitUnit;
+		if (IS_IN_REPLAY || (u8)(*activePortraitUnit)->playerId == *LOCAL_NATION_ID) {
+			getSuppliesUsed();
+			if (*statusScreenFunc != 12) {
+				hideOptionalStatusScreenControls(v1);
+				showControlGroup(v1, -10, -13);
+				v2 = *activePortraitUnit;
+				*statusScreenFunc = 12;
+			}
+			v3 = units_dat::GroupFlags[(u16)v2->id];
+			if (v3.isZerg) {
+				v21 = 0;
+			}
+			else if (v3.isProtoss) {
+				v21 = 2;
+			}
+			else {
+				v21 = (v3.isTerran) != 0 ? RaceId::Terran : RaceId::Neutral;
+			}
+			v4 = v2->playerId;
+			if (v21) { // !RACE_Zerg
+				if (v21 == 1) { // RACE_Terran
+					v5 = raceSupply[RaceId::Terran].used[v4];
+				}
+				else if (v21 == 2) { // RACE_Protoss
+					v5 = raceSupply[RaceId::Protoss].used[v4];
+				}
+				else {
+					v5 = 0;
+				}
+			}
+			else {
+				v5 = raceSupply[RaceId::Zerg].used[v4];
+			}
+			ByteOperations::SetLowWord(v20, v21);
+			v6 = v21 + 820;
+			if (v21 == -821) {
+				v7 = 0;
+			}
+			else if (v6 < *statTxtTbl) {
+				v7 = (char*)statTxtTbl + statTxtTbl[v6 + 1];
+			}
+			else {
+				v7 = "";
+			}
+			sprintf_s(struct_Char2->buf, 260, "%s %d", v7, (v5 + 1) / 2);
+			v8 = v21 + 814;
+			if (v21 == -815) {
+				v9 = 0;
+			}
+			else if (v8 < *statTxtTbl) {
+				v9 = (char*)statTxtTbl + statTxtTbl[v8 + 1];
+			}
+			else {
+				v9 = "";
+			}
+			v10 = getLastQueueSlotType((*activePortraitUnit));
+			sprintf_s("", 260, "%s %d", v9, (units_dat::SupplyProvided[v10] + 1) / 2);
+			v11 = v20 + 66353;
+			if (v21 == -818) {
+				v12 = 0;
+			}
+			else if ((u16)v11 < *statTxtTbl) {
+				v11 = (u16)v11;
+				v12 = (char*)statTxtTbl + statTxtTbl[(u16)v11 + 1];
+			}
+			else {
+				v12 = "";
+			}
+			ByteOperations::SetLowByte(v11, v21);
+			v13 = getSuppliesAvailable((*activePortraitUnit)->playerId, v11);
+			sprintf_s(unkString_Char, 260, "%s %d", v12, (v13 + 1) / 2);
+			v22 = (*activePortraitUnit)->playerId;
+			v14 = units_dat::GroupFlags[getLastQueueSlotType((*activePortraitUnit))];
+			int race = (*activePortraitUnit)->getRace();
+			if (v14.isZerg) {
+				v15 = raceSupply[RaceId::Zerg].max[v22];
+			}
+			else if (v14.isTerran) {
+				v15 = raceSupply[RaceId::Terran].max[v22];
+			}
+			else if (v14.isProtoss) {
+				v15 = raceSupply[RaceId::Protoss].max[v22];
+			}
+			else {
+				v15 = 0;
+			}
+			v16 = v20 + 823;
+			if ((s16)v20 == -824) {
+				v17 = 0;
+			}
+			else if (v16 < *statTxtTbl) {
+				v17 = (char*)statTxtTbl + statTxtTbl[v16 + 1];
+			}
+			else {
+				v17 = "";
+			}
+			sprintf_s(struct_Char2->buf, 260, "%s %d", v17, (unsigned int)(v15 + 1) >> 1);
+			addTextToDialog((int)v1, -10, (int)struct_Char);
+			addTextToDialog((int)v1, -11, (int)"");
+			addTextToDialog((int)v1, -12, (int)unkString_Char);
+			addTextToDialog((int)v1, -13, (int)struct_Char2);
+			v18 = (*activePortraitUnit)->id;
+			if (units_dat::ShieldsEnabled[v18]) {
+				drawShieldUpgrade((int)v1, 0);
+			}
+			else if (v18 != UnitId::ZergOverlord && v18 != UnitId::Hero_Yggdrasill) {
+				if (v1->controlType)
+					v1 = *(BinDlg**)&v1->parent;
+				v19 = *(BinDlg**)&v1->childrenDlg;
+				if (v19) {
+					while (v19->index != 9)
+					{
+						v19 = v19->next;
+						if (!v19)
+							goto LABEL_55;
+					}
+				}
+				else {
+				LABEL_55:
+					v19 = 0;
+				}
+				hideDialog(v19);
+			}
+			else {
+				drawArmor((int)v1, v18, 0);
+			}
+		}
+		else {
+			unitStatAct_Standard((void*)a1);
 		}
 	}
 }
@@ -209,6 +375,69 @@ namespace { // Helpers
 			PUSHAD
 			MOV ESI, a1
 			CALL Func_hideDialog
+			POPAD
+		}
+	}
+
+	// For drawSupplyUnitInfo
+
+	const u32 Func_getSuppliesUsed = 0x00424732;
+	int getSuppliesUsed() {
+		static int result;
+		__asm {
+			PUSHAD
+			CALL Func_getSuplpiesUsed
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_getLastQueueSlotType = 0x0047B270;
+	u16 getLastQueueSlotType(CUnit* a1) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV EDX, a1
+			CALL Func_getLastQueueSlotType
+			MOV result, EAX
+			POPAD
+		}
+		return (u16)result;
+	}
+
+	const u32 Func_getSuppliesAvailable = 0x00488900;
+	u32 getSuppliesAvailable(u8 a1, int a2) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOVZX AL, a1
+			MOV ECX, a2
+			CALL Func_getSuppliesAvailable
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_drawArmor = 0x00425600;
+	void drawArmor(int a1, int a2, u16 a3) {
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			MOV EDX, a2
+			PUSH a3
+			CALL Func_drawArmor
+			POPAD
+		}
+	}
+
+	const u32 Func_unitStatAct_Standard = 0x00426F50;
+	void unitStatAct_Standard(void* a1) {
+		__asm {
+			PUSHAD
+			MOV ECX, a1
+			CALL Func_unitStatAct_Standard
 			POPAD
 		}
 	}

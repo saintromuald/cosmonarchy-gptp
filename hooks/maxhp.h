@@ -6,4 +6,5 @@ namespace hooks {
 	u32 maxshields(int id, int playerId);
 	u32 getTotalHitPointsPlusShields(CUnit* a1);
 	void drawUnitInfo(BinDlg* a1);
+	void drawSupplyUnitInfo(int a1);						// 00427540
 }

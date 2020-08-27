@@ -517,9 +517,23 @@ namespace hooks {
 		}
 	}
 
+	void __declspec(naked) drawSupplyUnitInfo_Wrapper() {
+		static int a1;
+		__asm {
+			MOV a1, EAX
+			PUSHAD
+		}
+		hooks::drawSupplyUnitInfo(a1);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 	void injectMaxHpHooks() {
 		jmpPatch(getTotalHitPointsPlusShields_Wrapper, 0x00402710, 5);
 		jmpPatch(drawUnitInfo_Wrapper, 0x00426190, 3);
+		jmpPatch(drawSupplyUnitInfo_Wrapper, 0x00427540, 1);
 		
 		//required for Heatshield
 		/*jmpPatch(getMaxHpWrapper, 0x00401404, 2);//done
