@@ -754,12 +754,6 @@ u32 get_aise_value(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2){
 	return result;
 }
 
-u32 get_generic_value(CUnit* u, u32 val) {
-	return get_aise_value(u, NULL, AiseId::GenericValue, val, 0);
-}
-u32 get_generic_timer(CUnit* u, u32 val) {
-	return get_aise_value(u, NULL, AiseId::GenericTimer, val, 0);
-}
 const u32 Func_PsiPlacement = 0x00473920;
 u8 getUpgradeLevel(u8 playerId, u8 upgradeId) {
 	assert(playerId < PLAYER_COUNT);
