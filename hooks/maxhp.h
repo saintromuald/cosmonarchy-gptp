@@ -13,4 +13,5 @@ namespace hooks {
 	int calcUnitStrength(int a1, u8 a2);							// 00431270
 	u32 getUnitStrength(CUnit* a1, int a2, bool a3);				// 0043183F
 	bool AI_RestorationRequirementsProc(CUnit* a1, CUnit* a2);		// 004407E0
+	bool AI_EMPShieldRequirementsProc(CUnit* a1, CUnit* a2);		// 004413D0
 }

@@ -24,9 +24,9 @@
 	Line 72970: 00431274  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00431270 -- calcUnitStrength -- HOOKED
 	Line 73606: 00431865  |.  8A86 B0476600 MOV AL,BYTE PTR DS:[ESI+6647B0] -- 0x00431800 -- getUnitStrength -- HOOKED
 	Line 95686: 00440800   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004407E0 -- AI_RestorationRequirementsProc -- HOOKED
+	Line 96913: 004413E7   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004413D0 -- AI_EMPShieldRequirementsProc -- HOOKED
 
 	// Not hooked yet
-	Line 96913: 004413E7   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004413D0 -- AI_EMPShieldRequirementsProc
 	Line 180864: 00479777  |.  8A82 B0476600 MOV AL,BYTE PTR DS:[EDX+6647B0] -- 0x00479730 -- HallucinationHit
 	Line 182607: 0047A841  |.  8A8F B0476600 MOV CL,BYTE PTR DS:[EDI+6647B0] -- 0x0047A820 -- DrawImage_HpBar
 	Line 184040: 0047B6A5  |.  8A87 B0476600 MOV AL,BYTE PTR DS:[EDI+6647B0] -- 0x0047B6A0 -- SetBuildShieldGain
@@ -41,51 +41,56 @@
 namespace {
 
 	// For drawUnitInfo
-	void hideOptionalStatusScreenControls(BinDlg* a1);					// 00457310
-	void showControlGroup(BinDlg* a1, s16 a2, s16 a3);					// 00457250
-	void addTextToDialog(int a1, s16 a2, int a3);						// 004258B0
-	void drawShieldUpgrade(int a1, u16 a2);								// 00425510
-	void hideDialog(BinDlg* a1);										// 00418700
+	void hideOptionalStatusScreenControls(BinDlg* a1);											// 00457310
+	void showControlGroup(BinDlg* a1, s16 a2, s16 a3);											// 00457250
+	void addTextToDialog(int a1, s16 a2, int a3);												// 004258B0
+	void drawShieldUpgrade(int a1, u16 a2);														// 00425510
+	void hideDialog(BinDlg* a1);																// 00418700
 
 	// For drawSupplyUnitInfo
-	int getSuppliesUsed();												// 00424732
-	u16 getLastQueueSlotType(CUnit* a1);								// 0047B270
-	u32 getSuppliesAvailable(u8 a1, int a2);							// 00488900
-	void drawArmor(int a1, int a2, u16 a3);								// 00425600
-	void unitStatAct_Standard(void* a1);								// 00426F50
+	int getSuppliesUsed();																		// 00424732
+	u16 getLastQueueSlotType(CUnit* a1);														// 0047B270
+	u32 getSuppliesAvailable(u8 a1, int a2);													// 00488900
+	void drawArmor(int a1, int a2, u16 a3);														// 00425600
+	void unitStatAct_Standard(void* a1);														// 00426F50
 
 	// For AI_TargetEnemyProc
-	bool AI_UnitCanAttack(CUnit* a1);									// 00476180
+	bool AI_UnitCanAttack(CUnit* a1);															// 00476180
 
 	// For drawBuildingInfo
-	int needRedrawUI();													// 00424A10
-	CUnit* genericStatusUpdateDrawnValues();							// 004248F0
-	void drawProgressBar(int a1);										// 004260C0
-	void drawNukeSiloInfo(int a1);										// 00426FF0
-	bool unitIsActiveTransport(CUnit* a1);								// 004E6BA0
-	bool isQueueSlotActive(CUnit* a1, int a2);							// 00401E70
-	void drawTrainingProgress(BinDlg* a1);								// 004268D0
-	bool isConstructingAddon(CUnit* a1);								// 004E66B0
-	bool isAttemptingProtossBuild(CUnit* a1);							// 004E4C40
-	void drawAddonProgress(int a1);										// 00425F30
-	void drawTechProgress(int a1);										// 004266F0
-	void drawUpgradeProgress(BinDlg* a1);								// 00426500
-	bool unitIsGeyser(CUnit* a1);										// 004688B0
-	void drawGasQuantity(BinDlg* a1);									// 00426190
-	s8 unitGetGroundWeapon(CUnit* a1);									// 00475AD0
-	void drawDisplayButtons(int a1);									// 00426C60
-	BinDlg* getControlFromIndex(BinDlg* a1, s16 a2);					// 00418080
-	void setTextStr(int a1);											// 004263E0
-	void setUnitStatusStrText(int a1);									// 00425B50
-	int unitGetName(CUnit* a1);											// 0047B5A0
+	int needRedrawUI();																			// 00424A10
+	CUnit* genericStatusUpdateDrawnValues();													// 004248F0
+	void drawProgressBar(int a1);																// 004260C0
+	void drawNukeSiloInfo(int a1);																// 00426FF0
+	bool unitIsActiveTransport(CUnit* a1);														// 004E6BA0
+	bool isQueueSlotActive(CUnit* a1, int a2);													// 00401E70
+	void drawTrainingProgress(BinDlg* a1);														// 004268D0
+	bool isConstructingAddon(CUnit* a1);														// 004E66B0
+	bool isAttemptingProtossBuild(CUnit* a1);													// 004E4C40
+	void drawAddonProgress(int a1);																// 00425F30
+	void drawTechProgress(int a1);																// 004266F0
+	void drawUpgradeProgress(BinDlg* a1);														// 00426500
+	bool unitIsGeyser(CUnit* a1);																// 004688B0
+	void drawGasQuantity(BinDlg* a1);															// 00426190
+	s8 unitGetGroundWeapon(CUnit* a1);															// 00475AD0
+	void drawDisplayButtons(int a1);															// 00426C60
+	BinDlg* getControlFromIndex(BinDlg* a1, s16 a2);											// 00418080
+	void setTextStr(int a1);																	// 004263E0
+	void setUnitStatusStrText(int a1);															// 00425B50
+	int unitGetName(CUnit* a1);																	// 0047B5A0
 
 	// For getUnitStrength
-	int getCurrentHitPointsPlusShields(CUnit* a1);						// 004026D0
-	int getBaseStrength(int a1, CUnit* a2);								// 004316D0
-	int getMaxHP(CUnit* a1);											// 00401400
+	int getCurrentHitPointsPlusShields(CUnit* a1);												// 004026D0
+	int getBaseStrength(int a1, CUnit* a2);														// 004316D0
+	int getMaxHP(CUnit* a1);																	// 00401400
 
 	// For AI_RestorationRequirementsProc
-	int canWeaponTargetUnit(u8 a1, CUnit* a2, CUnit* a3);				// 00475CE0
+	int canWeaponTargetUnit(u8 a1, CUnit* a2, CUnit* a3);										// 00475CE0
+
+	// For AI_EMPShieldRequirementsProc
+	s32 AI_TargetUnitIsWorthHitting(CUnit* a1, CUnit* a2);										// 00440E30
+	int createSplashWeaponProc(s16 a1, s16 a2, s16 a3, int (__fastcall* a4)(int, int), int a5);	// 004E82E0
+	int unitShieldsClumpInAreaAccumulatorProc(CUnit* a1, CUnit* a2);							// 00440A60
 }
 
 namespace hooks {
@@ -570,6 +575,34 @@ namespace hooks {
 		}
 		return result;
 	}
+
+	bool AI_EMPShieldRequirementsProc(CUnit* a1, CUnit* a2) { // 004413D0
+		CUnit* v2; // esi
+		CUnit* v3; // edi
+		CSprite* v5; // edx
+		s16 v6; // cx
+		s16 spriteX;
+
+		v2 = a1;
+		v3 = a2;
+		if (!AI_TargetUnitIsWorthHitting(a1, a2)
+			|| !units_dat::ShieldsEnabled[(u16)v2->id]
+			|| !canWeaponTargetUnit(WeaponId::EMP_Shockwave, v2, v3)) {
+			return 0;
+		}
+		v5 = v2->sprite;
+		v6 = v5->position.y;
+		spriteX = v5->position.x;
+		*tempHPShields = 0;
+		*tempWeapon = WeaponId::EMP_Shockwave;
+		createSplashWeaponProc(
+			160,
+			spriteX,
+			v6,
+			(int(__fastcall*)(int, int))unitShieldsClumpInAreaAccumulatorProc,
+			(int)v3);
+		return *tempHPShields >= 200;
+	}
 }
 
 namespace { // Helpers
@@ -997,4 +1030,52 @@ namespace { // Helpers
 		}
 		return result;
 	}
+
+	// For AI_EMPShieldRequirementsProc
+
+	const u32 Func_AI_TargetUnitIsWorthHitting = 0x00440E30;
+	s32 AI_TargetUnitIsWorthHitting(CUnit* a1, CUnit* a2) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			MOV ECX, a2
+			CALL Func_AI_TargetUnitIsWorthHitting
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_createSplashWeaponProc = 0x004E82E0;
+	int createSplashWeaponProc(s16 a1, s16 a2, s16 a3, int(__fastcall* a4)(int, int), int a5) {
+		static int result;
+		__asm {
+			PUSHAD
+			PUSH a5
+			PUSH a4
+			MOV AX, a1
+			MOV DX, a2
+			MOV CX, a3
+			CALL Func_createSplashWeaponProc
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_unitShieldsClumpInAreaAccumulatorProc = 0x00440A60;
+	int unitShieldsClumpInAreaAccumulatorProc(CUnit* a1, CUnit* a2) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV ECX, a1
+			MOV EDX, a2
+			CALL Func_unitShieldsClumpInAreaAccumulatorProc
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
 }

@@ -278,6 +278,10 @@ SCBW_DATA(		s16*,			userInterfaceEnergy,		0x006CAC0C);
 SCBW_DATA(		s32*,			userInterfaceShields,		0x006CA9EC);
 SCBW_DATA(		char*,			redrawTransportUI,			0x006CA9F0);
 
+// For AI_EMPShieldRequirementsProc
+SCBW_DATA(		s32*,			tempHPShields,				0x00695798);
+SCBW_DATA(		s32*,			tempWeapon,					0x00695604);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data

@@ -646,6 +646,23 @@ namespace hooks {
 		}
 	}
 
+	void __declspec(naked) AI_EMPShieldRequirementsProc_Wrapper() {
+		static CUnit* a1;
+		static CUnit* a2;
+		static bool result;
+		__asm {
+			MOV a1, ECX
+			MOV a2, EDX
+			PUSHAD
+		}
+		result = hooks::AI_EMPShieldRequirementsProc(a1, a2);
+		__asm {
+			POPAD
+			MOVZX EAX, result
+			RETN
+		}
+	}
+
 	void injectMaxHpHooks() {
 		jmpPatch(getTotalHitPointsPlusShields_Wrapper, 0x00402710, 5);
 		//jmpPatch(drawUnitInfo_Wrapper, 0x00426190, 3);
@@ -656,6 +673,7 @@ namespace hooks {
 		//jmpPatch(calcUnitStrength_Wrapper, 0x00431270, 5);
 		//jmpPatch(getUnitStrength_Wrapper, 0x00431800, 0);
 		jmpPatch(AI_RestorationRequirementsProc_Wrapper, 0x004407E0, 1);
+		jmpPatch(AI_EMPShieldRequirementsProc_Wrapper, 0x004413D0, 1);
 		
 		//required for Heatshield
 		/*jmpPatch(getMaxHpWrapper, 0x00401404, 2);//done
