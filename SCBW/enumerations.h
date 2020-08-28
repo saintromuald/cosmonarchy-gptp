@@ -28,6 +28,65 @@ namespace FlingyDatEntries {
 	};
 }
 
+namespace UnitsDatEntries {
+	enum {
+		Flingy,//flingy
+		Subunit, //subunit
+		Infested, //infested unit
+		Construction, //construction graphic
+		StartDirection, //start direction
+		ShieldEnabled, //shield enabled
+		MaxShields, //max shields
+		/*
+		4, //max hits
+		1, //elevation
+		1, //movement flags
+		1, //rank
+		1, //computer idle order
+		1, //human idle order
+		1, //return to idle order
+		1, //attack unit order
+		1, //attack move order
+		1, //ground weapon
+		1, //max ground hits
+		1, //air weapon
+		1, //max air hits
+		1, //computer ai unit type
+		4, //flags
+		1, //seek range
+		1, //sight range
+		1, //armor upgrade
+		1, //size
+		1, //armor
+		1, //right-click
+		2, //READY
+		2, //what-first
+		2, //what-last
+		2, //pss-first
+		2, //pss-last
+		2, //yes-first
+		2, //yes-last
+		4, //building dimensions (2+2
+		4, //addon placement
+		8, //unit bounds
+		2, //portrait
+		2, //mineral cost
+		2, //gas cost
+		2, //time cost
+		2, //restriction flags
+		1, //group flags
+		1, //supply provided
+		1, //supply required
+		1, //space required
+		1, //space provided
+		2, //build score
+		2, //destroy core
+		2, //map string id
+		1, //broodwar only
+		2, //staredit avail*/
+	};
+}
+
 namespace SfxDatEntries {
 	enum {
 		Race,
