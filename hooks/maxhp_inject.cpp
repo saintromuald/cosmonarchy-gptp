@@ -577,6 +577,54 @@ namespace hooks {
 		}
 	}
 
+	void __declspec(naked) calcUnitStrength_Wrapper() {
+		static int a1;
+		static u8 a2;
+		static int result;
+		__asm {
+			MOV a1, EAX
+			PUSH EBP
+			MOV EBP, ESP
+			SUB ESP, 0x08
+			MOV EAX, [EBP + 0x08]
+			MOV a2, AL
+			PUSHAD
+		}
+		result = hooks::calcUnitStrength(a1, a2);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 8
+		}
+	}
+
+	void __declspec(naked) getUnitStrength_Wrapper() {
+		static CUnit* a1;
+		static int a2;
+		static bool a3;
+		static int result;
+		__asm {
+			MOV a1, EAX
+			MOV a2, ECX
+			PUSH EBP
+			MOV EBP, ESP
+			SUB ESP, 0x08
+			MOV EAX, [EBP + 0x08]
+			MOV a3, AL
+			PUSHAD
+		}
+		result = hooks::getUnitStrength(a1, a2, a3);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 12
+		}
+	}
+
 	void injectMaxHpHooks() {
 		jmpPatch(getTotalHitPointsPlusShields_Wrapper, 0x00402710, 5);
 		//jmpPatch(drawUnitInfo_Wrapper, 0x00426190, 3);
@@ -584,6 +632,8 @@ namespace hooks {
 		//jmpPatch(drawWireframeShield_Wrapper, 0x004566B0, 5);
 		jmpPatch(AI_TargetEnemyProc_Wrapper, 0x00440A20, 2);
 		jmpPatch(drawBuildingInfo_Wrapper, 0x00427890, 3);
+		jmpPatch(calcUnitStrength_Wrapper, 0x00431270, 5);
+		jmpPatch(getUnitStrength_Wrapper, 0x00431800, 0);
 		
 		//required for Heatshield
 		/*jmpPatch(getMaxHpWrapper, 0x00401404, 2);//done

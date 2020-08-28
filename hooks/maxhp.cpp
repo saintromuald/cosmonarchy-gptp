@@ -21,10 +21,10 @@
 	Line 129037: 004566B4  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004566B0 -- drawWireframeShield -- HOOKED
 	Line 95955: 00440A9A   .  8A90 B0476600 MOV DL,BYTE PTR DS:[EAX+6647B0] -- 0x00440A20 -- AI_TargetEnemyProc -- HOOKED
 	Line 58440: 004279F3   .  8A83 B0476600 MOV AL,BYTE PTR DS:[EBX+6647B0] -- 0x00427890 -- drawBuildingInfo -- HOOKED
+	Line 72970: 00431274  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00431270 -- calcUnitStrength -- HOOKED
 
 	// Not hooked yet
-	Line 72970: 00431274  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00431270 -- CalculateBaseStrength
-	Line 73606: 00431865  |.  8A86 B0476600 MOV AL,BYTE PTR DS:[ESI+6647B0] -- 0x00431800 -- CalculateStrength
+	Line 73606: 00431865  |.  8A86 B0476600 MOV AL,BYTE PTR DS:[ESI+6647B0] -- 0x00431800 -- getUnitStrength
 	Line 95686: 00440800   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004407E0 -- AI_RestorationRequirementsProc
 	Line 96913: 004413E7   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004413D0 -- AI_EMPShieldRequirementsProc
 	Line 180864: 00479777  |.  8A82 B0476600 MOV AL,BYTE PTR DS:[EDX+6647B0] -- 0x00479730 -- HallucinationHit
@@ -78,6 +78,11 @@ namespace {
 	void setTextStr(int a1);											// 004263E0
 	void setUnitStatusStrText(int a1);									// 00425B50
 	int unitGetName(CUnit* a1);											// 0047B5A0
+
+	// For getUnitStrength
+	int getCurrentHitPointsPlusShields(CUnit* a1);						// 004026D0
+	int getBaseStrength(int a1, CUnit* a2);								// 004316D0
+	int getMaxHP(CUnit* a1);											// 00401400
 }
 
 namespace hooks {
@@ -97,7 +102,7 @@ namespace hooks {
 		return result;
 	}
 
-	u32 getTotalHitPointsPlusShields(CUnit* a1) {
+	u32 getTotalHitPointsPlusShields(CUnit* a1) { // 00402710
 		int v1; // eax
 		int v2; // ecx
 		int v3; // eax
@@ -116,7 +121,7 @@ namespace hooks {
 		return v2 + v3;
 	}
 
-	void drawUnitInfo(BinDlg* a1) {
+	void drawUnitInfo(BinDlg* a1) { // 00426190
 		BinDlg* v1; // ebx
 		s16 v2; // ax
 		const char* v3; // eax
@@ -471,6 +476,73 @@ namespace hooks {
 		setUnitStatusStrText((int)v2);
 		v8 = unitGetName(*activePortraitUnit);
 		addTextToDialog((int)v2, -5, v8);
+	}
+
+	int calcUnitStrength(int a1, u8 a2) { // 00431270
+		int v2; // ecx
+		unsigned __int64 v3; // rax
+		int v4; // ebx
+		u32 v5; // esi
+		int v6; // edi
+		int v7; // eax
+		int totalHits; // [esp+0h] [ebp-4h]
+
+		if (units_dat::ShieldsEnabled[a1]) {
+			v2 = units_dat::MaxShieldPoints[a1];
+		}
+		else {
+			v2 = 0;
+		}
+
+		totalHits = v2 + (units_dat::MaxHitPoints[a1] >> 8);
+		if (totalHits) {
+			v4 = (u8)weapons_dat::DamageFactor[a2];
+			v5 = weapons_dat::Cooldown[a2];
+			v6 = weapons_dat::DamageAmount[a2];
+			if (a2 == -126) {
+				v7 = 0;
+			}
+			else {
+				v7 = (v6 * v4 << 11) / (s32)v5;
+			}
+			v3 = (unsigned __int64)(sqrt((double)(v6 * v4 * (weapons_dat::MaxRange[a2] / v5)
+				+ ((u32)(totalHits * v7) >> 8)))
+				* 7.58);
+		}
+		else {
+			v3 = 0;
+		}
+		return v3;
+	}
+
+	u32 getUnitStrength(CUnit* a1, int a2, bool a3) {
+		CUnit* v3; // edi
+		int v4; // esi
+		int v5; // ebx
+		int v7; // ebx
+		int v8; // esi
+		u32 v9; // ecx
+		int groundAir; // [esp+10h] [ebp+8h]
+
+		v3 = a1;
+		v4 = (u16)a1->id;
+		if (v4 == UnitId::ZergLarva || v4 == UnitId::ZergEgg || v4 == UnitId::ZergCocoon || v4 == UnitId::ZergLurkerEgg)
+			return 0;
+		if (a1->status & UnitStatus::IsHallucination) {
+			v5 = getTotalHitPointsPlusShields(a1);
+			if (getCurrentHitPointsPlusShields(v3) < v5)
+				return 0;
+		}
+		v7 = getBaseStrength(a3, v3);
+		groundAir = getCurrentHitPointsPlusShields(v3);
+		if (units_dat::ShieldsEnabled[v4])
+			v8 = units_dat::MaxShieldPoints[v4];
+		else
+			v8 = 0;
+		v9 = v8 + getMaxHP(v3);
+		if (!v9)
+			v9 = 1;
+		return v7 * groundAir / v9;
 	}
 }
 
@@ -837,6 +909,47 @@ namespace { // Helpers
 			PUSHAD
 			MOV ECX, a1
 			CALL Func_unitGetName
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	// For getUnitStrength
+	const u32 Func_getCurrentHitPointsPlusShields = 0x004026D0;
+	int getCurrentHitPointsPlusShields(CUnit* a1) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_getCurrentHitPointsPlusShields
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_getBaseStrength = 0x004316D0;
+	int getBaseStrength(int a1, CUnit* a2) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			MOV EDI, a2
+			CALL Func_getBaseStrength
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_getMaxHP = 0x00401400;
+	int getMaxHP(CUnit* a1) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_getMaxHP
 			MOV result, EAX
 			POPAD
 		}
