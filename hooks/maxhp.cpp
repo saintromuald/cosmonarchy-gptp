@@ -590,9 +590,9 @@ namespace { // Helpers
 	void showControlGroup(BinDlg* a1, s16 a2, s16 a3) {
 		__asm {
 			PUSHAD
+			PUSH a3
 			MOV EAX, a1
 			MOVZX CX, a2
-			PUSH a3
 			CALL Func_showControlGroup
 			POPAD
 		}
@@ -602,9 +602,9 @@ namespace { // Helpers
 	void addTextToDialog(int a1, s16 a2, int a3) {
 		__asm {
 			PUSHAD
+			PUSH a3
 			MOV EAX, a1
 			MOVZX CX, a2
-			PUSH a3
 			CALL Func_addTextToDialog
 			POPAD
 		}
@@ -614,8 +614,8 @@ namespace { // Helpers
 	void drawShieldUpgrade(int a1, u16 a2) {
 		__asm {
 			PUSHAD
-			MOV EAX, a1
 			PUSH a2
+			MOV EAX, a1
 			CALL Func_drawShieldUpgrade
 			POPAD
 		}
@@ -676,9 +676,9 @@ namespace { // Helpers
 	void drawArmor(int a1, int a2, u16 a3) {
 		__asm {
 			PUSHAD
+			PUSH a3
 			MOV EAX, a1
 			MOV EDX, a2
-			PUSH a3
 			CALL Func_drawArmor
 			POPAD
 		}

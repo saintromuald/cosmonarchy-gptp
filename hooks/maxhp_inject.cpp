@@ -586,8 +586,10 @@ namespace hooks {
 			PUSH EBP
 			MOV EBP, ESP
 			SUB ESP, 0x08
+			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV a2, AL
+			POP EAX
 			PUSHAD
 		}
 		result = hooks::calcUnitStrength(a1, a2);
@@ -611,8 +613,10 @@ namespace hooks {
 			PUSH EBP
 			MOV EBP, ESP
 			SUB ESP, 0x08
+			PUSH EAX
 			MOV EAX, [EBP + 0x0C]
 			MOV a3, AL
+			POP EAX
 			PUSHAD
 		}
 		result = hooks::getUnitStrength(a1, a2, a3);
@@ -621,7 +625,7 @@ namespace hooks {
 			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
-			RETN 12
+			RETN 0x0C
 		}
 	}
 
