@@ -611,7 +611,7 @@ namespace hooks {
 			PUSH EBP
 			MOV EBP, ESP
 			SUB ESP, 0x08
-			MOV EAX, [EBP + 0x08]
+			MOV EAX, [EBP + 0x0C]
 			MOV a3, AL
 			PUSHAD
 		}
@@ -649,8 +649,8 @@ namespace hooks {
 		//jmpPatch(drawWireframeShield_Wrapper, 0x004566B0, 5);
 		jmpPatch(AI_TargetEnemyProc_Wrapper, 0x00440A20, 2);
 		jmpPatch(drawBuildingInfo_Wrapper, 0x00427890, 3);
-		jmpPatch(calcUnitStrength_Wrapper, 0x00431270, 5);
-		jmpPatch(getUnitStrength_Wrapper, 0x00431800, 0);
+		//jmpPatch(calcUnitStrength_Wrapper, 0x00431270, 5);
+		//jmpPatch(getUnitStrength_Wrapper, 0x00431800, 0);
 		jmpPatch(AI_RestorationRequirementsProc_Wrapper, 0x004407E0, 1);
 		
 		//required for Heatshield

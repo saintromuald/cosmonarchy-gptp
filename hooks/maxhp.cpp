@@ -518,7 +518,7 @@ namespace hooks {
 		return v3;
 	}
 
-	u32 getUnitStrength(CUnit* a1, int a2, bool a3) {
+	u32 getUnitStrength(CUnit* a1, int a2, bool a3) { // 00431800
 		CUnit* v3; // edi
 		int v4; // esi
 		int v5; // ebx
@@ -548,7 +548,7 @@ namespace hooks {
 		return v7 * groundAir / v9;
 	}
 
-	bool AI_RestorationRequirementsProc(CUnit* a1, CUnit* a2) {
+	bool AI_RestorationRequirementsProc(CUnit* a1, CUnit* a2) { // 004407E0
 		CUnit* v2; // edx
 		int v3; // eax
 		bool result; // eax
