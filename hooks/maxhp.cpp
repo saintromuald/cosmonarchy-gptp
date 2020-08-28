@@ -22,10 +22,10 @@
 	Line 95955: 00440A9A   .  8A90 B0476600 MOV DL,BYTE PTR DS:[EAX+6647B0] -- 0x00440A20 -- AI_TargetEnemyProc -- HOOKED
 	Line 58440: 004279F3   .  8A83 B0476600 MOV AL,BYTE PTR DS:[EBX+6647B0] -- 0x00427890 -- drawBuildingInfo -- HOOKED
 	Line 72970: 00431274  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00431270 -- calcUnitStrength -- HOOKED
+	Line 73606: 00431865  |.  8A86 B0476600 MOV AL,BYTE PTR DS:[ESI+6647B0] -- 0x00431800 -- getUnitStrength -- HOOKED
+	Line 95686: 00440800   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004407E0 -- AI_RestorationRequirementsProc -- HOOKED
 
 	// Not hooked yet
-	Line 73606: 00431865  |.  8A86 B0476600 MOV AL,BYTE PTR DS:[ESI+6647B0] -- 0x00431800 -- getUnitStrength
-	Line 95686: 00440800   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004407E0 -- AI_RestorationRequirementsProc
 	Line 96913: 004413E7   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004413D0 -- AI_EMPShieldRequirementsProc
 	Line 180864: 00479777  |.  8A82 B0476600 MOV AL,BYTE PTR DS:[EDX+6647B0] -- 0x00479730 -- HallucinationHit
 	Line 182607: 0047A841  |.  8A8F B0476600 MOV CL,BYTE PTR DS:[EDI+6647B0] -- 0x0047A820 -- DrawImage_HpBar
@@ -83,6 +83,9 @@ namespace {
 	int getCurrentHitPointsPlusShields(CUnit* a1);						// 004026D0
 	int getBaseStrength(int a1, CUnit* a2);								// 004316D0
 	int getMaxHP(CUnit* a1);											// 00401400
+
+	// For AI_RestorationRequirementsProc
+	int canWeaponTargetUnit(u8 a1, CUnit* a2, CUnit* a3);				// 00475CE0
 }
 
 namespace hooks {
@@ -544,6 +547,29 @@ namespace hooks {
 			v9 = 1;
 		return v7 * groundAir / v9;
 	}
+
+	bool AI_RestorationRequirementsProc(CUnit* a1, CUnit* a2) {
+		CUnit* v2; // edx
+		int v3; // eax
+		bool result; // eax
+
+		result = 0;
+		if (a1->playerId == a2->playerId) {
+			if (canWeaponTargetUnit(WeaponId::Restoration, a1, a2))	{
+				v3 = units_dat::ShieldsEnabled[(u16)v2->id] ? v2->shields >> 8 : 0;
+				if (v3 + ((v2->hitPoints + 255) >> 8) > 60
+					&& (v2->ensnareTimer
+						|| v2->plagueTimer
+						|| v2->irradiateTimer
+						|| v2->lockdownTimer
+						|| v2->maelstromTimer
+						|| v2->acidSporeCount))	{
+					result = 1;
+				}
+			}
+		}
+		return result;
+	}
 }
 
 namespace { // Helpers
@@ -950,6 +976,22 @@ namespace { // Helpers
 			PUSHAD
 			MOV EAX, a1
 			CALL Func_getMaxHP
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	// For AI_RestorationRequirementsProc
+	const u32 Func_canWeaponTargetUnit = 0x00475CE0;
+	int canWeaponTargetUnit(u8 a1, CUnit* a2, CUnit* a3) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV AL, a1
+			MOV EDX, a2
+			PUSH a3
+			CALL Func_canWeaponTargetUnit
 			MOV result, EAX
 			POPAD
 		}
