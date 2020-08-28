@@ -217,6 +217,9 @@ namespace hooks {
 		if (captivatingClawsStacks > 0) {
 			speed -= speed * (0.25 * captivatingClawsStacks);
 		}
+		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
+			speed -= speed / 4;
+		}
 
 	#ifdef DELIVERANCE
 		// Deathless Procession upgrade: gains 125% movespeed, increasing to 175% when above 50% shields

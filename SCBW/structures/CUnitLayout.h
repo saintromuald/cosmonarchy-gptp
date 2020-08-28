@@ -31,10 +31,10 @@ namespace NewGameCommand {
 		CyprianAction = 0x02,
 		RelicAction = 0x03,
 		Aperture = 0x04,
-		PhaseLink = 0x05,
+		PhaseLink = 0x05,//also Khaydarin Eclipse
 		PlanetCracker = 0x06,
 		CreateUnit = 0x07,
-		KhaydarinControl = 0x08,
+//		KhaydarinControl = 0x08,//obsolete
 		CarrierPrebuild = 0x09,
 
 		OverlordDamageField = 0xA,
@@ -45,7 +45,7 @@ namespace NewGameCommand {
 		OverlordBombardment = 0xF,
 		OverlordAltitudeChange = 0x10,
 
-
+		
 		
 
 

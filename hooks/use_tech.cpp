@@ -341,6 +341,16 @@ namespace hooks
 				scbw::SendCommand(buf, 0xc);
 			}
 			break;
+		case TechId::PhaseLink://and Khaydarin Eclipse
+		{
+			auto firstInList = clientSelectionGroup->unit[0];
+			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+			buf[0] = 0x99;//new general command
+			buf[1] = NewGameCommand::PhaseLink;
+			buf[2] = *ACTIVE_PLAYER_ID;
+			scbw::SendCommand(buf, 0xc);
+			break;
+		}
 		case TechId::UnusedTech40://sublime shepherd
 		{
 

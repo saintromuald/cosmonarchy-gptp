@@ -1126,6 +1126,16 @@ u32 getUnitOverlayAdjustment(CUnit* const unit) {
 		return 0;
 }
 
+const u32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
+void makeToHoldPosition(CUnit* unit) {
+
+	__asm {
+		PUSHAD
+		MOV ESI, unit
+		CALL Func_OrdersHoldPositionSuicidal
+		POPAD
+	}
+}
 void refreshScreen(int left, int top, int right, int bottom) {
 
 	left	>>= 4; right	= (right	+ 15) >> 4;

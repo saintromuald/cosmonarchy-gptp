@@ -76,6 +76,8 @@ enum Enum {
 //Zerg
 	EssenceDrain			= 35, // Gorgoleth energy steal ability
 
+
+
 	//extended
 	//ChasmalColonySwitch = 47,	// Chasmal Colony - Adaptive Barrier / Adrenal Secretion
 };

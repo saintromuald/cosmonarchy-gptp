@@ -16,6 +16,12 @@ u8 getSeekRangeHook(CUnit* unit) {
 	u8 bonusAmount = 0;
 
 	switch (unitId) {
+		case UnitId::ProtossExemplar:
+		{
+			if (scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
+				bonusAmount = 6;
+			}
+		}
 		case UnitId::ZergBasilisk:
 		{
 			ActiveTile tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
@@ -62,6 +68,14 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 			if (tile.hasCreep || tile.creepReceeding) {
 				bonusAmount += 64;
 			}
+			break;
+		case UnitId::ProtossExemplar:
+		{
+			if (scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
+				bonusAmount = 6;
+			}
+		}
+		default:
 			break;
 	}
 
