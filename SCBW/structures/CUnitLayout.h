@@ -42,7 +42,7 @@ namespace NewGameCommand {
 		OverlordCustomStim=0xC,
 		GenericSwitchAbility = 0x0D,
 		Observance=0xE,
-		OverlordBombardment = 0xF,
+		IssueCTFCop2 = 0xF,
 		OverlordAltitudeChange = 0x10,
 
 		
