@@ -82,7 +82,7 @@ namespace GptpId {
 		SetGenericUnit,
 		DirgeImpale,
 		ClearClarionLinks,
-		SetGenericSprite=27,
+		SetGenericVariable=27,
 		Void = 10005,
 	};
 }
@@ -117,7 +117,7 @@ namespace AiseId {
 		ReadSamaseFile,
 		ReadSamaseFile_Ptr,
 		GenericUnit,
-		GenericSprite,
+		GenericVariable,
 	};
 }
 

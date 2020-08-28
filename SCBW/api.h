@@ -168,10 +168,13 @@ u32 getImageData(u32 entry, u32 index);
 CUnit* get_generic_unit(CUnit* unit, u32 id);
 
 u32 get_generic_value(CUnit* u, u32 val);
+int get_generic_variable(u32 val);
+
 u32 get_generic_timer(CUnit* u, u32 val);
 u32 get_aise_value(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2);
 void set_generic_unit(CUnit* unit, u32 id, CUnit* targ);
 void set_generic_value(CUnit* u, u32 id, u32 val);
+void set_generic_variable(u32 id, int val);
 void set_generic_timer(CUnit* u, u32 id, u32 val);
 
 void sendGPTP_aise_cmd(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2, u32 v3);

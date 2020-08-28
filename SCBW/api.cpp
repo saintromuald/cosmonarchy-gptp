@@ -708,20 +708,24 @@ std::string readSamaseFile(char* name) {
 	return str;
 }
 
-CUnit* get_generic_unit(CUnit* unit, u32 id){
+int get_generic_variable(u32 id) {
+	return get_aise_value(NULL, NULL, AiseId::GenericVariable, id, 0);
+}
+CUnit* get_generic_unit(CUnit* unit, u32 id) {
 	u32 val = get_aise_value(unit, NULL, AiseId::GenericUnit, id, 0);
 	return reinterpret_cast<CUnit*>(val);
 }
-CSprite* get_generic_sprite(CUnit* unit, u32 id) {
-	u32 val = get_aise_value(unit, NULL, AiseId::GenericSprite, id, 0);
-	return reinterpret_cast<CSprite*>(val);
+u32 get_generic_value(CUnit* u, u32 val) {
+	return get_aise_value(u, NULL, AiseId::GenericValue, val, 0);
 }
-void set_generic_sprite(CUnit* u, u32 id, CSprite* val) {
-	scbw::sendGPTP_aise_cmd(u, NULL, GptpId::SetGenericValue, id, reinterpret_cast<u32>(val), 0);
+u32 get_generic_timer(CUnit* u, u32 val) {
+	return get_aise_value(u, NULL, AiseId::GenericTimer, val, 0);
 }
-
 void set_generic_unit(CUnit* unit, u32 id, CUnit* targ) {
 	scbw::sendGPTP_aise_cmd(unit, targ, GptpId::SetGenericUnit, 0, 0, 0);
+}
+void set_generic_variable(u32 id, int val) {
+	scbw::sendGPTP_aise_cmd(NULL, NULL, GptpId::SetGenericVariable, id, val, 0);
 }
 void set_generic_value(CUnit* u, u32 id, u32 val) {
 	scbw::sendGPTP_aise_cmd(u, NULL, GptpId::SetGenericValue, id, val, 0);
