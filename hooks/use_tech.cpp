@@ -346,7 +346,7 @@ namespace hooks
 			auto firstInList = clientSelectionGroup->unit[0];
 			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
 			buf[0] = 0x99;//new general command
-			buf[1] = NewGameCommand::PhaseLink;
+			buf[1] = NewGameCommand::IssueCTFCop2;//used for Phase Link, Khaydarin Eclipse and (in Overlord) Anti-Air Mode
 			buf[2] = *ACTIVE_PLAYER_ID;
 			scbw::SendCommand(buf, 0xc);
 			break;
