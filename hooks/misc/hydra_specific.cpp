@@ -86,64 +86,69 @@ namespace hooks {
 		u32 status = 0;
 		if (unit->id == UnitId::ProtossClarion) {
 			if (scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
-				status = 0;
+				status = 1;//disable clarion
 			}
 			else {
-				status = 1;
+				status = 0;//enable clarion
 			}
 		}
 		else if (unit->id == UnitId::ProtossExemplar) {
 			status = scbw::get_generic_value(unit, ValueId::ExemplarSwitch);
 		}
 		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell;//might be  changed later if required
-		if (unit->mainOrderState == 0) {
-			if (unit->movementFlags & MovementFlags::Accelerating)
+		auto order_state = scbw::get_generic_value(unit, ValueId::ProtossSwitchOrderState);
+
+		if (order_state == 0) {
+			if (unit->movementFlags & MovementFlags::Accelerating) {
 				scbw::makeToHoldPosition(unit);
-			unit->mainOrderState = 1;
+			}
+			scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 1);
 		}
-		else if (unit->mainOrderState == 1) {
+		else if (order_state==1) {
+			
 			if (!(unit->movementFlags & MovementFlags::Accelerating)) {
 				unit->playIscriptAnim(anim);
-				unit->mainOrderState = 2;
+				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 2);
+			}
+			else {
+				//scbw::printText("Accelerating?");
 			}
 		}
-		else if (unit->mainOrderState == 2) {
+		else if (order_state == 2) {
+		//	scbw::printText("State 2");
 			if (unit->orderSignal & 4) {
+				//scbw::printText("Get Signal");
 				unit->orderSignal &= ~0x4;
-				unit->mainOrderState = 0;
+				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 0);
 				if (unit->id == UnitId::ProtossClarion) {
 					if (status == 0) {
+						//scbw::printText("Set clar switch to 1");
 						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 1, 0, 0);
 					}
 					else {
+						//scbw::printText("Set clar switch to 0, clear clarion links");
 						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 0, 0, 0);
 						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ClearClarionLinks, 0, 0, 0);
 					}
 				}
 				else if (unit->id == UnitId::ProtossExemplar) {
+					//scbw::printText("Set Switch");
 					if (status == 0) {
 						scbw::set_generic_value(unit, ValueId::ExemplarSwitch, 1);
 					}
 					else {
 						scbw::set_generic_value(unit, ValueId::ExemplarSwitch, 0);
+						
 					}
+					unit->updateSpeed();
 				}
+				//scbw::printText("Free");
 				unit->orderToIdle();//do next queued order
 			}
+			else {
+			//	scbw::printText("Wait for signal");
+			}
 		}
-
-
-		/*
-		//replaces CTFCop2
-		if (scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 1, 0, 0);
-		}
-		else {
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 0, 0, 0);
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ClearClarionLinks, 0, 0, 0);
-		}
-		//no animation
-		unit->orderToIdle();*/
 	}
 }
 	

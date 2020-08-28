@@ -476,7 +476,6 @@ namespace hooks {
 						}
 					}
 				}
-				
 				// Paladin - Skyfall
 				if (unit->id == UnitId::TerranPaladin
 					&& scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::SkyfallTimer, 0) == 1 &&

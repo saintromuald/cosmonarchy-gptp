@@ -211,7 +211,7 @@ namespace ValueId {
 		SimulacrumStacks							= 68,
 		LobotomySlow								= 69,
 		EmpyreanMissilePos							= 70,
-
+		ProtossSwitchOrderState						= 71,
 	#if DELIVERANCE
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,

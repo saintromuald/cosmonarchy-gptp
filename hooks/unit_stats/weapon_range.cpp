@@ -72,7 +72,7 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 		case UnitId::ProtossExemplar:
 		{
 			if (scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
-				bonusAmount = 6;
+				bonusAmount = 6*32;
 			}
 		}
 		default:
