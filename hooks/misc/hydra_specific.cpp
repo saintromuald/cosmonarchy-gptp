@@ -150,5 +150,23 @@ namespace hooks {
 			}
 		}
 	}
+	bool canAttackTarget_EndChunk(CUnit* source, u32 target_flags) {
+		if (source->id == UnitId::ProtossClarion && scbw::get_aise_value(source, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
+			return false;
+		}
+		if (target_flags & UnitStatus::InAir) {
+			if (source->getAirWeapon() != WeaponId::None) {
+				return true;
+			}
+		}
+		else {
+			if (source->getGroundWeapon() != WeaponId::None) {
+				return true;
+			}
+		}
+
+
+		return false;
+	}
 }
 	

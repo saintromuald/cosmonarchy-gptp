@@ -16,6 +16,7 @@ namespace hooks {
 	u32 get_mine_id(CUnit* unit);
 	u32 extend_tech_target_check(u32 orig_result, CUnit* caster, CUnit* target, u8 techId);
 	void order_PhaseLink(CUnit* unit);
+	bool canAttackTarget_EndChunk(CUnit* source, u32 target_flags);
 }
 
 namespace hooks {

@@ -309,7 +309,9 @@ void orders_TurretAttack(CUnit* unit) {
 					current_unit_weaponId = units_dat::AirWeapon[current_unit->id]; //77AD2
 				else
 					current_unit_weaponId = current_unit->getGroundWeapon();		//77AE6
-
+				if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
+					current_unit_weaponId = WeaponId::None;
+				}
 				//77AF6
 				if(current_unit_weaponId == WeaponId::None) {
 					jump_to_77A45 = true;
@@ -397,7 +399,9 @@ void orders_TurretAttack(CUnit* unit) {
 								current_unit_weaponId = current_unit->getAirWeapon();
 							else
 								current_unit_weaponId = current_unit->getGroundWeapon(); //include the lurker special case so it's ok
-
+							if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
+								current_unit_weaponId = WeaponId::None;
+							}
 							//77C40
 							if(current_unit_weaponId >= WeaponId::None)
 								jump_to_77C78 = true;
@@ -578,7 +582,9 @@ void orders_AttackFixedRange(CUnit* unit) {
 						currentWeaponId = current_unit->getAirWeapon();
 					else
 						currentWeaponId = current_unit->getGroundWeapon();
-
+					if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
+						currentWeaponId = WeaponId::None;
+					}
 					//77E44
 					if(currentWeaponId != WeaponId::None)
 						jump_to_77E99 = true;

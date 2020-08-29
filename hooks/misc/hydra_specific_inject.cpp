@@ -297,8 +297,50 @@ namespace hooks {
             JMP progressOrder_jmp
         }
     }
-    void phaseLinkPatches() {
+    void phaseLinkPatches() {   
         jmpPatch(PhaseLinkOrder_Wrapper, 0x004EC629, 2);
+    }
+    void __declspec(naked) canAttackTarget_Tail_Wrapper() {
+        static u32 target_flags;
+        static CUnit* source;
+        static u32 result;
+        __asm {
+            PUSH EAX
+            MOV EAX,[EBP-0x4]
+            MOV target_flags,EAX
+            POP EAX
+            MOV source,EDI
+            PUSHAD
+        }
+        result = hooks::canAttackTarget_EndChunk(source,target_flags);
+        __asm {
+            POPAD
+            MOV EAX,result
+            POP EDI
+            MOV ESP,EBP
+            POP EBP
+            RETN 4
+        }
+
+    }
+    void __declspec(naked) getGroundWeaponHookWrapper() {
+        static CUnit* unit;
+        u8 result;
+        __asm {
+            MOV unit,ECX
+            PUSHAD
+        }
+        result = unit->getGroundWeapon();
+        __asm {
+            POPAD
+            MOV AL,result
+            RETN
+        }
+    }
+    void clarionWrappers() {
+        //canAttackTarget - end
+        jmpPatch(canAttackTarget_Tail_Wrapper, 0x0047682C, 1);
+        jmpPatch(getGroundWeaponHookWrapper, 0x00475AD0);
     }
     void injectHydraSpecific() {
         flingySpeedPatches();
@@ -308,11 +350,53 @@ namespace hooks {
         phaseLinkPatches();//replaces CTFCop2 order
         lobotomyMinePatches();
         trapJumpWrappers();
+        clarionWrappers();
         //lobotomyMineTargetingPatches();
         
         //add later: disable WarpIn functionality, make it useless
         
         archonHardcodePatches();
+        /*
+        
+00431B26  |.  0F95C1        |SETNE CL
+00431B29  |.  8BC1          |MOV EAX,ECX
+00431B2B  |>  85C0          |TEST EAX,EAX
+00431B2D  |.  0F84 70010000 |JE 00431CA3
+        */
+
+        /*
+        
+0043AFCD  |>  8BCB          |MOV ECX,EBX
+0043AFCF  |.  E8 FCAA0300   |CALL 00475AD0
+0043AFD4  |>  3C 82         |CMP AL,82
+0043AFD6  |.  74 23         |JE SHORT 0043AFFB
+        */
+
+        /*
+        
+004418D9   .  E8 F2410300   CALL 00475AD0
+        */
+
+        /*
+        
+00441900   .  E8 CB410300   CALL 00475AD0
+00441905   .  3C 82         CMP AL,82
+        */
+
+        /*
+        
+	Line 154324: 00467E37  |.  E8 94DC0000   CALL 00475AD0
+	Line 175187: 00475AD0  /$  66:8B41 64    MOV AX,WORD PTR DS:[ECX+64]
+	Line 175887: 004761F1  |>  E8 DAF8FFFF   CALL 00475AD0
+	Line 176527: 0047684D  |.  E8 7EF2FFFF   CALL 00475AD0
+	Line 178261: 00477AE8  |.  E8 E3DFFFFF   CALL 00475AD0
+	Line 178537: 00477E36  |.  E8 95DCFFFF   CALL 00475AD0
+	Line 179279: 00478640  |.  E8 8BD4FFFF   CALL 00475AD0
+	Line 179802: 00478BC4  |.  E8 07CFFFFF   CALL 00475AD0
+	Line 207274: 0048B0D1   .  E8 FAA9FEFF   CALL 00475AD0
+	Line 321514: 004D818F  |.  E8 3CD9F9FF   |CALL 00475AD0
+	Line 344811: 004E8076  |.  E8 55DAF8FF   CALL 00475AD0
+        */
     }
 }
 
