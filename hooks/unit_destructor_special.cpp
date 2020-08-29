@@ -273,6 +273,9 @@ void unitDestructorSpecialHook(CUnit* unit) {
 			unit->getY() + range);
 		unitFinder.forEach(simulacrum);
 	}
+	if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
+		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ClearClarionLinks, 0, 0, 0);
+	}
 	if(unit->irradiateTimer > 0){
 		if(unit->_unknown_0x026 & 0x2){
 				//scbw::printText("Radiation Shockwave detected");
