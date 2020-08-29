@@ -748,7 +748,7 @@ namespace hooks {
 		jmpPatch(AI_EMPShieldRequirementsProc_Wrapper, 0x004413D0, 1);
 		//jmpPatch(attackOverlayAndNotify_Wrapper, 0x00479730, 1);
 		//jmpPatch(drawImageHPBar_0_Wrapper, 0x0047A820, 1);
-		jmpPatch(setBuildShieldGain_Wrapper, 0x0047B6A0, 0);
+		//jmpPatch(setBuildShieldGain_Wrapper, 0x0047B6A0, 0);
 		
 		//required for Heatshield
 		/*jmpPatch(getMaxHpWrapper, 0x00401404, 2);//done

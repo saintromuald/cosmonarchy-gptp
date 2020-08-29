@@ -799,10 +799,10 @@ namespace hooks {
 
 	void setBuildShieldGain(CUnit* a1) { // 0047B6A0
 		int _type; // edi
-		unsigned __int16 v2; // dx
+		u16 v2; // dx
 		int v3; // ecx
-		unsigned int v4; // edx
-		unsigned int v5; // eax
+		u32 v4; // edx
+		u32 v5; // eax
 
 		_type = (u16)a1->id;
 		if (units_dat::ShieldsEnabled[_type]) {
@@ -812,8 +812,8 @@ namespace hooks {
 				a1->shields = v3;
 				v2 = units_dat::TimeCost[_type];
 				if (!v2
-					|| (v5 = (((unsigned int)units_dat::MaxShieldPoints[_type] << 8) - v3) / v2, (ByteOperations::SetHighWord((a1->buildRepairHpGain), v5)) == 0)) {
-					ByteOperations::SetHighWord(a1->buildRepairHpGain, 1);
+					|| (v5 = (((u32)units_dat::MaxShieldPoints[_type] << 8) - v3) / v2, (a1->buildRepairHpGain = v5) == 0)) {
+					a1->buildRepairHpGain = 1;
 				}
 			}
 		}
