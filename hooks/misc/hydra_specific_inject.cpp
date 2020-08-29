@@ -321,11 +321,10 @@ namespace hooks {
             POP EBP
             RETN 4
         }
-
     }
     void __declspec(naked) getGroundWeaponHookWrapper() {
         static CUnit* unit;
-        u8 result;
+        u32 result;
         __asm {
             MOV unit,ECX
             PUSHAD
@@ -333,14 +332,15 @@ namespace hooks {
         result = unit->getGroundWeapon();
         __asm {
             POPAD
-            MOV AL,result
+            MOV EAX,result
             RETN
         }
     }
     void clarionWrappers() {
         //canAttackTarget - end
         jmpPatch(canAttackTarget_Tail_Wrapper, 0x0047682C, 1);
-        jmpPatch(getGroundWeaponHookWrapper, 0x00475AD0);
+        //tail wrapper disabled, without air weapon it don't have sense anywhere, will be reworked w/ air target functionality
+        //jmpPatch(getGroundWeaponHookWrapper, 0x00475AD0);
     }
     void injectHydraSpecific() {
         flingySpeedPatches();
