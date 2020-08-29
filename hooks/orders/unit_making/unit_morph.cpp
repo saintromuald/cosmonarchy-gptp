@@ -153,9 +153,7 @@ namespace hooks {
 					//scbw::printText("Setup egg");
 					bool bStopThere = false;
 					u16 eggId;
-
 					incrementUnitScoresEx(unit, -1, 0);
-
 					//was unit->status = unit->status & ~UnitStatus::Completed
 					//in original code
 					if (unit->status & UnitStatus::Completed)
@@ -611,12 +609,12 @@ namespace {
 
 	const u32 Func_incrementUnitScoresEx = 0x00488D50;
 	//unk1 is ECX, unk2 is pushed value
-	void incrementUnitScoresEx(CUnit* unit, s32 unk1, s32 unk2) {
+	void incrementUnitScoresEx(CUnit* unit, s32 count, s32 unk2) {
 
 		__asm {
 			PUSHAD
 			MOV EDI, unit
-			MOV unk1, ECX
+			MOV ECX, count
 			PUSH unk2
 			CALL Func_incrementUnitScoresEx
 			POPAD
