@@ -180,6 +180,7 @@ namespace hooks {
 				speed = (double)speed * ((10.0 + stacks) / 10.0);
 			}
 		}
+
 		// Collective Integration passive: gains increased movespeed based on tech level
 		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth || unit->id==UnitId::ZergOthstoleth) {
 			u32 irisCountSpeed = unitCountTable[UnitId::ZergOverlordIris].player[unit->playerId];
@@ -217,8 +218,10 @@ namespace hooks {
 		if (captivatingClawsStacks > 0) {
 			speed -= speed * (0.25 * captivatingClawsStacks);
 		}
+
+		// Khaydarin Eclipse ability: slow Exemplar by 75%
 		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
-			speed -= speed / 4;
+			speed = speed / 4;
 		}
 
 	#ifdef DELIVERANCE
@@ -299,6 +302,8 @@ namespace hooks {
 				acceleration *= 2;
 			}
 		}
+
+		// ???
 		else if (unit->id == UnitId::ProtossSimulacrum) {
 			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10)*1.5;
 			if (stacks > 0) {
@@ -307,6 +312,10 @@ namespace hooks {
 		}
 		return acceleration;
 
+		// Khaydarin Eclipse ability: slow Exemplar by 75%
+		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
+			acceleration = acceleration / 4;
+		}
 
 	}
 
