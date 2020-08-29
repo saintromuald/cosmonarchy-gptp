@@ -1,16 +1,17 @@
 #pragma once
 #include <windows.h>
+#include "types.h"
 
 namespace ByteOperations {
-	extern INT8& SetLowByte(INT8& lvalue, INT8 value);
-	extern UINT8& SetLowByte(UINT8& lvalue, UINT8 value);
+	s8& SetLowByte(s8& lvalue, s8 value);
+	u8& SetLowByte(u8& lvalue, u8 value);
 
-	extern INT16& SetLowByte(INT16& lvalue, INT8 value);
-	extern UINT16& SetHighByte(UINT16& lvalue, UINT8 value);
+	s16& SetLowByte(s16& lvalue, s8 value);
+	u16& SetHighByte(s16& lvalue, u8 value);
 
-	extern INT32& SetLowByte(INT32& lvalue, INT8 value);
-	extern UINT32& SetHighByte(UINT32& lvalue, UINT8 value);
+	s32& SetLowByte(s32& lvalue, s8 value);
+	u32& SetHighByte(s32& lvalue, u8 value);
 
-	extern INT32& SetLowWord(INT32& lvalue, INT16 value);
-	extern UINT32& SetHighWord(UINT32& lvalue, UINT16 value);
+	s32& SetLowWord(s32& lvalue, s16 value);
+	u32& SetHighWord(s32& lvalue, u16 value);
 }
