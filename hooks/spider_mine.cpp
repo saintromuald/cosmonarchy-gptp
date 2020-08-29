@@ -254,26 +254,23 @@ namespace hooks {
 		CUnit* v14; // edi
 		Point32 a2; // [esp+Ch] [ebp-4h]
 
-		scbw::printText("Try place mine");
+		//scbw::printText("Try place mine");
 		v1 = a1;
-		if (a1->mainOrderState)
-		{
+		if (a1->mainOrderState)	{
 			if (techUseAllowed(a1, 3u, (unsigned __int8)a1->playerId)
 				&& ((v11 = v1->sprite, v1->moveTarget.pt.x != v11->position.x)
 					|| v1->moveTarget.pt.y != v11->position.y
-					|| ((v1->status & UnitStatus::Unmovable) != 0) != 1))
-			{
-				scbw::printFormattedText("distance %X %X", (getDistanceFast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00),
-					0x1400);
-				if ((getDistanceFast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00) <= 0x1400)
-				{
-					scbw::printText("hold");
+					|| ((v1->status & UnitStatus::Unmovable) != 0) != 1)) {
+				//scbw::printFormattedText("distance %X %X", (getDistanceFast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00),
+				//	0x1400);
+				if ((getDistanceFast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00) <= 0x1400)	{
+					//scbw::printText("hold");
 					orders_HoldPosSuicidal(v1);
 					v12 = v1->orderTarget.pt.y;
 					a2.x = v1->orderTarget.pt.x;
 					a2.y = v12;
 					fixTargetLocation(0xDu, &a2);
-					scbw::printFormattedText("create at %d %d, order target is %d %d", a2.x, a2.y,v1->orderTarget.pt.x,v1->orderTarget.pt.y);
+					//scbw::printFormattedText("create at %d %d, order target is %d %d", a2.x, a2.y,v1->orderTarget.pt.x,v1->orderTarget.pt.y);
 					v13 = createUnit(0xDu, a2.x, a2.y, (unsigned __int8)v1->playerId);
 					v14 = v13;
 					if (v13)
@@ -289,55 +286,45 @@ namespace hooks {
 					}
 					toIdle(v1);
 				}
-				else if (v1->pAI)
-				{
+				else if (v1->pAI) {
 					if (isUnitMovable(v1))
 						toIdle(v1);
 				}
 			}
-			else if (v1->orderQueueHead)
-			{
+			else if (v1->orderQueueHead) {
 				v1->userActionFlags |= 1u;
 				orders_Nothing2(v1);
 			}
-			else if (v1->pAI)
-			{
+			else if (v1->pAI) {
 				orderComputerClear(v1, 0x9Cu);
 			}
-			else
-			{
+			else {
 				orderComputerClear(v1, units_dat::ReturnToIdleOrder[(unsigned __int16)v1->id]);
 			}
 		}
-		else
-		{
+		else {
 			v2 = a1->orderTarget.unit;
-			if (v2)
-			{
+			if (v2) {
 				v3 = moveToTarget(v2, a1);
 				v4 = v2->sprite;
 				v5 = v4->position.y;
 				v6 = v4->position.x;
-				if (v6 != v1->nextTargetWaypoint.x || v5 != v1->nextTargetWaypoint.y)
-				{
+				if (v6 != v1->nextTargetWaypoint.x || v5 != v1->nextTargetWaypoint.y) {
 					v1->nextTargetWaypoint.x = v6;
 					v1->nextTargetWaypoint.y = v5;
 				}
-				if (v3)
-				{
+				if (v3) {
 					v7 = v1->orderTarget.unit;
 					v1->orderTarget.pt.x = v7->sprite->position.x;
 					v1->orderTarget.pt.y = v7->sprite->position.y;
 					v1->mainOrderState = 1;
 				}
 			}
-			else
-			{
+			else {
 				v8 = a1->orderTarget.pt.y;
 				v9 = a1->orderTarget.pt.x;
 				ByteOperations::SetLowByte(v10, setMoveTargetXY(v9, v8, a1));
-				if (v9 != v1->nextTargetWaypoint.x|| v8 != v1->nextTargetWaypoint.y)
-				{
+				if (v9 != v1->nextTargetWaypoint.x|| v8 != v1->nextTargetWaypoint.y) {
 					v1->nextTargetWaypoint.x = v9;
 					v1->nextTargetWaypoint.y = v8;
 				}

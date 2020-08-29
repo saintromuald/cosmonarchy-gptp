@@ -10,12 +10,12 @@ namespace {
 	CUnit** getAllUnitsInBounds(Box32* a1);
 	bool unitCanAttackTarget(CUnit* a1, CUnit* a2, int a3);
 	void wpnHit(CUnit* a1, CUnit* a2, int a3, int a4);
-	unsigned int getDistanceFast(int a1, int a2, int a3, int a4);
-	byte getGroundWeapon(CUnit* a1);
+	u32 getDistanceFast(int a1, int a2, int a3, int a4);
+	char getGroundWeapon(CUnit* a1);
 	int getUnitMaxWeaponRange(CUnit* a1, unsigned __int8 a2);
 }
-/*
-namespace hooks {
+
+namespace hooks {/*
 	
 	int askForHelp_AI(CUnit* a1, CUnit* a2, int a3) { // 0043ADA0
 		CUnit* v3; // esi
@@ -161,15 +161,14 @@ namespace hooks {
 		result = tempUnitsListArraysCountsListLastIndex[0] - 1;
 		tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
 		return result;
-	}
+	}*/
 }
 
 namespace {
+
 	const u32 Func_getAllUnitsInBounds = 0x0042FF80;
 	CUnit** getAllUnitsInBounds(Box32* a1) {
-		static Box32* a1;
 		static CUnit** result;
-
 		__asm {
 			PUSHAD
 			MOV a1, EAX
@@ -182,11 +181,7 @@ namespace {
 
 	const u32 Func_unitCanAttackTarget = 0x00476730;
 	bool unitCanAttackTarget(CUnit* a1, CUnit* a2, int a3) {
-		static CUnit* a1;
-		static CUnit* a2;
-		static int a3;
-		static bool result;
-
+		static int result;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -196,41 +191,31 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return result;
+		return (bool)result;
 	};
 
 	const u32 Func_wpnHit = 0x0043F320;
 	void wpnHit(CUnit* a1, CUnit* a2, int a3, int a4) {
-		static CUnit* a1;
-		static CUnit* a2;
-		static int a3;
-		static int a4;
-
 		__asm {
 			PUSHAD
 			PUSH a4
 			PUSH a3
-			PUSH a2
-			PUSH a1
+			MOV ECX, a1
+			MOV EDX, a2
 			CALL Func_wpnHit
 			POPAD
 		}
 	};
 
 	const u32 Func_getDistanceFast = 0x0040C360;
-	unsigned int getDistanceFast(int a1, int a2, int a3, int a4) {
-		static int a1;
-		static int a2;
-		static int a3;
-		static int a4;
+	u32 getDistanceFast(int a1, int a2, int a3, int a4) {
 		static unsigned int result;
-
 		__asm {
 			PUSHAD
 			PUSH a4
 			PUSH a3
-			PUSH a2
-			PUSH a1
+			MOV ECX, a1
+			MOV EDX, a2
 			CALL Func_getDistanceFast
 			MOV result, EAX
 			POPAD
@@ -239,24 +224,21 @@ namespace {
 	};
 
 	const u32 Func_getGroundWeapon = 0x00475AD0;
-	byte getGroundWeapon(CUnit* a1) {
-		static CUnit* a1;
-		static byte result;
-
+	char getGroundWeapon(CUnit* a1) {
+		static int result;
 		__asm {
 			PUSHAD
-			PUSH a1
+			MOV ECX, a1
 			CALL Func_getGroundWeapon
 			MOV result, EAX
 			POPAD
 		}
-		return result;
+		return (char)result;
 	};
 
 	const u32 Func_getUnitMaxWeaponRange = 0x00475870;
 	int getUnitMaxWeaponRange(CUnit* a1, unsigned __int8 a2) {
 		static int result;
-
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -267,4 +249,4 @@ namespace {
 		}
 		return result;
 	};
-}*/
+}
