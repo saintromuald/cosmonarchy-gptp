@@ -16,4 +16,5 @@ namespace hooks {
 	bool AI_EMPShieldRequirementsProc(CUnit* a1, CUnit* a2);												// 004413D0
 	char attackOverlayAndNotify(CUnit* a1, CUnit* a2, u8 a3, char a4);										// 00479730
 	void drawImageHPBar(int screenX, int screenY, GrpFrame* pFrame, Box32* grpRect, int colorData);			// 0047A820
+	void setBuildShieldGain(CUnit* a1);																		// 0047B6A0
 }

@@ -26,10 +26,10 @@
 	Line 95686: 00440800   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004407E0 -- AI_RestorationRequirementsProc -- HOOKED
 	Line 96913: 004413E7   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004413D0 -- AI_EMPShieldRequirementsProc -- HOOKED
 	Line 180864: 00479777  |.  8A82 B0476600 MOV AL,BYTE PTR DS:[EDX+6647B0] -- 0x00479730 -- attackOverlayAndNotify -- HOOKED
+	Line 182607: 0047A841  |.  8A8F B0476600 MOV CL,BYTE PTR DS:[EDI+6647B0] -- 0x0047A820 -- DrawImage_HpBar -- HOOKED
 
 	// Not hooked yet
-	Line 182607: 0047A841  |.  8A8F B0476600 MOV CL,BYTE PTR DS:[EDI+6647B0] -- 0x0047A820 -- DrawImage_HpBar
-	Line 184040: 0047B6A5  |.  8A87 B0476600 MOV AL,BYTE PTR DS:[EDI+6647B0] -- 0x0047B6A0 -- SetBuildShieldGain
+	Line 184040: 0047B6A5  |.  8A87 B0476600 MOV AL,BYTE PTR DS:[EDI+6647B0] -- 0x0047B6A0 -- setBuildShieldGain
 	Line 206949: 0048AD35  |.  8A81 B0476600 MOV AL,BYTE PTR DS:[ECX+6647B0] -- 0x0048ACD0 -- GetWeaponDamage
 	Line 217770: 00492239  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00492140 -- ShouldStopOrderedSpell
 	Line 293899: 004C5A3D  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004C5A20 -- ModifyUnitShields
@@ -793,6 +793,28 @@ namespace hooks {
 					renderHPBar(v37, v38 + v27, &v33, v39, (int)v31);
 				}
 				return;
+			}
+		}
+	}
+
+	void setBuildShieldGain(CUnit* a1) { // 0047B6A0
+		int _type; // edi
+		unsigned __int16 v2; // dx
+		int v3; // ecx
+		unsigned int v4; // edx
+		unsigned int v5; // eax
+
+		_type = (u16)a1->id;
+		if (units_dat::ShieldsEnabled[_type]) {
+			if (a1->status & UnitStatus::GroundedBuilding) {
+				v4 = (s32)((unsigned __int64)(1717986919i64 * (units_dat::MaxShieldPoints[_type] << 8)) >> 0x20) >> 2;
+				v3 = v4 + (v4 >> 31);
+				a1->shields = v3;
+				v2 = units_dat::TimeCost[_type];
+				if (!v2
+					|| (v5 = (((unsigned int)units_dat::MaxShieldPoints[_type] << 8) - v3) / v2, (ByteOperations::SetHighWord((a1->buildRepairHpGain), v5)) == 0)) {
+					ByteOperations::SetHighWord(a1->buildRepairHpGain, 1);
+				}
 			}
 		}
 	}
