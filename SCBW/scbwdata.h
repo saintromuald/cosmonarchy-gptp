@@ -282,6 +282,11 @@ SCBW_DATA(		char*,			redrawTransportUI,			0x006CA9F0);
 SCBW_DATA(		s32*,			tempHPShields,				0x00695798);
 SCBW_DATA(		s32*,			tempWeapon,					0x00695604);
 
+// For drawImageHPBar
+SCBW_DATA(		unk_61*,		struct_5140C4,				0x005140C4);
+SCBW_DATA(		unk_61*,		struct_5140D8,				0x005140D8);
+SCBW_DATA(		unk_62*,		struct_5140E8,				0x005140E8);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data
