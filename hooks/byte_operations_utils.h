@@ -3,15 +3,27 @@
 #include "types.h"
 
 namespace ByteOperations {
-	s8& SetLowByte(s8& lvalue, s8 value);
-	u8& SetLowByte(u8& lvalue, u8 value);
+	template<typename T, typename Y>
+	T& SetLowByte(T& lvalue, Y value) {
+		lvalue = LOBYTE(value);
+		return lvalue;
+	}
 
-	s16& SetLowByte(s16& lvalue, s8 value);
-	u16& SetHighByte(s16& lvalue, u8 value);
+	template<typename T, typename Y>
+	T& SetHighByte(T& lvalue, Y value) {
+		lvalue = HIBYTE(value);
+		return lvalue;
+	}
 
-	s32& SetLowByte(s32& lvalue, s8 value);
-	u32& SetHighByte(s32& lvalue, u8 value);
+	template<typename T, typename Y>
+	T& SetLowWord(T& lvalue, Y value) {
+		lvalue = LOWORD(value) | HIWORD(lvalue);
+		return lvalue;
+	}
 
-	s32& SetLowWord(s32& lvalue, s16 value);
-	u32& SetHighWord(s32& lvalue, u16 value);
+	template<typename T, typename Y>
+	T& SetHighWord(T& lvalue, Y value) {
+		lvalue = HIWORD(value) | LOWORD(lvalue);
+		return lvalue;
+	}
 }
