@@ -25,11 +25,11 @@
 	Line 73606: 00431865  |.  8A86 B0476600 MOV AL,BYTE PTR DS:[ESI+6647B0] -- 0x00431800 -- getUnitStrength -- HOOKED
 	Line 95686: 00440800   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004407E0 -- AI_RestorationRequirementsProc -- HOOKED
 	Line 96913: 004413E7   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004413D0 -- AI_EMPShieldRequirementsProc -- HOOKED
+	Line 180864: 00479777  |.  8A82 B0476600 MOV AL,BYTE PTR DS:[EDX+6647B0] -- 0x00479730 -- attackOverlayAndNotify -- HOOKED
+	Line 182607: 0047A841  |.  8A8F B0476600 MOV CL,BYTE PTR DS:[EDI+6647B0] -- 0x0047A820 -- DrawImage_HpBar -- HOOKED
 
 	// Not hooked yet
-	Line 180864: 00479777  |.  8A82 B0476600 MOV AL,BYTE PTR DS:[EDX+6647B0] -- 0x00479730 -- HallucinationHit
-	Line 182607: 0047A841  |.  8A8F B0476600 MOV CL,BYTE PTR DS:[EDI+6647B0] -- 0x0047A820 -- DrawImage_HpBar
-	Line 184040: 0047B6A5  |.  8A87 B0476600 MOV AL,BYTE PTR DS:[EDI+6647B0] -- 0x0047B6A0 -- SetBuildShieldGain
+	Line 184040: 0047B6A5  |.  8A87 B0476600 MOV AL,BYTE PTR DS:[EDI+6647B0] -- 0x0047B6A0 -- setBuildShieldGain
 	Line 206949: 0048AD35  |.  8A81 B0476600 MOV AL,BYTE PTR DS:[ECX+6647B0] -- 0x0048ACD0 -- GetWeaponDamage
 	Line 217770: 00492239  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00492140 -- ShouldStopOrderedSpell
 	Line 293899: 004C5A3D  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004C5A20 -- ModifyUnitShields
@@ -91,6 +91,20 @@ namespace {
 	s32 AI_TargetUnitIsWorthHitting(CUnit* a1, CUnit* a2);										// 00440E30
 	int createSplashWeaponProc(s16 a1, s16 a2, s16 a3, int (__fastcall* a4)(int, int), int a5);	// 004E82E0
 	int unitShieldsClumpInAreaAccumulatorProc(CUnit* a1, CUnit* a2);							// 00440A60
+
+	// For hallucinationHit
+	void unitWasHit(CUnit* a1, CUnit* a2, int a3);												// 004795D0
+	void doAttackNotifyEvent(CUnit* a1);														// 0048F230
+	CImage* createShieldOverlay(int a1, CUnit* a2);												// 004E6140
+
+	// For drawImageHPBar
+	int unk_billions(int a1, s32 a2, int a3, int a4);											// 0047A750
+	int unk_billions2(int a1, s32 a2, int a3, int a4);											// 0047A6E0
+	int hpBarSurfaceBuffer(int a1, int a2, int* a3, int a4, int a5);							// 0047A350
+	int hpBarSurfaceBuffer2(int a1, int a2, u16 a3, int a4);									// 0047A2C3
+	int renderHPBar(int a1, int a2, int* a3, int a4, int a5);									// 0047A4E0
+	s32 getUnitMaxEnergy(CUnit* a1);															// 00491870
+	int getHpBarDrawSizes(int a1, s32 a2, int a3, int a4);										// 0047A670
 }
 
 namespace hooks {
@@ -421,7 +435,7 @@ namespace hooks {
 		ByteOperations::SetLowWord(v4, v1->id);
 		if ((u16)v4 >= 0xB0u && (u16)v4 <= 0xB2u || (s16)v4 == 188)
 			goto LABEL_35;
-		if (!IS_IN_REPLAY && (unsigned __int8)v1->id != *LOCAL_NATION_ID)
+		if (!IS_IN_REPLAY && (u8)v1->id != *LOCAL_NATION_ID)
 			goto LABEL_6;
 		if (!(v1->status & 1)) {
 			drawProgressBar((int)v2);
@@ -488,7 +502,7 @@ namespace hooks {
 
 	int calcUnitStrength(int a1, u8 a2) { // 00431270
 		int v2; // ecx
-		unsigned __int64 v3; // rax
+		unsigned _int64 v3; // rax
 		int v4; // ebx
 		u32 v5; // esi
 		int v6; // edi
@@ -513,7 +527,7 @@ namespace hooks {
 			else {
 				v7 = (v6 * v4 << 11) / (s32)v5;
 			}
-			v3 = (unsigned __int64)(sqrt((double)(v6 * v4 * (weapons_dat::MaxRange[a2] / v5)
+			v3 = (unsigned _int64)(sqrt((double)(v6 * v4 * (weapons_dat::MaxRange[a2] / v5)
 				+ ((u32)(totalHits * v7) >> 8)))
 				* 7.58);
 		}
@@ -602,6 +616,207 @@ namespace hooks {
 			(int(__fastcall*)(int, int))unitShieldsClumpInAreaAccumulatorProc,
 			(int)v3);
 		return *tempHPShields >= 200;
+	}
+
+	char attackOverlayAndNotify(CUnit* a1, CUnit* a2, u8 a3, char a4) { // 00479730
+		s32* v4; // eax
+		CUnit* v5; // ebx
+		char returnValue = 0;
+
+		v5 = a1;
+		v4 = &a1->hitPoints;
+		if (v4) {
+			if (!(v5->status & UnitStatus::Invincible)) {
+				if (a2) {
+					unitWasHit(v5, a2, a3 != WeaponId::Irradiate);
+					if (a3 != WeaponId::Irradiate && v5->playerId != a2->playerId)
+						doAttackNotifyEvent(v5);
+				}
+				if (units_dat::ShieldsEnabled[(u16)v5->id]) {
+					if (v5->shields >= 256) {
+						*v4 = a3;
+						if (weapons_dat::DamageType[a3]) {
+							returnValue = (char)createShieldOverlay(a4, v5);
+						}
+					}
+				}
+			}
+		}
+		return returnValue;
+	}
+
+	void drawImageHPBar(int screenX, int screenY, GrpFrame* pFrame, Box32* grpRect, int colorData) { // 0047A820
+		int v5; // esi
+		int v6; // edi
+		char v7; // cl
+		int v8; // eax
+		int v9; // ecx
+		int v10; // eax
+		unk_61* v11; // ecx
+		int v12; // edx
+		u8 v13; // dl
+		int v14; // eax
+		int v15; // ecx
+		int v16; // ebx
+		unk_62* v17; // eax
+		int v18; // ecx
+		u16 v19; // di
+		int v20; // ebx
+		u16 v21; // ax
+		int v22; // ebx
+		int v23; // edi
+		signed int v24; // ecx
+		u16 v25; // ax
+		int v26; // eax
+		int v27; // ebx
+		int v28; // edx
+		bool v29; // zf
+		int v30; // eax
+		unk_61* v31; // ecx
+		int v32; // edx
+		int v33; // [esp+Ch] [ebp-1Ch]
+		int v34; // [esp+10h] [ebp-18h]
+		int v35; // [esp+14h] [ebp-14h]
+		int v36; // [esp+18h] [ebp-10h]
+		int v37; // [esp+1Ch] [ebp-Ch]
+		int v38; // [esp+20h] [ebp-8h]
+		int v39; // [esp+24h] [ebp-4h]
+
+		v37 = screenX;
+		v5 = colorData;
+		v6 = *(u16*)(colorData + 100);
+		v33 = grpRect->left;
+		v34 = grpRect->top;
+		v7 = units_dat::ShieldsEnabled[v6];
+		v38 = screenY;
+		v8 = grpRect->bottom;
+		v35 = grpRect->right;
+		if (v7) {
+			v36 = 7;
+			if (v8 <= 7)
+				v36 = v8;
+			v13 = sprites_dat::IsVisible[*(u16*)(*(int*)(colorData + 12) + 8) + 390];
+			v14 = units_dat::MaxHitPoints[v6] >> 8;
+			ByteOperations::SetHighByte(colorData, sprites_dat::IsVisible[*(u16*)(*(int*)(colorData + 12) + 8) + 390]);
+			if (v14) {
+				v15 = v14;
+			}
+			else {
+				v15 = (*(int*)(v5 + 8) + 255) >> 8;
+				if (!v15)
+					v15 = 1;
+			}
+			v16 = unk_billions((*(int*)(v5 + 8) + 255) >> 8, v15, (int)&v39, v13);
+			unk_billions2(*(int*)(v5 + 96) >> 8, units_dat::MaxShieldPoints[v6], (int)&colorData, HIBYTE(colorData));
+			v17 = struct_5140E8;
+			if (v16 < (u8)(*struct_5140E8).anonymous_0) {
+				do {
+					v18 = (u8)v17[1].anonymous_0;
+					++v17;
+				} while (v16 < v18);
+			}
+			v19 = v38;
+			v20 = v37;
+			hpBarSurfaceBuffer(v37, v38, &v33, v39, (int)v17);
+			hpBarSurfaceBuffer2(colorData, v20, v19, (int)&v33);
+			ByteOperations::SetHighByte(colorData, (u8)8);
+		}
+		else {
+			v36 = 5;
+			if (v8 <= 5)
+				v36 = v8;
+			if (units_dat::MaxHitPoints[v6] >> 8) {
+				v9 = units_dat::MaxHitPoints[v6] >> 8;
+			}
+			else {
+				v9 = (*(int*)(colorData + 8) + 255) >> 8;
+				if (!v9)
+					v9 = 1;
+			}
+			v10 = unk_billions(
+				(*(int*)(colorData + 8) + 255) >> 8,
+				v9,
+				(int)&v39,
+				(u8)sprites_dat::IsVisible[*(u16*)(*(int*)(colorData + 12) + 8) + 390]);
+			v11 = struct_5140C4;
+			if (v10 < (u8)(*struct_5140C4).anonymous_0) {
+				do {
+					v12 = (u8)v11[1].anonymous_0;
+					++v11;
+				} while (v10 < v12);
+			}
+			renderHPBar(v37, v38, &v33, v39, (int)v11);
+			ByteOperations::SetHighByte(colorData, 6);
+		}
+		v21 = *(s16*)(v5 + 100);
+		v22 = units_dat::BaseProperty[v21] & UnitProperty::Spellcaster;
+		if (v22 && (v23 = (*(int*)(v5 + 220) >> 30) & 1) == 0
+			|| (v23 = (*(int*)(v5 + 220) >> 30) & 1) != 0
+			|| v21 == 40) {
+			if (*(u8*)(v5 + 76) == *LOCAL_NATION_ID) {
+				if (v22) {
+					if (!v23) {
+						v24 = getUnitMaxEnergy((CUnit*)v5) >> 8;
+						goto LABEL_32;
+					}
+				}
+				else if (!v23) {
+					v25 = v21 != 40 ? 0 : 0x708;
+					goto LABEL_31;
+				}
+				v25 = 1350;
+			LABEL_31:
+				v24 = v25;
+			LABEL_32:
+				if (!v22 || v23)
+					v26 = *(u16*)(v5 + 272);
+				else
+					v26 = *(u8*)(v5 + 163);
+				v27 = HIBYTE(colorData);
+				v28 = grpRect->bottom - HIBYTE(colorData);
+				v29 = grpRect->bottom == HIBYTE(colorData);
+				v34 = HIBYTE(colorData) + grpRect->top;
+				v36 = v28;
+				if (v28 >= 0 && !v29) {
+					v30 = getHpBarDrawSizes(
+						v26,
+						v24,
+						(int)&v39,
+						(u8)sprites_dat::IsVisible[*(u16*)(*(int*)(v5 + 12) + 8) + 390]);
+					v31 = struct_5140D8;
+					if (v30 < (u8)(*struct_5140D8).anonymous_0) {
+						do {
+							v32 = (u8)v31[1].anonymous_0;
+							++v31;
+						} while (v30 < v32);
+					}
+					renderHPBar(v37, v38 + v27, &v33, v39, (int)v31);
+				}
+				return;
+			}
+		}
+	}
+
+	void setBuildShieldGain(CUnit* a1) { // 0047B6A0
+		int _type; // edi
+		u16 v2; // dx
+		int v3; // ecx
+		u32 v4; // edx
+		u32 v5; // eax
+
+		_type = (u16)a1->id;
+		if (units_dat::ShieldsEnabled[_type]) {
+			if (a1->status & UnitStatus::GroundedBuilding) {
+				v4 = (s32)((unsigned __int64)(1717986919i64 * (units_dat::MaxShieldPoints[_type] << 8)) >> 0x20) >> 2;
+				v3 = v4 + (v4 >> 31);
+				a1->shields = v3;
+				v2 = units_dat::TimeCost[_type];
+				if (!v2
+					|| (v5 = (((u32)units_dat::MaxShieldPoints[_type] << 8) - v3) / v2, (a1->buildRepairHpGain = v5) == 0)) {
+					a1->buildRepairHpGain = 1;
+				}
+			}
+		}
 	}
 }
 
@@ -1078,4 +1293,152 @@ namespace { // Helpers
 		return result;
 	}
 
+	// For hallucinationHit
+	const u32 Func_unitWasHit = 0x004795D0;
+	void unitWasHit(CUnit* a1, CUnit* a2, int a3) {
+		__asm {
+			PUSHAD
+			PUSH a3
+			PUSH a2
+			MOV EBX, a1
+			CALL Func_unitWasHit
+			POPAD
+		}
+	}
+
+	const u32 Func_doAttackNotifyEvent = 0x0048F230;
+	void doAttackNotifyEvent(CUnit* a1) {
+		__asm {
+			PUSHAD
+			PUSH a1
+			CALL Func_doAttackNotifyEvent
+			POPAD
+		}
+	}
+
+	const u32 Func_createShieldOverlay = 0x004E6140;
+	CImage* createShieldOverlay(int a1, CUnit* a2) {
+		static CImage* result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			MOV ECX, a2
+			CALL Func_createShieldOverlay
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	// For drawImageHPBar
+	const u32 Func_unk_billions = 0x0047A750;
+	int unk_billions(int a1, s32 a2, int a3, int a4) {
+		static int result;
+		__asm {
+			PUSHAD
+			PUSH a4
+			MOV EAX, a1
+			MOV ECX, a2
+			MOV EBX, a3
+			CALL Func_unk_billions
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_unk_billions2 = 0x0047A6E0;
+	int unk_billions2(int a1, s32 a2, int a3, int a4) {
+		static int result;
+		__asm {
+			PUSHAD
+			PUSH a4
+			MOV EAX, a1
+			MOV ECX, a2
+			MOV EDI, a3
+			CALL Func_unk_billions2
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_hpBarSurfaceBuffer = 0x0047A350;
+	int hpBarSurfaceBuffer(int a1, int a2, int* a3, int a4, int a5) {
+		static int result;
+		__asm {
+			PUSHAD
+			PUSH a5
+			PUSH a4
+			PUSH a3
+			PUSH a2
+			PUSH a1
+			CALL Func_hpBarSurfaceBuffer
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+	
+	const u32 Func_hpBarSurfaceBuffer2 = 0x0047A120;
+	int hpBarSurfaceBuffer2(int a1, int a2, u16 a3, int a4) {
+		static int result;
+		__asm {
+			PUSHAD
+			PUSH a4
+			PUSH a3
+			PUSH a2
+			MOV EAX, a1
+			CALL Func_hpBarSurfaceBuffer2
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_renderHPBar = 0x0047A4E0;
+	int renderHPBar(int a1, int a2, int* a3, int a4, int a5) {
+		static int result;
+		__asm {
+			PUSHAD
+			PUSH a5
+			PUSH a4
+			PUSH a3
+			PUSH a2
+			PUSH a1
+			CALL Func_renderHPBar
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_getUnitMaxEnergy = 0x00491870;
+	s32 getUnitMaxEnergy(CUnit* a1) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_getUnitMaxEnergy
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_getHpBarDrawSizes = 0x0047A670;
+	int getHpBarDrawSizes(int a1, s32 a2, int a3, int a4) {
+		static int result;
+		__asm {
+			PUSHAD
+			PUSH a4
+			MOV EAX, a1
+			MOV ECX, a2
+			MOV EDI, a3
+			CALL Func_getHpBarDrawSizes
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

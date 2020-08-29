@@ -91,6 +91,27 @@ struct Contour {
 };
 C_ASSERT(sizeof(Contour) == 8);
 */
+
+struct unk_61 {
+	u8 anonymous_0;
+	u8 anonymous_1;
+	u8 anonymous_2;
+	u8 anonymous_3;
+	u8 anonymous_4;
+	u8 anonymous_5;
+};
+
+struct unk_62 {
+	u8 anonymous_0;
+	u8 anonymous_1;
+	u8 anonymous_2;
+	u8 anonymous_3;
+	u8 anonymous_4;
+	u8 anonymous_5;
+	u8 anonymous_6;
+	u8 anonymous_7;
+};
+
 struct bStringMap {
 	u8		value;				// 0x0
 	u8		id;					// 0x1

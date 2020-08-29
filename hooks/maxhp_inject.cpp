@@ -663,17 +663,92 @@ namespace hooks {
 		}
 	}
 
+	void __declspec(naked) attackOverlayAndNotify_Wrapper() {
+		static CUnit* a1;
+		static CUnit* a2;
+		static u8 a3;
+		static char a4;
+		static char result;
+		__asm {
+			MOV a1, EAX
+			MOV a2, ESI
+			PUSH EBP
+			MOV EBP, ESP
+			SUB ESP, 0x08
+			PUSH EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV a3, AL
+			MOV EAX, [EBP + 0x10]
+			MOV a4, AL
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::attackOverlayAndNotify(a1, a2, a3, a4);
+		__asm {
+			POPAD
+			MOVZX EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x10
+		}
+	}
+
+	void __declspec(naked) drawImageHPBar_Wrapper() {
+		static int screenX;
+		static int screenY;
+		static GrpFrame* pFrame;
+		static Box32* grpRect;
+		static int colorData;
+		__asm {
+			MOV screenX, ECX
+			MOV screenY, EDX
+			PUSH EBP
+			MOV EBP, ESP
+			SUB ESP, 0x08
+			PUSH EAX
+			MOV EAX, [EBP + 0x0C]
+			MOV pFrame, EAX
+			MOV EAX, [EBP + 0x10]
+			MOV grpRect, EAX
+			MOV EAX, [EBP + 0x14]
+			MOV colorData, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::drawImageHPBar(screenX, screenY, pFrame, grpRect, colorData);
+		__asm {
+			POPAD
+			RETN 0x14
+		}
+	}
+
+	void __declspec(naked) setBuildShieldGain_Wrapper() {
+		static CUnit* a1;
+		__asm {
+			MOV a1, EBX
+			PUSHAD
+		}
+		hooks::setBuildShieldGain(a1);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 	void injectMaxHpHooks() {
-		jmpPatch(getTotalHitPointsPlusShields_Wrapper, 0x00402710, 5);
+		//jmpPatch(getTotalHitPointsPlusShields_Wrapper, 0x00402710, 5);
 		//jmpPatch(drawUnitInfo_Wrapper, 0x00426190, 3);
 		//jmpPatch(drawSupplyUnitInfo_Wrapper, 0x00427540, 1);
 		//jmpPatch(drawWireframeShield_Wrapper, 0x004566B0, 5);
-		jmpPatch(AI_TargetEnemyProc_Wrapper, 0x00440A20, 2);
-		jmpPatch(drawBuildingInfo_Wrapper, 0x00427890, 3);
+		//jmpPatch(AI_TargetEnemyProc_Wrapper, 0x00440A20, 2);
+		//jmpPatch(drawBuildingInfo_Wrapper, 0x00427890, 3);
 		//jmpPatch(calcUnitStrength_Wrapper, 0x00431270, 5);
 		//jmpPatch(getUnitStrength_Wrapper, 0x00431800, 0);
-		jmpPatch(AI_RestorationRequirementsProc_Wrapper, 0x004407E0, 1);
-		jmpPatch(AI_EMPShieldRequirementsProc_Wrapper, 0x004413D0, 1);
+		//jmpPatch(AI_RestorationRequirementsProc_Wrapper, 0x004407E0, 1);
+		//jmpPatch(AI_EMPShieldRequirementsProc_Wrapper, 0x004413D0, 1);
+		//jmpPatch(attackOverlayAndNotify_Wrapper, 0x00479730, 1);
+		//jmpPatch(drawImageHPBar_0_Wrapper, 0x0047A820, 1);
+		//jmpPatch(setBuildShieldGain_Wrapper, 0x0047B6A0, 0);
 		
 		//required for Heatshield
 		/*jmpPatch(getMaxHpWrapper, 0x00401404, 2);//done
