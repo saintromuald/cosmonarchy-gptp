@@ -190,7 +190,7 @@ namespace hooks {
 				speed *= 6;
 
 			}
-			if (quayCountSpeed) {
+			else if (quayCountSpeed) {
 				speed *= 5;
 
 			}
@@ -294,7 +294,7 @@ namespace hooks {
 				acceleration *= 4;
 
 			}
-			if (quayCountAccel) {
+			else if (quayCountAccel) {
 				acceleration *= 3;
 
 			}
