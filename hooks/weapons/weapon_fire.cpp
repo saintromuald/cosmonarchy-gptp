@@ -256,7 +256,8 @@ namespace hooks {
 				
 			}
 
-			if (weaponId == WeaponId::SubterraneanTentacle && unit->orderTarget.unit != NULL) {
+			// Tendril Amitosis
+			/*if (weaponId == WeaponId::SubterraneanTentacle && unit->orderTarget.unit != NULL) {
 				auto range = weapons_dat::MaxRange[WeaponId::SubterraneanTentacle];
 				auto a = scbw::UnitFinder::getNearestTarget(
 					unit->getX() - range, unit->getY() - range,
@@ -279,7 +280,7 @@ namespace hooks {
 					}
 					unit->orderTarget = old;
 				}
-			}
+			}/**/
 		}
 	}
 
