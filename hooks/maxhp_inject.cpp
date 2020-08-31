@@ -718,6 +718,8 @@ namespace hooks {
 		hooks::drawImageHPBar(screenX, screenY, pFrame, grpRect, colorData);
 		__asm {
 			POPAD
+			MOV ESP, EBP
+			POP EBP
 			RETN 0x14
 		}
 	}
@@ -787,7 +789,76 @@ namespace hooks {
 		__asm {
 			POPAD
 			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
 			RETN 0x08
+		}
+	}
+
+	void __declspec(naked) compileHealthBar_Wrapper() {
+		static int a1;
+		static int a2;
+		__asm {
+			MOV a1, ESI
+			PUSH EBP
+			MOV EBP, ESP
+			SUB ESP, 0x08
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV a2, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::compileHealthBar(a1, a2);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
+
+	void __declspec(naked) AI_FindTransport_Wrapper() {
+		static CUnit* a1;
+		static int a2;
+		static s32 result;
+		__asm {
+			MOV a1, EBX
+			PUSH EBP
+			MOV EBP, ESP
+			SUB ESP, 0x08
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV a2, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::AI_FindTransport(a1, a2);
+		__asm {
+			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+	}
+
+	void __declspec(naked) mapDataTransfer_Wrapper() {
+		static char a1;
+		static int a2;
+		static int a3;
+		static s32 result;
+		__asm {
+			MOVZX a1, CL
+			MOV a2, EDX
+			MOV a3, EAX
+			PUSHAD
+		}
+		result = hooks::mapDataTransfer(a1, a2, a3);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
 		}
 	}
 
@@ -808,6 +879,9 @@ namespace hooks {
 //		jmpPatch(getUnitBulletDamage_Wrapper, 0x0048ACD0, 1);
 //		jmpPatch(canCastSpell_Wrapper, 0x00492140, 1);
 //		jmpPatch(modifyUnitShields_Wrapper, 0x004C5A20, 2);
+//		jmpPatch(compileHealthBar_Wrapper, 0x004D6010, 1);
+//		jmpPatch(AI_FindTransport_Wrapper, 0x004E6EF0, 1);
+//		jmpPatch(mapDataTransfer_Wrapper, 0x004EAFE0, 1);
 		
 		//required for Heatshield
 		/*jmpPatch(getMaxHpWrapper, 0x00401404, 2);//done

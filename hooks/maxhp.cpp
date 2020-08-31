@@ -31,11 +31,9 @@
 	Line 206949: 0048AD35  |.  8A81 B0476600 MOV AL,BYTE PTR DS:[ECX+6647B0] -- 0x0048ACD0 -- getUnitBulletDamage -- HOOKED, compiler errors
 	Line 217770: 00492239  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00492140 -- canCastSpell -- HOOKED
 	Line 293899: 004C5A3D  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004C5A20 -- modifyUnitShields -- HOOKED
-
-	// Not hooked yet
-	Line 318718: 004D60BC  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004D6010 -- InitHealthBarImage
-	Line 343282: 004E6FC6  |.  8A87 B0476600 |MOV AL,BYTE PTR DS:[EDI+6647B0] -- 0x004E6EF0 -- Ai_FindTransport
-	Line 349375: 004EB0F4   .  8A90 B0476600 MOV DL,BYTE PTR DS:[EAX+6647B0] -- 0x004EAFE0 -- Command_MapData
+	Line 318718: 004D60BC  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004D6010 -- compileHealthBar -- HOOKED, compiler error
+	Line 343282: 004E6FC6  |.  8A87 B0476600 |MOV AL,BYTE PTR DS:[EDI+6647B0] -- 0x004E6EF0 -- Ai_FindTransport -- HOOKED, compiler errors
+	Line 349375: 004EB0F4   .  8A90 B0476600 MOV DL,BYTE PTR DS:[EAX+6647B0] -- 0x004EAFE0 -- mapDataTransfer -- HOOKED, type error?
 */
 
 namespace {
@@ -114,6 +112,25 @@ namespace {
 
 	// For modifyUnitShields
 	int SErrSetLastError(char a1);																// 00410172
+
+	// For compileHealthBar
+	void updateImageDrawData(CImage* a1);														// 004D57B0
+	void playImageIscript(CImage* a1, char a2);													// 004D8470
+
+	// For AI_FindTransport
+	bool canEnterTransport(CUnit* a1, CUnit* a2);												// 004E6E00
+	s16 SAI_GetRegionIdFromPxEx(s32 a1, s32 a2);												// 0049C9F0
+	s32 getUnitDistanceToHalt(int a1, CUnit* a2, int a3);										// 00402140
+
+	// For mapDataTransfer
+	s32 dataTransfer00(int a1, char a2, int a3);												// 00472A00
+	int dataTransfer01(u32 a1, int a2, u32 a3);													// 0045A600
+	s32 dataTransfer02(int a1, int a2, char a3);												// 0045A230
+	s32 dataTransfer03(int a1, char a2, int a3);												// 0045A1F0
+	int dataTransfer04(u32 a1, int a2, int a3);													// 0045A390
+	s32 dataTransfer05(int a1, int a2);															// 0045A190
+	vectorHead* vectorTransfer(char a1, char a2);												// 0045A010
+	int dataTransfer06(int a1);																	// 00472900
 }
 
 namespace hooks {
@@ -1009,6 +1026,161 @@ namespace hooks {
 		*(int*)(a1 + 96) = v4 << 8;
 		return 1;
 	}
+
+	void compileHealthBar(int a1, int a2) { // 004D6010
+		int v2; // eax
+		CUnit* v3; // edi
+		u8 v4; // cl
+		int v5; // eax
+		u16 v6; // ax
+		int v7; // eax
+		char v8; // cl
+		char v9; // cl
+		s32* v10; // edx
+
+		v2 = *(u16*)(a2 + 8);
+		v3 = activePlayerSelection->unit[*(u8*)(a2 + 11)];
+		v4 = sprites_dat::IsVisible[v2 + 390];
+		*(s8*)(a1 + 15) = sprites_dat::HpBarSize[v2 + 262]
+			+ (imageGrpGraphics[(u8)orders_dat::Unused3[v2 + 62] + 561]->frames[0].height >> 1)
+			+ 8;
+		*(s8*)(*(s32*)(a1 + 44) + 6) = 0;
+		*(s8*)(*(s32*)(a1 + 44) + 7) = 0;
+		*(s8*)(*(s32*)(a1 + 44) + 8) = v4 - (v4 - 1) % 3;
+		v5 = *(s32*)(a1 + 44);
+		if (*(s8*)(v5 + 8) < 0x13u)
+			*(s8*)(v5 + 8) = 19;
+		*(s8*)(*(s32*)(a1 + 44) + 9) = 0;
+		v6 = v3->id;
+		if (units_dat::BaseProperty[v6] & 0x200000 && !(v3->status & 0x40000000)
+			|| v3->status & 0x40000000
+			|| v6 == 40) {
+			*(s8*)(*(s32*)(a1 + 44) + 9) += 6;
+		}
+		v7 = *(s32*)(a1 + 44);
+		v8 = *(s8*)(v7 + 9);
+		if (units_dat::ShieldsEnabled[(unsigned __int16)v3->id])
+			v9 = v8 + 7;
+		else
+			v9 = v8 + 5;
+		*(s8*)(v7 + 9) = v9;
+		*(s16*)(*(s32*)(a1 + 44) + 2) = *(unsigned __int8*)(*(s32*)(a1 + 44) + 8);
+		*(s16*)(*(s32*)(a1 + 44) + 4) = *(unsigned __int8*)(*(s32*)(a1 + 44) + 9);
+		*(s32*)(a1 + 60) = a2;
+		*(s16*)(a1 + 12) = 0;
+		v10 = (s32*)(a1 + 36);
+		*v10 = 0;
+		v10[1] = 0;
+//		*(s32*)(a1 + 48) = v3;
+		updateImageDrawData((CImage*)a1);
+		*(s8*)(a1 + 12) |= 1u;
+		playImageIscript((CImage*)a1, 0);
+	}
+
+	s32 AI_FindTransport(CUnit* a1, int a2) { // 004E6E00
+		CUnit* v2; // esi
+		s32 v3; // ecx
+		u16 v4; // ax
+		int v5; // edi
+		int v6; // eax
+		char v7; // al
+		s16 v8; // ST16_2
+		u32 v9; // eax
+		s32 v11; // [esp+8h] [ebp-Ch]
+		u32 v12; // [esp+Ch] [ebp-8h]
+
+		*(s32*)a2 = 0;
+		v2 = firstPlayerUnit->unit[(u8)a1->playerId];
+		v11 = 0;
+		v12 = 99999999;
+		if (!v2)
+			return v11;
+		while (1) {
+			v3 = v2->status;
+			if (v3 & 0x40000000)
+				goto LABEL_22;
+			v4 = v2->id;
+//			if (v4 == 42 && !upgradesLevelSC[(u8)v2->playerId][24])
+				goto LABEL_22;
+			v5 = v4;
+			if (!units_dat::SpaceProvided[v4] || !(v3 & 1) || !(v3 & 0x20000))
+				goto LABEL_22;
+			if (v2->orderTarget.unit == a1)
+				break;
+			v6 = units_dat::MaxHitPoints[v4] >> 8;
+			if (!v6) {
+				v6 = (v2->hitPoints + 255) >> 8;
+				if (!v6)
+					v6 = 1;
+			}
+			if ((v2->hitPoints + 255) >> 8 >= 3 * v6 / 4 || units_dat::ShieldsEnabled[v5] && v2->shields >> 8 == units_dat::MaxShieldPoints[v5]) {
+				v11 = 1;
+				if (canEnterTransport(v2, a1)) {
+					v7 = v2->mainOrderId;
+					if (v7 != OrderId::Pickup2 && v7 != OrderId::Unload) {
+						if (v7 != OrderId::MoveUnload
+							|| (v8 = SAI_GetRegionIdFromPxEx(v2->orderTarget.pt.x, v2->orderTarget.pt.y),
+								v8 == SAI_GetRegionIdFromPxEx(a1->orderTarget.pt.x, a1->orderTarget.pt.y)))
+						{
+							v9 = getUnitDistanceToHalt(v2->sprite->position.y, a1, v2->sprite->position.x);
+							if (v9 < v12) {
+//								*(s32*)a2 = v2;
+								v12 = v9;
+							}
+						}
+					}
+				}
+			}
+		LABEL_22:
+			v2 = v2->player_link.next;
+			if (!v2)
+				return v11;
+		}
+//		*(s32*)a2 = v2;
+		return 1;
+	}
+
+	s32 mapDataTransfer(char a1, int a2, int a3) { // 004EAFE0
+		int v3; // eax
+		s32 result; // eax
+
+		if (!a2 || !a3)
+			return 0;
+		switch (*(unsigned __int8*)a2)
+		{
+		case 0u:
+			result = dataTransfer00(a3, a1, a2);
+			break;
+		case 1u:
+			result = dataTransfer01(a3, a2, a1);
+			break;
+		case 2u:
+			result = dataTransfer02(a3, a2, a1);
+			break;
+		case 3u:
+			result = dataTransfer03(a3, a1, a2);
+			break;
+		case 4u:
+			result = dataTransfer04(a3, a2, a1);
+			break;
+		case 5u:
+			result = dataTransfer05(a3, a2);
+			break;
+		case 6u:
+			if (a3 == 3 && (v3 = (int)vectorTransfer(*(s8*)(a2 + 2), *(s8*)(a2 + 1))) != 0) {
+				*(s8*)(v3 + 52) &= 0xFDu;
+				dataTransfer06(v3);
+				result = 1;
+			}
+			else {
+				result = 0;
+			}
+			break;
+		default:
+			return 0;
+		}
+		return result;
+	}
 }
 
 namespace { // Helpers
@@ -1699,6 +1871,190 @@ namespace { // Helpers
 			PUSHAD
 			PUSH a1
 			CALL Func_SErrSetLastError
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	// For compileHealthBar
+
+	const u32 Func_updateImageDrawData = 0x004D57B0;
+	void updateImageDrawData(CImage* a1) {
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_updateImageDrawData
+			POPAD
+		}
+	}
+
+	const u32 Func_playImageIscript = 0x004D8470;
+	void playImageIscript(CImage* a1, char a2) {
+		__asm {
+			PUSHAD
+			PUSH a2
+			MOV ECX, a1
+			CALL Func_playImageIscript
+			POPAD
+		}
+	}
+
+	// For AI_FindTransport
+	const u32 Func_canEnterTransport = 0x004E6E00;
+	bool canEnterTransport(CUnit* a1, CUnit* a2) {
+		static int result;
+		__asm {
+			PUSHAD
+			PUSH a2
+			MOV EAX, a1
+			CALL Func_canEnterTransport
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_SAI_GetRegionIdFromPxEx = 0x0049C9F0;
+	s16 SAI_GetRegionIdFromPxEx(s32 a1, s32 a2) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EDI, a1
+			MOV ECX, a2
+			CALL Func_SAI_GetRegionIdFromPxEx
+			MOV result, EAX
+			POPAD
+		}
+		return (s16)result;
+	}
+
+	const u32 Func_getUnitDistanceToHalt = 0x00402140;
+	s32 getUnitDistanceToHalt(int a1, CUnit* a2, int a3) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH a3
+			MOV ECX, a1
+			MOV EAX, a2
+			CALL Func_getUnitDistanceToHalt
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	// For mapDataTransfer
+	const u32 Func_dataTransfer00 = 0x00472A00;
+	s32 dataTransfer00(int a1, char a2, int a3) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			MOVZX CL, a2
+			MOV ESI, a3
+			CALL Func_dataTransfer00
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_dataTransfer01 = 0x0045A600;
+	int dataTransfer01(u32 a1, int a2, u32 a3) {
+		static int result;
+		__asm {
+			PUSHAD
+			PUSH a3
+			PUSH a2
+			MOV EAX, a1
+			CALL Func_dataTransfer01
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_dataTransfer02 = 0x0045A230;
+	s32 dataTransfer02(int a1, int a2, char a3) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			MOV ECX, a2
+			MOVZX BL, a3
+			CALL Func_dataTransfer02
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_dataTransfer03 = 0x0045A1F0;
+	s32 dataTransfer03(int a1, char a2, int a3) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH a3
+			MOV EAX, a1
+			MOVZX BL, a2
+			CALL Func_dataTransfer03
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+	
+	const u32 Func_dataTransfer04 = 0x0045A390;
+	int dataTransfer04(u32 a1, int a2, int a3) {
+		static int result;
+		__asm {
+			PUSHAD
+			PUSH a3
+			PUSH a2
+			MOV EAX, a1
+			CALL Func_dataTransfer04
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_dataTransfer05 = 0x0045A190;
+	s32 dataTransfer05(int a1, int a2) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			MOV EDI, a2
+			CALL Func_dataTransfer05
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_vectorTransfer = 0x0045A010;
+	vectorHead* vectorTransfer(char a1, char a2) {
+		static vectorHead* result;
+		__asm {
+			PUSHAD
+			PUSH a2
+			MOVZX BL, a1
+			CALL Func_vectorTransfer
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_dataTransfer06 = 0x00472900;
+	int dataTransfer06(int a1) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_dataTransfer06
 			MOV result, EAX
 			POPAD
 		}

@@ -20,4 +20,7 @@ namespace hooks {
 	int getUnitBulletDamage(CUnit* victim, CBullet* bullet);												// 0048ACD0
 	s32 canCastSpell(CUnit* a1);																			// 00492140
 	s32 modifyUnitShields(int a1, int a2);																	// 004C5A20
+	void compileHealthBar(int a1, int a2);																	// 004D6010
+	s32 AI_FindTransport(CUnit* a1, int a2);																// 004E6EF0
+	s32 mapDataTransfer(char a1, int a2, int a3);															// 004EAFE0
 }

@@ -92,6 +92,11 @@ struct Contour {
 C_ASSERT(sizeof(Contour) == 8);
 */
 
+struct vectorHead {
+	u32 next;
+	u32 prev;
+};
+
 struct unk_61 {
 	u8 anonymous_0;
 	u8 anonymous_1;
