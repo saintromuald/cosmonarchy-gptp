@@ -591,7 +591,12 @@ namespace hooks {
 		completed_unit_counts[unit->id].player[unit->playerId] += count;
 		int race = unit->getRace();
 		int supply = units_dat::SupplyProvided[unit->id];
-		
+		if (unit->id == UnitId::EggIroleth) {
+			supply = units_dat::SupplyProvided[UnitId::overlord];
+		}
+		if (unit->id == UnitId::EggOthstoleth) {
+			supply = units_dat::SupplyProvided[UnitId::ZergIroleth];
+		}
 		int supply_new = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SupplyProvidedValue, 0);
 		if (supply_new) supply = supply_new;
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SupplyProvidedValue, supply, 0);
