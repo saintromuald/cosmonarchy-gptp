@@ -180,8 +180,15 @@ namespace hooks {
 						}
 						break;
 					case UnitId::ZergZergling:
-						eggId = UnitId::EggVorvaling;
+						if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergNathrokor) {
+							eggId = UnitId::EggNathrokor;
+						}
+						else {
+							eggId = UnitId::EggVorvaling;
+						}
+						
 						break;
+
 					case UnitId::ZergMutalisk:
 						eggId = UnitId::cocoon;
 						break;
@@ -326,7 +333,11 @@ namespace hooks {
 				return true;
 			}
 		}
-
+		if (unit->id == UnitId::ZergZergling) {
+			if (morphUnitId == UnitId::ZergNathrokor) {
+				return true;
+			}
+		}
 		if (unit->id == UnitId::ZergOverlord) {
 			if (morphUnitId == UnitId::ZergIroleth) {
 				return true;
@@ -383,7 +394,12 @@ namespace hooks {
 
 		}
 		if (unitId == UnitId::ZergZergling)
+		{
+			if (resultId == UnitId::ZergNathrokor) {
+				return UnitId::EggNathrokor;
+			}
 			return UnitId::EggVorvaling;
+		}
 		if (unitId == UnitId::ZergUltralisk)
 			return UnitId::EggKeskathalor;
 		if (unitId == UnitId::ZergOverlord)
@@ -411,6 +427,9 @@ namespace hooks {
 			return UnitId::ZergHydralisk;
 		}
 		if (eggUnit->id == UnitId::EggVorvaling) {
+			return UnitId::ZergZergling;
+		}
+		if (eggUnit->id == UnitId::EggNathrokor) {
 			return UnitId::ZergZergling;
 		}
 		if (eggUnit->id == UnitId::EggIroleth) {
