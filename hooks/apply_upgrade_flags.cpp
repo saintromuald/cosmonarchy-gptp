@@ -18,11 +18,23 @@ namespace hooks {
 void applyUpgradeFlagsToNewUnitHook(CUnit* unit) {
 
 	Bool8 bSpeedUpgrade = 0, bCooldownUpgrade = 0;
+
 /*	if (unit->id == UnitId::vulture) {
 		if(scbw::getUpgradeLevel(unit->playerId,UpgradeId::IonPropulsion) && unit->sprite!=NULL){
 			unit->sprite->elevationLevel = 12;
 		}
 	}*/
+
+	if (unit->id == UnitId::ZergLurker)
+		bSpeedUpgrade = 1;
+
+	if (bSpeedUpgrade == 1) {
+		unit->status |= UnitStatus::SpeedUpgrade;
+		unit->updateSpeed();
+	}
+
+	unit->updateSpeed();
+
 }
 
 ;
@@ -38,6 +50,7 @@ void applyUpgradeFlagsToExistingUnitsHook(CUnit* unit, u8 upgradeId) {
 
 	bool bCooldownUpgrade = false;	//[EBP-01]
 	bool bSpeedUpgrade = true;		//[EBP-02]
+
 	/*if (unit->id == UnitId::TerranVulture) {
 		if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::IonPropulsion) && unit->sprite != NULL) {
 			unit->sprite->elevationLevel = 12;
