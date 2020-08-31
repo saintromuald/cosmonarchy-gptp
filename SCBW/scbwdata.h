@@ -287,6 +287,10 @@ SCBW_DATA(		unk_61*,		struct_5140C4,				0x005140C4);
 SCBW_DATA(		unk_61*,		struct_5140D8,				0x005140D8);
 SCBW_DATA(		unk_62*,		struct_5140E8,				0x005140E8);
 
+// For getUnitBulletDamage
+SCBW_DATA(		char*,			upgradesLevelSC,			0x0058D2B0);
+SCBW_DATA(		char*,			upgradesLevelBW,			0x0058F2FE);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data

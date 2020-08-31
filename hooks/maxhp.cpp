@@ -27,12 +27,12 @@
 	Line 96913: 004413E7   .  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004413D0 -- AI_EMPShieldRequirementsProc -- HOOKED
 	Line 180864: 00479777  |.  8A82 B0476600 MOV AL,BYTE PTR DS:[EDX+6647B0] -- 0x00479730 -- attackOverlayAndNotify -- HOOKED
 	Line 182607: 0047A841  |.  8A8F B0476600 MOV CL,BYTE PTR DS:[EDI+6647B0] -- 0x0047A820 -- DrawImage_HpBar -- HOOKED
+	Line 184040: 0047B6A5  |.  8A87 B0476600 MOV AL,BYTE PTR DS:[EDI+6647B0] -- 0x0047B6A0 -- setBuildShieldGain -- HOOKED, dysfunctional
+	Line 206949: 0048AD35  |.  8A81 B0476600 MOV AL,BYTE PTR DS:[ECX+6647B0] -- 0x0048ACD0 -- getUnitBulletDamage -- HOOKED, compiler errors
+	Line 217770: 00492239  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00492140 -- canCastSpell -- HOOKED
+	Line 293899: 004C5A3D  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004C5A20 -- modifyUnitShields -- HOOKED
 
 	// Not hooked yet
-	Line 184040: 0047B6A5  |.  8A87 B0476600 MOV AL,BYTE PTR DS:[EDI+6647B0] -- 0x0047B6A0 -- setBuildShieldGain
-	Line 206949: 0048AD35  |.  8A81 B0476600 MOV AL,BYTE PTR DS:[ECX+6647B0] -- 0x0048ACD0 -- GetWeaponDamage
-	Line 217770: 00492239  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x00492140 -- ShouldStopOrderedSpell
-	Line 293899: 004C5A3D  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004C5A20 -- ModifyUnitShields
 	Line 318718: 004D60BC  |.  8A88 B0476600 MOV CL,BYTE PTR DS:[EAX+6647B0] -- 0x004D6010 -- InitHealthBarImage
 	Line 343282: 004E6FC6  |.  8A87 B0476600 |MOV AL,BYTE PTR DS:[EDI+6647B0] -- 0x004E6EF0 -- Ai_FindTransport
 	Line 349375: 004EB0F4   .  8A90 B0476600 MOV DL,BYTE PTR DS:[EAX+6647B0] -- 0x004EAFE0 -- Command_MapData
@@ -105,6 +105,15 @@ namespace {
 	int renderHPBar(int a1, int a2, int* a3, int a4, int a5);									// 0047A4E0
 	s32 getUnitMaxEnergy(CUnit* a1);															// 00491870
 	int getHpBarDrawSizes(int a1, s32 a2, int a3, int a4);										// 0047A670
+
+	// For canCastSpell
+	bool unitIsFrozen(CUnit* a1);																// 004020B0
+	bool isUnitCasterNotHallucination(CUnit* a1);												// 00401210
+	bool getActiveTileFlag(s16 a1, s16 a2, int a3, int a4);										// 00472F80
+	CUnit* getTargetUnitAbilityErrorStatString(CUnit* a1, char a2, int a3);						// 00491E80
+
+	// For modifyUnitShields
+	int SErrSetLastError(char a1);																// 00410172
 }
 
 namespace hooks {
@@ -818,6 +827,188 @@ namespace hooks {
 			}
 		}
 	}
+
+	int getUnitBulletDamage(CUnit* victim, CBullet* bullet)	{ // 0048ACD0
+		int v2; // edi
+		CUnit* v3; // esi
+		int v4; // eax
+		int v5; // eax
+		unsigned __int16 v6; // cx
+		int v7; // esi
+		s8 v8; // cl
+		int result; // eax
+		int v10; // eax
+		int unitType; // ecx
+		signed int v12; // eax
+		int v13; // ecx
+		signed int v14; // eax
+		int v15; // eax
+
+		v2 = (u8)bullet->weaponType;
+		v3 = victim;
+		if (weapons_dat::ExplosionType[v2] == WeaponEffect::NuclearMissile)	{
+			unitType = (u16)victim->id;
+			v10 = units_dat::MaxHitPoints[unitType];
+			if (units_dat::ShieldsEnabled[unitType]) {
+				v12 = v10 >> 8;
+				if (!v12) {
+					v12 = (v3->hitPoints + 255) >> 8;
+					if (!v12)
+						v12 = 1;
+				}
+				v13 = 2 * (v12 + units_dat::MaxShieldPoints[unitType]);
+			}
+			else {
+				v14 = v10 >> 8;
+				if (!v14) {
+					v14 = (v3->hitPoints + 255) >> 8;
+					if (!v14)
+						v14 = 1;
+				}
+				v13 = 2 * v14;
+			}
+			v15 = v13 / 3;
+			if (v13 / 3 < 500)
+				v15 = 500;
+			result = v15 << 8;
+		}
+		else {
+			v5 = (u8)bullet->weaponType;
+			v6 = weapons_dat::DamageUpgrade[v5];
+			v7 = weapons_dat::DamageAmount[v5];
+			v4 = (u8)bullet->srcPlayer;
+			if (v6 >= (u16)BwUpgrade::UnusedUpgrade46)
+				/*v8 = upgradesLevelBW[v4][v6];
+			else
+				v8 = upgradesLevelSC[v4][v6];*/
+			result = (v7 + v8 * weapons_dat::DamageBonus[v2]) << 8;
+		}
+		return result;
+	}
+
+	s32 canCastSpell(CUnit* a1) { // 00492140
+		u8 v1; // al
+		int v2; // ebx
+		CUnit* v3; // esi
+		signed int result; // eax
+		int v5; // eax
+		int v6; // eax
+		bool v7; // eax
+		s16 v8; // [esp+8h] [ebp-Ch]
+		s16 v9; // [esp+Ch] [ebp-8h]
+		u8 v10; // [esp+13h] [ebp-1h]
+
+		v1 = a1->mainOrderId;
+		v2 = v1;
+		v10 = orders_dat::OrderWeaponId[v1];
+		v8 = a1->orderTarget.pt.y;
+		v3 = a1->orderTarget.unit;
+		v9 = a1->orderTarget.pt.x;
+		if (a1->pAI) {
+			switch (v1)
+			{
+			case OrderId::MagnaPulse:
+			case OrderId::StasisField:
+				if (v3 && !unitIsFrozen(v3))
+					goto LABEL_23;
+				goto LABEL_17;
+			case OrderId::CastParasite:
+				if (v3 && !v3->parasiteFlags)
+					goto LABEL_23;
+				result = 1;
+				break;
+			case OrderId::EmpShockwave:
+				if (!v3)
+					goto LABEL_23;
+				ByteOperations::SetLowByte(v5, isUnitCasterNotHallucination(v3));
+				if (v5)	{
+					if (HIBYTE(v3->energy) >= 0x64u)
+						goto LABEL_23;
+				}
+				if (units_dat::ShieldsEnabled[(u16)v3->id] && (s32)(v3->shields & 0xFFFFFF00) >= 25600)
+					goto LABEL_23;
+			LABEL_17:
+				result = 1;
+				break;
+			case OrderId::Irradiate:
+				if (v3 && !v3->irradiateTimer)
+					goto LABEL_23;
+				result = 1;
+				break;
+			case OrderId::Plague:
+				if (v3 && !v3->plagueTimer)
+					goto LABEL_23;
+				result = 1;
+				break;
+			case OrderId::Ensnare:
+				if (!v3 || !v3->ensnareTimer)
+					goto LABEL_23;
+				result = 1;
+				break;
+			default:
+				goto LABEL_23;
+			}
+		}
+		else {
+		LABEL_23:
+			if (orders_dat::UseWeaponTargeting[v2])
+			{
+				if (!canWeaponTargetUnit(v10, v3, a1))
+					return 1;
+			}
+			else {
+				ByteOperations::SetLowByte(v6, orders_dat::TechUsed[v2]);
+				if ((u8)v6 < (u8)TechId::None) {
+					v6 = (u8)v6;
+					switch ((u8)v6) {
+					case TechId::EMPShockwave:
+					case TechId::ScannerSweep:
+					case TechId::DarkSwarm:
+					case TechId::Plague:
+					case TechId::Ensnare:
+					case TechId::PsionicStorm:
+					case TechId::Recall:
+					case TechId::StasisField:
+					case TechId::DisruptionWeb:
+					case TechId::Maelstrom:
+						break;
+					default:
+						if ((u8)v6 == TechId::SpiderMines) {
+							ByteOperations::SetLowByte(v7, getActiveTileFlag(v8, v9, 0x410000, 0));
+						}
+						else {
+							if (!v3 || v3->status & 0x4000000)
+								goto LABEL_17;
+							v7 = (u16)getTargetUnitAbilityErrorStatString(v3, a1->playerId, v6) == 0;
+						}
+						if (!v7)
+							goto LABEL_17;
+						break;
+					}
+				}
+			}
+			result = 0;
+		}
+		return result;
+	}
+
+	s32 modifyUnitShields(int a1, int a2) { // 004C5A20
+		int v3; // eax
+		signed int v4; // ecx
+
+		if (!a1) {
+			SErrSetLastError(87);
+			return 0;
+		}
+		v3 = *(u16*)(a1 + 100);
+		if (!units_dat::ShieldsEnabled[v3])
+			return 0;
+		v4 = units_dat::MaxShieldPoints[v3];
+		if (v4 >= (s32)(a2 * v4 / 0x64u))
+			v4 = a2 * (u32)units_dat::MaxShieldPoints[v3] / 0x64;
+		*(int*)(a1 + 96) = v4 << 8;
+		return 1;
+	}
 }
 
 namespace { // Helpers
@@ -1436,6 +1627,78 @@ namespace { // Helpers
 			MOV ECX, a2
 			MOV EDI, a3
 			CALL Func_getHpBarDrawSizes
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	// For canCastSpell
+	const u32 Func_unitIsFrozen = 0x004020B0;
+	bool unitIsFrozen(CUnit* a1) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_unitIsFrozen
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_isUnitCasterNotHallucination = 0x00401210;
+	bool isUnitCasterNotHallucination(CUnit* a1) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_isUnitCasterNotHallucination
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_getActiveTileFlag = 0x00472F80;
+	bool getActiveTileFlag(s16 a1, s16 a2, int a3, int a4) {
+		static int result;
+		__asm {
+			PUSHAD
+			PUSH a4
+			PUSH a3
+			PUSH a2
+			MOVZX AX, a1
+			CALL Func_getActiveTileFlag
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_getTargetUnitAbilityErrorStatString = 0x00491E80;
+	CUnit* getTargetUnitAbilityErrorStatString(CUnit* a1, char a2, int a3) {
+		static CUnit* result;
+		__asm {
+			PUSHAD
+			PUSH a3
+			MOV EAX, a1
+			MOVZX BL, a2
+			CALL Func_getTargetUnitAbilityErrorStatString
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	// For modifyUnitShields
+	const u32 Func_SErrSetLastError = 0x00410172;
+	int SErrSetLastError(char a1) {
+		static int result;
+		__asm {
+			PUSHAD
+			PUSH a1
+			CALL Func_SErrSetLastError
 			MOV result, EAX
 			POPAD
 		}

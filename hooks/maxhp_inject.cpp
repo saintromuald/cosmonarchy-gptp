@@ -735,20 +735,79 @@ namespace hooks {
 		}
 	}
 
+	void __declspec(naked) getUnitBulletDamage_Wrapper() {
+		static CUnit* victim;
+		static CBullet* bullet;
+		static int result;
+		__asm {
+			MOV victim, EAX
+			MOV bullet, EDX
+			PUSHAD
+		}
+		result = hooks::getUnitBulletDamage(victim, bullet);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) canCastSpell_Wrapper() {
+		static CUnit* a1;
+		static s32 result;
+		__asm {
+			MOV a1, EDI
+			PUSHAD
+		}
+		result = hooks::canCastSpell(a1);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) modifyUnitShields_Wrapper() {
+		static int a1;
+		static int a2;
+		static s32 result;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			SUB ESP, 0x08
+			PUSH EAX
+			MOV EAX, [EBP + 0x04]
+			MOV a1, EAX
+			MOV EAX, [EBP + 0x08]
+			MOV a2, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::modifyUnitShields(a1, a2);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN 0x08
+		}
+	}
+
 	void injectMaxHpHooks() {
-		//jmpPatch(getTotalHitPointsPlusShields_Wrapper, 0x00402710, 5);
-		//jmpPatch(drawUnitInfo_Wrapper, 0x00426190, 3);
-		//jmpPatch(drawSupplyUnitInfo_Wrapper, 0x00427540, 1);
-		//jmpPatch(drawWireframeShield_Wrapper, 0x004566B0, 5);
-		//jmpPatch(AI_TargetEnemyProc_Wrapper, 0x00440A20, 2);
-		//jmpPatch(drawBuildingInfo_Wrapper, 0x00427890, 3);
-		//jmpPatch(calcUnitStrength_Wrapper, 0x00431270, 5);
-		//jmpPatch(getUnitStrength_Wrapper, 0x00431800, 0);
-		//jmpPatch(AI_RestorationRequirementsProc_Wrapper, 0x004407E0, 1);
-		//jmpPatch(AI_EMPShieldRequirementsProc_Wrapper, 0x004413D0, 1);
-		//jmpPatch(attackOverlayAndNotify_Wrapper, 0x00479730, 1);
-		//jmpPatch(drawImageHPBar_0_Wrapper, 0x0047A820, 1);
-		//jmpPatch(setBuildShieldGain_Wrapper, 0x0047B6A0, 0);
+//		jmpPatch(getTotalHitPointsPlusShields_Wrapper, 0x00402710, 5);
+//		jmpPatch(drawUnitInfo_Wrapper, 0x00426190, 3);
+//		jmpPatch(drawSupplyUnitInfo_Wrapper, 0x00427540, 1);
+//		jmpPatch(drawWireframeShield_Wrapper, 0x004566B0, 5);
+//		jmpPatch(AI_TargetEnemyProc_Wrapper, 0x00440A20, 2);
+//		jmpPatch(drawBuildingInfo_Wrapper, 0x00427890, 3);
+//		jmpPatch(calcUnitStrength_Wrapper, 0x00431270, 5);
+//		jmpPatch(getUnitStrength_Wrapper, 0x00431800, 0);
+//		jmpPatch(AI_RestorationRequirementsProc_Wrapper, 0x004407E0, 1);
+//		jmpPatch(AI_EMPShieldRequirementsProc_Wrapper, 0x004413D0, 1);
+//		jmpPatch(attackOverlayAndNotify_Wrapper, 0x00479730, 1);
+//		jmpPatch(drawImageHPBar_0_Wrapper, 0x0047A820, 1);
+//		jmpPatch(setBuildShieldGain_Wrapper, 0x0047B6A0, 0);
+//		jmpPatch(getUnitBulletDamage_Wrapper, 0x0048ACD0, 1);
+//		jmpPatch(canCastSpell_Wrapper, 0x00492140, 1);
+//		jmpPatch(modifyUnitShields_Wrapper, 0x004C5A20, 2);
 		
 		//required for Heatshield
 		/*jmpPatch(getMaxHpWrapper, 0x00401404, 2);//done
