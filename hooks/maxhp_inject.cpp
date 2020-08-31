@@ -849,7 +849,7 @@ namespace hooks {
 		static int a3;
 		static s32 result;
 		__asm {
-			MOVZX a1, CL
+			MOV a1, CL
 			MOV a2, EDX
 			MOV a3, EAX
 			PUSHAD
