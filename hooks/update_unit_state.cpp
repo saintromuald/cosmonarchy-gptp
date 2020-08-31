@@ -591,9 +591,30 @@ namespace hooks {
 		completed_unit_counts[unit->id].player[unit->playerId] += count;
 		int race = unit->getRace();
 		int supply = units_dat::SupplyProvided[unit->id];
+		
 		int supply_new = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SupplyProvidedValue, 0);
 		if (supply_new) supply = supply_new;
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SupplyProvidedValue, supply, 0);
+
+		if (unit != NULL) {
+			auto supply_overlord_modifier = scbw::get_generic_value(unit, ValueId::OverlordSupplyGimmick);
+			if (supply_overlord_modifier > 0) {
+				switch (supply_overlord_modifier) {
+				case 1:
+					supply = units_dat::SupplyProvided[UnitId::ZergIroleth] - units_dat::SupplyProvided[UnitId::ZergOverlord];
+					break;
+				case 2:
+					supply = units_dat::SupplyProvided[UnitId::ZergOthstoleth] - units_dat::SupplyProvided[UnitId::ZergIroleth];
+					break;
+				default:
+					break;
+				}
+			}
+			else if (unit->id == UnitId::ZergOthstoleth) {
+				supply = units_dat::SupplyProvided[unit->id];
+			}
+			scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 0);
+		}
 		raceSupply[race].provided[unit->playerId] += count * supply;
 		if (units_dat::GroupFlags[unit->id].isFactory) {
 			factoriesOwned[unit->playerId] += count;

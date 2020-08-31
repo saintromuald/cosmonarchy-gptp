@@ -212,6 +212,7 @@ namespace ValueId {
 		LobotomySlow								= 69,
 		EmpyreanMissilePos							= 70,
 		ProtossSwitchOrderState						= 71,
+		OverlordSupplyGimmick						= 72,
 	#if DELIVERANCE
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,

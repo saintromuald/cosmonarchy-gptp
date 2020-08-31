@@ -153,7 +153,15 @@ namespace hooks {
 					//scbw::printText("Setup egg");
 					bool bStopThere = false;
 					u16 eggId;
-					incrementUnitScoresEx(unit, -1, 0);
+					switch (unit->id) {
+					case UnitId::ZergOverlord:
+					case UnitId::ZergIroleth:
+						break;
+					default:
+						incrementUnitScoresEx(unit, -1, 0);
+						break;
+					}
+//					incrementUnitScoresEx(unit, -1, 0);
 					//was unit->status = unit->status & ~UnitStatus::Completed
 					//in original code
 					if (unit->status & UnitStatus::Completed)
@@ -214,6 +222,7 @@ namespace hooks {
 							return;
 						}
 						else {
+
 							replaceUnitWithType(unit, eggId);
 						}
 						
@@ -244,8 +253,17 @@ namespace hooks {
 					if (unit->orderSignal & 4) {
 
 						unit->orderSignal -= 4;
+						switch (unit->id) {
+						case UnitId::EggIroleth:
+							scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 1);
+							break;
+						case UnitId::EggOthstoleth:
+							scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 2);
+							break;
+						default:
+							break;
+						}
 						replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
-
 						if (
 							unit->id == UnitId::ZergDrone ||
 							unit->id == UnitId::ZergOverlord
@@ -253,9 +271,7 @@ namespace hooks {
 							AI_TrainingUnit(unit, unit);
 
 						playMorphingCompleteSound(unit);
-
 						unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
-
 						if (units_dat::ConstructionGraphic[unit->id] != 0) {
 
 							CImage* current_image;
@@ -275,7 +291,9 @@ namespace hooks {
 						else { //5DF60
 
 							//update various stuff (set hp, set shield...) not finished on Morph
+
 							function_004A01F0(unit);
+
 							updateUnitStrength(unit);
 
 							if (unit->id == UnitId::ZergEgg)
