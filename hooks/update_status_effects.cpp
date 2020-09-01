@@ -522,17 +522,14 @@ void updateStatusEffects(CUnit* unit) {
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::MaledictionSlow, (24*4)+1, 0);
 				u32 overlayImageId;
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
-					overlayImageId = ImageId::MaelstromOverlay_Medium;
+					overlayImageId = ImageId::Malediction_Medium;
 				else
 					if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
-						overlayImageId = ImageId::MaelstromOverlay_Large;
+						overlayImageId = ImageId::Malediction_Large;
 					else
-						overlayImageId = ImageId::MaelstromOverlay_Small;
+						overlayImageId = ImageId::Malediction_Small;
 				unit->sprite->createTopOverlay(overlayImageId,
 					0, 0, 0);
-				//new maelstrom visual code
-				//scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetMaelstromOffset, 25, 0, 0);
-//				unit->sprite->images.head->setRemapping(ColorRemapping::GFire);
 			}
 			unit->updateSpeed();
 		}

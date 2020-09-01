@@ -589,20 +589,23 @@ namespace hooks {
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::MaledictionSlow, 0) == 1) {
 					u32 overlayImageId;
 					if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
-						overlayImageId = ImageId::MaelstromOverlay_Medium;
+						overlayImageId = ImageId::Malediction_Medium;
 					else
 						if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
-							overlayImageId = ImageId::MaelstromOverlay_Large;
+							overlayImageId = ImageId::Malediction_Large;
 						else
-							overlayImageId = ImageId::MaelstromOverlay_Small;
+							overlayImageId = ImageId::Malediction_Small;
 					while (unit->sprite->getOverlay(overlayImageId)) {
 						unit->sprite->removeOverlay(overlayImageId);
 					}
 					unit->updateSpeed();
 				}
+
+				// Lobotomy Mine
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::LobotomySlow, 0) > 0) {
 					unit->updateSpeed();
 				}
+
 				// Zergling - Adrenal Glands
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::AdrenalTimer, 0) == 1) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::AdrenalStacks, 0, 0);

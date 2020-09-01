@@ -1012,5 +1012,8 @@ enum Enum {
 	Malice_Small						= 1064,
 	Malice_Medium						= 1065,
 	Malice_Large						= 1066,
+	Malediction_Small					= 1067,
+	Malediction_Medium					= 1068,
+	Malediction_Large					= 1069,
 };
 }
