@@ -53,7 +53,6 @@ namespace hooks {
 		   return true;
 	   }
 	   if (bullet->weaponType == WeaponId::PlasmidBreath) {
-		   scbw::printText("Plasmid");
 		   CUnit* nathrokor = bullet->sourceUnit;
 		   u16 angle = scbw::getAngle(nathrokor->position.x, nathrokor->position.y,
 			   target->position.x, target->position.y);
@@ -63,11 +62,9 @@ namespace hooks {
 		   int delta = unit_angle - angle;
 		   delta = abs((delta + 128) % 256 - 128);
 		   if (delta > arc) {
-			   scbw::printText("Outside arc");
 			   return false;
 		   }
 		   else {
-			   scbw::printText("In arc");
 		   }
 	   }
 	   return true;
