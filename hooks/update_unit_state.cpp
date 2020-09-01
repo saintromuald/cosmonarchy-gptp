@@ -353,24 +353,15 @@ namespace hooks {
 			unit->_unknown_0x08C &= ~0x1;
 			u32 overlayImageId;
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
-				overlayImageId = ImageId::MaelstromOverlay_Medium;
+				overlayImageId = ImageId::Malice_Medium;
 			else
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
-					overlayImageId = ImageId::MaelstromOverlay_Large;
+					overlayImageId = ImageId::Malice_Large;
 				else
-					overlayImageId = ImageId::MaelstromOverlay_Small;
+					overlayImageId = ImageId::Malice_Small;
 			if (!unit->getOverlay(overlayImageId)) {
 				unit->sprite->createTopOverlay(overlayImageId,
 					0, 0, 0);
-				if (!scbw::get_aise_value(unit, NULL, AiseId::HasMalice, 0, 0) == 1){
-					//unit->sprite->images.head->setRemapping(ColorRemapping::BExpl);
-					//new maelstrom visual code
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetMaelstromOffset, 75, 0, 0);
-				}
-				else {
-					//new maelstrom visual code
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetMaelstromOffset, 50, 0, 0);
-				}
 			}
 		}
 		
@@ -378,14 +369,14 @@ namespace hooks {
 			unit->_unknown_0x08C &= ~0x2;
 			u32 overlayImageId;
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
-				overlayImageId = ImageId::MaelstromOverlay_Medium;
+				overlayImageId = ImageId::Malice_Medium;
 			else
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
-					overlayImageId = ImageId::MaelstromOverlay_Large;
+					overlayImageId = ImageId::Malice_Large;
 				else
-					overlayImageId = ImageId::MaelstromOverlay_Small;
+					overlayImageId = ImageId::Malice_Small;
 			if (unit->getOverlay(overlayImageId)) {
-				unit->removeOverlay(ImageId::MaelstromOverlay_Small, ImageId::MaelstromOverlay_Large);
+				unit->removeOverlay(ImageId::Malice_Small, ImageId::Malice_Large);
 			}
 		}
 
