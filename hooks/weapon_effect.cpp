@@ -48,7 +48,30 @@ namespace hooks {
 			}
 	    }
    }
-
+   bool nathrokorCondition(CBullet* bullet, CUnit* target) {
+	   if (bullet->sourceUnit == NULL || target==NULL) {
+		   return true;
+	   }
+	   if (bullet->weaponType == WeaponId::PlasmidBreath) {
+		   scbw::printText("Plasmid");
+		   CUnit* nathrokor = bullet->sourceUnit;
+		   u16 angle = scbw::getAngle(nathrokor->position.x, nathrokor->position.y,
+			   target->position.x, target->position.y);
+		   u16 unit_angle = nathrokor->velocityDirection1;
+		   int arc = (double)15 / 1.40625;
+		   //30 degrees
+		   int delta = unit_angle - angle;
+		   delta = abs((delta + 128) % 256 - 128);
+		   if (delta > arc) {
+			   scbw::printText("Outside arc");
+			   return false;
+		   }
+		   else {
+			   scbw::printText("In arc");
+		   }
+	   }
+	   return true;
+   }
 	void friendlySplash(CBullet* bullet, u32 weaponId, u8 splash_type, CUnit* guaranteed_hit){
 		int splash = splash_type;
 		if (bullet->sourceUnit != NULL) {
@@ -65,7 +88,7 @@ namespace hooks {
 		if (weaponId == WeaponId::ArcliteShockCannon && scbw::getUpgradeLevel(bullet->srcPlayer, UpgradeId::HammerfallShells)) {
 			r += r / 3;
 		}
-
+		
 		// Safety Off - Cyprian ability
 		if (isUnsafeCyprianBullet(bullet,weaponId)){
 			r = 40;
@@ -75,6 +98,9 @@ namespace hooks {
 		if (isChargedGorgolethBullet(bullet, weaponId)) {
 			r = 45;
 		}
+		if (weaponId == WeaponId::PlasmidBreath) {
+			r = 32;
+		}
 
 		// Get units within the outer splash radius
 		scbw::UnitFinder unitsInSplash(x-r, y-r, x+r, y+r);
@@ -83,7 +109,7 @@ namespace hooks {
 		//
 
 		bool hasGuaranteedHitUnit = guaranteed_hit != NULL;
-		if (hasGuaranteedHitUnit) {
+		if (hasGuaranteedHitUnit && nathrokorCondition(bullet, bullet->attackTarget.unit)) {
 			weaponBulletShot(guaranteed_hit, bullet, 1);
 		}
 
@@ -122,12 +148,13 @@ namespace hooks {
 			if(isUnsafeCyprianBullet(bullet,weaponId)){
 				outer = 40;
 			}
-
 			// Probing Incisors - Gorgoleth passive
 			if (isChargedGorgolethBullet(bullet, weaponId)) {
 				outer = 45;
 			}
-
+			if (weaponId == WeaponId::PlasmidBreath) {
+				outer = 32;
+			}
 			if(!isUnitDistanceWithin(target, bullet, outer)) continue;
       
 			// Don't storm a unit that's already being stormed
@@ -154,9 +181,9 @@ namespace hooks {
 				inner = 30;
 			}
 
-			if(isUnitDistanceWithin(target, bullet, inner)){
-			weaponBulletShot(target, bullet, 1); // 100% damage
-			continue;
+			if(isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet,target)){
+				weaponBulletShot(target, bullet, 1); // 100% damage
+				continue;
 			}
       
 			// Burrowed units can only be hit by inner radius
@@ -174,19 +201,22 @@ namespace hooks {
 			if(isUnsafeCyprianBullet(bullet,weaponId)){
 				medium = 25;
 			}
-
 			// Probing Incisors - Gorgoleth passive
 			if (isChargedGorgolethBullet(bullet, weaponId)) {
 				medium = 37;
 			}
-
-			if(isUnitDistanceWithin(target, bullet, medium)){
+			if (weaponId == WeaponId::PlasmidBreath) {
+				r = 32;
+			}
+			if(isUnitDistanceWithin(target, bullet, medium) && nathrokorCondition(bullet, target)){
 				weaponBulletShot(target, bullet, 2); // 50% damage
 				continue;
 			}
       
 			// Outer radius
-			weaponBulletShot(target, bullet, 4); // 25% damage
+			if (nathrokorCondition(bullet, target)) {
+				weaponBulletShot(target, bullet, 4); // 25% damage
+			}
 		}
 	}
 
