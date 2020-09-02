@@ -84,10 +84,6 @@ namespace UnitsDatEntries {
 		2, //map string id
 		1, //broodwar only
 		2, //staredit avail*/
-
-
-
-		FlingyAisePtr=1000,
 	};
 }
 
