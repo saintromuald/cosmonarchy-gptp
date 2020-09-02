@@ -165,6 +165,7 @@ u32 getFlingyData(u32 entry, u32 index);
 
 u32 getSpriteData(u32 entry, u32 index);
 u32 getImageData(u32 entry, u32 index);
+u32 getUnitData(u32 entry, u32 index);
 CUnit* get_generic_unit(CUnit* unit, u32 id);
 
 u32 get_generic_value(CUnit* u, u32 val);

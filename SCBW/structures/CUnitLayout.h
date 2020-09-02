@@ -118,6 +118,7 @@ namespace AiseId {
 		ReadSamaseFile_Ptr,
 		GenericUnit,
 		GenericVariable,
+		GetUnitData,
 	};
 }
 
