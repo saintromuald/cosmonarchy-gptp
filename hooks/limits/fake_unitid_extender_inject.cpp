@@ -35,6 +35,40 @@ namespace hooks {
 			JMP wrapper1Jmp
 		}
 	}
+	void __declspec(naked) flingyWrapper2() {
+		static u32 flingyPtr;
+		static u32 regPtrOffset;
+		__asm {
+			MOV regPtrOffset, EDI
+			PUSHAD
+		}
+		flingyPtr = get_flingy_ptr_val() + regPtrOffset;
+		__asm {
+			POPAD
+			PUSH ESI
+			MOV ESI, flingyPtr
+			MOV ECX, [ESI]
+			POP ESI
+			JMP wrapper2Jmp
+		}
+	}
+	void __declspec(naked) flingyWrapper3() {
+		static u32 flingyPtr;
+		static u32 regPtrOffset;
+		__asm {
+			MOV regPtrOffset, ECX
+			PUSHAD
+		}
+		flingyPtr = get_flingy_ptr_val() + regPtrOffset;
+		__asm {
+			POPAD
+			PUSH ESI
+			MOV ESI, flingyPtr
+			MOV EDX, [ESI]
+			POP ESI
+			JMP wrapper3Jmp
+		}
+	}
 	void unitsDatWrapperPatches() {
 		//TO DO: All wrapper patches
 		//implement get_flingy_ptr_val() on aise side
@@ -44,10 +78,13 @@ namespace hooks {
 		//enable everything in aise/gptp
 		//test
 		jmpPatch(flingyWrapper1, 0x00454317, 2);
+		jmpPatch(flingyWrapper2, 0x00463A71, 2);
+		jmpPatch(flingyWrapper2, 0x004683C6, 2);
 		/*
 	Line 125772: 00454317  |.  0FB680 F84466>MOVZX EAX,BYTE PTR DS:[EAX+6644F8] //EAX <- EAX //DONE
-	Line 148264: 00463A71  |.  0FB68F F84466>MOVZX ECX,BYTE PTR DS:[EDI+6644F8] //ECX <- EDI
-	Line 154775: 004683C6   .  0FB691 F84466>MOVZX EDX,BYTE PTR DS:[ECX+6644F8] //EDX <- ECX
+	Line 148264: 00463A71  |.  0FB68F F84466>MOVZX ECX,BYTE PTR DS:[EDI+6644F8] //ECX <- EDI //DONE
+	Line 154775: 004683C6   .  0FB691 F84466>MOVZX EDX,BYTE PTR DS:[ECX+6644F8] //EDX <- ECX //DONE
+
 	Line 184214: 0047B854  |.  0FB690 F84466>MOVZX EDX,BYTE PTR DS:[EAX+6644F8] //EDX <- EAX
 	Line 184242: 0047B8A4  |.  0FB690 F84466>MOVZX EDX,BYTE PTR DS:[EAX+6644F8] //EDX <- EAX
 	Line 184269: 0047B8F4   .  0FB688 F84466>MOVZX ECX,BYTE PTR DS:[EAX+6644F8] //ECX <- EAX
