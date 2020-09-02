@@ -570,6 +570,7 @@ u32 getImageData(u32 entry, u32 index) {
 u32 getUnitData(u32 entry, u32 index) {
 	return get_aise_value(NULL, NULL, AiseId::GetUnitData, entry, index);
 }
+
 bool isZergEgg(u16 id, bool allow_normal_eggs, bool allow_larvae) {
 	switch (id) {
 	case UnitId::ZergCocoon:

@@ -119,6 +119,8 @@ namespace AiseId {
 		GenericUnit,
 		GenericVariable,
 		GetUnitData,
+		GetFlingyPtr,//for extender
+
 	};
 }
 
