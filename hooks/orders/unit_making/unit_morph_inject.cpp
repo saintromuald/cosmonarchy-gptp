@@ -218,7 +218,8 @@ namespace {
 			unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 			/*replaceSpriteImages(unit->sprite,
 				sprites_dat::ImageId[flingy_dat::SpriteID[units_dat::Graphic[unit->previousUnitType]]], 0);*/
-			auto index = units_dat::Graphic[unit->previousUnitType];
+//			auto index = units_dat::Graphic[unit->previousUnitType];
+			auto index = scbw::getUnitData(UnitsDatEntries::Flingy, unit->previousUnitType);
 //			replaceSpriteImages(unit->sprite, sprites_dat::ImageId[scbw::getFlingyData(FlingyDatEntries::SpriteId, index)], 0);
 			auto fl_sId = scbw::getFlingyData(FlingyDatEntries::SpriteId, index);
 			//scbw::getSpriteData(SpritesDatEntries::ImageId,building->sprite->spriteId),

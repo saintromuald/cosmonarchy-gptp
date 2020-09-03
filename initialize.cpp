@@ -205,7 +205,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 //	memoryPatch(0x004AAF23 + 5, &retn, 1);
 	injectGlobalsHooks();
 	hooks::injectHydraSpecific();
-	//hooks::injectLimitHooks();
+	hooks::injectLimitHooks();
 	//
 
 

@@ -25,7 +25,7 @@ namespace hooks {
 			MOV regPtrOffset, EAX
 			PUSHAD
 		}
-		flingyPtr = get_flingy_ptr_val()+regPtrOffset;
+		flingyPtr = get_flingy_ptr_val()+regPtrOffset * 4;
 		__asm {
 			POPAD
 			PUSH ESI
@@ -42,7 +42,7 @@ namespace hooks {
 			MOV regPtrOffset, EDI
 			PUSHAD
 		}
-		flingyPtr = get_flingy_ptr_val() + regPtrOffset;
+		flingyPtr = get_flingy_ptr_val() + regPtrOffset * 4;
 		__asm {
 			POPAD
 			PUSH ESI
@@ -59,7 +59,7 @@ namespace hooks {
 			MOV regPtrOffset, ECX
 			PUSHAD
 		}
-		flingyPtr = get_flingy_ptr_val() + regPtrOffset;
+		flingyPtr = get_flingy_ptr_val() + regPtrOffset * 4;
 		__asm {
 			POPAD
 			PUSH ESI
@@ -76,7 +76,7 @@ namespace hooks {
 			MOV regPtrOffset, EAX
 			PUSHAD
 		}
-		flingyPtr = get_flingy_ptr_val() + regPtrOffset;
+		flingyPtr = get_flingy_ptr_val() + regPtrOffset * 4;
 		__asm {
 			POPAD
 			PUSH ESI
@@ -93,7 +93,7 @@ namespace hooks {
 			MOV regPtrOffset, EAX
 			PUSHAD
 		}
-		flingyPtr = get_flingy_ptr_val() + regPtrOffset;
+		flingyPtr = get_flingy_ptr_val() + regPtrOffset * 4;
 		__asm {
 			POPAD
 			PUSH ESI
@@ -110,7 +110,7 @@ namespace hooks {
 			MOV regPtrOffset, EAX
 			PUSHAD
 		}
-		flingyPtr = get_flingy_ptr_val() + regPtrOffset;
+		flingyPtr = get_flingy_ptr_val() + regPtrOffset * 4;
 		__asm {
 			POPAD
 			PUSH ESI
@@ -127,7 +127,7 @@ namespace hooks {
 			MOV regPtrOffset, EAX
 			PUSHAD
 		}
-		flingyPtr = get_flingy_ptr_val() + regPtrOffset;
+		flingyPtr = get_flingy_ptr_val() + regPtrOffset * 4;
 		__asm {
 			POPAD
 			PUSH ESI
@@ -144,7 +144,7 @@ namespace hooks {
 			MOV regPtrOffset, EAX
 			PUSHAD
 		}
-		flingyPtr = get_flingy_ptr_val() + regPtrOffset;
+		flingyPtr = get_flingy_ptr_val() + regPtrOffset*4;
 		__asm {
 			POPAD
 			PUSH ESI
@@ -161,15 +161,21 @@ namespace hooks {
 			MOV regPtrOffset, EAX
 			PUSHAD
 		}
-		flingyPtr = get_flingy_ptr_val() + regPtrOffset;
+		flingyPtr = get_flingy_ptr_val() + regPtrOffset*4;
+		//
 		__asm {
 			POPAD
 			PUSH ESI
 			MOV ESI, flingyPtr
-			MOV EDX, [ESI]
+			MOV EDX, [ESI]//EDX can't move
 			POP ESI
 			JMP wrapper9Jmp
 		}
+		/*
+		__asm {
+			MOVZX EDX,[EAX+0x6644F8]
+			JMP wrapper9Jmp
+		}*/
 	}
 	void __declspec(naked) flingyWrapper10() {
 		static u32 flingyPtr;
@@ -178,7 +184,7 @@ namespace hooks {
 			MOV regPtrOffset, EBX
 			PUSHAD
 		}
-		flingyPtr = get_flingy_ptr_val() + regPtrOffset;
+		flingyPtr = get_flingy_ptr_val() + regPtrOffset*4;
 		__asm {
 			POPAD
 			PUSH ESI
@@ -195,7 +201,7 @@ namespace hooks {
 			MOV regPtrOffset, EDX
 			PUSHAD
 		}
-		flingyPtr = get_flingy_ptr_val() + regPtrOffset;
+		flingyPtr = get_flingy_ptr_val() + regPtrOffset * 4;
 		__asm {
 			POPAD
 			PUSH ESI
@@ -210,11 +216,13 @@ namespace hooks {
 		//All wrapper patches - done
 		//implement get_flingy_ptr_val() on aise side - done
 		//data rewriting in aise - done
-		//data reading (get_aise_value) in aise
-		//use new data in gptp
-		//aise: add offsets for sound vectors
+		//data reading (get_aise_value) in aise - done
+		//aise: add offsets for sound vectors - done
+		//use new data in gptp - done
+		//add usage to gptp
 		//enable everything in aise/gptp
-		//test
+		//test/
+		/*
 		jmpPatch(flingyWrapper1, 0x00454317, 2);
 		jmpPatch(flingyWrapper2, 0x00463A71, 2);
 		jmpPatch(flingyWrapper3, 0x004683C6, 2);
@@ -225,7 +233,7 @@ namespace hooks {
 		jmpPatch(flingyWrapper8, 0x0048DA8A, 2);
 		jmpPatch(flingyWrapper9, 0x00497148, 2);
 		jmpPatch(flingyWrapper10, 0x0049ED0B, 2);
-		jmpPatch(flingyWrapper11, 0x004E9A10, 2);
+		jmpPatch(flingyWrapper11, 0x004E9A10, 2);*/
 		/*
 	Line 125772: 00454317  |.  0FB680 F84466>MOVZX EAX,BYTE PTR DS:[EAX+6644F8] //EAX <- EAX //DONE
 	Line 148264: 00463A71  |.  0FB68F F84466>MOVZX ECX,BYTE PTR DS:[EDI+6644F8] //ECX <- EDI //DONE

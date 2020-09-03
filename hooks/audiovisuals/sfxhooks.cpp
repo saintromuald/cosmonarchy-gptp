@@ -22,11 +22,14 @@ namespace hooks {
 
 		/*if (!(units_dat::GroupFlags[unitId].isBuilding)) {		// original check was unitId <= 0x69, now checks for existance of annoyed lines
 			scbw::printText("unit has piss lines");
-			scbw::printFormattedText("%i", units_dat::SoundAnnoyedFirst[unitId]);
-			sound = units_dat::SoundAnnoyedFirst[unitId];
+			//scbw::printFormattedText("%i", units_dat::SoundAnnoyedFirst[unitId]);
+			scbw::printFormattedText("%i", scbw::getUnitData(UnitsDatEntries::SndPssFirst,unitId));
+			//sound = units_dat::SoundAnnoyedFirst[unitId];
+			sound = scbw::getUnitData(UnitsDatEntries::SndPssFirst,unitId);
 			if ((s16)sound) {
 				sound = (u16)sound;
-				if (a2 <= (u16)units_dat::SoundAnnoyedLast[unitId] - (u16)sound + 1) {
+//				if (a2 <= (u16)units_dat::SoundAnnoyedLast[unitId] - (u16)sound + 1) {
+				if (a2 <= (u16)scbw::getUnitData(UnitsDatEntries::SndPssLast,unitId)-(u16)sound+1){
 					if (a2)
 						scbw::printText("return sound");
 						return sound + a2 - 1;
@@ -37,10 +40,13 @@ namespace hooks {
 				}
 			}
 		}*/
-		whatStart = units_dat::SoundWhatFirst[unitId];
-		whatEnd = (u16)units_dat::SoundWhatLast[unitId];
+//		whatStart = units_dat::SoundWhatFirst[unitId];
+//		whatEnd = (u16)units_dat::SoundWhatLast[unitId];
+		whatStart = scbw::getUnitData(UnitsDatEntries::SndWhtFirst, unitId);
+		whatEnd = scbw::getUnitData(UnitsDatEntries::SndWhtLast, unitId);
 		if (whatStart == whatEnd) {
-			*lastRandSFX = units_dat::SoundWhatFirst[unitId];
+//			*lastRandSFX = units_dat::SoundWhatFirst[unitId];
+			*lastRandSFX = scbw::getUnitData(UnitsDatEntries::SndWhtFirst, unitId);
 			result = whatStart;
 		}
 		else {
@@ -57,8 +63,12 @@ namespace hooks {
 		u16 v1; // ax
 		int result; // eax
 
-		if (!(units_dat::GroupFlags[a1].isBuilding) && (v1 = units_dat::SoundYesFirst[a1]) != 0)
+/*		if (!(units_dat::GroupFlags[a1].isBuilding) && (v1 = units_dat::SoundYesFirst[a1]) != 0)
 			result = randGetSFXBetween((int)units_dat::SoundYesLast[a1], (int)v1);
+		else
+			result = 0;*/
+		if (!(units_dat::GroupFlags[a1].isBuilding) && (v1 = scbw::getUnitData(UnitsDatEntries::SndYesFirst,a1)) != 0)
+			result = randGetSFXBetween((int)scbw::getUnitData(UnitsDatEntries::SndYesLast,a1), (int)v1);
 		else
 			result = 0;
 		return result;
