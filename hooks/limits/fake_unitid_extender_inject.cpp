@@ -206,11 +206,13 @@ namespace hooks {
 		}
 	}
 	void unitsDatWrapperPatches() {
-		//TO DO: All wrapper patches
-		//implement get_flingy_ptr_val() on aise side
+		//TO DO: 
+		//All wrapper patches - done
+		//implement get_flingy_ptr_val() on aise side - done
+		//data rewriting in aise - done
 		//data reading (get_aise_value) in aise
-		//data rewriting in aise
 		//use new data in gptp
+		//aise: add offsets for sound vectors
 		//enable everything in aise/gptp
 		//test
 		jmpPatch(flingyWrapper1, 0x00454317, 2);

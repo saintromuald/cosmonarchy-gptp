@@ -37,6 +37,20 @@ namespace UnitsDatEntries {
 		StartDirection, //start direction
 		ShieldEnabled, //shield enabled
 		MaxShields, //max shields
+
+
+		SndReady=29,
+		SndWhtFirst=30,
+		SndWhtLast=31,
+		SndPssFirst=32,
+		SndPssLast=33,
+		SndYesFirst=34,
+		SndYesLast=35,
+
+
+
+
+
 		/*
 		4, //max hits
 		1, //elevation
