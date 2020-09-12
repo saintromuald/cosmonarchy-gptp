@@ -35,7 +35,7 @@ namespace hooks {
 			}
 		}
 		whatStart = scbw::getUnitData(UnitsDatEntries::SndWhtFirst, unitId);
-		whatEnd = scbw::getUnitData(UnitsDatEntries::SndWhtLast, unitId);
+		whatEnd = (u16)scbw::getUnitData(UnitsDatEntries::SndWhtLast, unitId);
 		if (whatStart == whatEnd) {
 			*lastRandSFX = scbw::getUnitData(UnitsDatEntries::SndWhtFirst, unitId);
 			result = whatStart;
