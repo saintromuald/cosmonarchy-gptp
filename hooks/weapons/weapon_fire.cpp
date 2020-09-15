@@ -230,7 +230,7 @@ namespace hooks {
 						}
 					}
 				}
-				if (weaponId == WeaponId::EmpyreanMissiles) {
+				if (weaponId == WeaponId::PlasmaBarrage) {
 					auto rotate = scbw::get_generic_value(unit, ValueId::EmpyreanMissilePos);
 					const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayAttackPtr, 
 											unit->sprite->mainGraphic->id));
@@ -293,7 +293,7 @@ namespace hooks {
 		u8 time = bullet->time_remaining--;
 		bool bEnd = false;
 		
-		if (bullet->weaponType == WeaponId::EmpyreanMissiles) {
+		if (bullet->weaponType == WeaponId::PlasmaBarrage) {
 			u8 time_current = 255 - time;
 			if (time_current == 8) {
 				bullet->flingyTopSpeed *= 2;
@@ -303,7 +303,7 @@ namespace hooks {
 		if (time == 0 || bullet->moveTarget.pt.x == bullet->position.x && bullet->moveTarget.pt.y == bullet->position.y) {
 			bEnd = true;
 		}
-		else if (bullet->weaponType == WeaponId::EmpyreanMissiles) {
+		else if (bullet->weaponType == WeaponId::PlasmaBarrage) {
 			u32 range = 128;
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
 				bullet->position.x - range, bullet->position.y - range,
