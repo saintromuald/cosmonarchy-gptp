@@ -162,23 +162,25 @@ enum Enum {
 	// Protoss \\
 		
 	PhaseCannon									= 68,			// Simulacrum weapon
-	EmpyreanMissiles							= 71,			// Empyrean weapon
+	PlasmaBarrage								= 71,			// Empyrean weapon
 	PhaseSignifier								= 72,			// Hierophant weapon
 	AuroraPhotonBlasters						= 73,			// Aurora weapon
 	PanoptusAntiMatterMissiles					= 74,			// Panoptus weapon
-	AugurWeapon									= 75,			// Augur weapon
-	ExemplarWeapon								= 76,			// Exemplar weapon
+	AeonsMadness								= 75,			// Augur weapon
+	PhaseBeam									= 76,			// Exemplar weapon
 	PsiSabers									= 86,			// Legionnaire weapon
+	CelestialCannon								= 90,			// Star Sovereign primary weapon
+	InterventionMissiles						= 91,			// Star Sovereign secondary weapon
 	WardensMark									= 110,			// Clarion weapon
 
 	// Zerg \\
 
 	VorvalClaws									= 36,			// Vorvaling weapon
 	PlasmidBreath								= 37,			// Nathrokor weapon
-	KesthathWeapon								= 41,			// Keskathalor weapon
-	AlkajWeapon									= 45,			// Alkajelisk weapon
+	ScreamingVenom								= 41,			// Keskathalor weapon
+	PlasmidSpores								= 45,			// Alkajelisk weapon
 	SerratedCleavers							= 47,			// Gorgoleth weapon
-	AlkajSpore									= 49,			// Alkajelisk behavior weapon
+	ParasiticSpores								= 49,			// Alkajelisk behavior weapon
 	BasiliskCorrosiveAcid						= 50,			// Basilisk weapon
 	EssenceDrain								= 51,			// Ability targeting - Gorgoleth
 
