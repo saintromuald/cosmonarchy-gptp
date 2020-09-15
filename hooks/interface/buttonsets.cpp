@@ -1049,9 +1049,12 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if (((*activePortraitUnit)->id == UnitId::ZergLair
-								||	(*activePortraitUnit)->id == UnitId::ZergHive
-								||	(*activePortraitUnit)->id == UnitId::ZergSire) &&  //Lair, Hive, Sire Collective Integration passive
+								if (((*activePortraitUnit)->id == UnitId::ZergLair				//Lair, Hive, Sire Larval Gestation passive
+								||	(*activePortraitUnit)->id == UnitId::ZergHive				//Overlord Iris, Iroleth Quay, Othstoleth Berth Collective Integration passive
+								||	(*activePortraitUnit)->id == UnitId::ZergSire
+								||	(*activePortraitUnit)->id == UnitId::ZergOverlordIris
+								||	(*activePortraitUnit)->id == UnitId::ZergIrolethQuay
+								||	(*activePortraitUnit)->id == UnitId::ZergOthstolethBerth) &&
 									current_button->iconID == IconId::Suicide_Scourge)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
