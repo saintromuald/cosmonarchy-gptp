@@ -718,6 +718,7 @@ namespace hooks {
 				// Southpaw - Knockout Drivers upgrade
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KnockoutDriversTimer, 0) == 1) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::KnockoutDriversValue, 0, 0);
+					unit->updateSpeed();
 				}
 
 				if (unit->id == UnitId::ProtossPylon
