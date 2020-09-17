@@ -56,7 +56,7 @@ namespace hooks {
 
 			unit->orderSignal -= 4;
 			bool vorvaling = false;
-			if (unit->previousUnitType == UnitId::ZergVorvaling || unit->previousUnitType == UnitId::EggVorvaling) {
+			if (unit->previousUnitType == UnitId::ZergVorvaling || unit->previousUnitType==UnitId::ZergNathrokor || unit->previousUnitType == UnitId::EggVorvaling) {
 				vorvaling = true;
 			}
 
@@ -239,6 +239,7 @@ namespace hooks {
 						if (unit->id == UnitId::EggVorvaling) {
 							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
 						}
+
 					}
 
 				}
