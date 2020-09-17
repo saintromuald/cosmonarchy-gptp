@@ -960,6 +960,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossEmpyrean &&  //Empyrean Heavenly Blaze passive
+									current_button->iconID == IconId::PulseCannon)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 
 								// ZERG \\
 								
