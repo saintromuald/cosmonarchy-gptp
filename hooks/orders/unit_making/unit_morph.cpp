@@ -56,7 +56,8 @@ namespace hooks {
 
 			unit->orderSignal -= 4;
 			bool vorvaling = false;
-			if (unit->previousUnitType == UnitId::ZergVorvaling || unit->previousUnitType==UnitId::ZergNathrokor || unit->previousUnitType == UnitId::EggVorvaling) {
+			if (unit->previousUnitType == UnitId::ZergVorvaling || unit->previousUnitType==UnitId::ZergNathrokor || 
+				unit->previousUnitType == UnitId::EggVorvaling || unit->previousUnitType==UnitId::EggNathrokor) {
 				vorvaling = true;
 			}
 
@@ -70,7 +71,7 @@ namespace hooks {
 
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg && !vorvaling) {
 
-				unit2 = function_0045D910(unit);//zerg birth
+				unit2 = function_0045D910(unit);//zerg dual birth
 
 				if (unit2 != NULL)
 					AI_TrainingUnit(unit, unit2);
