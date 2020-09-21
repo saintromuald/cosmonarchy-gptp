@@ -661,7 +661,6 @@ bool isZergBuildingMorphResult(u16 id){
 	case UnitId::ZergGorgolethApiary:
 	case UnitId::ZergSporeColony:
 	case UnitId::ZergSunkenColony:
-	case UnitId::ZergChasmalColony:
 	case UnitId::ZergBasiliskDen:
 	case UnitId::ZergLurkerDen:
 	case UnitId::ZergVorvalPond:

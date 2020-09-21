@@ -721,7 +721,8 @@ namespace hooks {
 
 							// Barracks buttonset handling
 							if (current_button->reqVar == UnitId::TerranFirebat
-								|| current_button->reqVar == UnitId::TerranCyprian) {
+								|| current_button->reqVar == UnitId::TerranCyprian
+								|| current_button->reqVar == UnitId::TerranMadcap) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -846,6 +847,11 @@ namespace hooks {
 
 								if ((*activePortraitUnit)->id == UnitId::TerranFirebat && //Firebat Apollyoid Adhesive passive
 									current_button->iconID == IconId::Flyer_Attack)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranMadcap && //Madcap Maverick Feeders passive
+									current_button->iconID == IconId::Twin_Autocannons)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}

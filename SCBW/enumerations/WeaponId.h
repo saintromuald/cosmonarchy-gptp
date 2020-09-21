@@ -142,6 +142,7 @@ enum Enum {
 
 	PerditionRifle								= 3,			// Apostle weapon
 	UppercutLaser								= 5,			// Southpaw weapon
+	DanannAutoguns								= 9,			// Madcap weapon
 	CrusaderMissiles							= 10,			// Paladin weapon
 	FuriaMissiles								= 21,			// Madrigal weapon 1
 	ImperiosoMissiles							= 22,			// Madrigal weapon 2
@@ -160,7 +161,9 @@ enum Enum {
 	IonCannon									= 129,			// Ion Cannon weapon
 
 	// Protoss \\
-		
+	
+	PulseBlaser									= 65,			// Vassal weapon
+	PlasmaFlurry								= 67,			// Gladius weapon
 	PhaseCannon									= 68,			// Simulacrum weapon
 	PlasmaBarrage								= 71,			// Empyrean weapon
 	PhaseSignifier								= 72,			// Hierophant weapon
@@ -168,6 +171,7 @@ enum Enum {
 	PanoptusAntiMatterMissiles					= 74,			// Panoptus weapon
 	AeonsMadness								= 75,			// Augur weapon
 	PhaseBeam									= 76,			// Exemplar weapon
+	NeutronCannon								= 78,			// Magister weapon
 	PsiSabers									= 86,			// Legionnaire weapon
 	CelestialCannon								= 90,			// Star Sovereign primary weapon
 	InterventionMissiles						= 91,			// Star Sovereign secondary weapon

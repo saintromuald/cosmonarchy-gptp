@@ -148,8 +148,7 @@ namespace hooks {
 
 		if (unit->id == UnitId::ZergCreepColony
 		|| unit->id == UnitId::ZergSunkenColony
-		|| unit->id == UnitId::ZergSporeColony
-		|| unit->id == UnitId::ZergChasmalColony) {
+		|| unit->id == UnitId::ZergSporeColony) {
 			// TODO: inform creep about missing colony?
 		} else if (unit->id == UnitId::ProtossPylon) {
 			// TODO: enable nearby disabled structures, update energy sprite position
@@ -300,8 +299,7 @@ namespace hooks {
 
 						if (unit->id == UnitId::ZergCreepColony
 						|| unit->id == UnitId::ZergSunkenColony
-						|| unit->id == UnitId::ZergSporeColony
-						|| unit->id == UnitId::ZergChasmalColony) {
+						|| unit->id == UnitId::ZergSporeColony) {
 							// TODO: spawn creep
 						} else if (unit->id == UnitId::ProtossPhotonCannon) {
 							// TODO: check if pylon power is around, enable or disable the structure

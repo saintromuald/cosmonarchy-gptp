@@ -496,6 +496,7 @@ enum Enum {
 	ProtossAurora									= 80,		// Mojo Scout
 	ProtossClarion									= 81,		// Warbringer
 	ProtossEmpyrean									= 82,		// Gantrithor
+	ProtossVassal									= 88,		// Artanis
 	ProtossSimulacrum								= 89,		// Rhynadon
 	ProtossWarpRelay								= 90,		// Bengalaas
 	ProtossBulwark									= 93,		// Scantid
