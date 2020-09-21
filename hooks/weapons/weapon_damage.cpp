@@ -642,6 +642,15 @@ namespace hooks {
 				}
 			}*/
 
+			// Essense Drain - Gorgoleth Energy Steal
+			if (attacker != NULL) {
+				if (attacker->id == UnitId::ZergGorgoleth) {
+					u16 energy = std::min(target->energy, (u16)(damage + shieldReduceAmount));
+					target->energy -= energy;
+					attacker->energy += energy;
+				}
+			}
+
 			if (attacker != NULL) { // looks like target will always be alive if this function was called?
 				if (scbw::get_aise_value(target, 0, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0) >= 1) {
 					CUnit* haluAttacker = attacker;
