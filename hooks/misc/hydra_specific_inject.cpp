@@ -342,6 +342,31 @@ namespace hooks {
         //tail wrapper disabled, without air weapon it don't have sense anywhere, will be reworked w/ air target functionality
         jmpPatch(getGroundWeaponHookWrapper, 0x00475AD0);
     }
+    const u32 jmp_skip = 0x00404541;
+    const u32 jmp_continue = 0x00404539;
+    void __declspec(naked) createBuildingAiWorkaround_Wrapper() {
+        static BuildingAi* bAi;
+        __asm {
+            MOV EDX,[ECX+0xABE0]
+            MOV bAi, EDX
+            PUSHAD
+        }
+        if (reinterpret_cast<u32>(bAi) < 0x300000) {
+            __asm {
+                POPAD
+                JMP jmp_skip    
+            }
+        }
+        else {
+            __asm {
+                POPAD
+                JMP jmp_continue
+            }
+        }
+    }
+    void createBuildingAiWorkaround() {
+        jmpPatch(createBuildingAiWorkaround_Wrapper, 0x00404533, 1);
+    }
     void injectHydraSpecific() {
         flingySpeedPatches();
 
@@ -352,6 +377,7 @@ namespace hooks {
         lobotomyMinePatches();
         trapJumpWrappers();
         clarionWrappers();
+        createBuildingAiWorkaround();
         //lobotomyMineTargetingPatches();
         
         //add later: disable WarpIn functionality, make it useless

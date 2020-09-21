@@ -654,7 +654,7 @@ struct WorkerAi {
 	AiTown* town;
 };
 C_ASSERT(sizeof(WorkerAi) == 24); // 0x18
-
+*/
 struct BuildingAi {
 	BuildingAi* next;
 	BuildingAi* prev;
@@ -666,7 +666,7 @@ struct BuildingAi {
 	void* trainQueueValues[5];
 };
 C_ASSERT(sizeof(BuildingAi) == 44); // 0x2C
-
+/*
 struct MilitaryAi {
 	MilitaryAi* next;
 	MilitaryAi* prev;
