@@ -430,10 +430,6 @@ enum Enum {
 /*0xF9*/	Buttons_ReplayPlaying					= 249,
 
 #ifdef DELIVERANCE
-//Terran-Hero
-	QuentinChase									= 16,		// Sarah Kerrigan
-	ArnoldLannigan									= 17,		// Alan Schezar
-
 //Protoss-Unit
 	ProtossAmaranth									= 61,		// Conclave heavy skirmisher	| Dark Templar Unit
 	ProtossEcclesiast								= 79,		// Conclave ranged psion		| Tassadar
@@ -460,9 +456,16 @@ enum Enum {
 //Terran-Unit
 	TerranApostle									= 10,		// Gui Montag
 	TerranShaman									= 15,		// Civilian
+	TerranMason										= 16,		// Sarah Kerrigan
+	TerranWendigo									= 17,		// Alan Schezar
+	TerranMadcap									= 18,		// Alan Schezar Turret
 	TerranSouthpaw									= 19,		// Raynor Vulture
+	TerranSalamander								= 22,		// Magellan
+	TerranGorgon									= 23,		// Edmund Duke Tank
+	TerranPhobos									= 24,		// Edmund Duke Tank Turret
 	TerranMadrigal									= 27,		// Mengsk Battlecruiser
 	TerranCentaur									= 28,		// Hyperion
+	TerranPenumbra									= 53,		// Hunter Killer
 	TerranWyvern									= 91,		// Cargo Ship
 	TerranCyprian									= 92,		// Mercenary Gunship
 	TerranAzazel									= 98,		// Raszagal Corsair
@@ -476,6 +479,8 @@ enum Enum {
 	TerranGallery									= 185,		// Independent Jump Gate
 	TerranSalvoYard									= 189,		// Warp Gate
 	TerranFutureStation								= 192,		// Terran Marker
+	TerranParticleAccelerator						= 200,		// Power Generator
+	TerranNaniteAssembly							= 203,		// Floor Missile Trap
 	TerranTreasury									= 215,		// Flag
 	TerranQuarry									= 220,		// Mineral Cluster Type 1
 	TerranQuantumInstitute							= 223,		// Protoss Gas Orb Type 2
@@ -483,6 +488,9 @@ enum Enum {
 
 //Protoss-Unit
 	ProtossStarSovereign							= 21,		// Tom Kazansky
+	ProtossGladius									= 25,		// Edmund Duke Siege Tank
+	ProtossMagister									= 26,		// Edmund Duke Siege Turret
+	ProtossArtisan									= 29,		// Norad II
 	ProtossLegionnaire								= 74,		// Dark Templar Hero
 	ProtossHierophant								= 76,		// Tassadar/Zeratul Archon
 	ProtossAurora									= 80,		// Mojo Scout
@@ -497,14 +505,16 @@ enum Enum {
 //Protoss-Building
 	ProtossAutomatonRegister						= 158,		// Unused Protoss 1				| Simulacrum requirement
 	ProtossBlazingEffigy							= 161,		// Unused Protoss 2				| Hierophant requirement
-	ProtossReliquary								= 175,		// Xel'Naga Temple
+	ProtossArgosy									= 168,		// Stasis Chamber				| Advanced Protoss production
+	ProtossVicarage									= 175,		// Xel'Naga Temple				| Legionnaire requirement
 	ProtossStridentStratum							= 182,		// Mining Platform				| Clarion requirement
 	ProtossStellarIcon								= 183,		// Independent Command Center	| Panoptus requirement
 	ProtossAstralOmen								= 184,		// Independent Starport			| Corsair requirement
+	ProtossCrucible									= 201,		// Overmind Cocoon				| Structure w/ efficiency aura for production/upgrades
 	ProtossExaltedAshlar							= 211,		// Left Wall Flame Trap			| Exemplar requirement
 	ProtossCosmicAltar								= 213,		// Right Wall Flame Trap		| Empyrean requirement
-	ProtossPennant									= 221,		// Mineral Cluster Type 2
-	ProtossGrandLibrary								= 226,		// Terran Gas Tank Type 1		| Archon requirement
+	ProtossPennant									= 221,		// Mineral Cluster Type 2		| Structure w/ regeneration aura for resources
+	ProtossGrandLibrary								= 226,		// Terran Gas Tank Type 1		| Advanced Templar production
 
 //Zerg-Unit
 	ZergAlkajelisk									= 48,		// Torrasque
@@ -545,7 +555,6 @@ enum Enum {
 	ZergOthstolethBerth								= 181,		// Cantina
 	ZergLurkerDen									= 191,		// Zerg Marker
 	ZergDevourerHaunt								= 197,		// Zerg Flag Beacon
-	ZergChasmalColony								= 201,		// Overmind Cocoon
 	ZergVorvalPond									= 204,		// Floor Hatch
 	ZergNathrokLake									= 210,		// Left Wall Missile Trap
 	ZergAlkajCavern									= 212,		// Right Wall Missile Trap
