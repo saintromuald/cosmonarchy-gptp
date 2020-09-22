@@ -140,10 +140,12 @@ enum Enum {
 
 	// Terran \\
 
-	PerditionRifle								= 3,			// Apostle weapon
+	CharonRifle									= 3,			// Apostle weapon
 	UppercutLaser								= 5,			// Southpaw weapon
-	DanannAutoguns								= 9,			// Madcap weapon
+	DanannAutogun								= 9,			// Madcap weapon
 	CrusaderMissiles							= 10,			// Paladin weapon
+	PerditionBarrage							= 17,			// Salamander weapon
+	ArtificeBattery								= 18,			// Gorgon weapon
 	FuriaMissiles								= 21,			// Madrigal weapon 1
 	ImperiosoMissiles							= 22,			// Madrigal weapon 2
 	ArtaxCannon									= 23,			// Centaur weapon 1

@@ -465,6 +465,7 @@ enum Enum {
 	TerranPhobos									= 24,		// Edmund Duke Tank Turret
 	TerranMadrigal									= 27,		// Mengsk Battlecruiser
 	TerranCentaur									= 28,		// Hyperion
+	TerranAlicanth									= 52,		// Unclean One
 	TerranPenumbra									= 53,		// Hunter Killer
 	TerranWyvern									= 91,		// Cargo Ship
 	TerranCyprian									= 92,		// Mercenary Gunship
@@ -526,12 +527,6 @@ enum Enum {
 	ZergVorvaling									= 128,		// Uraj
 	ZergBasilisk									= 129,		// Khalis
 	ZergIroleth										= 222,		// Protoss Gas Orb Type 1
-
-//Zerg-Elite
-	AberrantBastethir								= 49,		// Matriarch
-	AberrantMaktisthuk								= 52,		// Unclean One
-	AberrantKonvimoth								= 53,		// Hunter Killer
-	AberrantAkistrigon								= 55,		// Kukulza Mutalisk
 
 //Zerg-Egg
 	EggOthstoleth									= 95,		// Ragnasaur

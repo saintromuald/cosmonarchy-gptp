@@ -788,7 +788,7 @@ namespace hooks {
 							}
 
 							// Starport buttonset handling
-							if (current_button->reqVar == UnitId::TerranBattlecruiser
+							if (current_button->reqVar == UnitId::TerranAlicanth
 							||	current_button->reqVar == UnitId::TerranCentaur) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
@@ -815,7 +815,8 @@ namespace hooks {
 							}
 							else
 							if (current_button->reqVar == UnitId::TerranWyvern
-							||	current_button->reqVar == UnitId::TerranValkyrie) {
+							||	current_button->reqVar == UnitId::TerranValkyrie
+							||	current_button->reqVar == UnitId::TerranGorgon) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
