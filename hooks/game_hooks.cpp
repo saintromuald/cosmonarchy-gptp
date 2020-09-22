@@ -355,7 +355,7 @@ public:
 
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::TreasuryStacks, 1, 0);
 		int supply = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SupplyProvidedValue, 0);
-		unit->setSupplyProvided(supply + 2);
+		unit->setSupplyProvided(supply + 4);
 	}
 };
 
@@ -762,7 +762,7 @@ namespace hooks {
 				if (unit->id == UnitId::TerranTreasury
 					&& (unit->status & UnitStatus::Completed)) {
 					Point16 pos = unit->position;
-					int radius = (9 * 32) / 2;
+					int radius = (10 * 32) / 2;
 					scbw::UnitFinder(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius).forEach(treasuryProc(unit->playerId));
 				}
 
