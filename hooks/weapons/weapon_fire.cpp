@@ -251,6 +251,9 @@ namespace hooks {
 						unit->orderTarget.unit->position.x,unit->orderTarget.unit->position.y));
 				}
 				else {
+					if (unit->id == UnitId::TerranMadcap) {
+						scbw::add_generic_value(unit, ValueId::MadcapStacks, 1);
+					}
 					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 				}
 				

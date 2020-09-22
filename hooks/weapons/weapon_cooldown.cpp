@@ -42,6 +42,13 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 			cooldown = newCooldown;
 		}
 	}
+	if (unit->id == UnitId::TerranMadcap) {
+		auto stacks = MathUtils::clamp<u32>(scbw::get_generic_value(unit, ValueId::MadcapStacks), 0, 10);
+		if (stacks > 0) {
+			double newCooldown = (double)cooldown * (1.0 - stacks / 20.0);
+			cooldown = newCooldown;
+		}
+	}
 	// Ravening Mandible upgrade: gains increased attack speed based on current energy
 	if (unit->id==UnitId::ZergGorgoleth) {
 		cooldown *= 0.75;

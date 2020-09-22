@@ -178,6 +178,7 @@ void set_generic_value(CUnit* u, u32 id, u32 val);
 void set_generic_variable(u32 id, int val);
 void set_generic_timer(CUnit* u, u32 id, u32 val);
 
+void add_generic_value(CUnit* u, u32 id, int val);
 void makeToHoldPosition(CUnit* unit);
 
 void sendGPTP_aise_cmd(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2, u32 v3);

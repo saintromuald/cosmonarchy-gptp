@@ -485,7 +485,11 @@ namespace hooks {
 					}
 					
 				}
-				
+				//Madcap stacks
+				if (unit->id == UnitId::TerranMadcap && unit->movementFlags & MovementFlags::Accelerating) {
+					scbw::set_generic_value(unit, ValueId::MadcapStacks, 0);
+				}
+
 				// Legionnaire - Blade Vortex
 				if (unit->id == UnitId::ProtossLegionnaire) {
 					//teleport jump

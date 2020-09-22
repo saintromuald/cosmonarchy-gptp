@@ -733,6 +733,10 @@ void set_generic_variable(u32 id, int val) {
 void set_generic_value(CUnit* u, u32 id, u32 val) {
 	scbw::sendGPTP_aise_cmd(u, NULL, GptpId::SetGenericValue, id, val, 0);
 }
+void add_generic_value(CUnit* u, u32 id, int val) {
+	scbw::sendGPTP_aise_cmd(u, NULL, GptpId::AddGenericValue, id, val, 0);
+}
+
 void set_generic_timer(CUnit* u, u32 id, u32 val) {
 	scbw::sendGPTP_aise_cmd(u, NULL, GptpId::SetGenericTimer, id, val, 0);
 }
