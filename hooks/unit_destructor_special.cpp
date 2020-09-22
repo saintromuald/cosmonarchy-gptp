@@ -264,7 +264,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 			web->removeTimer = 5 * 24;
 		}
 	}
-	if (units_dat::BaseProperty[unit->id] & UnitProperty::Mechanical) {
+	if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
 		u32 range = 5*32;
 		scbw::UnitFinder unitFinder(unit->getX() - range,
 			unit->getY() - range,
