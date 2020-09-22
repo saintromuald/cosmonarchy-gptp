@@ -265,13 +265,12 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		}
 	}
 	if (units_dat::BaseProperty[unit->id] & UnitProperty::Mechanical) {
-		simulacrumProc simulacrum = simulacrumProc(unit);
 		u32 range = 5*32;
 		scbw::UnitFinder unitFinder(unit->getX() - range,
 			unit->getY() - range,
 			unit->getX() + range,
 			unit->getY() + range);
-		unitFinder.forEach(simulacrum);
+		unitFinder.forEach(simulacrumProc(unit));
 	}
 	if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ClearClarionLinks, 0, 0, 0);
