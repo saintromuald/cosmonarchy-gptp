@@ -217,6 +217,7 @@ namespace ValueId {
 		ProtossSwitchOrderState						= 71,
 		OverlordSupplyGimmick						= 72,
 		MadcapStacks								= 73,
+		PhobosDischarge								= 74,
 	#if DELIVERANCE
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,

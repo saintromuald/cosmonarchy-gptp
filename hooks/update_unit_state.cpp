@@ -180,8 +180,18 @@ namespace hooks {
 					maxEnergy = 12800;  //50 * 256; Identical to energy amount on spawn
 				else
 					maxEnergy = unit->getMaxEnergy();
+				bool phobosCondition = false;
+				if (unit->id == UnitId::TerranPhobos && scbw::get_generic_value(unit, ValueId::PhobosDischarge) > 0) {
+					unit->spendUnitEnergy(426);//(200 * 256) / (5 * 24)  ~ 426.66
+					if (unit->energy < 426) {
+						unit->energy = 0;
+						scbw::set_generic_value(unit, ValueId::PhobosDischarge, 0);
+						
+					}
+					phobosCondition = true;
+				}
 
-				if (unit->energy == maxEnergy)
+				if (unit->energy == maxEnergy && !phobosCondition)
 					bStopHere = true;
 				else {
 
@@ -196,7 +206,10 @@ namespace hooks {
 					//parameters used since the calculation
 					/*if (unit->energy > maxEnergy)
 						unit->energy = maxEnergy;*/
-					unit->addUnitEnergy(8,maxEnergy);
+
+					unit->addUnitEnergy(8, maxEnergy);
+					
+					
 				}
 
 			}

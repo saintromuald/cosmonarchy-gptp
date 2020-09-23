@@ -254,6 +254,16 @@ namespace hooks {
 					if (unit->id == UnitId::TerranMadcap) {
 						scbw::add_generic_value(unit, ValueId::MadcapStacks, 1);
 					}
+					if (unit->id == UnitId::TerranPhobos && scbw::get_generic_value(unit,ValueId::PhobosDischarge)==0) {
+						unit->addUnitEnergy(5 * 256);
+						if (unit->energy == unit->getMaxEnergy()){
+							//unit->energy = 0;
+							scbw::set_generic_value(unit, ValueId::PhobosDischarge, 1);
+							//51200 energy
+							//120 steps
+							//spend roughly 426 energy units per frame
+						}
+					}
 					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 				}
 				
