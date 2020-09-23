@@ -775,8 +775,7 @@ namespace hooks {
 							}
 							else
 							if (current_button->reqVar == UnitId::TerranMadrigal
-							||	current_button->reqVar == UnitId::TerranPaladin
-							||	current_button->reqVar == UnitId::TerranCyclops) {
+							||	current_button->reqVar == UnitId::TerranPaladin) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -789,7 +788,7 @@ namespace hooks {
 							}
 
 							// Starport buttonset handling
-							if (current_button->reqVar == UnitId::TerranAlicanth
+							if (current_button->reqVar == UnitId::TerranPegasus
 							||	current_button->reqVar == UnitId::TerranCentaur) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
@@ -914,6 +913,16 @@ namespace hooks {
 								}
 								if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser &&  //Battlecruiser Fore Castle passive 
 									current_button->iconID == IconId::TerranShipPlating)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranPhobos &&  //Phobos Argent Capacitors passive 
+									current_button->iconID == IconId::KhaydarinCore)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranPenumbra &&  //Penumbra Shadow's Weight passive 
+									current_button->iconID == IconId::CaduceusReactor)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
