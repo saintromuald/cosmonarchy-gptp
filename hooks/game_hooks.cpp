@@ -288,7 +288,7 @@ public:
 		}
 		auto size = units_dat::SizeType[unit->id];
 		if (size != UnitSize::Small) {
-			return; penumbraProc
+			return;
 		}
 		if (penumbra->killCount < 255) {
 			penumbra->killCount++;
