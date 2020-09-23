@@ -139,7 +139,8 @@ enum Enum {
 	// HYDRA \\
 
 	// Terran \\
-
+		
+	RetractorBatteries							= 1,			// Pegasus weapon 1
 	CharonRifle									= 3,			// Apostle weapon
 	UppercutLaser								= 5,			// Southpaw weapon
 	DanannAutogun								= 9,			// Madcap weapon
@@ -152,7 +153,6 @@ enum Enum {
 	SunchaserMissiles							= 24,			// Centaur weapon 2
 	TwinRailguns								= 26,			// Cyprian weapon
 	ErebolShockCannon							= 39,			// Penumbra weapon
-	RetractorBatteries							= 49,			// Pegasus weapon 1
 	LancetMissiles								= 51,			// Pegasus weapon 2
 	Defibrilators								= 87,			// Shaman weapon
 	DiscoidRailgun								= 88,			// Savant weapon
