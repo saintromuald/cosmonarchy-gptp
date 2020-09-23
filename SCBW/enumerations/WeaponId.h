@@ -152,12 +152,14 @@ enum Enum {
 	SunchaserMissiles							= 24,			// Centaur weapon 2
 	TwinRailguns								= 26,			// Cyprian weapon
 	ErebolShockCannon							= 39,			// Penumbra weapon
-	RetractorBatteries							= 49,			// Alicanth weapon 1
-	LancetMissiles								= 51,			// Alicanth weapon 2
+	RetractorBatteries							= 49,			// Pegasus weapon 1
+	LancetMissiles								= 51,			// Pegasus weapon 2
 	Defibrilators								= 87,			// Shaman weapon
 	DiscoidRailgun								= 88,			// Savant weapon
     LobotomyMine								= 89,			// Lobotomy Mine weapon
 	FlakCannons									= 93,			// Cyclops weapon
+	ArgosLaserBatteries							= 94,			// Phobos weapon 1
+	AcheronMissiles								= 95,			// Phobos weapon 2
 	PowerSiphon									= 101,			// Ability targeting - Savant
 	Observance									= 122,			// Ability targeting - Science Vessel
 	Dirge										= 123,			// Madrigal Dirge damage
