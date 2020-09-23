@@ -424,7 +424,7 @@ namespace hooks {
 			}
 
 			damageType = weapons_dat::DamageType[weaponId];
-
+			/*
 			if (weaponId == WeaponId::EssenceDrain && attacker != NULL) {
 				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
 					u32 amount = 75 * 256;
@@ -434,7 +434,7 @@ namespace hooks {
 					attacker->energy = std::min(attacker->energy + amount, (u32)attacker->getMaxEnergy());
 					target->spendUnitEnergy(amount);
 				}
-			}
+			}*/
 
 			if (damageType != DamageType::IgnoreArmor) {
 				damage -= std::min(scbw::getCliffAdvantage(attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor

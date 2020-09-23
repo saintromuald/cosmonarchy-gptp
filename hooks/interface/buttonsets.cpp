@@ -775,7 +775,8 @@ namespace hooks {
 							}
 							else
 							if (current_button->reqVar == UnitId::TerranMadrigal
-							||	current_button->reqVar == UnitId::TerranPaladin) {
+							||	current_button->reqVar == UnitId::TerranPaladin
+							||	current_button->reqVar == UnitId::TerranCyclops) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}

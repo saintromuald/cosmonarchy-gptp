@@ -151,6 +151,9 @@ enum Enum {
 	ArtaxCannon									= 23,			// Centaur weapon 1
 	SunchaserMissiles							= 24,			// Centaur weapon 2
 	TwinRailguns								= 26,			// Cyprian weapon
+	ErebolShockCannon							= 39,			// Penumbra weapon
+	RetractorBatteries							= 49,			// Alicanth weapon 1
+	LancetMissiles								= 51,			// Alicanth weapon 2
 	Defibrilators								= 87,			// Shaman weapon
 	DiscoidRailgun								= 88,			// Savant weapon
     LobotomyMine								= 89,			// Mine
@@ -177,6 +180,7 @@ enum Enum {
 	PsiSabers									= 86,			// Legionnaire weapon
 	CelestialCannon								= 90,			// Star Sovereign primary weapon
 	InterventionMissiles						= 91,			// Star Sovereign secondary weapon
+	PlanetCracker								= 92,			// Star Sovereign ability
 	WardensMark									= 110,			// Clarion weapon
 
 	// Zerg \\
@@ -188,7 +192,6 @@ enum Enum {
 	SerratedCleavers							= 47,			// Gorgoleth weapon
 	ParasiticSpores								= 49,			// Alkajelisk behavior weapon
 	BasiliskCorrosiveAcid						= 50,			// Basilisk weapon
-	EssenceDrain								= 51,			// Ability targeting - Gorgoleth
 
 	#ifdef DELIVERANCE
 		EcclesiastWeapon = 110,

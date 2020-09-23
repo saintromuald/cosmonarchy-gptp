@@ -467,6 +467,7 @@ enum Enum {
 	TerranCentaur									= 28,		// Hyperion
 	TerranAlicanth									= 52,		// Unclean One
 	TerranPenumbra									= 53,		// Hunter Killer
+	TerranCyclops									= 55,		// Kukulza Mutalisk
 	TerranWyvern									= 91,		// Cargo Ship
 	TerranCyprian									= 92,		// Mercenary Gunship
 	TerranAzazel									= 98,		// Raszagal Corsair
