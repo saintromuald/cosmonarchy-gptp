@@ -15,6 +15,14 @@
 #include "enumerations/SoundId.h"
 #include "enumerations/IconId.h"
 
+namespace UnitSize {
+	enum {
+		Independent,
+		Small,
+		Medium,
+		Large,
+	};
+}
 
 namespace FlingyDatEntries {
 	enum {

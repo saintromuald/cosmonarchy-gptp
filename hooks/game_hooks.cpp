@@ -266,6 +266,38 @@ public:
 	}
 };
 
+class penumbraProc : public scbw::UnitFinderCallbackProcInterface
+{
+
+private:
+	CUnit* penumbra;
+
+public:
+	penumbraProc(CUnit* penumbra)
+		: penumbra(penumbra) {}
+	void proc(CUnit* unit)
+	{
+		if (unit == penumbra) {
+			return;
+		}
+		if (unit->status & UnitStatus::Invincible) {
+			return;
+		}
+		if (unit->status & UnitStatus::InAir) {
+			return;
+		}
+		auto size = units_dat::SizeType[unit->id];
+		if (size != UnitSize::Small) {
+			return;
+		}
+		if (penumbra->killCount < 255) {
+			penumbra->killCount++;
+		}
+		unit->remove();
+		
+
+	}
+};
 class shamanProc : public scbw::UnitFinderCallbackProcInterface
 {
 
@@ -485,6 +517,17 @@ namespace hooks {
 					}
 					
 				}
+
+				//
+				if (unit->id == UnitId::TerranPenumbra) {
+					auto spores = penumbraProc(unit);
+					scbw::UnitFinder unitFinder(unit->getLeft()-16,
+						unit->getTop()-16,
+						unit->getRight()+16,
+						unit->getBottom()+16);
+					unitFinder.forEach(spores);
+				}
+
 				//Madcap stacks
 				if (unit->id == UnitId::TerranMadcap && unit->movementFlags & MovementFlags::Accelerating) {
 					scbw::set_generic_value(unit, ValueId::MadcapStacks, 0);
