@@ -11,12 +11,12 @@ char buffer[128];
 u8 getDamageFactorForTooltip(u8 weaponId, CUnit* unit) {
 
 	//Default StarCraft behavior
-	if (
-		unit->id == UnitId::TerranFirebat ||
-		unit->id == UnitId::Hero_GuiMontag ||
-		unit->id == UnitId::ProtossZealot ||
-		unit->id == UnitId::Hero_FenixZealot ||
-		unit->id == UnitId::ProtossLegionnaire //Legionnaire
+	if (unit->id == UnitId::TerranFirebat
+	||	unit->id == UnitId::Hero_GuiMontag
+	||	unit->id == UnitId::ProtossZealot
+	||	unit->id == UnitId::Hero_FenixZealot
+	||	unit->id == UnitId::ProtossLegionnaire
+	||	weaponId == WeaponId::RetractorBatteries
 		)
 		return 2;
 
