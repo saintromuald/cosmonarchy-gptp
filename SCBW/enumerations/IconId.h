@@ -329,7 +329,7 @@ enum Enum {
 /*0142*/	KhaydarinCore,
 /*0143*/	Gauss_Rifle,
 /*0144*/	C10_Canister_Rifle,
-/*0145*/	Fragmentation_Grenade,
+/*0145*/	FragmentationGrenade,
 /*0146*/	Twin_Autocannons,
 /*0147*/	HellfireMissilePack,
 /*0148*/	Arclite_Cannon,

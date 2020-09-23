@@ -876,6 +876,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranSouthpaw &&  //Cyclops Fragmentary Shells passive
+									current_button->iconID == IconId::FragmentationGrenade)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::TerranSiegeTankTankMode &&  //Siege Tank Babylon Plating passive
 									current_button->iconID == IconId::TerranVehiclePlating)
 								{
