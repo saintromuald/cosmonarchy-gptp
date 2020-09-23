@@ -665,7 +665,8 @@ namespace hooks {
 					if (a1->orderTarget.pt.x == a1->sprite->position.x
 						&& a1->orderTarget.pt.y == a1->sprite->position.y
 						&& ((a1->status & UnitStatus::Unmovable) != 0) != -1
-						&& techUseAllowed(a1, TechId::Burrowing, (u8)a1->playerId) == 1) {
+						//&& techUseAllowed(a1, TechId::Burrowing, (u8)a1->playerId) == 1
+						) {
 						orderComputerClear(a1, OrderId::Burrow);
 					}
 				}
