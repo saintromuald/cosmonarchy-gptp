@@ -156,7 +156,8 @@ enum Enum {
 	LancetMissiles								= 51,			// Alicanth weapon 2
 	Defibrilators								= 87,			// Shaman weapon
 	DiscoidRailgun								= 88,			// Savant weapon
-    LobotomyMine								= 89,			// Mine
+    LobotomyMine								= 89,			// Lobotomy Mine weapon
+	FlakCannons									= 93,			// Cyclops weapon
 	PowerSiphon									= 101,			// Ability targeting - Savant
 	Observance									= 122,			// Ability targeting - Science Vessel
 	Dirge										= 123,			// Madrigal Dirge damage
