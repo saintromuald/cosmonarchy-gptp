@@ -288,7 +288,7 @@ public:
 		}
 		auto size = units_dat::SizeType[unit->id];
 		if (size != UnitSize::Small) {
-			return;
+			return; penumbraProc
 		}
 		if (penumbra->killCount < 255) {
 			penumbra->killCount++;
@@ -519,7 +519,7 @@ namespace hooks {
 				}
 
 				//
-				if (unit->id == UnitId::TerranPenumbra) {
+				if (unit->id == UnitId::TerranPenumbra && unit->movementFlags & MovementFlags::Accelerating) {
 					auto spores = penumbraProc(unit);
 					scbw::UnitFinder unitFinder(unit->getLeft()-16,
 						unit->getTop()-16,
