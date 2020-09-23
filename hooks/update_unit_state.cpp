@@ -9,6 +9,10 @@ namespace {
 	bool unitHpIsInRedZone(CUnit* unit);					//0x004022C0
 	void RestoreAllUnitStats(CUnit* unit);					//0x00492F70 (hooked by hooks\update_status_effects.cpp)
 	void setAllImageGroupFlagsPal11(CSprite* sprite);		//0x00497430
+
+	// For AI_Burrower
+	void techUseAllowed(CUnit* a1, s16 a2, s32 a3);			//0046DD80
+	void orderComputerClear(CUnit* a1, u8 a2);				//00475310
 } //unnamed namespace
 
 
@@ -541,6 +545,7 @@ namespace hooks {
 
 			}
 			
+			// Last Orders - Aurora passive
 			if (unit->id == UnitId::ProtossAurora) {
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::LastOrdersInit, 0)==1) {
 					auto distance = scbw::getDistanceFast(unit->position.x, unit->position.y,
@@ -652,6 +657,22 @@ namespace hooks {
 			completed_unit_counts[unit->id].player[unit->playerId] = 0;
 		}
 	}
+
+	void AI_Burrower(CUnit* a1) {
+		if (units_dat::BaseProperty[a1->id] & UnitProperty::Burrowable) {
+			if (!(a1->status & UnitStatus::Burrowed) && a1->id != UnitId::ZergDrone) {
+				if (a1->mainOrderId == OrderId::ComputerAI || a1->mainOrderId == OrderId::Guard) {
+					if (a1->orderTarget.pt.x == a1->sprite->position.x
+						&& a1->orderTarget.pt.y == a1->sprite->position.y
+						&& ((a1->status & UnitStatus::Unmovable) != 0) != -1
+						&& techUseAllowed(a1, TechId::Burrowing, (u8)a1->playerId) == 1) {
+						orderComputerClear(a1, OrderId::Burrow);
+					}
+				}
+			}
+		}
+	}
+
 } //hooks
 
 namespace {
@@ -700,6 +721,31 @@ namespace {
 				current_image->flags |= CImage_Flags::Redraw;
 		}
 
+	}
+
+	// For AI_Burrower
+
+	const u32 Func_techUseAllowed = 0x0046DD80;
+	void techUseAllowed(CUnit* a1, s16 a2, s32 a3) {
+		__asm {
+			PUSHAD
+			PUSH a3
+			MOV EAX, a1
+			MOVZX DI, a2
+			CALL Func_techUseAllowed
+			POPAD
+		}
+	}
+
+	const u32 Func_orderComputerClear = 0x00475310;
+	void orderComputerClear(CUnit* a1, u8 a2) {
+		__asm {
+			PUSHAD
+			MOV ESI, a1
+			MOVZX CL, a2
+			CALL Func_orderComputerClear
+			POPAD
+		}
 	}
 
 	// \\
