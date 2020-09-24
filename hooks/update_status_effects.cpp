@@ -227,7 +227,7 @@ class safetyUnburrow : public scbw::UnitFinderCallbackMatchInterface {
 public:
 	//Check if @p unit is suitable unburrow target.
 	bool match(CUnit* target) {
-		if (target->status & UnitStatus::GroundedBuilding == 0) {
+		if (!(target->status & UnitStatus::GroundedBuilding)) {
 			return false;
 		}
 		if (target->id == UnitId::BasiliskCreeper) {
@@ -239,10 +239,8 @@ public:
 		if (!func_dounitscollide(burrower, target)) {
 			return false;
 		}
-
 		return true;
 	}
-
 	//Constructor
 	safetyUnburrow(CUnit* burrower) : burrower(burrower) {}
 };
@@ -304,10 +302,14 @@ void updateStatusEffects(CUnit* unit) {
 				unit->getTop()-32,
 				unit->getRight()+32,
 				unit->getBottom()+32, unit, Unburrow);
+			bool canBurrowAfter = false;
+			//from Ai_Burrowable
+			//
 			if (nearest != NULL) {
 				unburrow(unit);
 			}
 		}		
+
 	}
 
 	// Azazel - Sublime Shepherd ability
@@ -662,7 +664,46 @@ void updateStatusEffects(CUnit* unit) {
 	else if (previousAcidSporeCount != 0) {
 		unit->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
 	}
+}
 
+const u32 Func_orderComputerClear = 0x00475310;
+void orderComputerClear(CUnit* a1, u8 a2) {
+	__asm {
+		PUSHAD
+		MOV ESI, a1
+		MOVZX CL, a2
+		CALL Func_orderComputerClear
+		POPAD
+	}
+}
+void AI_Burrower(CUnit* a1) {
+	if (units_dat::BaseProperty[a1->id] & UnitProperty::Burrowable) {
+		if (!(a1->status & UnitStatus::Burrowed) && a1->id != UnitId::ZergDrone) {
+			if (a1->mainOrderId == OrderId::ComputerAI || a1->mainOrderId == OrderId::Guard) {
+				if (a1->moveTarget.pt.x == a1->sprite->position.x
+					&& a1->moveTarget.pt.y == a1->sprite->position.y
+					&& ((a1->status & UnitStatus::Unmovable) != 0) != -1
+					//&& techUseAllowed(a1, TechId::Burrowing, (u8)a1->playerId) == 1
+					) {
+					bool canBurrow = true;
+					auto tile = scbw::getActiveTileAt(a1->position.x, a1->position.y);
+					if (tile.currentlyOccupied) {
+						safetyUnburrow Unburrow = safetyUnburrow(a1);
+						CUnit* nearest = scbw::UnitFinder::getNearestTarget(a1->getLeft() - 32,
+							a1->getTop() - 32,
+							a1->getRight() + 32,
+							a1->getBottom() + 32, a1, Unburrow);
+						if (nearest != NULL) {
+							canBurrow = false;
+						}
+					}
+					if (canBurrow) {
+						orderComputerClear(a1, OrderId::Burrow);
+					}
+				}
+			}
+		}
+	}
 }
 
 } //hooks

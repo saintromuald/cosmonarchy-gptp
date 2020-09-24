@@ -25,12 +25,26 @@ void __declspec(naked) updateStatusEffectsWrapper() {
 	}
 }
 
+void __declspec(naked) AiBurrower_Wrapper() {
+	static CUnit* unit;
+	__asm {
+		MOV unit, EAX
+		PUSHAD
+	}
+	hooks::AI_Burrower(unit);
+	__asm {
+		POPAD
+		RETN
+	}
+}
 } //unnamed namespace
 
 namespace hooks {
 
 void injectUpdateStatusEffects() {
 	jmpPatch(updateStatusEffectsWrapper, 0x00492F70, 5);
+
+	jmpPatch(AiBurrower_Wrapper, 0x004A1340, 4);
 }
 
 } //hooks

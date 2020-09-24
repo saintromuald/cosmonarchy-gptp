@@ -12,7 +12,6 @@ namespace {
 
 	// For AI_Burrower
 	void techUseAllowed(CUnit* a1, s16 a2, s32 a3);			//0046DD80
-	void orderComputerClear(CUnit* a1, u8 a2);				//00475310
 } //unnamed namespace
 
 
@@ -658,21 +657,7 @@ namespace hooks {
 		}
 	}
 
-	void AI_Burrower(CUnit* a1) {
-		if (units_dat::BaseProperty[a1->id] & UnitProperty::Burrowable) {
-			if (!(a1->status & UnitStatus::Burrowed) && a1->id != UnitId::ZergDrone) {
-				if (a1->mainOrderId == OrderId::ComputerAI || a1->mainOrderId == OrderId::Guard) {
-					if (a1->orderTarget.pt.x == a1->sprite->position.x
-						&& a1->orderTarget.pt.y == a1->sprite->position.y
-						&& ((a1->status & UnitStatus::Unmovable) != 0) != -1
-						//&& techUseAllowed(a1, TechId::Burrowing, (u8)a1->playerId) == 1
-						) {
-						orderComputerClear(a1, OrderId::Burrow);
-					}
-				}
-			}
-		}
-	}
+
 
 } //hooks
 
@@ -738,16 +723,6 @@ namespace {
 		}
 	}
 
-	const u32 Func_orderComputerClear = 0x00475310;
-	void orderComputerClear(CUnit* a1, u8 a2) {
-		__asm {
-			PUSHAD
-			MOV ESI, a1
-			MOVZX CL, a2
-			CALL Func_orderComputerClear
-			POPAD
-		}
-	}
 
 	// \\
 

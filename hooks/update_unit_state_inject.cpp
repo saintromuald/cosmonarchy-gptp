@@ -63,7 +63,6 @@ void __declspec(naked) incrementUnitScoresEx_Wrapper() { // 0x00488D50
 		RETN 4
 	}
 }
-
 } //unnamed namespace
 
 namespace hooks {
