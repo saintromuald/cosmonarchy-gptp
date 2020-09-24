@@ -231,6 +231,7 @@ namespace hooks {
 					}
 				}
 				if (weaponId == WeaponId::PlasmaBarrage) {
+					// Empyrean missile spawn positions
 					auto rotate = scbw::get_generic_value(unit, ValueId::EmpyreanMissilePos);
 					const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayAttackPtr, 
 											unit->sprite->mainGraphic->id));
@@ -239,7 +240,6 @@ namespace hooks {
 					if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
 						offset.x = -offset.x;
 					}
-//					scbw::printFormattedText("Empyrean Pos: %d, frameDir %d, direct %d, %d %d", rotate, frameDirection, unit->currentDirection1, offset.x, offset.y);
 					rotate++;
 					if (rotate > 3) {
 						rotate = 0;
@@ -250,7 +250,48 @@ namespace hooks {
 					createBullet(weaponId, unit, X,Y, unit->playerId, scbw::getAngle(X,Y,
 						unit->orderTarget.unit->position.x,unit->orderTarget.unit->position.y));
 				}
-				else if(weaponId==WeaponId::PerditionBarrage){//salamander
+				if (weaponId == WeaponId::ArgosLaserBatteries) {
+					// Empyrean laser spawn positions
+					auto rotate = scbw::get_generic_value(unit, ValueId::PhobosLaserPos);
+					const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayAttackPtr, 
+											unit->sprite->mainGraphic->id));
+					u8 frameDirection = unit->sprite->mainGraphic->direction;
+					Point8 offset = loFile->getOffset(frameDirection, rotate);
+					if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
+						offset.x = -offset.x;
+					}
+					rotate++;
+					if (rotate > 3) {
+						rotate = 0;
+					}
+					scbw::set_generic_value(unit, ValueId::PhobosLaserPos, rotate);
+					auto X = x + offset.x;
+					auto Y = y + offset.y;
+					createBullet(weaponId, unit, X,Y, unit->playerId, scbw::getAngle(X,Y,
+						unit->orderTarget.unit->position.x,unit->orderTarget.unit->position.y));
+				}
+				if (weaponId == WeaponId::AcheronMissiles) {
+					// Phobos missile spawn positions
+					auto rotate = scbw::get_generic_value(unit, ValueId::PhobosMissilePos);
+					const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlaySpecialPtr, 
+											unit->sprite->mainGraphic->id));
+					u8 frameDirection = unit->sprite->mainGraphic->direction;
+					Point8 offset = loFile->getOffset(frameDirection, rotate);
+					if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
+						offset.x = -offset.x;
+					}
+					rotate++;
+					if (rotate > 5) {
+						rotate = 0;
+					}
+					scbw::set_generic_value(unit, ValueId::PhobosMissilePos, rotate);
+					auto X = x + offset.x;
+					auto Y = y + offset.y;
+					createBullet(weaponId, unit, X,Y, unit->playerId, scbw::getAngle(X,Y,
+						unit->orderTarget.unit->position.x,unit->orderTarget.unit->position.y));
+				}
+				else if(weaponId==WeaponId::PerditionBarrage) {
+					// Salamander missile target positions
 					auto rotate = scbw::get_generic_value(unit, ValueId::SalamanderAtkPos);
 					if (rotate == 1) {
 						createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
@@ -265,19 +306,22 @@ namespace hooks {
 					scbw::set_generic_value(unit, ValueId::SalamanderAtkPos, rotate);
 				}
 				else {
+					// Madcap - Maverick Feeders passive
 					if (unit->id == UnitId::TerranMadcap) {
 						scbw::add_generic_value(unit, ValueId::MadcapStacks, 1);
 					}
+
+					// Phobos - Argent Capacitors passive
 					if (unit->id == UnitId::TerranPhobos && scbw::get_generic_value(unit,ValueId::PhobosDischarge)==0) {
 						unit->addUnitEnergy(5 * 256);
 						if (unit->energy == unit->getMaxEnergy()){
-							//unit->energy = 0;
 							scbw::set_generic_value(unit, ValueId::PhobosDischarge, 1);
 							//51200 energy
 							//120 steps
 							//spend roughly 426 energy units per frame
 						}
 					}
+
 					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 				}
 				
@@ -320,16 +364,22 @@ namespace hooks {
 		u8 time = bullet->time_remaining--;
 		bool bEnd = false;
 		
-		if (bullet->weaponType == WeaponId::PlasmaBarrage) {
+		// Accelerate missiles over time
+		if (bullet->weaponType == WeaponId::PlasmaBarrage
+		|| bullet->weaponType == WeaponId::AntiMatterMissiles
+		||	bullet->weaponType == WeaponId::AcheronMissiles) {
 			u8 time_current = 255 - time;
 			if (time_current == 8) {
 				bullet->flingyTopSpeed *= 2;
 				bullet->flingyAcceleration *= 2;
 			}
 		}
+
 		if (time == 0 || bullet->moveTarget.pt.x == bullet->position.x && bullet->moveTarget.pt.y == bullet->position.y) {
 			bEnd = true;
 		}
+
+		// Empyrean missile interception
 		else if (bullet->weaponType == WeaponId::PlasmaBarrage) {
 			u32 range = 128;
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
@@ -342,6 +392,7 @@ namespace hooks {
 				bEnd = true;
 			}
 		}
+
 		if (bEnd)
 		{
 			target = bullet->attackTarget.unit;

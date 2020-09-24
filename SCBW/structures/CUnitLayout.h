@@ -221,6 +221,8 @@ namespace ValueId {
 		SalamanderAtkPos							= 75,
 		NaniteField									= 76,
 		NaniteFieldTimer							= 77,
+		PhobosLaserPos								= 78,
+		PhobosMissilePos							= 79,
 	#if DELIVERANCE
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,
@@ -234,9 +236,9 @@ namespace ValueId {
 #include "SCBW\enumerations\TechId.h"
 //const u32 first_generic_toggle_ability = ValueId::ReverseThrust;
 //const u32 last_generic_toggle_ability = ValueId::DisruptionWeb;
-const u32 string_toggle_on[5] = {1703, 1807, 1265, 1232, 1248};
-const u32 string_toggle_off[5] = {1113, 1114, 1270, 1233, 1052};
-const u32 button_toggle_on[5] = {374, 319, 369, 374, 365};
+const u32 string_toggle_on[5] = {1703, 1807, 1265, 1232, 1383};
+const u32 string_toggle_off[5] = {1113, 1114, 1270, 1233, 1382};
+const u32 button_toggle_on[5] = {374, 319, 369, 374, 366};
 const u32 button_toggle_off[5] = {375, 236, 236, 375, 236};
 const u32 toggle_values[5] = {ValueId::ReverseThrust, ValueId::SublimeShepherd, ValueId::DisruptionWeb, ValueId::TempoChange, ValueId::NaniteField};
 const u32 toggle_abilities[5] = {TechId::EMPShockwave, TechId::UnusedTech40, TechId::DisruptionWeb, TechId::TempoChange, TechId::NaniteField};
