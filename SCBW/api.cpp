@@ -1289,6 +1289,24 @@ void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer, CUn
 		}
 	}
 }
+void rangeModifiedFire(u8 weaponId, CUnit* unit, s16 x, s16 y, u32 offset) {
+	auto target_unit = unit->orderTarget.unit;
+	auto target_pos = unit->orderTarget.pt;
+	auto distance = scbw::getDistanceFast(unit->position.x, unit->position.y,
+		unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y);
+	distance += offset;
+	if (distance < 0) {
+		distance = 0;
+	}
+	auto polar_x = unit->getX() + scbw::getPolarX(distance, unit->currentDirection1);
+	auto polar_y = unit->getY() + scbw::getPolarY(distance, unit->currentDirection1);
+	unit->orderTarget.unit = NULL;
+	unit->orderTarget.pt.x = polar_x;
+	unit->orderTarget.pt.y = polar_y;
+	createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+	unit->orderTarget.unit = target_unit;
+	unit->orderTarget.pt = target_pos;
+}
 
 int getBroodlingCountFromSupply(CUnit* unit) {
 	if (units_dat::GroupFlags[unit->id].isBuilding) return 0;

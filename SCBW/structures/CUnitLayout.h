@@ -218,6 +218,7 @@ namespace ValueId {
 		OverlordSupplyGimmick						= 72,
 		MadcapStacks								= 73,
 		PhobosDischarge								= 74,
+		SalamanderAtkPos							= 75,
 	#if DELIVERANCE
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,

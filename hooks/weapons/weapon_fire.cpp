@@ -250,6 +250,20 @@ namespace hooks {
 					createBullet(weaponId, unit, X,Y, unit->playerId, scbw::getAngle(X,Y,
 						unit->orderTarget.unit->position.x,unit->orderTarget.unit->position.y));
 				}
+				else if(weaponId==WeaponId::PerditionBarrage){//salamander
+					auto rotate = scbw::get_generic_value(unit, ValueId::SalamanderAtkPos);
+					if (rotate == 1) {
+						createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+					}
+					else {
+						scbw::rangeModifiedFire(weaponId, unit, x, y, 32-32*rotate);
+					}
+					rotate++;
+					if (rotate > 2) {
+						rotate = 0;
+					}
+					scbw::set_generic_value(unit, ValueId::SalamanderAtkPos, rotate);
+				}
 				else {
 					if (unit->id == UnitId::TerranMadcap) {
 						scbw::add_generic_value(unit, ValueId::MadcapStacks, 1);

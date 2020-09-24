@@ -354,6 +354,7 @@ inline bool setInGameLoopState(bool newState) {
 
 //////////////////////////////////////////////////////////////// @}
 
+void rangeModifiedFire(u8 weaponId, CUnit* unit, s16 x, s16 y, u32 offset);
 int getBroodlingCountFromSupply(CUnit* unit);
 void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, CUnit* attacker = NULL);
 CUnit** getSourceQueens(CUnit* unit);
