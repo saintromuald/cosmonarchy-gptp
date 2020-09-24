@@ -236,10 +236,24 @@ namespace hooks {
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::EmpyreanMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::ArgosLaserBatteries) {
+					// Phobos - Argent Capacitors passive
+					if (unit->id == UnitId::TerranPhobos && scbw::get_generic_value(unit, ValueId::PhobosDischarge) == 0) {
+						unit->addUnitEnergy(5 * 256);
+						if (unit->energy == unit->getMaxEnergy()) {
+							scbw::set_generic_value(unit, ValueId::PhobosDischarge, 1);
+						}
+					}
 					// Phobos laser spawn positions
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::PhobosLaserPos, 4, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::AcheronMissiles) {
+					// Phobos - Argent Capacitors passive
+					if (unit->id == UnitId::TerranPhobos && scbw::get_generic_value(unit, ValueId::PhobosDischarge) == 0) {
+						unit->addUnitEnergy(5 * 256);
+						if (unit->energy == unit->getMaxEnergy()) {
+							scbw::set_generic_value(unit, ValueId::PhobosDischarge, 1);
+						}
+					}
 					// Phobos missile spawn positions
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::PhobosMissilePos, 6, ImagesDatEntries::OverlaySpecialPtr);
 				}
@@ -262,17 +276,6 @@ namespace hooks {
 					// Madcap - Maverick Feeders passive
 					if (unit->id == UnitId::TerranMadcap) {
 						scbw::add_generic_value(unit, ValueId::MadcapStacks, 1);
-					}
-
-					// Phobos - Argent Capacitors passive
-					if (unit->id == UnitId::TerranPhobos && scbw::get_generic_value(unit,ValueId::PhobosDischarge)==0) {
-						unit->addUnitEnergy(5 * 256);
-						if (unit->energy == unit->getMaxEnergy()){
-							scbw::set_generic_value(unit, ValueId::PhobosDischarge, 1);
-							//51200 energy
-							//120 steps
-							//spend roughly 426 energy units per frame
-						}
 					}
 
 					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
