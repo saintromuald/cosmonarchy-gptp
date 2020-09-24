@@ -346,7 +346,12 @@ public:
 				tgt = unit->subunit;
 			else
 				tgt = unit;
-			(tgt->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
+			if (organic) {
+				(tgt->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
+			}
+			else {
+				(tgt->sprite)->createTopOverlay(1158, 0, 0, 0);
+			}
 
 		}
 //		unit->setHp(unit->hitPoints + (6 * 256));
