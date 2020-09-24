@@ -303,10 +303,12 @@ class shamanProc : public scbw::UnitFinderCallbackProcInterface
 
 private:
 	CUnit* shaman;
+	bool organic;
+	u32 heal;
 
 public:
-	shamanProc(CUnit* shaman)
-		: shaman(shaman) {}
+	shamanProc(CUnit* shaman, bool organic, u32 heal)
+		: shaman(shaman), organic(organic), heal(heal) {}
 	void proc(CUnit* unit)
 	{
 		if (unit->playerId != shaman->playerId) {
@@ -316,7 +318,9 @@ public:
 		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
 			return;
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic))
+		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic) && organic)
+			return;
+		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Mechanical) && !organic)
 			return;
 		if (unit->stasisTimer) {
 			return;
@@ -345,25 +349,15 @@ public:
 			(tgt->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
 
 		}
-		unit->setHp(unit->hitPoints + (6 * 256));
-		if (unit->getCurrentHpInGame() == unit->getMaxHpInGame() && reqHeal) {
+//		unit->setHp(unit->hitPoints + (6 * 256));
+		unit->setHp(unit->hitPoints + (heal * 256));
+		if (unit->getCurrentHpInGame() == unit->getMaxHpInGame() && reqHeal && organic) {
 			if (!unit->getOverlay(971)) {
 				unit->sprite->createTopOverlay(971);
 			}
 			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::Adrenaline, 1 + (2 * 24), 0);
 			return;
 		}
-
-
-		/*if (dist <= 35) {
-			unit->setHp(unit->hitPoints + (6 * 256));
-		}
-		else if (dist <= 50) {
-			unit->setHp(unit->hitPoints + (4 * 256));
-		}
-		else  {
-			unit->setHp(unit->hitPoints + (2 * 256));
-		}*/
 	}
 };
 
@@ -725,7 +719,22 @@ namespace hooks {
 						if (unit->_padding_0x132 & 0x8) {
 							unit->_padding_0x133 = 24;
 							unit->sprite->playIscriptAnim(IscriptAnimation::CastSpell);
-							shamanProc Heal = shamanProc(unit);
+							shamanProc Heal = shamanProc(unit,true,6);
+							scbw::UnitFinder unitFinder(unit->getX() - 128,
+								unit->getY() - 128,
+								unit->getX() + 128,
+								unit->getY() + 128);
+							unitFinder.forEach(Heal);
+						}
+					}
+					if (scbw::get_generic_value(unit, ValueId::NaniteField)) {
+						auto timer = scbw::get_generic_timer(unit, ValueId::NaniteFieldTimer);
+						unit->_padding_0x133 = 0;
+						unit->_padding_0x132 = 0;
+						if (timer == 0) {
+							scbw::set_generic_timer(unit, ValueId::NaniteFieldTimer, 24);
+							unit->sprite->playIscriptAnim(IscriptAnimation::CastSpell);
+							shamanProc Heal = shamanProc(unit,false,4);
 							scbw::UnitFinder unitFinder(unit->getX() - 128,
 								unit->getY() - 128,
 								unit->getX() + 128,

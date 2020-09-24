@@ -219,6 +219,8 @@ namespace ValueId {
 		MadcapStacks								= 73,
 		PhobosDischarge								= 74,
 		SalamanderAtkPos							= 75,
+		NaniteField									= 76,
+		NaniteFieldTimer							= 77,
 	#if DELIVERANCE
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,
@@ -232,13 +234,13 @@ namespace ValueId {
 #include "SCBW\enumerations\TechId.h"
 //const u32 first_generic_toggle_ability = ValueId::ReverseThrust;
 //const u32 last_generic_toggle_ability = ValueId::DisruptionWeb;
-const u32 string_toggle_on[4] = {1703, 1807, 1265, 1232};
-const u32 string_toggle_off[4] = {1113, 1114, 1270, 1233};
-const u32 button_toggle_on[4] = {374, 319, 369, 374};
-const u32 button_toggle_off[4] = {375, 236, 236, 375};
-const u32 toggle_values[4] = {ValueId::ReverseThrust, ValueId::SublimeShepherd, ValueId::DisruptionWeb, ValueId::TempoChange};
-const u32 toggle_abilities[4] = {TechId::EMPShockwave, TechId::UnusedTech40, TechId::DisruptionWeb, TechId::TempoChange};
-const u32 generictoggles = 4;
+const u32 string_toggle_on[5] = {1703, 1807, 1265, 1232, 1248};
+const u32 string_toggle_off[5] = {1113, 1114, 1270, 1233, 1052};
+const u32 button_toggle_on[5] = {374, 319, 369, 374, 365};
+const u32 button_toggle_off[5] = {375, 236, 236, 375, 236};
+const u32 toggle_values[5] = {ValueId::ReverseThrust, ValueId::SublimeShepherd, ValueId::DisruptionWeb, ValueId::TempoChange, ValueId::NaniteField};
+const u32 toggle_abilities[5] = {TechId::EMPShockwave, TechId::UnusedTech40, TechId::DisruptionWeb, TechId::TempoChange, TechId::NaniteField};
+const u32 generictoggles = 5;
 
 namespace HydraFlags1 {
 	enum {

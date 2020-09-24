@@ -258,13 +258,45 @@ namespace hooks
 				if (firstInList->_padding_0x132 & 0x8) {
 					action = 1;
 				}
+				//set medstims
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
 				buf[0] = 0x99;//new general command
 				buf[1] = NewGameCommand::ShamanAction;
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				scbw::SendCommand(buf, 0xc);
+				//disable nanite field
+				u8 bufNanite[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+				bufNanite[0] = 0x99;//new general command
+				bufNanite[1] = NewGameCommand::GenericSwitchAbility;
+				bufNanite[2] = 0;
+				bufNanite[3] = *ACTIVE_PLAYER_ID;
+				bufNanite[4] = ValueId::NaniteField;
+				scbw::SendCommand(bufNanite, 0xc);
 			}
+			break;
+		}
+		case TechId::NaniteField: 
+		{
+			int action = 1;//on
+			if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::NaniteField, 0) == 1) {
+				action = 0;//off
+			}
+			//set nanite field
+			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+			buf[0] = 0x99;//new general command
+			buf[1] = NewGameCommand::GenericSwitchAbility;
+			buf[2] = action;
+			buf[3] = *ACTIVE_PLAYER_ID;
+			buf[4] = ValueId::NaniteField;
+			scbw::SendCommand(buf, 0xc);
+			//disable medstims
+			u8 bufMedstims[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+			bufMedstims[0] = 0x99;//new general command
+			bufMedstims[1] = NewGameCommand::ShamanAction;
+			bufMedstims[2] = 1;
+			bufMedstims[3] = *ACTIVE_PLAYER_ID;
+			scbw::SendCommand(bufMedstims, 0xc);
 			break;
 		}
 		case TechId::UnusedTech26://Cyprian Safety Off/Safety On
@@ -286,7 +318,7 @@ namespace hooks
 			}
 			break;
 		}
-		case TechId::UnusedTech38:
+/*		case TechId::UnusedTech38:
 		{
 			//Equip - Empower hero with relic
 			scbw::printText("Try use Tech38");
@@ -324,7 +356,7 @@ namespace hooks
 				scbw::printText("No selected units");
 			}
 			break;
-		}
+		}*/
 		case TechId::UnusedTech39://observance
 			IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
 

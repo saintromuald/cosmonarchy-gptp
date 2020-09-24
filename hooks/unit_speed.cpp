@@ -161,9 +161,10 @@ namespace hooks {
 
 		// Activate Medstims ability: reduce movespeed
 		else if (unit->id == UnitId::TerranShaman) {
-			if (unit->_padding_0x132 & 0x8) {
+			if (unit->_padding_0x132 & 0x8 || scbw::get_generic_value(unit,ValueId::NaniteField)) {
 				speed /= 2;
 			}
+
 		}
 
 		// Safety Off ability: reduce movespeed
