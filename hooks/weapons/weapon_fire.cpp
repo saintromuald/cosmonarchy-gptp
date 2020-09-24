@@ -230,6 +230,7 @@ namespace hooks {
 						}
 					}
 				}
+				
 				if (weaponId == WeaponId::PlasmaBarrage) {
 					// Empyrean missile spawn positions
 					auto rotate = scbw::get_generic_value(unit, ValueId::EmpyreanMissilePos);
@@ -250,7 +251,7 @@ namespace hooks {
 					createBullet(weaponId, unit, X,Y, unit->playerId, scbw::getAngle(X,Y,
 						unit->orderTarget.unit->position.x,unit->orderTarget.unit->position.y));
 				}
-				if (weaponId == WeaponId::ArgosLaserBatteries) {
+				else if (weaponId == WeaponId::ArgosLaserBatteries) {
 					// Empyrean laser spawn positions
 					auto rotate = scbw::get_generic_value(unit, ValueId::PhobosLaserPos);
 					const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayAttackPtr, 
@@ -260,17 +261,18 @@ namespace hooks {
 					if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
 						offset.x = -offset.x;
 					}
+					//scbw::printFormattedText("Laser rotate: %d, off %d %d", rotate, offset.x, offset.y);
 					rotate++;
 					if (rotate > 3) {
 						rotate = 0;
 					}
 					scbw::set_generic_value(unit, ValueId::PhobosLaserPos, rotate);
-					auto X = x + offset.x;
-					auto Y = y + offset.y;
+					auto X = unit->getX() + offset.x;
+					auto Y = unit->getY() + offset.y;
 					createBullet(weaponId, unit, X,Y, unit->playerId, scbw::getAngle(X,Y,
 						unit->orderTarget.unit->position.x,unit->orderTarget.unit->position.y));
 				}
-				if (weaponId == WeaponId::AcheronMissiles) {
+				else if (weaponId == WeaponId::AcheronMissiles) {
 					// Phobos missile spawn positions
 					auto rotate = scbw::get_generic_value(unit, ValueId::PhobosMissilePos);
 					const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlaySpecialPtr, 
@@ -280,13 +282,14 @@ namespace hooks {
 					if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
 						offset.x = -offset.x;
 					}
+					//scbw::printFormattedText("Missile rotate: %d, off %d %d", rotate,offset.x,offset.y);
 					rotate++;
 					if (rotate > 5) {
 						rotate = 0;
 					}
 					scbw::set_generic_value(unit, ValueId::PhobosMissilePos, rotate);
-					auto X = x + offset.x;
-					auto Y = y + offset.y;
+					auto X = unit->getX() + offset.x;
+					auto Y = unit->getY() + offset.y;
 					createBullet(weaponId, unit, X,Y, unit->playerId, scbw::getAngle(X,Y,
 						unit->orderTarget.unit->position.x,unit->orderTarget.unit->position.y));
 				}
