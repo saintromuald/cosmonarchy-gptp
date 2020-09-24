@@ -233,67 +233,17 @@ namespace hooks {
 				
 				if (weaponId == WeaponId::PlasmaBarrage) {
 					// Empyrean missile spawn positions
-					auto rotate = scbw::get_generic_value(unit, ValueId::EmpyreanMissilePos);
-					const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayAttackPtr, 
-											unit->sprite->mainGraphic->id));
-					u8 frameDirection = unit->sprite->mainGraphic->direction;
-					Point8 offset = loFile->getOffset(frameDirection, rotate);
-					if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
-						offset.x = -offset.x;
-					}
-					rotate++;
-					if (rotate > 3) {
-						rotate = 0;
-					}
-					scbw::set_generic_value(unit, ValueId::EmpyreanMissilePos, rotate);
-					auto X = x + offset.x;
-					auto Y = y + offset.y;
-					createBullet(weaponId, unit, X,Y, unit->playerId, scbw::getAngle(X,Y,
-						unit->orderTarget.unit->position.x,unit->orderTarget.unit->position.y));
+					scbw::setMissileSourcePos(unit, weaponId, ValueId::EmpyreanMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::ArgosLaserBatteries) {
-					// Empyrean laser spawn positions
-					auto rotate = scbw::get_generic_value(unit, ValueId::PhobosLaserPos);
-					const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayAttackPtr, 
-											unit->sprite->mainGraphic->id));
-					u8 frameDirection = unit->sprite->mainGraphic->direction;
-					Point8 offset = loFile->getOffset(frameDirection, rotate);
-					if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
-						offset.x = -offset.x;
-					}
-					//scbw::printFormattedText("Laser rotate: %d, off %d %d", rotate, offset.x, offset.y);
-					rotate++;
-					if (rotate > 3) {
-						rotate = 0;
-					}
-					scbw::set_generic_value(unit, ValueId::PhobosLaserPos, rotate);
-					auto X = unit->getX() + offset.x;
-					auto Y = unit->getY() + offset.y;
-					createBullet(weaponId, unit, X,Y, unit->playerId, scbw::getAngle(X,Y,
-						unit->orderTarget.unit->position.x,unit->orderTarget.unit->position.y));
+					// Phobos laser spawn positions
+					scbw::setMissileSourcePos(unit, weaponId, ValueId::PhobosLaserPos, 4, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::AcheronMissiles) {
 					// Phobos missile spawn positions
-					auto rotate = scbw::get_generic_value(unit, ValueId::PhobosMissilePos);
-					const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlaySpecialPtr, 
-											unit->sprite->mainGraphic->id));
-					u8 frameDirection = unit->sprite->mainGraphic->direction;
-					Point8 offset = loFile->getOffset(frameDirection, rotate);
-					if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
-						offset.x = -offset.x;
-					}
-					//scbw::printFormattedText("Missile rotate: %d, off %d %d", rotate,offset.x,offset.y);
-					rotate++;
-					if (rotate > 5) {
-						rotate = 0;
-					}
-					scbw::set_generic_value(unit, ValueId::PhobosMissilePos, rotate);
-					auto X = unit->getX() + offset.x;
-					auto Y = unit->getY() + offset.y;
-					createBullet(weaponId, unit, X,Y, unit->playerId, scbw::getAngle(X,Y,
-						unit->orderTarget.unit->position.x,unit->orderTarget.unit->position.y));
+					scbw::setMissileSourcePos(unit, weaponId, ValueId::PhobosMissilePos, 6, ImagesDatEntries::OverlaySpecialPtr);
 				}
-				else if(weaponId==WeaponId::PerditionBarrage) {
+				else if (weaponId == WeaponId::PerditionBarrage) {
 					// Salamander missile target positions
 					auto rotate = scbw::get_generic_value(unit, ValueId::SalamanderAtkPos);
 					if (rotate == 1) {

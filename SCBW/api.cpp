@@ -832,6 +832,26 @@ void setUpgradeLevel(u8 playerId, u8 upgradeId, u8 level) {
 
 }
 
+void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType) {
+	auto rotate = scbw::get_generic_value(unit, valueId);
+	const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
+		unit->sprite->mainGraphic->id));
+	u8 frameDirection = unit->sprite->mainGraphic->direction;
+	Point8 offset = loFile->getOffset(frameDirection, rotate);
+	if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
+		offset.x = -offset.x;
+	}
+	rotate++;
+	if (rotate > rotateCount - 1) {
+		rotate = 0;
+	}
+	scbw::set_generic_value(unit, valueId, rotate);
+	auto X = unit->getX() + offset.x;
+	auto Y = unit->getY() + offset.y;
+	createBullet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y,
+		unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
+}
+
 //-------- Map information --------//
 
 const u32 Func_GetGroundHeightAtPos = 0x004BD0F0;
