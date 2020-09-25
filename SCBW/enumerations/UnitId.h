@@ -430,22 +430,9 @@ enum Enum {
 /*0xF9*/	Buttons_ReplayPlaying					= 249,
 
 #ifdef DELIVERANCE
-//Protoss-Unit
-	ProtossAmaranth									= 61,		// Conclave heavy skirmisher	| Dark Templar Unit
-	ProtossEcclesiast								= 79,		// Conclave ranged psion		| Tassadar
-	ProtossTerminus									= 99,		// Cimmerian heavy strider		| Samir Duran
-
-//Protoss-Building
-	ProtossPrelacy									= 223,		// Ecclesiast production		| Gas Orb 2
-	ProtossCrucible									= 227,		// Terminus production			| Gas Tank 2
-
 //Protoss-Hero
-	Sashalok										= 75,		// Zeratul
-	Torros											= 77,		// Fenix Zealot
 	Asalamir										= 78,		// Fenix Dragoon
 	Damos											= 86,		// Danimoth
-	Nerazan											= 87,		// Aldaris
-	Keszalon										= 88,		// Artanis
 
 //Zerg-Hero
 	Gothroki										= 151,		// Cerebrate
@@ -494,7 +481,10 @@ enum Enum {
 	ProtossMagister									= 26,		// Edmund Duke Siege Turret
 	ProtossArtisan									= 29,		// Norad II
 	ProtossLegionnaire								= 74,		// Dark Templar Hero
+	ProtossAmaranth									= 75,		// Zeratul Dark Templar
 	ProtossHierophant								= 76,		// Tassadar/Zeratul Archon
+	ProtossTerminus									= 78,		// Fenix Dragoon
+	ProtossEcclesiast								= 79,		// Tassadar Templar
 	ProtossAurora									= 80,		// Mojo Scout
 	ProtossClarion									= 81,		// Warbringer
 	ProtossEmpyrean									= 82,		// Gantrithor
@@ -509,7 +499,7 @@ enum Enum {
 	ProtossAutomatonRegister						= 158,		// Unused Protoss 1				| Simulacrum requirement
 	ProtossBlazingEffigy							= 161,		// Unused Protoss 2				| Hierophant requirement
 	ProtossArgosy									= 168,		// Stasis Chamber				| Advanced Protoss production
-	ProtossVicarage									= 175,		// Xel'Naga Temple				| Legionnaire requirement
+	ProtossPrincipality								= 175,		// Xel'Naga Temple				| Legionnaire requirement
 	ProtossStridentStratum							= 182,		// Mining Platform				| Clarion requirement
 	ProtossStellarIcon								= 183,		// Independent Command Center	| Panoptus requirement
 	ProtossAstralOmen								= 184,		// Independent Starport			| Corsair requirement
