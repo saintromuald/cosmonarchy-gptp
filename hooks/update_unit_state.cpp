@@ -553,6 +553,7 @@ namespace hooks {
 						unit->status |= UnitStatus::Invincible;
 						scbw::createBullet(121, unit, unit->position.x, unit->position.y, unit->playerId,
 							unit->currentDirection1);
+						// TODO: Add impact graphic
 						unit->remove();
 					}
 				}
