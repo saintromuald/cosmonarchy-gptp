@@ -69,6 +69,28 @@ namespace scbw {
 		}
 
 	}
+
+	const u32 Func_CreateThingy = 0x00488210;
+	CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId) {
+
+		static CThingy* thingy;
+		s32 x_ = x;
+
+		__asm {
+			PUSHAD
+			PUSH playerId
+			MOVSX EDI, y
+			PUSH x_
+			PUSH spriteId
+			CALL Func_CreateThingy
+			MOV thingy, EAX
+			POPAD
+		}
+
+		return thingy;
+
+	}
+
 	void artificalBulletFrom(u8 weaponId, u8 playerId, CUnit* source, CUnit* target, Point16 target_pt) {
 		auto target_unit = source->orderTarget.unit;
 		auto target_pos = source->orderTarget.pt;
