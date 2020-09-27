@@ -235,6 +235,10 @@ namespace hooks {
 					// Empyrean missile spawn positions
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::EmpyreanMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
 				}
+				if (weaponId == WeaponId::SunchaserMissiles) {
+					// Centaur missile spawn positions
+					scbw::setMissileSourcePos(unit, weaponId, ValueId::CentaurMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
+				}
 				else if (weaponId == WeaponId::ArgosLaserBatteries) {
 					// Phobos - Argent Capacitors passive
 					if (unit->id == UnitId::TerranPhobos && scbw::get_generic_value(unit, ValueId::PhobosDischarge) == 0) {

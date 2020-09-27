@@ -223,6 +223,7 @@ namespace ValueId {
 		NaniteFieldTimer							= 77,
 		PhobosLaserPos								= 78,
 		PhobosMissilePos							= 79,
+		CentaurMissilePos							= 80,
 	#if DELIVERANCE
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,
