@@ -181,7 +181,9 @@ namespace hooks {
 				speed = (double)speed * ((10.0 + stacks) / 10.0);
 			}
 		}
-
+		else if (unit->id == UnitId::TerranGorgon && scbw::get_generic_timer(unit,ValueId::GorgonTimer)>0) {
+			speed += speed / 2;
+		}
 		// Collective Integration passive: gains increased movespeed based on tech level
 		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth || unit->id==UnitId::ZergOthstoleth) {
 			u32 irisCountSpeed = unitCountTable[UnitId::ZergOverlordIris].player[unit->playerId];
@@ -310,12 +312,15 @@ namespace hooks {
 				acceleration = (double)acceleration * ((10.0 + stacks) / 10.0);
 			}
 		}
-		return acceleration;
-
+		else if (unit->id == UnitId::TerranGorgon && scbw::get_generic_timer(unit, ValueId::GorgonTimer) > 0) {
+			acceleration += acceleration / 2;
+		}
 		// Khaydarin Eclipse ability: slow Exemplar by 75%
 		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
 			acceleration = acceleration / 4;
 		}
+		return acceleration;
+
 
 	}
 
