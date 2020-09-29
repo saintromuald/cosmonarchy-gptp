@@ -669,7 +669,6 @@ namespace hooks {
 
 				if (damage >= target->hitPoints) { // <- keep this as hitPoints, because the damage is already calculated to include armor, shields and damage factor calculations
 
-
 					// Kaiser Rampage - Ultralisk upgrade
 					if (attacker->id == UnitId::ZergUltralisk) {
 						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::KaiserRampage, 1 + (2 * 24), 0);

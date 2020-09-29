@@ -901,6 +901,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranGorgon &&  //Gorgon Petrification passive
+									current_button->iconID == IconId::Argus_Jewel)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::TerranAzazel &&  //Azazel Innervating Matrices passive
 									current_button->iconID == IconId::Restoration_Research)
 								{
@@ -955,6 +960,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossEcclesiast &&  //Ecclesiast Astral Blessing passive : enabled 
+									current_button->iconID == IconId::ProtossGroundWeapons)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossHighTemplar &&  //High Templar Ascendancy passive
 									current_button->iconID == IconId::MindControlUnused)
 								{
@@ -967,6 +977,11 @@ namespace hooks {
 								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossDarkTemplar &&  //Dark Templar Silent Strikes passive
 									current_button->iconID == IconId::ProtossGroundWeapons)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossSimulacrum &&  //Simulacrum Autovitality passive : enabled 
+									current_button->iconID == IconId::ApialSensors)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
@@ -1000,6 +1015,11 @@ namespace hooks {
 								}
 								if ((*activePortraitUnit)->id == UnitId::ZergVorvaling && //Vorvaling Captivating Claws passive
 									current_button->iconID == IconId::Claws)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergNathrokor && //Nathrokor Adrenal Frenzy passive
+									current_button->iconID == IconId::Suicide_Scourge)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
@@ -1081,12 +1101,6 @@ namespace hooks {
 								||	(*activePortraitUnit)->id == UnitId::ZergIrolethQuay
 								||	(*activePortraitUnit)->id == UnitId::ZergOthstolethBerth) &&
 									current_button->iconID == IconId::Suicide_Scourge)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-
-								if ((*activePortraitUnit)->id == UnitId::ProtossEcclesiast &&  //Ecclesiast-Astral Blessing passive : enabled 
-									current_button->iconID == IconId::ProtossGroundWeapons)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
