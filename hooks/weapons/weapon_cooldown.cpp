@@ -67,7 +67,6 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 		}
 	}
 
-#ifdef DELIVERANCE
 	// Terminus passive: gains attack speed with each upgrade
 	if (unit->id == UnitId::ProtossTerminus && scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossGroundWeapons)) {
 		int terminusUpg = scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossGroundWeapons);
@@ -78,7 +77,6 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 	if (astral_tempest_stacks) {
 		cooldown *= 1 - astral_tempest_stacks * 0.05;
 	}
-#endif
 
 	if (cooldownModifier > 0)	// Lame hardcode for attackspeed upgrades
 		cooldown /= 2;

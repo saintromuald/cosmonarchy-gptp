@@ -170,7 +170,7 @@ enum Enum {
 
 	// Protoss \\
 	
-	PulseBlaser									= 65,			// Vassal weapon
+	PulseBlaster								= 65,			// Vassal weapon
 	PlasmaFlurry								= 67,			// Gladius weapon
 	PhaseCannon									= 68,			// Simulacrum weapon
 	PlasmaBarrage								= 71,			// Empyrean weapon
@@ -184,6 +184,9 @@ enum Enum {
 	CelestialCannon								= 90,			// Star Sovereign primary weapon
 	InterventionMissiles						= 91,			// Star Sovereign secondary weapon
 	PlanetCracker								= 92,			// Star Sovereign ability
+	AstralBlaster								= 97,			// Ecclesiast weapon
+	ApexDisruptorCannon							= 98,			// Terminus weapon
+	PsiCleaver									= 99,			// Amaranth weapon
 	WardensMark									= 110,			// Clarion weapon
 
 	// Zerg \\
@@ -195,10 +198,5 @@ enum Enum {
 	SerratedCleavers							= 47,			// Gorgoleth weapon
 	ParasiticSpores								= 49,			// Alkajelisk behavior weapon
 	BasiliskCorrosiveAcid						= 50,			// Basilisk weapon
-
-	#ifdef DELIVERANCE
-		EcclesiastWeapon = 110,
-		TerminusWeapon = 112,
-	#endif
 	};
 }

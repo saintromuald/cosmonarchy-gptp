@@ -224,14 +224,12 @@ namespace ValueId {
 		PhobosLaserPos								= 78,
 		PhobosMissilePos							= 79,
 		CentaurMissilePos							= 80,
-	#if DELIVERANCE
+
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,
 		EcclesiastPlayer							= 102,
-
 		AstralTempestStacks							= 103,
 		AstralTempestTimer							= 104, 
-	#endif
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

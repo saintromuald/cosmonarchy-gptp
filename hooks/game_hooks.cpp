@@ -833,7 +833,6 @@ namespace hooks {
 					scbw::UnitFinder(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius).forEach(treasuryProc(unit->playerId));
 				}
 
-			#ifdef HYDRA
 				// Dark Templar - Decloak on attack
 				if (unit->id == UnitId::ProtossDarkTemplar) {
 					auto timer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DarkTemplarTimer, 0);
@@ -847,9 +846,7 @@ namespace hooks {
 						}
 					}
 				}
-			#endif
 
-			#ifdef DELIVERANCE
 				// Apply Ecclesiast - Astral Blessing stacks and timer
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::EcclesiastTimer, 0) == 1) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::EcclesiastStack, 0, 0);
@@ -857,7 +854,6 @@ namespace hooks {
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::AstralTempestTimer, 0) == 1) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::AstralTempestStacks, 0, 0);
 				}
-			#endif
 
 			}
 			scbw::setInGameLoopState(false);

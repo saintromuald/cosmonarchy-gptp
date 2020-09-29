@@ -225,9 +225,8 @@ namespace hooks {
 			speed = speed / 4;
 		}
 
-	#ifdef DELIVERANCE
 		// Deathless Procession upgrade: gains 125% movespeed, increasing to 175% when above 50% shields
-		if unit->id == UnitId::ProtossAmaranth) {
+		if (unit->id == UnitId::ProtossAmaranth) {
 			if (unit->getCurrentShieldsInGame() <= units_dat::MaxShieldPoints[unit->id] / 2)
 				speed += speed / 4;
 			else
@@ -235,10 +234,9 @@ namespace hooks {
 		}
 
 		u32 astral_tempest_stacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AstralTempestStacks, 0);
-		else if (astral_tempest_stacks) {
+		if (astral_tempest_stacks) {
 			speed *= 1 + astral_tempest_stacks * 0.05;
 		}
-	#endif
 
 		// DEBUG
 		// Speed logger

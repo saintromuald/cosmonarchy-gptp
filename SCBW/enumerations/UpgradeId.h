@@ -181,16 +181,12 @@ namespace UpgradeId {
 		Augment19 = 239,				// 
 		Augment20 = 240,				// 
 
-	#ifdef HYDRA
 		SilentStrikes = 79,				// Dark Templar attack speed on kill
 		Malediction = 116,				// Maelstrom Feedback and slow
-	#endif
 		
-	#ifdef DELIVERANCE
 		AstralBlessing = 150,			// Ecclesiast support-shield behavior
 		AstralTempest = 151,			// Ecclesiast support-attack speed behavior
 		DeathlessProcession = 152,		// Amaranth shieldsteal
-	#endif
 	};
 }
 

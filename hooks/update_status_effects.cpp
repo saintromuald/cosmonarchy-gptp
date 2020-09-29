@@ -286,12 +286,10 @@ void updateStatusEffects(CUnit* unit) {
 		unit->updateSpeed();
 	}
 
-#ifdef DELIVERANCE
 	// Astral Tempest: Ecclesiast movespeed on Astral Blessing proc
 	else if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AstralTempestStacks, 0) > 0) {
 		unit->updateSpeed();
 	}
-#endif
 
 	// Forcibly unburrow units that collide with buildings
 	if (unit->status & UnitStatus::Burrowed) {

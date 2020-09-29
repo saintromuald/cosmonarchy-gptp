@@ -965,13 +965,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-							#ifdef HYDRA
 								if ((*activePortraitUnit)->id == UnitId::ProtossDarkTemplar &&  //Dark Templar Silent Strikes passive
 									current_button->iconID == IconId::ProtossGroundWeapons)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-							#endif
 								if ((*activePortraitUnit)->id == UnitId::ProtossAurora &&  //Aurora Last Orders passive
 									current_button->iconID == IconId::MojoScout)
 								{
@@ -1087,13 +1085,11 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 
-							#ifdef DELIVERANCE
 								if ((*activePortraitUnit)->id == UnitId::ProtossEcclesiast &&  //Ecclesiast-Astral Blessing passive : enabled 
 									current_button->iconID == IconId::ProtossGroundWeapons)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-							#endif
 
 								// Passive icons: END \\
 

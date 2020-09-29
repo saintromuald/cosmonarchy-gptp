@@ -251,7 +251,6 @@ bool irradiateTarget(CUnit* unit) {
 	return true;
 }
 
-#ifdef DELIVERANCE
 class ecclesiastProc : public scbw::UnitFinderCallbackProcInterface {
 private:
 	int _stacks = 0;
@@ -265,10 +264,8 @@ public:
 
 	void proc(CUnit* unit) {
 		if (_playerID != unit->playerId && !scbw::isAlliedTo(_playerID, unit->playerId)) return; // Ally Check
-		if (astral_tempest_researched) { // Astral Tempest Check
-			//imgul(unit->sprite, 1520, 0, 0, 0);
-			imgul(unit->sprite, 425, 0, 0, 0);
-		} else if (units_dat::ShieldsEnabled[unit->id] && unit->shields < units_dat::MaxShieldPoints[unit->id] * 256) { // Shield Check for default behavior
+		imgul(unit->sprite, 425, 0, 0, 0);
+		if (units_dat::ShieldsEnabled[unit->id] && unit->shields < units_dat::MaxShieldPoints[unit->id] * 256) { // Shield Check for default behavior
 			imgul(unit->sprite, 425, 0, 0, 0);
 		} else { // Return if both checks failed
 			return;
@@ -277,15 +274,12 @@ public:
 		if (units_dat::ShieldsEnabled[unit->id]) { // Shield Heal
 			unit->shields = std::min(unit->shields + healAmount, units_dat::MaxShieldPoints[unit->id] * 256);
 		}
-		if (astral_tempest_researched) { // Astral Tempest Buff
-			if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AstralTempestStacks, 0) < _stacks) {
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::AstralTempestStacks, _stacks, 0);
-			}
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::AstralTempestTimer, 49, 0);
+		if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AstralTempestStacks, 0) < _stacks) {
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::AstralTempestStacks, _stacks, 0);
 		}
+		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::AstralTempestTimer, 49, 0);
 	}
 };
-#endif
 
 namespace hooks {
 	/// Hooks into the CUnit::damageWith() function.
@@ -355,9 +349,8 @@ namespace hooks {
 				captivating_claws::applyCaptivatingClaws(attacker, target);
 			}
 
-		#ifdef DELIVERANCE
 			// Ecclesiast Astral Blessing
-			if (attacker != NULL && weaponId == WeaponId::EcclesiastWeapon) {
+			if (attacker != NULL && weaponId == WeaponId::AstralBlaster) {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0) < 10) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::EcclesiastStack, 1, 0);
 				}
@@ -370,7 +363,6 @@ namespace hooks {
 				double shieldStealRate = MathUtils::map(attacker->hitPoints / 256, (int)attacker->getMaxHpInGame() / 4, (int)attacker->getMaxHpInGame(), 0.75, 0.0, true);
 				attacker->shields = std::min((s32)(attacker->shields + damage * shieldStealRate), (s32)units_dat::MaxShieldPoints[attacker->id] * 256);
 			}
-		#endif
 
 			if (weaponId == WeaponId::GlaveWurm || weaponId == WeaponId::GlaveWurm_Kukulza_Mutalisk) {
 				double mul = 1.0;
@@ -689,14 +681,12 @@ namespace hooks {
 						scbw::spawnBroodlings(supplyCount, attacker->playerId, target->position.x, target->position.y, 720, scbw::getSourceQueens(attacker)[0]);
 					}
 
-				#ifdef DELIVERANCE
 					// Ecclesiast - Astral Blessing proc
 					int stacks = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0);
 					int player = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastPlayer, 0);
 					const int range = 64;
-					scbw::UnitFinder unitFinder(target->getX() - range, target->getY() - range,
+					scbw::UnitFinder(target->getX() - range, target->getY() - range,
 						target->getX() + range, target->getY() + range).forEach(ecclesiastProc(stacks, player));
-				#endif
 				}
 			}
 
