@@ -263,21 +263,19 @@ public:
 	}
 
 	void proc(CUnit* unit) {
-		if (_playerID != unit->playerId && !scbw::isAlliedTo(_playerID, unit->playerId)) return; // Ally Check
-		imgul(unit->sprite, 425, 0, 0, 0);
+		if (_playerID != unit->playerId && !scbw::isAlliedTo(_playerID, unit->playerId)) {
+			return; // Ally Check
+		}
 		if (units_dat::ShieldsEnabled[unit->id] && unit->shields < units_dat::MaxShieldPoints[unit->id] * 256) { // Shield Check for default behavior
 			imgul(unit->sprite, 425, 0, 0, 0);
-		} else { // Return if both checks failed
+		}
+		else { // Return if both checks failed
 			return;
 		}
 		int healAmount = (5 * (_stacks + 1)) * 256;
 		if (units_dat::ShieldsEnabled[unit->id]) { // Shield Heal
 			unit->shields = std::min(unit->shields + healAmount, units_dat::MaxShieldPoints[unit->id] * 256);
 		}
-		if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AstralTempestStacks, 0) < _stacks) {
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::AstralTempestStacks, _stacks, 0);
-		}
-		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::AstralTempestTimer, 49, 0);
 	}
 };
 

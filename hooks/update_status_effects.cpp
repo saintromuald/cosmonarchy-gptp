@@ -286,11 +286,6 @@ void updateStatusEffects(CUnit* unit) {
 		unit->updateSpeed();
 	}
 
-	// Astral Tempest: Ecclesiast movespeed on Astral Blessing proc
-	else if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AstralTempestStacks, 0) > 0) {
-		unit->updateSpeed();
-	}
-
 	// Forcibly unburrow units that collide with buildings
 	if (unit->status & UnitStatus::Burrowed) {
 		auto tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
