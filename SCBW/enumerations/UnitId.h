@@ -496,17 +496,19 @@ enum Enum {
 	ProtossIdol										= 99,		// Samir Duran
 	ProtossGolem									= 100,		// Alexei Stukov
 	ProtossAugur									= 102,		// Gerard DuGalle
+	ProtossBarghest									= 104,		// Infested Duran
 
 //Protoss-Building
 	ProtossAutomatonRegister						= 158,		// Unused Protoss 1				| Simulacrum requirement
 	ProtossBlazingEffigy							= 161,		// Unused Protoss 2				| Hierophant requirement
-	ProtossArgosy									= 168,		// Stasis Chamber				| Advanced Protoss production
+	ProtossArgosy									= 168,		// Stasis Chamber				| Advanced Stellar production
 	ProtossPrincipality								= 175,		// Xel'Naga Temple				| Legionnaire requirement
 	ProtossStridentStratum							= 182,		// Mining Platform				| Clarion requirement
 	ProtossStellarIcon								= 183,		// Independent Command Center	| Panoptus requirement
 	ProtossAstralOmen								= 184,		// Independent Starport			| Corsair requirement
+	ProtossRoboticsAuthority						= 190,		// Psi Disruptor				| Advanced Robotics production
 	ProtossCrucible									= 201,		// Overmind Cocoon				| Structure w/ efficiency aura for production/upgrades
-	ProtossExaltedAshlar							= 211,		// Left Wall Flame Trap			| Exemplar requirement
+	ProtossCelestialShrine							= 211,		// Left Wall Flame Trap			| Exemplar requirement
 	ProtossCosmicAltar								= 213,		// Right Wall Flame Trap		| Empyrean requirement
 	ProtossPennant									= 221,		// Mineral Cluster Type 2		| Structure w/ regeneration aura for resources
 	ProtossGrandLibrary								= 226,		// Terran Gas Tank Type 1		| Advanced Templar production

@@ -190,6 +190,7 @@ enum Enum {
 	WardensMark									= 110,			// Clarion weapon
 	PrismaticBlaster							= 112,			// Idol weapon
 	BloodlessAssault							= 113,			// Golem weapon
+	RayOfAgony									= 114,			// Barghest weapon
 
 	// Zerg \\
 
