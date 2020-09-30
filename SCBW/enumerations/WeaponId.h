@@ -188,6 +188,8 @@ enum Enum {
 	ApexDisruptorCannon							= 98,			// Terminus weapon
 	PsiCleaver									= 99,			// Amaranth weapon
 	WardensMark									= 110,			// Clarion weapon
+	PrismaticBlaster							= 112,			// Idol weapon
+	BloodlessAssault							= 113,			// Golem weapon
 
 	// Zerg \\
 

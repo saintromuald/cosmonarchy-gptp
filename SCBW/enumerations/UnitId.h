@@ -493,6 +493,8 @@ enum Enum {
 	ProtossWarpRelay								= 90,		// Bengalaas
 	ProtossBulwark									= 93,		// Scantid
 	ProtossExemplar									= 94,		// Kakaru
+	ProtossIdol										= 99,		// Samir Duran
+	ProtossGolem									= 100,		// Alexei Stukov
 	ProtossAugur									= 102,		// Gerard DuGalle
 
 //Protoss-Building
