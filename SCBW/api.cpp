@@ -852,6 +852,41 @@ void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount
 		unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
 }
 
+bool isSlowed(CUnit* unit) {
+	if (unit->ensnareTimer || unit->unusedTimer) {
+		return true;
+	}
+	if (get_generic_timer(unit, ValueId::MaledictionSlow) > 1) {
+		return true;
+	}
+	if (get_generic_timer(unit, ValueId::LobotomySlow) > 1) {
+		return true;
+	}
+	if (unit->id==UnitId::TerranWyvern && get_generic_value(unit, ValueId::ReverseThrust) == 1) {
+		return true;
+	}
+	if (unit->id == UnitId::TerranShaman) {
+		if (unit->_padding_0x132 & 0x8 || scbw::get_generic_value(unit, ValueId::NaniteField)) {
+			return true;
+		}
+	}
+	if (unit->id == UnitId::TerranCyprian) {
+		if (scbw::get_generic_value(unit, AiseId::SendCyprianValue) == 1) {
+			return true;
+		}
+	}
+	if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
+		return true;
+	}
+	return false;
+}
+bool isStunned(CUnit* unit) {
+	if (unit->maelstromTimer || unit->stasisTimer) {
+		return true;
+	}
+	return false;
+}
+
 //-------- Map information --------//
 
 const u32 Func_GetGroundHeightAtPos = 0x004BD0F0;

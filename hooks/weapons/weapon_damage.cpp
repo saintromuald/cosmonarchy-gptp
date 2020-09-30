@@ -669,15 +669,16 @@ namespace hooks {
 
 				if (damage >= target->hitPoints) { // <- keep this as hitPoints, because the damage is already calculated to include armor, shields and damage factor calculations
 
+
 					// Kaiser Rampage - Ultralisk upgrade
 					if (attacker->id == UnitId::ZergUltralisk) {
 						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::KaiserRampage, 1 + (2 * 24), 0);
 						attacker->updateSpeed();
 					}
-					if (attacker->id == UnitId::TerranGorgon) {
+					/*if (attacker->id == UnitId::TerranGorgon) {
 						scbw::set_generic_timer(attacker, ValueId::GorgonTimer, (2 * 24) + 1);
 						attacker->updateSpeed();
-					}
+					}*/
 
 					// Incubators - Broodling upgrade
 					int supplyCount = scbw::getBroodlingCountFromSupply(target);

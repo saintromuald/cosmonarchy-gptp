@@ -91,8 +91,7 @@ namespace hooks {
 		}
 		// Reverse Thrust ability: reduce movespeed
 		if (unit->id == UnitId::TerranWyvern && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::ReverseThrust, 0) == 1) {
-			if(scbw::get_aise_value(unit,NULL,AiseId::GenericValue,ValueId::ReverseThrust,0)==1)
-				speed /= 2;
+			speed /= 2;
 		}
 
 		// Adrenal Surge upgrade: gains double movespeed when moving towards enemies
@@ -133,7 +132,7 @@ namespace hooks {
 			}
 		}
 
-		// Panoptus upgrade
+		// Panoptus Upgrade
 		else if (unit->id == UnitId::ProtossPanoptus || unit->id == UnitId::Hero_Mojo || unit->id == UnitId::Hero_Artanis)
 			speed = 1707;
 
@@ -152,10 +151,12 @@ namespace hooks {
 			speed += speed / 2;
 		}
 
+	#ifdef HYDRA
 		// Leg Enhancements upgrade (Dark Templar): gains 120% movespeed
 		else if (unit->id == UnitId::ProtossDarkTemplar) {
 			speed += speed / 5;
 		}
+	#endif
 
 		// Activate Medstims ability: reduce movespeed
 		else if (unit->id == UnitId::TerranShaman) {
@@ -179,12 +180,9 @@ namespace hooks {
 				speed = (double)speed * ((10.0 + stacks) / 10.0);
 			}
 		}
-
-		// Nathrokor - Adrenal Frenzy passive: increase movement speed for all organics within 2 weapon range by 50%
 		else if (unit->id == UnitId::TerranGorgon && scbw::get_generic_timer(unit,ValueId::GorgonTimer)>0) {
 			speed += speed / 2;
 		}
-
 		// Collective Integration passive: gains increased movespeed based on tech level
 		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth || unit->id==UnitId::ZergOthstoleth) {
 			u32 irisCountSpeed = unitCountTable[UnitId::ZergOverlordIris].player[unit->playerId];
@@ -236,7 +234,6 @@ namespace hooks {
 				speed += (speed / 2) + speed / 4;
 		}
 
-		// Astral Tempest upgrade - may be removed
 		u32 astral_tempest_stacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AstralTempestStacks, 0);
 		if (astral_tempest_stacks) {
 			speed *= 1 + astral_tempest_stacks * 0.05;
@@ -307,19 +304,16 @@ namespace hooks {
 			}
 		}
 
-		// Simulacrum - Autovitality passive
+		// ???
 		else if (unit->id == UnitId::ProtossSimulacrum) {
 			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10)*1.5;
 			if (stacks > 0) {
 				acceleration = (double)acceleration * ((10.0 + stacks) / 10.0);
 			}
 		}
-
-		// Nathrokor - Adrenal Frenzy passive: increase acceleration for all organics within 2 weapon range by 50%
 		else if (unit->id == UnitId::TerranGorgon && scbw::get_generic_timer(unit, ValueId::GorgonTimer) > 0) {
 			acceleration += acceleration / 2;
 		}
-
 		// Khaydarin Eclipse ability: slow Exemplar by 75%
 		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
 			acceleration = acceleration / 4;
