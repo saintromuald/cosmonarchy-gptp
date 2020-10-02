@@ -447,6 +447,7 @@ enum Enum {
 	TerranWendigo									= 17,		// Alan Schezar
 	TerranMadcap									= 18,		// Alan Schezar Turret
 	TerranSouthpaw									= 19,		// Raynor Vulture
+	TerranWendigo									= 20,		// Raynor Marine
 	TerranSalamander								= 22,		// Magellan
 	TerranGorgon									= 23,		// Edmund Duke Tank
 	TerranPhobos									= 24,		// Edmund Duke Tank Turret
@@ -488,6 +489,7 @@ enum Enum {
 	ProtossAurora									= 80,		// Mojo Scout
 	ProtossClarion									= 81,		// Warbringer
 	ProtossEmpyrean									= 82,		// Gantrithor
+	ProtossPariah									= 87,		// Aldaris
 	ProtossVassal									= 88,		// Artanis
 	ProtossSimulacrum								= 89,		// Rhynadon
 	ProtossWarpRelay								= 90,		// Bengalaas

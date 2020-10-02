@@ -145,6 +145,7 @@ enum Enum {
 	UppercutLaser								= 5,			// Southpaw weapon
 	DanannAutogun								= 9,			// Madcap weapon
 	CrusaderMissiles							= 10,			// Paladin weapon
+	FusionSaw									= 12,			// Wendigo weapon
 	PerditionBarrage							= 17,			// Salamander weapon
 	ArtificeBattery								= 18,			// Gorgon weapon
 	FuriaMissiles								= 21,			// Madrigal weapon 1
@@ -191,6 +192,7 @@ enum Enum {
 	PrismaticBlaster							= 112,			// Idol weapon
 	BloodlessAssault							= 113,			// Golem weapon
 	RayOfAgony									= 114,			// Barghest weapon
+	IconoclastBlades							= 115,			// Pariah weapon
 
 	// Zerg \\
 

@@ -901,6 +901,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranWendigo &&  //Wendigo Automedicus passive
+									current_button->iconID == IconId::PhotonCannon_Weapon)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::TerranGorgon &&  //Gorgon Petrification passive
 									current_button->iconID == IconId::Argus_Jewel)
 								{
