@@ -16,6 +16,7 @@ u8 getDamageFactorForTooltip(u8 weaponId, CUnit* unit) {
 	||	unit->id == UnitId::ProtossLegionnaire
 	||	unit->id == UnitId::ProtossAmaranth
 	||	unit->id == UnitId::ProtossGolem
+	||	unit->id == UnitId::ProtossPariah
 	||	weaponId == WeaponId::RetractorBatteries
 		)
 		return 2;
