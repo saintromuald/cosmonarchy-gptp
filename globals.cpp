@@ -88,14 +88,14 @@ void globals::frameHook() {
 				constexpr int unitSizeFactor[5] = { 2, 0, 256, 192, 128 };//Concussive damage
 				auto count = 0;
 				int r = 16;
-				auto n = unitRangeCount(NULL, CFlags::NoInvincible | CFlags::NoBuilding | CFlags::Enemy | CFlags::NoAir, {});
+				auto n = unitRangeCount(NULL, CFlags::NoInvincible | CFlags::Enemy | CFlags::NoAir, {});
 				scbw::UnitFinder unitsInSplash(impact.position.x - r, impact.position.y - r, 
 											impact.position.x + r, impact.position.y + r);
 				for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 					auto unit = unitsInSplash.getUnit(i);
 					if (n.match(unit)) {
-						auto damage_factor = unitSizeFactor[units_dat::SizeType[unit->id]];
-						double damage = weapons_dat::DamageAmount[WeaponId::IncendiaryPayload] * (damage_factor / 256.0);
+						double damage_factor = unitSizeFactor[units_dat::SizeType[unit->id]];
+						double damage = (double)weapons_dat::DamageAmount[WeaponId::IncendiaryPayload] * (damage_factor / 256.0);
 						unitsInSplash.getUnit(i)->inflictDamage(damage, NULL, -1, false, true);
 					}
 				}
