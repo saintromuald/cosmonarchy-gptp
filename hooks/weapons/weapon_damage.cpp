@@ -449,6 +449,10 @@ namespace hooks {
 						u32 lifesteal = shieldReduceAmount / 2;
 						attacker->setHp(attacker->hitPoints + lifesteal);
 					}
+					if (attacker->id == UnitId::TerranWendigo && units_dat::BaseProperty[target->id] & UnitProperty::Mechanical) {
+						u32 lifesteal = shieldReduceAmount / 4;
+						attacker->setHp(attacker->hitPoints + lifesteal);
+					}
 				}
 
 				damage -= shieldReduceAmount;
@@ -499,6 +503,10 @@ namespace hooks {
 			if (attacker != NULL && target != NULL) {
 				if (attacker->id == UnitId::ZergUltralisk) {
 					u32 lifesteal = damage / 2;
+					attacker->setHp(attacker->hitPoints + lifesteal);
+				}
+				if (attacker->id == UnitId::TerranWendigo && units_dat::BaseProperty[target->id] & UnitProperty::Mechanical) {
+					u32 lifesteal = damage / 4;
 					attacker->setHp(attacker->hitPoints + lifesteal);
 				}
 			}
