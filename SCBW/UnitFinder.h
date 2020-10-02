@@ -80,7 +80,8 @@ class UnitFinder {
                                    CUnit* sourceUnit, UnitFinderCallbackMatchInterface& match);
     static CUnit* getNearestTarget(int left, int top, int right, int bottom,
         CBullet* sourceBullet, UnitFinderCallbackMatchInterface& match);
-
+    static CUnit* getNearestTarget(int left, int top, int right, int bottom,
+        Point32 position, UnitFinderCallbackMatchInterface& match);
     /// Searches the entire map, returning the nearest unit to @p sourceUnit
     /// for which match(unit) evaluates to true. If there are no matches,
     /// returns NULL.
@@ -100,6 +101,11 @@ class UnitFinder {
         UnitFinderData* left, UnitFinderData* top,
         UnitFinderData* right, UnitFinderData* bottom,
         UnitFinderCallbackMatchInterface& match, CBullet* sourceBullet);
+    static CUnit* getNearest(int x, int y,
+        int boundsLeft, int boundsTop, int boundsRight, int boundsBottom,
+        UnitFinderData* left, UnitFinderData* top,
+        UnitFinderData* right, UnitFinderData* bottom,
+        UnitFinderCallbackMatchInterface& match, Point32 sourcePosition);
     static UnitFinderData* getStartX();
     static UnitFinderData* getStartY();
     static UnitFinderData* getEndX();

@@ -4,7 +4,7 @@
 #include <SCBW/enumerations.h>
 #include <SCBW/api.h>
 #include "hooks/weapons/wpnspellhit.h"
-
+#include "globals.h"
 namespace {
   bool isUnitDistanceWithin(CUnit* target, CBullet* bullet, u32 radius);
   void weaponBulletShot(CUnit* target, CBullet* bullet, u32 dmgDivisor);
@@ -71,11 +71,21 @@ namespace hooks {
    }
 	void friendlySplash(CBullet* bullet, u32 weaponId, u8 splash_type, CUnit* guaranteed_hit){
 		int splash = splash_type;
-		if (bullet->sourceUnit != NULL) {
-				if (bullet->sourceUnit->isBlind) {
-					splash = SplashType::Radial;
+		if (bullet->sourceUnit != NULL && bullet->sourceUnit->sprite!=NULL) {
+			if (bullet->sourceUnit->isBlind) {
+				splash = SplashType::Radial;
+			}
+			
+			//must be moved to aise
+			if (bullet->sourceUnit->id == UnitId::TerranSalamander) {
+				auto hit = bullet->attackTarget.pt;
+				if (bullet->attackTarget.unit != NULL) {
+					hit = bullet->attackTarget.unit->position;
 				}
+				Globals.createSalamanderFire(hit.x, hit.y, 11, 5, true);
+			}
 		}
+		
 		s16 x,y,r;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;

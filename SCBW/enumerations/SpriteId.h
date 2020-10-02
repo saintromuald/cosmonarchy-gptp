@@ -524,5 +524,6 @@ enum Enum {
 	None = 517,
 
 	MadrigalMissile2 = 549,
+	SalamanderImpact = 596,
 };
 }

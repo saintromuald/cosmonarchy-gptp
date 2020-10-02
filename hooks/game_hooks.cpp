@@ -450,6 +450,11 @@ namespace hooks {
 				);
 			scbw::printText(b);*/
 
+			if (*elapsedTimeFrames == 0) {
+				Globals.reset();
+			}
+			Globals.frameHook();
+			
 			// Reset Treasury Stacks, before unit loop
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
 				int supply = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SupplyProvidedValue, 0);
@@ -853,6 +858,9 @@ namespace hooks {
 				// Apply Ecclesiast - Astral Blessing stacks and timer
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::EcclesiastTimer, 0) == 1) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::EcclesiastStack, 0, 0);
+				}
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::AstralTempestTimer, 0) == 1) {
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::AstralTempestStacks, 0, 0);
 				}
 
 			}

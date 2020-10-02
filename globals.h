@@ -18,6 +18,14 @@ struct SaveState {
 	}
 };
 
+class salamanderImpact {
+public:
+	Point32 position;
+	u8 elevation;
+	u32 timer;
+	u32 repeatsLeft;
+};
+
 class globals {
 	std::string output;
 public:
@@ -29,6 +37,7 @@ public:
 	//non-serializable data (exists only temporarily in memory in wrapper/hook flow)
 	int flingy_init_bullet_id;
 	u8 flingy_init_player_id;
+	std::vector<salamanderImpact> salamanderImpacts;
 	//
 
 	SaveState aise_save();
@@ -40,6 +49,9 @@ public:
 		unitid_extender = false;
 		//
 	}
+	void reset();
+	void frameHook();
+	void createSalamanderFire(int x, int y, u8 player, u8 elevation, bool addImpactValue);
 };
 
 void injectGlobalsHooks();

@@ -3,6 +3,7 @@
 #include <array>
 #include <vector>
 #include <map>
+#include "globals.h"
 
 // Saving
 template <typename T> // 1-Dimensional Array
@@ -49,6 +50,7 @@ std::ostream& operator<<(std::ostream& stream, T& object) {
 	stream << *(char*)&object << "\0";
 	return stream;
 }
+
 
 // Loading
 template <typename T> // 1-Dimensional Array
@@ -98,6 +100,7 @@ std::istream& operator>>(std::istream& stream, std::vector<T, Y>& vec) {
 	} while (str != "");
 	return stream;
 }
+
 
 template <typename T> // Undefined Object
 std::istream& operator>>(std::istream& stream, T& object) {
