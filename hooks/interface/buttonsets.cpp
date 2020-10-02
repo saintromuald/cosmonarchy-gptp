@@ -990,6 +990,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossPariah &&  //Pariah Heretical Bedlam passive : enabled 
+									current_button->iconID == IconId::PhaseDisruptor)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossAurora &&  //Aurora Last Orders passive
 									current_button->iconID == IconId::MojoScout)
 								{

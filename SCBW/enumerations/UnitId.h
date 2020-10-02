@@ -444,7 +444,7 @@ enum Enum {
 	TerranApostle									= 10,		// Gui Montag
 	TerranShaman									= 15,		// Civilian
 	TerranMason										= 16,		// Sarah Kerrigan
-	TerranWendigo									= 17,		// Alan Schezar
+	TerranAutocrat									= 17,		// Alan Schezar
 	TerranMadcap									= 18,		// Alan Schezar Turret
 	TerranSouthpaw									= 19,		// Raynor Vulture
 	TerranWendigo									= 20,		// Raynor Marine
