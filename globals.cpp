@@ -20,7 +20,11 @@ SaveState globals::aise_save() {
 		stream.write(reinterpret_cast<const char*>(&salamanderImpacts[i].repeatsLeft), sizeof(salamanderImpacts[i].repeatsLeft));
 		stream.write(reinterpret_cast<const char*>(&salamanderImpacts[i].timer), sizeof(salamanderImpacts[i].timer));
 	}
-
+	auto pariahHitCount = pariahHits.size();
+	for (int i = 0; i < pariahHitCount; i++) {
+		stream.write(reinterpret_cast<const char*>(&pariahHits[i].source), sizeof(pariahHits[i].source));
+		stream.write(reinterpret_cast<const char*>(&pariahHits[i].target), sizeof(pariahHits[i].target));
+	}
 	output = stream.rdbuf()->str();
 	if (output.length() == 0) {
 		return state;
@@ -41,8 +45,10 @@ void globals::aise_load(const char* ptr, u32 len){
 	stream.read(reinterpret_cast<char*>(&extended_sfx), sizeof(extended_sfx));
 	stream.read(reinterpret_cast<char*>(&tbl_extender), sizeof(tbl_extender));
 	stream.read(reinterpret_cast<char*>(&unitid_extender), sizeof(unitid_extender));
-	auto impactsSize = 0;
+	
+	pariahHits.clear();
 	salamanderImpacts.clear();
+	auto impactsSize = 0;
 	stream.read(reinterpret_cast<char*>(&impactsSize), sizeof(impactsSize));
 	for (int i = 0; i < impactsSize; i++) {
 		salamanderImpact impact;
@@ -53,15 +59,28 @@ void globals::aise_load(const char* ptr, u32 len){
 		stream.read(reinterpret_cast<char*>(&impact.timer), sizeof(impact.timer));
 		salamanderImpacts.push_back(impact);
 	}
+	auto pariahHitsCount = 0;
+	stream.read(reinterpret_cast<char*>(&pariahHitsCount), sizeof(pariahHitsCount));
+	for (int i = 0; i < pariahHitsCount; i++) {
+		pariahHit hit;
+		stream.read(reinterpret_cast<char*>(&hit.source), sizeof(hit.source));
+		stream.read(reinterpret_cast<char*>(&hit.target), sizeof(hit.target));
+		pariahHits.push_back(hit);
+	}
 }
 void globals::reset() {
 	salamanderImpacts.clear();
+}
+void globals::unitFrameHook(CUnit* unit) {
+	if (unit->id == UnitId::ProtossPariah && unit->orderSignal & 0x20) {
+		unit->orderSignal &= ~0x20;
+		remove_unit_from_pariah_table(unit, true);
+	}
 }
 void globals::frameHook() {
 	for (int a = 0; a < salamanderImpacts.size();a++) {
 		auto& impact = salamanderImpacts[a];
 		if (impact.timer > 0) {
-			
 			//deals 20 concussive damage per 5 seconds
 			//deals 4 (1024) concussive damage per second
 			//deals [128] concussive damage per 1/3 seconds (8 frames)
@@ -96,6 +115,30 @@ void globals::frameHook() {
 		}
 	}
 }
+
+void globals::remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly){
+	for (int i = 0; i < pariahHits.size(); i++) {
+		if (pariahHits[i].source == unit || (pariahHits[i].target == unit && !sourceOnly)) {
+			pariahHits.erase(pariahHits.begin() + i);
+			i--;
+		}
+	}
+}
+bool globals::was_hit_by_pariah(CUnit* source, CUnit* target){
+	for (auto a : pariahHits) {
+		if (source == a.source && target == a.target) {
+			return true;
+		}
+	}
+	return false;
+}
+void globals::register_pariah_hit(CUnit* source, CUnit* target){
+	pariahHit hit;
+	hit.source = source;
+	hit.target = target;
+	pariahHits.push_back(hit);
+}
+
 void globals::createSalamanderFire(int x, int y, u8 player,u8 elevationLevel, bool addImpactValue) {
 	if (addImpactValue) {
 		for (auto a : salamanderImpacts) {

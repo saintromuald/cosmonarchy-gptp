@@ -25,6 +25,11 @@ public:
 	u32 timer;
 	u32 repeatsLeft;
 };
+class pariahHit {
+public:
+	CUnit* source;
+	CUnit* target;
+};
 
 class globals {
 	std::string output;
@@ -38,6 +43,7 @@ public:
 	int flingy_init_bullet_id;
 	u8 flingy_init_player_id;
 	std::vector<salamanderImpact> salamanderImpacts;
+	std::vector<pariahHit> pariahHits;
 	//
 
 	SaveState aise_save();
@@ -51,6 +57,10 @@ public:
 	}
 	void reset();
 	void frameHook();
+	void unitFrameHook(CUnit* unit);
+	void remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly);
+	bool was_hit_by_pariah(CUnit* source, CUnit* target);
+	void register_pariah_hit(CUnit* source, CUnit* target);
 	void createSalamanderFire(int x, int y, u8 player, u8 elevation, bool addImpactValue);
 };
 

@@ -523,19 +523,30 @@ namespace {
   // creates attack overlay & deals damage from the bullet (just calls overlayAndNotify if the weapon deals no damage, or calls target->damageWith if it does
   const u32 Helper_WeaponBulletShot = 0x00479AE0;
   void weaponBulletShot(CUnit* target, CBullet* bullet, u32 dmgDivisor){
+
+	if (bullet != NULL && target!=NULL && bullet->sourceUnit && bullet->weaponType == WeaponId::IconoclastBlades) {
+		if (!Globals.was_hit_by_pariah(bullet->sourceUnit, target)) {
+			Globals.register_pariah_hit(bullet->sourceUnit, target);
+		}
+		else {
+			return;
+		}
+	}
     __asm {
-      PUSHAD
-      PUSH dmgDivisor
-      MOV EAX, target
-      MOV EDX, bullet
-      CALL Helper_WeaponBulletShot
-      POPAD
+		  PUSHAD
+		  PUSH dmgDivisor
+		  MOV EAX, target
+		  MOV EDX, bullet
+		  CALL Helper_WeaponBulletShot
+		  POPAD
     }
   }
 
   const u32 Helper_DoWeaponHit = 0x004795D0;
   void doWeaponHit(CUnit* target, CUnit* attacker, u8 dmgDivisor) {
     u32 divisor = dmgDivisor;
+	
+
     __asm {
       PUSHAD
       PUSH divisor

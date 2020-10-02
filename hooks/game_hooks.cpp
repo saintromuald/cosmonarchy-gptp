@@ -494,6 +494,7 @@ namespace hooks {
 			// Loop through all visible units in the game.
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
 				CUnitExtended::get(unit)->tick();
+				Globals.unitFrameHook(unit);
 				//hooks::ShowHealthBar(unit);
 				if (unit->id == UnitId::corsair) {
 					auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);

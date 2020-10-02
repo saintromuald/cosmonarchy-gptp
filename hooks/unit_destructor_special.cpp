@@ -9,6 +9,7 @@
 //Identical to 00466170  sub_466170
 //Not hooked but used by hooked unitDestructorSpecialHook
 #include <SCBW/UnitFinder.h>
+#include "globals.h"
 
 class customPlagueProc_2 : public scbw::UnitFinderCallbackProcInterface
 	{
@@ -254,10 +255,10 @@ void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords) {
 
 }
 
-
 //Hooked down there instead of a specific inject.cpp
 void unitDestructorSpecialHook(CUnit* unit) {
 
+	Globals.remove_unit_from_pariah_table(unit,false);
 	if (unit->id == UnitId::corsair) {
 		auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
 		if (web != NULL) {
