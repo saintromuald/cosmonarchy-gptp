@@ -162,6 +162,7 @@ enum Enum {
 	ArgosLaserBatteries							= 94,			// Phobos weapon 1
 	AcheronMissiles								= 95,			// Phobos weapon 2
 	PowerSiphon									= 101,			// Ability targeting - Savant
+	IncendiaryPayload							= 116,			// Salamander behavior damage
 	Observance									= 122,			// Ability targeting - Science Vessel
 	Dirge										= 123,			// Madrigal Dirge damage
 	JacksonCannon								= 125,			// Wyvern weapon + ability targeting - Wyvern

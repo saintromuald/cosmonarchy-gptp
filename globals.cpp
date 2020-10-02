@@ -95,7 +95,7 @@ void globals::frameHook() {
 					auto unit = unitsInSplash.getUnit(i);
 					if (n.match(unit)) {
 						auto damage_factor = unitSizeFactor[units_dat::SizeType[unit->id]];
-						double damage = 128.0 * (damage_factor / 256.0);
+						double damage = weapons_dat::DamageAmount[WeaponId::IncendiaryPayload] * (damage_factor / 256.0);
 						unitsInSplash.getUnit(i)->inflictDamage(damage, NULL, -1, false, true);
 					}
 				}

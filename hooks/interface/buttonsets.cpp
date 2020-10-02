@@ -926,6 +926,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranSalamander &&  //Salamander Incendiary Payload passive
+									current_button->iconID == IconId::Flame_Thrower)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser &&  //Battlecruiser Fore Castle passive 
 									current_button->iconID == IconId::TerranShipPlating)
 								{
