@@ -194,7 +194,12 @@ namespace hooks {
 						eggId = UnitId::cocoon;
 						break;
 					case UnitId::ZergUltralisk:
-						eggId = UnitId::EggKeskathalor;
+						if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergAlkajelisk) {
+							eggId = UnitId::EggAlkajelisk;
+						}
+						else {
+							eggId = UnitId::EggKeskathalor;
+						}
 						break;
 					case UnitId::ZergOverlord:
 						eggId = UnitId::EggIroleth;
@@ -335,10 +340,11 @@ namespace hooks {
 				return true;
 			}
 		}
-		if (unit->id == UnitId::ZergZergling) {
-			if (morphUnitId == UnitId::ZergNathrokor) {
+		if (unit->id == UnitId::ZergUltralisk) {
+			if (morphUnitId == UnitId::ZergKeskathalor || morphUnitId==UnitId::ZergAlkajelisk) {
 				return true;
 			}
+
 		}
 		if (unit->id == UnitId::ZergOverlord) {
 			if (morphUnitId == UnitId::ZergIroleth) {
@@ -403,7 +409,14 @@ namespace hooks {
 			return UnitId::EggVorvaling;
 		}
 		if (unitId == UnitId::ZergUltralisk)
-			return UnitId::EggKeskathalor;
+		{
+			if (resultId == UnitId::ZergAlkajelisk) {
+				return UnitId::EggAlkajelisk;
+			}
+			else {
+				return UnitId::EggKeskathalor;
+			}
+		}
 		if (unitId == UnitId::ZergOverlord)
 			return UnitId::EggIroleth;
 		if (unitId == UnitId::ZergIroleth) {
@@ -443,7 +456,9 @@ namespace hooks {
 		if (eggUnit->id == UnitId::EggKeskathalor) {
 			return UnitId::ZergUltralisk;
 		}
-
+		if (eggUnit->id == UnitId::EggAlkajelisk) {
+			return UnitId::ZergUltralisk;
+		}
 
 		//  || unitId==223 || unitId==102 || unitIds==179
 		return UnitId::None;  //Default (no revert for larvae)
