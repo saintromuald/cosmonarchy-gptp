@@ -229,8 +229,6 @@ namespace ValueId {
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,
 		EcclesiastPlayer							= 102,
-		AstralTempestStacks							= 103,
-		AstralTempestTimer							= 104, 
 
 	};	
 }

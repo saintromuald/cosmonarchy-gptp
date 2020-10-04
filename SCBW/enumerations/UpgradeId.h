@@ -185,7 +185,6 @@ namespace UpgradeId {
 		Malediction = 116,				// Maelstrom Feedback and slow
 		
 		AstralBlessing = 150,			// Ecclesiast support-shield behavior
-		AstralTempest = 151,			// Ecclesiast support-attack speed behavior
 		DeathlessProcession = 152,		// Amaranth shieldsteal
 	};
 }

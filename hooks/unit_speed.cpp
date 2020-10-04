@@ -234,11 +234,6 @@ namespace hooks {
 				speed += (speed / 2) + speed / 4;
 		}
 
-		u32 astral_tempest_stacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AstralTempestStacks, 0);
-		if (astral_tempest_stacks) {
-			speed *= 1 + astral_tempest_stacks * 0.05;
-		}
-
 		// DEBUG
 		// Speed logger
 		/*
