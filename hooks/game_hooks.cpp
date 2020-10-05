@@ -863,6 +863,12 @@ namespace hooks {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::EcclesiastStack, 0, 0);
 				}
 
+				// Update flingy speed when Adrenal Frenzy timer expires
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::NathrokorTimer, 0) == 1) {
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::NathrokorTimer, 0, 0);
+					unit->updateSpeed();
+				}
+
 			}
 			scbw::setInGameLoopState(false);
 		}
