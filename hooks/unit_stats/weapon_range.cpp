@@ -30,6 +30,11 @@ u8 getSeekRangeHook(CUnit* unit) {
 			}
 			break;
 		}
+		case UnitId::TerranMadrigal: {
+			if (scbw::get_generic_value(unit, ValueId::TempoChange)) {
+				bonusAmount = 4;
+			}
+		}
 		default:
 			bonusAmount = 0;
 
@@ -73,6 +78,11 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 		{
 			if (scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
 				bonusAmount = 6*32;
+			}
+		}
+		case UnitId::TerranMadrigal: {
+			if (scbw::get_generic_value(unit, ValueId::TempoChange)) {
+				bonusAmount = 4*32;
 			}
 		}
 		default:

@@ -44,20 +44,19 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	const char* meleeText = "Melee";
 
 	//grab weapon details from weapon dat
-	const u8 damageFactor = getDamageFactorForTooltip(weaponId, unit);
-	const u8 upgradeLevel = scbw::getUpgradeLevel(unit->playerId, weapons_dat::DamageUpgrade[weaponId]);
-	const u16 baseDamage = weapons_dat::DamageAmount[weaponId] * damageFactor;
-	const u16 bonusDamage = weapons_dat::DamageBonus[weaponId] * damageFactor * upgradeLevel;
-	const u8 damageType = weapons_dat::DamageType[weaponId];
+	u8 damageFactor = getDamageFactorForTooltip(weaponId, unit);
+	u8 upgradeLevel = scbw::getUpgradeLevel(unit->playerId, weapons_dat::DamageUpgrade[weaponId]);
+	u16 baseDamage = weapons_dat::DamageAmount[weaponId] * damageFactor;
+	u16 bonusDamage = weapons_dat::DamageBonus[weaponId] * damageFactor * upgradeLevel;
+	u8 damageType = weapons_dat::DamageType[weaponId];
 	//calculate max range for weapon
-	const u32 range = weapons_dat::MaxRange[weaponId] / 32;
+	u32 range = weapons_dat::MaxRange[weaponId] / 32;
 	u32 bonusRange = 0;
 
 	//find range bonus for weapon
 	switch (weaponId) {
 
-	case UnitId::ZergBasilisk:
-	{
+	case UnitId::ZergBasilisk:	{
 		ActiveTile tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
 		if (tile.hasCreep || tile.creepReceeding) {
 			bonusRange = 2;
@@ -66,8 +65,16 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	}
 	default:
 		bonusRange = 0;
-
+		break;
 	}
+
+	/*if (unit->id == UnitId::TerranMadrigal
+	&& scbw::get_generic_value(unit, ValueId::TempoChange)) {
+		damageFactor = getDamageFactorForTooltip(WeaponId::ImperiosoMissiles, unit);
+		baseDamage = weapons_dat::DamageAmount[WeaponId::ImperiosoMissiles] * damageFactor;
+		bonusDamage = weapons_dat::DamageBonus[WeaponId::ImperiosoMissiles] * damageFactor * upgradeLevel;
+		range = weapons_dat::MaxRange[WeaponId::ImperiosoMissiles] / 32;
+	}*/
 
 	//grab the string for the damage type of the weapon
 	switch (damageType) {
@@ -252,7 +259,7 @@ namespace hooks {
 		if (iconUnitId == UnitId::spider_mine)
 			return getDamageTooltipString(WeaponId::SpiderMines, unit, 794);		//"Spider Mines"
 		
-		if(iconUnitId==UnitId::LobotomyMine){
+		if (iconUnitId == UnitId::LobotomyMine){
 			return getDamageTooltipString(WeaponId::LobotomyMine, unit, 794);
 		}
 		

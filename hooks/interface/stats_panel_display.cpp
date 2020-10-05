@@ -113,6 +113,11 @@ namespace hooks {
 
 				u32 groundWeapon;													//[EBP-05]
 				u8 groundWeaponMainUnit = units_dat::GroundWeapon[activeUnit->id];	//BL
+				if (activeUnit->id == UnitId::TerranMadrigal
+					&& scbw::get_generic_value(activeUnit, ValueId::TempoChange)
+					&& groundWeaponMainUnit == WeaponId::FuriaMissiles) {
+					groundWeaponMainUnit = WeaponId::ImperiosoMissiles;
+				}
 				u8 groundWeaponSubunit;												//CL
 
 				if (groundWeaponMainUnit == WeaponId::None) {
