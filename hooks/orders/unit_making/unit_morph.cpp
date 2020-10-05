@@ -336,12 +336,12 @@ namespace hooks {
 		}
 
 		if (unit->id == UnitId::ZergZergling) {
-			if (morphUnitId == UnitId::ZergVorvaling) {
+			if (morphUnitId == UnitId::ZergVorvaling || morphUnitId == UnitId::ZergNathrokor) {
 				return true;
 			}
 		}
 		if (unit->id == UnitId::ZergUltralisk) {
-			if (morphUnitId == UnitId::ZergKeskathalor || morphUnitId==UnitId::ZergAlkajelisk) {
+			if (morphUnitId == UnitId::ZergKeskathalor || morphUnitId == UnitId::ZergAlkajelisk) {
 				return true;
 			}
 

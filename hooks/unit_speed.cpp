@@ -151,19 +151,16 @@ namespace hooks {
 			speed += speed / 2;
 		}
 
-	#ifdef HYDRA
 		// Leg Enhancements upgrade (Dark Templar): gains 120% movespeed
 		else if (unit->id == UnitId::ProtossDarkTemplar) {
 			speed += speed / 5;
 		}
-	#endif
 
 		// Activate Medstims ability: reduce movespeed
 		else if (unit->id == UnitId::TerranShaman) {
 			if (unit->_padding_0x132 & 0x8 || scbw::get_generic_value(unit,ValueId::NaniteField)) {
 				speed /= 2;
 			}
-
 		}
 
 		// Safety Off ability: reduce movespeed
@@ -180,9 +177,13 @@ namespace hooks {
 				speed = (double)speed * ((10.0 + stacks) / 10.0);
 			}
 		}
-		else if (unit->id == UnitId::TerranGorgon && scbw::get_generic_timer(unit,ValueId::GorgonTimer)>0) {
+
+		// Nathrokor Adrenal Frenzy behavior: increase movespeed of all nearby organic allies after kill
+		else if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0) {
 			speed += speed / 2;
+//			scbw::printFormattedText("SPEED | Unit id: %d", (u32)unit->id);
 		}
+
 		// Collective Integration passive: gains increased movespeed based on tech level
 		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth || unit->id==UnitId::ZergOthstoleth) {
 			u32 irisCountSpeed = unitCountTable[UnitId::ZergOverlordIris].player[unit->playerId];
@@ -299,16 +300,20 @@ namespace hooks {
 			}
 		}
 
-		// ???
+		// Simulacrum Autovitality behavior
 		else if (unit->id == UnitId::ProtossSimulacrum) {
 			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10)*1.5;
 			if (stacks > 0) {
 				acceleration = (double)acceleration * ((10.0 + stacks) / 10.0);
 			}
 		}
-		else if (unit->id == UnitId::TerranGorgon && scbw::get_generic_timer(unit, ValueId::GorgonTimer) > 0) {
+
+		// Nathrokor Adrenal Frenzy behavior: increase acceleration of all nearby organic allies after kill
+		else if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0) {
 			acceleration += acceleration / 2;
+//			scbw::printFormattedText("ACCEL | Unit id: %d", (u32)unit->id);
 		}
+
 		// Khaydarin Eclipse ability: slow Exemplar by 75%
 		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
 			acceleration = acceleration / 4;

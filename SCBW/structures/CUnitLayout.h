@@ -225,6 +225,7 @@ namespace ValueId {
 		PhobosMissilePos							= 79,
 		CentaurMissilePos							= 80,
 		GorgonTimer									= 81,
+		NathrokorTimer								= 82,
 
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,

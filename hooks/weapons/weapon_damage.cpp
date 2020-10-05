@@ -279,6 +279,27 @@ public:
 	}
 };
 
+class nathrokorProc : public scbw::UnitFinderCallbackProcInterface {
+private:
+	int _playerId = 0;
+
+public:
+	nathrokorProc(int playerId) {
+		_playerId = playerId;
+	}
+
+	void proc(CUnit* unit) {
+		if (unit == NULL
+		|| (_playerId != unit->playerId && !scbw::isAlliedTo(_playerId, unit->playerId))
+		|| !(units_dat::BaseProperty[unit->id] & UnitProperty::Organic)) {
+			return;
+		}
+		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::NathrokorTimer, (4 * 24) + 1, 0);
+		unit->updateSpeed();
+//		scbw::printFormattedText("Unit id: %d",(u32)unit->id);
+	}
+};
+
 namespace hooks {
 	/// Hooks into the CUnit::damageWith() function.
 	void weaponDamageHook(s32		damage,
@@ -675,18 +696,20 @@ namespace hooks {
 
 				if (damage >= target->hitPoints) { // <- keep this as hitPoints, because the damage is already calculated to include armor, shields and damage factor calculations
 
-
-					// Kaiser Rampage - Ultralisk upgrade
+					// Kaiser Rampage - Ultralisk behavior
 					if (attacker->id == UnitId::ZergUltralisk) {
 						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::KaiserRampage, 1 + (2 * 24), 0);
 						attacker->updateSpeed();
 					}
-					/*if (attacker->id == UnitId::TerranGorgon) {
-						scbw::set_generic_timer(attacker, ValueId::GorgonTimer, (2 * 24) + 1);
-						attacker->updateSpeed();
-					}*/
 
-					// Incubators - Broodling upgrade
+					// Adrenal Frenzy - Nathrokor behavior
+					if (attacker->id == UnitId::ZergNathrokor) {
+						int player = attacker->playerId;
+						const int range = 48;
+						scbw::UnitFinder(attacker->getX() - range, attacker->getY() - range, attacker->getX() + range, attacker->getY() + range).forEach(nathrokorProc(player));
+					}
+
+					// Incubators - Broodling behavior
 					int supplyCount = scbw::getBroodlingCountFromSupply(target);
 					if (attacker->id == UnitId::ZergBroodling) {
 						scbw::spawnBroodlings(supplyCount, attacker->playerId, target->position.x, target->position.y, 720, scbw::getSourceQueens(attacker)[0]);

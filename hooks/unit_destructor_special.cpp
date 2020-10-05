@@ -259,7 +259,7 @@ void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords) {
 void unitDestructorSpecialHook(CUnit* unit) {
 
 	Globals.remove_unit_from_pariah_table(unit,false);
-	if (unit->id == UnitId::corsair) {
+	if (unit->id == UnitId::ProtossCorsair) {
 		auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
 		if (web != NULL) {
 			web->removeTimer = 5 * 24;
