@@ -30,6 +30,30 @@ public:
 	}
 };
 
+class madrigalFuriaMatch : public scbw::UnitFinderCallbackMatchInterface {
+private:
+	CUnit* madrigal;
+public:
+	madrigalFuriaMatch(CUnit* madrigal)
+		: madrigal(madrigal) {}
+
+	bool match(CUnit* unit) {
+		if (unit == madrigal) {
+			return false;
+		}
+		if (unit == madrigal->orderTarget.unit) {
+			return false;
+		}
+		if (scbw::isAlliedTo(madrigal->playerId, unit->playerId)) {
+			return false;
+		}
+		if (!madrigal->canAttackTarget(unit)) {
+			return false;
+		}
+		return true;
+	}
+};
+
 class empyreanMissileMatch : public scbw::UnitFinderCallbackMatchInterface {
 private:
 	CBullet* missile;
@@ -187,7 +211,7 @@ namespace hooks {
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SpineY, targ_y, 0);
 			}
 			if (good) {
-				if (weaponId==WeaponId::FuriaMissiles && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TempoChange,0)==1) {
+				if (weaponId == WeaponId::FuriaMissiles && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TempoChange,0)==1) {
 					weaponId = WeaponId::ImperiosoMissiles;
 				}
 				if (weaponId == WeaponId::PowerSiphon) {
@@ -281,10 +305,31 @@ namespace hooks {
 					if (unit->id == UnitId::TerranMadcap) {
 						scbw::add_generic_value(unit, ValueId::MadcapStacks, 1);
 					}
-
 					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
-				}
-				
+				}				
+			}
+
+			// Madrigal Furia Missiles
+			if (weaponId == WeaponId::FuriaMissiles && unit->orderTarget.unit != NULL) {
+				scbw::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+				auto old = unit->orderTarget.unit;
+				auto finderMatch = madrigalFuriaMatch(unit);
+				auto range = weapons_dat::MaxRange[weaponId];
+				auto count = 0;
+				scbw::UnitFinder unitsInSplash(unit->getX() - range, unit->getY() - range, unit->getX() + range, unit->getY() + range);
+				for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
+					CUnit* target = unitsInSplash.getUnit(i);
+					if (finderMatch.match(target)) {
+						count++;
+						if (target != NULL) {
+							unit->orderTarget.unit = target;
+							auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
+								target->getX(), target->getY());
+							scbw::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
+						}
+					}
+				};
+				unit->orderTarget.unit = old;
 			}
 
 			// Tendril Amitosis
