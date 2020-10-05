@@ -30,6 +30,12 @@ public:
 	CUnit* source;
 	CUnit* target;
 };
+class apostleAgent {
+public:
+	Point32 position;
+	u32 timer;
+	u32 unitId;
+};
 
 class globals {
 	std::string output;
@@ -44,6 +50,7 @@ public:
 	u8 flingy_init_player_id;
 	std::vector<salamanderImpact> salamanderImpacts;
 	std::vector<pariahHit> pariahHits;
+	std::vector<apostleAgent> apostleAgents;
 	//
 
 	SaveState aise_save();
@@ -62,6 +69,7 @@ public:
 	bool was_hit_by_pariah(CUnit* source, CUnit* target);
 	void register_pariah_hit(CUnit* source, CUnit* target);
 	void createSalamanderFire(int x, int y, u8 player, u8 elevation, bool addImpactValue);
+//	void initLazarusAgent(int x, int y, u8 player, u32 unitId, CUnit* unit);
 };
 
 void injectGlobalsHooks();
