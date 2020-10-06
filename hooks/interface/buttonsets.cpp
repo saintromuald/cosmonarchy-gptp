@@ -867,7 +867,7 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								if ((*activePortraitUnit)->id == UnitId::TerranApostle &&  //Apostle Blood Tithe passive
-									current_button->iconID == IconId::Heal)
+									current_button->iconID == IconId::Optical_Flare)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}

@@ -310,7 +310,13 @@ public:
 		if (!(scbw::isAlliedTo(attacker->playerId, unit->playerId))) {
 			return;
 		}
-		u32 value = (units_dat::MaxHitPoints[target->id] * 0.10);
+		u32 value = 0;
+		if (units_dat::ShieldsEnabled[target->id]) {
+			value = (units_dat::MaxHitPoints[target->id] + (units_dat::MaxShieldPoints[target->id] * 256)) * 0.10;
+		}
+		else {
+			value = (units_dat::MaxHitPoints[target->id] * 0.10);
+		}
 		if (unit->hitPoints + value >= (u32)units_dat::MaxHitPoints[unit->id])
 			unit->hitPoints = units_dat::MaxHitPoints[unit->id];
 		else
