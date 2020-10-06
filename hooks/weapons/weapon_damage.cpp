@@ -671,8 +671,8 @@ if (nearest != NULL) {
 			// Stellar Enforcement - Magister behavior
 			if (attacker != NULL) {
 				if (attacker->id == UnitId::ProtossMagister
-				&&	!(scbw::get_generic_value(target, ValueId::MagisterRange))) {
-					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::MagisterRange, 1, 0);
+				&&	!(scbw::get_generic_value(target, ValueId::StellarEnforcement))) {
+					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::StellarEnforcement, 1, 0);
 				}
 			}
 

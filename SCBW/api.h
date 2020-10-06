@@ -358,7 +358,7 @@ int getBroodlingCountFromSupply(CUnit* unit);
 void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, CUnit* attacker = NULL);
 CUnit** getSourceQueens(CUnit* unit);
 
-bool canUseCliffAdventage(CUnit* unit, u8 weapon = NULL);
+bool canUseCliffAdvantage(CUnit* unit, u8 weapon = NULL);
 s32 getCliffAdvantage(CUnit* unit, u8 weapon = NULL);
 void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType);
 bool isSlowed(CUnit* unit);

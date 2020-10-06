@@ -39,7 +39,7 @@ u8 getSeekRangeHook(CUnit* unit) {
 			bonusAmount += 0;
 	}
 
-	// Robotic Sapience - Barghest passive
+	// Robotic Sapience - Barghest behavior
 	if (scbw::get_generic_value(unit, ValueId::RoboticSapience)) {
 		u32 stacks = scbw::get_generic_value(unit, ValueId::RoboticSapience);
 		if (stacks >= 10) {
@@ -50,13 +50,22 @@ u8 getSeekRangeHook(CUnit* unit) {
 		}
 	}
 
+	// Stellar Enforcement - Magister behavior
+	if (unit->orderTarget.unit != NULL
+	&& scbw::get_generic_value(unit->orderTarget.unit, ValueId::StellarEnforcement)) {
+		bonusAmount += 2;
+	}
+
+	// Ignore bonus range for melee units
 	if (weapons_dat::MaxRange[unit->getGroundWeapon()] <= 32) {
 		bonusAmount = 0;
 	}
 
+	// Compile variable for use in height advantage calculations
 	seekRange = units_dat::SeekRange[unitId] + bonusAmount;
 
-	if (scbw::canUseCliffAdventage(unit)) {
+	// Height advantage
+	if (scbw::canUseCliffAdvantage(unit)) {
 		seekRange += 2;
 		seekRange -= (2 - std::max(scbw::getCliffAdvantage(unit), 0)); // ideally we would pass weapon id
 	}
@@ -103,7 +112,7 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 			break;
 	}
 
-	// Robotic Sapience - Barghest passive
+	// Robotic Sapience - Barghest behavior
 	if (scbw::get_generic_value(unit, ValueId::RoboticSapience)) {
 		u32 stacks = scbw::get_generic_value(unit, ValueId::RoboticSapience);
 		if (stacks >= 10) {
@@ -113,12 +122,20 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 			bonusAmount += (stacks * 16);
 		}
 	}
+	
+	// Stellar Enforcement - Magister behavior
+	if (unit->orderTarget.unit != NULL
+	&&	scbw::get_generic_value(unit->orderTarget.unit, ValueId::StellarEnforcement)) {
+		bonusAmount += 64;
+	}
 
-	if (scbw::canUseCliffAdventage(unit, weaponId)) {
+	// Height advantage
+	if (scbw::canUseCliffAdvantage(unit, weaponId)) {
 		bonusAmount += 128;
 		bonusAmount -= (2 - std::max(scbw::getCliffAdvantage(unit), 0)) * 64;
 	}
 
+	// Ignore bonus range for melee units
 	if (weapons_dat::MaxRange[unit->getGroundWeapon()] <= 32) {
 		bonusAmount = 0;
 	}

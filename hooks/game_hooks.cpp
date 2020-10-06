@@ -788,6 +788,12 @@ namespace hooks {
 					unit->playIscriptAnim(IscriptAnimation::Unused1);
 				}
 
+				// Basilisk console refresh for tooltip
+				if (unit->id == UnitId::ZergBasilisk
+				&&	unit == playersSelections->unit[*ACTIVE_NATION_ID][0]) {
+					scbw::refreshConsole();
+				}
+
 				// Centaur - Sunchaser Missiles animation
 				if (unit->id == UnitId::TerranCentaur && unit->orderSignal & 0x20) {
 					unit->orderSignal &= ~0x20;

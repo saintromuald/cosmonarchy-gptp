@@ -227,7 +227,7 @@ namespace ValueId {
 		LazarusAgent								= 81,
 		NathrokorTimer								= 82,
 		RoboticSapience								= 83,
-		MagisterRange								= 84,
+		StellarEnforcement							= 84,
 
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,

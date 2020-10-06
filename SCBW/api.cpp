@@ -1377,7 +1377,7 @@ CUnit** getSourceQueens(CUnit* unit) {
 	return queens;
 }
 
-bool canUseCliffAdventage(CUnit* unit, u8 weapon) {
+bool canUseCliffAdvantage(CUnit* unit, u8 weapon) {
 	if (unit == NULL)
 		return false;
 	return (!(unit->status & UnitStatus::InAir)
@@ -1388,7 +1388,7 @@ bool canUseCliffAdventage(CUnit* unit, u8 weapon) {
 s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
 	if (unit == NULL)
 		return 0;
-	if (!canUseCliffAdventage(unit, weapon))
+	if (!canUseCliffAdvantage(unit, weapon))
 		return 0;
 	u32 cliffAdvantage = 0;
 	Point16 targetPoint;

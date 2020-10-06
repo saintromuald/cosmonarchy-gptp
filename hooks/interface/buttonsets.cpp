@@ -990,6 +990,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossArchon &&  //Archon Aegis passive
+									current_button->iconID == IconId::RechargeShields)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossSimulacrum &&  //Simulacrum Autovitality passive : enabled 
 									current_button->iconID == IconId::ApialSensors)
 								{
@@ -1010,8 +1015,8 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossArchon &&  //Archon Aegis passive
-									current_button->iconID == IconId::RechargeShields)
+								if ((*activePortraitUnit)->id == UnitId::ProtossMagister &&  //Magister Stellar Enforcement passive
+									current_button->iconID == IconId::PhaseDisruptorCannon)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
