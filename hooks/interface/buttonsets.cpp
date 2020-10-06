@@ -995,6 +995,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossBarghest &&  //Barghest Robotic Sapience passive : enabled 
+									current_button->iconID == IconId::PhotonCannon_Weapon)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossPariah &&  //Pariah Heretical Bedlam passive : enabled 
 									current_button->iconID == IconId::PhaseDisruptor)
 								{

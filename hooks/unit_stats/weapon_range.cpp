@@ -19,26 +19,41 @@ u8 getSeekRangeHook(CUnit* unit) {
 		case UnitId::ProtossExemplar:
 		{
 			if (scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
-				bonusAmount = 6;
+				bonusAmount += 6;
 			}
 		}
 		case UnitId::ZergBasilisk:
 		{
 			ActiveTile tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
 			if (tile.hasCreep || tile.creepReceeding) {
-				bonusAmount = 2;
+				bonusAmount += 2;
 			}
 			break;
 		}
 		case UnitId::TerranMadrigal: {
 			if (scbw::get_generic_value(unit, ValueId::TempoChange)) {
-				bonusAmount = 4;
+				bonusAmount += 4;
 			}
 		}
 		default:
-			bonusAmount = 0;
-
+			bonusAmount += 0;
 	}
+
+	// Robotic Sapience - Barghest passive
+	if (scbw::get_generic_value(unit, ValueId::RoboticSapience)) {
+		u32 stacks = scbw::get_generic_value(unit, ValueId::RoboticSapience);
+		if (stacks >= 10) {
+			bonusAmount += 5;
+		}
+		else {
+			bonusAmount += stacks * 0.5;
+		}
+	}
+
+	if (weapons_dat::MaxRange[unit->getGroundWeapon()] <= 32) {
+		bonusAmount = 0;
+	}
+
 	seekRange = units_dat::SeekRange[unitId] + bonusAmount;
 
 	if (scbw::canUseCliffAdventage(unit)) {
@@ -63,11 +78,10 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 
 
 	//Give bonus range to units inside Bunkers
-	if (unit->status & UnitStatus::InBuilding)
+	if (unit->status & UnitStatus::InBuilding) {
 		bonusAmount = 64;
-
+	}
 	switch (unit->id) {
-
 		case UnitId::ZergBasilisk:
 			ActiveTile tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
 			if (tile.hasCreep || tile.creepReceeding) {
@@ -77,21 +91,36 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 		case UnitId::ProtossExemplar:
 		{
 			if (scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
-				bonusAmount = 6*32;
+				bonusAmount += 6*32;
 			}
 		}
 		case UnitId::TerranMadrigal: {
 			if (scbw::get_generic_value(unit, ValueId::TempoChange)) {
-				bonusAmount = 4*32;
+				bonusAmount += 4*32;
 			}
 		}
 		default:
 			break;
 	}
 
+	// Robotic Sapience - Barghest passive
+	if (scbw::get_generic_value(unit, ValueId::RoboticSapience)) {
+		u32 stacks = scbw::get_generic_value(unit, ValueId::RoboticSapience);
+		if (stacks >= 10) {
+			bonusAmount += 5 * 32;
+		}
+		else {
+			bonusAmount += (stacks * 16);
+		}
+	}
+
 	if (scbw::canUseCliffAdventage(unit, weaponId)) {
 		bonusAmount += 128;
 		bonusAmount -= (2 - std::max(scbw::getCliffAdvantage(unit), 0)) * 64;
+	}
+
+	if (weapons_dat::MaxRange[unit->getGroundWeapon()] <= 32) {
+		bonusAmount = 0;
 	}
 
 	return weapons_dat::MaxRange[weaponId] + bonusAmount;

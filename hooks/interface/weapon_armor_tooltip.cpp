@@ -54,27 +54,28 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	u32 bonusRange = 0;
 
 	//find range bonus for weapon
+	if (scbw::get_generic_value(unit, ValueId::RoboticSapience)) {
+		u32 stacks = scbw::get_generic_value(unit, ValueId::RoboticSapience);
+		if (stacks >= 10) {
+			bonusRange += 5;
+		}
+		else {
+			bonusRange += stacks * 0.5;
+		}
+	}
 	switch (weaponId) {
 
 	case UnitId::ZergBasilisk:	{
 		ActiveTile tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
 		if (tile.hasCreep || tile.creepReceeding) {
-			bonusRange = 2;
+			bonusRange += 2;
 		}
 		break;
 	}
 	default:
-		bonusRange = 0;
+		bonusRange += 0;
 		break;
 	}
-
-	/*if (unit->id == UnitId::TerranMadrigal
-	&& scbw::get_generic_value(unit, ValueId::TempoChange)) {
-		damageFactor = getDamageFactorForTooltip(WeaponId::ImperiosoMissiles, unit);
-		baseDamage = weapons_dat::DamageAmount[WeaponId::ImperiosoMissiles] * damageFactor;
-		bonusDamage = weapons_dat::DamageBonus[WeaponId::ImperiosoMissiles] * damageFactor * upgradeLevel;
-		range = weapons_dat::MaxRange[WeaponId::ImperiosoMissiles] / 32;
-	}*/
 
 	//grab the string for the damage type of the weapon
 	switch (damageType) {

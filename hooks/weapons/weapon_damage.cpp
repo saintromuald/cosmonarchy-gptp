@@ -570,16 +570,16 @@ namespace hooks {
 							scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::LastOrdersInit, 1, 0);
 							lastordersProc2 Orders = lastordersProc2(target);
 							scbw::UnitFinder unitFinder(target->getX() - 288,
-								target->getY() - 288,
-								target->getX() + 288,
-								target->getY() + 288);
-							CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
-							if (nearest != NULL) {
-								damage = 0;
-								target->setHp(units_dat::MaxHitPoints[target->id]/2);
-								target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
-								target->status |= UnitStatus::CanNotReceiveOrders;
-							}
+target->getY() - 288,
+target->getX() + 288,
+target->getY() + 288);
+CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
+if (nearest != NULL) {
+	damage = 0;
+	target->setHp(units_dat::MaxHitPoints[target->id] / 2);
+	target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
+	target->status |= UnitStatus::CanNotReceiveOrders;
+}
 						}
 					}
 
@@ -650,7 +650,7 @@ namespace hooks {
 					}
 				}
 			}
-			
+
 			// Tendril Amitosis - Sunken Colony upgrade
 			/*if (weaponId == WeaponId::SubterraneanTentacle && target != NULL) {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::Amitosis, 0) == 1) {
@@ -659,12 +659,20 @@ namespace hooks {
 				}
 			}*/
 
-			// Essense Drain - Gorgoleth Energy Steal
+			// Essence Drain - Gorgoleth Energy Steal
 			if (attacker != NULL) {
 				if (attacker->id == UnitId::ZergGorgoleth) {
 					u16 energy = std::min(target->energy, (u16)(damage + shieldReduceAmount));
 					target->energy -= energy;
 					attacker->energy += energy;
+				}
+			}
+
+			// Stellar Enforcement - Magister behavior
+			if (attacker != NULL) {
+				if (attacker->id == UnitId::ProtossMagister
+				&&	!(scbw::get_generic_value(target, ValueId::MagisterRange))) {
+					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::MagisterRange, 1, 0);
 				}
 			}
 

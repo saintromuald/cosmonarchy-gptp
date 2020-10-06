@@ -366,7 +366,7 @@ public:
 	}
 };
 
-class treasuryProc : public scbw::UnitFinderCallbackProcInterface 	{
+class treasuryProc : public scbw::UnitFinderCallbackProcInterface {
 	u8 _playerId;
 
 public:
@@ -868,7 +868,6 @@ namespace hooks {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::NathrokorTimer, 0, 0);
 					unit->updateSpeed();
 				}
-
 			}
 			scbw::setInGameLoopState(false);
 		}
