@@ -169,7 +169,7 @@ enum Enum {
 	Skyfall										= 126,			// Ability targeting - Paladin
 	EnergyDecay									= 127,			// Ability targeting - Savant
 	IonCannon									= 129,			// Ion Cannon weapon
-	CyclopsDetonation							= 116,			// Cyclops behavior damage
+	FragmentaryShells							= 116,			// Cyclops behavior damage
 
 	// Protoss \\
 	

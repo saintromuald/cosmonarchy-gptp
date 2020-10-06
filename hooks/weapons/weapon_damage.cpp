@@ -542,7 +542,6 @@ namespace hooks {
 			}
 
 			if (attacker != NULL && target != NULL) {
-			#ifdef HYDRA
 				if (attacker->id == UnitId::ProtossDarkTemplar && attacker->playerId) {
 					bool silent_kill = false;
 					if (damage >= target->hitPoints) {
@@ -554,7 +553,6 @@ namespace hooks {
 						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::DarkTemplarTimer, 24 + 1, 0);
 					}
 				}
-			#endif
 
 				if (weaponId == WeaponId::NuclearMissile && target->hitPoints > damage) {
 					if (attacker != NULL && irradiateTarget(target)) {
@@ -716,11 +714,19 @@ namespace hooks {
 					}
 
 					// Ecclesiast - Astral Blessing proc
-					int stacks = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0);
-					int player = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastPlayer, 0);
-					const int range = 64;
-					scbw::UnitFinder(target->getX() - range, target->getY() - range,
-						target->getX() + range, target->getY() + range).forEach(ecclesiastProc(stacks, player));
+					if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0)) {
+						int stacks = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0);
+						int player = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastPlayer, 0);
+						const int range = 64;
+						scbw::UnitFinder(target->getX() - range, target->getY() - range, target->getX() + range, target->getY() + range).forEach(ecclesiastProc(stacks, player));
+					}
+
+					// Cyclops - Flak Cannon passive
+					if (attacker->id == UnitId::TerranCyclops) {
+						auto newAngle = scbw::getAngle(attacker->getX(), attacker->getY(), target->getX(), target->getY());
+						scbw::createBullet(WeaponId::FragmentaryShells, attacker, target->getX(), target->getY(), attacker->playerId, newAngle);
+					}
+
 				}
 			}
 

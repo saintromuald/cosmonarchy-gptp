@@ -876,7 +876,7 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranSouthpaw &&  //Cyclops Fragmentary Shells passive
+								if ((*activePortraitUnit)->id == UnitId::TerranCyclops &&  //Cyclops Fragmentary Shells passive
 									current_button->iconID == IconId::FragmentationGrenade)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
