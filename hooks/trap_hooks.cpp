@@ -21,21 +21,36 @@ namespace { // helpers
 }
 
 namespace hooks {
-	bool unitIsFloorTrap(int a1) { // 0047B070
-		s16 v1; // ax
-
-		v1 = *(s16*)(a1 + 100);
-		//return v1 == UnitId::Special_FloorMissileTrap || v1 == UnitId::Special_FloorGunTrap;
-        return 0;
+	bool unitIsFloorTrap(CUnit* unit) { // 0047B070
+		u16 id = unit->id;
+        /*switch (id) {
+        case UnitId::Special_FloorGunTrap:
+        case UnitId::Special_FloorMissileTrap:
+            return true;
+        default:
+            return false;
+        }*/
+        return false;
 	}
-
+    bool unitIsInstallationAsset(u16 id) {
+/*      
+        //originally:
+        if (id >= UnitId::Special_FloorMissileTrap && id <= UnitId::Special_RightWallFlameTrap) {
+            return true;
+        }*/
+        if (id >= UnitId::Special_UpperLevelDoor && id <= UnitId::Special_RightPitDoor) {
+            return true;
+        }
+        return false;
+    }
     s16 disableUnit(CUnit* pUnit) { // 0047B4B0
         int unitFlags; // eax
         CImage* i; // esi
         s16 unitType; // ax
 
         unitFlags = pUnit->status;
-        if (!(unitFlags & UnitStatus::DoodadStatesThing) && !pUnit->lockdownTimer && !pUnit->stasisTimer && !pUnit->maelstromTimer) {
+        if (!(unitFlags & UnitStatus::DoodadStatesThing) && pUnit->lockdownTimer==0 && pUnit->stasisTimer==0 
+            && pUnit->maelstromTimer==0) {
             pUnit->status = unitFlags | UnitStatus::Disabled;
             for (i = pUnit->sprite->images.head; i; i = i->link.next)
                 playImageIscript(i, IscriptAnimation::AlmostBuilt);
@@ -90,11 +105,11 @@ namespace hooks {
         v2 = units_dat::BaseProperty[(u16)a1->id];
         if (v2 & UnitProperty::TwoUnitsIn1Egg) {
             incrementUnitScores(a1, -1);
-            v1->status |= 1u;
+            v1->status |= UnitStatus::Completed;
             incrementUnitScores(v1, 1);
         }
         else {
-            a1->status |= 1u;
+            a1->status |= UnitStatus::Completed;
         }
 
         incrementUnitScoresEx(1, v1, 1);
