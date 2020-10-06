@@ -449,7 +449,7 @@ namespace hooks {
 
 			s32 maxShields = (s32)(units_dat::MaxShieldPoints[unit->id]) * 256;
 			if (unit->id == UnitId::ProtossAugur) {
-				unit->shields -= std::min(7, unit->shields);
+				unit->shields -= std::min(14, unit->shields);
 			}
 			else {
 				if (unit->shields != maxShields && unit->id != UnitId::scarab) {

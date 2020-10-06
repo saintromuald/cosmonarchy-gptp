@@ -866,6 +866,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranApostle &&  //Apostle Blood Tithe passive
+									current_button->iconID == IconId::Heal)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::TerranGhost &&  //Ghost Somatic Implants passive
 									current_button->iconID == IconId::OcularImplants)
 								{

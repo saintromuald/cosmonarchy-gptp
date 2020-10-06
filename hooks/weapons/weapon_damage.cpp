@@ -197,6 +197,7 @@ public:
 		}
 	}
 };
+
 class astralaegisProc : public scbw::UnitFinderCallbackProcInterface {
 
 private:
@@ -214,7 +215,6 @@ public:
 };
 
 class lastordersProc2 : public scbw::UnitFinderCallbackMatchInterface {
-
 	CUnit* martyr;
 
 public:
@@ -298,6 +298,27 @@ public:
 		unit->updateSpeed();
 //		scbw::printFormattedText("Unit id: %d",(u32)unit->id);
 	}
+};
+
+class bloodTitheProc : public scbw::UnitFinderCallbackProcInterface {
+	CUnit* attacker;
+	CUnit* target;
+
+private:
+public:
+	void proc(CUnit* unit) {
+		if (!(scbw::isAlliedTo(attacker->playerId, unit->playerId))) {
+			return;
+		}
+		u32 value = (units_dat::MaxHitPoints[target->id] * 0.10);
+		if (unit->hitPoints + value >= (u32)units_dat::MaxHitPoints[unit->id])
+			unit->hitPoints = units_dat::MaxHitPoints[unit->id];
+		else
+			unit->hitPoints += value;
+	}
+
+	//Constructor
+	bloodTitheProc(CUnit* attacker, CUnit* target) : attacker(attacker), target(target) {}
 };
 
 namespace hooks {
@@ -559,6 +580,7 @@ namespace hooks {
 						hooks::IrradiateHit(attacker, target, attacker->playerId);
 					}
 				}
+
 				if (damage >= target->hitPoints) {
 					//relic death effect
 					//scbw::printText("Check relic");
@@ -569,20 +591,16 @@ namespace hooks {
 						if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::LastOrdersInit, 0) == 0) {
 							scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::LastOrdersInit, 1, 0);
 							lastordersProc2 Orders = lastordersProc2(target);
-							scbw::UnitFinder unitFinder(target->getX() - 288,
-target->getY() - 288,
-target->getX() + 288,
-target->getY() + 288);
-CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
-if (nearest != NULL) {
-	damage = 0;
-	target->setHp(units_dat::MaxHitPoints[target->id] / 2);
-	target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
-	target->status |= UnitStatus::CanNotReceiveOrders;
+							scbw::UnitFinder unitFinder(target->getX() - 288, target->getY() - 288, target->getX() + 288, target->getY() + 288);
+							CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
+							if (nearest != NULL) {
+								damage = 0;
+								target->setHp(units_dat::MaxHitPoints[target->id] / 2);
+								target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
+								target->status |= UnitStatus::CanNotReceiveOrders;
 }
 						}
 					}
-
 
 					if (units_dat::BaseProperty[attacker->id] & UnitProperty::Hero &&
 						scbw::get_aise_value(attacker, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1
@@ -673,6 +691,17 @@ if (nearest != NULL) {
 				if (attacker->id == UnitId::ProtossMagister
 				&&	!(scbw::get_generic_value(target, ValueId::StellarEnforcement))) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::StellarEnforcement, 1, 0);
+				}
+			}
+
+			// Blood Tithe - Apostle behavior
+			if (attacker != NULL) {
+				if (attacker->id == UnitId::TerranApostle
+//				&& scbw::getDistanceFast(attacker->position.x, attacker->position.y, target->position.x, target->position.y) >= 160
+				) {
+					u32 range = 3 * 32;
+					scbw::UnitFinder unitFinder(target->getX() - range, target->getY() - range, target->getX() + range, target->getY() + range);
+					unitFinder.forEach(bloodTitheProc(attacker, target));
 				}
 			}
 
