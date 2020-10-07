@@ -87,6 +87,6 @@ namespace hooks {
 void injectWeaponFireHooks() {
 	jmpPatch(fireWeaponWrapper, Func_FireUnitWeapon, 0);
 	jmpPatch(progressBulletFlight_Wrapper, 0x0048B3B0, 3);
-	jmpPatch(bulletBehaviour_Bounce_Wrapper, 0x0048B2D0, 2);
+	jmpPatch(bulletBehaviour_Bounce_Wrapper, 0x0048B2D0, 0);
 	}
 } //hooks
