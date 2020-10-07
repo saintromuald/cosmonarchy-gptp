@@ -34,7 +34,9 @@ class gladiusBullet {
 public:
 	CBullet* bullet;
 	std::vector<CUnit*> already_hit;
+	gladiusBullet(CBullet* bullet,std::vector<CUnit*> already_hit): bullet(bullet),already_hit(already_hit){}
 };
+
 class apostleAgent {
 public:
 	Point32 position;

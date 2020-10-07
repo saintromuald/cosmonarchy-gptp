@@ -159,9 +159,7 @@ void globals::add_gladius_hit(CBullet* bullet, CUnit* target) {
 			return;
 		}
 	}
-	gladiusBullet gb;
-	gb.bullet = bullet;
-	gb.already_hit = { target };
+	gladiusBullet gb(bullet, { target });
 	gladiusBullets.push_back(gb);
 
 }
