@@ -30,13 +30,18 @@ public:
 	CUnit* source;
 	CUnit* target;
 };
+class gladiusBullet {
+public:
+	CBullet* bullet;
+	std::vector<CUnit*> already_hit;
+};
 class apostleAgent {
 public:
 	Point32 position;
 	u32 timer;
 	u32 unitId;
+	u8 playerId;
 };
-
 class globals {
 	std::string output;
 public:
@@ -50,8 +55,8 @@ public:
 	u8 flingy_init_player_id;
 	std::vector<salamanderImpact> salamanderImpacts;
 	std::vector<pariahHit> pariahHits;
+	std::vector<gladiusBullet> gladiusBullets;
 	std::vector<apostleAgent> apostleAgents;
-	//
 
 	SaveState aise_save();
 	void aise_load(const char* ptr, u32 len);
@@ -69,6 +74,8 @@ public:
 	bool was_hit_by_pariah(CUnit* source, CUnit* target);
 	void register_pariah_hit(CUnit* source, CUnit* target);
 	void createSalamanderFire(int x, int y, u8 player, u8 elevation, bool addImpactValue);
+	bool was_already_hit_by_gladius_bullet(CBullet* bullet, CUnit* target);
+	void add_gladius_hit(CBullet* bullet, CUnit* target);
 //	void initLazarusAgent(int x, int y, u8 player, u32 unitId, CUnit* unit);
 };
 

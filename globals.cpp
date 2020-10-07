@@ -139,6 +139,32 @@ void globals::register_pariah_hit(CUnit* source, CUnit* target){
 	pariahHits.push_back(hit);
 }
 
+
+bool globals::was_already_hit_by_gladius_bullet(CBullet* bullet, CUnit* target) {
+	for (auto a : gladiusBullets) {
+		if (bullet == a.bullet) {
+			for (auto b : a.already_hit) {
+				if (b == target) {
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+void globals::add_gladius_hit(CBullet* bullet, CUnit* target) {
+	for (auto a : gladiusBullets) {
+		if (a.bullet == bullet) {
+			a.already_hit.push_back(target);
+			return;
+		}
+	}
+	gladiusBullet gb;
+	gb.bullet = bullet;
+	gb.already_hit = { target };
+	gladiusBullets.push_back(gb);
+
+}
 void globals::createSalamanderFire(int x, int y, u8 player,u8 elevationLevel, bool addImpactValue) {
 	if (addImpactValue) {
 		for (auto a : salamanderImpacts) {
