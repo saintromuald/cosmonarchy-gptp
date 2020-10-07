@@ -20,66 +20,43 @@ namespace hooks {
 /// Checks whether the unit can attack from inside a bunker.
 void unitAttackFromInsideBunkerHook(CUnit* unit) {
 
-	if (
-			unit->id == UnitId::TerranMarine
-		||	unit->id == UnitId::Hero_JimRaynorMarine
-		||	unit->id == UnitId::TerranGhost
-		||	unit->id == UnitId::Hero_SarahKerrigan
-		||	unit->id == UnitId::Hero_AlexeiStukov
-		||	unit->id == UnitId::Hero_SamirDuran
-		||	unit->id == UnitId::Hero_InfestedDuran
+	if (	unit->id == UnitId::TerranMarine
 		||	unit->id == UnitId::TerranFirebat
-		||	unit->id == UnitId::Hero_GuiMontag
 		||	unit->id == UnitId::TerranCyprian
+		||	unit->id == UnitId::TerranMadcap
+		||	unit->id == UnitId::TerranApostle
+		||	unit->id == UnitId::TerranGhost
 		||	unit->id == UnitId::TerranSavant
+		||	unit->id == UnitId::ProtossEcclesiast
 		||	unit->id == UnitId::ZergHydralisk
 		||	unit->id == UnitId::ZergBasilisk
 //		||	unit->id == UnitId::InfestedTemplar
 //		||	unit->id == UnitId::ChampionTemplar
-	)
-	{
+	) {
 
 		Bool32 resultApplyCooldown;
-
 		unit->status |= UnitStatus::HoldingPosition;
-
 		if(unit->subunit != NULL)
 			(unit->subunit)->status |= UnitStatus::HoldingPosition;
-
 		resultApplyCooldown = attackApplyCooldown(unit);
-
 		if(resultApplyCooldown != 0) {
-
-			if(
-				unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
-				unit->orderTarget.pt.y != unit->nextTargetWaypoint.y
-			)
-			{
+			if(unit->orderTarget.pt.x != unit->nextTargetWaypoint.x
+			|| unit->orderTarget.pt.y != unit->nextTargetWaypoint.y) {
 				unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
 				unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
 			}
-
 		}
 		else {
-
 			if(unit->mainOrderTimer == 0) {
-
 				unit->mainOrderTimer = 15;
-
 				unit->orderTarget.unit = findRandomAttackTarget(unit);
-
 				if(unit->orderTarget.unit != NULL)
 					unit->orderQueueTimer = 0;
-
 			} //if(unit->mainOrderTimer == 0)
-
 		} //if(resultApplyCooldown == 0)
-
 	} //if valid id
-
 }
 
-;
 //not checked against original code by UndeadStar
 void createBunkerAttackThingyHook(CUnit* unit) {
 
@@ -99,7 +76,7 @@ void createBunkerAttackThingyHook(CUnit* unit) {
 	u8 frameAngle;
 	u16 spriteId;
 
-	if (unit->id == UnitId::firebat || unit->id == UnitId::gui_montag) {
+	if (unit->id == UnitId::TerranFirebat) {
 		frameAngle = ((unit->currentDirection1 + 8) / 16 % 16) * 16;
 		spriteId = 378; //Firebat flamethrower graphics
 	}
