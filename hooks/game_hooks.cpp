@@ -624,12 +624,22 @@ namespace hooks {
 				}
 
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::EnergyDecay, 0) == 1) {
-					//
-					// add later: remove persistent overlay (set in weapon_damage)
-					//
+					u32 overlayImageId;
+					if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
+						overlayImageId = 1108;
+					else
+						if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
+							overlayImageId = 1109;
+						else
+							overlayImageId = 1107;
+					if (unit->subunit != NULL)
+						unit->subunit->sprite->removeOverlay(overlayImageId);
+					else
+						unit->sprite->removeOverlay(overlayImageId);
 				}
+
 				// Lurker - Seismic Spines
-				if (unit->id == UnitId::lurker && unit->sprite!=NULL && unit->mainOrderId!=OrderId::Die 
+				if (unit->id == UnitId::ZergLurker && unit->sprite!=NULL && unit->mainOrderId!=OrderId::Die 
 					&& scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::LurkerETA, 0) == 1) {
 					//placeholder for seismic spines
 					auto position = unit->position;//new target
