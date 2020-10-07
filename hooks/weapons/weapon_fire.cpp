@@ -150,7 +150,7 @@ public:
 };
 
 
-namespace {
+namespace { // Helper functions
 	typedef void(__stdcall* GetWeaponHitPosFunc)(CUnit* unit, s32* x, s32* y);
 	GetWeaponHitPosFunc const getWeaponHitPos = (GetWeaponHitPosFunc)0x004762C0;
 	void createBullet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
@@ -158,6 +158,11 @@ namespace {
 	// For progressBulletFlight
 	void progressBulletMovement(CBullet* a1); // 0048B250
 	void playImageIscript(CImage* a1, char a2); // 004D8470
+
+	// For bulletBehavior_Bounce
+	CBullet* changeMovePos(CBullet* a1, s32 a2, s32 a3); // 00495240
+	void progressBulletMovement(CBullet* a1); // 0048B250
+	CUnit* findNextBounceTarget(CBullet* a1); // 0048B1E0
 } //unnamed namespace
 
 
@@ -419,6 +424,48 @@ namespace hooks {
 		}
 	}
 
+	void bulletBehaviour_Bounce(CBullet* a1) { // 0048B2D0
+		CUnit* v1; // eax
+		char v2; // al
+		CUnit* v3; // ebx
+		CImage* i; // esi
+		CUnit* v5; // eax
+		CSprite* v6; // edx
+		CImage* j; // esi
+
+		v1 = a1->attackTarget.unit;
+		if (v1)	{
+			if (!(a1->hitFlags & 1))
+				changeMovePos(a1, v1->sprite->position.y, v1->sprite->position.x);
+		}
+		progressBulletMovement(a1);
+		if (a1->moveTarget.pt.x == a1->position.x && a1->moveTarget.pt.y == a1->position.y)	{
+			v2 = a1->remainingBounces - 1;
+			a1->remainingBounces = v2;
+			if (v2 && (v3 = findNextBounceTarget(a1), a1->nextBounceUnit = a1->attackTarget.unit, v3)) {
+				for (i = a1->sprite->images.head; i; i = i->link.next)
+					playImageIscript(i, IscriptAnimation::SpecialState1);
+				a1->attackTarget.unit = v3;
+			}
+			else {
+				v5 = a1->attackTarget.unit;
+				a1->behaviourTypeInternal = 5;
+				if (v5) {
+					a1->attackTarget.pt.x = v5->sprite->position.x;
+					a1->attackTarget.pt.y = v5->sprite->position.y;
+				}
+				else {
+					a1->attackTarget.unit = 0;
+				}
+				v6 = a1->sprite;
+				a1->unknown_0x4E = 0; // Was lowbyte
+				a1->someUnitType = UnitId::None;
+				for (j = v6->images.head; j; j = j->link.next)
+					playImageIscript(j, IscriptAnimation::Death);
+			}
+		}
+	}
+
 } //hooks
 
 
@@ -512,6 +559,46 @@ namespace {
 			CALL Func_playImageIscript
 			POPAD
 		}
+	}
+
+	// For bulletBehavior_Bounce
+
+	const u32 Func_changeMovePos = 0x00495240;
+	CBullet* changeMovePos(CBullet* a1, s32 a2, s32 a3) {
+		static CBullet* result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			MOV ECX, a2
+			MOV ESI, a3
+			CALL Func_changeMovePos
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_progressBulletMovement = 0x0048B250;
+	void progressBulletMovement(CBullet* a1) {
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_progressBulletMovement
+			POPAD
+		}
+	}
+
+	const u32 Func_findNextBouncetarget = 0x0048B1E0;
+	CUnit* findNextBounceTarget(CBullet* a1) {
+		static CUnit* result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_findNextBounceTarget
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 
 } //unnamed namespace
