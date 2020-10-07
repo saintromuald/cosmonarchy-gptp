@@ -52,14 +52,17 @@ public:
 	u32 extended_sfx;
 	bool tbl_extender;
 	bool unitid_extender;
-	//non-serializable data (exists only temporarily in memory in wrapper/hook flow)
-	int flingy_init_bullet_id;
-	u8 flingy_init_player_id;
+
 	std::vector<salamanderImpact> salamanderImpacts;
 	std::vector<pariahHit> pariahHits;
 	std::vector<gladiusBullet> gladiusBullets;
 	std::vector<apostleAgent> apostleAgents;
 
+
+	//non-serializable data (exists only temporarily in memory in wrapper/hook flow)
+	int flingy_init_bullet_id;
+	u8 flingy_init_player_id;
+	CBullet* bounce_bullet;
 	SaveState aise_save();
 	void aise_load(const char* ptr, u32 len);
 	globals() {

@@ -7,6 +7,7 @@
 #include "SCBW/UnitFinder.h"
 #include "MathUtils.h"
 #include "hooks/byte_operations_utils.h"
+#include "globals.h"
 //-------- Helper function declarations. Do NOT modify! ---------//
 
 
@@ -161,7 +162,7 @@ namespace { // Helper functions
 
 	// For bulletBehavior_Bounce
 	CBullet* changeMovePos(CBullet* a1, s32 a2, s32 a3); // 00495240
-	void progressBulletMovement(CBullet* a1); // 0048B250
+	void progressBulletMovement_func(CBullet* a1); // 0048B250
 	CUnit* findNextBounceTarget(CBullet* a1); // 0048B1E0
 
 	// For findNextBounceTargetProc
@@ -388,7 +389,7 @@ namespace hooks {
 		CUnit* target; // eax
 		CSprite* v4; // edx
 		CImage* i; // esi
-		progressBulletMovement(bullet);
+		progressBulletMovement_func(bullet);
 		u8 time = bullet->time_remaining--;
 		bool bEnd = false;
 		
@@ -456,10 +457,16 @@ namespace hooks {
 			if (!(a1->hitFlags & 1))
 				changeMovePos(a1, v1->sprite->position.y, v1->sprite->position.x);
 		}
-		progressBulletMovement(a1);
+		progressBulletMovement_func(a1);
 		if (a1->moveTarget.pt.x == a1->position.x && a1->moveTarget.pt.y == a1->position.y)	{
 			v2 = a1->remainingBounces - 1;
+			//
+			if (a1->weaponType == WeaponId::PlasmaFlurry) {
+				v2 = 1;
+			}
+			//
 			a1->remainingBounces = v2;
+			Globals.bounce_bullet = a1;
 			if (v2 && (v3 = findNextBounceTarget(a1), a1->nextBounceUnit = a1->attackTarget.unit, v3)) {
 				for (i = a1->sprite->images.head; i; i = i->link.next)
 					playImageIscript(i, IscriptAnimation::SpecialState1);
@@ -478,6 +485,7 @@ namespace hooks {
 				v6 = a1->sprite;
 				a1->unknown_0x4E = 0; // Was lowbyte
 				a1->someUnitType = UnitId::None;
+
 				for (j = v6->images.head; j; j = j->link.next)
 					playImageIscript(j, IscriptAnimation::Death);
 			}
@@ -499,16 +507,16 @@ namespace hooks {
 		s32 v13; // eax
 		s8 v14; // cl
 
-		pSrc = bulletBounceMissileSource;
-		nSrcStatus = bulletBounceMissileSource->status;
+		pSrc = *bulletBounceMissileSource;
+		nSrcStatus = (*bulletBounceMissileSource)->status;
 		_pIterator = pIterator;
 		if (nSrcStatus & 0x400)
 			return 0;
-		if (bulletBounceMissileSource->lockdownTimer)
+		if ((*bulletBounceMissileSource)->lockdownTimer)
 			return 0;
-		if (bulletBounceMissileSource->stasisTimer)
+		if ((*bulletBounceMissileSource)->stasisTimer)
 			return 0;
-		if (bulletBounceMissileSource->maelstromTimer)
+		if ((*bulletBounceMissileSource)->maelstromTimer)
 			return 0;
 		if (!pIterator)
 			return 0;
@@ -516,7 +524,7 @@ namespace hooks {
 			return 0;
 		if (pIterator->sprite->flags & 0x20)
 			return 0;
-		ByteOperations::SetLowByte(v4, unitCanSeeCloakedTarget(pIterator, bulletBounceMissileSource));
+		ByteOperations::SetLowByte(v4, unitCanSeeCloakedTarget(pIterator, (*bulletBounceMissileSource)));
 		if (v4)
 			return 0;
 		v5 = pSrc->subunit;
@@ -552,9 +560,26 @@ namespace hooks {
 		if (v13 & 0x300 && !((1 << pSrc->playerId) & _pIterator->visibilityStatus))
 			return 0;
 		v14 = _pIterator->playerId == 11 ? _pIterator->sprite->playerId : _pIterator->playerId;
-//		if (playerAlliance[(u8)pSrc->playerId][v14] || bulletBounceMissileTarget == _pIterator)
+		if (playerAlliance[(u8)pSrc->playerId].flags[v14] || *bulletBounceMissileTarget == _pIterator)
 			return 0;
-		return bulletBounceMissileNext != _pIterator;
+		
+		if (Globals.bounce_bullet->weaponType==WeaponId::PlasmaFlurry) {
+			if (Globals.was_already_hit_by_gladius_bullet(Globals.bounce_bullet, pIterator)) {
+				return false;
+			}
+			else {
+				if (scbw::getDistanceFast((*bulletBounceMissileNext)->getX(), (*bulletBounceMissileNext)->getY(),
+					_pIterator->getX(), _pIterator->getY()) <= 64) {
+					Globals.add_gladius_hit(Globals.bounce_bullet, pIterator);
+					return true;
+				}
+				else {
+					return false;
+				}
+			}
+		}
+		return *bulletBounceMissileNext != _pIterator;
+	
 	}
 
 	/*
@@ -713,7 +738,7 @@ namespace {
 	// For progressBulletMovement
 
 	const u32 Func_progressBulletMovement = 0x0048B250;
-	void progressBulletMovement(CBullet* a1) {
+	void progressBulletMovement_func(CBullet* a1) {
 		__asm {
 			PUSHAD
 			MOV EAX, a1
