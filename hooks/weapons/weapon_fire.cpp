@@ -552,7 +552,7 @@ namespace hooks {
 		if (v13 & 0x300 && !((1 << pSrc->playerId) & _pIterator->visibilityStatus))
 			return 0;
 		v14 = _pIterator->playerId == 11 ? _pIterator->sprite->playerId : _pIterator->playerId;
-		if (playerAlliance[(u8)pSrc->playerId][v14] || bulletBounceMissileTarget == _pIterator)
+//		if (playerAlliance[(u8)pSrc->playerId][v14] || bulletBounceMissileTarget == _pIterator)
 			return 0;
 		return bulletBounceMissileNext != _pIterator;
 	}

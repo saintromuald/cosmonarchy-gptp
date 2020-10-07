@@ -876,6 +876,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranSavant &&  //Savant Energy Decay passive
+									current_button->iconID == IconId::Feedback)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::TerranSouthpaw &&  //Southpaw Knockout Drivers passive
 									current_button->iconID == IconId::BurstLasers)
 								{

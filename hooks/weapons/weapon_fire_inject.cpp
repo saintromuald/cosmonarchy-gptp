@@ -120,6 +120,6 @@ void injectWeaponFireHooks() {
 	jmpPatch(fireWeaponWrapper, Func_FireUnitWeapon, 0);
 	jmpPatch(progressBulletFlight_Wrapper, 0x0048B3B0, 3);
 	jmpPatch(bulletBehaviour_Bounce_Wrapper, 0x0048B2D0, 0);
-	jmpPatch(findNextBounceTargetProc_Wrapper, 0x0048B2D0, 3);
+//	jmpPatch(findNextBounceTargetProc_Wrapper, 0x0048B2D0, 3);
 	}
 } //hooks

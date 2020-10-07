@@ -356,8 +356,8 @@ namespace hooks {
 			/*
 					if (target->status & UnitStatus::IsHallucination)
 						damage *= 2;*/
-			if (attacker != NULL && weaponId == WeaponId::EnergyDecay) {
-				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::EnergyDecay, 240+1, 0);
+			if (attacker != NULL && weaponId == WeaponId::DiscoidRailgun) {
+				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::EnergyDecay, (5*24)+1, 0);
 				scbw::sendGPTP_aise_cmd(target, attacker, GptpId::SetGenericUnit, ValueId::DecaySavant, 0, 0);
 				u8 overlaySize = scbw::hasOverlay(target);
 				if (target->subunit != NULL)
