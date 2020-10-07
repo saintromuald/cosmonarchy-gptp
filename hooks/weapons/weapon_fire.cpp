@@ -750,17 +750,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_progressBulletMovement = 0x0048B250;
-	void progressBulletMovement(CBullet* a1) {
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_progressBulletMovement
-			POPAD
-		}
-	}
-
-	const u32 Func_findNextBouncetarget = 0x0048B1E0;
+	const u32 Func_findNextBounceTarget = 0x0048B1E0;
 	CUnit* findNextBounceTarget(CBullet* a1) {
 		static CUnit* result;
 		__asm {

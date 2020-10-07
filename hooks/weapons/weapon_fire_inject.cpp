@@ -82,7 +82,7 @@ namespace {
 		static CUnit* pIterator;
 		static bool result;
 		__asm {
-			MOV a1, ECX
+			MOV pIterator, ECX
 			PUSHAD
 		}
 		result = hooks::findNextBounceTargetProc(pIterator);
