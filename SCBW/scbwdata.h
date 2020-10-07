@@ -291,6 +291,11 @@ SCBW_DATA(		unk_62*,		struct_5140E8,				0x005140E8);
 SCBW_DATA(		char*,			upgradesLevelSC,			0x0058D2B0);
 SCBW_DATA(		char*,			upgradesLevelBW,			0x0058F2FE);
 
+// For findNextBounceTargetProc
+SCBW_DATA(		CUnit*,			bulletBounceMissileSource,	0x0064EECC);
+SCBW_DATA(		CUnit*,			bulletBounceMissileTarget,	0x0064EED0);
+SCBW_DATA(		CUnit*,			bulletBounceMissileNext,	0x0064EED4);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data

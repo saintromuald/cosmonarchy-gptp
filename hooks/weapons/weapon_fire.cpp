@@ -163,6 +163,24 @@ namespace { // Helper functions
 	CBullet* changeMovePos(CBullet* a1, s32 a2, s32 a3); // 00495240
 	void progressBulletMovement(CBullet* a1); // 0048B250
 	CUnit* findNextBounceTarget(CBullet* a1); // 0048B1E0
+
+	// For findNextBounceTargetProc
+	bool unitCanSeeCloakedTarget(CUnit* a1, CUnit* a2); // 00401D60
+	bool unitIsSubunit(CUnit* a1); // 00401D40
+	bool unitIsCarrier(CUnit* a1); // 00401470
+	bool unitIsReaver(CUnit* a1); // 00401490
+	bool unitHasPathToUnit(CUnit* a1, CUnit* a2); // 0049CBB0
+	bool canInfest(CUnit* a1); // 00402750
+	s32 canBeInfested(CUnit* a1, CUnit* a2); // 00402210
+
+	// For writeBullets
+/*	void packBulletData(CBullet* a1, s32 a2); // 0048A9A0
+	size_t _lockwrite(const void* a1, size_t a2, size_t a3, FILE* a4); // 00411931
+	void* SMemAlloc(s32 a1, char* a2, s32 a3, s32 a4); // 0041006A
+	s32 compressWrite(void* a1, u32 a2, FILE* a3); // 004C3450
+	bool SMemFree(void* a1, char* a2, s32 a3, char a4); // 00410070
+	CBullet* unpackBulletData(CBullet* a1, s32 a2); // 0048A8D0	*/
+
 } //unnamed namespace
 
 
@@ -466,6 +484,160 @@ namespace hooks {
 		}
 	}
 
+	bool findNextBounceTargetProc(CUnit* pIterator) { // 0048AFD0
+		CUnit* pSrc; // esi
+		s32 nSrcStatus; // eax
+		CUnit* _pIterator; // edi
+		s32 v4; // eax
+		CUnit* v5; // ebx
+		s32 v6; // eax
+		s32 v7; // eax
+		s32 v8; // eax
+		BOOL v9; // eax
+		s32 v10; // eax
+		CUnit* v11; // ecx
+		s32 v13; // eax
+		s8 v14; // cl
+
+		pSrc = bulletBounceMissileSource;
+		nSrcStatus = bulletBounceMissileSource->status;
+		_pIterator = pIterator;
+		if (nSrcStatus & 0x400)
+			return 0;
+		if (bulletBounceMissileSource->lockdownTimer)
+			return 0;
+		if (bulletBounceMissileSource->stasisTimer)
+			return 0;
+		if (bulletBounceMissileSource->maelstromTimer)
+			return 0;
+		if (!pIterator)
+			return 0;
+		if (pIterator->status & UnitStatus::Invincible)
+			return 0;
+		if (pIterator->sprite->flags & 0x20)
+			return 0;
+		ByteOperations::SetLowByte(v4, unitCanSeeCloakedTarget(pIterator, bulletBounceMissileSource));
+		if (v4)
+			return 0;
+		v5 = pSrc->subunit;
+		ByteOperations::SetLowByte(v6, unitIsSubunit(pSrc->subunit));
+		if (!v6)
+			v5 = pSrc;
+		ByteOperations::SetLowByte(v7, unitIsCarrier(pSrc));
+		if (!v7) {
+			ByteOperations::SetLowByte(v8, unitIsReaver(pSrc));
+			if (v8)	{
+				if (_pIterator->status & UnitStatus::InAir)
+					return 0;
+				ByteOperations::SetLowByte(v9, unitHasPathToUnit(pSrc, _pIterator));
+			}
+			else {
+				ByteOperations::SetLowByte(v10, canInfest(pSrc));
+				if (v10) {
+					v9 = canBeInfested(v11, _pIterator) != 0;
+				}
+				else {
+					if (pSrc->id == UnitId::ProtossArbiter && pSrc->pAI)
+						return 0;
+					if (_pIterator->status & UnitStatus::InAir)
+						v9 = units_dat::AirWeapon[(u16)v5->id] != -126;
+					else
+						v9 = units_dat::GroundWeapon[(u16)v5->id] != -126;
+				}
+			}
+			if (!v9)
+				return 0;
+		}
+		v13 = _pIterator->status;
+		if (v13 & 0x300 && !((1 << pSrc->playerId) & _pIterator->visibilityStatus))
+			return 0;
+		v14 = _pIterator->playerId == 11 ? _pIterator->sprite->playerId : _pIterator->playerId;
+		if (playerAlliance[(u8)pSrc->playerId][v14] || bulletBounceMissileTarget == _pIterator)
+			return 0;
+		return bulletBounceMissileNext != _pIterator;
+	}
+
+	/*
+	int writeBullets(FILE* hFile) {
+		s32 v1; // edi
+		CBullet* v2; // esi
+		CBullet* v3; // eax
+		s32 v4; // edx
+		s32 v5; // ecx
+		s32 v6; // esi
+		size_t v7; // eax
+		s16* v8; // eax
+		u16 v9; // dx
+		CBullet* v10; // ebx
+		void* v11; // edi
+		u32 v12; // esi
+		s16* v13; // eax
+		CBullet* v14; // ecx
+		s32 v15; // edi
+		CBullet* v16; // ecx
+		s32 v18; // [esp+8h] [ebp-Ch]
+		s16* v19; // [esp+Ch] [ebp-8h]
+		s32 data; // [esp+10h] [ebp-4h]
+
+		v2 = bulletTable;
+		v1 = 100;
+		do {
+			packBulletData(v2, 1);
+			++v2;
+			--v1;
+		} while (v1);
+		v4 = 0;
+		data = 0;
+		v3 = (CBullet*)((char*)bulletTable + 12);
+		v5 = 100;
+		do {
+			if (v3->previous)
+				++v4;
+			++v3;
+			--v5;
+		} while (v5);
+		data = v4;
+		v7 = _lockwrite(&data, 2u, 1u, hFile);
+		v6 = v7 == 1;
+		if (v7 == 1) {
+			if ((s16)data) {
+				v12 = 114 * (unsigned __int16)data;
+				v18 = 114 * (unsigned __int16)data;
+				v8 = SMemAlloc(114 * (unsigned __int16)data, "Starcraft\\SWAR\\lang\\CBullet.cpp", 1276, 8);
+				v11 = v8;
+				v19 = v8;
+				data = 0;
+				v9 = 0;
+				v10 = bulletTable;
+				do
+				{
+					if (v10->sprite)
+					{
+						*v8 = v9;
+						v13 = v8 + 1;
+						qmemcpy(v13, v10, 0x70u);
+						v11 = v19;
+						v12 = v18;
+						v8 = v13 + 56;
+						++data;
+					}
+					++v9;
+					++v10;
+				} while (v9 < 0x64u);
+				v6 = compressWrite(v11, v12, hFile);
+				SMemFree(v11, "Starcraft\\SWAR\\lang\\CBullet.cpp", 1299, 0);
+			}
+		}
+		v14 = bulletTable;
+		v15 = 100;
+		do {
+			unpackBulletData(v14, 1);
+			v14 = v16 + 1;
+			--v15;
+		} while (v15);
+		return v6;
+	}*/
+
 } //hooks
 
 
@@ -600,5 +772,100 @@ namespace {
 		}
 		return result;
 	}
+
+	const u32 Func_unitCanSeeCloakedTarget = 0x00401D60;
+	bool unitCanSeeCloakedTarget(CUnit* a1, CUnit* a2) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH a2
+			MOV EAX, a1
+			CALL Func_unitCanSeeCloakedTarget
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_unitIsSubunit = 0x00401D40;
+	bool unitIsSubunit(CUnit* a1) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_unitIsSubunit
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_unitIsCarrier = 0x00401470;
+	bool unitIsCarrier(CUnit* a1) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_unitIsCarrier
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_unitIsReaver = 0x00401490;
+	bool unitIsReaver(CUnit* a1) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_unitIsReaver
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_unitHasPathToUnit = 0x0049CBB0;
+	bool unitHasPathToUnit(CUnit* a1, CUnit* a2) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			MOV ECX, a2
+			CALL Func_unitHasPathToUnit
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_canInfest = 0x00402750;
+	bool canInfest(CUnit* a1) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_canInfest
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_canBeInfested = 0x00402210;
+	s32 canBeInfested(CUnit* a1, CUnit* a2) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, a1
+			MOV EDX, a2
+			CALL Func_canBeInfested
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
 
 } //unnamed namespace

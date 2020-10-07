@@ -6,6 +6,8 @@ namespace hooks {
 	void fireWeaponHook(CUnit* unit, u8 weaponId);
 	void progressBulletFlight(CBullet* a1);
 	void bulletBehaviour_Bounce(CBullet* a1); // 0048B2D0
+	bool findNextBounceTargetProc(CUnit* pIterator); // 0048AFD0
+//	int writeBullets(FILE *a1); // 0048AEB0
 
 	void injectWeaponFireHooks();
 
