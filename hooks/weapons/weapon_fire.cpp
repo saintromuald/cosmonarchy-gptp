@@ -516,8 +516,8 @@ namespace hooks {
 		pSrc = *bulletBounceMissileSource;
 		nSrcStatus = (*bulletBounceMissileSource)->status;
 		_pIterator = pIterator;
-		scbw::printText("Check bullet source status");
-		if (nSrcStatus & UnitStatus::DoodadStatesThing) {
+		// The following checks disallowed bouncing if the source was disabled. This feature is removed in HYDRA.
+/*		if (nSrcStatus & UnitStatus::DoodadStatesThing) {
 			scbw::printText("Source unit is disabled (doodad state)");
 			return 0;
 		}
@@ -532,7 +532,7 @@ namespace hooks {
 		if ((*bulletBounceMissileSource)->maelstromTimer) {
 			scbw::printText("Source unit is disabled (maelstrom)");
 			return 0;
-		}
+		}*/
 		scbw::printText("Check bullet target status");
 		if (!pIterator) {
 			scbw::printText("Target is null");
