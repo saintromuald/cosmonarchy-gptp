@@ -174,6 +174,9 @@ namespace { // Helper functions
 	bool canInfest(CUnit* a1); // 00402750
 	s32 canBeInfested(CUnit* a1, CUnit* a2); // 00402210
 
+	// For findNextBounceTarget
+	s32 iterateUnitsAtLocationTargetProc(Box32* a1, s32 (__fastcall *a2)(s32, s32), CUnit* a3); // 004E8280
+
 	// For writeBullets
 /*	void packBulletData(CBullet* a1, s32 a2); // 0048A9A0
 	size_t _lockwrite(const void* a1, size_t a2, size_t a3, FILE* a4); // 00411931
@@ -454,8 +457,9 @@ namespace hooks {
 
 		v1 = a1->attackTarget.unit;
 		if (v1)	{
-			if (!(a1->hitFlags & 1))
+			if (!(a1->hitFlags & 1)) {
 				changeMovePos(a1, v1->sprite->position.y, v1->sprite->position.x);
+			}
 		}
 		progressBulletMovement_func(a1);
 		if (a1->moveTarget.pt.x == a1->position.x && a1->moveTarget.pt.y == a1->position.y)	{
@@ -468,8 +472,9 @@ namespace hooks {
 			a1->remainingBounces = v2;
 			Globals.bounce_bullet = a1;
 			if (v2 && (v3 = findNextBounceTarget(a1), a1->nextBounceUnit = a1->attackTarget.unit, v3)) {
-				for (i = a1->sprite->images.head; i; i = i->link.next)
+				for (i = a1->sprite->images.head; i; i = i->link.next) {
 					playImageIscript(i, IscriptAnimation::SpecialState1);
+				}
 				a1->attackTarget.unit = v3;
 			}
 			else {
@@ -486,8 +491,9 @@ namespace hooks {
 				a1->unknown_0x4E = 0; // Was lowbyte
 				a1->someUnitType = UnitId::None;
 
-				for (j = v6->images.head; j; j = j->link.next)
+				for (j = v6->images.head; j; j = j->link.next) {
 					playImageIscript(j, IscriptAnimation::Death);
+				}
 			}
 		}
 	}
@@ -501,7 +507,7 @@ namespace hooks {
 		s32 v6; // eax
 		s32 v7; // eax
 		s32 v8; // eax
-		BOOL v9; // eax
+		bool v9; // eax
 		s32 v10; // eax
 		CUnit* v11; // ecx
 		s32 v13; // eax
@@ -510,60 +516,89 @@ namespace hooks {
 		pSrc = *bulletBounceMissileSource;
 		nSrcStatus = (*bulletBounceMissileSource)->status;
 		_pIterator = pIterator;
-		if (nSrcStatus & 0x400)
+		scbw::printText("Check bullet source status");
+		if (nSrcStatus & UnitStatus::DoodadStatesThing) {
+			scbw::printText("Source unit is disabled (doodad state)");
 			return 0;
-		if ((*bulletBounceMissileSource)->lockdownTimer)
+		}
+		if ((*bulletBounceMissileSource)->lockdownTimer) {
+			scbw::printText("Source unit is disabled (lockdown)");
 			return 0;
-		if ((*bulletBounceMissileSource)->stasisTimer)
+		}
+		if ((*bulletBounceMissileSource)->stasisTimer) {
+			scbw::printText("Source unit is disabled (stasis)");
 			return 0;
-		if ((*bulletBounceMissileSource)->maelstromTimer)
+		}
+		if ((*bulletBounceMissileSource)->maelstromTimer) {
+			scbw::printText("Source unit is disabled (maelstrom)");
 			return 0;
-		if (!pIterator)
+		}
+		scbw::printText("Check bullet target status");
+		if (!pIterator) {
+			scbw::printText("Target is null");
 			return 0;
-		if (pIterator->status & UnitStatus::Invincible)
+		}
+		if (pIterator->status & UnitStatus::Invincible) {
+			scbw::printText("Target is invincible");
 			return 0;
-		if (pIterator->sprite->flags & 0x20)
+		}
+		if (pIterator->sprite->flags & CSprite_Flags::Hidden) {
+			scbw::printText("Target is hidden");
 			return 0;
-		ByteOperations::SetLowByte(v4, unitCanSeeCloakedTarget(pIterator, (*bulletBounceMissileSource)));
-		if (v4)
+		}
+		if (unitCanSeeCloakedTarget(pIterator, (*bulletBounceMissileSource))) {
+			scbw::printText("Target cannot be seen by source");
 			return 0;
-		v5 = pSrc->subunit;
-		ByteOperations::SetLowByte(v6, unitIsSubunit(pSrc->subunit));
-		if (!v6)
+		}
+		scbw::printText("Check subunit status");
+		if (pSrc->subunit != NULL
+		&&	unitIsSubunit(pSrc->subunit)) {
+			v5 = pSrc->subunit;
+		}
+		else {
 			v5 = pSrc;
-		ByteOperations::SetLowByte(v7, unitIsCarrier(pSrc));
-		if (!v7) {
-			ByteOperations::SetLowByte(v8, unitIsReaver(pSrc));
-			if (v8)	{
+		}
+		scbw::printText("Check lardcode status");
+		if (!(unitIsCarrier(pSrc))) {
+			if (unitIsReaver(pSrc))	{
 				if (_pIterator->status & UnitStatus::InAir)
 					return 0;
-				ByteOperations::SetLowByte(v9, unitHasPathToUnit(pSrc, _pIterator));
+				v9 = unitHasPathToUnit(pSrc, _pIterator);
 			}
 			else {
-				ByteOperations::SetLowByte(v10, canInfest(pSrc));
-				if (v10) {
-					v9 = canBeInfested(v11, _pIterator) != 0;
+				if (canInfest(pSrc)) {
+					v9 = canBeInfested(v11, _pIterator) != 0; // v11 is not used..?
 				}
 				else {
-					if (pSrc->id == UnitId::ProtossArbiter && pSrc->pAI)
+					if (pSrc->id == UnitId::ProtossArbiter && pSrc->pAI) {
 						return 0;
-					if (_pIterator->status & UnitStatus::InAir)
+					}
+					if (_pIterator->status & UnitStatus::InAir) {
 						v9 = units_dat::AirWeapon[(u16)v5->id] != -126;
-					else
+					}
+					else {
 						v9 = units_dat::GroundWeapon[(u16)v5->id] != -126;
+					}
 				}
 			}
-			if (!v9)
+			if (!v9) {
 				return 0;
+			}
 		}
 		v13 = _pIterator->status;
-		if (v13 & 0x300 && !((1 << pSrc->playerId) & _pIterator->visibilityStatus))
+		if (v13 & 0x300 && !((1 << pSrc->playerId) & _pIterator->visibilityStatus)) {
 			return 0;
+		}
 		v14 = _pIterator->playerId == 11 ? _pIterator->sprite->playerId : _pIterator->playerId;
-		if (playerAlliance[(u8)pSrc->playerId].flags[v14] || *bulletBounceMissileTarget == _pIterator)
+		if (playerAlliance[(u8)pSrc->playerId].flags[v14] || *bulletBounceMissileTarget == _pIterator) {
 			return 0;
+		}
 		
-		if (Globals.bounce_bullet->weaponType==WeaponId::PlasmaFlurry) {
+		// Gladius Binding Flurry behavior
+		scbw::printText("Gladius code start");
+		if (Globals.bounce_bullet->weaponType == WeaponId::PlasmaFlurry
+		&&	(*bulletBounceMissileNext)->sprite != NULL
+		&&	_pIterator->sprite != NULL) {
 			if (Globals.was_already_hit_by_gladius_bullet(Globals.bounce_bullet, pIterator)) {
 				return false;
 			}
@@ -578,8 +613,34 @@ namespace hooks {
 				}
 			}
 		}
-		return *bulletBounceMissileNext != _pIterator;
-	
+		scbw::printText("Gladius code end");
+		return *bulletBounceMissileNext != _pIterator;	
+	}
+
+	CUnit* findNextBounceTarget(CBullet* a1) { // 0048B1E0
+		CUnit* v2; // edx
+		CUnit* v3; // ecx
+		CSprite* v4; // eax
+		u16 v5;
+		u16 v6;
+		Box32 _a1; // [esp+0h] [ebp-8h]
+
+		if (!a1->sourceUnit) {
+			return 0;
+		}
+		v2 = a1->nextBounceUnit;
+		*bulletBounceMissileSource = a1->sourceUnit;
+		v3 = a1->attackTarget.unit;
+		v4 = a1->sprite;
+		*bulletBounceMissileTarget = v3;
+		v5 = v4->position.y;
+		v6 = v4->position.x;
+		*bulletBounceMissileNext = v2;
+		_a1.left = (s16)v6 - 96;
+		_a1.top = (s16)v6 + 96;
+		_a1.right = (s16)v5 - 96;
+		_a1.bottom = (s16)v5 + 96;
+		return (CUnit*)iterateUnitsAtLocationTargetProc(&_a1, (int(__fastcall*)(s32, s32))findNextBounceTargetProc, 0);
 	}
 
 	/*
@@ -882,5 +943,21 @@ namespace {
 		return result;
 	}
 
+	// For findNextBounceTarget
+
+	const u32 Func_iterateUnitsAtLocationTargetProc = 0x004E8280;
+	s32 iterateUnitsAtLocationTargetProc(Box32* a1, s32 (__fastcall *a2)(s32, s32), CUnit* a3) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH a3
+			MOV EBX, a2
+			MOV EAX, a1
+			CALL Func_iterateUnitsAtLocationTargetProc
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 
 } //unnamed namespace

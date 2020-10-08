@@ -144,60 +144,40 @@ namespace hooks {
 
 		}
 		else { //E761F
-
 			if(
 				unitToLoad->pAI == NULL ||
 				unitToLoad->mainOrderId == OrderId::Pickup4
-			) 
-			{ //E762F
-
+			) { //E762F
 				if(unit->mainOrderState == 0) {
-
 					if(scbw::canBeEnteredBy(unit,unitToLoad)) {
-
 						if(unit->mainOrderTimer == 0) {
-
 							unit->mainOrderTimer = 7;
-
 							if(!unit->isTargetWithinMinRange(unitToLoad,1))
 								orderToMoveToTarget(unit,unitToLoad);
 							else {
-
 								makeToHoldPosition(unit);
-
 								if(
 									unitToLoad->mainOrderId != OrderId::EnterTransport &&
 									unitToLoad->mainOrderId != OrderId::Pickup4
 								)
 									unitToLoad->orderTo(OrderId::EnterTransport,unit);
-
 								if(unit->pAI != NULL)
 									unit->mainOrderState = 1;
 								else {
 									function_00474A70(unit,unitToLoad,OrderId::Pickup1);
 									prepareForNextOrder(unit);
 								}
-
 							}
-
-
 						}
-
 					}
 					else
 						unit->orderToIdle();
-
 				}
-
 			}
 			else //E7642
 				unit->orderToIdle();
-
 		}
-
 	}
-
-	;
 
 	//unit is a transport (overlord,shuttle,dropship)
 	//a big part of the code could not be tested

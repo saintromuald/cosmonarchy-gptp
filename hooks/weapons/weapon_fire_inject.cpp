@@ -88,6 +88,22 @@ namespace {
 		result = hooks::findNextBounceTargetProc(pIterator);
 		__asm {
 			POPAD
+			MOVZX EAX, result
+			RETN
+		}
+	}
+
+	void __declspec(naked) findNextBounceTarget_Wrapper() {
+		static CBullet* a1;
+		static CUnit* result;
+		__asm {
+			MOV a1, EAX
+			PUSHAD
+		}
+		result = hooks::findNextBounceTarget(a1);
+		__asm {
+			POPAD
+			MOV EAX, result
 			RETN
 		}
 	}
@@ -119,7 +135,8 @@ namespace hooks {
 void injectWeaponFireHooks() {
 	jmpPatch(fireWeaponWrapper, Func_FireUnitWeapon, 0);
 	jmpPatch(progressBulletFlight_Wrapper, 0x0048B3B0, 3);
-	//jmpPatch(bulletBehaviour_Bounce_Wrapper, 0x0048B2D0, 0);
-	//jmpPatch(findNextBounceTargetProc_Wrapper, 0x0048B2D0, 3);
+//	jmpPatch(bulletBehaviour_Bounce_Wrapper, 0x0048B2D0, 0);
+//	jmpPatch(findNextBounceTargetProc_Wrapper, 0x0048AFD0, 3);
+//	jmpPatch(findNextBounceTarget_Wrapper, 0x0048B1E0, 1);
 	}
 } //hooks
