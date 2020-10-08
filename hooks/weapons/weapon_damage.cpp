@@ -176,7 +176,7 @@ class ascendancyProc : public scbw::UnitFinderCallbackProcInterface {
 private:
 public:
 	void proc(CUnit* unit) {
-		if (unit->id != UnitId::high_templar) {
+		if (unit->id != UnitId::ProtossHighTemplar) {
 			return;
 		}
 		if (
@@ -353,20 +353,36 @@ namespace hooks {
 			if (scbw::isCheatEnabled(CheatFlags::PowerOverwhelming) &&			//If Power Overwhelming is enabled
 				playerTable[attackingPlayerId].type != PlayerType::Human)		//and the attacker is not a human player
 				damage = 0;
-			/*
-					if (target->status & UnitStatus::IsHallucination)
+			
+			// Hallucination damage factor -- disabled in HYDRA
+/*			if (target->status & UnitStatus::IsHallucination)
 						damage *= 2;*/
+
+			// Savant Entropy Gauntlets behavior - Apply timer and overlay
 			if (attacker != NULL && weaponId == WeaponId::DiscoidRailgun) {
-				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::EnergyDecay, (5*24)+1, 0);
-				scbw::sendGPTP_aise_cmd(target, attacker, GptpId::SetGenericUnit, ValueId::DecaySavant, 0, 0);
-				u8 overlaySize = scbw::hasOverlay(target);
-				if (target->subunit != NULL)
-					target->subunit->sprite->createTopOverlay(overlaySize + ImageId::MindControlHit_Small, 0, 0, 0);
-				else
-					target->sprite->createTopOverlay(overlaySize + ImageId::MindControlHit_Small, 0, 0, 0);
-				//
-				// replace later with persistent overlay
-				//
+				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
+					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::EnergyDecay, (5 * 24) + 1, 0);
+					scbw::sendGPTP_aise_cmd(target, attacker, GptpId::SetGenericUnit, ValueId::DecaySavant, 0, 0);
+					u32 overlayImageId;
+					if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay)
+						overlayImageId = 1108;
+					else
+						if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay)
+							overlayImageId = 1109;
+						else
+							overlayImageId = 1107;
+					if (target->subunit != NULL) {
+						target->subunit->sprite->removeOverlay(overlayImageId);
+						target->subunit->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
+					}
+					else {
+						target->sprite->removeOverlay(overlayImageId);
+						target->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
+					}
+					//
+					// replace later with persistent overlay
+					//
+				}
 			}
 			if (attacker != NULL && weaponId == WeaponId::Claws) {
 				if (scbw::get_aise_value(attacker, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0) < 4) {

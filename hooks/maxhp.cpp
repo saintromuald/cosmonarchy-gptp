@@ -1077,7 +1077,7 @@ namespace hooks {
 		playImageIscript((CImage*)a1, 0);
 	}
 
-	s32 AI_FindTransport(CUnit* a1, int a2) { // 004E6E00
+	s32 AI_FindTransport(CUnit* a1, int a2) { // 004E6EF0
 		CUnit* v2; // esi
 		s32 v3; // ecx
 		u16 v4; // ax
