@@ -639,7 +639,7 @@ namespace hooks {
 				}
 
 				// Lurker - Seismic Spines
-				if (unit->id == UnitId::ZergLurker && unit->sprite!=NULL && unit->mainOrderId!=OrderId::Die 
+				if (unit->id == UnitId::ZergLurker && unit->sprite != NULL && unit->mainOrderId != OrderId::Die 
 					&& scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::LurkerETA, 0) == 1) {
 					//placeholder for seismic spines
 					auto position = unit->position;//new target

@@ -379,13 +379,15 @@ namespace hooks {
 
 			//Lurker can only attack while burrowed even if
 			//given a melee attack according to this code
-			if(
-				attacker->id != UnitId::ZergLurker ||
-				attacker->status & UnitStatus::Burrowed
-			)
+			if (attacker->id != UnitId::ZergLurker
+			|| (attacker->status & UnitStatus::Burrowed
+				|| attacker->status & UnitStatus::InBuilding)
+				) { // Attempt to allow Lurkers to attack from within Bunkers
 				weaponId = units_dat::GroundWeapon[attacker->id];
-			else
+			}
+			else {
 				weaponId = WeaponId::None;
+			}
 
 			//if (!IsInRange(attacker, target, weapons_dat::MaxRange[weaponId]))
 			//	return;

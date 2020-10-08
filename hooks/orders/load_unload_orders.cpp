@@ -645,7 +645,8 @@ namespace hooks {
 		}
 		v4 = a2;
 		if (a2->status & UnitStatus::Burrowed
-/*		|| a2->playerId != v3->playerId*/) { // Original code
+//		|| a2->playerId != v3->playerId // Original code
+			) {
 			return 0;
 		}
 		if (!(scbw::isAlliedTo(a1->playerId, a2->playerId))) {

@@ -225,9 +225,15 @@ namespace hooks {
 		}
 		if (weapons_dat::FlingyId[weaponId] != 0) {
 			bool good = true;
-			if (unit->id == UnitId::TerranWyvern && unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabOn, 0) == 1) {
+
+			// Wyvern Land Grab ability
+			if (unit->id == UnitId::TerranWyvern
+			&& unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell
+			&& scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabOn, 0) == 1) {
 				good = false;
 			}
+
+			// Lurker Seismic Spines behavior
 			if (weaponId == WeaponId::SubterraneanSpines) {
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::LurkerETA, 17, 0);
 				auto range = weapons_dat::MaxRange[weaponId] + 16;
@@ -237,10 +243,16 @@ namespace hooks {
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SpineX, targ_x, 0);
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SpineY, targ_y, 0);
 			}
+
 			if (good) {
-				if (weaponId == WeaponId::FuriaMissiles && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TempoChange,0)==1) {
+
+				// Madrigal Tempo Change weapon switch
+				if (weaponId == WeaponId::FuriaMissiles
+				&& scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TempoChange,0)==1) {
 					weaponId = WeaponId::ImperiosoMissiles;
 				}
+
+				// Savant Power Siphon ability
 				if (weaponId == WeaponId::PowerSiphon) {
 					u32 energy = 0;
 					powerSiphonCollectProc collectProc = powerSiphonCollectProc(unit,energy);
@@ -302,7 +314,7 @@ namespace hooks {
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::PhobosLaserPos, 4, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::AcheronMissiles) {
-					// Phobos - Argent Capacitors passive
+					// Phobos - Argent Capacitors behavior
 					if (unit->id == UnitId::TerranPhobos && scbw::get_generic_value(unit, ValueId::PhobosDischarge) == 0) {
 						unit->addUnitEnergy(5 * 256);
 						if (unit->energy == unit->getMaxEnergy()) {
