@@ -12,6 +12,11 @@ namespace {
 
 	// For AI_Burrower
 	void techUseAllowed(CUnit* a1, s16 a2, s32 a3);			//0046DD80
+
+	// For irradiate function
+	CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);
+	bool setThingyVisibilityFlags(CThingy* thingy);
+	CUnit** getAllUnitsInBounds(Box16* coords);
 } //unnamed namespace
 
 
@@ -586,6 +591,84 @@ namespace hooks {
 			} //if (unit->getRace() == RaceId::Terran)
 
 
+
+		// Radiation Shockwave - Irradiate enhancement
+			if (unit->irradiateTimer > 0) {
+				if (scbw::get_generic_value(unit, ValueId::RadiationShockwaveCount)) {
+					scbw::printText("Radiation Shockwave detected");
+//					unit->_unknown_0x026 &= ~0x2;
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 0, 0);
+
+					CThingy* emp_sprite;
+					emp_sprite = createThingy(371, unit->position.x, unit->position.y, 0);
+					if (emp_sprite != NULL) {
+						emp_sprite->sprite->elevationLevel = 19; //0x13
+						setThingyVisibilityFlags(emp_sprite);
+					}
+
+					static u16* const maxBoxRightValue = (u16*)0x00628450;
+					static u16* const maxBoxBottomValue = (u16*)0x006284B4;
+					Box16 area_of_effect;
+					CUnit** unitsInAreaOfEffect;
+					CUnit* current_unit;
+					area_of_effect.left = (u16)unit->sprite->position.x - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+					area_of_effect.right = (u16)unit->sprite->position.x + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+					area_of_effect.top = (u16)unit->sprite->position.y - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+					area_of_effect.bottom = (u16)unit->sprite->position.y + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+					if (area_of_effect.left < 0)
+						area_of_effect.left = 0;
+					else
+						if (area_of_effect.right > * maxBoxRightValue)
+							area_of_effect.right = *maxBoxRightValue;
+
+					//check and fix effect if beyond height of map
+					if (area_of_effect.top < 0)
+						area_of_effect.top = 0;
+					else
+						if (area_of_effect.bottom > * maxBoxBottomValue)
+							area_of_effect.bottom = *maxBoxBottomValue;
+					unitsInAreaOfEffect = getAllUnitsInBounds(&area_of_effect);
+					current_unit = *unitsInAreaOfEffect;
+					while (current_unit != NULL) {
+						if (
+							current_unit != unit->irradiatedBy &&				//EMP doesn't affect the attacker
+							(
+								unit->irradiatedBy == NULL ||					//EMP doesn't affect the attacker
+								current_unit != unit->irradiatedBy->subunit	//subunit
+								)
+							)
+						{
+
+							if (current_unit->status & UnitStatus::IsHallucination)
+								current_unit->remove();
+							else
+								if (current_unit->stasisTimer == 0) { //don't work against units in stasis
+
+									current_unit->energy -= 100*256;
+									current_unit->shields -= 100*256;
+
+									if (
+										current_unit->sprite->flags & CSprite_Flags::Selected &&
+										current_unit->sprite != NULL
+										)
+										setAllImageGroupFlagsPal11(current_unit->sprite);
+
+								}
+
+						}
+
+						unitsInAreaOfEffect++;					//go on next unit of the list (or null)
+						current_unit = *unitsInAreaOfEffect;
+
+					}
+					*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
+					*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[*tempUnitsListArraysCountsListLastIndex];
+				}
+				else {
+					//scbw::printText("Radiation Shockwave is not detected");
+				}
+			}
+
 		} //if (unit->status & UnitStatus::Completed) {
 
 	};
@@ -722,6 +805,59 @@ namespace {
 			CALL Func_techUseAllowed
 			POPAD
 		}
+	}
+
+	// For irradiate function
+
+	const u32 Func_CreateThingy = 0x00488210;
+	CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId) {
+
+		static CThingy* thingy;
+		s32 x_ = x;
+
+		__asm {
+			PUSHAD
+			PUSH playerId
+			MOVSX EDI, y
+			PUSH x_
+			PUSH spriteId
+			CALL Func_CreateThingy
+			MOV thingy, EAX
+			POPAD
+		}
+		return thingy;
+	}
+
+	const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
+	bool setThingyVisibilityFlags(CThingy* thingy) {
+
+		static Bool32 bPreResult;
+
+		__asm {
+			PUSHAD
+			MOV ESI, thingy
+			CALL Func_SetThingyVisibilityFlags
+			MOV bPreResult, EAX
+			POPAD
+		}
+		return (bPreResult != 0);
+	}
+
+	const u32 Func_GetAllUnitsInBounds = 0x0042FF80;
+	CUnit** getAllUnitsInBounds(Box16* coords) {
+
+		static CUnit** units_in_bounds;
+
+		__asm {
+			PUSHAD
+			MOV EAX, coords
+			CALL Func_GetAllUnitsInBounds
+			MOV units_in_bounds, EAX
+			POPAD
+		}
+
+		return units_in_bounds;
+
 	}
 
 

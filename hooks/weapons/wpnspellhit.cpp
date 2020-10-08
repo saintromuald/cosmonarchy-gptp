@@ -47,7 +47,7 @@ namespace {
 	void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker,Box16* coords);				//0x004E8280
 	void IterateUnitsAtLocationTargetProc_Maelstrom(CUnit* attacker,Box16* coords);				//0x004E8280
 	void IterateUnitsAtLocationTargetProc_StasisField(CUnit* attacker,Box16* coords);			//0x004E8280
-	void createEnsnareOverlay(CUnit* a1);															//0x004F45E0
+	void createEnsnareOverlay(CUnit* a1);														//0x004F45E0
 
 } //unnamed namespace
 
@@ -78,6 +78,8 @@ namespace hooks {
 		target->irradiateTimer = 8*3;
 		target->irradiatedBy = attacker;
 		target->irradiatePlayerId = attackingPlayerId;
+		scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::RadiationShockwaveTimer, (4*24)+1, 0);
+		scbw::printText("Send command!");
 	};
 
 	//bullet is not normally part of the function, so if the function is called
@@ -314,7 +316,9 @@ namespace hooks {
 				bullet->direction1,
 				damageDivisor
 			);
-		}/*
+		}
+		
+		/*
 		if(swarmDamage>0){
 			scbw::printText("Swarm damage exists, Search for swarm");
 //			CUnit* checkSwarm = scbw::getDarkSwarm(target);
@@ -488,8 +492,10 @@ namespace hooks {
 				else
 				if(current_unit->stasisTimer == 0) { //don't work against units in stasis
 
-					current_unit->energy = 0;
-					current_unit->shields = 0;
+/*					current_unit->energy = 0;
+					current_unit->shields = 0;*/ // Original code
+					current_unit->energy -= 100;
+					current_unit->shields -= 100;
 
 					if(
 						current_unit->sprite->flags & CSprite_Flags::Selected &&
@@ -1346,9 +1352,6 @@ namespace {
 			POPAD
 		}
 	}
-
-
-	;
 
 } //Unnamed namespace
 

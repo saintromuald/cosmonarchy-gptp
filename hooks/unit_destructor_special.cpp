@@ -300,8 +300,10 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ClearClarionLinks, 0, 0, 0);
 	}
-	if(unit->irradiateTimer > 0){
-		if(unit->_unknown_0x026 & 0x2){
+	if (unit->irradiateTimer > 0) {
+		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 1, 0);
+	}
+	/*	if(unit->_unknown_0x026 & 0x2){
 				//scbw::printText("Radiation Shockwave detected");
 				unit->_unknown_0x026 &= ~0x2;
 				//radiation shockwave
@@ -374,7 +376,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		else {
 				//scbw::printText("Radiation Shockwave is not detected");
 		}
-	}
+	}*/
 
 	// Parasite - spawning broodlings on death
 	if (unit->parasiteFlags != 0) {

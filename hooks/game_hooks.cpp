@@ -871,6 +871,18 @@ namespace hooks {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::NathrokorTimer, 0, 0);
 					unit->updateSpeed();
 				}
+
+				if (scbw::get_generic_timer(unit, ValueId::RadiationShockwaveTimer) > 0) {
+					scbw::printFormattedText("Timer: %d", scbw::get_generic_timer(unit, ValueId::RadiationShockwaveTimer));
+				}
+
+				// Radiation Shockwave 5-second timer
+				if (scbw::get_generic_timer(unit, ValueId::RadiationShockwaveTimer) == 1) {
+					scbw::printText("5-second timer!");
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::RadiationShockwaveTimer, 0, 0);
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 1, 0);
+				}
+
 			}
 			scbw::setInGameLoopState(false);
 		}

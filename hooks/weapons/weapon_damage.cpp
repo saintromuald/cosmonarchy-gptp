@@ -748,10 +748,14 @@ namespace hooks {
 							}
 						}
 					}
-				}
-					
+				}					
 
 				if (damage >= target->hitPoints) { // <- keep this as hitPoints, because the damage is already calculated to include armor, shields and damage factor calculations
+
+					// Radiation Shockwave on death
+					if (target->irradiateTimer > 0) {
+						scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 1, 0);
+					}
 
 					// Kaiser Rampage - Ultralisk behavior
 					if (attacker->id == UnitId::ZergUltralisk) {

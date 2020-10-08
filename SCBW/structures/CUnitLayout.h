@@ -189,7 +189,7 @@ namespace ValueId {
 		HallucinationPointer						= 44,
 
 		TempoChange									= 45,
-//		DirgeImpale_Unused							= 46,
+		RadiationShockwaveTimer						= 46,
 		DirgeAttacker								= 47,
 		EggBoostTimer								= 48,
 		RemainingBuildTimeCopy						= 49,
@@ -210,6 +210,7 @@ namespace ValueId {
 		CaptivatingClawsStacks						= 62,
 
 		EnergyDecay									= 63,
+		RadiationShockwaveCount						= 64,
 		DecaySavant									= 67,
 		SimulacrumStacks							= 68,
 		LobotomySlow								= 69,
@@ -228,6 +229,7 @@ namespace ValueId {
 		NathrokorTimer								= 82,
 		RoboticSapience								= 83,
 		StellarEnforcement							= 84,
+
 
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,

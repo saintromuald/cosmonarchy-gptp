@@ -467,8 +467,8 @@ void updateStatusEffects(CUnit* unit) {
 						else
 						if(current_unit->stasisTimer == 0) { //don't work against units in stasis
 		
-							current_unit->energy = 0;
-							current_unit->shields = 0;
+							current_unit->energy -= 100*256;
+							current_unit->shields -= 100*256;
 		
 							if(
 								current_unit->sprite->flags & CSprite_Flags::Selected &&
