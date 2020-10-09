@@ -317,11 +317,24 @@ void updateStatusEffects(CUnit* unit) {
 		}
 	}
 
-	// Quarry and Iroleth resource regeneration aura
+	// Quarry, Iroleth, Othstoleth, Pennant resource regeneration aura
 	if (unit->sprite!=NULL && unit->mainOrderId!=OrderId::Die 
-		&& (unit->id == UnitId::TerranQuarry || unit->id == UnitId::ZergIroleth || unit->id==UnitId::ZergOthstoleth)) {
+		&& (unit->id == UnitId::TerranQuarry
+			|| unit->id == UnitId::ZergIroleth
+			|| unit->id == UnitId::ZergOthstoleth
+			|| unit->id == UnitId::ProtossPennant)) {
 		
-		u32 radius = unit->id == UnitId::TerranQuarry ? 320 : 224;
+		u32 radius;
+		if (unit->id == UnitId::TerranQuarry) {
+			radius = 320;
+		}
+		else if (unit->id == UnitId::ZergIroleth || unit->id == UnitId::ZergOthstoleth) {
+			radius = 224;
+		}
+		else if (unit->id == UnitId::ProtossPennant) {
+			radius = 160;
+		}
+
 		resourceBoostProc Boost = resourceBoostProc(unit);
 		scbw::UnitFinder unitFinder(unit->getX() - radius,
 			unit->getY() - radius,
@@ -329,6 +342,8 @@ void updateStatusEffects(CUnit* unit) {
 			unit->getY() + radius);
 		unitFinder.forEach(Boost);
 	}
+
+	// Othstoleth morph speed increase aura
 	if (unit->id == UnitId::ZergOthstoleth) {
 		u32 radius = 224;
 		othstolethProc eggBoost = othstolethProc(unit);
@@ -339,7 +354,7 @@ void updateStatusEffects(CUnit* unit) {
 		unitFinder.forEach(eggBoost);
 	}
 
-	// Ghost - Somatic Implants upgrade
+	// Ghost Somatic Implants behavior
 	if (unit->id == UnitId::TerranGhost) {
 		if (
 			!(unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)))
