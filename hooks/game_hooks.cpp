@@ -872,13 +872,12 @@ namespace hooks {
 					unit->updateSpeed();
 				}
 
-				if (scbw::get_generic_timer(unit, ValueId::RadiationShockwaveTimer) > 0) {
-					scbw::printFormattedText("Timer: %d", scbw::get_generic_timer(unit, ValueId::RadiationShockwaveTimer));
+				if (unit->defensiveMatrixTimer) {
+					scbw::printFormattedText("Timer: %d", unit->defensiveMatrixTimer);
 				}
 
 				// Radiation Shockwave 5-second timer
 				if (scbw::get_generic_timer(unit, ValueId::RadiationShockwaveTimer) == 1) {
-					scbw::printText("5-second timer!");
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::RadiationShockwaveTimer, 0, 0);
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 1, 0);
 				}

@@ -1403,4 +1403,67 @@ s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
 	return (sourceHeight - targetHeight) / 2;
 }
 
+	void restoreFunc(CUnit* unit) {
+		u32 overlayImageId;
+		CUnit* overlayTargetUnit;
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
+			overlayImageId = ImageId::RestorationHit_Medium;
+		else
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
+				overlayImageId = ImageId::RestorationHit_Large;
+			else
+				overlayImageId = ImageId::RestorationHit_Small;
+		if (unit->subunit != NULL)
+			overlayTargetUnit = unit->subunit;
+		else
+			overlayTargetUnit = unit;
+		(overlayTargetUnit->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
+
+		//remove status effects and corresponding overlays
+		//timers set to 0 twice reflect the original code
+		unit->parasiteFlags = 0;
+		unit->isBlind = 0;
+
+		if (unit->ensnareTimer != 0) {
+			unit->ensnareTimer = 0;
+			unit->removeOverlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
+			unit->ensnareTimer = 0;
+			//specific update following ensnare removal
+			unit->updateSpeed();
+		}
+
+		if (unit->plagueTimer != 0) {
+			unit->plagueTimer = 0;
+			unit->removeOverlay(ImageId::PlagueOverlay_Small, ImageId::PlagueOverlay_Large);
+			unit->plagueTimer = 0;
+		}
+
+		if (unit->irradiateTimer != 0) {
+			unit->irradiateTimer = 0;
+			unit->removeOverlay(ImageId::Irradiate_Small, ImageId::Irradiate_Large);
+			unit->irradiateTimer = 0;
+
+			//specific updates following irradiate removal
+			unit->irradiatedBy = NULL;
+			unit->irradiatePlayerId = 8;
+		}
+
+		if (scbw::get_generic_timer(unit, ValueId::EnergyDecay) > 0) {
+			scbw::set_generic_timer(unit, ValueId::EnergyDecay, 0);
+			unit->removeOverlay(1107, 1109);
+		}
+
+		if (unit->lockdownTimer != 0)
+			unit->removeLockdown();
+
+		if (unit->maelstromTimer != 0)
+			unit->removeMaelstrom();
+
+		if (unit->acidSporeCount != 0)
+			unit->removeAcidSpores();
+
+		//was hardcoded in original code
+		scbw::refreshConsole();
+	}
+
 } //scbw

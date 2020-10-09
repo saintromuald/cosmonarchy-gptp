@@ -496,11 +496,10 @@ namespace hooks {
 			bool bStopHere = false;
 
 			// TODO: Finish Defensive Matrix changes
-			/*
-			if (unit->defensiveMatrixTimer == 69) {
-				// TODO: Replace with a call to Restore?
-				removeAllStatusEffects(unit);
-			}*/
+			
+			if (unit->defensiveMatrixTimer == 168) {
+				scbw::restoreFunc(unit);
+			}
 
 			//HP regeneration
 			if (
@@ -855,27 +854,7 @@ namespace {
 			MOV units_in_bounds, EAX
 			POPAD
 		}
-
 		return units_in_bounds;
-
-	}
-
-
-	// \\
-
-	void removeAllStatusEffects(CUnit* unit) {
-		unit->removeAcidSpores();
-		unit->removeLockdown();
-		unit->removeMaelstrom();
-		unit->removeStasisField();
-		/*
-		unit->ensnareTimer = 0;
-		unit->irradiateTimer = 0;
-		unit->isBlind = 0;
-		unit->parasiteFlags = 0;
-		unit->plagueTimer = 0;
-		unit->stimTimer = 0;
-		unit->unusedTimer = 0;*/
 	}
 
 }

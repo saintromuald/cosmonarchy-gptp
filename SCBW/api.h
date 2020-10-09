@@ -363,5 +363,6 @@ s32 getCliffAdvantage(CUnit* unit, u8 weapon = NULL);
 void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType);
 bool isSlowed(CUnit* unit);
 bool isStunned(CUnit* unit);
+void restoreFunc(CUnit* unit);
 
 } //scbw

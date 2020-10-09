@@ -79,7 +79,6 @@ namespace hooks {
 		target->irradiatedBy = attacker;
 		target->irradiatePlayerId = attackingPlayerId;
 		scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::RadiationShockwaveTimer, (4*24)+1, 0);
-		scbw::printText("Send command!");
 	};
 
 	//bullet is not normally part of the function, so if the function is called
@@ -142,73 +141,8 @@ namespace hooks {
 		if(target->status & UnitStatus::IsHallucination)
 			target->remove();
 		else {
-
 			//create impact overlay
-
-			u32 overlayImageId;
-			CUnit* overlayTargetUnit;
-
-			if(units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay)
-				overlayImageId = ImageId::RestorationHit_Medium;
-			else
-			if(units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay)
-				overlayImageId = ImageId::RestorationHit_Large;
-			else
-				overlayImageId = ImageId::RestorationHit_Small;
-
-			if(target->subunit != NULL)
-				overlayTargetUnit = target->subunit;
-			else
-				overlayTargetUnit = target;
-
-			(overlayTargetUnit->sprite)->createTopOverlay(overlayImageId,0,0,0);
-
-			//remove status effects and corresponding overlays
-			//timers set to 0 twice reflect the original code
-
-			target->parasiteFlags = 0;
-			target->isBlind = 0;
-
-			if(target->ensnareTimer != 0) {
-
-				target->ensnareTimer = 0;
-				target->removeOverlay(ImageId::EnsnareOverlay_Small,ImageId::EnsnareOverlay_Large);
-				target->ensnareTimer = 0;
-
-				//specific update following ensnare removal
-				target->updateSpeed();
-
-			}
-
-			if(target->plagueTimer != 0) {
-				target->plagueTimer = 0;
-				target->removeOverlay(ImageId::PlagueOverlay_Small,ImageId::PlagueOverlay_Large);
-				target->plagueTimer = 0;
-			}
-
-			if(target->irradiateTimer != 0) {
-				target->irradiateTimer = 0;
-				target->removeOverlay(ImageId::Irradiate_Small,ImageId::Irradiate_Large);
-				target->irradiateTimer = 0;
-
-				//specific updates following irradiate removal
-				target->irradiatedBy = NULL;
-				target->irradiatePlayerId = 8;
-
-			}
-
-			if(target->lockdownTimer != 0)
-				target->removeLockdown();
-
-			if(target->maelstromTimer != 0)
-				target->removeMaelstrom();
-
-			if(target->acidSporeCount != 0)
-				target->removeAcidSpores();
-
-			//was hardcoded in original code
-			scbw::refreshConsole();
-
+			scbw::restoreFunc(target);
 		}
 
 	} //void RestoreHit(CUnit* target)
@@ -492,8 +426,6 @@ namespace hooks {
 				else
 				if(current_unit->stasisTimer == 0) { //don't work against units in stasis
 
-/*					current_unit->energy = 0;
-					current_unit->shields = 0;*/ // Original code
 					current_unit->energy -= 100;
 					current_unit->shields -= 100;
 
