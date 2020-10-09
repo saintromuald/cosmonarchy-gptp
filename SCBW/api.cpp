@@ -1448,6 +1448,7 @@ s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
 			unit->irradiatePlayerId = 8;
 		}
 
+		// Remove Energy Decay
 		if (scbw::get_generic_timer(unit, ValueId::EnergyDecay) > 0) {
 			scbw::set_generic_timer(unit, ValueId::EnergyDecay, 0);
 			unit->removeOverlay(1107, 1109);
