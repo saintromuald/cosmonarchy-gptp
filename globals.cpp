@@ -141,7 +141,7 @@ void globals::register_pariah_hit(CUnit* source, CUnit* target){
 
 
 bool globals::was_already_hit_by_gladius_bullet(CBullet* bullet, CUnit* target) {
-	for (auto a : gladiusBullets) {
+	for (auto &a : gladiusBullets) {
 		if (bullet == a.bullet) {
 			for (auto b : a.already_hit) {
 				if (b == target) {
@@ -153,7 +153,7 @@ bool globals::was_already_hit_by_gladius_bullet(CBullet* bullet, CUnit* target) 
 	return false;
 }
 void globals::add_gladius_hit(CBullet* bullet, CUnit* target) {
-	for (auto a : gladiusBullets) {
+	for (auto &a : gladiusBullets) {
 		if (a.bullet == bullet) {
 			a.already_hit.push_back(target);
 			return;
@@ -161,7 +161,6 @@ void globals::add_gladius_hit(CBullet* bullet, CUnit* target) {
 	}
 	gladiusBullet gb(bullet, { target });
 	gladiusBullets.push_back(gb);
-
 }
 void globals::createSalamanderFire(int x, int y, u8 player,u8 elevationLevel, bool addImpactValue) {
 	if (addImpactValue) {
