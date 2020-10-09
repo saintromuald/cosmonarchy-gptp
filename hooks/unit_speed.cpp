@@ -56,7 +56,6 @@ namespace hooks {
 		// Kaiser Rampage upgrade: gains 150% movespeed on kill for 1 second
 		if (unit->id == UnitId::ZergUltralisk) {
 			if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
-
 				speed += speed;
 			}
 		}
@@ -75,17 +74,18 @@ namespace hooks {
 			}
 		}
 
-
 		if (decrease > 0) {
 			for (int i = 0; i<decrease; i++) {
 				speed /= 2;
 			}
 		}
 
-		// Malediction upgrade: Apply movespeed slow to Maelstrom victims once stun wears off
+		// Malediction: Apply movespeed slow to Maelstrom victims once stun wears off
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::MaledictionSlow, 0) > 1) {
 			speed /= 2;
 		}
+
+		// Lobotomy Mine slow
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::LobotomySlow, 0) > 1) {
 			speed /= 2;
 		}
@@ -132,8 +132,10 @@ namespace hooks {
 			}
 		}
 
-		// Panoptus Upgrade
-		else if (unit->id == UnitId::ProtossPanoptus || unit->id == UnitId::Hero_Mojo || unit->id == UnitId::Hero_Artanis)
+		// Leftover movement speed code
+		else if (unit->id == UnitId::ProtossPanoptus
+		|| unit->id == UnitId::Hero_Mojo
+		|| unit->id == UnitId::Hero_Artanis)
 			speed = 1707;
 
 		// Muscular Augment upgrade (Hydralisk): gains 150% movespeed
@@ -191,11 +193,9 @@ namespace hooks {
 			u32 berthCountSpeed = unitCountTable[UnitId::ZergOthstolethBerth].player[unit->playerId];
 			if (berthCountSpeed) {
 				speed *= 6;
-
 			}
 			else if (quayCountSpeed) {
 				speed *= 5;
-
 			}
 			else if (irisCountSpeed) {
 				speed *= 4;

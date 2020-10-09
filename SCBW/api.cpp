@@ -1421,9 +1421,18 @@ s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
 
 		//remove status effects and corresponding overlays
 		//timers set to 0 twice reflect the original code
+
+		// Remove Parasite
+		if (scbw::get_generic_timer(unit, ValueId::ParasiteArmTimer) > 0) {
+			scbw::set_generic_timer(unit, ValueId::ParasiteArmTimer, 0);
+			unit->removeOverlay(1031);
+		}
+
+		// Remove default flags
 		unit->parasiteFlags = 0;
 		unit->isBlind = 0;
 
+		// Remove Ensnare
 		if (unit->ensnareTimer != 0) {
 			unit->ensnareTimer = 0;
 			unit->removeOverlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
@@ -1432,12 +1441,14 @@ s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
 			unit->updateSpeed();
 		}
 
+		// Remove Plague
 		if (unit->plagueTimer != 0) {
 			unit->plagueTimer = 0;
 			unit->removeOverlay(ImageId::PlagueOverlay_Small, ImageId::PlagueOverlay_Large);
 			unit->plagueTimer = 0;
 		}
 
+		// Remove Irradiate
 		if (unit->irradiateTimer != 0) {
 			unit->irradiateTimer = 0;
 			unit->removeOverlay(ImageId::Irradiate_Small, ImageId::Irradiate_Large);
@@ -1450,16 +1461,53 @@ s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
 
 		// Remove Energy Decay
 		if (scbw::get_generic_timer(unit, ValueId::EnergyDecay) > 0) {
-			scbw::set_generic_timer(unit, ValueId::EnergyDecay, 0);
-			unit->removeOverlay(1107, 1109);
+			scbw::set_generic_timer(unit, ValueId::EnergyDecay, 1);
 		}
 
+		// Remove armor rend (generic)
+		if (scbw::get_generic_value(unit, ValueId::ArmorReduce) > 0) {
+			scbw::set_generic_value(unit, ValueId::ArmorReduce, 0);
+		}
+
+		// Remove Malediction
+		if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 0) {
+			scbw::set_generic_timer(unit, ValueId::MaledictionSlow, 1);
+		}
+
+		// Remove Observance
+		if (scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) > 0) {
+			scbw::set_generic_timer(unit, ValueId::ObservanceTimerDebuff, 1);
+		}
+
+		// Remove Knockout Drivers
+		if (scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) > 0) {
+			scbw::set_generic_timer(unit, ValueId::KnockoutDriversTimer, 1);
+		}
+
+		// Remove Hallucination
+		if (scbw::get_generic_timer(unit, ValueId::HallucinatingTimer) > 0) {
+			scbw::set_generic_timer(unit, ValueId::HallucinatingTimer, 1);
+		}
+
+		// Remove Captivating Claws
+		if (scbw::get_generic_timer(unit, ValueId::CaptivatingClawsTimer) > 0) {
+			scbw::set_generic_timer(unit, ValueId::CaptivatingClawsTimer, 1);
+		}
+
+		// Remove Lobotomy Mine slow
+		if (scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0) {
+			scbw::set_generic_timer(unit, ValueId::LobotomySlow, 1);
+		}
+
+		// Remove Lockdown
 		if (unit->lockdownTimer != 0)
 			unit->removeLockdown();
 
+		// Remove Maelstrom
 		if (unit->maelstromTimer != 0)
 			unit->removeMaelstrom();
 
+		// Remove Devourer Acid Spores
 		if (unit->acidSporeCount != 0)
 			unit->removeAcidSpores();
 
