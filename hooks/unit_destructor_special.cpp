@@ -284,6 +284,8 @@ void unitDestructorSpecialHook(CUnit* unit) {
 			web->removeTimer = 5 * 24;
 		}
 	}
+
+	// Simulacrum Autovitality behavior
 	if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
 		u32 range = 5*32;
 		scbw::UnitFinder unitFinder(unit->getX() - range,
@@ -292,91 +294,23 @@ void unitDestructorSpecialHook(CUnit* unit) {
 			unit->getY() + range);
 		unitFinder.forEach(simulacrumProc(unit));
 	}
+
+	// Barghest Robotic Sapience behavior
 	if (unit->id == UnitId::ProtossBarghest) {
 		u32 range = 5 * 32;
 		scbw::UnitFinder unitFinder(unit->getX() - range, unit->getY() - range, unit->getX() + range, unit->getY() + range);
 		unitFinder.forEach(barghestProc(unit));
 	}
+
+	// Clarion Phase Link behavior
 	if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ClearClarionLinks, 0, 0, 0);
 	}
+
+	// Irradiate Radiation Shockwave enhancement
 	if (unit->irradiateTimer > 0) {
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 1, 0);
 	}
-	/*	if(unit->_unknown_0x026 & 0x2){
-				//scbw::printText("Radiation Shockwave detected");
-				unit->_unknown_0x026 &= ~0x2;
-				//radiation shockwave
-
-				CThingy* emp_sprite;
-				emp_sprite = createThingyFunc(371, unit->position.x, unit->position.y, 0);
-				if (emp_sprite != NULL) {
-					emp_sprite->sprite->elevationLevel = 19; //0x13
-					setThingyVisibilityFlagsFunc(emp_sprite);
-				}				
-
-				static u16* const maxBoxRightValue =			(u16*) 0x00628450;
-				static u16* const maxBoxBottomValue =			(u16*) 0x006284B4;	
-				Box16 area_of_effect;	
-				CUnit** unitsInAreaOfEffect;
-				CUnit* current_unit;	
-				area_of_effect.left = (u16)unit->sprite->position.x -  weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-				area_of_effect.right = (u16)unit->sprite->position.x +  weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-				area_of_effect.top = (u16)unit->sprite->position.y -  weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-				area_of_effect.bottom = (u16)unit->sprite->position.y +  weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-				if(area_of_effect.left < 0)
-					area_of_effect.left = 0;
-				else
-				if(area_of_effect.right > *maxBoxRightValue)
-					area_of_effect.right = *maxBoxRightValue;
-		
-				//check and fix effect if beyond height of map
-				if(area_of_effect.top < 0)
-					area_of_effect.top = 0;
-				else
-				if(area_of_effect.bottom > *maxBoxBottomValue)
-					area_of_effect.bottom = *maxBoxBottomValue;
-				unitsInAreaOfEffect = getAllUnitsInBounds_copy(&area_of_effect);
-				current_unit = *unitsInAreaOfEffect;	
-				while(current_unit != NULL) {
-					if(
-						current_unit != unit->irradiatedBy &&				//EMP doesn't affect the attacker
-						(
-							unit->irradiatedBy == NULL ||					//EMP doesn't affect the attacker
-							current_unit != unit->irradiatedBy->subunit	//subunit
-						)
-					)
-					{
-		
-						if(current_unit->status & UnitStatus::IsHallucination)
-							current_unit->remove();
-						else
-						if(current_unit->stasisTimer == 0) { //don't work against units in stasis
-		
-							current_unit->energy = 0;
-							current_unit->shields = 0;
-		
-							if(
-								current_unit->sprite->flags & CSprite_Flags::Selected &&
-								current_unit->sprite != NULL
-							) 
-								setAllImageGroupFlagsPal11(current_unit->sprite);
-		
-						}
-		
-					}
-		
-					unitsInAreaOfEffect++;					//go on next unit of the list (or null)
-					current_unit = *unitsInAreaOfEffect;
-		
-				} 
-				*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
-				*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[*tempUnitsListArraysCountsListLastIndex];
-		}
-		else {
-				//scbw::printText("Radiation Shockwave is not detected");
-		}
-	}*/
 
 	// Parasite - spawning broodlings on death
 	if (unit->parasiteFlags != 0) {

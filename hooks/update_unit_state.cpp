@@ -594,7 +594,7 @@ namespace hooks {
 		// Radiation Shockwave - Irradiate enhancement
 			if (unit->irradiateTimer > 0) {
 				if (scbw::get_generic_value(unit, ValueId::RadiationShockwaveCount)) {
-					scbw::printText("Radiation Shockwave detected");
+//					scbw::printText("Radiation Shockwave detected");
 //					unit->_unknown_0x026 &= ~0x2;
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 0, 0);
 

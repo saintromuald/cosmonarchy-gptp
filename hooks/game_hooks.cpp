@@ -872,10 +872,6 @@ namespace hooks {
 					unit->updateSpeed();
 				}
 
-				if (unit->defensiveMatrixTimer) {
-					scbw::printFormattedText("Timer: %d", unit->defensiveMatrixTimer);
-				}
-
 				// Radiation Shockwave 5-second timer
 				if (scbw::get_generic_timer(unit, ValueId::RadiationShockwaveTimer) == 1) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::RadiationShockwaveTimer, 0, 0);
