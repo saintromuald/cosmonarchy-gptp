@@ -40,13 +40,13 @@ namespace {
 	Bool32 function_004F1870(CUnit* unit, int x, int y);								//F1870
 
 	// For updatePlacementStateForPlacementBox
-	s32 canBuildOnTileLocation(CUnit* a1, int a2, int a3, int a4, int unitType, int a6, int a7, int a8, int a9);												// 00473FB0
+	s32 canBuildOnTileLocation(CUnit* a1, s8 a2, s16 a3, s16 a4, s32 unitType, s32 a6, s32 a7, s32 a8, s32 a9); // 00473FB0
 
 	// For refreshScreen
 	s32 updatePlacementStateForPlacementBox(); // 0048DCE0
-	int unk_buildingPlacementRelated(int a1, int a2); // 0048D7F0
-	s32 initPlacementBoxPos(int a1, Point16* a2); // 0048D660
-	char unk_buildingPlacementRelatedMouse(int a1, int a2); // 0048D7B0
+	s32 unk_buildingPlacementRelated(s32 a1, s32 a2); // 0048D7F0
+	s32 initPlacementBoxPos(s32 a1, Point16* a2); // 0048D660
+	char unk_buildingPlacementRelatedMouse(s32 a1, s32 a2); // 0048D7B0
 
 } //unnamed namespace
 
@@ -645,6 +645,11 @@ void orders_SCVBuild(CUnit* unit) {
 		s32 v0; // esi
 		s32 result; // eax
 
+		if (*activePortraitUnit == NULL) {
+			return 0;
+		}
+
+		scbw::printText("First call");
 		v0 = canBuildOnTileLocation(
 			*activePortraitUnit,
 			*unk_placementRelated,
@@ -655,30 +660,21 @@ void orders_SCVBuild(CUnit* unit) {
 			1,
 			0,
 			0);
+		scbw::printText("First call over");
 		u32 source = *placeBuildBaseType;
 		u32 target = *placeBuildingUnitType;
-		int addon_x = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
-		int addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
-		if (target == UnitId::TerranFutureStation) {
-			if (source == UnitId::TerranAcademy || source == UnitId::TerranArmory) {
-				addon_x = 96;
-				addon_y = 0;
-			}
-			else if (source == UnitId::TerranDrydock) {
-				addon_x = 96;
-				addon_y = 48;
-			}
-		}
-		else if (target == UnitId::TerranQuarry) {
+		s32 addon_x = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
+		s32 addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
+		if (target == UnitId::TerranQuarry) {
 			addon_x = 128;
-			addon_y=32;
+			addon_y = 32;
 		}
 		if (!isPlacingAddon
 			|| (result = canBuildOnTileLocation(
 				*activePortraitUnit,
 				*unk_placementRelated,
-				*placeBuildingX - addon_x,
-				*placeBuildingY - addon_y,
+				(*placeBuildingX) - addon_x,
+				(*placeBuildingY) - addon_y,
 				*placeBuildBaseType,
 				0,
 				1,
@@ -690,43 +686,32 @@ void orders_SCVBuild(CUnit* unit) {
 		return result;
 	}
 
-	char refreshScreen(int ecx0) { // 0048DDC0
+	char refreshScreen(s32 ecx0) { // 0048DDC0
 		char result;
-		int v2;
-		int v3;
-		int v4;
+		s32 v2;
+		s32 v3;
+		s32 v4;
 		Point16 v6;
 
 		v6 = *(Point16*)&ecx0;
 		result = (char)IS_PLACING_BUILDING;
-		if (IS_PLACING_BUILDING)
-		{
+		if (IS_PLACING_BUILDING) {
 			ByteOperations::SetLowWord(ecx0, mouse->y);
 			v6.x = mouse->x;
 			v6.y = mouse->y;
 			if (initPlacementBoxPos(ecx0, &v6)) {
 				*placeBuildingMessageId = updatePlacementStateForPlacementBox();
 				refreshLayer3And4();
-				unk_buildingPlacementRelated(1, (int)&v6);
+				unk_buildingPlacementRelated(1, (s32)&v6);
 				if (isPlacingAddon) {
 					v4 = *placeBuildingUnitId - UnitId::TerranCommandCenter;
 					v6.x = units_dat::AddonPlacement[v4].x;
 					v6.y = units_dat::AddonPlacement[v4].y;
-					if (*placeBuildingUnitId == UnitId::TerranFutureStation) {
-						if (*placeBuildBaseType == UnitId::TerranAcademy || *placeBuildBaseType == UnitId::TerranArmory) {
-							v6.x = 96;
-							v6.y = 0;
-						}
-						else if (*placeBuildBaseType == UnitId::TerranDrydock) {
-							v6.x = 96;
-							v6.y = 48;
-						}
-					}
-					else if (*placeBuildingUnitId == UnitId::TerranQuarry) {
+					if (*placeBuildingUnitId == UnitId::TerranQuarry) {
 						v6.x = 128;
 						v6.y = 32;
 					}
-					unk_buildingPlacementRelated(0, (int)&v6);
+					unk_buildingPlacementRelated(0, (s32)&v6);
 				}
 				result = refreshLayer3And4();
 			}
@@ -1080,9 +1065,7 @@ namespace {
 
 	const u32 Func_Sub4EB9C0 = 0x004EB9C0;
 	bool function_004EB9C0(CUnit* unit, int x, int y) {
-
 		static Bool32 bPreResult;
-
 		__asm {
 			PUSHAD
 			MOV EDX, unit
@@ -1092,16 +1075,12 @@ namespace {
 			MOV bPreResult, EAX
 			POPAD
 		}
-
 		return (bPreResult != 0);
-
 	};
 
 	const u32 Func_Sub4F1870 = 0x004F1870;
 	Bool32 function_004F1870(CUnit* unit, int x, int y) {
-
 		static Bool32 rValue;
-
 		__asm {
 			PUSHAD
 			PUSH y
@@ -1111,7 +1090,6 @@ namespace {
 			MOV rValue, EAX
 			POPAD
 		}
-
 		return rValue;
 
 	};
@@ -1119,25 +1097,23 @@ namespace {
 	// For updatePlacementStateForPlacementBox
 
 	const u32 Func_canBuildOnTileLocation = 0x00473FB0;
-	s32 canBuildOnTileLocation(CUnit* a1, int a2, int a3, int a4, int unitType, int a6, int a7, int a8, int a9) {
+	s32 canBuildOnTileLocation(CUnit* a1, s8 a2, s16 a3, s16 a4, s32 unitType, s32 a6, s32 a7, s32 a8, s32 a9) {
 		static s32 result;
-
 		__asm {
 			PUSHAD
-			PUSH a1
-			PUSH a2
-			PUSH a3
-			PUSH a4
-			PUSH unitType
-			PUSH a6
-			PUSH a7
-			PUSH a8
 			PUSH a9
+			PUSH a8
+			PUSH a7
+			PUSH a6
+			PUSH unitType
+			PUSH a4
+			PUSH a3
+			PUSH a2
+			PUSH a1
 			CALL Func_canBuildOnTileLocation
 			MOV result, EAX
 			POPAD
 		}
-
 		return result;
 	};
 
@@ -1146,7 +1122,6 @@ namespace {
 	const u32 Func_updatePlacementStateForPlacementBox = 0x0048DCE0;
 	s32 updatePlacementStateForPlacementBox() {
 		static s32 result;
-
 		__asm {
 			PUSHAD
 			CALL Func_updatePlacementStateForPlacementBox
@@ -1157,13 +1132,12 @@ namespace {
 	}
 
 	const u32 Func_unk_buildingPlacementRelated = 0x0048D7F0;
-	int unk_buildingPlacementRelated(int a1, int a2) {
-		static int result;
-
+	s32 unk_buildingPlacementRelated(s32 a1, s32 a2) {
+		static s32 result;
 		__asm {
 			PUSHAD
-			MOV EAX, a1
 			PUSH a2
+			MOV EAX, a1
 			CALL Func_unk_buildingPlacementRelated
 			MOV result, EAX
 			POPAD
@@ -1172,9 +1146,8 @@ namespace {
 	}
 
 	const u32 Func_initPlacementBoxPos = 0x0048D660;
-	s32 initPlacementBoxPos(int a1, Point16* a2) {
+	s32 initPlacementBoxPos(s32 a1, Point16* a2) {
 		static s32 result;
-
 		__asm {
 			PUSHAD
 			MOV ECX, a1
@@ -1187,9 +1160,8 @@ namespace {
 	}
 
 	const u32 Func_unk_buildingPlacementRelatedMouse = 0x0048D7B0;
-	char unk_buildingPlacementRelatedMouse(int a1, int a2) {
-		static int result;
-
+	char unk_buildingPlacementRelatedMouse(s32 a1, s32 a2) {
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, a1

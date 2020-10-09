@@ -230,8 +230,8 @@ SCBW_DATA(		u32*,			activeTileHandle,			0x006D1260)
 
 // For updatePlacementStateForPlacementBox
 SCBW_DATA(		u8*,			unk_placementRelated,		0x0064088C);
-SCBW_DATA(		u32*,			placeBuildingX,				0x00640890);
-SCBW_DATA(		u32*,			placeBuildingY,				0x00640892);
+SCBW_DATA(		u16*,			placeBuildingX,				0x00640890);
+SCBW_DATA(		u16*,			placeBuildingY,				0x00640892);
 SCBW_DATA(		u32*,			isPlacingAddon,				0x00640884);
 SCBW_DATA(		u16*,		    placeBuildingUnitType,		0x0064088A);
 SCBW_DATA(		u32*,			placeBuildBaseType,			0x00640888);

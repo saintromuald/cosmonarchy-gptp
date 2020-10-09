@@ -45,48 +45,38 @@ namespace {
 	};
 
 	void __declspec(naked) orders_SCVBuildWrapper() {
-
 		static CUnit* unit;
-
 		__asm {
-
 			PUSH EBP
 			MOV EBP, ESP
-
 			MOV EAX, [EBP+0x08]
 			MOV unit, EAX
-
 			PUSHAD
-
 		}
-
 		hooks::orders_SCVBuild(unit);
-
 		__asm {
 			POPAD
 			POP EBP
 			RETN 4
 		}
-
 	};
 
 	void __declspec(naked) updatePlacementStateForPlacementBox_Wrapper() { // 0048DCE0
-		static signed int result;
-
+		static s32 result;
 		__asm {
 			PUSHAD
 		}
 		result = hooks::updatePlacementStateForPlacementBox();
 		__asm {
 			POPAD
+			MOV EAX, result
 			RETN
 		}
 	}
 
 	void __declspec(naked) refreshScreen_Wrapper() { // 0048DDC0
-		static int ecx0;
+		static s32 ecx0;
 		static char result;
-
 		__asm {
 			MOV ecx0, ECX
 			PUSHAD
@@ -94,6 +84,7 @@ namespace {
 		result = hooks::refreshScreen(ecx0);
 		__asm {
 			POPAD
+			MOVZX EAX, result
 			RETN
 		}
 	}
