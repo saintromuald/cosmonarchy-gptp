@@ -43,7 +43,7 @@ namespace {
 	s32 canBuildOnTileLocation(CUnit* a1, s8 a2, s16 a3, s16 a4, s32 unitType, s32 a6, s32 a7, s32 a8, s32 a9); // 00473FB0
 
 	// For refreshScreen
-	s32 updatePlacementStateForPlacementBox(); // 0048DCE0
+	s32 updatePlacementStateForPlacementBox_Func(); // 0048DCE0
 	s32 unk_buildingPlacementRelated(s32 a1, s32 a2); // 0048D7F0
 	s32 initPlacementBoxPos(s32 a1, Point16* a2); // 0048D660
 	char unk_buildingPlacementRelatedMouse(s32 a1, s32 a2); // 0048D7B0
@@ -652,9 +652,9 @@ void orders_SCVBuild(CUnit* unit) {
 		scbw::printText("First call");
 		v0 = canBuildOnTileLocation(
 			*activePortraitUnit,
-			*unk_placementRelated,
-			*placeBuildingX,
-			*placeBuildingY,
+			(u8)*unk_placementRelated,
+			(u16)*placeBuildingX,
+			(u16)*placeBuildingY,
 			*placeBuildingUnitType,
 			1,
 			1,
@@ -672,10 +672,10 @@ void orders_SCVBuild(CUnit* unit) {
 		if (!isPlacingAddon
 			|| (result = canBuildOnTileLocation(
 				*activePortraitUnit,
-				*unk_placementRelated,
+				(u8)*unk_placementRelated,
 				(*placeBuildingX) - addon_x,
-				(*placeBuildingY) - addon_y,
-				*placeBuildBaseType,
+				(u16)(*placeBuildingY) - addon_y,
+				(u16)*placeBuildBaseType,
 				0,
 				1,
 				0,
@@ -1120,7 +1120,7 @@ namespace {
 	// For refreshScreen
 
 	const u32 Func_updatePlacementStateForPlacementBox = 0x0048DCE0;
-	s32 updatePlacementStateForPlacementBox() {
+	s32 updatePlacementStateForPlacementBox_Func() {
 		static s32 result;
 		__asm {
 			PUSHAD
