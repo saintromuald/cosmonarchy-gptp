@@ -577,6 +577,7 @@ bool isZergEgg(u16 id, bool allow_normal_eggs, bool allow_larvae) {
 	case UnitId::ZergLurkerEgg:
 	case UnitId::EggVorvaling:
 	case UnitId::EggNathrokor:
+	case UnitId::EggKalkaleth:
 	case UnitId::EggBasilisk:
 	case UnitId::EggAlkajelisk:
 	case UnitId::EggKeskathalor:
@@ -605,6 +606,7 @@ bool isConventionalUnitMorphResult(u16 id) {
 	case UnitId::ZergGorgoleth:
 	case UnitId::ZergVorvaling:
 	case UnitId::ZergNathrokor:
+	case UnitId::ZergKalkaleth:
 	case UnitId::ZergBasilisk:
 	case UnitId::ZergLurker:
 	case UnitId::ZergIroleth:
@@ -635,6 +637,7 @@ bool isConventionalUnitMorphSource(u16 id, bool allow_larvae) {
 	case UnitId::ZergUltralisk:
 	case UnitId::ZergMutalisk:
 	case UnitId::ZergHydralisk:
+	case UnitId::ZergNathrokor:
 	case UnitId::ZergZergling:
 	case UnitId::ZergIroleth:
 	case UnitId::ZergOverlord:
@@ -665,6 +668,7 @@ bool isZergBuildingMorphResult(u16 id){
 	case UnitId::ZergLurkerDen:
 	case UnitId::ZergVorvalPond:
 	case UnitId::ZergNathrokLake:
+	case UnitId::ZergKalkathBloom:
 	case UnitId::ZergIrolethQuay:
 	case UnitId::ZergOthstolethBerth:
 		return true;
@@ -684,6 +688,7 @@ bool isZergBuildingMorphSource(u16 id){
 	case UnitId::ZergCreepColony:
 	case UnitId::ZergHydraliskDen:
 	case UnitId::ZergSpawningPool:
+	case UnitId::ZergNathrokLake:
 	case UnitId::ZergOverlordIris:
 	case UnitId::ZergIrolethQuay:
 		return true;

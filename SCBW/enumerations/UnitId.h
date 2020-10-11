@@ -517,6 +517,7 @@ enum Enum {
 
 //Zerg-Unit
 	ZergAlkajelisk									= 48,		// Torrasque
+	ZergKalkaleth									= 51,		// Infested Kerrigan
 	ZergNathrokor									= 54,		// Devouring One
 	ZergGorgoleth									= 56,		// Kukulza Guardian
 	ZergOthstoleth									= 57,		// Yggdrasil
@@ -526,6 +527,7 @@ enum Enum {
 	ZergIroleth										= 222,		// Protoss Gas Orb Type 1
 
 //Zerg-Egg
+	EggKalkaleth									= 29,		// Norad II
 	EggOthstoleth									= 95,		// Ragnasaur
 	EggDevourer										= 173,		// Khaydarin Crystal Formation
 	EggGorgoleth									= 179,		// Cave
@@ -541,6 +543,7 @@ enum Enum {
 
 //Zerg-Building
 	ZergMutationPit									= 145,		// Unused Zerg 1
+	ZergKalkathBloom								= 147,		// Zerg Overmind (With Shell)
 	ZergGorgolethApiary								= 148,		// Zerg Overmind
 	ZergChrysalis									= 150,		// Mature Chrysalis
 	ZergIrolethQuay									= 152,		// Cerebrate Daggoth

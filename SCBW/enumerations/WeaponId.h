@@ -162,14 +162,14 @@ enum Enum {
 	ArgosLaserBatteries							= 94,			// Phobos weapon 1
 	AcheronMissiles								= 95,			// Phobos weapon 2
 	PowerSiphon									= 101,			// Ability targeting - Savant
-	IncendiaryPayload							= 116,			// Salamander behavior damage
+	FragmentaryShells							= 116,			// Cyclops behavior damage
 	Observance									= 122,			// Ability targeting - Science Vessel
 	Dirge										= 123,			// Madrigal Dirge damage
+	IncendiaryPayload							= 124,			// Salamander behavior damage
 	JacksonCannon								= 125,			// Wyvern weapon + ability targeting - Wyvern
 	Skyfall										= 126,			// Ability targeting - Paladin
 	EnergyDecay									= 127,			// Ability targeting - Savant
 	IonCannon									= 129,			// Ion Cannon weapon
-	FragmentaryShells							= 116,			// Cyclops behavior damage
 
 	// Protoss \\
 	
@@ -205,5 +205,6 @@ enum Enum {
 	SerratedCleavers							= 47,			// Gorgoleth weapon
 	ParasiticSpores								= 49,			// Alkajelisk behavior weapon
 	BasiliskCorrosiveAcid						= 50,			// Basilisk weapon
+	ToxicSpray									= 117,			// Kalkaleth weapon
 	};
 }
