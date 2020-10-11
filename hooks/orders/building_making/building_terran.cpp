@@ -669,7 +669,7 @@ void orders_SCVBuild(CUnit* unit) {
 			addon_x = 128;
 			addon_y = 32;
 		}
-		if (!isPlacingAddon
+		if (!*isPlacingAddon
 			|| (result = canBuildOnTileLocation(
 				*activePortraitUnit,
 				(u8)*unk_placementRelated,
@@ -700,10 +700,10 @@ void orders_SCVBuild(CUnit* unit) {
 			v6.x = mouse->x;
 			v6.y = mouse->y;
 			if (initPlacementBoxPos(ecx0, &v6)) {
-				*placeBuildingMessageId = updatePlacementStateForPlacementBox();
+				*placeBuildingMessageId = updatePlacementStateForPlacementBox_Func();
 				refreshLayer3And4();
 				unk_buildingPlacementRelated(1, (s32)&v6);
-				if (isPlacingAddon) {
+				if (*isPlacingAddon) {
 					v4 = *placeBuildingUnitId - UnitId::TerranCommandCenter;
 					v6.x = units_dat::AddonPlacement[v4].x;
 					v6.y = units_dat::AddonPlacement[v4].y;
