@@ -324,6 +324,10 @@ namespace hooks {
 					// Phobos missile spawn positions
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::PhobosMissilePos, 6, ImagesDatEntries::OverlaySpecialPtr);
 				}
+				if (weaponId == WeaponId::ToxicSpray) {
+					// Kalkaleth missile spawn position
+					scbw::setMissileSourcePos(unit, weaponId, ValueId::KalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+				}
 				else if (weaponId == WeaponId::PerditionBarrage) {
 					// Salamander missile target positions
 					auto rotate = scbw::get_generic_value(unit, ValueId::SalamanderAtkPos);

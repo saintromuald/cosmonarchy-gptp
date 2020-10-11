@@ -589,10 +589,10 @@ bool isZergEgg(u16 id, bool allow_normal_eggs, bool allow_larvae) {
 	default:
 		break;
 	}
-	if (id == UnitId::larva && allow_larvae) {
+	if (id == UnitId::ZergLarva && allow_larvae) {
 		return true;
 	}
-	if (id == UnitId::egg && allow_normal_eggs) {
+	if (id == UnitId::ZergEgg && allow_normal_eggs) {
 		return true;
 	}
 	return false;
@@ -637,8 +637,8 @@ bool isConventionalUnitMorphSource(u16 id, bool allow_larvae) {
 	case UnitId::ZergUltralisk:
 	case UnitId::ZergMutalisk:
 	case UnitId::ZergHydralisk:
-	case UnitId::ZergNathrokor:
 	case UnitId::ZergZergling:
+	case UnitId::ZergNathrokor:
 	case UnitId::ZergIroleth:
 	case UnitId::ZergOverlord:
 	case UnitId::ProtossHighTemplar:

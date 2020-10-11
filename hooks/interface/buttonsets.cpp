@@ -1058,6 +1058,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ZergKalkaleth && //Kalkaleth Lithe Organelle passive
+									current_button->iconID == IconId::AcidSpore)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk Genesis passive
 									current_button->iconID == IconId::ZergAdvancedBuildings)
 								{

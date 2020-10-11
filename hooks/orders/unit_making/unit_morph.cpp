@@ -186,12 +186,12 @@ namespace hooks {
 						}
 						else {
 							eggId = UnitId::EggVorvaling;
-						}
-						
+						}						
 						break;
-
+					case UnitId::ZergNathrokor:
+						eggId = UnitId::EggKalkaleth;
 					case UnitId::ZergMutalisk:
-						eggId = UnitId::cocoon;
+						eggId = UnitId::ZergCocoon;
 						break;
 					case UnitId::ZergUltralisk:
 						if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergAlkajelisk) {
@@ -340,6 +340,11 @@ namespace hooks {
 				return true;
 			}
 		}
+		if (unit->id == UnitId::ZergNathrokor) {
+			if (morphUnitId == UnitId::ZergKalkaleth) {
+				return true;
+			}
+		}
 		if (unit->id == UnitId::ZergUltralisk) {
 			if (morphUnitId == UnitId::ZergKeskathalor || morphUnitId == UnitId::ZergAlkajelisk) {
 				return true;
@@ -356,7 +361,7 @@ namespace hooks {
 				return true;
 			}
 		}
-		if (unit->id == UnitId::high_templar) {
+		if (unit->id == UnitId::ProtossHighTemplar) {
 			if (morphUnitId == UnitId::ProtossAugur) {
 				return true;
 			}
@@ -408,6 +413,9 @@ namespace hooks {
 			}
 			return UnitId::EggVorvaling;
 		}
+		if (unitId == UnitId::ZergNathrokor) {
+			return UnitId::ZergKalkaleth;
+		}
 		if (unitId == UnitId::ZergUltralisk)
 		{
 			if (resultId == UnitId::ZergAlkajelisk) {
@@ -446,6 +454,9 @@ namespace hooks {
 		}
 		if (eggUnit->id == UnitId::EggNathrokor) {
 			return UnitId::ZergZergling;
+		}
+		if (eggUnit->id == UnitId::EggKalkaleth) {
+			return UnitId::ZergNathrokor;
 		}
 		if (eggUnit->id == UnitId::EggIroleth) {
 			return UnitId::ZergOverlord;
@@ -497,8 +508,8 @@ namespace hooks {
 		if (units_dat::BaseProperty[unitId] & UnitProperty::TwoUnitsIn1Egg)
 			supplyCost *= 2;
 
-		if (unitId == UnitId::lurker)
-			supplyCost -= units_dat::SupplyRequired[UnitId::hydralisk];
+		if (unitId == UnitId::ZergLurker)
+			supplyCost -= units_dat::SupplyRequired[UnitId::ZergHydralisk];
 
 		aiSupplyReserved[playerId] = supplyCost;
 
