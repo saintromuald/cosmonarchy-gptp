@@ -189,7 +189,7 @@ struct CUnit: public CUnitLayout {
 
 	/// Deals damage to shields and hp
   void inflictDamage(s32 damage, CUnit* attacker = NULL,
-	  s32 attackingPlayer = -1, bool notify = true, bool shield_overlay = false, int direction = 0);
+	  s32 attackingPlayer = -1, bool notify = true, bool shield_overlay = false, int direction = 0, bool ignoreDmg128Overflow = false);
   
 
   /// Reduces Defensive Matrix by @p amount, removing it if possible.
