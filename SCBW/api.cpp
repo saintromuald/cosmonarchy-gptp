@@ -892,6 +892,23 @@ bool isStunned(CUnit* unit) {
 	return false;
 }
 
+void adjustAddonX(u16 addonId, u16 sourceId, u16& x) {
+	if (addonId == UnitId::TerranQuarry) {
+		x = 128;
+	}
+}
+void adjustAddonY(u16 addonId, u16 sourceId, u16& y) {
+	if (addonId == UnitId::TerranQuarry) {
+		y = 32;
+	}
+}
+
+void adjustAddonCoordinates(u16 addonId, u16 sourceId, u16& x, u16& y) {
+	adjustAddonX(addonId, sourceId, x);
+	adjustAddonY(addonId, sourceId, y);
+}
+
+
 //-------- Map information --------//
 
 const u32 Func_GetGroundHeightAtPos = 0x004BD0F0;

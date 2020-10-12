@@ -185,6 +185,12 @@ void sendGPTP_aise_cmd(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2, 
 /// Note: This uses TechId::Enum, instead of ScTech::Enum and BwTech::Enum.
 bool hasTechResearched(u8 playerId, u16 techId);
 
+/// Adjusts x,y addon coordinates of quarry and similar unit ids
+
+void adjustAddonX(u16 addonId, u16 sourceId, u16& x);
+void adjustAddonY(u16 addonId, u16 sourceId, u16& y);
+void adjustAddonCoordinates(u16 addonId, u16 sourceId, u16 &x, u16 &y);
+
 u8 getUpgradeMaxLevel(u8 playerId, u8 upgradeId);
 bool hasTechAvailable(u8 playerId, u16 techId);
 //u32 techUseAllowed(CUnit* unit, u16 techId, u32 playerId);
