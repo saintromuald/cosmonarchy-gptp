@@ -620,7 +620,7 @@ namespace hooks {
 						thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
 						scbw::setThingyVisibilityFlags(thingy);
 					}
-					unit->inflictDamage(30 * 256, NULL,-1, false, true);		
+					unit->inflictDamage(30 * 256, NULL,-1, false, true,false,false);		
 				}
 
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::EnergyDecay, 0) == 1) {
