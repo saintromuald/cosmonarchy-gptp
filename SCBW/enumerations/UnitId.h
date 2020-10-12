@@ -466,13 +466,13 @@ enum Enum {
 //Terran-Building
 	TerranMedbay									= 119,		// Starbase / Terran Unused 1
 	TerranMunitionsBay								= 121,		// Repair Bay / Terran Unused 2
+	TerranQuarry									= 174,		// Protoss Temple
 	TerranGallery									= 185,		// Independent Jump Gate
 	TerranSalvoYard									= 189,		// Warp Gate
 	TerranFutureStation								= 192,		// Terran Marker
 	TerranParticleAccelerator						= 200,		// Power Generator
 	TerranNaniteAssembly							= 203,		// Floor Missile Trap
 	TerranTreasury									= 215,		// Flag
-	TerranQuarry									= 220,		// Mineral Cluster Type 1
 	TerranQuantumInstitute							= 223,		// Protoss Gas Orb Type 2
 	TerranDrydock									= 225,		// Zerg Gas Sac Type 2
 

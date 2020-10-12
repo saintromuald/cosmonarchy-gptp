@@ -956,6 +956,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranQuarry &&  //Quarry Meskalloid Stimulant passive 
+									current_button->iconID == IconId::Argus_Jewel)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								
 
 								// PROTOSS \\
