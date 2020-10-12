@@ -441,17 +441,14 @@ namespace hooks {
 			}
 		}
 
-		if (bEnd)
-		{
+		if (bEnd) {
 			target = bullet->attackTarget.unit;
 			bullet->behaviourTypeInternal = 5;
-			if (target != NULL)
-			{
+			if (target != NULL)	{
 				bullet->attackTarget.pt.x = target->sprite->position.x;
 				bullet->attackTarget.pt.y = target->sprite->position.y;
 			}
-			else
-			{
+			else {
 				bullet->attackTarget.unit = 0;
 			}
 			v4 = bullet->sprite;
