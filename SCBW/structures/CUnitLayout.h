@@ -230,6 +230,7 @@ namespace ValueId {
 		NathrokorTimer								= 82,
 		RoboticSapience								= 83,
 		StellarEnforcement							= 84,
+		DisruptionWebDamage							= 85,
 
 
 		EcclesiastStack								= 100,

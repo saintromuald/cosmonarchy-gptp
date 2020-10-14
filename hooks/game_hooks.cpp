@@ -520,7 +520,10 @@ namespace hooks {
 							web->remove();
 						}
 					}
-					
+					if (scbw::get_generic_value(unit, ValueId::DisruptionWebDamage)) {
+						scbw::set_generic_value(unit, ValueId::DisruptionWebDamage, 0);
+						unit->inflictDamage(techdata_dat::EnergyCost[TechId::DisruptionWeb], unit, unit->playerId, false, true);
+					}
 				}
 
 				//
