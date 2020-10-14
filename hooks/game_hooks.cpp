@@ -522,6 +522,7 @@ namespace hooks {
 					}
 					if (scbw::get_generic_value(unit, ValueId::DisruptionWebDamage)) {
 						scbw::set_generic_value(unit, ValueId::DisruptionWebDamage, 0);
+						scbw::printFormattedText("Disruption - Energy Decay - Inflict damage %d", techdata_dat::EnergyCost[TechId::DisruptionWeb]);
 						unit->inflictDamage(techdata_dat::EnergyCost[TechId::DisruptionWeb], unit, unit->playerId, false, true);
 					}
 				}
