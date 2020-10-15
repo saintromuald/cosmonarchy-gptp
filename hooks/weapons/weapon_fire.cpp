@@ -298,7 +298,7 @@ namespace hooks {
 					// Empyrean missile spawn positions
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::EmpyreanMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
 				}
-				if (weaponId == WeaponId::SunchaserMissiles) {
+				else if (weaponId == WeaponId::SunchaserMissiles) {
 					// Centaur missile spawn positions
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::CentaurMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
 				}
@@ -324,7 +324,7 @@ namespace hooks {
 					// Phobos missile spawn positions
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::PhobosMissilePos, 6, ImagesDatEntries::OverlaySpecialPtr);
 				}
-				if (weaponId == WeaponId::ToxicSpray) {
+				else if (weaponId == WeaponId::ToxicSpray) {
 					// Kalkaleth missile spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::KalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 				}
@@ -343,6 +343,27 @@ namespace hooks {
 					}
 					scbw::set_generic_value(unit, ValueId::SalamanderAtkPos, rotate);
 				}
+				else if (weaponId == WeaponId::FuriaMissiles && unit->orderTarget.unit != NULL) {
+					scbw::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+					auto old = unit->orderTarget.unit;
+					auto finderMatch = madrigalFuriaMatch(unit);
+					auto range = weapons_dat::MaxRange[weaponId];
+					auto count = 0;
+					scbw::UnitFinder unitsInSplash(unit->getX() - range, unit->getY() - range, unit->getX() + range, unit->getY() + range);
+					for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
+						CUnit* target = unitsInSplash.getUnit(i);
+						if (finderMatch.match(target)) {
+							count++;
+							if (target != NULL) {
+								unit->orderTarget.unit = target;
+								auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
+									target->getX(), target->getY());
+								scbw::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
+							}
+						}
+					};
+					unit->orderTarget.unit = old;
+				}
 				else {
 					// Madcap - Maverick Feeders passive
 					if (unit->id == UnitId::TerranMadcap) {
@@ -353,27 +374,7 @@ namespace hooks {
 			}
 
 			// Madrigal Furia Missiles
-			if (weaponId == WeaponId::FuriaMissiles && unit->orderTarget.unit != NULL) {
-				scbw::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
-				auto old = unit->orderTarget.unit;
-				auto finderMatch = madrigalFuriaMatch(unit);
-				auto range = weapons_dat::MaxRange[weaponId];
-				auto count = 0;
-				scbw::UnitFinder unitsInSplash(unit->getX() - range, unit->getY() - range, unit->getX() + range, unit->getY() + range);
-				for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
-					CUnit* target = unitsInSplash.getUnit(i);
-					if (finderMatch.match(target)) {
-						count++;
-						if (target != NULL) {
-							unit->orderTarget.unit = target;
-							auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
-								target->getX(), target->getY());
-							scbw::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
-						}
-					}
-				};
-				unit->orderTarget.unit = old;
-			}
+			
 
 			// Tendril Amitosis
 			/*if (weaponId == WeaponId::SubterraneanTentacle && unit->orderTarget.unit != NULL) {
