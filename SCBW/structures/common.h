@@ -29,10 +29,10 @@ struct Point32 {
 };
 
 struct Box16 {
-  s16 left;
-  s16 top;
-  s16 right;
-  s16 bottom;
+  s16 left;     // x
+  s16 top;      // y
+  s16 right;    // w
+  s16 bottom;   // h
 };
 
 struct Box32 {

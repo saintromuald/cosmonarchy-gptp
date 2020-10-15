@@ -296,6 +296,11 @@ SCBW_DATA(		CUnit**,			bulletBounceMissileSource,	0x0064EECC);
 SCBW_DATA(		CUnit**,			bulletBounceMissileTarget,	0x0064EED0);
 SCBW_DATA(		CUnit**,			bulletBounceMissileNext,	0x0064EED4);
 
+// For setUnderDisruptionWeb
+SCBW_DATA(		void**,				unkArray_59CB64,			0x0059CB64); // size of 252
+SCBW_DATA(		CUnit*,				unitReference,				0x0059CB58);
+
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data

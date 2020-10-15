@@ -37,6 +37,10 @@ namespace {
 	Point32 setResourceTarget(CUnit* a1);
 	void ordersNothing2(CUnit* a1);
 	void orderComputerClear(CUnit* a1, __int8 a2);
+
+	// for updateDisruptionWebStatus
+	CUnit** getAllUnitsInBounds(Box32* a1);												// 0042FF80
+	s32 setUnderDisruptionWeb_Func(s32);												// 004EB170
 }
 
 namespace hooks {
@@ -72,7 +76,7 @@ namespace hooks {
 
 		ByteOperations::SetLowByte(v8, isTargetWithinMinMovementRange(a2, _maxRange, finalUnit));
 		return v8 == 0;
-	};
+	}
 
 	signed int isReadyToAttack(CUnit* a1, unsigned __int8 a2) { // 00476640
 		CUnit* v2; // esi
@@ -101,7 +105,7 @@ namespace hooks {
 			return 0;
 		}
 		return 1;
-	};
+	}
 	
 	bool isUnitInWeaponRange(CUnit* a1, CUnit* a2) { // 00476870
 		CUnit* v2; // edi
@@ -141,7 +145,7 @@ namespace hooks {
 		}
 		v8 = getUnitMaxWeaponRange(a2, v5);
 		return isTargetWithinMinMovementRange(v2, v8, v4);
-	};
+	}
 
 	char canCastOrderedSpellNow(CUnit* a1) { // 00491DB0
 		CUnit* v1; // esi
@@ -181,7 +185,7 @@ namespace hooks {
 			}
 		}
 		return v2;
-	};
+	}
 
 	void ordersWatchTarget(CUnit* a1) { // 0047BAB0
 		CUnit* v1; // esi
@@ -230,7 +234,7 @@ namespace hooks {
 					unknownOrdersFunc((int)v1, v1->orderTarget.pt.x, v1->orderTarget.pt.y);
 			}
 		}
-	};
+	}
 
 	void ordersStayInRange(CUnit* a1) { // 0047C4F0
 		CUnit* v1; // esi
@@ -364,7 +368,135 @@ namespace hooks {
 				orderComputerClear(v1, units_dat::ReturnToIdleOrder[(unsigned __int16)v1->id]);
 			}
 		}
-	};
+	}
+
+	s32 __fastcall setUnderDisruptionWeb(s32 a1) {
+		s32 v1; // eax
+		s32 v2; // eax
+		u16 v3; // ax
+		s16* v4; // edx
+		s32 v5; // esi
+		s32 v6; // ecx
+		u32 v7; // eax
+		void* v8; // edi
+		CUnit* v9; // eax
+		s32 v11; // ecx
+
+		v1 = *(s32*)(a1 + 220);
+		if (v1 & 4)
+			return 0;
+		v2 = v1 | 0x8000;
+		*(s32*)(a1 + 220) = v2;
+		if (v2 & 0x40000000
+		|| (v3 = *(s16*)(a1 + 100), v3 == 42) && !upgradesLevelSC[*(u8*)(a1 + 76)][24]
+		|| !units_dat::SpaceProvided[v3]) {
+			v11 = *(s32*)(a1 + 112);
+			if (v11)
+				*(s32*)(v11 + 220) |= 0x8000u;
+			return 0;
+		}
+		v4 = (s16*)(a1 + 176);
+		v5 = 8;
+		do {
+			v6 = (u16)*v4;
+			if (*v4) {
+				v7 = 336 * (v6 & 0x7FF);
+				v8 = unkArray_59CB64[v7 / 4];
+				v9 = &unitReference[v7 / 0x150];
+				if (v8) {
+					if ((v9->mainOrderId || v9->mainOrderState != 1) && (u8)v9->targetOrderSpecial == v6 >> 11)
+						v9->status |= 0x8000u;
+				}
+			}
+			++v4;
+			--v5;
+		} while (v5);
+		return 0;
+	}
+
+	s32 updateDisruptionWebStatus() { // 004EB2F0
+		CUnit* i; // edx
+		s32 v1; // eax
+		u32 v2; // eax
+		u16 v3; // ax
+		s32 v4; // edi
+		s16* v5; // esi
+		s32 v6; // ecx
+		CUnit* v7; // eax
+		u32 v8; // eax
+		void* v9; // ebx
+		CUnit* v10; // eax
+		s32 result; // eax
+		CUnit* j; // edi
+		CSprite* v13; // eax
+		s32* v14; // esi
+		s16 v15; // cx
+		s32 k; // ecx
+		s32 v17; // ecx
+		s16 a1; // [esp+Ch] [ebp-8h]
+		s16 v19; // [esp+Eh] [ebp-6h]
+		s16 v20; // [esp+10h] [ebp-4h]
+		s16 v21; // [esp+12h] [ebp-2h]
+
+		for (i = *firstVisibleUnit; i; i = i->link.next) {
+			v1 = i->status;
+			if (!(v1 & 4) || (v1 & 0x8000) != 0) {
+				v2 = v1 & 0xFFFF7FFF;
+				i->status = v2;
+				if (!(v2 & 0x40000000)
+				&& ((v3 = i->id, v3 != 42) || upgradesLevelSC[(u8)i->playerId][24])
+				&& units_dat::SpaceProvided[v3]) {
+					v5 = (WORD*)i->loadedUnit.index;
+					v4 = 8;
+					do {
+						v6 = *v5;
+						if (*v5) {
+							v8 = 336 * (v6 & 0x7FF);
+							v9 = unkArray_59CB64[v8 / 4];
+							v7 = &unitReference[v8 / 0x150];
+							if (v9)	{
+								if ((v7->mainOrderId || v7->mainOrderState != 1) && (u8)v7->targetOrderSpecial == v6 >> 11)
+									v7->status &= 0xFFFF7FFF;
+							}
+						}
+						++v5;
+						--v4;
+					} while (v4);
+				}
+				else {
+					v10 = i->subunit;
+					if (v10)
+						v10->status &= 0xFFFF7FFF;
+				}
+			}
+		}
+		result = completed_unit_counts[5][131];
+		if (completed_unit_counts[5][131]) {
+			for (j = firstPlayerUnit[11]; j; j = j->player_link.next) {
+				if (j->id == 105)	{
+					v13 = j->sprite;
+					v15 = v13->position.y;
+					ByteOperations::SetLowWord(v13, v13->position.x);
+					v19 = v15 - units_dat::UnitBounds[105].top;
+					v21 = v15 + units_dat::UnitBounds[105].bottom;
+					a1 = (s16)v13 - units_dat::UnitBounds[105].left;
+					v20 = (s16)v13 + units_dat::UnitBounds[105].right;
+					v14 = (s32*)getAllUnitsInBounds((Box32*)&a1);
+					if (setUnderDisruptionWeb_Func || !*v14) {
+						for (k = *v14; k; ++v14) {
+							if (setUnderDisruptionWeb_Func(k))
+								break;
+							k = v14[1];
+						}
+					}
+					v17 = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]];
+					result = tempUnitsListArraysCountsListLastIndex[0]-- - 1;
+					*tempUnitsListCurrentArrayCount = v17;
+				}
+			}
+		}
+		return result;
+	}
 }
 
 namespace {
@@ -715,5 +847,32 @@ namespace {
 			CALL Func_orderComputerClear
 			POPAD
 		}
-	};
+	}
+
+	// for updateDisruptionWebStatus
+	const u32 Func_getAllUnitsInBounds = 0x0042FF80;
+	CUnit** getAllUnitsInBounds(Box32* a1) {
+		static CUnit** result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_getAllUnitsInBounds
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_setUnderDisruptionWeb_Func = 0x004EB170;
+	s32 setUnderDisruptionWeb_Func(s32) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, a1
+			CALL Func_setUnderDisruptionWeb_Func
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }
