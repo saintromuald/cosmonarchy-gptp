@@ -42,6 +42,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 			cooldown = newCooldown;
 		}
 	}
+
 	if (unit->id == UnitId::TerranMadcap) {
 		auto stacks = MathUtils::clamp<u32>(scbw::get_generic_value(unit, ValueId::MadcapStacks), 0, 10);
 		if (stacks > 0) {
@@ -49,28 +50,32 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 			cooldown = newCooldown;
 		}
 	}
+
 	// Ravening Mandible upgrade: gains increased attack speed based on current energy
 	if (unit->id==UnitId::ZergGorgoleth) {
 		cooldown *= 0.75;
 		double value = MathUtils::map(unit->energy / 256, 100, 250, 1.0, 0.5, true);
 		cooldown *= value;
 	}
-	// Kaiser Rampage upgrade: gains double attack speed for 1 second
+
+	// Kaiser Rampage upgrade: gains double attack speed for 1 second on kill
 	if (unit->id == UnitId::ZergUltralisk) {
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
 			cooldown /= 2;
 		}
 	}
+
+	// Phobos behavior
 	if (unit->id == UnitId::TerranPhobos) {
 		if (scbw::get_generic_value(unit, ValueId::PhobosDischarge) > 0) {
 			cooldown /= 2;
 		}
 	}
 
-	// Terminus passive: gains attack speed with each upgrade
-	if (unit->id == UnitId::ProtossTerminus && scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossGroundWeapons)) {
-		int terminusUpg = scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossGroundWeapons);
-		cooldown -= cooldown * (0.1 * terminusUpg);
+	// Atreus Stalwart Stance behavior: gains 125% attack speed while shields remain intact
+	if (unit->id == UnitId::ProtossAtreus
+		&& unit->getCurrentShieldsInGame() > 1) { // Leaving it at 1 so incidental regen doesn't give the bonus
+		cooldown -= cooldown / 4;
 	}
 
 	if (cooldownModifier > 0)	// Lame hardcode for attackspeed upgrades

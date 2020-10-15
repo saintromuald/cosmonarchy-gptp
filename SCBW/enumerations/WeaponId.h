@@ -188,13 +188,15 @@ enum Enum {
 	InterventionMissiles						= 91,			// Star Sovereign secondary weapon
 	PlanetCracker								= 92,			// Star Sovereign ability
 	AstralBlaster								= 97,			// Ecclesiast weapon
-	ApexDisruptorCannon							= 98,			// Terminus weapon
+	DauntlessDisruptorCannon					= 98,			// Terminus weapon
 	PsiCleaver									= 99,			// Amaranth weapon
 	WardensMark									= 110,			// Clarion weapon
 	PrismaticBlaster							= 112,			// Idol weapon
 	BloodlessAssault							= 113,			// Golem weapon
 	RayOfAgony									= 114,			// Barghest weapon
 	IconoclastBlades							= 115,			// Pariah weapon
+	PsionicBurst								= 118,			// Manifold weapon
+	
 
 	// Zerg \\
 
