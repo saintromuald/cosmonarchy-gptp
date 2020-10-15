@@ -1,6 +1,5 @@
 #include "building_terran.h"
 #include <SCBW/api.h>
-#include "..\..\byte_operations_utils.h"
 
 #ifndef FALSE
 #define FALSE 0
@@ -735,39 +734,6 @@ void orders_SCVBuild(CUnit* unit) {
 			}
 		}
 		return result;
-		/*
-		char result;
-		s32 v2;
-		s32 v3;
-		s32 v4;
-		Point16 v6;
-
-		v6 = *(Point16*)&ecx0;
-		result = *IS_PLACING_BUILDING;
-		if (*IS_PLACING_BUILDING) {
-			ByteOperations::SetLowWord(ecx0, mouse->y);
-			v6.x = mouse->x;
-			v6.y = mouse->y;
-			if (initPlacementBoxPos(ecx0, &v6)) {
-				*placeBuildingMessageId = updatePlacementStateForPlacementBox_Func();
-				refreshLayer3And4();
-
-				unk_buildingPlacementRelated(1, (s32)&v6);
-				if (*isPlacingAddon) {
-					v4 = *placeBuildingUnitId - UnitId::TerranCommandCenter;
-					v6.x = units_dat::AddonPlacement[v4].x;
-					v6.y = units_dat::AddonPlacement[v4].y;
-					scbw::adjustAddonCoordinates(*placeBuildingUnitId, 0, v6.x, v6.y);
-					unk_buildingPlacementRelated(0, (s32)&v6);
-				}
-				result = refreshLayer3And4();
-			}
-			else {
-				unk_buildingPlacementRelatedMouse(v2, 1);
-				result = unk_buildingPlacementRelatedMouse(v3, 0);
-			}
-		}
-		return result;*/
 	}
 } //namespace hooks
 

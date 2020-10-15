@@ -3,6 +3,7 @@
 #include <SCBW/api.h>
 #include <SCBW/UnitFinder.h>
 #include "logger.h"
+#include <algorithm>
 //Helper functions definitions
 
 
@@ -48,6 +49,13 @@ namespace {
 	void IterateUnitsAtLocationTargetProc_Maelstrom(CUnit* attacker,Box16* coords);				//0x004E8280
 	void IterateUnitsAtLocationTargetProc_StasisField(CUnit* attacker,Box16* coords);			//0x004E8280
 	void createEnsnareOverlay(CUnit* a1);														//0x004F45E0
+
+	// For createScanner
+	void ordersNothing2(CUnit* a1);																// 00475000
+	void orderComputerClear(CUnit* a1, u8 a2);													// 00475310
+	s32 setUnitStatTxtErrorMsg(s32 a1);															// 0048CCB0
+	s32 playSoundFromSource(s32 a1, CUnit* a2, s32 a3, s32 a4);									// 0048ED50
+	void toIdle(CUnit* a1);																		// 004753A0
 
 } //unnamed namespace
 
@@ -868,7 +876,86 @@ namespace hooks {
 
 	} //void DisruptionWebHit(u32 attackingPlayerId, int x, int y, CBullet* bullet)
 
-	;
+	void createScanner(CUnit* a1) { // 00464E40
+		CUnit* v1; // esi
+		u16 v2; // ax
+		bool v3; // zf
+		GroupFlag v4; // al
+		u8 v5; // al
+		s16 v6; // cx
+		s16 v7; // ax
+		const char* v8; // eax
+		s16 v9; // cx
+		CUnit* v10; // eax
+		CUnit* v11; // ebx
+		s16 v12; // ax
+		Point16 a2; // [esp+4h] [ebp-4h]
+
+		v1 = a1;
+		if (!(*CHEAT_STATE & 0x800)) {
+			v2 = techdata_dat::EnergyCost[4] * 256;
+			v3 = v1->energy >= v2;
+//			a2 = (Point32)(v1->energy < v2);		// check this out
+			if (!v3) {
+				v4 = units_dat::GroupFlags[(u16)v1->id];
+				if (v4.isZerg) {
+					v5 = 0;
+				}
+				else if (v4.isTerran) {
+					v5 = 1;
+				}
+				else {
+					v5 = (v4.isProtoss) != 0 ? 2 : 4;
+				}
+				v6 = v5 + 864;
+				v7 = v5 + 863;
+				if (!v6)
+					goto LABEL_15;
+				if (v7 < *statTxtTbl) {
+					v8 = (char*)statTxtTbl + statTxtTbl[v7 + 1];
+					if (!v8) {
+					LABEL_15:
+						if (v1->orderQueueHead) {
+							v1->userActionFlags |= 1u;
+							ordersNothing2(v1);
+						}
+						else if (v1->pAI) {
+							orderComputerClear(v1, 0x9Cu);
+						}
+						else {
+							orderComputerClear(v1, units_dat::ReturnToIdleOrder[(u16)v1->id]);
+						}
+						return;
+					}
+				}
+				else {
+					v8 = "";
+				}
+				if ((u8)v1->playerId == *LOCAL_NATION_ID && *ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
+					setUnitStatTxtErrorMsg((s32)v8);
+				goto LABEL_15;
+			}
+		}
+		v9 = v1->orderTarget.pt.x;
+		a2.y = v1->orderTarget.pt.y;
+		a2.x = v9;
+		fixTargetLocation(&a2, UnitId::Spell_ScannerSweep);
+		v10 = CreateUnit(0x21u, a2.x, a2.y, (u8)v1->playerId);
+		v11 = v10;
+		if (v10) {
+			function_004A01F0(v10);
+			updateUnitStrength(v11);
+			playSoundFromSource(388, v1, 1, 0);
+			if (!(*CHEAT_STATE & 0x800)) {
+				v1->spendUnitEnergy(techdata_dat::EnergyCost[4] * 256);
+			}
+			toIdle(v1);
+		}
+		else {
+			displayLastNetErrForPlayer(v1->playerId);
+			toIdle(v1);
+		}
+	}
 
 } //hooks
 
@@ -1284,6 +1371,68 @@ namespace {
 			POPAD
 		}
 	}
+
+	// For createScanner
+	const u32 Func_ordersNothing2 = 0x00475000;
+	void ordersNothing2(CUnit* a1) {
+		__asm {
+			PUSHAD
+			MOV ECX, a1
+			CALL Func_ordersNothing2
+			POPAD
+		}
+	}
+	
+	const u32 Func_orderComputerClear = 0x00475310;
+	void orderComputerClear(CUnit* a1, u8 a2) {
+		__asm {
+			PUSHAD
+			MOV ESI, a1
+			MOVZX CL, a2
+			CALL Func_orderComputerClear
+			POPAD
+		}
+	}
+	
+	const u32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
+	s32 setUnitStatTxtErrorMsg(s32 a1) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_setUnitStatTxtErrorMsg
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_playSoundFromSource = 0x0048ED50;
+	s32 playSoundFromSource(s32 a1, CUnit* a2, s32 a3, s32 a4) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH a4
+			PUSH a3
+			MOV ESI, a2
+			MOV EBX, a1
+			CALL Func_playSoundFromSource
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_toIdle = 0x004753A0;
+	void toIdle(CUnit* a1) {
+		__asm {
+			PUSHAD
+			MOV ECX, a1
+			CALL Func_toIdle
+			POPAD
+		}
+	}
+
 
 } //Unnamed namespace
 

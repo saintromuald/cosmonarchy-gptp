@@ -593,6 +593,19 @@ namespace {
 		}
 	}
 
+	void __declspec(naked) createScannerWrapper() {
+		static CUnit* a1;
+		__asm {
+			MOV a1, EAX
+			PUSHAD
+		}
+		hooks::createScanner(a1);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 }//unnamed namespace
 
 namespace hooks {
@@ -616,6 +629,7 @@ namespace hooks {
 		jmpPatch(StasisFieldHitWrapper,		0x004F6A80, 1);
 		jmpPatch(DisruptionWebHitWrapper,	0x004F6AF0, 2);
 		jmpPatch(ensnareProcWrapper,		0x004F46C0, 1);
+		jmpPatch(createScannerWrapper,		0x00464E40, 0);
 	}
 
 } //hooks
