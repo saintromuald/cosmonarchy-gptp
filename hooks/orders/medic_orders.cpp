@@ -196,35 +196,34 @@ namespace hooks {
 //void orders_MedicHoldPosition(CUnit* unit)
 //in base_orders/stopholdpos_orders.cpp
 
-
-	u32 doMedicHeal_Func(CUnit* medic, CUnit* target) {
+	u32 doMedicHeal_Func(CUnit* medic, CUnit* target) { // 00463C40
 		auto v3 = medic;
 		auto result = medic->canUseTech(TechId::Healing, medic->playerId);
-		if (result)
-		{
+		if (result) {
 			auto v4 = target;
-			if (target && AI_OrderHeal(v3, target))
-			{
+			if (target && AI_OrderHeal(v3, target)) {
 				if (!target->isBeingHealed)
 					goto LABEL_7;
 				auto v5 = MedicHeal_TargetAcquire(v3);
 				auto v6 = v5;
-				if (v5)
-				{
+				if (v5)	{
 					unitOrderMoveToTargetUnit(v3, v5);
 					moveToTarget(v6, v3);
-					v4 = v6	;
+					v4 = v6;
 				LABEL_7:
-					if (!medic->isTargetWithinMinRange(v4, 30))
+					if (!medic->isTargetWithinMinRange(v4, 30)) {
 						return 3;
-					auto v7 = units_dat::MaxHitPoints[target->hitPoints] - target->hitPoints;
-					if (v7 > 200)
-						v7 = 200;
-					auto v8 = v7 >> 1;
-					if (medic->hasEnergy(v7 >> 1))
+					}
+					auto hpToHeal = units_dat::MaxHitPoints[target->id] - target->hitPoints;
+					if (hpToHeal > 200) {
+						hpToHeal = 200;
+					}
+					auto energyCost = hpToHeal >> 1;
+					if (!medic->hasEnergy(energyCost)) {
 						return 2;
-					medic->spendUnitEnergy(v8);
-					target->setHp(target->hitPoints + v7);
+					}
+					medic->spendUnitEnergy(energyCost);
+					target->setHp(target->hitPoints + (hpToHeal));
 					result = 1;
 					target->isBeingHealed = 1;
 					return result;
@@ -234,7 +233,6 @@ namespace hooks {
 		}
 		return result;			
 	}
-
 
 	void orders_MedicHeal1(CUnit* unit) {
 		CUnit* target = unit->orderTarget.unit;

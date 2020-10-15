@@ -21,8 +21,6 @@ namespace {
 
 	}
 
-	;
-
 	void __declspec(naked) orders_HealMoveWrapper() {
 
 		static CUnit* unit;
@@ -46,8 +44,6 @@ namespace {
 
 	}
 
-	;
-
 	void __declspec(naked) orders_MedicWrapper() {
 
 		static CUnit* unit;
@@ -70,8 +66,6 @@ namespace {
 
 	}
 
-	;
-
 	void __declspec(naked) orders_MedicHeal1Wrapper() {
 
 		static CUnit* unit;
@@ -89,8 +83,6 @@ namespace {
 		}
 
 	}
-
-	;
 
 	void __declspec(naked) AI_AcquireHealTarget_Wrapper()
 	{
@@ -111,6 +103,7 @@ namespace {
 			RETN
 		}
 	}
+
 	void __declspec(naked) doMedicHeal_Wrapper() {
 		static CUnit* medic;
 		static CUnit* target;
@@ -118,9 +111,11 @@ namespace {
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV medic,EAX
+			PUSH EAX
 			MOV EAX,[EBP+0x08]
 			MOV target,EAX
+			POP EAX
+			MOV medic, EAX
 			PUSHAD
 		}
 		result = hooks::doMedicHeal_Func(medic, target);
@@ -143,7 +138,7 @@ void injectMedicOrdersHooks() {
 	jmpPatch(orders_MedicWrapper,			0x00463900, 1);
 	jmpPatch(orders_MedicHeal1Wrapper,		0x00464180, 1);
 	jmpPatch(AI_AcquireHealTarget_Wrapper,	0x00463530, 1);
-//	jmpPatch(doMedicHeal_Wrapper, 0x00463C40, 1);
+	jmpPatch(doMedicHeal_Wrapper,			0x00463C40, 1);
 }
 
 } //hooks
