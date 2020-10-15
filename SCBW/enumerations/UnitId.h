@@ -466,17 +466,19 @@ enum Enum {
 //Terran-Building
 	TerranMedbay									= 119,		// Starbase / Terran Unused 1
 	TerranMunitionsBay								= 121,		// Repair Bay / Terran Unused 2
+	TerranQuarry									= 174,		// Protoss Temple
 	TerranGallery									= 185,		// Independent Jump Gate
 	TerranSalvoYard									= 189,		// Warp Gate
 	TerranFutureStation								= 192,		// Terran Marker
 	TerranParticleAccelerator						= 200,		// Power Generator
 	TerranNaniteAssembly							= 203,		// Floor Missile Trap
 	TerranTreasury									= 215,		// Flag
-	TerranQuarry									= 220,		// Mineral Cluster Type 1
 	TerranQuantumInstitute							= 223,		// Protoss Gas Orb Type 2
 	TerranDrydock									= 225,		// Zerg Gas Sac Type 2
 
 //Protoss-Unit
+	ProtossManifold									= 16,		// Sarah Kerrigan
+	ProtossArchitect								= 17,		// Alan Schezar
 	ProtossStarSovereign							= 21,		// Tom Kazansky
 	ProtossGladius									= 25,		// Edmund Duke Siege Tank
 	ProtossMagister									= 26,		// Edmund Duke Siege Turret
@@ -484,7 +486,7 @@ enum Enum {
 	ProtossLegionnaire								= 74,		// Dark Templar Hero
 	ProtossAmaranth									= 75,		// Zeratul Dark Templar
 	ProtossHierophant								= 76,		// Tassadar/Zeratul Archon
-	ProtossTerminus									= 78,		// Fenix Dragoon
+	ProtossAtreus									= 78,		// Fenix Dragoon
 	ProtossEcclesiast								= 79,		// Tassadar Templar
 	ProtossAurora									= 80,		// Mojo Scout
 	ProtossClarion									= 81,		// Warbringer
@@ -517,6 +519,7 @@ enum Enum {
 
 //Zerg-Unit
 	ZergAlkajelisk									= 48,		// Torrasque
+	ZergKalkaleth									= 51,		// Infested Kerrigan
 	ZergNathrokor									= 54,		// Devouring One
 	ZergGorgoleth									= 56,		// Kukulza Guardian
 	ZergOthstoleth									= 57,		// Yggdrasil
@@ -526,6 +529,7 @@ enum Enum {
 	ZergIroleth										= 222,		// Protoss Gas Orb Type 1
 
 //Zerg-Egg
+	EggKalkaleth									= 29,		// Norad II
 	EggOthstoleth									= 95,		// Ragnasaur
 	EggDevourer										= 173,		// Khaydarin Crystal Formation
 	EggGorgoleth									= 179,		// Cave
@@ -541,6 +545,7 @@ enum Enum {
 
 //Zerg-Building
 	ZergMutationPit									= 145,		// Unused Zerg 1
+	ZergKalkathBloom								= 147,		// Zerg Overmind (With Shell)
 	ZergGorgolethApiary								= 148,		// Zerg Overmind
 	ZergChrysalis									= 150,		// Mature Chrysalis
 	ZergIrolethQuay									= 152,		// Cerebrate Daggoth

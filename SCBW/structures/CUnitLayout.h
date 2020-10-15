@@ -211,6 +211,7 @@ namespace ValueId {
 
 		EnergyDecay									= 63,
 		RadiationShockwaveCount						= 64,
+		KalkalethMissilePos							= 65,
 		DecaySavant									= 67,
 		SimulacrumStacks							= 68,
 		LobotomySlow								= 69,
@@ -229,6 +230,7 @@ namespace ValueId {
 		NathrokorTimer								= 82,
 		RoboticSapience								= 83,
 		StellarEnforcement							= 84,
+		DisruptionWebDamage							= 85,
 
 
 		EcclesiastStack								= 100,

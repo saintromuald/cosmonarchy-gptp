@@ -577,6 +577,7 @@ bool isZergEgg(u16 id, bool allow_normal_eggs, bool allow_larvae) {
 	case UnitId::ZergLurkerEgg:
 	case UnitId::EggVorvaling:
 	case UnitId::EggNathrokor:
+	case UnitId::EggKalkaleth:
 	case UnitId::EggBasilisk:
 	case UnitId::EggAlkajelisk:
 	case UnitId::EggKeskathalor:
@@ -588,10 +589,10 @@ bool isZergEgg(u16 id, bool allow_normal_eggs, bool allow_larvae) {
 	default:
 		break;
 	}
-	if (id == UnitId::larva && allow_larvae) {
+	if (id == UnitId::ZergLarva && allow_larvae) {
 		return true;
 	}
-	if (id == UnitId::egg && allow_normal_eggs) {
+	if (id == UnitId::ZergEgg && allow_normal_eggs) {
 		return true;
 	}
 	return false;
@@ -605,6 +606,7 @@ bool isConventionalUnitMorphResult(u16 id) {
 	case UnitId::ZergGorgoleth:
 	case UnitId::ZergVorvaling:
 	case UnitId::ZergNathrokor:
+	case UnitId::ZergKalkaleth:
 	case UnitId::ZergBasilisk:
 	case UnitId::ZergLurker:
 	case UnitId::ZergIroleth:
@@ -636,6 +638,7 @@ bool isConventionalUnitMorphSource(u16 id, bool allow_larvae) {
 	case UnitId::ZergMutalisk:
 	case UnitId::ZergHydralisk:
 	case UnitId::ZergZergling:
+	case UnitId::ZergNathrokor:
 	case UnitId::ZergIroleth:
 	case UnitId::ZergOverlord:
 	case UnitId::ProtossHighTemplar:
@@ -665,6 +668,7 @@ bool isZergBuildingMorphResult(u16 id){
 	case UnitId::ZergLurkerDen:
 	case UnitId::ZergVorvalPond:
 	case UnitId::ZergNathrokLake:
+	case UnitId::ZergKalkathBloom:
 	case UnitId::ZergIrolethQuay:
 	case UnitId::ZergOthstolethBerth:
 		return true;
@@ -684,6 +688,7 @@ bool isZergBuildingMorphSource(u16 id){
 	case UnitId::ZergCreepColony:
 	case UnitId::ZergHydraliskDen:
 	case UnitId::ZergSpawningPool:
+	case UnitId::ZergNathrokLake:
 	case UnitId::ZergOverlordIris:
 	case UnitId::ZergIrolethQuay:
 		return true;
@@ -886,6 +891,23 @@ bool isStunned(CUnit* unit) {
 	}
 	return false;
 }
+
+void adjustAddonX(u16 addonId, u16 sourceId, u16& x) {
+	if (addonId == UnitId::TerranQuarry) {
+		x = 128;
+	}
+}
+void adjustAddonY(u16 addonId, u16 sourceId, u16& y) {
+	if (addonId == UnitId::TerranQuarry) {
+		y = 32;
+	}
+}
+
+void adjustAddonCoordinates(u16 addonId, u16 sourceId, u16& x, u16& y) {
+	adjustAddonX(addonId, sourceId, x);
+	adjustAddonY(addonId, sourceId, y);
+}
+
 
 //-------- Map information --------//
 

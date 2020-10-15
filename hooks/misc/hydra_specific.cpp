@@ -95,7 +95,7 @@ namespace hooks {
 		else if (unit->id == UnitId::ProtossExemplar) {
 			status = scbw::get_generic_value(unit, ValueId::ExemplarSwitch);
 		}
-		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell;//might be  changed later if required
+		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell; //might be  changed later if required
 		auto order_state = scbw::get_generic_value(unit, ValueId::ProtossSwitchOrderState);
 
 		if (order_state == 0) {

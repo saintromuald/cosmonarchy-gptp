@@ -220,13 +220,13 @@ Bool32 __cdecl currentUnitSelectionCanCloakWrapper() {
 namespace hooks {
 
 void injectCloakingTechHooks() {
-  jmpPatch(cloakingTechWrapper_IsCloaked,       0x00429210, 1);
-  jmpPatch(cloakingTechWrapper_CanCloak,        0x004292C0, 1);
+//  jmpPatch(cloakingTechWrapper_IsCloaked,       0x00429210, 1);
+//  jmpPatch(cloakingTechWrapper_CanCloak,        0x004292C0, 1);
   jmpPatch(cloakingTechWrapper_CMDRECV_Cloak,   0x004C0720, 3);
   jmpPatch(cloakingTechWrapper_AI_cloakUnit,    0x0043B970, 1);
-  jmpPatch(cloakingTechWrapper_CMDRECV_Decloak, 0x004C0660, 3);
-  jmpPatch(getCloakingTechWrapper,              0x00491A50, 3);
-  jmpPatch(currentUnitSelectionCanCloakWrapper, 0x00423540, 1);
+//  jmpPatch(cloakingTechWrapper_CMDRECV_Decloak, 0x004C0660, 3);
+//  jmpPatch(getCloakingTechWrapper,              0x00491A50, 3);
+//  jmpPatch(currentUnitSelectionCanCloakWrapper, 0x00423540, 1);
 }
 
 } //hooks

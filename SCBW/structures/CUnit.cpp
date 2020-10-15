@@ -393,15 +393,18 @@ void CUnit::damageWith(s32 damage, u8 weaponId, CUnit* attacker,
 		POPAD		
 	}
 }
-void CUnit::inflictDamage(s32 dmg, CUnit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, int direction) {
+void CUnit::inflictDamage(s32 dmg, CUnit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, int direction,
+	bool ignoreDmg128Overflow) {
 	auto damage = dmg;
 	s32 shieldReduceAmount = 0;
 	if (units_dat::ShieldsEnabled[this->id]) {
 		shieldReduceAmount = std::min(damage, this->shields);
 		damage -= shieldReduceAmount;
 	}
-	if (shieldReduceAmount == 0 && damage < 128)
+	if (shieldReduceAmount == 0 && damage < 128 && !ignoreDmg128Overflow)
+	{
 		damage = 128;
+	}
 	if (shieldReduceAmount != 0) {
 		this->shields -= shieldReduceAmount;
 	}
@@ -550,11 +553,11 @@ void CUnit::removeAcidSpores() {
 
 ///Identical to Unit__SpendEnergy @ 0x00491460
 ///May underflow if alone
-void	CUnit::spendUnitEnergy(u32 energy) {
+void CUnit::spendUnitEnergy(u32 energySpent) {
 	if(!(*CHEAT_STATE & CheatFlags::TheGathering))
-		this->energy -= energy;
+		this->energy -= energySpent;
 	if (scbw::get_aise_value(this, NULL, AiseId::GenericTimer, ValueId::EnergyDecay, 0) > 1) {
-		this->inflictDamage(energy, scbw::get_generic_unit(this,ValueId::DecaySavant), -1, false, true);
+		this->inflictDamage(energySpent, scbw::get_generic_unit(this, ValueId::DecaySavant), -1, false, true, 00, true);
 	}
 }
 void CUnit::addUnitEnergy(u32 energy) {

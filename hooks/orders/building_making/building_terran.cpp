@@ -40,12 +40,12 @@ namespace {
 	Bool32 function_004F1870(CUnit* unit, int x, int y);								//F1870
 
 	// For updatePlacementStateForPlacementBox
-	s32 canBuildOnTileLocation(CUnit* a1, s8 a2, s16 a3, s16 a4, s32 unitType, s32 a6, s32 a7, s32 a8, s32 a9); // 00473FB0
-
+	s32 canBuildOnTileLocation(CUnit* a1, s32 player, s32 x_tile, s32 y_tile, s32 unitType,
+		s32 placement_state_entry, s32 check_vision, s32 also_invisible, s32 without_vision);//00473FB0
 	// For refreshScreen
 	s32 updatePlacementStateForPlacementBox_Func(); // 0048DCE0
-	s32 unk_buildingPlacementRelated(s32 a1, s32 a2); // 0048D7F0
-	s32 initPlacementBoxPos(s32 a1, Point16* a2); // 0048D660
+	s32 unk_buildingPlacementRelated(s32 a1, Point16* a2); // 0048D7F0
+	s32 initPlacementBoxPos(Point16* in_out); // 0048D660
 	char unk_buildingPlacementRelatedMouse(s32 a1, s32 a2); // 0048D7B0
 
 } //unnamed namespace
@@ -645,37 +645,55 @@ void orders_SCVBuild(CUnit* unit) {
 		s32 v0; // esi
 		s32 result; // eax
 
-		if (*activePortraitUnit == NULL) {
+/*		if (*activePortraitUnit == NULL) {
 			return 0;
-		}
+		}*/
 
 		scbw::printText("First call");
 		v0 = canBuildOnTileLocation(
 			*activePortraitUnit,
-			(u8)*unk_placementRelated,
-			(u16)*placeBuildingX,
-			(u16)*placeBuildingY,
+			*unk_placementRelated,
+			*placeBuildingX,
+			*placeBuildingY,
 			*placeBuildingUnitType,
 			1,
 			1,
 			0,
 			0);
 		scbw::printText("First call over");
+
+/*		if (*isPlacingAddon) {
+			u32 source = *placeBuildBaseType;
+			u32 target = *placeBuildingUnitType;
+			u16 addon_x = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
+			u16 addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
+			scbw::adjustAddonCoordinates(target, source, addon_x, addon_y);
+			result = canBuildOnTileLocation(
+				*activePortraitUnit,
+				*unk_placementRelated,
+				addon_x,
+				addon_y,
+				source,
+				0,
+				1,
+				0,
+				0);
+		}
+		else {
+			result = v0;
+		}*/
 		u32 source = *placeBuildBaseType;
 		u32 target = *placeBuildingUnitType;
-		s32 addon_x = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
-		s32 addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
-		if (target == UnitId::TerranQuarry) {
-			addon_x = 128;
-			addon_y = 32;
-		}
-		if (!isPlacingAddon
+		u16 addon_x = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
+		u16 addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
+		scbw::adjustAddonCoordinates(source, target, addon_x, addon_y);
+		if (!*isPlacingAddon
 			|| (result = canBuildOnTileLocation(
 				*activePortraitUnit,
-				(u8)*unk_placementRelated,
-				(*placeBuildingX) - addon_x,
-				(u16)(*placeBuildingY) - addon_y,
-				(u16)*placeBuildBaseType,
+				*unk_placementRelated,
+				addon_x,
+				addon_y,
+				*placeBuildBaseType,
 				0,
 				1,
 				0,
@@ -687,6 +705,37 @@ void orders_SCVBuild(CUnit* unit) {
 	}
 
 	char refreshScreen(s32 ecx0) { // 0048DDC0
+
+		auto v6 = ecx0;
+		auto result = *IS_PLACING_BUILDING;
+		if (*IS_PLACING_BUILDING) {
+			auto y = mouse->y;
+			auto x = mouse->x;
+			auto mouse_pos = Point16{ (u16)mouse->x, (u16)mouse->y };
+			if (initPlacementBoxPos(&mouse_pos)) {
+				*placeBuildingMessageId = updatePlacementStateForPlacementBox_Func();
+				refreshLayer3And4();
+				Point16 buildPoint;
+				buildPoint.x = x;
+				buildPoint.y = y;
+				unk_buildingPlacementRelated(1, &buildPoint);
+				if (*isPlacingAddon) {
+					auto v4 = *placeBuildingUnitId - UnitId::TerranCommandCenter;
+					Point16 addon_point;
+					addon_point.x = units_dat::AddonPlacement[v4].x;
+					addon_point.y = units_dat::AddonPlacement[v4].y;
+					scbw::adjustAddonCoordinates(*placeBuildingUnitId, 0, addon_point.x, addon_point.y);
+					unk_buildingPlacementRelated(0, &addon_point);
+				}
+				result = refreshLayer3And4();
+			}
+			else {
+				unk_buildingPlacementRelatedMouse(0, 1);
+				result = unk_buildingPlacementRelatedMouse(0, 0);
+			}
+		}
+		return result;
+		/*
 		char result;
 		s32 v2;
 		s32 v3;
@@ -694,23 +743,21 @@ void orders_SCVBuild(CUnit* unit) {
 		Point16 v6;
 
 		v6 = *(Point16*)&ecx0;
-		result = (char)IS_PLACING_BUILDING;
-		if (IS_PLACING_BUILDING) {
+		result = *IS_PLACING_BUILDING;
+		if (*IS_PLACING_BUILDING) {
 			ByteOperations::SetLowWord(ecx0, mouse->y);
 			v6.x = mouse->x;
 			v6.y = mouse->y;
 			if (initPlacementBoxPos(ecx0, &v6)) {
-				*placeBuildingMessageId = updatePlacementStateForPlacementBox();
+				*placeBuildingMessageId = updatePlacementStateForPlacementBox_Func();
 				refreshLayer3And4();
+
 				unk_buildingPlacementRelated(1, (s32)&v6);
-				if (isPlacingAddon) {
+				if (*isPlacingAddon) {
 					v4 = *placeBuildingUnitId - UnitId::TerranCommandCenter;
 					v6.x = units_dat::AddonPlacement[v4].x;
 					v6.y = units_dat::AddonPlacement[v4].y;
-					if (*placeBuildingUnitId == UnitId::TerranQuarry) {
-						v6.x = 128;
-						v6.y = 32;
-					}
+					scbw::adjustAddonCoordinates(*placeBuildingUnitId, 0, v6.x, v6.y);
 					unk_buildingPlacementRelated(0, (s32)&v6);
 				}
 				result = refreshLayer3And4();
@@ -720,7 +767,7 @@ void orders_SCVBuild(CUnit* unit) {
 				result = unk_buildingPlacementRelatedMouse(v3, 0);
 			}
 		}
-		return result;
+		return result;*/
 	}
 } //namespace hooks
 
@@ -1097,18 +1144,20 @@ namespace {
 	// For updatePlacementStateForPlacementBox
 
 	const u32 Func_canBuildOnTileLocation = 0x00473FB0;
-	s32 canBuildOnTileLocation(CUnit* a1, s8 a2, s16 a3, s16 a4, s32 unitType, s32 a6, s32 a7, s32 a8, s32 a9) {
+	s32 canBuildOnTileLocation(CUnit* a1, s32 player, s32 x_tile, s32 y_tile, s32 unitType,
+		s32 placement_state_entry, s32 check_vision, s32 also_invisible, s32 without_vision) {
 		static s32 result;
+
 		__asm {
 			PUSHAD
-			PUSH a9
-			PUSH a8
-			PUSH a7
-			PUSH a6
+			PUSH without_vision
+			PUSH also_invisible
+			PUSH check_vision
+			PUSH placement_state_entry
 			PUSH unitType
-			PUSH a4
-			PUSH a3
-			PUSH a2
+			PUSH y_tile
+			PUSH x_tile
+			PUSH player
 			PUSH a1
 			CALL Func_canBuildOnTileLocation
 			MOV result, EAX
@@ -1132,7 +1181,7 @@ namespace {
 	}
 
 	const u32 Func_unk_buildingPlacementRelated = 0x0048D7F0;
-	s32 unk_buildingPlacementRelated(s32 a1, s32 a2) {
+	s32 unk_buildingPlacementRelated(s32 a1, Point16* a2) {
 		static s32 result;
 		__asm {
 			PUSHAD
@@ -1146,12 +1195,12 @@ namespace {
 	}
 
 	const u32 Func_initPlacementBoxPos = 0x0048D660;
-	s32 initPlacementBoxPos(s32 a1, Point16* a2) {
+	s32 initPlacementBoxPos(Point16* in_out) {
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV ECX, a1
-			MOV EDX, a2
+//			MOV ECX, a1
+			MOV EDX, in_out
 			CALL Func_initPlacementBoxPos
 			MOV result, EAX
 			POPAD

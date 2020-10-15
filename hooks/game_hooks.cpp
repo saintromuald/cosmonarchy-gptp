@@ -520,7 +520,11 @@ namespace hooks {
 							web->remove();
 						}
 					}
-					
+					if (scbw::get_generic_value(unit, ValueId::DisruptionWebDamage)) {
+						scbw::set_generic_value(unit, ValueId::DisruptionWebDamage, 0);
+						//scbw::printFormattedText("Disruption - Energy Decay - Inflict damage %d", techdata_dat::EnergyCost[TechId::DisruptionWeb]);
+						unit->inflictDamage(techdata_dat::EnergyCost[TechId::DisruptionWeb]*256, unit, unit->playerId, false, true);
+					}
 				}
 
 				//
@@ -620,7 +624,7 @@ namespace hooks {
 						thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
 						scbw::setThingyVisibilityFlags(thingy);
 					}
-					unit->inflictDamage(30 * 256, NULL,-1, false, true);		
+					unit->inflictDamage(30 * 256, NULL,-1, false, true,false,false);		
 				}
 
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::EnergyDecay, 0) == 1) {

@@ -112,7 +112,7 @@ void cmdRECV_PlaceBuildingAddon(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
 	CUnit* builder;
 	u32 result_function_00473FB0;
 
-	s32 addonPlaceX = 0, addonPlaceY = 0;
+	u16 addonPlaceX = 0, addonPlaceY = 0;
 
 	*selectionIndexStart = 0;
 	builder = getActivePlayerNextSelection();
@@ -133,7 +133,7 @@ void cmdRECV_PlaceBuildingAddon(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
 	if(result_function_00473FB0 == 0) {
 
 		addonPlaceX = (s16)units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].x;
-		if (builtUnitId == UnitId::TerranFutureStation) {
+		/*if (builtUnitId == UnitId::TerranFutureStation) {
 			if (builder->id == UnitId::academy || builder->id == UnitId::armory) {
 				addonPlaceX = 96;
 			}
@@ -143,9 +143,8 @@ void cmdRECV_PlaceBuildingAddon(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
 		}
 		else if (builtUnitId == UnitId::TerranQuarry) {
 			addonPlaceX = 128;
-		}
-		
-
+		}*/
+		scbw::adjustAddonX(builtUnitId, builder->id, addonPlaceX);
 
 		if(addonPlaceX < 0)
 			addonPlaceX += 31;
@@ -155,7 +154,7 @@ void cmdRECV_PlaceBuildingAddon(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
 		addonPlaceX = x - addonPlaceX;
 
 		addonPlaceY = (s16)units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].y;
-		if (builtUnitId == UnitId::TerranFutureStation) {
+		/*if (builtUnitId == UnitId::TerranFutureStation) {
 			if (builder->id == UnitId::academy || builder->id == UnitId::armory) {
 				addonPlaceY = 0;
 			}
@@ -165,7 +164,8 @@ void cmdRECV_PlaceBuildingAddon(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
 		}
 		else if (builtUnitId == UnitId::TerranQuarry) {
 			addonPlaceY = 32;
-		}
+		}*/
+		scbw::adjustAddonY(builtUnitId, builder->id, addonPlaceY);
 		if(addonPlaceY < 0)
 			addonPlaceY += 31;
 
