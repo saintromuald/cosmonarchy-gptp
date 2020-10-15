@@ -210,6 +210,14 @@ namespace hooks {
 			speed = (u32) ((double)speed * multiplier);
 		}
 
+		// Deathless Procession: gains increased movespeed based on missing shields
+		else if (unit->id == UnitId::ProtossGolem) {
+			u32 health = unit->shields / 256;
+			u32 maxHealth = units_dat::MaxShieldPoints[unit->id];
+			double multiplier = MathUtils::map(health, maxHealth, maxHealth - maxHealth, 1.0, 1.5, true);
+			speed = (u32) ((double)speed * multiplier);
+		}
+
 		// Knockout Drivers upgrade: reduces movement speed by 5% per stack
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0) > 0) {
 			u32 knockoutValue = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0);

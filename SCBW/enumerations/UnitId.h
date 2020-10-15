@@ -477,6 +477,8 @@ enum Enum {
 	TerranDrydock									= 225,		// Zerg Gas Sac Type 2
 
 //Protoss-Unit
+	ProtossManifold									= 16,		// Sarah Kerrigan
+	ProtossArchitect								= 17,		// Alan Schezar
 	ProtossStarSovereign							= 21,		// Tom Kazansky
 	ProtossGladius									= 25,		// Edmund Duke Siege Tank
 	ProtossMagister									= 26,		// Edmund Duke Siege Turret
@@ -484,7 +486,7 @@ enum Enum {
 	ProtossLegionnaire								= 74,		// Dark Templar Hero
 	ProtossAmaranth									= 75,		// Zeratul Dark Templar
 	ProtossHierophant								= 76,		// Tassadar/Zeratul Archon
-	ProtossTerminus									= 78,		// Fenix Dragoon
+	ProtossAtreus									= 78,		// Fenix Dragoon
 	ProtossEcclesiast								= 79,		// Tassadar Templar
 	ProtossAurora									= 80,		// Mojo Scout
 	ProtossClarion									= 81,		// Warbringer

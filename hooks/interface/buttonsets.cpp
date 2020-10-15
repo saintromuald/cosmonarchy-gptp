@@ -990,6 +990,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossAtreus &&  //Atreus Stalwart Stance passive : enabled 
+									current_button->iconID == IconId::PlasmaShields)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossHighTemplar &&  //High Templar Ascendancy passive
 									current_button->iconID == IconId::MindControlUnused)
 								{
@@ -1010,8 +1015,18 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossPariah &&  //Pariah Heretical Bedlam passive : enabled 
+									current_button->iconID == IconId::PhaseDisruptor)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossSimulacrum &&  //Simulacrum Autovitality passive : enabled 
 									current_button->iconID == IconId::ApialSensors)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossGolem &&  //Golem Deathless Procession passive : enabled 
+									current_button->iconID == IconId::LegEnhancements)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
@@ -1020,8 +1035,8 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossPariah &&  //Pariah Heretical Bedlam passive : enabled 
-									current_button->iconID == IconId::PhaseDisruptor)
+								if ((*activePortraitUnit)->id == UnitId::ProtossArchitect &&  //Architect Reactive Payload passive : enabled 
+									current_button->iconID == IconId::AntimatterMissiles)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
