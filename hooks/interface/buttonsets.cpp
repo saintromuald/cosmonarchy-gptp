@@ -1015,6 +1015,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossPariah &&  //Pariah Heretical Bedlam passive : enabled 
+									current_button->iconID == IconId::PhaseDisruptor)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossSimulacrum &&  //Simulacrum Autovitality passive : enabled 
 									current_button->iconID == IconId::ApialSensors)
 								{
@@ -1030,8 +1035,8 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossPariah &&  //Pariah Heretical Bedlam passive : enabled 
-									current_button->iconID == IconId::PhaseDisruptor)
+								if ((*activePortraitUnit)->id == UnitId::ProtossArchitect &&  //Architect Reactive Payload passive : enabled 
+									current_button->iconID == IconId::AntimatterMissiles)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}

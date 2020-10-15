@@ -196,6 +196,7 @@ enum Enum {
 	RayOfAgony									= 114,			// Barghest weapon
 	IconoclastBlades							= 115,			// Pariah weapon
 	PsionicBurst								= 118,			// Manifold weapon
+	DispersiveSalvo								= 119,			// Architect weapon
 	
 
 	// Zerg \\

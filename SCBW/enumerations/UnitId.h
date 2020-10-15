@@ -478,6 +478,7 @@ enum Enum {
 
 //Protoss-Unit
 	ProtossManifold									= 16,		// Sarah Kerrigan
+	ProtossArchitect								= 17,		// Alan Schezar
 	ProtossStarSovereign							= 21,		// Tom Kazansky
 	ProtossGladius									= 25,		// Edmund Duke Siege Tank
 	ProtossMagister									= 26,		// Edmund Duke Siege Turret
