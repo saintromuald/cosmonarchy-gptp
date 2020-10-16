@@ -297,13 +297,13 @@ void orders_TurretAttack(CUnit* unit) {
 		jump_to_77A9D = false;
 
 		if(jump_to_77AB7) {
-
+			/*
 			if(unit->id == UnitId::ProtossArbiter && unit->pAI != NULL) {
 				jump_to_77A45 = true;
 				bJumpToEarlierCode = true;
 			}
 			else {
-
+				*/
 				//77ACC
 				if(target->status & UnitStatus::InAir)
 					current_unit_weaponId = units_dat::AirWeapon[current_unit->id]; //77AD2
@@ -320,7 +320,7 @@ void orders_TurretAttack(CUnit* unit) {
 				else
 					jump_to_77AFE = true;
 
-			} //if(unit->id != UnitId::ProtossArbiter || unit->pAI == NULL)
+			//} //if(unit->id != UnitId::ProtossArbiter || unit->pAI == NULL)
 
 		}
 
@@ -571,10 +571,10 @@ void orders_AttackFixedRange(CUnit* unit) {
 			else {
 
 				//77E09:
-				if(unit->id == UnitId::ProtossArbiter && unit->pAI != NULL)
+				/*if(unit->id == UnitId::ProtossArbiter && unit->pAI != NULL)
 					jump_to_77E48 = true;
 				else {
-
+					*/
 					u8 currentWeaponId;
 
 					//77E1A:
@@ -591,7 +591,7 @@ void orders_AttackFixedRange(CUnit* unit) {
 					else
 						jump_to_77E48 = true;
 
-				}
+				//}
 
 			} //unit cannot infest
 

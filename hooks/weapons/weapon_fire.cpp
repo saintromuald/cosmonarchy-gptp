@@ -587,7 +587,7 @@ namespace hooks {
 					v9 = canBeInfested(v11, _pIterator) != 0; // v11 is not used..?
 				}
 				else {
-					if (pSrc->id == UnitId::ProtossArbiter && pSrc->pAI) {
+					if (/*pSrc->id == UnitId::ProtossArbiter && */ pSrc->pAI) {
 						return 0;
 					}
 					if (_pIterator->status & UnitStatus::InAir) {

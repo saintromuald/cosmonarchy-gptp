@@ -210,6 +210,20 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectTargetRelatedHooks();
 	//
 
+	//arbiter attack hardcode
+	const u8 jmp = 0xEB;
+	nops(0x0043AEE0, 10);
+	nops(0x0043CF89, 4);
+	memoryPatch(0x0043CF8D, &jmp, 1);
+	nops(0x0047681B, 5);
+	memoryPatch(0x00476820, &jmp, 1);
+	nops(0x00476E67, 6);
+	nops(0x00477AB7, 5);
+	memoryPatch(0x00477ABC, &jmp, 1);
+	nops(0x00477E09, 5);
+	nops(0x00478613, 5);
+	nops(0x0048B0A1, 5);
+
 
 	//town hall code
 
