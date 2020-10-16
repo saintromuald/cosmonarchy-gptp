@@ -133,14 +133,45 @@ namespace hooks {
         }
     }*/
 
+/*    void __declspec(naked) setUnderDisruptionWeb_Wrapper() {
+        static CUnit* a1;
+        static s32 result;
+        __asm {
+            MOV a1, EAX
+            PUSHAD
+        }
+        result = hooks::setUnderDisruptionWeb(a1);
+        __asm {
+            POPAD
+            MOV EAX, result
+            RETN
+        }
+    }
 
+    void __declspec(naked) updateDisruptionWebStatus_Wrapper() {
+        static s32 result;
+        __asm {
+            PUSHAD
+        }
+        result = hooks::updateDisruptionWebStatus();
+        __asm {
+            POPAD
+            MOV EAX, result
+            RETN
+        }
+    }*/
 	void injectTargetHooks() {
 		// reference hooks
 		//jmpPatch(Ai_ProgressSpendingQueue_JmpWrapper, 0x00434C31);
 		//jmpPatch(Ai_BuildSupplies_Wrapper, 0x00433730);
 		//jmpPatch(Ai_GetDefaultWorkerFromRace, 0x00432130);
-        jmpPatch(setUnderDisruptionWeb_Wrapper, 0x004EB170, 1);
-        jmpPatch(updateDisruptionWebStatus_Wrapper, 0x004EB2F0, 1);
+       
+
+        nops(0x004EB176, 8);//disruption web
+        nops(0x004EB316, 2);//disruption web
+
+        //jmpPatch(setUnderDisruptionWeb_Wrapper, 0x004EB170, 1);
+        //jmpPatch(updateDisruptionWebStatus_Wrapper, 0x004EB2F0, 1);
 	}
 	void injectTargetRelatedHooks() {
 		injectTargetHooks();
@@ -202,31 +233,5 @@ namespace hooks {
         }
     }*/
 
-    void __declspec(naked) setUnderDisruptionWeb_Wrapper() {
-        static s32 a1;
-        static s32 result;
-        __asm {
-            MOV a1, EAX
-            PUSHAD
-        }
-        result = hooks::setUnderDisruptionWeb(a1);
-        __asm {
-            POPAD
-            MOV EAX, result
-            RETN
-        }
-    }
 
-    void __declspec(naked) updateDisruptionWebStatus_Wrapper() {
-        static s32 result;
-        __asm {
-            PUSHAD
-        }
-        result = hooks::updateDisruptionWebStatus();
-        __asm {
-            POPAD
-            MOV EAX, result
-            RETN
-        }
-    }
 }

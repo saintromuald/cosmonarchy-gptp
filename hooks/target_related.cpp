@@ -39,8 +39,8 @@ namespace {
 	void orderComputerClear(CUnit* a1, __int8 a2);
 
 	// for updateDisruptionWebStatus
-	CUnit** getAllUnitsInBounds(Box32* a1);												// 0042FF80
-	s32 setUnderDisruptionWeb_Func(s32);												// 004EB170
+//	CUnit** getAllUnitsInBounds(Box32* a1);												// 0042FF80
+//	s32 setUnderDisruptionWeb_Func(s32);												// 004EB170
 }
 
 namespace hooks {
@@ -369,33 +369,34 @@ namespace hooks {
 			}
 		}
 	}
-
-	s32 __fastcall setUnderDisruptionWeb(s32 a1) {
+	/*
+	s32 setUnderDisruptionWeb(CUnit* a1) {
 		s32 v1; // eax
 		s32 v2; // eax
-		u16 v3; // ax
 		s16* v4; // edx
 		s32 v5; // esi
 		s32 v6; // ecx
 		u32 v7; // eax
 		void* v8; // edi
 		CUnit* v9; // eax
-		s32 v11; // ecx
+		CUnit* v11; // ecx
 
-		v1 = *(s32*)(a1 + 220);
-		if (v1 & 4)
+		u16 v3; // ax
+
+		v1 = a1->status;
+		if (v1 & UnitStatus::InAir)
 			return 0;
-		v2 = v1 | 0x8000;
-		*(s32*)(a1 + 220) = v2;
-		if (v2 & 0x40000000
-		|| (v3 = *(s16*)(a1 + 100), v3 == 42) && !upgradesLevelSC[*(u8*)(a1 + 76)][24]
+		v2 = v1 | UnitStatus::CanNotAttack;
+		a1->status = v2;
+		if (v2 & UnitStatus::IsHallucination
+		|| (v3 = a1->id, v3 == UnitId::overlord) && scbw::getUpgradeLevel(a1->playerId,UpgradeId::VentralSacs)==0
 		|| !units_dat::SpaceProvided[v3]) {
-			v11 = *(s32*)(a1 + 112);
+			v11 = a1->subunit;
 			if (v11)
-				*(s32*)(v11 + 220) |= 0x8000u;
+				v11->status |= UnitStatus::CanNotAttack;
 			return 0;
 		}
-		v4 = (s16*)(a1 + 176);
+//		v4 = a1->loadedUnit.index;
 		v5 = 8;
 		do {
 			v6 = (u16)*v4;
@@ -412,9 +413,12 @@ namespace hooks {
 			--v5;
 		} while (v5);
 		return 0;
-	}
+	}*/
 
+	/*
 	s32 updateDisruptionWebStatus() { // 004EB2F0
+
+		
 		CUnit* i; // edx
 		s32 v1; // eax
 		u32 v2; // eax
@@ -496,7 +500,7 @@ namespace hooks {
 			}
 		}
 		return result;
-	}
+	}*/
 }
 
 namespace {
@@ -864,7 +868,7 @@ namespace {
 	}
 
 	const u32 Func_setUnderDisruptionWeb_Func = 0x004EB170;
-	s32 setUnderDisruptionWeb_Func(s32) {
+	s32 setUnderDisruptionWeb_Func(s32 a1) {
 		static s32 result;
 		__asm {
 			PUSHAD
