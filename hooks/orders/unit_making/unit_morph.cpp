@@ -190,6 +190,7 @@ namespace hooks {
 						break;
 					case UnitId::ZergNathrokor:
 						eggId = UnitId::EggKalkaleth;
+						break;
 					case UnitId::ZergMutalisk:
 						eggId = UnitId::ZergCocoon;
 						break;
@@ -340,32 +341,37 @@ namespace hooks {
 				return true;
 			}
 		}
+
 		if (unit->id == UnitId::ZergNathrokor) {
 			if (morphUnitId == UnitId::ZergKalkaleth) {
 				return true;
 			}
 		}
+
 		if (unit->id == UnitId::ZergUltralisk) {
 			if (morphUnitId == UnitId::ZergKeskathalor || morphUnitId == UnitId::ZergAlkajelisk) {
 				return true;
 			}
-
 		}
+
 		if (unit->id == UnitId::ZergOverlord) {
 			if (morphUnitId == UnitId::ZergIroleth) {
 				return true;
 			}
 		}
+
 		if (unit->id == UnitId::ZergIroleth) {
 			if (morphUnitId == UnitId::ZergOthstoleth) {
 				return true;
 			}
 		}
+
 		if (unit->id == UnitId::ProtossHighTemplar) {
 			if (morphUnitId == UnitId::ProtossAugur) {
 				return true;
 			}
 		}
+
 		if (unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergMutalisk) {
 			if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1) {
 				return true;
@@ -406,6 +412,7 @@ namespace hooks {
 			return UnitId::EggBasilisk;
 
 		}
+
 		if (unitId == UnitId::ZergZergling)
 		{
 			if (resultId == UnitId::ZergNathrokor) {
@@ -413,9 +420,11 @@ namespace hooks {
 			}
 			return UnitId::EggVorvaling;
 		}
+
 		if (unitId == UnitId::ZergNathrokor) {
-			return UnitId::ZergKalkaleth;
+			return UnitId::EggKalkaleth;
 		}
+
 		if (unitId == UnitId::ZergUltralisk)
 		{
 			if (resultId == UnitId::ZergAlkajelisk) {
@@ -425,8 +434,11 @@ namespace hooks {
 				return UnitId::EggKeskathalor;
 			}
 		}
-		if (unitId == UnitId::ZergOverlord)
+
+		if (unitId == UnitId::ZergOverlord) {
 			return UnitId::EggIroleth;
+		}
+
 		if (unitId == UnitId::ZergIroleth) {
 			return UnitId::ZergOthstoleth;
 		}
@@ -440,7 +452,9 @@ namespace hooks {
 	u16 getCancelMorphRevertTypeHook(CUnit* eggUnit) {
 		//Default StarCraft behavior
 
-		if (eggUnit->id == UnitId::ZergCocoon || eggUnit->id == UnitId::EggGorgoleth) {
+		if (eggUnit->id == UnitId::ZergCocoon
+		||	eggUnit->id == UnitId::EggGorgoleth
+		||	eggUnit->id == UnitId::EggDevourer) {
 			return UnitId::ZergMutalisk;
 		}
 		if (eggUnit->id == UnitId::ZergLurkerEgg) {
