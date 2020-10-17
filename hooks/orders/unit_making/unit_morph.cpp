@@ -499,8 +499,14 @@ namespace hooks {
 			return 0;
 
 		//No offset, since the morphed unit should stay where it is
-		if (unit->previousUnitType == UnitId::ZergCocoon)
+		if (unit->previousUnitType == UnitId::ZergCocoon
+		||	unit->previousUnitType == UnitId::EggKalkaleth
+		||	unit->previousUnitType == UnitId::EggDevourer
+		||	unit->previousUnitType == UnitId::EggGorgoleth
+		||	unit->previousUnitType == UnitId::EggIroleth
+		||	unit->previousUnitType == UnitId::EggOthstoleth) {
 			return 0;
+		}
 
 		//Hovering units (?) float 7 pixels above ground
 		if (units_dat::MovementFlags[unit->id] == MovementFlags::HoverUnit)
