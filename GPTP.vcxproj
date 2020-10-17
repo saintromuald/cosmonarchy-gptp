@@ -212,6 +212,7 @@
     <ClCompile Include="hooks\audiovisuals\sfxhooks.cpp" />
     <ClCompile Include="hooks\audiovisuals\sfxhooks_inject.cpp" />
     <ClCompile Include="hooks\byte_operations_utils.cpp" />
+    <ClCompile Include="hooks\hydraFinder.cpp" />
     <ClCompile Include="hooks\economic_units.cpp" />
     <ClCompile Include="hooks\economic_units_inject.cpp" />
     <ClCompile Include="hooks\interface\extender\selection_extender.cpp" />

@@ -231,6 +231,7 @@ namespace ValueId {
 		RoboticSapience								= 83,
 		StellarEnforcement							= 84,
 		DisruptionWebDamage							= 85,
+		CastLazarusAgent							= 86,
 
 
 		EcclesiastStack								= 100,

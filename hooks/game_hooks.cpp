@@ -11,7 +11,7 @@
 #include "hooks/interface/uifeatures/uifeatures.h"
 #include "hooks/interface/hpbars/hpbars.h"
 #include "Utils/captivating_claws.h"
-
+#include "hooks/hydraFinder.h"
 const int hyperTrigger = 0x006509A0;
 const u32 Func_Sub4A01F0 = 0x004A01F0;
 void function_004A01F0g(CUnit* unit) {
@@ -496,6 +496,13 @@ namespace hooks {
 				CUnitExtended::get(unit)->tick();
 				Globals.unitFrameHook(unit);
 				//hooks::ShowHealthBar(unit);
+				if (unit->id == UnitId::TerranApostle) {
+					if (scbw::get_generic_value(unit, ValueId::CastLazarusAgent) == 1) {
+						scbw::set_generic_value(unit, ValueId::CastLazarusAgent, 0);
+						//cast lazarus agent
+						unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent]*256);
+					}
+				}
 				if (unit->id == UnitId::corsair) {
 					auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
 					if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0)) {

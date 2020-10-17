@@ -61,6 +61,7 @@ enum Enum {
 	LandGrab				= 17, // Wyvern target ground ability
 	AdministerMedstims		= 24, // Shaman organic heal ability
 	SafetyOff				= 26, // Cyprian weapon switch ability
+	LazarusAgent			= 32, // Apostle ability
 	TempoChange				= 36, // Madrigal weapon switch ability
 	Skyfall					= 37, // Paladin missile salvo ability
 	NaniteField				= 38, // Shaman mech repair ability

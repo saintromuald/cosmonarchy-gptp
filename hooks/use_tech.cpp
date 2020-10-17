@@ -399,6 +399,19 @@ namespace hooks
 			scbw::SendCommand(buf, 0xc);
 			break;
 		}
+		case TechId::LazarusAgent:
+		{
+			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+			buf[0] = 0x99;//new general command
+			buf[1] = NewGameCommand::GenericSwitchAbility;
+			buf[2] = 1;
+			buf[3] = *ACTIVE_PLAYER_ID;
+			buf[4] = ValueId::CastLazarusAgent;
+			scbw::SendCommand(buf, 0xc);
+			//in gameplay sense it is not used as switch ability, 
+			//but it uses switch ability framework to not bother with rust
+			break;
+		}
 		case TechId::TempoChange://sublime shepherd
 		{
 
