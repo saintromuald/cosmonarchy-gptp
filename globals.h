@@ -43,6 +43,7 @@ public:
 	u32 timer;
 	u32 unitId;
 	u8 playerId;
+	CUnit* creator;
 };
 class globals {
 	std::string output;
@@ -57,7 +58,6 @@ public:
 	std::vector<pariahHit> pariahHits;
 	std::vector<gladiusBullet> gladiusBullets;
 	std::vector<apostleAgent> apostleAgents;
-
 
 	//non-serializable data (exists only temporarily in memory in wrapper/hook flow)
 	int flingy_init_bullet_id;
@@ -75,13 +75,15 @@ public:
 	void reset();
 	void frameHook();
 	void unitFrameHook(CUnit* unit);
+	void unitDeathHook(CUnit* unit);
 	void remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly);
 	bool was_hit_by_pariah(CUnit* source, CUnit* target);
 	void register_pariah_hit(CUnit* source, CUnit* target);
 	void createSalamanderFire(int x, int y, u8 player, u8 elevation, bool addImpactValue);
 	bool was_already_hit_by_gladius_bullet(CBullet* bullet, CUnit* target);
 	void add_gladius_hit(CBullet* bullet, CUnit* target);
-//	void initLazarusAgent(int x, int y, u8 player, u32 unitId, CUnit* unit);
+	void initLazarusAgent(int x, int y, u8 player, u32 unitId, CUnit* unit);
+	void clear_ptr_in_apostle_table(CUnit* unit);
 };
 
 void injectGlobalsHooks();

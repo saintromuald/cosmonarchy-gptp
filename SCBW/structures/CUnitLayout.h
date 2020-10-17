@@ -232,7 +232,7 @@ namespace ValueId {
 		StellarEnforcement							= 84,
 		DisruptionWebDamage							= 85,
 		CastLazarusAgent							= 86,
-
+		LazarusAgentApostleSrc						= 87,
 
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,

@@ -11,7 +11,7 @@ SaveState globals::aise_save() {
 	stream.write(reinterpret_cast<const char*>(&extended_sfx), sizeof(extended_sfx));
 	stream.write(reinterpret_cast<const char*>(&tbl_extender), sizeof(tbl_extender));
 	stream.write(reinterpret_cast<const char*>(&unitid_extender), sizeof(unitid_extender));
-	auto impactsSize = salamanderImpacts.size();
+	u32 impactsSize = salamanderImpacts.size();
 	stream.write(reinterpret_cast<const char*>(&impactsSize), sizeof(impactsSize));
 	for (int i = 0; i < impactsSize;i++) {
 		stream.write(reinterpret_cast<const char*>(&salamanderImpacts[i].position.x), sizeof(salamanderImpacts[i].position.x));
@@ -20,10 +20,19 @@ SaveState globals::aise_save() {
 		stream.write(reinterpret_cast<const char*>(&salamanderImpacts[i].repeatsLeft), sizeof(salamanderImpacts[i].repeatsLeft));
 		stream.write(reinterpret_cast<const char*>(&salamanderImpacts[i].timer), sizeof(salamanderImpacts[i].timer));
 	}
-	auto pariahHitCount = pariahHits.size();
+	u32 pariahHitCount = pariahHits.size();
 	for (int i = 0; i < pariahHitCount; i++) {
 		stream.write(reinterpret_cast<const char*>(&pariahHits[i].source), sizeof(pariahHits[i].source));
 		stream.write(reinterpret_cast<const char*>(&pariahHits[i].target), sizeof(pariahHits[i].target));
+	}
+	u32 apostleCount = apostleAgents.size();
+	for (int i = 0; i < apostleCount; i++) {
+		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].creator), sizeof(apostleAgents[i].creator));
+		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].playerId), sizeof(apostleAgents[i].playerId));
+		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].position.x), sizeof(apostleAgents[i].position.x));
+		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].position.y), sizeof(apostleAgents[i].position.y));
+		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].timer), sizeof(apostleAgents[i].timer));
+		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].unitId), sizeof(apostleAgents[i].unitId));
 	}
 	output = stream.rdbuf()->str();
 	if (output.length() == 0) {
@@ -59,13 +68,25 @@ void globals::aise_load(const char* ptr, u32 len){
 		stream.read(reinterpret_cast<char*>(&impact.timer), sizeof(impact.timer));
 		salamanderImpacts.push_back(impact);
 	}
-	auto pariahHitsCount = 0;
+	u32 pariahHitsCount = 0;
 	stream.read(reinterpret_cast<char*>(&pariahHitsCount), sizeof(pariahHitsCount));
 	for (int i = 0; i < pariahHitsCount; i++) {
 		pariahHit hit;
 		stream.read(reinterpret_cast<char*>(&hit.source), sizeof(hit.source));
 		stream.read(reinterpret_cast<char*>(&hit.target), sizeof(hit.target));
 		pariahHits.push_back(hit);
+	}
+	u32 apostleCount = 0;
+	stream.read(reinterpret_cast<char*>(&apostleCount), sizeof(apostleCount));
+	for (int i = 0; i < pariahHitsCount; i++) {
+		apostleAgent agent;
+		stream.read(reinterpret_cast<char*>(&agent.creator), sizeof(agent.creator));
+		stream.read(reinterpret_cast<char*>(&agent.playerId), sizeof(agent.playerId));
+		stream.read(reinterpret_cast<char*>(&agent.position.x), sizeof(agent.position.x));
+		stream.read(reinterpret_cast<char*>(&agent.position.y), sizeof(agent.position.y));
+		stream.read(reinterpret_cast<char*>(&agent.timer), sizeof(agent.timer));
+		stream.read(reinterpret_cast<char*>(&agent.unitId), sizeof(agent.unitId));
+		apostleAgents.push_back(agent);
 	}
 }
 void globals::reset() {
@@ -77,7 +98,24 @@ void globals::unitFrameHook(CUnit* unit) {
 		remove_unit_from_pariah_table(unit, true);
 	}
 }
+void globals::unitDeathHook(CUnit* unit) {
+	if (scbw::get_generic_value(unit, ValueId::LazarusAgent) == 1) {
+		initLazarusAgent(unit->position.x, unit->position.y, unit->playerId, unit->id, scbw::get_generic_unit(unit,ValueId::LazarusAgentApostleSrc));
+	}
+}
 void globals::frameHook() {
+	for (int a = 0; a < apostleAgents.size(); a++) {
+		auto& agent = apostleAgents[a];
+		if (agent.timer > 0) {
+			agent.timer--;
+		}
+		else {
+			//revive unit
+			scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y, agent.creator);
+			apostleAgents.erase(apostleAgents.begin() + a);
+			a--;
+		}
+	}
 	for (int a = 0; a < salamanderImpacts.size();a++) {
 		auto& impact = salamanderImpacts[a];
 		if (impact.timer > 0) {
@@ -138,7 +176,13 @@ void globals::register_pariah_hit(CUnit* source, CUnit* target){
 	hit.target = target;
 	pariahHits.push_back(hit);
 }
-
+void globals::clear_ptr_in_apostle_table(CUnit* ptr) {
+	for (auto& a : apostleAgents) {
+		if (a.creator == ptr) {
+			a.creator = NULL;//agent values themselves must not be deleted to prevent non-working lazarus agent buffs
+		}
+	}
+}
 
 bool globals::was_already_hit_by_gladius_bullet(CBullet* bullet, CUnit* target) {
 	for (auto &a : gladiusBullets) {
@@ -161,6 +205,16 @@ void globals::add_gladius_hit(CBullet* bullet, CUnit* target) {
 	}
 	gladiusBullet gb(bullet, { target });
 	gladiusBullets.push_back(gb);
+}
+void globals::initLazarusAgent(int x, int y, u8 player, u32 unitId, CUnit* unit) {
+	apostleAgent a;
+	a.playerId = player;
+	a.position.x = x;
+	a.position.y = y;
+	a.timer = 48;
+	a.unitId = unitId;
+	a.creator = unit;
+	apostleAgents.push_back(a);
 }
 void globals::createSalamanderFire(int x, int y, u8 player,u8 elevationLevel, bool addImpactValue) {
 	if (addImpactValue) {

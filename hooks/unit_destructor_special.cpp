@@ -278,13 +278,14 @@ void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords) {
 void unitDestructorSpecialHook(CUnit* unit) {
 
 	Globals.remove_unit_from_pariah_table(unit,false);
+	Globals.clear_ptr_in_apostle_table(unit);
+	Globals.unitDeathHook(unit);
 	if (unit->id == UnitId::ProtossCorsair) {
 		auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
 		if (web != NULL) {
 			web->removeTimer = 5 * 24;
 		}
 	}
-
 	// Simulacrum Autovitality behavior
 	if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
 		u32 range = 5*32;
