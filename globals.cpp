@@ -100,7 +100,7 @@ void globals::unitFrameHook(CUnit* unit) {
 }
 void globals::unitDeathHook(CUnit* unit) {
 	if (scbw::get_generic_value(unit, ValueId::LazarusAgent) == 1) {
-		initLazarusAgent(unit->position.x, unit->position.y, unit->playerId, unit->id, scbw::get_generic_unit(unit,ValueId::LazarusAgentApostleSrc));
+		initLazarusAgent(unit->position.x, unit->position.y, unit->playerId, unit->id, NULL);
 	}
 }
 void globals::frameHook() {
@@ -214,6 +214,7 @@ void globals::initLazarusAgent(int x, int y, u8 player, u32 unitId, CUnit* unit)
 	a.timer = 48;
 	a.unitId = unitId;
 	a.creator = unit;
+//	scbw::printFormattedText("Try push back %d", apostleAgents.size());
 	apostleAgents.push_back(a);
 }
 void globals::createSalamanderFire(int x, int y, u8 player,u8 elevationLevel, bool addImpactValue) {

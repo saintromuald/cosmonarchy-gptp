@@ -500,6 +500,7 @@ namespace hooks {
 					if (scbw::get_generic_value(unit, ValueId::CastLazarusAgent) == 1) {
 						scbw::set_generic_value(unit, ValueId::CastLazarusAgent, 0);
 						//cast lazarus agent
+						
 						unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent]*256);
 						auto r = 128;//radius
 						auto n = unitRangeCount(NULL, CFlags::NoBuilding | CFlags::Ally | 

@@ -58,6 +58,7 @@ public:
 	std::vector<pariahHit> pariahHits;
 	std::vector<gladiusBullet> gladiusBullets;
 	std::vector<apostleAgent> apostleAgents;
+	apostleAgent test;
 
 	//non-serializable data (exists only temporarily in memory in wrapper/hook flow)
 	int flingy_init_bullet_id;
