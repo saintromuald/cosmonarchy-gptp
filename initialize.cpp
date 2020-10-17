@@ -211,8 +211,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	//
 
 	//arbiter attack hardcode
-/*	const u8 jmp = 0xEB;
-	nops(0x0043AEE0, 10);
+	const u8 jmp = 0xEB;
+
+	/*nops(0x0043AEE0, 10);
 	nops(0x0043CF89, 4);
 	memoryPatch(0x0043CF8D, &jmp, 1);
 	nops(0x0047681B, 5);
@@ -222,7 +223,17 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x00477ABC, &jmp, 1);
 	nops(0x00477E09, 5);
 	nops(0x00478613, 5);
-	nops(0x0048B0A1, 5);*/
+	nops(0x00478613, 5);
+	nops(0x0048B0A1, 5);
+	memoryPatch(0x0048B0A6, &jmp, 1);
+	*/
+	memoryPatch(0x00477AB7+4, &none, 1);
+	memoryPatch(0x0043CF89 + 2, &none, 1);
+	memoryPatch(0x0047681B + 4, &none, 1);
+	memoryPatch(0x00476E67 + 2, &none, 1);
+	memoryPatch(0x00477E09 + 4, &none, 1);
+	memoryPatch(0x00478613 + 4, &none, 1);
+	memoryPatch(0x0048B0A1 + 4, &none, 1);
 
 
 	//town hall code
