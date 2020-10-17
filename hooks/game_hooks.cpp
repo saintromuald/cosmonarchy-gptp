@@ -504,7 +504,7 @@ namespace hooks {
 						unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent]*256);
 						auto r = 128;//radius
 						auto n = unitRangeCount(NULL, CFlags::NoBuilding | CFlags::Ally | 
-							CFlags::OnlyOrganic | CFlags::IncludingSelf , {});
+							CFlags::OnlyOrganic | CFlags::IncludingSelf, {});
 						scbw::UnitFinder unitsInSplash(unit->getX() - r, unit->getY() - r,
 							unit->position.x + r, unit->position.y + r);
 						for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
