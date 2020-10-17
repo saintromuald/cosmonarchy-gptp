@@ -111,7 +111,10 @@ void globals::frameHook() {
 		}
 		else {
 			//revive unit
-			scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y, agent.creator);
+			auto revived = scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y, agent.creator);
+			if (revived) {
+				revived->setHp(units_dat::MaxHitPoints[revived->id] / 2);
+			}
 			apostleAgents.erase(apostleAgents.begin() + a);
 			a--;
 		}
