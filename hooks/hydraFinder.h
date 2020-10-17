@@ -16,6 +16,7 @@ namespace CFlags {
 		OnlyMechanic=1<<7,
 		Enemy=1<<8,
 		Ally=1<<9,
+		IncludingSelf=1<<10,
 	};
 }
 
@@ -31,6 +32,9 @@ public:
 
 	bool match(CUnit* unit)
 	{
+		if (unit == center && !(context & CFlags::IncludingSelf)) {
+			return false;
+		}
 		if (unit->status & UnitStatus::Invincible && context & CFlags::NoInvincible) {
 			return false;
 		}
