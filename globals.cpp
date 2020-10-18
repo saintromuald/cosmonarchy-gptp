@@ -28,6 +28,7 @@ SaveState globals::aise_save() {
 	u32 apostleCount = apostleAgents.size();
 	for (int i = 0; i < apostleCount; i++) {
 		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].creator), sizeof(apostleAgents[i].creator));
+		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].energy), sizeof(apostleAgents[i].energy));
 		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].playerId), sizeof(apostleAgents[i].playerId));
 		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].position.x), sizeof(apostleAgents[i].position.x));
 		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].position.y), sizeof(apostleAgents[i].position.y));
@@ -81,6 +82,7 @@ void globals::aise_load(const char* ptr, u32 len){
 	for (int i = 0; i < pariahHitsCount; i++) {
 		apostleAgent agent;
 		stream.read(reinterpret_cast<char*>(&agent.creator), sizeof(agent.creator));
+		stream.read(reinterpret_cast<char*>(&agent.energy), sizeof(agent.energy));
 		stream.read(reinterpret_cast<char*>(&agent.playerId), sizeof(agent.playerId));
 		stream.read(reinterpret_cast<char*>(&agent.position.x), sizeof(agent.position.x));
 		stream.read(reinterpret_cast<char*>(&agent.position.y), sizeof(agent.position.y));
@@ -100,7 +102,7 @@ void globals::unitFrameHook(CUnit* unit) {
 }
 void globals::unitDeathHook(CUnit* unit) {
 	if (scbw::get_generic_value(unit, ValueId::LazarusAgent) == 1) {
-		initLazarusAgent(unit->position.x, unit->position.y, unit->playerId, unit->id, NULL);
+		initLazarusAgent(unit->position.x, unit->position.y, unit->playerId, unit->id, unit->energy, NULL);
 	}
 }
 void globals::frameHook() {
@@ -114,6 +116,7 @@ void globals::frameHook() {
 			auto revived = scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y, agent.creator);
 			if (revived) {
 				revived->setHp(units_dat::MaxHitPoints[revived->id] / 2);
+				revived->energy = agent.energy;
 			}
 			apostleAgents.erase(apostleAgents.begin() + a);
 			a--;
@@ -209,13 +212,14 @@ void globals::add_gladius_hit(CBullet* bullet, CUnit* target) {
 	gladiusBullet gb(bullet, { target });
 	gladiusBullets.push_back(gb);
 }
-void globals::initLazarusAgent(int x, int y, u8 player, u32 unitId, CUnit* unit) {
+void globals::initLazarusAgent(int x, int y, u8 player, u32 unitId, u32 energy, CUnit* unit) {
 	apostleAgent a;
 	a.playerId = player;
 	a.position.x = x;
 	a.position.y = y;
 	a.timer = 48;
 	a.unitId = unitId;
+	a.energy = energy;
 	a.creator = unit;
 //	scbw::printFormattedText("Try push back %d", apostleAgents.size());
 	apostleAgents.push_back(a);

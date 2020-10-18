@@ -43,8 +43,10 @@ public:
 	u32 timer;
 	u32 unitId;
 	u8 playerId;
+	u32 energy;
 	CUnit* creator;
 };
+
 class globals {
 	std::string output;
 public:
@@ -83,7 +85,7 @@ public:
 	void createSalamanderFire(int x, int y, u8 player, u8 elevation, bool addImpactValue);
 	bool was_already_hit_by_gladius_bullet(CBullet* bullet, CUnit* target);
 	void add_gladius_hit(CBullet* bullet, CUnit* target);
-	void initLazarusAgent(int x, int y, u8 player, u32 unitId, CUnit* unit);
+	void initLazarusAgent(int x, int y, u8 player, u32 unitId, u32 energy, CUnit* unit);
 	void clear_ptr_in_apostle_table(CUnit* unit);
 };
 
