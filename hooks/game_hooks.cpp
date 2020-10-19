@@ -514,7 +514,7 @@ namespace hooks {
 						}
 					}
 				}
-				if (unit->id == UnitId::corsair) {
+				if (unit->id == UnitId::ProtossCorsair) {
 					auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
 					if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0)) {
 						
@@ -717,9 +717,6 @@ namespace hooks {
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::LobotomySlow, 0) > 0) {
 					unit->updateSpeed();
 				}
-				/*if (unit->id == UnitId::TerranGorgon && scbw::get_generic_timer(unit, ValueId::GorgonTimer) == 1) {
-					unit->updateSpeed();
-				}*/
 
 				// Zergling - Adrenal Glands
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::AdrenalTimer, 0) == 1) {
@@ -798,18 +795,6 @@ namespace hooks {
 							unit->_padding_0x132 |= HydraFlags1::BasiliskBurrowed;
 							spawnCreeper(unit);
 						}
-					}
-					else {
-						// TODO: Cleanup
-						/*
-						if (unit->_padding_0x132 & HydraFlags1::BasiliskBurrowed) {
-							if (unit->connectedUnit != NULL) {
-								unit->connectedUnit->userActionFlags |= 0x4;
-								unit->connectedUnit->remove();
-							}
-						}
-						unit->_padding_0x132 &= ~HydraFlags1::BasiliskBurrowed;
-											*/
 					}
 				}
 

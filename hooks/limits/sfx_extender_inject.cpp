@@ -21,7 +21,7 @@ namespace hooks {
 //        auto sfx_data = scbw::readSamaseFile("arr\\sfxdata.dat");
     }
     void newSfxExtender() {
-        NEW_SOUND_TYPE_COUNT = 1144;//Define your length here (change later to custom func reading sfxdata)
+        NEW_SOUND_TYPE_COUNT = 20000;   //Define your length here (change later to custom func reading sfxdata)
         SFXDAT_Volume = new u8[NEW_SOUND_TYPE_COUNT];
         SFXDAT_Flags = new u8[NEW_SOUND_TYPE_COUNT];
         SFXDAT_Race = new u16[NEW_SOUND_TYPE_COUNT];

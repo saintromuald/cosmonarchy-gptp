@@ -117,6 +117,7 @@ void globals::frameHook() {
 			if (revived) {
 				revived->setHp(units_dat::MaxHitPoints[revived->id] / 2);
 				revived->energy = agent.energy;
+				revived->playIscriptAnim(IscriptAnimation::Unused1);
 			}
 			apostleAgents.erase(apostleAgents.begin() + a);
 			a--;
