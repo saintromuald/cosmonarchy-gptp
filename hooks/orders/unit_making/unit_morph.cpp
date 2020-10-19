@@ -243,7 +243,7 @@ namespace hooks {
 						changeUnitButtonSet_Sub4E5D60(unit, unit->id);
 						unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 						unit->mainOrderState = 1;
-						if (unit->id == UnitId::EggVorvaling) {
+						if (unit->id == UnitId::EggVorvaling || unit->id==UnitId::EggNathrokor) {
 							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
 						}
 
