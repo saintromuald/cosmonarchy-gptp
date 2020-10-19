@@ -310,6 +310,10 @@ public:
 		if (!(scbw::isAlliedTo(attacker->playerId, unit->playerId))) {
 			return;
 		}
+		if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic)	// Return if ally or target are not organic
+		||	!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic)) {
+			return;
+		}
 		u32 value = 0;
 		if (units_dat::ShieldsEnabled[target->id]) {
 			value = (units_dat::MaxHitPoints[target->id] + (units_dat::MaxShieldPoints[target->id] * 256)) * 0.10;
