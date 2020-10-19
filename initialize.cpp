@@ -97,6 +97,7 @@
 #include "hooks/interface/uifeatures/uifeatures.h"
 #include "hooks/trap_hooks.h"
 #include "hooks/target_related.h"
+
 //#include "AI/spellcasting.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
@@ -235,6 +236,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x00478613 + 4, &none, 1);
 	memoryPatch(0x0048B0A1 + 4, &none, 1);
 
+	
 
 	//town hall code
 

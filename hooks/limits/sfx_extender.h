@@ -1,47 +1,17 @@
 #pragma once
 #include "hooks/limits/extender.h"
 
-struct SoundData {
-	u32 wav_data_size;
-	u32 tick;
-	u32 duration_msecs;
-	void* buffer;
-	SoundData() {
-		wav_data_size = 0;
-		tick = 0;
-		duration_msecs = 0;
-		buffer = NULL;
-	}
-};
-
-struct SFXExtender : public Extender {
-	virtual std::vector<u32> get_address_list();
-	virtual std::vector<u32> get_size_list();
-public:
-	std::vector<u16> race;
-	std::vector<u8> min_volume;
-	std::vector<u8> flags;
-	std::vector<u8> priority;
-	std::vector<u32> sound_file_ptrs;
-	std::vector<std::string> extra_strings;//past 1144
-	std::vector<SoundData> unk;
-	SoundData* ptr;
-	std::vector<u32> get_flags_list();
-	virtual int identifier(std::string str);
-	virtual void extend();
-	virtual u32 parse_entry_value(std::string str, int id);
-	virtual bool is_string_id(int id);
-	virtual void set_value(int entry, int id, std::string str);
-	virtual void set_value(int entry, int id, int val);
-	virtual void set_extended_data();
-	void copyArrays();
-};
-
-
+static u32 NEW_SOUND_TYPE_COUNT = 1144;
+//BG
+UNK* makeCleanSFXDAT_Unknown(int count);
+extern u8* SFXDAT_Volume;
+extern u8* SFXDAT_Flags;
+extern u16* SFXDAT_Race;
+extern u8* SFXDAT_Type;
+extern u32* SFXDAT_SoundFile;
+extern UNK* SFXDAT_Unknown;
 
 namespace hooks {
-	void sfxExtender();
+	void sfxExtenderGetCount();
+	void newSfxExtender();
 }
-
-
-extern SFXExtender new_sfxdata;

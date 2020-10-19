@@ -411,10 +411,7 @@ namespace hooks {
 				//Write your code here
 				hooks::initializeScreenLocations();
 				hooks::clearActions();
-				if (Globals.extended_sfx) {
-					new_sfxdata.extend();
-					new_sfxdata.set_extended_data();
-				}
+
 			}
 			hooks::handleScreenHotkeys();
 			scbw::refreshScreen(); // refreshes screen, needed for game clock and apm timer to update every frame

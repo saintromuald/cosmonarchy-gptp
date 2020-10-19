@@ -7,7 +7,7 @@
 #include "globals.h"
 namespace hooks {
 	void loadAiseSamaseData() {
-//		hooks::sfxExtender();
+		hooks::sfxExtenderGetCount();
 		hooks::unitsDatWrapperPatches();
 	}
 	const u32 jmp_004DAF36 = 0x004DAF36;
@@ -26,6 +26,7 @@ namespace hooks {
 
 //		hooks::injectCCMUHooks();
 //		hooks::sfxExtender();
+		newSfxExtender();
 //		hooks::injectTblExtender();
 		
 		jmpPatch(preInitDataWrapper, 0x004DAF31);
