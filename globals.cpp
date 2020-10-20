@@ -118,6 +118,7 @@ void globals::frameHook() {
 				revived->setHp(units_dat::MaxHitPoints[revived->id] / 2);
 				revived->energy = agent.energy;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
+				scbw::set_generic_value(revived, ValueId::LazarusNoHeal, 1);
 			}
 			apostleAgents.erase(apostleAgents.begin() + a);
 			a--;

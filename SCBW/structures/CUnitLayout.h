@@ -233,10 +233,12 @@ namespace ValueId {
 		DisruptionWebDamage							= 85,
 		CastLazarusAgent							= 86,
 		LazarusAgentApostleSrc						= 87,
+		LazarusNoHeal								= 88,
 
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,
 		EcclesiastPlayer							= 102,
+
 
 	};	
 }

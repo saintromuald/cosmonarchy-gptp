@@ -493,6 +493,14 @@ namespace hooks {
 				CUnitExtended::get(unit)->tick();
 				Globals.unitFrameHook(unit);
 				//hooks::ShowHealthBar(unit);
+				if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic &&
+					scbw::get_generic_value(unit, ValueId::LazarusNoHeal)==1) {
+					if (unit->sprite && unit->sprite->mainGraphic
+						&& unit->sprite->mainGraphic->animation != IscriptAnimation::Unused1) {
+						//clear revival no-heal flag
+						scbw::set_generic_value(unit, ValueId::LazarusNoHeal, 0);
+					}
+				}
 				if (unit->id == UnitId::TerranApostle) {
 					if (scbw::get_generic_value(unit, ValueId::CastLazarusAgent) == 1) {
 						scbw::set_generic_value(unit, ValueId::CastLazarusAgent, 0);
