@@ -199,18 +199,31 @@ public:
 	observanceMatch(CUnit* observed)
 		: observed(observed) {}
 
+	bool match(CUnit* unit) {		
+		if (unit == observed
+		|| scbw::isAlliedTo(observed->playerId, unit->playerId)
+		|| unit->id != UnitId::TerranScienceVessel) {
+			return false;
+		}
+
+		return true;
+	}
+};
+
+class observanceVictimMatch : public scbw::UnitFinderCallbackMatchInterface {
+private:
+	CUnit* vessel;
+public:
+	observanceVictimMatch(CUnit* vessel)
+		: vessel(vessel) {}
+
 	bool match(CUnit* unit) {
-		
-		if (unit == observed) {
+		if (unit == vessel
+		|| scbw::isAlliedTo(vessel->playerId, unit->playerId)
+		|| scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) <= 1) {
 			return false;
 		}
-		if (scbw::isAlliedTo(observed->playerId, unit->playerId)) {
-			return false;
-		}
-		if (unit->id != UnitId::science_vessel) {
-			return false;
-		}
-		
+
 		return true;
 	}
 };
@@ -686,22 +699,37 @@ namespace hooks {
 
 				// Science Vessel - Observance ability
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ObservanceTimerDebuff, 0) == 1) {
-					auto range = 160;
+					auto range = 192;
 					auto observance = observanceMatch(unit);
 					auto a = scbw::UnitFinder::getNearestTarget(
 						unit->getX() - range, unit->getY() - range,
 						unit->getX() + range, unit->getY() + range,
 						unit, observance
 					);
-
+					
 					if (a != NULL) {
 						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::ObservanceTimerDebuff, (5 * 24) + 1, 0);
 						if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0) < 5) {
 							scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::ObservanceRend, 1, 0);
-						}	
+						}
 					}
 					else {
 						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::ObservanceRend, 0, 0);
+						unit->removeOverlay(1231, 1233);
+					}
+				}
+				// Persistant overlay creation
+				if (scbw::get_generic_timer(unit, ValueId::ObservanceOverlayTimer) <= 1) {
+					auto range = 192;
+					auto victim = observanceVictimMatch(unit);
+					auto a = scbw::UnitFinder::getNearestTarget(
+						unit->getX() - range, unit->getY() - range,
+						unit->getX() + range, unit->getY() + range,
+						unit, victim
+					);
+					if (a != NULL) {
+						unit->sprite->createOverlay(1230);
+						scbw::set_generic_timer(unit, ValueId::ObservanceOverlayTimer, 18);
 					}
 				}
 
@@ -752,11 +780,6 @@ namespace hooks {
 				}
 
 				// TODO: Reavers remain at full stocks
-
-				// TODO: Cleanup
-				// Orphaned?
-				//(*unit)._dc132 |= 0x8;
-				//(*unit)._dc133 = 24;
 
 				// Shaman - Administer Medstims ability
 				if (unit->id == UnitId::TerranShaman) {

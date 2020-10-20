@@ -307,10 +307,11 @@ class bloodTitheProc : public scbw::UnitFinderCallbackProcInterface {
 private:
 public:
 	void proc(CUnit* unit) {
-		if (!(scbw::isAlliedTo(attacker->playerId, unit->playerId))) {
+		if (!(scbw::isAlliedTo(attacker->playerId, unit->playerId))	// Return if recipient is not allied, or if recipient is the target
+		||	unit == target) {
 			return;
 		}
-		if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic)	// Return if ally or target are not organic
+		if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic)	// Return if recipient or target are not organic
 		||	!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic)) {
 			return;
 		}
@@ -687,9 +688,20 @@ namespace hooks {
 			// Observance - Science Vessel ability
 			if (attacker != NULL) {
 				if (weaponId == WeaponId::Observance) {
+					scbw::set_generic_timer(attacker, ValueId::ObservanceOverlayTimer, 18);
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::ObservanceTimerDebuff, 1 + (5 * 24), 0);
 					int rend = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0);
 					if (rend < 5) {
+						if (rend == 0) {
+							int overlay = 1233;
+							if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay) {
+								overlay -= 2;
+							}
+							else if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay) {
+								overlay -= 1;
+							}
+							target->sprite->createOverlay(overlay);
+						}
 						scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::ObservanceRend, 1, 0);
 					}
 				}

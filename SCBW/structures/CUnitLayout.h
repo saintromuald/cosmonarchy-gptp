@@ -234,6 +234,7 @@ namespace ValueId {
 		CastLazarusAgent							= 86,
 		LazarusAgentApostleSrc						= 87,
 		LazarusNoHeal								= 88,
+		ObservanceOverlayTimer						= 89,
 
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,
