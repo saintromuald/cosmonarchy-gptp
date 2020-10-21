@@ -89,7 +89,6 @@ public:
 	}
 };
 
-
 class powerSiphonCollectProc : public scbw::UnitFinderCallbackProcInterface {
 private:
 	CUnit* savant;
@@ -125,7 +124,6 @@ public:
 	}
 };
 
-
 class powerSiphonDistributeMatch : public scbw::UnitFinderCallbackMatchInterface {
 private:
 	CUnit* savant;
@@ -149,7 +147,6 @@ public:
 		return true;
 	}
 };
-
 
 namespace { // Helper functions
 	typedef void(__stdcall* GetWeaponHitPosFunc)(CUnit* unit, s32* x, s32* y);

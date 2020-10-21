@@ -871,6 +871,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranApostle &&  //Apostle Last Breath passive
+									current_button->iconID == IconId::Suicide_Scourge)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::TerranGhost &&  //Ghost Somatic Implants passive
 									current_button->iconID == IconId::OcularImplants)
 								{

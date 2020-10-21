@@ -26,6 +26,7 @@ class customPlagueProc_2 : public scbw::UnitFinderCallbackProcInterface
 		}
 	}
 };
+
 class simulacrumProc : public scbw::UnitFinderCallbackProcInterface
 {
 private:
@@ -45,6 +46,7 @@ public:
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::SimulacrumStacks, 1, 0);
 	}
 };
+
 class barghestProc : public scbw::UnitFinderCallbackProcInterface
 {
 private:
@@ -65,6 +67,26 @@ public:
 	}
 };
 
+class lastBreathProc : public scbw::UnitFinderCallbackProcInterface
+{
+private:
+	CUnit* victim;
+
+public:
+	lastBreathProc(CUnit* victim)
+		: victim(victim) {}
+	void proc(CUnit* unit)
+	{
+		if (unit->id != UnitId::TerranApostle) {
+			return;
+		}
+		if (!scbw::isAlliedTo(victim->playerId, unit->playerId)) {
+			return;
+		}
+		unit->energy += 5*256;
+		unit->sprite->createUnderlay(425);
+	}
+};
 
 void killAllHangarUnits(CUnit* unit) {
 
@@ -127,9 +149,7 @@ void killAllHangarUnits(CUnit* unit) {
 	} //while (unit->carrier.outHangarCount != 0)
 
 	unit->carrier.outHangarChild = NULL;
-
 }
-
 
 //Identical to 00468770 sub_468770
 //Not hooked but used by hooked unitDestructorSpecialHook
@@ -303,6 +323,16 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		unitFinder.forEach(barghestProc(unit));
 	}
 
+	// Apostle Last Breath behavior
+	if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic) {
+		u32 range = 4 * 32;
+		scbw::UnitFinder unitFinder(unit->getX() - range,
+			unit->getY() - range,
+			unit->getX() + range,
+			unit->getY() + range);
+		unitFinder.forEach(lastBreathProc(unit));
+	}
+
 	// Clarion Phase Link behavior
 	if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ClearClarionLinks, 0, 0, 0);
@@ -323,7 +353,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		}
 	}
 	
-	if (unit->id==UnitId::infested_terran) {
+	if (unit->id==UnitId::ZergInfestedTerran) {
 		Box16 coords;
 		CThingy* ensnare_effect_sprite;
 		ensnare_effect_sprite = createThingyFunc(SpriteId::Ensnare, unit->position.x, unit->position.y, 0);

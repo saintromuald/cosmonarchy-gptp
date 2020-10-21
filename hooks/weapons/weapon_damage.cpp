@@ -35,7 +35,7 @@ void displayneterr_49E530(u32 playerId) {
 		POPAD
 	}
 }
-;
+
 const u32 Func_UpdateUnitStrength = 0x0049FA40;
 void updateStrength_49FA40(CUnit* unit) {
 
@@ -48,8 +48,6 @@ void updateStrength_49FA40(CUnit* unit) {
 
 }
 
-;
-
 const u32 Func_Sub4A01F0 = 0x004A01F0;
 void function_004A01F0_copy(CUnit* unit) {
 
@@ -61,8 +59,6 @@ void function_004A01F0_copy(CUnit* unit) {
 	}
 
 }
-;
-
 
 const u32 Func_497ED0 = 0x00497ED0;
 void makeSpriteVisible(CSprite* sprite) {
@@ -75,8 +71,6 @@ void makeSpriteVisible(CSprite* sprite) {
 	}
 
 }
-;
-
 
 const u32 Func_AI_TrainingUnit = 0x004A2830;
 void AI_Train_4A2830(CUnit* unit_creator, CUnit* created_unit) {
@@ -88,8 +82,6 @@ void AI_Train_4A2830(CUnit* unit_creator, CUnit* created_unit) {
 		POPAD
 	}
 }
-
-;
 
 const u32 Func_CreateUnit = 0x004A09D0;
 CUnit* CreateUnit_09D0(u32 unitId, int x, int y, u32 playerId) {
@@ -109,10 +101,6 @@ CUnit* CreateUnit_09D0(u32 unitId, int x, int y, u32 playerId) {
 	return unit_created;
 
 }
-
-;
-
-
 
 //copied from recall_spell, replace later
 const u32 Func_CreateThingy = 0x00488210;
@@ -150,8 +138,6 @@ bool function_004878f0(CThingy* thingy) {
 
 }
 
-;
-
 const u32 Func_Sub498D70 = 0x00498D70;
 void imgul(CSprite* sprite, u32 imageId, u32 unk1, u32 unk2, u32 unk3) {
 
@@ -167,7 +153,6 @@ void imgul(CSprite* sprite, u32 imageId, u32 unk1, u32 unk2, u32 unk3) {
 	}
 
 }
-;
 
 //
 #include "SCBW\UnitFinder.h"
