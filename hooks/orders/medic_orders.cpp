@@ -314,7 +314,8 @@ namespace hooks {
 			|| target->playerId >= 8
 			|| medic->playerId >= 8
 			|| target->hitPoints >= units_dat::MaxHitPoints[type]
-			|| target->isFrozen()) {
+			|| target->isFrozen()
+			|| scbw::get_generic_value(target,ValueId::LazarusNoHeal)==1) {
 			return 0;
 		}
 		return true;
