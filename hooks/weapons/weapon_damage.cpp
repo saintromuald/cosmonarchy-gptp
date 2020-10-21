@@ -687,7 +687,8 @@ namespace hooks {
 
 			// Observance - Science Vessel ability
 			if (attacker != NULL) {
-				if (weaponId == WeaponId::Observance) {
+				if (weaponId == WeaponId::Observance
+				&&	(!scbw::isAlliedTo(attacker->playerId, target->playerId))) {
 					scbw::set_generic_timer(attacker, ValueId::ObservanceOverlayTimer, 18);
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::ObservanceTimerDebuff, 1 + (5 * 24), 0);
 					int rend = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0);
