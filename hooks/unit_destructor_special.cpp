@@ -306,6 +306,16 @@ void unitDestructorSpecialHook(CUnit* unit) {
 			web->removeTimer = 5 * 24;
 		}
 	}
+
+	if (scbw::get_generic_value(unit, ValueId::AlkajeliskParasite) == 1) {
+		unit->orderTarget.pt.x = unit->position.x + 1;
+		unit->orderTarget.pt.y = unit->position.y;
+		auto bullet = scbw::createBulletRet(WeaponId::ParasiticSpores, unit, unit->position.x, unit->position.y,
+			scbw::get_generic_value(unit, ValueId::AlkajeliskParasitePlayer), 0);
+		if (bullet != NULL) {
+			bullet->time_remaining = 255;
+		}
+	}
 	// Simulacrum Autovitality behavior
 	if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
 		u32 range = 5*32;

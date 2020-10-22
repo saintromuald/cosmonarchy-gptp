@@ -46,7 +46,6 @@ namespace scbw {
 
 	const u32 Helper_CreateBullet = 0x0048C260;
 	void createBullet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction) {
-
 		static u32 attackingPlayer_;
 		static u32 direction_;
 		static s32 x_;
@@ -55,7 +54,6 @@ namespace scbw {
 		attackingPlayer_ = attackingPlayer;
 		direction_ = direction;
 		x_ = x; y_ = y;
-
 		__asm {
 			PUSHAD
 			PUSH direction_
@@ -67,6 +65,31 @@ namespace scbw {
 			CALL Helper_CreateBullet
 			POPAD
 		}
+	}
+	CBullet* createBulletRet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction) {
+
+		static u32 attackingPlayer_;
+		static u32 direction_;
+		static s32 x_;
+		static s32 y_;
+
+		attackingPlayer_ = attackingPlayer;
+		direction_ = direction;
+		x_ = x; y_ = y;
+		static CBullet* bullet;
+		__asm {
+			PUSHAD
+			PUSH direction_
+			PUSH attackingPlayer_
+			PUSH y_
+			PUSH x_
+			MOV EAX, source
+			MOVZX ECX, weaponId
+			CALL Helper_CreateBullet
+			MOV bullet,EAX
+			POPAD
+		}
+		return bullet;
 
 	}
 	void artificalBulletFrom(u8 weaponId, u8 playerId, CUnit* source, CUnit* target, Point16 target_pt) {

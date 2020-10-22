@@ -89,6 +89,25 @@ public:
 	}
 };
 
+class alkajSporeMatch : public scbw::UnitFinderCallbackMatchInterface {
+private:
+	CBullet* missile;
+public:
+	alkajSporeMatch(CBullet* missile)
+		: missile(missile) {}
+
+	bool match(CUnit* unit) {
+		if (unit->status & UnitStatus::Invincible) {
+			return false;
+		}
+		if (scbw::isAlliedTo(missile->srcPlayer, unit->playerId)) {
+			return false;
+		}
+		return true;
+	}
+};
+
+
 class powerSiphonCollectProc : public scbw::UnitFinderCallbackProcInterface {
 private:
 	CUnit* savant;
@@ -406,8 +425,42 @@ namespace hooks {
 		CUnit* target; // eax
 		CSprite* v4; // edx
 		CImage* i; // esi
-		progressBulletMovement_func(bullet);
+		
+		if (bullet->weaponType == WeaponId::ParasiticSpores) {
+			if (bullet->attackTarget.unit == NULL) {
+				u32 range = 8*32;//seek range
+				auto seekTarget = scbw::UnitFinder::getNearestTarget(
+					bullet->position.x - range, bullet->position.y - range,
+					bullet->position.x + range, bullet->position.y + range,
+					bullet, alkajSporeMatch(bullet)
+				);
+				if (seekTarget != NULL) {
+					bullet->attackTarget.unit = seekTarget;
+					bullet->attackTarget.pt = seekTarget->position;
+					bullet->moveTarget.unit = seekTarget;
+					bullet->moveTarget.pt = seekTarget->position;
+					scbw::printText("Find target,progress");
+					progressBulletMovement_func(bullet);
+				}
+				else {
+					scbw::printText("Notarget");
+				}
+			}
+			else {
+				scbw::printFormattedText("Progress %d",bullet->time_remaining);
+				progressBulletMovement_func(bullet);
+			}
+		}
+		else {
+			progressBulletMovement_func(bullet);
+		}
 		u8 time = bullet->time_remaining--;
+		if (bullet->weaponType == WeaponId::ParasiticSpores) {
+			if (bullet->time_remaining < 135 && bullet->attackTarget.unit==NULL) {//135 is 255 - 5*24
+				scbw::printText("Stop progressing");
+				time = 0;
+			}
+		}
 		bool bEnd = false;
 		
 		// Accelerate missiles over time
