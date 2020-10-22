@@ -592,7 +592,9 @@ namespace hooks {
 						hooks::IrradiateHit(attacker, target, attacker->playerId);
 					}
 				}
-
+				if ((weaponId == WeaponId::PlasmidSpores || weaponId==WeaponId::ParasiticSpores) && damage >= target->hitPoints) {
+					scbw::set_generic_value(target, ValueId::AlkajeliskParasite, 1);
+				}
 				if (damage >= target->hitPoints) {
 					//relic death effect
 					//scbw::printText("Check relic");
