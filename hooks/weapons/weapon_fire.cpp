@@ -459,8 +459,7 @@ namespace hooks {
 		}
 		u8 time = bullet->time_remaining--;
 		if (bullet->weaponType == WeaponId::ParasiticSpores) {
-			if (bullet->time_remaining < 135 && bullet->attackTarget.unit==NULL) {//135 is 255 - 5*24
-				scbw::printText("Stop progressing");
+			if (bullet->time_remaining < 135 && bullet->attackTarget.unit==NULL) { //135 is 255 - 5*24
 				time = 0;
 			}
 		}

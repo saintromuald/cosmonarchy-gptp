@@ -1148,6 +1148,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ZergAlkajelisk &&  //Alkajelisk Parasitic Spores passive
+									current_button->iconID == IconId::Seeker_Spores)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if (((*activePortraitUnit)->id == UnitId::ZergIroleth
 								|| (*activePortraitUnit)->id == UnitId::ZergOthstoleth) &&  //Iroleth, Othstoleth Endomorphic Accelerant passive
 									current_button->iconID == IconId::ZergBasicBuildings)
