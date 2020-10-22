@@ -439,15 +439,18 @@ namespace hooks {
 					bullet->attackTarget.pt = seekTarget->position;
 					bullet->moveTarget.unit = seekTarget;
 					bullet->moveTarget.pt = seekTarget->position;
-					scbw::printText("Find target,progress");
+					bullet->targetPosition = seekTarget->position;
+					bullet->targetPosition2 = seekTarget->position;
+					
+					//scbw::printText("Find target,progress");
 					progressBulletMovement_func(bullet);
 				}
-				else {
+				/*else {
 					scbw::printText("Notarget");
-				}
+				}*/
 			}
 			else {
-				scbw::printFormattedText("Progress %d",bullet->time_remaining);
+				//scbw::printFormattedText("Progress %d, %d",bullet->time_remaining);
 				progressBulletMovement_func(bullet);
 			}
 		}
