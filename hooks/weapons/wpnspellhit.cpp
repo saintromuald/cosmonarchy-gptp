@@ -887,8 +887,8 @@ namespace hooks {
 			v2 = units_dat::BaseProperty[a1->id];
 			if (v2 & UnitProperty::MediumOverlay)
 				v3 = 1;
-			else
-				v3 = (v2 >> 25) & 2;
+			else if (v2 & UnitProperty::LargeOverlay)
+				v3 = 2;
 			v4 = a1->subunit;
 			if (!v4)
 				v4 = a1;
