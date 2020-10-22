@@ -25,7 +25,7 @@ namespace hooks {
 	CUnit* createDisruptionWeb(u32 playerId, int x, int y);
 	int ensnareProc(CUnit* target, CUnit* attacker);								//004F46C0
 	void createScanner(CUnit* a1);													//00464E40
-
+	u8 stasisFieldOverlay(CUnit* a1, u8 a2);
 	//The injector function for this hook module.
 	void injectWpnSpellHitHooks();
 

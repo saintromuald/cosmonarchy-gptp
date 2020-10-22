@@ -605,31 +605,55 @@ namespace {
 			RETN
 		}
 	}
+	void __declspec(naked) stasisFieldOverlayWrapper() {
+		static CUnit* unit;
+		static u32 a2;
+		__asm {
+			PUSH EBP
+			MOV EBP,ESP
+			MOV unit,EDI
+			PUSH EAX
+			MOV EAX,[EBP+0x08]
+			MOV a2, EAX
+			POP EAX
+			PUSHAD
+		}
+		a2 = hooks::stasisFieldOverlay(unit, a2);
+		__asm {
+			POPAD
+			MOV EAX,a2
+			MOV ESP,EBP
+			POP EBP
+			RETN 4
+		}
+	}
 
 }//unnamed namespace
 
 namespace hooks {
 
 	void injectWpnSpellHitHooks() {
-		jmpPatch(IrradiateHitWrapper,		0x00454E00, 4);
-		jmpPatch(OpticalFlareHitWrapper,	0x00455170, 1);
-		jmpPatch(RestoreHitWrapper,			0x00455230, 6);
-		jmpPatch(LockdownHitWrapper,		0x00455380, 4);
-		jmpPatch(WeaponBulletHitWrapper,	0x00479AE0, 1);
-		jmpPatch(MeleeAttackHitWrapper,		0x00479B40, 0);
-		jmpPatch(EMPShockwaveHitWrapper,	0x00492BA0, 1);
-		jmpPatch(CorrosiveAcidHitWrapper,	0x004F4770, 1);
-		jmpPatch(ConsumeHitWrapper,			0x004F47B0, 0);
-		jmpPatch(EnsnareHitWrapper,			0x004F4830, 1);
-		jmpPatch(DarkSwarmHitWrapper,		0x004F48A0, 2);
-		jmpPatch(BroodlingHitWrapper,		0x004F4940, 1);
-		jmpPatch(PlagueHitWrapper,			0x004F4B30, 1);
-		jmpPatch(MaelstromHitWrapper,		0x004F6850, 1);
-		jmpPatch(MindControlHitWrapper,		0x004F6910, 8);
-		jmpPatch(StasisFieldHitWrapper,		0x004F6A80, 1);
-		jmpPatch(DisruptionWebHitWrapper,	0x004F6AF0, 2);
-		jmpPatch(ensnareProcWrapper,		0x004F46C0, 1);
-		jmpPatch(createScannerWrapper,		0x00464E40, 0);
+		jmpPatch(IrradiateHitWrapper, 0x00454E00, 4);
+		jmpPatch(OpticalFlareHitWrapper, 0x00455170, 1);
+		jmpPatch(RestoreHitWrapper, 0x00455230, 6);
+		jmpPatch(LockdownHitWrapper, 0x00455380, 4);
+		jmpPatch(WeaponBulletHitWrapper, 0x00479AE0, 1);
+		jmpPatch(MeleeAttackHitWrapper, 0x00479B40, 0);
+		jmpPatch(EMPShockwaveHitWrapper, 0x00492BA0, 1);
+		jmpPatch(CorrosiveAcidHitWrapper, 0x004F4770, 1);
+		jmpPatch(ConsumeHitWrapper, 0x004F47B0, 0);
+		jmpPatch(EnsnareHitWrapper, 0x004F4830, 1);
+		jmpPatch(DarkSwarmHitWrapper, 0x004F48A0, 2);
+		jmpPatch(BroodlingHitWrapper, 0x004F4940, 1);
+		jmpPatch(PlagueHitWrapper, 0x004F4B30, 1);
+		jmpPatch(MaelstromHitWrapper, 0x004F6850, 1);
+		jmpPatch(MindControlHitWrapper, 0x004F6910, 8);
+		jmpPatch(StasisFieldHitWrapper, 0x004F6A80, 1);
+		jmpPatch(DisruptionWebHitWrapper, 0x004F6AF0, 2);
+		jmpPatch(ensnareProcWrapper, 0x004F46C0, 1);
+		jmpPatch(createScannerWrapper, 0x00464E40, 0);
+		jmpPatch(stasisFieldOverlayWrapper, 0x004F67B0, 4);
+			
 	}
 
 } //hooks

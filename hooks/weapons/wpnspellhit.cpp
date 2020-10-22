@@ -37,6 +37,7 @@ namespace {
 	u32 GetUnitBulletDamage(CBullet* bullet, CUnit* target);									//0x0048ACD0
 	u32 getSpellStatString(CUnit* target, u32 techId, u8 playerId);								//0x00491E80
 	void function_492CC0(CUnit* unit);															//0x00492CC0
+	u8 function_492CC0_ret(CUnit* unit);															//0x00492CC0
 	void setAllImageGroupFlagsPal11(CSprite* sprite);											//0x00497430
 	void displayLastNetErrForPlayer(u32 playerId);												//0x0049E530
 	void updateUnitStrength(CUnit* unit);														//0x0049FA40
@@ -875,7 +876,31 @@ namespace hooks {
 		auto unit = createDisruptionWeb(attackingPlayerId, x, y);
 
 	} //void DisruptionWebHit(u32 attackingPlayerId, int x, int y, CBullet* bullet)
+	u8 stasisFieldOverlay(CUnit* a1, u8 a2) {
+		u32 v2; // eax
+		unsigned __int8 v3; // al
+		CUnit* v4; // ecx
+		unsigned __int8 v5; // al
 
+		if (!a1->stasisTimer)
+		{
+			v2 = units_dat::BaseProperty[a1->id];
+			if (v2 & UnitProperty::MediumOverlay)
+				v3 = 1;
+			else
+				v3 = (v2 >> 25) & 2;
+			v4 = a1->subunit;
+			if (!v4)
+				v4 = a1;
+			a1->sprite->createOverlay(ImageId::StasisField_Small + v3, 0, 0, 0);
+			a1->status |= UnitStatus::Invincible;//remove
+		}
+		v5 = a1->stasisTimer;
+		if (a2 > v5)
+			v5 = a2;
+		a1->stasisTimer = v5;
+		return function_492CC0_ret(a1);
+	}
 	void createScanner(CUnit* a1) { // 00464E40
 		CUnit* v1; // esi
 		u16 v2; // ax
@@ -1194,7 +1219,19 @@ namespace {
 	}
 
 	;
+	u8 function_492CC0_ret(CUnit* unit) {
+		u32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_Sub492CC0
+			MOV result,EAX
+			POPAD
+		}
+		return result;
+	}
 
+	;
 	//Identical to setAllImageGroupFlagsPal11 @ 0x00497430;
 	void setAllImageGroupFlagsPal11(CSprite* sprite) {
 
