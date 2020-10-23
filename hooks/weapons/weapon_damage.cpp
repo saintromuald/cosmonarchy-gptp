@@ -343,12 +343,12 @@ namespace hooks {
 			if (scbw::isCheatEnabled(CheatFlags::PowerOverwhelming) &&			//If Power Overwhelming is enabled
 				playerTable[attackingPlayerId].type != PlayerType::Human)		//and the attacker is not a human player
 				damage = 0;
-			
+
 			// Hallucination damage factor -- disabled in HYDRA
 /*			if (target->status & UnitStatus::IsHallucination)
 						damage *= 2;*/
 
-			// Savant Entropy Gauntlets behavior - Apply timer and overlay
+						// Savant Entropy Gauntlets behavior - Apply timer and overlay
 			if (attacker != NULL && weaponId == WeaponId::DiscoidRailgun) {
 				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::EnergyDecay, (5 * 24) + 1, 0);
@@ -380,7 +380,7 @@ namespace hooks {
 				}
 				scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::AdrenalTimer, 49, 0); //49 is 2 seconds (48) + 1
 			}
-			if (weaponId == 22 && attacker != NULL) {			
+			if (weaponId == 22 && attacker != NULL) {
 				/*if (scbw::get_aise_value(target, NULL, AiseId::GenericTimer, ValueId::DirgeImpale, 0) == 0) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::DirgeImpale, 24 + 1, 0);
 				}*/
@@ -416,7 +416,7 @@ namespace hooks {
 				attacker->shields = std::min((s32)(attacker->shields + damage * shieldStealRate), (s32)units_dat::MaxShieldPoints[attacker->id] * 256);
 			}
 
-			if (weaponId == WeaponId::GlaveWurm || weaponId == WeaponId::GlaveWurm_Kukulza_Mutalisk) {
+			if (weaponId == WeaponId::GlaveWurm) {
 				double mul = 1.0;
 				switch (dmgDivisor) {
 				case 0:
@@ -438,7 +438,8 @@ namespace hooks {
 				sprintf(buf, "Mutalisk: damage %d divisor %d mul %lf result %d", damage, dmgDivisor, mul, dmg);
 				scbw::printText(buf);*/
 				damage = dmg + (target->acidSporeCount * 256);
-			} else {
+			}
+			else {
 				damage = damage / dmgDivisor + (target->acidSporeCount * 256);
 			}
 
@@ -565,13 +566,8 @@ namespace hooks {
 				}
 			}
 
-			if (shieldReduceAmount == 0 && damage < 128)
+			if (shieldReduceAmount == 0 && damage < 128) {
 				damage = 128;
-
-			// Overcharge - Shaman upgrade
-			if (weaponId == WeaponId::Defibrilators) {
-				target->unusedTimer = 6;
-				target->updateSpeed();
 			}
 
 			if (attacker != NULL && target != NULL) {
