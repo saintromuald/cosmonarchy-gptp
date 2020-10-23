@@ -30,11 +30,11 @@ public:
 	CUnit* source;
 	CUnit* target;
 };
-class gladiusBullet {
+class multihitBullet {
 public:
 	CBullet* bullet;
 	std::vector<CUnit*> already_hit;
-	gladiusBullet(CBullet* bullet,std::vector<CUnit*> already_hit): bullet(bullet),already_hit(already_hit){}
+	multihitBullet(CBullet* bullet,std::vector<CUnit*> already_hit): bullet(bullet),already_hit(already_hit){}
 };
 
 class apostleAgent {
@@ -58,7 +58,7 @@ public:
 
 	std::vector<salamanderImpact> salamanderImpacts;
 	std::vector<pariahHit> pariahHits;
-	std::vector<gladiusBullet> gladiusBullets;
+	std::vector<multihitBullet> multihitBullets;
 	std::vector<apostleAgent> apostleAgents;
 	apostleAgent test;
 
@@ -83,8 +83,8 @@ public:
 	bool was_hit_by_pariah(CUnit* source, CUnit* target);
 	void register_pariah_hit(CUnit* source, CUnit* target);
 	void createSalamanderFire(int x, int y, u8 player, u8 elevation, bool addImpactValue);
-	bool was_already_hit_by_gladius_bullet(CBullet* bullet, CUnit* target);
-	void add_gladius_hit(CBullet* bullet, CUnit* target);
+	bool was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target);
+	void add_bullet_multihit(CBullet* bullet, CUnit* target);
 	void initLazarusAgent(int x, int y, u8 player, u32 unitId, u32 energy, CUnit* unit);
 	void clear_ptr_in_apostle_table(CUnit* unit);
 };

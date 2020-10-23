@@ -121,9 +121,10 @@ namespace hooks {
 
 		//unit has started casting Recall (== went through the other condition)
 		if(unit->mainOrderState == 1) {
-
+			
 			//execute the recall effect when timer reach 0
 			if(unit->mainOrderTimer == 0) {
+				
 
 				Box16 spell_location;
 
@@ -259,7 +260,8 @@ namespace hooks {
 						0
 					);
 
-				unit->mainOrderTimer = 22;
+//				unit->mainOrderTimer = 22;
+				unit->mainOrderTimer = 3 * 24;
 				unit->mainOrderState = 1;
 
 			}

@@ -192,8 +192,8 @@ void globals::clear_ptr_in_apostle_table(CUnit* ptr) {
 	}
 }
 
-bool globals::was_already_hit_by_gladius_bullet(CBullet* bullet, CUnit* target) {
-	for (auto &a : gladiusBullets) {
+bool globals::was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target) {
+	for (auto &a : multihitBullets) {
 		if (bullet == a.bullet) {
 			for (auto b : a.already_hit) {
 				if (b == target) {
@@ -204,15 +204,15 @@ bool globals::was_already_hit_by_gladius_bullet(CBullet* bullet, CUnit* target) 
 	}
 	return false;
 }
-void globals::add_gladius_hit(CBullet* bullet, CUnit* target) {
-	for (auto &a : gladiusBullets) {
+void globals::add_bullet_multihit(CBullet* bullet, CUnit* target) {
+	for (auto &a : multihitBullets) {
 		if (a.bullet == bullet) {
 			a.already_hit.push_back(target);
 			return;
 		}
 	}
-	gladiusBullet gb(bullet, { target });
-	gladiusBullets.push_back(gb);
+	multihitBullet gb(bullet, { target });
+	multihitBullets.push_back(gb);
 }
 void globals::initLazarusAgent(int x, int y, u8 player, u32 unitId, u32 energy, CUnit* unit) {
 	apostleAgent a;

@@ -88,6 +88,39 @@ public:
 		return true;
 	}
 };
+class kalkalethMissileMatch : public scbw::UnitFinderCallbackMatchInterface {
+private:
+	CBullet* missile;
+public:
+	kalkalethMissileMatch(CBullet* missile)
+		: missile(missile) {}
+
+	bool match(CUnit* unit) {
+		if (unit->status & UnitStatus::Invincible) {
+			return false;
+		}
+		if (scbw::isAlliedTo(missile->srcPlayer, unit->playerId)) {
+			return false;
+		}
+		auto box = units_dat::UnitBounds[unit->id];
+		if (missile->position.x < unit->getLeft()) {
+			return false;
+		}
+		if (missile->position.x > unit->getRight()) {
+			return false;
+		}
+		if (missile->position.y < unit->getTop()) {
+			return false;
+		}
+		if (missile->position.y > unit->getBottom()) {
+			return false;
+		}
+		if (Globals.was_already_hit_by_multihit_bullet(missile, unit)) {
+			return false;
+		}
+		return true;
+	}
+};
 
 class alkajSporeMatch : public scbw::UnitFinderCallbackMatchInterface {
 private:
@@ -175,6 +208,7 @@ namespace { // Helper functions
 	// For progressBulletFlight
 	void progressBulletMovement(CBullet* a1); // 0048B250
 	void playImageIscript(CImage* a1, char a2); // 004D8470
+	void doMissileDmg(CBullet * bullet);  //0048B770
 
 	// For bulletBehavior_Bounce
 	CBullet* changeMovePos(CBullet* a1, s32 a2, s32 a3); // 00495240
@@ -449,16 +483,10 @@ namespace hooks {
 					bullet->moveTarget.pt = seekTarget->position;
 					bullet->targetPosition = seekTarget->position;
 					bullet->targetPosition2 = seekTarget->position;
-					
-					//scbw::printText("Find target,progress");
 					progressBulletMovement_func(bullet);
 				}
-				/*else {
-					scbw::printText("Notarget");
-				}*/
 			}
 			else {
-				//scbw::printFormattedText("Progress %d, %d",bullet->time_remaining);
 				progressBulletMovement_func(bullet);
 			}
 		}
@@ -499,6 +527,23 @@ namespace hooks {
 			if (collisionTarget != NULL) {
 				bullet->attackTarget.unit = collisionTarget;
 				bEnd = true;
+			}
+		}
+		else if (bullet->weaponType == WeaponId::ToxicSpray) {
+			u32 range = 128;
+			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
+				bullet->position.x - range, bullet->position.y - range,
+				bullet->position.x + range, bullet->position.y + range,
+				bullet, kalkalethMissileMatch(bullet)
+			);
+			if (collisionTarget != NULL) {
+				Globals.add_bullet_multihit(bullet, collisionTarget);
+				scbw::weaponBulletShot(collisionTarget, bullet, 1);
+				bullet->moveTarget.unit = bullet->attackTarget.unit;
+				if (bullet->moveTarget.unit != NULL) {
+					bullet->targetPosition = bullet->moveTarget.unit->position;
+					bullet->targetPosition2 = bullet->moveTarget.unit->position;
+				}
 			}
 		}
 
@@ -678,7 +723,7 @@ namespace hooks {
 			if (pIterator != NULL && *bulletBounceMissileNext != NULL
 				&& (*bulletBounceMissileNext)->sprite != NULL
 				&& _pIterator->sprite != NULL) {
-				if (Globals.was_already_hit_by_gladius_bullet(Globals.bounce_bullet, _pIterator)) {
+				if (Globals.was_already_hit_by_multihit_bullet(Globals.bounce_bullet, _pIterator)) {
 					return false;
 					//scbw::printText("Already hit");
 				}
@@ -692,7 +737,7 @@ namespace hooks {
 						return false;
 					}*/
 					//scbw::printFormattedText("Add hit %d",Globals.bounce_bullet);
-					Globals.add_gladius_hit(Globals.bounce_bullet, _pIterator);
+					Globals.add_bullet_multihit(Globals.bounce_bullet, _pIterator);
 					return *bulletBounceMissileNext != _pIterator;
 						
 				}
@@ -1048,5 +1093,16 @@ namespace {
 		}
 		return result;
 	}
+
+	//for progressBullet
+	const u32 func_doMissileDmg = 0x0048B770;
+	void doMissileDmg(CBullet* bullet) {
+		__asm {
+			PUSHAD
+			PUSH bullet
+			CALL func_doMissileDmg
+			POPAD
+		}
+	};
 
 } //unnamed namespace

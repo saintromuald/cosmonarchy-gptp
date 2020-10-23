@@ -66,6 +66,19 @@ namespace scbw {
 			POPAD
 		}
 	}
+
+	const u32 Helper_WeaponBulletShot = 0x00479AE0;
+	void weaponBulletShot(CUnit* target, CBullet* bullet, u32 dmgDivisor) {
+		__asm {
+			PUSHAD
+			PUSH dmgDivisor
+			MOV EAX, target
+			MOV EDX, bullet
+			CALL Helper_WeaponBulletShot
+			POPAD
+		}
+	}
+
 	CBullet* createBulletRet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction) {
 
 		static u32 attackingPlayer_;
