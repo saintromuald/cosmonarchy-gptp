@@ -116,6 +116,7 @@ public:
 			return false;
 		}
 		if (Globals.was_already_hit_by_multihit_bullet(missile, unit)) {
+			scbw::printText("Unit was already hit");
 			return false;
 		}
 		return true;
@@ -655,24 +656,18 @@ namespace hooks {
 			scbw::printText("Source unit is disabled (maelstrom)");
 			return 0;
 		}*/
-//		scbw::printText("Check bullet target status");
 		if (!pIterator) {
-//			scbw::printText("Target is null");
 			return 0;
 		}
 		if (pIterator->status & UnitStatus::Invincible) {
-//			scbw::printText("Target is invincible");
 			return 0;
 		}
 		if (pIterator->sprite->flags & CSprite_Flags::Hidden) {
-//			scbw::printText("Target is hidden");
 			return 0;
 		}
 		if (unitCanSeeCloakedTarget(pIterator, (*bulletBounceMissileSource))) {
-//			scbw::printText("Target cannot be seen by source");
 			return 0;
 		}
-//		scbw::printText("Check subunit status");
 		if (pSrc->subunit != NULL
 		&&	unitIsSubunit(pSrc->subunit)) {
 			v5 = pSrc->subunit;
@@ -680,7 +675,6 @@ namespace hooks {
 		else {
 			v5 = pSrc;
 		}
-//		scbw::printText("Check lardcode status");
 		if (!(unitIsCarrier(pSrc))) {
 			if (unitIsReaver(pSrc))	{
 				if (_pIterator->status & UnitStatus::InAir)
