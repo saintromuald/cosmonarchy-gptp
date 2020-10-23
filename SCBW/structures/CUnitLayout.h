@@ -237,6 +237,8 @@ namespace ValueId {
 		ObservanceOverlayTimer						= 89,
 		AlkajeliskParasite							= 90,
 		AlkajeliskParasitePlayer					= 91,
+		PegasusLaserPos								= 92,
+		PegasusMissilePos							= 93,
 
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,

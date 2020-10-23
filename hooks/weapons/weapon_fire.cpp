@@ -344,6 +344,14 @@ namespace hooks {
 					// Kalkaleth missile spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::KalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 				}
+				else if (weaponId == WeaponId::RetractorBatteries) {
+					// Pegasus laser spawn position
+					scbw::setMissileSourcePos(unit, weaponId, ValueId::PegasusLaserPos, 2, ImagesDatEntries::OverlayAttackPtr);
+				}
+				else if (weaponId == WeaponId::LancetMissiles) {
+					// Pegasus missile spawn position
+					scbw::setMissileSourcePos(unit, weaponId, ValueId::PegasusMissilePos, 4, ImagesDatEntries::OverlaySpecialPtr);
+				}
 				else if (weaponId == WeaponId::PerditionBarrage) {
 					// Salamander missile target positions
 					auto rotate = scbw::get_generic_value(unit, ValueId::SalamanderAtkPos);
