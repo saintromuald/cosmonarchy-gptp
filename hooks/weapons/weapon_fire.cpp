@@ -119,7 +119,6 @@ public:
 			return false;
 		}
 		if (Globals.was_already_hit_by_multihit_bullet(missile, unit)) {
-			scbw::printText("Unit was already hit");
 			return false;
 		}
 		return true;
