@@ -829,12 +829,6 @@ namespace hooks {
 							}
 						}
 
-						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Nuke_Available) {
-							if ((*activePortraitUnit)->id == UnitId::TerranScienceVessel) {
-								current_button_state = BUTTON_STATE::Disabled;
-							}
-						}
-
 						// Passive icons (yes, it's quite ugly)
 						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Spell_Researched)	{
 							if (current_button->iconID == IconId::Lockdown
