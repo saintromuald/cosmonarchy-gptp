@@ -540,7 +540,11 @@ namespace hooks {
 			);
 			if (collisionTarget != NULL) {
 				Globals.add_bullet_multihit(bullet, collisionTarget);
-				scbw::weaponBulletShot(collisionTarget, bullet, 1);
+//				scbw::weaponBulletShot(collisionTarget, bullet, 1);
+				auto saveTarget = bullet->attackTarget.unit;
+				for (i = bullet->sprite->images.head; i; i = i->link.next)
+					playImageIscript(i, IscriptAnimation::AirAttkInit);
+				bullet->attackTarget.unit = saveTarget;
 				bullet->moveTarget.unit = bullet->attackTarget.unit;
 				if (bullet->moveTarget.unit != NULL) {
 					bullet->targetPosition = bullet->moveTarget.unit->position;
