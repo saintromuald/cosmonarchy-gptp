@@ -87,6 +87,7 @@ public:
 	void add_bullet_multihit(CBullet* bullet, CUnit* target);
 	void initLazarusAgent(int x, int y, u8 player, u32 unitId, u32 energy, CUnit* unit);
 	void clear_ptr_in_apostle_table(CUnit* unit);
+	void remove_multihit_bullet(CBullet* bullet);
 };
 
 void injectGlobalsHooks();

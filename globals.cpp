@@ -170,6 +170,14 @@ void globals::remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly){
 		}
 	}
 }
+void globals::remove_multihit_bullet(CBullet* bullet) {
+	for (int i = 0; i < multihitBullets.size(); i++) {
+		if (multihitBullets[i].bullet == bullet) {
+			multihitBullets.erase(multihitBullets.begin() + i);
+			i--;
+		}
+	}
+}
 bool globals::was_hit_by_pariah(CUnit* source, CUnit* target){
 	for (auto a : pariahHits) {
 		if (source == a.source && target == a.target) {
@@ -204,6 +212,7 @@ bool globals::was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target)
 	}
 	return false;
 }
+
 void globals::add_bullet_multihit(CBullet* bullet, CUnit* target) {
 	for (auto &a : multihitBullets) {
 		if (a.bullet == bullet) {

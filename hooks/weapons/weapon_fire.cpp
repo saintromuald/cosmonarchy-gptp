@@ -428,6 +428,7 @@ namespace hooks {
 					if (unit->id == UnitId::TerranMadcap) {
 						scbw::add_generic_value(unit, ValueId::MadcapStacks, 1);
 					}
+					
 					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 				}				
 			}
@@ -549,6 +550,9 @@ namespace hooks {
 		}
 
 		if (bEnd) {
+			if (bullet->weaponType == WeaponId::PlasmaFlurry || bullet->weaponType == WeaponId::ToxicSpray) {
+				Globals.remove_multihit_bullet(bullet);
+			}
 			target = bullet->attackTarget.unit;
 			bullet->behaviourTypeInternal = 5;
 			if (target != NULL)	{
@@ -674,7 +678,7 @@ namespace hooks {
 		}
 		else {
 			v5 = pSrc;
-		}
+		}	
 		if (!(unitIsCarrier(pSrc))) {
 			if (unitIsReaver(pSrc))	{
 				if (_pIterator->status & UnitStatus::InAir)
