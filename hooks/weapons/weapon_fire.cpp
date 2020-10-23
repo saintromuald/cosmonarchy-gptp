@@ -99,6 +99,9 @@ public:
 		if (unit->status & UnitStatus::Invincible) {
 			return false;
 		}
+		if (missile->attackTarget.unit == unit) {
+			return false;
+		}
 		if (scbw::isAlliedTo(missile->srcPlayer, unit->playerId)) {
 			return false;
 		}
