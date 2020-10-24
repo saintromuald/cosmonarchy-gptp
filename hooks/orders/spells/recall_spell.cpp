@@ -40,7 +40,6 @@ namespace hooks {
 			//collision detected, cancel the movement
 			scbw::setUnitPosition(target,previous_pos.x,previous_pos.y);
 		else {
-
 			CThingy* recall_effect_sprite;
 
 			//finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
@@ -121,11 +120,9 @@ namespace hooks {
 
 		//unit has started casting Recall (== went through the other condition)
 		if(unit->mainOrderState == 1) {
-			
 			//execute the recall effect when timer reach 0
 			if(unit->mainOrderTimer == 0) {
-				
-
+				unit->status &= ~UnitStatus::CanNotReceiveOrders;
 				Box16 spell_location;
 
 				spell_location.left = unit->orderTarget.pt.x - 64;
@@ -196,7 +193,7 @@ namespace hooks {
 
 				CThingy* recall_effect_sprite;
 				u32 random_value;
-
+				
 				if(!scbw::isCheatEnabled(CheatFlags::TheGathering))
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::Recall] * 256);
 
@@ -261,6 +258,7 @@ namespace hooks {
 					);
 
 //				unit->mainOrderTimer = 22;
+				unit->status |= UnitStatus::CanNotReceiveOrders;
 				unit->mainOrderTimer = 3 * 24;
 				unit->mainOrderState = 1;
 
