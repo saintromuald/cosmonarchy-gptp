@@ -53,7 +53,7 @@ namespace hooks {
 		int increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 		int decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
 
-		// Kaiser Rampage upgrade: gains 150% movespeed on kill for 1 second
+		// Ultralisk Kaiser Rampage: gains 150% movespeed on kill for 1 second
 		if (unit->id == UnitId::ZergUltralisk) {
 			if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
 				speed += speed;
@@ -80,7 +80,7 @@ namespace hooks {
 			}
 		}
 
-		// Malediction: Apply movespeed slow to Maelstrom victims once stun wears off
+		// Dark Archon Malediction: Apply movespeed slow to Maelstrom victims once stun wears off
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::MaledictionSlow, 0) > 1) {
 			speed /= 2;
 		}
@@ -89,12 +89,12 @@ namespace hooks {
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::LobotomySlow, 0) > 1) {
 			speed /= 2;
 		}
-		// Reverse Thrust ability: reduce movespeed
+		// Wyvern Reverse Thrust ability: reduce movespeed
 		if (unit->id == UnitId::TerranWyvern && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::ReverseThrust, 0) == 1) {
 			speed /= 2;
 		}
 
-		// Adrenal Surge upgrade: gains double movespeed when moving towards enemies
+		// Vorvaling Adrenal Surge: gains double movespeed when moving towards enemies
 		if (unit->id == UnitId::ZergVorvaling) {
 			u32 range = unit->getSightRange(false) * 32;
 			scbw::UnitFinder unitFinder(unit->getX() - range,
@@ -112,7 +112,7 @@ namespace hooks {
 			}
 		}
 
-		// Ion Propulsion upgrade: reduce movespeed, gains hover-mover status
+		// Vulture Ion Propulsion: reduce movespeed, gains hover-mover status
 		else if (unit->id == UnitId::TerranVulture) {
 			auto tile = scbw::getActiveTileAt(unit->getX(), unit->getY());
 			if (tile.isUnwalkable || !tile.isWalkable) {
@@ -122,7 +122,7 @@ namespace hooks {
 			}
 		}
 
-		// Somatic Implants: gains 125% movespeed while cloaked
+		// Ghost Somatic Implants: gains 125% movespeed while cloaked
 		else if (unit->id == UnitId::TerranGhost) {
 			if (
 				unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))
@@ -138,41 +138,41 @@ namespace hooks {
 		|| unit->id == UnitId::Hero_Artanis)
 			speed = 1707;
 
-		// Muscular Augment upgrade (Hydralisk): gains 150% movespeed
+		// Muscular Augment (Hydralisk): gains 150% movespeed
 		else if (unit->id == UnitId::ZergHydralisk) {
 			speed += speed / 2;
 		}
 
-		// Leg Enhancements upgrade (Zealot): gains 125% movespeed
+		// Leg Enhancements (Zealot): gains 125% movespeed
 		else if (unit->id == UnitId::ProtossZealot) {
 			speed += speed / 4;
 		}
 
-		// Leg Enhancements upgrade (Legionnaire): gains 150% movespeed
+		// Leg Enhancements (Legionnaire): gains 150% movespeed
 		else if (unit->id == UnitId::ProtossLegionnaire) {
 			speed += speed / 2;
 		}
 
-		// Leg Enhancements upgrade (Dark Templar): gains 120% movespeed
+		// Leg Enhancements (Dark Templar): gains 120% movespeed
 		else if (unit->id == UnitId::ProtossDarkTemplar) {
 			speed += speed / 5;
 		}
 
-		// Activate Medstims ability: reduce movespeed
+		// Shaman Activate Medstims / Nanite Field abilities: reduce movespeed
 		else if (unit->id == UnitId::TerranShaman) {
-			if (unit->_padding_0x132 & 0x8 || scbw::get_generic_value(unit,ValueId::NaniteField)) {
+			if (unit->_padding_0x132 & 0x8 || scbw::get_generic_value(unit, ValueId::NaniteField)) {
 				speed /= 2;
 			}
 		}
 
-		// Safety Off ability: reduce movespeed
+		// Cyprian Safety Off ability: reduce movespeed
 		else if (unit->id == UnitId::TerranCyprian) {
 			if (scbw::get_aise_value(unit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
 				speed -= (speed / 3); // safety off
 			}
 		}
 
-		// Simulacrum behavior: increase movespeed when any nearby Simulacrum dies
+		// Simulacrum Autovitality: increase movespeed when any nearby Simulacrum dies
 		else if (unit->id == UnitId::ProtossSimulacrum) {
 			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10)*1.5;
 			if (stacks > 0) {
@@ -180,13 +180,13 @@ namespace hooks {
 			}
 		}
 
-		// Nathrokor Adrenal Frenzy behavior: increase movespeed of all nearby organic allies after kill
+		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby organic allies after kill
 		else if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0) {
 			speed += speed / 2;
 //			scbw::printFormattedText("SPEED | Unit id: %d", (u32)unit->id);
 		}
 
-		// Collective Integration passive: gains increased movespeed based on tech level
+		// Collective Integration: gains increased movespeed based on tech level
 		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth || unit->id==UnitId::ZergOthstoleth) {
 			u32 irisCountSpeed = unitCountTable[UnitId::ZergOverlordIris].player[unit->playerId];
 			u32 quayCountSpeed = unitCountTable[UnitId::ZergIrolethQuay].player[unit->playerId];
@@ -202,7 +202,7 @@ namespace hooks {
 			}
 		}
 
-		// Death March passive: gains increased movespeed based on missing health
+		// Infested Terran Death March: gains increased movespeed based on missing health
 		else if (unit->id == UnitId::ZergInfestedTerran) {
 			u32 health = unit->hitPoints / 256;
 			u32 maxHealth = unit->getMaxHpInGame();
@@ -210,7 +210,7 @@ namespace hooks {
 			speed = (u32) ((double)speed * multiplier);
 		}
 
-		// Deathless Procession: gains increased movespeed based on missing shields
+		// Golem Deathless Procession: gains increased movespeed based on missing shields
 		else if (unit->id == UnitId::ProtossGolem) {
 			u32 health = unit->shields / 256;
 			u32 maxHealth = units_dat::MaxShieldPoints[unit->id];
@@ -218,13 +218,13 @@ namespace hooks {
 			speed = (u32) ((double)speed * multiplier);
 		}
 
-		// Knockout Drivers upgrade: reduces movement speed by 5% per stack
+		// Southpaw Knockout Drivers: reduces movement speed by 5% per stack
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0) > 0) {
 			u32 knockoutValue = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0);
 			speed -= speed * (0.05 * knockoutValue);
 		}
 
-		// Captivating Claws upgrade: reduces movement speed by 25% per unique attacker
+		// Vorvaling Captivating Claws: reduces movement speed by 25% per unique attacker
 		u32 captivatingClawsStacks = captivating_claws::getCaptivatingClawsStacks(unit);
 		if (captivatingClawsStacks > 0) {
 			speed -= speed * (0.25 * captivatingClawsStacks);
@@ -233,14 +233,6 @@ namespace hooks {
 		// Khaydarin Eclipse ability: slow Exemplar by 75%
 		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
 			speed = speed / 4;
-		}
-
-		// Deathless Procession upgrade: gains 125% movespeed, increasing to 175% when above 50% shields
-		if (unit->id == UnitId::ProtossAmaranth) {
-			if (unit->getCurrentShieldsInGame() <= units_dat::MaxShieldPoints[unit->id] / 2)
-				speed += speed / 4;
-			else
-				speed += (speed / 2) + speed / 4;
 		}
 
 		// DEBUG
@@ -290,7 +282,7 @@ namespace hooks {
 		if (decrease > 0)
 			acceleration = acceleration - (acceleration / 4);
 
-		// Collective Integration passive: gains increased acceleration based on tech level
+		// Collective Integration: gains increased acceleration based on tech level
 		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth) {
 			u32 irisCountAccel = unitCountTable[UnitId::ZergOverlordIris].player[unit->playerId];
 			u32 quayCountAccel = unitCountTable[UnitId::ZergIrolethQuay].player[unit->playerId];
@@ -308,7 +300,7 @@ namespace hooks {
 			}
 		}
 
-		// Simulacrum Autovitality behavior
+		// Simulacrum Autovitality
 		else if (unit->id == UnitId::ProtossSimulacrum) {
 			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10)*1.5;
 			if (stacks > 0) {
@@ -316,7 +308,7 @@ namespace hooks {
 			}
 		}
 
-		// Nathrokor Adrenal Frenzy behavior: increase acceleration of all nearby organic allies after kill
+		// Nathrokor Adrenal Frenzy: increase acceleration of all nearby organic allies after kill
 		else if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0) {
 			acceleration += acceleration / 2;
 //			scbw::printFormattedText("ACCEL | Unit id: %d", (u32)unit->id);
