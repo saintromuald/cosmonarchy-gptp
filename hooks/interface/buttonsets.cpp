@@ -1186,16 +1186,24 @@ namespace hooks {
 									current_button->iconID = 365;
 								}
 							}
-							if (current_button->actVar == TechId::UnusedTech26) {
-								if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
-									//current_button->actStringID = 1633;
-									current_button->iconID = 375;
+							if (current_button->actVar == TechId::SafetyOff ) {//safety off and rescind control
+								if ((*activePortraitUnit)->id == UnitId::TerranCyprian) {
+									if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
+										//current_button->actStringID = 1633;
+										current_button->iconID = 375;
+									}
+									else {
+										//current_button->actStringID = 1632;
+										current_button->iconID = 374;
+									}
 								}
-								else {
-									//current_button->actStringID = 1632;
-									current_button->iconID = 374;
+								else if ((*activePortraitUnit)->id == UnitId::ProtossDarkArchon) {
+									if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::SumMindControlCost, 0, 0) == 0) {
+										current_button_state = BUTTON_STATE::Invisible;
+									}
 								}
 							}
+
 							for (int i = 0; i < generictoggles; i++) {
 								if (current_button->actVar == toggle_abilities[i]) {
 									if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::GenericValue, toggle_values[i], 0) == 1) {
