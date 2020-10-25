@@ -243,10 +243,14 @@ namespace hooks {
 						changeUnitButtonSet_Sub4E5D60(unit, unit->id);
 						unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 						unit->mainOrderState = 1;
-						if (unit->id == UnitId::EggVorvaling || unit->id == UnitId::EggNathrokor) {
+						if (unit->id == UnitId::EggVorvaling
+						||	unit->id == UnitId::EggNathrokor
+						||	unit->id == UnitId::EggKalkaleth) { // Kalkaleth uses air cocoon
 							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
 						}
-						else if (unit->id == UnitId::EggAlkajelisk || unit->id == UnitId::EggKeskathalor) {
+						else if (unit->id == UnitId::EggAlkajelisk
+						||	unit->id == UnitId::EggKeskathalor
+						||	unit->id == UnitId::EggIroleth) { // Iroleth uses air cocoon
 							unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
 						}
 
