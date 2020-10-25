@@ -900,6 +900,18 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Disabled; // Disable while sieged
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranMadrigal &&  //Madrigal Furia Salvo passive
+									current_button->iconID == IconId::GeminiMissiles &&
+									scbw::get_generic_value((*activePortraitUnit), ValueId::TempoChange) == 0)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranMadrigal &&  //Madrigal Shrike Payload passive
+									current_button->iconID == IconId::Fusion_Cutter_Harvest &&
+									scbw::get_generic_value((*activePortraitUnit), ValueId::TempoChange) > 0)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::TerranWraith &&  //Wraith Capacitors passive
 									current_button->iconID == IconId::BurstLasers)
 								{

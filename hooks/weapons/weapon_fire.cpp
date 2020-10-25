@@ -377,7 +377,7 @@ namespace hooks {
 					// Phobos missile spawn positions
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::PhobosMissilePos, 6, ImagesDatEntries::OverlaySpecialPtr);
 				}
-				else if (weaponId == WeaponId::ToxicSpray) {
+				else if (weaponId == WeaponId::ViscousAcid) {
 					// Kalkaleth missile spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::KalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 				}
@@ -533,7 +533,7 @@ namespace hooks {
 				bEnd = true;
 			}
 		}
-		else if (bullet->weaponType == WeaponId::ToxicSpray) {
+		else if (bullet->weaponType == WeaponId::ViscousAcid) {
 			u32 range = 128;
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
 				bullet->position.x - range, bullet->position.y - range,
@@ -555,7 +555,7 @@ namespace hooks {
 		}
 
 		if (bEnd) {
-			if (bullet->weaponType == WeaponId::ToxicSpray) {
+			if (bullet->weaponType == WeaponId::ViscousAcid) {
 				Globals.remove_multihit_bullet(bullet);
 			}
 			target = bullet->attackTarget.unit;

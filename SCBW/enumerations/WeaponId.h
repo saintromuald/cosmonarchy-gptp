@@ -181,21 +181,21 @@ enum Enum {
 	AuroraPhotonBlasters						= 73,			// Aurora weapon
 	PanoptusAntiMatterMissiles					= 74,			// Panoptus weapon
 	AeonsMadness								= 75,			// Augur weapon
-	PhaseBeam									= 76,			// Exemplar weapon
+	PlasmaTorpedo								= 76,			// Exemplar weapon
 	NeutronCannon								= 78,			// Magister weapon
 	PsiSabers									= 86,			// Legionnaire weapon
 	CelestialCannon								= 90,			// Star Sovereign primary weapon
 	InterventionMissiles						= 91,			// Star Sovereign secondary weapon
 	PlanetCracker								= 92,			// Star Sovereign ability
 	AstralBlaster								= 97,			// Ecclesiast weapon
-	DauntlessDisruptorCannon					= 98,			// Terminus weapon
+	DauntlessDisruptorCannon					= 98,			// Atreus weapon
 	PsiCleaver									= 99,			// Amaranth weapon
 	WardensMark									= 110,			// Clarion weapon
 	PrismaticBlaster							= 112,			// Idol weapon
 	BloodlessAssault							= 113,			// Golem weapon
 	RayOfAgony									= 114,			// Barghest weapon
 	IconoclastBlades							= 115,			// Pariah weapon
-	PsionicBurst								= 118,			// Manifold weapon
+	PhaseBlaster								= 118,			// Manifold weapon
 	DispersiveSalvo								= 119,			// Architect weapon	
 
 	// Zerg \\
@@ -207,6 +207,6 @@ enum Enum {
 	SerratedCleavers							= 47,			// Gorgoleth weapon
 	ParasiticSpores								= 49,			// Alkajelisk behavior weapon
 	BasiliskCorrosiveAcid						= 50,			// Basilisk weapon
-	ToxicSpray									= 117,			// Kalkaleth weapon
+	ViscousAcid									= 117,			// Kalkaleth weapon
 	};
 }
