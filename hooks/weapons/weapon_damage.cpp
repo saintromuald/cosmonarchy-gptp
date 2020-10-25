@@ -5,7 +5,7 @@
 #include "MathUtils.h"
 #include "../orders/spells/hallucination_spell.h"
 #include "Utils/captivating_claws.h"
-
+#include "globals.h"
 namespace {
 	//Helper functions
 	void createShieldOverlay(CUnit* unit, u32 attackDirection);
@@ -415,8 +415,15 @@ namespace hooks {
 				double shieldStealRate = MathUtils::map(attacker->hitPoints / 256, (int)attacker->getMaxHpInGame() / 4, (int)attacker->getMaxHpInGame(), 0.75, 0.0, true);
 				attacker->shields = std::min((s32)(attacker->shields + damage * shieldStealRate), (s32)units_dat::MaxShieldPoints[attacker->id] * 256);
 			}
-
-			if (weaponId == WeaponId::GlaveWurm) {
+			if (weaponId == WeaponId::DispersiveSalvo) {
+				double div = 1.0;
+				if (dmgDivisor != 0) {
+					div = (double)dmgDivisor;
+				}
+				int dmg = ((double)damage / div);
+				damage = dmg + (target->acidSporeCount * 256);
+			}
+			else if (weaponId == WeaponId::GlaveWurm) {
 				double mul = 1.0;
 				switch (dmgDivisor) {
 				case 0:

@@ -121,6 +121,27 @@ public:
 		if (Globals.was_already_hit_by_multihit_bullet(missile, unit)) {
 			return false;
 		}
+
+		return true;
+	}
+};
+class architectBulletMatch : public scbw::UnitFinderCallbackMatchInterface {
+private:
+	CBullet* missile;
+public:
+	architectBulletMatch(CBullet* missile)
+		: missile(missile) {}
+
+	bool match(CUnit* unit) {
+		if (unit->status & UnitStatus::Invincible) {
+			return false;
+		}
+		if (missile->attackTarget.unit == unit) {
+			return false;
+		}
+		if (scbw::isAlliedTo(missile->srcPlayer, unit->playerId)) {
+			return false;
+		}
 		return true;
 	}
 };
@@ -515,7 +536,50 @@ namespace hooks {
 				bullet->flingyAcceleration *= 2;
 			}
 		}
-
+		if (bullet->weaponType == WeaponId::DispersiveSalvo && bullet->sourceUnit && bullet->attackTarget.unit && 
+				bullet->attackTarget.unit->sprite && bullet->sourceUnit->sprite) {
+			CUnit* targ = bullet->attackTarget.unit;
+			if(scbw::getDistanceFast(bullet->position.x,bullet->position.y,targ->getX(),targ->getY())<3*32){
+				if (!Globals.multihit_bullet_is_set(bullet)) {
+					Globals.add_multihit_empty_bullet(bullet,1);
+					auto finderMatch = architectBulletMatch(bullet);
+					auto old = bullet->sourceUnit->orderTarget.unit;
+					auto oldSpritePos = bullet->sourceUnit->sprite->position;
+					auto oldPos = bullet->sourceUnit->position;
+					bullet->sourceUnit->sprite->position = bullet->position;
+					bullet->sourceUnit->position = bullet->position;
+					auto r = 3*32;
+					scbw::UnitFinder unitsInSplash(bullet->position.x - r, bullet->position.y - r,
+											    	bullet->position.x + r, bullet->position.y + r);
+					int count=0;
+					for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
+						CUnit* target = unitsInSplash.getUnit(i);
+						if (finderMatch.match(target)) {
+							if (target != NULL) {
+								count++;
+							}
+						}
+					};
+					for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
+						CUnit* target = unitsInSplash.getUnit(i);
+						if (finderMatch.match(target)) {
+							if (target != NULL) {
+								bullet->sourceUnit->orderTarget.unit = target;
+								auto newAngle = scbw::getAngle(bullet->position.x, bullet->position.y,
+									target->getX(), target->getY());
+								auto newBullet = scbw::createBulletRet(WeaponId::DispersiveSalvo, bullet->sourceUnit,
+									bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
+								newBullet->position = bullet->position;
+								Globals.add_multihit_empty_bullet(newBullet,count+1);
+							}
+						}
+					};
+					bullet->sourceUnit->orderTarget.unit = old;
+					bullet->sourceUnit->position = oldPos;
+					bullet->sourceUnit->sprite->position = oldSpritePos;
+				}
+			}
+		}
 		if (time == 0 || bullet->moveTarget.pt.x == bullet->position.x && bullet->moveTarget.pt.y == bullet->position.y) {
 			bEnd = true;
 		}
@@ -555,11 +619,12 @@ namespace hooks {
 		}
 
 		if (bEnd) {
-			if (bullet->weaponType == WeaponId::ViscousAcid) {
+			if (bullet->weaponType == WeaponId::ViscousAcid || bullet->weaponType==WeaponId::DispersiveSalvo) {
 				Globals.remove_multihit_bullet(bullet);
 			}
 			target = bullet->attackTarget.unit;
 			bullet->behaviourTypeInternal = 5;
+
 			if (target != NULL)	{
 				bullet->attackTarget.pt.x = target->sprite->position.x;
 				bullet->attackTarget.pt.y = target->sprite->position.y;

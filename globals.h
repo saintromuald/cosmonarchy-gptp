@@ -33,8 +33,12 @@ public:
 class multihitBullet {
 public:
 	CBullet* bullet;
+	int divider;
 	std::vector<CUnit*> already_hit;
-	multihitBullet(CBullet* bullet,std::vector<CUnit*> already_hit): bullet(bullet),already_hit(already_hit){}
+	multihitBullet(){
+		divider = 0;
+	}
+	multihitBullet(CBullet* bullet,std::vector<CUnit*> already_hit,u32 divider): bullet(bullet),already_hit(already_hit),divider(divider){}
 };
 
 class apostleAgent {
@@ -84,10 +88,13 @@ public:
 	void register_pariah_hit(CUnit* source, CUnit* target);
 	void createSalamanderFire(int x, int y, u8 player, u8 elevation, bool addImpactValue);
 	bool was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target);
+	bool multihit_bullet_is_set(CBullet* bullet);
+	void add_multihit_empty_bullet(CBullet* bullet, int divider);
 	void add_bullet_multihit(CBullet* bullet, CUnit* target);
 	void initLazarusAgent(int x, int y, u8 player, u32 unitId, u32 energy, CUnit* unit);
 	void clear_ptr_in_apostle_table(CUnit* unit);
 	void remove_multihit_bullet(CBullet* bullet);
+	int get_divider(CBullet* bullet);
 };
 
 void injectGlobalsHooks();

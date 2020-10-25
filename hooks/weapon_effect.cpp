@@ -121,7 +121,10 @@ namespace hooks {
 		if (hasGuaranteedHitUnit && nathrokorCondition(bullet, bullet->attackTarget.unit)) {
 			weaponBulletShot(guaranteed_hit, bullet, 1);
 		}
-
+		int divisor = 1;
+		if (weaponId == WeaponId::DispersiveSalvo) {
+			divisor = Globals.get_divider(bullet);
+		}
 		for (int i = 0; i < unitsInSplash.getUnitCount(); i++){
 			CUnit* target = unitsInSplash.getUnit(i);
 			if (hasGuaranteedHitUnit && target == guaranteed_hit) { // skips target check if hasGuaranteedHitUnit is unset, just for little bit of performance
@@ -196,7 +199,7 @@ namespace hooks {
 			}
 
 			if(isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet,target)){
-				weaponBulletShot(target, bullet, 1); // 100% damage
+				weaponBulletShot(target, bullet, divisor); // 100% damage
 				continue;
 			}
       
@@ -226,13 +229,13 @@ namespace hooks {
 				r = 32;
 			}
 			if(isUnitDistanceWithin(target, bullet, medium) && nathrokorCondition(bullet, target)){
-				weaponBulletShot(target, bullet, 2); // 50% damage
+				weaponBulletShot(target, bullet, divisor*2); // 50% damage
 				continue;
 			}
       
 			// Outer radius
 			if (nathrokorCondition(bullet, target)) {
-				weaponBulletShot(target, bullet, 4); // 25% damage
+				weaponBulletShot(target, bullet, divisor*4); // 25% damage
 			}
 		}
 	}
@@ -363,6 +366,9 @@ namespace hooks {
     if (target == NULL) return;
     darkSwarmDamage(bullet->attackTarget.unit->position.x,bullet->attackTarget.unit->position.y,1,bullet,weaponId);
     u8 divisor = 1;
+	if (weaponId == WeaponId::DispersiveSalvo) {
+		divisor = Globals.get_divider(bullet);
+	}
     if (bullet->hitFlags & 1) { // Miss ?
       if (target->pAI == NULL) return;
       if (bullet->sourceUnit == NULL) return;
@@ -400,6 +406,7 @@ namespace hooks {
 
         
       }
+	  
 	  weaponBulletShot(target, bullet, divisor);
     }
   }

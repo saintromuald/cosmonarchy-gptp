@@ -35,6 +35,21 @@ SaveState globals::aise_save() {
 		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].timer), sizeof(apostleAgents[i].timer));
 		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].unitId), sizeof(apostleAgents[i].unitId));
 	}
+	u32 multihitCount = 0;
+	stream.write(reinterpret_cast<char*>(&multihitCount), sizeof(multihitCount));
+	for (int i = 0; i < multihitCount; i++) {
+		multihitBullet bull;
+		stream.write(reinterpret_cast<char*>(&bull.bullet), sizeof(bull.bullet));
+		stream.write(reinterpret_cast<char*>(&bull.divider), sizeof(bull.divider));
+		u32 alreadyHitCount = bull.already_hit.size();
+		stream.write(reinterpret_cast<char*>(&alreadyHitCount), sizeof(alreadyHitCount));
+		for (int j = 0; j < alreadyHitCount; j++) {
+			CUnit* hit = bull.already_hit[j];
+			stream.write(reinterpret_cast<char*>(&hit), sizeof(hit));
+		}
+		multihitBullets.push_back(bull);
+	}
+	//
 	output = stream.rdbuf()->str();
 	if (output.length() == 0) {
 		return state;
@@ -89,6 +104,21 @@ void globals::aise_load(const char* ptr, u32 len){
 		stream.read(reinterpret_cast<char*>(&agent.timer), sizeof(agent.timer));
 		stream.read(reinterpret_cast<char*>(&agent.unitId), sizeof(agent.unitId));
 		apostleAgents.push_back(agent);
+	}
+	u32 multihitCount = 0;
+	stream.read(reinterpret_cast<char*>(&multihitCount), sizeof(multihitCount));
+	for (int i = 0; i < multihitCount; i++) {
+		multihitBullet bull;
+		stream.read(reinterpret_cast<char*>(&bull.bullet), sizeof(bull.bullet));
+		stream.read(reinterpret_cast<char*>(&bull.divider), sizeof(bull.divider));
+		u32 alreadyHitCount = 0;
+		stream.read(reinterpret_cast<char*>(&alreadyHitCount), sizeof(alreadyHitCount));
+		for (int j = 0; j < alreadyHitCount; j++) {
+			CUnit* hit;
+			stream.read(reinterpret_cast<char*>(&hit), sizeof(hit));
+			bull.already_hit.push_back(hit);
+		}
+		multihitBullets.push_back(bull);
 	}
 }
 void globals::reset() {
@@ -212,7 +242,14 @@ bool globals::was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target)
 	}
 	return false;
 }
-
+bool globals::multihit_bullet_is_set(CBullet* bullet) {
+	for (auto& a : multihitBullets) {
+		if (bullet == a.bullet) {
+			return true;
+		}
+	}
+	return false;
+}
 void globals::add_bullet_multihit(CBullet* bullet, CUnit* target) {
 	for (auto &a : multihitBullets) {
 		if (a.bullet == bullet) {
@@ -220,7 +257,25 @@ void globals::add_bullet_multihit(CBullet* bullet, CUnit* target) {
 			return;
 		}
 	}
-	multihitBullet gb(bullet, { target });
+	multihitBullet gb(bullet, { target },0);
+	multihitBullets.push_back(gb);
+}
+int globals::get_divider(CBullet* bullet) {
+	for (auto& a : multihitBullets) {
+		if (a.bullet == bullet && a.divider != 0) {
+			return a.divider;
+		}
+	}
+	return 1;
+}
+void globals::add_multihit_empty_bullet(CBullet* bullet, int divider) {
+	for (auto& a : multihitBullets) {
+		if (a.bullet == bullet) {
+			a.divider=divider;
+			return;
+		}
+	}
+	multihitBullet gb(bullet, {}, divider);
 	multihitBullets.push_back(gb);
 }
 void globals::initLazarusAgent(int x, int y, u8 player, u32 unitId, u32 energy, CUnit* unit) {
