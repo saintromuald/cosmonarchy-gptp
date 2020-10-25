@@ -555,7 +555,7 @@ namespace hooks {
 		}
 
 		if (bEnd) {
-			if (bullet->weaponType == WeaponId::PlasmaFlurry || bullet->weaponType == WeaponId::ToxicSpray) {
+			if (bullet->weaponType == WeaponId::ToxicSpray) {
 				Globals.remove_multihit_bullet(bullet);
 			}
 			target = bullet->attackTarget.unit;
@@ -610,6 +610,9 @@ namespace hooks {
 			}
 			else {
 //				scbw::printText("NoJump");
+				if (a1->weaponType == WeaponId::PlasmaFlurry) {
+					Globals.remove_multihit_bullet(a1);
+				}
 				v5 = a1->attackTarget.unit;
 				a1->behaviourTypeInternal = 5;
 				if (v5) {
@@ -695,9 +698,10 @@ namespace hooks {
 					v9 = canBeInfested(v11, _pIterator) != 0; // v11 is not used..?
 				}
 				else {
-					if (/*pSrc->id == UnitId::ProtossArbiter && */ pSrc->pAI) {
+					/*if (pSrc->id == UnitId::ProtossArbiter && pSrc->pAI) {
+					
 						return 0;
-					}
+					}*/
 					if (_pIterator->status & UnitStatus::InAir) {
 						v9 = units_dat::AirWeapon[(u16)v5->id] != -126;
 					}
@@ -727,18 +731,11 @@ namespace hooks {
 				&& (*bulletBounceMissileNext)->sprite != NULL
 				&& _pIterator->sprite != NULL) {
 				if (Globals.was_already_hit_by_multihit_bullet(Globals.bounce_bullet, _pIterator)) {
+					//scbw::printText("NoItr - Already hit");
 					return false;
-					//scbw::printText("Already hit");
 				}
 				else {
-					/*if (scbw::getDistanceFast((*bulletBounceMissileNext)->getX(), (*bulletBounceMissileNext)->getY(),
-						_pIterator->getX(), _pIterator->getY()) <= 64) {
-						Globals.add_gladius_hit(Globals.bounce_bullet, pIterator);
-						return true;
-					}
-					else {
-						return false;
-					}*/
+
 					//scbw::printFormattedText("Add hit %d",Globals.bounce_bullet);
 					Globals.add_bullet_multihit(Globals.bounce_bullet, _pIterator);
 					return *bulletBounceMissileNext != _pIterator;
