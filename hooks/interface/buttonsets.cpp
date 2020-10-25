@@ -1001,6 +1001,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossAmaranth &&  //Amaranth Eternal Service passive : enabled 
+									current_button->iconID == IconId::PhaseDisruptorCannon)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossAtreus &&  //Atreus Stalwart Stance passive : enabled 
 									current_button->iconID == IconId::PlasmaShields)
 								{
@@ -1053,6 +1058,11 @@ namespace hooks {
 								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossAurora &&  //Aurora Last Orders passive
 									current_button->iconID == IconId::MojoScout)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossGladius &&  //Gladius Binding Plasma passive
+									current_button->iconID == IconId::PhaseDisruptor)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
