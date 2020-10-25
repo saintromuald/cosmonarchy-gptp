@@ -1198,7 +1198,16 @@ namespace hooks {
 									}
 								}
 								else if ((*activePortraitUnit)->id == UnitId::ProtossDarkArchon) {
-									if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::SumMindControlCost, 0, 0) == 0) {
+									bool canCancel = false;
+									for (int i = 0; i < 12; i++) {
+										CUnit* selU = clientSelectionGroup->unit[i];
+										if (selU != NULL && selU->id == UnitId::ProtossDarkArchon) {
+											if (scbw::get_aise_value(selU, NULL, AiseId::SumMindControlCost, 0, 0) > 0) {
+												canCancel = true;
+											}
+										}
+									}
+									if (!canCancel) {
 										current_button_state = BUTTON_STATE::Invisible;
 									}
 								}
