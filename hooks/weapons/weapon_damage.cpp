@@ -411,10 +411,16 @@ namespace hooks {
 			}
 
 			// Amaranth - shield recharge per missing HP
-			if (attacker != NULL && attacker->id == UnitId::ProtossAmaranth) {
-				double shieldStealRate = MathUtils::map(attacker->hitPoints / 256, (int)attacker->getMaxHpInGame() / 4, (int)attacker->getMaxHpInGame(), 0.75, 0.0, true);
-				attacker->shields = std::min((s32)(attacker->shields + damage * shieldStealRate), (s32)units_dat::MaxShieldPoints[attacker->id] * 256);
-				scbw::printFormattedText("Rate: %d | HP: %i | Max HP: %i", shieldStealRate, attacker->hitPoints, attacker->getMaxHpInGame());
+			if (attacker != NULL) {
+				if (attacker->id == UnitId::ProtossAmaranth) {
+					s32 hp = attacker->hitPoints / 256;
+					s32 maxHp = attacker->getMaxHpInGame();
+					double shieldStealRate = MathUtils::map(hp, maxHp / 4, maxHp, 0.75, 0.0, true);
+					s32 healAmount = damage * shieldStealRate;
+					s32 maxShields = units_dat::MaxShieldPoints[attacker->id] * 256;
+					attacker->shields = std::min(attacker->shields + healAmount, maxShields);
+					scbw::printFormattedText("Rate: %f | HP: %i | Max HP: %i | Damage: %i | Heal Amount: %i", shieldStealRate, hp, maxHp, damage / 256, healAmount / 256);
+				}
 			}
 
 			// Architect behavior
