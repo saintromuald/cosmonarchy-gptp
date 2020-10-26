@@ -718,6 +718,7 @@ namespace hooks {
 						unit->removeOverlay(1231, 1233);
 					}
 				}
+
 				// Persistant overlay creation
 				if (scbw::get_generic_timer(unit, ValueId::ObservanceOverlayTimer) <= 1) {
 					auto range = 192;
@@ -727,7 +728,8 @@ namespace hooks {
 						unit->getX() + range, unit->getY() + range,
 						unit, victim
 					);
-					if (a != NULL) {
+					if (a != NULL
+					&&	unit->id == UnitId::TerranScienceVessel) {
 						unit->sprite->createOverlay(1230);
 						scbw::set_generic_timer(unit, ValueId::ObservanceOverlayTimer, 18);
 					}
