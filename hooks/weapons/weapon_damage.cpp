@@ -414,7 +414,10 @@ namespace hooks {
 			if (attacker != NULL && attacker->id == UnitId::ProtossAmaranth) {
 				double shieldStealRate = MathUtils::map(attacker->hitPoints / 256, (int)attacker->getMaxHpInGame() / 4, (int)attacker->getMaxHpInGame(), 0.75, 0.0, true);
 				attacker->shields = std::min((s32)(attacker->shields + damage * shieldStealRate), (s32)units_dat::MaxShieldPoints[attacker->id] * 256);
+				scbw::printFormattedText("Rate: %d | HP: %i | Max HP: %i", shieldStealRate, attacker->hitPoints, attacker->getMaxHpInGame());
 			}
+
+			// Architect behavior
 			if (weaponId == WeaponId::DispersiveSalvo) {
 				double div = 1.0;
 				if (dmgDivisor != 0) {
