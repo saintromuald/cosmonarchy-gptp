@@ -1139,6 +1139,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ZergGuardian &&  //Guardian Searing Acid passive
+									current_button->iconID == IconId::ZergFlyerAttacks)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::ZergBroodling &&  //Broodling Incubators passive
 									current_button->iconID == IconId::RoarUnused)
 								{
