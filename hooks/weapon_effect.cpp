@@ -370,6 +370,7 @@ namespace hooks {
 		divisor = Globals.get_divider(bullet);
 	}
 	else if (weaponId == WeaponId::AcidSpore
+	&&		bullet->sourceUnit
 	&&		bullet->sourceUnit->sprite
 	&&		target->sprite) {
 		divisor = scbw::getDistanceFast(bullet->sourceUnit->getX(), bullet->sourceUnit->getY(), target->getX(), target->getY()) / (32*3);
