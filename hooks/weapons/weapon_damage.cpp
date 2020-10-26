@@ -419,7 +419,7 @@ namespace hooks {
 					s32 healAmount = damage * shieldStealRate;
 					s32 maxShields = units_dat::MaxShieldPoints[attacker->id] * 256;
 					attacker->shields = std::min(attacker->shields + healAmount, maxShields);
-					scbw::printFormattedText("Rate: %f | HP: %i | Max HP: %i | Damage: %i | Heal Amount: %i", shieldStealRate, hp, maxHp, damage / 256, healAmount / 256);
+//					scbw::printFormattedText("Rate: %f | HP: %i | Max HP: %i | Damage: %i | Heal Amount: %i", shieldStealRate, hp, maxHp, damage / 256, healAmount / 256);
 				}
 			}
 
@@ -432,10 +432,13 @@ namespace hooks {
 				int dmg = ((double)damage / div);
 				damage = dmg + (target->acidSporeCount * 256);
 			}
-			//Guardian behavior
+
+			// Guardian behavior
 			else if (weaponId == WeaponId::AcidSpore) {
-				damage = damage + (target->acidSporeCount * 256) + (dmgDivisor * 5 * 256);
+				damage = damage + (target->acidSporeCount * 256) + (dmgDivisor * 10 * 256);
 			}
+
+			// Mutalisk bounce damage
 			else if (weaponId == WeaponId::GlaveWurm) {
 				double mul = 1.0;
 				switch (dmgDivisor) {
