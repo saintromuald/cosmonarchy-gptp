@@ -369,6 +369,9 @@ namespace hooks {
 	if (weaponId == WeaponId::DispersiveSalvo) {
 		divisor = Globals.get_divider(bullet);
 	}
+	else if (weaponId == WeaponId::AcidSpore && bullet->sourceUnit->sprite && target->sprite) {
+		divisor = scbw::getDistanceFast(bullet->sourceUnit->getX(), bullet->sourceUnit->getY(), target->getX(), target->getY())/(32*2);
+	}
     if (bullet->hitFlags & 1) { // Miss ?
       if (target->pAI == NULL) return;
       if (bullet->sourceUnit == NULL) return;

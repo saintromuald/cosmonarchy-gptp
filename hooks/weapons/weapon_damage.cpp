@@ -426,6 +426,10 @@ namespace hooks {
 				int dmg = ((double)damage / div);
 				damage = dmg + (target->acidSporeCount * 256);
 			}
+			//Guardian behavior
+			else if (weaponId == WeaponId::AcidSpore) {
+				damage = damage + (target->acidSporeCount * 256) + (dmgDivisor * 5 * 256);
+			}
 			else if (weaponId == WeaponId::GlaveWurm) {
 				double mul = 1.0;
 				switch (dmgDivisor) {
