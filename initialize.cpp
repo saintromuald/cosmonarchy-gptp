@@ -429,8 +429,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	//h
 	hooks::injectSelectMod();
 
-	/*
-	hooks::injectMergeUnitsHooks();*/
+	
+	hooks::injectMergeUnitsHooks();
 
 
 	//h

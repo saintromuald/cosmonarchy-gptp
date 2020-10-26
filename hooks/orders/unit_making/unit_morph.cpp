@@ -218,7 +218,6 @@ namespace hooks {
 					//scbw::printFormattedText("Stop status: %d", (int)bStopThere);
 					if (!bStopThere) {
 						if (unit->id == UnitId::ProtossHighTemplar) {
-							//scbw::printText("Augur morph");
 							replaceUnitWithType(unit, UnitId::ProtossAugur);
 							unit->sprite->flags &= ~CSprite_Flags::IscriptCode;
 							if(unit->sprite->images.head != NULL) {

@@ -82,7 +82,7 @@ void orders_CompletingArchonSummon(CUnit* unit) {
 	BinDlg**  const someDialogUnknownUser       = (BinDlg**)0x0068C1EC;
 
 	bool stopFunction = false;
-
+	
 	if(unit->mainOrderState == 0) {
 
 		//93BB2
@@ -107,7 +107,6 @@ void orders_CompletingArchonSummon(CUnit* unit) {
 
 	}else
 	if( unit->mainOrderState == 1 && (unit->orderSignal & 4) ) {
-
 		//93B37
 
 		unit->orderSignal -= 4;
@@ -127,7 +126,10 @@ void orders_CompletingArchonSummon(CUnit* unit) {
 		playMorphingCompleteSound(unit);
 		unit->order(units_dat::HumanIdleOrder[unit->id],0,0,NULL,UnitId::None,0);
 		actUnitReturnToIdle(unit);
-
+		if (unit->id == UnitId::ProtossAugur) {
+			unit->status |= UnitStatus::Completed;
+	
+		}
 	}
 
 }
@@ -324,7 +326,6 @@ void orders_WarpingDarkArchon(CUnit* unit) {
 void orders_WarpingArchon(CUnit* unit) {
 
 	CUnit* targetUnit = unit->orderTarget.unit;
-
 	if(
 		targetUnit == NULL || 
 		unit->playerId != targetUnit->playerId ||
@@ -495,6 +496,7 @@ void orders_WarpingArchon(CUnit* unit) {
 			function_0046A820(unit); ////pathing related
 
 			unit->orderComputerCL(OrderId::CompletingArchonSummon);
+			
 
 		} //if(distanceBetweenUnits <= 20)
 
