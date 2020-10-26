@@ -240,57 +240,57 @@ namespace hooks {
 		}
 	}
 
-  void friendlyLurkerSplash(CBullet* bullet, u32 weaponId, u8 splash) {
-    s16 x, y, r;
-    x = bullet->sprite->position.x;
-    y = bullet->sprite->position.y;
-    r = weapons_dat::OuterSplashRadius[weaponId];
+	void friendlyLurkerSplash(CBullet* bullet, u32 weaponId, u8 splash) {
+		s16 x, y, r;
+		x = bullet->sprite->position.x;
+		y = bullet->sprite->position.y;
+		r = weapons_dat::OuterSplashRadius[weaponId];
 
-    // Get units within the outer splash radius
-    scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
+		// Get units within the outer splash radius
+		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
 
-    for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
-      CUnit* target = unitsInSplash.getUnit(i);
+		for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
+			CUnit* target = unitsInSplash.getUnit(i);
 
-      // Units can't splash themselves
-      if (target == bullet->sourceUnit) continue;
+			// Units can't splash themselves
+			if (target == bullet->sourceUnit) continue;
 
-      // Don't hit allied units -- normally just checks target->playerId == bullet->srcPlayer
- //     if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
-	if(splash==SplashType::Enemy){
-		if (bullet->srcPlayer==target->playerId && target != bullet->attackTarget.unit) continue;
+			// Don't hit allied units -- normally just checks target->playerId == bullet->srcPlayer
+		//     if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
+		if(splash==SplashType::Enemy){
+			if (bullet->srcPlayer==target->playerId && target != bullet->attackTarget.unit) continue;
+		}
+		else if(splash==SplashType::FriendlyNew){
+			if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
+		}    
+
+			// Can the unit be targetted?
+			if (!scbw::canWeaponTargetUnit(bullet->weaponType, target, target)) continue;
+
+			// We found units in a square around the target, but is the target within the splash radius?
+			if (!isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[bullet->weaponType])) continue;
+
+			if (bullet->sourceUnit != NULL) {
+			bool cont = false; // supposed to be a return within the loops, but since we can't it's a bool
+			for (int r = 0; r < 32 && !cont; r++) {
+				for (int c = 0; c < 16; c++) {
+				if (spineHitTable->hits[r][c].source == bullet->sourceUnit && spineHitTable->hits[r][c].target == target) {
+					cont = true; // unit has already been hit
+					break;
+				}
+				}
+			}
+			if (cont) continue;
+
+			if (*spineHitCol != 16) {
+				spineHitTable->hits[*spineHitRow][*spineHitCol].source = bullet->sourceUnit;
+				spineHitTable->hits[*spineHitRow][*spineHitCol].target = target;
+				(*spineHitCol)++;
+			}
+			}
+			weaponBulletShot(target, bullet, 1);
+		}
 	}
-	else if(splash==SplashType::FriendlyNew){
-		if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
-	}    
-
-      // Can the unit be targetted?
-      if (!scbw::canWeaponTargetUnit(bullet->weaponType, target, target)) continue;
-
-      // We found units in a square around the target, but is the target within the splash radius?
-      if (!isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[bullet->weaponType])) continue;
-
-      if (bullet->sourceUnit != NULL) {
-        bool cont = false; // supposed to be a return within the loops, but since we can't it's a bool
-        for (int r = 0; r < 32 && !cont; r++) {
-          for (int c = 0; c < 16; c++) {
-            if (spineHitTable->hits[r][c].source == bullet->sourceUnit && spineHitTable->hits[r][c].target == target) {
-              cont = true; // unit has already been hit
-              break;
-            }
-          }
-        }
-        if (cont) continue;
-
-        if (*spineHitCol != 16) {
-          spineHitTable->hits[*spineHitRow][*spineHitCol].source = bullet->sourceUnit;
-          spineHitTable->hits[*spineHitRow][*spineHitCol].target = target;
-          (*spineHitCol)++;
-        }
-      }
-      weaponBulletShot(target, bullet, 1);
-    }
-  }
 
 	bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId) {
 		if (weaponId == WeaponId::SerratedCleavers) {
@@ -315,6 +315,7 @@ namespace hooks {
 		}
 		return false;
 	}
+
 	bool GorgonCondition(CBullet* bullet) {
 		if (bullet->sourceUnit != NULL && bullet->attackTarget.unit != NULL) {
 			auto target = bullet->attackTarget.unit;
@@ -337,85 +338,84 @@ namespace hooks {
 			POPAD
 		}
 	}
-  // clone of 'Normal' damage for reference
-  void normalDamage(CBullet* bullet, u32 weaponId) {
-	if (bullet->sourceUnit!=NULL && weaponId == WeaponId::Lockdown) {
-		CUnit* mine = scbw::createUnitIngame(UnitId::LobotomyMine, bullet->srcPlayer, bullet->position.x, bullet->position.y);
-		if (mine != NULL)
-		{
-			turnUnit(mine, bullet->sourceUnit->currentDirection1);
-		}
-	}
-    //re-route cyprian bullet
-	//if(bullet->sourceUnit != NULL && bullet->attackTarget.unit!=NULL)
-    if(isUnsafeCyprianBullet(bullet,weaponId)) {
-		friendlySplash(bullet, weaponId, SplashType::Radial);
-		//scbw::printText("Cyprian - Execute splash instead of normal");
-		return;
-    }
-	if (GorgonCondition(bullet)) {
-		friendlySplash(bullet, weaponId, SplashType::FriendlyNew);
-		return;
-	}
-    if (isChargedGorgolethBullet(bullet, weaponId)) {
-		bullet->sourceUnit->spendUnitEnergy(10 * 256);
-        friendlySplash(bullet, weaponId, SplashType::FriendlyNew, bullet->attackTarget.unit);
-        return;
-    }
-    CUnit* target = bullet->attackTarget.unit;
-    if (target == NULL) return;
-    darkSwarmDamage(bullet->attackTarget.unit->position.x,bullet->attackTarget.unit->position.y,1,bullet,weaponId);
-    u8 divisor = 1;
-	if (weaponId == WeaponId::DispersiveSalvo) {
-		divisor = Globals.get_divider(bullet);
-	}
-	else if (weaponId == WeaponId::AcidSpore
-	&&		bullet->sourceUnit
-	&&		bullet->sourceUnit->sprite
-	&&		target->sprite) {
-		divisor = scbw::getDistanceFast(bullet->sourceUnit->getX(), bullet->sourceUnit->getY(), target->getX(), target->getY()) / (32*3);
-	}
-    if (bullet->hitFlags & 1) { // Miss ?
-      if (target->pAI == NULL) return;
-      if (bullet->sourceUnit == NULL) return;
-      doWeaponHit(target, bullet->sourceUnit, divisor);
-      return;
-    } else {
-      if (weapons_dat::Behavior[weaponId] == WeaponBehavior::Bounce) {
-	bool mutalisk = true;
-	bool bounces = true;
-	if(bullet !=NULL && bullet->sourceUnit!=NULL){
-		if (bullet->sourceUnit->id==129){
-			if(bullet->remainingBounces<=1){
-				mutalisk = false;
-			}
-			else {
-				bounces = false;
+
+	// clone of 'Normal' damage for reference
+	void normalDamage(CBullet* bullet, u32 weaponId) {
+		if (bullet->sourceUnit!=NULL && weaponId == WeaponId::Lockdown) {
+			CUnit* mine = scbw::createUnitIngame(UnitId::LobotomyMine, bullet->srcPlayer, bullet->position.x, bullet->position.y);
+			if (mine != NULL)
+			{
+				turnUnit(mine, bullet->sourceUnit->currentDirection1);
 			}
 		}
-	}
-	if(bounces){
-		if(mutalisk) {
-			int bounceCount = 2;
-			divisor = bounceCount - bullet->remainingBounces;
-			/*
-			for (int i = 2 - bullet->remainingBounces; i != 0; i--) {
-				divisor *= 3;
-			}*/
-			//1-3-9  2-1-0 - old
-			//1-2-3  2-1-0 - new
+		//re-route cyprian bullet
+		//if(bullet->sourceUnit != NULL && bullet->attackTarget.unit!=NULL)
+		if(isUnsafeCyprianBullet(bullet,weaponId)) {
+			friendlySplash(bullet, weaponId, SplashType::Radial);
+			//scbw::printText("Cyprian - Execute splash instead of normal");
+			return;
+		}
+		if (GorgonCondition(bullet)) {
+			friendlySplash(bullet, weaponId, SplashType::FriendlyNew);
+			return;
+		}
+		if (isChargedGorgolethBullet(bullet, weaponId)) {
+			bullet->sourceUnit->spendUnitEnergy(10 * 256);
+			friendlySplash(bullet, weaponId, SplashType::FriendlyNew, bullet->attackTarget.unit);
+			return;
+		}
+		CUnit* target = bullet->attackTarget.unit;
+		if (target == NULL) return;
+		darkSwarmDamage(bullet->attackTarget.unit->position.x,bullet->attackTarget.unit->position.y,1,bullet,weaponId);
+		u8 divisor = 1;
+		if (weaponId == WeaponId::DispersiveSalvo) {
+			divisor = Globals.get_divider(bullet);
+		}
+		else if (weaponId == WeaponId::AcidSpore
+		&&		bullet->sourceUnit
+		&&		bullet->sourceUnit->sprite
+		&&		target->sprite) {
+			divisor = scbw::getDistanceFast(bullet->sourceUnit->getX(), bullet->sourceUnit->getY(), target->getX(), target->getY()) / (32*3);
+		}
+		if (bullet->hitFlags & 1) { // Miss ?
+		  if (target->pAI == NULL) return;
+		  if (bullet->sourceUnit == NULL) return;
+		  doWeaponHit(target, bullet->sourceUnit, divisor);
+		  return;
 		}
 		else {
-			divisor *= 3;
+			if (weapons_dat::Behavior[weaponId] == WeaponBehavior::Bounce) {
+				bool mutalisk = true;
+				bool bounces = true;
+				if(bullet !=NULL && bullet->sourceUnit!=NULL){
+					if (bullet->sourceUnit->id==129){
+						if(bullet->remainingBounces<=1){
+							mutalisk = false;
+						}
+						else {
+							bounces = false;
+						}
+					}
+				}
+				if (bounces) {
+					if (mutalisk) {
+						int bounceCount = 2;
+						divisor = bounceCount - bullet->remainingBounces;
+						/*
+						for (int i = 2 - bullet->remainingBounces; i != 0; i--) {
+							divisor *= 3;
+						}*/
+						//1-3-9  2-1-0 - old
+						//1-2-3  2-1-0 - new
+					}
+					else {
+						divisor *= 3;
+					}
+				}        
+			}	  
+		weaponBulletShot(target, bullet, divisor);
 		}
 	}
-
-        
-      }
-	  
-	  weaponBulletShot(target, bullet, divisor);
-    }
-  }
 
   // clone of 'Yamato' damage for reference
   void yamatoDamage(CBullet* bullet, u32 weaponId) {
