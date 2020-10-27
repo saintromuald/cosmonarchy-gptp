@@ -159,7 +159,6 @@ class findBestAttackTargetProc : public scbw::UnitFinderCallbackProcInterface {
 		CUnit* unit;
 		int seekRange;
 		u32 minRange;
-
 };
 
 //Searches for the best attack target nearby for the @p unit.
