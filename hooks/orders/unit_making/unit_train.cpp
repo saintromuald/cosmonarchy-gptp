@@ -1,6 +1,6 @@
 #include "unit_train.h"
 #include <SCBW/api.h>
-
+#include "hooks/hydraFinder.h"
 #ifndef TRUE
 #define TRUE 1
 #endif
@@ -76,9 +76,9 @@ void secondaryOrd_TrainFighter(CUnit* unit) {
 			u32 hpGain;
 
 			if(builtUnit != NULL) {
-
+				
 				hpGain = getHPGainForRepair(builtUnit);
-
+				
 				buildingAddon(builtUnit,hpGain,FALSE);
 
 				if(builtUnit->status & UnitStatus::Completed) {
@@ -172,7 +172,7 @@ void function_00468420(CUnit* unit) {
 					builtUnit = attemptTrainHatchUnit(unit,unit->buildQueue[unit->buildQueueSlot],1);
 				else
 					builtUnit = attemptTrainHatchUnit(unit,unit->buildQueue[unit->buildQueueSlot],0);
-
+				
 				unit->currentBuildUnit = builtUnit;
 
 				if(builtUnit == NULL)
@@ -199,10 +199,29 @@ void function_00468420(CUnit* unit) {
 			CUnit* builtUnit = unit->currentBuildUnit;
 
 			if(builtUnit != NULL) {
-
 				u32 hpGain = getHPGainForRepair(builtUnit);
-
-				if(buildingAddon(builtUnit,hpGain,TRUE)) {
+				bool extraBuild = false;
+				if (scbw::get_generic_value(builtUnit, ValueId::CrucibleValue) == 0) {
+					auto r = 256;
+					auto n = unitRangeCount(NULL, CFlags::NoInvincible | CFlags::Ally, { UnitId::ProtossCrucible });
+					scbw::UnitFinder unitsInSplash(builtUnit->position.x - r, builtUnit->position.y - r,
+						builtUnit->position.x + r, builtUnit->position.y + r);
+					for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
+						auto unit = unitsInSplash.getUnit(i);
+						if (n.match(unit)) {
+							scbw::set_generic_value(builtUnit, ValueId::CrucibleValue, 5);//6 is ~100/15
+							buildingAddon(builtUnit, hpGain, TRUE);
+							if (builtUnit->status & UnitStatus::Completed) {
+								extraBuild = true;
+							}
+							break;
+						}
+					}
+				}
+				else {
+					scbw::sendGPTP_aise_cmd(builtUnit, NULL, GptpId::AddGenericValue, ValueId::CrucibleValue, -1, 0);
+				}
+				if(extraBuild || buildingAddon(builtUnit,hpGain,TRUE)) {
 
 					if(builtUnit->status & UnitStatus::Completed) {
 

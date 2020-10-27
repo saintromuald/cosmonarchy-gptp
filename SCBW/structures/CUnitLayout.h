@@ -243,6 +243,7 @@ namespace ValueId {
 		GuardianMissileLaunchPosY					= 95,
 		SovereignCannonPos							= 96,
 		AICloakGimmick								= 97,
+		CrucibleValue								= 98,
 
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,
