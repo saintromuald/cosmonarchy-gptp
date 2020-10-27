@@ -244,6 +244,7 @@ namespace ValueId {
 		SovereignCannonPos							= 96,
 		AICloakGimmick								= 97,
 		CrucibleValue								= 98,
+		KeskathalorMissilePos						= 99,
 
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,

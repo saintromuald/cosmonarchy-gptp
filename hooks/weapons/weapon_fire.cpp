@@ -402,6 +402,10 @@ namespace hooks {
 					// Kalkaleth missile spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::KalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 				}
+				else if (weaponId == WeaponId::ScreamingVenom) {
+					// Keskathalor missile spawn position
+					scbw::setMissileSourcePos(unit, weaponId, ValueId::KeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
+				}
 				else if (weaponId == WeaponId::RetractorBatteries) {
 					// Pegasus laser spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::PegasusLaserPos, 2, ImagesDatEntries::OverlayAttackPtr);
