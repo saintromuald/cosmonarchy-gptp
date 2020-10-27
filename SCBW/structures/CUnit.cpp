@@ -117,8 +117,13 @@ u32 CUnit::getMaxHpRaw() const {
 	assert(this);
 	return units_dat::MaxHitPoints[this->id];
 }
-
-
+u8 CUnit::getSpellCountdown() const {
+	assert(this);
+	if (this->id == UnitId::TerranWyvern) {
+		return this->groundWeaponCooldown;
+	}
+	return this->spellCooldown;
+}
 extern const u32 Func_GetMaxWeaponRange = 0x00475870;
 u32 CUnit::getMaxWeaponRange(u8 weaponId) const {
 	assert(this);

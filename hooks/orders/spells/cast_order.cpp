@@ -169,7 +169,7 @@ void orders_Spell(CUnit* unit) {
 				else { //92A01
 
 					if(
-						unit->spellCooldown == 0 &&
+						unit->getSpellCountdown() == 0 &&
 						gcd_condition && //new
 						function_00476640(unit,orderWeaponId) && //is ready to fire weapon (angle,range...) maybe?
 						!(unit->movementFlags & MovementFlags::Accelerating) &&

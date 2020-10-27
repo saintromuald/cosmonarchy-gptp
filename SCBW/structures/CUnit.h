@@ -192,6 +192,7 @@ struct CUnit: public CUnitLayout {
 	  s32 attackingPlayer = -1, bool notify = true, bool shield_overlay = false, int direction = 0, bool ignoreDmg128Overflow = false);
   
 
+
   /// Reduces Defensive Matrix by @p amount, removing it if possible.
   void reduceDefensiveMatrixHp(s32 amount);
 
@@ -395,6 +396,9 @@ struct CUnit: public CUnitLayout {
   /// Updates the unit's actual speed. This function should be called after
   /// changing any properties and status effects that affect movement speed.
   void updateSpeed();
+
+  /// For Wyvern Land Grab
+  u8 getSpellCountdown() const;
 
   //////////////////////////////////////////////////////////////// @}
 
