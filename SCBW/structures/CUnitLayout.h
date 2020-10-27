@@ -241,6 +241,7 @@ namespace ValueId {
 		PegasusMissilePos							= 93,
 		GuardianMissileLaunchPosX				    = 94,
 		GuardianMissileLaunchPosY					= 95,
+		SovereignCannonPos							= 96,
 
 
 		EcclesiastStack								= 100,

@@ -410,6 +410,10 @@ namespace hooks {
 					// Pegasus missile spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::PegasusMissilePos, 4, ImagesDatEntries::OverlaySpecialPtr);
 				}
+				else if (weaponId == WeaponId::CelestialCannon) {
+					// Star Sovereign laser spawn position
+					scbw::setMissileSourcePos(unit, weaponId, ValueId::SovereignCannonPos, 2, ImagesDatEntries::OverlayAttackPtr);
+				}
 				else if (weaponId == WeaponId::PerditionBarrage) {
 					// Salamander missile target positions
 					auto rotate = scbw::get_generic_value(unit, ValueId::SalamanderAtkPos);
@@ -458,9 +462,6 @@ namespace hooks {
 					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 				}				
 			}
-
-			// Madrigal Furia Missiles
-			
 
 			// Tendril Amitosis
 			/*if (weaponId == WeaponId::SubterraneanTentacle && unit->orderTarget.unit != NULL) {

@@ -1076,6 +1076,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossStarSovereign &&  //Star Sovereign Intervention passive
+									current_button->iconID == IconId::AntimatterMissiles)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 
 								// ZERG \\
 								
