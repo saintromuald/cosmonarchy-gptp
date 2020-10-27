@@ -105,10 +105,24 @@ void applyCloakingOrderHook(CUnit* unit) {
 	if (scbw::isCheatEnabled(CheatFlags::TheGathering) || unit->energy >= energyCost) {
 
 		if (!scbw::isCheatEnabled(CheatFlags::TheGathering)){
-			unit->spendUnitEnergy(energyCost);
+			bool spend = true;
+			if (scbw::get_generic_value(unit, ValueId::AICloakGimmick) == 1) {
+				spend = false;
+			}
+			if (unit->pAI != NULL) {
+				scbw::set_generic_value(unit, ValueId::AICloakGimmick, 1);
+			}
+			if (spend) {
+				unit->spendUnitEnergy(energyCost);
+			}
 		}
 		//original code is hardcoded instead of using a function like setSecondaryOrder
-		unit->setSecondaryOrder(OrderId::Cloak);
+		if (unit->secondaryOrderId != OrderId::Cloak) {
+			unit->setSecondaryOrder(OrderId::Cloak);
+		}
+		else if(unit->pAI!=NULL) {
+			scbw::set_generic_value(unit, ValueId::AICloakGimmick, 0);
+		}
 	}
 }
 
@@ -149,9 +163,8 @@ void __declspec(naked) cloakingTechWrapper_AI_cloakUnit() {
 
 	if (!(unit->status & UnitStatus::RequiresDetection)) {
 		if (unit->canUseTech(hooks::getCloakingTech(unit), unit->playerId) == 1) {
-			scbw::printText("Apply Cloaking");
-			//applyCloakingOrderHook(unit);
-			applyCloakingOrderFunc(unit);
+			applyCloakingOrderHook(unit);
+			//applyCloakingOrderFunc(unit);
 
 		}
 	}
@@ -200,6 +213,19 @@ void __declspec(naked) getCloakingTechWrapper() {
 
 ;
 
+void __declspec(naked) cloakingTech_ApplyCloakingOrder() {
+	static CUnit* unit;
+	__asm {
+		MOV unit,EAX
+		PUSHAD
+	}
+	applyCloakingOrderHook(unit);
+	__asm {
+		POPAD
+		RETN
+	}
+}
+
 Bool32 __cdecl currentUnitSelectionCanCloakWrapper() {
 
 	RaceId::Enum race;
@@ -237,6 +263,7 @@ void injectCloakingTechHooks() {
 //  jmpPatch(cloakingTechWrapper_CanCloak,        0x004292C0, 1);
   jmpPatch(cloakingTechWrapper_CMDRECV_Cloak,   0x004C0720, 3);
   jmpPatch(cloakingTechWrapper_AI_cloakUnit,    0x0043B970, 1);
+//  jmpPatch(cloakingTech_ApplyCloakingOrder, 0x00491B30, 5);
 //  jmpPatch(cloakingTechWrapper_CMDRECV_Decloak, 0x004C0660, 3);
 //  jmpPatch(getCloakingTechWrapper,              0x00491A50, 3);
 //  jmpPatch(currentUnitSelectionCanCloakWrapper, 0x00423540, 1);

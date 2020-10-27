@@ -561,8 +561,9 @@ void CUnit::removeAcidSpores() {
 void CUnit::spendUnitEnergy(u32 energySpent) {
 	if(!(*CHEAT_STATE & CheatFlags::TheGathering))
 		this->energy -= energySpent;
+	
 	if (scbw::get_aise_value(this, NULL, AiseId::GenericTimer, ValueId::EnergyDecay, 0) > 1) {
-		this->inflictDamage(energySpent, scbw::get_generic_unit(this, ValueId::DecaySavant), -1, false, true, 00, true);
+		this->inflictDamage(energySpent, scbw::get_generic_unit(this, ValueId::DecaySavant), -1, false, true, 0, true);
 	}
 }
 void CUnit::addUnitEnergy(u32 energy) {
@@ -931,12 +932,13 @@ const u32 Func_CanUseTech = 0x0046DD80;
 int CUnit::canUseTech(u8 techId, u8 playerId) const {
 	assert(this);
 	s32 playerId_ = playerId;
+	u32 _techId = techId;
 	static s32 result;
 
 	__asm {
 		PUSHAD
 		PUSH playerId_
-		MOVZX DI, techId
+		MOV EDI, _techId
 		MOV EAX, this
 		CALL Func_CanUseTech
 		MOV result, EAX
