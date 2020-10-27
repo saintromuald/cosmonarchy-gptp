@@ -104,14 +104,12 @@ void applyCloakingOrderHook(CUnit* unit) {
 
 	if (scbw::isCheatEnabled(CheatFlags::TheGathering) || unit->energy >= energyCost) {
 
-		if (!scbw::isCheatEnabled(CheatFlags::TheGathering))
+		if (!scbw::isCheatEnabled(CheatFlags::TheGathering)){
 			unit->spendUnitEnergy(energyCost);
-
+		}
 		//original code is hardcoded instead of using a function like setSecondaryOrder
 		unit->setSecondaryOrder(OrderId::Cloak);
-
 	}
-
 }
 
 ;
@@ -129,6 +127,16 @@ void __cdecl cloakingTechWrapper_CMDRECV_Cloak() {
 
 ;
 
+
+const u32 Func_ApplyCloak = 0x00491B30;
+void applyCloakingOrderFunc(CUnit* unit) {
+	__asm {
+		PUSHAD
+		MOV EAX,unit
+		CALL Func_ApplyCloak
+		POPAD
+	}
+}
 void __declspec(naked) cloakingTechWrapper_AI_cloakUnit() {
 
 	static CUnit* unit;
@@ -138,9 +146,14 @@ void __declspec(naked) cloakingTechWrapper_AI_cloakUnit() {
 		PUSHAD
 	}
 
+
 	if (!(unit->status & UnitStatus::RequiresDetection)) {
-		if (unit->canUseTech(hooks::getCloakingTech(unit), unit->playerId) == 1)
-			applyCloakingOrderHook(unit);
+		if (unit->canUseTech(hooks::getCloakingTech(unit), unit->playerId) == 1) {
+			scbw::printText("Apply Cloaking");
+			//applyCloakingOrderHook(unit);
+			applyCloakingOrderFunc(unit);
+
+		}
 	}
 
 	__asm {
