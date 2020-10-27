@@ -360,7 +360,7 @@ namespace hooks
 		case TechId::UnusedTech39://observance
 			IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
 
-			if (firstInList != NULL) {
+/*			if (firstInList != NULL) {
 				int action = 0;//enable
 				if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::Observance, 0) == 1) {
 					action = 1;//disable
@@ -371,7 +371,7 @@ namespace hooks
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				scbw::SendCommand(buf, 0xc);
-			}
+			}*/
 			break;
 		case TechId::PhaseLink://and Khaydarin Eclipse
 		{
