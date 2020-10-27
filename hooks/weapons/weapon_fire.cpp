@@ -451,7 +451,10 @@ namespace hooks {
 					if (unit->id == UnitId::TerranMadcap) {
 						scbw::add_generic_value(unit, ValueId::MadcapStacks, 1);
 					}
-					
+					if (weaponId == WeaponId::AcidSpore && unit->sprite) {
+						scbw::set_generic_value(unit, ValueId::GuardianMissileLaunchPosX, unit->getX());
+						scbw::set_generic_value(unit, ValueId::GuardianMissileLaunchPosY, unit->getY());
+					}
 					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 				}				
 			}

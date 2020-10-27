@@ -375,7 +375,11 @@ namespace hooks {
 		&&		bullet->sourceUnit
 		&&		bullet->sourceUnit->sprite
 		&&		target->sprite) {
-			divisor = scbw::getDistanceFast(bullet->sourceUnit->getX(), bullet->sourceUnit->getY(), target->getX(), target->getY()) / (32*3);
+			auto X = scbw::get_generic_value(bullet->sourceUnit, ValueId::GuardianMissileLaunchPosX);
+			auto Y = scbw::get_generic_value(bullet->sourceUnit, ValueId::GuardianMissileLaunchPosY);
+			if (X != 0 && Y != 0) {
+				divisor = scbw::getDistanceFast(X, Y, target->getX(), target->getY()) / (32 * 3);
+			}
 		}
 		if (bullet->hitFlags & 1) { // Miss ?
 		  if (target->pAI == NULL) return;

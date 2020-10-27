@@ -239,6 +239,9 @@ namespace ValueId {
 		AlkajeliskParasitePlayer					= 91,
 		PegasusLaserPos								= 92,
 		PegasusMissilePos							= 93,
+		GuardianMissileLaunchPosX				    = 94,
+		GuardianMissileLaunchPosY					= 95,
+
 
 		EcclesiastStack								= 100,
 		EcclesiastTimer								= 101,
