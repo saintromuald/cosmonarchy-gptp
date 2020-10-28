@@ -276,7 +276,7 @@ namespace hooks
 			}
 			break;
 		}
-		case TechId::NaniteField: 
+		case TechId::NaniteField:
 		{
 			int action = 1;//on
 			if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::NaniteField, 0) == 1) {
@@ -318,60 +318,60 @@ namespace hooks
 			}
 			break;
 		}
-/*		case TechId::UnusedTech38:
-		{
-			//Equip - Empower hero with relic
-			scbw::printText("Try use Tech38");
-			if (firstInList != NULL) {
-				if (firstInList->id == 175) {//reliquary
-					u8 relic_type = 0;
-					u32 button_number = head->frameCount;
-					u32 relic = 0;
-					relic = scbw::get_aise_value(firstInList, NULL, AiseId::GetRelicByIndex, button_number, 0);
-					char buf[64];
-					sprintf(buf, "Relic id: %d", relic);
-					scbw::printText(buf);
+		/*		case TechId::UnusedTech38:
+				{
+					//Equip - Empower hero with relic
+					scbw::printText("Try use Tech38");
+					if (firstInList != NULL) {
+						if (firstInList->id == 175) {//reliquary
+							u8 relic_type = 0;
+							u32 button_number = head->frameCount;
+							u32 relic = 0;
+							relic = scbw::get_aise_value(firstInList, NULL, AiseId::GetRelicByIndex, button_number, 0);
+							char buf[64];
+							sprintf(buf, "Relic id: %d", relic);
+							scbw::printText(buf);
 
-					if (relic != 0) {
-						if (relic == 202) {
-							scbw::printText("Blind Judge");
-						}
-						scbw::sendGPTP_aise_cmd(firstInList, NULL, GptpId::EmpowerHero, relic, 0, 0);
-						if (scbw::get_aise_value(firstInList, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1) {
-							scbw::printText("Found relic");
+							if (relic != 0) {
+								if (relic == 202) {
+									scbw::printText("Blind Judge");
+								}
+								scbw::sendGPTP_aise_cmd(firstInList, NULL, GptpId::EmpowerHero, relic, 0, 0);
+								if (scbw::get_aise_value(firstInList, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1) {
+									scbw::printText("Found relic");
+								}
+								else {
+									scbw::printText("No relic!");
+								}
+								scbw::refreshConsole();
+							}
 						}
 						else {
-							scbw::printText("No relic!");
+							char buf[64];
+							sprintf(buf, "Incorrect reliquary id %d", firstInList->id);
+							scbw::printText(buf);
 						}
-						scbw::refreshConsole();
 					}
-				}
-				else {
-					char buf[64];
-					sprintf(buf, "Incorrect reliquary id %d", firstInList->id);
-					scbw::printText(buf);
-				}
-			}
-			else {
-				scbw::printText("No selected units");
-			}
-			break;
-		}*/
+					else {
+						scbw::printText("No selected units");
+					}
+					break;
+				}*/
 		case TechId::UnusedTech39://observance
 			IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
 
-/*			if (firstInList != NULL) {
-				int action = 0;//enable
-				if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::Observance, 0) == 1) {
-					action = 1;//disable
-				}
-				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
-				buf[0] = 0x99;//new general command
-				buf[1] = NewGameCommand::Observance;
-				buf[2] = action;
-				buf[3] = *ACTIVE_PLAYER_ID;
-				scbw::SendCommand(buf, 0xc);
-			}*/
+			/*			if (firstInList != NULL) {
+							int action = 0;//enable
+							if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::Observance, 0) == 1) {
+								action = 1;//disable
+							}
+							u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+							buf[0] = 0x99;//new general command
+							buf[1] = NewGameCommand::Observance;
+							buf[2] = action;
+							buf[3] = *ACTIVE_PLAYER_ID;
+							scbw::SendCommand(buf, 0xc);
+						}*/
 			break;
 		case TechId::PhaseLink://and Khaydarin Eclipse
 		{
@@ -385,14 +385,21 @@ namespace hooks
 		}
 		case TechId::PlanetCracker:
 		{
+			auto firstInList = clientSelectionGroup->unit[0];
 			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+			buf[0] = 0x99;//new general command
+			buf[1] = NewGameCommand::IssueCTFCop2;//used for Phase Link, Khaydarin Eclipse, and (in Overlord) Anti-Air Mode
+			buf[2] = *ACTIVE_PLAYER_ID;
+			scbw::SendCommand(buf, 0xc);
+			break;
+			/*u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
 			buf[0] = 0x99;//new general command
 			buf[1] = NewGameCommand::GenericSwitchAbility;
 			buf[2] = 1;
 			buf[3] = *ACTIVE_PLAYER_ID;
 			buf[4] = ValueId::CastPlanetCracker;
 			scbw::SendCommand(buf, 0xc);
-			break;
+			break;*/
 		}
 		case TechId::UnusedTech40://sublime shepherd
 		{
@@ -449,8 +456,10 @@ namespace hooks
 			IssueTriTargetOrder(OrderId::Hover, 0, 0);
 			break;
 		case TechId::EnergyDecay:
+		{
 			IssueTriTargetOrder(OrderId::GuardianAspect, 0, 0);
 			break;
+		}
 		case TechId::DisruptionWeb:
 		{
 			int action = 1;//on

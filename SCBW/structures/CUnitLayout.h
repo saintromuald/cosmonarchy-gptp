@@ -250,8 +250,9 @@ namespace ValueId {
 		EcclesiastTimer								= 101,
 		EcclesiastPlayer							= 102,
 
-		CastPlanetCracker							= 103,
-		PlanetCrackerChannel						= 104,
+//		CastPlanetCracker							= 103,
+		PlanetCrackerChannel						= 103,
+		PlanetCrackerDelay							= 8,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

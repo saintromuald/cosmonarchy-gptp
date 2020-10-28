@@ -181,7 +181,7 @@ void globals::frameHook() {
 				}
 			}
 			else if (impact.impactId == ImpactId::Planetcracker) {
-				int r = 5*32;
+				int r = 8*32;
 				auto n = unitRangeCount(NULL, CFlags::NoInvincible | CFlags::NoAir, {});
 				scbw::UnitFinder unitsInSplash(impact.position.x - r, impact.position.y - r,
 					impact.position.x + r, impact.position.y + r);
