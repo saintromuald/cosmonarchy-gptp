@@ -514,6 +514,23 @@ namespace hooks {
 						scbw::set_generic_value(unit, ValueId::LazarusNoHeal, 0);
 					}
 				}
+				if (unit->id == UnitId::ProtossStarSovereign) {
+					if (!(unit->status & UnitStatus::NoBrkCodeStart)) {
+						if (scbw::get_generic_value(unit, ValueId::CastPlanetCracker) == 1) {
+							scbw::set_generic_value(unit, ValueId::CastPlanetCracker, 0);
+							/*auto thingy = scbw::createThingy(SpriteId::PlanetCrackerBeam, unit->position.x, unit->position.y,
+															unit->playerId);
+							if (thingy != NULL) {
+								thingy->sprite->elevationLevel = unit->sprite->elevationLevel - 1;
+							}*/
+							unit->playIscriptAnim(IscriptAnimation::CastSpell);
+							scbw::set_generic_timer(unit, ValueId::PlanetCrackerChannel, 121);
+						}
+					}
+					if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerChannel) == 1) {
+						Globals.createPlanetCracker(unit->position.x, unit->position.y, unit->playerId, unit->sprite->elevationLevel);
+					}
+				}
 				if (unit->id == UnitId::TerranApostle) {
 					if (scbw::get_generic_value(unit, ValueId::CastLazarusAgent) == 1) {
 						scbw::set_generic_value(unit, ValueId::CastLazarusAgent, 0);

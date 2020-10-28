@@ -17,13 +17,21 @@ struct SaveState {
 		len = 0;
 	}
 };
+namespace ImpactId {
+	enum {
+		Salamander,
+		Planetcracker,
 
-class salamanderImpact {
+	};
+}
+
+class persistImpact {
 public:
 	Point32 position;
 	u8 elevation;
 	u32 timer;
 	u32 repeatsLeft;
+	u8 impactId;
 };
 class pariahHit {
 public:
@@ -60,7 +68,7 @@ public:
 	bool tbl_extender;
 	bool unitid_extender;
 
-	std::vector<salamanderImpact> salamanderImpacts;
+	std::vector<persistImpact> persistImpacts;
 	std::vector<pariahHit> pariahHits;
 	std::vector<multihitBullet> multihitBullets;
 	std::vector<apostleAgent> apostleAgents;
@@ -87,6 +95,7 @@ public:
 	bool was_hit_by_pariah(CUnit* source, CUnit* target);
 	void register_pariah_hit(CUnit* source, CUnit* target);
 	void createSalamanderFire(int x, int y, u8 player, u8 elevation, bool addImpactValue);
+	void createPlanetCracker(int x, int y, u8 player, u8 elevation);
 	bool was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target);
 	bool multihit_bullet_is_set(CBullet* bullet);
 	void add_multihit_empty_bullet(CBullet* bullet, int divider);

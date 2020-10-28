@@ -525,5 +525,7 @@ enum Enum {
 
 	MadrigalMissile2 = 549,
 	SalamanderImpact = 596,
+
+	PlanetCrackerBeam = 634,
 };
 }

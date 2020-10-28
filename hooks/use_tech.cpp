@@ -383,6 +383,17 @@ namespace hooks
 			scbw::SendCommand(buf, 0xc);
 			break;
 		}
+		case TechId::PlanetCracker:
+		{
+			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+			buf[0] = 0x99;//new general command
+			buf[1] = NewGameCommand::GenericSwitchAbility;
+			buf[2] = 1;
+			buf[3] = *ACTIVE_PLAYER_ID;
+			buf[4] = ValueId::CastPlanetCracker;
+			scbw::SendCommand(buf, 0xc);
+			break;
+		}
 		case TechId::UnusedTech40://sublime shepherd
 		{
 
@@ -459,9 +470,9 @@ namespace hooks
 		case TechId::MindControl:
 			IssueTriTargetOrder(OrderId::CastMindControl, 0, 0);
 			break;
-		case TechId::Feedback:
+/*		case TechId::Feedback:
 			IssueTriTargetOrder(OrderId::CastFeedback, 0, 0);
-			break;
+			break;*/
 		case TechId::OpticalFlare:
 			IssueTriTargetOrder(OrderId::CastOpticalFlare, 0, 0);
 			break;
