@@ -101,11 +101,35 @@ namespace hooks {
 			if (order_state == 0) {
 				if (unit->movementFlags & MovementFlags::Accelerating) {
 					scbw::makeToHoldPosition(unit);
-					
 				}
 				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 1);
 			}
 			else if (order_state == 1) {
+				if (!(unit->movementFlags & MovementFlags::Accelerating)) {
+					scbw::set_generic_timer(unit, ValueId::PlanetCrackerDelay, 24);
+					unit->status |= UnitStatus::CanNotReceiveOrders;
+					unit->status |= UnitStatus::CanNotAttack;
+					scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 2);
+				}
+			}
+			else if (order_state == 2) {
+				if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerDelay) == 0) {
+					unit->playIscriptAnim(anim);
+					scbw::set_generic_timer(unit, ValueId::PlanetCrackerChannel, 121);
+					scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 3);
+				}
+			}
+			else if (order_state == 3) {
+				if (unit->orderSignal & 4) {
+					unit->orderSignal &= ~0x4;
+					unit->status &= ~UnitStatus::CanNotReceiveOrders;
+					unit->status &= ~UnitStatus::CanNotAttack;
+					scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 0);
+					unit->orderToIdle();
+				}
+			}
+
+/*			else if (order_state == 1) {
 				if (!(unit->movementFlags & MovementFlags::Accelerating)) {
 					unit->playIscriptAnim(anim);
 					scbw::set_generic_timer(unit, ValueId::PlanetCrackerChannel, 121);
@@ -118,7 +142,7 @@ namespace hooks {
 					scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 0);
 					unit->orderToIdle();
 				}
-			}
+			}*/
 			return;
 		}
 		
