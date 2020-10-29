@@ -2,6 +2,7 @@
 #include "hooks/limits/ccmu.h"
 #include "hooks/limits/sfx_extender.h"
 #include "hooks/limits/tbl_extender.h"
+#include "hooks/limits/misc_extenders.h"
 #include "hooks/limits/fake_unitid_extender.h"
 #include "logger.h"
 #include "globals.h"
@@ -27,6 +28,7 @@ namespace hooks {
 //		hooks::injectCCMUHooks();
 //		hooks::sfxExtender();
 		newSfxExtender();
+		injectPortdataLimits();
 //		hooks::injectTblExtender();
 		
 		jmpPatch(preInitDataWrapper, 0x004DAF31);

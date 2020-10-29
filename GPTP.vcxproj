@@ -233,6 +233,7 @@
     <ClCompile Include="hooks\interface\mainmenu\glucustom_inject.cpp" />
     <ClCompile Include="hooks\limits\extender_inject.cpp" />
     <ClCompile Include="hooks\limits\fake_unitid_extender_inject.cpp" />
+    <ClCompile Include="hooks\limits\misc_extenders_inject.cpp" />
     <ClCompile Include="hooks\limits\sfx_extender_inject.cpp" />
     <ClCompile Include="hooks\limits\tbl_extender.cpp" />
     <ClCompile Include="hooks\maxhp.cpp" />
@@ -471,6 +472,7 @@
     <ClInclude Include="hooks\interface\uifeatures\screen_hotkeys.h" />
     <ClInclude Include="hooks\interface\uifeatures\uifeatures.h" />
     <ClInclude Include="hooks\limits\fake_unitid_extender.h" />
+    <ClInclude Include="hooks\limits\misc_extenders.h" />
     <ClInclude Include="hooks\trap_hooks.h" />
     <ClInclude Include="SCBW\stat_txt_spec.h" />
     <ClInclude Include="Utils\captivating_claws.h" />
