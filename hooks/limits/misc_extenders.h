@@ -4,7 +4,8 @@
 static u32 NEW_BULLET_COUNT = 100;
 //original count is 100
 
-static u32 NEW_PORTDATA_COUNT = 9999;////Change your count here
+static u32 NEW_PORTDATA_COUNT = 110;
+//static u32 NEW_PORTDATA_COUNT = 9999;
 //original count is 110
 
 //BG
