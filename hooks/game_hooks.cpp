@@ -703,7 +703,7 @@ namespace hooks {
 					unit->sprite->position = spr_position;
 				}
 
-				// Science Vessel - Observance ability
+				// Science Vessel Observance - ability
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ObservanceTimerDebuff, 0) == 1) {
 					auto range = 192;
 					auto observance = observanceMatch(unit);
@@ -725,7 +725,7 @@ namespace hooks {
 					}
 				}
 
-				// Persistant overlay creation
+				// Science Vessel Observance - persistant overlay creation
 				if (scbw::get_generic_timer(unit, ValueId::ObservanceOverlayTimer) <= 1) {
 					auto range = 192;
 					auto victim = observanceVictimMatch(unit);
@@ -738,6 +738,65 @@ namespace hooks {
 					&&	unit->id == UnitId::TerranScienceVessel) {
 						unit->sprite->createOverlay(1230);
 						scbw::set_generic_timer(unit, ValueId::ObservanceOverlayTimer, 18);
+					}
+				}
+
+				// Star Sovereign Planet Cracker - blast effects
+				if (unit->id == UnitId::ProtossStarSovereign) {
+					u32 player = unit->playerId;
+					u16 X = unit->position.x;
+					u16 Y = unit->position.y;
+					if (unit->orderSignal & 8) {
+						unit->orderSignal &= ~8;
+						scbw::createThingy(635, X + 32, Y + 32, player);
+						scbw::createThingy(635, X - 32, Y + 32, player);
+						scbw::createThingy(635, X + 32, Y - 32, player);
+						scbw::createThingy(635, X - 32, Y - 32, player);
+					}
+					else if (unit->orderSignal & 16) {
+						unit->orderSignal &= ~16;
+						scbw::createThingy(635, X + 80, Y + 80, player);
+						scbw::createThingy(635, X - 80, Y + 80, player);
+						scbw::createThingy(635, X + 80, Y - 80, player);
+						scbw::createThingy(635, X - 80, Y - 80, player);
+						scbw::createThingy(635, X + 144, Y + 80, player);
+						scbw::createThingy(635, X - 144, Y + 80, player);
+						scbw::createThingy(635, X + 144, Y - 80, player);
+						scbw::createThingy(635, X - 144, Y - 80, player);
+						scbw::createThingy(635, X + 144, Y - 0, player);
+						scbw::createThingy(635, X - 144, Y - 0, player);
+						scbw::createThingy(635, X + 0, Y - 144, player);
+						scbw::createThingy(635, X - 0, Y + 144, player);
+						scbw::createThingy(635, X + 80, Y + 144, player);
+						scbw::createThingy(635, X - 80, Y + 144, player);
+						scbw::createThingy(635, X + 80, Y - 144, player);
+						scbw::createThingy(635, X - 80, Y + 144, player);
+						scbw::createThingy(635, X + 80, Y + 0, player);
+						scbw::createThingy(635, X - 80, Y + 0, player);
+						scbw::createThingy(635, X + 0, Y + 80, player);
+						scbw::createThingy(635, X - 0, Y + 80, player);
+					}
+					else if (unit->orderSignal & 32) {
+						unit->orderSignal &= ~32;
+						scbw::createThingy(635, X + 144, Y + 144, player);
+						scbw::createThingy(635, X - 144, Y + 144, player);
+						scbw::createThingy(635, X + 144, Y - 144, player);
+						scbw::createThingy(635, X - 144, Y - 144, player);
+						scbw::createThingy(635, X + 208, Y + 144, player);
+						scbw::createThingy(635, X - 208, Y + 144, player);
+						scbw::createThingy(635, X + 208, Y - 144, player);
+						scbw::createThingy(635, X - 208, Y - 144, player);
+						scbw::createThingy(635, X + 208, Y - 0, player);
+						scbw::createThingy(635, X - 208, Y - 0, player);
+						scbw::createThingy(635, X + 0, Y - 208, player);
+						scbw::createThingy(635, X - 0, Y + 208, player);
+						scbw::createThingy(635, X + 144, Y + 208, player);
+						scbw::createThingy(635, X - 144, Y + 208, player);
+						scbw::createThingy(635, X + 144, Y - 208, player);
+						scbw::createThingy(635, X - 144, Y - 208, player);
+					}
+					else if (unit->orderSignal & 64) {
+						unit->orderSignal &= ~64;
 					}
 				}
 
