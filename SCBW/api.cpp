@@ -872,7 +872,17 @@ void setUpgradeLevel(u8 playerId, u8 upgradeId, u8 level) {
 		UpgradesBw->currentLevel[playerId][upgradeId - UpgradeId::PrismaticShield] = level;
 
 }
+void setOffsetToParentSpecialOverlay(CImage* image) {
 
+	const u32 Func_updateImagePositionOffset = 0x004D5A00;
+
+	__asm {
+		PUSHAD
+		MOV ECX, image
+		CALL Func_updateImagePositionOffset
+		POPAD
+	}
+}
 void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType) {
 	auto rotate = scbw::get_generic_value(unit, valueId);
 	const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,

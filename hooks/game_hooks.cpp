@@ -12,6 +12,7 @@
 #include "hooks/interface/hpbars/hpbars.h"
 #include "Utils/captivating_claws.h"
 #include "hooks/hydraFinder.h"
+#include "globals.h"
 const int hyperTrigger = 0x006509A0;
 const u32 Func_Sub4A01F0 = 0x004A01F0;
 void function_004A01F0g(CUnit* unit) {
@@ -517,10 +518,35 @@ namespace hooks {
 				if (unit->id == UnitId::ProtossStarSovereign) {
 					if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerChannel) == 1) {
 						Globals.createPlanetCracker(unit->position.x, unit->position.y, unit->playerId, unit->sprite->elevationLevel);
+						//Globals.createPlanetCracker(unit->position.x, unit->position.y, unit->playerId, unit->sprite->elevationLevel);
 					}
 
 				}
+				if (unit->id == UnitId::Special_IonCannon) {
+					auto turret = unit->getOverlay(1256);
+					if (unit->sprite && turret) {
+						
+						const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlaySpecialPtr,
+							1256));
+						u8 frameDirection = turret->direction;
+						Point8 offset = loFile->getOffset(frameDirection, 0);
+						if (turret->flags & CImage_Flags::Mirrored) {
+							offset.x = -offset.x;
+						}
+						auto turretOverlay = unit->getOverlay(1257);
+						if (!turretOverlay) {
+							CImage* cannonOverlay = unit->sprite->createOverlay(1257, offset.x, offset.y, turret->direction);
+						}
+						else {
+							turretOverlay->direction = turret->direction;
+							turretOverlay->horizontalOffset = offset.x;
+							turretOverlay->verticalOffset = offset.y;
+						}
+						
+					}
+				}
 				if (unit->id == UnitId::TerranApostle) {
+
 					if (scbw::get_generic_value(unit, ValueId::CastLazarusAgent) == 1) {
 						scbw::set_generic_value(unit, ValueId::CastLazarusAgent, 0);
 						//cast lazarus agent
