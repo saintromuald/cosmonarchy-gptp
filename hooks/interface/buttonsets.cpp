@@ -942,7 +942,12 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranCentaur &&  //Centaur Sunchaser Missiles passive
+								if ((*activePortraitUnit)->id == UnitId::TerranPegasus &&  //Pegasus Surgical Strike passive
+									current_button->iconID == IconId::GeminiMissiles)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranCentaur &&  //Centaur Sunchaser Salvo passive
 									current_button->iconID == IconId::GeminiMissiles)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
