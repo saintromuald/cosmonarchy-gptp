@@ -1464,7 +1464,16 @@ bool canUseCliffAdvantage(CUnit* unit, u8 weapon) {
 	&& (unit->id != UnitId::ProtossScarab)
 	&& (weapon == NULL || weapons_dat::MaxRange[weapon] > 32));
 }
-
+int dir_saturate(int direction, int value) {
+	int d = direction + value;
+	if (d > 255) {
+		return d - 255;
+	}
+	if (d < 0) {
+		return d + 255;
+	}
+	return d;
+}
 s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
 	if (unit == NULL)
 		return 0;

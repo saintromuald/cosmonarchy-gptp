@@ -252,7 +252,8 @@ namespace ValueId {
 
 //		CastPlanetCracker							= 103,
 		PlanetCrackerChannel						= 103,
-		PlanetCrackerDelay							= 8,
+		PlanetCrackerDelay							= 104,
+		StarcallerInterceptionMissiles				= 105,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

@@ -17,6 +17,7 @@ namespace CFlags {
 		Enemy=1<<8,
 		Ally=1<<9,
 		IncludingSelf=1<<10,
+		FrontalArc=1<<11,
 	};
 }
 
@@ -42,9 +43,24 @@ public:
 			return false;
 		}
 		if (!(unit->status & UnitStatus::InAir) && context & CFlags::NoGround) {
-			return false;
+			return 0;
+
 		}
+
+		
 		if (center) {
+			if (context & CFlags::FrontalArc) {
+				u16 angle = scbw::getAngle(center->position.x, center->position.y,
+					unit->position.x, unit->position.y);
+				u16 unit_angle = center->velocityDirection1;
+				int arc = (double)45 / 1.40625;
+				//90 degrees
+				int delta = unit_angle - angle;
+				delta = abs((delta + 128) % 256 - 128);
+				if (delta > arc) {
+					return false;
+				}
+			}
 			if (scbw::isAlliedTo(unit->playerId, center->playerId) && context & CFlags::Enemy) {
 				return false;
 			}

@@ -88,6 +88,38 @@ public:
 		return true;
 	}
 };
+
+class starsovereignMissileMatch : public scbw::UnitFinderCallbackMatchInterface {
+private:
+	CBullet* missile;
+public:
+	starsovereignMissileMatch(CBullet* missile)
+		: missile(missile) {}
+
+	bool match(CUnit* unit) {
+		if (unit->status & UnitStatus::Invincible) {
+			return false;
+		}
+		if (scbw::isAlliedTo(missile->srcPlayer, unit->playerId)) {
+			return false;
+		}
+		auto box = units_dat::UnitBounds[unit->id];
+		if (missile->position.x < unit->getLeft()) {
+			return false;
+		}
+		if (missile->position.x > unit->getRight()) {
+			return false;
+		}
+		if (missile->position.y < unit->getTop()) {
+			return false;
+		}
+		if (missile->position.y > unit->getBottom()) {
+			return false;
+		}
+		return true;
+	}
+};
+
 class kalkalethMissileMatch : public scbw::UnitFinderCallbackMatchInterface {
 private:
 	CBullet* missile;
@@ -599,6 +631,18 @@ namespace hooks {
 				bullet->position.x - range, bullet->position.y - range,
 				bullet->position.x + range, bullet->position.y + range,
 				bullet, empyreanMissileMatch(bullet)
+			);
+			if (collisionTarget != NULL) {
+				bullet->attackTarget.unit = collisionTarget;
+				bEnd = true;
+			}
+		}
+		else if (bullet->weaponType == WeaponId::InterventionMissiles) {
+			u32 range = 128;
+			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
+				bullet->position.x - range, bullet->position.y - range,
+				bullet->position.x + range, bullet->position.y + range,
+				bullet, starsovereignMissileMatch(bullet)
 			);
 			if (collisionTarget != NULL) {
 				bullet->attackTarget.unit = collisionTarget;

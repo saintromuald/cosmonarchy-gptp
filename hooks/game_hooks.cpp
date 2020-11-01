@@ -518,9 +518,51 @@ namespace hooks {
 				if (unit->id == UnitId::ProtossStarSovereign) {
 					if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerChannel) == 1) {
 						Globals.createPlanetCracker(unit->position.x, unit->position.y, unit->playerId, unit->sprite->elevationLevel);
-						//Globals.createPlanetCracker(unit->position.x, unit->position.y, unit->playerId, unit->sprite->elevationLevel);
 					}
+					if (scbw::get_generic_timer(unit, ValueId::StarcallerInterceptionMissiles)==0) {
+						auto r = weapons_dat::MaxRange[WeaponId::InterventionMissiles];
+						auto n = unitRangeCount(unit, CFlags::Enemy | CFlags::FrontalArc, {});
+						scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
+							unit->position.x + r, unit->position.y + r);
+						bool enemiesDetected = false;
+						for (int i = 0; i < unitsInFinder.getUnitCount(); i++) {
+							auto picked_unit = unitsInFinder.getUnit(i);
+							if (n.match(picked_unit)) {
+								enemiesDetected = true;
+								break;
+							}
+						}
+						if (enemiesDetected) {
+							scbw::set_generic_timer(unit, ValueId::StarcallerInterceptionMissiles, 
+												weapons_dat::Cooldown[WeaponId::InterventionMissiles]);
+							const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlaySpecialPtr,
+								unit->sprite->mainGraphic->id));
+							u8 frameDirection = unit->sprite->mainGraphic->direction;
+							Point8 offset = loFile->getOffset(frameDirection, 0);
+							if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
+								offset.x = -offset.x;
+							}
+							auto X = unit->getX() + offset.x;
+							auto Y = unit->getY() + offset.y;
+							for (int arc = 0; arc < 6; arc++) {
+								auto target_unit = unit->orderTarget.unit;
+								auto target_pos = unit->orderTarget.pt;
+								auto offset_direction = -40 + arc * 16;
+								auto polar_x = unit->getX() + scbw::getPolarX(r, scbw::dir_saturate(unit->currentDirection1, offset_direction));
+								auto polar_y = unit->getY() + scbw::getPolarY(r, scbw::dir_saturate(unit->currentDirection1, offset_direction));
+								unit->orderTarget.unit = NULL;
+								unit->orderTarget.pt.x = polar_x;
+								unit->orderTarget.pt.y = polar_y;
+								scbw::createBullet(WeaponId::InterventionMissiles, unit, X, Y, unit->playerId, 
+									scbw::dir_saturate(unit->currentDirection1, offset_direction));
+								unit->orderTarget.unit = target_unit;
+								unit->orderTarget.pt = target_pos;
 
+								//scbw::spreadFire(WeaponId::InterventionMissiles, unit, X, Y, -40 + arc * 16);
+								//-40 -24 -8 8 24 40
+							}
+						}
+					}
 				}
 				if (unit->id == UnitId::Special_IonCannon) {
 					auto turret = unit->getOverlay(1256);

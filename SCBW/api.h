@@ -366,6 +366,7 @@ void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer = 18
 CUnit** getSourceQueens(CUnit* unit);
 u16 getLastQueueSlotType(CUnit* a1);
 bool canUseCliffAdvantage(CUnit* unit, u8 weapon = NULL);
+int dir_saturate(int direction, int value);
 s32 getCliffAdvantage(CUnit* unit, u8 weapon = NULL);
 void setOffsetToParentSpecialOverlay(CImage* image);
 void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType);
