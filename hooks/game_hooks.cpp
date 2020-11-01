@@ -515,12 +515,14 @@ namespace hooks {
 						scbw::set_generic_value(unit, ValueId::LazarusNoHeal, 0);
 					}
 				}
+
+				// Star Sovereign Intervention Missiles behavior
 				if (unit->id == UnitId::ProtossStarSovereign) {
 					if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerChannel) == 1) {
 						Globals.createPlanetCracker(unit->position.x, unit->position.y, unit->playerId, unit->sprite->elevationLevel);
 					}
 					if (scbw::get_generic_timer(unit, ValueId::StarcallerInterceptionMissiles)==0) {
-						auto r = weapons_dat::MaxRange[WeaponId::InterventionMissiles];
+						auto r = 5*32;
 						auto n = unitRangeCount(unit, CFlags::Enemy | CFlags::FrontalArc, {});
 						scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
 							unit->position.x + r, unit->position.y + r);
@@ -556,6 +558,7 @@ namespace hooks {
 								unit->orderTarget.pt.y = polar_y;
 								scbw::createBullet(WeaponId::InterventionMissiles, unit, X, Y, unit->playerId, 
 									scbw::dir_saturate(unit->currentDirection1, offset_direction));
+								scbw::playSound(80, unit);
 								unit->orderTarget.unit = target_unit;
 								unit->orderTarget.pt = target_pos;
 
