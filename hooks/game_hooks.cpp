@@ -535,16 +535,17 @@ namespace hooks {
 						if (enemiesDetected) {
 							scbw::set_generic_timer(unit, ValueId::StarcallerInterceptionMissiles, 
 												weapons_dat::Cooldown[WeaponId::InterventionMissiles]);
-							const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlaySpecialPtr,
-								unit->sprite->mainGraphic->id));
-							u8 frameDirection = unit->sprite->mainGraphic->direction;
-							Point8 offset = loFile->getOffset(frameDirection, 0);
-							if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
-								offset.x = -offset.x;
-							}
-							auto X = unit->getX() + offset.x;
-							auto Y = unit->getY() + offset.y;
+							
 							for (int arc = 0; arc < 6; arc++) {
+								const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlaySpecialPtr,
+									unit->sprite->mainGraphic->id));
+								u8 frameDirection = unit->sprite->mainGraphic->direction;
+								Point8 offset = loFile->getOffset(frameDirection, 5-arc);
+								if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
+									offset.x = -offset.x;
+								}
+								auto X = unit->getX() + offset.x;
+								auto Y = unit->getY() + offset.y;
 								auto target_unit = unit->orderTarget.unit;
 								auto target_pos = unit->orderTarget.pt;
 								auto offset_direction = -40 + arc * 16;
