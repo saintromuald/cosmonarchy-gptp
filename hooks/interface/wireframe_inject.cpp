@@ -25,12 +25,33 @@ void __declspec(naked) statdata_UnitWireframeUpdate_FragmentWrapper() {
 
 }
 
+void __declspec(naked) wireframeShields_Wrapper() {
+	//
+	static CUnit* unit;
+	static u8 result;
+	__asm {
+		MOV unit, EDX
+		PUSHAD
+	}
+	result = hooks::wireframeShields(unit);
+	__asm {
+		POPAD
+		MOV AL,result
+		RETN
+	}
+
+}
 }; //unnamed namespace
 
 namespace hooks {
 
 void injectWireframeHook() {
-	jmpPatch(statdata_UnitWireframeUpdate_FragmentWrapper, 0x00456911, 2);
+
+	//jmpPatch(statdata_UnitWireframeUpdate_FragmentWrapper, 0x00456911, 2);
+	//unused right now, must be updated for new unit ids if used
+
+	//new
+	jmpPatch(wireframeShields_Wrapper, 0x004566B0, 5);
 }
 
 ;

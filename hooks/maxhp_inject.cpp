@@ -530,22 +530,7 @@ namespace hooks {
 		}
 	}
 
-	void __declspec(naked) drawWireframeShield_Wrapper() {
-		static int a1;
-		static CUnit* a2;
-		static char result;
-		__asm {
-			MOV a1, ECX
-			MOV a2, EDX
-			PUSHAD
-		}
-		result = hooks::drawWireframeShield(a1, a2);
-		__asm {
-			POPAD
-			MOVZX EAX, result
-			RETN
-		}
-	}
+
 
 	void __declspec(naked) AI_TargetEnemyProc_Wrapper() {
 		static CUnit* a1;
@@ -866,7 +851,6 @@ namespace hooks {
 //		jmpPatch(getTotalHitPointsPlusShields_Wrapper, 0x00402710, 5);
 //		jmpPatch(drawUnitInfo_Wrapper, 0x00426190, 3);
 //		jmpPatch(drawSupplyUnitInfo_Wrapper, 0x00427540, 1);
-//		jmpPatch(drawWireframeShield_Wrapper, 0x004566B0, 5);
 //		jmpPatch(AI_TargetEnemyProc_Wrapper, 0x00440A20, 2);
 //		jmpPatch(drawBuildingInfo_Wrapper, 0x00427890, 3);
 //		jmpPatch(calcUnitStrength_Wrapper, 0x00431270, 5);

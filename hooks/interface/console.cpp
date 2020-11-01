@@ -225,17 +225,16 @@ namespace {
 	}
 
 	const u32 Func_getLastQueueSlotType = 0x0047B270;
-	unsigned __int16 getLastQueueSlotType(CUnit* a1) {
+	u16 getLastQueueSlotType(CUnit* a1) {
 		static int result;
-
 		__asm {
-			POPAD
+			PUSHAD
 			MOV EDX, a1
 			CALL Func_getLastQueueSlotType
 			MOV result, EAX
 			POPAD
 		}
-		return (unsigned __int16)result;
+		return (u16)result;
 
 	}
 

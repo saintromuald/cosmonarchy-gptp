@@ -872,6 +872,18 @@ void setUpgradeLevel(u8 playerId, u8 upgradeId, u8 level) {
 		UpgradesBw->currentLevel[playerId][upgradeId - UpgradeId::PrismaticShield] = level;
 
 }
+const u32 Func_getLastQueueSlotType = 0x0047B270;
+u16 getLastQueueSlotType(CUnit* a1) {
+	static int result;
+	__asm {
+		PUSHAD
+		MOV EDX, a1
+		CALL Func_getLastQueueSlotType
+		MOV result, EAX
+		POPAD
+	}
+	return (u16)result;
+}
 void setOffsetToParentSpecialOverlay(CImage* image) {
 
 	const u32 Func_updateImagePositionOffset = 0x004D5A00;

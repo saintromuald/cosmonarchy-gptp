@@ -364,7 +364,7 @@ void rangeModifiedFire(u8 weaponId, CUnit* unit, s16 x, s16 y, u32 offset);
 int getBroodlingCountFromSupply(CUnit* unit);
 void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, CUnit* attacker = NULL);
 CUnit** getSourceQueens(CUnit* unit);
-
+u16 getLastQueueSlotType(CUnit* a1);
 bool canUseCliffAdvantage(CUnit* unit, u8 weapon = NULL);
 s32 getCliffAdvantage(CUnit* unit, u8 weapon = NULL);
 void setOffsetToParentSpecialOverlay(CImage* image);

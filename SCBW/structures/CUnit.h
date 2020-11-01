@@ -260,6 +260,9 @@ struct CUnit: public CUnitLayout {
   /// Returns the overlay image of this unit's sprite (or its subunit's sprite)
   /// that matches the @p imageId. If the image cannot be found, returns NULL.
   CImage* getOverlay(u16 imageId) const;
+  s32 maxShields() const;
+  bool shieldsEnabled() const;
+  bool shieldsEnabledRaw() const;
 
   /// Makes the unit's sprite play the specified Iscript animation entry.
   void playIscriptAnim(IscriptAnimation::Enum animation);

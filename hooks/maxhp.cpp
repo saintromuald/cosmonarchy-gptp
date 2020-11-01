@@ -397,30 +397,6 @@ namespace hooks {
 		}
 	}
 
-	char drawWireframeShield(int a1, CUnit* a2) { // 004566B0
-		CUnit* v2; // edx
-		u16 v3; // ax
-		char result; // al
-		CUnit* v5; // edx
-		int v6; // eax
-		char v7; // cl
-
-		if (units_dat::ShieldsEnabled[(u16)a2->id] && units_dat::MaxShieldPoints[getLastQueueSlotType(a2)]) {
-			v3 = getLastQueueSlotType(v2);
-			v6 = 7 * (v5->shields >> 8) / units_dat::MaxShieldPoints[v3];
-			v7 = charBuffer[(u8)wireframeConstants[2 * v6]];
-			result = charBuffer[(u8)wireframeConstants[2 * v6 + 1]];
-			imgDrawPaletteIndex[192] = v7;
-			imgDrawPaletteIndex[193] = result;
-		}
-		else {
-			result = byteShieldStr[0];
-			imgDrawPaletteIndex[192] = byteShieldStr[0];
-			imgDrawPaletteIndex[193] = byteShieldStr[0];
-		}
-		return result;
-	}
-
 	bool AI_TargetEnemyProc(CUnit* a1, CUnit* a2) { // 00440A20
 		s8 v2; // dl
 		s8 v3; // bl

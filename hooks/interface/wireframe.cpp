@@ -36,7 +36,45 @@ namespace hooks {
 			unitId = unit->id;
 
 		return unitId;
-
 	}
+	u16 getLastQueueSlotType(CUnit* unit) {
+		u16 unitId;
+		if (unit->status & UnitStatus::Completed)
+			unitId = unit->id;
+		else {
+			unitId = unit->buildQueue[unit->buildQueueSlot];
+			if (!(scbw::isZergBuildingMorphResult))
+				unitId = unit->id;
+		}
+		return unitId;
+	};
 
+	u8 wireframeShields(CUnit* unit) {
+		auto eax = unit->id;
+		u8 al;
+		if (units_dat::ShieldsEnabled[unit->id]) {
+			auto lastSlot = scbw::getLastQueueSlotType(unit);
+			auto maxShields = units_dat::MaxShieldPoints[lastSlot];
+			if (lastSlot == unit->id) {
+				maxShields = unit->maxShields();//for stasis, later
+			}
+			if (maxShields) {
+				auto shields = unit->shields >> 8;
+				shields *= 7;
+				shields /= maxShields;
+				auto wireConst = wireframeConstants[shields*2];
+				auto wireConstShift = wireframeConstants[(shields * 2) + 1];
+				auto buf1 = charBuffer[wireConst];//CL
+				al = charBuffer[wireConstShift];//AL
+				*off_50CE81 = buf1;
+				*off_50CE82 = al;
+			}
+		}
+		else {
+			auto al = *byteShieldStr;
+			*off_50CE81 = al;
+			*off_50CE82 = al;
+		}
+		return al;
+	}
 } //hooks

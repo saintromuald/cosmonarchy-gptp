@@ -43,6 +43,18 @@ u32 CUnit::getCurrentLifeInGame() const {
 	else
 		return getCurrentHpInGame();
 };
+s32 CUnit::maxShields() const {
+	assert(this);
+	return units_dat::MaxShieldPoints[this->id];
+}
+bool CUnit::shieldsEnabled() const {
+	assert(this);
+	return units_dat::ShieldsEnabled[this->id];
+}
+bool CUnit::shieldsEnabledRaw() const {
+	assert(this);
+	return units_dat::ShieldsEnabled[this->id];
+}
 
 //Identical to function @ 0x00475AD0
 u8 CUnit::getGroundWeapon() const {
@@ -989,6 +1001,8 @@ void CUnit::fireWeapon(u8 weaponId) const {
 	}
 
 }
+
+
 
 CUnit* CUnit::getFromIndex(u16 index) {
 	if (Globals.extended_unit_table == 1) {

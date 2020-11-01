@@ -449,8 +449,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectBuildingMorphHooks();
 	
 	hooks::injectMakeNydusExitHook();
-	hooks::injectUnitMorphHooks();/*
-	hooks::injectWireframeHook();
+	hooks::injectUnitMorphHooks();
+	hooks::injectWireframeHook();/*
 	hooks::injectDieOrderHook();*/
 	hooks::injectBuildingTerranHook();
 	hooks::injectBuildingProtossHooks();

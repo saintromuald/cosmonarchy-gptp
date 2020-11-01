@@ -267,10 +267,14 @@ SCBW_DATA(		BufferStr*,		struct_Char2,				0x006CAB08);
 SCBW_DATA(		char*,			unkString_Char,				0x006CA668);
 
 // For drawWireframeShield
+
 SCBW_DATA(		char*,			charBuffer,					0x0068C208);
 SCBW_DATA(		char*,			byteShieldStr,				0x0068C20A); // count of 22
-SCBW_DATA(		char*,			wireframeConstants,			0x00515280); // count of 40
+SCBW_DATA(		u8*,			wireframeConstants,			0x00515280); // count of 40
 SCBW_DATA(		char*,			imgDrawPaletteIndex,		0x0050CEC1); // count of 256
+SCBW_DATA(u8*, off_50CE81, 0x0050CE81); 
+SCBW_DATA(u8*, off_50CE82, 0x0050CE82);
+
 
 // For drawBuildingInfo
 SCBW_DATA(		s32*,			selectionGroupHP,			0x006CA94C);
@@ -290,6 +294,7 @@ SCBW_DATA(		unk_62*,		struct_5140E8,				0x005140E8);
 // For getUnitBulletDamage
 SCBW_DATA(		char*,			upgradesLevelSC,			0x0058D2B0);
 SCBW_DATA(		char*,			upgradesLevelBW,			0x0058F2FE);
+
 
 // For findNextBounceTargetProc
 SCBW_DATA(		CUnit**,			bulletBounceMissileSource,	0x0064EECC);
