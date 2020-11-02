@@ -551,8 +551,9 @@ namespace hooks {
 								auto target_unit = unit->orderTarget.unit;
 								auto target_pos = unit->orderTarget.pt;
 								auto offset_direction = -40 + arc * 16;
-								auto polar_x = unit->getX() + scbw::getPolarX(r, scbw::dir_saturate(unit->currentDirection1, offset_direction));
-								auto polar_y = unit->getY() + scbw::getPolarY(r, scbw::dir_saturate(unit->currentDirection1, offset_direction));
+								auto maxRange = weapons_dat::MaxRange[WeaponId::InterventionMissiles];
+								auto polar_x = unit->getX() + scbw::getPolarX(maxRange, scbw::dir_saturate(unit->currentDirection1, offset_direction));
+								auto polar_y = unit->getY() + scbw::getPolarY(maxRange, scbw::dir_saturate(unit->currentDirection1, offset_direction));
 								unit->orderTarget.unit = NULL;
 								unit->orderTarget.pt.x = polar_x;
 								unit->orderTarget.pt.y = polar_y;
