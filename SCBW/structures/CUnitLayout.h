@@ -251,9 +251,9 @@ namespace ValueId {
 		EcclesiastPlayer							= 102,
 
 		AugurSafetyCheck							= 103,
-		PlanetCrackerChannel						= 103,
-		PlanetCrackerDelay							= 104,
-		StarcallerInterceptionMissiles				= 105,
+		PlanetCrackerChannel						= 104,
+		PlanetCrackerDelay							= 105,
+		StarcallerInterceptionMissiles				= 106,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
