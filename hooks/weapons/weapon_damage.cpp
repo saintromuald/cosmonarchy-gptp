@@ -844,16 +844,29 @@ namespace hooks {
 					}
 
 					// Augur - Death behavior
-					if (target->id == UnitId::ProtossAugur && scbw::get_generic_value(target, ValueId::AugurSafetyCheck) == 0) {
-						scbw::set_generic_value(target, ValueId::AugurSafetyCheck, 1);
-						augurDeathProc Orders = augurDeathProc(target);
-						scbw::UnitFinder unitFinder(target->getX() - 288, target->getY() - 288, target->getX() + 288, target->getY() + 288);
-						CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
-						if (nearest != NULL) {
-							target->orderTarget.unit = nearest;
-							scbw::createBullet(WeaponId::FinalHour, target, target->position.x, target->position.y, target->playerId, 
-									scbw::getAngle(target->position.x,target->position.y,nearest->getX(),nearest->getY()));
+					if (target->id == UnitId::ProtossAugur) {
+						scbw::printText("Augur dies");
+						if (scbw::get_generic_value(target, ValueId::AugurSafetyCheck) == 0){
+							scbw::printText("Augur passed safety check");
+							scbw::set_generic_value(target, ValueId::AugurSafetyCheck, 1);
+							augurDeathProc Orders = augurDeathProc(target);
+							scbw::UnitFinder unitFinder(target->getX() - 384, target->getY() - 384, 
+								target->getX() + 384, target->getY() + 384);
+							CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
+							if (nearest != NULL) {
+								target->orderTarget.unit = nearest;
+								scbw::printText("Unit found, spawn missile");
+								scbw::createBullet(WeaponId::FinalHour, target, target->position.x, target->position.y, target->playerId,
+									scbw::getAngle(target->position.x, target->position.y, nearest->getX(), nearest->getY()));
+							}
+							else {
+								scbw::printText("No enemy vulnerable non-dying unit with 12 range");
+							}
 						}
+						else {
+							scbw::printText("Augur has not passed safety check");
+						}
+
 					}
 				}
 			}
