@@ -209,10 +209,7 @@ class lastordersProc2 : public scbw::UnitFinderCallbackMatchInterface {
 	CUnit* martyr;
 
 public:
-	//Check if @p unit is a suitable target for the @p spiderMine.
 	bool match(CUnit* target) {
-
-		//Don't attack friendly / allied units
 		if (target->playerId == martyr->playerId) {
 			return false;
 		}
@@ -349,7 +346,6 @@ public:
 
 void augurSacrifice(CUnit* target) {
 	if (scbw::get_generic_value(target, ValueId::AugurSafetyCheck) == 0) {
-		scbw::printText("Augur passed safety check");
 		scbw::set_generic_value(target, ValueId::AugurSafetyCheck, 1);
 		augurDeathProc Orders = augurDeathProc(target);
 		scbw::UnitFinder unitFinder(target->getX() - 384, target->getY() - 384,
@@ -357,7 +353,6 @@ void augurSacrifice(CUnit* target) {
 		CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
 		if (nearest != NULL) {
 			target->orderTarget.unit = nearest;
-			scbw::printText("Unit found, spawn missile");
 			scbw::createBullet(WeaponId::FinalHour, target, target->position.x, target->position.y, target->playerId,
 				scbw::getAngle(target->position.x, target->position.y, nearest->getX(), nearest->getY()));
 
@@ -369,12 +364,6 @@ void augurSacrifice(CUnit* target) {
 			target->userActionFlags |= 0x4;
 			return;
 		}
-		else {
-			scbw::printText("No enemy vulnerable non-dying unit with 12 range");
-		}
-	}
-	else {
-		scbw::printText("Augur has not passed safety check");
 	}
 }
 
@@ -517,10 +506,6 @@ namespace hooks {
 					break;
 				};
 				int dmg = ((double)damage * mul);
-				/*
-				char buf[64];
-				sprintf(buf, "Mutalisk: damage %d divisor %d mul %lf result %d", damage, dmgDivisor, mul, dmg);
-				scbw::printText(buf);*/
 				damage = dmg + (target->acidSporeCount * 256);
 			}
 			else {
@@ -677,8 +662,6 @@ namespace hooks {
 					scbw::set_generic_value(target, ValueId::AlkajeliskParasitePlayer, attacker->playerId);
 				}
 				if (damage >= target->hitPoints) {
-					//relic death effect
-					//scbw::printText("Check relic");
 
 
 					// Last Orders - Aurora upgrade
@@ -877,7 +860,6 @@ namespace hooks {
 
 					// Augur - Death behavior
 					if (target->id == UnitId::ProtossAugur) {
-						scbw::printText("Augur dies");
 						augurSacrifice(target);
 
 					}
