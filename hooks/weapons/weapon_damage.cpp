@@ -863,7 +863,9 @@ namespace hooks {
 								target->status |= UnitStatus::Invincible;
 								scbw::createThingy(642, target->getX(), target->getY(), target->playerId);
 								scbw::playSound(scbw::randBetween(1235, 1238), target);
-								scbw::set_generic_timer(target, ValueId::AugurGimmickTimer, (5 * 32) + 1);
+								target->removeTimer = 5 * 32;
+								target->userActionFlags |= 0x4;
+								//scbw::set_generic_timer(target, ValueId::AugurGimmickTimer, (5 * 32) + 1);
 								return;
 							}
 							else {

@@ -503,13 +503,13 @@ namespace hooks {
 			//}
 
 			// Loop through all hidden units in the game.
-			for (CUnit* unit = *firstHiddenUnit; unit; unit = unit->link.next) {
+			/*for (CUnit* unit = *firstHiddenUnit; unit; unit = unit->link.next) {
 				if (unit->id == UnitId::ProtossAugur && scbw::get_generic_timer(unit, ValueId::AugurGimmickTimer) == 1) {
 					scbw::printText("Gimmick: remove augur");
 					unit->userActionFlags |= 0x4;
 					unit->remove();
 				}
-			}
+			}*/
 			// Loop through all visible units in the game.
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
 				CUnitExtended::get(unit)->tick();
