@@ -250,7 +250,7 @@ namespace ValueId {
 		EcclesiastTimer								= 101,
 		EcclesiastPlayer							= 102,
 
-//		CastPlanetCracker							= 103,
+		AugurSafetyCheck							= 103,
 		PlanetCrackerChannel						= 103,
 		PlanetCrackerDelay							= 104,
 		StarcallerInterceptionMissiles				= 105,
