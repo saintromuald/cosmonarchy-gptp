@@ -2,6 +2,7 @@
 #include "update_status_effects.h"
 #include <SCBW/api.h>
 #include <algorithm>
+#include "hooks/weapons/weapon_damage.h"
 
 
 namespace {
@@ -533,7 +534,8 @@ namespace hooks {
 
 			//Self-destruct timer
 			if (unit->id == UnitId::ProtossAugur && unit->shields == 0) {
-				unit->remove();
+				//unit->remove();
+				augurSacrifice(unit);
 				//add final hour code later
 				bStopHere = true;
 			}

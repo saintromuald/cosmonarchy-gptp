@@ -346,6 +346,37 @@ public:
 	bloodTitheProc(CUnit* attacker, CUnit* target) : attacker(attacker), target(target) {}
 };
 
+void augurSacrifice(CUnit* target) {
+	if (scbw::get_generic_value(target, ValueId::AugurSafetyCheck) == 0) {
+		scbw::printText("Augur passed safety check");
+		scbw::set_generic_value(target, ValueId::AugurSafetyCheck, 1);
+		augurDeathProc Orders = augurDeathProc(target);
+		scbw::UnitFinder unitFinder(target->getX() - 384, target->getY() - 384,
+			target->getX() + 384, target->getY() + 384);
+		CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
+		if (nearest != NULL) {
+			target->orderTarget.unit = nearest;
+			scbw::printText("Unit found, spawn missile");
+			scbw::createBullet(WeaponId::FinalHour, target, target->position.x, target->position.y, target->playerId,
+				scbw::getAngle(target->position.x, target->position.y, nearest->getX(), nearest->getY()));
+
+			scbw::hideAndDisableUnit(target);
+			target->status |= UnitStatus::Invincible;
+			scbw::createThingy(642, target->getX(), target->getY(), target->playerId);
+			scbw::playSound(scbw::randBetween(1235, 1238), target);
+			target->removeTimer = 5 * 32;
+			target->userActionFlags |= 0x4;
+			return;
+		}
+		else {
+			scbw::printText("No enemy vulnerable non-dying unit with 12 range");
+		}
+	}
+	else {
+		scbw::printText("Augur has not passed safety check");
+	}
+}
+
 namespace hooks {
 	/// Hooks into the CUnit::damageWith() function.
 	void weaponDamageHook(s32		damage,
@@ -846,35 +877,7 @@ namespace hooks {
 					// Augur - Death behavior
 					if (target->id == UnitId::ProtossAugur) {
 						scbw::printText("Augur dies");
-						if (scbw::get_generic_value(target, ValueId::AugurSafetyCheck) == 0){
-							scbw::printText("Augur passed safety check");
-							scbw::set_generic_value(target, ValueId::AugurSafetyCheck, 1);
-							augurDeathProc Orders = augurDeathProc(target);
-							scbw::UnitFinder unitFinder(target->getX() - 384, target->getY() - 384, 
-								target->getX() + 384, target->getY() + 384);
-							CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
-							if (nearest != NULL) {
-								target->orderTarget.unit = nearest;
-								scbw::printText("Unit found, spawn missile");
-								scbw::createBullet(WeaponId::FinalHour, target, target->position.x, target->position.y, target->playerId,
-									scbw::getAngle(target->position.x, target->position.y, nearest->getX(), nearest->getY()));
-								
-								scbw::hideAndDisableUnit(target);
-								target->status |= UnitStatus::Invincible;
-								scbw::createThingy(642, target->getX(), target->getY(), target->playerId);
-								scbw::playSound(scbw::randBetween(1235, 1238), target);
-								target->removeTimer = 5 * 32;
-								target->userActionFlags |= 0x4;
-								//scbw::set_generic_timer(target, ValueId::AugurGimmickTimer, (5 * 32) + 1);
-								return;
-							}
-							else {
-								scbw::printText("No enemy vulnerable non-dying unit with 12 range");
-							}
-						}
-						else {
-							scbw::printText("Augur has not passed safety check");
-						}
+						augurSacrifice(target);
 
 					}
 				}

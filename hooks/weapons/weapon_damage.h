@@ -1,6 +1,7 @@
 #pragma once
 #include "../../SCBW/structures/CUnit.h"
 
+void augurSacrifice(CUnit* target);
 namespace hooks {
 
 void weaponDamageHook(s32     damage,
