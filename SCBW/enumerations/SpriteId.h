@@ -527,5 +527,7 @@ enum Enum {
 	SalamanderImpact = 596,
 
 	PlanetCrackerBeam = 634,
+
+	IonField = 900, //placeholder
 };
 }
