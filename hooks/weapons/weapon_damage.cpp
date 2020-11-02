@@ -858,6 +858,13 @@ namespace hooks {
 								scbw::printText("Unit found, spawn missile");
 								scbw::createBullet(WeaponId::FinalHour, target, target->position.x, target->position.y, target->playerId,
 									scbw::getAngle(target->position.x, target->position.y, nearest->getX(), nearest->getY()));
+								
+								scbw::hideAndDisableUnit(target);
+								target->status |= UnitStatus::Invincible;
+								scbw::createThingy(642, target->getX(), target->getY(), target->playerId);
+								scbw::playSound(scbw::randBetween(1235, 1238), target);
+								scbw::set_generic_timer(target, ValueId::AugurGimmickTimer, (5 * 32) + 1);
+								return;
 							}
 							else {
 								scbw::printText("No enemy vulnerable non-dying unit with 12 range");

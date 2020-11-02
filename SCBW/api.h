@@ -373,5 +373,5 @@ void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount
 bool isSlowed(CUnit* unit);
 bool isStunned(CUnit* unit);
 void restoreFunc(CUnit* unit);
-
+void hideAndDisableUnit(CUnit* unit);
 } //scbw

@@ -254,6 +254,7 @@ namespace ValueId {
 		PlanetCrackerChannel						= 104,
 		PlanetCrackerDelay							= 105,
 		StarcallerInterceptionMissiles				= 106,
+		AugurGimmickTimer							= 107,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

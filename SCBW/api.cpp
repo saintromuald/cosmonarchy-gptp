@@ -1457,6 +1457,18 @@ CUnit** getSourceQueens(CUnit* unit) {
 	return queens;
 }
 
+const u32 Func_unitDeathSomething_0 = 0x004E6340;
+void hideAndDisableUnit(CUnit* unit) {
+
+	__asm {
+		PUSHAD
+		MOV EAX, unit
+		CALL Func_unitDeathSomething_0
+		POPAD
+	}
+
+}
+;
 bool canUseCliffAdvantage(CUnit* unit, u8 weapon) {
 	if (unit == NULL)
 		return false;
