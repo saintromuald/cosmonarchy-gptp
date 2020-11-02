@@ -184,12 +184,14 @@ public:
 	}
 };
 
-class astralaegisProc : public scbw::UnitFinderCallbackProcInterface {
+class astralAegisProc : public scbw::UnitFinderCallbackProcInterface {
+	CUnit* archon;
 
 private:
 public:
 	void proc(CUnit* unit) {
-		if (!units_dat::ShieldsEnabled[unit->id]) {
+		if (!units_dat::ShieldsEnabled[unit->id]
+		||	!(scbw::isAlliedTo(unit->playerId, archon->playerId))) {
 			return;
 		}
 		u32 value = 50 * 256;
@@ -221,7 +223,6 @@ public:
 			return false;
 		}
 		return true;
-
 	}
 
 	//Constructor
@@ -232,10 +233,8 @@ class augurDeathProc : public scbw::UnitFinderCallbackMatchInterface {
 	CUnit* augur;
 
 public:
-	//Check if @p unit is a suitable target for the @p spiderMine.
 	bool match(CUnit* target) {
 
-		//Don't attack friendly / allied units
 		if (target->sprite == NULL) {
 			return false;
 		}
@@ -735,7 +734,7 @@ namespace hooks {
 
 			if (damage >= target->hitPoints) {
 				if (target->id == UnitId::ProtossArchon) {
-					astralaegisProc Aegis = astralaegisProc();
+					astralAegisProc Aegis = astralAegisProc();
 					scbw::UnitFinder unitFinder(target->getX() - 96,
 						target->getY() - 96,
 						target->getX() + 96,
