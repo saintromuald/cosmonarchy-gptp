@@ -320,7 +320,7 @@ void globals::createPlanetCracker(int x, int y, u8 player, u8 elevationLevel) {
 void globals::createSalamanderFire(int x, int y, u8 player,u8 elevationLevel, bool addImpactValue) {
 	if (addImpactValue) {
 		for (auto a : persistImpacts) {
-			if (scbw::getDistanceFast(x, y, a.position.x, a.position.y) < 12) {
+			if (a.impactId==ImpactId::Salamander && scbw::getDistanceFast(x, y, a.position.x, a.position.y) < 12) {
 				return;
 			}
 		}
@@ -339,8 +339,31 @@ void globals::createSalamanderFire(int x, int y, u8 player,u8 elevationLevel, bo
 			persistImpacts.push_back(impact);
 		}
 	}
-
 }
+void globals::createIonField(int x, int y, u8 player, u8 elevationLevel, bool addImpactValue) {
+	if (addImpactValue) {
+		for (auto a : persistImpacts) {
+			if (a.impactId==ImpactId::IonField && scbw::getDistanceFast(x, y, a.position.x, a.position.y) < 12) {
+				return;
+			}
+		}
+	}
+	CThingy* thingy = scbw::createThingy(SpriteId::IonField, x, y, 11);
+	if (thingy != NULL) {
+		thingy->sprite->elevationLevel = elevationLevel;
+		scbw::setThingyVisibilityFlags(thingy);
+		if (addImpactValue) {
+			persistImpact impact;
+			impact.position = Point32{ x,y };
+			impact.timer = 24;
+			impact.repeatsLeft = 5 - 1;
+			impact.elevation = elevationLevel;
+			impact.impactId = ImpactId::IonField;
+			persistImpacts.push_back(impact);
+		}
+	}
+}
+
 void __declspec(naked) Globals_SaveStateWrapper() {
 	static SaveState* state;
 	__asm {

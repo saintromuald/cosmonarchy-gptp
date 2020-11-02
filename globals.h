@@ -21,7 +21,7 @@ namespace ImpactId {
 	enum {
 		Salamander,
 		Planetcracker,
-
+		IonField,
 	};
 }
 
@@ -95,6 +95,7 @@ public:
 	bool was_hit_by_pariah(CUnit* source, CUnit* target);
 	void register_pariah_hit(CUnit* source, CUnit* target);
 	void createSalamanderFire(int x, int y, u8 player, u8 elevation, bool addImpactValue);
+	void createIonField(int x, int y, u8 player, u8 elevation, bool addImpactValue);
 	void createPlanetCracker(int x, int y, u8 player, u8 elevation);
 	bool was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target);
 	bool multihit_bullet_is_set(CBullet* bullet);

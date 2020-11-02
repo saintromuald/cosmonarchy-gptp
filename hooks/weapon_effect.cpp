@@ -84,6 +84,13 @@ namespace hooks {
 				}
 				Globals.createSalamanderFire(hit.x, hit.y, 11, 5, true);
 			}
+/*			if (bullet->sourceUnit->id == WeaponId::IonCannon) {
+				auto hit = bullet->attackTarget.pt;
+				if (bullet->attackTarget.unit != NULL) {
+					hit = bullet->attackTarget.unit->position;
+				}
+				Globals.createIonField(hit.x, hit.y, 11, 5, true);
+			}*/
 		}
 		
 		s16 x,y,r;
