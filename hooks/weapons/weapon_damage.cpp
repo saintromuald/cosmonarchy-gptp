@@ -200,6 +200,9 @@ public:
 		else
 			unit->shields += value;
 	}
+
+	//Constructor
+	astralAegisProc(CUnit* archon) : archon(archon) {}
 };
 
 class lastordersProc2 : public scbw::UnitFinderCallbackMatchInterface {
@@ -248,7 +251,6 @@ public:
 			return false;
 		}
 		return true;
-
 	}
 
 	//Constructor
@@ -734,7 +736,7 @@ namespace hooks {
 
 			if (damage >= target->hitPoints) {
 				if (target->id == UnitId::ProtossArchon) {
-					astralAegisProc Aegis = astralAegisProc();
+					astralAegisProc Aegis = astralAegisProc(target);
 					scbw::UnitFinder unitFinder(target->getX() - 96,
 						target->getY() - 96,
 						target->getX() + 96,
