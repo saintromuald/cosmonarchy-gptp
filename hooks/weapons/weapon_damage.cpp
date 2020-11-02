@@ -5,6 +5,7 @@
 #include "MathUtils.h"
 #include "../orders/spells/hallucination_spell.h"
 #include "Utils/captivating_claws.h"
+#include "hooks/hydraFinder.h"
 #include "globals.h"
 namespace {
 	//Helper functions
@@ -225,6 +226,34 @@ public:
 
 	//Constructor
 	lastordersProc2(CUnit* martyr) : martyr(martyr) {}
+};
+
+class augurDeathProc : public scbw::UnitFinderCallbackMatchInterface {
+	CUnit* augur;
+
+public:
+	//Check if @p unit is a suitable target for the @p spiderMine.
+	bool match(CUnit* target) {
+
+		//Don't attack friendly / allied units
+		if (target->sprite == NULL) {
+			return false;
+		}
+		if (target->playerId == augur->playerId) {
+			return false;
+		}
+		if (scbw::isAlliedTo(target->playerId, augur->playerId)) {
+			return false;
+		}
+		if (target->status & UnitStatus::Invincible) {
+			return false;
+		}
+		return true;
+
+	}
+
+	//Constructor
+	augurDeathProc(CUnit* augur) : augur(augur) {}
 };
 
 
@@ -632,7 +661,7 @@ namespace hooks {
 								target->setHp(units_dat::MaxHitPoints[target->id] / 2);
 								target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
 								target->status |= UnitStatus::CanNotReceiveOrders;
-}
+							}
 						}
 					}
 
@@ -814,6 +843,18 @@ namespace hooks {
 						scbw::createBullet(WeaponId::FragmentaryShells, attacker, target->getX(), target->getY(), attacker->playerId, newAngle);
 					}
 
+					// Augur - Death behavior
+					if (target->id == UnitId::ProtossAugur && scbw::get_generic_value(target, ValueId::AugurSafetyCheck) == 0) {
+						scbw::set_generic_value(target, ValueId::AugurSafetyCheck, 1);
+						augurDeathProc Orders = augurDeathProc(target);
+						scbw::UnitFinder unitFinder(target->getX() - 288, target->getY() - 288, target->getX() + 288, target->getY() + 288);
+						CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
+						if (nearest != NULL) {
+							target->orderTarget.unit = nearest;
+							scbw::createBullet(WeaponId::FinalHour, target, target->position.x, target->position.y, target->playerId, 
+									scbw::getAngle(target->position.x,target->position.y,nearest->getX(),nearest->getY()));
+						}
+					}
 				}
 			}
 

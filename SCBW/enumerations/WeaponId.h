@@ -197,6 +197,7 @@ enum Enum {
 	IconoclastBlades							= 115,			// Pariah weapon
 	PhaseBlaster								= 118,			// Manifold weapon
 	DispersiveSalvo								= 119,			// Architect weapon	
+	FinalHour									= 128,			// Augur behavior
 
 	// Zerg \\
 
