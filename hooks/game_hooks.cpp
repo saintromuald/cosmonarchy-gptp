@@ -685,6 +685,7 @@ namespace hooks {
 						}
 					}
 				}
+
 				// Paladin - Skyfall
 				if (unit->id == UnitId::TerranPaladin
 					&& scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::SkyfallTimer, 0) == 1 &&
@@ -753,6 +754,7 @@ namespace hooks {
 					unit->inflictDamage(30 * 256, NULL,-1, false, true,false,false);		
 				}
 
+				// Savant - Entropy Gauntlets
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::EnergyDecay, 0) == 1) {
 					u32 overlayImageId;
 					if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
