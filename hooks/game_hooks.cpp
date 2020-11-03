@@ -380,6 +380,7 @@ public:
 	}
 };
 
+const int TREASURY_INCREASE = 4;
 class treasuryProc : public scbw::UnitFinderCallbackProcInterface {
 	u8 _playerId;
 
@@ -400,7 +401,7 @@ public:
 
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::TreasuryStacks, 1, 0);
 		int supply = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SupplyProvidedValue, 0);
-		unit->setSupplyProvided(supply + 4);
+		unit->setSupplyProvided(supply + TREASURY_INCREASE);
 	}
 };
 
@@ -471,7 +472,7 @@ namespace hooks {
 				int supply = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SupplyProvidedValue, 0);
 				int stacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TreasuryStacks, 0);
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::TreasuryStacks, 0, 0);
-				unit->setSupplyProvided(supply - stacks * 2);
+				unit->setSupplyProvided(supply - stacks * TREASURY_INCREASE);
 			}
 
 			for (int player = 0; player < 8; player++) { // Synchronize upgrades
