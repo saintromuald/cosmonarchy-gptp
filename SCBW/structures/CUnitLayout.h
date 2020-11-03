@@ -256,6 +256,7 @@ namespace ValueId {
 		StarcallerInterceptionMissiles				= 106,
 		AugurGimmickTimer							= 107,
 		PenumbraLaserPos							= 108,
+		ClarionSFX									= 109,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

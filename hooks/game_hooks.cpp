@@ -1064,6 +1064,12 @@ namespace hooks {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 1, 0);
 				}
 
+				// Clarion SFX
+				if (scbw::get_generic_value(unit, ValueId::ClarionSFX) > 0) {
+					scbw::set_generic_value(unit, ValueId::ClarionSFX, 0);
+					scbw::playSound(scbw::randBetween(1254, 1255), unit);
+				}
+
 			}
 			scbw::setInGameLoopState(false);
 		}
