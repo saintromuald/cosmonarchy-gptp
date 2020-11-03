@@ -1036,7 +1036,7 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossAugur &&  //Augur Final Hour passive
+								if ((*activePortraitUnit)->id == UnitId::ProtossArchon &&  //Augur Final Hour passive
 									current_button->iconID == IconId::PsionicShockwave)
 								{
 									current_button_state = BUTTON_STATE::Enabled;

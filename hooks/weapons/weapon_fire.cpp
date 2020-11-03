@@ -450,6 +450,10 @@ namespace hooks {
 					// Star Sovereign laser spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::SovereignCannonPos, 2, ImagesDatEntries::OverlayAttackPtr);
 				}
+				else if (weaponId == WeaponId::RetractorBatteries) {
+					// Penumbra laser spawn position
+					scbw::setMissileSourcePos(unit, weaponId, ValueId::PenumbraLaserPos, 1, ImagesDatEntries::OverlayAttackPtr);
+				}
 				else if (weaponId == WeaponId::PerditionBarrage) {
 					// Salamander missile target positions
 					auto rotate = scbw::get_generic_value(unit, ValueId::SalamanderAtkPos);
@@ -662,6 +666,7 @@ namespace hooks {
 				int divisor = 1;
 				if (bullet->weaponType == WeaponId::ErebolShockCannon) {
 					//Penumbra Behavior
+					scbw::createThingy(644, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					scbw::weaponBulletShot(collisionTarget, bullet, 2);
 				}
 				else {
