@@ -184,14 +184,12 @@ public:
 	}
 };
 
-class astralAegisProc : public scbw::UnitFinderCallbackProcInterface {
-	CUnit* archon;
+class astralaegisProc : public scbw::UnitFinderCallbackProcInterface {
 
 private:
 public:
 	void proc(CUnit* unit) {
-		if (!units_dat::ShieldsEnabled[unit->id]
-		||	!(scbw::isAlliedTo(unit->playerId, archon->playerId))) {
+		if (!units_dat::ShieldsEnabled[unit->id]) {
 			return;
 		}
 		u32 value = 50 * 256;
@@ -200,16 +198,16 @@ public:
 		else
 			unit->shields += value;
 	}
-
-	//Constructor
-	astralAegisProc(CUnit* archon) : archon(archon) {}
 };
 
 class lastordersProc2 : public scbw::UnitFinderCallbackMatchInterface {
 	CUnit* martyr;
 
 public:
+	//Check if @p unit is a suitable target for the @p spiderMine.
 	bool match(CUnit* target) {
+
+		//Don't attack friendly / allied units
 		if (target->playerId == martyr->playerId) {
 			return false;
 		}
@@ -223,6 +221,7 @@ public:
 			return false;
 		}
 		return true;
+
 	}
 
 	//Constructor
@@ -233,8 +232,10 @@ class augurDeathProc : public scbw::UnitFinderCallbackMatchInterface {
 	CUnit* augur;
 
 public:
+	//Check if @p unit is a suitable target for the @p spiderMine.
 	bool match(CUnit* target) {
 
+		//Don't attack friendly / allied units
 		if (target->sprite == NULL) {
 			return false;
 		}
@@ -248,6 +249,7 @@ public:
 			return false;
 		}
 		return true;
+
 	}
 
 	//Constructor
@@ -346,6 +348,7 @@ public:
 
 void augurSacrifice(CUnit* target) {
 	if (scbw::get_generic_value(target, ValueId::AugurSafetyCheck) == 0) {
+		scbw::printText("Augur passed safety check");
 		scbw::set_generic_value(target, ValueId::AugurSafetyCheck, 1);
 		augurDeathProc Orders = augurDeathProc(target);
 		scbw::UnitFinder unitFinder(target->getX() - 384, target->getY() - 384,
@@ -353,6 +356,7 @@ void augurSacrifice(CUnit* target) {
 		CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
 		if (nearest != NULL) {
 			target->orderTarget.unit = nearest;
+			scbw::printText("Unit found, spawn missile");
 			scbw::createBullet(WeaponId::FinalHour, target, target->position.x, target->position.y, target->playerId,
 				scbw::getAngle(target->position.x, target->position.y, nearest->getX(), nearest->getY()));
 
@@ -364,6 +368,12 @@ void augurSacrifice(CUnit* target) {
 			target->userActionFlags |= 0x4;
 			return;
 		}
+		else {
+			scbw::printText("No enemy vulnerable non-dying unit with 12 range");
+		}
+	}
+	else {
+		scbw::printText("Augur has not passed safety check");
 	}
 }
 
@@ -506,6 +516,10 @@ namespace hooks {
 					break;
 				};
 				int dmg = ((double)damage * mul);
+				/*
+				char buf[64];
+				sprintf(buf, "Mutalisk: damage %d divisor %d mul %lf result %d", damage, dmgDivisor, mul, dmg);
+				scbw::printText(buf);*/
 				damage = dmg + (target->acidSporeCount * 256);
 			}
 			else {
@@ -640,7 +654,7 @@ namespace hooks {
 			}
 
 			if (attacker != NULL && target != NULL) {
-				if (attacker->id == UnitId::ProtossDarkTemplar && attacker->playerId) {
+				if ((attacker->id==UnitId::ProtossBarghest || attacker->id == UnitId::ProtossDarkTemplar) && attacker->playerId) {
 					bool silent_kill = false;
 					if (damage >= target->hitPoints) {
 						silent_kill = true;
@@ -662,6 +676,8 @@ namespace hooks {
 					scbw::set_generic_value(target, ValueId::AlkajeliskParasitePlayer, attacker->playerId);
 				}
 				if (damage >= target->hitPoints) {
+					//relic death effect
+					//scbw::printText("Check relic");
 
 
 					// Last Orders - Aurora upgrade
@@ -719,7 +735,7 @@ namespace hooks {
 
 			if (damage >= target->hitPoints) {
 				if (target->id == UnitId::ProtossArchon) {
-					astralAegisProc Aegis = astralAegisProc(target);
+					astralaegisProc Aegis = astralaegisProc();
 					scbw::UnitFinder unitFinder(target->getX() - 96,
 						target->getY() - 96,
 						target->getX() + 96,
@@ -860,6 +876,7 @@ namespace hooks {
 
 					// Augur - Death behavior
 					if (target->id == UnitId::ProtossAugur) {
+						scbw::printText("Augur dies");
 						augurSacrifice(target);
 
 					}
