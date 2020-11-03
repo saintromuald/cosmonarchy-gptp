@@ -666,6 +666,7 @@ namespace hooks {
 				int divisor = 1;
 				if (bullet->weaponType == WeaponId::ErebolShockCannon) {
 					//Penumbra Behavior
+					scbw::createThingy(629, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					scbw::weaponBulletShot(collisionTarget, bullet, 2);
 				}
 				else {
