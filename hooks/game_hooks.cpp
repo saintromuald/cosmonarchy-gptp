@@ -653,15 +653,15 @@ namespace hooks {
 					}
 				}
 
-				//
-				if (unit->id == UnitId::TerranPenumbra && unit->movementFlags & MovementFlags::Accelerating) {
+				// Penumbra Shadow's Weight passive (disabled)
+/*				if (unit->id == UnitId::TerranPenumbra && unit->movementFlags & MovementFlags::Accelerating) {
 					auto spores = penumbraProc(unit);
 					scbw::UnitFinder unitFinder(unit->getLeft()-16,
 						unit->getTop()-16,
 						unit->getRight()+16,
 						unit->getBottom()+16);
 					unitFinder.forEach(spores);
-				}
+				}*/
 
 				//Madcap stacks
 				if (unit->id == UnitId::TerranMadcap && unit->movementFlags & MovementFlags::Accelerating) {
