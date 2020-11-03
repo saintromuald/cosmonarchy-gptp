@@ -120,11 +120,11 @@ public:
 	}
 };
 
-class kalkalethMissileMatch : public scbw::UnitFinderCallbackMatchInterface {
+class missilePassMatch : public scbw::UnitFinderCallbackMatchInterface {
 private:
 	CBullet* missile;
 public:
-	kalkalethMissileMatch(CBullet* missile)
+	missilePassMatch(CBullet* missile)
 		: missile(missile) {}
 
 	bool match(CUnit* unit) {
@@ -653,23 +653,30 @@ namespace hooks {
 				bEnd = true;
 			}
 		}
-		else if (bullet->weaponType == WeaponId::ViscousAcid) {
+		else if (bullet->weaponType == WeaponId::ViscousAcid || bullet->weaponType==WeaponId::ErebolShockCannon) {
+			//for missiles hitting targets on its way.
 			u32 range = 128;
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
 				bullet->position.x - range, bullet->position.y - range,
 				bullet->position.x + range, bullet->position.y + range,
-				bullet, kalkalethMissileMatch(bullet)
+				bullet, missilePassMatch(bullet)
 			);
 			if (collisionTarget != NULL) {
 				Globals.add_bullet_multihit(bullet, collisionTarget);
-				scbw::weaponBulletShot(collisionTarget, bullet, 1);
-				scbw::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
-				
-
-				bullet->moveTarget.unit = bullet->attackTarget.unit;
-				if (bullet->moveTarget.unit != NULL) {
-					bullet->targetPosition = bullet->moveTarget.unit->position;
-					bullet->targetPosition2 = bullet->moveTarget.unit->position;
+				int divisor = 1;
+				if (bullet->weaponType == WeaponId::ErebolShockCannon) {
+					//Penumbra Behavior
+					scbw::weaponBulletShot(collisionTarget, bullet, 2);
+				}
+				else {
+					//Kalkaleth Behavior
+					scbw::weaponBulletShot(collisionTarget, bullet, 1);
+					scbw::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
+					bullet->moveTarget.unit = bullet->attackTarget.unit;
+					if (bullet->moveTarget.unit != NULL) {
+						bullet->targetPosition = bullet->moveTarget.unit->position;
+						bullet->targetPosition2 = bullet->moveTarget.unit->position;
+					}
 				}
 			}
 		}
