@@ -1034,7 +1034,7 @@ namespace hooks {
 				}
 
 				// Dark Templar - Decloak on attack
-				if (unit->id == UnitId::ProtossDarkTemplar || unit->id==UnitId::ProtossBarghest) {
+				if (unit->id == UnitId::ProtossDarkTemplar) {
 					auto timer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DarkTemplarTimer, 0);
 					if (timer == 1) {
 						for (int i = 0; i < 8; i++) {
