@@ -967,8 +967,8 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranPenumbra &&  //Penumbra Shroud Piercer passive 
-									current_button->iconID == IconId::BurstLasers)
+								if ((*activePortraitUnit)->id == UnitId::TerranPenumbra &&  //Penumbra Shadow's Weight passive 
+									current_button->iconID == IconId::CaduceusReactor)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
@@ -1031,13 +1031,8 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossArchon &&  //Archon Astral Aegis passive
+								if ((*activePortraitUnit)->id == UnitId::ProtossArchon &&  //Archon Aegis passive
 									current_button->iconID == IconId::RechargeShields)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossAugur &&  //Augur Final Hour passive
-									current_button->iconID == IconId::PsionicShockwave)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
