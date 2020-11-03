@@ -367,10 +367,14 @@ namespace hooks {
 				unit->orderTarget.unit->unusedTimer = 180;
 			}
 		}
-		if (unit->_padding_0x132 & 0x10) {//signify/shaman update speed flag
+
+		// Cowardice slow flag
+		if (unit->_padding_0x132 & 0x10) {
 			unit->_padding_0x132 &= ~0x10;
 			unit->updateSpeed();
 		}
+
+		// Malice overlays
 		if (unit->_unknown_0x08C & 0x1) {
 			unit->_unknown_0x08C &= ~0x1;
 			u32 overlayImageId;
