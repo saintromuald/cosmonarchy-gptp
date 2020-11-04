@@ -31,8 +31,7 @@ public:
 	unitRangeCount(CUnit* center, u32 context, std::vector<u16> allowedUnitIds)
 		: center(center), context(context), allowedUnitIds(allowedUnitIds) {}
 
-	bool match(CUnit* unit)
-	{
+	bool match(CUnit* unit) {
 		if (unit == center && !(context & CFlags::IncludingSelf)) {
 			return false;
 		}
@@ -44,7 +43,6 @@ public:
 		}
 		if (!(unit->status & UnitStatus::InAir) && context & CFlags::NoGround) {
 			return 0;
-
 		}
 
 		

@@ -602,14 +602,13 @@ namespace hooks {
 					}
 				}
 				if (unit->id == UnitId::TerranApostle) {
-
 					if (scbw::get_generic_value(unit, ValueId::CastLazarusAgent) == 1) {
 						scbw::set_generic_value(unit, ValueId::CastLazarusAgent, 0);
-						//cast lazarus agent
-						
+
+						//cast lazarus agent						
 						unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent]*256);
 						auto r = 128;//radius
-						auto n = unitRangeCount(NULL, CFlags::NoBuilding | CFlags::Ally | 
+						auto n = unitRangeCount(unit, CFlags::NoBuilding | CFlags::Ally | 
 							CFlags::OnlyOrganic | CFlags::IncludingSelf, {});
 						scbw::UnitFinder unitsInSplash(unit->getX() - r, unit->getY() - r,
 							unit->position.x + r, unit->position.y + r);
@@ -619,6 +618,7 @@ namespace hooks {
 								//apply lazarus agent
 								scbw::set_generic_value(picked_unit, ValueId::LazarusAgent, 1);
 								scbw::set_generic_unit(picked_unit, ValueId::LazarusAgentApostleSrc, unit);
+								picked_unit->sprite->createTopOverlay(1265);
 							}
 						}
 					}
