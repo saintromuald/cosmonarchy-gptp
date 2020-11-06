@@ -840,6 +840,10 @@ namespace hooks {
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergGorgolethApiary, ignoreIncomplete);
 			break;
 
+		case UnitId::ZergGorgolethApiary:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergGuardianRoost, ignoreIncomplete);
+			break;
+
 		case UnitId::ZergHydraliskDen:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergBasiliskDen, ignoreIncomplete);
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergLurkerDen, ignoreIncomplete);

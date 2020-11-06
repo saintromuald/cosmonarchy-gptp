@@ -672,6 +672,7 @@ bool isConventionalUnitMorphSource(u16 id, bool allow_larvae) {
 	switch (id) {
 	case UnitId::ZergUltralisk:
 	case UnitId::ZergMutalisk:
+	case UnitId::ZergGorgoleth:
 	case UnitId::ZergHydralisk:
 	case UnitId::ZergZergling:
 	case UnitId::ZergNathrokor:
@@ -721,6 +722,7 @@ bool isZergBuildingMorphSource(u16 id){
 	case UnitId::ZergEvolutionChamber:
 	case UnitId::ZergUltraliskCavern:
 	case UnitId::ZergSpire:
+	case UnitId::ZergGorgolethApiary:
 	case UnitId::ZergCreepColony:
 	case UnitId::ZergHydraliskDen:
 	case UnitId::ZergSpawningPool:
