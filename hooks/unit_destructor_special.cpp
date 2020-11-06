@@ -80,6 +80,9 @@ public:
 		if (unit->id != UnitId::TerranApostle) {
 			return;
 		}
+		if (unit == victim) {
+			return;
+		}
 		if (!scbw::isAlliedTo(victim->playerId, unit->playerId)) {
 			return;
 		}

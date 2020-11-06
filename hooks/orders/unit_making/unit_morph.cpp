@@ -192,6 +192,14 @@ namespace hooks {
 						eggId = UnitId::EggKalkaleth;
 						break;
 					case UnitId::ZergMutalisk:
+						if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergGorgoleth) {
+							eggId = UnitId::EggGorgoleth;
+						}
+						else {
+							eggId = UnitId::EggDevourer;
+						}
+						break;
+					case UnitId::ZergGorgoleth:
 						eggId = UnitId::ZergCocoon;
 						break;
 					case UnitId::ZergUltralisk:
@@ -334,16 +342,15 @@ namespace hooks {
 	bool unitCanMorphHook(CUnit* unit, u16 morphUnitId) {
 		//Default StarCraft behavior
 		if (unit->id == UnitId::ZergHydralisk) {
-			if (morphUnitId == UnitId::ZergBasilisk) {
-				return true;
-			}
-			if (morphUnitId == UnitId::ZergLurker) {
+			if (morphUnitId == UnitId::ZergBasilisk 
+			||	morphUnitId == UnitId::ZergLurker) {
 				return true;
 			}
 		}
 
 		if (unit->id == UnitId::ZergZergling) {
-			if (morphUnitId == UnitId::ZergVorvaling || morphUnitId == UnitId::ZergNathrokor) {
+			if (morphUnitId == UnitId::ZergVorvaling
+			||	morphUnitId == UnitId::ZergNathrokor) {
 				return true;
 			}
 		}
@@ -354,8 +361,15 @@ namespace hooks {
 			}
 		}
 
+		if (unit->id == UnitId::ZergGorgoleth) {
+			if (morphUnitId == UnitId::ZergGuardian) {
+				return true;
+			}
+		}
+
 		if (unit->id == UnitId::ZergUltralisk) {
-			if (morphUnitId == UnitId::ZergKeskathalor || morphUnitId == UnitId::ZergAlkajelisk) {
+			if (morphUnitId == UnitId::ZergKeskathalor
+			||	morphUnitId == UnitId::ZergAlkajelisk) {
 				return true;
 			}
 		}
@@ -407,8 +421,10 @@ namespace hooks {
 				return UnitId::EggDevourer;
 			else if (resultId == UnitId::ZergGorgoleth)
 				return UnitId::EggGorgoleth;
-			else
-				return UnitId::ZergCocoon;
+		}
+
+		if (unitId == UnitId::ZergGorgoleth) {
+			return UnitId::ZergCocoon;
 		}
 
 		if (unitId == UnitId::ZergHydralisk) {
@@ -416,11 +432,9 @@ namespace hooks {
 				return UnitId::ZergLurkerEgg;
 			}
 			return UnitId::EggBasilisk;
-
 		}
 
-		if (unitId == UnitId::ZergZergling)
-		{
+		if (unitId == UnitId::ZergZergling)	{
 			if (resultId == UnitId::ZergNathrokor) {
 				return UnitId::EggNathrokor;
 			}
@@ -431,8 +445,7 @@ namespace hooks {
 			return UnitId::EggKalkaleth;
 		}
 
-		if (unitId == UnitId::ZergUltralisk)
-		{
+		if (unitId == UnitId::ZergUltralisk) {
 			if (resultId == UnitId::ZergAlkajelisk) {
 				return UnitId::EggAlkajelisk;
 			}
@@ -458,10 +471,12 @@ namespace hooks {
 	u16 getCancelMorphRevertTypeHook(CUnit* eggUnit) {
 		//Default StarCraft behavior
 
-		if (eggUnit->id == UnitId::ZergCocoon
-		||	eggUnit->id == UnitId::EggGorgoleth
+		if (eggUnit->id == UnitId::EggGorgoleth
 		||	eggUnit->id == UnitId::EggDevourer) {
 			return UnitId::ZergMutalisk;
+		}
+		if (eggUnit->id == UnitId::ZergCocoon) {
+			return UnitId::ZergGorgoleth;
 		}
 		if (eggUnit->id == UnitId::ZergLurkerEgg) {
 			return UnitId::ZergHydralisk;
