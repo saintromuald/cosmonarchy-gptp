@@ -662,7 +662,12 @@ namespace hooks {
 				bullet, missilePassMatch(bullet)
 			);
 			if (collisionTarget != NULL) {
-				Globals.add_bullet_multihit(bullet, collisionTarget);
+				if (bullet->weaponType == WeaponId::ErebolShockCannon) {
+					Globals.add_bullet_multihit(bullet, collisionTarget);
+				}
+				else {
+					Globals.add_incremental_bullet_multihit(bullet, collisionTarget);
+				}
 				int divisor = 1;
 				if (bullet->weaponType == WeaponId::ErebolShockCannon) {
 					//Penumbra Behavior
@@ -671,7 +676,9 @@ namespace hooks {
 				}
 				else {
 					//Kalkaleth Behavior
-					scbw::weaponBulletShot(collisionTarget, bullet, 1);
+					auto divider = Globals.get_multihit_count(bullet);
+//					scbw::printFormattedText("Divider is %d", divider);
+					scbw::weaponBulletShot(collisionTarget, bullet, divider);
 					scbw::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					bullet->moveTarget.unit = bullet->attackTarget.unit;
 					if (bullet->moveTarget.unit != NULL) {

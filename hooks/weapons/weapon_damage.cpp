@@ -492,12 +492,10 @@ namespace hooks {
 				int dmg = ((double)damage / div);
 				damage = dmg + (target->acidSporeCount * 256);
 			}
-
 			// Guardian behavior
 			else if (weaponId == WeaponId::AcidSpore) {
 				damage = damage + (target->acidSporeCount * 256) + (dmgDivisor * 10 * 256);
 			}
-
 			// Mutalisk bounce damage
 			else if (weaponId == WeaponId::GlaveWurm) {
 				double mul = 1.0;
@@ -516,11 +514,20 @@ namespace hooks {
 					break;
 				};
 				int dmg = ((double)damage * mul);
-				/*
-				char buf[64];
-				sprintf(buf, "Mutalisk: damage %d divisor %d mul %lf result %d", damage, dmgDivisor, mul, dmg);
-				scbw::printText(buf);*/
 				damage = dmg + (target->acidSporeCount * 256);
+			}
+			else if (weaponId == WeaponId::ViscousAcid) {
+				int decrement = (dmgDivisor-1) * 256;
+				if (decrement < damage) {
+					damage = damage - decrement + (target->acidSporeCount * 256);
+					//get_multihit_count
+					//scbw::printFormattedText("Divisor is: %d, Kalkaleth damage: %d", dmgDivisor, damage / 256);
+				}
+				else {
+					damage = damage + (target->acidSporeCount * 256);
+				}
+				
+				
 			}
 			else {
 				damage = damage / dmgDivisor + (target->acidSporeCount * 256);
