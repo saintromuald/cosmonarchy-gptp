@@ -668,7 +668,6 @@ namespace hooks {
 				else {
 					Globals.add_incremental_bullet_multihit(bullet, collisionTarget);
 				}
-				int divisor = 1;
 				if (bullet->weaponType == WeaponId::ErebolShockCannon) {
 					//Penumbra Behavior
 					scbw::createThingy(644, bullet->position.x, bullet->position.y, bullet->srcPlayer);
@@ -677,8 +676,8 @@ namespace hooks {
 				else {
 					//Kalkaleth Behavior
 					auto divider = Globals.get_multihit_count(bullet);
-//					scbw::printFormattedText("Divider is %d", divider);
 					scbw::weaponBulletShot(collisionTarget, bullet, divider);
+					scbw::printFormattedText("Bullet: %X", bullet);
 					scbw::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					bullet->moveTarget.unit = bullet->attackTarget.unit;
 					if (bullet->moveTarget.unit != NULL) {
@@ -690,7 +689,7 @@ namespace hooks {
 		}
 
 		if (bEnd) {
-			if (bullet->weaponType == WeaponId::ViscousAcid || bullet->weaponType==WeaponId::DispersiveSalvo) {
+			if (bullet->weaponType == WeaponId::ViscousAcid || bullet->weaponType == WeaponId::DispersiveSalvo) {
 				Globals.remove_multihit_bullet(bullet);
 			}
 			target = bullet->attackTarget.unit;
@@ -708,6 +707,8 @@ namespace hooks {
 			bullet->someUnitType = 228;
 			for (i = v4->images.head; i; i = i->link.next)
 				playImageIscript(i, 1);
+			
+			
 		}
 	}
 

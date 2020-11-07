@@ -284,7 +284,7 @@ void globals::add_incremental_bullet_multihit(CBullet* bullet, CUnit* target) {
 			return;
 		}
 	}
-	multihitBullet gb(bullet, { target }, 0);
+	multihitBullet gb(bullet, { target }, 1);
 	multihitBullets.push_back(gb);
 }
 int globals::get_divider(CBullet* bullet) {
