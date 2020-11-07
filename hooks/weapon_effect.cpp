@@ -378,6 +378,9 @@ namespace hooks {
 		if (weaponId == WeaponId::DispersiveSalvo) {
 			divisor = Globals.get_divider(bullet);
 		}
+		else if (weaponId == WeaponId::ViscousAcid) {
+			divisor = Globals.get_multihit_count(bullet);
+		}
 		else if (weaponId == WeaponId::AcidSpore
 		&&		bullet->sourceUnit
 		&&		bullet->sourceUnit->sprite

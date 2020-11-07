@@ -517,11 +517,11 @@ namespace hooks {
 				damage = dmg + (target->acidSporeCount * 256);
 			}
 			else if (weaponId == WeaponId::ViscousAcid) {
-				int decrement = (dmgDivisor-1) * 256;
+				int decrement = dmgDivisor * 256;
 				if (decrement < damage) {
 					damage = damage - decrement + (target->acidSporeCount * 256);
 					//get_multihit_count
-					//scbw::printFormattedText("Divisor is: %d, Kalkaleth damage: %d", dmgDivisor, damage / 256);
+//					scbw::printFormattedText("Divisor is: %d, Kalkaleth damage: %d", dmgDivisor, damage / 256);
 				}
 				else {
 					damage = damage + (target->acidSporeCount * 256);
