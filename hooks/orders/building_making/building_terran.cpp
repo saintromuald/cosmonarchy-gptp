@@ -625,8 +625,9 @@ void orders_SCVBuild(CUnit* unit) {
 		bMoveTargetResult = SetMoveTarget_xy(unit,unit->orderTarget.pt.x,unit->orderTarget.pt.y);
 
 		if(
-			unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
-			unit->orderTarget.pt.y != unit->nextTargetWaypoint.y
+			(unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
+			unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
+			&& !(unit->orderTarget.pt.x==0 && unit->orderTarget.pt.y==0)
 			) 
 		{
 			unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
