@@ -277,6 +277,16 @@ void globals::add_bullet_multihit(CBullet* bullet, CUnit* target) {
 	multihitBullet gb(bullet, { target },0);
 	multihitBullets.push_back(gb);
 }
+void globals::add_incremental_bullet_multihit(CBullet* bullet, CUnit* target) {
+	for (auto& a : multihitBullets) {
+		if (a.bullet == bullet) {
+			a.already_hit.push_back(target);
+			return;
+		}
+	}
+	multihitBullet gb(bullet, { target }, 0);
+	multihitBullets.push_back(gb);
+}
 int globals::get_divider(CBullet* bullet) {
 	for (auto& a : multihitBullets) {
 		if (a.bullet == bullet && a.divider != 0) {
@@ -284,6 +294,14 @@ int globals::get_divider(CBullet* bullet) {
 		}
 	}
 	return 1;
+}
+u32 globals::get_multihit_count(CBullet* bullet) {
+	for (auto& a : multihitBullets) {
+		if (a.bullet == bullet) {
+			return a.already_hit.size();
+		}
+	}
+	return 0;
 }
 void globals::add_multihit_empty_bullet(CBullet* bullet, int divider) {
 	for (auto& a : multihitBullets) {

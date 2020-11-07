@@ -93,14 +93,17 @@ public:
 	void unitDeathHook(CUnit* unit);
 	void remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly);
 	bool was_hit_by_pariah(CUnit* source, CUnit* target);
+
 	void register_pariah_hit(CUnit* source, CUnit* target);
 	void createSalamanderFire(int x, int y, u8 player, u8 elevation, bool addImpactValue);
 	void createIonField(int x, int y, u8 player, u8 elevation, bool addImpactValue);
 	void createPlanetCracker(int x, int y, u8 player, u8 elevation);
 	bool was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target);
 	bool multihit_bullet_is_set(CBullet* bullet);
+	u32 get_multihit_count(CBullet* bullet);
 	void add_multihit_empty_bullet(CBullet* bullet, int divider);
 	void add_bullet_multihit(CBullet* bullet, CUnit* target);
+	void add_incremental_bullet_multihit(CBullet* bullet, CUnit* target);
 	void initLazarusAgent(int x, int y, u8 player, u32 unitId, u32 energy, CUnit* unit);
 	void clear_ptr_in_apostle_table(CUnit* unit);
 	void remove_multihit_bullet(CBullet* bullet);
