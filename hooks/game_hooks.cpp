@@ -500,8 +500,14 @@ namespace hooks {
 				scbw::setUpgradeLevel(player, UpgradeId::ZergFlyerCaparace, level);
 			}
 
-			//for (CBullet* bullet = *firstBullet; bullet; bullet = bullet->next) {
-			//}
+			for (CBullet* bullet = *firstBullet; bullet; bullet = bullet->next) {
+				if (bullet->weaponType == WeaponId::ViscousAcid) {
+					if (bullet->orderSignal & 0x80) {
+						bullet->orderSignal &= ~0x80;
+						Globals.remove_multihit_bullet(bullet);
+					}
+				}
+			}
 
 			// Loop through all hidden units in the game.
 			/*for (CUnit* unit = *firstHiddenUnit; unit; unit = unit->link.next) {

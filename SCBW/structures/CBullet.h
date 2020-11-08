@@ -43,8 +43,10 @@ struct CBullet {
                                                // 3 = bounce
                                                // 4 = persist on site
                                                // 5 = appear on target/instant
+                                      
                                                // 6 = attack target area
-  /*0x4E*/ u16          unknown_0x4E;
+  /*0x4E*/ u8           unknown_0x4E;
+  /*0x4F*/ u8           orderSignal;  //added by iquare
   /*0x50*/ u16          someUnitType; // usually holds UnitType::None (Unknown unit type stuff?)
   /*0x52*/ u16          unknown_0x52; 
   /*0x54*/ s32          unknown_0x54; // usually holds 0

@@ -432,7 +432,8 @@ namespace hooks {
 				}
 				else if (weaponId == WeaponId::ViscousAcid) {
 					// Kalkaleth missile spawn position
-					scbw::setMissileSourcePos(unit, weaponId, ValueId::KalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+					auto bullet = scbw::setMissileSourcePosRet(unit, weaponId, ValueId::KalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+					Globals.remove_multihit_bullet(bullet);
 				}
 				else if (weaponId == WeaponId::ScreamingVenom) {
 					// Keskathalor missile spawn position
@@ -677,7 +678,7 @@ namespace hooks {
 					//Kalkaleth Behavior
 					auto divider = Globals.get_multihit_count(bullet);
 					scbw::weaponBulletShot(collisionTarget, bullet, divider);
-					scbw::printFormattedText("Bullet: %X", bullet);
+//					scbw::printFormattedText("Hit by bullet: %X", bullet);
 					scbw::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					bullet->moveTarget.unit = bullet->attackTarget.unit;
 					if (bullet->moveTarget.unit != NULL) {
@@ -689,7 +690,7 @@ namespace hooks {
 		}
 
 		if (bEnd) {
-			if (bullet->weaponType == WeaponId::ViscousAcid || bullet->weaponType == WeaponId::DispersiveSalvo) {
+			if (/*bullet->weaponType == WeaponId::ViscousAcid || */bullet->weaponType == WeaponId::DispersiveSalvo) {
 				Globals.remove_multihit_bullet(bullet);
 			}
 			target = bullet->attackTarget.unit;
@@ -703,8 +704,10 @@ namespace hooks {
 				bullet->attackTarget.unit = 0;
 			}
 			v4 = bullet->sprite;
+			bullet->orderSignal |= 0x80;//new
 			bullet->unknown_0x4E = 0;
 			bullet->someUnitType = 228;
+//			scbw::printFormattedText("Hit by bullet: %X", bullet);
 			for (i = v4->images.head; i; i = i->link.next)
 				playImageIscript(i, 1);
 			
