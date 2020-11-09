@@ -28,7 +28,7 @@ namespace hooks {
 //		hooks::injectCCMUHooks();
 //		hooks::sfxExtender();
 		newSfxExtender();
-		injectPortdataLimits();
+//		injectPortdataLimits();
 //		hooks::injectTblExtender();
 		
 		jmpPatch(preInitDataWrapper, 0x004DAF31);
