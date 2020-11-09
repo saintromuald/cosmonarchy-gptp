@@ -1,7 +1,7 @@
 #include "config.h"
-#include "config_utility.h"
 #include "yaml-cpp/yaml.h"
 #include <fstream>
+#include "config_utility.h"
 
 Config config;
 
@@ -10,7 +10,7 @@ bool ConfigExists() {
 }
 
 void LoadConfig() {
-	if (!ConfigExists()) {
+	if (!ConfigExists()) { 
 		SaveConfig();
 	}
 	else {
