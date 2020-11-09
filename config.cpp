@@ -31,12 +31,20 @@ void LoadConfig() {
 void SaveConfig() {
 	YAML::Emitter out;
 	out << YAML::BeginMap;
+
+	out << YAML::Comment("Project: HYDRA config");
+	out << YAML::Newline << YAML::Newline;
+	out << YAML::Comment("Launch");
 	WriteField(out, "disable-wmode-prompt", config.disable_wmode_prompt);
 	WriteField(out, "prefer-wmode", config.prefer_wmode);
+	out << YAML::Newline << YAML::Newline;
 
+	out << YAML::Comment("UI");
 	WriteField(out, "show-timer", config.show_timer);
 	WriteField(out, "extended-camera-hotkeys", config.extended_camera_hotkeys);
+	out << YAML::Newline << YAML::Newline;
 
+	out << YAML::Comment("Hotkeys");
 	WriteField(out, "grid-hotkeys", YAML::BeginMap);
 	WriteField(out, "enabled", config.grid_hotkeys);
 	WriteField(out, "layout", YAML::BeginSeq);
@@ -44,8 +52,8 @@ void SaveConfig() {
 		out << str;
 	}
 	out << YAML::EndSeq << YAML::EndMap;
-	out << YAML::EndMap;
 
+	out << YAML::EndMap;
 	std::ofstream configFile(CONFIG_FILENAME);
 	configFile << out.c_str();
 }
