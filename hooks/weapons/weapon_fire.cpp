@@ -614,8 +614,10 @@ namespace hooks {
 									target->getX(), target->getY());
 								auto newBullet = scbw::createBulletRet(WeaponId::DispersiveSalvo, bullet->sourceUnit,
 									bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
-								newBullet->position = bullet->position;
-								Globals.add_multihit_empty_bullet(newBullet,count+1);
+								if (newBullet) {
+									newBullet->position = bullet->position;
+									Globals.add_multihit_empty_bullet(newBullet, count + 1);
+								}
 							}
 						}
 					};
