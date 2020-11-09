@@ -44,7 +44,7 @@ void SaveConfig() {
 	WriteField(out, "extended-camera-hotkeys", config.extended_camera_hotkeys);
 	out << YAML::Newline << YAML::Newline;
 
-	out << YAML::Comment("Hotkeys");
+	out << YAML::Comment("Hotkeys (Not Implemented Yet)");
 	WriteField(out, "grid-hotkeys", YAML::BeginMap);
 	WriteField(out, "enabled", config.grid_hotkeys);
 	WriteField(out, "layout", YAML::BeginSeq);
