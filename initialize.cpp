@@ -108,24 +108,33 @@
 
 namespace
 {
-	void runWMode()
+	void loadWMode() {
+		HINSTANCE hDll;
+		hDll = LoadLibrary("./WMODE.dll");
+		hDll = LoadLibrary("./WMODE_FIX.dll");
+	}
+
+	void runWMode(bool hidePrompt, bool preferWmode)
 	{
-		//KYSXD W-Mode start
-		int msgboxID = MessageBox(NULL, "Do you want to play in windowed mode?", PLUGIN_NAME, MB_YESNOCANCEL);
-		switch (msgboxID) {
-		case IDYES:
-			HINSTANCE hDll;
-			hDll = LoadLibrary("./WMODE.dll");
-			hDll = LoadLibrary("./WMODE_FIX.dll");
-			break;
-		case IDCANCEL:
-			exit(0);
-		}//KYSXD W-Mode end
+		if (!hidePrompt) {
+			//KYSXD W-Mode start
+			int msgboxID = MessageBox(NULL, "Do you want to play in windowed mode?", PLUGIN_NAME, MB_YESNOCANCEL);
+			switch (msgboxID) {
+			case IDYES:
+				loadWMode();
+				break;
+			case IDCANCEL:
+				exit(0);
+			}//KYSXD W-Mode end
+		}
+		else {
+			if (preferWmode) loadWMode();
+		}
 	}
 }
 BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	LoadConfig();
-	runWMode();
+	runWMode(config.disable_wmode_prompt, config.prefer_wmode);
 	//StarCraft.exe version check
 	char exePath[300];
 	const DWORD pathLen = GetModuleFileName(NULL, exePath, sizeof(exePath));

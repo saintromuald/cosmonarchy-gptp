@@ -10,26 +10,30 @@ bool ConfigExists() {
 }
 
 void LoadConfig() {
-	if (!ConfigExists()) { 
-		SaveConfig();
-	}
-	else {
+	if (ConfigExists()) {
 		YAML::Node configNode = YAML::LoadFile(CONFIG_FILENAME);
 
-		LoadField(configNode, config.show_timer, "show-timer");
-		LoadField(configNode, config.extended_camera_hotkeys, "extended-camera-hotkeys");
+		LoadField(configNode, "disable-wmode-prompt", config.disable_wmode_prompt);
+		LoadField(configNode, "prefer-wmode", config.prefer_wmode);
+
+		LoadField(configNode, "show-timer", config.show_timer);
+		LoadField(configNode, "extended-camera-hotkeys", config.extended_camera_hotkeys);
 
 		auto gridNode = configNode["grid-hotkeys"];
 		if (gridNode) {
-			LoadField(gridNode, config.grid_hotkeys, "enabled");
-			LoadField(gridNode, config.layout, "layout");
+			LoadField(gridNode, "enabled", config.grid_hotkeys);
+			LoadField(gridNode, "layout", config.layout);
 		}
 	}
+	SaveConfig();
 }
 
 void SaveConfig() {
 	YAML::Emitter out;
 	out << YAML::BeginMap;
+	WriteField(out, "disable-wmode-prompt", config.disable_wmode_prompt);
+	WriteField(out, "prefer-wmode", config.prefer_wmode);
+
 	WriteField(out, "show-timer", config.show_timer);
 	WriteField(out, "extended-camera-hotkeys", config.extended_camera_hotkeys);
 

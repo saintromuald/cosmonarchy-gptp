@@ -1,5 +1,6 @@
 #include "screen_hotkeys.h"
 #include "hook_tools.h"
+#include "config.h"
 
 namespace {
 	void _declspec(naked) saveScreenLocation_Wrapper() {
@@ -67,9 +68,11 @@ namespace {
 namespace hooks {
 
 	void injectScreenHotkeysHooks() {
-		jmpPatch(saveScreenLocation_Wrapper,		0x00484360, 0);
-		jmpPatch(recallScreenLocation_Wrapper,		0x00484500, 1);
-		jmpPatch(helpMenuCall_Wrapper,				0x00484770, 0);
-		jmpPatch(screenLocationSwitchCase_Wrapper,	0x0048478A, 1);
+		if (config.extended_camera_hotkeys) {
+			jmpPatch(saveScreenLocation_Wrapper, 0x00484360, 0);
+			jmpPatch(recallScreenLocation_Wrapper, 0x00484500, 1);
+			jmpPatch(helpMenuCall_Wrapper, 0x00484770, 0);
+			jmpPatch(screenLocationSwitchCase_Wrapper, 0x0048478A, 1);
+		}
 	}
 }

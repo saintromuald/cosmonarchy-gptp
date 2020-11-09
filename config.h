@@ -4,6 +4,10 @@
 
 const std::string CONFIG_FILENAME = "config.yml";
 struct Config {
+	// Launch Settings
+	bool disable_wmode_prompt = false;
+	bool prefer_wmode = true;
+	
 	// UI
 	bool show_timer = true;
 	bool extended_camera_hotkeys = true;

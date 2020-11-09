@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <Windows.h>
+#include "config.h"
 
 namespace {
 	s32 BWFXN_PrintXY(const char* text, s32 x, s32 y);
@@ -93,8 +94,10 @@ namespace hooks {
 	}
 
 	void drawUIFeatures() {
-		std::string time = getFormattedTime(*elapsedTimeFrames / 24);
-		drawText(time.c_str(), 10, 3, 100, 15, 7);
+		if (config.show_timer) {
+			std::string time = getFormattedTime(*elapsedTimeFrames / 24);
+			drawText(time.c_str(), 10, 3, 100, 15, 7);
+		}
 
 		//std::string apm = "APM: " + std::to_string(getAPM());
 		//drawText(apm.c_str(), 10, 15, 100, 15, 7);
