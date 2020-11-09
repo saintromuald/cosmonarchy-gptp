@@ -97,6 +97,7 @@
 #include "hooks/interface/uifeatures/uifeatures.h"
 #include "hooks/trap_hooks.h"
 #include "hooks/target_related.h"
+#include "config.h"
 
 //#include "AI/spellcasting.h"
 
@@ -123,6 +124,7 @@ namespace
 	}
 }
 BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
+	LoadConfig();
 	runWMode();
 	//StarCraft.exe version check
 	char exePath[300];
