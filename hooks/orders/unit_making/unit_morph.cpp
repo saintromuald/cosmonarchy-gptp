@@ -391,8 +391,16 @@ namespace hooks {
 				return true;
 			}
 		}
-
-		if (unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergMutalisk) {
+		if (unit->id == UnitId::ZergMutalisk) {
+			if (morphUnitId == UnitId::ZergDevourer) {
+				return true;
+			}
+			if (morphUnitId == UnitId::ZergGorgoleth) {
+				return true;
+			}
+		}
+		if (unit->id == UnitId::ZergLarva) {
+			
 			if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1) {
 				return true;
 			}
@@ -419,8 +427,7 @@ namespace hooks {
 		if (unitId == UnitId::ZergMutalisk) {
 			if (resultId == UnitId::ZergDevourer)
 				return UnitId::EggDevourer;
-			else if (resultId == UnitId::ZergGorgoleth)
-				return UnitId::EggGorgoleth;
+			return UnitId::EggGorgoleth;
 		}
 
 		if (unitId == UnitId::ZergGorgoleth) {
