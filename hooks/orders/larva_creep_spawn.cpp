@@ -145,12 +145,16 @@ namespace hooks {
 
 													//if failed to find a spawn point for larva
 													//set the timer before retry to 3
-					if ((unit->id == UnitId::lair && unit->mainOrderId!=OrderId::Morph2) || 
-						(unit->id==UnitId::hive && unit->mainOrderId==OrderId::Morph2)) {
+					if ((unit->id == UnitId::ZergLair && unit->mainOrderId!=OrderId::Morph2) || 
+						(unit->id == UnitId::ZergHive && unit->mainOrderId == OrderId::Morph2)) {
 						unit->building.larvaTimer = 27;
 					}
-					else if (unit->id == UnitId::hive && unit->mainOrderId!=OrderId::Morph2) {
+					else if (unit->id == UnitId::ZergHive && unit->mainOrderId!=OrderId::Morph2 ||
+						unit->id == UnitId::ZergSire && unit->mainOrderId == OrderId::Morph2) {
 						unit->building.larvaTimer = 18;
+					}
+					else if (unit->id == UnitId::ZergSire && unit->mainOrderId != OrderId::Morph2) {
+						unit->building.larvaTimer = 12;
 					}
 
 					if (!function_004E8E10(unit, &coords_2))
@@ -197,7 +201,8 @@ namespace hooks {
 			unit->id == UnitId::ZergHatchery ||
 			unit->id == UnitId::ZergLair ||
 			unit->id == UnitId::ZergHive ||
-			(unit->id == UnitId::infested_command_center && !(unit->status & UnitStatus::InAir))
+			unit->id == UnitId::ZergSire ||
+			(unit->id == UnitId::ZergInfestedCommandCenter && !(unit->status & UnitStatus::InAir))
 			)
 			secondaryOrd_SpawningLarva(unit);
 		if (unit->building.creepTimer != 0)
@@ -212,16 +217,16 @@ namespace hooks {
 			if (unit->id == 180) {
 				//scbw::printText("spread basilisk creep");
 				unit->building.creepTimer = 10;
-			}
-			u32 lair_count = unitCountTable[UnitId::lair].player[unit->playerId];
-			u32 hive_count = unitCountTable[UnitId::hive].player[unit->playerId];
+			}/*
+			u32 lair_count = unitCountTable[UnitId::ZergLair].player[unit->playerId];
+			u32 hive_count = unitCountTable[UnitId::ZergHive].player[unit->playerId];
 			
 			if (hive_count) {
 				unit->building.creepTimer -= unit->building.creepTimer / 2;
 			}
 			else if (lair_count) {
 				unit->building.creepTimer -= unit->building.creepTimer / 4;
-			}
+			}*/
 											//look for a place to spawn creep on
 											//return value == 0 if all potential tiles are already creep, 2 == potential tiles are occupied by another building, 1 == potential tiles are otherwise still available
 											// Replace UnitId::ZergHive with unit->id if giving specific buildings different creep bounding rectangles in getCreepRegion
@@ -295,7 +300,8 @@ namespace hooks {
 					unit->id == UnitId::ZergHatchery ||
 					unit->id == UnitId::ZergLair ||
 					unit->id == UnitId::ZergHive ||
-					(unit->id==UnitId::infested_command_center && 
+					unit->id == UnitId::ZergSire ||
+					(unit->id==UnitId::ZergInfestedCommandCenter && 
 					!(unit->status & UnitStatus::InAir));
 
 				if (isZergMainBuilding)
@@ -379,16 +385,17 @@ namespace hooks {
 		switch (unitId) {
 		case UnitId::ZergHatchery:
 		case UnitId::ZergCreepColony:
-		case UnitId::infested_command_center:
+		case UnitId::ZergInfestedCommandCenter:
 			return isComplete;
 
+		case UnitId::ZergSire:
 		case UnitId::ZergHive:
 		case UnitId::ZergLair:
 		case UnitId::ZergSporeColony:
 		case UnitId::ZergSunkenColony:
 
-		case UnitId::UnusedCaveIn:
-		case UnitId::Special_MatureChrysalis:
+		case UnitId::BasiliskCreeper:
+		case UnitId::ZergChrysalis:
 			return true;
 
 		default:
