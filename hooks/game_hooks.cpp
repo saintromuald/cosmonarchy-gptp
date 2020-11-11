@@ -583,7 +583,7 @@ namespace hooks {
 							}
 						}
 					}
-				}
+				}/*
 				if (unit->id == UnitId::Special_IonCannon) {
 					auto turret = unit->getOverlay(1256);
 					if (unit->sprite && turret) {
@@ -606,7 +606,7 @@ namespace hooks {
 						}
 						
 					}
-				}
+				}*/
 				if (unit->id == UnitId::TerranApostle) {
 					if (scbw::get_generic_value(unit, ValueId::CastLazarusAgent) == 1) {
 						scbw::set_generic_value(unit, ValueId::CastLazarusAgent, 0);
