@@ -257,6 +257,7 @@ namespace ValueId {
 		AugurGimmickTimer							= 107,
 		PenumbraLaserPos							= 108,
 		ClarionSFX									= 109,
+		SwitchModeGimmickTimer						= 110,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
