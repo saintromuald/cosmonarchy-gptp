@@ -156,11 +156,12 @@ namespace hooks {
 		else if (order_state==1) {
 			if (!(unit->movementFlags & MovementFlags::Accelerating)) {
 				unit->playIscriptAnim(anim);
+				scbw::set_generic_timer(unit, ValueId::SwitchModeGimmickTimer, 5);
 				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 2);
 			}
 		}
 		else if (order_state == 2) {
-			if (unit->orderSignal & 4) {
+			if (scbw::get_generic_timer(unit,ValueId::SwitchModeGimmickTimer)==0) {
 				unit->orderSignal &= ~0x4;
 				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 0);
 				if (unit->id == UnitId::ProtossClarion) {
@@ -175,13 +176,14 @@ namespace hooks {
 				else if (unit->id == UnitId::ProtossExemplar) {
 					if (status == 0) {
 						scbw::set_generic_value(unit, ValueId::ExemplarSwitch, 1);
+						scbw::printText("Setval1");
 					}
 					else {
 						scbw::set_generic_value(unit, ValueId::ExemplarSwitch, 0);
-						
+						scbw::printText("Setval0");
 					}
-					unit->updateSpeed();
 				}
+				unit->updateSpeed();
 				unit->orderToIdle();//do next queued order
 			}
 		}
