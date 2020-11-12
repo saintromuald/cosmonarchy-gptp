@@ -149,8 +149,8 @@ namespace hooks {
 						(unit->id == UnitId::ZergHive && unit->mainOrderId == OrderId::Morph2)) {
 						unit->building.larvaTimer = 27;
 					}
-					else if (unit->id == UnitId::ZergHive && unit->mainOrderId!=OrderId::Morph2 ||
-						unit->id == UnitId::ZergSire && unit->mainOrderId == OrderId::Morph2) {
+					else if ((unit->id == UnitId::ZergHive && unit->mainOrderId!=OrderId::Morph2) ||
+						(unit->id == UnitId::ZergSire && unit->mainOrderId == OrderId::Morph2)) {
 						unit->building.larvaTimer = 18;
 					}
 					else if (unit->id == UnitId::ZergSire && unit->mainOrderId != OrderId::Morph2) {
