@@ -176,11 +176,9 @@ namespace hooks {
 				else if (unit->id == UnitId::ProtossExemplar) {
 					if (status == 0) {
 						scbw::set_generic_value(unit, ValueId::ExemplarSwitch, 1);
-						scbw::printText("Setval1");
 					}
 					else {
 						scbw::set_generic_value(unit, ValueId::ExemplarSwitch, 0);
-						scbw::printText("Setval0");
 					}
 				}
 				unit->updateSpeed();
