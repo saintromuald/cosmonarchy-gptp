@@ -258,6 +258,8 @@ namespace ValueId {
 		PenumbraLaserPos							= 108,
 		ClarionSFX									= 109,
 		SwitchModeGimmickTimer						= 110,
+
+		AI_LazarusTimer								= 111,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

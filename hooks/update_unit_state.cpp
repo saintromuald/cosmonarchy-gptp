@@ -294,7 +294,7 @@ namespace hooks {
 
 		
 		if (unit->pAI != NULL) {
-
+			hydra_unit_ai(unit);
 		}
 		//Timers
 		if (unit->mainOrderTimer)

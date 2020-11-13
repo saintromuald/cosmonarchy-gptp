@@ -867,12 +867,10 @@ u8 getUpgradeMaxLevel(u8 playerId, u8 upgradeId) {
 void setUpgradeLevel(u8 playerId, u8 upgradeId, u8 level) {
 	assert(playerId < PLAYER_COUNT);
 	assert(upgradeId < UpgradeId::None);
-
 	if (upgradeId < UpgradeId::PrismaticShield)
 		UpgradesSc->currentLevel[playerId][upgradeId] = level;
 	else
 		UpgradesBw->currentLevel[playerId][upgradeId - UpgradeId::PrismaticShield] = level;
-
 }
 const u32 Func_getLastQueueSlotType = 0x0047B270;
 u16 getLastQueueSlotType(CUnit* a1) {
@@ -897,6 +895,7 @@ void setOffsetToParentSpecialOverlay(CImage* image) {
 		POPAD
 	}
 }
+
 void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType) {
 	auto rotate = scbw::get_generic_value(unit, valueId);
 	const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
