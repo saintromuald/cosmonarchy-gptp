@@ -18,6 +18,8 @@ namespace CFlags {
 		Ally=1<<9,
 		IncludingSelf=1<<10,
 		FrontalArc=1<<11,
+		Spellcaster=1<<12,
+		HasEnergy=1<<13,
 	};
 }
 
@@ -44,7 +46,16 @@ public:
 		if (!(unit->status & UnitStatus::InAir) && context & CFlags::NoGround) {
 			return 0;
 		}
-
+		if (context & CFlags::Spellcaster) {
+			if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster)) {
+				return false;
+			}
+		}
+		if (context & CFlags::HasEnergy) {
+			if (unit->energy < 256) {
+				return false;
+			}
+		}
 		
 		if (center) {
 			if (context & CFlags::FrontalArc) {

@@ -3,7 +3,7 @@
 
 void hydra_unit_ai(CUnit* unit) {
 /*
-Apostle Lazarus Agent: If 5 or more organic allies (that don't have the buff) are nearby, cast the spell.
+Apostle Lazarus Agent: If 5 or more organic allies (that don't have the buff) are nearby, cast the spell. **DONE**
 				AI should also try to position Apostles near organics, but not sure if that's feasible.
 Ghost Lobotomy Mine: I think all mines should be reworked in terms of how the AI places them, 
 					I would suggest dropping them in positions where enemy ground units 
@@ -11,6 +11,7 @@ Ghost Lobotomy Mine: I think all mines should be reworked in terms of how the AI
 					That way it's like they're responding to ground paths taken by enemies. 
 					Vulture Spider Mines could be done in similar ways.
 Savant Power Siphon: If 2 or more allied specialists are nearby, target an enemy specialist within 7 range.
+
 Paladin Skyfall: If 6 or more enemies are within 64px of each other while being within range, target terrain between the Paladin and the target group, 64px away from the group.
 Science Vessel Observance: If 3 or more enemies are within 96px of each other, and the Vessel has more than 50% HP, target the group and stay within range while attempting to avoid damage.
 Azazel Sublime Shepherd: Toggle while 2 or more allied units are within 96px of the Azazel, and stay within 96px of as many allies as possible.
@@ -40,13 +41,25 @@ Sometimes I get this crash when closing the exe, not sure if this is related to 
 		}
 	}
 	else if (unit->id == UnitId::TerranGhost) {
-		if (unit->vulture.spiderMineCount > 0) {
-			//
-			//
-			//
-		}
+		//mines
 	}
 	else if (unit->id == UnitId::TerranSavant) {
-
+		if (scbw::get_generic_timer(unit, ValueId::AI_SiphonTimer) == 0 && unit->mainOrderId!=OrderId::PowerSiphon) {
+			int count = 0;
+			hydraFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::PowerSiphon],
+				CFlags::Ally | CFlags::Spellcaster, {}, [&](CUnit* u) {
+					if (u->energy < u->getMaxEnergy()) {
+						count++;
+					}
+				});
+			if (count >= 2) {
+				//Savant Power Siphon: If 2 or more allied specialists are nearby, target an enemy specialist within 7 range.
+				auto enemy = rangeMatchUnit(unit, 7 * 32, CFlags::Enemy | CFlags::Spellcaster | CFlags::HasEnergy, {});
+				if (enemy != NULL) {
+					unit->orderTo(OrderId::PowerSiphon, enemy);
+					scbw::set_generic_timer(unit, ValueId::AI_SiphonTimer, 3 * 32);
+				}
+			}
+		}	
 	}
 }

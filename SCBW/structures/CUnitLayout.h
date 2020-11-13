@@ -260,6 +260,7 @@ namespace ValueId {
 		SwitchModeGimmickTimer						= 110,
 
 		AI_LazarusTimer								= 111,
+		AI_SiphonTimer								= 112,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
