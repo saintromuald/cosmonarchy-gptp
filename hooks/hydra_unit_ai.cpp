@@ -27,7 +27,7 @@ Sometimes I get this crash when closing the exe, not sure if this is related to 
 		{
 			int count = 0;
 			hydraFinderLoop(NULL,unit->position,128, CFlags::NoBuilding | CFlags::Ally |
-				CFlags::OnlyOrganic | CFlags::IncludingSelf, {},[&](CUnit* u)
+				CFlags::OnlyOrganic, {},[&](CUnit* u)
 			{
 				if (scbw::get_generic_value(u, ValueId::LazarusAgent) != 1) {
 					count++;
