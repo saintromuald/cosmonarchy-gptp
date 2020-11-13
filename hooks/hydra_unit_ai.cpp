@@ -35,7 +35,7 @@ Sometimes I get this crash when closing the exe, not sure if this is related to 
 			});
 			if (count >= 5) {
 				scbw::set_generic_value(unit, ValueId::CastLazarusAgent, 1);
-				scbw::set_generic_timer(unit, ValueId::AI_LazarusTimer, 64);
+				scbw::set_generic_timer(unit, ValueId::AI_LazarusTimer, 24);
 			}
 		}
 	}
