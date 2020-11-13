@@ -236,6 +236,7 @@
     <ClCompile Include="hooks\hydraFinder.cpp" />
     <ClCompile Include="hooks\economic_units.cpp" />
     <ClCompile Include="hooks\economic_units_inject.cpp" />
+    <ClCompile Include="hooks\hydra_unit_ai.cpp" />
     <ClCompile Include="hooks\interface\extender\selection_extender.cpp" />
     <ClCompile Include="hooks\interface\extender\selection_extender_inject.cpp" />
     <ClCompile Include="hooks\interface\hpbars\hpbars.cpp" />
@@ -520,6 +521,7 @@
     <ClInclude Include="hooks\audiovisuals\sfxhooks.h" />
     <ClInclude Include="hooks\byte_operations_utils.h" />
     <ClInclude Include="hooks\hydraFinder.h" />
+    <ClInclude Include="hooks\hydra_unit_ai.h" />
     <ClInclude Include="hooks\interface\hpbars\hpbars.h" />
     <ClInclude Include="hooks\interface\uifeatures\screen_hotkeys.h" />
     <ClInclude Include="hooks\interface\uifeatures\uifeatures.h" />
@@ -672,7 +674,6 @@
     <ClInclude Include="SCBW\enumerations\TechId.h" />
     <ClInclude Include="hooks\transfer_tech_upgrades.h" />
     <ClInclude Include="hooks\unit_destructor_special.h" />
-    <ClInclude Include="unhooked\unit_morph.h" />
     <ClInclude Include="hooks\unit_speed.h" />
     <ClInclude Include="SCBW\UnitFinder.h" />
     <ClInclude Include="SCBW\enumerations\UnitId.h" />

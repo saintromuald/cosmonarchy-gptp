@@ -3,7 +3,7 @@
 #include <SCBW/api.h>
 #include <algorithm>
 #include "hooks/weapons/weapon_damage.h"
-
+#include "hooks/hydra_unit_ai.h"
 
 namespace {
 	//Helper function: Returns true if the unit's HP <= 33%.
@@ -292,9 +292,11 @@ namespace hooks {
 	/// Identical to function @ 0x004EC290
 	void updateUnitStateHook(CUnit* unit) {
 
+		
+		if (unit->pAI != NULL) {
+
+		}
 		//Timers
-
-
 		if (unit->mainOrderTimer)
 			unit->mainOrderTimer--;
 		if (unit->groundWeaponCooldown)
