@@ -64,7 +64,10 @@ Sometimes I get this crash when closing the exe, not sure if this is related to 
 	}
 	else if (unit->id == UnitId::TerranPaladin) {
 		if (unit->mainOrderId != OrderId::Skyfall) {
+			hydraFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::Skyfall],
+				CFlags::Enemy, {}, [&](CUnit* u) {
 
+				});
 		}
 	}
 }

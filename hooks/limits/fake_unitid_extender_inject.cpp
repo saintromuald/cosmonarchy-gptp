@@ -156,7 +156,7 @@ namespace hooks {
 	}
 	const u32 f9special = 0x00497157;
 	void __declspec(naked) flingyWrapper9() {
-		static u32 regPtrOffset;
+	/*	static u32 regPtrOffset;
 		static u8 spriteId;//must be fixed later
 		__asm {
 			MOV regPtrOffset, EAX
@@ -167,7 +167,28 @@ namespace hooks {
 			POPAD
 			MOVZX EDX,spriteId
 			JMP f9special
+		}*/
+
+		static u32 unitId;
+		static u32 flingyId;
+		static u16 spriteId;
+		__asm {
+			MOV unitId, EAX
+			PUSHAD
 		}
+		flingyId = scbw::getUnitData(UnitsDatEntries::Flingy, unitId);
+		spriteId = scbw::getFlingyData(FlingyDatEntries::SpriteId, flingyId);
+		__asm {
+			POPAD
+			MOVZX EDX,spriteId
+			JMP f9special
+		}
+
+
+		/*
+00497148  |.  0FB690 F84466>|MOVZX EDX,BYTE PTR DS:[EAX+6644F8]
+0049714F  |.  0FB71455 18A3>|MOVZX EDX,WORD PTR DS:[EDX*2+6CA318]
+		*/
 	}
 	void __declspec(naked) flingyWrapper10() {
 		static u32 flingyPtr;
@@ -226,7 +247,7 @@ namespace hooks {
 		jmpPatch(flingyWrapper6, 0x0047B8F4, 2); //calculate speed change
 		jmpPatch(flingyWrapper7, 0x0048D756, 2); //getUnitPlaceboxSize 
 		jmpPatch(flingyWrapper8, 0x0048DA8A, 2); //unk2
-		jmpPatch(flingyWrapper9, 0x00497148, 2); //InitSpriteVisionSync //causes bug?
+		jmpPatch(flingyWrapper9, 0x00497148, 2); //InitSpriteVisionSync 
 		jmpPatch(flingyWrapper10, 0x0049ED0B, 2); //InitializeUnit
 		jmpPatch(flingyWrapper11, 0x004E9A10, 2); //Unburrow_Generic
 		/*
