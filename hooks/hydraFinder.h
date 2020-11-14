@@ -20,6 +20,8 @@ namespace CFlags {
 		FrontalArc=1<<11,
 		Spellcaster=1<<12,
 		HasEnergy=1<<13,
+		NotSelf=1<<14,
+		Shielded=1<<15,
 	};
 }
 
@@ -35,6 +37,9 @@ public:
 
 	bool match(CUnit* unit) {
 		if (unit == center && !(context & CFlags::IncludingSelf)) {
+			return false;
+		}
+		if (unit == center && context & CFlags::NotSelf) {
 			return false;
 		}
 		if (unit->status & UnitStatus::Invincible && context & CFlags::NoInvincible) {
@@ -53,6 +58,14 @@ public:
 		}
 		if (context & CFlags::HasEnergy) {
 			if (unit->energy < 256) {
+				return false;
+			}
+		}
+		if (context & CFlags::Shielded) {
+			if (!units_dat::ShieldsEnabled[unit->id]) {
+				return false;
+			}
+			if (unit->shields < 256) {
 				return false;
 			}
 		}
@@ -106,8 +119,8 @@ bool rangeMatch(CUnit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
 CUnit* rangeMatchUnit(CUnit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
 CUnit* rangeMatchPosition(Point32 position, u32 r, u32 context, std::vector<u16> allowedIds);
 
-template<typename Loop2D>
-inline void hydraFinderLoop(CUnit* unitPtr, Point16 pos, int r, u32 flags, std::vector<u16> unitIds, Loop2D l)
+template<typename hydraLoop>
+inline void hydraFinderLoop(CUnit* unitPtr, Point16 pos, int r, u32 flags, std::vector<u16> unitIds, hydraLoop l)
 {
 	auto condition = unitRangeCount(unitPtr, flags, unitIds);
 	scbw::UnitFinder unitsInSplash(pos.x - r, pos.y - r,

@@ -261,6 +261,7 @@ namespace ValueId {
 
 		AI_LazarusTimer								= 111,
 		AI_SiphonTimer								= 112,
+		AI_ClarionTimer								= 113,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

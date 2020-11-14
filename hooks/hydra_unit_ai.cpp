@@ -1,5 +1,5 @@
 #include "hooks\hydra_unit_ai.h"
-
+#include "MathUtils.h"
 
 void hydra_unit_ai(CUnit* unit) {
 /*
@@ -62,12 +62,56 @@ Sometimes I get this crash when closing the exe, not sure if this is related to 
 			}
 		}	
 	}
-	else if (unit->id == UnitId::TerranPaladin) {
-		if (unit->mainOrderId != OrderId::Skyfall) {
-			hydraFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::Skyfall],
-				CFlags::Enemy, {}, [&](CUnit* u) {
-
+	else if (unit->id == UnitId::ProtossClarion) {
+		if (scbw::get_generic_timer(unit, ValueId::AI_ClarionTimer) == 0 && unit->mainOrderId!=OrderId::KhaydarinEclipse) {
+			int count = 0;
+			hydraFinderLoop(unit, unit->sprite->position, 128,
+				CFlags::Ally | CFlags::Shielded | CFlags::NotSelf, {}, [&](CUnit* u) {
+					count++;
 				});
+			auto clarionVal = scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0);
+			if (count >= 2 && clarionVal == 0) {
+				unit->orderComputerCL(OrderId::KhaydarinEclipse);
+				unit->orderTarget.pt = unit->sprite->position;
+				unit->mainOrderState = 0;
+				scbw::set_generic_timer(unit, ValueId::AI_ClarionTimer, 96);
+			}
+			else if (count < 2 && clarionVal == 1) {
+				unit->orderComputerCL(OrderId::KhaydarinEclipse);
+				unit->orderTarget.pt = unit->sprite->position;
+				unit->mainOrderState = 0;
+				scbw::set_generic_timer(unit, ValueId::AI_ClarionTimer, 96);
+			}
 		}
 	}
+/*	else if (unit->id == UnitId::TerranPaladin) {
+		if (unit->mainOrderId != OrderId::Skyfall) {
+			bool skyfallCondition = false;
+			hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Skyfall],
+				CFlags::Enemy, {}, [&](CUnit* u) {
+
+//				scbw::printText("Loop");
+				CUnit* tryTarget = u;
+				int innerCount = 0;
+				hydraFinderLoop(u, u->position, weapons_dat::MaxRange[WeaponId::Skyfall] , CFlags::Ally | CFlags::NoInvincible, {}, 
+					[&](CUnit* internalUnit) {
+					innerCount++;
+				});
+				scbw::printFormattedText("Count is %d", innerCount);
+				if (innerCount >= 6) {
+					Point16 source = unit->position;
+					Point16 target = u->position;
+
+					auto distance = scbw::getDistanceFast(source.x, source.y, target.x, target.y);
+					if (distance >= 64) {
+						double fraction = (distance - 64) / distance;
+						u16 resultX, resultY;
+						resultX = MathUtils::lerp(fraction, source.x, target.x, false);
+						resultY = MathUtils::lerp(fraction, source.y, target.y, false);
+						unit->orderTo(OrderId::Skyfall, resultX, resultY);
+					}
+				}
+			});
+		}
+	}*/
 }
