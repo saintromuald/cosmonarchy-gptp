@@ -813,8 +813,15 @@ namespace hooks {
 		switch (unitId) {
 		case UnitId::ZergHatchery:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergLair, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergHive, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
+			break;
+
 		case UnitId::ZergLair:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergHive, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
+			break;
+
 		case UnitId::ZergHive:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
 			break;
@@ -826,18 +833,27 @@ namespace hooks {
 
 		case UnitId::ZergSpawningPool:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergVorvalPond, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergNathrokLake, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
+			break;
+
+		case UnitId::ZergNathrokLake:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergOverlordIris:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergIrolethQuay, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergOthstolethBerth, ignoreIncomplete);
+			break;
+
 		case UnitId::ZergIrolethQuay:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergOthstolethBerth, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergSpire:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergGuardianRoost, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergDevourerHaunt, ignoreIncomplete);
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergGorgolethApiary, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergDevourerHaunt, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergGuardianRoost, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergGorgolethApiary:
@@ -853,8 +869,10 @@ namespace hooks {
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergMutationPit, ignoreIncomplete);
 			break;
 
+		case UnitId::ZergUltraliskCavern:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergAlkajChasm, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergKeskathGrotto, ignoreIncomplete);
 			break;
-
 		}
 		return unitCount;
 	}

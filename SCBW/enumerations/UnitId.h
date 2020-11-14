@@ -555,8 +555,8 @@ enum Enum {
 	ZergDevourerHaunt								= 197,		// Zerg Flag Beacon
 	ZergVorvalPond									= 204,		// Floor Hatch
 	ZergNathrokLake									= 210,		// Left Wall Missile Trap
-	ZergAlkajCavern									= 212,		// Right Wall Missile Trap
-	ZergKeskathCavern								= 219,		// Khaydarin Crystal
+	ZergAlkajChasm									= 212,		// Right Wall Missile Trap
+	ZergKeskathGrotto								= 219,		// Khaydarin Crystal
 	ZergOverlordIris								= 224,		// Zerg Gas Sac Type 1
 	ZergSire										= 227,		// Terran Gas Tank Type 2
 
