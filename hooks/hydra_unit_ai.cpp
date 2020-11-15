@@ -94,25 +94,28 @@ Sometimes I get this crash when closing the exe, not sure if this is related to 
 			scbw::get_generic_timer(unit,ValueId::AI_QueenTimer)==0) {
 			hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Parasite],
 				CFlags::NotSelf, {}, [&](CUnit* u) {
-				std::vector<CUnit*> group;
+				std::vector<std::pair<CUnit*,u32>> group;
 				int supply = 0;
 				hydraFinderLoop(u, u->position, 128, 0, {}, [&](CUnit* u2) {
-					group.push_back(u);
+					u32 priority = units_dat::SupplyRequired[u->id]*100;
+					if (u->status & UnitStatus::InAir) {
+						priority /= 4;
+					}
+					auto weapon = u->getGroundWeapon();
+					if (weapon != WeaponId::None) {
+						if (weapons_dat::MaxRange[weapon] >= 64) {
+							priority /= 2;
+						}
+					}
+					group.push_back(std::make_pair(u,priority));
 					supply += units_dat::SupplyRequired[u->id];
 				});
-				
+				std::sort(group.begin(), group.end(), [](auto& left, auto& right) {
+					return left.second < right.second;
+				});
 				supply /= 2;//true supply is x2 supply
 				if (supply >= 5) {
-					u32 groupX, groupY;
-					groupX = 0;
-					groupY = 0;
-					for (auto a : group) {
-						groupX += a->position.x;
-						groupY += a->position.y;
-					}
-					groupX /= group.size();
-					groupY /= group.size();
-					unit->orderTo(OrderId::CastParasite, u);
+					unit->orderTo(OrderId::CastParasite, group[0].first);
 					scbw::set_generic_timer(unit, ValueId::AI_QueenTimer, 75);
 					return;
 				}	
