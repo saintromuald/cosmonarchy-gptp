@@ -464,6 +464,9 @@ namespace hooks {
 
 			if (*elapsedTimeFrames == 0) {
 				Globals.reset();
+				for (int i = 0; i < 8; i++) {
+					scbw::setUpgradeLevel(i, UpgradeId::VentralSacs, 1);
+				}
 			}
 			Globals.frameHook();
 			
