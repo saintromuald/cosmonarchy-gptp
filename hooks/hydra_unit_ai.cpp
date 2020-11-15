@@ -111,7 +111,7 @@ Sometimes I get this crash when closing the exe, not sure if this is related to 
 					supply += units_dat::SupplyRequired[u->id];
 				});
 				std::sort(group.begin(), group.end(), [](auto& left, auto& right) {
-					return left.second < right.second;
+					return left.second > right.second;
 				});
 				supply /= 2;//true supply is x2 supply
 				if (supply >= 5) {
