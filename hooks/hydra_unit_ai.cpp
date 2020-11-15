@@ -16,10 +16,14 @@ Paladin Skyfall: If 6 or more enemies are within 64px of each other while being 
 				target terrain between the Paladin and the target group, 64px away from the group.
 Science Vessel Observance: If 3 or more enemies are within 96px of each other, and the Vessel has more than 50% HP, target the group and stay within range while attempting to avoid damage.
 Azazel Sublime Shepherd: Toggle while 2 or more allied units are within 96px of the Azazel, and stay within 96px of as many allies as possible.
-Clarion Phase Link: While 4 or more allied shielded units are within 128px of the Clarion, toggle the ability on.
+Clarion Phase Link: While 4 or more allied shielded units are within 128px of the Clarion, toggle the ability on. **DONE**
 Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a group of 6 or more units are within 160px of one another. Attempt to group as many units as possible during the channel.
-Star Sovereign Grief of All Gods: When at least 2000 HP+shields worth of enemy units are within 320px of the Star Sovereign and there are no allied buildings and less than 2000 HP+shields worth of allied units within the same radius, and the Star Sovereign has more than 50% of HP+shields combined, channel the ability and attempt to protect the Star Sovereign with low-cost/low-HP units.
-Queen Parasite: When 5 or more supply's worth of units (of any owner) are within 128px of each other, target the group.
+Star Sovereign Grief of All Gods: When at least 2000 HP+shields worth of enemy units are within 320px of the
+		Star Sovereign and there are no allied buildings and less than 2000 HP+shields worth of allied 
+		units within the same radius, and the Star Sovereign has more than 50% of HP+shields combined, 
+		channel the ability and attempt to protect the Star Sovereign with low-cost/low-HP units.
+Queen Parasite: When 5 or more supply's worth of units (of any owner) are within 128px 
+				of each other, target the group.	**DONE**
 Sometimes I get this crash when closing the exe, not sure if this is related to veeq's GPTP config or something else
 */
 	if (unit->id == UnitId::TerranApostle) {
@@ -84,8 +88,64 @@ Sometimes I get this crash when closing the exe, not sure if this is related to 
 			}
 		}
 	}
+	else if (unit->id == UnitId::ZergQueen) {
+		if (unit->mainOrderId != OrderId::CastParasite && 
+			unit->energy >= techdata_dat::EnergyCost[TechId::Parasite]*256 &&
+			scbw::get_generic_timer(unit,ValueId::AI_QueenTimer)==0) {
+			hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Parasite],
+				CFlags::NotSelf, {}, [&](CUnit* u) {
+				std::vector<CUnit*> group;
+				int supply = 0;
+				hydraFinderLoop(u, u->position, 128, 0, {}, [&](CUnit* u2) {
+					group.push_back(u);
+					supply += units_dat::SupplyRequired[u->id];
+				});
+				
+				supply /= 2;//true supply is x2 supply
+				if (supply >= 5) {
+					u32 groupX, groupY;
+					groupX = 0;
+					groupY = 0;
+					for (auto a : group) {
+						groupX += a->position.x;
+						groupY += a->position.y;
+					}
+					groupX /= group.size();
+					groupY /= group.size();
+					unit->orderTo(OrderId::CastParasite, u);
+					scbw::set_generic_timer(unit, ValueId::AI_QueenTimer, 75);
+					return;
+				}	
+			});
+		}
+	}
+	else if (unit->id == UnitId::ProtossStarSovereign && scbw::get_generic_timer(unit, ValueId::AI_GriefOfAllGodsTimer) == 0) {
+		auto enemyUnitsHealth = 0;
+		auto alliedUnitsHealth = 0;
+		bool alliedBuildings = false;
+		hydraFinderLoop(unit, unit->sprite->position, 320,
+			CFlags::NotSelf | CFlags::NoAir | CFlags::NoInvincible, {}, [&](CUnit* u) {
+			if (!scbw::isAlliedTo(unit->playerId, u->playerId)) {
+				enemyUnitsHealth += (u->hitPoints + u->shields) / 256;
+			}
+			if (scbw::isAlliedTo(unit->playerId, u->playerId)) {
+				if (units_dat::BaseProperty[u->id] & UnitProperty::Building) {
+					alliedBuildings = true;
+					return;
+				}
+				alliedUnitsHealth += (u->hitPoints + u->shields) / 256;
+			}
+		});
+		if (!alliedBuildings && enemyUnitsHealth >= 2000 && alliedUnitsHealth < 2000 && (unit->hitPoints+unit->shields)*2 >= 
+			(units_dat::MaxHitPoints[unit->id]+units_dat::MaxShieldPoints[unit->id])){
+			scbw::set_generic_timer(unit, ValueId::AI_GriefOfAllGodsTimer, 612);
+			unit->orderComputerCL(OrderId::KhaydarinEclipse);
+			unit->orderTarget.pt = unit->sprite->position;
+			unit->mainOrderState = 0;
+		}
+	}
 /*	else if (unit->id == UnitId::TerranPaladin) {
-		if (unit->mainOrderId != OrderId::Skyfall) {
+		if (unit->mainOrderId != OrderId::Skyfall && scbw::get_generic_timer(unit,ValueId::AI_PaladinTimer)) {
 			bool skyfallCondition = false;
 			hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Skyfall],
 				CFlags::Enemy, {}, [&](CUnit* u) {
@@ -97,7 +157,7 @@ Sometimes I get this crash when closing the exe, not sure if this is related to 
 					[&](CUnit* internalUnit) {
 					innerCount++;
 				});
-				scbw::printFormattedText("Count is %d", innerCount);
+				//scbw::printFormattedText("Count is %d", innerCount);
 				if (innerCount >= 6) {
 					Point16 source = unit->position;
 					Point16 target = u->position;
@@ -108,7 +168,8 @@ Sometimes I get this crash when closing the exe, not sure if this is related to 
 						u16 resultX, resultY;
 						resultX = MathUtils::lerp(fraction, source.x, target.x, false);
 						resultY = MathUtils::lerp(fraction, source.y, target.y, false);
-						unit->orderTo(OrderId::Skyfall, resultX, resultY);
+						unit->orderTo(OrderId::Skyfall, u->position.x, u->position.y);
+						scbw::set_generic_timer(unit, ValueId::AI_PaladinTimer, 50);
 					}
 				}
 			});

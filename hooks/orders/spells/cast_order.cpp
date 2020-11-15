@@ -57,15 +57,18 @@ void orders_Spell(CUnit* unit) {
 		}
 	}
 	if(unit->mainOrderState == 2) {
-
+//		scbw::printText("State 2");
 		if(unit->orderSignal & 2) {
+//			scbw::printText("Signal & 2");
+			
 			unit->orderSignal -= 2;
 			unit->orderToIdle();
 		}
 		else { //92886
-
+			//scbw::printText("No Signal 2 yet");
 			if(target != NULL) {
-
+				//scbw::printText("Target exists");
+				
 				unit->orderTarget.pt.x = target->sprite->position.x;
 				unit->orderTarget.pt.y = target->sprite->position.y;
 
@@ -84,9 +87,8 @@ void orders_Spell(CUnit* unit) {
 
 	}
 	else { //928CF
-
+		//scbw::printText("State != 2");
 		if(!canCastSpell_0(unit)) {
-
 			char* message = (char*)statTxtTblNew->getString(876); //Invalid Target
 			
 			//do the actual transmission corresponding to the message
@@ -98,7 +100,8 @@ void orders_Spell(CUnit* unit) {
 
 		}
 		else { //9291A
-
+			//scbw::printText("Continue...");
+			
 			u8 techUsed = orders_dat::TechUsed[unit->mainOrderId];
 
 			if(techUsed >= TechId::None)
@@ -111,7 +114,7 @@ void orders_Spell(CUnit* unit) {
 				unit->energy < spellCost
 			)
 			{
-
+				//scbw::printText("energy < spellcost");
 				u8 raceId;
 				char* message;
 
@@ -145,9 +148,10 @@ void orders_Spell(CUnit* unit) {
 			else { //929C2
 
 				u32 result_00492620;
-
+				//scbw::printText("energy >= spellcost");
 				//may initiate movement from unit depending on
 				//mainOrderState
+				//scbw::printFormattedText("Order state: %d", unit->mainOrderState);
 				if(unit->mainOrderState == 0)
 					result_00492620 = function_00492620(unit,1);
 				else
@@ -160,10 +164,13 @@ void orders_Spell(CUnit* unit) {
 					gcd_condition = false;//new
 				}
 
-				if(result_00492620 == 0) {
+				if (result_00492620 == 0) {
 
-					if(unit->getMovableState() == 2) //unmovable
+					if (unit->getMovableState() == 2) //unmovable
+					{
+						//scbw::printText("to Idle");
 						unit->orderToIdle();
+					}
 
 				}
 				else { //92A01
@@ -176,7 +183,7 @@ void orders_Spell(CUnit* unit) {
 						unit->getMovableState() != 0
 					) 
 					{ //92A38
-
+						//scbw::printText("Conditions good");
 						bool bStopHere = false;
 
 						//in case it was modified by a previous function,
@@ -195,6 +202,7 @@ void orders_Spell(CUnit* unit) {
 								//Maybe the switch and array use could be removed in a future version
 								//since enough elements use default value (switch 6)
 								u32 switch_value = array_00492B44[orderWeaponId - 0x20];
+								//scbw::printText("Get switch value");
 
 								if(switch_value != 6) {
 
@@ -218,6 +226,7 @@ void orders_Spell(CUnit* unit) {
 
 									if(analyzed_target_status != 0) {
 										unit->orderToIdle();
+										//scbw::printText("Bad analysis");
 										bStopHere = true;
 									}
 
@@ -229,6 +238,7 @@ void orders_Spell(CUnit* unit) {
 
 						if(!bStopHere) { //92AA3
 
+//							scbw::printText("Spend energy");
 							u8 cooldown;
 							u32 random_value;
 

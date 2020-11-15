@@ -262,6 +262,9 @@ namespace ValueId {
 		AI_LazarusTimer								= 111,
 		AI_SiphonTimer								= 112,
 		AI_ClarionTimer								= 113,
+		AI_QueenTimer								= 114,
+		AI_PaladinTimer								= 115,
+		AI_GriefOfAllGodsTimer						= 116,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
