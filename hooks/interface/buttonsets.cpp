@@ -1091,6 +1091,21 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossPylon &&  //Pylon Warp Matrix passive
+									current_button->iconID == IconId::KhaydarinCore)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossCrucible &&  //Crucible Khaydarin Charge passive
+									current_button->iconID == IconId::KhaydarinCore)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossPennant &&  //Pennant Prismatic Surge passive
+									current_button->iconID == IconId::KhaydarinCore)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 
 								// ZERG \\
 								
