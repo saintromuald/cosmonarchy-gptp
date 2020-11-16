@@ -265,6 +265,8 @@ namespace ValueId {
 		AI_QueenTimer								= 114,
 		AI_PaladinTimer								= 115,
 		AI_GriefOfAllGodsTimer						= 116,
+
+		WraithLaserPos								= 117,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

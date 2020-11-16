@@ -29,11 +29,6 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 	int cooldownModifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
 							+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
 
-	// Capacitors upgrade: gains increased attack speed while cloaked
-	if(unit->id==UnitId::wraith && weaponId==WeaponId::BurstLasers && (unit->status & UnitStatus::Cloaked)){
-		cooldown -= cooldown / 5;
-	}
-
 	// Simulacrum behavior: increase weapon speed when any nearby Simulacrum dies
 	if (unit->id == UnitId::ProtossSimulacrum) {
 		double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10);
@@ -43,6 +38,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 		}
 	}
 
+	// Madcap Maverick Feeders behavior: increase weapon speed while stationary
 	if (unit->id == UnitId::TerranMadcap) {
 		auto stacks = MathUtils::clamp<u32>(scbw::get_generic_value(unit, ValueId::MadcapStacks), 0, 10);
 		if (stacks > 0) {

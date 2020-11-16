@@ -451,9 +451,13 @@ namespace hooks {
 					// Star Sovereign laser spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::SovereignCannonPos, 2, ImagesDatEntries::OverlayAttackPtr);
 				}
-				else if (weaponId == WeaponId::RetractorBatteries) {
+				else if (weaponId == WeaponId::ErebolShockCannon) {
 					// Penumbra laser spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::PenumbraLaserPos, 1, ImagesDatEntries::OverlayAttackPtr);
+				}
+				else if (weaponId == WeaponId::BurstLasers) {
+					// Penumbra laser spawn position
+					scbw::setMissileSourcePos(unit, weaponId, ValueId::WraithLaserPos, 1, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::PerditionBarrage) {
 					// Salamander missile target positions
