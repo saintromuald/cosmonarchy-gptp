@@ -26,13 +26,7 @@ void CMDRECV_TrainFighter() {
 		if(current_selection->id == UnitId::ProtossCarrier)
 			unitToBuild = UnitId::ProtossInterceptor;
 		else
-		if(current_selection->id == UnitId::Hero_Gantrithor)
-			unitToBuild = UnitId::ProtossInterceptor;
-		else
 		if(current_selection->id == UnitId::ProtossReaver)
-			unitToBuild = UnitId::ProtossScarab;
-		else
-		if(current_selection->id == UnitId::Hero_Warbringer)
 			unitToBuild = UnitId::ProtossScarab;
 		else
 			unitToBuild = 0; //not translating it as marine as it's an error case
@@ -42,9 +36,7 @@ void CMDRECV_TrainFighter() {
 			) 
 		{
 			if(	current_selection->id == UnitId::ProtossCarrier ||
-				current_selection->id == UnitId::Hero_Gantrithor ||
 				current_selection->id == UnitId::ProtossReaver ||
-				current_selection->id == UnitId::Hero_Warbringer
 				)
 			{
 

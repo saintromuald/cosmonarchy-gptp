@@ -250,16 +250,16 @@ namespace hooks {
 	const char* getSpecialTooltipString(u16 iconUnitId, CUnit* unit) {
 		//Default StarCraft behavior
 
-		if (iconUnitId == UnitId::interceptor)
+		if (iconUnitId == UnitId::ProtossInterceptor)
 			return getDamageTooltipString(WeaponId::PulseCannon, unit, 791);		//"Interceptors"
 
-		if (iconUnitId == UnitId::scarab)
+		if (iconUnitId == UnitId::ProtossScarab)
 			return getDamageTooltipString(WeaponId::Scarab, unit, 792);				//"Scarabs"
 
-		if (iconUnitId == UnitId::nuclear_missile)
+		if (iconUnitId == UnitId::TerranNuclearMissile)
 			return statTxtTblNew->getString(793);										//"Nukes"
 
-		if (iconUnitId == UnitId::spider_mine)
+		if (iconUnitId == UnitId::TerranVultureSpiderMine)
 			return getDamageTooltipString(WeaponId::SpiderMines, unit, 794);		//"Spider Mines"
 		
 		if (iconUnitId == UnitId::LobotomyMine){
