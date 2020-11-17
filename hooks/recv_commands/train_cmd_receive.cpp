@@ -36,7 +36,7 @@ void CMDRECV_TrainFighter() {
 			) 
 		{
 			if(	current_selection->id == UnitId::ProtossCarrier ||
-				current_selection->id == UnitId::ProtossReaver ||
+				current_selection->id == UnitId::ProtossReaver
 				)
 			{
 
