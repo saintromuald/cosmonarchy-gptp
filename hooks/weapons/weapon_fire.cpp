@@ -456,8 +456,8 @@ namespace hooks {
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::PenumbraLaserPos, 1, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::BurstLasers) {
-					// Penumbra laser spawn position
-					scbw::setMissileSourcePos(unit, weaponId, ValueId::WraithLaserPos, 1, ImagesDatEntries::OverlayAttackPtr);
+					// Wraith laser spawn position
+					scbw::setMissileSourcePos(unit, weaponId, ValueId::WraithLaserPos, 3, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::PerditionBarrage) {
 					// Salamander missile target positions
