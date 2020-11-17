@@ -3,9 +3,10 @@
 
 namespace hooks {
 
-	void secondaryOrd_TrainFighter(CUnit* unit);	//00466790
-	void function_00468420(CUnit* unit);			//00468420
+	void secondaryOrd_TrainFighter(CUnit* unit);	// 0x00466790
+	void function_00468420(CUnit* unit);			// 0x00468420
 
 	void injectUnitTrainHooks();
 	int isQueueSlotActive(CUnit* unit, u32 slot);
+	char getMaxHangerSpace(CUnit* a1);				// 0x004653D0
 } //hooks

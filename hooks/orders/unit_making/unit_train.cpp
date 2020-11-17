@@ -12,16 +12,16 @@
 
 namespace {
 
-u32 getHPGainForRepair(CUnit* unit);										//02C40
-void refundUnitTrainCost(u32 unitId, u8 playerId);							//2CEC0
-void function_00432430(CUnit* unit, u32 buildQueueSlot);					//32430
-void addHangarUnit(CUnit* main_unit, CUnit* added_unit);					//66300
-void orderNewUnitToRally(CUnit* unit, CUnit* factory);						//66F50
-Bool32 buildingAddon(CUnit* unit, u32 hpGain, Bool32 canBeAborted);			//679A0
-CUnit* attemptTrainHatchUnit(CUnit* trainer, u32 builtUnitID, u32 flag);	//68200
-void AI_CancelStructure(CUnit* unit);										//68280
-void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit);				//A2830
-void hideAndDisableUnit(CUnit* unit);										//E6340
+	u32 getHPGainForRepair(CUnit* unit);										//02C40
+	void refundUnitTrainCost(u32 unitId, u8 playerId);							//2CEC0
+	void function_00432430(CUnit* unit, u32 buildQueueSlot);					//32430
+	void addHangarUnit(CUnit* main_unit, CUnit* added_unit);					//66300
+	void orderNewUnitToRally(CUnit* unit, CUnit* factory);						//66F50
+	Bool32 buildingAddon(CUnit* unit, u32 hpGain, Bool32 canBeAborted);			//679A0
+	CUnit* attemptTrainHatchUnit(CUnit* trainer, u32 builtUnitID, u32 flag);	//68200
+	void AI_CancelStructure(CUnit* unit);										//68280
+	void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit);				//A2830
+	void hideAndDisableUnit(CUnit* unit);										//E6340
 
 } //unnamed namespace
 
@@ -33,63 +33,73 @@ namespace hooks {
 		//return unit->buildQueue[(slot + unit->buildQueueSlot) % 5] <= UnitId::Spell_DisruptionWeb;
 		return unit->buildQueue[(slot + unit->buildQueueSlot) % 5] < UnitId::None;
 	}
-void secondaryOrd_TrainFighter(CUnit* unit) {
 
-	if(
-		unit->id == UnitId::ProtossCarrier ||
-		unit->id == UnitId::Hero_Gantrithor ||
-		unit->id == UnitId::ProtossReaver ||
-		unit->id == UnitId::Hero_Warbringer
-	)
-	{
-		if(unit->secondaryOrderState == 0 || unit->secondaryOrderState == 1) {
+	void secondaryOrd_TrainFighter(CUnit* unit) {
+		if(
+			unit->id == UnitId::ProtossCarrier ||
+			unit->id == UnitId::Hero_Gantrithor ||
+			unit->id == UnitId::ProtossReaver ||
+			unit->id == UnitId::Hero_Warbringer
+		)
+		{
+			if(unit->secondaryOrderState == 0 || unit->secondaryOrderState == 1) {
 
-			if(unit->buildQueue[unit->buildQueueSlot] == UnitId::None) {
-				unit->secondaryOrderState = 3;
-				unit->currentBuildUnit = NULL;
-			}
-			else {
-
-				CUnit* builtUnit;
-
-				if(unit->secondaryOrderState == 0)
-					builtUnit = attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 1);
-				else
-					builtUnit = attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 0);
-
-				unit->currentBuildUnit = builtUnit;
-
-				if(builtUnit == NULL)
-					unit->secondaryOrderState = 1;
+				if(unit->buildQueue[unit->buildQueueSlot] == UnitId::None) {
+					unit->secondaryOrderState = 3;
+					unit->currentBuildUnit = NULL;
+				}
 				else {
-					builtUnit->interceptor.parent = unit;
-					unit->secondaryOrderState = 2;
+
+					CUnit* builtUnit;
+
+					if(unit->secondaryOrderState == 0)
+						builtUnit = attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 1);
+					else
+						builtUnit = attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 0);
+
+					unit->currentBuildUnit = builtUnit;
+
+					if(builtUnit == NULL)
+						unit->secondaryOrderState = 1;
+					else {
+						builtUnit->interceptor.parent = unit;
+						unit->secondaryOrderState = 2;
+					}
+
 				}
 
 			}
+			else
+			if(unit->secondaryOrderState == 2) {
 
-		}
-		else
-		if(unit->secondaryOrderState == 2) {
+				CUnit* builtUnit = unit->currentBuildUnit;
+				u32 hpGain;
 
-			CUnit* builtUnit = unit->currentBuildUnit;
-			u32 hpGain;
-
-			if(builtUnit != NULL) {
+				if(builtUnit != NULL) {
 				
-				hpGain = getHPGainForRepair(builtUnit);
+					hpGain = getHPGainForRepair(builtUnit);
 				
-				buildingAddon(builtUnit,hpGain,FALSE);
+					buildingAddon(builtUnit,hpGain,FALSE);
 
-				if(builtUnit->status & UnitStatus::Completed) {
+					if(builtUnit->status & UnitStatus::Completed) {
 
-					addHangarUnit(unit,builtUnit);
+						addHangarUnit(unit,builtUnit);
 
-					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
-					unit->buildQueueSlot++;
+						unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
+						unit->buildQueueSlot++;
 
-					if(unit->buildQueueSlot >= 5)
-						unit->buildQueueSlot = 0;
+						if(unit->buildQueueSlot >= 5)
+							unit->buildQueueSlot = 0;
+
+						scbw::refreshConsole();
+
+						unit->currentBuildUnit = NULL;
+						unit->secondaryOrderState = 0;
+
+					}
+
+				}
+				else {
 
 					scbw::refreshConsole();
 
@@ -99,36 +109,28 @@ void secondaryOrd_TrainFighter(CUnit* unit) {
 				}
 
 			}
-			else {
+			else
+			if(unit->secondaryOrderState == 3) {
 
-				scbw::refreshConsole();
+				if(	unit->id == UnitId::ProtossReaver ||
+					unit->id == UnitId::Hero_Warbringer
+				)
+					unit->secondaryOrderState = 4;
+				else {
 
-				unit->currentBuildUnit = NULL;
-				unit->secondaryOrderState = 0;
+					CUnit* inHangarChild = unit->carrier.inHangarChild;
 
-			}
+					if(inHangarChild != NULL) {
 
-		}
-		else
-		if(unit->secondaryOrderState == 3) {
+						s32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossInterceptor];
 
-			if(	unit->id == UnitId::ProtossReaver ||
-				unit->id == UnitId::Hero_Warbringer
-			)
-				unit->secondaryOrderState = 4;
-			else {
+						while(inHangarChild != NULL && inHangarChild->hitPoints >= hpInterceptor)
+							inHangarChild = inHangarChild->interceptor.hangar_link.next;
 
-				CUnit* inHangarChild = unit->carrier.inHangarChild;
+						if(inHangarChild != NULL)
+							inHangarChild->setHp(inHangarChild->hitPoints + 128);
 
-				if(inHangarChild != NULL) {
-
-					s32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossInterceptor];
-
-					while(inHangarChild != NULL && inHangarChild->hitPoints >= hpInterceptor)
-						inHangarChild = inHangarChild->interceptor.hangar_link.next;
-
-					if(inHangarChild != NULL)
-						inHangarChild->setHp(inHangarChild->hitPoints + 128);
+					}
 
 				}
 
@@ -138,147 +140,51 @@ void secondaryOrd_TrainFighter(CUnit* unit) {
 
 	}
 
-}
+	//generic unit training function
+	void function_00468420(CUnit* unit) {
 
-;
-
-//generic unit training function
-void function_00468420(CUnit* unit) {
-
-	if(
-		!(unit->status & UnitStatus::DoodadStatesThing) &&
-		unit->lockdownTimer == 0 &&
-		unit->stasisTimer == 0 &&
-		unit->maelstromTimer == 0 &&
-		(	!units_dat::GroupFlags[unit->id].isZerg ||
-			unit->id == UnitId::ZergInfestedCommandCenter
+		if(
+			!(unit->status & UnitStatus::DoodadStatesThing) &&
+			unit->lockdownTimer == 0 &&
+			unit->stasisTimer == 0 &&
+			unit->maelstromTimer == 0 &&
+			(	!units_dat::GroupFlags[unit->id].isZerg ||
+				unit->id == UnitId::ZergInfestedCommandCenter
+			)
 		)
-	)
-	{
+		{
 
-		bool jump_to_685D8 = false;
+			bool jump_to_685D8 = false;
 
-		if(unit->secondaryOrderState <= 1) {
+			if(unit->secondaryOrderState <= 1) {
 
-			if(unit->buildQueue[unit->buildQueueSlot] == UnitId::None) {
-				unit->setSecondaryOrder(OrderId::Nothing2);
-				unit->sprite->playIscriptAnim(IscriptAnimation::WorkingToIdle,true);
-			}
-			else {
+				if(unit->buildQueue[unit->buildQueueSlot] == UnitId::None) {
+					unit->setSecondaryOrder(OrderId::Nothing2);
+					unit->sprite->playIscriptAnim(IscriptAnimation::WorkingToIdle,true);
+				}
+				else {
 
-				CUnit* builtUnit;
+					CUnit* builtUnit;
 
-				if(unit->secondaryOrderState == 0)
-					builtUnit = attemptTrainHatchUnit(unit,unit->buildQueue[unit->buildQueueSlot],1);
-				else
-					builtUnit = attemptTrainHatchUnit(unit,unit->buildQueue[unit->buildQueueSlot],0);
+					if(unit->secondaryOrderState == 0)
+						builtUnit = attemptTrainHatchUnit(unit,unit->buildQueue[unit->buildQueueSlot],1);
+					else
+						builtUnit = attemptTrainHatchUnit(unit,unit->buildQueue[unit->buildQueueSlot],0);
 				
-				unit->currentBuildUnit = builtUnit;
+					unit->currentBuildUnit = builtUnit;
 
-				if(builtUnit == NULL)
-					unit->secondaryOrderState = 1;
-				else {
-
-					CImage* current_image = unit->sprite->images.head;
-
-					unit->secondaryOrderState = 2;
-
-					while(current_image != NULL) {
-						current_image->playIscriptAnim(IscriptAnimation::IsWorking);
-						current_image = current_image->link.next;
-					}
-
-				}
-
-			}
-
-		}
-		else
-		if(unit->secondaryOrderState == 2) {
-
-			CUnit* builtUnit = unit->currentBuildUnit;
-
-			if(builtUnit != NULL) {
-				u32 hpGain = getHPGainForRepair(builtUnit);
-				bool extraBuild = false;
-				if (scbw::get_generic_value(builtUnit, ValueId::CrucibleValue) == 0) {
-					auto r = 256;
-					auto n = unitRangeCount(NULL, CFlags::NoInvincible | CFlags::Ally, { UnitId::ProtossCrucible });
-					scbw::UnitFinder unitsInSplash(builtUnit->position.x - r, builtUnit->position.y - r,
-						builtUnit->position.x + r, builtUnit->position.y + r);
-					for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
-						auto unit = unitsInSplash.getUnit(i);
-						if (n.match(unit)) {
-							scbw::set_generic_value(builtUnit, ValueId::CrucibleValue, 5);//6 is ~100/15
-							buildingAddon(builtUnit, hpGain, TRUE);
-							if (builtUnit->status & UnitStatus::Completed) {
-								extraBuild = true;
-							}
-							break;
-						}
-					}
-				}
-				else {
-					scbw::sendGPTP_aise_cmd(builtUnit, NULL, GptpId::AddGenericValue, ValueId::CrucibleValue, -1, 0);
-				}
-				if(extraBuild || buildingAddon(builtUnit,hpGain,TRUE)) {
-
-					if(builtUnit->status & UnitStatus::Completed) {
-
-						AI_TrainingUnit(unit,builtUnit);
-
-						if(builtUnit->id == UnitId::TerranNuclearMissile)
-							hideAndDisableUnit(builtUnit);
-						else
-							orderNewUnitToRally(builtUnit,unit);
-						
-						
-						
-						function_00432430(unit,unit->buildQueueSlot);
-
-						unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
-						unit->buildQueueSlot = (unit->buildQueueSlot + 1) % 5;
-						
-						jump_to_685D8 = true;	
-
-					}
-
-				}
-				else { //unit was canceled due to lack of space around the building
-
-					u32 queueSlot = unit->buildQueueSlot % 5;
-
-					if(unit->buildQueue[queueSlot] == UnitId::None)
-						jump_to_685D8 = true;
+					if(builtUnit == NULL)
+						unit->secondaryOrderState = 1;
 					else {
 
-						u8 counter = 4;
+						CImage* current_image = unit->sprite->images.head;
 
-						if(unit->currentBuildUnit != NULL)
-							AI_CancelStructure(unit->currentBuildUnit);
-						else {
+						unit->secondaryOrderState = 2;
 
-							if(!units_dat::BaseProperty[unit->buildQueue[unit->buildQueueSlot % 5]] & UnitProperty::Building)
-								refundUnitTrainCost(unit->buildQueue[unit->buildQueueSlot % 5],unit->playerId);
-
+						while(current_image != NULL) {
+							current_image->playIscriptAnim(IscriptAnimation::IsWorking);
+							current_image = current_image->link.next;
 						}
-
-						do {
-
-							counter--;
-							unit->buildQueue[unit->buildQueueSlot] = unit->buildQueue[(unit->buildQueueSlot + 1) % 5];
-
-							if(unit->pAI != NULL && *(u8*)((u32)unit->pAI + 8) == 3) {
-								*(u8*)((u32)unit->pAI + unit->buildQueueSlot + 9) = *(u8*)((u32)unit->pAI + (unit->buildQueueSlot + 1) % 5 + 9);
-								*(u32*)((u32)unit->pAI + unit->buildQueueSlot * 4 + 0x18) = *(u32*)((u32)unit->pAI + ((unit->buildQueueSlot + 1) % 5) * 4 + 0x18);
-							}
-
-
-						}while(counter != 0);
-
-						unit->buildQueue[(unit->buildQueueSlot + 1) % 5] = UnitId::None;
-
-						jump_to_685D8 = true;
 
 					}
 
@@ -286,200 +192,287 @@ void function_00468420(CUnit* unit) {
 
 			}
 			else
-				jump_to_685D8 = true;			
+			if(unit->secondaryOrderState == 2) {
 
-			if(jump_to_685D8) {
-				if (builtUnit!=NULL && builtUnit->id == UnitId::ProtossCarrier) {
-					int interceptors = 12;
+				CUnit* builtUnit = unit->currentBuildUnit;
 
-					u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
-					buf[0] = 0x99;//new general command
-					buf[1] = NewGameCommand::CarrierPrebuild;
-					buf[2] = interceptors;
-					buf[3] = *ACTIVE_PLAYER_ID;
-					memcpy(&buf[4], &builtUnit, 4);
+				if(builtUnit != NULL) {
+					u32 hpGain = getHPGainForRepair(builtUnit);
+					bool extraBuild = false;
+					if (scbw::get_generic_value(builtUnit, ValueId::CrucibleValue) == 0) {
+						auto r = 256;
+						auto n = unitRangeCount(NULL, CFlags::NoInvincible | CFlags::Ally, { UnitId::ProtossCrucible });
+						scbw::UnitFinder unitsInSplash(builtUnit->position.x - r, builtUnit->position.y - r,
+							builtUnit->position.x + r, builtUnit->position.y + r);
+						for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
+							auto unit = unitsInSplash.getUnit(i);
+							if (n.match(unit)) {
+								scbw::set_generic_value(builtUnit, ValueId::CrucibleValue, 5);//6 is ~100/15
+								buildingAddon(builtUnit, hpGain, TRUE);
+								if (builtUnit->status & UnitStatus::Completed) {
+									extraBuild = true;
+								}
+								break;
+							}
+						}
+					}
+					else {
+						scbw::sendGPTP_aise_cmd(builtUnit, NULL, GptpId::AddGenericValue, ValueId::CrucibleValue, -1, 0);
+					}
+					if(extraBuild || buildingAddon(builtUnit,hpGain,TRUE)) {
 
-					scbw::SendCommand(buf, 0xc);
+						if(builtUnit->status & UnitStatus::Completed) {
+
+							AI_TrainingUnit(unit,builtUnit);
+
+							if(builtUnit->id == UnitId::TerranNuclearMissile)
+								hideAndDisableUnit(builtUnit);
+							else
+								orderNewUnitToRally(builtUnit,unit);
+						
+						
+						
+							function_00432430(unit,unit->buildQueueSlot);
+
+							unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
+							unit->buildQueueSlot = (unit->buildQueueSlot + 1) % 5;
+						
+							jump_to_685D8 = true;	
+
+						}
+
+					}
+					else { //unit was canceled due to lack of space around the building
+
+						u32 queueSlot = unit->buildQueueSlot % 5;
+
+						if(unit->buildQueue[queueSlot] == UnitId::None)
+							jump_to_685D8 = true;
+						else {
+
+							u8 counter = 4;
+
+							if(unit->currentBuildUnit != NULL)
+								AI_CancelStructure(unit->currentBuildUnit);
+							else {
+
+								if(!units_dat::BaseProperty[unit->buildQueue[unit->buildQueueSlot % 5]] & UnitProperty::Building)
+									refundUnitTrainCost(unit->buildQueue[unit->buildQueueSlot % 5],unit->playerId);
+
+							}
+
+							do {
+
+								counter--;
+								unit->buildQueue[unit->buildQueueSlot] = unit->buildQueue[(unit->buildQueueSlot + 1) % 5];
+
+								if(unit->pAI != NULL && *(u8*)((u32)unit->pAI + 8) == 3) {
+									*(u8*)((u32)unit->pAI + unit->buildQueueSlot + 9) = *(u8*)((u32)unit->pAI + (unit->buildQueueSlot + 1) % 5 + 9);
+									*(u32*)((u32)unit->pAI + unit->buildQueueSlot * 4 + 0x18) = *(u32*)((u32)unit->pAI + ((unit->buildQueueSlot + 1) % 5) * 4 + 0x18);
+								}
+
+
+							}while(counter != 0);
+
+							unit->buildQueue[(unit->buildQueueSlot + 1) % 5] = UnitId::None;
+
+							jump_to_685D8 = true;
+
+						}
+
+					}
+
+				}
+				else
+					jump_to_685D8 = true;			
+
+				if(jump_to_685D8) {
+					if (builtUnit!=NULL && builtUnit->id == UnitId::ProtossCarrier) {
+						int interceptors = 12;
+
+						u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+						buf[0] = 0x99;//new general command
+						buf[1] = NewGameCommand::CarrierPrebuild;
+						buf[2] = interceptors;
+						buf[3] = *ACTIVE_PLAYER_ID;
+						memcpy(&buf[4], &builtUnit, 4);
+
+						scbw::SendCommand(buf, 0xc);
+					}
+
+					scbw::refreshConsole();
+					unit->currentBuildUnit = NULL;
+					unit->secondaryOrderState = 0;
 				}
 
-				scbw::refreshConsole();
-				unit->currentBuildUnit = NULL;
-				unit->secondaryOrderState = 0;
 			}
+
 
 		}
 
-
 	}
 
-}
+	char getMaxHangerSpace(CUnit* a1) { // 0x004653D0
+		u16 id; // ax
+		s32 hangarSpace; // eax
 
-;
+		id = a1->id;
+		if (id != UnitId::ProtossCarrier) {
+			if (id != UnitId::ProtossReaver) {
+				hangarSpace = 0;
+			}
+			else {
+				hangarSpace = 5;
+			}
+		}
+		else {
+			hangarSpace = 12;
+		}
+		return hangarSpace;
+	}
 
 } //namespace hooks
-
-;
 
 //-------- Helper function definitions. Do NOT modify! --------//
 
 namespace {
 
-//Identical to getHPGainForRepair @ 0x00402C40
-u32 getHPGainForRepair(CUnit* unit) {
+	//Identical to getHPGainForRepair @ 0x00402C40
+	u32 getHPGainForRepair(CUnit* unit) {
 
-	if(*CHEAT_STATE & CheatFlags::OperationCwal)
-		return unit->buildRepairHpGain * 16;
-	else
-		return unit->buildRepairHpGain;
+		if(*CHEAT_STATE & CheatFlags::OperationCwal)
+			return unit->buildRepairHpGain * 16;
+		else
+			return unit->buildRepairHpGain;
 
-}
-
-;
-
-const u32 Func_refundUnitTrainCost = 0x0042CEC0;
-void refundUnitTrainCost(u32 unitId, u8 playerId) {
-
-	__asm {
-		PUSHAD
-		MOV ECX, unitId
-		MOV AL, playerId
-		CALL Func_refundUnitTrainCost
-		POPAD
 	}
 
-}
+	const u32 Func_refundUnitTrainCost = 0x0042CEC0;
+	void refundUnitTrainCost(u32 unitId, u8 playerId) {
 
-;
+		__asm {
+			PUSHAD
+			MOV ECX, unitId
+			MOV AL, playerId
+			CALL Func_refundUnitTrainCost
+			POPAD
+		}
 
-const u32 Func_Sub432430 = 0x00432430;
-void function_00432430(CUnit* unit, u32 buildQueueSlot) {
-
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		MOV ECX, buildQueueSlot
-		CALL Func_Sub432430
-		POPAD
 	}
 
-}
+	const u32 Func_Sub432430 = 0x00432430;
+	void function_00432430(CUnit* unit, u32 buildQueueSlot) {
 
-;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			MOV ECX, buildQueueSlot
+			CALL Func_Sub432430
+			POPAD
+		}
 
-const u32 Func_addHangerUnit = 0x00466300;
-void addHangarUnit(CUnit* main_unit, CUnit* added_unit) {
-
-	__asm {
-		PUSHAD
-		MOV EDI, main_unit
-		MOV ESI, added_unit
-		CALL Func_addHangerUnit
-		POPAD
 	}
 
-}
+	const u32 Func_addHangerUnit = 0x00466300;
+	void addHangarUnit(CUnit* main_unit, CUnit* added_unit) {
 
-;
+		__asm {
+			PUSHAD
+			MOV EDI, main_unit
+			MOV ESI, added_unit
+			CALL Func_addHangerUnit
+			POPAD
+		}
 
-const u32 Func_Sub466F50 = 0x00466F50;
-void orderNewUnitToRally(CUnit* unit, CUnit* factory) {
-
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		MOV ECX, factory
-		CALL Func_Sub466F50
-		POPAD
 	}
 
-}
+	const u32 Func_Sub466F50 = 0x00466F50;
+	void orderNewUnitToRally(CUnit* unit, CUnit* factory) {
 
-;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			MOV ECX, factory
+			CALL Func_Sub466F50
+			POPAD
+		}
 
-const u32 Func_buildingAddon = 0x004679A0;
-//if canBeAborted is TRUE, the unit can be aborted because there's
-//no room around the constructing building
-Bool32 buildingAddon(CUnit* unit, u32 hpGain, Bool32 canBeAborted) {
-
-	static Bool32 bResult;
-
-	__asm {
-		PUSHAD
-		MOV EDX, hpGain
-		MOV EAX, unit
-		PUSH canBeAborted
-		CALL Func_buildingAddon
-		MOV bResult, EAX
-		POPAD
 	}
 
-	return bResult;
+	const u32 Func_buildingAddon = 0x004679A0;
+	//if canBeAborted is TRUE, the unit can be aborted because there's
+	//no room around the constructing building
+	Bool32 buildingAddon(CUnit* unit, u32 hpGain, Bool32 canBeAborted) {
 
-}
+		static Bool32 bResult;
 
-;
+		__asm {
+			PUSHAD
+			MOV EDX, hpGain
+			MOV EAX, unit
+			PUSH canBeAborted
+			CALL Func_buildingAddon
+			MOV bResult, EAX
+			POPAD
+		}
 
-const u32 Func_attemptTrainHatchUnit = 0x00468200;
-CUnit* attemptTrainHatchUnit(CUnit* trainer, u32 builtUnitID, u32 flag) {
+		return bResult;
 
-	static CUnit* builtUnit;
-
-	__asm {
-		PUSHAD
-		MOV ESI, trainer
-		MOV EDI, builtUnitID
-		PUSH flag
-		CALL Func_attemptTrainHatchUnit
-		MOV builtUnit, EAX
-		POPAD
 	}
 
-	return builtUnit;
+	const u32 Func_attemptTrainHatchUnit = 0x00468200;
+	CUnit* attemptTrainHatchUnit(CUnit* trainer, u32 builtUnitID, u32 flag) {
 
-}
+		static CUnit* builtUnit;
 
-;
+		__asm {
+			PUSHAD
+			MOV ESI, trainer
+			MOV EDI, builtUnitID
+			PUSH flag
+			CALL Func_attemptTrainHatchUnit
+			MOV builtUnit, EAX
+			POPAD
+		}
 
-const u32 Func_AI_CancelStructure = 0x00468280;
-void AI_CancelStructure(CUnit* unit) {
+		return builtUnit;
 
-	__asm {
-		PUSHAD
-		MOV ECX, unit
-		CALL Func_AI_CancelStructure
-		POPAD
 	}
 
-}
+	const u32 Func_AI_CancelStructure = 0x00468280;
+	void AI_CancelStructure(CUnit* unit) {
 
-;
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			CALL Func_AI_CancelStructure
+			POPAD
+		}
 
-const u32 Func_AI_TrainingUnit = 0x004A2830;
-void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit) {
-	__asm {
-		PUSHAD
-		MOV EAX, created_unit
-		MOV ECX, unit_creator
-		CALL Func_AI_TrainingUnit
-		POPAD
 	}
-}
 
-;
+	const u32 Func_AI_TrainingUnit = 0x004A2830;
+	void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit) {
+		__asm {
+			PUSHAD
+			MOV EAX, created_unit
+			MOV ECX, unit_creator
+			CALL Func_AI_TrainingUnit
+			POPAD
+		}
+	}
 
-const u32 Func_unitDeathSomething_0 = 0x004E6340;
-void hideAndDisableUnit(CUnit* unit) {
+	const u32 Func_unitDeathSomething_0 = 0x004E6340;
+	void hideAndDisableUnit(CUnit* unit) {
 
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_unitDeathSomething_0
-		POPAD
-	  }
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_unitDeathSomething_0
+			POPAD
+		  }
 
-}
-
-;
+	}
 
 } //Unnamed namespace
 
