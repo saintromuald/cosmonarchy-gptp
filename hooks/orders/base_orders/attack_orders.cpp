@@ -78,7 +78,7 @@ void orders_ReaverAttack1(CUnit* unit) {
 			u32 status_saved = (unit->status & UnitStatus::HoldingPosition) + (unit->status & UnitStatus::Disabled);
 			u8 newOrderId;
 
-			if(unit->id == UnitId::ProtossReaver || unit->id == UnitId::Hero_Warbringer) {
+			if(unit->id == UnitId::ProtossReaver) {
 				//65720:
 				if(unit->mainOrderId == OrderId::ReaverHold)
 					newOrderId = OrderId::ReaverHold;
@@ -143,7 +143,7 @@ void orders_CarrierAttack1(CUnit* unit) {
 			//give orders to interceptors/scarabs (through outHangarChild)
 			function_00465780(unit);
 
-			if(unit->id == UnitId::ProtossReaver || unit->id == UnitId::Hero_Warbringer) {
+			if(unit->id == UnitId::ProtossReaver) {
 				//65A03:
 				if(unit->mainOrderId == OrderId::ReaverHold)
 					newOrderId = OrderId::ReaverHold;
@@ -221,11 +221,11 @@ void orders_TurretAttack(CUnit* unit) {
 			current_unit = unit;
 
 		//identical to check performed by unitIsCarrier @ 0x00401470
-		if(unit->id == UnitId::ProtossCarrier || unit->id == UnitId::Hero_Gantrithor)
+		if(unit->id == UnitId::ProtossCarrier)
 			jump_to_77AFE = true;
 		else
 		//identical to check performed by unitIsReaver @ 0x00401490, using if(!unitIsReaver())
-		if(!(unit->id == UnitId::ProtossReaver || unit->id == UnitId::Hero_Warbringer))
+		if(!(unit->id == UnitId::ProtossReaver))
 			jump_to_77A9D = true;
 		else
 		if(target->status & UnitStatus::InAir)
@@ -545,11 +545,11 @@ void orders_AttackFixedRange(CUnit* unit) {
 
 		//77DC4:
 		//identical to check performed by unitIsCarrier @ 0x00401470
-		if(unit->id == UnitId::ProtossCarrier || unit->id == UnitId::Hero_Gantrithor)
+		if(unit->id == UnitId::ProtossCarrier)
 			jump_to_77E99 = true;
 		else
 		//identical to check performed by unitIsReaver @ 0x00401490, using if(!unitIsReaver())
-		if(!(unit->id == UnitId::ProtossReaver || unit->id == UnitId::Hero_Warbringer))
+		if(!(unit->id == UnitId::ProtossReaver))
 			jump_to_77DEF = true;
 		else
 		if(target->status & UnitStatus::InAir)
