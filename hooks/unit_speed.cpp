@@ -165,11 +165,9 @@ namespace hooks {
 			}
 		}
 
-		// Cyprian Safety Off ability: reduce movespeed
+		// Cyprian: hardcode ideal movement speed
 		else if (unit->id == UnitId::TerranCyprian) {
-			if (scbw::get_aise_value(unit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
-				speed -= (speed / 3); // safety off
-			}
+			speed += (speed / 5);
 		}
 
 		// Simulacrum Autovitality: increase movespeed when any nearby Simulacrum dies
