@@ -525,6 +525,7 @@ namespace hooks {
 				CUnitExtended::get(unit)->tick();
 				Globals.unitFrameHook(unit);
 				//hooks::ShowHealthBar(unit);
+				
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic &&
 					scbw::get_generic_value(unit, ValueId::LazarusNoHeal)==1) {
 					if (unit->sprite && unit->sprite->mainGraphic
@@ -534,6 +535,19 @@ namespace hooks {
 					}
 				}
 
+				// Sublime Shepherd overlay
+				if (unit->id == UnitId::TerranAzazel) {
+					if (scbw::get_generic_value(unit, ValueId::SublimeShepherd) == 1) {
+						if (!unit->getOverlay(1267)) {
+							unit->sprite->createTopOverlay(1267);
+						}
+					}
+					else {
+						if (unit->getOverlay(1267)) {
+							unit->sprite->removeOverlay(1267);
+						}
+					}
+				}
 				// Star Sovereign Intervention Missiles behavior
 				if (unit->id == UnitId::ProtossStarSovereign) {
 					if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerChannel) == 1) {
