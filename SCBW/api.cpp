@@ -1508,6 +1508,19 @@ int dir_saturate(int direction, int value) {
 	}
 	return d;
 }
+u32 get_sized_overlay(CUnit* unit, u32 initial) {
+
+	u32 overlayImageId;
+	if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
+		overlayImageId = initial + 1;
+	else
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
+			overlayImageId = initial + 2;
+		else
+			overlayImageId = initial;
+	return overlayImageId;
+}
+
 s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
 	if (unit == NULL)
 		return 0;

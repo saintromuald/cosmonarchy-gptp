@@ -1009,6 +1009,9 @@ enum Enum {
 
 	// HYDRA \\
 
+	Cowardice_Small					    = 1061,
+	Cowardice_Medium					= 1062,
+	Cowardice_Large						= 1063,
 	Malice_Small						= 1064,
 	Malice_Medium						= 1065,
 	Malice_Large						= 1066,

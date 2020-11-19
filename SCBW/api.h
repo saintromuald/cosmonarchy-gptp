@@ -157,6 +157,7 @@ inline bool isUnitEnemy(u8 playerId, CUnit* unit) {
   return 0 == playerAlliance[playerId].flags[unitOwner];
 }
 
+u32 get_sized_overlay(CUnit* unit, u32 initial);
 /// Returns the amount of remaining supply (total available - total used) for
 /// the @p playerId, using @p raceId to determine the appropriate race to use.
 /// This is affected by the "Food For Thought" cheat flag.

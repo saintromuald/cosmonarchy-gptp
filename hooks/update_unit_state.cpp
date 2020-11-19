@@ -70,6 +70,9 @@ void removeoverlays2(u32 from, u32 to, CUnit* unit) {
 		POPAD
 	}
 }
+
+
+
 #include "SCBW\UnitFinder.h"
 #include "SCBW\api.h"
 class wyvernMatch : public scbw::UnitFinderCallbackMatchInterface {
@@ -376,35 +379,42 @@ namespace hooks {
 			unit->updateSpeed();
 		}
 
-		// Malice overlays
+		// Cowardice / Malice overlays
 		if (unit->_unknown_0x08C & 0x1) {
 			unit->_unknown_0x08C &= ~0x1;
-			u32 overlayImageId;
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
-				overlayImageId = ImageId::Malice_Medium;
-			else
-				if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
-					overlayImageId = ImageId::Malice_Large;
-				else
-					overlayImageId = ImageId::Malice_Small;
-			if (!unit->getOverlay(overlayImageId)) {
+
+			u32 overlayImageId = scbw::get_sized_overlay(unit,ImageId::Cowardice_Small);
+			if (!unit->getOverlay(overlayImageId) && scbw::get_aise_value(unit,NULL,AiseId::HasMalice,0,0)==0) {
 				unit->sprite->createTopOverlay(overlayImageId,
 					0, 0, 0);
+				scbw::set_generic_value(unit, ValueId::HierophantOverlay, 1);
 			}
 		}
-		
+		if (scbw::get_generic_value(unit,ValueId::HierophantOverlay)==1) {
+			auto overlayId = scbw::get_sized_overlay(unit, ImageId::Cowardice_Small);
+			auto overlay = unit->getOverlay(overlayId);
+			if (scbw::get_aise_value(unit, NULL, AiseId::HasMalice, 0, 0) == 1) {
+				if (unit->getOverlay(overlayId)) {
+					unit->removeOverlay(overlayId);
+				}
+				u32 maliceId = scbw::get_sized_overlay(unit, ImageId::Malice_Small);
+				if (!unit->getOverlay(maliceId)) {
+					unit->sprite->createTopOverlay(maliceId, 0, 0, 0);
+				}
+				scbw::set_generic_value(unit, ValueId::HierophantOverlay, 0);
+			}
+		}
+		//Clear Malice/Cowardice overlays
 		if (unit->_unknown_0x08C & 0x2) {
 			unit->_unknown_0x08C &= ~0x2;
-			u32 overlayImageId;
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
-				overlayImageId = ImageId::Malice_Medium;
-			else
-				if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
-					overlayImageId = ImageId::Malice_Large;
-				else
-					overlayImageId = ImageId::Malice_Small;
-			if (unit->getOverlay(overlayImageId)) {
-				unit->removeOverlay(ImageId::Malice_Small, ImageId::Malice_Large);
+			u32 maliceId = scbw::get_sized_overlay(unit, ImageId::Malice_Small);
+			u32 cowardiceId = scbw::get_sized_overlay(unit, ImageId::Cowardice_Small);
+			scbw::set_generic_value(unit, ValueId::HierophantOverlay, 0);
+			if (unit->getOverlay(maliceId)) {
+				unit->removeOverlay(maliceId);
+			}
+			if (unit->getOverlay(cowardiceId)) {
+				unit->removeOverlay(cowardiceId);
 			}
 		}
 

@@ -267,6 +267,7 @@ namespace ValueId {
 		AI_GriefOfAllGodsTimer						= 116,
 
 		WraithLaserPos								= 117,
+		HierophantOverlay							= 118,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
