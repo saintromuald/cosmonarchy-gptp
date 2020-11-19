@@ -382,7 +382,6 @@ namespace hooks {
 		// Cowardice / Malice overlays
 		if (unit->_unknown_0x08C & 0x1) {
 			unit->_unknown_0x08C &= ~0x1;
-
 			u32 overlayImageId = scbw::get_sized_overlay(unit,ImageId::Cowardice_Small);
 			if (!unit->getOverlay(overlayImageId) && scbw::get_aise_value(unit,NULL,AiseId::HasMalice,0,0)==0) {
 				unit->sprite->createTopOverlay(overlayImageId,

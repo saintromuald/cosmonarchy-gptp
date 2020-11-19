@@ -280,7 +280,10 @@ void updateStatusEffects(CUnit* unit) {
 	if (unit->id == UnitId::ProtossClarion) {
 		unit->updateSpeed();
 	}
-
+	//Update speed adjust
+	if (unit->id == UnitId::ProtossExemplar) {
+		unit->updateSpeed();
+	}
 
 	// Ion Propulsion: Vulture slow while over impassable terrain
 	else if (unit->id == UnitId::TerranVulture && scbw::getUpgradeLevel(unit->playerId, UpgradeId::IonPropulsion)) {

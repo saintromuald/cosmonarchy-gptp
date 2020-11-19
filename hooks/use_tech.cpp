@@ -375,12 +375,45 @@ namespace hooks
 			break;
 		case TechId::PhaseLink://and Khaydarin Eclipse
 		{
+
 			auto firstInList = clientSelectionGroup->unit[0];
+			if (firstInList != NULL) {
+				if (firstInList->id == UnitId::ProtossClarion) {
+					int action = 0;//enable
+					if (scbw::get_aise_value(firstInList, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
+						action = 1;//disable
+					}
+					u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+					buf[0] = 0x99;//new general command
+					buf[1] = NewGameCommand::PhaseLink;
+					buf[2] = action;
+					buf[3] = *ACTIVE_PLAYER_ID;
+					scbw::SendCommand(buf, 0xc);
+				}
+				else {//exemplar
+					int action = 1;//on
+					if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::ExemplarSwitch, 0) == 1) {
+						action = 0;//off
+					}
+					u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+					buf[0] = 0x99;//new general command
+					buf[1] = NewGameCommand::GenericSwitchAbility;
+					buf[2] = action;
+					buf[3] = *ACTIVE_PLAYER_ID;
+					buf[4] = ValueId::ExemplarSwitch;
+					scbw::SendCommand(buf, 0xc);
+					break;
+				}
+			}
+			/*
 			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
 			buf[0] = 0x99;//new general command
 			buf[1] = NewGameCommand::IssueCTFCop2;//used for Phase Link, Khaydarin Eclipse and (in Overlord) Anti-Air Mode
 			buf[2] = *ACTIVE_PLAYER_ID;
 			scbw::SendCommand(buf, 0xc);
+			break;
+			*/
+
 			break;
 		}
 		case TechId::PlanetCracker:

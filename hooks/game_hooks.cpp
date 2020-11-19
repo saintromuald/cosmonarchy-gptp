@@ -713,7 +713,8 @@ namespace hooks {
 				// Paladin - Skyfall
 				if (unit->id == UnitId::TerranPaladin
 					&& scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::SkyfallTimer, 0) == 1 &&
-					!unit->isFrozen()) {
+					!unit->isFrozen()) 
+				{
 					u8 missile = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SkyfallStacks, 0);
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::SkyfallStacks, 1, 0);
 					if (missile == 20) {
@@ -753,7 +754,6 @@ namespace hooks {
 							unit->orderTarget.unit = targ;
 						}
 						scbw::createBullet(10, unit, source_x, source_y, unit->playerId, unit->currentDirection1);
-
 					}
 				}
 
@@ -928,6 +928,7 @@ namespace hooks {
 					unit->updateSpeed();
 				}
 
+				
 				// Zergling - Adrenal Glands
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::AdrenalTimer, 0) == 1) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::AdrenalStacks, 0, 0);
