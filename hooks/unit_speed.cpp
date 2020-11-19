@@ -131,6 +131,12 @@ namespace hooks {
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SomaticImplants, 1, 0);
 			}
 		}
+		//Clarion shield movespeed gain
+		else if (unit->id == UnitId::ProtossClarion) {
+			double fraction = (double)unit->shields / ((double)units_dat::MaxShieldPoints[unit->id]*256);
+			double newSpeed = (double)speed*(1.0 + fraction);
+			speed = newSpeed;
+		}
 
 		// Leftover movement speed code
 		else if (unit->id == UnitId::ProtossPanoptus
@@ -305,7 +311,12 @@ namespace hooks {
 				acceleration = (double)acceleration * ((10.0 + stacks) / 10.0);
 			}
 		}
-
+		//Clarion acceleration shield boost
+		else if (unit->id == UnitId::ProtossClarion) {
+			double fraction = (double)unit->shields / ((double)units_dat::MaxShieldPoints[unit->id] * 256);
+			double newAcc = (double)acceleration * (1.0 + fraction);
+			acceleration = newAcc;
+		}
 		// Nathrokor Adrenal Frenzy: increase acceleration of all nearby organic allies after kill
 		else if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0) {
 			acceleration += acceleration / 2;
