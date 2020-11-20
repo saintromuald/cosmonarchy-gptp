@@ -548,6 +548,7 @@ namespace hooks {
 						}
 					}
 				}
+
 				// Star Sovereign Intervention Missiles behavior
 				if (unit->id == UnitId::ProtossStarSovereign) {
 					if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerChannel) == 1) {
