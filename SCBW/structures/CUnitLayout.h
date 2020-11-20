@@ -268,6 +268,8 @@ namespace ValueId {
 
 		WraithLaserPos								= 117,
 		HierophantOverlay							= 118,
+		PhaseRushPlayer								= 119,
+		PhaseRushTimer								= 120,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

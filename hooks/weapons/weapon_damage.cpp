@@ -815,6 +815,14 @@ namespace hooks {
 				}
 			}
 
+			// Phase Rush - Manifold behavior
+			if (attacker != NULL) {
+				if (units_dat::BaseProperty[attacker->id] & UnitProperty::RoboticUnit) {
+					scbw::set_generic_value(target, ValueId::PhaseRushPlayer, attacker->playerId);
+					scbw::set_generic_timer(target, ValueId::PhaseRushTimer, 5 * 24);
+				}
+			}
+
 			if (attacker != NULL) { // looks like target will always be alive if this function was called?
 				if (scbw::get_aise_value(target, 0, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0) >= 1) {
 					CUnit* haluAttacker = attacker;
@@ -880,7 +888,6 @@ namespace hooks {
 
 					// Augur - Death behavior
 					if (target->id == UnitId::ProtossAugur) {
-						scbw::printText("Augur dies");
 						augurSacrifice(target);
 
 					}

@@ -36,6 +36,35 @@ public:
 	}
 };
 
+class manifoldProc : public scbw::UnitFinderCallbackProcInterface
+{
+private:
+	CUnit* manifold;
+
+public:
+	manifoldProc(CUnit* manifold)
+		: manifold(manifold) {}
+	void proc(CUnit* unit)
+	{
+		if (!(scbw::get_generic_timer(unit, ValueId::PhaseRushTimer))) {
+			return;
+		}
+		if (scbw::isAlliedTo(manifold->playerId, scbw::get_generic_value(unit, ValueId::PhaseRushPlayer))) {
+			return;
+		}
+		u16 angle = scbw::getAngle(manifold->position.x, manifold->position.y,
+			unit->position.x, unit->position.y);
+		u16 unit_angle = manifold->velocityDirection1;
+		int arc = (double)60 / 1.40625;
+		//120 degrees
+		int delta = unit_angle - angle;
+		delta = abs((delta + 128) % 256 - 128);
+		if (delta <= arc) {
+			manifold->_padding_0x132 |= 0x2;
+		}
+	}
+};
+
 
 namespace hooks {
 
@@ -190,22 +219,24 @@ namespace hooks {
 //			scbw::printFormattedText("SPEED | Unit id: %d", (u32)unit->id);
 		}
 
-		// Collective Integration: gains increased movespeed based on tech level
-/*		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth || unit->id==UnitId::ZergOthstoleth) {
-			u32 irisCountSpeed = unitCountTable[UnitId::ZergOverlordIris].player[unit->playerId];
-			u32 quayCountSpeed = unitCountTable[UnitId::ZergIrolethQuay].player[unit->playerId];
-			u32 berthCountSpeed = unitCountTable[UnitId::ZergOthstolethBerth].player[unit->playerId];
-			if (berthCountSpeed) {
-				speed *= 6;
+		// Manifold Phase Rush: gains 150% increased movespeed when moving towards enemies attacked by allied robotics
+		else if (unit->id == UnitId::ProtossManifold) {
+			u32 range = unit->getSightRange(false) * 32;
+			scbw::UnitFinder unitFinder(unit->getX() - range,
+				unit->getY() - range,
+				unit->getX() + range,
+				unit->getY() + range);
+			unitFinder.forEach(manifoldProc(unit));
+			if (unit->_padding_0x132 & 0x2) {
+				//speed += (speed / 2);
+				speed *= 2;
+				unit->_padding_0x132 &= ~0x2;
 			}
-			else if (quayCountSpeed) {
-				speed *= 5;
-			}
-			else if (irisCountSpeed) {
-				speed *= 4;
+			else {
+				//speed += (speed / 4);
 			}
 		}
-*/
+
 		// Infested Terran Death March: gains increased movespeed based on missing health
 		else if (unit->id == UnitId::ZergInfestedTerran) {
 			u32 health = unit->hitPoints / 256;
