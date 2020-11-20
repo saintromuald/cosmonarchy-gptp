@@ -102,7 +102,6 @@ namespace hooks {
 			buildingId = building->id;
 
 		if (building->mainOrderState == 0) {
-			//scbw::printText("State 0...");
 			if (building->remainingBuildTime < (units_dat::TimeCost[buildingId] * 3 / 4))
 				building->mainOrderState = 1;
 
@@ -133,7 +132,6 @@ namespace hooks {
 
 				}
 		} else if (building->mainOrderState == 1) { //5D5AE
-
 			if (building->id == UnitId::ZergExtractor) {
 
 				CImage* overlay = building->sprite->getOverlay(ImageId::VespeneGeyser2);
@@ -149,7 +147,6 @@ namespace hooks {
 			jump_to_5D56C = true;
 
 		}  else  if (building->mainOrderState == 2) { //5D5E2
-
 				if (building->remainingBuildTime < units_dat::TimeCost[buildingId] / 2) {
 					//scbw::printText("Set order state 3");
 					building->mainOrderState = 3;
@@ -157,7 +154,6 @@ namespace hooks {
 				jump_to_5D56C = true;
 
 		} else if (building->mainOrderState == 3) { //5D603
-
 				building->sprite->playIscriptAnim(IscriptAnimation::SpecialState2, true);
 				building->mainOrderState = 4;
 				//scbw::printText("Set order state 4");
@@ -173,15 +169,18 @@ namespace hooks {
 			jump_to_5D56C = true;
 
 		} else if (building->mainOrderState == 5) { //5D62F
-			bool sEnd = false;
+			
+			building->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
+			building->mainOrderState = 6;
+			playBuildingCompleteSound(building);
+			jump_to_5D56C = true;
+
+			/*bool sEnd = false;
 			//if (building->orderSignal & 0x1) {
 			building->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
 			sEnd = true;
 
 			replaceSpriteImages_copy(building->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId), 0);
-			char buf[32];
-			sprintf(buf, "Sprite id is %d", building->sprite->spriteId);
-			//scbw::printText(buf);
 			function_004D8500_copy(building->sprite->mainGraphic);
 			//}
 			if (sEnd) {
@@ -190,7 +189,7 @@ namespace hooks {
 				building->mainOrderState = 6;
 				playBuildingCompleteSound(building);
 			}
-			jump_to_5D56C = true;
+			jump_to_5D56C = true;*/
 		} else if (building->mainOrderState == 6) { //5D64Bs
 
 			bool ordCondition = false;
@@ -373,7 +372,6 @@ namespace hooks {
 					zergPlaceBuildingCntd(unit);
 				}
 				else {
-
 					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 					resources->minerals[unit->playerId] += (units_dat::MineralCost[builtUnitId] * 3) / 4;
 					resources->gas[unit->playerId] += (units_dat::GasCost[builtUnitId] * 3) / 4;
