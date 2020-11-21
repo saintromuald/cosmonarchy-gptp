@@ -46,10 +46,21 @@ public:
 		: manifold(manifold) {}
 	void proc(CUnit* unit)
 	{
-		if (!(scbw::get_generic_timer(unit, ValueId::PhaseRushTimer))) {
+/*		if (!(scbw::get_generic_timer(unit, ValueId::PhaseRushTimer))) {
 			return;
 		}
 		if (scbw::isAlliedTo(manifold->playerId, scbw::get_generic_value(unit, ValueId::PhaseRushPlayer))) {
+			return;
+		}*/
+		bool ret = true;
+		for (int i = 0; i < 8; i++) {
+			if (scbw::get_generic_timer(unit, ValueId::PhobosLaserPos + i) > 0) {
+				if (!scbw::isAlliedTo(manifold->playerId, i)) {
+					ret = false;
+				}
+			}
+		}
+		if (ret) {
 			return;
 		}
 		u16 angle = scbw::getAngle(manifold->position.x, manifold->position.y,

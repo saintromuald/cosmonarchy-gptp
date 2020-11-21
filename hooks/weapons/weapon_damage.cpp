@@ -818,8 +818,8 @@ namespace hooks {
 			// Phase Rush - Manifold behavior
 			if (attacker != NULL) {
 				if (units_dat::BaseProperty[attacker->id] & UnitProperty::RoboticUnit) {
-					scbw::set_generic_value(target, ValueId::PhaseRushPlayer, attacker->playerId);
-					scbw::set_generic_timer(target, ValueId::PhaseRushTimer, 5 * 24);
+//					scbw::set_generic_value(target, ValueId::PhaseRushPlayerArrayStart+attacker->playerId, 1);
+					scbw::set_generic_timer(target, ValueId::PhaseRushTimerArrayStart+attacker->playerId, 5 * 24);
 				}
 			}
 
