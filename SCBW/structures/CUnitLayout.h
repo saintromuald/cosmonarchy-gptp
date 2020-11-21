@@ -269,8 +269,8 @@ namespace ValueId {
 		WraithLaserPos								= 117,
 		HierophantOverlay							= 118,
 		PhaseRushTimerArrayStart				    = 119,
-//		PhaseRushPlayerArrayStart					= 119,
-		//values 119 - 126
+		//values 119 - 126 must not be used
+		NewMedstimTimer									= 127,
 
 	};	
 }

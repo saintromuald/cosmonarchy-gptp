@@ -950,11 +950,11 @@ bool isSlowed(CUnit* unit) {
 	if (unit->id==UnitId::TerranWyvern && get_generic_value(unit, ValueId::ReverseThrust) == 1) {
 		return true;
 	}
-	if (unit->id == UnitId::TerranShaman) {
+/*	if (unit->id == UnitId::TerranShaman) {
 		if (unit->_padding_0x132 & 0x8 || scbw::get_generic_value(unit, ValueId::NaniteField)) {
 			return true;
 		}
-	}
+	}*/
 	if (unit->id == UnitId::TerranCyprian) {
 		if (scbw::get_generic_value(unit, AiseId::SendCyprianValue) == 1) {
 			return true;

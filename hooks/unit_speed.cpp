@@ -164,11 +164,11 @@ namespace hooks {
 		}
 
 		// Shaman Activate Medstims / Nanite Field abilities: reduce movespeed
-		else if (unit->id == UnitId::TerranShaman) {
+		/*else if (unit->id == UnitId::TerranShaman) {
 			if (unit->_padding_0x132 & 0x8 || scbw::get_generic_value(unit, ValueId::NaniteField)) {
 				speed /= 2;
 			}
-		}
+		}*/
 
 		// Cyprian: hardcode ideal movement speed
 		else if (unit->id == UnitId::TerranCyprian) {

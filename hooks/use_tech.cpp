@@ -253,7 +253,7 @@ namespace hooks
 			//			IssueTriTargetOrder(OrderId::Restoration, 0, 0);
 			//0 - deploy
 			//1 - stop
-			if (firstInList != NULL) {
+/*			if (firstInList != NULL) {
 				u8 action = 0;
 				if (firstInList->_padding_0x132 & 0x8) {
 					action = 1;
@@ -274,7 +274,7 @@ namespace hooks
 				bufNanite[4] = ValueId::NaniteField;
 				scbw::SendCommand(bufNanite, 0xc);
 			}
-			break;
+			break;*/
 		}
 		case TechId::NaniteField:
 		{
@@ -291,12 +291,12 @@ namespace hooks
 			buf[4] = ValueId::NaniteField;
 			scbw::SendCommand(buf, 0xc);
 			//disable medstims
-			u8 bufMedstims[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+/*			u8 bufMedstims[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
 			bufMedstims[0] = 0x99;//new general command
 			bufMedstims[1] = NewGameCommand::ShamanAction;
 			bufMedstims[2] = 1;
 			bufMedstims[3] = *ACTIVE_PLAYER_ID;
-			scbw::SendCommand(bufMedstims, 0xc);
+			scbw::SendCommand(bufMedstims, 0xc);*/
 			break;
 		}
 		case TechId::UnusedTech26://Cyprian Safety Off/Safety On

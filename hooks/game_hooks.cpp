@@ -960,7 +960,7 @@ namespace hooks {
 					if (unit->_padding_0x132 & 0x8) {
 						unit->groundWeaponCooldown = 8;
 					}
-					if (unit->_padding_0x133 > 0) {
+					/*if (unit->_padding_0x133 > 0) {
 						unit->_padding_0x133--;
 					}
 					if (unit->_padding_0x133 == 0) {
@@ -974,7 +974,7 @@ namespace hooks {
 								unit->getY() + 128);
 							unitFinder.forEach(Heal);
 						}
-					}
+					}*/
 					if (scbw::get_generic_value(unit, ValueId::NaniteField)) {
 						auto timer = scbw::get_generic_timer(unit, ValueId::NaniteFieldTimer);
 						unit->_padding_0x133 = 0;
@@ -983,6 +983,19 @@ namespace hooks {
 							scbw::set_generic_timer(unit, ValueId::NaniteFieldTimer, 24);
 							unit->sprite->playIscriptAnim(IscriptAnimation::CastSpell);
 							shamanProc Heal = shamanProc(unit,false,4);
+							scbw::UnitFinder unitFinder(unit->getX() - 128,
+								unit->getY() - 128,
+								unit->getX() + 128,
+								unit->getY() + 128);
+							unitFinder.forEach(Heal);
+						}
+					}
+					else {
+						auto timer = scbw::get_generic_timer(unit, ValueId::NewMedstimTimer);
+						if (timer == 0) {
+							scbw::set_generic_timer(unit, ValueId::NewMedstimTimer, 24);
+							unit->sprite->playIscriptAnim(IscriptAnimation::CastSpell);
+							shamanProc Heal = shamanProc(unit, true, 6);
 							scbw::UnitFinder unitFinder(unit->getX() - 128,
 								unit->getY() - 128,
 								unit->getX() + 128,
