@@ -208,7 +208,7 @@ namespace hooks {
 				}
 			}
 			if (accelerate) {
-				speed *= 2;
+				speed += speed / 2;
 			}
 
 			/*u32 range = unit->getSightRange(false) * 32;
