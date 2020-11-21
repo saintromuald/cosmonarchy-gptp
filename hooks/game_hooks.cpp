@@ -955,8 +955,6 @@ namespace hooks {
 					}
 				}
 
-				// TODO: Reavers remain at full stocks
-
 				// Shaman - Administer Medstims ability
 				if (unit->id == UnitId::TerranShaman) {
 					if (unit->_padding_0x132 & 0x8) {
