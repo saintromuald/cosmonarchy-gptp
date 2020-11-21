@@ -3,7 +3,7 @@
 #include "unit_speed.h"
 #include "../SCBW/enumerations.h"
 #include "../SCBW/scbwdata.h"
-
+#include "hooks/hydraFinder.h"
 #include <SCBW/UnitFinder.h>
 #include "SCBW/api.h"
 
@@ -35,47 +35,6 @@ public:
 		}
 	}
 };
-
-class manifoldProc : public scbw::UnitFinderCallbackProcInterface
-{
-private:
-	CUnit* manifold;
-
-public:
-	manifoldProc(CUnit* manifold)
-		: manifold(manifold) {}
-	void proc(CUnit* unit)
-	{
-/*		if (!(scbw::get_generic_timer(unit, ValueId::PhaseRushTimer))) {
-			return;
-		}
-		if (scbw::isAlliedTo(manifold->playerId, scbw::get_generic_value(unit, ValueId::PhaseRushPlayer))) {
-			return;
-		}*/
-		bool ret = true;
-		for (int i = 0; i < 8; i++) {
-			if (scbw::get_generic_timer(unit, ValueId::PhobosLaserPos + i) > 0) {
-				if (!scbw::isAlliedTo(manifold->playerId, i)) {
-					ret = false;
-				}
-			}
-		}
-		if (ret) {
-			return;
-		}
-		u16 angle = scbw::getAngle(manifold->position.x, manifold->position.y,
-			unit->position.x, unit->position.y);
-		u16 unit_angle = manifold->velocityDirection1;
-		int arc = (double)60 / 1.40625;
-		//120 degrees
-		int delta = unit_angle - angle;
-		delta = abs((delta + 128) % 256 - 128);
-		if (delta <= arc) {
-			manifold->_padding_0x132 |= 0x2;
-		}
-	}
-};
-
 
 namespace hooks {
 
@@ -232,7 +191,27 @@ namespace hooks {
 
 		// Manifold Phase Rush: gains 150% increased movespeed when moving towards enemies attacked by allied robotics
 		else if (unit->id == UnitId::ProtossManifold) {
-			u32 range = unit->getSightRange(false) * 32;
+			auto r = unit->getSightRange(false) * 32;
+			auto n = unitRangeCount(unit, CFlags::Enemy | CFlags::FrontalArc, {});
+			scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
+				unit->position.x + r, unit->position.y + r);
+			bool accelerate = false;
+			for (int i = 0; i < unitsInFinder.getUnitCount(); i++) {
+				auto picked_unit = unitsInFinder.getUnit(i);
+				if (n.match(picked_unit)) {
+					for (int p = 0; p < 8; p++) {
+						if (scbw::get_generic_timer(picked_unit, ValueId::PhaseRushTimerArrayStart + p) > 0 &&
+							scbw::isAlliedTo(unit->playerId,p)) {
+							accelerate = true;
+						}
+					}
+				}
+			}
+			if (accelerate) {
+				speed *= 2;
+			}
+
+			/*u32 range = unit->getSightRange(false) * 32;
 			scbw::UnitFinder unitFinder(unit->getX() - range,
 				unit->getY() - range,
 				unit->getX() + range,
@@ -242,10 +221,8 @@ namespace hooks {
 				//speed += (speed / 2);
 				speed *= 2;
 				unit->_padding_0x132 &= ~0x2;
-			}
-			else {
-				//speed += (speed / 4);
-			}
+			}*/
+
 		}
 
 		// Infested Terran Death March: gains increased movespeed based on missing health
