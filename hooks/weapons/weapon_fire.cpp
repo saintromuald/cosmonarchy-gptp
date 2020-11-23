@@ -348,6 +348,7 @@ namespace hooks {
 				int targ_y = unit->getY() + scbw::getPolarY(range, angle);
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SpineX, targ_x, 0);
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SpineY, targ_y, 0);
+				Globals.clear_lurker(unit);
 			}
 
 			if (good) {

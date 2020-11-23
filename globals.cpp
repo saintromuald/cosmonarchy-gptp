@@ -11,6 +11,7 @@ SaveState globals::aise_save() {
 	stream.write(reinterpret_cast<const char*>(&extended_sfx), sizeof(extended_sfx));
 	stream.write(reinterpret_cast<const char*>(&tbl_extender), sizeof(tbl_extender));
 	stream.write(reinterpret_cast<const char*>(&unitid_extender), sizeof(unitid_extender));
+
 	u32 impactsSize = persistImpacts.size();
 	stream.write(reinterpret_cast<const char*>(&impactsSize), sizeof(impactsSize));
 	for (int i = 0; i < impactsSize;i++) {
@@ -36,10 +37,10 @@ SaveState globals::aise_save() {
 		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].timer), sizeof(apostleAgents[i].timer));
 		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].unitId), sizeof(apostleAgents[i].unitId));
 	}
-	u32 multihitCount = 0;
+	u32 multihitCount = multihitBullets.size();
 	stream.write(reinterpret_cast<char*>(&multihitCount), sizeof(multihitCount));
 	for (int i = 0; i < multihitCount; i++) {
-		multihitBullet bull;
+		multihitBullet bull = multihitBullets[i];
 		stream.write(reinterpret_cast<char*>(&bull.bullet), sizeof(bull.bullet));
 		stream.write(reinterpret_cast<char*>(&bull.divider), sizeof(bull.divider));
 		u32 alreadyHitCount = bull.already_hit.size();
@@ -48,7 +49,17 @@ SaveState globals::aise_save() {
 			CUnit* hit = bull.already_hit[j];
 			stream.write(reinterpret_cast<char*>(&hit), sizeof(hit));
 		}
-		multihitBullets.push_back(bull);
+	}
+	u32 lurkerMapSize = lurkerSpineHits.size();
+	for (auto a : lurkerSpineHits) {
+		CUnit* key = a.first;
+		stream.write(reinterpret_cast<char*>(&key), sizeof(key));
+		u32 valueCount = a.second.size();
+		stream.write(reinterpret_cast<char*>(&valueCount), sizeof(valueCount));
+		for (int b = 0; b < valueCount; b++) {
+			CUnit* value = a.second[b];
+			stream.write(reinterpret_cast<char*>(&value), sizeof(value));
+		}
 	}
 	//
 	output = stream.rdbuf()->str();
@@ -67,13 +78,12 @@ void globals::aise_load(const char* ptr, u32 len){
 	std::stringstream stream(std::stringstream::in | std::stringstream::out | std::stringstream::binary);
 	std::string str(ptr, len);
 	stream << str;
+	this->reset();
 	stream.read(reinterpret_cast<char*>(&extended_unit_table), sizeof(extended_unit_table));
 	stream.read(reinterpret_cast<char*>(&extended_sfx), sizeof(extended_sfx));
 	stream.read(reinterpret_cast<char*>(&tbl_extender), sizeof(tbl_extender));
 	stream.read(reinterpret_cast<char*>(&unitid_extender), sizeof(unitid_extender));
 	
-	pariahHits.clear();
-	persistImpacts.clear();
 	auto impactsSize = 0;
 	stream.read(reinterpret_cast<char*>(&impactsSize), sizeof(impactsSize));
 	for (int i = 0; i < impactsSize; i++) {
@@ -122,9 +132,26 @@ void globals::aise_load(const char* ptr, u32 len){
 		}
 		multihitBullets.push_back(bull);
 	}
+	u32 lurkerMapSize = 0;
+	stream.read(reinterpret_cast<char*>(&lurkerMapSize), sizeof(lurkerMapSize));
+	for (int i = 0; i < lurkerMapSize; i++) {
+		CUnit* key = NULL;
+		stream.read(reinterpret_cast<char*>(&key), sizeof(key));
+		u32 valueCount = 0;
+		stream.read(reinterpret_cast<char*>(&valueCount), sizeof(valueCount));	
+		for (int j = 0; j < valueCount; j++) {
+			CUnit* value = NULL;
+			stream.read(reinterpret_cast<char*>(&value), sizeof(value));
+			lurkerSpineHits[key].push_back(value);
+		}
+	}
 }
 void globals::reset() {
 	persistImpacts.clear();
+	pariahHits.clear();
+	multihitBullets.clear();
+	apostleAgents.clear();
+	lurkerSpineHits.clear();
 }
 void globals::unitFrameHook(CUnit* unit) {
 	if (unit->id == UnitId::ProtossPariah && unit->orderSignal & 0x20) {
@@ -135,6 +162,15 @@ void globals::unitFrameHook(CUnit* unit) {
 void globals::unitDeathHook(CUnit* unit) {
 	if (scbw::get_generic_value(unit, ValueId::LazarusAgent) == 1) {
 		initLazarusAgent(unit->position.x, unit->position.y, unit->playerId, unit->id, unit->energy, NULL);
+	}
+	lurkerSpineHits[unit].clear();
+	for (auto& a : lurkerSpineHits) {
+		for (int b = 0; b < a.second.size(); b++) {
+			if (a.second[b] == unit) {
+				a.second.erase(a.second.begin() + b);
+				b--;
+			}
+		}
 	}
 }
 void globals::frameHook() {
@@ -358,6 +394,8 @@ void globals::createSalamanderFire(int x, int y, u8 player,u8 elevationLevel, bo
 		}
 	}
 }
+
+
 void globals::createIonField(int x, int y, u8 player, u8 elevationLevel, bool addImpactValue) {
 	if (addImpactValue) {
 		for (auto a : persistImpacts) {
@@ -380,6 +418,25 @@ void globals::createIonField(int x, int y, u8 player, u8 elevationLevel, bool ad
 			persistImpacts.push_back(impact);
 		}
 	}
+}
+
+
+void globals::clear_lurker(CUnit* lurker) {
+	lurkerSpineHits[lurker].clear();
+
+}
+void globals::add_lurker_spine_pair(CUnit* lurker, CUnit* target) {
+	lurkerSpineHits[lurker].push_back(target);
+}
+bool globals::spine_pair_exists(CUnit* lurker, CUnit* target) {
+	for (auto a : lurkerSpineHits) {
+		for (auto b : a.second) {
+			if (a.first == lurker && b == target) {
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 void __declspec(naked) Globals_SaveStateWrapper() {

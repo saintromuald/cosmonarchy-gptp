@@ -1,6 +1,7 @@
 #pragma once
 #pragma pack(1)
 #include <vector>
+#include <map>
 #include <sstream>
 #include <ostream>
 #include <istream>
@@ -72,6 +73,8 @@ public:
 	std::vector<pariahHit> pariahHits;
 	std::vector<multihitBullet> multihitBullets;
 	std::vector<apostleAgent> apostleAgents;
+	std::map<CUnit*, std::vector<CUnit*>> lurkerSpineHits;
+	
 	apostleAgent test;
 
 	//non-serializable data (exists only temporarily in memory in wrapper/hook flow)
@@ -108,6 +111,10 @@ public:
 	void clear_ptr_in_apostle_table(CUnit* unit);
 	void remove_multihit_bullet(CBullet* bullet);
 	int get_divider(CBullet* bullet);
+	void clear_lurker(CUnit* lurker);
+	void add_lurker_spine_pair(CUnit* lurker, CUnit* target);
+	bool spine_pair_exists(CUnit* lurker, CUnit* target);
+
 };
 
 void injectGlobalsHooks();

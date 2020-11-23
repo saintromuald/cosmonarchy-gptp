@@ -821,6 +821,8 @@ namespace hooks {
 					scbw::artificalBulletFrom(WeaponId::SubterraneanSpines, unit->playerId, unit, NULL, spr_position);
 					unit->position = position;
 					unit->sprite->position = spr_position;
+					auto spineCount = 0;
+					Globals.clear_lurker(unit);
 				}
 
 				// Science Vessel Observance - ability

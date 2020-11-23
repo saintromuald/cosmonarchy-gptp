@@ -278,22 +278,31 @@ namespace hooks {
 			if (!isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[bullet->weaponType])) continue;
 
 			if (bullet->sourceUnit != NULL) {
-			bool cont = false; // supposed to be a return within the loops, but since we can't it's a bool
-			for (int r = 0; r < 32 && !cont; r++) {
-				for (int c = 0; c < 16; c++) {
-				if (spineHitTable->hits[r][c].source == bullet->sourceUnit && spineHitTable->hits[r][c].target == target) {
-					cont = true; // unit has already been hit
+				/*
+				bool cont = false; // supposed to be a return within the loops, but since we can't it's a bool
+				for (int r = 0; r < 32 && !cont; r++) {
+					for (int c = 0; c < 16; c++) {
+					if (spineHitTable->hits[r][c].source == bullet->sourceUnit && spineHitTable->hits[r][c].target == target) {
+						cont = true; // unit has already been hit
+						break;
+					}
+					}
+				}
+				if (cont) continue;
+
+				if (*spineHitCol != 16) {
+					spineHitTable->hits[*spineHitRow][*spineHitCol].source = bullet->sourceUnit;
+					spineHitTable->hits[*spineHitRow][*spineHitCol].target = target;
+					(*spineHitCol)++;
+				}*/
+				bool cont = false;
+				if (Globals.spine_pair_exists(bullet->sourceUnit, target)) {
+					cont = true;
 					break;
 				}
-				}
-			}
-			if (cont) continue;
-
-			if (*spineHitCol != 16) {
-				spineHitTable->hits[*spineHitRow][*spineHitCol].source = bullet->sourceUnit;
-				spineHitTable->hits[*spineHitRow][*spineHitCol].target = target;
-				(*spineHitCol)++;
-			}
+				if (cont)
+					continue;
+				Globals.add_lurker_spine_pair(bullet->sourceUnit, target);
 			}
 			weaponBulletShot(target, bullet, 1);
 		}
