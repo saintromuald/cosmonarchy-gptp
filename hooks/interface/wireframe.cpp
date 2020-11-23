@@ -54,12 +54,12 @@ namespace hooks {
 		u8 al;
 		if (units_dat::ShieldsEnabled[unit->id]) {
 			auto lastSlot = scbw::getLastQueueSlotType(unit);
-			auto maxShields = units_dat::MaxShieldPoints[lastSlot];
+			u32 maxShields = units_dat::MaxShieldPoints[lastSlot];
 			if (lastSlot == unit->id) {
 				maxShields = unit->maxShields();//for stasis, later
 			}
 			if (maxShields) {
-				auto shields = unit->shields >> 8;
+				u32 shields = (u32)unit->shields >> 8;
 				shields *= 7;
 				shields /= maxShields;
 				auto wireConst = wireframeConstants[shields*2];

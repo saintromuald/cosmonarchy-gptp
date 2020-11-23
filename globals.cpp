@@ -163,6 +163,11 @@ void globals::unitDeathHook(CUnit* unit) {
 	if (scbw::get_generic_value(unit, ValueId::LazarusAgent) == 1) {
 		initLazarusAgent(unit->position.x, unit->position.y, unit->playerId, unit->id, unit->energy, NULL);
 	}
+	for (int i = 0; i < this->apostleAgents.size(); i++) {
+		if (apostleAgents[i].creator == unit) {
+			apostleAgents[i].creator=NULL;
+		}
+	}
 	lurkerSpineHits[unit].clear();
 	for (auto& a : lurkerSpineHits) {
 		for (int b = 0; b < a.second.size(); b++) {
@@ -187,6 +192,7 @@ void globals::frameHook() {
 				revived->energy = agent.energy;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
 				scbw::set_generic_value(revived, ValueId::LazarusNoHeal, 1);
+				
 			}
 			apostleAgents.erase(apostleAgents.begin() + a);
 			a--;
