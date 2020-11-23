@@ -551,13 +551,13 @@ namespace hooks {
 				// Exemplar overlay
 				if (unit->id == UnitId::ProtossExemplar) {
 					if (scbw::get_generic_value(unit, ValueId::ExemplarSwitch) == 1) {
-						if (!unit->getOverlay(1267)) {
-							unit->sprite->createTopOverlay(1267);
+						if (!unit->getOverlay(1271)) {
+							unit->sprite->createTopOverlay(1271);
 						}
 					}
 					else {
-						if (unit->getOverlay(1267)) {
-							unit->sprite->removeOverlay(1267);
+						if (unit->getOverlay(1271)) {
+							unit->sprite->removeOverlay(1271);
 						}
 					}
 				}
