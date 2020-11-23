@@ -710,13 +710,7 @@ namespace hooks {
 					function_004A01F0(created_broodling);
 					updateUnitStrength(created_broodling);
 
-					if (created_broodling->status & UnitStatus::IsHallucination)
-						timerBeforeDisappearance = 1350;	//probably old unremoved code
-					else
-						if (created_broodling->id == UnitId::ZergBroodling)
-							timerBeforeDisappearance = 720;	//0x708
-						else
-							timerBeforeDisappearance = 0;
+					timerBeforeDisappearance = 720;	//0x708
 
 					if (
 						created_broodling->removeTimer == 0 ||
