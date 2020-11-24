@@ -271,6 +271,7 @@ namespace ValueId {
 		PhaseRushTimerArrayStart				    = 119,
 		//values 119 - 126 must not be used
 		NewMedstimTimer									= 127,
+		LurkerPickTarget								= 128,
 
 	};	
 }

@@ -49,8 +49,10 @@ namespace {
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
+			PUSH EAX
 			MOV EAX, [EBP+0x08]
 			MOV unit, EAX
+			POP EAX
 			PUSHAD
 		}
 		hooks::orders_SCVBuild(unit);
@@ -131,7 +133,6 @@ void injectBuildingTerranHook() {
 	jmpPatch(orders_TerranBuildSelfWrapper,					0x00467760, 2);
 	jmpPatch(orders_SCVBuild2Wrapper,						0x00467A70, 1);
 	jmpPatch(orders_SCVBuildWrapper,						0x00467FD0, 0);
-
 	//placementSimpleWrappers();//causes insane bug
 
 	//jmpPatch(updatePlacementStateForPlacementBox_Wrapper,	0x0048DCE0, 0);
