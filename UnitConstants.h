@@ -14,7 +14,7 @@
 //		but we might want to limit the include scope for this one
 // - Maybe we should also move aise enums in here, I don't think it ever made sense for it to be in CUnit, since it's included everywhere.
 
-// Shorthand for 1 in-game second - meaning 20 frames. only works in this file to avoid potential conflicts.
+// Shorthand for in-game seconds (1 second - 20 frames). only works in this file to avoid potential conflicts.
 static constexpr int operator "" s(unsigned long long amount) {
 	return (int)(amount * 20);
 }
