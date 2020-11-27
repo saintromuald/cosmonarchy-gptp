@@ -35,6 +35,7 @@ void SendCommand(u8* params, u32 param_length);
 /// used as the source of the sound.
 void playSound(u32 sfxId, CUnit* sourceUnit = NULL);
 /// Prints text to the screen, optionally using the given text color.
+void print(std::string text, u32 color = GameTextColor::White);
 void printText(const char* text, u32 color = GameTextColor::White);
 void printFormattedText(const char* format, ...);
 void printFormattedColoredText(const char* format, u32 color, ...);

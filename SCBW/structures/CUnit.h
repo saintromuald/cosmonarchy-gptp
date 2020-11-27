@@ -4,6 +4,7 @@
 #pragma once
 #include <algorithm>
 #include "CUnitLayout.h"
+#include "UnitConstants.h"
 #include <SCBW/enumerations.h>
 #include "../../graphics/graphics.h"
 

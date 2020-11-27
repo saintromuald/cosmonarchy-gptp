@@ -268,6 +268,10 @@ void playSound(u32 sfxId, CUnit* sourceUnit) {
 }
 
 
+void print(std::string text, u32 color) {
+	printText(text.c_str(), color);
+}
+
 void printFormattedText(const char* format, ...) {
 	char buf[256];
 

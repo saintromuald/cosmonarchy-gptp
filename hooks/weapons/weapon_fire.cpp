@@ -502,7 +502,8 @@ namespace hooks {
 				else {
 					// Madcap - Maverick Feeders passive
 					if (unit->id == UnitId::TerranMadcap) {
-						scbw::add_generic_value(unit, ValueId::MadcapStacks, 1);
+						int stacks = scbw::get_generic_value(unit, ValueId::MadcapStacks);
+						scbw::set_generic_value(unit, ValueId::MadcapStacks, MathUtils::clamp(stacks + MADCAP_PASSIVE_DECAY_TIME, 0, MADCAP_MAX_STACKS * MADCAP_PASSIVE_DECAY_TIME));
 					}
 					if (weaponId == WeaponId::AcidSpore && unit->sprite) {
 						scbw::set_generic_value(unit, ValueId::GuardianMissileLaunchPosX, unit->getX());

@@ -521,7 +521,6 @@ namespace hooks {
 			}*/
 			// Loop through all visible units in the game.
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
-				CUnitExtended::get(unit)->tick();
 				Globals.unitFrameHook(unit);
 				//hooks::ShowHealthBar(unit);
 				
@@ -700,8 +699,11 @@ namespace hooks {
 				}*/
 
 				//Madcap stacks
-				if (unit->id == UnitId::TerranMadcap && unit->movementFlags & MovementFlags::Accelerating) {
-					scbw::set_generic_value(unit, ValueId::MadcapStacks, 0);
+				if (unit->id == UnitId::TerranMadcap && unit->movementFlags & MovementFlags::Accelerating || unit->movementFlags & MovementFlags::Moving) {
+					if (scbw::get_generic_value(unit, ValueId::MadcapStacks) > 0) {
+						scbw::add_generic_value(unit, ValueId::MadcapStacks, -1);
+						//scbw::print(std::to_string(scbw::get_generic_value(unit, ValueId::MadcapStacks)));
+					}
 				}
 
 				// Legionnaire - Blade Vortex
