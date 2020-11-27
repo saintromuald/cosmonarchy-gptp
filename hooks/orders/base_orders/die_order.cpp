@@ -1,6 +1,5 @@
 #include "die_order.h"
 #include <SCBW/api.h>
-#include "CUnitExtended.h"
 
 
 //helper functions def

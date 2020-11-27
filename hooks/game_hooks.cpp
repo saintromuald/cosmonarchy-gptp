@@ -6,7 +6,6 @@
 #include <SCBW/ExtendSightLimit.h>
 #include "psi_field.h"
 #include <cstdio>
-#include "CUnitExtended.h"
 #include "hooks/interface/uifeatures/screen_hotkeys.h"
 #include "hooks/interface/uifeatures/uifeatures.h"
 #include "hooks/interface/hpbars/hpbars.h"

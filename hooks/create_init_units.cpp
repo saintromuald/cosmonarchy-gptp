@@ -1,5 +1,4 @@
 #include "create_init_units.h"
-#include "CUnitExtended.h"
 #include <SCBW/api.h>
 
 //helper functions def

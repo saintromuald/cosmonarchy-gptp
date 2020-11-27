@@ -228,7 +228,6 @@
     <ClCompile Include="config_utility.h" />
     <ClCompile Include="hooks\build_time.cpp" />
     <ClCompile Include="hooks\build_time_inject.cpp" />
-    <ClCompile Include="CUnitExtended.cpp" />
     <ClCompile Include="globals.cpp" />
     <ClCompile Include="hooks\audiovisuals\sfxhooks.cpp" />
     <ClCompile Include="hooks\audiovisuals\sfxhooks_inject.cpp" />
@@ -516,7 +515,6 @@
     <ClInclude Include="config.h" />
     <ClInclude Include="globals_serialization.h" />
     <ClInclude Include="hooks\build_time.h" />
-    <ClInclude Include="CUnitExtended.h" />
     <ClInclude Include="globals.h" />
     <ClInclude Include="hooks\audiovisuals\sfxhooks.h" />
     <ClInclude Include="hooks\byte_operations_utils.h" />
@@ -551,6 +549,7 @@
     <ClInclude Include="lib_src\yaml-cpp\tag.h" />
     <ClInclude Include="lib_src\yaml-cpp\token.h" />
     <ClInclude Include="SCBW\stat_txt_spec.h" />
+    <ClInclude Include="UnitConstants.h" />
     <ClInclude Include="Utils\captivating_claws.h" />
     <ClInclude Include="hooks\interface\extender\selection_extender.h" />
     <ClInclude Include="hooks\limits\ccmu.h" />

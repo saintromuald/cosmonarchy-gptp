@@ -1,7 +1,6 @@
 #include "weapon_damage.h"
 #include "../../SCBW/api.h"
 #include <algorithm>
-#include "CUnitExtended.h"
 #include "MathUtils.h"
 #include "../orders/spells/hallucination_spell.h"
 #include "Utils/captivating_claws.h"
