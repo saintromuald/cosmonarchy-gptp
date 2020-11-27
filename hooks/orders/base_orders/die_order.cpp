@@ -21,8 +21,6 @@ void orders_Die(CUnit* unit) {
 
 	bool jump_to_795AB = false;
 
-	CUnitExtended::unitDie(unit);
-
 	if(unit->userActionFlags & 4)
 		hideAndDisableUnit(unit);
 
