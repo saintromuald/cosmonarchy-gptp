@@ -26,6 +26,6 @@ static constexpr int operator "" s(long double amount) {
 // Note: I would recommend having unit name as first segment of any related variable name.
 
 // Madcap
-constexpr int MADCAP_PASSIVE_DECAY_TIME = 1s;
+constexpr int MADCAP_PASSIVE_DECAY_TIME = 0.5s;
 constexpr int MADCAP_MAX_STACKS = 10;
 constexpr double MADCAP_ATTACK_SPEED_PER_STACK = 0.05;
