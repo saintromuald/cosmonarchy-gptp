@@ -271,11 +271,8 @@ namespace hooks {
 			bool lurkerOverride = false;
 			if (bullet->sourceUnit && (CUnit*)scbw::get_generic_value(bullet->sourceUnit, ValueId::LurkerPickTarget) == target) {
 				lurkerOverride = true;
-				scbw::printText("Override");
 			}
-			scbw::printFormattedText("Target is %X, PickTarget is %X-%X", (u32)target,(u32)bullet->sourceUnit,(u32)scbw::get_generic_unit(bullet->sourceUnit, ValueId::LurkerPickTarget));
 			if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && !lurkerOverride && target != bullet->attackTarget.unit) {
-				scbw::printText("Continue");
 				continue;
 			}
 		}    
