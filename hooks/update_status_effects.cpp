@@ -78,6 +78,9 @@ public:
 		if (booster == unit) {
 			return;
 		}
+		if (!(booster->status & UnitStatus::Completed)) {
+			return;
+		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::ResourceContainer) {
 			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::MineralSpecialRegenTimer, 24, 0);
 		}
@@ -93,6 +96,9 @@ public:
 
 	void proc(CUnit* unit) {
 		if (booster == unit) {
+			return;
+		}
+		if (!(booster->status & UnitStatus::Completed)) {
 			return;
 		}
 		if (scbw::isAlliedTo(unit->playerId, booster->playerId) && scbw::isZergEgg(unit->id,true,false)) {

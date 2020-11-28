@@ -455,7 +455,7 @@ namespace hooks {
 					unit->building.resource.resourceAmount++;
 					scbw::refreshConsole();
 				}
-				else if (unit->building.resource.resourceAmount < 1500) {
+				else if (unit->building.resource.resourceAmount < 5000) {
 					unit->building.resource.resourceAmount++;		
 					if (unit->id >= UnitId::mineral_field_1 && unit->id <= UnitId::mineral_field_3) {
 						updateMineralPatchImage(unit);
