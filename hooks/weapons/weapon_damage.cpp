@@ -821,6 +821,11 @@ namespace hooks {
 				}
 			}
 
+			// Petrification - Gorgon behavior
+			if (GorgonCondition(attacker, target)) {
+				scbw::refreshDebuffs(target);
+			}
+
 			if (attacker != NULL) { // looks like target will always be alive if this function was called?
 				if (scbw::get_aise_value(target, 0, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0) >= 1) {
 					CUnit* haluAttacker = attacker;
@@ -842,7 +847,7 @@ namespace hooks {
 							}
 						}
 					}
-				}					
+				}
 
 				if (damage >= target->hitPoints) { // <- keep this as hitPoints, because the damage is already calculated to include armor, shields and damage factor calculations
 
@@ -920,6 +925,17 @@ namespace hooks {
 
 		}
 
+	}
+
+	bool GorgonCondition(CUnit* attacker, CUnit* target) {
+		if (attacker != NULL && target != NULL) {
+			if (attacker->id == UnitId::TerranGorgon) {
+				if (scbw::isStunned(target) || scbw::isSlowed(target)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 } //hooks
 namespace {

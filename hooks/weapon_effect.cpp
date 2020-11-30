@@ -107,9 +107,6 @@ namespace hooks {
 		if (isUnsafeCyprianBullet(bullet,weaponId)){
 			r = 40;
 		}
-		if (GorgonCondition(bullet)) {
-			r = 36;
-		}
 		// Probing Incisors - Gorgoleth passive
 		if (isChargedGorgolethBullet(bullet, weaponId)) {
 			r = 45;
@@ -167,9 +164,6 @@ namespace hooks {
 			if(isUnsafeCyprianBullet(bullet,weaponId)){
 				outer = 40;
 			}
-			if (GorgonCondition(bullet)) {
-				outer = 36;
-			}
 			// Probing Incisors - Gorgoleth passive
 			if (isChargedGorgolethBullet(bullet, weaponId)) {
 				outer = 45;
@@ -197,9 +191,6 @@ namespace hooks {
 			if (isUnsafeCyprianBullet(bullet,weaponId)){
 				inner = 15;
 			}
-			if (GorgonCondition(bullet)) {
-				inner = 12;
-			}
 			// Probing Incisors - Gorgoleth passive
 			if (isChargedGorgolethBullet(bullet, weaponId)) {
 				inner = 30;
@@ -224,9 +215,6 @@ namespace hooks {
 			// Safety Off - Cyprian ability
 			if(isUnsafeCyprianBullet(bullet,weaponId)){
 				medium = 25;
-			}
-			if (GorgonCondition(bullet)) {
-				medium = 24;
 			}
 			// Probing Incisors - Gorgoleth passive
 			if (isChargedGorgolethBullet(bullet, weaponId)) {
@@ -338,18 +326,6 @@ namespace hooks {
 		return false;
 	}
 
-	bool GorgonCondition(CBullet* bullet) {
-		if (bullet->sourceUnit != NULL && bullet->attackTarget.unit != NULL) {
-			auto target = bullet->attackTarget.unit;
-			if (bullet->sourceUnit->id == UnitId::TerranGorgon) {
-				if (scbw::isStunned(target) || scbw::isSlowed(target)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
 	const u32 Func_turnUnit = 0x00495F20;
 	void turnUnit(CUnit* a1, char a2) {
 		__asm {
@@ -375,10 +351,6 @@ namespace hooks {
 		if(isUnsafeCyprianBullet(bullet,weaponId)) {
 			friendlySplash(bullet, weaponId, SplashType::Radial);
 			//scbw::printText("Cyprian - Execute splash instead of normal");
-			return;
-		}
-		if (GorgonCondition(bullet)) {
-			friendlySplash(bullet, weaponId, SplashType::FriendlyNew);
 			return;
 		}
 		if (isChargedGorgolethBullet(bullet, weaponId)) {

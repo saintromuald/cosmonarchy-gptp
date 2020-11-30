@@ -12,6 +12,7 @@ void weaponDamageHook(s32     damage,
                       s8      direction,
                       u8      dmgDivisor);
 
+bool GorgonCondition(CUnit* attacker, CUnit* target);
 void injectWeaponDamageHook();
 
 } //hooks

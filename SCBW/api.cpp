@@ -1435,113 +1435,114 @@ u8 hasOverlay(CUnit* unit) {
 
 }
 
-;
-void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer, CUnit* creator) {
-	for (int i = 0; i < count; i++) {
-		CUnit* unit = scbw::createUnitIngame(UnitId::ZergBroodling, playerId, x, y, creator);
-		if (unit != nullptr) {
-			scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
-			if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
-				unit->removeTimer = removeTimer;
-			}
-			scbw::sendGPTP_aise_cmd(unit, creator, GptpId::SetGenericUnit, ValueId::BroodlingMother, 0, 0);
+	void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer, CUnit* creator) {
+		for (int i = 0; i < count; i++) {
+			CUnit* unit = scbw::createUnitIngame(UnitId::ZergBroodling, playerId, x, y, creator);
+			if (unit != nullptr) {
+				scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
+				if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
+					unit->removeTimer = removeTimer;
+				}
+				scbw::sendGPTP_aise_cmd(unit, creator, GptpId::SetGenericUnit, ValueId::BroodlingMother, 0, 0);
 
-			if (creator != NULL) creator->energy = std::min((u16)(creator->energy + (u16)5 * (u16)256), creator->getMaxEnergy()); // Parasite and Incubators
+				if (creator != NULL) creator->energy = std::min((u16)(creator->energy + (u16)5 * (u16)256), creator->getMaxEnergy()); // Parasite and Incubators
+			}
 		}
 	}
-}
-void rangeModifiedFire(u8 weaponId, CUnit* unit, s16 x, s16 y, u32 offset) {
-	auto target_unit = unit->orderTarget.unit;
-	auto target_pos = unit->orderTarget.pt;
-	auto distance = scbw::getDistanceFast(unit->position.x, unit->position.y,
-		unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y);
-	distance += offset;
-	if (distance < 0) {
-		distance = 0;
-	}
-	auto polar_x = unit->getX() + scbw::getPolarX(distance, unit->currentDirection1);
-	auto polar_y = unit->getY() + scbw::getPolarY(distance, unit->currentDirection1);
-	unit->orderTarget.unit = NULL;
-	unit->orderTarget.pt.x = polar_x;
-	unit->orderTarget.pt.y = polar_y;
-	createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
-	unit->orderTarget.unit = target_unit;
-	unit->orderTarget.pt = target_pos;
-}
 
-int getBroodlingCountFromSupply(CUnit* unit) {
-	if (units_dat::GroupFlags[unit->id].isBuilding) return 0;
-	if (units_dat::SupplyProvided[unit->id] > 0) return 0;
-	return std::max((int)units_dat::SupplyRequired[unit->id], 1);
-}
-
-CUnit** getSourceQueens(CUnit* unit) {
-	CUnit* queens[2] = { NULL };
-	if (unit == NULL) return queens; // <- prevents crash from incubators, but does not fix the issue
-	queens[0] = scbw::get_generic_unit(unit, ValueId::BroodlingMother);
-	queens[1] = scbw::get_generic_unit(unit, ValueId::ParasiteSource);
-	return queens;
-}
-
-const u32 Func_unitDeathSomething_0 = 0x004E6340;
-void hideAndDisableUnit(CUnit* unit) {
-
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_unitDeathSomething_0
-		POPAD
+	void rangeModifiedFire(u8 weaponId, CUnit* unit, s16 x, s16 y, u32 offset) {
+		auto target_unit = unit->orderTarget.unit;
+		auto target_pos = unit->orderTarget.pt;
+		auto distance = scbw::getDistanceFast(unit->position.x, unit->position.y,
+			unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y);
+		distance += offset;
+		if (distance < 0) {
+			distance = 0;
+		}
+		auto polar_x = unit->getX() + scbw::getPolarX(distance, unit->currentDirection1);
+		auto polar_y = unit->getY() + scbw::getPolarY(distance, unit->currentDirection1);
+		unit->orderTarget.unit = NULL;
+		unit->orderTarget.pt.x = polar_x;
+		unit->orderTarget.pt.y = polar_y;
+		createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+		unit->orderTarget.unit = target_unit;
+		unit->orderTarget.pt = target_pos;
 	}
 
-}
-;
-bool canUseCliffAdvantage(CUnit* unit, u8 weapon) {
-	if (unit == NULL)
-		return false;
-	return (!(unit->status & UnitStatus::InAir)
-	&& (unit->id != UnitId::ProtossScarab)
-	&& (weapon == NULL || weapons_dat::MaxRange[weapon] > 32));
-}
-int dir_saturate(int direction, int value) {
-	int d = direction + value;
-	if (d > 255) {
-		return d - 255;
+	int getBroodlingCountFromSupply(CUnit* unit) {
+		if (units_dat::GroupFlags[unit->id].isBuilding) return 0;
+		if (units_dat::SupplyProvided[unit->id] > 0) return 0;
+		return std::max((int)units_dat::SupplyRequired[unit->id], 1);
 	}
-	if (d < 0) {
-		return d + 255;
-	}
-	return d;
-}
-u32 get_sized_overlay(CUnit* unit, u32 initial) {
 
-	u32 overlayImageId;
-	if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
-		overlayImageId = initial + 1;
-	else
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
-			overlayImageId = initial + 2;
+	CUnit** getSourceQueens(CUnit* unit) {
+		CUnit* queens[2] = { NULL };
+		if (unit == NULL) return queens; // <- prevents crash from incubators, but does not fix the issue
+		queens[0] = scbw::get_generic_unit(unit, ValueId::BroodlingMother);
+		queens[1] = scbw::get_generic_unit(unit, ValueId::ParasiteSource);
+		return queens;
+	}
+
+	const u32 Func_unitDeathSomething_0 = 0x004E6340;
+	void hideAndDisableUnit(CUnit* unit) {
+
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_unitDeathSomething_0
+			POPAD
+		}
+
+	}
+	
+	bool canUseCliffAdvantage(CUnit* unit, u8 weapon) {
+		if (unit == NULL)
+			return false;
+		return (!(unit->status & UnitStatus::InAir)
+		&& (unit->id != UnitId::ProtossScarab)
+		&& (weapon == NULL || weapons_dat::MaxRange[weapon] > 32));
+	}
+
+	int dir_saturate(int direction, int value) {
+		int d = direction + value;
+		if (d > 255) {
+			return d - 255;
+		}
+		if (d < 0) {
+			return d + 255;
+		}
+		return d;
+	}
+
+	u32 get_sized_overlay(CUnit* unit, u32 initial) {
+		u32 overlayImageId;
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
+			overlayImageId = initial + 1;
 		else
-			overlayImageId = initial;
-	return overlayImageId;
-}
-
-s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
-	if (unit == NULL)
-		return 0;
-	if (!canUseCliffAdvantage(unit, weapon))
-		return 0;
-	u32 cliffAdvantage = 0;
-	Point16 targetPoint;
-	CUnit* targetUnit = unit->orderTarget.unit;
-	if (targetUnit != NULL && !(targetUnit->status & UnitStatus::InAir)) {
-		targetPoint = targetUnit->position;
-	} else {
-		targetPoint = unit->orderTarget.pt;
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
+				overlayImageId = initial + 2;
+			else
+				overlayImageId = initial;
+		return overlayImageId;
 	}
-	s32 sourceHeight = scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight;
-	s32 targetHeight = scbw::getActiveTileAt(targetPoint.x, targetPoint.y).groundHeight;
-	return (sourceHeight - targetHeight) / 2;
-}
+
+	s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
+		if (unit == NULL)
+			return 0;
+		if (!canUseCliffAdvantage(unit, weapon))
+			return 0;
+		u32 cliffAdvantage = 0;
+		Point16 targetPoint;
+		CUnit* targetUnit = unit->orderTarget.unit;
+		if (targetUnit != NULL && !(targetUnit->status & UnitStatus::InAir)) {
+			targetPoint = targetUnit->position;
+		} else {
+			targetPoint = unit->orderTarget.pt;
+		}
+		s32 sourceHeight = scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight;
+		s32 targetHeight = scbw::getActiveTileAt(targetPoint.x, targetPoint.y).groundHeight;
+		return (sourceHeight - targetHeight) / 2;
+	}
 
 	void restoreFunc(CUnit* unit) {
 		u32 overlayImageId;
@@ -1650,6 +1651,69 @@ s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
 		// Remove Devourer Acid Spores
 		if (unit->acidSporeCount != 0)
 			unit->removeAcidSpores();
+
+		//was hardcoded in original code
+		scbw::refreshConsole();
+	}
+
+	void refreshDebuffs(CUnit* unit) {
+		u32 overlayImageId;
+		CUnit* overlayTargetUnit;
+
+		// TODO: Add read for refreshing timers
+/*		if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
+			overlayImageId = ImageId::RestorationHit_Medium;
+		else
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
+				overlayImageId = ImageId::RestorationHit_Large;
+			else
+				overlayImageId = ImageId::RestorationHit_Small;
+		if (unit->subunit != NULL)
+			overlayTargetUnit = unit->subunit;
+		else
+			overlayTargetUnit = unit;
+		(overlayTargetUnit->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);*/
+
+		// NOTE: classic timers should be divided by 2.5 to get the value in seconds
+
+		// Reset Ensnare
+		if (unit->ensnareTimer != 0) {
+			unit->ensnareTimer = 37;
+			//specific update following ensnare removal
+			unit->updateSpeed();
+		}
+
+		// Reset Malediction
+		if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 0) {
+			scbw::set_generic_timer(unit, ValueId::MaledictionSlow, 4*24);
+		}
+
+		// Reset Knockout Drivers
+		if (scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) > 0) {
+			scbw::set_generic_timer(unit, ValueId::KnockoutDriversTimer, 2*24);
+		}
+
+		// Reset Captivating Claws
+		if (scbw::get_generic_timer(unit, ValueId::CaptivatingClawsTimer) > 0) {
+			scbw::set_generic_timer(unit, ValueId::CaptivatingClawsTimer, 1*24);
+		}
+
+		// Reset Lobotomy Mine slow
+		if (scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0) {
+			scbw::set_generic_timer(unit, ValueId::LobotomySlow, 6*24);
+		}
+
+		// Reset Lockdown
+		if (unit->lockdownTimer != 0)
+			unit->lockdownTimer = 7;
+
+		// Reset Maelstrom
+		if (unit->maelstromTimer != 0)
+			unit->maelstromTimer = 10;
+
+		// Reset Devourer Acid Spores
+		if (unit->acidSporeCount != 0)
+			unit->acidSporeTime[unit->acidSporeCount] = 25;
 
 		//was hardcoded in original code
 		scbw::refreshConsole();

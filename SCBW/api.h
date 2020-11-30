@@ -309,72 +309,74 @@ u16 random();
 /// @name Needs research
 //////////////////////////////////////////////////////////////// @{
 
-/// Tells StarCraft to refresh the console (current button set, unit portrait,
-/// and status bar). not completely understood.
-void refreshConsole();
+    /// Tells StarCraft to refresh the console (current button set, unit portrait,
+    /// and status bar). not completely understood.
+    void refreshConsole();
 
-// Moves the camera/screen to the unit
-void MoveScreenToUnit(CUnit* unit, u32 playerId = 8);
+    // Moves the camera/screen to the unit
+    void MoveScreenToUnit(CUnit* unit, u32 playerId = 8);
 
-// Creates a minimap ping at x,y (relative pos)
-void minimapPing(u32 x, u32 y, s32 color, u32 playerId = 8);
+    // Creates a minimap ping at x,y (relative pos)
+    void minimapPing(u32 x, u32 y, s32 color, u32 playerId = 8);
 
 // Functionally identical to the [playfram] opcode in iscript.bin.
-inline void playFrame(CImage* image, u16 frameset) {
-  if (image->frameSet != frameset) {
-    image->frameSet = frameset;
-    u16 frameIndex = frameset + image->direction;
-    if (image->frameIndex != frameIndex) {
-		image->flags |= CImage_Flags::Redraw;	//Order the game to redraw the image
-		image->frameIndex = frameIndex;
+    inline void playFrame(CImage* image, u16 frameset) {
+        if (image->frameSet != frameset) {
+            image->frameSet = frameset;
+            u16 frameIndex = frameset + image->direction;
+            if (image->frameIndex != frameIndex) {
+		        image->flags |= CImage_Flags::Redraw;	//Order the game to redraw the image
+		        image->frameIndex = frameIndex;
+            }
+        }
     }
-  }
-}
 
 /// Sets the data of the Anywhere location.
-inline void setAnywhereLocation() {
-  LOCATION* location = &locationTable[63];
-  location->dimensions.left   = 0;
-  location->dimensions.top    = 0;
-  location->dimensions.right  = 32 * mapTileSize->width;
-  location->dimensions.bottom = 32 * mapTileSize->height;
-  location->flags = 63;
-}
+    inline void setAnywhereLocation() {
+        LOCATION* location = &locationTable[63];
+        location->dimensions.left   = 0;
+        location->dimensions.top    = 0;
+        location->dimensions.right  = 32 * mapTileSize->width;
+        location->dimensions.bottom = 32 * mapTileSize->height;
+        location->flags = 63;
+    }
 
 /// Sets the data of location @p locNumber.
-inline void setLocation(int locNumber, int left, int top, int right, int bottom, int flags) {
-  LOCATION* location = &locationTable[locNumber];
-  location->dimensions.left   = left;
-  location->dimensions.top    = top;
-  location->dimensions.right  = right;
-  location->dimensions.bottom = bottom;
-  location->flags = flags;
-}
+    inline void setLocation(int locNumber, int left, int top, int right, int bottom, int flags) {
+      LOCATION* location = &locationTable[locNumber];
+      location->dimensions.left   = left;
+      location->dimensions.top    = top;
+      location->dimensions.right  = right;
+      location->dimensions.bottom = bottom;
+      location->flags = flags;
+    }
 
 /// Sets or clears the "is currently inside the game loop" property.
 /// This must be called in nextFrame() to use scbw::random() there.
-inline bool setInGameLoopState(bool newState) {
-  //Identical to function @ 0x004DC540
-  Bool32 previousState = *IS_IN_GAME_LOOP;
-  *IS_IN_GAME_LOOP = (newState ? 1 : 0);
-  return previousState != 0;
-}
+    inline bool setInGameLoopState(bool newState) {
+      //Identical to function @ 0x004DC540
+      Bool32 previousState = *IS_IN_GAME_LOOP;
+      *IS_IN_GAME_LOOP = (newState ? 1 : 0);
+      return previousState != 0;
+    }
 
 //////////////////////////////////////////////////////////////// @}
 
-void rangeModifiedFire(u8 weaponId, CUnit* unit, s16 x, s16 y, u32 offset);
-int getBroodlingCountFromSupply(CUnit* unit);
-void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, CUnit* attacker = NULL);
-CUnit** getSourceQueens(CUnit* unit);
-u16 getLastQueueSlotType(CUnit* a1);
-bool canUseCliffAdvantage(CUnit* unit, u8 weapon = NULL);
-int dir_saturate(int direction, int value);
-s32 getCliffAdvantage(CUnit* unit, u8 weapon = NULL);
-void setOffsetToParentSpecialOverlay(CImage* image);
-void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType);
-CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType);
-bool isSlowed(CUnit* unit);
-bool isStunned(CUnit* unit);
-void restoreFunc(CUnit* unit);
-void hideAndDisableUnit(CUnit* unit);
+    void rangeModifiedFire(u8 weaponId, CUnit* unit, s16 x, s16 y, u32 offset);
+    int getBroodlingCountFromSupply(CUnit* unit);
+    void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, CUnit* attacker = NULL);
+    CUnit** getSourceQueens(CUnit* unit);
+    u16 getLastQueueSlotType(CUnit* a1);
+    bool canUseCliffAdvantage(CUnit* unit, u8 weapon = NULL);
+    int dir_saturate(int direction, int value);
+    s32 getCliffAdvantage(CUnit* unit, u8 weapon = NULL);
+    void setOffsetToParentSpecialOverlay(CImage* image);
+    void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType);
+    CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType);
+    bool isSlowed(CUnit* unit);
+    bool isStunned(CUnit* unit);
+    void restoreFunc(CUnit* unit);
+    void refreshDebuffs(CUnit* unit);
+    void hideAndDisableUnit(CUnit* unit);
+
 } //scbw
