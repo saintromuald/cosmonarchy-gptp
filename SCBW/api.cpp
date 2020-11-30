@@ -1674,7 +1674,8 @@ u8 hasOverlay(CUnit* unit) {
 			overlayTargetUnit = unit;
 		(overlayTargetUnit->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);*/
 
-		// NOTE: classic timers should be divided by 2.5 to get the value in seconds
+		// NOTE: classic timer formula is (([real seconds / 0.042) / 8)
+		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
 
 		// Reset Ensnare
 		if (unit->ensnareTimer != 0) {
@@ -1705,15 +1706,15 @@ u8 hasOverlay(CUnit* unit) {
 
 		// Reset Lockdown
 		if (unit->lockdownTimer != 0)
-			unit->lockdownTimer = 7;
+			unit->lockdownTimer = 18;
 
 		// Reset Maelstrom
 		if (unit->maelstromTimer != 0)
-			unit->maelstromTimer = 10;
+			unit->maelstromTimer = 12;
 
 		// Reset Devourer Acid Spores
 		if (unit->acidSporeCount != 0)
-			unit->acidSporeTime[unit->acidSporeCount] = 25;
+			unit->acidSporeTime[unit->acidSporeCount] = 30;
 
 		//was hardcoded in original code
 		scbw::refreshConsole();
