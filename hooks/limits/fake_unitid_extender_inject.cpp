@@ -156,39 +156,22 @@ namespace hooks {
 	}
 	const u32 f9special = 0x00497157;
 	void __declspec(naked) flingyWrapper9() {
-	/*	static u32 regPtrOffset;
-		static u8 spriteId;//must be fixed later
+		static u32 flingyPtr;
+		static u32 regPtrOffset;
+		static u32 f9special = 0x00497148 + 7;
 		__asm {
 			MOV regPtrOffset, EAX
 			PUSHAD
 		}
-		spriteId = scbw::getFlingyData(FlingyDatEntries::SpriteId, regPtrOffset);
+		flingyPtr = get_flingy_ptr_val() + regPtrOffset * 4;
 		__asm {
 			POPAD
-			MOVZX EDX,spriteId
-			JMP f9special
-		}*/
-
-		static u32 unitId;
-		static u32 flingyId;
-		static u16 spriteId;
-		__asm {
-			MOV unitId, EAX
-			PUSHAD
-		}
-		flingyId = scbw::getUnitData(UnitsDatEntries::Flingy, unitId);
-		spriteId = scbw::getFlingyData(FlingyDatEntries::SpriteId, flingyId);
-		__asm {
-			POPAD
-			MOVZX EDX,spriteId
+			PUSH ESI
+			MOV ESI, flingyPtr
+			MOV EDX, [ESI]
+			POP ESI
 			JMP f9special
 		}
-
-
-		/*
-00497148  |.  0FB690 F84466>|MOVZX EDX,BYTE PTR DS:[EAX+6644F8]
-0049714F  |.  0FB71455 18A3>|MOVZX EDX,WORD PTR DS:[EDX*2+6CA318]
-		*/
 	}
 	void __declspec(naked) flingyWrapper10() {
 		static u32 flingyPtr;
@@ -237,11 +220,9 @@ namespace hooks {
 		//test/
 		
 		jmpPatch(flingyWrapper1, 0x00454317, 2);//updateSpeed
-		
+
 		jmpPatch(flingyWrapper2, 0x00463A71, 2);//unk1
-		
-//		jmpPatch(flingyWrapper3, 0x004683C6, 2);//CancelUnit, wrapper must be enabled only if unit morph hooks are disabled
-		
+//		jmpPatch(flingyWrapper3, 0x004683C6, 2);//CancelUnit, wrapper must be enabled only if unit morph hooks are disabled	
 //		jmpPatch(flingyWrapper4, 0x0047B854, 2); // calculate turn speed, wrapper must be enabled only if speed hooks are disabled
 //		jmpPatch(flingyWrapper5, 0x0047B8A4, 2); //calculate acceleration, wrapper must be enabled only if speed hooks are disabled
 		jmpPatch(flingyWrapper6, 0x0047B8F4, 2); //calculate speed change
