@@ -180,6 +180,7 @@ namespace hooks {
 			MOV regPtrOffset, EBX
 			PUSHAD
 		}
+		scbw::printFormattedText("Flingy init ptr %X", get_flingy_ptr_val());
 		flingyPtr = get_flingy_ptr_val() + regPtrOffset*4;
 		__asm {
 			POPAD

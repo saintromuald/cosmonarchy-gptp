@@ -9,7 +9,7 @@
 namespace hooks {
 	void loadAiseSamaseData() {
 		hooks::sfxExtenderGetCount();
-		//hooks::unitsDatWrapperPatches();
+		hooks::unitsDatWrapperPatches();
 	}
 	const u32 jmp_004DAF36 = 0x004DAF36;
 	void __declspec(naked) preInitDataWrapper() {
