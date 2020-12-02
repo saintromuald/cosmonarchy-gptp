@@ -226,11 +226,14 @@ namespace hooks {
 //		jmpPatch(flingyWrapper4, 0x0047B854, 2); // calculate turn speed, wrapper must be enabled only if speed hooks are disabled
 //		jmpPatch(flingyWrapper5, 0x0047B8A4, 2); //calculate acceleration, wrapper must be enabled only if speed hooks are disabled
 		jmpPatch(flingyWrapper6, 0x0047B8F4, 2); //calculate speed change
-		jmpPatch(flingyWrapper7, 0x0048D756, 2); //getUnitPlaceboxSize 
+		/*jmpPatch(flingyWrapper7, 0x0048D756, 2); //getUnitPlaceboxSize 
 		jmpPatch(flingyWrapper8, 0x0048DA8A, 2); //unk2
 		jmpPatch(flingyWrapper9, 0x00497148, 2); //InitSpriteVisionSync 
 		jmpPatch(flingyWrapper10, 0x0049ED0B, 2); //InitializeUnit
-		jmpPatch(flingyWrapper11, 0x004E9A10, 2); //Unburrow_Generic
+		jmpPatch(flingyWrapper11, 0x004E9A10, 2); //Unburrow_Generic*///debug testing
+
+
+
 		/*
 	Line 125772: 00454317  |.  0FB680 F84466>MOVZX EAX,BYTE PTR DS:[EAX+6644F8] //EAX <- EAX //DONE
 	Line 148264: 00463A71  |.  0FB68F F84466>MOVZX ECX,BYTE PTR DS:[EDI+6644F8] //ECX <- EDI //DONE
