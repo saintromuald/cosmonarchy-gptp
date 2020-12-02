@@ -183,10 +183,10 @@ namespace hooks {
 		flingyPtr = get_flingy_ptr_val() + regPtrOffset*4;
 		__asm {
 			POPAD
-			PUSH ESI
-			MOV ESI, flingyPtr
-			MOV EAX, [ESI]
-			POP ESI
+			PUSH EDX
+			MOV EDX, flingyPtr
+			MOVZX EAX, [EDX]
+			POP EDX
 			JMP wrapper10Jmp
 		}
 	}
@@ -227,7 +227,7 @@ namespace hooks {
 //		jmpPatch(flingyWrapper5, 0x0047B8A4, 2); //calculate acceleration, wrapper must be enabled only if speed hooks are disabled
 		jmpPatch(flingyWrapper6, 0x0047B8F4, 2); //calculate speed change
 		jmpPatch(flingyWrapper7, 0x0048D756, 2); //getUnitPlaceboxSize 
-		/*jmpPatch(flingyWrapper8, 0x0048DA8A, 2); //unk2
+		jmpPatch(flingyWrapper8, 0x0048DA8A, 2); //unk2
 		jmpPatch(flingyWrapper9, 0x00497148, 2); //InitSpriteVisionSync 
 		jmpPatch(flingyWrapper10, 0x0049ED0B, 2); //InitializeUnit
 		jmpPatch(flingyWrapper11, 0x004E9A10, 2); //Unburrow_Generic*///debug testing
