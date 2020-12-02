@@ -163,7 +163,7 @@ void spawnCreeper(CUnit* unit) {
 				tile_x * 32,
 				tile_y * 32,
 				UnitId::nydus_canal
-			);
+			);//apply creep
 			func_0047D770(creep_spawned);
 
 			creep_spawned->status |= UnitStatus::Invincible;
@@ -611,29 +611,41 @@ namespace hooks {
 							}
 						}
 					}
-				}/*
-				if (unit->id == UnitId::Special_IonCannon) {
-					auto turret = unit->getOverlay(1256);
-					if (unit->sprite && turret) {
-						
-						const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlaySpecialPtr,
-							1256));
-						u8 frameDirection = turret->direction;
-						Point8 offset = loFile->getOffset(frameDirection, 0);
-						if (turret->flags & CImage_Flags::Mirrored) {
-							offset.x = -offset.x;
+				}
+	/*			if (unit->id == UnitId::Special_IonCannon) {
+					const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlaySpecialPtr,
+						1255));
+//						u8 frameDirection = turret->direction;
+					u8 frameDirection = unit->sprite->mainGraphic->direction;
+					auto tryOverlay = unit->getOverlay(1256);
+					bool mirror = false;
+					if (tryOverlay) {
+						frameDirection = tryOverlay->direction;
+						if (tryOverlay->flags & CImage_Flags::Mirrored) {
+							mirror = true;
+							scbw::printText("Mirrored");
 						}
-						auto turretOverlay = unit->getOverlay(1257);
-						if (!turretOverlay) {
-							CImage* cannonOverlay = unit->sprite->createOverlay(1257, offset.x, offset.y, turret->direction);
-						}
-						else {
-							turretOverlay->direction = turret->direction;
-							turretOverlay->horizontalOffset = offset.x;
-							turretOverlay->verticalOffset = offset.y;
-						}
-						
 					}
+					Point8 offset = loFile->getOffset(frameDirection, 0);
+					if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored || mirror) {
+						offset.x = -offset.x;
+					}
+					auto overlay = reinterpret_cast<CSprite*>(scbw::get_generic_value(unit, ValueId::IonCannonSprite));
+					if (overlay == NULL) {
+						auto turret = scbw::createThingy(645, unit->position.x + offset.x, unit->position.y + offset.y, unit->playerId);					
+						turret->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
+						scbw::set_generic_value(unit, ValueId::IonCannonSprite, reinterpret_cast<u32>(turret->sprite));
+						auto fakeTurret = unit->sprite->createTopOverlay(1256, 0, 0, unit->sprite->mainGraphic->direction);
+						fakeTurret->flags |= CImage_Flags::Invisible;
+					}
+					else {
+						overlay->position.x = unit->position.x + offset.x;
+						overlay->position.y = unit->position.y + offset.y;
+						//overlay->mainGraphic->direction = frameDirection;
+						overlay->mainGraphic->setImageDirection(frameDirection);
+						scbw::printFormattedText("Direction is %d, offset is %d %d", frameDirection,offset.x,offset.y);
+					}
+						
 				}*/
 				if (unit->id == UnitId::TerranApostle) {
 					if (scbw::get_generic_value(unit, ValueId::CastLazarusAgent) == 1) {

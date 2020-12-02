@@ -83,6 +83,20 @@ void CImage::initializeData(CSprite *parent, u16 imageId, s8 x, s8 y) {
 		this->coloringData = colorShift[scbw::getImageData(ImagesDatEntries::DrawRemap,imageId)].data;
 }
 
+
+///same as function 0x004D5EA0, direction is 0-31
+void CImage::setImageDirection(u8 direction) {
+	assert(this);
+	constexpr u32 Func_setDir = 0x004D5EA0;
+	__asm {
+		PUSHAD
+		MOV EAX, this
+		PUSH direction
+		CALL Func_setDir
+		POPAD
+	}
+}
+
 GrpFrame* CImage::getCurrentFrame() const {
 	assert(this);
 	return &this->grpOffset->frames[this->frameIndex];

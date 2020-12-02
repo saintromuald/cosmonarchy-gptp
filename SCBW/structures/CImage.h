@@ -81,6 +81,8 @@ struct CImage {
   /// functions, and should not be used by modders.
   void initializeData(CSprite *parent, u16 imageId, s8 x, s8 y);
 
+  void setImageDirection(u8 direction);
+
   /// Return a pointer to the current frame when called
   GrpFrame* getCurrentFrame() const;
 
