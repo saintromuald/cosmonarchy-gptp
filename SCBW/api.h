@@ -362,19 +362,21 @@ u16 random();
 
 //////////////////////////////////////////////////////////////// @}
 
-void rangeModifiedFire(u8 weaponId, CUnit* unit, s16 x, s16 y, u32 offset);
-int getBroodlingCountFromSupply(CUnit* unit);
-void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, CUnit* attacker = NULL);
-CUnit** getSourceQueens(CUnit* unit);
-u16 getLastQueueSlotType(CUnit* a1);
-bool canUseCliffAdvantage(CUnit* unit, u8 weapon = NULL);
-int dir_saturate(int direction, int value);
-s32 getCliffAdvantage(CUnit* unit, u8 weapon = NULL);
-void setOffsetToParentSpecialOverlay(CImage* image);
-void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType);
-CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType);
-bool isSlowed(CUnit* unit);
-bool isStunned(CUnit* unit);
-void restoreFunc(CUnit* unit);
-void hideAndDisableUnit(CUnit* unit);
+    void rangeModifiedFire(u8 weaponId, CUnit* unit, s16 x, s16 y, u32 offset);
+    int getBroodlingCountFromSupply(CUnit* unit);
+    void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, CUnit* attacker = NULL);
+    CUnit** getSourceQueens(CUnit* unit);
+    u16 getLastQueueSlotType(CUnit* a1);
+    bool canUseCliffAdvantage(CUnit* unit, u8 weapon = NULL);
+    int dir_saturate(int direction, int value);
+    s32 getCliffAdvantage(CUnit* unit, u8 weapon = NULL);
+    void setOffsetToParentSpecialOverlay(CImage* image);
+    void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType);
+    CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType);
+    bool isSlowed(CUnit* unit);
+    bool isStunned(CUnit* unit);
+    void restoreFunc(CUnit* unit);
+    void refreshDebuffs(CUnit* unit);
+    void hideAndDisableUnit(CUnit* unit);
+
 } //scbw
