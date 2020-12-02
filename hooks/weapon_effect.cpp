@@ -366,8 +366,7 @@ namespace hooks {
 			divisor = Globals.get_divider(bullet);
 		}
 		else if (weaponId == WeaponId::ViscousAcid) {
-//			divisor = Globals.get_multihit_count(bullet);
-			divisor = 1;
+			divisor = Globals.get_multihit_count(bullet);
 //			scbw::printFormattedText("Get divisor %d, bullet: %X",divisor,bullet);
 		}
 		else if (weaponId == WeaponId::AcidSpore
