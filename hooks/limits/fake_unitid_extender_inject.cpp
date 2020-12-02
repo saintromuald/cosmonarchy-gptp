@@ -174,7 +174,7 @@ namespace hooks {
 		}
 	}
 	void __declspec(naked) flingyWrapper10() {
-		static u32 flingyPtr;
+		/*static u32 flingyPtr;
 		static u32 regPtrOffset;
 		__asm {
 			MOV regPtrOffset, EBX
@@ -189,7 +189,20 @@ namespace hooks {
 			MOV EAX, [EDX]
 			POP EDX
 			JMP wrapper10Jmp
+		}*/
+		static u32 flingyId;
+		static u32 unitId;
+		__asm {
+			MOV unitId, EBX
+			PUSHAD
 		}
+		flingyId = scbw::getUnitData(UnitsDatEntries::Flingy, unitId);
+		__asm {
+			POPAD
+			MOV EAX,flingyId
+			JMP wrapper10Jmp
+		}
+
 	}
 	void __declspec(naked) flingyWrapper11() {
 		static u32 flingyPtr;
