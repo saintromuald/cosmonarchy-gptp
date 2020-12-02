@@ -185,7 +185,7 @@ namespace hooks {
 			POPAD
 			PUSH EDX
 			MOV EDX, flingyPtr
-			MOVZX EAX, [EDX]
+			MOV EAX, [EDX]
 			POP EDX
 			JMP wrapper10Jmp
 		}
