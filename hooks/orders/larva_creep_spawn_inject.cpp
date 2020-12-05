@@ -253,6 +253,29 @@ namespace {
 			RET
 		}
 	}
+	const u32 func_ret = 0x0047DD48;
+	const u32 func_call = 0x00414290;
+	const u32 func_cont = 0x0047DCD3;
+	void __declspec(naked) bugWrapper() {
+		static void* disappearingCreepPtr;
+		__asm {
+			CALL func_call
+			MOV ESI, disappearingCreepPtr
+			PUSHAD
+		}
+		if (disappearingCreepPtr == NULL) {
+			__asm {
+				POPAD
+				JMP func_ret
+			}
+		}
+		else {
+			__asm {
+				POPAD
+				JMP func_cont
+			}
+		}
+	}
 
 } //unnamed namespace
 
@@ -279,6 +302,10 @@ namespace hooks {
 		jmpPatch(spreadsCreep_Wrapper, 0x00413870);
 		jmpPatch(runCreepRandomizer_Wrapper, 0x004140A0);
 
+
+		//
+		jmpPatch(bugWrapper, 0x0047DCCA);//attempt to fix Bug
+		//
 
 		const u32 offs_a = 0x004147A4;
 		const u32 offs_b = 0x004145E7;
@@ -307,5 +334,4 @@ namespace hooks {
 		*(u32*)(&func_f[3]) = (u32)(&inCreepArea_Call) - (offs_f + 3 + 4);
 		memoryPatch(offs_f, func_f, sizeof(func_f));
 	}
-
 }
