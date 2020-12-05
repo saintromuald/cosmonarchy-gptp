@@ -260,7 +260,8 @@ namespace {
 		static void* disappearingCreepPtr;
 		__asm {
 			CALL func_call
-			MOV ESI, disappearingCreepPtr
+			MOV disappearingCreepPtr, ESI
+
 			PUSHAD
 		}
 		if (disappearingCreepPtr == NULL) {
@@ -272,6 +273,7 @@ namespace {
 		else {
 			__asm {
 				POPAD
+				MOVZX ECX, [ESI+0x12]
 				JMP func_cont
 			}
 		}
