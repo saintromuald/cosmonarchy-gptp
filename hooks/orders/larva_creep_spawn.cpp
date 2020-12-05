@@ -205,8 +205,14 @@ namespace hooks {
 			(unit->id == UnitId::ZergInfestedCommandCenter && !(unit->status & UnitStatus::InAir))
 			)
 			secondaryOrd_SpawningLarva(unit);
-		if (unit->building.creepTimer != 0)
-			unit->building.creepTimer--;
+		if (unit->building.creepTimer != 0) {
+			if (unit->building.creepTimer >= 2) {
+				unit->building.creepTimer -= 2;
+			}
+			else {
+				unit->building.creepTimer = 0;
+			}
+		}
 		else {
 
 			//EA8B6:
@@ -386,6 +392,7 @@ namespace hooks {
 		case UnitId::ZergHatchery:
 		case UnitId::ZergCreepColony:
 		case UnitId::ZergInfestedCommandCenter:
+		case UnitId::ZergChrysalis:
 			return isComplete;
 
 		case UnitId::ZergSire:
@@ -395,7 +402,6 @@ namespace hooks {
 		case UnitId::ZergSunkenColony:
 
 		case UnitId::BasiliskCreeper:
-		case UnitId::ZergChrysalis:
 			return true;
 
 		default:
