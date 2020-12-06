@@ -219,6 +219,9 @@ public:
 		if (target->status & UnitStatus::InAir) {
 			return false;
 		}
+		if (scbw::getDistanceFast(martyr->position.x, martyr->position.y, target->position.x, target->position.y) > 288) {
+			return false;
+		}
 		return true;
 
 	}
