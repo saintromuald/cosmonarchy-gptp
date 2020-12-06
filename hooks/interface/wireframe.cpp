@@ -51,7 +51,7 @@ namespace hooks {
 
 	u8 wireframeShields(CUnit* unit) {
 		auto eax = unit->id;
-		u8 al;
+		u8 al = 0;
 		if (units_dat::ShieldsEnabled[unit->id]) {
 			auto lastSlot = scbw::getLastQueueSlotType(unit);
 			u32 maxShields = units_dat::MaxShieldPoints[lastSlot];
@@ -71,7 +71,7 @@ namespace hooks {
 			}
 		}
 		else {
-			auto al = *byteShieldStr;
+			al = *byteShieldStr;
 			*off_50CE81 = al;
 			*off_50CE82 = al;
 		}

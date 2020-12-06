@@ -297,7 +297,6 @@ namespace hooks {
 	char* getUnitRankString(CUnit* a2) { // 0042F370
 		unsigned __int16 _type; // ax
 		int v2; // ecx
-		int v4; // edx
 
 		_type = a2->id;
 		if (units_dat::BaseProperty[_type] & UnitProperty::NeutralAccessories
@@ -315,11 +314,11 @@ namespace hooks {
 			return 0;
 		}*/
 		if (_type != UnitId::TerranBattlecruiser && _type != UnitId::Hero_NoradII && _type != UnitId::Hero_Hyperion
-			|| !(v2 & UnitProperty::Hero)
+			|| !(units_dat::BaseProperty[_type] & UnitProperty::Hero)
 			|| !units_dat::MapStringId[_type])
 		{
 			if (unitGetRace(a2) == 1)                 // Terran
-				return getStatTxtString((unsigned __int8)(a2->rankIncrease + units_dat::Rank[v4]) + 1302);
+				return getStatTxtString((unsigned __int8)(a2->rankIncrease + units_dat::Rank[_type]) + 1302);
 			return 0;
 		}
 		if (statTxtTblNew->getString(570))
