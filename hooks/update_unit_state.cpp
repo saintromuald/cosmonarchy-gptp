@@ -690,26 +690,31 @@ namespace hooks {
 	};
 
 	void incrementUnitScoresEx(int count, CUnit* unit, int increment_scores) { // 0x00488D50
+		
 		if (unit->status & UnitStatus::IsHallucination) {
 			return;
 		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
 			return;
 		}
+		auto player = unit->playerId;
+		auto unit_id = unit->id;
 		completed_unit_counts[unit->id].player[unit->playerId] += count;
+
 		int race = unit->getRace();
 		int supply = units_dat::SupplyProvided[unit->id];
+		
 		if (unit->id == UnitId::EggIroleth) {
 			supply = units_dat::SupplyProvided[UnitId::overlord];
 		}
 		if (unit->id == UnitId::EggOthstoleth) {
 			supply = units_dat::SupplyProvided[UnitId::ZergIroleth];
 		}
-		int supply_new = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SupplyProvidedValue, 0);
-		if (supply_new) supply = supply_new;
-		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SupplyProvidedValue, supply, 0);
-
-		if (unit != NULL) {
+		if (*elapsedTimeFrames > 0) {
+			u32 supply_new = scbw::get_generic_value(unit, ValueId::SupplyProvidedValue);
+			if (supply_new)
+				supply = supply_new;
+			scbw::set_generic_value(unit, ValueId::SupplyProvidedValue, supply);
 			auto supply_overlord_modifier = scbw::get_generic_value(unit, ValueId::OverlordSupplyGimmick);
 			if (supply_overlord_modifier > 0) {
 				switch (supply_overlord_modifier) {
@@ -728,32 +733,35 @@ namespace hooks {
 			}
 			scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 0);
 		}
-		raceSupply[race].provided[unit->playerId] += count * supply;
-		if (units_dat::GroupFlags[unit->id].isFactory) {
+		//
+		if (race <= RaceId::Protoss) {
+			raceSupply[race].provided[player] += count * supply;
+		}
+		if (units_dat::GroupFlags[unit_id].isFactory) {
 			factoriesOwned[unit->playerId] += count;
 		}
-		if (units_dat::GroupFlags[unit->id].isBuilding) {
+		if (units_dat::GroupFlags[unit_id].isBuilding) {
 			buildingsOwned[unit->playerId] += count;
 		}
-		if (units_dat::GroupFlags[unit->id].isMen) {
+		if (units_dat::GroupFlags[unit_id].isMen) {
 			unitsProduced[unit->playerId] += count;
 		}
 		if (increment_scores!=0) {
-			if (units_dat::GroupFlags[unit->id].isMen) {
-				if (!scbw::isAnyMorphMorphResult(unit->id)) {
+			if (units_dat::GroupFlags[unit_id].isMen) {
+				if (!scbw::isAnyMorphMorphResult(unit_id)) {
 					unitsOwned[unit->playerId] += count;
 				}
 				unitScore[unit->playerId] += count;	
 			}
-			else if (units_dat::GroupFlags[unit->id].isBuilding) {
-				if (!scbw::isZergBuildingMorphResult(unit->id)) {
+			else if (units_dat::GroupFlags[unit_id].isBuilding) {
+				if (!scbw::isZergBuildingMorphResult(unit_id)) {
 					buildingsOwned[unit->playerId] += count;
 				}
-				buildingScore[unit->playerId] += count * units_dat::BuildScore[unit->id];
+				buildingScore[unit->playerId] += count * units_dat::BuildScore[unit_id];
 			}
 		}
-		if (completed_unit_counts[unit->id].player[unit->playerId] < 0) {
-			completed_unit_counts[unit->id].player[unit->playerId] = 0;
+		if (completed_unit_counts[unit_id].player[unit->playerId] < 0) {
+			completed_unit_counts[unit_id].player[unit->playerId] = 0;
 		}
 	}
 
