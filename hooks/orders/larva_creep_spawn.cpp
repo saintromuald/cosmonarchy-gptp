@@ -197,14 +197,14 @@ namespace hooks {
 	void secondaryOrd_SpreadCreepSpawningLarva(CUnit* unit) {
 
 		
-		if (
-			unit->id == UnitId::ZergHatchery ||
-			unit->id == UnitId::ZergLair ||
-			unit->id == UnitId::ZergHive ||
-			unit->id == UnitId::ZergSire ||
-			(unit->id == UnitId::ZergInfestedCommandCenter && !(unit->status & UnitStatus::InAir))
-			)
+		if (unit->id == UnitId::ZergHatchery
+		||  unit->id == UnitId::ZergLair
+		||  unit->id == UnitId::ZergHive
+		||  unit->id == UnitId::ZergSire
+		|| (unit->id == UnitId::ZergInfestedCommandCenter && !(unit->status & UnitStatus::InAir))
+			) {
 			secondaryOrd_SpawningLarva(unit);
+		}
 		if (unit->building.creepTimer != 0) {
 			if (unit->building.creepTimer >= 2) {
 				unit->building.creepTimer -= 2;
