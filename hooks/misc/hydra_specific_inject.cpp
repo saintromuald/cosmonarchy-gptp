@@ -364,10 +364,40 @@ namespace hooks {
             }
         }
     }
+
+    void __declspec(naked) checkUnitDatRequirements_Wrapper() {
+        static u32 result;
+        static u32 unit_id;
+        static CUnit* parent;
+        static u32 playerId;
+        __asm {
+            PUSH EBP
+            MOV EBP,ESP
+            MOV unit_id,EAX
+            MOV parent,ESI
+            PUSH EAX
+            MOV EAX, [EBP+0x08]
+            MOV playerId,EAX
+            POP EAX
+            PUSHAD
+        }
+        result = hooks::checkUnitDatRequirements(playerId, unit_id, parent);
+        __asm {
+            POPAD
+            MOV EAX,result
+            MOV ESP,EBP
+            POP EBP
+            RETN 4
+        }
+//        0046E1C0 = CheckUnitDatRequirements(), arg 1 player_id, eax unit_id, esi Unit* parent
+
+    }
     void createBuildingAiWorkaround() {
         jmpPatch(createBuildingAiWorkaround_Wrapper, 0x00404533, 1);
     }
     void injectHydraSpecific() {
+        //jmpPatch(checkUnitDatRequirements_Wrapper, 0x0046E1C0, 1);//must be finished first (+add firegraft offsets)
+
         flingySpeedPatches();
 
         //start of spell order code

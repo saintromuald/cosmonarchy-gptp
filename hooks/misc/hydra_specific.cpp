@@ -1,7 +1,319 @@
 //
 #include "hooks/misc/hydra_specific.h"
 #include "globals.h"
+#include "hooks/orders/unit_making/unit_train.h"
+namespace ReqOpcode {
+	enum {
+
+		Or = 0xff01,
+		CurrentUnitIs = 0xff02,
+		HasUnit = 0xff03,
+		HasAddonAttached = 0xff04,
+		IsNotLifted = 0xff05,
+		IsLifted = 0xff06,
+		IsNotBusyBuilding = 0xff07, 
+		IsNotConstructingAddon = 0xff08, 
+		IsNotTeching=0xff09,
+		IsNotUpgrading=0xff0a,
+		IsNotConstructingBuilding=0xff0b,
+		HasNoAddon=0xff0c,
+		HasNoNydusExit=0xff0d,
+		HasHangarSpace=0xff0e,
+		TechIsResearched=0xff0f,
+		HasNoNuke=0xff10,
+		NotBurrowedOrAIControlled=0xff11,
+		IsNotLandedBuilding=0xff12,
+		IsLandedBuidling=0xff13,
+		CanMove=0xff14,
+		CanAttack=0xff15,
+		IsWorker=0xff16,
+		CanLiftOff=0xff17,
+		IsTransport=0xff18,
+		IsPowerup=0xff19,
+		IsSubunit=0xff1a,
+		HasSpiderMinesOrAddons=0xff1b,
+		IsHero=0xff1c,
+		CanRallyOrRclick=0xff1d,
+		AllowOnHallucinations=0xff1e,
+		UpgradeLevelBasedJump=0xff1f,//0xff20 if level 1, 0xff20 if level >=2
+		Disabled=0xff22,
+		Blank=0xff23,
+		BroodWar=0xff24,
+		IfTechResearched=0xff25,
+		IfBurrowed=0xff26,
+		EndOfSublist = 0xFFFF,
+	};
+}
+
+//u32 parseUnitDatReqs() {
+void parseUnitDatReqs(){
+//	static u32 result;
+	const u32 parseUnitFunc = 0x0046e100;
+	__asm {
+		PUSHAD
+		CALL parseUnitFunc
+//		MOV result,EAX
+		POPAD
+	}
+	//return result;
+}
+
 namespace hooks {
+
+	u32 checkUnitDatRequirements(u8 playerId, u16 unit_id, CUnit* unit) {
+		//
+		//
+		// Warning: This hook don't points to firegraft offsets. Firegraft offsets must be taken into account and added to hook
+		// before using it.
+		//
+		//
+		auto v3 = unit_id;
+		static u32* lastError = (u32*)0x0066FF60;
+		static u16* reqTable = (u16*)0x00514178;
+		*lastError = 0;
+		if (unit_id >= UnitId::None) {
+			*lastError = 16;
+			return 0;
+		}
+		if (playerId != unit->playerId) {
+			*lastError = 1;
+			return 0;
+		}
+		if (!(unit->status & UnitStatus::Completed)) {
+			*lastError = 20;
+			return 0;
+		}
+		if (unit->isFrozen()) {
+			*lastError = 10;
+			return 0;
+		}
+		if (!UnitAvailability->available[unit->playerId][unit->id]) {
+			*lastError = 2;
+			return 0;
+		}
+		if (hooks::isQueueSlotActive(unit, 4)) {//if build queue is full
+		LABEL_86:
+			*lastError = 3;
+			return 0;
+		}
+		if (unit->status & UnitStatus::IsHallucination) {
+			*lastError = 22;
+			return 0;
+		}
+		// 57
+
+
+		if (units_dat::unitsDat43[unit->id] == ReqOpcode::EndOfSublist){
+			parseUnitDatReqs();
+		}
+		int v7 = (u16)units_dat::unitsDat43[unit->id];
+
+		if (units_dat::unitsDat43[unit->id] == 0)
+		{
+		LABEL_93:
+			*lastError = 23;
+			return 0;
+		}
+		auto v26 = 1;
+		auto v25 = 1;
+		int v8 = reqTable[v7];
+		auto v27 = 0;
+		if (v8 == -1)
+			return 1;
+		LABEL_18:
+		auto v9 = 0;
+		auto v28 = 0;
+		auto v11 = 0;
+		auto v24 = 0;
+		CUnit* v12 = 0;
+		auto requiredId = 0;
+/*		while (true)
+		{
+			v8 = (u16)v8;
+			switch (v8)
+			{
+			case ReqOpcode::CurrentUnitIs:
+				requiredId = reqTable[v7++];
+				if (completed_unit_counts[requiredId].player[unit->playerId] > 0)
+					v26 = 0;
+				if (requiredId == unit->id)
+				{
+					v27 = 0;
+					v25 = 0;
+					v11 = v9 + 1;
+					goto LABEL_72;//end
+				}
+				if (v25)
+					v27 = 1;
+				goto LABEL_73;
+			case ReqOpcode::HasUnit:
+				requiredId = reqTable[v7++];
+				v24 = completed_unit_counts[requiredId][unit->playerId]+all_unit_counts[requiredId][unit->playerId];
+				goto LABEL_71;
+			case ReqOpcode::HasAddonAttached:
+				if (*CHEAT_STATE & CheatFlags::ModifyThePhaseVariance)
+				{
+					++v7;
+					v11 = v9 + 1;
+				}
+				else
+				{
+					v12 = unit->building.addon;
+					if (v12!=NULL || (++v7, v12->id != reqTable[v7]))
+					{
+						if (!v27)
+							*lastError = 4;
+						return -1;
+					}
+					v11 = v9 + 1;
+				}
+				goto LABEL_72;
+			case ReqOpcode::IsNotLifted:
+				if (!(parent->statusFlags & 2))
+				{
+					lastInternalErr = 7;
+					return 0;
+				}
+				v11 = v9 + 1;
+				goto LABEL_72;
+			case reqOpcode_Is_not_training_or_morphing:
+				if (unitIsTrainingOrMorphing(parent) || LOBYTE(parent->field_C8) != 44 || BYTE1(parent->field_C8) != 61)
+					goto LABEL_87;
+				++v28;
+				goto LABEL_73;
+			case reqOpcode_Is_not_constructing_addon:
+				LOBYTE(v13) = isConstructingAddon(parent);
+				if (v13)
+					goto LABEL_87;
+				LOBYTE(v15) = isAttemptingProtossBuild(parent);
+				if (v15)
+					goto LABEL_87;
+				v11 = v14 + 1;
+				goto LABEL_72;
+			case reqOpcode_Is_not_researching:
+				if (LOBYTE(parent->field_C8) != 44)
+					goto LABEL_87;
+				v11 = v9 + 1;
+				goto LABEL_72;
+			case reqOpcode_Is_not_upgrading:
+				if (BYTE1(parent->field_C8) != 61)
+					goto LABEL_87;
+				v11 = v9 + 1;
+				goto LABEL_72;
+			case reqOpcode_Is_not_constructing:
+				if (parent->type == 7 && parent->mainOrderType == 33)
+					goto LABEL_87;
+				v11 = v9 + 1;
+				goto LABEL_72;
+			case reqOpcode_Does_not_have_addon_attached:
+				if (parent->field_C0)
+				{
+					if (!v27)
+						lastInternalErr = 4;
+					return 0;
+				}
+				v11 = v9 + 1;
+			LABEL_72:
+				v28 = v11;
+			LABEL_73:
+				if (sgTree[++v7] == -255)
+				{
+					LOWORD(v8) = sgTree[v7];
+					v9 = v28;
+					++v7;
+					continue;
+				}
+				if (!v28 && v26)
+				{
+					lastInternalErr = 8;
+					return -1;
+				}
+				LOWORD(v8) = sgTree[v7];
+				v26 = 1;
+				if ((_WORD)v8 != -1)
+					goto LABEL_18;
+				if (v27)
+				{
+					lastInternalErr = 25;
+					return -1;
+				}
+				return 1;
+			case reqOpcode_Has_hangar_space:
+				v17 = -1;
+				LOBYTE(v18) = unitIsCarrier(parent);
+				if (v18)
+				{
+					v19 = BYTE1(parent->field_C8) + getHangerTrainCount(v16, (int)parent);
+				}
+				else
+				{
+					LOBYTE(v21) = unitIsReaver(parent);
+					if (!v21)
+						goto LABEL_51;
+					v19 = getHangerTrainCount(v20, (int)parent);
+				}
+				v17 = LOBYTE(parent->field_C8) + v19;
+			LABEL_51:
+				if (v17 >= (unsigned __int8)getMaxHangerSpace(parent))
+					goto LABEL_86;
+				++v28;
+				goto LABEL_73;
+			case reqOpcode_Does_not_have_loaded_nuke:
+				if (*(_DWORD*)&parent->field_D0)
+					goto LABEL_86;
+				v11 = v9 + 1;
+				goto LABEL_72;
+			case reqOpcode_Is_not_burrowed:
+				if (parent->statusFlags & 0x10)
+				{
+				LABEL_87:
+					lastInternalErr = 5;
+					return 0;
+				}
+				v11 = v9 + 1;
+				goto LABEL_72;
+			case reqOpcode_Grey:
+				lastInternalErr = 21;
+				return -1;
+			case reqOpcode_Blank:
+				goto LABEL_93;
+			case reqOpcode_Must_be_Brood_War:
+				if (!isExpansion)
+				{
+					lastInternalErr = 26;
+					return 0;
+				}
+				v11 = v9 + 1;
+				goto LABEL_72;
+			case reqOpcode_Is_researched:
+				v10 = sgTree[v7++];
+				if (!isTechResearched(playerID, v10) && !(gameCheatFlags & 0x1000))
+				{
+					lastInternalErr = 9;
+					return -1;
+				}
+				++v28;
+				goto LABEL_73;
+			case reqOpcode_Is_burrowed:
+				if (!(parent->statusFlags & 0x10))
+				{
+					lastInternalErr = 5;
+					return -1;
+				}
+				v11 = v9 + 1;
+				goto LABEL_72;
+			default:
+				if (gameCheatFlags & 0x2000)
+					++v9;
+				v24 = completedUnitCount[0][playerID + 12 * v8];
+			LABEL_71:
+				v11 = v24 + v9;
+				goto LABEL_72;
+			}
+		}*/
+	return 0;
+	}
+
 	u32 realTopSpeed(CFlingy* flingy, u32 flingyId) {
 		u32 speed = scbw::getFlingyData(FlingyDatEntries::TopSpeed, flingyId);
 		return speed;
