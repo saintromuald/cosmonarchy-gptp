@@ -791,7 +791,8 @@ namespace hooks {
 
 			// Essence Drain - Gorgoleth Energy Steal
 			if (attacker != NULL) {
-				if (attacker->id == UnitId::ZergGorgoleth) {
+				if (attacker->id == UnitId::ZergGorgoleth
+				&& units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
 					u16 energy = std::min(target->energy, (u16)(damage + shieldReduceAmount));
 					target->energy -= energy;
 					attacker->energy += energy;

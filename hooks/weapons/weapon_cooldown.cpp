@@ -48,13 +48,6 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 		}
 	}
 
-	// Ravening Mandible upgrade: gains increased attack speed based on current energy
-	if (unit->id==UnitId::ZergGorgoleth) {
-		cooldown *= 0.75;
-		double value = MathUtils::map(unit->energy / 256, 100, 250, 1.0, 0.5, true);
-		cooldown *= value;
-	}
-
 	// Kaiser Rampage upgrade: gains double attack speed for 1 second on kill
 	if (unit->id == UnitId::ZergUltralisk) {
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
