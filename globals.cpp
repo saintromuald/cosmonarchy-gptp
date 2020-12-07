@@ -3,8 +3,8 @@
 #include "hooks/hydraFinder.h"
 globals Globals;
 
-SaveState globals::aise_save() {
-	static SaveState state;
+//SaveState globals::aise_save() {
+void globals::aise_save(){
 	output.clear();
 	std::ostringstream stream(std::stringstream::out|std::stringstream::binary);
 	stream.write(reinterpret_cast<const char*>(&extended_unit_table), sizeof(extended_unit_table));
@@ -64,17 +64,20 @@ SaveState globals::aise_save() {
 	//
 	output = stream.rdbuf()->str();
 	if (output.length() == 0) {
-		return state;
+//		return state;
+		return;
 		//error
 	}
-	state.ptr = output.c_str();
-	state.len = output.size();
-	return state;
+	saveState.ptr = output.c_str();
+	saveState.len = output.size();
+	return;
+//	return state;
 }
 void globals::aise_load(const char* ptr, u32 len){
 	if (len == 0 || ptr==0) {
 		return;//error
 	}
+	scbw::printText("Load....");
 	std::stringstream stream(std::stringstream::in | std::stringstream::out | std::stringstream::binary);
 	std::string str(ptr, len);
 	stream << str;
@@ -119,6 +122,8 @@ void globals::aise_load(const char* ptr, u32 len){
 	}
 	u32 multihitCount = 0;
 	stream.read(reinterpret_cast<char*>(&multihitCount), sizeof(multihitCount));
+	scbw::printFormattedText("Hits: %d", multihitCount);
+	/*
 	for (int i = 0; i < multihitCount; i++) {
 		multihitBullet bull;
 		stream.read(reinterpret_cast<char*>(&bull.bullet), sizeof(bull.bullet));
@@ -144,7 +149,7 @@ void globals::aise_load(const char* ptr, u32 len){
 			stream.read(reinterpret_cast<char*>(&value), sizeof(value));
 			lurkerSpineHits[key].push_back(value);
 		}
-	}
+	}*/
 }
 void globals::reset() {
 	persistImpacts.clear();
@@ -450,7 +455,9 @@ void __declspec(naked) Globals_SaveStateWrapper() {
 	__asm {
 		PUSHAD
 	}
-	state = &Globals.aise_save();
+//	state = &Globals.aise_save();
+	Globals.aise_save();
+	state = &saveState;
 	__asm {
 		POPAD
 		MOV EAX, state
@@ -476,4 +483,7 @@ void __declspec(naked) Globals_LoadStateWrapper() {
 void injectGlobalsHooks() {
 	jmpPatch(Globals_SaveStateWrapper, 0x004AAF23);
 	jmpPatch(Globals_LoadStateWrapper, 0x004AAE94);
+//	const u8 retn = 0xc3;
+//	memoryPatch(0x004AAF23 + 5, &retn, 1);
+//	memoryPatch(0x004AAE94 + 5, &retn, 1);
 }

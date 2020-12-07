@@ -81,7 +81,8 @@ public:
 	int flingy_init_bullet_id;
 	u8 flingy_init_player_id;
 	CBullet* bounce_bullet;
-	SaveState aise_save();
+//	SaveState aise_save();
+	void aise_save();
 	void aise_load(const char* ptr, u32 len);
 	globals() {
 		extended_unit_table = 0;
@@ -119,4 +120,5 @@ public:
 
 void injectGlobalsHooks();
 
+static SaveState saveState;
 extern globals Globals;
