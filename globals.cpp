@@ -77,7 +77,7 @@ void globals::aise_load(const char* ptr, u32 len){
 	if (len == 0 || ptr==0) {
 		return;//error
 	}
-	scbw::printText("Load....");
+	//scbw::printText("Load....");
 	std::stringstream stream(std::stringstream::in | std::stringstream::out | std::stringstream::binary);
 	std::string str(ptr, len);
 	stream << str;
@@ -122,7 +122,7 @@ void globals::aise_load(const char* ptr, u32 len){
 	}
 	u32 multihitCount = 0;
 	stream.read(reinterpret_cast<char*>(&multihitCount), sizeof(multihitCount));
-	scbw::printFormattedText("Hits: %d", multihitCount);
+	//scbw::printFormattedText("Hits: %d", multihitCount);
 	/*
 	for (int i = 0; i < multihitCount; i++) {
 		multihitBullet bull;
