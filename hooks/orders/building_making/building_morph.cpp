@@ -839,13 +839,13 @@ namespace hooks {
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
 			break;
 
-		case UnitId::ZergOverlordIris:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergIrolethQuay, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergOthstolethBerth, ignoreIncomplete);
+		case UnitId::ZergIrolethIris:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergOthstolethOviform, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergAlaszilethArbor, ignoreIncomplete);
 			break;
 
-		case UnitId::ZergIrolethQuay:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergOthstolethBerth, ignoreIncomplete);
+		case UnitId::ZergOthstolethOviform:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergAlaszilethArbor, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergSpire:

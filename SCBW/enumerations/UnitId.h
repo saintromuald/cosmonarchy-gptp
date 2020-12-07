@@ -548,16 +548,16 @@ enum Enum {
 	ZergKalkathBloom								= 147,		// Zerg Overmind (With Shell)
 	ZergGorgolethApiary								= 148,		// Zerg Overmind
 	ZergChrysalis									= 150,		// Mature Chrysalis
-	ZergIrolethQuay									= 152,		// Cerebrate Daggoth
+	ZergOthstolethOviform							= 152,		// Cerebrate Daggoth
 	ZergBasiliskDen									= 153,		// Unused Zerg 2
-	ZergOthstolethBerth								= 181,		// Cantina
+	ZergAlaszilethArbor								= 181,		// Cantina
 	ZergLurkerDen									= 191,		// Zerg Marker
 	ZergDevourerHaunt								= 197,		// Zerg Flag Beacon
 	ZergVorvalPond									= 204,		// Floor Hatch
 	ZergNathrokLake									= 210,		// Left Wall Missile Trap
 	ZergAlkajChasm									= 212,		// Right Wall Missile Trap
 	ZergKeskathGrotto								= 219,		// Khaydarin Crystal
-	ZergOverlordIris								= 224,		// Zerg Gas Sac Type 1
+	ZergIrolethIris									= 224,		// Zerg Gas Sac Type 1
 	ZergSire										= 227,		// Terran Gas Tank Type 2
 
 	};
