@@ -710,8 +710,8 @@ bool isZergBuildingMorphResult(u16 id){
 	case UnitId::ZergVorvalPond:
 	case UnitId::ZergNathrokLake:
 	case UnitId::ZergKalkathBloom:
-	case UnitId::ZergIrolethQuay:
-	case UnitId::ZergOthstolethBerth:
+	case UnitId::ZergOthstolethOviform:
+	case UnitId::ZergAlaszilethArbor:
 		return true;
 	default:
 		break;
@@ -731,8 +731,8 @@ bool isZergBuildingMorphSource(u16 id){
 	case UnitId::ZergHydraliskDen:
 	case UnitId::ZergSpawningPool:
 	case UnitId::ZergNathrokLake:
-	case UnitId::ZergOverlordIris:
-	case UnitId::ZergIrolethQuay:
+	case UnitId::ZergIrolethIris:
+	case UnitId::ZergOthstolethOviform:
 		return true;
 	default:
 		break;
