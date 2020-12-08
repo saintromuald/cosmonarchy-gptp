@@ -64,6 +64,7 @@
 #include "hooks/orders/liftland.h"
 #include "hooks/orders/load_unload_orders.h"
 #include "hooks/load_unload_proc.h"
+#include "hooks/interface/mainmenu/lobby.h"
 #include "hooks/orders/building_making/make_nydus_exit.h"
 #include "hooks/orders/medic_orders.h"
 #include "hooks/orders/merge_units.h"
@@ -554,6 +555,8 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 //	hooks::injectHpBarsHooks();
 	hooks::injectUIFeaturesHooks();
 	hooks::injectTrapHooks();
+
+//	hooks::injectLobbyHooks();
 
 	return TRUE;
 }

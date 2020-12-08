@@ -167,7 +167,7 @@ enum Enum : u8 {
   Neutral = 4,
   Select  = 5,
   Random  = 6,
-  None    = 7,
+  None    = 7, // also called Inactive
 };
 }
 
