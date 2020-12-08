@@ -8,7 +8,7 @@ namespace { // Wrappers
 		__asm {
 			PUSHAD
 		}
-		result = hooks::initGame(a1);
+		result = hooks::initGame();
 		__asm {
 			POPAD
 			MOV result, EAX

@@ -508,6 +508,8 @@
     <ClCompile Include="hooks\unit_stats\weapon_range_inject.cpp" />
     <ClCompile Include="AI\spells\yamato_gun.cpp" />
     <ClCompile Include="Utils\captivating_claws.cpp" />
+    <ClInclude Include="hooks\interface\mainmenu\lobby.cpp" />
+    <ClInclude Include="hooks\interface\mainmenu\lobby_inject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AIScripter\AICore.h" />
@@ -521,6 +523,7 @@
     <ClInclude Include="hooks\hydraFinder.h" />
     <ClInclude Include="hooks\hydra_unit_ai.h" />
     <ClInclude Include="hooks\interface\hpbars\hpbars.h" />
+    <ClInclude Include="hooks\interface\mainmenu\lobby.h" />
     <ClInclude Include="hooks\interface\uifeatures\screen_hotkeys.h" />
     <ClInclude Include="hooks\interface\uifeatures\uifeatures.h" />
     <ClInclude Include="hooks\limits\fake_unitid_extender.h" />

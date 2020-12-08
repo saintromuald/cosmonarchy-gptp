@@ -14,19 +14,19 @@ namespace hooks {
     s32 initGame() { // 004EE110
         s32 v1; // esi
 
-        if (scbw::multiPlayerMode) {
+        if (multiPlayerMode) {
             return 0;
         }
-        if (scbw::customSingleplayer[0]) {
+        if (customSingleplayer[0]) {
             if (gameData->victoryCondition
             ||  gameData->startingUnits
             ||  gameData->tournamentModeEnabled) {
                 switchAllAvailableComputerSlotsToOpen();
-                *playerTable[LOCAL_NATION_ID].race = *selectedSingleplayerRace[0];
+                playerTable[*LOCAL_NATION_ID].race = selectedSingleplayerRace[0];
                 v1 = 0;
                 do {
-                    if (*selectedSingleplayerRace[v1 + 1] != RaceId::None) {
-                        setLastOpenSlotToComputer(*selectedSingleplayerRace[v1 + 1]);
+                    if (selectedSingleplayerRace[v1 + 1] != RaceId::None) {
+                        setLastOpenSlotToComputer(selectedSingleplayerRace[v1 + 1]);
                     }
                     ++v1;
                 } while (v1 < 8);
