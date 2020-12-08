@@ -568,39 +568,59 @@ namespace hooks {
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
 	void EnsnareHit(CUnit* attacker, int x, int y, CBullet* bullet) {
-
 		Box16 coords;
 		CThingy* ensnare_effect_sprite;
-
 		ensnare_effect_sprite = createThingy(SpriteId::Ensnare,x,y,0);
-
 		if(ensnare_effect_sprite != NULL) {
 			ensnare_effect_sprite->sprite->elevationLevel = 19; //0x13
 			setThingyVisibilityFlags(ensnare_effect_sprite);
 		}
-
 		coords.top = y - 64;
 		coords.right = x + 64;
 		coords.left = x - 64;
-		coords.bottom = y + 64;
-		
-		
+		coords.bottom = y + 64;		
 		IterateUnitsAtLocationTargetProc_Ensnare(attacker, &coords);
-
 	} //void EnsnareHit(CUnit* attacker, int x, int y, CBullet* bullet)
-		
-	;
 
-	int ensnareProc(CUnit* target, CUnit* attacker)
-	{
+	int ensnareProc(CUnit* target, CUnit* attacker)	{
 		if (target != attacker
 		&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)
-		&& target->id != UnitId::ZergInfestedTerran)							// Ensnaring Brood units are impervious to Ensnare
-		{
+		&& target->id != UnitId::ZergInfestedTerran) {
 			if (!(target->status & UnitStatus::Invincible) && !(target->status & UnitStatus::Burrowed))
 				createEnsnareOverlay(target);
 		}
 		return 0;
+	}
+
+	void applyEnsnare(CUnit* a1) { // 004F45E0
+		s32 baseProperty; // eax
+		u8 overlayPadding; // al
+		CUnit* victim; // ecx
+
+		if (!(a1->ensnareTimer)
+		&&  !(a1->status & UnitStatus::Burrowed)) {
+
+			// Calculate overlay ID offset based on units_dat flags
+			overlayPadding = 0;
+			baseProperty = units_dat::BaseProperty[a1->id];
+			if (baseProperty & UnitProperty::MediumOverlay) {
+				overlayPadding = 1;
+			}
+			else if (baseProperty & UnitProperty::LargeOverlay) {
+				overlayPadding = 2;
+			}
+			victim = a1;
+			if (a1->subunit != NULL) {
+				victim = a1->subunit;
+			}
+
+			// Create overlay
+			victim->sprite->createOverlay(ImageId::EnsnareOverlay_Small + overlayPadding);
+		}
+
+		// Apply effect
+		a1->ensnareTimer = 37;
+		a1->updateSpeed();
 	}
 
 	//bullet is not normally part of the function, so if the function is called

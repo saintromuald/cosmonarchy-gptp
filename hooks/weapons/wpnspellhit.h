@@ -5,27 +5,31 @@
 #include "SCBW\api.h"
 namespace hooks {
 
-//	void IrradiateHit(CUnit* attacker, CUnit* target, u8 attackingPlayerId);		//00454E00
-	void OpticalFlareHit(CUnit* target, u32 attackingPlayerId, CBullet* bullet);	//00455170
-	void RestoreHit(CUnit* target, CBullet* bullet);								//00455230
-	void LockdownHit(CUnit* target, u8 previousLockdownTimer, CBullet* bullet);		//00455380
-	void WeaponBulletHit(CBullet* bullet, CUnit* target, u32 damageDivisor);		//00479AE0
-	void MeleeAttackHit(CUnit* attacker);											//00479B40
-	void EMPShockwaveHit(CUnit* attacker, int x, int y, CBullet* bullet);			//00492BA0
-	void CorrosiveAcidHit(u32 attackingPlayerId, int x, int y, CBullet* bullet);	//004F4770
-	void ConsumeHit(CUnit* attacker, CUnit* target);								//004F47B0
-	void EnsnareHit(CUnit* attacker, int x, int y, CBullet* bullet);				//004F4830
-	void DarkSwarmHit(int x, int y, u32 attackingPlayerId, CBullet* bullet);		//004F48A0
-	void BroodlingHit(CUnit* attacker, CUnit* target, CBullet* bullet);				//004F4940
-	void PlagueHit(CUnit* attacker, int x, int y, CBullet* bullet);					//004F4B30
-	void MaelstromHit(CUnit* attacker, int x, int y, CBullet* bullet);				//004F6850
-	void MindControlHit(CUnit* attacker, CUnit* target);							//004F6910
-	void StasisFieldHit(CUnit* attacker, int x, int y, CBullet* bullet);			//004F6A80
-	void DisruptionWebHit(u32 attackingPlayerId, int x, int y, CBullet* bullet);	//004F6AF0
-	CUnit* createDisruptionWeb(u32 playerId, int x, int y);
-	int ensnareProc(CUnit* target, CUnit* attacker);								//004F46C0
-	void createScanner(CUnit* a1);													//00464E40
+//	void IrradiateHit(CUnit* attacker, CUnit* target, u8 attackingPlayerId);		// 00454E00
+	void OpticalFlareHit(CUnit* target, u32 attackingPlayerId, CBullet* bullet);	// 00455170
+	void RestoreHit(CUnit* target, CBullet* bullet);								// 00455230
+	void LockdownHit(CUnit* target, u8 previousLockdownTimer, CBullet* bullet);		// 00455380
+	void WeaponBulletHit(CBullet* bullet, CUnit* target, u32 damageDivisor);		// 00479AE0
+	void MeleeAttackHit(CUnit* attacker);											// 00479B40
+	void EMPShockwaveHit(CUnit* attacker, int x, int y, CBullet* bullet);			// 00492BA0
+	void CorrosiveAcidHit(u32 attackingPlayerId, int x, int y, CBullet* bullet);	// 004F4770
+	void ConsumeHit(CUnit* attacker, CUnit* target);								// 004F47B0
+	void EnsnareHit(CUnit* attacker, int x, int y, CBullet* bullet);				// 004F4830
+	void DarkSwarmHit(int x, int y, u32 attackingPlayerId, CBullet* bullet);		// 004F48A0
+	void BroodlingHit(CUnit* attacker, CUnit* target, CBullet* bullet);				// 004F4940
+	void PlagueHit(CUnit* attacker, int x, int y, CBullet* bullet);					// 004F4B30
+	void MaelstromHit(CUnit* attacker, int x, int y, CBullet* bullet);				// 004F6850
+	void MindControlHit(CUnit* attacker, CUnit* target);							// 004F6910
+	void StasisFieldHit(CUnit* attacker, int x, int y, CBullet* bullet);			// 004F6A80
+	void DisruptionWebHit(u32 attackingPlayerId, int x, int y, CBullet* bullet);	// 004F6AF0
+	CUnit* createDisruptionWeb(u32 playerId, int x, int y);							   
+	int ensnareProc(CUnit* target, CUnit* attacker);								// 004F46C0
+	void createScanner(CUnit* a1);													// 00464E40
 	u8 stasisFieldOverlay(CUnit* a1, u8 a2);
+
+	// Hooked to allow for modifying Ensnare duration - Pr0nogo
+	void applyEnsnare(CUnit* a1);													// 004F45E0
+	
 	//The injector function for this hook module.
 	void injectWpnSpellHitHooks();
 
