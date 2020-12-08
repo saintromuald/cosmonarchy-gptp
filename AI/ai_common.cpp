@@ -22,9 +22,9 @@ bool isTargetWorthHitting(CUnit* target, CUnit* attacker) {
     return false;
 
   if (target->id == UnitId::scarab
-      || target->id == UnitId::TerranVultureSpiderMine
+      || target->id == UnitId::TerranSpiderMine
       || target->id == UnitId::ProtossInterceptor
-	  || target->id == UnitId::LobotomyMine)
+	  || target->id == UnitId::TerranLobotomyMine)
     return false;
 
   //Target is a worker inside a gas building

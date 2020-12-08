@@ -53,7 +53,7 @@ namespace hooks {
 		scbw::disableDialog(v5);
 		auto statData = v5->statButtonUser;
 		auto v7 = *cmdicons_grp;
-		v5->graphic = UnitId::LobotomyMine - 1;//or set icon id
+		v5->graphic = UnitId::TerranLobotomyMine - 1;//or set icon id
 		statData->button_grp = v7;
 //		statData->grp_frame = UnitId::LobotomyMine;
 		statData->grp_frame = 13;
@@ -300,8 +300,8 @@ namespace hooks {
 
 		_type = a2->id;
 		if (units_dat::BaseProperty[_type] & UnitProperty::NeutralAccessories
-//		|| _type == UnitId::TerranCivilian
-		|| _type == UnitId::TerranVultureSpiderMine)
+		|| _type == UnitId::TerranLobotomyMine
+		|| _type == UnitId::TerranSpiderMine)
 			return 0;
 /*		if (_type == UnitId::Hero_Gantrithor)
 		{
@@ -314,11 +314,11 @@ namespace hooks {
 			return 0;
 		}*/
 		if (_type != UnitId::TerranBattlecruiser && _type != UnitId::Hero_NoradII && _type != UnitId::Hero_Hyperion
-			|| !(units_dat::BaseProperty[_type] & UnitProperty::Hero)
-			|| !units_dat::MapStringId[_type])
-		{
-			if (unitGetRace(a2) == 1)                 // Terran
+		|| !(units_dat::BaseProperty[_type] & UnitProperty::Hero)
+		|| !units_dat::MapStringId[_type]) {
+			if (unitGetRace(a2) == 1) {                 // Terran
 				return getStatTxtString((unsigned __int8)(a2->rankIncrease + units_dat::Rank[_type]) + 1302);
+			}
 			return 0;
 		}
 		if (statTxtTblNew->getString(570))

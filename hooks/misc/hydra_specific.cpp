@@ -380,9 +380,9 @@ namespace hooks {
 
 	u32 get_mine_id(CUnit* unit) {
 		if (unit->id == UnitId::TerranGhost) {
-			return UnitId::LobotomyMine;
+			return UnitId::TerranLobotomyMine;
 		}
-		return UnitId::TerranVultureSpiderMine;
+		return UnitId::TerranSpiderMine;
 	}
 	u32 extend_tech_target_check(u32 orig_result, CUnit* caster, CUnit* target, u8 techId) {
 		if (orig_result == 0) {//Valid Target

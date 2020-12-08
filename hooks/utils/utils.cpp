@@ -107,7 +107,7 @@ bool unit_IsStandardAndMovable(CUnit* unit) {
 			unit->id >= UnitId::Special_FloorMissileTrap &&
 			unit->id <= UnitId::Special_RightWallFlameTrap
 		) ||
-		unit->id == UnitId::TerranVultureSpiderMine ||
+		unit->id == UnitId::TerranSpiderMine ||
 		unit->id == UnitId::ZergEgg ||
 		unit->id == UnitId::Critter_Rhynadon ||
 		unit->id == UnitId::Critter_Bengalaas ||

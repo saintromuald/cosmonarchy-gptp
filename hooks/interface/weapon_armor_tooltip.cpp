@@ -259,10 +259,10 @@ namespace hooks {
 		if (iconUnitId == UnitId::TerranNuclearMissile)
 			return statTxtTblNew->getString(793);										//"Nukes"
 
-		if (iconUnitId == UnitId::TerranVultureSpiderMine)
+		if (iconUnitId == UnitId::TerranSpiderMine)
 			return getDamageTooltipString(WeaponId::SpiderMines, unit, 794);		//"Spider Mines"
 		
-		if (iconUnitId == UnitId::LobotomyMine){
+		if (iconUnitId == UnitId::TerranLobotomyMine){
 			return getDamageTooltipString(WeaponId::LobotomyMine, unit, 794);
 		}
 		

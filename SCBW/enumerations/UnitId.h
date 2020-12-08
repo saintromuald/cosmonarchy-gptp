@@ -182,7 +182,7 @@ enum Enum {
 /*0x0A*/	Hero_GuiMontag							= 10,
 /*0x0B*/	TerranDropship							= 11,
 /*0x0C*/	TerranBattlecruiser						= 12,
-/*0x0D*/	TerranVultureSpiderMine					= 13,
+/*0x0D*/	TerranSpiderMine						= 13,
 /*0x0E*/	TerranNuclearMissile					= 14,
 /*0x0F*/	TerranCivilian							= 15,
 /*0x10*/	Hero_SarahKerrigan						= 16,
@@ -461,7 +461,7 @@ enum Enum {
 	TerranAzazel									= 98,		// Raszagal Corsair
 	TerranPaladin									= 186,		// Ruins
 	TerranSavant									= 187,		// Kyadarin Crystal Formation
-	LobotomyMine									= 209,		// Floor Gun Trap
+	TerranLobotomyMine								= 209,		// Floor Gun Trap
 
 //Terran-Building
 	TerranMedbay									= 119,		// Starbase / Terran Unused 1

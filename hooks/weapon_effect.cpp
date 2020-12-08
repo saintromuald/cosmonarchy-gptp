@@ -340,7 +340,7 @@ namespace hooks {
 	// clone of 'Normal' damage for reference
 	void normalDamage(CBullet* bullet, u32 weaponId) {
 		if (bullet->sourceUnit!=NULL && weaponId == WeaponId::Lockdown) {
-			CUnit* mine = scbw::createUnitIngame(UnitId::LobotomyMine, bullet->srcPlayer, bullet->position.x, bullet->position.y);
+			CUnit* mine = scbw::createUnitIngame(UnitId::TerranLobotomyMine, bullet->srcPlayer, bullet->position.x, bullet->position.y);
 			if (mine != NULL)
 			{
 				turnUnit(mine, bullet->sourceUnit->currentDirection1);
@@ -493,8 +493,8 @@ namespace hooks {
 			if (!target->isDead()
 				&& !units_dat::GroupFlags[target->id].isBuilding
 				&& !(units_dat::BaseProperty[target->id] & UnitProperty::ResourceContainer)
-				&& target->id!=UnitId::TerranVultureSpiderMine
-				&& target->id!=UnitId::LobotomyMine) {
+				&& target->id!=UnitId::TerranSpiderMine
+				&& target->id!=UnitId::TerranLobotomyMine) {
 					if (units_dat::BaseProperty[target->id] & UnitProperty::Organic) {
 						scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::LobotomySlow, 6 * 24, 0);
 					}

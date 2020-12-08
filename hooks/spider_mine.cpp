@@ -212,7 +212,7 @@ namespace hooks {
 
 				current_image = unit->sprite->images.head;
 				IscriptAnimation::Enum anim = IscriptAnimation::SpecialState1;
-				if (unit->id == UnitId::LobotomyMine) {
+				if (unit->id == UnitId::TerranLobotomyMine) {
 					anim = IscriptAnimation::Unused1;
 				}
 				while(current_image != NULL) {

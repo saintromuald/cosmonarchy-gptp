@@ -495,7 +495,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectCMDRECV_CancelHooks();/*
 	hooks::injectSelectLarvaHooks();*/
 	hooks::injectRepairOrderHook();
-	hooks::injectStatsPanelDisplayHook(); // TODO: Fix getUnitRankString hook
+	hooks::injectStatsPanelDisplayHook();
 //	hooks::injectUtilsHooks();
 	hooks::injectMindControlSpellHook();
 	hooks::injectCMDRECV_BuildHooks();

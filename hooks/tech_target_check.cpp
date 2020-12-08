@@ -46,11 +46,11 @@ u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayerId, u16 techId) {
 			if(units_dat::BaseProperty[target->id] & UnitProperty::Building)
 				stringId = 877; //Unable to target structure.<0>
 			else
-			if(target->id < UnitId::TerranVultureSpiderMine || target->id > UnitId::ZergLurkerEgg)
+			if(target->id < UnitId::TerranSpiderMine || target->id > UnitId::ZergLurkerEgg)
 				stringId = 0; //valid target
 			else
-			if(	target->id == UnitId::TerranVultureSpiderMine ||
-				target->id == UnitId::LobotomyMine ||
+			if(	target->id == UnitId::TerranSpiderMine ||
+				target->id == UnitId::TerranLobotomyMine ||
 				target->id == UnitId::ZergLarva ||
 				target->id == UnitId::ZergEgg ||
 				target->id == UnitId::ZergCocoon ||
