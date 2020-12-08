@@ -499,7 +499,7 @@ namespace hooks {
 						scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::LobotomySlow, 6 * 24, 0);
 					}
 					else {
-						hooks::LockdownHit(target, 0x83, bullet);
+						hooks::LockdownHit(target, 18, bullet);
 					}
 				}
 			}
