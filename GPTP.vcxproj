@@ -240,6 +240,8 @@
     <ClCompile Include="hooks\interface\extender\selection_extender_inject.cpp" />
     <ClCompile Include="hooks\interface\hpbars\hpbars.cpp" />
     <ClCompile Include="hooks\interface\hpbars\hpbars_inject.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\lobby.cpp" />
+    <ClCompile Include="hooks\interface\mainmenu\lobby_inject.cpp" />
     <ClCompile Include="hooks\interface\uifeatures\screen_hotkeys.cpp" />
     <ClCompile Include="hooks\interface\uifeatures\screen_hotkeys_inject.cpp" />
     <ClCompile Include="hooks\interface\uifeatures\uifeatures.cpp" />
@@ -508,8 +510,6 @@
     <ClCompile Include="hooks\unit_stats\weapon_range_inject.cpp" />
     <ClCompile Include="AI\spells\yamato_gun.cpp" />
     <ClCompile Include="Utils\captivating_claws.cpp" />
-    <ClInclude Include="hooks\interface\mainmenu\lobby.cpp" />
-    <ClInclude Include="hooks\interface\mainmenu\lobby_inject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AIScripter\AICore.h" />
