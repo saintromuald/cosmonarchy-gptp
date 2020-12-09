@@ -1,9 +1,9 @@
 #include "console.h"
 #include <hook_tools.h>
 
-namespace {/*
-	__int16 __declspec(naked) loadRaceUI_Wrapper() { // 004EE2D0
-		static int result;
+namespace {
+	void __declspec(naked) loadRaceUI_Wrapper() { // 004EE2D0
+		static s32 result;
 		__asm {
 			PUSHAD
 		}
@@ -13,10 +13,10 @@ namespace {/*
 			MOV result, EAX
 			RETN
 		}
-	};*/
+	}
 
 	void __declspec(naked) setTextStr_Wrapper() { // 004263E0
-		static int a1;
+		static s32 a1;
 
 		__asm {
 			PUSH EBP
@@ -39,7 +39,7 @@ namespace {/*
 namespace hooks {
 
 	void injectConsoleHooks() {
-//		jmpPatch(loadRaceUI_Wrapper, 0x004EE2D0, 1);
+		jmpPatch(loadRaceUI_Wrapper, 0x004EE2D0, 3);
 		jmpPatch(setTextStr_Wrapper, 0x004263E0, 0);
 	}
 }

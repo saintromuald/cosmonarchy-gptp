@@ -207,11 +207,11 @@ SCBW_DATA(u32*,					selectionSoundCounter,		0x00640548);
 SCBW_DATA(u32*,					lastRandSFX,				0x006D5BE0);
 
 // For loadRaceUI
-SCBW_DATA(u8*,					consoleIndex,				0x0057F1E2);
-SCBW_DATA(u16*,					currentMusicId,				0x0057F1DE);
+SCBW_DATA(		u8*,			consoleIndex,				0x0057F1E2);
+SCBW_DATA(		u16*,			currentMusicId,				0x0057F1DE);
 SCBW_DATA(const char*,			xCampaignFirstMission,		0x005122C0);
 SCBW_DATA(const char*,			campaignFirstMission,		0x005122BC);
-SCBW_DATA(const u32*,			consoleRaceSpecific,		0x0051A3B4);
+SCBW_DATA(		u32*,			consoleRaceSpecific,		0x0051A3B4);
 
 // For loadGameCreate
 SCBW_DATA(		u32*,			isHost,						0x00596888);

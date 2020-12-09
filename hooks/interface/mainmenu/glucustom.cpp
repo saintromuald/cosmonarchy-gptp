@@ -4,55 +4,55 @@
 #include <SCBW/scbwdata.h>
 /*
 namespace {
-
+	
 	//For raceDropdown
-	char addItemToListing(char pszString, BinDlg* pDlg, __int8 bFlags);		//0041B760
+	char addItemToListing(char pszString, BinDlg* pDlg, __int8 bFlags);			//0041B760
 	void createDialogDropdown(BinDlg* a1);										//0041B410
 	void dlgSetSelected(unsigned __int8 a1, BinDlg* a2);						//0041A600
 	
 	//For initSingleplayerCustom
-	bool isMeleeGame(char a1, __int16 a2, char a3);								//004AD850
+	bool isMeleeGame(s8 a1, s16 a2, s8 a3);										//004AD850
 	PLAYER randomizePlayerSlot();												//004A9A30
 
 	//For initGameLoad
-	HANDLE stopMusic();															//004A5F50
-	FILE loadReplayFile(int a1, int a2, int a3);								//004DF570
-	signed int levelCheatCreate(char a1, int a2);								//004EE5B0
-	signed int loadGameCreate(int a1, char a2);									//004EE520
-	signed int gameCreateSomething(char a1);									//004EE3D0
-	signed int singleplayerMeleeCreate();										//004EE110
-	int getSystemTime(LPSYSTEMTIME* a1);										//0040C7DF
+//	HANDLE stopMusic();															//004A5F50
+	FILE loadReplayFile(s32 a1, s32 a2, s32 a3);								//004DF570
+	s32 levelCheatCreate(s8 a1, s32 a2);										//004EE5B0
+	s32 loadGameCreate(s32 a1, s8 a2);											//004EE520
+	s32 gameCreateSomething(s8 a1);												//004EE3D0
+	s32 singleplayerMeleeCreate();												//004EE110
+	s32 getSystemTime(LPSYSTEMTIME* a1);										//0040C7DF
 	void initScreenLayer();														//0041A030
-	int subTwoCheckTwo(void a1, int a2);										//004EE0F0
+	s32 subTwoCheckTwo(void* a1, int a2);										//004EE0F0
 	void loadGameFonts();														//004DAE50
-	void srand(unsigned int a1);												//0040C7B0
-	dwPOINT initPathArray();													//0042F4F0
-	signed int appAddExit(int a1);												//004F6100
+	void srand(u32 a1);															//0040C7B0
+	Point32 initPathArray();													//0042F4F0
+	s32 appAddExit(s32 a1);														//004F6100
 	char multiplayerChatSomething();											//0049B500
-	void getPlayerStructs(void a1);												//004DE9A0
+	void getPlayerStructs(void* a1);											//004DE9A0
 	PLAYER initStartingRacesAndTypes();											//0049CC40
 	char initMultiplayerSavePlayers();											//004A9250
 	FILE initPlayers();															//004A9D80
 	void setVisionIndex();														//004EE180
 	void initAiPlayerNames();													//004ED2B0
-	__int16 loadRaceUI();														//004EE2D0
+	s16 loadRaceUI();															//004EE2D0
 	bool hotkeyRemapping();														//004EEC30
-	signed int gameInit(int a1);												//004EEE00
-	int getPlayerColors(int a1);												//004DE950
-	signed int randomizePlayerColors();											//0049B060
-	int authorizeMap(int a1, int a2, int a3, int a4);							//004CC110
-	char bigPacketError(int a1, char 2, int a3, int a4, int a5);				//004BB430
-	signed int loadGameCore(int a1);											//004EED10
-	void chooseTriggerTemplate(int a1, char a2, int a3);						//004ABAF0
-	int initPlayerNames();														//004B2DF0
-	int tickCounterInit();														//004A2BF0
-	int CMDRECV_SetReplaySpeed(int a1, unsigned __int8 a2, unsigned int a3);	//004DEB90
-	void copyPlayerStructsToReplay(void a1, void a2);							//004DE9D0
-	signed int allocReplayCommands();											//004CE280
+	s32 gameInit(s32 a1);														//004EEE00
+	s32 getPlayerColors(s32 a1);												//004DE950
+	s32 randomizePlayerColors();												//0049B060
+	s32 authorizeMap(s32 a1, s32 a2, s32 a3, s32 a4);							//004CC110
+	s8 bigPacketError(s32 a1, s8 a2, s32 a3, s32 a4, s32 a5);					//004BB430
+	s32 loadGameCore(s32 a1);													//004EED10
+	void chooseTriggerTemplate(s32 a1, s8 a2, s32 a3);							//004ABAF0
+	s32 initPlayerNames();														//004B2DF0
+	s32 tickCounterInit();														//004A2BF0
+	s32 CMDRECV_SetReplaySpeed(s32 a1, u8 a2, u32 a3);							//004DEB90
+	void copyPlayerStructsToReplay(void* a1, void* a2);							//004DE9D0
+	s32 allocReplayCommands();													//004CE280
 }
 
 namespace hooks {
-
+	
 	void raceDropdown(BinDlg* a1) { // 004ADF20 -- https://pastebin.com/raw/rXq01xR5
 		bStringMap* v2; // edi
 		BinDlg* dlgDropdown; // esi
@@ -67,7 +67,7 @@ namespace hooks {
 
 		dlgDropdown = a1;
 		a1->flags |= 0x80000000;
-		v2 = &singleRaceSelect;
+//		v2 = &singleRaceSelect;
 		do
 		{
 			v4 = (unsigned __int8)v2->id - 1;
