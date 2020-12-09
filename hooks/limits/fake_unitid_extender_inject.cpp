@@ -232,7 +232,7 @@ namespace hooks {
 		//add usage to gptp
 		//enable everything in aise/gptp
 		//test/
-		
+		/*
 		jmpPatch(flingyWrapper1, 0x00454317, 2);//updateSpeed
 		jmpPatch(flingyWrapper2, 0x00463A71, 2);//unk1
 //		jmpPatch(flingyWrapper3, 0x004683C6, 2);//CancelUnit, wrapper must be enabled only if unit morph hooks are disabled	
@@ -243,8 +243,8 @@ namespace hooks {
 		jmpPatch(flingyWrapper8, 0x0048DA8A, 2); //unk2
 		jmpPatch(flingyWrapper9, 0x00497148, 2); //InitSpriteVisionSync 
 		jmpPatch(flingyWrapper10, 0x0049ED0B, 2); //InitializeUnit
-		jmpPatch(flingyWrapper11, 0x004E9A10, 2); //Unburrow_Generic*///debug testing
-
+		jmpPatch(flingyWrapper11, 0x004E9A10, 2); //Unburrow_Generic//debug testing
+		*/
 
 
 		/*
