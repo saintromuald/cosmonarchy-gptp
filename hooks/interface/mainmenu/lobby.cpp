@@ -27,7 +27,12 @@ namespace hooks {
                 do {
                     if (selectedSingleplayerRace[v1 + 1] != RaceId::None) {
                         setLastOpenSlotToComputer(selectedSingleplayerRace[v1 + 1]);
+                        if(playerTable[v1].type == PlayerType::NotUsed || playerTable[v1].type == PlayerType::OpenSlot) {
+                            playerTable[v1].type = PlayerType::Computer;
+                        }
                     }
+
+                       
                     ++v1;
                 } while (v1 < 8);
             }
