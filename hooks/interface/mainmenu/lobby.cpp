@@ -14,7 +14,7 @@ namespace hooks {
     s32 initGame() { // 004EE110
         s32 v1; // esi
 
-        if (multiPlayerMode) {
+        if (*multiPlayerMode) {
             return 0;
         }
         if (customSingleplayer[0]) {
