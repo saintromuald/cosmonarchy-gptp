@@ -384,8 +384,8 @@ namespace hooks {
         result = hooks::checkUnitDatRequirements(playerId, unit_id, parent);
         __asm {
             POPAD
-            MOV EAX,result
-            MOV ESP,EBP
+            MOV EAX, result
+            MOV ESP, EBP
             POP EBP
             RETN 4
         }

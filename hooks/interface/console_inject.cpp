@@ -29,6 +29,7 @@ namespace {
 		}
 		hooks::setTextStr(a1);
 		_asm {
+			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN 4

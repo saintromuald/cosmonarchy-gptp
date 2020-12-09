@@ -191,7 +191,7 @@ SCBW_DATA(const u8*,			playerHasLeft,				0x00581D62); // array of 0x8
 SCBW_DATA(const u8*,			lossType,					0x00581D61);
 SCBW_DATA(const u8*,			unkVictoryVariable,			0x00581D66);
 SCBW_DATA(const u32*,			saveLoadSuccess,			0x006D5A68);
-SCBW_DATA(const u32*,			elapstedTimeModifier,		0x006D5BCC);
+SCBW_DATA(		u32*,			elapstedTimeModifier,		0x006D5BCC);
 SCBW_DATA(const u32*,			savedElapsedSeconds,		0x0057F240);
 SCBW_DATA(const Options*,		optionsList,				0x006CDFD4);
 SCBW_DATA(const ReplayData*,	replayData,					0x00596BBC);
@@ -304,6 +304,15 @@ SCBW_DATA(		CUnit**,			bulletBounceMissileNext,	0x0064EED4);
 // For setUnderDisruptionWeb
 SCBW_DATA(		void**,				unkArray_59CB64,			0x0059CB64); // size of 252
 SCBW_DATA(		CUnit*,				unitReference,				0x0059CB58);
+
+// For startGame
+SCBW_DATA(		s8*,				gameState,					0x0066FBFA);
+SCBW_DATA(		s32*,				playerReplayWatchers,		0x00640970);
+SCBW_DATA(		s8*,				countdownTimerInterval,		0x0066FBFC);
+SCBW_DATA(		s32*,				countdownTimeTickCount,		0x0059CC7C);
+SCBW_DATA(		s32*,				countdownTimeTickCount_0,	0x0059CC88);
+SCBW_DATA(		s32*,				isInGame,					0x006D5BC8);
+SCBW_DATA(		s32*,				countdownTimeRemaining,		0x0059CC78);
 
 
 //////////////////////////////////////////////////////////////// @}
