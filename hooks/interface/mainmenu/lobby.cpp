@@ -65,8 +65,10 @@ namespace hooks {
             v2 = 9;
             return bootReason(v2);
         }
-        if (IS_IN_REPLAY) {
-            memcpy(playerReplayWatchers, playerTable, 0x1B0u);
+        if (*IS_IN_REPLAY) {
+            for (int i = 0; i < 12; i++) {
+                playerReplayWatchers[i] = playerTable[i];
+            }
         }
         *gameState = 5;
         *countdownTimerInterval = 24;
@@ -146,9 +148,9 @@ namespace { // Helper definitions
         }
     }
 
-    const u32 Func_getTickCount = 0x004FE0C4;
     s32 getTickCount() {
         static s32 result;
+        static u32 Func_getTickCount = *(u32*)0x004FE0C4;
         __asm {
             PUSHAD
             CALL Func_getTickCount

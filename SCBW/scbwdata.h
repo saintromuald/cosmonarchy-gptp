@@ -307,7 +307,8 @@ SCBW_DATA(		CUnit*,				unitReference,				0x0059CB58);
 
 // For startGame
 SCBW_DATA(		s8*,				gameState,					0x0066FBFA);
-SCBW_DATA(		s32*,				playerReplayWatchers,		0x00640970);
+SCBW_DATA(		PLAYER*,			playerReplayWatchers,		0x00640970);
+
 SCBW_DATA(		s8*,				countdownTimerInterval,		0x0066FBFC);
 SCBW_DATA(		s32*,				countdownTimeTickCount,		0x0059CC7C);
 SCBW_DATA(		s32*,				countdownTimeTickCount_0,	0x0059CC88);
@@ -581,6 +582,7 @@ SCBW_DATA(u8*,          refreshRegions,         0x006CEFF8);  //640 x 480 divide
 SCBW_DATA(Layers*,      screenLayers,           0x006CEF50);
 typedef void (__stdcall *DrawGameProc)(graphics::Bitmap *surface, Bounds *bounds);
 static DrawGameProc const oldDrawGameProc = (DrawGameProc) 0x004BD580;
+
 
 //Array used in multiplayer to randomize factions
 //used by unit.getFactionColor() and
