@@ -83,6 +83,13 @@ namespace hooks {
         *isInGame = 1;
         *elapstedTimeModifier = 0;
         *countdownTimeRemaining = result;
+        for (int i = 0; i < 8; i++) {
+            if (selectedSingleplayerRace[i] != RaceId::None) {
+                if (playerTable[i].type == PlayerType::NotUsed || playerTable[i].type == PlayerType::OpenSlot) {
+                    playerTable[i].type = PlayerType::Computer;
+                }
+            }
+        }
         return result;
     }
 }
