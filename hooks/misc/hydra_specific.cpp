@@ -57,6 +57,66 @@ void parseUnitDatReqs(){
 	}
 	//return result;
 }
+bool isAttemptingProtossBuild(const CUnit* probe) {
+	return probe->mainOrderId == OrderId::BuildProtoss1
+		&& probe->status & UnitStatus::GroundedBuilding
+		&& probe->orderTarget.unit != NULL
+		&& !(probe->orderTarget.unit->status & UnitStatus::Completed);
+}
+bool isConstructingAddon(const CUnit* building) {
+	return building->secondaryOrderId == OrderId::BuildAddon
+		&& building->status & UnitStatus::GroundedBuilding
+		&& building->currentBuildUnit != NULL
+		&& !(building->currentBuildUnit->status & UnitStatus::Completed);
+}
+
+const u32 Func_getHangerTrainCount = 0x00465270;
+u8 getHangerTrainCount(CUnit* unit) {
+	static u8 result = 0;
+	__asm {
+		PUSHAD
+		MOV EDX,unit
+		CALL Func_getHangerTrainCount
+		MOV result,AL
+		POPAD
+	}
+}
+const u32 Func_unitIsReaver = 0x00401490;
+bool unitIsReaver(CUnit* a1) {
+	static s32 result;
+	__asm {
+		PUSHAD
+		MOV EAX, a1
+		CALL Func_unitIsReaver
+		MOV result, EAX
+		POPAD
+	}
+	return (bool)result;
+}
+const u32 Func_unitIsCarrier = 0x00401470;
+bool unitIsCarrier(CUnit* a1) {
+	static s32 result;
+	__asm {
+		PUSHAD
+		MOV EAX, a1
+		CALL Func_unitIsCarrier
+		MOV result, EAX
+		POPAD
+	}
+	return (bool)result;
+}
+bool unitIsTrainingOrMorphing(CUnit* unit) {
+	const u32 Func_unitIsTrainingOrMorphing = 0x00401500;
+	static u32 result;
+	__asm {
+		PUSHAD
+		MOV ECX,unit
+		CALL Func_unitIsTrainingOrMorphing
+		MOV result,EAX
+		POPAD
+	}
+}
+
 
 namespace hooks {
 
@@ -125,6 +185,9 @@ namespace hooks {
 		auto v28 = 0;
 		auto v11 = 0;
 		auto v24 = 0;
+		auto v14 = 0;
+		auto v17 = 0;
+		auto v18 = 0;
 		CUnit* v12 = 0;
 		auto requiredId = 0;
 /*		while (true)
@@ -148,7 +211,7 @@ namespace hooks {
 				goto LABEL_73;
 			case ReqOpcode::HasUnit:
 				requiredId = reqTable[v7++];
-				v24 = completed_unit_counts[requiredId][unit->playerId]+all_unit_counts[requiredId][unit->playerId];
+				v24 = completed_unit_counts[requiredId].player[unit->playerId] + all_unit_counts[requiredId].player[unit->playerId];
 				goto LABEL_71;
 			case ReqOpcode::HasAddonAttached:
 				if (*CHEAT_STATE & CheatFlags::ModifyThePhaseVariance)
@@ -159,7 +222,7 @@ namespace hooks {
 				else
 				{
 					v12 = unit->building.addon;
-					if (v12!=NULL || (++v7, v12->id != reqTable[v7]))
+					if (v12 != NULL || (++v7, v12->id != reqTable[v7]))
 					{
 						if (!v27)
 							*lastError = 4;
@@ -169,149 +232,158 @@ namespace hooks {
 				}
 				goto LABEL_72;
 			case ReqOpcode::IsNotLifted:
-				if (!(parent->statusFlags & 2))
+				if (!(unit->status & UnitStatus::GroundedBuilding))
 				{
-					lastInternalErr = 7;
+					*lastError = 7;
 					return 0;
 				}
 				v11 = v9 + 1;
 				goto LABEL_72;
-			case reqOpcode_Is_not_training_or_morphing:
-				if (unitIsTrainingOrMorphing(parent) || LOBYTE(parent->field_C8) != 44 || BYTE1(parent->field_C8) != 61)
+			case ReqOpcode::IsNotBusyBuilding:
+				if (unitIsTrainingOrMorphing(unit) || unit->building.upgradeType != TechId::None ||
+					unit->building.techType != UpgradeId::None)
 					goto LABEL_87;
 				++v28;
 				goto LABEL_73;
-			case reqOpcode_Is_not_constructing_addon:
-				LOBYTE(v13) = isConstructingAddon(parent);
+			case ReqOpcode::IsNotConstructingAddon:
+			{
+				auto v13 = isConstructingAddon(unit);
 				if (v13)
 					goto LABEL_87;
-				LOBYTE(v15) = isAttemptingProtossBuild(parent);
+				auto v15 = isAttemptingProtossBuild(unit);
 				if (v15)
 					goto LABEL_87;
 				v11 = v14 + 1;
 				goto LABEL_72;
-			case reqOpcode_Is_not_researching:
-				if (LOBYTE(parent->field_C8) != 44)
+			}
+			case ReqOpcode::IsNotTeching:
+				if (unit->building.techType != TechId::None)
 					goto LABEL_87;
 				v11 = v9 + 1;
 				goto LABEL_72;
-			case reqOpcode_Is_not_upgrading:
-				if (BYTE1(parent->field_C8) != 61)
+			case ReqOpcode::IsNotUpgrading:
+				if (unit->building.upgradeType != UpgradeId::None)
 					goto LABEL_87;
 				v11 = v9 + 1;
 				goto LABEL_72;
-			case reqOpcode_Is_not_constructing:
-				if (parent->type == 7 && parent->mainOrderType == 33)
+			case ReqOpcode::IsNotConstructingBuilding:
+				if (unit->id == UnitId::TerranSCV && unit->mainOrderId == OrderId::ConstructingBuilding)
 					goto LABEL_87;
 				v11 = v9 + 1;
 				goto LABEL_72;
-			case reqOpcode_Does_not_have_addon_attached:
-				if (parent->field_C0)
+			case ReqOpcode::HasNoAddon:
+				if (unit->building.addon)
 				{
 					if (!v27)
-						lastInternalErr = 4;
+						*lastError = 4;
 					return 0;
 				}
 				v11 = v9 + 1;
 			LABEL_72:
 				v28 = v11;
 			LABEL_73:
-				if (sgTree[++v7] == -255)
+				if (reqTable[++v7] == -255)
 				{
-					LOWORD(v8) = sgTree[v7];
+					v8 = reqTable[v7];
 					v9 = v28;
 					++v7;
 					continue;
 				}
 				if (!v28 && v26)
 				{
-					lastInternalErr = 8;
+					*lastError = 8;
 					return -1;
 				}
-				LOWORD(v8) = sgTree[v7];
+				v8 = reqTable[v7];
 				v26 = 1;
-				if ((_WORD)v8 != -1)
+				if (v8 != -1)
 					goto LABEL_18;
 				if (v27)
 				{
-					lastInternalErr = 25;
+					*lastError = 25;
 					return -1;
 				}
 				return 1;
-			case reqOpcode_Has_hangar_space:
+			case ReqOpcode::HasHangarSpace:
+			{
 				v17 = -1;
-				LOBYTE(v18) = unitIsCarrier(parent);
+				auto v19 = 0;
+				auto v21 = 0;
+				auto v20 = 0;
+				v18 = unitIsCarrier(unit);
 				if (v18)
 				{
-					v19 = BYTE1(parent->field_C8) + getHangerTrainCount(v16, (int)parent);
+					v19 = unit->carrier.inHangarCount + getHangerTrainCount(unit);
 				}
 				else
 				{
-					LOBYTE(v21) = unitIsReaver(parent);
+					v21 = unitIsReaver(unit);
 					if (!v21)
 						goto LABEL_51;
-					v19 = getHangerTrainCount(v20, (int)parent);
+					v19 = getHangerTrainCount(unit);
 				}
-				v17 = LOBYTE(parent->field_C8) + v19;
+				v17 = unit->carrier.inHangarCount + v19;
+
 			LABEL_51:
-				if (v17 >= (unsigned __int8)getMaxHangerSpace(parent))
+				if (v17 >= getMaxHangerSpace(unit))
 					goto LABEL_86;
 				++v28;
 				goto LABEL_73;
-			case reqOpcode_Does_not_have_loaded_nuke:
-				if (*(_DWORD*)&parent->field_D0)
+			}
+			case ReqOpcode::HasNoNuke:
+				if (unit->building.silo.nuke)
 					goto LABEL_86;
 				v11 = v9 + 1;
 				goto LABEL_72;
-			case reqOpcode_Is_not_burrowed:
-				if (parent->statusFlags & 0x10)
+			case ReqOpcode::NotBurrowedOrAIControlled:
+				if (unit->status & UnitStatus::Burrowed)
 				{
 				LABEL_87:
-					lastInternalErr = 5;
+					*lastError = 5;
 					return 0;
 				}
 				v11 = v9 + 1;
 				goto LABEL_72;
-			case reqOpcode_Grey:
-				lastInternalErr = 21;
+			case ReqOpcode::Disabled:
+				*lastError = 21;
 				return -1;
-			case reqOpcode_Blank:
+			case ReqOpcode::Blank:
 				goto LABEL_93;
-			case reqOpcode_Must_be_Brood_War:
-				if (!isExpansion)
+			case ReqOpcode::BroodWar:
+				if (!*IS_BROOD_WAR)
 				{
-					lastInternalErr = 26;
+					*lastError = 26;
 					return 0;
 				}
 				v11 = v9 + 1;
 				goto LABEL_72;
-			case reqOpcode_Is_researched:
-				v10 = sgTree[v7++];
-				if (!isTechResearched(playerID, v10) && !(gameCheatFlags & 0x1000))
+			case ReqOpcode::TechIsResearched:
+				auto v10 = reqTable[v7++];
+				if (scbw::hasTechResearched(unit->playerId,v10) && !(*CHEAT_STATE & CheatFlags::MedievalMan))
 				{
-					lastInternalErr = 9;
+					*lastError = 9;
 					return -1;
 				}
 				++v28;
 				goto LABEL_73;
-			case reqOpcode_Is_burrowed:
-				if (!(parent->statusFlags & 0x10))
+			case ReqOpcode::IfBurrowed:
+				if (!(unit->status & UnitStatus::Burrowed))
 				{
-					lastInternalErr = 5;
+					*lastError = 5;
 					return -1;
 				}
 				v11 = v9 + 1;
 				goto LABEL_72;
 			default:
-				if (gameCheatFlags & 0x2000)
+				if (*CHEAT_STATE & 0x2000)
 					++v9;
-				v24 = completedUnitCount[0][playerID + 12 * v8];
+				v24 = completed_unit_counts[requiredId][playerId];
 			LABEL_71:
 				v11 = v24 + v9;
 				goto LABEL_72;
 			}
 		}*/
-	return 0;
+		return 0;
 	}
 
 	u32 realTopSpeed(CFlingy* flingy, u32 flingyId) {

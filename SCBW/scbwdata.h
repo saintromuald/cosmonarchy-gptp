@@ -41,6 +41,10 @@ SCBW_DATA(CSprite*,     spriteTable,  0x00629D98);
 SCBW_DATA(UNITSCORES_I*, unitCountTable, 0x00584DE4);
 SCBW_DATA(UNITSCORES_I*, completed_unit_counts, unitCountTable);
 
+
+SCBW_DATA(UNITSCORES_I*, allUnitCountTable, 0x00582324);
+SCBW_DATA(UNITSCORES_I*, all_unit_counts, unitCountTable);
+
 //From locations.cpp
 SCBW_DATA(const MapSize*, mapTileSize,    0x0057F1D4);
 SCBW_DATA(LOCATION*,      locationTable,  0x0058DC60);
