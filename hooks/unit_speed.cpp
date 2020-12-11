@@ -163,25 +163,18 @@ namespace hooks {
 			speed += speed / 5;
 		}
 
-		// Shaman Activate Medstims / Nanite Field abilities: reduce movespeed
-		/*else if (unit->id == UnitId::TerranShaman) {
-			if (unit->_padding_0x132 & 0x8 || scbw::get_generic_value(unit, ValueId::NaniteField)) {
-				speed /= 2;
-			}
-		}*/
-
 		// Cyprian: hardcode ideal movement speed
 		else if (unit->id == UnitId::TerranCyprian) {
 			speed += (speed / 5);
 		}
 
-		// Simulacrum Autovitality: increase movespeed when any nearby Simulacrum dies
-/*		else if (unit->id == UnitId::ProtossSimulacrum) {
-			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10)*1.5;
+		// Vassal Autovitality: increase movespeed when any nearby Simulacrum dies
+		else if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
+			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::VassalStacks), 0, 10)*1.5;
 			if (stacks > 0) {
 				speed = (double)speed * ((10.0 + stacks) / 10.0);
 			}
-		}*/
+		}
 
 		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby organic allies after kill
 		else if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0) {
@@ -305,41 +298,24 @@ namespace hooks {
 		if (decrease > 0)
 			acceleration = acceleration - (acceleration / 4);
 
-		// Collective Integration: gains increased acceleration based on tech level
-/*		else if (unit->id == UnitId::ZergOverlord || unit->id == UnitId::ZergIroleth) {
-			u32 irisCountAccel = unitCountTable[UnitId::ZergOverlordIris].player[unit->playerId];
-			u32 quayCountAccel = unitCountTable[UnitId::ZergIrolethQuay].player[unit->playerId];
-			u32 berthCountAccel = unitCountTable[UnitId::ZergOthstolethBerth].player[unit->playerId];
-			if (berthCountAccel) {
-				acceleration *= 4;
-
-			}
-			else if (quayCountAccel) {
-				acceleration *= 3;
-
-			}
-			else if (irisCountAccel) {
-				acceleration *= 2;
-			}
-		}
-*/
-		// Simulacrum Autovitality
-/*		else if (unit->id == UnitId::ProtossSimulacrum) {
-			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10)*1.5;
+		// Vassal Autovitality
+		else if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
+			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::VassalStacks), 0, 10)*1.5;
 			if (stacks > 0) {
 				acceleration = (double)acceleration * ((10.0 + stacks) / 10.0);
 			}
-		}*/
+		}
+
 		//Clarion acceleration shield boost
 		else if (unit->id == UnitId::ProtossClarion) {
 			double fraction = (double)unit->shields / ((double)units_dat::MaxShieldPoints[unit->id] * 256);
 			double newAcc = (double)acceleration * (1.0 + fraction);
 			acceleration = newAcc;
 		}
+
 		// Nathrokor Adrenal Frenzy: increase acceleration of all nearby organic allies after kill
 		else if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0) {
 			acceleration += acceleration / 2;
-//			scbw::printFormattedText("ACCEL | Unit id: %d", (u32)unit->id);
 		}
 
 		// Khaydarin Eclipse ability: slow Exemplar by 75%

@@ -809,7 +809,8 @@ namespace hooks {
 			}
 
 			// Autovitality - Simulacrum behavior
-			if (target->id == UnitId::ProtossSimulacrum) {
+			if (target->id == UnitId::ProtossSimulacrum
+			&&	(scbw::get_generic_timer(target, ValueId::SimulacrumCloneTimer) == 0)) {
 				scbw::set_generic_timer(target, ValueId::SimulacrumCloneTimer, 5 * 24); // 5 seconds may be too long, needs testing
 			}
 
@@ -879,7 +880,6 @@ namespace hooks {
 					// Augur - Death behavior
 					if (target->id == UnitId::ProtossAugur) {
 						augurSacrifice(target);
-
 					}
 				}
 			}

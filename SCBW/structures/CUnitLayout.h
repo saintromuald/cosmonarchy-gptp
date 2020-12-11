@@ -213,7 +213,7 @@ namespace ValueId {
 		RadiationShockwaveCount						= 64,
 		KalkalethMissilePos							= 65,
 		DecaySavant									= 67,
-		SimulacrumStacks							= 68,
+		VassalStacks								= 68,
 		LobotomySlow								= 69,
 		EmpyreanMissilePos							= 70,
 		ProtossSwitchOrderState						= 71,

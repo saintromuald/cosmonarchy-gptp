@@ -30,8 +30,8 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 							+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
 
 	// Simulacrum behavior: increase weapon speed when any nearby Simulacrum dies
-	if (unit->id == UnitId::ProtossSimulacrum) {
-		double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10);
+	if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
+		double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::VassalStacks), 0, 10);
 		if (stacks > 0) {
 			double newCooldown = (double)cooldown * (1.0 - stacks / 13.333);
 			cooldown = newCooldown;

@@ -27,23 +27,23 @@ class customPlagueProc_2 : public scbw::UnitFinderCallbackProcInterface
 	}
 };
 
-class simulacrumProc : public scbw::UnitFinderCallbackProcInterface
+class vassalProc : public scbw::UnitFinderCallbackProcInterface
 {
 private:
-	CUnit* simulacrum;
+	CUnit* vassal;
 
 public:
-	simulacrumProc(CUnit* simulacrum)
-		: simulacrum(simulacrum) {}
+	vassalProc(CUnit* vassal)
+		: vassal(vassal) {}
 	void proc(CUnit* unit)
 	{
-		if (unit->id != UnitId::ProtossSimulacrum) {
+		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit)) {
 			return;
 		}
-		if (!scbw::isAlliedTo(simulacrum->playerId, unit->playerId)) {
+		if (!scbw::isAlliedTo(vassal->playerId, unit->playerId)) {
 			return;
 		}
-		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::SimulacrumStacks, 1, 0);
+		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::VassalStacks, 1, 0);
 	}
 };
 
@@ -318,15 +318,16 @@ void unitDestructorSpecialHook(CUnit* unit) {
 			bullet->time_remaining = 255;
 		}
 	}
-	// Simulacrum Autovitality behavior
-/*	if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
+
+	// Vassal Autovitality behavior
+	if (unit->id == UnitId::ProtossVassal) {
 		u32 range = 5*32;
 		scbw::UnitFinder unitFinder(unit->getX() - range,
 			unit->getY() - range,
 			unit->getX() + range,
 			unit->getY() + range);
-		unitFinder.forEach(simulacrumProc(unit));
-	}*/
+		unitFinder.forEach(vassalProc(unit));
+	}
 
 	// Barghest Robotic Sapience behavior
 	if (unit->id == UnitId::ProtossBarghest) {
