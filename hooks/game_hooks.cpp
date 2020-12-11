@@ -1138,7 +1138,7 @@ namespace hooks {
 
 				// Autovitality - Simulacrum behavior
 				if (scbw::get_generic_timer(unit, ValueId::SimulacrumCloneTimer) == 1) {
-					scbw::createUnitFromAbility(1, unit->playerId, unit->position.x, unit->position.y, 0, unit);
+					scbw::createUnitFromAbility(UnitId::ProtossSimulacrum, 1, unit->playerId, unit->position.x, unit->position.y, 0, unit);
 				}
 
 				// Robotic Sapience - Barghest passive
