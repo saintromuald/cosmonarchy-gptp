@@ -168,7 +168,7 @@ namespace hooks {
 			speed += (speed / 5);
 		}
 
-		// Vassal Autovitality: increase movespeed when any nearby Simulacrum dies
+		// Vassal Terminal Surge: increase movespeed when any nearby Simulacrum dies
 		else if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
 			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::VassalStacks), 0, 10)*1.5;
 			if (stacks > 0) {
@@ -203,18 +203,6 @@ namespace hooks {
 			if (accelerate) {
 				speed += speed / 2;
 			}
-
-			/*u32 range = unit->getSightRange(false) * 32;
-			scbw::UnitFinder unitFinder(unit->getX() - range,
-				unit->getY() - range,
-				unit->getX() + range,
-				unit->getY() + range);
-			unitFinder.forEach(manifoldProc(unit));
-			if (unit->_padding_0x132 & 0x2) {
-				//speed += (speed / 2);
-				speed *= 2;
-				unit->_padding_0x132 &= ~0x2;
-			}*/
 
 		}
 
@@ -298,7 +286,7 @@ namespace hooks {
 		if (decrease > 0)
 			acceleration = acceleration - (acceleration / 4);
 
-		// Vassal Autovitality
+		// Vassal Terminal Surge
 		else if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
 			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::VassalStacks), 0, 10)*1.5;
 			if (stacks > 0) {

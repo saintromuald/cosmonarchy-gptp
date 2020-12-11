@@ -400,6 +400,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		unitFinder.forEach(UpgPlague);
 		//add finder later to trace plague flag
 	}
+
 	//Destroy interceptors and scarabs
 	if (
 		unit->id == UnitId::ProtossCarrier || 

@@ -29,7 +29,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 	int cooldownModifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
 							+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
 
-	// Simulacrum behavior: increase weapon speed when any nearby Simulacrum dies
+	// Vassal Terminal Surge behavior
 	if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
 		double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::VassalStacks), 0, 10);
 		if (stacks > 0) {

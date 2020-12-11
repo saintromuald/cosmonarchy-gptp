@@ -1046,8 +1046,8 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossVassal &&  //Vassal Autovitality passive : enabled 
-									current_button->iconID == IconId::ApialSensors)
+								if ((*activePortraitUnit)->id == UnitId::ProtossVassal &&  //Vassal Terminal Surge passive : enabled 
+									current_button->iconID == IconId::RechargeShields)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
