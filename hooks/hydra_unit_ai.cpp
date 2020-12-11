@@ -33,7 +33,6 @@ Corsair Disruption Web:
 				at least 30 energy,
 				move towards the most significant enemy threat within 128px (in terms of enemy unit count). Recheck conditions
 				to disable the behavior (besides HP/shields and energy checks).
-
 */
 	if (unit->id == UnitId::TerranApostle) {
 		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256) &&

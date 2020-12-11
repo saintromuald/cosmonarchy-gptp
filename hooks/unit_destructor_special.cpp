@@ -47,8 +47,7 @@ public:
 	}
 };
 
-class barghestProc : public scbw::UnitFinderCallbackProcInterface
-{
+class barghestProc : public scbw::UnitFinderCallbackProcInterface {
 private:
 	CUnit* barghest;
 
@@ -320,14 +319,14 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		}
 	}
 	// Simulacrum Autovitality behavior
-	if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
+/*	if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
 		u32 range = 5*32;
 		scbw::UnitFinder unitFinder(unit->getX() - range,
 			unit->getY() - range,
 			unit->getX() + range,
 			unit->getY() + range);
 		unitFinder.forEach(simulacrumProc(unit));
-	}
+	}*/
 
 	// Barghest Robotic Sapience behavior
 	if (unit->id == UnitId::ProtossBarghest) {
@@ -361,7 +360,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		int supplyCount = scbw::getBroodlingCountFromSupply(unit);
 		for (int player = 0; player < PLAYER_COUNT; player++) {
 			if (unit->parasiteFlags & (1 << player) && scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ParasiteArmTimer, 0) <= 1) {
-				scbw::spawnBroodlings(supplyCount, player, unit->position.x, unit->position.y, 720, scbw::getSourceQueens(unit)[1]);
+				scbw::createUnitFromAbility(supplyCount, player, unit->position.x, unit->position.y, 720, scbw::getSourceQueens(unit)[1]);
 			}
 		}
 	}

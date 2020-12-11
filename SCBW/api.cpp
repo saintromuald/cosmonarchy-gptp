@@ -1357,102 +1357,114 @@ u16 random() {
 
 //-------- Needs research --------//
 
-//Logically equivalent to function @ 0x004C36C0
-void refreshConsole() {
+	//Logically equivalent to function @ 0x004C36C0
+	void refreshConsole() {
 
-	static u32*	const bCanUpdateCurrentButtonSet		= (u32*)		0x0068C1B0;
-	static u8*	 const bCanUpdateSelectedUnitPortrait	= (u8*)			0x0068AC74;
-	static u8*	 const bCanUpdateStatDataDialog			= (u8*)			0x0068C1F8;
-	static BinDlg**	const someDialogUnknown				= (BinDlg**)	0x0068C1E8;
-	static BinDlg**	const someDialogUnknownUser			= (BinDlg**)	0x0068C1EC;
+		static u32*	const bCanUpdateCurrentButtonSet		= (u32*)		0x0068C1B0;
+		static u8*	 const bCanUpdateSelectedUnitPortrait	= (u8*)			0x0068AC74;
+		static u8*	 const bCanUpdateStatDataDialog			= (u8*)			0x0068C1F8;
+		static BinDlg**	const someDialogUnknown				= (BinDlg**)	0x0068C1E8;
+		static BinDlg**	const someDialogUnknownUser			= (BinDlg**)	0x0068C1EC;
 
-	*bCanUpdateCurrentButtonSet = 1;
-	*bCanUpdateSelectedUnitPortrait = 1;
-	*bCanUpdateStatDataDialog = 1;
-	*someDialogUnknown = NULL;
-	*someDialogUnknownUser = NULL;
+		*bCanUpdateCurrentButtonSet = 1;
+		*bCanUpdateSelectedUnitPortrait = 1;
+		*bCanUpdateStatDataDialog = 1;
+		*someDialogUnknown = NULL;
+		*someDialogUnknownUser = NULL;
 
-}
+	}
 
-const u32 Func_MoveScreen = 0x0049C440;
-//Player check added based on how others functions test it
-//Values above or equal to 8 means all players
-//Equivalent to moveScreenToUnit @ 0x004E6020
-void MoveScreenToUnit(CUnit* unit, u32 playerId) {
+	const u32 Func_MoveScreen = 0x0049C440;
+	//Player check added based on how others functions test it
+	//Values above or equal to 8 means all players
+	//Equivalent to moveScreenToUnit @ 0x004E6020
+	void MoveScreenToUnit(CUnit* unit, u32 playerId) {
 
-	if(playerId >= 8 || playerId == *LOCAL_NATION_ID) {
+		if(playerId >= 8 || playerId == *LOCAL_NATION_ID) {
 
-		int x,y;
+			int x,y;
 
-		x = (s16)unit->sprite->position.x;
-		y = (s16)unit->sprite->position.y;
+			x = (s16)unit->sprite->position.x;
+			y = (s16)unit->sprite->position.y;
 
-		if(x < 0) 
-			x += 31;
-		if(y < 0) 
-			y += 31;
+			if(x < 0) 
+				x += 31;
+			if(y < 0) 
+				y += 31;
 
-		x = ((x/32) - 10) * 32;
-		y = ((y/32) - 6) * 32;
+			x = ((x/32) - 10) * 32;
+			y = ((y/32) - 6) * 32;
 
-		__asm {
-			PUSHAD
-			MOV ECX, y
-			MOV EAX, x
-			CALL Func_MoveScreen
-			POPAD
+			__asm {
+				PUSHAD
+				MOV ECX, y
+				MOV EAX, x
+				CALL Func_MoveScreen
+				POPAD
+			}
+
 		}
 
 	}
 
-}
+	const u32 Func_minimapPing = 0x004A34C0;
+	//Player check added based on how others functions test it
+	//Values above or equal to 8 means all players
+	//x and y are coords as gotten from unit->sprite->position
+	void minimapPing(u32 x, u32 y, s32 color, u32 playerId) {
 
-const u32 Func_minimapPing = 0x004A34C0;
-//Player check added based on how others functions test it
-//Values above or equal to 8 means all players
-//x and y are coords as gotten from unit->sprite->position
-void minimapPing(u32 x, u32 y, s32 color, u32 playerId) {
+		if(playerId >= 8 || playerId == *LOCAL_NATION_ID)
+			__asm {
+				PUSHAD
+				PUSH color
+				PUSH y
+				PUSH x
+				CALL Func_minimapPing
+				POPAD
+			}
 
-	if(playerId >= 8 || playerId == *LOCAL_NATION_ID)
+	}
+
+	const u32 Func_hasOverlay = 0x0047B720;
+	u8 hasOverlay(CUnit* unit) {
+
+		static u8 result;
+
 		__asm {
 			PUSHAD
-			PUSH color
-			PUSH y
-			PUSH x
-			CALL Func_minimapPing
+			MOV EAX, unit
+			CALL Func_hasOverlay
+			MOV result, AL
 			POPAD
 		}
 
-}
+		return result;
 
-const u32 Func_hasOverlay = 0x0047B720;
-u8 hasOverlay(CUnit* unit) {
-
-	static u8 result;
-
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_hasOverlay
-		MOV result, AL
-		POPAD
 	}
 
-	return result;
-
-}
-
-	void spawnBroodlings(int count, u16 playerId, s32 x, s32 y, u32 removeTimer, CUnit* creator) {
+	void createUnitFromAbility(int count, u16 playerId, s32 x, s32 y, u32 removeTimer, CUnit* creator) {
 		for (int i = 0; i < count; i++) {
-			CUnit* unit = scbw::createUnitIngame(UnitId::ZergBroodling, playerId, x, y, creator);
-			if (unit != nullptr) {
-				scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
-				if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
-					unit->removeTimer = removeTimer;
-				}
-				scbw::sendGPTP_aise_cmd(unit, creator, GptpId::SetGenericUnit, ValueId::BroodlingMother, 0, 0);
+			if (creator != NULL) {
+				if (creator->id == UnitId::ZergQueen) { // Broodspawn / Parasite
+					CUnit* unit = scbw::createUnitIngame(UnitId::ZergBroodling, playerId, x, y, creator);
+					if (unit != nullptr) {
+						scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
+						if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
+							unit->removeTimer = removeTimer;
+						}
+						scbw::sendGPTP_aise_cmd(unit, creator, GptpId::SetGenericUnit, ValueId::BroodlingMother, 0, 0);
 
-				if (creator != NULL) creator->energy = std::min((u16)(creator->energy + (u16)5 * (u16)256), creator->getMaxEnergy()); // Parasite and Incubators
+						if (creator != NULL) {
+							creator->energy = std::min((u16)(creator->energy + (u16)5 * (u16)256), creator->getMaxEnergy()); // Parasite and Incubators
+						}
+					}
+				}
+				else if (creator->id == UnitId::ProtossSimulacrum) {
+					CUnit* unit = scbw::createUnitIngame(UnitId::ProtossSimulacrum, playerId, x, y, creator);
+					if (unit != nullptr) {
+						scbw::playSound(SoundId::Protoss_TRILOBYTE_PTrRdy00_WAV, unit);
+					}
+				}
 			}
 		}
 	}

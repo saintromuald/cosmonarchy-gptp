@@ -270,9 +270,10 @@ namespace ValueId {
 		HierophantOverlay							= 118,
 		PhaseRushTimerArrayStart				    = 119,
 		//values 119 - 126 must not be used
-		NewMedstimTimer									= 127,
-		LurkerPickTarget								= 128,
-		IonCannonSprite									= 129,
+		NewMedstimTimer								= 127,
+		LurkerPickTarget							= 128,
+		IonCannonSprite								= 129,
+		SimulacrumCloneTimer						= 130,
 
 	};	
 }

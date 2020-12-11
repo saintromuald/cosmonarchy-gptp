@@ -404,6 +404,21 @@ public:
 	}
 };
 
+class barghestProc : public scbw::UnitFinderCallbackProcInterface {
+private:
+	CUnit* barghest;
+
+public:
+	barghestProc(CUnit* barghest)
+		: barghest(barghest) {}
+	void proc(CUnit* unit) {
+		if (!(unit->id == UnitId::ProtossBarghest
+		||	!(scbw::isAlliedTo(barghest->playerId, unit->playerId)))) {
+			return;
+		}
+	}
+};
+
 #include "logger.h"
 #include "limits/sfx_extender.h"
 #include "hooks/weapons/wpnspellhit.h"
@@ -987,21 +1002,6 @@ namespace hooks {
 					if (unit->_padding_0x132 & 0x8) {
 						unit->groundWeaponCooldown = 8;
 					}
-					/*if (unit->_padding_0x133 > 0) {
-						unit->_padding_0x133--;
-					}
-					if (unit->_padding_0x133 == 0) {
-						if (unit->_padding_0x132 & 0x8) {
-							unit->_padding_0x133 = 24;
-							unit->sprite->playIscriptAnim(IscriptAnimation::CastSpell);
-							shamanProc Heal = shamanProc(unit,true,6);
-							scbw::UnitFinder unitFinder(unit->getX() - 128,
-								unit->getY() - 128,
-								unit->getX() + 128,
-								unit->getY() + 128);
-							unitFinder.forEach(Heal);
-						}
-					}*/
 					if (scbw::get_generic_value(unit, ValueId::NaniteField)) {
 						auto timer = scbw::get_generic_timer(unit, ValueId::NaniteFieldTimer);
 						unit->_padding_0x133 = 0;
@@ -1100,7 +1100,7 @@ namespace hooks {
 				}
 
 				// Dark Templar - Decloak on attack
-				if (unit->id == UnitId::ProtossDarkTemplar || unit->id==UnitId::ProtossBarghest) {
+				if (unit->id == UnitId::ProtossDarkTemplar || unit->id == UnitId::ProtossBarghest) {
 					auto timer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DarkTemplarTimer, 0);
 					if (timer == 1) {
 						for (int i = 0; i < 8; i++) {
@@ -1136,6 +1136,21 @@ namespace hooks {
 					scbw::playSound(scbw::randBetween(1254, 1255), unit);
 				}
 
+				// Autovitality - Simulacrum behavior
+				if (scbw::get_generic_timer(unit, ValueId::SimulacrumCloneTimer) == 1) {
+					scbw::createUnitFromAbility(1, unit->playerId, unit->position.x, unit->position.y, 0, unit);
+				}
+
+				// Robotic Sapience - Barghest passive
+/*				if (unit->id == UnitId::ProtossBarghest) {
+					if (!(scbw::get_generic_value(unit, ValueId::RoboticSapience) >= 10)) {
+						Point16 pos = unit->position;
+						int radius = (10 * 32) / 2;
+						int stacks = scbw::UnitFinder(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius).forEach(barghestProc(unit));
+						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RoboticSapience, 1, 0);
+					}
+				}
+*/
 			}
 			scbw::setInGameLoopState(false);
 		}

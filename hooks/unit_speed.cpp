@@ -176,12 +176,12 @@ namespace hooks {
 		}
 
 		// Simulacrum Autovitality: increase movespeed when any nearby Simulacrum dies
-		else if (unit->id == UnitId::ProtossSimulacrum) {
+/*		else if (unit->id == UnitId::ProtossSimulacrum) {
 			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10)*1.5;
 			if (stacks > 0) {
 				speed = (double)speed * ((10.0 + stacks) / 10.0);
 			}
-		}
+		}*/
 
 		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby organic allies after kill
 		else if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0) {
@@ -324,12 +324,12 @@ namespace hooks {
 		}
 */
 		// Simulacrum Autovitality
-		else if (unit->id == UnitId::ProtossSimulacrum) {
+/*		else if (unit->id == UnitId::ProtossSimulacrum) {
 			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::SimulacrumStacks), 0, 10)*1.5;
 			if (stacks > 0) {
 				acceleration = (double)acceleration * ((10.0 + stacks) / 10.0);
 			}
-		}
+		}*/
 		//Clarion acceleration shield boost
 		else if (unit->id == UnitId::ProtossClarion) {
 			double fraction = (double)unit->shields / ((double)units_dat::MaxShieldPoints[unit->id] * 256);

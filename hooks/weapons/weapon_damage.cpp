@@ -473,7 +473,6 @@ namespace hooks {
 					s32 healAmount = damage * shieldStealRate;
 					s32 maxShields = units_dat::MaxShieldPoints[attacker->id] * 256;
 					attacker->shields = std::min(attacker->shields + healAmount, maxShields);
-//					scbw::printFormattedText("Rate: %f | HP: %i | Max HP: %i | Damage: %i | Heal Amount: %i", shieldStealRate, hp, maxHp, damage / 256, healAmount / 256);
 				}
 			}
 
@@ -486,10 +485,12 @@ namespace hooks {
 				int dmg = ((double)damage / div);
 				damage = dmg + (target->acidSporeCount * 256);
 			}
+
 			// Guardian behavior
 			else if (weaponId == WeaponId::AcidSpore) {
 				damage = damage + (target->acidSporeCount * 256) + (dmgDivisor * 10 * 256);
 			}
+
 			// Mutalisk bounce damage
 			else if (weaponId == WeaponId::GlaveWurm) {
 				double mul = 1.0;
@@ -510,12 +511,12 @@ namespace hooks {
 				int dmg = ((double)damage * mul);
 				damage = dmg + (target->acidSporeCount * 256);
 			}
+
+			// Kalkaleth behavior
 			else if (weaponId == WeaponId::ViscousAcid) {
 				int decrement = dmgDivisor * 256;
 				if (decrement < damage) {
 					damage = damage - decrement + (target->acidSporeCount * 256);
-					//get_multihit_count
-					//scbw::printFormattedText("Divisor is: %d, Kalkaleth damage: %d", dmgDivisor, damage / 256);
 				}
 				else {
 					damage = damage + (target->acidSporeCount * 256);
@@ -527,44 +528,29 @@ namespace hooks {
 				damage = damage / dmgDivisor + (target->acidSporeCount * 256);
 			}
 
-
+			// Hallucinations deal half damage
 			if (attacker != NULL) {
 				if (attacker->status & UnitStatus::IsHallucination) {
 					damage /= 2;
 				}
 			}
+
+			// Minimum amount of damage that can be dealt
 			if (damage < 128)
 				damage = 128;
 
 			//Reduce Defensive Matrix
 			if (target->defensiveMatrixHp != 0) {
-
 				s32 d_matrix_reduceAmount;
-
 				if (target->defensiveMatrixHp > damage)
 					d_matrix_reduceAmount = damage;
 				else
 					d_matrix_reduceAmount = target->defensiveMatrixHp;
-
-
 				damage -= d_matrix_reduceAmount;
 				target->reduceDefensiveMatrixHp(d_matrix_reduceAmount);
-
 			}
 
 			damageType = weapons_dat::DamageType[weaponId];
-			/*
-			if (weaponId == WeaponId::EssenceDrain && attacker != NULL) {
-				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
-					u32 amount = 75 * 256;
-					if (target->energy < amount) {
-						amount = target->energy;
-					}
-					attacker->energy = std::min(attacker->energy + amount, (u32)attacker->getMaxEnergy());
-					target->spendUnitEnergy(amount);
-				}
-			}*/
-
 			if (damageType != DamageType::IgnoreArmor) {
 				damage -= std::min(scbw::getCliffAdvantage(attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
 			}
@@ -572,15 +558,14 @@ namespace hooks {
 			//Reduce Plasma Shields...but not just yet
 			s32 shieldReduceAmount = 0;
 			if (units_dat::ShieldsEnabled[target->id] && target->shields >= 256) {
-
 				if (damageType != DamageType::IgnoreArmor) {
-
 					s32 plasmaShieldUpg = scbw::getUpgradeLevel(target->playerId, UpgradeId::ProtossPlasmaShields) * 256;
-					if (damage > plasmaShieldUpg) //Weird logic, Blizzard dev must have been sleepy
+					if (damage > plasmaShieldUpg) { //Weird logic, Blizzard dev must have been sleepy
 						damage -= plasmaShieldUpg;
-					else
+					}
+					else {
 						damage = 128;
-
+					}
 				}
 				shieldReduceAmount = std::min(damage, target->shields);
 				if (attacker != NULL && target != NULL) {
@@ -588,24 +573,19 @@ namespace hooks {
 						u32 lifesteal = shieldReduceAmount / 2;
 						attacker->setHp(attacker->hitPoints + lifesteal);
 					}
-
 					// Wendigo Automedicus passive (shield component)
 					if (attacker->id == UnitId::TerranWendigo && units_dat::BaseProperty[target->id] & UnitProperty::Mechanical) {
 						u32 lifesteal = shieldReduceAmount / 2;
 						attacker->setHp(attacker->hitPoints + lifesteal);
 					}
 				}
-
 				damage -= shieldReduceAmount;
-
 			}
 
 			//Apply armor
 			bool shield_overlay = false;
 			if (damageType != DamageType::IgnoreArmor) {
-
 				s32 armorTotal = target->getArmor() * 256;
-
 				if (attacker != NULL && target != NULL) {
 					armorTotal += scbw::get_aise_value(target, NULL, AiseId::GetShepherds, 0, 0) * 256;
 					if (scbw::get_aise_value(target, NULL, AiseId::GenericTimer, ValueId::Adrenaline, 0) > 0) {
@@ -624,7 +604,6 @@ namespace hooks {
 						}
 					}
 				}
-
 				damage -= std::min(damage, armorTotal);
 				auto rend = 256 * scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0);
 				damage += rend;
@@ -706,8 +685,7 @@ namespace hooks {
 						scbw::get_aise_value(attacker, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1
 						&& (units_dat::BaseProperty[target->id] & UnitProperty::Organic)
 						&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
-
-						scbw::sendGPTP_aise_cmd(attacker, target, GptpId::BlindJudgeTimedEffect, target->energy, 0, 0);
+							scbw::sendGPTP_aise_cmd(attacker, target, GptpId::BlindJudgeTimedEffect, target->energy, 0, 0);
 						/*
 						u32 energy = target->energy;
 						Point16 pos = target->position;
@@ -830,6 +808,11 @@ namespace hooks {
 				scbw::refreshDebuffs(target);
 			}
 
+			// Autovitality - Simulacrum behavior
+			if (target->id == UnitId::ProtossSimulacrum) {
+				scbw::set_generic_timer(target, ValueId::SimulacrumCloneTimer, 5 * 24); // 5 seconds may be too long, needs testing
+			}
+
 			if (attacker != NULL) { // looks like target will always be alive if this function was called?
 				if (scbw::get_aise_value(target, 0, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0) >= 1) {
 					CUnit* haluAttacker = attacker;
@@ -876,7 +859,7 @@ namespace hooks {
 					// Incubators - Broodling behavior
 					int supplyCount = scbw::getBroodlingCountFromSupply(target);
 					if (attacker->id == UnitId::ZergBroodling) {
-						scbw::spawnBroodlings(supplyCount, attacker->playerId, target->position.x, target->position.y, 720, scbw::getSourceQueens(attacker)[0]);
+						scbw::createUnitFromAbility(supplyCount, attacker->playerId, target->position.x, target->position.y, 720, scbw::getSourceQueens(attacker)[0]);
 					}
 
 					// Ecclesiast - Astral Blessing proc
