@@ -5,26 +5,28 @@ void hydra_unit_ai(CUnit* unit) {
 /*
 Apostle Lazarus Agent: If 5 or more organic allies (that don't have the buff) are nearby, cast the spell. **DONE**
 				AI should also try to position Apostles near organics, but not sure if that's feasible.
-Ghost Lobotomy Mine: I think all mines should be reworked in terms of how the AI places them, 
-					I would suggest dropping them in positions where enemy ground units 
-					have been spotted/attacked/killed within the last few minutes. 
-					That way it's like they're responding to ground paths taken by enemies. 
-					Vulture Spider Mines could be done in similar ways.
 Savant Power Siphon: If 2 or more allied specialists are nearby, target an enemy specialist within 7 range. **DONE**
-
-Paladin Skyfall: If 6 or more enemies are within 64px of each other while being within range, 
-				target terrain between the Paladin and the target group, 64px away from the group.
-Science Vessel Observance: If 3 or more enemies are within 96px of each other, and the Vessel has more than 50% HP, target the group and stay within range while attempting to avoid damage.
-Azazel Sublime Shepherd: Toggle while 2 or more allied units are within 96px of the Azazel, and stay within 96px of as many allies as possible.
 Clarion Phase Link: While 4 or more allied shielded units are within 128px of the Clarion, toggle the ability on. **DONE**
-Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a group of 6 or more units are within 160px of one another. Attempt to group as many units as possible during the channel.
-Star Sovereign Grief of All Gods: When at least 2000 HP+shields worth of enemy units are within 320px of the
-		Star Sovereign and there are no allied buildings and less than 2000 HP+shields worth of allied 
-		units within the same radius, and the Star Sovereign has more than 50% of HP+shields combined, 
-		channel the ability and attempt to protect the Star Sovereign with low-cost/low-HP units.
 Queen Parasite: When 5 or more supply's worth of units (of any owner) are within 128px 
 				of each other, target the group.	**DONE**
-Sometimes I get this crash when closing the exe, not sure if this is related to veeq's GPTP config or something else
+
+Ghost Lobotomy Mine: I think all mines should be reworked in terms of how the AI places them,
+				I would suggest dropping them in positions where enemy ground units
+				have been spotted/attacked/killed within the last few minutes.
+				That way it's like they're responding to ground paths taken by enemies.
+				Vulture Spider Mines could be done in similar ways.
+Paladin Skyfall: If 6 or more enemies are within 64px of each other while being within range, 
+				target terrain between the Paladin and the target group, 64px away from the group.
+Science Vessel Observance: If 3 or more enemies are within 96px of each other, and the Vessel has more than 50% HP, target
+				the group and stay within range while attempting to avoid damage.
+Azazel Sublime Shepherd: Toggle while 2 or more allied units are within 96px of the Azazel, and stay within 96px of as many
+				allies as possible.
+Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a group of 6 or more units are within 160px of
+				one another. Attempt to group as many units as possible during the channel.
+Star Sovereign Grief of All Gods: When at least 2000 HP+shields worth of enemy units are within 320px of the Star Sovereign
+				and there are no allied buildings and less than 2000 HP+shields worth of allied units within the same radius,
+				and the Star Sovereign has more than 50% of HP+shields combined, channel the ability and attempt to protect the
+				Star Sovereign with low-cost/low-HP units.
 */
 	if (unit->id == UnitId::TerranApostle) {
 		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256) &&
