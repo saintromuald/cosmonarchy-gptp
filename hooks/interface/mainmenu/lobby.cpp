@@ -34,7 +34,7 @@ namespace hooks {
                 do {
                     if (selectedSingleplayerRace[v1 + 1] != RaceId::None) {
                         setLastOpenSlotToComputer(selectedSingleplayerRace[v1 + 1]);
-                        if(playerTable[v1].type == PlayerType::NotUsed || playerTable[v1].type == PlayerType::OpenSlot) {
+                        if(/*playerTable[v1].type == PlayerType::NotUsed || */playerTable[v1].type == PlayerType::OpenSlot) {
                             playerTable[v1].type = PlayerType::Computer;
                         }
                     }
@@ -85,7 +85,7 @@ namespace hooks {
         *countdownTimeRemaining = result;
         for (int i = 0; i < 8; i++) {
             if (selectedSingleplayerRace[i] != RaceId::None) {
-                if (playerTable[i].type == PlayerType::NotUsed || playerTable[i].type == PlayerType::OpenSlot) {
+                if (/*playerTable[i].type == PlayerType::NotUsed || */playerTable[i].type == PlayerType::OpenSlot) {
                     playerTable[i].type = PlayerType::Computer;
                 }
             }
