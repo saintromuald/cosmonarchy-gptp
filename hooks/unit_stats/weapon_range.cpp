@@ -1,6 +1,7 @@
 //Contains hooks that control attack range and seek range (AKA target acquisition range).
 
 #include "weapon_range.h"
+#include "hooks/hydraFinder.h"
 #include <SCBW/api.h>
 
 namespace hooks {
@@ -40,7 +41,7 @@ u8 getSeekRangeHook(CUnit* unit) {
 	}
 
 	// Robotic Sapience - Barghest behavior
-	if (scbw::get_generic_value(unit, ValueId::RoboticSapience)) {
+/*	if (scbw::get_generic_value(unit, ValueId::RoboticSapience)) {
 		u32 stacks = scbw::get_generic_value(unit, ValueId::RoboticSapience);
 		if (stacks >= 10) {
 			bonusAmount += 5;
@@ -48,7 +49,21 @@ u8 getSeekRangeHook(CUnit* unit) {
 		else {
 			bonusAmount += stacks * 0.5;
 		}
-	}
+	}*/
+	
+	//Repentent Chorus - Barghest Behavior
+	int r = 5 * 32;
+	auto barghestCountProc = unitRangeCount(NULL, CFlags::Ally | CFlags::NotSelf, { UnitId::ProtossBarghest });
+	scbw::UnitFinder barghestsNearby(unit->position.x - r, unit->position.y - r,
+		unit->position.x + r, unit->position.y + r);
+	auto barghestCount = barghestsNearby.getUnitCount();
+	bonusAmount += barghestCount / 4;//seek range is measured in tiles, unfortunately
+	/*
+	int r = 16;
+					auto n = unitRangeCount(NULL, CFlags::NoInvincible | CFlags::Enemy | CFlags::NoAir, {});
+					scbw::UnitFinder unitsInSplash(impact.position.x - r, impact.position.y - r,
+						impact.position.x + r, impact.position.y + r);
+	*/
 
 	// Stellar Enforcement - Magister behavior
 	if (unit->orderTarget.unit != NULL
@@ -60,6 +75,7 @@ u8 getSeekRangeHook(CUnit* unit) {
 	if (weapons_dat::MaxRange[unit->getGroundWeapon()] <= 32) {
 		bonusAmount = 0;
 	}
+	
 
 	// Compile variable for use in height advantage calculations
 	seekRange = units_dat::SeekRange[unitId] + bonusAmount;
@@ -69,6 +85,7 @@ u8 getSeekRangeHook(CUnit* unit) {
 		seekRange += 2;
 		seekRange -= (2 - std::max(scbw::getCliffAdvantage(unit), 0)); // ideally we would pass weapon id
 	}
+
 
 	return seekRange;
 };
@@ -113,7 +130,7 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 	}
 
 	// Robotic Sapience - Barghest behavior
-	if (scbw::get_generic_value(unit, ValueId::RoboticSapience)) {
+/*	if (scbw::get_generic_value(unit, ValueId::RoboticSapience)) {
 		u32 stacks = scbw::get_generic_value(unit, ValueId::RoboticSapience);
 		if (stacks >= 10) {
 			bonusAmount += 5 * 32;
@@ -121,8 +138,17 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 		else {
 			bonusAmount += (stacks * 16);
 		}
-	}
-	
+	}*/
+
+	// Repentent Chorus - Barghest behavior
+	int r = 5 * 32;
+	auto barghestCountProc = unitRangeCount(NULL, CFlags::Ally | CFlags::NotSelf, { UnitId::ProtossBarghest });
+	scbw::UnitFinder barghestsNearby(unit->position.x - r, unit->position.y - r,
+		unit->position.x + r, unit->position.y + r);
+	auto barghestCount = barghestsNearby.getUnitCount();
+	bonusAmount += barghestCount * 8;
+
+
 	// Stellar Enforcement - Magister behavior
 	if (unit->orderTarget.unit != NULL
 	&&	scbw::get_generic_value(unit->orderTarget.unit, ValueId::StellarEnforcement)) {

@@ -330,11 +330,11 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	}
 
 	// Barghest Robotic Sapience behavior
-	if (unit->id == UnitId::ProtossBarghest) {
+/*	if (unit->id == UnitId::ProtossBarghest) {
 		u32 range = 5 * 32;
 		scbw::UnitFinder unitFinder(unit->getX() - range, unit->getY() - range, unit->getX() + range, unit->getY() + range);
 		unitFinder.forEach(barghestProc(unit));
-	}
+	}*/
 
 	// Apostle Last Breath behavior
 	if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic) {
