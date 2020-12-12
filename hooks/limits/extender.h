@@ -79,3 +79,5 @@ namespace Jmp {
 		JBE,
 	};
 }
+
+static u32 fakeExtFlingyIds[228];
