@@ -74,7 +74,7 @@ Corsair Disruption Web:
 			}
 		}	
 	}
-	else if (unit->id == UnitId::ProtossClarion) {
+/*	else if (unit->id == UnitId::ProtossClarion) {
 		if (scbw::get_generic_timer(unit, ValueId::AI_ClarionTimer) == 0 && unit->mainOrderId!=OrderId::KhaydarinEclipse) {
 			int count = 0;
 			hydraFinderLoop(unit, unit->sprite->position, 128,
@@ -83,22 +83,16 @@ Corsair Disruption Web:
 				});
 			auto clarionVal = scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0);
 			if (count >= 2 && clarionVal == 0) {
-/*				unit->orderComputerCL(OrderId::KhaydarinEclipse);
-				unit->orderTarget.pt = unit->sprite->position;
-				unit->mainOrderState = 0;*/
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 1, 0, 0);
 				scbw::set_generic_timer(unit, ValueId::AI_ClarionTimer, 96);
 			}
 			else if (count < 2 && clarionVal == 1) {
-/*				unit->orderComputerCL(OrderId::KhaydarinEclipse);
-				unit->orderTarget.pt = unit->sprite->position;
-				unit->mainOrderState = 0;*/
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 0, 0, 0);
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ClearClarionLinks, 0, 0, 0);
 				scbw::set_generic_timer(unit, ValueId::AI_ClarionTimer, 96);
 			}
 		}
-	}
+	}*/
 	else if (unit->id == UnitId::ZergQueen) {
 		if (unit->mainOrderId != OrderId::CastParasite && 
 			unit->energy >= techdata_dat::EnergyCost[TechId::Parasite]*256 &&

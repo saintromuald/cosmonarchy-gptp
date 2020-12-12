@@ -347,7 +347,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	}
 
 	// Clarion Phase Link behavior
-	if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
+	if (unit->id == UnitId::ProtossClarion/* && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1*/) {
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ClearClarionLinks, 0, 0, 0);
 	}
 

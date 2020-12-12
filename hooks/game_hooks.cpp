@@ -1135,7 +1135,10 @@ namespace hooks {
 					scbw::set_generic_value(unit, ValueId::ClarionSFX, 0);
 					scbw::playSound(scbw::randBetween(1254, 1255), unit);
 				}
-
+				if (unit->id==UnitId::ProtossClarion && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 0) {
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 1, 0, 0);
+					unit->updateSpeed();
+				}
 				// Autovitality - Simulacrum behavior
 				if (scbw::get_generic_timer(unit, ValueId::SimulacrumCloneTimer) == 1) {
 					scbw::createUnitFromAbility(UnitId::ProtossSimulacrum, 1, unit->playerId, unit->position.x, unit->position.y, 0, unit);
