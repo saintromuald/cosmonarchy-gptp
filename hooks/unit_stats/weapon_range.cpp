@@ -141,13 +141,14 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 	}*/
 
 	// Repentent Chorus - Barghest behavior
-	int r = 5 * 32;
-	auto barghestCountProc = unitRangeCount(NULL, CFlags::Ally | CFlags::NotSelf, { UnitId::ProtossBarghest });
-	scbw::UnitFinder barghestsNearby(unit->position.x - r, unit->position.y - r,
-		unit->position.x + r, unit->position.y + r);
-	auto barghestCount = barghestsNearby.getUnitCount();
-	bonusAmount += barghestCount * 8;
-
+	if (unit->id == UnitId::ProtossBarghest) {
+		int r = 5 * 32;
+		auto barghestCountProc = unitRangeCount(NULL, CFlags::Ally | CFlags::NotSelf, { UnitId::ProtossBarghest });
+		scbw::UnitFinder barghestsNearby(unit->position.x - r, unit->position.y - r,
+			unit->position.x + r, unit->position.y + r);
+		auto barghestCount = barghestsNearby.getUnitCount();
+		bonusAmount += barghestCount * 8;
+	}
 
 	// Stellar Enforcement - Magister behavior
 	if (unit->orderTarget.unit != NULL
