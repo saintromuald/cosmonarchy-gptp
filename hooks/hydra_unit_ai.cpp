@@ -1,7 +1,5 @@
 #include "hooks\hydra_unit_ai.h"
 #include "MathUtils.h"
-#include "SCBW/api.h"
-#include "SCBW/scbwdata.h"
 #include "UnitConstants.h"
 
 void hydra_unit_ai(CUnit* unit) {
@@ -137,19 +135,17 @@ Corsair Disruption Web:
 				scbw::set_generic_value(unit, ValueId::ExecutingCorsairMoveOrder, 0);
 			}
 		}
-		auto webs = hydraUnitCount(unit, unit->sprite->position, AI_WEB_SEEK_RANGE, 0, {UnitId::Spell_DisruptionWeb });
-		auto allies = hydraUnitCount(unit, unit->sprite->position, AI_CORSAIR_ALLY_SEEK_RANGE, CFlags::Ally | CFlags::NotSelf, {});
-		auto enemies = hydraUnitCount(unit, unit->sprite->position, AI_CORSAIR_ENEMY_SEEK_RANGE, CFlags::Enemy, {});
+		auto webs = hydraUnitCount(unit, unit->sprite->position, 96, 0, { UnitId::Spell_DisruptionWeb });
+		auto allies = hydraUnitCount(unit, unit->sprite->position, 128, CFlags::Ally | CFlags::NotSelf, {});
+		auto enemies = hydraUnitCount(unit, unit->sprite->position, 128, CFlags::Enemy, {});
 		auto percentage = (double)(unit->hitPoints+unit->shields) / 
 			(double)(units_dat::MaxHitPoints[unit->id]+units_dat::MaxShieldPoints[unit->id]*256);
 		if (web_state == 0) {
-			if (webs==0 && unit->energy >= AI_WEB_MIN_ENERGY * 256 && percentage >= AI_CORSAIR_LIFE_PERCENTAGE
-				&& allies >= AI_WEB_ALLY_MIN_COUNT && enemies >= AI_WEB_ENEMY_MIN_COUNT) {
+			if (webs==0 && unit->energy >= 30 * 256 && percentage >= 0.5 && allies >= 3 && enemies >= 2) {
 				CUnit* mostSignificant=NULL;
 				auto maxSignificance = 0;
 				hydraFinderLoop(unit, unit->sprite->position, 128, CFlags::Enemy, {}, [&](CUnit* u) {
-					auto significance = hydraUnitCount(u, u->position, AI_CORSAIR_ENEMY_SEEK_RANGE / 2, 
-						CFlags::NotSelf | CFlags::Ally, {});
+					auto significance = hydraUnitCount(u, u->position, 128 / 2, CFlags::NotSelf | CFlags::Ally, {});
 					if (significance > maxSignificance) {
 						maxSignificance = significance;
 						mostSignificant = u;
@@ -158,12 +154,12 @@ Corsair Disruption Web:
 				if (mostSignificant != NULL) {
 					unit->orderTo(OrderId::Move, mostSignificant->position.x, mostSignificant->position.y);
 					scbw::set_generic_value(unit, ValueId::DisruptionWeb, 1);
-					scbw::set_generic_timer(unit, ValueId::AI_CorsairDweb_Timer, AI_WEB_TIMER);
+					scbw::set_generic_timer(unit, ValueId::AI_CorsairDweb_Timer, 3 * 24);
 				}
 			}
 		}
 		else {
-			if (!(allies >= AI_WEB_ALLY_MIN_COUNT && enemies >= AI_WEB_ENEMY_MIN_COUNT)) {
+			if (!(allies >= 3 && enemies >= 2)) {
 				if (scbw::get_generic_timer(unit, ValueId::AI_CorsairDweb_Timer) == 0) {
 					scbw::set_generic_value(unit, ValueId::DisruptionWeb, 0);
 					scbw::set_generic_value(unit, ValueId::ExecutingCorsairMoveOrder, 0);
@@ -173,6 +169,14 @@ Corsair Disruption Web:
 				}
 			}
 		}
+		/*
+		Corsair Disruption Web :
+		When there are at least 3 allies within 128px, and there are at least 2 enemies within 128px, and there are no
+			activated Disruption Webs within 96px, and the Corsair is above 50 % total HP and shields, and the Corsair has
+			at least 30 energy,
+			move towards the most significant enemy threat within 128px(in terms of enemy unit count).Recheck conditions
+			to disable the behavior(besides HP / shields and energy checks).
+			*/
 	}
 	else if (unit->id == UnitId::ProtossStarSovereign && scbw::get_generic_timer(unit, ValueId::AI_GriefOfAllGodsTimer) == 0) {
 		auto enemyUnitsHealth = 0;
