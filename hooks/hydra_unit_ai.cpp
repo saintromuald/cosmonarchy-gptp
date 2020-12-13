@@ -178,7 +178,7 @@ Corsair Disruption Web:
 		auto enemyUnitsHealth = 0;
 		auto alliedUnitsHealth = 0;
 		bool alliedBuildings = false;
-		hydraFinderLoop(unit, unit->sprite->position, 320,
+		hydraFinderLoop(unit, unit->sprite->position, AI_STARSOVEREIGN_ABIL_SEEKRANGE,
 			CFlags::NotSelf | CFlags::NoAir | CFlags::NoInvincible, {}, [&](CUnit* u) {
 			if (!scbw::isAlliedTo(unit->playerId, u->playerId)) {
 				enemyUnitsHealth += (u->hitPoints + u->shields) / 256;
@@ -191,9 +191,12 @@ Corsair Disruption Web:
 				alliedUnitsHealth += (u->hitPoints + u->shields) / 256;
 			}
 		});
-		if (!alliedBuildings && enemyUnitsHealth >= 2000 && alliedUnitsHealth < 2000 && (unit->hitPoints+unit->shields)*2 >= 
-			(units_dat::MaxHitPoints[unit->id]+units_dat::MaxShieldPoints[unit->id]*256)){
-			scbw::set_generic_timer(unit, ValueId::AI_GriefOfAllGodsTimer, 612);
+		double percentage = ((double)unit->hitPoints + (double)unit->shields) /
+			((double)units_dat::MaxHitPoints[unit->id] + (double)units_dat::MaxShieldPoints[unit->id] * 256);
+		if (!alliedBuildings && enemyUnitsHealth >= AI_STARSOVEREIGN_ABIL_MIN_ENEMY_HEALTH 
+			&& alliedUnitsHealth < AI_STARSOVEREIGN_ABIL_MAX_ALLY_HEALTH 
+			&& percentage>=AI_STARSOVEREIGN_ABIL_LIFE_PERCENTAGE){
+			scbw::set_generic_timer(unit, ValueId::AI_GriefOfAllGodsTimer, AI_STARSOVEREIGN_ABIL_TIMER);
 			unit->orderComputerCL(OrderId::KhaydarinEclipse);
 			unit->orderTarget.pt = unit->sprite->position;
 			unit->mainOrderState = 0;

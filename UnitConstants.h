@@ -39,3 +39,10 @@ constexpr int AI_WEB_MIN_ENERGY = 30;
 constexpr int AI_WEB_ALLY_MIN_COUNT = 3;
 constexpr int AI_WEB_ENEMY_MIN_COUNT = 2;
 constexpr int AI_WEB_TIMER = 3 * 24;
+
+//Star Sovereign - Grief of All Gods - AI
+constexpr int AI_STARSOVEREIGN_ABIL_SEEKRANGE = 32 * 10;
+constexpr int AI_STARSOVEREIGN_ABIL_MIN_ENEMY_HEALTH = 2000;
+constexpr int AI_STARSOVEREIGN_ABIL_MAX_ALLY_HEALTH = 2000;
+constexpr double AI_STARSOVEREIGN_ABIL_LIFE_PERCENTAGE = 0.5;
+constexpr int AI_STARSOVEREIGN_ABIL_TIMER = 612;
