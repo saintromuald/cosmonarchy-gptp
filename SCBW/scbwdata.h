@@ -392,7 +392,7 @@ SCBW_DATA(u16*,		BuildScore,				unitsDat[49].address);	//00663408
 SCBW_DATA(u16*,		DestroyScore,			unitsDat[50].address);	//00663EB8
 SCBW_DATA(u16*,		MapStringId,			unitsDat[51].address);	//00660260
 SCBW_DATA(u8*,		BroodwarOnly,			unitsDat[52].address);	//006606D8
-SCBW_DATA(u16*, StarEditAvailFlags,						unitsDat[53].address);	//00661518 //"Staredit Availability Flags" according to EUDDB
+//SCBW_DATA(u16*, ???,						unitsDat[53].address);	//00661518 //"Staredit Availability Flags" according to EUDDB
 } //units_dat (last entry at 0x00513EAC)
 
 namespace flingy_dat {

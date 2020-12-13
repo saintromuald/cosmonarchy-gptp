@@ -604,7 +604,6 @@ u32 getFlingyData(u32 entry, u32 index) {
 u32 getSpriteData(u32 entry, u32 index) {
 	return get_aise_value(NULL, NULL, AiseId::GetSpriteData, entry, index);
 }
-
 u32 getImageData(u32 entry, u32 index) {
 	return get_aise_value(NULL, NULL, AiseId::GetImageData, entry, index);
 }
@@ -778,11 +777,6 @@ void set_generic_unit(CUnit* unit, u32 id, CUnit* targ) {
 void set_generic_variable(u32 id, int val) {
 	scbw::sendGPTP_aise_cmd(NULL, NULL, GptpId::SetGenericVariable, id, val, 0);
 }
-
-void setSpriteData(u32 entry, u32 index, u32 value) {
-	return sendGPTP_aise_cmd(NULL, NULL, GptpId::SetSpriteData, entry, index, value);
-}
-
 void set_generic_value(CUnit* u, u32 id, u32 val) {
 	scbw::sendGPTP_aise_cmd(u, NULL, GptpId::SetGenericValue, id, val, 0);
 }

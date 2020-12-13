@@ -83,7 +83,6 @@ namespace GptpId {
 		DirgeImpale,
 		ClearClarionLinks,
 		SetGenericVariable=27,
-		SetSpriteData=28,
 		Void = 10005,
 	};
 }
@@ -275,8 +274,6 @@ namespace ValueId {
 		LurkerPickTarget							= 128,
 		IonCannonSprite								= 129,
 		SimulacrumCloneTimer						= 130,
-		ExecutingCorsairMoveOrder					= 131,
-		AI_CorsairDweb_Timer						= 132,
 
 	};	
 }
