@@ -52,11 +52,7 @@ u8 getSeekRangeHook(CUnit* unit) {
 	}*/
 	
 	//Repentent Chorus - Barghest Behavior
-	int r = 5 * 32;
-	auto barghestCountProc = unitRangeCount(NULL, CFlags::Ally | CFlags::NotSelf, { UnitId::ProtossBarghest });
-	scbw::UnitFinder barghestsNearby(unit->position.x - r, unit->position.y - r,
-		unit->position.x + r, unit->position.y + r);
-	auto barghestCount = barghestsNearby.getUnitCount();
+	auto barghestCount = hydraUnitCount(unit, unit->position, 5 * 32, CFlags::Ally | CFlags::NotSelf, { UnitId::ProtossBarghest });
 	bonusAmount += barghestCount / 4;//seek range is measured in tiles, unfortunately
 	/*
 	int r = 16;
@@ -143,10 +139,7 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 	// Repentent Chorus - Barghest behavior
 	if (unit->id == UnitId::ProtossBarghest) {
 		int r = 5 * 32;
-		auto barghestCountProc = unitRangeCount(NULL, CFlags::Ally | CFlags::NotSelf, { UnitId::ProtossBarghest });
-		scbw::UnitFinder barghestsNearby(unit->position.x - r, unit->position.y - r,
-			unit->position.x + r, unit->position.y + r);
-		auto barghestCount = barghestsNearby.getUnitCount();
+		auto barghestCount = hydraUnitCount(unit, unit->position, 5 * 32, CFlags::Ally | CFlags::NotSelf, { UnitId::ProtossBarghest });
 		bonusAmount += barghestCount * 8;
 	}
 

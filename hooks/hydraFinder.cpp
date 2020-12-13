@@ -10,6 +10,21 @@ bool rangeMatch(CUnit* unit, u32 r, u32 context, std::vector<u16> allowedIds) {
 	);
 	return a != NULL;
 }
+
+u32 hydraUnitCount(CUnit* unitPtr, Point16 pos, int r, u32 flags, std::vector<u16> unitIds)
+{
+	auto condition = unitRangeCount(unitPtr, flags, unitIds);
+	scbw::UnitFinder unitsInSplash(pos.x - r, pos.y - r,
+		pos.x + r, pos.y + r);
+	auto count = 0;
+	for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
+		auto unit = unitsInSplash.getUnit(i);
+		if (condition.match(unit)) {
+			count++;
+		}
+	}
+	return count;
+}
 CUnit* rangeMatchUnit(CUnit* unit, u32 r, u32 context, std::vector<u16> allowedIds) {
 	scbw::UnitFinder unitsInSplash(unit->getX() - r, unit->getY() - r, unit->getX() + r, unit->getY() + r);
 	auto a = scbw::UnitFinder::getNearestTarget(

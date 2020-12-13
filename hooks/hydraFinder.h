@@ -118,7 +118,7 @@ public:
 bool rangeMatch(CUnit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
 CUnit* rangeMatchUnit(CUnit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
 CUnit* rangeMatchPosition(Point32 position, u32 r, u32 context, std::vector<u16> allowedIds);
-
+u32 hydraUnitCount(CUnit* unitPtr, Point16 pos, int r, u32 flags, std::vector<u16> unitIds);
 template<typename hydraLoop>
 inline void hydraFinderLoop(CUnit* unitPtr, Point16 pos, int r, u32 flags, std::vector<u16> unitIds, hydraLoop l)
 {
