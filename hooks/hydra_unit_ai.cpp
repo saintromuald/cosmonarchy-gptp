@@ -16,6 +16,12 @@ Star Sovereign Grief of All Gods: When at least 2000 HP+shields worth of enemy u
 				and there are no allied buildings and less than 2000 HP+shields worth of allied units within the same radius,
 				and the Star Sovereign has more than 50% of HP+shields combined, channel the ability and attempt to protect the
 				Star Sovereign with low-cost/low-HP units.	**DONE**
+Corsair Disruption Web:
+				When there are at least 3 allies within 128px, and there are at least 2 enemies within 128px, and there are no
+				activated Disruption Webs within 96px, and the Corsair is above 50% total HP and shields, and the Corsair has
+				at least 30 energy,
+				move towards the most significant enemy threat within 128px (in terms of enemy unit count). Recheck conditions
+				to disable the behavior (besides HP/shields and energy checks). **DONE**
 
 Ghost Lobotomy Mine: I think all mines should be reworked in terms of how the AI places them,
 				I would suggest dropping them in positions where enemy ground units
@@ -30,12 +36,6 @@ Azazel Sublime Shepherd: Toggle while 2 or more allied units are within 96px of 
 				allies as possible.
 Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a group of 6 or more units are within 160px of
 				one another. Attempt to group as many units as possible during the channel.
-Corsair Disruption Web:
-				When there are at least 3 allies within 128px, and there are at least 2 enemies within 128px, and there are no
-				activated Disruption Webs within 96px, and the Corsair is above 50% total HP and shields, and the Corsair has
-				at least 30 energy,
-				move towards the most significant enemy threat within 128px (in terms of enemy unit count). Recheck conditions
-				to disable the behavior (besides HP/shields and energy checks).
 */
 	if (unit->id == UnitId::TerranApostle) {
 		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256) &&
