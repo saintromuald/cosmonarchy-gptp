@@ -196,7 +196,8 @@ enum Enum {
 	RayOfAgony									= 114,			// Barghest weapon
 	IconoclastBlades							= 115,			// Pariah weapon
 	PhaseBlaster								= 118,			// Manifold weapon
-	DispersiveSalvo								= 119,			// Architect weapon	
+	DispersiveSalvo								= 119,			// Architect weapon
+	AuroraLastOrders							= 121,			// Aurora behavior damage
 	FinalHour									= 128,			// Augur behavior
 
 	// Zerg \\

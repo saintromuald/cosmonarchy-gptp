@@ -29,3 +29,20 @@ static constexpr int operator "" s(long double amount) {
 constexpr int MADCAP_PASSIVE_DECAY_TIME = 0.5s;
 constexpr int MADCAP_MAX_STACKS = 10;
 constexpr double MADCAP_ATTACK_SPEED_PER_STACK = 0.05;
+
+//Corsair - Disruption Web - AI
+constexpr int AI_WEB_SEEK_RANGE = 96;
+constexpr int AI_CORSAIR_ALLY_SEEK_RANGE = 128;
+constexpr int AI_CORSAIR_ENEMY_SEEK_RANGE = 128;
+constexpr double AI_CORSAIR_LIFE_PERCENTAGE = 0.5;
+constexpr int AI_WEB_MIN_ENERGY = 30;
+constexpr int AI_WEB_ALLY_MIN_COUNT = 3;
+constexpr int AI_WEB_ENEMY_MIN_COUNT = 2;
+constexpr int AI_WEB_TIMER = 3 * 24;
+
+//Star Sovereign - Grief of All Gods - AI
+constexpr int AI_STARSOVEREIGN_ABIL_SEEKRANGE = 32 * 10;
+constexpr int AI_STARSOVEREIGN_ABIL_MIN_ENEMY_HEALTH = 2000;
+constexpr int AI_STARSOVEREIGN_ABIL_MAX_ALLY_HEALTH = 2000;
+constexpr double AI_STARSOVEREIGN_ABIL_LIFE_PERCENTAGE = 0.5;
+constexpr int AI_STARSOVEREIGN_ABIL_TIMER = 612;

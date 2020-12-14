@@ -1,4 +1,7 @@
 #include "hooks\hydra_unit_ai.h"
+#include "SCBW/api.h"
+#include "SCBW/scbwdata.h"
+#include "UnitConstants.h"
 #include "MathUtils.h"
 
 void hydra_unit_ai(CUnit* unit) {
@@ -144,12 +147,56 @@ Corsair Disruption Web:
 				alliedUnitsHealth += (u->hitPoints + u->shields) / 256;
 			}
 		});
-		if (!alliedBuildings && enemyUnitsHealth >= 2000 && alliedUnitsHealth < 2000 && (unit->hitPoints+unit->shields)*2 >= 
-			(units_dat::MaxHitPoints[unit->id]+units_dat::MaxShieldPoints[unit->id])){
+		if (!alliedBuildings && enemyUnitsHealth >= 2000 && alliedUnitsHealth < 2000 && (unit->hitPoints + unit->shields) * 2 >=
+			(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id])) {
 			scbw::set_generic_timer(unit, ValueId::AI_GriefOfAllGodsTimer, 612);
 			unit->orderComputerCL(OrderId::KhaydarinEclipse);
 			unit->orderTarget.pt = unit->sprite->position;
 			unit->mainOrderState = 0;
+		}
+	}
+	else if (unit->id == UnitId::ProtossCorsair) {
+		auto web_state = scbw::get_generic_value(unit, ValueId::DisruptionWeb);
+		if (scbw::get_generic_value(unit, ValueId::ExecutingCorsairMoveOrder) != 0) {
+			if (unit->mainOrderId != OrderId::Move) {
+				scbw::set_generic_value(unit, ValueId::ExecutingCorsairMoveOrder, 0);
+			}
+		}
+		auto webs = hydraUnitCount(unit, unit->sprite->position, AI_WEB_SEEK_RANGE, 0, { UnitId::Spell_DisruptionWeb });
+		auto allies = hydraUnitCount(unit, unit->sprite->position, AI_CORSAIR_ALLY_SEEK_RANGE, CFlags::Ally | CFlags::NotSelf, {});
+		auto enemies = hydraUnitCount(unit, unit->sprite->position, AI_CORSAIR_ENEMY_SEEK_RANGE, CFlags::Enemy, {});
+		auto percentage = (double)(unit->hitPoints + unit->shields) /
+			(double)(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id] * 256);
+		if (web_state == 0) {
+			if (webs == 0 && unit->energy >= AI_WEB_MIN_ENERGY * 256 && percentage >= AI_CORSAIR_LIFE_PERCENTAGE
+				&& allies >= AI_WEB_ALLY_MIN_COUNT && enemies >= AI_WEB_ENEMY_MIN_COUNT) {
+				CUnit* mostSignificant = NULL;
+				auto maxSignificance = 0;
+				hydraFinderLoop(unit, unit->sprite->position, 128, CFlags::Enemy, {}, [&](CUnit* u) {
+					auto significance = hydraUnitCount(u, u->position, AI_CORSAIR_ENEMY_SEEK_RANGE / 2,
+						CFlags::NotSelf | CFlags::Ally, {});
+					if (significance > maxSignificance) {
+						maxSignificance = significance;
+						mostSignificant = u;
+					}
+					});
+				if (mostSignificant != NULL) {
+					unit->orderTo(OrderId::Move, mostSignificant->position.x, mostSignificant->position.y);
+					scbw::set_generic_value(unit, ValueId::DisruptionWeb, 1);
+					scbw::set_generic_timer(unit, ValueId::AI_CorsairDweb_Timer, AI_WEB_TIMER);
+				}
+			}
+		}
+		else {
+			if (!(allies >= AI_WEB_ALLY_MIN_COUNT && enemies >= AI_WEB_ENEMY_MIN_COUNT)) {
+				if (scbw::get_generic_timer(unit, ValueId::AI_CorsairDweb_Timer) == 0) {
+					scbw::set_generic_value(unit, ValueId::DisruptionWeb, 0);
+					scbw::set_generic_value(unit, ValueId::ExecutingCorsairMoveOrder, 0);
+					if (unit->mainOrderId == OrderId::Move) {
+						unit->orderTo(OrderId::Stop);
+					}
+				}
+			}
 		}
 	}
 /*	else if (unit->id == UnitId::TerranPaladin) {
