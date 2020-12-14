@@ -561,6 +561,7 @@ namespace hooks {
 						}
 					}
 				}
+
 				// Exemplar overlay
 				if (unit->id == UnitId::ProtossExemplar) {
 					if (scbw::get_generic_value(unit, ValueId::ExemplarSwitch) == 1) {
@@ -574,6 +575,7 @@ namespace hooks {
 						}
 					}
 				}
+
 				// Star Sovereign Intervention Missiles behavior
 				if (unit->id == UnitId::ProtossStarSovereign) {
 					if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerChannel) == 1) {
@@ -627,41 +629,8 @@ namespace hooks {
 						}
 					}
 				}
-	/*			if (unit->id == UnitId::Special_IonCannon) {
-					const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlaySpecialPtr,
-						1255));
-//						u8 frameDirection = turret->direction;
-					u8 frameDirection = unit->sprite->mainGraphic->direction;
-					auto tryOverlay = unit->getOverlay(1256);
-					bool mirror = false;
-					if (tryOverlay) {
-						frameDirection = tryOverlay->direction;
-						if (tryOverlay->flags & CImage_Flags::Mirrored) {
-							mirror = true;
-							scbw::printText("Mirrored");
-						}
-					}
-					Point8 offset = loFile->getOffset(frameDirection, 0);
-					if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored || mirror) {
-						offset.x = -offset.x;
-					}
-					auto overlay = reinterpret_cast<CSprite*>(scbw::get_generic_value(unit, ValueId::IonCannonSprite));
-					if (overlay == NULL) {
-						auto turret = scbw::createThingy(645, unit->position.x + offset.x, unit->position.y + offset.y, unit->playerId);					
-						turret->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
-						scbw::set_generic_value(unit, ValueId::IonCannonSprite, reinterpret_cast<u32>(turret->sprite));
-						auto fakeTurret = unit->sprite->createTopOverlay(1256, 0, 0, unit->sprite->mainGraphic->direction);
-						fakeTurret->flags |= CImage_Flags::Invisible;
-					}
-					else {
-						overlay->position.x = unit->position.x + offset.x;
-						overlay->position.y = unit->position.y + offset.y;
-						//overlay->mainGraphic->direction = frameDirection;
-						overlay->mainGraphic->setImageDirection(frameDirection);
-						scbw::printFormattedText("Direction is %d, offset is %d %d", frameDirection,offset.x,offset.y);
-					}
-						
-				}*/
+
+				// Apostle - Lazarus Agent cast
 				if (unit->id == UnitId::TerranApostle) {
 					if (scbw::get_generic_value(unit, ValueId::CastLazarusAgent) == 1) {
 						scbw::set_generic_value(unit, ValueId::CastLazarusAgent, 0);
@@ -684,6 +653,8 @@ namespace hooks {
 						}
 					}
 				}
+
+				// Disruption Web - Corsair ability
 				if (unit->id == UnitId::ProtossCorsair) {
 					auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
 					if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0)) {
@@ -714,16 +685,6 @@ namespace hooks {
 						unit->inflictDamage(techdata_dat::EnergyCost[TechId::DisruptionWeb]*256, unit, unit->playerId, false, true);
 					}
 				}
-
-				// Penumbra Shadow's Weight passive (disabled)
-/*				if (unit->id == UnitId::TerranPenumbra && unit->movementFlags & MovementFlags::Accelerating) {
-					auto spores = penumbraProc(unit);
-					scbw::UnitFinder unitFinder(unit->getLeft()-16,
-						unit->getTop()-16,
-						unit->getRight()+16,
-						unit->getBottom()+16);
-					unitFinder.forEach(spores);
-				}*/
 
 				//Madcap stacks
 				if (unit->id == UnitId::TerranMadcap && unit->movementFlags & MovementFlags::Accelerating || unit->movementFlags & MovementFlags::Moving) {
@@ -970,7 +931,6 @@ namespace hooks {
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::LobotomySlow, 0) > 0) {
 					unit->updateSpeed();
 				}
-
 				
 				// Zergling - Adrenal Glands
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::AdrenalTimer, 0) == 1) {
@@ -1135,25 +1095,17 @@ namespace hooks {
 					scbw::set_generic_value(unit, ValueId::ClarionSFX, 0);
 					scbw::playSound(scbw::randBetween(1254, 1255), unit);
 				}
+
 				if (unit->id==UnitId::ProtossClarion && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 0) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 1, 0, 0);
 					unit->updateSpeed();
 				}
+
 				// Autovitality - Simulacrum behavior
 				if (scbw::get_generic_timer(unit, ValueId::SimulacrumCloneTimer) == 1) {
 					scbw::createUnitFromAbility(UnitId::ProtossSimulacrum, 1, unit->playerId, unit->position.x, unit->position.y, 0, unit);
 				}
 
-				// Robotic Sapience - Barghest passive
-/*				if (unit->id == UnitId::ProtossBarghest) {
-					if (!(scbw::get_generic_value(unit, ValueId::RoboticSapience) >= 10)) {
-						Point16 pos = unit->position;
-						int radius = (10 * 32) / 2;
-						int stacks = scbw::UnitFinder(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius).forEach(barghestProc(unit));
-						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RoboticSapience, 1, 0);
-					}
-				}
-*/
 			}
 			scbw::setInGameLoopState(false);
 		}
