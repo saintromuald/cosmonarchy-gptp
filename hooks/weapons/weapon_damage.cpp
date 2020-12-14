@@ -312,7 +312,6 @@ public:
 		}
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::NathrokorTimer, (4 * 24) + 1, 0);
 		unit->updateSpeed();
-//		scbw::printFormattedText("Unit id: %d",(u32)unit->id);
 	}
 };
 

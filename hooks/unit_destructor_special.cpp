@@ -47,25 +47,6 @@ public:
 	}
 };
 
-class barghestProc : public scbw::UnitFinderCallbackProcInterface {
-private:
-	CUnit* barghest;
-
-public:
-	barghestProc(CUnit* barghest)
-		: barghest(barghest) {}
-	void proc(CUnit* unit)
-	{
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit)) {
-			return;
-		}
-		if (scbw::get_generic_value(unit, ValueId::RoboticSapience) >= 10) {
-			return;
-		}
-		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::RoboticSapience, 1, 0);
-	}
-};
-
 class lastBreathProc : public scbw::UnitFinderCallbackProcInterface
 {
 private:
@@ -328,13 +309,6 @@ void unitDestructorSpecialHook(CUnit* unit) {
 			unit->getY() + range);
 		unitFinder.forEach(vassalProc(unit));
 	}
-
-	// Barghest Robotic Sapience behavior
-/*	if (unit->id == UnitId::ProtossBarghest) {
-		u32 range = 5 * 32;
-		scbw::UnitFinder unitFinder(unit->getX() - range, unit->getY() - range, unit->getX() + range, unit->getY() + range);
-		unitFinder.forEach(barghestProc(unit));
-	}*/
 
 	// Apostle Last Breath behavior
 	if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic) {

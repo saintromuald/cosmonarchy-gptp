@@ -125,17 +125,6 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 			break;
 	}
 
-	// Robotic Sapience - Barghest behavior
-/*	if (scbw::get_generic_value(unit, ValueId::RoboticSapience)) {
-		u32 stacks = scbw::get_generic_value(unit, ValueId::RoboticSapience);
-		if (stacks >= 10) {
-			bonusAmount += 5 * 32;
-		}
-		else {
-			bonusAmount += (stacks * 16);
-		}
-	}*/
-
 	// Repentent Chorus - Barghest behavior
 	if (unit->id == UnitId::ProtossBarghest) {
 		int r = 5 * 32;

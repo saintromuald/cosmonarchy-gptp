@@ -1184,13 +1184,13 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergBroodling &&  //Broodling Incubators passive
-									current_button->iconID == IconId::RoarUnused)
+								if ((*activePortraitUnit)->id == UnitId::ZergQueen &&  //Queen Gamete Meiosis passive
+									current_button->iconID == IconId::GameteMeiosis)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergInfestedTerran &&  //Infested Terran Ensnare passive 
-									current_button->iconID == IconId::Ensnare)
+								if ((*activePortraitUnit)->id == UnitId::ZergBroodling &&  //Broodling Incubators passive
+									current_button->iconID == IconId::RoarUnused)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}

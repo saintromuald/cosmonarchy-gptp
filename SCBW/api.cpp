@@ -2,6 +2,7 @@
 #include <SCBW/UnitFinder.h>
 #include <algorithm>
 #include <cassert>
+#include <utility>
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -12,6 +13,24 @@ class DarkSwarmFinderProc : public scbw::UnitFinderCallbackMatchInterface {
 		bool match(CUnit* unit) {
 			return unit->id == UnitId::Spell_DarkSwarm;
 		}
+};
+
+class gameteMeiosisProc : public scbw::UnitFinderCallbackProcInterface {
+private:
+	CUnit* broodling;
+
+public:
+	gameteMeiosisProc(CUnit* broodling)
+		: broodling(broodling) {}
+	void proc(CUnit* unit) {
+		if (unit->id != UnitId::ZergQueen) {
+			return;
+		}
+		if (!scbw::isAlliedTo(broodling->playerId, unit->playerId)) {
+			return;
+		}
+		std::min((u16)(unit->energy + (u16)5 * (u16)256), unit->getMaxEnergy());
+	}
 };
 
 namespace scbw {
@@ -1457,11 +1476,12 @@ u16 random() {
 					if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
 						unit->removeTimer = removeTimer;
 					}
-					scbw::sendGPTP_aise_cmd(unit, creator, GptpId::SetGenericUnit, ValueId::BroodlingMother, 0, 0);
-
-					if (creator != NULL) {
-						creator->energy = std::min((u16)(creator->energy + (u16)5 * (u16)256), creator->getMaxEnergy()); // Parasite and Incubators
-					}
+					u32 range = 6 * 32;
+					scbw::UnitFinder unitFinder(unit->getX() - range,
+						unit->getY() - range,
+						unit->getX() + range,
+						unit->getY() + range);
+					unitFinder.forEach(gameteMeiosisProc(unit));
 				}
 				else if (unitId == UnitId::ProtossSimulacrum) {
 					scbw::playSound(SoundId::Protoss_TRILOBYTE_PTrRdy00_WAV, unit);
