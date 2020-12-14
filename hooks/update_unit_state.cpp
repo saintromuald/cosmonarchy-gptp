@@ -611,8 +611,6 @@ namespace hooks {
 		// Radiation Shockwave - Irradiate enhancement
 			if (unit->irradiateTimer > 0) {
 				if (scbw::get_generic_value(unit, ValueId::RadiationShockwaveCount)) {
-//					scbw::printText("Radiation Shockwave detected");
-//					unit->_unknown_0x026 &= ~0x2;
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 0, 0);
 
 					CThingy* emp_sprite;
@@ -660,8 +658,9 @@ namespace hooks {
 							else
 								if (current_unit->stasisTimer == 0) { //don't work against units in stasis
 
-									current_unit->energy -= 100*256;
-									current_unit->shields -= 100*256;
+									s32 energyBig = current_unit->energy;
+									current_unit->energy -= std::min(100*256, energyBig);
+									current_unit->shields -= std::min(100*256, current_unit->shields);
 
 									if (
 										current_unit->sprite->flags & CSprite_Flags::Selected &&
