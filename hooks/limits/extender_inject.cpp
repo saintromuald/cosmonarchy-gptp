@@ -120,11 +120,11 @@ namespace hooks {
 		jmpPatch(madnessSetFlingyId_Wrapper, 0x004AB147);
 
 		std::vector<u8> eax_eax = { 0x8b, 0x04, 0x85 };
-//		dumbCodeInject(0x00454317, fakeExtFlingyIds, eax_eax, 0);//+
+		dumbCodeInject(0x00454317, fakeExtFlingyIds, eax_eax, 0);//+
 		std::vector<u8> ecx_edi = { 0x8b, 0x0c, 0xbd };
 		dumbCodeInject(0x00463A71, fakeExtFlingyIds, ecx_edi, 0);
 		std::vector<u8> edx_ecx = { 0x8b, 0x14, 0x8d };
-		dumbCodeInject(0x004683C6, fakeExtFlingyIds, edx_ecx, 2);
+	//	dumbCodeInject(0x004683C6, fakeExtFlingyIds, edx_ecx, 2);//unit_morph - AI Wrapper
 		std::vector<u8> edx_eax = { 0x8b, 0x14, 0x85 };
 		//dumbCodeInject(0x0047B854, fakeExtFlingyIds, edx_eax, 2);
 		//dumbCodeInject(0x0047B8A4, fakeExtFlingyIds, edx_eax, 2);
