@@ -977,6 +977,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranTreasury &&  //Treasury Expanded Storage passive 
+									current_button->iconID == IconId::ApolloReactor)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								
 
 								// PROTOSS \\
