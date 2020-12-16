@@ -29,7 +29,10 @@ public:
 		if (!scbw::isAlliedTo(broodling->playerId, unit->playerId)) {
 			return;
 		}
-		std::min((u16)(unit->energy + (u16)5 * (u16)256), unit->getMaxEnergy());
+		if (unit->energy < 200 * 256) {
+			unit->energy = std::min((u16)(unit->energy + (u16)5 * (u16)256), unit->getMaxEnergy());
+			unit->sprite->createUnderlay(425);
+		}
 	}
 };
 
@@ -1471,7 +1474,7 @@ u16 random() {
 		for (int i = 0; i < count; i++) {
 			CUnit* unit = scbw::createUnitIngame(unitId, playerId, x, y, creator);
 			if (unit != nullptr) {
-				if (unitId == UnitId::ZergBroodling) { // Broodspawn / Parasite
+				if (unitId == UnitId::ZergBroodling) { // Parasite & Incubators
 					scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
 					if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
 						unit->removeTimer = removeTimer;
@@ -1758,6 +1761,37 @@ u16 random() {
 
 		//was hardcoded in original code
 		scbw::refreshConsole();
+	}
+
+	void applyEnsnare(CUnit* a1) { // 004F45E0
+		s32 baseProperty; // eax
+		u8 overlayPadding; // al
+		CUnit* victim; // ecx
+
+		if (!(a1->ensnareTimer)
+			&& !(a1->status & UnitStatus::Burrowed)) {
+
+			// Calculate overlay ID offset based on units_dat flags
+			overlayPadding = 0;
+			baseProperty = units_dat::BaseProperty[a1->id];
+			if (baseProperty & UnitProperty::MediumOverlay) {
+				overlayPadding = 1;
+			}
+			else if (baseProperty & UnitProperty::LargeOverlay) {
+				overlayPadding = 2;
+			}
+			victim = a1;
+			if (a1->subunit != NULL) {
+				victim = a1->subunit;
+			}
+
+			// Create overlay
+			victim->sprite->createOverlay(ImageId::EnsnareOverlay_Small + overlayPadding);
+		}
+
+		// Apply effect
+		a1->ensnareTimer = 37;
+		a1->updateSpeed();
 	}
 
 } //scbw

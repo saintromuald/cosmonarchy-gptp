@@ -277,6 +277,7 @@ namespace ValueId {
 		SimulacrumCloneTimer						= 130,
 		ExecutingCorsairMoveOrder					= 131,
 		AI_CorsairDweb_Timer						= 132,
+		EnsnaringBrood								= 133,
 
 	};	
 }

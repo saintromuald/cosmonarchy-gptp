@@ -419,6 +419,21 @@ public:
 	}
 };
 
+class ensnaringBroodProc : public scbw::UnitFinderCallbackProcInterface {
+private:
+	CUnit* queen;
+
+public:
+	ensnaringBroodProc(CUnit* queen)
+		: queen(queen) {}
+	void proc(CUnit* unit) {
+		if (!(scbw::isAlliedTo(unit->playerId, queen->playerId))) {
+			return;
+		}
+		scbw::set_generic_timer(unit, ValueId::EnsnaringBrood, 8 * 24);
+	}
+};
+
 #include "logger.h"
 #include "limits/sfx_extender.h"
 #include "hooks/weapons/wpnspellhit.h"
@@ -1106,6 +1121,14 @@ namespace hooks {
 					scbw::createUnitFromAbility(UnitId::ProtossSimulacrum, 1, unit->playerId, unit->position.x, unit->position.y, 0, unit);
 				}
 
+				// TODO: Finish
+				// Queen - Ensnaring Brood ability
+/*				if (unit->id == UnitId::ZergQueen) {
+					Point16 pos = unit->position;
+					int radius = 3 * 32;
+					scbw::UnitFinder(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius).forEach(ensnaringBroodProc(unit));
+					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::EnsnaringBrood]); // Needs definition, we can replace Broodspawn
+				}*/
 			}
 			scbw::setInGameLoopState(false);
 		}

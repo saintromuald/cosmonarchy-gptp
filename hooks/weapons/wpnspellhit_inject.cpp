@@ -629,19 +629,6 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) applyEnsnare_Wrapper() {
-		static CUnit* a1;
-		__asm {
-			MOV a1, EDI
-			PUSHAD
-		}
-		hooks::applyEnsnare(a1);
-		__asm {
-			POPAD
-			RETN
-		}
-	}
-
 }//unnamed namespace
 
 namespace hooks {
@@ -667,7 +654,6 @@ namespace hooks {
 		jmpPatch(ensnareProcWrapper, 0x004F46C0, 1);
 		jmpPatch(createScannerWrapper, 0x00464E40, 0);
 		jmpPatch(stasisFieldOverlayWrapper, 0x004F67B0, 4);
-		jmpPatch(applyEnsnare_Wrapper, 0x004F45E0, 2);
 			
 	}
 

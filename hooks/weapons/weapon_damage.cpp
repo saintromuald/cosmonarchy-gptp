@@ -520,11 +520,14 @@ namespace hooks {
 				else {
 					damage = damage + (target->acidSporeCount * 256);
 				}
-				
-				
 			}
 			else {
 				damage = damage / dmgDivisor + (target->acidSporeCount * 256);
+			}
+
+			// Ensnaring Brood - Queen enchantment ability
+			if (scbw::get_generic_timer(attacker, ValueId::EnsnaringBrood) > 0) {
+				applyEnsnare(target);
 			}
 
 			// Hallucinations deal half damage
@@ -680,6 +683,7 @@ namespace hooks {
 						}
 					}
 
+					// Blind Judge relic
 					if (units_dat::BaseProperty[attacker->id] & UnitProperty::Hero &&
 						scbw::get_aise_value(attacker, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1
 						&& (units_dat::BaseProperty[target->id] & UnitProperty::Organic)
@@ -909,9 +913,35 @@ namespace hooks {
 			//Update unit strength data (?)
 			target->airStrength = getUnitStrength(target, false);
 			target->groundStrength = getUnitStrength(target, true);
-
 		}
+	}
 
+	void applyEnsnare(CUnit* a1) { // 004F45E0
+		s32 baseProperty; // eax
+		u8 overlayPadding; // al
+		CUnit* victim; // ecx
+
+		if (!(a1->ensnareTimer)
+		&&  !(a1->status & UnitStatus::Burrowed)) {
+			// Calculate overlay ID offset based on units_dat flags
+			overlayPadding = 0;
+			baseProperty = units_dat::BaseProperty[a1->id];
+			if (baseProperty & UnitProperty::MediumOverlay) {
+				overlayPadding = 1;
+			}
+			else if (baseProperty & UnitProperty::LargeOverlay) {
+				overlayPadding = 2;
+			}
+			victim = a1;
+			if (a1->subunit != NULL) {
+				victim = a1->subunit;
+			}
+			// Create overlay
+			victim->sprite->createOverlay(ImageId::EnsnareOverlay_Small + overlayPadding);
+		}
+		// Apply effect
+		a1->ensnareTimer = 37;
+		a1->updateSpeed();
 	}
 
 	bool GorgonCondition(CUnit* attacker, CUnit* target) {

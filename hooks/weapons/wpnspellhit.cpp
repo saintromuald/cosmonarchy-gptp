@@ -592,37 +592,6 @@ namespace hooks {
 		return 0;
 	}
 
-	void applyEnsnare(CUnit* a1) { // 004F45E0
-		s32 baseProperty; // eax
-		u8 overlayPadding; // al
-		CUnit* victim; // ecx
-
-		if (!(a1->ensnareTimer)
-		&&  !(a1->status & UnitStatus::Burrowed)) {
-
-			// Calculate overlay ID offset based on units_dat flags
-			overlayPadding = 0;
-			baseProperty = units_dat::BaseProperty[a1->id];
-			if (baseProperty & UnitProperty::MediumOverlay) {
-				overlayPadding = 1;
-			}
-			else if (baseProperty & UnitProperty::LargeOverlay) {
-				overlayPadding = 2;
-			}
-			victim = a1;
-			if (a1->subunit != NULL) {
-				victim = a1->subunit;
-			}
-
-			// Create overlay
-			victim->sprite->createOverlay(ImageId::EnsnareOverlay_Small + overlayPadding);
-		}
-
-		// Apply effect
-		a1->ensnareTimer = 37;
-		a1->updateSpeed();
-	}
-
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
 	void DarkSwarmHit(int x, int y, u32 attackingPlayerId, CBullet* bullet) {
