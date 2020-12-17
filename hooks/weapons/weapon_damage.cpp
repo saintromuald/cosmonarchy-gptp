@@ -526,7 +526,7 @@ namespace hooks {
 			}
 
 			// Ensnaring Brood - Queen enchantment ability
-			if (scbw::get_generic_timer(attacker, ValueId::EnsnaringBrood) > 0) {
+			if (attacker!=NULL && scbw::get_generic_timer(attacker, ValueId::EnsnaringBrood) > 0) {
 				applyEnsnare(target);
 			}
 
