@@ -278,7 +278,7 @@ namespace ValueId {
 		ExecutingCorsairMoveOrder					= 131,
 		AI_CorsairDweb_Timer						= 132,
 		EnsnaringBrood								= 133,
-
+		EnsnaringBroodAbility						= 134,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

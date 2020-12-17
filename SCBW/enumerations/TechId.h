@@ -76,7 +76,7 @@ enum Enum {
 
 //Zerg
 	EssenceDrain			= 35, // Gorgoleth energy steal ability
-
+	EnsnaringBrood			= 13, // Queen ability applying ensnaring brood effect
 
 
 	//extended

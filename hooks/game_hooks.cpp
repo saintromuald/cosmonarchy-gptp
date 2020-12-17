@@ -1127,12 +1127,13 @@ namespace hooks {
 
 				// TODO: Finish
 				// Queen - Ensnaring Brood ability
-/*				if (unit->id == UnitId::ZergQueen) {
+				if (unit->id == UnitId::ZergQueen && scbw::get_generic_value(unit,ValueId::EnsnaringBroodAbility)==1) {
 					Point16 pos = unit->position;
 					int radius = 3 * 32;
+					scbw::set_generic_value(unit, ValueId::EnsnaringBroodAbility, 0);
 					scbw::UnitFinder(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius).forEach(ensnaringBroodProc(unit));
-					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::EnsnaringBrood]); // Needs definition, we can replace Broodspawn
-				}*/
+					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::EnsnaringBrood]*256); // Needs definition, we can replace Broodspawn
+				}
 			}
 			scbw::setInGameLoopState(false);
 		}
