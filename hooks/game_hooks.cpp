@@ -434,7 +434,12 @@ public:
 		||	!(unit->status & UnitStatus::Completed)) {
 			return;
 		}
-		scbw::set_generic_timer(unit, ValueId::EnsnaringBrood, 8 * 24);
+		// Overlays
+		if (unit->getOverlay(1281)) {
+			unit->removeOverlay(1281);
+		}
+		scbw::set_generic_timer(unit, ValueId::EnsnaringBrood, 12 * 24);
+		unit->sprite->createTopOverlay(1281);
 	}
 };
 
@@ -1125,14 +1130,19 @@ namespace hooks {
 					scbw::createUnitFromAbility(UnitId::ProtossSimulacrum, 1, unit->playerId, unit->position.x, unit->position.y, 0, unit);
 				}
 
-				// TODO: Finish
 				// Queen - Ensnaring Brood ability
-				if (unit->id == UnitId::ZergQueen && scbw::get_generic_value(unit,ValueId::EnsnaringBroodAbility)==1) {
+				if (unit->id == UnitId::ZergQueen
+				&&  scbw::get_generic_value(unit,ValueId::EnsnaringBroodAbility) == 1) {
 					Point16 pos = unit->position;
-					int radius = 3 * 32;
+					int radius = 6 * 32;
 					scbw::set_generic_value(unit, ValueId::EnsnaringBroodAbility, 0);
 					scbw::UnitFinder(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius).forEach(ensnaringBroodProc(unit));
-					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::EnsnaringBrood]*256); // Needs definition, we can replace Broodspawn
+					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::EnsnaringBrood]*256);
+				}
+
+				// Remove Ensnaring Brood overlay
+				if (scbw::get_generic_timer(unit, ValueId::EnsnaringBrood) == 1) {
+					unit->removeOverlay(1281);
 				}
 			}
 			scbw::setInGameLoopState(false);

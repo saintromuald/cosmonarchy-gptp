@@ -339,21 +339,6 @@ void unitDestructorSpecialHook(CUnit* unit) {
 			}
 		}
 	}
-	
-	if (unit->id==UnitId::ZergInfestedTerran) {
-		Box16 coords;
-		CThingy* ensnare_effect_sprite;
-		ensnare_effect_sprite = createThingyFunc(SpriteId::Ensnare, unit->position.x, unit->position.y, 0);
-		if (ensnare_effect_sprite != NULL) {
-			ensnare_effect_sprite->sprite->elevationLevel = 19; //0x13
-			setThingyVisibilityFlagsFunc(ensnare_effect_sprite);
-		}
-		coords.top = unit->position.y - 64;
-		coords.right = unit->position.x + 64;
-		coords.left = unit->position.x - 64;
-		coords.bottom = unit->position.y + 64;
-		IterateUnitsAtLocationTargetProc_EnsnareFunc(unit, &coords);
-	}
 
 	//defiler plague upgrade (unknown id), add condition later
 	if ((unit->_unknown_0x026 & 0x4) && unit->plagueTimer>0) {
@@ -376,29 +361,17 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	}
 
 	//Destroy interceptors and scarabs
-	if (
-		unit->id == UnitId::ProtossCarrier || 
-		unit->id == UnitId::Hero_Gantrithor || 
-		unit->id == UnitId::ProtossReaver || 
-		unit->id == UnitId::Hero_Warbringer
-	) 
-	{
+	if (unit->id == UnitId::ProtossCarrier
+	||  unit->id == UnitId::ProtossReaver) {
 		killAllHangarUnits(unit);
 	}
-	else
 
 	//Destroy nuclear missiles mid-launch
-	if (
-		unit->id == UnitId::ghost || 
-		unit->id == UnitId::sarah_kerrigan || 
-		unit->id == UnitId::Hero_AlexeiStukov|| 
-		unit->id == UnitId::Hero_SamirDuran|| 
-		unit->id == UnitId::Hero_InfestedDuran
-	) 
-	{
-
+	else
+	if (unit->id == UnitId::TerranGhost
+	||  unit->id == UnitId::TerranScienceVessel) {
 		if (unit->building.ghostNukeMissile != NULL) {
-			(unit->building.ghostNukeMissile)->sprite->playIscriptAnim(IscriptAnimation::Death,true);
+			(unit->building.ghostNukeMissile)->sprite->playIscriptAnim(IscriptAnimation::Death, true);
 			unit->building.ghostNukeMissile = NULL;
 		} 
 
