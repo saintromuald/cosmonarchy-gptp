@@ -395,11 +395,185 @@ namespace hooks {
     void createBuildingAiWorkaround() {
         jmpPatch(createBuildingAiWorkaround_Wrapper, 0x00404533, 1);
     }
+
+
+    //
+
+    static bool warningOnce00 = false;
+    const u32 Hook_DropDebugging00 = 0x0047CDDB;
+    const u32 Hook_DropDebugging00Back = 0x0047CDE1;
+    void __declspec(naked) dropDebugging00() {
+        static char buffer[256];
+        static u8 hashStructIndex;
+
+        __asm {
+            JNB short _Jmp
+            JMP Hook_DropDebugging00Back
+            _Jmp :
+            PUSHAD
+                MOV EBP, ESP
+                MOV hashStructIndex, AL
+        }
+
+        if (!warningOnce00) {
+            sprintf_s(buffer, "Invalid hashStructIndex!!\nhashStructIndex: %u", hashStructIndex);
+            scbw::printText(buffer, GameTextColor::Red);
+            warningOnce00 = true;
+        }
+
+        __asm {
+            POPAD
+            XOR EAX, EAX
+            POP EBX
+            RETN
+        }
+
+    }
+
+    static bool warningOnce01 = false;
+    const u32 Hook_DropDebugging01 = 0x0047CCF8;
+    void __declspec(naked) dropDebugging01() {
+        static char buffer[256];
+        static u32 activeNationID;
+
+        __asm {
+            PUSHAD
+            MOV EBP, ESP
+            MOV activeNationID, EBX
+        }
+
+        if (!warningOnce01) {
+            sprintf_s(buffer, "Invalid PlayerFlag!!\nactiveNationID: %u", activeNationID);
+            scbw::printText(buffer, GameTextColor::Red);
+            warningOnce01 = true;
+        }
+
+        __asm {
+            POPAD
+            POP EDI
+            XOR EAX, EAX
+            POP EBX
+            POP EBP
+            RETN 4
+        }
+    }
+
+    static bool warningOnce02 = false;
+    const u32 Hook_DropDebugging02 = 0x0047CD63;
+    void __declspec(naked) dropDebugging02() {
+//        static char buffer[256];
+        static bool isSucceeded;
+        static u8 visibilityHash;
+        static u8 nationHash;
+        __asm {
+            PUSHAD
+            MOV EBP, ESP
+            MOV isSucceeded, AL
+            MOV visibilityHash, CL
+            MOV nationHash, DL
+        }
+
+        if (!isSucceeded && !warningOnce02) {
+//            sprintf_s(buffer, "Invalid SpriteVisibility!!\nactiveNationID: %u", *ACTIVE_NATION_ID);
+ //           scbw::printText(buffer, GameTextColor::Red);
+            scbw::printFormattedText("Invalid SpriteVisibility!!\nactiveNationID: % u", *ACTIVE_NATION_ID);
+            scbw::printFormattedText("SpriteVisHash (from VisionSync) %d =/= visionHash (from CMD) %d", nationHash, visibilityHash);
+            warningOnce02 = true;
+        }
+
+        __asm {
+            POPAD
+            //
+//            MOV AL, 1 //disable desync status
+            //
+            POP EBX
+            POP EBP
+            RETN 4
+        }
+    }
+
+    struct hashStruct {
+        u16 hash;
+        u8 hashType;
+        u8 byte[0x109];
+    };
+    static_assert(sizeof(hashStruct) == 0x10C, "Invalid hashStruct Size");
+    hashStruct* hashList = (hashStruct*)0x0065EB30;
+    //
+    static bool warningOnce03_00 = false;
+    static bool warningOnce03_01 = false;
+    const u32 Hook_DropDebugging03 = 0x0047CDF1;
+    void __declspec(naked) dropDebugging03() {
+        static char buffer[256];
+        static u8* data;
+        static u32 hashStructIndex;
+        static u8 hashType;
+        static bool isSucceeded;
+
+        __asm {
+            PUSHAD
+            MOV EBP, ESP
+            MOV data, EDI
+            MOV hashStructIndex, ESI
+            MOV hashType, BL
+        }
+
+        isSucceeded = true;
+
+        if (hashList[hashStructIndex].hash != *(u16*)(data + 2) && !warningOnce03_00) {
+            isSucceeded = false;
+            sprintf_s(buffer, "Invalid Hash!!\nhashStructIndex: %u\nHashType1 = %u\nHash1 = 0x%04x\nHashType2 = %u\nHash2 = 0x%04x",
+                hashStructIndex,
+                hashList[hashStructIndex].hashType,
+                hashList[hashStructIndex].hash,
+                hashType & 0x0F,
+                *(u16*)(data + 2));
+            scbw::printText(buffer, GameTextColor::Red);
+            warningOnce03_00 = true;
+        }
+
+        if (hashList[hashStructIndex].hashType != (hashType & 0x0F) && warningOnce03_01) {
+            isSucceeded = false;
+            sprintf_s(buffer, "Invalid HashType!!\nhashStructIndex: %u\nHashType = %u", hashStructIndex, hashList[hashStructIndex].hashType);
+            scbw::printText(buffer, GameTextColor::Red);
+            warningOnce03_01 = true;
+        }
+
+        if (isSucceeded) {
+            __asm {
+                POPAD
+                POP ESI
+                MOV EAX, 1
+                POP EBX
+                RETN
+            }
+        }
+        else {
+            __asm {
+                POPAD
+                POP ESI
+                XOR EAX, EAX
+                POP EBX
+                RETN
+            }
+        }
+    }
+
+
+
+    void desyncTesting() {
+        //code from BG
+        jmpPatch(dropDebugging00, Hook_DropDebugging00);
+        jmpPatch(dropDebugging01, Hook_DropDebugging01);
+        jmpPatch(dropDebugging02, Hook_DropDebugging02);
+        jmpPatch(dropDebugging03, Hook_DropDebugging03);
+
+    }
     void injectHydraSpecific() {
         //jmpPatch(checkUnitDatRequirements_Wrapper, 0x0046E1C0, 1);//must be finished first (+add firegraft offsets)
 
         flingySpeedPatches();
-
+        desyncTesting();
         //start of spell order code
         //default case of switch 004EC4FF
         unusedOrderPatches();
