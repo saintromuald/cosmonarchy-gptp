@@ -430,6 +430,10 @@ public:
 		if (!(scbw::isAlliedTo(unit->playerId, queen->playerId))) {
 			return;
 		}
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building
+		||	!(unit->status & UnitStatus::Completed)) {
+			return;
+		}
 		scbw::set_generic_timer(unit, ValueId::EnsnaringBrood, 8 * 24);
 	}
 };
