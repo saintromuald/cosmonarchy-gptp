@@ -26,11 +26,9 @@ void CMDRECV_CancelNuke() {
 
 	while(current_unit != NULL) {
 
-		if(	current_unit->id == UnitId::TerranGhost ||
-			current_unit->id == UnitId::Hero_SarahKerrigan ||
-			current_unit->id == UnitId::Hero_AlexeiStukov ||
-			current_unit->id == UnitId::Hero_SamirDuran ||
-			current_unit->id == UnitId::Hero_InfestedDuran
+		// Why is it like this? We should instead check if the unit has a connected nuke, rather than doing insipid hardcode.
+		if(current_unit->id == UnitId::TerranGhost
+		|| current_unit->id == UnitId::TerranScienceVessel
 		)
 		{
 
