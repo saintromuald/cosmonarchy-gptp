@@ -264,6 +264,7 @@ namespace hooks {
 							if(unit->sprite->images.head != NULL) {
 								CImage* current_image = unit->sprite->images.head;
 								do {
+									
 									current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 									current_image = current_image->link.next;
 								}while (current_image != NULL);
@@ -276,7 +277,9 @@ namespace hooks {
 							return;
 						}
 						else {
+
 							scbw::set_generic_value(unit, ValueId::EggOrigin, unit->id);
+							//morph into egg from source unit
 							replaceUnitWithType(unit, eggId);
 						}
 						
@@ -295,7 +298,7 @@ namespace hooks {
 							unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
 						}
 						*/
-//						scbw::printFormattedText("Unit %d origin %d previous %d", unit->id, origin, unit->previousUnitType);
+						//scbw::printFormattedText("Unit %d origin %d previous %d", unit->id, origin, unit->previousUnitType);
 						
 						if (origin == UnitId::ZergZergling
 							|| origin == UnitId::ZergNathrokor) { // Kalkaleth uses air cocoon
@@ -304,6 +307,9 @@ namespace hooks {
 						else if (origin == UnitId::ZergUltralisk 
 							|| origin==UnitId::ZergOverlord) { // Iroleth uses air cocoon
 							unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
+						}
+						else if (origin == UnitId::ZergLarva) {
+							unit->sprite->playIscriptAnim(IscriptAnimation::Walking, true);
 						}
 					}
 
@@ -316,7 +322,12 @@ namespace hooks {
 			if (unit->mainOrderState == 1) {
 				//advance
 				if (advanceRemainingBuildTime_Sub466940(unit)) {
-					unit->sprite->playIscriptAnim(IscriptAnimation::SpecialState1, true);
+					auto origin = scbw::get_generic_value(unit, ValueId::EggOrigin);
+					auto anim = IscriptAnimation::SpecialState1;
+					/*if (origin == UnitId::ZergLarva) {
+						anim = IscriptAnimation::GndAttkInit;
+					}*/
+					unit->sprite->playIscriptAnim(anim, true);
 					unit->mainOrderState = 2;
 				}
 			}
@@ -366,7 +377,11 @@ namespace hooks {
 							current_image = unit->sprite->images.head;
 
 							while (current_image != NULL) {
-								current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
+								auto anim = IscriptAnimation::SpecialState1;
+								/*if (origin == UnitId::ZergLarva) {
+									anim = IscriptAnimation::GndAttkInit;
+								}*/
+								current_image->playIscriptAnim(anim);
 								current_image = current_image->link.next;
 							}
 

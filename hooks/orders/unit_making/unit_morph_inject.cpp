@@ -243,7 +243,6 @@ namespace {
 		u16 unitId = unit->id;
 		if (scbw::isZergEggNew(unit,true,false) || unit->isRemorphingBuilding())
 			unitId = unit->buildQueue[unit->buildQueueSlot];
-
 		return 100 * (units_dat::TimeCost[unitId] - unit->remainingBuildTime) / units_dat::TimeCost[unitId];
 	}
 
