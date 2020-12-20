@@ -279,7 +279,6 @@ namespace ValueId {
 		AI_CorsairDweb_Timer						= 132,
 		EnsnaringBrood								= 133,
 		EnsnaringBroodAbility						= 134,
-		EggOrigin									= 135,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

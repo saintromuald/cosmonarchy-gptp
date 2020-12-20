@@ -100,7 +100,7 @@ namespace {
 
 		unit->status &= ~(UnitStatus::Completed);
 		morphEggType = hooks::getUnitMorphEggTypeHook(unit->id, unit,unit->buildQueue[0]);
-		assert(scbw::isZergEggNew(morphEggType,true,false));
+		assert(scbw::isZergEgg(morphEggType,true,false));
 		__asm {
 			POPAD
 			PUSH morphEggType
@@ -180,8 +180,9 @@ namespace {
 		if (scbw::isConventionalUnitMorphResult(unit->id))
 			return;
 		if (unit->status & UnitStatus::GroundedBuilding) {
-			if (unit->getRace() == RaceId::Zerg 
-					&& hooks::isMorphing(unit)) {
+			if (unit->getRace() == RaceId::Zerg || 
+				((unit->id==UnitId::gateway || unit->id==UnitId::robotics_facility || unit->id==UnitId::stargate)
+					&& hooks::isMorphing(unit))) {
 				cancelZergBuilding(unit);
 				return;
 			}
@@ -190,7 +191,7 @@ namespace {
 		}
 		else {
 			u16 refundUnitId;
-			if (scbw::isZergEggNew(unit,true,false))
+			if (scbw::isZergEgg(unit->id,true,false))
 				refundUnitId = unit->buildQueue[unit->buildQueueSlot % 5];
 			else
 				refundUnitId = unit->id;
@@ -199,7 +200,6 @@ namespace {
 		}
 
 		u16 cancelChangeUnitId = hooks::getCancelMorphRevertTypeHook(unit);
-		scbw::printFormattedText("Revert unit id: %d", cancelChangeUnitId);
 		if (cancelChangeUnitId == UnitId::None) {
 			//scbw::printText("Remove the unit");
 			if (unit->id == UnitId::nuclear_missile) {
@@ -241,7 +241,7 @@ namespace {
 
 	s32 getRemainingBuildTimePctHook(CUnit* unit) {
 		u16 unitId = unit->id;
-		if (scbw::isZergEggNew(unit,true,false) || unit->isRemorphingBuilding())
+		if (scbw::isZergEgg(unitId,true,false) || unit->isRemorphingBuilding())
 			unitId = unit->buildQueue[unit->buildQueueSlot];
 
 		return 100 * (units_dat::TimeCost[unitId] - unit->remainingBuildTime) / units_dat::TimeCost[unitId];

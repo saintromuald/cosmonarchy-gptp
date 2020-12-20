@@ -101,7 +101,7 @@ u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayerId, u16 techId) {
 				units_dat::BaseProperty[target->id] & UnitProperty::Building
 			||	target->playerId != castingPlayerId
 			||	target->getRace() != RaceId::Zerg
-			||	scbw::isZergEggNew(target)
+			||	scbw::isZergEgg(target->id)
 			)
 				stringId = 876; //Invalid target.<0>
 			else

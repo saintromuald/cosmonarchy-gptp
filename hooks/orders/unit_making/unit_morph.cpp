@@ -56,12 +56,8 @@ namespace hooks {
 
 			unit->orderSignal -= 4;
 			bool vorvaling = false;
-/*			if (unit->previousUnitType == UnitId::ZergVorvaling || unit->previousUnitType==UnitId::ZergNathrokor || 
+			if (unit->previousUnitType == UnitId::ZergVorvaling || unit->previousUnitType==UnitId::ZergNathrokor || 
 				unit->previousUnitType == UnitId::EggVorvaling || unit->previousUnitType==UnitId::EggNathrokor) {
-				vorvaling = true;
-			}*/
-			auto origin = scbw::get_generic_value(unit, ValueId::EggOrigin);
-			if (origin == UnitId::ZergZergling) {
 				vorvaling = true;
 			}
 
@@ -74,6 +70,7 @@ namespace hooks {
 			unit2 = NULL;
 
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg && !vorvaling) {
+
 				unit2 = function_0045D910(unit);//zerg dual birth
 
 				if (unit2 != NULL)
@@ -115,7 +112,7 @@ namespace hooks {
 				scbw::setUnitPosition(unit, pos.x, pos.y);
 
 			if (
-				!scbw::isZergEggNew(unit,false,false,unit->previousUnitType)
+				!scbw::isZergEgg(unit->previousUnitType,false,false)
 				)
 			{
 
@@ -176,36 +173,6 @@ namespace hooks {
 						eggId = UnitId::ZergEgg;
 						break;
 					case UnitId::ZergHydralisk:
-						eggId = UnitId::ZergEgg;
-						break;
-					case UnitId::ZergZergling:
-						eggId = UnitId::ZergEgg;
-						break;
-					case UnitId::ZergNathrokor:
-						eggId = UnitId::ZergCocoon;
-						break;
-					case UnitId::ZergMutalisk:
-						
-						eggId = UnitId::ZergCocoon;
-						break;
-					case UnitId::ZergGorgoleth:
-						eggId = UnitId::ZergCocoon;
-						break;
-					case UnitId::ZergUltralisk:
-						eggId = UnitId::ZergEgg;
-						break;
-					case UnitId::ZergOverlord:
-						eggId = UnitId::ZergCocoon;
-						break;
-					case UnitId::ZergIroleth:
-						eggId = UnitId::ZergCocoon;
-						break;
-						/*
-					case UnitId::ZergLarva:
-						eggId = UnitId::ZergEgg;
-						break;
-
-					case UnitId::ZergHydralisk:
 						if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergLurker) {
 							eggId = UnitId::ZergLurkerEgg;
 						}
@@ -248,7 +215,7 @@ namespace hooks {
 						break;
 					case UnitId::ZergIroleth:
 						eggId = UnitId::EggOthstoleth;
-						break;*/
+						break;
 					default:
 						if (unit->id != UnitId::ProtossHighTemplar) {
 							bStopThere = true;
@@ -276,15 +243,14 @@ namespace hooks {
 							return;
 						}
 						else {
-							scbw::set_generic_value(unit, ValueId::EggOrigin, unit->id);
+
 							replaceUnitWithType(unit, eggId);
 						}
 						
 						changeUnitButtonSet_Sub4E5D60(unit, unit->id);
 						unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 						unit->mainOrderState = 1;
-						auto origin = scbw::get_generic_value(unit, ValueId::EggOrigin);
-/*						if (unit->id == UnitId::EggVorvaling
+						if (unit->id == UnitId::EggVorvaling
 						||	unit->id == UnitId::EggNathrokor
 						||	unit->id == UnitId::EggKalkaleth) { // Kalkaleth uses air cocoon
 							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
@@ -294,17 +260,7 @@ namespace hooks {
 						||	unit->id == UnitId::EggIroleth) { // Iroleth uses air cocoon
 							unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
 						}
-						*/
-						scbw::printFormattedText("Unit %d origin %d previous %d", unit->id, origin, unit->previousUnitType);
-						
-						if (origin == UnitId::ZergZergling
-							|| origin == UnitId::ZergNathrokor) { // Kalkaleth uses air cocoon
-							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
-						}
-						else if (origin == UnitId::ZergUltralisk 
-							|| origin==UnitId::ZergOverlord) { // Iroleth uses air cocoon
-							unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
-						}
+
 					}
 
 				}
@@ -326,8 +282,7 @@ namespace hooks {
 					if (unit->orderSignal & 4) {
 
 						unit->orderSignal -= 4;
-						auto origin = scbw::get_generic_value(unit, ValueId::EggOrigin);
-/*						switch (unit->id) {
+						switch (unit->id) {
 						case UnitId::EggIroleth:
 							scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 1);
 							break;
@@ -336,18 +291,7 @@ namespace hooks {
 							break;
 						default:
 							break;
-						}*/
-						switch (origin) {
-						case UnitId::ZergOverlord:
-							scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 1);
-							break;
-						case UnitId::ZergIroleth:
-							scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 2);
-							break;
-						default:
-							break;
 						}
-
 						replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
 						if (
 							unit->id == UnitId::ZergDrone ||
@@ -456,6 +400,7 @@ namespace hooks {
 			}
 		}
 		if (unit->id == UnitId::ZergLarva) {
+			
 			if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1) {
 				return true;
 			}
@@ -466,7 +411,7 @@ namespace hooks {
 	//Check if @p unitId is an egg unit that can be rallied
 	bool isRallyableEggUnitHook(u16 unitId) {
 		//Default StarCraft behavior
-		if (scbw::isZergEggNew(NULL,false,false,unitId))
+		if (scbw::isZergEgg(unitId,false,false))
 			return false;
 
 		return true;
@@ -476,14 +421,6 @@ namespace hooks {
 	//If the unit cannot morph, return UnitId::None.
 	u16 getUnitMorphEggTypeHook(u16 unitId, CUnit* unit, u16 resultId) {
 		//Default StarCraft behavior
-
-		if (units_dat::BaseProperty[unitId] & UnitProperty::Flyer) {
-			return UnitId::cocoon;
-		}
-		else {
-			return UnitId::egg;
-		}
-		/*
 		if (unitId == UnitId::ZergLarva)
 			return UnitId::ZergEgg;
 
@@ -532,8 +469,8 @@ namespace hooks {
 			return UnitId::ZergOthstoleth;
 		}
 
-		*/
-		//return UnitId::None;
+
+		return UnitId::None;
 	}
 
 	//Determine the type (unit ID) of the unit to revert to when cancelling an
@@ -541,7 +478,7 @@ namespace hooks {
 	u16 getCancelMorphRevertTypeHook(CUnit* eggUnit) {
 		//Default StarCraft behavior
 
-		/*if (eggUnit->id == UnitId::EggGorgoleth
+		if (eggUnit->id == UnitId::EggGorgoleth
 		||	eggUnit->id == UnitId::EggDevourer) {
 			return UnitId::ZergMutalisk;
 		}
@@ -574,11 +511,8 @@ namespace hooks {
 		}
 		if (eggUnit->id == UnitId::EggAlkajelisk) {
 			return UnitId::ZergUltralisk;
-		}*/
-		auto source = scbw::get_generic_value(eggUnit, ValueId::EggOrigin);
-		if (source != UnitId::ZergLarva) {
-			return source;
 		}
+
 		//  || unitId==223 || unitId==102 || unitIds==179
 		return UnitId::None;  //Default (no revert for larvae)
 	}
@@ -593,12 +527,12 @@ namespace hooks {
 			return 0;
 
 		//No offset, since the morphed unit should stay where it is
-		if (unit->previousUnitType == UnitId::ZergCocoon/*
+		if (unit->previousUnitType == UnitId::ZergCocoon
 		||	unit->previousUnitType == UnitId::EggKalkaleth
 		||	unit->previousUnitType == UnitId::EggDevourer
 		||	unit->previousUnitType == UnitId::EggGorgoleth
 		||	unit->previousUnitType == UnitId::EggIroleth
-		||	unit->previousUnitType == UnitId::EggOthstoleth*/) {
+		||	unit->previousUnitType == UnitId::EggOthstoleth) {
 			return 0;
 		}
 
