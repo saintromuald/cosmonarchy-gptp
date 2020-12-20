@@ -280,6 +280,7 @@ namespace ValueId {
 		EnsnaringBrood								= 133,
 		EnsnaringBroodAbility						= 134,
 		EggOrigin									= 135,
+		IonCannonProjectilePos						= 136,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
