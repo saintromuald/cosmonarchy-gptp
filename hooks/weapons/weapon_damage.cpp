@@ -261,8 +261,8 @@ public:
 
 bool irradiateTarget(CUnit* unit) {
 
-	if (scbw::isZergEggNew(unit))
-		return false;
+/*	if (scbw::isZergEggNew(unit))
+		return false;*/
 
 	return true;
 }
