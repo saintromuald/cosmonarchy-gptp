@@ -636,7 +636,7 @@ u32 getUnitData(u32 entry, u32 index) {
 
 bool isZergEggNew(CUnit* unit,  bool allow_larval_eggs, bool allow_larvae,u16 explicit_unit_id) {
 
-	u16 id = 0;
+	u16 id = UnitId::None;
 	if(id!=NULL){
 		id = unit->id;
 	}
@@ -645,7 +645,7 @@ bool isZergEggNew(CUnit* unit,  bool allow_larval_eggs, bool allow_larvae,u16 ex
 	}
 	switch (id) {
 	case UnitId::ZergEgg:
-		if (unit && scbw::get_generic_value(unit, ValueId::EggOrigin) == UnitId::larva && !allow_larval_eggs) {
+		if (unit && !allow_larval_eggs && scbw::get_generic_value(unit, ValueId::EggOrigin) == UnitId::larva ) {
 			return false;
 		}
 		return true;
