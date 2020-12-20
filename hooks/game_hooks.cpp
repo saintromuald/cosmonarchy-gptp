@@ -562,7 +562,13 @@ namespace hooks {
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
 				Globals.unitFrameHook(unit);
 				//hooks::ShowHealthBar(unit);
-				
+				if (unit->id == UnitId::ZergUltralisk || unit->id == UnitId::ZergEgg) {
+					if (scbw::get_generic_timer(unit, ValueId::UltraliskCancelGimmick)) {
+						if (unit->sprite->mainGraphic->animation != IscriptAnimation::CastSpell) {
+							unit->playIscriptAnim(IscriptAnimation::CastSpell);
+						}
+					}
+				}
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic &&
 					scbw::get_generic_value(unit, ValueId::LazarusNoHeal)==1) {
 					if (unit->sprite && unit->sprite->mainGraphic

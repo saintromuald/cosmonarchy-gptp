@@ -233,9 +233,9 @@ namespace {
 			}
 			else if (unit->id == UnitId::ZergUltralisk) {
 				unit->playIscriptAnim(IscriptAnimation::CastSpell);
+				scbw::set_generic_timer(unit, ValueId::UltraliskCancelGimmick, 4);
 			}
 			else {
-				scbw::printText("Player Iscript");
 				unit->playIscriptAnim(IscriptAnimation::SpecialState2);
 			}
 			
