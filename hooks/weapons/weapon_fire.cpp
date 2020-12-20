@@ -463,6 +463,10 @@ namespace hooks {
 					// Wraith laser spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::WraithLaserPos, 3, ImagesDatEntries::OverlayAttackPtr);
 				}
+				else if (weaponId == WeaponId::IonCannon) {
+					// Ion Cannon projectile spawn position
+					scbw::setMissileSourcePos(unit, weaponId, ValueId::IonCannonProjectilePos, 1, ImagesDatEntries::OverlaySpecialPtr);
+				}
 				else if (weaponId == WeaponId::PerditionBarrage) {
 					// Salamander missile target positions
 					auto rotate = scbw::get_generic_value(unit, ValueId::SalamanderAtkPos);
