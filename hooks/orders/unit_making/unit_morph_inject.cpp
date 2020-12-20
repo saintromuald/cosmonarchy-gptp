@@ -199,10 +199,10 @@ namespace {
 		}
 
 		u16 cancelChangeUnitId = hooks::getCancelMorphRevertTypeHook(unit);
-		scbw::printFormattedText("Revert unit id: %d", cancelChangeUnitId);
+//		scbw::printFormattedText("Revert unit id: %d", cancelChangeUnitId);
 		if (cancelChangeUnitId == UnitId::None) {
 			//scbw::printText("Remove the unit");
-			if (unit->id == UnitId::nuclear_missile) {
+			if (unit->id == UnitId::TerranNuclearMissile) {
 				CUnit* silo = unit->connectedUnit;
 				if (silo) {
 					silo->building.silo.nuke = NULL;
@@ -226,7 +226,7 @@ namespace {
 			replaceSpriteImages(unit->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, fl_sId), 0);
 			unit->orderSignal &= ~0x4;
 			
-			if (unit->id == UnitId::zergling) {
+			if (unit->id == UnitId::ZergZergling) {
 				unit->playIscriptAnim(IscriptAnimation::Unused2);
 			}
 			else {

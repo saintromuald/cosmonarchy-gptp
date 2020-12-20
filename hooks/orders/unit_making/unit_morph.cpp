@@ -295,7 +295,7 @@ namespace hooks {
 							unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
 						}
 						*/
-						scbw::printFormattedText("Unit %d origin %d previous %d", unit->id, origin, unit->previousUnitType);
+//						scbw::printFormattedText("Unit %d origin %d previous %d", unit->id, origin, unit->previousUnitType);
 						
 						if (origin == UnitId::ZergZergling
 							|| origin == UnitId::ZergNathrokor) { // Kalkaleth uses air cocoon
