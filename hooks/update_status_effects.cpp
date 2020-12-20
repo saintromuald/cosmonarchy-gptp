@@ -22,8 +22,8 @@ class irradiateProc : public scbw::UnitFinderCallbackProcInterface {
 			return;
 
 		//Don't damage larvae, eggs, and lurker eggs
-		if(scbw::isZergEggNew(unit,true,true))
-			return;
+/*		if(scbw::isZergEggNew(unit,true,true))
+			return;*/
 
 		//Irradiate splash damage does not affect burrowed units
 		if (unit != irradiatedUnit && unit->status & UnitStatus::Burrowed)
