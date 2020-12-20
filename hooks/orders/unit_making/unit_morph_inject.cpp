@@ -225,11 +225,17 @@ namespace {
 			//scbw::getSpriteData(SpritesDatEntries::ImageId,building->sprite->spriteId),
 			replaceSpriteImages(unit->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, fl_sId), 0);
 			unit->orderSignal &= ~0x4;
-			
 			if (unit->id == UnitId::ZergZergling) {
 				unit->playIscriptAnim(IscriptAnimation::Unused2);
 			}
+			else if (unit->id == UnitId::ZergNathrokor) {
+				unit->playIscriptAnim(IscriptAnimation::Unused2);
+			}
+			else if (unit->id == UnitId::ZergUltralisk) {
+				unit->playIscriptAnim(IscriptAnimation::CastSpell);
+			}
 			else {
+				scbw::printText("Player Iscript");
 				unit->playIscriptAnim(IscriptAnimation::SpecialState2);
 			}
 			
