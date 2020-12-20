@@ -562,8 +562,8 @@ namespace hooks {
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
 				Globals.unitFrameHook(unit);
 				//hooks::ShowHealthBar(unit);
-				if (unit->id == UnitId::ZergUltralisk || unit->id == UnitId::ZergEgg) {
-					if (scbw::get_generic_timer(unit, ValueId::UltraliskCancelGimmick)) {
+				if (unit->id == UnitId::ZergUltrakor || unit->id == UnitId::ZergEgg) {
+					if (scbw::get_generic_timer(unit, ValueId::UltrakorCancelGimmick)) {
 						if (unit->sprite->mainGraphic->animation != IscriptAnimation::CastSpell) {
 							unit->playIscriptAnim(IscriptAnimation::CastSpell);
 						}
@@ -1023,7 +1023,7 @@ namespace hooks {
 				}
 
 				// Basilisk - Biogenesis
-				if (unit->id == UnitId::ZergBasilisk) {
+				if (unit->id == UnitId::ZergBactalisk) {
 					if (unit->status & UnitStatus::Burrowed) {
 						if (!(unit->_padding_0x132 & HydraFlags1::BasiliskBurrowed))
 						{

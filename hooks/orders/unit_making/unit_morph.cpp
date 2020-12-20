@@ -188,10 +188,10 @@ namespace hooks {
 						
 						eggId = UnitId::ZergCocoon;
 						break;
-					case UnitId::ZergGorgoleth:
+					case UnitId::ZergGorgrokor:
 						eggId = UnitId::ZergCocoon;
 						break;
-					case UnitId::ZergUltralisk:
+					case UnitId::ZergUltrakor:
 						eggId = UnitId::ZergEgg;
 						break;
 					case UnitId::ZergOverlord:
@@ -304,7 +304,7 @@ namespace hooks {
 							|| origin == UnitId::ZergNathrokor) { // Kalkaleth uses air cocoon
 							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
 						}
-						else if (origin == UnitId::ZergUltralisk 
+						else if (origin == UnitId::ZergUltrakor 
 							|| origin==UnitId::ZergOverlord) { // Iroleth uses air cocoon
 							unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
 						}
@@ -413,7 +413,7 @@ namespace hooks {
 	bool unitCanMorphHook(CUnit* unit, u16 morphUnitId) {
 		//Default StarCraft behavior
 		if (unit->id == UnitId::ZergHydralisk) {
-			if (morphUnitId == UnitId::ZergBasilisk 
+			if (morphUnitId == UnitId::ZergBactalisk 
 			||	morphUnitId == UnitId::ZergLurker) {
 				return true;
 			}
@@ -427,18 +427,18 @@ namespace hooks {
 		}
 
 		if (unit->id == UnitId::ZergNathrokor) {
-			if (morphUnitId == UnitId::ZergKalkaleth) {
+			if (morphUnitId == UnitId::ZergKalkalisk) {
 				return true;
 			}
 		}
 
-		if (unit->id == UnitId::ZergGorgoleth) {
+		if (unit->id == UnitId::ZergGorgrokor) {
 			if (morphUnitId == UnitId::ZergGuardian) {
 				return true;
 			}
 		}
 
-		if (unit->id == UnitId::ZergUltralisk) {
+		if (unit->id == UnitId::ZergUltrakor) {
 			if (morphUnitId == UnitId::ZergKeskathalor
 			||	morphUnitId == UnitId::ZergAlkajelisk) {
 				return true;
@@ -466,7 +466,7 @@ namespace hooks {
 			if (morphUnitId == UnitId::ZergDevourer) {
 				return true;
 			}
-			if (morphUnitId == UnitId::ZergGorgoleth) {
+			if (morphUnitId == UnitId::ZergGorgrokor) {
 				return true;
 			}
 		}

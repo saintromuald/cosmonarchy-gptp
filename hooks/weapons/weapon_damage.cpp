@@ -573,7 +573,7 @@ namespace hooks {
 				}
 				shieldReduceAmount = std::min(damage, target->shields);
 				if (attacker != NULL && target != NULL) {
-					if (attacker->id == UnitId::ZergUltralisk) {
+					if (attacker->id == UnitId::ZergUltrakor) {
 						u32 lifesteal = shieldReduceAmount / 2;
 						attacker->setHp(attacker->hitPoints + lifesteal);
 					}
@@ -625,7 +625,7 @@ namespace hooks {
 
 			damage = (damage * damage_factor) / 256;
 			if (attacker != NULL && target != NULL) {
-				if (attacker->id == UnitId::ZergUltralisk) {
+				if (attacker->id == UnitId::ZergUltrakor) {
 					u32 lifesteal = damage / 2;
 					attacker->setHp(attacker->hitPoints + lifesteal);
 				}
@@ -774,7 +774,7 @@ namespace hooks {
 
 			// Essence Drain - Gorgoleth Energy Steal
 			if (attacker != NULL) {
-				if (attacker->id == UnitId::ZergGorgoleth
+				if (attacker->id == UnitId::ZergGorgrokor
 				&& units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
 					u16 energy = std::min(target->energy, (u16)(damage + shieldReduceAmount));
 					target->energy -= energy;
@@ -852,7 +852,7 @@ namespace hooks {
 					}
 
 					// Kaiser Rampage - Ultralisk behavior
-					if (attacker->id == UnitId::ZergUltralisk) {
+					if (attacker->id == UnitId::ZergUltrakor) {
 						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::KaiserRampage, 1 + (2 * 24), 0);
 						attacker->updateSpeed();
 					}

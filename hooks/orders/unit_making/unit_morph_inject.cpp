@@ -231,9 +231,9 @@ namespace {
 			else if (unit->id == UnitId::ZergNathrokor) {
 				unit->playIscriptAnim(IscriptAnimation::Unused2);
 			}
-			else if (unit->id == UnitId::ZergUltralisk) {
+			else if (unit->id == UnitId::ZergUltrakor) {
 				unit->playIscriptAnim(IscriptAnimation::CastSpell);
-				scbw::set_generic_timer(unit, ValueId::UltraliskCancelGimmick, 4);
+				scbw::set_generic_timer(unit, ValueId::UltrakorCancelGimmick, 4);
 			}
 			else {
 				unit->playIscriptAnim(IscriptAnimation::SpecialState2);

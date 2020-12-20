@@ -53,7 +53,7 @@ namespace hooks {
 		int decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
 
 		// Ultralisk Kaiser Rampage: gains 150% movespeed on kill for 1 second
-		if (unit->id == UnitId::ZergUltralisk) {
+		if (unit->id == UnitId::ZergUltrakor) {
 			if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
 				speed += speed;
 			}

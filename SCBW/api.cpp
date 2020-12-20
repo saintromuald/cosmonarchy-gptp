@@ -691,11 +691,11 @@ bool isConventionalUnitMorphResult(u16 id) {
 	case UnitId::ZergKeskathalor:
 	case UnitId::ZergGuardian:
 	case UnitId::ZergDevourer:
-	case UnitId::ZergGorgoleth:
+	case UnitId::ZergGorgrokor:
 	case UnitId::ZergVorvaling:
 	case UnitId::ZergNathrokor:
-	case UnitId::ZergKalkaleth:
-	case UnitId::ZergBasilisk:
+	case UnitId::ZergKalkalisk:
+	case UnitId::ZergBactalisk:
 	case UnitId::ZergLurker:
 	case UnitId::ZergIroleth:
 	case UnitId::ZergOthstoleth:
@@ -722,9 +722,9 @@ bool isAnyMorphMorphResult(u16 id) {
 }
 bool isConventionalUnitMorphSource(u16 id, bool allow_larvae) {
 	switch (id) {
-	case UnitId::ZergUltralisk:
+	case UnitId::ZergUltrakor:
 	case UnitId::ZergMutalisk:
-	case UnitId::ZergGorgoleth:
+	case UnitId::ZergGorgrokor:
 	case UnitId::ZergHydralisk:
 	case UnitId::ZergZergling:
 	case UnitId::ZergNathrokor:
@@ -750,16 +750,16 @@ bool isZergBuildingMorphResult(u16 id){
 	case UnitId::ZergAlkajChasm:
 	case UnitId::ZergGuardianRoost:
 	case UnitId::ZergDevourerHaunt:
-	case UnitId::ZergGorgolethApiary:
+	case UnitId::ZergGorgrokApiary:
 	case UnitId::ZergSporeColony:
 	case UnitId::ZergSunkenColony:
-	case UnitId::ZergBasiliskDen:
+	case UnitId::ZergBactalDen:
 	case UnitId::ZergLurkerDen:
 	case UnitId::ZergVorvalPond:
 	case UnitId::ZergNathrokLake:
 	case UnitId::ZergKalkathBloom:
-	case UnitId::ZergOthstolethOviform:
-	case UnitId::ZergAlaszilethArbor:
+	case UnitId::ZergOthstolOviform:
+	case UnitId::ZergAlazilArbor:
 		return true;
 	default:
 		break;
@@ -772,15 +772,15 @@ bool isZergBuildingMorphSource(u16 id){
 	case UnitId::ZergLair:
 	case UnitId::ZergHatchery:
 	case UnitId::ZergEvolutionChamber:
-	case UnitId::ZergUltraliskCavern:
+	case UnitId::ZergUltrakCavern:
 	case UnitId::ZergSpire:
-	case UnitId::ZergGorgolethApiary:
+	case UnitId::ZergGorgrokApiary:
 	case UnitId::ZergCreepColony:
-	case UnitId::ZergHydraliskDen:
+	case UnitId::ZergHydralDen:
 	case UnitId::ZergSpawningPool:
 	case UnitId::ZergNathrokLake:
-	case UnitId::ZergIrolethIris:
-	case UnitId::ZergOthstolethOviform:
+	case UnitId::ZergIrolIris:
+	case UnitId::ZergOthstolOviform:
 		return true;
 	default:
 		break;

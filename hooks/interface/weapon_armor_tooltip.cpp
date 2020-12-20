@@ -18,7 +18,7 @@ u8 getDamageFactorForTooltip(u8 weaponId, CUnit* unit) {
 	||	unit->id == UnitId::ProtossGolem
 	||	unit->id == UnitId::ProtossPariah
 	||	weaponId == WeaponId::RetractorBatteries
-	||	unit->id == UnitId::ZergBasilisk
+	||	unit->id == UnitId::ZergBactalisk
 	||	weaponId == WeaponId::CelestialCannon
 		)
 		return 2;
@@ -67,7 +67,7 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	}
 	switch (weaponId) {
 
-	case UnitId::ZergBasilisk:	{
+	case UnitId::ZergBactalisk:	{
 		ActiveTile tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
 		if (tile.hasCreep || tile.creepReceeding) {
 			bonusRange += 2;

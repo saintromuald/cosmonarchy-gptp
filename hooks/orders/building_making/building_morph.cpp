@@ -839,27 +839,27 @@ namespace hooks {
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
 			break;
 
-		case UnitId::ZergIrolethIris:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergOthstolethOviform, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergAlaszilethArbor, ignoreIncomplete);
+		case UnitId::ZergIrolIris:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergOthstolOviform, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergAlazilArbor, ignoreIncomplete);
 			break;
 
-		case UnitId::ZergOthstolethOviform:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergAlaszilethArbor, ignoreIncomplete);
+		case UnitId::ZergOthstolOviform:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergAlazilArbor, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergSpire:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergGorgolethApiary, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergGorgrokApiary, ignoreIncomplete);
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergDevourerHaunt, ignoreIncomplete);
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergGuardianRoost, ignoreIncomplete);
 			break;
 
-		case UnitId::ZergGorgolethApiary:
+		case UnitId::ZergGorgrokApiary:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergGuardianRoost, ignoreIncomplete);
 			break;
 
-		case UnitId::ZergHydraliskDen:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergBasiliskDen, ignoreIncomplete);
+		case UnitId::ZergHydralDen:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergBactalDen, ignoreIncomplete);
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergLurkerDen, ignoreIncomplete);
 			break;
 
@@ -867,7 +867,7 @@ namespace hooks {
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergMutationPit, ignoreIncomplete);
 			break;
 
-		case UnitId::ZergUltraliskCavern:
+		case UnitId::ZergUltrakCavern:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergAlkajChasm, ignoreIncomplete);
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergKeskathGrotto, ignoreIncomplete);
 			break;

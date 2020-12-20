@@ -49,7 +49,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 	}
 
 	// Kaiser Rampage upgrade: gains double attack speed for 1 second on kill
-	if (unit->id == UnitId::ZergUltralisk) {
+	if (unit->id == UnitId::ZergUltrakor) {
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
 			cooldown /= 2;
 		}

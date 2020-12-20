@@ -208,7 +208,7 @@ enum Enum {
 /*0x24*/	ZergEgg									= 36,
 /*0x25*/	ZergZergling							= 37,
 /*0x26*/	ZergHydralisk							= 38,
-/*0x27*/	ZergUltralisk							= 39,
+/*0x27*/	ZergUltrakor							= 39,
 /*0x28*/	ZergBroodling							= 40,
 /*0x29*/	ZergDrone								= 41,
 /*0x2A*/	ZergOverlord							= 42,
@@ -216,7 +216,7 @@ enum Enum {
 /*0x2C*/	ZergGuardian							= 44,
 /*0x2D*/	ZergQueen								= 45,
 /*0x2E*/	ZergDefiler								= 46,
-/*0x2F*/	ZergScourge								= 47,
+/*0x2F*/	ZergSkryling							= 47,
 /*0x30*/	Hero_Torrasque							= 48,
 /*0x31*/	Hero_Matriarch							= 49,
 /*0x32*/	ZergInfestedTerran						= 50,
@@ -304,12 +304,12 @@ enum Enum {
 /*0x84*/	ZergLair								= 132,
 /*0x85*/	ZergHive								= 133,
 /*0x86*/	ZergNydusCanal							= 134,
-/*0x87*/	ZergHydraliskDen						= 135,
+/*0x87*/	ZergHydralDen							= 135,
 /*0x88*/	ZergDefilerMound						= 136,
 /*0x89*/	ZergGuardianRoost						= 137,
 /*0x8A*/	ZergQueensNest							= 138,
 /*0x8B*/	ZergEvolutionChamber					= 139,
-/*0x8C*/	ZergUltraliskCavern						= 140,
+/*0x8C*/	ZergUltrakCavern						= 140,
 /*0x8D*/	ZergSpire								= 141,
 /*0x8E*/	ZergSpawningPool						= 142,
 /*0x8F*/	ZergCreepColony							= 143,
@@ -519,13 +519,13 @@ enum Enum {
 
 //Zerg-Unit
 	ZergAlkajelisk									= 48,		// Torrasque
-	ZergKalkaleth									= 51,		// Infested Kerrigan
+	ZergKalkalisk									= 51,		// Infested Kerrigan
 	ZergNathrokor									= 54,		// Devouring One
-	ZergGorgoleth									= 56,		// Kukulza Guardian
+	ZergGorgrokor									= 56,		// Kukulza Guardian
 	ZergOthstoleth									= 57,		// Yggdrasil
 	ZergKeskathalor									= 96,		// Ursadon
 	ZergVorvaling									= 128,		// Uraj
-	ZergBasilisk									= 129,		// Khalis
+	ZergBactalisk									= 129,		// Khalis
 	ZergIroleth										= 222,		// Protoss Gas Orb Type 1
 
 //Zerg-Egg
@@ -546,18 +546,18 @@ enum Enum {
 //Zerg-Building
 	ZergMutationPit									= 145,		// Unused Zerg 1
 	ZergKalkathBloom								= 147,		// Zerg Overmind (With Shell)
-	ZergGorgolethApiary								= 148,		// Zerg Overmind
+	ZergGorgrokApiary								= 148,		// Zerg Overmind
 	ZergChrysalis									= 150,		// Mature Chrysalis
-	ZergOthstolethOviform							= 152,		// Cerebrate Daggoth
-	ZergBasiliskDen									= 153,		// Unused Zerg 2
-	ZergAlaszilethArbor								= 181,		// Cantina
+	ZergOthstolOviform								= 152,		// Cerebrate Daggoth
+	ZergBactalDen									= 153,		// Unused Zerg 2
+	ZergAlazilArbor									= 181,		// Cantina
 	ZergLurkerDen									= 191,		// Zerg Marker
 	ZergDevourerHaunt								= 197,		// Zerg Flag Beacon
 	ZergVorvalPond									= 204,		// Floor Hatch
 	ZergNathrokLake									= 210,		// Left Wall Missile Trap
 	ZergAlkajChasm									= 212,		// Right Wall Missile Trap
 	ZergKeskathGrotto								= 219,		// Khaydarin Crystal
-	ZergIrolethIris									= 224,		// Zerg Gas Sac Type 1
+	ZergIrolIris									= 224,		// Zerg Gas Sac Type 1
 	ZergSire										= 227,		// Terran Gas Tank Type 2
 
 	};

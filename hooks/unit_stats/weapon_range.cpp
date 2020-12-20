@@ -23,7 +23,7 @@ u8 getSeekRangeHook(CUnit* unit) {
 				bonusAmount += 6;
 			}
 		}
-		case UnitId::ZergBasilisk:
+		case UnitId::ZergBactalisk:
 		{
 			ActiveTile tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
 			if (tile.hasCreep || tile.creepReceeding) {
@@ -104,7 +104,7 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 		bonusAmount = 64;
 	}
 	switch (unit->id) {
-		case UnitId::ZergBasilisk:
+		case UnitId::ZergBactalisk:
 			ActiveTile tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
 			if (tile.hasCreep || tile.creepReceeding) {
 				bonusAmount += 64;

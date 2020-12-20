@@ -1139,22 +1139,22 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergKalkaleth && //Kalkaleth Lithe Organelle passive
+								if ((*activePortraitUnit)->id == UnitId::ZergKalkalisk && //Kalkaleth Lithe Organelle passive
 									current_button->iconID == IconId::AcidSpore)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk Genesis passive
+								if ((*activePortraitUnit)->id == UnitId::ZergBactalisk && //Basilisk Genesis passive
 									current_button->iconID == IconId::ZergAdvancedBuildings)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk Corrosive Dispersion passive
+								if ((*activePortraitUnit)->id == UnitId::ZergBactalisk && //Basilisk Corrosive Dispersion passive
 									current_button->iconID == IconId::ZergFlyerAttacks)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}								
-								if ((*activePortraitUnit)->id == UnitId::ZergBasilisk && //Basilisk Caustic Fission passive
+								if ((*activePortraitUnit)->id == UnitId::ZergBactalisk && //Basilisk Caustic Fission passive
 									current_button->iconID == IconId::AcidSpore)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -1169,12 +1169,12 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergGorgoleth &&  //Gorgoleth Probing Incisors passive
+								if ((*activePortraitUnit)->id == UnitId::ZergGorgrokor &&  //Gorgoleth Probing Incisors passive
 									current_button->iconID == IconId::KaiserBlades)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergGorgoleth &&  //Gorgoleth Ravening Mandible passive
+								if ((*activePortraitUnit)->id == UnitId::ZergGorgrokor &&  //Gorgoleth Ravening Mandible passive
 									current_button->iconID == IconId::RoarUnused)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -1199,12 +1199,12 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergUltralisk &&  //Ultralisk Siphon passive
+								if ((*activePortraitUnit)->id == UnitId::ZergUltrakor &&  //Ultralisk Siphon passive
 									current_button->iconID == IconId::KaiserBlades)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergUltralisk &&  //Ultralisk Kaiser passive
+								if ((*activePortraitUnit)->id == UnitId::ZergUltrakor &&  //Ultralisk Kaiser passive
 									current_button->iconID == IconId::AnabolicSynthesis)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -1228,9 +1228,9 @@ namespace hooks {
 								if (((*activePortraitUnit)->id == UnitId::ZergLair				//Lair, Hive, Sire Larval Gestation passive
 								||	(*activePortraitUnit)->id == UnitId::ZergHive				//Overlord Iris, Iroleth Quay, Othstoleth Berth Collective Integration passive
 								||	(*activePortraitUnit)->id == UnitId::ZergSire
-								||	(*activePortraitUnit)->id == UnitId::ZergIrolethIris
-								||	(*activePortraitUnit)->id == UnitId::ZergOthstolethOviform
-								||	(*activePortraitUnit)->id == UnitId::ZergAlaszilethArbor) &&
+								||	(*activePortraitUnit)->id == UnitId::ZergIrolIris
+								||	(*activePortraitUnit)->id == UnitId::ZergOthstolOviform
+								||	(*activePortraitUnit)->id == UnitId::ZergAlazilArbor) &&
 									current_button->iconID == IconId::Suicide_Scourge)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
