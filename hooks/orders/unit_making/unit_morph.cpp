@@ -493,10 +493,10 @@ namespace hooks {
 		//Default StarCraft behavior
 
 		if (units_dat::BaseProperty[unitId] & UnitProperty::Flyer) {
-			return UnitId::cocoon;
+			return UnitId::ZergCocoon;
 		}
 		else {
-			return UnitId::egg;
+			return UnitId::ZergEgg;
 		}
 		/*
 		if (unitId == UnitId::ZergLarva)
@@ -548,7 +548,7 @@ namespace hooks {
 		}
 
 		*/
-		//return UnitId::None;
+		return UnitId::None;
 	}
 
 	//Determine the type (unit ID) of the unit to revert to when cancelling an
@@ -591,10 +591,10 @@ namespace hooks {
 			return UnitId::ZergUltralisk;
 		}*/
 		auto source = scbw::get_generic_value(eggUnit, ValueId::EggOrigin);
-		if (source != UnitId::ZergLarva) {
+		if (eggUnit->getRace() == RaceId::Zerg
+		&&	source != UnitId::ZergLarva) {
 			return source;
 		}
-		//  || unitId==223 || unitId==102 || unitIds==179
 		return UnitId::None;  //Default (no revert for larvae)
 	}
 

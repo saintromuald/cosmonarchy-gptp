@@ -169,7 +169,7 @@ namespace {
 		if (unit->status & UnitStatus::Completed)
 			return;
 
-		if (unit->id == UnitId::nydus_canal && unit->building.nydusExit != NULL)
+		if (unit->id == UnitId::ZergNydusCanal && unit->building.nydusExit != NULL)
 			return;
 
 		//Don't bother if unit is not morphed yet
@@ -190,7 +190,7 @@ namespace {
 		}
 		else {
 			u16 refundUnitId;
-			if (scbw::isZergEggNew(unit,true,false))
+			if (scbw::isZergEggNew(unit, true, false))
 				refundUnitId = unit->buildQueue[unit->buildQueueSlot % 5];
 			else
 				refundUnitId = unit->id;

@@ -634,31 +634,39 @@ u32 getUnitData(u32 entry, u32 index) {
 	return get_aise_value(NULL, NULL, AiseId::GetUnitData, entry, index);
 }
 
-bool isZergEggNew(CUnit* unit,  bool allow_larval_eggs, bool allow_larvae,u16 explicit_unit_id) {
+bool isZergEggNew(CUnit* unit, bool allow_larval_eggs, bool allow_larvae, u16 explicit_unit_id) {
 
 	u16 id = UnitId::None;
-	if(id!=NULL){
+
+	if (id != NULL) {
 		id = unit->id;
 	}
+
 	else {
 		id = explicit_unit_id;
 	}
+
 	switch (id) {
 	case UnitId::ZergEgg:
-		if (unit && !allow_larval_eggs && scbw::get_generic_value(unit, ValueId::EggOrigin) == UnitId::larva ) {
+		if (unit
+		&& !allow_larval_eggs
+		&&  scbw::get_generic_value(unit, ValueId::EggOrigin) == UnitId::ZergLarva) {
 			return false;
 		}
 		return true;
-	case UnitId::cocoon:
+	case UnitId::ZergCocoon:
 		return true;
 	default:
 		break;
 	}
-	if (allow_larvae && id == UnitId::ZergLarva) {
+
+	if (allow_larvae
+	&&  id == UnitId::ZergLarva) {
 		return true;
 	}
 	return false;
 }
+
 bool isZergEgg(u16 id, bool allow_normal_eggs, bool allow_larvae) {
 	switch (id) {
 	case UnitId::ZergCocoon:
