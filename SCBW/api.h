@@ -15,6 +15,8 @@ bool isConventionalUnitMorphResult(u16 id);
 bool isConventionalUnitMorphSource(u16 id, bool allow_larvae=false);
 bool isZergBuildingMorphResult(u16 id);
 bool isZergBuildingMorphSource(u16 id);
+
+bool isZergEggNew(CUnit* unit, bool allow_larval_eggs = true, bool allow_larvae = true, u16 explicit_id = UnitId::None);
 bool isZergEgg(u16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
 void createBullet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
 void ApplySpores(CUnit* unit);

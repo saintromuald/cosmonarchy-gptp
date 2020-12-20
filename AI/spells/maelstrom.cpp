@@ -38,10 +38,7 @@ namespace AI {
 			  return false;
 
 			if (isTargetAttackingAlly(target, caster)
-				&& target->id != UnitId::larva
-				&& target->id != UnitId::egg
-				&& target->id != UnitId::cocoon
-				&& target->id != UnitId::lurker_egg) {
+				&& !scbw::isZergEggNew(target,true,true)) {
 
 			  const int totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Maelstrom);
 			  if (!isUnderAttack && totalEnemyLife < 250)

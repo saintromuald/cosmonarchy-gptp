@@ -261,7 +261,7 @@ public:
 
 bool irradiateTarget(CUnit* unit) {
 
-	if (unit->id == UnitId::ZergLarva || unit->id == UnitId::ZergEgg || unit->id == UnitId::ZergLurkerEgg)
+	if (scbw::isZergEggNew(unit))
 		return false;
 
 	return true;

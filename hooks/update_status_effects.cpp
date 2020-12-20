@@ -22,7 +22,7 @@ class irradiateProc : public scbw::UnitFinderCallbackProcInterface {
 			return;
 
 		//Don't damage larvae, eggs, and lurker eggs
-		if (unit->id == UnitId::larva || unit->id == UnitId::egg || unit->id == UnitId::lurker_egg)
+		if(scbw::isZergEggNew(unit,true,true))
 			return;
 
 		//Irradiate splash damage does not affect burrowed units
@@ -101,7 +101,7 @@ public:
 		if (!(booster->status & UnitStatus::Completed)) {
 			return;
 		}
-		if (scbw::isAlliedTo(unit->playerId, booster->playerId) && scbw::isZergEgg(unit->id,true,false)) {
+		if (scbw::isAlliedTo(unit->playerId, booster->playerId) && scbw::isZergEggNew(unit,true,false)) {
 			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::EggBoostTimer, 24, 0);
 		}
 	}

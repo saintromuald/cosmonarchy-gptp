@@ -24,7 +24,7 @@ namespace AI {
 			if (target->id == UnitId::bunker && target->hasLoadedUnit())
 			  return true;
 
-			if (target->id == UnitId::egg)
+			if (scbw::isZergEggNew(target))
 			  return false;
 
 			const int targetLife = target->getCurrentLifeInGame();
