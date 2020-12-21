@@ -1164,6 +1164,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ZergAlmaksalisk && //Almaksalisk Flanking Spines passive
+									current_button->iconID == IconId::Chitinous_Plating)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::ZergLurker && //Lurker Seismic Spines passive
 									current_button->iconID == IconId::SubterraneanSpines)
 								{

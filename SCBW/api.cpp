@@ -1792,6 +1792,10 @@ u16 random() {
 		if (unit->acidSporeCount != 0)
 			unit->acidSporeTime[unit->acidSporeCount] = 30;
 
+		// Reset Irradiate
+		if (unit->irradiateTimer != 0)
+			unit->irradiateTimer = 8*3;
+
 		//was hardcoded in original code
 		scbw::refreshConsole();
 	}
@@ -1802,6 +1806,8 @@ u16 random() {
 		|| scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) > 0
 		|| scbw::get_generic_timer(unit, ValueId::CaptivatingClawsTimer) > 0
 		|| scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0
+		|| scbw::get_generic_value(unit, ValueId::EnergyDecay) > 0
+		|| unit->irradiateTimer != 0
 		|| unit->ensnareTimer != 0
 		|| unit->lockdownTimer != 0
 		|| unit->maelstromTimer != 0
