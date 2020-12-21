@@ -642,9 +642,9 @@ namespace hooks {
 				damage = 128;
 			}
 
-			// Quazilisk Passive
-			if (shieldReduceAmount == 0 && weaponId == WeaponId::QuazaliskWeapon) {
-				float missingFactor = target->hitPoints / target->getMaxHpRaw();
+			// Quazilisk Melting Points
+			if (weaponId == WeaponId::AcridBarbs) {
+				float missingFactor = 1 - (target->hitPoints / target->getMaxHpRaw()); 
 				float damageIncrease = floor(missingFactor / QUAZILISK_PASSIVE_FACTOR) * HEALTH_MULTIPLIER;
 				damage += damageIncrease;
 			}

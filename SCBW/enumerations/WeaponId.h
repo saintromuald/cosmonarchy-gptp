@@ -209,6 +209,8 @@ enum Enum {
 	SerratedCleavers							= 47,			// Gorgrokor weapon
 	ParasiticSpores								= 49,			// Alkajelisk behavior weapon
 	BasiliskCorrosiveAcid						= 50,			// Basilisk weapon
+	AcridBarbs									= 102,			// Quazilisk weapon
 	ViscousAcid									= 117,			// Kalkalisk weapon
+	PiercingSpines								= 999,			// Almaksalisk weapon
 	};
 }

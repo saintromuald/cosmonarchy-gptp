@@ -1134,6 +1134,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ZergQuazilisk && //Quazilisk Melting Points passive
+									current_button->iconID == IconId::Suicide_Infested_Terran)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::ZergNathrokor && //Nathrokor Adrenal Frenzy passive
 									current_button->iconID == IconId::Suicide_Scourge)
 								{
