@@ -383,5 +383,6 @@ u16 random();
     void refreshDebuffs(CUnit* unit);
     void applyEnsnare(CUnit* unit);
     bool isEnabled(CUnit* unit);
+    bool isDebuffed(CUnit* unit);
 
 } //scbw

@@ -1796,6 +1796,18 @@ u16 random() {
 		scbw::refreshConsole();
 	}
 
+	bool isDebuffed(CUnit* unit) {
+		return 
+		   scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 0
+		|| scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) > 0
+		|| scbw::get_generic_timer(unit, ValueId::CaptivatingClawsTimer) > 0
+		|| scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0
+		|| unit->ensnareTimer != 0
+		|| unit->lockdownTimer != 0
+		|| unit->maelstromTimer != 0
+		|| unit->acidSporeCount != 0;
+	}
+
 	void applyEnsnare(CUnit* unit) { // 004F45E0
 		s32 baseProperty; // eax
 		u8 overlayPadding; // al

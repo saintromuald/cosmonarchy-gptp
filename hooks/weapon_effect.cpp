@@ -339,37 +339,44 @@ namespace hooks {
 
 	// clone of 'Normal' damage for reference
 	void normalDamage(CBullet* bullet, u32 weaponId) {
-		if (bullet->sourceUnit!=NULL && weaponId == WeaponId::Lockdown) {
+		// Create Lobotomy Mines
+		if (bullet->sourceUnit != NULL && weaponId == WeaponId::Lockdown) {
 			CUnit* mine = scbw::createUnitIngame(UnitId::TerranLobotomyMine, bullet->srcPlayer, bullet->position.x, bullet->position.y);
-			if (mine != NULL)
-			{
+			if (mine != NULL) {
 				turnUnit(mine, bullet->sourceUnit->currentDirection1);
 			}
 		}
-		//re-route cyprian bullet
-		//if(bullet->sourceUnit != NULL && bullet->attackTarget.unit!=NULL)
-		if(isUnsafeCyprianBullet(bullet,weaponId)) {
-			friendlySplash(bullet, weaponId, SplashType::Radial);
-			//scbw::printText("Cyprian - Execute splash instead of normal");
-			return;
-		}
+
+		// 
 		if (isChargedGorgolethBullet(bullet, weaponId)) {
 			bullet->sourceUnit->spendUnitEnergy(5 * 256);
 			friendlySplash(bullet, weaponId, SplashType::FriendlyNew, bullet->attackTarget.unit);
 			return;
 		}
+
+		// 
 		CUnit* target = bullet->attackTarget.unit;
-		if (target == NULL) return;
-		darkSwarmDamage(bullet->attackTarget.unit->position.x,bullet->attackTarget.unit->position.y,1,bullet,weaponId);
+		if (target == NULL) {
+			return;
+		}
+
+		// 
+		darkSwarmDamage(bullet->attackTarget.unit->position.x, bullet->attackTarget.unit->position.y, 1, bullet, weaponId);
+
+		// 
 		u8 divisor = 1;
 		if (weaponId == WeaponId::DispersiveSalvo) {
 			divisor = Globals.get_divider(bullet);
 		}
+
+		// 
 		else if (weaponId == WeaponId::ViscousAcid) {
 //			divisor = Globals.get_multihit_count(bullet);
 			divisor = 1;
 //			scbw::printFormattedText("Get divisor %d, bullet: %X",divisor,bullet);
 		}
+
+		// 
 		else if (weaponId == WeaponId::AcidSpore
 		&&		bullet->sourceUnit
 		&&		bullet->sourceUnit->sprite
@@ -380,12 +387,16 @@ namespace hooks {
 				divisor = scbw::getDistanceFast(X, Y, target->getX(), target->getY()) / (32 * 3);
 			}
 		}
+
+		// 
 		if (bullet->hitFlags & 1) { // Miss ?
 		  if (target->pAI == NULL) return;
 		  if (bullet->sourceUnit == NULL) return;
 		  doWeaponHit(target, bullet->sourceUnit, divisor);
 		  return;
 		}
+
+		// 
 		else {
 			if (weapons_dat::Behavior[weaponId] == WeaponBehavior::Bounce) {
 				bool mutalisk = true;
