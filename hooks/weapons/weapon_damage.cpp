@@ -1,6 +1,7 @@
 #include "weapon_damage.h"
 #include "../../SCBW/api.h"
 #include <algorithm>
+#include <cmath>
 #include "MathUtils.h"
 #include "../orders/spells/hallucination_spell.h"
 #include "Utils/captivating_claws.h"
@@ -401,7 +402,7 @@ namespace hooks {
 /*			if (target->status & UnitStatus::IsHallucination)
 						damage *= 2;*/
 
-						// Savant Entropy Gauntlets behavior - Apply timer and overlay
+			// Savant Entropy Gauntlets behavior - Apply timer and overlay
 			if (attacker != NULL && weaponId == WeaponId::DiscoidRailgun) {
 				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::EnergyDecay, (5 * 24) + 1, 0);
@@ -639,6 +640,13 @@ namespace hooks {
 
 			if (shieldReduceAmount == 0 && damage < 128) {
 				damage = 128;
+			}
+
+			// Quazilisk Passive
+			if (shieldReduceAmount == 0 && weaponId == WeaponId::QuazaliskWeapon) {
+				float missingFactor = target->hitPoints / target->getMaxHpRaw();
+				float damageIncrease = floor(missingFactor / QUAZILISK_PASSIVE_FACTOR) * HEALTH_MULTIPLIER;
+				damage += damageIncrease;
 			}
 
 			if (attacker != NULL && target != NULL) {
