@@ -12,9 +12,20 @@ namespace hooks {
         CSprite* sprite; // ecx
 
         flags = unit->status;
-        if (!(flags & UnitStatus::IgnoreTileCollision) || !(flags & UnitStatus::IsNormal)) {
+/*      if (!(flags & UnitStatus::IgnoreTileCollision) || !(flags & UnitStatus::IsNormal)) {
             sprite = unit->sprite;
             if (unit->moveTarget.pt.x == sprite->position.x
+                && unit->moveTarget.pt.y == sprite->position.y
+                && ((flags & UnitStatus::Unmovable) != 0) != -1
+                && unit->nextTargetWaypoint.x == unit->position.x
+                && unit->nextTargetWaypoint.y == unit->position.y) {
+                return 0;
+            }
+        }
+        */
+        if (!(flags & UnitStatus::IgnoreTileCollision) || !(flags & UnitStatus::IsNormal)) {
+            sprite = unit->sprite;
+            if (sprite!=NULL && unit->moveTarget.pt.x == sprite->position.x
                 && unit->moveTarget.pt.y == sprite->position.y
                 && ((flags & UnitStatus::Unmovable) != 0) != -1
                 && unit->nextTargetWaypoint.x == unit->position.x
