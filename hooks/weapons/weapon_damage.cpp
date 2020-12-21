@@ -535,9 +535,10 @@ namespace hooks {
 
 			// Quazilisk - Melting Points
 			if (weaponId == WeaponId::AcridBarbs) {
-				float missingFactor = 1 - (target->hitPoints / target->getMaxHpRaw());
-				float damageIncrease = floor(missingFactor / QUAZILISK_PASSIVE_FACTOR) * HEALTH_MULTIPLIER;
-				damage += damageIncrease;
+				float missingFactor = 1 - ((float)target->hitPoints / target->getMaxHpRaw());
+				float damageIncrease = floor(missingFactor / QUAZILISK_PASSIVE_FACTOR);
+				//scbw::print("Damage Increase: " + std::to_string(damageIncrease));
+				damage += damageIncrease * HEALTH_MULTIPLIER;
 			}
 
 			// Hallucinations deal half damage
