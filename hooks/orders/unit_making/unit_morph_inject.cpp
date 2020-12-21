@@ -173,7 +173,7 @@ namespace {
 			return;
 
 		//Don't bother if unit is not morphed yet
-		if (scbw::isConventionalUnitMorphSource(unit->id, false)) {
+		if (scbw::isConventionalUnitMorphSource(unit->id, false, false)) {
 			return;
 		}
 		//Don't bother if unit has finished morphing

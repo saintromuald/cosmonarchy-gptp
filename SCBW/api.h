@@ -12,7 +12,7 @@ namespace hooks {
 namespace scbw {
 bool isAnyMorphMorphResult(u16 id);
 bool isConventionalUnitMorphResult(u16 id);
-bool isConventionalUnitMorphSource(u16 id, bool allow_larvae=false);
+bool isConventionalUnitMorphSource(u16 id, bool allow_larvae=false, bool allow_high_templar=false);
 bool isZergBuildingMorphResult(u16 id);
 bool isZergBuildingMorphSource(u16 id);
 

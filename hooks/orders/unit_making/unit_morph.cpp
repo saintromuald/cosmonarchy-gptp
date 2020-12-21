@@ -138,7 +138,7 @@ namespace hooks {
 		//scbw::printText("Morph...");
 		if (unit->mainOrderState == 0) {
 
-			if (scbw::isConventionalUnitMorphSource(unit->id,true)
+			if (scbw::isConventionalUnitMorphSource(unit->id,true,true)
 				
 				)
 			{

@@ -728,7 +728,7 @@ bool isAnyMorphMorphResult(u16 id) {
 	}
 	return false;
 }
-bool isConventionalUnitMorphSource(u16 id, bool allow_larvae) {
+bool isConventionalUnitMorphSource(u16 id, bool allow_larvae, bool allow_high_templar) {
 	switch (id) {
 	case UnitId::ZergUltrakor:
 	case UnitId::ZergMutalisk:
@@ -738,10 +738,12 @@ bool isConventionalUnitMorphSource(u16 id, bool allow_larvae) {
 	case UnitId::ZergNathrokor:
 	case UnitId::ZergIroleth:
 	case UnitId::ZergOverlord:
-	case UnitId::ProtossHighTemplar:
 		return true;
 	default:
 		break;
+	}
+	if (id == UnitId::ProtossHighTemplar && allow_high_templar) {
+		return true;
 	}
 	if (id == UnitId::ZergLarva && allow_larvae) {
 		return true;
