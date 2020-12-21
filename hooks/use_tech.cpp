@@ -501,11 +501,6 @@ namespace hooks
 		case TechId::PowerTransfer:
 			IssueTriTargetOrder(OrderId::Hover, 0, 0);
 			break;
-		case TechId::EnergyDecay:
-		{
-			IssueTriTargetOrder(OrderId::GuardianAspect, 0, 0);
-			break;
-		}
 		case TechId::DisruptionWeb:
 		{
 			int action = 1;//on
