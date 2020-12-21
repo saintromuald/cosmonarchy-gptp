@@ -556,6 +556,13 @@ namespace hooks {
 			}
 
 			damageType = weapons_dat::DamageType[weaponId];
+
+			// Almaksalisk - Flanking Spines
+			if (weaponId == WeaponId::PiercingSpines && scbw::isDebuffed(target)) {
+				damageType = DamageType::IgnoreArmor;
+			}
+
+			// Cliff Advantage - Armor
 			if (damageType != DamageType::IgnoreArmor) {
 				damage -= std::min(scbw::getCliffAdvantage(attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
 			}
