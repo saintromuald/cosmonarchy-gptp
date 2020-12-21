@@ -31,8 +31,7 @@ void unitAttackFromInsideBunkerHook(CUnit* unit) {
 		||	unit->id == UnitId::ZergHydralisk
 		||	unit->id == UnitId::ZergBactalisk
 		||	unit->id == UnitId::ZergLurker
-//		||	unit->id == UnitId::InfestedTemplar
-//		||	unit->id == UnitId::ChampionTemplar
+		||	unit->id == UnitId::ZergKeskathalor
 	) {
 
 		Bool32 resultApplyCooldown;

@@ -206,9 +206,9 @@ enum Enum {
 	PlasmidBreath								= 37,			// Nathrokor weapon
 	ScreamingVenom								= 41,			// Keskathalor weapon
 	PlasmidSpores								= 45,			// Alkajelisk weapon
-	SerratedCleavers							= 47,			// Gorgoleth weapon
+	SerratedCleavers							= 47,			// Gorgrokor weapon
 	ParasiticSpores								= 49,			// Alkajelisk behavior weapon
 	BasiliskCorrosiveAcid						= 50,			// Basilisk weapon
-	ViscousAcid									= 117,			// Kalkaleth weapon
+	ViscousAcid									= 117,			// Kalkalisk weapon
 	};
 }

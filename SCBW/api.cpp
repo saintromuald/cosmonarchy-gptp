@@ -670,17 +670,6 @@ bool isZergEggNew(CUnit* unit, bool allow_larval_eggs, bool allow_larvae, u16 ex
 bool isZergEgg(u16 id, bool allow_normal_eggs, bool allow_larvae) {
 	switch (id) {
 	case UnitId::ZergCocoon:
-	case UnitId::ZergLurkerEgg:
-	case UnitId::EggVorvaling:
-	case UnitId::EggNathrokor:
-	case UnitId::EggKalkaleth:
-	case UnitId::EggBasilisk:
-	case UnitId::EggAlkajelisk:
-	case UnitId::EggKeskathalor:
-	case UnitId::EggIroleth:
-	case UnitId::EggGorgoleth:
-	case UnitId::EggDevourer:
-	case UnitId::EggOthstoleth:
 		return true;
 	default:
 		break;
@@ -701,12 +690,15 @@ bool isConventionalUnitMorphResult(u16 id) {
 	case UnitId::ZergDevourer:
 	case UnitId::ZergGorgrokor:
 	case UnitId::ZergVorvaling:
+	case UnitId::ZergQuazilisk:
 	case UnitId::ZergNathrokor:
 	case UnitId::ZergKalkalisk:
 	case UnitId::ZergBactalisk:
+	case UnitId::ZergAlmaksalisk:
 	case UnitId::ZergLurker:
 	case UnitId::ZergIroleth:
 	case UnitId::ZergOthstoleth:
+	case UnitId::ZergDefiler:
 	case UnitId::ProtossAugur:
 		return true;
 	default:
@@ -735,9 +727,11 @@ bool isConventionalUnitMorphSource(u16 id, bool allow_larvae, bool allow_high_te
 	case UnitId::ZergGorgrokor:
 	case UnitId::ZergHydralisk:
 	case UnitId::ZergZergling:
+	case UnitId::ZergVorvaling:
 	case UnitId::ZergNathrokor:
 	case UnitId::ZergIroleth:
 	case UnitId::ZergOverlord:
+	case UnitId::ZergZoryusthaleth:
 		return true;
 	default:
 		break;
@@ -766,10 +760,12 @@ bool isZergBuildingMorphResult(u16 id){
 	case UnitId::ZergBactalDen:
 	case UnitId::ZergLurkerDen:
 	case UnitId::ZergVorvalPond:
+	case UnitId::ZergQuazilQuay:
 	case UnitId::ZergNathrokLake:
 	case UnitId::ZergKalkathBloom:
 	case UnitId::ZergOthstolOviform:
 	case UnitId::ZergAlazilArbor:
+	case UnitId::ZergDefilerMound:
 		return true;
 	default:
 		break;
@@ -788,9 +784,11 @@ bool isZergBuildingMorphSource(u16 id){
 	case UnitId::ZergCreepColony:
 	case UnitId::ZergHydralDen:
 	case UnitId::ZergSpawningPool:
+	case UnitId::ZergVorvalPond:
 	case UnitId::ZergNathrokLake:
 	case UnitId::ZergIrolIris:
 	case UnitId::ZergOthstolOviform:
+	case UnitId::ZergZoryusShroud:
 		return true;
 	default:
 		break;

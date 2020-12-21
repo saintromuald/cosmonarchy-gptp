@@ -703,12 +703,18 @@ namespace hooks {
 		int race = unit->getRace();
 		int supply = units_dat::SupplyProvided[unit->id];
 		
-		if (unit->id == UnitId::EggIroleth) {
-			supply = units_dat::SupplyProvided[UnitId::overlord];
+		if (scbw::isZergEggNew(unit, false, false)) {
+			if (unit->buildQueue[unit->buildQueueSlot % 5] == UnitId::ZergIroleth) {
+				supply = units_dat::SupplyProvided[UnitId::ZergOverlord];
+			}
+			if (unit->buildQueue[unit->buildQueueSlot % 5] == UnitId::ZergOthstoleth) {
+				supply = units_dat::SupplyProvided[UnitId::ZergIroleth];
+			}
+			if (unit->buildQueue[unit->buildQueueSlot % 5] == UnitId::ZergAlaszileth) {
+				supply = units_dat::SupplyProvided[UnitId::ZergOthstoleth];
+			}
 		}
-		if (unit->id == UnitId::EggOthstoleth) {
-			supply = units_dat::SupplyProvided[UnitId::ZergIroleth];
-		}
+
 		if (*elapsedTimeFrames > 0) {
 			u32 supply_new = scbw::get_generic_value(unit, ValueId::SupplyProvidedValue);
 			if (supply_new)

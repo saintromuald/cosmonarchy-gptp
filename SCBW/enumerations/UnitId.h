@@ -518,22 +518,21 @@ enum Enum {
 	ProtossGrandLibrary								= 226,		// Terran Gas Tank Type 1		| Advanced Templar production
 
 //Zerg-Unit
+	ZergAlmaksalisk									= 29,		// Norad II
 	ZergAlkajelisk									= 48,		// Torrasque
 	ZergKalkalisk									= 51,		// Infested Kerrigan
 	ZergNathrokor									= 54,		// Devouring One
 	ZergGorgrokor									= 56,		// Kukulza Guardian
 	ZergOthstoleth									= 57,		// Yggdrasil
+	ZergQuazilisk									= 95,		// Ragnasaur
 	ZergKeskathalor									= 96,		// Ursadon
+	ZergZoryusthaleth								= 97,		// Lurker Egg
 	ZergVorvaling									= 128,		// Uraj
 	ZergBactalisk									= 129,		// Khalis
+	ZergAlaszileth									= 173,		// Khaydarin Crystal Formation
 	ZergIroleth										= 222,		// Protoss Gas Orb Type 1
 
 //Zerg-Egg
-	EggKalkaleth									= 29,		// Norad II
-	EggOthstoleth									= 95,		// Ragnasaur
-	EggDevourer										= 173,		// Khaydarin Crystal Formation
-	EggGorgoleth									= 179,		// Cave
-	EggIroleth										= 193,		// Protoss Marker
 	EggBasilisk										= 198,		// Terran Flag Beacon
 	EggKeskathalor									= 199,		// Protoss Flag Beacon
 	EggVorvaling									= 216,		// Young Chrysalis
@@ -550,13 +549,16 @@ enum Enum {
 	ZergChrysalis									= 150,		// Mature Chrysalis
 	ZergOthstolOviform								= 152,		// Cerebrate Daggoth
 	ZergBactalDen									= 153,		// Unused Zerg 2
+	ZergAlmakAntre									= 179,		// Cave
 	ZergAlazilArbor									= 181,		// Cantina
 	ZergLurkerDen									= 191,		// Zerg Marker
+	ZergZoryusShroud								= 193,		// Protoss Marker
 	ZergDevourerHaunt								= 197,		// Zerg Flag Beacon
 	ZergVorvalPond									= 204,		// Floor Hatch
 	ZergNathrokLake									= 210,		// Left Wall Missile Trap
 	ZergAlkajChasm									= 212,		// Right Wall Missile Trap
 	ZergKeskathGrotto								= 219,		// Khaydarin Crystal
+	ZergQuazilQuay									= 220,		// Mineral Chunk Type 1
 	ZergIrolIris									= 224,		// Zerg Gas Sac Type 1
 	ZergSire										= 227,		// Terran Gas Tank Type 2
 
