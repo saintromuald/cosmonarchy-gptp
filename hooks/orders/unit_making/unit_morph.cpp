@@ -115,14 +115,16 @@ namespace hooks {
 				scbw::setUnitPosition(unit, pos.x, pos.y);
 
 			if (
-				!scbw::isZergEggNew(unit,false,false,unit->previousUnitType)
+				!scbw::isZergEggNew(unit,true,false,unit->previousUnitType)
 				)
 			{
+				auto origin = scbw::get_generic_value(unit, ValueId::EggOrigin);
+				if (origin == UnitId::ZergLarva) {
+					orderNewUnitToRally(unit, unit->connectedUnit);
 
-				orderNewUnitToRally(unit, unit->connectedUnit);
-
-				if (unit2 != NULL)
-					orderNewUnitToRally(unit2, unit->connectedUnit);
+					if (unit2 != NULL)
+						orderNewUnitToRally(unit2, unit->connectedUnit);
+				}
 
 			}
 
@@ -395,8 +397,8 @@ namespace hooks {
 							function_004A01F0(unit);
 
 							updateUnitStrength(unit);
-
-							if (unit->id == UnitId::ZergEgg)
+							auto origin = scbw::get_generic_value(unit, ValueId::EggOrigin);
+							if (unit->id == UnitId::ZergEgg && origin==UnitId::ZergLarva)
 								orderNewUnitToRally(unit, unit->connectedUnit);
 
 						}
