@@ -190,7 +190,6 @@ enum Enum {
 	AstralBlaster								= 97,			// Ecclesiast weapon
 	DauntlessDisruptorCannon					= 98,			// Atreus weapon
 	PsiCleaver									= 99,			// Amaranth weapon
-	WardensMark									= 110,			// Clarion weapon
 	PrismaticBlaster							= 112,			// Idol weapon
 	BloodlessAssault							= 113,			// Golem weapon
 	RayOfAgony									= 114,			// Barghest weapon
@@ -210,7 +209,7 @@ enum Enum {
 	ParasiticSpores								= 49,			// Alkajelisk behavior weapon
 	BasiliskCorrosiveAcid						= 50,			// Basilisk weapon
 	AcridBarbs									= 102,			// Quazilisk weapon
+	PiercingSpines								= 110,			// Almaksalisk weapon
 	ViscousAcid									= 117,			// Kalkalisk weapon
-	PiercingSpines								= 999,			// Almaksalisk weapon
 	};
 }
