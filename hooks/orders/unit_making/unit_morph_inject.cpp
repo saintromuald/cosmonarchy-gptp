@@ -100,7 +100,7 @@ namespace {
 
 		unit->status &= ~(UnitStatus::Completed);
 		morphEggType = hooks::getUnitMorphEggTypeHook(unit->id, unit,unit->buildQueue[0]);
-		assert(scbw::isZergEggNew(morphEggType,true,false));
+		assert(scbw::isZergEggNew(unit,true,false, morphEggType));
 		__asm {
 			POPAD
 			PUSH morphEggType
