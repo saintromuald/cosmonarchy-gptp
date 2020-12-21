@@ -99,6 +99,7 @@
 #include "hooks/trap_hooks.h"
 #include "hooks/target_related.h"
 #include "config.h"
+#include "hooks/unit_movement.h"
 
 //#include "AI/spellcasting.h"
 
@@ -531,7 +532,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectWeaponFireHooks();
 
 
-	hooks::injectUnitDestructorSpecial();//hydra
+	hooks::injectUnitDestructorSpecial();
 
 	hooks::injectWeaponEffectHook();
 	hooks::injectUseTechHooks();
@@ -557,6 +558,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectTrapHooks();
 
 	hooks::injectLobbyHooks();
+	hooks::injectUnitMovementHooks();
 
 	return TRUE;
 }
