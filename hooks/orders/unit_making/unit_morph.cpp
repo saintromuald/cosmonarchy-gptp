@@ -591,7 +591,8 @@ namespace hooks {
 			return UnitId::ZergUltralisk;
 		}*/
 		auto source = scbw::get_generic_value(eggUnit, ValueId::EggOrigin);
-		if (eggUnit->getRace() == RaceId::Zerg) {
+		if (eggUnit->getRace() == RaceId::Zerg
+		&&  eggUnit->id != UnitId::ZergInfestedTerran) {
 			if (!(units_dat::BaseProperty[eggUnit->id] & UnitProperty::Building)
 			   && source != UnitId::ZergLarva) {
 				return source;
