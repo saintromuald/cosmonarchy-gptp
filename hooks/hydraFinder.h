@@ -22,6 +22,7 @@ namespace CFlags {
 		HasEnergy=1<<13,
 		NotSelf=1<<14,
 		Shielded=1<<15,
+		Enabled=1<<16,
 	};
 }
 
@@ -112,6 +113,9 @@ public:
 			return false;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building && context & CFlags::NoBuilding)
 			return false;
+		if (!(scbw::isEnabled(unit)) && context & CFlags::Enabled) {
+			return false;
+		}
 		return true;
 	}
 };

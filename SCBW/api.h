@@ -378,8 +378,10 @@ u16 random();
     CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType);
     bool isSlowed(CUnit* unit);
     bool isStunned(CUnit* unit);
+    void hideAndDisableUnit(CUnit* unit);
     void restoreFunc(CUnit* unit);
     void refreshDebuffs(CUnit* unit);
-    void hideAndDisableUnit(CUnit* unit);
+    void applyEnsnare(CUnit* unit);
+    bool isEnabled(CUnit* unit);
 
 } //scbw

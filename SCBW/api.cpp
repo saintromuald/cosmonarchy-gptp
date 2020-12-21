@@ -1798,26 +1798,26 @@ u16 random() {
 		scbw::refreshConsole();
 	}
 
-	void applyEnsnare(CUnit* a1) { // 004F45E0
+	void applyEnsnare(CUnit* unit) { // 004F45E0
 		s32 baseProperty; // eax
 		u8 overlayPadding; // al
 		CUnit* victim; // ecx
 
-		if (!(a1->ensnareTimer)
-			&& !(a1->status & UnitStatus::Burrowed)) {
+		if (!(unit->ensnareTimer)
+			&& !(unit->status & UnitStatus::Burrowed)) {
 
 			// Calculate overlay ID offset based on units_dat flags
 			overlayPadding = 0;
-			baseProperty = units_dat::BaseProperty[a1->id];
+			baseProperty = units_dat::BaseProperty[unit->id];
 			if (baseProperty & UnitProperty::MediumOverlay) {
 				overlayPadding = 1;
 			}
 			else if (baseProperty & UnitProperty::LargeOverlay) {
 				overlayPadding = 2;
 			}
-			victim = a1;
-			if (a1->subunit != NULL) {
-				victim = a1->subunit;
+			victim = unit;
+			if (unit->subunit != NULL) {
+				victim = unit->subunit;
 			}
 
 			// Create overlay
@@ -1825,8 +1825,18 @@ u16 random() {
 		}
 
 		// Apply effect
-		a1->ensnareTimer = 37;
-		a1->updateSpeed();
+		unit->ensnareTimer = 37;
+		unit->updateSpeed();
+	}
+
+	bool isEnabled(CUnit* unit) {
+		if (unit->lockdownTimer
+		||  unit->maelstromTimer
+		||  unit->stasisTimer
+		||  unit->status & UnitStatus::Disabled) {
+			return false;
+		}
+		return true;
 	}
 
 } //scbw
