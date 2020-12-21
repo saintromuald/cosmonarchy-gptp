@@ -881,7 +881,7 @@ namespace hooks {
 					}
 
 					// Incubators - Broodling behavior
-					int supplyCount = scbw::getBroodlingCountFromSupply(target);
+					int supplyCount = 2;// scbw::getBroodlingCountFromSupply(target);
 					if (attacker->id == UnitId::ZergBroodling) {
 						scbw::createUnitFromAbility(UnitId::ZergBroodling, supplyCount, attacker->playerId, target->position.x, target->position.y, 720, scbw::getSourceQueens(attacker)[0]);
 					}
