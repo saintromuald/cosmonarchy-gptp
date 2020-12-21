@@ -180,10 +180,9 @@ namespace {
 		if (scbw::isConventionalUnitMorphResult(unit->id))
 			return;
 		if (unit->status & UnitStatus::GroundedBuilding) {
-			if (unit->getRace() == RaceId::Zerg 
-					&& hooks::isMorphing(unit)) {
-				cancelZergBuilding(unit);
-				return;
+			if (unit->getRace() == RaceId::Zerg) {
+					cancelZergBuilding(unit);
+					return;
 			}
 			resources->minerals[unit->playerId] += units_dat::MineralCost[unit->id] * 3 / 4;
 			resources->gas[unit->playerId] += units_dat::GasCost[unit->id] * 3 / 4;

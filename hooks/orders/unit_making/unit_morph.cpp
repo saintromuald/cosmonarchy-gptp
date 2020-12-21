@@ -591,9 +591,11 @@ namespace hooks {
 			return UnitId::ZergUltralisk;
 		}*/
 		auto source = scbw::get_generic_value(eggUnit, ValueId::EggOrigin);
-		if (eggUnit->getRace() == RaceId::Zerg
-		&&	source != UnitId::ZergLarva) {
-			return source;
+		if (eggUnit->getRace() == RaceId::Zerg) {
+			if (!(units_dat::BaseProperty[eggUnit->id] & UnitProperty::Building)
+			   && source != UnitId::ZergLarva) {
+				return source;
+			}
 		}
 		return UnitId::None;  //Default (no revert for larvae)
 	}
