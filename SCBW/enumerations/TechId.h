@@ -60,7 +60,6 @@ enum Enum {
 	ReverseThrust			= 2,  // Wyvern fire while moving switch
 	LandGrab				= 17, // Wyvern target ground ability
 	AdministerMedstims		= 24, // Shaman organic heal ability
-	SafetyOff				= 26, // Cyprian weapon switch ability
 	LazarusAgent			= 32, // Apostle ability
 	TempoChange				= 36, // Madrigal weapon switch ability
 	Skyfall					= 37, // Paladin missile salvo ability
@@ -68,15 +67,16 @@ enum Enum {
 	Observance				= 39, // Science Vessel armor reduction ability
 	SublimeShepherd			= 40, // Azazel cloud cover ability
 	PowerTransfer			= 41, // Savant energy transfer ability
-	EnergyDecay				= 42, // Savant energy damage ability
 
 //Protoss
 	PlanetCracker			= 29, // Star Sovereign damage ability
 	PhaseLink				= 33, // Clarion shield damage distribution ability
 
 //Zerg
-	EssenceDrain			= 35, // Gorgoleth energy steal ability
 	EnsnaringBrood			= 13, // Queen ability applying ensnaring brood effect
+	SwarmingOmen			= 26, // Zoryusthaleth movement speed beacon ability
+	EssenceDrain			= 35, // Gorgoleth energy steal ability
+	Reconstitution			= 42, // Zoryusthaleth corpse recycling toggle
 
 
 	//extended

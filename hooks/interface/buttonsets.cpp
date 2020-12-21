@@ -1263,7 +1263,7 @@ namespace hooks {
 									current_button->iconID = 365;
 								}
 							}
-							if (current_button->actVar == TechId::SafetyOff ) {//safety off and rescind control
+							if (current_button->actVar == TechId::SwarmingOmen ) {// rescind control
 								if ((*activePortraitUnit)->id == UnitId::TerranCyprian) {
 									if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
 										//current_button->actStringID = 1633;

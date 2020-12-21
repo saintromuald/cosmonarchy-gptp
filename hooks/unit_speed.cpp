@@ -239,6 +239,47 @@ namespace hooks {
 			speed = speed / 4;
 		}
 
+		// Swarming Omen ability: 150% movement speed when moving towards Zoryusthaleth
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic) {
+			auto r = 10 * 32;
+			auto n = unitRangeCount(unit, CFlags::Ally | CFlags::FrontalArc, { UnitId::ZergZoryusthaleth });
+			scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
+				unit->position.x + r, unit->position.y + r);
+			bool accelerate = false;
+			for (int i = 0; i < unitsInFinder.getUnitCount(); i++) {
+				auto picked_unit = unitsInFinder.getUnit(i);
+				if (n.match(picked_unit)) {
+					if (scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer) > 0) {
+						accelerate = true;
+					}
+				}
+			}
+			if (accelerate) {
+				speed += speed / 2;
+			}
+		}
+
+		// Zoryusthaleth Protective Instincts: 150% movement speed when moving towards wounded organic allies
+		if (unit->id == UnitId::ZergZoryusthaleth) {
+			auto r = 10 * 32;
+			auto n = unitRangeCount(unit, CFlags::Ally | CFlags::OnlyOrganic | CFlags::FrontalArc, { UnitId::ZergZoryusthaleth });
+			scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
+				unit->position.x + r, unit->position.y + r);
+			bool accelerate = false;
+			for (int i = 0; i < unitsInFinder.getUnitCount(); i++) {
+				auto picked_unit = unitsInFinder.getUnit(i);
+				if (n.match(picked_unit)) {
+					if (picked_unit->getCurrentHpInGame() < picked_unit->getMaxHpInGame()) {
+						accelerate = true;
+					}
+				}
+			}
+			if (accelerate) {
+				speed += speed / 2;
+			}
+		}
+
+
 		// DEBUG
 		// Speed logger
 		/*
