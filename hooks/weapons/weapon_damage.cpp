@@ -533,6 +533,13 @@ namespace hooks {
 				applyEnsnare(target);
 			}
 
+			// Quazilisk - Melting Points
+			if (weaponId == WeaponId::AcridBarbs) {
+				float missingFactor = 1 - (target->hitPoints / target->getMaxHpRaw());
+				float damageIncrease = floor(missingFactor / QUAZILISK_PASSIVE_FACTOR) * HEALTH_MULTIPLIER;
+				damage += damageIncrease;
+			}
+
 			// Hallucinations deal half damage
 			if (attacker != NULL) {
 				if (attacker->status & UnitStatus::IsHallucination) {
@@ -647,13 +654,6 @@ namespace hooks {
 
 			if (shieldReduceAmount == 0 && damage < 128) {
 				damage = 128;
-			}
-
-			// Quazilisk Melting Points
-			if (weaponId == WeaponId::AcridBarbs) {
-				float missingFactor = 1 - (target->hitPoints / target->getMaxHpRaw()); 
-				float damageIncrease = floor(missingFactor / QUAZILISK_PASSIVE_FACTOR) * HEALTH_MULTIPLIER;
-				damage += damageIncrease;
 			}
 
 			if (attacker != NULL && target != NULL) {
