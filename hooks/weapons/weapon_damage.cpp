@@ -528,7 +528,7 @@ namespace hooks {
 					divisor = 1;
 					scbw::printFormattedText("Incorrect weapon hit %d", weaponId);
 				}
-				damage = damage / dmgDivisor + (target->acidSporeCount * 256);
+				damage = damage / divisor + (target->acidSporeCount * 256);
 			}
 
 			// Ensnaring Brood - Queen enchantment ability
@@ -560,9 +560,14 @@ namespace hooks {
 			damageType = weapons_dat::DamageType[weaponId];
 
 			// Dark Swarm - Defiler Ability
-			if (scbw::isUnderDarkSwarm(target) && weapons_dat::MaxRange[weaponId] > 32 && dmgDivisor == 1) {
+			scbw::print(std::to_string(scbw::isUnderDarkSwarm(target)));
+			scbw::print(std::to_string(weapons_dat::MaxRange[weaponId]));
+			scbw::print(std::to_string(dmgDivisor));
+			scbw::print(std::to_string(weaponId));
+			if (scbw::isUnderDarkSwarm(target) && weapons_dat::MaxRange[weaponId] > 32 && (dmgDivisor == 1 || weaponId == WeaponId::AcidSpore) && weaponId != WeaponId::SubterraneanSpines) {
 				damageType = DamageType::Independent;
 			}
+			scbw::print(std::to_string(damageType));
 
 			//Reduce Defensive Matrix
 			if (target->defensiveMatrixHp != 0) {
