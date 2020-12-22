@@ -326,17 +326,18 @@ namespace hooks {
 		// Aise Value
 		addStatus(statuses, "Energy Decay", scbw::get_generic_value(unit, ValueId::EnergyDecay));
 		addStatus(statuses, "Armor Reduction", scbw::get_generic_value(unit, ValueId::ArmorReduce));
-		addStatus(statuses, "Maverick Feeders", scbw::get_generic_value(unit, ValueId::MadcapStacks));
+		addStatus(statuses, "Maverick Feeders", ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MADCAP_PASSIVE_DECAY_TIME));
 		addStatus(statuses, "Reverse Thrust", scbw::get_generic_value(unit, ValueId::ReverseThrust));
 		addStatus(statuses, "Sublime Shepherd", scbw::get_generic_value(unit, ValueId::SublimeShepherd));
 		addStatus(statuses, "Lazarus Agent", scbw::get_generic_value(unit, ValueId::LazarusAgent));
 		addStatus(statuses, "Expanded Storage", scbw::get_generic_value(unit, ValueId::TreasuryStacks)); // <- currently only works for overlord and it's morphs
 		addStatus(statuses, "Khaydarian Eclipse", scbw::get_generic_value(unit, ValueId::ExemplarSwitch));
-		addStatus(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && scbw::get_generic_value(unit, ValueId::TempoChange) == 0);
-		addStatus(statuses, "Tempo Down", scbw::get_generic_value(unit, ValueId::TempoChange) == 1);
+		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_value(unit, ValueId::TempoChange) == 0);
+		addStatus(statuses, "Dirge", scbw::get_generic_value(unit, ValueId::TempoChange) == 1);
 
 		// Aise Value - Gimmicked
 		addStatus(statuses, "Phase Link", scbw::get_aise_value(unit, NULL, AiseId::HasClarionLink, 0, 0));
+		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, NULL, AiseId::SumMindControlCost, 0, 0) / 2); // for caster
 		bool malice = scbw::get_aise_value(unit, NULL, AiseId::HasMalice, 0, 0);
 		addStatus(statuses, "Cowardice", scbw::get_generic_value(unit, ValueId::HierophantOverlay) || malice);
 		addStatus(statuses, "Malice", malice);
@@ -367,7 +368,7 @@ namespace hooks {
 
 		// TODO
 		//	make sublime shepard show on targets not only caster
-		//	add optical flare, mind control, last orders?, infested (when it's implemented)
+		//	add optical flare, mind control on target, last orders?, infested (when it's implemented)
 		//	properly track cowardice, malice timers
 		//	color code source player if possible
 
