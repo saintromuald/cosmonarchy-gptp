@@ -42,7 +42,6 @@ static std::string formatStringVector(std::vector<std::string> strings) {
 	for (const std::string& str : strings) {
 		result += str;
 		if (++i != strings.size()) result += ", ";
-		if (i % 3 == 0) result += "\n\t";
 	}
 	return result;
 }
@@ -268,6 +267,50 @@ namespace hooks {
 			statuses.push_back("Burrowed");
 		else if (unit->status & UnitStatus::Cloaked)
 			statuses.push_back("Cloaked");
+
+		if (unit->defensiveMatrixTimer > 0) {
+			statuses.push_back("Defensive Matrix (" + std::to_string(unit->defensiveMatrixHp / 256) + "hp)");
+		}
+		if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 0) {
+			statuses.push_back("Malediction");
+		}
+		if (scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) > 0) {
+			statuses.push_back("Knockout Drivers (" + std::to_string(scbw::get_generic_value(unit, ValueId::KnockoutDriversValue)) + ")");
+		}
+		if (scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0) {
+			statuses.push_back("Lobotomy Slow");
+		}
+		if (scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) > 0) {
+			statuses.push_back("Observance");
+		}
+		if (scbw::get_generic_value(unit, ValueId::EnergyDecay) > 0) {
+			statuses.push_back("Energy Decay (" + std::to_string(scbw::get_generic_value(unit, ValueId::EnergyDecay)) + ")");
+		}
+		if (scbw::get_generic_value(unit, ValueId::ArmorReduce) > 0) {
+			statuses.push_back("Armor Reduction (" + std::to_string(scbw::get_generic_value(unit, ValueId::ArmorReduce)) + ")");
+		}
+		if (unit->irradiateTimer != 0) {
+			statuses.push_back("Irradiated");
+		}
+		if (unit->ensnareTimer != 0) {
+			statuses.push_back("Ensnared");
+		}
+		if (unit->lockdownTimer != 0) {
+			statuses.push_back("Lockeddown");
+		}
+		if (unit->maelstromTimer != 0) {
+			statuses.push_back("Maelstromed");
+		}
+		if (unit->acidSporeCount != 0) {
+			statuses.push_back("Corrosive Spores (" + std::to_string(unit->acidSporeCount) + ")");
+		}
+		if (unit->plagueTimer != 0) {
+			statuses.push_back("Plagued");
+		}
+		if (unit->parasiteFlags) {
+			statuses.push_back("Parasited");
+		}
+		// TODO: add optical flare, cowardice, malice
 
 		std::string status = formatStringVector(statuses);
 

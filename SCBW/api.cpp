@@ -1812,17 +1812,21 @@ u16 random() {
 	}
 
 	bool isDebuffed(CUnit* unit) {
-		return 
-		   scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 0
-		|| scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) > 0
-		|| scbw::get_generic_timer(unit, ValueId::CaptivatingClawsTimer) > 0
-		|| scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0
-		|| scbw::get_generic_value(unit, ValueId::EnergyDecay) > 0
-		|| unit->irradiateTimer != 0
-		|| unit->ensnareTimer != 0
-		|| unit->lockdownTimer != 0
-		|| unit->maelstromTimer != 0
-		|| unit->acidSporeCount != 0;
+		return scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 0
+			|| scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) > 0
+			|| scbw::get_generic_timer(unit, ValueId::CaptivatingClawsTimer) > 0
+			|| scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0
+			|| scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) > 0
+			|| scbw::get_generic_value(unit, ValueId::EnergyDecay) > 0
+			|| scbw::get_generic_value(unit, ValueId::ArmorReduce) > 0
+			|| unit->irradiateTimer != 0
+			|| unit->ensnareTimer != 0
+			|| unit->lockdownTimer != 0
+			|| unit->maelstromTimer != 0
+			|| unit->acidSporeCount != 0
+			|| unit->plagueTimer != 0
+			|| unit->parasiteFlags;
+		// TODO: add optical flare, cowardice, malice + also add them to status tooltip
 	}
 
 	void applyEnsnare(CUnit* unit) { // 004F45E0
