@@ -107,75 +107,67 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 		break;
 	};
 
-	//check if not melee
-	if (range > 0) {
-		//check for valk weapon
-		if (weaponId == WeaponId::HaloRockets) {
-			//check for upgrade damage
-			if (bonusDamage > 0)
-				if (bonusRange > 0) {
-					sprintf_s(buffer, sizeof(buffer), "\004%s\002\n%s %d+%d %s\n%s %d+%d\n%s %s",
-						entryName, damageStr, baseDamage, bonusDamage, perRocketStr, rangeText, range, bonusRange, type, typeName);
-				}
-				else {
-					sprintf_s(buffer, sizeof(buffer), "\004%s\002\n%s %d+%d %s\n%s %d\n%s %s",
-						entryName, damageStr, baseDamage, bonusDamage, perRocketStr, rangeText, range, type, typeName);
-				}
-			else
-				if (bonusRange > 0) {
-					sprintf_s(buffer, sizeof(buffer), "\004%s\002\n%s %d %s\n%s %d+%d\n%s %s",
-						entryName, damageStr, baseDamage, perRocketStr, rangeText, range, bonusRange, type, typeName);
-				}
-				else {
-					sprintf_s(buffer, sizeof(buffer), "\004%s\002\n%s %d %s\n%s %d\n%s %s",
-						entryName, damageStr, baseDamage, perRocketStr, rangeText, range, type, typeName);
-				}
-		}
-		else {
-			//check for upgrade damage
-			if (bonusDamage > 0)
-				if (bonusRange > 0) {
-					sprintf_s(buffer, sizeof(buffer), "\004%s\002\n%s %d+%d\n%s %d+%d\n%s %s",
-						entryName, damageStr, baseDamage, bonusDamage, rangeText, range, bonusRange, type, typeName);
-				}
-				else {
-					sprintf_s(buffer, sizeof(buffer), "\004%s\002\n%s %d+%d\n%s %d\n%s %s",
-						entryName, damageStr, baseDamage, bonusDamage, rangeText, range, type, typeName);
-				}
-			else
-				if (bonusRange > 0) {
-					sprintf_s(buffer, sizeof(buffer), "\004%s\002\n%s %d\n%s %d+%d\n%s %s",
-						entryName, damageStr, baseDamage, rangeText, range, bonusRange, type, typeName);
-				}
-				else {
-					sprintf_s(buffer, sizeof(buffer), "\004%s\002\n%s %d\n%s %d\n%s %s",
-						entryName, damageStr, baseDamage, rangeText, range, type, typeName);
-				}
-		}
-		//melee attacks
-	}
-	else {
-		//check for valk weapon
-		if (weaponId == WeaponId::HaloRockets) {
-			//check for upgrade damage
-			if (bonusDamage > 0)
-				sprintf_s(buffer, sizeof(buffer), "\004%s\002\n%s %d+%d %s\n%s %s\n%s %s",
-					entryName, damageStr, baseDamage, bonusDamage, perRocketStr, rangeText, meleeText, type, typeName);
-			else
-				sprintf_s(buffer, sizeof(buffer), "\004%s\002\n%s %d %s\n%s %s\n%s %s",
-					entryName, damageStr, baseDamage, perRocketStr, rangeText, meleeText, type, typeName);
-		}
-		else {
-			//check for upgrade damage
-			if (bonusDamage > 0)
-				sprintf_s(buffer, sizeof(buffer), "\004%s\002\n%s %d+%d\n%s %s\n%s %s",
-					entryName, damageStr, baseDamage, bonusDamage, rangeText, meleeText, type, typeName);
-			else
-				sprintf_s(buffer, sizeof(buffer), "\004%s\002\n%s %d\n%s %s\n%s %s",
-					entryName, damageStr, baseDamage, rangeText, meleeText, type, typeName);
-		}
+	std::string attackCdText = "Cooldown:";
+	int attackCd = weapons_dat::Cooldown[weaponId];
+	std::string splashRadText = "Splash Radius:";
+	int splashInner = weapons_dat::InnerSplashRadius[weaponId];
+	int splashMedium = weapons_dat::MediumSplashRadius[weaponId];
+	int splashOuter = weapons_dat::OuterSplashRadius[weaponId];
+	bool hasSplash = splashInner || splashMedium || splashOuter;
+	std::string splashTypeText = "Splash Type:";
+	int splashType = weapons_dat::ExplosionType[weaponId];
+	std::string splashTypeValue = "";
+
+	switch (splashType) {
+	case WeaponEffect::SplashRadial:
+		// Orange
+		splashTypeValue = "\021Unsafe\002";
+		break;
+	case WeaponEffect::SplashEnemy:
+		// Green
+		splashTypeValue = "\017Safe\002";
+		break;
+	case WeaponEffect::Unknown_Crash:
+		// Orange
+		splashTypeValue = "\017Ally Safe\002";
+		break;
+	case WeaponEffect::SplashAir:
+		// Yellow
+		splashTypeValue = "\003Air Only\002";
+		break;
+	default:
+		// White
+		splashTypeValue = "\004Normal Hit\002";
+		break;
+	};
+
+	// Name
+	std::string text = "\004" + std::string(entryName) + "\002\n";
+
+	// Damage
+	text += std::string(damageStr) + " " + std::to_string(baseDamage);
+	if (bonusDamage > 0) text += "+" + std::to_string(bonusDamage);
+	if (weaponId == WeaponId::HaloRockets) text += " " + std::string(perRocketStr);
+
+	// Cooldown
+	text += "\n" + std::string(attackCdText) + " " + std::to_string(attackCd);
+
+	// Range
+	text += "\n" + std::string(rangeText) + " ";
+	if (range > 0) text += std::to_string(range);
+	else text += std::string(meleeText);
+
+	if (bonusRange > 0) text += "+" + std::to_string(bonusRange);
+	text += "\n" + std::string(type) + " " + std::string(typeName);
+
+	// Splash
+	if (hasSplash) {
+		text += "\n" + splashRadText + " " + std::to_string(splashInner) + "/" + std::to_string(splashMedium) + "/" + std::to_string(splashOuter);
+		text += "\n" + splashTypeText + " " + splashTypeValue;
 	}
 
+	strncpy(buffer, text.c_str(), sizeof(buffer));
+	buffer[sizeof(buffer) - 1] = 0;
 	return buffer;
 }
 
