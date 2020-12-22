@@ -23,6 +23,8 @@ namespace CFlags {
 		NotSelf=1<<14,
 		Shielded=1<<15,
 		Enabled=1<<16,
+		Powered=1<<17,
+		Completed=1<<18,
 	};
 }
 
@@ -70,7 +72,16 @@ public:
 				return false;
 			}
 		}
-		
+		if (context & CFlags::Powered) {
+			if (unit->status & UnitStatus::DoodadStatesThing) {
+				return false;
+			}
+		}
+		if (context & CFlags::Completed) {
+			if (!(unit->status & UnitStatus::Completed)) {
+				return false;
+			}
+		}
 		if (center) {
 			if (context & CFlags::FrontalArc) {
 				u16 angle = scbw::getAngle(center->position.x, center->position.y,
