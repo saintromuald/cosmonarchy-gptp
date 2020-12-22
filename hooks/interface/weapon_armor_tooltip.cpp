@@ -4,7 +4,7 @@
 #include <cstdio>
 
 
-char buffer[128];
+char buffer[256];
 
 //Returns the special damage multiplier factor for units that don't use the
 //"Damage Factor" property in weapons.dat.
@@ -34,6 +34,7 @@ u8 getDamageFactorForTooltip(u8 weaponId, CUnit* unit) {
 //This function is used for weapon icons and special icons.
 //Precondition: @p entryStrIndex is a stat_txt.tbl string index.
 #include "SCBW/stat_txt_spec.h"
+#include <iomanip>
 const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) {
 	//Default StarCraft behavior
 
@@ -107,8 +108,39 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 		break;
 	};
 
+	std::string minRangeText = "Min Range:";
+	int minRange = weapons_dat::MinRange[weaponId] / 32;
+
 	std::string attackCdText = "Cooldown:";
-	int attackCd = weapons_dat::Cooldown[weaponId];
+	double attackCd = (double) weapons_dat::Cooldown[weaponId] / 24;
+
+	std::string targetText = "Targets:";
+	std::string targetFlagsText = "";
+	std::vector<std::string> targetFlags;
+	if (weapons_dat::TargetFlags[weaponId].ground)
+		targetFlags.push_back("Ground");
+	if (weapons_dat::TargetFlags[weaponId].air)
+		targetFlags.push_back("Air");
+	if (weapons_dat::TargetFlags[weaponId].mechanical || weapons_dat::TargetFlags[weaponId].orgOrMech)
+		targetFlags.push_back("Mechanical");
+	if (weapons_dat::TargetFlags[weaponId].organic || weapons_dat::TargetFlags[weaponId].orgOrMech)
+		targetFlags.push_back("Organic");
+	if (weapons_dat::TargetFlags[weaponId].nonBuilding)
+		targetFlags.push_back("Not Building");
+	if (weapons_dat::TargetFlags[weaponId].nonRobotic)
+		targetFlags.push_back("Not Robotic");
+	if (weapons_dat::TargetFlags[weaponId].terrain)
+		targetFlags.push_back("Terrain");
+
+	if (targetFlags.size() == 0)
+		targetFlags.push_back("Nothing");
+
+	int i = 0;
+	for (std::string s : targetFlags) {
+		targetFlagsText += s;
+		if (++i != targetFlags.size()) targetFlagsText += " | ";
+	}
+
 	std::string splashRadText = "Splash Radius:";
 	int splashInner = weapons_dat::InnerSplashRadius[weaponId];
 	int splashMedium = weapons_dat::MediumSplashRadius[weaponId];
@@ -150,14 +182,26 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	if (weaponId == WeaponId::HaloRockets) text += " " + std::string(perRocketStr);
 
 	// Cooldown
-	text += "\n" + std::string(attackCdText) + " " + std::to_string(attackCd);
+	std::stringstream ss;
+	ss << std::setprecision(2) << attackCd;
+	text += "\n" + std::string(attackCdText) + " " + ss.str() + "s";
 
 	// Range
+	if (minRange > 0) {
+		text += "\n" + std::string(minRangeText) + " " + std::to_string(minRange);
+	}
+
 	text += "\n" + std::string(rangeText) + " ";
-	if (range > 0) text += std::to_string(range);
+	if (range > 0) {
+		text += std::to_string(range);
+		if (bonusRange > 0) text += "+" + std::to_string(bonusRange);
+	}
 	else text += std::string(meleeText);
 
-	if (bonusRange > 0) text += "+" + std::to_string(bonusRange);
+	// Target
+	text += "\n" + targetText + " " + targetFlagsText;
+
+	// Type
 	text += "\n" + std::string(type) + " " + std::string(typeName);
 
 	// Splash
