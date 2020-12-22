@@ -266,7 +266,7 @@ namespace hooks {
 			statuses.push_back("Ground");
 		if (unit->status & UnitStatus::Burrowed)
 			statuses.push_back("Burrowed");
-		if (unit->status & UnitStatus::Cloaked)
+		else if (unit->status & UnitStatus::Cloaked)
 			statuses.push_back("Cloaked");
 
 		std::string status = formatStringVector(statuses);
