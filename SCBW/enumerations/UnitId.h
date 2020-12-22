@@ -497,7 +497,6 @@ enum Enum {
 	ProtossVassal									= 88,		// Artanis
 	ProtossSimulacrum								= 89,		// Rhynadon
 	ProtossWarpRelay								= 90,		// Bengalaas
-	ProtossBulwark									= 93,		// Scantid
 	ProtossExemplar									= 94,		// Kakaru
 	ProtossIdol										= 99,		// Samir Duran
 	ProtossGolem									= 100,		// Alexei Stukov
@@ -526,6 +525,7 @@ enum Enum {
 	ZergNathrokor									= 54,		// Devouring One
 	ZergGorgrokor									= 56,		// Kukulza Guardian
 	ZergOthstoleth									= 57,		// Yggdrasil
+	ZergBroodlisk									= 93,		// Scantid
 	ZergQuazilisk									= 95,		// Ragnasaur
 	ZergKeskathalor									= 96,		// Ursadon
 	ZergZoryusthaleth								= 97,		// Lurker Egg

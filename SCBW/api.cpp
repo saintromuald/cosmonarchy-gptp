@@ -1512,7 +1512,8 @@ u16 random() {
 		for (int i = 0; i < count; i++) {
 			CUnit* unit = scbw::createUnitIngame(unitId, playerId, x, y, creator);
 			if (unit != nullptr) {
-				if (unitId == UnitId::ZergBroodling) { // Parasite & Incubators
+				if (unitId == UnitId::ZergBroodling
+				||	unitId == UnitId::ZergBroodlisk) { // Parasite & Incubators
 					scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
 					if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
 						unit->removeTimer = removeTimer;
