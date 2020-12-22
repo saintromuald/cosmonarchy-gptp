@@ -17,6 +17,7 @@ namespace hooks {
 	void injectWeaponEffectHook();
 	void normalDamage(CBullet* bullet, u32 weaponId);
 	void yamatoDamage(CBullet* bullet, u32 weaponId);
+	void airSplash(CBullet* bullet, u32 weaponId);
 
 	// HYDRA-specific
 	bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId);

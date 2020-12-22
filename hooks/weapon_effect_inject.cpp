@@ -163,6 +163,23 @@ namespace {
 			RETN 4
 		}
 	}
+	void __declspec(naked) airSplashWrapper() {
+		static CBullet* bullet;
+		static u32 weaponId;
+		__asm {
+			MOV bullet, EBX
+			MOV weaponId, ECX
+		}
+		hooks::airSplash(bullet, weaponId);
+		__asm {
+			POP EDI
+			POP ESI
+			POP EBX
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+	}
   
  //    (void*)0x0048B797,                //  1 - Normal
  //    (void*)0x0048B80B,                // 15 - Yamato Gun
@@ -197,7 +214,7 @@ namespace {
    (void*)0x0048BBC2,      // 21 - Optical Flare
    (void*)0x0048BB99,      // 22 - Maelstrom
    friendlySplashWrapper,  // 23 - Unused
-   (void*)0x0048B828       // 24 - Splash (Corsair)
+   airSplashWrapper,       // 24 - Splash (Air)
    // Add more !
  };
   
