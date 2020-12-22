@@ -356,7 +356,7 @@ namespace hooks {
 		//addStatus(statuses, "Ectomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::EggBoostTimer), TimerType::Aise); // <- currently can't read tooltips from eggs
 		//addStatus(statuses, "Endomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer), TimerType::Aise); // <- nor mineral fields
 		addStatus(statuses, "Adrenaline Packs", -1, scbw::get_generic_timer(unit, ValueId::Adrenaline), TimerType::Aise);
-		addStatus(statuses, "Adrenal Frezny", -1, scbw::get_generic_timer(unit, ValueId::NathrokorTimer), TimerType::Aise);
+		addStatus(statuses, "Adrenal Frenzy", -1, scbw::get_generic_timer(unit, ValueId::NathrokorTimer), TimerType::Aise);
 
 		// Aise Value
 		addStatus(statuses, "Energy Decay", scbw::get_generic_value(unit, ValueId::EnergyDecay));
