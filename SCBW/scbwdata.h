@@ -276,8 +276,8 @@ SCBW_DATA(		char*,			charBuffer,					0x0068C208);
 SCBW_DATA(		char*,			byteShieldStr,				0x0068C20A); // count of 22
 SCBW_DATA(		u8*,			wireframeConstants,			0x00515280); // count of 40
 SCBW_DATA(		char*,			imgDrawPaletteIndex,		0x0050CEC1); // count of 256
-SCBW_DATA(u8*, off_50CE81, 0x0050CE81); 
-SCBW_DATA(u8*, off_50CE82, 0x0050CE82);
+SCBW_DATA(u8*,					off_50CE81,					0x0050CE81); 
+SCBW_DATA(u8*,					off_50CE82,					0x0050CE82);
 
 
 // For drawBuildingInfo
@@ -301,23 +301,28 @@ SCBW_DATA(		char*,			upgradesLevelBW,			0x0058F2FE);
 
 
 // For findNextBounceTargetProc
-SCBW_DATA(		CUnit**,			bulletBounceMissileSource,	0x0064EECC);
-SCBW_DATA(		CUnit**,			bulletBounceMissileTarget,	0x0064EED0);
-SCBW_DATA(		CUnit**,			bulletBounceMissileNext,	0x0064EED4);
+SCBW_DATA(		CUnit**,			bulletBounceMissileSource,		0x0064EECC);
+SCBW_DATA(		CUnit**,			bulletBounceMissileTarget,		0x0064EED0);
+SCBW_DATA(		CUnit**,			bulletBounceMissileNext,		0x0064EED4);
 
 // For setUnderDisruptionWeb
-SCBW_DATA(		void**,				unkArray_59CB64,			0x0059CB64); // size of 252
-SCBW_DATA(		CUnit*,				unitReference,				0x0059CB58);
+SCBW_DATA(		void**,				unkArray_59CB64,				0x0059CB64);	// size of 252
+SCBW_DATA(		CUnit*,				unitReference,					0x0059CB58);
 
 // For startGame
-SCBW_DATA(		s8*,				gameState,					0x0066FBFA);
-SCBW_DATA(		PLAYER*,			playerReplayWatchers,		0x00640970);
+SCBW_DATA(		s8*,				gameState,						0x0066FBFA);
+SCBW_DATA(		PLAYER*,			playerReplayWatchers,			0x00640970);
 
-SCBW_DATA(		s8*,				countdownTimerInterval,		0x0066FBFC);
-SCBW_DATA(		s32*,				countdownTimeTickCount,		0x0059CC7C);
-SCBW_DATA(		s32*,				countdownTimeTickCount_0,	0x0059CC88);
-SCBW_DATA(		s32*,				isInGame,					0x006D5BC8);
-SCBW_DATA(		s32*,				countdownTimeRemaining,		0x0059CC78);
+SCBW_DATA(		s8*,				countdownTimerInterval,			0x0066FBFC);
+SCBW_DATA(		s32*,				countdownTimeTickCount,			0x0059CC7C);
+SCBW_DATA(		s32*,				countdownTimeTickCount_0,		0x0059CC88);
+SCBW_DATA(		s32*,				isInGame,						0x006D5BC8);
+SCBW_DATA(		s32*,				countdownTimeRemaining,			0x0059CC78);
+
+// For airSplash
+SCBW_DATA(		CUnit**,			airSplashList,					0x0064EEE0);	// size of 1700
+SCBW_DATA(		s32*,				airSplashListCount,				0x0046DEB4);
+SCBW_DATA(		s32*,				isInGroundSplashProc,			0x0064DEB8);
 
 
 //////////////////////////////////////////////////////////////// @}

@@ -5,22 +5,28 @@
 #include <SCBW/api.h>
 #include "hooks/weapons/wpnspellhit.h"
 #include "globals.h"
-namespace {
-  bool isUnitDistanceWithin(CUnit* target, CBullet* bullet, u32 radius);
-  void weaponBulletShot(CUnit* target, CBullet* bullet, u32 dmgDivisor);
-  void doWeaponHit(CUnit* target, CUnit* attacker, u8 dmgDivisor);
-  void Ai_UnitWasHit(u32 main_target_reaction, u32 dont_call_help, CUnit* attacker, CUnit* target);
+namespace {	// helper declarations
+	bool isUnitDistanceWithin(CUnit* target, CBullet* bullet, u32 radius);
+	void weaponBulletShot(CUnit* target, CBullet* bullet, u32 dmgDivisor);
+	void doWeaponHit(CUnit* target, CUnit* attacker, u8 dmgDivisor);
+	void Ai_UnitWasHit(u32 main_target_reaction, u32 dont_call_help, CUnit* attacker, CUnit* target);
 
-  // SC internal data for lurker spines
-  struct SpineHitTable {
-    struct {
-      CUnit* source;
-      CUnit* target;
-    } hits[32][16];
-  };
-  SpineHitTable* const spineHitTable = (SpineHitTable*)(0x0064DEC8);
-  u32* const spineHitRow = (u32*)(0x64EEC8);
-  u32* const spineHitCol = (u32*)(0x64DEA8);
+	// for airSplash
+	CUnit* findBestUnit(Box16* radius, s32 bullet, s32(__fastcall* func)(s32, s32));					// 004E8830
+	s16 randomizeShort(s32 counts);																		// 004DC4A0
+	s32 splashFunc(CBullet* bullet, CUnit* unit);														// 0048B570
+
+	// SC internal data for Lurker spines
+	struct SpineHitTable {
+		struct {
+			CUnit* source;
+			CUnit* target;
+		} hits[32][16];
+	};
+	SpineHitTable* const spineHitTable = (SpineHitTable*)(0x0064DEC8);
+	u32* const spineHitRow = (u32*)(0x64EEC8);
+	u32* const spineHitCol = (u32*)(0x64DEA8);
+
 }//unnamed namespace
 
 namespace hooks {
@@ -98,19 +104,11 @@ namespace hooks {
 		y = bullet->sprite->position.y;
 		r = weapons_dat::OuterSplashRadius[weaponId];
 
-		// Hammerfall Shells - Siege Tank upgrade
-		if (weaponId == WeaponId::ArcliteShockCannon && scbw::getUpgradeLevel(bullet->srcPlayer, UpgradeId::HammerfallShells)) {
-			r += r / 3;
-		}
-		
-		// Safety Off - Cyprian ability
-		if (isUnsafeCyprianBullet(bullet,weaponId)){
-			r = 40;
-		}
 		// Probing Incisors - Gorgoleth passive
 		if (isChargedGorgolethBullet(bullet, weaponId)) {
 			r = 45;
 		}
+		// Nathrokor weapon
 		if (weaponId == WeaponId::PlasmidBreath) {
 			r = 32;
 		}
@@ -155,19 +153,12 @@ namespace hooks {
 			// We found units in a square around the target, but is the target within the splash radius?
 			s16 outer = weapons_dat::OuterSplashRadius[bullet->weaponType];
 
-			// Hammerfall Shells - Siege Tank upgrade
-			if (weaponId == WeaponId::ArcliteShockCannon && scbw::getUpgradeLevel(bullet->srcPlayer, UpgradeId::HammerfallShells)) {
-				outer += outer / 3;
-			}
-
-			// Safety Off - Cyprian ability
-			if(isUnsafeCyprianBullet(bullet,weaponId)){
-				outer = 40;
-			}
 			// Probing Incisors - Gorgoleth passive
 			if (isChargedGorgolethBullet(bullet, weaponId)) {
 				outer = 45;
 			}
+
+			// Nathrokor weapon
 			if (weaponId == WeaponId::PlasmidBreath) {
 				outer = 32;
 			}
@@ -182,20 +173,12 @@ namespace hooks {
 			// Inner radius 
 			s16 inner = weapons_dat::InnerSplashRadius[bullet->weaponType];
 
-			// Hammerfall Shells - Siege Tank upgrade
-			if (weaponId == WeaponId::ArcliteShockCannon && scbw::getUpgradeLevel(bullet->srcPlayer, UpgradeId::HammerfallShells)) {
-				inner += inner / 3;
-			}
-
-			// Safety Off - Cyprian ability
-			if (isUnsafeCyprianBullet(bullet,weaponId)){
-				inner = 15;
-			}
 			// Probing Incisors - Gorgoleth passive
 			if (isChargedGorgolethBullet(bullet, weaponId)) {
 				inner = 30;
 			}
 
+			// Nathrokor weapon
 			if(isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet,target)){
 				weaponBulletShot(target, bullet, divisor); // 100% damage
 				continue;
@@ -207,27 +190,19 @@ namespace hooks {
 			// Medium radius
 			s16 medium = weapons_dat::MediumSplashRadius[bullet->weaponType];
 
-			// Hammerfall Shells - Siege Tank upgrade
-			if (weaponId == WeaponId::ArcliteShockCannon && scbw::getUpgradeLevel(bullet->srcPlayer, UpgradeId::HammerfallShells)) {
-				medium += medium / 3;
-			}
-
-			// Safety Off - Cyprian ability
-			if(isUnsafeCyprianBullet(bullet,weaponId)){
-				medium = 25;
-			}
 			// Probing Incisors - Gorgoleth passive
 			if (isChargedGorgolethBullet(bullet, weaponId)) {
 				medium = 37;
 			}
+
+			// Nathrokor weapon
 			if (weaponId == WeaponId::PlasmidBreath) {
 				r = 32;
 			}
 			if(isUnitDistanceWithin(target, bullet, medium) && nathrokorCondition(bullet, target)){
 				weaponBulletShot(target, bullet, divisor*2); // 50% damage
 				continue;
-			}
-      
+			}      
 			// Outer radius
 			if (nathrokorCondition(bullet, target)) {
 				weaponBulletShot(target, bullet, divisor*4); // 25% damage
@@ -431,6 +406,75 @@ namespace hooks {
 		}
 	}
 
+//  case WPNEffect_Splash_Air:
+	void splashAir(CBullet* bullet, u32 weaponId) { // 0048B790
+		CUnit* target = bullet->attackTarget.unit;
+		if (target == NULL) {
+			return;
+		}
+		s16 radius = weapons_dat::OuterSplashRadius[weaponId];
+		CSprite* bulletSprite = bullet->sprite;
+		s16 posX = bulletSprite->position.x;
+		s16 posY = bulletSprite->position.y;
+		s32 list;
+		Box16* searchRadius;
+		
+		*airSplashListCount = 0;
+		searchRadius->left = posX - radius;
+		searchRadius->top = posY - radius;
+		searchRadius->right = radius + posX;
+		searchRadius->bottom = radius + posY;
+
+		findBestUnit(searchRadius, (s32)bullet, (s32(__fastcall*)(s32, s32))airSplashProc);
+		if (airSplashListCount) {
+			if (*airSplashListCount == 1) {
+				list = 0;
+			}
+			else {
+				list = randomizeShort(58) % *airSplashListCount;
+			}
+			weaponBulletShot(target, bullet, (s32)airSplashList[list]);
+		}
+		findBestUnit(searchRadius, (s32)bullet, (s32(__fastcall*)(s32, s32))airSplashProc2);
+	}
+
+	s32 airSplashProc(CUnit* unit, CBullet* bullet) {
+		s16 weaponId = bullet->weaponType;
+		s16 x, y, r;
+		x = bullet->sprite->position.x;
+		y = bullet->sprite->position.y;
+		r = weapons_dat::OuterSplashRadius[weaponId];
+
+		// Get units within the outer splash radius
+		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
+
+		darkSwarmDamage(x, y, r, bullet, weaponId);
+
+		for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
+			CUnit* target = unitsInSplash.getUnit(i);
+
+			// Units can't splash themselves -- except psi storm
+			if (target == bullet->sourceUnit && bullet->weaponType != WeaponId::PsiStorm) continue;
+
+			// Ignore allied units
+			if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
+
+			// Can the unit be targeted?
+			if (!scbw::canWeaponTargetUnit(bullet->weaponType, target, target)) continue;
+
+			// We found units in a square around the target, but is the target within the splash radius?
+			s16 outer = weapons_dat::OuterSplashRadius[bullet->weaponType];
+
+			// Inner radius 
+			s16 inner = weapons_dat::InnerSplashRadius[bullet->weaponType];
+		}
+	}
+
+	s32 airSplashProc2(CUnit* a1, CBullet* a2) {
+		*isInGroundSplashProc = 0;
+		return splashFunc(a2, a1);
+	}
+
   // clone of 'Yamato' damage for reference
   void yamatoDamage(CBullet* bullet, u32 weaponId) {
     if (bullet->attackTarget.unit == NULL) return;
@@ -518,7 +562,7 @@ namespace hooks {
 }//hooks
 
 namespace {
-   /*** helper functions that I couldn't find in gptp ***/
+	/*** helper functions that I couldn't find in gptp ***/
 	const u32 Func_0043F320 = 0x0043F320;
 	void Ai_UnitWasHit(u32 main_target_reaction, u32 dont_call_help, CUnit* attacker, CUnit* target) {
 		__asm {
@@ -532,58 +576,103 @@ namespace {
 		}
 	}
 
-  // checks if the distance between target and bullet's positions is < radius
-  const u32 Helper_IsUnitDistanceWithin = 0x0048ADB0;
-  bool isUnitDistanceWithin(CUnit* target, CBullet* bullet, u32 radius){
-    u32 result;
-    __asm {
-      PUSHAD
-      PUSH radius;
-      PUSH bullet;
-      MOV ECX, target
-      CALL Helper_IsUnitDistanceWithin
-      MOV result, EAX
-      POPAD
-    }
-    return result;
-  }
-  
-  // creates attack overlay & deals damage from the bullet (just calls overlayAndNotify if the weapon deals no damage, or calls target->damageWith if it does
-  const u32 Helper_WeaponBulletShot = 0x00479AE0;
-  void weaponBulletShot(CUnit* target, CBullet* bullet, u32 dmgDivisor){
+	// checks if the distance between target and bullet's positions is < radius
+	const u32 Helper_IsUnitDistanceWithin = 0x0048ADB0;
+	bool isUnitDistanceWithin(CUnit* target, CBullet* bullet, u32 radius) {
 
-	if (bullet != NULL && target!=NULL && bullet->sourceUnit && bullet->weaponType == WeaponId::IconoclastBlades) {
-		if (!Globals.was_hit_by_pariah(bullet->sourceUnit, target)) {
-			Globals.register_pariah_hit(bullet->sourceUnit, target);
+		u32 result;
+		__asm {
+			PUSHAD
+			PUSH radius;
+			PUSH bullet;
+			MOV ECX, target
+			CALL Helper_IsUnitDistanceWithin
+			MOV result, EAX
+			POPAD
 		}
-		else {
-			return;
+		return result;
+	}
+  
+	// creates attack overlay & deals damage from the bullet (just calls overlayAndNotify if the weapon deals no damage, or calls target->damageWith if it does
+	const u32 Helper_WeaponBulletShot = 0x00479AE0;
+	void weaponBulletShot(CUnit* target, CBullet* bullet, u32 dmgDivisor) {
+
+		if (bullet != NULL && target!=NULL && bullet->sourceUnit && bullet->weaponType == WeaponId::IconoclastBlades) {
+			if (!Globals.was_hit_by_pariah(bullet->sourceUnit, target)) {
+				Globals.register_pariah_hit(bullet->sourceUnit, target);
+			}
+			else {
+				return;
+			}
+		}
+		__asm {
+			PUSHAD
+			PUSH dmgDivisor
+			MOV EAX, target
+			MOV EDX, bullet
+			CALL Helper_WeaponBulletShot
+			POPAD
 		}
 	}
-    __asm {
-		  PUSHAD
-		  PUSH dmgDivisor
-		  MOV EAX, target
-		  MOV EDX, bullet
-		  CALL Helper_WeaponBulletShot
-		  POPAD
-    }
-  }
 
-  const u32 Helper_DoWeaponHit = 0x004795D0;
-  void doWeaponHit(CUnit* target, CUnit* attacker, u8 dmgDivisor) {
-    u32 divisor = dmgDivisor;
-	
+	const u32 Helper_DoWeaponHit = 0x004795D0;
+	void doWeaponHit(CUnit* target, CUnit* attacker, u8 dmgDivisor) {
 
-    __asm {
-      PUSHAD
-      PUSH divisor
-      PUSH attacker
-      MOV EBX, target
-      CALL Helper_DoWeaponHit
-      POPAD
-    }
-  }
+	u32 divisor = dmgDivisor;
+	__asm {
+		PUSHAD
+		PUSH divisor
+		PUSH attacker
+		MOV EBX, target
+		CALL Helper_DoWeaponHit
+		POPAD
+		}
+	}
+
+	// for airSplash
+
+	const u32 Func_findBestUnit = 0x004E8830;
+	CUnit* findBestUnit(Box16* radius, s32 bullet, s32(__fastcall* func)(s32, s32)) {
+		static CUnit* result;
+		__asm {
+			PUSHAD
+			MOV EAX, radius
+			MOV EBX, bullet
+			MOV EDI, func
+			CALL Func_findBestUnit
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_randomizeShort = 0x004DC4A0;
+	s16 randomizeShort(s32 counts) {
+		static s16 result;
+		__asm {
+			PUSHAD
+			MOV EAX, counts
+			CALL Func_randomizeShort
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_splashFunc = 0x0048B570;
+	s32 splashFunc(CBullet* bullet, CUnit* unit) {
+		static s32 result;
+
+		__asm {
+			PUSHAD
+			MOV EDI, bullet
+			MOV ESI, unit
+			CALL Func_splashFunc
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 
 }//unnamed namespace
 
