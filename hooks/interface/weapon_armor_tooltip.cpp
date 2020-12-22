@@ -327,6 +327,7 @@ namespace hooks {
 		addStatus(statuses, "Plagued", -1, unit->plagueTimer);
 		addStatus(statuses, "Stasis", -1, unit->stasisTimer);
 		addStatus(statuses, "Timed Life", -1, unit->removeTimer, TimerType::RemoveTimer);
+		addStatus(statuses, "Under Dark Swarm", scbw::isUnderDarkSwarm(unit));
 		addStatus(statuses, "Parasited", unit->parasiteFlags != 0);
 		// TODO: add optical flare, cowardice, malice
 
