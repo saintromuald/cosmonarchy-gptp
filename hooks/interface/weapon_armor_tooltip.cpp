@@ -2,6 +2,8 @@
 #include <SCBW/api.h>
 #include <SCBW/enumerations/WeaponId.h>
 #include <cstdio>
+#include "../unit_speed.h"
+#include "../weapons/weapon_cooldown.h"
 
 
 char buffer[256];
@@ -63,8 +65,8 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	//grab weapon details from weapon dat
 	u8 damageFactor = getDamageFactorForTooltip(weaponId, unit);
 	u8 upgradeLevel = scbw::getUpgradeLevel(unit->playerId, weapons_dat::DamageUpgrade[weaponId]);
-	u16 baseDamage = weapons_dat::DamageAmount[weaponId] * damageFactor;
-	u16 bonusDamage = weapons_dat::DamageBonus[weaponId] * damageFactor * upgradeLevel;
+	u16 baseDamage = weapons_dat::DamageAmount[weaponId];
+	u16 bonusDamage = weapons_dat::DamageBonus[weaponId] * upgradeLevel;
 	u8 damageType = weapons_dat::DamageType[weaponId];
 	//calculate max range for weapon
 	u32 range = weapons_dat::MaxRange[weaponId] / 32;
@@ -125,6 +127,7 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 
 	std::string attackCdText = "Cooldown:";
 	double attackCd = (double) weapons_dat::Cooldown[weaponId] / 24;
+	double attackCdModifier = ((double) hooks::getModifiedWeaponCooldownHook(unit, weaponId) / 24) - attackCd;
 
 	std::string targetText = "Targets:";
 	std::vector<std::string> targetFlags;
@@ -181,14 +184,24 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	std::string text = "\004" + std::string(entryName) + "\002\n";
 
 	// Damage
-	text += std::string(damageStr) + " " + std::to_string(baseDamage);
+	text += std::string(damageStr) + " " + std::to_string(damageFactor) +"x(" + std::to_string(baseDamage);
 	if (bonusDamage > 0) text += "+" + std::to_string(bonusDamage);
-	if (weaponId == WeaponId::HaloRockets) text += " " + std::string(perRocketStr);
+	text += ")";
+	//if (weaponId == WeaponId::HaloRockets) text += " " + std::string(perRocketStr);
 
 	// Cooldown
 	std::stringstream ss;
-	ss << std::setprecision(4) << attackCd;
+	ss << std::setprecision(4);
+	ss << attackCd;
 	text += "\n" + std::string(attackCdText) + " " + ss.str() + "s";
+	if (attackCdModifier != 0) {
+		ss.str("");
+		ss << abs(attackCdModifier);
+
+		if (attackCdModifier > 0) text += " + ";
+		else text += " - ";
+		text += ss.str() + "s";
+	}
 
 	// Range
 	text += "\n" + std::string(rangeText) + " ";
@@ -295,6 +308,21 @@ namespace hooks {
 			break;
 		}
 
+		std::stringstream ss;
+		ss << std::setprecision(4);
+
+		ss << unit->flingyTopSpeed / 32 / 15 * 24;
+		std::string movementSpeed = ss.str();
+		ss.str("");
+
+		//int accel = hooks::getModifiedUnitAccelerationHook(unit);
+		//ss << accel;
+		//std::string acceleration = ss.str();
+		//ss.str("");
+
+		//ss << hooks::getModifiedUnitTurnSpeedHook(unit);
+		//std::string turnRate = ss.str();
+		//ss.str("");
 
 		std::string plane = unit->status & UnitStatus::InAir ? "Air" : "Ground";
 
@@ -332,6 +360,7 @@ namespace hooks {
 		addStatus(statuses, "Lazarus Agent", scbw::get_generic_value(unit, ValueId::LazarusAgent));
 		addStatus(statuses, "Expanded Storage", scbw::get_generic_value(unit, ValueId::TreasuryStacks)); // <- currently only works for overlord and it's morphs
 		addStatus(statuses, "Khaydarian Eclipse", scbw::get_generic_value(unit, ValueId::ExemplarSwitch));
+		addStatus(statuses, "Robotic Sapience", scbw::get_generic_value(unit, ValueId::RoboticSapience));
 		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_value(unit, ValueId::TempoChange) == 0);
 		addStatus(statuses, "Dirge", scbw::get_generic_value(unit, ValueId::TempoChange) == 1);
 
@@ -380,6 +409,9 @@ namespace hooks {
 		text += "\nSize: " + std::string(sizeText);
 		text += "\nSight Range: " + std::to_string(sightRange);
 		text += "\nPlane: " + plane;
+		text += "\nMove Speed: " + movementSpeed;
+		//if (accel != 1) text += "\nAcceleration: " + acceleration;
+		//text += "\nTurn Rate: " + turnRate;
 		text += "\nStatus: " + status;
 
 		strncpy(buffer, text.c_str(), sizeof(buffer));
