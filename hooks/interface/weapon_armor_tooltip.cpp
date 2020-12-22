@@ -35,6 +35,18 @@ u8 getDamageFactorForTooltip(u8 weaponId, CUnit* unit) {
 //Precondition: @p entryStrIndex is a stat_txt.tbl string index.
 #include "SCBW/stat_txt_spec.h"
 #include <iomanip>
+
+static std::string formatStringVector(std::vector<std::string> strings) {
+	std::string result;
+	int i = 0;
+	for (const std::string& str : strings) {
+		result += str;
+		if (++i != strings.size()) result += ", ";
+		if (i % 3 == 0) result += "\n\t";
+	}
+	return result;
+}
+
 const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) {
 	//Default StarCraft behavior
 
@@ -114,7 +126,6 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	double attackCd = (double) weapons_dat::Cooldown[weaponId] / 24;
 
 	std::string targetText = "Targets:";
-	std::string targetFlagsText = "";
 	std::vector<std::string> targetFlags;
 	if (weapons_dat::TargetFlags[weaponId].ground)
 		targetFlags.push_back("Ground");
@@ -134,11 +145,7 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	if (targetFlags.size() == 0)
 		targetFlags.push_back("Nothing");
 
-	int i = 0;
-	for (std::string s : targetFlags) {
-		targetFlagsText += s;
-		if (++i != targetFlags.size()) targetFlagsText += ", ";
-	}
+	std::string targetFlagsText = formatStringVector(targetFlags);
 
 	std::string splashRadText = "Splash Radius:";
 	int splashInner = weapons_dat::InnerSplashRadius[weaponId];
@@ -251,11 +258,25 @@ namespace hooks {
 			break;
 		}
 
+		std::vector<std::string> statuses;
+
+		if (unit->status & UnitStatus::InAir)
+			statuses.push_back("Air");
+		else
+			statuses.push_back("Ground");
+		if (unit->status & UnitStatus::Burrowed)
+			statuses.push_back("Burrowed");
+		if (unit->status & UnitStatus::Cloaked)
+			statuses.push_back("Cloaked");
+
+		std::string status = formatStringVector(statuses);
+
 		std::string text = "\004" + std::string(armorUpgradeName) + "\002";
 		text += "\n" + std::string(armorStr) + " " + std::to_string(baseArmor);
 		if (bonusArmor > 0) text += "+" + std::to_string(bonusArmor);
 		text += "\nSize: " + std::string(sizeText);
 		text += "\nSight Range: " + std::to_string(sightRange);
+		text += "\nStatus: " + status;
 
 		strncpy(buffer, text.c_str(), sizeof(buffer));
 		buffer[sizeof(buffer) - 1] = 0;
