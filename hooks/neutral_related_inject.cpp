@@ -18,10 +18,29 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) shouldAttackUnit_Wrapper() { // 00431550
+		static CUnit* attacker;
+		static CUnit* target;
+		static bool result;
+
+		__asm {
+			MOV attacker, ECX
+			MOV target, ESI
+			PUSHAD
+		}
+		result = hooks::shouldAttackUnit(attacker, target);
+		__asm {
+			POPAD
+			MOVZX EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks {
 	void injectNeutralRelatedHooks() {
 		jmpPatch(unitNotNeutral_Wrapper, 0x004CBE20, 1);
+//		jmpPatch(shouldAttackUnit_Wrapper, 0x00431550, 0);
 	}
 }
