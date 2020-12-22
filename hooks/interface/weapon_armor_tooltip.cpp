@@ -108,7 +108,6 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 		break;
 	};
 
-	std::string minRangeText = "Min Range:";
 	int minRange = weapons_dat::MinRange[weaponId] / 32;
 
 	std::string attackCdText = "Cooldown:";
@@ -187,12 +186,11 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	text += "\n" + std::string(attackCdText) + " " + ss.str() + "s";
 
 	// Range
-	if (minRange > 0) {
-		text += "\n" + std::string(minRangeText) + " " + std::to_string(minRange);
-	}
-
 	text += "\n" + std::string(rangeText) + " ";
 	if (range > 0) {
+		if (minRange > 0) {
+			text += std::to_string(minRange) + "-";
+		}
 		text += std::to_string(range);
 		if (bonusRange > 0) text += "+" + std::to_string(bonusRange);
 	}
