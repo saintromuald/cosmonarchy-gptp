@@ -224,7 +224,8 @@ namespace {
 			//scbw::getSpriteData(SpritesDatEntries::ImageId,building->sprite->spriteId),
 			replaceSpriteImages(unit->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, fl_sId), 0);
 			unit->orderSignal &= ~0x4;
-			if (unit->id == UnitId::ZergZergling) {
+			if (unit->id == UnitId::ZergZergling
+			||	unit->id == UnitId::ZergVorvaling) {
 				unit->playIscriptAnim(IscriptAnimation::Unused2);
 			}
 			else if (unit->id == UnitId::ZergNathrokor) {
