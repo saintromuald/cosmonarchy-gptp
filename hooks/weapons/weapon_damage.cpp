@@ -7,6 +7,7 @@
 #include "Utils/captivating_claws.h"
 #include "hooks/hydraFinder.h"
 #include "globals.h"
+#include "logger.h"
 namespace {
 	//Helper functions
 	void createShieldOverlay(CUnit* unit, u32 attackDirection);
@@ -921,6 +922,7 @@ namespace hooks {
 
 			// Deal Damage, except for Independent damage, which always deals 0
 			if (damageType != DamageType::Independent && target->defensiveMatrixHp == 0) {
+//				GPTP::logger << "weaponhit: " << weaponId << '\n';
 				target->damageHp(damage, attacker, attackingPlayerId, weaponId != WeaponId::Irradiate);
 				// Prevent Science Vessels from being continuously revealed to the irradiated target
 			}
