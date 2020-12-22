@@ -237,14 +237,28 @@ namespace hooks {
 		return ss.str();
 	}
 
-	static void addStatus(std::vector<std::string>& vec, std::string name, int value = -1, int timer = -1, bool aise = false) {
+	static std::string removetimerToString(int timer) {
+		std::stringstream ss;
+		// TODO: find accurate formula for remove timer
+		ss << ceil((timer - 1) / 24) << "s";
+		return ss.str();
+	}
+
+	enum class TimerType {
+		Vanilla = 0,
+		Aise,
+		RemoveTimer,
+	};
+
+	static void addStatus(std::vector<std::string>& vec, std::string name, int value = -1, int timer = -1, TimerType timerType = TimerType::Vanilla) {
 		if (timer > 0 || value > 0) {
 			std::string text = name;
 			if (timer > 0 || value > 1) {
 				text += " (";
 				if (timer > 0) {
-					if (aise) text += aisetimerToString(timer);
-					else text += timerToString(timer);
+					if (timerType == TimerType::Vanilla) text += timerToString(timer);
+					else if (timerType == TimerType::Aise) text += aisetimerToString(timer);
+					else text += removetimerToString(timer);
 					if (value > 1) {
 						text += ", ";
 					}
@@ -298,10 +312,11 @@ namespace hooks {
 		else if (unit->status & UnitStatus::Cloaked)
 			statuses.push_back("Cloaked");
 		addStatus(statuses, "Defensive Matrix", unit->defensiveMatrixHp / 256, unit->defensiveMatrixTimer);
-		addStatus(statuses, "Malediction", -1, scbw::get_generic_timer(unit, ValueId::MaledictionSlow), true);
-		addStatus(statuses, "Malediction", scbw::get_generic_value(unit, ValueId::KnockoutDriversValue), scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer), true);
-		addStatus(statuses, "Lobotomy Slow", -1, scbw::get_generic_timer(unit, ValueId::LobotomySlow), true);
-		addStatus(statuses, "Observance", -1, scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff), true);
+		addStatus(statuses, "Malediction", -1, scbw::get_generic_timer(unit, ValueId::MaledictionSlow), TimerType::Aise);
+		addStatus(statuses, "Ensnaring Brood", -1, scbw::get_generic_timer(unit, ValueId::EnsnaringBrood), TimerType::Aise);
+		addStatus(statuses, "Knockout Drivers", scbw::get_generic_value(unit, ValueId::KnockoutDriversValue), scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer), TimerType::Aise);
+		addStatus(statuses, "Lobotomy Slow", -1, scbw::get_generic_timer(unit, ValueId::LobotomySlow), TimerType::Aise);
+		addStatus(statuses, "Observance", -1, scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff), TimerType::Aise);
 		addStatus(statuses, "Energy Decay", scbw::get_generic_value(unit, ValueId::EnergyDecay), -1);
 		addStatus(statuses, "Armor Reduction", scbw::get_generic_value(unit, ValueId::ArmorReduce), -1);
 		addStatus(statuses, "Irradiated", -1, unit->irradiateTimer);
@@ -310,6 +325,8 @@ namespace hooks {
 		addStatus(statuses, "Maelstromed", -1, unit->maelstromTimer);
 		addStatus(statuses, "Corrosive Spores", unit->acidSporeCount);
 		addStatus(statuses, "Plagued", -1, unit->plagueTimer);
+		addStatus(statuses, "Stasis", -1, unit->stasisTimer);
+		addStatus(statuses, "Timed Life", -1, unit->removeTimer, TimerType::RemoveTimer);
 		addStatus(statuses, "Parasited", unit->parasiteFlags != 0);
 		// TODO: add optical flare, cowardice, malice
 
