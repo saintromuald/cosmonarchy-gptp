@@ -412,13 +412,15 @@ bool canWeaponTargetUnit(u8 weaponId, CUnit* target, CUnit* attacker) {
 }
 
 bool isUnderDarkSwarm(CUnit* unit) {
+	return getDarkSwarm(unit) != NULL;
+}
 
+CUnit* getDarkSwarm(CUnit* unit) {
 	static UnitFinder darkSwarmFinder;
 	darkSwarmFinder.search(unit->getLeft(), unit->getTop(), unit->getRight(), unit->getBottom());
 
 	CUnit* darkSwarm = darkSwarmFinder.getFirst(DarkSwarmFinderProc());
-	return darkSwarm != NULL;
-
+	return darkSwarm;
 }
 
 CUnit* getDarkSwarm(u16 x, u16 y, u16 radius) {
