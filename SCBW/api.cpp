@@ -726,6 +726,7 @@ bool isConventionalUnitMorphSource(u16 id, bool allow_larvae, bool allow_high_te
 	case UnitId::ZergMutalisk:
 	case UnitId::ZergGorgrokor:
 	case UnitId::ZergHydralisk:
+	case UnitId::ZergBactalisk:
 	case UnitId::ZergZergling:
 	case UnitId::ZergVorvaling:
 	case UnitId::ZergNathrokor:
@@ -758,6 +759,7 @@ bool isZergBuildingMorphResult(u16 id){
 	case UnitId::ZergSporeColony:
 	case UnitId::ZergSunkenColony:
 	case UnitId::ZergBactalDen:
+	case UnitId::ZergAlmakAntre:
 	case UnitId::ZergLurkerDen:
 	case UnitId::ZergVorvalPond:
 	case UnitId::ZergQuazilQuay:
@@ -783,6 +785,7 @@ bool isZergBuildingMorphSource(u16 id){
 	case UnitId::ZergGorgrokApiary:
 	case UnitId::ZergCreepColony:
 	case UnitId::ZergHydralDen:
+	case UnitId::ZergBactalDen:
 	case UnitId::ZergSpawningPool:
 	case UnitId::ZergVorvalPond:
 	case UnitId::ZergNathrokLake:
@@ -961,7 +964,7 @@ void setOffsetToParentSpecialOverlay(CImage* image) {
 	}
 }
 
-void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType) {
+void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset) {
 	if (unit->sprite == NULL || unit->orderTarget.unit == NULL) {
 		return;
 	}
@@ -969,7 +972,7 @@ void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount
 	const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
 		unit->sprite->mainGraphic->id));
 	u8 frameDirection = unit->sprite->mainGraphic->direction;
-	Point8 offset = loFile->getOffset(frameDirection, rotate);
+	Point8 offset = loFile->getOffset(frameDirection + (17*frameset_offset), rotate);
 	if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
 		offset.x = -offset.x;
 	}
@@ -985,7 +988,7 @@ void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount
 	
 	
 }
-CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType) {
+CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset) {
 	if (unit->sprite == NULL || unit->orderTarget.unit==NULL) {
 		return NULL;
 	}
@@ -993,7 +996,7 @@ CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rota
 	const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
 		unit->sprite->mainGraphic->id));
 	u8 frameDirection = unit->sprite->mainGraphic->direction;
-	Point8 offset = loFile->getOffset(frameDirection, rotate);
+	Point8 offset = loFile->getOffset(frameDirection + (17 * frameset_offset), rotate);
 	if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
 		offset.x = -offset.x;
 	}

@@ -353,9 +353,7 @@ namespace hooks {
 				}
 				Globals.clear_lurker(unit);
 			}
-
 			if (good) {
-
 				// Madrigal Tempo Change weapon switch
 				if (weaponId == WeaponId::FuriaMissiles
 				&& scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TempoChange,0)==1) {
@@ -463,10 +461,11 @@ namespace hooks {
 					// Wraith laser spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::WraithLaserPos, 3, ImagesDatEntries::OverlayAttackPtr);
 				}
-/*				else if (weaponId == WeaponId::IonCannon) {
+				else if (weaponId == WeaponId::IonCannon) {
 					// Ion Cannon projectile spawn position
-					scbw::setMissileSourcePos(unit, weaponId, ValueId::IonCannonProjectilePos, 1, ImagesDatEntries::OverlaySpecialPtr);
-				}*/
+					scbw::setMissileSourcePos(unit, weaponId, ValueId::IonCannonProjectilePos, 1, 
+						ImagesDatEntries::OverlaySpecialPtr, 1);//1 is frameset offset
+				}
 				else if (weaponId == WeaponId::PerditionBarrage) {
 					// Salamander missile target positions
 					auto rotate = scbw::get_generic_value(unit, ValueId::SalamanderAtkPos);

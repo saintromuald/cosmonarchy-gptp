@@ -324,7 +324,7 @@ namespace hooks {
 	//and nothing called this function)
 	void orders_Pickup4_0(CUnit* unit) {
 
-		WRITE_TO_LOG("orders_Pickup4_0 START");
+//		WRITE_TO_LOG("orders_Pickup4_0 START");
 
 		if(unit->playerId == 11) {
 
@@ -421,7 +421,7 @@ namespace hooks {
 
 		}
 
-		WRITE_TO_LOG("orders_Pickup4_0 END");
+//		WRITE_TO_LOG("orders_Pickup4_0 END");
 
 	}
 
