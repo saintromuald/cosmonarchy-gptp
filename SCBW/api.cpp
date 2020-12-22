@@ -964,7 +964,7 @@ void setOffsetToParentSpecialOverlay(CImage* image) {
 	}
 }
 
-void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType) {
+void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset) {
 	if (unit->sprite == NULL || unit->orderTarget.unit == NULL) {
 		return;
 	}
@@ -972,7 +972,7 @@ void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount
 	const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
 		unit->sprite->mainGraphic->id));
 	u8 frameDirection = unit->sprite->mainGraphic->direction;
-	Point8 offset = loFile->getOffset(frameDirection, rotate);
+	Point8 offset = loFile->getOffset(frameDirection + (17*frameset_offset), rotate);
 	if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
 		offset.x = -offset.x;
 	}
@@ -988,7 +988,7 @@ void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount
 	
 	
 }
-CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType) {
+CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset) {
 	if (unit->sprite == NULL || unit->orderTarget.unit==NULL) {
 		return NULL;
 	}
@@ -996,7 +996,7 @@ CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rota
 	const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
 		unit->sprite->mainGraphic->id));
 	u8 frameDirection = unit->sprite->mainGraphic->direction;
-	Point8 offset = loFile->getOffset(frameDirection, rotate);
+	Point8 offset = loFile->getOffset(frameDirection + (17 * frameset_offset), rotate);
 	if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
 		offset.x = -offset.x;
 	}
