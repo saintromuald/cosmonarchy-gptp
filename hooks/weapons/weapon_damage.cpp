@@ -523,6 +523,11 @@ namespace hooks {
 				}
 			}
 			else {
+				u32 divisor = dmgDivisor;
+				if (divisor == 0) {
+					divisor = 1;
+					scbw::printFormattedText("Incorrect weapon hit %d", weaponId);
+				}
 				damage = damage / dmgDivisor + (target->acidSporeCount * 256);
 			}
 
