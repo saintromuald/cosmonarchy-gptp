@@ -1545,10 +1545,18 @@ u16 random() {
 		unit->orderTarget.pt = target_pos;
 	}
 
-	int getBroodlingCountFromSupply(CUnit* unit) {
-		if (units_dat::GroupFlags[unit->id].isBuilding) return 0;
-		if (units_dat::SupplyProvided[unit->id] > 0) return 0;
-		return std::max((int)units_dat::SupplyRequired[unit->id], 1);
+	bool canSpawnBroodling(CUnit* target) {
+		if (units_dat::GroupFlags[target->id].isBuilding) return false;
+		if (units_dat::SupplyProvided[target->id] > 0) return false;
+		return true;
+	}
+
+	int getBroodlingCountFromSupply(CUnit* target) {
+		if (!canSpawnBroodling(target)) return 0;
+		bool ground = !(target->status & UnitStatus::InAir);
+		bool onCreep = scbw::getActiveTileAt(target->getX(), target->getY()).hasCreep;
+		double multiplier = (ground && onCreep) ? 1.5 : 1;
+		return ceil(std::max(((int) units_dat::SupplyRequired[target->id]), 1) * multiplier);
 	}
 
 	CUnit** getSourceQueens(CUnit* unit) {

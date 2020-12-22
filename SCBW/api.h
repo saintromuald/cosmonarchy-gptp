@@ -366,7 +366,8 @@ u16 random();
 //////////////////////////////////////////////////////////////// @}
 
     void rangeModifiedFire(u8 weaponId, CUnit* unit, s16 x, s16 y, u32 offset);
-    int getBroodlingCountFromSupply(CUnit* unit);
+    bool canSpawnBroodling(CUnit* target);
+    int getBroodlingCountFromSupply(CUnit* target);
     void createUnitFromAbility(int unitId, int count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, CUnit* attacker = NULL);
     CUnit** getSourceQueens(CUnit* unit);
     u16 getLastQueueSlotType(CUnit* a1);
