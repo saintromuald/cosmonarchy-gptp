@@ -283,6 +283,7 @@ namespace ValueId {
 		IonCannonProjectilePos						= 136,
 		UltrakorCancelGimmick						= 137,
 		SwarmingOmenTimer							= 138,
+		SwarmingOmenAbility							= 139,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

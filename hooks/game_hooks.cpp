@@ -1150,6 +1150,16 @@ namespace hooks {
 				if (scbw::get_generic_timer(unit, ValueId::EnsnaringBrood) == 1) {
 					unit->removeOverlay(1281);
 				}
+
+				// Zoryusthaleth - Swarming Omen ability
+				if (scbw::get_generic_value(unit, ValueId::SwarmingOmenAbility) > 0) {
+					scbw::set_generic_timer(unit, ValueId::SwarmingOmenTimer, 5*24);
+				}
+
+				// Remove Swarming Omen overlay
+				if (scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer) == 1) {
+//					unit->removeOverlay();
+				}
 			}
 			scbw::setInGameLoopState(false);
 		}

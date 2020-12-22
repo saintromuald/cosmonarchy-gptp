@@ -212,6 +212,18 @@ namespace hooks
 			//but it uses switch ability framework to not bother with rust
 			break;
 		}
+		case TechId::SwarmingOmen:
+		{
+			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
+			buf[0] = 0x99;//new general command
+			buf[1] = NewGameCommand::GenericSwitchAbility;
+			buf[2] = 1;
+			buf[3] = *ACTIVE_PLAYER_ID;
+			buf[4] = ValueId::SwarmingOmenAbility;
+			scbw::SendCommand(buf, 0xc);
+			//copied from Ensnaring Brood
+			break;
+		}
 		case TechId::Parasite:
 			IssueTriTargetOrder(OrderId::CastParasite, 0, 0);
 			break;
@@ -312,7 +324,7 @@ namespace hooks
 			scbw::SendCommand(bufMedstims, 0xc);*/
 			break;
 		}
-		case TechId::UnusedTech26://Cyprian Safety Off/Safety On
+/*		case TechId::UnusedTech26://Cyprian Safety Off/Safety On
 		{
 			//0 - off (enable splash mode)
 			//1 - on (disable splash mode)
@@ -330,7 +342,7 @@ namespace hooks
 				scbw::SendCommand(buf, 0xc);
 			}
 			break;
-		}
+		}*/
 		/*		case TechId::UnusedTech38:
 				{
 					//Equip - Empower hero with relic

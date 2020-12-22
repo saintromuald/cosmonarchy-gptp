@@ -73,10 +73,10 @@ enum Enum {
 	PhaseLink				= 33, // Clarion shield damage distribution ability
 
 //Zerg
-	EnsnaringBrood			= 13, // Queen ability applying ensnaring brood effect
-	SwarmingOmen			= 26, // Zoryusthaleth movement speed beacon ability
+	EnsnaringBrood			= 13, // Queen disruptive enchantment ability
+	Reconstitution			= 26, // Zoryusthaleth corpse-recycling toggle
 	EssenceDrain			= 35, // Gorgoleth energy steal ability
-	Reconstitution			= 42, // Zoryusthaleth corpse recycling toggle
+	SwarmingOmen			= 42, // Zoryusthaleth movement speed beacon ability
 
 
 	//extended
