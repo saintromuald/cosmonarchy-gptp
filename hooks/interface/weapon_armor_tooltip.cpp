@@ -254,8 +254,8 @@ namespace hooks {
 		std::string text = "\004" + std::string(armorUpgradeName) + "\002";
 		text += "\n" + std::string(armorStr) + " " + std::to_string(baseArmor);
 		if (bonusArmor > 0) text += "+" + std::to_string(bonusArmor);
-		text += "\nSight Range: " + std::to_string(sightRange);
 		text += "\nSize: " + std::string(sizeText);
+		text += "\nSight Range: " + std::to_string(sightRange);
 
 		strncpy(buffer, text.c_str(), sizeof(buffer));
 		buffer[sizeof(buffer) - 1] = 0;
