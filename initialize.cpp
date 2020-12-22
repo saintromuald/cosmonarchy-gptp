@@ -280,6 +280,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x0047B45A + 2, patchLastUnit, 1);
 	memoryPatch(0x0047B7CF + 2, patchLastUnit, 1);
 	memoryPatch(0x004CBE4E + 2, patchLastUnit, 1);
+
 	//scantid id hardcode
 	memoryPatch(0x0043158C + 2, patchLastUnit, 1);
 	memoryPatch(0x00431B4F + 2, patchLastUnit, 1);
@@ -288,6 +289,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x0047B46C + 2, patchLastUnit, 1);
 	memoryPatch(0x0047B7E1 + 2, patchLastUnit, 1);
 	memoryPatch(0x004CBE58 + 2, patchLastUnit, 1);
+
 	//ragnasaur id hardcode
 	memoryPatch(0x00431580 + 2, patchLastUnit, 1);
 	memoryPatch(0x00431B43 + 2, patchLastUnit, 1);
@@ -296,6 +298,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x0047B460 + 2, patchLastUnit, 1);
 	memoryPatch(0x0047B7D5 + 2, patchLastUnit, 1);
 	memoryPatch(0x004CBE53 + 2, patchLastUnit, 1);
+
 	//kakaru id hardcode
 	memoryPatch(0x00431586 + 2, patchLastUnit, 1);
 	memoryPatch(0x00431B49 + 2, patchLastUnit, 1);
@@ -306,6 +309,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x0047C425 + 4, patchLastUnit, 1);
 	memoryPatch(0x0047C476 + 4, patchLastUnit, 1);
 	memoryPatch(0x004CBE5D + 2, patchLastUnit, 1);
+
 	//ursadon id hardcode
 	memoryPatch(0x00431592 + 2, patchLastUnit, 1);
 	memoryPatch(0x00431B55 + 2, patchLastUnit, 1);
@@ -314,6 +318,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x0047B472 + 2, patchLastUnit, 1);
 	memoryPatch(0x0047B7E7 + 2, patchLastUnit, 1);
 	memoryPatch(0x004CBE62 + 2, patchLastUnit, 1);
+
 	//warbringer id hardcode
 	memoryPatch(0x004F6C1C + 2, patchLastUnit, 1);
 	memoryPatch(0x004F6578 + 2, patchLastUnit, 1);
@@ -358,6 +363,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x004247C4 + 3, patchLastUnit, 1);
 	memoryPatch(0x004014C6 + 2, patchLastUnit, 1);
 	memoryPatch(0x0040149A + 2, patchLastUnit, 1);
+
 	//dark archon - energy of mcontrolled dark archons no longer set to 0
 //	memoryPatch(0x004F6938 + 4, patchLastUnit, 1);
 	nops(0x0049EEBD, 0xa);//disable beacon collision hardcode
