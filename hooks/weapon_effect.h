@@ -18,8 +18,6 @@ namespace hooks {
 	void normalDamage(CBullet* bullet, u32 weaponId);
 	void yamatoDamage(CBullet* bullet, u32 weaponId);
 	void airSplash(CBullet* bullet, u32 weaponId);
-	s32 airSplashProc(CUnit* unit, CBullet* bullet);
-	s32 airSplashProc2(CUnit* unit, CBullet* bullet);
 
 	// HYDRA-specific
 	bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId);

@@ -423,7 +423,40 @@ namespace hooks {
 		searchRadius->right = radius + posX;
 		searchRadius->bottom = radius + posY;
 
-		findBestUnit(searchRadius, (s32)bullet, (s32(__fastcall*)(s32, s32))airSplashProc);
+		s16 x, y, r;
+		x = bullet->sprite->position.x;
+		y = bullet->sprite->position.y;
+		r = weapons_dat::OuterSplashRadius[weaponId];
+		// Get units within the outer splash radius
+		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
+		//
+		darkSwarmDamage(x, y, r, bullet, weaponId);
+		//
+		s32 result;
+		for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
+			// airSplashProc
+			s8 weaponIdLoop; // bl
+			s32 listCount; // eax
+			CUnit* target = unitsInSplash.getUnit(i);
+
+			weaponIdLoop = bullet->weaponType;
+			if (target != bullet->sourceUnit && (target->playerId != bullet->srcPlayer || target == bullet->attackTarget.unit))	{
+				if (scbw::canWeaponTargetUnit(weaponIdLoop, target, target)) {
+					if (isUnitDistanceWithin(target, bullet, weapons_dat::OuterSplashRadius[weaponIdLoop]))	{
+						if (isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[weaponIdLoop])
+						&& target == bullet->attackTarget.unit)	{
+							airSplashList[0] = target;
+							result = 1;
+							*airSplashListCount = 1;
+							break;
+						}
+						listCount = *airSplashListCount;
+						airSplashList[*airSplashListCount] = target;
+						*airSplashListCount = listCount + 1;
+					}
+				}
+			}
+		}
 		if (airSplashListCount) {
 			if (*airSplashListCount == 1) {
 				list = 0;
@@ -433,59 +466,8 @@ namespace hooks {
 			}
 			weaponBulletShot(target, bullet, (s32)airSplashList[list]);
 		}
-		findBestUnit(searchRadius, (s32)bullet, (s32(__fastcall*)(s32, s32))airSplashProc2);
-	}
-
-	s32 airSplashProc(CUnit* unit, CBullet* bullet) {
-		s16 weaponId = bullet->weaponType;
-		s16 x, y, r;
-		x = bullet->sprite->position.x;
-		y = bullet->sprite->position.y;
-		r = weapons_dat::OuterSplashRadius[weaponId];
-
-		// Get units within the outer splash radius
-		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
-
-		darkSwarmDamage(x, y, r, bullet, weaponId);
-
-		for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
-			CUnit* target = unitsInSplash.getUnit(i);
-
-			// Units can't splash themselves -- except psi storm
-			if (target == bullet->sourceUnit && bullet->weaponType != WeaponId::PsiStorm) continue;
-
-			// Ignore allied units
-			if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
-
-			// Can the unit be targeted?
-			if (!scbw::canWeaponTargetUnit(bullet->weaponType, target, target)) continue;
-
-			// We found units in a square around the target, but is the target within the splash radius?
-			s16 outer = weapons_dat::OuterSplashRadius[bullet->weaponType];
-
-			s32 divisor = 1;
-
-			// Inner radius 
-			s16 inner = weapons_dat::InnerSplashRadius[bullet->weaponType];
-			if (isUnitDistanceWithin(target, bullet, inner)) {
-				weaponBulletShot(target, bullet, divisor); // 100% damage
-				continue;
-			}
-			// Medium radius
-			s16 medium = weapons_dat::MediumSplashRadius[bullet->weaponType];
-			if (isUnitDistanceWithin(target, bullet, medium)) {
-				weaponBulletShot(target, bullet, divisor * 2); // 50% damage
-				continue;
-			}
-			// Outer radius
-			weaponBulletShot(target, bullet, divisor * 4); // 25% damage
-		}
-		return 0;
-	}
-
-	s32 airSplashProc2(CUnit* unit, CBullet* bullet) {
-		*isInGroundSplashProc = 0;
-		return splashFunc(bullet, unit);
+		// airSplashProc2
+		friendlySplash(bullet, weaponId, SplashType::FriendlyNew);
 	}
 
   // clone of 'Yamato' damage for reference
