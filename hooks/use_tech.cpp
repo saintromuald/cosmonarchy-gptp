@@ -324,7 +324,7 @@ namespace hooks
 			scbw::SendCommand(bufMedstims, 0xc);*/
 			break;
 		}
-		case TechId::UnusedTech26://Cyprian Safety Off/Safety On
+/*		case TechId::UnusedTech26://Cyprian Safety Off/Safety On
 		{
 			//0 - off (enable splash mode)
 			//1 - on (disable splash mode)
@@ -342,7 +342,7 @@ namespace hooks
 				scbw::SendCommand(buf, 0xc);
 			}
 			break;
-		}
+		}*/
 		/*		case TechId::UnusedTech38:
 				{
 					//Equip - Empower hero with relic
