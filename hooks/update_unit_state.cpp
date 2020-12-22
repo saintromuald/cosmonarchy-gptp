@@ -182,12 +182,13 @@ namespace hooks {
 			}*/
 
 			else { //EB526
-
+				if (unit == NULL) {
+					return;
+				}
 				int maxEnergy;
-
-				if (unit->id == UnitId::ProtossDarkArchon &&
-					unit->mainOrderId == OrderId::CompletingArchonSummon &&
-					unit->mainOrderState == 0
+				if (unit->id == UnitId::ProtossDarkArchon
+				&&	unit->mainOrderId == OrderId::CompletingArchonSummon
+				&&	unit->mainOrderState == 0
 					)
 					maxEnergy = 12800;  //50 * 256; Identical to energy amount on spawn
 				else

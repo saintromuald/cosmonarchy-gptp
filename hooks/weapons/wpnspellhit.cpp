@@ -513,19 +513,16 @@ namespace hooks {
 	//easily available information (and getting it the hard way seems overkill)
 	void ConsumeHit(CUnit* attacker, CUnit* target) {
 		//scbw::printText("Try consume");
-		if(target==NULL){
-			//scbw::printText("No target!");
+		if(attacker == NULL
+		|| target == NULL) {
+			return;
 		}
 		else {
-			if(target->status & UnitStatus::Invincible){
-				//scbw::printText("Target is Invincible!");
-			}
-			if(getSpellStatString(target,TechId::Consume,attacker->playerId) !=0){
+			if(getSpellStatString(target,TechId::Consume, attacker->playerId) !=0) {
 				//char buf[32];
 				//ebx/bl  = player id, arg 1 = 0x10, eax = edi (target)
 				//sprintf(buf,"Spell error: %d",getSpellStatString(target,TechId::Consume,attacker->playerId) );
 				//scbw::printText(buf);
-
 			}
 		}
 
@@ -550,8 +547,8 @@ namespace hooks {
 				else
 					attacker->energy += 12800;*/
 		
-
-				u32 energyMax =  attacker->getMaxEnergy();
+				// Consume heals Defilers when at full energy
+				u32 energyMax = attacker->getMaxEnergy();
 				u32 diff = energyMax-attacker->energy;
 				if(power > diff ) {
 					attacker->energy = energyMax;
@@ -687,9 +684,6 @@ namespace hooks {
 				//create the broodling
 				created_broodling = CreateUnit(UnitId::ZergBroodling, pos.x, pos.y, attacker->playerId);
 				scbw::sendGPTP_aise_cmd(created_broodling, attacker, GptpId::SetGenericUnit, ValueId::BroodlingMother, 0, 0);
-				if (attacker != NULL) {
-					attacker->energy = std::min((u16)(attacker->energy + (u16)5*256), attacker->getMaxEnergy()); // Spawn Broodling
-				}
 
 				if (created_broodling == NULL) {
 					displayLastNetErrForPlayer(attacker->playerId);
