@@ -390,7 +390,7 @@ void CUnit::damageWith(s32 damage, u8 weaponId, CUnit* attacker,
 											 u8 attackingPlayer, s8 direction, u8 damageDivisor) {
 	assert(this);
 	assert(weaponId < WEAPON_TYPE_COUNT);
-	assert(damageDivisor != 0);
+//	assert(damageDivisor != 0);
 
 	u32 weaponId_				 = weaponId;
 	s32 attackingPlayer_	= attackingPlayer;
