@@ -237,17 +237,10 @@ namespace hooks {
 		return ss.str();
 	}
 
-	static std::string removetimerToString(int timer) {
-		std::stringstream ss;
-		// TODO: find accurate formula for remove timer
-		ss << ceil((timer - 1) / 24) << "s";
-		return ss.str();
-	}
-
 	enum class TimerType {
 		Vanilla = 0,
 		Aise,
-		RemoveTimer,
+		RemoveTimer
 	};
 
 	static void addStatus(std::vector<std::string>& vec, std::string name, int value = -1, int timer = -1, TimerType timerType = TimerType::Vanilla) {
@@ -257,8 +250,7 @@ namespace hooks {
 				text += " (";
 				if (timer > 0) {
 					if (timerType == TimerType::Vanilla) text += timerToString(timer);
-					else if (timerType == TimerType::Aise) text += aisetimerToString(timer);
-					else text += removetimerToString(timer);
+					else text += aisetimerToString(timer);
 					if (value > 1) {
 						text += ", ";
 					}
