@@ -1152,8 +1152,9 @@ namespace hooks {
 				}
 
 				// Zoryusthaleth - Swarming Omen ability
-				if (scbw::get_generic_value(unit, ValueId::SwarmingOmenAbility) > 0) {
+				if (scbw::get_generic_value(unit, ValueId::SwarmingOmenAbility) == 1) {
 					scbw::set_generic_timer(unit, ValueId::SwarmingOmenTimer, 5*24);
+					scbw::set_generic_value(unit, ValueId::SwarmingOmenAbility, 0);
 				}
 
 				// Remove Swarming Omen overlay
