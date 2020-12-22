@@ -277,6 +277,26 @@ struct CThingy {
 /*0C*/  CSprite *sprite;
 };
 
+struct CHKUnit {
+/*00*/	u32	 id;
+/*04*/	u16	 x;
+/*06*/	u16	 y;
+/*08*/	u16	 unitid;
+/*0A*/	u16	 relation;
+/*0C*/	u16	 validStateFlags;
+/*0E*/	u16	 validProperties;
+/*10*/	u8	 playerId;
+/*11*/	u8	 hp;
+/*12*/	u8	 shields;
+/*13*/	u8	 energy;
+/*14*/	u16	 resources;
+/*16*/	u16	 field_16;
+/*18*/	u16	 hangar;
+/*1A*/	u16	 stateFlags;
+/*1C*/	u32	 field_1c;
+/*20*/	u32	 relatedUnit;
+};
+
 //---- Taken from locations.cpp ----//
 
 struct MapSize {
