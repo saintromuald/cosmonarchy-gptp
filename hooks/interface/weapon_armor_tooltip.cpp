@@ -317,25 +317,26 @@ namespace hooks {
 		addStatus(statuses, "Observance", -1, scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff), TimerType::Aise);
 		addStatus(statuses, "Kaiser Rampage", -1, scbw::get_generic_timer(unit, ValueId::KaiserRampage), TimerType::Aise);
 		addStatus(statuses, "Hallucinating", -1, scbw::get_generic_timer(unit, ValueId::HallucinatingTimer), TimerType::Aise);
-		addStatus(statuses, "Ectomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::EggBoostTimer), TimerType::Aise);
-		addStatus(statuses, "Endomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer), TimerType::Aise);
-		addStatus(statuses, "Nanite Field", -1, scbw::get_generic_timer(unit, ValueId::NaniteFieldTimer), TimerType::Aise);
+		//addStatus(statuses, "Ectomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::EggBoostTimer), TimerType::Aise); // <- can't read tooltips from eggs
+		//addStatus(statuses, "Endomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer), TimerType::Aise); // <- nor mineral fields
+		//addStatus(statuses, "Nanite Field", -1, scbw::get_generic_timer(unit, ValueId::NaniteFieldTimer), TimerType::Aise); // <- not trackable, timer is too short
 		addStatus(statuses, "Adrenaline Packs", -1, scbw::get_generic_timer(unit, ValueId::Adrenaline), TimerType::Aise);
+		addStatus(statuses, "Adrenal Frezny", -1, scbw::get_generic_timer(unit, ValueId::NathrokorTimer), TimerType::Aise);
 
 		// Aise Value
 		addStatus(statuses, "Energy Decay", scbw::get_generic_value(unit, ValueId::EnergyDecay));
 		addStatus(statuses, "Armor Reduction", scbw::get_generic_value(unit, ValueId::ArmorReduce));
 		addStatus(statuses, "Maverick Feeders", scbw::get_generic_value(unit, ValueId::MadcapStacks));
 		addStatus(statuses, "Reverse Thrust", scbw::get_generic_value(unit, ValueId::ReverseThrust));
-		addStatus(statuses, "Sublime Shepherd", scbw::get_generic_timer(unit, ValueId::SublimeShepherd));
-		addStatus(statuses, "Lazarus Agent", scbw::get_generic_timer(unit, ValueId::LazarusAgent));
-		addStatus(statuses, "Expanded Storage", scbw::get_generic_timer(unit, ValueId::OverlordSupplyGimmick));
-		addStatus(statuses, "Khaydarian Eclipse", scbw::get_generic_timer(unit, ValueId::ExemplarSwitch));
-		addStatus(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && scbw::get_generic_timer(unit, ValueId::TempoChange) == 0);
-		addStatus(statuses, "Tempo Down", scbw::get_generic_timer(unit, ValueId::TempoChange) == 1);
+		addStatus(statuses, "Sublime Shepherd", scbw::get_generic_value(unit, ValueId::SublimeShepherd));
+		addStatus(statuses, "Lazarus Agent", scbw::get_generic_value(unit, ValueId::LazarusAgent));
+		addStatus(statuses, "Expanded Storage", scbw::get_generic_value(unit, ValueId::TreasuryStacks)); // <- only works for overlord and it's morphs
+		addStatus(statuses, "Khaydarian Eclipse", scbw::get_generic_value(unit, ValueId::ExemplarSwitch));
+		addStatus(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && scbw::get_generic_value(unit, ValueId::TempoChange) == 0);
+		addStatus(statuses, "Tempo Down", scbw::get_generic_value(unit, ValueId::TempoChange) == 1);
 
 		// Aise Value - Gimmicked
-		addStatus(statuses, "Phase Link", scbw::get_generic_value(unit, ValueId::ClarionSFX));
+		addStatus(statuses, "Phase Link", scbw::get_aise_value(unit, NULL, AiseId::HasClarionLink, 0, 0));
 		bool malice = scbw::get_aise_value(unit, NULL, AiseId::HasMalice, 0, 0);
 		addStatus(statuses, "Cowardice", scbw::get_generic_value(unit, ValueId::HierophantOverlay) || malice);
 		addStatus(statuses, "Malice", malice);
@@ -365,10 +366,9 @@ namespace hooks {
 		}
 
 		// TODO
-		//	fix phase link, exemplar switch, nanite field, madrigal switch, sublime shepard
-		//	add optical flare, mind control, adrenal frezny, last orders?, infested (when it's implemented)
+		//	make sublime shepard show on targets not only caster
+		//	add optical flare, mind control, last orders?, infested (when it's implemented)
 		//	properly track cowardice, malice timers
-		//	properly track adrenaline packs stacks
 		//	color code source player if possible
 
 		std::string status = formatStringVector(statuses);
