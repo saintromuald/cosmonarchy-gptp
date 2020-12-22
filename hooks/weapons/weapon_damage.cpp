@@ -552,6 +552,13 @@ namespace hooks {
 			if (damage < 128)
 				damage = 128;
 
+			damageType = weapons_dat::DamageType[weaponId];
+
+			// Dark Swarm - Defilier Ability
+			if (scbw::isUnderDarkSwarm(target) && weapons_dat::MaxRange[weaponId] > 32 && dmgDivisor == 1) {
+				damageType = DamageType::Independent;
+			}
+
 			//Reduce Defensive Matrix
 			if (target->defensiveMatrixHp != 0) {
 				s32 d_matrix_reduceAmount;
@@ -562,8 +569,6 @@ namespace hooks {
 				damage -= d_matrix_reduceAmount;
 				target->reduceDefensiveMatrixHp(d_matrix_reduceAmount);
 			}
-
-			damageType = weapons_dat::DamageType[weaponId];
 
 			// Almaksalisk - Flanking Spines
 			if (weaponId == WeaponId::PiercingSpines && scbw::isDebuffed(target)) {
@@ -908,7 +913,7 @@ namespace hooks {
 			}
 
 			// Deal Damage, except for Independent damage, which always deals 0
-			if (weapons_dat::DamageType[weaponId] != DamageType::Independent && target->defensiveMatrixHp == 0) {
+			if (damageType != DamageType::Independent && target->defensiveMatrixHp == 0) {
 				target->damageHp(damage, attacker, attackingPlayerId, weaponId != WeaponId::Irradiate);
 				// Prevent Science Vessels from being continuously revealed to the irradiated target
 			}
