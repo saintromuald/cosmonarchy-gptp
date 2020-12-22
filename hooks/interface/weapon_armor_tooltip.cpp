@@ -321,7 +321,7 @@ namespace hooks {
 		addStatus(statuses, "Armor Reduction", scbw::get_generic_value(unit, ValueId::ArmorReduce), -1);
 		addStatus(statuses, "Irradiated", -1, unit->irradiateTimer);
 		addStatus(statuses, "Ensnared", -1, unit->ensnareTimer);
-		addStatus(statuses, "Lockeddown", -1, unit->lockdownTimer);
+		addStatus(statuses, "Lobotomized", -1, unit->lockdownTimer);
 		addStatus(statuses, "Maelstromed", -1, unit->maelstromTimer);
 		addStatus(statuses, "Corrosive Spores", unit->acidSporeCount);
 		addStatus(statuses, "Plagued", -1, unit->plagueTimer);
