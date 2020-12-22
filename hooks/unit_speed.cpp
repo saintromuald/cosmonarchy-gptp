@@ -262,7 +262,7 @@ namespace hooks {
 		// Zoryusthaleth Protective Instincts: 150% movement speed when moving towards wounded organic allies
 		if (unit->id == UnitId::ZergZoryusthaleth) {
 			auto r = 10 * 32;
-			auto n = unitRangeCount(unit, CFlags::Ally | CFlags::OnlyOrganic | CFlags::FrontalArc, { UnitId::ZergZoryusthaleth });
+			auto n = unitRangeCount(unit, CFlags::Ally | CFlags::OnlyOrganic | CFlags::FrontalArc, {});
 			scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
 				unit->position.x + r, unit->position.y + r);
 			bool accelerate = false;
@@ -278,7 +278,6 @@ namespace hooks {
 				speed += speed / 2;
 			}
 		}
-
 
 		// DEBUG
 		// Speed logger

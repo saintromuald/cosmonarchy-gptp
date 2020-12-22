@@ -1224,6 +1224,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ZergZoryusthaleth &&  //Zoryusthaleth Protective Instincts passive
+									current_button->iconID == IconId::MuscularAugments)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if (((*activePortraitUnit)->id == UnitId::ZergIroleth
 								|| (*activePortraitUnit)->id == UnitId::ZergOthstoleth) &&  //Iroleth, Othstoleth Endomorphic Accelerant passive
 									current_button->iconID == IconId::ZergBasicBuildings)
