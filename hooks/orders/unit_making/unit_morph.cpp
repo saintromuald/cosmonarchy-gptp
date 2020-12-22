@@ -242,7 +242,8 @@ namespace hooks {
 						//scbw::printFormattedText("Unit %d origin %d previous %d", unit->id, origin, unit->previousUnitType);
 						
 						if (origin == UnitId::ZergZergling
-							|| origin == UnitId::ZergNathrokor) { // Kalkaleth uses air cocoon
+						||  origin == UnitId::ZergVorvaling		// Temporary
+						||	origin == UnitId::ZergNathrokor) {	// Kalkaleth uses air cocoon
 							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
 						}
 						else if (origin == UnitId::ZergUltrakor 
