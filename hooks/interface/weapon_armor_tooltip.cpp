@@ -336,7 +336,7 @@ namespace hooks {
 
 		// Aise Value - Gimmicked
 		addStatus(statuses, "Phase Link", scbw::get_generic_value(unit, ValueId::ClarionSFX));
-		bool malice = scbw::get_aise_value(unit, NULL, AiseId::HasMalice, 0, 0));
+		bool malice = scbw::get_aise_value(unit, NULL, AiseId::HasMalice, 0, 0);
 		addStatus(statuses, "Cowardice", scbw::get_generic_value(unit, ValueId::HierophantOverlay) || malice);
 		addStatus(statuses, "Malice", malice);
 
