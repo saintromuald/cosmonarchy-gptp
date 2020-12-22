@@ -480,6 +480,7 @@ namespace hooks {
 			// Outer radius
 			weaponBulletShot(target, bullet, divisor * 4); // 25% damage
 		}
+		return 0;
 	}
 
 	s32 airSplashProc2(CUnit* unit, CBullet* bullet) {
