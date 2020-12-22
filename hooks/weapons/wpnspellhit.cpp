@@ -19,6 +19,11 @@ public:
 		if(unit->plagueTimer>0){
 			unit->_unknown_0x026 |=0x4;
 		}
+		if (defiler != NULL
+			&& scbw::get_generic_timer(defiler, ValueId::EnsnaringBrood) > 0
+			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building)) {
+			scbw::applyEnsnare(unit);
+		}
 	}
 };
 
