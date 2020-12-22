@@ -250,6 +250,12 @@ namespace hooks {
 		return ss.str();
 	}
 
+	static std::string removetimerToString(int timer) {
+		std::stringstream ss;
+		ss << ceil(timer / 42) << "s";
+		return ss.str();
+	}
+
 	enum class TimerType {
 		Vanilla = 0,
 		Aise,
@@ -263,7 +269,8 @@ namespace hooks {
 				text += " (";
 				if (timer > 0) {
 					if (timerType == TimerType::Vanilla) text += timerToString(timer);
-					else text += aisetimerToString(timer);
+					else if (timerType == TimerType::Aise) text += aisetimerToString(timer);
+					else text += removetimerToString(timer);
 					if (value > 1) {
 						text += ", ";
 					}
