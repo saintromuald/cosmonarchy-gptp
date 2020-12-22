@@ -37,7 +37,9 @@ u8 getDamageFactorForTooltip(u8 weaponId, CUnit* unit) {
 #include <iomanip>
 
 static std::string formatStringVector(std::vector<std::string> strings) {
-	std::string result;
+	std::string result = "";
+	if (strings.size() == 0)
+		strings.push_back("None");
 	int i = 0;
 	for (const std::string& str : strings) {
 		result += str;
@@ -141,9 +143,6 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	if (weapons_dat::TargetFlags[weaponId].terrain)
 		targetFlags.push_back("Terrain");
 
-	if (targetFlags.size() == 0)
-		targetFlags.push_back("Nothing");
-
 	std::string targetFlagsText = formatStringVector(targetFlags);
 
 	std::string splashRadText = "Splash Radius:";
@@ -226,6 +225,39 @@ namespace hooks {
 		return getDamageTooltipString(weaponId, unit, weapons_dat::Label[weaponId]);
 	}
 
+	static std::string timerToString(int timer) {
+		std::stringstream ss;
+		ss << floor((timer * 0.042) * 8) << "s";
+		return ss.str();
+	}
+
+	static std::string aisetimerToString(int timer) {
+		std::stringstream ss;
+		ss << ceil((timer - 1) / 24) << "s";
+		return ss.str();
+	}
+
+	static void addStatus(std::vector<std::string>& vec, std::string name, int value = -1, int timer = -1, bool aise = false) {
+		if (timer > 0 || value > 0) {
+			std::string text = name;
+			if (timer > 0 || value > 1) {
+				text += " (";
+				if (timer > 0) {
+					if (aise) text += aisetimerToString(timer);
+					else text += timerToString(timer);
+					if (value > 1) {
+						text += ", ";
+					}
+				}
+				if (value > 1) {
+					text += std::to_string(value);
+				}
+				text += ")";
+			}
+			vec.push_back(text);
+		}
+	}
+
 	//Returns the C-string for the tooltip text of the unit's armor icon.
 	const char* getArmorTooltipString(CUnit* unit) {
 		//Default StarCraft behavior
@@ -257,59 +289,28 @@ namespace hooks {
 			break;
 		}
 
-		std::vector<std::string> statuses;
 
-		if (unit->status & UnitStatus::InAir)
-			statuses.push_back("Air");
-		else
-			statuses.push_back("Ground");
+		std::string plane = unit->status & UnitStatus::InAir ? "Air" : "Ground";
+
+		std::vector<std::string> statuses;
 		if (unit->status & UnitStatus::Burrowed)
 			statuses.push_back("Burrowed");
 		else if (unit->status & UnitStatus::Cloaked)
 			statuses.push_back("Cloaked");
-
-		if (unit->defensiveMatrixTimer > 0) {
-			statuses.push_back("Defensive Matrix (" + std::to_string(unit->defensiveMatrixHp / 256) + "hp)");
-		}
-		if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 0) {
-			statuses.push_back("Malediction");
-		}
-		if (scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) > 0) {
-			statuses.push_back("Knockout Drivers (" + std::to_string(scbw::get_generic_value(unit, ValueId::KnockoutDriversValue)) + ")");
-		}
-		if (scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0) {
-			statuses.push_back("Lobotomy Slow");
-		}
-		if (scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) > 0) {
-			statuses.push_back("Observance");
-		}
-		if (scbw::get_generic_value(unit, ValueId::EnergyDecay) > 0) {
-			statuses.push_back("Energy Decay (" + std::to_string(scbw::get_generic_value(unit, ValueId::EnergyDecay)) + ")");
-		}
-		if (scbw::get_generic_value(unit, ValueId::ArmorReduce) > 0) {
-			statuses.push_back("Armor Reduction (" + std::to_string(scbw::get_generic_value(unit, ValueId::ArmorReduce)) + ")");
-		}
-		if (unit->irradiateTimer != 0) {
-			statuses.push_back("Irradiated");
-		}
-		if (unit->ensnareTimer != 0) {
-			statuses.push_back("Ensnared");
-		}
-		if (unit->lockdownTimer != 0) {
-			statuses.push_back("Lockeddown");
-		}
-		if (unit->maelstromTimer != 0) {
-			statuses.push_back("Maelstromed");
-		}
-		if (unit->acidSporeCount != 0) {
-			statuses.push_back("Corrosive Spores (" + std::to_string(unit->acidSporeCount) + ")");
-		}
-		if (unit->plagueTimer != 0) {
-			statuses.push_back("Plagued");
-		}
-		if (unit->parasiteFlags) {
-			statuses.push_back("Parasited");
-		}
+		addStatus(statuses, "Defensive Matrix", unit->defensiveMatrixHp / 256, unit->defensiveMatrixTimer);
+		addStatus(statuses, "Malediction", -1, scbw::get_generic_timer(unit, ValueId::MaledictionSlow), true);
+		addStatus(statuses, "Malediction", scbw::get_generic_value(unit, ValueId::KnockoutDriversValue), scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer), true);
+		addStatus(statuses, "Lobotomy Slow", -1, scbw::get_generic_timer(unit, ValueId::LobotomySlow), true);
+		addStatus(statuses, "Observance", -1, scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff), true);
+		addStatus(statuses, "Energy Decay", scbw::get_generic_value(unit, ValueId::EnergyDecay), -1);
+		addStatus(statuses, "Armor Reduction", scbw::get_generic_value(unit, ValueId::ArmorReduce), -1);
+		addStatus(statuses, "Irradiated", -1, unit->irradiateTimer);
+		addStatus(statuses, "Ensnared", -1, unit->ensnareTimer);
+		addStatus(statuses, "Lockeddown", -1, unit->lockdownTimer);
+		addStatus(statuses, "Maelstromed", -1, unit->maelstromTimer);
+		addStatus(statuses, "Corrosive Spores", unit->acidSporeCount);
+		addStatus(statuses, "Plagued", -1, unit->plagueTimer);
+		addStatus(statuses, "Parasited", unit->parasiteFlags != 0);
 		// TODO: add optical flare, cowardice, malice
 
 		std::string status = formatStringVector(statuses);
@@ -319,6 +320,7 @@ namespace hooks {
 		if (bonusArmor > 0) text += "+" + std::to_string(bonusArmor);
 		text += "\nSize: " + std::string(sizeText);
 		text += "\nSight Range: " + std::to_string(sightRange);
+		text += "\nPlane: " + plane;
 		text += "\nStatus: " + status;
 
 		strncpy(buffer, text.c_str(), sizeof(buffer));
