@@ -554,7 +554,7 @@ namespace hooks {
 
 			damageType = weapons_dat::DamageType[weaponId];
 
-			// Dark Swarm - Defilier Ability
+			// Dark Swarm - Defiler Ability
 			if (scbw::isUnderDarkSwarm(target) && weapons_dat::MaxRange[weaponId] > 32 && dmgDivisor == 1) {
 				damageType = DamageType::Independent;
 			}
