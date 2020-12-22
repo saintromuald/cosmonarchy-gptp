@@ -234,28 +234,31 @@ namespace hooks {
 		const char* sizeLabel = "Size:";
 		const char* sizeText = "";
 
+		const int sightRange = units_dat::SightRange[unit->id];
+
 		switch (unitSize) {
 		case 1:
-			sizeText = "Small";
+			sizeText = "\017Small\002";
 			break;
 		case 2:
-			sizeText = "Medium";
+			sizeText = "\003Medium\002";
 			break;
 		case 3:
-			sizeText = "Large";
+			sizeText = "\021Large\002";
 			break;
 		default:
-			sizeText = "Unknown";
+			sizeText = "\004Unknown\002";
 			break;
 		}
 
-		if (bonusArmor > 0)
-			sprintf_s(buffer, sizeof(buffer), "\004%s\002\n%s %d+%d\nSize: %s",
-				armorUpgradeName, armorStr, baseArmor, bonusArmor, sizeText);
-		else
-			sprintf_s(buffer, sizeof(buffer), "\004%s\002\n%s %d\nSize: %s",
-				armorUpgradeName, armorStr, baseArmor, sizeText);
+		std::string text = "\004" + std::string(armorUpgradeName) + "\002";
+		text += "\n" + std::string(armorStr) + " " + std::to_string(baseArmor);
+		if (bonusArmor > 0) text += "+" + std::to_string(bonusArmor);
+		text += "\nSight Range: " + std::to_string(sightRange);
+		text += "\nSize: " + std::string(sizeText);
 
+		strncpy(buffer, text.c_str(), sizeof(buffer));
+		buffer[sizeof(buffer) - 1] = 0;
 		return buffer;
 	}
 
@@ -269,13 +272,13 @@ namespace hooks {
 		const char* shieldStr = statTxtTblNew->getString(779);					 //"Shields:"
 
 		u8 shieldUpgradeLevel = scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossPlasmaShields);
-		if (shieldUpgradeLevel > 0)
-			sprintf_s(buffer, sizeof(buffer), "\004%s\002\n%s %d+%d",
-				shieldUpgradeName, shieldStr, 0, shieldUpgradeLevel);
-		else
-			sprintf_s(buffer, sizeof(buffer), "\004%s\002\n%s %d",
-				shieldUpgradeName, shieldStr, 0);
 
+		std::string text = "\004" + std::string(shieldUpgradeName) + "\002";
+		text += "\n" + std::string(shieldStr) + " 0";
+		if (shieldUpgradeLevel > 0) text += "+" + std::to_string(shieldUpgradeLevel);
+
+		strncpy(buffer, text.c_str(), sizeof(buffer));
+		buffer[sizeof(buffer) - 1] = 0;
 		return buffer;
 	}
 
