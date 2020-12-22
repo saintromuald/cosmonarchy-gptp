@@ -333,9 +333,10 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	// Parasite - spawning broodlings on death
 	if (unit->parasiteFlags != 0) {
 		int supplyCount = scbw::getBroodlingCountFromSupply(unit);
+		int type = unit->status & UnitStatus::InAir ? UnitId::ZergBroodling : UnitId::ZergBroodling;
 		for (int player = 0; player < PLAYER_COUNT; player++) {
 			if (unit->parasiteFlags & (1 << player) && scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ParasiteArmTimer, 0) <= 1) {
-				scbw::createUnitFromAbility(UnitId::ZergBroodling, supplyCount, player, unit->position.x, unit->position.y, 720, scbw::getSourceQueens(unit)[1]);
+				scbw::createUnitFromAbility(type, supplyCount, player, unit->position.x, unit->position.y, 720, scbw::getSourceQueens(unit)[1]);
 			}
 		}
 	}
