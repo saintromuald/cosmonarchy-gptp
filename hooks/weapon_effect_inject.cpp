@@ -181,13 +181,13 @@ namespace {
 		}
 	}
   
- //    (void*)0x0048B797,                //  1 - Normal
- //    (void*)0x0048B80B,                // 15 - Yamato Gun
- //    (void*)0x0048B8B9,                //  2 - Splash (Radial)
- //    (void*)0x0048B8B9,                //  3 - Splash (Enemy)
-//		 (void*)0x0048B910				 //  4 - Lockdown
- //    (void*)0x0048B969,                //  6 - Parasite
-//	(void*)0x0048B9C8,					 //  7 - Broodlings
+//	(void*)0x0048B797,	// 1 - Normal
+//	(void*)0x0048B80B,	// 15 - Yamato Gun
+//	(void*)0x0048B8B9,	// 2 - Splash (Radial)
+//	(void*)0x0048B8B9,	// 3 - Splash (Enemy)
+//	(void*)0x0048B910	// 4 - Lockdown
+//	(void*)0x0048B969,	// 6 - Parasite
+//	(void*)0x0048B9C8,	// 7 - Broodlings
 
  const void* WeaponEffects_SwitchTable[] = {
    (void*)0x0048BBF6,      //  0 - None
