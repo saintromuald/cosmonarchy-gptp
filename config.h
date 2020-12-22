@@ -13,7 +13,7 @@ struct Config {
 	bool extended_camera_hotkeys = true;
 
 	// Hotkeys
-	bool grid_hotkeys = true;
+	bool grid_hotkeys = false;
 	std::array<std::string, 3> layout = { "QWE", "ASD", "ZXC" };
 
 	// Debug
@@ -21,9 +21,9 @@ struct Config {
 	bool dump_desync_game_data_arrays = false;
 	bool dump_desync_animation_info = false;
 	bool dump_crash_info = false;*/
+
+	bool ConfigExists();
+	void LoadConfig();
+	void SaveConfig();
 };
 extern Config config;
-
-extern bool ConfigExists();
-extern void LoadConfig();
-extern void SaveConfig();

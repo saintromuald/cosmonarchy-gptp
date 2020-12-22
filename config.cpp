@@ -5,11 +5,11 @@
 
 Config config;
 
-bool ConfigExists() {
+bool Config::ConfigExists() {
 	return std::ifstream(CONFIG_FILENAME).good();
 }
 
-void LoadConfig() {
+void Config::LoadConfig() {
 	if (ConfigExists()) {
 		YAML::Node configNode = YAML::LoadFile(CONFIG_FILENAME);
 
@@ -28,7 +28,7 @@ void LoadConfig() {
 	SaveConfig();
 }
 
-void SaveConfig() {
+void Config::SaveConfig() {
 	YAML::Emitter out;
 	out << YAML::BeginMap;
 
