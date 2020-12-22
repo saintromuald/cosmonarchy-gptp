@@ -137,7 +137,7 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	int i = 0;
 	for (std::string s : targetFlags) {
 		targetFlagsText += s;
-		if (++i != targetFlags.size()) targetFlagsText += " | ";
+		if (++i != targetFlags.size()) targetFlagsText += ", ";
 	}
 
 	std::string splashRadText = "Splash Radius:";
