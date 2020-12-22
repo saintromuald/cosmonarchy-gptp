@@ -175,82 +175,21 @@ namespace hooks {
 
 					switch (unit->id) {
 					case UnitId::ZergLarva:
-						eggId = UnitId::ZergEgg;
-						break;
-					case UnitId::ZergHydralisk:
-						eggId = UnitId::ZergEgg;
-						break;
 					case UnitId::ZergZergling:
-						eggId = UnitId::ZergEgg;
-						break;
-					case UnitId::ZergNathrokor:
-						eggId = UnitId::ZergCocoon;
-						break;
-					case UnitId::ZergMutalisk:
-						
-						eggId = UnitId::ZergCocoon;
-						break;
-					case UnitId::ZergGorgrokor:
-						eggId = UnitId::ZergCocoon;
-						break;
+					case UnitId::ZergVorvaling:
+					case UnitId::ZergHydralisk:
+					case UnitId::ZergBactalisk:
+					case UnitId::ZergZoryusthaleth:
 					case UnitId::ZergUltrakor:
 						eggId = UnitId::ZergEgg;
 						break;
-					case UnitId::ZergOverlord:
-						eggId = UnitId::ZergCocoon;
-						break;
-					case UnitId::ZergIroleth:
-						eggId = UnitId::ZergCocoon;
-						break;
-						/*
-					case UnitId::ZergLarva:
-						eggId = UnitId::ZergEgg;
-						break;
-
-					case UnitId::ZergHydralisk:
-						if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergLurker) {
-							eggId = UnitId::ZergLurkerEgg;
-						}
-						else {
-							eggId = UnitId::EggBasilisk;
-						}
-						break;
-					case UnitId::ZergZergling:
-						if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergNathrokor) {
-							eggId = UnitId::EggNathrokor;
-						}
-						else {
-							eggId = UnitId::EggVorvaling;
-						}						
-						break;
 					case UnitId::ZergNathrokor:
-						eggId = UnitId::EggKalkaleth;
-						break;
 					case UnitId::ZergMutalisk:
-						if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergGorgoleth) {
-							eggId = UnitId::EggGorgoleth;
-						}
-						else {
-							eggId = UnitId::EggDevourer;
-						}
-						break;
-					case UnitId::ZergGorgoleth:
+					case UnitId::ZergGorgrokor:
+					case UnitId::ZergOverlord:
+					case UnitId::ZergIroleth:
 						eggId = UnitId::ZergCocoon;
 						break;
-					case UnitId::ZergUltralisk:
-						if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergAlkajelisk) {
-							eggId = UnitId::EggAlkajelisk;
-						}
-						else {
-							eggId = UnitId::EggKeskathalor;
-						}
-						break;
-					case UnitId::ZergOverlord:
-						eggId = UnitId::EggIroleth;
-						break;
-					case UnitId::ZergIroleth:
-						eggId = UnitId::EggOthstoleth;
-						break;*/
 					default:
 						if (unit->id != UnitId::ProtossHighTemplar) {
 							bStopThere = true;
@@ -414,16 +353,16 @@ namespace hooks {
 	//Check if @p unit can morph into @p morphUnitId.
 	bool unitCanMorphHook(CUnit* unit, u16 morphUnitId) {
 		//Default StarCraft behavior
-		if (unit->id == UnitId::ZergHydralisk) {
-			if (morphUnitId == UnitId::ZergBactalisk 
-			||	morphUnitId == UnitId::ZergLurker) {
-				return true;
-			}
-		}
 
 		if (unit->id == UnitId::ZergZergling) {
 			if (morphUnitId == UnitId::ZergVorvaling
 			||	morphUnitId == UnitId::ZergNathrokor) {
+				return true;
+			}
+		}
+
+		if (unit->id == UnitId::ZergVorvaling) {
+			if (morphUnitId == UnitId::ZergQuazilisk) {
 				return true;
 			}
 		}
@@ -434,8 +373,27 @@ namespace hooks {
 			}
 		}
 
+		if (unit->id == UnitId::ZergHydralisk) {
+			if (morphUnitId == UnitId::ZergBactalisk
+				|| morphUnitId == UnitId::ZergLurker) {
+				return true;
+			}
+		}
+
+		if (unit->id == UnitId::ZergBactalisk) {
+			if (morphUnitId == UnitId::ZergAlmaksalisk) {
+				return true;
+			}
+		}
+
 		if (unit->id == UnitId::ZergGorgrokor) {
 			if (morphUnitId == UnitId::ZergGuardian) {
+				return true;
+			}
+		}
+
+		if (unit->id == UnitId::ZergZoryusthaleth) {
+			if (morphUnitId == UnitId::ZergDefiler) {
 				return true;
 			}
 		}
@@ -500,56 +458,6 @@ namespace hooks {
 		else {
 			return UnitId::ZergEgg;
 		}
-		/*
-		if (unitId == UnitId::ZergLarva)
-			return UnitId::ZergEgg;
-
-		if (unitId == UnitId::ZergMutalisk) {
-			if (resultId == UnitId::ZergDevourer)
-				return UnitId::EggDevourer;
-			return UnitId::EggGorgoleth;
-		}
-
-		if (unitId == UnitId::ZergGorgoleth) {
-			return UnitId::ZergCocoon;
-		}
-
-		if (unitId == UnitId::ZergHydralisk) {
-			if (resultId == UnitId::ZergLurker) {
-				return UnitId::ZergLurkerEgg;
-			}
-			return UnitId::EggBasilisk;
-		}
-
-		if (unitId == UnitId::ZergZergling)	{
-			if (resultId == UnitId::ZergNathrokor) {
-				return UnitId::EggNathrokor;
-			}
-			return UnitId::EggVorvaling;
-		}
-
-		if (unitId == UnitId::ZergNathrokor) {
-			return UnitId::EggKalkaleth;
-		}
-
-		if (unitId == UnitId::ZergUltralisk) {
-			if (resultId == UnitId::ZergAlkajelisk) {
-				return UnitId::EggAlkajelisk;
-			}
-			else {
-				return UnitId::EggKeskathalor;
-			}
-		}
-
-		if (unitId == UnitId::ZergOverlord) {
-			return UnitId::EggIroleth;
-		}
-
-		if (unitId == UnitId::ZergIroleth) {
-			return UnitId::ZergOthstoleth;
-		}
-
-		*/
 		return UnitId::None;
 	}
 
@@ -558,40 +466,6 @@ namespace hooks {
 	u16 getCancelMorphRevertTypeHook(CUnit* eggUnit) {
 		//Default StarCraft behavior
 
-		/*if (eggUnit->id == UnitId::EggGorgoleth
-		||	eggUnit->id == UnitId::EggDevourer) {
-			return UnitId::ZergMutalisk;
-		}
-		if (eggUnit->id == UnitId::ZergCocoon) {
-			return UnitId::ZergGorgoleth;
-		}
-		if (eggUnit->id == UnitId::ZergLurkerEgg) {
-			return UnitId::ZergHydralisk;
-		}
-		if (eggUnit->id == UnitId::EggBasilisk) {
-			return UnitId::ZergHydralisk;
-		}
-		if (eggUnit->id == UnitId::EggVorvaling) {
-			return UnitId::ZergZergling;
-		}
-		if (eggUnit->id == UnitId::EggNathrokor) {
-			return UnitId::ZergZergling;
-		}
-		if (eggUnit->id == UnitId::EggKalkaleth) {
-			return UnitId::ZergNathrokor;
-		}
-		if (eggUnit->id == UnitId::EggIroleth) {
-			return UnitId::ZergOverlord;
-		}
-		if (eggUnit->id == UnitId::EggOthstoleth) {
-			return UnitId::ZergIroleth;
-		}
-		if (eggUnit->id == UnitId::EggKeskathalor) {
-			return UnitId::ZergUltralisk;
-		}
-		if (eggUnit->id == UnitId::EggAlkajelisk) {
-			return UnitId::ZergUltralisk;
-		}*/
 		auto source = scbw::get_generic_value(eggUnit, ValueId::EggOrigin);
 		if (eggUnit->getRace() == RaceId::Zerg
 		&&  eggUnit->id != UnitId::ZergInfestedTerran) {
@@ -613,12 +487,7 @@ namespace hooks {
 			return 0;
 
 		//No offset, since the morphed unit should stay where it is
-		if (unit->previousUnitType == UnitId::ZergCocoon/*
-		||	unit->previousUnitType == UnitId::EggKalkaleth
-		||	unit->previousUnitType == UnitId::EggDevourer
-		||	unit->previousUnitType == UnitId::EggGorgoleth
-		||	unit->previousUnitType == UnitId::EggIroleth
-		||	unit->previousUnitType == UnitId::EggOthstoleth*/) {
+		if (unit->previousUnitType == UnitId::ZergCocoon) {
 			return 0;
 		}
 

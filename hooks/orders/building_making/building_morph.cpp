@@ -831,8 +831,13 @@ namespace hooks {
 
 		case UnitId::ZergSpawningPool:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergVorvalPond, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergQuazilQuay, ignoreIncomplete);
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergNathrokLake, ignoreIncomplete);
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
+			break;
+
+		case UnitId::ZergVorvalPond:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergQuazilQuay, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergNathrokLake:
@@ -860,7 +865,12 @@ namespace hooks {
 
 		case UnitId::ZergHydralDen:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergBactalDen, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergAlmakAntre, ignoreIncomplete);
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergLurkerDen, ignoreIncomplete);
+			break;
+
+		case UnitId::ZergBactalDen:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergAlmakAntre, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergEvolutionChamber:
@@ -870,6 +880,10 @@ namespace hooks {
 		case UnitId::ZergUltrakCavern:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergAlkajChasm, ignoreIncomplete);
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergKeskathGrotto, ignoreIncomplete);
+			break;
+
+		case UnitId::ZergZoryusShroud:
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergDefilerMound, ignoreIncomplete);
 			break;
 		}
 		return unitCount;
