@@ -887,8 +887,9 @@ namespace hooks {
 
 					// Incubators - Broodling behavior
 					int supplyCount = scbw::canSpawnBroodling(target) ? 2 : 0;// scbw::getBroodlingCountFromSupply(target);
+					int type = attacker->id;
 					if (attacker->id == UnitId::ZergBroodling) {
-						scbw::createUnitFromAbility(UnitId::ZergBroodling, supplyCount, attacker->playerId, target->position.x, target->position.y, 720, scbw::getSourceQueens(attacker)[0]);
+						scbw::createUnitFromAbility(type, supplyCount, attacker->playerId, target->position.x, target->position.y, 720, scbw::getSourceQueens(attacker)[0]);
 					}
 
 					// Ecclesiast - Astral Blessing proc
