@@ -318,9 +318,8 @@ namespace hooks {
 		addStatus(statuses, "Observance", -1, scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff), TimerType::Aise);
 		addStatus(statuses, "Kaiser Rampage", -1, scbw::get_generic_timer(unit, ValueId::KaiserRampage), TimerType::Aise);
 		addStatus(statuses, "Hallucinating", -1, scbw::get_generic_timer(unit, ValueId::HallucinatingTimer), TimerType::Aise);
-		//addStatus(statuses, "Ectomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::EggBoostTimer), TimerType::Aise); // <- can't read tooltips from eggs
+		//addStatus(statuses, "Ectomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::EggBoostTimer), TimerType::Aise); // <- currently can't read tooltips from eggs
 		//addStatus(statuses, "Endomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer), TimerType::Aise); // <- nor mineral fields
-		//addStatus(statuses, "Nanite Field", -1, scbw::get_generic_timer(unit, ValueId::NaniteFieldTimer), TimerType::Aise); // <- not trackable, timer is too short
 		addStatus(statuses, "Adrenaline Packs", -1, scbw::get_generic_timer(unit, ValueId::Adrenaline), TimerType::Aise);
 		addStatus(statuses, "Adrenal Frezny", -1, scbw::get_generic_timer(unit, ValueId::NathrokorTimer), TimerType::Aise);
 
@@ -331,7 +330,7 @@ namespace hooks {
 		addStatus(statuses, "Reverse Thrust", scbw::get_generic_value(unit, ValueId::ReverseThrust));
 		addStatus(statuses, "Sublime Shepherd", scbw::get_generic_value(unit, ValueId::SublimeShepherd));
 		addStatus(statuses, "Lazarus Agent", scbw::get_generic_value(unit, ValueId::LazarusAgent));
-		addStatus(statuses, "Expanded Storage", scbw::get_generic_value(unit, ValueId::TreasuryStacks)); // <- only works for overlord and it's morphs
+		addStatus(statuses, "Expanded Storage", scbw::get_generic_value(unit, ValueId::TreasuryStacks)); // <- currently only works for overlord and it's morphs
 		addStatus(statuses, "Khaydarian Eclipse", scbw::get_generic_value(unit, ValueId::ExemplarSwitch));
 		addStatus(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && scbw::get_generic_value(unit, ValueId::TempoChange) == 0);
 		addStatus(statuses, "Tempo Down", scbw::get_generic_value(unit, ValueId::TempoChange) == 1);
