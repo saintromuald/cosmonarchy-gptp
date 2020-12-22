@@ -726,6 +726,7 @@ bool isConventionalUnitMorphSource(u16 id, bool allow_larvae, bool allow_high_te
 	case UnitId::ZergMutalisk:
 	case UnitId::ZergGorgrokor:
 	case UnitId::ZergHydralisk:
+	case UnitId::ZergBactalisk:
 	case UnitId::ZergZergling:
 	case UnitId::ZergVorvaling:
 	case UnitId::ZergNathrokor:
@@ -758,6 +759,7 @@ bool isZergBuildingMorphResult(u16 id){
 	case UnitId::ZergSporeColony:
 	case UnitId::ZergSunkenColony:
 	case UnitId::ZergBactalDen:
+	case UnitId::ZergAlmakAntre:
 	case UnitId::ZergLurkerDen:
 	case UnitId::ZergVorvalPond:
 	case UnitId::ZergQuazilQuay:
@@ -783,6 +785,7 @@ bool isZergBuildingMorphSource(u16 id){
 	case UnitId::ZergGorgrokApiary:
 	case UnitId::ZergCreepColony:
 	case UnitId::ZergHydralDen:
+	case UnitId::ZergBactalDen:
 	case UnitId::ZergSpawningPool:
 	case UnitId::ZergVorvalPond:
 	case UnitId::ZergNathrokLake:
