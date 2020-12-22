@@ -190,31 +190,32 @@ namespace {
 //	(void*)0x0048B9C8,	// 7 - Broodlings
 
  const void* WeaponEffects_SwitchTable[] = {
-   (void*)0x0048BBF6,      //  0 - None
-   normalWrapper,          //  1 - Normal
-   radialSplashWrapper,    //  2 - Splash (Radial)
-   enemySplashWrapper,     //  3 - Splash (Enemy)
-   lockdownWrapper,      //  4 - Lockdown
-   (void*)0x0048B8B9,      //  5 - Nuclear Missile
-   parasiteWrapper,        //  6 - Parasite
-   broodlingsWrapper,      //  7 - Broodlings
-   (void*)0x0048BA0F,      //  8 - EMP Shockwave
-   (void*)0x0048BA67,      //  9 - Irradiate
-   (void*)0x0048BAAB,      // 10 - Ensnare
-   (void*)0x0048BAC8,      // 11 - Plague
-   (void*)0x0048B93D,      // 12 - Stasis Field
-   (void*)0x0048BAE2,      // 13 - Dark Swarm
-   (void*)0x0048BB00,      // 14 - Consume
-   yamatoWrapper,          // 15 - Yamato Gun
-   (void*)0x0048BA2C,      // 16 - Restoration
-   (void*)0x0048BB35,      // 17 - Disruption Web
-   (void*)0x0048BB53,      // 18 - Corrosive Acid
-   (void*)0x0048BBE9,      // 19 - Mind Control -- unused
-   (void*)0x0048BBE9,      // 20 - Feedback -- unused
-   (void*)0x0048BBC2,      // 21 - Optical Flare
-   (void*)0x0048BB99,      // 22 - Maelstrom
-   friendlySplashWrapper,  // 23 - Unused
-   airSplashWrapper,       // 24 - Splash (Air)
+   (void*)0x0048BBF6,		  //  0 - None
+   normalWrapper,			  //  1 - Normal
+   radialSplashWrapper,		  //  2 - Splash (Radial)
+   enemySplashWrapper,		  //  3 - Splash (Enemy)
+   lockdownWrapper,			  //  4 - Lockdown
+   (void*)0x0048B8B9,		  //  5 - Nuclear Missile
+   parasiteWrapper,			  //  6 - Parasite
+   broodlingsWrapper,		  //  7 - Broodlings
+   (void*)0x0048BA0F,		  //  8 - EMP Shockwave
+   (void*)0x0048BA67,		  //  9 - Irradiate
+   (void*)0x0048BAAB,		  // 10 - Ensnare
+   (void*)0x0048BAC8,		  // 11 - Plague
+   (void*)0x0048B93D,		  // 12 - Stasis Field
+   (void*)0x0048BAE2,		  // 13 - Dark Swarm
+   (void*)0x0048BB00,		  // 14 - Consume
+   yamatoWrapper,			  // 15 - Yamato Gun
+   (void*)0x0048BA2C,		  // 16 - Restoration
+   (void*)0x0048BB35,		  // 17 - Disruption Web
+   (void*)0x0048BB53,		  // 18 - Corrosive Acid
+   (void*)0x0048BBE9,		  // 19 - Mind Control -- unused
+   (void*)0x0048BBE9,		  // 20 - Feedback -- unused
+   (void*)0x0048BBC2,		  // 21 - Optical Flare
+   (void*)0x0048BB99,		  // 22 - Maelstrom
+   friendlySplashWrapper,	  // 23 - Unused
+   (void*)0x0048B828,		  // 24 - Splash (Air)
+//   airSplashWrapper,		  // 24 - Splash (Air)
    // Add more !
  };
   
