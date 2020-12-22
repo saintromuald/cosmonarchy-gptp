@@ -265,6 +265,8 @@
     <ClCompile Include="hooks\misc\hydra_specific_inject.cpp" />
     <ClCompile Include="hooks\miss_chance.cpp" />
     <ClCompile Include="hooks\miss_chance_inject.cpp" />
+    <ClCompile Include="hooks\neutral_related.cpp" />
+    <ClCompile Include="hooks\neutral_related_inject.cpp" />
     <ClCompile Include="hooks\orders\ai\ai_orders.cpp" />
     <ClCompile Include="hooks\orders\ai\ai_orders_inject.cpp" />
     <ClCompile Include="hooks\orders\base_orders\attack_orders.cpp" />
@@ -530,6 +532,7 @@
     <ClInclude Include="hooks\interface\uifeatures\uifeatures.h" />
     <ClInclude Include="hooks\limits\fake_unitid_extender.h" />
     <ClInclude Include="hooks\limits\misc_extenders.h" />
+    <ClInclude Include="hooks\neutral_related.h" />
     <ClInclude Include="hooks\trap_hooks.h" />
     <ClInclude Include="hooks\unit_movement.h" />
     <ClInclude Include="lib_src\yaml-cpp\collectionstack.h" />
