@@ -182,7 +182,7 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 
 	// Cooldown
 	std::stringstream ss;
-	ss << std::setprecision(2) << attackCd;
+	ss << std::setprecision(3) << attackCd;
 	text += "\n" + std::string(attackCdText) + " " + ss.str() + "s";
 
 	// Range
