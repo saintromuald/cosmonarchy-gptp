@@ -407,7 +407,7 @@ namespace hooks {
 	}
 
 //  case WPNEffect_Splash_Air:
-	void splashAir(CBullet* bullet, u32 weaponId) { // 0048B790
+	void airSplash(CBullet* bullet, u32 weaponId) { // 0048B790
 		CUnit* target = bullet->attackTarget.unit;
 		if (target == NULL) {
 			return;
@@ -470,9 +470,9 @@ namespace hooks {
 		}
 	}
 
-	s32 airSplashProc2(CUnit* a1, CBullet* a2) {
+	s32 airSplashProc2(CUnit* unit, CBullet* bullet) {
 		*isInGroundSplashProc = 0;
-		return splashFunc(a2, a1);
+		return splashFunc(bullet, unit);
 	}
 
   // clone of 'Yamato' damage for reference
@@ -648,7 +648,7 @@ namespace {
 
 	const u32 Func_randomizeShort = 0x004DC4A0;
 	s16 randomizeShort(s32 counts) {
-		static s16 result;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, counts
@@ -656,7 +656,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return result;
+		return (s16)result;
 	}
 
 	const u32 Func_splashFunc = 0x0048B570;
