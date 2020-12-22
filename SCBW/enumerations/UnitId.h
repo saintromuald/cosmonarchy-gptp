@@ -470,6 +470,8 @@ enum Enum {
 	TerranGallery									= 185,		// Independent Jump Gate
 	TerranSalvoYard									= 189,		// Warp Gate
 	TerranFutureStation								= 192,		// Terran Marker
+	TerranIronFoundry								= 198,		// Terran Flag Beacon
+	TerranCaptaincy									= 199,		// Protoss Flag Beacon
 	TerranParticleAccelerator						= 200,		// Power Generator
 	TerranNaniteAssembly							= 203,		// Floor Missile Trap
 	TerranTreasury									= 215,		// Flag
@@ -533,8 +535,6 @@ enum Enum {
 	ZergIroleth										= 222,		// Protoss Gas Orb Type 1
 
 //Zerg-Egg
-	EggBasilisk										= 198,		// Terran Flag Beacon
-	EggKeskathalor									= 199,		// Protoss Flag Beacon
 	EggVorvaling									= 216,		// Young Chrysalis
 	EggNathrokor									= 217,		// Psi Emitter
 	EggAlkajelisk									= 218,		// Data Disc
