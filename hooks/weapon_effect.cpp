@@ -178,7 +178,6 @@ namespace hooks {
 				inner = 30;
 			}
 
-			// Nathrokor weapon
 			if(isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet,target)){
 				weaponBulletShot(target, bullet, divisor); // 100% damage
 				continue;
@@ -195,7 +194,6 @@ namespace hooks {
 				medium = 37;
 			}
 
-			// Nathrokor weapon
 			if (weaponId == WeaponId::PlasmidBreath) {
 				r = 32;
 			}
@@ -465,8 +463,22 @@ namespace hooks {
 			// We found units in a square around the target, but is the target within the splash radius?
 			s16 outer = weapons_dat::OuterSplashRadius[bullet->weaponType];
 
+			s32 divisor = 1;
+
 			// Inner radius 
 			s16 inner = weapons_dat::InnerSplashRadius[bullet->weaponType];
+			if (isUnitDistanceWithin(target, bullet, inner)) {
+				weaponBulletShot(target, bullet, divisor); // 100% damage
+				continue;
+			}
+			// Medium radius
+			s16 medium = weapons_dat::MediumSplashRadius[bullet->weaponType];
+			if (isUnitDistanceWithin(target, bullet, medium)) {
+				weaponBulletShot(target, bullet, divisor * 2); // 50% damage
+				continue;
+			}
+			// Outer radius
+			weaponBulletShot(target, bullet, divisor * 4); // 25% damage
 		}
 	}
 
