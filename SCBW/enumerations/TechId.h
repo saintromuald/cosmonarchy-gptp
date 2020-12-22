@@ -74,9 +74,9 @@ enum Enum {
 
 //Zerg
 	EnsnaringBrood			= 13, // Queen disruptive enchantment ability
-	SwarmingOmen			= 26, // Zoryusthaleth movement speed beacon ability
+	Reconstitution			= 26, // Zoryusthaleth corpse-recycling toggle
 	EssenceDrain			= 35, // Gorgoleth energy steal ability
-	Reconstitution			= 42, // Zoryusthaleth corpse recycling toggle
+	SwarmingOmen			= 42, // Zoryusthaleth movement speed beacon ability
 
 
 	//extended
