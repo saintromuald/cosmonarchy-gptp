@@ -166,7 +166,9 @@ void globals::unitFrameHook(CUnit* unit) {
 }
 void globals::unitDeathHook(CUnit* unit) {
 	if (scbw::get_generic_value(unit, ValueId::LazarusAgent) == 1) {
-		initLazarusAgent(unit->position.x, unit->position.y, unit->playerId, unit->id, unit->energy, NULL);
+		
+		initLazarusAgent(unit->position.x, unit->position.y, unit->playerId, unit->id, unit->energy, 
+			scbw::get_generic_unit(unit, ValueId::LazarusAgentApostleSrc));
 	}
 	for (int i = 0; i < this->apostleAgents.size(); i++) {
 		if (apostleAgents[i].creator == unit) {
@@ -191,12 +193,16 @@ void globals::frameHook() {
 		}
 		else {
 			//revive unit
+//			scbw::printFormattedText("Agent Creator: 0x%X", agent.creator);
 			auto revived = scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y, agent.creator);
 			if (revived) {
 				revived->setHp(units_dat::MaxHitPoints[revived->id] / 2);
 				revived->energy = agent.energy;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
 				scbw::set_generic_value(revived, ValueId::LazarusNoHeal, 1);
+				revived->status |= UnitStatus::Invincible;
+				scbw::set_generic_value(revived, ValueId::IsReviving, 1);
+
 				
 			}
 			apostleAgents.erase(apostleAgents.begin() + a);
@@ -369,6 +375,7 @@ void globals::initLazarusAgent(int x, int y, u8 player, u32 unitId, u32 energy, 
 	a.unitId = unitId;
 	a.energy = energy;
 	a.creator = unit;
+//	scbw::printFormattedText("Set creator to 0x%X", a.creator);
 //	scbw::printFormattedText("Try push back %d", apostleAgents.size());
 	apostleAgents.push_back(a);
 }

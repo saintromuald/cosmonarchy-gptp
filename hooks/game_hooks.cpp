@@ -642,6 +642,12 @@ namespace hooks {
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
 				Globals.unitFrameHook(unit);
 				//hooks::ShowHealthBar(unit);
+
+				if (scbw::get_generic_value(unit, ValueId::IsReviving) == 1 &&
+					unit->sprite->mainGraphic->animation != IscriptAnimation::Unused1) {
+					unit->status &= ~UnitStatus::Invincible;
+					scbw::set_generic_value(unit, ValueId::IsReviving, 0);
+				}
 				
 				//Zoryusthaleth - Reconstitution
 				
