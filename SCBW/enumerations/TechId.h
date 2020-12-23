@@ -56,27 +56,27 @@ enum Enum {
 	// HYDRA \\
 
 //Terran
-	LobotomyMine					= 1,
-	ReverseThrust					= 2,  // Wyvern fire while moving switch
-	LandGrab						= 17, // Wyvern target ground ability
-	AdministerMedstims				= 24, // Shaman organic heal ability
-	LazarusAgent					= 32, // Apostle ability
-	TempoChange						= 36, // Madrigal weapon switch ability
-	Skyfall							= 37, // Paladin missile salvo ability
-	NaniteField						= 38, // Shaman mech repair ability
-	Observance						= 39, // Science Vessel armor reduction ability
-	SublimeShepherd					= 40, // Azazel cloud cover ability
-	PowerTransfer					= 41, // Savant energy transfer ability
+	LobotomyMine			= 1,
+	ReverseThrust			= 2,  // Wyvern fire while moving switch
+	LandGrab				= 17, // Wyvern target ground ability
+	AdministerMedstims		= 24, // Shaman organic heal ability
+	LazarusAgent			= 32, // Apostle ability
+	TempoChange				= 36, // Madrigal weapon switch ability
+	Skyfall					= 37, // Paladin missile salvo ability
+	NaniteField				= 38, // Shaman mech repair ability
+	Observance				= 39, // Science Vessel armor reduction ability
+	SublimeShepherd			= 40, // Azazel cloud cover ability
+	PowerTransfer			= 41, // Savant energy transfer ability
 
 //Protoss
-	PlanetCracker					= 29, // Star Sovereign damage ability
-	PhaseLink						= 33, // Clarion shield damage distribution ability
+	PlanetCracker			= 29, // Star Sovereign damage ability
+	PhaseLink				= 33, // Clarion shield damage distribution ability
 
 //Zerg
-	EnsnaringBrood					= 13, // Queen disruptive enchantment ability
-	Reconstitution					= 26, // Zoryusthaleth corpse-recycling toggle
-	EssenceDrain					= 35, // Gorgoleth energy steal ability
-	SwarmingOmen					= 42, // Zoryusthaleth movement speed beacon ability
+	EnsnaringBrood			= 13, // Queen disruptive enchantment ability
+	Reconstitution			= 26, // Zoryusthaleth corpse-recycling toggle
+	EssenceDrain			= 35, // Gorgoleth energy steal ability
+	SwarmingOmen			= 42, // Zoryusthaleth movement speed beacon ability
 
 
 	//extended
