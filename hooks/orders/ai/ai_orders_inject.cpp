@@ -7,13 +7,14 @@ namespace {
 		static CUnit* result;
 		static CUnit* parent;
 		__asm {
-			PUSHAD
 			MOV result, EAX
 			MOV parent, ECX
+			PUSHAD
 		}
 		hooks::AI_TrainingUnit(result, parent);
 		__asm {
 			POPAD
+			RETN
 		}
 	}
 }
