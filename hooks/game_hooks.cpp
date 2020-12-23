@@ -483,9 +483,6 @@ public:
 	std::vector<CThingy*> findCorpses(int left, int right, int top, int bottom) {
 		std::vector<CThingy*> corpseList;
 		for (auto a : corpses) {
-			scbw::printFormattedText("Corpse %d %d, bounds %d -> %d, %d -> %d",
-				a->sprite->position.x, a->sprite->position.y,
-				left, right, top, bottom);
 			if (a->sprite->position.x >= left && a->sprite->position.x <= right &&
 				a->sprite->position.y >= top && a->sprite->position.y <= bottom) {
 				corpseList.push_back(a);
@@ -495,7 +492,7 @@ public:
 	}
 	void sortAllCorpses() {
 		for (CThingy* ls = *first_lone_sprite; ls; ls = ls->next) {
-			if (ls->sprite && !(ls->sprite->flags & CSprite_Flags::Flag01)) {
+			if (ls->sprite) {
 				switch (ls->sprite->spriteId) {
 				case SpriteId::Broodling_Remnants:
 				case SpriteId::Defiler_Remnants:
@@ -647,16 +644,11 @@ namespace hooks {
 				if (unit->id == UnitId::ZergZoryusthaleth && 
 					scbw::get_generic_value(unit, ValueId::Reconstitution) == 1) {
 					auto r = 128;
-					scbw::printFormattedText("Search for corpses");
 					std::vector<CThingy*> corpseList = corpses.findCorpses(unit->position.x - r,
 						unit->position.x + r, unit->position.y - r, unit->position.y + r
 					);
-					if (corpseList.size() > 0) {
-						scbw::printFormattedText("Found corpses");
-					}
-					std::vector<Point16> positions;
 					for (auto a : corpseList) {
-						if (unit->energy >= 5 * 256) {
+						if (unit->energy >= 5 * 256 && !(a->sprite->flags & CSprite_Flags::Flag04)) {
 							unit->spendUnitEnergy(5 * 256);
 							auto corpseheal = reconstitutionProc(unit);
 							scbw::UnitFinder unitFinder(unit->getX() - r,
@@ -664,16 +656,14 @@ namespace hooks {
 								unit->getX() + r,
 								unit->getY() + r);
 							unitFinder.forEach(corpseheal);
-//							positions.push_back(a->sprite->position);
-							//a->sprite->mainGraphic->free();
-//							a->sprite->flags |= CSprite_Flags::Flag01;
-						}
-					}
-					for (auto a : positions) {
-						CThingy* thingy = scbw::createThingy(SpriteId::Consume, a.x, a.y, 11);
-						if (thingy != NULL) {
-							thingy->sprite->elevationLevel = 11;
-							scbw::setThingyVisibilityFlags(thingy);
+/*							CThingy* thingy = scbw::createThingy(_set your id here_, 
+								a->sprite->position.x,a->sprite->position.y, 11);
+							if (thingy != NULL) {
+								thingy->sprite->elevationLevel = 11;
+								scbw::setThingyVisibilityFlags(thingy);
+							}*/
+							a->sprite->flags |= CSprite_Flags::Flag04;
+							a->sprite->playIscriptAnim(IscriptAnimation::Death);
 						}
 					}
 				}
