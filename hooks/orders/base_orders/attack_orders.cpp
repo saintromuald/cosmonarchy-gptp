@@ -1297,7 +1297,7 @@ bool isUnitCritter(CUnit* unit) {
 
 	bool bReturnValue;
 
-	if(
+/*	if(
 		unit->id == UnitId::Critter_Rhynadon ||
 		unit->id == UnitId::Critter_Bengalaas ||
 		unit->id == UnitId::Critter_Ragnasaur ||
@@ -1306,7 +1306,7 @@ bool isUnitCritter(CUnit* unit) {
 		unit->id == UnitId::Critter_Ursadon
 	)
 		bReturnValue = true;
-	else
+	else*/
 		bReturnValue = false;
 
 	return bReturnValue;
