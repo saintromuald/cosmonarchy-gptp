@@ -165,11 +165,7 @@ void globals::unitFrameHook(CUnit* unit) {
 	}
 }
 void globals::unitDeathHook(CUnit* unit) {
-	if (scbw::get_generic_value(unit, ValueId::LazarusAgent) == 1) {
-		
-		initLazarusAgent(unit->position.x, unit->position.y, unit->playerId, unit->id, unit->energy, 
-			scbw::get_generic_unit(unit, ValueId::LazarusAgentApostleSrc));
-	}
+	
 	for (int i = 0; i < this->apostleAgents.size(); i++) {
 		if (apostleAgents[i].creator == unit) {
 			apostleAgents[i].creator=NULL;

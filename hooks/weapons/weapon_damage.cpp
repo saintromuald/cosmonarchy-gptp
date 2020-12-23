@@ -766,6 +766,11 @@ namespace hooks {
 						target->getY() + 288);
 					unitFinder.forEach(ascendancyProc());
 				}
+				if (scbw::get_generic_value(target, ValueId::LazarusAgent) == 1) {
+					Globals.initLazarusAgent(target->position.x, target->position.y,
+						target->playerId, target->id, target->energy,
+						(CUnit*)scbw::get_generic_value(target, ValueId::LazarusAgentApostleSrc));
+				}
 			}
 
 			// Observance - Science Vessel ability

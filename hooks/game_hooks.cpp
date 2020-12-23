@@ -792,7 +792,7 @@ namespace hooks {
 							if (n.match(picked_unit)) {
 								//apply lazarus agent
 								scbw::set_generic_value(picked_unit, ValueId::LazarusAgent, 1);
-								scbw::set_generic_unit(picked_unit, ValueId::LazarusAgentApostleSrc, unit);
+								scbw::set_generic_value(picked_unit, ValueId::LazarusAgentApostleSrc, (u32)unit);
 								picked_unit->sprite->createTopOverlay(1265);
 							}
 						}
