@@ -1270,7 +1270,7 @@ namespace hooks {
 				if (scbw::get_generic_value(unit, ValueId::SwarmingOmenAbility) == 1) {
 					scbw::set_generic_timer(unit, ValueId::SwarmingOmenTimer, 5*24);
 					scbw::set_generic_value(unit, ValueId::SwarmingOmenAbility, 0);
-					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::SwarmingOmen]);
+					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::SwarmingOmen]*256);
 				}
 
 				// Remove Swarming Omen overlay
