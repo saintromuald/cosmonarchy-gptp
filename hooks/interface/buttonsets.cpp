@@ -669,7 +669,11 @@ namespace hooks {
 
 		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
 		u16* const BUTTONSET_PORTRAIT_BUTTONSETID = (u16*)0x0068C14C;
-		BUTTON_SET* const current_buttonset = getButtonSet(*BUTTONSET_PORTRAIT_BUTTONSETID);
+		auto buttonsetId = *BUTTONSET_PORTRAIT_BUTTONSETID;
+		if (buttonsetId == 215) {
+			buttonsetId = UnitId::Special_StartLocation;
+		}
+		BUTTON_SET* const current_buttonset = getButtonSet(buttonsetId);
 		u32* const unknown_0066FF60 = (u32*)0x0066FF60;
 
 		bool bStopThere = false;
