@@ -249,7 +249,7 @@ namespace hooks {
 			for (int i = 0; i < unitsInFinder.getUnitCount(); i++) {
 				auto picked_unit = unitsInFinder.getUnit(i);
 				if (n.match(picked_unit)) {
-					if (scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer) > 0) {
+					if (scbw::get_generic_timer(picked_unit, ValueId::SwarmingOmenTimer) > 0) {
 						accelerate = true;
 					}
 				}
