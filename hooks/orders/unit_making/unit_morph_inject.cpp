@@ -224,8 +224,8 @@ namespace {
 			//scbw::getSpriteData(SpritesDatEntries::ImageId,building->sprite->spriteId),
 			replaceSpriteImages(unit->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, fl_sId), 0);
 			unit->orderSignal &= ~0x4;
-			if (unit->id == UnitId::ZergZergling
-			||	unit->id == UnitId::ZergVorvaling) {
+			if (unit->id == UnitId::ZergZergling 
+				|| unit->id==UnitId::ZergVorvaling) {
 				unit->playIscriptAnim(IscriptAnimation::Unused2);
 			}
 			else if (unit->id == UnitId::ZergNathrokor) {
@@ -378,10 +378,56 @@ void __declspec(naked) orders_Morph1Wrapper() {
 	}
 
 }
-
 ;
 
+/*void __declspec(naked) RemoveWorkerOrBuildingAiWrapper() {
+	static CUnit* unit;
+	static u32 assert_is_building;
+	static u32 result;
+	__asm {
+		MOV unit,EDI
+		PUSH EAX
+		MOV EAX,[EBP+0x08]
+		POP EAX
+		PUSHAD
+	}
+	result = hooks::remove_worker_or_building_ai(unit,assert_is_building);
+	__asm {
+		POPAD
+		MOV EAX, result
+		RETN
+	}
+}
+;*/
+
+
+const u32 Jmp_IsEgg = 0x00434CF1;
+const u32 Jmp_IsNotEgg = 0x00434CD6;
+void __declspec(naked) deleteBuildingWorkerAiEggJmpWrapper() {
+	static CUnit* unit;
+	__asm {
+		MOV unit,EDI
+		PUSHAD
+	}
+	if (scbw::isLarvalEgg(unit)) {
+		__asm {
+			POPAD
+			JMP Jmp_IsEgg
+		}
+	}
+	else {
+		__asm {
+			POPAD
+			JMP Jmp_IsNotEgg
+		}
+	}
+	
+}
+
+
 }; //unnamed namespace
+
+
 
 namespace hooks {
 
@@ -397,7 +443,9 @@ namespace hooks {
 		jmpPatch(getRemainingBuildTimePctWrapper, 0x004669E0);	//004669E0  sub_4669E0 EXACT
 		jmpPatch(getUnitVerticalOffsetOnBirthWrapper, 0x0045DE00);	//0045DD60  orders_ZergBirth within
 		jmpPatch(isRallyableEggUnitWrapper, 0x0045DE57);	//0045DD60  orders_ZergBirth within
-
+		//
+		jmpPatch(deleteBuildingWorkerAiEggJmpWrapper, 0x00434CD0, 1);
+//		jmpPatch(RemoveWorkerOrBuildingAiWrapper, 0x00434C90); //00434C90 //failed hook, causes crashes
 	}
 
 }; //hooks

@@ -636,6 +636,15 @@ u32 getUnitData(u32 entry, u32 index) {
 	return get_aise_value(NULL, NULL, AiseId::GetUnitData, entry, index);
 }
 
+bool isLarvalEgg(CUnit* unit) {
+	if (unit->id == UnitId::ZergEgg) {
+		auto origin = get_generic_value(unit, ValueId::EggOrigin);
+		if (origin == UnitId::ZergLarva) {
+			return true;
+		}
+	}
+	return false;
+}
 bool isZergEggNew(CUnit* unit, bool allow_larval_eggs, bool allow_larvae, u16 explicit_unit_id) {
 
 	u16 id = UnitId::None;

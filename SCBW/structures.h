@@ -661,20 +661,21 @@ struct GuardAi {
 	u32 previousUpdate;
 };
 C_ASSERT(sizeof(GuardAi) == 32); // 0x20
-
+*/
 struct WorkerAi {
 	WorkerAi* next;
 	WorkerAi* prev;
 	u8 type;
-	u8 unk9;
-	u8 unkA;
+	u8 target_resource;
+	u8 reassign_count;
 	u8 waitTimer;
-	u32 unkCount;
+	u32 last_update_second;
 	CUnit* parent;
 	AiTown* town;
 };
+
 C_ASSERT(sizeof(WorkerAi) == 24); // 0x18
-*/
+
 struct BuildingAi {
 	BuildingAi* next;
 	BuildingAi* prev;

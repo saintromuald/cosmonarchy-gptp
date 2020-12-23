@@ -242,8 +242,8 @@ namespace hooks {
 						//scbw::printFormattedText("Unit %d origin %d previous %d", unit->id, origin, unit->previousUnitType);
 						
 						if (origin == UnitId::ZergZergling
-						||  origin == UnitId::ZergVorvaling		// Temporary
-						||	origin == UnitId::ZergNathrokor) {	// Kalkaleth uses air cocoon
+							|| origin == UnitId::ZergNathrokor	  // Temporary
+							|| origin == UnitId::ZergVorvaling) { // Kalkaleth uses air cocoon
 							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
 						}
 						else if (origin == UnitId::ZergUltrakor 
@@ -447,6 +447,91 @@ namespace hooks {
 
 		return true;
 	}
+
+	const u32 Func_RemoveGasRefs = 0x00432760;
+	void removeAITownGasReferences(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV ECX,unit
+			CALL Func_RemoveGasRefs
+			POPAD
+		}
+	}
+	const u32 Func_DeleteBuildingAi = 0x00404500;
+	void deleteBuildingAi(void* building_ai_list, BuildingAi* ai) {
+		__asm {
+			PUSHAD
+			MOV EDX,building_ai_list
+			MOV EAX,ai
+			CALL Func_DeleteBuildingAi
+			POPAD
+		}
+	}
+	const u32 Func_DeleteWorkerAi = 0x00404470;
+	void deleteWorkerAi(void* worker_ai_list, WorkerAi* ai) {
+		__asm {
+			PUSHAD
+			MOV EDX,worker_ai_list
+			MOV EAX,ai
+			CALL Func_DeleteWorkerAi
+			POPAD
+		}
+	}
+	const u32 Func_DeleteAiTownIfNeeded = 0x004347E0;
+	void deleteAiTownIfNeeded(AiTown* town) {
+		__asm {
+			PUSHAD
+			MOV EAX,town
+			CALL Func_DeleteAiTownIfNeeded
+			POPAD
+		}
+	}
+/*	u32 remove_worker_or_building_ai(CUnit* unit, u8 assert_is_building) {
+		BuildingAi* ai;
+		AiTown* town;
+		removeAITownGasReferences(unit);
+		ai = (BuildingAi*)unit->pAI;
+		auto result = 0;
+		if (ai)
+		{
+			if (assert_is_building
+				|| units_dat::BaseProperty[unit->id] & UnitProperty::Building && unit->id != UnitId::ResourceVespeneGeyser
+				|| unit->id == UnitId::ZergLarva
+				|| unit->id == UnitId::ZergEgg
+				//|| scbw::isLarvalEgg(unit)
+				|| unit->id == UnitId::ZergOverlord)
+			{
+				town = ai->town;
+				auto free = town->free_buildings;
+				deleteBuildingAi(free, ai);
+			}
+			else
+			{
+				
+				if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Worker))
+					return 0;
+				town = ai->town;
+				deleteWorkerAi(town->free_workers, (WorkerAi*)ai);
+				town->worker_count--;
+			}
+			if (town)
+			{
+				if (unit == town->building_scv)
+					town->building_scv = NULL;
+				if (unit == town->main_building)
+					town->main_building = NULL;
+			}
+			if (!assert_is_building)
+			{
+				if (town)
+					deleteAiTownIfNeeded(town);
+			}
+			unit->pAI = NULL;
+			result = 1;
+		}
+		return result;
+	}
+	*/
 
 	//Return the ID of the egg unit to use when morphing @p unitId.
 	//If the unit cannot morph, return UnitId::None.
