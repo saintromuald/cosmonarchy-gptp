@@ -523,11 +523,34 @@ enum Enum {
 	Khalis = 516,
 	None = 517,
 
-	MadrigalMissile2 = 549,
-	SalamanderImpact = 596,
+	// HYDRA \\
 
-	PlanetCrackerBeam = 634,
-
+	// 
+	MadrigalMissile2						= 549,
+	SalamanderImpact						= 596,
+	PlanetCrackerBeam						= 634,
 	IonField = 900, //placeholder
+
+	// CORPSE \\
+		
+	Corpse_Ghost							= 230,
+	Corpse_Marine							= 236,
+	Corpse_Medic							= 490,
+	Corpse_Apostle							= 565,
+	Corpse_Firebat							= 615,
+
+	Corpse_Dragoon							= 192,
+
+	Corpse_Broodling						= 134,
+	Corpse_Defiler							= 139,
+	Corpse_Drone							= 141,
+	Corpse_Egg								= 143,
+	Corpse_Hydralisk						= 147,
+	Corpse_Larva							= 150,
+	Corpse_Ultralisk						= 158,
+	Corpse_Zergling							= 160,
+	Corpse_Lurker							= 484,
+	Corpse_Bactalisk						= 617,
+
 };
 }
