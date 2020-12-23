@@ -286,6 +286,7 @@ namespace ValueId {
 		SwarmingOmenAbility							= 139,
 		Reconstitution								= 140,
 		SimulacrumClone								= 141,
+		IsReviving									= 142,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
