@@ -529,7 +529,7 @@ enum Enum {
 	MadrigalMissile2						= 549,
 	SalamanderImpact						= 596,
 	PlanetCrackerBeam						= 634,
-	IonField = 900, //placeholder
+	IonField								= 900, //placeholder
 
 	// CORPSE \\
 		
@@ -552,5 +552,7 @@ enum Enum {
 	Corpse_Lurker							= 484,
 	Corpse_Bactalisk						= 617,
 
+	Corpse_ZergBuildingSmall				= 186,
+	Corpse_ZergBuildingLarge				= 187,
 };
 }
