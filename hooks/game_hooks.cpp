@@ -494,19 +494,24 @@ public:
 		for (CThingy* ls = *first_lone_sprite; ls; ls = ls->next) {
 			if (ls->sprite) {
 				switch (ls->sprite->spriteId) {
-				case SpriteId::Broodling_Remnants:
-				case SpriteId::Defiler_Remnants:
-				case SpriteId::Dragoon_Remnants:
-				case SpriteId::Drone_Remnants:
-				case SpriteId::Egg_Remnants:
-				case SpriteId::Ghost_Remnants:
-				case SpriteId::Hydralisk_Remnants:
-				case SpriteId::Larva_Remnants:
-				case SpriteId::Lurker_Remnants:
-				case SpriteId::Marine_Remnants:
-				case SpriteId::Medic_Remnants:
-				case SpriteId::Ultralisk_Remnants:
-				case SpriteId::Zergling_Remnants:
+				case SpriteId::Corpse_Apostle:
+				case SpriteId::Corpse_Bactalisk:
+				case SpriteId::Corpse_Broodling:
+				case SpriteId::Corpse_Defiler:
+				case SpriteId::Corpse_Dragoon:
+				case SpriteId::Corpse_Drone:
+				case SpriteId::Corpse_Egg:
+				case SpriteId::Corpse_Firebat:
+				case SpriteId::Corpse_Ghost:
+				case SpriteId::Corpse_Hydralisk:
+				case SpriteId::Corpse_Larva:
+				case SpriteId::Corpse_Lurker:
+				case SpriteId::Corpse_Marine:
+				case SpriteId::Corpse_Medic:
+				case SpriteId::Corpse_Ultralisk:
+				case SpriteId::Corpse_ZergBuildingLarge:
+				case SpriteId::Corpse_ZergBuildingSmall:
+				case SpriteId::Corpse_Zergling:
 					corpses.push_back(ls);
 					scbw::printFormattedText("Add corpse at %d %d", ls->sprite->position.x, ls->sprite->position.y);
 					break;
