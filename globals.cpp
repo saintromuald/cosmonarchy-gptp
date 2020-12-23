@@ -196,7 +196,7 @@ void globals::frameHook() {
 				revived->energy = agent.energy;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
 				scbw::set_generic_value(revived, ValueId::LazarusNoHeal, 1);
-				revived->status |= UnitStatus::Invincible;
+			//	revived->status |= UnitStatus::Invincible;
 				scbw::set_generic_value(revived, ValueId::IsReviving, 1);
 
 				

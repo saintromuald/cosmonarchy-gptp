@@ -645,7 +645,7 @@ namespace hooks {
 
 				if (scbw::get_generic_value(unit, ValueId::IsReviving) == 1 &&
 					unit->sprite->mainGraphic->animation != IscriptAnimation::Unused1) {
-					unit->status &= ~UnitStatus::Invincible;
+					//unit->status &= ~UnitStatus::Invincible;
 					scbw::set_generic_value(unit, ValueId::IsReviving, 0);
 				}
 				
