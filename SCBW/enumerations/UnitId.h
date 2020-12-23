@@ -443,8 +443,6 @@ enum Enum {
 //Terran-Unit
 	TerranApostle									= 10,		// Gui Montag
 	TerranShaman									= 15,		// Civilian
-	TerranMason										= 16,		// Sarah Kerrigan
-	TerranAutocrat									= 17,		// Alan Schezar
 	TerranMadcap									= 18,		// Alan Schezar Turret
 	TerranSouthpaw									= 19,		// Raynor Vulture
 	TerranWendigo									= 20,		// Raynor Marine
@@ -476,7 +474,6 @@ enum Enum {
 	TerranNaniteAssembly							= 203,		// Floor Missile Trap
 	TerranTreasury									= 215,		// Flag
 	TerranQuantumInstitute							= 223,		// Protoss Gas Orb Type 2
-	TerranDrydock									= 225,		// Zerg Gas Sac Type 2
 
 //Protoss-Unit
 	ProtossManifold									= 16,		// Sarah Kerrigan
@@ -516,6 +513,7 @@ enum Enum {
 	ProtossCelestialShrine							= 211,		// Left Wall Flame Trap			| Exemplar requirement
 	ProtossCosmicAltar								= 213,		// Right Wall Flame Trap		| Empyrean requirement
 	ProtossPennant									= 221,		// Mineral Cluster Type 2		| Structure w/ regeneration aura for resources
+	ProtossSanctumOfSorrow							= 225,		// Zerg Gas Sac Type 2			| Pariah and Augur requirement
 	ProtossGrandLibrary								= 226,		// Terran Gas Tank Type 1		| Advanced Templar production
 
 //Zerg-Unit
