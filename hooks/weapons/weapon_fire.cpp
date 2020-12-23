@@ -302,6 +302,9 @@ namespace hooks {
 	//This hook affects the following iscript opcodes: attackwith, attack, castspell
 	//This also affects CUnit::fireWeapon().
 	void fireWeaponHook(CUnit* unit, u8 wId) {
+		if (unit == NULL) {
+			return;
+		}
 		//Default StarCraft behavior
 		u8 weaponId = wId;
 		//Retrieve the spawning position for the bullet.
@@ -377,10 +380,11 @@ namespace hooks {
 						unit->getX() + range,
 						unit->getY() + range);
 					u32 matchCount = unitFinder_distribute.getMatchUnitCount(distrMatch);
-					if (matchCount != 0 && energy>0) {
+					if (matchCount != 0 && energy > 0) {
 						u32 perEach = energy / matchCount;
 						u32 extra = energy % matchCount;
-						unitFinder_distribute.getFirst(distrMatch)->addUnitEnergy(extra);
+						CUnit* unit = unitFinder_distribute.getFirst(distrMatch);
+						if (unit != nullptr) unit->addUnitEnergy(extra);
 						u32 unspent = 0;
 						unitFinder_distribute.forEachInMatch(distrMatch, [&](CUnit* u) {
 							u->addUnitEnergy(unspent);
@@ -397,7 +401,8 @@ namespace hooks {
 							unspent = perEach - howMuch;
 						});
 						if (energy > 0) {
-							unitFinder_distribute.getFirst(distrMatch)->addUnitEnergy(energy);
+							CUnit* unit = unitFinder_distribute.getFirst(distrMatch);
+							if (unit != nullptr) unit->addUnitEnergy(extra);
 						}
 					}
 				}

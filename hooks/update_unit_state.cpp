@@ -182,12 +182,13 @@ namespace hooks {
 			}*/
 
 			else { //EB526
-
+				if (unit == NULL) {
+					return;
+				}
 				int maxEnergy;
-
-				if (unit->id == UnitId::ProtossDarkArchon &&
-					unit->mainOrderId == OrderId::CompletingArchonSummon &&
-					unit->mainOrderState == 0
+				if (unit->id == UnitId::ProtossDarkArchon
+				&&	unit->mainOrderId == OrderId::CompletingArchonSummon
+				&&	unit->mainOrderState == 0
 					)
 					maxEnergy = 12800;  //50 * 256; Identical to energy amount on spawn
 				else
@@ -567,7 +568,7 @@ namespace hooks {
 			
 			// Last Orders - Aurora passive
 			if (unit->id == UnitId::ProtossAurora) {
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::LastOrdersInit, 0)==1) {
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::LastOrdersInit, 0) == 1) {
 					auto distance = scbw::getDistanceFast(unit->position.x, unit->position.y,
 						unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					if (distance<32) {
