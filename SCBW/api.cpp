@@ -1344,7 +1344,7 @@ CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* creator) {
 	else {
 		FinishUnit_Pre(unit);
 		updateUnitStrength(unit);
-		if (creator !=NULL && creator->pAI != NULL)
+		if (creator != NULL && creator->pAI != NULL)
 			InheritAI2(creator, unit);
 	}
 	return unit;
@@ -1513,7 +1513,7 @@ u16 random() {
 			CUnit* unit = scbw::createUnitIngame(unitId, playerId, x, y, creator);
 			if (unit != nullptr) {
 				if (unitId == UnitId::ZergBroodling
-				||	unitId == UnitId::ZergBroodlisk) { // Parasite & Incubators
+				 || unitId == UnitId::ZergBroodlisk) { // Parasite & Incubators
 					scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
 					if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
 						unit->removeTimer = removeTimer;
