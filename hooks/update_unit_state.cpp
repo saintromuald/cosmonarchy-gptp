@@ -295,9 +295,7 @@ namespace hooks {
 	/// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
 	/// Identical to function @ 0x004EC290
 	void updateUnitStateHook(CUnit* unit) {
-		if (unit == NULL) {
-			return;
-		}
+
 		
 		if (unit->pAI != NULL) {
 			hydra_unit_ai(unit);
@@ -574,7 +572,6 @@ namespace hooks {
 					auto distance = scbw::getDistanceFast(unit->position.x, unit->position.y,
 						unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					if (distance<32) {
-						scbw::set_generic_value(unit, ValueId::LastOrdersInit, 0);
 						unit->status |= UnitStatus::Invincible;
 						scbw::createBullet(121, unit, unit->position.x, unit->position.y, unit->playerId,
 							unit->currentDirection1);
