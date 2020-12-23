@@ -196,6 +196,7 @@ namespace hooks {
 						if (scbw::get_generic_timer(picked_unit, ValueId::PhaseRushTimerArrayStart + p) > 0 &&
 							scbw::isAlliedTo(unit->playerId,p)) {
 							accelerate = true;
+							break;
 						}
 					}
 				}
@@ -251,6 +252,8 @@ namespace hooks {
 				if (n.match(picked_unit)) {
 					if (scbw::get_generic_timer(picked_unit, ValueId::SwarmingOmenTimer) > 0) {
 						accelerate = true;
+						scbw::set_generic_timer(unit, ValueId::SwarmingOmenStatus, 25);
+						break;
 					}
 				}
 			}
@@ -271,6 +274,8 @@ namespace hooks {
 				if (n.match(picked_unit)) {
 					if (picked_unit->getCurrentHpInGame() < picked_unit->getMaxHpInGame()) {
 						accelerate = true;
+						scbw::set_generic_timer(unit, ValueId::ProtectiveInstinctsStatus, 25);
+						break;
 					}
 				}
 			}
