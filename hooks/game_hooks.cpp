@@ -513,7 +513,6 @@ public:
 				case SpriteId::Corpse_ZergBuildingSmall:
 				case SpriteId::Corpse_Zergling:
 					corpses.push_back(ls);
-					scbw::printFormattedText("Add corpse at %d %d", ls->sprite->position.x, ls->sprite->position.y);
 					break;
 				default:
 					break;
