@@ -14,7 +14,7 @@ namespace {
 }
 
 namespace hooks {
-	void AI_TrainingUnit(CUnit* result, CUnit* parent) {		// 004A2830
+	void AI_TrainingUnit(CUnit* result, CUnit* parent) {			// 004A2830
 		int v2; // edx
 		int v3; // edx
 		int v4; // esi
@@ -34,7 +34,8 @@ namespace hooks {
 			}
 			else if (result->id == UnitId::ZergBroodling
 			||		 result->id == UnitId::ZergBroodlisk
-			||		 result->id == UnitId::ProtossSimulacrum) {
+			||		(result->id == UnitId::ProtossSimulacrum
+				&&	 scbw::get_generic_value(result, ValueId::SimulacrumClone) > 0)) {
 				AI_TrainingBroodling(parent, result);
 			}
 			else {

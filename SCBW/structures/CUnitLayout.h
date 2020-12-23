@@ -284,7 +284,8 @@ namespace ValueId {
 		UltrakorCancelGimmick						= 137,
 		SwarmingOmenTimer							= 138,
 		SwarmingOmenAbility							= 139,
-		Reconstitution							= 140,
+		Reconstitution								= 140,
+		SimulacrumClone								= 141,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
