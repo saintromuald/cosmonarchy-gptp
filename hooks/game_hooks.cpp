@@ -443,10 +443,84 @@ public:
 	}
 };
 
+class reconstitutionProc : public scbw::UnitFinderCallbackProcInterface {
+private:
+	CUnit* zoryusthaleth;
+
+public:
+	reconstitutionProc(CUnit* zoryusthaleth)
+		: zoryusthaleth(zoryusthaleth) {}
+	void proc(CUnit* unit) {
+		if (!(scbw::isAlliedTo(unit->playerId, zoryusthaleth->playerId))) {
+			return;
+		}
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
+			return;
+		}
+		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic)) {
+			return;
+		}
+
+		double fraction = 0.1*(double)units_dat::MaxHitPoints[unit->id];
+		unit->setHp(std::min(unit->hitPoints+(int)fraction,units_dat::MaxHitPoints[unit->id]));
+	}
+};
+
 #include "logger.h"
 #include "limits/sfx_extender.h"
 #include "hooks/weapons/wpnspellhit.h"
 #include "globals.h"
+
+class CorpseFinder {
+public:
+	//
+	//
+	// Right now finder is very inefficient performance-wise, it should be improved later
+	//
+	//
+	std::vector<CThingy*> corpses;
+
+	std::vector<CThingy*> findCorpses(int left, int right, int top, int bottom) {
+		std::vector<CThingy*> corpseList;
+		for (auto a : corpses) {
+			scbw::printFormattedText("Corpse %d %d, bounds %d -> %d, %d -> %d",
+				a->sprite->position.x, a->sprite->position.y,
+				left, right, top, bottom);
+			if (a->sprite->position.x >= left && a->sprite->position.x <= right &&
+				a->sprite->position.y >= top && a->sprite->position.y <= bottom) {
+				corpseList.push_back(a);
+			}
+		}
+		return corpseList;
+	}
+	void sortAllCorpses() {
+		for (CThingy* ls = *first_lone_sprite; ls; ls = ls->next) {
+			if (ls->sprite && !(ls->sprite->flags & CSprite_Flags::Flag01)) {
+				switch (ls->sprite->spriteId) {
+				case SpriteId::Broodling_Remnants:
+				case SpriteId::Defiler_Remnants:
+				case SpriteId::Dragoon_Remnants:
+				case SpriteId::Drone_Remnants:
+				case SpriteId::Egg_Remnants:
+				case SpriteId::Ghost_Remnants:
+				case SpriteId::Hydralisk_Remnants:
+				case SpriteId::Larva_Remnants:
+				case SpriteId::Lurker_Remnants:
+				case SpriteId::Marine_Remnants:
+				case SpriteId::Medic_Remnants:
+				case SpriteId::Ultralisk_Remnants:
+				case SpriteId::Zergling_Remnants:
+					corpses.push_back(ls);
+					scbw::printFormattedText("Add corpse at %d %d", ls->sprite->position.x, ls->sprite->position.y);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+};
+
 namespace hooks {
 
 	/// This hook is called every frame; most of your plugin's logic goes here.
@@ -559,9 +633,50 @@ namespace hooks {
 				}
 			}*/
 			// Loop through all visible units in the game.
+
+			//Sort corpses
+			CorpseFinder corpses;
+			corpses.sortAllCorpses();
+
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
 				Globals.unitFrameHook(unit);
 				//hooks::ShowHealthBar(unit);
+				
+				//Zoryusthaleth - Reconstitution
+				
+				if (unit->id == UnitId::ZergZoryusthaleth && 
+					scbw::get_generic_value(unit, ValueId::Reconstitution) == 1) {
+					auto r = 128;
+					scbw::printFormattedText("Search for corpses");
+					std::vector<CThingy*> corpseList = corpses.findCorpses(unit->position.x - r,
+						unit->position.x + r, unit->position.y - r, unit->position.y + r
+					);
+					if (corpseList.size() > 0) {
+						scbw::printFormattedText("Found corpses");
+					}
+					std::vector<Point16> positions;
+					for (auto a : corpseList) {
+						if (unit->energy >= 5 * 256) {
+							unit->spendUnitEnergy(5 * 256);
+							auto corpseheal = reconstitutionProc(unit);
+							scbw::UnitFinder unitFinder(unit->getX() - r,
+								unit->getY() - r,
+								unit->getX() + r,
+								unit->getY() + r);
+							unitFinder.forEach(corpseheal);
+//							positions.push_back(a->sprite->position);
+							//a->sprite->mainGraphic->free();
+//							a->sprite->flags |= CSprite_Flags::Flag01;
+						}
+					}
+					for (auto a : positions) {
+						CThingy* thingy = scbw::createThingy(SpriteId::Consume, a.x, a.y, 11);
+						if (thingy != NULL) {
+							thingy->sprite->elevationLevel = 11;
+							scbw::setThingyVisibilityFlags(thingy);
+						}
+					}
+				}
 				if (unit->id == UnitId::ZergUltrakor || unit->id == UnitId::ZergEgg) {
 					if (scbw::get_generic_timer(unit, ValueId::UltrakorCancelGimmick)) {
 						if (unit->sprite->mainGraphic->animation != IscriptAnimation::CastSpell) {

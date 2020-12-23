@@ -284,18 +284,19 @@ namespace ValueId {
 		UltrakorCancelGimmick						= 137,
 		SwarmingOmenTimer							= 138,
 		SwarmingOmenAbility							= 139,
+		Reconstitution							= 140,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
 //const u32 first_generic_toggle_ability = ValueId::ReverseThrust;
 //const u32 last_generic_toggle_ability = ValueId::DisruptionWeb;
-const u32 string_toggle_on[5] = {1703, 1807, 1265, 1232, 1383};
-const u32 string_toggle_off[5] = {1113, 1114, 1270, 1233, 1248};
-const u32 button_toggle_on[5] = {374, 319, 369, 374, 366};
-const u32 button_toggle_off[5] = {375, 236, 236, 375, 365};
-const u32 toggle_values[5] = {ValueId::ReverseThrust, ValueId::SublimeShepherd, ValueId::DisruptionWeb, ValueId::TempoChange, ValueId::NaniteField};
-const u32 toggle_abilities[5] = {TechId::EMPShockwave, TechId::UnusedTech40, TechId::DisruptionWeb, TechId::TempoChange, TechId::NaniteField};
-const u32 generictoggles = 5;
+const u32 string_toggle_on[6] = {1703, 1807, 1265, 1232, 1383, 328};
+const u32 string_toggle_off[6] = {1113, 1114, 1270, 1233, 1248, 330};
+const u32 button_toggle_on[6] = {374, 319, 369, 374, 366, 296};
+const u32 button_toggle_off[6] = {375, 236, 236, 375, 365, 236};
+const u32 toggle_values[6] = {ValueId::ReverseThrust, ValueId::SublimeShepherd, ValueId::DisruptionWeb, ValueId::TempoChange, ValueId::NaniteField, ValueId::Reconstitution};
+const u32 toggle_abilities[6] = {TechId::EMPShockwave, TechId::UnusedTech40, TechId::DisruptionWeb, TechId::TempoChange, TechId::NaniteField, TechId::Reconstitution};
+const u32 generictoggles = 6;
 
 namespace HydraFlags1 {
 	enum {

@@ -196,9 +196,10 @@ namespace hooks
 		case TechId::DefensiveMatrix:
 			IssueTriTargetOrder(OrderId::DefensiveMatrix, 0, 0);
 			break;
-/*		case TechId::SpawnBroodlings:
-			IssueTriTargetOrder(OrderId::SummonBroodlings, 0, 0);
-			break;*/
+			/*		case TechId::SpawnBroodlings:
+						IssueTriTargetOrder(OrderId::SummonBroodlings, 0, 0);
+						break;*/
+
 		case TechId::EnsnaringBrood:
 		{
 			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
@@ -230,6 +231,7 @@ namespace hooks
 		case TechId::Infestation:
 			IssueTriTargetOrder(OrderId::InfestMine3, OrderId::Move, OrderId::InfestMine2);
 			break;
+
 		case TechId::EMPShockwave:
 			//			IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
 						//reverse thrust switch
@@ -315,13 +317,21 @@ namespace hooks
 			buf[3] = *ACTIVE_PLAYER_ID;
 			buf[4] = ValueId::NaniteField;
 			scbw::SendCommand(buf, 0xc);
-			//disable medstims
-/*			u8 bufMedstims[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
-			bufMedstims[0] = 0x99;//new general command
-			bufMedstims[1] = NewGameCommand::ShamanAction;
-			bufMedstims[2] = 1;
-			bufMedstims[3] = *ACTIVE_PLAYER_ID;
-			scbw::SendCommand(bufMedstims, 0xc);*/
+			break;
+		}
+		case TechId::Reconstitution:
+		{
+			int action = 1;//on
+			if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::Reconstitution, 0) == 1) {
+				action = 0;//off
+			}
+			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+			buf[0] = 0x99;//new general command
+			buf[1] = NewGameCommand::GenericSwitchAbility;
+			buf[2] = action;
+			buf[3] = *ACTIVE_PLAYER_ID;
+			buf[4] = ValueId::Reconstitution;
+			scbw::SendCommand(buf, 0xc);
 			break;
 		}
 /*		case TechId::UnusedTech26://Cyprian Safety Off/Safety On
