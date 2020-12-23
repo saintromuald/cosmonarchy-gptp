@@ -189,10 +189,10 @@ void orders_SCVBuild2(CUnit* unit) {
 			s16 ebp_18,ebp_16,ebp_14,ebp_12,x_min,y_min,x_max,y_max;
 			s32 ebp_08;
 
-			ebp_18 = builtUnit->sprite->position.x - builtUnit->sprite->unkflags_12 / 2;
-			ebp_14 = builtUnit->sprite->position.x + builtUnit->sprite->unkflags_12 / 2 - 1;
-			ebp_16 = builtUnit->sprite->position.y - builtUnit->sprite->unkflags_13 / 2;
-			ebp_12 = builtUnit->sprite->position.y + builtUnit->sprite->unkflags_13 / 2 - 1;
+			ebp_18 = builtUnit->sprite->position.x - builtUnit->sprite->width / 2;
+			ebp_14 = builtUnit->sprite->position.x + builtUnit->sprite->width / 2 - 1;
+			ebp_16 = builtUnit->sprite->position.y - builtUnit->sprite->height / 2;
+			ebp_12 = builtUnit->sprite->position.y + builtUnit->sprite->height / 2 - 1;
 			ebp_08 = units_dat::BuildingDimensions[builtUnit->id].x;
 
 			if(ebp_08 < 0)
