@@ -109,12 +109,12 @@ bool unit_IsStandardAndMovable(CUnit* unit) {
 		) ||
 		unit->id == UnitId::TerranSpiderMine ||
 		unit->id == UnitId::ZergEgg ||
-		unit->id == UnitId::Critter_Rhynadon ||
+/*		unit->id == UnitId::Critter_Rhynadon ||
 		unit->id == UnitId::Critter_Bengalaas ||
 		unit->id == UnitId::Critter_Ragnasaur ||
 		unit->id == UnitId::Critter_Kakaru ||
 		unit->id == UnitId::Critter_Scantid ||
-		unit->id == UnitId::Critter_Ursadon ||
+		unit->id == UnitId::Critter_Ursadon ||*/
 		unit->id == UnitId::Spell_DarkSwarm ||
 		unit->id == UnitId::Spell_DisruptionWeb
 	)
