@@ -15,10 +15,6 @@ namespace {
 
 namespace hooks {
 	void AI_TrainingUnit(CUnit* result, CUnit* parent) {			// 004A2830
-		int v2; // edx
-		int v3; // edx
-		int v4; // esi
-		CUnit* v5; // edx
 
 		if (playerTable[(u8)parent->playerId].type == PlayerType::Computer) {
 			if (playerTable[(u8)result->playerId].type == PlayerType::Computer
