@@ -6,247 +6,91 @@
 #include "hooks\byte_operations_utils.h"
 
 namespace {
-	// for askForHelp_AI
-	CUnit** getAllUnitsInBounds(Box32* a1);
-	bool unitCanAttackTarget(CUnit* a1, CUnit* a2, int a3);
-	void wpnHit(CUnit* a1, CUnit* a2, int a3, int a4);
-	u32 getDistanceFast(int a1, int a2, int a3, int a4);
-	char getGroundWeapon(CUnit* a1);
-	int getUnitMaxWeaponRange(CUnit* a1, unsigned __int8 a2);
+	// for AI_TrainingUnit
+	char AI_TrainingWorker(CUnit* result, CUnit* parent);			// 00435700
+	void AI_TrainingOverlord(CUnit* result, CUnit* parent);			// 00435770
+	void AI_TrainingBroodling(CUnit* parent, CUnit* result);		// 0043E280
+	void AI_TrainingNormal(CUnit* result, CUnit* parent);			// 00435DB0
 }
 
-namespace hooks {/*
-	
-	int askForHelp_AI(CUnit* a1, CUnit* a2, int a3) { // 0043ADA0
-		CUnit* v3; // esi
-		signed __int16 v4; // ax
-		int v5; // eax
-		int v6; // ecx
-		CSprite* v7; // ecx
-		CUnit** v8; // edi
-		__int16 v9; // dx
-		CUnit** v10; // eax
-		bool v11; // eax
-		CUnit* v12; // edi
-		unsigned __int16 v13; // cx
-		unsigned __int16 v14; // ax
-		int v15; // eax
-		int v16; // eax
-		AI_Main* v17; // eax
-		char v18; // al
-		CUnit* v19; // esi
-		AI_Main* v20; // ecx
-		int v21; // edx
-		CUnit* v22; // ebx
-		CSprite* v23; // eax
-		__int16 v24; // bx
-		unsigned int v25; // eax
-		int v26; // eax
-		unsigned __int8 v27; // al
-		int v28; // eax
-		int result; // eax
-		__int16 a1; // [esp+8h] [ebp-18h]
-		__int16 v31; // [esp+Ah] [ebp-16h]
-		unsigned int v32; // [esp+Ch] [ebp-14h]
-		bool v33; // [esp+10h] [ebp-10h]
-		int v34; // [esp+14h] [ebp-Ch]
-		CUnit** v35; // [esp+18h] [ebp-8h]
-		CUnit* x2; // [esp+1Ch] [ebp-4h]
+namespace hooks {
+	void AI_TrainingUnit(CUnit* result, CUnit* parent) {		// 004A2830
+		int v2; // edx
+		int v3; // edx
+		int v4; // esi
+		CUnit* v5; // edx
 
-		v3 = a1;
-		int _id1 = a1->id;
-		if (units_dat::GroupFlags[_id1].isBuilding)
-			v4 = (AIScriptController[(unsigned __int8)a1->playerId].AI_Flags & 0x20) != 0 ? 288 : 576;	// 0x20 = CONTROLLER_IS_CAMPAIGN
-		else
-			v4 = (AIScriptController[(unsigned __int8)a1->playerId].AI_Flags & 0x20) != 0 ? 96 : 288;	// 0x20 = CONTROLLER_IS_CAMPAIGN
-		v7 = a1->sprite;
-		v9 = v7->position.y;
-		ByteOperations::SetLowWord(v7, v7->position.x);
-		ByteOperations::SetHighWord(v32, v4 + v9);
-		v31 = v9 - v4;
-		a1 = (__int16)v7 - v4;
-		v32 = (2 ^ 17-1) & (v4 + (__int16)v7) | v32 & ((2^17-1) << 16); // LOWORD(v32)
-		v10 = getAllUnitsInBounds((Box32*)&a1);
-		v6 = (unsigned __int8)a1->playerId;
-		v8 = v10;
-		v5 = v6;
-		v35 = v8;
-		v34 = v6;
-		v11 = !AIScriptController[v6].AI_DefenseBuild_GG
-			&& !AIScriptController[v5].AI_DefenseBuild_AG
-			&& !AIScriptController[v5].AI_DefenseBuild_GA
-			&& !AIScriptController[v5].AI_DefenseBuild_AA;
-		v12 = *v8;
-		v33 = v11 == 0;
-		if (v12)
-		{
-			while (1)
-			{
-				if (v12 != v3 && (unsigned __int8)v12->playerId == v6)
-				{
-					v13 = v12->id;
-					if (!(units_dat::BaseProperty[v13] & UnitProperty::Worker)
-						|| (v14 = a2->id, units_dat::BaseProperty[v14] & UnitProperty::Worker)
-						|| !v33 && v14 == UnitId::ZergZergling)
-					{
-						if (v13 != UnitId::ProtossArbiter)
-						{
-							ByteOperations::SetLowByte(v15, unitCanAttackTarget(a2, v12, 1));
-							if (v15 || (ByteOperations::SetLowByte(v16, (unitCanAttackTarget(v12, a2, 1), v16)) && !(v12->status & UnitStatus::Burrowed))) {
-								if (!a3)
-								{
-									v19 = a2;
-									goto LABEL_32;
-								}
-								v17 = v12->pAI;
-								if (v17)
-								{
-									if (v17->controlType == 4)
-									{
-										v18 = v17->cptn->captainType;
-										if (v18 == 1 || v18 == 8 || v18 == 9 || v18 == 2)
-										{
-											v19 = a2;
-											wpnHit(v12, a2, 0, 1);
-										LABEL_32:
-											v20 = v12->pAI;
-											if (!v20)
-												goto LABEL_47;
-											if (v20->controlType != 1)
-												goto LABEL_47;
-											v21 = SLOWORD(v20->town);
-											v23 = v19->sprite;
-											v24 = v23->position.y;
-											v23 = v23->position.x & (2^17-1) | v23 & ((2^17-1) << 16); // LOWORD(v23)
-											x2 = (CUnit*)SHIWORD(v20->cptn);
-											v25 = getDistanceFast((signed __int16)v23, (int)x2, v24, v21);
-											v22 = v12->subunit;
-											v32 = v25;
-											x2 = v22;
-											v26 = v22->isSubunit & (2^9-1) | v26 & ((2^25-1) << 8); // LOBYTE(v26)
-											if (!v26)
-											{
-												x2 = v12;
-												v22 = v12;
-											}
-											v27 = v12->status & UnitStatus::InAir ? units_dat::AirWeapon[(unsigned __int16)v22->id] : getGroundWeapon(v22);
-											if (v27 != -126)
-											{
-												v28 = getUnitMaxWeaponRange(x2, v27);
-												if (v32 <= v28 + 192)
-													LABEL_47:
-												wpnHit(v12, v19, 0, 1);
-											}
-											goto LABEL_42;
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			LABEL_42:
-				v12 = v35[1];
-				++v35;
-				if (!v12)
-				{
-					result = tempUnitsListArraysCountsListLastIndex[0] - 1;
-					tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
-					return result;
-				}
-				v6 = v34;
-				v3 = a1;
+		if (playerTable[(u8)parent->playerId].type == PlayerType::Computer) {
+			if (playerTable[(u8)result->playerId].type == PlayerType::Computer
+			&&  result->id == UnitId::TerranMedic) {
+				if (!(AIScriptController[(u8)result->playerId].mainMedic))
+					  AIScriptController[(u8)result->playerId].mainMedic = result;
+			}
+			if (units_dat::BaseProperty[result->id] & UnitProperty::Worker) {
+				AI_TrainingWorker(result, parent);
+			}
+			else if (result->id == UnitId::ZergOverlord) {
+				AI_TrainingOverlord(result, parent);
+			}
+			else if (result->id == UnitId::ZergBroodling
+			||		 result->id == UnitId::ZergBroodlisk
+			||		 result->id == UnitId::ProtossSimulacrum) {
+				AI_TrainingBroodling(parent, result);
+			}
+			else {
+				AI_TrainingNormal(result, parent);
 			}
 		}
-		result = tempUnitsListArraysCountsListLastIndex[0] - 1;
-		tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
-		return result;
-	}*/
+	}
 }
 
 namespace {
-
-	const u32 Func_getAllUnitsInBounds = 0x0042FF80;
-	CUnit** getAllUnitsInBounds(Box32* a1) {
-		static CUnit** result;
+	// for AI_TrainUnit
+	const u32 Func_AI_TrainingWorker = 0x00435700;
+	char AI_TrainingWorker(CUnit* result, CUnit* parent) {
+		static s32 resultFunc;
 		__asm {
 			PUSHAD
-			MOV a1, EAX
-			CALL Func_getAllUnitsInBounds
-			MOV result, EAX
+			MOV EAX, result
+			MOV ECX, parent
+			CALL Func_AI_TrainingWorker
+			MOV resultFunc, EAX
 			POPAD
 		}
-		return result;
-	};
+		return (char)resultFunc;
+	}
 
-	const u32 Func_unitCanAttackTarget = 0x00476730;
-	bool unitCanAttackTarget(CUnit* a1, CUnit* a2, int a3) {
-		static int result;
+	const u32 Func_AI_TrainingOverlord = 0x00435770;
+	void AI_TrainingOverlord(CUnit* result, CUnit* parent) {
 		__asm {
 			PUSHAD
-			PUSH a3
-			MOV EBX, a1
-			MOV ESI, a2
-			CALL Func_unitCanAttackTarget
-			MOV result, EAX
+			MOV EAX, result
+			MOV ECX, parent
+			CALL Func_AI_TrainingOverlord
 			POPAD
 		}
-		return (bool)result;
-	};
+	}
 
-	const u32 Func_wpnHit = 0x0043F320;
-	void wpnHit(CUnit* a1, CUnit* a2, int a3, int a4) {
+	const u32 Func_AI_TrainingBroodling = 0x0043E280;
+	void AI_TrainingBroodling(CUnit* parent, CUnit* result) {
 		__asm {
 			PUSHAD
-			PUSH a4
-			PUSH a3
-			MOV ECX, a1
-			MOV EDX, a2
-			CALL Func_wpnHit
+			PUSH result
+			PUSH parent
+			CALL Func_AI_TrainingBroodling
 			POPAD
 		}
-	};
+	}
 
-	const u32 Func_getDistanceFast = 0x0040C360;
-	u32 getDistanceFast(int a1, int a2, int a3, int a4) {
-		static unsigned int result;
+	const u32 Func_AI_TrainingNormal = 0x00435DB0;
+	void AI_TrainingNormal(CUnit* result, CUnit* parent) {
 		__asm {
 			PUSHAD
-			PUSH a4
-			PUSH a3
-			MOV ECX, a1
-			MOV EDX, a2
-			CALL Func_getDistanceFast
-			MOV result, EAX
+			MOV EAX, result
+			MOV ECX, parent
+			CALL Func_AI_TrainingNormal
 			POPAD
 		}
-		return result;
-	};
+	}
 
-	const u32 Func_getGroundWeapon = 0x00475AD0;
-	char getGroundWeapon(CUnit* a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			CALL Func_getGroundWeapon
-			MOV result, EAX
-			POPAD
-		}
-		return (char)result;
-	};
-
-	const u32 Func_getUnitMaxWeaponRange = 0x00475870;
-	int getUnitMaxWeaponRange(CUnit* a1, unsigned __int8 a2) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOVZX BL, a2
-			CALL Func_getUnitMaxWeaponRange
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	};
 }

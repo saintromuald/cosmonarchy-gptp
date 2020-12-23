@@ -1,28 +1,26 @@
 #include "ai_orders.h"
 #include <hook_tools.h>
-/*
+
 namespace {
 
-	int __declspec(naked) askForHelp_AI_Wrapper() { // 0043ADA0
-		static CUnit* a1;
-		static CUnit* a2;
-		static int a3;
-		static int result;
+	void __declspec(naked) AI_TrainingUnit_Wrapper() { // 004A2830
+		static CUnit* result;
+		static CUnit* parent;
 		__asm {
 			PUSHAD
+			MOV result, EAX
+			MOV parent, ECX
 		}
-		result = hooks::askForHelp_AI(a1, a2, a3);
+		hooks::AI_TrainingUnit(result, parent);
 		__asm {
 			POPAD
-			MOV result, EAX
-			RETN
 		}
-	};
+	}
 }
 
 namespace hooks {
 
 	void injectAIOrdersHooks() {
-		jmpPatch(askForHelp_AI_Wrapper, 0x0043ADA0, 1);
+		jmpPatch(AI_TrainingUnit_Wrapper, 0x004A2830, 2);
 	}
-}*/
+}
