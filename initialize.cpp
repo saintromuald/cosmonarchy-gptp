@@ -577,7 +577,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectMaxHpHooks();
 
 //	hooks::injectSpellcasterAI();
-//	hooks::injectAIOrdersHooks();
+	hooks::injectAIOrdersHooks();
 	hooks::injectSfxHooks();
 	hooks::injectMissChanceHooks();
 	hooks::injectBuildTimeHooks();

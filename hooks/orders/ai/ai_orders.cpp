@@ -3,7 +3,6 @@
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
 #include <windows.h>
-#include "hooks\byte_operations_utils.h"
 
 namespace {
 	// for AI_TrainingUnit
