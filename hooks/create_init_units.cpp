@@ -1,5 +1,6 @@
 #include "create_init_units.h"
 #include <SCBW/api.h>
+#include <SCBW/UnitFinder.h>
 
 //helper functions def
 
@@ -87,6 +88,60 @@ void CreateInitialMeleeBuildings(u8 raceId, u32 playerId) {
 
 ;
 
+class MineralFieldAveragePosProc : public scbw::UnitFinderCallbackProcInterface
+{
+private:
+	const u16 refX;
+	const u16 refY;
+	u8 cliffLevel;
+	int& sumX;
+	int& sumY;
+	u32& count;
+
+public:
+	MineralFieldAveragePosProc(const u16& refX, const u16& refY, int& sumX, int& sumY, u32& count) :
+	refX(refX), refY(refY), sumX(sumX), sumY(sumY), count(count)
+	{
+		cliffLevel = scbw::getActiveTileAt(refX, refY).groundHeight;
+	}
+
+	void proc(CUnit* unit) override {
+		if ((unit->id == UnitId::ResourceMineralField
+		  || unit->id == UnitId::ResourceMineralFieldType2
+		  || unit->id == UnitId::ResourceMineralFieldType3)
+		  && scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight == cliffLevel) {
+			Point16 pos = unit->position;
+			sumX += pos.x - refX;
+			sumY += pos.y - refY;
+			count += 1;
+		}
+	}
+};
+
+void findWorkerSpawnPosition(const u16& startX, const u16& startY, u16& targetX, u16& targetY)
+{
+	int sumX = 0;
+	int sumY = 0;
+	u32 count = 0;
+
+	scbw::UnitFinder unitFinder;
+	unitFinder.search(startX - 10 * 32, startY - 10 * 32, startX + 10 * 32, startY + 10 * 32);
+	unitFinder.forEach(MineralFieldAveragePosProc(startX, startY, sumX, sumY, count));
+
+	if (count == 0) {
+		targetX = startX;
+		targetY = startY;
+		return;
+	}
+
+	double averageX = (double) sumX / count;
+	double averageY = (double) sumY / count;
+	double distance = pow(pow(averageX, 2) + pow(averageY, 2), 0.5);
+
+	targetX = startX + averageX / distance * 32;
+	targetY = startY + averageY / distance * 16;
+}
+
 void CreateInitialMeleeUnits() {
 
 	u32 playerId;
@@ -132,138 +187,37 @@ void CreateInitialMeleeUnits() {
 				u8 unitId;
 				CUnit* created_unit;
 
-				if(*raceIdOffset == RaceId::Zerg)
+
+				if (*raceIdOffset == RaceId::Zerg)
 					unitId = UnitId::ZergDrone;
 				else
-				if(*raceIdOffset == RaceId::Terran)
+				if (*raceIdOffset == RaceId::Terran)
 					unitId = UnitId::TerranSCV;
 				else
-				if(*raceIdOffset == RaceId::Protoss)
+				if (*raceIdOffset == RaceId::Protoss)
 					unitId = UnitId::ProtossProbe;
 				else
 					unitId = UnitId::None;
 
-				created_unit = createUnit(unitId,startPositions[playerId].x,startPositions[playerId].y,playerId);
+				if (unitId != UnitId::None) {
+					u16 targetX;
+					u16 targetY;
 
-				if(created_unit != NULL) {
+					Point16 startPos = startPositions[playerId];
+					findWorkerSpawnPosition(startPos.x, startPos.y, targetX, targetY);
 
-					function_004A01F0(created_unit);
+					for (int i = 0; i < 6; i++) {
 
-					if(function_0049EC30(created_unit) != 0)
-						updateUnitStrength(created_unit);
+						created_unit = createUnit(unitId, targetX, targetY, playerId);
 
+						if (created_unit != NULL) {
+							function_004A01F0(created_unit);
+
+							if (function_0049EC30(created_unit) != 0)
+								updateUnitStrength(created_unit);
+						}
+					}
 				}
-
-				if(*raceIdOffset == RaceId::Zerg)
-					unitId = UnitId::ZergDrone;
-				else
-				if(*raceIdOffset == RaceId::Terran)
-					unitId = UnitId::TerranSCV;
-				else
-				if(*raceIdOffset == RaceId::Protoss)
-					unitId = UnitId::ProtossProbe;
-				else
-					unitId = UnitId::None;
-
-				created_unit = createUnit(unitId,startPositions[playerId].x,startPositions[playerId].y,playerId);
-
-				if(created_unit != NULL) {
-
-					function_004A01F0(created_unit);
-
-					if(function_0049EC30(created_unit) != 0)
-						updateUnitStrength(created_unit);
-
-				}
-
-				if(*raceIdOffset == RaceId::Zerg)
-					unitId = UnitId::ZergDrone;
-				else
-				if(*raceIdOffset == RaceId::Terran)
-					unitId = UnitId::TerranSCV;
-				else
-				if(*raceIdOffset == RaceId::Protoss)
-					unitId = UnitId::ProtossProbe;
-				else
-					unitId = UnitId::None;
-
-				created_unit = createUnit(unitId,startPositions[playerId].x,startPositions[playerId].y,playerId);
-
-				if(created_unit != NULL) {
-
-					function_004A01F0(created_unit);
-
-					if(function_0049EC30(created_unit) != 0)
-						updateUnitStrength(created_unit);
-
-				}
-
-				if(*raceIdOffset == RaceId::Zerg)
-					unitId = UnitId::ZergDrone;
-				else
-				if(*raceIdOffset == RaceId::Terran)
-					unitId = UnitId::TerranSCV;
-				else
-				if(*raceIdOffset == RaceId::Protoss)
-					unitId = UnitId::ProtossProbe;
-				else
-					unitId = UnitId::None;
-
-				created_unit = createUnit(unitId,startPositions[playerId].x,startPositions[playerId].y,playerId);
-
-				if(created_unit != NULL) {
-
-					function_004A01F0(created_unit);
-
-					if(function_0049EC30(created_unit) != 0)
-						updateUnitStrength(created_unit);
-
-				}
-
-				if(*raceIdOffset == RaceId::Zerg)
-					unitId = UnitId::ZergDrone;
-				else
-				if(*raceIdOffset == RaceId::Terran)
-					unitId = UnitId::TerranSCV;
-				else
-				if(*raceIdOffset == RaceId::Protoss)
-					unitId = UnitId::ProtossProbe;
-				else
-					unitId = UnitId::None;
-
-				created_unit = createUnit(unitId,startPositions[playerId].x,startPositions[playerId].y,playerId);
-
-				if(created_unit != NULL) {
-
-					function_004A01F0(created_unit);
-
-					if(function_0049EC30(created_unit) != 0)
-						updateUnitStrength(created_unit);
-
-				}
-
-				if(*raceIdOffset == RaceId::Zerg)
-					unitId = UnitId::ZergDrone;
-				else
-				if(*raceIdOffset == RaceId::Terran)
-					unitId = UnitId::TerranSCV;
-				else
-				if(*raceIdOffset == RaceId::Protoss)
-					unitId = UnitId::ProtossProbe;
-				else
-					unitId = UnitId::None;
-
-				created_unit = createUnit(unitId,startPositions[playerId].x,startPositions[playerId].y,playerId);
-
-				if(created_unit != NULL) {
-
-					function_004A01F0(created_unit);
-
-					if(function_0049EC30(created_unit) != 0)
-						updateUnitStrength(created_unit);
-
-				}
-
 			}
 
 		}
