@@ -156,9 +156,9 @@ Point16 findWorkerSpawnPositions(int townhallId, const u16& startX, const u16& s
 	double offsetX = averageX / distance;
 	double offsetY = averageY / distance;
 
-	const double multiplier = 1.35;
-	double width = multiplier;
-	double height = multiplier;
+	const double distanceMultiplier = 1.35;
+	double width = distanceMultiplier;
+	double height = distanceMultiplier;
 
 	if (offsetX < 0) {
 		width *= units_dat::UnitBounds[townhallId].left;
@@ -175,7 +175,8 @@ Point16 findWorkerSpawnPositions(int townhallId, const u16& startX, const u16& s
 	offsetX *= width;
 	offsetY *= height;
 
-	if (abs(offsetX - offsetY) < 96.0 * multiplier) {
+	const double diagonalClampBreakpoint = 96.0;
+	if (abs(offsetX - offsetY) < diagonalClampBreakpoint * distanceMultiplier) {
 		offsetX = sign(offsetX) * width;
 		offsetY = sign(offsetY) * height;
 	} else if (abs(offsetX) > abs(offsetY)) {
