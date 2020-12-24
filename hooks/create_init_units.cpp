@@ -43,7 +43,6 @@ u8 GetRaceWorker(u8 raceId) {
 namespace hooks {
 
 void CreateInitialMeleeBuildings(u8 raceId, u32 playerId) {
-
 	u8 buildingId = GetRaceTownhall(raceId);
 	s32 buildingSizeX, buildingSizeY;
 	Box16 searchBox; 
@@ -80,9 +79,8 @@ void CreateInitialMeleeBuildings(u8 raceId, u32 playerId) {
 		if(function_0049EC30(created_unit) != 0)
 			updateUnitStrength(created_unit);
 
-		if(	spreadsCreep(created_unit->id,1) ||
-			units_dat::BaseProperty[created_unit->id] & UnitProperty::CreepBuilding
-		)
+		if(spreadsCreep(created_unit->id,1)
+		|| units_dat::BaseProperty[created_unit->id] & UnitProperty::CreepBuilding)
 		{
 			function_004148F0(
 				created_unit->sprite->position.x,
@@ -93,9 +91,7 @@ void CreateInitialMeleeBuildings(u8 raceId, u32 playerId) {
 			//CreateBuildingLarva(created_unit);
 			//Starting larva is 1 - HYDRA
 		}
-
 	}
-
 }
 
 ;
@@ -191,7 +187,6 @@ Point16 findWorkerSpawnPositions(int townhallId, const u16& startX, const u16& s
 }
 
 void CreateInitialMeleeUnits() {
-
 	u32 playerId;
 	u8* raceIdOffset;
 
@@ -204,7 +199,6 @@ void CreateInitialMeleeUnits() {
 		playerId--;
 
 		if(*(raceIdOffset-1) == 2 || *(raceIdOffset-1) == 1) {
-
 			//0 is use map settings,1 is Workers, 2 is Workers + Main Building
 			u8 startingUnits = (u8)(*(u16*)(0x00596871));
 
@@ -212,22 +206,20 @@ void CreateInitialMeleeUnits() {
 			static u8* tournament_mode = (u8*)0x00596877;
 			static u8* user_select_slots = (u8*)0x0059BDA8;
 
-			if(
-				*victory_conditions == 0 && //check triggers for conditions
-				startingUnits == 0 &&		//use map units
-				*tournament_mode == 0 &&	//tournament mode off
-				playerId < 8 &&
-				(user_select_slots[playerId]) != 0	//race selected instead of using map settings?
-			)
+			if (*victory_conditions == 0					// check triggers for conditions
+			  && startingUnits == 0 					// use map units
+			  &&*tournament_mode == 0					// tournament mode off
+			  && playerId < 8
+			  && (user_select_slots[playerId]) != 0	// race selected instead of using map settings?
+			) {
 				startingUnits = 2;
+			}
 
 			if(startingUnits == 2) {
-
 				CreateInitialMeleeBuildings(*raceIdOffset,playerId);
 
 				if(*raceIdOffset == RaceId::Zerg)
 					CreateInitialOverlord(playerId);
-
 			}
 
 			if(startingUnits == 1 || startingUnits == 2) {
@@ -241,7 +233,6 @@ void CreateInitialMeleeUnits() {
 					Point16 pos = findWorkerSpawnPositions(townhallId, startPos.x, startPos.y);
 
 					for (int i = 0; i < 6; i++) {
-
 						created_unit = createUnit(unitId, pos.x, pos.y, playerId);
 
 						if (created_unit != NULL) {
@@ -263,9 +254,8 @@ void CreateInitialMeleeUnits() {
 ;
 
 void CreateInitialOverlord(u8 playerId) {
-
-	static u16* const maxBoxRightValue =	(u16*)		0x00628450;
-	static u16* const maxBoxBottomValue =	(u16*)		0x006284B4;
+	static u16* const maxBoxRightValue = (u16*) 0x00628450;
+	static u16* const maxBoxBottomValue = (u16*) 0x006284B4;
 
 	int overlordStartX, overlordStartY;
 	CUnit* created_unit;
@@ -290,7 +280,6 @@ void CreateInitialOverlord(u8 playerId) {
 			updateUnitStrength(created_unit);
 
 	}
-
 }
 
 ;
