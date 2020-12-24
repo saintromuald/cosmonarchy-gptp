@@ -252,7 +252,7 @@ namespace hooks {
 
 	static std::string removetimerToString(int timer) {
 		std::stringstream ss;
-		ss << ceil(timer / 42) << "s";
+		ss << ceil(timer / 24) << "s";
 		return ss.str();
 	}
 
