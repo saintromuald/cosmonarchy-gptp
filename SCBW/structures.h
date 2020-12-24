@@ -26,7 +26,7 @@ const int SOUND_TYPE_COUNT		= 1144;
 #include "structures/Player.h" //made into external file to have .cpp
 
 #pragma pack(1)
-
+/*
 struct UnitAI {
 	CLink<UnitAI>	link;				// 0x0, 0x4
 	u8				type;				// 0x8 \\ 0x1 = Guard, 0x2 = Worker, 0x3 = Building / Available to scripts, 0x4 = Military
@@ -41,7 +41,7 @@ struct UnitAI {
 	u32				field20;			// 0x20
 	u32				field24;			// 0x24
 	u32				field28;			// 0x28
-};
+};*/
 /*
 struct pathing {
 	u16 regionCount;
