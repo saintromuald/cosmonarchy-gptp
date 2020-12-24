@@ -490,7 +490,7 @@ namespace hooks {
 		jmpPatch(getRemainingBuildTimePctWrapper, 0x004669E0);	//004669E0  sub_4669E0 EXACT
 		jmpPatch(getUnitVerticalOffsetOnBirthWrapper, 0x0045DE00);	//0045DD60  orders_ZergBirth within
 		jmpPatch(isRallyableEggUnitWrapper, 0x0045DE57);	//0045DD60  orders_ZergBirth within
-//		jmpPatch(beginTrainWrapper, 0x00468200); //unused hook, for now
+		//jmpPatch(beginTrainWrapper, 0x00468200); //unused hook, for now
 		//
 		jmpPatch(deleteBuildingWorkerAiEggJmpWrapper, 0x00434CD0, 1);
 		jmpPatch(addUnitAiEggJmpWrapper, 0x00433E64, 1);
