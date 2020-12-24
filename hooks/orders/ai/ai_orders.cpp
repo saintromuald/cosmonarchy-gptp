@@ -18,7 +18,7 @@ namespace {
 }
 
 namespace hooks {
-	void AI_TrainingUnit(CUnit* result, CUnit* parent) {			// 004A2830
+	void AI_TrainingUnit(CUnit* result, CUnit* parent) {						// 004A2830
 
 		if (playerTable[parent->playerId].type == PlayerType::Computer) {
 			if (playerTable[result->playerId].type == PlayerType::Computer
@@ -48,7 +48,10 @@ namespace hooks {
 		}
 	}
 	/*
-	void AI_AddMilitary(AiCaptain* region, CUnit* unit, s32 alwaysThisRegion) {
+	void AI_AddMilitary(AiCaptain* region, CUnit* unit, s32 alwaysThisRegion) {	// 0043DA20
+	// alwaysThisRegion acts as a bool, not sure why IDA thinks it's s32
+	// I assumed medicAI was UnitAI* but IDA tries to assign town values to it later
+	// Looking at the aise version of this hook didn't help as it's more akin to a rewrite: https://pastebin.com/raw/8xNTUCuv
 		AiCaptain* regionNew; // esi
 		UnitAI* medicAI; // eax
 		CUnit* medic; // edx
