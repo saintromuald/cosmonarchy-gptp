@@ -1,6 +1,7 @@
 #include "create_init_units.h"
 #include <SCBW/api.h>
 #include <SCBW/UnitFinder.h>
+#include <vector>
 
 //helper functions def
 
@@ -17,25 +18,36 @@ CUnit* FindBestUnit(Box16* coords, u32 searchProc);			//E8830
 	
 } //unnamed namespace
 
+u8 GetRaceTownhall(u8 raceId) {
+	if (raceId == RaceId::Zerg)
+		return UnitId::ZergHatchery;
+	else if (raceId == RaceId::Terran)
+		return UnitId::TerranCommandCenter;
+	else if (raceId == RaceId::Protoss)
+		return UnitId::ProtossNexus;
+	else
+		return UnitId::None;
+}
+
+u8 GetRaceWorker(u8 raceId) {
+	if (raceId == RaceId::Zerg)
+		return UnitId::ZergDrone;
+	else if (raceId == RaceId::Terran)
+		return UnitId::TerranSCV;
+	else if (raceId == RaceId::Protoss)
+		return UnitId::ProtossProbe;
+	else
+		return UnitId::None;
+}
+
 namespace hooks {
 
 void CreateInitialMeleeBuildings(u8 raceId, u32 playerId) {
 
-	u8 buildingId;
+	u8 buildingId = GetRaceTownhall(raceId);
 	s32 buildingSizeX, buildingSizeY;
 	Box16 searchBox; 
 	CUnit* created_unit;
-
-	if(raceId == RaceId::Zerg)
-		buildingId = UnitId::ZergHatchery;
-	else
-	if(raceId == RaceId::Terran)
-		buildingId = UnitId::TerranCommandCenter;
-	else
-	if(raceId == RaceId::Protoss)
-		buildingId = UnitId::ProtossNexus;
-	else
-		buildingId = UnitId::None;
 
 	buildingSizeX = units_dat::BuildingDimensions[buildingId].x;
 	buildingSizeY = units_dat::BuildingDimensions[buildingId].y;
@@ -118,8 +130,9 @@ public:
 	}
 };
 
-void findWorkerSpawnPosition(const u16& startX, const u16& startY, u16& targetX, u16& targetY)
+Point16 findWorkerSpawnPositions(int townhallId, const u16& startX, const u16& startY)
 {
+	std::vector<Point16> positions;
 	int sumX = 0;
 	int sumY = 0;
 	u32 count = 0;
@@ -129,17 +142,33 @@ void findWorkerSpawnPosition(const u16& startX, const u16& startY, u16& targetX,
 	unitFinder.forEach(MineralFieldAveragePosProc(startX, startY, sumX, sumY, count));
 
 	if (count == 0) {
-		targetX = startX;
-		targetY = startY;
-		return;
+		return Point16{ startX, startY };
 	}
 
 	double averageX = (double) sumX / count;
 	double averageY = (double) sumY / count;
 	double distance = pow(pow(averageX, 2) + pow(averageY, 2), 0.5);
 
-	targetX = startX + averageX / distance * 32;
-	targetY = startY + averageY / distance * 16;
+	double offsetX = averageX / distance;
+	double offsetY = averageY / distance;
+
+	const double multiplier = 1.35;
+	if (offsetX < 0) {
+		offsetX *= units_dat::UnitBounds[townhallId].left;
+	} else {
+		offsetX *= units_dat::UnitBounds[townhallId].right;
+	}
+
+	if (offsetY < 0) {
+		offsetY *= units_dat::UnitBounds[townhallId].top;
+	} else {
+		offsetY *= units_dat::UnitBounds[townhallId].bottom;
+	}
+
+	offsetX *= multiplier;
+	offsetY *= multiplier;
+
+	return Point16{ (u16)(startX + offsetX), (u16)(startY + offsetY) };
 }
 
 void CreateInitialMeleeUnits() {
@@ -184,31 +213,17 @@ void CreateInitialMeleeUnits() {
 
 			if(startingUnits == 1 || startingUnits == 2) {
 
-				u8 unitId;
+				u8 unitId = GetRaceWorker(*raceIdOffset);
+				u8 townhallId = GetRaceTownhall(*raceIdOffset);
 				CUnit* created_unit;
-
-
-				if (*raceIdOffset == RaceId::Zerg)
-					unitId = UnitId::ZergDrone;
-				else
-				if (*raceIdOffset == RaceId::Terran)
-					unitId = UnitId::TerranSCV;
-				else
-				if (*raceIdOffset == RaceId::Protoss)
-					unitId = UnitId::ProtossProbe;
-				else
-					unitId = UnitId::None;
-
+				
 				if (unitId != UnitId::None) {
-					u16 targetX;
-					u16 targetY;
-
 					Point16 startPos = startPositions[playerId];
-					findWorkerSpawnPosition(startPos.x, startPos.y, targetX, targetY);
+					Point16 pos = findWorkerSpawnPositions(townhallId, startPos.x, startPos.y);
 
 					for (int i = 0; i < 6; i++) {
 
-						created_unit = createUnit(unitId, targetX, targetY, playerId);
+						created_unit = createUnit(unitId, pos.x, pos.y, playerId);
 
 						if (created_unit != NULL) {
 							function_004A01F0(created_unit);
