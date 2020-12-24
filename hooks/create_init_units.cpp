@@ -178,8 +178,7 @@ Point16 findWorkerSpawnPositions(int townhallId, const u16& startX, const u16& s
 	if (abs(offsetX - offsetY) < 32.0 * multiplier) {
 		offsetX = sign(offsetX) * width;
 		offsetY = sign(offsetY) * height;
-	} else
-	if (abs(offsetX) > abs(offsetY)) {
+	} else if (abs(offsetX) > abs(offsetY)) {
 		offsetX = sign(offsetX) * width;
 	} else {
 		offsetY = sign(offsetY) * height;
