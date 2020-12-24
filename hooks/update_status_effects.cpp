@@ -447,8 +447,8 @@ void updateStatusEffects(CUnit* unit) {
 		doIrradiateDamage(unit);	//assumed to work, not checked in details
 
 		if (unit->irradiateTimer == 0) {
-			if(unit->_unknown_0x026 & 0x2){
-				unit->_unknown_0x026 &= ~0x2;
+			if(unit->newFlags1 & NewFlags1::RadiationShockwave){
+				unit->newFlags1 &= ~NewFlags1::RadiationShockwave;
 				//radiation shockwave
 				//scbw::printText("Radiation Shockwave detected");
 
@@ -639,8 +639,8 @@ void updateStatusEffects(CUnit* unit) {
 
 		if (unit->plagueTimer == 0){
 			unit->removeOverlay(ImageId::PlagueOverlay_Small, ImageId::PlagueOverlay_Large);
-			if(unit->_unknown_0x026 & 0x4){
-				unit->_unknown_0x026 &= ~0x4;
+			if(unit->newFlags1 & NewFlags1::Metastasis){
+				unit->newFlags1 &= ~NewFlags1::Metastasis;
 			}
 		}
 

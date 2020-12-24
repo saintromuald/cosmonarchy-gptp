@@ -264,6 +264,23 @@ enum Enum : u32 {
 };
 }
 
+//For various newFlags fields
+namespace NewFlags1 {
+enum Enum : u8 {
+	Unused1				= 0x1,
+	RadiationShockwave	= 0x2,
+	Metastasis			= 0x4,
+};
+}
+
+namespace NewFlags2 {
+	enum Enum : u8 {
+		Unused1 = 0x1,
+		Unused2 = 0x2,
+		Unused4 = 0x4,
+	};
+}
+
 //---- Taken from buttons.cpp ----//
 namespace BUTTON_STATE {
 enum Enum {

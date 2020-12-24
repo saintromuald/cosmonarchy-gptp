@@ -279,7 +279,7 @@ namespace ValueId {
 		AI_CorsairDweb_Timer						= 132,
 		EnsnaringBrood								= 133,
 		EnsnaringBroodAbility						= 134,
-		EggOrigin									= 135,
+		OldEggOrigin								= 135,	// Replace later
 		IonCannonProjectilePos						= 136,
 		UltrakorCancelGimmick						= 137,
 		SwarmingOmenTimer							= 138,
@@ -355,7 +355,7 @@ struct CUnitLayout {
 											* the direction they are facing faster than then can change the direction they are moving.
 											*/	
 /*0x024*/ u16       flingyId;
-/*0x026*/ u8        _unknown_0x026;		//hydra - new Flags
+/*0x026*/ u8        newFlags1;		//was _unknown_0x026
 						//0x1 - order signal for protoss morphs
 						//0x2 - irradiate shockwave
 						//0x4 - metastasis plague
@@ -388,8 +388,11 @@ struct CUnitLayout {
 											
                                           */
 /*0x050*/ u16       orderUnitType;
-/*0x052*/ u16       _unknown_0x052;       // 2-byte padding
-
+/*0x052*/ u8		eggOrigin;		// was _unknown_0x052
+/*0x053*/ u8		newFlags2;		// split from _unknown_0x052
+										// 0x1  - unused
+										// 0x2	- unused
+										// 0x4	- unused
 /*0x054*/ u8        mainOrderTimer;		  // A timer for orders, example: time left before minerals are harvested
 /*0x055*/ u8        groundWeaponCooldown;
 /*0x056*/ u8        airWeaponCooldown;

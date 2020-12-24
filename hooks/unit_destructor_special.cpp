@@ -21,8 +21,8 @@ class customPlagueProc_2 : public scbw::UnitFinderCallbackProcInterface
 		: defiler(defiler) {}
 	void proc(CUnit* unit)
 	{
-		if(unit->plagueTimer>0){
-			unit->_unknown_0x026 |=0x4;
+		if(unit->plagueTimer > 0){
+			unit->newFlags1 |= NewFlags1::Metastasis;
 		}
 	}
 };
@@ -341,8 +341,8 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		}
 	}
 
-	//defiler plague upgrade (unknown id), add condition later
-	if ((unit->_unknown_0x026 & 0x4) && unit->plagueTimer>0) {
+	// Metastasis - Plague spreads when a unit dies
+	if ((unit->newFlags1 & NewFlags1::Metastasis) && unit->plagueTimer > 0) {
 		scbw::createBullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->playerId, 
 			unit->currentDirection1);	
 		Box16 coords;

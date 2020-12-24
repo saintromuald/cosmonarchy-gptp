@@ -17,7 +17,7 @@ public:
 	void proc(CUnit* unit)
 	{
 		if(unit->plagueTimer>0){
-			unit->_unknown_0x026 |=0x4;
+			unit->newFlags1 |= NewFlags1::Metastasis;
 		}
 		if (defiler != NULL
 			&& scbw::get_generic_timer(defiler, ValueId::EnsnaringBrood) > 0
@@ -88,7 +88,7 @@ namespace hooks {
 			(unitWithOverlay->sprite)->createTopOverlay(irradiateImageId,0,0,0);
 		}
 		if(attacker!=NULL)
-			target->_unknown_0x026 |= 0x2;
+			target->newFlags1 |= NewFlags1::RadiationShockwave;
 		target->irradiateTimer = 8*3;
 		target->irradiatedBy = attacker;
 		target->irradiatePlayerId = attackingPlayerId;

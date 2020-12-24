@@ -60,7 +60,7 @@ namespace hooks {
 				unit->previousUnitType == UnitId::EggVorvaling || unit->previousUnitType==UnitId::EggNathrokor) {
 				vorvaling = true;
 			}*/
-			auto origin = scbw::get_generic_value(unit, ValueId::EggOrigin);
+			auto origin = unit->eggOrigin;
 			if (origin == UnitId::ZergZergling) {
 				vorvaling = true;
 			}
@@ -118,7 +118,7 @@ namespace hooks {
 				!scbw::isZergEggNew(unit,true,false,unit->previousUnitType)
 				)
 			{
-				auto origin = scbw::get_generic_value(unit, ValueId::EggOrigin);
+				auto origin = unit->eggOrigin;
 				if (origin == UnitId::ZergLarva) {
 					orderNewUnitToRally(unit, unit->connectedUnit);
 
@@ -218,8 +218,7 @@ namespace hooks {
 							return;
 						}
 						else {
-
-							scbw::set_generic_value(unit, ValueId::EggOrigin, unit->id);
+							unit->eggOrigin = unit->id;
 							//morph into egg from source unit
 							replaceUnitWithType(unit, eggId);
 						}
@@ -227,7 +226,7 @@ namespace hooks {
 						changeUnitButtonSet_Sub4E5D60(unit, unit->id);
 						unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 						unit->mainOrderState = 1;
-						auto origin = scbw::get_generic_value(unit, ValueId::EggOrigin);
+						auto origin = unit->eggOrigin;
 /*						if (unit->id == UnitId::EggVorvaling
 						||	unit->id == UnitId::EggNathrokor
 						||	unit->id == UnitId::EggKalkaleth) { // Kalkaleth uses air cocoon
@@ -264,7 +263,7 @@ namespace hooks {
 			if (unit->mainOrderState == 1) {
 				//advance
 				if (advanceRemainingBuildTime_Sub466940(unit)) {
-					auto origin = scbw::get_generic_value(unit, ValueId::EggOrigin);
+					auto origin = unit->eggOrigin;
 					auto anim = IscriptAnimation::SpecialState1;
 					/*if (origin == UnitId::ZergLarva) {
 						anim = IscriptAnimation::GndAttkInit;
@@ -279,17 +278,7 @@ namespace hooks {
 					if (unit->orderSignal & 4) {
 
 						unit->orderSignal -= 4;
-						auto origin = scbw::get_generic_value(unit, ValueId::EggOrigin);
-/*						switch (unit->id) {
-						case UnitId::EggIroleth:
-							scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 1);
-							break;
-						case UnitId::EggOthstoleth:
-							scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 2);
-							break;
-						default:
-							break;
-						}*/
+						auto origin = unit->eggOrigin;
 						switch (origin) {
 						case UnitId::ZergOverlord:
 							scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 1);
@@ -337,7 +326,7 @@ namespace hooks {
 							function_004A01F0(unit);
 
 							updateUnitStrength(unit);
-							auto origin = scbw::get_generic_value(unit, ValueId::EggOrigin);
+							auto origin = unit->eggOrigin;
 							if (unit->id == UnitId::ZergEgg && origin==UnitId::ZergLarva)
 								orderNewUnitToRally(unit, unit->connectedUnit);
 
@@ -552,7 +541,7 @@ namespace hooks {
 	u16 getCancelMorphRevertTypeHook(CUnit* eggUnit) {
 		//Default StarCraft behavior
 
-		auto source = scbw::get_generic_value(eggUnit, ValueId::EggOrigin);
+		auto source = eggUnit->eggOrigin;
 		if (eggUnit->getRace() == RaceId::Zerg
 		&&  eggUnit->id != UnitId::ZergInfestedTerran) {
 			if (!(units_dat::BaseProperty[eggUnit->id] & UnitProperty::Building)
