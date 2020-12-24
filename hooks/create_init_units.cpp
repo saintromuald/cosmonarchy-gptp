@@ -112,7 +112,7 @@ private:
 
 public:
 	MineralFieldAveragePosProc(const u16& refX, const u16& refY, int& sumX, int& sumY, u32& count) :
-	refX(refX), refY(refY), sumX(sumX), sumY(sumY), count(count)
+		refX(refX), refY(refY), sumX(sumX), sumY(sumY), count(count)
 	{
 		cliffLevel = scbw::getActiveTileAt(refX, refY).groundHeight;
 	}
@@ -129,6 +129,10 @@ public:
 		}
 	}
 };
+
+double sign(double x) {
+	return x < 0.0 ? -1.0 : x > 0.0 ? 1.0 : 0.0;
+}
 
 Point16 findWorkerSpawnPositions(int townhallId, const u16& startX, const u16& startY)
 {
@@ -153,20 +157,33 @@ Point16 findWorkerSpawnPositions(int townhallId, const u16& startX, const u16& s
 	double offsetY = averageY / distance;
 
 	const double multiplier = 1.35;
+	double width = multiplier;
+	double height = multiplier;
+
 	if (offsetX < 0) {
-		offsetX *= units_dat::UnitBounds[townhallId].left;
+		width *= units_dat::UnitBounds[townhallId].left;
 	} else {
-		offsetX *= units_dat::UnitBounds[townhallId].right;
+		width *= units_dat::UnitBounds[townhallId].right;
 	}
 
 	if (offsetY < 0) {
-		offsetY *= units_dat::UnitBounds[townhallId].top;
+		height *= units_dat::UnitBounds[townhallId].top;
 	} else {
-		offsetY *= units_dat::UnitBounds[townhallId].bottom;
+		height *= units_dat::UnitBounds[townhallId].bottom;
 	}
 
-	offsetX *= multiplier;
-	offsetY *= multiplier;
+	offsetX *= width;
+	offsetY *= height;
+
+	if (abs(offsetX - offsetY) < 32.0 * multiplier) {
+		offsetX = sign(offsetX) * width;
+		offsetY = sign(offsetY) * height;
+	} else
+	if (abs(offsetX) > abs(offsetY)) {
+		offsetX = sign(offsetX) * width;
+	} else {
+		offsetY = sign(offsetY) * height;
+	}
 
 	return Point16{ (u16)(startX + offsetX), (u16)(startY + offsetY) };
 }
