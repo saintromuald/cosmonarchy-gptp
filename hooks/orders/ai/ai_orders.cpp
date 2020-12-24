@@ -72,8 +72,8 @@ namespace {
 	void AI_TrainingBroodling(CUnit* parent, CUnit* result) {
 		__asm {
 			PUSHAD
-			PUSH parent
 			PUSH result
+			PUSH parent
 			CALL Func_AI_TrainingBroodling
 			POPAD
 		}

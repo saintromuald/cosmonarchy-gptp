@@ -13,4 +13,5 @@ namespace hooks {
 	bool hasSuppliesForUnitHook(u8 playerId, u16 unitId, bool canShowErrorMessage);
 	void injectUnitMorphHooks();
 	u32 remove_worker_or_building_ai(CUnit* unit, u8 assert_is_building);
+	CUnit* beginTrain(CUnit* unit, u16 unit_id, bool notify_error);
 } //hooks
