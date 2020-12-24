@@ -627,6 +627,25 @@ namespace hooks {
 		return true;
 	}
 
+	CUnit* beginTrain(CUnit* unit, u16 unit_id, bool notify_error) {
+		if (unit->status & UnitStatus::GroundedBuilding
+			|| unit->id==UnitId::ProtossCarrier
+//			|| unit->id==UnitId::Hero_Gantrithor
+			|| unit->id==UnitId::ProtossReaver
+//			|| unit->id==UnitId::Hero_Warbringer
+			|| scbw::isLarvalEgg(unit))//just egg previously
+		{
+			if (hasSuppliesForUnit(unit_id,unit->playerId,notify_error))
+			{
+				CUnit* result = scbw::CreateUnit(unit_id, unit->getX(), unit->getY(), unit->playerId);
+				if (result)
+					return result;
+				scbw::displayLastNetErrForPlayer(unit->playerId);
+			}
+		}
+		return 0;
+	}
+
 
 } //namespace hooks
 

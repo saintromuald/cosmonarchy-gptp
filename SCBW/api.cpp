@@ -1340,6 +1340,18 @@ void InheritAI2(CUnit* unit_creator, CUnit* created_unit) {
 		POPAD
 	}
 };
+
+
+const u32 Func_displayLastNetErrForPlayer = 0x0049E530;
+void displayLastNetErrForPlayer(u32 playerId) {
+	__asm {
+		PUSHAD
+		PUSH playerId
+		CALL Func_displayLastNetErrForPlayer
+		POPAD
+	}
+}
+
 CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* creator) {
 	Point16 pos;
 	CUnit* unit;
@@ -1358,15 +1370,7 @@ CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* creator) {
 	}
 	return unit;
 }
-const u32 Func_displayLastNetErrForPlayer = 0x0049E530;
-void displayLastNetErrForPlayer(u32 playerId) {
-	__asm {
-		PUSHAD
-		PUSH playerId
-		CALL Func_displayLastNetErrForPlayer
-		POPAD
-	}
-}
+
 u32 getUnitOverlayAdjustment(CUnit* const unit) {
 	if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
 		return 1;

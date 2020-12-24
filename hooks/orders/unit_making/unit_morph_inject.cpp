@@ -423,7 +423,54 @@ void __declspec(naked) deleteBuildingWorkerAiEggJmpWrapper() {
 	}
 	
 }
+const u32 Jmp_UnitAi_IsEgg = 0x00433E74;
+const u32 Jmp_UnitAi_IsNotEgg = 0x00433E6A;
+void __declspec(naked) addUnitAiEggJmpWrapper() {
+	static CUnit* unit;
+	__asm {
+		MOV unit, EBX
+		PUSHAD
+	}
+	if (scbw::isLarvalEgg(unit)) {
+		__asm {
+			POPAD
+			JMP Jmp_UnitAi_IsEgg
+		}
+	}
+	else {
+		__asm {
+			POPAD
+			JMP Jmp_UnitAi_IsNotEgg
+		}
+	}
+}
 
+
+void __declspec(naked) beginTrainWrapper() {
+	static u32 notify_error;
+	static CUnit* unit;
+	static CUnit* result;
+	static u16 unit_id;
+	__asm {
+		PUSH EBP
+		MOV EBP,ESP
+		MOV unit,ESI
+		MOV unit_id,DI
+		PUSH EAX
+		MOV EAX,[EBP+0x08]
+		MOV notify_error,EAX
+		POP EAX
+		PUSHAD
+	}
+	result = hooks::beginTrain(unit, unit_id, notify_error);
+	__asm {
+		POPAD
+		MOV EAX,result
+		MOV ESP,EBP
+		POP EBP
+		RETN 4
+	}
+}
 
 }; //unnamed namespace
 
@@ -443,8 +490,12 @@ namespace hooks {
 		jmpPatch(getRemainingBuildTimePctWrapper, 0x004669E0);	//004669E0  sub_4669E0 EXACT
 		jmpPatch(getUnitVerticalOffsetOnBirthWrapper, 0x0045DE00);	//0045DD60  orders_ZergBirth within
 		jmpPatch(isRallyableEggUnitWrapper, 0x0045DE57);	//0045DD60  orders_ZergBirth within
+//		jmpPatch(beginTrainWrapper, 0x00468200); //unused hook, for now
 		//
 		jmpPatch(deleteBuildingWorkerAiEggJmpWrapper, 0x00434CD0, 1);
+		jmpPatch(addUnitAiEggJmpWrapper, 0x00433E64, 1);
+		//
+
 //		jmpPatch(RemoveWorkerOrBuildingAiWrapper, 0x00434C90); //00434C90 //failed hook, causes crashes
 	}
 

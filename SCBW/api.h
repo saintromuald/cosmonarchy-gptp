@@ -285,6 +285,7 @@ CUnit* CreateUnit(u32 unitId, int x, int y, u32 playerId);
 void displayLastNetErrForPlayer(u32 playerId);
 void FinishUnit_Pre(CUnit* unit);
 void updateUnitStrength(CUnit* unit);
+void displayLastNetErrForPlayer(u32 playerId);
 void InheritAI2(CUnit* unit_creator, CUnit* created_unit);
 /// Calculates the images.dat overlay adjustment for the given unit.
 /// This piece of code is used throughout StarCraft.exe for various status

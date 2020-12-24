@@ -15,11 +15,12 @@ namespace {
 namespace hooks {
 	void AI_TrainingUnit(CUnit* result, CUnit* parent) {			// 004A2830
 
-		if (playerTable[(u8)parent->playerId].type == PlayerType::Computer) {
-			if (playerTable[(u8)result->playerId].type == PlayerType::Computer
-			&&  result->id == UnitId::TerranMedic) {
-				if (!(AIScriptController[(u8)result->playerId].mainMedic))
-					  AIScriptController[(u8)result->playerId].mainMedic = result;
+		if (playerTable[parent->playerId].type == PlayerType::Computer) {
+			if (playerTable[result->playerId].type == PlayerType::Computer
+				&&  result->id == UnitId::TerranMedic) {
+				if (!(AIScriptController[result->playerId].mainMedic))
+					  AIScriptController[result->playerId].mainMedic = result;
+
 			}
 			if (units_dat::BaseProperty[result->id] & UnitProperty::Worker) {
 				AI_TrainingWorker(result, parent);
@@ -53,7 +54,7 @@ namespace {
 			MOV resultFunc, EAX
 			POPAD
 		}
-		return (char)resultFunc;
+		return resultFunc;
 	}
 
 	const u32 Func_AI_TrainingOverlord = 0x00435770;
@@ -71,8 +72,8 @@ namespace {
 	void AI_TrainingBroodling(CUnit* parent, CUnit* result) {
 		__asm {
 			PUSHAD
-			PUSH result
 			PUSH parent
+			PUSH result
 			CALL Func_AI_TrainingBroodling
 			POPAD
 		}
