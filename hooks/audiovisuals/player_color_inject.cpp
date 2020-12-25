@@ -21,7 +21,7 @@ namespace {
 
 namespace hooks {
 
-	void injectAIOrdersHooks() {
+	void injectPlayerColorHooks() {
 //		jmpPatch(AI_TrainingUnit_Wrapper, 0x004A2830, 2);
 	}
 }
