@@ -1759,23 +1759,6 @@ u16 random() {
 	}
 
 	void refreshDebuffs(CUnit* unit) {
-		u32 overlayImageId;
-		CUnit* overlayTargetUnit;
-
-		// TODO: Add read for refreshing timers
-/*		if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
-			overlayImageId = ImageId::RestorationHit_Medium;
-		else
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
-				overlayImageId = ImageId::RestorationHit_Large;
-			else
-				overlayImageId = ImageId::RestorationHit_Small;
-		if (unit->subunit != NULL)
-			overlayTargetUnit = unit->subunit;
-		else
-			overlayTargetUnit = unit;
-		(overlayTargetUnit->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);*/
-
 		// NOTE: classic timer formula is (([real seconds / 0.042) / 8)
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
 
@@ -1820,7 +1803,7 @@ u16 random() {
 
 		// Reset Irradiate
 		if (unit->irradiateTimer != 0)
-			unit->irradiateTimer = 8*3;
+			unit->irradiateTimer = 24;
 
 		//was hardcoded in original code
 		scbw::refreshConsole();
