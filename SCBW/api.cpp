@@ -1535,6 +1535,9 @@ u16 random() {
 					unitFinder.forEach(gameteMeiosisProc(unit));
 				}
 				else if (unitId == UnitId::ProtossSimulacrum) {
+					if (creator != nullptr) {
+						unit->hitPoints = creator->hitPoints;
+					}
 					scbw::playSound(SoundId::Protoss_TRILOBYTE_PTrRdy00_WAV, unit);
 				}
 			}
