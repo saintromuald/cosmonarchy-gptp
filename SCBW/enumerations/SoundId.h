@@ -1145,7 +1145,12 @@ enum Enum {
 	Protoss_Artanis_PAtYes00_wav = 1140,
 	Protoss_Artanis_PAtYes01_wav = 1141,
 	Protoss_Artanis_PAtYes02_wav = 1142,
-	Protoss_Artanis_PAtYes03_wav = 1143
+	Protoss_Artanis_PAtYes03_wav = 1143,
+
+
+	// HYDRA \\
+
+	Simulacrum_Clone_01			= 1332,
 };
 }
 

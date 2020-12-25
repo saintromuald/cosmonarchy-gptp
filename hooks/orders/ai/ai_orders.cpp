@@ -33,13 +33,7 @@ namespace hooks {
 			else if (result->id == UnitId::ZergOverlord) {
 				AI_TrainingOverlord(result, parent);
 			}
-			else if (result->id == UnitId::ZergBroodling
-			||		 result->id == UnitId::ZergBroodlisk
-			||		(result->id == UnitId::ProtossSimulacrum
-				&&	 scbw::get_generic_value(result, ValueId::SimulacrumClone) > 0)) {
-				if (parent == NULL) {
-					parent = firstPlayerUnit->unit[result->playerId];
-				}
+			else if (result->id == UnitId::ZergBroodling) {
 				AI_TrainingBroodling(parent, result);
 			}
 			else {

@@ -1538,7 +1538,7 @@ u16 random() {
 					if (creator != nullptr) {
 						unit->hitPoints = creator->hitPoints;
 					}
-					scbw::playSound(SoundId::Protoss_TRILOBYTE_PTrRdy00_WAV, unit);
+					scbw::playSound(SoundId::Simulacrum_Clone_01, unit);
 				}
 			}
 		}
