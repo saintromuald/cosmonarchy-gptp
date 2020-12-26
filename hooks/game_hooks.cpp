@@ -1278,6 +1278,25 @@ namespace hooks {
 				if (scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer) == 1) {
 //					unit->removeOverlay();
 				}
+
+				// Larval Colony - Spawn Larva
+				if (unit->id == UnitId::ZergLarvalColony
+					&& scbw::get_generic_timer(unit, ValueId::LarvalColonyTimer) == 0) {
+					int freeSlot = 0;
+					for (int var = ValueId::LarvalColonyArray; var <= ValueId::LarvalColonyArrayEnd; var++) {
+						if (scbw::get_generic_unit(unit, var) != nullptr) {
+							freeSlot = var;
+							break;
+						}
+					}
+					if (freeSlot != 0) {
+						CUnit* unit = scbw::createUnitIngame(UnitId::larva, unit->playerId, unit->getX(), unit->getY(), unit);
+						if (unit != nullptr) {
+							scbw::set_generic_timer(unit, ValueId::LarvalColonyTimer, 1 + LARVAL_COLONY_TIME);
+							scbw::set_generic_unit(unit, freeSlot, unit);
+						}
+					}
+				}
 			}
 			scbw::setInGameLoopState(false);
 		}

@@ -533,7 +533,6 @@ enum Enum {
 	ZergIroleth										= 222,		// Protoss Gas Orb Type 1
 
 //Zerg-Egg
-	EggVorvaling									= 216,		// Young Chrysalis
 	EggNathrokor									= 217,		// Psi Emitter
 	EggAlkajelisk									= 218,		// Data Disc
 
@@ -559,6 +558,7 @@ enum Enum {
 	ZergQuazilQuay									= 220,		// Mineral Chunk Type 1
 	ZergIrolIris									= 224,		// Zerg Gas Sac Type 1
 	ZergSire										= 227,		// Terran Gas Tank Type 2
+	ZergLarvalColony								= 216,		// Young Chrysalis
 
 	};
 }

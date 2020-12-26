@@ -52,3 +52,8 @@ constexpr int AI_STARSOVEREIGN_ABIL_TIMER = 612;
 
 // Quazilisk - Passive
 constexpr double QUAZILISK_PASSIVE_FACTOR = 0.1;
+
+// Larva Spawn Rate
+constexpr int LARVA_SPAWN_TIME = 342;
+constexpr double LARVAL_COLONY_MULTIPLIER = 0.75;
+constexpr int LARVA_COLONY_TIME = LARVA_SPAWN_TIME / LARVAL_COLONY_MULTIPLIER;
