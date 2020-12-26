@@ -20,7 +20,8 @@ public:
 		: vorvaling(vorvaling) {}
 	void proc(CUnit* unit)
 	{
-		if (scbw::isAlliedTo(vorvaling->playerId, unit->playerId)) {
+		if (scbw::isAlliedTo(vorvaling->playerId, unit->playerId)
+		||	units_dat::BaseProperty[unit->id] & UnitProperty::Flyer) {
 			return;
 		}
 		u16 angle = scbw::getAngle(vorvaling->position.x, vorvaling->position.y,
