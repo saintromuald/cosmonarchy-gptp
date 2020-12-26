@@ -143,14 +143,18 @@ namespace hooks {
 					unit->building.larvaTimer = 37; 
 					/*0x25*/
 
+					if (unit->id == UnitId::ZergLarvalColony) {
+						unit->building.larvaTimer = 37 / LARVAL_COLONY_MULTIPLIER;
+					}
+
 													//if failed to find a spawn point for larva
 													//set the timer before retry to 3
-					if ((unit->id == UnitId::ZergLair && unit->mainOrderId!=OrderId::Morph2) || 
-						(unit->id == UnitId::ZergHive && unit->mainOrderId == OrderId::Morph2)) {
+					if (unit->id == UnitId::ZergLair && unit->mainOrderId != OrderId::Morph2 || 
+						unit->id == UnitId::ZergHive && unit->mainOrderId == OrderId::Morph2) {
 						unit->building.larvaTimer = 27;
 					}
-					else if ((unit->id == UnitId::ZergHive && unit->mainOrderId!=OrderId::Morph2) ||
-						(unit->id == UnitId::ZergSire && unit->mainOrderId == OrderId::Morph2)) {
+					else if (unit->id == UnitId::ZergHive && unit->mainOrderId != OrderId::Morph2 ||
+							 unit->id == UnitId::ZergSire && unit->mainOrderId == OrderId::Morph2) {
 						unit->building.larvaTimer = 18;
 					}
 					else if (unit->id == UnitId::ZergSire && unit->mainOrderId != OrderId::Morph2) {
@@ -307,8 +311,8 @@ namespace hooks {
 					unit->id == UnitId::ZergLair ||
 					unit->id == UnitId::ZergHive ||
 					unit->id == UnitId::ZergSire ||
-					(unit->id==UnitId::ZergInfestedCommandCenter && 
-					!(unit->status & UnitStatus::InAir));
+					(unit->id==UnitId::ZergInfestedCommandCenter && !(unit->status & UnitStatus::InAir)) ||
+					unit->id == UnitId::ZergLarvalColony;
 
 				if (isZergMainBuilding)
 					orderId = OrderId::SpawningLarva;

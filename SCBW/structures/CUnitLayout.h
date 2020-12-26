@@ -289,9 +289,6 @@ namespace ValueId {
 		IsReviving									= 142,
 		SwarmingOmenStatus							= 143,
 		ProtectiveInstinctsStatus					= 144,
-		LarvalColonyTimer							= 145,
-		LarvalColonyArray							= 146,
-		LarvalColonyArrayEnd						= 148,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
