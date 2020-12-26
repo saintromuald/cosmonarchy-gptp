@@ -451,7 +451,8 @@ namespace hooks {
 			flags.push_back("Robotic");
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Detector)
 			flags.push_back("Detector");
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding)
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding
+			|| (unit->id == UnitId::ZergBactalisk && unit->status & UnitStatus::Burrowed))
 			flags.push_back("Spreads Creep");
 
 		std::string flag = formatStringVector(flags);
