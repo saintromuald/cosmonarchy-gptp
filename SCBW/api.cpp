@@ -761,14 +761,15 @@ bool isZergBuildingMorphResult(u16 id){
 	case UnitId::ZergSire:
 	case UnitId::ZergHive:
 	case UnitId::ZergLair:
+	case UnitId::ZergLarvalColony:
+	case UnitId::ZergSporeColony:
+	case UnitId::ZergSunkenColony:
 	case UnitId::ZergMutationPit:
 	case UnitId::ZergKeskathGrotto:
 	case UnitId::ZergAlkajChasm:
 	case UnitId::ZergGuardianRoost:
 	case UnitId::ZergDevourerHaunt:
 	case UnitId::ZergGorgrokApiary:
-	case UnitId::ZergSporeColony:
-	case UnitId::ZergSunkenColony:
 	case UnitId::ZergBactalDen:
 	case UnitId::ZergAlmakAntre:
 	case UnitId::ZergLurkerDen:
@@ -790,11 +791,11 @@ bool isZergBuildingMorphSource(u16 id){
 	case UnitId::ZergHive:
 	case UnitId::ZergLair:
 	case UnitId::ZergHatchery:
+	case UnitId::ZergCreepColony:
 	case UnitId::ZergEvolutionChamber:
 	case UnitId::ZergUltrakCavern:
 	case UnitId::ZergSpire:
 	case UnitId::ZergGorgrokApiary:
-	case UnitId::ZergCreepColony:
 	case UnitId::ZergHydralDen:
 	case UnitId::ZergBactalDen:
 	case UnitId::ZergSpawningPool:
