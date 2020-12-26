@@ -11,6 +11,7 @@ struct Config {
 	// UI
 	bool show_timer = true;
 	bool extended_camera_hotkeys = true;
+	bool always_show_extended_tooltips = false;
 
 	// Hotkeys
 	bool grid_hotkeys = false;

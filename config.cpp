@@ -18,6 +18,7 @@ void Config::LoadConfig() {
 
 		LoadField(configNode, "show-timer", config.show_timer);
 		LoadField(configNode, "extended-camera-hotkeys", config.extended_camera_hotkeys);
+		LoadField(configNode, "always-show-extended-tooltips", config.always_show_extended_tooltips);
 
 		auto gridNode = configNode["grid-hotkeys"];
 		if (gridNode) {
@@ -42,6 +43,7 @@ void Config::SaveConfig() {
 	out << YAML::Comment("UI");
 	WriteField(out, "show-timer", config.show_timer);
 	WriteField(out, "extended-camera-hotkeys", config.extended_camera_hotkeys);
+	WriteField(out, "always-show-extended-tooltips", config.always_show_extended_tooltips);
 	out << YAML::Newline << YAML::Newline;
 
 	out << YAML::Comment("Hotkeys (Not Implemented Yet)");

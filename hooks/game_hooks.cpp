@@ -543,6 +543,7 @@ namespace hooks {
 			}
 			hooks::handleScreenHotkeys();
 			scbw::refreshScreen(); // refreshes screen, needed for game clock and apm timer to update every frame
+			scbw::refreshConsole();
 			
 			//framework example, rework and use later
 			/*if (*elapsedTimeFrames == 1) {

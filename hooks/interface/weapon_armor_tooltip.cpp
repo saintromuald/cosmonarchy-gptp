@@ -4,6 +4,8 @@
 #include <cstdio>
 #include "../unit_speed.h"
 #include "../weapons/weapon_cooldown.h"
+#include "../config.h"
+#include <Windows.h>
 
 
 char buffer[256];
@@ -51,28 +53,35 @@ static std::string formatStringVector(std::vector<std::string> strings) {
 }
 
 const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) {
-	//Default StarCraft behavior
+	const bool extended = GetKeyState(VK_SHIFT) & 0x8000 || config.always_show_extended_tooltips;
 
-	//get strings
+	// Get game strings
 	const char* entryName = statTxtTblNew->getString(entryStrIndex);
 	const char* damageStr = statTxtTblNew->getString(777);					//"Damage:"
 	const char* perRocketStr = statTxtTblNew->getString(1301);				//"per rocket"
-	const char* type = "Type:";
 	const char* typeName = "";
-	const char* rangeText = "Range:";
-	const char* meleeText = "Melee";
 
-	//grab weapon details from weapon dat
 	u8 damageFactor = getDamageFactorForTooltip(weaponId, unit);
 	u8 upgradeLevel = scbw::getUpgradeLevel(unit->playerId, weapons_dat::DamageUpgrade[weaponId]);
 	u16 baseDamage = weapons_dat::DamageAmount[weaponId];
 	u16 bonusDamage = weapons_dat::DamageBonus[weaponId] * upgradeLevel;
 	u8 damageType = weapons_dat::DamageType[weaponId];
-	//calculate max range for weapon
+
+	u32 minRange = weapons_dat::MinRange[weaponId] / 32;
 	u32 range = weapons_dat::MaxRange[weaponId] / 32;
 	u32 bonusRange = 0;
 
-	//find range bonus for weapon
+	std::string damageModifiers = "";
+	double attackCd = (double)weapons_dat::Cooldown[weaponId] / 24;
+	double attackCdModifier = ((double)hooks::getModifiedWeaponCooldownHook(unit, weaponId) / 24) - attackCd;
+
+	int splashInner = weapons_dat::InnerSplashRadius[weaponId];
+	int splashMedium = weapons_dat::MediumSplashRadius[weaponId];
+	int splashOuter = weapons_dat::OuterSplashRadius[weaponId];
+	bool hasSplash = splashInner || splashMedium || splashOuter;
+	int splashType = weapons_dat::ExplosionType[weaponId];
+	std::string splashTypeValue = "";
+
 	if (scbw::get_generic_value(unit, ValueId::RoboticSapience)) {
 		u32 stacks = scbw::get_generic_value(unit, ValueId::RoboticSapience);
 		if (stacks >= 10) {
@@ -96,26 +105,27 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 		break;
 	}
 
-	//grab the string for the damage type of the weapon
 	switch (damageType) {
 	case DamageType::Normal:
-		//Normal type damage uses green text
-		typeName = "\017Normal\002";
+		// Yellow
+		typeName = "\003Normal\002";
 		break;
 	case DamageType::Explosive:
-		//Explosive type damage uses orange text
+		// Orange
 		typeName = "\021Explosive\002";
+		damageModifiers = "\01750\002/\00375\002/\021100\002";
 		break;
 	case DamageType::Concussive:
-		//Concussive type damage uses yellow text
-		typeName = "\003Concussive\002";
+		// Teal
+		typeName = "\017Concussive\002";
+		damageModifiers = "\017100\002/\00375\002/\02150\002";
 		break;
 	case DamageType::Independent:
-		//Independent type damage uses white text
+		// White
 		typeName = "\004Independent\002";
 		break;
 	case DamageType::IgnoreArmor:
-		//Ignore Armor type damage uses white text
+		// White
 		typeName = "\004Ignores Armor\002";
 		break;
 	default:
@@ -123,13 +133,29 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 		break;
 	};
 
-	int minRange = weapons_dat::MinRange[weaponId] / 32;
+	switch (splashType) {
+	case WeaponEffect::SplashRadial:
+		// Red
+		splashTypeValue = "\006Unsafe\002";
+		break;
+	case WeaponEffect::SplashEnemy:
+		// Green
+		splashTypeValue = "\007Safe\002";
+		break;
+	case WeaponEffect::Unknown_Crash:
+		// Green
+		splashTypeValue = "\007Ally Safe\002";
+		break;
+	case WeaponEffect::SplashAir:
+		// Yellow
+		splashTypeValue = "\003Air Only\002";
+		break;
+	default:
+		// White
+		splashTypeValue = "\004Normal Hit\002";
+		break;
+	};
 
-	std::string attackCdText = "Cooldown:";
-	double attackCd = (double) weapons_dat::Cooldown[weaponId] / 24;
-	double attackCdModifier = ((double) hooks::getModifiedWeaponCooldownHook(unit, weaponId) / 24) - attackCd;
-
-	std::string targetText = "Targets:";
 	std::vector<std::string> targetFlags;
 	if (weapons_dat::TargetFlags[weaponId].ground)
 		targetFlags.push_back("Ground");
@@ -148,53 +174,31 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 
 	std::string targetFlagsText = formatStringVector(targetFlags);
 
-	std::string splashRadText = "Splash Radius:";
-	int splashInner = weapons_dat::InnerSplashRadius[weaponId];
-	int splashMedium = weapons_dat::MediumSplashRadius[weaponId];
-	int splashOuter = weapons_dat::OuterSplashRadius[weaponId];
-	bool hasSplash = splashInner || splashMedium || splashOuter;
-	std::string splashTypeText = "Splash Type:";
-	int splashType = weapons_dat::ExplosionType[weaponId];
-	std::string splashTypeValue = "";
-
-	switch (splashType) {
-	case WeaponEffect::SplashRadial:
-		// Orange
-		splashTypeValue = "\021Unsafe\002";
-		break;
-	case WeaponEffect::SplashEnemy:
-		// Green
-		splashTypeValue = "\017Safe\002";
-		break;
-	case WeaponEffect::Unknown_Crash:
-		// Orange
-		splashTypeValue = "\017Ally Safe\002";
-		break;
-	case WeaponEffect::SplashAir:
-		// Yellow
-		splashTypeValue = "\003Air Only\002";
-		break;
-	default:
-		// White
-		splashTypeValue = "\004Normal Hit\002";
-		break;
-	};
-
 	// Name
 	std::string text = "\004" + std::string(entryName) + "\002\n";
 
 	// Damage
-	text += std::string(damageStr) + " " + std::to_string(damageFactor) +"x(" + std::to_string(baseDamage);
-	if (bonusDamage > 0) text += "+" + std::to_string(bonusDamage);
-	text += ")";
-	//if (weaponId == WeaponId::HaloRockets) text += " " + std::string(perRocketStr);
+	if (extended) {
+		text += std::string(damageStr) + " " + std::to_string(damageFactor) + "x(" + std::to_string(baseDamage);
+		if (bonusDamage > 0) text += "+" + std::to_string(bonusDamage);
+		text += ")";
+	}
+	else {
+		text += std::string(damageStr) + " " + std::to_string(damageFactor * baseDamage);
+		if (bonusDamage > 0) text += "+" + std::to_string(bonusDamage);
+	}
+	
+	if (!extended && weaponId == WeaponId::HaloRockets) text += " " + std::string(perRocketStr);
 
 	// Cooldown
 	std::stringstream ss;
 	ss << std::setprecision(4);
-	ss << attackCd;
-	text += "\n" + std::string(attackCdText) + " " + ss.str() + "s";
-	if (attackCdModifier != 0) {
+	if (extended) ss << attackCd;
+	else ss << (attackCd + attackCdModifier);
+	text += "\nCooldown: ";
+	text += attackCdModifier > 0 ? "\006" : attackCdModifier < 0 ? "\005" : "\002";
+	text += ss.str() + "s";
+	if (extended && attackCdModifier != 0) {
 		ss.str("");
 		ss << abs(attackCdModifier);
 
@@ -202,9 +206,10 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 		else text += " - ";
 		text += ss.str() + "s";
 	}
+	text += "\002";
 
 	// Range
-	text += "\n" + std::string(rangeText) + " ";
+	text += "\nRange: ";
 	if (range > 0) {
 		if (minRange > 0) {
 			text += std::to_string(minRange) + "-";
@@ -212,18 +217,25 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 		text += std::to_string(range);
 		if (bonusRange > 0) text += "+" + std::to_string(bonusRange);
 	}
-	else text += std::string(meleeText);
+	else text += "Melee";
 
 	// Target
-	text += "\n" + targetText + " " + targetFlagsText;
+	text += "\nTargets: " + targetFlagsText;
 
 	// Type
-	text += "\n" + std::string(type) + " " + std::string(typeName);
+	text += "\nType: " + std::string(typeName);
+	if (extended && damageModifiers != "") {
+		text += " (" + damageModifiers + ")";
+	}
 
 	// Splash
 	if (hasSplash) {
-		text += "\n" + splashRadText + " " + std::to_string(splashInner) + "/" + std::to_string(splashMedium) + "/" + std::to_string(splashOuter);
-		text += "\n" + splashTypeText + " " + splashTypeValue;
+		text += "\nSplash Radius: " + std::to_string(splashInner) + "/" + std::to_string(splashMedium) + "/" + std::to_string(splashOuter);
+		text += "\nSplash Type: " + splashTypeValue;
+	}
+
+	if (!extended) {
+		text += "\n-- Hold \003Shift\002 for more details --";
 	}
 
 	strncpy(buffer, text.c_str(), sizeof(buffer));
@@ -284,9 +296,8 @@ namespace hooks {
 		}
 	}
 
-	//Returns the C-string for the tooltip text of the unit's armor icon.
 	const char* getArmorTooltipString(CUnit* unit) {
-		//Default StarCraft behavior
+		const bool extended = GetKeyState(VK_SHIFT) & 0x8000 || config.always_show_extended_tooltips;
 
 		const u16 labelId = upgrades_dat::Label[units_dat::ArmorUpgrade[unit->id]];
 		const char* armorUpgradeName = statTxtTblNew->getString(labelId);
@@ -298,19 +309,25 @@ namespace hooks {
 		const char* sizeLabel = "Size:";
 		const char* sizeText = "";
 
+		const u8 transportSpace = units_dat::SpaceRequired[unit->id];
+
 		const int sightRange = units_dat::SightRange[unit->id];
 
 		switch (unitSize) {
 		case 1:
+			// Teal
 			sizeText = "\017Small\002";
 			break;
 		case 2:
+			// Yellow
 			sizeText = "\003Medium\002";
 			break;
 		case 3:
+			// Orange
 			sizeText = "\021Large\002";
 			break;
 		default:
+			// White
 			sizeText = "\004Unknown\002";
 			break;
 		}
@@ -322,14 +339,14 @@ namespace hooks {
 		std::string movementSpeed = ss.str();
 		ss.str("");
 
-		//int accel = hooks::getModifiedUnitAccelerationHook(unit);
-		//ss << accel;
-		//std::string acceleration = ss.str();
-		//ss.str("");
+		int accel = hooks::getModifiedUnitAccelerationHook(unit);
+		ss << accel;
+		std::string acceleration = ss.str();
+		ss.str("");
 
-		//ss << hooks::getModifiedUnitTurnSpeedHook(unit);
-		//std::string turnRate = ss.str();
-		//ss.str("");
+		ss << hooks::getModifiedUnitTurnSpeedHook(unit);
+		std::string turnRate = ss.str();
+		ss.str("");
 
 		std::string plane = unit->status & UnitStatus::InAir ? "Air" : "Ground";
 
@@ -405,24 +422,56 @@ namespace hooks {
 			addStatus(statuses, "Under Dark Swarm", darkSwarm->hitPoints / 256, darkSwarm->removeTimer, TimerType::RemoveTimer);
 		}
 
-		// TODO
+		std::string status = formatStringVector(statuses);
+
+		// TODO Statuses
 		//	make sublime shepard show on targets not only caster
 		//	add optical flare, mind control on target, last orders?, infested (when it's implemented)
 		//	properly track cowardice, malice timers
 		//	color code source player if possible
 
-		std::string status = formatStringVector(statuses);
+		std::vector<std::string> flags;
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
+			flags.push_back("Structure");
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::ProducesUnits)
+			flags.push_back("Factory");
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Addon)
+			flags.push_back("Addon");
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+			flags.push_back("Worker");
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Hero)
+			flags.push_back("Hero");
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Invincible)
+			flags.push_back("Invincible");
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic)
+			flags.push_back("Organic");
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Mechanical)
+			flags.push_back("Mechanical");
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit)
+			flags.push_back("Robotic");
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Detector)
+			flags.push_back("Detector");
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding)
+			flags.push_back("Spreads Creep");
+
+		std::string flag = formatStringVector(flags);
 
 		std::string text = "\004" + std::string(armorUpgradeName) + "\002";
 		text += "\n" + std::string(armorStr) + " " + std::to_string(baseArmor);
 		if (bonusArmor > 0) text += "+" + std::to_string(bonusArmor);
 		text += "\nSize: " + std::string(sizeText);
-		text += "\nSight Range: " + std::to_string(sightRange);
 		text += "\nPlane: " + plane;
 		text += "\nMove Speed: " + movementSpeed;
-		//if (accel != 1) text += "\nAcceleration: " + acceleration;
-		//text += "\nTurn Rate: " + turnRate;
 		text += "\nStatus: " + status;
+		if (extended) text += "\nFlags: " + flag;
+		if (extended && accel != 1) text += "\nAcceleration: " + acceleration;
+		if (extended) text += "\nTurn Rate: " + turnRate;
+		if (extended) text += "\nSight Range: " + std::to_string(sightRange);
+		if (extended && transportSpace != 255) text += "\nTransport Space: " + std::to_string(transportSpace);
+
+		if (!extended) {
+			text += "\n-- Hold \003Shift\002 for more details --";
+		}
 
 		strncpy(buffer, text.c_str(), sizeof(buffer));
 		buffer[sizeof(buffer) - 1] = 0;
