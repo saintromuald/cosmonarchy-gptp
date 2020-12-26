@@ -1254,6 +1254,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ZergLarvalColony &&  //Larval Colony Larval Gestation passive
+									current_button->iconID == IconId::MetasynapticNode)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 
 								// Passive icons: END \\
 

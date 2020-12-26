@@ -827,6 +827,7 @@ namespace hooks {
 		case UnitId::ZergCreepColony:
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergSunkenColony, ignoreIncomplete);
 			unitCount += getNumberOfUnitType(unit, UnitId::ZergSporeColony, ignoreIncomplete);
+			unitCount += getNumberOfUnitType(unit, UnitId::ZergLarvalColony, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergSpawningPool:
