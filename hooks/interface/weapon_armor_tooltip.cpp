@@ -82,6 +82,9 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	int splashType = weapons_dat::ExplosionType[weaponId];
 	std::string splashTypeValue = "";
 
+	bool isSuicideUnit = unit->id == UnitId::ZergInfestedTerran ||
+						 unit->id == UnitId::ZergSkryling;
+
 	if (scbw::get_generic_value(unit, ValueId::RoboticSapience)) {
 		u32 stacks = scbw::get_generic_value(unit, ValueId::RoboticSapience);
 		if (stacks >= 10) {
@@ -185,28 +188,39 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	}
 	else {
 		text += std::string(damageStr) + " " + std::to_string(damageFactor * baseDamage);
-		if (bonusDamage > 0) text += "+" + std::to_string(bonusDamage);
+		if (bonusDamage > 0) text += "+" + std::to_string(damageFactor * bonusDamage);
 	}
 	
 	if (!extended && weaponId == WeaponId::HaloRockets) text += " " + std::string(perRocketStr);
 
 	// Cooldown
+	std::string modifierColor = attackCdModifier > 0 ? "\006" : attackCdModifier < 0 ? "\005" : "\002";
 	std::stringstream ss;
 	ss << std::setprecision(4);
-	if (extended) ss << attackCd;
-	else ss << (attackCd + attackCdModifier);
-	text += "\nCooldown: ";
-	text += attackCdModifier > 0 ? "\006" : attackCdModifier < 0 ? "\005" : "\002";
-	text += ss.str() + "s";
-	if (extended && attackCdModifier != 0) {
-		ss.str("");
-		ss << abs(attackCdModifier);
-
-		if (attackCdModifier > 0) text += " + ";
-		else text += " - ";
+	if (!isSuicideUnit) {
+		if (extended) ss << attackCd;
+		else ss << (attackCd + attackCdModifier);
+		text += "\nCooldown: ";
+		text += modifierColor;
 		text += ss.str() + "s";
+		if (extended && attackCdModifier != 0) {
+			ss.str("");
+			ss << abs(attackCdModifier);
+
+			if (attackCdModifier > 0) text += " + ";
+			else text += " - ";
+			text += modifierColor + ss.str() + "s";
+		}
+		text += "\002";
 	}
-	text += "\002";
+
+	// DPS
+	if (!isSuicideUnit && extended) {
+		ss.str("");
+		double cd = (attackCd + attackCdModifier);
+		ss << ((double)damageFactor * (baseDamage + bonusDamage) / cd);
+		text += "\nDPS: " + modifierColor + ss.str() + "\002";
+	}
 
 	// Range
 	text += "\nRange: ";
