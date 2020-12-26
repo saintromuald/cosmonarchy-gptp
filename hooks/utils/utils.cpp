@@ -97,26 +97,17 @@ bool unit_IsStandardAndMovable(CUnit* unit) {
 	bool return_value;
 
 	if(
-		units_dat::BaseProperty[unit->id] & UnitProperty::Building ||
-		units_dat::BaseProperty[unit->id] & UnitProperty::NeutralAccessories ||
-		unit->status & UnitStatus::DoodadStatesThing ||
-		unit->lockdownTimer != 0 ||
-		unit->stasisTimer != 0 ||
-		unit->maelstromTimer != 0 ||
-		(
-			unit->id >= UnitId::Special_FloorMissileTrap &&
-			unit->id <= UnitId::Special_RightWallFlameTrap
-		) ||
-		unit->id == UnitId::TerranSpiderMine ||
-		unit->id == UnitId::ZergEgg ||
-/*		unit->id == UnitId::Critter_Rhynadon ||
-		unit->id == UnitId::Critter_Bengalaas ||
-		unit->id == UnitId::Critter_Ragnasaur ||
-		unit->id == UnitId::Critter_Kakaru ||
-		unit->id == UnitId::Critter_Scantid ||
-		unit->id == UnitId::Critter_Ursadon ||*/
-		unit->id == UnitId::Spell_DarkSwarm ||
-		unit->id == UnitId::Spell_DisruptionWeb
+		units_dat::BaseProperty[unit->id] & UnitProperty::Building
+	||  units_dat::BaseProperty[unit->id] & UnitProperty::NeutralAccessories
+	||	unit->status & UnitStatus::DoodadStatesThing
+	||	unit->id == UnitId::TerranSpiderMine
+	||	unit->id == UnitId::TerranLobotomyMine
+	||	unit->id == UnitId::Spell_DarkSwarm
+	||	unit->id == UnitId::Spell_DisruptionWeb
+	||	unit->id == UnitId::Special_PitDoor
+	||	unit->id == UnitId::Special_RightPitDoor
+	||	unit->id == UnitId::Special_UpperLevelDoor
+	||	unit->id == UnitId::Special_RightUpperLevelDoor
 	)
 		return_value = false;
 	else
