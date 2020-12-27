@@ -25,7 +25,6 @@ namespace hooks {
 				&&  result->id == UnitId::TerranMedic) {
 				if (!(AIScriptController[result->playerId].mainMedic))
 					  AIScriptController[result->playerId].mainMedic = result;
-
 			}
 			if (units_dat::BaseProperty[result->id] & UnitProperty::Worker) {
 				AI_TrainingWorker(result, parent);
