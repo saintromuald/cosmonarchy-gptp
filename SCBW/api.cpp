@@ -1332,11 +1332,11 @@ void updateUnitStrength(CUnit* unit) {
 	}
 }
 const u32 Func_AI_TrainingUnit = 0x004A2830;
-void InheritAI2(CUnit* unit_creator, CUnit* created_unit) {
+void InheritAI2(CUnit* result, CUnit* parent) {
 	__asm {
 		PUSHAD
-		MOV EAX, created_unit
-		MOV ECX, unit_creator
+		MOV ECX, parent
+		MOV EAX, result
 		CALL Func_AI_TrainingUnit
 		POPAD
 	}
@@ -1355,7 +1355,7 @@ CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* creator) {
 		FinishUnit_Pre(unit);
 		updateUnitStrength(unit);
 		if (creator != NULL && creator->pAI != NULL)
-			InheritAI2(creator, unit);
+			InheritAI2(unit, creator);
 	}
 	return unit;
 }

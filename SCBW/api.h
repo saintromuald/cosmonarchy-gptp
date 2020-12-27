@@ -286,7 +286,7 @@ void displayLastNetErrForPlayer(u32 playerId);
 void FinishUnit_Pre(CUnit* unit);
 void updateUnitStrength(CUnit* unit);
 void displayLastNetErrForPlayer(u32 playerId);
-void InheritAI2(CUnit* unit_creator, CUnit* created_unit);
+void InheritAI2(CUnit* result, CUnit* parent);
 /// Calculates the images.dat overlay adjustment for the given unit.
 /// This piece of code is used throughout StarCraft.exe for various status
 /// effects, such as Ensnare, Plague, and Defensive Matrix.
