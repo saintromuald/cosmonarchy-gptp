@@ -1536,7 +1536,7 @@ u16 random() {
 				}
 				else if (unitId == UnitId::ProtossSimulacrum) {
 					if (creator != nullptr) {
-						unit->hitPoints = creator->hitPoints;
+						unit->hitPoints = std::min(256, creator->hitPoints);
 					}
 					scbw::playSound(SoundId::Simulacrum_Clone_01, unit);
 				}
