@@ -927,7 +927,7 @@ namespace hooks {
 
 			// Deal Damage, except for Independent damage, which always deals 0
 			if (damageType != DamageType::Independent && target->defensiveMatrixHp == 0) {
-				GPTP::logger << "weaponhit: " << (s32)weaponId << '\n';
+//				GPTP::logger << "weaponhit: " << (s32)weaponId << '\n';
 				target->damageHp(damage, attacker, attackingPlayerId, weaponId != WeaponId::Irradiate);
 				// Prevent Science Vessels from being continuously revealed to the irradiated target
 			}
