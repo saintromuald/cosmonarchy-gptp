@@ -22,8 +22,9 @@ namespace hooks {
 		if (playerTable[result->playerId].type == PlayerType::Computer) {
 			if (playerTable[result->playerId].type == PlayerType::Computer
 				&& result->id == UnitId::TerranMedic) {
-				if (!(AIScriptController[result->playerId].mainMedic))
+				if (!(AIScriptController[result->playerId].mainMedic)) {
 					AIScriptController[result->playerId].mainMedic = result;
+				}
 			}
 
 			if (result->id == UnitId::ZergBroodling
