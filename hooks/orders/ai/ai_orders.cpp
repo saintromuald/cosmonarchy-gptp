@@ -19,25 +19,33 @@ namespace {
 
 namespace hooks {
 	void AI_TrainingUnit(CUnit* result, CUnit* parent) {						// 004A2830
-
-		if (playerTable[parent->playerId].type == PlayerType::Computer) {
+		if (playerTable[result->playerId].type == PlayerType::Computer) {
 			if (playerTable[result->playerId].type == PlayerType::Computer
-				&&  result->id == UnitId::TerranMedic) {
+				&& result->id == UnitId::TerranMedic) {
 				if (!(AIScriptController[result->playerId].mainMedic))
-					  AIScriptController[result->playerId].mainMedic = result;
+					AIScriptController[result->playerId].mainMedic = result;
+			}
 
+			if (result->id == UnitId::ZergBroodling
+			|| result->id == UnitId::ZergBroodlisk
+			//|| result->id == UnitId::ProtossSimulacrum
+			) {
+				AI_TrainingBroodling(result, result);
 			}
-			if (units_dat::BaseProperty[result->id] & UnitProperty::Worker) {
-				AI_TrainingWorker(result, parent);
-			}
-			else if (result->id == UnitId::ZergOverlord) {
-				AI_TrainingOverlord(result, parent);
-			}
-			else if (result->id == UnitId::ZergBroodling) {
-				AI_TrainingBroodling(parent, result);
-			}
-			else {
-				AI_TrainingNormal(result, parent);
+
+			if (parent != nullptr) {
+				if (parent->pAI != nullptr) {
+					if (units_dat::BaseProperty[result->id] & UnitProperty::Worker) {
+						AI_TrainingWorker(result, parent);
+					}
+					else if (result->id == UnitId::ZergOverlord) {
+						AI_TrainingOverlord(result, parent);
+					}
+					else {
+						AI_TrainingNormal(result, parent);
+					}
+				}
+				
 			}
 		}
 	}

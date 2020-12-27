@@ -1354,8 +1354,7 @@ CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* creator) {
 	else {
 		FinishUnit_Pre(unit);
 		updateUnitStrength(unit);
-		if (creator != NULL && creator->pAI != NULL)
-			InheritAI2(unit, creator);
+		InheritAI2(unit, creator);
 	}
 	return unit;
 }
