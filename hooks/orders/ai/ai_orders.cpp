@@ -32,6 +32,7 @@ namespace hooks {
 			//|| result->id == UnitId::ProtossSimulacrum
 			) {
 				AI_TrainingBroodling(result, result);
+				return;
 			}
 
 			if (parent != nullptr) {
