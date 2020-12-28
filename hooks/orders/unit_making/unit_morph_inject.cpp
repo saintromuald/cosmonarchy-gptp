@@ -472,8 +472,52 @@ void __declspec(naked) beginTrainWrapper() {
 	}
 }
 
-}; //unnamed namespace
+const u32 Jmp_UnitTask_IsEgg = 0x00434CF1;
+const u32 Jmp_UnitTask_IsNotEgg = 0x00434CD6;
+void __declspec(naked) detachUnitTask_EggJmpWrapper() {
+	static CUnit* unit;
+	__asm {
+		MOV unit, EDI
+		PUSHAD
+	}
+	if (scbw::isLarvalEgg(unit)) {
+		__asm {
+			POPAD
+			JMP Jmp_UnitTask_IsEgg
+		}
+	}
+	else {
+		__asm {
+			POPAD
+			JMP Jmp_UnitTask_IsEgg
+		}
+	}
+}
 
+const u32 Jmp_PrepSuicide_IsEgg = 0x0043D218;
+const u32 Jmp_PrepSuicide_IsNotEgg = 0x0043D212;
+void __declspec(naked) prepSuicide_EggJmpWrapper() {
+	static CUnit* unit;
+	__asm {
+		MOV unit, ESI
+		PUSHAD
+	}
+	if (scbw::isLarvalEgg(unit)) {
+		__asm {
+			POPAD
+			JMP Jmp_PrepSuicide_IsEgg
+		}
+	}
+	else {
+		__asm {
+			POPAD
+			JMP Jmp_PrepSuicide_IsEgg
+		}
+	}
+}
+
+
+}; //unnamed namespace
 
 
 namespace hooks {
@@ -490,7 +534,28 @@ namespace hooks {
 		jmpPatch(getRemainingBuildTimePctWrapper, 0x004669E0);	//004669E0  sub_4669E0 EXACT
 		jmpPatch(getUnitVerticalOffsetOnBirthWrapper, 0x0045DE00);	//0045DD60  orders_ZergBirth within
 		jmpPatch(isRallyableEggUnitWrapper, 0x0045DE57);	//0045DD60  orders_ZergBirth within
-		//jmpPatch(beginTrainWrapper, 0x00468200); //unused hook, for now
+		
+		//												
+		jmpPatch(beginTrainWrapper, 0x00468200); 
+		jmpPatch(detachUnitTask_EggJmpWrapper, 0x00434CD0, 1);
+		jmpPatch(prepSuicide_EggJmpWrapper, 0x0043D20C, 1);
+		//has unfinished disabled bugged hook in aise
+
+		/*
+		Egg unitid hardcode
+
+//
+// Probably related
+/
+00488AF0 = IncrementKillScores(), edi Unit *killed, edx killing_player
+// IDA calls it "incrementUnitDeathScores"
+0x00488B90  |.  66:3D 2400    CMP AX,24
+
+004A2130 = AiScript_SwitchRescue(), edx player
+0x004A21CA  |.  66:3D 2400    |CMP AX,24
+
+
+		*/
 		//
 		jmpPatch(deleteBuildingWorkerAiEggJmpWrapper, 0x00434CD0, 1);
 		jmpPatch(addUnitAiEggJmpWrapper, 0x00433E64, 1);
