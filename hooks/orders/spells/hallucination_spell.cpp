@@ -5,20 +5,24 @@
 
 namespace {
 
-bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 sightRange,u32 error_message_index);	//926D0
-void UnitDestructor(CUnit* unit);																					//A0990
-bool function_004F66D0(CUnit* unit);																				//F66D0
-//CUnit* createHallucinationUnit(CUnit* target, u32 playerId);														//F6B90
+	bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 sightRange,u32 error_message_index);	// 926D0
+	void UnitDestructor(CUnit* unit);																					// A0990
+	bool function_004F66D0(CUnit* unit);																				// 004F66D0	// called PlaceHallucination in Neiv's list
+
+	// for createHallucination
+	CUnit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId);														// 004A09D0
+	void applyHallucinationStats(CUnit* halUnit);																		// 004F6180
+	s32 hallucinateScarabs(CUnit* a1, CUnit* a2);																		// 004F65B0
+	void AI_TrainingUnit(CUnit* result, CUnit* parent);																	// 004A2830
+	void displayLastNetErrForPlayer(u8 a1);																				// 0049E530
 
 } //unnamed namespace
 
 namespace hooks {
 
 	void orders_Hallucination1(CUnit* unit) {
-
 		int sightRange = unit->getSightRange(true);
 		u16 techCost;
-
 		if(
 			ordersSpell_Sub_4926D0(
 				unit,
@@ -27,11 +31,9 @@ namespace hooks {
 				sightRange * 32,
 				0x899 //Invalid Target
 			)
-		)
-		{
-
+		) {
 			int counter = 1;
-			
+			// TODO: cleanup
 			//while(counter > 0) {
 			//
 			//	counter--;
@@ -70,98 +72,148 @@ namespace hooks {
 				unit->orderComputerCL(OrderId::ComputerAI);
 			else
 				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
-
 		}
-
 	}
 
-	;
+	// Hooked to rule out AI issues -- Pr0nogo
+	CUnit* createHallucination(CUnit* source, s32 player) {
+		CUnit* halUnit; // eax
+		CUnit* v3; // edi
+		CUnit* halUnit2; // esi
+		CUnit* result; // eax
+		u16 halTimer; // cx
+		u16 currentHalTimer; // ax
+		s16 unitType; // ax
+
+		v3 = source;
+		halUnit = createUnit(source->id, source->sprite->position.x, source->sprite->position.y, player);
+		halUnit2 = halUnit;
+		if (halUnit) {
+			applyHallucinationStats(halUnit);
+			if (halUnit2->status & UnitStatus::IsHallucination)
+				halTimer = 1350;
+			else
+				halTimer = halUnit2->id != UnitId::ZergBroodling ? 0 : 1800;
+			currentHalTimer = halUnit2->removeTimer;
+			if (!currentHalTimer || halTimer < currentHalTimer)
+				halUnit2->removeTimer = halTimer;
+			unitType = halUnit2->id;
+			if (unitType == UnitId::ProtossReaver)
+				hallucinateScarabs(halUnit2, v3);
+			AI_TrainingUnit(halUnit2, halUnit2);
+			result = halUnit2;
+		}
+		else {
+			displayLastNetErrForPlayer(player);
+			result = 0;
+		}
+		return result;
+	}
 
 } //namespace hooks
 
-;
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
 namespace {
 
-const u32 Func_Sub_4926D0 = 0x004926D0;
-bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 sightRange,u32 error_message_index) {
-
-	static Bool32 bPreResult;
-
-	__asm {
-		PUSHAD
-		PUSH techEnergyCost
-		PUSH sightRange
-		PUSH techId
-		MOV EAX, error_message_index
-		MOV EBX, unit
-		CALL Func_Sub_4926D0
-		MOV bPreResult, EAX
-		POPAD
+	const u32 Func_Sub_4926D0 = 0x004926D0;
+	bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index) {
+		static Bool32 bPreResult;
+		__asm {
+			PUSHAD
+			PUSH techEnergyCost
+			PUSH sightRange
+			PUSH techId
+			MOV EAX, error_message_index
+			MOV EBX, unit
+			CALL Func_Sub_4926D0
+			MOV bPreResult, EAX
+			POPAD
+		}
+		return (bPreResult != 0);
 	}
 
-	return (bPreResult != 0);
-
-}
-
-;
-
-
-} //Unnamed namespace
-
-namespace hallucinationHelpers {
-
-const u32 Func_UnitDestructor = 0x004A0990;
-void UnitDestructor(CUnit* unit) {
-
-	__asm {
-		PUSHAD
-		MOV ECX, unit
-		CALL Func_UnitDestructor
-		POPAD
+	const u32 Func_UnitDestructor = 0x004A0990;
+	void UnitDestructor(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			CALL Func_UnitDestructor
+			POPAD
+		}
 	}
 
-}
-
-;
-
-const u32 Func_sub_4F66D0 = 0x004F66D0;
-bool function_004F66D0(CUnit* unit) {
-
-	static Bool32 bPreResult;
-
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_sub_4F66D0
-		MOV bPreResult, EAX
-		POPAD
+	const u32 Func_sub_4F66D0 = 0x004F66D0;
+	bool function_004F66D0(CUnit* unit) {
+		static Bool32 bPreResult;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_sub_4F66D0
+			MOV bPreResult, EAX
+			POPAD
+		}
+		return (bPreResult != 0);
 	}
 
-	return (bPreResult != 0);
+	// for createHallucination
 
-}
-
-const u32 Func_sub_4F6B90 = 0x004F6B90;
-CUnit* createHallucinationUnit(CUnit* target, u32 playerId) {
-
-	static CUnit* return_value;
-
-	__asm {
-		PUSHAD
-		PUSH playerId
-		MOV ECX, target
-		CALL Func_sub_4F6B90
-		MOV return_value, EAX
-		POPAD
+	const u32 Func_createUnit = 0x004A09D0;
+	CUnit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId) {
+		static CUnit* result;
+		__asm {
+			PUSHAD
+			PUSH playerId
+			PUSH y
+			MOV EAX, x
+			MOVZX CX, unitType
+			CALL Func_createUnit
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 
-	return return_value;
+	const u32 Func_applyHallucinationStats = 0x004F6180;
+	void applyHallucinationStats(CUnit* halUnit) {
+		__asm {
+			PUSHAD
+			MOV EAX, halUnit
+			CALL Func_applyHallucinationStats
+			POPAD
+		}
+	}
 
+	const u32 Func_hallucinateScarabs = 0x004F65B0;
+	s32 hallucinateScarabs(CUnit* a1, CUnit* a2) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH a2
+			MOV ESI, a1
+			CALL Func_hallucinateScarabs
+			MOV EAX, result
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_TrainingUnit = 0x004A2830;
+	void AI_TrainingUnit(CUnit* result, CUnit* parent) {
+		__asm {
+			PUSHAD
+			MOV EAX, result
+			MOV ECX, parent
+			CALL Func_AI_TrainingUnit
+			POPAD
+		}
+	}
+
+	const u32 Func_displayLastNetErrForPlayer = 0x0049E530;
+	void displayLastNetErrForPlayer(u8 a1) {
+		__asm {
+			PUSHAD
+			PUSH a1
+			CALL Func_displayLastNetErrForPlayer
+			POPAD
+		}
+	}
 }
-
-}
-
-//End of helper functions
