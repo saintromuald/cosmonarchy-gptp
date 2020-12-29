@@ -35,7 +35,7 @@ namespace hooks {
 
 			if (result->id == UnitId::ZergBroodling
 			|| result->id == UnitId::ZergBroodlisk
-			//|| result->id == UnitId::ProtossSimulacrum
+//			|| result->id == UnitId::ProtossSimulacrum
 			) {
 				AI_TrainingBroodling(result, result);
 				return;
