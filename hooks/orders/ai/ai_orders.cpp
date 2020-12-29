@@ -109,18 +109,19 @@ namespace hooks {
 	// Hooked to rule out AI crashes - Pr0nogo
 	void AI_CreateNuke(CUnit* silo, CUnit* result, CUnit* a3) { // a3 is unused!
 		CUnit* nuke; // eax
-		CUnit* v4; // esi
+		CUnit* nuke2; // esi
 
 		if (silo->id == UnitId::TerranNuclearSilo && !*(s32*)&silo->building.silo.isReady) {
 			nuke = createUnit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->playerId);
+			nuke2 = nuke;
 			if (nuke) {
 				updateUnitStatsFinishBuilding(nuke);
-				updateUnitStrengthAndApplyDefaultOrders(nuke);
-				hideUnit(nuke);
-				silo->building.silo.nuke = nuke;
+				updateUnitStrengthAndApplyDefaultOrders(nuke2);
+				hideUnit(nuke2);
+				silo->building.silo.nuke = nuke2;
 				silo->building.silo.isReady = 1;
-				nuke->connectedUnit = silo;
-				AI_TrainingUnit(nuke, silo);
+				nuke2->connectedUnit = silo;
+				AI_TrainingUnit(nuke2, silo);
 			}
 		}
 	}
