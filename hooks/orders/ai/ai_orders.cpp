@@ -3,7 +3,6 @@
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
 #include <windows.h>
-#include "logger.h"
 
 namespace {
 	// for AI_TrainingUnit
@@ -26,9 +25,16 @@ namespace {
 	void AI_AssignMilitary(s32 regionType, AiCaptain* region);						// 004390A0
 	void AI_AddMilitary(AiCaptain* region, CUnit* unit, s32 always_this_region);	// 0043DA20
 }
-
+#include "logger.h"
 namespace hooks {
 	void AI_TrainingUnit(CUnit* result, CUnit* parent) {							// 004A2830
+		//debug
+		GPTP::logger << "Result id: " << result->id;
+		if (parent && parent != result) {
+			GPTP::logger << ", Parent id: " << parent->id;
+		}
+		GPTP::logger << '\n';
+		
 		if (playerTable[result->playerId].type == PlayerType::Computer) {
 			if (playerTable[result->playerId].type == PlayerType::Computer
 				&& result->id == UnitId::TerranMedic) {
