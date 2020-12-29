@@ -102,7 +102,7 @@
 #include "hooks/unit_movement.h"
 #include "hooks/neutral_related.h"
 
-//#include "AI/spellcasting.h"
+#include "AI/spellcasting.h"
 
 /// This function is called when the plugin is loaded into StarCraft.
 /// You can enable/disable each group of hooks by commenting them.
@@ -576,7 +576,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectUnitTooltipHook();
 	hooks::injectMaxHpHooks();
 
-//	hooks::injectSpellcasterAI();
+	hooks::injectSpellcasterAI();
 	hooks::injectAIOrdersHooks();
 	hooks::injectSfxHooks();
 	hooks::injectMissChanceHooks();
