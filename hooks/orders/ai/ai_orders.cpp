@@ -136,18 +136,32 @@ namespace hooks {
 		s16 regionType; // ax
 		AiCaptain* playerRegion; // ecx
 		s32 regionId; // esi
-
-		regionId = SAI_GetRegionIdFromPxEx(result->sprite->position.x, result->sprite->position.y);
+		int pX, pY;
+		if (result->sprite != nullptr) {
+			pX = result->sprite->position.x;
+			pY = result->sprite->position.y;
+		}
+		else {
+			pX = result->position.x;
+			pY = result->position.y;
+			scbw::printText("NULL sprite of Create Broodling detected");
+		}
+		regionId = SAI_GetRegionIdFromPxEx(pX,pY);
 		playerRegion = AiRegionCaptains[parent->playerId];
 		if (playerRegion == NULL) {
 			scbw::printText("NULL region in AI_TrainingBroodling!");
 			return;
 		}
-		regionType = playerRegion[regionId].captainType;
-		region = &playerRegion[regionId];
-		if (!regionType)
-			AI_AssignMilitary(1, region);
-		AI_AddMilitary(region, result, 1);
+		regionType = playerRegion[regionId].captainType;//state
+		region = &playerRegion[regionId];		
+		if (region == NULL) {
+			scbw::printText("AI Broodling Bug: Null region");
+		}
+		else {
+			if (regionType != 0)//region has assigned state, state 0 is nothing
+				AI_AssignMilitary(1, region);
+			AI_AddMilitary(region, result, 1);
+		}
 	}
 }
 
