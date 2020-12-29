@@ -165,11 +165,93 @@ namespace hooks {
 			GPTP::logger << "AI Broodling Bug: Null region!" << '\n';
 		}
 		else {
-			if (regionType != 0)//region has assigned state, state 0 is nothing
+			if (regionType != 0) //region has assigned state, state 0 is nothing
 				AI_AssignMilitary(1, region);
 			AI_AddMilitary(region, result, 1);
 		}
 	}
+
+	// Hooked to investigate crashes - Pr0nogo
+/*	void AI_TrainingNormal(CUnit* a1, CUnit* a2) {									// 00435DB0
+		s16 v2; // dx
+		CUnit* v3; // esi
+		s16 regionId; // ax
+		UnitAi* v5; // ebx
+		UnitAi* v6; // eax
+		s32 v7; // edi
+		AiTown* v8; // ebx
+		AiCaptain* v9; // eax
+		s16 v10; // dx
+		s16 v11; // cx
+		UnitAi* v12; // [esp+4h] [ebp-4h]
+
+		v3 = a1;
+		v2 = a1->id;
+		if (v2 != UnitId::ZergGuardian && v2 != UnitId::ZergDevourer) {
+			if (a1->status & 0x40000000) {
+				regionId = SAI_GetRegionIdFromPxEx(a1->sprite->position.x, a1->sprite->position.y);
+				AI_AddMilitary(&AiRegionCaptains[a1->playerId][regionId], a1, 1);
+				return;
+			}
+			if (v2 != UnitId::ProtossArchon
+				&& v2 != UnitId::ProtossDarkArchon
+				&& v2 != UnitId::ZergLurker
+				&& v2 != UnitId::TerranNuclearMissile
+				&& v2 != UnitId::ProtossObserver)
+			{
+				v5 = a2->pAI;
+				v12 = a2->pAI;
+				if (v5) {
+					if (a2 == a1) {
+						v7 = 0;
+						AI_AssignWorker(a1);
+						v6 = v3->pAI;
+						if (v6)
+						{
+							v8 = v6->town;
+							AI_TownInfo(v6, (UnitAi*)&v8->field_10);
+							if (v8)
+							{
+								if (v3 == v8->field_28)
+									v8->field_28 = 0;
+								if (v3 == v8->field_24)
+									v8->field_24 = 0;
+							}
+							v5 = v12;
+							v3->pAI = 0;
+						}
+					}
+					else if (a2->id == v2) {
+						v7 = 0;
+					}
+					else {
+						v7 = (u8)a2->buildQueueSlot;
+					}
+					v9 = (AiCaptain*)*(&v5->field_18 + v7);
+					if (*(&v5->field_9 + v7) == 2)
+					{
+						if (!*(s32*)&v9->field_C)
+						{
+							v10 = v9->fullAirStrength;
+							v11 = v9->field_18;
+							*(s32*)&v9->field_C = v3;
+							v9->regionAirStrength = v10;
+							v9->fullGndStrength = v11;
+							v3->pAI = (UnitAi*)v9;
+							return;
+						}
+						*(&v5->field_9 + v7) = 1;
+						v9 = getAIRegionInfoFromUnitLocation(v3);
+						*(&v5->field_18 + v7) = (int)v9;
+					}
+					if (*(&v5->field_9 + v7) == 1)
+						AI_AddMilitary(v9, v3, 0);
+					else
+						AI_AddGuard(v3);
+				}
+			}
+		}
+	}*/
 }
 
 namespace {

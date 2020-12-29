@@ -622,7 +622,7 @@ C_ASSERT(sizeof(GuiOverlay) == 44); //0x2C
 //static_assert(sizeof(GuiOverlay) == 44, "The size of the GuiOverlay structure is invalid");
 
 //-------- AI related stuff --------//
-/*
+
 struct UnitAi {
 	CLink<UnitAi>	link;				// 0x0, 0x4
 	u8 type;
@@ -630,8 +630,7 @@ struct UnitAi {
 C_ASSERT(sizeof(UnitAi) == 9);
 
 struct GuardAi {
-	GuardAi* next;
-	GuardAi* prev;
+	CLink<GuardAi>	link;				// 0x0, 0x4
 	u8 type;
 	u8 timesDied;
 	u8 unkA[2];
@@ -643,10 +642,9 @@ struct GuardAi {
 	u32 previousUpdate;
 };
 C_ASSERT(sizeof(GuardAi) == 32); // 0x20
-*/
+
 struct WorkerAi {
-	WorkerAi* next;
-	WorkerAi* prev;
+	CLink<WorkerAi>	link;		// 0x0, 0x4
 	u8 type;
 	u8 target_resource;
 	u8 reassign_count;
@@ -659,8 +657,7 @@ struct WorkerAi {
 C_ASSERT(sizeof(WorkerAi) == 24); // 0x18
 
 struct BuildingAi {
-	BuildingAi* next;
-	BuildingAi* prev;
+	CLink<BuildingAi>	link;	// 0x0, 0x4
 	u8 type;
 	u8 trainQueueTypes[5];
 	u8 unkE[2];
@@ -672,8 +669,7 @@ C_ASSERT(sizeof(BuildingAi) == 44); // 0x2C
 
 /*
 struct MilitaryAi {
-	MilitaryAi* next;
-	MilitaryAi* prev;
+	CLink<MilitaryAi>	link;		// 0x0, 0x4
 	u8 type;
 	u8 padding[3];
 	CUnit* parent;
