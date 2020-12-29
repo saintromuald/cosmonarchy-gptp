@@ -27,22 +27,6 @@ const int SOUND_TYPE_COUNT		= 1144;
 
 #pragma pack(1)
 /*
-struct UnitAI {
-	CLink<UnitAI>	link;				// 0x0, 0x4
-	u8				type;				// 0x8 \\ 0x1 = Guard, 0x2 = Worker, 0x3 = Building / Available to scripts, 0x4 = Military
-	u8				deaths;				// 0x9 \\ if >= 3, no build
-	u8				fieldA;				// 0xA
-	u8				timer;				// 0xB
-	CUnit*			parent;				// 0xC
-	AiCaptain*		captain;			// 0x10
-	AiTown*			town;				// 0x14
-	u32				field18;			// 0x18
-	u32				field1C;			// 0x1C
-	u32				field20;			// 0x20
-	u32				field24;			// 0x24
-	u32				field28;			// 0x28
-};*/
-/*
 struct pathing {
 	u16 regionCount;
 	u16 unk1;
@@ -640,8 +624,7 @@ C_ASSERT(sizeof(GuiOverlay) == 44); //0x2C
 //-------- AI related stuff --------//
 /*
 struct UnitAi {
-	UnitAi* next;
-	UnitAi* prev;
+	CLink<UnitAi>	link;				// 0x0, 0x4
 	u8 type;
 };
 C_ASSERT(sizeof(UnitAi) == 9);
@@ -660,7 +643,7 @@ struct GuardAi {
 	u32 previousUpdate;
 };
 C_ASSERT(sizeof(GuardAi) == 32); // 0x20
-*/
+
 struct WorkerAi {
 	WorkerAi* next;
 	WorkerAi* prev;
@@ -686,6 +669,7 @@ struct BuildingAi {
 	void* trainQueueValues[5];
 };
 C_ASSERT(sizeof(BuildingAi) == 44); // 0x2C
+*/
 /*
 struct MilitaryAi {
 	MilitaryAi* next;
