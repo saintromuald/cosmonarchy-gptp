@@ -3,6 +3,7 @@
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
 #include <windows.h>
+#include "logger.h"
 
 namespace {
 	// for AI_TrainingUnit
@@ -144,18 +145,21 @@ namespace hooks {
 		else {
 			pX = result->position.x;
 			pY = result->position.y;
-			scbw::printText("NULL sprite of Create Broodling detected");
+			scbw::printText("NULL sprite of Create Broodling detected!");
+			GPTP::logger << "NULL sprite of Create Broodling detected!" << '\n';
 		}
 		regionId = SAI_GetRegionIdFromPxEx(pX,pY);
 		playerRegion = AiRegionCaptains[parent->playerId];
 		if (playerRegion == NULL) {
 			scbw::printText("NULL region in AI_TrainingBroodling!");
+			GPTP::logger << "NULL region in AI_TrainingBroodling!" << '\n';
 			return;
 		}
 		regionType = playerRegion[regionId].captainType;//state
 		region = &playerRegion[regionId];		
 		if (region == NULL) {
-			scbw::printText("AI Broodling Bug: Null region");
+			scbw::printText("AI Broodling Bug: Null region!");
+			GPTP::logger << "AI Broodling Bug: Null region!" << '\n';
 		}
 		else {
 			if (regionType != 0)//region has assigned state, state 0 is nothing
