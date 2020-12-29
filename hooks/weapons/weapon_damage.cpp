@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <cmath>
 #include "MathUtils.h"
-#include "../orders/spells/hallucination_spell.h"
 #include "Utils/captivating_claws.h"
 #include "hooks/hydraFinder.h"
 #include "globals.h"
@@ -24,6 +23,10 @@ namespace {
 		{3, 0, 256, 256, 256},			//Normal
 		{4, 0, 256, 256, 256}			//IgnoreArmor
 	};
+
+	CUnit* createHallucination(CUnit* target, u32 playerId);
+	bool placeHallucination(CUnit* unit);
+	void unitDestructor(CUnit * unit);
 
 } //unnamed namespace
 
@@ -864,13 +867,13 @@ namespace hooks {
 						u32 haluPlayer = scbw::get_aise_value(target, 0, AiseId::GenericValue, ValueId::HallucinatingSourcePlayer, 0);
 						if (haluPlayer != haluAttacker->playerId && !scbw::isAlliedTo(haluPlayer, haluAttacker->playerId)) return;
 
-						CUnit* hal_unit = hallucinationHelpers::createHallucinationUnit(haluAttacker, haluPlayer);
+						CUnit* hal_unit = createHallucination(haluAttacker, haluPlayer);
 						if (hal_unit != NULL) {
 							hal_unit->sprite->createOverlay(ImageId::HallucinationDeath3);
 							scbw::sendGPTP_aise_cmd(haluAttacker, hal_unit, GptpId::SetGenericUnit, ValueId::HallucinationPointer, 0, 0);
 
-							if (!hallucinationHelpers::function_004F66D0(hal_unit)) {
-								hallucinationHelpers::UnitDestructor(hal_unit);
+							if (!placeHallucination(hal_unit)) {
+								unitDestructor(hal_unit);
 							}
 						}
 					}
@@ -995,8 +998,6 @@ namespace hooks {
 } //hooks
 namespace {
 
-	/**** Definitions of helper functions. Do NOT modify anything below! ****/
-
 	//Creates the Plasma Shield flickering effect.
 	//Identical to function @ 0x004E6140
 	void createShieldOverlay(CUnit* unit, u32 attackDirection) {
@@ -1015,12 +1016,9 @@ namespace {
 	//Somehow related to AI stuff; details unknown.
 	const u32 Helper_GetUnitStrength = 0x00431800;
 	u16 getUnitStrength(CUnit* unit, bool useGroundStrength) {
-
 		static u16 strength;
 		static u32 useGroundStrength_;
-
 		useGroundStrength_ = useGroundStrength ? 1 : 0;
-
 		__asm {
 			PUSHAD
 			PUSH useGroundStrength_
@@ -1029,9 +1027,46 @@ namespace {
 			MOV strength, AX
 			POPAD
 		}
-
 		return strength;
+	}
 
+	// Hallucination-related
+	// Moved here instead of including an entire other file...
+	const u32 Func_createHallucination = 0x004F6B90;
+	CUnit* createHallucination(CUnit* target, u32 playerId) {
+		static CUnit* return_value;
+		__asm {
+			PUSHAD
+			PUSH playerId
+			MOV ECX, target
+			CALL Func_createHallucination
+			MOV return_value, EAX
+			POPAD
+		}
+		return return_value;
+	}
+
+	const u32 Func_placeHallucination = 0x004F66D0;
+	bool placeHallucination(CUnit* unit) {
+		static Bool32 bPreResult;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_placeHallucination
+			MOV bPreResult, EAX
+			POPAD
+		}
+		return (bPreResult != 0);
+	}
+
+	const u32 Func_unitDestructor = 0x004A0990;
+	void unitDestructor(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			CALL Func_unitDestructor
+			POPAD
+		}
 	}
 
 } //unnamed namespace
