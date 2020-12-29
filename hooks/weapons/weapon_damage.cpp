@@ -859,7 +859,9 @@ namespace hooks {
 			if (attacker != NULL) { // looks like target will always be alive if this function was called?
 				if (scbw::get_aise_value(target, 0, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0) >= 1) {
 					CUnit* haluAttacker = attacker;
-					if (attacker->interceptor.parent != NULL) {
+					if ((haluAttacker->id == UnitId::ProtossInterceptor
+						|| haluAttacker->id == UnitId::ProtossScarab)
+						&& attacker->interceptor.parent != NULL) {
 						haluAttacker = attacker->interceptor.parent;
 					}
 					if (scbw::get_generic_unit(haluAttacker, ValueId::HallucinationPointer) == NULL
