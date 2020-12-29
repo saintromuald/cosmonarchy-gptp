@@ -643,7 +643,7 @@ struct GuardAi {
 	u32 previousUpdate;
 };
 C_ASSERT(sizeof(GuardAi) == 32); // 0x20
-
+*/
 struct WorkerAi {
 	WorkerAi* next;
 	WorkerAi* prev;
@@ -669,7 +669,7 @@ struct BuildingAi {
 	void* trainQueueValues[5];
 };
 C_ASSERT(sizeof(BuildingAi) == 44); // 0x2C
-*/
+
 /*
 struct MilitaryAi {
 	MilitaryAi* next;
