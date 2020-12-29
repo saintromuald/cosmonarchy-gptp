@@ -21,14 +21,12 @@ namespace {
 	void __declspec(naked) AI_CreateNuke_Wrapper() { // 0045B7A0
 		static CUnit* silo;
 		static CUnit* result;
-		static CUnit* a3;
 		__asm {
 			MOV silo, EDI
 			MOV result, EAX
-			MOV a3, ECX
 			PUSHAD
 		}
-		hooks::AI_CreateNuke(silo, result, a3);
+		hooks::AI_CreateNuke(silo, result);
 		__asm {
 			POPAD
 			RETN

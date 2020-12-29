@@ -107,7 +107,7 @@ namespace hooks {
 	}*/
 
 	// Hooked to rule out AI crashes - Pr0nogo
-	void AI_CreateNuke(CUnit* silo, CUnit* result, CUnit* a3) { // a3 is unused!
+	void AI_CreateNuke(CUnit* silo, CUnit* result) { // originally had 3 args, but last one was unused
 		CUnit* nuke; // eax
 		CUnit* nuke2; // esi
 
