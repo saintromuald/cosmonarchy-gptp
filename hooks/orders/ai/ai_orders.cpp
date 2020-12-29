@@ -15,6 +15,12 @@ namespace {
 	s16 SAI_GetRegionIdFromPxEx(s32 x, s32 y);									// 0049C9F0
 	void AI_OrderToDestination(CUnit* unit, int orderId, int x, int y);			// 0043D5D0
 	void AI_AssignCaptainToSlowestUnit(AiCaptain* region);						// 00436F70
+
+	// for AI_CreateNuke
+	CUnit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId);				// 004A09D0
+	void updateUnitStatsFinishBuilding(CUnit* unit);							// 004A01F0
+	u32 updateUnitStrengthAndApplyDefaultOrders(CUnit* unit);					// 0049FA40
+	void hideUnit(CUnit* unit);													// 004E6340
 }
 
 namespace hooks {
@@ -99,6 +105,25 @@ namespace hooks {
 			}
 		}
 	}*/
+
+	// Hooked to rule out AI crashes - Pr0nogo
+	void AI_CreateNuke(CUnit* silo, CUnit* result, CUnit* a3) { // a3 is unused!
+		CUnit* nuke; // eax
+		CUnit* v4; // esi
+
+		if (silo->id == UnitId::TerranNuclearSilo && !*(s32*)&silo->building.silo.isReady) {
+			nuke = createUnit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->playerId);
+			if (nuke) {
+				updateUnitStatsFinishBuilding(nuke);
+				updateUnitStrengthAndApplyDefaultOrders(nuke);
+				hideUnit(nuke);
+				silo->building.silo.nuke = nuke;
+				silo->building.silo.isReady = 1;
+				nuke->connectedUnit = silo;
+				AI_TrainingUnit(nuke, silo);
+			}
+		}
+	}
 }
 
 namespace {
@@ -185,6 +210,57 @@ namespace {
 			PUSHAD
 			PUSH region
 			CALL Func_AI_AssignCaptainToSlowestUnit
+			POPAD
+		}
+	}
+
+	// for AI_CreateNuke
+
+	const u32 Func_createUnit = 0x004A09D0;
+	CUnit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId) {
+		static CUnit* result;
+		__asm {
+			PUSHAD
+			PUSH playerId
+			PUSH y
+			MOV EAX, x
+			MOVZX CX, unitType
+			CALL Func_createUnit
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_updateUnitStatsFinishBuilding = 0x004A01F0;
+	void updateUnitStatsFinishBuilding(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_updateUnitStatsFinishBuilding
+			POPAD
+		}
+	}
+
+	const u32 Func_updateUnitStrengthAndApplyDefaultOrders = 0x0049FA40;
+	u32 updateUnitStrengthAndApplyDefaultOrders(CUnit* unit) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_updateUnitStrengthAndApplyDefaultOrders
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_hideUnit = 0x004E6340;
+	void hideUnit(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_hideUnit
 			POPAD
 		}
 	}
