@@ -6,25 +6,28 @@
 
 namespace {
 	// for AI_TrainingUnit
-	char AI_TrainingWorker(CUnit* result, CUnit* parent);						// 00435700
-	void AI_TrainingOverlord(CUnit* result, CUnit* parent);						// 00435770
-	void AI_TrainingBroodling(CUnit* parent, CUnit* result);					// 0043E280
-	void AI_TrainingNormal(CUnit* result, CUnit* parent);						// 00435DB0
+	char AI_TrainingWorker(CUnit* result, CUnit* parent);							// 00435700
+	void AI_TrainingOverlord(CUnit* result, CUnit* parent);							// 00435770
+	void AI_TrainingNormal(CUnit* result, CUnit* parent);							// 00435DB0
 
 	// for AI_AddMilitary
-	s16 SAI_GetRegionIdFromPxEx(s32 x, s32 y);									// 0049C9F0
-	void AI_OrderToDestination(CUnit* unit, int orderId, int x, int y);			// 0043D5D0
-	void AI_AssignCaptainToSlowestUnit(AiCaptain* region);						// 00436F70
+	s16 SAI_GetRegionIdFromPxEx(s32 x, s32 y);										// 0049C9F0
+	void AI_OrderToDestination(CUnit* unit, int orderId, int x, int y);				// 0043D5D0
+	void AI_AssignCaptainToSlowestUnit(AiCaptain* region);							// 00436F70
 
 	// for AI_CreateNuke
-	CUnit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId);				// 004A09D0
-	void updateUnitStatsFinishBuilding(CUnit* unit);							// 004A01F0
-	u32 updateUnitStrengthAndApplyDefaultOrders(CUnit* unit);					// 0049FA40
-	void hideUnit(CUnit* unit);													// 004E6340
+	CUnit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId);					// 004A09D0
+	void updateUnitStatsFinishBuilding(CUnit* unit);								// 004A01F0
+	u32 updateUnitStrengthAndApplyDefaultOrders(CUnit* unit);						// 0049FA40
+	void hideUnit(CUnit* unit);														// 004E6340
+
+	// for AI_TrainingBroodling
+	void AI_AssignMilitary(s32 regionType, AiCaptain* region);						// 004390A0
+	void AI_AddMilitary(AiCaptain* region, CUnit* unit, s32 always_this_region);	// 0043DA20
 }
 
 namespace hooks {
-	void AI_TrainingUnit(CUnit* result, CUnit* parent) {						// 004A2830
+	void AI_TrainingUnit(CUnit* result, CUnit* parent) {							// 004A2830
 		if (playerTable[result->playerId].type == PlayerType::Computer) {
 			if (playerTable[result->playerId].type == PlayerType::Computer
 				&& result->id == UnitId::TerranMedic) {
@@ -57,15 +60,15 @@ namespace hooks {
 			}
 		}
 	}
-	/*
-	void AI_AddMilitary(AiCaptain* region, CUnit* unit, s32 alwaysThisRegion) {	// 0043DA20
+	
+/*	void AI_AddMilitary(AiCaptain* region, CUnit* unit, s32 alwaysThisRegion) {		// 0043DA20
 	// alwaysThisRegion acts as a bool, not sure why IDA thinks it's s32
 	// I assumed medicAI was UnitAI* but IDA tries to assign town values to it later
 	// Looking at the aise version of this hook didn't help as it's more akin to a rewrite: https://pastebin.com/raw/8xNTUCuv
 		AiCaptain* regionNew; // esi
-		UnitAI* medicAI; // eax
+		UnitAi* medicAI; // eax
 		CUnit* medic; // edx
-		UnitAI* nextAI; // ecx
+		UnitAi* nextAI; // ecx
 		bool previousBool; // zf
 		AiTown* AItown; // ecx
 
@@ -76,9 +79,9 @@ namespace hooks {
 				unit->sprite->position.y)];
 		}
 		medic = region->mainMedic;
-		medicAI = (UnitAI*)medic->pAI;
+		medicAI = (UnitAi*)medic->pAI;
 		if (medicAI) {
-			nextAI = (UnitAI*)medicAI->link.prev;
+			nextAI = (UnitAi*)medicAI->link.prev;
 			medic->pAI = (void*)medicAI->link.prev;
 			if (!medicAI->link.prev)
 				nextAI->link.next = 0;
@@ -101,13 +104,14 @@ namespace hooks {
 					SAI_Paths->regions[(u16)regionNew->region].rgnCenterX >> 8,
 					SAI_Paths->regions[(u16)regionNew->region].rgnCenterY >> 8);
 				if (regionNew->captainType == 8 || regionNew->captainType == 9 || regionNew->captainType == 1 || regionNew->captainType == 2)
-					AssignCaptainToSlowestUnit(v3);
+					assignCaptainToSlowestUnit(v3);
 			}
 		}
 	}*/
 
 	// Hooked to rule out AI crashes - Pr0nogo
-	void AI_CreateNuke(CUnit* silo, CUnit* result) { // originally had 3 args, but last one was unused
+	void AI_CreateNuke(CUnit* silo, CUnit* result) {								// 0045B7A0
+		// originally had 3 args, but last one was unused
 		CUnit* nuke; // eax
 		CUnit* nuke2; // esi
 
@@ -124,6 +128,26 @@ namespace hooks {
 				AI_TrainingUnit(nuke2, silo);
 			}
 		}
+	}
+
+	// Hooked to add region null check - Pr0nogo
+	void AI_TrainingBroodling(CUnit* parent, CUnit* result) {						// 0043E280
+		AiCaptain* region; // esi
+		s16 regionType; // ax
+		AiCaptain* playerRegion; // ecx
+		s32 regionId; // esi
+
+		regionId = SAI_GetRegionIdFromPxEx(result->sprite->position.x, result->sprite->position.y);
+		playerRegion = AiRegionCaptains[parent->playerId];
+		if (playerRegion == NULL) {
+			scbw::printText("NULL region in AI_TrainingBroodling!");
+			return;
+		}
+		regionType = playerRegion[regionId].captainType;
+		region = &playerRegion[regionId];
+		if (!regionType)
+			AI_AssignMilitary(1, region);
+		AI_AddMilitary(region, result, 1);
 	}
 }
 
@@ -150,17 +174,6 @@ namespace {
 			MOV EAX, result
 			MOV ECX, parent
 			CALL Func_AI_TrainingOverlord
-			POPAD
-		}
-	}
-
-	const u32 Func_AI_TrainingBroodling = 0x0043E280;
-	void AI_TrainingBroodling(CUnit* parent, CUnit* result) {
-		__asm {
-			PUSHAD
-			PUSH result
-			PUSH parent
-			CALL Func_AI_TrainingBroodling
 			POPAD
 		}
 	}
@@ -266,4 +279,28 @@ namespace {
 		}
 	}
 
+	// for AI_TrainingBroodling
+
+	const u32 Func_AI_AssignMilitary = 0x004390A0;
+	void AI_AssignMilitary(s32 regionType, AiCaptain* region) {
+		__asm {
+			PUSHAD
+			MOV EBX, regionType
+			MOV ESI, region
+			CALL Func_AI_AssignMilitary
+			POPAD
+		}
+	}
+
+	const u32 Func_AI_AddMilitary = 0x0043DA20;
+	void AI_AddMilitary(AiCaptain* region, CUnit* unit, s32 always_this_region) {
+		__asm {
+			PUSHAD
+			PUSH always_this_region
+			MOV EAX, region
+			MOV EBX, unit
+			CALL Func_AI_AddMilitary
+			POPAD
+		}
+	}
 }
