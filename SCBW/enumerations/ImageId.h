@@ -128,6 +128,7 @@ enum Enum {
 	ShuttleShadow                       = 119,
 	ShuttleEngines                      = 120,
 	ShuttleWarpFlash                    = 121,
+
 	Dragoon                             = 122,
 	DragoonShadow                       = 123,
 	DragoonRemnants                     = 124,
@@ -1018,5 +1019,11 @@ enum Enum {
 	Malediction_Small					= 1067,
 	Malediction_Medium					= 1068,
 	Malediction_Large					= 1069,
+
+
+	FirstMinorDamageOverlay				= 450,
+	LastMinorDamageOverlay			    = 471,
+	FirstMajorDamageOverlay				= 472,
+
 };
 }
