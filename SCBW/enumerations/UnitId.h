@@ -481,7 +481,6 @@ enum Enum {
 	ProtossStarSovereign							= 21,		// Tom Kazansky
 	ProtossGladius									= 25,		// Edmund Duke Siege Tank
 	ProtossMagister									= 26,		// Edmund Duke Siege Turret
-	ProtossArtisan									= 29,		// Norad II
 	ProtossLegionnaire								= 74,		// Dark Templar Hero
 	ProtossAmaranth									= 75,		// Zeratul Dark Templar
 	ProtossHierophant								= 76,		// Tassadar/Zeratul Archon
