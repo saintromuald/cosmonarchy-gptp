@@ -609,7 +609,7 @@ namespace hooks {
 					}
 					// Wendigo Automedicus passive (shield component)
 					if (attacker->id == UnitId::TerranWendigo && units_dat::BaseProperty[target->id] & UnitProperty::Mechanical) {
-						u32 lifesteal = shieldReduceAmount / 2;
+						u32 lifesteal = shieldReduceAmount / 4;
 						attacker->setHp(attacker->hitPoints + lifesteal);
 					}
 				}
@@ -662,7 +662,7 @@ namespace hooks {
 
 				// Wendigo Automedicus passive (HP component)
 				if (attacker->id == UnitId::TerranWendigo && units_dat::BaseProperty[target->id] & UnitProperty::Mechanical) {
-					u32 lifesteal = damage / 2;
+					u32 lifesteal = damage / 4;
 					attacker->setHp(attacker->hitPoints + lifesteal);
 				}
 			}
