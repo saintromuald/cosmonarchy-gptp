@@ -559,16 +559,14 @@ namespace hooks {
         }
     }
 
-
-
     void desyncTesting() {
         //code from BG
         jmpPatch(dropDebugging00, Hook_DropDebugging00);
         jmpPatch(dropDebugging01, Hook_DropDebugging01);
         jmpPatch(dropDebugging02, Hook_DropDebugging02);
         jmpPatch(dropDebugging03, Hook_DropDebugging03);
-
     }
+
     void __declspec(naked) createDamageOverlay_Wrapper() {
         static CSprite* sprite;
         __asm {
@@ -589,11 +587,11 @@ namespace hooks {
         }
     }
     void damageOverlayDebug() {
-        jmpPatch(createDamageOverlay_Wrapper, 0x004993C0);
+//      jmpPatch(createDamageOverlay_Wrapper, 0x004993C0);
     }
     void injectHydraSpecific() {
         //jmpPatch(checkUnitDatRequirements_Wrapper, 0x0046E1C0, 1);//must be finished first (+add firegraft offsets)
-
+        
         flingySpeedPatches();
         desyncTesting();
         //start of spell order code
@@ -605,9 +603,8 @@ namespace hooks {
         clarionWrappers();
         createBuildingAiWorkaround();
         damageOverlayDebug();
-
-        //lobotomyMineTargetingPatches();
         
+        //lobotomyMineTargetingPatches();        
         //add later: disable WarpIn functionality, make it useless
         
         archonHardcodePatches();
