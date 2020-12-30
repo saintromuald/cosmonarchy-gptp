@@ -501,17 +501,17 @@ enum Enum {
 	ProtossBarghest									= 104,		// Infested Duran
 
 //Protoss-Building
-	ProtossAutomatonRegister						= 158,		// Unused Protoss 1				| Simulacrum requirement
-	ProtossBlazingEffigy							= 161,		// Unused Protoss 2				| Hierophant requirement
+	ProtossAutomatonRegister						= 158,		// Unused Protoss 1				| Idol requirement
+	ProtossAncestralEffigy							= 161,		// Unused Protoss 2				| Atreus requirement
 	ProtossArgosy									= 168,		// Stasis Chamber				| Advanced Stellar production
 	ProtossPrincipality								= 175,		// Xel'Naga Temple				| Legionnaire requirement
-	ProtossStridentStratum							= 182,		// Mining Platform				| Clarion requirement
-	ProtossStellarIcon								= 183,		// Independent Command Center	| Panoptus requirement
-	ProtossAstralOmen								= 184,		// Independent Starport			| Corsair requirement
+	ProtossStridentStratum							= 182,		// Mining Platform				| Barghest requirement
+	ProtossStellarIcon								= 183,		// Independent Command Center	| Exemplar requirement
+	ProtossAstralOmen								= 184,		// Independent Starport			| Gladius requirement
 	ProtossRoboticsAuthority						= 190,		// Psi Disruptor				| Advanced Robotics production
 	ProtossCrucible									= 201,		// Overmind Cocoon				| Structure w/ efficiency aura for production/upgrades
-	ProtossCelestialShrine							= 211,		// Left Wall Flame Trap			| Exemplar requirement
-	ProtossCosmicAltar								= 213,		// Right Wall Flame Trap		| Empyrean requirement
+	ProtossCelestialShrine							= 211,		// Left Wall Flame Trap			| Empyrean requirement
+	ProtossCosmicAltar								= 213,		// Right Wall Flame Trap		| Star Sovereign requirement
 	ProtossPennant									= 221,		// Mineral Cluster Type 2		| Structure w/ regeneration aura for resources
 	ProtossSanctumOfSorrow							= 225,		// Zerg Gas Sac Type 2			| Pariah and Augur requirement
 	ProtossGrandLibrary								= 226,		// Terran Gas Tank Type 1		| Advanced Templar production
