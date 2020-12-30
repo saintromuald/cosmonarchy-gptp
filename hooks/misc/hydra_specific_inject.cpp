@@ -569,6 +569,30 @@ namespace hooks {
         jmpPatch(dropDebugging03, Hook_DropDebugging03);
 
     }
+    void __declspec(naked) createDamageOverlay_Wrapper() {
+        static CSprite* sprite;
+        static CImage* image;
+        __asm {
+            PUSH EBP
+            MOV EBP,ESP
+            PUSH EAX
+            MOV EAX,[EBP+0x08]
+            MOV sprite,EAX
+            POP EAX
+            PUSHAD
+        }
+        image = hooks::createDamageOverlay(sprite);
+        __asm {
+            POPAD
+            MOV EAX,image
+            MOV ESP,EBP
+            POP EBP
+            RETN 4
+        }
+    }
+    void damageOverlayDebug() {
+        jmpPatch(createDamageOverlay_Wrapper, 0x004993C0);
+    }
     void injectHydraSpecific() {
         //jmpPatch(checkUnitDatRequirements_Wrapper, 0x0046E1C0, 1);//must be finished first (+add firegraft offsets)
 
@@ -582,6 +606,8 @@ namespace hooks {
         trapJumpWrappers();
         clarionWrappers();
         createBuildingAiWorkaround();
+//        damageOverlayDebug();
+
         //lobotomyMineTargetingPatches();
         
         //add later: disable WarpIn functionality, make it useless

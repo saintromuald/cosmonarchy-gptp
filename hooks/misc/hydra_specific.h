@@ -17,7 +17,7 @@ namespace hooks {
 	u32 extend_tech_target_check(u32 orig_result, CUnit* caster, CUnit* target, u8 techId);
 	void order_PhaseLink(CUnit* unit);
 	bool canAttackTarget_EndChunk(CUnit* source, u32 target_flags);
-
+	CImage* createDamageOverlay(CSprite* sprite);
 	u32 checkUnitDatRequirements(u8 playerId, u16 unit_id, CUnit* parent);
 }
 
