@@ -606,7 +606,7 @@ namespace hooks {
         trapJumpWrappers();
         clarionWrappers();
         createBuildingAiWorkaround();
-//        damageOverlayDebug();
+//      damageOverlayDebug();
 
         //lobotomyMineTargetingPatches();
         

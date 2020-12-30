@@ -121,7 +121,7 @@ bool unitIsTrainingOrMorphing(CUnit* unit) {
 namespace hooks {
 
 	CImage* createDamageOverlay(CSprite* sprite) {
-	  CImage *result; // eax
+	  CImage *result = nullptr; // eax
 	  CImage *v2; // ecx
 	  int v3; // edi
 	  CImage *v4; // esi
