@@ -278,7 +278,7 @@ CUnit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y);
 //function used for broodlings and similar stuff
 CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* creator=NULL);
 //additional function calls
-
+int bw_rand(int rng_id);
 void weaponBulletShot(CUnit* target, CBullet* bullet, u32 dmgDivisor);
 void fixTargetLocation(Point16* coords, u32 unitId);
 CUnit* CreateUnit(u32 unitId, int x, int y, u32 playerId);

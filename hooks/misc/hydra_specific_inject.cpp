@@ -571,7 +571,6 @@ namespace hooks {
     }
     void __declspec(naked) createDamageOverlay_Wrapper() {
         static CSprite* sprite;
-        static CImage* image;
         __asm {
             PUSH EBP
             MOV EBP,ESP
@@ -581,10 +580,9 @@ namespace hooks {
             POP EAX
             PUSHAD
         }
-        image = hooks::createDamageOverlay(sprite);
+        hooks::createDamageOverlay(sprite);
         __asm {
             POPAD
-            MOV EAX,image
             MOV ESP,EBP
             POP EBP
             RETN 4
@@ -606,7 +604,7 @@ namespace hooks {
         trapJumpWrappers();
         clarionWrappers();
         createBuildingAiWorkaround();
-//      damageOverlayDebug();
+        damageOverlayDebug();
 
         //lobotomyMineTargetingPatches();
         

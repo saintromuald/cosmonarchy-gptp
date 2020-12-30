@@ -1,6 +1,7 @@
 //
 #include "hooks/misc/hydra_specific.h"
 #include "globals.h"
+#include <cassert>
 #include "hooks/orders/unit_making/unit_train.h"
 namespace ReqOpcode {
 	enum {
@@ -116,133 +117,56 @@ bool unitIsTrainingOrMorphing(CUnit* unit) {
 		POPAD
 	}
 }
-
+#include <array>
 
 namespace hooks {
 
-	CImage* createDamageOverlay(CSprite* sprite) {
-	  CImage *result = nullptr; // eax
-	  CImage *v2; // ecx
-	  int v3; // edi
-	  CImage *v4; // esi
-	  short v5; // ax
-	  u32 v6; // eax
-	  int v7; // eax
-	  int v8; // ebx
-	  int v9; // edi
-	  GrpHead *v10; // eax
-	  int v11; // edx
-	  char v12; // ST1C_1
-	  unsigned int v13; // eax
-	  CImage *v14; // ecx
-	  short v15; // si
-	  char v16; // al
-	  char *v17; // eax
-	  int v18; // ecx
-	  int v19; // eax
-	  char v20; // dl
-	  char v21; // bl
-	  u32 v22; // esi
-	  u32 v23; // ecx
-	  short a4; // [esp+Ch] [ebp-14h]
-	  int v25; // [esp+10h] [ebp-10h]
-	  int v26; // [esp+14h] [ebp-Ch]
-	  GrpHead *v27; // [esp+18h] [ebp-8h]
-	  int v28; // [esp+1Ch] [ebp-4h]
-	  v2 = sprite->mainGraphic;
-	  u16 id = v2->id;
-	  v3 = 0;
-	  auto damageOverlay = scbw::getImageData(ImagesDatEntries::OverlayDamage, id);
-	  if ( damageOverlay )
-	  {
-		v4 = sprite->images.head;
-		if ( !v4 )
-		{
-	LABEL_6:
-		  if ( *IS_IN_GAME_LOOP)
-		  {
-			++randomCounts[8];
-			v13 = (0x15A4E35 * (*lastRandomNumber) + 1) >> 16;
-			(*lastRandomNumber)++;
-			*lastRandomNumber = 0x15A4E35 * (*lastRandomNumber) + 1;
-			v6 = v13 & 0x7FFF;
-		  }
-		  else
-		  {
-			v6 = 0;
-		  }
-		  v14 = sprite->mainGraphic;
-		  v28 = 0;
-		  v25 = v6 % (scbw::getImageData(ImagesDatEntries::BuildingOverlayStateMax, v14->id) >> 1) + 1;
-		  v27 = (GrpHead*)scbw::getImageData(ImagesDatEntries::OverlayDamagePtr, v14->id);
-		  v16 = LOBYTE(v14->flags) >> 1;
-		  v26 = 4 * v14->frameIndex + 8;
-		  v15 = v16 & 1;
-		  a4 = v16 & 1;
-		  while ( true )
-		  {
-			if ( v3 >= 22 )
-			  v3 = 0;
-			v17 = (char *)&v27->frameCount + 2 * v3 + *(u32*)((char *)&v27->frameCount + v26);
-			v18 = *v17;//damageOverlay crash happens here
-			if ( v15 )
-			  v18 = -v18;
-			v19 = v17[1];
-			v20 = v18;
-			v21 = v19;
-			if ( v18 != 127 || v19 != 127 )
+//	CImage* createDamageOverlay(CSprite* sprite) {
+	void createDamageOverlay(CSprite* sprite) {
+		if (sprite->mainGraphic == nullptr)
+			return;
+		const LO_Header* overlay = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayDamagePtr, sprite->mainGraphic->id));
+		if (overlay==nullptr)
+			return;//return if there's no overlay defined
+
+		for (CImage* image = sprite->images.head; image; image = image->link.next) {
+			if (image->id >= ImageId::FirstMinorDamageOverlay && 
+				image->id <= ImageId::LastMinorDamageOverlay)
 			{
-			  result = sprite->images.head;
-			  ++v28;
-			  v22 = v3 + 472;
-			  if ( result )
-			  {
-				while ( 1 )
-				{
-				  v23 = (unsigned __int16)result->id;
-				  if ( v23 >= v22 && v23 <= v22 )
-					break;
-				  result = result->link.next;
-				  if ( !result )
-					goto LABEL_23;
-				}
-			  }
-			  else
-			  {
-	LABEL_23:
-				if ( v28 >= v25 )
-				{
-				  if ( v3 != -1 )
-					result = sprite->createTopOverlay(v3 + 450, v20, v21, 0);
-				  return result;
-				}
-			  }
-			  v15 = a4;
+				int variation = image->id - ImageId::FirstMinorDamageOverlay;
+				image->free();
+				Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation);//not sure about first arg
+				sprite->createTopOverlay(ImageId::FirstMajorDamageOverlay + variation, offset.x, offset.y, 0);
 			}
-			++v3;
-		  }
 		}
-		while ( 1 )
+
+		Point8 invalid_pos = Point8{ 127, 127 };
+		std::array<int, 22> results;
+		auto result_pos = results.begin();
+		for (int i = 0; i < 22; i++)
 		{
-		  v5 = v4->id;
-		  if ( (unsigned __int16)v5 >= 450u && (unsigned __int16)v5 <= 471u )
-			break;
-		  v4 = v4->link.next;
-		  if ( !v4 )
-			goto LABEL_6;
+			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, i);//not sure about first arg
+			if (offset.x == invalid_pos.x && offset.y==invalid_pos.y)
+				continue;
+			u32 overlay_id = ImageId::FirstMajorDamageOverlay + i;
+			bool found = false;
+			for (CImage* image = sprite->images.head; image; image = image->link.next) {
+				if (image->id == overlay_id) {
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				*result_pos++ = i;
 		}
-		v10 = (GrpHead*)scbw::getImageData(ImagesDatEntries::OverlayDamagePtr, v2->id);
-		v9 = (unsigned __int16)v4->id - 450;
-		v11 = *((u32*)&v10->frames[0].width + (unsigned __int16)v2->frameIndex) + 2 * v9;
-		v8 = *((char *)&v10->frameCount + v11);
-		v7 = (int)v10 + v11;
-		if ( v2->flags & 2 )
-		  v8 = -v8;
-		v12 = *(u8*)(v7 + 1);
-		v4->free();
-		result = sprite->createTopOverlay(v9 + 472, v8, v12, 0);
-	  }
-	  return result;
+		assert(result_pos <= results.end());
+		if (result_pos != results.begin())
+		{
+			int variation = scbw::bw_rand(result_pos - results.begin());
+//			Point32 pos = overlay.GetValues(main_image, variation);
+			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation);//not sure about first arg
+			sprite->createTopOverlay(ImageId::FirstMinorDamageOverlay + variation, offset.x, offset.y, 0);
+		}
 	}
 
 	u32 checkUnitDatRequirements(u8 playerId, u16 unit_id, CUnit* unit) {
