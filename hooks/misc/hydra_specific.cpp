@@ -132,6 +132,11 @@ namespace hooks {
 			{
 				int variation = image->id - ImageId::FirstMinorDamageOverlay;
 				image->free();
+				if (sprite->mainGraphic->frameIndex >= overlay->frameCount) {
+					scbw::printFormattedColoredText("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
+						GameTextColor::Red, sprite->mainGraphic->frameIndex, sprite->mainGraphic->id);
+					return;
+				}
 				Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation);//not sure about first arg
 				sprite->createTopOverlay(ImageId::FirstMajorDamageOverlay + variation, offset.x, offset.y, 0);
 			}
@@ -162,6 +167,11 @@ namespace hooks {
 		if(result_pos!=results.begin())
 		{
 			int variation = results[scbw::randBetween(0,result_pos - results.begin() - 1)];
+			if (sprite->mainGraphic->frameIndex >= overlay->frameCount) {
+				scbw::printFormattedColoredText("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
+					GameTextColor::Red, sprite->mainGraphic->frameIndex, sprite->mainGraphic->id);
+				return;
+			}
 			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation);		
 			sprite->createTopOverlay(ImageId::FirstMinorDamageOverlay + variation, offset.x, offset.y, 0);
 		}
