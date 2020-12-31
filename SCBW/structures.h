@@ -410,25 +410,25 @@ struct TownReq {
 	u16 id;
 };
 struct AiTown {
-	CLink<AiTown> link;
-	void* free_workers;//replace later
-	void* workers;//replace later
-	void* free_buildings;//replace later
-	void* buildings;//replace later
-	u8 player;
-	u8 inited;
-	u8 worker_count;
-	u8 worker_limit;
-	u8 resource_area;
-	u8 resource_area_not_set;
-	u8 in_battle;
-	u8 unk1f;
-	Point16 position;
-	CUnit* main_building;
-	CUnit* building_scv;
-	CUnit* mineral;
-	CUnit* gas_buildings[3];
-	TownReq town_units[0x64];
+	CLink<AiTown> link;							//	0x00 and 0x04
+	void* free_workers;//replace later			//	0x8
+	void* workers;//replace later				//	0xC?
+	void* free_buildings;//replace later		//	0x10
+	void* buildings;//replace later				//	0x14?
+	u8 player;									//	0x18
+	u8 inited;									//	0x19
+	u8 worker_count;							//	0x1a
+	u8 worker_limit;							//	0x1b
+	u8 resource_area;							//	0x1c
+	u8 resource_area_not_set;					//	0x1d
+	u8 in_battle;								//	0x1e
+	u8 unk1f;									//	0x1f
+	Point16 position;							//	0x20
+	CUnit* main_building;						//	0x24
+	CUnit* building_scv;						//	0x28
+	CUnit* mineral;								//	0x2c
+	CUnit* gas_buildings[3];					//	0x30
+	TownReq town_units[0x64];					//	0x3c
 };
 
 //Based on BWAPI's Offsets.h
