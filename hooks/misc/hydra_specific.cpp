@@ -159,11 +159,8 @@ namespace hooks {
 			if (!found)
 			{
 				*result_pos++ = i;
-				//overlays.push_back(i);
 			}
 		}
-//		if (overlay_first!=-1)
-//		if(overlays.size()>0)
 		if(result_pos!=results.begin())
 		{
 			int variation = results[scbw::randBetween(0,result_pos - results.begin() - 1)];
