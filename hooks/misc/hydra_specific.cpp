@@ -118,10 +118,8 @@ bool unitIsTrainingOrMorphing(CUnit* unit) {
 	}
 }
 #include <array>
-#include <logger.h>
 namespace hooks {
 
-//	CImage* createDamageOverlay(CSprite* sprite) {
 	void createDamageOverlay(CSprite* sprite) {
 		if (sprite->mainGraphic == nullptr)
 			return;
@@ -138,14 +136,12 @@ namespace hooks {
 				sprite->createTopOverlay(ImageId::FirstMajorDamageOverlay + variation, offset.x, offset.y, 0);
 			}
 		}
-
-		Point8 invalid_pos = Point8{ 127, 127 };
 		std::array<int, 22> results;
 		auto result_pos = results.begin();
 		for (int i = 0; i < 22; i++)
 		{
-			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, i);//not sure about first arg
-			if (offset.x == invalid_pos.x && offset.y==invalid_pos.y)
+			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, i);
+			if (offset.x == 127 && offset.y == 127)
 				continue;
 			u32 overlay_id = ImageId::FirstMajorDamageOverlay + i;
 			bool found = false;
@@ -156,13 +152,17 @@ namespace hooks {
 				}
 			}
 			if (!found)
+			{
 				*result_pos++ = i;
+				//overlays.push_back(i);
+			}
 		}
-		assert(result_pos <= results.end());
-		if (result_pos != results.begin())
+//		if (overlay_first!=-1)
+//		if(overlays.size()>0)
+		if(result_pos!=results.begin())
 		{
-			int variation = scbw::randBetween(0,result_pos-results.begin());
-			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation);//not sure about first arg			sprite->createTopOverlay(ImageId::FirstMinorDamageOverlay + variation, offset.x, offset.y, 0);
+			int variation = results[scbw::randBetween(0,result_pos - results.begin() - 1)];
+			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation);		
 			sprite->createTopOverlay(ImageId::FirstMinorDamageOverlay + variation, offset.x, offset.y, 0);
 		}
 	}
