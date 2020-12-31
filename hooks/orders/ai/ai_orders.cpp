@@ -52,7 +52,8 @@ namespace hooks {
 			}
 
 			if (parent != nullptr) {
-				if (parent->pAI != nullptr) {
+				if (parent->pAI != nullptr
+				||	result->status & UnitStatus::IsHallucination) {
 					if (units_dat::BaseProperty[result->id] & UnitProperty::Worker) {
 						AI_TrainingWorker(result, parent);
 					}
