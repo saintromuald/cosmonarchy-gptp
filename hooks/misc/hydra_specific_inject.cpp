@@ -587,7 +587,7 @@ namespace hooks {
         }
     }
     void damageOverlayDebug() {
-//      jmpPatch(createDamageOverlay_Wrapper, 0x004993C0);
+       jmpPatch(createDamageOverlay_Wrapper, 0x004993C0);
     }
     void injectHydraSpecific() {
         //jmpPatch(checkUnitDatRequirements_Wrapper, 0x0046E1C0, 1);//must be finished first (+add firegraft offsets)

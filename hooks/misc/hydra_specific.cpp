@@ -118,7 +118,7 @@ bool unitIsTrainingOrMorphing(CUnit* unit) {
 	}
 }
 #include <array>
-
+#include <logger.h>
 namespace hooks {
 
 //	CImage* createDamageOverlay(CSprite* sprite) {
@@ -128,7 +128,6 @@ namespace hooks {
 		const LO_Header* overlay = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayDamagePtr, sprite->mainGraphic->id));
 		if (overlay==nullptr)
 			return;//return if there's no overlay defined
-
 		for (CImage* image = sprite->images.head; image; image = image->link.next) {
 			if (image->id >= ImageId::FirstMinorDamageOverlay && 
 				image->id <= ImageId::LastMinorDamageOverlay)
@@ -162,9 +161,8 @@ namespace hooks {
 		assert(result_pos <= results.end());
 		if (result_pos != results.begin())
 		{
-			int variation = scbw::bw_rand(result_pos - results.begin());
-//			Point32 pos = overlay.GetValues(main_image, variation);
-			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation);//not sure about first arg
+			int variation = scbw::randBetween(0,result_pos-results.begin());
+			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation);//not sure about first arg			sprite->createTopOverlay(ImageId::FirstMinorDamageOverlay + variation, offset.x, offset.y, 0);
 			sprite->createTopOverlay(ImageId::FirstMinorDamageOverlay + variation, offset.x, offset.y, 0);
 		}
 	}

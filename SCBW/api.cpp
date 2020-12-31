@@ -1001,13 +1001,6 @@ void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount
 	
 }
 
-int bw_rand(int rng_id) {
-	if (!*IS_IN_GAME_LOOP)
-		return 0;
-	uint32_t seed = (*lastRandomNumber) * 0x15A4E35 + 1;
-	*lastRandomNumber = seed;
-	return (seed >> 0x10) & 0x7fff;
-}
 
 CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset) {
 	if (unit->sprite == NULL || unit->orderTarget.unit==NULL) {
