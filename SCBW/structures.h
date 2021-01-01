@@ -598,6 +598,7 @@ struct GuardAi {
 };
 C_ASSERT(sizeof(GuardAi) == 32); // 0x20
 
+struct AiTown; // declaring this here to avoid compiler errors
 struct WorkerAi {
 	CLink<WorkerAi>	link;		// 0x0, 0x4
 	u8 type;
@@ -606,7 +607,7 @@ struct WorkerAi {
 	u8 waitTimer;
 	u32 last_update_second;
 	CUnit* parent;
-	void* town;
+	AiTown* town;
 };
 C_ASSERT(sizeof(WorkerAi) == 24); // 0x18
 
@@ -616,7 +617,7 @@ struct BuildingAi {
 	u8 trainQueueTypes[5];
 	u8 unkE[2];
 	CUnit* parent;
-	void* town;
+	AiTown* town;
 	void* trainQueueValues[5];
 };
 C_ASSERT(sizeof(BuildingAi) == 44); // 0x2C
