@@ -264,7 +264,7 @@ namespace hooks {
 	}*/
 
 	// Hooked because iquare told me to - Pr0nogo
-	char AI_AddUnitAi(CUnit* unit, AiTown* town) { // 00433DD0
+/*	char AI_AddUnitAi(CUnit* unit, AiTown* town) { // 00433DD0
 		UnitAi* unitAI;
 		WorkerAi* unitAIWorker;
 		BuildingAi* unitAIBuilding;
@@ -392,8 +392,7 @@ namespace hooks {
 			}
 		}
 		return (char)unitAI;
-	}
-	
+	}*/	
 }
 
 namespace {
@@ -547,5 +546,82 @@ namespace {
 			CALL Func_AI_AddMilitary
 			POPAD
 		}
+	}
+
+	// for AI_AddUnitAi
+
+	const u32 Func_AI_CreateBuildingAi = 0x004044C0;
+	UnitAi* AI_CreateBuildingAi(BuildingAiArray* buildingAI) {
+		static UnitAi* result;
+		__asm {
+			PUSHAD
+			MOV ESI, buildingAI
+			CALL Func_AI_CreateBuildingAi
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_orderComputerClear = 0x00475310;
+	void orderComputerClear(CUnit* unit, u8 orderId) {
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			MOVZX CL, orderId
+			CALL Func_orderComputerClear
+			POPAD
+		}
+	}
+
+	const u32 Func_setSecondaryOrder = 0x004743D0;
+	CUnit* setSecondaryOrder(CUnit* result, char orderId) {
+		static CUnit* result2;
+		__asm {
+			PUSHAD
+			MOV EAX, result
+			MOVZX CL, orderId
+			CALL Func_setSecondaryOrder
+			MOV result2, EAX
+			POPAD
+		}
+		return result2;
+	}
+
+	const u32 Func_AI_MakeGuard = 0x0043A010;
+	void AI_MakeGuard(s32 playerId, CUnit* unit) {
+		__asm {
+			PUSHAD
+			PUSH unit
+			PUSH playerId
+			CALL Func_AI_MakeGuard
+			POPAD
+		}
+	}
+
+	const u32 Func_unitIsActiveResourceDepot = 0x00401CF0;
+	bool unitIsActiveResourceDepot(CUnit* unit) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EDX, unit
+			CALL Func_unitIsActiveResourceDepot
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_getPlayerDefaultRefineryUnitType = 0x004320D0;
+	s32 getPlayerDefaultRefineryUnitType(s32 playerId) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, playerId
+			CALL Func_getPlayerDefaultRefineryUnitType
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }
