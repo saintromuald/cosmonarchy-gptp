@@ -580,54 +580,54 @@ C_ASSERT(sizeof(AiCaptain) == 52);
 
 struct UnitAi {
 	CLink<UnitAi>	link;				// 0x0, 0x4
-	u8 type;
+	u8 type;							// 0x8
 };
 C_ASSERT(sizeof(UnitAi) == 9);
 
 struct GuardAi {
 	CLink<GuardAi>	link;				// 0x0, 0x4
-	u8 type;
-	u8 timesDied;
-	u8 unkA[2];
-	CUnit* parent;
-	u16 id;
-	Point16 home;
-	Point16 unkPos;
-	u8 unk1A[2];
-	u32 previousUpdate;
+	u8 type;							// 0x8
+	u8 timesDied;						// 0x9
+	u8 unkA[2];							// 0xA
+	CUnit* parent;						// 0xC
+	u16 id;								// 0x10
+	Point16 home;						// 0x12
+	Point16 unkPos;						// 0x16
+	u8 unk1A[2];						// 0x1A
+	u32 previousUpdate;					// 0x1C
 };
 C_ASSERT(sizeof(GuardAi) == 32); // 0x20
 
 struct AiTown; // declaring this here to avoid compiler errors
 struct WorkerAi {
-	CLink<WorkerAi>	link;		// 0x0, 0x4
-	u8 type;
-	u8 target_resource;
-	u8 reassign_count;
-	u8 waitTimer;
-	u32 last_update_second;
-	CUnit* parent;
-	AiTown* town;
+	CLink<WorkerAi>	link;				// 0x0, 0x4
+	u8 type;							// 0x8
+	u8 target_resource;					// 0x9
+	u8 reassign_count;					// 0xA
+	u8 waitTimer;						// 0xB
+	u32 last_update_second;				// 0xC
+	CUnit* parent;						// 0x10
+	AiTown* town;						// 0x14
 };
 C_ASSERT(sizeof(WorkerAi) == 24); // 0x18
 
 struct BuildingAi {
-	CLink<BuildingAi>	link;	// 0x0, 0x4
-	u8 type;
-	u8 trainQueueTypes[5];
-	u8 unkE[2];
-	CUnit* parent;
-	AiTown* town;
-	void* trainQueueValues[5];
+	CLink<BuildingAi>	link;			// 0x0, 0x4
+	u8 type;							// 0x8
+	u8 trainQueueTypes[5];				// 0x9
+	u8 unkE[2];							// 0xE
+	CUnit* parent;						// 0x10
+	AiTown* town;						// 0x14
+	void* trainQueueValues[5];			// 0x18
 };
 C_ASSERT(sizeof(BuildingAi) == 44); // 0x2C
 
 struct MilitaryAi {
-	CLink<MilitaryAi>	link;		// 0x0, 0x4
-	u8 type;
-	u8 padding[3];
-	CUnit* parent;
-	AiCaptain* region;
+	CLink<MilitaryAi>	link;			// 0x0, 0x4
+	u8 type;							// 0x8
+	u8 padding[3];						// 0x9
+	CUnit* parent;						// 0xC
+	AiCaptain* region;					// 0x10
 };
 C_ASSERT(sizeof(MilitaryAi) == 20); // 0x14
 

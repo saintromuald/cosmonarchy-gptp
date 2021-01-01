@@ -24,6 +24,15 @@ namespace {
 	// for AI_TrainingBroodling
 	void AI_AssignMilitary(s32 regionType, AiCaptain* region);						// 004390A0
 	void AI_AddMilitary(AiCaptain* region, CUnit* unit, s32 always_this_region);	// 0043DA20
+
+	// for AI_AddUnitAi
+	UnitAi* AI_CreateBuildingAi(BuildingAiArray* buildingAI);						// 004044C0
+	void orderComputerClear(CUnit* unit, u8 orderId);								// 00475310
+	CUnit* setSecondaryOrder(CUnit* result, char orderId);							// 004743D0
+	void AI_MakeGuard(s32 playerId, CUnit* unit);									// 0043A010
+	bool unitIsActiveResourceDepot(CUnit* unit);									// 00401CF0
+	s32 getPlayerDefaultRefineryUnitType(s32 playerId);								// 004320D0
+
 }
 #include "logger.h"
 namespace hooks {
@@ -255,47 +264,45 @@ namespace hooks {
 	}*/
 
 	// Hooked because iquare told me to - Pr0nogo
-/*	char AI_AddUnitAi(CUnit* unit, AiTown* town) { // 00433DD0
-		UnitAi* unitAI; // eax
-		CUnit* worker; // edx
-		UnitAi* previous1; // ecx
-		bool v6; // zf
-		CUnit* v7; // ecx
-		s16 v8; // ax
-		s32* v9; // ecx
-		char* v10; // ecx
-		s16 v11; // ax
-		s8 v12; // al
-		s32 v13; // esi
-		unitIDs unitType; // eax
-		s32 v15; // eax
-		u16 v16; // cx
+	char AI_AddUnitAi(CUnit* unit, AiTown* town) { // 00433DD0
+		UnitAi* unitAI;
+		WorkerAi* unitAIWorker;
+		BuildingAi* unitAIBuilding;
+		WorkerAiArray* workerAIArray;
+		UnitAi* previous1;
+		CUnit* v7; // unused!!!
+		void* buildingQueueValues; // was s32*
+		void* buildingQueueTypes; // was char*
+		s8 playerRACE;
+		s32 playerID;
+		unitIDs unitType; // what do I do
+		u16 v16;
 
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker) {
-			worker = town->free_workers.first_free_worker;
-			unitAI = (UnitAi*)worker->pAI;
+			workerAIArray = town->free_workers;
+			unitAI = (UnitAi*)workerAIArray->first_free_worker;
 			if (unitAI) {
 				previous1 = unitAI->link.prev;
-				v6 = unitAI->link.prev == 0;
-				*(UnitAi*)worker->pAI = *unitAI->link.prev;
-				if (!v6)
+				workerAIArray->first_free_worker = (WorkerAi*)unitAI->link.prev;
+				if (!unitAI->link.prev)
 					previous1->link.next = 0;
 				if (unitAI) {
 					unitAI->link.next = 0;
 					unitAI->link.prev = (UnitAi*)town->workers;
 					if (town->workers)
 						v7->link.next = (CUnit*)unitAI; // This variable is not used!
-					town->workers = (CUnit*)unitAI;
-					unitAI->type = 2;
-					unitAI->cptn = (AiCaptain*)unit;
-					unitAI->town = town;
-					unitAI->field_9 = 1;
-					unitAI->unit = (CUnit*)elapsedTime_0;
-					unitAI->timer = 0;
-					unitAI->field_A = 0;
-					unit->field_C8 = 0;
+					town->workers = (WorkerAi*)unitAI;
+					unitAIWorker = (WorkerAi*)unitAI;
+					unitAIWorker->type = 2;
+					unitAIWorker->parent = unit;
+					unitAIWorker->town = town;
+					unitAIWorker->target_resource = 1;
+					unitAIWorker->last_update_second = *elapsedTimeSeconds;
+					unitAIWorker->waitTimer = 0;
+					unitAIWorker->reassign_count = 0;
+					unit->beacon.flagSpawnFrame = 0;
 					unit->pAI = unitAI;
-					++town->unitAICount;
+					++town->worker_count;
 				}
 			}
 		}
@@ -304,88 +311,89 @@ namespace hooks {
 			|| unit->id == UnitId::ZergEgg
 			|| unit->id == UnitId::ZergOverlord)
 		{
-			unitAI = (UnitAi*)sub_4044C0((s32)&town->field_10);
-			if (unitAI)
-			{
-				unitAI->controlType = 3;
-				unitAI->cptn = (AiCaptain*)unit;
-				unitAI->town = town;
-				v9 = &unitAI->field_18;
-				*v9 = 0;
-				v9[1] = 0;
-				v9[2] = 0;
-				v9[3] = 0;
-				v9[4] = 0;
-				v10 = &v2->field_9;
-				*(s32*)v10 = 0;
-				v10[4] = 0;
+			unitAI = AI_CreateBuildingAi(town->free_buildings);
+			if (unitAI) {
+				unitAI->type = 3;
+				unitAIBuilding = (BuildingAi*)unitAI;
+				unitAIBuilding->parent = unit;
+				unitAIBuilding->town = town;
+				buildingQueueValues = &unitAIBuilding->trainQueueValues;
+				*buildingQueueValues = 0;
+				buildingQueueValues[1] = 0;
+				buildingQueueValues[2] = 0;
+				buildingQueueValues[3] = 0;
+				buildingQueueValues[4] = 0;
+				buildingQueueTypes = &unitAIBuilding->trainQueueTypes;
+				*(s32*)buildingQueueTypes = 0;
+				buildingQueueTypes[4] = 0;
 				unit->pAI = unitAI;
 				if (unit->id == UnitId::ZergHatchery
 				|| unit->id == UnitId::ZergLair
 				|| unit->id == UnitId::ZergHive)
 				{
 					if (unit->status & UnitStatus::Completed) {
-						orderComputer_cl(unit, OrderId::ComputerAI);// ComputerAI
+						orderComputerClear(unit, OrderId::ComputerAI);
 						setSecondaryOrder(unit, OrderId::SpreadCreep);
 					}
 				}
-				if (!(AIScriptController[(u8)town->ubOwner].AI_Flags & CONTROLLER_IS_CAMPAIGN)
+				if (!(AIScriptController[(u8)town->player].AI_Flags.isUseMapSettings) // CONTROLLER_IS_CAMPAIGN
 					|| unit->status & UnitStatus::GroundedBuilding
-					&& (v11 = unit->id, v11 != UnitId::TerranMissileTurret)
-					&& v11 != UnitId::TerranBunker
-					&& v11 != UnitId::ZergCreepColony
-					&& v11 != UnitId::ZergSporeColony
-					&& v11 != UnitId::ZergSunkenColony
-					&& v11 != UnitId::ProtossPylon
-					&& v11 != UnitId::ProtossPhotonCannon)
+					&& (unit->id != UnitId::TerranMissileTurret)
+					&& unit->id != UnitId::TerranBunker
+					&& unit->id != UnitId::ZergCreepColony
+					&& unit->id != UnitId::ZergSporeColony
+					&& unit->id != UnitId::ZergSunkenColony
+					&& unit->id != UnitId::ProtossPylon
+					&& unit->id != UnitId::ProtossPhotonCannon)
 				{
-					AI_MakeGuard((u8)town->ubOwner, unit);
+					AI_MakeGuard(town->player, unit);
 				}
-				if (!town->field_19) {
-					town->field_19 = 1;
-					town->field_2C = 0;
-					town->gas_0 = 0;
-					town->gas_1 = 0;
-					town->gas_2 = 0;
+				if (!town->inited) {
+					town->inited = 1;
+					town->mineral = 0;
+					town->gas_buildings[0] = 0;
+					town->gas_buildings[1] = 0;
+					town->gas_buildings[2] = 0;
 				}
-				v13 = (u8)unit->playerId;
-				v12 = playerTable[v13].race;
-				if (v12 == 1)
+				playerID = unit->playerId;
+				playerRACE = playerTable[playerID].race;
+				if (playerRACE == 1) {
 					unitType = 0x6A; // UNI_FIRST_BLDG
-				else
-					unitType = v12 != 0 ? UnitId::ProtossNexus : UnitId::ZergHatchery;
-				if ((u16)unit->id == unitType || (LOBYTE(v15) = unitIsActiveResourceDepot(unit), v15))
-				{
-					v2 = (UnitAi*)town->field_24;
-					if (!v2)
-						town->field_24 = unit;
 				}
 				else {
-					v2 = (UnitAi*)getPlayerDefaultRefineryUnitType(v13);
-					v16 = unit->id;
-					if ((UnitAi*)v16 == v2 || v16 == UnitId::ResourceVespeneGeyser) {
-						if (town->gas_0) {
-							if (town->gas_1) {
-								if (!town->gas_2)
-									town->gas_2 = unit;
+					unitType = playerRACE != 0 ? UnitId::ProtossNexus : UnitId::ZergHatchery;
+				}
+				if (unit->id == unitType || unitIsActiveResourceDepot(unit))
+				{
+					unitAI = (UnitAi*)town->main_building->pAI;
+					if (!unitAI)
+						town->main_building = unit;
+				}
+				else {
+					unitAI = (UnitAi*)getPlayerDefaultRefineryUnitType(playerID);
+					v16 = unit->id; // what the fuck
+					if ((UnitAi*)v16 == unitAI || unit->id == UnitId::ResourceVespeneGeyser) {
+						if (town->gas_buildings[0]) {
+							if (town->gas_buildings[1]) {
+								if (!town->gas_buildings[2])
+									town->gas_buildings[2] = unit;
 							}
 							else {
-								town->gas_1 = unit;
+								town->gas_buildings[1] = unit;
 							}
 						}
 						else {
-							town->gas_0 = unit;
+							town->gas_buildings[0] = unit;
 						}
-						LOBYTE(v2) = town->baseID;
-						if ((s8)unitAI)
-							town->field_1D = 1;
+						if (town->resource_area)
+							town->resource_area_not_set = 1;
 					}
 				}
 			}
 		}
 		return (char)unitAI;
 	}
-	*/
+	
 }
 
 namespace {
