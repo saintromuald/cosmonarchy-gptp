@@ -264,19 +264,17 @@ namespace hooks {
 	}*/
 
 	// Hooked because iquare told me to - Pr0nogo
-/*	char AI_AddUnitAi(CUnit* unit, AiTown* town) { // 00433DD0
+	void AI_AddUnitAi(CUnit* unit, AiTown* town) { // 00433DD0
 		UnitAi* unitAI;
 		WorkerAi* unitAIWorker;
 		BuildingAi* unitAIBuilding;
 		WorkerAiArray* workerAIArray;
 		UnitAi* previous1;
-		CUnit* v7; // unused!!!
-		void* buildingQueueValues; // was s32*
-		void* buildingQueueTypes; // was char*
+		int* buildingQueueValues; 
+		u8* buildingQueueTypes; // was char*
 		s8 playerRACE;
 		s32 playerID;
-		unitIDs unitType; // what do I do
-		u16 v16;
+		u16 unitType;
 
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker) {
 			workerAIArray = town->free_workers;
@@ -290,7 +288,7 @@ namespace hooks {
 					unitAI->link.next = 0;
 					unitAI->link.prev = (UnitAi*)town->workers;
 					if (town->workers)
-						v7->link.next = (CUnit*)unitAI; // This variable is not used!
+						town->workers->link.next = (WorkerAi*)unitAI;
 					town->workers = (WorkerAi*)unitAI;
 					unitAIWorker = (WorkerAi*)unitAI;
 					unitAIWorker->type = 2;
@@ -313,23 +311,24 @@ namespace hooks {
 		{
 			unitAI = AI_CreateBuildingAi(town->free_buildings);
 			if (unitAI) {
-				unitAI->type = 3;
+				unitAI->type = 3;//building ai
 				unitAIBuilding = (BuildingAi*)unitAI;
 				unitAIBuilding->parent = unit;
 				unitAIBuilding->town = town;
-				buildingQueueValues = &unitAIBuilding->trainQueueValues;
-				*buildingQueueValues = 0;
-				buildingQueueValues[1] = 0;
-				buildingQueueValues[2] = 0;
-				buildingQueueValues[3] = 0;
-				buildingQueueValues[4] = 0;
-				buildingQueueTypes = &unitAIBuilding->trainQueueTypes;
-				*(s32*)buildingQueueTypes = 0;
-				buildingQueueTypes[4] = 0;
+				buildingQueueValues = (int*)unitAIBuilding->trainQueueValues;
+				for (int i = 0; i < 5; i++) {
+					buildingQueueValues[i] = 0;
+				}
+				buildingQueueTypes = &unitAIBuilding->trainQueueTypes[0];
+				for (int i = 0; i < 5; i++) {
+					buildingQueueTypes[i] = 0;
+				}
 				unit->pAI = unitAI;
 				if (unit->id == UnitId::ZergHatchery
-				|| unit->id == UnitId::ZergLair
-				|| unit->id == UnitId::ZergHive)
+					|| unit->id == UnitId::ZergLair
+					|| unit->id == UnitId::ZergHive
+					|| unit->id == UnitId::ZergSire //new, hydra
+					)
 				{
 					if (unit->status & UnitStatus::Completed) {
 						orderComputerClear(unit, OrderId::ComputerAI);
@@ -343,6 +342,7 @@ namespace hooks {
 					&& unit->id != UnitId::ZergCreepColony
 					&& unit->id != UnitId::ZergSporeColony
 					&& unit->id != UnitId::ZergSunkenColony
+					&& unit->id != UnitId::ZergLarvalColony //new, hydra
 					&& unit->id != UnitId::ProtossPylon
 					&& unit->id != UnitId::ProtossPhotonCannon)
 				{
@@ -351,17 +351,20 @@ namespace hooks {
 				if (!town->inited) {
 					town->inited = 1;
 					town->mineral = 0;
-					town->gas_buildings[0] = 0;
-					town->gas_buildings[1] = 0;
-					town->gas_buildings[2] = 0;
+					for (int i = 0; i < 3; i++) {
+						town->gas_buildings[i] = 0;
+					}
 				}
 				playerID = unit->playerId;
 				playerRACE = playerTable[playerID].race;
-				if (playerRACE == 1) {
-					unitType = 0x6A; // UNI_FIRST_BLDG
+				if (playerRACE == RaceId::Terran) {
+					unitType = UnitId::TerranCommandCenter;
+				}
+				else if (playerRACE == RaceId::Protoss) {
+					unitType = UnitId::ProtossNexus;
 				}
 				else {
-					unitType = playerRACE != 0 ? UnitId::ProtossNexus : UnitId::ZergHatchery;
+					unitType = UnitId::ZergHatchery;
 				}
 				if (unit->id == unitType || unitIsActiveResourceDepot(unit))
 				{
@@ -370,9 +373,8 @@ namespace hooks {
 						town->main_building = unit;
 				}
 				else {
-					unitAI = (UnitAi*)getPlayerDefaultRefineryUnitType(playerID);
-					v16 = unit->id; // what the fuck
-					if ((UnitAi*)v16 == unitAI || unit->id == UnitId::ResourceVespeneGeyser) {
+					auto gas_structure_id = getPlayerDefaultRefineryUnitType(playerID);
+					if (unit->id==gas_structure_id || unit->id == UnitId::ResourceVespeneGeyser) {
 						if (town->gas_buildings[0]) {
 							if (town->gas_buildings[1]) {
 								if (!town->gas_buildings[2])
@@ -391,8 +393,7 @@ namespace hooks {
 				}
 			}
 		}
-		return (char)unitAI;
-	}*/	
+	}
 }
 
 namespace {
