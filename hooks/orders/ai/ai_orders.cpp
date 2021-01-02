@@ -311,7 +311,7 @@ namespace hooks {
 		{
 			unitAI = AI_CreateBuildingAi(town->free_buildings);
 			if (unitAI) {
-				unitAI->type = 3;//building ai
+				unitAI->type = 3; //building ai
 				unitAIBuilding = (BuildingAi*)unitAI;
 				unitAIBuilding->parent = unit;
 				unitAIBuilding->town = town;

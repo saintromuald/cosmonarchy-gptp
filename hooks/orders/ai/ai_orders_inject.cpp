@@ -55,6 +55,20 @@ namespace {
 			RETN 8
 		}
 	}
+	void __declspec(naked) AI_AddUnitAi_Wrapper() { // 00433DD0
+		static CUnit* unit;
+		static AiTown* town;
+		__asm {
+			MOV EBX, unit
+			MOV EDI, town
+			PUSHAD
+		}
+		hooks::AI_AddUnitAi(unit, town);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -63,5 +77,6 @@ namespace hooks {
 		jmpPatch(AI_TrainingUnit_Wrapper,		0x004A2830, 2);
 //		jmpPatch(AI_CreateNuke_Wrapper,			0x0045B7A0, 0);
 		jmpPatch(AI_TrainingBroodling_Wrapper,	0x0043E280, 1);
+		jmpPatch(AI_AddUnitAi_Wrapper,			0x00433DD0, 2);
 	}
 }
