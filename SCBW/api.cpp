@@ -1628,22 +1628,38 @@ u16 random() {
 		return overlayImageId;
 	}
 
+	Point16 getTargetPoint(CUnit* unit) {
+		Point16 targetPoint;
+		CUnit* targetUnit = unit->orderTarget.unit;
+		if (targetUnit != NULL && !(targetUnit->status & UnitStatus::InAir)) {
+			targetPoint = targetUnit->position;
+		}
+		else {
+			targetPoint = unit->orderTarget.pt;
+		}
+		return targetPoint;
+	}
+
 	s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
 		if (unit == NULL)
 			return 0;
 		if (!canUseCliffAdvantage(unit, weapon))
 			return 0;
-		u32 cliffAdvantage = 0;
-		Point16 targetPoint;
-		CUnit* targetUnit = unit->orderTarget.unit;
-		if (targetUnit != NULL && !(targetUnit->status & UnitStatus::InAir)) {
-			targetPoint = targetUnit->position;
-		} else {
-			targetPoint = unit->orderTarget.pt;
-		}
+		Point16 targetPoint = getTargetPoint(unit);
 		s32 sourceHeight = scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight;
 		s32 targetHeight = scbw::getActiveTileAt(targetPoint.x, targetPoint.y).groundHeight;
 		return (sourceHeight - targetHeight) / 2;
+	}
+
+	s32 getCreepAdvantage(CUnit* unit, u8 weapon) {
+		if (unit == NULL)
+			return 0;
+		if (!canUseCliffAdvantage(unit, weapon) || unit->getRace() != RaceId::Zerg)
+			return 0;
+		Point16 targetPoint = getTargetPoint(unit);
+		bool sourceCreep = scbw::getActiveTileAt(unit->position.x, unit->position.y).hasCreep;
+		bool targetCreep = scbw::getActiveTileAt(targetPoint.x, targetPoint.y).hasCreep;
+		return (sourceCreep && !targetCreep) ? 1 : 0;
 	}
 
 	void restoreFunc(CUnit* unit) {

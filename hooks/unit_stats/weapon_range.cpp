@@ -77,11 +77,12 @@ u8 getSeekRangeHook(CUnit* unit) {
 	seekRange = units_dat::SeekRange[unitId] + bonusAmount;
 
 	// Height advantage
-	if (scbw::canUseCliffAdvantage(unit)) {
-		seekRange += 2;
-		seekRange -= (2 - std::max(scbw::getCliffAdvantage(unit), 0)); // ideally we would pass weapon id
-	}
+	seekRange += 2;
+	seekRange -= (2 - std::max(scbw::getCliffAdvantage(unit), 0));
 
+	// Creep advantage
+	seekRange += 1;
+	seekRange -= (1 - std::max(scbw::getCreepAdvantage(unit), 0));
 
 	return seekRange;
 };
@@ -139,10 +140,12 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 	}
 
 	// Height advantage
-	if (scbw::canUseCliffAdvantage(unit, weaponId)) {
-		bonusAmount += 128;
-		bonusAmount -= (2 - std::max(scbw::getCliffAdvantage(unit), 0)) * 64;
-	}
+	bonusAmount += 128;
+	bonusAmount -= (2 - std::max(scbw::getCliffAdvantage(unit), 0)) * 64;
+
+	// Creep advantage
+	bonusAmount += 64;
+	bonusAmount -= (1 - std::max(scbw::getCreepAdvantage(unit), 0)) * 64;
 
 	// Ignore bonus range for melee units
 	if (weapons_dat::MaxRange[unit->getGroundWeapon()] <= 32) {
