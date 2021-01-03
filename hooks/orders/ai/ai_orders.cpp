@@ -24,6 +24,15 @@ namespace {
 	// for AI_TrainingBroodling
 	void AI_AssignMilitary(s32 regionType, AiCaptain* region);						// 004390A0
 	void AI_AddMilitary(AiCaptain* region, CUnit* unit, s32 always_this_region);	// 0043DA20
+
+	// for AI_AddUnitAi
+	UnitAi* AI_CreateBuildingAi(BuildingAiArray* buildingAI);						// 004044C0
+	void orderComputerClear(CUnit* unit, u8 orderId);								// 00475310
+	CUnit* setSecondaryOrder(CUnit* result, char orderId);							// 004743D0
+	void AI_MakeGuard(s32 playerId, CUnit* unit);									// 0043A010
+	bool unitIsActiveResourceDepot(CUnit* unit);									// 00401CF0
+	s32 getPlayerDefaultRefineryUnitType(s32 playerId);								// 004320D0
+
 }
 #include "logger.h"
 namespace hooks {
@@ -163,11 +172,7 @@ namespace hooks {
 		regionType = playerRegion[regionId].captainType;//state
 		region = &playerRegion[regionId];		
 		if (region == NULL) {
-<<<<<<< Updated upstream
 			GPTP::logger << "AI Broodling Bug: Null region!" << '\n';
-=======
-			GPTP::logger << "AI Broodling Bug: Null region" << '\n';
->>>>>>> Stashed changes
 		}
 		else {
 			if (regionType != 0) //region has assigned state, state 0 is nothing
