@@ -113,6 +113,7 @@ namespace hooks {
 		};
 		return order;
 	}
+
 	u32 get_townhall_from_race(u32 race) {
 		u32 id = 0xe4;
 		switch (race) {
@@ -131,6 +132,7 @@ namespace hooks {
 		}
 		return id;
 	}
+
 	bool unit_is_correct_townhall(u32 unit_id, u32 cmp_id, CUnit* unit) {
 		//unit is unused. this is function is supposed to be used for custom faction workers
 		switch (unit_id) {
@@ -159,6 +161,7 @@ namespace hooks {
 		};
 		return false;
 	}
+
 	bool is_terran_supply(u16 unit_id, CUnit* worker) {
 		//worker is not used originally in regards of supply, but may be required for custom race support
 		if (unit_id == UnitId::TerranSupplyDepot) {
@@ -177,6 +180,7 @@ namespace hooks {
 			break;
 		}
 	}
+
 	bool is_gasholder_structure(u16 unit_id){
 		switch (unit_id) {
 		case UnitId::TerranRefinery:
@@ -188,6 +192,7 @@ namespace hooks {
 			break;
 		}
 	}
+
 	u32 get_worker_from_race(u32 race) {
 		u32 id = 0xe4;
 		switch (race) {
@@ -206,6 +211,7 @@ namespace hooks {
 		}
 		return id;
 	}
+
 	u32 get_supply_structure_from_race(u32 race, u8 player) {
 		u32 id = 0xe4;
 		//player is not used originally but may be required for custom race support
@@ -225,97 +231,66 @@ namespace hooks {
 		}
 		return id;
 	}
-	void Ai_BuildSupplies(AiTown* a1) {
-		// 1
+
+	void Ai_BuildSupplies(AiTown* town) {	// 00433730
 		u8 race; // al
-		unsigned __int8 v2; // bl
-		int v3; // esi
-		unsigned __int16 workerUnit; // ax
-		int v6; // eax
-		signed int v7; // edi
-		int v8; // eax
-		unsigned int v9; // eax
-		int v10; // ebx
-		char v11; // al
-		unsigned int v12; // eax
-		u8 v13; // cl
-		int v14; // eax
-		u16 v15; // ecx
-		unsigned int v16; // ecx
-		unsigned int v17; // edi
-		int v18; // [esp+0h] [ebp-Ch]
-		signed int v19; // [esp+4h] [ebp-8h]
+		u8 player; // bl
+		u16 workerUnit; // ax
+		s32 remainingSupply; // eax
+		u32 supplyCountCompare; // eax
+		u32 supplyUsedCompare; // eax
+		u32 townHallSupply; // ecx
+		u32 economyCountCompare; // edi
 		u32 supplyUnit; // [esp+8h] [ebp-4h]
 		
 		//copied from hexrays, will be adjusted later
-		if (a1)
-		{
-			v2 = a1->player;
-			v3 = v2;
-			race = playerTable[v2].race;
-			v18 = v2;
-			//
-			/*u32 faction = OverlordFaction::OmegaSquadron;
-			if (a1->main_building != NULL) {
-				faction = scbw::get_aise_value(a1->main_building, NULL, AiseId::GetCurrentFaction, 0, 0);
-			}*/
-			//
-			supplyUnit = get_supply_structure_from_race(race,v2);		
-			/*if (!((faction >= OverlordFaction::AlphaSquadron && faction <= OverlordFaction::OmegaSquadron)
-				|| faction == OverlordFaction::Umojans || faction == OverlordFaction::Cerberus)) {			
-				supplyUnit = UnitId::scrap_processor;
-			}*/
+		if (town) {
+			player = town->player;
+			race = playerTable[player].race;
+			supplyUnit = get_supply_structure_from_race(race, player);
 			workerUnit = get_worker_from_race(race);
-			/*if (faction == OverlordFaction::Miners) {
-				workerUnit = UnitId::mole;
-			}*/
-			v8 = getSuppliesRemaining(v2, workerUnit);
-			v7 = v8;
-			v19 = v8;
-			v6 = Ai_HasBuildingsNeedingPower(v2);
-			if (v6)
+			remainingSupply = getSuppliesRemaining(player, workerUnit);
+
+			if (race = RaceId::Protoss // new
+			&& Ai_HasBuildingsNeedingPower(player))
 			{
-				v10 = supplyUnit;
-				v9 = Ai_CountEconomyUnits(v3, supplyUnit);//int player, u16 unitId
+				supplyCountCompare = Ai_CountEconomyUnits(player, supplyUnit);
 			LABEL_21:
-				v17 = v9 + 1;
-				if ((!v19 || !(AIScriptController[v3].AI_Flags.isFarmsNotimingOn) || Ai_HasBuildingsNeedingPower(v3))
-					&& v17 > Ai_CountEconomyUnits(v3, v10))
+				economyCountCompare = supplyCountCompare + 1;
+				if ((!remainingSupply || !(AIScriptController[player].AI_Flags.isFarmsNotimingOn) || Ai_HasBuildingsNeedingPower(player))
+					&& economyCountCompare > Ai_CountEconomyUnits(player, supplyUnit))
 				{
-					Ai_AddTownSpendReq(v18, v19 > 8 ? 120 : 140, v10, (void*)a1);//???machine shop and ultralisk cavern
+					Ai_AddTownSpendReq(player, remainingSupply > 8 ? 120 : 140, supplyUnit, (void*)town);
 				}
-				//used variables: v17, v9, v3, v10, v18, v19, a1
 				return;
 			}
-			if (v7 < 13)
+			if (remainingSupply < 13)
 			{
 				auto flags = units_dat::GroupFlags[supplyUnit];
 				if (flags.isZerg) {
-					v6 = RaceId::Zerg;
+					race = RaceId::Zerg;
 				}
 				else if(flags.isTerran){
-					v6 = RaceId::Terran;
+					race = RaceId::Terran;
 				}
 				else if (units_dat::GroupFlags[supplyUnit].isProtoss) {
-					v6 = RaceId::Protoss;
+					race = RaceId::Protoss;
 				}
 				else {
-					v6 = RaceId::Neutral;
+					race = RaceId::Neutral;
 				}
-				v14 = getSuppliesUsed(v6, v2);
-				v13 = playerTable[v2].race;
-				v12 = v14 + 13;
-				v15 = get_townhall_from_race(v13);
-				v16 = units_dat::SupplyProvided[v15];
-				if (v12 > v16)
+				race = playerTable[player].race;
+				supplyUsedCompare = getSuppliesUsed(race, player) + 13;
+				townHallSupply = units_dat::SupplyProvided[get_townhall_from_race(race)];
+				if (supplyUsedCompare > townHallSupply)
 				{
-					v10 = supplyUnit;
-					v9 = (v12 - v16) / units_dat::SupplyProvided[supplyUnit];
+					supplyCountCompare = (supplyUsedCompare - townHallSupply) / units_dat::SupplyProvided[supplyUnit];
 					goto LABEL_21;
 				}
 			}
 		}
 	}
+
 	u32 orders_isGeyserTopUnitHook(CUnit* unit) {
 		if (unit->status & UnitStatus::Completed) {
 			if (is_vespene_top_structure(unit->id)) {
@@ -324,8 +299,8 @@ namespace hooks {
 		}
 		return false;
 	}
-	/*
-	signed int Ai_TryProgressSpendingQueue_Worker(AiTown* a1, CUnit* a2) {
+	
+/*	signed int Ai_TryProgressSpendingQueue_Worker(AiTown* a1, CUnit* a2) {
 		int v2; // eax
 		CUnit* pUnit; // edi
 		UnitAi* aiCtrl; // edx
