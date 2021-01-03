@@ -1000,6 +1000,8 @@ void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount
 	
 	
 }
+
+
 CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset) {
 	if (unit->sprite == NULL || unit->orderTarget.unit==NULL) {
 		return NULL;
@@ -1354,7 +1356,9 @@ CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* creator) {
 	else {
 		FinishUnit_Pre(unit);
 		updateUnitStrength(unit);
-		InheritAI2(unit, creator);
+		if (creator != NULL && creator->pAI != NULL) {
+			InheritAI2(unit, creator);
+		}
 	}
 	return unit;
 }

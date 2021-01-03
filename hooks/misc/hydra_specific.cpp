@@ -1,6 +1,7 @@
 //
 #include "hooks/misc/hydra_specific.h"
 #include "globals.h"
+#include <cassert>
 #include "hooks/orders/unit_making/unit_train.h"
 namespace ReqOpcode {
 	enum {
@@ -116,9 +117,62 @@ bool unitIsTrainingOrMorphing(CUnit* unit) {
 		POPAD
 	}
 }
-
-
+#include <array>
 namespace hooks {
+
+	void createDamageOverlay(CSprite* sprite) {
+		if (sprite->mainGraphic == nullptr)
+			return;
+		const LO_Header* overlay = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayDamagePtr, sprite->mainGraphic->id));
+		if (overlay==nullptr)
+			return;//return if there's no overlay defined
+		for (CImage* image = sprite->images.head; image; image = image->link.next) {
+			if (image->id >= ImageId::FirstMinorDamageOverlay && 
+				image->id <= ImageId::LastMinorDamageOverlay)
+			{
+				int variation = image->id - ImageId::FirstMinorDamageOverlay;
+				image->free();
+				if (sprite->mainGraphic->frameIndex >= overlay->frameCount) {
+					scbw::printFormattedText("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
+						sprite->mainGraphic->frameIndex, sprite->mainGraphic->id);
+					return;
+				}
+				Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation);//not sure about first arg
+				sprite->createTopOverlay(ImageId::FirstMajorDamageOverlay + variation, offset.x, offset.y, 0);
+			}
+		}
+		std::array<int, 22> results;
+		auto result_pos = results.begin();
+		if (sprite->mainGraphic->frameIndex >= overlay->frameCount) {
+			scbw::printFormattedText("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
+				sprite->mainGraphic->frameIndex, sprite->mainGraphic->id);
+			return;
+		}
+		for (int i = 0; i < 22; i++)
+		{
+			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, i);
+			if (offset.x == 127 && offset.y == 127)
+				continue;
+			u32 overlay_id = ImageId::FirstMajorDamageOverlay + i;
+			bool found = false;
+			for (CImage* image = sprite->images.head; image; image = image->link.next) {
+				if (image->id == overlay_id) {
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+			{
+				*result_pos++ = i;
+			}
+		}
+		if(result_pos!=results.begin())
+		{
+			int variation = results[scbw::randBetween(0,result_pos - results.begin() - 1)];
+			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation);		
+			sprite->createTopOverlay(ImageId::FirstMinorDamageOverlay + variation, offset.x, offset.y, 0);
+		}
+	}
 
 	u32 checkUnitDatRequirements(u8 playerId, u16 unit_id, CUnit* unit) {
 		//

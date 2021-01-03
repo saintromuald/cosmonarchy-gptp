@@ -29,7 +29,7 @@ namespace {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
-			MOV EAX, [EBP + 4]
+			MOV EAX, [EBP+0x08]
 			MOV player, EAX
 			POP EAX
 			MOV source, ECX
@@ -38,9 +38,9 @@ namespace {
 		result = hooks::createHallucination(source, player);
 		__asm {
 			POPAD
+			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
-			MOV EAX, result
 			RETN 4
 		}
 	}

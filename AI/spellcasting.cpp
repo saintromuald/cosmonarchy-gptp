@@ -188,7 +188,8 @@ bool AI_spellcasterHook(CUnit* unit, bool isUnitBeingAttacked) {
 
       //Spawn Broodlings
       if (canCastSpellOrder(unit, TechId::SpawnBroodlings, OrderId::SummonBroodlings)) {
-
+          return false;
+          /*
         CUnit* target = findBestSpawnBroodlingsTarget(unit, isUnitBeingAttacked);
         
         if (unit->mainOrderId == OrderId::SummonBroodlings
@@ -198,7 +199,7 @@ bool AI_spellcasterHook(CUnit* unit, bool isUnitBeingAttacked) {
         if (aiCastSpellOrder(unit, target, OrderId::SummonBroodlings)) {
           unit->order(OrderId::Move, unit->getX(), unit->getY(), NULL, UnitId::None, false);
           return true;
-        }
+        }*/
 
       }
 
@@ -367,6 +368,8 @@ bool AI_spellcasterHook(CUnit* unit, bool isUnitBeingAttacked) {
 
     case UnitId::corsair:
       //Disruption Web
+        return false;
+        /*
       if (canCastSpellOrder(unit, TechId::DisruptionWeb, OrderId::CastDisruptionWeb)) {
 
         CUnit* target = findBestDisruptionWebTarget(unit, isUnitBeingAttacked);
@@ -379,7 +382,7 @@ bool AI_spellcasterHook(CUnit* unit, bool isUnitBeingAttacked) {
           return true;
 
       }
-
+      */
       break;
   }
 

@@ -26,70 +26,6 @@ const int SOUND_TYPE_COUNT		= 1144;
 #include "structures/Player.h" //made into external file to have .cpp
 
 #pragma pack(1)
-/*
-struct UnitAI {
-	CLink<UnitAI>	link;				// 0x0, 0x4
-	u8				type;				// 0x8 \\ 0x1 = Guard, 0x2 = Worker, 0x3 = Building / Available to scripts, 0x4 = Military
-	u8				deaths;				// 0x9 \\ if >= 3, no build
-	u8				fieldA;				// 0xA
-	u8				timer;				// 0xB
-	CUnit*			parent;				// 0xC
-	AiCaptain*		captain;			// 0x10
-	AiTown*			town;				// 0x14
-	u32				field18;			// 0x18
-	u32				field1C;			// 0x1C
-	u32				field20;			// 0x20
-	u32				field24;			// 0x24
-	u32				field28;			// 0x28
-};*/
-/*
-struct pathing {
-	u16 regionCount;
-	u16 unk1;
-	u16 unk2;
-	SplitRegion* unkSplit;
-	u16 mapTileRegions[256];
-	u32 splitRegions[37500];
-	AiCaptain* regions[5000];
-	u16 manyNeighborIds[10000];
-	ContourData* contourData;
-};
-C_ASSERT(sizeof(pathing) == 621088); // 0x97a20
-*//*
-struct SplitRegion {
-	u16 minitileFlags;
-	u16 regionFalse;
-	u16 regionTrue;
-};
-C_ASSERT(sizeof(SplitRegion) == 6);*/
-/*
-struct ContourData {
-	Contour* topContours;
-	Contour* rightContours;
-	Contour* botContours;
-	Contour* leftContours;
-	u16 topContourCount;
-	u16 rightContourCount;
-	u16 botContourCount;
-	u16 leftContourCount;
-	u16 bottom;
-	u16 left;
-	u16 top;
-	u16 right;
-	u16 bottomPlus1;
-	u16 leftMinus1;
-	u16 topMinus1;
-	u16 rightPlus1;
-};
-C_ASSERT(sizeof(ContourData) == 56); // 0x38
-*//*
-struct Contour {
-	u16 pos[3];
-	u8 type; // Top, Right, Bottom, Left
-	u8 flags; // 0x3 = first_dodge, 0xc = last_dodge, 0x30 = 2bit _50x20 pos2_index, 0xc0 = 2bit _50x20 pos3_index
-};
-C_ASSERT(sizeof(Contour) == 8);
-*/
 
 struct vectorHead {
 	u32 next;
@@ -420,32 +356,6 @@ C_ASSERT(sizeof(ColorShiftData) == 20);
 //static_assert(sizeof(ColorShiftData) == 20, "The size of the ColorShiftData structure is invalid");
 
 //-------- Flag structures --------//
-struct TownReq {
-	u8 flags_and_count;
-	u8 priority;
-	u16 id;
-};
-struct AiTown {
-	CLink<AiTown> link;
-	void* free_workers;//replace later
-	void* workers;//replace later
-	void* free_buildings;//replace later
-	void* buildings;//replace later
-	u8 player;
-	u8 inited;
-	u8 worker_count;
-	u8 worker_limit;
-	u8 resource_area;
-	u8 resource_area_not_set;
-	u8 in_battle;
-	u8 unk1f;
-	Point16 position;
-	CUnit* main_building;
-	CUnit* building_scv;
-	CUnit* mineral;
-	CUnit* gas_buildings[3];
-	TownReq town_units[0x64];
-};
 
 //Based on BWAPI's Offsets.h
 struct ActiveTile {
@@ -638,65 +548,127 @@ C_ASSERT(sizeof(GuiOverlay) == 44); //0x2C
 //static_assert(sizeof(GuiOverlay) == 44, "The size of the GuiOverlay structure is invalid");
 
 //-------- AI related stuff --------//
-/*
+
+struct AiCaptain { //AiRegion
+	/*00*/  u16 region;
+	/*02*/  u16 unknown_0x2;
+	/*04*/  u8  playerId;
+	/*05*/  u8  captainType;
+	/*06*/  u8  unknown_0x6;
+	/*07*/  u8  unknown_0x7;
+	/*08*/  u8  captainFlags;
+	/*09*/  u8  unknown_0x9;
+	/*0A*/  u8  unknown_0xA;
+	/*0B*/  u8  unknown_0xB;
+	/*0C*/  u16 unknown_0xC;
+	/*0E*/  u16 unknown_0xE;
+	/*10*/  u16 regionGndStrength;
+	/*12*/  u16 regionAirStrength;
+	/*14*/  u16 fullGndStrength;
+	/*16*/  u16 fullAirStrength;
+	/*18*/  u16 unknown_0x18;
+	/*1A*/  u16 unknown_0x1A;
+	/*1C*/  u32 unknown_0x1C;
+	/*20*/  u32 unknown_0x20;
+	/*24*/  CUnit* slowestUnit;
+	/*28*/  CUnit* followTarget;
+	/*2C*/  CUnit* mainMedic;
+	/*30*/  void* town;
+};
+C_ASSERT(sizeof(AiCaptain) == 52);
+//static_assert(sizeof(AiCaptain) == 52, "The size of the AiCaptain structure is invalid");
+
 struct UnitAi {
-	UnitAi* next;
-	UnitAi* prev;
-	u8 type;
+	CLink<UnitAi>	link;				// 0x0, 0x4
+	u8 type;							// 0x8
 };
 C_ASSERT(sizeof(UnitAi) == 9);
 
 struct GuardAi {
-	GuardAi* next;
-	GuardAi* prev;
-	u8 type;
-	u8 timesDied;
-	u8 unkA[2];
-	CUnit* parent;
-	u16 id;
-	Point16 home;
-	Point16 unkPos;
-	u8 unk1A[2];
-	u32 previousUpdate;
+	CLink<GuardAi>	link;				// 0x0, 0x4
+	u8 type;							// 0x8
+	u8 timesDied;						// 0x9
+	u8 unkA[2];							// 0xA
+	CUnit* parent;						// 0xC
+	u16 id;								// 0x10
+	Point16 home;						// 0x12
+	Point16 unkPos;						// 0x16
+	u8 unk1A[2];						// 0x1A
+	u32 previousUpdate;					// 0x1C
 };
 C_ASSERT(sizeof(GuardAi) == 32); // 0x20
-*/
-struct WorkerAi {
-	WorkerAi* next;
-	WorkerAi* prev;
-	u8 type;
-	u8 target_resource;
-	u8 reassign_count;
-	u8 waitTimer;
-	u32 last_update_second;
-	CUnit* parent;
-	AiTown* town;
-};
 
+struct AiTown; // declaring this here to avoid compiler errors
+struct WorkerAi {
+	CLink<WorkerAi>	link;				// 0x0, 0x4
+	u8 type;							// 0x8
+	u8 target_resource;					// 0x9
+	u8 reassign_count;					// 0xA
+	u8 waitTimer;						// 0xB
+	u32 last_update_second;				// 0xC
+	CUnit* parent;						// 0x10
+	AiTown* town;						// 0x14
+};
 C_ASSERT(sizeof(WorkerAi) == 24); // 0x18
 
 struct BuildingAi {
-	BuildingAi* next;
-	BuildingAi* prev;
-	u8 type;
-	u8 trainQueueTypes[5];
-	u8 unkE[2];
-	CUnit* parent;
-	AiTown* town;
-	void* trainQueueValues[5];
+	CLink<BuildingAi>	link;			// 0x0, 0x4
+	u8 type;							// 0x8
+	u8 trainQueueTypes[5];				// 0x9
+	u8 unkE[2];							// 0xE
+	CUnit* parent;						// 0x10
+	AiTown* town;						// 0x14
+	void* trainQueueValues[5];			// 0x18
 };
 C_ASSERT(sizeof(BuildingAi) == 44); // 0x2C
-/*
+
 struct MilitaryAi {
-	MilitaryAi* next;
-	MilitaryAi* prev;
-	u8 type;
-	u8 padding[3];
-	CUnit* parent;
-	AiCaptain* region;
+	CLink<MilitaryAi>	link;			// 0x0, 0x4
+	u8 type;							// 0x8
+	u8 padding[3];						// 0x9
+	CUnit* parent;						// 0xC
+	AiCaptain* region;					// 0x10
 };
 C_ASSERT(sizeof(MilitaryAi) == 20); // 0x14
-*/
+
+struct WorkerAiArray {
+	WorkerAi* worker_ais[1000];
+	WorkerAi* first_free_worker;
+};
+
+struct BuildingAiArray {
+	BuildingAi* building_ais[1000];
+	BuildingAi* first_free_building;
+};
+
+struct TownReq {
+	u8 flags_and_count;
+	u8 priority;
+	u16 id;
+};
+
+struct AiTown {
+	CLink<AiTown> link;							//	0x0 and 0x4
+	WorkerAiArray* free_workers;				//	0x8
+	WorkerAi* workers;							//	0xC
+	BuildingAiArray* free_buildings;			//	0x10
+	BuildingAi* buildings;						//	0x14
+	u8 player;									//	0x18
+	u8 inited;									//	0x19
+	u8 worker_count;							//	0x1a
+	u8 worker_limit;							//	0x1b
+	u8 resource_area;							//	0x1c
+	u8 resource_area_not_set;					//	0x1d
+	u8 in_battle;								//	0x1e
+	u8 unk1f;									//	0x1f
+	Point16 position;							//	0x20
+	CUnit* main_building;						//	0x24
+	CUnit* building_scv;						//	0x28
+	CUnit* mineral;								//	0x2c
+	CUnit* gas_buildings[3];					//	0x30
+	TownReq town_units[0x64];					//	0x3c
+};
+
 struct AI_Main {
 /*000*/  s32 oreCollection;
 /*004*/  s32 gasCollection;
@@ -756,36 +728,6 @@ struct AI_Main {
 
 C_ASSERT(sizeof(AI_Main) == 1256); /*0x4E8*/
 //static_assert(sizeof(AI_Main) == 1256, "The size of the AI_Main structure is invalid");
-
-struct AiCaptain {//AiRegion
-/*00*/  u16 region;
-/*02*/  u16 unknown_0x2;
-/*04*/  u8  playerId;
-/*05*/  u8  captainType;
-/*06*/  u8  unknown_0x6;
-/*07*/  u8  unknown_0x7;
-/*08*/  u8  captainFlags;
-/*09*/  u8  unknown_0x9;
-/*0A*/  u8  unknown_0xA;
-/*0B*/  u8  unknown_0xB;
-/*0C*/  u16 unknown_0xC;
-/*0E*/  u16 unknown_0xE;
-/*10*/  u16 regionGndStrength;
-/*12*/  u16 regionAirStrength;
-/*14*/  u16 fullGndStrength;
-/*16*/  u16 fullAirStrength;
-/*18*/  u16 unknown_0x18;
-/*1A*/  u16 unknown_0x1A;
-/*1C*/  u32 unknown_0x1C;
-/*20*/  u32 unknown_0x20;
-/*24*/  CUnit* slowestUnit;
-/*28*/  CUnit* followTarget;
-/*2C*/  CUnit* mainMedic;
-/*30*/  void  *town;
-};
-
-C_ASSERT(sizeof(AiCaptain) == 52); 
-//static_assert(sizeof(AiCaptain) == 52, "The size of the AiCaptain structure is invalid");
 
 // From BWAPI Offsets.h, used in scbwdata.h by UnitAvailability
 struct _uavail {

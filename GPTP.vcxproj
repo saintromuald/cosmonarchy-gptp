@@ -536,6 +536,7 @@
     <ClInclude Include="hooks\limits\fake_unitid_extender.h" />
     <ClInclude Include="hooks\limits\misc_extenders.h" />
     <ClInclude Include="hooks\neutral_related.h" />
+    <ClInclude Include="hooks\orders\building_making\building_helper.h" />
     <ClInclude Include="hooks\trap_hooks.h" />
     <ClInclude Include="hooks\unit_movement.h" />
     <ClInclude Include="lib_src\yaml-cpp\collectionstack.h" />
@@ -642,7 +643,6 @@
     <ClInclude Include="hooks\unit_stats\armor_bonus.h" />
     <ClInclude Include="hooks\attack_priority.h" />
     <ClInclude Include="graphics\Bitmap.h" />
-    <ClInclude Include="unhooked\building_morph.h" />
     <ClInclude Include="hooks\bunker_hooks.h" />
     <ClInclude Include="SCBW\structures\CBullet.h" />
     <ClInclude Include="SCBW\structures\CImage.h" />

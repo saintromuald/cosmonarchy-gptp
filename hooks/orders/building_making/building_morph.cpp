@@ -5,6 +5,7 @@
 #include <SCBW/scbwdata.h>
 #include "hooks\orders\building_making\building_morph.h"
 #include "hooks\orders\unit_making\unit_morph.h"
+#include "hooks\orders\building_making\building_helper.h"
 #include "logger.h"
 
 namespace {
@@ -780,7 +781,7 @@ namespace {
 //-------- Helper function declarations. Do NOT modify! ---------//
 
 namespace {
-	int getNumberOfUnitType(const CUnit* unit, u16 unitId, bool ignoreIncomplete);
+	int BuildingHelper::getNumberOfUnitType(const CUnit* unit, u16 unitId, bool ignoreIncomplete);
 } //unnamed namespace
 
 
@@ -806,85 +807,85 @@ namespace hooks {
 	int getMorphBuildingTypeCountHook(const CUnit* unit, u16 unitId, bool ignoreIncomplete) {
 		//Default StarCraft behavior
 
-		int unitCount = getNumberOfUnitType(unit, unitId, ignoreIncomplete);
+		int unitCount = BuildingHelper::getNumberOfUnitType(unit, unitId, ignoreIncomplete);
 
 		switch (unitId) {
 		case UnitId::ZergHatchery:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergLair, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergHive, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLair, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergHive, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergLair:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergHive, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergHive, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergHive:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergCreepColony:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergSunkenColony, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergSporeColony, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergLarvalColony, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSunkenColony, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSporeColony, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLarvalColony, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergSpawningPool:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergVorvalPond, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergQuazilQuay, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergNathrokLake, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergVorvalPond, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergQuazilQuay, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergNathrokLake, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergVorvalPond:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergQuazilQuay, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergQuazilQuay, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergNathrokLake:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergIrolIris:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergOthstolOviform, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergAlazilArbor, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergOthstolOviform, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlazilArbor, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergOthstolOviform:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergAlazilArbor, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlazilArbor, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergSpire:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergGorgrokApiary, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergDevourerHaunt, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergGuardianRoost, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGorgrokApiary, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergDevourerHaunt, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGuardianRoost, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergGorgrokApiary:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergGuardianRoost, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGuardianRoost, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergHydralDen:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergBactalDen, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergAlmakAntre, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergLurkerDen, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergBactalDen, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlmakAntre, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLurkerDen, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergBactalDen:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergAlmakAntre, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlmakAntre, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergEvolutionChamber:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergMutationPit, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergMutationPit, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergUltrakCavern:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergAlkajChasm, ignoreIncomplete);
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergKeskathGrotto, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlkajChasm, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKeskathGrotto, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergZoryusShroud:
-			unitCount += getNumberOfUnitType(unit, UnitId::ZergDefilerMound, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergDefilerMound, ignoreIncomplete);
 			break;
 		}
 		return unitCount;
@@ -900,85 +901,3 @@ namespace hooks {
 		}
 	}
 } //hooks
-
-
-  //-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	//Check if @p unit is warping in a Protoss building.
-	//Identical to function @ 0x004E4C40
-	bool isWarpingInProtossBuilding(const CUnit* probe) {
-		return probe->mainOrderId == OrderId::BuildProtoss1
-			&& probe->status & UnitStatus::GroundedBuilding
-			&& probe->orderTarget.unit != NULL
-			&& !(probe->orderTarget.unit->status & UnitStatus::Completed);
-	}
-
-	//Check if @p building is in the process of constructing an add-on.
-	//Identical to function @ 0x004E66B0
-	bool isConstructingAddon(const CUnit* building) {
-		return building->secondaryOrderId == OrderId::BuildAddon
-			&& building->status & UnitStatus::GroundedBuilding
-			&& building->currentBuildUnit != NULL
-			&& !(building->currentBuildUnit->status & UnitStatus::Completed);
-	}
-
-	//Return the building or add-on that the @p unit is constructing.
-	//Identical to function @ 0x00466A30
-	CUnit* getConstructRepairTarget(const CUnit* unit) {
-		if (unit->mainOrderId == OrderId::BuildTerran
-			|| unit->mainOrderId == OrderId::Repair1
-			|| unit->mainOrderId == OrderId::ConstructingBuilding
-			|| isWarpingInProtossBuilding(unit))
-			return unit->orderTarget.unit;
-
-		if (unit->secondaryOrderId == OrderId::Train
-			|| unit->secondaryOrderId == OrderId::TrainFighter
-			|| isConstructingAddon(unit))
-			return unit->currentBuildUnit;
-
-		return NULL;
-	}
-
-	//Identical to function @ 0x00466B70
-	int getNumberOfUnitTypeInBuildQueue(const CUnit* unit, u16 unitId) {
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker) {
-			if (getConstructRepairTarget(unit) == NULL
-				&& unit->buildQueue[unit->buildQueueSlot % 5] == unitId
-				&& (unit->mainOrderId == OrderId::BuildTerran
-					|| unit->mainOrderId == OrderId::BuildProtoss1
-					|| unit->mainOrderId == OrderId::DroneLand
-					|| unit->mainOrderId == OrderId::DroneBuild
-					|| unit->mainOrderId == OrderId::DroneStartBuild))
-				return 1;
-			else
-				return 0;
-		}
-
-		if (scbw::isZergEgg(unit->id,true,false)
-			|| unit->mainOrderId == OrderId::Morph2
-			|| unit->mainOrderId == OrderId::ZergBuildSelf)
-			return (unit->buildQueue[unit->buildQueueSlot % 5] == unitId) ? 1 : 0;
-
-		int unitCount = 0;
-		for (int i = 0; i < 5; ++i) {
-			if (unit->buildQueue[(unit->buildQueueSlot + i) % 5] == unitId)
-				++unitCount;
-		}
-		return unitCount;
-	}
-
-	int getNumberOfUnitType(const CUnit* unit, u16 unitId, bool ignoreIncomplete) {
-		if (!ignoreIncomplete || unit->status & UnitStatus::Completed) {
-			if (unit->id == unitId)
-				return 1;
-
-			if (!ignoreIncomplete)
-				return getNumberOfUnitTypeInBuildQueue(unit, unitId);
-		}
-
-		return 0;
-	}
-
-} //unnamed namespace
