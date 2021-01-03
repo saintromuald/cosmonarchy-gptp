@@ -59,8 +59,8 @@ namespace {
 		static CUnit* unit;
 		static AiTown* town;
 		__asm {
-			MOV EBX, unit
-			MOV EDI, town
+			MOV unit, EBX
+			MOV town, EDI
 			PUSHAD
 		}
 		hooks::AI_AddUnitAi(unit, town);
