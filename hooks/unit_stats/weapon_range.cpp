@@ -23,14 +23,6 @@ u8 getSeekRangeHook(CUnit* unit) {
 				bonusAmount += 6;
 			}
 		}
-		case UnitId::ZergBactalisk:
-		{
-			ActiveTile tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
-			if (tile.hasCreep || tile.creepReceeding) {
-				bonusAmount += 2;
-			}
-			break;
-		}
 		case UnitId::TerranMadrigal: {
 			if (scbw::get_generic_value(unit, ValueId::TempoChange)) {
 				bonusAmount += 4;
@@ -72,17 +64,20 @@ u8 getSeekRangeHook(CUnit* unit) {
 		bonusAmount = 0;
 	}
 	
-
 	// Compile variable for use in height advantage calculations
 	seekRange = units_dat::SeekRange[unitId] + bonusAmount;
 
-	// Height advantage
-	seekRange += 2;
-	seekRange -= (2 - std::max(scbw::getCliffAdvantage(unit), 0));
+	if (unit->orderTarget.unit != NULL
+	&& !(units_dat::BaseProperty[unit->orderTarget.unit->id] & UnitProperty::Flyer))
+	{
+		// Height advantage
+		seekRange += 2;
+		seekRange -= (2 - std::max(scbw::getCliffAdvantage(unit), 0));
 
-	// Creep advantage
-	seekRange += 1;
-	seekRange -= (1 - std::max(scbw::getCreepAdvantage(unit), 0));
+		// Creep advantage
+		seekRange += 1;
+		seekRange -= (1 - std::max(scbw::getCreepAdvantage(unit), 0));
+	}
 
 	return seekRange;
 };
@@ -104,13 +99,8 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 	if (unit->status & UnitStatus::InBuilding) {
 		bonusAmount = 64;
 	}
+
 	switch (unit->id) {
-		case UnitId::ZergBactalisk:
-			ActiveTile tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
-			if (tile.hasCreep || tile.creepReceeding) {
-				bonusAmount += 64;
-			}
-			break;
 		case UnitId::ProtossExemplar:
 		{
 			if (scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
@@ -139,13 +129,17 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 		bonusAmount += 64;
 	}
 
-	// Height advantage
-	bonusAmount += 128;
-	bonusAmount -= (2 - std::max(scbw::getCliffAdvantage(unit), 0)) * 64;
+	if (unit->orderTarget.unit != NULL
+	&& !(units_dat::BaseProperty[unit->orderTarget.unit->id] & UnitProperty::Flyer))
+	{
+		// Height advantage
+		bonusAmount += 128;
+		bonusAmount -= (2 - std::max(scbw::getCliffAdvantage(unit), 0)) * 64;
 
-	// Creep advantage
-	bonusAmount += 64;
-	bonusAmount -= (1 - std::max(scbw::getCreepAdvantage(unit), 0)) * 64;
+		// Creep advantage
+		bonusAmount += 64;
+		bonusAmount -= (1 - std::max(scbw::getCreepAdvantage(unit), 0)) * 64;
+	}
 
 	// Ignore bonus range for melee units
 	if (weapons_dat::MaxRange[unit->getGroundWeapon()] <= 32) {
