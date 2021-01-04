@@ -232,63 +232,98 @@ namespace hooks {
 		return id;
 	}
 
-	void Ai_BuildSupplies(AiTown* town) {	// 00433730
-		u8 race; // al
-		u8 player; // bl
-		u16 workerUnit; // ax
-		s32 remainingSupply; // eax
-		u32 supplyCountCompare; // eax
-		u32 supplyUsedCompare; // eax
-		u32 townHallSupply; // ecx
-		u32 economyCountCompare; // edi
-		u32 supplyUnit; // [esp+8h] [ebp-4h]
-		
-		//copied from hexrays, will be adjusted later
-		if (town) {
-			player = town->player;
-			race = playerTable[player].race;
-			supplyUnit = get_supply_structure_from_race(race, player);
-			workerUnit = get_worker_from_race(race);
-			remainingSupply = getSuppliesRemaining(player, workerUnit);
-
-			if (race = RaceId::Protoss // new
-			&& Ai_HasBuildingsNeedingPower(player))
-			{
-				supplyCountCompare = Ai_CountEconomyUnits(player, supplyUnit);
-			LABEL_21:
-				economyCountCompare = supplyCountCompare + 1;
-				if ((!remainingSupply || !(AIScriptController[player].AI_Flags.isFarmsNotimingOn) || Ai_HasBuildingsNeedingPower(player))
-					&& economyCountCompare > Ai_CountEconomyUnits(player, supplyUnit))
-				{
-					Ai_AddTownSpendReq(player, remainingSupply > 8 ? 120 : 140, supplyUnit, (void*)town);
+	void Ai_BuildSupplies(AiTown* town) {
+		// Tidomann
+		u8 race_;
+		u8 player_;
+		bool hasTerran_ = false;
+		bool hasZerg_ = false;
+		bool hasProtoss_ = false;
+		if (town)
+		{
+			player_ = town->player;
+			race_ = playerTable[player_].race;
+			//Race Checks, Allows main race to continue to function, but will consider other races if there is supply exists
+			//and supply is provided
+			switch (race_) {
+			case RaceId::Terran:
+				hasTerran_ = true;
+				if (raceSupply[RaceId::Zerg].used[player_] != 0 && raceSupply[RaceId::Zerg].provided[player_] != 0) {
+					hasZerg_ = true;
 				}
-				return;
+				if (raceSupply[RaceId::Protoss].used[player_] != 0 && raceSupply[RaceId::Protoss].provided[player_] != 0) {
+					hasProtoss_ = true;
+				}
+				break;
+			case RaceId::Zerg:
+				hasZerg_ = true;
+				if (raceSupply[RaceId::Terran].used[player_] != 0 && raceSupply[RaceId::Terran].provided[player_] != 0) {
+					hasTerran_ = true;
+				}
+				if (raceSupply[RaceId::Protoss].used[player_] != 0 && raceSupply[RaceId::Protoss].provided[player_] != 0) {
+					hasProtoss_ = true;
+				}
+				break;
+			case RaceId::Protoss:
+				hasProtoss_ = true;
+				if (raceSupply[RaceId::Terran].used[player_] != 0 && raceSupply[RaceId::Terran].provided[player_] != 0) {
+					hasTerran_ = true;
+				}
+				if (raceSupply[RaceId::Zerg].used[player_] != 0 && raceSupply[RaceId::Zerg].provided[player_] != 0) {
+					hasZerg_ = true;
+				}
+				break;
 			}
-			if (remainingSupply < 13)
-			{
-				auto flags = units_dat::GroupFlags[supplyUnit];
-				if (flags.isZerg) {
-					race = RaceId::Zerg;
+
+			if (hasProtoss_) {
+				if (checkSupplyNeed(player_, RaceId::Protoss)) {
+					Ai_AddTownSpendReq(player_, getSuppliesRemaining(player_, get_townhall_from_race(RaceId::Protoss)) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player_), (void*)town);
 				}
-				else if(flags.isTerran){
-					race = RaceId::Terran;
+			}
+			if (hasZerg_) {
+				if (checkSupplyNeed(player_, RaceId::Zerg)) {
+					Ai_AddTownSpendReq(player_, getSuppliesRemaining(player_, get_townhall_from_race(RaceId::Zerg)) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player_), (void*)town);
 				}
-				else if (units_dat::GroupFlags[supplyUnit].isProtoss) {
-					race = RaceId::Protoss;
-				}
-				else {
-					race = RaceId::Neutral;
-				}
-				race = playerTable[player].race;
-				supplyUsedCompare = getSuppliesUsed(race, player) + 13;
-				townHallSupply = units_dat::SupplyProvided[get_townhall_from_race(race)];
-				if (supplyUsedCompare > townHallSupply)
-				{
-					supplyCountCompare = (supplyUsedCompare - townHallSupply) / units_dat::SupplyProvided[supplyUnit];
-					goto LABEL_21;
+			}
+			if (hasTerran_) {
+				if (checkSupplyNeed(player_, RaceId::Terran)) {
+					Ai_AddTownSpendReq(player_, getSuppliesRemaining(player_, get_townhall_from_race(RaceId::Terran)) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player_), (void*)town);
 				}
 			}
 		}
+	}
+
+	bool checkSupplyNeed(u8 player_, u8 race_) {
+		unsigned int checkEcoUnits_;
+		int supplyRemaining_;
+		u32 workerUnit = get_worker_from_race(race_);
+		int supplyUsedCompare_;
+		u8 townHallSupply_;
+		u32 supplyUnit_ = get_supply_structure_from_race(race_, player_);
+
+		supplyRemaining_ = getSuppliesRemaining(player_, workerUnit);
+
+		if (race_ == RaceId::Protoss) {
+			if (Ai_HasBuildingsNeedingPower(player_)) {
+				return true;
+			}
+		}
+		if (supplyRemaining_ < 13) {
+			supplyUsedCompare_ = getSuppliesUsed(race_, player_) + 13;
+			townHallSupply_ = units_dat::SupplyProvided[get_townhall_from_race(race_)];
+			if (supplyUsedCompare_ > townHallSupply_) {
+				checkEcoUnits_ = (supplyUsedCompare_ - townHallSupply_) / units_dat::SupplyProvided[supplyUnit_];
+				//farms_timing on, compare ecounits required vs ecounits count
+				if (!(AIScriptController[player_].AI_Flags.isFarmsNotimingOn) && (checkEcoUnits_ + 1 > Ai_CountEconomyUnits(player_, supplyUnit_))) {
+					return true;
+				}
+				//if max supply , and current supply units (including those under construction) will not satisfy requirement
+				if ((!supplyRemaining_) && Ai_CountEconomyUnits(player_, supplyUnit_) * units_dat::SupplyProvided[supplyUnit_] + townHallSupply_ < getSuppliesUsed(race_, player_)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	u32 orders_isGeyserTopUnitHook(CUnit* unit) {
