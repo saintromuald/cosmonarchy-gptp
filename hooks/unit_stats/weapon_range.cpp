@@ -143,6 +143,10 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 
 	// Ignore bonus range for melee units
 	if (weapons_dat::MaxRange[unit->getGroundWeapon()] <= 32) {
+		if (unit->status & UnitStatus::InBuilding	// this sucks, someone fix this
+		&& unit->id == UnitId::TerranFirebat) {
+			break;
+		}
 		bonusAmount = 0;
 	}
 
