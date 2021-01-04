@@ -632,12 +632,12 @@ struct MilitaryAi {
 C_ASSERT(sizeof(MilitaryAi) == 20); // 0x14
 
 struct WorkerAiArray {
-	WorkerAi* worker_ais[1000];
+	WorkerAi worker_ais[1000];
 	WorkerAi* first_free_worker;
 };
 
 struct BuildingAiArray {
-	BuildingAi* building_ais[1000];
+	BuildingAi building_ais[1000];
 	BuildingAi* first_free_building;
 };
 
@@ -668,6 +668,7 @@ struct AiTown {
 	CUnit* gas_buildings[3];					//	0x30
 	TownReq town_units[0x64];					//	0x3c
 };
+C_ASSERT(sizeof(AiTown) == 0x1cc);
 
 struct AI_Main {
 /*000*/  s32 oreCollection;

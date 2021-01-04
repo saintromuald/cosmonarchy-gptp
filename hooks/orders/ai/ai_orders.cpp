@@ -275,16 +275,18 @@ namespace hooks {
 		s8 playerRACE;
 		s32 playerID;
 		u16 unitType;
-
+		
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker) {
 			workerAIArray = town->free_workers;
-			unitAI = (UnitAi*)workerAIArray->first_free_worker;
-			if (unitAI) {
+			unitAI = (UnitAi*)(workerAIArray->first_free_worker);
+			if (unitAI!=nullptr) {
 				previous1 = unitAI->link.prev;
+				auto prevIsNull = unitAI->link.prev == 0;
 				workerAIArray->first_free_worker = (WorkerAi*)unitAI->link.prev;
-				if (!unitAI->link.prev)
+				if (!prevIsNull)
 					previous1->link.next = 0;
-				if (unitAI) {
+				if (unitAI != nullptr) {
+					
 					unitAI->link.next = 0;
 					unitAI->link.prev = (UnitAi*)town->workers;
 					if (town->workers)
