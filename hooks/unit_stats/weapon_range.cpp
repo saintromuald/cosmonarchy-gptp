@@ -145,7 +145,7 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 	if (weapons_dat::MaxRange[unit->getGroundWeapon()] <= 32) {
 		if (unit->status & UnitStatus::InBuilding	// this sucks, someone fix this
 		&& unit->id == UnitId::TerranFirebat) {
-			break;
+			return weapons_dat::MaxRange[weaponId] + bonusAmount;
 		}
 		bonusAmount = 0;
 	}
