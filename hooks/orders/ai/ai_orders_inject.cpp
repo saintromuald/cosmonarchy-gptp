@@ -1,6 +1,6 @@
 #include "ai_orders.h"
 #include <hook_tools.h>
-
+#include "SCBW/api.h"
 namespace {
 
 	void __declspec(naked) AI_TrainingUnit_Wrapper() { // 004A2830
@@ -69,6 +69,30 @@ namespace {
 			RETN
 		}
 	}
+	const u32 addUnitAiShortJump = 0x00433DED;
+	void __declspec(naked) AI_AddUnitAi_FreeWorkerCheck_JmpWrapper() {
+		static WorkerAiArray* free;
+		__asm {
+			MOV free,EDX
+			MOV EAX,[EDX+0x5DC0]
+			PUSHAD
+		}
+		if ((u32)free <= 0x100000) {
+			scbw::printText("Corrupted pointer in AddUnitAi!");
+			__asm {
+				POPAD
+				POP ESI
+				RETN
+			}
+		}
+		else {
+			__asm {
+				POPAD
+				JMP addUnitAiShortJump
+			}
+		}
+		
+	}
 }
 
 namespace hooks {
@@ -77,6 +101,7 @@ namespace hooks {
 		jmpPatch(AI_TrainingUnit_Wrapper,		0x004A2830, 2);
 //		jmpPatch(AI_CreateNuke_Wrapper,			0x0045B7A0, 0);
 		jmpPatch(AI_TrainingBroodling_Wrapper,	0x0043E280, 1);
-		jmpPatch(AI_AddUnitAi_Wrapper,			0x00433DD0, 2);
+//		jmpPatch(AI_AddUnitAi_Wrapper,			0x00433DD0, 2);
+		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper, 0x00433DE7, 1);
 	}
 }
