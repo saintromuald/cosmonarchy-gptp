@@ -1600,14 +1600,6 @@ u16 random() {
 		}
 
 	}
-	
-	bool canUseCliffAdvantage(CUnit* unit, u8 weapon) {
-		if (unit == NULL)
-			return false;
-		return (!(unit->status & UnitStatus::InAir)
-		&& (unit->id != UnitId::ProtossScarab)
-		&& (weapon == NULL || weapons_dat::MaxRange[weapon] > 32));
-	}
 
 	int dir_saturate(int direction, int value) {
 		int d = direction + value;
@@ -1632,16 +1624,14 @@ u16 random() {
 		return overlayImageId;
 	}
 
-	Point16 getTargetPoint(CUnit* unit) {
-		Point16 targetPoint;
-		CUnit* targetUnit = unit->orderTarget.unit;
-		if (targetUnit != NULL && !(targetUnit->status & UnitStatus::InAir)) {
-			targetPoint = targetUnit->position;
-		}
-		else {
-			targetPoint = unit->orderTarget.pt;
-		}
-		return targetPoint;
+	bool canUseCliffAdvantage(CUnit* unit, u8 weapon) {
+		if (unit == NULL)
+			return false;
+		return (!(unit->status & UnitStatus::InAir)
+			&& (unit->id != UnitId::ProtossScarab)
+			&& (weapon == NULL || weapons_dat::MaxRange[weapon] > 32)
+			&& !(unit->status & UnitStatus::InBuilding)
+			&& unit->id != UnitId::TerranFirebat);
 	}
 
 	s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
@@ -1649,20 +1639,28 @@ u16 random() {
 			return 0;
 		if (!canUseCliffAdvantage(unit, weapon))
 			return 0;
-		Point16 targetPoint = getTargetPoint(unit);
+		CUnit* targetUnit = unit->orderTarget.unit;
+		if (targetUnit == nullptr)
+			return 0;
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Flyer)
+			return 0;
 		s32 sourceHeight = scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight;
-		s32 targetHeight = scbw::getActiveTileAt(targetPoint.x, targetPoint.y).groundHeight;
+		s32 targetHeight = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).groundHeight;
 		return (sourceHeight - targetHeight) / 2;
 	}
 
 	s32 getCreepAdvantage(CUnit* unit, u8 weapon) {
-		if (unit == NULL)
+		if (unit == nullptr)
 			return 0;
 		if (!canUseCliffAdvantage(unit, weapon) || unit->getRace() != RaceId::Zerg)
 			return 0;
-		Point16 targetPoint = getTargetPoint(unit);
+		CUnit* targetUnit = unit->orderTarget.unit;
+		if (targetUnit == nullptr)
+			return 0;
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Flyer)
+			return 0;
 		bool sourceCreep = scbw::getActiveTileAt(unit->position.x, unit->position.y).hasCreep;
-		bool targetCreep = scbw::getActiveTileAt(targetPoint.x, targetPoint.y).hasCreep;
+		bool targetCreep = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).hasCreep;
 		return (sourceCreep && !targetCreep) ? 1 : 0;
 	}
 

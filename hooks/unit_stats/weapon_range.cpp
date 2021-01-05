@@ -129,29 +129,15 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 		bonusAmount += 64;
 	}
 
-	if (unit->orderTarget.unit != NULL
-	&& !(units_dat::BaseProperty[unit->orderTarget.unit->id] & UnitProperty::Flyer))
-	{
-		// Height advantage
-		bonusAmount += 128;
-		bonusAmount -= (2 - std::max(scbw::getCliffAdvantage(unit), 0)) * 64;
+	// Height advantage
+	bonusAmount += 128;
+	bonusAmount -= (2 - std::max(scbw::getCliffAdvantage(unit), 0)) * 64;
 
-		// Creep advantage
-		bonusAmount += 64;
-		bonusAmount -= (1 - std::max(scbw::getCreepAdvantage(unit), 0)) * 64;
-	}
-
-	// Ignore bonus range for melee units
-	if (weapons_dat::MaxRange[unit->getGroundWeapon()] <= 32) {
-		if (unit->status & UnitStatus::InBuilding	// this sucks, someone fix this
-		&& unit->id == UnitId::TerranFirebat) {
-			return weapons_dat::MaxRange[weaponId] + bonusAmount;
-		}
-		bonusAmount = 0;
-	}
+	// Creep advantage
+	bonusAmount += 64;
+	bonusAmount -= (1 - std::max(scbw::getCreepAdvantage(unit), 0)) * 64;
 
 	return weapons_dat::MaxRange[weaponId] + bonusAmount;
-
 }
 
 } //hooks
