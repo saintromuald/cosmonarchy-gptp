@@ -28,6 +28,7 @@ void unitAttackFromInsideBunkerHook(CUnit* unit) {
 		||	unit->id == UnitId::TerranGhost
 		||	unit->id == UnitId::TerranSavant
 		||	unit->id == UnitId::ProtossEcclesiast
+		||	unit->id == UnitId::ZergQuazilisk
 		||	unit->id == UnitId::ZergHydralisk
 		||	unit->id == UnitId::ZergBactalisk
 		||	unit->id == UnitId::ZergLurker
