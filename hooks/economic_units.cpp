@@ -277,17 +277,17 @@ namespace hooks {
 
 			if (hasProtoss_) {
 				if (checkSupplyNeed(player_, RaceId::Protoss)) {
-					Ai_AddTownSpendReq(player_, getSuppliesRemaining(player_, get_townhall_from_race(RaceId::Protoss)) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player_), (void*)town);
+					Ai_AddTownSpendReq(player_, scbw::getSupplyRemaining(player_, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player_), (void*)town);
 				}
 			}
 			if (hasZerg_) {
 				if (checkSupplyNeed(player_, RaceId::Zerg)) {
-					Ai_AddTownSpendReq(player_, getSuppliesRemaining(player_, get_townhall_from_race(RaceId::Zerg)) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player_), (void*)town);
+					Ai_AddTownSpendReq(player_, scbw::getSupplyRemaining(player_, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player_), (void*)town);
 				}
 			}
 			if (hasTerran_) {
 				if (checkSupplyNeed(player_, RaceId::Terran)) {
-					Ai_AddTownSpendReq(player_, getSuppliesRemaining(player_, get_townhall_from_race(RaceId::Terran)) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player_), (void*)town);
+					Ai_AddTownSpendReq(player_, scbw::getSupplyRemaining(player_, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player_), (void*)town);
 				}
 			}
 		}
@@ -318,7 +318,7 @@ namespace hooks {
 					return true;
 				}
 				//if max supply , and current supply units (including those under construction) will not satisfy requirement
-				if ((!supplyRemaining_) && Ai_CountEconomyUnits(player_, supplyUnit_) * units_dat::SupplyProvided[supplyUnit_] + townHallSupply_ < getSuppliesUsed(race_, player_)) {
+				if ((!supplyRemaining_) && Ai_CountEconomyUnits(player_, supplyUnit_) * units_dat::SupplyProvided[supplyUnit_] + townHallSupply_ <= getSuppliesUsed(race_, player_)) {
 					return true;
 				}
 			}
