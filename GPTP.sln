@@ -7,18 +7,15 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GPTP", "GPTP.vcxproj", "{BA
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		DLV Debug|Win32 = DLV Debug|Win32
-		DLV Release|Win32 = DLV Release|Win32
 		HYD Debug|Win32 = HYD Debug|Win32
+		HYD FastDebug|Win32 = HYD FastDebug|Win32
 		HYD Release|Win32 = HYD Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.DLV Debug|Win32.ActiveCfg = DLV Debug|Win32
-		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.DLV Debug|Win32.Build.0 = DLV Debug|Win32
-		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.DLV Release|Win32.ActiveCfg = DLV Release|Win32
-		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.DLV Release|Win32.Build.0 = DLV Release|Win32
 		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.HYD Debug|Win32.ActiveCfg = HYD Debug|Win32
 		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.HYD Debug|Win32.Build.0 = HYD Debug|Win32
+		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.HYD FastDebug|Win32.ActiveCfg = HYD FastDebug|Win32
+		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.HYD FastDebug|Win32.Build.0 = HYD FastDebug|Win32
 		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.HYD Release|Win32.ActiveCfg = HYD Release|Win32
 		{BAE0A287-3166-4C79-9F90-0C6A6DDB5A69}.HYD Release|Win32.Build.0 = HYD Release|Win32
 	EndGlobalSection
