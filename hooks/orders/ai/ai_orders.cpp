@@ -37,6 +37,29 @@ namespace {
 #include "logger.h"
 namespace hooks {
 	void AI_TrainingUnit(CUnit* result, CUnit* parent) {							// 004A2830
+		if (playerTable[parent->playerId].type == PlayerType::Computer) {
+			if (playerTable[result->playerId].type == PlayerType::Computer
+				&& result->id == UnitId::TerranMedic) {
+				if (!(AIScriptController[result->playerId].mainMedic))
+					AIScriptController[result->playerId].mainMedic = result;
+
+			}
+			if (units_dat::BaseProperty[result->id] & UnitProperty::Worker) {
+				AI_TrainingWorker(result, parent);
+			}
+			else if (result->id == UnitId::ZergOverlord) {
+				AI_TrainingOverlord(result, parent);
+			}
+			else if (result->id == UnitId::ZergBroodling) {
+				AI_TrainingBroodling(parent, result);
+			}
+			else {
+				AI_TrainingNormal(result, parent);
+			}
+		}
+	}
+
+		/*
 		//debug
 		GPTP::logger << "Result id: " << result->id;
 		if (parent && parent != result) {
@@ -76,7 +99,7 @@ namespace hooks {
 				
 			}
 		}
-	}
+	}*/
 	
 /*	void AI_AddMilitary(AiCaptain* region, CUnit* unit, s32 alwaysThisRegion) {		// 0043DA20
 	// alwaysThisRegion acts as a bool, not sure why IDA thinks it's s32
