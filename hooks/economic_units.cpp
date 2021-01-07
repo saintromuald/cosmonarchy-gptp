@@ -65,13 +65,13 @@ int getSuppliesRemaining(u8 player, u16 unit_id) {
 }
 
 const u32 Func_00448400 = 0x00448400;
-void Ai_AddTownSpendReq(u32 player, u32 priority, u32 unitId, void* param) {
+void Ai_AddTownSpendReq(u32 player, u32 unitId, u32 priority, void* param) {
 	__asm {
 		PUSHAD
+		PUSH param
 		MOV EAX, player
 		MOV ESI, unitId
 		MOV EDI, priority
-		PUSH param
 		CALL Func_00448400
 		POPAD
 	}
@@ -277,17 +277,17 @@ namespace hooks {
 
 			if (hasProtoss_) {
 				if (checkSupplyNeed(player_, RaceId::Protoss)) {
-					Ai_AddTownSpendReq(player_, scbw::getSupplyRemaining(player_, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player_), (void*)town);
+					Ai_AddTownSpendReq(player_, get_supply_structure_from_race(RaceId::Protoss, player_), scbw::getSupplyRemaining(player_, RaceId::Protoss) > 8 ? 120 : 140, (void*)town);
 				}
 			}
 			if (hasZerg_) {
 				if (checkSupplyNeed(player_, RaceId::Zerg)) {
-					Ai_AddTownSpendReq(player_, scbw::getSupplyRemaining(player_, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player_), (void*)town);
+					Ai_AddTownSpendReq(player_, get_supply_structure_from_race(RaceId::Zerg, player_), scbw::getSupplyRemaining(player_, RaceId::Zerg) > 8 ? 120 : 140, (void*)town);
 				}
 			}
 			if (hasTerran_) {
 				if (checkSupplyNeed(player_, RaceId::Terran)) {
-					Ai_AddTownSpendReq(player_, scbw::getSupplyRemaining(player_, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player_), (void*)town);
+					Ai_AddTownSpendReq(player_,  get_supply_structure_from_race(RaceId::Terran, player_), scbw::getSupplyRemaining(player_, RaceId::Terran) > 8 ? 120 : 140, (void*)town);
 				}
 			}
 		}
