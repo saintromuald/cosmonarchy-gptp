@@ -65,13 +65,13 @@ int getSuppliesRemaining(u8 player, u16 unit_id) {
 }
 
 const u32 Func_00448400 = 0x00448400;
-void Ai_AddTownSpendReq(u32 player, u32 priority, u32 unitId, void* param) {
+void Ai_AddTownSpendReq(u32 player, u32 unitId, u32 priority, void* param) {
 	__asm {
 		PUSHAD
+		PUSH param
 		MOV EAX, player
 		MOV ESI, unitId
 		MOV EDI, priority
-		PUSH param
 		CALL Func_00448400
 		POPAD
 	}
