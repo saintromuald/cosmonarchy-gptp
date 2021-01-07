@@ -268,28 +268,24 @@ namespace hooks {
 		return false;
 	}
 
-	s32 AI_AddTownSpendingRequest(s32 a1, s32 a2, s32 a3, AiCaptain* a4) { // 00448400
-		int v4; // ebx
-		int v5; // eax
-		s8 v6; // al
+	s32 AI_AddTownSpendingRequest(s32 playerId, s32 priority, s32 unitId, AiCaptain* region) { // 00448400
+		int battleTime; // eax
+		s8 race; // al
 		int result; // eax
-		s32 v8; // eax
-		s32 v9; // [esp+4h] [ebp-4h]
+		s32 reqType; // [esp+4h] [ebp-4h]
 
-		v4 = a1;
-		v5 = AIScriptController[a1].lastIndividualUpdateTime;
-		if (!v5
-			|| *elapsedTimeSeconds - v5 >= 0x1E
-			|| ((v6 = playerTable[v4].race, v6 != 1) ? (result = 8 * (v6 != 0) + 149) : (result = 110),
-				a3 == result || a2 == 140))
+		battleTime = AIScriptController[playerId].lastIndividualUpdateTime;
+		if (!battleTime
+			|| *elapsedTimeSeconds - battleTime >= 0x1E // in_battle flag? just a coincidence?
+			|| ((race = playerTable[playerId].race, race != 1) ? (result = 8 * (race != 0) + 149) : (result = 110),
+				unitId == result || priority == 140))
 		{
-			v8 = units_dat::BaseProperty[a3];
-			if (v8 & UnitProperty::Worker)
-				v9 = 4;
+			if (units_dat::BaseProperty[unitId] & UnitProperty::Worker)
+				reqType = 4;
 			else
-				v9 = 2 * (units_dat::BaseProperty[a3] & 2) | 3;
-			AI_AddCostToNeeds(a3, v4, v9);
-			result = AI_AddSpendingRequest(a3, v4, v9, a2, a4);
+				reqType = 2 * (units_dat::BaseProperty[unitId] & UnitProperty::Addon) | 3; // 3 = UnitProperty::Addon + UnitProperty::Building
+			AI_AddCostToNeeds(unitId, playerId, reqType);
+			result = AI_AddSpendingRequest(unitId, playerId, reqType, priority, region);
 		}
 		return result;
 	}
