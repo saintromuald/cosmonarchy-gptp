@@ -21,75 +21,8 @@ namespace {
 	void orderTarget(CUnit* a1, unsigned __int8 a2, __int16 a3, __int16 a4); // 00475260
 	int refundAllQueueSlots(CUnit* a1); // 00466E80
 	bool hasMoneyCanMake(CUnit* a1, unsigned __int16 a2); // 00467250
-}
-
-const u32 Func_0x00433410 = 0x00433410;
-int Ai_HasBuildingsNeedingPower(u32 player) {
-	static int result;
-	__asm {
-		PUSHAD
-		MOV EAX,player
-		CALL Func_0x00433410
-		MOV result,EAX
-		POPAD
-	}
-	return result;
-}
-
-const u32 Func_0x00433470 = 0x00433470;
-int Ai_CountEconomyUnits(u32 player, u32 unit_id) {
-	static int result;
-	__asm {
-		PUSHAD
-		MOV EAX,player
-		PUSH unit_id
-		CALL Func_0x00433470
-		MOV result, EAX
-		POPAD
-	}
-	return result;
-}
-
-const u32 Func_0x004889D0 = 0x004889D0;
-int getSuppliesRemaining(u8 player, u16 unit_id) {
-	static int result;
-	__asm {
-		PUSHAD
-		MOV BL,player
-		MOV DI,unit_id
-		CALL Func_0x004889D0
-		MOV result,EAX
-		POPAD
-	}
-	return result;
-}
-
-const u32 Func_00448400 = 0x00448400;
-void Ai_AddTownSpendReq(u32 player, u32 unitId, u32 priority, void* param) {
-	__asm {
-		PUSHAD
-		PUSH param
-		MOV EAX, player
-		MOV ESI, unitId
-		MOV EDI, priority
-		CALL Func_00448400
-		POPAD
-	}
-}
-//v6byte (eax), player (cl)
-
-const u32 Func_4888c0 = 0x004888c0;
-int getSuppliesUsed(int byte_data, u8 player) {
-	static u32 result;
-	__asm {
-		PUSHAD
-		MOV EAX, byte_data
-		MOV CL, player
-		CALL Func_4888c0
-		MOV result, EAX
-		POPAD
-	}
-	return result;
+	s32 AI_AddCostToNeeds(s32 a1, s32 a2, s32 a3); // 00447DC0
+	s32 AI_AddSpendingRequest(s16 a1, s32 a2, char a3, char a4, AiCaptain* a5); // 00447980
 }
 
 namespace hooks {
@@ -334,6 +267,32 @@ namespace hooks {
 		}
 		return false;
 	}
+
+	s32 AI_AddTownSpendingRequest(s32 a1, s32 a2, s32 a3, AiCaptain* a4) { // 00448400
+		int v4; // ebx
+		int v5; // eax
+		s8 v6; // al
+		int result; // eax
+		s32 v8; // eax
+		s32 v9; // [esp+4h] [ebp-4h]
+
+		v4 = a1;
+		v5 = AIScriptController[a1].lastIndividualUpdateTime;
+		if (!v5
+			|| *elapsedTimeSeconds - v5 >= 0x1E
+			|| ((v6 = playerTable[v4].race, v6 != 1) ? (result = 8 * (v6 != 0) + 149) : (result = 110),
+				a3 == result || a2 == 140))
+		{
+			v8 = units_dat::BaseProperty[a3];
+			if (v8 & UnitProperty::Worker)
+				v9 = 4;
+			else
+				v9 = 2 * (units_dat::BaseProperty[a3] & 2) | 3;
+			AI_AddCostToNeeds(a3, v4, v9);
+			result = AI_AddSpendingRequest(a3, v4, v9, a2, a4);
+		}
+		return result;
+	}
 	
 /*	signed int Ai_TryProgressSpendingQueue_Worker(AiTown* a1, CUnit* a2) {
 		int v2; // eax
@@ -537,4 +496,108 @@ namespace hooks {
     Line 285431: 004BFDB6  |.  C645 FC 29    MOV BYTE PTR SS:[EBP-4],29
     Line 347662: 004E9EC0   >  66:83F9 29    CMP CX,29
 	*/
+}
+
+namespace {
+
+	const u32 Func_0x00433410 = 0x00433410;
+	int Ai_HasBuildingsNeedingPower(u32 player) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV EAX, player
+			CALL Func_0x00433410
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_0x00433470 = 0x00433470;
+	int Ai_CountEconomyUnits(u32 player, u32 unit_id) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV EAX, player
+			PUSH unit_id
+			CALL Func_0x00433470
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_0x004889D0 = 0x004889D0;
+	int getSuppliesRemaining(u8 player, u16 unit_id) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV BL, player
+			MOV DI, unit_id
+			CALL Func_0x004889D0
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_00448400 = 0x00448400;
+	void Ai_AddTownSpendReq(u32 player, u32 unitId, u32 priority, void* param) {
+		__asm {
+			PUSHAD
+			PUSH param
+			MOV EAX, player
+			MOV ESI, unitId
+			MOV EDI, priority
+			CALL Func_00448400
+			POPAD
+		}
+	}
+	//v6byte (eax), player (cl)
+
+	const u32 Func_4888c0 = 0x004888c0;
+	int getSuppliesUsed(int byte_data, u8 player) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, byte_data
+			MOV CL, player
+			CALL Func_4888c0
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_AddCostToNeeds = 0x00447DC0;
+	s32 AI_AddCostToNeeds(s32 a1, s32 a2, s32 a3) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH a3
+			MOV EBX, a2
+			MOV EAX, a1
+			CALL Func_AI_AddCostToNeeds
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_AddSpendingRequest = 0x00447980;
+	s32 AI_AddSpendingRequest(s16 a1, s32 a2, char a3, char a4, AiCaptain* a5) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH a5
+			PUSH a4
+			MOVZX CL, a3
+			MOV EDX, a2
+			MOVZX AX, a1
+			CALL Func_AI_AddSpendingRequest
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

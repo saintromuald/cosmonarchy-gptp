@@ -204,6 +204,33 @@ namespace hooks {
 			}
 		}
 	}
+	void __declspec(naked) AI_AddTownSpendingRequest_Wrapper() { // 00448400
+		static s32 result;
+		static s32 a1;
+		static s32 a2;
+		static s32 a3;
+		static AiCaptain* a4;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV a4, EAX
+			POP EAX
+			MOV a3, ESI
+			MOV a2, EDI
+			MOV a1, EAX
+			PUSHAD
+		}
+		result = hooks::AI_AddTownSpendingRequest(a1, a2, a3, a4);
+		__asm {
+			POPAD
+			MOV result, EAX
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x4
+		}
+	}
 	void injectWorkerHooks() {
 		jmpPatch(Ai_ProgressSpendingQueue_JmpWrapper, 0x00434C31);
 		jmpPatch(Ai_BuildSupplies_Wrapper, 0x00433730);
@@ -214,6 +241,7 @@ namespace hooks {
 		jmpPatch(Ai_UpgradesFinished_JmpWrapper, 0x004365F6, 4);
 		jmpPatch(Ai_RemoveDangerousRegions_JmpWrapper, 0x00443876);
 		jmpPatch(Ai_GetBuildLocation_JmpWrapper, 0x0044622B);
+		jmpPatch(AI_AddTownSpendingRequest_Wrapper, 0x00448400, 0);
 	}
 	void injectSupplyDepotHooks() {
 		jmpPatch(Ai_TryProgressSpendingQueue_WorkerJmpWrapper, 0x00434912, 3);
