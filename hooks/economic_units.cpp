@@ -2,30 +2,20 @@
 
 namespace {
 
-	signed int isUnitTypeRaceUnitRace(unsigned __int16 a1, CUnit* a2);											// 00432480
-	signed int techtreeAllowed(unsigned __int16 a1, CUnit* a2, int a3);											// 0046E1C0
-	bool hasResourcesForUnit(unsigned __int16 a1, int a2);														// 004487B0
-	int getPlayerDefaultRefineryUnitType(int a1);																// 004320D0
-	signed int getBunkerPosition(int a1, Point32* a2);															// 004376F0
-	__int16 getRegionIdFromPixels(signed int a1, signed int a2);												// 0049C9F0
-	void doAreaFixupsForEnemy(int a1, unsigned __int16 a2, unsigned int a3);									// 00444EB0
-	signed int AiManageBuildingPlacement(CUnit* a1, unsigned int a2, Point32* a3, Point32* a4, signed int a5);	// 004464C0
-	int AiFinishUnit(CUnit* a1);																				// 00433640
-	void AiAssignMilitary(int a1, AiCaptain* a2);																// 004390A0
-	signed int getTurretPosition(int a1, Point32* a2);															// 00437670
-	void getSecondHatcheryBuildLocation(int a1, __int16 a2, __int16 a3);										// 00444630
-	CUnit* getAiRefinery(AiTown* a1, int a2, int a3);															// 00432B90
-	__int16 AiReserve(int a1, int a2);																			// 00447D00
-	AI_Main* AiPopSpendingRequest(int a1);																		// 004476D0
-	void orderTarget(CUnit* a1, unsigned __int8 a2, __int16 a3, __int16 a4);									// 00475260
+	// 
 	int refundAllQueueSlots(CUnit* a1);																			// 00466E80
-	bool hasMoneyCanMake(CUnit* a1, unsigned __int16 a2);														// 00467250
 	int Ai_HasBuildingsNeedingPower(u32 player);																// 00433410
 	int Ai_CountEconomyUnits(u32 player, u32 unit_id);															// 00433470
 	int getSuppliesRemaining(u8 player, u16 unit_id);															// 004889D0
 	int getSuppliesUsed(int byte_data, u8 player);																// 004888C0
+
+	// For AI_AddTownSpendingRequest
 	s32 AI_AddCostToNeeds(s32 a1, s32 a2, s32 a3);																// 00447DC0
 	s32 AI_AddSpendingRequest(s16 a1, s32 a2, char a3, char a4, void* a5);										// 00447980
+
+	// For AI_AddSpendingRequest
+	bool isAIAllowedToBuild(s32 a1, s32 a2);																	// 00447830
+
 }
 
 namespace hooks {
@@ -283,15 +273,77 @@ namespace hooks {
 			|| ((race = playerTable[playerId].race, race != 1) ? (result = 8 * (race != 0) + 149) : (result = 110),
 				unitId == result || priority == 140))
 		{
-			if (units_dat::BaseProperty[unitId] & UnitProperty::Worker)
+			if (units_dat::BaseProperty[unitId] & UnitProperty::Worker) {
 				reqType = 4;
-			else
+			}
+			else {
 				reqType = 2 * (units_dat::BaseProperty[unitId] & UnitProperty::Addon) | 3; // 3 = UnitProperty::Addon + UnitProperty::Building
+			}
 			AI_AddCostToNeeds(unitId, playerId, reqType);
 			result = AI_AddSpendingRequest(unitId, playerId, reqType, priority, param);
 		}
 		return result;
 	}
+	/*
+	s32 AI_AddSpendingRequest(s16 a1, s32 a2, char a3, char a4, void* a5) { // 00447980
+		char v5; // bl
+		s16 v6; // di
+		s32 v7; // esi
+		s32 result; // eax
+		u8 v9; // al
+		AI_Main* v10; // ecx
+		s32 v11; // esi
+		s32 v12; // edx
+		s32 v13; // edi
+		s32 v14; // [esp+Ch] [ebp-8h]
+
+		v6 = a1;
+		v5 = a3;
+		v7 = a2;
+		switch (a3)
+		{
+		case 1:
+		case 2:
+		case 4:
+		case 8:
+			result = isAIAllowedToBuild(a2, a1);
+			if (!result)
+				goto LABEL_3;
+			break;
+		default:
+		LABEL_3:
+			v10 = &AIScriptController[v7];
+			v9 = v10->waitForceCount;
+			LOBYTE(v14) = a4;
+			BYTE1(v14) = v5;
+			HIWORD(v14) = v6;
+			if (v9 == 63)
+			{
+				v11 = 62;
+			}
+			else
+			{
+				v11 = v9;
+				v10->waitForceCount = v9 + 1;
+			}
+			*((s32*)&v10->unknown_0x18 + 2 * v11) = v14;
+			result = (v11 - 1) / 2;
+			for (*((s32*)&v10->pTownMain + 2 * v11) = a5; v11 > 0; result = (result - 1) / 2)
+			{
+				if ((unsigned __int8)*(&v10->unknown_0x18 + 8 * v11) <= *(&v10->unknown_0x18 + 8 * result))
+					break;
+				v12 = *((s32*)&v10->unknown_0x18 + 2 * v11);
+				v13 = *((s32*)&v10->pTownMain + 2 * v11);
+				*((s32*)&v10->unknown_0x18 + 2 * v11) = *((s32*)&v10->unknown_0x18 + 2 * result);
+				*((s32*)&v10->pTownMain + 2 * v11) = *((s32*)&v10->pTownMain + 2 * result);
+				v11 = result;
+				*((s32*)&v10->unknown_0x18 + 2 * result) = v12;
+				*((s32*)&v10->pTownMain + 2 * result) = v13;
+			}
+			break;
+		}
+		return result;
+	}*/
 
 	/*   TODO: Worker-related hooks
 	Line 78684: 00434C36  |.  83F8 29       CMP EAX,29
@@ -393,5 +445,20 @@ namespace {
 			POPAD
 		}
 		return result;
+	}
+
+	// For AI_AddSpendingRequest
+	const u32 Func_isAIAllowedToBuild = 0x00447830;
+	bool isAIAllowedToBuild(s32 a1, s32 a2) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, a2
+			MOV EAX, a1
+			CALL Func_isAIAllowedToBuild
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
 	}
 }
