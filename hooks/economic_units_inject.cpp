@@ -206,23 +206,23 @@ namespace hooks {
 	}
 	void __declspec(naked) AI_AddTownSpendingRequest_Wrapper() { // 00448400
 		static s32 result;
-		static s32 a1;
-		static s32 a2;
-		static s32 a3;
-		static AiCaptain* a4;
+		static s32 playerId;
+		static s32 priority;
+		static s32 unitId;
+		static void* param;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV a4, EAX
+			MOV param, EAX
 			POP EAX
-			MOV a3, ESI
-			MOV a2, EDI
-			MOV a1, EAX
+			MOV unitId, ESI
+			MOV priority, EDI
+			MOV playerId, EAX
 			PUSHAD
 		}
-		result = hooks::AI_AddTownSpendingRequest(a1, a2, a3, a4);
+		result = hooks::AI_AddTownSpendingRequest(playerId, priority, unitId, param);
 		__asm {
 			POPAD
 			MOV result, EAX

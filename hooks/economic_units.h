@@ -13,7 +13,7 @@ namespace hooks {
 	bool is_vespene_top_structure(u16 unit_id);
 	bool is_gasholder_structure(u16 unit_id);
 	bool checkSupplyNeed(u8 player_, u8 race_);
-	s32 AI_AddTownSpendingRequest(s32 a1, s32 a2, s32 a3, AiCaptain* a4); // 00448400
+	s32 AI_AddTownSpendingRequest(s32 playerId, s32 priority, s32 unitId, void* param); // 00448400
 
 	u32 orders_isGeyserTopUnitHook(CUnit* unit);
 }
