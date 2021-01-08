@@ -195,6 +195,7 @@ namespace hooks {
 		if (!town) return false;
 		if (town->in_battle) return false; // We probably don't want supplies to be built in attacked towns. We might want to ommit this condition if it's the only eligable town
 		if (GetTownRace(town) != raceId) return false;
+		if (town->main_building->remainingBuildTime != 0) return false; // town not finished, nullchecks are in the previous function
 		if (raceId == RaceId::Zerg) { // Zerg don't need workers for supply building, we could check for larvae instead, but it should be fine
 			return true;
 		}
@@ -203,13 +204,9 @@ namespace hooks {
 
 	// First checks if main town is eligible for supply building
 	// If not then iterates on every player's town and then checks if it's eligible for supply building
-	AiTown* GetFirstEligibleTown(AiTown* mainTown, u8 playerId, u8 raceId) {
-		if (IsTownEligible(mainTown, raceId)) {
-			return mainTown;
-		}
-			
+	AiTown* GetFirstEligibleTown(u8 playerId, u8 raceId) {			
 		AiTown* aiTown = AiArray; // first
-		if (!aiTown) return mainTown; // no AI towns
+		if (!aiTown) return nullptr; // no AI towns
 		do {
 			if (aiTown->player == playerId) {
 				if (IsTownEligible(aiTown, raceId)) {
@@ -218,7 +215,7 @@ namespace hooks {
 			}
 		} while (aiTown = aiTown->link.next);
 		//scbw::print("Can't find eligible town for supply building!");
-		return mainTown; // couldn't find anything
+		return nullptr; // couldn't find anything
 	}
 
 	// ---
@@ -268,20 +265,23 @@ namespace hooks {
 
 			if (hasProtoss_) {
 				if (checkSupplyNeed(player_, RaceId::Protoss)) {
-					town = GetFirstEligibleTown(town, player_, RaceId::Protoss);
-					AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player_), (void*)town);
+					town = GetFirstEligibleTown(player_, RaceId::Protoss);
+					if (town)
+						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player_), (void*)town);
 				}
 			}
 			if (hasZerg_) {
 				if (checkSupplyNeed(player_, RaceId::Zerg)) {
-					town = GetFirstEligibleTown(town, player_, RaceId::Zerg);
-					AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player_), (void*)town);
+					town = GetFirstEligibleTown(player_, RaceId::Zerg);
+					if (town)
+						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player_), (void*)town);
 				}
 			}
 			if (hasTerran_) {
 				if (checkSupplyNeed(player_, RaceId::Terran)) {
-					town = GetFirstEligibleTown(town, player_, RaceId::Terran);
-					AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player_), (void*)town);
+					town = GetFirstEligibleTown(player_, RaceId::Terran);
+					if (town)
+						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player_), (void*)town);
 				}
 			}
 		}
