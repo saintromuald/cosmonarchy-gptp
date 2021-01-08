@@ -158,12 +158,34 @@ namespace hooks {
 		return id;
 	}
 
-	// Veeq
+	// Veeq7
 	// Returns town race judging by main town, first checks if it has buildings assigned
 	u8 GetTownRace(AiTown* town) {
 		if (!town) return RaceId::Neutral;
 		if (!town->main_building) return RaceId::Neutral; // can't tell from main town, might want to check from buildings maybe
 		return town->main_building->getRace();
+	}
+
+	// Checks if worker is valid (exists && correct race)
+	bool IsValidWorker(const WorkerAi& worker, u8 raceId) {
+		if (!worker.parent) return false;
+		if (worker.parent->getRace() != raceId) return false;
+		return true;
+	}
+
+	// Checks if town has a free worker of given race
+	// First checks SC's first free worker var; If invalid iterates over all free workers, might want to check workers instead, needs testing
+	bool HasFreeWorker(AiTown* town, u8 raceId) {
+		WorkerAi* first = town->free_workers->first_free_worker;
+		if (first) {
+			if (IsValidWorker(*first, raceId)) {
+				return true;
+			}
+		}
+		for (const WorkerAi& worker : town->free_workers->worker_ais) {
+			if (IsValidWorker(worker, raceId)) return true;
+		}
+		return false;
 	}
 
 	// Checks if town is eligible for supply building (correct race && has correct free worker)
@@ -174,19 +196,14 @@ namespace hooks {
 		if (raceId == RaceId::Zerg) { // Zerg don't need workers for supply building, we could check for larvae instead, but it should be fine
 			return true;
 		}
-		if (!town->free_workers->first_free_worker) return false;
-		if (!town->free_workers->first_free_worker->parent) return false;
-		if (town->free_workers->first_free_worker->parent->getRace() != raceId) return false;
-		return true;
+		return HasFreeWorker(town, raceId);
 	}
 
 	// First checks if main town is eligible for supply building
 	// If not then iterates on every player's town and then checks if it's eligible for supply building
 	AiTown* GetFirstEligibleTown(AiTown* mainTown, u8 playerId, u8 raceId) {
-		if (mainTown) {
-			if (IsTownEligible(mainTown, raceId)) {
-				return mainTown;
-			}
+		if (IsTownEligible(mainTown, raceId)) {
+			return mainTown;
 		}
 			
 		AiTown* aiTown = AiArray; // first
@@ -199,7 +216,8 @@ namespace hooks {
 				}
 			}
 		} while (aiTown = aiTown->link.next);
-		return nullptr;
+		scbw::print("Can't find eligible town for supply building!");
+		return mainTown; // couldn't find anything
 	}
 	// ---
 
