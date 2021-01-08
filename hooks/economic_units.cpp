@@ -209,6 +209,7 @@ namespace hooks {
 		}
 			
 		AiTown* aiTown = AiArray; // first
+		if (!aiTown) return mainTown; // no AI towns
 		do {
 			if (aiTown->player == playerId) {
 				if (IsTownEligible(aiTown, raceId)) {
