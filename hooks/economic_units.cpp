@@ -159,6 +159,7 @@ namespace hooks {
 	}
 
 	// Veeq7
+
 	// Returns town race judging by main town, first checks if it has buildings assigned
 	u8 GetTownRace(AiTown* town) {
 		if (!town) return RaceId::Neutral;
@@ -220,6 +221,7 @@ namespace hooks {
 		scbw::print("Can't find eligible town for supply building!");
 		return mainTown; // couldn't find anything
 	}
+
 	// ---
 
 	void Ai_BuildSupplies(AiTown* town) {
