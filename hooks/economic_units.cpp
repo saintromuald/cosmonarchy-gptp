@@ -173,6 +173,7 @@ namespace hooks {
 			return true;
 		}
 		if (!town->free_workers->first_free_worker) return false;
+		if (!town->free_workers->first_free_worker->parent) return false;
 		if (!town->free_workers->first_free_worker->parent->getRace() != raceId) return false;
 		return true;
 	}
