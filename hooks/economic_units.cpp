@@ -218,7 +218,7 @@ namespace hooks {
 				}
 			}
 		} while (aiTown = aiTown->link.next);
-		scbw::print("Can't find eligible town for supply building!");
+		//scbw::print("Can't find eligible town for supply building!");
 		return mainTown; // couldn't find anything
 	}
 
