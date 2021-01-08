@@ -210,11 +210,9 @@ namespace hooks {
 			
 		AiTown* aiTown = AiArray; // first
 		do {
-			if (aiTown) {
-				if (aiTown->player == playerId) {
-					if (IsTownEligible(aiTown, raceId)) {
-						return aiTown;
-					}
+			if (aiTown->player == playerId) {
+				if (IsTownEligible(aiTown, raceId)) {
+					return aiTown;
 				}
 			}
 		} while (aiTown = aiTown->link.next);
