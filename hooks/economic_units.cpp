@@ -204,7 +204,12 @@ namespace hooks {
 
 	// First checks if main town is eligible for supply building
 	// If not then iterates on every player's town and then checks if it's eligible for supply building
-	AiTown* GetFirstEligibleTown(u8 playerId, u8 raceId) {			
+	AiTown* GetFirstEligibleTown(AiTown* mainTown, u8 playerId, u8 raceId) {			
+		if (mainTown) {
+			if (IsTownEligible(mainTown, raceId)) {
+				return mainTown;
+			}
+		}
 		AiTown* aiTown = AiArray; // first
 		if (!aiTown) return nullptr; // no AI towns
 		do {
@@ -265,21 +270,21 @@ namespace hooks {
 
 			if (hasProtoss_) {
 				if (checkSupplyNeed(player_, RaceId::Protoss)) {
-					town = GetFirstEligibleTown(player_, RaceId::Protoss);
+					town = GetFirstEligibleTown(town, player_, RaceId::Protoss);
 					if (town)
 						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player_), (void*)town);
 				}
 			}
 			if (hasZerg_) {
 				if (checkSupplyNeed(player_, RaceId::Zerg)) {
-					town = GetFirstEligibleTown(player_, RaceId::Zerg);
+					town = GetFirstEligibleTown(town, player_, RaceId::Zerg);
 					if (town)
 						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player_), (void*)town);
 				}
 			}
 			if (hasTerran_) {
 				if (checkSupplyNeed(player_, RaceId::Terran)) {
-					town = GetFirstEligibleTown(player_, RaceId::Terran);
+					town = GetFirstEligibleTown(town, player_, RaceId::Terran);
 					if (town)
 						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player_), (void*)town);
 				}
