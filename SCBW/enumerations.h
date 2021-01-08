@@ -594,3 +594,48 @@ namespace RightClickActions {
 		Unknown = 6				//only by ComSat addon
 };
 }
+
+namespace ReqOpcodes {
+	enum Enum {
+		None						= 0x0FF00,
+		Or							= 0x0FF01,
+		CurrentUnitIs				= 0x0FF02,
+		MustHave					= 0x0FF03,
+		MustHaveAddon				= 0x0FF04,
+		IsNotLiftedOff				= 0x0FF05,
+		IsLiftedOff					= 0x0FF06,
+		IsNotTrainingOrMorphing		= 0x0FF07,
+		IsNotConstructingAddon		= 0x0FF08,
+		IsNotResearching			= 0x0FF09,
+		IsNotUpgrading				= 0x0FF0A,
+		IsNotConstructing			= 0x0FF0B,
+		DoesNotHaveAddonAttached	= 0x0FF0C,
+		DoesNotHaveExit				= 0x0FF0D,
+		HasHangarSpace				= 0x0FF0E,
+		MustBeResearched			= 0x0FF0F,
+		DoesNotHaveArmedMissile		= 0x0FF10,
+		IsNotBurrowed				= 0x0FF11,
+		CanAttack					= 0x0FF12,
+		CanSetRallyPoint			= 0x0FF13,
+		CanMove						= 0x0FF14,
+		HasWeapon					= 0x0FF15,
+		IsWorker					= 0x0FF16,
+		IsFlyingBuilding			= 0x0FF17,
+		IsTransport					= 0x0FF18,
+		IsPowerup					= 0x0FF19,
+		IsSubunit					= 0x0FF1A,
+		HasMines					= 0x0FF1B,
+		IsHeroAndEnabled			= 0x0FF1C,
+		CanHoldPosition				= 0x0FF1D,
+		AllowOnHallucinations		= 0x0FF1E,
+		UpgradeLv1Requires			= 0x0FF1F,
+		UpgradeLv2Requires			= 0x0FF20,
+		UpgradeLv3Requires			= 0x0FF21,	// also used for anything above level 3
+		Grey						= 0x0FF22,
+		Blank						= 0x0FF23,
+		MustBeBroodWar				= 0x0FF24,
+		IsResearched				= 0x0FF25,
+		IsBurrowed					= 0x0FF26,
+		EndOfSublist				= 0x0FFFF,
+	};
+}

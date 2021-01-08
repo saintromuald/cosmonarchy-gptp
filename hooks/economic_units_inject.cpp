@@ -225,7 +225,7 @@ namespace hooks {
 		result = hooks::AI_AddTownSpendingRequest(playerId, priority, unitId, param);
 		__asm {
 			POPAD
-			MOV result, EAX
+			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x4
