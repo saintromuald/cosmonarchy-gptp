@@ -98,7 +98,7 @@ namespace {
 namespace hooks {
 
 	void injectAIOrdersHooks() {
-//		jmpPatch(AI_TrainingUnit_Wrapper,		0x004A2830, 2);
+		jmpPatch(AI_TrainingUnit_Wrapper,		0x004A2830, 2);
 //		jmpPatch(AI_CreateNuke_Wrapper,			0x0045B7A0, 0);
 		jmpPatch(AI_TrainingBroodling_Wrapper,	0x0043E280, 1);
 //		jmpPatch(AI_AddUnitAi_Wrapper,			0x00433DD0, 2);

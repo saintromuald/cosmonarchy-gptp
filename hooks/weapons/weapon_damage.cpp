@@ -389,22 +389,21 @@ namespace hooks {
 
 		if (target->hitPoints != 0 && !(target->status & UnitStatus::Invincible)) {
 
-			//if (attacker != nullptr) {
-			//	if (attacker->id == UnitId::ProtossDarkTemplar) {
-			//		CUnitExtended* flags = CUnitExtended::get(attacker);
-			//		flags->timerSpecial1 = 42;
-			//	}
-			//}
-
 			u8 damageType;
-
+			bool canDamage = true; // debug only!
 			if (scbw::isCheatEnabled(CheatFlags::PowerOverwhelming) &&			//If Power Overwhelming is enabled
 				playerTable[attackingPlayerId].type != PlayerType::Human)		//and the attacker is not a human player
 				damage = 0;
 
-			// Hallucination damage factor -- disabled in HYDRA
-/*			if (target->status & UnitStatus::IsHallucination)
-						damage *= 2;*/
+			if (target->pAI != NULL) {
+				WorkerAi* ai = (WorkerAi*)target->pAI;
+				if (ai->type == 2 || ai->type == 3) {
+					if (ai->town == nullptr) {
+						scbw::printFormattedText("Ai_ReactToHit crash! Attacker id %d, target id %d", attacker->id, target->id);
+						canDamage = false;
+					}
+				}
+			}
 
 			// Savant Entropy Gauntlets behavior - Apply timer and overlay
 			if (attacker != NULL && weaponId == WeaponId::DiscoidRailgun) {
@@ -655,6 +654,7 @@ namespace hooks {
 
 			damage = (damage * damage_factor) / 256;
 			if (attacker != NULL && target != NULL) {
+				// Ultrakor Saber Siphon passive
 				if (attacker->id == UnitId::ZergUltrakor) {
 					u32 lifesteal = damage / 2;
 					attacker->setHp(attacker->hitPoints + lifesteal);
@@ -937,13 +937,15 @@ namespace hooks {
 
 			// Deal Damage, except for Independent damage, which always deals 0
 			if (damageType != DamageType::Independent && target->defensiveMatrixHp == 0) {
-//				GPTP::logger << "weaponhit: " << (s32)weaponId << '\n';
-				target->damageHp(damage, attacker, attackingPlayerId, weaponId != WeaponId::Irradiate);
-				// Prevent Science Vessels from being continuously revealed to the irradiated target
+				if (canDamage) {
+					target->damageHp(damage, attacker, attackingPlayerId, weaponId != WeaponId::Irradiate);
+					// Prevent Science Vessels from being continuously revealed to the irradiated target
+				}
 			}
 
 			// Reduce shields (finally)
-			if (shieldReduceAmount != 0) {
+			if (shieldReduceAmount != 0
+			&&	canDamage) {
 				if (scbw::get_aise_value(target, NULL, AiseId::HasClarionLink, 0, 0)) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SpreadClarionDamage, shieldReduceAmount, damageType, direction);
 				}
