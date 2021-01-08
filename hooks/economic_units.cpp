@@ -174,7 +174,8 @@ namespace hooks {
 	}
 
 	// Checks if town has a free worker of given race
-	// First checks SC's first free worker var; If invalid iterates over all free workers, might want to check workers instead, needs testing
+	// First checks SC's first free worker var; If invalid iterates over all free workers
+	// This was needed since first free worker is sometimes null.
 	bool HasFreeWorker(AiTown* town, u8 raceId) {
 		WorkerAi* first = town->free_workers->first_free_worker;
 		if (first) {
