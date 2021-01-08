@@ -161,12 +161,14 @@ namespace hooks {
 	// Veeq
 	// Returns town race judging by main town, first checks if it has buildings assigned
 	u8 GetTownRace(AiTown* town) {
+		if (!town) return RaceId::Neutral;
 		if (!town->main_building) return RaceId::Neutral; // can't tell from main town, might want to check from buildings maybe
 		return town->main_building->getRace();
 	}
 
 	// Checks if town is eligible for supply building (correct race && has correct free worker)
 	bool IsTownEligible(AiTown* town, u8 raceId) {
+		if (!town) return false;
 		if (town->in_battle) return false; // We probably don't want supplies to be built in attacked towns. We might want to ommit this condition if it's the only eligable town
 		if (GetTownRace(town) != raceId) return false;
 		if (raceId == RaceId::Zerg) { // Zerg don't need workers for supply building, we could check for larvae instead, but it should be fine
@@ -174,20 +176,26 @@ namespace hooks {
 		}
 		if (!town->free_workers->first_free_worker) return false;
 		if (!town->free_workers->first_free_worker->parent) return false;
-		if (!town->free_workers->first_free_worker->parent->getRace() != raceId) return false;
+		if (town->free_workers->first_free_worker->parent->getRace() != raceId) return false;
 		return true;
 	}
 
 	// First checks if main town is eligible for supply building
 	// If not then iterates on every player's town and then checks if it's eligible for supply building
 	AiTown* GetFirstEligibleTown(AiTown* mainTown, u8 playerId, u8 raceId) {
-		if (IsTownEligible(mainTown, raceId))
-			return mainTown;
+		if (mainTown) {
+			if (IsTownEligible(mainTown, raceId)) {
+				return mainTown;
+			}
+		}
+			
 		AiTown* aiTown = AiArray; // first
 		do {
-			if (aiTown->player == playerId) {
-				if (IsTownEligible(aiTown, raceId)) {
-					return aiTown;
+			if (aiTown) {
+				if (aiTown->player == playerId) {
+					if (IsTownEligible(aiTown, raceId)) {
+						return aiTown;
+					}
 				}
 			}
 		} while (aiTown = aiTown->link.next);
