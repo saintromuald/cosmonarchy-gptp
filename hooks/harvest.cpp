@@ -141,8 +141,16 @@ void transferResourceToWorkerHook(CUnit* worker, CUnit* resource) {
 						resourceAmount += ((resourceAmount / 4) + (resourceAmount / 4) + (resourceAmount / 4));
 					}
 					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 5) {
-						//+200%, mapcrap only				
+						//+200%
 						resourceAmount *= 2;
+					}
+					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 6) {
+						//+225%
+						resourceAmount *= (2 + (1 / 4));
+					}
+					if (scbw::getUpgradeLevel(worker->playerId, UpgradeId::MiningEfficiency) == 7) {
+						//+250%
+						resourceAmount *= (2 + (1 / 2));
 					}
 				//}
 				//
