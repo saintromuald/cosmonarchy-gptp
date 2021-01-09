@@ -1351,7 +1351,7 @@ CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* creator) {
 	fixTargetLocation(&pos, unitId);
 	unit = CreateUnit(unitId, pos.x, pos.y, playerId);
 	if (unit == NULL) {
-		displayLastNetErrForPlayer(creator->playerId);
+		displayLastNetErrForPlayer(playerId);
 	}
 	else {
 		FinishUnit_Pre(unit);
