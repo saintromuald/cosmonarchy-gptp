@@ -1541,6 +1541,7 @@ u16 random() {
 				else if (unitId == UnitId::ProtossSimulacrum) {
 					if (creator != nullptr) {
 						unit->hitPoints = std::max(256, creator->hitPoints);
+						unit->shields = std:max(256, creator->shields);
 					}
 					scbw::playSound(SoundId::Simulacrum_Clone_01, unit);
 				}
