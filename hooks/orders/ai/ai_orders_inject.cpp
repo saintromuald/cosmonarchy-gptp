@@ -32,6 +32,7 @@ namespace {
 			RETN
 		}
 	}
+
 	void __declspec(naked) AI_TrainingBroodling_Wrapper() { // 0043E280
 		static CUnit* parent;
 		static CUnit* result;
@@ -55,6 +56,7 @@ namespace {
 			RETN 8
 		}
 	}
+
 	void __declspec(naked) AI_AddUnitAi_Wrapper() { // 00433DD0
 		static CUnit* unit;
 		static AiTown* town;
@@ -69,6 +71,7 @@ namespace {
 			RETN
 		}
 	}
+
 	const u32 addUnitAiShortJump = 0x00433DED;
 	void __declspec(naked) AI_AddUnitAi_FreeWorkerCheck_JmpWrapper() {
 		static WorkerAiArray* free;
