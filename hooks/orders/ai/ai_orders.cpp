@@ -419,6 +419,33 @@ namespace hooks {
 			}
 		}
 	}
+
+	void AI_BuildTechUpgrade(AiTown* town, char method, char a3, s16 id, char priority, bool need) { // 00431F90
+		s32 i; // eax
+		TownReq* townUnits; // edx
+
+		if (playerTable[(u8)town->player].type == PlayerType::Computer)
+		{
+			townUnits = town->town_units;
+			i = 0;
+			if (town->town_units[0].flags_and_count & 0xF8)
+			{
+				while (i != 100) {
+					++townUnits;
+					++i;
+					if (!(townUnits->flags_and_count & 0xF8))
+						goto LABEL_5;
+				}
+			}
+			else {
+			LABEL_5:
+				town->town_units[i].flags_and_count = need | 2 * (method & 3 | 4 * a3);
+				town->town_units[i].id = id;
+				town->town_units[i].priority = priority;
+			}
+		}
+	}
+
 }
 
 namespace {

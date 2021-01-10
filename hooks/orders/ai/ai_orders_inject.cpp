@@ -93,6 +93,40 @@ namespace {
 		}
 		
 	}
+
+	void __declspec(naked) AI_BuildTechUpgrade_Wrapper() { // 00431F90
+		static AiTown* town;
+		static char method;
+		static char a3;
+		static s16 id;
+		static char priority;
+		static bool need;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV method, AL
+			MOV EAX, [EBP + 0xC]
+			MOV a3, AL
+			MOV EAX, [EBP + 0x10]
+			MOV id, AX
+			MOV EAX, [EBP + 0x14]
+			MOV priority, AL
+			MOV EAX, [EBP + 0x18]
+			MOV need, AL
+			POP EAX
+			MOV town, ESI
+			PUSHAD
+		}
+		hooks::AI_BuildTechUpgrade(town, method, a3, id, priority, need);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 20
+		}
+	}
 }
 
 namespace hooks {
@@ -103,5 +137,6 @@ namespace hooks {
 		jmpPatch(AI_TrainingBroodling_Wrapper,	0x0043E280, 1);
 //		jmpPatch(AI_AddUnitAi_Wrapper,			0x00433DD0, 2);
 		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper, 0x00433DE7, 1);
+		jmpPatch(AI_BuildTechUpgrade_Wrapper,	0x00431F90, 2);
 	}
 }
