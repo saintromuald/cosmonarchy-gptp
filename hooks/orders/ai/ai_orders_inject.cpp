@@ -96,25 +96,25 @@ namespace {
 
 	void __declspec(naked) AI_BuildTechUpgrade_Wrapper() { // 00431F90
 		static AiTown* town;
-		static char method;
-		static char a3;
-		static s16 id;
-		static char priority;
-		static bool need;
+		static s32 method;
+		static s32 a3;
+		static s32 id;
+		static s32 priority;
+		static s32 need;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV method, AL
+			MOV method, EAX
 			MOV EAX, [EBP + 0xC]
-			MOV a3, AL
+			MOV a3, EAX
 			MOV EAX, [EBP + 0x10]
-			MOV id, AX
+			MOV id, EAX
 			MOV EAX, [EBP + 0x14]
-			MOV priority, AL
+			MOV priority, EAX
 			MOV EAX, [EBP + 0x18]
-			MOV need, AL
+			MOV need, EAX
 			POP EAX
 			MOV town, ESI
 			PUSHAD

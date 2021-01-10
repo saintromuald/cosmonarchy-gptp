@@ -420,7 +420,7 @@ namespace hooks {
 		}
 	}
 
-	void AI_BuildTechUpgrade(AiTown* town, char method, char a3, s16 id, char priority, bool need) { // 00431F90
+	void AI_BuildTechUpgrade(AiTown* town, s32 method, s32 a3, s32 id, s32 priority, s32 need) { // 00431F90
 		s32 i; // eax
 		TownReq* townUnits; // edx
 
