@@ -422,7 +422,7 @@ namespace hooks {
 
 	void AI_BuildTechUpgrade(AiTown* town, s32 method, s32 amount, s32 id, s32 priority, s32 need) { // 00431F90
 		s32 itr = 0; // eax
-		constexpr int BuildCountFlag = 0xF8;
+		constexpr int BuildCountFlag = 0xF8;//0xf8 are upper flags of 0xff, 0x1/0x2/0x4 are used by other flags
 		TownReq* townUnits; // edx
 		if (playerTable[(u8)town->player].type == PlayerType::Computer)
 		{
