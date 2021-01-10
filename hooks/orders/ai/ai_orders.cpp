@@ -420,28 +420,33 @@ namespace hooks {
 		}
 	}
 
-	void AI_BuildTechUpgrade(AiTown* town, s32 method, s32 a3, s32 id, s32 priority, s32 need) { // 00431F90
-		s32 i; // eax
+	void AI_BuildTechUpgrade(AiTown* town, s32 method, s32 amount, s32 id, s32 priority, s32 need) { // 00431F90
+		s32 itr = 0; // eax
+		constexpr int BuildCountFlag = 0xF8;
 		TownReq* townUnits; // edx
-
 		if (playerTable[(u8)town->player].type == PlayerType::Computer)
 		{
 			townUnits = town->town_units;
-			i = 0;
-			if (town->town_units[0].flags_and_count & 0xF8)
+			bool setNeed = false;
+			if (town->town_units[0].flags_and_count & BuildCountFlag)//if build
 			{
-				while (i != 100) {
+				for (int i = 0; i < 100; i++) {
 					++townUnits;
-					++i;
-					if (!(townUnits->flags_and_count & 0xF8))
-						goto LABEL_5;
+					if (!(townUnits->flags_and_count & BuildCountFlag)) {//if not build
+						setNeed = true;
+						itr = i;
+						break;
+					}
 				}
 			}
 			else {
-			LABEL_5:
-				town->town_units[i].flags_and_count = need | 2 * (method & 3 | 4 * a3);
-				town->town_units[i].id = id;
-				town->town_units[i].priority = priority;
+				setNeed = true;
+			}
+			if(setNeed) {
+				town->town_units[itr].flags_and_count = need | 0x2 * (method & 0x3 | 0x4 * amount);
+				town->town_units[itr].id = id;
+				town->town_units[itr].priority = priority;
+				// build orders have 0xf8 flag, tech has 0x4, upgrade has 0x2, 0x1 - only if needed
 			}
 		}
 	}
