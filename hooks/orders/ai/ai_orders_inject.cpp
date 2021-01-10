@@ -74,7 +74,6 @@ namespace {
 		static WorkerAiArray* free;
 		__asm {
 			MOV free,EDX
-			MOV EAX,[EDX+0x5DC0]
 			PUSHAD
 		}
 		if ((u32)free <= 0x100000) {
@@ -88,6 +87,7 @@ namespace {
 		else {
 			__asm {
 				POPAD
+				MOV EAX, [EDX + 0x5DC0]
 				JMP addUnitAiShortJump
 			}
 		}
