@@ -385,6 +385,7 @@ u16 random();
     void hideAndDisableUnit(CUnit* unit);
     void restoreFunc(CUnit* unit);
     void refreshDebuffs(CUnit* unit);
+    void inheritDebuffs(CUnit* parent, CUnit* child);
     void applyEnsnare(CUnit* unit);
     bool isEnabled(CUnit* unit);
     bool isDebuffed(CUnit* unit);

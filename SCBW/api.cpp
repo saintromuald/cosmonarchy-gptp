@@ -1542,6 +1542,7 @@ u16 random() {
 					if (creator != nullptr) {
 						unit->hitPoints = std::max(256, creator->hitPoints);
 						unit->shields = std::max(256, creator->shields);
+						scbw::inheritDebuffs(creator, unit);
 					}
 					scbw::playSound(SoundId::Simulacrum_Clone_01, unit);
 				}
@@ -1788,14 +1789,29 @@ u16 random() {
 			unit->updateSpeed();
 		}
 
+		// Refresh Plague
+		if (unit->plagueTimer != 0) {
+			unit->plagueTimer = 30;
+		}
+
 		// Reset Malediction
 		if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 0) {
 			scbw::set_generic_timer(unit, ValueId::MaledictionSlow, 4*24);
 		}
 
+		// Reset Observance
+		if (scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) > 0) {
+			scbw::set_generic_timer(unit, ValueId::ObservanceTimerDebuff, 5*24);
+		}
+
 		// Reset Knockout Drivers
 		if (scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) > 0) {
 			scbw::set_generic_timer(unit, ValueId::KnockoutDriversTimer, 2*24);
+		}
+
+		// Reset Hallucination
+		if (scbw::get_generic_timer(unit, ValueId::HallucinatingTimer) > 0) {
+			scbw::set_generic_timer(unit, ValueId::HallucinatingTimer, 20*24);
 		}
 
 		// Reset Captivating Claws
@@ -1823,6 +1839,77 @@ u16 random() {
 		// Reset Irradiate
 		if (unit->irradiateTimer != 0)
 			unit->irradiateTimer = 24;
+
+		//was hardcoded in original code
+		scbw::refreshConsole();
+	}
+
+	void inheritDebuffs(CUnit* parent, CUnit* child) {
+		// NOTE: classic timer formula is (([real seconds / 0.042) / 8)
+		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
+
+		// Inherit Ensnare
+		if (parent->ensnareTimer != 0) {
+			child->ensnareTimer = parent->ensnareTimer;
+			//specific update following ensnare removal
+			child->updateSpeed();
+		}
+
+		// Inherit Plague
+		if (parent->plagueTimer != 0) {
+			child->plagueTimer = parent->plagueTimer;
+		}
+
+		// Inherit armor rend (generic)
+		if (scbw::get_generic_value(parent, ValueId::ArmorReduce) > 0) {
+			scbw::set_generic_value(child, ValueId::ArmorReduce, scbw::get_generic_value(parent, ValueId::ArmorReduce));
+		}
+
+		// Inherit Malediction
+		if (scbw::get_generic_timer(parent, ValueId::MaledictionSlow) > 0) {
+			scbw::set_generic_timer(child, ValueId::MaledictionSlow, scbw::get_generic_timer(parent, ValueId::MaledictionSlow));
+		}
+
+		// Inherit Observance
+		if (scbw::get_generic_timer(parent, ValueId::ObservanceTimerDebuff) > 0) {
+			scbw::set_generic_timer(child, ValueId::ObservanceTimerDebuff, scbw::get_generic_timer(parent, ValueId::ObservanceTimerDebuff));
+		}
+
+		// Inherit Knockout Drivers
+		if (scbw::get_generic_timer(parent, ValueId::KnockoutDriversTimer) > 0) {
+			scbw::set_generic_timer(child, ValueId::KnockoutDriversTimer, scbw::get_generic_timer(parent, ValueId::KnockoutDriversTimer));
+		}
+
+		// Inherit Hallucination
+		if (scbw::get_generic_timer(parent, ValueId::HallucinatingTimer) > 0) {
+			scbw::set_generic_timer(child, ValueId::HallucinatingTimer, scbw::get_generic_timer(parent, ValueId::HallucinatingTimer));
+		}
+
+		// Inherit Captivating Claws
+		if (scbw::get_generic_timer(parent, ValueId::CaptivatingClawsTimer) > 0) {
+			scbw::set_generic_timer(child, ValueId::CaptivatingClawsTimer, scbw::get_generic_timer(parent, ValueId::CaptivatingClawsTimer));
+		}
+
+		// Inherit Lobotomy Mine slow
+		if (scbw::get_generic_timer(parent, ValueId::LobotomySlow) > 0) {
+			scbw::set_generic_timer(child, ValueId::LobotomySlow, scbw::get_generic_timer(parent, ValueId::LobotomySlow));
+		}
+
+		// Inherit Lockdown
+		if (parent->lockdownTimer != 0)
+			child->lockdownTimer = parent->lockdownTimer;
+
+		// Inherit Maelstrom
+		if (parent->maelstromTimer != 0)
+			child->maelstromTimer = parent->maelstromTimer;
+
+		// Inherit Devourer Acid Spores
+		if (parent->acidSporeCount != 0)
+			child->acidSporeCount = parent->acidSporeCount;
+
+		// Inherit Irradiate
+		if (parent->irradiateTimer != 0)
+			child->irradiateTimer = parent->irradiateTimer;
 
 		//was hardcoded in original code
 		scbw::refreshConsole();
