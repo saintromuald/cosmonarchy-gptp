@@ -45,7 +45,7 @@ bool AI_spellcasterHook(CUnit* unit, bool isUnitBeingAttacked) {
 
     case UnitId::ghost:
       //Lockdown
-      if (canCastSpellOrder(unit, TechId::Lockdown, OrderId::MagnaPulse)) {
+      if (canCastSpellOrder(unit, TechId::Lockdown, OrderId::MagnaPulse) && unit->vulture.spiderMineCount > 0) {
 
         CUnit* target = findBestLockdownTarget(unit, isUnitBeingAttacked);
         
