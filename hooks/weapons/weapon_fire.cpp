@@ -5,6 +5,7 @@
 #include <SCBW/enumerations.h>
 #include <SCBW/api.h>
 #include "SCBW/UnitFinder.h"
+#include "hooks/hydraFinder.h"
 #include "MathUtils.h"
 #include "hooks/byte_operations_utils.h"
 #include "globals.h"
@@ -438,12 +439,14 @@ namespace hooks {
 					auto old = unit->orderTarget.unit;
 					for (int i = 0; i < 5; i++) {
 						auto range = hooks::getMaxWeaponRangeHook(unit, WeaponId::MinotaurLaserBattery) + 32;
+						auto n = unitRangeCount(unit, CFlags::Enemy | CFlags::FrontalArc, {});
 						auto newTarget = scbw::UnitFinder::getNearestTarget(
 							unit->getX() - range, unit->getY() - range,
 							unit->getX() + range, unit->getY() + range,
 							unit, monocerosTargetingMatch(unit, monoceros)
 						);
-						if (newTarget != NULL) {
+						if (newTarget != NULL
+						&&	n.match(newTarget)) {
 							monoceros.insert(newTarget);
 							unit->orderTarget.unit = newTarget;
 							auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
