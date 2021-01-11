@@ -460,6 +460,14 @@ namespace hooks {
 					unit->orderTarget.unit = old;
 				}
 
+				// Titan Reactors - Heracles passive - Refresh timer on attack and add stack
+				if (weaponId == WeaponId::JavelinCannons) {
+					scbw::set_generic_timer(unit, ValueId::TitanReactorsTimer, 24*5);
+					if (scbw::get_generic_value(unit, ValueId::TitanReactorsStack < 5)) {
+						scbw::set_generic_value(unit, ValueId::TitanReactorsStack, (scbw::get_generic_value(unit, ValueId::TitanReactorsStack) + 1));
+					}
+				}
+
 				if (weaponId == WeaponId::PlasmaBarrage) {
 					// Empyrean missile spawn positions
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::EmpyreanMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
@@ -499,7 +507,7 @@ namespace hooks {
 					// Keskathalor missile spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::KeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
 				}
-				else if (weaponId == WeaponId::RetractorBatteries) {
+				else if (weaponId == WeaponId::JavelinCannons) {
 					// Pegasus laser spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::PegasusLaserPos, 2, ImagesDatEntries::OverlayAttackPtr);
 				}

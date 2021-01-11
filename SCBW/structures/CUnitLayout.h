@@ -289,6 +289,8 @@ namespace ValueId {
 		IsReviving									= 142,
 		SwarmingOmenStatus							= 143,
 		ProtectiveInstinctsStatus					= 144,
+		TitanReactorsStack							= 145,
+		TitanReactorsTimer							= 146,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

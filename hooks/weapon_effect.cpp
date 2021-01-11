@@ -135,7 +135,7 @@ namespace hooks {
 
 			// Units can't splash themselves -- except psi storm
 			if (target == bullet->sourceUnit && bullet->weaponType != WeaponId::PsiStorm) continue;
-      
+
 			// Don't hit allied units -- normally just checks target->playerId == bullet->srcPlayer (also checks if type is 'splash enemy' or 'nuclear missile')
 	//      if(scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
 
@@ -145,11 +145,11 @@ namespace hooks {
 
 			else if (splash==SplashType::FriendlyNew){
 				if(scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
-			}    
+			}
 
 			// Can the unit be targeted?
 			if(!scbw::canWeaponTargetUnit(bullet->weaponType, target, target)) continue;
-      
+
 			// We found units in a square around the target, but is the target within the splash radius?
 			s16 outer = weapons_dat::OuterSplashRadius[bullet->weaponType];
 
@@ -162,14 +162,19 @@ namespace hooks {
 			if (weaponId == WeaponId::PlasmidBreath) {
 				outer = 32;
 			}
+
+			if (weaponId == WeaponId::JavelinCannons) {
+				outer = 32 + (32 * (0.1 * scbw::get_generic_value(bullet->sourceUnit, ValueId::TitanReactorsStack)));
+			}
+
 			if(!isUnitDistanceWithin(target, bullet, outer)) continue;
-      
+
 			// Don't storm a unit that's already being stormed
 			if(bullet->weaponType == WeaponId::PsiStorm){
 				if(target->isUnderStorm) continue;
 				target->isUnderStorm = 1;
 			}
-      
+
 			// Inner radius 
 			s16 inner = weapons_dat::InnerSplashRadius[bullet->weaponType];
 
@@ -178,14 +183,18 @@ namespace hooks {
 				inner = 30;
 			}
 
+			if (weaponId == WeaponId::JavelinCannons) {
+				outer = 12 + (12 * (0.1 * scbw::get_generic_value(bullet->sourceUnit, ValueId::TitanReactorsStack)));
+			}
+
 			if(isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet,target)){
 				weaponBulletShot(target, bullet, divisor); // 100% damage
 				continue;
 			}
-      
+
 			// Burrowed units can only be hit by inner radius
 			if(target->status & UnitStatus::Burrowed) continue;
-      
+
 			// Medium radius
 			s16 medium = weapons_dat::MediumSplashRadius[bullet->weaponType];
 
@@ -194,13 +203,19 @@ namespace hooks {
 				medium = 37;
 			}
 
+			if (weaponId == WeaponId::JavelinCannons) {
+				outer = 24 + (24 * (0.1 * scbw::get_generic_value(bullet->sourceUnit, ValueId::TitanReactorsStack)));
+			}
+
 			if (weaponId == WeaponId::PlasmidBreath) {
 				r = 32;
 			}
+
 			if(isUnitDistanceWithin(target, bullet, medium) && nathrokorCondition(bullet, target)){
 				weaponBulletShot(target, bullet, divisor*2); // 50% damage
 				continue;
-			}      
+			}
+
 			// Outer radius
 			if (nathrokorCondition(bullet, target)) {
 				weaponBulletShot(target, bullet, divisor*4); // 25% damage

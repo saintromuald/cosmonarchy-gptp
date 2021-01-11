@@ -140,7 +140,7 @@ enum Enum {
 
 	// Terran \\
 		
-	RetractorBatteries							= 1,			// Pegasus weapon 1
+	JavelinCannons								= 1,			// Heracles weapon
 	CharonRifle									= 3,			// Apostle weapon
 	UppercutLaser								= 5,			// Southpaw weapon
 	DanannAutogun								= 9,			// Madcap weapon
