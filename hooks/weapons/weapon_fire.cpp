@@ -463,8 +463,9 @@ namespace hooks {
 				// Titan Reactors - Heracles passive - Refresh timer on attack and add stack
 				if (weaponId == WeaponId::JavelinCannons) {
 					scbw::set_generic_timer(unit, ValueId::TitanReactorsTimer, 24*5);
-					if (scbw::get_generic_value(unit, ValueId::TitanReactorsStack < 5)) {
-						scbw::set_generic_value(unit, ValueId::TitanReactorsStack, (scbw::get_generic_value(unit, ValueId::TitanReactorsStack) + 1));
+					s32 stacks = scbw::get_generic_value(unit, ValueId::TitanReactorsStack);
+					if (stacks < 5) {
+						scbw::set_generic_value(unit, ValueId::TitanReactorsStack, stacks + 1);
 					}
 				}
 
@@ -506,14 +507,6 @@ namespace hooks {
 				else if (weaponId == WeaponId::ScreamingVenom) {
 					// Keskathalor missile spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::KeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
-				}
-				else if (weaponId == WeaponId::JavelinCannons) {
-					// Pegasus laser spawn position
-					scbw::setMissileSourcePos(unit, weaponId, ValueId::PegasusLaserPos, 2, ImagesDatEntries::OverlayAttackPtr);
-				}
-				else if (weaponId == WeaponId::LancetMissiles) {
-					// Pegasus missile spawn position
-					scbw::setMissileSourcePos(unit, weaponId, ValueId::PegasusMissilePos, 4, ImagesDatEntries::OverlaySpecialPtr);
 				}
 				else if (weaponId == WeaponId::CelestialCannon) {
 					// Star Sovereign laser spawn position
