@@ -428,15 +428,6 @@ enum Enum {
 /*0xF7*/	Buttons_GroupBurrower					= 247,
 /*0xF8*/	Buttons_ReplayPaused					= 248,
 /*0xF9*/	Buttons_ReplayPlaying					= 249,
-
-#ifdef DELIVERANCE
-//Protoss-Hero
-	Asalamir										= 78,		// Fenix Dragoon
-	Damos											= 86,		// Danimoth
-
-//Zerg-Hero
-	Gothroki										= 151,		// Cerebrate
-#endif
  
 	//HYDRA\\
 
@@ -451,10 +442,11 @@ enum Enum {
 	TerranPhobos									= 24,		// Edmund Duke Tank Turret
 	TerranMadrigal									= 27,		// Mengsk Battlecruiser
 	TerranCentaur									= 28,		// Hyperion
-	TerranPazuzu									= 49,		// Matriarch (Queen)
+	TerranPazuzu									= 49,		// Matriarch Queen
 	TerranPegasus									= 52,		// Unclean One
 	TerranPenumbra									= 53,		// Hunter Killer
 	TerranCyclops									= 55,		// Kukulza Mutalisk
+	TerranHeracles									= 77,		// Fenix Zealot
 	TerranWyvern									= 91,		// Cargo Ship
 	TerranCyprian									= 92,		// Mercenary Gunship
 	TerranAzazel									= 98,		// Raszagal Corsair
@@ -490,6 +482,7 @@ enum Enum {
 	ProtossAurora									= 80,		// Mojo Scout
 	ProtossClarion									= 81,		// Warbringer
 	ProtossEmpyrean									= 82,		// Gantrithor
+	ProtossDemiurge									= 86,		// Danimoth
 	ProtossPariah									= 87,		// Aldaris
 	ProtossVassal									= 88,		// Artanis
 	ProtossSimulacrum								= 89,		// Rhynadon
