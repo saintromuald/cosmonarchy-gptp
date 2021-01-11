@@ -29,7 +29,7 @@ namespace hooks {
 
 		bool returnValue;
 
-		returnValue = (unit->id == UnitId::queen || unit->id == UnitId::matriarch);
+		returnValue = (unit->id == UnitId::ZergQueen);
 
 		return returnValue;
 

@@ -451,6 +451,7 @@ enum Enum {
 	TerranPhobos									= 24,		// Edmund Duke Tank Turret
 	TerranMadrigal									= 27,		// Mengsk Battlecruiser
 	TerranCentaur									= 28,		// Hyperion
+	TerranPazuzu									= 49,		// Matriarch (Queen)
 	TerranPegasus									= 52,		// Unclean One
 	TerranPenumbra									= 53,		// Hunter Killer
 	TerranCyclops									= 55,		// Kukulza Mutalisk
