@@ -45,10 +45,10 @@ namespace hooks {
 		CUnit* unitToLoad = unit->orderTarget.unit;
 
 		if(	unitToLoad != NULL &&
-			scbw::canBeEnteredBy(unit,unitToLoad)
+			scbw::canBeEnteredBy(unit, unitToLoad)
 		) 
 		{
-			function_00474A70(unit,unitToLoad,OrderId::Pickup2);
+			function_00474A70(unit, unitToLoad, OrderId::Pickup2);
 			prepareForNextOrder(unit);
 		}
 		else
@@ -73,13 +73,13 @@ namespace hooks {
 						bStopLoop = true;
 
 					if(!bStopLoop) {
-						removeOrderFromUnitQueue(unit,unit->orderQueueTail);
+						removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 						bStopLoop = (unit->orderQueueTail == NULL);
 					}
 
 				}
 
-				unit->performAnotherOrder(OrderId::ComputerAI,0,0,NULL,UnitId::None);
+				unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, NULL, UnitId::None);
 
 			}
 
@@ -112,8 +112,8 @@ namespace hooks {
 		}
 		else { //E73F4
 
-			if(scbw::canBeEnteredBy(unit,unitToLoad))
-				unitToLoad->orderTo(OrderId::EnterTransport,unit);
+			if(scbw::canBeEnteredBy(unit, unitToLoad))
+				unitToLoad->orderTo(OrderId::EnterTransport, unit);
 
 			unit->orderToIdle();
 
@@ -152,19 +152,19 @@ namespace hooks {
 					if(scbw::canBeEnteredBy(unit,unitToLoad)) {
 						if(unit->mainOrderTimer == 0) {
 							unit->mainOrderTimer = 7;
-							if(!unit->isTargetWithinMinRange(unitToLoad,1))
-								orderToMoveToTarget(unit,unitToLoad);
+							if(!unit->isTargetWithinMinRange(unitToLoad, 1))
+								orderToMoveToTarget(unit, unitToLoad);
 							else {
 								makeToHoldPosition(unit);
 								if(
 									unitToLoad->mainOrderId != OrderId::EnterTransport &&
 									unitToLoad->mainOrderId != OrderId::Pickup4
 								)
-									unitToLoad->orderTo(OrderId::EnterTransport,unit);
+									unitToLoad->orderTo(OrderId::EnterTransport, unit);
 								if(unit->pAI != NULL)
 									unit->mainOrderState = 1;
 								else {
-									function_00474A70(unit,unitToLoad,OrderId::Pickup1);
+									function_00474A70(unit, unitToLoad, OrderId::Pickup1);
 									prepareForNextOrder(unit);
 								}
 							}
@@ -285,7 +285,7 @@ namespace hooks {
 								if(unitToUnload->id == UnitId::ProtossReaver && bIsDistanceGreaterThanHaltDistance)
 									bStopLoop = true;
 								else 
-								if(function_004E76C0(unit,unitToUnload,&pos) == 0) {
+								if(function_004E76C0(unit, unitToUnload, &pos) == 0) {
 									bStopAll = true;
 									bStopLoop = true;
 								}
@@ -599,7 +599,7 @@ namespace hooks {
 								unit->orderQueueTail->orderId == OrderId::ComputerAI
 							)
 							{
-								removeOrderFromUnitQueue(unit,unit->orderQueueTail);
+								removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 							}
 							else
 								bEndLoop = true;
@@ -607,7 +607,7 @@ namespace hooks {
 							if(!bEndLoop)
 								bEndLoop = (unit->orderQueueTail == NULL);
 						}
-						unit->performAnotherOrder(OrderId::ComputerAI,0,0,NULL,UnitId::None);
+						unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, NULL, UnitId::None);
 						prepareForNextOrder(unit);
 					}
 				}

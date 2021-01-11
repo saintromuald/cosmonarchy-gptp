@@ -1205,8 +1205,9 @@ namespace hooks {
 					scbw::UnitFinder(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius).forEach(treasuryProc(unit->playerId));
 				}
 
-				// Dark Templar - Decloak on attack
-				if (unit->id == UnitId::ProtossDarkTemplar || unit->id == UnitId::ProtossBarghest) {
+				// Permanently Cloaked units decloak on attack
+				if ((unit->id == UnitId::ProtossDarkTemplar || unit->id == UnitId::ProtossBarghest)
+				&& !(unit->status & UnitStatus::CloakingForFree)) {
 					auto timer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DarkTemplarTimer, 0);
 					if (timer == 1) {
 						for (int i = 0; i < 8; i++) {

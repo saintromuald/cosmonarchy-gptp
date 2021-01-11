@@ -352,7 +352,7 @@ namespace hooks {
 				if (unit->id == UnitId::ZergHatchery
 					|| unit->id == UnitId::ZergLair
 					|| unit->id == UnitId::ZergHive
-					|| unit->id == UnitId::ZergSire //new, hydra
+					|| unit->id == UnitId::ZergSire
 					)
 				{
 					if (unit->status & UnitStatus::Completed) {
@@ -367,7 +367,7 @@ namespace hooks {
 					&& unit->id != UnitId::ZergCreepColony
 					&& unit->id != UnitId::ZergSporeColony
 					&& unit->id != UnitId::ZergSunkenColony
-					&& unit->id != UnitId::ZergLarvalColony //new, hydra
+					&& unit->id != UnitId::ZergLarvalColony
 					&& unit->id != UnitId::ProtossPylon
 					&& unit->id != UnitId::ProtossPhotonCannon)
 				{
@@ -422,17 +422,17 @@ namespace hooks {
 
 	void AI_BuildTechUpgrade(AiTown* town, s32 method, s32 amount, s32 id, s32 priority, s32 need) { // 00431F90
 		s32 itr = 0; // eax
-		constexpr int BuildCountFlag = 0xF8;//0xf8 are upper flags of 0xff, 0x1/0x2/0x4 are used by other flags
+		constexpr int BuildCountFlag = 0xF8; //0xf8 are upper flags of 0xff, 0x1/0x2/0x4 are used by other flags
 		TownReq* townUnits; // edx
 		if (playerTable[(u8)town->player].type == PlayerType::Computer)
 		{
 			townUnits = town->town_units;
 			bool setNeed = false;
-			if (town->town_units[0].flags_and_count & BuildCountFlag)//if build
+			if (town->town_units[0].flags_and_count & BuildCountFlag) //if build
 			{
 				for (int i = 0; i < 100; i++) {
 					++townUnits;
-					if (!(townUnits->flags_and_count & BuildCountFlag)) {//if not build
+					if (!(townUnits->flags_and_count & BuildCountFlag)) { //if not build
 						setNeed = true;
 						itr = i;
 						break;

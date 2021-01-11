@@ -1095,6 +1095,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossArbiter &&  //Arbiter Shroud of Adun passive
+									current_button->iconID == IconId::PhotonCannon_Weapon)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossEmpyrean &&  //Empyrean Heavenly Blaze passive
 									current_button->iconID == IconId::PulseCannon)
 								{
