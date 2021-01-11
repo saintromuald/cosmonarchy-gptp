@@ -849,11 +849,6 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranMadcap && //Madcap Maverick Feeders passive
-									current_button->iconID == IconId::Twin_Autocannons)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
 								if ((*activePortraitUnit)->id == UnitId::TerranShaman && //Shaman Overcharge passive
 									current_button->iconID == IconId::RechargeShields)
 								{
@@ -864,16 +859,6 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranApostle &&  //Apostle Blood Tithe passive
-									current_button->iconID == IconId::Optical_Flare)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::TerranApostle &&  //Apostle Last Breath passive
-									current_button->iconID == IconId::Suicide_Scourge)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
 								if ((*activePortraitUnit)->id == UnitId::TerranGhost &&  //Ghost Somatic Implants passive
 									current_button->iconID == IconId::OcularImplants)
 								{
@@ -881,6 +866,26 @@ namespace hooks {
 								}
 								if ((*activePortraitUnit)->id == UnitId::TerranSavant &&  //Savant Energy Decay passive
 									current_button->iconID == IconId::Feedback)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranMadcap && //Madcap Maverick Feeders passive
+									current_button->iconID == IconId::Twin_Autocannons)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranHeracles && //Heracles Titan Reactors passive
+									current_button->iconID == IconId::TitanReactor)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranApostle &&  //Apostle Blood Tithe passive
+									current_button->iconID == IconId::Optical_Flare)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranApostle &&  //Apostle Last Breath passive
+									current_button->iconID == IconId::Suicide_Scourge)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
@@ -916,6 +921,16 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranPazuzu &&  //Pazuzu Deconstruction passive
+									current_button->iconID == IconId::ScarabDamage)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranPenumbra &&  //Penumbra Shroud Piercer passive 
+									current_button->iconID == IconId::BurstLasers)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::TerranWraith &&  //Wraith Capacitors passive
 									current_button->iconID == IconId::BurstLasers)
 								{
@@ -936,6 +951,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranSalamander &&  //Salamander Incendiary Payload passive
+									current_button->iconID == IconId::Flame_Thrower)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::TerranAzazel &&  //Azazel Innervating Matrices passive
 									current_button->iconID == IconId::Restoration_Research)
 								{
@@ -946,18 +966,8 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranPegasus &&  //Pegasus Surgical Strike passive
-									current_button->iconID == IconId::GeminiMissiles)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
 								if ((*activePortraitUnit)->id == UnitId::TerranCentaur &&  //Centaur Sunchaser Salvo passive
 									current_button->iconID == IconId::GeminiMissiles)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::TerranSalamander &&  //Salamander Incendiary Payload passive
-									current_button->iconID == IconId::Flame_Thrower)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
@@ -973,11 +983,6 @@ namespace hooks {
 								}
 								if ((*activePortraitUnit)->id == UnitId::TerranPhobos &&  //Phobos Argent Capacitors passive 
 									current_button->iconID == IconId::KhaydarinCore)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::TerranPenumbra &&  //Penumbra Shroud Piercer passive 
-									current_button->iconID == IconId::BurstLasers)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
@@ -1015,17 +1020,17 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossEcclesiast &&  //Ecclesiast Astral Blessing passive : enabled 
+								if ((*activePortraitUnit)->id == UnitId::ProtossEcclesiast &&  //Ecclesiast Astral Blessing passive 
 									current_button->iconID == IconId::ProtossGroundWeapons)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossAmaranth &&  //Amaranth Eternal Service passive : enabled 
+								if ((*activePortraitUnit)->id == UnitId::ProtossAmaranth &&  //Amaranth Eternal Service passive 
 									current_button->iconID == IconId::PhaseDisruptorCannon)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossAtreus &&  //Atreus Stalwart Stance passive : enabled 
+								if ((*activePortraitUnit)->id == UnitId::ProtossAtreus &&  //Atreus Stalwart Stance passive 
 									current_button->iconID == IconId::PlasmaShields)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -1055,33 +1060,38 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossPariah &&  //Pariah Heretical Bedlam passive : enabled 
+								if ((*activePortraitUnit)->id == UnitId::ProtossPariah &&  //Pariah Heretical Bedlam passive 
 									current_button->iconID == IconId::PhaseDisruptor)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossVassal &&  //Vassal Terminal Surge passive : enabled 
+								if ((*activePortraitUnit)->id == UnitId::ProtossVassal &&  //Vassal Terminal Surge passive 
 									current_button->iconID == IconId::RechargeShields)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossSimulacrum &&  //Simulacrum Autovitality passive : enabled 
+								if ((*activePortraitUnit)->id == UnitId::ProtossSimulacrum &&  //Simulacrum Autovitality passive 
 									current_button->iconID == IconId::ApialSensors)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossGolem &&  //Golem Deathless Procession passive : enabled 
+								if ((*activePortraitUnit)->id == UnitId::ProtossGolem &&  //Golem Deathless Procession passive 
 									current_button->iconID == IconId::LegEnhancements)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossBarghest &&  //Barghest Robotic Sapience passive : enabled 
+								if ((*activePortraitUnit)->id == UnitId::ProtossBarghest &&  //Barghest Robotic Sapience passive 
 									current_button->iconID == IconId::PhotonCannon_Weapon)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossArchitect &&  //Architect Reactive Payload passive : enabled 
+								if ((*activePortraitUnit)->id == UnitId::ProtossArchitect &&  //Architect Reactive Payload passive 
 									current_button->iconID == IconId::AntimatterMissiles)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ProtossDemiurge &&  //Demiurge Worship passive 
+									current_button->iconID == IconId::OcularImplants)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
