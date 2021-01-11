@@ -8,6 +8,8 @@
 #include "MathUtils.h"
 #include "hooks/byte_operations_utils.h"
 #include "globals.h"
+#include "hooks/unit_stats/weapon_range.h"
+#include <set>
 //-------- Helper function declarations. Do NOT modify! ---------//
 
 
@@ -256,6 +258,28 @@ public:
 	}
 };
 
+class monocerosTargetingMatch : public scbw::UnitFinderCallbackMatchInterface {
+private:
+	CUnit* battlecruiser;
+public:
+	std::set<CUnit*>& unitSet;
+
+	monocerosTargetingMatch(CUnit* battlecruiser, std::set<CUnit*>& unitSet)
+		: battlecruiser(battlecruiser), unitSet(unitSet) {}
+
+	bool match(CUnit* unit) {
+
+		if (unit == battlecruiser
+		||  unitSet.find(unit) != unitSet.end()
+		||	scbw::isAlliedTo(unit->playerId, battlecruiser->playerId)
+		||	!battlecruiser->canAttackTarget(unit)
+		||	unitSet.count(unit) >= 5) {
+			return false;
+		}
+		return true;
+	}
+};
+
 namespace { // Helper functions
 	typedef void(__stdcall* GetWeaponHitPosFunc)(CUnit* unit, s32* x, s32* y);
 	GetWeaponHitPosFunc const getWeaponHitPos = (GetWeaponHitPosFunc)0x004762C0;
@@ -406,7 +430,33 @@ namespace hooks {
 						}
 					}
 				}
-				
+
+				else if (weaponId == WeaponId::MinotaurLaserBattery) {
+					std::set<CUnit*> monoceros;
+					monoceros.insert(unit->orderTarget.unit);
+					scbw::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+					auto old = unit->orderTarget.unit;
+					for (int i = 0; i < 8; i++) {
+						auto range = hooks::getMaxWeaponRangeHook(unit, WeaponId::MinotaurLaserBattery) + 32;
+						auto newTarget = scbw::UnitFinder::getNearestTarget(
+							unit->getX() - range, unit->getY() - range,
+							unit->getX() + range, unit->getY() + range,
+							unit, monocerosTargetingMatch(unit, monoceros)
+						);
+						if (newTarget != NULL) {
+							monoceros.insert(newTarget);
+							unit->orderTarget.unit = newTarget;
+							auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
+								newTarget->getX(), newTarget->getY());
+							scbw::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
+						}
+						else {
+							break;
+						}
+					}
+					unit->orderTarget.unit = old;
+				}
+
 				if (weaponId == WeaponId::PlasmaBarrage) {
 					// Empyrean missile spawn positions
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::EmpyreanMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);

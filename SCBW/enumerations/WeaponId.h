@@ -148,6 +148,7 @@ enum Enum {
 	FusionSaw									= 12,			// Wendigo weapon
 	PerditionBarrage							= 17,			// Salamander weapon
 	ArtificeBattery								= 18,			// Gorgon weapon
+	MinotaurLaserBattery						= 19,			// Battlecruiser weapon
 	FuriaMissiles								= 21,			// Madrigal weapon 1
 	ImperiosoMissiles							= 22,			// Madrigal weapon 2
 	ArtaxCannon									= 23,			// Centaur weapon 1
