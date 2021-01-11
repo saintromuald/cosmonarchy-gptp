@@ -164,7 +164,9 @@ namespace hooks {
 			}
 
 			if (weaponId == WeaponId::JavelinCannons) {
-				outer = (s16)((double)weapons_dat::OuterSplashRadius[WeaponId::JavelinCannons] * (1 + 0.1 * scbw::get_generic_value(bullet->sourceUnit, ValueId::TitanReactorsStack)));
+				const double splashBase = weapons_dat::OuterSplashRadius[WeaponId::JavelinCannons];
+				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::TitanReactorsStack);
+				outer = (s16)(splashBase * (1 + 0.1 * stacks));
 			}
 
 			if(!isUnitDistanceWithin(target, bullet, outer)) continue;
@@ -184,7 +186,9 @@ namespace hooks {
 			}
 
 			if (weaponId == WeaponId::JavelinCannons) {
-				inner = (s16)((double)weapons_dat::InnerSplashRadius[WeaponId::JavelinCannons] * (1 + 0.1 * scbw::get_generic_value(bullet->sourceUnit, ValueId::TitanReactorsStack)));
+				const double splashBase = weapons_dat::InnerSplashRadius[WeaponId::JavelinCannons];
+				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::TitanReactorsStack);
+				inner = (s16)(splashBase * (1 + 0.1 * stacks));
 			}
 
 			if(isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet,target)){
@@ -204,7 +208,9 @@ namespace hooks {
 			}
 
 			if (weaponId == WeaponId::JavelinCannons) {
-				medium = (s16)((double)weapons_dat::MediumSplashRadius[WeaponId::JavelinCannons] * (1 + 0.1 * scbw::get_generic_value(bullet->sourceUnit, ValueId::TitanReactorsStack)));
+				const double splashBase = weapons_dat::MediumSplashRadius[WeaponId::JavelinCannons];
+				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::TitanReactorsStack);
+				medium = (s16)(splashBase * (1 + 0.1 * stacks));
 			}
 
 			if (weaponId == WeaponId::PlasmidBreath) {
