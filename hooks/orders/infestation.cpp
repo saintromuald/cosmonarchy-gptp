@@ -26,28 +26,17 @@ namespace hooks {
 
 	//replace 0x00402750 canInfest
 	bool unitCanInfest(CUnit* unit) {
-
-		bool returnValue;
-
-		returnValue = (unit->id == UnitId::ZergQueen);
-
-		return returnValue;
-
+		return (unit->id == UnitId::ZergQueen);
 	}
-
-	;
 
 	//replace 0x00402210 CC_CanBeInfested
 	bool isInfestableUnit(CUnit* unit) {
-
 		u32 unitHpTest;
 		u32 unitMaxHp;
 		bool returnValue;
 
-		returnValue = (unit->status & UnitStatus::Completed) && (unit->id == UnitId::command_center);
-
+		returnValue = (unit->status & UnitStatus::Completed) && (unit->id == UnitId::TerranCommandCenter);
 		if (returnValue) {
-
 			unitMaxHp = unit->getMaxHpInGame();
 			unitHpTest = unit->getCurrentHpInGame();
 
@@ -61,43 +50,30 @@ namespace hooks {
 
 	}
 
-	;
-
 	//Based on and replace orders_InfestMine1 (0x004EA4C0)
 	void orderMorphIntoInfested(CUnit* unitInfested) {
-
 		bool bErrorReturnToIdle;
 		bool bStopFunction = false;
-
 		u16 infestedUnitNewId;
 		u16 infestationOverlayId;
-
 		CUnit* unitInfesting = unitInfested->orderTarget.unit;
-
 		bErrorReturnToIdle = (unitInfesting == NULL || !isInfestableUnit(unitInfested));
 
 		if(!bErrorReturnToIdle) {
-
 			if(unitInfested->mainOrderState == 0) {
-
 				//init timer
 				unitInfested->remainingBuildTime = 3;
 				unitInfested->mainOrderState = 2;
 				bStopFunction = true;
-
 			}
 
 			if(!bStopFunction) {
-
 				if(unitInfested->remainingBuildTime != 0) {
-
 					//advancing timer
 					unitInfested->remainingBuildTime--;
 					bStopFunction = true;
-
 				}
 				else {
-
 					//will become 0xffff, this is used by internal functions
 					unitInfested->remainingBuildTime--;
 
@@ -150,19 +126,15 @@ namespace hooks {
 						removeOrderFromUnitQueue(unitInfested, unitInfested->orderQueueHead);
 
 					if(unitInfested->status & UnitStatus::GroundedBuilding) {
-
 						CImage* current_image = unitInfested->sprite->images.head;
 
 						while(current_image != NULL) {
-
 							//script 0x14 in asm code
 							current_image->playIscriptAnim(IscriptAnimation::WorkingToIdle);
 
 							//load next image of the list (or NULL)
 							current_image = current_image->link.next;
-
 						}
-
 					}
 
 					//Just use ImageId::InfestedCommandCenterOverlay instead
@@ -177,51 +149,36 @@ namespace hooks {
 
 					//give the proper button set to the unit
 					changeUnitButtonSet_Sub_4E5D60(unitInfested, infestedUnitNewId);
-
 					scbw::refreshConsole();
 
 				} //if(unitInfested->remainingBuildTime == 0)
-
 			} //if(!bStopFunction)
-
 		} //if(!bErrorReturnToIdle)
-
 		if(!bStopFunction)
 			actUnitReturnToIdle(unitInfested);
-
 	}
-
-
-	;
 
 	//Based on and replace 004EA290 orders_InfestMine4
 	void orderInfestTarget(CUnit* unitInfesting) {
-
 		CUnit* unitInfested = unitInfesting->orderTarget.unit;
 		bool bBuildTimeReachedZero = false;
 		bool bStopFunction = false;
 		bool bReturnToIdle = false;
-
 		Point16 actualpos;
 
 		if(unitInfesting->mainOrderState == 3) {
-
-			//infesting in progress, dealing with timer
-			
+			//infesting in progress, dealing with timer			
 			if(unitInfesting->remainingBuildTime != 0) {
 				unitInfesting->remainingBuildTime--;
 				bStopFunction = true;
 			}
 			else
 				bBuildTimeReachedZero = true;
-
 		}
 		else
 		if(unitInfesting->mainOrderState != 0) // if ==0, wait for EA33F to start infestation logic
 			bStopFunction = true;
-
 		if(!bStopFunction && bBuildTimeReachedZero) { 
-
 			//EA2CC
 			//Infestation timer ended
 
@@ -229,7 +186,6 @@ namespace hooks {
 			//indeed at the same location, and more importantly, if the infested unit got
 			//destroyed, then access to unitInfested->sprite->position would cause a crash
 			if(scbw::checkUnitCollisionPos(unitInfesting, &unitInfesting->sprite->position, &actualpos)) {
-
 				scbw::setUnitPosition(unitInfesting, actualpos.x, actualpos.y);
 				makeToHoldPosition(unitInfesting);
 				showAndEnableUnit(unitInfesting);
@@ -240,24 +196,21 @@ namespace hooks {
 				}
 				else
 					bReturnToIdle = true;
-
 			}
 			else
 				bStopFunction = true;
-
 		} //if(!bStopFunction && bBuildTimeReachedZero) {
 
 		if(bReturnToIdle)
 			actUnitReturnToIdle(unitInfesting);
 		else
 		if(!bStopFunction) { //EA33F
-
 			//not started the infestation logic yet, doing it here
 
 			if(		unitInfested != NULL && 
 					isInfestableUnit(unitInfested) &&
-					unitInfested->mainOrderId != OrderId::InfestMine1) {
-
+					unitInfested->mainOrderId != OrderId::InfestMine1)
+			{
 				hideAndDisableUnit(unitInfesting);								//hide the infesting unit
 				unitInfested->orderTo(OrderId::InfestMine1, unitInfesting);		//order the target to be infested, giving it the infesting unit as order target
 				unitInfesting->mainOrderState = 3;
@@ -267,25 +220,19 @@ namespace hooks {
 			}
 
 			if(!bStopFunction) { //EA377
-
 				//"move to invalid target" logic...I think
-
 				setNextWaypoint_Sub4EB290(unitInfesting);
-
 				if(	unitInfesting->moveTarget.pt.x != unitInfesting->nextTargetWaypoint.x ||
-					unitInfesting->moveTarget.pt.y != unitInfesting->nextTargetWaypoint.y) {
-
+					unitInfesting->moveTarget.pt.y != unitInfesting->nextTargetWaypoint.y)
+				{
 					unitInfesting->nextTargetWaypoint.x = unitInfesting->moveTarget.pt.x;
 					unitInfesting->nextTargetWaypoint.y = unitInfesting->moveTarget.pt.y;
 
 				}
-
 				//EA39E
-
 				if(unitInfesting->orderQueueHead != NULL)
 					actUnitReturnToIdle(unitInfesting);
 				else {
-
 					unitInfesting->order(
 						units_dat::ReturnToIdleOrder[unitInfesting->id],
 						0, 
@@ -293,19 +240,11 @@ namespace hooks {
 						NULL, 
 						UnitId::None, 
 						false);
-
 					actUnitReturnToIdle(unitInfesting);
-
 				}
-
-			}	
-
+			}
 		} //if(!bStopFunction && bBuildTimeReachedZero)
-
-
 	} //void orderInfestTarget(CUnit* unitInfesting)
-
-	;
 
 } //hooks
 
