@@ -140,6 +140,6 @@ namespace hooks {
 		jmpPatch(AI_TrainingBroodling_Wrapper,	0x0043E280, 1);
 //		jmpPatch(AI_AddUnitAi_Wrapper,			0x00433DD0, 2);
 		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper, 0x00433DE7, 1);
-		jmpPatch(AI_BuildTechUpgrade_Wrapper,	0x00431F90, 2);
+//		jmpPatch(AI_BuildTechUpgrade_Wrapper,	0x00431F90, 2);
 	}
 }
