@@ -436,7 +436,7 @@ namespace hooks {
 					monoceros.insert(unit->orderTarget.unit);
 					scbw::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 					auto old = unit->orderTarget.unit;
-					for (int i = 0; i < 8; i++) {
+					for (int i = 0; i < 5; i++) {
 						auto range = hooks::getMaxWeaponRangeHook(unit, WeaponId::MinotaurLaserBattery) + 32;
 						auto newTarget = scbw::UnitFinder::getNearestTarget(
 							unit->getX() - range, unit->getY() - range,

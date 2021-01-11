@@ -966,6 +966,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser &&  //Battlecruiser Monoceros Targeting passive 
+									current_button->iconID == IconId::SingularityCharge)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::TerranPhobos &&  //Phobos Argent Capacitors passive 
 									current_button->iconID == IconId::KhaydarinCore)
 								{
