@@ -724,22 +724,8 @@ namespace hooks {
 						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Can_Create_UnitorBuilding) {
 
 							// Barracks buttonset handling
-							if (current_button->reqVar == UnitId::TerranFirebat
-								|| current_button->reqVar == UnitId::TerranCyprian
-								|| current_button->reqVar == UnitId::TerranMadcap) {
-								if ((*activePortraitUnit)->building.addon == NULL) {
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranGallery) {
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else {
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-							}
-							else
-							if (current_button->reqVar == UnitId::TerranShaman
-							||	current_button->reqVar == UnitId::TerranApostle) {
+							if (current_button->reqVar == UnitId::TerranMedic
+							||	current_button->reqVar == UnitId::TerranShaman) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -792,12 +778,13 @@ namespace hooks {
 							}
 
 							// Starport buttonset handling
-							if (current_button->reqVar == UnitId::TerranPegasus
-							||	current_button->reqVar == UnitId::TerranCentaur) {
+							if (current_button->reqVar == UnitId::TerranSalamander
+								|| current_button->reqVar == UnitId::TerranWyvern
+								|| current_button->reqVar == UnitId::TerranValkyrie) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranPhysicsLab) {
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMunitionsBay) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								else {
@@ -811,20 +798,6 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranControlTower) {
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else {
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-							}
-							else
-							if (current_button->reqVar == UnitId::TerranWyvern
-							||	current_button->reqVar == UnitId::TerranValkyrie
-							||	current_button->reqVar == UnitId::TerranGorgon) {
-								if ((*activePortraitUnit)->building.addon == NULL) {
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMunitionsBay) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								else {
