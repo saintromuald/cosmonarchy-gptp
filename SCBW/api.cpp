@@ -1983,7 +1983,7 @@ u16 random() {
 		case RaceId::Protoss:
 			upgType = UpgradeId::ProtossGroundWeapons;
 		default:
-			upgType = UpgradeId::TerranInfantryWeapons
+			upgType = UpgradeId::TerranInfantryWeapons;
 		}
 		return upgType;
 	}

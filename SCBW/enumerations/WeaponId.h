@@ -155,7 +155,7 @@ enum Enum {
 	SunchaserMissiles							= 24,			// Centaur weapon 2
 	TwinRailguns								= 26,			// Cyprian weapon
 	ErebolShockCannon							= 39,			// Penumbra weapon
-	LancetMissiles								= 51,			// Pegasus weapon 2
+	JupiterDriver								= 51,			// Pazuzu weapon
 	DiscoidRailgun								= 88,			// Savant weapon
     LobotomyMine								= 89,			// Lobotomy Mine weapon
 	FlakCannons									= 93,			// Cyclops weapon
