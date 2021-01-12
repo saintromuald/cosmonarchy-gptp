@@ -15,14 +15,14 @@ namespace {
 			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV a3, EAX
+			MOV a3, AX
 			MOV EAX, [EBP + 0xC]
 			MOV target, EAX
 			MOV EAX, [EBP + 0x10]
-			MOV unitID, EAX
+			MOV unitID, AX
 			POP EAX
 			MOV a2, EDX
-			MOV a1, EAX
+			MOV unit, EAX
 			PUSHAD
 		}
 		result = hooks::genericRightClickUnitProc2(unit, a2, a3, target, unitID);

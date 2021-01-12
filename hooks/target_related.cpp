@@ -804,7 +804,7 @@ namespace {
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV ECX, a1
+			MOV ECX, unit
 			CALL Func_unitIsActiveTransport
 			MOV result, EAX
 			POPAD
