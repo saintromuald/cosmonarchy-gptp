@@ -875,7 +875,13 @@ namespace {
 	s32 orderAllowed(CUnit* a1, u16 a2, s32 a3) {
 		static s32 result;
 		__asm {
-
+			PUSHAD
+			PUSH a3
+			MOVZX BX, a2
+			MOV EAX, a1
+			CALL Func_orderAllowed
+			MOV result, EAX
+			POPAD
 		}
 		return result;
 	}
