@@ -466,7 +466,20 @@ namespace hooks {
 					s32 stacks = scbw::get_generic_value(unit, ValueId::TitanReactorsStack);
 					if (stacks < 5) {
 						scbw::set_generic_value(unit, ValueId::TitanReactorsStack, stacks + 1);
+						scbw::playSound(1372, unit);
 					}
+				}
+
+				// Deconstruction - Pazuzu passive
+				if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
+					s32 upgType = scbw::getUpgradeType(unit);
+					double baseDamage = weapons_dat::DamageAmount[weaponId];
+					double bonusDamage = (double)weapons_dat::DamageBonus[weaponId] * (double)scbw::getUpgradeLevel(unit->playerId, upgType);
+					double finalDamage = baseDamage;
+					if (bonusDamage) {
+						finalDamage = baseDamage + bonusDamage;
+					}
+					unit->inflictDamage((s32)(0.25 * finalDamage));
 				}
 
 				if (weaponId == WeaponId::PlasmaBarrage) {

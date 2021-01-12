@@ -405,6 +405,12 @@ namespace hooks {
 				}
 			}
 
+			// Deconstruction - Pazuzu passive - apply stack
+			if (attacker->id == UnitId::TerranPazuzu
+			&&	scbw::get_generic_value(target, ValueId::Deconstruction) == 0) {
+				scbw::set_generic_value(target, ValueId::Deconstruction, 1);
+			}
+
 			// Savant Entropy Gauntlets behavior - Apply timer and overlay
 			if (attacker != NULL && weaponId == WeaponId::DiscoidRailgun) {
 				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {

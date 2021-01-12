@@ -1974,4 +1974,18 @@ u16 random() {
 		return true;
 	}
 
+	s32 getUpgradeType(CUnit* unit) {
+		s32 race = unit->getRace();
+		double upgType;
+		switch (race) {
+		case RaceId::Zerg:
+			upgType = UpgradeId::ZergMeleeAttacks;
+		case RaceId::Protoss:
+			upgType = UpgradeId::ProtossGroundWeapons;
+		default:
+			upgType = UpgradeId::TerranInfantryWeapons
+		}
+		return upgType;
+	}
+
 } //scbw

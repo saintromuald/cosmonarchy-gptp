@@ -827,7 +827,6 @@ namespace hooks {
 					}
 					if (scbw::get_generic_value(unit, ValueId::DisruptionWebDamage)) {
 						scbw::set_generic_value(unit, ValueId::DisruptionWebDamage, 0);
-						//scbw::printFormattedText("Disruption - Energy Decay - Inflict damage %d", techdata_dat::EnergyCost[TechId::DisruptionWeb]);
 						unit->inflictDamage(techdata_dat::EnergyCost[TechId::DisruptionWeb] * 256, unit, unit->playerId, false, true);
 					}
 				}
@@ -836,7 +835,6 @@ namespace hooks {
 				if (unit->id == UnitId::TerranMadcap && unit->movementFlags & MovementFlags::Accelerating || unit->movementFlags & MovementFlags::Moving) {
 					if (scbw::get_generic_value(unit, ValueId::MadcapStacks) > 0) {
 						scbw::add_generic_value(unit, ValueId::MadcapStacks, -1);
-						//scbw::print(std::to_string(scbw::get_generic_value(unit, ValueId::MadcapStacks)));
 					}
 				}
 

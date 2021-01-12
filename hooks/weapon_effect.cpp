@@ -191,7 +191,7 @@ namespace hooks {
 				inner = (s16)(splashBase * (1 + 0.1 * stacks));
 			}
 
-			if(isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet,target)){
+			if (isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet,target)){
 				weaponBulletShot(target, bullet, divisor); // 100% damage
 				continue;
 			}

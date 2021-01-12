@@ -389,5 +389,6 @@ u16 random();
     void applyEnsnare(CUnit* unit);
     bool isEnabled(CUnit* unit);
     bool isDebuffed(CUnit* unit);
+    s32 getUpgradeType(CUnit* unit);
 
 } //scbw
