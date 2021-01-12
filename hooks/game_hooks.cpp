@@ -651,7 +651,7 @@ namespace hooks {
 				}
 
 
-				if(unit->id==UnitId::ProtossDarkArchon && scbw::get_generic_value(unit,ValueId::RescindMindControl)==1){
+				if(unit->id==UnitId::ProtossMindTyrant && scbw::get_generic_value(unit,ValueId::RescindMindControl)==1){
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::FreeMindControlled, 0, 0, 0);
 					scbw::set_generic_value(unit, ValueId::RescindMindControl, 0);
 				}
@@ -1210,7 +1210,7 @@ namespace hooks {
 				}
 
 				// Permanently Cloaked units decloak on attack
-				if ((unit->id == UnitId::ProtossDarkTemplar || unit->id == UnitId::ProtossBarghest)
+				if ((unit->id == UnitId::ProtossCabalist || unit->id == UnitId::ProtossBarghest)
 					&& !(unit->status & UnitStatus::CloakingForFree)) {
 					auto timer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DarkTemplarTimer, 0);
 					if (timer == 1) {

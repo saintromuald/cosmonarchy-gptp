@@ -679,10 +679,10 @@ namespace hooks {
 			}
 
 			if (attacker != NULL && target != NULL) {
-				if ((attacker->id==UnitId::ProtossBarghest || attacker->id == UnitId::ProtossDarkTemplar) && attacker->playerId) {
+				if ((attacker->id==UnitId::ProtossBarghest || attacker->id == UnitId::ProtossCabalist) && attacker->playerId) {
 					bool silent_kill = false;
 					if (damage >= target->hitPoints
-					&&	attacker->id == UnitId::ProtossDarkTemplar) {
+					&&	attacker->id == UnitId::ProtossCabalist) {
 						silent_kill = true;
 					}
 					if (!silent_kill && !(attacker->visibilityStatus & 1 << target->playerId)) {

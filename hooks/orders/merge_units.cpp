@@ -281,7 +281,7 @@ void orders_WarpingDarkArchon(CUnit* unit) {
 
 			//9479C:
 			mergeStatusIntoUnit_Sub493180(unit,targetUnit);
-			replaceUnitWithType(unit, UnitId::ProtossDarkArchon);
+			replaceUnitWithType(unit, UnitId::ProtossMindTyrant);
 
 			//update stuff related to the beginning of merge process I think
 			function_0049B440(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);

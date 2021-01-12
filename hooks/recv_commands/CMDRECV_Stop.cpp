@@ -71,7 +71,7 @@ void CMDRECV_ReaverStop() {
 		)
 			*u32_0066FF60 = 0x08;
 		else
-		if(	current_unit->id == UnitId::ProtossDarkArchon &&
+		if(	current_unit->id == UnitId::ProtossMindTyrant &&
 			current_unit->mainOrderId == OrderId::CompletingArchonSummon
 		)
 			*u32_0066FF60 = 0x08;
@@ -176,7 +176,7 @@ void CMDRECV_CarrierStop() {
 		)
 			*u32_0066FF60 = 0x08;
 		else
-		if(	current_unit->id == UnitId::ProtossDarkArchon &&
+		if(	current_unit->id == UnitId::ProtossMindTyrant &&
 			current_unit->mainOrderId == OrderId::CompletingArchonSummon
 		)
 			*u32_0066FF60 = 0x08;
@@ -276,7 +276,7 @@ void CMDRECV_Stop(u8 bCommandType) {
 		)
 			*u32_0066FF60 = 0x08;
 		else
-		if(	current_unit->id == UnitId::ProtossDarkArchon &&
+		if(	current_unit->id == UnitId::ProtossMindTyrant &&
 			current_unit->mainOrderId == OrderId::CompletingArchonSummon
 		)
 			*u32_0066FF60 = 0x08;

@@ -155,7 +155,7 @@ namespace hooks {
 					unit->spendUnitEnergy(cloakingEnergyCost);
 
 			}
-			else if (unit->id == UnitId::ProtossDarkArchon && scbw::get_aise_value(unit,NULL,AiseId::SumMindControlCost,0,0)>0) {
+			else if (unit->id == UnitId::ProtossMindTyrant && scbw::get_aise_value(unit,NULL,AiseId::SumMindControlCost,0,0)>0) {
 				auto sum = scbw::get_aise_value(unit, NULL, AiseId::SumMindControlCost, 0, 0)/2;
 				unit->spendUnitEnergy(std::min(unit->energy, (u16)(16 * sum)));
 				if (unit->energy == 0) {
@@ -186,7 +186,7 @@ namespace hooks {
 					return;
 				}
 				int maxEnergy;
-				if (unit->id == UnitId::ProtossDarkArchon
+				if (unit->id == UnitId::ProtossMindTyrant
 				&&	unit->mainOrderId == OrderId::CompletingArchonSummon
 				&&	unit->mainOrderState == 0
 					)

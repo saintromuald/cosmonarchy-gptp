@@ -1018,7 +1018,7 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossDarkTemplar &&  //Dark Templar Silent Strikes passive
+								if ((*activePortraitUnit)->id == UnitId::ProtossCabalist &&  //Dark Templar Silent Strikes passive
 									current_button->iconID == IconId::ProtossGroundWeapons)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -1284,7 +1284,7 @@ namespace hooks {
 								}
 							}
 
-							if ((*activePortraitUnit)->id != UnitId::ProtossDarkArchon) {
+							if ((*activePortraitUnit)->id != UnitId::ProtossMindTyrant) {
 								for (int i = 0; i < generictoggles; i++) {
 									if (current_button->actVar == toggle_abilities[i]) {
 										if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::GenericValue, toggle_values[i], 0) == 1) {
@@ -1298,11 +1298,11 @@ namespace hooks {
 							}
 
 							if (current_button->actVar == TechId::RescindMindControl) {
-								if ((*activePortraitUnit)->id == UnitId::ProtossDarkArchon) {
+								if ((*activePortraitUnit)->id == UnitId::ProtossMindTyrant) {
 									bool canCancel = false;
 									for (int i = 0; i < 12; i++) {
 										CUnit* selU = clientSelectionGroup->unit[i];
-										if (selU != NULL && selU->id == UnitId::ProtossDarkArchon) {
+										if (selU != NULL && selU->id == UnitId::ProtossMindTyrant) {
 											if (scbw::get_aise_value(selU, NULL, AiseId::SumMindControlCost, 0, 0) > 0) {
 												canCancel = true;
 											}

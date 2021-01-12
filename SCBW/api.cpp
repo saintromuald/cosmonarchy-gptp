@@ -724,7 +724,7 @@ bool isAnyMorphMorphResult(u16 id) {
 	}
 	switch (id) {
 	case UnitId::ProtossArchon:
-	case UnitId::ProtossDarkArchon:
+	case UnitId::ProtossMindTyrant:
 		return true;
 	default:
 		break;

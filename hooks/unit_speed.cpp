@@ -160,7 +160,7 @@ namespace hooks {
 		}
 
 		// Leg Enhancements (Dark Templar): gains 120% movespeed
-		else if (unit->id == UnitId::ProtossDarkTemplar) {
+		else if (unit->id == UnitId::ProtossCabalist) {
 			speed += speed / 5;
 		}
 

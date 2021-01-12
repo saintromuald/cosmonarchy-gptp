@@ -35,7 +35,7 @@ void CMDRECV_MergeDarkArchon() {
 
 		while(current_unit != NULL) {
 
-			if(current_unit->id == UnitId::ProtossDarkTemplar) {
+			if(current_unit->id == UnitId::ProtossCabalist) {
 				templars_stored[templars_stored_count] = current_unit;
 				templars_stored_count++;
 			}

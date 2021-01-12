@@ -322,7 +322,7 @@ namespace hooks
 		case TechId::Reconstitution://also rescind mind control
 		{
 			auto zoryusthaleth = true;
-			if (firstInList->id == UnitId::ProtossDarkArchon) {
+			if (firstInList->id == UnitId::ProtossMindTyrant) {
 				zoryusthaleth = false;
 			}
 			
