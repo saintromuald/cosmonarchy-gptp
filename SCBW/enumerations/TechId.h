@@ -71,6 +71,7 @@ enum Enum {
 //Protoss
 	PlanetCracker			= 29, // Star Sovereign damage ability
 	PhaseLink				= 33, // Clarion shield damage distribution ability
+	RescindMindControl		= 26, // Dark Archon option
 
 //Zerg
 	EnsnaringBrood			= 13, // Queen disruptive enchantment ability

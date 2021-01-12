@@ -650,6 +650,12 @@ namespace hooks {
 					scbw::set_generic_value(unit, ValueId::IsReviving, 0);
 				}
 
+
+				if(unit->id==UnitId::ProtossDarkArchon && scbw::get_generic_value(unit,ValueId::RescindMindControl)==1){
+					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::FreeMindControlled, 0, 0, 0);
+					scbw::set_generic_value(unit, ValueId::RescindMindControl, 0);
+				}
+
 				//Zoryusthaleth - Reconstitution
 
 				if (unit->id == UnitId::ZergZoryusthaleth &&

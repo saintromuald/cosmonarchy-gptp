@@ -293,6 +293,7 @@ namespace ValueId {
 		TitanReactorsTimer							= 146,
 		Deconstruction								= 147,
 		DeconstructionPlayer						= 148,
+		RescindMindControl							= 149,
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

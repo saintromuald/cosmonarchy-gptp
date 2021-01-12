@@ -319,19 +319,35 @@ namespace hooks
 			scbw::SendCommand(buf, 0xc);
 			break;
 		}
-		case TechId::Reconstitution:
+		case TechId::Reconstitution://also rescind mind control
 		{
-			int action = 1;//on
-			if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::Reconstitution, 0) == 1) {
-				action = 0;//off
+			auto zoryusthaleth = true;
+			if (firstInList->id == UnitId::ProtossDarkArchon) {
+				zoryusthaleth = false;
 			}
-			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
-			buf[0] = 0x99;//new general command
-			buf[1] = NewGameCommand::GenericSwitchAbility;
-			buf[2] = action;
-			buf[3] = *ACTIVE_PLAYER_ID;
-			buf[4] = ValueId::Reconstitution;
-			scbw::SendCommand(buf, 0xc);
+			
+			int action = 1;//on
+			if (zoryusthaleth) {
+				if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::Reconstitution, 0) == 1) {
+					action = 0;//off
+				}
+				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+				buf[0] = 0x99;//new general command
+				buf[1] = NewGameCommand::GenericSwitchAbility;
+				buf[2] = action;
+				buf[3] = *ACTIVE_PLAYER_ID;
+				buf[4] = ValueId::Reconstitution;
+				scbw::SendCommand(buf, 0xc);
+			}
+			else {
+				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+				buf[0] = 0x99;//new general command
+				buf[1] = NewGameCommand::GenericSwitchAbility;
+				buf[2] = action;
+				buf[3] = *ACTIVE_PLAYER_ID;
+				buf[4] = ValueId::RescindMindControl;
+				scbw::SendCommand(buf, 0xc);
+			}
 			break;
 		}
 /*		case TechId::UnusedTech26://Cyprian Safety Off/Safety On

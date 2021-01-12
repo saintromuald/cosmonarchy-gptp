@@ -1270,7 +1270,8 @@ namespace hooks {
 									current_button->iconID = 365;
 								}
 							}
-							if (current_button->actVar == TechId::SwarmingOmen ) {// rescind control
+							
+							if (current_button->actVar == TechId::SwarmingOmen ) {
 								if ((*activePortraitUnit)->id == UnitId::TerranCyprian) {
 									if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
 										//current_button->actStringID = 1633;
@@ -1281,7 +1282,23 @@ namespace hooks {
 										current_button->iconID = 374;
 									}
 								}
-								else if ((*activePortraitUnit)->id == UnitId::ProtossDarkArchon) {
+							}
+
+							if ((*activePortraitUnit)->id != UnitId::ProtossDarkArchon) {
+								for (int i = 0; i < generictoggles; i++) {
+									if (current_button->actVar == toggle_abilities[i]) {
+										if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::GenericValue, toggle_values[i], 0) == 1) {
+											current_button->iconID = button_toggle_off[i];
+										}
+										else {
+											current_button->iconID = button_toggle_on[i];
+										}
+									}
+								}
+							}
+
+							if (current_button->actVar == TechId::RescindMindControl) {
+								if ((*activePortraitUnit)->id == UnitId::ProtossDarkArchon) {
 									bool canCancel = false;
 									for (int i = 0; i < 12; i++) {
 										CUnit* selU = clientSelectionGroup->unit[i];
@@ -1293,17 +1310,6 @@ namespace hooks {
 									}
 									if (!canCancel) {
 										current_button_state = BUTTON_STATE::Invisible;
-									}
-								}
-							}
-
-							for (int i = 0; i < generictoggles; i++) {
-								if (current_button->actVar == toggle_abilities[i]) {
-									if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::GenericValue, toggle_values[i], 0) == 1) {
-										current_button->iconID = button_toggle_off[i];
-									}
-									else {
-										current_button->iconID = button_toggle_on[i];
 									}
 								}
 							}
