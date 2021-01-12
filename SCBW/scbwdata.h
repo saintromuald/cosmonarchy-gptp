@@ -332,6 +332,12 @@ SCBW_DATA(		s32*,				isInGroundSplashProc,			0x0064DEB8);
 SCBW_DATA(		AiTown*,			AiArray,						0x006AA090);
 SCBW_DATA(		AiTown*,			AiDataList,						0x006AA050);	// sizeof 0x64[0x8]
 
+// For CMDRECV_HoldPosition
+SCBW_DATA(		s16*,				mapHeightPixels,				0x006284B4);
+SCBW_DATA(		s32*,				orderType4Position,				0x006D5C20);
+SCBW_DATA(		s32*,				orderType4Target,				0x006D5C24);
+
+
 
 //////////////////////////////////////////////////////////////// @}
 

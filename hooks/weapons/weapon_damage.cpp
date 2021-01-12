@@ -409,6 +409,7 @@ namespace hooks {
 			if (attacker->id == UnitId::TerranPazuzu
 			&&	scbw::get_generic_value(target, ValueId::Deconstruction) == 0) {
 				scbw::set_generic_value(target, ValueId::Deconstruction, 1);
+				scbw::set_generic_value(target, ValueId::DeconstructionPlayer, attacker->playerId);
 			}
 
 			// Savant Entropy Gauntlets behavior - Apply timer and overlay

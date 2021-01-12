@@ -38,9 +38,16 @@ namespace {
 	void ordersNothing2(CUnit* a1);
 	void orderComputerClear(CUnit* a1, __int8 a2);
 
-	// for updateDisruptionWebStatus
-//	CUnit** getAllUnitsInBounds(Box32* a1);												// 0042FF80
-//	s32 setUnderDisruptionWeb_Func(s32);												// 004EB170
+	// for genericRightClickUnitProc2
+	bool unitIsActiveTransport(CUnit* unit);											// 004E6BA0
+	s32 isOrderValid(char a1, CUnit* a2, s32 a3, CUnit* a4, s32 a5);					// 00474D90
+	bool canEnterTransport(CUnit* a1, CUnit* a2);										// 004E6E00
+	u16 getUnitAbilityErrorStatString(CUnit* a1, char a2, s32 a3);						// 00491E80
+
+	// for CMDRECV_HoldPosition
+	CUnit* getActivePlayerFirstSelection();												// 0049A850
+	s32 orderAllowed(CUnit* a1, u16 a2, s32 a3);										// 0046DC20
+	void targetedOrder(s16 a1, s32 a2, CUnit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10);	// 004754F0
 }
 
 namespace hooks {
@@ -369,143 +376,83 @@ namespace hooks {
 			}
 		}
 	}
-	/*
-	s32 setUnderDisruptionWeb(CUnit* a1) {
-		s32 v1; // eax
-		s32 v2; // eax
-		s16* v4; // edx
-		s32 v5; // esi
-		s32 v6; // ecx
-		u32 v7; // eax
-		void* v8; // edi
-		CUnit* v9; // eax
-		CUnit* v11; // ecx
 
-		u16 v3; // ax
-
-		v1 = a1->status;
-		if (v1 & UnitStatus::InAir)
-			return 0;
-		v2 = v1 | UnitStatus::CanNotAttack;
-		a1->status = v2;
-		if (v2 & UnitStatus::IsHallucination
-		|| (v3 = a1->id, v3 == UnitId::overlord) && scbw::getUpgradeLevel(a1->playerId,UpgradeId::VentralSacs)==0
-		|| !units_dat::SpaceProvided[v3]) {
-			v11 = a1->subunit;
-			if (v11)
-				v11->status |= UnitStatus::CanNotAttack;
-			return 0;
-		}
-//		v4 = a1->loadedUnit.index;
-		v5 = 8;
-		do {
-			v6 = (u16)*v4;
-			if (*v4) {
-				v7 = 336 * (v6 & 0x7FF);
-				v8 = unkArray_59CB64[v7 / 4];
-				v9 = &unitReference[v7 / 0x150];
-				if (v8) {
-					if ((v9->mainOrderId || v9->mainOrderState != 1) && (u8)v9->targetOrderSpecial == v6 >> 11)
-						v9->status |= 0x8000u;
-				}
-			}
-			++v4;
-			--v5;
-		} while (v5);
-		return 0;
-	}*/
-
-	/*
-	s32 updateDisruptionWebStatus() { // 004EB2F0
-
-		
-		CUnit* i; // edx
-		s32 v1; // eax
-		u32 v2; // eax
-		u16 v3; // ax
-		s32 v4; // edi
-		s16* v5; // esi
-		s32 v6; // ecx
-		CUnit* v7; // eax
-		u32 v8; // eax
-		void* v9; // ebx
-		CUnit* v10; // eax
+	s32 genericRightClickUnitProc2(CUnit* unit, s32 a2, s16 a3, CUnit* target, s16 unitID) { // 00455E00
 		s32 result; // eax
-		CUnit* j; // edi
-		CSprite* v13; // eax
-		s32* v14; // esi
-		s16 v15; // cx
-		s32 k; // ecx
-		s32 v17; // ecx
-		s16 a1; // [esp+Ch] [ebp-8h]
-		s16 v19; // [esp+Eh] [ebp-6h]
-		s16 v20; // [esp+10h] [ebp-4h]
-		s16 v21; // [esp+12h] [ebp-2h]
+		CUnit* targetVar; // esi
 
-		for (i = *firstVisibleUnit; i; i = i->link.next) {
-			v1 = i->status;
-			if (!(v1 & 4) || (v1 & 0x8000) != 0) {
-				v2 = v1 & 0xFFFF7FFF;
-				i->status = v2;
-				if (!(v2 & 0x40000000)
-				&& ((v3 = i->id, v3 != 42) || upgradesLevelSC[(u8)i->playerId][24])
-				&& units_dat::SpaceProvided[v3]) {
-					v5 = (WORD*)i->loadedUnit.index;
-					v4 = 8;
-					do {
-						v6 = *v5;
-						if (*v5) {
-							v8 = 336 * (v6 & 0x7FF);
-							v9 = unkArray_59CB64[v8 / 4];
-							v7 = &unitReference[v8 / 0x150];
-							if (v9)	{
-								if ((v7->mainOrderId || v7->mainOrderState != 1) && (u8)v7->targetOrderSpecial == v6 >> 11)
-									v7->status &= 0xFFFF7FFF;
-							}
-						}
-						++v5;
-						--v4;
-					} while (v4);
-				}
-				else {
-					v10 = i->subunit;
-					if (v10)
-						v10->status &= 0xFFFF7FFF;
-				}
-			}
+		if (unit->status & UnitStatus::GroundedBuilding) {
+			if (unit->isFactory())
+				result = OrderId::RallyPoint2 - (target != 0);
+			else
+				result = OrderId::Nothing2;
+			return result;
 		}
-		result = completed_unit_counts[5][131];
-		if (completed_unit_counts[5][131]) {
-			for (j = firstPlayerUnit[11]; j; j = j->player_link.next) {
-				if (j->id == 105)	{
-					v13 = j->sprite;
-					v15 = v13->position.y;
-					ByteOperations::SetLowWord(v13, v13->position.x);
-					v19 = v15 - units_dat::UnitBounds[105].top;
-					v21 = v15 + units_dat::UnitBounds[105].bottom;
-					a1 = (s16)v13 - units_dat::UnitBounds[105].left;
-					v20 = (s16)v13 + units_dat::UnitBounds[105].right;
-					v14 = (s32*)getAllUnitsInBounds((Box32*)&a1);
-					if (setUnderDisruptionWeb_Func || !*v14) {
-						for (k = *v14; k; ++v14) {
-							if (setUnderDisruptionWeb_Func(k))
-								break;
-							k = v14[1];
-						}
-					}
-					v17 = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]];
-					result = tempUnitsListArraysCountsListLastIndex[0]-- - 1;
-					*tempUnitsListCurrentArrayCount = v17;
-				}
-			}
+		targetVar = target;
+		if (!target) {
+			if ((unit->id == UnitId::ZergQueen) && unitID != UnitId::None)
+				return OrderId::Rightclickaction;
+			return OrderId::Move;
+		}
+		if (unitIsActiveTransport(unit) && isOrderValid(OrderId::Pickup2, unit, 0, targetVar, 0))
+			return OrderId::Pickup2;
+		if (unitIsActiveTransport(targetVar) && canEnterTransport(targetVar, unit))
+			return OrderId::EnterTransport;
+		if (targetVar->status & UnitStatus::Burrowed)
+			return OrderId::Move;
+		if (unit->id != UnitId::ZergQueen
+			|| targetVar->status & UnitStatus::Invincible
+			|| getUnitAbilityErrorStatString(targetVar, unit->playerId, 12) != 0)
+		{
+			result = (u8)(unit->id != UnitId::TerranMedic ? 0 : 0x80) + OrderId::Follow;
+		}
+		else
+		{
+			result = OrderId::InfestMine2;
 		}
 		return result;
-	}*/
+	}
+
+	CUnit* CMDRECV_HoldPosition(s32 a1) { // 004C20C0
+		CUnit* result; // eax
+		CUnit* i; // esi
+		s16 unitId; // ax
+		u8 orderId; // al
+
+		*((s8*)&mapHeightPixels + 2) = 0;
+		result = getActivePlayerFirstSelection();
+		for (i = result; result; i = result)
+		{
+			unitId = i->id;
+			if (unitId != UnitId::ProtossCarrier) {
+				if (unitId != UnitId::ProtossReaver) {
+					if (unitId != UnitId::ZergQueen) {
+						if (unitId != UnitId::ZergSkryling && unitId != UnitId::ZergInfestedTerran)
+							orderId = unitId != UnitId::TerranMedic ? 107 : 178;
+						else
+							orderId = OrderId::HoldPosition4;
+					}
+					else {
+						orderId = OrderId::HoldPosition3;
+					}
+				}
+				else {
+					orderId = OrderId::ReaverHold;
+				}
+			}
+			else {
+				orderId = OrderId::HoldPosition1;
+			}
+			if (orderAllowed(i, orderId, *ACTIVE_NATION_ID) == 1)
+				targetedOrder(0, UnitId::None, i, 0, 1, *(s8*)(a1 + 1) != 0, orderId, 0, *orderType4Position, *orderType4Target);
+			result = getActivePlayerFirstSelection();
+		}
+		return result;
+	}
 }
 
 namespace {
-	// For isUnitTargetOutOfMaxRange
-
+	// for isUnitTargetOutOfMaxRange
 	const u32 Func_isTargetVisible = 0x004E5E30;
 	unsigned int isTargetVisible(CUnit* a1, CUnit* a2) {
 		static unsigned int result;
@@ -553,8 +500,7 @@ namespace {
 		return result2 = (bool)result;
 	};
 
-	// For isReadyToAttack
-
+	// for isReadyToAttack
 	const u32 Func_getDistanceToUnit = 0x00430D30;
 	unsigned int getDistanceToUnit(CUnit* a1, CUnit* a2) {
 		static unsigned int result;
@@ -667,7 +613,6 @@ namespace {
 	};
 
 	// for ordersWatchTarget
-
 	const u32 Func_unitCanAttackTarget = 0x00476730;
 	bool unitCanAttackTarget(CUnit* a1, CUnit* a2, int a3) {
 		static int result;
@@ -853,30 +798,104 @@ namespace {
 		}
 	}
 
-	// for updateDisruptionWebStatus
-	const u32 Func_getAllUnitsInBounds = 0x0042FF80;
-	CUnit** getAllUnitsInBounds(Box32* a1) {
-		static CUnit** result;
+	// for genericRightClickUnitProc2
+	const u32 Func_unitIsActiveTransport = 0x004E6BA0;
+	bool unitIsActiveTransport(CUnit* unit) {
+		static s32 result;
 		__asm {
 			PUSHAD
-			MOV EAX, a1
-			CALL Func_getAllUnitsInBounds
+			MOV ECX, a1
+			CALL Func_unitIsActiveTransport
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_isOrderValid = 0x00474D90;
+	s32 isOrderValid(char a1, CUnit* a2, s32 a3, CUnit* a4, s32 a5) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH a5
+			MOV ESI, a4
+			MOV EDI, a3
+			MOV EBX, a2
+			MOVZX AL, a1
+			CALL Func_isOrderValid
 			MOV result, EAX
 			POPAD
 		}
 		return result;
 	}
 
-	const u32 Func_setUnderDisruptionWeb_Func = 0x004EB170;
-	s32 setUnderDisruptionWeb_Func(s32 a1) {
+	const u32 Func_canEnterTransport = 0x004E6E00;
+	bool canEnterTransport(CUnit* a1, CUnit* a2) {
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV ECX, a1
-			CALL Func_setUnderDisruptionWeb_Func
+			PUSH a2
+			MOV EAX, a1
+			CALL Func_canEnterTransport
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_getUnitAbilityErrorStatString = 0x00491E80;
+	u16 getUnitAbilityErrorStatString(CUnit* a1, char a2, s32 a3) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH a3
+			MOVZX BL, a2
+			MOV EAX, a1
+			CALL Func_getUnitAbilityErrorStatString
+			MOV result, EAX
+			POPAD
+		}
+		return (u16)result;
+	}
+
+	// for CMDRECV_HoldPosition
+	const u32 Func_getActivePlayerFirstSelection = 0x0049A850;
+	CUnit* getActivePlayerFirstSelection() {
+		static CUnit* result;
+		__asm {
+			PUSHAD
+			CALL Func_getActivePlayerFirstSelection
 			MOV result, EAX
 			POPAD
 		}
 		return result;
+	}
+
+	const u32 Func_orderAllowed = 0x0046DC20;
+	s32 orderAllowed(CUnit* a1, u16 a2, s32 a3) {
+		static s32 result;
+		__asm {
+
+		}
+		return result;
+	}
+
+	const u32 Func_targetedOrder = 0x004754F0;
+	void targetedOrder(s16 a1, s32 a2, CUnit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10) {
+		__asm {
+			PUSHAD
+			PUSH a10
+			PUSH a9
+			PUSH a8
+			PUSH a7
+			PUSH a6
+			PUSH a5
+			MOVZX AX, a4
+			MOV ESI, a3
+			MOV EBX, a2
+			MOVZX DX, a1
+			CALL Func_targetedOrder
+			POPAD
+		}
 	}
 }

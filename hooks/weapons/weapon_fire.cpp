@@ -479,7 +479,7 @@ namespace hooks {
 					if (bonusDamage) {
 						finalDamage = baseDamage + bonusDamage;
 					}
-					unit->inflictDamage((s32)(0.25 * finalDamage));
+					unit->inflictDamage((s32)(0.25 * finalDamage), unit, scbw::get_generic_value(unit, ValueId::DeconstructionPlayer), false);
 				}
 
 				if (weaponId == WeaponId::PlasmaBarrage) {
