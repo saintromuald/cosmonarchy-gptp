@@ -931,7 +931,7 @@ namespace hooks {
 				}
 
 				// Savant - Entropy Gauntlets
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::EnergyDecay, 0) == 1) {
+				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::EntropyGauntlets, 0) == 1) {
 					u32 overlayImageId;
 					if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
 						overlayImageId = 1108;

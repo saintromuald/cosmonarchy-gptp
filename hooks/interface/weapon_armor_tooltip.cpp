@@ -389,7 +389,7 @@ namespace hooks {
 		addStatus(statuses, "Adrenal Frenzy", -1, scbw::get_generic_timer(unit, ValueId::NathrokorTimer), TimerType::Aise);
 
 		// Aise Value
-		addStatus(statuses, "Energy Decay", scbw::get_generic_value(unit, ValueId::EnergyDecay));
+		addStatus(statuses, "Energy Decay", scbw::get_generic_value(unit, ValueId::EntropyGauntlets));
 		addStatus(statuses, "Armor Reduction", scbw::get_generic_value(unit, ValueId::ArmorReduce));
 		addStatus(statuses, "Maverick Feeders", ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MADCAP_PASSIVE_DECAY_TIME));
 		addStatus(statuses, "Reverse Thrust", scbw::get_generic_value(unit, ValueId::ReverseThrust));

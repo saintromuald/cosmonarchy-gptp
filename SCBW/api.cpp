@@ -1722,9 +1722,9 @@ u16 random() {
 			unit->irradiatePlayerId = 8;
 		}
 
-		// Remove Energy Decay
-		if (scbw::get_generic_timer(unit, ValueId::EnergyDecay) > 0) {
-			scbw::set_generic_timer(unit, ValueId::EnergyDecay, 1);
+		// Remove Entropy Gauntlets
+		if (scbw::get_generic_timer(unit, ValueId::EntropyGauntlets) > 0) {
+			scbw::set_generic_timer(unit, ValueId::EntropyGauntlets, 1);
 		}
 
 		// Remove armor rend (generic)
@@ -1773,6 +1773,11 @@ u16 random() {
 		// Remove Devourer Acid Spores
 		if (unit->acidSporeCount != 0)
 			unit->removeAcidSpores();
+
+		// Remove Deconstruction
+		if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
+			scbw::set_generic_value(unit, ValueId::Deconstruction, 0);
+		}
 
 		//was hardcoded in original code
 		scbw::refreshConsole();
@@ -1848,16 +1853,35 @@ u16 random() {
 		// NOTE: classic timer formula is (([real seconds / 0.042) / 8)
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
 
+		// Get overlay info
+		s32 overlayOffset = 0;
+		if (units_dat::BaseProperty[child->id] & UnitProperty::MediumOverlay) {
+			overlayOffset = 1;
+		}
+		else if (units_dat::BaseProperty[child->id] & UnitProperty::LargeOverlay) {
+			overlayOffset = 2;
+		}
+
 		// Inherit Ensnare
 		if (parent->ensnareTimer != 0) {
 			child->ensnareTimer = parent->ensnareTimer;
-			//specific update following ensnare removal
+			if (!(child->sprite->getOverlay(ImageId::EnsnareOverlay_Small + overlayOffset))) {
+				child->sprite->createOverlay(ImageId::EnsnareOverlay_Small + overlayOffset);
+			}
 			child->updateSpeed();
 		}
 
 		// Inherit Plague
 		if (parent->plagueTimer != 0) {
 			child->plagueTimer = parent->plagueTimer;
+			if (!(child->sprite->getOverlay(ImageId::PlagueOverlay_Small + overlayOffset))) {
+				child->sprite->createOverlay(ImageId::PlagueOverlay_Small + overlayOffset);
+			}
+		}
+
+		// Inherit Parasite
+		if (scbw::get_generic_unit(parent, ValueId::ParasiteSource) != nullptr) {
+			scbw::set_generic_unit(child, ValueId::ParasiteSource, scbw::get_generic_unit(parent, ValueId::ParasiteSource));
 		}
 
 		// Inherit armor rend (generic)
@@ -1911,6 +1935,73 @@ u16 random() {
 		if (parent->irradiateTimer != 0)
 			child->irradiateTimer = parent->irradiateTimer;
 
+		// Inherit Defensive Matrix
+		if (parent->defensiveMatrixTimer > 0) {
+			child->defensiveMatrixHp = parent->defensiveMatrixHp;
+			child->defensiveMatrixTimer = parent->defensiveMatrixTimer;
+		}
+
+		// Inherit Stasis Field
+		if (parent->stasisTimer > 0) {
+			child->stasisTimer = parent->stasisTimer;
+		}
+
+		// Inherit Deconstruction
+		if (scbw::get_generic_value(parent, ValueId::Deconstruction) > 0) {
+			scbw::set_generic_value(child, ValueId::Deconstruction, scbw::get_generic_value(parent, ValueId::Deconstruction));
+			if (!(child->sprite->getOverlay(1332 + overlayOffset))) {
+				child->sprite->createOverlay(1332 + overlayOffset);
+			}
+		}
+
+		// Inherit Entropy Gauntlets
+		if (scbw::get_generic_timer(parent, ValueId::EntropyGauntlets) > 0) {
+			scbw::set_generic_timer(child, ValueId::EntropyGauntlets, scbw::get_generic_timer(parent, ValueId::EntropyGauntlets));
+			if (!(child->sprite->getOverlay(1107 + overlayOffset))) {
+				child->sprite->createOverlay(1107 + overlayOffset);
+			}
+		}
+
+		// Inherit Sublime Shepherd
+		if (scbw::get_generic_value(parent, ValueId::SublimeShepherd) > 0) {
+			scbw::set_generic_value(child, ValueId::SublimeShepherd, scbw::get_generic_value(parent, ValueId::SublimeShepherd));
+		}
+
+		// Inherit Cowardice
+
+		// Inherit Malice
+
+		// Inherit Terminal Surge
+		if (scbw::get_generic_value(parent, ValueId::TerminalSurge) > 0) {
+			scbw::set_generic_value(child, ValueId::TerminalSurge, scbw::get_generic_value(parent, ValueId::TerminalSurge));
+		}
+
+		// Inherit Astral Blessing
+		if (scbw::get_generic_timer(parent, ValueId::EcclesiastTimer) > 0) {
+			scbw::set_generic_value(child, ValueId::EcclesiastStack, scbw::get_generic_value(parent, ValueId::EcclesiastStack));
+			scbw::set_generic_value(child, ValueId::EcclesiastPlayer, scbw::get_generic_value(parent, ValueId::EcclesiastPlayer));
+			scbw::set_generic_timer(child, ValueId::EcclesiastTimer, scbw::get_generic_timer(parent, ValueId::EcclesiastTimer));
+		}
+
+		// Inherit Stellar Enforcement
+		if (scbw::get_generic_value(parent, ValueId::StellarEnforcement) > 0) {
+			scbw::set_generic_value(child, ValueId::StellarEnforcement, get_generic_value(parent, ValueId::StellarEnforcement));
+		}
+
+		// Inherit Adrenal Frenzy
+		if (scbw::get_generic_timer(parent, ValueId::NathrokorTimer) > 0) {
+			scbw::set_generic_timer(child, ValueId::NathrokorTimer, scbw::get_generic_timer(parent, ValueId::NathrokorTimer));
+		}
+
+		// Inherit Swarming Omen
+		if (scbw::get_generic_timer(parent, ValueId::SwarmingOmenTimer) > 0) {
+			scbw::set_generic_value(child, ValueId::SwarmingOmenStatus, scbw::get_generic_value(parent, ValueId::SwarmingOmenStatus));
+			scbw::set_generic_timer(child, ValueId::SwarmingOmenTimer, scbw::get_generic_timer(parent, ValueId::SwarmingOmenTimer));
+		}
+
+		// Inherit Kaiser Rampage
+
+
 		//was hardcoded in original code
 		scbw::refreshConsole();
 	}
@@ -1921,7 +2012,7 @@ u16 random() {
 			|| scbw::get_generic_timer(unit, ValueId::CaptivatingClawsTimer) > 0
 			|| scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0
 			|| scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) > 0
-			|| scbw::get_generic_value(unit, ValueId::EnergyDecay) > 0
+			|| scbw::get_generic_value(unit, ValueId::EntropyGauntlets) > 0
 			|| scbw::get_generic_value(unit, ValueId::ArmorReduce) > 0
 			|| unit->irradiateTimer != 0
 			|| unit->ensnareTimer != 0
@@ -1929,8 +2020,9 @@ u16 random() {
 			|| unit->maelstromTimer != 0
 			|| unit->acidSporeCount != 0
 			|| unit->plagueTimer != 0
-			|| unit->parasiteFlags;
-		// TODO: add optical flare, cowardice, malice + also add them to status tooltip
+			|| unit->parasiteFlags
+			|| unit->isBlind;
+		// TODO: cowardice, malice + also add them to status tooltip
 	}
 
 	void applyEnsnare(CUnit* unit) { // 004F45E0

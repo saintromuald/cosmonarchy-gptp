@@ -210,11 +210,11 @@ namespace ValueId {
 		CaptivatingClawsIndex						= 61,
 		CaptivatingClawsStacks						= 62,
 
-		EnergyDecay									= 63,
+		EntropyGauntlets							= 63,
 		RadiationShockwaveCount						= 64,
 		KalkalethMissilePos							= 65,
 		DecaySavant									= 67,
-		VassalStacks								= 68,
+		TerminalSurge								= 68,
 		LobotomySlow								= 69,
 		EmpyreanMissilePos							= 70,
 		ProtossSwitchOrderState						= 71,

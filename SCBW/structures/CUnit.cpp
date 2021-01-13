@@ -574,7 +574,7 @@ void CUnit::spendUnitEnergy(u32 energySpent) {
 	if(!(*CHEAT_STATE & CheatFlags::TheGathering))
 		this->energy -= energySpent;
 	
-	if (scbw::get_aise_value(this, NULL, AiseId::GenericTimer, ValueId::EnergyDecay, 0) > 1) {
+	if (scbw::get_aise_value(this, NULL, AiseId::GenericTimer, ValueId::EntropyGauntlets, 0) > 1) {
 		this->inflictDamage(energySpent, scbw::get_generic_unit(this, ValueId::DecaySavant), -1, false, true, 0, true);
 	}
 }

@@ -43,7 +43,7 @@ public:
 		if (!scbw::isAlliedTo(vassal->playerId, unit->playerId)) {
 			return;
 		}
-		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::VassalStacks, 1, 0);
+		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::TerminalSurge, 1, 0);
 	}
 };
 

@@ -31,7 +31,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 
 	// Vassal Terminal Surge behavior
 	if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
-		double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::VassalStacks), 0, 10);
+		double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::TerminalSurge), 0, 10);
 		if (stacks > 0) {
 			double newCooldown = (double)cooldown * (1.0 - stacks / 13.333);
 			cooldown = newCooldown;

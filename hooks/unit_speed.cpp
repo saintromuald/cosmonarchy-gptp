@@ -171,7 +171,7 @@ namespace hooks {
 
 		// Vassal Terminal Surge: increase movespeed when any nearby Simulacrum dies
 		else if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
-			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::VassalStacks), 0, 10)*1.5;
+			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::TerminalSurge), 0, 10)*1.5;
 			if (stacks > 0) {
 				speed = (double)speed * ((10.0 + stacks) / 10.0);
 			}
@@ -334,7 +334,7 @@ namespace hooks {
 
 		// Vassal Terminal Surge
 		else if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
-			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::VassalStacks), 0, 10)*1.5;
+			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::TerminalSurge), 0, 10)*1.5;
 			if (stacks > 0) {
 				acceleration = (double)acceleration * ((10.0 + stacks) / 10.0);
 			}

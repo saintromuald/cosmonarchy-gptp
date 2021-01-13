@@ -415,7 +415,7 @@ namespace hooks {
 			// Savant Entropy Gauntlets behavior - Apply timer and overlay
 			if (attacker != NULL && weaponId == WeaponId::DiscoidRailgun) {
 				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
-					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::EnergyDecay, (5 * 24) + 1, 0);
+					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::EntropyGauntlets, (5 * 24) + 1, 0);
 					scbw::sendGPTP_aise_cmd(target, attacker, GptpId::SetGenericUnit, ValueId::DecaySavant, 0, 0);
 					u32 overlayImageId;
 					if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay)
