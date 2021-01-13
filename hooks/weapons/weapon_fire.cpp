@@ -343,14 +343,12 @@ namespace hooks {
 				return;
 			}
 			getWeaponHitPos(unit, &x, &y);
-
 		}
 		else if (behavior == WeaponBehavior::AppearOnTargetSite) {
 			x = unit->orderTarget.pt.x;
 			y = unit->orderTarget.pt.y;
 		}
-		else
-		{
+		else {
 			s32 forwardOffset = weapons_dat::ForwardOffset[weaponId];
 
 			x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
@@ -359,14 +357,12 @@ namespace hooks {
 		}
 		if (weapons_dat::FlingyId[weaponId] != 0) {
 			bool good = true;
-
 			// Wyvern Land Grab ability
 			if (unit->id == UnitId::TerranWyvern
 			&& unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell
 			&& scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabOn, 0) == 1) {
 				good = false;
 			}
-
 			// Lurker Seismic Spines behavior
 			if (weaponId == WeaponId::SubterraneanSpines) {
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::LurkerETA, 17, 0);
@@ -387,7 +383,6 @@ namespace hooks {
 				&& scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TempoChange,0)==1) {
 					weaponId = WeaponId::ImperiosoMissiles;
 				}
-
 				// Savant Power Siphon ability
 				if (weaponId == WeaponId::PowerSiphon) {
 					u32 energy = 0;
@@ -431,7 +426,7 @@ namespace hooks {
 						}
 					}
 				}
-
+				// Monoceros Targeting - Battlecruiser behavior
 				else if (weaponId == WeaponId::MinotaurLaserBattery) {
 					std::set<CUnit*> monoceros;
 					monoceros.insert(unit->orderTarget.unit);
@@ -459,8 +454,7 @@ namespace hooks {
 					}
 					unit->orderTarget.unit = old;
 				}
-
-				// Titan Reactors - Heracles passive - Refresh timer on attack and add stack
+				// Titan Reactors - Heracles behavior - Refresh timer on attack and add stack
 				if (weaponId == WeaponId::JavelinCannons) {
 					scbw::set_generic_timer(unit, ValueId::TitanReactorsTimer, 24*5);
 					s32 stacks = scbw::get_generic_value(unit, ValueId::TitanReactorsStack);
@@ -469,7 +463,7 @@ namespace hooks {
 						scbw::playSound(1372, unit);
 					}
 				}
-
+				// Missile spawn positions
 				if (weaponId == WeaponId::PlasmaBarrage) {
 					// Empyrean missile spawn positions
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::EmpyreanMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);

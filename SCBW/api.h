@@ -392,5 +392,6 @@ u16 random();
     s32 getUpgradeType(CUnit* unit);
     s32 getOverlayOffset(u16 unitId);
     s32 getFinalDamage(CUnit* unit, u16 weaponId);
+    bool unitIsPacifist(CUnit* unit);
 
 } //scbw

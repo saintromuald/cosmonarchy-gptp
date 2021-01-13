@@ -2096,4 +2096,9 @@ u16 random() {
 		return finalDamage;
 	}
 
+	// I may need to make this function more flexible later
+	bool unitIsPacifist(CUnit* unit) {
+		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Attack);
+	}
+
 } //scbw

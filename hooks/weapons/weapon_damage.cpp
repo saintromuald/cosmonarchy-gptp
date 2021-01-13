@@ -405,7 +405,9 @@ namespace hooks {
 				}
 			}
 			// Deconstruction - Pazuzu behavior - apply stack
-			if (attacker!=nullptr && attacker->id == UnitId::TerranPazuzu
+			if (attacker!=nullptr
+			&&	attacker->id == UnitId::TerranPazuzu
+			&&	!(scbw::unitIsPacifist(target))
 			&&	scbw::get_generic_value(target, ValueId::Deconstruction) == 0) {
 				scbw::set_generic_value(target, ValueId::Deconstruction, 1);
 				scbw::set_generic_value(target, ValueId::DeconstructionPlayer, attacker->playerId);
