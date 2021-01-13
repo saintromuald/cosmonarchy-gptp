@@ -390,5 +390,6 @@ u16 random();
     bool isEnabled(CUnit* unit);
     bool isDebuffed(CUnit* unit);
     s32 getUpgradeType(CUnit* unit);
+    s32 getOverlayOffset(u16 unitId);
 
 } //scbw

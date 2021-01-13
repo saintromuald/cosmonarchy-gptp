@@ -2080,4 +2080,15 @@ u16 random() {
 		return upgType;
 	}
 
+	s32 getOverlayOffset(u16 unitId) {
+		u32 overlayOffset = 0;
+		if (units_dat::BaseProperty[unitId] & UnitProperty::MediumOverlay) {
+			overlayOffset = 1;
+		}
+		else if (units_dat::BaseProperty[unitId] & UnitProperty::LargeOverlay) {
+			overlayOffset = 2;
+		}
+		return overlayOffset;
+	}
+
 } //scbw

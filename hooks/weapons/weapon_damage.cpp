@@ -410,6 +410,8 @@ namespace hooks {
 			&&	scbw::get_generic_value(target, ValueId::Deconstruction) == 0) {
 				scbw::set_generic_value(target, ValueId::Deconstruction, 1);
 				scbw::set_generic_value(target, ValueId::DeconstructionPlayer, attacker->playerId);
+				s32 overlayOffset = scbw::getOverlayOffset(target->id);
+				target->sprite->createOverlay(1332 + overlayOffset);
 			}
 
 			// Savant Entropy Gauntlets behavior - Apply timer and overlay
@@ -702,11 +704,8 @@ namespace hooks {
 					scbw::set_generic_value(target, ValueId::AlkajeliskParasitePlayer, attacker->playerId);
 				}
 				if (damage >= target->hitPoints) {
-					//relic death effect
-					//scbw::printText("Check relic");
 
-
-					// Last Orders - Aurora upgrade
+					// Last Orders - Aurora behavior
 					if (target->id == UnitId::ProtossAurora) {
 						if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::LastOrdersInit, 0) == 0) {
 							scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::LastOrdersInit, 1, 0);
@@ -723,12 +722,12 @@ namespace hooks {
 					}
 
 					// Blind Judge relic
-					if (units_dat::BaseProperty[attacker->id] & UnitProperty::Hero &&
+					/*if (units_dat::BaseProperty[attacker->id] & UnitProperty::Hero &&
 						scbw::get_aise_value(attacker, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1
 						&& (units_dat::BaseProperty[target->id] & UnitProperty::Organic)
 						&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
 							scbw::sendGPTP_aise_cmd(attacker, target, GptpId::BlindJudgeTimedEffect, target->energy, 0, 0);
-						/*
+						
 						u32 energy = target->energy;
 						Point16 pos = target->position;
 						CUnit* resurrected_unit;
@@ -746,8 +745,7 @@ namespace hooks {
 							if (attacker->pAI != NULL)
 								AI_Train_4A2830(attacker, resurrected_unit);
 						}
-	*/
-					}
+					}*/	
 				}
 			}
 
