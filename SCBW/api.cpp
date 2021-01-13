@@ -2099,9 +2099,8 @@ u16 random() {
 	// I may need to make this function more flexible later
 	bool unitIsPacifist(CUnit* unit) {
 		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Attack)
-			|| (unit->getAirWeapon() == WeaponId::None
-				&& unit->getGroundWeapon() == WeaponId::None)
-			||	unit->id == UnitId::ZergLurker; // LAME
+			||	(unit->hasWeapon())
+			||	 unit->id == UnitId::ZergLurker; // LAME
 	}
 
 } //scbw
