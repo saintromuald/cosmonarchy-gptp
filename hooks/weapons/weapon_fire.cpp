@@ -470,17 +470,6 @@ namespace hooks {
 					}
 				}
 
-				// Deconstruction - Pazuzu passive
-				if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
-					s32 upgType = scbw::getUpgradeType(unit);
-					double baseDamage = weapons_dat::DamageAmount[weaponId];
-					double bonusDamage = (double)weapons_dat::DamageBonus[weaponId] * (double)scbw::getUpgradeLevel(unit->playerId, upgType);
-					double finalDamage = baseDamage;
-					if (bonusDamage) {
-						finalDamage = baseDamage + bonusDamage;
-					}
-					unit->inflictDamage((s32)(0.25 * finalDamage), unit, scbw::get_generic_value(unit, ValueId::DeconstructionPlayer), false);
-				}
 
 				if (weaponId == WeaponId::PlasmaBarrage) {
 					// Empyrean missile spawn positions
@@ -585,7 +574,9 @@ namespace hooks {
 						scbw::set_generic_value(unit, ValueId::GuardianMissileLaunchPosY, unit->getY());
 					}
 					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
-				}				
+				}			
+
+				
 			}
 
 			// Tendril Amitosis
@@ -614,6 +605,19 @@ namespace hooks {
 				}
 			}/**/
 		}
+		// Deconstruction - Pazuzu passive
+		if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
+			s32 upgType = scbw::getUpgradeType(unit);
+			double baseDamage = weapons_dat::DamageAmount[weaponId];
+			double bonusDamage = (double)weapons_dat::DamageBonus[weaponId] * (double)scbw::getUpgradeLevel(unit->playerId, upgType);
+			double finalDamage = baseDamage;
+			if (bonusDamage) {
+				finalDamage = baseDamage + bonusDamage;
+			}
+			//scbw::printFormattedText("Deal damage: %d", (s32)(0.25 * finalDamage));
+			unit->inflictDamage((s32)(0.25 * finalDamage), unit, scbw::get_generic_value(unit, ValueId::DeconstructionPlayer), false);
+		}
+		
 	}
 
 	void progressBulletFlight(CBullet* bullet) { //		

@@ -194,6 +194,15 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x004357FB + 2, &none, sizeof(u8));//disable placing units near bunkers
 	memoryPatch(0x0043583F + 1, &none, sizeof(u8));//disable placing units near missile turrets
 
+	//matriarch - pazuzu id hardcode
+	memoryPatch(0x0040275A + 2, &none, sizeof(u8));
+	memoryPatch(0x0043CF74 + 2, &none, sizeof(u8));
+	memoryPatch(0x00455E49 + 3, &none, sizeof(u8));
+	memoryPatch(0x00455EC7 + 3, &none, sizeof(u8));
+	memoryPatch(0x00475B68 + 2, &none, sizeof(u8));
+	memoryPatch(0x004C210A + 2, &none, sizeof(u8));
+
+
 	//rhynadon id hardcode
 	memoryPatch(0x0042E352 + 1, &none, sizeof(u8));
 	memoryPatch(0x00431574 + 2, &none, sizeof(u8));

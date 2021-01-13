@@ -406,7 +406,7 @@ namespace hooks {
 			}
 
 			// Deconstruction - Pazuzu passive - apply stack
-			if (attacker->id == UnitId::TerranPazuzu
+			if (attacker!=nullptr && attacker->id == UnitId::TerranPazuzu
 			&&	scbw::get_generic_value(target, ValueId::Deconstruction) == 0) {
 				scbw::set_generic_value(target, ValueId::Deconstruction, 1);
 				scbw::set_generic_value(target, ValueId::DeconstructionPlayer, attacker->playerId);
