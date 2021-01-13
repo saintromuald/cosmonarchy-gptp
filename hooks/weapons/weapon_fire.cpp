@@ -575,7 +575,6 @@ namespace hooks {
 					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 				}				
 			}
-
 			// Tendril Amitosis
 			/*if (weaponId == WeaponId::SubterraneanTentacle && unit->orderTarget.unit != NULL) {
 				auto range = weapons_dat::MaxRange[WeaponId::SubterraneanTentacle];
@@ -602,13 +601,11 @@ namespace hooks {
 				}
 			}*/
 		}
-
 		// Deconstruction - Pazuzu passive
 		if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
 			double selfDamage = (0.25 * scbw::getFinalDamage(unit, weaponId) * 256);
 			unit->inflictDamage((s32)(selfDamage), unit, scbw::get_generic_value(unit, ValueId::DeconstructionPlayer), false);
-		}
-		
+		}		
 	}
 
 	void progressBulletFlight(CBullet* bullet) { //		
