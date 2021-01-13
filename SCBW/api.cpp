@@ -2100,7 +2100,8 @@ u16 random() {
 	bool unitIsPacifist(CUnit* unit) {
 		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Attack)
 			|| (unit->getAirWeapon() == WeaponId::None
-				&& unit->getGroundWeapon() == WeaponId::None);
+				&& unit->getGroundWeapon() == WeaponId::None)
+			||	unit->id == UnitId::ZergLurker; // LAME
 	}
 
 } //scbw
