@@ -388,7 +388,6 @@ namespace hooks {
 		//the unit must neither be already dead nor invincible
 
 		if (target->hitPoints != 0 && !(target->status & UnitStatus::Invincible)) {
-
 			u8 damageType;
 			bool canDamage = true; // debug only!
 			if (scbw::isCheatEnabled(CheatFlags::PowerOverwhelming) &&			//If Power Overwhelming is enabled
