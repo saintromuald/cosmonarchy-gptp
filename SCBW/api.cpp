@@ -2085,4 +2085,15 @@ u16 random() {
 		return overlayOffset;
 	}
 
+	s32 getFinalDamage(CUnit* unit, u16 weaponId) {
+		s32 upgType = getUpgradeType(unit);
+		s32 baseDamage = weapons_dat::DamageAmount[weaponId];
+		double bonusDamage = (double)weapons_dat::DamageBonus[weaponId] * (double)scbw::getUpgradeLevel(unit->playerId, upgType);
+		double finalDamage = baseDamage;
+		if (bonusDamage) {
+			finalDamage = baseDamage + bonusDamage;
+		}
+		return finalDamage;
+	}
+
 } //scbw

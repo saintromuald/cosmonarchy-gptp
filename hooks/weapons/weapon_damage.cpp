@@ -404,8 +404,7 @@ namespace hooks {
 					}
 				}
 			}
-
-			// Deconstruction - Pazuzu passive - apply stack
+			// Deconstruction - Pazuzu behavior - apply stack
 			if (attacker!=nullptr && attacker->id == UnitId::TerranPazuzu
 			&&	scbw::get_generic_value(target, ValueId::Deconstruction) == 0) {
 				scbw::set_generic_value(target, ValueId::Deconstruction, 1);
@@ -413,7 +412,6 @@ namespace hooks {
 				s32 overlayOffset = scbw::getOverlayOffset(target->id);
 				target->sprite->createOverlay(1332 + overlayOffset);
 			}
-
 			// Savant Entropy Gauntlets behavior - Apply timer and overlay
 			if (attacker != NULL && weaponId == WeaponId::DiscoidRailgun) {
 				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
@@ -435,39 +433,32 @@ namespace hooks {
 						target->sprite->removeOverlay(overlayImageId);
 						target->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
 					}
-					//
-					// replace later with persistent overlay
-					//
 				}
 			}
+			// Adrenal Glands - Zergling behavior
 			if (attacker != NULL && weaponId == WeaponId::Claws) {
 				if (scbw::get_aise_value(attacker, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0) < 4) {
 					scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::AddGenericValue, ValueId::AdrenalStacks, 1, 0);
 				}
 				scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::AdrenalTimer, 49, 0); //49 is 2 seconds (48) + 1
 			}
+			// Dirge - Madrigal behavior
 			if (weaponId == 22 && attacker != NULL) {
-				/*if (scbw::get_aise_value(target, NULL, AiseId::GenericTimer, ValueId::DirgeImpale, 0) == 0) {
-					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::DirgeImpale, 24 + 1, 0);
-				}*/
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::DirgeImpale, 24, 0, 0);
 				scbw::sendGPTP_aise_cmd(target, attacker, GptpId::SetGenericUnit, ValueId::DirgeAttacker, 0, 0);
 			}
-
-			// Southpaw - Knockout Drivers
+			// Knockout Drivers - Southpaw behavior
 			if (attacker != NULL && weaponId == WeaponId::UppercutLaser) {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0) < 20) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::KnockoutDriversValue, 1, 0);
 				}
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::KnockoutDriversTimer, 49, 0); //49 is 2 seconds (48) + 1
 			}
-
-			// Vorvaling - Captivating Claws
+			// Captivating Claws - Vorvaling behavior
 			if (attacker != NULL && weaponId == WeaponId::VorvalClaws) {
 				captivating_claws::applyCaptivatingClaws(attacker, target);
 			}
-
-			// Ecclesiast Astral Blessing
+			// Astral Blessing - Ecclesiast behavior
 			if (attacker != NULL && weaponId == WeaponId::AstralBlaster) {
 				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0) < 10) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::EcclesiastStack, 1, 0);
@@ -475,8 +466,7 @@ namespace hooks {
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::EcclesiastTimer, 49, 0); //49 is 2 seconds (48) + 1
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::EcclesiastPlayer, attacker->playerId, 0);
 			}
-
-			// Amaranth - shield recharge per missing HP
+			// Eternal Service - Amaranth behavior
 			if (attacker != NULL) {
 				if (attacker->id == UnitId::ProtossAmaranth) {
 					s32 hp = attacker->hitPoints / 256;
@@ -487,8 +477,7 @@ namespace hooks {
 					attacker->shields = std::min(attacker->shields + healAmount, maxShields);
 				}
 			}
-
-			// Architect behavior
+			// Reactive Payload - Architect behavior
 			if (weaponId == WeaponId::DispersiveSalvo) {
 				double div = 1.0;
 				if (dmgDivisor != 0) {
@@ -497,13 +486,11 @@ namespace hooks {
 				int dmg = ((double)damage / div);
 				damage = dmg + (target->acidSporeCount * 256);
 			}
-
-			// Guardian behavior
+			// Searing Acid - Guardian behavior
 			else if (weaponId == WeaponId::AcidSpore) {
 				damage = damage + (target->acidSporeCount * 256) + (dmgDivisor * 10 * 256);
 			}
-
-			// Mutalisk bounce damage
+			// Lithe Organelle - Mutalisk bounce damage
 			else if (weaponId == WeaponId::GlaveWurm) {
 				double mul = 1.0;
 				switch (dmgDivisor) {
