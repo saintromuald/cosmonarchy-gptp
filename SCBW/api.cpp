@@ -1854,13 +1854,7 @@ u16 random() {
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
 
 		// Get overlay info
-		s32 overlayOffset = 0;
-		if (units_dat::BaseProperty[child->id] & UnitProperty::MediumOverlay) {
-			overlayOffset = 1;
-		}
-		else if (units_dat::BaseProperty[child->id] & UnitProperty::LargeOverlay) {
-			overlayOffset = 2;
-		}
+		s32 overlayOffset = getOverlayOffset(child->id);
 
 		// Inherit Ensnare
 		if (parent->ensnareTimer != 0) {
