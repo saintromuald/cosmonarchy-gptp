@@ -392,9 +392,10 @@ namespace hooks {
 			u8 damageType;
 			bool canDamage = true; // debug only!
 			if (scbw::isCheatEnabled(CheatFlags::PowerOverwhelming) &&			//If Power Overwhelming is enabled
-				playerTable[attackingPlayerId].type != PlayerType::Human)		//and the attacker is not a human player
+				playerTable[target->playerId].type == PlayerType::Human)		//and the target player is a human player
+			{
 				damage = 0;
-
+			}
 			if (target->pAI != NULL) {
 				WorkerAi* ai = (WorkerAi*)target->pAI;
 				if (ai->type == 2 || ai->type == 3) {
