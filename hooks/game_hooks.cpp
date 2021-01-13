@@ -1289,6 +1289,33 @@ namespace hooks {
 				if (scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer) == 1) {
 //					unit->removeOverlay();
 				}
+
+				// Controlled Demolition - initial cast
+				/*if (conditional) { // ability cast
+					scbw::set_generic_timer(unit, ValueId::ControlledDemolition, 10*24);
+					s32 overlayOffset = scbw::getOverlaySize(unit->id);
+				//	unit->sprite->createOverlay(ImageId::ControlledDemolitionOverlay_Small + overlayOffset);
+				}
+				*/
+
+				// Controlled Demolition - destroy structure
+				if (scbw::get_generic_timer(unit, ValueId::ControlledDemolition) == 1) {
+					// Do we need more than this for the sake of calculating score screen counts and etc?
+					unit->remove();
+				}
+
+				// Emergency Detonation - initial cast
+				/*if (conditional) { // ability cast
+					scbw::set_generic_timer(unit, ValueId::EmergencyDetonation, (u32)(0.5 * scbw::get_generic_timer(unit, ValueId::ControlledDemolition)));
+					s32 overlayOffset = scbw::getOverlaySize(unit->id);
+				//	unit->sprite->createOverlay(ImageId::EmergencyDetonationOverlay_Small + overlayOffset);
+				}
+				*/
+
+				if (scbw::get_generic_timer(unit, ValueId::EmergencyDetonation) == 1) {
+				//	scbw::createBullet(WeaponId::EmergencyDetonation, unit, unit->position.x, unit->position.y, unit->playerId); // Have to select a weapon entry
+					unit->remove();
+				}
 			}
 			scbw::setInGameLoopState(false);
 		}

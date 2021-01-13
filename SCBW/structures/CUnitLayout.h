@@ -294,6 +294,9 @@ namespace ValueId {
 		Deconstruction								= 147,
 		DeconstructionPlayer						= 148,
 		RescindMindControl							= 149,
+		ControlledDemolition						= 150, // timer
+		EmergencyDetonation							= 151, // timer
+
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
