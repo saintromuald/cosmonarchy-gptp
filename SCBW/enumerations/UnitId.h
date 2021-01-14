@@ -523,11 +523,9 @@ enum Enum {
 	ZergVorvaling									= 128,		// Uraj
 	ZergBactalisk									= 129,		// Khalis
 	ZergAlaszileth									= 173,		// Khaydarin Crystal Formation
+	ZergKonvilisk									= 217,		// Psi Emitter
+	ZergAkistrokor									= 218,		// Data Disc
 	ZergIroleth										= 222,		// Protoss Gas Orb Type 1
-
-//Zerg-Egg
-	EggNathrokor									= 217,		// Psi Emitter
-	EggAlkajelisk									= 218,		// Data Disc
 
 //Zerg-Misc
 	BasiliskCreeper									= 180,		// Cave-in

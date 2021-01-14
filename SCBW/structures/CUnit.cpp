@@ -414,6 +414,9 @@ void CUnit::inflictDamage(s32 dmg, CUnit* attacker, s32 attackingPlayer, bool no
 	bool ignoreDmg128Overflow) {
 	auto damage = dmg;
 	s32 shieldReduceAmount = 0;
+	if (scbw::get_generic_value(this, ValueId::GodsMadeFlesh) > 0) {
+		return;
+	}
 	if (units_dat::ShieldsEnabled[this->id]) {
 		shieldReduceAmount = std::min(damage, this->shields);
 		damage -= shieldReduceAmount;

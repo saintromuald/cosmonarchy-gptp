@@ -301,7 +301,9 @@ namespace ValueId {
 		GodsMadeFlesh								= 154,		// value
 		ChasmalColonyArteries						= 155,		// value
 		AdaptiveAmitosis							= 156,		// value
-
+		EnthrallingTalons							= 157,		// value
+		InfestedByAkistrokor						= 158,		// value
+		FertileSpines								= 159,		// value
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

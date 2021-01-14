@@ -404,6 +404,11 @@ namespace hooks {
 					}
 				}
 			}
+			// Fertile Spines - Konvilisk behavior
+			if (attacker != nullptr
+			&&	scbw::get_generic_value(attacker, ValueId::FertileSpines) > 0) {
+				scbw::set_generic_unit(target, ValueId::ParasiteSource, attacker);
+			}
 			// Deconstruction - Pazuzu behavior - apply stack
 			if (attacker!=nullptr
 			&&	attacker->id == UnitId::TerranPazuzu
