@@ -158,7 +158,7 @@ SCBW_DATA(const char*,	TurnBuffer,				0x00654880);
 ////possible values were 0057F1DC and [00596828]
 
 // Added from BWAPI Offsets.h, but made const since it would not be safe to modify those
-SCBW_DATA(const char*,			 CurrentMapFileName,		0x0057FD3C);
+SCBW_DATA(		char*,			 CurrentMapFileName,		0x0057FD3C);
 SCBW_DATA(const char*,			 CurrentMapName,			0x0057FE40);
 SCBW_DATA(const _uavail*,		 UnitAvailability,			0x0057F27C);
 
@@ -189,7 +189,7 @@ SCBW_DATA(const u32*,			replaySeed,					0x006D0F38);
 //SCBW_DATA(const func*,			mouseOverCallback,			0x006D5EAC); // how to define a func?
 SCBW_DATA(const u32*,			randomCounts,				0x0051C610); // size of 0x400, array?
 SCBW_DATA(const u32*,			randomCountsTotal,			0x0051CA18);
-SCBW_DATA(const u16*,			campaignIndex,				0x0057F244);
+SCBW_DATA(		u16*,			campaignIndex,				0x0057F244);
 SCBW_DATA(const void*,			mapArchiveHandle,			0x00596BC4);
 SCBW_DATA(const GameData*,		gameData,					0x005967F8);
 SCBW_DATA(const u8*,			mapStarted,					0x006D121C);
@@ -337,7 +337,9 @@ SCBW_DATA(		s16*,				mapHeightPixels,				0x006284B4);
 SCBW_DATA(		s32*,				orderType4Position,				0x006D5C20);
 SCBW_DATA(		s32*,				orderType4Target,				0x006D5C24);
 
-
+// For openMapFile
+SCBW_DATA(		char*,				mapsFolder,						0x0066FC08);
+SCBW_DATA(		s32*,				dword_5994DC,					0x005994DC);
 
 //////////////////////////////////////////////////////////////// @}
 
