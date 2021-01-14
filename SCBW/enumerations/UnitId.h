@@ -238,7 +238,7 @@ enum Enum {
 /*0x42*/	ProtossDragoon							= 66,
 /*0x43*/	ProtossHighTemplar						= 67,
 /*0x44*/	ProtossArchon							= 68,
-/*0x45*/	ProtossShuttle							= 69,
+/*0x45*/	ProtossEnvoy							= 69,
 /*0x46*/	ProtossPanoptus							= 70,
 /*0x47*/	ProtossArbiter							= 71,
 /*0x48*/	ProtossCarrier							= 72,
