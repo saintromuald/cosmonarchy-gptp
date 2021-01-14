@@ -179,7 +179,7 @@ SCBW_DATA(char**,				statusscreen_infobtn,		0x00519F40);
 SCBW_DATA(GrpHead**,			cmdicons_grp,				0x0068C1E0);
 
 // For initGameLoad
-SCBW_DATA(const void*,			scenarioChk,				0x006D0F24);
+SCBW_DATA(		void*,			scenarioChk,				0x006D0F24);
 SCBW_DATA(const u8*,			playerForce,				0x0059BDA8); // array of 0x8
 SCBW_DATA(const u8*,			playerForceSomethingReplay,	0x006D11A1); // array of 0x8
 SCBW_DATA(const FILE*,			loadGameFileHandle,			0x006D1218);
@@ -340,6 +340,11 @@ SCBW_DATA(		s32*,				orderType4Target,				0x006D5C24);
 // For openMapFile
 SCBW_DATA(		char*,				mapsFolder,						0x0066FC08);
 SCBW_DATA(		s32*,				dword_5994DC,					0x005994DC);
+
+// For loadMap
+SCBW_DATA(		scenarioFormat*,	stru_500574,					0x00500574);
+SCBW_DATA(		scenarioFormat*,	stru_50057C,					0x0050057C);
+SCBW_DATA(		s32*,				scenarioCHKSize,				0x006D0F20);
 
 //////////////////////////////////////////////////////////////// @}
 

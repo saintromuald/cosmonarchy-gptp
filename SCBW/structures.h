@@ -27,6 +27,17 @@ const int SOUND_TYPE_COUNT		= 1144;
 
 #pragma pack(1)
 
+struct chkStruct {
+	u8 section[4];
+	u32 function;
+	u32 flags;
+};
+
+struct scenarioFormat {
+	chkStruct* chkStruct;
+	u32 chkStructCount;
+};
+
 struct vectorHead {
 	u32 next;
 	u32 prev;
