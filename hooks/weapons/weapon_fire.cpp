@@ -16,21 +16,22 @@
 
 class tendrilMatch : public scbw::UnitFinderCallbackMatchInterface {
 private:
-	CUnit* sunken;
+	CUnit* defensiveStructure;
+	u16 weaponId;
 public:
-	tendrilMatch(CUnit* sunken)
-		: sunken(sunken) {}
+	tendrilMatch(CUnit* defensiveStructure, u16 weaponId)
+		: defensiveStructure(defensiveStructure), weaponId(weaponId) {}
 
 	bool match(CUnit* unit) {
-		if (unit == sunken) {
+		if (unit == defensiveStructure) {
 			return false;
 		}
-		if (unit == sunken->orderTarget.unit) {
+		if (unit == defensiveStructure->orderTarget.unit) {
 			return false;
 		}
-		if (scbw::isAlliedTo(sunken->playerId, unit->playerId))
+		if (scbw::isAlliedTo(defensiveStructure->playerId, unit->playerId))
 			return false;
-		return scbw::canWeaponTargetUnit(WeaponId::SubterraneanTentacle, unit, sunken);
+		return scbw::canWeaponTargetUnit(weaponId, unit, defensiveStructure);
 	}
 };
 
@@ -569,20 +570,21 @@ namespace hooks {
 					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 				}				
 			}
-			// Tendril Amitosis
-			/*if (weaponId == WeaponId::SubterraneanTentacle && unit->orderTarget.unit != NULL) {
-				auto range = weapons_dat::MaxRange[WeaponId::SubterraneanTentacle];
+			// Adaptive Amitosis
+			if (unit->orderTarget.unit != NULL
+			&&	scbw::get_generic_value(unit, ValueId::AdaptiveAmitosis) > 0) {
+				auto range = weapons_dat::MaxRange[weaponId];
 				auto a = scbw::UnitFinder::getNearestTarget(
 					unit->getX() - range, unit->getY() - range,
 					unit->getX() + range, unit->getY() + range,
-					unit, tendrilMatch(unit)
+					unit, tendrilMatch(unit, weaponId)
 				);
 				if (a != NULL) {
 					auto old = unit->orderTarget;
 					unit->orderTarget.unit = a;
 					unit->orderTarget.pt = a->sprite->position;
-					//						createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 					scbw::sendGPTP_aise_cmd(unit->orderTarget.unit, NULL, GptpId::SetGenericValue, ValueId::Amitosis, 1, 0);
+					// TODO: verify that this will work with all weapon types
 					const u32 Iscript_UseWeapon = 0x00479C30;
 					__asm {
 						PUSHAD
@@ -593,7 +595,7 @@ namespace hooks {
 					}
 					unit->orderTarget = old;
 				}
-			}*/
+			}
 		}
 		// Deconstruction - Pazuzu passive
 		if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
