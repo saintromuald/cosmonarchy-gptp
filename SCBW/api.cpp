@@ -1690,6 +1690,9 @@ u16 random() {
 			scbw::set_generic_timer(unit, ValueId::ParasiteArmTimer, 0);
 			unit->removeOverlay(1031);
 		}
+		if (scbw::get_generic_unit(unit, ValueId::ParasiteSource) != nullptr) {
+			scbw::set_generic_unit(unit, ValueId::ParasiteSource, nullptr);
+		}
 
 		// Remove default flags
 		unit->parasiteFlags = 0;

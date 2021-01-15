@@ -406,8 +406,9 @@ namespace hooks {
 			}
 			// Fertile Spines - Konvilisk behavior
 			if (attacker != nullptr
-			&&	scbw::get_generic_value(attacker, ValueId::FertileSpines) > 0) {
-				scbw::set_generic_unit(target, ValueId::ParasiteSource, attacker);
+			&&	scbw::get_generic_value(attacker, ValueId::FertileSpines) > 0
+			&&	!(target->parasiteFlags)) {
+				scbw::set_generic_timer(target, ValueId::ParasiteArmTimer, (24 * 2) + 1); // replace with unitconstant later
 			}
 			// Deconstruction - Pazuzu behavior - apply stack
 			if (attacker!=nullptr
