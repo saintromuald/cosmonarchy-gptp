@@ -31,6 +31,8 @@ namespace {	// helper declarations
 
 namespace hooks {
 
+
+
    void darkSwarmDamage(u16 x, u16 y, u16 r, CBullet* bullet, u32 weaponId) {
 	    CUnit* dsw = scbw::getDarkSwarm(x,y,r);
 	    if(dsw!=NULL){

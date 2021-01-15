@@ -304,6 +304,7 @@ namespace ValueId {
 		EnthrallingTalons							= 157,		// value
 		InfestedByAkistrokor						= 158,		// value
 		FertileSpines								= 159,		// value
+		TurretParentLink							= 160,		//value 
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
@@ -421,7 +422,7 @@ struct CUnitLayout {
 /*0x066*/ u8       _unknown_0x066;        // HYDRA - mineral regen cooldown
 		  u8	   _unknown_0x067;	      // HYDRA - warp relay warp in
 /*0x068*/ CLink<CUnit> player_link;
-/*0x070*/ CUnit*    subunit;	//???
+/*0x070*/ CUnit*    subunit;	
 /*0x074*/ COrder*   orderQueueHead;
 /*0x078*/ COrder*   orderQueueTail;
 /*0x07C*/ CUnit*    autoTargetUnit;       //The auto-acquired target (Note: This field is actually used for different targets internally, especially by the AI)
@@ -549,7 +550,7 @@ struct CUnitLayout {
 /*0x100*/ void*     path;						//use BW::Path* in BWAPI
 /*0x104*/ u8        pathingCollisionInterval;  // unknown
 /*0x105*/ u8        pathingFlags;       // 0x01 = uses pathing; 0x02 = ?; 0x04 = ?
-/*0x106*/ u8        _unused_0x106;
+/*0x106*/ u8        unused_0x106;
 /*0x107*/ Bool8      isBeingHealed;		// 1 if a medic is currently healing this unit
 /*0x108*/ Box16     contourBounds;      // A rect that specifies the closest contour (collision) points
 

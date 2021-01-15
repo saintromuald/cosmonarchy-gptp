@@ -418,6 +418,11 @@ namespace hooks {
 			&&	scbw::get_generic_value(target, ValueId::Deconstruction) == 0) {
 				scbw::set_generic_value(target, ValueId::Deconstruction, 1);
 				scbw::set_generic_value(target, ValueId::DeconstructionPlayer, attacker->playerId);
+				if (target->subunit != nullptr) {
+					scbw::set_generic_value(target->subunit, ValueId::Deconstruction, 1);
+					scbw::set_generic_value(target->subunit, ValueId::DeconstructionPlayer, attacker->playerId);
+				}
+				
 				s32 overlayOffset = scbw::getOverlayOffset(target->id);
 				target->sprite->createOverlay(1332 + overlayOffset);
 			}

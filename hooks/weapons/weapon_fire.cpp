@@ -10,6 +10,7 @@
 #include "hooks/byte_operations_utils.h"
 #include "globals.h"
 #include "hooks/unit_stats/weapon_range.h"
+#include "weapon_damage.h"
 #include <set>
 //-------- Helper function declarations. Do NOT modify! ---------//
 
@@ -599,8 +600,19 @@ namespace hooks {
 		}
 		// Deconstruction - Pazuzu passive
 		if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
-			double selfDamage = (0.25 * scbw::getFinalDamage(unit, weaponId) * 256);
-			unit->inflictDamage((s32)(selfDamage), unit, scbw::get_generic_value(unit, ValueId::DeconstructionPlayer), false);
+			double selfDamage = (0.25 * (double)scbw::getFinalDamage(unit, weaponId) * 256.0);
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
+				auto deconstructionTarget = (CUnit*)scbw::get_generic_value(unit, ValueId::TurretParentLink);
+				if (deconstructionTarget == nullptr) {
+					return;
+				}
+				weaponDamageHook(selfDamage, deconstructionTarget, weaponId, deconstructionTarget, deconstructionTarget->playerId,
+					deconstructionTarget->playerId, 1);//inflictDamage cause crashes!
+			}
+			else {
+				unit->inflictDamage((s32)(selfDamage), unit, scbw::get_generic_value(unit, ValueId::DeconstructionPlayer), false);
+			}
+//			
 		}		
 	}
 
