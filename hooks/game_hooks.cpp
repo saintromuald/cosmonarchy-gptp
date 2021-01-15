@@ -25,10 +25,6 @@ void function_004A01F0g(CUnit* unit) {
 
 }
 
-;
-
-
-
 const u32 Func_98A10= 0x00498A10;
 void makeSpriteInvisible(CSprite* sprite) {
 
@@ -40,23 +36,16 @@ void makeSpriteInvisible(CSprite* sprite) {
 	}
 
 }
-;
-
-
 
 const u32 Func_UpdateUnitStrength = 0x0049FA40;
 void updateUnitStrengthg(CUnit* unit) {
-
 	__asm {
 		PUSHAD
 		MOV EAX, unit
 		CALL Func_UpdateUnitStrength
 		POPAD
 	}
-
 }
-;
-
 
 const u32 Func_CreateUnit = 0x004A09D0;
 CUnit* CreateUnit(u32 unitId, int x, int y, u32 playerId) {
@@ -73,7 +62,6 @@ CUnit* CreateUnit(u32 unitId, int x, int y, u32 playerId) {
 	}
 	return unit_created;
 }
-;
 
 const u32 Func_Sub4148F0 = 0x004148F0;
 void function_004148F0_(int x, int y, u32 unitId) {
@@ -89,8 +77,6 @@ void function_004148F0_(int x, int y, u32 unitId) {
 
 }
 
-;
-
 const u32 Func_Sub47D770 = 0x0047D770;
 void func_0047D770(CUnit* unit) {
 
@@ -102,9 +88,6 @@ void func_0047D770(CUnit* unit) {
 	}
 
 }
-
-;
-
 
 const u32 Func_updateNewUnitVision = 0x0045CE90;
 void funcupdateNewUnitVision(CUnit* unit, int x, int y) {
@@ -119,8 +102,6 @@ void funcupdateNewUnitVision(CUnit* unit, int x, int y) {
 	}
 
 }
-
-;
 
 const u32 Func_ReplaceUnitWithType = 0x0049FED0;
 void replaceUnitWithType(CUnit* unit, u16 newUnitId) {
@@ -162,7 +143,7 @@ void spawnCreeper(CUnit* unit) {
 			function_004148F0_(
 				tile_x * 32,
 				tile_y * 32,
-				UnitId::nydus_canal
+				UnitId::ZergNydusCanal
 			);//apply creep
 			func_0047D770(creep_spawned);
 

@@ -36,6 +36,14 @@ namespace {
 	void setCreepRelationalData(u32 x, u32 y, setCreepRelationalData_callback callback, u32 arg); // 0x00413FA0
 	u32 iterateDirectionalCreepData(u32 x, u32 y, u32 callback, u32 arg); // 0x00413B30
 
+	// for applyCreepAtLocationFromUnitType
+	s32 modifyCreepState(s32 x_tile, s32 y_tile, s32 (__stdcall* creepChange)(s32, s32, s32, s32, s32), void* param);	// 00413FA0
+	s32 runCreepRandomizer(s16* originalTile, s32 creepTileBorders, s32* outCreepStatus, s16* currentTile, s32 unused);	// 004140A0 // "note possible desync"
+	s32 unkCreepBorders(s32 a1, s32 a2);																				// 006D0C78
+	u32 forEachAdjacentTile(s32 (__stdcall* callback)(s32, s32, s32, s32, void*), void* param, s32 x_tile, s32 y_tile);	// 00413B30
+	s32 unkCreepTile(s32 pos, s32 originalTile, s32 x_tile, s32 y_tile, void* param);									// 00414440
+	char unkSpreadCreep(s32 a1, s32 a2, s16 a3);																		// 00414680
+
 } //unnamed namespace
 
 ;
@@ -218,28 +226,18 @@ namespace hooks {
 			}
 		}
 		else {
-
 			//EA8B6:
-
 			u8 result_00414680;
 
 			unit->building.creepTimer = 15; /*0F*/
 			if (unit->id == 180) {
 				//scbw::printText("spread basilisk creep");
 				unit->building.creepTimer = 10;
-			}/*
-			u32 lair_count = unitCountTable[UnitId::ZergLair].player[unit->playerId];
-			u32 hive_count = unitCountTable[UnitId::ZergHive].player[unit->playerId];
-			
-			if (hive_count) {
-				unit->building.creepTimer -= unit->building.creepTimer / 2;
 			}
-			else if (lair_count) {
-				unit->building.creepTimer -= unit->building.creepTimer / 4;
-			}*/
-											//look for a place to spawn creep on
-											//return value == 0 if all potential tiles are already creep, 2 == potential tiles are occupied by another building, 1 == potential tiles are otherwise still available
-											// Replace UnitId::ZergHive with unit->id if giving specific buildings different creep bounding rectangles in getCreepRegion
+
+			//look for a place to spawn creep on
+			//return value == 0 if all potential tiles are already creep, 2 == potential tiles are occupied by another building, 1 == potential tiles are otherwise still available
+			// Replace UnitId::ZergHive with unit->id if giving specific buildings different creep bounding rectangles in getCreepRegion
 			result_00414680 = spreadCreep(unit->id, unit->sprite->position.x, unit->sprite->position.y);
 			if (unit->id == UnitId::ZergInfestedCommandCenter) {
 				result_00414680 = 0;
@@ -463,6 +461,65 @@ namespace hooks {
 		return true;
 	}
 
+	/*
+	char applyCreepAtLocationFromUnitType(s16 a1, s32 a2, s32 a3) { // 004148F0
+		u32 v3; // ecx
+		u32 v4; // ebx
+		s32 v5; // edi
+		u32 v6; // esi
+		s32 v7; // eax
+		u32 v8; // eax
+		s32 v9; // edi
+		char result; // al
+		u32 v11; // [esp+Ch] [ebp-10h]
+		s32 v12; // [esp+10h] [ebp-Ch]
+		u32 v13; // [esp+14h] [ebp-8h]
+		s32 v14; // [esp+18h] [ebp-4h]
+
+		v7 = units_dat::BuildingDimensions[a1];
+		v5 = (s16)v7 / 32;
+		v4 = a2 / 32 - v5 / 2;
+		v6 = a3 / 32 - (v7 >> 16) / 32 / 2;
+		v3 = v6 + (v7 >> 16) / 32;
+		v12 = a2 / 32 - v5 / 2;
+		v11 = v3;
+		if (v6 < v3) {
+			v8 = v5 + v4;
+			v13 = v5 + v4;
+			do {
+				v9 = v4;
+				v14 = v4;
+				if (v4 < v8) {
+					do {
+						if (!(*activeTileArray[(s16)v9 + mapTileSize->width * (s16)v6] & 0x20800000)
+							&& ((s16)v6 + 1 == mapTileSize->height
+								|| !(*activeTileArray[(s16)v9 + mapTileSize->width * (s16)(v6 + 1)] & 0x800000)))
+						{
+							modifyCreepState(
+								v9,
+								v6,
+								(s32(__stdcall*)(s32, s32, s32, s32, s32))runCreepRandomizer,
+								0);
+							if (!(*(u32*)0x006D0C78) || !unkCreepBorders(v9, v6))
+							{
+								forEachAdjacentTile(unkCreepTile, 0, v9, v6);
+								v9 = v14;
+							}
+						}
+						v8 = v13;
+						v14 = ++v9;
+					} while (v9 < v13);
+					v4 = v12;
+					v3 = v11;
+				}
+				++v6;
+			} while (v6 < v3);
+		}
+		do
+			result = unkSpreadCreep(a3, a2, a1);
+		while (result == 1);
+		return result;
+	}*/
 
 } //hooks
 

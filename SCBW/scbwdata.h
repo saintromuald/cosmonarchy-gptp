@@ -231,9 +231,6 @@ SCBW_DATA(		u32*,			replayEndFrame,				0x006D0F31);
 SCBW_DATA(		u32*,			levelCheatUnlocked,			0x006D11C0);
 SCBW_DATA(const char*,			playerName,					0x0057EEB5);
 
-// For isUnderDarkSwarm
-SCBW_DATA(		u32*,			activeTileHandle,			0x006D1260)
-
 // For updatePlacementStateForPlacementBox
 SCBW_DATA(		u8*,			unk_placementRelated,		0x0064088C);
 SCBW_DATA(		u16*,			placeBuildingX,				0x00640890);
