@@ -301,7 +301,7 @@ void updateStatusEffects(CUnit* unit) {
 	}
 
 	// Knockout Drivers: Southpaw slow per stack
-	else if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0) > 0) {
+	else if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversStacks, 0) > 0) {
 		unit->updateSpeed();
 	}
 

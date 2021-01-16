@@ -1115,9 +1115,9 @@ void CUnit::updateSpeed() {
 
 void CUnit::setSupplyProvided(u8 amount) { // overwrites previous supply provided
 	u32 race = this->getRace();
-	u32 previous_supply = scbw::get_aise_value(this, NULL, AiseId::GenericValue, ValueId::SupplyProvidedValue, 0);
+	u32 previous_supply = scbw::get_aise_value(this, NULL, AiseId::GenericValue, ValueId::SupplyProvided, 0);
 	if (previous_supply)
 		raceSupply[race].provided[this->playerId] -= previous_supply;
 	raceSupply[race].provided[this->playerId] += amount;
-	scbw::sendGPTP_aise_cmd(this, NULL, GptpId::SetGenericValue, ValueId::SupplyProvidedValue, amount, 0);
+	scbw::sendGPTP_aise_cmd(this, NULL, GptpId::SetGenericValue, ValueId::SupplyProvided, amount, 0);
 }

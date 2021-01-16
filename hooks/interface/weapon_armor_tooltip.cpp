@@ -370,7 +370,7 @@ namespace hooks {
 			statuses.push_back("Cloaked");
 
 		// Aise Timer + Value
-		addStatus(statuses, "Knockout Drivers", scbw::get_generic_value(unit, ValueId::KnockoutDriversValue), scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer), TimerType::Aise);
+		addStatus(statuses, "Knockout Drivers", scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks), scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer), TimerType::Aise);
 		addStatus(statuses, "Adrenal Glands", scbw::get_generic_value(unit, ValueId::AdrenalStacks), scbw::get_generic_timer(unit, ValueId::AdrenalTimer), TimerType::Aise);
 		addStatus(statuses, "Astral Blessing", scbw::get_generic_value(unit, ValueId::EcclesiastStack), scbw::get_generic_timer(unit, ValueId::EcclesiastTimer), TimerType::Aise);
 		addStatus(statuses, "Captivating Claws", scbw::get_generic_value(unit, ValueId::CaptivatingClawsStacks), scbw::get_generic_timer(unit, ValueId::CaptivatingClawsTimer), TimerType::Aise);

@@ -717,10 +717,10 @@ namespace hooks {
 		}
 
 		if (*elapsedTimeFrames > 0) {
-			u32 supply_new = scbw::get_generic_value(unit, ValueId::SupplyProvidedValue);
+			u32 supply_new = scbw::get_generic_value(unit, ValueId::SupplyProvided);
 			if (supply_new)
 				supply = supply_new;
-			scbw::set_generic_value(unit, ValueId::SupplyProvidedValue, supply);
+			scbw::set_generic_value(unit, ValueId::SupplyProvided, supply);
 			auto supply_overlord_modifier = scbw::get_generic_value(unit, ValueId::OverlordSupplyGimmick);
 			if (supply_overlord_modifier > 0) {
 				switch (supply_overlord_modifier) {

@@ -20,7 +20,7 @@ public:
 			unit->newFlags1 |= NewFlags1::Metastasis;
 		}
 		if (defiler != NULL
-			&& scbw::get_generic_timer(defiler, ValueId::EnsnaringBrood) > 0
+			&& scbw::get_generic_timer(defiler, ValueId::EnsnaringBroodTimer) > 0
 			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building)) {
 			scbw::applyEnsnare(unit);
 		}

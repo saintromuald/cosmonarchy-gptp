@@ -225,8 +225,8 @@ namespace hooks {
 		}
 
 		// Southpaw Knockout Drivers: reduces movement speed by 5% per stack
-		if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0) > 0) {
-			u32 knockoutValue = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0);
+		if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversStacks, 0) > 0) {
+			u32 knockoutValue = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversStacks, 0);
 			speed -= speed * (0.05 * knockoutValue);
 		}
 

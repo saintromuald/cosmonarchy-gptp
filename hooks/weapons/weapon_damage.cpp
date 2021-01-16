@@ -465,8 +465,8 @@ namespace hooks {
 			}
 			// Knockout Drivers - Southpaw behavior
 			if (attacker != NULL && weaponId == WeaponId::UppercutLaser) {
-				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::KnockoutDriversValue, 0) < 20) {
-					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::KnockoutDriversValue, 1, 0);
+				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::KnockoutDriversStacks, 0) < 20) {
+					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::KnockoutDriversStacks, 1, 0);
 				}
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::KnockoutDriversTimer, 49, 0); //49 is 2 seconds (48) + 1
 			}

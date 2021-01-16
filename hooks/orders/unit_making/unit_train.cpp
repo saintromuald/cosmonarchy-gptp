@@ -199,7 +199,7 @@ namespace hooks {
 				if(builtUnit != NULL) {
 					u32 hpGain = getHPGainForRepair(builtUnit);
 					bool extraBuild = false;
-					if (scbw::get_generic_value(builtUnit, ValueId::CrucibleValue) == 0) {
+					if (scbw::get_generic_value(builtUnit, ValueId::Crucible) == 0) {
 						auto r = 256;
 						auto n = unitRangeCount(NULL, CFlags::NoInvincible | CFlags::Ally | CFlags::Powered | CFlags::Completed, 
 							{ UnitId::ProtossCrucible });
@@ -208,7 +208,7 @@ namespace hooks {
 						for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 							auto unit = unitsInSplash.getUnit(i);
 							if (n.match(unit)) {
-								scbw::set_generic_value(builtUnit, ValueId::CrucibleValue, 5);//6 is ~100/15
+								scbw::set_generic_value(builtUnit, ValueId::Crucible, 5);//6 is ~100/15
 								buildingAddon(builtUnit, hpGain, TRUE);
 								if (builtUnit->status & UnitStatus::Completed) {
 									extraBuild = true;
@@ -218,7 +218,7 @@ namespace hooks {
 						}
 					}
 					else {
-						scbw::sendGPTP_aise_cmd(builtUnit, NULL, GptpId::AddGenericValue, ValueId::CrucibleValue, -1, 0);
+						scbw::sendGPTP_aise_cmd(builtUnit, NULL, GptpId::AddGenericValue, ValueId::Crucible, -1, 0);
 					}
 					if(extraBuild || buildingAddon(builtUnit,hpGain,TRUE)) {
 

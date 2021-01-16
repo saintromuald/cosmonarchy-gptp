@@ -182,7 +182,7 @@ namespace ValueId {
 		LastOrdersInit								= 37,
 		BroodlingMother								= 38,
 		ParasiteSource								= 39,
-		KnockoutDriversValue						= 40,
+		KnockoutDriversStacks						= 40,
 		KnockoutDriversTimer						= 41,
 
 		HallucinatingSourcePlayer					= 42,
@@ -195,7 +195,7 @@ namespace ValueId {
 		EggBoostTimer								= 48,
 		RemainingBuildTimeCopy						= 49,
 		TreasuryStacks								= 50,
-		SupplyProvidedValue							= 51,
+		SupplyProvided								= 51,
 
 		SkyfallTimer								= 52,
 		SkyfallStacks								= 53,
@@ -244,67 +244,67 @@ namespace ValueId {
 		GuardianMissileLaunchPosY					= 95,
 		SovereignCannonPos							= 96,
 		AICloakGimmick								= 97,
-		CrucibleValue								= 98,
-		KeskathalorMissilePos						= 99,
-
-		EcclesiastStack								= 100,		// value
-		EcclesiastTimer								= 101,		// timer
-		EcclesiastPlayer							= 102,		// value
+		Crucible									= 98,
+		KeskathalorMissilePos						= 99,		
+															// TODO: Make sure anything above this is named correctly
+		EcclesiastStack								= 100,		
+		EcclesiastTimer								= 101,		
+		EcclesiastPlayer							= 102,		
 
 		AugurSafetyCheck							= 103,		
 		PlanetCrackerChannel						= 104,		 
 		PlanetCrackerDelay							= 105,		
 		StarcallerInterceptionMissiles				= 106,		
-		AugurGimmickTimer							= 107,		// timer
-		PenumbraLaserPos							= 108,		// value
-		ClarionSFX									= 109,		// value
-		SwitchModeGimmickTimer						= 110,		// timer
+		AugurGimmickTimer							= 107,		
+		PenumbraLaserPos							= 108,		
+		ClarionSFX									= 109,		
+		SwitchModeGimmickTimer						= 110,		
 
-		AI_LazarusTimer								= 111,		// timer
-		AI_SiphonTimer								= 112,		// timer
-		AI_ClarionTimer								= 113,		// timer
-		AI_QueenTimer								= 114,		// timer
-		AI_PaladinTimer								= 115,		// timer
-		AI_GriefOfAllGodsTimer						= 116,		// timer
+		AI_LazarusTimer								= 111,		
+		AI_SiphonTimer								= 112,		
+		AI_ClarionTimer								= 113,		
+		AI_QueenTimer								= 114,		
+		AI_PaladinTimer								= 115,		
+		AI_GriefOfAllGodsTimer						= 116,		
 
-		WraithLaserPos								= 117,		// value
-		HierophantOverlay							= 118,		// value
-		PhaseRushTimerArrayStart				    = 119,		// timer
-		//values 119 - 126 must not be used
-		NewMedstimTimer								= 127,		// timer
+		WraithLaserPos								= 117,		
+		HierophantOverlay							= 118,		
+		PhaseRushTimerArrayStart				    = 119,		// timer array
+		PhaseRushTimerArrayEnd						= 126,		// note: don't use any values in between!
+		NewMedstimTimer								= 127,		
 		LurkerPickTarget							= 128,		
-		IonCannonSprite								= 129,		// value
-		SimulacrumCloneTimer						= 130,		// timer
+		IonCannonSprite								= 129,		
+		SimulacrumCloneTimer						= 130,		
 		ExecutingCorsairMoveOrder					= 131,		
-		AI_CorsairDweb_Timer						= 132,		// timer
-		EnsnaringBrood								= 133,		// timer
-		EnsnaringBroodAbility						= 134,		// value
-		OldEggOrigin								= 135,		// Replace later
-		IonCannonProjectilePos						= 136,		// value
-		UltrakorCancelGimmick						= 137,		// value
-		SwarmingOmenTimer							= 138,		// timer
-		SwarmingOmenAbility							= 139,		// value
-		Reconstitution								= 140,		// value
-		SimulacrumClone								= 141,		// value
-		IsReviving									= 142,		// value
-		SwarmingOmenStatus							= 143,		// value
-		ProtectiveInstinctsStatus					= 144,		// value
-		TitanReactorsStack							= 145,		// value
-		TitanReactorsTimer							= 146,		// timer
-		Deconstruction								= 147,		// value
-		DeconstructionPlayer						= 148,		// value
-		RescindMindControl							= 149,		// value
-		ControlledDemolition						= 150,		// timer
-		EmergencyDetonation							= 151,		// timer
-		WorshipStack								= 152,		// value
-		WorshipOriginalPlayer						= 153,		// value
-		GodsMadeFlesh								= 154,		// value
-		ChasmalColonyArteries						= 155,		// value
-		AdaptiveAmitosis							= 156,		// value
-		EnthrallingTalons							= 157,		// value
-		InfestedByAkistrokor						= 158,		// value
-		FertileSpines								= 159,		// value
-		TurretParentLink							= 160,		//value 
+		AI_CorsairDweb_Timer						= 132,		
+		EnsnaringBroodTimer							= 133,		
+		EnsnaringBroodAbility						= 134,		
+		OldEggOrigin								= 135,		// depricated, remove later
+		IonCannonProjectilePos						= 136,		
+		UltrakorCancelGimmick						= 137,		
+		SwarmingOmenTimer							= 138,		
+		SwarmingOmenAbility							= 139,		
+		Reconstitution								= 140,		
+		SimulacrumClone								= 141,		
+		IsReviving									= 142,		
+		SwarmingOmenStatus							= 143,		
+		ProtectiveInstinctsStatus					= 144,		
+		TitanReactorsStack							= 145,		
+		TitanReactorsTimer							= 146,		
+		Deconstruction								= 147,		
+		DeconstructionPlayer						= 148,		
+		RescindMindControl							= 149,		
+		ControlledDemolitionTimer					= 150,		
+		EmergencyDetonationTimer					= 151,		
+		WorshipStack								= 152,		
+		WorshipOriginalPlayer						= 153,		
+		GodsMadeFlesh								= 154,		
+		ChasmalColonyArteries						= 155,		
+		AdaptiveAmitosis							= 156,		
+		EnthrallingTalons							= 157,		
+		InfestedByAkistrokor						= 158,		
+		FertileSpines								= 159,		
+		TurretParentLink							= 160,		 
 	};	
 }
 #include "SCBW\enumerations\TechId.h"
