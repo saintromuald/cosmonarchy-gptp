@@ -418,13 +418,15 @@ namespace hooks {
 			&&	scbw::get_generic_value(target, ValueId::Deconstruction) == 0) {
 				scbw::set_generic_value(target, ValueId::Deconstruction, 1);
 				scbw::set_generic_value(target, ValueId::DeconstructionPlayer, attacker->playerId);
+				s32 overlayOffset = scbw::getOverlayOffset(target->id);
 				if (target->subunit != nullptr) {
 					scbw::set_generic_value(target->subunit, ValueId::Deconstruction, 1);
 					scbw::set_generic_value(target->subunit, ValueId::DeconstructionPlayer, attacker->playerId);
+					target->subunit->sprite->createOverlay(1332 + overlayOffset);
 				}
-				
-				s32 overlayOffset = scbw::getOverlayOffset(target->id);
-				target->sprite->createOverlay(1332 + overlayOffset);
+				else {
+					target->sprite->createOverlay(1332 + overlayOffset);
+				}
 			}
 			// Savant Entropy Gauntlets behavior - Apply timer and overlay
 			if (attacker != NULL && weaponId == WeaponId::DiscoidRailgun) {

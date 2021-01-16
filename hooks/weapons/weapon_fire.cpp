@@ -612,7 +612,7 @@ namespace hooks {
 			else {
 				unit->inflictDamage((s32)(selfDamage), unit, scbw::get_generic_value(unit, ValueId::DeconstructionPlayer), false);
 			}
-//			
+			scbw::playSound(1372, unit);
 		}		
 	}
 
