@@ -411,7 +411,7 @@ public:
 		if (unit->getOverlay(1281)) {
 			unit->removeOverlay(1281);
 		}
-		scbw::set_generic_timer(unit, ValueId::EnsnaringBrood, 12 * 24);
+		scbw::set_generic_timer(unit, ValueId::EnsnaringBroodTimer, 12 * 24);
 		unit->sprite->createTopOverlay(1281);
 	}
 };
@@ -1247,7 +1247,7 @@ namespace hooks {
 				}
 
 				// Remove Ensnaring Brood overlay
-				if (scbw::get_generic_timer(unit, ValueId::EnsnaringBrood) == 1) {
+				if (scbw::get_generic_timer(unit, ValueId::EnsnaringBroodTimer) == 1) {
 					unit->removeOverlay(1281);
 				}
 
@@ -1272,7 +1272,7 @@ namespace hooks {
 				*/
 
 				// Controlled Demolition - destroy structure
-				if (scbw::get_generic_timer(unit, ValueId::ControlledDemolition) == 1) {
+				if (scbw::get_generic_timer(unit, ValueId::ControlledDemolitionTimer) == 1) {
 					// Do we need more than this for the sake of calculating score screen counts and etc?
 					unit->remove();
 				}
@@ -1285,7 +1285,7 @@ namespace hooks {
 				}
 				*/
 
-				if (scbw::get_generic_timer(unit, ValueId::EmergencyDetonation) == 1) {
+				if (scbw::get_generic_timer(unit, ValueId::EmergencyDetonationTimer) == 1) {
 				//	scbw::createBullet(WeaponId::EmergencyDetonation, unit, unit->position.x, unit->position.y, unit->playerId); // Have to select a weapon entry
 					unit->remove();
 				}
