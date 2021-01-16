@@ -2101,11 +2101,26 @@ u16 random() {
 		return finalDamage;
 	}
 
-	// I may need to make this function more flexible later
+	// I may need to make this function more flexible later -- Pr0nogo
 	bool unitIsPacifist(CUnit* unit) {
 		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Attack)
 			|| !(unit->hasWeapon())
 			||	 unit->id == UnitId::ZergLurker; // LAME
+	}
+
+	// Identical to function OrderIsSpell @ 00436930 -- Pr0nogo
+	// We should update the lardcode for HYDRA
+	bool orderIsSpell(s32 orderId) {
+		return orderId == OrderId::Plague
+			|| orderId == OrderId::DarkSwarm
+			|| orderId == OrderId::Ensnare
+			|| orderId == OrderId::Irradiate
+			|| orderId == OrderId::StasisField
+			|| orderId == OrderId::EmpShockwave
+			|| orderId == OrderId::MagnaPulse
+			|| orderId == OrderId::PsiStorm
+			|| orderId == OrderId::SummonBroodlings
+			|| orderId == OrderId::FireYamatoGun1;
 	}
 
 } //scbw

@@ -588,6 +588,39 @@ void CUnit::addUnitEnergy(u32 energy, u32 energyMax) {
 	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, energyMax);
 }
 
+// Identical to getTotalHitPointsPlusShields @ 00402710
+s32 CUnit::getTotalHitPointsPlusShields() {
+	assert(this);
+	s32 id = this->id;
+	s32 shields = 0;
+	s32 hp = units_dat::MaxHitPoints[id] >> 8;
+	if (units_dat::ShieldsEnabled[id]) {
+		shields = units_dat::MaxShieldPoints[id];
+	}
+	if (!hp) {
+		hp = (this->hitPoints + 255) >> 8;
+		if (!hp) {
+			hp = 1;
+		}
+	}
+	return shields + hp;
+}
+
+// Identical to isAIControllerNotABuilding @ 004381D0
+s32 CUnit::isUnitAINonBuilding() {
+	assert(this);
+	UnitAi* ai = (UnitAi*)this->pAI;
+	MilitaryAi* mai = (MilitaryAi*)ai;
+	s32 result = 1;
+	if (!ai
+	||	ai->type != 4
+	||	mai->parent != this
+	||	units_dat::BaseProperty[this->id] & UnitProperty::Building) {
+		result = 0;
+	}
+	return result;
+}
+
 //-------- Unit orders --------//
 
 //Logically equivalent to function @ 0x004752B0
