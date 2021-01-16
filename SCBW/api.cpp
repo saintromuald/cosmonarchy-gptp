@@ -1627,17 +1627,16 @@ u16 random() {
 	}
 
 	bool canUseCliffAdvantage(CUnit* unit, u8 weapon) {
-		if (unit == NULL)
-			return false;
-		return (!(unit->status & UnitStatus::InAir)
-			&& (unit->id != UnitId::ProtossScarab)
+		return unit != nullptr
+			&& !(unit->status & UnitStatus::InAir)
+			&& unit->id != UnitId::ProtossScarab
 			&& (weapon == NULL || weapons_dat::MaxRange[weapon] > 32)
 			&& !(unit->status & UnitStatus::InBuilding)
-			&& unit->id != UnitId::TerranFirebat);
+			&& unit->id != UnitId::TerranFirebat;
 	}
 
 	s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
-		if (unit == NULL)
+		if (unit == nullptr)
 			return 0;
 		if (!canUseCliffAdvantage(unit, weapon))
 			return 0;

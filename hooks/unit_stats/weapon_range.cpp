@@ -131,11 +131,11 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 
 	// Height advantage
 	bonusAmount += 128;
-	bonusAmount -= (2 - std::max(scbw::getCliffAdvantage(unit), 0)) * 64;
+	bonusAmount -= (2 - std::max(scbw::getCliffAdvantage(unit, weaponId), 0)) * 64;
 
 	// Creep advantage
 	bonusAmount += 64;
-	bonusAmount -= (1 - std::max(scbw::getCreepAdvantage(unit), 0)) * 64;
+	bonusAmount -= (1 - std::max(scbw::getCreepAdvantage(unit, weaponId), 0)) * 64;
 
 	return weapons_dat::MaxRange[weaponId] + bonusAmount;
 }
