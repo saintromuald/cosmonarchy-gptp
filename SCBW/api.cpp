@@ -1689,6 +1689,9 @@ u16 random() {
 			scbw::set_generic_timer(unit, ValueId::ParasiteArmTimer, 0);
 			unit->removeOverlay(1031);
 		}
+		if (scbw::get_generic_unit(unit, ValueId::ParasiteSource) != nullptr) {
+			scbw::set_generic_unit(unit, ValueId::ParasiteSource, nullptr);
+		}
 
 		// Remove default flags
 		unit->parasiteFlags = 0;
@@ -1942,6 +1945,9 @@ u16 random() {
 		// Inherit Deconstruction
 		if (scbw::get_generic_value(parent, ValueId::Deconstruction) > 0) {
 			scbw::set_generic_value(child, ValueId::Deconstruction, scbw::get_generic_value(parent, ValueId::Deconstruction));
+			if (child->subunit != nullptr) {
+				scbw::set_generic_value(child->subunit, ValueId::Deconstruction, scbw::get_generic_value(parent, ValueId::Deconstruction));
+			}
 			if (!(child->sprite->getOverlay(1332 + overlayOffset))) {
 				child->sprite->createOverlay(1332 + overlayOffset);
 			}

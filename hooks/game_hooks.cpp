@@ -348,15 +348,7 @@ public:
 			}
 
 		}
-//		unit->setHp(unit->hitPoints + (6 * 256));
 		unit->setHp(unit->hitPoints + (heal * 256));
-		if (unit->getCurrentHpInGame() == unit->getMaxHpInGame() && reqHeal && organic) {
-			if (!unit->getOverlay(971)) {
-				unit->sprite->createTopOverlay(971);
-			}
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::Adrenaline, 1 + (2 * 24), 0);
-			return;
-		}
 	}
 };
 

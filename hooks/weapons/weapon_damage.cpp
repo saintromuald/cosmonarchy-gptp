@@ -406,8 +406,9 @@ namespace hooks {
 			}
 			// Fertile Spines - Konvilisk behavior
 			if (attacker != nullptr
-			&&	scbw::get_generic_value(attacker, ValueId::FertileSpines) > 0) {
-				scbw::set_generic_unit(target, ValueId::ParasiteSource, attacker);
+			&&	scbw::get_generic_value(attacker, ValueId::FertileSpines) > 0
+			&&	!(target->parasiteFlags)) {
+				scbw::set_generic_timer(target, ValueId::ParasiteArmTimer, (24 * 2) + 1); // replace with unitconstant later
 			}
 			// Deconstruction - Pazuzu behavior - apply stack
 			if (attacker!=nullptr
@@ -418,7 +419,14 @@ namespace hooks {
 				scbw::set_generic_value(target, ValueId::Deconstruction, 1);
 				scbw::set_generic_value(target, ValueId::DeconstructionPlayer, attacker->playerId);
 				s32 overlayOffset = scbw::getOverlayOffset(target->id);
-				target->sprite->createOverlay(1332 + overlayOffset);
+				if (target->subunit != nullptr) {
+					scbw::set_generic_value(target->subunit, ValueId::Deconstruction, 1);
+					scbw::set_generic_value(target->subunit, ValueId::DeconstructionPlayer, attacker->playerId);
+					target->subunit->sprite->createOverlay(1332 + overlayOffset);
+				}
+				else {
+					target->sprite->createOverlay(1332 + overlayOffset);
+				}
 			}
 			// Savant Entropy Gauntlets behavior - Apply timer and overlay
 			if (attacker != NULL && weaponId == WeaponId::DiscoidRailgun) {
@@ -625,9 +633,6 @@ namespace hooks {
 				s32 armorTotal = target->getArmor() * 256;
 				if (attacker != NULL && target != NULL) {
 					armorTotal += scbw::get_aise_value(target, NULL, AiseId::GetShepherds, 0, 0) * 256;
-					if (scbw::get_aise_value(target, NULL, AiseId::GenericTimer, ValueId::Adrenaline, 0) > 0) {
-						armorTotal += 512;
-					}
 					if (target->id == UnitId::TerranBattlecruiser) {
 						u16 angle = scbw::getAngle(target->position.x, target->position.y,
 							attacker->position.x, attacker->position.y);

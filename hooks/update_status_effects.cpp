@@ -266,6 +266,10 @@ void unburrow(CUnit* unit) {
 ;
 void updateStatusEffects(CUnit* unit) {
 
+	if (unit->subunit != nullptr) {
+		scbw::set_generic_value(unit->subunit, ValueId::TurretParentLink, (u32)unit);
+	}
+
 	// Decrement Stasis Field timer (and remove effect if 0)
 	if (unit->stasisTimer != 0) {
 

@@ -227,19 +227,6 @@ namespace hooks {
 						unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 						unit->mainOrderState = 1;
 						auto origin = unit->eggOrigin;
-/*						if (unit->id == UnitId::EggVorvaling
-						||	unit->id == UnitId::EggNathrokor
-						||	unit->id == UnitId::EggKalkaleth) { // Kalkaleth uses air cocoon
-							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
-						}
-						else if (unit->id == UnitId::EggAlkajelisk
-						||	unit->id == UnitId::EggKeskathalor
-						||	unit->id == UnitId::EggIroleth) { // Iroleth uses air cocoon
-							unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
-						}
-						*/
-						//scbw::printFormattedText("Unit %d origin %d previous %d", unit->id, origin, unit->previousUnitType);
-						
 						if (origin == UnitId::ZergZergling
 							|| origin == UnitId::ZergNathrokor	  // Temporary
 							|| origin == UnitId::ZergVorvaling) { // Kalkaleth uses air cocoon

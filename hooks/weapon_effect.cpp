@@ -31,6 +31,8 @@ namespace {	// helper declarations
 
 namespace hooks {
 
+
+
    void darkSwarmDamage(u16 x, u16 y, u16 r, CBullet* bullet, u32 weaponId) {
 	    CUnit* dsw = scbw::getDarkSwarm(x,y,r);
 	    if(dsw!=NULL){
@@ -493,10 +495,10 @@ namespace hooks {
 
   // clone of 'Yamato' damage for reference
   void yamatoDamage(CBullet* bullet, u32 weaponId) {
-    if (bullet->attackTarget.unit == NULL) return;
-    darkSwarmDamage(bullet->attackTarget.unit->position.x,bullet->attackTarget.unit->position.y,1,bullet,weaponId);
-	weaponBulletShot(bullet->attackTarget.unit, bullet, 1);
-  }
+		if (bullet->attackTarget.unit == NULL) return;
+		darkSwarmDamage(bullet->attackTarget.unit->position.x,bullet->attackTarget.unit->position.y,1,bullet,weaponId);
+		weaponBulletShot(bullet->attackTarget.unit, bullet, 1);
+	}
 
 	class parasiteProc : public scbw::UnitFinderCallbackProcInterface {
 	private:
