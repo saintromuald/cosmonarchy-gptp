@@ -348,7 +348,6 @@ public:
 			}
 
 		}
-//		unit->setHp(unit->hitPoints + (6 * 256));
 		unit->setHp(unit->hitPoints + (heal * 256));
 	}
 };
