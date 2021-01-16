@@ -33,6 +33,34 @@ namespace {
 	bool unitIsActiveResourceDepot(CUnit* unit);									// 00401CF0
 	s32 getPlayerDefaultRefineryUnitType(s32 playerId);								// 004320D0
 
+	// for AI_UnitWasHit // haven't wrapped any of these yet, some should probably be methods in api etc
+	char AI_CancelStructure(CUnit* structure, s32 a2);								// 00468280
+	CUnit* AI_GetActualTarget(CUnit* attacker, CUnit* target);						// 0043AD60
+	CUnit* checkArbiterCloakingRange(CUnit* unit, u16 id);							// 004410C0
+	void AI_OrderUnitCloaking(CUnit* unit);											// 0043B970
+	void AI_OrderLurkerBurrow(CUnit* unit);											// 0043C230
+	bool AI_IsUnderAttack(CUnit* unit, s32 flag);									// 00436E70
+	bool unitIsActiveTransport(CUnit* unit);										// 004E6BA0
+	s32 isUnitLoaded(CUnit* unit);													// 004E7110
+	void orderComputerClear(CUnit* unit, u8 orderId);								// 00475310
+	s32 AI_TryReturnHome(CUnit* unit, s32 a2);										// 00462EA0
+	s32 AI_TransportAction(CUnit* unit);											// 0043DB50
+	s32 AI_AskForHelp(CUnit* self, CUnit* attacker, s32 onlyNearbyGuards);			// 0043ADA0
+	s16 getRegionIdFromUnit(CUnit* unit);											// 0049CB40
+	s32 getEnemyAirStrengthInRegion(u16 regionId, s32 player);						// 00431D00
+	s32 getEnemyStrengthInRegion(u16 regionId, s32 player, s32 includeAir);			// 004318E0
+	bool unitIsPerformingUnbreakableCode(CUnit* unit);								// 00402310
+	bool AI_CastSpellBehavior(CUnit* unit, bool isAggro);							// 004A13C0
+	s32 AI_Flee(CUnit* unit, CUnit* enemy);											// 0043E400
+	bool unitHasPathToDestOnGround(CUnit* unit, s16 x, s16 y);						// 0042FA00
+	bool AI_HasNoDefenseBuild(s32 player);											// 00447370
+	bool unitCanSeeCloakedTarget(CUnit* target, CUnit* unit);						// 00401D60
+	void AI_RespondToCloakedThreat(CUnit* threat, CUnit* unit);						// 0043C580
+	bool unitCanAttackTarget(CUnit* target, CUnit* unit, s32 checkDetection);		// 00476730
+	s32 burrowIdle_Normal(CUnit* unit, s32 a2, s32 a3, s32 a4);						// 00477160
+	__int64 AI_PrepareToFlee(CUnit* unit, CUnit* a2);								// 00476A50
+	void orderInterrupt(CUnit* unit, u8 orderId, Point32* pos, CUnit* a4);			// 00474C30
+
 }
 #include "logger.h"
 namespace hooks {
@@ -450,6 +478,280 @@ namespace hooks {
 			}
 		}
 	}
+
+	// Hooked to modify AI behavior such as cancelling structures, withdrawing hurt high-value targets, etc -- Pr0nogo
+/*	void AI_UnitWasHit(CUnit* pUnit, CUnit* a2, s32 a3, s32 a4) { // 0043F320
+		s8 v4; // cl
+		CUnit* v5; // ebx
+		CUnit* v6; // esi
+		BuildingAi* v7; // eax
+		s32 v8; // edx
+		s32 quartTotalHP; // edi
+		CUnit* v10; // eax
+		s32 v11; // eax
+		UnitAi* v12; // esi
+		s32 v13; // eax
+		AiCaptain* v14; // esi
+		s32 v15; // edx
+		s32 v16; // eax
+		AiCaptain* v17; // edi
+		char v18; // al
+		s16 v19; // ax
+		s16 v20; // di
+		s32 v21; // esi
+		s32 v22; // eax
+		s32 v23; // edi
+		s32 v24; // eax
+		s32 v25; // esi
+		s32 v26; // esi
+		CUnit* v27; // esi
+		u16 v29; // ax
+		__int64 v33; // rax
+		CUnit* v34; // esi
+		s32 v35; // eax
+		CUnit* v36; // esi
+		CUnit* v37; // eax
+		s32 v38; // eax
+		s32 v39; // [esp+Ch] [ebp-14h]
+		s32 v40; // [esp+Ch] [ebp-14h]
+		s32 v41; // [esp+14h] [ebp-Ch]
+		s32 v42; // [esp+14h] [ebp-Ch]
+		CUnit* a1; // [esp+1Ch] [ebp-4h]
+		s32 v44; // [esp+2Ch] [ebp+Ch]
+
+		MilitaryAi* militaryAi;
+
+		v5 = pUnit;
+		v4 = pUnit->playerId;
+		v6 = a2;
+		if (playerTable[v4].type != PlayerType::Computer || v4 >= 8u)
+			return;
+		if (units_dat::BaseProperty[(u16)v5->id] & UnitProperty::Building)
+		{
+			if (v5->pAI)
+			{
+				AIScriptController[v4].lastIndividualUpdateTime = *elapsedTimeSeconds;
+				v7 = (BuildingAi*)v5->pAI;
+				if (v7)
+					v7->town->in_battle = 1;
+				if (a3) {
+					if (a2) {
+						if (units_dat::BaseProperty[(u16)v5->id] & UnitProperty::Worker // cancel structure code
+							&& !(v5->mainOrderId) // Original function call checks if unit has a sprite??? 00475A50
+							&& !(v5->status & UnitStatus::Completed))
+						{
+							quartTotalHP = v5->getTotalHitPointsPlusShields() / 4;
+							if (v5->getCurrentLifeInGame() < quartTotalHP)
+							{
+								AI_CancelStructure(v5, v8);
+								return;
+							}
+						}
+					}
+				}
+			}
+		}
+		v10 = AI_GetActualTarget(v5, v6);
+		a1 = v10;
+		if (v10->status & UnitStatus::InBuilding)
+		{
+			a1 = v10->connectedUnit;
+			if (!a1)
+				return;
+		}
+		v11 = a1->status;
+		if (v11 & 0x800)                            // CloakingForFree
+		{
+			if (!(v11 & UnitStatus::CloakingForFree))
+			{
+				a1 = checkArbiterCloakingRange(v5, UnitId::ProtossArbiter);
+				if (!a1)
+					return;
+			}
+		}
+		if (a3)
+		{
+			AI_OrderUnitCloaking(v5);
+			AI_OrderLurkerBurrow(v5);
+		}
+		v12 = (UnitAi*)v5->pAI;
+		v39 = 0;
+		v41 = 0;
+		if (!v12)
+			goto LABEL_37;
+		if (v12->type == 4) {
+			militaryAi = (MilitaryAi*)v12;
+			if (militaryAi->region->captainType == 1)
+			{
+				if (v5->isUnitAINonBuilding())
+					AI_AssignMilitary(2, militaryAi->region);
+			}
+			v41 = AI_IsUnderAttack(v5, 0);
+		}
+		if (!a3 || !unitIsActiveTransport(v5) || !(v5->status & UnitStatus::IsBuilding))
+			goto LABEL_37;
+		if (isUnitLoaded(v5))
+		{
+			if (v5->mainOrderId != 111)
+				orderComputerClear(v5, 0x6Fu);
+			return;
+		}
+		if (AI_TryReturnHome(v5, 0) || !AI_TransportAction(v5))
+		{
+			if (AIScriptController[(u8)v5->playerId].AI_Flags.isUseMapSettings)
+				v39 = 1;
+		LABEL_37:
+			v14 = &AiRegionCaptains[(u8)v5->playerId][SAI_GetRegionIdFromPxEx(
+				v5->sprite->position.x,
+				v5->sprite->position.y)];
+			if (!v39)
+			{
+				if (!a4)
+					AI_AskForHelp(v5, a1, v41);
+				if (!v41)
+				{
+					if (!v5->pAI
+						|| AI_IsUnderAttack(v5, 0)
+						|| (v42 = 1, *(s8*)(v15 + 8) == 1)
+						&& AIScriptController[(u8)v5->playerId].AI_Flags.isUseMapSettings)
+					{
+						v42 = 0;
+					}
+					v17 = &AiRegionCaptains[(u8)v5->playerId][getRegionIdFromUnit(a1)];
+					if (v42)
+					{
+						v18 = v14->captainType;
+						if (v18 == 5 || v18 == 4)
+							AI_AssignMilitary(6, v14);
+						if (v14->captainType)
+						{
+							if (!v17->captainType && *elapsedTimeSeconds > 60)
+								AI_AssignMilitary(5, v17);
+						}
+					}
+					if (!a4)
+					{
+						v17->unknown_0x18 = getEnemyAirStrengthInRegion(v17->region, (u8)v5->playerId);
+						v17->unknown_0x1A = getEnemyStrengthInRegion(v17->region, (u8)v5->playerId, 0);
+						v19 = v17->unknown_0xE;
+						if (v19 > v14->unknown_0xE)
+							v14->unknown_0xE = v19;
+						v20 = v17->unknown_0xC;
+						if (v20 > v14->unknown_0xC)
+							v14->unknown_0xC = v20;
+					}
+				}
+			}
+			v14->captainFlags |= 0x20u;
+			if (v5->status & UnitStatus::Completed)
+			{
+				v21 = (u8)v5->mainOrderId;
+				v40 = (u8)v5->mainOrderId;
+				if (v21 != OrderId::CompletingArchonSummon && v21 != OrderId::ResetCollision1 && v21 != OrderId::ConstructingBuilding)
+				{
+					if (a3 || !scbw::orderIsSpell(v21))
+					{
+						v23 = (u16)v5->id;
+						if (v5->id || v21 != OrderId::EnterTransport)
+						{
+							v44 = unitIsPerformingUnbreakableCode(v5);
+							if (v44 || !AI_CastSpellBehavior(v5, a3))
+							{
+								if (v21 != OrderId::RechargeShields1 && v21 != OrderId::Move)
+								{
+									if (!a3)
+										goto LABEL_126;
+									if (v23 != UnitId::ProtossCarrier
+										|| (u8)(LOBYTE(v5->field_C8) + BYTE1(v5->carrier.inHangarCount)) > 2u
+										|| !AI_TransportAction(v5))
+									{
+										if (a1 && a1->status & UnitStatus::IsBuilding // Attempt to return to base when below an HP threshold
+											|| AIScriptController[(u8)v5->playerId].AI_Flags.isUseMapSettings
+											|| ((v25 = 3 * v5->getTotalHitPointsPlusShields() / 4, v5->getCurrentLifeInGame() > v25)
+												|| v23 != UnitId::ProtossArbiter && v23 != UnitId::TerranWraith && v23 != UnitId::ZergMutalisk
+												|| !AI_TransportAction(v5))
+											&& ((v26 = 2 * v5->getTotalHitPointsPlusShields() / 3, v5->getCurrentLifeInGame() > v26)
+												|| v23 != UnitId::TerranBattlecruiser && v23 != UnitId::ProtossCarrier && v23 != UnitId::ProtossPanoptus
+												|| !AI_TransportAction(v5)))
+										{
+											if (v5->id != UnitId::ZergLurker
+												|| v5->status & UnitStatus::Burrowed
+												|| v40 == OrderId::Burrow
+												|| v40 == OrderId::Unburrow)
+											{
+												v27 = a1;
+											}
+											else {
+												v27 = a1;
+												if (AI_Flee(v5, a1))
+													return;
+											}
+											if (v44
+												|| !(v5->status & UnitStatus::IsBuilding)
+												|| unitHasPathToDestOnGround(v5, v27->sprite->position.x, v27->sprite->position.y)
+												|| !AI_Flee(v5, v27))
+											{
+											LABEL_126:
+												if (v5->orderTarget.unit != a1) { // Responding with workers
+													if (!(units_dat::BaseProperty[(u16)v5->id] & UnitProperty::Worker)
+														|| (v29 = a1->id, units_dat::BaseProperty[v29] & UnitProperty::Worker)
+														|| v29 == UnitId::ZergZergling
+														|| AI_HasNoDefenseBuild((u8)v5->id))
+													{
+														if (a3) {
+															if (v5->pAI)
+															{
+																if (unitCanSeeCloakedTarget(a1, v5))
+																	AI_RespondToCloakedThreat(v5, a1);
+															}
+														}
+														if (!v44)
+														{
+															if (unitCanAttackTarget(a1, v5, 1))
+															{
+																v36 = v5->subunit;
+																v37 = v5->subunit;
+																v5->autoTargetUnit = a1;
+																if (v37->isSubunit())
+																	v36->autoTargetUnit = a1;
+																burrowIdle_Normal(v5, 0, 1, 0);
+															}
+															else if (v5->pAI)
+															{
+																if (v40 != 159
+																	|| (v33 = AI_PrepareToFlee(a1, v5), (s32)v33 == *(s32*)&v5->sprite->position))
+																{
+																	if (a3) {
+																		if (v5->id != 34)
+																		{
+																			v34 = v5->orderTarget.unit;
+																			if (!v34 || !unitCanAttackTarget(v34, v34, 1))
+																				AI_Flee(v5, a1);
+																		}
+																	}
+																}
+																else {
+																	orderInterrupt(v5, 6u, (Point32*)v33, (CUnit*)HIDWORD(v33)); // point32 was dwPosition, I think that's the same thing
+																}
+															}
+														}
+													}
+													else if (a3)
+													{
+														AI_Flee(v5, a1);
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}*/
 
 }
 

@@ -407,6 +407,8 @@ struct CUnit: public CUnitLayout {
   //////////////////////////////////////////////////////////////// @}
 
   void setSupplyProvided(u8 amount);
+  s32 getTotalHitPointsPlusShields();
+  s32 CUnit::isUnitAINonBuilding();
 };
 
 C_ASSERT(sizeof(CFlingy) == 0x4c);
