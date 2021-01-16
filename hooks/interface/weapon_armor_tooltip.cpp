@@ -429,6 +429,7 @@ namespace hooks {
 
 		// Vanilla Value
 		addStatus(statuses, "Parasited", unit->parasiteFlags != 0);
+		addStatus(statuses, "Blinded", (bool) unit->isBlind);
 
 		// Case Specific
 		addStatus(statuses, "Sieged", unit->id == UnitId::TerranSiegeTankSiegeMode);
@@ -441,7 +442,7 @@ namespace hooks {
 
 		// TODO Statuses
 		//	make sublime shepard show on targets not only caster
-		//	add optical flare, mind control on target, last orders?, infested (when it's implemented)
+		//	add optical flare timer, mind control on target, last orders?, infested (when it's implemented)
 		//	properly track cowardice, malice timers
 		//	color code source player if possible
 
