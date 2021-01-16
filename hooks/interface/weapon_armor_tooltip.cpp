@@ -403,8 +403,8 @@ namespace hooks {
 		addStatus(statuses, "Dirge", scbw::get_generic_value(unit, ValueId::TempoChange) == 1);
 		addStatus(statuses, "Swarming Omen", scbw::get_generic_timer(unit, ValueId::SwarmingOmenStatus) > 0);
 		addStatus(statuses, "Protective Instincts", scbw::get_generic_timer(unit, ValueId::ProtectiveInstinctsStatus) > 0);
-		addStatus(statuses, "Deconstructing", scbw::get_generic_timer(unit, ValueId::Deconstruction) > 0);
-		addStatus(statuses, "Worshiping", scbw::get_generic_timer(unit, ValueId::WorshipStack) > 0);
+		addStatus(statuses, "Deconstructing", scbw::get_generic_value(unit, ValueId::Deconstruction) > 0);
+		addStatus(statuses, "Worshiping", scbw::get_generic_value(unit, ValueId::WorshipStack) > 0);
 
 		// Aise Value - Gimmicked
 		addStatus(statuses, "Phase Link", scbw::get_aise_value(unit, NULL, AiseId::HasClarionLink, 0, 0));
