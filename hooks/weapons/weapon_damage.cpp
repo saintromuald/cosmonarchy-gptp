@@ -633,9 +633,6 @@ namespace hooks {
 				s32 armorTotal = target->getArmor() * 256;
 				if (attacker != NULL && target != NULL) {
 					armorTotal += scbw::get_aise_value(target, NULL, AiseId::GetShepherds, 0, 0) * 256;
-					if (scbw::get_aise_value(target, NULL, AiseId::GenericTimer, ValueId::Adrenaline, 0) > 0) {
-						armorTotal += 512;
-					}
 					if (target->id == UnitId::TerranBattlecruiser) {
 						u16 angle = scbw::getAngle(target->position.x, target->position.y,
 							attacker->position.x, attacker->position.y);
