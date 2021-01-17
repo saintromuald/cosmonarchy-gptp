@@ -1643,8 +1643,8 @@ u16 random() {
 		CUnit* targetUnit = unit->orderTarget.unit;
 		if (targetUnit == nullptr)
 			return 0;
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Flyer)
-			return 0;
+		//if (targetUnit->status & UnitStatus::InAir)
+		//	return 0;
 		s32 sourceHeight = scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight;
 		s32 targetHeight = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).groundHeight;
 		return (sourceHeight - targetHeight) / 2;
@@ -1658,8 +1658,8 @@ u16 random() {
 		CUnit* targetUnit = unit->orderTarget.unit;
 		if (targetUnit == nullptr)
 			return 0;
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Flyer)
-			return 0;
+		//if (targetUnit->status & UnitStatus::InAir)
+		//	return 0;
 		bool sourceCreep = scbw::getActiveTileAt(unit->position.x, unit->position.y).hasCreep;
 		bool targetCreep = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).hasCreep;
 		return (sourceCreep && !targetCreep) ? 1 : 0;
