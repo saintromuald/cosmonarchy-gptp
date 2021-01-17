@@ -434,7 +434,7 @@ namespace hooks {
 					monoceros.insert(unit->orderTarget.unit);
 					scbw::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 					auto old = unit->orderTarget.unit;
-					for (int i = 0; i < 5; i++) {
+					for (int i = 0; i < 4; i++) {
 						auto range = hooks::getMaxWeaponRangeHook(unit, WeaponId::MinotaurLaserBattery) + 32;
 						auto n = unitRangeCount(unit, CFlags::Enemy | CFlags::FrontalArc, {});
 						auto newTarget = scbw::UnitFinder::getNearestTarget(
@@ -449,6 +449,7 @@ namespace hooks {
 							auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
 								newTarget->getX(), newTarget->getY());
 							scbw::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
+							// hardcode battlecruiser deconstruction later
 						}
 						else {
 							break;
