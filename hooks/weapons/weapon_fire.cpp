@@ -449,7 +449,10 @@ namespace hooks {
 							auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
 								newTarget->getX(), newTarget->getY());
 							scbw::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
-							// hardcode battlecruiser deconstruction later
+							if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) { // inlined for now; maybe an api func would be best
+								double selfDamage = (0.25 * (double)scbw::getFinalDamage(unit, weaponId) * 256.0);
+								unit->inflictDamage((s32)(selfDamage), unit, scbw::get_generic_value(unit, ValueId::DeconstructionPlayer), false);
+							}
 						}
 						else {
 							break;
