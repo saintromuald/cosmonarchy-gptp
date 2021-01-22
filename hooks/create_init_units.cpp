@@ -51,9 +51,9 @@ void CreateInitialMeleeBuildings(u8 raceId, u32 playerId) {
 	buildingSizeX = units_dat::BuildingDimensions[buildingId].x;
 	buildingSizeY = units_dat::BuildingDimensions[buildingId].y;
 
-	if(buildingSizeX < 0)
+	if (buildingSizeX < 0)
 		buildingSizeX++;
-	if(buildingSizeY < 0)
+	if (buildingSizeY < 0)
 		buildingSizeY++;
 
 	searchBox.left = (startPositions[playerId].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0;
@@ -72,15 +72,15 @@ void CreateInitialMeleeBuildings(u8 raceId, u32 playerId) {
 			playerId
 		);
 
-	if(created_unit != NULL) {
+	if (created_unit != NULL) {
 
 		function_004A01F0(created_unit);
 
-		if(function_0049EC30(created_unit) != 0)
+		if (function_0049EC30(created_unit) != 0)
 			updateUnitStrength(created_unit);
 
-		if(spreadsCreep(created_unit->id,1)
-		|| units_dat::BaseProperty[created_unit->id] & UnitProperty::CreepBuilding)
+		if (spreadsCreep(created_unit->id, 1)
+			|| units_dat::BaseProperty[created_unit->id] & UnitProperty::CreepBuilding)
 		{
 			function_004148F0(
 				created_unit->sprite->position.x,
@@ -126,11 +126,11 @@ public:
 	}
 };
 
-double sign(double x) {
+double Sign(double x) {
 	return x < 0.0 ? -1.0 : x > 0.0 ? 1.0 : 0.0;
 }
 
-Point16 findWorkerSpawnPositions(int townhallId, const u16& startX, const u16& startY)
+Point16 FindWorkerSpawnPositions(int townhallId, const u16& startX, const u16& startY, bool& horizontal)
 {
 	std::vector<Point16> positions;
 	int sumX = 0;
@@ -141,46 +141,57 @@ Point16 findWorkerSpawnPositions(int townhallId, const u16& startX, const u16& s
 	unitFinder.search(startX - 10 * 32, startY - 10 * 32, startX + 10 * 32, startY + 10 * 32);
 	unitFinder.forEach(MineralFieldAveragePosProc(startX, startY, sumX, sumY, count));
 
-	if (count == 0) {
-		return Point16{ startX, startY };
+	if (count == 0) { // default to bottom horizontal
+		count = 1;
+		sumX = 0;
+		sumY = 1;
 	}
 
-	double averageX = (double) sumX / count;
-	double averageY = (double) sumY / count;
+	double averageX = (double)sumX / count;
+	double averageY = (double)sumY / count;
 	double distance = pow(pow(averageX, 2) + pow(averageY, 2), 0.5);
 
 	double offsetX = averageX / distance;
 	double offsetY = averageY / distance;
 
-	const double distanceMultiplier = 1.35;
+	const double distanceMultiplier = 1.4;
 	double width = distanceMultiplier;
 	double height = distanceMultiplier;
 
 	if (offsetX < 0) {
 		width *= units_dat::UnitBounds[townhallId].left;
-	} else {
+	}
+	else {
 		width *= units_dat::UnitBounds[townhallId].right;
 	}
 
 	if (offsetY < 0) {
 		height *= units_dat::UnitBounds[townhallId].top;
-	} else {
+	}
+	else {
 		height *= units_dat::UnitBounds[townhallId].bottom;
 	}
 
-	offsetX *= width;
-	offsetY *= height;
+	offsetX = offsetX * width;
+	offsetY = offsetY * height;
 
-	const double diagonalClampBreakpoint = 96.0;
-	if (abs(offsetX - offsetY) < diagonalClampBreakpoint * distanceMultiplier) {
-		offsetX = sign(offsetX) * width;
-		offsetY = sign(offsetY) * height;
-	} else if (abs(offsetX) > abs(offsetY)) {
-		offsetX = sign(offsetX) * width;
-		offsetY = 0;
+	const double diagonalThreshold = 0.5; // 1 - full diagonal, 0 - straight line
+	bool forceHorizontal = false;
+	double max = std::max(abs(offsetX), abs(offsetY));
+	double min = std::min(abs(offsetX), abs(offsetY));
+	if (min != 0 && diagonalThreshold != 0) {
+		forceHorizontal = max / min < 1 / diagonalThreshold;
+	}
+
+	if (forceHorizontal ||
+		abs(offsetX) < abs(offsetY)) {
+		offsetX = -units_dat::UnitBounds[townhallId].left * distanceMultiplier;
+		offsetY = Sign(offsetY) * height;
+		horizontal = true;
 	} else {
-		offsetX = 0;
-		offsetY = sign(offsetY) * height;
+		offsetX = Sign(offsetX) * width;
+		offsetY = units_dat::UnitBounds[townhallId].bottom * distanceMultiplier * 1.5;
+		horizontal = false;
 	}
 
 	return Point16{ (u16)(startX + offsetX), (u16)(startY + offsetY) };
@@ -215,14 +226,14 @@ void CreateInitialMeleeUnits() {
 				startingUnits = 2;
 			}
 
-			if(startingUnits == 2) {
-				CreateInitialMeleeBuildings(*raceIdOffset,playerId);
+			if (startingUnits == 2) {
+				CreateInitialMeleeBuildings(*raceIdOffset, playerId);
 
-				if(*raceIdOffset == RaceId::Zerg)
+				if (*raceIdOffset == RaceId::Zerg)
 					CreateInitialOverlord(playerId);
 			}
 
-			if(startingUnits == 1 || startingUnits == 2) {
+			if (startingUnits == 1 || startingUnits == 2) {
 
 				u8 unitId = GetRaceWorker(*raceIdOffset);
 				u8 townhallId = GetRaceTownhall(*raceIdOffset);
@@ -230,10 +241,19 @@ void CreateInitialMeleeUnits() {
 				
 				if (unitId != UnitId::None) {
 					Point16 startPos = startPositions[playerId];
-					Point16 pos = findWorkerSpawnPositions(townhallId, startPos.x, startPos.y);
+					bool horizontal = true;
+					Point16 pos = FindWorkerSpawnPositions(townhallId, startPos.x, startPos.y, horizontal);
 
 					for (int i = 0; i < 6; i++) {
+						const int correctionOffset = 1;
+						const int unitWidth = units_dat::UnitBounds[unitId].left + units_dat::UnitBounds[unitId].right + correctionOffset;
+						const int unitHeight = units_dat::UnitBounds[unitId].bottom + units_dat::UnitBounds[unitId].top + correctionOffset;
+
+						if (horizontal) pos.x += unitWidth;
+						else pos.y -= unitHeight;
+
 						created_unit = createUnit(unitId, pos.x, pos.y, playerId);
+						scbw::teleport(created_unit, pos);
 
 						if (created_unit != NULL) {
 							function_004A01F0(created_unit);
@@ -244,7 +264,6 @@ void CreateInitialMeleeUnits() {
 					}
 				}
 			}
-
 		}
 
 	}
