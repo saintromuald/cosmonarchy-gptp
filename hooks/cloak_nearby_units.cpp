@@ -49,6 +49,10 @@ void cloakNearbyUnitsHook(CUnit* cloaker) {
 			current_unit != cloaker																	// Don't cloak self
 			&& !(units_dat::BaseProperty[current_unit->id] & UnitProperty::NeutralAccessories)		// Don't cloak items
 			&& current_unit->id != UnitId::TerranNuclearMissile										// Don't cloak nukes
+			&& current_unit->id != UnitId::ResourceMineralField										// Don't cloak resources
+			&& current_unit->id != UnitId::ResourceMineralFieldType2								//
+			&& current_unit->id != UnitId::ResourceMineralFieldType3								//
+			&& current_unit->id != UnitId::ResourceVespeneGeyser									//
 			&& current_unit->mainOrderId != OrderId::Warpin											// Don't cloak units doing order WarpIn
 			&& scbw::isAlliedTo(current_unit->playerId, cloaker->playerId)							// (or allied to Cloaker owner)
 			&& cloaker->isTargetWithinMinRange(current_unit, cloakRadius)							// Check again if unit in range of cloaking
