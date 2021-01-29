@@ -75,8 +75,8 @@ bool isUnitInUnsafeRegion(CUnit* unit) {
   u16 currentRegion = getRegionIdAtPosEx(unit->getX(), unit->getY());
   AiCaptain *currentAiCaptain = &AiRegionCaptains[unit->playerId][currentRegion];
   return currentAiCaptain->captainType == 3
-    || currentAiCaptain->unknown_0x1C
-    || currentAiCaptain->unknown_0x20
+    || currentAiCaptain->airTarget
+    || currentAiCaptain->groundTarget
     || currentAiCaptain->captainFlags & 0x20;
 }
 

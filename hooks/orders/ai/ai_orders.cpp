@@ -83,6 +83,14 @@ namespace {
 	u32 AI_GetMissingAttackForceUnits(AiCaptain* region, s32* outUnitIds, u32 isCampaign);			// 0043E580
 	s32 AI_HasForcesMovingToAttack(u32 player);														// 0043A2E0
 
+	// for AI_AttackManager
+	u16 PopulateRegionsWithOwn(char* regionData, u32 player);										// 00438B30
+	void PopulateRegionsWithEnemy(u32 player, char* regionData);									// 00439B50
+	s32 AI_GetNeighborRegionTypes(char* regionData);												// 00436D80
+	void Ai_FinishRegionAccessibility(char* regionData);											// 00436CF0
+	s32 AI_SetAttackGroupingRegion(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,	// 004399D0
+		s32 x, s32 y, u32 alwaysOverwriteLastAttack);
+
 }
 #include "logger.h"
 namespace hooks {
@@ -889,14 +897,299 @@ namespace hooks {
 	}
 
 //	0x00438050 => get_missing_attack_force_units_hook(*mut AiRegion,*mut u32,bool)->u32;
+/*	u32 AI_GetMissingAttackForceUnits(AiCaptain* region, DWORD* unitIds, u32 isCampaign) {
+		s16 v3; // dx
+		s16* v4; // ecx
+		u32 i; // edi
+		u32 v6; // eax
+		CUnit* v7; // esi
+		s8 v8; // bl
+		u32 v9; // ecx
+		unitIDs v10; // edx
+		s32 v11; // eax
+		u32 v12; // esi
+		s32 v13; // ecx
+		UnitAi* v14; // ecx
+		u32 v15; // esi
+		u32 v16; // ecx
+		CUnit* v18; // [esp+8h] [ebp-4h]
+		MilitaryAi* military;
+
+		v4 = AIScriptController[(u8)region->playerId].attackers;
+		v3 = *v4;
+		for (i = 0; *v4; ++i)
+		{
+			unitIds[i] = v3 - 1;
+			++v4;
+			v3 = *v4;
+		}
+		v6 = (u8)region->playerId;
+		v7 = firstPlayerUnit->unit[v6];
+		v18 = firstPlayerUnit->unit[v6];
+		if (v7) {
+			while (1) {
+				if (v7->sprite) {
+					v8 = v7->mainOrderId;
+					if (v8) {
+						v9 = (u16)v7->id;
+						if (!(units_dat::BaseProperty[v9] & UnitProperty::Subunit))
+							break;
+					}
+				}
+			LABEL_37:
+				v18 = v7->player_link.next;
+				if (!v18)
+					return i;
+				v7 = v7->player_link.next;
+			}
+			v10 = (u16)v7->id;
+			if (v9 == UnitId::TerranSiegeTankSiegeMode)
+				v10 = UnitId::TerranSiegeTankTankMode;
+			v11 = 1;
+			v12 = v7->status & 1;
+			if (!v12 || v8 == OrderId::CompletingArchonSummon || v8 == OrderId::ResetCollision1)
+			{
+				if (isCampaign) {
+				LABEL_36:
+					v7 = v18;
+					goto LABEL_37;
+				}
+				if (v10 == UnitId::ZergEgg || v10 == UnitId::ZergCocoon) {
+					v10 = (u16)v18->buildQueue[(u8)v18->buildQueueSlot];
+					v13 = units_dat::BaseProperty[v10];
+					if (v13 & 0x400)
+						v11 = 2;
+				}
+			}
+			if (!(units_dat::ComputerAIInternal[v10] & 1)) {
+				v14 = (UnitAi*)v18->pAI;
+				military = (MilitaryAi*)v18->pAI;
+				if (!v12
+					|| v8 == 0x6A // UNI_FIRST_BLDG
+					|| v8 == UnitId::Special_MatureChrysalis
+					|| v14 != 0 && v14->type == 4 && military->region == region)
+				{
+					if (v11) {
+						v15 = i - 1;
+						do {
+							v16 = 0;
+							if (i) {
+								while (v10 != unitIds[v16]) {
+									if (++v16 >= i)
+										goto LABEL_35;
+								}
+								unitIds[v16] = UnitId::None;
+								if (v16 == v15) {
+									--i;
+									--v15;
+								}
+							}
+						LABEL_35:
+							--v11;
+						} while (v11);
+					}
+				}
+			}
+			goto LABEL_36;
+		}
+		return i;
+	}*/
 
 //	0x00447230 => ai_add_to_attackforce(@edi u32,@eax u32,@ecx u32);
+/*	void AI_AddToAttack(u32 result, u32 player, u32 unitId) { // 00447230
+		u32 _counter; // esi
+		u32 i; // eax
+		u32 plOffset; // edx
+		u16* atkGroups; // ecx
+		u16* v7; // ecx
+
+		_counter = result;
+		if (player < 8 && result < 63 && unitId < UnitId::None) {
+			plOffset = 628 * player;
+			i = 0;
+			if (AIScriptController[player].attackers[0]) {
+				atkGroups = AIScriptController[player].attackers;
+				while (i < 63) {
+					++atkGroups;
+					++i;
+					if (!*atkGroups)
+						goto LABEL_8;
+				}
+			}
+			else
+			{
+			LABEL_8:
+				if (_counter)
+				{
+					v7 = &AIScriptController[0].attackers[plOffset + i];
+					do
+					{
+						--_counter;
+						if (i >= 63)
+							break;
+						*v7 = unitId + 1;
+						++i;
+						++v7;
+					} while (_counter);
+				}
+			}
+		}
+	}*/
 
 //	0x0043ABB0 => ai_attack_to_hook(u32,i32,i32,bool,bool)->u32;
+	bool AI_AttackManager(u32 _player, s32 x1, s32 y1, u32 alywaysOverwriteLastAttack, u32 allowFallbackAirOnly) { // 0043ABB0
+		u32 v5; // esi
+		WORD v7; // ax
+		WORD* v8; // ecx
+		char regionsList[2500]; // [esp+4h] [ebp-9C8h]
+		u32 v10; // [esp+9C8h] [ebp-4h]
+
+		v5 = _player;
+		if (AIScriptController[_player].supplyCollection)
+			return 1;
+		if (AIScriptController[v5].AI_AttackGroup)
+			return *((u8*)&AiRegionCaptains[_player][(u16)AIScriptController[v5].AI_AttackGroup] - 47) != 8;
+		memset(regionsList, 0, sizeof(regionsList));
+		PopulateRegionsWithOwn(regionsList, _player);
+		PopulateRegionsWithEnemy(_player, regionsList);
+		while (AI_GetNeighborRegionTypes(regionsList))
+			Ai_FinishRegionAccessibility(regionsList);
+		v7 = AIScriptController[v5].attackers[0];
+		v8 = AIScriptController[v5].attackers;
+		v10 = v7 != 0;
+		if (v7)
+		{
+			while (units_dat::DestroyScore[2 * v7 + 226] & 4)
+			{
+				v7 = v8[1];
+				++v8;
+				if (!v7)
+					goto LABEL_12;
+			}
+			v10 = 0;
+		}
+	LABEL_12:
+		AIScriptController[v5].AI_Flags.isSecureFinished = 1; // Might be wrong
+		if (!AI_SetAttackGroupingRegion(v10, 0, _player, regionsList, x1, y1, alywaysOverwriteLastAttack)
+		&& !AI_SetAttackGroupingRegion(v10, 1, _player, regionsList, x1, y1, alywaysOverwriteLastAttack))
+		{
+			if (!allowFallbackAirOnly || v10) {
+				return 1;
+			}
+			if (!AI_SetAttackGroupingRegion(1, 0, _player, regionsList, x1, y1, alywaysOverwriteLastAttack)
+			&& !AI_SetAttackGroupingRegion(1, 1, _player, regionsList, x1, y1, alywaysOverwriteLastAttack))
+			{
+				AIScriptController[v5].supplyCollection = 1;
+				return 1;
+			}
+		}
+		return 0;
+	}
 
 //	0x00437F20 => has_units_for_attack_force_hook(@edx u32)->u32;
+	s32 AI_HasUnitsForAttackForce(u32 player) { // 00437F20
+		u16* v2; // eax
+		u16 v3; // cx
+		u32 i; // edi
+		CUnit* v5; // edx
+		u32 v6; // eax
+		u8 v7; // bl
+		u32 v8; // ecx
+		s32 v9; // esi
+		u32 v10; // ecx
+		u32 v11; // ecx
+		u32 v13[63]; // [esp+4h] [ebp-FCh]
+
+		v2 = AIScriptController[player].attackers;
+		v3 = *v2;
+		for (i = 0; *v2; ++i)
+		{
+			v13[i] = v3 - 1;
+			++v2;
+			v3 = *v2;
+		}
+		v5 = firstPlayerUnit->unit[player];
+		if (v5)
+		{
+			v6 = i - 1;
+			do
+			{
+				if (v5->sprite)
+				{
+					v7 = v5->mainOrderId;
+					if (v7)
+					{
+						v8 = (u16)v5->id;
+						if (!(units_dat::BaseProperty[v8] & 0x10))
+						{
+							v9 = (u16)v5->id;
+							if (v8 == 30)
+								v9 = 5;
+							if (!(units_dat::ComputerAIInternal[v9] & 1))
+							{
+								if (v5->status & 1)
+								{
+									if (v7 != 106 && v7 != 150 && !orders_dat::UseWeaponTargeting[v7])
+									{
+										if (v5->pAI)
+										{
+											v10 = 0;
+											if (i)
+											{
+												while (v9 != v13[v10])
+												{
+													if (++v10 >= i)
+														goto LABEL_22;
+												}
+												v13[v10] = 228;
+												if (v10 == v6)
+												{
+													--i;
+													--v6;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			LABEL_22:
+				v5 = v5->player_link.next;
+			} while (v5);
+		}
+		v11 = 0;
+		if (!i)
+			return 1;
+		while (v13[v11] == 228)
+		{
+			if (++v11 >= i)
+				return 1;
+		}
+		return 0;
+	}
 
 //	0x00447040 => ai_remove_from_attack(@eax u32,@edx u32);
+	void AI_RemoveFromAttack(s32 unitId, u32 player) { // 00447040
+		u32 v2; // esi
+		u32 v3; // ecx
+		u16* v4; // eax
+
+		if (unitId == UnitId::TerranSiegeTankSiegeMode)
+			unitId = UnitId::TerranSiegeTankTankMode;
+		v2 = unitId + 1;
+		v3 = 0;
+		v4 = AIScriptController[player].attackers;
+		while (*v4 != v2)
+		{
+			++v3;
+			++v4;
+			if (v3 >= 63)
+				return;
+		}
+		AIScriptController[0].attackers[v3 + 628 * player] = 229;
+	}
 }
 
 namespace {

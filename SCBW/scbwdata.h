@@ -383,7 +383,7 @@ SCBW_DATA(u8*,			GroundWeapon,			unitsDat[17].address);	//006636B8
 SCBW_DATA(u8*,			MaxGroundHits,			unitsDat[18].address);	//006645E0
 SCBW_DATA(u8*,			AirWeapon,				unitsDat[19].address);	//006616E0
 SCBW_DATA(u8*,			MaxAirHits,				unitsDat[20].address);	//0065FC18
-//SCBW_DATA(u8*,		???,					unitsDat[21].address);	//00660178 //"Computer AI Unit Type" according to EUDDB
+SCBW_DATA(u8*,			ComputerAIInternal,		unitsDat[21].address);	//00660178 //"Computer AI Unit Type" according to EUDDB
 SCBW_DATA(u32*,			BaseProperty,			unitsDat[22].address);  //00664080 AKA SpecialAbilityFlags, UnitProperty, etc. Use with UnitProperty::Enum.
 SCBW_DATA(u8*,			SeekRange,				unitsDat[23].address);  //00662DB8 AKA Target Acquisition Range, Acquire Target Range, etc.
 SCBW_DATA(u8*,			SightRange,				unitsDat[24].address);	//00663238
