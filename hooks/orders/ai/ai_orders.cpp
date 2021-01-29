@@ -75,6 +75,13 @@ namespace {
 	void AI_GetRegionMilitaryTypes(AiCaptain* region, s32* hasGroundMilitary,						// 00438FC0
 		s32* cantAttackGround, s32* cantAttackAir);
 	s32 AI_CanTravelToRegion(AiCaptain* region1, AiCaptain* region2);								// 0043A790
+	CUnit* AI_PickAttackTarget_NoBuildings(AiCaptain* region);										// 0043A510
+	u32 AI_MoveMilitaryToOtherRegion(AiCaptain* target, AiCaptain* source, u32 pullUnitsNearRegion,	// 0043E580
+		u32 sendPureSpellcasters, u32 dontSendFromBunkers);
+	AiTown* AI_IterateTownSomething(AiCaptain* region);												// 0043DD20
+	u32 AI_AttackTimerDecrement(u32 player);														// 00447090
+	u32 AI_GetMissingAttackForceUnits(AiCaptain* region, s32* outUnitIds, u32 isCampaign);			// 0043E580
+	s32 AI_HasForcesMovingToAttack(u32 player);														// 0043A2E0
 
 }
 #include "logger.h"
@@ -770,7 +777,7 @@ namespace hooks {
 	
 	// hooked for attack extender
 //	0x0043E670 => train_attack_force(@eax *mut AiRegion)->u32;
-/*	u32 trainAttackForce(AiCaptain* region) {					// 0043E670
+	u32 trainAttackForce(AiCaptain* region) {					// 0043E670
 		u32 result; // eax
 		u32 v2; // edi
 		AiCaptain* v3; // esi
@@ -815,10 +822,10 @@ namespace hooks {
 			} while (v6 < v10);
 		}
 		return result;
-	}*/
+	}
 
 //	0x0043EEC0 => grouping_for_attack(*mut AiRegion);
-/*	void AIRegion_GroupingForAttack(AiCaptain* region) { // 0043EEC0
+	void AIRegion_GroupingForAttack(AiCaptain* region) { // 0043EEC0
 		AiCaptain* v1; // esi
 		CUnit* v2; // eax
 		AiCaptain* v3; // esi
@@ -838,62 +845,56 @@ namespace hooks {
 			return;
 		AI_GetRegionMilitaryTypes(region, &a2, &a3, &a4);
 		v1 = region;
-		if (a2 && SAI_Paths->regions[(u16)region->region].accessabilityFlags == 0x1FFD || AI_CanTravelToRegion(region, region))
+//		if (a2 && SAI_Paths->regions[(u16)region->region].accessabilityFlags == 0x1FFD || AI_CanTravelToRegion(region, region)) // TODO: add SAI_Paths
 		{
 			AI_AssignMilitary(0, region);
-			v2 = sub_43A510(region);
-			if (v2)
-			{
-				v3 = &AIRegionCaptains[(u8)region->playerId][SAI_GetRegionIdFromPxEx(
+			v2 = AI_PickAttackTarget_NoBuildings(region);
+			if (v2) {
+				v3 = &AiRegionCaptains[(u8)region->playerId][SAI_GetRegionIdFromPxEx(
 					v2->sprite->position.x,
 					v2->sprite->position.y)];
 				AI_AssignMilitary(9, v3);
-				sub_43E580(v3, a1, 0, 0, 1);
+				AI_MoveMilitaryToOtherRegion(v3, region, 0, 0, 1);
 			}
-			else
-			{
-				sub_43DD20(region);
+			else {
+				AI_IterateTownSomething(region);
 			}
 			return;
 		}
-		if (AI_AttackTimerDecrement((u8)region->playerId))
-		{
+		if (AI_AttackTimerDecrement((u8)region->playerId)) {
 		LABEL_15:
-			v6 = a1->field_2;
-			if (v6)
-			{
-				v7 = &AIRegionCaptains[(u8)region->playerId][v6];
+			v6 = region->unknown_0x2;
+			if (v6) {
+				v7 = &AiRegionCaptains[(u8)region->playerId][v6];
 				AI_AssignMilitary(1, v7);
 				v8 = v7;
-				v1 = a1;
-				sub_43E580(v8, a1, 0, 0, 1);
+				v1 = region;
+				AI_MoveMilitaryToOtherRegion(v8, region, 0, 0, 1);
 			}
 			AI_AssignMilitary(0, v1);
 			return;
 		}
-		v4 = sub_438050(region, (DWORD*)v9, 1);
+		v4 = AI_GetMissingAttackForceUnits(region, (s32*)v9, 1);
 		v5 = 0;
-		if (!v4)
-		{
+		if (!v4) {
 		LABEL_14:
-			if (sub_43A2E0((u8)region->playerId))
+			if (AI_HasForcesMovingToAttack((u8)region->playerId))
 				return;
 			goto LABEL_15;
 		}
-		while ((u32)v9[v5] >= 0xE4)
-		{
+		while ((u32)v9[v5] >= 0xE4) {
 			if (++v5 >= v4)
 				goto LABEL_14;
 		}
-	}*/
+	}
 
 //	0x00438050 => get_missing_attack_force_units_hook(*mut AiRegion,*mut u32,bool)->u32;
+
+//	0x00447230 => ai_add_to_attackforce(@edi u32,@eax u32,@ecx u32);
 
 //	0x0043ABB0 => ai_attack_to_hook(u32,i32,i32,bool,bool)->u32;
 
 //	0x00437F20 => has_units_for_attack_force_hook(@edx u32)->u32;
-
-//	0x00447230 => ai_add_to_attackforce(@edi u32,@eax u32,@ecx u32);
 
 //	0x00447040 => ai_remove_from_attack(@eax u32,@edx u32);
 }

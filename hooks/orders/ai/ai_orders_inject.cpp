@@ -145,17 +145,38 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) AIRegion_GroupingForAttack_Wrapper() { // 0043EEC0
+		static AiCaptain* region;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV region, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::AIRegion_GroupingForAttack(region);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+	}
 }
 
 namespace hooks {
 
 	void injectAIOrdersHooks() {
-		jmpPatch(AI_TrainingUnit_Wrapper,		0x004A2830, 2);
-//		jmpPatch(AI_CreateNuke_Wrapper,			0x0045B7A0, 0);
-		jmpPatch(AI_TrainingBroodling_Wrapper,	0x0043E280, 1);
-//		jmpPatch(AI_AddUnitAi_Wrapper,			0x00433DD0, 2);
-		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper, 0x00433DE7, 1);
-//		jmpPatch(AI_BuildTechUpgrade_Wrapper,	0x00431F90, 2);
-//		jmpPatch(trainAttackForce_Wrapper,		0x0043E670, 4);
+		jmpPatch(AI_TrainingUnit_Wrapper,					0x004A2830, 2);
+//		jmpPatch(AI_CreateNuke_Wrapper,						0x0045B7A0, 0);
+		jmpPatch(AI_TrainingBroodling_Wrapper,				0x0043E280, 1);
+//		jmpPatch(AI_AddUnitAi_Wrapper,						0x00433DD0, 2);
+		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper,	0x00433DE7, 1);
+//		jmpPatch(AI_BuildTechUpgrade_Wrapper,				0x00431F90, 2);
+//		jmpPatch(trainAttackForce_Wrapper,					0x0043E670, 4);
+//		jmpPatch(AIRegion_GroupingForAttack_Wrapper,		0x0043EEC0, 4);
 	}
 }
