@@ -68,6 +68,14 @@ namespace {
 	u32 AI_AddSpendingRequest(u16 unitId, u32 type, u8 player, char priority, void* value);			// 00447980
 	u32 AI_AddBaseUnitSpendingRequest(u32 unitId, u32 player, AiCaptain* region, char priority);	// 004484A0
 
+	// for AIRegion_GroupForAttack
+	u32 AI_RecalculateRegionStrength(AiCaptain* region);											// 0043A390
+	CUnit* AI_TargetEnemyInRegion(AiCaptain* region);												// 0043CC40
+	s32 AI_MoveMilitaryToDefend(AiCaptain* region);													// 0043DE40
+	void AI_GetRegionMilitaryTypes(AiCaptain* region, s32* hasGroundMilitary,						// 00438FC0
+		s32* cantAttackGround, s32* cantAttackAir);
+	s32 AI_CanTravelToRegion(AiCaptain* region1, AiCaptain* region2);								// 0043A790
+
 }
 #include "logger.h"
 namespace hooks {
@@ -762,7 +770,7 @@ namespace hooks {
 	
 	// hooked for attack extender
 //	0x0043E670 => train_attack_force(@eax *mut AiRegion)->u32;
-	u32 trainAttackForce(AiCaptain* region) {					// 0043E670
+/*	u32 trainAttackForce(AiCaptain* region) {					// 0043E670
 		u32 result; // eax
 		u32 v2; // edi
 		AiCaptain* v3; // esi
@@ -807,9 +815,77 @@ namespace hooks {
 			} while (v6 < v10);
 		}
 		return result;
-	}
+	}*/
 
 //	0x0043EEC0 => grouping_for_attack(*mut AiRegion);
+/*	void AIRegion_GroupingForAttack(AiCaptain* region) { // 0043EEC0
+		AiCaptain* v1; // esi
+		CUnit* v2; // eax
+		AiCaptain* v3; // esi
+		u32 v4; // eax
+		u32 v5; // ecx
+		u16 v6; // ax
+		AiCaptain* v7; // esi
+		AiCaptain* v8; // edi
+		u32 v9[63]; // [esp+8h] [ebp-108h]
+		s32 a3; // [esp+104h] [ebp-Ch]
+		s32 a4; // [esp+108h] [ebp-8h]
+		s32 a2; // [esp+10Ch] [ebp-4h]
+
+		AI_RecalculateRegionStrength(region);
+		AI_TargetEnemyInRegion(region);
+		if (region->captainFlags & 0x20 && AI_MoveMilitaryToDefend(region))
+			return;
+		AI_GetRegionMilitaryTypes(region, &a2, &a3, &a4);
+		v1 = region;
+		if (a2 && SAI_Paths->regions[(u16)region->region].accessabilityFlags == 0x1FFD || AI_CanTravelToRegion(region, region))
+		{
+			AI_AssignMilitary(0, region);
+			v2 = sub_43A510(region);
+			if (v2)
+			{
+				v3 = &AIRegionCaptains[(u8)region->playerId][SAI_GetRegionIdFromPxEx(
+					v2->sprite->position.x,
+					v2->sprite->position.y)];
+				AI_AssignMilitary(9, v3);
+				sub_43E580(v3, a1, 0, 0, 1);
+			}
+			else
+			{
+				sub_43DD20(region);
+			}
+			return;
+		}
+		if (AI_AttackTimerDecrement((u8)region->playerId))
+		{
+		LABEL_15:
+			v6 = a1->field_2;
+			if (v6)
+			{
+				v7 = &AIRegionCaptains[(u8)region->playerId][v6];
+				AI_AssignMilitary(1, v7);
+				v8 = v7;
+				v1 = a1;
+				sub_43E580(v8, a1, 0, 0, 1);
+			}
+			AI_AssignMilitary(0, v1);
+			return;
+		}
+		v4 = sub_438050(region, (DWORD*)v9, 1);
+		v5 = 0;
+		if (!v4)
+		{
+		LABEL_14:
+			if (sub_43A2E0((u8)region->playerId))
+				return;
+			goto LABEL_15;
+		}
+		while ((u32)v9[v5] >= 0xE4)
+		{
+			if (++v5 >= v4)
+				goto LABEL_14;
+		}
+	}*/
 
 //	0x00438050 => get_missing_attack_force_units_hook(*mut AiRegion,*mut u32,bool)->u32;
 

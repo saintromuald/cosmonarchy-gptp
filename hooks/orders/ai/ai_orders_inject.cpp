@@ -130,6 +130,21 @@ namespace {
 			RETN 20
 		}
 	}
+
+	void __declspec(naked) trainAttackForce_Wrapper() { // 0043E670
+		static AiCaptain* region;
+		static u32 result;
+		__asm {
+			MOV region, EAX
+			PUSHAD
+		}
+		result = hooks::trainAttackForce(region);
+		__asm {
+			POPAD
+			MOV result, EAX
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -141,5 +156,6 @@ namespace hooks {
 //		jmpPatch(AI_AddUnitAi_Wrapper,			0x00433DD0, 2);
 		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper, 0x00433DE7, 1);
 //		jmpPatch(AI_BuildTechUpgrade_Wrapper,	0x00431F90, 2);
+//		jmpPatch(trainAttackForce_Wrapper,		0x0043E670, 4);
 	}
 }

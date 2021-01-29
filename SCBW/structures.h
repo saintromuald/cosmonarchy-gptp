@@ -577,10 +577,10 @@ struct AiCaptain { //AiRegion
 	/*12*/  u16 regionAirStrength;
 	/*14*/  u16 fullGndStrength;
 	/*16*/  u16 fullAirStrength;
-	/*18*/  u16 unknown_0x18;
-	/*1A*/  u16 unknown_0x1A;
-	/*1C*/  u32 unknown_0x1C;
-	/*20*/  u32 unknown_0x20;
+	/*18*/  u16 enemyAirStrength;
+	/*1A*/  u16 enemyGroundStrength;
+	/*1C*/  u32 airTarget;
+	/*20*/  u32 groundTarget;
 	/*24*/  CUnit* slowestUnit;
 	/*28*/  CUnit* followTarget;
 	/*2C*/  CUnit* mainMedic;
