@@ -871,7 +871,7 @@ namespace hooks {
 	
 	// hooked for attack extender
 //	0x0043E670 => train_attack_force(@eax *mut AiRegion)->u32;
-	u32 trainAttackForce(AiCaptain* region) {					// 0043E670
+	u32 AI_TrainAttackForce(AiCaptain* region) {					// 0043E670
 		u32 result; // eax
 		u32 v2; // edi
 		AiCaptain* v3; // esi
@@ -919,7 +919,7 @@ namespace hooks {
 	}
 
 //	0x0043EEC0 => grouping_for_attack(*mut AiRegion);
-	void AIRegion_GroupingForAttack(AiCaptain* region) { // 0043EEC0
+	void AI_GroupingForAttack(AiCaptain* region) { // 0043EEC0
 		AiCaptain* v1; // esi
 		CUnit* v2; // eax
 		AiCaptain* v3; // esi
@@ -983,7 +983,7 @@ namespace hooks {
 	}
 
 //	0x00438050 => get_missing_attack_force_units_hook(*mut AiRegion,*mut u32,bool)->u32;
-/*	u32 AI_GetMissingAttackForceUnits(AiCaptain* region, DWORD* unitIds, u32 isCampaign) {
+/*	u32 AI_GetMissingAttackForceUnits(AiCaptain* region, u32* unitIds, u32 isCampaign) {
 		s16 v3; // dx
 		s16* v4; // ecx
 		u32 i; // edi

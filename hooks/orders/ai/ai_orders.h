@@ -11,8 +11,14 @@ namespace hooks {
 	void AI_IterateBuildingAI(CUnit* result, CUnit* parent);												// 00435770
 
 	// Attack extender
-	u32 trainAttackForce(AiCaptain* region);																// 0043E670
-	void AIRegion_GroupingForAttack(AiCaptain* region);														// 0043EEC0
+	u32 AI_TrainAttackForce(AiCaptain* region);																// 0043E670
+	void AI_GroupingForAttack(AiCaptain* region);															// 0043EEC0
+	u32 AI_GetMissingAttackForceUnits(AiCaptain* region, u32* unitIds, u32 isCampaign);						// 00438050
+	void AI_AddToAttack(u32 result, u32 player, u32 unitId);												// 00447230
+	bool AI_AttackManager(u32 _player, s32 x1, s32 y1, u32 alywaysOverwriteLastAttack,						// 0043ABB0
+		u32 allowFallbackAirOnly);
+	s32 AI_HasUnitsForAttackForce(u32 player);																// 00437F20
+	void AI_RemoveFromAttack(s32 unitId, u32 player);														// 00447040
 
 	void injectAIOrdersHooks();
 }
