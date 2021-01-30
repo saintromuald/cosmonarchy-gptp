@@ -67,8 +67,9 @@ namespace {
 	s32 AI_GetQueuedCount(CUnit* builder, u32 unitId);												// 00466B70
 	void AI_PrepareGuardAI(u16 y, u32 player, u16 unitId, u16 x);									// 00462670
 
-	// for trainAttackForce
-	u32 getMissingAttackForceUnits(AiCaptain* region, s32* outUnitIds, s32 onlyAcceptCompleted);	// 00438050
+	// Attack extender
+
+	// for AI_TrainAttackForce
 	s32 AI_AddRegionToMilitary(AiCaptain* region, s32 unitId, s32 priority);						// 0043E2E0
 	u32 AI_FindUnit(u32 unitId, u32 playerId, u32 type);											// 00447DC0
 	u32 AI_AddSpendingRequest(u16 unitId, u32 type, u8 player, char priority, void* value);			// 00447980
@@ -86,7 +87,6 @@ namespace {
 		u32 sendPureSpellcasters, u32 dontSendFromBunkers);
 	AiTown* AI_IterateTownSomething(AiCaptain* region);												// 0043DD20
 	u32 AI_AttackTimerDecrement(u32 player);														// 00447090
-	u32 AI_GetMissingAttackForceUnits(AiCaptain* region, s32* outUnitIds, u32 isCampaign);			// 0043E580
 	s32 AI_HasForcesMovingToAttack(u32 player);														// 0043A2E0
 
 	// for AI_AttackManager
@@ -887,7 +887,7 @@ namespace hooks {
 
 		v3 = region;
 		v2 = (u8)region->playerId;
-		result = getMissingAttackForceUnits(region, (s32*)v9, AIScriptController[v2].AI_Flags.isUseMapSettings);
+		result = AI_GetMissingAttackForceUnits(region, v9, AIScriptController[v2].AI_Flags.isUseMapSettings);
 		v10 = result;
 		if (AIScriptController[v2].AI_Flags.isUseMapSettings
 			|| (v5 = AIScriptController[v2].lastIndividualUpdateTime) != 0
@@ -968,7 +968,7 @@ namespace hooks {
 			AI_AssignMilitary(0, v1);
 			return;
 		}
-		v4 = AI_GetMissingAttackForceUnits(region, (s32*)v9, 1);
+		v4 = AI_GetMissingAttackForceUnits(region, v9, 1);
 		v5 = 0;
 		if (!v4) {
 		LABEL_14:
@@ -1507,4 +1507,34 @@ namespace {
 		}
 		return result;
 	}
+
+	// Attack extender // TODO: Write helper wrappers
+
+	// for AI_TrainAttackForce
+	s32 AI_AddRegionToMilitary(AiCaptain* region, s32 unitId, s32 priority);						// 0043E2E0
+	u32 AI_FindUnit(u32 unitId, u32 playerId, u32 type);											// 00447DC0
+	u32 AI_AddSpendingRequest(u16 unitId, u32 type, u8 player, char priority, void* value);			// 00447980
+	u32 AI_AddBaseUnitSpendingRequest(u32 unitId, u32 player, AiCaptain* region, char priority);	// 004484A0
+
+	// for AIRegion_GroupForAttack
+	u32 AI_RecalculateRegionStrength(AiCaptain* region);											// 0043A390
+	CUnit* AI_TargetEnemyInRegion(AiCaptain* region);												// 0043CC40
+	s32 AI_MoveMilitaryToDefend(AiCaptain* region);													// 0043DE40
+	void AI_GetRegionMilitaryTypes(AiCaptain* region, s32* hasGroundMilitary,						// 00438FC0
+		s32* cantAttackGround, s32* cantAttackAir);
+	s32 AI_CanTravelToRegion(AiCaptain* region1, AiCaptain* region2);								// 0043A790
+	CUnit* AI_PickAttackTarget_NoBuildings(AiCaptain* region);										// 0043A510
+	u32 AI_MoveMilitaryToOtherRegion(AiCaptain* target, AiCaptain* source, u32 pullUnitsNearRegion,	// 0043E580
+		u32 sendPureSpellcasters, u32 dontSendFromBunkers);
+	AiTown* AI_IterateTownSomething(AiCaptain* region);												// 0043DD20
+	u32 AI_AttackTimerDecrement(u32 player);														// 00447090
+	s32 AI_HasForcesMovingToAttack(u32 player);														// 0043A2E0
+
+	// for AI_AttackManager
+	u16 PopulateRegionsWithOwn(char* regionData, u32 player);										// 00438B30
+	void PopulateRegionsWithEnemy(u32 player, char* regionData);									// 00439B50
+	s32 AI_GetNeighborRegionTypes(char* regionData);												// 00436D80
+	void Ai_FinishRegionAccessibility(char* regionData);											// 00436CF0
+	s32 AI_SetAttackGroupingRegion(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,	// 004399D0
+		s32 x, s32 y, u32 alwaysOverwriteLastAttack);
 }

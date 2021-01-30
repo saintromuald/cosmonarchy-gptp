@@ -253,7 +253,7 @@ namespace {
 		result = hooks::AI_AttackManager(player, x, y, alwaysOverwriteLastAttack, allowFallbackAirOnly);
 		__asm {
 			POPAD
-			MOV result, EAX
+			MOV result, AL
 			MOV ESP, EBP
 			POP EBP
 			RETN 20
