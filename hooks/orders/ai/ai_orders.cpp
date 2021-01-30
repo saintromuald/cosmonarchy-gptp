@@ -66,7 +66,7 @@ namespace {
 	BuildingAi* AI_DeleteBuildingAI(BuildingAi* building, BuildingAiArray* buildingList);			// 00404500
 	s32 AI_GetQueuedCount(CUnit* builder, u32 unitId);												// 00466B70
 	void AI_PrepareGuardAI(u16 y, u32 player, u16 unitId, u16 x);									// 00462670
-
+	/*
 	// Attack extender
 
 	// for AI_TrainAttackForce
@@ -95,7 +95,7 @@ namespace {
 	s32 AI_GetNeighborRegionTypes(char* regionData);												// 00436D80
 	void Ai_FinishRegionAccessibility(char* regionData);											// 00436CF0
 	s32 AI_SetAttackGroupingRegion(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,	// 004399D0
-		s32 x, s32 y, u32 alwaysOverwriteLastAttack);
+		s32 x, s32 y, u32 alwaysOverwriteLastAttack);*/
 
 }
 #include "logger.h"
@@ -868,7 +868,7 @@ namespace hooks {
 			}
 		}
 	}
-	
+/*
 	// hooked for attack extender
 //	0x0043E670 => train_attack_force(@eax *mut AiRegion)->u32;
 	u32 AI_TrainAttackForce(AiCaptain* region) {					// 0043E670
@@ -983,7 +983,7 @@ namespace hooks {
 	}
 
 //	0x00438050 => get_missing_attack_force_units_hook(*mut AiRegion,*mut u32,bool)->u32;
-/*	u32 AI_GetMissingAttackForceUnits(AiCaptain* region, u32* unitIds, u32 isCampaign) {
+	u32 AI_GetMissingAttackForceUnits(AiCaptain* region, u32* unitIds, u32 isCampaign) {
 		s16 v3; // dx
 		s16* v4; // ecx
 		u32 i; // edi
@@ -1079,10 +1079,10 @@ namespace hooks {
 			goto LABEL_36;
 		}
 		return i;
-	}*/
+	}
 
 //	0x00447230 => ai_add_to_attackforce(@edi u32,@eax u32,@ecx u32);
-/*	void AI_AddToAttack(u32 result, u32 player, u32 unitId) { // 00447230
+	void AI_AddToAttack(u32 result, u32 player, u32 unitId) { // 00447230
 		u32 _counter; // esi
 		u32 i; // eax
 		u32 plOffset; // edx
@@ -1120,7 +1120,7 @@ namespace hooks {
 				}
 			}
 		}
-	}*/
+	}
 
 //	0x0043ABB0 => ai_attack_to_hook(u32,i32,i32,bool,bool)->u32;
 	bool AI_AttackManager(u32 _player, s32 x1, s32 y1, u32 alywaysOverwriteLastAttack, u32 allowFallbackAirOnly) { // 0043ABB0
@@ -1275,7 +1275,7 @@ namespace hooks {
 				return;
 		}
 		AIScriptController[0].attackers[v3 + 628 * player] = 229;
-	}
+	}*/
 }
 
 namespace {
@@ -1508,6 +1508,61 @@ namespace {
 		return result;
 	}
 
+	// for AI_IterateBuildingAI
+	const u32 Func_AI_RemoveFromTowns = 0x00432760;
+	u16 AI_RemoveFromTowns(CUnit* worker) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, worker
+			CALL Func_AI_RemoveFromTowns
+			MOV result, EAX
+			POPAD
+		}
+		return (u16)result;
+	}
+
+	const u32 Func_AI_DeleteBuildingAI = 0x00404500;
+	BuildingAi* AI_DeleteBuildingAI(BuildingAi* building, BuildingAiArray* buildingList) {
+		static BuildingAi* result;
+		__asm {
+			PUSHAD
+			MOV EAX, building
+			MOV EDX, buildingList
+			CALL Func_AI_DeleteBuildingAI
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_GetQueuedCount = 0x00466B70;
+	s32 AI_GetQueuedCount(CUnit* builder, u32 unitId) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, builder
+			MOV EDI, unitId
+			CALL Func_AI_GetQueuedCount
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_PrepareGuardAI = 0x00462670;
+	void AI_PrepareGuardAI(u16 y, u32 player, u16 unitId, u16 x) {
+		__asm {
+			PUSH x
+			PUSH unitId
+			MOV ESI, player
+			MOVZX DI, y
+			CALL Func_AI_PrepareGuardAI
+			POPAD
+		}
+	}
+
+	/*
 	// Attack extender // TODO: Write helper wrappers
 
 	// for AI_TrainAttackForce
@@ -1536,5 +1591,5 @@ namespace {
 	s32 AI_GetNeighborRegionTypes(char* regionData);												// 00436D80
 	void Ai_FinishRegionAccessibility(char* regionData);											// 00436CF0
 	s32 AI_SetAttackGroupingRegion(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,	// 004399D0
-		s32 x, s32 y, u32 alwaysOverwriteLastAttack);
+		s32 x, s32 y, u32 alwaysOverwriteLastAttack);*/
 }

@@ -130,7 +130,7 @@ namespace {
 			RETN 20
 		}
 	}
-
+	/*
 	void __declspec(naked) AI_IterateBuildingAI_Wrapper() { // 00435770
 		static CUnit* result;
 		static CUnit* parent;
@@ -287,7 +287,7 @@ namespace {
 			POPAD
 			RETN
 		}
-	}
+	}*/
 }
 
 namespace hooks {
