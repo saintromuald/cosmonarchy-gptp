@@ -130,7 +130,7 @@ namespace {
 			RETN 20
 		}
 	}
-	/*
+	
 	void __declspec(naked) AI_IterateBuildingAI_Wrapper() { // 00435770
 		static CUnit* result;
 		static CUnit* parent;
@@ -145,6 +145,8 @@ namespace {
 			RETN
 		}
 	}
+
+	// Attack extender
 
 	void __declspec(naked) AI_TrainAttackForce_Wrapper() { // 0043E670
 		static AiCaptain* region;
@@ -287,7 +289,7 @@ namespace {
 			POPAD
 			RETN
 		}
-	}*/
+	}
 }
 
 namespace hooks {

@@ -66,7 +66,7 @@ namespace {
 	BuildingAi* AI_DeleteBuildingAI(BuildingAi* building, BuildingAiArray* buildingList);			// 00404500
 	s32 AI_GetQueuedCount(CUnit* builder, u32 unitId);												// 00466B70
 	void AI_PrepareGuardAI(u16 y, u32 player, u16 unitId, u16 x);									// 00462670
-	/*
+	
 	// Attack extender
 
 	// for AI_TrainAttackForce
@@ -93,9 +93,9 @@ namespace {
 	u16 PopulateRegionsWithOwn(char* regionData, u32 player);										// 00438B30
 	void PopulateRegionsWithEnemy(u32 player, char* regionData);									// 00439B50
 	s32 AI_GetNeighborRegionTypes(char* regionData);												// 00436D80
-	void Ai_FinishRegionAccessibility(char* regionData);											// 00436CF0
+	void AI_FinishRegionAccessibility(char* regionData);											// 00436CF0
 	s32 AI_SetAttackGroupingRegion(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,	// 004399D0
-		s32 x, s32 y, u32 alwaysOverwriteLastAttack);*/
+		s32 x, s32 y, u32 alwaysOverwriteLastAttack);
 
 }
 #include "logger.h"
@@ -868,7 +868,7 @@ namespace hooks {
 			}
 		}
 	}
-/*
+
 	// hooked for attack extender
 //	0x0043E670 => train_attack_force(@eax *mut AiRegion)->u32;
 	u32 AI_TrainAttackForce(AiCaptain* region) {					// 0043E670
@@ -983,15 +983,15 @@ namespace hooks {
 	}
 
 //	0x00438050 => get_missing_attack_force_units_hook(*mut AiRegion,*mut u32,bool)->u32;
-	u32 AI_GetMissingAttackForceUnits(AiCaptain* region, u32* unitIds, u32 isCampaign) {
+	u32 AI_GetMissingAttackForceUnits(AiCaptain* region, u32* unitIds, u32 isCampaign) { // 00438050
 		s16 v3; // dx
-		s16* v4; // ecx
+		u16* v4; // ecx
 		u32 i; // edi
 		u32 v6; // eax
 		CUnit* v7; // esi
 		s8 v8; // bl
 		u32 v9; // ecx
-		unitIDs v10; // edx
+		u32 v10; // edx // was unitIDs, not sure what it should be here
 		s32 v11; // eax
 		u32 v12; // esi
 		s32 v13; // ecx
@@ -1139,7 +1139,7 @@ namespace hooks {
 		PopulateRegionsWithOwn(regionsList, _player);
 		PopulateRegionsWithEnemy(_player, regionsList);
 		while (AI_GetNeighborRegionTypes(regionsList))
-			Ai_FinishRegionAccessibility(regionsList);
+			AI_FinishRegionAccessibility(regionsList);
 		v7 = AIScriptController[v5].attackers[0];
 		v8 = AIScriptController[v5].attackers;
 		v10 = v7 != 0;
@@ -1275,7 +1275,7 @@ namespace hooks {
 				return;
 		}
 		AIScriptController[0].attackers[v3 + 628 * player] = 229;
-	}*/
+	}
 }
 
 namespace {
@@ -1553,6 +1553,7 @@ namespace {
 	const u32 Func_AI_PrepareGuardAI = 0x00462670;
 	void AI_PrepareGuardAI(u16 y, u32 player, u16 unitId, u16 x) {
 		__asm {
+			PUSHAD
 			PUSH x
 			PUSH unitId
 			MOV ESI, player
@@ -1561,35 +1562,279 @@ namespace {
 			POPAD
 		}
 	}
-
-	/*
-	// Attack extender // TODO: Write helper wrappers
+	
+	// Attack extender
 
 	// for AI_TrainAttackForce
-	s32 AI_AddRegionToMilitary(AiCaptain* region, s32 unitId, s32 priority);						// 0043E2E0
-	u32 AI_FindUnit(u32 unitId, u32 playerId, u32 type);											// 00447DC0
-	u32 AI_AddSpendingRequest(u16 unitId, u32 type, u8 player, char priority, void* value);			// 00447980
-	u32 AI_AddBaseUnitSpendingRequest(u32 unitId, u32 player, AiCaptain* region, char priority);	// 004484A0
+	const u32 Func_AI_AddRegionToMilitary = 0x0043E2E0;
+	s32 AI_AddRegionToMilitary(AiCaptain* region, s32 unitId, s32 priority) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH priority
+			PUSH unitId
+			MOV EAX, region
+			CALL Func_AI_AddRegionToMilitary
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_FindUnit = 0x00447DC0;
+	u32 AI_FindUnit(u32 unitId, u32 playerId, u32 type) {
+		static u32 typeXD = type;
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH typeXD
+			MOV EBX, playerId
+			MOV EAX, unitId
+			CALL Func_AI_FindUnit
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_AddSpendingRequest = 0x00447980;
+	u32 AI_AddSpendingRequest(u16 unitId, u32 type, u8 player, char priority, void* value) {
+		static u32 typeXD = type;
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH value
+			PUSH priority
+			MOVZX CL, player
+			MOV EDX, typeXD
+			MOVZX AX, unitId
+			CALL Func_AI_AddSpendingRequest
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+	
+	const u32 Func_AI_AddBaseUnitSpendingRequest = 0x004484A0;
+	u32 AI_AddBaseUnitSpendingRequest(u32 unitId, u32 player, AiCaptain* region, char priority) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH priority
+			MOV ESI, region
+			MOV ECX, player
+			MOV EAX, unitId
+			CALL Func_AI_AddBaseUnitSpendingRequest
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 
 	// for AIRegion_GroupForAttack
-	u32 AI_RecalculateRegionStrength(AiCaptain* region);											// 0043A390
-	CUnit* AI_TargetEnemyInRegion(AiCaptain* region);												// 0043CC40
-	s32 AI_MoveMilitaryToDefend(AiCaptain* region);													// 0043DE40
-	void AI_GetRegionMilitaryTypes(AiCaptain* region, s32* hasGroundMilitary,						// 00438FC0
-		s32* cantAttackGround, s32* cantAttackAir);
-	s32 AI_CanTravelToRegion(AiCaptain* region1, AiCaptain* region2);								// 0043A790
-	CUnit* AI_PickAttackTarget_NoBuildings(AiCaptain* region);										// 0043A510
-	u32 AI_MoveMilitaryToOtherRegion(AiCaptain* target, AiCaptain* source, u32 pullUnitsNearRegion,	// 0043E580
-		u32 sendPureSpellcasters, u32 dontSendFromBunkers);
-	AiTown* AI_IterateTownSomething(AiCaptain* region);												// 0043DD20
-	u32 AI_AttackTimerDecrement(u32 player);														// 00447090
-	s32 AI_HasForcesMovingToAttack(u32 player);														// 0043A2E0
+	const u32 Func_AI_RecalculateRegionStrength = 0x0043A390;
+	u32 AI_RecalculateRegionStrength(AiCaptain* region) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV ESI, region
+			CALL Func_AI_RecalculateRegionStrength
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_TargetEnemyInRegion = 0x0043CC40;
+	CUnit* AI_TargetEnemyInRegion(AiCaptain* region) {
+		static CUnit* result;
+		__asm {
+			PUSHAD
+			MOV EDI, region
+			CALL Func_AI_TargetEnemyInRegion
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_MoveMilitaryToDefend = 0x0043DE40;
+	s32 AI_MoveMilitaryToDefend(AiCaptain* region) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EDI, region
+			CALL Func_AI_TargetEnemyInRegion
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_GetRegionMilitaryTypes = 0x00438FC0;
+	void AI_GetRegionMilitaryTypes(AiCaptain* region, s32* hasGroundMilitary,
+		s32* cantAttackGround, s32* cantAttackAir) {
+		__asm {
+			PUSHAD
+			MOV EAX, region
+			MOV EBX, hasGroundMilitary
+			MOV EDI, cantAttackGround
+			MOV ESI, cantAttackAir
+			CALL Func_AI_GetRegionMilitaryTypes
+			POPAD
+		}
+	}
+
+	const u32 Func_AI_CanTravelToRegion = 0x0043A790;
+	s32 AI_CanTravelToRegion(AiCaptain* region1, AiCaptain* region2) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH region2
+			PUSH region1
+			CALL Func_AI_CanTravelToRegion
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_PickAttackTarget_NoBuildings = 0x0043A510;
+	CUnit* AI_PickAttackTarget_NoBuildings(AiCaptain* region) {
+		static CUnit* result;
+		__asm {
+			PUSHAD
+			PUSH region
+			CALL Func_AI_PickAttackTarget_NoBuildings
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_MoveMilitaryToOtherRegion = 0x0043E580;
+	u32 AI_MoveMilitaryToOtherRegion(AiCaptain* target, AiCaptain* source, u32 pullUnitsNearRegion,
+		u32 sendPureSpellcasters, u32 dontSendFromBunkers) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH dontSendFromBunkers
+			PUSH sendPureSpellcasters
+			PUSH pullUnitsNearRegion
+			MOV ESI, source
+			MOV EDI, target
+			CALL Func_AI_MoveMilitaryToOtherRegion
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_IterateTownSomething = 0x0043DD20;
+	AiTown* AI_IterateTownSomething(AiCaptain* region) {
+		static AiTown* result;
+		__asm {
+			PUSHAD
+			MOV ESI, region
+			CALL Func_AI_IterateTownSomething
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_AttackTimerDecrement = 0x00447090;
+	u32 AI_AttackTimerDecrement(u32 player) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, player
+			CALL Func_AI_AttackTimerDecrement
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_HasForcesMovingToAttack = 0x0043A2E0;
+	s32 AI_HasForcesMovingToAttack(u32 player) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, player
+			CALL Func_AI_HasForcesMovingToAttack
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 
 	// for AI_AttackManager
-	u16 PopulateRegionsWithOwn(char* regionData, u32 player);										// 00438B30
-	void PopulateRegionsWithEnemy(u32 player, char* regionData);									// 00439B50
-	s32 AI_GetNeighborRegionTypes(char* regionData);												// 00436D80
-	void Ai_FinishRegionAccessibility(char* regionData);											// 00436CF0
-	s32 AI_SetAttackGroupingRegion(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,	// 004399D0
-		s32 x, s32 y, u32 alwaysOverwriteLastAttack);*/
+	const u32 Func_PopulateRegionsWithOwn = 0x00438B30;
+	u16 PopulateRegionsWithOwn(char* regionData, u32 player) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH player
+			MOV EBX, regionData
+			CALL Func_PopulateRegionsWithOwn
+			MOV result, EAX
+			POPAD
+		}
+		return (u16)result;
+	}
+
+	const u32 Func_PopulateRegionsWithEnemy = 0x00439B50;
+	void PopulateRegionsWithEnemy(u32 player, char* regionData) {
+		__asm {
+			PUSHAD
+			PUSH regionData
+			PUSH player
+			CALL Func_PopulateRegionsWithEnemy
+			POPAD
+		}
+	}
+
+	const u32 Func_AI_GetNeighborRegionTypes = 0x00436D80;
+	s32 AI_GetNeighborRegionTypes(char* regionData) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EBX, regionData
+			CALL Func_AI_GetNeighborRegionTypes
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_FinishRegionAccessibility = 0x00436CF0;
+	void AI_FinishRegionAccessibility(char* regionData) {
+		__asm {
+			PUSHAD
+			MOV EBX, regionData
+			CALL Func_AI_FinishRegionAccessibility
+			POPAD
+		}
+	}
+
+	const u32 FUnc_AI_SetAttackGroupingRegion = 0x004399D0;
+	s32 AI_SetAttackGroupingRegion(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,
+		s32 x, s32 y, u32 alwaysOverwriteLastAttack) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH alwaysOverwriteLastAttack
+			PUSH y
+			PUSH x
+			PUSH regionData
+			PUSH player
+			MOV EDX, alsoVeryNear
+			MOV ECX, airAttack
+			CALL FUnc_AI_SetAttackGroupingRegion
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }
