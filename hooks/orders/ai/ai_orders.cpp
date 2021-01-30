@@ -61,6 +61,12 @@ namespace {
 	__int64 AI_PrepareToFlee(CUnit* unit, CUnit* a2);												// 00476A50
 	void orderInterrupt(CUnit* unit, u8 orderId, Point32* pos, CUnit* a4);							// 00474C30
 
+	// for AI_IterateBuildingAI
+	u16 AI_RemoveFromTowns(CUnit* worker);															// 00432760
+	BuildingAi* AI_DeleteBuildingAI(BuildingAi* building, BuildingAiArray* buildingList);			// 00404500
+	s32 AI_GetQueuedCount(CUnit* builder, u32 unitId);												// 00466B70
+	void AI_PrepareGuardAI(u16 y, u32 player, u16 unitId, u16 x);									// 00462670
+
 	// for trainAttackForce
 	u32 getMissingAttackForceUnits(AiCaptain* region, s32* outUnitIds, s32 onlyAcceptCompleted);	// 00438050
 	s32 AI_AddRegionToMilitary(AiCaptain* region, s32 unitId, s32 priority);						// 0043E2E0
@@ -106,7 +112,7 @@ namespace hooks {
 				AI_TrainingWorker(result, parent);
 			}
 			else if (result->id == UnitId::ZergOverlord) {
-				AI_TrainingOverlord(result, parent);
+				AI_TrainingOverlord(result, parent); // replace with hook later
 			}
 			else if (result->id == UnitId::ZergBroodling) {
 				AI_TrainingBroodling(parent, result);
@@ -148,7 +154,7 @@ namespace hooks {
 						AI_TrainingWorker(result, parent);
 					}
 					else if (result->id == UnitId::ZergOverlord) {
-						AI_TrainingOverlord(result, parent);
+						AI_TrainingOverlord(result, parent); // replace with hook later
 					}
 					else {
 						AI_TrainingNormal(result, parent);
@@ -782,6 +788,86 @@ namespace hooks {
 			}
 		}
 	}*/
+
+	// Hooked to change guard assignments for structures based on AI personality -- Pr0nogo
+	// TODO: Cleanup and make changes
+	void AI_IterateBuildingAI(CUnit* result, CUnit* parent) { // 00435770
+		UnitAi* parentAI; // eax
+		AiTown* parentTown; // esi
+		BuildingAi* removeBuilding; // eax
+		AiTown* removeBuildingTown; // edi
+		CUnit* workerUnit; // esi
+		CUnit* workerTarget; // ecx
+		s32 queueCount; // eax
+		s32 queueCount2;
+		BuildingAi* j; // esi
+		CUnit* builderUnit; // ecx
+		u32 i; // [esp+8h] [ebp-4h]
+		WorkerAi* worker;
+		BuildingAi* building;
+
+		if (playerTable[(u8)parent->playerId].type == PlayerType::Computer) {
+			parentAI = (UnitAi*)parent->pAI;
+			if (parentAI) {
+				if (parentAI->type == 2) {
+					worker = (WorkerAi*)parentAI;
+					parentTown = worker->town;
+				}
+				else { // assumed BuildingAi, unlikely to be GuardAi, can't be anything else
+					building = (BuildingAi*)parentAI;
+					parentTown = building->town;
+				}
+				if (parent == result) {
+					AI_RemoveFromTowns(result);
+					removeBuilding = (BuildingAi*)result->pAI;
+					if (removeBuilding) {
+						removeBuildingTown = removeBuilding->town;
+						AI_DeleteBuildingAI(removeBuilding, removeBuildingTown->free_buildings);
+						if (removeBuildingTown)
+						{
+							if (result == removeBuildingTown->building_scv)
+								removeBuildingTown->building_scv = 0;
+							if (result == removeBuildingTown->main_building)
+								removeBuildingTown->main_building = 0;
+						}
+						result->pAI = 0;
+					}
+				}
+				AI_AddUnitAi(result, parentTown);
+				if (result->id != UnitId::TerranBunker || *elapsedTimeSeconds <= 60)
+				{
+					if (result->id == UnitId::TerranMissileTurret) {
+						workerUnit = parentTown->workers->parent;
+						for (i = 0; workerUnit; i += queueCount)
+						{
+							workerTarget = workerUnit->moveTarget.unit;
+							if (workerTarget->id == UnitId::TerranMissileTurret)
+								queueCount = 1;
+							else
+								queueCount = AI_GetQueuedCount(workerTarget, UnitId::TerranMissileTurret);
+//							workerUnit = *(u32*)workerUnit; // not sure if this is even necessary, does v8 need to be iterated upon every loop?
+						}
+						for (j = parentTown->buildings; j; i += queueCount2)
+						{
+							builderUnit = j->parent;
+							if (builderUnit->id == UnitId::TerranMissileTurret)
+								queueCount2 = 1;
+							else
+								queueCount2 = AI_GetQueuedCount(builderUnit, UnitId::TerranMissileTurret);
+							j = j->link.prev;
+						}
+						if (i >= 4) {
+							AI_PrepareGuardAI(result->sprite->position.y, (u8)result->playerId, 1, result->sprite->position.x);
+						}
+					}
+				}
+				else {
+					AI_PrepareGuardAI(result->sprite->position.y, (u8)result->playerId, 5, result->sprite->position.x);
+					AI_PrepareGuardAI(result->sprite->position.y, (u8)result->playerId, 1, result->sprite->position.x);
+				}
+			}
+		}
+	}
 	
 	// hooked for attack extender
 //	0x0043E670 => train_attack_force(@eax *mut AiRegion)->u32;

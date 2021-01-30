@@ -131,6 +131,21 @@ namespace {
 		}
 	}
 
+	void __declspec(naked) AI_IterateBuildingAI_Wrapper() { // 00435770
+		static CUnit* result;
+		static CUnit* parent;
+		__asm {
+			MOV result, EAX
+			MOV parent, ECX
+			PUSHAD
+		}
+		hooks::AI_IterateBuildingAI(result, parent);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 	void __declspec(naked) trainAttackForce_Wrapper() { // 0043E670
 		static AiCaptain* region;
 		static u32 result;
@@ -176,6 +191,7 @@ namespace hooks {
 //		jmpPatch(AI_AddUnitAi_Wrapper,						0x00433DD0, 2);
 		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper,	0x00433DE7, 1);
 //		jmpPatch(AI_BuildTechUpgrade_Wrapper,				0x00431F90, 2);
+//		jmpPatch(AI_IterateBuildingAI_Wrapper,				0x00435770, 1);
 //		jmpPatch(trainAttackForce_Wrapper,					0x0043E670, 4);
 //		jmpPatch(AIRegion_GroupingForAttack_Wrapper,		0x0043EEC0, 4);
 	}
