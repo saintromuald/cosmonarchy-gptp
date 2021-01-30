@@ -11,7 +11,7 @@ namespace {
 
 	CUnit* getUnitPointer();
 
-	u8 spreadCreep(u32 unitId, int x, int y);								//0x00414680
+	u8 spreadCreep(u32 unitId, int x, int y);									//0x00414680
 	void AI_TrainingOverlord(CUnit* main_building, CUnit* larva);				//0x00435770
 	void updateUnitStrength(CUnit* unit);										//0x0049FA40
 	void function_004A01F0(CUnit* unit);										//0x004A01F0

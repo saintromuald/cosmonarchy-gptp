@@ -151,27 +151,27 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	if (!checkStarCraftExeVersion(exePath))
 		return FALSE;
 
-	// quick drop timeout
+	// quick drop timeout -- Veeq7
 	memoryPatch(0x004A345D+2, (u32)0);
 
-	//disable powerup hardcode
+	//iquare, start
+	// disable powerup hardcode
 	// FLAG id only
 	const u8 maxunsigned_2[5] = {0xff, 0xff };
-	memoryPatch(0x0044095D+4, maxunsigned_2, 2);//flag
-	memoryPatch(0x0045FE5C+1, maxunsigned_2, 2);//flag
-	memoryPatch(0x00460902+ 1, maxunsigned_2, 2);//flag
-	memoryPatch(0x0049F145 + 4, maxunsigned_2, 2);//flag
-	memoryPatch(0x004E4153 + 4, maxunsigned_2, 2);//flag
-	memoryPatch(0x004E416E + 4, maxunsigned_2, 2);//flag
-//	memoryPatch(0x004E426B + 1, maxunsigned_2, 2);//ctf create flag, this code don't runs at all because CTF are spell orders now
+	memoryPatch(0x0044095D+4, maxunsigned_2, 2);	//flag
+	memoryPatch(0x0045FE5C+1, maxunsigned_2, 2);	//flag
+	memoryPatch(0x00460902+ 1, maxunsigned_2, 2);	//flag
+	memoryPatch(0x0049F145 + 4, maxunsigned_2, 2);	//flag
+	memoryPatch(0x004E4153 + 4, maxunsigned_2, 2);	//flag
+	memoryPatch(0x004E416E + 4, maxunsigned_2, 2);	//flag
+//	memoryPatch(0x004E426B + 1, maxunsigned_2, 2);	//ctf create flag, this code doesn't run at all because CTF are spell orders now
 	memoryPatch(0x004E5F68 + 3, maxunsigned_2, 2);
 	memoryPatch(0x004E70E4 + 4, maxunsigned_2, 2);
 	memoryPatch(0x004F3A9C + 4, maxunsigned_2, 2);
 	memoryPatch(0x004F3C26 + 4, maxunsigned_2, 2);
 	memoryPatch(0x004F3CD5 + 4, maxunsigned_2, 2);
-	//iquare, start
-	//medic hardcode patches
 
+	//medic hardcode patches
 	const u8 none = 0xE4;
 	const u8 moveaxpatch[5] = { 0xb8,  0x00, 0x00, 0x00, 0x00 };
 	/*
@@ -192,10 +192,11 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x004A2854 + 4, &none, sizeof(u8));//disable inheritai2 medic hardcode
 	memoryPatch(0x0043F92A + 4, &none, sizeof(u8));//disable ai react to hit hardcode
 	*/
-	memoryPatch(0x004357FB + 2, &none, sizeof(u8));//disable placing units near bunkers
-	memoryPatch(0x0043583F + 1, &none, sizeof(u8));//disable placing units near missile turrets
+	// TODO: hook parent function and make AI assign different units based on personality
+	memoryPatch(0x004357FB + 2, &none, sizeof(u8));//disable AI placing units near bunkers
+	memoryPatch(0x0043583F + 1, &none, sizeof(u8));//disable AI placing units near missile turrets
 
-	//matriarch - pazuzu id hardcode
+	// matriarch - pazuzu id hardcode
 	memoryPatch(0x0040275A + 2, &none, sizeof(u8));
 	memoryPatch(0x0043CF74 + 2, &none, sizeof(u8));
 	memoryPatch(0x00455E49 + 3, &none, sizeof(u8));
@@ -203,8 +204,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x00475B68 + 2, &none, sizeof(u8));
 	memoryPatch(0x004C210A + 2, &none, sizeof(u8));
 
-
-	//rhynadon id hardcode
+	// rhynadon id hardcode
 	memoryPatch(0x0042E352 + 1, &none, sizeof(u8));
 	memoryPatch(0x00431574 + 2, &none, sizeof(u8));
 	memoryPatch(0x00431B37 + 2, &none, sizeof(u8));
@@ -214,6 +214,25 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x0047B7C9 + 2, &none, sizeof(u8));
 	memoryPatch(0x004CBE49 + 2, &none, sizeof(u8));
 
+	// flag beacon id hardcode
+	memoryPatch(0x0042F134 + 2, &none, sizeof(u8));
+	memoryPatch(0x0042F13A + 2, &none, sizeof(u8));
+	memoryPatch(0x0043A602 + 2, &none, sizeof(u8));
+	memoryPatch(0x0043A609 + 2, &none, sizeof(u8));
+	memoryPatch(0x004558A3 + 2, &none, sizeof(u8));
+	memoryPatch(0x004558A9 + 2, &none, sizeof(u8));
+	memoryPatch(0x00455940 + 2, &none, sizeof(u8));
+	memoryPatch(0x00455946 + 2, &none, sizeof(u8));
+	memoryPatch(0x00455AF2 + 2, &none, sizeof(u8));
+	memoryPatch(0x00455AF8 + 2, &none, sizeof(u8));
+	memoryPatch(0x00473A16 + 2, &none, sizeof(u8));
+	memoryPatch(0x00473A1C + 2, &none, sizeof(u8));
+	memoryPatch(0x00473BD6 + 2, &none, sizeof(u8));
+	memoryPatch(0x00473BE3 + 2, &none, sizeof(u8));
+	memoryPatch(0x0047B2C4 + 2, &none, sizeof(u8));
+	memoryPatch(0x0047B2CA + 2, &none, sizeof(u8));
+	memoryPatch(0x004E3DC4 + 2, &none, sizeof(u8));
+	memoryPatch(0x004E3DCA + 2, &none, sizeof(u8));
 
 	memoryPatch((void*)0x00487C93, moveaxpatch, sizeof(moveaxpatch));//disable unit selectable check in placement function
 
@@ -222,7 +241,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x004E6E7A + 1, &fourth, sizeof(u8));
 	const u8 jnz = 0x75;
 	memoryPatch(0x004E6E7C, &jnz, sizeof(u8));
-
 
 //	hooks::injectEconomicUnitHooks();
 	//test for globals
