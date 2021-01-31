@@ -197,7 +197,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
 	// flag beacon id hardcode
 	const u8 jmp = 0xEB;
-	memoryPatch(0x0042F134 + 2, &none, sizeof(u8));
+/*	memoryPatch(0x0042F134 + 2, &none, sizeof(u8));
 	memoryPatch(0x0042F13A, &jmp, 1); // JA
 	memoryPatch(0x0043A602 + 2, &none, sizeof(u8));
 	memoryPatch(0x0043A609 + 2, &none, sizeof(u8));
@@ -215,7 +215,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x0047B2CA + 2, &none, sizeof(u8));
 	memoryPatch(0x004E3DC4 + 2, &none, sizeof(u8));
 	memoryPatch(0x004E3DCA, &jmp, 1); // JA
-
+	*/
 	const u8 moveaxpatch[5] = { 0xb8,  0x00, 0x00, 0x00, 0x00 };
 	memoryPatch((void*)0x00487C93, moveaxpatch, sizeof(moveaxpatch));//disable unit selectable check in placement function
 
