@@ -158,43 +158,24 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	// disable powerup hardcode
 	// FLAG id only
 	const u8 maxunsigned_2[5] = {0xff, 0xff };
-	memoryPatch(0x0044095D+4, maxunsigned_2, 2);	//flag
-	memoryPatch(0x0045FE5C+1, maxunsigned_2, 2);	//flag
-	memoryPatch(0x00460902+ 1, maxunsigned_2, 2);	//flag
-	memoryPatch(0x0049F145 + 4, maxunsigned_2, 2);	//flag
-	memoryPatch(0x004E4153 + 4, maxunsigned_2, 2);	//flag
-	memoryPatch(0x004E416E + 4, maxunsigned_2, 2);	//flag
-//	memoryPatch(0x004E426B + 1, maxunsigned_2, 2);	//ctf create flag, this code doesn't run at all because CTF are spell orders now
+	memoryPatch(0x0044095D+4, maxunsigned_2, 2);	// flag
+	memoryPatch(0x0045FE5C+1, maxunsigned_2, 2);	// flag
+	memoryPatch(0x00460902+ 1, maxunsigned_2, 2);	// flag
+	memoryPatch(0x0049F145 + 4, maxunsigned_2, 2);	// flag
+	memoryPatch(0x004E4153 + 4, maxunsigned_2, 2);	// flag
+	memoryPatch(0x004E416E + 4, maxunsigned_2, 2);	// flag
+//	memoryPatch(0x004E426B + 1, maxunsigned_2, 2);	// ctf create flag, this code doesn't run at all because CTF are spell orders now
 	memoryPatch(0x004E5F68 + 3, maxunsigned_2, 2);
 	memoryPatch(0x004E70E4 + 4, maxunsigned_2, 2);
 	memoryPatch(0x004F3A9C + 4, maxunsigned_2, 2);
 	memoryPatch(0x004F3C26 + 4, maxunsigned_2, 2);
 	memoryPatch(0x004F3CD5 + 4, maxunsigned_2, 2);
 
-	//medic hardcode patches
 	const u8 none = 0xE4;
-	const u8 moveaxpatch[5] = { 0xb8,  0x00, 0x00, 0x00, 0x00 };
-	/*
-	memoryPatch(0x0049ABEB + 2, &none, sizeof(u8));//disable turning of attack/move to heal-move on medics
-	memoryPatch(0x00442358 + 4, &none, sizeof(u8));//disable medicheal/target acquire
-	memoryPatch(0x00478263 + 4, &none, sizeof(u8));//disable turning of patrol to heal-move on medics
-	memoryPatch(0x00455EFC + 3, &none, sizeof(u8));//changing right-click proc on medics
-	memoryPatch(0x004784A8 + 4, &none, sizeof(u8));//disable computer return on medics
-	memoryPatch(0x0043DCAD + 4, &none, sizeof(u8));//disable forced return to base on medics
-	//
-	memoryPatch(0x004C2124 + 2, &none, sizeof(u8));//disable medic-hold position
-	memoryPatch(0x0043D70E + 4, &none, sizeof(u8));//disable medic hardcode in progress ai function
-	memoryPatch(0x0043DAD5 + 4, &none, sizeof(u8));//disable medic hardcode in add military ai function
-	memoryPatch(0x0043C215 + 4, &none, sizeof(u8));//disable unknown medic-related hardcode
-	memoryPatch(0x004A290B + 2, &none, sizeof(u8));//disable computer_script medic hardcode
-	memoryPatch(0x004477C0 + 4, &none, sizeof(u8));//disable medic_remove
-	memoryPatch(0x0046305B + 4, &none, sizeof(u8));//disable give_ai medic hardcode
-	memoryPatch(0x004A2854 + 4, &none, sizeof(u8));//disable inheritai2 medic hardcode
-	memoryPatch(0x0043F92A + 4, &none, sizeof(u8));//disable ai react to hit hardcode
-	*/
+	
 	// TODO: hook parent function and make AI assign different units based on personality
-	memoryPatch(0x004357FB + 2, &none, sizeof(u8));//disable AI placing units near bunkers
-	memoryPatch(0x0043583F + 1, &none, sizeof(u8));//disable AI placing units near missile turrets
+	memoryPatch(0x004357FB + 2, &none, sizeof(u8)); //disable AI placing units near bunkers
+	memoryPatch(0x0043583F + 1, &none, sizeof(u8)); //disable AI placing units near missile turrets
 
 	// matriarch - pazuzu id hardcode
 	memoryPatch(0x0040275A + 2, &none, sizeof(u8));
@@ -215,8 +196,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x004CBE49 + 2, &none, sizeof(u8));
 
 	// flag beacon id hardcode
+	const u8 jmp = 0xEB;
 	memoryPatch(0x0042F134 + 2, &none, sizeof(u8));
-	memoryPatch(0x0042F13A + 2, &none, sizeof(u8));
+	memoryPatch(0x0042F13A, &jmp, 1); // JA
 	memoryPatch(0x0043A602 + 2, &none, sizeof(u8));
 	memoryPatch(0x0043A609 + 2, &none, sizeof(u8));
 	memoryPatch(0x004558A3 + 2, &none, sizeof(u8));
@@ -232,8 +214,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x0047B2C4 + 2, &none, sizeof(u8));
 	memoryPatch(0x0047B2CA + 2, &none, sizeof(u8));
 	memoryPatch(0x004E3DC4 + 2, &none, sizeof(u8));
-	memoryPatch(0x004E3DCA + 2, &none, sizeof(u8));
+	memoryPatch(0x004E3DCA, &jmp, 1); // JA
 
+	const u8 moveaxpatch[5] = { 0xb8,  0x00, 0x00, 0x00, 0x00 };
 	memoryPatch((void*)0x00487C93, moveaxpatch, sizeof(moveaxpatch));//disable unit selectable check in placement function
 
 	//disable terran structure building transport condition
@@ -243,7 +226,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x004E6E7C, &jnz, sizeof(u8));
 
 //	hooks::injectEconomicUnitHooks();
-	//test for globals
+//	test for globals
 //	nops(0x004AAF23, 5);
 //	const u8 retn = 0xc3;
 //	memoryPatch(0x004AAF23 + 5, &retn, 1);
@@ -252,12 +235,10 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectLimitHooks();
 	hooks::injectTargetRelatedHooks();
 //	hooks::unitsDatWrapperPatches();
-	//
 
 	//arbiter attack hardcode
-	const u8 jmp = 0xEB;
 
-	/*nops(0x0043AEE0, 10);
+/*	nops(0x0043AEE0, 10);
 	nops(0x0043CF89, 4);
 	memoryPatch(0x0043CF8D, &jmp, 1);
 	nops(0x0047681B, 5);
@@ -279,8 +260,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x00478613 + 4, &none, 1);
 	memoryPatch(0x0048B0A1 + 4, &none, 1);
 
-	
-
 	//town hall code
 
 	//worker code
@@ -293,14 +272,13 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	//00402C24, 0042850A, 0042974B,00444D51,004E8C04,004EA88C(hook exists, larva)
 	//hatchery-only code 00434B2F,00436380,
 
-
 	u8 patchLastUnit[] = { 0xE4 };
-	//allow pissed/yes sounds for >= Command Center
+//	allow pissed/yes sounds for >= Command Center
 //	memoryPatch(0x0048EA20 + 2, patchLastUnit, 1);
-	//hook required
+//	hook required
 //	nops(0x0048EAB0, 5);
 
-	//bengalaas id hardcode
+	// bengalaas id hardcode
 	memoryPatch(0x0043157A + 2, patchLastUnit, 1);
 	memoryPatch(0x00431B3D + 2, patchLastUnit, 1);
 	memoryPatch(0x00437E11 + 2, patchLastUnit, 1);
@@ -309,7 +287,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x0047B7CF + 2, patchLastUnit, 1);
 	memoryPatch(0x004CBE4E + 2, patchLastUnit, 1);
 
-	//scantid id hardcode
+	// scantid id hardcode
 	memoryPatch(0x0043158C + 2, patchLastUnit, 1);
 	memoryPatch(0x00431B4F + 2, patchLastUnit, 1);
 	memoryPatch(0x00437E23 + 2, patchLastUnit, 1);
@@ -318,7 +296,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x0047B7E1 + 2, patchLastUnit, 1);
 	memoryPatch(0x004CBE58 + 2, patchLastUnit, 1);
 
-	//ragnasaur id hardcode
+	// ragnasaur id hardcode
 	memoryPatch(0x00431580 + 2, patchLastUnit, 1);
 	memoryPatch(0x00431B43 + 2, patchLastUnit, 1);
 	memoryPatch(0x00437E17 + 2, patchLastUnit, 1);
@@ -327,7 +305,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x0047B7D5 + 2, patchLastUnit, 1);
 	memoryPatch(0x004CBE53 + 2, patchLastUnit, 1);
 
-	//kakaru id hardcode
+	// kakaru id hardcode
 	memoryPatch(0x00431586 + 2, patchLastUnit, 1);
 	memoryPatch(0x00431B49 + 2, patchLastUnit, 1);
 	memoryPatch(0x00437E1D + 2, patchLastUnit, 1);
@@ -338,7 +316,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x0047C476 + 4, patchLastUnit, 1);
 	memoryPatch(0x004CBE5D + 2, patchLastUnit, 1);
 
-	//ursadon id hardcode
+	// ursadon id hardcode
 	memoryPatch(0x00431592 + 2, patchLastUnit, 1);
 	memoryPatch(0x00431B55 + 2, patchLastUnit, 1);
 	memoryPatch(0x00437E29 + 2, patchLastUnit, 1);
@@ -347,7 +325,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x0047B7E7 + 2, patchLastUnit, 1);
 	memoryPatch(0x004CBE62 + 2, patchLastUnit, 1);
 
-	//warbringer id hardcode
+	// warbringer id hardcode
 	memoryPatch(0x004F6C1C + 2, patchLastUnit, 1);
 	memoryPatch(0x004F6578 + 2, patchLastUnit, 1);
 	memoryPatch(0x004F656B + 2, patchLastUnit, 1);
@@ -392,30 +370,30 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x004014C6 + 2, patchLastUnit, 1);
 	memoryPatch(0x0040149A + 2, patchLastUnit, 1);
 
-	//dark archon - energy of mcontrolled dark archons no longer set to 0
+//	dark archon - energy of controlled dark archons is no longer set to 0
 //	memoryPatch(0x004F6938 + 4, patchLastUnit, 1);
 	nops(0x0049EEBD, 0xa);//disable beacon collision hardcode
 //	u8 p8a = { 0x8a };
 
-	// TODO: Resolve this bug
-	// This code has a bug, that makes workers not remove their resource chunks properly 
-	//const u8 signff[2] = { 0xff,0x7f };
-	//memoryPatch(0x004981C4 + 3, signff, 2);
-	//memoryPatch(0x00497764 + 3, signff, 2);//lardcode
-	//memoryPatch(0x004F3944 + 3, signff, 2);//lardcode
-	//memoryPatch(0x00497784 + 3, signff, 2);//disable burrow hardcode for image ids: Flag, Young Chrysalis, Uraj, Khalis
+//	TODO: Resolve this bug
+//	This code has a bug that makes workers not remove their resource chunks properly 
+//	const u8 signff[2] = { 0xff,0x7f };
+//	memoryPatch(0x004981C4 + 3, signff, 2);
+//	memoryPatch(0x00497764 + 3, signff, 2);	//lardcode
+//	memoryPatch(0x004F3944 + 3, signff, 2);	//lardcode
+//	memoryPatch(0x00497784 + 3, signff, 2);	//disable burrow hardcode for image ids: Flag, Young Chrysalis, Uraj, Khalis
 	
-	// This code is a replacement for the code above, that does not work properly
+//	This code is a replacement for the code above
 	u8 p8a = { 0x8a };
 	u8 ff = { 0xff };
-	memoryPatch(0x00497764 + 3, &p8a, sizeof(u8));//
-	memoryPatch(0x00497784 + 3, &ff, sizeof(u8));//disable burrow hardcode for image ids: Flag, Young Chrysalis, Uraj, Khalis
+	memoryPatch(0x00497764 + 3, &p8a, sizeof(u8));	
+	memoryPatch(0x00497784 + 3, &ff, sizeof(u8));	// disable burrow hardcode for image ids: Flag, Young Chrysalis, Uraj, Khalis
 
 	//ctf orders
 	u8 patchCTF1[] = { 0xE9, 0xCC, 0x02, 0x00, 0x00 };
-	memoryPatch(0x004EC80A, patchCTF1, sizeof patchCTF1);//CTFCOPInit //wyvern?
+	memoryPatch(0x004EC80A, patchCTF1, sizeof patchCTF1); //CTFCOPInit //wyvern?
 	u8 patchCTF2[] = { 0xE9, 0xC2, 0x02, 0x00, 0x00 };
-	memoryPatch(0x004EC814, patchCTF2, sizeof patchCTF2);//CTFCOP1 //essence drain
+	memoryPatch(0x004EC814, patchCTF2, sizeof patchCTF2); //CTFCOP1 //essence drain
 	//
 
 	//iquare, end
@@ -481,129 +459,94 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	//FaRTy1billion, end
 	//
 
-
 	//h
 	hooks::injectGameHooks();
 	//h
 	hooks::injectDrawHook();
-
 	
-
 	//in order of creation
-	/*
-	hooks::injectInfestationHooks();
-	hooks::injectSiegeTransformHooks();*/
-
-
+	
+//	hooks::injectInfestationHooks();
+//	hooks::injectSiegeTransformHooks();
 	hooks::injectButtonSetHooks();
-
 	//h
 	hooks::injectSelectMod();
-
-	
 	hooks::injectMergeUnitsHooks();
-
-
 	//h
-	hooks::injectLarvaCreepSpawnHooks();
-
-	/*
-	hooks::injectLiftLandHooks();*//*
-	hooks::injectAttackOrdersHooks();
-	hooks::injectStopHoldPosOrdersHooks();*/
+	hooks::injectLarvaCreepSpawnHooks();	
+//	hooks::injectLiftLandHooks();
+//	hooks::injectAttackOrdersHooks();
+//	hooks::injectStopHoldPosOrdersHooks();
 	hooks::injectRecallSpellHooks();
-	hooks::injectEnterNydusHooks();/*
-								   */
+	hooks::injectEnterNydusHooks();
 	hooks::injectCastOrderHooks();
 	hooks::injectWpnSpellHitHooks();
-
-	hooks::injectBuildingMorphHooks();
-	
+	hooks::injectBuildingMorphHooks();	
 	hooks::injectMakeNydusExitHook();
 	hooks::injectUnitMorphHooks();
-	hooks::injectWireframeHook();/*
-	hooks::injectDieOrderHook();*/
+	hooks::injectWireframeHook();
+//	hooks::injectDieOrderHook();
 	hooks::injectBuildingTerranHook();
 	hooks::injectBuildingProtossHooks();
 	hooks::injectUnitTrainHooks();
 
-
 	hooks::injectLoadUnloadProcHooks();
-	hooks::injectLoadUnloadOrdersHooks();/*
-	hooks::injectNukeOrdersHooks();
-	hooks::injectBurrowTechHooks();
-	hooks::injectResearchUpgradeOrdersHooks();*/
+	hooks::injectLoadUnloadOrdersHooks();
+//	hooks::injectNukeOrdersHooks();
+//	hooks::injectBurrowTechHooks();
+//	hooks::injectResearchUpgradeOrdersHooks();
 	hooks::injectMedicOrdersHooks();
-	hooks::injectHallucinationSpellHook();/*
-	hooks::injectFeedbackSpellHook();
-	hooks::injectBtnsCondHook();
-	hooks::injectRecvCmdHook();*/
+	hooks::injectHallucinationSpellHook();
+//	hooks::injectFeedbackSpellHook();
+//	hooks::injectBtnsCondHook();
+//	hooks::injectRecvCmdHook();
 	hooks::injectCreateInitUnitsHooks();
 //	hooks::injectGiveUnitHook();
-	hooks::injectTrainCmdRecvHooks();/*
-	hooks::injectCMDRECV_SiegeTankHooks();
-	hooks::injectCMDRECV_MergeArchonHooks();*/
-
+	hooks::injectTrainCmdRecvHooks();
+//	hooks::injectCMDRECV_SiegeTankHooks();
+//	hooks::injectCMDRECV_MergeArchonHooks();
 
 	hooks::injectCMDRECV_MorphHooks();
-	/*
-
-
-	hooks::injectCMDRECV_StopHooks();*/
-	hooks::injectCMDRECV_CancelHooks();/*
-	hooks::injectSelectLarvaHooks();*/
+//	hooks::injectCMDRECV_StopHooks();
+	hooks::injectCMDRECV_CancelHooks();
+//	hooks::injectSelectLarvaHooks();
 	hooks::injectRepairOrderHook();
 	hooks::injectStatsPanelDisplayHook();
 //	hooks::injectUtilsHooks();
 	hooks::injectMindControlSpellHook();
-	hooks::injectCMDRECV_BuildHooks();
-	
+	hooks::injectCMDRECV_BuildHooks();	
 
 	hooks::injectApplyUpgradeFlags();
-	hooks::injectAttackPriorityHooks();
-	
+	hooks::injectAttackPriorityHooks();	
 	hooks::injectBunkerHooks();
-	hooks::injectCloakNearbyUnits();
-	
+	hooks::injectCloakNearbyUnits();	
 	hooks::injectCloakingTechHooks();
-	/*
-	hooks::injectDetectorHooks();*/
-	hooks::injectHarvestResource();
-	/*
-	hooks::injectRallyHooks();*/
-
-	hooks::injectRechargeShieldsHooks();
-
-	
+//	hooks::injectDetectorHooks();
+	hooks::injectHarvestResource();	
+//	hooks::injectRallyHooks();
+	hooks::injectRechargeShieldsHooks();	
 	hooks::injectSpiderMineHooks();
-/*
-	hooks::injectStimPacksHooks();*/
-	hooks::injectTechTargetCheckHooks();/*
-	hooks::injectTransferTechAndUpgradesHooks();*/
+
+//	hooks::injectStimPacksHooks();
+	hooks::injectTechTargetCheckHooks();
+//	hooks::injectTransferTechAndUpgradesHooks();
 	hooks::injectUnitSpeedHooks();
 	hooks::injectUpdateStatusEffects();
 	hooks::injectUpdateUnitState();
 	hooks::injectWeaponCooldownHook();
 	hooks::injectWeaponDamageHook();
-
 	hooks::injectWeaponFireHooks();
-
-
 	hooks::injectUnitDestructorSpecial();
-
 	hooks::injectWeaponEffectHook();
-	hooks::injectUseTechHooks();
-	
-	//hooks::injectPsiFieldHooks();
+	hooks::injectUseTechHooks();	
+//	hooks::injectPsiFieldHooks();
 
 	hooks::injectArmorBonusHook();
 	hooks::injectSightRangeHook();
 	hooks::injectUnitMaxEnergyHook();
 	hooks::injectWeaponRangeHooks();
-
 	hooks::injectUnitTooltipHook();
 	hooks::injectMaxHpHooks();
-
 	hooks::injectSpellcasterAI();
 	hooks::injectAIOrdersHooks();
 	hooks::injectSfxHooks();
