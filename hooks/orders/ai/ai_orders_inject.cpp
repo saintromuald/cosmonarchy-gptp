@@ -158,7 +158,7 @@ namespace {
 		result = hooks::AI_TrainAttackForce(region);
 		__asm {
 			POPAD
-			MOV result, EAX
+			MOV EAX, result
 			RETN
 		}
 	}
