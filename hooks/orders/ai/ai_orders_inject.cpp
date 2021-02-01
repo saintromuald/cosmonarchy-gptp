@@ -283,6 +283,7 @@ namespace {
 		__asm {
 			MOV unitId, EAX
 			MOV player, EDX
+			PUSHAD
 		}
 		hooks::AI_RemoveFromAttack(unitId, player);
 		__asm {
