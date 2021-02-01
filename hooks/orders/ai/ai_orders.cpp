@@ -918,6 +918,7 @@ namespace hooks {
 		AI_GetRegionMilitaryTypes(region, &a2, &a3, &a4);
 		v1 = region;
 //		if (a2 && SAI_Paths->regions[(u16)region->region].accessabilityFlags == 0x1FFD || AI_CanTravelToRegion(region, region)) // TODO: add SAI_Paths
+		if(a2 && (*SAI_Paths)->regions[region->region].accessabilityFlags == 0x1FFD || AI_CanTravelToRegion(region,region))
 		{
 			AI_AssignMilitary(0, region);
 			v2 = AI_PickAttackTarget_NoBuildings(region);

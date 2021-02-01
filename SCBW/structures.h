@@ -594,6 +594,23 @@ struct UnitAi {
 };
 C_ASSERT(sizeof(UnitAi) == 9);
 
+struct Region {
+	u16 accessabilityFlags;
+	u16 group;
+	u8 _dc4[0x14];
+	Box16 area;
+	u8 _dc20[0x20];
+};
+
+struct pathing {
+	u16 regionCount;
+	u8 _dc2[0x449fa];
+	Region regions[5000];
+	u8 _dc92bfc[0x4e24];
+};
+
+C_ASSERT(sizeof(pathing) == 0x97a20);
+
 struct GuardAi {
 	CLink<GuardAi>	link;				// 0x0, 0x4
 	u8 type;							// 0x8
