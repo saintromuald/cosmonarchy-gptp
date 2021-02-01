@@ -562,17 +562,16 @@ C_ASSERT(sizeof(GuiOverlay) == 44); //0x2C
 
 struct AiCaptain { //AiRegion
 	/*00*/  u16 region;
-	/*02*/  u16 unknown_0x2;
+	/*02*/  u16 targetRegion;
 	/*04*/  u8  playerId;
 	/*05*/  u8  captainType;
-	/*06*/  u8  unknown_0x6;
-	/*07*/  u8  unknown_0x7;
+	/*06*/  u8  defensePriorityAdd;
+	/*07*/  u8  unkCount;
 	/*08*/  u8  captainFlags;
 	/*09*/  u8  unknown_0x9;
-	/*0A*/  u8  unknown_0xA;
-	/*0B*/  u8  unknown_0xB;
-	/*0C*/  u16 unknown_0xC;
-	/*0E*/  u16 unknown_0xE;
+	/*0A*/  u16 groundUnitCount;
+	/*0C*/  u16 neededGroundStrength;
+	/*0E*/  u16 neededAirStrength;
 	/*10*/  u16 regionGndStrength;
 	/*12*/  u16 regionAirStrength;
 	/*14*/  u16 fullGndStrength;
