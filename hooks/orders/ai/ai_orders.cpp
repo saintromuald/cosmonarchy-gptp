@@ -516,7 +516,7 @@ namespace hooks {
 	}
 
 	// Hooked to modify AI behavior such as cancelling structures, withdrawing hurt high-value targets, etc -- Pr0nogo
-/*	void AI_UnitWasHit(CUnit* self, CUnit* attacker, s32 mainTargetReactions, s32 dontCallHelp) { // 0043F320
+	void AI_UnitWasHit(CUnit* self, CUnit* attacker, s32 mainTargetReactions, s32 dontCallHelp) { // 0043F320
 		BuildingAi* selfBuildingAi; // eax
 		s32 quartTotalHP; // edi
 		CUnit* target; // eax
@@ -765,7 +765,7 @@ namespace hooks {
 				}
 			}
 		}
-	}*/
+	}
 
 	// Hooked to change guard assignments for structures based on AI personality -- Pr0nogo
 	// TODO: Cleanup and make changes

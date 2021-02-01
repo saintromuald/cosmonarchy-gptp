@@ -8,6 +8,7 @@ namespace hooks {
 	void AI_TrainingBroodling(CUnit* parent, CUnit* result);												// 0043E280
 	void AI_AddUnitAi(CUnit* unit, AiTown* town);															// 00433DD0
 	void AI_BuildTechUpgrade(AiTown* town, s32 method, s32 amount, s32 id, s32 priority, s32 need);			// 00431F90
+	void AI_UnitWasHit(CUnit* self, CUnit* attacker, s32 mainTargetReactions, s32 dontCallHelp);			// 0043F320
 	void AI_IterateBuildingAI(CUnit* result, CUnit* parent);												// 00435770
 	
 	// Attack extender

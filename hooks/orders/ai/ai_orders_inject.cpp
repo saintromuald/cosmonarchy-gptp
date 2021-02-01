@@ -130,6 +130,33 @@ namespace {
 			RETN 20
 		}
 	}
+
+	void __declspec(naked) AI_UnitWasHit_Wrapper() { // 0043F320
+		static CUnit* self;
+		static CUnit* attacker;
+		static s32 mainTargetReactions;
+		static s32 dontCallHelp;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV dontCallHelp, EAX
+			MOV EAX, [EBP + 0xC]
+			MOV mainTargetReactions, EAX
+			POP EAX
+			MOV attacker, EDX
+			MOV self, ECX
+			PUSHAD
+		}
+		hooks::AI_UnitWasHit(self, attacker, mainTargetReactions, dontCallHelp);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 8
+		}
+	}
 	
 	void __declspec(naked) AI_IterateBuildingAI_Wrapper() { // 00435770
 		static CUnit* result;
@@ -302,6 +329,7 @@ namespace hooks {
 //		jmpPatch(AI_AddUnitAi_Wrapper,						0x00433DD0, 2);
 		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper,	0x00433DE7, 1);
 //		jmpPatch(AI_BuildTechUpgrade_Wrapper,				0x00431F90, 2);
+//		jmpPatch(AI_UnitWasHit_Wrapper,						0x0043F320, 1);
 //		jmpPatch(AI_IterateBuildingAI_Wrapper,				0x00435770, 1);
 //		jmpPatch(AI_TrainAttackForce_Wrapper,				0x0043E670, 4);
 //		jmpPatch(AI_GroupingForAttack_Wrapper,				0x0043EEC0, 4);
