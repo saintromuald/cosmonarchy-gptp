@@ -33,8 +33,8 @@ namespace {
 	bool unitIsActiveResourceDepot(CUnit* unit);													// 00401CF0
 	s32 getPlayerDefaultRefineryUnitType(s32 playerId);												// 004320D0
 
-	// for AI_UnitWasHit // haven't wrapped any of these yet, some should probably be methods in api etc
-	char AI_CancelStructure(CUnit* structure, s32 a2);												// 00468280
+	// for AI_UnitWasHit // some of these should probably be methods in api/etc
+	char AI_CancelStructure(CUnit* structure);														// 00468280
 	CUnit* AI_GetActualTarget(CUnit* attacker, CUnit* target);										// 0043AD60
 	CUnit* checkArbiterCloakingRange(CUnit* unit, u16 id);											// 004410C0
 	void AI_OrderUnitCloaking(CUnit* unit);															// 0043B970
@@ -43,7 +43,7 @@ namespace {
 	bool unitIsActiveTransport(CUnit* unit);														// 004E6BA0
 	s32 isUnitLoaded(CUnit* unit);																	// 004E7110
 	void orderComputerClear(CUnit* unit, u8 orderId);												// 00475310
-	s32 AI_TryReturnHome(CUnit* unit, s32 a2);														// 00462EA0
+	s32 AI_TryReturnHome(CUnit* unit, s32 dontIssueOrder);											// 00462EA0
 	s32 AI_TransportAction(CUnit* unit);															// 0043DB50
 	s32 AI_AskForHelp(CUnit* self, CUnit* attacker, s32 onlyNearbyGuards);							// 0043ADA0
 	s16 getRegionIdFromUnit(CUnit* unit);															// 0049CB40
@@ -52,14 +52,14 @@ namespace {
 	bool unitIsPerformingUnbreakableCode(CUnit* unit);												// 00402310
 	bool AI_CastSpellBehavior(CUnit* unit, bool isAggro);											// 004A13C0
 	s32 AI_Flee(CUnit* unit, CUnit* enemy);															// 0043E400
-	bool unitHasPathToDestOnGround(CUnit* unit, s16 x, s16 y);										// 0042FA00
+	bool unitHasGroundPath(CUnit* unit, s16 x, s16 y);												// 0042FA00
 	bool AI_HasNoDefenseBuild(s32 player);															// 00447370
 	bool unitCanSeeCloakedTarget(CUnit* target, CUnit* unit);										// 00401D60
 	void AI_RespondToCloakedThreat(CUnit* threat, CUnit* unit);										// 0043C580
 	bool unitCanAttackTarget(CUnit* target, CUnit* unit, s32 checkDetection);						// 00476730
-	s32 burrowIdle_Normal(CUnit* unit, s32 a2, s32 a3, s32 a4);										// 00477160
-	__int64 AI_PrepareToFlee(CUnit* unit, CUnit* a2);												// 00476A50
-	void orderInterrupt(CUnit* unit, u8 orderId, Point32* pos, CUnit* a4);							// 00474C30
+	s32 AI_UpdateAttackTarget(CUnit* unit, s32 acceptIfSieged, s32 acceptCritters, s32 mustReach);	// 00477160
+	__int64 AI_PrepareToFlee(CUnit* unit, CUnit* enemy);											// 00476A50
+	void orderInterrupt(CUnit* unit, u8 orderId, Point32* pos, CUnit* target);						// 00474C30
 
 	// for AI_IterateBuildingAI
 	u16 AI_RemoveFromTowns(CUnit* worker);															// 00432760
@@ -569,7 +569,7 @@ namespace hooks {
 						{
 							quartTotalHP = self->getTotalHitPointsPlusShields() / 4;
 							if (self->getCurrentLifeInGame() < quartTotalHP) {
-								AI_CancelStructure(self, 0); // originally unused variable v8
+								AI_CancelStructure(self); // originally unused variable v8
 								return;
 							}
 						}
@@ -707,7 +707,7 @@ namespace hooks {
 											}
 											if (v44
 												|| !(self->status & UnitStatus::IsBuilding)
-												|| unitHasPathToDestOnGround(self, v27->sprite->position.x, v27->sprite->position.y)
+												|| unitHasGroundPath(self, v27->sprite->position.x, v27->sprite->position.y)
 												|| !AI_Flee(self, v27))
 											{
 											LABEL_126:
@@ -730,7 +730,7 @@ namespace hooks {
 																self->autoTargetUnit = realTarget;
 																if (v37->isSubunit())
 																	v36->autoTargetUnit = realTarget;
-																burrowIdle_Normal(self, 0, 1, 0);
+																AI_UpdateAttackTarget(self, 0, 1, 0);
 															}
 															else if (self->pAI) {
 																if (v40 != 159
@@ -1485,6 +1485,354 @@ namespace {
 			POPAD
 		}
 		return result;
+	}
+
+	// for AI_UnitWasHit // some of these should probably be methods in api/etc
+	const u32 Func_AI_CancelStructure = 0x00468280;
+	char AI_CancelStructure(CUnit* structure) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, structure
+			CALL Func_AI_CancelStructure
+			MOV result, EAX
+			POPAD
+		}
+		return (char)result;
+	}
+
+	const u32 Func_AI_GetActualTarget = 0x0043AD60;
+	CUnit* AI_GetActualTarget(CUnit* attacker, CUnit* target) {
+		static CUnit* result;
+		__asm {
+			PUSHAD
+			MOV EDI, attacker
+			MOV ESI, target
+			CALL Func_AI_GetActualTarget
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_checkArbiterCloakingRange = 0x004410C0;
+	CUnit* checkArbiterCloakingRange(CUnit* unit, u16 id) {
+		static CUnit* result;
+		__asm {
+			PUSHAD
+			PUSH id
+			MOV EAX, unit
+			CALL Func_checkArbiterCloakingRange
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_OrderUnitCloaking = 0x0043B970;
+	void AI_OrderUnitCloaking(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL Func_AI_OrderUnitCloaking
+			POPAD
+		}
+	}
+
+	const u32 Func_AI_OrderLurkerBurrow = 0x0043C230;
+	void AI_OrderLurkerBurrow(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_OrderLurkerBurrow
+			POPAD
+		}
+	}
+
+	const u32 Func_AI_IsUnderAttack = 0x00436E70;
+	bool AI_IsUnderAttack(CUnit* unit, s32 flag) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH flag
+			MOV EAX, unit
+			CALL Func_AI_IsUnderAttack
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_unitIsActiveTransport = 0x004E6BA0;
+	bool unitIsActiveTransport(CUnit* unit) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			CALL Func_unitIsActiveTransport
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_isUnitLoaded = 0x004E7110;
+	s32 isUnitLoaded(CUnit* unit) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_isUnitLoaded
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_orderComputerClear = 0x00475310;
+	void orderComputerClear(CUnit* unit, u8 orderId) {
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			MOVZX CL, orderId
+			CALL Func_orderComputerClear
+			POPAD
+		}
+	}
+
+	const u32 Func_AI_TryReturnHome = 0x00462EA0;
+	s32 AI_TryReturnHome(CUnit* unit, s32 dontIssueOrder) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH dontIssueOrder
+			MOV EAX, unit
+			CALL Func_AI_TryReturnHome
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_TransportAction = 0x0043DB50;
+	s32 AI_TransportAction(CUnit* unit) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL Func_AI_TransportAction
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+	
+	const u32 Func_AI_AskForHelp = 0x0043ADA0;
+	s32 AI_AskForHelp(CUnit* self, CUnit* attacker, s32 onlyNearbyGuards) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH onlyNearbyGuards
+			PUSH attacker
+			PUSH self
+			CALL Func_AI_AskForHelp
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_getRegionIdFromUnit = 0x0049CB40;
+	s16 getRegionIdFromUnit(CUnit* unit) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_getRegionIdFromUnit
+			MOV result, EAX
+			POPAD
+		}
+		return (s16)result;
+	}
+
+	const u32 Func_getEnemyAirStrengthInRegion = 0x00431D00;
+	s32 getEnemyAirStrengthInRegion(u16 regionId, s32 player) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH player
+			MOVZX AX, regionId
+			CALL Func_getEnemyAirStrengthInRegion
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_getEnemyStrengthInRegion = 0x004318E0;
+	s32 getEnemyStrengthInRegion(u16 regionId, s32 player, s32 includeAir) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH includeAir
+			PUSH player
+			MOVZX AX, regionId
+			CALL Func_getEnemyStrengthInRegion
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_unitIsPerformingUnbreakableCode = 0x00402310;
+	bool unitIsPerformingUnbreakableCode(CUnit* unit) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_unitIsPerformingUnbreakableCode
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_AI_CastSpellBehavior = 0x004A13C0;
+	bool AI_CastSpellBehavior(CUnit* unit, bool isAggro) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH isAggro
+			MOV EAX, unit
+			CALL Func_AI_CastSpellBehavior
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_AI_Flee = 0x0043E400;
+	s32 AI_Flee(CUnit* unit, CUnit* enemy) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH enemy
+			MOV EAX, unit
+			CALL Func_AI_Flee
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_unitHasGroundPath = 0x0042FA00;
+	bool unitHasGroundPath(CUnit* unit, s16 x, s16 y) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH y
+			MOVZX DX, x
+			MOV EAX, unit
+			CALL Func_unitHasGroundPath
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_AI_HasNoDefenseBuild = 0x00447370;
+	bool AI_HasNoDefenseBuild(s32 player) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, player
+			CALL Func_AI_HasNoDefenseBuild
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_unitCanSeeCloakedTarget = 0x00401D60;
+	bool unitCanSeeCloakedTarget(CUnit* target, CUnit* unit) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH unit
+			MOV EAX, target
+			CALL Func_unitCanSeeCloakedTarget
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_AI_RespondToCloakedThreat = 0x0043C580;
+	void AI_RespondToCloakedThreat(CUnit* threat, CUnit* unit) {
+		__asm {
+			PUSHAD
+			PUSH unit
+			MOV EAX, threat
+			CALL Func_AI_RespondToCloakedThreat
+			POPAD
+		}
+	}
+
+	const u32 Func_unitCanAttackTarget = 0x00476730;
+	bool unitCanAttackTarget(CUnit* target, CUnit* unit, s32 checkDetection) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH checkDetection
+			MOV ESI, unit
+			MOV EBX, target
+			CALL Func_unitCanAttackTarget
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_AI_UpdateAttackTarget = 0x00477160;
+	s32 AI_UpdateAttackTarget(CUnit* unit, s32 acceptIfSieged, s32 acceptCritters, s32 mustReach) {
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH mustReach
+			PUSH acceptCritters
+			PUSH acceptIfSieged
+			MOV ECX, unit
+			CALL Func_AI_UpdateAttackTarget
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_AI_PrepareToFlee = 0x00476A50;
+	__int64 AI_PrepareToFlee(CUnit* enemy, CUnit* unit) {
+		static __int64 result;
+		__asm {
+			PUSH unit
+			MOV EAX, enemy
+			CALL Func_AI_PrepareToFlee
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const u32 Func_orderInterrupt = 0x00474C30;
+	void orderInterrupt(CUnit* unit, u8 orderId, Point32* pos, CUnit* target) {
+		__asm {
+			PUSHAD
+			PUSH target
+			PUSH pos
+			PUSH orderId
+			MOV ESI, unit
+			CALL Func_orderInterrupt
+			POPAD
+		}
 	}
 
 	// for AI_IterateBuildingAI
