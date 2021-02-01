@@ -197,25 +197,34 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 
 	// flag beacon id hardcode
 	const u8 jmp = 0xEB;
-/*	memoryPatch(0x0042F134 + 2, &none, sizeof(u8));
+	const u8 min = 0x00;
+	memoryPatch(0x0042F134 + 2, &none, sizeof(u8));
 	memoryPatch(0x0042F13A, &jmp, 1); // JA
 	memoryPatch(0x0043A602 + 2, &none, sizeof(u8));
-	memoryPatch(0x0043A609 + 2, &none, sizeof(u8));
+//	memoryPatch(0x0043A609 + 2, &none, sizeof(u8));
+
 	memoryPatch(0x004558A3 + 2, &none, sizeof(u8));
-	memoryPatch(0x004558A9 + 2, &none, sizeof(u8));
+	//memoryPatch(0x004558A9 + 2, &none, sizeof(u8));
+
 	memoryPatch(0x00455940 + 2, &none, sizeof(u8));
-	memoryPatch(0x00455946 + 2, &none, sizeof(u8));
+	//memoryPatch(0x00455946 + 2, &none, sizeof(u8));
+
 	memoryPatch(0x00455AF2 + 2, &none, sizeof(u8));
-	memoryPatch(0x00455AF8 + 2, &none, sizeof(u8));
+	//memoryPatch(0x00455AF8 + 2, &none, sizeof(u8));
+
 	memoryPatch(0x00473A16 + 2, &none, sizeof(u8));
-	memoryPatch(0x00473A1C + 2, &none, sizeof(u8));
+	//memoryPatch(0x00473A1C + 2, &none, sizeof(u8));
+
+
 	memoryPatch(0x00473BD6 + 2, &none, sizeof(u8));
-	memoryPatch(0x00473BE3 + 2, &none, sizeof(u8));
+	//memoryPatch(0x00473BE3 + 2, &none, sizeof(u8));
+
 	memoryPatch(0x0047B2C4 + 2, &none, sizeof(u8));
-	memoryPatch(0x0047B2CA + 2, &none, sizeof(u8));
+	//memoryPatch(0x0047B2CA + 2, &none, sizeof(u8));
+
 	memoryPatch(0x004E3DC4 + 2, &none, sizeof(u8));
 	memoryPatch(0x004E3DCA, &jmp, 1); // JA
-	*/
+	
 	const u8 moveaxpatch[5] = { 0xb8,  0x00, 0x00, 0x00, 0x00 };
 	memoryPatch((void*)0x00487C93, moveaxpatch, sizeof(moveaxpatch));//disable unit selectable check in placement function
 
