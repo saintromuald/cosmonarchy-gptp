@@ -42,7 +42,6 @@ namespace {
 	bool AI_IsUnderAttack(CUnit* unit, s32 flag);													// 00436E70
 	bool unitIsActiveTransport(CUnit* unit);														// 004E6BA0
 	s32 isUnitLoaded(CUnit* unit);																	// 004E7110
-	void orderComputerClear(CUnit* unit, u8 orderId);												// 00475310
 	s32 AI_TryReturnHome(CUnit* unit, s32 dontIssueOrder);											// 00462EA0
 	s32 AI_TransportAction(CUnit* unit);															// 0043DB50
 	s32 AI_AskForHelp(CUnit* self, CUnit* attacker, s32 onlyNearbyGuards);							// 0043ADA0
@@ -58,7 +57,7 @@ namespace {
 	void AI_RespondToCloakedThreat(CUnit* threat, CUnit* unit);										// 0043C580
 	bool unitCanAttackTarget(CUnit* target, CUnit* unit, s32 checkDetection);						// 00476730
 	s32 AI_UpdateAttackTarget(CUnit* unit, s32 acceptIfSieged, s32 acceptCritters, s32 mustReach);	// 00477160
-	__int64 AI_PrepareToFlee(CUnit* unit, CUnit* enemy);											// 00476A50
+//	__int64 AI_PrepareToFlee(CUnit* unit, CUnit* enemy);											// 00476A50
 	void orderInterrupt(CUnit* unit, u8 orderId, Point32* pos, CUnit* target);						// 00474C30
 
 	// for AI_IterateBuildingAI
@@ -734,7 +733,8 @@ namespace hooks {
 															}
 															else if (self->pAI) {
 																if (v40 != 159
-																	|| (v33 = AI_PrepareToFlee(realTarget, self), (s32)v33 == *(s32*)&self->sprite->position))
+//																	|| (v33 = AI_PrepareToFlee(realTarget, self), (s32)v33 == *(s32*)&self->sprite->position)
+																	)
 																{
 																	if (mainTargetReactions) {
 																		if (self->id != 34)
@@ -1544,7 +1544,7 @@ namespace {
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_OrderLurkerBurrow
+			CALL Func_AI_OrderLurkerBurrow
 			POPAD
 		}
 	}
@@ -1587,17 +1587,6 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
-
-	const u32 Func_orderComputerClear = 0x00475310;
-	void orderComputerClear(CUnit* unit, u8 orderId) {
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			MOVZX CL, orderId
-			CALL Func_orderComputerClear
-			POPAD
-		}
 	}
 
 	const u32 Func_AI_TryReturnHome = 0x00462EA0;
@@ -1809,7 +1798,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_PrepareToFlee = 0x00476A50;
+/*	const u32 Func_AI_PrepareToFlee = 0x00476A50;
 	__int64 AI_PrepareToFlee(CUnit* enemy, CUnit* unit) {
 		static __int64 result;
 		__asm {
@@ -1820,7 +1809,7 @@ namespace {
 			POPAD
 		}
 		return result;
-	}
+	}*/
 
 	const u32 Func_orderInterrupt = 0x00474C30;
 	void orderInterrupt(CUnit* unit, u8 orderId, Point32* pos, CUnit* target) {
