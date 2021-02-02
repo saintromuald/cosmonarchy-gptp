@@ -1062,40 +1062,37 @@ namespace hooks {
 
 //	0x00447230 => ai_add_to_attackforce(@edi u32,@eax u32,@ecx u32);
 	void AI_AddToAttack(u32 result, u32 player, u32 unitId) { // 00447230
-		u32 _counter; // esi
-		u32 i; // eax
+		u32 counter; // esi
+		u32 index; // eax
 		u32 plOffset; // edx
 		u16* atkGroups; // ecx
-		u16* v7; // ecx
+		u16* atkFinal; // ecx
 
-		_counter = result;
+		counter = result;
 		if (player < 8 && result < 63 && unitId < UnitId::None) {
 			plOffset = 628 * player;
-			i = 0;
+			index = 0;
 			if (AIScriptController[player].attackers[0]) {
 				atkGroups = AIScriptController[player].attackers;
-				while (i < 63) {
+				while (index < 63) {
 					++atkGroups;
-					++i;
+					++index;
 					if (!*atkGroups)
 						goto LABEL_8;
 				}
 			}
-			else
-			{
+			else {
 			LABEL_8:
-				if (_counter)
-				{
-					v7 = &AIScriptController[0].attackers[plOffset + i];
-					do
-					{
-						--_counter;
-						if (i >= 63)
+				if (counter) {
+					atkFinal = &AIScriptController[0].attackers[plOffset + index];
+					do {
+						--counter;
+						if (index >= 63)
 							break;
-						*v7 = unitId + 1;
-						++i;
-						++v7;
-					} while (_counter);
+						*atkFinal = unitId + 1;
+						++index;
+						++atkFinal;
+					} while (counter);
 				}
 			}
 		}
