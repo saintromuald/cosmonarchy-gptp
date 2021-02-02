@@ -1100,8 +1100,8 @@ namespace hooks {
 
 //	0x0043ABB0 => ai_attack_to_hook(u32,i32,i32,bool,bool)->u32;
 	bool AI_AttackManager(u32 player, s32 x1, s32 y1, u32 alywaysOverwriteLastAttack, u32 allowFallbackAirOnly) { // 0043ABB0
-		WORD attackWave; // ax
-		WORD* attackWave2; // ecx
+		u16 attackWave; // ax
+		u16* attackWave2; // ecx
 		char regionsList[2500]; // [esp+4h] [ebp-9C8h]
 		u32 waveBool; // [esp+9C8h] [ebp-4h]
 
