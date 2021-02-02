@@ -898,36 +898,36 @@ namespace hooks {
 
 //	0x0043EEC0 => grouping_for_attack(*mut AiRegion);
 	void AI_GroupingForAttack(AiCaptain* region) { // 0043EEC0
-		AiCaptain* v1; // esi
-		CUnit* v2; // eax
-		AiCaptain* v3; // esi
-		u32 v4; // eax
-		u32 v5; // ecx
-		u16 v6; // ax
-		AiCaptain* v7; // esi
-		AiCaptain* v8; // edi
-		u32 v9[63]; // [esp+8h] [ebp-108h]
+		AiCaptain* regionVar; // esi
+		CUnit* attackTarget; // eax
+		AiCaptain* targetRegion; // esi
+		u32 missingUnits; // eax
+		u32 attackUnit; // ecx
+		u16 regionId; // ax
+		AiCaptain* targetRegion2; // esi
+		AiCaptain* targetRegion3; // edi
+		u32 attackWave[63]; // [esp+8h] [ebp-108h]
 		s32 a3; // [esp+104h] [ebp-Ch]
 		s32 a4; // [esp+108h] [ebp-8h]
 		s32 a2; // [esp+10Ch] [ebp-4h]
 
 		AI_RecalculateRegionStrength(region);
 		AI_TargetEnemyInRegion(region);
-		if (region->captainFlags & 0x20 && AI_MoveMilitaryToDefend(region))
+		if (region->captainFlags & 0x20 && AI_MoveMilitaryToDefend(region)) {
 			return;
+		}
 		AI_GetRegionMilitaryTypes(region, &a2, &a3, &a4);
-		v1 = region;
-//		if (a2 && SAI_Paths->regions[(u16)region->region].accessabilityFlags == 0x1FFD || AI_CanTravelToRegion(region, region)) // TODO: add SAI_Paths
-		if(a2 && (*SAI_Paths)->regions[region->region].accessabilityFlags == 0x1FFD || AI_CanTravelToRegion(region,region))
+		regionVar = region;
+		if (a2 && (*SAI_Paths)->regions[region->region].accessabilityFlags == 0x1FFD || AI_CanTravelToRegion(region,region))
 		{
 			AI_AssignMilitary(0, region);
-			v2 = AI_PickAttackTarget_NoBuildings(region);
-			if (v2) {
-				v3 = &AiRegionCaptains[(u8)region->playerId][SAI_GetRegionIdFromPxEx(
-					v2->sprite->position.x,
-					v2->sprite->position.y)];
-				AI_AssignMilitary(9, v3);
-				AI_MoveMilitaryToOtherRegion(v3, region, 0, 0, 1);
+			attackTarget = AI_PickAttackTarget_NoBuildings(region);
+			if (attackTarget) {
+				targetRegion = &AiRegionCaptains[(u8)region->playerId][SAI_GetRegionIdFromPxEx(
+					attackTarget->sprite->position.x,
+					attackTarget->sprite->position.y)];
+				AI_AssignMilitary(9, targetRegion);
+				AI_MoveMilitaryToOtherRegion(targetRegion, region, 0, 0, 1);
 			}
 			else {
 				AI_IterateTownSomething(region);
@@ -936,27 +936,27 @@ namespace hooks {
 		}
 		if (AI_AttackTimerDecrement((u8)region->playerId)) {
 		LABEL_15:
-			v6 = region->targetRegion;
-			if (v6) {
-				v7 = &AiRegionCaptains[(u8)region->playerId][v6];
-				AI_AssignMilitary(1, v7);
-				v8 = v7;
-				v1 = region;
-				AI_MoveMilitaryToOtherRegion(v8, region, 0, 0, 1);
+			regionId = region->targetRegion;
+			if (regionId) {
+				targetRegion2 = &AiRegionCaptains[(u8)region->playerId][regionId];
+				AI_AssignMilitary(1, targetRegion2);
+				targetRegion3 = targetRegion2;
+				regionVar = region;
+				AI_MoveMilitaryToOtherRegion(targetRegion3, region, 0, 0, 1);
 			}
-			AI_AssignMilitary(0, v1);
+			AI_AssignMilitary(0, regionVar);
 			return;
 		}
-		v4 = AI_GetMissingAttackForceUnits(region, v9, 1);
-		v5 = 0;
-		if (!v4) {
+		missingUnits = AI_GetMissingAttackForceUnits(region, attackWave, 1);
+		attackUnit = 0;
+		if (!missingUnits) {
 		LABEL_14:
 			if (AI_HasForcesMovingToAttack((u8)region->playerId))
 				return;
 			goto LABEL_15;
 		}
-		while ((u32)v9[v5] >= 0xE4) {
-			if (++v5 >= v4)
+		while ((u32)attackWave[attackUnit] >= 0xE4) {
+			if (++attackUnit >= missingUnits)
 				goto LABEL_14;
 		}
 	}
