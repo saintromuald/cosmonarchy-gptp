@@ -1117,8 +1117,9 @@ namespace hooks {
 		memset(regionsList, 0, sizeof(regionsList));
 		PopulateRegionsWithOwn(regionsList, player);
 		PopulateRegionsWithEnemy(player, regionsList);
-		while (AI_GetNeighborRegionTypes(regionsList))
+		while (AI_GetNeighborRegionTypes(regionsList)) {
 			AI_FinishRegionAccessibility(regionsList);
+		}
 		attackWave = AIScriptController[player].attackers[0];
 		attackWave2 = AIScriptController[player].attackers;
 		waveBool = attackWave != 0;
