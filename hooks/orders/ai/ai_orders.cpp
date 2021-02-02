@@ -1135,7 +1135,7 @@ namespace hooks {
 			waveBool = 0;
 		}
 	LABEL_12:
-		AIScriptController[player].AI_Flags.isSecureFinished = 1; // Might be wrong
+		AIScriptController[player].AI_Flags.isSecureFinished = 1;
 		if (!AI_SetAttackGroupingRegion(waveBool, 0, player, regionsList, x1, y1, alywaysOverwriteLastAttack)
 		&& !AI_SetAttackGroupingRegion(waveBool, 1, player, regionsList, x1, y1, alywaysOverwriteLastAttack))
 		{
