@@ -1102,49 +1102,49 @@ namespace hooks {
 	}
 
 //	0x0043ABB0 => ai_attack_to_hook(u32,i32,i32,bool,bool)->u32;
-	bool AI_AttackManager(u32 _player, s32 x1, s32 y1, u32 alywaysOverwriteLastAttack, u32 allowFallbackAirOnly) { // 0043ABB0
-		u32 v5; // esi
-		WORD v7; // ax
-		WORD* v8; // ecx
+	bool AI_AttackManager(u32 player, s32 x1, s32 y1, u32 alywaysOverwriteLastAttack, u32 allowFallbackAirOnly) { // 0043ABB0
+		WORD attackWave; // ax
+		WORD* attackWave2; // ecx
 		char regionsList[2500]; // [esp+4h] [ebp-9C8h]
-		u32 v10; // [esp+9C8h] [ebp-4h]
+		u32 waveBool; // [esp+9C8h] [ebp-4h]
 
-		v5 = _player;
-		if (AIScriptController[_player].supplyCollection)
+		if (AIScriptController[player].supplyCollection) {
 			return 1;
-		if (AIScriptController[v5].AI_AttackGroup)
-			return *((u8*)&AiRegionCaptains[_player][(u16)AIScriptController[v5].AI_AttackGroup] - 47) != 8;
+		}
+		if (AIScriptController[player].AI_AttackGroup) {
+			return *((u8*)&AiRegionCaptains[player][(u16)AIScriptController[player].AI_AttackGroup] - 47) != 8;
+		}
 		memset(regionsList, 0, sizeof(regionsList));
-		PopulateRegionsWithOwn(regionsList, _player);
-		PopulateRegionsWithEnemy(_player, regionsList);
+		PopulateRegionsWithOwn(regionsList, player);
+		PopulateRegionsWithEnemy(player, regionsList);
 		while (AI_GetNeighborRegionTypes(regionsList))
 			AI_FinishRegionAccessibility(regionsList);
-		v7 = AIScriptController[v5].attackers[0];
-		v8 = AIScriptController[v5].attackers;
-		v10 = v7 != 0;
-		if (v7)
+		attackWave = AIScriptController[player].attackers[0];
+		attackWave2 = AIScriptController[player].attackers;
+		waveBool = attackWave != 0;
+		if (attackWave)
 		{
-			while (units_dat::DestroyScore[2 * v7 + 226] & 4)
+			while (units_dat::DestroyScore[2 * attackWave + 226] & 4)
 			{
-				v7 = v8[1];
-				++v8;
-				if (!v7)
+				attackWave = attackWave2[1];
+				++attackWave2;
+				if (!attackWave)
 					goto LABEL_12;
 			}
-			v10 = 0;
+			waveBool = 0;
 		}
 	LABEL_12:
-		AIScriptController[v5].AI_Flags.isSecureFinished = 1; // Might be wrong
-		if (!AI_SetAttackGroupingRegion(v10, 0, _player, regionsList, x1, y1, alywaysOverwriteLastAttack)
-		&& !AI_SetAttackGroupingRegion(v10, 1, _player, regionsList, x1, y1, alywaysOverwriteLastAttack))
+		AIScriptController[player].AI_Flags.isSecureFinished = 1; // Might be wrong
+		if (!AI_SetAttackGroupingRegion(waveBool, 0, player, regionsList, x1, y1, alywaysOverwriteLastAttack)
+		&& !AI_SetAttackGroupingRegion(waveBool, 1, player, regionsList, x1, y1, alywaysOverwriteLastAttack))
 		{
-			if (!allowFallbackAirOnly || v10) {
+			if (!allowFallbackAirOnly || waveBool) {
 				return 1;
 			}
-			if (!AI_SetAttackGroupingRegion(1, 0, _player, regionsList, x1, y1, alywaysOverwriteLastAttack)
-			&& !AI_SetAttackGroupingRegion(1, 1, _player, regionsList, x1, y1, alywaysOverwriteLastAttack))
+			if (!AI_SetAttackGroupingRegion(1, 0, player, regionsList, x1, y1, alywaysOverwriteLastAttack)
+			&& !AI_SetAttackGroupingRegion(1, 1, player, regionsList, x1, y1, alywaysOverwriteLastAttack))
 			{
-				AIScriptController[v5].supplyCollection = 1;
+				AIScriptController[player].supplyCollection = 1;
 				return 1;
 			}
 		}
