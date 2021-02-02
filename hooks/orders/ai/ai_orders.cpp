@@ -2134,7 +2134,7 @@ namespace {
 		}
 	}
 
-	const u32 FUnc_AI_SetAttackGroupingRegion = 0x004399D0;
+	const u32 Func_AI_SetAttackGroupingRegion = 0x004399D0;
 	s32 AI_SetAttackGroupingRegion(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,
 		s32 x, s32 y, u32 alwaysOverwriteLastAttack) {
 		static s32 result;
@@ -2147,7 +2147,7 @@ namespace {
 			PUSH player
 			MOV EDX, alsoVeryNear
 			MOV ECX, airAttack
-			CALL FUnc_AI_SetAttackGroupingRegion
+			CALL Func_AI_SetAttackGroupingRegion
 			MOV result, EAX
 			POPAD
 		}
