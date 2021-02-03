@@ -928,7 +928,7 @@ namespace hooks {
 					}
 
 					// Cyclops - Flak Cannon passive
-					if (attacker->id == UnitId::TerranCyclops) {
+					if (weaponId == WeaponId::FlakCannons) {
 						auto newAngle = scbw::getAngle(attacker->getX(), attacker->getY(), target->getX(), target->getY());
 						scbw::createBullet(WeaponId::FragmentaryShells, attacker, target->getX(), target->getY(), attacker->playerId, newAngle);
 					}
