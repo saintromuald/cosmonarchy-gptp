@@ -1183,9 +1183,9 @@ namespace hooks {
 				}
 
 				// Permanently Cloaked units decloak on attack
-				if ((unit->id == UnitId::ProtossCabalist || unit->id == UnitId::ProtossBarghest)
+				if (units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak
 					&& !(unit->status & UnitStatus::CloakingForFree)) {
-					auto timer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::DarkTemplarTimer, 0);
+					auto timer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::PermanentCloakTimer, 0);
 					if (timer == 1) {
 						for (int i = 0; i < 8; i++) {
 							if (!scbw::isAlliedTo(unit->playerId, i)) {

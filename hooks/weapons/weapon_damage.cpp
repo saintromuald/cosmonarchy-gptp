@@ -681,7 +681,7 @@ namespace hooks {
 			}
 
 			if (attacker != NULL && target != NULL) {
-				if ((attacker->id==UnitId::ProtossBarghest || attacker->id == UnitId::ProtossCabalist) && attacker->playerId) {
+				if ((units_dat::BaseProperty[attacker->id] & UnitProperty::PermanentCloak) && attacker->playerId) {
 					bool silent_kill = false;
 					if (damage >= target->hitPoints
 					&&	attacker->id == UnitId::ProtossCabalist) {
@@ -690,7 +690,7 @@ namespace hooks {
 					if (!silent_kill && !(attacker->visibilityStatus & 1 << target->playerId)) {
 						attacker->visibilityStatus |= (1 << target->playerId);
 						makeSpriteVisible(attacker->sprite);
-						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::DarkTemplarTimer, 24 + 1, 0);
+						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::PermanentCloakTimer, 48 + 1, 0);
 					}
 				}
 

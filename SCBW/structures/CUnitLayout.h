@@ -162,7 +162,7 @@ namespace ValueId {
 		ObservanceTimerDebuff						= 21,
 		ObservanceRend								= 21,
 		UpgradeBoost								= 22,
-		DarkTemplarTimer							= 23,
+		PermanentCloakTimer							= 23,
 		CorrosiveSporeDelay							= 24,
 		LurkerETA									= 25,
 		SpineX										= 26,
