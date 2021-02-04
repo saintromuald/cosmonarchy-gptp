@@ -301,9 +301,9 @@ namespace hooks {
 	bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId) {
 		if (weaponId == WeaponId::SerratedCleavers) {
 			if (bullet != NULL && bullet->sourceUnit != NULL && bullet->sourceUnit->id==UnitId::ZergGorgrokor) {
-				if (bullet->sourceUnit->energy >= 5 * 256) {
+//				if (bullet->sourceUnit->energy >= 5 * 256) {
 					return true;
-				}
+//				}
 			}
 		}
 		return false;
@@ -345,7 +345,7 @@ namespace hooks {
 
 		// 
 		if (isChargedGorgolethBullet(bullet, weaponId)) {
-			bullet->sourceUnit->spendUnitEnergy(5 * 256);
+//			bullet->sourceUnit->spendUnitEnergy(5 * 256);
 			friendlySplash(bullet, weaponId, SplashType::FriendlyNew, bullet->attackTarget.unit);
 			return;
 		}
