@@ -234,7 +234,7 @@ namespace {
 			MOV result, EAX
 			MOV ESP, EBP
 			POP EBP
-			RETN 12
+			RETN 0x0C
 		}
 	}
 
@@ -256,7 +256,7 @@ namespace {
 	}
 
 	void __declspec(naked) AI_AttackManager_Wrapper() { // 0043ABB0
-		static bool result;
+		static u32 result;
 		static u32 player;
 		static s32 x;
 		static s32 y;
@@ -282,10 +282,10 @@ namespace {
 		result = hooks::AI_AttackManager(player, x, y, alwaysOverwriteLastAttack, allowFallbackAirOnly);
 		__asm {
 			POPAD
-			MOV result, AL
+			MOV EAX,result
 			MOV ESP, EBP
 			POP EBP
-			RETN 20
+			RETN 0x14
 		}
 	}
 

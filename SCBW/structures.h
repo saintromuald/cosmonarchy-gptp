@@ -697,61 +697,69 @@ struct AiTown {
 };
 C_ASSERT(sizeof(AiTown) == 0x1cc);
 
+struct AiSpendingRequest {
+	u8 priority;
+	u8 type;
+	u16 id;
+	void* val;
+};
+
+struct SpendingRequest {
+	u8 priority;
+	u8 ty;
+	u16 id; 
+	void* val;
+};
 struct AI_Main {
-/*000*/  s32 oreCollection;
-/*004*/  s32 gasCollection;
-/*008*/  s32 supplyCollection;
-/*00C*/  s32 ore;
-/*010*/  s32 gas;
-/*014*/  s32 supply;
-/*018*/  u8  unknown_0x18;
-/*019*/  u8  newBuildType;
-/*01A*/  u16 nextBuildType;
-/*01C*/  void  *pTownMain;
-/*020*/  u32 unknown_0x20[124];
-/*210*/  u8  unknown_0x210;
-/*211*/  u8  builtSomething;
-/*212*/  u8  AI_NukeRate;
-/*213*/  u8  AI_Attacks;
-/*214*/  u32 AI_LastNukeTime;
-/*218*/  struct {
-    u16 isSecureFinished    : 1;	/*0001*/
-    u16 isTownStarted       : 1;	/*0002*/
-    u16 isDefaultBuildOff   : 1;	/*0004*/
-    u16 isTransportsOff     : 1;	/*0008*/
-    u16 isFarmsNotimingOn   : 1;	/*0010*/
-    u16 isUseMapSettings    : 1;	/*0020*/
-    u16 flag_0x40           : 1;	/*0040*/
-    u16 spreadCreep         : 1;	/*0080*/
-    u16 flag_0x100          : 1;	/*0100*/
-    u16 hasStrongestGndArmy : 1;	/*0200*/ //Set if the AI's ground army is stronger than the total strength of the strongest enemy force
-    u16 bUpgradesFinished   : 1;	/*0400*/
-    u16 bTargetExpansion    : 1;	/*0800*/
-  } AI_Flags;
-/*21A*/  u16 AI_PanicBlock;
-/*21C*/  u16 AI_MaxForce;
-/*21E*/  u16 AI_AttackGroup;
-/*220*/  u16 waitForceCount;
-/*222*/  u8  AI_DefaultMin;
-/*223*/  u8  unknown_0x223;
-/*224*/  u32 lastIndividualUpdateTime;
-/*228*/  u32 AI_AttackTimer;
-/*22C*/  u8  unknown_0x22C;
-/*22D*/  u8  spellcasterTimer;
-/*22E*/  u8  attackManagerTimer;
-/*22F*/  u8  AI_IfDif;
-/*230*/  u16 attackers[64];
-/*2B0*/  u32 AI_DefenseBuild_GG[10];
-/*2D8*/  u32 AI_DefenseBuild_AG[10];
-/*300*/  u32 AI_DefenseBuild_GA[10];
-/*328*/  u32 AI_DefenseBuild_AA[10];
-/*350*/  u32 AI_DefenseUse_GG[10];
-/*378*/  u32 AI_DefenseUse_AG[10];
-/*3A0*/  u32 AI_DefenseUse_GA[10];
-/*3C8*/  u32 AI_DefenseUse_AA[10];
-/*3F0*/  u8  AI_DefineMax[UNIT_TYPE_COUNT];
-/*4D4*/  CUnit* mainMedic;
-/*4D8*/  Box32 genCmdLoc;
+	u32 mineralCollection;
+	u32 gasCollection;
+	u32 supplyCollection;
+	u32 minerals_available;
+	u32 gas_available;
+	u32 supply_available;
+	SpendingRequest requests[0x3f];
+	uint8_t request_count;
+	uint8_t liftoff_cooldown;
+	u16 AI_NukeRate;
+	u16 AI_Attacks;
+	u16 AI_LastNukeTime;
+	struct {
+		u16 isSecureFinished : 1;	/*0001*/
+		u16 isTownStarted : 1;	/*0002*/
+		u16 isDefaultBuildOff : 1;	/*0004*/
+		u16 isTransportsOff : 1;	/*0008*/
+		u16 isFarmsNotimingOn : 1;	/*0010*/
+		u16 isUseMapSettings : 1;	/*0020*/
+		u16 flag_0x40 : 1;	/*0040*/
+		u16 spreadCreep : 1;	/*0080*/
+		u16 flag_0x100 : 1;	/*0100*/
+		u16 hasStrongestGndArmy : 1;	/*0200*/ //Set if the AI's ground army is stronger than the total strength of the strongest enemy force
+		u16 bUpgradesFinished : 1;	/*0400*/
+		u16 bTargetExpansion : 1;	/*0800*/
+	} AI_Flags;
+	u16 AI_PanicBlock;
+	u16 AI_MaxForce;
+	uint16_t AI_AttackGroup;
+	uint16_t wanted_unit;
+	uint8_t dc222[0x2];
+	u32 lastIndividualUpdateTime; // 0x224
+	u32 last_attack_seconds;
+	uint8_t strategic_suicide; // 0x22c
+	uint8_t spellcasterTimer;
+	uint8_t attack_failed;
+	uint8_t difficulty;
+	uint16_t attackers[0x40]; // 0x230
+	/*2B0*/  u32 AI_DefenseBuild_GG[10];
+	/*2D8*/  u32 AI_DefenseBuild_AG[10];
+	/*300*/  u32 AI_DefenseBuild_GA[10];
+	/*328*/  u32 AI_DefenseBuild_AA[10];
+	/*350*/  u32 AI_DefenseUse_GG[10];
+	/*378*/  u32 AI_DefenseUse_AG[10];
+	/*3A0*/  u32 AI_DefenseUse_GA[10];
+	/*3C8*/  u32 AI_DefenseUse_AA[10];
+	uint8_t unit_build_limits[0xe4]; // 0x3f0
+	CUnit* mainMedic; // 0x4d4
+	uint8_t unk4d8[0x10];
 };
 
 C_ASSERT(sizeof(AI_Main) == 1256); /*0x4E8*/
