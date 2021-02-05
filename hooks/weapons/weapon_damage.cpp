@@ -681,7 +681,9 @@ namespace hooks {
 			}
 
 			if (attacker != NULL && target != NULL) {
-				if ((units_dat::BaseProperty[attacker->id] & UnitProperty::PermanentCloak) && attacker->playerId) {
+				if ((units_dat::BaseProperty[attacker->id] & UnitProperty::PermanentCloak
+					||	attacker->status & UnitStatus::CloakingForFree)
+				&&	attacker->playerId) {
 					bool silent_kill = false;
 					if (damage >= target->hitPoints
 					&&	attacker->id == UnitId::ProtossCabalist) {

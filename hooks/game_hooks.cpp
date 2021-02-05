@@ -1182,9 +1182,9 @@ namespace hooks {
 					scbw::UnitFinder(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius).forEach(treasuryProc(unit->playerId));
 				}
 
-				// Permanently Cloaked units decloak on attack
+				// Permanently Cloaked units recloak after 2 seconds of being out of combat
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak
-					&& !(unit->status & UnitStatus::CloakingForFree)) {
+				||	unit->status & UnitStatus::CloakingForFree) {
 					auto timer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::PermanentCloakTimer, 0);
 					if (timer == 1) {
 						for (int i = 0; i < 8; i++) {
