@@ -1166,7 +1166,7 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergLurker && //Lurker Seismic Spines passive
+								if ((*activePortraitUnit)->id == UnitId::ZergLakizilisk && //Lurker Seismic Spines passive
 									current_button->iconID == IconId::SubterraneanSpines)
 								{
 									current_button_state = BUTTON_STATE::Enabled;

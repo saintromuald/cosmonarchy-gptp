@@ -1394,7 +1394,7 @@ u8 getRightClickActionOrder(CUnit* unit) {
 
 	u8 result;
 
-	if( unit->id == UnitId::ZergLurker && unit->status & UnitStatus::Burrowed )
+	if( unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed )
 		result = RightClickActions::NoMove_NormalAttack;
 	else {
 

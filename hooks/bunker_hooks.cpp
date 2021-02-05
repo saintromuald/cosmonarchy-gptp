@@ -31,7 +31,7 @@ void unitAttackFromInsideBunkerHook(CUnit* unit) {
 		||	unit->id == UnitId::ZergQuazilisk
 		||	unit->id == UnitId::ZergHydralisk
 		||	unit->id == UnitId::ZergBactalisk
-		||	unit->id == UnitId::ZergLurker
+		||	unit->id == UnitId::ZergLakizilisk
 		||	unit->id == UnitId::ZergKeskathalor
 	) {
 

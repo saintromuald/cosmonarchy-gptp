@@ -25,7 +25,7 @@ namespace hooks {
 			}
 		}*/
 
-		if (unit->id == UnitId::ZergLurker)
+		if (unit->id == UnitId::ZergLakizilisk)
 			bSpeedUpgrade = 1;
 
 		if (bSpeedUpgrade == 1) {

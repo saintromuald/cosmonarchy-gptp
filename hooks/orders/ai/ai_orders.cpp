@@ -692,7 +692,7 @@ namespace hooks {
 												|| v23 != UnitId::TerranBattlecruiser && v23 != UnitId::ProtossCarrier && v23 != UnitId::ProtossPanoptus
 												|| !AI_TransportAction(self)))
 										{
-											if (self->id != UnitId::ZergLurker
+											if (self->id != UnitId::ZergLakizilisk
 												|| self->status & UnitStatus::Burrowed
 												|| v40 == OrderId::Burrow
 												|| v40 == OrderId::Unburrow)

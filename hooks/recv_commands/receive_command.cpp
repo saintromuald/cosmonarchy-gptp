@@ -373,7 +373,7 @@ bool CanTargetSelf(CUnit* unit, u8 orderId) {
 		return_value = true;
 	else
 	if(
-		(unit->id == UnitId::ZergDefiler || unit->id == UnitId::Hero_UncleanOne) &&
+		(unit->id == UnitId::ZergIsthrathaleth || unit->id == UnitId::Hero_UncleanOne) &&
 		orderId == OrderId::DarkSwarm
 	)
 		return_value = true;

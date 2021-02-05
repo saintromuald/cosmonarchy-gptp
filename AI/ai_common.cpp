@@ -276,7 +276,7 @@ int getTotalEnemyNukeValueInArea(int x, int y, int searchBounds, CUnit* caster) 
 
 				if(	target->canDetect() ||
 					target->id == UnitId::ZergSunkenColony ||
-					target->id == UnitId::ZergLurker
+					target->id == UnitId::ZergLakizilisk
 				)
 					totalNukeTargetValue = 800; //0x0320
 

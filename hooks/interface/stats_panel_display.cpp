@@ -104,7 +104,7 @@ namespace hooks {
 			}
 
 			if (
-				activeUnit->id != UnitId::ZergLurker ||
+				activeUnit->id != UnitId::ZergLakizilisk ||
 				activeUnit->status & UnitStatus::Burrowed
 				)
 			{
@@ -134,7 +134,7 @@ namespace hooks {
 					if (groundWeaponSubunit == WeaponId::None)
 						bNoGroundWeaponDisplay = true;			//26D19
 					else
-						if (activeUnit->id == UnitId::ZergLurker && !(activeUnit->status & UnitStatus::Burrowed))
+						if (activeUnit->id == UnitId::ZergLakizilisk && !(activeUnit->status & UnitStatus::Burrowed))
 							groundWeapon = UnitId::None;			//26D2A
 						else
 							if (groundWeaponMainUnit != WeaponId::None)
@@ -194,7 +194,7 @@ namespace hooks {
 					u8 groundWeapon;	//AL
 
 					//26DBE
-					if (activeUnit->id == UnitId::ZergLurker && !(activeUnit->status & UnitStatus::Burrowed))
+					if (activeUnit->id == UnitId::ZergLakizilisk && !(activeUnit->status & UnitStatus::Burrowed))
 						groundWeapon = WeaponId::None;
 					else {
 

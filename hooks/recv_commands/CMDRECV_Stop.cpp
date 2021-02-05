@@ -48,7 +48,7 @@ void CMDRECV_ReaverStop() {
 			*u32_0066FF60 = 0x0A;
 		else
 		if( current_unit->status & UnitStatus::Burrowed &&
-			current_unit->id != UnitId::ZergLurker
+			current_unit->id != UnitId::ZergLakizilisk
 		)
 			*u32_0066FF60 = 0x0B;
 		else
@@ -153,7 +153,7 @@ void CMDRECV_CarrierStop() {
 			*u32_0066FF60 = 0x0A;
 		else
 		if( current_unit->status & UnitStatus::Burrowed &&
-			current_unit->id != UnitId::ZergLurker
+			current_unit->id != UnitId::ZergLakizilisk
 		)
 			*u32_0066FF60 = 0x0B;
 		else
@@ -258,7 +258,7 @@ void CMDRECV_Stop(u8 bCommandType) {
 			*u32_0066FF60 = 0x0A;
 		else
 		if( current_unit->status & UnitStatus::Burrowed &&
-			current_unit->id != UnitId::ZergLurker
+			current_unit->id != UnitId::ZergLakizilisk
 		)
 			*u32_0066FF60 = 0x0B;
 		else

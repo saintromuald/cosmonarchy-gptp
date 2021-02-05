@@ -72,7 +72,7 @@ namespace hooks {
 		else
 		{
 			_id = finalUnit->id;
-			if (_id != UnitId::ZergLurker || finalUnit->status & 0x10)
+			if (_id != UnitId::ZergLakizilisk || finalUnit->status & 0x10)
 				_wpn = units_dat::GroundWeapon[_id];
 			else
 				_wpn = -126;
@@ -138,7 +138,7 @@ namespace hooks {
 		}
 		else {
 			v6 = v4->id;
-			if (v6 != UnitId::ZergLurker || v4->status & 0x10)
+			if (v6 != UnitId::ZergLakizilisk || v4->status & 0x10)
 				v5 = units_dat::GroundWeapon[v6];
 			else
 				v5 = -126;
@@ -295,7 +295,7 @@ namespace hooks {
 				}
 				else {
 					v13 = v11->id;
-					if (v13 != UnitId::ZergLurker || v11->status & 0x10)
+					if (v13 != UnitId::ZergLakizilisk || v11->status & 0x10)
 						v12 = units_dat::GroundWeapon[v13];
 					else
 						v12 = 0x82;

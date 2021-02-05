@@ -338,27 +338,9 @@ namespace hooks {
 			}
 		}
 
-		if (unit->id == UnitId::ZergVorvaling) {
-			if (morphUnitId == UnitId::ZergQuazilisk) {
-				return true;
-			}
-		}
-
-		if (unit->id == UnitId::ZergNathrokor) {
-			if (morphUnitId == UnitId::ZergKalkalisk) {
-				return true;
-			}
-		}
-
 		if (unit->id == UnitId::ZergHydralisk) {
 			if (morphUnitId == UnitId::ZergBactalisk
-				|| morphUnitId == UnitId::ZergLurker) {
-				return true;
-			}
-		}
-
-		if (unit->id == UnitId::ZergBactalisk) {
-			if (morphUnitId == UnitId::ZergAlmaksalisk) {
+				|| morphUnitId == UnitId::ZergLakizilisk) {
 				return true;
 			}
 		}
@@ -369,8 +351,9 @@ namespace hooks {
 			}
 		}
 
-		if (unit->id == UnitId::ZergZoryusthaleth) {
-			if (morphUnitId == UnitId::ZergDefiler) {
+		if (unit->id == UnitId::ZergQuazilisk) {
+			if (morphUnitId == UnitId::ZergKalkalisk
+				|| morphUnitId == UnitId::ZergAlmaksalisk) {
 				return true;
 			}
 		}
@@ -378,6 +361,12 @@ namespace hooks {
 		if (unit->id == UnitId::ZergUltrakor) {
 			if (morphUnitId == UnitId::ZergKeskathalor
 			||	morphUnitId == UnitId::ZergAlkajelisk) {
+				return true;
+			}
+		}
+
+		if (unit->id == UnitId::ZergZoryusthaleth) {
+			if (morphUnitId == UnitId::ZergIsthrathaleth) {
 				return true;
 			}
 		}
@@ -573,7 +562,7 @@ namespace hooks {
 		if (units_dat::BaseProperty[unitId] & UnitProperty::TwoUnitsIn1Egg)
 			supplyCost *= 2;
 
-		if (unitId == UnitId::ZergLurker)
+		if (unitId == UnitId::ZergLakizilisk)
 			supplyCost -= units_dat::SupplyRequired[UnitId::ZergHydralisk];
 
 		aiSupplyReserved[playerId] = supplyCost;

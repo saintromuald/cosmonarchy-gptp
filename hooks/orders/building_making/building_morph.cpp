@@ -833,17 +833,7 @@ namespace hooks {
 
 		case UnitId::ZergSpawningPool:
 			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergVorvalPond, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergQuazilQuay, ignoreIncomplete);
 			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergNathrokLake, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
-			break;
-
-		case UnitId::ZergVorvalPond:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergQuazilQuay, ignoreIncomplete);
-			break;
-
-		case UnitId::ZergNathrokLake:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergIrolIris:
@@ -867,11 +857,11 @@ namespace hooks {
 
 		case UnitId::ZergHydralDen:
 			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergBactalDen, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlmakAntre, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLurkerDen, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLakizDen, ignoreIncomplete);
 			break;
 
-		case UnitId::ZergBactalDen:
+		case UnitId::ZergQuazilQuay:
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
 			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlmakAntre, ignoreIncomplete);
 			break;
 
@@ -885,7 +875,7 @@ namespace hooks {
 			break;
 
 		case UnitId::ZergZoryusShroud:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergDefilerMound, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergIsthrathMound, ignoreIncomplete);
 			break;
 		}
 		return unitCount;

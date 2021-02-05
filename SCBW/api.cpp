@@ -701,15 +701,14 @@ bool isConventionalUnitMorphResult(u16 id) {
 	case UnitId::ZergDevourer:
 	case UnitId::ZergGorgrokor:
 	case UnitId::ZergVorvaling:
-	case UnitId::ZergQuazilisk:
 	case UnitId::ZergNathrokor:
 	case UnitId::ZergKalkalisk:
 	case UnitId::ZergBactalisk:
 	case UnitId::ZergAlmaksalisk:
-	case UnitId::ZergLurker:
+	case UnitId::ZergLakizilisk:
 	case UnitId::ZergIroleth:
 	case UnitId::ZergOthstoleth:
-	case UnitId::ZergDefiler:
+	case UnitId::ZergIsthrathaleth:
 	case UnitId::ProtossAugur:
 		return true;
 	default:
@@ -737,10 +736,8 @@ bool isConventionalUnitMorphSource(u16 id, bool allow_larvae, bool allow_high_te
 	case UnitId::ZergMutalisk:
 	case UnitId::ZergGorgrokor:
 	case UnitId::ZergHydralisk:
-	case UnitId::ZergBactalisk:
 	case UnitId::ZergZergling:
-	case UnitId::ZergVorvaling:
-	case UnitId::ZergNathrokor:
+	case UnitId::ZergQuazilisk:
 	case UnitId::ZergIroleth:
 	case UnitId::ZergOverlord:
 	case UnitId::ZergZoryusthaleth:
@@ -772,14 +769,13 @@ bool isZergBuildingMorphResult(u16 id){
 	case UnitId::ZergGorgrokApiary:
 	case UnitId::ZergBactalDen:
 	case UnitId::ZergAlmakAntre:
-	case UnitId::ZergLurkerDen:
+	case UnitId::ZergLakizDen:
 	case UnitId::ZergVorvalPond:
-	case UnitId::ZergQuazilQuay:
 	case UnitId::ZergNathrokLake:
 	case UnitId::ZergKalkathBloom:
 	case UnitId::ZergOthstolOviform:
 	case UnitId::ZergAlazilArbor:
-	case UnitId::ZergDefilerMound:
+	case UnitId::ZergIsthrathMound:
 		return true;
 	default:
 		break;
@@ -799,8 +795,7 @@ bool isZergBuildingMorphSource(u16 id){
 	case UnitId::ZergHydralDen:
 	case UnitId::ZergBactalDen:
 	case UnitId::ZergSpawningPool:
-	case UnitId::ZergVorvalPond:
-	case UnitId::ZergNathrokLake:
+	case UnitId::ZergQuazilQuay:
 	case UnitId::ZergIrolIris:
 	case UnitId::ZergOthstolOviform:
 	case UnitId::ZergZoryusShroud:
@@ -2105,7 +2100,7 @@ u16 random() {
 	bool unitIsPacifist(CUnit* unit) {
 		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Attack)
 			|| !(unit->hasWeapon())
-			||	 unit->id == UnitId::ZergLurker; // LAME
+			||	 unit->id == UnitId::ZergLakizilisk; // LAME
 	}
 
 	// Identical to function OrderIsSpell @ 00436930 -- Pr0nogo

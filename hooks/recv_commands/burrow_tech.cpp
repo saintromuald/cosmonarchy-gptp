@@ -85,11 +85,11 @@ namespace hooks {
 
 		if(	unit->mainOrderId == OrderId::Burrow ||
 			unit->mainOrderId == OrderId::Burrowed ||
-			unit->id == UnitId::ZergLurker
+			unit->id == UnitId::ZergLakizilisk
 			) 
 		{
 
-			if(unit->id == UnitId::ZergLurker)
+			if(unit->id == UnitId::ZergLakizilisk)
 				unit->status |= UnitStatus::CanNotReceiveOrders;
 
 			unit->userActionFlags |= 1;

@@ -215,7 +215,7 @@ enum Enum {
 /*0x2B*/	ZergMutalisk							= 43,
 /*0x2C*/	ZergGuardian							= 44,
 /*0x2D*/	ZergQueen								= 45,
-/*0x2E*/	ZergDefiler								= 46,
+/*0x2E*/	ZergIsthrathaleth						= 46,
 /*0x2F*/	ZergSkryling							= 47,
 /*0x30*/	Hero_Torrasque							= 48,
 /*0x31*/	Hero_Matriarch							= 49,
@@ -272,7 +272,7 @@ enum Enum {
 /*0x64*/	Hero_AlexeiStukov						= 100,
 /*0x65*/	Special_MapRevealer						= 101,
 /*0x66*/	Hero_GerardDuGalle						= 102,
-/*0x67*/	ZergLurker								= 103,
+/*0x67*/	ZergLakizilisk							= 103,
 /*0x68*/	Hero_InfestedDuran						= 104,
 /*0x69*/	Spell_DisruptionWeb						= 105,
 /*0x6A*/	TerranCommandCenter						= 106,
@@ -305,7 +305,7 @@ enum Enum {
 /*0x85*/	ZergHive								= 133,
 /*0x86*/	ZergNydusCanal							= 134,
 /*0x87*/	ZergHydralDen							= 135,
-/*0x88*/	ZergDefilerMound						= 136,
+/*0x88*/	ZergIsthrathMound						= 136,
 /*0x89*/	ZergGuardianRoost						= 137,
 /*0x8A*/	ZergQueensNest							= 138,
 /*0x8B*/	ZergEvolutionChamber					= 139,
@@ -539,7 +539,7 @@ enum Enum {
 	ZergBactalDen									= 153,		// Unused Zerg 2
 	ZergAlmakAntre									= 179,		// Cave
 	ZergAlazilArbor									= 181,		// Cantina
-	ZergLurkerDen									= 191,		// Zerg Marker
+	ZergLakizDen									= 191,		// Zerg Marker
 	ZergZoryusShroud								= 193,		// Protoss Marker
 	ZergDevourerHaunt								= 197,		// Zerg Flag Beacon
 	ZergVorvalPond									= 204,		// Floor Hatch
