@@ -40,28 +40,27 @@ u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayerId, u16 techId) {
 		else
 		if(techId == TechId::MindControl) {
 
-			if(target->playerId == castingPlayerId)
-				stringId = 1327; //Must target enemy units<0>
+			if (target->playerId == castingPlayerId) {
+				stringId = 1327; // Must target enemy units<0>
+			}
 			else
-			if(units_dat::BaseProperty[target->id] & UnitProperty::Building)
-				stringId = 877; //Unable to target structure.<0>
+			if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
+				stringId = 877; // Unable to target structure.<0>
+			}
 			else
-			if(target->id < UnitId::TerranSpiderMine || target->id > UnitId::ZergLurkerEgg)
-				stringId = 0; //valid target
-			else
-			if(	target->id == UnitId::TerranSpiderMine ||
-				target->id == UnitId::TerranLobotomyMine ||
-				target->id == UnitId::ZergLarva ||
-				target->id == UnitId::ZergEgg ||
-				target->id == UnitId::ZergCocoon ||
-				target->id == UnitId::ProtossInterceptor ||
-				target->id == UnitId::ProtossScarab ||
-				target->id == UnitId::ZergLurkerEgg
-			)
+			if (target->id == UnitId::TerranSpiderMine
+			||	target->id == UnitId::TerranLobotomyMine
+			||	target->id == UnitId::ZergLarva
+			||	target->id == UnitId::ZergEgg
+			||	target->id == UnitId::ZergCocoon
+			||	target->id == UnitId::ProtossInterceptor
+			||	target->id == UnitId::ProtossScarab
+					) {
 				stringId = 876; //Invalid target.<0>
-			else
+			}
+			else {
 				stringId = 0; //valid target
-
+			}
 		}
 		else
 		if(techId == TechId::Hallucination) {

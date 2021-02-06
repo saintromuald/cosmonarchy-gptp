@@ -103,8 +103,7 @@ namespace hooks {
 			!(target->status & UnitStatus::Invincible) &&
 			!(target->status & UnitStatus::Burrowed) &&
 			target->id != UnitId::ZergLarva &&
-			target->id != UnitId::ZergEgg /*&&
-			target->id != UnitId::ZergLurkerEgg */&&
+			target->id != UnitId::ZergEgg &&
 			!(target->status & UnitStatus::IsHallucination) &&
 			target != caster
 		)

@@ -290,10 +290,10 @@ namespace hooks {
 				return;
 			}
 			if (v2 != UnitId::ProtossArchon
-				&& v2 != UnitId::ProtossDarkArchon
-				&& v2 != UnitId::ZergLurker
+				&& v2 != UnitId::ProtossMindTyrant
+				&& v2 != UnitId::ZergLakizilisk
 				&& v2 != UnitId::TerranNuclearMissile
-				&& v2 != UnitId::ProtossObserver)
+				&& v2 != UnitId::ProtossWitness)
 			{
 				v5 = a2->pAI;
 				v12 = a2->pAI;

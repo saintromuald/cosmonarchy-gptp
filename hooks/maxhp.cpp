@@ -550,7 +550,7 @@ namespace hooks {
 
 		v3 = a1;
 		v4 = (u16)a1->id;
-		if (v4 == UnitId::ZergLarva || v4 == UnitId::ZergEgg || v4 == UnitId::ZergCocoon || v4 == UnitId::ZergLurkerEgg)
+		if (v4 == UnitId::ZergLarva || v4 == UnitId::ZergEgg || v4 == UnitId::ZergCocoon)
 			return 0;
 		if (a1->status & UnitStatus::IsHallucination) {
 			v5 = getTotalHitPointsPlusShields(a1);

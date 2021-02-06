@@ -831,9 +831,8 @@ namespace hooks {
 			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLarvalColony, ignoreIncomplete);
 			break;
 
-		case UnitId::ZergSpawningPool:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergVorvalPond, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergNathrokLake, ignoreIncomplete);
+		case UnitId::ZergEvolutionChamber:
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergMutationPit, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergIrolIris:
@@ -843,6 +842,16 @@ namespace hooks {
 
 		case UnitId::ZergOthstolOviform:
 			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlazilArbor, ignoreIncomplete);
+			break;
+
+		case UnitId::ZergSpawningPool:
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergVorvalPond, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergNathrokLake, ignoreIncomplete);
+			break;
+
+		case UnitId::ZergHydralDen:
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergBactalDen, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLakizDen, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergSpire:
@@ -855,18 +864,9 @@ namespace hooks {
 			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGuardianRoost, ignoreIncomplete);
 			break;
 
-		case UnitId::ZergHydralDen:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergBactalDen, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLakizDen, ignoreIncomplete);
-			break;
-
 		case UnitId::ZergQuazilQuay:
 			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
 			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlmakAntre, ignoreIncomplete);
-			break;
-
-		case UnitId::ZergEvolutionChamber:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergMutationPit, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergUltrakCavern:

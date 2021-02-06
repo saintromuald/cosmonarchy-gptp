@@ -47,7 +47,7 @@ namespace hooks {
 			/*
 			if(
 				current_unit->id == UnitId::ZergHydralisk &&
-				wUnitType == UnitId::ZergLurker
+				wUnitType == UnitId::ZergLakizilisk
 			)
 				bAllowMorph = current_unit->canUseTech(TechId::LurkerAspect,*ACTIVE_NATION_ID) == 1;
 			else*/
