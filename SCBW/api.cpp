@@ -23,7 +23,7 @@ public:
 	gameteMeiosisProc(CUnit* broodling)
 		: broodling(broodling) {}
 	void proc(CUnit* unit) {
-		if (unit->id != UnitId::ZergQueen) {
+		if (unit->id != UnitId::ZergMatraleth) {
 			return;
 		}
 		if (!scbw::isAlliedTo(broodling->playerId, unit->playerId)) {
