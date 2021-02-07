@@ -396,7 +396,7 @@ void updateStatusEffects(CUnit* unit) {
 	}
 
 	// 
-	if (unit->id == UnitId::ZergVorvaling || unit->id==UnitId::TerranShaman || unit->id==UnitId::ZergOverlord) {
+	if (unit->id == UnitId::ZergVorvaling || unit->id==UnitId::TerranShaman || unit->id==UnitId::ZergOvileth) {
 		unit->updateSpeed();
 	}
 

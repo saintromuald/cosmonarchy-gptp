@@ -289,7 +289,7 @@ void CreateInitialOverlord(u8 playerId) {
 	else
 		overlordStartY = startPositions[playerId].y - (units_dat::UnitBounds[UnitId::ZergHatchery].bottom + units_dat::UnitBounds[UnitId::ZergHatchery].top + 1);
 
-	created_unit = createUnit(UnitId::ZergOverlord,overlordStartX,overlordStartY,playerId);
+	created_unit = createUnit(UnitId::ZergOvileth,overlordStartX,overlordStartY,playerId);
 
 	if(created_unit != NULL) {
 

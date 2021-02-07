@@ -211,10 +211,10 @@ enum Enum {
 /*0x27*/	ZergUltrakor							= 39,
 /*0x28*/	ZergBroodling							= 40,
 /*0x29*/	ZergDrone								= 41,
-/*0x2A*/	ZergOverlord							= 42,
+/*0x2A*/	ZergOvileth								= 42,
 /*0x2B*/	ZergMutalisk							= 43,
-/*0x2C*/	ZergGuardian							= 44,
-/*0x2D*/	ZergQueen								= 45,
+/*0x2C*/	ZergGeszithalor							= 44,
+/*0x2D*/	ZergMatraleth							= 45,
 /*0x2E*/	ZergIsthrathaleth						= 46,
 /*0x2F*/	ZergSkryling							= 47,
 /*0x30*/	Hero_Torrasque							= 48,
@@ -231,12 +231,12 @@ enum Enum {
 /*0x3B*/	ZergCocoon								= 59,
 /*0x3C*/	ProtossCorsair							= 60,
 /*0x3D*/	ProtossCabalist							= 61,
-/*0x3E*/	ZergDevourer							= 62,
+/*0x3E*/	ZergVithrilisk							= 62,
 /*0x3F*/	ProtossMindTyrant						= 63,
 /*0x40*/	ProtossProbe							= 64,
 /*0x41*/	ProtossZealot							= 65,
 /*0x42*/	ProtossDragoon							= 66,
-/*0x43*/	ProtossHighTemplar						= 67,
+/*0x43*/	ProtossTemplar							= 67,
 /*0x44*/	ProtossArchon							= 68,
 /*0x45*/	ProtossEnvoy							= 69,
 /*0x46*/	ProtossPanoptus							= 70,
@@ -306,11 +306,11 @@ enum Enum {
 /*0x86*/	ZergNydusCanal							= 134,
 /*0x87*/	ZergHydralDen							= 135,
 /*0x88*/	ZergIsthrathMound						= 136,
-/*0x89*/	ZergGuardianRoost						= 137,
-/*0x8A*/	ZergQueensNest							= 138,
-/*0x8B*/	ZergEvolutionChamber					= 139,
+/*0x89*/	ZergGeszithRoost						= 137,
+/*0x8A*/	ZergMatralNest							= 138,
+/*0x8B*/	ZergAkisNest							= 139,
 /*0x8C*/	ZergUltrakCavern						= 140,
-/*0x8D*/	ZergSpire								= 141,
+/*0x8D*/	ZergMutalSpire							= 141,
 /*0x8E*/	ZergSpawningPool						= 142,
 /*0x8F*/	ZergCreepColony							= 143,
 /*0x90*/	ZergSporeColony							= 144,
@@ -531,7 +531,7 @@ enum Enum {
 	BasiliskCreeper									= 180,		// Cave-in
 
 //Zerg-Building
-	ZergMutationPit									= 145,		// Unused Zerg 1
+	ZergKonvilNest									= 145,		// Unused Zerg 1
 	ZergKalkathBloom								= 147,		// Zerg Overmind (With Shell)
 	ZergGorgrokApiary								= 148,		// Zerg Overmind
 	ZergChrysalis									= 150,		// Mature Chrysalis
@@ -541,7 +541,7 @@ enum Enum {
 	ZergAlazilArbor									= 181,		// Cantina
 	ZergLakizDen									= 191,		// Zerg Marker
 	ZergZoryusShroud								= 193,		// Protoss Marker
-	ZergDevourerHaunt								= 197,		// Zerg Flag Beacon
+	ZergVithrilHaunt								= 197,		// Zerg Flag Beacon
 	ZergVorvalPond									= 204,		// Floor Hatch
 	ZergNathrokLake									= 210,		// Left Wall Missile Trap
 	ZergAlkajChasm									= 212,		// Right Wall Missile Trap

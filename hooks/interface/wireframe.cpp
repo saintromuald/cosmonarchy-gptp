@@ -22,7 +22,7 @@ namespace hooks {
 			if (
 				unitId == UnitId::ZergHive ||
 				unitId == UnitId::ZergLair ||
-				unitId == UnitId::ZergGuardianRoost ||
+				unitId == UnitId::ZergGeszithRoost ||
 				unitId == UnitId::ZergSporeColony ||
 				unitId == UnitId::ZergSunkenColony ||
 				unitId == 191

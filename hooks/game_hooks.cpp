@@ -1237,7 +1237,7 @@ namespace hooks {
 				}
 
 				// Queen - Ensnaring Brood ability
-				if (unit->id == UnitId::ZergQueen
+				if (unit->id == UnitId::ZergMatraleth
 				&&  scbw::get_generic_value(unit,ValueId::EnsnaringBroodAbility) == 1) {
 					Point16 pos = unit->position;
 					int radius = 6 * 32;

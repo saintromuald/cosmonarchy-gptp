@@ -370,7 +370,7 @@ namespace hooks {
 			if (units_dat::ShieldsEnabled[v18]) {
 				drawShieldUpgrade((int)v1, 0);
 			}
-			else if (v18 != UnitId::ZergOverlord && v18 != UnitId::Hero_Yggdrasill) {
+			else if (v18 != UnitId::ZergOvileth && v18 != UnitId::Hero_Yggdrasill) {
 				if (v1->controlType)
 					v1 = *(BinDlg**)&v1->parent;
 				v19 = *(BinDlg**)&v1->childrenDlg;

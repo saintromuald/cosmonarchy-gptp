@@ -166,7 +166,7 @@ class ascendancyProc : public scbw::UnitFinderCallbackProcInterface {
 private:
 public:
 	void proc(CUnit* unit) {
-		if (unit->id != UnitId::ProtossHighTemplar) {
+		if (unit->id != UnitId::ProtossTemplar) {
 			return;
 		}
 		if (

@@ -26,7 +26,7 @@ namespace hooks {
 
 	//replace 0x00402750 canInfest
 	bool unitCanInfest(CUnit* unit) {
-		return (unit->id == UnitId::ZergQueen);
+		return (unit->id == UnitId::ZergMatraleth);
 	}
 
 	//replace 0x00402210 CC_CanBeInfested

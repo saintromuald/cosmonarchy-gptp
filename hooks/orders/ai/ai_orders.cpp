@@ -110,7 +110,7 @@ namespace hooks {
 			if (units_dat::BaseProperty[result->id] & UnitProperty::Worker) {
 				AI_TrainingWorker(result, parent);
 			}
-			else if (result->id == UnitId::ZergOverlord) {
+			else if (result->id == UnitId::ZergOvileth) {
 				AI_TrainingOverlord(result, parent); // replace with hook later
 			}
 			else if (result->id == UnitId::ZergBroodling) {
@@ -395,7 +395,7 @@ namespace hooks {
 		else if (units_dat::BaseProperty[unit->id] & 1 && unit->id != UnitId::ResourceVespeneGeyser
 			|| unit->id == UnitId::ZergLarva
 			|| unit->id == UnitId::ZergEgg
-			|| unit->id == UnitId::ZergOverlord)
+			|| unit->id == UnitId::ZergOvileth)
 		{
 			unitAI = AI_CreateBuildingAi(town->free_buildings);
 			if (unitAI) {

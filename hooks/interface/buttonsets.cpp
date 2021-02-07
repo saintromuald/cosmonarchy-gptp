@@ -1008,12 +1008,12 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossHighTemplar &&  //High Templar Ascendancy passive
+								if ((*activePortraitUnit)->id == UnitId::ProtossTemplar &&  //High Templar Ascendancy passive
 									current_button->iconID == IconId::MindControlUnused)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossHighTemplar &&  //High Templar Ephemeral Blades passive
+								if ((*activePortraitUnit)->id == UnitId::ProtossTemplar &&  //High Templar Ephemeral Blades passive
 									current_button->iconID == IconId::ProtossGroundWeapons)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -1171,7 +1171,7 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergDevourer &&  //Devourer Critical Mass passive
+								if ((*activePortraitUnit)->id == UnitId::ZergVithrilisk &&  //Devourer Critical Mass passive
 									current_button->iconID == IconId::VenomUnused)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -1186,12 +1186,12 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergGuardian &&  //Guardian Searing Acid passive
+								if ((*activePortraitUnit)->id == UnitId::ZergGeszithalor &&  //Guardian Searing Acid passive
 									current_button->iconID == IconId::ZergFlyerAttacks)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergQueen &&  //Queen Gamete Meiosis passive
+								if ((*activePortraitUnit)->id == UnitId::ZergMatraleth &&  //Queen Gamete Meiosis passive
 									current_button->iconID == IconId::GameteMeiosis)
 								{
 									current_button_state = BUTTON_STATE::Enabled;

@@ -435,7 +435,7 @@ namespace hooks {
 		if(
 			target != NULL &&
 			!(target->status & UnitStatus::IsHallucination) &&
-			(target->id != UnitId::ZergOverlord ||
+			(target->id != UnitId::ZergOvileth ||
 			 UpgradesSc->currentLevel[unit->playerId][UpgradeId::VentralSacs] != 0) &&
 			units_dat::SpaceProvided[target->id] != 0 &&
 			scbw::canBeEnteredBy(target,unit)
@@ -867,7 +867,7 @@ bool unitIsActiveTransport(CUnit* unit) {
 	if(!(unit->status & UnitStatus::IsHallucination)) {
 
 		if(
-			unit->id != UnitId::ZergOverlord ||
+			unit->id != UnitId::ZergOvileth ||
 			UpgradesSc->currentLevel[unit->playerId][UpgradeId::VentralSacs] != 0
 		)
 		{

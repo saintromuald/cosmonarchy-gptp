@@ -83,7 +83,7 @@ namespace hooks {
 
 			if (
 				unit->id != UnitId::ZergDrone &&
-				unit->id != UnitId::ZergOverlord
+				unit->id != UnitId::ZergOvileth
 				)
 				AI_TrainingUnit(unit, unit);
 
@@ -160,7 +160,7 @@ namespace hooks {
 					bool bStopThere = false;
 					u16 eggId;
 					switch (unit->id) {
-					case UnitId::ZergOverlord:
+					case UnitId::ZergOvileth:
 					case UnitId::ZergIroleth:
 						break;
 					default:
@@ -186,12 +186,12 @@ namespace hooks {
 					case UnitId::ZergNathrokor:
 					case UnitId::ZergMutalisk:
 					case UnitId::ZergGorgrokor:
-					case UnitId::ZergOverlord:
+					case UnitId::ZergOvileth:
 					case UnitId::ZergIroleth:
 						eggId = UnitId::ZergCocoon;
 						break;
 					default:
-						if (unit->id != UnitId::ProtossHighTemplar) {
+						if (unit->id != UnitId::ProtossTemplar) {
 							bStopThere = true;
 						}
 						
@@ -199,7 +199,7 @@ namespace hooks {
 					}
 					//scbw::printFormattedText("Stop status: %d", (int)bStopThere);
 					if (!bStopThere) {
-						if (unit->id == UnitId::ProtossHighTemplar) {
+						if (unit->id == UnitId::ProtossTemplar) {
 							replaceUnitWithType(unit, UnitId::ProtossAugur);
 							unit->sprite->flags &= ~CSprite_Flags::IscriptCode;
 							if(unit->sprite->images.head != NULL) {
@@ -233,7 +233,7 @@ namespace hooks {
 							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
 						}
 						else if (origin == UnitId::ZergUltrakor 
-							|| origin==UnitId::ZergOverlord) { // Iroleth uses air cocoon
+							|| origin==UnitId::ZergOvileth) { // Iroleth uses air cocoon
 							unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
 						}
 						else if (origin == UnitId::ZergLarva) {
@@ -267,7 +267,7 @@ namespace hooks {
 						unit->orderSignal -= 4;
 						auto origin = unit->eggOrigin;
 						switch (origin) {
-						case UnitId::ZergOverlord:
+						case UnitId::ZergOvileth:
 							scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 1);
 							break;
 						case UnitId::ZergIroleth:
@@ -280,7 +280,7 @@ namespace hooks {
 						replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
 						if (
 							unit->id == UnitId::ZergDrone ||
-							unit->id == UnitId::ZergOverlord
+							unit->id == UnitId::ZergOvileth
 							)
 							AI_TrainingUnit(unit, unit);
 
@@ -346,7 +346,7 @@ namespace hooks {
 		}
 
 		if (unit->id == UnitId::ZergGorgrokor) {
-			if (morphUnitId == UnitId::ZergGuardian) {
+			if (morphUnitId == UnitId::ZergGeszithalor) {
 				return true;
 			}
 		}
@@ -371,7 +371,7 @@ namespace hooks {
 			}
 		}
 
-		if (unit->id == UnitId::ZergOverlord) {
+		if (unit->id == UnitId::ZergOvileth) {
 			if (morphUnitId == UnitId::ZergIroleth) {
 				return true;
 			}
@@ -383,13 +383,13 @@ namespace hooks {
 			}
 		}
 
-		if (unit->id == UnitId::ProtossHighTemplar) {
+		if (unit->id == UnitId::ProtossTemplar) {
 			if (morphUnitId == UnitId::ProtossAugur) {
 				return true;
 			}
 		}
 		if (unit->id == UnitId::ZergMutalisk) {
-			if (morphUnitId == UnitId::ZergDevourer) {
+			if (morphUnitId == UnitId::ZergVithrilisk) {
 				return true;
 			}
 			if (morphUnitId == UnitId::ZergGorgrokor) {

@@ -382,7 +382,7 @@ bool CanTargetSelf(CUnit* unit, u8 orderId) {
 		return_value = false;
 	else
 	if(
-		unit->id == UnitId::ZergOverlord &&
+		unit->id == UnitId::ZergOvileth &&
 		UpgradesSc->currentLevel[unit->playerId][UpgradeId::VentralSacs] == 0
 	)
 		return_value = false;

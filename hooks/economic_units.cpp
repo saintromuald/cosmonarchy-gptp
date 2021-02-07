@@ -149,10 +149,10 @@ namespace hooks {
 			id = UnitId::ProtossPylon;
 			break;
 		case RaceId::Zerg:
-			id = UnitId::ZergOverlord;
+			id = UnitId::ZergOvileth;
 			break;
 		default:
-			id = UnitId::ZergOverlord;
+			id = UnitId::ZergOvileth;
 			break;
 		}
 		return id;

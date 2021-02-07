@@ -96,7 +96,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 			}
 		}
 	}*/
-	else if (unit->id == UnitId::ZergQueen) {
+	else if (unit->id == UnitId::ZergMatraleth) {
 		if (unit->mainOrderId != OrderId::CastParasite && 
 			unit->energy >= techdata_dat::EnergyCost[TechId::Parasite]*256 &&
 			scbw::get_generic_timer(unit,ValueId::AI_QueenTimer)==0) {

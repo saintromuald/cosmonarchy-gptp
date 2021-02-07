@@ -706,7 +706,7 @@ namespace hooks {
 		
 		if (scbw::isZergEggNew(unit, false, false)) {
 			if (unit->buildQueue[unit->buildQueueSlot % 5] == UnitId::ZergIroleth) {
-				supply = units_dat::SupplyProvided[UnitId::ZergOverlord];
+				supply = units_dat::SupplyProvided[UnitId::ZergOvileth];
 			}
 			if (unit->buildQueue[unit->buildQueueSlot % 5] == UnitId::ZergOthstoleth) {
 				supply = units_dat::SupplyProvided[UnitId::ZergIroleth];
@@ -725,7 +725,7 @@ namespace hooks {
 			if (supply_overlord_modifier > 0) {
 				switch (supply_overlord_modifier) {
 				case 1:
-					supply = units_dat::SupplyProvided[UnitId::ZergIroleth] - units_dat::SupplyProvided[UnitId::ZergOverlord];
+					supply = units_dat::SupplyProvided[UnitId::ZergIroleth] - units_dat::SupplyProvided[UnitId::ZergOvileth];
 					break;
 				case 2:
 					supply = units_dat::SupplyProvided[UnitId::ZergOthstoleth] - units_dat::SupplyProvided[UnitId::ZergIroleth];

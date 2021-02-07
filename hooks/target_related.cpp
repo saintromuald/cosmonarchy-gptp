@@ -390,7 +390,7 @@ namespace hooks {
 		}
 		targetVar = target;
 		if (!target) {
-			if ((unit->id == UnitId::ZergQueen) && unitID != UnitId::None)
+			if ((unit->id == UnitId::ZergMatraleth) && unitID != UnitId::None)
 				return OrderId::Rightclickaction;
 			return OrderId::Move;
 		}
@@ -400,7 +400,7 @@ namespace hooks {
 			return OrderId::EnterTransport;
 		if (targetVar->status & UnitStatus::Burrowed)
 			return OrderId::Move;
-		if (unit->id != UnitId::ZergQueen
+		if (unit->id != UnitId::ZergMatraleth
 			|| targetVar->status & UnitStatus::Invincible
 			|| getUnitAbilityErrorStatString(targetVar, unit->playerId, 12) != 0)
 		{
@@ -426,7 +426,7 @@ namespace hooks {
 			unitId = i->id;
 			if (unitId != UnitId::ProtossCarrier) {
 				if (unitId != UnitId::ProtossReaver) {
-					if (unitId != UnitId::ZergQueen) {
+					if (unitId != UnitId::ZergMatraleth) {
 						if (unitId != UnitId::ZergSkryling && unitId != UnitId::ZergInfestedTerran)
 							orderId = unitId != UnitId::TerranMedic ? 107 : 178;
 						else
