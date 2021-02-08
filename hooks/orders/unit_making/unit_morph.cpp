@@ -181,6 +181,7 @@ namespace hooks {
 					case UnitId::ZergBactalisk:
 					case UnitId::ZergZoryusthaleth:
 					case UnitId::ZergUltrakor:
+					case UnitId::ZergQuazilisk:
 						eggId = UnitId::ZergEgg;
 						break;
 					case UnitId::ZergNathrokor:
