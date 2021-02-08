@@ -574,11 +574,16 @@ void CUnit::removeAcidSpores() {
 ///Identical to Unit__SpendEnergy @ 0x00491460
 ///May underflow if alone
 void CUnit::spendUnitEnergy(u32 energySpent) {
-	if(!(*CHEAT_STATE & CheatFlags::TheGathering))
-		this->energy -= energySpent;
-	
-	if (scbw::get_aise_value(this, NULL, AiseId::GenericTimer, ValueId::EntropyGauntlets, 0) > 1) {
-		this->inflictDamage(energySpent, scbw::get_generic_unit(this, ValueId::DecaySavant), -1, false, true, 0, true);
+	if (!(*CHEAT_STATE & CheatFlags::TheGathering)) {
+		if (this->energy > energySpent) {
+			this->energy -= energySpent;
+		}
+		else {
+			this->energy = 0;
+		}
+	}	
+	if (scbw::get_aise_value(this, NULL, AiseId::GenericTimer, ValueId::EntropyGauntlets, 0) > 1) {						// TODO: fix entropy gauntlets bug
+		this->inflictDamage(energySpent, scbw::get_generic_unit(this, ValueId::DecaySavant), -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
 	}
 }
 void CUnit::addUnitEnergy(u32 energy) {

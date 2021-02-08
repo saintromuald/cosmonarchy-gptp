@@ -230,10 +230,12 @@ public:
 		energyCollected += drain;
 		unit->spendUnitEnergy(drain);
 		u8 overlaySize = scbw::hasOverlay(unit);
-		if (unit->subunit != NULL)
+		if (unit->subunit != NULL) {
 			unit->subunit->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
-		else
+		}
+		else {
 			unit->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
+		}
 	}
 };
 
@@ -406,7 +408,9 @@ namespace hooks {
 						u32 perEach = energy / matchCount;
 						u32 extra = energy % matchCount;
 						CUnit* unit = unitFinder_distribute.getFirst(distrMatch);
-						if (unit != nullptr) unit->addUnitEnergy(extra);
+						if (unit != nullptr) {
+							unit->addUnitEnergy(extra);
+						}
 						u32 unspent = 0;
 						unitFinder_distribute.forEachInMatch(distrMatch, [&](CUnit* u) {
 							u->addUnitEnergy(unspent);
@@ -416,15 +420,19 @@ namespace hooks {
 							u->energy += howMuch;
 							energy -= howMuch;
 							u8 overlaySize = scbw::hasOverlay(u);
-							if (u->subunit != NULL)
+							if (u->subunit != NULL) {
 								u->subunit->sprite->createTopOverlay(overlaySize + ImageId::MindControlHit_Small, 0, 0, 0);
-							else
+							}
+							else {
 								u->sprite->createTopOverlay(overlaySize + ImageId::MindControlHit_Small, 0, 0, 0);
+							}
 							unspent = perEach - howMuch;
 						});
 						if (energy > 0) {
 							CUnit* unit = unitFinder_distribute.getFirst(distrMatch);
-							if (unit != nullptr) unit->addUnitEnergy(extra);
+							if (unit != nullptr) {
+								unit->addUnitEnergy(extra);
+							}
 						}
 					}
 				}
