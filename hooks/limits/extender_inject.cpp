@@ -6,6 +6,7 @@
 #include "hooks/limits/fake_unitid_extender.h"
 #include "logger.h"
 #include "globals.h"
+#include <cassert>
 namespace hooks {
 	void loadAiseSamaseData() {
 		hooks::sfxExtenderGetCount();
@@ -150,6 +151,49 @@ namespace hooks {
 		
 		
 	}
+
+
+	void __declspec(naked) GetAttackUnit_Wrapper() {
+		static u32 unitId;
+		static u32 playerId;
+		static u32 index;
+		__asm {
+			MOV playerId, ECX
+			MOV index, EBX
+			PUSHAD
+		}
+		assert(playerId < 8);
+		assert(index < 64);//change later
+		unitId = AIScriptController[playerId].attackers[index];
+		__asm {
+			POPAD
+			MOV EAX, unitId
+			RETN
+		}
+	}
+
+	void __declspec(naked) SetAttackUnit_Wrapper() {
+		static u32 unitId;
+		static u32 index;
+		static u32 playerId;
+		__asm {
+			MOV unitId, ECX
+			MOV index, EBX
+			MOV playerId, EDX
+			PUSHAD
+		}
+		assert(playerId < 8);
+		assert(index < 64);//change later
+		AIScriptController[playerId].attackers[index] = unitId;
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+	void newAttackExtender() {
+		jmpPatch(GetAttackUnit_Wrapper, 0x004171E5);//null int3 bytes
+		jmpPatch(SetAttackUnit_Wrapper, 0x00417207);//null int3 bytes
+	}
 	void injectLimitHooks() {
 
 //		hooks::injectCCMUHooks();
@@ -158,6 +202,7 @@ namespace hooks {
 //		injectPortdataLimits();
 //		hooks::injectTblExtender();
 		insaneFlingyIdExtender();
+		newAttackExtender();
 		jmpPatch(preInitDataWrapper, 0x004DAF31);
 		/*
 		auto str = scbw::readSamaseFile("samase\\sfx_ext.txt");
