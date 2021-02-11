@@ -171,7 +171,16 @@ namespace hooks {
 			RETN
 		}
 	}
-
+	void __declspec(naked) GetAttackLength_Wrapper() {
+		__asm {
+			PUSHAD
+		}
+		__asm {
+			POPAD
+			MOV EAX, 0x3F
+			RETN
+		}
+	}
 	void __declspec(naked) SetAttackUnit_Wrapper() {
 		static u32 unitId;
 		static u32 index;
@@ -190,8 +199,11 @@ namespace hooks {
 			RETN
 		}
 	}
+
+
 	void newAttackExtender() {
 		jmpPatch(GetAttackUnit_Wrapper, 0x004171E5);//null int3 bytes
+		jmpPatch(GetAttackLength_Wrapper, 0x00417268);//null int3 bytes
 		jmpPatch(SetAttackUnit_Wrapper, 0x00417207);//null int3 bytes
 	}
 	void injectLimitHooks() {
@@ -202,7 +214,7 @@ namespace hooks {
 //		injectPortdataLimits();
 //		hooks::injectTblExtender();
 		insaneFlingyIdExtender();
-		newAttackExtender();
+		newAttackExtender();//if extended attack config option is not enabled in aise, will cause aise crashes
 		jmpPatch(preInitDataWrapper, 0x004DAF31);
 		/*
 		auto str = scbw::readSamaseFile("samase\\sfx_ext.txt");
