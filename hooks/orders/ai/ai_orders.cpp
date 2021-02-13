@@ -1234,7 +1234,7 @@ namespace hooks {
 	}
 
 //	0x00447040 => ai_remove_from_attack(@eax u32,@edx u32);
-	void AI_RemoveFromAttack(s32 unitId, u32 player) { // 00447040
+/*	void AI_RemoveFromAttack(s32 unitId, u32 player) { // 00447040
 		u32 v2; // esi
 		u32 v3; // ecx
 		u16* v4; // eax
@@ -1252,7 +1252,7 @@ namespace hooks {
 				return;
 		}
 		AIScriptController[0].attackers[v3 + 628 * player] = 229;
-	}
+	}*/
 }
 
 namespace {

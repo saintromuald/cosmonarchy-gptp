@@ -480,6 +480,7 @@
     <ClInclude Include="hooks\interface\mainmenu\lobby.h" />
     <ClInclude Include="hooks\interface\uifeatures\screen_hotkeys.h" />
     <ClInclude Include="hooks\interface\uifeatures\uifeatures.h" />
+    <ClInclude Include="hooks\limits\attack_extender.h" />
     <ClInclude Include="hooks\limits\fake_unitid_extender.h" />
     <ClInclude Include="hooks\limits\misc_extenders.h" />
     <ClInclude Include="hooks\neutral_related.h" />

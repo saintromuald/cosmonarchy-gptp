@@ -304,7 +304,7 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) AI_RemoveFromAttack_Wrapper() { // 00447040
+/*	void __declspec(naked) AI_RemoveFromAttack_Wrapper() { // 00447040
 		static s32 unitId;
 		static u32 player;
 		__asm {
@@ -317,7 +317,7 @@ namespace {
 			POPAD
 			RETN
 		}
-	}
+	}*/
 }
 
 namespace hooks {
@@ -337,7 +337,8 @@ namespace hooks {
 		jmpPatch(AI_GetMissingAttackForceUnits_Wrapper,		0x00438050, 2);
 		jmpPatch(AI_AddToAttack_Wrapper,					0x00447230, 1);
 		jmpPatch(AI_AttackManager_Wrapper,					0x0043ABB0, 4);
-		jmpPatch(AI_HasUnitsForAttackForce_Wrapper,			0x00437F20, 4);
-		jmpPatch(AI_RemoveFromAttack_Wrapper,				0x00447040, 0);*/
+		jmpPatch(AI_HasUnitsForAttackForce_Wrapper,			0x00437F20, 4);*/
+
+		//jmpPatch(AI_RemoveFromAttack_Wrapper,				0x00447040, 0);
 	}
 }

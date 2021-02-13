@@ -4,6 +4,7 @@
 #include "hooks/limits/tbl_extender.h"
 #include "hooks/limits/misc_extenders.h"
 #include "hooks/limits/fake_unitid_extender.h"
+#include "hooks/limits/attack_extender.h"
 #include "logger.h"
 #include "globals.h"
 #include <cassert>
@@ -12,6 +13,21 @@ namespace hooks {
 		hooks::sfxExtenderGetCount();
 		hooks::unitsDatWrapperPatches();
 	}
+
+
+	void AI_RemoveFromAttack(s32 unitId_, u32 player) {
+		int unitId = unitId_;
+		if (unitId == UnitId::TerranSiegeTankSiegeMode)
+			unitId = UnitId::TerranSiegeTankTankMode;
+		unitId++;
+		for (int i = 0; i < ATTACK_LIMIT; i++) {
+			if (AIScriptController[player].attackers[i] == unitId) {
+				AIScriptController[player].attackers[i] = UnitId::None + 1;
+				return;
+			}
+		}
+	}
+
 	const u32 jmp_004DAF36 = 0x004DAF36;
 	void __declspec(naked) preInitDataWrapper() {
 		__asm {
@@ -163,8 +179,8 @@ namespace hooks {
 			PUSHAD
 		}
 		assert(playerId < 8);
-		assert(index < 64);//change later
-		unitId = AIScriptController[playerId].attackers[index];
+		assert(index < ATTACK_LIMIT);
+		unitId = AIScriptController[playerId].attackers[index];//is actually "unitId+1"
 		__asm {
 			POPAD
 			MOV EAX, unitId
@@ -192,19 +208,147 @@ namespace hooks {
 			PUSHAD
 		}
 		assert(playerId < 8);
-		assert(index < 64);//change later
-		AIScriptController[playerId].attackers[index] = unitId;
+		assert(index < ATTACK_LIMIT);//change later
+		AIScriptController[playerId].attackers[index] = unitId;//is actually "unitId+1"
 		__asm {
 			POPAD
 			RETN
 		}
 	}
+	const u32 GetMissingJmpWrapper = 0x00438067;
+
+	void __declspec(naked) AI_GetMissingAttackForceUnits_JmpWrapper() {
+		static u32 playerId;
+		static u16* arrayStart;
+		__asm {
+			MOV playerId, ECX
+			PUSHAD
+		}
+		arrayStart = &AIScriptController[playerId].attackers[0];
+		__asm {
+			POPAD
+			MOV ECX,arrayStart
+			JMP GetMissingJmpWrapper
+		}
+	}
+
+	const u32 AIAddToAttack_NullJmp = 0x00447274;
+	const u32 AIAddToAttack_Continue = 0x00447265;
+	void __declspec(naked) AI_AddToAttack_JmpWrapper1() {
+		static u32 playerId;
+		static u32 arrayOffset;
+		__asm {
+			MOV playerId, ECX
+			PUSHAD
+		}
+		if (AIScriptController[playerId].attackers[0] == 0) {
+			__asm {
+				POPAD
+				JMP AIAddToAttack_NullJmp
+			}
+		}
+		else {
+			arrayOffset = reinterpret_cast<u32>(&AIScriptController[playerId].attackers[0]);
+			__asm {
+				POPAD
+				MOV ECX, arrayOffset
+				JMP AIAddToAttack_Continue
+			}
+		}
+	}
+	const u32 AIAddAttackTo_LastJmp = 0x00447282;
+	void __declspec(naked) AI_AddToAttack_JmpWrapper2() {
+		static u32 playerMul;
+		static u32 player;
+		static u32 index;
+		static u32 getUnit;
+		__asm {
+			MOV playerMul, EDX
+			MOV index, EAX
+			PUSHAD
+		}
+		assert(index < ATTACK_LIMIT);
+		player = playerMul / (sizeof(AI_Main) / 2);
+		getUnit = AIScriptController[player].attackers[index];
+		__asm {
+			POPAD
+			MOV ECX, getUnit
+			JMP AIAddAttackTo_LastJmp
+		}
+	}
+	const u32 AIAttackManager_Jmp = 0x0043AC61;
+	void __declspec(naked) AI_AttackManager_JmpWrapper() {
+		static u32 offset;
+		static u32 playerId;
+		static u32 arrayOffset;
+		static u16 unitId;
+		__asm {
+			PUSH EAX
+			MOV EAX,[EBP+0x08]
+			MOV playerId,EAX
+			POP EAX
+			PUSHAD
+		}
+		unitId = AIScriptController[playerId].attackers[0];
+		arrayOffset = reinterpret_cast<u32>(AIScriptController[playerId].attackers);
+		__asm {
+			POPAD
+			MOV AX,unitId
+			MOV ECX, arrayOffset
+			JMP AIAttackManager_Jmp
+		}
+	}
+	static u32 AI_HasUnitsForAttack_Jmp = 0x00437F36;
+	void __declspec(naked) AI_HasUnitsForAttackForce_JmpWrapper() {
+		static u32 playerId;
+		static u32 arrayOffset;
+		__asm {
+			MOV playerId,EAX
+			PUSHAD
+		}
+		arrayOffset = reinterpret_cast<u32>(AIScriptController[playerId].attackers);
+		__asm {
+			POPAD
+			MOV EAX,arrayOffset
+			JMP AI_HasUnitsForAttack_Jmp
+		}
+	}
 
 
+
+	void __declspec(naked) AI_RemoveFromAttack_Wrapper() { // 00447040
+		static u32 unitId;
+		static u32 player;
+		__asm {
+			MOV unitId, EAX
+			MOV player, EDX
+			PUSHAD
+		}
+		hooks::AI_RemoveFromAttack(unitId, player);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 	void newAttackExtender() {
 		jmpPatch(GetAttackUnit_Wrapper, 0x004171E5);//null int3 bytes
 		jmpPatch(GetAttackLength_Wrapper, 0x00417268);//null int3 bytes
 		jmpPatch(SetAttackUnit_Wrapper, 0x00417207);//null int3 bytes
+		//
+		u32 attackSize = (ATTACK_LIMIT * 4) + 8;
+		memoryPatch(0x0043E673 + 2, attackSize);
+		memoryPatch(0x0043EEC3 + 2, attackSize);
+		jmpPatch(AI_GetMissingAttackForceUnits_JmpWrapper, 0x0043805B, 5);
+		//AI_AddToAttack
+		jmpPatch(AI_AddToAttack_JmpWrapper1, 0x0044724F, 3);
+		jmpPatch(AI_AddToAttack_JmpWrapper2, 0x0044727B, 2);
+		jmpPatch(AI_AttackManager_JmpWrapper, 0x0043AC54, 2);
+		jmpPatch(AI_HasUnitsForAttackForce_JmpWrapper, 0x00437F2B, 1);
+		jmpPatch(AI_RemoveFromAttack_Wrapper, 0x00447040, 0);
+
+		//AI_RemoveFromAttack
+
+
 	}
 	void injectLimitHooks() {
 
@@ -214,7 +358,9 @@ namespace hooks {
 //		injectPortdataLimits();
 //		hooks::injectTblExtender();
 		insaneFlingyIdExtender();
-		newAttackExtender();//if extended attack config option is not enabled in aise, will cause aise crashes
+
+
+//		newAttackExtender();//if extended attack config option is not enabled in aise, will cause aise crashes
 		jmpPatch(preInitDataWrapper, 0x004DAF31);
 		/*
 		auto str = scbw::readSamaseFile("samase\\sfx_ext.txt");
