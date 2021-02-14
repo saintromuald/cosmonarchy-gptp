@@ -6,6 +6,7 @@
 #include <ostream>
 #include <istream>
 #include "SCBW\api.h"
+#include "hooks\limits\attack_extender.h"
 
 class globals;
 
@@ -60,6 +61,22 @@ public:
 	CUnit* creator;
 };
 
+
+class AttackExtender {
+public:
+//	std::vector<std::vector<u16>> attacks;
+	u16 attacks[PLAYABLE_PLAYER_COUNT][ATTACK_LIMIT];
+	AttackExtender() {
+		
+		for (int i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
+			for (int j = 0; j < ATTACK_LIMIT; j++) {
+				attacks[i][j] = 0;
+			}
+		}
+	}
+};
+
+
 class globals {
 	std::string output;
 public:
@@ -74,6 +91,7 @@ public:
 	std::vector<multihitBullet> multihitBullets;
 	std::vector<apostleAgent> apostleAgents;
 	std::map<CUnit*, std::vector<CUnit*>> lurkerSpineHits;
+	AttackExtender attackers;
 	
 	apostleAgent test;
 

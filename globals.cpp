@@ -1,6 +1,7 @@
 #include "globals.h"
 #include "hook_tools.h"
 #include "hooks/hydraFinder.h"
+#include "hooks/limits/attack_extender.h"
 globals Globals;
 
 //SaveState globals::aise_save() {
@@ -37,6 +38,11 @@ void globals::aise_save(){
 		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].timer), sizeof(apostleAgents[i].timer));
 		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].unitId), sizeof(apostleAgents[i].unitId));
 	}
+	for (int i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
+		for (int j = 0; j < ATTACK_LIMIT; i++) {
+			stream.write(reinterpret_cast<char*>(&attackers.attacks[i][j]), sizeof(u16));
+		}
+	}
 	u32 multihitCount = multihitBullets.size();
 	stream.write(reinterpret_cast<char*>(&multihitCount), sizeof(multihitCount));
 	for (int i = 0; i < multihitCount; i++) {
@@ -61,6 +67,7 @@ void globals::aise_save(){
 			stream.write(reinterpret_cast<char*>(&value), sizeof(value));
 		}
 	}
+	
 	//
 	output = stream.rdbuf()->str();
 	if (output.length() == 0) {
@@ -120,8 +127,14 @@ void globals::aise_load(const char* ptr, u32 len){
 		stream.read(reinterpret_cast<char*>(&agent.unitId), sizeof(agent.unitId));
 		apostleAgents.push_back(agent);
 	}
-	u32 multihitCount = 0;
-	stream.read(reinterpret_cast<char*>(&multihitCount), sizeof(multihitCount));
+	for (int i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
+		for (int j = 0; j < ATTACK_LIMIT; i++) {
+			stream.write(reinterpret_cast<char*>(&attackers.attacks[i][j]), sizeof(u16));
+		}
+	}
+
+	//u32 multihitCount = 0;
+	//stream.read(reinterpret_cast<char*>(&multihitCount), sizeof(multihitCount));
 	//scbw::printFormattedText("Hits: %d", multihitCount);
 	/*
 	for (int i = 0; i < multihitCount; i++) {

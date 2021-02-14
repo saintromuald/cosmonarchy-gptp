@@ -21,8 +21,10 @@ namespace hooks {
 			unitId = UnitId::TerranSiegeTankTankMode;
 		unitId++;
 		for (int i = 0; i < ATTACK_LIMIT; i++) {
-			if (AIScriptController[player].attackers[i] == unitId) {
-				AIScriptController[player].attackers[i] = UnitId::None + 1;
+/*			if (AIScriptController[player].attackers[i] == unitId) {
+				AIScriptController[player].attackers[i] = UnitId::None + 1;*/
+			if(Globals.attackers.attacks[player][i] == unitId){
+				Globals.attackers.attacks[player][i] = UnitId::None + 1;
 				return;
 			}
 		}
@@ -180,7 +182,8 @@ namespace hooks {
 		}
 		assert(playerId < 8);
 		assert(index < ATTACK_LIMIT);
-		unitId = AIScriptController[playerId].attackers[index];//is actually "unitId+1"
+		//unitId = AIScriptController[playerId].attackers[index];//is actually "unitId+1"
+		unitId = Globals.attackers.attacks[playerId][index];
 		__asm {
 			POPAD
 			MOV EAX, unitId
@@ -209,7 +212,8 @@ namespace hooks {
 		}
 		assert(playerId < 8);
 		assert(index < ATTACK_LIMIT);//change later
-		AIScriptController[playerId].attackers[index] = unitId;//is actually "unitId+1"
+//		AIScriptController[playerId].attackers[index] = unitId;//is actually "unitId+1"
+		Globals.attackers.attacks[playerId][index] = unitId;
 		__asm {
 			POPAD
 			RETN
@@ -224,7 +228,8 @@ namespace hooks {
 			MOV playerId, ECX
 			PUSHAD
 		}
-		arrayStart = &AIScriptController[playerId].attackers[0];
+//		arrayStart = &AIScriptController[playerId].attackers[0];
+		arrayStart = &Globals.attackers.attacks[playerId][0];
 		__asm {
 			POPAD
 			MOV ECX,arrayStart
@@ -241,14 +246,16 @@ namespace hooks {
 			MOV playerId, ECX
 			PUSHAD
 		}
-		if (AIScriptController[playerId].attackers[0] == 0) {
+//		if (AIScriptController[playerId].attackers[0] == 0) {
+		if(Globals.attackers.attacks[playerId][0] == 0){
 			__asm {
 				POPAD
 				JMP AIAddToAttack_NullJmp
 			}
 		}
 		else {
-			arrayOffset = reinterpret_cast<u32>(&AIScriptController[playerId].attackers[0]);
+//			arrayOffset = reinterpret_cast<u32>(&AIScriptController[playerId].attackers[0]);
+			arrayOffset = reinterpret_cast<u32>(&Globals.attackers.attacks[playerId][0]);
 			__asm {
 				POPAD
 				MOV ECX, arrayOffset
@@ -269,7 +276,8 @@ namespace hooks {
 		}
 		assert(index < ATTACK_LIMIT);
 		player = playerMul / (sizeof(AI_Main) / 2);
-		getUnit = AIScriptController[player].attackers[index];
+//		getUnit = AIScriptController[player].attackers[index];
+		getUnit = Globals.attackers.attacks[player][index];
 		__asm {
 			POPAD
 			MOV ECX, getUnit
@@ -289,8 +297,10 @@ namespace hooks {
 			POP EAX
 			PUSHAD
 		}
-		unitId = AIScriptController[playerId].attackers[0];
-		arrayOffset = reinterpret_cast<u32>(AIScriptController[playerId].attackers);
+/*		unitId = AIScriptController[playerId].attackers[0];
+		arrayOffset = reinterpret_cast<u32>(AIScriptController[playerId].attackers);*/
+		unitId = Globals.attackers.attacks[playerId][0];
+		arrayOffset = reinterpret_cast<u32>(&Globals.attackers.attacks[playerId][0]);
 		__asm {
 			POPAD
 			MOV AX,unitId
@@ -306,7 +316,8 @@ namespace hooks {
 			MOV playerId,EAX
 			PUSHAD
 		}
-		arrayOffset = reinterpret_cast<u32>(AIScriptController[playerId].attackers);
+//		arrayOffset = reinterpret_cast<u32>(AIScriptController[playerId].attackers);
+		arrayOffset = reinterpret_cast<u32>(&Globals.attackers.attacks[playerId][0]);
 		__asm {
 			POPAD
 			MOV EAX,arrayOffset
@@ -345,10 +356,7 @@ namespace hooks {
 		jmpPatch(AI_AttackManager_JmpWrapper, 0x0043AC54, 2);
 		jmpPatch(AI_HasUnitsForAttackForce_JmpWrapper, 0x00437F2B, 1);
 		jmpPatch(AI_RemoveFromAttack_Wrapper, 0x00447040, 0);
-
 		//AI_RemoveFromAttack
-
-
 	}
 	void injectLimitHooks() {
 
@@ -358,8 +366,6 @@ namespace hooks {
 //		injectPortdataLimits();
 //		hooks::injectTblExtender();
 		insaneFlingyIdExtender();
-
-
 //		newAttackExtender();//if extended attack config option is not enabled in aise, will cause aise crashes
 		jmpPatch(preInitDataWrapper, 0x004DAF31);
 		/*
