@@ -432,7 +432,7 @@ namespace hooks {
 //		hooks::injectTblExtender();
 		insaneFlingyIdExtender();
 
-		newAttackExtender();//if extended attack config option is not enabled in aise, will cause aise crashes
+//		newAttackExtender();//if extended attack config option is not enabled in aise, will cause aise crashes
 
 		jmpPatch(preInitDataWrapper, 0x004DAF31);
 		/*
