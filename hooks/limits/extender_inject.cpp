@@ -341,6 +341,65 @@ namespace hooks {
 			RETN
 		}
 	}
+	const u32 Jmp_SendSuicide = 0x0043e1f9;
+	void __declspec(naked) AI_SendSuicide_JmpWrapper() {
+		static u32 playerId;
+		static u32 index;
+		static u32 arrayOffset;
+		static u32 size2;
+		__asm {
+			MOV EDX,index
+			PUSHAD
+		}
+		playerId = index / sizeof(AI_Main);
+		arrayOffset = reinterpret_cast<u32>(&Globals.attackers.attacks[playerId][0]);
+		size2 = ATTACK_LIMIT / 2;
+		__asm {
+			POPAD
+			MOV EDI,arrayOffset
+			MOV ECX,size2
+			JMP Jmp_SendSuicide
+		}
+	}
+
+	const u32 Jmp_Unk1 = 0x00448179;
+	void __declspec(naked) AI_Unk1_JmpWrapper() {
+		static u32 playerId;
+		static u32 index;
+		static u32 arrayOffset;
+		static u32 size2;
+		__asm {
+			MOV EDX, index
+			PUSHAD
+		}
+		playerId = index / sizeof(AI_Main);
+		arrayOffset = reinterpret_cast<u32>(&Globals.attackers.attacks[playerId][0]);
+		size2 = ATTACK_LIMIT / 2;
+		__asm {
+			POPAD
+			MOV EDI, arrayOffset
+			MOV ECX, size2
+			JMP Jmp_Unk1
+		}
+	}
+
+	void __declspec(naked) AI_Unk2_Wrapper() {
+		static u32 playerId;
+		static u32 arrayOffset;
+		__asm {
+			MOV EAX,playerId
+			PUSHAD
+		}
+		arrayOffset = reinterpret_cast<u32>(&Globals.attackers.attacks[playerId][0]);
+		__asm {
+			POPAD
+			MOV EAX,arrayOffset
+			RETN
+		}
+	}
+
+
+
 	void newAttackExtender() {
 		jmpPatch(GetAttackUnit_Wrapper, 0x004171E5);//null int3 bytes
 		jmpPatch(GetAttackLength_Wrapper, 0x00417268);//null int3 bytes
@@ -356,9 +415,15 @@ namespace hooks {
 		jmpPatch(AI_AttackManager_JmpWrapper, 0x0043AC54, 2);
 		jmpPatch(AI_HasUnitsForAttackForce_JmpWrapper, 0x00437F2B, 1);
 		jmpPatch(AI_RemoveFromAttack_Wrapper, 0x00447040, 0);
+		jmpPatch(AI_SendSuicide_JmpWrapper, 0x0043E1EE, 1);
+		jmpPatch(AI_Unk1_JmpWrapper, 0x0044816E, 0);//most likely do not execute
+		jmpPatch(AI_Unk2_Wrapper, 0x00447220, 0);//most likely do not execute
+
+
 		//AI_RemoveFromAttack
 	}
 	void injectLimitHooks() {
+
 
 //		hooks::injectCCMUHooks();
 //		hooks::sfxExtender();
@@ -366,7 +431,9 @@ namespace hooks {
 //		injectPortdataLimits();
 //		hooks::injectTblExtender();
 		insaneFlingyIdExtender();
-//		newAttackExtender();//if extended attack config option is not enabled in aise, will cause aise crashes
+
+		newAttackExtender();//if extended attack config option is not enabled in aise, will cause aise crashes
+
 		jmpPatch(preInitDataWrapper, 0x004DAF31);
 		/*
 		auto str = scbw::readSamaseFile("samase\\sfx_ext.txt");
