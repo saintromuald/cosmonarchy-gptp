@@ -413,7 +413,6 @@ namespace hooks {
 			// Deconstruction - Pazuzu behavior - apply stack
 			if (attacker!=nullptr
 			&&	attacker->id == UnitId::TerranPazuzu
-			&&	units_dat::BaseProperty[target->id] & UnitProperty::Mechanical
 			&&	!(scbw::unitIsPacifist(target))
 			&&	scbw::get_generic_value(target, ValueId::Deconstruction) == 0) {
 				scbw::set_generic_value(target, ValueId::Deconstruction, 1);
