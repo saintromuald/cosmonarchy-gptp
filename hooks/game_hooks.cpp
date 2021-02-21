@@ -512,7 +512,6 @@ namespace hooks {
 				//Write your code here
 				hooks::initializeScreenLocations();
 				hooks::clearActions();
-
 			}
 			hooks::handleScreenHotkeys();
 			scbw::refreshScreen(); // refreshes screen, needed for game clock and apm timer to update every frame

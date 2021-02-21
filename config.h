@@ -18,6 +18,7 @@ struct Config {
 	std::array<std::string, 3> layout = { "QWE", "ASD", "ZXC" };
 
 	// Debug
+	bool verbose = false;
 	/*bool dump_ai_info = false;
 	bool dump_desync_game_data_arrays = false;
 	bool dump_desync_animation_info = false;

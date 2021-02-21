@@ -3,10 +3,6 @@
 /// Made by pastelmind
 
 #pragma once
-#ifdef _DEBUG
-//If this macro is not defined, GPTP::logger will be disabled.
-#define GPTP_LOGGING_ENABLED
-#endif
 
 #include <fstream>
 
@@ -32,6 +28,7 @@ class GameLogger {
     int lastUpdatedFrame;
 };
 
+extern bool doLogging;
 extern GameLogger logger;
 
 } //GPTP
@@ -44,15 +41,13 @@ namespace GPTP {
 template <typename T>
 GameLogger& GameLogger::operator<<(const T& t) {
 
-  #ifdef GPTP_LOGGING_ENABLED
+    if (doLogging) {
+        if (checkLogFile())
+            if (updateFrame())
+                logFile << t;
+    }
 
-  if (checkLogFile())
-    if (updateFrame())
-      logFile << t;
-
-  #endif
-
-  return *this;
+    return *this;
 }
 
 } //GPTP
