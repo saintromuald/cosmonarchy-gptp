@@ -8,6 +8,9 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
+extern void makeSpriteVisible(CSprite* sprite);
+extern void UpdateSpriteImagesForCloak(CSprite* sprite);
+
 class DarkSwarmFinderProc : public scbw::UnitFinderCallbackMatchInterface {
 	public:
 		bool match(CUnit* unit) {
@@ -2118,4 +2121,13 @@ u16 random() {
 			|| orderId == OrderId::FireYamatoGun1;
 	}
 
+	void cloakLogic(CUnit* unit) {
+		if ((units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak
+		|| unit->status & UnitStatus::CloakingForFree)
+		&& unit->playerId
+		&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Burrowable)) {
+			UpdateSpriteImagesForCloak(unit->sprite);
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::PermanentCloakTimer, 48 + 1, 0);
+		}
+	}
 } //scbw

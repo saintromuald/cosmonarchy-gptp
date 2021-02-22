@@ -134,6 +134,20 @@ void makeSpriteVisible(CSprite* sprite) {
 
 ;
 
+const u32 Func_498A90 = 0x00498A90;
+void UpdateSpriteImagesForCloak(CSprite* sprite) {
+
+	__asm {
+		PUSHAD
+		MOV EDI, sprite
+		CALL Func_498A90
+		POPAD
+	}
+
+}
+
+;
+
 const u32 Func_Irradiate = 0x00454E00;
 void spawnCreeper(CUnit* unit) {
 
@@ -1201,13 +1215,13 @@ namespace hooks {
 				||	unit->status & UnitStatus::CloakingForFree) {
 					auto timer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::PermanentCloakTimer, 0);
 					if (timer == 1) {
+						unit->status |= UnitStatus::Cloaked;
 						for (int i = 0; i < 8; i++) {
 							if (!scbw::isAlliedTo(unit->playerId, i)) {
 								unit->visibilityStatus &= ~(1 << i);
 							}
 						}
 					} else if (timer > 1) {
-						makeSpriteVisible(unit->sprite);
 						for (int i = 0; i < 8; i++) {
 							unit->visibilityStatus |= (1 << i);
 						}

@@ -359,6 +359,10 @@ namespace hooks {
 			y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1)
 				- weapons_dat::VerticalOffset[weaponId];
 		}
+
+		if (unit->id != UnitId::ProtossCabalist)
+			scbw::cloakLogic(unit);
+
 		if (weapons_dat::FlingyId[weaponId] != 0) {
 			bool good = true;
 			// Wyvern Land Grab ability

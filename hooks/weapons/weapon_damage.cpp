@@ -668,14 +668,8 @@ namespace hooks {
 			}
 
 			if (attacker != NULL && target != NULL) {
-				if ((units_dat::BaseProperty[attacker->id] & UnitProperty::PermanentCloak
-					||	attacker->status & UnitStatus::CloakingForFree)
-				&&	attacker->playerId && !(units_dat::BaseProperty[attacker->id] & UnitProperty::Burrowable)) {
-					bool silent_kill = damage >= target->hitPoints && attacker->id == UnitId::ProtossCabalist;
-					if (!silent_kill && !(attacker->visibilityStatus & 1 << target->playerId)) {
-						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::PermanentCloakTimer, 48 + 1, 0);
-					}
-				}
+				if (damage < target->hitPoints && attacker->id == UnitId::ProtossCabalist)
+					scbw::cloakLogic(attacker);
 
 				if (weaponId == WeaponId::NuclearMissile && target->hitPoints > damage) {
 					if (attacker != NULL && irradiateTarget(target)) {
