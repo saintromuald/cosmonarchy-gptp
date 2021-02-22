@@ -79,7 +79,7 @@ void killAllHangarUnits(CUnit* unit) {
 		CUnit* childInside = unit->carrier.inHangarChild;
 		unit->carrier.inHangarChild = childInside->interceptor.hangar_link.prev;
 		childInside->interceptor.parent = NULL;
-		GPTP::logger << "Removehangar -" << std::endl;
+//		GPTP::logger << "Removehangar -" << std::endl;
 		childInside->remove();
 		unit->carrier.inHangarCount--;
 	}
