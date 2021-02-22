@@ -137,7 +137,6 @@ namespace
 	}
 }
 BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
-	Sleep(10000);
 	load_config();
 	runWMode(config.disable_wmode_prompt, config.prefer_wmode);
 	//StarCraft.exe version check
