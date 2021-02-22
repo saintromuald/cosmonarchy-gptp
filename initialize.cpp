@@ -6,6 +6,7 @@
 //Hook header files
 #include "hooks/game_hooks.h"
 #include "graphics/draw_hook.h"
+#include "config.h"
 
 #include "hooks/maxhp.h"
 #include "hooks/apply_upgrade_flags.h"
@@ -98,7 +99,6 @@
 #include "hooks/interface/uifeatures/uifeatures.h"
 #include "hooks/trap_hooks.h"
 #include "hooks/target_related.h"
-#include "config.h"
 #include "hooks/unit_movement.h"
 #include "hooks/neutral_related.h"
 #include "hooks/game/file_operations.h"
@@ -137,8 +137,8 @@ namespace
 	}
 }
 BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
-	config.LoadConfig();
-	GPTP::doLogging = config.verbose;
+	Sleep(10000);
+	load_config();
 	runWMode(config.disable_wmode_prompt, config.prefer_wmode);
 	//StarCraft.exe version check
 	char exePath[300];

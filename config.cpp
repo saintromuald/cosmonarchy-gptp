@@ -2,15 +2,16 @@
 #include "yaml-cpp/yaml.h"
 #include <fstream>
 #include "config_utility.h"
+#include <logger.h>
 
 Config config;
 
-bool Config::ConfigExists() {
-	return std::ifstream(CONFIG_FILENAME).good();
+bool file_exists(std::string file) {
+	return std::ifstream(file).good();
 }
 
-void Config::LoadConfig() {
-	if (ConfigExists()) {
+void load_config() {
+	if (file_exists(CONFIG_FILENAME)) {
 		YAML::Node configNode = YAML::LoadFile(CONFIG_FILENAME);
 
 		LoadField(configNode, "disable-wmode-prompt", config.disable_wmode_prompt);
@@ -21,6 +22,7 @@ void Config::LoadConfig() {
 		LoadField(configNode, "always-show-extended-tooltips", config.always_show_extended_tooltips);
 
 		LoadField(configNode, "verbose", config.verbose);
+		GPTP::doLogging = config.verbose;
 
 		auto gridNode = configNode["grid-hotkeys"];
 		if (gridNode) {
@@ -28,10 +30,10 @@ void Config::LoadConfig() {
 			LoadField(gridNode, "layout", config.layout);
 		}
 	}
-	SaveConfig();
+	save_config();
 }
 
-void Config::SaveConfig() {
+void save_config() {
 	YAML::Emitter out;
 	out << YAML::BeginMap;
 

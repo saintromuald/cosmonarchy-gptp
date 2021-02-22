@@ -23,9 +23,9 @@ struct Config {
 	bool dump_desync_game_data_arrays = false;
 	bool dump_desync_animation_info = false;
 	bool dump_crash_info = false;*/
-
-	bool ConfigExists();
-	void LoadConfig();
-	void SaveConfig();
 };
 extern Config config;
+
+bool file_exists(std::string file);
+void load_config();
+void save_config();
