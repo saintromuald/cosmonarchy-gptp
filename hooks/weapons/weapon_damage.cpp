@@ -65,18 +65,6 @@ void function_004A01F0_copy(CUnit* unit) {
 
 }
 
-const u32 Func_497ED0 = 0x00497ED0;
-void makeSpriteVisible(CSprite* sprite) {
-
-	__asm {
-		PUSHAD
-		MOV EAX, sprite
-		CALL Func_497ED0
-		POPAD
-	}
-
-}
-
 const u32 Func_AI_TrainingUnit = 0x004A2830;
 void AI_Train_4A2830(CUnit* unit_creator, CUnit* created_unit) {
 	__asm {
@@ -682,16 +670,9 @@ namespace hooks {
 			if (attacker != NULL && target != NULL) {
 				if ((units_dat::BaseProperty[attacker->id] & UnitProperty::PermanentCloak
 					||	attacker->status & UnitStatus::CloakingForFree)
-				&&	attacker->playerId
-				&&	attacker->id != UnitId::ZergLakizilisk) {
-					bool silent_kill = false;
-					if (damage >= target->hitPoints
-					&&	attacker->id == UnitId::ProtossCabalist) {
-						silent_kill = true;
-					}
+				&&	attacker->playerId && !(units_dat::BaseProperty[attacker->id] & UnitProperty::Burrowable)) {
+					bool silent_kill = damage >= target->hitPoints && attacker->id == UnitId::ProtossCabalist;
 					if (!silent_kill && !(attacker->visibilityStatus & 1 << target->playerId)) {
-						attacker->visibilityStatus |= (1 << target->playerId);
-						makeSpriteVisible(attacker->sprite);
 						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::PermanentCloakTimer, 48 + 1, 0);
 					}
 				}

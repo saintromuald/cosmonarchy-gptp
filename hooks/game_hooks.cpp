@@ -120,6 +120,20 @@ void replaceUnitWithType(CUnit* unit, u16 newUnitId) {
 
 ;
 
+const u32 Func_497ED0 = 0x00497ED0;
+void makeSpriteVisible(CSprite* sprite) {
+
+	__asm {
+		PUSHAD
+		MOV EAX, sprite
+		CALL Func_497ED0
+		POPAD
+	}
+
+}
+
+;
+
 const u32 Func_Irradiate = 0x00454E00;
 void spawnCreeper(CUnit* unit) {
 
@@ -1189,10 +1203,13 @@ namespace hooks {
 					if (timer == 1) {
 						for (int i = 0; i < 8; i++) {
 							if (!scbw::isAlliedTo(unit->playerId, i)) {
-								if (unit->visibilityStatus & (1 << i)) {
-									unit->visibilityStatus &= ~(1 << i);
-								}
+								unit->visibilityStatus &= ~(1 << i);
 							}
+						}
+					} else if (timer > 1) {
+						makeSpriteVisible(unit->sprite);
+						for (int i = 0; i < 8; i++) {
+							unit->visibilityStatus |= (1 << i);
 						}
 					}
 				}
