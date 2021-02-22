@@ -1091,7 +1091,7 @@ namespace hooks {
 						if (timer == 0) {
 							scbw::set_generic_timer(unit, ValueId::NaniteFieldTimer, 24);
 							unit->sprite->playIscriptAnim(IscriptAnimation::CastSpell);
-							shamanProc Heal = shamanProc(unit, false, 4);
+							shamanProc Heal = shamanProc(unit, false, 2);
 							scbw::UnitFinder unitFinder(unit->getX() - 128,
 								unit->getY() - 128,
 								unit->getX() + 128,
