@@ -2126,7 +2126,7 @@ u16 random() {
 		|| unit->status & UnitStatus::CloakingForFree)
 		&& unit->playerId
 		&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Burrowable)) {
-			UpdateSpriteImagesForCloak(unit->sprite);
+			makeSpriteVisible(unit->sprite);
 			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::PermanentCloakTimer, 48 + 1, 0);
 		}
 	}
