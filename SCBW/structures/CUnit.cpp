@@ -376,6 +376,10 @@ const u32 Func_SetUnitHp = 0x00467340;
 void CUnit::setHp(s32 hitPoints, bool deliberateHeal) {
 	assert(this);
 
+	// If already full, don't clear debuffs
+	if (this->hitPoints == this->getMaxHpRaw()) {
+		deliberateHeal = false;
+	}
 	__asm {
 		PUSHAD
 		MOV EAX, this
@@ -383,6 +387,7 @@ void CUnit::setHp(s32 hitPoints, bool deliberateHeal) {
 		CALL Func_SetUnitHp
 		POPAD
 	}
+	// If heals to full clear debuffs
 	if (deliberateHeal && this->hitPoints == this->getMaxHpRaw()) {
 		scbw::restoreFunc(this);
 	}
