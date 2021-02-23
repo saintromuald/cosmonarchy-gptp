@@ -383,7 +383,7 @@ void CUnit::setHp(s32 hitPoints, bool deliberateHeal) {
 		CALL Func_SetUnitHp
 		POPAD
 	}
-	if (deliberateHeal && this->hitPoints == hitPoints) {
+	if (deliberateHeal && this->hitPoints == this->getMaxHpRaw()) {
 		scbw::restoreFunc(this);
 	}
 }
