@@ -1665,11 +1665,10 @@ u16 random() {
 		CUnit* overlayTargetUnit;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
 			overlayImageId = ImageId::RestorationHit_Medium;
+		else if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
+			overlayImageId = ImageId::RestorationHit_Large;
 		else
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
-				overlayImageId = ImageId::RestorationHit_Large;
-			else
-				overlayImageId = ImageId::RestorationHit_Small;
+			overlayImageId = ImageId::RestorationHit_Small;
 		if (unit->subunit != NULL)
 			overlayTargetUnit = unit->subunit;
 		else

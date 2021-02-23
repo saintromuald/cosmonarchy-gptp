@@ -373,7 +373,7 @@ s16 CUnit::getBottom() const {
 //-------- Modifying unit state --------//
 
 const u32 Func_SetUnitHp = 0x00467340;
-void CUnit::setHp(s32 hitPoints) {
+void CUnit::setHp(s32 hitPoints, bool deliberateHeal) {
 	assert(this);
 
 	__asm {
@@ -382,6 +382,9 @@ void CUnit::setHp(s32 hitPoints) {
 		MOV ECX, hitPoints
 		CALL Func_SetUnitHp
 		POPAD
+	}
+	if (deliberateHeal && this->hitPoints == hitPoints) {
+		scbw::restoreFunc(this);
 	}
 }
 
