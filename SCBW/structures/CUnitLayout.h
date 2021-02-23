@@ -551,7 +551,7 @@ struct CUnitLayout {
 /*0x104*/ u8        pathingCollisionInterval;  // unknown
 /*0x105*/ u8        pathingFlags;       // 0x01 = uses pathing; 0x02 = ?; 0x04 = ?
 /*0x106*/ u8        unused_0x106;
-/*0x107*/ Bool8      isBeingHealed;		// 1 if a medic is currently healing this unit
+/*0x107*/ Bool8     isBeingHealed;		// 1 if a medic is currently healing this unit
 /*0x108*/ Box16     contourBounds;      // A rect that specifies the closest contour (collision) points
 
 /*0x110*/ u16       removeTimer;        // Hallucination, Dark Swarm, Disruption Web, Broodling (but not Scanner Sweep according to BWAPI)
