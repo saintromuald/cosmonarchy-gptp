@@ -1762,6 +1762,11 @@ u16 random() {
 
 		// Remove Deconstruction
 		scbw::set_generic_value(unit, ValueId::Deconstruction, 0);
+		unit->removeOverlay(1332);
+		if (unit->subunit) {
+			scbw::set_generic_value(unit->subunit, ValueId::Deconstruction, 0);
+			unit->subunit->removeOverlay(1332);
+		}
 
 		//was hardcoded in original code
 		scbw::refreshConsole();
