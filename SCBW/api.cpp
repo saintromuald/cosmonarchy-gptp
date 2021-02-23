@@ -1683,9 +1683,7 @@ u16 random() {
 			scbw::set_generic_timer(unit, ValueId::ParasiteArmTimer, 0);
 			unit->removeOverlay(1031);
 		}
-		if (scbw::get_generic_unit(unit, ValueId::ParasiteSource) != nullptr) {
-			scbw::set_generic_unit(unit, ValueId::ParasiteSource, nullptr);
-		}
+		scbw::set_generic_unit(unit, ValueId::ParasiteSource, nullptr);
 
 		// Remove default flags
 		unit->parasiteFlags = 0;
@@ -1693,7 +1691,6 @@ u16 random() {
 
 		// Remove Ensnare
 		if (unit->ensnareTimer != 0) {
-			unit->ensnareTimer = 0;
 			unit->removeOverlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
 			unit->ensnareTimer = 0;
 			//specific update following ensnare removal
@@ -1702,14 +1699,12 @@ u16 random() {
 
 		// Remove Plague
 		if (unit->plagueTimer != 0) {
-			unit->plagueTimer = 0;
 			unit->removeOverlay(ImageId::PlagueOverlay_Small, ImageId::PlagueOverlay_Large);
 			unit->plagueTimer = 0;
 		}
 
 		// Remove Irradiate
 		if (unit->irradiateTimer != 0) {
-			unit->irradiateTimer = 0;
 			unit->removeOverlay(ImageId::Irradiate_Small, ImageId::Irradiate_Large);
 			unit->irradiateTimer = 0;
 
@@ -1718,14 +1713,12 @@ u16 random() {
 			unit->irradiatePlayerId = 8;
 		}
 
+		// Remove armor rend (generic)
+		scbw::set_generic_value(unit, ValueId::ArmorReduce, 0);
+
 		// Remove Entropy Gauntlets
 		if (scbw::get_generic_timer(unit, ValueId::EntropyGauntlets) > 0) {
 			scbw::set_generic_timer(unit, ValueId::EntropyGauntlets, 1);
-		}
-
-		// Remove armor rend (generic)
-		if (scbw::get_generic_value(unit, ValueId::ArmorReduce) > 0) {
-			scbw::set_generic_value(unit, ValueId::ArmorReduce, 0);
 		}
 
 		// Remove Malediction
@@ -1759,21 +1752,16 @@ u16 random() {
 		}
 
 		// Remove Lockdown
-		if (unit->lockdownTimer != 0)
-			unit->removeLockdown();
+		unit->removeLockdown();
 
 		// Remove Maelstrom
-		if (unit->maelstromTimer != 0)
-			unit->removeMaelstrom();
+		unit->removeMaelstrom();
 
 		// Remove Devourer Acid Spores
-		if (unit->acidSporeCount != 0)
-			unit->removeAcidSpores();
+		unit->removeAcidSpores();
 
 		// Remove Deconstruction
-		if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
-			scbw::set_generic_value(unit, ValueId::Deconstruction, 0);
-		}
+		scbw::set_generic_value(unit, ValueId::Deconstruction, 0);
 
 		//was hardcoded in original code
 		scbw::refreshConsole();
