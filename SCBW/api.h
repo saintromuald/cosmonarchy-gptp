@@ -393,5 +393,6 @@ u16 random();
     s32 getFinalDamage(CUnit* unit, u16 weaponId);
     bool unitIsPacifist(CUnit* unit);
     bool orderIsSpell(s32 orderId);
+    void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound = true);
 
 } //scbw
