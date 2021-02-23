@@ -2121,17 +2121,15 @@ u16 random() {
 	void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound) {
 		// Deconstruction - Pazuzu passive
 		double selfDamage = (0.25 * (double)(weapons_dat::DamageAmount[weaponId] * 256.0));
+		auto deconstructionTarget = unit;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
-			auto deconstructionTarget = (CUnit*)scbw::get_generic_value(unit, ValueId::TurretParentLink);
+			deconstructionTarget = (CUnit*)scbw::get_generic_value(unit, ValueId::TurretParentLink);
 			if (deconstructionTarget == nullptr) {
 				return;
 			}
-			hooks::weaponDamageHook(selfDamage, deconstructionTarget, weaponId, deconstructionTarget, deconstructionTarget->playerId,
-				deconstructionTarget->playerId, 1); //inflictDamage cause crashes!
 		}
-		else {
-			unit->inflictDamage((s32)(selfDamage), unit, scbw::get_generic_value(unit, ValueId::DeconstructionPlayer), false);
-		}
+		hooks::weaponDamageHook(selfDamage, deconstructionTarget, weaponId, deconstructionTarget, deconstructionTarget->playerId,
+			deconstructionTarget->playerId, 1);
 		if (playSound) {
 			scbw::playSound(1372, unit);
 		}
