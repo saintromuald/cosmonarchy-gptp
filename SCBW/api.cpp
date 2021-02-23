@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cassert>
 #include <utility>
+#include <hooks/weapons/weapon_damage.h>
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -2098,9 +2099,8 @@ u16 random() {
 
 	// I may need to make this function more flexible later -- Pr0nogo
 	bool unitIsPacifist(CUnit* unit) {
-		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Attack)
-			|| !(unit->hasWeapon())
-			||	 unit->id == UnitId::ZergLakizilisk; // LAME
+		return !((unit->hasWeapon())
+			||	  unit->id == UnitId::ZergLakizilisk); // LAME
 	}
 
 	// Identical to function OrderIsSpell @ 00436930 -- Pr0nogo
@@ -2116,6 +2116,25 @@ u16 random() {
 			|| orderId == OrderId::PsiStorm
 			|| orderId == OrderId::SummonBroodlings
 			|| orderId == OrderId::FireYamatoGun1;
+	}
+
+	void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound) {
+		// Deconstruction - Pazuzu passive
+		double selfDamage = (0.25 * (double)(weapons_dat::DamageAmount[weaponId] * 256.0));
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
+			auto deconstructionTarget = (CUnit*)scbw::get_generic_value(unit, ValueId::TurretParentLink);
+			if (deconstructionTarget == nullptr) {
+				return;
+			}
+			hooks::weaponDamageHook(selfDamage, deconstructionTarget, weaponId, deconstructionTarget, deconstructionTarget->playerId,
+				deconstructionTarget->playerId, 1); //inflictDamage cause crashes!
+		}
+		else {
+			unit->inflictDamage((s32)(selfDamage), unit, scbw::get_generic_value(unit, ValueId::DeconstructionPlayer), false);
+		}
+		if (playSound) {
+			scbw::playSound(1372, unit);
+		}
 	}
 
 } //scbw
