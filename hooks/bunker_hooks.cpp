@@ -20,12 +20,12 @@ namespace hooks {
 /// Checks whether the unit can attack from inside a bunker.
 void unitAttackFromInsideBunkerHook(CUnit* unit) {
 
-	if (	unit->id == UnitId::TerranMarine
-		||	unit->id == UnitId::TerranFirebat
+	if (	unit->id == UnitId::TerranMaverick
+		||	unit->id == UnitId::TerranHarakan
 		||	unit->id == UnitId::TerranCyprian
 		||	unit->id == UnitId::TerranMadcap
 		||	unit->id == UnitId::TerranApostle
-		||	unit->id == UnitId::TerranGhost
+		||	unit->id == UnitId::TerranEidolon
 		||	unit->id == UnitId::TerranSavant
 		||	unit->id == UnitId::ProtossEcclesiast
 		||	unit->id == UnitId::ZergQuazilisk
@@ -77,7 +77,7 @@ void createBunkerAttackThingyHook(CUnit* unit) {
 	u8 frameAngle;
 	u16 spriteId;
 
-	if (unit->id == UnitId::TerranFirebat) {
+	if (unit->id == UnitId::TerranHarakan) {
 		frameAngle = ((unit->currentDirection1 + 8) / 16 % 16) * 16;
 		spriteId = 378; //Firebat flamethrower graphics
 	}

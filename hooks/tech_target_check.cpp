@@ -53,8 +53,8 @@ u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayerId, u16 techId) {
 			||	target->id == UnitId::ZergLarva
 			||	target->id == UnitId::ZergEgg
 			||	target->id == UnitId::ZergCocoon
-			||	target->id == UnitId::ProtossInterceptor
-			||	target->id == UnitId::ProtossScarab
+			||	target->id == UnitId::ProtossSteward
+			||	target->id == UnitId::ProtossPlasmaShell
 					) {
 				stringId = 876; //Invalid target.<0>
 			}
@@ -64,7 +64,7 @@ u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayerId, u16 techId) {
 		}
 		else
 		if(techId == TechId::Hallucination) {
-			if(target->id == UnitId::ProtossInterceptor)
+			if(target->id == UnitId::ProtossSteward)
 				stringId = 876; // Invalid target.<0>
 			else
 			if(units_dat::BaseProperty[target->id] & UnitProperty::Building)

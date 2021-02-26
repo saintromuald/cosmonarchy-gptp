@@ -183,7 +183,7 @@ public:
 	bool match(CUnit* unit) {		
 		if (unit == observed
 		|| scbw::isAlliedTo(observed->playerId, unit->playerId)
-		|| unit->id != UnitId::TerranScienceVessel) {
+		|| unit->id != UnitId::TerranSeraph) {
 			return false;
 		}
 
@@ -779,7 +779,7 @@ namespace hooks {
 				}
 
 				// Disruption Web - Corsair ability
-				if (unit->id == UnitId::ProtossCorsair) {
+				if (unit->id == UnitId::ProtossLanifect) {
 					auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
 					if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0)) {
 
@@ -968,7 +968,7 @@ namespace hooks {
 						unit, victim
 					);
 					if (a != NULL
-						&& unit->id == UnitId::TerranScienceVessel) {
+						&& unit->id == UnitId::TerranSeraph) {
 						unit->sprite->createOverlay(1230);
 						scbw::set_generic_timer(unit, ValueId::ObservanceOverlayTimer, 18);
 					}

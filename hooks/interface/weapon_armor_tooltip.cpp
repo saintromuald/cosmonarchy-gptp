@@ -15,7 +15,7 @@ char buffer[256];
 u8 getDamageFactorForTooltip(u8 weaponId, CUnit* unit) {
 
 	//Default StarCraft behavior
-	if (unit->id == UnitId::TerranFirebat
+	if (unit->id == UnitId::TerranHarakan
 	||	unit->id == UnitId::ProtossZealot
 	||	unit->id == UnitId::ProtossLegionnaire
 	||	unit->id == UnitId::ProtossAmaranth
@@ -432,7 +432,7 @@ namespace hooks {
 		addStatus(statuses, "Blinded", (bool) unit->isBlind);
 
 		// Case Specific
-		addStatus(statuses, "Sieged", unit->id == UnitId::TerranSiegeTankSiegeMode);
+		addStatus(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode);
 		if (scbw::isUnderDarkSwarm(unit)) {
 			CUnit* darkSwarm = scbw::getDarkSwarm(unit);
 			addStatus(statuses, "Under Dark Swarm", darkSwarm->hitPoints / 256, darkSwarm->removeTimer, TimerType::RemoveTimer);
@@ -521,10 +521,10 @@ namespace hooks {
 	const char* getSpecialTooltipString(u16 iconUnitId, CUnit* unit) {
 		//Default StarCraft behavior
 
-		if (iconUnitId == UnitId::ProtossInterceptor)
+		if (iconUnitId == UnitId::ProtossSteward)
 			return getDamageTooltipString(WeaponId::PulseCannon, unit, 791);		//"Interceptors"
 
-		if (iconUnitId == UnitId::ProtossScarab)
+		if (iconUnitId == UnitId::ProtossPlasmaShell)
 			return getDamageTooltipString(WeaponId::Scarab, unit, 792);				//"Scarabs"
 
 		if (iconUnitId == UnitId::TerranNuclearMissile)

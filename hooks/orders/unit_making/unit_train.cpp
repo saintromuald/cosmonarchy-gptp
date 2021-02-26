@@ -36,9 +36,9 @@ namespace hooks {
 
 	void secondaryOrd_TrainFighter(CUnit* unit) {
 		if(
-			unit->id == UnitId::ProtossCarrier ||
+			unit->id == UnitId::ProtossSolarion ||
 			unit->id == UnitId::Hero_Gantrithor ||
-			unit->id == UnitId::ProtossReaver ||
+			unit->id == UnitId::ProtossAccantor ||
 			unit->id == UnitId::Hero_Warbringer
 		)
 		{
@@ -112,7 +112,7 @@ namespace hooks {
 			else
 			if(unit->secondaryOrderState == 3) {
 
-				if(	unit->id == UnitId::ProtossReaver ||
+				if(	unit->id == UnitId::ProtossAccantor ||
 					unit->id == UnitId::Hero_Warbringer
 				)
 					unit->secondaryOrderState = 4;
@@ -122,7 +122,7 @@ namespace hooks {
 
 					if(inHangarChild != NULL) {
 
-						s32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossInterceptor];
+						s32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossSteward];
 
 						while(inHangarChild != NULL && inHangarChild->hitPoints >= hpInterceptor)
 							inHangarChild = inHangarChild->interceptor.hangar_link.next;
@@ -288,7 +288,7 @@ namespace hooks {
 					jump_to_685D8 = true;			
 
 				if(jump_to_685D8) {
-					if (builtUnit!=NULL && builtUnit->id == UnitId::ProtossCarrier) {
+					if (builtUnit!=NULL && builtUnit->id == UnitId::ProtossSolarion) {
 						int interceptors = 12;
 
 						u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
@@ -318,8 +318,8 @@ namespace hooks {
 		s32 hangarSpace; // eax
 
 		id = a1->id;
-		if (id != UnitId::ProtossCarrier) {
-			if (id != UnitId::ProtossReaver) {
+		if (id != UnitId::ProtossSolarion) {
+			if (id != UnitId::ProtossAccantor) {
 				hangarSpace = 0;
 			}
 			else {

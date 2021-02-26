@@ -23,7 +23,7 @@ bool isTargetWorthHitting(CUnit* target, CUnit* attacker) {
 
   if (target->id == UnitId::scarab
       || target->id == UnitId::TerranSpiderMine
-      || target->id == UnitId::ProtossInterceptor
+      || target->id == UnitId::ProtossSteward
 	  || target->id == UnitId::TerranLobotomyMine)
     return false;
 

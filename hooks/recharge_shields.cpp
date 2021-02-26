@@ -289,8 +289,8 @@ void makeToHoldPosition(CUnit* unit) {
 //Identical to unitIsHangerUnit @ 0x00401450
 bool isHangarUnit(CUnit* unit) {
 	if(
-		unit->id == UnitId::ProtossInterceptor ||
-		unit->id == UnitId::ProtossScarab
+		unit->id == UnitId::ProtossSteward ||
+		unit->id == UnitId::ProtossPlasmaShell
 	)
 		return true;
 	else

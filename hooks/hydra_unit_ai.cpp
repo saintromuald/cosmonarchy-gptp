@@ -55,7 +55,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 			}
 		}
 	}
-	else if (unit->id == UnitId::TerranGhost) {
+	else if (unit->id == UnitId::TerranEidolon) {
 		//mines
 	}
 	else if (unit->id == UnitId::TerranSavant) {
@@ -155,7 +155,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 			unit->mainOrderState = 0;
 		}
 	}
-	else if (unit->id == UnitId::ProtossCorsair) {
+	else if (unit->id == UnitId::ProtossLanifect) {
 		auto web_state = scbw::get_generic_value(unit, ValueId::DisruptionWeb);
 		if (scbw::get_generic_value(unit, ValueId::ExecutingCorsairMoveOrder) != 0) {
 			if (unit->mainOrderId != OrderId::Move) {

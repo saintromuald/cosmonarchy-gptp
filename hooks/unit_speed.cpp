@@ -123,7 +123,7 @@ namespace hooks {
 		}
 
 		// Ghost Somatic Implants: gains 125% movespeed while cloaked
-		else if (unit->id == UnitId::TerranGhost) {
+		else if (unit->id == UnitId::TerranEidolon) {
 			if (
 				unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))
 			{

@@ -82,7 +82,7 @@ namespace hooks {
 			}
 
 			if (
-				unit->id != UnitId::ZergDrone &&
+				unit->id != UnitId::ZergDroleth &&
 				unit->id != UnitId::ZergOvileth
 				)
 				AI_TrainingUnit(unit, unit);
@@ -192,7 +192,7 @@ namespace hooks {
 						eggId = UnitId::ZergCocoon;
 						break;
 					default:
-						if (unit->id != UnitId::ProtossTemplar) {
+						if (unit->id != UnitId::ProtossCantavis) {
 							bStopThere = true;
 						}
 						
@@ -200,7 +200,7 @@ namespace hooks {
 					}
 					//scbw::printFormattedText("Stop status: %d", (int)bStopThere);
 					if (!bStopThere) {
-						if (unit->id == UnitId::ProtossTemplar) {
+						if (unit->id == UnitId::ProtossCantavis) {
 							replaceUnitWithType(unit, UnitId::ProtossAugur);
 							unit->sprite->flags &= ~CSprite_Flags::IscriptCode;
 							if(unit->sprite->images.head != NULL) {
@@ -280,7 +280,7 @@ namespace hooks {
 
 						replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
 						if (
-							unit->id == UnitId::ZergDrone ||
+							unit->id == UnitId::ZergDroleth ||
 							unit->id == UnitId::ZergOvileth
 							)
 							AI_TrainingUnit(unit, unit);
@@ -384,7 +384,7 @@ namespace hooks {
 			}
 		}
 
-		if (unit->id == UnitId::ProtossTemplar) {
+		if (unit->id == UnitId::ProtossCantavis) {
 			if (morphUnitId == UnitId::ProtossAugur) {
 				return true;
 			}
@@ -595,9 +595,9 @@ namespace hooks {
 
 	CUnit* beginTrain(CUnit* unit, u16 unit_id, bool notify_error) {
 		if (unit->status & UnitStatus::GroundedBuilding
-			|| unit->id==UnitId::ProtossCarrier
+			|| unit->id==UnitId::ProtossSolarion
 //			|| unit->id==UnitId::Hero_Gantrithor
-			|| unit->id==UnitId::ProtossReaver
+			|| unit->id==UnitId::ProtossAccantor
 //			|| unit->id==UnitId::Hero_Warbringer
 			|| scbw::isLarvalEgg(unit))//just egg previously
 		{

@@ -425,7 +425,7 @@ namespace hooks {
 
 			if (unit->id == UnitId::ZergExtractor) {
 
-				CUnit* drone = createUnit(UnitId::ZergDrone, unit->getX(), unit->getY(), unit->playerId);
+				CUnit* drone = createUnit(UnitId::ZergDroleth, unit->getX(), unit->getY(), unit->playerId);
 
 				if (drone == NULL) {
 					displayLastNetErrForPlayer(unit->playerId);
@@ -458,7 +458,7 @@ namespace hooks {
 				}
 
 				scbw::playSound(SoundId::Misc_ZBldgPlc_wav_1, unit);
-				replaceUnitWithType(unit, UnitId::ZergDrone);
+				replaceUnitWithType(unit, UnitId::ZergDroleth);
 
 				//probably AI related
 				function_00433FE0(unit);
