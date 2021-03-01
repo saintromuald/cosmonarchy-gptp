@@ -654,8 +654,7 @@ namespace hooks {
 		
 		// Accelerate missiles over time
 		if (bullet->weaponType == WeaponId::PlasmaBarrage
-		|| bullet->weaponType == WeaponId::AntiMatterMissiles
-		||	bullet->weaponType == WeaponId::AcheronMissiles) {
+		||	bullet->weaponType == WeaponId::AntiMatterMissiles) {
 			u8 time_current = 255 - time;
 			if (time_current == 8) {
 				bullet->flingyTopSpeed *= 2;

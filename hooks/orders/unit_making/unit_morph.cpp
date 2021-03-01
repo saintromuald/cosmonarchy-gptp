@@ -56,10 +56,6 @@ namespace hooks {
 
 			unit->orderSignal -= 4;
 			bool vorvaling = false;
-/*			if (unit->previousUnitType == UnitId::ZergVorvaling || unit->previousUnitType==UnitId::ZergNathrokor || 
-				unit->previousUnitType == UnitId::EggVorvaling || unit->previousUnitType==UnitId::EggNathrokor) {
-				vorvaling = true;
-			}*/
 			auto origin = unit->eggOrigin;
 			if (origin == UnitId::ZergZergling) {
 				vorvaling = true;
@@ -191,6 +187,13 @@ namespace hooks {
 					case UnitId::ZergIroleth:
 						eggId = UnitId::ZergCocoon;
 						break;
+					case UnitId::ZergMatraleth:
+						if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergKonvilisk) {
+							eggId = UnitId::ZergEgg;
+						}
+						else {
+							eggId = UnitId::ZergCocoon;
+						}
 					default:
 						if (unit->id != UnitId::ProtossCantavis) {
 							bStopThere = true;

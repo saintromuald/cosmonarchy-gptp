@@ -303,7 +303,7 @@ namespace ValueId {
 		AdaptiveAmitosis							= 156,		
 		EnthrallingTalons							= 157,		
 		InfestedByAkistrokor						= 158,		
-		FertileSpines								= 159,		
+		FertileSpines								= 159,		// unused
 		TurretParentLink							= 160,		 
 		BindingGripTimer							= 161,		 
 	};	
