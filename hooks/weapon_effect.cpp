@@ -502,26 +502,16 @@ namespace hooks {
 
 	class parasiteProc : public scbw::UnitFinderCallbackProcInterface {
 	private:
-		u8 _playerID;
-		CUnit* _queen;
+		u8 playerID;
+		CUnit* queen;
 	public:
 		parasiteProc(u8 playerID, CUnit* queen) {
-			_playerID = playerID;
-			_queen = queen;
+			this->playerID = playerID;
+			this->queen = queen;
 		}
 
 		void proc(CUnit* unit) {
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::Building) return;
-			if (unit->status & UnitStatus::Burrowed) return;
-			int playerFlag = 1 << _playerID;
-			constexpr int defaultArmParasiteTimer = (24 * 2) + 1;
-			if (unit->parasiteFlags != playerFlag) { // <- Prevent overwriting timer for already parasited units by same player
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::ParasiteArmTimer, defaultArmParasiteTimer, 0);
-				unit->sprite->createOverlay(1031, 0, 0, 0);
-			}
-			scbw::sendGPTP_aise_cmd(unit, _queen, GptpId::SetGenericUnit, ValueId::ParasiteSource, 0, 0);
-			unit->parasiteFlags = playerFlag; // Parasite now overwrites other players' parasite
-			scbw::refreshConsole();
+			scbw::applyParasite(unit, playerID, queen);
 		}
 	};
 

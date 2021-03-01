@@ -405,10 +405,8 @@ namespace hooks {
 			// Fertile Spines - Konvilisk behavior
 			if (attacker != nullptr
 			&&	attacker->id == UnitId::ZergKonvilisk
-			&&	scbw::canBeParasited(target)
-			&&	!scbw::unitIsParasited(target)
-			&&	target->getCurrentHpInGame() < (target->getMaxHpInGame() / 2)) {
-				scbw::set_generic_timer(target, ValueId::ParasiteArmTimer, (24 * 2) + 1); // replace with unitconstant later
+			/*&&	target->getCurrentHpInGame() < (target->getMaxHpInGame() / 2)*/) {
+				scbw::applyParasite(target, attacker->playerId, attacker);
 			}
 
 			// Deconstruction - Pazuzu behavior - apply stack
@@ -556,9 +554,9 @@ namespace hooks {
 			// Quazilisk - Melting Points
 			if (weaponId == WeaponId::AcridBarbs) {
 				float missingFactor = 1 - ((float)target->hitPoints / target->getMaxHpRaw());
-				float damageIncrease = floor(missingFactor / QUAZILISK_PASSIVE_FACTOR);
+				float damageIncrease = floor(missingFactor / QuazaliskPassiveFactor);
 				//scbw::print("Damage Increase: " + std::to_string(damageIncrease));
-				damage += damageIncrease * HEALTH_MULTIPLIER;
+				damage += damageIncrease * HealthMultiplier;
 			}
 
 			// Hallucinations deal half damage

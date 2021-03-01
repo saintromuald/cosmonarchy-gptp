@@ -26,32 +26,35 @@ static constexpr int operator "" s(long double amount) {
 // Note: I would recommend having unit name as first segment of any related variable name.
 
 // General
-constexpr int HEALTH_MULTIPLIER = 256;
+constexpr int HealthMultiplier = 256;
 
 // Madcap
-constexpr int MADCAP_PASSIVE_DECAY_TIME = 0.5s;
-constexpr int MADCAP_MAX_STACKS = 10;
-constexpr double MADCAP_ATTACK_SPEED_PER_STACK = 0.05;
+constexpr int MadcapPassiveDecayTime = 0.5s;
+constexpr int MadcapMaxStacks = 10;
+constexpr double MadcapAttackSpeedPerStack = 0.05;
 
 // Corsair - Disruption Web - AI
-constexpr int AI_WEB_SEEK_RANGE = 96;
-constexpr int AI_CORSAIR_ALLY_SEEK_RANGE = 128;
-constexpr int AI_CORSAIR_ENEMY_SEEK_RANGE = 128;
-constexpr double AI_CORSAIR_LIFE_PERCENTAGE = 0.5;
-constexpr int AI_WEB_MIN_ENERGY = 30;
-constexpr int AI_WEB_ALLY_MIN_COUNT = 3;
-constexpr int AI_WEB_ENEMY_MIN_COUNT = 2;
-constexpr int AI_WEB_TIMER = 3 * 24;
+constexpr int AIWebSeekRange = 96;
+constexpr int AICorsairAllySeekRange = 128;
+constexpr int AICorsairEnemySeekRange = 128;
+constexpr double AICorsairLifePercentage = 0.5;
+constexpr int AIWebMinEnergy = 30;
+constexpr int AIWebAllyMinCount = 3;
+constexpr int AIWebEnemyMinCount = 2;
+constexpr int AIWebTimer = 3 * 24;
 
 // Star Sovereign - Grief of All Gods - AI
-constexpr int AI_STARSOVEREIGN_ABIL_SEEKRANGE = 32 * 10;
-constexpr int AI_STARSOVEREIGN_ABIL_MIN_ENEMY_HEALTH = 2000;
-constexpr int AI_STARSOVEREIGN_ABIL_MAX_ALLY_HEALTH = 2000;
-constexpr double AI_STARSOVEREIGN_ABIL_LIFE_PERCENTAGE = 0.5;
-constexpr int AI_STARSOVEREIGN_ABIL_TIMER = 612;
+constexpr int AIStarsovereignAbilSeekRange = 32 * 10;
+constexpr int AIStarsovereignAbilMinEnemyHealth = 2000;
+constexpr int AIStarsovereignAbilMaxAllyHealth = 2000;
+constexpr double AIStarsovereignAbilLifePercentage = 0.5;
+constexpr int AIStarsovereignAbilTimer = 612;
 
 // Quazilisk - Passive
-constexpr double QUAZILISK_PASSIVE_FACTOR = 0.1;
+constexpr double QuazaliskPassiveFactor = 0.1;
 
 // Larval Colony
-constexpr double LARVAL_COLONY_MULTIPLIER = 0.75;
+constexpr double LarvalColonyMultiplier = 0.75;
+
+// Matraleth - Parasite
+constexpr int DefaultArmParasiteTimer = (24 * 2) + 1;

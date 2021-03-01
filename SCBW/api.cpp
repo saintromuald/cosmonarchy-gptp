@@ -2128,12 +2128,20 @@ u16 random() {
 	}
 
 	bool canBeParasited(CUnit* unit) {
-		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Building);
+		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Building)
+			&& !(unit->status & UnitStatus::Burrowed);
 	}
 
-	bool unitIsParasited(CUnit* unit) {
-		return !scbw::get_generic_timer(unit, ValueId::ParasiteArmTimer)
-			&& !unit->parasiteFlags;
+	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen) {
+		if (!scbw::canBeParasited(unit)) return;
+		int playerFlag = 1 << playerID;
+		if (unit->parasiteFlags != playerFlag) { // <- Prevent overwriting timer for already parasited units by same player
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::ParasiteArmTimer, DefaultArmParasiteTimer, 0);
+			unit->sprite->createOverlay(1031, 0, 0, 0);
+		}
+		scbw::sendGPTP_aise_cmd(unit, queen, GptpId::SetGenericUnit, ValueId::ParasiteSource, 0, 0);
+		unit->parasiteFlags = playerFlag; // Parasite now overwrites other player's parasite
+		scbw::refreshConsole();
 	}
 
 } //scbw

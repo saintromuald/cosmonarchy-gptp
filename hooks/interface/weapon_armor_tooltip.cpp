@@ -395,7 +395,7 @@ namespace hooks {
 		// Aise Value
 		addStatus(statuses, "Energy Decay", scbw::get_generic_value(unit, ValueId::EntropyGauntlets));
 		addStatus(statuses, "Armor Reduction", scbw::get_generic_value(unit, ValueId::ArmorReduce));
-		addStatus(statuses, "Cabeirus Feeders", ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MADCAP_PASSIVE_DECAY_TIME));
+		addStatus(statuses, "Cabeirus Feeders", ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime));
 		addStatus(statuses, "Reverse Thrust", scbw::get_generic_value(unit, ValueId::ReverseThrust));
 		addStatus(statuses, "Sublime Shepherd", scbw::get_generic_value(unit, ValueId::SublimeShepherd));
 		addStatus(statuses, "Lazarus Agent", scbw::get_generic_value(unit, ValueId::LazarusAgent));
