@@ -53,7 +53,7 @@ namespace hooks {
 		int increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 		int decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
 
-		// Ultralisk Kaiser Rampage: gains 150% movespeed on kill for 1 second
+		// Ultrakor Kaiser Rampage: gains 150% movespeed on kill for 1 second
 		if (unit->id == UnitId::ZergUltrakor) {
 			if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
 				speed += speed;
@@ -80,7 +80,7 @@ namespace hooks {
 			}
 		}
 
-		// Dark Archon Malediction: Apply movespeed slow to Maelstrom victims once stun wears off
+		// Mind Tyrant Malediction: Apply movespeed slow to Maelstrom victims once stun wears off
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::MaledictionSlow, 0) > 1) {
 			speed /= 2;
 		}
@@ -89,6 +89,7 @@ namespace hooks {
 		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::LobotomySlow, 0) > 1) {
 			speed /= 2;
 		}
+
 		// Wyvern Reverse Thrust ability: reduce movespeed
 		if (unit->id == UnitId::TerranWyvern && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::ReverseThrust, 0) == 1) {
 			speed /= 2;
@@ -122,7 +123,7 @@ namespace hooks {
 			}
 		}
 
-		// Ghost Somatic Implants: gains 125% movespeed while cloaked
+		// Eidolon Somatic Implants: gains 125% movespeed while cloaked
 		else if (unit->id == UnitId::TerranEidolon) {
 			if (
 				unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))
@@ -131,7 +132,8 @@ namespace hooks {
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SomaticImplants, 1, 0);
 			}
 		}
-		//Clarion shield movespeed gain
+
+		//Clarion Harmony Drive: gains increased movement speed based on shields
 		else if (unit->id == UnitId::ProtossClarion) {
 			double fraction = (double)unit->shields / ((double)units_dat::MaxShieldPoints[unit->id]*256);
 			double newSpeed = (double)speed*(1.0 + fraction);
@@ -144,27 +146,19 @@ namespace hooks {
 		|| unit->id == UnitId::Hero_Artanis)
 			speed = 1707;
 
-		// Muscular Augment (Hydralisk): gains 150% movespeed
+		// Hardcode ideal movement speeds
 		else if (unit->id == UnitId::ZergHydralisk) {
 			speed += speed / 2;
 		}
-
-		// Leg Enhancements (Zealot): gains 125% movespeed
 		else if (unit->id == UnitId::ProtossZealot) {
 			speed += speed / 4;
 		}
-
-		// Leg Enhancements (Legionnaire): gains 150% movespeed
 		else if (unit->id == UnitId::ProtossLegionnaire) {
 			speed += speed / 2;
 		}
-
-		// Leg Enhancements (Dark Templar): gains 120% movespeed
 		else if (unit->id == UnitId::ProtossCabalist) {
 			speed += speed / 5;
 		}
-
-		// Cyprian: hardcode ideal movement speed
 		else if (unit->id == UnitId::TerranCyprian) {
 			speed += (speed / 5);
 		}
