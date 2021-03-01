@@ -330,7 +330,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 1, 0);
 	}
 
-	// Parasite - spawning broodlings on death
+	// Parasite - spawn broodlings on death
 	if (unit->parasiteFlags != 0) {
 		int supplyCount = scbw::getBroodlingCountFromSupply(unit);
 		int type = unit->status & UnitStatus::InAir ? UnitId::ZergBroodlisk : UnitId::ZergBroodling;

@@ -2127,4 +2127,13 @@ u16 random() {
 		}
 	}
 
+	bool canBeParasited(CUnit* unit) {
+		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Building);
+	}
+
+	bool unitIsParasited(CUnit* unit) {
+		return !scbw::get_generic_timer(unit, ValueId::ParasiteArmTimer)
+			&& !unit->parasiteFlags;
+	}
+
 } //scbw
