@@ -167,7 +167,7 @@ namespace hooks {
 
 			if (weaponId == WeaponId::JavelinCannons) {
 				const double splashBase = weapons_dat::OuterSplashRadius[WeaponId::JavelinCannons];
-				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::TitanReactorsStack);
+				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
 				outer = (s16)(splashBase * (1 + 0.1 * stacks));
 			}
 
@@ -189,7 +189,7 @@ namespace hooks {
 
 			if (weaponId == WeaponId::JavelinCannons) {
 				const double splashBase = weapons_dat::InnerSplashRadius[WeaponId::JavelinCannons];
-				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::TitanReactorsStack);
+				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
 				inner = (s16)(splashBase * (1 + 0.1 * stacks));
 			}
 
@@ -211,7 +211,7 @@ namespace hooks {
 
 			if (weaponId == WeaponId::JavelinCannons) {
 				const double splashBase = weapons_dat::MediumSplashRadius[WeaponId::JavelinCannons];
-				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::TitanReactorsStack);
+				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
 				medium = (s16)(splashBase * (1 + 0.1 * stacks));
 			}
 

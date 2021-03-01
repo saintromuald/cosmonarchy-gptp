@@ -279,7 +279,7 @@ namespace ValueId {
 		AI_CorsairDweb_Timer						= 132,		
 		EnsnaringBroodTimer							= 133,		
 		EnsnaringBroodAbility						= 134,		
-		OldEggOrigin								= 135,		// depricated, remove later
+		CutaneousBarrier							= 135,
 		IonCannonProjectilePos						= 136,		
 		UltrakorCancelGimmick						= 137,		
 		SwarmingOmenTimer							= 138,		
@@ -289,8 +289,8 @@ namespace ValueId {
 		IsReviving									= 142,		
 		SwarmingOmenStatus							= 143,		
 		ProtectiveInstinctsStatus					= 144,		
-		TitanReactorsStack							= 145,		
-		TitanReactorsTimer							= 146,		
+		NemeanReactorsStack							= 145,		
+		NemeanReactorsTimer							= 146,		
 		Deconstruction								= 147,		
 		DeconstructionPlayer						= 148,		
 		RescindMindControl							= 149,		
@@ -305,6 +305,7 @@ namespace ValueId {
 		InfestedByAkistrokor						= 158,		
 		FertileSpines								= 159,		
 		TurretParentLink							= 160,		 
+		BindingGripTimer							= 161,		 
 	};	
 }
 #include "SCBW\enumerations\TechId.h"

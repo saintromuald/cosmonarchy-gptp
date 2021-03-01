@@ -472,10 +472,10 @@ namespace hooks {
 				}
 				// Titan Reactors - Heracles behavior - Refresh timer on attack and add stack
 				if (weaponId == WeaponId::JavelinCannons) {
-					scbw::set_generic_timer(unit, ValueId::TitanReactorsTimer, 24*5);
-					s32 stacks = scbw::get_generic_value(unit, ValueId::TitanReactorsStack);
+					scbw::set_generic_timer(unit, ValueId::NemeanReactorsTimer, 24*5);
+					s32 stacks = scbw::get_generic_value(unit, ValueId::NemeanReactorsStack);
 					if (stacks < 5) {
-						scbw::set_generic_value(unit, ValueId::TitanReactorsStack, stacks + 1);
+						scbw::set_generic_value(unit, ValueId::NemeanReactorsStack, stacks + 1);
 						scbw::playSound(1372, unit);
 					}
 				}

@@ -1198,8 +1198,8 @@ namespace hooks {
 				}
 
 				// Remove all Titan Reactors stacks after not attacking for 5 seconds
-				if (scbw::get_generic_timer(unit, ValueId::TitanReactorsTimer) == 1) {
-					scbw::set_generic_value(unit, ValueId::TitanReactorsStack, 0);
+				if (scbw::get_generic_timer(unit, ValueId::NemeanReactorsTimer) == 1) {
+					scbw::set_generic_value(unit, ValueId::NemeanReactorsStack, 0);
 					// remove overlay later
 				}
 
