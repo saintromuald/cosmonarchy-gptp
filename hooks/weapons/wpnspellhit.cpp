@@ -1054,7 +1054,7 @@ namespace {
 			temp_unit->killCount++;
 
 		while(
-			temp_unit->id == UnitId::ProtossInterceptor &&
+			temp_unit->id == UnitId::ProtossSteward &&
 			temp_unit->interceptor.parent != NULL
 		) {
 

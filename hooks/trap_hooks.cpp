@@ -149,7 +149,7 @@ namespace hooks {
             }
         }
         else if (v1->sprite->flags & 0x20) {
-            if (v3 != UnitId::ProtossInterceptor && v3 != UnitId::ProtossScarab) {
+            if (v3 != UnitId::ProtossSteward && v3 != UnitId::ProtossPlasmaShell) {
                 initUnitTrapDoodad(v1);
             }
         }

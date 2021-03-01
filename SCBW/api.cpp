@@ -206,7 +206,7 @@ bool teleport(CUnit* u, Point16 target, u16 spriteAnimation, bool preserveOrder)
 
 		//disconnect a nuke from a ghost using it
 		if (
-			u->id == UnitId::TerranGhost ||
+			u->id == UnitId::TerranEidolon ||
 			u->id == UnitId::Hero_SarahKerrigan ||
 			u->id == UnitId::Hero_AlexeiStukov ||
 			u->id == UnitId::Hero_SamirDuran ||
@@ -746,7 +746,7 @@ bool isConventionalUnitMorphSource(u16 id, bool allow_larvae, bool allow_high_te
 	default:
 		break;
 	}
-	if (id == UnitId::ProtossTemplar && allow_high_templar) {
+	if (id == UnitId::ProtossCantavis && allow_high_templar) {
 		return true;
 	}
 	if (id == UnitId::ZergLarva && allow_larvae) {
@@ -1625,10 +1625,10 @@ u16 random() {
 	bool canUseCliffAdvantage(CUnit* unit, u8 weapon) {
 		return unit != nullptr
 			&& !(unit->status & UnitStatus::InAir)
-			&& unit->id != UnitId::ProtossScarab
+			&& unit->id != UnitId::ProtossPlasmaShell
 			&& (weapon == NULL || weapons_dat::MaxRange[weapon] > 32)
 			&& !(unit->status & UnitStatus::InBuilding)
-			&& unit->id != UnitId::TerranFirebat;
+			&& unit->id != UnitId::TerranHarakan;
 	}
 
 	s32 getCliffAdvantage(CUnit* unit, u8 weapon) {

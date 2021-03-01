@@ -21,7 +21,7 @@ void CMDRECV_Siege(u8 bCommandType) {
 	while(current_selection != NULL) {
 
 		if(
-			(current_selection->id == UnitId::TerranSiegeTankTankMode ||
+			(current_selection->id == UnitId::TerranPhalanxTankMode ||
 			current_selection->id == UnitId::Hero_EdmundDukeTankMode) &&
 			current_selection->mainOrderId != OrderId::SiegeMode
 		)
@@ -65,7 +65,7 @@ void CMDRECV_Unsiege(u8 bCommandType) {
 	while(current_selection != NULL) {
 
 		if(
-			(current_selection->id == UnitId::TerranSiegeTankSiegeMode ||
+			(current_selection->id == UnitId::TerranPhalanxSiegeMode ||
 			current_selection->id == UnitId::Hero_EdmundDukeSiegeMode) &&
 			current_selection->mainOrderId != OrderId::TankMode
 		)

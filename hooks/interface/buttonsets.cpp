@@ -172,7 +172,7 @@ BUTTON_SET* getCustomButtonSet() {
 	static BUTTON customButtonsArray[50]; //
 
 										  //since it's a copy of the marine set, it would have the same amount of buttons
-	customButtonSet.buttonsInSet = buttonSetTable[UnitId::TerranMarine].buttonsInSet;
+	customButtonSet.buttonsInSet = buttonSetTable[UnitId::TerranMaverick].buttonsInSet;
 
 	//connectedUnit should usually be init at 0xFFFF.Almost unused (maybe not fully implemented).
 	customButtonSet.connectedUnit = 0xFFFF;
@@ -183,14 +183,14 @@ BUTTON_SET* getCustomButtonSet() {
 	//For each button in the array until reaching the amount of buttonsInSet, copy the data for
 	//each member of the button structure from the marine to the custom set.
 	for (u32 i = 0; i < customButtonSet.buttonsInSet; i++) {
-		customButtonsArray[i].actFunc = buttonSetTable[UnitId::TerranMarine].firstButton[i].actFunc;
-		customButtonsArray[i].actStringID = buttonSetTable[UnitId::TerranMarine].firstButton[i].actStringID;
-		customButtonsArray[i].actVar = buttonSetTable[UnitId::TerranMarine].firstButton[i].actVar;
-		customButtonsArray[i].iconID = buttonSetTable[UnitId::TerranMarine].firstButton[i].iconID;
-		customButtonsArray[i].position = buttonSetTable[UnitId::TerranMarine].firstButton[i].position;
-		customButtonsArray[i].reqFunc = buttonSetTable[UnitId::TerranMarine].firstButton[i].reqFunc;
-		customButtonsArray[i].reqStringID = buttonSetTable[UnitId::TerranMarine].firstButton[i].reqStringID;
-		customButtonsArray[i].reqVar = buttonSetTable[UnitId::TerranMarine].firstButton[i].reqVar;
+		customButtonsArray[i].actFunc = buttonSetTable[UnitId::TerranMaverick].firstButton[i].actFunc;
+		customButtonsArray[i].actStringID = buttonSetTable[UnitId::TerranMaverick].firstButton[i].actStringID;
+		customButtonsArray[i].actVar = buttonSetTable[UnitId::TerranMaverick].firstButton[i].actVar;
+		customButtonsArray[i].iconID = buttonSetTable[UnitId::TerranMaverick].firstButton[i].iconID;
+		customButtonsArray[i].position = buttonSetTable[UnitId::TerranMaverick].firstButton[i].position;
+		customButtonsArray[i].reqFunc = buttonSetTable[UnitId::TerranMaverick].firstButton[i].reqFunc;
+		customButtonsArray[i].reqStringID = buttonSetTable[UnitId::TerranMaverick].firstButton[i].reqStringID;
+		customButtonsArray[i].reqVar = buttonSetTable[UnitId::TerranMaverick].firstButton[i].reqVar;
 	}
 
 	return &customButtonSet;
@@ -724,7 +724,7 @@ namespace hooks {
 						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Can_Create_UnitorBuilding) {
 
 							// Barracks buttonset handling
-							if (current_button->reqVar == UnitId::TerranMedic
+							if (current_button->reqVar == UnitId::TerranCleric
 							||	current_button->reqVar == UnitId::TerranShaman) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
@@ -737,7 +737,7 @@ namespace hooks {
 								}
 							}
 							else
-							if (current_button->reqVar == UnitId::TerranGhost
+							if (current_button->reqVar == UnitId::TerranEidolon
 							||	current_button->reqVar == UnitId::TerranSavant) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
@@ -751,7 +751,7 @@ namespace hooks {
 							}
 
 							// Factory buttonset handling
-							if (current_button->reqVar == UnitId::TerranSiegeTankTankMode
+							if (current_button->reqVar == UnitId::TerranPhalanxTankMode
 							||	current_button->reqVar == UnitId::TerranGoliath) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
@@ -793,7 +793,7 @@ namespace hooks {
 							}
 							else
 							if (current_button->reqVar == UnitId::TerranAzazel
-							||	current_button->reqVar == UnitId::TerranScienceVessel) {
+							||	current_button->reqVar == UnitId::TerranSeraph) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
@@ -817,7 +817,7 @@ namespace hooks {
 
 								// TERRAN \\
 
-								if ((*activePortraitUnit)->id == UnitId::TerranFirebat && //Firebat Apollyoid Adhesive passive
+								if ((*activePortraitUnit)->id == UnitId::TerranHarakan && //Firebat Apollyoid Adhesive passive
 									current_button->iconID == IconId::Flyer_Attack)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -832,7 +832,7 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranGhost &&  //Ghost Somatic Implants passive
+								if ((*activePortraitUnit)->id == UnitId::TerranEidolon &&  //Ghost Somatic Implants passive
 									current_button->iconID == IconId::OcularImplants)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -872,12 +872,12 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranSiegeTankTankMode &&  //Siege Tank Babylon Plating passive
+								if ((*activePortraitUnit)->id == UnitId::TerranPhalanxTankMode &&  //Siege Tank Babylon Plating passive
 									current_button->iconID == IconId::TerranVehiclePlating)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranSiegeTankSiegeMode &&  //Siege Tank Babylon Plating passive
+								if ((*activePortraitUnit)->id == UnitId::TerranPhalanxSiegeMode &&  //Siege Tank Babylon Plating passive
 									current_button->iconID == IconId::TerranVehiclePlating)
 								{
 									current_button_state = BUTTON_STATE::Disabled; // Disable while sieged
@@ -909,7 +909,7 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranDropship &&  //Dropship Hotdrop passive
+								if ((*activePortraitUnit)->id == UnitId::TerranTrojan &&  //Dropship Hotdrop passive
 									current_button->iconID == IconId::Land)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -934,7 +934,7 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranScienceVessel &&  //Science Vessel Radiation Shockwave passive
+								if ((*activePortraitUnit)->id == UnitId::TerranSeraph &&  //Science Vessel Radiation Shockwave passive
 									current_button->iconID == IconId::EMPShockwave)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -944,12 +944,12 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser &&  //Battlecruiser Fore Castle passive 
+								if ((*activePortraitUnit)->id == UnitId::TerranMinotaur &&  //Battlecruiser Fore Castle passive 
 									current_button->iconID == IconId::TerranShipPlating)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranBattlecruiser &&  //Battlecruiser Monoceros Targeting passive 
+								if ((*activePortraitUnit)->id == UnitId::TerranMinotaur &&  //Battlecruiser Monoceros Targeting passive 
 									current_button->iconID == IconId::SingularityCharge)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -1008,12 +1008,12 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossTemplar &&  //High Templar Ascendancy passive
+								if ((*activePortraitUnit)->id == UnitId::ProtossCantavis &&  //High Templar Ascendancy passive
 									current_button->iconID == IconId::MindControlUnused)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossTemplar &&  //High Templar Ephemeral Blades passive
+								if ((*activePortraitUnit)->id == UnitId::ProtossCantavis &&  //High Templar Ephemeral Blades passive
 									current_button->iconID == IconId::ProtossGroundWeapons)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -1083,7 +1083,7 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossArbiter &&  //Arbiter Shroud of Adun passive
+								if ((*activePortraitUnit)->id == UnitId::ProtossDidact &&  //Arbiter Shroud of Adun passive
 									current_button->iconID == IconId::PhotonCannon_Weapon)
 								{
 									current_button_state = BUTTON_STATE::Enabled;

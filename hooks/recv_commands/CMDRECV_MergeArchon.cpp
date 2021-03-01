@@ -165,7 +165,7 @@ void CMDRECV_MergeArchon() {
 
 		while(current_unit != NULL) {
 
-			if(current_unit->id == UnitId::ProtossTemplar) {
+			if(current_unit->id == UnitId::ProtossCantavis) {
 				templars_stored[templars_stored_count] = current_unit;
 				templars_stored_count++;
 			}

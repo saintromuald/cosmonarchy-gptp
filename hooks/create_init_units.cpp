@@ -31,11 +31,11 @@ u8 GetRaceTownhall(u8 raceId) {
 
 u8 GetRaceWorker(u8 raceId) {
 	if (raceId == RaceId::Zerg)
-		return UnitId::ZergDrone;
+		return UnitId::ZergDroleth;
 	else if (raceId == RaceId::Terran)
-		return UnitId::TerranSCV;
+		return UnitId::TerranMason;
 	else if (raceId == RaceId::Protoss)
-		return UnitId::ProtossProbe;
+		return UnitId::ProtossScribe;
 	else
 		return UnitId::None;
 }

@@ -282,7 +282,7 @@ namespace hooks {
 
 							if(unitToUnload != NULL) {
 
-								if(unitToUnload->id == UnitId::ProtossReaver && bIsDistanceGreaterThanHaltDistance)
+								if(unitToUnload->id == UnitId::ProtossAccantor && bIsDistanceGreaterThanHaltDistance)
 									bStopLoop = true;
 								else 
 								if(function_004E76C0(unit, unitToUnload, &pos) == 0) {

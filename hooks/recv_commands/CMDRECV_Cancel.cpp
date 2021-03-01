@@ -27,8 +27,8 @@ void CMDRECV_CancelNuke() {
 	while(current_unit != NULL) {
 
 		// Why is it like this? We should instead check if the unit has a connected nuke, rather than doing insipid hardcode.
-		if(current_unit->id == UnitId::TerranGhost
-		|| current_unit->id == UnitId::TerranScienceVessel
+		if(current_unit->id == UnitId::TerranEidolon
+		|| current_unit->id == UnitId::TerranSeraph
 		)
 		{
 

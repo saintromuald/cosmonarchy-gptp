@@ -283,7 +283,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	Globals.remove_unit_from_pariah_table(unit,false);
 	Globals.clear_ptr_in_apostle_table(unit);
 	Globals.unitDeathHook(unit);
-	if (unit->id == UnitId::ProtossCorsair) {
+	if (unit->id == UnitId::ProtossLanifect) {
 		auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
 		if (web != NULL) {
 			web->removeTimer = 5 * 24;
@@ -366,15 +366,15 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	}
 
 	//Destroy interceptors and scarabs
-	if (unit->id == UnitId::ProtossCarrier
-	||  unit->id == UnitId::ProtossReaver) {
+	if (unit->id == UnitId::ProtossSolarion
+	||  unit->id == UnitId::ProtossAccantor) {
 		killAllHangarUnits(unit);
 	}
 
 	//Destroy nuclear missiles mid-launch
 	else
-	if (unit->id == UnitId::TerranGhost
-	||  unit->id == UnitId::TerranScienceVessel) {
+	if (unit->id == UnitId::TerranEidolon
+	||  unit->id == UnitId::TerranSeraph) {
 		if (unit->building.ghostNukeMissile != NULL) {
 			(unit->building.ghostNukeMissile)->sprite->playIscriptAnim(IscriptAnimation::Death, true);
 			unit->building.ghostNukeMissile = NULL;
@@ -403,7 +403,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		//those tests
 
 		//Is a scarab or interceptor
-		if (unit->id == UnitId::ProtossScarab || unit->id == UnitId::ProtossInterceptor) {
+		if (unit->id == UnitId::ProtossPlasmaShell || unit->id == UnitId::ProtossSteward) {
 
 			if (unit->status & UnitStatus::Completed) {
 

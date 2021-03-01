@@ -166,7 +166,7 @@ class ascendancyProc : public scbw::UnitFinderCallbackProcInterface {
 private:
 public:
 	void proc(CUnit* unit) {
-		if (unit->id != UnitId::ProtossTemplar) {
+		if (unit->id != UnitId::ProtossCantavis) {
 			return;
 		}
 		if (
@@ -629,7 +629,7 @@ namespace hooks {
 				s32 armorTotal = target->getArmor() * 256;
 				if (attacker != NULL && target != NULL) {
 					armorTotal += scbw::get_aise_value(target, NULL, AiseId::GetShepherds, 0, 0) * 256;
-					if (target->id == UnitId::TerranBattlecruiser) {
+					if (target->id == UnitId::TerranMinotaur) {
 						u16 angle = scbw::getAngle(target->position.x, target->position.y,
 							attacker->position.x, attacker->position.y);
 						u16 unit_angle = target->velocityDirection1;
@@ -863,8 +863,8 @@ namespace hooks {
 			if (attacker != NULL) { // looks like target will always be alive if this function was called?
 				if (scbw::get_aise_value(target, 0, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0) >= 1) {
 					CUnit* haluAttacker = attacker;
-					if ((haluAttacker->id == UnitId::ProtossInterceptor
-						|| haluAttacker->id == UnitId::ProtossScarab)
+					if ((haluAttacker->id == UnitId::ProtossSteward
+						|| haluAttacker->id == UnitId::ProtossPlasmaShell)
 						&& attacker->interceptor.parent != NULL) {
 						haluAttacker = attacker->interceptor.parent;
 					}

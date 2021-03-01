@@ -23,11 +23,11 @@ void CMDRECV_TrainFighter() {
 		u32 unitToBuild;
 
 		//the original code was messy, simplified/optimized version here
-		if(current_selection->id == UnitId::ProtossCarrier)
-			unitToBuild = UnitId::ProtossInterceptor;
+		if(current_selection->id == UnitId::ProtossSolarion)
+			unitToBuild = UnitId::ProtossSteward;
 		else
-		if(current_selection->id == UnitId::ProtossReaver)
-			unitToBuild = UnitId::ProtossScarab;
+		if(current_selection->id == UnitId::ProtossAccantor)
+			unitToBuild = UnitId::ProtossPlasmaShell;
 		else
 			unitToBuild = 0; //not translating it as marine as it's an error case
 
@@ -35,8 +35,8 @@ void CMDRECV_TrainFighter() {
 			HasMoneyCanMake(current_selection,unitToBuild) //add unit to build queue if successful
 			) 
 		{
-			if(	current_selection->id == UnitId::ProtossCarrier ||
-				current_selection->id == UnitId::ProtossReaver
+			if(	current_selection->id == UnitId::ProtossSolarion ||
+				current_selection->id == UnitId::ProtossAccantor
 				)
 			{
 

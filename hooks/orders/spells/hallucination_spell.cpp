@@ -98,7 +98,7 @@ namespace hooks {
 			if (!currentHalTimer || halTimer < currentHalTimer)
 				halUnit2->removeTimer = halTimer;
 			unitType = halUnit2->id;
-			if (unitType == UnitId::ProtossReaver)	// Originally also ran for Warbringer ID
+			if (unitType == UnitId::ProtossAccantor)	// Originally also ran for Warbringer ID
 				hallucinateScarabs(halUnit2, v3);
 			AI_TrainingUnit(halUnit2, halUnit2);
 			result = halUnit2;

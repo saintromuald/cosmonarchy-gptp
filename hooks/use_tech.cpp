@@ -145,7 +145,7 @@ namespace hooks
 				TechCapableUnit = true;
 				
 			}
-			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossCorsair &&
+			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossLanifect &&
 				scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0) == 1) {
 				TechCapableUnit = true;
 

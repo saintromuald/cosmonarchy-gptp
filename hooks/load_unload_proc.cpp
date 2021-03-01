@@ -97,7 +97,7 @@ namespace hooks {
 
 		scbw::playSound(SoundId::Misc_ZOvTra00_wav + unitRaceId, unit);
 
-		if (unitToLoad->id == UnitId::TerranSCV) {
+		if (unitToLoad->id == UnitId::TerranMason) {
 
 			if (unitToLoad->pAI != NULL) {
 
@@ -273,7 +273,7 @@ namespace hooks {
 				//probably check where unit can be spawned
 				if (function_004E76C0(transport, unit, &pos) != 0) {
 
-					if (transport->id == UnitId::TerranDropship) {
+					if (transport->id == UnitId::TerranTrojan) {
 						if (transport->getCurrentLifeInGame() <= (transport->getMaxHpInGame() * 0.5)) {
 							transport->mainOrderTimer = 7;
 						}
@@ -334,7 +334,7 @@ namespace hooks {
 
 					if (transport->status & UnitStatus::GroundedBuilding) { //E806B
 
-						if (unit->id != UnitId::ProtossReaver) {
+						if (unit->id != UnitId::ProtossAccantor) {
 
 							u8 weaponId = unit->getGroundWeapon();
 

@@ -17,8 +17,8 @@ namespace hooks {
 
 	void AI_RemoveFromAttack(s32 unitId_, u32 player) {
 		int unitId = unitId_;
-		if (unitId == UnitId::TerranSiegeTankSiegeMode)
-			unitId = UnitId::TerranSiegeTankTankMode;
+		if (unitId == UnitId::TerranPhalanxSiegeMode)
+			unitId = UnitId::TerranPhalanxTankMode;
 		unitId++;
 		for (int i = 0; i < ATTACK_LIMIT; i++) {
 /*			if (AIScriptController[player].attackers[i] == unitId) {

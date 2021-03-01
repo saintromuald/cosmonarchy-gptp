@@ -52,12 +52,12 @@ void CMDRECV_ReaverStop() {
 		)
 			*u32_0066FF60 = 0x0B;
 		else
-		if(	current_unit->id == UnitId::TerranSCV &&
+		if(	current_unit->id == UnitId::TerranMason &&
 			current_unit->mainOrderId == OrderId::ConstructingBuilding
 		)
 			*u32_0066FF60 = 0x08;
 		else
-		if((current_unit->id == UnitId::TerranGhost ||
+		if((current_unit->id == UnitId::TerranEidolon ||
 			current_unit->id == UnitId::Hero_SarahKerrigan ||
 			current_unit->id == UnitId::Hero_AlexeiStukov ||
 			current_unit->id == UnitId::Hero_SamirDuran ||
@@ -157,12 +157,12 @@ void CMDRECV_CarrierStop() {
 		)
 			*u32_0066FF60 = 0x0B;
 		else
-		if(	current_unit->id == UnitId::TerranSCV &&
+		if(	current_unit->id == UnitId::TerranMason &&
 			current_unit->mainOrderId == OrderId::ConstructingBuilding
 		)
 			*u32_0066FF60 = 0x08;
 		else
-		if((current_unit->id == UnitId::TerranGhost ||
+		if((current_unit->id == UnitId::TerranEidolon ||
 			current_unit->id == UnitId::Hero_SarahKerrigan ||
 			current_unit->id == UnitId::Hero_AlexeiStukov ||
 			current_unit->id == UnitId::Hero_SamirDuran ||
@@ -262,7 +262,7 @@ void CMDRECV_Stop(u8 bCommandType) {
 		)
 			*u32_0066FF60 = 0x0B;
 		else
-		if((current_unit->id == UnitId::TerranGhost ||
+		if((current_unit->id == UnitId::TerranEidolon ||
 			current_unit->id == UnitId::Hero_SarahKerrigan ||
 			current_unit->id == UnitId::Hero_AlexeiStukov ||
 			current_unit->id == UnitId::Hero_SamirDuran ||

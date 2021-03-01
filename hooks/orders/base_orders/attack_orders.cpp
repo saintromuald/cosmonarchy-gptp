@@ -78,7 +78,7 @@ void orders_ReaverAttack1(CUnit* unit) {
 			u32 status_saved = (unit->status & UnitStatus::HoldingPosition) + (unit->status & UnitStatus::Disabled);
 			u8 newOrderId;
 
-			if(unit->id == UnitId::ProtossReaver) {
+			if(unit->id == UnitId::ProtossAccantor) {
 				//65720:
 				if(unit->mainOrderId == OrderId::ReaverHold)
 					newOrderId = OrderId::ReaverHold;
@@ -143,7 +143,7 @@ void orders_CarrierAttack1(CUnit* unit) {
 			//give orders to interceptors/scarabs (through outHangarChild)
 			function_00465780(unit);
 
-			if(unit->id == UnitId::ProtossReaver) {
+			if(unit->id == UnitId::ProtossAccantor) {
 				//65A03:
 				if(unit->mainOrderId == OrderId::ReaverHold)
 					newOrderId = OrderId::ReaverHold;
@@ -221,11 +221,11 @@ void orders_TurretAttack(CUnit* unit) {
 			current_unit = unit;
 
 		//identical to check performed by unitIsCarrier @ 0x00401470
-		if(unit->id == UnitId::ProtossCarrier)
+		if(unit->id == UnitId::ProtossSolarion)
 			jump_to_77AFE = true;
 		else
 		//identical to check performed by unitIsReaver @ 0x00401490, using if(!unitIsReaver())
-		if(!(unit->id == UnitId::ProtossReaver))
+		if(!(unit->id == UnitId::ProtossAccantor))
 			jump_to_77A9D = true;
 		else
 		if(target->status & UnitStatus::InAir)
@@ -339,7 +339,7 @@ void orders_TurretAttack(CUnit* unit) {
 				bool jump_to_77BD7 = false;
 
 				if(
-					unit->id != UnitId::TerranSiegeTankTankModeTurret ||
+					unit->id != UnitId::TerranPhalanxTankModeTurret ||
 					current_subunit->pAI == NULL ||
 					(current_subunit->canUseTech(TechId::TankSiegeMode,unit->playerId) != TRUE) ||
 					!isUnitVisible(unit)
@@ -348,14 +348,14 @@ void orders_TurretAttack(CUnit* unit) {
 				else {
 
 					//77B5F:
-					u32 result_getMaxWpnRange = unit->getMaxWeaponRange(units_dat::GroundWeapon[UnitId::TerranSiegeTankSiegeModeTurret]);
+					u32 result_getMaxWpnRange = unit->getMaxWeaponRange(units_dat::GroundWeapon[UnitId::TerranPhalanxSiegeModeTurret]);
 
 					if(!isTargetWithinMinMovementRange(current_subunit,target,result_getMaxWpnRange))
 						jump_to_77BD7 = true;
 					else {
 
 						//77B77:
-						result_getMaxWpnRange = unit->getMaxWeaponRange(units_dat::GroundWeapon[UnitId::TerranSiegeTankTankModeTurret]);
+						result_getMaxWpnRange = unit->getMaxWeaponRange(units_dat::GroundWeapon[UnitId::TerranPhalanxTankModeTurret]);
 
 						if(
 							isTargetWithinMinMovementRange(current_subunit,target,result_getMaxWpnRange) ||
@@ -367,12 +367,12 @@ void orders_TurretAttack(CUnit* unit) {
 							unit->orderComputerCL(OrderId::Nothing2);
 
 							//this orderId is hardcoded, not calculated 
-							unit->orderSimple(units_dat::AttackUnitOrder[UnitId::TerranSiegeTankSiegeModeTurret],false);
+							unit->orderSimple(units_dat::AttackUnitOrder[UnitId::TerranPhalanxSiegeModeTurret],false);
 
 							current_subunit->orderComputerCL(OrderId::SiegeMode);
 
 							//this orderId is hardcoded, not calculated 
-							current_subunit->issueQueuedOrderTarget(units_dat::AttackUnitOrder[UnitId::TerranSiegeTankSiegeMode],target,false);
+							current_subunit->issueQueuedOrderTarget(units_dat::AttackUnitOrder[UnitId::TerranPhalanxSiegeMode],target,false);
 
 						}
 
@@ -545,11 +545,11 @@ void orders_AttackFixedRange(CUnit* unit) {
 
 		//77DC4:
 		//identical to check performed by unitIsCarrier @ 0x00401470
-		if(unit->id == UnitId::ProtossCarrier)
+		if(unit->id == UnitId::ProtossSolarion)
 			jump_to_77E99 = true;
 		else
 		//identical to check performed by unitIsReaver @ 0x00401490, using if(!unitIsReaver())
-		if(!(unit->id == UnitId::ProtossReaver))
+		if(!(unit->id == UnitId::ProtossAccantor))
 			jump_to_77DEF = true;
 		else
 		if(target->status & UnitStatus::InAir)

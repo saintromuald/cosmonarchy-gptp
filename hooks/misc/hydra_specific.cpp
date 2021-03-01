@@ -499,13 +499,13 @@ namespace hooks {
 		if (unit->id == UnitId::TerranVulture) {
 			unit->vulture.spiderMineCount = 3;
 		}
-		else if (unit->id == UnitId::TerranGhost) {
+		else if (unit->id == UnitId::TerranEidolon) {
 			unit->vulture.spiderMineCount = 2;
 		}
 	}
 
 	u32 get_mine_id(CUnit* unit) {
-		if (unit->id == UnitId::TerranGhost) {
+		if (unit->id == UnitId::TerranEidolon) {
 			return UnitId::TerranLobotomyMine;
 		}
 		return UnitId::TerranSpiderMine;
