@@ -1135,16 +1135,6 @@ namespace hooks {
 					}
 				}
 
-				// Phobos - Acheron Missiles animation
-				if (unit->id == UnitId::TerranPhobos && unit->orderSignal & 0x20) {
-					unit->orderSignal &= ~0x20;
-					if (unit->orderTarget.unit != NULL) {
-						if (unit->getDistanceToTarget(unit->orderTarget.unit) <= 192) {
-							unit->playIscriptAnim(IscriptAnimation::Unused1);
-						}
-					}
-				}
-
 				// Hallucinating Visual Effect
 				u32 hallucinatingTimer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0);
 				if (unit != NULL && unit->sprite != NULL) {

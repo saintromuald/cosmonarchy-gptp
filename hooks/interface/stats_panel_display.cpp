@@ -149,12 +149,9 @@ namespace hooks {
 						//26D54
 						StatsWeaponLevel(dialog, index, groundWeapon);
 						index++;
+						// Display additional weapons
 						if (activeUnit->id == UnitId::TerranCentaur) {
 							StatsWeaponLevel(dialog, index, WeaponId::SunchaserMissiles);
-							index++;
-						}
-						else if (activeUnit->id == UnitId::TerranPhobos) {
-							StatsWeaponLevel(dialog, index, WeaponId::AcheronMissiles);
 							index++;
 						}
 					}
