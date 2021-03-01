@@ -401,12 +401,15 @@ namespace hooks {
 					}
 				}
 			}
+
 			// Fertile Spines - Konvilisk behavior
 			if (attacker != nullptr
-			&&	scbw::get_generic_value(attacker, ValueId::FertileSpines) > 0
+			&&	attacker->id == UnitId::ZergKonvilisk
+			&&	target->getCurrentHpInGame() <= (target->getMaxHpInGame() / 2)
 			&&	!(target->parasiteFlags)) {
 				scbw::set_generic_timer(target, ValueId::ParasiteArmTimer, (24 * 2) + 1); // replace with unitconstant later
 			}
+
 			// Deconstruction - Pazuzu behavior - apply stack
 			if (attacker!=nullptr
 			&&	attacker->id == UnitId::TerranPazuzu
