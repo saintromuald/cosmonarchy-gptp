@@ -278,7 +278,7 @@ namespace hooks {
 						//if (unit->id == UnitId::u) {
 						//	hpGain += hpGain/2;
 						//}
-						target->setHp(target->hitPoints + hpGain);
+						target->setHp(target->hitPoints + hpGain, true);
 						
 					
 						

@@ -348,7 +348,7 @@ public:
 			}
 
 		}
-		unit->setHp(unit->hitPoints + (heal * 256));
+		unit->setHp(unit->hitPoints + (heal * 256), true);
 	}
 };
 
@@ -435,7 +435,7 @@ public:
 		}
 
 		double fraction = 0.1*(double)units_dat::MaxHitPoints[unit->id];
-		unit->setHp(std::min(unit->hitPoints+(int)fraction,units_dat::MaxHitPoints[unit->id]));
+		unit->setHp(std::min(unit->hitPoints+(int)fraction,units_dat::MaxHitPoints[unit->id]), true);
 	}
 };
 
