@@ -117,6 +117,89 @@ bool unitIsTrainingOrMorphing(CUnit* unit) {
 		POPAD
 	}
 }
+const u32 Func_initializeRandomizerInfo = 0x0047E410;
+u8 initializeRandomizerInfo() {
+	static u32 result;
+	__asm {
+		PUSHAD
+		CALL Func_initializeRandomizerInfo
+		MOV result, EAX
+		POPAD
+	}
+	return (u8)result;
+}
+
+const u32 Func_AI_Loop = 0x004A2B00;
+void AI_Loop() {
+	__asm {
+		PUSHAD
+		CALL Func_AI_Loop
+		POPAD
+	}
+}
+
+const u32 Func_updateActiveTileInfo = 0x0049C4C0;
+s32 updateActiveTileInfo() {
+	static s32 result;
+	__asm {
+		PUSHAD
+		CALL Func_updateActiveTileInfo
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+const u32 Func_removeFOWCheat = 0x00480880;
+s32 removeFOWCheat() {
+	static s32 result;
+	__asm {
+		PUSHAD
+		CALL Func_removeFOWCheat
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+const u32 Func_updateUnits = 0x004ED000;
+void updateUnits() {
+	__asm {
+		PUSHAD
+		CALL Func_updateUnits
+		POPAD
+	}
+}
+
+const u32 Func_imageDrawingBulletDrawing = 0x0048C3D0;
+s32 imageDrawingBulletDrawing() {
+	static s32 result;
+	__asm {
+		PUSHAD
+		CALL Func_imageDrawingBulletDrawing
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+const u32 Func_updateImages = 0x00496330;
+void updateImages() {
+	__asm {
+		PUSHAD
+		CALL Func_updateImages
+		POPAD
+	}
+}
+
+const u32 Func_updateThingys = 0x00488510;
+void updateThingys() {
+	__asm {
+		PUSHAD
+		CALL Func_updateThingys
+		POPAD
+	}
+}
 #include <array>
 namespace hooks {
 
@@ -641,6 +724,28 @@ namespace hooks {
 
 
 		return false;
-	}	
+	}
+
+	s32 gameLoop() { // 004D94B0 - hooked for lag testing - Pr0nogo
+		bool v0;
+
+		scbw::setInGameLoopState(1);
+		initializeRandomizerInfo();
+		AI_Loop();
+		if (!visionUpdateCount)
+			*visionUpdateCount = 100;
+		v0 = *visionUpdateCount == 1;
+		*visionUpdateCount -= 1;
+		*visionUpdated = v0;
+		if (v0) {
+			updateActiveTileInfo();
+			removeFOWCheat();
+		}
+		updateUnits();
+		imageDrawingBulletDrawing();
+		updateImages();
+		updateThingys();
+		return scbw::setInGameLoopState(0);
+	}
 }
 	
