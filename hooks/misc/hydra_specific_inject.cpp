@@ -589,6 +589,18 @@ namespace hooks {
     void damageOverlayDebug() {
        jmpPatch(createDamageOverlay_Wrapper, 0x004993C0);
     }
+    void __declspec(naked) gameLoop_Wrapper() {
+        static s32 result;
+        __asm {
+            PUSHAD
+        }
+        result = hooks::gameLoop();
+        __asm {
+            POPAD
+            MOV EAX, result
+            RETN
+        }
+    }
     void injectHydraSpecific() {
         //jmpPatch(checkUnitDatRequirements_Wrapper, 0x0046E1C0, 1);//must be finished first (+add firegraft offsets)
         
@@ -608,6 +620,9 @@ namespace hooks {
         //add later: disable WarpIn functionality, make it useless
         
         archonHardcodePatches();
+//      jmpPatch(gameLoop_Wrapper, 0x004D94B0, 3);
+
+        // TODO: Cleanup
         /*
         
 00431B26  |.  0F95C1        |SETNE CL
