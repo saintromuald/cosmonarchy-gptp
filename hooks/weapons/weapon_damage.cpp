@@ -485,7 +485,7 @@ namespace hooks {
 				if (attacker->id == UnitId::ProtossAmaranth) {
 					s32 hp = attacker->hitPoints / 256;
 					s32 maxHp = attacker->getMaxHpInGame();
-					double shieldStealRate = MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.1, true);
+					double shieldStealRate = MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
 					s32 healAmount = damage * shieldStealRate;
 					s32 maxShields = units_dat::MaxShieldPoints[attacker->id] * 256;
 					attacker->shields = std::min(attacker->shields + healAmount, maxShields);

@@ -147,6 +147,9 @@ namespace hooks {
 			speed = 1707;
 
 		// Hardcode ideal movement speeds
+		else if (unit->id == UnitId::TerranCyprian) {
+			speed += (speed / 5);
+		}
 		else if (unit->id == UnitId::ZergHydralisk) {
 			speed += speed / 2;
 		}
@@ -159,8 +162,8 @@ namespace hooks {
 		else if (unit->id == UnitId::ProtossCabalist) {
 			speed += speed / 5;
 		}
-		else if (unit->id == UnitId::TerranCyprian) {
-			speed += (speed / 5);
+		else if (unit->id == UnitId::ProtossAmaranth) {
+			speed += speed / 5;
 		}
 
 		// Vassal Terminal Surge: increase movespeed when any nearby Simulacrum dies
