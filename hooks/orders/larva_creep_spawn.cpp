@@ -394,7 +394,6 @@ namespace hooks {
 		case UnitId::ZergHatchery:
 		case UnitId::ZergCreepColony:
 		case UnitId::ZergInfestedCommandCenter:
-		case UnitId::ZergChrysalis:
 			return isComplete;
 
 		case UnitId::ZergSire:

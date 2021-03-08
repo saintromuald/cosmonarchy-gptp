@@ -380,6 +380,10 @@ void CUnit::setHp(s32 hitPoints, bool deliberateHeal) {
 	if (this->hitPoints == this->getMaxHpRaw()) {
 		deliberateHeal = false;
 	}
+	// Servile Vigor - Cohort passive
+	if (this->id == UnitId::TerranCohort) {
+		hitPoints *= 2;
+	}
 	__asm {
 		PUSHAD
 		MOV EAX, this

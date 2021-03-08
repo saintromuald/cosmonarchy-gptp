@@ -431,6 +431,13 @@ enum Enum {
  
 	//HYDRA\\
 
+//Unused
+//	TerranPhysicsLab								= 118,		// Physics Lab
+//	TerranBioticBase								= 126,		// Norad II Crashed Battlecruiser
+//	TerranTinkerersTower							= 150,		// Mature Chrysalis
+//	TerranGuildhall									= 185,		// Independent Jump Gate
+//	TerranQuantumInstitute							= 223,		// Protoss Gas Orb Type 2
+
 //Terran-Unit
 	TerranApostle									= 10,		// Gui Montag
 	TerranShaman									= 15,		// Civilian
@@ -443,30 +450,32 @@ enum Enum {
 	TerranMadrigal									= 27,		// Mengsk Battlecruiser
 	TerranCentaur									= 28,		// Hyperion
 	TerranPazuzu									= 49,		// Matriarch Queen
-	TerranPegasus									= 52,		// Unclean One
+	TerranCohort									= 50,		// Infested Terran
 	TerranPenumbra									= 53,		// Hunter Killer
 	TerranCyclops									= 55,		// Kukulza Mutalisk
 	TerranHeracles									= 77,		// Fenix Zealot
 	TerranWyvern									= 91,		// Cargo Ship
 	TerranCyprian									= 92,		// Mercenary Gunship
 	TerranAzazel									= 98,		// Raszagal Corsair
+	TerranSiren										= 151,		// Cerebrate
 	TerranPaladin									= 186,		// Ruins
 	TerranSavant									= 187,		// Kyadarin Crystal Formation
+	TerranAspirant									= 194,		// Zerg Beacon
+	TerranBlackjack									= 195,		// Terran Beacon
+	TerranClaymore									= 196,		// Protoss Beacon
 	TerranLobotomyMine								= 209,		// Floor Gun Trap
 
 //Terran-Building
 	TerranMedbay									= 119,		// Starbase / Terran Unused 1
 	TerranMunitionsBay								= 121,		// Repair Bay / Terran Unused 2
 	TerranQuarry									= 174,		// Protoss Temple
-	TerranGallery									= 185,		// Independent Jump Gate
 	TerranSalvoYard									= 189,		// Warp Gate
 	TerranFutureStation								= 192,		// Terran Marker
 	TerranIronFoundry								= 198,		// Terran Flag Beacon
 	TerranCaptaincy									= 199,		// Protoss Flag Beacon
-	TerranParticleAccelerator						= 200,		// Power Generator
-	TerranNaniteAssembly							= 203,		// Floor Missile Trap
+	TerranScrapyard									= 200,		// Power Generator
+	TerranNaniteAssembly							= 203,		// Floor Missile Trap	
 	TerranTreasury									= 215,		// Flag
-	TerranQuantumInstitute							= 223,		// Protoss Gas Orb Type 2
 
 //Protoss-Unit
 	ProtossManifold									= 16,		// Sarah Kerrigan
@@ -474,6 +483,7 @@ enum Enum {
 	ProtossStarSovereign							= 21,		// Tom Kazansky
 	ProtossGladius									= 25,		// Edmund Duke Siege Tank
 	ProtossMagister									= 26,		// Edmund Duke Siege Turret
+	ProtossMonogram									= 52,		// Unclean One
 	ProtossLegionnaire								= 74,		// Dark Templar Hero
 	ProtossAmaranth									= 75,		// Zeratul Dark Templar
 	ProtossHierophant								= 76,		// Tassadar/Zeratul Archon
@@ -532,9 +542,8 @@ enum Enum {
 
 //Zerg-Building
 	ZergKonvilNest									= 145,		// Unused Zerg 1
-	ZergKalkathBloom								= 147,		// Zerg Overmind (With Shell)
-	ZergGorgrokApiary								= 148,		// Zerg Overmind
-	ZergChrysalis									= 150,		// Mature Chrysalis
+	ZergKalkathBloom								= 147,		// Overmind (With Shell)
+	ZergGorgrokApiary								= 148,		// Overmind
 	ZergOthstolOviform								= 152,		// Cerebrate Daggoth
 	ZergBactalDen									= 153,		// Unused Zerg 2
 	ZergAlmakAntre									= 179,		// Cave
