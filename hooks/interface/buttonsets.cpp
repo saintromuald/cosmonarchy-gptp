@@ -817,7 +817,7 @@ namespace hooks {
 
 								// TERRAN \\
 
-								if ((*activePortraitUnit)->id == UnitId::TerranHarakan && //Firebat Apollyoid Adhesive passive
+								if ((*activePortraitUnit)->id == UnitId::TerranHarakan && //Harakan Apollyoid Adhesive passive
 									current_button->iconID == IconId::Flyer_Attack)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -832,7 +832,7 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranEidolon &&  //Ghost Somatic Implants passive
+								if ((*activePortraitUnit)->id == UnitId::TerranEidolon &&  //Eidolon Somatic Implants passive
 									current_button->iconID == IconId::OcularImplants)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -872,12 +872,12 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranPhalanxTankMode &&  //Siege Tank Babylon Plating passive
+								if ((*activePortraitUnit)->id == UnitId::TerranPhalanxTankMode &&  //Phalanx Babylon Plating passive
 									current_button->iconID == IconId::TerranVehiclePlating)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranPhalanxSiegeMode &&  //Siege Tank Babylon Plating passive
+								if ((*activePortraitUnit)->id == UnitId::TerranPhalanxSiegeMode &&  //Phalanx Babylon Plating passive
 									current_button->iconID == IconId::TerranVehiclePlating)
 								{
 									current_button_state = BUTTON_STATE::Disabled; // Disable while sieged
@@ -909,7 +909,7 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranTrojan &&  //Dropship Hotdrop passive
+								if ((*activePortraitUnit)->id == UnitId::TerranTrojan &&  //Trojan Hotdrop passive
 									current_button->iconID == IconId::Land)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -934,7 +934,7 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranSeraph &&  //Science Vessel Radiation Shockwave passive
+								if ((*activePortraitUnit)->id == UnitId::TerranSeraph &&  //Seraph Radiation Shockwave passive
 									current_button->iconID == IconId::EMPShockwave)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -944,12 +944,12 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranMinotaur &&  //Battlecruiser Fore Castle passive 
+								if ((*activePortraitUnit)->id == UnitId::TerranMinotaur &&  //Minotaur Fore Castle passive 
 									current_button->iconID == IconId::TerranShipPlating)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranMinotaur &&  //Battlecruiser Monoceros Targeting passive 
+								if ((*activePortraitUnit)->id == UnitId::TerranMinotaur &&  //Minotaur Monoceros Targeting passive 
 									current_button->iconID == IconId::SingularityCharge)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -1008,17 +1008,17 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossCantavis &&  //High Templar Ascendancy passive
+								if ((*activePortraitUnit)->id == UnitId::ProtossCantavis &&  //Cantavis Ascendancy passive
 									current_button->iconID == IconId::MindControlUnused)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossCantavis &&  //High Templar Ephemeral Blades passive
+								if ((*activePortraitUnit)->id == UnitId::ProtossCantavis &&  //Cantavis Ephemeral Blades passive
 									current_button->iconID == IconId::ProtossGroundWeapons)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossCabalist &&  //Dark Templar Silent Strikes passive
+								if ((*activePortraitUnit)->id == UnitId::ProtossCabalist &&  //Cabalist Silent Strikes passive
 									current_button->iconID == IconId::ProtossGroundWeapons)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -1083,7 +1083,7 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ProtossDidact &&  //Arbiter Shroud of Adun passive
+								if ((*activePortraitUnit)->id == UnitId::ProtossDidact &&  //Didact Shroud of Adun passive
 									current_button->iconID == IconId::PhotonCannon_Weapon)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -1166,32 +1166,32 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergLakizilisk && //Lurker Seismic Spines passive
+								if ((*activePortraitUnit)->id == UnitId::ZergLakizilisk && //Lakizilisk Seismic Spines passive
 									current_button->iconID == IconId::SubterraneanSpines)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergVithrilisk &&  //Devourer Critical Mass passive
+								if ((*activePortraitUnit)->id == UnitId::ZergVithrilisk &&  //Vithrlisk Critical Mass passive
 									current_button->iconID == IconId::VenomUnused)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergGorgrokor &&  //Gorgoleth Probing Incisors passive
+								if ((*activePortraitUnit)->id == UnitId::ZergGorgrokor &&  //Gorgrokor Probing Incisors passive
 									current_button->iconID == IconId::KaiserBlades)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergGorgrokor &&  //Gorgoleth Ravening Mandible passive
+								if ((*activePortraitUnit)->id == UnitId::ZergGorgrokor &&  //Gorgrokor Ravening Mandible passive
 									current_button->iconID == IconId::RoarUnused)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergGeszithalor &&  //Guardian Searing Acid passive
+								if ((*activePortraitUnit)->id == UnitId::ZergGeszithalor &&  //Geszithalor Searing Acid passive
 									current_button->iconID == IconId::ZergFlyerAttacks)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergMatraleth &&  //Queen Gamete Meiosis passive
+								if ((*activePortraitUnit)->id == UnitId::ZergMatraleth &&  //Matraleth Gamete Meiosis passive
 									current_button->iconID == IconId::GameteMeiosis)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -1201,17 +1201,12 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergInfestedTerran &&  //Infested Terran Death March passive 
-									current_button->iconID == IconId::LegEnhancements)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::ZergUltrakor &&  //Ultralisk Siphon passive
+								if ((*activePortraitUnit)->id == UnitId::ZergUltrakor &&  //Ultrakor Saber Siphon passive
 									current_button->iconID == IconId::KaiserBlades)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergUltrakor &&  //Ultralisk Kaiser passive
+								if ((*activePortraitUnit)->id == UnitId::ZergUltrakor &&  //Ultrakor Kaiser Rampage passive
 									current_button->iconID == IconId::AnabolicSynthesis)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
@@ -1238,7 +1233,7 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								if (((*activePortraitUnit)->id == UnitId::ZergLair				//Lair, Hive, Sire Larval Gestation passive
-								||	(*activePortraitUnit)->id == UnitId::ZergHive				//Overlord Iris, Iroleth Quay, Othstoleth Berth Collective Integration passive
+								||	(*activePortraitUnit)->id == UnitId::ZergHive				//Irol Iris, Othstol Oviform, Alaszil Arbor Collective Integration passive
 								||	(*activePortraitUnit)->id == UnitId::ZergSire
 								||	(*activePortraitUnit)->id == UnitId::ZergIrolIris
 								||	(*activePortraitUnit)->id == UnitId::ZergOthstolOviform
