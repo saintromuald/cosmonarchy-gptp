@@ -3,6 +3,8 @@
 #include "globals.h"
 #include <cassert>
 #include "hooks/orders/unit_making/unit_train.h"
+#include "stopwatch/Stopwatch.h"
+#include "logger.h"
 namespace ReqOpcode {
 	enum {
 
@@ -728,23 +730,41 @@ namespace hooks {
 
 	s32 gameLoop() { // 004D94B0 - hooked for lag testing - Pr0nogo
 		bool v0;
+		win32::Stopwatch sw;
+		sw.Start();
+		double aiLoop, unitLoop, imageThingyLoop, tileLoop;
 
 		scbw::setInGameLoopState(1);
 		initializeRandomizerInfo();
 		AI_Loop();
+		aiLoop = sw.ElapsedMilliseconds();
+		sw.Stop();
+		
 		if (!visionUpdateCount)
 			*visionUpdateCount = 100;
 		v0 = *visionUpdateCount == 1;
 		*visionUpdateCount -= 1;
 		*visionUpdated = v0;
+		sw.Start();
 		if (v0) {
 			updateActiveTileInfo();
 			removeFOWCheat();
 		}
+		sw.Stop();
+		tileLoop = sw.ElapsedMilliseconds();
+		sw.Start();
 		updateUnits();
+		sw.Stop();
+		sw.Start();
+		unitLoop = sw.ElapsedMilliseconds();
 		imageDrawingBulletDrawing();
 		updateImages();
 		updateThingys();
+		sw.Stop();
+		imageThingyLoop = sw.ElapsedMilliseconds();
+//		if (*elapsedTimeFrames % 24 == 0) {
+			GPTP::logger << "aiLoop: " << aiLoop << ", unitLoop: " << unitLoop << ", " << "tile loop: " << tileLoop << ", thingy/bullet/imageLoop: " << imageThingyLoop << '\n';
+		//}
 		return scbw::setInGameLoopState(0);
 	}
 }
