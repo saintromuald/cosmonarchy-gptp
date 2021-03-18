@@ -449,6 +449,10 @@ namespace hooks {
 		}
 		return result;
 	}
+
+	bool unitCanSeeCloakedTarget(CUnit* target, CUnit* unit) { // 00401D60, hooked for cloak rewrite - Pr0nogo
+		return target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
+	}
 }
 
 namespace {

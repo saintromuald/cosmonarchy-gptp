@@ -49,6 +49,28 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) unitCanSeeCloakedTarget_Wrapper() { // 00401D60
+		static CUnit* target;
+		static CUnit* unit;
+		static bool result;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x04]
+			MOV unit, EAX
+			POP EAX
+			MOV target, EAX
+			PUSHAD
+		}
+		result = hooks::unitCanSeeCloakedTarget(target, unit);
+		__asm {
+			POPAD
+			MOV result, AL
+			RETN 4
+		}
+	}
 }
 
 namespace hooks {
@@ -56,10 +78,10 @@ namespace hooks {
 	void injectTargetHooks() {
 //		jmpPatch(genericRightClickUnitProc2_Wrapper, 0x00455E00, 1);
 //		jmpPatch(genericRightClickUnitProc2_Wrapper, 0x004C20C0, 0);
-       
         nops(0x004EB176, 8);//disruption web
         nops(0x004EB316, 2);//disruption web
 
+//		jmpPatch(unitCanSeeCloakedTarget_Wrapper, 0x00401D60, 4);
 	}
 	void injectTargetRelatedHooks() {
 		injectTargetHooks();
