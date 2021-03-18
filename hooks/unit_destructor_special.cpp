@@ -79,7 +79,7 @@ void killAllHangarUnits(CUnit* unit) {
 		CUnit* childInside = unit->carrier.inHangarChild;
 		unit->carrier.inHangarChild = childInside->interceptor.hangar_link.prev;
 		childInside->interceptor.parent = NULL;
-		GPTP::logger << "Removehangar -" << std::endl;
+//		GPTP::logger << "Removehangar -" << std::endl;
 		childInside->remove();
 		unit->carrier.inHangarCount--;
 	}
@@ -283,7 +283,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	Globals.remove_unit_from_pariah_table(unit,false);
 	Globals.clear_ptr_in_apostle_table(unit);
 	Globals.unitDeathHook(unit);
-	if (unit->id == UnitId::ProtossCorsair) {
+	if (unit->id == UnitId::ProtossLanifect) {
 		auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
 		if (web != NULL) {
 			web->removeTimer = 5 * 24;
@@ -330,7 +330,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 1, 0);
 	}
 
-	// Parasite - spawning broodlings on death
+	// Parasite - spawn broodlings on death
 	if (unit->parasiteFlags != 0) {
 		int supplyCount = scbw::getBroodlingCountFromSupply(unit);
 		int type = unit->status & UnitStatus::InAir ? UnitId::ZergBroodlisk : UnitId::ZergBroodling;
@@ -366,15 +366,15 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	}
 
 	//Destroy interceptors and scarabs
-	if (unit->id == UnitId::ProtossCarrier
-	||  unit->id == UnitId::ProtossReaver) {
+	if (unit->id == UnitId::ProtossSolarion
+	||  unit->id == UnitId::ProtossAccantor) {
 		killAllHangarUnits(unit);
 	}
 
 	//Destroy nuclear missiles mid-launch
 	else
-	if (unit->id == UnitId::TerranGhost
-	||  unit->id == UnitId::TerranScienceVessel) {
+	if (unit->id == UnitId::TerranEidolon
+	||  unit->id == UnitId::TerranSeraph) {
 		if (unit->building.ghostNukeMissile != NULL) {
 			(unit->building.ghostNukeMissile)->sprite->playIscriptAnim(IscriptAnimation::Death, true);
 			unit->building.ghostNukeMissile = NULL;
@@ -403,7 +403,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		//those tests
 
 		//Is a scarab or interceptor
-		if (unit->id == UnitId::ProtossScarab || unit->id == UnitId::ProtossInterceptor) {
+		if (unit->id == UnitId::ProtossPlasmaShell || unit->id == UnitId::ProtossSteward) {
 
 			if (unit->status & UnitStatus::Completed) {
 

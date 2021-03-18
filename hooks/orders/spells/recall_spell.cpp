@@ -61,7 +61,7 @@ namespace hooks {
 
 			//disconnect a nuke from a ghost using it
 			if(
-				target->id == UnitId::TerranGhost ||
+				target->id == UnitId::TerranEidolon ||
 				target->id == UnitId::Hero_SarahKerrigan ||
 				target->id == UnitId::Hero_AlexeiStukov ||
 				target->id == UnitId::Hero_SamirDuran ||

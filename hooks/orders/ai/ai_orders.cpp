@@ -102,7 +102,7 @@ namespace hooks {
 	void AI_TrainingUnit(CUnit* result, CUnit* parent) {							// 004A2830
 		if (playerTable[parent->playerId].type == PlayerType::Computer) {
 			if (playerTable[result->playerId].type == PlayerType::Computer
-				&& result->id == UnitId::TerranMedic) {
+				&& result->id == UnitId::TerranCleric) {
 				if (!(AIScriptController[result->playerId].mainMedic))
 					AIScriptController[result->playerId].mainMedic = result;
 
@@ -585,7 +585,7 @@ namespace hooks {
 		}
 		if (realTarget->status & UnitStatus::CloakingForFree) {
 			if (!(realTarget->status & UnitStatus::CloakingForFree)) {
-				realTarget = checkArbiterCloakingRange(self, UnitId::ProtossArbiter);
+				realTarget = checkArbiterCloakingRange(self, UnitId::ProtossDidact);
 				if (!realTarget) {
 					return;
 				}
@@ -679,17 +679,17 @@ namespace hooks {
 								{
 									if (!mainTargetReactions)
 										goto LABEL_126;
-									if (v23 != UnitId::ProtossCarrier
+									if (v23 != UnitId::ProtossSolarion
 //										|| (u8)(LOBYTE(self->field_C8) + BYTE1(self->carrier.inHangarCount)) > 2u
 										|| !AI_TransportAction(self))
 									{
 										if (realTarget && realTarget->status & UnitStatus::IsBuilding // Attempt to return to base when below an HP threshold
 											|| AIScriptController[(u8)self->playerId].AI_Flags.isUseMapSettings
 											|| ((v25 = 3 * self->getTotalHitPointsPlusShields() / 4, self->getCurrentLifeInGame() > v25)
-												|| v23 != UnitId::ProtossArbiter && v23 != UnitId::TerranWraith && v23 != UnitId::ZergMutalisk
+												|| v23 != UnitId::ProtossDidact && v23 != UnitId::TerranWraith && v23 != UnitId::ZergMutalisk
 												|| !AI_TransportAction(self))
 											&& ((v26 = 2 * self->getTotalHitPointsPlusShields() / 3, self->getCurrentLifeInGame() > v26)
-												|| v23 != UnitId::TerranBattlecruiser && v23 != UnitId::ProtossCarrier && v23 != UnitId::ProtossPanoptus
+												|| v23 != UnitId::TerranMinotaur && v23 != UnitId::ProtossSolarion && v23 != UnitId::ProtossPanoptus
 												|| !AI_TransportAction(self)))
 										{
 											if (self->id != UnitId::ZergLakizilisk
@@ -1008,8 +1008,8 @@ namespace hooks {
 				v7 = v7->player_link.next;
 			}
 			v10 = (u16)v7->id;
-			if (v9 == UnitId::TerranSiegeTankSiegeMode)
-				v10 = UnitId::TerranSiegeTankTankMode;
+			if (v9 == UnitId::TerranPhalanxSiegeMode)
+				v10 = UnitId::TerranPhalanxTankMode;
 			v11 = 1;
 			v12 = v7->status & 1;
 			if (!v12 || v8 == OrderId::CompletingArchonSummon || v8 == OrderId::ResetCollision1)

@@ -282,7 +282,7 @@ void updateStatusEffects(CUnit* unit) {
 	// Update speed based on upgrades or status effects
 
 	// Passenger Insurance: Dropship acceleration
-	if (unit->id == UnitId::TerranDropship) {
+	if (unit->id == UnitId::TerranTrojan) {
 		unit->updateSpeed();
 	}
 
@@ -374,7 +374,7 @@ void updateStatusEffects(CUnit* unit) {
 	}
 
 	// Ghost Somatic Implants behavior
-	if (unit->id == UnitId::TerranGhost) {
+	if (unit->id == UnitId::TerranEidolon) {
 		if (
 			!(unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)))
 		{
@@ -706,7 +706,7 @@ void orderComputerClear(CUnit* a1, u8 a2) {
 }
 void AI_Burrower(CUnit* a1) {
 	if (units_dat::BaseProperty[a1->id] & UnitProperty::Burrowable) {
-		if (!(a1->status & UnitStatus::Burrowed) && a1->id != UnitId::ZergDrone) {
+		if (!(a1->status & UnitStatus::Burrowed) && a1->id != UnitId::ZergDroleth) {
 			if (a1->mainOrderId == OrderId::ComputerAI || a1->mainOrderId == OrderId::Guard) {
 				if (a1->moveTarget.pt.x == a1->sprite->position.x
 					&& a1->moveTarget.pt.y == a1->sprite->position.y

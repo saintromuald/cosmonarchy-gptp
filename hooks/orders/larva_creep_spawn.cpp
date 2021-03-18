@@ -152,7 +152,7 @@ namespace hooks {
 					/*0x25*/
 
 					if (unit->id == UnitId::ZergLarvalColony) {
-						unit->building.larvaTimer = 37 / LARVAL_COLONY_MULTIPLIER;
+						unit->building.larvaTimer = 37 / LarvalColonyMultiplier;
 					}
 
 													//if failed to find a spawn point for larva
@@ -394,7 +394,6 @@ namespace hooks {
 		case UnitId::ZergHatchery:
 		case UnitId::ZergCreepColony:
 		case UnitId::ZergInfestedCommandCenter:
-		case UnitId::ZergChrysalis:
 			return isComplete;
 
 		case UnitId::ZergSire:

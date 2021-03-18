@@ -404,7 +404,7 @@ namespace hooks {
 			|| targetVar->status & UnitStatus::Invincible
 			|| getUnitAbilityErrorStatString(targetVar, unit->playerId, 12) != 0)
 		{
-			result = (u8)(unit->id != UnitId::TerranMedic ? 0 : 0x80) + OrderId::Follow;
+			result = (u8)(unit->id != UnitId::TerranCleric ? 0 : 0x80) + OrderId::Follow;
 		}
 		else
 		{
@@ -424,11 +424,11 @@ namespace hooks {
 		for (i = result; result; i = result)
 		{
 			unitId = i->id;
-			if (unitId != UnitId::ProtossCarrier) {
-				if (unitId != UnitId::ProtossReaver) {
+			if (unitId != UnitId::ProtossSolarion) {
+				if (unitId != UnitId::ProtossAccantor) {
 					if (unitId != UnitId::ZergMatraleth) {
 						if (unitId != UnitId::ZergSkryling && unitId != UnitId::ZergInfestedTerran)
-							orderId = unitId != UnitId::TerranMedic ? 107 : 178;
+							orderId = unitId != UnitId::TerranCleric ? 107 : 178;
 						else
 							orderId = OrderId::HoldPosition4;
 					}
@@ -448,6 +448,10 @@ namespace hooks {
 			result = getActivePlayerFirstSelection();
 		}
 		return result;
+	}
+
+	bool unitCanSeeCloakedTarget(CUnit* target, CUnit* unit) { // 00401D60, hooked for cloak rewrite - Pr0nogo
+		return target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
 	}
 }
 

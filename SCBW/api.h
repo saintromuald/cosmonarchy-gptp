@@ -394,5 +394,10 @@ u16 random();
     bool unitIsPacifist(CUnit* unit);
     bool orderIsSpell(s32 orderId);
     void cloakLogic(CUnit* unit);
+    void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound = true);
+    bool canBeParasited(CUnit* unit);
+    bool unitIsParasited(CUnit* unit);
+    bool unitIsParasitedAndArmed(CUnit* unit);
+    void applyParasite(CUnit* unit, u8 playerID, CUnit* queen);
 
 } //scbw

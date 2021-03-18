@@ -23,15 +23,15 @@ namespace hooks {
 	u32 get_order_from_unit_id(u32 unit_id) {
 		u32 order = 0;
 		switch (unit_id) {
-		case UnitId::TerranSCV://0x7
+		case UnitId::TerranMason://0x7
 /*		case UnitId::mole:
 		case UnitId::engineer:*/
 			order = OrderId::BuildTerran;
 			break;
-		case UnitId::ZergDrone://0x29
+		case UnitId::ZergDroleth://0x29
 			order = OrderId::DroneStartBuild;
 			break;
-		case UnitId::ProtossProbe://0x40
+		case UnitId::ProtossScribe://0x40
 			order = OrderId::BuildProtoss1;
 			break;
 		default:
@@ -123,16 +123,16 @@ namespace hooks {
 		u32 id = 0xe4;
 		switch (race) {
 		case RaceId::Terran:
-			id = UnitId::TerranSCV;
+			id = UnitId::TerranMason;
 			break;
 		case RaceId::Protoss:
-			id = UnitId::ProtossProbe;
+			id = UnitId::ProtossScribe;
 			break;
 		case RaceId::Zerg:
-			id = UnitId::ZergDrone;
+			id = UnitId::ZergDroleth;
 			break;
 		default:
-			id = UnitId::ZergDrone;
+			id = UnitId::ZergDroleth;
 			break;
 		}
 		return id;

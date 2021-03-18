@@ -154,7 +154,7 @@ class ascendancyProc : public scbw::UnitFinderCallbackProcInterface {
 private:
 public:
 	void proc(CUnit* unit) {
-		if (unit->id != UnitId::ProtossTemplar) {
+		if (unit->id != UnitId::ProtossCantavis) {
 			return;
 		}
 		if (
@@ -330,10 +330,7 @@ public:
 		else {
 			value = (units_dat::MaxHitPoints[target->id] * 0.10);
 		}
-		if (unit->hitPoints + value >= (u32)units_dat::MaxHitPoints[unit->id])
-			unit->hitPoints = units_dat::MaxHitPoints[unit->id];
-		else
-			unit->hitPoints += value;
+		unit->setHp(unit->hitPoints + value, true);
 	}
 
 	//Constructor
@@ -392,12 +389,14 @@ namespace hooks {
 					}
 				}
 			}
+
 			// Fertile Spines - Konvilisk behavior
 			if (attacker != nullptr
-			&&	scbw::get_generic_value(attacker, ValueId::FertileSpines) > 0
-			&&	!(target->parasiteFlags)) {
-				scbw::set_generic_timer(target, ValueId::ParasiteArmTimer, (24 * 2) + 1); // replace with unitconstant later
+			&&	attacker->id == UnitId::ZergKonvilisk
+			/*&&	target->getCurrentHpInGame() < (target->getMaxHpInGame() / 2)*/) {
+				scbw::applyParasite(target, attacker->playerId, attacker);
 			}
+
 			// Deconstruction - Pazuzu behavior - apply stack
 			if (attacker!=nullptr
 			&&	attacker->id == UnitId::TerranPazuzu
@@ -474,7 +473,7 @@ namespace hooks {
 				if (attacker->id == UnitId::ProtossAmaranth) {
 					s32 hp = attacker->hitPoints / 256;
 					s32 maxHp = attacker->getMaxHpInGame();
-					double shieldStealRate = MathUtils::map(hp, maxHp / 4, maxHp, 0.75, 0.0, true);
+					double shieldStealRate = MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
 					s32 healAmount = damage * shieldStealRate;
 					s32 maxShields = units_dat::MaxShieldPoints[attacker->id] * 256;
 					attacker->shields = std::min(attacker->shields + healAmount, maxShields);
@@ -543,9 +542,9 @@ namespace hooks {
 			// Quazilisk - Melting Points
 			if (weaponId == WeaponId::AcridBarbs) {
 				float missingFactor = 1 - ((float)target->hitPoints / target->getMaxHpRaw());
-				float damageIncrease = floor(missingFactor / QUAZILISK_PASSIVE_FACTOR);
+				float damageIncrease = floor(missingFactor / QuazaliskPassiveFactor);
 				//scbw::print("Damage Increase: " + std::to_string(damageIncrease));
-				damage += damageIncrease * HEALTH_MULTIPLIER;
+				damage += damageIncrease * HealthMultiplier;
 			}
 
 			// Hallucinations deal half damage
@@ -603,12 +602,12 @@ namespace hooks {
 				if (attacker != NULL && target != NULL) {
 					if (attacker->id == UnitId::ZergUltrakor) {
 						u32 lifesteal = shieldReduceAmount / 2;
-						attacker->setHp(attacker->hitPoints + lifesteal);
+						attacker->setHp(attacker->hitPoints + lifesteal, true);
 					}
 					// Wendigo Automedicus passive (shield component)
 					if (attacker->id == UnitId::TerranWendigo && units_dat::BaseProperty[target->id] & UnitProperty::Mechanical) {
 						u32 lifesteal = shieldReduceAmount / 4;
-						attacker->setHp(attacker->hitPoints + lifesteal);
+						attacker->setHp(attacker->hitPoints + lifesteal, true);
 					}
 				}
 				damage -= shieldReduceAmount;
@@ -620,7 +619,7 @@ namespace hooks {
 				s32 armorTotal = target->getArmor() * 256;
 				if (attacker != NULL && target != NULL) {
 					armorTotal += scbw::get_aise_value(target, NULL, AiseId::GetShepherds, 0, 0) * 256;
-					if (target->id == UnitId::TerranBattlecruiser) {
+					if (target->id == UnitId::TerranMinotaur) {
 						u16 angle = scbw::getAngle(target->position.x, target->position.y,
 							attacker->position.x, attacker->position.y);
 						u16 unit_angle = target->velocityDirection1;
@@ -653,13 +652,13 @@ namespace hooks {
 				// Ultrakor Saber Siphon passive
 				if (attacker->id == UnitId::ZergUltrakor) {
 					u32 lifesteal = damage / 2;
-					attacker->setHp(attacker->hitPoints + lifesteal);
+					attacker->setHp(attacker->hitPoints + lifesteal, true);
 				}
 
 				// Wendigo Automedicus passive (HP component)
 				if (attacker->id == UnitId::TerranWendigo && units_dat::BaseProperty[target->id] & UnitProperty::Mechanical) {
 					u32 lifesteal = damage / 4;
-					attacker->setHp(attacker->hitPoints + lifesteal);
+					attacker->setHp(attacker->hitPoints + lifesteal, true);
 				}
 			}
 
@@ -841,8 +840,8 @@ namespace hooks {
 			if (attacker != NULL) { // looks like target will always be alive if this function was called?
 				if (scbw::get_aise_value(target, 0, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0) >= 1) {
 					CUnit* haluAttacker = attacker;
-					if ((haluAttacker->id == UnitId::ProtossInterceptor
-						|| haluAttacker->id == UnitId::ProtossScarab)
+					if ((haluAttacker->id == UnitId::ProtossSteward
+						|| haluAttacker->id == UnitId::ProtossPlasmaShell)
 						&& attacker->interceptor.parent != NULL) {
 						haluAttacker = attacker->interceptor.parent;
 					}

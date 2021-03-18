@@ -55,7 +55,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 			}
 		}
 	}
-	else if (unit->id == UnitId::TerranGhost) {
+	else if (unit->id == UnitId::TerranEidolon) {
 		//mines
 	}
 	else if (unit->id == UnitId::TerranSavant) {
@@ -134,7 +134,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 		auto enemyUnitsHealth = 0;
 		auto alliedUnitsHealth = 0;
 		bool alliedBuildings = false;
-		hydraFinderLoop(unit, unit->sprite->position, AI_STARSOVEREIGN_ABIL_SEEKRANGE,
+		hydraFinderLoop(unit, unit->sprite->position, AIStarsovereignAbilSeekRange,
 			CFlags::NotSelf | CFlags::NoAir | CFlags::NoInvincible, {}, [&](CUnit* u) {
 			if (!scbw::isAlliedTo(unit->playerId, u->playerId)) {
 				enemyUnitsHealth += (u->hitPoints + u->shields) / 256;
@@ -155,25 +155,25 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 			unit->mainOrderState = 0;
 		}
 	}
-	else if (unit->id == UnitId::ProtossCorsair) {
+	else if (unit->id == UnitId::ProtossLanifect) {
 		auto web_state = scbw::get_generic_value(unit, ValueId::DisruptionWeb);
 		if (scbw::get_generic_value(unit, ValueId::ExecutingCorsairMoveOrder) != 0) {
 			if (unit->mainOrderId != OrderId::Move) {
 				scbw::set_generic_value(unit, ValueId::ExecutingCorsairMoveOrder, 0);
 			}
 		}
-		auto webs = hydraUnitCount(unit, unit->sprite->position, AI_WEB_SEEK_RANGE, 0, { UnitId::Spell_DisruptionWeb });
-		auto allies = hydraUnitCount(unit, unit->sprite->position, AI_CORSAIR_ALLY_SEEK_RANGE, CFlags::Ally | CFlags::NotSelf, {});
-		auto enemies = hydraUnitCount(unit, unit->sprite->position, AI_CORSAIR_ENEMY_SEEK_RANGE, CFlags::Enemy, {});
+		auto webs = hydraUnitCount(unit, unit->sprite->position, AIWebSeekRange, 0, { UnitId::Spell_DisruptionWeb });
+		auto allies = hydraUnitCount(unit, unit->sprite->position, AICorsairAllySeekRange, CFlags::Ally | CFlags::NotSelf, {});
+		auto enemies = hydraUnitCount(unit, unit->sprite->position, AICorsairEnemySeekRange, CFlags::Enemy, {});
 		auto percentage = (double)(unit->hitPoints + unit->shields) /
 			(double)(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id] * 256);
 		if (web_state == 0) {
-			if (webs == 0 && unit->energy >= AI_WEB_MIN_ENERGY * 256 && percentage >= AI_CORSAIR_LIFE_PERCENTAGE
-				&& allies >= AI_WEB_ALLY_MIN_COUNT && enemies >= AI_WEB_ENEMY_MIN_COUNT) {
+			if (webs == 0 && unit->energy >= AIWebMinEnergy * 256 && percentage >= AICorsairLifePercentage
+				&& allies >= AIWebAllyMinCount && enemies >= AIWebEnemyMinCount) {
 				CUnit* mostSignificant = NULL;
 				auto maxSignificance = 0;
 				hydraFinderLoop(unit, unit->sprite->position, 128, CFlags::Enemy, {}, [&](CUnit* u) {
-					auto significance = hydraUnitCount(u, u->position, AI_CORSAIR_ENEMY_SEEK_RANGE / 2,
+					auto significance = hydraUnitCount(u, u->position, AICorsairEnemySeekRange / 2,
 						CFlags::NotSelf | CFlags::Ally, {});
 					if (significance > maxSignificance) {
 						maxSignificance = significance;
@@ -183,12 +183,12 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 				if (mostSignificant != NULL) {
 					unit->orderTo(OrderId::Move, mostSignificant->position.x, mostSignificant->position.y);
 					scbw::set_generic_value(unit, ValueId::DisruptionWeb, 1);
-					scbw::set_generic_timer(unit, ValueId::AI_CorsairDweb_Timer, AI_WEB_TIMER);
+					scbw::set_generic_timer(unit, ValueId::AI_CorsairDweb_Timer, AIWebTimer);
 				}
 			}
 		}
 		else {
-			if (!(allies >= AI_WEB_ALLY_MIN_COUNT && enemies >= AI_WEB_ENEMY_MIN_COUNT)) {
+			if (!(allies >= AIWebAllyMinCount && enemies >= AIWebEnemyMinCount)) {
 				if (scbw::get_generic_timer(unit, ValueId::AI_CorsairDweb_Timer) == 0) {
 					scbw::set_generic_value(unit, ValueId::DisruptionWeb, 0);
 					scbw::set_generic_value(unit, ValueId::ExecutingCorsairMoveOrder, 0);

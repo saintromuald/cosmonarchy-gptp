@@ -39,7 +39,7 @@ s32 BTNSCOND_HasScarabs(CUnit* unit) {
 
 	for(int i = 0;return_value == BUTTON_DISABLED && i < SELECTION_ARRAY_LENGTH;i++)
 		if(	clientSelectionGroup->unit[i] != NULL && 
-			(clientSelectionGroup->unit[i]->id == UnitId::Hero_Warbringer || clientSelectionGroup->unit[i]->id == UnitId::ProtossReaver) &&
+			(clientSelectionGroup->unit[i]->id == UnitId::Hero_Warbringer || clientSelectionGroup->unit[i]->id == UnitId::ProtossAccantor) &&
 			clientSelectionGroup->unit[i]->carrier.inHangarCount != 0
 		)
 			return_value = BUTTON_ENABLED;

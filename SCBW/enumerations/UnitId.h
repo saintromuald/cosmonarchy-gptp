@@ -169,19 +169,19 @@ enum Enum {
   mineral_field_3									= 178,
 
   //Full names
-/*0x00*/	TerranMarine							= 0,
-/*0x01*/	TerranGhost								= 1,
+/*0x00*/	TerranMaverick							= 0,
+/*0x01*/	TerranEidolon							= 1,
 /*0x02*/	TerranVulture							= 2,
 /*0x03*/	TerranGoliath							= 3,
 /*0x04*/	TerranGoliathTurret						= 4,
-/*0x05*/	TerranSiegeTankTankMode					= 5,
-/*0x06*/	TerranSiegeTankTankModeTurret			= 6,
-/*0x07*/	TerranSCV								= 7,
+/*0x05*/	TerranPhalanxTankMode					= 5,
+/*0x06*/	TerranPhalanxTankModeTurret				= 6,
+/*0x07*/	TerranMason								= 7,
 /*0x08*/	TerranWraith							= 8,
-/*0x09*/	TerranScienceVessel						= 9,
+/*0x09*/	TerranSeraph							= 9,
 /*0x0A*/	Hero_GuiMontag							= 10,
-/*0x0B*/	TerranDropship							= 11,
-/*0x0C*/	TerranBattlecruiser						= 12,
+/*0x0B*/	TerranTrojan							= 11,
+/*0x0C*/	TerranMinotaur							= 12,
 /*0x0D*/	TerranSpiderMine						= 13,
 /*0x0E*/	TerranNuclearMissile					= 14,
 /*0x0F*/	TerranCivilian							= 15,
@@ -199,18 +199,18 @@ enum Enum {
 /*0x1B*/	Hero_ArcturusMengsk						= 27,
 /*0x1C*/	Hero_Hyperion							= 28,
 /*0x1D*/	Hero_NoradII							= 29,
-/*0x1E*/	TerranSiegeTankSiegeMode				= 30,
-/*0x1F*/	TerranSiegeTankSiegeModeTurret			= 31,
-/*0x20*/	TerranFirebat							= 32,
+/*0x1E*/	TerranPhalanxSiegeMode					= 30,
+/*0x1F*/	TerranPhalanxSiegeModeTurret			= 31,
+/*0x20*/	TerranHarakan							= 32,
 /*0x21*/	Spell_ScannerSweep						= 33,
-/*0x22*/	TerranMedic								= 34,
+/*0x22*/	TerranCleric							= 34,
 /*0x23*/	ZergLarva								= 35,
 /*0x24*/	ZergEgg									= 36,
 /*0x25*/	ZergZergling							= 37,
 /*0x26*/	ZergHydralisk							= 38,
 /*0x27*/	ZergUltrakor							= 39,
 /*0x28*/	ZergBroodling							= 40,
-/*0x29*/	ZergDrone								= 41,
+/*0x29*/	ZergDroleth								= 41,
 /*0x2A*/	ZergOvileth								= 42,
 /*0x2B*/	ZergMutalisk							= 43,
 /*0x2C*/	ZergGeszithalor							= 44,
@@ -229,20 +229,20 @@ enum Enum {
 /*0x39*/	Hero_Yggdrasill							= 57,
 /*0x3A*/	TerranValkyrie							= 58,
 /*0x3B*/	ZergCocoon								= 59,
-/*0x3C*/	ProtossCorsair							= 60,
+/*0x3C*/	ProtossLanifect							= 60,
 /*0x3D*/	ProtossCabalist							= 61,
 /*0x3E*/	ZergVithrilisk							= 62,
 /*0x3F*/	ProtossMindTyrant						= 63,
-/*0x40*/	ProtossProbe							= 64,
+/*0x40*/	ProtossScribe							= 64,
 /*0x41*/	ProtossZealot							= 65,
-/*0x42*/	ProtossDragoon							= 66,
-/*0x43*/	ProtossTemplar							= 67,
+/*0x42*/	ProtossDracadin							= 66,
+/*0x43*/	ProtossCantavis							= 67,
 /*0x44*/	ProtossArchon							= 68,
 /*0x45*/	ProtossEnvoy							= 69,
 /*0x46*/	ProtossPanoptus							= 70,
-/*0x47*/	ProtossArbiter							= 71,
-/*0x48*/	ProtossCarrier							= 72,
-/*0x49*/	ProtossInterceptor						= 73,
+/*0x47*/	ProtossDidact							= 71,
+/*0x48*/	ProtossSolarion							= 72,
+/*0x49*/	ProtossSteward							= 73,
 /*0x4A*/	Hero_DarkTemplar						= 74,
 /*0x4B*/	Hero_Zeratul							= 75,
 /*0x4C*/	Hero_TassadarZeratulArchon				= 76,
@@ -252,9 +252,9 @@ enum Enum {
 /*0x50*/	Hero_Mojo								= 80,
 /*0x51*/	Hero_Warbringer							= 81,
 /*0x52*/	Hero_Gantrithor							= 82,
-/*0x53*/	ProtossReaver							= 83,
-/*0x54*/	ProtossObserver							= 84,
-/*0x55*/	ProtossScarab							= 85,
+/*0x53*/	ProtossAccantor							= 83,
+/*0x54*/	ProtossWitness							= 84,
+/*0x55*/	ProtossPlasmaShell						= 85,
 /*0x56*/	Hero_Danimoth							= 86,
 /*0x57*/	Hero_Aldaris							= 87,
 /*0x58*/	Hero_Artanis							= 88,
@@ -431,6 +431,13 @@ enum Enum {
  
 	//HYDRA\\
 
+//Unused
+//	TerranPhysicsLab								= 118,		// Physics Lab
+//	TerranBioticBase								= 126,		// Norad II Crashed Battlecruiser
+//	TerranTinkerersTower							= 150,		// Mature Chrysalis
+//	TerranGuildhall									= 185,		// Independent Jump Gate
+//	TerranQuantumInstitute							= 223,		// Protoss Gas Orb Type 2
+
 //Terran-Unit
 	TerranApostle									= 10,		// Gui Montag
 	TerranShaman									= 15,		// Civilian
@@ -443,30 +450,32 @@ enum Enum {
 	TerranMadrigal									= 27,		// Mengsk Battlecruiser
 	TerranCentaur									= 28,		// Hyperion
 	TerranPazuzu									= 49,		// Matriarch Queen
-	TerranPegasus									= 52,		// Unclean One
+	TerranCohort									= 50,		// Infested Terran
 	TerranPenumbra									= 53,		// Hunter Killer
 	TerranCyclops									= 55,		// Kukulza Mutalisk
 	TerranHeracles									= 77,		// Fenix Zealot
 	TerranWyvern									= 91,		// Cargo Ship
 	TerranCyprian									= 92,		// Mercenary Gunship
 	TerranAzazel									= 98,		// Raszagal Corsair
+	TerranSiren										= 151,		// Cerebrate
 	TerranPaladin									= 186,		// Ruins
 	TerranSavant									= 187,		// Kyadarin Crystal Formation
+	TerranAspirant									= 194,		// Zerg Beacon
+	TerranBlackjack									= 195,		// Terran Beacon
+	TerranClaymore									= 196,		// Protoss Beacon
 	TerranLobotomyMine								= 209,		// Floor Gun Trap
 
 //Terran-Building
 	TerranMedbay									= 119,		// Starbase / Terran Unused 1
 	TerranMunitionsBay								= 121,		// Repair Bay / Terran Unused 2
 	TerranQuarry									= 174,		// Protoss Temple
-	TerranGallery									= 185,		// Independent Jump Gate
 	TerranSalvoYard									= 189,		// Warp Gate
 	TerranFutureStation								= 192,		// Terran Marker
 	TerranIronFoundry								= 198,		// Terran Flag Beacon
 	TerranCaptaincy									= 199,		// Protoss Flag Beacon
-	TerranParticleAccelerator						= 200,		// Power Generator
-	TerranNaniteAssembly							= 203,		// Floor Missile Trap
+	TerranScrapyard									= 200,		// Power Generator
+	TerranNaniteAssembly							= 203,		// Floor Missile Trap	
 	TerranTreasury									= 215,		// Flag
-	TerranQuantumInstitute							= 223,		// Protoss Gas Orb Type 2
 
 //Protoss-Unit
 	ProtossManifold									= 16,		// Sarah Kerrigan
@@ -474,6 +483,7 @@ enum Enum {
 	ProtossStarSovereign							= 21,		// Tom Kazansky
 	ProtossGladius									= 25,		// Edmund Duke Siege Tank
 	ProtossMagister									= 26,		// Edmund Duke Siege Turret
+	ProtossMonogram									= 52,		// Unclean One
 	ProtossLegionnaire								= 74,		// Dark Templar Hero
 	ProtossAmaranth									= 75,		// Zeratul Dark Templar
 	ProtossHierophant								= 76,		// Tassadar/Zeratul Archon
@@ -532,9 +542,8 @@ enum Enum {
 
 //Zerg-Building
 	ZergKonvilNest									= 145,		// Unused Zerg 1
-	ZergKalkathBloom								= 147,		// Zerg Overmind (With Shell)
-	ZergGorgrokApiary								= 148,		// Zerg Overmind
-	ZergChrysalis									= 150,		// Mature Chrysalis
+	ZergKalkathBloom								= 147,		// Overmind (With Shell)
+	ZergGorgrokApiary								= 148,		// Overmind
 	ZergOthstolOviform								= 152,		// Cerebrate Daggoth
 	ZergBactalDen									= 153,		// Unused Zerg 2
 	ZergAlmakAntre									= 179,		// Cave

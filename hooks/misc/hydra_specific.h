@@ -19,6 +19,7 @@ namespace hooks {
 	bool canAttackTarget_EndChunk(CUnit* source, u32 target_flags);
 	void createDamageOverlay(CSprite* sprite);
 	u32 checkUnitDatRequirements(u8 playerId, u16 unit_id, CUnit* parent);
+	s32 gameLoop(); // 004D94B0
 }
 
 namespace hooks {

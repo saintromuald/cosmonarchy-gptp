@@ -125,7 +125,7 @@ namespace hooks {
 				u16 cloakingEnergyCost;
 
 				//Equivalent to getCloakingEnergyConsumption @ 0x00491A90
-				if (unit->id == UnitId::TerranGhost
+				if (unit->id == UnitId::TerranEidolon
 				|| unit->id == UnitId::Hero_SarahKerrigan
 				|| unit->id == UnitId::Hero_InfestedKerrigan
 				|| unit->id == UnitId::Hero_SamirDuran
@@ -354,10 +354,10 @@ namespace hooks {
 
 		}
 
-		if (unit->id == UnitId::ProtossReaver) {
+		if (unit->id == UnitId::ProtossAccantor) {
 			CUnit* scarab = unit->carrier.inHangarChild;
 			while (scarab != NULL) {
-				if (scarab->id == UnitId::ProtossScarab) {
+				if (scarab->id == UnitId::ProtossPlasmaShell) {
 					if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::Relocators) && 
 						!(scarab->status & UnitStatus::InAir)) {
 						scarab->sprite->elevationLevel = 12;

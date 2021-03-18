@@ -445,6 +445,9 @@ namespace hooks {
 					std::set<CUnit*> monoceros;
 					monoceros.insert(unit->orderTarget.unit);
 					scbw::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+					if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
+						scbw::doDeconstructionDamage(unit, weaponId);
+					}
 					auto old = unit->orderTarget.unit;
 					for (int i = 0; i < 4; i++) {
 						auto range = hooks::getMaxWeaponRangeHook(unit, WeaponId::MinotaurLaserBattery) + 32;
@@ -461,9 +464,8 @@ namespace hooks {
 							auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
 								newTarget->getX(), newTarget->getY());
 							scbw::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
-							if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) { // inlined for now; maybe an api func would be best
-								double selfDamage = (0.25 * (double)scbw::getFinalDamage(unit, weaponId) * 256.0);
-								unit->inflictDamage((s32)(selfDamage), unit, scbw::get_generic_value(unit, ValueId::DeconstructionPlayer), false);
+							if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
+								scbw::doDeconstructionDamage(unit, weaponId, false);
 							}
 						}
 						else {
@@ -474,10 +476,10 @@ namespace hooks {
 				}
 				// Titan Reactors - Heracles behavior - Refresh timer on attack and add stack
 				if (weaponId == WeaponId::JavelinCannons) {
-					scbw::set_generic_timer(unit, ValueId::TitanReactorsTimer, 24*5);
-					s32 stacks = scbw::get_generic_value(unit, ValueId::TitanReactorsStack);
+					scbw::set_generic_timer(unit, ValueId::NemeanReactorsTimer, 24*5);
+					s32 stacks = scbw::get_generic_value(unit, ValueId::NemeanReactorsStack);
 					if (stacks < 5) {
-						scbw::set_generic_value(unit, ValueId::TitanReactorsStack, stacks + 1);
+						scbw::set_generic_value(unit, ValueId::NemeanReactorsStack, stacks + 1);
 						scbw::playSound(1372, unit);
 					}
 				}
@@ -500,17 +502,6 @@ namespace hooks {
 					}
 					// Phobos laser spawn positions
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::PhobosLaserPos, 4, ImagesDatEntries::OverlayAttackPtr);
-				}
-				else if (weaponId == WeaponId::AcheronMissiles) {
-					// Phobos - Argent Capacitors behavior
-					if (unit->id == UnitId::TerranPhobos && scbw::get_generic_value(unit, ValueId::PhobosDischarge) == 0) {
-						unit->addUnitEnergy(5 * 256);
-						if (unit->energy == unit->getMaxEnergy()) {
-							scbw::set_generic_value(unit, ValueId::PhobosDischarge, 1);
-						}
-					}
-					// Phobos missile spawn positions
-					scbw::setMissileSourcePos(unit, weaponId, ValueId::PhobosMissilePos, 6, ImagesDatEntries::OverlaySpecialPtr);
 				}
 				else if (weaponId == WeaponId::ViscousAcid) {
 					// Kalkaleth missile spawn position
@@ -555,6 +546,9 @@ namespace hooks {
 				}
 				else if (weaponId == WeaponId::FuriaMissiles && unit->orderTarget.unit != NULL) {
 					scbw::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+					if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
+						scbw::doDeconstructionDamage(unit, weaponId);
+					}
 					auto old = unit->orderTarget.unit;
 					auto finderMatch = madrigalFuriaMatch(unit);
 					auto range = weapons_dat::MaxRange[weaponId];
@@ -569,6 +563,9 @@ namespace hooks {
 								auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
 									target->getX(), target->getY());
 								scbw::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
+								if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
+									scbw::doDeconstructionDamage(unit, weaponId, false);
+								}
 							}
 						}
 					};
@@ -578,7 +575,7 @@ namespace hooks {
 					// Madcap - Maverick Feeders passive
 					if (unit->id == UnitId::TerranMadcap) {
 						int stacks = scbw::get_generic_value(unit, ValueId::MadcapStacks);
-						scbw::set_generic_value(unit, ValueId::MadcapStacks, MathUtils::clamp(stacks + MADCAP_PASSIVE_DECAY_TIME, 0, MADCAP_MAX_STACKS * MADCAP_PASSIVE_DECAY_TIME));
+						scbw::set_generic_value(unit, ValueId::MadcapStacks, MathUtils::clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime));
 					}
 					if (weaponId == WeaponId::AcidSpore && unit->sprite) {
 						scbw::set_generic_value(unit, ValueId::GuardianMissileLaunchPosX, unit->getX());
@@ -616,20 +613,8 @@ namespace hooks {
 		}
 		// Deconstruction - Pazuzu passive
 		if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
-			double selfDamage = (0.25 * (double)scbw::getFinalDamage(unit, weaponId) * 256.0);
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
-				auto deconstructionTarget = (CUnit*)scbw::get_generic_value(unit, ValueId::TurretParentLink);
-				if (deconstructionTarget == nullptr) {
-					return;
-				}
-				weaponDamageHook(selfDamage, deconstructionTarget, weaponId, deconstructionTarget, deconstructionTarget->playerId,
-					deconstructionTarget->playerId, 1);//inflictDamage cause crashes!
-			}
-			else {
-				unit->inflictDamage((s32)(selfDamage), unit, scbw::get_generic_value(unit, ValueId::DeconstructionPlayer), false);
-			}
-			scbw::playSound(1372, unit);
-		}		
+			scbw::doDeconstructionDamage(unit, weaponId);
+		}
 	}
 
 	void progressBulletFlight(CBullet* bullet) { //		
@@ -673,8 +658,7 @@ namespace hooks {
 		
 		// Accelerate missiles over time
 		if (bullet->weaponType == WeaponId::PlasmaBarrage
-		|| bullet->weaponType == WeaponId::AntiMatterMissiles
-		||	bullet->weaponType == WeaponId::AcheronMissiles) {
+		||	bullet->weaponType == WeaponId::AntiMatterMissiles) {
 			u8 time_current = 255 - time;
 			if (time_current == 8) {
 				bullet->flingyTopSpeed *= 2;

@@ -211,7 +211,7 @@ public:
 	bool match(CUnit* unit) {		
 		if (unit == observed
 		|| scbw::isAlliedTo(observed->playerId, unit->playerId)
-		|| unit->id != UnitId::TerranScienceVessel) {
+		|| unit->id != UnitId::TerranSeraph) {
 			return false;
 		}
 
@@ -376,7 +376,7 @@ public:
 			}
 
 		}
-		unit->setHp(unit->hitPoints + (heal * 256));
+		unit->setHp(unit->hitPoints + (heal * 256), true);
 	}
 };
 
@@ -463,7 +463,7 @@ public:
 		}
 
 		double fraction = 0.1*(double)units_dat::MaxHitPoints[unit->id];
-		unit->setHp(std::min(unit->hitPoints+(int)fraction,units_dat::MaxHitPoints[unit->id]));
+		unit->setHp(std::min(unit->hitPoints+(int)fraction,units_dat::MaxHitPoints[unit->id]), true);
 	}
 };
 
@@ -807,7 +807,7 @@ namespace hooks {
 				}
 
 				// Disruption Web - Corsair ability
-				if (unit->id == UnitId::ProtossCorsair) {
+				if (unit->id == UnitId::ProtossLanifect) {
 					auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
 					if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0)) {
 
@@ -996,7 +996,7 @@ namespace hooks {
 						unit, victim
 					);
 					if (a != NULL
-						&& unit->id == UnitId::TerranScienceVessel) {
+						&& unit->id == UnitId::TerranSeraph) {
 						unit->sprite->createOverlay(1230);
 						scbw::set_generic_timer(unit, ValueId::ObservanceOverlayTimer, 18);
 					}
@@ -1119,7 +1119,7 @@ namespace hooks {
 						if (timer == 0) {
 							scbw::set_generic_timer(unit, ValueId::NaniteFieldTimer, 24);
 							unit->sprite->playIscriptAnim(IscriptAnimation::CastSpell);
-							shamanProc Heal = shamanProc(unit, false, 4);
+							shamanProc Heal = shamanProc(unit, false, 2);
 							scbw::UnitFinder unitFinder(unit->getX() - 128,
 								unit->getY() - 128,
 								unit->getX() + 128,
@@ -1158,16 +1158,6 @@ namespace hooks {
 					unit->orderSignal &= ~0x20;
 					if (unit->orderTarget.unit != NULL) {
 						if (unit->getDistanceToTarget(unit->orderTarget.unit) <= 128) {
-							unit->playIscriptAnim(IscriptAnimation::Unused1);
-						}
-					}
-				}
-
-				// Phobos - Acheron Missiles animation
-				if (unit->id == UnitId::TerranPhobos && unit->orderSignal & 0x20) {
-					unit->orderSignal &= ~0x20;
-					if (unit->orderTarget.unit != NULL) {
-						if (unit->getDistanceToTarget(unit->orderTarget.unit) <= 192) {
 							unit->playIscriptAnim(IscriptAnimation::Unused1);
 						}
 					}
@@ -1230,8 +1220,8 @@ namespace hooks {
 				}
 
 				// Remove all Titan Reactors stacks after not attacking for 5 seconds
-				if (scbw::get_generic_timer(unit, ValueId::TitanReactorsTimer) == 1) {
-					scbw::set_generic_value(unit, ValueId::TitanReactorsStack, 0);
+				if (scbw::get_generic_timer(unit, ValueId::NemeanReactorsTimer) == 1) {
+					scbw::set_generic_value(unit, ValueId::NemeanReactorsStack, 0);
 					// remove overlay later
 				}
 

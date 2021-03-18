@@ -40,10 +40,10 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 
 	// Madcap Maverick Feeders behavior: increase weapon speed while stationary
 	if (unit->id == UnitId::TerranMadcap) {
-		u32 stacks = ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MADCAP_PASSIVE_DECAY_TIME);
+		u32 stacks = ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime);
 		if (stacks > 0) {
 			//scbw::print(std::to_string(stacks) + ", " + std::to_string(scbw::get_generic_value(unit, ValueId::MadcapStacks)));
-			double newCooldown = (double)cooldown * (1.0 - stacks * MADCAP_ATTACK_SPEED_PER_STACK);
+			double newCooldown = (double)cooldown * (1.0 - stacks * MadcapAttackSpeedPerStack);
 			cooldown = newCooldown;
 		}
 	}

@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cassert>
 #include <utility>
+#include <hooks/weapons/weapon_damage.h>
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -208,7 +209,7 @@ bool teleport(CUnit* u, Point16 target, u16 spriteAnimation, bool preserveOrder)
 
 		//disconnect a nuke from a ghost using it
 		if (
-			u->id == UnitId::TerranGhost ||
+			u->id == UnitId::TerranEidolon ||
 			u->id == UnitId::Hero_SarahKerrigan ||
 			u->id == UnitId::Hero_AlexeiStukov ||
 			u->id == UnitId::Hero_SamirDuran ||
@@ -748,7 +749,7 @@ bool isConventionalUnitMorphSource(u16 id, bool allow_larvae, bool allow_high_te
 	default:
 		break;
 	}
-	if (id == UnitId::ProtossTemplar && allow_high_templar) {
+	if (id == UnitId::ProtossCantavis && allow_high_templar) {
 		return true;
 	}
 	if (id == UnitId::ZergLarva && allow_larvae) {
@@ -1627,10 +1628,10 @@ u16 random() {
 	bool canUseCliffAdvantage(CUnit* unit, u8 weapon) {
 		return unit != nullptr
 			&& !(unit->status & UnitStatus::InAir)
-			&& unit->id != UnitId::ProtossScarab
+			&& unit->id != UnitId::ProtossPlasmaShell
 			&& (weapon == NULL || weapons_dat::MaxRange[weapon] > 32)
 			&& !(unit->status & UnitStatus::InBuilding)
-			&& unit->id != UnitId::TerranFirebat;
+			&& unit->id != UnitId::TerranHarakan;
 	}
 
 	s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
@@ -1668,11 +1669,10 @@ u16 random() {
 		CUnit* overlayTargetUnit;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
 			overlayImageId = ImageId::RestorationHit_Medium;
+		else if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
+			overlayImageId = ImageId::RestorationHit_Large;
 		else
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
-				overlayImageId = ImageId::RestorationHit_Large;
-			else
-				overlayImageId = ImageId::RestorationHit_Small;
+			overlayImageId = ImageId::RestorationHit_Small;
 		if (unit->subunit != NULL)
 			overlayTargetUnit = unit->subunit;
 		else
@@ -1687,9 +1687,7 @@ u16 random() {
 			scbw::set_generic_timer(unit, ValueId::ParasiteArmTimer, 0);
 			unit->removeOverlay(1031);
 		}
-		if (scbw::get_generic_unit(unit, ValueId::ParasiteSource) != nullptr) {
-			scbw::set_generic_unit(unit, ValueId::ParasiteSource, nullptr);
-		}
+		scbw::set_generic_unit(unit, ValueId::ParasiteSource, nullptr);
 
 		// Remove default flags
 		unit->parasiteFlags = 0;
@@ -1697,7 +1695,6 @@ u16 random() {
 
 		// Remove Ensnare
 		if (unit->ensnareTimer != 0) {
-			unit->ensnareTimer = 0;
 			unit->removeOverlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
 			unit->ensnareTimer = 0;
 			//specific update following ensnare removal
@@ -1706,14 +1703,12 @@ u16 random() {
 
 		// Remove Plague
 		if (unit->plagueTimer != 0) {
-			unit->plagueTimer = 0;
 			unit->removeOverlay(ImageId::PlagueOverlay_Small, ImageId::PlagueOverlay_Large);
 			unit->plagueTimer = 0;
 		}
 
 		// Remove Irradiate
 		if (unit->irradiateTimer != 0) {
-			unit->irradiateTimer = 0;
 			unit->removeOverlay(ImageId::Irradiate_Small, ImageId::Irradiate_Large);
 			unit->irradiateTimer = 0;
 
@@ -1722,14 +1717,12 @@ u16 random() {
 			unit->irradiatePlayerId = 8;
 		}
 
+		// Remove armor rend (generic)
+		scbw::set_generic_value(unit, ValueId::ArmorReduce, 0);
+
 		// Remove Entropy Gauntlets
 		if (scbw::get_generic_timer(unit, ValueId::EntropyGauntlets) > 0) {
 			scbw::set_generic_timer(unit, ValueId::EntropyGauntlets, 1);
-		}
-
-		// Remove armor rend (generic)
-		if (scbw::get_generic_value(unit, ValueId::ArmorReduce) > 0) {
-			scbw::set_generic_value(unit, ValueId::ArmorReduce, 0);
 		}
 
 		// Remove Malediction
@@ -1763,20 +1756,20 @@ u16 random() {
 		}
 
 		// Remove Lockdown
-		if (unit->lockdownTimer != 0)
-			unit->removeLockdown();
+		unit->removeLockdown();
 
 		// Remove Maelstrom
-		if (unit->maelstromTimer != 0)
-			unit->removeMaelstrom();
+		unit->removeMaelstrom();
 
 		// Remove Devourer Acid Spores
-		if (unit->acidSporeCount != 0)
-			unit->removeAcidSpores();
+		unit->removeAcidSpores();
 
 		// Remove Deconstruction
-		if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
-			scbw::set_generic_value(unit, ValueId::Deconstruction, 0);
+		scbw::set_generic_value(unit, ValueId::Deconstruction, 0);
+		unit->removeOverlay(1332);
+		if (unit->subunit) {
+			scbw::set_generic_value(unit->subunit, ValueId::Deconstruction, 0);
+			unit->subunit->removeOverlay(1332);
 		}
 
 		//was hardcoded in original code
@@ -2101,9 +2094,8 @@ u16 random() {
 
 	// I may need to make this function more flexible later -- Pr0nogo
 	bool unitIsPacifist(CUnit* unit) {
-		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Attack)
-			|| !(unit->hasWeapon())
-			||	 unit->id == UnitId::ZergLakizilisk; // LAME
+		return !((unit->hasWeapon())
+			||	  unit->id == UnitId::ZergLakizilisk); // LAME
 	}
 
 	// Identical to function OrderIsSpell @ 00436930 -- Pr0nogo
@@ -2130,4 +2122,39 @@ u16 random() {
 			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::PermanentCloakTimer, 48 + 1, 0);
 		}
 	}
+    
+	void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound) {
+		// Deconstruction - Pazuzu passive
+		double selfDamage = (0.25 * (double)(weapons_dat::DamageAmount[weaponId] * 256.0));
+		auto deconstructionTarget = unit;
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
+			deconstructionTarget = (CUnit*)scbw::get_generic_value(unit, ValueId::TurretParentLink);
+			if (deconstructionTarget == nullptr) {
+				return;
+			}
+		}
+		hooks::weaponDamageHook(selfDamage, deconstructionTarget, weaponId, deconstructionTarget, deconstructionTarget->playerId,
+			deconstructionTarget->playerId, 1);
+		if (playSound) {
+			scbw::playSound(1372, unit);
+		}
+	}
+
+	bool canBeParasited(CUnit* unit) {
+		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Building)
+			&& !(unit->status & UnitStatus::Burrowed);
+	}
+
+	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen) {
+		if (!scbw::canBeParasited(unit)) return;
+		int playerFlag = 1 << playerID;
+		if (unit->parasiteFlags != playerFlag) { // <- Prevent overwriting timer for already parasited units by same player
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::ParasiteArmTimer, DefaultArmParasiteTimer, 0);
+			unit->sprite->createOverlay(1031, 0, 0, 0);
+		}
+		scbw::sendGPTP_aise_cmd(unit, queen, GptpId::SetGenericUnit, ValueId::ParasiteSource, 0, 0);
+		unit->parasiteFlags = playerFlag; // Parasite now overwrites other player's parasite
+		scbw::refreshConsole();
+	}
+
 } //scbw

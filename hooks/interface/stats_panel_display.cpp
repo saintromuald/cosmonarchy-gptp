@@ -149,12 +149,9 @@ namespace hooks {
 						//26D54
 						StatsWeaponLevel(dialog, index, groundWeapon);
 						index++;
+						// Display additional weapons
 						if (activeUnit->id == UnitId::TerranCentaur) {
 							StatsWeaponLevel(dialog, index, WeaponId::SunchaserMissiles);
-							index++;
-						}
-						else if (activeUnit->id == UnitId::TerranPhobos) {
-							StatsWeaponLevel(dialog, index, WeaponId::AcheronMissiles);
 							index++;
 						}
 					}
@@ -232,9 +229,9 @@ namespace hooks {
 
 			//26E31
 			if (
-				activeUnit->id == UnitId::ProtossCarrier
+				activeUnit->id == UnitId::ProtossSolarion
 //				||	activeUnit->id == UnitId::Hero_Gantrithor
-				||	activeUnit->id == UnitId::ProtossReaver
+				||	activeUnit->id == UnitId::ProtossAccantor
 //				||	activeUnit->id == UnitId::Hero_Warbringer
 				)
 			{
@@ -313,7 +310,7 @@ namespace hooks {
 			}
 			return 0;
 		}*/
-		if (_type != UnitId::TerranBattlecruiser && _type != UnitId::Hero_NoradII && _type != UnitId::Hero_Hyperion
+		if (_type != UnitId::TerranMinotaur && _type != UnitId::Hero_NoradII && _type != UnitId::Hero_Hyperion
 		|| !(units_dat::BaseProperty[_type] & UnitProperty::Hero)
 		|| !units_dat::MapStringId[_type]) {
 			if (unitGetRace(a2) == 1) {                 // Terran

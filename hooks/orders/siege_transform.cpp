@@ -26,7 +26,7 @@ namespace hooks {
 
 		if(unit->mainOrderState == 0) {
 
-			if(unit->id == UnitId::TerranSiegeTankSiegeMode || unit->id == UnitId::Hero_EdmundDukeSiegeMode) {
+			if(unit->id == UnitId::TerranPhalanxSiegeMode || unit->id == UnitId::Hero_EdmundDukeSiegeMode) {
 
 				if(!(unit->subunit->status & UnitStatus::NoBrkCodeStart)) {
 
@@ -74,8 +74,8 @@ namespace hooks {
 
 				if(unit->id == UnitId::Hero_EdmundDukeSiegeMode)
 					unitNewId = UnitId::Hero_EdmundDukeTankMode;else
-				if(unit->id == UnitId::TerranSiegeTankSiegeMode)
-					unitNewId = UnitId::TerranSiegeTankTankMode;
+				if(unit->id == UnitId::TerranPhalanxSiegeMode)
+					unitNewId = UnitId::TerranPhalanxTankMode;
 				else
 					unitNewId = unit->id;
 
@@ -97,7 +97,7 @@ namespace hooks {
 
 		if(unit->mainOrderState == 0) {
 
-			if(unit->id == UnitId::TerranSiegeTankTankMode || unit->id == UnitId::Hero_EdmundDukeTankMode) {
+			if(unit->id == UnitId::TerranPhalanxTankMode || unit->id == UnitId::Hero_EdmundDukeTankMode) {
 
 				if(unit->movementFlags & MovementFlags::Accelerating)
 					makeToHoldPosition(unit);
@@ -147,8 +147,8 @@ namespace hooks {
 					u16 unitNewId = unit->id;
 
 					//identical to @00463310
-					if(unit->id == UnitId::TerranSiegeTankTankMode)
-						unitNewId = UnitId::TerranSiegeTankSiegeMode;
+					if(unit->id == UnitId::TerranPhalanxTankMode)
+						unitNewId = UnitId::TerranPhalanxSiegeMode;
 					else
 					if(unit->id == UnitId::Hero_EdmundDukeTankMode)
 						unitNewId = UnitId::Hero_EdmundDukeSiegeMode;

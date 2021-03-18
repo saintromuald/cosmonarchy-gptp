@@ -159,8 +159,7 @@ enum Enum {
 	DiscoidRailgun								= 88,			// Savant weapon
     LobotomyMine								= 89,			// Lobotomy Mine weapon
 	FlakCannons									= 93,			// Cyclops weapon
-	ArgosLaserBatteries							= 94,			// Phobos weapon 1
-	AcheronMissiles								= 95,			// Phobos weapon 2
+	ArgosLaserBatteries							= 94,			// Phobos weapon
 	PowerSiphon									= 101,			// Ability targeting - Savant
 	FragmentaryShells							= 116,			// Cyclops behavior damage
 	Observance									= 122,			// Ability targeting - Science Vessel
@@ -209,6 +208,7 @@ enum Enum {
 	ParasiticSpores								= 49,			// Alkajelisk behavior weapon
 	BasiliskCorrosiveAcid						= 50,			// Bactalisk weapon
 	SwarmingSpores								= 81,			// Broodlisk weapon
+	SowingSpines								= 95,			// Konvilisk weapon
 	AcridBarbs									= 102,			// Quazilisk weapon
 	PiercingSpines								= 110,			// Almaksalisk weapon
 	ViscousAcid									= 117,			// Kalkalisk weapon

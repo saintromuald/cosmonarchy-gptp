@@ -218,12 +218,12 @@ namespace hooks {
 					if (hpToHeal > 200) {
 						hpToHeal = 200;
 					}
-					auto energyCost = hpToHeal >> 1;
+/*					auto energyCost = hpToHeal >> 1;
 					if (!medic->hasEnergy(energyCost)) {
 						return 2;
 					}
-					medic->spendUnitEnergy(energyCost);
-					target->setHp(target->hitPoints + (hpToHeal));
+					medic->spendUnitEnergy(energyCost);*/
+					target->setHp(target->hitPoints + (hpToHeal), true);
 					result = 1;
 					target->isBeingHealed = 1;
 					return result;

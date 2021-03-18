@@ -3,6 +3,8 @@
 #include "globals.h"
 #include <cassert>
 #include "hooks/orders/unit_making/unit_train.h"
+#include "stopwatch/Stopwatch.h"
+#include "logger.h"
 namespace ReqOpcode {
 	enum {
 
@@ -114,6 +116,89 @@ bool unitIsTrainingOrMorphing(CUnit* unit) {
 		MOV ECX,unit
 		CALL Func_unitIsTrainingOrMorphing
 		MOV result,EAX
+		POPAD
+	}
+}
+const u32 Func_initializeRandomizerInfo = 0x0047E410;
+u8 initializeRandomizerInfo() {
+	static u32 result;
+	__asm {
+		PUSHAD
+		CALL Func_initializeRandomizerInfo
+		MOV result, EAX
+		POPAD
+	}
+	return (u8)result;
+}
+
+const u32 Func_AI_Loop = 0x004A2B00;
+void AI_Loop() {
+	__asm {
+		PUSHAD
+		CALL Func_AI_Loop
+		POPAD
+	}
+}
+
+const u32 Func_updateActiveTileInfo = 0x0049C4C0;
+s32 updateActiveTileInfo() {
+	static s32 result;
+	__asm {
+		PUSHAD
+		CALL Func_updateActiveTileInfo
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+const u32 Func_removeFOWCheat = 0x00480880;
+s32 removeFOWCheat() {
+	static s32 result;
+	__asm {
+		PUSHAD
+		CALL Func_removeFOWCheat
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+const u32 Func_updateUnits = 0x004ED000;
+void updateUnits() {
+	__asm {
+		PUSHAD
+		CALL Func_updateUnits
+		POPAD
+	}
+}
+
+const u32 Func_imageDrawingBulletDrawing = 0x0048C3D0;
+s32 imageDrawingBulletDrawing() {
+	static s32 result;
+	__asm {
+		PUSHAD
+		CALL Func_imageDrawingBulletDrawing
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+const u32 Func_updateImages = 0x00496330;
+void updateImages() {
+	__asm {
+		PUSHAD
+		CALL Func_updateImages
+		POPAD
+	}
+}
+
+const u32 Func_updateThingys = 0x00488510;
+void updateThingys() {
+	__asm {
+		PUSHAD
+		CALL Func_updateThingys
 		POPAD
 	}
 }
@@ -499,13 +584,13 @@ namespace hooks {
 		if (unit->id == UnitId::TerranVulture) {
 			unit->vulture.spiderMineCount = 3;
 		}
-		else if (unit->id == UnitId::TerranGhost) {
+		else if (unit->id == UnitId::TerranEidolon) {
 			unit->vulture.spiderMineCount = 2;
 		}
 	}
 
 	u32 get_mine_id(CUnit* unit) {
-		if (unit->id == UnitId::TerranGhost) {
+		if (unit->id == UnitId::TerranEidolon) {
 			return UnitId::TerranLobotomyMine;
 		}
 		return UnitId::TerranSpiderMine;
@@ -641,6 +726,46 @@ namespace hooks {
 
 
 		return false;
-	}	
+	}
+
+	s32 gameLoop() { // 004D94B0 - hooked for lag testing - Pr0nogo
+		bool v0;
+		win32::Stopwatch sw;
+		sw.Start();
+		double aiLoop, unitLoop, imageThingyLoop, tileLoop;
+
+		scbw::setInGameLoopState(1);
+		initializeRandomizerInfo();
+		AI_Loop();
+		aiLoop = sw.ElapsedMilliseconds();
+		sw.Stop();
+		
+		if (!visionUpdateCount)
+			*visionUpdateCount = 100;
+		v0 = *visionUpdateCount == 1;
+		*visionUpdateCount -= 1;
+		*visionUpdated = v0;
+		sw.Start();
+		if (v0) {
+			updateActiveTileInfo();
+			removeFOWCheat();
+		}
+		sw.Stop();
+		tileLoop = sw.ElapsedMilliseconds();
+		sw.Start();
+		updateUnits();
+		sw.Stop();
+		sw.Start();
+		unitLoop = sw.ElapsedMilliseconds();
+		imageDrawingBulletDrawing();
+		updateImages();
+		updateThingys();
+		sw.Stop();
+		imageThingyLoop = sw.ElapsedMilliseconds();
+//		if (*elapsedTimeFrames % 24 == 0) {
+			GPTP::logger << "aiLoop: " << aiLoop << ", unitLoop: " << unitLoop << ", " << "tile loop: " << tileLoop << ", thingy/bullet/imageLoop: " << imageThingyLoop << '\n';
+		//}
+		return scbw::setInGameLoopState(0);
+	}
 }
 	
