@@ -60,6 +60,7 @@ namespace {
 			PUSH EAX
 			MOV EAX, [EBP + 0x04]
 			MOV unit, EAX
+			POP EBP
 			POP EAX
 			MOV target, EAX
 			PUSHAD
@@ -67,7 +68,7 @@ namespace {
 		result = hooks::unitCanSeeCloakedTarget(target, unit);
 		__asm {
 			POPAD
-			MOV result, AL
+			MOV AL, result
 			RETN 4
 		}
 	}
@@ -81,7 +82,7 @@ namespace hooks {
         nops(0x004EB176, 8);//disruption web
         nops(0x004EB316, 2);//disruption web
 
-//		jmpPatch(unitCanSeeCloakedTarget_Wrapper, 0x00401D60, 4);
+		//jmpPatch(unitCanSeeCloakedTarget_Wrapper, 0x00401D60, 4);
 	}
 	void injectTargetRelatedHooks() {
 		injectTargetHooks();
