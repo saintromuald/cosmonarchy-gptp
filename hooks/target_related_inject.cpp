@@ -67,7 +67,7 @@ namespace {
 		result = hooks::unitCanSeeCloakedTarget(target, unit);
 		__asm {
 			POPAD
-			MOV result, AL
+			MOV AL, result
 			RETN 4
 		}
 	}
