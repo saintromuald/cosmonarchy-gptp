@@ -58,7 +58,7 @@ namespace {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
-			MOV EAX, [EBP + 0x08]
+			MOV EAX, [EBP + 0x04]
 			MOV unit, EAX
 			POP EAX
 			MOV target, EAX
