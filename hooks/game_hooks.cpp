@@ -592,30 +592,30 @@ namespace hooks {
 				unit->setSupplyProvided(supply - stacks * TREASURY_INCREASE);
 			}
 
-			for (int player = 0; player < 8; player++) { // Synchronize upgrades
-				int level = 0;
-
-				// Terran Upgrades
-				level = scbw::getUpgradeLevel(player, UpgradeId::TerranInfantryWeapons);
-				scbw::setUpgradeLevel(player, UpgradeId::TerranVehicleWeapons, level);
-				scbw::setUpgradeLevel(player, UpgradeId::TerranShipWeapons, level);
-				level = scbw::getUpgradeLevel(player, UpgradeId::TerranInfantryArmor);
-				scbw::setUpgradeLevel(player, UpgradeId::TerranVehiclePlating, level);
-				scbw::setUpgradeLevel(player, UpgradeId::TerranShipPlating, level);
-
-				// Protoss Upgrades
-				level = scbw::getUpgradeLevel(player, UpgradeId::ProtossGroundWeapons);
-				scbw::setUpgradeLevel(player, UpgradeId::ProtossAirWeapons, level);
-				level = scbw::getUpgradeLevel(player, UpgradeId::ProtossArmor);
-				scbw::setUpgradeLevel(player, UpgradeId::ProtossPlating, level);
-
-				// Zerg Upgrades
-				level = scbw::getUpgradeLevel(player, UpgradeId::ZergMeleeAttacks);
-				scbw::setUpgradeLevel(player, UpgradeId::ZergMissileAttacks, level);
-				scbw::setUpgradeLevel(player, UpgradeId::ZergFlyerAttacks, level);
-				level = scbw::getUpgradeLevel(player, UpgradeId::ZergCarapace);
-				scbw::setUpgradeLevel(player, UpgradeId::ZergFlyerCaparace, level);
-			}
+			//for (int player = 0; player < 8; player++) { // Synchronize upgrades
+			//	int level = 0;
+			//
+			//	// Terran Upgrades
+			//	level = scbw::getUpgradeLevel(player, UpgradeId::TerranInfantryWeapons);
+			//	scbw::setUpgradeLevel(player, UpgradeId::TerranVehicleWeapons, level);
+			//	scbw::setUpgradeLevel(player, UpgradeId::TerranShipWeapons, level);
+			//	level = scbw::getUpgradeLevel(player, UpgradeId::TerranInfantryArmor);
+			//	scbw::setUpgradeLevel(player, UpgradeId::TerranVehiclePlating, level);
+			//	scbw::setUpgradeLevel(player, UpgradeId::TerranShipPlating, level);
+			//
+			//	// Protoss Upgrades
+			//	level = scbw::getUpgradeLevel(player, UpgradeId::ProtossGroundWeapons);
+			//	scbw::setUpgradeLevel(player, UpgradeId::ProtossAirWeapons, level);
+			//	level = scbw::getUpgradeLevel(player, UpgradeId::ProtossArmor);
+			//	scbw::setUpgradeLevel(player, UpgradeId::ProtossPlating, level);
+			//
+			//	// Zerg Upgrades
+			//	level = scbw::getUpgradeLevel(player, UpgradeId::ZergMeleeAttacks);
+			//	scbw::setUpgradeLevel(player, UpgradeId::ZergMissileAttacks, level);
+			//	scbw::setUpgradeLevel(player, UpgradeId::ZergFlyerAttacks, level);
+			//	level = scbw::getUpgradeLevel(player, UpgradeId::ZergCarapace);
+			//	scbw::setUpgradeLevel(player, UpgradeId::ZergFlyerCaparace, level);
+			//}
 
 			for (CBullet* bullet = *firstBullet; bullet; bullet = bullet->next) {
 				if (bullet->weaponType == WeaponId::ViscousAcid) {
