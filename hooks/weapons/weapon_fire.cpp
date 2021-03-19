@@ -361,7 +361,7 @@ namespace hooks {
 		}
 
 		if (unit->id != UnitId::ProtossCabalist)
-			scbw::cloakLogic(unit);
+			scbw::decloakProc(unit);
 
 		if (weapons_dat::FlingyId[weaponId] != 0) {
 			bool good = true;

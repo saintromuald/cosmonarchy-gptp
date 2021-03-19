@@ -668,7 +668,7 @@ namespace hooks {
 
 			if (attacker != NULL && target != NULL) {
 				if (damage < target->hitPoints && attacker->id == UnitId::ProtossCabalist)
-					scbw::cloakLogic(attacker);
+					scbw::decloakProc(attacker);
 
 				if (weaponId == WeaponId::NuclearMissile && target->hitPoints > damage) {
 					if (attacker != NULL && irradiateTarget(target)) {

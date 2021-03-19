@@ -2113,7 +2113,7 @@ u16 random() {
 			|| orderId == OrderId::FireYamatoGun1;
 	}
 
-	void cloakLogic(CUnit* unit) {
+	void decloakProc(CUnit* unit) {
 		if ((units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak
 		|| unit->status & UnitStatus::CloakingForFree)
 		&& unit->playerId
