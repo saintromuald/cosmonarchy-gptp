@@ -53,7 +53,7 @@ namespace {
 	void __declspec(naked) unitCanSeeCloakedTarget_Wrapper() { // 00401D60
 		static CUnit* target;
 		static CUnit* unit;
-		static bool result;
+		static u32 result;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -67,7 +67,7 @@ namespace {
 		result = hooks::unitCanSeeCloakedTarget(target, unit);
 		__asm {
 			POPAD
-			MOV AL, result
+			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 4
