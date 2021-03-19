@@ -450,7 +450,7 @@ namespace hooks {
 		return result;
 	}
 
-	bool unitCanSeeCloakedTarget(CUnit* target, CUnit* unit) { // 00401D60, hooked for cloak rewrite - Pr0nogo
+	u32 unitCanSeeCloakedTarget(CUnit* target, CUnit* unit) { // 00401D60, hooked for cloak rewrite - Pr0nogo
 		u32 flags = target->status; // BYTE1() & 3 == check if unit is cloaked/requires detect
 		return flags & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
 	}
