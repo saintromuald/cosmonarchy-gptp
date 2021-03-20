@@ -77,8 +77,54 @@ public:
 };
 struct CustomUnitStruct {
 	std::vector<double> genericValues;
-	std::vector<double> genericTimers;
+	std::vector<int> genericTimers;
 	std::vector<CUnit*> genericUnits;
+
+	void setGenericValue(int variable, int value) {
+		if (variable >= genericValues.size()) {
+			genericValues.resize(variable + 1, 0);
+		}
+		genericValues[variable] = value;
+	}
+	void setGenericTimer(int variable, int value) {
+		if (variable >= genericTimers.size()) {
+			genericTimers.resize(variable + 1, 0);
+		}
+		genericTimers[variable] = value;
+
+	}
+
+	void addGenericValue(int variable, int value) {
+		if (variable >= genericValues.size()) {
+			genericValues.resize(variable + 1, 0);
+		}
+		genericValues[variable] += value;
+	}
+	int getGenericValue(int variable) {
+		if (variable < genericValues.size()) {
+			return genericValues[variable];
+		}
+		return 0;
+	}
+	int getGenericTimer(int variable) {
+		if (variable < genericTimers.size()) {
+			return genericTimers[variable];
+		}
+		return 0;
+	}
+
+	void setGenericUnit(int variable, CUnit* unit) {
+		if (variable >= genericUnits.size()) {
+			genericUnits.resize(variable + 1, nullptr);
+		}
+		genericUnits[variable] = unit;
+	}
+	CUnit* getGenericUnit(int variable) {
+		if (variable < genericUnits.size()) {
+			return genericUnits[variable];
+		}
+		return nullptr;
+	}
 };
 class globals {
 	std::string output;

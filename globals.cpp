@@ -13,6 +13,8 @@ void globals::refreshDebuggingInfo() {
 }
 
 //SaveState globals::aise_save() {
+
+
 void globals::aise_save(){
 	output.clear();
 	std::ostringstream stream(std::stringstream::out|std::stringstream::binary);
