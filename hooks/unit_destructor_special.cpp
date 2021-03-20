@@ -43,7 +43,7 @@ public:
 		if (!scbw::isAlliedTo(vassal->playerId, unit->playerId)) {
 			return;
 		}
-		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::TerminalSurge, 1, 0);
+		scbw::add_generic_value(unit, ValueId::TerminalSurge, 1);
 	}
 };
 
@@ -327,7 +327,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 
 	// Irradiate Radiation Shockwave enhancement
 	if (unit->irradiateTimer > 0) {
-		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 1, 0);
+		scbw::set_generic_value(unit, ValueId::RadiationShockwaveCount, 1);
 	}
 
 	// Parasite - spawn broodlings on death

@@ -371,7 +371,7 @@ public:
 			unit->sprite->createUnderlay(1060, 0, 0, 0);
 		}
 
-		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::TreasuryStacks, 1, 0);
+		scbw::set_generic_value(unit, ValueId::TreasuryStacks, 1);
 		int supply = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SupplyProvided, 0);
 		unit->setSupplyProvided(supply + TREASURY_INCREASE);
 	}
@@ -560,7 +560,7 @@ namespace hooks {
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
 				int supply = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SupplyProvided, 0);
 				int stacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TreasuryStacks, 0);
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::TreasuryStacks, 0, 0);
+				scbw::set_generic_value(unit, ValueId::TreasuryStacks, 0);
 				unit->setSupplyProvided(supply - stacks * TREASURY_INCREASE);
 			}
 
@@ -787,10 +787,10 @@ namespace hooks {
 							web = hooks::createDisruptionWeb(unit->playerId, unit->getX(), unit->getY());
 							if (web == NULL) {
 								//CCMU case
-								scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::DisruptionWeb, 0, 0);
+								scbw::set_generic_value(unit, ValueId::DisruptionWeb, 0);
 							}
 							else {
-								scbw::sendGPTP_aise_cmd(unit, web, GptpId::SetGenericUnit, ValueId::AttachedDisruptionWeb, 0, 0);
+								scbw::set_generic_unit(unit, ValueId::AttachedDisruptionWeb, web);
 							}
 						}
 						else {
@@ -840,12 +840,12 @@ namespace hooks {
 					!unit->isFrozen())
 				{
 					u8 missile = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SkyfallStacks, 0);
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::SkyfallStacks, 1, 0);
+					scbw::set_generic_value(unit, ValueId::SkyfallStacks, scbw::get_generic_value(unit, ValueId::SkyfallStacks)+1);
 					if (missile == 20) {
-						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SkyfallStacks, 0, 0);
+						scbw::set_generic_value(unit, ValueId::SkyfallStacks, 0);
 					}
 					else {
-						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::SkyfallTimer, 2 + 1, 0);
+						scbw::set_generic_timer(unit, ValueId::SkyfallTimer, 2 + 1);
 						u32 tgt_x = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SkyfallX, 0);
 						u32 tgt_y = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SkyfallY, 0);
 						//scbw::printFormattedText("Read X Y %d %d [a]", tgt_x, tgt_y);
@@ -947,13 +947,13 @@ namespace hooks {
 					);
 
 					if (a != NULL) {
-						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::ObservanceTimerDebuff, (5 * 24) + 1, 0);
+						scbw::set_generic_timer(unit, ValueId::ObservanceTimerDebuff, (5 * 24) + 1);
 						if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0) < 5) {
-							scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::ObservanceRend, 1, 0);
+							scbw::set_generic_value(unit, ValueId::ObservanceRend, scbw::get_generic_value(unit, ValueId::ObservanceRend)+1);
 						}
 					}
 					else {
-						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::ObservanceRend, 0, 0);
+						scbw::set_generic_value(unit, ValueId::ObservanceRend, 0);
 						unit->removeOverlay(1231, 1233);
 					}
 				}
@@ -1056,7 +1056,7 @@ namespace hooks {
 
 				// Zergling - Adrenal Glands
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::AdrenalTimer, 0) == 1) {
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::AdrenalStacks, 0, 0);
+					scbw::set_generic_value(unit, ValueId::AdrenalStacks, 0);
 				}
 
 				// Vorvaling - Captivating Claws
@@ -1152,7 +1152,7 @@ namespace hooks {
 
 				// Southpaw - Knockout Drivers behavior
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KnockoutDriversTimer, 0) == 1) {
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::KnockoutDriversStacks, 0, 0);
+					scbw::set_generic_value(unit, ValueId::KnockoutDriversStacks, 0);
 					unit->updateSpeed();
 				}
 
@@ -1195,19 +1195,19 @@ namespace hooks {
 
 				// Apply Ecclesiast - Astral Blessing stacks and timer
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::EcclesiastTimer, 0) == 1) {
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::EcclesiastStack, 0, 0);
+					scbw::set_generic_value(unit, ValueId::EcclesiastStack, 0);
 				}
 
 				// Update flingy speed when Adrenal Frenzy timer expires
 				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::NathrokorTimer, 0) == 1) {
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::NathrokorTimer, 0, 0);
+					scbw::set_generic_timer(unit, ValueId::NathrokorTimer, 0);
 					unit->updateSpeed();
 				}
 
 				// Radiation Shockwave 5-second timer
 				if (scbw::get_generic_timer(unit, ValueId::RadiationShockwaveTimer) == 1) {
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::RadiationShockwaveTimer, 0, 0);
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 1, 0);
+					scbw::set_generic_timer(unit, ValueId::RadiationShockwaveTimer, 0);
+					scbw::set_generic_value(unit, ValueId::RadiationShockwaveCount, 1);
 				}
 
 				// Clarion SFX

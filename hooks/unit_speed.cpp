@@ -129,7 +129,7 @@ namespace hooks {
 				unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))
 			{
 				speed += speed / 4;
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SomaticImplants, 1, 0);
+				scbw::set_generic_value(unit, ValueId::SomaticImplants, 1);
 			}
 		}
 

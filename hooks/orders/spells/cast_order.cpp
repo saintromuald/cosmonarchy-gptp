@@ -26,28 +26,28 @@ void orders_Spell(CUnit* unit) {
 	if (unit->id == UnitId::TerranPaladin) {
 		if (unit->orderSignal & 0x20) {
 			unit->orderSignal &= ~0x20;
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::SkyfallTimer, 3, 0);
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SkyfallStacks, 0, 0);
+			scbw::set_generic_timer(unit, ValueId::SkyfallTimer, 3);
+			scbw::set_generic_value(unit, ValueId::SkyfallStacks, 0);
 			auto pt = unit->orderTarget.pt;
 			if (unit->orderTarget.unit != NULL) {
 				pt = unit->orderTarget.unit->position;
 				unit->orderTarget.unit = NULL;
 			}
 			//scbw::printFormattedText("Fire skyfall %d %d -> %d %d",unit->getX(),unit->getY(),pt.x,pt.y);
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SkyfallX, unit->orderTarget.pt.x, 0);
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SkyfallY, unit->orderTarget.pt.y, 0);
+			scbw::set_generic_value(unit, ValueId::SkyfallX, unit->orderTarget.pt.x);
+			scbw::set_generic_value(unit, ValueId::SkyfallY, unit->orderTarget.pt.y);
 		}
 	}
 	if (unit->id == UnitId::TerranWyvern) {
 		if (unit->orderSignal & 0x40) {
 			unit->orderSignal &= ~0x40;
 			if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::ReverseThrust, 0) == 1) {
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::WyvernReverseLandgrabOn, 1, 0);
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::WyvernReverseLandgrabX, unit->orderTarget.pt.x, 0);
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::WyvernReverseLandgrabY, unit->orderTarget.pt.y, 0);
+				scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabOn, 1);
+				scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabX, unit->orderTarget.pt.x);
+				scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabY, unit->orderTarget.pt.y);
 			}
 			else {
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::WyvernReverseLandgrabOn, 0, 0);
+				scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabOn, 0);
 			}
 			
 		}

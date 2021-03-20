@@ -369,13 +369,13 @@ namespace hooks {
 			}
 			// Lurker Seismic Spines behavior
 			if (weaponId == WeaponId::SubterraneanSpines) {
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::LurkerETA, 17, 0);
+				scbw::set_generic_timer(unit, ValueId::LurkerETA, 17);
 				auto range = weapons_dat::MaxRange[weaponId] + 16;
 				int angle = scbw::getAngle(unit->getX(), unit->getY(), unit->orderTarget.unit->getX(), unit->orderTarget.unit->getY());
 				int targ_x = unit->getX() + scbw::getPolarX(range, angle);
 				int targ_y = unit->getY() + scbw::getPolarY(range, angle);
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SpineX, targ_x, 0);
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SpineY, targ_y, 0);
+				scbw::set_generic_value(unit, ValueId::SpineX, targ_x);
+				scbw::set_generic_value(unit, ValueId::SpineY, targ_y);
 				if (unit->orderTarget.unit != NULL) {
 					scbw::set_generic_value(unit, ValueId::LurkerPickTarget, (u32)unit->orderTarget.unit);
 				}
@@ -593,7 +593,7 @@ namespace hooks {
 					auto old = unit->orderTarget;
 					unit->orderTarget.unit = a;
 					unit->orderTarget.pt = a->sprite->position;
-					scbw::sendGPTP_aise_cmd(unit->orderTarget.unit, NULL, GptpId::SetGenericValue, ValueId::Amitosis, 1, 0);
+					scbw::set_generic_value(unit->orderTarget.unit, ValueId::Amitosis, 1);
 					// TODO: verify that this will work with all weapon types
 					const u32 Iscript_UseWeapon = 0x00479C30;
 					__asm {

@@ -92,7 +92,7 @@ namespace hooks {
 		target->irradiateTimer = 8*3;
 		target->irradiatedBy = attacker;
 		target->irradiatePlayerId = attackingPlayerId;
-		scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::RadiationShockwaveTimer, (4*24)+1, 0);
+		scbw::set_generic_timer(target, ValueId::RadiationShockwaveTimer, (4*24)+1);
 	};
 
 	//bullet is not normally part of the function, so if the function is called
@@ -485,7 +485,7 @@ namespace hooks {
 			
 			if (bullet->attackTarget.unit->acidSporeCount >= 6
 				&& scbw::get_aise_value(bullet->attackTarget.unit,NULL,AiseId::GenericTimer,ValueId::CorrosiveSporeDelay,0)==0) {
-				scbw::sendGPTP_aise_cmd(bullet->attackTarget.unit, NULL, GptpId::SetGenericTimer, ValueId::CorrosiveSporeDelay, 25, 0);
+				scbw::set_generic_timer(bullet->attackTarget.unit, ValueId::CorrosiveSporeDelay, 25);
 				
 			}
 		}
@@ -683,7 +683,7 @@ namespace hooks {
 
 				//create the broodling
 				created_broodling = CreateUnit(UnitId::ZergBroodling, pos.x, pos.y, attacker->playerId);
-				scbw::sendGPTP_aise_cmd(created_broodling, attacker, GptpId::SetGenericUnit, ValueId::BroodlingMother, 0, 0);
+				scbw::set_generic_unit(created_broodling, ValueId::BroodlingMother, attacker);
 
 				if (created_broodling == NULL) {
 					displayLastNetErrForPlayer(attacker->playerId);

@@ -2136,10 +2136,10 @@ u16 random() {
 		if (!scbw::canBeParasited(unit)) return;
 		int playerFlag = 1 << playerID;
 		if (unit->parasiteFlags != playerFlag) { // <- Prevent overwriting timer for already parasited units by same player
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::ParasiteArmTimer, DefaultArmParasiteTimer, 0);
+			scbw::set_generic_timer(unit, ValueId::ParasiteArmTimer, DefaultArmParasiteTimer);
 			unit->sprite->createOverlay(1031, 0, 0, 0);
 		}
-		scbw::sendGPTP_aise_cmd(unit, queen, GptpId::SetGenericUnit, ValueId::ParasiteSource, 0, 0);
+		scbw::set_generic_unit(unit, ValueId::ParasiteSource, queen);
 		unit->parasiteFlags = playerFlag; // Parasite now overwrites other player's parasite
 		scbw::refreshConsole();
 	}

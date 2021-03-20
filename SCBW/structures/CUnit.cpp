@@ -1165,5 +1165,5 @@ void CUnit::setSupplyProvided(u8 amount) { // overwrites previous supply provide
 	if (previous_supply)
 		raceSupply[race].provided[this->playerId] -= previous_supply;
 	raceSupply[race].provided[this->playerId] += amount;
-	scbw::sendGPTP_aise_cmd(this, NULL, GptpId::SetGenericValue, ValueId::SupplyProvided, amount, 0);
+	scbw::set_generic_value(this, ValueId::SupplyProvided, amount);
 }

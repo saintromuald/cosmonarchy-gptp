@@ -165,13 +165,13 @@ namespace hooks {
 			else if (unit->id == UnitId::TerranAzazel && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
 				unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
 				if (unit->energy == 0) {
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SublimeShepherd, 0, 0);
+					scbw::set_generic_value(unit, ValueId::SublimeShepherd, 0);
 				}
 			}
 			else if (unit->id == UnitId::corsair && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0)) {
 				unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
 				if (unit->energy == 0) {
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::DisruptionWeb, 0, 0);
+					scbw::set_generic_value(unit, ValueId::DisruptionWeb, 0);
 				}
 			}
 /*			else if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {			
@@ -335,7 +335,7 @@ namespace hooks {
 						scbw::artificalBulletFrom(WeaponId::JacksonCannon, unit->playerId, unit, NULL, targ_x, targ_y);
 					}
 					else {
-						scbw::sendGPTP_aise_cmd(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabOn, 0, 0);
+						scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabOn, 0);
 					}
 				}
 				if(seek_unit) {
@@ -612,7 +612,7 @@ namespace hooks {
 		// Radiation Shockwave - Irradiate enhancement
 			if (unit->irradiateTimer > 0) {
 				if (scbw::get_generic_value(unit, ValueId::RadiationShockwaveCount)) {
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 0, 0);
+					scbw::set_generic_value(unit, ValueId::RadiationShockwaveCount, 0);
 
 					CThingy* emp_sprite;
 					emp_sprite = createThingy(371, unit->position.x, unit->position.y, 0);

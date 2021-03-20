@@ -82,7 +82,7 @@ public:
 			return;
 		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::ResourceContainer) {
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::MineralSpecialRegenTimer, 24, 0);
+			scbw::set_generic_timer(unit, ValueId::MineralSpecialRegenTimer, 24);
 		}
 	}
 };
@@ -102,7 +102,7 @@ public:
 			return;
 		}
 		if (scbw::isAlliedTo(unit->playerId, booster->playerId) && scbw::isZergEggNew(unit,true,false)) {
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::EggBoostTimer, 24, 0);
+			scbw::set_generic_timer(unit, ValueId::EggBoostTimer, 24);
 		}
 	}
 };
@@ -381,7 +381,7 @@ void updateStatusEffects(CUnit* unit) {
 			if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SomaticImplants, 0) == 1) {
 
 				unit->updateSpeed();
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SomaticImplants, 0, 0);
+				scbw::set_generic_value(unit, ValueId::SomaticImplants, 0);
 			}
 		}
 	}
@@ -548,8 +548,8 @@ void updateStatusEffects(CUnit* unit) {
 		{
 			unit->removeMaelstrom();
 			if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::Malediction, 0)) {
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::Malediction, 0, 0);
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::MaledictionSlow, (24*4)+1, 0);
+				scbw::set_generic_value(unit, ValueId::Malediction, 0);
+				scbw::set_generic_timer(unit, ValueId::MaledictionSlow, (24*4)+1);
 				u32 overlayImageId;
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
 					overlayImageId = ImageId::Malediction_Medium;

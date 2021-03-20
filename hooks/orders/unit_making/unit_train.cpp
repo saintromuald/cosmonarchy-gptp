@@ -218,7 +218,7 @@ namespace hooks {
 						}
 					}
 					else {
-						scbw::sendGPTP_aise_cmd(builtUnit, NULL, GptpId::AddGenericValue, ValueId::Crucible, -1, 0);
+						scbw::add_generic_value(builtUnit, ValueId::Crucible, -1);
 					}
 					if(extraBuild || buildingAddon(builtUnit,hpGain,TRUE)) {
 

@@ -16,19 +16,19 @@ namespace captivating_claws {
 
 	void applyCaptivatingClaws(CUnit* source, CUnit* target) {
 		int index = (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::CaptivatingClawsIndex, 0) + 1) % 4;
-		scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::CaptivatingClawsIndex, index, 0);
+		scbw::set_generic_value(target, ValueId::CaptivatingClawsIndex, index);
 
 		if (canApplyCaptivatingClaws(source, target)) {
-			scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::CaptivatingClawsStacks, 1, 0);
+			scbw::set_generic_value(target, ValueId::CaptivatingClawsStacks, 1);
 		}
-		scbw::sendGPTP_aise_cmd(target, source, GptpId::SetGenericUnit, captivatingClawSources[index], 0, 0);
-		scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::CaptivatingClawsTimer, (24 * 1) + 1, 0);
+		scbw::set_generic_unit(target, captivatingClawSources[index], source);
+		scbw::set_generic_timer(target, ValueId::CaptivatingClawsTimer, (24 * 1) + 1);
 	}
 
 	void clearCaptivatingClaws(CUnit* target) {
-		scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::CaptivatingClawsStacks, 0, 0);
+		scbw::set_generic_value(target, ValueId::CaptivatingClawsStacks, 0);
 		for (int i = 0; i < 4; i++) {
-			scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericUnit, captivatingClawSources[i], 0, 0);
+			scbw::set_generic_unit(target, captivatingClawSources[i], NULL);
 		}
 	}
 }
