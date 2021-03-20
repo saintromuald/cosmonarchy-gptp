@@ -75,11 +75,21 @@ public:
 		}
 	}
 };
-
-
+struct CustomUnitStruct {
+public:
+	std::vector<double> genericValues;
+	std::vector<double> genericTimers;
+	std::vector<CUnit*> genericUnits;
+};
 class globals {
 	std::string output;
 public:
+	//debugging data
+/*	double unitSpeedDbg;
+	double weaponDamageDbg;
+	double gameHookDbg;
+	double updateUnitStateDbg;
+	double updateStatusEffectsDbg;*/
 	//serializable data
 	u32 extended_unit_table;
 	u32 extended_sfx;
@@ -91,6 +101,7 @@ public:
 	std::vector<multihitBullet> multihitBullets;
 	std::vector<apostleAgent> apostleAgents;
 	std::map<CUnit*, std::vector<CUnit*>> lurkerSpineHits;
+	std::map<CUnit*, CustomUnitStruct> unitStructs;
 	AttackExtender attackers;
 	
 	apostleAgent test;
@@ -107,8 +118,12 @@ public:
 		extended_sfx = 0;
 		tbl_extender = false;
 		unitid_extender = false;
+
+		refreshDebuggingInfo();
+
 		//
 	}
+	void refreshDebuggingInfo();
 	void reset();
 	void frameHook();
 	void unitFrameHook(CUnit* unit);
