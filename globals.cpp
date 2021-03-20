@@ -4,6 +4,14 @@
 #include "hooks/limits/attack_extender.h"
 globals Globals;
 
+void globals::refreshDebuggingInfo() {
+/*	unitSpeedDbg = 0;
+	weaponDamageDbg = 0;
+	gameHookDbg = 0;
+	updateUnitStateDbg = 0;
+	updateStatusEffectsDbg = 0;*/
+}
+
 //SaveState globals::aise_save() {
 void globals::aise_save(){
 	output.clear();
