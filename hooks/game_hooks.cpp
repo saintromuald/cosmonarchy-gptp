@@ -371,7 +371,7 @@ public:
 			unit->sprite->createUnderlay(1060, 0, 0, 0);
 		}
 
-		scbw::set_generic_value(unit, ValueId::TreasuryStacks, 1);
+		scbw::add_generic_value(unit, ValueId::TreasuryStacks, 1);
 		int supply = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SupplyProvided, 0);
 		unit->setSupplyProvided(supply + TREASURY_INCREASE);
 	}
@@ -840,7 +840,7 @@ namespace hooks {
 					!unit->isFrozen())
 				{
 					u8 missile = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SkyfallStacks, 0);
-					scbw::set_generic_value(unit, ValueId::SkyfallStacks, scbw::get_generic_value(unit, ValueId::SkyfallStacks)+1);
+					scbw::add_generic_value(unit, ValueId::SkyfallStacks, 1);
 					if (missile == 20) {
 						scbw::set_generic_value(unit, ValueId::SkyfallStacks, 0);
 					}
@@ -949,7 +949,7 @@ namespace hooks {
 					if (a != NULL) {
 						scbw::set_generic_timer(unit, ValueId::ObservanceTimerDebuff, (5 * 24) + 1);
 						if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0) < 5) {
-							scbw::set_generic_value(unit, ValueId::ObservanceRend, scbw::get_generic_value(unit, ValueId::ObservanceRend)+1);
+							scbw::add_generic_value(unit, ValueId::ObservanceRend, 1);
 						}
 					}
 					else {
