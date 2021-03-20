@@ -58,7 +58,7 @@ namespace {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
-			MOV EAX, [EBP + 0x04]
+			MOV EAX, [EBP + 0x08]
 			MOV unit, EAX
 			POP EAX
 			MOV target, EAX
@@ -83,7 +83,7 @@ namespace hooks {
         nops(0x004EB176, 8);//disruption web
         nops(0x004EB316, 2);//disruption web
 
-//		jmpPatch(unitCanSeeCloakedTarget_Wrapper, 0x00401D60, 4);
+		jmpPatch(unitCanSeeCloakedTarget_Wrapper, 0x00401D60, 4);
 	}
 	void injectTargetRelatedHooks() {
 		injectTargetHooks();
