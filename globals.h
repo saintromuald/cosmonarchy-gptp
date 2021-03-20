@@ -76,7 +76,7 @@ public:
 	}
 };
 struct CustomUnitStruct {
-	std::vector<double> genericValues;
+	std::vector<int> genericValues;
 	std::vector<int> genericTimers;
 	std::vector<CUnit*> genericUnits;
 
