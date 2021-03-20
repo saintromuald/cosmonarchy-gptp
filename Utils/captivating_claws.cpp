@@ -19,7 +19,7 @@ namespace captivating_claws {
 		scbw::set_generic_value(target, ValueId::CaptivatingClawsIndex, index);
 
 		if (canApplyCaptivatingClaws(source, target)) {
-			scbw::set_generic_value(target, ValueId::CaptivatingClawsStacks, 1);
+			scbw::add_generic_value(target, ValueId::CaptivatingClawsStacks, 1);
 		}
 		scbw::set_generic_unit(target, captivatingClawSources[index], source);
 		scbw::set_generic_timer(target, ValueId::CaptivatingClawsTimer, (24 * 1) + 1);
