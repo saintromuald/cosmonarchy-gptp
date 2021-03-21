@@ -622,14 +622,12 @@ namespace hooks {
 					scbw::set_generic_value(unit, ValueId::IsReviving, 0);
 				}
 
-
 				if(unit->id==UnitId::ProtossMindTyrant && scbw::get_generic_value(unit,ValueId::RescindMindControl)==1){
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::FreeMindControlled, 0, 0, 0);
 					scbw::set_generic_value(unit, ValueId::RescindMindControl, 0);
 				}
 
 				//Zoryusthaleth - Reconstitution
-
 				if (unit->id == UnitId::ZergZoryusthaleth &&
 					scbw::get_generic_value(unit, ValueId::Reconstitution) == 1) {
 					auto r = 128;
@@ -778,7 +776,7 @@ namespace hooks {
 					}
 				}
 
-				// Disruption Web - Corsair ability
+				// Disruption Web - Lanifect ability
 				if (unit->id == UnitId::ProtossLanifect) {
 					auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
 					if (scbw::get_generic_value(unit, ValueId::DisruptionWeb)) {
@@ -836,9 +834,9 @@ namespace hooks {
 
 				// Paladin - Skyfall
 				if (unit->id == UnitId::TerranPaladin
-					&& scbw::get_generic_timer(unit,ValueId::SkyfallTimer) == 1 &&
-					&& scbw::get_generic_timer(unit, ValueId::SkyfallTimer) == 1 &&
-					!unit->isFrozen())
+					&& scbw::get_generic_timer(unit,ValueId::SkyfallTimer) == 1
+					&& scbw::get_generic_timer(unit, ValueId::SkyfallTimer) == 1
+					&& !unit->isFrozen())
 				{
 					u8 missile = scbw::get_generic_value(unit, ValueId::SkyfallStacks);
 					scbw::add_generic_value(unit, ValueId::SkyfallStacks, 1);
@@ -950,14 +948,15 @@ namespace hooks {
 					if (a != NULL) {
 						scbw::set_generic_timer(unit, ValueId::ObservanceTimerDebuff, (5 * 24) + 1);
 						if (scbw::get_generic_value(unit, ValueId::ObservanceRend) < 5) {
-							scbw::set_generic_value(unit, ValueId::ObservanceRend, scbw::get_generic_value(unit, ValueId::ObservanceRend)+1);
-						if (scbw::get_generic_value(unit, ValueId::ObservanceRend) < 5) {
-							scbw::add_generic_value(unit, ValueId::ObservanceRend, 1);
+							scbw::set_generic_value(unit, ValueId::ObservanceRend, scbw::get_generic_value(unit, ValueId::ObservanceRend) + 1);
+							if (scbw::get_generic_value(unit, ValueId::ObservanceRend) < 5) {
+								scbw::add_generic_value(unit, ValueId::ObservanceRend, 1);
+							}
 						}
-					}
-					else {
-						scbw::set_generic_value(unit, ValueId::ObservanceRend, 0);
-						unit->removeOverlay(1231, 1233);
+						else {
+							scbw::set_generic_value(unit, ValueId::ObservanceRend, 0);
+							unit->removeOverlay(1231, 1233);
+						}
 					}
 				}
 

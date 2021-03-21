@@ -1,6 +1,7 @@
 #include "build_time.h"
 #include "SCBW/api.h"
 #include "SCBW/UnitFinder.h"
+#include "globals.h"
 
 namespace hooks {
 

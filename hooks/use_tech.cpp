@@ -357,7 +357,7 @@ namespace hooks
 			if (firstInList != NULL) {
 				int action = 0;//enable
 
-				if (scbw::get_generic_value(firstInList, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
+				if (scbw::get_aise_value(firstInList, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
 					action = 1;//disable
 				}
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
@@ -378,7 +378,7 @@ namespace hooks
 							u8 relic_type = 0;
 							u32 button_number = head->frameCount;
 							u32 relic = 0;
-							relic = scbw::get_generic_value(firstInList, NULL, AiseId::GetRelicByIndex, button_number, 0);
+							relic = scbw::get_aise_value(firstInList, NULL, AiseId::GetRelicByIndex, button_number, 0);
 							char buf[64];
 							sprintf(buf, "Relic id: %d", relic);
 							scbw::printText(buf);
@@ -388,7 +388,7 @@ namespace hooks
 									scbw::printText("Blind Judge");
 								}
 								scbw::sendGPTP_aise_cmd(firstInList, NULL, GptpId::EmpowerHero, relic, 0, 0);
-								if (scbw::get_generic_value(firstInList, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1) {
+								if (scbw::get_aise_value(firstInList, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1) {
 									scbw::printText("Found relic");
 								}
 								else {
@@ -431,7 +431,7 @@ namespace hooks
 			if (firstInList != NULL) {
 				if (firstInList->id == UnitId::ProtossClarion) {
 					int action = 0;//enable
-					if (scbw::get_generic_value(firstInList, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
+					if (scbw::get_aise_value(firstInList, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
 						action = 1;//disable
 					}
 					u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12

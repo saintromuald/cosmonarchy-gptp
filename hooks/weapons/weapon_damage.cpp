@@ -630,7 +630,7 @@ namespace hooks {
 			if (damageType != DamageType::IgnoreArmor) {
 				s32 armorTotal = target->getArmor() * 256;
 				if (attacker != NULL && target != NULL) {
-					armorTotal += scbw::get_generic_value(target, NULL, AiseId::GetShepherds, 0, 0) * 256;
+					armorTotal += scbw::get_aise_value(target, NULL, AiseId::GetShepherds, 0, 0) * 256;
 					if (target->id == UnitId::TerranMinotaur) {
 						u16 angle = scbw::getAngle(target->position.x, target->position.y,
 							attacker->position.x, attacker->position.y);
@@ -952,7 +952,7 @@ namespace hooks {
 			// Reduce shields (finally)
 			if (shieldReduceAmount != 0
 			&&	canDamage) {
-				if (scbw::get_generic_value(target, NULL, AiseId::HasClarionLink, 0, 0)) {
+				if (scbw::get_aise_value(target, NULL, AiseId::HasClarionLink, 0, 0)) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SpreadClarionDamage, shieldReduceAmount, damageType, direction);
 				}
 				else {

@@ -206,14 +206,14 @@ void __declspec(naked) get_stattxt_string_Wrapper() {
 
 	for (int i = 0; i < generictoggles; i++) {
 		if (stringId == string_toggle_on[i]) {
-			if (scbw::get_generic_value(*activePortraitUnit, toggle_values[i], 0) == 1) {
+			if (scbw::get_generic_value(*activePortraitUnit, toggle_values[i]) == 1) {
 				stringId = string_toggle_off[i];
 			}
 		}
 	}
 
 	if (stringId == 1633) {
-		if (scbw::get_generic_value(*activePortraitUnit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
+		if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
 			stringId = 1634;
 		}
 	}
