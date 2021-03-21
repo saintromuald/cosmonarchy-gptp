@@ -836,18 +836,18 @@ namespace hooks {
 
 				// Paladin - Skyfall
 				if (unit->id == UnitId::TerranPaladin
-					&& scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::SkyfallTimer, 0) == 1 &&
+					&& scbw::get_generic_timer(unit,ValueId::SkyfallTimer) == 1 &&
 					!unit->isFrozen())
 				{
-					u8 missile = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SkyfallStacks, 0);
+					u8 missile = scbw::get_generic_value(unit, ValueId::SkyfallStacks);
 					scbw::add_generic_value(unit, ValueId::SkyfallStacks, 1);
 					if (missile == 20) {
 						scbw::set_generic_value(unit, ValueId::SkyfallStacks, 0);
 					}
 					else {
 						scbw::set_generic_timer(unit, ValueId::SkyfallTimer, 2 + 1);
-						u32 tgt_x = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SkyfallX, 0);
-						u32 tgt_y = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SkyfallY, 0);
+						u32 tgt_x = scbw::get_generic_value(unit, ValueId::SkyfallX);
+						u32 tgt_y = scbw::get_generic_value(unit, ValueId::SkyfallY);
 						//scbw::printFormattedText("Read X Y %d %d [a]", tgt_x, tgt_y);
 						auto column = missile / 4;
 						auto row = missile % 4;
@@ -882,7 +882,7 @@ namespace hooks {
 				}
 
 				// Devourer - Critical Mass
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::CorrosiveSporeDelay, 0) == 1) {
+				if (scbw::get_generic_timer(unit, ValueId::CorrosiveSporeDelay) == 1) {
 					int count = unit->acidSporeCount;
 					unit->acidSporeCount -= 2;
 					int range = 160;
@@ -903,7 +903,7 @@ namespace hooks {
 				}
 
 				// Savant - Entropy Gauntlets
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::EntropyGauntlets, 0) == 1) {
+				if (scbw::get_generic_timer(unit, ValueId::EntropyGauntlets) == 1) {
 					u32 overlayImageId;
 					if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
 						overlayImageId = 1108;
