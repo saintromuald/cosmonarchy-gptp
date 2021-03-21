@@ -84,7 +84,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 				CFlags::Ally | CFlags::Shielded | CFlags::NotSelf, {}, [&](CUnit* u) {
 					count++;
 				});
-			auto clarionVal = scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0);
+			auto clarionVal = scbw::get_generic_value(unit, NULL, AiseId::SendClarionValue, 0, 0);
 			if (count >= 2 && clarionVal == 0) {
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 1, 0, 0);
 				scbw::set_generic_timer(unit, ValueId::AI_ClarionTimer, 96);

@@ -364,7 +364,7 @@ namespace hooks {
 			// Wyvern Land Grab ability
 			if (unit->id == UnitId::TerranWyvern
 			&& unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell
-			&& scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabOn, 0) == 1) {
+			&& scbw::get_generic_value(unit, ValueId::WyvernReverseLandgrabOn) == 1) {
 				good = false;
 			}
 			// Lurker Seismic Spines behavior
@@ -384,7 +384,7 @@ namespace hooks {
 			if (good) {
 				// Madrigal Tempo Change weapon switch
 				if (weaponId == WeaponId::FuriaMissiles
-				&& scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TempoChange,0)==1) {
+				&& scbw::get_generic_value(unit, ValueId::TempoChange)==1) {
 					weaponId = WeaponId::ImperiosoMissiles;
 				}
 				// Savant Power Siphon ability

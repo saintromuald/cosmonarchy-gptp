@@ -833,7 +833,7 @@ int get_generic_variable(u32 id) {
 	return reinterpret_cast<CUnit*>(val);
 }
 u32 get_generic_value(CUnit* u, u32 val) {
-	return get_aise_value(u, NULL, AiseId::GenericValue, val, 0);
+	return get_aise_value(u, val, 0);
 }
 u32 get_generic_timer(CUnit* u, u32 val) {
 	return get_aise_value(u, NULL, AiseId::GenericTimer, val, 0);

@@ -1268,7 +1268,7 @@ namespace hooks {
 							
 							if (current_button->actVar == TechId::SwarmingOmen ) {
 								if ((*activePortraitUnit)->id == UnitId::TerranCyprian) {
-									if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
+									if (scbw::get_generic_value(*activePortraitUnit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
 										//current_button->actStringID = 1633;
 										current_button->iconID = 375;
 									}
@@ -1282,7 +1282,7 @@ namespace hooks {
 							if ((*activePortraitUnit)->id != UnitId::ProtossMindTyrant) {
 								for (int i = 0; i < generictoggles; i++) {
 									if (current_button->actVar == toggle_abilities[i]) {
-										if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::GenericValue, toggle_values[i], 0) == 1) {
+										if (scbw::get_generic_value(*activePortraitUnit, toggle_values[i], 0) == 1) {
 											current_button->iconID = button_toggle_off[i];
 										}
 										else {
@@ -1298,7 +1298,7 @@ namespace hooks {
 									for (int i = 0; i < 12; i++) {
 										CUnit* selU = clientSelectionGroup->unit[i];
 										if (selU != NULL && selU->id == UnitId::ProtossMindTyrant) {
-											if (scbw::get_aise_value(selU, NULL, AiseId::SumMindControlCost, 0, 0) > 0) {
+											if (scbw::get_generic_value(selU, NULL, AiseId::SumMindControlCost, 0, 0) > 0) {
 												canCancel = true;
 											}
 										}

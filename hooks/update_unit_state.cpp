@@ -162,19 +162,19 @@ namespace hooks {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::FreeMindControlled, 0, 0, 0);
 				}
 			}
-			else if (unit->id == UnitId::TerranAzazel && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
+			else if (unit->id == UnitId::TerranAzazel && scbw::get_generic_value(unit, ValueId::SublimeShepherd) == 1) {
 				unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
 				if (unit->energy == 0) {
 					scbw::set_generic_value(unit, ValueId::SublimeShepherd, 0);
 				}
 			}
-			else if (unit->id == UnitId::corsair && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0)) {
+			else if (unit->id == UnitId::corsair && scbw::get_generic_value(unit, ValueId::DisruptionWeb)) {
 				unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
 				if (unit->energy == 0) {
 					scbw::set_generic_value(unit, ValueId::DisruptionWeb, 0);
 				}
 			}
-/*			else if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {			
+/*			else if (unit->id == UnitId::ProtossClarion && scbw::get_generic_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {			
 				unit->spendUnitEnergy(13);
 				if(unit->energy==0) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 0, 0, 0);
@@ -309,7 +309,7 @@ namespace hooks {
 			unit->airWeaponCooldown--;
 		if (unit->spellCooldown)
 			unit->spellCooldown--;
-		if (unit->id == UnitId::TerranWyvern && scbw::get_aise_value(unit,NULL,AiseId::GenericValue,ValueId::ReverseThrust,0)==1
+		if (unit->id == UnitId::TerranWyvern && scbw::get_generic_value(unit, ValueId::ReverseThrust)==1
 			&& unit->groundWeaponCooldown==0) {
 
 			bool can_free_fire = true;
@@ -326,9 +326,9 @@ namespace hooks {
 				
 				unit->groundWeaponCooldown = weapons_dat::Cooldown[WeaponId::JacksonCannon];
 				bool seek_unit = true;
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabOn, 0)==1) {
-					auto targ_x = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabX, 0);
-					auto targ_y = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabY, 0);
+				if (scbw::get_generic_value(unit, ValueId::WyvernReverseLandgrabOn)==1) {
+					auto targ_x = scbw::get_generic_value(unit, ValueId::WyvernReverseLandgrabX);
+					auto targ_y = scbw::get_generic_value(unit, ValueId::WyvernReverseLandgrabY);
 					auto direction = scbw::getAngle(x, y, targ_x, targ_y);
 					if (scbw::getDistanceFast(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
 						seek_unit = false;
@@ -568,7 +568,7 @@ namespace hooks {
 			
 			// Last Orders - Aurora passive
 			if (unit->id == UnitId::ProtossAurora) {
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::LastOrdersInit, 0) == 1) {
+				if (scbw::get_generic_value(unit, ValueId::LastOrdersInit) == 1) {
 					auto distance = scbw::getDistanceFast(unit->position.x, unit->position.y,
 						unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					if (distance<32) {

@@ -321,7 +321,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	}
 
 	// Clarion Phase Link behavior
-	if (unit->id == UnitId::ProtossClarion/* && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1*/) {
+	if (unit->id == UnitId::ProtossClarion/* && scbw::get_generic_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1*/) {
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ClearClarionLinks, 0, 0, 0);
 	}
 
@@ -335,7 +335,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		int supplyCount = scbw::getBroodlingCountFromSupply(unit);
 		int type = unit->status & UnitStatus::InAir ? UnitId::ZergBroodlisk : UnitId::ZergBroodling;
 		for (int player = 0; player < PLAYER_COUNT; player++) {
-			if (unit->parasiteFlags & (1 << player) && scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ParasiteArmTimer, 0) <= 1) {
+			if (unit->parasiteFlags & (1 << player) && scbw::get_generic_timer(unit, ValueId::ParasiteArmTimer) <= 1) {
 				auto sourceQueen = scbw::getSourceQueens(unit)[1];
 				if (sourceQueen) {
 					scbw::createUnitFromAbility(type, supplyCount, player, unit->position.x, unit->position.y,

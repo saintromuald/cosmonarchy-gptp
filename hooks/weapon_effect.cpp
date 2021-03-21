@@ -313,7 +313,7 @@ namespace hooks {
 		if(weaponId==26){
 			if(bullet!=NULL){
 				if(bullet->sourceUnit!=NULL) {
-					if (scbw::get_aise_value(bullet->sourceUnit,NULL,AiseId::SendCyprianValue,0,0)==1) {
+					if (scbw::get_generic_value(bullet->sourceUnit,NULL,AiseId::SendCyprianValue,0,0)==1) {
 						return true;
 					}
 				}

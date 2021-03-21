@@ -50,7 +50,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 
 	// Kaiser Rampage upgrade: gains double attack speed for 1 second on kill
 	if (unit->id == UnitId::ZergUltrakor) {
-		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
+		if (scbw::get_generic_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
 			cooldown /= 2;
 		}
 	}
@@ -78,7 +78,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 	if (unit->stimTimer) {		// Fixes aice-related Stimpack issue
 		cooldown += 2;
 	}
-	u32 adrenalStacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0);
+	u32 adrenalStacks = scbw::get_generic_value(unit, ValueId::AdrenalStacks, 0);
 	if (adrenalStacks) {
 		cooldown -= adrenalStacks / 2;
 	}

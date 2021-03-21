@@ -301,7 +301,7 @@ void updateStatusEffects(CUnit* unit) {
 	}
 
 	// Knockout Drivers: Southpaw slow per stack
-	else if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversStacks, 0) > 0) {
+	else if (scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks) > 0) {
 		unit->updateSpeed();
 	}
 
@@ -326,7 +326,7 @@ void updateStatusEffects(CUnit* unit) {
 
 	// Azazel - Sublime Shepherd ability
 	if (unit->id == UnitId::TerranAzazel) {
-		if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
+		if (scbw::get_generic_value(unit, ValueId::SublimeShepherd) == 1) {
 			sublimeShepherdProc Heal = sublimeShepherdProc(unit);
 			scbw::UnitFinder unitFinder(unit->getX() - 96,
 				unit->getY() - 96,
@@ -378,7 +378,7 @@ void updateStatusEffects(CUnit* unit) {
 		if (
 			!(unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)))
 		{
-			if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SomaticImplants, 0) == 1) {
+			if (scbw::get_generic_value(unit, ValueId::SomaticImplants) == 1) {
 
 				unit->updateSpeed();
 				scbw::set_generic_value(unit, ValueId::SomaticImplants, 0);
@@ -547,7 +547,7 @@ void updateStatusEffects(CUnit* unit) {
 		if (unit->maelstromTimer == 0)
 		{
 			unit->removeMaelstrom();
-			if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::Malediction, 0)) {
+			if (scbw::get_generic_value(unit, ValueId::Malediction)) {
 				scbw::set_generic_value(unit, ValueId::Malediction, 0);
 				scbw::set_generic_timer(unit, ValueId::MaledictionSlow, (24*4)+1);
 				u32 overlayImageId;

@@ -366,13 +366,13 @@ public:
 		if (unit->playerId != _playerId && !scbw::isAlliedTo(_playerId, unit->playerId)) return;
 		if (!(unit->status & UnitStatus::Completed)) return;
 
-		u32 stacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TreasuryStacks, 0);
+		u32 stacks = scbw::get_generic_value(unit, ValueId::TreasuryStacks);
 		if (*elapsedTimeFrames % 36 == 0 && stacks == 0) {
 			unit->sprite->createUnderlay(1060, 0, 0, 0);
 		}
 
 		scbw::add_generic_value(unit, ValueId::TreasuryStacks, 1);
-		int supply = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SupplyProvided, 0);
+		int supply = scbw::get_generic_value(unit, ValueId::SupplyProvided);
 		unit->setSupplyProvided(supply + TREASURY_INCREASE);
 	}
 };
@@ -525,8 +525,8 @@ namespace hooks {
 				auto data_ptr = &data;
 				auto len_ptr = &len;
 				u32 val = reinterpret_cast<u32>(name);
-				auto result = scbw::get_aise_value(NULL, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));				
-				auto result2 = scbw::get_aise_value(NULL, NULL, AiseId::ReadSamaseFile_Ptr, 0, 0);
+				auto result = scbw::get_generic_value(NULL, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));				
+				auto result2 = scbw::get_generic_value(NULL, NULL, AiseId::ReadSamaseFile_Ptr, 0, 0);
 			}*/
 			
 			// Order debugger
@@ -558,8 +558,8 @@ namespace hooks {
 			
 			// Reset Treasury Stacks, before unit loop
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
-				int supply = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SupplyProvided, 0);
-				int stacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::TreasuryStacks, 0);
+				int supply = scbw::get_generic_value(unit, ValueId::SupplyProvided);
+				int stacks = scbw::get_generic_value(unit, ValueId::TreasuryStacks);
 				scbw::set_generic_value(unit, ValueId::TreasuryStacks, 0);
 				unit->setSupplyProvided(supply - stacks * TREASURY_INCREASE);
 			}
@@ -781,7 +781,7 @@ namespace hooks {
 				// Disruption Web - Corsair ability
 				if (unit->id == UnitId::ProtossLanifect) {
 					auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
-					if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0)) {
+					if (scbw::get_generic_value(unit, ValueId::DisruptionWeb)) {
 
 						if (web == NULL) {
 							web = hooks::createDisruptionWeb(unit->playerId, unit->getX(), unit->getY());
@@ -837,6 +837,7 @@ namespace hooks {
 				// Paladin - Skyfall
 				if (unit->id == UnitId::TerranPaladin
 					&& scbw::get_generic_timer(unit,ValueId::SkyfallTimer) == 1 &&
+					&& scbw::get_generic_timer(unit, ValueId::SkyfallTimer) == 1 &&
 					!unit->isFrozen())
 				{
 					u8 missile = scbw::get_generic_value(unit, ValueId::SkyfallStacks);
@@ -920,13 +921,13 @@ namespace hooks {
 
 				// Lurker - Seismic Spines
 				if (unit->id == UnitId::ZergLakizilisk && unit->sprite != NULL && unit->mainOrderId != OrderId::Die
-					&& scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::LurkerETA, 0) == 1) {
+					&& scbw::get_generic_timer(unit, ValueId::LurkerETA) == 1) {
 					//placeholder for seismic spines
 					auto position = unit->position;//new target
 					auto spr_position = unit->sprite->position;
 					Point16 pos;
-					pos.x = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SpineX, 0);
-					pos.y = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SpineY, 0);
+					pos.x = scbw::get_generic_value(unit, ValueId::SpineX);
+					pos.y = scbw::get_generic_value(unit, ValueId::SpineY);
 					unit->position = pos;
 					unit->sprite->position = pos;
 					scbw::artificalBulletFrom(WeaponId::SubterraneanSpines, unit->playerId, unit, NULL, spr_position);
@@ -937,7 +938,7 @@ namespace hooks {
 				}
 
 				// Science Vessel Observance - ability
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ObservanceTimerDebuff, 0) == 1) {
+				if (scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) == 1) {
 					auto range = 192;
 					auto observance = observanceMatch(unit);
 					auto a = scbw::UnitFinder::getNearestTarget(
@@ -948,8 +949,10 @@ namespace hooks {
 
 					if (a != NULL) {
 						scbw::set_generic_timer(unit, ValueId::ObservanceTimerDebuff, (5 * 24) + 1);
-						if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0) < 5) {
+						if (scbw::get_generic_value(unit, ValueId::ObservanceRend) < 5) {
 							scbw::set_generic_value(unit, ValueId::ObservanceRend, scbw::get_generic_value(unit, ValueId::ObservanceRend)+1);
+						if (scbw::get_generic_value(unit, ValueId::ObservanceRend) < 5) {
+							scbw::add_generic_value(unit, ValueId::ObservanceRend, 1);
 						}
 					}
 					else {
@@ -1034,7 +1037,7 @@ namespace hooks {
 				}
 
 				// Dark Archon - Malediction (Maelstrom)
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::MaledictionSlow, 0) == 1) {
+				if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) == 1) {
 					u32 overlayImageId;
 					if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
 						overlayImageId = ImageId::Malediction_Medium;
@@ -1050,17 +1053,17 @@ namespace hooks {
 				}
 
 				// Lobotomy Mine
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::LobotomySlow, 0) > 0) {
+				if (scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0) {
 					unit->updateSpeed();
 				}
 
 				// Zergling - Adrenal Glands
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::AdrenalTimer, 0) == 1) {
+				if (scbw::get_generic_timer(unit, ValueId::AdrenalTimer) == 1) {
 					scbw::set_generic_value(unit, ValueId::AdrenalStacks, 0);
 				}
 
 				// Vorvaling - Captivating Claws
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::CaptivatingClawsTimer, 0) == 1) {
+				if (scbw::get_generic_timer(unit, ValueId::CaptivatingClawsTimer) == 1) {
 					captivating_claws::clearCaptivatingClaws(unit);
 				}
 
@@ -1136,7 +1139,7 @@ namespace hooks {
 				}
 
 				// Hallucinating Visual Effect
-				u32 hallucinatingTimer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0);
+				u32 hallucinatingTimer = scbw::get_generic_timer(unit, ValueId::HallucinatingTimer);
 				if (unit != NULL && unit->sprite != NULL) {
 					if (hallucinatingTimer % 24 == 1) {
 						CSprite* sprite;
@@ -1151,7 +1154,7 @@ namespace hooks {
 				}
 
 				// Southpaw - Knockout Drivers behavior
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KnockoutDriversTimer, 0) == 1) {
+				if (scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) == 1) {
 					scbw::set_generic_value(unit, ValueId::KnockoutDriversStacks, 0);
 					unit->updateSpeed();
 				}
@@ -1175,7 +1178,7 @@ namespace hooks {
 				// Permanently Cloaked units recloak after 2 seconds of being out of combat
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak
 				||	unit->status & UnitStatus::CloakingForFree) {
-					auto timer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::PermanentCloakTimer, 0);
+					auto timer = scbw::get_generic_timer(unit, ValueId::PermanentCloakTimer);
 					if (timer == 1) {
 						for (int i = 0; i < 8; i++) {
 							if (!scbw::isAlliedTo(unit->playerId, i)) {
@@ -1194,12 +1197,12 @@ namespace hooks {
 				}
 
 				// Apply Ecclesiast - Astral Blessing stacks and timer
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::EcclesiastTimer, 0) == 1) {
+				if (scbw::get_generic_timer(unit, ValueId::EcclesiastTimer) == 1) {
 					scbw::set_generic_value(unit, ValueId::EcclesiastStack, 0);
 				}
 
 				// Update flingy speed when Adrenal Frenzy timer expires
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::NathrokorTimer, 0) == 1) {
+				if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) == 1) {
 					scbw::set_generic_timer(unit, ValueId::NathrokorTimer, 0);
 					unit->updateSpeed();
 				}

@@ -12,7 +12,7 @@ namespace hooks {
 		if (scbw::isCheatEnabled(CheatFlags::OperationCwal)) {
 			multiplier = 16;
 		}
-		if (scbw::get_aise_value(unit, 0, AiseId::GenericTimer, ValueId::EggBoostTimer, 0) % 2 == 1) {
+		if (scbw::get_generic_timer(unit, ValueId::EggBoostTimer) % 2 == 1) {
 			multiplier *= 2;
 		}
 		unit->remainingBuildTime -= std::min(multiplier,unit->remainingBuildTime);

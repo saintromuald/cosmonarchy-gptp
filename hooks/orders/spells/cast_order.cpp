@@ -41,7 +41,7 @@ void orders_Spell(CUnit* unit) {
 	if (unit->id == UnitId::TerranWyvern) {
 		if (unit->orderSignal & 0x40) {
 			unit->orderSignal &= ~0x40;
-			if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::ReverseThrust, 0) == 1) {
+			if (scbw::get_generic_value(unit, ValueId::ReverseThrust) == 1) {
 				scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabOn, 1);
 				scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabX, unit->orderTarget.pt.x);
 				scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabY, unit->orderTarget.pt.y);

@@ -3,11 +3,11 @@
 namespace captivating_claws {
 	int captivatingClawSources[4] = {ValueId::CaptivatingClawsSource1, ValueId::CaptivatingClawsSource2, ValueId::CaptivatingClawsSource3, ValueId::CaptivatingClawsSource4};
 	u32 getCaptivatingClawsStacks(CUnit* target) {
-		return scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::CaptivatingClawsStacks, 0);
+		return scbw::get_generic_value(target, ValueId::CaptivatingClawsStacks);
 	}
 
 	bool canApplyCaptivatingClaws(CUnit* source, CUnit* target) {
-		if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, getCaptivatingClawsStacks(target), 0) >= 4) return false;
+		if (scbw::get_generic_value(target, getCaptivatingClawsStacks(target)) >= 4) return false;
 		for (int i = 0; i < 4; i++) {
 			if (scbw::get_generic_unit(target, captivatingClawSources[i]) == source) return false;
 		}
@@ -15,7 +15,7 @@ namespace captivating_claws {
 	}
 
 	void applyCaptivatingClaws(CUnit* source, CUnit* target) {
-		int index = (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::CaptivatingClawsIndex, 0) + 1) % 4;
+		int index = (scbw::get_generic_value(target, ValueId::CaptivatingClawsIndex) + 1) % 4;
 		scbw::set_generic_value(target, ValueId::CaptivatingClawsIndex, index);
 
 		if (canApplyCaptivatingClaws(source, target)) {

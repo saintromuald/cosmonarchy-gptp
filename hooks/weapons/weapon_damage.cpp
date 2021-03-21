@@ -451,7 +451,7 @@ namespace hooks {
 			}
 			// Adrenal Glands - Zergling behavior
 			if (attacker != NULL && weaponId == WeaponId::Claws) {
-				if (scbw::get_aise_value(attacker, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0) < 4) {
+				if (scbw::get_generic_value(attacker, ValueId::AdrenalStacks) < 4) {
 					scbw::add_generic_value(attacker, ValueId::AdrenalStacks, 1);
 				}
 				scbw::set_generic_timer(attacker, ValueId::AdrenalTimer, 49); //49 is 2 seconds (48) + 1
@@ -463,7 +463,7 @@ namespace hooks {
 			}
 			// Knockout Drivers - Southpaw behavior
 			if (attacker != NULL && weaponId == WeaponId::UppercutLaser) {
-				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::KnockoutDriversStacks, 0) < 20) {
+				if (scbw::get_generic_value(target, ValueId::KnockoutDriversStacks) < 20) {
 					scbw::add_generic_value(target, ValueId::KnockoutDriversStacks, 1);
 				}
 				scbw::set_generic_timer(target, ValueId::KnockoutDriversTimer, 49); //49 is 2 seconds (48) + 1
@@ -474,7 +474,7 @@ namespace hooks {
 			}
 			// Astral Blessing - Ecclesiast behavior
 			if (attacker != NULL && weaponId == WeaponId::AstralBlaster) {
-				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0) < 10) {
+				if (scbw::get_generic_value(target, ValueId::EcclesiastStack) < 10) {
 					scbw::add_generic_value(target, ValueId::EcclesiastStack, 1);
 				}
 				scbw::set_generic_timer(target, ValueId::EcclesiastTimer, 49); //49 is 2 seconds (48) + 1
@@ -630,7 +630,7 @@ namespace hooks {
 			if (damageType != DamageType::IgnoreArmor) {
 				s32 armorTotal = target->getArmor() * 256;
 				if (attacker != NULL && target != NULL) {
-					armorTotal += scbw::get_aise_value(target, NULL, AiseId::GetShepherds, 0, 0) * 256;
+					armorTotal += scbw::get_generic_value(target, NULL, AiseId::GetShepherds, 0, 0) * 256;
 					if (target->id == UnitId::TerranMinotaur) {
 						u16 angle = scbw::getAngle(target->position.x, target->position.y,
 							attacker->position.x, attacker->position.y);
@@ -645,7 +645,7 @@ namespace hooks {
 					}
 				}
 				damage -= std::min(damage, armorTotal);
-				auto rend = 256 * scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0);
+				auto rend = 256 * scbw::get_generic_value(target, ValueId::ObservanceRend);
 				damage += rend;
 			}
 
@@ -708,7 +708,7 @@ namespace hooks {
 
 					// Last Orders - Aurora behavior
 					if (target->id == UnitId::ProtossAurora) {
-						if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::LastOrdersInit, 0) == 0) {
+						if (scbw::get_generic_value(target, ValueId::LastOrdersInit) == 0) {
 							scbw::set_generic_value(target, ValueId::LastOrdersInit, 1);
 							lastordersProc2 Orders = lastordersProc2(target);
 							scbw::UnitFinder unitFinder(target->getX() - 288, target->getY() - 288, target->getX() + 288, target->getY() + 288);
@@ -724,7 +724,7 @@ namespace hooks {
 
 					// Blind Judge relic
 					/*if (units_dat::BaseProperty[attacker->id] & UnitProperty::Hero &&
-						scbw::get_aise_value(attacker, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1
+						scbw::get_generic_value(attacker, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1
 						&& (units_dat::BaseProperty[target->id] & UnitProperty::Organic)
 						&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
 							scbw::sendGPTP_aise_cmd(attacker, target, GptpId::BlindJudgeTimedEffect, target->energy, 0, 0);
@@ -788,7 +788,7 @@ namespace hooks {
 				&&	(!scbw::isAlliedTo(attacker->playerId, target->playerId))) {
 					scbw::set_generic_timer(attacker, ValueId::ObservanceOverlayTimer, 18);
 					scbw::set_generic_timer(target, ValueId::ObservanceTimerDebuff, 1 + (5 * 24));
-					int rend = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0);
+					int rend = scbw::get_generic_value(target, ValueId::ObservanceRend);
 					if (rend < 5) {
 						if (rend == 0) {
 							int overlay = 1233;
@@ -807,7 +807,7 @@ namespace hooks {
 
 			// Tendril Amitosis - Sunken Colony upgrade
 			/*if (weaponId == WeaponId::SubterraneanTentacle && target != NULL) {
-				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::Amitosis, 0) == 1) {
+				if (scbw::get_generic_value(target, ValueId::Amitosis) == 1) {
 					damage /= 2;
 					scbw::set_generic_value(target, ValueId::Amitosis, 0);
 				}
@@ -863,7 +863,7 @@ namespace hooks {
 			}
 
 			if (attacker != NULL) { // looks like target will always be alive if this function was called?
-				if (scbw::get_aise_value(target, 0, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0) >= 1) {
+				if (scbw::get_generic_timer(target, ValueId::HallucinatingTimer) >= 1) {
 					CUnit* haluAttacker = attacker;
 					if ((haluAttacker->id == UnitId::ProtossSteward
 						|| haluAttacker->id == UnitId::ProtossPlasmaShell)
@@ -872,7 +872,7 @@ namespace hooks {
 					}
 					if (scbw::get_generic_unit(haluAttacker, ValueId::HallucinationPointer) == NULL
 					&& !(haluAttacker->status & UnitStatus::IsHallucination)) {
-						u32 haluPlayer = scbw::get_aise_value(target, 0, AiseId::GenericValue, ValueId::HallucinatingSourcePlayer, 0);
+						u32 haluPlayer = scbw::get_generic_value(target, ValueId::HallucinatingSourcePlayer);
 						if (haluPlayer != haluAttacker->playerId && !scbw::isAlliedTo(haluPlayer, haluAttacker->playerId)) return;
 
 						CUnit* hal_unit = createHallucination(haluAttacker, haluPlayer);
@@ -921,9 +921,9 @@ namespace hooks {
 					}
 
 					// Ecclesiast - Astral Blessing proc
-					if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0)) {
-						int stacks = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0);
-						int player = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastPlayer, 0);
+					if (scbw::get_generic_value(target, ValueId::EcclesiastStack)) {
+						int stacks = scbw::get_generic_value(target, ValueId::EcclesiastStack);
+						int player = scbw::get_generic_value(target, ValueId::EcclesiastPlayer);
 						const int range = 64;
 						scbw::UnitFinder(target->getX() - range, target->getY() - range, target->getX() + range, target->getY() + range).forEach(ecclesiastProc(stacks, player));
 					}
@@ -952,7 +952,7 @@ namespace hooks {
 			// Reduce shields (finally)
 			if (shieldReduceAmount != 0
 			&&	canDamage) {
-				if (scbw::get_aise_value(target, NULL, AiseId::HasClarionLink, 0, 0)) {
+				if (scbw::get_generic_value(target, NULL, AiseId::HasClarionLink, 0, 0)) {
 					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SpreadClarionDamage, shieldReduceAmount, damageType, direction);
 				}
 				else {
