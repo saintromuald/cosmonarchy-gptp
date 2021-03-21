@@ -2,7 +2,7 @@
 #include <SCBW/api.h>
 #include <SCBW/UnitFinder.h>
 #include "hooks/weapons/wpnspellhit.h"
-
+#include "globals.h"
 class irradiateProc : public scbw::UnitFinderCallbackProcInterface {
 
 	private:

@@ -400,7 +400,9 @@ bool canCastSpellOrder(CUnit* unit, u8 techId, u8 orderId) {
   u16 energyCost = 0;
   if (orders_dat::TechUsed[orderId] < TechId::None)
     energyCost = techdata_dat::EnergyCost[orders_dat::TechUsed[orderId]] * 256;
-
+  if (techId == TechId::Lockdown && unit->vulture.spiderMineCount == 0) {
+      return false;
+  }
   if (scbw::isCheatEnabled(CheatFlags::TheGathering || unit->energy >= energyCost))
     return unit->canUseTech(techId, unit->playerId) == 1;
 

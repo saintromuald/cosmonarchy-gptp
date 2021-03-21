@@ -828,7 +828,7 @@ std::string readSamaseFile(char* name) {
 int get_generic_variable(u32 id) {
 	return get_aise_value(NULL, NULL, AiseId::GenericVariable, id, 0);
 }
-CUnit* get_generic_unit(CUnit* unit, u32 id) {
+/*CUnit* get_generic_unit(CUnit* unit, u32 id) {
 	u32 val = get_aise_value(unit, NULL, AiseId::GenericUnit, id, 0);
 	return reinterpret_cast<CUnit*>(val);
 }
@@ -840,7 +840,7 @@ u32 get_generic_timer(CUnit* u, u32 val) {
 }
 void set_generic_unit(CUnit* unit, u32 id, CUnit* targ) {
 	scbw::sendGPTP_aise_cmd(unit, targ, GptpId::SetGenericUnit, 0, 0, 0);
-}
+}*/
 void set_generic_variable(u32 id, int val) {
 	scbw::sendGPTP_aise_cmd(NULL, NULL, GptpId::SetGenericVariable, id, val, 0);
 }
@@ -849,7 +849,7 @@ void setSpriteData(u32 entry, u32 index, u32 value) {
 	return sendGPTP_aise_cmd(NULL, NULL, GptpId::SetSpriteData, entry, index, value);
 }
 
-void set_generic_value(CUnit* u, u32 id, u32 val) {
+/*void set_generic_value(CUnit* u, u32 id, u32 val) {
 	scbw::sendGPTP_aise_cmd(u, NULL, GptpId::SetGenericValue, id, val, 0);
 }
 void add_generic_value(CUnit* u, u32 id, int val) {
@@ -858,7 +858,7 @@ void add_generic_value(CUnit* u, u32 id, int val) {
 
 void set_generic_timer(CUnit* u, u32 id, u32 val) {
 	scbw::sendGPTP_aise_cmd(u, NULL, GptpId::SetGenericTimer, id, val, 0);
-}
+}*/
 
 const u32 Func_CanTargetSpell = 0x00492020;
 u32 get_aise_value(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2){
@@ -972,32 +972,7 @@ void setOffsetToParentSpecialOverlay(CImage* image) {
 	}
 }
 
-void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset) {
-	if (unit->sprite == NULL || unit->orderTarget.unit == NULL) {
-		return;
-	}
-	auto rotate = scbw::get_generic_value(unit, valueId);
-	const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
-		unit->sprite->mainGraphic->id));
-	u8 frameDirection = unit->sprite->mainGraphic->direction;
-	Point8 offset = loFile->getOffset(frameDirection + (17*frameset_offset), rotate);
-	if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
-		offset.x = -offset.x;
-	}
-	rotate++;
-	if (rotate > rotateCount - 1) {
-		rotate = 0;
-	}
-	scbw::set_generic_value(unit, valueId, rotate);
-	auto X = unit->getX() + offset.x;
-	auto Y = unit->getY() + offset.y;
-	createBullet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y,
-		unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
-	
-	
-}
-
-
+/*
 CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset) {
 	if (unit->sprite == NULL || unit->orderTarget.unit==NULL) {
 		return NULL;
@@ -1035,11 +1010,6 @@ bool isSlowed(CUnit* unit) {
 	if (unit->id==UnitId::TerranWyvern && get_generic_value(unit, ValueId::ReverseThrust) == 1) {
 		return true;
 	}
-/*	if (unit->id == UnitId::TerranShaman) {
-		if (unit->_padding_0x132 & 0x8 || scbw::get_generic_value(unit, ValueId::NaniteField)) {
-			return true;
-		}
-	}*/
 	if (unit->id == UnitId::TerranCyprian) {
 		if (scbw::get_generic_value(unit, AiseId::SendCyprianValue) == 1) {
 			return true;
@@ -1050,6 +1020,7 @@ bool isSlowed(CUnit* unit) {
 	}
 	return false;
 }
+*/
 bool isStunned(CUnit* unit) {
 	if (unit->maelstromTimer || unit->stasisTimer) {
 		return true;
@@ -1579,13 +1550,6 @@ u16 random() {
 		return ceil(std::max(((int) units_dat::SupplyRequired[target->id]), 1) * multiplier);
 	}
 
-	CUnit** getSourceQueens(CUnit* unit) {
-		CUnit* queens[2] = { NULL };
-		if (unit == NULL) return queens; // <- prevents crash from incubators, but does not fix the issue
-		queens[0] = scbw::get_generic_unit(unit, ValueId::BroodlingMother);
-		queens[1] = scbw::get_generic_unit(unit, ValueId::ParasiteSource);
-		return queens;
-	}
 
 	const u32 Func_unitDeathSomething_0 = 0x004E6340;
 	void hideAndDisableUnit(CUnit* unit) {
@@ -1661,7 +1625,7 @@ u16 random() {
 		return (sourceCreep && !targetCreep) ? 1 : 0;
 	}
 
-	void restoreFunc(CUnit* unit) {
+/*	void restoreFunc(CUnit* unit) {
 		u32 overlayImageId;
 		CUnit* overlayTargetUnit;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
@@ -2011,7 +1975,7 @@ u16 random() {
 			|| unit->isBlind;
 		// TODO: cowardice, malice + also add them to status tooltip
 	}
-
+	*/
 	void applyEnsnare(CUnit* unit) { // 004F45E0
 		s32 baseProperty; // eax
 		u8 overlayPadding; // al
@@ -2110,29 +2074,14 @@ u16 random() {
 			|| orderId == OrderId::FireYamatoGun1;
 	}
 
-	void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound) {
-		// Deconstruction - Pazuzu passive
-		double selfDamage = (0.25 * (double)(weapons_dat::DamageAmount[weaponId] * 256.0));
-		auto deconstructionTarget = unit;
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
-			deconstructionTarget = (CUnit*)scbw::get_generic_value(unit, ValueId::TurretParentLink);
-			if (deconstructionTarget == nullptr) {
-				return;
-			}
-		}
-		hooks::weaponDamageHook(selfDamage, deconstructionTarget, weaponId, deconstructionTarget, deconstructionTarget->playerId,
-			deconstructionTarget->playerId, 1);
-		if (playSound) {
-			scbw::playSound(1372, unit);
-		}
-	}
+
 
 	bool canBeParasited(CUnit* unit) {
 		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Building)
 			&& !(unit->status & UnitStatus::Burrowed);
 	}
 
-	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen) {
+/*	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen) {
 		if (!scbw::canBeParasited(unit)) return;
 		int playerFlag = 1 << playerID;
 		if (unit->parasiteFlags != playerFlag) { // <- Prevent overwriting timer for already parasited units by same player
@@ -2143,5 +2092,5 @@ u16 random() {
 		unit->parasiteFlags = playerFlag; // Parasite now overwrites other player's parasite
 		scbw::refreshConsole();
 	}
-
+	*/
 } //scbw

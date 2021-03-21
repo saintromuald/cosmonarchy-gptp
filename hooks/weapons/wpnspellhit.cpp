@@ -3,6 +3,7 @@
 #include <SCBW/api.h>
 #include <SCBW/UnitFinder.h>
 #include "logger.h"
+#include "globals.h"
 #include <algorithm>
 //Helper functions definitions
 

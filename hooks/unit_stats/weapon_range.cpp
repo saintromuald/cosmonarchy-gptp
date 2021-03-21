@@ -3,7 +3,7 @@
 #include "weapon_range.h"
 #include "hooks/hydraFinder.h"
 #include <SCBW/api.h>
-
+#include "globals.h"
 namespace hooks {
 
 /// Returns the modified seek range (AKA target acquisition range) for the unit.

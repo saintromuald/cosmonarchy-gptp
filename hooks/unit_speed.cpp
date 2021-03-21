@@ -6,7 +6,7 @@
 #include "hooks/hydraFinder.h"
 #include <SCBW/UnitFinder.h>
 #include "SCBW/api.h"
-
+#include "globals.h"
 #include "MathUtils.h"
 #include "Utils/captivating_claws.h"
 

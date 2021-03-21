@@ -1,6 +1,6 @@
 #include "hallucination_spell.h"
 #include <SCBW/api.h>
-
+#include "globals.h"
 //helper functions def
 
 namespace {

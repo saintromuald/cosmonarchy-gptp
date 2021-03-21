@@ -4,7 +4,7 @@
 #include <algorithm>
 #include "hooks/weapons/weapon_damage.h"
 #include "hooks/hydra_unit_ai.h"
-
+#include "globals.h"
 namespace {
 	//Helper function: Returns true if the unit's HP <= 33%.
 	bool unitHpIsInRedZone(CUnit* unit);					//0x004022C0

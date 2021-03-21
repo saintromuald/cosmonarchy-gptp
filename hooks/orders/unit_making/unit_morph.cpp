@@ -6,7 +6,7 @@
 #include <cassert>
 #include "hooks\orders\building_making\building_morph.h"
 #include "hooks\orders\unit_making\unit_morph.h"
-//
+#include "globals.h"
 //helper functions def
 
 

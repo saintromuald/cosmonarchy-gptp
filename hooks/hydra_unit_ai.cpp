@@ -3,7 +3,7 @@
 #include "SCBW/scbwdata.h"
 #include "UnitConstants.h"
 #include "MathUtils.h"
-
+#include "globals.h"
 void hydra_unit_ai(CUnit* unit) {
 /*
 Apostle Lazarus Agent: If 5 or more organic allies (that don't have the buff) are nearby, cast the spell. **DONE**

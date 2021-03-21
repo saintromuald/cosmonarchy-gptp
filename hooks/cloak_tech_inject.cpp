@@ -2,7 +2,7 @@
 #include "../SCBW/scbwdata.h"
 #include "../SCBW/api.h"
 #include "../hook_tools.h"
-
+#include "globals.h"
 /*
 
 There are 9 places where StarCraft checks unit ID for cloaking.

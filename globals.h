@@ -200,3 +200,23 @@ void injectGlobalsHooks();
 
 static SaveState saveState;
 extern globals Globals;
+
+namespace scbw {
+	CUnit* get_generic_unit(CUnit* unit, u32 id);
+	u32 get_generic_value(CUnit* u, u32 val);
+	u32 get_generic_timer(CUnit* u, u32 val);
+	void set_generic_unit(CUnit* unit, u32 id, CUnit* targ);
+	void set_generic_value(CUnit* u, u32 id, u32 val);
+	void set_generic_timer(CUnit* u, u32 id, u32 val);
+	void add_generic_value(CUnit* u, u32 id, int val);
+	CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset);
+	bool isSlowed(CUnit* unit);
+	void refreshDebuffs(CUnit* unit);
+	void inheritDebuffs(CUnit* parent, CUnit* child);
+	bool isDebuffed(CUnit* unit);
+	void restoreFunc(CUnit* unit);
+	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen);
+	void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound);
+	void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset);
+	CUnit** getSourceQueens(CUnit* unit);
+}

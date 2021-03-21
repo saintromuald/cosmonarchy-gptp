@@ -358,7 +358,7 @@ class treasuryProc : public scbw::UnitFinderCallbackProcInterface {
 
 public:
 	treasuryProc(u8 playerId) {
-		_playerId = playerId;
+		_playerId = playerId;	
 	}
 
 	void proc(CUnit* unit) {
@@ -949,7 +949,7 @@ namespace hooks {
 					if (a != NULL) {
 						scbw::set_generic_timer(unit, ValueId::ObservanceTimerDebuff, (5 * 24) + 1);
 						if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0) < 5) {
-							scbw::add_generic_value(unit, ValueId::ObservanceRend, 1);
+							scbw::set_generic_value(unit, ValueId::ObservanceRend, scbw::get_generic_value(unit, ValueId::ObservanceRend)+1);
 						}
 					}
 					else {

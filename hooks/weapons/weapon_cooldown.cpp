@@ -3,7 +3,7 @@
 #include "../../SCBW/enumerations.h"
 #include "../../SCBW/api.h"
 #include "../../MathUtils.h"
-
+#include "globals.h"
 
 namespace hooks {
 

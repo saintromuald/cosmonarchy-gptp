@@ -1,6 +1,7 @@
 #include "unit_train.h"
 #include <SCBW/api.h>
 #include "hooks/hydraFinder.h"
+#include "globals.h"
 #ifndef TRUE
 #define TRUE 1
 #endif

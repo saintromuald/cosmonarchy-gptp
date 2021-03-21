@@ -1,6 +1,6 @@
 #include "buttonsets.h"
 #include "SCBW/api.h"
-
+#include "globals.h"
 //Helper functions
 
 namespace {

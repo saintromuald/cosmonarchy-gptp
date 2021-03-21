@@ -1,5 +1,5 @@
 #include "captivating_claws.h"
-
+#include "globals.h"
 namespace captivating_claws {
 	int captivatingClawSources[4] = {ValueId::CaptivatingClawsSource1, ValueId::CaptivatingClawsSource2, ValueId::CaptivatingClawsSource3, ValueId::CaptivatingClawsSource4};
 	u32 getCaptivatingClawsStacks(CUnit* target) {

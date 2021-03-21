@@ -1,6 +1,6 @@
 #include "medic_orders.h"
 #include <SCBW/api.h>
-
+#include "globals.h"
 //helper functions def
 
 namespace {
