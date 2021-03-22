@@ -209,7 +209,7 @@ void globals::frameHook() {
 	for (auto & a : unitStructs) {
 		for (int i = 0; i < a.second.genericTimers.size();i++) {
 			if (a.second.genericTimers[i] > 0) {
-				scbw::printFormattedText("Timer decrease: %d %d", i, a.second.genericTimers[i]);
+//				scbw::printFormattedText("Timer decrease: %d %d", i, a.second.genericTimers[i]);
 				a.second.genericTimers[i]--;
 			}
 		}

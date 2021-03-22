@@ -205,11 +205,11 @@ namespace hooks {
 
 		}
 
-		// Infested Terran Death March: gains increased movespeed based on missing health
-		else if (unit->id == UnitId::ZergInfestedTerran) {
+		// Blackjack Wear and Tear: reduce movement speed based on missing health
+		else if (unit->id == UnitId::TerranBlackjack) {
 			u32 health = unit->hitPoints / 256;
 			u32 maxHealth = unit->getMaxHpInGame();
-			double multiplier = MathUtils::map(health, maxHealth, maxHealth / 2, 1.0, 1.5, true);
+			double multiplier = MathUtils::map(health, (u32)0, maxHealth, 1.0, 0.66, true); // nice casting tbh
 			speed = (u32) ((double)speed * multiplier);
 		}
 
