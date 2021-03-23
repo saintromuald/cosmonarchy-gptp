@@ -146,9 +146,11 @@ enum Enum {
 	DanannAutogun								= 9,			// Madcap weapon
 	CrusaderMissiles							= 10,			// Paladin weapon
 	FusionSaw									= 12,			// Wendigo weapon
+	Monogun										= 15,			// Blackjack weapon
 	PerditionBarrage							= 17,			// Salamander weapon
 	ArtificeBattery								= 18,			// Gorgon weapon
 	MinotaurLaserBattery						= 19,			// Battlecruiser weapon
+	GaussPistols								= 20,			// Cohort weapon
 	FuriaMissiles								= 21,			// Madrigal weapon 1
 	ImperiosoMissiles							= 22,			// Madrigal weapon 2
 	ArtaxCannon									= 23,			// Centaur weapon 1
@@ -156,6 +158,7 @@ enum Enum {
 	TwinRailguns								= 26,			// Cyprian weapon
 	ErebolShockCannon							= 39,			// Penumbra weapon
 	JupiterDriver								= 51,			// Pazuzu weapon
+	PotentiumCannon								= 69,			// Aspirant weapon
 	DiscoidRailgun								= 88,			// Savant weapon
     LobotomyMine								= 89,			// Lobotomy Mine weapon
 	FlakCannons									= 93,			// Cyclops weapon

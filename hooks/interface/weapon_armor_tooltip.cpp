@@ -15,19 +15,20 @@ char buffer[256];
 u8 getDamageFactorForTooltip(u8 weaponId, CUnit* unit) {
 
 	//Default StarCraft behavior
-	if (unit->id == UnitId::TerranHarakan
-	||	unit->id == UnitId::ProtossZealot
-	||	unit->id == UnitId::ProtossLegionnaire
-	||	unit->id == UnitId::ProtossAmaranth
-	||	unit->id == UnitId::ProtossGolem
-	||	unit->id == UnitId::ProtossPariah
-	||	unit->id == UnitId::ZergBactalisk
-	||	unit->id == UnitId::ZergAlmaksalisk
+	if (weaponId == WeaponId::FlameThrower
+	||	weaponId == WeaponId::GaussPistols
+	||	weaponId == WeaponId::PsiBlades
+	||	weaponId == WeaponId::PsiSabers
+	||	weaponId == WeaponId::PsiCleaver
+	||	weaponId == WeaponId::BloodlessAssault
+	||	weaponId == WeaponId::IconoclastBlades
 	||	weaponId == WeaponId::CelestialCannon
+	||	weaponId == WeaponId::CorrosiveAcid
+	||	weaponId == WeaponId::PiercingSpines
 		)
 		return 2;
 
-	if (unit->id == UnitId::TerranValkyrie)
+	if (weaponId == WeaponId::HaloRockets)
 		return 1;
 
 	return weapons_dat::DamageFactor[weaponId];
