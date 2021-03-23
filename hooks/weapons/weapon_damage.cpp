@@ -457,9 +457,9 @@ namespace hooks {
 				scbw::set_generic_timer(attacker, ValueId::AdrenalTimer, 49); //49 is 2 seconds (48) + 1
 			}
 			// Dirge - Madrigal behavior
-			if (weaponId == 22 && attacker != NULL) {
+			if (weaponId == WeaponId::ImperiosoMissiles && attacker != NULL) {
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::DirgeImpale, 24, 0, 0);
-				scbw::set_generic_unit(target, ValueId::DirgeAttacker, attacker);
+				scbw::set_generic_rust_unit(target, ValueId::DirgeAttacker, attacker);
 			}
 			// Knockout Drivers - Southpaw behavior
 			if (attacker != NULL && weaponId == WeaponId::UppercutLaser) {

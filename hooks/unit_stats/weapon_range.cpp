@@ -19,12 +19,12 @@ u8 getSeekRangeHook(CUnit* unit) {
 	switch (unitId) {
 		case UnitId::ProtossExemplar:
 		{
-			if (scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
+			if (scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch)) {
 				bonusAmount += 6;
 			}
 		}
 		case UnitId::TerranMadrigal: {
-			if (scbw::get_generic_value(unit, ValueId::TempoChange)) {
+			if (scbw::get_generic_rust_value(unit, ValueId::TempoChange)) {
 				bonusAmount += 4;
 			}
 		}
@@ -103,12 +103,12 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 	switch (unit->id) {
 		case UnitId::ProtossExemplar:
 		{
-			if (scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
+			if (scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch)) {
 				bonusAmount += 6*32;
 			}
 		}
 		case UnitId::TerranMadrigal: {
-			if (scbw::get_generic_value(unit, ValueId::TempoChange)) {
+			if (scbw::get_generic_rust_value(unit, ValueId::TempoChange)) {
 				bonusAmount += 4*32;
 			}
 		}

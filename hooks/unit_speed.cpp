@@ -91,7 +91,7 @@ namespace hooks {
 		}
 
 		// Wyvern Reverse Thrust ability: reduce movespeed
-		if (unit->id == UnitId::TerranWyvern && scbw::get_generic_value(unit, ValueId::ReverseThrust) == 1) {
+		if (unit->id == UnitId::TerranWyvern && scbw::get_generic_rust_value(unit, ValueId::ReverseThrust) == 1) {
 			speed /= 2;
 		}
 
@@ -234,7 +234,7 @@ namespace hooks {
 		}
 
 		// Khaydarin Eclipse ability: slow Exemplar by 75%
-		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
+		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch)) {
 			speed = speed / 4;
 		}
 
@@ -350,7 +350,7 @@ namespace hooks {
 		}
 
 		// Khaydarin Eclipse ability: slow Exemplar by 75%
-		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
+		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch)) {
 			acceleration = acceleration / 4;
 		}
 		return acceleration;

@@ -156,7 +156,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 		}
 	}
 	else if (unit->id == UnitId::ProtossLanifect) {
-		auto web_state = scbw::get_generic_value(unit, ValueId::DisruptionWeb);
+		auto web_state = scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb);
 		if (scbw::get_generic_value(unit, ValueId::ExecutingCorsairMoveOrder) != 0) {
 			if (unit->mainOrderId != OrderId::Move) {
 				scbw::set_generic_value(unit, ValueId::ExecutingCorsairMoveOrder, 0);
@@ -182,7 +182,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 					});
 				if (mostSignificant != NULL) {
 					unit->orderTo(OrderId::Move, mostSignificant->position.x, mostSignificant->position.y);
-					scbw::set_generic_value(unit, ValueId::DisruptionWeb, 1);
+					scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 1);
 					scbw::set_generic_timer(unit, ValueId::AI_CorsairDweb_Timer, AIWebTimer);
 				}
 			}
@@ -190,7 +190,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 		else {
 			if (!(allies >= AIWebAllyMinCount && enemies >= AIWebEnemyMinCount)) {
 				if (scbw::get_generic_timer(unit, ValueId::AI_CorsairDweb_Timer) == 0) {
-					scbw::set_generic_value(unit, ValueId::DisruptionWeb, 0);
+					scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 0);
 					scbw::set_generic_value(unit, ValueId::ExecutingCorsairMoveOrder, 0);
 					if (unit->mainOrderId == OrderId::Move) {
 						unit->orderTo(OrderId::Stop);

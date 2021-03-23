@@ -326,7 +326,7 @@ void updateStatusEffects(CUnit* unit) {
 
 	// Azazel - Sublime Shepherd ability
 	if (unit->id == UnitId::TerranAzazel) {
-		if (scbw::get_generic_value(unit, ValueId::SublimeShepherd) == 1) {
+		if (scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd) == 1) {
 			sublimeShepherdProc Heal = sublimeShepherdProc(unit);
 			scbw::UnitFinder unitFinder(unit->getX() - 96,
 				unit->getY() - 96,

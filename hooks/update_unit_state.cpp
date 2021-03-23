@@ -162,16 +162,16 @@ namespace hooks {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::FreeMindControlled, 0, 0, 0);
 				}
 			}
-			else if (unit->id == UnitId::TerranAzazel && scbw::get_generic_value(unit, ValueId::SublimeShepherd) == 1) {
+			else if (unit->id == UnitId::TerranAzazel && scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd) == 1) {
 				unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
 				if (unit->energy == 0) {
-					scbw::set_generic_value(unit, ValueId::SublimeShepherd, 0);
+					scbw::set_generic_rust_value(unit, ValueId::SublimeShepherd, 0);
 				}
 			}
-			else if (unit->id == UnitId::corsair && scbw::get_generic_value(unit, ValueId::DisruptionWeb)) {
+			else if (unit->id == UnitId::corsair && scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb)) {
 				unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
 				if (unit->energy == 0) {
-					scbw::set_generic_value(unit, ValueId::DisruptionWeb, 0);
+					scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 0);
 				}
 			}
 /*			else if (unit->id == UnitId::ProtossClarion && scbw::get_generic_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {			
@@ -309,7 +309,7 @@ namespace hooks {
 			unit->airWeaponCooldown--;
 		if (unit->spellCooldown)
 			unit->spellCooldown--;
-		if (unit->id == UnitId::TerranWyvern && scbw::get_generic_value(unit, ValueId::ReverseThrust)==1
+		if (unit->id == UnitId::TerranWyvern && scbw::get_generic_rust_value(unit, ValueId::ReverseThrust)==1
 			&& unit->groundWeaponCooldown==0) {
 
 			bool can_free_fire = true;

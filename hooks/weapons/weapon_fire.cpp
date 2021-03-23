@@ -384,7 +384,7 @@ namespace hooks {
 			if (good) {
 				// Madrigal Tempo Change weapon switch
 				if (weaponId == WeaponId::FuriaMissiles
-				&& scbw::get_generic_value(unit, ValueId::TempoChange)==1) {
+				&& scbw::get_generic_rust_value(unit, ValueId::TempoChange)==1) {
 					weaponId = WeaponId::ImperiosoMissiles;
 				}
 				// Savant Power Siphon ability

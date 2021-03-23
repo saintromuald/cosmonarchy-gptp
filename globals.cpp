@@ -952,7 +952,7 @@ namespace scbw {
 		if (get_generic_timer(unit, ValueId::LobotomySlow) > 1) {
 			return true;
 		}
-		if (unit->id == UnitId::TerranWyvern && get_generic_value(unit, ValueId::ReverseThrust) == 1) {
+		if (unit->id == UnitId::TerranWyvern && get_generic_rust_value(unit, ValueId::ReverseThrust) == 1) {
 			return true;
 		}
 		if (unit->id == UnitId::TerranCyprian) {
@@ -960,7 +960,7 @@ namespace scbw {
 				return true;
 			}
 		}
-		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
+		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch)) {
 			return true;
 		}
 		return false;

@@ -629,7 +629,7 @@ namespace hooks {
 
 				//Zoryusthaleth - Reconstitution
 				if (unit->id == UnitId::ZergZoryusthaleth &&
-					scbw::get_generic_value(unit, ValueId::Reconstitution) == 1) {
+					scbw::get_generic_rust_value(unit, ValueId::Reconstitution) == 1) {
 					auto r = 128;
 					std::vector<CThingy*> corpseList = corpses.findCorpses(unit->position.x - r,
 						unit->position.x + r, unit->position.y - r, unit->position.y + r
@@ -672,7 +672,7 @@ namespace hooks {
 
 				// Sublime Shepherd overlay
 				if (unit->id == UnitId::TerranAzazel) {
-					if (scbw::get_generic_value(unit, ValueId::SublimeShepherd) == 1) {
+					if (scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd) == 1) {
 						if (!unit->getOverlay(1267)) {
 							unit->sprite->createTopOverlay(1267);
 						}
@@ -686,7 +686,7 @@ namespace hooks {
 
 				// Exemplar overlay
 				if (unit->id == UnitId::ProtossExemplar) {
-					if (scbw::get_generic_value(unit, ValueId::ExemplarSwitch) == 1) {
+					if (scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch) == 1) {
 						if (!unit->getOverlay(1271)) {
 							unit->sprite->createTopOverlay(1271);
 						}
@@ -754,8 +754,8 @@ namespace hooks {
 
 				// Apostle - Lazarus Agent cast
 				if (unit->id == UnitId::TerranApostle) {
-					if (scbw::get_generic_value(unit, ValueId::CastLazarusAgent) == 1) {
-						scbw::set_generic_value(unit, ValueId::CastLazarusAgent, 0);
+					if (scbw::get_generic_rust_value(unit, ValueId::CastLazarusAgent) == 1) {
+						scbw::set_generic_rust_value(unit, ValueId::CastLazarusAgent, 0);
 
 						//cast lazarus agent						
 						unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256);
@@ -779,13 +779,13 @@ namespace hooks {
 				// Disruption Web - Lanifect ability
 				if (unit->id == UnitId::ProtossLanifect) {
 					auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
-					if (scbw::get_generic_value(unit, ValueId::DisruptionWeb)) {
+					if (scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb)) {
 
 						if (web == NULL) {
 							web = hooks::createDisruptionWeb(unit->playerId, unit->getX(), unit->getY());
 							if (web == NULL) {
 								//CCMU case
-								scbw::set_generic_value(unit, ValueId::DisruptionWeb, 0);
+								scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 0);
 							}
 							else {
 								scbw::set_generic_unit(unit, ValueId::AttachedDisruptionWeb, web);
@@ -801,7 +801,7 @@ namespace hooks {
 							web->remove();
 						}
 					}
-					if (scbw::get_generic_value(unit, ValueId::DisruptionWebDamage)) {
+					if (scbw::get_generic_rust_value(unit, ValueId::DisruptionWebDamage)) {
 						scbw::set_generic_value(unit, ValueId::DisruptionWebDamage, 0);
 						unit->inflictDamage(techdata_dat::EnergyCost[TechId::DisruptionWeb] * 256, unit, unit->playerId, false, true);
 					}
@@ -1086,7 +1086,7 @@ namespace hooks {
 					if (unit->_padding_0x132 & 0x8) {
 						unit->groundWeaponCooldown = 8;
 					}
-					if (scbw::get_generic_value(unit, ValueId::NaniteField)) {
+					if (scbw::get_generic_rust_value(unit, ValueId::NaniteField)) {
 						auto timer = scbw::get_generic_timer(unit, ValueId::NaniteFieldTimer);
 						unit->_padding_0x133 = 0;
 						unit->_padding_0x132 = 0;
@@ -1230,10 +1230,10 @@ namespace hooks {
 
 				// Queen - Ensnaring Brood ability
 				if (unit->id == UnitId::ZergMatraleth
-				&&  scbw::get_generic_value(unit,ValueId::EnsnaringBroodAbility) == 1) {
+				&&  scbw::get_generic_rust_value(unit,ValueId::EnsnaringBroodAbility) == 1) {
 					Point16 pos = unit->position;
 					int radius = 6 * 32;
-					scbw::set_generic_value(unit, ValueId::EnsnaringBroodAbility, 0);
+					scbw::set_generic_rust_value(unit, ValueId::EnsnaringBroodAbility, 0);
 					scbw::UnitFinder(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius).forEach(ensnaringBroodProc(unit));
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::EnsnaringBrood]*256);
 				}
@@ -1244,9 +1244,9 @@ namespace hooks {
 				}
 
 				// Zoryusthaleth - Swarming Omen ability
-				if (scbw::get_generic_value(unit, ValueId::SwarmingOmenAbility) == 1) {
+				if (scbw::get_generic_rust_value(unit, ValueId::SwarmingOmenAbility) == 1) {
 					scbw::set_generic_timer(unit, ValueId::SwarmingOmenTimer, 15*24);
-					scbw::set_generic_value(unit, ValueId::SwarmingOmenAbility, 0);
+					scbw::set_generic_rust_value(unit, ValueId::SwarmingOmenAbility, 0);
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::SwarmingOmen]*256);
 				}
 

@@ -828,12 +828,16 @@ std::string readSamaseFile(char* name) {
 int get_generic_variable(u32 id) {
 	return get_aise_value(NULL, NULL, AiseId::GenericVariable, id, 0);
 }
+CUnit* get_generic_rust_unit(CUnit* unit, u32 id) {
+	u32 val = get_aise_value(unit, NULL, AiseId::GenericUnit, id, 0);
+	return reinterpret_cast<CUnit*>(val);
+}
 /*CUnit* get_generic_unit(CUnit* unit, u32 id) {
 	u32 val = get_aise_value(unit, NULL, AiseId::GenericUnit, id, 0);
 	return reinterpret_cast<CUnit*>(val);
 }
 u32 get_generic_value(CUnit* u, u32 val) {
-	return get_aise_value(u, val, 0);
+	return get_aise_value(u, NULL, AiseId::GenericValue, val, 0);
 }
 u32 get_generic_timer(CUnit* u, u32 val) {
 	return get_aise_value(u, NULL, AiseId::GenericTimer, val, 0);
@@ -841,10 +845,19 @@ u32 get_generic_timer(CUnit* u, u32 val) {
 void set_generic_unit(CUnit* unit, u32 id, CUnit* targ) {
 	scbw::sendGPTP_aise_cmd(unit, targ, GptpId::SetGenericUnit, 0, 0, 0);
 }*/
+void set_generic_rust_unit(CUnit* unit, u32 id, CUnit* targ) {
+	scbw::sendGPTP_aise_cmd(unit, targ, GptpId::SetGenericUnit, 0, 0, 0);
+}
 void set_generic_variable(u32 id, int val) {
 	scbw::sendGPTP_aise_cmd(NULL, NULL, GptpId::SetGenericVariable, id, val, 0);
 }
 
+u32 get_generic_rust_value(CUnit* u, u32 val) {
+	return get_aise_value(u, NULL, AiseId::GenericValue, val, 0);
+}
+void set_generic_rust_value(CUnit* u, u32 id, u32 val) {
+	scbw::sendGPTP_aise_cmd(u, NULL, GptpId::SetGenericValue, id, val, 0);
+}
 void setSpriteData(u32 entry, u32 index, u32 value) {
 	return sendGPTP_aise_cmd(NULL, NULL, GptpId::SetSpriteData, entry, index, value);
 }
@@ -1015,7 +1028,7 @@ bool isSlowed(CUnit* unit) {
 			return true;
 		}
 	}
-	if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
+	if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch)) {
 		return true;
 	}
 	return false;
