@@ -843,10 +843,10 @@ u32 get_generic_timer(CUnit* u, u32 val) {
 	return get_aise_value(u, NULL, AiseId::GenericTimer, val, 0);
 }
 void set_generic_unit(CUnit* unit, u32 id, CUnit* targ) {
-	scbw::sendGPTP_aise_cmd(unit, targ, GptpId::SetGenericUnit, 0, 0, 0);
+	scbw::sendGPTP_aise_cmd(unit, targ, GptpId::SetGenericUnit, id, 0, 0);
 }*/
 void set_generic_rust_unit(CUnit* unit, u32 id, CUnit* targ) {
-	scbw::sendGPTP_aise_cmd(unit, targ, GptpId::SetGenericUnit, 0, 0, 0);
+	scbw::sendGPTP_aise_cmd(unit, targ, GptpId::SetGenericUnit, id, 0, 0);
 }
 void set_generic_variable(u32 id, int val) {
 	scbw::sendGPTP_aise_cmd(NULL, NULL, GptpId::SetGenericVariable, id, val, 0);
