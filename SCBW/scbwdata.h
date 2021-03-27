@@ -190,7 +190,7 @@ SCBW_DATA(const u32*,			replaySeed,					0x006D0F38);
 SCBW_DATA(const u32*,			randomCounts,				0x0051C610); // size of 0x400, array?
 SCBW_DATA(const u32*,			randomCountsTotal,			0x0051CA18);
 SCBW_DATA(		u16*,			campaignIndex,				0x0057F244);
-SCBW_DATA(const void*,			mapArchiveHandle,			0x00596BC4);
+SCBW_DATA(		void*,			mapArchiveHandle,			0x00596BC4);
 SCBW_DATA(const GameData*,		gameData,					0x005967F8);
 SCBW_DATA(const u8*,			mapStarted,					0x006D121C);
 SCBW_DATA(const u8*,			playerHasLeft,				0x00581D62); // array of 0x8
@@ -346,6 +346,9 @@ SCBW_DATA(		s32*,				scenarioCHKSize,				0x006D0F20);
 // For gameLoop
 SCBW_DATA(		s32*,				visionUpdateCount,				0x0051CE98);
 SCBW_DATA(		s8*,				visionUpdated,					0x0051CE9C);
+
+// X405: For displayEstablishing Shot
+SCBW_DATA(		CampaignMission*,	campaignMissions,				0x004FFF60);
 
 //////////////////////////////////////////////////////////////// @}
 

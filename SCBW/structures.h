@@ -27,6 +27,12 @@ const int SOUND_TYPE_COUNT		= 1144;
 
 #pragma pack(1)
 
+struct CampaignMission
+{
+	char* missionName;
+	int missionIndex;
+};
+
 struct chkStruct {
 	u8 section[4];
 	u32 function;
