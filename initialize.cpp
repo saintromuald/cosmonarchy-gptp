@@ -102,6 +102,7 @@
 #include "hooks/unit_movement.h"
 #include "hooks/neutral_related.h"
 #include "hooks/game/file_operations.h"
+#include "hooks/interface/mainmenu/glucustom.h"
 
 #include "AI/spellcasting.h"
 
@@ -570,6 +571,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectUnitMovementHooks();
 	hooks::injectNeutralRelatedHooks();
 //	hooks::injectFileOperationsHooks();
-
+	hooks::injectGlucustomHooks();
 	return TRUE;
 }
