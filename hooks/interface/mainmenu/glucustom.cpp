@@ -52,9 +52,10 @@ namespace {
 	*/
 	//
 	void* loadInitCreditsBIN(char* a1);															// 004D8DF0
-	bool SFileOpenArchive(char* archiveName, u32 dwPriority, u32 dwFlags, void* handle);		// 004100B2
+	bool SFileOpenArchive(char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle);	// 004100B2
 	bool SFileCloseArchive(void* archive);														// 004100BE
-	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void* phFile);	// 004100C4
+	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void** phFile);	// 004100C4
+	bool SFileCloseFile(void* hFile);	                                                        // 004100C4
 }
 
 namespace hooks {
@@ -323,22 +324,26 @@ namespace hooks {
 	};*/
 
 	void displayEstablishingShot() { // 004D9200, hooked by X405
-		if (!multiPlayerMode && !(*CHEAT_STATE & CheatFlags::NoGlues) && campaignIndex) {
+		// This is the original original function which loads the establisihing shots in campaigns:
+		if (!*multiPlayerMode && !(*CHEAT_STATE & CheatFlags::NoGlues) && *campaignIndex) {
 			for (int i = 0; i < 65; i++) {
-				if (campaignMissions[i].missionIndex == (int)campaignIndex)
+				if (campaignMissions[i].missionIndex == *campaignIndex)
 					loadInitCreditsBIN(campaignMissions[i].missionName);
 			}
 		}
-		// The code above is the original function at address 0x4D9200
-		// The code below is my patch:
-		else if (campaignIndex == 0 && CurrentMapFileName) {
+		// This addition enables establishing shots in custom scenarios:
+		else if (*campaignIndex == 0 && CurrentMapFileName) {
 			SFileOpenArchive(CurrentMapFileName, 0, 0, mapArchiveHandle);
-			void* unusedHandle;
-			bool establishingShotExists = SFileOpenFileEx(mapArchiveHandle, "rez\\est.txt", 0, &unusedHandle);
-			if (establishingShotExists) {
+			void* handle;
+			bool establishingShotExists = SFileOpenFileEx(*mapArchiveHandle, "rez\\est.txt", 0, &handle);
+			if (handle)
+				SFileCloseFile(handle);
+
+			if (establishingShotExists)
 				loadInitCreditsBIN("est");
-			}
-			SFileCloseArchive(mapArchiveHandle);
+
+			if (*mapArchiveHandle)
+				SFileCloseArchive(*mapArchiveHandle);
 		}
 	}
 	
@@ -859,7 +864,7 @@ namespace {
 	}
 
 	const u32 Func_SFileOpenArchive = 0x004100B2;
-	bool SFileOpenArchive(char* archiveName, u32 dwPriority, u32 dwFlags, void* handle) {
+	bool SFileOpenArchive(char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle) {
 		static u32 result;
 		__asm {
 			PUSHAD
@@ -888,7 +893,7 @@ namespace {
 	}
 
 	const u32 Func_SFileOpenFileEx = 0x004100C4;
-	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void* phFile) {
+	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void** phFile) {
 		static u32 result;
 		__asm {
 			PUSHAD
@@ -898,6 +903,19 @@ namespace {
 			PUSH hMPQ
 			CALL Func_SFileOpenFileEx
 			MOV result, eAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_SFileCloseFile = 0x4100b8;
+	bool SFileCloseFile(void* hFile) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH hFile
+			CALL Func_SFileCloseFile
+			MOV result, EAX
 			POPAD
 		}
 		return (bool)result;
