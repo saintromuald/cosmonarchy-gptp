@@ -358,7 +358,7 @@ void augurSacrifice(CUnit* target) {
 		CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
 		if (nearest != NULL) {
 			target->orderTarget.unit = nearest;
-			scbw::createBullet(WeaponId::FinalHour, target, target->position.x, target->position.y, target->playerId,
+			scbw::createBullet(WeaponId::AugurFinalHour, target, target->position.x, target->position.y, target->playerId,
 				scbw::getAngle(target->position.x, target->position.y, nearest->getX(), nearest->getY()));
 
 			scbw::hideAndDisableUnit(target);
@@ -427,7 +427,7 @@ namespace hooks {
 				}
 			}
 			// Savant Entropy Gauntlets behavior - Apply timer and overlay
-			if (attacker != NULL && weaponId == WeaponId::DiscoidRailgun) {
+			if (attacker != NULL && weaponId == WeaponId::SavantDiscoidRailgun) {
 				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
 					scbw::set_generic_timer(target, ValueId::EntropyGauntlets, (5 * 24) + 1);
 					scbw::set_generic_unit(target, ValueId::DecaySavant, attacker);
@@ -457,23 +457,23 @@ namespace hooks {
 				scbw::set_generic_timer(attacker, ValueId::AdrenalTimer, 49); //49 is 2 seconds (48) + 1
 			}
 			// Dirge - Madrigal behavior
-			if (weaponId == WeaponId::ImperiosoMissiles && attacker != NULL) {
+			if (weaponId == WeaponId::MadrigalImperiosoMissiles && attacker != NULL) {
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::DirgeImpale, 24, 0, 0);
 				scbw::set_generic_rust_unit(target, ValueId::DirgeAttacker, attacker);
 			}
 			// Knockout Drivers - Southpaw behavior
-			if (attacker != NULL && weaponId == WeaponId::UppercutLaser) {
+			if (attacker != NULL && weaponId == WeaponId::SouthpawUppercutLaser) {
 				if (scbw::get_generic_value(target, ValueId::KnockoutDriversStacks) < 20) {
 					scbw::add_generic_value(target, ValueId::KnockoutDriversStacks, 1);
 				}
 				scbw::set_generic_timer(target, ValueId::KnockoutDriversTimer, 49); //49 is 2 seconds (48) + 1
 			}
 			// Captivating Claws - Vorvaling behavior
-			if (attacker != NULL && weaponId == WeaponId::VorvalClaws) {
+			if (attacker != NULL && weaponId == WeaponId::VorvalingClaws) {
 				captivating_claws::applyCaptivatingClaws(attacker, target);
 			}
 			// Astral Blessing - Ecclesiast behavior
-			if (attacker != NULL && weaponId == WeaponId::AstralBlaster) {
+			if (attacker != NULL && weaponId == WeaponId::EcclesiastAstralBlaster) {
 				if (scbw::get_generic_value(target, ValueId::EcclesiastStack) < 10) {
 					scbw::add_generic_value(target, ValueId::EcclesiastStack, 1);
 				}
@@ -492,7 +492,7 @@ namespace hooks {
 				}
 			}
 			// Reactive Payload - Architect behavior
-			if (weaponId == WeaponId::DispersiveSalvo) {
+			if (weaponId == WeaponId::ArchitectDispersiveSalvo) {
 				double div = 1.0;
 				if (dmgDivisor != 0) {
 					div = (double)dmgDivisor;
@@ -526,7 +526,7 @@ namespace hooks {
 			}
 
 			// Kalkaleth behavior
-			else if (weaponId == WeaponId::ViscousAcid) {
+			else if (weaponId == WeaponId::KalkaliskViscousAcid) {
 				int decrement = dmgDivisor * 256;
 				if (decrement < damage) {
 					damage = damage - decrement + (target->acidSporeCount * 256);
@@ -552,7 +552,7 @@ namespace hooks {
 			}
 
 			// Quazilisk - Melting Points
-			if (weaponId == WeaponId::AcridBarbs) {
+			if (weaponId == WeaponId::QuaziliskAcridBarbs) {
 				float missingFactor = 1 - ((float)target->hitPoints / target->getMaxHpRaw());
 				float damageIncrease = floor(missingFactor / QuazaliskPassiveFactor);
 				//scbw::print("Damage Increase: " + std::to_string(damageIncrease));
@@ -589,7 +589,7 @@ namespace hooks {
 			}
 
 			// Almaksalisk - Flanking Spines
-			if (weaponId == WeaponId::PiercingSpines && scbw::isDebuffed(target)) {
+			if (weaponId == WeaponId::AlmaksaliskPiercingSpines && scbw::isDebuffed(target)) {
 				damageType = DamageType::IgnoreArmor;
 			}
 
@@ -700,7 +700,7 @@ namespace hooks {
 						hooks::IrradiateHit(attacker, target, attacker->playerId);
 					}
 				}
-				if ((weaponId == WeaponId::PlasmidSpores || weaponId==WeaponId::ParasiticSpores) && damage >= target->hitPoints) {
+				if ((weaponId == WeaponId::AlkajeliskPlasmidSpores || weaponId==WeaponId::AlkajeliskParasiticSpores) && damage >= target->hitPoints) {
 					scbw::set_generic_value(target, ValueId::AlkajeliskParasite, 1);
 					scbw::set_generic_value(target, ValueId::AlkajeliskParasitePlayer, attacker->playerId);
 				}
@@ -784,7 +784,7 @@ namespace hooks {
 
 			// Observance - Science Vessel ability
 			if (attacker != NULL) {
-				if (weaponId == WeaponId::Observance
+				if (weaponId == WeaponId::SeraphObservance
 				&&	(!scbw::isAlliedTo(attacker->playerId, target->playerId))) {
 					scbw::set_generic_timer(attacker, ValueId::ObservanceOverlayTimer, 18);
 					scbw::set_generic_timer(target, ValueId::ObservanceTimerDebuff, 1 + (5 * 24));
@@ -929,9 +929,9 @@ namespace hooks {
 					}
 
 					// Cyclops - Flak Cannon passive
-					if (weaponId == WeaponId::FlakCannons) {
+					if (weaponId == WeaponId::CyclopsFlakCannons) {
 						auto newAngle = scbw::getAngle(attacker->getX(), attacker->getY(), target->getX(), target->getY());
-						scbw::createBullet(WeaponId::FragmentaryShells, attacker, target->getX(), target->getY(), attacker->playerId, newAngle);
+						scbw::createBullet(WeaponId::CyclopsFragmentaryShells, attacker, target->getX(), target->getY(), attacker->playerId, newAngle);
 					}
 
 					// Augur - Death behavior

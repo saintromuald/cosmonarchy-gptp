@@ -590,7 +590,7 @@ namespace hooks {
 			//}
 
 			for (CBullet* bullet = *firstBullet; bullet; bullet = bullet->next) {
-				if (bullet->weaponType == WeaponId::ViscousAcid) {
+				if (bullet->weaponType == WeaponId::KalkaliskViscousAcid) {
 					if (bullet->orderSignal & 0x80) {
 						bullet->orderSignal &= ~0x80;
 						Globals.remove_multihit_bullet(bullet);
@@ -710,7 +710,7 @@ namespace hooks {
 						}
 						if (enemiesDetected) {
 							scbw::set_generic_timer(unit, ValueId::StarcallerInterceptionMissiles,
-								weapons_dat::Cooldown[WeaponId::InterventionMissiles]);
+								weapons_dat::Cooldown[WeaponId::StarSovereignInterventionMissiles]);
 
 							for (int arc = 0; arc < 6; arc++) {
 								const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlaySpecialPtr,
@@ -725,13 +725,13 @@ namespace hooks {
 								auto target_unit = unit->orderTarget.unit;
 								auto target_pos = unit->orderTarget.pt;
 								auto offset_direction = -40 + arc * 16;
-								auto maxRange = weapons_dat::MaxRange[WeaponId::InterventionMissiles];
+								auto maxRange = weapons_dat::MaxRange[WeaponId::StarSovereignInterventionMissiles];
 								auto polar_x = unit->getX() + scbw::getPolarX(maxRange, scbw::dir_saturate(unit->currentDirection1, offset_direction));
 								auto polar_y = unit->getY() + scbw::getPolarY(maxRange, scbw::dir_saturate(unit->currentDirection1, offset_direction));
 								unit->orderTarget.unit = NULL;
 								unit->orderTarget.pt.x = polar_x;
 								unit->orderTarget.pt.y = polar_y;
-								scbw::createBullet(WeaponId::InterventionMissiles, unit, X, Y, unit->playerId,
+								scbw::createBullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->playerId,
 									scbw::dir_saturate(unit->currentDirection1, offset_direction));
 								scbw::playSound(80, unit);
 								unit->orderTarget.unit = target_unit;

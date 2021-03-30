@@ -60,7 +60,7 @@ namespace hooks {
 	   if (bullet->sourceUnit == NULL || target==NULL) {
 		   return true;
 	   }
-	   if (bullet->weaponType == WeaponId::PlasmidBreath) {
+	   if (bullet->weaponType == WeaponId::NathrokorPlasmidBreath) {
 		   CUnit* nathrokor = bullet->sourceUnit;
 		   u16 angle = scbw::getAngle(nathrokor->position.x, nathrokor->position.y,
 			   target->position.x, target->position.y);
@@ -111,7 +111,7 @@ namespace hooks {
 			r = 45;
 		}
 		// Nathrokor weapon
-		if (weaponId == WeaponId::PlasmidBreath) {
+		if (weaponId == WeaponId::NathrokorPlasmidBreath) {
 			r = 32;
 		}
 
@@ -126,7 +126,7 @@ namespace hooks {
 			weaponBulletShot(guaranteed_hit, bullet, 1);
 		}
 		int divisor = 1;
-		if (weaponId == WeaponId::DispersiveSalvo) {
+		if (weaponId == WeaponId::ArchitectDispersiveSalvo) {
 			divisor = Globals.get_divider(bullet);
 		}
 		for (int i = 0; i < unitsInSplash.getUnitCount(); i++){
@@ -161,12 +161,12 @@ namespace hooks {
 			}
 
 			// Nathrokor weapon
-			if (weaponId == WeaponId::PlasmidBreath) {
+			if (weaponId == WeaponId::NathrokorPlasmidBreath) {
 				outer = 32;
 			}
 
-			if (weaponId == WeaponId::JavelinCannons) {
-				const double splashBase = weapons_dat::OuterSplashRadius[WeaponId::JavelinCannons];
+			if (weaponId == WeaponId::HeraclesJavelinCannons) {
+				const double splashBase = weapons_dat::OuterSplashRadius[WeaponId::HeraclesJavelinCannons];
 				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
 				outer = (s16)(splashBase * (1 + 0.1 * stacks));
 			}
@@ -187,8 +187,8 @@ namespace hooks {
 				inner = 30;
 			}
 
-			if (weaponId == WeaponId::JavelinCannons) {
-				const double splashBase = weapons_dat::InnerSplashRadius[WeaponId::JavelinCannons];
+			if (weaponId == WeaponId::HeraclesJavelinCannons) {
+				const double splashBase = weapons_dat::InnerSplashRadius[WeaponId::HeraclesJavelinCannons];
 				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
 				inner = (s16)(splashBase * (1 + 0.1 * stacks));
 			}
@@ -209,13 +209,13 @@ namespace hooks {
 				medium = 37;
 			}
 
-			if (weaponId == WeaponId::JavelinCannons) {
-				const double splashBase = weapons_dat::MediumSplashRadius[WeaponId::JavelinCannons];
+			if (weaponId == WeaponId::HeraclesJavelinCannons) {
+				const double splashBase = weapons_dat::MediumSplashRadius[WeaponId::HeraclesJavelinCannons];
 				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
 				medium = (s16)(splashBase * (1 + 0.1 * stacks));
 			}
 
-			if (weaponId == WeaponId::PlasmidBreath) {
+			if (weaponId == WeaponId::NathrokorPlasmidBreath) {
 				r = 32;
 			}
 
@@ -299,7 +299,7 @@ namespace hooks {
 	}
 
 	bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId) {
-		if (weaponId == WeaponId::SerratedCleavers) {
+		if (weaponId == WeaponId::GorgrokorSerratedCleavers) {
 			if (bullet != NULL && bullet->sourceUnit != NULL && bullet->sourceUnit->id==UnitId::ZergGorgrokor) {
 //				if (bullet->sourceUnit->energy >= 5 * 256) {
 					return true;
@@ -361,12 +361,12 @@ namespace hooks {
 
 		// 
 		u8 divisor = 1;
-		if (weaponId == WeaponId::DispersiveSalvo) {
+		if (weaponId == WeaponId::ArchitectDispersiveSalvo) {
 			divisor = Globals.get_divider(bullet);
 		}
 
 		// 
-		else if (weaponId == WeaponId::ViscousAcid) {
+		else if (weaponId == WeaponId::KalkaliskViscousAcid) {
 //			divisor = Globals.get_multihit_count(bullet);
 			divisor = 1;
 //			scbw::printFormattedText("Get divisor %d, bullet: %X",divisor,bullet);
@@ -549,7 +549,7 @@ namespace hooks {
 		s16 x, y, r;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;
-		r = weapons_dat::OuterSplashRadius[WeaponId::LobotomyMine];
+		r = weapons_dat::OuterSplashRadius[WeaponId::LobotomyMineExplosion];
 		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
 		for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 			CUnit* target = unitsInSplash.getUnit(i);
@@ -605,7 +605,7 @@ namespace {
 	const u32 Helper_WeaponBulletShot = 0x00479AE0;
 	void weaponBulletShot(CUnit* target, CBullet* bullet, u32 dmgDivisor) {
 
-		if (bullet != NULL && target!=NULL && bullet->sourceUnit && bullet->weaponType == WeaponId::IconoclastBlades) {
+		if (bullet != NULL && target!=NULL && bullet->sourceUnit && bullet->weaponType == WeaponId::PariahIconoclastBlades) {
 			if (!Globals.was_hit_by_pariah(bullet->sourceUnit, target)) {
 				Globals.register_pariah_hit(bullet->sourceUnit, target);
 			}

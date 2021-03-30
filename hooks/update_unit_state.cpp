@@ -93,7 +93,7 @@ public:
 			return false;
 		}
 		if (scbw::getDistanceFast(unit->sprite->position.x, unit->sprite->position.y,
-			gunship->sprite->position.x, gunship->sprite->position.y) > weapons_dat::MaxRange[WeaponId::JacksonCannon]) {
+			gunship->sprite->position.x, gunship->sprite->position.y) > weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon]) {
 			return false;
 		}
 		return true;
@@ -319,12 +319,12 @@ namespace hooks {
 				}
 			}
 			if (can_free_fire) {
-				auto range = weapons_dat::MaxRange[WeaponId::JacksonCannon];
-				s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::JacksonCannon];
+				auto range = weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon];
+				s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernJacksonCannon];
 				auto x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
 				auto y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1);
 				
-				unit->groundWeaponCooldown = weapons_dat::Cooldown[WeaponId::JacksonCannon];
+				unit->groundWeaponCooldown = weapons_dat::Cooldown[WeaponId::WyvernJacksonCannon];
 				bool seek_unit = true;
 				if (scbw::get_generic_value(unit, ValueId::WyvernReverseLandgrabOn)==1) {
 					auto targ_x = scbw::get_generic_value(unit, ValueId::WyvernReverseLandgrabX);
@@ -332,7 +332,7 @@ namespace hooks {
 					auto direction = scbw::getAngle(x, y, targ_x, targ_y);
 					if (scbw::getDistanceFast(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
 						seek_unit = false;
-						scbw::artificalBulletFrom(WeaponId::JacksonCannon, unit->playerId, unit, NULL, targ_x, targ_y);
+						scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, NULL, targ_x, targ_y);
 					}
 					else {
 						scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabOn, 0);
@@ -346,7 +346,7 @@ namespace hooks {
 					);
 					if (a != NULL) {
 						auto direction = scbw::getAngle(x, y, a->getX(), a->getY());
-						scbw::artificalBulletFrom(WeaponId::JacksonCannon, unit->playerId, unit, a, a->position);
+						scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, a, a->position);
 					}
 				}
 				unit->updateSpeed();

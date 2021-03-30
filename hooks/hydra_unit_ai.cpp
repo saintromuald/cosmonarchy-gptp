@@ -61,7 +61,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 	else if (unit->id == UnitId::TerranSavant) {
 		if (scbw::get_generic_timer(unit, ValueId::AI_SiphonTimer) == 0 && unit->mainOrderId!=OrderId::PowerSiphon) {
 			int count = 0;
-			hydraFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::PowerSiphon],
+			hydraFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::SavantPowerSiphon],
 				CFlags::Ally | CFlags::Spellcaster, {}, [&](CUnit* u) {
 					if (u->energy < u->getMaxEnergy()) {
 						count++;

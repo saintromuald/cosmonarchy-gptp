@@ -16,15 +16,15 @@ u8 getDamageFactorForTooltip(u8 weaponId, CUnit* unit) {
 
 	//Default StarCraft behavior
 	if (weaponId == WeaponId::FlameThrower
-	||	weaponId == WeaponId::GaussPistols
+	||	weaponId == WeaponId::CohortGaussPistols
 	||	weaponId == WeaponId::PsiBlades
-	||	weaponId == WeaponId::PsiSabers
-	||	weaponId == WeaponId::PsiCleaver
-	||	weaponId == WeaponId::BloodlessAssault
-	||	weaponId == WeaponId::IconoclastBlades
-	||	weaponId == WeaponId::CelestialCannon
+	||	weaponId == WeaponId::LegionnairePsiSabers
+	||	weaponId == WeaponId::AmaranthPsiCleaver
+	||	weaponId == WeaponId::GolemBloodlessAssault
+	||	weaponId == WeaponId::PariahIconoclastBlades
+	||	weaponId == WeaponId::StarSovereignCelestialCannon
 	||	weaponId == WeaponId::CorrosiveAcid
-	||	weaponId == WeaponId::PiercingSpines
+	||	weaponId == WeaponId::AlmaksaliskPiercingSpines
 		)
 		return 2;
 
@@ -544,7 +544,7 @@ namespace hooks {
 			return getDamageTooltipString(WeaponId::SpiderMines, unit, 794);		//"Spider Mines"
 		
 		if (iconUnitId == UnitId::TerranLobotomyMine){
-			return getDamageTooltipString(WeaponId::LobotomyMine, unit, 794);
+			return getDamageTooltipString(WeaponId::LobotomyMineExplosion, unit, 794);
 		}
 		
 

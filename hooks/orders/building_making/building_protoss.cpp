@@ -41,7 +41,7 @@ namespace hooks {
 
 			distance = scbw::getDistanceFast(unit->halt.x,unit->halt.y,unit->orderTarget.pt.x * 256,unit->orderTarget.pt.y * 256);
 
-			if(unit->buildQueue[unit->buildQueueSlot] == UnitId::ProtossAssimilator)
+			if(unit->buildQueue[unit->buildQueueSlot] == UnitId::ProtossAquifer)
 				distance_wanted = 88;
 			else
 				distance_wanted = 70;
@@ -64,7 +64,7 @@ namespace hooks {
 			if(!(unit->movementFlags & MovementFlags::Accelerating)) {
 
 				u32 distance_wanted;
-				bool isBuildingAssimilator = (unit->buildQueue[unit->buildQueueSlot] == UnitId::ProtossAssimilator);
+				bool isBuildingAssimilator = (unit->buildQueue[unit->buildQueueSlot] == UnitId::ProtossAquifer);
 
 				if(isBuildingAssimilator)
 					distance_wanted = 88;
@@ -84,7 +84,7 @@ namespace hooks {
 						CUnit* builtUnit;
 
 						if(isBuildingAssimilator)
-							builtUnit = function_004678A0(unit,UnitId::ProtossAssimilator);
+							builtUnit = function_004678A0(unit,UnitId::ProtossAquifer);
 						else
 							builtUnit = createUnit(
 											unit->buildQueue[unit->buildQueueSlot],
@@ -133,7 +133,7 @@ namespace hooks {
 			CImage* current_image;
 
 			if(	target == NULL ||
-				target->id != UnitId::ProtossAssimilator ||
+				target->id != UnitId::ProtossAquifer ||
 				unit->orderQueueHead != NULL
 			)
 				unit->orderToIdle();

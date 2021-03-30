@@ -73,7 +73,7 @@ u8 harvestResourceFrom(CUnit* resource, bool isMineral) {
 //Transfers a set amount of resources from a resource patch to a worker.
 void transferResourceToWorkerHook(CUnit* worker, CUnit* resource) {
 
-	if(resource->id >= UnitId::TerranRefinery && resource->id <= UnitId::ResourceMineralFieldType3) {
+	if(resource->id >= UnitId::TerranReservoir && resource->id <= UnitId::ResourceMineralFieldType3) {
 
 		u32 chunkImageId;
 		bool isMineral = false;
