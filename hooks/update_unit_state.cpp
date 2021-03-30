@@ -155,8 +155,8 @@ namespace hooks {
 					unit->spendUnitEnergy(cloakingEnergyCost);
 
 			}
-			else if (unit->id == UnitId::ProtossMindTyrant && scbw::get_aise_value(unit,NULL,AiseId::SumMindControlCost,0,0)>0) {
-				auto sum = scbw::get_aise_value(unit, NULL, AiseId::SumMindControlCost, 0, 0)/2;
+			else if (unit->id == UnitId::ProtossMindTyrant && scbw::get_aise_value(unit, NULL, AiseId::SumMindControlCost, 0, 0) > 0) {
+				auto sum = scbw::get_aise_value(unit, NULL, AiseId::SumMindControlCost, 0, 0) / 2;
 				unit->spendUnitEnergy(std::min(unit->energy, (u16)(16 * sum)));
 				if (unit->energy == 0) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::FreeMindControlled, 0, 0, 0);
@@ -384,7 +384,7 @@ namespace hooks {
 		if (unit->_unknown_0x08C & 0x1) {
 			unit->_unknown_0x08C &= ~0x1;
 			u32 overlayImageId = scbw::get_sized_overlay(unit,ImageId::Cowardice_Small);
-			if (!unit->getOverlay(overlayImageId) && scbw::get_aise_value(unit,NULL,AiseId::HasMalice,0,0)==0) {
+			if (!unit->getOverlay(overlayImageId) && scbw::get_aise_value(unit, NULL, AiseId::HasMalice, 0, 0) == 0) {
 				unit->sprite->createTopOverlay(overlayImageId,
 					0, 0, 0);
 				scbw::set_generic_value(unit, ValueId::HierophantOverlay, 1);
