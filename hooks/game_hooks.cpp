@@ -249,13 +249,11 @@ public:
 		if (unit->status & UnitStatus::Invincible) {
 			return;
 		}
-//		scbw::printText("Spend");
 		auto count = std::min(4, (int)victim->acidSporeCount);
 		for (int i = 0; i < count; i++) {
 			if (unit->acidSporeCount < 9) {
 				scbw::ApplySpores(unit);
 			}
-//			scbw::printText("SetSpores");
 		}
 	}
 };
@@ -564,7 +562,8 @@ namespace hooks {
 				unit->setSupplyProvided(supply - stacks * TREASURY_INCREASE);
 			}
 
-			//for (int player = 0; player < 8; player++) { // Synchronize upgrades
+			// Synchronize upgrades
+			//for (int player = 0; player < 8; player++) {
 			//	int level = 0;
 			//
 			//	// Terran Upgrades
@@ -616,21 +615,23 @@ namespace hooks {
 				Globals.unitFrameHook(unit);
 				//hooks::ShowHealthBar(unit);
 
-
+				// Reviving from Lazarus Agent
 				if (scbw::get_generic_value(unit, ValueId::IsReviving) == 1 &&
 					unit->sprite->mainGraphic->animation != IscriptAnimation::Unused1) {
-					//unit->status &= ~UnitStatus::Invincible;
+//					unit->status &= ~UnitStatus::Invincible;
 					scbw::set_generic_value(unit, ValueId::IsReviving, 0);
 				}
 
+				// Mind Tyrant Rescind
 				if(unit->id==UnitId::ProtossMindTyrant){
 					if (scbw::get_generic_value(unit, ValueId::RescindMindControl) == 1) {
 						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::FreeMindControlled, 0, 0, 0);
 						scbw::set_generic_value(unit, ValueId::RescindMindControl, 0);
 					}
 				}
+
+				// Zoryusthaleth - Reconstitution
 				else if (unit->id == UnitId::ZergZoryusthaleth) {
-					//Zoryusthaleth - Reconstitution
 					if (scbw::get_generic_rust_value(unit, ValueId::Reconstitution) == 1) {
 						auto r = 128;
 						std::vector<CThingy*> corpseList = corpses.findCorpses(unit->position.x - r,
@@ -645,12 +646,13 @@ namespace hooks {
 									unit->getX() + r,
 									unit->getY() + r);
 								unitFinder.forEach(corpseheal);
-								/*							CThingy* thingy = scbw::createThingy(_set your id here_,
-																a->sprite->position.x,a->sprite->position.y, 11);
-															if (thingy != NULL) {
-																thingy->sprite->elevationLevel = 11;
-																scbw::setThingyVisibilityFlags(thingy);
-															}*/
+								/*
+								CThingy* thingy = scbw::createThingy(_set your id here_,
+									a->sprite->position.x,a->sprite->position.y, 11);
+								if (thingy != NULL) {
+									thingy->sprite->elevationLevel = 11;
+									scbw::setThingyVisibilityFlags(thingy);
+								}*/
 								a->sprite->flags |= CSprite_Flags::Flag04;
 								a->sprite->playIscriptAnim(IscriptAnimation::Death);
 							}
@@ -664,8 +666,9 @@ namespace hooks {
 						}
 					}
 				}
+
+				// Sublime Shepherd overlay
 				else if (unit->id == UnitId::TerranAzazel) {
-					// Sublime Shepherd overlay
 					if (scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd) == 1) {
 						if (!unit->getOverlay(1267)) {
 							unit->sprite->createTopOverlay(1267);
@@ -677,8 +680,9 @@ namespace hooks {
 						}
 					}
 				}
+
+				// Exemplar overlay
 				else if (unit->id == UnitId::ProtossExemplar) {
-					// Exemplar overlay
 					if (scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch) == 1) {
 						if (!unit->getOverlay(1271)) {
 							unit->sprite->createTopOverlay(1271);
@@ -690,8 +694,9 @@ namespace hooks {
 						}
 					}
 				}
+
+				// Star Sovereign Intervention Missiles behavior + Grief of All Gods
 				else if (unit->id == UnitId::ProtossStarSovereign) {
-					// Star Sovereign Intervention Missiles behavior + Grief of All Gods
 					if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerChannel) == 1) {
 						Globals.createPlanetCracker(unit->position.x, unit->position.y, unit->playerId, unit->sprite->elevationLevel);
 					}
@@ -736,13 +741,11 @@ namespace hooks {
 								scbw::playSound(80, unit);
 								unit->orderTarget.unit = target_unit;
 								unit->orderTarget.pt = target_pos;
-
-								//scbw::spreadFire(WeaponId::InterventionMissiles, unit, X, Y, -40 + arc * 16);
-								//-40 -24 -8 8 24 40
 							}
 						}
 					}
-					//Star Sovereign - blast effects
+
+					// Star Sovereign - blast effects
 					u32 player = unit->playerId;
 					u16 X = unit->position.x;
 					u16 Y = unit->position.y;
@@ -799,8 +802,9 @@ namespace hooks {
 						unit->orderSignal &= ~64;
 					}
 				}
+
+				// Apostle - Lazarus Agent cast
 				else if (unit->id == UnitId::TerranApostle) {
-					// Apostle - Lazarus Agent cast
 					if (scbw::get_generic_rust_value(unit, ValueId::CastLazarusAgent) == 1) {
 						scbw::set_generic_rust_value(unit, ValueId::CastLazarusAgent, 0);
 
@@ -822,11 +826,11 @@ namespace hooks {
 						}
 					}
 				}
+
+				// Disruption Web - Lanifect ability
 				else if (unit->id == UnitId::ProtossLanifect) {
-					// Disruption Web - Lanifect ability
 					auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
 					if (scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb)) {
-
 						if (web == NULL) {
 							web = hooks::createDisruptionWeb(unit->playerId, unit->getX(), unit->getY());
 							if (web == NULL) {
@@ -852,14 +856,16 @@ namespace hooks {
 						unit->inflictDamage(techdata_dat::EnergyCost[TechId::DisruptionWeb] * 256, unit, unit->playerId, false, true);
 					}
 				}
+
+				// Madcap Cabeirus Feeders - subtract stacks while moving
 				else if (unit->id == UnitId::TerranMadcap) {
-					//Madcap stacks
-					if (unit->id == UnitId::TerranMadcap && unit->movementFlags & MovementFlags::Accelerating || unit->movementFlags & MovementFlags::Moving) {
+					if (unit->movementFlags & MovementFlags::Accelerating || unit->movementFlags & MovementFlags::Moving) {
 						if (scbw::get_generic_value(unit, ValueId::MadcapStacks) > 0) {
 							scbw::add_generic_value(unit, ValueId::MadcapStacks, -1);
 						}
 					}
 				}
+
 				else if (unit->id == UnitId::ProtossLegionnaire) {
 					// Legionnaire - Blade Vortex
 					//teleport jump
@@ -876,11 +882,11 @@ namespace hooks {
 							}
 						}
 					}
-				}			
-				else if (unit->id == UnitId::TerranPaladin)
-				{
-					// Paladin - Skyfall
-					if(scbw::get_generic_timer(unit, ValueId::SkyfallTimer) == 1
+				}
+
+				// Paladin - Skyfall
+				else if (unit->id == UnitId::TerranPaladin) {
+					if (scbw::get_generic_timer(unit, ValueId::SkyfallTimer) == 1
 						&& scbw::get_generic_timer(unit, ValueId::SkyfallTimer) == 1
 						&& !unit->isFrozen()){
 						u8 missile = scbw::get_generic_value(unit, ValueId::SkyfallStacks);
@@ -925,6 +931,7 @@ namespace hooks {
 						}
 					}
 				}
+
 				else if (unit->id == UnitId::ZergLakizilisk) {
 					//placeholder for seismic spines
 					if (unit->sprite != NULL && unit->mainOrderId != OrderId::Die
@@ -943,6 +950,7 @@ namespace hooks {
 						Globals.clear_lurker(unit);
 					}
 				}
+
 				// Shaman - Administer Medstims ability
 				else if (unit->id == UnitId::TerranShaman) {
 					if (unit->_padding_0x132 & 0x8) {
@@ -977,6 +985,7 @@ namespace hooks {
 						}
 					}
 				}
+
 				// Basilisk - Biogenesis
 				else if (unit->id == UnitId::ZergBactalisk) {
 					if (unit->status & UnitStatus::Burrowed) {
@@ -987,6 +996,7 @@ namespace hooks {
 						}
 					}
 				}
+
 				// Centaur - Sunchaser Missiles animation
 				else if (unit->id == UnitId::TerranCentaur) {
 					if (unit->orderSignal & 0x20) {
@@ -999,9 +1009,7 @@ namespace hooks {
 					}
 				}
 
-
-
-
+				// Lazarus Agent revive
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic &&
 					scbw::get_generic_value(unit, ValueId::LazarusNoHeal) == 1) {
 					if (unit->sprite && unit->sprite->mainGraphic
@@ -1010,11 +1018,6 @@ namespace hooks {
 						scbw::set_generic_value(unit, ValueId::LazarusNoHeal, 0);
 					}
 				}
-
-				
-
-				
-
 				
 				// Devourer - Critical Mass
 				if (scbw::get_generic_timer(unit, ValueId::CorrosiveSporeDelay) == 1) {
@@ -1052,8 +1055,6 @@ namespace hooks {
 					else
 						unit->sprite->removeOverlay(overlayImageId);
 				}
-
-
 
 				// Science Vessel Observance - ability
 				if (scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) == 1) {
