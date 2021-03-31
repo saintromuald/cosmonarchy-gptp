@@ -959,12 +959,27 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranQuarry &&  //Quarry Meskalloid Stimulant passive 
+								if ((*activePortraitUnit)->id == UnitId::TerranBlackjack &&  // Blackjack Wear and Tear passive 
+									current_button->iconID == IconId::ProtossAirPlating)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranCohort &&  // Cohort Servile Vigor passive 
+									current_button->iconID == IconId::TerranInfantryArmor)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranAspirant &&  // Aspirant Criticality passive 
+									current_button->iconID == IconId::ScarabDamage)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranQuarry &&  // Quarry Meskalloid Stimulant passive 
 									current_button->iconID == IconId::Argus_Jewel)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranTreasury &&  //Treasury Expanded Storage passive 
+								if ((*activePortraitUnit)->id == UnitId::TerranTreasury &&  // Treasury Expanded Storage passive 
 									current_button->iconID == IconId::ApolloReactor)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
