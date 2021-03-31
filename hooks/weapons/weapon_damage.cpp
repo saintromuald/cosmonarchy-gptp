@@ -315,7 +315,7 @@ public:
 		|| !(units_dat::BaseProperty[unit->id] & UnitProperty::Organic)) {
 			return;
 		}
-		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::NathrokorTimer, (4 * 24) + 1, 0);
+		scbw::set_generic_timer(unit, ValueId::NathrokorTimer, (4 * 24) + 1);
 		unit->updateSpeed();
 	}
 };
@@ -358,7 +358,7 @@ void augurSacrifice(CUnit* target) {
 		CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
 		if (nearest != NULL) {
 			target->orderTarget.unit = nearest;
-			scbw::createBullet(WeaponId::FinalHour, target, target->position.x, target->position.y, target->playerId,
+			scbw::createBullet(WeaponId::AugurFinalHour, target, target->position.x, target->position.y, target->playerId,
 				scbw::getAngle(target->position.x, target->position.y, nearest->getX(), nearest->getY()));
 
 			scbw::hideAndDisableUnit(target);
@@ -427,10 +427,10 @@ namespace hooks {
 				}
 			}
 			// Savant Entropy Gauntlets behavior - Apply timer and overlay
-			if (attacker != NULL && weaponId == WeaponId::DiscoidRailgun) {
+			if (attacker != NULL && weaponId == WeaponId::SavantDiscoidRailgun) {
 				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
-					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::EntropyGauntlets, (5 * 24) + 1, 0);
-					scbw::sendGPTP_aise_cmd(target, attacker, GptpId::SetGenericUnit, ValueId::DecaySavant, 0, 0);
+					scbw::set_generic_timer(target, ValueId::EntropyGauntlets, (5 * 24) + 1);
+					scbw::set_generic_unit(target, ValueId::DecaySavant, attacker);
 					u32 overlayImageId;
 					if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay)
 						overlayImageId = 1108;
@@ -451,34 +451,34 @@ namespace hooks {
 			}
 			// Adrenal Glands - Zergling behavior
 			if (attacker != NULL && weaponId == WeaponId::Claws) {
-				if (scbw::get_aise_value(attacker, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0) < 4) {
-					scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::AddGenericValue, ValueId::AdrenalStacks, 1, 0);
+				if (scbw::get_generic_value(attacker, ValueId::AdrenalStacks) < 4) {
+					scbw::add_generic_value(attacker, ValueId::AdrenalStacks, 1);
 				}
-				scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::AdrenalTimer, 49, 0); //49 is 2 seconds (48) + 1
+				scbw::set_generic_timer(attacker, ValueId::AdrenalTimer, 49); //49 is 2 seconds (48) + 1
 			}
 			// Dirge - Madrigal behavior
-			if (weaponId == 22 && attacker != NULL) {
+			if (weaponId == WeaponId::MadrigalImperiosoMissiles && attacker != NULL) {
 				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::DirgeImpale, 24, 0, 0);
-				scbw::sendGPTP_aise_cmd(target, attacker, GptpId::SetGenericUnit, ValueId::DirgeAttacker, 0, 0);
+				scbw::set_generic_rust_unit(target, ValueId::DirgeAttacker, attacker);
 			}
 			// Knockout Drivers - Southpaw behavior
-			if (attacker != NULL && weaponId == WeaponId::UppercutLaser) {
-				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::KnockoutDriversStacks, 0) < 20) {
-					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::KnockoutDriversStacks, 1, 0);
+			if (attacker != NULL && weaponId == WeaponId::SouthpawUppercutLaser) {
+				if (scbw::get_generic_value(target, ValueId::KnockoutDriversStacks) < 20) {
+					scbw::add_generic_value(target, ValueId::KnockoutDriversStacks, 1);
 				}
-				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::KnockoutDriversTimer, 49, 0); //49 is 2 seconds (48) + 1
+				scbw::set_generic_timer(target, ValueId::KnockoutDriversTimer, 49); //49 is 2 seconds (48) + 1
 			}
 			// Captivating Claws - Vorvaling behavior
-			if (attacker != NULL && weaponId == WeaponId::VorvalClaws) {
+			if (attacker != NULL && weaponId == WeaponId::VorvalingClaws) {
 				captivating_claws::applyCaptivatingClaws(attacker, target);
 			}
 			// Astral Blessing - Ecclesiast behavior
-			if (attacker != NULL && weaponId == WeaponId::AstralBlaster) {
-				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0) < 10) {
-					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::EcclesiastStack, 1, 0);
+			if (attacker != NULL && weaponId == WeaponId::EcclesiastAstralBlaster) {
+				if (scbw::get_generic_value(target, ValueId::EcclesiastStack) < 10) {
+					scbw::add_generic_value(target, ValueId::EcclesiastStack, 1);
 				}
-				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::EcclesiastTimer, 49, 0); //49 is 2 seconds (48) + 1
-				scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::EcclesiastPlayer, attacker->playerId, 0);
+				scbw::set_generic_timer(target, ValueId::EcclesiastTimer, 49); //49 is 2 seconds (48) + 1
+				scbw::set_generic_value(target, ValueId::EcclesiastPlayer, attacker->playerId);
 			}
 			// Eternal Service - Amaranth behavior
 			if (attacker != NULL) {
@@ -492,7 +492,7 @@ namespace hooks {
 				}
 			}
 			// Reactive Payload - Architect behavior
-			if (weaponId == WeaponId::DispersiveSalvo) {
+			if (weaponId == WeaponId::ArchitectDispersiveSalvo) {
 				double div = 1.0;
 				if (dmgDivisor != 0) {
 					div = (double)dmgDivisor;
@@ -526,7 +526,7 @@ namespace hooks {
 			}
 
 			// Kalkaleth behavior
-			else if (weaponId == WeaponId::ViscousAcid) {
+			else if (weaponId == WeaponId::KalkaliskViscousAcid) {
 				int decrement = dmgDivisor * 256;
 				if (decrement < damage) {
 					damage = damage - decrement + (target->acidSporeCount * 256);
@@ -552,7 +552,7 @@ namespace hooks {
 			}
 
 			// Quazilisk - Melting Points
-			if (weaponId == WeaponId::AcridBarbs) {
+			if (weaponId == WeaponId::QuaziliskAcridBarbs) {
 				float missingFactor = 1 - ((float)target->hitPoints / target->getMaxHpRaw());
 				float damageIncrease = floor(missingFactor / QuazaliskPassiveFactor);
 				//scbw::print("Damage Increase: " + std::to_string(damageIncrease));
@@ -589,7 +589,7 @@ namespace hooks {
 			}
 
 			// Almaksalisk - Flanking Spines
-			if (weaponId == WeaponId::PiercingSpines && scbw::isDebuffed(target)) {
+			if (weaponId == WeaponId::AlmaksaliskPiercingSpines && scbw::isDebuffed(target)) {
 				damageType = DamageType::IgnoreArmor;
 			}
 
@@ -645,7 +645,7 @@ namespace hooks {
 					}
 				}
 				damage -= std::min(damage, armorTotal);
-				auto rend = 256 * scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0);
+				auto rend = 256 * scbw::get_generic_value(target, ValueId::ObservanceRend);
 				damage += rend;
 			}
 
@@ -691,7 +691,7 @@ namespace hooks {
 					if (!silent_kill && !(attacker->visibilityStatus & 1 << target->playerId)) {
 						attacker->visibilityStatus |= (1 << target->playerId);
 						makeSpriteVisible(attacker->sprite);
-						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::PermanentCloakTimer, 48 + 1, 0);
+						scbw::set_generic_timer(attacker, ValueId::PermanentCloakTimer, 48 + 1);
 					}
 				}
 
@@ -700,7 +700,7 @@ namespace hooks {
 						hooks::IrradiateHit(attacker, target, attacker->playerId);
 					}
 				}
-				if ((weaponId == WeaponId::PlasmidSpores || weaponId==WeaponId::ParasiticSpores) && damage >= target->hitPoints) {
+				if ((weaponId == WeaponId::AlkajeliskPlasmidSpores || weaponId==WeaponId::AlkajeliskParasiticSpores) && damage >= target->hitPoints) {
 					scbw::set_generic_value(target, ValueId::AlkajeliskParasite, 1);
 					scbw::set_generic_value(target, ValueId::AlkajeliskParasitePlayer, attacker->playerId);
 				}
@@ -708,8 +708,8 @@ namespace hooks {
 
 					// Last Orders - Aurora behavior
 					if (target->id == UnitId::ProtossAurora) {
-						if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::LastOrdersInit, 0) == 0) {
-							scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::LastOrdersInit, 1, 0);
+						if (scbw::get_generic_value(target, ValueId::LastOrdersInit) == 0) {
+							scbw::set_generic_value(target, ValueId::LastOrdersInit, 1);
 							lastordersProc2 Orders = lastordersProc2(target);
 							scbw::UnitFinder unitFinder(target->getX() - 288, target->getY() - 288, target->getX() + 288, target->getY() + 288);
 							CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
@@ -724,7 +724,7 @@ namespace hooks {
 
 					// Blind Judge relic
 					/*if (units_dat::BaseProperty[attacker->id] & UnitProperty::Hero &&
-						scbw::get_aise_value(attacker, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1
+						scbw::get_generic_value(attacker, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1
 						&& (units_dat::BaseProperty[target->id] & UnitProperty::Organic)
 						&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
 							scbw::sendGPTP_aise_cmd(attacker, target, GptpId::BlindJudgeTimedEffect, target->energy, 0, 0);
@@ -784,11 +784,11 @@ namespace hooks {
 
 			// Observance - Science Vessel ability
 			if (attacker != NULL) {
-				if (weaponId == WeaponId::Observance
+				if (weaponId == WeaponId::SeraphObservance
 				&&	(!scbw::isAlliedTo(attacker->playerId, target->playerId))) {
 					scbw::set_generic_timer(attacker, ValueId::ObservanceOverlayTimer, 18);
-					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericTimer, ValueId::ObservanceTimerDebuff, 1 + (5 * 24), 0);
-					int rend = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::ObservanceRend, 0);
+					scbw::set_generic_timer(target, ValueId::ObservanceTimerDebuff, 1 + (5 * 24));
+					int rend = scbw::get_generic_value(target, ValueId::ObservanceRend);
 					if (rend < 5) {
 						if (rend == 0) {
 							int overlay = 1233;
@@ -800,16 +800,16 @@ namespace hooks {
 							}
 							target->sprite->createOverlay(overlay);
 						}
-						scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::ObservanceRend, 1, 0);
+						scbw::add_generic_value(target, ValueId::ObservanceRend, 1);
 					}
 				}
 			}
 
 			// Tendril Amitosis - Sunken Colony upgrade
 			/*if (weaponId == WeaponId::SubterraneanTentacle && target != NULL) {
-				if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::Amitosis, 0) == 1) {
+				if (scbw::get_generic_value(target, ValueId::Amitosis) == 1) {
 					damage /= 2;
-					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::Amitosis, 0, 0);
+					scbw::set_generic_value(target, ValueId::Amitosis, 0);
 				}
 			}*/
 
@@ -827,7 +827,7 @@ namespace hooks {
 			if (attacker != NULL) {
 				if (attacker->id == UnitId::ProtossMagister
 				&&	!(scbw::get_generic_value(target, ValueId::StellarEnforcement))) {
-					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::AddGenericValue, ValueId::StellarEnforcement, 1, 0);
+					scbw::add_generic_value(target, ValueId::StellarEnforcement, 1);
 				}
 			}
 
@@ -863,7 +863,7 @@ namespace hooks {
 			}
 
 			if (attacker != NULL) { // looks like target will always be alive if this function was called?
-				if (scbw::get_aise_value(target, 0, AiseId::GenericTimer, ValueId::HallucinatingTimer, 0) >= 1) {
+				if (scbw::get_generic_timer(target, ValueId::HallucinatingTimer) >= 1) {
 					CUnit* haluAttacker = attacker;
 					if ((haluAttacker->id == UnitId::ProtossSteward
 						|| haluAttacker->id == UnitId::ProtossPlasmaShell)
@@ -872,13 +872,13 @@ namespace hooks {
 					}
 					if (scbw::get_generic_unit(haluAttacker, ValueId::HallucinationPointer) == NULL
 					&& !(haluAttacker->status & UnitStatus::IsHallucination)) {
-						u32 haluPlayer = scbw::get_aise_value(target, 0, AiseId::GenericValue, ValueId::HallucinatingSourcePlayer, 0);
+						u32 haluPlayer = scbw::get_generic_value(target, ValueId::HallucinatingSourcePlayer);
 						if (haluPlayer != haluAttacker->playerId && !scbw::isAlliedTo(haluPlayer, haluAttacker->playerId)) return;
 
 						CUnit* hal_unit = createHallucination(haluAttacker, haluPlayer);
 						if (hal_unit != NULL) {
 							hal_unit->sprite->createOverlay(ImageId::HallucinationDeath3);
-							scbw::sendGPTP_aise_cmd(haluAttacker, hal_unit, GptpId::SetGenericUnit, ValueId::HallucinationPointer, 0, 0);
+							scbw::set_generic_unit(haluAttacker, ValueId::HallucinationPointer, hal_unit);
 
 							if (!placeHallucination(hal_unit)) {
 								unitDestructor(hal_unit);
@@ -891,12 +891,12 @@ namespace hooks {
 
 					// Radiation Shockwave on death
 					if (target->irradiateTimer > 0) {
-						scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 1, 0);
+						scbw::set_generic_value(target, ValueId::RadiationShockwaveCount, 1);
 					}
 
 					// Kaiser Rampage - Ultralisk behavior
 					if (attacker->id == UnitId::ZergUltrakor) {
-						scbw::sendGPTP_aise_cmd(attacker, NULL, GptpId::SetGenericTimer, ValueId::KaiserRampage, 1 + (2 * 24), 0);
+						scbw::set_generic_timer(attacker, ValueId::KaiserRampage, 1 + (2 * 24));
 						attacker->updateSpeed();
 					}
 
@@ -921,17 +921,17 @@ namespace hooks {
 					}
 
 					// Ecclesiast - Astral Blessing proc
-					if (scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0)) {
-						int stacks = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastStack, 0);
-						int player = scbw::get_aise_value(target, NULL, AiseId::GenericValue, ValueId::EcclesiastPlayer, 0);
+					if (scbw::get_generic_value(target, ValueId::EcclesiastStack)) {
+						int stacks = scbw::get_generic_value(target, ValueId::EcclesiastStack);
+						int player = scbw::get_generic_value(target, ValueId::EcclesiastPlayer);
 						const int range = 64;
 						scbw::UnitFinder(target->getX() - range, target->getY() - range, target->getX() + range, target->getY() + range).forEach(ecclesiastProc(stacks, player));
 					}
 
 					// Cyclops - Flak Cannon passive
-					if (weaponId == WeaponId::FlakCannons) {
+					if (weaponId == WeaponId::CyclopsFlakCannons) {
 						auto newAngle = scbw::getAngle(attacker->getX(), attacker->getY(), target->getX(), target->getY());
-						scbw::createBullet(WeaponId::FragmentaryShells, attacker, target->getX(), target->getY(), attacker->playerId, newAngle);
+						scbw::createBullet(WeaponId::CyclopsFragmentaryShells, attacker, target->getX(), target->getY(), attacker->playerId, newAngle);
 					}
 
 					// Augur - Death behavior

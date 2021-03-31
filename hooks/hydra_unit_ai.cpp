@@ -3,7 +3,7 @@
 #include "SCBW/scbwdata.h"
 #include "UnitConstants.h"
 #include "MathUtils.h"
-
+#include "globals.h"
 void hydra_unit_ai(CUnit* unit) {
 /*
 Apostle Lazarus Agent: If 5 or more organic allies (that don't have the buff) are nearby, cast the spell. **DONE**
@@ -61,7 +61,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 	else if (unit->id == UnitId::TerranSavant) {
 		if (scbw::get_generic_timer(unit, ValueId::AI_SiphonTimer) == 0 && unit->mainOrderId!=OrderId::PowerSiphon) {
 			int count = 0;
-			hydraFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::PowerSiphon],
+			hydraFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::SavantPowerSiphon],
 				CFlags::Ally | CFlags::Spellcaster, {}, [&](CUnit* u) {
 					if (u->energy < u->getMaxEnergy()) {
 						count++;
@@ -84,7 +84,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 				CFlags::Ally | CFlags::Shielded | CFlags::NotSelf, {}, [&](CUnit* u) {
 					count++;
 				});
-			auto clarionVal = scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0);
+			auto clarionVal = scbw::get_generic_value(unit, NULL, AiseId::SendClarionValue, 0, 0);
 			if (count >= 2 && clarionVal == 0) {
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 1, 0, 0);
 				scbw::set_generic_timer(unit, ValueId::AI_ClarionTimer, 96);
@@ -156,7 +156,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 		}
 	}
 	else if (unit->id == UnitId::ProtossLanifect) {
-		auto web_state = scbw::get_generic_value(unit, ValueId::DisruptionWeb);
+		auto web_state = scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb);
 		if (scbw::get_generic_value(unit, ValueId::ExecutingCorsairMoveOrder) != 0) {
 			if (unit->mainOrderId != OrderId::Move) {
 				scbw::set_generic_value(unit, ValueId::ExecutingCorsairMoveOrder, 0);
@@ -182,7 +182,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 					});
 				if (mostSignificant != NULL) {
 					unit->orderTo(OrderId::Move, mostSignificant->position.x, mostSignificant->position.y);
-					scbw::set_generic_value(unit, ValueId::DisruptionWeb, 1);
+					scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 1);
 					scbw::set_generic_timer(unit, ValueId::AI_CorsairDweb_Timer, AIWebTimer);
 				}
 			}
@@ -190,7 +190,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 		else {
 			if (!(allies >= AIWebAllyMinCount && enemies >= AIWebEnemyMinCount)) {
 				if (scbw::get_generic_timer(unit, ValueId::AI_CorsairDweb_Timer) == 0) {
-					scbw::set_generic_value(unit, ValueId::DisruptionWeb, 0);
+					scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 0);
 					scbw::set_generic_value(unit, ValueId::ExecutingCorsairMoveOrder, 0);
 					if (unit->mainOrderId == OrderId::Move) {
 						unit->orderTo(OrderId::Stop);

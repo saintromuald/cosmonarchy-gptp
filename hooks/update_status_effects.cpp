@@ -2,7 +2,7 @@
 #include <SCBW/api.h>
 #include <SCBW/UnitFinder.h>
 #include "hooks/weapons/wpnspellhit.h"
-
+#include "globals.h"
 class irradiateProc : public scbw::UnitFinderCallbackProcInterface {
 
 	private:
@@ -82,7 +82,7 @@ public:
 			return;
 		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::ResourceContainer) {
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::MineralSpecialRegenTimer, 24, 0);
+			scbw::set_generic_timer(unit, ValueId::MineralSpecialRegenTimer, 24);
 		}
 	}
 };
@@ -102,7 +102,7 @@ public:
 			return;
 		}
 		if (scbw::isAlliedTo(unit->playerId, booster->playerId) && scbw::isZergEggNew(unit,true,false)) {
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::EggBoostTimer, 24, 0);
+			scbw::set_generic_timer(unit, ValueId::EggBoostTimer, 24);
 		}
 	}
 };
@@ -301,7 +301,7 @@ void updateStatusEffects(CUnit* unit) {
 	}
 
 	// Knockout Drivers: Southpaw slow per stack
-	else if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversStacks, 0) > 0) {
+	else if (scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks) > 0) {
 		unit->updateSpeed();
 	}
 
@@ -326,7 +326,7 @@ void updateStatusEffects(CUnit* unit) {
 
 	// Azazel - Sublime Shepherd ability
 	if (unit->id == UnitId::TerranAzazel) {
-		if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
+		if (scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd) == 1) {
 			sublimeShepherdProc Heal = sublimeShepherdProc(unit);
 			scbw::UnitFinder unitFinder(unit->getX() - 96,
 				unit->getY() - 96,
@@ -378,10 +378,10 @@ void updateStatusEffects(CUnit* unit) {
 		if (
 			!(unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)))
 		{
-			if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SomaticImplants, 0) == 1) {
+			if (scbw::get_generic_value(unit, ValueId::SomaticImplants) == 1) {
 
 				unit->updateSpeed();
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SomaticImplants, 0, 0);
+				scbw::set_generic_value(unit, ValueId::SomaticImplants, 0);
 			}
 		}
 	}
@@ -547,9 +547,9 @@ void updateStatusEffects(CUnit* unit) {
 		if (unit->maelstromTimer == 0)
 		{
 			unit->removeMaelstrom();
-			if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::Malediction, 0)) {
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::Malediction, 0, 0);
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::MaledictionSlow, (24*4)+1, 0);
+			if (scbw::get_generic_value(unit, ValueId::Malediction)) {
+				scbw::set_generic_value(unit, ValueId::Malediction, 0);
+				scbw::set_generic_timer(unit, ValueId::MaledictionSlow, (24*4)+1);
 				u32 overlayImageId;
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
 					overlayImageId = ImageId::Malediction_Medium;

@@ -600,7 +600,7 @@ void CUnit::spendUnitEnergy(u32 energySpent) {
 			this->energy = 0;
 		}
 	}	
-	if (scbw::get_aise_value(this, NULL, AiseId::GenericTimer, ValueId::EntropyGauntlets, 0) > 1) {						// TODO: fix entropy gauntlets bug
+	if (scbw::get_generic_timer(this, ValueId::EntropyGauntlets) > 1) {													// TODO: fix entropy gauntlets bug
 		this->inflictDamage(energySpent, scbw::get_generic_unit(this, ValueId::DecaySavant), -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
 	}
 }
@@ -1171,9 +1171,9 @@ void CUnit::updateSpeed() {
 
 void CUnit::setSupplyProvided(u8 amount) { // overwrites previous supply provided
 	u32 race = this->getRace();
-	u32 previous_supply = scbw::get_aise_value(this, NULL, AiseId::GenericValue, ValueId::SupplyProvided, 0);
+	u32 previous_supply = scbw::get_generic_value(this, ValueId::SupplyProvided);
 	if (previous_supply)
 		raceSupply[race].provided[this->playerId] -= previous_supply;
 	raceSupply[race].provided[this->playerId] += amount;
-	scbw::sendGPTP_aise_cmd(this, NULL, GptpId::SetGenericValue, ValueId::SupplyProvided, amount, 0);
+	scbw::set_generic_value(this, ValueId::SupplyProvided, amount);
 }

@@ -114,9 +114,9 @@ namespace hooks {
 				u32 groundWeapon;													//[EBP-05]
 				u8 groundWeaponMainUnit = units_dat::GroundWeapon[activeUnit->id];	//BL
 				if (activeUnit->id == UnitId::TerranMadrigal
-					&& scbw::get_generic_value(activeUnit, ValueId::TempoChange)
-					&& groundWeaponMainUnit == WeaponId::FuriaMissiles) {
-					groundWeaponMainUnit = WeaponId::ImperiosoMissiles;
+					&& scbw::get_generic_rust_value(activeUnit, ValueId::TempoChange)
+					&& groundWeaponMainUnit == WeaponId::MadrigalFuriaMissiles) {
+					groundWeaponMainUnit = WeaponId::MadrigalImperiosoMissiles;
 				}
 				u8 groundWeaponSubunit;												//CL
 
@@ -151,7 +151,7 @@ namespace hooks {
 						index++;
 						// Display additional weapons
 						if (activeUnit->id == UnitId::TerranCentaur) {
-							StatsWeaponLevel(dialog, index, WeaponId::SunchaserMissiles);
+							StatsWeaponLevel(dialog, index, WeaponId::CentaurSunchaserMissiles);
 							index++;
 						}
 					}

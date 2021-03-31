@@ -15,19 +15,20 @@ char buffer[256];
 u8 getDamageFactorForTooltip(u8 weaponId, CUnit* unit) {
 
 	//Default StarCraft behavior
-	if (unit->id == UnitId::TerranHarakan
-	||	unit->id == UnitId::ProtossZealot
-	||	unit->id == UnitId::ProtossLegionnaire
-	||	unit->id == UnitId::ProtossAmaranth
-	||	unit->id == UnitId::ProtossGolem
-	||	unit->id == UnitId::ProtossPariah
-	||	unit->id == UnitId::ZergBactalisk
-	||	unit->id == UnitId::ZergAlmaksalisk
-	||	weaponId == WeaponId::CelestialCannon
+	if (weaponId == WeaponId::FlameThrower
+	||	weaponId == WeaponId::CohortGaussPistols
+	||	weaponId == WeaponId::PsiBlades
+	||	weaponId == WeaponId::LegionnairePsiSabers
+	||	weaponId == WeaponId::AmaranthPsiCleaver
+	||	weaponId == WeaponId::GolemBloodlessAssault
+	||	weaponId == WeaponId::PariahIconoclastBlades
+	||	weaponId == WeaponId::StarSovereignCelestialCannon
+	||	weaponId == WeaponId::CorrosiveAcid
+	||	weaponId == WeaponId::AlmaksaliskPiercingSpines
 		)
 		return 2;
 
-	if (unit->id == UnitId::TerranValkyrie)
+	if (weaponId == WeaponId::HaloRockets)
 		return 1;
 
 	return weapons_dat::DamageFactor[weaponId];
@@ -397,14 +398,14 @@ namespace hooks {
 		addStatus(statuses, "Armor Reduction", scbw::get_generic_value(unit, ValueId::ArmorReduce));
 		addStatus(statuses, "Cabeirus Feeders", ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime));
 		addStatus(statuses, "Reverse Thrust", scbw::get_generic_value(unit, ValueId::ReverseThrust));
-		addStatus(statuses, "Sublime Shepherd", scbw::get_generic_value(unit, ValueId::SublimeShepherd));
+		addStatus(statuses, "Sublime Shepherd", scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd));
 		addStatus(statuses, "Lazarus Agent", scbw::get_generic_value(unit, ValueId::LazarusAgent));
 		addStatus(statuses, "Expanded Storage", scbw::get_generic_value(unit, ValueId::TreasuryStacks)); // currently only works for Ovileth and its morphs
-		addStatus(statuses, "Khaydarian Eclipse", scbw::get_generic_value(unit, ValueId::ExemplarSwitch));
+		addStatus(statuses, "Khaydarian Eclipse", scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch));
 		addStatus(statuses, "Robotic Sapience", scbw::get_generic_value(unit, ValueId::RoboticSapience));
-		addStatus(statuses, "Reconstitution", scbw::get_generic_value(unit, ValueId::Reconstitution));
-		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_value(unit, ValueId::TempoChange) == 0);
-		addStatus(statuses, "Dirge", scbw::get_generic_value(unit, ValueId::TempoChange) == 1);
+		addStatus(statuses, "Reconstitution", scbw::get_generic_rust_value(unit, ValueId::Reconstitution));
+		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 0);
+		addStatus(statuses, "Dirge", scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 1);
 		addStatus(statuses, "Swarming Omen", scbw::get_generic_timer(unit, ValueId::SwarmingOmenStatus) > 0);
 		addStatus(statuses, "Protective Instincts", scbw::get_generic_timer(unit, ValueId::ProtectiveInstinctsStatus) > 0);
 		addStatus(statuses, "Deconstructing", scbw::get_generic_value(unit, ValueId::Deconstruction) > 0);
@@ -543,7 +544,7 @@ namespace hooks {
 			return getDamageTooltipString(WeaponId::SpiderMines, unit, 794);		//"Spider Mines"
 		
 		if (iconUnitId == UnitId::TerranLobotomyMine){
-			return getDamageTooltipString(WeaponId::LobotomyMine, unit, 794);
+			return getDamageTooltipString(WeaponId::LobotomyMineExplosion, unit, 794);
 		}
 		
 

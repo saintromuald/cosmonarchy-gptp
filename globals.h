@@ -75,11 +75,66 @@ public:
 		}
 	}
 };
+struct CustomUnitStruct {
+	std::vector<int> genericValues;
+	std::vector<int> genericTimers;
+	std::vector<CUnit*> genericUnits;
 
+	void setGenericValue(int variable, int value) {
+		if (variable >= genericValues.size()) {
+			genericValues.resize(variable + 1, 0);
+		}
+		genericValues[variable] = value;
+	}
+	void setGenericTimer(int variable, int value) {
+		if (variable >= genericTimers.size()) {
+			genericTimers.resize(variable + 1, 0);
+		}
+		genericTimers[variable] = value;
 
+	}
+
+	void addGenericValue(int variable, int value) {
+		if (variable >= genericValues.size()) {
+			genericValues.resize(variable + 1, 0);
+		}
+		genericValues[variable] += value;
+	}
+	int getGenericValue(int variable) {
+		if (variable < genericValues.size()) {
+			return genericValues[variable];
+		}
+		return 0;
+	}
+	int getGenericTimer(int variable) {
+		if (variable < genericTimers.size()) {
+			return genericTimers[variable];
+		}
+		return 0;
+	}
+
+	void setGenericUnit(int variable, CUnit* unit) {
+		if (variable >= genericUnits.size()) {
+			genericUnits.resize(variable + 1, nullptr);
+		}
+		genericUnits[variable] = unit;
+	}
+	CUnit* getGenericUnit(int variable) {
+		if (variable < genericUnits.size()) {
+			return genericUnits[variable];
+		}
+		return nullptr;
+	}
+};
 class globals {
 	std::string output;
 public:
+	//debugging data
+/*	double unitSpeedDbg;
+	double weaponDamageDbg;
+	double gameHookDbg;
+	double updateUnitStateDbg;
+	double updateStatusEffectsDbg;*/
 	//serializable data
 	u32 extended_unit_table;
 	u32 extended_sfx;
@@ -91,6 +146,7 @@ public:
 	std::vector<multihitBullet> multihitBullets;
 	std::vector<apostleAgent> apostleAgents;
 	std::map<CUnit*, std::vector<CUnit*>> lurkerSpineHits;
+	std::map<CUnit*, CustomUnitStruct> unitStructs;
 	AttackExtender attackers;
 	
 	apostleAgent test;
@@ -107,8 +163,12 @@ public:
 		extended_sfx = 0;
 		tbl_extender = false;
 		unitid_extender = false;
+
+		refreshDebuggingInfo();
+
 		//
 	}
+	void refreshDebuggingInfo();
 	void reset();
 	void frameHook();
 	void unitFrameHook(CUnit* unit);
@@ -140,3 +200,23 @@ void injectGlobalsHooks();
 
 static SaveState saveState;
 extern globals Globals;
+
+namespace scbw {
+	CUnit* get_generic_unit(CUnit* unit, u32 id);
+	u32 get_generic_value(CUnit* u, u32 val);
+	u32 get_generic_timer(CUnit* u, u32 val);
+	void set_generic_unit(CUnit* unit, u32 id, CUnit* targ);
+	void set_generic_value(CUnit* u, u32 id, u32 val);
+	void set_generic_timer(CUnit* u, u32 id, u32 val);
+	void add_generic_value(CUnit* u, u32 id, int val);
+	CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset);
+	bool isSlowed(CUnit* unit);
+	void refreshDebuffs(CUnit* unit);
+	void inheritDebuffs(CUnit* parent, CUnit* child);
+	bool isDebuffed(CUnit* unit);
+	void restoreFunc(CUnit* unit);
+	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen);
+	void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound);
+	void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset);
+	CUnit** getSourceQueens(CUnit* unit);
+}

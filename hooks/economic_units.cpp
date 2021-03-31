@@ -98,8 +98,8 @@ namespace hooks {
 
 	bool is_vespene_top_structure(u16 unit_id) {
 		switch (unit_id) {
-		case UnitId::TerranRefinery:
-		case UnitId::ProtossAssimilator:
+		case UnitId::TerranReservoir:
+		case UnitId::ProtossAquifer:
 		case UnitId::ZergExtractor:
 			return true;
 		default:
@@ -109,8 +109,8 @@ namespace hooks {
 
 	bool is_gasholder_structure(u16 unit_id){
 		switch (unit_id) {
-		case UnitId::TerranRefinery:
-		case UnitId::ProtossAssimilator:
+		case UnitId::TerranReservoir:
+		case UnitId::ProtossAquifer:
 		case UnitId::ZergExtractor:
 //		case UnitId::KelMorianGasPump:
 			return true;

@@ -3,7 +3,7 @@
 #include "../../SCBW/enumerations.h"
 #include "../../SCBW/api.h"
 #include "../../MathUtils.h"
-
+#include "globals.h"
 
 namespace hooks {
 
@@ -48,9 +48,17 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 		}
 	}
 
+	// Blackjack Wear and Tear: reduce weapon speed based on missing health
+	else if (unit->id == UnitId::TerranBlackjack) {
+		u32 health = unit->hitPoints / 256;
+		u32 maxHealth = unit->getMaxHpInGame();
+		double multiplier = MathUtils::map(health, (u32)0, maxHealth, 1.0, 0.66, true); // nice casting tbh
+		cooldown = (u32)((double)cooldown * multiplier);
+	}
+
 	// Kaiser Rampage upgrade: gains double attack speed for 1 second on kill
 	if (unit->id == UnitId::ZergUltrakor) {
-		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
+		if (scbw::get_generic_timer(unit, ValueId::KaiserRampage) > 0) {
 			cooldown /= 2;
 		}
 	}
@@ -78,7 +86,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 	if (unit->stimTimer) {		// Fixes aice-related Stimpack issue
 		cooldown += 2;
 	}
-	u32 adrenalStacks = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::AdrenalStacks, 0);
+	u32 adrenalStacks = scbw::get_generic_value(unit, ValueId::AdrenalStacks);
 	if (adrenalStacks) {
 		cooldown -= adrenalStacks / 2;
 	}

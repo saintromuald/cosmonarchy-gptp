@@ -4,7 +4,7 @@
 #include <algorithm>
 #include "hooks/weapons/weapon_damage.h"
 #include "hooks/hydra_unit_ai.h"
-
+#include "globals.h"
 namespace {
 	//Helper function: Returns true if the unit's HP <= 33%.
 	bool unitHpIsInRedZone(CUnit* unit);					//0x004022C0
@@ -93,7 +93,7 @@ public:
 			return false;
 		}
 		if (scbw::getDistanceFast(unit->sprite->position.x, unit->sprite->position.y,
-			gunship->sprite->position.x, gunship->sprite->position.y) > weapons_dat::MaxRange[WeaponId::JacksonCannon]) {
+			gunship->sprite->position.x, gunship->sprite->position.y) > weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon]) {
 			return false;
 		}
 		return true;
@@ -155,26 +155,26 @@ namespace hooks {
 					unit->spendUnitEnergy(cloakingEnergyCost);
 
 			}
-			else if (unit->id == UnitId::ProtossMindTyrant && scbw::get_aise_value(unit,NULL,AiseId::SumMindControlCost,0,0)>0) {
-				auto sum = scbw::get_aise_value(unit, NULL, AiseId::SumMindControlCost, 0, 0)/2;
+			else if (unit->id == UnitId::ProtossMindTyrant && scbw::get_aise_value(unit, NULL, AiseId::SumMindControlCost, 0, 0) > 0) {
+				auto sum = scbw::get_aise_value(unit, NULL, AiseId::SumMindControlCost, 0, 0) / 2;
 				unit->spendUnitEnergy(std::min(unit->energy, (u16)(16 * sum)));
 				if (unit->energy == 0) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::FreeMindControlled, 0, 0, 0);
 				}
 			}
-			else if (unit->id == UnitId::TerranAzazel && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
+			else if (unit->id == UnitId::TerranAzazel && scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd) == 1) {
 				unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
 				if (unit->energy == 0) {
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SublimeShepherd, 0, 0);
+					scbw::set_generic_rust_value(unit, ValueId::SublimeShepherd, 0);
 				}
 			}
-			else if (unit->id == UnitId::corsair && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0)) {
+			else if (unit->id == UnitId::corsair && scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb)) {
 				unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
 				if (unit->energy == 0) {
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::DisruptionWeb, 0, 0);
+					scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 0);
 				}
 			}
-/*			else if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {			
+/*			else if (unit->id == UnitId::ProtossClarion && scbw::get_generic_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {			
 				unit->spendUnitEnergy(13);
 				if(unit->energy==0) {
 					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 0, 0, 0);
@@ -309,7 +309,7 @@ namespace hooks {
 			unit->airWeaponCooldown--;
 		if (unit->spellCooldown)
 			unit->spellCooldown--;
-		if (unit->id == UnitId::TerranWyvern && scbw::get_aise_value(unit,NULL,AiseId::GenericValue,ValueId::ReverseThrust,0)==1
+		if (unit->id == UnitId::TerranWyvern && scbw::get_generic_rust_value(unit, ValueId::ReverseThrust)==1
 			&& unit->groundWeaponCooldown==0) {
 
 			bool can_free_fire = true;
@@ -319,23 +319,23 @@ namespace hooks {
 				}
 			}
 			if (can_free_fire) {
-				auto range = weapons_dat::MaxRange[WeaponId::JacksonCannon];
-				s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::JacksonCannon];
+				auto range = weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon];
+				s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernJacksonCannon];
 				auto x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
 				auto y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1);
 				
-				unit->groundWeaponCooldown = weapons_dat::Cooldown[WeaponId::JacksonCannon];
+				unit->groundWeaponCooldown = weapons_dat::Cooldown[WeaponId::WyvernJacksonCannon];
 				bool seek_unit = true;
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabOn, 0)==1) {
-					auto targ_x = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabX, 0);
-					auto targ_y = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabY, 0);
+				if (scbw::get_generic_value(unit, ValueId::WyvernReverseLandgrabOn)==1) {
+					auto targ_x = scbw::get_generic_value(unit, ValueId::WyvernReverseLandgrabX);
+					auto targ_y = scbw::get_generic_value(unit, ValueId::WyvernReverseLandgrabY);
 					auto direction = scbw::getAngle(x, y, targ_x, targ_y);
 					if (scbw::getDistanceFast(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
 						seek_unit = false;
-						scbw::artificalBulletFrom(WeaponId::JacksonCannon, unit->playerId, unit, NULL, targ_x, targ_y);
+						scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, NULL, targ_x, targ_y);
 					}
 					else {
-						scbw::sendGPTP_aise_cmd(unit, NULL, AiseId::GenericValue, ValueId::WyvernReverseLandgrabOn, 0, 0);
+						scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabOn, 0);
 					}
 				}
 				if(seek_unit) {
@@ -346,7 +346,7 @@ namespace hooks {
 					);
 					if (a != NULL) {
 						auto direction = scbw::getAngle(x, y, a->getX(), a->getY());
-						scbw::artificalBulletFrom(WeaponId::JacksonCannon, unit->playerId, unit, a, a->position);
+						scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, a, a->position);
 					}
 				}
 				unit->updateSpeed();
@@ -384,7 +384,7 @@ namespace hooks {
 		if (unit->_unknown_0x08C & 0x1) {
 			unit->_unknown_0x08C &= ~0x1;
 			u32 overlayImageId = scbw::get_sized_overlay(unit,ImageId::Cowardice_Small);
-			if (!unit->getOverlay(overlayImageId) && scbw::get_aise_value(unit,NULL,AiseId::HasMalice,0,0)==0) {
+			if (!unit->getOverlay(overlayImageId) && scbw::get_aise_value(unit, NULL, AiseId::HasMalice, 0, 0) == 0) {
 				unit->sprite->createTopOverlay(overlayImageId,
 					0, 0, 0);
 				scbw::set_generic_value(unit, ValueId::HierophantOverlay, 1);
@@ -568,7 +568,7 @@ namespace hooks {
 			
 			// Last Orders - Aurora passive
 			if (unit->id == UnitId::ProtossAurora) {
-				if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::LastOrdersInit, 0) == 1) {
+				if (scbw::get_generic_value(unit, ValueId::LastOrdersInit) == 1) {
 					auto distance = scbw::getDistanceFast(unit->position.x, unit->position.y,
 						unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					if (distance<32) {
@@ -612,7 +612,7 @@ namespace hooks {
 		// Radiation Shockwave - Irradiate enhancement
 			if (unit->irradiateTimer > 0) {
 				if (scbw::get_generic_value(unit, ValueId::RadiationShockwaveCount)) {
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 0, 0);
+					scbw::set_generic_value(unit, ValueId::RadiationShockwaveCount, 0);
 
 					CThingy* emp_sprite;
 					emp_sprite = createThingy(371, unit->position.x, unit->position.y, 0);

@@ -617,7 +617,7 @@ namespace hooks {
 			}
 		}
 		else if (unit->id == UnitId::ProtossExemplar) {
-			status = scbw::get_generic_value(unit, ValueId::ExemplarSwitch);
+			status = scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch);
 		}
 		else if (unit->id == UnitId::ProtossStarSovereign) {
 			auto order_state = scbw::get_generic_value(unit, ValueId::ProtossSwitchOrderState);
@@ -698,10 +698,10 @@ namespace hooks {
 				}
 				else if (unit->id == UnitId::ProtossExemplar) {
 					if (status == 0) {
-						scbw::set_generic_value(unit, ValueId::ExemplarSwitch, 1);
+						scbw::set_generic_rust_value(unit, ValueId::ExemplarSwitch, 1);
 					}
 					else {
-						scbw::set_generic_value(unit, ValueId::ExemplarSwitch, 0);
+						scbw::set_generic_rust_value(unit, ValueId::ExemplarSwitch, 0);
 					}
 				}
 				unit->updateSpeed();

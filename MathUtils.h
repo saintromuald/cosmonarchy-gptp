@@ -12,7 +12,7 @@ static struct MathUtils {
 	static T lerp(double fraction, T min, T max, bool doClamp = false);
 
 	template<typename sourceType, typename targetType>
-	static targetType map(sourceType value, sourceType sourceMin, sourceType soureMax, targetType targetMin, targetType targetMax, bool doClamp = false);
+	static targetType map(sourceType value, sourceType sourceMin, sourceType sourceMax, targetType targetMin, targetType targetMax, bool doClamp = false);
 };
 
 template<typename T>

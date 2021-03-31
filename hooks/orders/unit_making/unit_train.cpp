@@ -1,6 +1,7 @@
 #include "unit_train.h"
 #include <SCBW/api.h>
 #include "hooks/hydraFinder.h"
+#include "globals.h"
 #ifndef TRUE
 #define TRUE 1
 #endif
@@ -218,7 +219,7 @@ namespace hooks {
 						}
 					}
 					else {
-						scbw::sendGPTP_aise_cmd(builtUnit, NULL, GptpId::AddGenericValue, ValueId::Crucible, -1, 0);
+						scbw::add_generic_value(builtUnit, ValueId::Crucible, -1);
 					}
 					if(extraBuild || buildingAddon(builtUnit,hpGain,TRUE)) {
 

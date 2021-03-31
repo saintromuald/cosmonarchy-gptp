@@ -1,6 +1,6 @@
 #include "hallucination_spell.h"
 #include <SCBW/api.h>
-
+#include "globals.h"
 //helper functions def
 
 namespace {
@@ -50,8 +50,8 @@ namespace hooks {
 			//
 			//}
 			CUnit* target = unit->orderTarget.unit;
-			scbw::sendGPTP_aise_cmd(target, 0, GptpId::SetGenericValue, ValueId::HallucinatingSourcePlayer, unit->playerId, 0);
-			scbw::sendGPTP_aise_cmd(target, 0, GptpId::SetGenericTimer, ValueId::HallucinatingTimer, (30 * 24) + 1, 0);
+			scbw::set_generic_value(target, ValueId::HallucinatingSourcePlayer, unit->playerId);
+			scbw::set_generic_timer(target, ValueId::HallucinatingTimer, (30 * 24) + 1);
 
 			if(!(*CHEAT_STATE & CheatFlags::TheGathering))
 				unit->spendUnitEnergy(techCost);

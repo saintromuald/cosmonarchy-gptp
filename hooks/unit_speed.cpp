@@ -6,7 +6,7 @@
 #include "hooks/hydraFinder.h"
 #include <SCBW/UnitFinder.h>
 #include "SCBW/api.h"
-
+#include "globals.h"
 #include "MathUtils.h"
 #include "Utils/captivating_claws.h"
 
@@ -55,7 +55,7 @@ namespace hooks {
 
 		// Ultrakor Kaiser Rampage: gains 150% movespeed on kill for 1 second
 		if (unit->id == UnitId::ZergUltrakor) {
-			if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::KaiserRampage, 0) > 0) {
+			if (scbw::get_generic_timer(unit, ValueId::KaiserRampage) > 0) {
 				speed += speed;
 			}
 		}
@@ -81,17 +81,17 @@ namespace hooks {
 		}
 
 		// Mind Tyrant Malediction: Apply movespeed slow to Maelstrom victims once stun wears off
-		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::MaledictionSlow, 0) > 1) {
+		if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 1) {
 			speed /= 2;
 		}
 
 		// Lobotomy Mine slow
-		if (scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::LobotomySlow, 0) > 1) {
+		if (scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 1) {
 			speed /= 2;
 		}
 
 		// Wyvern Reverse Thrust ability: reduce movespeed
-		if (unit->id == UnitId::TerranWyvern && scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::ReverseThrust, 0) == 1) {
+		if (unit->id == UnitId::TerranWyvern && scbw::get_generic_rust_value(unit, ValueId::ReverseThrust) == 1) {
 			speed /= 2;
 		}
 
@@ -129,7 +129,7 @@ namespace hooks {
 				unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))
 			{
 				speed += speed / 4;
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::SomaticImplants, 1, 0);
+				scbw::set_generic_value(unit, ValueId::SomaticImplants, 1);
 			}
 		}
 
@@ -205,11 +205,11 @@ namespace hooks {
 
 		}
 
-		// Infested Terran Death March: gains increased movespeed based on missing health
-		else if (unit->id == UnitId::ZergInfestedTerran) {
+		// Blackjack Wear and Tear: reduce movement speed based on missing health
+		else if (unit->id == UnitId::TerranBlackjack) {
 			u32 health = unit->hitPoints / 256;
 			u32 maxHealth = unit->getMaxHpInGame();
-			double multiplier = MathUtils::map(health, maxHealth, maxHealth / 2, 1.0, 1.5, true);
+			double multiplier = MathUtils::map(health, (u32)0, maxHealth, 1.0, 0.66, true); // nice casting tbh
 			speed = (u32) ((double)speed * multiplier);
 		}
 
@@ -222,8 +222,8 @@ namespace hooks {
 		}
 
 		// Southpaw Knockout Drivers: reduces movement speed by 5% per stack
-		if (scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversStacks, 0) > 0) {
-			u32 knockoutValue = scbw::get_aise_value(unit, NULL, AiseId::GenericValue, ValueId::KnockoutDriversStacks, 0);
+		if (scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks) > 0) {
+			u32 knockoutValue = scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks);
 			speed -= speed * (0.05 * knockoutValue);
 		}
 
@@ -234,7 +234,7 @@ namespace hooks {
 		}
 
 		// Khaydarin Eclipse ability: slow Exemplar by 75%
-		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
+		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch)) {
 			speed = speed / 4;
 		}
 
@@ -350,7 +350,7 @@ namespace hooks {
 		}
 
 		// Khaydarin Eclipse ability: slow Exemplar by 75%
-		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_value(unit, ValueId::ExemplarSwitch)) {
+		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch)) {
 			acceleration = acceleration / 4;
 		}
 		return acceleration;

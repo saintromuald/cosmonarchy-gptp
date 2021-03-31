@@ -408,8 +408,8 @@ void orders_SCVBuild2(CUnit* unit) {
 					if(builtUnit->status & UnitStatus::Completed) {
 
 						if(
-							builtUnit->id == UnitId::TerranRefinery ||
-							builtUnit->id == UnitId::ProtossAssimilator ||
+							builtUnit->id == UnitId::TerranReservoir ||
+							builtUnit->id == UnitId::ProtossAquifer ||
 							builtUnit->id == UnitId::ZergExtractor
 						)
 						{
@@ -475,8 +475,8 @@ void orders_SCVBuild2(CUnit* unit) {
 			if(builtUnit->status & UnitStatus::Completed) {
 
 				if(
-					builtUnit->id == UnitId::TerranRefinery ||
-					builtUnit->id == UnitId::ProtossAssimilator ||
+					builtUnit->id == UnitId::TerranReservoir ||
+					builtUnit->id == UnitId::ProtossAquifer ||
 					builtUnit->id == UnitId::ZergExtractor
 				)
 				{
@@ -563,8 +563,8 @@ void orders_SCVBuild(CUnit* unit) {
 				else
 					function_00474760(unit,unit->orderQueueHead,OrderId::ResetCollision1);
 
-				if(unit->buildQueue[unit->buildQueueSlot] == UnitId::TerranRefinery)
-					builtUnit = function_004678A0(unit,UnitId::TerranRefinery);
+				if(unit->buildQueue[unit->buildQueueSlot] == UnitId::TerranReservoir)
+					builtUnit = function_004678A0(unit,UnitId::TerranReservoir);
 				else
 					builtUnit = createUnit(
 									unit->buildQueue[unit->buildQueueSlot],

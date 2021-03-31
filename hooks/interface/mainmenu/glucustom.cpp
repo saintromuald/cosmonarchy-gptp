@@ -2,57 +2,64 @@
 #include <SCBW/api.h>
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
-/*
+
 namespace {
-	
+	/*
 	//For raceDropdown
-	char addItemToListing(char pszString, BinDlg* pDlg, __int8 bFlags);			//0041B760
-	void createDialogDropdown(BinDlg* a1);										//0041B410
-	void dlgSetSelected(unsigned __int8 a1, BinDlg* a2);						//0041A600
+	char addItemToListing(char pszString, BinDlg* pDlg, __int8 bFlags);							//0041B760
+	void createDialogDropdown(BinDlg* a1);														//0041B410
+	void dlgSetSelected(unsigned __int8 a1, BinDlg* a2);										//0041A600
 	
 	//For initSingleplayerCustom
-	bool isMeleeGame(s8 a1, s16 a2, s8 a3);										//004AD850
-	PLAYER randomizePlayerSlot();												//004A9A30
+	bool isMeleeGame(s8 a1, s16 a2, s8 a3);														//004AD850
+	PLAYER randomizePlayerSlot();																//004A9A30
 
 	//For initGameLoad
-//	HANDLE stopMusic();															//004A5F50
-	FILE loadReplayFile(s32 a1, s32 a2, s32 a3);								//004DF570
-	s32 levelCheatCreate(s8 a1, s32 a2);										//004EE5B0
-	s32 loadGameCreate(s32 a1, s8 a2);											//004EE520
-	s32 gameCreateSomething(s8 a1);												//004EE3D0
-	s32 singleplayerMeleeCreate();												//004EE110
-	s32 getSystemTime(LPSYSTEMTIME* a1);										//0040C7DF
-	void initScreenLayer();														//0041A030
-	s32 subTwoCheckTwo(void* a1, int a2);										//004EE0F0
-	void loadGameFonts();														//004DAE50
-	void srand(u32 a1);															//0040C7B0
-	Point32 initPathArray();													//0042F4F0
-	s32 appAddExit(s32 a1);														//004F6100
-	char multiplayerChatSomething();											//0049B500
-	void getPlayerStructs(void* a1);											//004DE9A0
-	PLAYER initStartingRacesAndTypes();											//0049CC40
-	char initMultiplayerSavePlayers();											//004A9250
-	FILE initPlayers();															//004A9D80
-	void setVisionIndex();														//004EE180
-	void initAiPlayerNames();													//004ED2B0
-	s16 loadRaceUI();															//004EE2D0
-	bool hotkeyRemapping();														//004EEC30
-	s32 gameInit(s32 a1);														//004EEE00
-	s32 getPlayerColors(s32 a1);												//004DE950
-	s32 randomizePlayerColors();												//0049B060
-	s32 authorizeMap(s32 a1, s32 a2, s32 a3, s32 a4);							//004CC110
-	s8 bigPacketError(s32 a1, s8 a2, s32 a3, s32 a4, s32 a5);					//004BB430
-	s32 loadGameCore(s32 a1);													//004EED10
-	void chooseTriggerTemplate(s32 a1, s8 a2, s32 a3);							//004ABAF0
-	s32 initPlayerNames();														//004B2DF0
-	s32 tickCounterInit();														//004A2BF0
-	s32 CMDRECV_SetReplaySpeed(s32 a1, u8 a2, u32 a3);							//004DEB90
-	void copyPlayerStructsToReplay(void* a1, void* a2);							//004DE9D0
-	s32 allocReplayCommands();													//004CE280
+	void* stopMusic();																			//004A5F50
+	FILE loadReplayFile(s32 a1, s32 a2, s32 a3);												//004DF570
+	s32 levelCheatCreate(s8 a1, s32 a2);														//004EE5B0
+	s32 loadGameCreate(s32 a1, s8 a2);															//004EE520
+	s32 gameCreateSomething(s8 a1);																//004EE3D0
+	s32 singleplayerMeleeCreate();																//004EE110
+	s32 getSystemTime(LPSYSTEMTIME* a1);														//0040C7DF
+	void initScreenLayer();																		//0041A030
+	s32 subTwoCheckTwo(void* a1, int a2);														//004EE0F0
+	void loadGameFonts();																		//004DAE50
+	void srand(u32 a1);																			//0040C7B0
+	Point32 initPathArray();																	//0042F4F0
+	s32 appAddExit(s32 a1);																		//004F6100
+	char multiplayerChatSomething();															//0049B500
+	void getPlayerStructs(void* a1);															//004DE9A0
+	PLAYER initStartingRacesAndTypes();															//0049CC40
+	char initMultiplayerSavePlayers();															//004A9250
+	FILE initPlayers();																			//004A9D80
+	void setVisionIndex();																		//004EE180
+	void initAiPlayerNames();																	//004ED2B0
+	s16 loadRaceUI();																			//004EE2D0
+	bool hotkeyRemapping();																		//004EEC30
+	s32 gameInit(s32 a1);																		//004EEE00
+	s32 getPlayerColors(s32 a1);																//004DE950
+	s32 randomizePlayerColors();																//0049B060
+	s32 authorizeMap(s32 a1, s32 a2, s32 a3, s32 a4);											//004CC110
+	s8 bigPacketError(s32 a1, s8 a2, s32 a3, s32 a4, s32 a5);									//004BB430
+	s32 loadGameCore(s32 a1);																	//004EED10
+	void chooseTriggerTemplate(s32 a1, s8 a2, s32 a3);											//004ABAF0
+	s32 initPlayerNames();																		//004B2DF0
+	s32 tickCounterInit();																		//004A2BF0
+	s32 CMDRECV_SetReplaySpeed(s32 a1, u8 a2, u32 a3);											//004DEB90
+	void copyPlayerStructsToReplay(void* a1, void* a2);											//004DE9D0
+	s32 allocReplayCommands();																	//004CE280
+	*/
+	//
+	void* loadInitCreditsBIN(char* a1);															// 004D8DF0
+	bool SFileOpenArchive(char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle);	// 004100B2
+	bool SFileCloseArchive(void* archive);														// 004100BE
+	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void** phFile);	// 004100C4
+	bool SFileCloseFile(void* hFile);	                                                        // 004100C4
 }
 
 namespace hooks {
-	
+	/*
 	void raceDropdown(BinDlg* a1) { // 004ADF20 -- https://pastebin.com/raw/rXq01xR5
 		bStringMap* v2; // edi
 		BinDlg* dlgDropdown; // esi
@@ -314,7 +321,31 @@ namespace hooks {
 			allocReplayCommands();
 		}
 		return 1;
-	};
+	};*/
+
+	void displayEstablishingShot() { // 004D9200, hooked by X405
+		// This is the original original function which loads the establisihing shots in campaigns:
+		if (!*multiPlayerMode && !(*CHEAT_STATE & CheatFlags::NoGlues) && *campaignIndex) {
+			for (int i = 0; i < 65; i++) {
+				if (campaignMissions[i].missionIndex == *campaignIndex)
+					loadInitCreditsBIN(campaignMissions[i].missionName);
+			}
+		}
+		// This addition enables establishing shots in custom scenarios:
+		else if (*campaignIndex == 0 && CurrentMapFileName) {
+			SFileOpenArchive(CurrentMapFileName, 0, 0, mapArchiveHandle);
+			void* handle;
+			bool establishingShotExists = SFileOpenFileEx(*mapArchiveHandle, "rez\\est.txt", 0, &handle);
+			if (handle)
+				SFileCloseFile(handle);
+
+			if (establishingShotExists)
+				loadInitCreditsBIN("est");
+
+			if (*mapArchiveHandle)
+				SFileCloseArchive(*mapArchiveHandle);
+		}
+	}
 	
 } //namespace hooks
 
@@ -323,7 +354,7 @@ namespace hooks {
 //-------- Helper function definitions. Do NOT modify! --------//
 
 namespace {
-
+	/*
 	//For raceDropdown
 	const u32 Func_addItemToListing = 0x0041B760;
 	char addItemToListing(char pszString, BinDlg* pDlg, __int8 bFlags) {
@@ -817,5 +848,77 @@ namespace {
 			POPAD
 		}
 		return result;
-	};
-}*/
+	};*/
+
+	// For displayEstablishingShot
+
+	void* loadInitCreditsBIN(char* a1) {
+		int address = 0x4D8DF0;
+		void* result_;
+		__asm {
+			mov eax, a1
+			call address
+			mov result_, eax
+		}
+		return result_;
+	}
+
+	const u32 Func_SFileOpenArchive = 0x004100B2;
+	bool SFileOpenArchive(char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH handle
+			PUSH dwFlags
+			PUSH dwPriority
+			PUSH archiveName
+			CALL Func_SFileOpenArchive
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_SFileCloseArchive = 0x004100BE;
+	bool SFileCloseArchive(void* archive) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH archive
+			CALL Func_SFileCloseArchive
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_SFileOpenFileEx = 0x004100C4;
+	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void** phFile) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH phFile
+			PUSH dwSearchScope
+			PUSH szFileName
+			PUSH hMPQ
+			CALL Func_SFileOpenFileEx
+			MOV result, eAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const u32 Func_SFileCloseFile = 0x4100b8;
+	bool SFileCloseFile(void* hFile) {
+		static u32 result;
+		__asm {
+			PUSHAD
+			PUSH hFile
+			CALL Func_SFileCloseFile
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+}

@@ -425,7 +425,7 @@ namespace hooks {
 				}
 				if (!(AIScriptController[(u8)town->player].AI_Flags.isUseMapSettings) // CONTROLLER_IS_CAMPAIGN
 					|| unit->status & UnitStatus::GroundedBuilding
-					&& (unit->id != UnitId::TerranMissileTurret)
+					&& (unit->id != UnitId::TerranWatchdog)
 					&& unit->id != UnitId::TerranBunker
 					&& unit->id != UnitId::ZergCreepColony
 					&& unit->id != UnitId::ZergSporeColony
@@ -814,24 +814,24 @@ namespace hooks {
 				AI_AddUnitAi(result, parentTown);
 				if (result->id != UnitId::TerranBunker || *elapsedTimeSeconds <= 60)
 				{
-					if (result->id == UnitId::TerranMissileTurret) {
+					if (result->id == UnitId::TerranWatchdog) {
 						workerUnit = parentTown->workers->parent;
 						for (i = 0; workerUnit; i += queueCount)
 						{
 							workerTarget = workerUnit->moveTarget.unit;
-							if (workerTarget->id == UnitId::TerranMissileTurret)
+							if (workerTarget->id == UnitId::TerranWatchdog)
 								queueCount = 1;
 							else
-								queueCount = AI_GetQueuedCount(workerTarget, UnitId::TerranMissileTurret);
+								queueCount = AI_GetQueuedCount(workerTarget, UnitId::TerranWatchdog);
 //							workerUnit = *(u32*)workerUnit; // not sure if this is even necessary, does v8 need to be iterated upon every loop?
 						}
 						for (j = parentTown->buildings; j; i += queueCount2)
 						{
 							builderUnit = j->parent;
-							if (builderUnit->id == UnitId::TerranMissileTurret)
+							if (builderUnit->id == UnitId::TerranWatchdog)
 								queueCount2 = 1;
 							else
-								queueCount2 = AI_GetQueuedCount(builderUnit, UnitId::TerranMissileTurret);
+								queueCount2 = AI_GetQueuedCount(builderUnit, UnitId::TerranWatchdog);
 							j = j->link.prev;
 						}
 						if (i >= 4) {

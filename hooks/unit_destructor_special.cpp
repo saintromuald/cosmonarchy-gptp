@@ -43,7 +43,7 @@ public:
 		if (!scbw::isAlliedTo(vassal->playerId, unit->playerId)) {
 			return;
 		}
-		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::TerminalSurge, 1, 0);
+		scbw::add_generic_value(unit, ValueId::TerminalSurge, 1);
 	}
 };
 
@@ -283,6 +283,13 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	Globals.remove_unit_from_pariah_table(unit,false);
 	Globals.clear_ptr_in_apostle_table(unit);
 	Globals.unitDeathHook(unit);
+
+	// Aspirant Criticality behavior
+	if (unit->id == UnitId::TerranAspirant) {
+		scbw::createBullet(WeaponId::AspirantCriticality, unit, unit->position.x, unit->position.y, unit->playerId, 0);
+	}
+
+	// Remove Disruption Fields
 	if (unit->id == UnitId::ProtossLanifect) {
 		auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
 		if (web != NULL) {
@@ -290,10 +297,11 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		}
 	}
 
+	// Alkajelisk Parasitic Spores behavior
 	if (scbw::get_generic_value(unit, ValueId::AlkajeliskParasite) == 1) {
 		unit->orderTarget.pt.x = unit->position.x + 1;
 		unit->orderTarget.pt.y = unit->position.y;
-		auto bullet = scbw::createBulletRet(WeaponId::ParasiticSpores, unit, unit->position.x, unit->position.y,
+		auto bullet = scbw::createBulletRet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y,
 			scbw::get_generic_value(unit, ValueId::AlkajeliskParasitePlayer), 0);
 		if (bullet != NULL) {
 			bullet->time_remaining = 255;
@@ -321,13 +329,13 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	}
 
 	// Clarion Phase Link behavior
-	if (unit->id == UnitId::ProtossClarion/* && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1*/) {
+	if (unit->id == UnitId::ProtossClarion) {
 		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ClearClarionLinks, 0, 0, 0);
 	}
 
 	// Irradiate Radiation Shockwave enhancement
 	if (unit->irradiateTimer > 0) {
-		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 1, 0);
+		scbw::set_generic_value(unit, ValueId::RadiationShockwaveCount, 1);
 	}
 
 	// Parasite - spawn broodlings on death
@@ -335,7 +343,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		int supplyCount = scbw::getBroodlingCountFromSupply(unit);
 		int type = unit->status & UnitStatus::InAir ? UnitId::ZergBroodlisk : UnitId::ZergBroodling;
 		for (int player = 0; player < PLAYER_COUNT; player++) {
-			if (unit->parasiteFlags & (1 << player) && scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ParasiteArmTimer, 0) <= 1) {
+			if (unit->parasiteFlags & (1 << player) && scbw::get_generic_timer(unit, ValueId::ParasiteArmTimer) <= 1) {
 				auto sourceQueen = scbw::getSourceQueens(unit)[1];
 				if (sourceQueen) {
 					scbw::createUnitFromAbility(type, supplyCount, player, unit->position.x, unit->position.y,
@@ -365,30 +373,30 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		//add finder later to trace plague flag
 	}
 
-	//Destroy interceptors and scarabs
+	// Destroy interceptors and scarabs
 	if (unit->id == UnitId::ProtossSolarion
 	||  unit->id == UnitId::ProtossAccantor) {
 		killAllHangarUnits(unit);
 	}
 
-	//Destroy nuclear missiles mid-launch
+	// Destroy nuclear missiles mid-launch
 	else
 	if (unit->id == UnitId::TerranEidolon
 	||  unit->id == UnitId::TerranSeraph) {
 		if (unit->building.ghostNukeMissile != NULL) {
-			(unit->building.ghostNukeMissile)->sprite->playIscriptAnim(IscriptAnimation::Death, true);
+		   (unit->building.ghostNukeMissile)->sprite->playIscriptAnim(IscriptAnimation::Death, true);
 			unit->building.ghostNukeMissile = NULL;
 		} 
 
 	}
 	else
 
-	//Is a harvestable mineral patch or gas building
+	// Is a harvestable mineral patch or gas building
 	if (
 		(unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3) ||
-		(	(unit->id == UnitId::TerranRefinery || unit->id == UnitId::ProtossAssimilator || unit->id == UnitId::ZergExtractor)
-			&& unit->status & UnitStatus::Completed
-		)	/*this test is equivalent to function unit_isGeyserUnit @ 004688B0*/
+	   ((unit->id == UnitId::TerranReservoir || unit->id == UnitId::ProtossAquifer || unit->id == UnitId::ZergExtractor)
+	&&   unit->status & UnitStatus::Completed
+		)	/*this is equivalent to function unit_isGeyserUnit @ 004688B0*/
 	  ) 
 	{
 		freeResourceContainer(unit);

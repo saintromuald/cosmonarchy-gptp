@@ -141,12 +141,12 @@ namespace hooks
 		if (firstInList != NULL) {
 			//initial check for energy-based switch abilities
 			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel &&
-				scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
+				scbw::get_generic_rust_value(firstInList, ValueId::SublimeShepherd) == 1) {
 				TechCapableUnit = true;
 				
 			}
 			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossLanifect &&
-				scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0) == 1) {
+				scbw::get_generic_rust_value(firstInList, ValueId::DisruptionWeb) == 1) {
 				TechCapableUnit = true;
 
 			}
@@ -161,7 +161,7 @@ namespace hooks
 			}
 			if (firstInList != NULL) {
 				if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel &&
-					scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
+					scbw::get_generic_rust_value(firstInList, ValueId::SublimeShepherd) == 1) {
 					TechCapableUnit = true;
 				}
 				if (firstInList->_padding_0x132 & 0x8) {
@@ -237,7 +237,7 @@ namespace hooks
 						//reverse thrust switch
 			if (firstInList != NULL) {
 				int action = 1;//on
-				if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::ReverseThrust, 0) == 1) {
+				if (scbw::get_generic_rust_value(firstInList, ValueId::ReverseThrust) == 1) {
 					action = 0;//off
 				}
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
@@ -306,7 +306,7 @@ namespace hooks
 		case TechId::NaniteField:
 		{
 			int action = 1;//on
-			if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::NaniteField, 0) == 1) {
+			if (scbw::get_generic_rust_value(firstInList, ValueId::NaniteField) == 1) {
 				action = 0;//off
 			}
 			//set nanite field
@@ -328,7 +328,7 @@ namespace hooks
 			
 			int action = 1;//on
 			if (zoryusthaleth) {
-				if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::Reconstitution, 0) == 1) {
+				if (scbw::get_generic_rust_value(firstInList, ValueId::Reconstitution) == 1) {
 					action = 0;//off
 				}
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
@@ -413,7 +413,7 @@ namespace hooks
 
 			/*			if (firstInList != NULL) {
 							int action = 0;//enable
-							if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::Observance, 0) == 1) {
+							if (scbw::get_generic_value(firstInList, ValueId::Observance) == 1) {
 								action = 1;//disable
 							}
 							u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
@@ -443,7 +443,7 @@ namespace hooks
 				}
 				else {//exemplar
 					int action = 1;//on
-					if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::ExemplarSwitch, 0) == 1) {
+					if (scbw::get_generic_rust_value(firstInList, ValueId::ExemplarSwitch) == 1) {
 						action = 0;//off
 					}
 					u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
@@ -489,7 +489,7 @@ namespace hooks
 		{
 
 			int action = 1;//on
-			if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::SublimeShepherd, 0) == 1) {
+			if (scbw::get_generic_rust_value(firstInList, ValueId::SublimeShepherd) == 1) {
 				action = 0;//off
 			}
 			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
@@ -518,7 +518,7 @@ namespace hooks
 		{
 
 			int action = 1;//on
-			if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::TempoChange, 0) == 1) {
+			if (scbw::get_generic_rust_value(firstInList, ValueId::TempoChange) == 1) {
 				action = 0;//off
 			}
 			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
@@ -542,7 +542,7 @@ namespace hooks
 		case TechId::DisruptionWeb:
 		{
 			int action = 1;//on
-			if (scbw::get_aise_value(firstInList, NULL, AiseId::GenericValue, ValueId::DisruptionWeb, 0) == 1) {
+			if (scbw::get_generic_rust_value(firstInList, ValueId::DisruptionWeb) == 1) {
 				action = 0;//off
 			}
 			u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
