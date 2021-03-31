@@ -207,10 +207,10 @@ namespace hooks {
 
 		// Blackjack Wear and Tear: reduce movement speed based on missing health
 		else if (unit->id == UnitId::TerranBlackjack) {
-			u32 health = unit->hitPoints / 256;
-			u32 maxHealth = unit->getMaxHpInGame();
-			double multiplier = MathUtils::map(health, (u32)0, maxHealth, 1.0, 0.66, true); // nice casting tbh
-			speed = (u32) ((double)speed * multiplier);
+			const u32 health = unit->hitPoints / 256;
+			const u32 maxHealth = unit->getMaxHpInGame();
+			const double multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
+			speed = speed * multiplier;
 		}
 
 		// Golem Deathless Procession: gains increased movespeed based on missing shields
