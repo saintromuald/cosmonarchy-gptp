@@ -179,7 +179,7 @@ struct CUnit: public CUnitLayout {
   /// Deals damage to this unit, using a specific weapons.dat ID.
   void damageWith(s32 damage,               ///< Amount of damage dealt to this unit.
                   u8 weaponId,              ///< weapons.dat ID to use.
-                  CUnit* attacker = NULL,///< Attacking unit (for increasing kill count)
+                  CUnit* attacker = NULL,   ///< Attacking unit (for increasing kill count)
                   u8 attackingPlayer = -1,  ///< Attacking player (for increasing kill score)
                   s8 direction = 0,         ///< Attacked direction (for shield flicker overlays)
                   u8 damageDivisor = 1      ///< Damage divisor (for splash damage / glave wurm calculations)

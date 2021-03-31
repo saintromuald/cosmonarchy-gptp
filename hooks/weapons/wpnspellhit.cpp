@@ -503,7 +503,7 @@ namespace hooks {
 				if(power > diff ) {
 					attacker->energy = energyMax;
 					power -= diff;
-					attacker->setHp(attacker->hitPoints+power);
+					attacker->setHp(attacker->hitPoints + power);
 				}
 				else {
 					attacker->energy += power;
