@@ -50,10 +50,10 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 
 	// Blackjack Wear and Tear: reduce weapon speed based on missing health
 	else if (unit->id == UnitId::TerranBlackjack) {
-		u32 health = unit->hitPoints / 256;
-		u32 maxHealth = unit->getMaxHpInGame();
-		double multiplier = MathUtils::map(health, (u32)0, maxHealth, 1.0, 0.66, true); // nice casting tbh
-		cooldown = (u32)((double)cooldown * multiplier);
+		const u32 health = unit->hitPoints / 256;
+		const u32 maxHealth = unit->getMaxHpInGame();
+		const double multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
+		cooldown /= multiplier;
 	}
 
 	// Kaiser Rampage upgrade: gains double attack speed for 1 second on kill
