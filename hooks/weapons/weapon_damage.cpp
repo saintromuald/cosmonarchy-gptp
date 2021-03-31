@@ -342,7 +342,7 @@ public:
 		else {
 			value = (units_dat::MaxHitPoints[target->id] * 0.10);
 		}
-		unit->setHp(unit->hitPoints + value, true);
+		unit->heal(value);
 	}
 
 	//Constructor
@@ -614,12 +614,12 @@ namespace hooks {
 				if (attacker != NULL && target != NULL) {
 					if (attacker->id == UnitId::ZergUltrakor) {
 						u32 lifesteal = shieldReduceAmount / 2;
-						attacker->setHp(attacker->hitPoints + lifesteal, true);
+						attacker->heal(lifesteal);
 					}
 					// Wendigo Automedicus passive (shield component)
 					if (attacker->id == UnitId::TerranWendigo && units_dat::BaseProperty[target->id] & UnitProperty::Mechanical) {
 						u32 lifesteal = shieldReduceAmount / 4;
-						attacker->setHp(attacker->hitPoints + lifesteal, true);
+						attacker->heal(lifesteal);
 					}
 				}
 				damage -= shieldReduceAmount;
@@ -664,13 +664,13 @@ namespace hooks {
 				// Ultrakor Saber Siphon passive
 				if (attacker->id == UnitId::ZergUltrakor) {
 					u32 lifesteal = damage / 2;
-					attacker->setHp(attacker->hitPoints + lifesteal, true);
+					attacker->heal(lifesteal);
 				}
 
 				// Wendigo Automedicus passive (HP component)
 				if (attacker->id == UnitId::TerranWendigo && units_dat::BaseProperty[target->id] & UnitProperty::Mechanical) {
 					u32 lifesteal = damage / 4;
-					attacker->setHp(attacker->hitPoints + lifesteal, true);
+					attacker->heal(lifesteal);
 				}
 			}
 

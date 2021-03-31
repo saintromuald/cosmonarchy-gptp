@@ -373,13 +373,9 @@ s16 CUnit::getBottom() const {
 //-------- Modifying unit state --------//
 
 const u32 Func_SetUnitHp = 0x00467340;
-void CUnit::setHp(s32 hitPoints, bool deliberateHeal) {
+void CUnit::setHp(s32 hitPoints) {
 	assert(this);
 
-	// If already full, don't clear debuffs
-	if (this->hitPoints == this->getMaxHpRaw()) {
-		deliberateHeal = false;
-	}
 	__asm {
 		PUSHAD
 		MOV EAX, this
@@ -387,8 +383,22 @@ void CUnit::setHp(s32 hitPoints, bool deliberateHeal) {
 		CALL Func_SetUnitHp
 		POPAD
 	}
+}
+
+void CUnit::heal(s32 hitPoints) {
+	assert(this);
+	if (this->hitPoints == this->getMaxHpRaw()) { // skip healing if max hp already
+		return;
+	}
+
+	if (id == UnitId::TerranCohort) {
+		hitPoints *= 2;
+	}
+
+	setHp(std::min((u32)(this->hitPoints) + (u32)(hitPoints), this->getMaxHpRaw()));
+
 	// If heals to full clear debuffs
-	if (deliberateHeal && this->hitPoints == this->getMaxHpRaw()) {
+	if (this->hitPoints == this->getMaxHpRaw()) {
 		scbw::restoreFunc(this);
 	}
 }

@@ -278,10 +278,7 @@ namespace hooks {
 						//if (unit->id == UnitId::u) {
 						//	hpGain += hpGain/2;
 						//}
-						target->setHp(target->hitPoints + hpGain, true);
-						
-					
-						
+						target->heal(hpGain);						
 
 						if(target->hitPoints < units_dat::MaxHitPoints[target->id])
 							bEndThere = true;

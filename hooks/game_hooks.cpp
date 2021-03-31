@@ -348,7 +348,7 @@ public:
 			}
 
 		}
-		unit->setHp(unit->hitPoints + (heal * 256), true);
+		unit->heal(heal * 256);
 	}
 };
 
@@ -434,8 +434,7 @@ public:
 			return;
 		}
 
-		double fraction = 0.1*(double)units_dat::MaxHitPoints[unit->id];
-		unit->setHp(std::min(unit->hitPoints+(int)fraction,units_dat::MaxHitPoints[unit->id]), true);
+		unit->heal(0.1 * units_dat::MaxHitPoints[unit->id]);
 	}
 };
 
@@ -517,6 +516,7 @@ namespace hooks {
 			scbw::refreshScreen(); // refreshes screen, needed for game clock and apm timer to update every frame
 			scbw::refreshConsole();
 			
+			// TODO: consider if removing this is possible?
 			//framework example, rework and use later
 			/*if (*elapsedTimeFrames == 1) {
 				char* name = "samase\\sprites_ext.txt";
@@ -548,6 +548,7 @@ namespace hooks {
 				);
 			scbw::printText(b);*/
 
+			// TODO: consider moving outside of the loop?
 			if (*elapsedTimeFrames == 0) {
 				Globals.reset();
 				for (int i = 0; i < 8; i++) {
@@ -563,31 +564,6 @@ namespace hooks {
 				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::TreasuryStacks, 0, 0);
 				unit->setSupplyProvided(supply - stacks * TREASURY_INCREASE);
 			}
-
-			//for (int player = 0; player < 8; player++) { // Synchronize upgrades
-			//	int level = 0;
-			//
-			//	// Terran Upgrades
-			//	level = scbw::getUpgradeLevel(player, UpgradeId::TerranInfantryWeapons);
-			//	scbw::setUpgradeLevel(player, UpgradeId::TerranVehicleWeapons, level);
-			//	scbw::setUpgradeLevel(player, UpgradeId::TerranShipWeapons, level);
-			//	level = scbw::getUpgradeLevel(player, UpgradeId::TerranInfantryArmor);
-			//	scbw::setUpgradeLevel(player, UpgradeId::TerranVehiclePlating, level);
-			//	scbw::setUpgradeLevel(player, UpgradeId::TerranShipPlating, level);
-			//
-			//	// Protoss Upgrades
-			//	level = scbw::getUpgradeLevel(player, UpgradeId::ProtossGroundWeapons);
-			//	scbw::setUpgradeLevel(player, UpgradeId::ProtossAirWeapons, level);
-			//	level = scbw::getUpgradeLevel(player, UpgradeId::ProtossArmor);
-			//	scbw::setUpgradeLevel(player, UpgradeId::ProtossPlating, level);
-			//
-			//	// Zerg Upgrades
-			//	level = scbw::getUpgradeLevel(player, UpgradeId::ZergMeleeAttacks);
-			//	scbw::setUpgradeLevel(player, UpgradeId::ZergMissileAttacks, level);
-			//	scbw::setUpgradeLevel(player, UpgradeId::ZergFlyerAttacks, level);
-			//	level = scbw::getUpgradeLevel(player, UpgradeId::ZergCarapace);
-			//	scbw::setUpgradeLevel(player, UpgradeId::ZergFlyerCaparace, level);
-			//}
 
 			for (CBullet* bullet = *firstBullet; bullet; bullet = bullet->next) {
 				if (bullet->weaponType == WeaponId::ViscousAcid) {
@@ -629,7 +605,6 @@ namespace hooks {
 				}
 
 				//Zoryusthaleth - Reconstitution
-
 				if (unit->id == UnitId::ZergZoryusthaleth &&
 					scbw::get_generic_value(unit, ValueId::Reconstitution) == 1) {
 					auto r = 128;
@@ -887,7 +862,8 @@ namespace hooks {
 					unit->acidSporeCount -= 2;
 					int range = 160;
 					auto spores = corrosiveSporeProc(unit);
-					scbw::UnitFinder unitFinder(unit->getX() - 96,
+					scbw::UnitFinder unitFinder(
+						unit->getX() - 96,
 						unit->getY() - 96,
 						unit->getX() + 96,
 						unit->getY() + 96);
