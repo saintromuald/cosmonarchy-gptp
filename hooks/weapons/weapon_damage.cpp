@@ -375,10 +375,10 @@ void augurSacrifice(CUnit* target) {
 namespace hooks {
 	struct WeaponDamageData {
 		const s32 damage;
-		s32 reducedDamage;
+		s32 finalDamage;
 		s32 shieldReduceAmount;
 		u8 damageType;
-		u8 dmgDivisor;
+		u8 damageDivisor;
 		u8 weaponId;
 		s8 direction;
 
@@ -388,9 +388,9 @@ namespace hooks {
 	};
 
 	static void weaponDamage_root(WeaponDamageData& data);
+	static void weaponDamage_damageModifiers(WeaponDamageData& data);
 	static void weaponDamage_lifesteal(WeaponDamageData& data);
 	static void weaponDamage_behaviors(WeaponDamageData& data);
-	static void weaponDamage_subcalc(WeaponDamageData& data);
 	static void weaponDamage_fatal(WeaponDamageData& data);
 
 	/// Hooks into the CUnit::damageWith() function.
@@ -401,14 +401,14 @@ namespace hooks {
 		CUnit* attacker,
 		u8 attackingPlayerId,
 		s8 direction,
-		u8 dmgDivisor
+		u8 damageDivisor
 	) {
 		WeaponDamageData data = {
 			damage,
 			damage,
 			0,
 			weapons_dat::DamageType[weaponId],
-			dmgDivisor,
+			damageDivisor,
 			weaponId,
 			direction,
 			target,
@@ -426,7 +426,7 @@ namespace hooks {
 		bool canDamage = true; // debug only!
 		if (scbw::isCheatEnabled(CheatFlags::PowerOverwhelming) &&			 // If Power Overwhelming is enabled
 			playerTable[data.target->playerId].type == PlayerType::Human) {		 // and the data.target player is a human player
-			data.reducedDamage = 0;
+			data.finalDamage = 0;
 		}
 
 		if (data.target->pAI != nullptr) {
@@ -442,55 +442,46 @@ namespace hooks {
 		// Hallucinations deal half damage
 		if (data.attacker != nullptr) {
 			if (data.attacker->status & UnitStatus::IsHallucination) {
-				data.reducedDamage /= 2;
+				data.finalDamage /= 2;
 			}
 		}
 
 		// Minimum amount of damage that can be dealt
-		if (data.reducedDamage < 128)
-			data.reducedDamage = 128;
+		if (data.finalDamage < 128)
+			data.finalDamage = 128;
 
 		// Reduce Defensive Matrix
 		if (data.target->defensiveMatrixHp != 0) {
 			s32 d_matrix_reduceAmount;
-			if (data.target->defensiveMatrixHp > data.reducedDamage)
-				d_matrix_reduceAmount = data.reducedDamage;
+			if (data.target->defensiveMatrixHp > data.finalDamage)
+				d_matrix_reduceAmount = data.finalDamage;
 			else
 				d_matrix_reduceAmount = data.target->defensiveMatrixHp;
-			data.reducedDamage -= d_matrix_reduceAmount;
+			data.finalDamage -= d_matrix_reduceAmount;
 			data.target->reduceDefensiveMatrixHp(d_matrix_reduceAmount);
 		}
 
 		// Cliff Advantage - Armor
 		if (data.damageType != DamageType::IgnoreArmor) {
-			data.reducedDamage -= std::min(scbw::getCliffAdvantage(data.attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
+			data.finalDamage -= std::min(scbw::getCliffAdvantage(data.attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
 		}
+
+		weaponDamage_damageModifiers(data);
 
 		// Reduce Plasma Shields...but not just yet
 		s32 shieldReduceAmount = 0;
 		if (units_dat::ShieldsEnabled[data.target->id] && data.target->shields >= 256) {
 			if (data.damageType != DamageType::IgnoreArmor) {
 				s32 plasmaShieldUpg = scbw::getUpgradeLevel(data.target->playerId, UpgradeId::ProtossPlasmaShields) * 256;
-				if (data.reducedDamage > plasmaShieldUpg) { //Weird logic, Blizzard dev must have been sleepy
-					data.reducedDamage -= plasmaShieldUpg;
+				if (data.finalDamage > plasmaShieldUpg) { //Weird logic, Blizzard dev must have been sleepy
+					data.finalDamage -= plasmaShieldUpg;
 				}
 				else {
-					data.reducedDamage = 128;
+					data.finalDamage = 128;
 				}
 			}
-			shieldReduceAmount = std::min(data.reducedDamage, data.target->shields);
-			if (data.attacker != nullptr) {
-				if (data.attacker->id == UnitId::ZergUltrakor) {
-					u32 lifesteal = shieldReduceAmount / 2;
-					data.attacker->heal(lifesteal);
-				}
-				// Wendigo Automedicus passive (shield component)
-				if (data.attacker->id == UnitId::TerranWendigo && units_dat::BaseProperty[data.target->id] & UnitProperty::Mechanical) {
-					u32 lifesteal = shieldReduceAmount / 4;
-					data.attacker->heal(lifesteal);
-				}
-			}
-			data.reducedDamage -= shieldReduceAmount;
+			shieldReduceAmount = std::min(data.finalDamage, data.target->shields);
+			data.finalDamage -= shieldReduceAmount;
 		}
 
 		// Apply armor
@@ -512,9 +503,9 @@ namespace hooks {
 					}
 				}
 			}
-			data.reducedDamage -= std::min(data.reducedDamage, armorTotal);
+			data.finalDamage -= std::min(data.finalDamage, armorTotal);
 			auto rend = 256 * scbw::get_generic_value(data.target, ValueId::ObservanceRend);
-			data.reducedDamage += rend;
+			data.finalDamage += rend;
 		}
 
 		//Apply damage type/unit size factor (not checked by UndeadStar, I will hope it work)
@@ -527,17 +518,16 @@ namespace hooks {
 			}
 		}
 
-		data.reducedDamage = (data.reducedDamage * damage_factor) / 256;
-		if (shieldReduceAmount == 0 && data.reducedDamage < 128) {
-			data.reducedDamage = 128;
+		data.finalDamage = (data.finalDamage * damage_factor) / 256;
+		if (shieldReduceAmount == 0 && data.finalDamage < 128) {
+			data.finalDamage = 128;
 		}
 
-		weaponDamage_subcalc(data);
 		weaponDamage_behaviors(data);
 		if (data.attacker != nullptr) { // lifesteal 
 			weaponDamage_lifesteal(data);
 		}
-		if (data.reducedDamage >= data.target->hitPoints) { // <- keep this as hitPoints, because the damage is already calculated to include armor, shields and damage factor calculations
+		if (data.finalDamage >= data.target->hitPoints) { // <- keep this as hitPoints, because the damage is already calculated to include armor, shields and damage factor calculations
 			weaponDamage_fatal(data);
 		}
 
@@ -571,9 +561,9 @@ namespace hooks {
 		data.target->groundStrength = getUnitStrength(data.target, true);
 	}
 
-	static void weaponDamage_subcalc(WeaponDamageData& data) {
+	static void weaponDamage_damageModifiers(WeaponDamageData& data) {
 		// Dark Swarm - Defiler Ability
-		if (scbw::isUnderDarkSwarm(data.target) && weapons_dat::MaxRange[data.weaponId] > 32 && (data.dmgDivisor == 1 || data.weaponId == WeaponId::AcidSpore) && data.weaponId != WeaponId::SubterraneanSpines) {
+		if (scbw::isUnderDarkSwarm(data.target) && weapons_dat::MaxRange[data.weaponId] > 32 && (data.damageDivisor == 1 || data.weaponId == WeaponId::AcidSpore) && data.weaponId != WeaponId::SubterraneanSpines) {
 			data.damageType = DamageType::Independent;
 		}
 
@@ -581,22 +571,22 @@ namespace hooks {
 		case WeaponId::ArchitectDispersiveSalvo: {
 			// Reactive Payload - Architect behavior
 			double div = 1.0;
-			if (data.dmgDivisor != 0) {
-				div = (double)data.dmgDivisor;
+			if (data.damageDivisor != 0) {
+				div = (double)data.damageDivisor;
 			}
-			int dmg = ((double)data.reducedDamage / div);
-			data.reducedDamage = dmg + (data.target->acidSporeCount * 256);
+			int dmg = ((double)data.finalDamage / div);
+			data.finalDamage = dmg + (data.target->acidSporeCount * 256);
 			break;
 		}
 		case WeaponId::AcidSpore: {
 			// Searing Acid - Guardian behavior
-			data.reducedDamage = data.reducedDamage + (data.target->acidSporeCount * 256) + (data.dmgDivisor * 10 * 256);
+			data.finalDamage = data.finalDamage + (data.target->acidSporeCount * 256) + (data.damageDivisor * 10 * 256);
 			break;
 		}
 		case WeaponId::GlaveWurm: {
 			// Lithe Organelle - Mutalisk bounce damage
 			double mul = 1.0;
-			switch (data.dmgDivisor) {
+			switch (data.damageDivisor) {
 			case 0:
 				mul = 1.0;
 				break;
@@ -610,39 +600,37 @@ namespace hooks {
 				mul = 1.0 / 9.0; // glave wurm 4th bounce
 				break;
 			};
-			data.reducedDamage = data.reducedDamage * mul + data.target->acidSporeCount * 256;
+			data.finalDamage = data.finalDamage * mul + data.target->acidSporeCount * 256;
 			break;
 		}
 		case WeaponId::KalkaliskViscousAcid: {
 			// Kalkaleth behavior
-			int decrement = data.dmgDivisor * 256;
+			int decrement = data.damageDivisor * 256;
 			if (decrement < data.damage) {
-				data.reducedDamage = data.reducedDamage - decrement + (data.target->acidSporeCount * 256);
+				data.finalDamage = data.finalDamage - decrement + (data.target->acidSporeCount * 256);
 			}
 			else {
-				data.reducedDamage = data.reducedDamage + (data.target->acidSporeCount * 256);
+				data.finalDamage = data.finalDamage + (data.target->acidSporeCount * 256);
 			}
 			break;
 		}
 		default: {
-			u32 divisor = data.dmgDivisor;
+			u32 divisor = data.damageDivisor;
 			if (divisor == 0) {
 				divisor = 1;
 				scbw::printFormattedText("Incorrect weapon hit %d", data.weaponId);
 			}
-			data.reducedDamage = data.reducedDamage / divisor + (data.target->acidSporeCount * 256);
+			data.finalDamage = data.finalDamage / divisor + (data.target->acidSporeCount * 256);
 		}
 		}
-	}
 
-	static void weaponDamage_behaviors(WeaponDamageData& data) {
 		switch (data.weaponId) {
 		case WeaponId::QuaziliskAcridBarbs: {
 			// Quazilisk - Melting Points
 			float missingFactor = 1 - ((float)data.target->hitPoints / data.target->getMaxHpRaw());
 			float damageIncrease = floor(missingFactor / QuazaliskPassiveFactor);
 			//scbw::print("Damage Increase: " + std::to_string(damageIncrease));
-			data.reducedDamage += damageIncrease * HealthMultiplier;
+			data.finalDamage += damageIncrease * HealthMultiplier;
 			break;
 		}
 		case WeaponId::AlmaksaliskPiercingSpines: {
@@ -654,25 +642,13 @@ namespace hooks {
 		}
 		}
 
-		// Petrification - Gorgon behavior
-		if (GorgonCondition(data.attacker, data.target)) {
-			scbw::refreshDebuffs(data.target);
-		}
-
-
-		// Ensnaring Brood - Queen enchantment ability
-		if (scbw::get_generic_timer(data.attacker, ValueId::EnsnaringBroodTimer) > 0
-			&& !(units_dat::BaseProperty[data.target->id] & UnitProperty::Building)) {
-			applyEnsnare(data.target);
-		}
-
-		// Cabalist - Silent Kill
+		// Decloak behavior, Cabalist - Silent Kill
 		if ((units_dat::BaseProperty[data.attacker->id] & UnitProperty::PermanentCloak
 			|| data.attacker->status & UnitStatus::CloakingForFree)
 			&& data.attacker->playerId
 			&& data.attacker->id != UnitId::ZergLakizilisk) {
 			bool silent_kill = false;
-			if (data.reducedDamage >= data.target->hitPoints
+			if (data.finalDamage >= data.target->hitPoints
 				&& data.attacker->id == UnitId::ProtossCabalist) {
 				silent_kill = true;
 			}
@@ -681,6 +657,19 @@ namespace hooks {
 				makeSpriteVisible(data.attacker->sprite);
 				scbw::set_generic_timer(data.attacker, ValueId::PermanentCloakTimer, 48 + 1);
 			}
+		}
+	}
+
+	static void weaponDamage_behaviors(WeaponDamageData& data) {
+		// Petrification - Gorgon behavior
+		if (GorgonCondition(data.attacker, data.target)) {
+			scbw::refreshDebuffs(data.target);
+		}
+
+		// Ensnaring Brood - Queen enchantment ability
+		if (scbw::get_generic_timer(data.attacker, ValueId::EnsnaringBroodTimer) > 0
+			&& !(units_dat::BaseProperty[data.target->id] & UnitProperty::Building)) {
+			applyEnsnare(data.target);
 		}
 
 		if (data.attacker != nullptr) {
@@ -800,7 +789,7 @@ namespace hooks {
 			}
 			case WeaponId::NuclearMissile: {
 				// Nuclear Missile - Ground Zero
-				if (data.target->hitPoints > data.reducedDamage && irradiateTarget(data.target)) {
+				if (data.target->hitPoints > data.finalDamage && irradiateTarget(data.target)) {
 					hooks::IrradiateHit(data.attacker, data.target, data.attacker->playerId);
 				}
 				break;
@@ -808,7 +797,7 @@ namespace hooks {
 			case WeaponId::AlkajeliskPlasmidSpores:
 			case WeaponId::AlkajeliskParasiticSpores: {
 				// Alkajelisk - Parasite
-				if ((data.weaponId == WeaponId::AlkajeliskPlasmidSpores || data.weaponId == WeaponId::AlkajeliskParasiticSpores) && data.reducedDamage >= data.target->hitPoints) {
+				if ((data.weaponId == WeaponId::AlkajeliskPlasmidSpores || data.weaponId == WeaponId::AlkajeliskParasiticSpores) && data.finalDamage >= data.target->hitPoints) {
 					scbw::set_generic_value(data.target, ValueId::AlkajeliskParasite, 1);
 					scbw::set_generic_value(data.target, ValueId::AlkajeliskParasitePlayer, data.attacker->playerId);
 				}
@@ -840,7 +829,7 @@ namespace hooks {
 			case WeaponId::GorgrokorSerratedCleavers: {
 				// Essence Drain - Gorgoleth Energy Steal
 				if (units_dat::BaseProperty[data.target->id] & UnitProperty::Spellcaster) {
-					u16 energy = std::min(data.target->energy, (u16)(data.reducedDamage + data.shieldReduceAmount));
+					u16 energy = std::min(data.target->energy, (u16)(data.finalDamage + data.shieldReduceAmount));
 					data.target->energy -= energy;
 					data.attacker->energy += energy;
 				}
@@ -897,18 +886,19 @@ namespace hooks {
 	}
 
 	static void weaponDamage_lifesteal(WeaponDamageData& data) {
+		const u32 damage = data.finalDamage + data.shieldReduceAmount; 
 		u32 lifesteal;
 		switch (data.weaponId) {
 		case WeaponId::KaiserBlades: {
 			// Ultrakor Saber Siphon passive
-			lifesteal = data.reducedDamage / 2;
+			lifesteal = damage / 2;
 			break;
 		}
 		case WeaponId::WendigoFusionSaw: {
 			// Wendigo Automedicus passive (HP component)
 			if (!(units_dat::BaseProperty[data.target->id] & UnitProperty::Mechanical))
 				return;
-			lifesteal = data.reducedDamage / 2;
+			lifesteal = damage / 2;
 			break;
 		}
 		default: {
@@ -990,7 +980,7 @@ namespace hooks {
 				);
 				CUnit* nearest = unitFinder.getNearestTarget(data.target, Orders);
 				if (nearest != nullptr) {
-					data.reducedDamage = 0;
+					data.finalDamage = 0;
 					data.target->setHp(units_dat::MaxHitPoints[data.target->id] / 2);
 					data.target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
 					data.target->status |= UnitStatus::CanNotReceiveOrders;
@@ -1088,9 +1078,8 @@ namespace {
 	//Identical to function @ 0x004E6140
 	void createShieldOverlay(CUnit* unit, u32 attackDirection) {
 
-		//		const LO_Header* shield_lo = shieldOverlays[unit->sprite->mainGraphic->id];
-		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayShieldPtr,
-			unit->sprite->mainGraphic->id));
+		//const LO_Header* shield_lo = shieldOverlays[unit->sprite->mainGraphic->id];
+		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayShieldPtr, unit->sprite->mainGraphic->id));
 		u32 frameAngle = (attackDirection - 124) / 8 % 32;
 
 		Point8 offset = shield_lo->getOffset(unit->sprite->mainGraphic->direction, frameAngle);
