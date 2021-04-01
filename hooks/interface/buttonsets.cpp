@@ -804,6 +804,20 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 							}
+						
+							// Scrapyard buttonset handling
+							if (current_button->reqVar == UnitId::TerranClaymore
+								|| current_button->reqVar == UnitId::TerranSiren) {
+								if ((*activePortraitUnit)->building.addon == NULL) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranFutureStation) {
+									current_button_state = BUTTON_STATE::Invisible;
+								}
+								else {
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+							}
 						}
 
 						// Passive icons (yes, it's quite ugly)

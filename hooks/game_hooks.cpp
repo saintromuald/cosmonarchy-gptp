@@ -564,6 +564,12 @@ namespace hooks {
 						Globals.remove_multihit_bullet(bullet);
 					}
 				}
+				if (bullet->weaponType == WeaponId::AspirantCriticality) {
+					if (bullet->orderSignal & 0x80) {
+						bullet->orderSignal &= ~0x80;
+						scbw::printText("u");
+					}
+				}
 			}
 
 			// Loop through all hidden units in the game.
