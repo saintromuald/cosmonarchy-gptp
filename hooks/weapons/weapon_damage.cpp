@@ -596,23 +596,29 @@ namespace hooks {
 		u8& dmgDivisor,
 		u8& damageType
 	) {
-		// Reactive Payload - Architect behavior
-		if (weaponId == WeaponId::ArchitectDispersiveSalvo) {
+		// Dark Swarm - Defiler Ability
+		if (scbw::isUnderDarkSwarm(target) && weapons_dat::MaxRange[weaponId] > 32 && (dmgDivisor == 1 || weaponId == WeaponId::AcidSpore) && weaponId != WeaponId::SubterraneanSpines) {
+			damageType = DamageType::Independent;
+		}
+
+		switch (weaponId) {
+		case WeaponId::ArchitectDispersiveSalvo: {
+			// Reactive Payload - Architect behavior
 			double div = 1.0;
 			if (dmgDivisor != 0) {
 				div = (double)dmgDivisor;
 			}
 			int dmg = ((double)damage / div);
 			damage = dmg + (target->acidSporeCount * 256);
+			break;
 		}
-
-		// Searing Acid - Guardian behavior
-		else if (weaponId == WeaponId::AcidSpore) {
+		case WeaponId::AcidSpore: {
+			// Searing Acid - Guardian behavior
 			damage = damage + (target->acidSporeCount * 256) + (dmgDivisor * 10 * 256);
+			break;
 		}
-
-		// Lithe Organelle - Mutalisk bounce damage
-		else if (weaponId == WeaponId::GlaveWurm) {
+		case WeaponId::GlaveWurm: {
+			// Lithe Organelle - Mutalisk bounce damage
 			double mul = 1.0;
 			switch (dmgDivisor) {
 			case 0:
@@ -630,10 +636,10 @@ namespace hooks {
 			};
 			int dmg = ((double)damage * mul);
 			damage = dmg + (target->acidSporeCount * 256);
+			break;
 		}
-
-		// Kalkaleth behavior
-		else if (weaponId == WeaponId::KalkaliskViscousAcid) {
+		case WeaponId::KalkaliskViscousAcid: {
+			// Kalkaleth behavior
 			int decrement = dmgDivisor * 256;
 			if (decrement < damage) {
 				damage = damage - decrement + (target->acidSporeCount * 256);
@@ -641,8 +647,9 @@ namespace hooks {
 			else {
 				damage = damage + (target->acidSporeCount * 256);
 			}
+			break;
 		}
-		else {
+		default: {
 			u32 divisor = dmgDivisor;
 			if (divisor == 0) {
 				divisor = 1;
@@ -650,51 +657,68 @@ namespace hooks {
 			}
 			damage = damage / divisor + (target->acidSporeCount * 256);
 		}
+		}
 
-		// Quazilisk - Melting Points
-		if (weaponId == WeaponId::QuaziliskAcridBarbs) {
+		switch (weaponId) {
+		case WeaponId::QuaziliskAcridBarbs: {
+			// Quazilisk - Melting Points
 			float missingFactor = 1 - ((float)target->hitPoints / target->getMaxHpRaw());
 			float damageIncrease = floor(missingFactor / QuazaliskPassiveFactor);
 			//scbw::print("Damage Increase: " + std::to_string(damageIncrease));
 			damage += damageIncrease * HealthMultiplier;
+			break;
 		}
-
-		// Dark Swarm - Defiler Ability
-		if (scbw::isUnderDarkSwarm(target) && weapons_dat::MaxRange[weaponId] > 32 && (dmgDivisor == 1 || weaponId == WeaponId::AcidSpore) && weaponId != WeaponId::SubterraneanSpines) {
-			damageType = DamageType::Independent;
+		case WeaponId::AlmaksaliskPiercingSpines: {
+			// Almaksalisk - Flanking Spines
+			if (scbw::isDebuffed(target)) {
+				damageType = DamageType::IgnoreArmor;
+			}
+			break;
 		}
-
-		// Almaksalisk - Flanking Spines
-		if (weaponId == WeaponId::AlmaksaliskPiercingSpines && scbw::isDebuffed(target)) {
-			damageType = DamageType::IgnoreArmor;
 		}
 
 		if (attacker != nullptr) {
-			// Fertile Spines - Konvilisk behavior
-			if (attacker->id == UnitId::ZergKonvilisk
-				/*&&	target->getCurrentHpInGame() < (target->getMaxHpInGame() / 2)*/) {
+			switch (attacker->id) {
+			case UnitId::ZergKonvilisk: {
+				// Fertile Spines - Konvilisk behavior
+				/*if (target->getCurrentHpInGame() < (target->getMaxHpInGame() / 2))*/
 				scbw::applyParasite(target, attacker->playerId, attacker);
+				break;
+			}
+			case UnitId::TerranPazuzu: {
+				// Deconstruction - Pazuzu behavior - apply stack
+				if (!(scbw::unitIsPacifist(target))
+					&& scbw::get_generic_value(target, ValueId::Deconstruction) == 0) {
+
+					scbw::set_generic_value(target, ValueId::Deconstruction, 1);
+					scbw::set_generic_value(target, ValueId::DeconstructionPlayer, attacker->playerId);
+					s32 overlayOffset = scbw::getOverlayOffset(target->id);
+					if (target->subunit != nullptr) {
+						scbw::set_generic_value(target->subunit, ValueId::Deconstruction, 1);
+						scbw::set_generic_value(target->subunit, ValueId::DeconstructionPlayer, attacker->playerId);
+						target->subunit->sprite->createOverlay(1332 + overlayOffset);
+					}
+					else {
+						target->sprite->createOverlay(1332 + overlayOffset);
+					}
+				}
+				break;
+			}
+			case UnitId::ProtossAmaranth: {
+				// Eternal Service - Amaranth behavior
+				s32 hp = attacker->hitPoints / 256;
+				s32 maxHp = attacker->getMaxHpInGame();
+				double shieldStealRate = MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
+				s32 healAmount = damage * shieldStealRate;
+				s32 maxShields = units_dat::MaxShieldPoints[attacker->id] * 256;
+				attacker->shields = std::min(attacker->shields + healAmount, maxShields);
+				break;
+			}
 			}
 
-			// Deconstruction - Pazuzu behavior - apply stack
-			if (attacker->id == UnitId::TerranPazuzu
-				&& !(scbw::unitIsPacifist(target))
-				&& scbw::get_generic_value(target, ValueId::Deconstruction) == 0) {
-				scbw::set_generic_value(target, ValueId::Deconstruction, 1);
-				scbw::set_generic_value(target, ValueId::DeconstructionPlayer, attacker->playerId);
-				s32 overlayOffset = scbw::getOverlayOffset(target->id);
-				if (target->subunit != nullptr) {
-					scbw::set_generic_value(target->subunit, ValueId::Deconstruction, 1);
-					scbw::set_generic_value(target->subunit, ValueId::DeconstructionPlayer, attacker->playerId);
-					target->subunit->sprite->createOverlay(1332 + overlayOffset);
-				}
-				else {
-					target->sprite->createOverlay(1332 + overlayOffset);
-				}
-			}
-
-			// Savant Entropy Gauntlets behavior - Apply timer and overlay
-			if (weaponId == WeaponId::SavantDiscoidRailgun) {
+			switch (weaponId) {
+			case WeaponId::SavantDiscoidRailgun: {
+				// Savant Entropy Gauntlets behavior - Apply timer and overlay
 				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
 					scbw::set_generic_timer(target, ValueId::EntropyGauntlets, (5 * 24) + 1);
 					scbw::set_generic_unit(target, ValueId::DecaySavant, attacker);
@@ -715,52 +739,44 @@ namespace hooks {
 						target->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
 					}
 				}
+				break;
 			}
-
-			// Adrenal Glands - Zergling behavior
-			if (weaponId == WeaponId::Claws) {
+			case WeaponId::Claws: {
+				// Adrenal Glands - Zergling behavior
 				if (scbw::get_generic_value(attacker, ValueId::AdrenalStacks) < 4) {
 					scbw::add_generic_value(attacker, ValueId::AdrenalStacks, 1);
 				}
 				scbw::set_generic_timer(attacker, ValueId::AdrenalTimer, 49); //49 is 2 seconds (48) + 1
+				break;
 			}
-
-			// Knockout Drivers - Southpaw behavior
-			if (weaponId == WeaponId::SouthpawUppercutLaser) {
+			case WeaponId::SouthpawUppercutLaser: {
+				// Knockout Drivers - Southpaw behavior
 				if (scbw::get_generic_value(target, ValueId::KnockoutDriversStacks) < 20) {
 					scbw::add_generic_value(target, ValueId::KnockoutDriversStacks, 1);
 				}
 				scbw::set_generic_timer(target, ValueId::KnockoutDriversTimer, 49); //49 is 2 seconds (48) + 1
+				break;
 			}
-
-			// Dirge - Madrigal behavior
-			if (weaponId == WeaponId::MadrigalImperiosoMissiles) {
+			case WeaponId::MadrigalImperiosoMissiles: {
+				// Dirge - Madrigal behavior
 				scbw::sendGPTP_aise_cmd(target, nullptr, GptpId::DirgeImpale, 24, 0, 0);
 				scbw::set_generic_rust_unit(target, ValueId::DirgeAttacker, attacker);
+				break;
 			}
-
-			// Captivating Claws - Vorvaling behavior
-			if (weaponId == WeaponId::VorvalingClaws) {
+			case WeaponId::VorvalingClaws: {
+				// Captivating Claws - Vorvaling behavior
 				captivating_claws::applyCaptivatingClaws(attacker, target);
+				break;
 			}
-
-			// Astral Blessing - Ecclesiast behavior
-			if (weaponId == WeaponId::EcclesiastAstralBlaster) {
+			case WeaponId::EcclesiastAstralBlaster: {
+				// Astral Blessing - Ecclesiast behavior
 				if (scbw::get_generic_value(target, ValueId::EcclesiastStack) < 10) {
 					scbw::add_generic_value(target, ValueId::EcclesiastStack, 1);
 				}
 				scbw::set_generic_timer(target, ValueId::EcclesiastTimer, 49); //49 is 2 seconds (48) + 1
 				scbw::set_generic_value(target, ValueId::EcclesiastPlayer, attacker->playerId);
+				break;
 			}
-
-			// Eternal Service - Amaranth behavior
-			if (attacker->id == UnitId::ProtossAmaranth) {
-				s32 hp = attacker->hitPoints / 256;
-				s32 maxHp = attacker->getMaxHpInGame();
-				double shieldStealRate = MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
-				s32 healAmount = damage * shieldStealRate;
-				s32 maxShields = units_dat::MaxShieldPoints[attacker->id] * 256;
-				attacker->shields = std::min(attacker->shields + healAmount, maxShields);
 			}
 
 			// Ensnaring Brood - Queen enchantment ability
@@ -783,16 +799,21 @@ namespace hooks {
 	) {
 		u32 lifesteal;
 		switch (attacker->id) {
-		case UnitId::ZergUltrakor: // Ultrakor Saber Siphon passive
+		case UnitId::ZergUltrakor: {
+			// Ultrakor Saber Siphon passive
 			lifesteal = damage / 2;
 			break;
-		case UnitId::TerranWendigo:// Wendigo Automedicus passive (HP component)
+		}
+		case UnitId::TerranWendigo: {
+			// Wendigo Automedicus passive (HP component)
 			if (!(units_dat::BaseProperty[target->id] & UnitProperty::Mechanical))
 				return;
 			lifesteal = damage / 2;
 			break;
-		default:
+		}
+		default: {
 			return;
+		}
 		}
 		attacker->heal(lifesteal);
 	}
@@ -838,74 +859,85 @@ namespace hooks {
 				}
 			}
 
-			if (weaponId == WeaponId::NuclearMissile && target->hitPoints > damage && irradiateTarget(target)) {
-				hooks::IrradiateHit(attacker, target, attacker->playerId);
+			switch (weaponId) {
+			case WeaponId::NuclearMissile: {
+				// Nuclear Missile - Ground Zero
+				if (target->hitPoints > damage && irradiateTarget(target)) {
+					hooks::IrradiateHit(attacker, target, attacker->playerId);
+				}
+				break;
 			}
-			if ((weaponId == WeaponId::AlkajeliskPlasmidSpores || weaponId == WeaponId::AlkajeliskParasiticSpores) && damage >= target->hitPoints) {
-				scbw::set_generic_value(target, ValueId::AlkajeliskParasite, 1);
-				scbw::set_generic_value(target, ValueId::AlkajeliskParasitePlayer, attacker->playerId);
+			case WeaponId::AlkajeliskPlasmidSpores:
+			case WeaponId::AlkajeliskParasiticSpores: {
+				// Alkajelisk - Parasite
+				if ((weaponId == WeaponId::AlkajeliskPlasmidSpores || weaponId == WeaponId::AlkajeliskParasiticSpores) && damage >= target->hitPoints) {
+					scbw::set_generic_value(target, ValueId::AlkajeliskParasite, 1);
+					scbw::set_generic_value(target, ValueId::AlkajeliskParasitePlayer, attacker->playerId);
+				}
+				break;
 			}
-			if (damage >= target->hitPoints) {
-
-				// Last Orders - Aurora behavior
-				if (target->id == UnitId::ProtossAurora) {
-					if (scbw::get_generic_value(target, ValueId::LastOrdersInit) == 0) {
-						scbw::set_generic_value(target, ValueId::LastOrdersInit, 1);
-						lastordersProc2 Orders = lastordersProc2(target);
-						scbw::UnitFinder unitFinder(target->getX() - 288, target->getY() - 288, target->getX() + 288, target->getY() + 288);
-						CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
-						if (nearest != nullptr) {
-							damage = 0;
-							target->setHp(units_dat::MaxHitPoints[target->id] / 2);
-							target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
-							target->status |= UnitStatus::CanNotReceiveOrders;
+			case WeaponId::SeraphObservance: {
+				// Observance - Science Vessel ability
+				if (weaponId == WeaponId::SeraphObservance
+					&& (!scbw::isAlliedTo(attacker->playerId, target->playerId))) {
+					scbw::set_generic_timer(attacker, ValueId::ObservanceOverlayTimer, 18);
+					scbw::set_generic_timer(target, ValueId::ObservanceTimerDebuff, 1 + (5 * 24));
+					int rend = scbw::get_generic_value(target, ValueId::ObservanceRend);
+					if (rend < 5) {
+						if (rend == 0) {
+							int overlay = 1233;
+							if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay) {
+								overlay -= 2;
+							}
+							else if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay) {
+								overlay -= 1;
+							}
+							target->sprite->createOverlay(overlay);
 						}
+						scbw::add_generic_value(target, ValueId::ObservanceRend, 1);
 					}
 				}
+				break;
+			}			
 			}
 
-			// Observance - Science Vessel ability
-			if (weaponId == WeaponId::SeraphObservance
-				&& (!scbw::isAlliedTo(attacker->playerId, target->playerId))) {
-				scbw::set_generic_timer(attacker, ValueId::ObservanceOverlayTimer, 18);
-				scbw::set_generic_timer(target, ValueId::ObservanceTimerDebuff, 1 + (5 * 24));
-				int rend = scbw::get_generic_value(target, ValueId::ObservanceRend);
-				if (rend < 5) {
-					if (rend == 0) {
-						int overlay = 1233;
-						if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay) {
-							overlay -= 2;
-						}
-						else if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay) {
-							overlay -= 1;
-						}
-						target->sprite->createOverlay(overlay);
-					}
-					scbw::add_generic_value(target, ValueId::ObservanceRend, 1);
+			switch (attacker->id) {
+			case UnitId::ZergGorgrokor: {
+				// Essence Drain - Gorgoleth Energy Steal
+				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
+					u16 energy = std::min(target->energy, (u16)(damage + shieldReduceAmount));
+					target->energy -= energy;
+					attacker->energy += energy;
 				}
+				break;
 			}
-
-			// Essence Drain - Gorgoleth Energy Steal
-			if (attacker->id == UnitId::ZergGorgrokor
-				&& units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
-				u16 energy = std::min(target->energy, (u16)(damage + shieldReduceAmount));
-				target->energy -= energy;
-				attacker->energy += energy;
+			case UnitId::ProtossMagister: {
+				// Stellar Enforcement - Magister behavior
+				if (!(scbw::get_generic_value(target, ValueId::StellarEnforcement))) {
+					scbw::add_generic_value(target, ValueId::StellarEnforcement, 1);
+				}
+				break;
 			}
-
-			// Stellar Enforcement - Magister behavior
-			if (attacker->id == UnitId::ProtossMagister
-				&& !(scbw::get_generic_value(target, ValueId::StellarEnforcement))) {
-				scbw::add_generic_value(target, ValueId::StellarEnforcement, 1);
-			}
-
-			// Blood Tithe - Apostle behavior
-			if (attacker->id == UnitId::TerranApostle
-				//				&& scbw::getDistanceFast(attacker->position.x, attacker->position.y, target->position.x, target->position.y) >= 160
-				) {
+			case UnitId::TerranApostle: {
+				// Blood Tithe - Apostle behavior
+				//if (scbw::getDistanceFast(attacker->position.x, attacker->position.y, target->position.x, target->position.y) >= 160 ) {
 				u32 range = 3 * 32;
 				scbw::UnitFinder unitFinder(target->getX() - range, target->getY() - range, target->getX() + range, target->getY() + range);
 				unitFinder.forEach(bloodTitheProc(attacker, target));
+				//}
+				break;
+			}
+			}
+
+			switch (target->id) {
+			case UnitId::ProtossSimulacrum: {
+				// Autovitality - Simulacrum behavior
+				if (!scbw::isAlliedTo(target->playerId, attacker->playerId)
+					&& scbw::get_generic_timer(target, ValueId::SimulacrumCloneTimer == 0)) {
+					scbw::set_generic_timer(target, ValueId::SimulacrumCloneTimer, 5 * 24); // 5 seconds may be too long, needs testing
+				}
+				break;
+			}
 			}
 
 			// Phase Rush - Manifold behavior
@@ -913,13 +945,7 @@ namespace hooks {
 				scbw::set_generic_timer(target, ValueId::PhaseRushTimerArrayStart + attacker->playerId, 5 * 24);
 			}
 
-			// Autovitality - Simulacrum behavior
-			if (target->id == UnitId::ProtossSimulacrum
-				&& !(scbw::isAlliedTo(target->playerId, attacker->playerId))
-				&& (scbw::get_generic_timer(target, ValueId::SimulacrumCloneTimer) == 0)) {
-				scbw::set_generic_timer(target, ValueId::SimulacrumCloneTimer, 5 * 24); // 5 seconds may be too long, needs testing
-			}
-
+			// Cantavis - Hallucinating
 			if (scbw::get_generic_timer(target, ValueId::HallucinatingTimer) >= 1) {
 				CUnit* haluAttacker = attacker;
 				if ((haluAttacker->id == UnitId::ProtossSteward
@@ -964,15 +990,7 @@ namespace hooks {
 			}
 		}
 
-		if (target->id == UnitId::ProtossArchon) {
-			astralaegisProc Aegis = astralaegisProc();
-			scbw::UnitFinder unitFinder(target->getX() - 96,
-				target->getY() - 96,
-				target->getX() + 96,
-				target->getY() + 96);
-			unitFinder.forEach(Aegis);
-		}
-
+		// Cantavis - Ascendancy
 		if (weaponId == WeaponId::PsiStorm || Halluc) {
 			//psi mastery effect
 			scbw::UnitFinder unitFinder(target->getX() - 288,
@@ -982,15 +1000,16 @@ namespace hooks {
 			unitFinder.forEach(ascendancyProc());
 		}
 
+		// Radiation Shockwave on death
+		if (target->irradiateTimer > 0) {
+			scbw::set_generic_value(target, ValueId::RadiationShockwaveCount, 1);
+		}
+
+		// Apostle - Lazarus Agent
 		if (scbw::get_generic_value(target, ValueId::LazarusAgent) == 1) {
 			Globals.initLazarusAgent(target->position.x, target->position.y,
 				target->playerId, target->id, target->energy,
 				(CUnit*)scbw::get_generic_value(target, ValueId::LazarusAgentApostleSrc));
-		}
-
-		// Radiation Shockwave on death
-		if (target->irradiateTimer > 0) {
-			scbw::set_generic_value(target, ValueId::RadiationShockwaveCount, 1);
 		}
 
 		// Ecclesiast - Astral Blessing proc
@@ -1001,28 +1020,59 @@ namespace hooks {
 			scbw::UnitFinder(target->getX() - range, target->getY() - range, target->getX() + range, target->getY() + range).forEach(ecclesiastProc(stacks, player));
 		}
 
-		// Augur - Death behavior
-		if (target->id == UnitId::ProtossAugur) {
-			augurSacrifice(target);
+		switch (target->id) { // TARGET SWITCH!
+		case UnitId::ProtossArchon: {
+			// Archon - Astral Aegis
+			astralaegisProc Aegis = astralaegisProc();
+			scbw::UnitFinder unitFinder(target->getX() - 96,
+				target->getY() - 96,
+				target->getX() + 96,
+				target->getY() + 96);
+			unitFinder.forEach(Aegis);
+			break;
+		}
+		case UnitId::ProtossAurora: {
+			// Last Orders - Aurora behavior
+			if (scbw::get_generic_value(target, ValueId::LastOrdersInit) == 0) {
+				scbw::set_generic_value(target, ValueId::LastOrdersInit, 1);
+				lastordersProc2 Orders = lastordersProc2(target);
+				scbw::UnitFinder unitFinder(target->getX() - 288, target->getY() - 288, target->getX() + 288, target->getY() + 288);
+				CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
+				if (nearest != nullptr) {
+					damage = 0;
+					target->setHp(units_dat::MaxHitPoints[target->id] / 2);
+					target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
+					target->status |= UnitStatus::CanNotReceiveOrders;
+				}
+			}
+			break;
+		}
+		case UnitId::ProtossAugur: {
+			// Augur - Death behavior
+			if (target->id == UnitId::ProtossAugur) {
+				augurSacrifice(target);
+			}
+		}
 		}
 
 		if (attacker != nullptr) {
-			// Kaiser Rampage - Ultralisk behavior
-			if (attacker->id == UnitId::ZergUltrakor) {
+			switch (attacker->id) {
+			case UnitId::ZergUltrakor: {
+				// Kaiser Rampage - Ultralisk behavior
 				scbw::set_generic_timer(attacker, ValueId::KaiserRampage, 1 + (2 * 24));
 				attacker->updateSpeed();
+				break;
 			}
-
-			// Adrenal Frenzy - Nathrokor behavior
-			if (attacker->id == UnitId::ZergNathrokor) {
+			case UnitId::ZergNathrokor: {
+				// Adrenal Frenzy - Nathrokor behavior
 				int player = attacker->playerId;
 				const int range = 48;
 				scbw::UnitFinder(attacker->getX() - range, attacker->getY() - range, attacker->getX() + range, attacker->getY() + range).forEach(nathrokorProc(player));
+				break;
 			}
-
-			// Incubators - Broodling behavior
-			if (attacker->id == UnitId::ZergBroodling ||
-				attacker->id == UnitId::ZergBroodlisk) {
+			case UnitId::ZergBroodling:
+			case UnitId::ZergBroodlisk: {
+				// Incubators - Broodling/Broodlisk behavior
 				int type = attacker->id;
 				int supplyCount = scbw::canSpawnBroodling(target) ? 2 : 0;// scbw::getBroodlingCountFromSupply(target);
 				auto sourceQueen = scbw::getSourceQueens(attacker)[0];
@@ -1031,6 +1081,8 @@ namespace hooks {
 						target->position.x, target->position.y, attacker->removeTimer,
 						scbw::getSourceQueens(attacker)[0]);
 				}
+				break;
+			}
 			}
 
 			// Cyclops - Flak Cannon passive
@@ -1080,6 +1132,7 @@ namespace hooks {
 		return false;
 	}
 } //hooks
+
 namespace {
 
 	//Creates the Plasma Shield flickering effect.
