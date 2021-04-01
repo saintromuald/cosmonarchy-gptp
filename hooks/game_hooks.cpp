@@ -497,12 +497,12 @@ namespace hooks {
 	void firstFrame();
 	void tickUnit(CUnit* unit, CorpseFinder& corpses);
 
-	/// This hook is called every frame; most of your plugin's logic goes here.
+	/// This hook is called every frame
 	bool nextFrame() {
 
-		if (!scbw::isGamePaused()) { //If the game is not paused
+		if (!scbw::isGamePaused()) { // If the game is not paused
 
-			scbw::setInGameLoopState(true); //Needed for scbw::random() to work
+			scbw::setInGameLoopState(true); // Needed for scbw::random() to work
 			graphics::resetAllGraphics();
 			hooks::updatePsiFieldProviders();
 			*(int*)hyperTrigger = 0; // Single frame hypertriggers
@@ -557,6 +557,7 @@ namespace hooks {
 				unit->setSupplyProvided(supply - stacks * TREASURY_INCREASE);
 			}
 
+			// Loop through bullets
 			for (CBullet* bullet = *firstBullet; bullet; bullet = bullet->next) {
 				if (bullet->weaponType == WeaponId::KalkaliskViscousAcid) {
 					if (bullet->orderSignal & 0x80) {
@@ -572,7 +573,7 @@ namespace hooks {
 				}
 			}
 
-			// Loop through all hidden units in the game.
+			// Loop through hidden units
 			/*for (CUnit* unit = *firstHiddenUnit; unit; unit = unit->link.next) {
 				if (unit->id == UnitId::ProtossAugur && scbw::get_generic_timer(unit, ValueId::AugurGimmickTimer) == 1) {
 					scbw::printText("Gimmick: remove augur");
