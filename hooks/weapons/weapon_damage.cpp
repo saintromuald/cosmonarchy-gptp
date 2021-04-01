@@ -373,47 +373,313 @@ void augurSacrifice(CUnit* target) {
 }
 
 namespace hooks {
+	static void weaponDamage_preReduction(
+		s32&	damage,
+		CUnit*	target,
+		u8&		weaponId,
+		CUnit*	attacker,
+		u8&		attackingPlayerId,
+		s8&		direction,
+		u8&		dmgDivisor,
+		u8&		damageType
+	);
+
+	static void weaponDamage_lifesteal(
+		s32&	damage,
+		CUnit*	target,
+		u8&		weaponId,
+		CUnit*	attacker,
+		u8&		attackingPlayerId,
+		s8&		direction,
+		u8&		dmgDivisor,
+		u8&		damageType
+	);
+
+	static void weaponDamage_postReduction(
+		s32&	damage,
+		CUnit*	target,
+		u8&		weaponId,
+		CUnit*	attacker,
+		u8&		attackingPlayerId,
+		s8&		direction,
+		u8&		dmgDivisor,
+		u8&		damageType,
+		s32		shieldReduceAmount
+	);
+
+	static void weaponDamage_fatal(
+		s32&	damage,
+		CUnit*	target,
+		u8&		weaponId,
+		CUnit*	attacker,
+		u8&		attackingPlayerId,
+		s8&		direction,
+		u8&		dmgDivisor,
+		u8&		damageType
+	);
+
 	/// Hooks into the CUnit::damageWith() function.
-	void weaponDamageHook(s32		damage,
-		CUnit* target,
+	void weaponDamageHook(
+		s32		damage,
+		CUnit*  target,
 		u8		weaponId,
-		CUnit* attacker,
+		CUnit*  attacker,
 		u8		attackingPlayerId,
 		s8		direction,
 		u8		dmgDivisor
 	) {
 		//the unit must neither be already dead nor invincible
+		if (target == nullptr || target->hitPoints == 0 || target->status & UnitStatus::Invincible)
+			return;
 
-		if (target->hitPoints != 0 && !(target->status & UnitStatus::Invincible)) {
-			u8 damageType;
-			bool canDamage = true; // debug only!
-			if (scbw::isCheatEnabled(CheatFlags::PowerOverwhelming) &&			//If Power Overwhelming is enabled
-				playerTable[target->playerId].type == PlayerType::Human)		//and the target player is a human player
-			{
-				damage = 0;
+		u8 damageType;
+		bool canDamage = true; // debug only!
+		if (scbw::isCheatEnabled(CheatFlags::PowerOverwhelming) &&			 // If Power Overwhelming is enabled
+			playerTable[target->playerId].type == PlayerType::Human) {		 // and the target player is a human player
+			damage = 0;
+		}
+
+		if (target->pAI != nullptr) {
+			WorkerAi* ai = (WorkerAi*)target->pAI;
+			if (ai->type == 2 || ai->type == 3) {
+				if (ai->town == nullptr) {
+					scbw::printFormattedText("Ai_ReactToHit crash! Attacker id %d, target id %d", attacker->id, target->id);
+					canDamage = false;
+				}
 			}
-			if (target->pAI != nullptr) {
-				WorkerAi* ai = (WorkerAi*)target->pAI;
-				if (ai->type == 2 || ai->type == 3) {
-					if (ai->town == nullptr) {
-						scbw::printFormattedText("Ai_ReactToHit crash! Attacker id %d, target id %d", attacker->id, target->id);
-						canDamage = false;
+		}
+
+		damageType = weapons_dat::DamageType[weaponId];
+
+		weaponDamage_preReduction(damage, target, weaponId, attacker, attackingPlayerId, direction, dmgDivisor, damageType);
+
+		// Hallucinations deal half damage
+		if (attacker != nullptr) {
+			if (attacker->status & UnitStatus::IsHallucination) {
+				damage /= 2;
+			}
+		}
+
+		// Minimum amount of damage that can be dealt
+		if (damage < 128)
+			damage = 128;
+
+		//Reduce Defensive Matrix
+		if (target->defensiveMatrixHp != 0) {
+			s32 d_matrix_reduceAmount;
+			if (target->defensiveMatrixHp > damage)
+				d_matrix_reduceAmount = damage;
+			else
+				d_matrix_reduceAmount = target->defensiveMatrixHp;
+			damage -= d_matrix_reduceAmount;
+			target->reduceDefensiveMatrixHp(d_matrix_reduceAmount);
+		}
+
+		// Cliff Advantage - Armor
+		if (damageType != DamageType::IgnoreArmor) {
+			damage -= std::min(scbw::getCliffAdvantage(attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
+		}
+
+		//Reduce Plasma Shields...but not just yet
+		s32 shieldReduceAmount = 0;
+		if (units_dat::ShieldsEnabled[target->id] && target->shields >= 256) {
+			if (damageType != DamageType::IgnoreArmor) {
+				s32 plasmaShieldUpg = scbw::getUpgradeLevel(target->playerId, UpgradeId::ProtossPlasmaShields) * 256;
+				if (damage > plasmaShieldUpg) { //Weird logic, Blizzard dev must have been sleepy
+					damage -= plasmaShieldUpg;
+				}
+				else {
+					damage = 128;
+				}
+			}
+			shieldReduceAmount = std::min(damage, target->shields);
+			if (attacker != nullptr) {
+				if (attacker->id == UnitId::ZergUltrakor) {
+					u32 lifesteal = shieldReduceAmount / 2;
+					attacker->heal(lifesteal);
+				}
+				// Wendigo Automedicus passive (shield component)
+				if (attacker->id == UnitId::TerranWendigo && units_dat::BaseProperty[target->id] & UnitProperty::Mechanical) {
+					u32 lifesteal = shieldReduceAmount / 4;
+					attacker->heal(lifesteal);
+				}
+			}
+			damage -= shieldReduceAmount;
+		}
+
+		//Apply armor
+		bool shield_overlay = false;
+		if (damageType != DamageType::IgnoreArmor) {
+			s32 armorTotal = target->getArmor() * 256;
+			if (attacker != nullptr) {
+				armorTotal += scbw::get_aise_value(target, nullptr, AiseId::GetShepherds, 0, 0) * 256;
+				if (target->id == UnitId::TerranMinotaur) {
+					u16 angle = scbw::getAngle(target->position.x, target->position.y,
+						attacker->position.x, attacker->position.y);
+					u16 unit_angle = target->velocityDirection1;
+					int arc = (double)45 / 1.40625;	//90 degrees
+					int delta = unit_angle - angle;
+					delta = abs((delta + 128) % 256 - 128);
+					if (delta <= arc) {
+						armorTotal += 512;
+						shield_overlay = true;
 					}
 				}
 			}
+			damage -= std::min(damage, armorTotal);
+			auto rend = 256 * scbw::get_generic_value(target, ValueId::ObservanceRend);
+			damage += rend;
+		}
 
+		//Apply damage type/unit size factor (not checked by UndeadStar, I will hope it work)
+		s32 damage_factor = damageFactor[damageType].unitSizeFactor[units_dat::SizeType[target->id]];
+		if (attacker != nullptr) {
+			if (attacker->id == UnitId::firebat) {
+				if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
+					damage_factor = 256;
+				}
+			}
+		}
+
+		damage = (damage * damage_factor) / 256;
+		if (attacker != nullptr) {
+			weaponDamage_lifesteal(damage, target, weaponId, attacker, attackingPlayerId, direction, dmgDivisor, damageType);
+		}
+
+		if (shieldReduceAmount == 0 && damage < 128) {
+			damage = 128;
+		}
+
+		weaponDamage_postReduction(damage, target, weaponId, attacker, attackingPlayerId, direction, dmgDivisor, damageType, shieldReduceAmount);
+
+		if (damage >= target->hitPoints) { // <- keep this as hitPoints, because the damage is already calculated to include armor, shields and damage factor calculations
+			weaponDamage_fatal(damage, target, weaponId, attacker, attackingPlayerId, direction, dmgDivisor, damageType);
+		}
+
+		// Deal Damage, except for Independent damage, which always deals 0
+		if (damageType != DamageType::Independent && target->defensiveMatrixHp == 0) {
+			if (canDamage) {
+				target->damageHp(damage, attacker, attackingPlayerId, weaponId != WeaponId::Irradiate);
+				// Prevent Science Vessels from being continuously revealed to the irradiated target
+			}
+		}
+
+		// Reduce shields (finally)
+		if (shieldReduceAmount != 0
+		&&	canDamage) {
+			if (scbw::get_aise_value(target, nullptr, AiseId::HasClarionLink, 0, 0)) {
+				scbw::sendGPTP_aise_cmd(target, nullptr, GptpId::SpreadClarionDamage, shieldReduceAmount, damageType, direction);
+			}
+			else {
+				target->shields -= shieldReduceAmount;
+				if (damageType != DamageType::Independent && target->shields != 0) {
+					shield_overlay = true;
+				}
+			}
+		}
+		if (shield_overlay) {
+			createShieldOverlay(target, direction);
+		}
+
+		//Update unit strength data (?)
+		target->airStrength = getUnitStrength(target, false);
+		target->groundStrength = getUnitStrength(target, true);
+	}
+
+	static void weaponDamage_preReduction(
+		s32& damage,
+		CUnit* target,
+		u8& weaponId,
+		CUnit* attacker,
+		u8& attackingPlayerId,
+		s8& direction,
+		u8& dmgDivisor,
+		u8& damageType
+	) {
+		// Reactive Payload - Architect behavior
+		if (weaponId == WeaponId::ArchitectDispersiveSalvo) {
+			double div = 1.0;
+			if (dmgDivisor != 0) {
+				div = (double)dmgDivisor;
+			}
+			int dmg = ((double)damage / div);
+			damage = dmg + (target->acidSporeCount * 256);
+		}
+
+		// Searing Acid - Guardian behavior
+		else if (weaponId == WeaponId::AcidSpore) {
+			damage = damage + (target->acidSporeCount * 256) + (dmgDivisor * 10 * 256);
+		}
+
+		// Lithe Organelle - Mutalisk bounce damage
+		else if (weaponId == WeaponId::GlaveWurm) {
+			double mul = 1.0;
+			switch (dmgDivisor) {
+			case 0:
+				mul = 1.0;
+				break;
+			case 1:
+				mul = 1.0 / 3.0; // glave wurm 1st bounce
+				break;
+			case 2:
+				mul = 1.0 / 6.0;
+				break;
+			default:
+				mul = 1.0 / 9.0; // glave wurm 4th bounce
+				break;
+			};
+			int dmg = ((double)damage * mul);
+			damage = dmg + (target->acidSporeCount * 256);
+		}
+
+		// Kalkaleth behavior
+		else if (weaponId == WeaponId::KalkaliskViscousAcid) {
+			int decrement = dmgDivisor * 256;
+			if (decrement < damage) {
+				damage = damage - decrement + (target->acidSporeCount * 256);
+			}
+			else {
+				damage = damage + (target->acidSporeCount * 256);
+			}
+		}
+		else {
+			u32 divisor = dmgDivisor;
+			if (divisor == 0) {
+				divisor = 1;
+				scbw::printFormattedText("Incorrect weapon hit %d", weaponId);
+			}
+			damage = damage / divisor + (target->acidSporeCount * 256);
+		}
+
+		// Quazilisk - Melting Points
+		if (weaponId == WeaponId::QuaziliskAcridBarbs) {
+			float missingFactor = 1 - ((float)target->hitPoints / target->getMaxHpRaw());
+			float damageIncrease = floor(missingFactor / QuazaliskPassiveFactor);
+			//scbw::print("Damage Increase: " + std::to_string(damageIncrease));
+			damage += damageIncrease * HealthMultiplier;
+		}
+
+		// Dark Swarm - Defiler Ability
+		if (scbw::isUnderDarkSwarm(target) && weapons_dat::MaxRange[weaponId] > 32 && (dmgDivisor == 1 || weaponId == WeaponId::AcidSpore) && weaponId != WeaponId::SubterraneanSpines) {
+			damageType = DamageType::Independent;
+		}
+
+		// Almaksalisk - Flanking Spines
+		if (weaponId == WeaponId::AlmaksaliskPiercingSpines && scbw::isDebuffed(target)) {
+			damageType = DamageType::IgnoreArmor;
+		}
+
+		if (attacker != nullptr) {
 			// Fertile Spines - Konvilisk behavior
-			if (attacker != nullptr
-			&&	attacker->id == UnitId::ZergKonvilisk
-			/*&&	target->getCurrentHpInGame() < (target->getMaxHpInGame() / 2)*/) {
+			if (attacker->id == UnitId::ZergKonvilisk
+				/*&&	target->getCurrentHpInGame() < (target->getMaxHpInGame() / 2)*/) {
 				scbw::applyParasite(target, attacker->playerId, attacker);
 			}
 
 			// Deconstruction - Pazuzu behavior - apply stack
-			if (attacker!=nullptr
-			&&	attacker->id == UnitId::TerranPazuzu
-			&&	!(scbw::unitIsPacifist(target))
-			&&	scbw::get_generic_value(target, ValueId::Deconstruction) == 0) {
+			if (attacker->id == UnitId::TerranPazuzu
+				&& !(scbw::unitIsPacifist(target))
+				&& scbw::get_generic_value(target, ValueId::Deconstruction) == 0) {
 				scbw::set_generic_value(target, ValueId::Deconstruction, 1);
 				scbw::set_generic_value(target, ValueId::DeconstructionPlayer, attacker->playerId);
 				s32 overlayOffset = scbw::getOverlayOffset(target->id);
@@ -426,8 +692,9 @@ namespace hooks {
 					target->sprite->createOverlay(1332 + overlayOffset);
 				}
 			}
+
 			// Savant Entropy Gauntlets behavior - Apply timer and overlay
-			if (attacker != nullptr && weaponId == WeaponId::SavantDiscoidRailgun) {
+			if (weaponId == WeaponId::SavantDiscoidRailgun) {
 				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
 					scbw::set_generic_timer(target, ValueId::EntropyGauntlets, (5 * 24) + 1);
 					scbw::set_generic_unit(target, ValueId::DecaySavant, attacker);
@@ -449,500 +716,328 @@ namespace hooks {
 					}
 				}
 			}
+
 			// Adrenal Glands - Zergling behavior
-			if (attacker != nullptr && weaponId == WeaponId::Claws) {
+			if (weaponId == WeaponId::Claws) {
 				if (scbw::get_generic_value(attacker, ValueId::AdrenalStacks) < 4) {
 					scbw::add_generic_value(attacker, ValueId::AdrenalStacks, 1);
 				}
 				scbw::set_generic_timer(attacker, ValueId::AdrenalTimer, 49); //49 is 2 seconds (48) + 1
 			}
-			// Dirge - Madrigal behavior
-			if (weaponId == WeaponId::MadrigalImperiosoMissiles && attacker != nullptr) {
-				scbw::sendGPTP_aise_cmd(target, nullptr, GptpId::DirgeImpale, 24, 0, 0);
-				scbw::set_generic_rust_unit(target, ValueId::DirgeAttacker, attacker);
-			}
+
 			// Knockout Drivers - Southpaw behavior
-			if (attacker != nullptr && weaponId == WeaponId::SouthpawUppercutLaser) {
+			if (weaponId == WeaponId::SouthpawUppercutLaser) {
 				if (scbw::get_generic_value(target, ValueId::KnockoutDriversStacks) < 20) {
 					scbw::add_generic_value(target, ValueId::KnockoutDriversStacks, 1);
 				}
 				scbw::set_generic_timer(target, ValueId::KnockoutDriversTimer, 49); //49 is 2 seconds (48) + 1
 			}
+
+			// Dirge - Madrigal behavior
+			if (weaponId == WeaponId::MadrigalImperiosoMissiles) {
+				scbw::sendGPTP_aise_cmd(target, nullptr, GptpId::DirgeImpale, 24, 0, 0);
+				scbw::set_generic_rust_unit(target, ValueId::DirgeAttacker, attacker);
+			}
+
 			// Captivating Claws - Vorvaling behavior
-			if (attacker != nullptr && weaponId == WeaponId::VorvalingClaws) {
+			if (weaponId == WeaponId::VorvalingClaws) {
 				captivating_claws::applyCaptivatingClaws(attacker, target);
 			}
+
 			// Astral Blessing - Ecclesiast behavior
-			if (attacker != nullptr && weaponId == WeaponId::EcclesiastAstralBlaster) {
+			if (weaponId == WeaponId::EcclesiastAstralBlaster) {
 				if (scbw::get_generic_value(target, ValueId::EcclesiastStack) < 10) {
 					scbw::add_generic_value(target, ValueId::EcclesiastStack, 1);
 				}
 				scbw::set_generic_timer(target, ValueId::EcclesiastTimer, 49); //49 is 2 seconds (48) + 1
 				scbw::set_generic_value(target, ValueId::EcclesiastPlayer, attacker->playerId);
 			}
-			// Eternal Service - Amaranth behavior
-			if (attacker != nullptr) {
-				if (attacker->id == UnitId::ProtossAmaranth) {
-					s32 hp = attacker->hitPoints / 256;
-					s32 maxHp = attacker->getMaxHpInGame();
-					double shieldStealRate = MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
-					s32 healAmount = damage * shieldStealRate;
-					s32 maxShields = units_dat::MaxShieldPoints[attacker->id] * 256;
-					attacker->shields = std::min(attacker->shields + healAmount, maxShields);
-				}
-			}
-			// Reactive Payload - Architect behavior
-			if (weaponId == WeaponId::ArchitectDispersiveSalvo) {
-				double div = 1.0;
-				if (dmgDivisor != 0) {
-					div = (double)dmgDivisor;
-				}
-				int dmg = ((double)damage / div);
-				damage = dmg + (target->acidSporeCount * 256);
-			}
-			// Searing Acid - Guardian behavior
-			else if (weaponId == WeaponId::AcidSpore) {
-				damage = damage + (target->acidSporeCount * 256) + (dmgDivisor * 10 * 256);
-			}
-			// Lithe Organelle - Mutalisk bounce damage
-			else if (weaponId == WeaponId::GlaveWurm) {
-				double mul = 1.0;
-				switch (dmgDivisor) {
-				case 0:
-					mul = 1.0;
-					break;
-				case 1:
-					mul = 1.0 / 3.0; // glave wurm 1st bounce
-					break;
-				case 2:
-					mul = 1.0 / 6.0;
-					break;
-				default:
-					mul = 1.0 / 9.0; // glave wurm 4th bounce
-					break;
-				};
-				int dmg = ((double)damage * mul);
-				damage = dmg + (target->acidSporeCount * 256);
-			}
 
-			// Kalkaleth behavior
-			else if (weaponId == WeaponId::KalkaliskViscousAcid) {
-				int decrement = dmgDivisor * 256;
-				if (decrement < damage) {
-					damage = damage - decrement + (target->acidSporeCount * 256);
-				}
-				else {
-					damage = damage + (target->acidSporeCount * 256);
-				}
-			}
-			else {
-				u32 divisor = dmgDivisor;
-				if (divisor == 0) {
-					divisor = 1;
-					scbw::printFormattedText("Incorrect weapon hit %d", weaponId);
-				}
-				damage = damage / divisor + (target->acidSporeCount * 256);
+			// Eternal Service - Amaranth behavior
+			if (attacker->id == UnitId::ProtossAmaranth) {
+				s32 hp = attacker->hitPoints / 256;
+				s32 maxHp = attacker->getMaxHpInGame();
+				double shieldStealRate = MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
+				s32 healAmount = damage * shieldStealRate;
+				s32 maxShields = units_dat::MaxShieldPoints[attacker->id] * 256;
+				attacker->shields = std::min(attacker->shields + healAmount, maxShields);
 			}
 
 			// Ensnaring Brood - Queen enchantment ability
-			if  (attacker != nullptr
-			&&   scbw::get_generic_timer(attacker, ValueId::EnsnaringBroodTimer) > 0
-			&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
+			if (scbw::get_generic_timer(attacker, ValueId::EnsnaringBroodTimer) > 0
+				&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
 				applyEnsnare(target);
 			}
+		}
+	}
 
-			// Quazilisk - Melting Points
-			if (weaponId == WeaponId::QuaziliskAcridBarbs) {
-				float missingFactor = 1 - ((float)target->hitPoints / target->getMaxHpRaw());
-				float damageIncrease = floor(missingFactor / QuazaliskPassiveFactor);
-				//scbw::print("Damage Increase: " + std::to_string(damageIncrease));
-				damage += damageIncrease * HealthMultiplier;
+	static void weaponDamage_lifesteal(
+		s32& damage,
+		CUnit* target,
+		u8& weaponId,
+		CUnit* attacker,
+		u8& attackingPlayerId,
+		s8& direction,
+		u8& dmgDivisor,
+		u8& damageType
+	) {
+		u32 lifesteal;
+		switch (attacker->id) {
+		case UnitId::ZergUltrakor: // Ultrakor Saber Siphon passive
+			lifesteal = damage / 2;
+			break;
+		case UnitId::TerranWendigo:// Wendigo Automedicus passive (HP component)
+			if (!(units_dat::BaseProperty[target->id] & UnitProperty::Mechanical))
+				return;
+			lifesteal = damage / 2;
+			break;
+		default:
+			return;
+		}
+		attacker->heal(lifesteal);
+	}
+
+	static void weaponDamage_postReduction(
+		s32&	damage,
+		CUnit*	target,
+		u8&		weaponId,
+		CUnit*	attacker,
+		u8&		attackingPlayerId,
+		s8&		direction,
+		u8&		dmgDivisor,
+		u8&		damageType,
+		s32		shieldReduceAmount
+	) {
+		// Tendril Amitosis - Sunken Colony upgrade
+		/*if (weaponId == WeaponId::SubterraneanTentacle) {
+			if (scbw::get_generic_value(target, ValueId::Amitosis) == 1) {
+				damage /= 2;
+				scbw::set_generic_value(target, ValueId::Amitosis, 0);
 			}
+		}*/
 
-			// Hallucinations deal half damage
-			if (attacker != nullptr) {
-				if (attacker->status & UnitStatus::IsHallucination) {
-					damage /= 2;
+		// Petrification - Gorgon behavior
+		if (GorgonCondition(attacker, target)) {
+			scbw::refreshDebuffs(target);
+		}
+
+		if (attacker != nullptr) {
+			if ((units_dat::BaseProperty[attacker->id] & UnitProperty::PermanentCloak
+				|| attacker->status & UnitStatus::CloakingForFree)
+				&& attacker->playerId
+				&& attacker->id != UnitId::ZergLakizilisk) {
+				bool silent_kill = false;
+				if (damage >= target->hitPoints
+					&& attacker->id == UnitId::ProtossCabalist) {
+					silent_kill = true;
+				}
+				if (!silent_kill && !(attacker->visibilityStatus & 1 << target->playerId)) {
+					attacker->visibilityStatus |= (1 << target->playerId);
+					makeSpriteVisible(attacker->sprite);
+					scbw::set_generic_timer(attacker, ValueId::PermanentCloakTimer, 48 + 1);
 				}
 			}
 
-			// Minimum amount of damage that can be dealt
-			if (damage < 128)
-				damage = 128;
-
-			damageType = weapons_dat::DamageType[weaponId];
-
-			// Dark Swarm - Defiler Ability
-			if (scbw::isUnderDarkSwarm(target) && weapons_dat::MaxRange[weaponId] > 32 && (dmgDivisor == 1 || weaponId == WeaponId::AcidSpore) && weaponId != WeaponId::SubterraneanSpines) {
-				damageType = DamageType::Independent;
+			if (weaponId == WeaponId::NuclearMissile && target->hitPoints > damage && irradiateTarget(target)) {
+				hooks::IrradiateHit(attacker, target, attacker->playerId);
 			}
-
-			//Reduce Defensive Matrix
-			if (target->defensiveMatrixHp != 0) {
-				s32 d_matrix_reduceAmount;
-				if (target->defensiveMatrixHp > damage)
-					d_matrix_reduceAmount = damage;
-				else
-					d_matrix_reduceAmount = target->defensiveMatrixHp;
-				damage -= d_matrix_reduceAmount;
-				target->reduceDefensiveMatrixHp(d_matrix_reduceAmount);
+			if ((weaponId == WeaponId::AlkajeliskPlasmidSpores || weaponId == WeaponId::AlkajeliskParasiticSpores) && damage >= target->hitPoints) {
+				scbw::set_generic_value(target, ValueId::AlkajeliskParasite, 1);
+				scbw::set_generic_value(target, ValueId::AlkajeliskParasitePlayer, attacker->playerId);
 			}
-
-			// Almaksalisk - Flanking Spines
-			if (weaponId == WeaponId::AlmaksaliskPiercingSpines && scbw::isDebuffed(target)) {
-				damageType = DamageType::IgnoreArmor;
-			}
-
-			// Cliff Advantage - Armor
-			if (damageType != DamageType::IgnoreArmor) {
-				damage -= std::min(scbw::getCliffAdvantage(attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
-			}
-
-			//Reduce Plasma Shields...but not just yet
-			s32 shieldReduceAmount = 0;
-			if (units_dat::ShieldsEnabled[target->id] && target->shields >= 256) {
-				if (damageType != DamageType::IgnoreArmor) {
-					s32 plasmaShieldUpg = scbw::getUpgradeLevel(target->playerId, UpgradeId::ProtossPlasmaShields) * 256;
-					if (damage > plasmaShieldUpg) { //Weird logic, Blizzard dev must have been sleepy
-						damage -= plasmaShieldUpg;
-					}
-					else {
-						damage = 128;
-					}
-				}
-				shieldReduceAmount = std::min(damage, target->shields);
-				if (attacker != nullptr && target != nullptr) {
-					if (attacker->id == UnitId::ZergUltrakor) {
-						u32 lifesteal = shieldReduceAmount / 2;
-						attacker->heal(lifesteal);
-					}
-					// Wendigo Automedicus passive (shield component)
-					if (attacker->id == UnitId::TerranWendigo && units_dat::BaseProperty[target->id] & UnitProperty::Mechanical) {
-						u32 lifesteal = shieldReduceAmount / 4;
-						attacker->heal(lifesteal);
-					}
-				}
-				damage -= shieldReduceAmount;
-			}
-
-			//Apply armor
-			bool shield_overlay = false;
-			if (damageType != DamageType::IgnoreArmor) {
-				s32 armorTotal = target->getArmor() * 256;
-				if (attacker != nullptr && target != nullptr) {
-					armorTotal += scbw::get_aise_value(target, nullptr, AiseId::GetShepherds, 0, 0) * 256;
-					if (target->id == UnitId::TerranMinotaur) {
-						u16 angle = scbw::getAngle(target->position.x, target->position.y,
-							attacker->position.x, attacker->position.y);
-						u16 unit_angle = target->velocityDirection1;
-						int arc = (double)45 / 1.40625;	//90 degrees
-						int delta = unit_angle - angle;
-						delta = abs((delta + 128) % 256 - 128);
-						if (delta <= arc) {
-							armorTotal += 512;
-							shield_overlay = true;
-						}
-					}
-				}
-				damage -= std::min(damage, armorTotal);
-				auto rend = 256 * scbw::get_generic_value(target, ValueId::ObservanceRend);
-				damage += rend;
-			}
-
-			//Apply damage type/unit size factor (not checked by UndeadStar, I will hope it work)
-			s32 damage_factor = damageFactor[damageType].unitSizeFactor[units_dat::SizeType[target->id]];
-			if (attacker != nullptr) {
-				if (attacker->id == UnitId::firebat) {
-					if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
-						damage_factor = 256;
-					}
-				}
-			}
-
-			damage = (damage * damage_factor) / 256;
-			if (attacker != nullptr && target != nullptr) {
-				// Ultrakor Saber Siphon passive
-				if (attacker->id == UnitId::ZergUltrakor) {
-					u32 lifesteal = damage / 2;
-					attacker->heal(lifesteal);
-				}
-
-				// Wendigo Automedicus passive (HP component)
-				if (attacker->id == UnitId::TerranWendigo && units_dat::BaseProperty[target->id] & UnitProperty::Mechanical) {
-					u32 lifesteal = damage / 4;
-					attacker->heal(lifesteal);
-				}
-			}
-
-			if (shieldReduceAmount == 0 && damage < 128) {
-				damage = 128;
-			}
-
-			if (attacker != nullptr && target != nullptr) {
-				if ((units_dat::BaseProperty[attacker->id] & UnitProperty::PermanentCloak
-					||	attacker->status & UnitStatus::CloakingForFree)
-				&&	attacker->playerId
-				&&	attacker->id != UnitId::ZergLakizilisk) {
-					bool silent_kill = false;
-					if (damage >= target->hitPoints
-					&&	attacker->id == UnitId::ProtossCabalist) {
-						silent_kill = true;
-					}
-					if (!silent_kill && !(attacker->visibilityStatus & 1 << target->playerId)) {
-						attacker->visibilityStatus |= (1 << target->playerId);
-						makeSpriteVisible(attacker->sprite);
-						scbw::set_generic_timer(attacker, ValueId::PermanentCloakTimer, 48 + 1);
-					}
-				}
-
-				if (weaponId == WeaponId::NuclearMissile && target->hitPoints > damage) {
-					if (attacker != nullptr && irradiateTarget(target)) {
-						hooks::IrradiateHit(attacker, target, attacker->playerId);
-					}
-				}
-				if ((weaponId == WeaponId::AlkajeliskPlasmidSpores || weaponId==WeaponId::AlkajeliskParasiticSpores) && damage >= target->hitPoints) {
-					scbw::set_generic_value(target, ValueId::AlkajeliskParasite, 1);
-					scbw::set_generic_value(target, ValueId::AlkajeliskParasitePlayer, attacker->playerId);
-				}
-				if (damage >= target->hitPoints) {
-
-					// Last Orders - Aurora behavior
-					if (target->id == UnitId::ProtossAurora) {
-						if (scbw::get_generic_value(target, ValueId::LastOrdersInit) == 0) {
-							scbw::set_generic_value(target, ValueId::LastOrdersInit, 1);
-							lastordersProc2 Orders = lastordersProc2(target);
-							scbw::UnitFinder unitFinder(target->getX() - 288, target->getY() - 288, target->getX() + 288, target->getY() + 288);
-							CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
-							if (nearest != nullptr) {
-								damage = 0;
-								target->setHp(units_dat::MaxHitPoints[target->id] / 2);
-								target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
-								target->status |= UnitStatus::CanNotReceiveOrders;
-							}
-						}
-					}
-				}
-			}
-
-			//Deal damage to target HP, killing it if possible
-			bool Halluc = false;
-			if (attacker != nullptr) {
-				if (attacker->status & UnitStatus::IsHallucination) {
-					Halluc = true;
-				}
-			}
-
 			if (damage >= target->hitPoints) {
-				if (target->id == UnitId::ProtossArchon) {
-					astralaegisProc Aegis = astralaegisProc();
-					scbw::UnitFinder unitFinder(target->getX() - 96,
-						target->getY() - 96,
-						target->getX() + 96,
-						target->getY() + 96);
-					unitFinder.forEach(Aegis);
-				}
-				if (weaponId == WeaponId::PsiStorm || Halluc) {
-					//psi mastery effect
-					scbw::UnitFinder unitFinder(target->getX() - 288,
-						target->getY() - 288,
-						target->getX() + 288,
-						target->getY() + 288);
-					unitFinder.forEach(ascendancyProc());
-				}
-				if (scbw::get_generic_value(target, ValueId::LazarusAgent) == 1) {
-					Globals.initLazarusAgent(target->position.x, target->position.y,
-						target->playerId, target->id, target->energy,
-						(CUnit*)scbw::get_generic_value(target, ValueId::LazarusAgentApostleSrc));
+
+				// Last Orders - Aurora behavior
+				if (target->id == UnitId::ProtossAurora) {
+					if (scbw::get_generic_value(target, ValueId::LastOrdersInit) == 0) {
+						scbw::set_generic_value(target, ValueId::LastOrdersInit, 1);
+						lastordersProc2 Orders = lastordersProc2(target);
+						scbw::UnitFinder unitFinder(target->getX() - 288, target->getY() - 288, target->getX() + 288, target->getY() + 288);
+						CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
+						if (nearest != nullptr) {
+							damage = 0;
+							target->setHp(units_dat::MaxHitPoints[target->id] / 2);
+							target->orderTo(OrderId::Move, nearest->position.x, nearest->position.y);
+							target->status |= UnitStatus::CanNotReceiveOrders;
+						}
+					}
 				}
 			}
 
 			// Observance - Science Vessel ability
-			if (attacker != nullptr) {
-				if (weaponId == WeaponId::SeraphObservance
-				&&	(!scbw::isAlliedTo(attacker->playerId, target->playerId))) {
-					scbw::set_generic_timer(attacker, ValueId::ObservanceOverlayTimer, 18);
-					scbw::set_generic_timer(target, ValueId::ObservanceTimerDebuff, 1 + (5 * 24));
-					int rend = scbw::get_generic_value(target, ValueId::ObservanceRend);
-					if (rend < 5) {
-						if (rend == 0) {
-							int overlay = 1233;
-							if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay) {
-								overlay -= 2;
-							}
-							else if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay) {
-								overlay -= 1;
-							}
-							target->sprite->createOverlay(overlay);
+			if (weaponId == WeaponId::SeraphObservance
+				&& (!scbw::isAlliedTo(attacker->playerId, target->playerId))) {
+				scbw::set_generic_timer(attacker, ValueId::ObservanceOverlayTimer, 18);
+				scbw::set_generic_timer(target, ValueId::ObservanceTimerDebuff, 1 + (5 * 24));
+				int rend = scbw::get_generic_value(target, ValueId::ObservanceRend);
+				if (rend < 5) {
+					if (rend == 0) {
+						int overlay = 1233;
+						if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay) {
+							overlay -= 2;
 						}
-						scbw::add_generic_value(target, ValueId::ObservanceRend, 1);
+						else if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay) {
+							overlay -= 1;
+						}
+						target->sprite->createOverlay(overlay);
 					}
+					scbw::add_generic_value(target, ValueId::ObservanceRend, 1);
 				}
 			}
 
-			// Tendril Amitosis - Sunken Colony upgrade
-			/*if (weaponId == WeaponId::SubterraneanTentacle && target != nullptr) {
-				if (scbw::get_generic_value(target, ValueId::Amitosis) == 1) {
-					damage /= 2;
-					scbw::set_generic_value(target, ValueId::Amitosis, 0);
-				}
-			}*/
-
 			// Essence Drain - Gorgoleth Energy Steal
-			if (attacker != nullptr) {
-				if (attacker->id == UnitId::ZergGorgrokor
+			if (attacker->id == UnitId::ZergGorgrokor
 				&& units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
-					u16 energy = std::min(target->energy, (u16)(damage + shieldReduceAmount));
-					target->energy -= energy;
-					attacker->energy += energy;
-				}
+				u16 energy = std::min(target->energy, (u16)(damage + shieldReduceAmount));
+				target->energy -= energy;
+				attacker->energy += energy;
 			}
 
 			// Stellar Enforcement - Magister behavior
-			if (attacker != nullptr) {
-				if (attacker->id == UnitId::ProtossMagister
-				&&	!(scbw::get_generic_value(target, ValueId::StellarEnforcement))) {
-					scbw::add_generic_value(target, ValueId::StellarEnforcement, 1);
-				}
+			if (attacker->id == UnitId::ProtossMagister
+				&& !(scbw::get_generic_value(target, ValueId::StellarEnforcement))) {
+				scbw::add_generic_value(target, ValueId::StellarEnforcement, 1);
 			}
 
 			// Blood Tithe - Apostle behavior
-			if (attacker != nullptr) {
-				if (attacker->id == UnitId::TerranApostle
-//				&& scbw::getDistanceFast(attacker->position.x, attacker->position.y, target->position.x, target->position.y) >= 160
+			if (attacker->id == UnitId::TerranApostle
+				//				&& scbw::getDistanceFast(attacker->position.x, attacker->position.y, target->position.x, target->position.y) >= 160
 				) {
-					u32 range = 3 * 32;
-					scbw::UnitFinder unitFinder(target->getX() - range, target->getY() - range, target->getX() + range, target->getY() + range);
-					unitFinder.forEach(bloodTitheProc(attacker, target));
-				}
+				u32 range = 3 * 32;
+				scbw::UnitFinder unitFinder(target->getX() - range, target->getY() - range, target->getX() + range, target->getY() + range);
+				unitFinder.forEach(bloodTitheProc(attacker, target));
 			}
 
 			// Phase Rush - Manifold behavior
-			if (attacker != nullptr) {
-				if (units_dat::BaseProperty[attacker->id] & UnitProperty::RoboticUnit) {
-					scbw::set_generic_timer(target, ValueId::PhaseRushTimerArrayStart+attacker->playerId, 5 * 24);
-				}
-			}
-
-			// Petrification - Gorgon behavior
-			if (GorgonCondition(attacker, target)) {
-				scbw::refreshDebuffs(target);
+			if (units_dat::BaseProperty[attacker->id] & UnitProperty::RoboticUnit) {
+				scbw::set_generic_timer(target, ValueId::PhaseRushTimerArrayStart + attacker->playerId, 5 * 24);
 			}
 
 			// Autovitality - Simulacrum behavior
-			if (target != nullptr && attacker != nullptr
-			&&	target->id == UnitId::ProtossSimulacrum
-			&& !(scbw::isAlliedTo(target->playerId, attacker->playerId))
-			&&	(scbw::get_generic_timer(target, ValueId::SimulacrumCloneTimer) == 0)) {
+			if (target->id == UnitId::ProtossSimulacrum
+				&& !(scbw::isAlliedTo(target->playerId, attacker->playerId))
+				&& (scbw::get_generic_timer(target, ValueId::SimulacrumCloneTimer) == 0)) {
 				scbw::set_generic_timer(target, ValueId::SimulacrumCloneTimer, 5 * 24); // 5 seconds may be too long, needs testing
 			}
 
-			if (attacker != nullptr) { // looks like target will always be alive if this function was called?
-				if (scbw::get_generic_timer(target, ValueId::HallucinatingTimer) >= 1) {
-					CUnit* haluAttacker = attacker;
-					if ((haluAttacker->id == UnitId::ProtossSteward
-						|| haluAttacker->id == UnitId::ProtossPlasmaShell)
-						&& attacker->interceptor.parent != nullptr) {
-						haluAttacker = attacker->interceptor.parent;
-					}
-					if (scbw::get_generic_unit(haluAttacker, ValueId::HallucinationPointer) == nullptr
+			if (scbw::get_generic_timer(target, ValueId::HallucinatingTimer) >= 1) {
+				CUnit* haluAttacker = attacker;
+				if ((haluAttacker->id == UnitId::ProtossSteward
+					|| haluAttacker->id == UnitId::ProtossPlasmaShell)
+					&& attacker->interceptor.parent != nullptr) {
+					haluAttacker = attacker->interceptor.parent;
+				}
+				if (scbw::get_generic_unit(haluAttacker, ValueId::HallucinationPointer) == nullptr
 					&& !(haluAttacker->status & UnitStatus::IsHallucination)) {
-						u32 haluPlayer = scbw::get_generic_value(target, ValueId::HallucinatingSourcePlayer);
-						if (haluPlayer != haluAttacker->playerId && !scbw::isAlliedTo(haluPlayer, haluAttacker->playerId)) return;
+					u32 haluPlayer = scbw::get_generic_value(target, ValueId::HallucinatingSourcePlayer);
+					if (haluPlayer != haluAttacker->playerId && !scbw::isAlliedTo(haluPlayer, haluAttacker->playerId)) return;
 
-						CUnit* hal_unit = createHallucination(haluAttacker, haluPlayer);
-						if (hal_unit != nullptr) {
-							hal_unit->sprite->createOverlay(ImageId::HallucinationDeath3);
-							scbw::set_generic_unit(haluAttacker, ValueId::HallucinationPointer, hal_unit);
+					CUnit* hal_unit = createHallucination(haluAttacker, haluPlayer);
+					if (hal_unit != nullptr) {
+						hal_unit->sprite->createOverlay(ImageId::HallucinationDeath3);
+						scbw::set_generic_unit(haluAttacker, ValueId::HallucinationPointer, hal_unit);
 
-							if (!placeHallucination(hal_unit)) {
-								unitDestructor(hal_unit);
-							}
+						if (!placeHallucination(hal_unit)) {
+							unitDestructor(hal_unit);
 						}
 					}
 				}
+			}
+		}
+	}
 
-				if (damage >= target->hitPoints) { // <- keep this as hitPoints, because the damage is already calculated to include armor, shields and damage factor calculations
+	static void weaponDamage_fatal(
+		s32& damage,
+		CUnit* target,
+		u8& weaponId,
+		CUnit* attacker,
+		u8& attackingPlayerId,
+		s8& direction,
+		u8& dmgDivisor,
+		u8& damageType
+	) {
+		//Deal damage to target HP, killing it if possible
+		bool Halluc = false;
+		if (attacker != nullptr) {
+			if (attacker->status & UnitStatus::IsHallucination) {
+				Halluc = true;
+			}
+		}
 
-					// Radiation Shockwave on death
-					if (target->irradiateTimer > 0) {
-						scbw::set_generic_value(target, ValueId::RadiationShockwaveCount, 1);
-					}
+		if (target->id == UnitId::ProtossArchon) {
+			astralaegisProc Aegis = astralaegisProc();
+			scbw::UnitFinder unitFinder(target->getX() - 96,
+				target->getY() - 96,
+				target->getX() + 96,
+				target->getY() + 96);
+			unitFinder.forEach(Aegis);
+		}
 
-					// Kaiser Rampage - Ultralisk behavior
-					if (attacker->id == UnitId::ZergUltrakor) {
-						scbw::set_generic_timer(attacker, ValueId::KaiserRampage, 1 + (2 * 24));
-						attacker->updateSpeed();
-					}
+		if (weaponId == WeaponId::PsiStorm || Halluc) {
+			//psi mastery effect
+			scbw::UnitFinder unitFinder(target->getX() - 288,
+				target->getY() - 288,
+				target->getX() + 288,
+				target->getY() + 288);
+			unitFinder.forEach(ascendancyProc());
+		}
 
-					// Adrenal Frenzy - Nathrokor behavior
-					if (attacker->id == UnitId::ZergNathrokor) {
-						int player = attacker->playerId;
-						const int range = 48;
-						scbw::UnitFinder(attacker->getX() - range, attacker->getY() - range, attacker->getX() + range, attacker->getY() + range).forEach(nathrokorProc(player));
-					}
+		if (scbw::get_generic_value(target, ValueId::LazarusAgent) == 1) {
+			Globals.initLazarusAgent(target->position.x, target->position.y,
+				target->playerId, target->id, target->energy,
+				(CUnit*)scbw::get_generic_value(target, ValueId::LazarusAgentApostleSrc));
+		}
 
-					// Incubators - Broodling behavior
-					if (attacker->id == UnitId::ZergBroodling ||
-						attacker->id == UnitId::ZergBroodlisk) {
-						int type = attacker->id;
-						int supplyCount = scbw::canSpawnBroodling(target) ? 2 : 0;// scbw::getBroodlingCountFromSupply(target);
-						auto sourceQueen = scbw::getSourceQueens(attacker)[0];
-						if (sourceQueen) {
-							scbw::createUnitFromAbility(type, supplyCount, attacker->playerId,
-								target->position.x, target->position.y, attacker->removeTimer,
-								scbw::getSourceQueens(attacker)[0]);
-						}
-					}
+		// Radiation Shockwave on death
+		if (target->irradiateTimer > 0) {
+			scbw::set_generic_value(target, ValueId::RadiationShockwaveCount, 1);
+		}
 
-					// Ecclesiast - Astral Blessing proc
-					if (scbw::get_generic_value(target, ValueId::EcclesiastStack)) {
-						int stacks = scbw::get_generic_value(target, ValueId::EcclesiastStack);
-						int player = scbw::get_generic_value(target, ValueId::EcclesiastPlayer);
-						const int range = 64;
-						scbw::UnitFinder(target->getX() - range, target->getY() - range, target->getX() + range, target->getY() + range).forEach(ecclesiastProc(stacks, player));
-					}
+		// Ecclesiast - Astral Blessing proc
+		if (scbw::get_generic_value(target, ValueId::EcclesiastStack)) {
+			int stacks = scbw::get_generic_value(target, ValueId::EcclesiastStack);
+			int player = scbw::get_generic_value(target, ValueId::EcclesiastPlayer);
+			const int range = 64;
+			scbw::UnitFinder(target->getX() - range, target->getY() - range, target->getX() + range, target->getY() + range).forEach(ecclesiastProc(stacks, player));
+		}
 
-					// Cyclops - Flak Cannon passive
-					if (weaponId == WeaponId::CyclopsFlakCannons) {
-						auto newAngle = scbw::getAngle(attacker->getX(), attacker->getY(), target->getX(), target->getY());
-						scbw::createBullet(WeaponId::CyclopsFragmentaryShells, attacker, target->getX(), target->getY(), attacker->playerId, newAngle);
-					}
+		// Augur - Death behavior
+		if (target->id == UnitId::ProtossAugur) {
+			augurSacrifice(target);
+		}
 
-					// Augur - Death behavior
-					if (target->id == UnitId::ProtossAugur) {
-						augurSacrifice(target);
-					}
+		if (attacker != nullptr) {
+			// Kaiser Rampage - Ultralisk behavior
+			if (attacker->id == UnitId::ZergUltrakor) {
+				scbw::set_generic_timer(attacker, ValueId::KaiserRampage, 1 + (2 * 24));
+				attacker->updateSpeed();
+			}
+
+			// Adrenal Frenzy - Nathrokor behavior
+			if (attacker->id == UnitId::ZergNathrokor) {
+				int player = attacker->playerId;
+				const int range = 48;
+				scbw::UnitFinder(attacker->getX() - range, attacker->getY() - range, attacker->getX() + range, attacker->getY() + range).forEach(nathrokorProc(player));
+			}
+
+			// Incubators - Broodling behavior
+			if (attacker->id == UnitId::ZergBroodling ||
+				attacker->id == UnitId::ZergBroodlisk) {
+				int type = attacker->id;
+				int supplyCount = scbw::canSpawnBroodling(target) ? 2 : 0;// scbw::getBroodlingCountFromSupply(target);
+				auto sourceQueen = scbw::getSourceQueens(attacker)[0];
+				if (sourceQueen) {
+					scbw::createUnitFromAbility(type, supplyCount, attacker->playerId,
+						target->position.x, target->position.y, attacker->removeTimer,
+						scbw::getSourceQueens(attacker)[0]);
 				}
 			}
 
-			// Deal Damage, except for Independent damage, which always deals 0
-			if (damageType != DamageType::Independent && target->defensiveMatrixHp == 0) {
-				if (canDamage) {
-					target->damageHp(damage, attacker, attackingPlayerId, weaponId != WeaponId::Irradiate);
-					// Prevent Science Vessels from being continuously revealed to the irradiated target
-				}
+			// Cyclops - Flak Cannon passive
+			if (weaponId == WeaponId::CyclopsFlakCannons) {
+				auto newAngle = scbw::getAngle(attacker->getX(), attacker->getY(), target->getX(), target->getY());
+				scbw::createBullet(WeaponId::CyclopsFragmentaryShells, attacker, target->getX(), target->getY(), attacker->playerId, newAngle);
 			}
-
-			// Reduce shields (finally)
-			if (shieldReduceAmount != 0
-			&&	canDamage) {
-				if (scbw::get_aise_value(target, nullptr, AiseId::HasClarionLink, 0, 0)) {
-					scbw::sendGPTP_aise_cmd(target, nullptr, GptpId::SpreadClarionDamage, shieldReduceAmount, damageType, direction);
-				}
-				else {
-					target->shields -= shieldReduceAmount;
-					if (damageType != DamageType::Independent && target->shields != 0) {
-						shield_overlay = true;
-					}
-				}
-			}
-			if (shield_overlay) {
-				createShieldOverlay(target, direction);
-			}
-
-			//Update unit strength data (?)
-			target->airStrength = getUnitStrength(target, false);
-			target->groundStrength = getUnitStrength(target, true);
 		}
 	}
 
