@@ -10,7 +10,7 @@ void CSprite::playIscriptAnim(IscriptAnimation::Enum animation, bool bReplaceCur
 	assert(this);
 
 	if (bReplaceCurrentScript || !(this->flags & CSprite_Flags::IscriptCode))
-		for (CImage* img = this->images.head; img != NULL; img = img->link.next)
+		for (CImage* img = this->images.head; img != nullptr; img = img->link.next)
 			img->playIscriptAnim(animation);
 
 }
@@ -23,7 +23,7 @@ void CSprite::free() {
 	CImage* image = this->images.head;
 	s32 sprite_row_position;
 
-	while (image != NULL) {
+	while (image != nullptr) {
 		CImage* nextImage = image->link.next;
 		image->free();
 		image = nextImage;
@@ -48,14 +48,14 @@ void CSprite::free() {
 		spritesOnTileRow->tails[sprite_row_position] = this->link.prev;
 
 	//untie the sprite from the previous and next one
-	if (this->link.prev != NULL)
+	if (this->link.prev != nullptr)
 		(this->link.prev)->link.next = this->link.next;
 
-	if (this->link.next != NULL)
+	if (this->link.next != nullptr)
 		(this->link.next)->link.prev = this->link.prev;
 
-	this->link.prev = NULL;
-	this->link.next = NULL;
+	this->link.prev = nullptr;
+	this->link.next = nullptr;
 
 	//perform identically to original code
 	unusedSprites->insertAfterHead<&CSprite::link>(this);
@@ -239,7 +239,7 @@ CImage* CSprite::getOverlay(u16 imageId) const {
 		if (image->id == imageId)
 			return image;
 
-	return NULL;
+	return nullptr;
 }
 
 //-------- Other --------//

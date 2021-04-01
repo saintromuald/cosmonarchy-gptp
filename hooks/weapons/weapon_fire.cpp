@@ -230,7 +230,7 @@ public:
 		energyCollected += drain;
 		unit->spendUnitEnergy(drain);
 		u8 overlaySize = scbw::hasOverlay(unit);
-		if (unit->subunit != NULL) {
+		if (unit->subunit != nullptr) {
 			unit->subunit->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
 		}
 		else {
@@ -331,7 +331,7 @@ namespace hooks {
 	//This hook affects the following iscript opcodes: attackwith, attack, castspell
 	//This also affects CUnit::fireWeapon().
 	void fireWeaponHook(CUnit* unit, u8 wId) {
-		if (unit == NULL) {
+		if (unit == nullptr) {
 			return;
 		}
 		//Default StarCraft behavior
@@ -343,7 +343,7 @@ namespace hooks {
 			behavior = WeaponBehavior::AppearOnTargetSite;
 		}
 		if (behavior == WeaponBehavior::AppearOnTargetUnit) {
-			if (unit->orderTarget.unit == NULL) {
+			if (unit->orderTarget.unit == nullptr) {
 				return;
 			}
 			getWeaponHitPos(unit, &x, &y);
@@ -376,7 +376,7 @@ namespace hooks {
 				int targ_y = unit->getY() + scbw::getPolarY(range, angle);
 				scbw::set_generic_value(unit, ValueId::SpineX, targ_x);
 				scbw::set_generic_value(unit, ValueId::SpineY, targ_y);
-				if (unit->orderTarget.unit != NULL) {
+				if (unit->orderTarget.unit != nullptr) {
 					scbw::set_generic_value(unit, ValueId::LurkerPickTarget, (u32)unit->orderTarget.unit);
 				}
 				Globals.clear_lurker(unit);
@@ -420,7 +420,7 @@ namespace hooks {
 							u->energy += howMuch;
 							energy -= howMuch;
 							u8 overlaySize = scbw::hasOverlay(u);
-							if (u->subunit != NULL) {
+							if (u->subunit != nullptr) {
 								u->subunit->sprite->createTopOverlay(overlaySize + ImageId::MindControlHit_Small, 0, 0, 0);
 							}
 							else {
@@ -453,7 +453,7 @@ namespace hooks {
 							unit->getX() + range, unit->getY() + range,
 							unit, monocerosTargetingMatch(unit, monoceros)
 						);
-						if (newTarget != NULL
+						if (newTarget != nullptr
 						&&	n.match(newTarget)) {
 							monoceros.insert(newTarget);
 							unit->orderTarget.unit = newTarget;
@@ -540,7 +540,7 @@ namespace hooks {
 					}
 					scbw::set_generic_value(unit, ValueId::SalamanderAtkPos, rotate);
 				}
-				else if (weaponId == WeaponId::MadrigalFuriaMissiles && unit->orderTarget.unit != NULL) {
+				else if (weaponId == WeaponId::MadrigalFuriaMissiles && unit->orderTarget.unit != nullptr) {
 					scbw::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 					if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
 						scbw::doDeconstructionDamage(unit, weaponId);
@@ -554,7 +554,7 @@ namespace hooks {
 						CUnit* target = unitsInSplash.getUnit(i);
 						if (finderMatch.match(target)) {
 							count++;
-							if (target != NULL) {
+							if (target != nullptr) {
 								unit->orderTarget.unit = target;
 								auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
 									target->getX(), target->getY());
@@ -581,7 +581,7 @@ namespace hooks {
 				}				
 			}
 			// Adaptive Amitosis
-			if (unit->orderTarget.unit != NULL
+			if (unit->orderTarget.unit != nullptr
 			&&	scbw::get_generic_value(unit, ValueId::AdaptiveAmitosis) > 0) {
 				auto range = weapons_dat::MaxRange[weaponId];
 				auto a = scbw::UnitFinder::getNearestTarget(
@@ -589,7 +589,7 @@ namespace hooks {
 					unit->getX() + range, unit->getY() + range,
 					unit, tendrilMatch(unit, weaponId)
 				);
-				if (a != NULL) {
+				if (a != nullptr) {
 					auto old = unit->orderTarget;
 					unit->orderTarget.unit = a;
 					unit->orderTarget.pt = a->sprite->position;
@@ -620,14 +620,14 @@ namespace hooks {
 		CImage* i; // esi
 		
 		if (bullet->weaponType == WeaponId::AlkajeliskParasiticSpores) {
-			if (bullet->attackTarget.unit == NULL) {
+			if (bullet->attackTarget.unit == nullptr) {
 				u32 range = 8*32;//seek range
 				auto seekTarget = scbw::UnitFinder::getNearestTarget(
 					bullet->position.x - range, bullet->position.y - range,
 					bullet->position.x + range, bullet->position.y + range,
 					bullet, alkajSporeMatch(bullet)
 				);
-				if (seekTarget != NULL) {
+				if (seekTarget != nullptr) {
 					bullet->attackTarget.unit = seekTarget;
 					bullet->attackTarget.pt = seekTarget->position;
 					bullet->moveTarget.unit = seekTarget;
@@ -646,7 +646,7 @@ namespace hooks {
 		}
 		u8 time = bullet->time_remaining--;
 		if (bullet->weaponType == WeaponId::AlkajeliskParasiticSpores) {
-			if (bullet->time_remaining < 135 && bullet->attackTarget.unit==NULL) { //135 is 255 - 5*24
+			if (bullet->time_remaining < 135 && bullet->attackTarget.unit==nullptr) { //135 is 255 - 5*24
 				time = 0;
 			}
 		}
@@ -680,7 +680,7 @@ namespace hooks {
 					for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 						CUnit* target = unitsInSplash.getUnit(i);
 						if (finderMatch.match(target)) {
-							if (target != NULL) {
+							if (target != nullptr) {
 								count++;
 							}
 						}
@@ -688,7 +688,7 @@ namespace hooks {
 					for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 						CUnit* target = unitsInSplash.getUnit(i);
 						if (finderMatch.match(target)) {
-							if (target != NULL) {
+							if (target != nullptr) {
 								bullet->sourceUnit->orderTarget.unit = target;
 								auto newAngle = scbw::getAngle(bullet->position.x, bullet->position.y,
 									target->getX(), target->getY());
@@ -719,7 +719,7 @@ namespace hooks {
 				bullet->position.x + range, bullet->position.y + range,
 				bullet, empyreanMissileMatch(bullet)
 			);
-			if (collisionTarget != NULL) {
+			if (collisionTarget != nullptr) {
 				bullet->attackTarget.unit = collisionTarget;
 				bEnd = true;
 			}
@@ -731,7 +731,7 @@ namespace hooks {
 				bullet->position.x + range, bullet->position.y + range,
 				bullet, starsovereignMissileMatch(bullet)
 			);
-			if (collisionTarget != NULL) {
+			if (collisionTarget != nullptr) {
 				bullet->attackTarget.unit = collisionTarget;
 				bEnd = true;
 			}
@@ -744,7 +744,7 @@ namespace hooks {
 				bullet->position.x + range, bullet->position.y + range,
 				bullet, missilePassMatch(bullet)
 			);
-			if (collisionTarget != NULL) {
+			if (collisionTarget != nullptr) {
 				if (bullet->weaponType == WeaponId::PenumbraErebolShockCannon) {
 					Globals.add_bullet_multihit(bullet, collisionTarget);
 				}
@@ -763,7 +763,7 @@ namespace hooks {
 //					scbw::printFormattedText("Hit by bullet: %X", bullet);
 					scbw::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					bullet->moveTarget.unit = bullet->attackTarget.unit;
-					if (bullet->moveTarget.unit != NULL) {
+					if (bullet->moveTarget.unit != nullptr) {
 						bullet->targetPosition = bullet->moveTarget.unit->position;
 						bullet->targetPosition2 = bullet->moveTarget.unit->position;
 					}
@@ -778,7 +778,7 @@ namespace hooks {
 			target = bullet->attackTarget.unit;
 			bullet->behaviourTypeInternal = 5;
 
-			if (target != NULL)	{
+			if (target != nullptr)	{
 				bullet->attackTarget.pt.x = target->sprite->position.x;
 				bullet->attackTarget.pt.y = target->sprite->position.y;
 			}
@@ -902,7 +902,7 @@ namespace hooks {
 		if (unitCanSeeCloakedTarget(pIterator, (*bulletBounceMissileSource))) {
 			return 0;
 		}
-		if (pSrc->subunit != NULL
+		if (pSrc->subunit != nullptr
 		&&	unitIsSubunit(pSrc->subunit)) {
 			v5 = pSrc->subunit;
 		}
@@ -949,9 +949,9 @@ namespace hooks {
 //		scbw::printFormattedText("Gladius code start %d %d",(u32)bulletBounceMissileNext,(u32)pIterator);
 
 		if (Globals.bounce_bullet->weaponType == WeaponId::GladiusPlasmaFlurry){
-			if (pIterator != NULL && *bulletBounceMissileNext != NULL
-				&& (*bulletBounceMissileNext)->sprite != NULL
-				&& _pIterator->sprite != NULL) {
+			if (pIterator != nullptr && *bulletBounceMissileNext != nullptr
+				&& (*bulletBounceMissileNext)->sprite != nullptr
+				&& _pIterator->sprite != nullptr) {
 				if (Globals.was_already_hit_by_multihit_bullet(Globals.bounce_bullet, _pIterator)) {
 					//scbw::printText("NoItr - Already hit");
 					return false;

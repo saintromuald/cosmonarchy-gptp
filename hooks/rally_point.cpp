@@ -17,7 +17,7 @@ void orderNewUnitToRally(CUnit* unit, CUnit* factory) {
 
 	//Do nothing if the rally target is the factory itself or the rally target position is 0
 	if (
-		factory != NULL && 
+		factory != nullptr && 
 		factory->isFactory() && 
 		factory->rally.unit != factory && 
 		factory->rally.pt.x != 0
@@ -25,7 +25,7 @@ void orderNewUnitToRally(CUnit* unit, CUnit* factory) {
 	{
 
 		//Following should be allowed only on friendly units
-		if (factory->rally.unit != NULL && (factory->rally.unit)->playerId == unit->playerId)
+		if (factory->rally.unit != nullptr && (factory->rally.unit)->playerId == unit->playerId)
 			unit->orderTo(OrderId::Follow, factory->rally.unit);
 		else
 			unit->orderTo(OrderId::Move, factory->rally.pt.x, factory->rally.pt.y);
@@ -38,7 +38,7 @@ void orderNewUnitToRally(CUnit* unit, CUnit* factory) {
 
 /// Called when the player sets the rally point on the ground.
 void setRallyPosition(CUnit* unit, u16 x, u16 y) {
-	unit->rally.unit = NULL;
+	unit->rally.unit = nullptr;
 	unit->rally.pt.x = x;
 	unit->rally.pt.y = y;
 }
@@ -48,7 +48,7 @@ void setRallyPosition(CUnit* unit, u16 x, u16 y) {
 /// Called when the player sets the rally point on a unit.
 void setRallyUnit(CUnit* unit, CUnit* target) {
 
-	if (target == NULL) 
+	if (target == nullptr) 
 		target = unit;
 
 	unit->rally.unit = target;

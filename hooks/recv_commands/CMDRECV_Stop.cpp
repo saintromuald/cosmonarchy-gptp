@@ -27,7 +27,7 @@ void CMDRECV_ReaverStop() {
 
 	current_unit = getActivePlayerNextSelection();
 
-	while(current_unit != NULL) {
+	while(current_unit != nullptr) {
 
 		*u32_0066FF60 = 0x00;
 
@@ -95,7 +95,7 @@ void CMDRECV_ReaverStop() {
 
 				while(bContinueLoop) {
 
-					if(current_unit->orderQueueTail == NULL)
+					if(current_unit->orderQueueTail == nullptr)
 						bContinueLoop = false;
 					else
 					if(	orders_dat::CanBeInterrupted[current_unit->orderQueueTail->orderId] ||
@@ -107,7 +107,7 @@ void CMDRECV_ReaverStop() {
 
 				}
 
-				current_unit->performAnotherOrder(OrderId::ReaverStop,0,0,NULL,UnitId::None,0);
+				current_unit->performAnotherOrder(OrderId::ReaverStop,0,0,nullptr,UnitId::None,0);
 
 			}
 
@@ -132,7 +132,7 @@ void CMDRECV_CarrierStop() {
 
 	current_unit = getActivePlayerNextSelection();
 
-	while(current_unit != NULL) {
+	while(current_unit != nullptr) {
 
 		*u32_0066FF60 = 0x00;
 
@@ -200,7 +200,7 @@ void CMDRECV_CarrierStop() {
 
 				while(bContinueLoop) {
 
-					if(current_unit->orderQueueTail == NULL)
+					if(current_unit->orderQueueTail == nullptr)
 						bContinueLoop = false;
 					else
 					if(	orders_dat::CanBeInterrupted[current_unit->orderQueueTail->orderId] ||
@@ -212,7 +212,7 @@ void CMDRECV_CarrierStop() {
 
 				}
 
-				current_unit->performAnotherOrder(OrderId::CarrierStop,0,0,NULL,UnitId::None,0);
+				current_unit->performAnotherOrder(OrderId::CarrierStop,0,0,nullptr,UnitId::None,0);
 
 			}
 
@@ -237,7 +237,7 @@ void CMDRECV_Stop(u8 bCommandType) {
 
 	current_unit = getActivePlayerNextSelection();
 
-	while(current_unit != NULL) {
+	while(current_unit != nullptr) {
 
 		*u32_0066FF60 = 0x00;
 

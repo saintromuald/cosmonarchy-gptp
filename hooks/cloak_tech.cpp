@@ -40,7 +40,7 @@ Bool32 BTNSCOND_IsCloaked(CUnit* unit, u32 playerId, u16 reqVar) {
 
 		unit_from_selection = clientSelectionGroup->unit[i];
 
-		if(unit_from_selection != NULL) {
+		if(unit_from_selection != nullptr) {
 
 			//original code is hardcoded, not using a function
 			u8 techId = getCloakingTech(unit_from_selection); 
@@ -77,7 +77,7 @@ Bool32 BTNSCOND_CanCloak(CUnit* unit, u32 playerId, u16 reqVar) {
 
 		unit_from_selection = clientSelectionGroup->unit[i];
 
-		if(unit_from_selection != NULL) {
+		if(unit_from_selection != nullptr) {
 
 			//original code is hardcoded, not using a function
 			u8 techId = getCloakingTech(unit_from_selection); 

@@ -118,7 +118,7 @@ void transferUnitTechToPlayerHook(CUnit* sourceUnit, u8 targetPlayerId, u32 rese
 	const int relatedTechArraySize					= 5;
 
 	//Stop if the source unit does not exist
-	if (researchTechFunc == NULL || sourceUnit == NULL)
+	if (researchTechFunc == NULL || sourceUnit == nullptr)
 		SErrSetLastError(87);
 	else {
 
@@ -166,7 +166,7 @@ void transferUnitTechToPlayerHook(CUnit* sourceUnit, u8 targetPlayerId, u32 rese
 
 		} //for (TechTransferData* data = (TechTransferData*)techDataArrayPosBegin; !bBreakMainLoop && (data != techDataArrayPosEnd); data++)
 
-	} //if (researchTechFunc != NULL && sourceUnit != NULL)
+	} //if (researchTechFunc != nullptr && sourceUnit != nullptr)
 
 } //void transferUnitTechToPlayerHook(CUnit* sourceUnit, u8 targetPlayerId, u32 researchTechFunc)
 
@@ -181,7 +181,7 @@ void transferUnitUpgradesToPlayerHook(CUnit* sourceUnit, u8 targetPlayerId, u32 
 	const int relatedUpgradeArraySize					= 4;
 
 	//Stop if the source unit does not exist
-	if (researchUpgradesFunc == NULL || sourceUnit == NULL)
+	if (researchUpgradesFunc == NULL || sourceUnit == nullptr)
 		SErrSetLastError(87);	//0x57
 	else {
 
@@ -229,7 +229,7 @@ void transferUnitUpgradesToPlayerHook(CUnit* sourceUnit, u8 targetPlayerId, u32 
 
 		} //for (upgradeTransferData* data = (upgradeTransferData*)upgradeDataArrayPosBegin; !bBreakMainLoop && (data != upgradeDataArrayPosEnd); data++)
 
-	} //if (researchupgradeFunc != NULL && sourceUnit != NULL)
+	} //if (researchupgradeFunc != nullptr && sourceUnit != nullptr)
 
 }
 

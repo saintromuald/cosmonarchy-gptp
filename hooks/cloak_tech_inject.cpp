@@ -109,7 +109,7 @@ void applyCloakingOrderHook(CUnit* unit) {
 			if (scbw::get_generic_value(unit, ValueId::AICloakGimmick) == 1) {
 				spend = false;
 			}
-			if (unit->pAI != NULL) {
+			if (unit->pAI != nullptr) {
 				scbw::set_generic_value(unit, ValueId::AICloakGimmick, 1);
 			}
 			if (spend) {
@@ -120,7 +120,7 @@ void applyCloakingOrderHook(CUnit* unit) {
 		if (unit->secondaryOrderId != OrderId::Cloak) {
 			unit->setSecondaryOrder(OrderId::Cloak);
 		}
-		else if(unit->pAI!=NULL) {
+		else if(unit->pAI!=nullptr) {
 			scbw::set_generic_value(unit, ValueId::AICloakGimmick, 0);
 		}
 	}
@@ -234,7 +234,7 @@ Bool32 __cdecl currentUnitSelectionCanCloakWrapper() {
 
 		CUnit* unit = clientSelectionGroup->unit[i];
 
-		if (unit != NULL) {
+		if (unit != nullptr) {
 			if (
 				scbw::isCheatEnabled(CheatFlags::TheGathering) ||
 				unit->energy >= techdata_dat::EnergyCost[hooks::getCloakingTech(unit)] * 256

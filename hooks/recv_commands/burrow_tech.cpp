@@ -21,7 +21,7 @@ namespace hooks {
 		*selectionIndexStart = 0;
 		selected_unit = getActivePlayerNextSelection();
 
-		while(selected_unit != NULL) {
+		while(selected_unit != nullptr) {
 
 			if(
 				units_dat::BaseProperty[selected_unit->id] & UnitProperty::Burrowable &&
@@ -44,7 +44,7 @@ namespace hooks {
 		*selectionIndexStart = 0;
 		selected_unit = getActivePlayerNextSelection();
 
-		while(selected_unit != NULL) {
+		while(selected_unit != nullptr) {
 
 			if(
 				units_dat::BaseProperty[selected_unit->id] & UnitProperty::Burrowable &&
@@ -98,7 +98,7 @@ namespace hooks {
 
 				bool bStopLoop = false;
 
-				while(unit->orderQueueTail != NULL && !bStopLoop) {
+				while(unit->orderQueueTail != nullptr && !bStopLoop) {
 					if(
 						!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId] &&
 						unit->orderQueueTail->orderId != OrderId::Unburrow
@@ -108,7 +108,7 @@ namespace hooks {
 						removeOrderFromUnitQueue(unit,unit->orderQueueTail);
 				}
 
-				unit->performAnotherOrder(OrderId::Unburrow,0,0,NULL,UnitId::None);
+				unit->performAnotherOrder(OrderId::Unburrow,0,0,nullptr,UnitId::None);
 
 			}
 

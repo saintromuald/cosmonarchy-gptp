@@ -10,8 +10,8 @@ C_ASSERT(sizeof(PLUGIN_NAME) <= MPQDRAFT_MAX_PLUGIN_NAME);
 
 
 BOOL WINAPI Plugin::Identify(LPDWORD lpdwPluginID) {
-  if (lpdwPluginID == NULL) {
-    MessageBox(NULL, "Cannot assign plugin ID", NULL, MB_OK);
+  if (lpdwPluginID == nullptr) {
+    MessageBox(nullptr, "Cannot assign plugin ID", nullptr, MB_OK);
     return FALSE;
   }
 
@@ -20,13 +20,13 @@ BOOL WINAPI Plugin::Identify(LPDWORD lpdwPluginID) {
 }
 
 BOOL WINAPI Plugin::GetPluginName(LPSTR lpszPluginName, DWORD nNameBufferLength) {
-  if (lpszPluginName == NULL) {
-    MessageBox(NULL, "Cannot assign plugin name", NULL, MB_OK);
+  if (lpszPluginName == nullptr) {
+    MessageBox(nullptr, "Cannot assign plugin name", nullptr, MB_OK);
     return FALSE;
   }
 
   if (nNameBufferLength < sizeof(PLUGIN_NAME)) {
-    MessageBox(NULL, "Plugin name buffer is too short", NULL, MB_OK);
+    MessageBox(nullptr, "Plugin name buffer is too short", nullptr, MB_OK);
     return FALSE;
   }
 
@@ -35,8 +35,8 @@ BOOL WINAPI Plugin::GetPluginName(LPSTR lpszPluginName, DWORD nNameBufferLength)
 }
 
 BOOL WINAPI Plugin::CanPatchExecutable(LPCSTR lpszEXEFileName) {
-  if (lpszEXEFileName == NULL) {
-    MessageBox(NULL, "Invalid path to patch target executable", NULL, MB_OK);
+  if (lpszEXEFileName == nullptr) {
+    MessageBox(nullptr, "Invalid path to patch target executable", nullptr, MB_OK);
     return FALSE;
   }
 
@@ -55,8 +55,8 @@ BOOL WINAPI Plugin::ReadyForPatch() {
 }
 
 BOOL WINAPI Plugin::GetModules(MPQDRAFTPLUGINMODULE *lpPluginModules, LPDWORD lpnNumModules) {
-  if (lpnNumModules == NULL) {
-    MessageBox(NULL, "Cannot assign number of modules", NULL, MB_OK);
+  if (lpnNumModules == nullptr) {
+    MessageBox(nullptr, "Cannot assign number of modules", nullptr, MB_OK);
     return FALSE;
   }
 
@@ -145,6 +145,6 @@ BOOL Plugin::checkStarCraftExeVersion(LPCSTR exePath) const {
   }
 
   if (!result)
-    MessageBox(NULL, errorMessage, NULL, MB_OK);
+    MessageBox(nullptr, errorMessage, nullptr, MB_OK);
   return result;
 }

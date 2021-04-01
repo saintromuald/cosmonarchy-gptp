@@ -48,13 +48,13 @@ u8 getSeekRangeHook(CUnit* unit) {
 	bonusAmount += barghestCount / 4;//seek range is measured in tiles, unfortunately
 	/*
 	int r = 16;
-					auto n = unitRangeCount(NULL, CFlags::NoInvincible | CFlags::Enemy | CFlags::NoAir, {});
+					auto n = unitRangeCount(nullptr, CFlags::NoInvincible | CFlags::Enemy | CFlags::NoAir, {});
 					scbw::UnitFinder unitsInSplash(impact.position.x - r, impact.position.y - r,
 						impact.position.x + r, impact.position.y + r);
 	*/
 
 	// Stellar Enforcement - Magister behavior
-	if (unit->orderTarget.unit != NULL
+	if (unit->orderTarget.unit != nullptr
 	&& scbw::get_generic_value(unit->orderTarget.unit, ValueId::StellarEnforcement)) {
 		bonusAmount += 2;
 	}
@@ -67,7 +67,7 @@ u8 getSeekRangeHook(CUnit* unit) {
 	// Compile variable for use in height advantage calculations
 	seekRange = units_dat::SeekRange[unitId] + bonusAmount;
 
-	if (unit->orderTarget.unit != NULL
+	if (unit->orderTarget.unit != nullptr
 	&& !(units_dat::BaseProperty[unit->orderTarget.unit->id] & UnitProperty::Flyer))
 	{
 		// Height advantage
@@ -124,7 +124,7 @@ u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 	}
 
 	// Stellar Enforcement - Magister behavior
-	if (unit->orderTarget.unit != NULL
+	if (unit->orderTarget.unit != nullptr
 	&&	scbw::get_generic_value(unit->orderTarget.unit, ValueId::StellarEnforcement)) {
 		bonusAmount += 64;
 	}

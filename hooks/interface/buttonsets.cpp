@@ -231,7 +231,7 @@ namespace hooks {
 
 			unitFromSelection = clientSelectionGroup->unit[unitIndexFromSelection];
 
-			if (unitFromSelection != NULL) {
+			if (unitFromSelection != nullptr) {
 
 				flagsHolder = units_dat::BaseProperty[unitFromSelection->id];
 
@@ -278,7 +278,7 @@ namespace hooks {
 
 				} //if(DX_holder != activeButtonSetId)
 
-			} //if(unitFromSelection != NULL)
+			} //if(unitFromSelection != nullptr)
 
 			  //58C88
 			unitIndexFromSelection++;
@@ -347,7 +347,7 @@ namespace hooks {
 		else
 			usedButtonIcon = currentSubUnitButtonIcon;
 
-		if (currentButtonDlg != NULL) {
+		if (currentButtonDlg != nullptr) {
 
 			bool bStopLooping = false;
 
@@ -367,11 +367,11 @@ namespace hooks {
 				else
 					currentButtonDlg = currentButtonDlg->next;
 
-			} while (!bStopLooping && currentButtonDlg != NULL);
+			} while (!bStopLooping && currentButtonDlg != nullptr);
 
 		}
 
-		if (currentButtonDlg == NULL)
+		if (currentButtonDlg == nullptr)
 			*BUTTONSET_MAINBUTTONGRAPHIC = 0xFFFF;
 		else {
 
@@ -504,7 +504,7 @@ namespace hooks {
 			CX_Holder = *BUTTONSET_CURRENT_BUTTONSETID;
 
 			if (*BUTTONSET_CURRENT_BUTTONSETID == UnitId::Buttons_Blank) {
-				if (*activePortraitUnit == NULL)
+				if (*activePortraitUnit == nullptr)
 					jumpTo59A38 = true;
 				else
 					CX_Holder = (*activePortraitUnit)->currentButtonSet;
@@ -533,14 +533,14 @@ namespace hooks {
 				//refresh popup text over button
 				function_459770();
 
-				jumpTo59A9F = (*activePortraitUnit == NULL);
+				jumpTo59A9F = (*activePortraitUnit == nullptr);
 
 				if (!jumpTo59A9F) {
 
 					mainOrderIdHolderUnit_EBP = (*activePortraitUnit)->mainOrderId;
 					CX_Holder = mainOrderIdHolderUnit_EBP;
 
-					if ((*activePortraitUnit)->subunit == NULL)
+					if ((*activePortraitUnit)->subunit == nullptr)
 						jumpTo59A83 = true;
 					else {
 						mainOrderIdHolderSubUnit_BL = (*activePortraitUnit)->subunit->mainOrderId;
@@ -565,14 +565,14 @@ namespace hooks {
 				//refresh popup text over button
 				function_459770();
 
-				jumpTo59A9F = (*activePortraitUnit == NULL);
+				jumpTo59A9F = (*activePortraitUnit == nullptr);
 
 				if (!jumpTo59A9F) {
 
 					mainOrderIdHolderUnit_EBP = (*activePortraitUnit)->mainOrderId;
 					CX_Holder = mainOrderIdHolderUnit_EBP;
 
-					if ((*activePortraitUnit)->subunit == NULL)
+					if ((*activePortraitUnit)->subunit == nullptr)
 						jumpTo59A83 = true;
 					else {
 						mainOrderIdHolderSubUnit_BL = (*activePortraitUnit)->subunit->mainOrderId;
@@ -589,13 +589,13 @@ namespace hooks {
 
 			//59A3C
 
-			if (*activePortraitUnit != NULL) {
+			if (*activePortraitUnit != nullptr) {
 
 				bool jumpTo59ABD = false;
 
 				mainOrderIdHolderUnit_EBP = (*activePortraitUnit)->mainOrderId;
 
-				if ((*activePortraitUnit)->subunit != NULL)
+				if ((*activePortraitUnit)->subunit != nullptr)
 					mainOrderIdHolderSubUnit_BL = (*activePortraitUnit)->subunit->mainOrderId;
 				else
 					mainOrderIdHolderSubUnit_BL = 0xFF;
@@ -696,10 +696,10 @@ namespace hooks {
 		//59203:
 		current_dialog = current_dialog->childrenDlg;
 
-		while (current_dialog != NULL && current_dialog->index != 1)
+		while (current_dialog != nullptr && current_dialog->index != 1)
 			current_dialog = current_dialog->next;
 
-		if (current_dialog == NULL || current_dialog->index != 1)
+		if (current_dialog == nullptr || current_dialog->index != 1)
 			bStopThere = true;
 
 		while (!bStopThere) {
@@ -726,7 +726,7 @@ namespace hooks {
 							// Barracks buttonset handling
 							if (current_button->reqVar == UnitId::TerranCleric
 							||	current_button->reqVar == UnitId::TerranShaman) {
-								if ((*activePortraitUnit)->building.addon == NULL) {
+								if ((*activePortraitUnit)->building.addon == nullptr) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMedbay) {
@@ -739,7 +739,7 @@ namespace hooks {
 							else
 							if (current_button->reqVar == UnitId::TerranEidolon
 							||	current_button->reqVar == UnitId::TerranSavant) {
-								if ((*activePortraitUnit)->building.addon == NULL) {
+								if ((*activePortraitUnit)->building.addon == nullptr) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranCovertOps) {
@@ -753,7 +753,7 @@ namespace hooks {
 							// Factory buttonset handling
 							if (current_button->reqVar == UnitId::TerranPhalanxTankMode
 							||	current_button->reqVar == UnitId::TerranGoliath) {
-								if ((*activePortraitUnit)->building.addon == NULL) {
+								if ((*activePortraitUnit)->building.addon == nullptr) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMachineShop) {
@@ -766,7 +766,7 @@ namespace hooks {
 							else
 							if (current_button->reqVar == UnitId::TerranMadrigal
 							||	current_button->reqVar == UnitId::TerranPaladin) {
-								if ((*activePortraitUnit)->building.addon == NULL) {
+								if ((*activePortraitUnit)->building.addon == nullptr) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranSalvoYard) {
@@ -781,7 +781,7 @@ namespace hooks {
 							if (current_button->reqVar == UnitId::TerranSalamander
 								|| current_button->reqVar == UnitId::TerranWyvern
 								|| current_button->reqVar == UnitId::TerranValkyrie) {
-								if ((*activePortraitUnit)->building.addon == NULL) {
+								if ((*activePortraitUnit)->building.addon == nullptr) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMunitionsBay) {
@@ -794,7 +794,7 @@ namespace hooks {
 							else
 							if (current_button->reqVar == UnitId::TerranAzazel
 							||	current_button->reqVar == UnitId::TerranSeraph) {
-								if ((*activePortraitUnit)->building.addon == NULL) {
+								if ((*activePortraitUnit)->building.addon == nullptr) {
 									current_button_state = BUTTON_STATE::Invisible;
 								}
 								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranControlTower) {
@@ -1283,7 +1283,7 @@ namespace hooks {
 							
 							if (current_button->actVar == TechId::SwarmingOmen ) {
 								if ((*activePortraitUnit)->id == UnitId::TerranCyprian) {
-									if (scbw::get_aise_value(*activePortraitUnit, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
+									if (scbw::get_aise_value(*activePortraitUnit, nullptr, AiseId::SendCyprianValue, 0, 0) == 1) {
 										//current_button->actStringID = 1633;
 										current_button->iconID = 375;
 									}
@@ -1323,8 +1323,8 @@ namespace hooks {
 									bool canCancel = false;
 									for (int i = 0; i < 12; i++) {
 										CUnit* selU = clientSelectionGroup->unit[i];
-										if (selU != NULL && selU->id == UnitId::ProtossMindTyrant) {
-											if (scbw::get_aise_value(selU, NULL, AiseId::SumMindControlCost, 0, 0) > 0) {
+										if (selU != nullptr && selU->id == UnitId::ProtossMindTyrant) {
+											if (scbw::get_aise_value(selU, nullptr, AiseId::SumMindControlCost, 0, 0) > 0) {
 												canCancel = true;
 											}
 										}
@@ -1350,7 +1350,7 @@ namespace hooks {
 
 				jumpto5933C =
 					(!*IS_IN_REPLAY) &&
-					(*activePortraitUnit != NULL) &&
+					(*activePortraitUnit != nullptr) &&
 					((*activePortraitUnit)->playerId != *LOCAL_NATION_ID);
 
 				if (!jumpto5933C) {
@@ -1444,13 +1444,13 @@ namespace hooks {
 				//5933C
 				scbw::hideDialog(current_dialog);
 				current_dialog->graphic = 0xFFFF;
-				current_dialog->buttonUser = NULL;
+				current_dialog->buttonUser = nullptr;
 			}
 
 			//5934E
 			current_dialog = current_dialog->next;
 
-			if (current_dialog == NULL)
+			if (current_dialog == nullptr)
 				bStopThere = true;
 
 			jumpto59336 = false;

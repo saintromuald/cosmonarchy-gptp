@@ -44,7 +44,7 @@ void cloakNearbyUnitsHook(CUnit* cloaker) {
 	unitsInAreaOfEffect = getAllUnitsInBounds(&area_of_effect);
 
 	current_unit = *unitsInAreaOfEffect;
-	while(current_unit != NULL) {
+	while(current_unit != nullptr) {
 		if (
 			current_unit != cloaker																	// Don't cloak self
 			&& !(units_dat::BaseProperty[current_unit->id] & UnitProperty::NeutralAccessories)		// Don't cloak items
@@ -93,14 +93,14 @@ void secondaryOrder_Cloak(CUnit* unit) {
 	if (
 		unit->isCloaked == 1 &&
 		!(unit->status & UnitStatus::RequiresDetection) &&
-		unit->burrow_link.next == NULL
+		unit->burrow_link.next == nullptr
 		)
 	{
 
 		unit->burrow_link.next = *firstBurrowedUnit;
-		unit->burrow_link.prev = NULL;
+		unit->burrow_link.prev = nullptr;
 
-		if (*firstBurrowedUnit != NULL)
+		if (*firstBurrowedUnit != nullptr)
 			(*firstBurrowedUnit)->burrow_link.prev = unit;
 
 		*firstBurrowedUnit = unit;

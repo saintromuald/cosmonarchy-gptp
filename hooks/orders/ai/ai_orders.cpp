@@ -247,17 +247,17 @@ namespace hooks {
 		else {
 			pX = result->position.x;
 			pY = result->position.y;
-			GPTP::logger << "NULL sprite of Create Broodling detected!" << '\n';
+			GPTP::logger << "null sprite of Create Broodling detected!" << '\n';
 		}
 		regionId = SAI_GetRegionIdFromPxEx(pX,pY);
 		playerRegion = AiRegionCaptains[parent->playerId];
-		if (playerRegion == NULL) {
-			GPTP::logger << "NULL region in AI_TrainingBroodling!" << '\n';
+		if (playerRegion == nullptr) {
+			GPTP::logger << "null region in AI_TrainingBroodling!" << '\n';
 			return;
 		}
 		regionType = playerRegion[regionId].captainType;//state
 		region = &playerRegion[regionId];		
-		if (region == NULL) {
+		if (region == nullptr) {
 			GPTP::logger << "AI Broodling Bug: Null region!" << '\n';
 		}
 		else {

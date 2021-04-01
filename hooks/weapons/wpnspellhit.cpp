@@ -20,7 +20,7 @@ public:
 		if(unit->plagueTimer>0){
 			unit->newFlags1 |= NewFlags1::Metastasis;
 		}
-		if (defiler != NULL
+		if (defiler != nullptr
 			&& scbw::get_generic_timer(defiler, ValueId::EnsnaringBroodTimer) > 0
 			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building)) {
 			scbw::applyEnsnare(unit);
@@ -82,13 +82,13 @@ namespace hooks {
 				irradiateImageId = ImageId::Irradiate_Large;
 			else
 				irradiateImageId = ImageId::Irradiate_Small;
-			if(target->subunit != NULL)
+			if(target->subunit != nullptr)
 				unitWithOverlay = target->subunit;
 			else
 				unitWithOverlay = target;
 			(unitWithOverlay->sprite)->createTopOverlay(irradiateImageId,0,0,0);
 		}
-		if(attacker!=NULL)
+		if(attacker!=nullptr)
 			target->newFlags1 |= NewFlags1::RadiationShockwave;
 		target->irradiateTimer = 8*3;
 		target->irradiatedBy = attacker;
@@ -128,7 +128,7 @@ namespace hooks {
 			else
 				overlayImageId = ImageId::OpticalFlareHit_Small;
 
-			if(target->subunit != NULL)
+			if(target->subunit != nullptr)
 				overlayTargetUnit = target->subunit;
 			else
 				overlayTargetUnit = target;
@@ -186,7 +186,7 @@ namespace hooks {
 			else
 				overlayImageId = ImageId::LockdownField_Small;
 
-			if(target->subunit != NULL)
+			if(target->subunit != nullptr)
 				overlayTargetUnit = target->subunit;
 			else
 				overlayTargetUnit = target;
@@ -230,14 +230,14 @@ namespace hooks {
 				}
 			}
 		}
-		return NULL;
+		return nullptr;
 	}*/
 
 	void WeaponBulletHit(CBullet* bullet, CUnit* target, u32 damageDivisor) {
 		if(bullet->hitFlags & 2){	
 			//bullet doing no damage (shot from hallucination)
 			bool ephemeralBlades = false;
-			if(bullet->sourceUnit!=NULL){
+			if(bullet->sourceUnit!=nullptr){
 				ephemeralBlades = true;
 			}
 			if(ephemeralBlades){
@@ -271,7 +271,7 @@ namespace hooks {
 		if(swarmDamage>0){
 			scbw::printText("Swarm damage exists, Search for swarm");
 //			CUnit* checkSwarm = scbw::getDarkSwarm(target);
-			if(checkSwarm != NULL){
+			if(checkSwarm != nullptr){
 				char buf[32];
 				sprintf(buf,"Damage to darkswarm: %d",swarmDamage);
 				scbw::printText(buf);
@@ -326,7 +326,7 @@ namespace hooks {
 
 		CUnit* target = attacker->orderTarget.unit;
 
-		if(target != NULL) {
+		if(target != nullptr) {
 
 			u8 weaponId;
 
@@ -347,7 +347,7 @@ namespace hooks {
 
 			if(attacker->status & UnitStatus::IsHallucination){
 				bool ephemeralBlades = false;
-				if(attacker!=NULL){
+				if(attacker!=nullptr){
 					ephemeralBlades = true;
 				}
 				if(ephemeralBlades){
@@ -426,11 +426,11 @@ namespace hooks {
 		unitsInAreaOfEffect = getAllUnitsInBounds(&area_of_effect);
 		current_unit = *unitsInAreaOfEffect;
 
-		while(current_unit != NULL) {
+		while(current_unit != nullptr) {
 			if(
 				current_unit != attacker &&				//EMP doesn't affect the attacker
 				(
-					attacker == NULL ||					//EMP doesn't affect the attacker
+					attacker == nullptr ||					//EMP doesn't affect the attacker
 					current_unit != attacker->subunit	//subunit
 				)
 			)
@@ -446,7 +446,7 @@ namespace hooks {
 
 					if(
 						current_unit->sprite->flags & CSprite_Flags::Selected &&
-						current_unit->sprite != NULL /*I'm following original code, though this order of tests doesn't make sense*/
+						current_unit->sprite != nullptr /*I'm following original code, though this order of tests doesn't make sense*/
 					) 
 						setAllImageGroupFlagsPal11(current_unit->sprite); //redraw the unit
 
@@ -457,7 +457,7 @@ namespace hooks {
 			unitsInAreaOfEffect++;					//go on next unit of the list (or null)
 			current_unit = *unitsInAreaOfEffect;
 
-		} //while(current_unit != NULL)
+		} //while(current_unit != nullptr)
 
 		//reload the previous temporary unit list from before the call to getAllUnitsInBounds
 		*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
@@ -481,7 +481,7 @@ namespace hooks {
 
 		//IterateUnitsAtLocationTargetProc_CorrosiveAcid(attackingPlayerId,&coords);
 		//spreads originally
-		if (bullet->attackTarget.unit != NULL) {
+		if (bullet->attackTarget.unit != nullptr) {
 			scbw::ApplySpores(bullet->attackTarget.unit);
 			
 			if (bullet->attackTarget.unit->acidSporeCount >= 6
@@ -514,8 +514,8 @@ namespace hooks {
 	//easily available information (and getting it the hard way seems overkill)
 	void ConsumeHit(CUnit* attacker, CUnit* target) {
 		//scbw::printText("Try consume");
-		if(attacker == NULL
-		|| target == NULL) {
+		if(attacker == nullptr
+		|| target == nullptr) {
 			return;
 		}
 		else {
@@ -528,7 +528,7 @@ namespace hooks {
 		}
 
 		if(
-			target != NULL && 
+			target != nullptr && 
 			!(target->status & UnitStatus::Invincible) &&
 			getSpellStatString(target,TechId::Consume,attacker->playerId) == 0 //returning a value != 0 means there was an error
 		) 
@@ -574,7 +574,7 @@ namespace hooks {
 		Box16 coords;
 		CThingy* ensnare_effect_sprite;
 		ensnare_effect_sprite = createThingy(SpriteId::Ensnare,x,y,0);
-		if(ensnare_effect_sprite != NULL) {
+		if(ensnare_effect_sprite != nullptr) {
 			ensnare_effect_sprite->sprite->elevationLevel = 19; //0x13
 			setThingyVisibilityFlags(ensnare_effect_sprite);
 		}
@@ -612,7 +612,7 @@ namespace hooks {
 		//the dark swarm is created for player 11 (neutral), not for the owner
 		dark_swarm_unit = CreateUnit(UnitId::Spell_DarkSwarm,coords.x,coords.y,11);
 
-		if(dark_swarm_unit == NULL)
+		if(dark_swarm_unit == nullptr)
 			displayLastNetErrForPlayer(attackingPlayerId);
 		else {
 
@@ -686,7 +686,7 @@ namespace hooks {
 				created_broodling = CreateUnit(UnitId::ZergBroodling, pos.x, pos.y, attacker->playerId);
 				scbw::set_generic_unit(created_broodling, ValueId::BroodlingMother, attacker);
 
-				if (created_broodling == NULL) {
+				if (created_broodling == nullptr) {
 					displayLastNetErrForPlayer(attacker->playerId);
 					jump_to_end_of_loop = true;
 				}
@@ -709,7 +709,7 @@ namespace hooks {
 
 					//AI stuff (may establish relationship between queen and broodling and/or
 					//be about supplies management, or something else?
-					if (attacker->pAI != NULL)
+					if (attacker->pAI != nullptr)
 						AI_TrainingUnit(attacker, created_broodling);
 
 				}
@@ -739,7 +739,7 @@ namespace hooks {
 		coords.right = x + 64;
 
 		IterateUnitsAtLocationTargetProc_Plague(attacker,&coords);
-		if(attacker!=NULL){
+		if(attacker!=nullptr){
 			//scbw::printText("Plague Metastasis is researched");
 			customPlagueProc UpgPlague = customPlagueProc(attacker);
 			u32 range = 64;
@@ -761,7 +761,7 @@ namespace hooks {
 		Box16 coords;
 		CThingy* maelstrom_effect_sprite = createThingy(SpriteId::Maelstrom_Hit,x,y,0);
 
-		if(maelstrom_effect_sprite != NULL) {
+		if(maelstrom_effect_sprite != nullptr) {
 			maelstrom_effect_sprite->sprite->elevationLevel = 17; //0x11
 			setThingyVisibilityFlags(maelstrom_effect_sprite);
 		}
@@ -805,7 +805,7 @@ namespace hooks {
 		Box16 coords;
 		CThingy* stasisfield_effect_sprite = createThingy(SpriteId::Stasis_Field_Hit,x,y,0);
 
-		if(stasisfield_effect_sprite != NULL) {
+		if(stasisfield_effect_sprite != nullptr) {
 			stasisfield_effect_sprite->sprite->elevationLevel = 17; //0x11
 			setThingyVisibilityFlags(stasisfield_effect_sprite);
 		}
@@ -834,7 +834,7 @@ namespace hooks {
 		//if necessary (by modifying coords)
 		fixTargetLocation(&coords, UnitId::Spell_DisruptionWeb);
 		disruption_web_unit = CreateUnit(UnitId::Spell_DisruptionWeb, coords.x, coords.y, 11);
-		if (disruption_web_unit == NULL)
+		if (disruption_web_unit == nullptr)
 			displayLastNetErrForPlayer(attackingPlayerId);
 		else {
 
@@ -1056,7 +1056,7 @@ namespace {
 
 		while(
 			temp_unit->id == UnitId::ProtossSteward &&
-			temp_unit->interceptor.parent != NULL
+			temp_unit->interceptor.parent != nullptr
 		) {
 
 			temp_unit = temp_unit->interceptor.parent;
@@ -1220,7 +1220,7 @@ namespace {
 
 		for(
 			CImage* current_image = sprite->images.head; 
-			current_image != NULL;
+			current_image != nullptr;
 			current_image = current_image->link.next
 		)
 		{

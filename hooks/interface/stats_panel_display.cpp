@@ -40,14 +40,14 @@ namespace hooks {
 			{
 				v5 = v5->next;
 				if (!v5) {
-					v5 = NULL;
+					v5 = nullptr;
 					break;
 				}
 			}
 		}
 		else
 		{
-			v5 = NULL;
+			v5 = nullptr;
 		}
 		scbw::showDialog(v5);
 		scbw::disableDialog(v5);
@@ -121,7 +121,7 @@ namespace hooks {
 				u8 groundWeaponSubunit;												//CL
 
 				if (groundWeaponMainUnit == WeaponId::None) {
-					if (activeUnit->subunit == NULL)
+					if (activeUnit->subunit == nullptr)
 						bNoGroundWeaponDisplay = true;
 					else
 						groundWeaponSubunit = units_dat::GroundWeapon[activeUnit->subunit->id];
@@ -140,7 +140,7 @@ namespace hooks {
 							if (groundWeaponMainUnit != WeaponId::None)
 								groundWeapon = groundWeaponMainUnit;	//26D35
 							else
-								if (activeUnit->subunit == NULL)
+								if (activeUnit->subunit == nullptr)
 									groundWeapon = WeaponId::None;			//26D41
 								else
 									groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id];	//26D51
@@ -167,7 +167,7 @@ namespace hooks {
 			if (airWeaponMainUnit != WeaponId::None)
 				airWeaponSubunit = airWeaponMainUnit;	//26D79
 			else
-				if (activeUnit->subunit == NULL)
+				if (activeUnit->subunit == nullptr)
 					bNoAirWeaponDisplay = true;				//26D82
 				else
 					airWeaponSubunit = units_dat::AirWeapon[activeUnit->subunit->id];	//26D8C
@@ -180,7 +180,7 @@ namespace hooks {
 					if (airWeaponMainUnit != WeaponId::None)
 						airWeapon = airWeaponMainUnit;	//26DA2
 					else {
-						if (activeUnit->subunit == NULL)
+						if (activeUnit->subunit == nullptr)
 							airWeapon = WeaponId::None;	//26DAF
 						else
 							airWeapon = units_dat::AirWeapon[activeUnit->subunit->id];
@@ -197,7 +197,7 @@ namespace hooks {
 
 						groundWeapon = units_dat::GroundWeapon[activeUnit->id];
 
-						if (groundWeapon == WeaponId::None && activeUnit->subunit != NULL)
+						if (groundWeapon == WeaponId::None && activeUnit->subunit != nullptr)
 							groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id]; //26DE6
 
 					}
@@ -211,7 +211,7 @@ namespace hooks {
 						else
 							if (airWeaponMainUnit == WeaponId::None) { //26DFF
 
-								if (activeUnit->subunit == NULL)
+								if (activeUnit->subunit == nullptr)
 									airWeapon = WeaponId::None;	//26E06
 								else
 									airWeapon = units_dat::AirWeapon[activeUnit->subunit->id]; //26E16
@@ -272,14 +272,14 @@ namespace hooks {
 		else
 			current_dialog = dialog->parent;
 
-		if (current_dialog->childrenDlg != NULL) {
+		if (current_dialog->childrenDlg != nullptr) {
 
 			current_dialog = current_dialog->childrenDlg;
 
-			while (current_dialog != NULL && current_dialog->index != index + 9)
+			while (current_dialog != nullptr && current_dialog->index != index + 9)
 				current_dialog = current_dialog->next;
 
-			while (index < 4 && current_dialog != NULL) {
+			while (index < 4 && current_dialog != nullptr) {
 				hideDialog(current_dialog);
 				current_dialog = current_dialog->next;
 				index++;

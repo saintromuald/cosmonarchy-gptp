@@ -39,7 +39,7 @@ void __declspec(naked) UpgradeIdComparison_Wrapper() {
 		PUSHAD
 	}
 	//
-	if(opcode < scbw::get_aise_value(NULL,NULL,AiseId::UpgradeLength,0,0)){
+	if(opcode < scbw::get_aise_value(nullptr,nullptr,AiseId::UpgradeLength,0,0)){
 		__asm {
 			POPAD
 			JMP Hook_Jump_UpgradeFunctionality

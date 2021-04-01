@@ -417,9 +417,9 @@ namespace hooks {
 		addStatus(statuses, "Enthralling Assault", scbw::get_generic_value(unit, ValueId::EnthrallingTalons) > 0);
 
 		// Aise Value - Gimmicked
-		addStatus(statuses, "Phase Link", scbw::get_aise_value(unit, NULL, AiseId::HasClarionLink, 0, 0));
-		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, NULL, AiseId::SumMindControlCost, 0, 0) > 0); // for caster
-		bool malice = scbw::get_aise_value(unit, NULL, AiseId::HasMalice, 0, 0);
+		addStatus(statuses, "Phase Link", scbw::get_aise_value(unit, nullptr, AiseId::HasClarionLink, 0, 0));
+		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0); // for caster
+		bool malice = scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0);
 		addStatus(statuses, "Cowardice", scbw::get_generic_value(unit, ValueId::HierophantOverlay) || malice);
 		addStatus(statuses, "Malice", malice);
 

@@ -24,16 +24,16 @@ void CMDRECV_MergeDarkArchon() {
 	*selectionIndexStart = 0;
 	current_unit = getActivePlayerNextSelection();
 
-	if(	current_unit != NULL && 
+	if(	current_unit != nullptr && 
 		current_unit->canUseTech(TechId::DarkArchonMeld,*ACTIVE_NATION_ID) == 1) 
 	{
 
 		for(int i = 0;i < SELECTION_ARRAY_LENGTH;i++)
-			templars_stored[i] = NULL;
+			templars_stored[i] = nullptr;
 
 		templars_stored_count = 0;
 
-		while(current_unit != NULL) {
+		while(current_unit != nullptr) {
 
 			if(current_unit->id == UnitId::ProtossCabalist) {
 				templars_stored[templars_stored_count] = current_unit;
@@ -51,11 +51,11 @@ void CMDRECV_MergeDarkArchon() {
 
 			templar_stored = templars_stored_iterator[-1];
 
-			if(templar_stored != NULL) {
+			if(templar_stored != nullptr) {
 
 				templar_merge_partner = templarMergePartner(templar_stored,templars_stored_iterator,templars_stored_count);
 
-				if(templar_merge_partner != NULL) {
+				if(templar_merge_partner != nullptr) {
 
 					templar_stored->userActionFlags |= 1;
 
@@ -65,7 +65,7 @@ void CMDRECV_MergeDarkArchon() {
 
 						while(bKeepLooping) {
 
-							if(templar_stored->orderQueueTail == NULL)
+							if(templar_stored->orderQueueTail == nullptr)
 								bKeepLooping = false;
 							else 
 							if(orders_dat::CanBeInterrupted[templar_stored->orderQueueTail->orderId] ||
@@ -100,7 +100,7 @@ void CMDRECV_MergeDarkArchon() {
 
 						while(bKeepLooping) {
 
-							if(templar_merge_partner->orderQueueTail == NULL)
+							if(templar_merge_partner->orderQueueTail == nullptr)
 								bKeepLooping = false;
 							else 
 							if(orders_dat::CanBeInterrupted[templar_merge_partner->orderQueueTail->orderId] ||
@@ -154,16 +154,16 @@ void CMDRECV_MergeArchon() {
 	*selectionIndexStart = 0;
 	current_unit = getActivePlayerNextSelection();
 
-	if(	current_unit != NULL && 
+	if(	current_unit != nullptr && 
 		current_unit->canUseTech(TechId::ArchonWarp,*ACTIVE_NATION_ID) == 1) 
 	{
 
 		for(int i = 0;i < SELECTION_ARRAY_LENGTH;i++)
-			templars_stored[i] = NULL;
+			templars_stored[i] = nullptr;
 
 		templars_stored_count = 0;
 
-		while(current_unit != NULL) {
+		while(current_unit != nullptr) {
 
 			if(current_unit->id == UnitId::ProtossCantavis) {
 				templars_stored[templars_stored_count] = current_unit;
@@ -181,11 +181,11 @@ void CMDRECV_MergeArchon() {
 
 			templar_stored = templars_stored_iterator[-1];
 
-			if(templar_stored != NULL) {
+			if(templar_stored != nullptr) {
 
 				templar_merge_partner = templarMergePartner(templar_stored,templars_stored_iterator,templars_stored_count);
 
-				if(templar_merge_partner != NULL) {
+				if(templar_merge_partner != nullptr) {
 
 					templar_stored->userActionFlags |= 1;
 
@@ -195,7 +195,7 @@ void CMDRECV_MergeArchon() {
 
 						while(bKeepLooping) {
 
-							if(templar_stored->orderQueueTail == NULL)
+							if(templar_stored->orderQueueTail == nullptr)
 								bKeepLooping = false;
 							else 
 							if(orders_dat::CanBeInterrupted[templar_stored->orderQueueTail->orderId] ||
@@ -230,7 +230,7 @@ void CMDRECV_MergeArchon() {
 
 						while(bKeepLooping) {
 
-							if(templar_merge_partner->orderQueueTail == NULL)
+							if(templar_merge_partner->orderQueueTail == nullptr)
 								bKeepLooping = false;
 							else 
 							if(orders_dat::CanBeInterrupted[templar_merge_partner->orderQueueTail->orderId] ||

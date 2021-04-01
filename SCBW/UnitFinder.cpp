@@ -29,7 +29,7 @@ int UnitFinder::getUnitCount(UnitFinderCallbackMatchInterface& callback) const {
 CUnit* UnitFinder::getUnit(int index) const {
   if (0 <= index && index <= this->unitCount)
     return this->units[index];
-  return NULL;
+  return nullptr;
 }
 
 UnitFinderData* UnitFinder::getStartX() {
@@ -134,7 +134,7 @@ CUnit* UnitFinder::getNearest(int x, int y,
     std::max(x - boundsLeft, boundsRight - x),
     std::max(y - boundsTop, boundsBottom - y));
 
-  CUnit* bestUnit = NULL;
+  CUnit* bestUnit = nullptr;
   bool canContinueSearch, hasFoundBestUnit;
 
   do {
@@ -259,7 +259,7 @@ CUnit* UnitFinder::getNearest(int x, int y,
         std::max(x - boundsLeft, boundsRight - x),
         std::max(y - boundsTop, boundsBottom - y));
 
-    CUnit* bestUnit = NULL;
+    CUnit* bestUnit = nullptr;
     bool canContinueSearch, hasFoundBestUnit;
 
     do {
@@ -381,7 +381,7 @@ CUnit* UnitFinder::getNearest(int x, int y,
         std::max(x - boundsLeft, boundsRight - x),
         std::max(y - boundsTop, boundsBottom - y));
 
-    CUnit* bestUnit = NULL;
+    CUnit* bestUnit = nullptr;
     bool canContinueSearch, hasFoundBestUnit;
 
     do {
@@ -586,14 +586,14 @@ CUnit* UnitFinder::getFirst(UnitFinderCallbackMatchInterface &callback) const {
 	  if (callback.match(this->getUnit(i)))
 		return this->getUnit(i);
 
-  return NULL;
+  return nullptr;
 
 }
 
 CUnit* UnitFinder::getBest(scbw::UnitFinderCallbackScoreInterface &callback) const {
 
   int bestScore = -1;
-  CUnit* bestUnit = NULL;
+  CUnit* bestUnit = nullptr;
 
   for (int i = 0; i < this->getUnitCount(); ++i) {
 

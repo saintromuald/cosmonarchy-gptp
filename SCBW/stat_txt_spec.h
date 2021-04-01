@@ -11,14 +11,14 @@ public:
 	}
 	const char* getString(u32 index) const {
 		if (Globals.tbl_extender) {
-			if (index == 0) return NULL;
+			if (index == 0) return nullptr;
 			else if (index <= getStringCountExt())
 				return (const char*)(extendedBuffer)+extendedBuffer[index];
 			else
 				return (const char*)0x00501B7D;
 		}
 		else {
-			if ((u16)index == 0) return NULL;
+			if ((u16)index == 0) return nullptr;
 			else if ((u16)index <= getStringCount())
 				return (const char*)(buffer)+buffer[(u16)index];
 			else

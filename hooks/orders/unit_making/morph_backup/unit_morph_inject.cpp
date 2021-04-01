@@ -169,7 +169,7 @@ namespace {
 		if (unit->status & UnitStatus::Completed)
 			return;
 
-		if (unit->id == UnitId::nydus_canal && unit->building.nydusExit != NULL)
+		if (unit->id == UnitId::nydus_canal && unit->building.nydusExit != nullptr)
 			return;
 
 		//Don't bother if unit is not morphed yet
@@ -205,7 +205,7 @@ namespace {
 			if (unit->id == UnitId::nuclear_missile) {
 				CUnit* silo = unit->connectedUnit;
 				if (silo) {
-					silo->building.silo.nuke = NULL;
+					silo->building.silo.nuke = nullptr;
 					silo->mainOrderState = 0;
 				}
 				scbw::refreshConsole();

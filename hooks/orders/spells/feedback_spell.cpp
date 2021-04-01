@@ -17,7 +17,7 @@ void orders_Feedback(CUnit* unit) {
 	CUnit* target = unit->orderTarget.unit;
 
 	if(
-		target != NULL &&
+		target != nullptr &&
 		units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster &&
 		!(target->status & UnitStatus::IsHallucination)
 	) 
@@ -59,7 +59,7 @@ void orders_Feedback(CUnit* unit) {
 
 						u8 overlaySize = scbw::hasOverlay(target);
 
-						if(target->subunit != NULL)
+						if(target->subunit != nullptr)
 							target->subunit->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small,0,0,0);
 						else
 							target->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small,0,0,0);
@@ -83,12 +83,12 @@ void orders_Feedback(CUnit* unit) {
 	}
 	else {	//F6E92
 
-		if(unit->orderQueueHead != NULL) {
+		if(unit->orderQueueHead != nullptr) {
 			unit->userActionFlags |= 1;
 			prepareForNextOrder(unit);
 		}
 		else
-		if(unit->pAI != NULL)
+		if(unit->pAI != nullptr)
 			unit->orderComputerCL(OrderId::ComputerAI);
 		else
 			unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);

@@ -229,9 +229,9 @@ void CMDRECV_Build(u8 orderId, s16 x, s16 y, u16 builtUnitId) {
 	*selectionIndexStart = 0;
 	builder = getActivePlayerNextSelection();
 
-	if(builder != NULL) {
+	if(builder != nullptr) {
 
-		if(getActivePlayerNextSelection() == NULL) { //multiple selection not allowed
+		if(getActivePlayerNextSelection() == nullptr) { //multiple selection not allowed
 
 			if(
 				x < mapTileSize->width &&

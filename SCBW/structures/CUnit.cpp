@@ -495,7 +495,7 @@ void CUnit::reduceDefensiveMatrixHp(s32 amount) {
 
 		current_image = this->sprite->images.head;
 
-		while(current_image != NULL) {
+		while(current_image != nullptr) {
 
 			if(
 				current_image->id < ImageId::DefensiveMatrixBack_Small ||
@@ -504,7 +504,7 @@ void CUnit::reduceDefensiveMatrixHp(s32 amount) {
 				current_image = current_image->link.next;
 			else {
 				current_image->free();
-				current_image = NULL;	//to exit loop
+				current_image = nullptr;	//to exit loop
 			}
 
 		}
@@ -667,7 +667,7 @@ void CUnit::orderTo(u8 orderId, u16 x, u16 y) {
 	assert(this);
 
 	this->userActionFlags |= 0x1;
-	this->order(orderId, x, y, NULL, UnitId::None, true);
+	this->order(orderId, x, y, nullptr, UnitId::None, true);
 	prepareForNextOrder(this);
 }
 
@@ -675,19 +675,19 @@ void CUnit::orderTo(u8 orderId, u16 x, u16 y) {
 //used in hooks so not doing assert, mind it if used in mods
 void CUnit::orderComputerCL(u8 orderId) {
 	this->userActionFlags |= 1;
-	this->order(orderId,0,0,NULL,UnitId::None,true);
+	this->order(orderId,0,0,nullptr,UnitId::None,true);
 	prepareForNextOrder(this);
 }
 
 //Equivalent to 00474D60 __order function
 void CUnit::orderSimple(u8 orderId, bool stopPreviousOrders) {
-	this->order(orderId,0,0,NULL,UnitId::None,stopPreviousOrders);
+	this->order(orderId,0,0,nullptr,UnitId::None,stopPreviousOrders);
 }
 
 //Equivalent to 00474D10 issueQueuedOrderTarget function
 void CUnit::issueQueuedOrderTarget(u8 orderId, CUnit* target, bool stopPreviousOrders) {
-	if(target == NULL)
-		this->order(orderId,0,0,NULL,UnitId::None,stopPreviousOrders);
+	if(target == nullptr)
+		this->order(orderId,0,0,nullptr,UnitId::None,stopPreviousOrders);
 	else
 		this->order(orderId,target->sprite->position.x,target->sprite->position.y,target,UnitId::None,stopPreviousOrders);
 }
@@ -759,7 +759,7 @@ void CUnit::setSecondaryOrder(u8 orderId) {
 	this->secondaryOrderId = orderId;
 	this->secondaryOrderPos.x = 0;
 	this->secondaryOrderPos.y = 0;
-	this->currentBuildUnit = NULL;
+	this->currentBuildUnit = nullptr;
 	this->secondaryOrderState = 0;
 }
 
@@ -811,9 +811,9 @@ graphics::ColorId CUnit::getFactionColor(CUnit* unit) {
 	//store a playerId until the end where it will properly store a ColorId
 	graphics::ColorId return_value;
 
-	if(unit != NULL) {
+	if(unit != nullptr) {
 
-		if(unit->sprite != NULL)
+		if(unit->sprite != nullptr)
 			// note: using the sprite playerId to preserve recruitable units color
 			return_value = unit->sprite->playerId;
 		else
@@ -861,9 +861,9 @@ graphics::ColorId CUnit::getColor(CUnit* unit) {
 
 	graphics::ColorId return_value;
 
-	if(unit != NULL) {
+	if(unit != nullptr) {
 
-		if(unit->sprite != NULL)
+		if(unit->sprite != nullptr)
 			// note: using the sprite playerId to preserve recruitable units color
 			return_value = unit->sprite->playerId;
 		else
@@ -888,7 +888,7 @@ graphics::ColorId CUnit::getColor(CUnit* unit) {
 
 	}
 	else
-		return_value = graphics::BLACK; // will return 0/black if unit is NULL
+		return_value = graphics::BLACK; // will return 0/black if unit is nullptr
 
 	return return_value;
 
@@ -1069,11 +1069,11 @@ CUnit* CUnit::getFromIndex(u16 index) {
 		{
 			return (CUnit*)&new_unit_table.units[index-1];
 		}
-		return NULL;
+		return nullptr;
 	}
 	if (1 <= index && index <= UNIT_ARRAY_LENGTH)
 		return &unitTable[index - 1];
-	return NULL;
+	return nullptr;
 }
 
 u16 CUnit::getIndex() const {
@@ -1101,7 +1101,7 @@ CUnit* CUnit::getLoadedUnit(int index) const {
 			&& loadedUnit->targetOrderSpecial == this->loadedUnit[index].unitId)
 		return loadedUnit;
 
-	return NULL;
+	return nullptr;
 }
 
 //Logically equivalent to function @ 0x004E6C90
@@ -1114,7 +1114,7 @@ CUnit* CUnit::getFirstLoadedUnit() const {
 			return firstLoadedUnit;
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //Logically equivalent to function @ 0x004E7110

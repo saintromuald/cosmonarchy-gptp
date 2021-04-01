@@ -29,9 +29,9 @@ void orders_Spell(CUnit* unit) {
 			scbw::set_generic_timer(unit, ValueId::SkyfallTimer, 3);
 			scbw::set_generic_value(unit, ValueId::SkyfallStacks, 0);
 			auto pt = unit->orderTarget.pt;
-			if (unit->orderTarget.unit != NULL) {
+			if (unit->orderTarget.unit != nullptr) {
 				pt = unit->orderTarget.unit->position;
-				unit->orderTarget.unit = NULL;
+				unit->orderTarget.unit = nullptr;
 			}
 			//scbw::printFormattedText("Fire skyfall %d %d -> %d %d",unit->getX(),unit->getY(),pt.x,pt.y);
 			scbw::set_generic_value(unit, ValueId::SkyfallX, unit->orderTarget.pt.x);
@@ -66,7 +66,7 @@ void orders_Spell(CUnit* unit) {
 		}
 		else { //92886
 			//scbw::printText("No Signal 2 yet");
-			if(target != NULL) {
+			if(target != nullptr) {
 				//scbw::printText("Target exists");
 				
 				unit->orderTarget.pt.x = target->sprite->position.x;
@@ -131,7 +131,7 @@ void orders_Spell(CUnit* unit) {
 
 				message = (char*)statTxtTblNew->getString(864 + raceId); //Not Enough Energy
 
-				if(message != NULL) {
+				if(message != nullptr) {
 
 					//display an error message only for the owner
 					//of the unit
@@ -190,7 +190,7 @@ void orders_Spell(CUnit* unit) {
 						//relinking
 						target = unit->orderTarget.unit;
 
-						if(unit->pAI != NULL && target != NULL) {
+						if(unit->pAI != nullptr && target != nullptr) {
 							
 							if(orderWeaponId <= WeaponId::Maelstrom) { //Maelstrom is the last spell-related weapon
 
@@ -234,7 +234,7 @@ void orders_Spell(CUnit* unit) {
 
 							} //if(orderWeaponId <= WeaponId::Maelstrom)
 
-						} //if(unit->pAI != NULL && target != NULL)
+						} //if(unit->pAI != nullptr && target != nullptr)
 
 						if(!bStopHere) { //92AA3
 
@@ -260,14 +260,14 @@ void orders_Spell(CUnit* unit) {
 
 							unit->movementFlags |= MovementFlags::StartingAttack;
 
-							if(unit->sprite->images.head != NULL) {
+							if(unit->sprite->images.head != nullptr) {
 
 								CImage* current_image = unit->sprite->images.head;
 								IscriptAnimation::Enum anim = (IscriptAnimation::Enum)orders_dat::OrderIscriptAnim[unit->mainOrderId];
 								if (techUsed == TechId::Lockdown && unit->vulture.spiderMineCount > 0) {
 									unit->vulture.spiderMineCount--;
 								}
-								while(current_image != NULL) {
+								while(current_image != nullptr) {
 									current_image->playIscriptAnim(anim);
 									current_image = current_image->link.next;
 								}
@@ -276,7 +276,7 @@ void orders_Spell(CUnit* unit) {
 
 							unit->mainOrderState = 2;
 
-							if(unit->pAI != NULL)
+							if(unit->pAI != nullptr)
 								AIScriptController[unit->playerId].spellcasterTimer = 1;
 
 						}

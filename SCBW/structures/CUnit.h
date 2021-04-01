@@ -127,11 +127,11 @@ struct CUnit: public CUnitLayout {
   /// Greater Spire, Sunken or Spore Colony under construction).
   bool isRemorphingBuilding() const;
 
-  /// Checks if the current unit is a subunit (i.e. not NULL and has the
+  /// Checks if the current unit is a subunit (i.e. not nullptr and has the
   /// UnitProperty::Subunit flag set).
   bool isSubunit() const;
 
-  /// Checks if the current unit is a factory (i.e. not NULL and has the
+  /// Checks if the current unit is a factory (i.e. not nullptr and has the
   /// flag isFactory from GroupFlags set).
   bool isFactory() const;
   
@@ -179,18 +179,18 @@ struct CUnit: public CUnitLayout {
   /// Deals damage to this unit, using a specific weapons.dat ID.
   void damageWith(s32 damage,               ///< Amount of damage dealt to this unit.
                   u8 weaponId,              ///< weapons.dat ID to use.
-                  CUnit* attacker = NULL,   ///< Attacking unit (for increasing kill count)
+                  CUnit* attacker = nullptr,   ///< Attacking unit (for increasing kill count)
                   u8 attackingPlayer = -1,  ///< Attacking player (for increasing kill score)
                   s8 direction = 0,         ///< Attacked direction (for shield flicker overlays)
                   u8 damageDivisor = 1      ///< Damage divisor (for splash damage / glave wurm calculations)
                   );
 
   /// Deals damage directly to unit HP, killing it if possible.
-  void damageHp(s32 damage, CUnit* attacker = NULL,
+  void damageHp(s32 damage, CUnit* attacker = nullptr,
                 s32 attackingPlayer = -1, bool notify = true);
 
 	/// Deals damage to shields and hp
-  void inflictDamage(s32 damage, CUnit* attacker = NULL,
+  void inflictDamage(s32 damage, CUnit* attacker = nullptr,
 	  s32 attackingPlayer = -1, bool notify = true, bool shield_overlay = false, int direction = 0, bool ignoreDmg128Overflow = false);
   
 
@@ -226,7 +226,7 @@ struct CUnit: public CUnitLayout {
   //////////////////////////////////////////////////////////////// @{
 
   /// Issue the @p order to the unit, using the given @p target unit.
-  void orderTo(u8 orderId, CUnit* target = NULL);
+  void orderTo(u8 orderId, CUnit* target = nullptr);
 
   /// Issue the @p order to the unit, using the given position as the target.
   void orderTo(u8 orderId, u16 x, u16 y);
@@ -260,7 +260,7 @@ struct CUnit: public CUnitLayout {
   //////////////////////////////////////////////////////////////// @{
   
   /// Returns the overlay image of this unit's sprite (or its subunit's sprite)
-  /// that matches the @p imageId. If the image cannot be found, returns NULL.
+  /// that matches the @p imageId. If the image cannot be found, returns nullptr.
   CImage* getOverlay(u16 imageId) const;
   s32 maxShields() const;
   bool shieldsEnabled() const;
@@ -358,7 +358,7 @@ struct CUnit: public CUnitLayout {
   void fireWeapon(u8 weaponId) const;
 
   /// Retrieves the unit pointer by @p index from the unit table (first unit is
-  /// indexed at 1). If invalid, returns NULL instead.
+  /// indexed at 1). If invalid, returns nullptr instead.
   static CUnit* getFromIndex(u16 index);
 
   /// Returns the index of this unit in the unit table. First unit == index 1.
@@ -371,11 +371,11 @@ struct CUnit: public CUnitLayout {
   u8 getLastOwnerId() const;
 
   /// Returns the loaded unit at @p index (value between 0-7). If no unit is
-  /// loaded at the slot, returns NULL instead.
+  /// loaded at the slot, returns nullptr instead.
   CUnit* getLoadedUnit(int index) const;
   
   /// Returns the first unit loaded in this unit. If this unit is not a
-  /// transport, or has no units inside, this function returns NULL instead.
+  /// transport, or has no units inside, this function returns nullptr instead.
   CUnit* getFirstLoadedUnit() const;
 
   /// Checks if this unit has other units loaded inside.

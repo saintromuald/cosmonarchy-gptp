@@ -137,7 +137,7 @@ namespace hooks {
 
 				CImage* overlay = building->sprite->getOverlay(ImageId::VespeneGeyser2);
 
-				if (overlay != NULL)
+				if (overlay != nullptr)
 					overlay->free();
 
 			}
@@ -241,7 +241,7 @@ namespace hooks {
 
 
 				current_image = building->sprite->images.head;
-				while (current_image != NULL) {
+				while (current_image != nullptr) {
 					current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
 					current_image = current_image->link.next;
 				}
@@ -386,7 +386,7 @@ namespace hooks {
 					unit->hitPoints = hp;
 					unit->shields = shield;
 					CImage* anchor = unit->getOverlay(ImageId::WarpAnchor);
-					if (anchor != NULL) {
+					if (anchor != nullptr) {
 						//scbw::printText("Anchor detected");
 						anchor->playIscriptAnim(IscriptAnimation::Death);
 					}
@@ -394,7 +394,7 @@ namespace hooks {
 						//scbw::printText("No anchor");
 						unit->sprite->createTopOverlay(970);
 						anchor = unit->getOverlay(970);
-						if (anchor != NULL) {
+						if (anchor != nullptr) {
 							//scbw::printText("Anchor2");
 							anchor->playIscriptAnim(IscriptAnimation::Death);
 						}
@@ -427,7 +427,7 @@ namespace hooks {
 
 				CUnit* drone = createUnit(UnitId::ZergDroleth, unit->getX(), unit->getY(), unit->playerId);
 
-				if (drone == NULL) {
+				if (drone == nullptr) {
 					displayLastNetErrForPlayer(unit->playerId);
 					unit->remove();
 					bStopThere = true;
@@ -452,7 +452,7 @@ namespace hooks {
 
 				CThingy* thingy = createThingy(SpriteId::Zerg_Building_Spawn_Small, unit->getX(), unit->getY(), 0);
 
-				if (thingy != NULL) {
+				if (thingy != nullptr) {
 					thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
 					scbw::setThingyVisibilityFlags(thingy);
 				}
@@ -484,7 +484,7 @@ namespace hooks {
 					units_dat::ReturnToIdleOrder[unit->id],
 					0,
 					0,
-					NULL,
+					nullptr,
 					UnitId::None,
 					false
 				);
@@ -883,7 +883,7 @@ namespace hooks {
 
 	void SetSpecialState1(CSprite* sprite) {
 		CImage* current_image = sprite->images.head;
-		while (current_image != NULL) {
+		while (current_image != nullptr) {
 			if (current_image->id != ImageId::StargateOverlay) {
 				current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 			}

@@ -28,7 +28,7 @@ namespace {
 			PUSHAD
 		};
 
-		if(clicked_unit != NULL)
+		if(clicked_unit != nullptr)
 			hooks::function_0046FB40(clicked_unit);
 
 		__asm {

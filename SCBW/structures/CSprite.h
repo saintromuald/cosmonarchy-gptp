@@ -58,7 +58,7 @@ struct CSprite {
 	void removeOverlay(u32 imageId);
 
 	/// Returns the overlay image of this sprite that has the given @p imageId.
-	/// If the image cannot be found, returns NULL.
+	/// If the image cannot be found, returns nullptr.
 	CImage* getOverlay(u16 imageId) const;
 
 	/// Checks whether this sprite is visible to @p playerId (i.e. not covered by

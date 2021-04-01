@@ -107,7 +107,7 @@ namespace hooks {
 		for (int i = 0; i < 12; i++) {
 			if (CurrentUnitSelection->unit[i] == unit) {
 				return true;
-			} else if (CurrentUnitSelection->unit[i] != NULL) {
+			} else if (CurrentUnitSelection->unit[i] != nullptr) {
 				return false;
 			}
 		}

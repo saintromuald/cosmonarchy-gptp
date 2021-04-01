@@ -25,7 +25,7 @@ namespace hooks {
         */
         if (!(flags & UnitStatus::IgnoreTileCollision) || !(flags & UnitStatus::IsNormal)) {
             sprite = unit->sprite;
-            if (sprite!=NULL && unit->moveTarget.pt.x == sprite->position.x
+            if (sprite!=nullptr && unit->moveTarget.pt.x == sprite->position.x
                 && unit->moveTarget.pt.y == sprite->position.y
                 && ((flags & UnitStatus::Unmovable) != 0) != -1
                 && unit->nextTargetWaypoint.x == unit->position.x

@@ -24,7 +24,7 @@ void CMDRECV_CancelNuke() {
 	*selectionIndexStart = 0;
 	current_unit = getActivePlayerNextSelection();
 
-	while(current_unit != NULL) {
+	while(current_unit != nullptr) {
 
 		// Why is it like this? We should instead check if the unit has a connected nuke, rather than doing insipid hardcode.
 		if(current_unit->id == UnitId::TerranEidolon
@@ -34,9 +34,9 @@ void CMDRECV_CancelNuke() {
 
 			CUnit* nuke = current_unit->connectedUnit;
 
-			if(nuke != NULL && nuke->id == UnitId::TerranNuclearMissile) {
-				current_unit->connectedUnit = NULL;
-				nuke->connectedUnit = NULL;
+			if(nuke != nullptr && nuke->id == UnitId::TerranNuclearMissile) {
+				current_unit->connectedUnit = nullptr;
+				nuke->connectedUnit = nullptr;
 			}
 
 		}
@@ -57,8 +57,8 @@ void CMDRECV_CancelAddon() {
 	*selectionIndexStart = 0;
 	unit = getActivePlayerNextSelection();
 
-	if(	unit != NULL &&
-		getActivePlayerNextSelection() == NULL &&
+	if(	unit != nullptr &&
+		getActivePlayerNextSelection() == nullptr &&
 		unit->secondaryOrderId == OrderId::BuildAddon &&
 		unit->status & UnitStatus::GroundedBuilding
 	)
@@ -66,7 +66,7 @@ void CMDRECV_CancelAddon() {
 
 		CUnit* addon = unit->currentBuildUnit;
 
-		if(	addon != NULL &&
+		if(	addon != nullptr &&
 			!(addon->status & UnitStatus::Completed) &&
 			unit->status & UnitStatus::Completed &&
 			unit->playerId == *ACTIVE_NATION_ID
@@ -90,8 +90,8 @@ void CMDRECV_CancelUpgrade() {
 	*selectionIndexStart = 0;
 	unit = getActivePlayerNextSelection();
 
-	if(	unit != NULL &&
-		getActivePlayerNextSelection() == NULL &&
+	if(	unit != nullptr &&
+		getActivePlayerNextSelection() == nullptr &&
 		unit->status & UnitStatus::Completed &&
 		unit->playerId == *ACTIVE_NATION_ID
 	)
@@ -112,8 +112,8 @@ void CMDRECV_CancelResearch() {
 	*selectionIndexStart = 0;
 	unit = getActivePlayerNextSelection();
 
-	if(	unit != NULL &&
-		getActivePlayerNextSelection() == NULL &&
+	if(	unit != nullptr &&
+		getActivePlayerNextSelection() == nullptr &&
 		units_dat::BaseProperty[unit->id] & UnitProperty::Building &&
 		unit->status & UnitStatus::Completed &&
 		unit->playerId == *ACTIVE_NATION_ID
@@ -134,8 +134,8 @@ void CMDRECV_CancelTrain(u16 wUnitID) {
 
 	*selectionIndexStart = 0;
 	unit = getActivePlayerNextSelection();
-	if(	unit != NULL &&
-		getActivePlayerNextSelection() == NULL &&
+	if(	unit != nullptr &&
+		getActivePlayerNextSelection() == nullptr &&
 		unit->id != UnitId::ZergLarva &&
 		unit->id != UnitId::ZergMutalisk &&
 		unit->id != UnitId::ZergHydralisk &&
@@ -172,7 +172,7 @@ void CMDRECV_CancelUnitMorph() {
 	*selectionIndexStart = 0;
 	current_unit = getActivePlayerNextSelection();
 
-	while(current_unit != NULL) {
+	while(current_unit != nullptr) {
 		if(current_unit->playerId == *ACTIVE_NATION_ID)
 			AI_CancelStructure(current_unit);
 
@@ -191,7 +191,7 @@ void CMDRECV_CancelConstruction() {
 
 	*selectionIndexStart = 0;
 	unit = getActivePlayerNextSelection();
-	if(unit!=NULL){
+	if(unit!=nullptr){
 		if(unit->id==158 || unit->id==161){
 			if (unit->getOverlay(ImageId::WarpAnchor)) {				
 				unit->removeOverlay(ImageId::WarpAnchor);				
@@ -199,8 +199,8 @@ void CMDRECV_CancelConstruction() {
 		}
 	}
 	//scbw::printText("Debug Cancel Structure");
-	if(	unit != NULL &&
-		getActivePlayerNextSelection() == NULL &&
+	if(	unit != nullptr &&
+		getActivePlayerNextSelection() == nullptr &&
 		unit->playerId == *ACTIVE_NATION_ID
 	)
 	{

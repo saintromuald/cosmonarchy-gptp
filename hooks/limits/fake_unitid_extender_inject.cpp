@@ -3,7 +3,7 @@
 namespace hooks {
 
 	u32 get_flingy_ptr_val() {
-		return scbw::get_aise_value(NULL, NULL, AiseId::GetFlingyPtr, 0, 0);
+		return scbw::get_aise_value(nullptr, nullptr, AiseId::GetFlingyPtr, 0, 0);
 	}
 
 	const u32 wrapper1Jmp = 0x00454317 + 7;

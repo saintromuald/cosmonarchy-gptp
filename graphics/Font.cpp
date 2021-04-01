@@ -7,11 +7,11 @@ namespace graphics {
 
 FontChar* Font::getChar(char c) const {
   u8 ch = (u8)c;
-  if (this != NULL
+  if (this != nullptr
       && this->low <= ch && ch <= this->high
       && this->chrs[ch - this->low] != (FontChar*)this)
     return this->chrs[ch - this->low];
-  return NULL;
+  return nullptr;
 }
 
 int Font::getCharWidth(char c) const {
@@ -41,7 +41,7 @@ int Font::getTextWidth(const char *pszStr) const {
 // ----------------- GET WIDTH ---------------------
 int Font::getTextHeight(const char *pszStr) const {
   // verify valid size index
-  if (!pszStr || this == NULL) return 0;
+  if (!pszStr || this == nullptr) return 0;
 
   int size = this->yMax;
   for (; *pszStr; ++pszStr) {
@@ -52,13 +52,13 @@ int Font::getTextHeight(const char *pszStr) const {
 }
 
 int Font::maxWidth() const {
-  if (this != NULL)
+  if (this != nullptr)
     return this->xMax;
   return 0;
 }
 
 int Font::maxHeight() const {
-  if (this != NULL)
+  if (this != nullptr)
     return this->yMax;
   return 0;
 }
@@ -78,36 +78,36 @@ int Font::getTextHeight(const char *pszStr, int size) {
 // ---------------- FontChar ----------------
 
 int FontChar::getWidth() const {
-  if (this != NULL)
+  if (this != nullptr)
     return this->width;
   return 0;
 }
 
 int FontChar::getHeight() const {
-  if (this != NULL)
+  if (this != nullptr)
     return this->height;
   return 0;
 }
 
 int FontChar::getX() const {
-  if (this != NULL)
+  if (this != nullptr)
     return this->x;
   return 0;
 }
 
 int FontChar::getY() const {
-  if (this != NULL)
+  if (this != nullptr)
     return this->y;
   return 0;
 }
 
 int FontChar::colorMask(int index) const {
-  assert(this != NULL);
+  assert(this != nullptr);
   return this->data[index] & 7;
 }
 
 int FontChar::pixelOffset(int index) const {
-  assert(this != NULL);
+  assert(this != nullptr);
   return this->data[index] >> 3;
 }
 

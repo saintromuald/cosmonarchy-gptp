@@ -57,7 +57,7 @@ namespace hooks {
 		u16 infestedUnitNewId;
 		u16 infestationOverlayId;
 		CUnit* unitInfesting = unitInfested->orderTarget.unit;
-		bErrorReturnToIdle = (unitInfesting == NULL || !isInfestableUnit(unitInfested));
+		bErrorReturnToIdle = (unitInfesting == nullptr || !isInfestableUnit(unitInfested));
 
 		if(!bErrorReturnToIdle) {
 			if(unitInfested->mainOrderState == 0) {
@@ -78,7 +78,7 @@ namespace hooks {
 					unitInfested->remainingBuildTime--;
 
 					//disconnect terran buildings from their add-on
-					if(unitInfested->building.addon != NULL)
+					if(unitInfested->building.addon != nullptr)
 						disconnectFromAddOn(unitInfested);
 
 					//this is the same as calling 0047B2E0 unitIsFactoryUnit like original code but faster
@@ -113,7 +113,7 @@ namespace hooks {
 					//unitInfested->secondaryOrderId == OrderId::Nothing2 beforehand
 					unitInfested->secondaryOrderPos.y = 0;
 					unitInfested->secondaryOrderPos.x = 0;
-					unitInfested->currentBuildUnit = NULL;
+					unitInfested->currentBuildUnit = nullptr;
 					unitInfested->secondaryOrderState = 0;
 					unitInfested->secondaryOrderId = OrderId::Nothing2;
 
@@ -122,17 +122,17 @@ namespace hooks {
 
 					//clear the orders queue of the unit (hardcoding function @ 0x004744D0)
 					//original code used the actual function instead of hardcoding
-					while(unitInfested->orderQueueHead != NULL)
+					while(unitInfested->orderQueueHead != nullptr)
 						removeOrderFromUnitQueue(unitInfested, unitInfested->orderQueueHead);
 
 					if(unitInfested->status & UnitStatus::GroundedBuilding) {
 						CImage* current_image = unitInfested->sprite->images.head;
 
-						while(current_image != NULL) {
+						while(current_image != nullptr) {
 							//script 0x14 in asm code
 							current_image->playIscriptAnim(IscriptAnimation::WorkingToIdle);
 
-							//load next image of the list (or NULL)
+							//load next image of the list (or nullptr)
 							current_image = current_image->link.next;
 						}
 					}
@@ -190,7 +190,7 @@ namespace hooks {
 				makeToHoldPosition(unitInfesting);
 				showAndEnableUnit(unitInfesting);
 
-				if(unitInfesting->orderQueueHead == NULL) {
+				if(unitInfesting->orderQueueHead == nullptr) {
 					unitInfesting->orderSimple(units_dat::ReturnToIdleOrder[unitInfesting->id],false);
 					bReturnToIdle = true;
 				}
@@ -207,7 +207,7 @@ namespace hooks {
 		if(!bStopFunction) { //EA33F
 			//not started the infestation logic yet, doing it here
 
-			if(		unitInfested != NULL && 
+			if(		unitInfested != nullptr && 
 					isInfestableUnit(unitInfested) &&
 					unitInfested->mainOrderId != OrderId::InfestMine1)
 			{
@@ -230,14 +230,14 @@ namespace hooks {
 
 				}
 				//EA39E
-				if(unitInfesting->orderQueueHead != NULL)
+				if(unitInfesting->orderQueueHead != nullptr)
 					actUnitReturnToIdle(unitInfesting);
 				else {
 					unitInfesting->order(
 						units_dat::ReturnToIdleOrder[unitInfesting->id],
 						0, 
 						0, 
-						NULL, 
+						nullptr, 
 						UnitId::None, 
 						false);
 					actUnitReturnToIdle(unitInfesting);

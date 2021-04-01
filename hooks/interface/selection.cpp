@@ -41,10 +41,10 @@ namespace hooks {
 		bool bKeepForEmptyListCase = false;
 		bool bDontAddToList = false;
 
-		backup_current_unit = NULL;
+		backup_current_unit = nullptr;
 
 		//if unit not null, become first entry of unit_list
-		if(unit != NULL) {
+		if(unit != nullptr) {
 			unit_list[0] = unit;
 			current_index_in_unit_list = 1;
 		}
@@ -54,7 +54,7 @@ namespace hooks {
 		//work with the first unit from units_in_bounds
 		current_unit = *units_in_bounds;
 
-		if(current_unit == NULL)
+		if(current_unit == nullptr)
 			bStopBigLoop = true;
 
 		while(!bStopBigLoop) {
@@ -64,7 +64,7 @@ namespace hooks {
 				 //if current_unit==unit, then it's already in
 				//unit_list
 
-				if(current_unit->subunit != NULL) {
+				if(current_unit->subunit != nullptr) {
 
 					//if what got selected is the turret or another subunit, swap
 					//the unit and the subunit as current_unit
@@ -89,7 +89,7 @@ namespace hooks {
 
 					}
 
-				} //if(current_unit->subunit != NULL)
+				} //if(current_unit->subunit != nullptr)
 
 				if(!bDontAddToList) {
 
@@ -129,7 +129,7 @@ namespace hooks {
 
 							//6F1C5
 
-							if(unit != NULL) {
+							if(unit != nullptr) {
 
 								//all units should belong to the same player (the one owning the clicked unit)
 								if(unit->playerId != current_unit->playerId)
@@ -183,7 +183,7 @@ namespace hooks {
 
 								}
 
-							} //if(unit != NULL)
+							} //if(unit != nullptr)
 
 							if(!bDontAddToList) {
 
@@ -221,8 +221,8 @@ namespace hooks {
 			bKeepForEmptyListCase = false;
 			bDontAddToList = false;
 
-			//continue until current_unit is NULL
-			if(current_unit == NULL)
+			//continue until current_unit is nullptr
+			if(current_unit == nullptr)
 				bStopBigLoop = true;
 
 		} //loop back at 6F237
@@ -234,11 +234,11 @@ namespace hooks {
 			//if current_index_in_unit_list == 0, the list is empty
 			//and cannot be used, so another solution is found here.
 
-			if(backup_current_unit == NULL) {
+			if(backup_current_unit == nullptr) {
 
 				//6F24E
 
-				if(unit == NULL)
+				if(unit == nullptr)
 					current_index_in_unit_list = 0; //return 0 (no list)
 				else {
 					//6F252
@@ -246,12 +246,12 @@ namespace hooks {
 					current_index_in_unit_list = 1; //return 1 (the clicked unit alone)
 				}
 
-			} //if(backup_current_unit == NULL)
+			} //if(backup_current_unit == nullptr)
 			else {
 
 				//6F264
 
-				if(unit != NULL) {
+				if(unit != nullptr) {
 					unit_list[0] = unit;
 					current_index_in_unit_list = 1; //return 1 (the clicked unit alone)
 				}
@@ -292,11 +292,11 @@ namespace hooks {
 			( *IS_DOUBLE_CLICKING && (clicked_unit->sprite->flags & CSprite_Flags::Selected) );
 
 		for(int i = 0; i < SELECTION_ARRAY_LENGTH; i++)
-			local_temp_array_1[i] = NULL;
+			local_temp_array_1[i] = nullptr;
 
 		if(
 			isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit ||
-			( *IS_HOLDING_SHIFT && (activePlayerSelection->unit[0] != NULL) )
+			( *IS_HOLDING_SHIFT && (activePlayerSelection->unit[0] != nullptr) )
 			) 
 		{
 
@@ -404,7 +404,7 @@ namespace hooks {
 					int arrayIndex;
 
 					//copy the existing selection into the local array
-					for(arrayIndex = 0 ; arrayIndex < SELECTION_ARRAY_LENGTH && activePlayerSelection->unit[arrayIndex] != NULL; arrayIndex++)
+					for(arrayIndex = 0 ; arrayIndex < SELECTION_ARRAY_LENGTH && activePlayerSelection->unit[arrayIndex] != nullptr; arrayIndex++)
 						local_temp_array_1[arrayIndex] = activePlayerSelection->unit[arrayIndex];
 
 					if( !(clicked_unit->sprite->flags & CSprite_Flags::Selected) ) {	
@@ -459,7 +459,7 @@ namespace hooks {
 
 						//either erase the element to delete or one that was repeated
 						//after memcpy
-						local_temp_array_1[arrayIndex] = NULL;
+						local_temp_array_1[arrayIndex] = nullptr;
 						
 						if(arrayIndex == 1) {
 
@@ -488,8 +488,8 @@ namespace hooks {
 							CMDACT_Select(local_temp_array_1,arrayIndex);
 
 							//tell the GUI to update stuff
-							*someDialogUnknown = NULL;
-							*someDialogUnknownUser = NULL;
+							*someDialogUnknown = nullptr;
+							*someDialogUnknownUser = nullptr;
 							*bCanUpdateSelectedUnitData = 1;
 							*bCanUpdateCurrentButtonSet = 1;
 							*bCanUpdateSelectedUnitPortrait = 1;
@@ -543,8 +543,8 @@ namespace hooks {
 				*bCanUpdateCurrentButtonSet = 1;
 				*bCanUpdateSelectedUnitPortrait = 1;
 				*bCanUpdateStatDataDialog = 1;
-				*someDialogUnknown = NULL;
-				*someDialogUnknownUser = NULL;
+				*someDialogUnknown = nullptr;
+				*someDialogUnknownUser = nullptr;
 
 			}
 

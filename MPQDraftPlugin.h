@@ -111,10 +111,10 @@
 
 #include <windows.h>
 
-// The maximum length of a plugin module's filename. INCLUDES final NULL.
+// The maximum length of a plugin module's filename. INCLUDES final nullptr.
 #define MPQDRAFT_MAX_PATH 264
 
-// The maximum length of a plugin's name. INCLUDES final NULL.
+// The maximum length of a plugin's name. INCLUDES final nullptr.
 #define MPQDRAFT_MAX_PLUGIN_NAME 64
 
 /*
@@ -166,7 +166,7 @@ struct IMPQDraftServer
 			MPQDRAFT_MAX_PATH characters long.
 
 		Behavior:
-			- If lpszFileName is NULL, GetPluginModules will fail.
+			- If lpszFileName is nullptr, GetPluginModules will fail.
 
 			- If the buffer pointer to by lpszFileName is shorter than the
 			length of the module's filename (which will never be more than
@@ -211,7 +211,7 @@ struct IMPQDraftPlugin
 			plugin's ID. MPQDraft will supply this DWORD.
 
 		Behavior:
-			- If lpdwPluginID is NULL, Identify will assert.
+			- If lpdwPluginID is nullptr, Identify will assert.
 
 			- On success, Identify will copy its ID to lpdwPluginID.
 	*/
@@ -231,7 +231,7 @@ struct IMPQDraftPlugin
 			the name of the plugin. This buffer will by provided by MPQDraft,
 			and will usually be MPQDRAFT_MAX_PLUGIN_NAME chars long.
 			nNameBufferLength [in] - The length of the buffer pointed to by
-			lpszPluginName, including space for the final NULL.
+			lpszPluginName, including space for the final nullptr.
 
 		Behavior:
 			- If lpszPluginName is null, GetPluginName will assert.
@@ -260,7 +260,7 @@ struct IMPQDraftPlugin
 			executable.
 
 		Behavior:
-			- If lpszEXEFileName is NULL, CanPatchExecutable will assert.
+			- If lpszEXEFileName is nullptr, CanPatchExecutable will assert.
 
 			- If an error occurs (i.e. the executable cannot be opened or read
 			from, CanPatchExecutable will fail.
@@ -287,7 +287,7 @@ struct IMPQDraftPlugin
 			attempt to modify the wizard. Such an attempt will probably crash.
 
 		Behavior:
-			- If hParentWnd is NULL, Configure will assert.
+			- If hParentWnd is nullptr, Configure will assert.
 
 			- If an error occurs while configuring the plugin, Configure will
 			fail.
@@ -324,21 +324,21 @@ struct IMPQDraftPlugin
 			lpPluginModules [out] - A pointer to the memory MPQDraft has
 			allocated to hold the list of modules. The plugin must  list each
 			module it will require in the patching process. When MPQDraft
-			first calls GetModules, lpPluginModules will be NULL.
+			first calls GetModules, lpPluginModules will be nullptr.
 			lpnNumModules [out] - A pointer to the number of plugin modules
 			the plugin will need. This number ought not to exceed 4.
 
 		Behavior:
-			- If lpnNumModules is NULL, GetModules will assert.
+			- If lpnNumModules is nullptr, GetModules will assert.
 
 			- If an error occurs, and GetModules is unable to supply the
 			required information, GetModules will fail. In this case, MPQDraft
 			will abort the patch.
 
-			- If lpPluginModules is non-NULL, GetModules will copy the
+			- If lpPluginModules is non-nullptr, GetModules will copy the
 			list of modules to lpPluginModules, and give the number of modules
 			in lpnNumModules.
-			- If lpPluginModules is NULL, GetModules will give the exact
+			- If lpPluginModules is nullptr, GetModules will give the exact
 			number of modules it will require in lpnNumModules, and succeed.
 	*/
 	virtual BOOL WINAPI GetModules(MPQDRAFTPLUGINMODULE *lpPluginModules, LPDWORD lpnNumModules) = 0;
@@ -362,7 +362,7 @@ struct IMPQDraftPlugin
 			needed in future use.
 
 		Behavior:
-			- If lpMPQDraftServer is NULL, InitializePlugin will assert.
+			- If lpMPQDraftServer is nullptr, InitializePlugin will assert.
 
 			- If the plugin was unable to perform the patch, and the the patch
 			target should be terminated, InitializePlugin will display an

@@ -264,7 +264,7 @@ namespace {
 
 			PUSHAD
 		}
-		if (disappearingCreepPtr == NULL) {
+		if (disappearingCreepPtr == nullptr) {
 			__asm {
 				POPAD
 				JMP func_ret

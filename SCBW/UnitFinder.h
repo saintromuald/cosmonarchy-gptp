@@ -56,11 +56,11 @@ class UnitFinder {
     }
     int getMatchUnitCount(UnitFinderCallbackMatchInterface& callback);
     /// Returns the first unit for which callback.match() returns true.
-    /// If there are no matches, returns NULL.
+    /// If there are no matches, returns nullptr.
     CUnit* getFirst(UnitFinderCallbackMatchInterface &callback) const;
 
     /// Returns the unit for which callback.score() returns the highest
-    /// nonnegative score. If there are no units, returns NULL.
+    /// nonnegative score. If there are no units, returns nullptr.
     /// Note: If callback.score() returns a negative value, the unit is ignored.
     CUnit* getBest(UnitFinderCallbackScoreInterface &callback) const;
 
@@ -69,12 +69,12 @@ class UnitFinder {
     int getUnitCount() const;
     int UnitFinder::getUnitCount(UnitFinderCallbackMatchInterface& matchInterface) const;
 
-    /// Returns the unit at the given index. Invalid index returns NULL instead.
+    /// Returns the unit at the given index. Invalid index returns nullptr instead.
     CUnit* getUnit(int index) const;
    
     /// Searches the area given by (@p left, @p top, @p right, @p bottom),
     /// returning the nearest unit to @p sourceUnit for which match(unit)
-    /// evaluates to true. If there are no matches, returns NULL.
+    /// evaluates to true. If there are no matches, returns nullptr.
     /// This does not use unit collision boxes for calculating distances.
     static CUnit* getNearestTarget(int left, int top, int right, int bottom,
                                    CUnit* sourceUnit, UnitFinderCallbackMatchInterface& match);
@@ -84,7 +84,7 @@ class UnitFinder {
         Point32 position, UnitFinderCallbackMatchInterface& match);
     /// Searches the entire map, returning the nearest unit to @p sourceUnit
     /// for which match(unit) evaluates to true. If there are no matches,
-    /// returns NULL.
+    /// returns nullptr.
     /// This does not use unit collision boxes for calculating distances.
     static CUnit* getNearestTarget(CUnit* sourceUnit, UnitFinderCallbackMatchInterface& match);
 

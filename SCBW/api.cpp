@@ -134,7 +134,7 @@ namespace scbw {
 		source->orderTarget.unit = target;
 		source->orderTarget.pt = target_pt;
 		Point16 pick;
-		if (target != NULL && target_unit!=NULL) {
+		if (target != nullptr && target_unit!=nullptr) {
 			source->orderTarget.pt = target_unit->sprite->position;
 		}
 		else {
@@ -175,7 +175,7 @@ bool teleport(CUnit* u, Point16 target, u16 spriteAnimation, bool preserveOrder)
 	//using another function to do exactly the same thing
 	function_004EBAE0(u, target.x,target.y);
 
-	if (!scbw::checkUnitCollisionPos(u, &(u->sprite->position), &new_pos, NULL, false, 0))
+	if (!scbw::checkUnitCollisionPos(u, &(u->sprite->position), &new_pos, nullptr, false, 0))
 		//collision detected, cancel the movement
 		scbw::setUnitPosition(u, previous_pos.x, previous_pos.y);
 	else {
@@ -185,7 +185,7 @@ bool teleport(CUnit* u, Point16 target, u16 spriteAnimation, bool preserveOrder)
 		//finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
 		scbw::prepareUnitMove(u, false);
 		if (!preserveOrder) {
-			u->orderTarget.unit = NULL;
+			u->orderTarget.unit = nullptr;
 		}
 		scbw::setUnitPosition(u, new_pos.x, new_pos.y);
 		scbw::refreshUnitAfterMove(u);
@@ -197,7 +197,7 @@ bool teleport(CUnit* u, Point16 target, u16 spriteAnimation, bool preserveOrder)
 		//create the Recall animation over the unit
 		if (spriteAnimation) {
 			recall_effect_sprite = createThingy(spriteAnimation, new_pos.x, new_pos.y, 0);
-			if (recall_effect_sprite != NULL) {
+			if (recall_effect_sprite != nullptr) {
 				recall_effect_sprite->sprite->elevationLevel = u->sprite->elevationLevel + 1;
 				scbw::setThingyVisibilityFlags(recall_effect_sprite);
 			}
@@ -214,12 +214,12 @@ bool teleport(CUnit* u, Point16 target, u16 spriteAnimation, bool preserveOrder)
 			)
 		{
 			if (
-				u->connectedUnit != NULL &&
+				u->connectedUnit != nullptr &&
 				u->connectedUnit->id == UnitId::TerranNuclearMissile
 				)
 			{
-				(u->connectedUnit)->connectedUnit = NULL;
-				u->connectedUnit = NULL;
+				(u->connectedUnit)->connectedUnit = nullptr;
+				u->connectedUnit = nullptr;
 			}
 		}
 	}
@@ -413,7 +413,7 @@ bool canWeaponTargetUnit(u8 weaponId, CUnit* target, CUnit* attacker) {
 }
 
 bool isUnderDarkSwarm(CUnit* unit) {
-	return getDarkSwarm(unit) != NULL;
+	return getDarkSwarm(unit) != nullptr;
 }
 
 CUnit* getDarkSwarm(CUnit* unit) {
@@ -624,17 +624,17 @@ void sendGPTP_aise_cmd(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2, 
 }
 
 u32 getFlingyData(u32 entry, u32 index) {
-	return get_aise_value(NULL, NULL, AiseId::GetFlingyData, entry, index);
+	return get_aise_value(nullptr, nullptr, AiseId::GetFlingyData, entry, index);
 }
 u32 getSpriteData(u32 entry, u32 index) {
-	return get_aise_value(NULL, NULL, AiseId::GetSpriteData, entry, index);
+	return get_aise_value(nullptr, nullptr, AiseId::GetSpriteData, entry, index);
 }
 
 u32 getImageData(u32 entry, u32 index) {
-	return get_aise_value(NULL, NULL, AiseId::GetImageData, entry, index);
+	return get_aise_value(nullptr, nullptr, AiseId::GetImageData, entry, index);
 }
 u32 getUnitData(u32 entry, u32 index) {
-	return get_aise_value(NULL, NULL, AiseId::GetUnitData, entry, index);
+	return get_aise_value(nullptr, nullptr, AiseId::GetUnitData, entry, index);
 }
 
 bool isLarvalEgg(CUnit* unit) {
@@ -808,13 +808,13 @@ bool isZergBuildingMorphSource(u16 id){
 }
 
 std::string readSamaseFile(char* name) {
-	const char* data = NULL;
+	const char* data = nullptr;
 	u32 len = 0;
 	auto data_ptr = &data;
 	auto len_ptr = &len;
 	u32 val = reinterpret_cast<u32>(name);
-	auto length = scbw::get_aise_value(NULL, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));
-	char* buf = (char*)scbw::get_aise_value(NULL, NULL, AiseId::ReadSamaseFile_Ptr, 0, 0);
+	auto length = scbw::get_aise_value(nullptr, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));
+	char* buf = (char*)scbw::get_aise_value(nullptr, nullptr, AiseId::ReadSamaseFile_Ptr, 0, 0);
 	std::string str;
 	if (length == 0) {
 		return str;
@@ -826,21 +826,21 @@ std::string readSamaseFile(char* name) {
 }
 
 int get_generic_variable(u32 id) {
-	return get_aise_value(NULL, NULL, AiseId::GenericVariable, id, 0);
+	return get_aise_value(nullptr, nullptr, AiseId::GenericVariable, id, 0);
 }
 CUnit* get_generic_rust_unit(CUnit* unit, u32 id) {
-	u32 val = get_aise_value(unit, NULL, AiseId::GenericUnit, id, 0);
+	u32 val = get_aise_value(unit, nullptr, AiseId::GenericUnit, id, 0);
 	return reinterpret_cast<CUnit*>(val);
 }
 /*CUnit* get_generic_unit(CUnit* unit, u32 id) {
-	u32 val = get_aise_value(unit, NULL, AiseId::GenericUnit, id, 0);
+	u32 val = get_aise_value(unit, nullptr, AiseId::GenericUnit, id, 0);
 	return reinterpret_cast<CUnit*>(val);
 }
 u32 get_generic_value(CUnit* u, u32 val) {
-	return get_aise_value(u, NULL, AiseId::GenericValue, val, 0);
+	return get_aise_value(u, nullptr, AiseId::GenericValue, val, 0);
 }
 u32 get_generic_timer(CUnit* u, u32 val) {
-	return get_aise_value(u, NULL, AiseId::GenericTimer, val, 0);
+	return get_aise_value(u, nullptr, AiseId::GenericTimer, val, 0);
 }
 void set_generic_unit(CUnit* unit, u32 id, CUnit* targ) {
 	scbw::sendGPTP_aise_cmd(unit, targ, GptpId::SetGenericUnit, id, 0, 0);
@@ -849,28 +849,28 @@ void set_generic_rust_unit(CUnit* unit, u32 id, CUnit* targ) {
 	scbw::sendGPTP_aise_cmd(unit, targ, GptpId::SetGenericUnit, id, 0, 0);
 }
 void set_generic_variable(u32 id, int val) {
-	scbw::sendGPTP_aise_cmd(NULL, NULL, GptpId::SetGenericVariable, id, val, 0);
+	scbw::sendGPTP_aise_cmd(nullptr, nullptr, GptpId::SetGenericVariable, id, val, 0);
 }
 
 u32 get_generic_rust_value(CUnit* u, u32 val) {
-	return get_aise_value(u, NULL, AiseId::GenericValue, val, 0);
+	return get_aise_value(u, nullptr, AiseId::GenericValue, val, 0);
 }
 void set_generic_rust_value(CUnit* u, u32 id, u32 val) {
-	scbw::sendGPTP_aise_cmd(u, NULL, GptpId::SetGenericValue, id, val, 0);
+	scbw::sendGPTP_aise_cmd(u, nullptr, GptpId::SetGenericValue, id, val, 0);
 }
 void setSpriteData(u32 entry, u32 index, u32 value) {
-	return sendGPTP_aise_cmd(NULL, NULL, GptpId::SetSpriteData, entry, index, value);
+	return sendGPTP_aise_cmd(nullptr, nullptr, GptpId::SetSpriteData, entry, index, value);
 }
 
 /*void set_generic_value(CUnit* u, u32 id, u32 val) {
-	scbw::sendGPTP_aise_cmd(u, NULL, GptpId::SetGenericValue, id, val, 0);
+	scbw::sendGPTP_aise_cmd(u, nullptr, GptpId::SetGenericValue, id, val, 0);
 }
 void add_generic_value(CUnit* u, u32 id, int val) {
-	scbw::sendGPTP_aise_cmd(u, NULL, GptpId::AddGenericValue, id, val, 0);
+	scbw::sendGPTP_aise_cmd(u, nullptr, GptpId::AddGenericValue, id, val, 0);
 }
 
 void set_generic_timer(CUnit* u, u32 id, u32 val) {
-	scbw::sendGPTP_aise_cmd(u, NULL, GptpId::SetGenericTimer, id, val, 0);
+	scbw::sendGPTP_aise_cmd(u, nullptr, GptpId::SetGenericTimer, id, val, 0);
 }*/
 
 const u32 Func_CanTargetSpell = 0x00492020;
@@ -987,8 +987,8 @@ void setOffsetToParentSpecialOverlay(CImage* image) {
 
 /*
 CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset) {
-	if (unit->sprite == NULL || unit->orderTarget.unit==NULL) {
-		return NULL;
+	if (unit->sprite == nullptr || unit->orderTarget.unit==nullptr) {
+		return nullptr;
 	}
 	auto rotate = scbw::get_generic_value(unit, valueId);
 	const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
@@ -1249,7 +1249,7 @@ const u32 Func_CreateUnitAtPos = 0x004CD360; //AKA createUnitXY()
 CUnit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y) {
 
 	if (unitType >= UNIT_TYPE_COUNT) 
-		return NULL;
+		return nullptr;
 
 	static CUnit* unit;
 
@@ -1330,13 +1330,13 @@ CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* creator) {
 	pos.y = y;
 	fixTargetLocation(&pos, unitId);
 	unit = CreateUnit(unitId, pos.x, pos.y, playerId);
-	if (unit == NULL) {
+	if (unit == nullptr) {
 		displayLastNetErrForPlayer(playerId);
 	}
 	else {
 		FinishUnit_Pre(unit);
 		updateUnitStrength(unit);
-		if (creator != NULL && creator->pAI != NULL) {
+		if (creator != nullptr && creator->pAI != nullptr) {
 			InheritAI2(unit, creator);
 		}
 	}
@@ -1428,8 +1428,8 @@ u16 random() {
 		*bCanUpdateCurrentButtonSet = 1;
 		*bCanUpdateSelectedUnitPortrait = 1;
 		*bCanUpdateStatDataDialog = 1;
-		*someDialogUnknown = NULL;
-		*someDialogUnknownUser = NULL;
+		*someDialogUnknown = nullptr;
+		*someDialogUnknownUser = nullptr;
 
 	}
 
@@ -1541,7 +1541,7 @@ u16 random() {
 		}
 		auto polar_x = unit->getX() + scbw::getPolarX(distance, unit->currentDirection1);
 		auto polar_y = unit->getY() + scbw::getPolarY(distance, unit->currentDirection1);
-		unit->orderTarget.unit = NULL;
+		unit->orderTarget.unit = nullptr;
 		unit->orderTarget.pt.x = polar_x;
 		unit->orderTarget.pt.y = polar_y;
 		createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
@@ -1647,7 +1647,7 @@ u16 random() {
 			overlayImageId = ImageId::RestorationHit_Large;
 		else
 			overlayImageId = ImageId::RestorationHit_Small;
-		if (unit->subunit != NULL)
+		if (unit->subunit != nullptr)
 			overlayTargetUnit = unit->subunit;
 		else
 			overlayTargetUnit = unit;
@@ -1687,7 +1687,7 @@ u16 random() {
 			unit->irradiateTimer = 0;
 
 			//specific updates following irradiate removal
-			unit->irradiatedBy = NULL;
+			unit->irradiatedBy = nullptr;
 			unit->irradiatePlayerId = 8;
 		}
 
@@ -2007,7 +2007,7 @@ u16 random() {
 				overlayPadding = 2;
 			}
 			victim = unit;
-			if (unit->subunit != NULL) {
+			if (unit->subunit != nullptr) {
 				victim = unit->subunit;
 			}
 

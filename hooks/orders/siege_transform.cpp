@@ -51,7 +51,7 @@ namespace hooks {
 
 				CImage* current_image = unit->sprite->images.head;
 
-				while(current_image != NULL) {
+				while(current_image != nullptr) {
 					current_image->playIscriptAnim(IscriptAnimation::SpecialState2);
 					current_image = current_image->link.next;
 				}
@@ -170,7 +170,7 @@ namespace hooks {
 
 				unit->orderSignal -= 1;
 
-				if(unit->orderQueueHead != NULL) {
+				if(unit->orderQueueHead != nullptr) {
 
 					if( !(unit->orderQueueHead->orderId == OrderId::WatchTarget) ) {
 

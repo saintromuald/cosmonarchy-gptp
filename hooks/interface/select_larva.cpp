@@ -26,7 +26,7 @@ namespace hooks {
 		CUnit* current_unit = *unitList;
 		u32 current_index = 0;
 
-		if(current_unit != NULL) {
+		if(current_unit != nullptr) {
 
 			bool bStopLoop = false;
 
@@ -46,7 +46,7 @@ namespace hooks {
 				if(!bStopLoop) {
 					unitList++;
 					current_unit = *unitList;
-					bStopLoop = (current_unit == NULL);
+					bStopLoop = (current_unit == nullptr);
 				}
 
 			}

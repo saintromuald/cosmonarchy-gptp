@@ -36,7 +36,7 @@ namespace hooks {
 		//using another function to do exactly the same thing
 		function_004EBAE0(target,caster->sprite->position.x,caster->sprite->position.y);
 
-		if(!scbw::checkUnitCollisionPos(target,&(caster->sprite->position),&new_pos,NULL,false,0))
+		if(!scbw::checkUnitCollisionPos(target,&(caster->sprite->position),&new_pos,nullptr,false,0))
 			//collision detected, cancel the movement
 			scbw::setUnitPosition(target,previous_pos.x,previous_pos.y);
 		else {
@@ -44,7 +44,7 @@ namespace hooks {
 
 			//finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
 			scbw::prepareUnitMove(target,false);
-			target->orderTarget.unit = NULL;
+			target->orderTarget.unit = nullptr;
 			scbw::setUnitPosition(target,new_pos.x,new_pos.y);
 			scbw::refreshUnitAfterMove(target);
 
@@ -54,7 +54,7 @@ namespace hooks {
 			
 			//create the Recall animation over the unit
 			recall_effect_sprite = createThingy(SpriteId::Recall_Field,new_pos.x,new_pos.y,0);
-			if(recall_effect_sprite != NULL) {
+			if(recall_effect_sprite != nullptr) {
 				recall_effect_sprite->sprite->elevationLevel = target->sprite->elevationLevel + 1;
 				setThingyVisibilityFlags(recall_effect_sprite);
 			}
@@ -70,12 +70,12 @@ namespace hooks {
 			{
 
 				if(
-					target->connectedUnit != NULL &&
+					target->connectedUnit != nullptr &&
 					target->connectedUnit->id == UnitId::TerranNuclearMissile
 				) 
 				{
-					(target->connectedUnit)->connectedUnit = NULL;
-					target->connectedUnit = NULL;
+					(target->connectedUnit)->connectedUnit = nullptr;
+					target->connectedUnit = nullptr;
 				}
 
 			}
@@ -179,7 +179,7 @@ namespace hooks {
 				message = (char*)statTxtTblNew->getString(864 + raceId);	//"Not enough energy" text
 
 				if(
-					message != NULL &&
+					message != nullptr &&
 					unit->playerId == *LOCAL_NATION_ID &&
 					*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID
 				)
@@ -196,7 +196,7 @@ namespace hooks {
 				if(!scbw::isCheatEnabled(CheatFlags::TheGathering))
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::Recall] * 256);
 
-				if(unit->orderTarget.unit != NULL) {
+				if(unit->orderTarget.unit != nullptr) {
 					unit->orderTarget.pt.x = unit->orderTarget.unit->sprite->position.x;
 					unit->orderTarget.pt.y = unit->orderTarget.unit->sprite->position.y;
 				}
@@ -209,7 +209,7 @@ namespace hooks {
 						0
 						);
 
-				if(recall_effect_sprite != NULL) {
+				if(recall_effect_sprite != nullptr) {
 					recall_effect_sprite->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
 					setThingyVisibilityFlags(recall_effect_sprite);
 				}

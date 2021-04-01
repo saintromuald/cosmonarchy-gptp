@@ -54,12 +54,12 @@ namespace hooks {
 
 			playWorkerErrorSound(nydus_canal, 0x358); //"You can't build there"
 
-			if (nydus_canal->orderQueueHead != NULL) {
+			if (nydus_canal->orderQueueHead != nullptr) {
 				nydus_canal->userActionFlags |= 1;
 				prepareForNextOrder(nydus_canal);
 			}
 			else
-				if (nydus_canal->pAI != NULL)
+				if (nydus_canal->pAI != nullptr)
 					nydus_canal->orderComputerCL(OrderId::ComputerAI);
 				else
 					nydus_canal->orderComputerCL(units_dat::ReturnToIdleOrder[nydus_canal->id]);
@@ -75,7 +75,7 @@ namespace hooks {
 					nydus_canal->playerId
 				);
 
-			if (nydusExit == NULL) {
+			if (nydusExit == nullptr) {
 				displayLastNetErrForPlayer(nydus_canal->playerId);
 				nydus_canal->orderToIdle();
 			}

@@ -35,7 +35,7 @@ void SendCommand(u8* params, u32 param_length);
 
 /// Plays the given sound from sfxdata.dat. If @p sourceUnit is provided, it is
 /// used as the source of the sound.
-void playSound(u32 sfxId, CUnit* sourceUnit = NULL);
+void playSound(u32 sfxId, CUnit* sourceUnit = nullptr);
 /// Prints text to the screen, optionally using the given text color.
 void print(std::string text, u32 color = GameTextColor::White);
 void printText(const char* text, u32 color = GameTextColor::White);
@@ -75,11 +75,11 @@ bool canBeEnteredBy(CUnit* transport, CUnit* unit);
 /// @p weapon.
 ///
 /// @param  weaponId  If this is an invalid weapons.dat ID, returns false.
-/// @param  target    If NULL is passed, the function checks whether the
+/// @param  target    If nullptr is passed, the function checks whether the
 ///                   weapon can target a position on the ground. If @p target
 ///                   is invincible, the function returns false.
-bool canWeaponTargetUnit(u8 weaponId, CUnit* target = NULL,
-                         CUnit* attacker = NULL);
+bool canWeaponTargetUnit(u8 weaponId, CUnit* target = nullptr,
+                         CUnit* attacker = nullptr);
 
 /// Checks if @p unit is under a Dark Swarm. This does NOT check whether the
 /// unit is a ground unit or a building.
@@ -253,7 +253,7 @@ void prepareUnitMove(CUnit* unit, bool hideUnit = false);
 ///
 /// @return True if the unit does not collide with other units, or can be moved
 ///         to a nearby non-colliding position.
-bool checkUnitCollisionPos(CUnit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea = NULL, bool hideErrorMsg = false, u32 someFlag = 0);
+bool checkUnitCollisionPos(CUnit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea = nullptr, bool hideErrorMsg = false, u32 someFlag = 0);
 
 /// Moves the unit's position to @p (x, y). If the unit is a ground unit and the
 /// the target position is on unwalkable terrain, this function moves the unit
@@ -273,13 +273,13 @@ CBullet* createBulletRet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingP
 
 /// Attempts to create a unit at the specified coordinates. If the unit cannot
 /// be created (e.g. there is no space), this function displays an error message
-/// and returns NULL instead. This function is the same one used for creating
+/// and returns nullptr instead. This function is the same one used for creating
 /// pre-placed units in UMS maps.
 ///
-/// @return           The created unit or NULL if the unit cannot be created.
+/// @return           The created unit or nullptr if the unit cannot be created.
 CUnit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y);
 //function used for broodlings and similar stuff
-CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* creator=NULL);
+CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* creator=nullptr);
 //additional function calls
 void weaponBulletShot(CUnit* target, CBullet* bullet, u32 dmgDivisor);
 void fixTargetLocation(Point16* coords, u32 unitId);
@@ -377,8 +377,8 @@ u16 random();
     u16 getLastQueueSlotType(CUnit* a1);
     int dir_saturate(int direction, int value);
     bool canUseCliffAdvantage(CUnit* unit, u8 weapon = NULL);
-    s32 getCliffAdvantage(CUnit* unit, u8 weapon = NULL);    
-    s32 getCreepAdvantage(CUnit* unit, u8 weapon = NULL);    
+    s32 getCliffAdvantage(CUnit* unit, u8 weapon = NULL);
+    s32 getCreepAdvantage(CUnit* unit, u8 weapon = NULL);
     void setOffsetToParentSpecialOverlay(CImage* image);
     void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset = 0);
     CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset = 0);

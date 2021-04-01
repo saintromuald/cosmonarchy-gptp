@@ -72,7 +72,7 @@ void CreateInitialMeleeBuildings(u8 raceId, u32 playerId) {
 			playerId
 		);
 
-	if (created_unit != NULL) {
+	if (created_unit != nullptr) {
 
 		function_004A01F0(created_unit);
 
@@ -255,7 +255,7 @@ void CreateInitialMeleeUnits() {
 						created_unit = createUnit(unitId, pos.x, pos.y, playerId);
 						scbw::teleport(created_unit, pos);
 
-						if (created_unit != NULL) {
+						if (created_unit != nullptr) {
 							function_004A01F0(created_unit);
 
 							if (function_0049EC30(created_unit) != 0)
@@ -291,7 +291,7 @@ void CreateInitialOverlord(u8 playerId) {
 
 	created_unit = createUnit(UnitId::ZergOvileth,overlordStartX,overlordStartY,playerId);
 
-	if(created_unit != NULL) {
+	if(created_unit != nullptr) {
 
 		function_004A01F0(created_unit);
 

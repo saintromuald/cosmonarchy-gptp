@@ -47,7 +47,7 @@ namespace hooks {
 
 				if(unit->buildQueue[unit->buildQueueSlot] == UnitId::None) {
 					unit->secondaryOrderState = 3;
-					unit->currentBuildUnit = NULL;
+					unit->currentBuildUnit = nullptr;
 				}
 				else {
 
@@ -60,7 +60,7 @@ namespace hooks {
 
 					unit->currentBuildUnit = builtUnit;
 
-					if(builtUnit == NULL)
+					if(builtUnit == nullptr)
 						unit->secondaryOrderState = 1;
 					else {
 						builtUnit->interceptor.parent = unit;
@@ -76,7 +76,7 @@ namespace hooks {
 				CUnit* builtUnit = unit->currentBuildUnit;
 				u32 hpGain;
 
-				if(builtUnit != NULL) {
+				if(builtUnit != nullptr) {
 				
 					hpGain = getHPGainForRepair(builtUnit);
 				
@@ -94,7 +94,7 @@ namespace hooks {
 
 						scbw::refreshConsole();
 
-						unit->currentBuildUnit = NULL;
+						unit->currentBuildUnit = nullptr;
 						unit->secondaryOrderState = 0;
 
 					}
@@ -104,7 +104,7 @@ namespace hooks {
 
 					scbw::refreshConsole();
 
-					unit->currentBuildUnit = NULL;
+					unit->currentBuildUnit = nullptr;
 					unit->secondaryOrderState = 0;
 
 				}
@@ -121,14 +121,14 @@ namespace hooks {
 
 					CUnit* inHangarChild = unit->carrier.inHangarChild;
 
-					if(inHangarChild != NULL) {
+					if(inHangarChild != nullptr) {
 
 						s32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossSteward];
 
-						while(inHangarChild != NULL && inHangarChild->hitPoints >= hpInterceptor)
+						while(inHangarChild != nullptr && inHangarChild->hitPoints >= hpInterceptor)
 							inHangarChild = inHangarChild->interceptor.hangar_link.next;
 
-						if(inHangarChild != NULL)
+						if(inHangarChild != nullptr)
 							inHangarChild->setHp(inHangarChild->hitPoints + 128);
 
 					}
@@ -174,7 +174,7 @@ namespace hooks {
 				
 					unit->currentBuildUnit = builtUnit;
 
-					if(builtUnit == NULL)
+					if(builtUnit == nullptr)
 						unit->secondaryOrderState = 1;
 					else {
 
@@ -182,7 +182,7 @@ namespace hooks {
 
 						unit->secondaryOrderState = 2;
 
-						while(current_image != NULL) {
+						while(current_image != nullptr) {
 							current_image->playIscriptAnim(IscriptAnimation::IsWorking);
 							current_image = current_image->link.next;
 						}
@@ -197,12 +197,12 @@ namespace hooks {
 
 				CUnit* builtUnit = unit->currentBuildUnit;
 
-				if(builtUnit != NULL) {
+				if(builtUnit != nullptr) {
 					u32 hpGain = getHPGainForRepair(builtUnit);
 					bool extraBuild = false;
 					if (scbw::get_generic_value(builtUnit, ValueId::Crucible) == 0) {
 						auto r = 256;
-						auto n = unitRangeCount(NULL, CFlags::NoInvincible | CFlags::Ally | CFlags::Powered | CFlags::Completed, 
+						auto n = unitRangeCount(nullptr, CFlags::NoInvincible | CFlags::Ally | CFlags::Powered | CFlags::Completed, 
 							{ UnitId::ProtossCrucible });
 						scbw::UnitFinder unitsInSplash(builtUnit->position.x - r, builtUnit->position.y - r,
 							builtUnit->position.x + r, builtUnit->position.y + r);
@@ -254,7 +254,7 @@ namespace hooks {
 
 							u8 counter = 4;
 
-							if(unit->currentBuildUnit != NULL)
+							if(unit->currentBuildUnit != nullptr)
 								AI_CancelStructure(unit->currentBuildUnit);
 							else {
 
@@ -268,7 +268,7 @@ namespace hooks {
 								counter--;
 								unit->buildQueue[unit->buildQueueSlot] = unit->buildQueue[(unit->buildQueueSlot + 1) % 5];
 
-								if(unit->pAI != NULL && *(u8*)((u32)unit->pAI + 8) == 3) {
+								if(unit->pAI != nullptr && *(u8*)((u32)unit->pAI + 8) == 3) {
 									*(u8*)((u32)unit->pAI + unit->buildQueueSlot + 9) = *(u8*)((u32)unit->pAI + (unit->buildQueueSlot + 1) % 5 + 9);
 									*(u32*)((u32)unit->pAI + unit->buildQueueSlot * 4 + 0x18) = *(u32*)((u32)unit->pAI + ((unit->buildQueueSlot + 1) % 5) * 4 + 0x18);
 								}
@@ -289,7 +289,7 @@ namespace hooks {
 					jump_to_685D8 = true;			
 
 				if(jump_to_685D8) {
-					if (builtUnit!=NULL && builtUnit->id == UnitId::ProtossSolarion) {
+					if (builtUnit!=nullptr && builtUnit->id == UnitId::ProtossSolarion) {
 						int interceptors = 12;
 
 						u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
@@ -303,7 +303,7 @@ namespace hooks {
 					}
 
 					scbw::refreshConsole();
-					unit->currentBuildUnit = NULL;
+					unit->currentBuildUnit = nullptr;
 					unit->secondaryOrderState = 0;
 				}
 

@@ -42,7 +42,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 			scbw::get_generic_timer(unit,ValueId::AI_LazarusTimer)==0) 
 		{
 			int count = 0;
-			hydraFinderLoop(NULL,unit->position,128, CFlags::NoBuilding | CFlags::Ally |
+			hydraFinderLoop(nullptr,unit->position,128, CFlags::NoBuilding | CFlags::Ally |
 				CFlags::OnlyOrganic, {},[&](CUnit* u)
 			{
 				if (scbw::get_generic_value(u, ValueId::LazarusAgent) != 1) {
@@ -70,7 +70,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 			if (count >= 2) {
 				//Savant Power Siphon: If 2 or more allied specialists are nearby, target an enemy specialist within 7 range.
 				auto enemy = rangeMatchUnit(unit, 7 * 32, CFlags::Enemy | CFlags::Spellcaster | CFlags::HasEnergy, {});
-				if (enemy != NULL) {
+				if (enemy != nullptr) {
 					unit->orderTo(OrderId::PowerSiphon, enemy);
 					scbw::set_generic_timer(unit, ValueId::AI_SiphonTimer, 3 * 32);
 				}
@@ -84,14 +84,14 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 				CFlags::Ally | CFlags::Shielded | CFlags::NotSelf, {}, [&](CUnit* u) {
 					count++;
 				});
-			auto clarionVal = scbw::get_generic_value(unit, NULL, AiseId::SendClarionValue, 0, 0);
+			auto clarionVal = scbw::get_generic_value(unit, nullptr, AiseId::SendClarionValue, 0, 0);
 			if (count >= 2 && clarionVal == 0) {
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 1, 0, 0);
+				scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::SetPhaseLinkStatus, 1, 0, 0);
 				scbw::set_generic_timer(unit, ValueId::AI_ClarionTimer, 96);
 			}
 			else if (count < 2 && clarionVal == 1) {
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 0, 0, 0);
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ClearClarionLinks, 0, 0, 0);
+				scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::SetPhaseLinkStatus, 0, 0, 0);
+				scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::ClearClarionLinks, 0, 0, 0);
 				scbw::set_generic_timer(unit, ValueId::AI_ClarionTimer, 96);
 			}
 		}
@@ -170,7 +170,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 		if (web_state == 0) {
 			if (webs == 0 && unit->energy >= AIWebMinEnergy * 256 && percentage >= AICorsairLifePercentage
 				&& allies >= AIWebAllyMinCount && enemies >= AIWebEnemyMinCount) {
-				CUnit* mostSignificant = NULL;
+				CUnit* mostSignificant = nullptr;
 				auto maxSignificance = 0;
 				hydraFinderLoop(unit, unit->sprite->position, 128, CFlags::Enemy, {}, [&](CUnit* u) {
 					auto significance = hydraUnitCount(u, u->position, AICorsairEnemySeekRange / 2,
@@ -180,7 +180,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 						mostSignificant = u;
 					}
 					});
-				if (mostSignificant != NULL) {
+				if (mostSignificant != nullptr) {
 					unit->orderTo(OrderId::Move, mostSignificant->position.x, mostSignificant->position.y);
 					scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 1);
 					scbw::set_generic_timer(unit, ValueId::AI_CorsairDweb_Timer, AIWebTimer);

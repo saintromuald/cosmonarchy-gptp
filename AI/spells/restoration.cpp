@@ -77,7 +77,7 @@ class RestorationTargetFinderProcSituational: public scbw::UnitFinderCallbackMat
 CUnit* findBestRestorationTargetSituational(CUnit* caster, bool isUnderAttack) {
 
   if (isUnderAttack)
-    return NULL;
+    return nullptr;
 
   return scbw::UnitFinder::getNearestTarget(caster, RestorationTargetFinderProcSituational(caster));
 }

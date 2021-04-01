@@ -34,7 +34,7 @@ void CImage::free()
 			//perform identically to original code
 	this->parentSprite->images.unlink<&CImage::link>(this);
 
-	this->grpOffset = NULL;
+	this->grpOffset = nullptr;
 
 	//perform identically to original code
 	unusedImages.insertAfterHead(this);

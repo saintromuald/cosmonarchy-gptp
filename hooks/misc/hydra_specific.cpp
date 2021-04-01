@@ -63,13 +63,13 @@ void parseUnitDatReqs(){
 bool isAttemptingProtossBuild(const CUnit* probe) {
 	return probe->mainOrderId == OrderId::BuildProtoss1
 		&& probe->status & UnitStatus::GroundedBuilding
-		&& probe->orderTarget.unit != NULL
+		&& probe->orderTarget.unit != nullptr
 		&& !(probe->orderTarget.unit->status & UnitStatus::Completed);
 }
 bool isConstructingAddon(const CUnit* building) {
 	return building->secondaryOrderId == OrderId::BuildAddon
 		&& building->status & UnitStatus::GroundedBuilding
-		&& building->currentBuildUnit != NULL
+		&& building->currentBuildUnit != nullptr
 		&& !(building->currentBuildUnit->status & UnitStatus::Completed);
 }
 
@@ -361,7 +361,7 @@ namespace hooks {
 				else
 				{
 					v12 = unit->building.addon;
-					if (v12 != NULL || (++v7, v12->id != reqTable[v7]))
+					if (v12 != nullptr || (++v7, v12->id != reqTable[v7]))
 					{
 						if (!v27)
 							*lastError = 4;
@@ -609,7 +609,7 @@ namespace hooks {
 		u32 status = 0;
 		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell; //might be  changed later if required
 		if (unit->id == UnitId::ProtossClarion) {
-			if (scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
+			if (scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
 				status = 1;//disable clarion
 			}
 			else {
@@ -689,11 +689,11 @@ namespace hooks {
 				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 0);
 				if (unit->id == UnitId::ProtossClarion) {
 					if (status == 0) {
-						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 1, 0, 0);
+						scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::SetPhaseLinkStatus, 1, 0, 0);
 					}
 					else {
-						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 0, 0, 0);
-						scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ClearClarionLinks, 0, 0, 0);
+						scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::SetPhaseLinkStatus, 0, 0, 0);
+						scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::ClearClarionLinks, 0, 0, 0);
 					}
 				}
 				else if (unit->id == UnitId::ProtossExemplar) {
@@ -710,7 +710,7 @@ namespace hooks {
 		}
 	}
 	bool canAttackTarget_EndChunk(CUnit* source, u32 target_flags) {
-		if (source->id == UnitId::ProtossClarion && scbw::get_aise_value(source, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
+		if (source->id == UnitId::ProtossClarion && scbw::get_aise_value(source, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
 			return false;
 		}
 		if (target_flags & UnitStatus::InAir) {

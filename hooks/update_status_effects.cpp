@@ -35,7 +35,7 @@ class irradiateProc : public scbw::UnitFinderCallbackProcInterface {
 		{
 //			const s32 damage = weapons_dat::DamageAmount[WeaponId::Irradiate] * 256 / weapons_dat::Cooldown[WeaponId::Irradiate];
 			s32 damage = (125*256)/24;
-			if(irradiatedUnit!=NULL){
+			if(irradiatedUnit!=nullptr){
 				if(irradiatedUnit->irradiateTimer==0){
 					damage += (125*256)%24;
 					//scbw::printText("Add additional damage");
@@ -124,7 +124,7 @@ void doIrradiateDamage(CUnit* irradiatedUnit) {
 
 		CUnit* transport = irradiatedUnit->connectedUnit;
 
-		if (transport != NULL) {
+		if (transport != nullptr) {
 			for (int i = 0; i < units_dat::SpaceProvided[transport->id]; ++i) {
 				CUnit* loadedUnit = transport->getLoadedUnit(i);
 				if (loadedUnit)
@@ -195,7 +195,7 @@ void setAllImageGroupFlagsPal11(CSprite* sprite) {
 
 	for(
 		CImage* current_image = sprite->images.head; 
-		current_image != NULL;
+		current_image != nullptr;
 		current_image = current_image->link.next
 	)
 	{
@@ -317,7 +317,7 @@ void updateStatusEffects(CUnit* unit) {
 			bool canBurrowAfter = false;
 			//from Ai_Burrowable
 			//
-			if (nearest != NULL) {
+			if (nearest != nullptr) {
 				unburrow(unit);
 			}
 		}		
@@ -337,7 +337,7 @@ void updateStatusEffects(CUnit* unit) {
 	}
 
 	// Quarry, Iroleth, Othstoleth, Pennant resource regeneration aura
-	if (unit->sprite!=NULL && unit->mainOrderId!=OrderId::Die 
+	if (unit->sprite!=nullptr && unit->mainOrderId!=OrderId::Die 
 		&& (unit->id == UnitId::TerranQuarry
 			|| unit->id == UnitId::ZergIroleth
 			|| unit->id == UnitId::ZergOthstoleth
@@ -458,7 +458,7 @@ void updateStatusEffects(CUnit* unit) {
 
 				CThingy* emp_sprite;
 				emp_sprite = createThingyFunc(371, unit->position.x, unit->position.y, 0);
-				if (emp_sprite != NULL) {
+				if (emp_sprite != nullptr) {
 					emp_sprite->sprite->elevationLevel = 19; //0x13
 					scbw::setThingyVisibilityFlags(emp_sprite);
 				}				
@@ -486,11 +486,11 @@ void updateStatusEffects(CUnit* unit) {
 					area_of_effect.bottom = *maxBoxBottomValue;
 				unitsInAreaOfEffect = getAllUnitsInBounds_copy(&area_of_effect);
 				current_unit = *unitsInAreaOfEffect;	
-				while(current_unit != NULL) {
+				while(current_unit != nullptr) {
 					if(
 						current_unit != unit->irradiatedBy &&				//EMP doesn't affect the attacker
 						(
-							unit->irradiatedBy == NULL ||					//EMP doesn't affect the attacker
+							unit->irradiatedBy == nullptr ||					//EMP doesn't affect the attacker
 							current_unit != unit->irradiatedBy->subunit	//subunit
 						)
 					)
@@ -507,7 +507,7 @@ void updateStatusEffects(CUnit* unit) {
 									
 							if(
 								current_unit->sprite->flags & CSprite_Flags::Selected &&
-								current_unit->sprite != NULL
+								current_unit->sprite != nullptr
 							) 
 								setAllImageGroupFlagsPal11(current_unit->sprite);
 		
@@ -527,7 +527,7 @@ void updateStatusEffects(CUnit* unit) {
 			}
 
 			unit->removeOverlay(ImageId::Irradiate_Small, ImageId::Irradiate_Large);
-			unit->irradiatedBy = NULL;
+			unit->irradiatedBy = nullptr;
 			unit->irradiatePlayerId = 8;
 		}
 
@@ -618,7 +618,7 @@ void updateStatusEffects(CUnit* unit) {
 					unit->sprite->createOverlay(ImageId::ShieldOverlay, 0,0, 0);
 				}
 				if (damage > 0) {
-					unit->damageHp(damage, NULL, -1, true);
+					unit->damageHp(damage, nullptr, -1, true);
 				}
 				
 				
@@ -649,9 +649,9 @@ void updateStatusEffects(CUnit* unit) {
 		}
 
 	}
-	if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0)==1) {
+	if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0)==1) {
 //		scbw::printText("Place clarion links");
-		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::PlaceClarionLinksForUnit, 0, 0, 0);//clears, then places all clarion links
+		scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::PlaceClarionLinksForUnit, 0, 0, 0);//clears, then places all clarion links
 	}
 	if (unit->isUnderStorm != 0)
 		unit->isUnderStorm--;
@@ -681,7 +681,7 @@ void updateStatusEffects(CUnit* unit) {
 
 			unit->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
 
-			if (unit->subunit != NULL)
+			if (unit->subunit != nullptr)
 				unit = unit->subunit;
 
 			unit->sprite->createTopOverlay(acidOverlayId);
@@ -721,7 +721,7 @@ void AI_Burrower(CUnit* a1) {
 							a1->getTop() - 32,
 							a1->getRight() + 32,
 							a1->getBottom() + 32, a1, Unburrow);
-						if (nearest != NULL) {
+						if (nearest != nullptr) {
 							canBurrow = false;
 						}
 					}

@@ -20,7 +20,7 @@ namespace hooks {
 		Bool8 bSpeedUpgrade = 0, bCooldownUpgrade = 0;
 
 	/*	if (unit->id == UnitId::vulture) {
-			if(scbw::getUpgradeLevel(unit->playerId,UpgradeId::IonPropulsion) && unit->sprite!=NULL){
+			if(scbw::getUpgradeLevel(unit->playerId,UpgradeId::IonPropulsion) && unit->sprite!=nullptr){
 				unit->sprite->elevationLevel = 12;
 			}
 		}*/
@@ -50,7 +50,7 @@ namespace hooks {
 		bool bSpeedUpgrade = true;		//[EBP-02]
 
 		/*if (unit->id == UnitId::TerranVulture) {
-			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::IonPropulsion) && unit->sprite != NULL) {
+			if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::IonPropulsion) && unit->sprite != nullptr) {
 				unit->sprite->elevationLevel = 12;
 			}
 		}*/

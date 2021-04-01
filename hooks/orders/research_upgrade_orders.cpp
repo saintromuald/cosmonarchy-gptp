@@ -76,7 +76,7 @@ namespace hooks {
 
 			current_image = unit->sprite->images.head;
 
-			while(current_image != NULL) {
+			while(current_image != nullptr) {
 				current_image->playIscriptAnim(IscriptAnimation::WorkingToIdle);
 				current_image = current_image->link.next;
 			}
@@ -115,13 +115,13 @@ namespace hooks {
 			unit->building.upgradeType = UpgradeId::None;
 			unit->building.upgradeLevel = 0;
 
-			if(unit->pAI != NULL) {
+			if(unit->pAI != nullptr) {
 
 				unit->userActionFlags |= 1;
 
 				if(unit->mainOrderId != OrderId::Die) {
 
-					bool bStopLoop = (unit->orderQueueTail == NULL);
+					bool bStopLoop = (unit->orderQueueTail == nullptr);
 
 					while(!bStopLoop) {
 
@@ -134,7 +134,7 @@ namespace hooks {
 
 					}
 
-					unit->performAnotherOrder(OrderId::ComputerAI,0,0,NULL,UnitId::None);
+					unit->performAnotherOrder(OrderId::ComputerAI,0,0,nullptr,UnitId::None);
 
 				}
 
@@ -143,7 +143,7 @@ namespace hooks {
 			}
 			else { //54875
 
-				if(unit->orderQueueHead != NULL) {
+				if(unit->orderQueueHead != nullptr) {
 					unit->userActionFlags |= 1;
 					prepareForNextOrder(unit);
 				}
@@ -204,7 +204,7 @@ namespace hooks {
 
 			current_image = unit->sprite->images.head;
 
-			while(current_image != NULL) {
+			while(current_image != nullptr) {
 				current_image->playIscriptAnim(IscriptAnimation::WorkingToIdle);
 				current_image = current_image->link.next;
 			}
@@ -243,13 +243,13 @@ namespace hooks {
 
 			unit->building.techType = TechId::None;
 
-			if(unit->pAI != NULL) {
+			if(unit->pAI != nullptr) {
 
 				unit->userActionFlags |= 1;
 
 				if(unit->mainOrderId != OrderId::Die) {
 
-					bool bStopLoop = (unit->orderQueueTail == NULL);
+					bool bStopLoop = (unit->orderQueueTail == nullptr);
 
 					while(!bStopLoop) {
 						if(	!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId] &&
@@ -260,7 +260,7 @@ namespace hooks {
 							removeOrderFromUnitQueue(unit,unit->orderQueueTail);
 					}
 
-					unit->performAnotherOrder(OrderId::ComputerAI,0,0,NULL,UnitId::None);
+					unit->performAnotherOrder(OrderId::ComputerAI,0,0,nullptr,UnitId::None);
 					
 				}
 
@@ -269,7 +269,7 @@ namespace hooks {
 			}
 			else { //54A47
 
-				if(unit->orderQueueHead != NULL) {
+				if(unit->orderQueueHead != nullptr) {
 					unit->userActionFlags |= 1;
 					prepareForNextOrder(unit);
 				}

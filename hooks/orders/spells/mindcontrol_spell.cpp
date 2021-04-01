@@ -16,14 +16,14 @@ namespace hooks {
 
 		CUnit* target = unit->orderTarget.unit;
 
-		if(target == NULL) {
+		if(target == nullptr) {
 
-			if(unit->orderQueueHead != NULL) {
+			if(unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else {
-				if(unit->pAI != NULL)
+				if(unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
 				else
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
@@ -70,7 +70,7 @@ namespace hooks {
 						//else
 						//	overlayId = ImageId::MindControlHit_Small;
 
-						if(target->subunit != NULL)
+						if(target->subunit != nullptr)
 							target->subunit->sprite->createTopOverlay(overlayId, 0, 0, 0);
 						else
 							target->sprite->createTopOverlay(overlayId, 0, 0, 0);
@@ -98,7 +98,7 @@ namespace hooks {
 
 			} //if (unit->playerId != target->playerId)
 
-		} //if (target != NULL)
+		} //if (target != nullptr)
 
 	} //void ordersCastMindControl(CUnit* unit)
 

@@ -27,7 +27,7 @@ namespace hooks {
 
 	void orders_ProbeBuild(CUnit* unit) {
 
-		if(unit->pAI != NULL)
+		if(unit->pAI != nullptr)
 			unit->status |= UnitStatus::IsGathering;
 
 		if(unit->mainOrderState == 0) {
@@ -95,7 +95,7 @@ namespace hooks {
 
 						unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 
-						if(builtUnit == NULL) {
+						if(builtUnit == nullptr) {
 							displayLastNetErrForPlayer(unit->playerId);
 							unit->orderToIdle();
 						}
@@ -132,9 +132,9 @@ namespace hooks {
 			CUnit* target = unit->orderTarget.unit;
 			CImage* current_image;
 
-			if(	target == NULL ||
+			if(	target == nullptr ||
 				target->id != UnitId::ProtossAquifer ||
-				unit->orderQueueHead != NULL
+				unit->orderQueueHead != nullptr
 			)
 				unit->orderToIdle();
 			else
@@ -142,7 +142,7 @@ namespace hooks {
 
 			current_image = unit->sprite->images.head;
 
-			while(current_image != NULL) {
+			while(current_image != nullptr) {
 				current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
 				current_image = current_image->link.next;
 			}
@@ -167,7 +167,7 @@ namespace hooks {
 
 				CImage* current_image = building->sprite->images.head;
 
-				while(current_image != NULL) {
+				while(current_image != nullptr) {
 
 					if(current_image->flags & CImage_Flags::Flag04) {
 
@@ -233,7 +233,7 @@ namespace hooks {
 
 				current_image = building->sprite->images.head;
 
-				while(current_image != NULL) {
+				while(current_image != nullptr) {
 
 					if(current_image->flags & CImage_Flags::Flag04) {
 
@@ -272,7 +272,7 @@ namespace hooks {
 
 					CImage* current_image = building->sprite->images.head;
 
-					while(current_image != NULL) {
+					while(current_image != nullptr) {
 
 						if(current_image->flags & CImage_Flags::Flag04) {
 

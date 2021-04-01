@@ -90,12 +90,12 @@ class DarkSwarmTargetFinderProc: public scbw::UnitFinderCallbackMatchInterface {
 
 			CUnit* targetOfTarget = target->orderTarget.unit;
 
-			if(targetOfTarget != NULL) {
+			if(targetOfTarget != nullptr) {
 
 				if (
 					targetOfTarget->playerId < PLAYABLE_PLAYER_COUNT &&
 					!caster->isTargetEnemy(targetOfTarget) &&
-					targetOfTarget->subunit == NULL &&
+					targetOfTarget->subunit == nullptr &&
 					!(targetOfTarget->status & UnitStatus::InAir)
 				)
 				{
@@ -241,7 +241,7 @@ CUnit* findBestDarkSwarmTarget(CUnit* caster, bool isUnderAttack) {
 	caster, DarkSwarmTargetFinderProc(caster));
 
   //Specific to 0x00442840
-  if ( (result != NULL) && (result->status & UnitStatus::InAir) )
+  if ( (result != nullptr) && (result->status & UnitStatus::InAir) )
     result = result->orderTarget.unit;
 
   return result;

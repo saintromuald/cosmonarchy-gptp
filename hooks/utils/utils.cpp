@@ -42,7 +42,7 @@ void InitializeDialog(BinDlg* dialog, void* dlgFunc) {
 	dialog->flags |= (BinDlgFlags::NoClickSound + BinDlgFlags::VerticalAlignmentBottom);
 	dialog->onInitDialog0x46.unk4a = 0;
 
-	if(dlgFunc != NULL)
+	if(dlgFunc != nullptr)
 		dialog->fxnInteract = dlgFunc;
 
 	dialog->onInitDialog0x36.responseAreaBitArray = (u32*)
@@ -125,7 +125,7 @@ CUnit* getActivePlayerFirstSelection() {
 	CUnit* unit;
 
 	if(*selectionIndexStart >= 12)
-		unit = NULL;
+		unit = nullptr;
 	else {
 
 		s32 playerId = *ACTIVE_PLAYER_ID;
@@ -136,10 +136,10 @@ CUnit* getActivePlayerFirstSelection() {
 
 			unit = playersSelections->unit[playerId][index];
 
-			if(unit == NULL)
+			if(unit == nullptr)
 				bStopLoop = true;
 			else
-			if(unit->sprite != NULL) {
+			if(unit->sprite != nullptr) {
 				if(unit->mainOrderId != OrderId::Die)
 					bStopLoop = true;
 				else

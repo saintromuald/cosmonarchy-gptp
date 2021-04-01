@@ -9,11 +9,11 @@ namespace {
 
 namespace hooks {
 	void ShowHealthBar(CUnit* unit) {
-		if (unit == NULL) return;
+		if (unit == nullptr) return;
 		RemoveHPBar(unit->sprite->images.head);
 		_unitTemp = unit;
 		CreateHealthBar(0, unit->sprite);
-		_unitTemp = NULL;
+		_unitTemp = nullptr;
 	}
 
 	void compileHealthBar(CImage* a1, CSprite* a2) {
@@ -29,7 +29,7 @@ namespace hooks {
 		u32* v10;	// edx
 
 		v2 = *(a2 + 8);
-		if (_unitTemp != NULL) {
+		if (_unitTemp != nullptr) {
 			v3 = _unitTemp;
 		} else {
 			v3 = CurrentUnitSelection[*(a2 + 11)];

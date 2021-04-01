@@ -73,13 +73,13 @@ Bool32 unitCanRechargeShieldsHook(CUnit* target, CUnit* battery) {
 	  )                       
 		result = 0;
 	else
-	if(target->pAI == NULL)
+	if(target->pAI == nullptr)
 		result = 1;
 	else { //Separate check for AI-controlled units
 		if (target->mainOrderId == OrderId::RechargeShields1 || target->mainOrderId == OrderId::Pickup4)
 			result = 0;
 		else
-		if (target->orderQueueHead != NULL && target->orderQueueHead->orderId == OrderId::RechargeShields1)
+		if (target->orderQueueHead != nullptr && target->orderQueueHead->orderId == OrderId::RechargeShields1)
 			result = 0;
 		else
 			result = 1;
@@ -103,14 +103,14 @@ void orderRechargeShieldsHook(CUnit* unit) {
 
 	//Skip if the Shield Battery does not exist, has no energy, or is disabled
 	//isFrozen code was hardcoded rather than function call in original code
-	if (battery == NULL || battery->energy == 0 || battery->isFrozen()) {
+	if (battery == nullptr || battery->energy == 0 || battery->isFrozen()) {
 
-		if (unit->orderQueueHead == NULL) {
+		if (unit->orderQueueHead == nullptr) {
 			unit->userActionFlags |= 1;
 			prepareForNextOrder(unit);
 		}
 		else {
-			if (unit->pAI != NULL)
+			if (unit->pAI != nullptr)
 				unit->orderComputerCL(OrderId::ComputerAI);
 			else
 				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
@@ -171,7 +171,7 @@ void orderRechargeShieldsHook(CUnit* unit) {
 
 		if(!bStopThere && unit->mainOrderState == 3) {
 
-			if(battery->orderTarget.unit == NULL)
+			if(battery->orderTarget.unit == nullptr)
 				battery->orderTarget.unit = unit;
 
 			//do 1 recharge action? (increase unit shield, decrease battery energy)
@@ -184,7 +184,7 @@ void orderRechargeShieldsHook(CUnit* unit) {
 			{
 
 				if(battery->orderTarget.unit == unit)
-					battery->orderTarget.unit = NULL;
+					battery->orderTarget.unit = nullptr;
 
 				unit->orderToIdle();
 

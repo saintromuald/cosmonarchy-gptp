@@ -38,7 +38,7 @@ class RecallTargetFinderProc: public scbw::UnitFinderCallbackMatchInterface {
 CUnit* findBestRecallTarget(CUnit* caster, bool isUnderAttack) {
 
   if (isUnitInUnsafeRegion(caster))
-    return NULL;
+    return nullptr;
 
   return scbw::UnitFinder::getNearestTarget(caster, RecallTargetFinderProc(caster));
 }

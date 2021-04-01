@@ -8,7 +8,7 @@ bool rangeMatch(CUnit* unit, u32 r, u32 context, std::vector<u16> allowedIds) {
 		unit->getX() + r, unit->getY() + r,
 		unit, unitRangeCount(unit, context, allowedIds)
 	);
-	return a != NULL;
+	return a != nullptr;
 }
 
 u32 hydraUnitCount(CUnit* unitPtr, Point16 pos, int r, u32 flags, std::vector<u16> unitIds)
@@ -40,7 +40,7 @@ CUnit* rangeMatchPosition(Point32 position, u32 r, u32 context, std::vector<u16>
 	auto a = scbw::UnitFinder::getNearestTarget(
 		position.x - r, position.y - r,
 		position.x + r, position.y + r,
-		position, unitRangeCount(NULL, context, allowedIds)
+		position, unitRangeCount(nullptr, context, allowedIds)
 	);
 	return a;
 }

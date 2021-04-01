@@ -164,12 +164,12 @@ void globals::aise_load(const char* ptr, u32 len){
 	u32 lurkerMapSize = 0;
 	stream.read(reinterpret_cast<char*>(&lurkerMapSize), sizeof(lurkerMapSize));
 	for (int i = 0; i < lurkerMapSize; i++) {
-		CUnit* key = NULL;
+		CUnit* key = nullptr;
 		stream.read(reinterpret_cast<char*>(&key), sizeof(key));
 		u32 valueCount = 0;
 		stream.read(reinterpret_cast<char*>(&valueCount), sizeof(valueCount));	
 		for (int j = 0; j < valueCount; j++) {
-			CUnit* value = NULL;
+			CUnit* value = nullptr;
 			stream.read(reinterpret_cast<char*>(&value), sizeof(value));
 			lurkerSpineHits[key].push_back(value);
 		}
@@ -192,7 +192,7 @@ void globals::unitDeathHook(CUnit* unit) {
 	unitStructs.erase(unit);
 	for (int i = 0; i < this->apostleAgents.size(); i++) {
 		if (apostleAgents[i].creator == unit) {
-			apostleAgents[i].creator=NULL;
+			apostleAgents[i].creator=nullptr;
 		}
 	}
 	lurkerSpineHits[unit].clear();
@@ -248,7 +248,7 @@ void globals::frameHook() {
 					constexpr int unitSizeFactor[5] = { 2, 0, 256, 192, 128 };//Concussive damage
 					auto count = 0;
 					int r = 16;
-					auto n = unitRangeCount(NULL, CFlags::NoInvincible | CFlags::Enemy | CFlags::NoAir, {});
+					auto n = unitRangeCount(nullptr, CFlags::NoInvincible | CFlags::Enemy | CFlags::NoAir, {});
 					scbw::UnitFinder unitsInSplash(impact.position.x - r, impact.position.y - r,
 						impact.position.x + r, impact.position.y + r);
 					for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
@@ -256,20 +256,20 @@ void globals::frameHook() {
 						if (n.match(unit)) {
 							double damage_factor = unitSizeFactor[units_dat::SizeType[unit->id]];
 							double damage = (double)(weapons_dat::DamageAmount[WeaponId::SalamanderIncendiaryPayload] + weapons_dat::DamageUpgrade[WeaponId::SalamanderIncendiaryPayload]) * (damage_factor / 256.0);
-							unitsInSplash.getUnit(i)->inflictDamage(damage, NULL, -1, false, true, true);
+							unitsInSplash.getUnit(i)->inflictDamage(damage, nullptr, -1, false, true, true);
 						}
 					}
 				}
 			}
 			else if (impact.impactId == ImpactId::Planetcracker) {
 				int r = 8*32;
-				auto n = unitRangeCount(NULL, CFlags::NoInvincible | CFlags::NoAir, {});
+				auto n = unitRangeCount(nullptr, CFlags::NoInvincible | CFlags::NoAir, {});
 				scbw::UnitFinder unitsInSplash(impact.position.x - r, impact.position.y - r,
 					impact.position.x + r, impact.position.y + r);
 				for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 					auto unit = unitsInSplash.getUnit(i);
 					if (n.match(unit)) {
-						unitsInSplash.getUnit(i)->inflictDamage(1777, NULL, -1, false, true, true);
+						unitsInSplash.getUnit(i)->inflictDamage(1777, nullptr, -1, false, true, true);
 						//1777 is [ 2500dmg*256 / 15sec*24 ]
 					}
 				}
@@ -323,7 +323,7 @@ void globals::register_pariah_hit(CUnit* source, CUnit* target){
 void globals::clear_ptr_in_apostle_table(CUnit* ptr) {
 	for (auto& a : apostleAgents) {
 		if (a.creator == ptr) {
-			a.creator = NULL;//agent values themselves must not be deleted to prevent non-working lazarus agent buffs
+			a.creator = nullptr;//agent values themselves must not be deleted to prevent non-working lazarus agent buffs
 		}
 	}
 }
@@ -426,7 +426,7 @@ void globals::createSalamanderFire(int x, int y, u8 player,u8 elevationLevel, bo
 		}
 	}
 	CThingy* thingy = scbw::createThingy(SpriteId::SalamanderImpact, x, y, 11);
-	if (thingy != NULL) {
+	if (thingy != nullptr) {
 		thingy->sprite->elevationLevel = elevationLevel;
 		scbw::setThingyVisibilityFlags(thingy);
 		if (addImpactValue) {
@@ -451,7 +451,7 @@ void globals::createIonField(int x, int y, u8 player, u8 elevationLevel, bool ad
 		}
 	}
 	CThingy* thingy = scbw::createThingy(SpriteId::IonField, x, y, 11);
-	if (thingy != NULL) {
+	if (thingy != nullptr) {
 		thingy->sprite->elevationLevel = elevationLevel;
 		scbw::setThingyVisibilityFlags(thingy);
 		if (addImpactValue) {
@@ -805,7 +805,7 @@ namespace scbw {
 			overlayImageId = ImageId::RestorationHit_Large;
 		else
 			overlayImageId = ImageId::RestorationHit_Small;
-		if (unit->subunit != NULL)
+		if (unit->subunit != nullptr)
 			overlayTargetUnit = unit->subunit;
 		else
 			overlayTargetUnit = unit;
@@ -845,7 +845,7 @@ namespace scbw {
 			unit->irradiateTimer = 0;
 
 			//specific updates following irradiate removal
-			unit->irradiatedBy = NULL;
+			unit->irradiatedBy = nullptr;
 			unit->irradiatePlayerId = 8;
 		}
 
@@ -919,8 +919,8 @@ namespace scbw {
 		scbw::refreshConsole();
 	}
 	CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset) {
-		if (unit->sprite == NULL || unit->orderTarget.unit == NULL) {
-			return NULL;
+		if (unit->sprite == nullptr || unit->orderTarget.unit == nullptr) {
+			return nullptr;
 		}
 		auto rotate = scbw::get_generic_value(unit, valueId);
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
@@ -967,8 +967,8 @@ namespace scbw {
 	}
 
 	CUnit** getSourceQueens(CUnit* unit) {
-		CUnit* queens[2] = { NULL };
-		if (unit == NULL) return queens; // <- prevents crash from incubators, but does not fix the issue
+		CUnit* queens[2] = { nullptr };
+		if (unit == nullptr) return queens; // <- prevents crash from incubators, but does not fix the issue
 		queens[0] = scbw::get_generic_unit(unit, ValueId::BroodlingMother);
 		queens[1] = scbw::get_generic_unit(unit, ValueId::ParasiteSource);
 		return queens;
@@ -991,7 +991,7 @@ namespace scbw {
 		}
 	}
 	void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset) {
-		if (unit->sprite == NULL || unit->orderTarget.unit == NULL) {
+		if (unit->sprite == nullptr || unit->orderTarget.unit == nullptr) {
 			return;
 		}
 		auto rotate = scbw::get_generic_value(unit, valueId);

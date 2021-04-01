@@ -44,7 +44,7 @@ namespace hooks {
 
 		CUnit* unitToLoad = unit->orderTarget.unit;
 
-		if(	unitToLoad != NULL &&
+		if(	unitToLoad != nullptr &&
 			scbw::canBeEnteredBy(unit, unitToLoad)
 		) 
 		{
@@ -52,7 +52,7 @@ namespace hooks {
 			prepareForNextOrder(unit);
 		}
 		else
-		if(unit->pAI != NULL) {
+		if(unit->pAI != nullptr) {
 
 			Point16 pos = {0,0};
 
@@ -60,7 +60,7 @@ namespace hooks {
 
 			if(unit->mainOrderId != OrderId::Die) {
 
-				bool bStopLoop = (unit->orderQueueTail == NULL);
+				bool bStopLoop = (unit->orderQueueTail == nullptr);
 
 				while(!bStopLoop) {
 
@@ -74,12 +74,12 @@ namespace hooks {
 
 					if(!bStopLoop) {
 						removeOrderFromUnitQueue(unit, unit->orderQueueTail);
-						bStopLoop = (unit->orderQueueTail == NULL);
+						bStopLoop = (unit->orderQueueTail == nullptr);
 					}
 
 				}
 
-				unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, NULL, UnitId::None);
+				unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
 
 			}
 
@@ -96,14 +96,14 @@ namespace hooks {
 
 		CUnit* unitToLoad = unit->orderTarget.unit;
 
-		if(unitToLoad == NULL) {
+		if(unitToLoad == nullptr) {
 
-			if(unit->orderQueueHead != NULL) {
+			if(unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else {
-				if(unit->pAI != NULL)
+				if(unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
 				else
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
@@ -129,14 +129,14 @@ namespace hooks {
 
 		CUnit* unitToLoad = unit->orderTarget.unit;
 
-		if(unitToLoad == NULL) {
+		if(unitToLoad == nullptr) {
 
-			if(unit->orderQueueHead != NULL) {
+			if(unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else {
-				if(unit->pAI != NULL)
+				if(unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
 				else
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
@@ -145,7 +145,7 @@ namespace hooks {
 		}
 		else { //E761F
 			if(
-				unitToLoad->pAI == NULL ||
+				unitToLoad->pAI == nullptr ||
 				unitToLoad->mainOrderId == OrderId::Pickup4
 			) { //E762F
 				if(unit->mainOrderState == 0) {
@@ -161,7 +161,7 @@ namespace hooks {
 									unitToLoad->mainOrderId != OrderId::Pickup4
 								)
 									unitToLoad->orderTo(OrderId::EnterTransport, unit);
-								if(unit->pAI != NULL)
+								if(unit->pAI != nullptr)
 									unit->mainOrderState = 1;
 								else {
 									function_00474A70(unit, unitToLoad, OrderId::Pickup1);
@@ -189,13 +189,13 @@ namespace hooks {
 
 		if(
 			unit->mainOrderState == 0 &&
-			unit->orderTarget.unit != NULL
+			unit->orderTarget.unit != nullptr
 		) 
 		{
 			unit->mainOrderState = 1;
 			unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
 			unit->orderTarget.pt.y = (unit->orderTarget.unit)->sprite->position.y;
-			unit->orderTarget.unit = NULL;
+			unit->orderTarget.unit = nullptr;
 		}
 
 		//E7739
@@ -210,12 +210,12 @@ namespace hooks {
 
 		if(distance <= 0x1000) {
 
-			if(unit->orderQueueHead != NULL) {
-				unknownSpecialOrder(unit,unit->orderQueueHead,OrderId::Unload,0,0,NULL,UnitId::None);
+			if(unit->orderQueueHead != nullptr) {
+				unknownSpecialOrder(unit,unit->orderQueueHead,OrderId::Unload,0,0,nullptr,UnitId::None);
 				prepareForNextOrder(unit);
 			}
 			else {
-				unit->performAnotherOrder(OrderId::Unload,0,0,NULL,UnitId::None);
+				unit->performAnotherOrder(OrderId::Unload,0,0,nullptr,UnitId::None);
 				prepareForNextOrder(unit);
 			}
 
@@ -233,7 +233,7 @@ namespace hooks {
 				unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
 			}
 
-			if(unit->pAI != NULL) {
+			if(unit->pAI != nullptr) {
 
 				u32 groundHeightAtPxPos1 =
 					scbw::getGroundHeightAtPos(
@@ -280,7 +280,7 @@ namespace hooks {
 
 							CUnit* unitToUnload = getLoadedUnitFromIndex(unit,index);
 
-							if(unitToUnload != NULL) {
+							if(unitToUnload != nullptr) {
 
 								if(unitToUnload->id == UnitId::ProtossAccantor && bIsDistanceGreaterThanHaltDistance)
 									bStopLoop = true;
@@ -331,9 +331,9 @@ namespace hooks {
 			unit->userActionFlags |= 1;
 
 			if(unit->status & UnitStatus::InTransport)
-				unit->order(OrderId::Nothing2,0,0,NULL,UnitId::None,1);
+				unit->order(OrderId::Nothing2,0,0,nullptr,UnitId::None,1);
 			else
-				unit->order(units_dat::ReturnToIdleOrder[unit->id],0,0,NULL,UnitId::None,1);
+				unit->order(units_dat::ReturnToIdleOrder[unit->id],0,0,nullptr,UnitId::None,1);
 
 			prepareForNextOrder(unit);
 
@@ -350,14 +350,14 @@ namespace hooks {
 			bool jump_to_E7C44 = false;
 			bool bEndThere = false;
 
-			if(target == NULL) {
+			if(target == nullptr) {
 
 				if(function_004E6EF0(unit,&target) == 0) {
 					unit->orderToIdle();
 					bEndThere = true;
 				}
 				else
-				if(target != NULL)
+				if(target != nullptr)
 					jump_to_E7C2B = true;
 
 			}
@@ -383,7 +383,7 @@ namespace hooks {
 				}
 
 				if(jump_to_E7C37)
-					unit->orderTarget.unit = NULL;
+					unit->orderTarget.unit = nullptr;
 
 				if(jump_to_E7C44) {
 
@@ -392,7 +392,7 @@ namespace hooks {
 						loadUnitProc(target,unit);
 						target->orderTo(OrderId::MoveUnload,unit->orderTarget.pt.x,unit->orderTarget.pt.y);
 
-						if(target->pAI != NULL)
+						if(target->pAI != nullptr)
 							_doOrder(
 								target,
 								OrderId::Move,
@@ -433,7 +433,7 @@ namespace hooks {
 		CUnit* target = unit->orderTarget.unit;
 
 		if(
-			target != NULL &&
+			target != nullptr &&
 			!(target->status & UnitStatus::IsHallucination) &&
 			(target->id != UnitId::ZergOvileth ||
 			 UpgradesSc->currentLevel[unit->playerId][UpgradeId::VentralSacs] != 0) &&
@@ -471,12 +471,12 @@ namespace hooks {
 
 		}
 		else {
-			if(unit->orderQueueHead != NULL) {
+			if(unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else
-			if(unit->pAI != NULL)
+			if(unit->pAI != nullptr)
 				unit->orderComputerCL(OrderId::ComputerAI);
 			else
 				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
@@ -519,7 +519,7 @@ namespace hooks {
 				loadedUnitOffset = (u32*)&unit->loadedUnit[counter];
 
 				if(	*loadedUnitOffset != 0  &&
-					unitTable_0059CB64[unit->loadedUnit[counter].index].link.prev != NULL //sprite check
+					unitTable_0059CB64[unit->loadedUnit[counter].index].link.prev != nullptr //sprite check
 				)
 				{
 
@@ -561,7 +561,7 @@ namespace hooks {
 					jump_to_E8195 = true;
 				else
 				if(
-					unit->pAI == NULL ||
+					unit->pAI == nullptr ||
 					unit->status & UnitStatus::GroundedBuilding
 				)
 					jump_to_E81AD = true;
@@ -582,17 +582,17 @@ namespace hooks {
 				jump_to_E81AD = true;
 			}
 			if(jump_to_E81AD) {
-				if(unit->orderQueueHead != NULL) {
+				if(unit->orderQueueHead != nullptr) {
 					unit->userActionFlags |= 1;
 					prepareForNextOrder(unit);
 				}
 				else 
-				if(unit->pAI != NULL) { //E81DE
+				if(unit->pAI != nullptr) { //E81DE
 					unit->userActionFlags |= 1;
 					if(unit->mainOrderId == OrderId::Die)
 						prepareForNextOrder(unit);
 					else {
-						bEndLoop = (unit->orderQueueTail == NULL);
+						bEndLoop = (unit->orderQueueTail == nullptr);
 						while(!bEndLoop) {
 							if(
 								orders_dat::CanBeInterrupted[(unit->orderQueueTail)->orderId] ||
@@ -605,9 +605,9 @@ namespace hooks {
 								bEndLoop = true;
 
 							if(!bEndLoop)
-								bEndLoop = (unit->orderQueueTail == NULL);
+								bEndLoop = (unit->orderQueueTail == nullptr);
 						}
-						unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, NULL, UnitId::None);
+						unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
 						prepareForNextOrder(unit);
 					}
 				}
@@ -617,7 +617,7 @@ namespace hooks {
 						units_dat::ReturnToIdleOrder[unit->id],
 						0,
 						0,
-						NULL,
+						nullptr,
 						UnitId::None,
 						true
 					);

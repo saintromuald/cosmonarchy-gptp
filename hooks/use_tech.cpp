@@ -115,7 +115,7 @@ namespace hooks
 /*		for (int i = 0; i < SELECTION_ARRAY_LENGTH && !TechCapableUnit; i++)
 		{
 			currentClientSelectionUnit = clientSelectionGroup->unit[i];
-			if (currentClientSelectionUnit != NULL)
+			if (currentClientSelectionUnit != nullptr)
 			{
 				if (techdata_dat::EnergyCost[tech] * 256 <= currentClientSelectionUnit->energy)
 				{
@@ -129,7 +129,7 @@ namespace hooks
 		{
 			currentClientSelectionUnit = playersSelections->unit[*ACTIVE_NATION_ID][i];
 			//if still desync, try ACTIVE_PLAYER_ID
-			if (currentClientSelectionUnit != NULL)
+			if (currentClientSelectionUnit != nullptr)
 			{
 				if (techdata_dat::EnergyCost[tech] * 256 <= currentClientSelectionUnit->energy)
 				{
@@ -138,7 +138,7 @@ namespace hooks
 			}
 		}*/
 		CUnit* firstInList = playersSelections->unit[*ACTIVE_NATION_ID][0];
-		if (firstInList != NULL) {
+		if (firstInList != nullptr) {
 			//initial check for energy-based switch abilities
 			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel &&
 				scbw::get_generic_rust_value(firstInList, ValueId::SublimeShepherd) == 1) {
@@ -159,7 +159,7 @@ namespace hooks
 			if (Ui_CheckEnergyForTechUse(tech)) {
 				TechCapableUnit = true;
 			}
-			if (firstInList != NULL) {
+			if (firstInList != nullptr) {
 				if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel &&
 					scbw::get_generic_rust_value(firstInList, ValueId::SublimeShepherd) == 1) {
 					TechCapableUnit = true;
@@ -235,7 +235,7 @@ namespace hooks
 		case TechId::EMPShockwave:
 			//			IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
 						//reverse thrust switch
-			if (firstInList != NULL) {
+			if (firstInList != nullptr) {
 				int action = 1;//on
 				if (scbw::get_generic_rust_value(firstInList, ValueId::ReverseThrust) == 1) {
 					action = 0;//off
@@ -280,7 +280,7 @@ namespace hooks
 			//			IssueTriTargetOrder(OrderId::Restoration, 0, 0);
 			//0 - deploy
 			//1 - stop
-/*			if (firstInList != NULL) {
+/*			if (firstInList != nullptr) {
 				u8 action = 0;
 				if (firstInList->_padding_0x132 & 0x8) {
 					action = 1;
@@ -354,10 +354,10 @@ namespace hooks
 		{
 			//0 - off (enable splash mode)
 			//1 - on (disable splash mode)
-			if (firstInList != NULL) {
+			if (firstInList != nullptr) {
 				int action = 0;//enable
 
-				if (scbw::get_aise_value(firstInList, NULL, AiseId::SendCyprianValue, 0, 0) == 1) {
+				if (scbw::get_aise_value(firstInList, nullptr, AiseId::SendCyprianValue, 0, 0) == 1) {
 					action = 1;//disable
 				}
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
@@ -373,12 +373,12 @@ namespace hooks
 				{
 					//Equip - Empower hero with relic
 					scbw::printText("Try use Tech38");
-					if (firstInList != NULL) {
+					if (firstInList != nullptr) {
 						if (firstInList->id == 175) {//reliquary
 							u8 relic_type = 0;
 							u32 button_number = head->frameCount;
 							u32 relic = 0;
-							relic = scbw::get_aise_value(firstInList, NULL, AiseId::GetRelicByIndex, button_number, 0);
+							relic = scbw::get_aise_value(firstInList, nullptr, AiseId::GetRelicByIndex, button_number, 0);
 							char buf[64];
 							sprintf(buf, "Relic id: %d", relic);
 							scbw::printText(buf);
@@ -387,8 +387,8 @@ namespace hooks
 								if (relic == 202) {
 									scbw::printText("Blind Judge");
 								}
-								scbw::sendGPTP_aise_cmd(firstInList, NULL, GptpId::EmpowerHero, relic, 0, 0);
-								if (scbw::get_aise_value(firstInList, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1) {
+								scbw::sendGPTP_aise_cmd(firstInList, nullptr, GptpId::EmpowerHero, relic, 0, 0);
+								if (scbw::get_aise_value(firstInList, nullptr, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1) {
 									scbw::printText("Found relic");
 								}
 								else {
@@ -411,7 +411,7 @@ namespace hooks
 		case TechId::UnusedTech39://observance
 			IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
 
-			/*			if (firstInList != NULL) {
+			/*			if (firstInList != nullptr) {
 							int action = 0;//enable
 							if (scbw::get_generic_value(firstInList, ValueId::Observance) == 1) {
 								action = 1;//disable
@@ -428,10 +428,10 @@ namespace hooks
 		{
 
 			auto firstInList = clientSelectionGroup->unit[0];
-			if (firstInList != NULL) {
+			if (firstInList != nullptr) {
 				if (firstInList->id == UnitId::ProtossClarion) {
 					int action = 0;//enable
-					if (scbw::get_aise_value(firstInList, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
+					if (scbw::get_aise_value(firstInList, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
 						action = 1;//disable
 					}
 					u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12

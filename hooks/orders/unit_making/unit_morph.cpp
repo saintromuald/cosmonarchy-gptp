@@ -67,12 +67,12 @@ namespace hooks {
 				)
 				bTwinEggOrCocoon = false;
 
-			unit2 = NULL;
+			unit2 = nullptr;
 
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg && !vorvaling) {
 				unit2 = function_0045D910(unit);//zerg dual birth
 
-				if (unit2 != NULL)
+				if (unit2 != nullptr)
 					AI_TrainingUnit(unit, unit2);
 
 			}
@@ -118,7 +118,7 @@ namespace hooks {
 				if (origin == UnitId::ZergLarva) {
 					orderNewUnitToRally(unit, unit->connectedUnit);
 
-					if (unit2 != NULL)
+					if (unit2 != nullptr)
 						orderNewUnitToRally(unit2, unit->connectedUnit);
 				}
 
@@ -206,13 +206,13 @@ namespace hooks {
 						if (unit->id == UnitId::ProtossCantavis) {
 							replaceUnitWithType(unit, UnitId::ProtossAugur);
 							unit->sprite->flags &= ~CSprite_Flags::IscriptCode;
-							if(unit->sprite->images.head != NULL) {
+							if(unit->sprite->images.head != nullptr) {
 								CImage* current_image = unit->sprite->images.head;
 								do {
 									
 									current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 									current_image = current_image->link.next;
-								}while (current_image != NULL);
+								}while (current_image != nullptr);
 							}
 							changeUnitButtonSet_Sub4E5D60(unit,UnitId::None);
 							scbw::refreshConsole();
@@ -298,7 +298,7 @@ namespace hooks {
 
 							current_image = unit->sprite->images.head;
 
-							while (current_image != NULL) {
+							while (current_image != nullptr) {
 								auto anim = IscriptAnimation::SpecialState1;
 								/*if (origin == UnitId::ZergLarva) {
 									anim = IscriptAnimation::GndAttkInit;
@@ -411,7 +411,7 @@ namespace hooks {
 	//Check if @p unitId is an egg unit that can be rallied
 	bool isRallyableEggUnitHook(u16 unitId) {
 		//Default StarCraft behavior
-		if (scbw::isZergEggNew(NULL,false,false,unitId))
+		if (scbw::isZergEggNew(nullptr,false,false,unitId))
 			return false;
 
 		return true;
@@ -486,16 +486,16 @@ namespace hooks {
 			if (town)
 			{
 				if (unit == town->building_scv)
-					town->building_scv = NULL;
+					town->building_scv = nullptr;
 				if (unit == town->main_building)
-					town->main_building = NULL;
+					town->main_building = nullptr;
 			}
 			if (!assert_is_building)
 			{
 				if (town)
 					deleteAiTownIfNeeded(town);
 			}
-			unit->pAI = NULL;
+			unit->pAI = nullptr;
 			result = 1;
 		}
 		return result;

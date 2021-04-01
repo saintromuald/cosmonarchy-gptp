@@ -78,7 +78,7 @@ void killAllHangarUnits(CUnit* unit) {
 	while(unit->carrier.inHangarCount != 0) {
 		CUnit* childInside = unit->carrier.inHangarChild;
 		unit->carrier.inHangarChild = childInside->interceptor.hangar_link.prev;
-		childInside->interceptor.parent = NULL;
+		childInside->interceptor.parent = nullptr;
 //		GPTP::logger << "Removehangar -" << std::endl;
 		childInside->remove();
 		unit->carrier.inHangarCount--;
@@ -88,7 +88,7 @@ void killAllHangarUnits(CUnit* unit) {
 
 		CUnit* childOutside = unit->carrier.outHangarChild;
 
-		childOutside->interceptor.parent = NULL;
+		childOutside->interceptor.parent = nullptr;
 
 		//Kill interceptors only (Scarabs will defuse anyway)
 		if (childOutside->id != UnitId::scarab) {
@@ -125,13 +125,13 @@ void killAllHangarUnits(CUnit* unit) {
 
 		//66239
 		unit->carrier.outHangarChild = childOutside->interceptor.hangar_link.prev;
-		childOutside->interceptor.hangar_link.prev = NULL;
-		childOutside->interceptor.hangar_link.next = NULL;
+		childOutside->interceptor.hangar_link.prev = nullptr;
+		childOutside->interceptor.hangar_link.next = nullptr;
 		unit->carrier.outHangarCount--;
 
 	} //while (unit->carrier.outHangarCount != 0)
 
-	unit->carrier.outHangarChild = NULL;
+	unit->carrier.outHangarChild = nullptr;
 }
 
 //Identical to 00468770 sub_468770
@@ -143,21 +143,21 @@ void freeResourceContainer(CUnit* resource) {
 	CUnit* worker = resource->building.resource.nextGatherer;
 	CUnit* nextWorker;
 
-	while (worker != NULL) {
+	while (worker != nullptr) {
 
-		if (worker->worker.harvest_link.prev != NULL) //untie the previous worker from current worker (tie it to next)
+		if (worker->worker.harvest_link.prev != nullptr) //untie the previous worker from current worker (tie it to next)
 			(worker->worker.harvest_link.prev)->worker.harvest_link.next = worker->worker.harvest_link.next;
 		else
 			resource->building.resource.nextGatherer = worker->worker.harvest_link.next;
 
-		if (worker->worker.harvest_link.next != NULL) //untie the next worker from current worker (tie it to previous)
+		if (worker->worker.harvest_link.next != nullptr) //untie the next worker from current worker (tie it to previous)
 			(worker->worker.harvest_link.next)->worker.harvest_link.prev = worker->worker.harvest_link.prev;
 
 		nextWorker = worker->worker.harvest_link.next;
 
-		worker->worker.harvestTarget = NULL;
-		worker->worker.harvest_link.prev = NULL;
-		worker->worker.harvest_link.next = NULL;
+		worker->worker.harvestTarget = nullptr;
+		worker->worker.harvest_link.prev = nullptr;
+		worker->worker.harvest_link.next = nullptr;
 
 		worker = nextWorker;
 
@@ -216,7 +216,7 @@ void setAllImageGroupFlagsPal11(CSprite* sprite) {
 
 	for(
 		CImage* current_image = sprite->images.head; 
-		current_image != NULL;
+		current_image != nullptr;
 		current_image = current_image->link.next
 	)
 	{
@@ -292,7 +292,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	// Remove Disruption Fields
 	if (unit->id == UnitId::ProtossLanifect) {
 		auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
-		if (web != NULL) {
+		if (web != nullptr) {
 			web->removeTimer = 5 * 24;
 		}
 	}
@@ -303,7 +303,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		unit->orderTarget.pt.y = unit->position.y;
 		auto bullet = scbw::createBulletRet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y,
 			scbw::get_generic_value(unit, ValueId::AlkajeliskParasitePlayer), 0);
-		if (bullet != NULL) {
+		if (bullet != nullptr) {
 			bullet->time_remaining = 255;
 		}
 	}
@@ -330,7 +330,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 
 	// Clarion Phase Link behavior
 	if (unit->id == UnitId::ProtossClarion) {
-		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ClearClarionLinks, 0, 0, 0);
+		scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::ClearClarionLinks, 0, 0, 0);
 	}
 
 	// Irradiate Radiation Shockwave enhancement
@@ -383,9 +383,9 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	else
 	if (unit->id == UnitId::TerranEidolon
 	||  unit->id == UnitId::TerranSeraph) {
-		if (unit->building.ghostNukeMissile != NULL) {
+		if (unit->building.ghostNukeMissile != nullptr) {
 		   (unit->building.ghostNukeMissile)->sprite->playIscriptAnim(IscriptAnimation::Death, true);
-			unit->building.ghostNukeMissile = NULL;
+			unit->building.ghostNukeMissile = nullptr;
 		} 
 
 	}
@@ -418,9 +418,9 @@ void unitDestructorSpecialHook(CUnit* unit) {
 				//following code is equivalent to a jump to function 004652A0
 				//with unit as parameter in EAX
 
-				if (unit->interceptor.parent != NULL) {
+				if (unit->interceptor.parent != nullptr) {
 
-					if (unit->interceptor.hangar_link.next != NULL) //untie the next interceptor/scarab from current interceptor/scarab (tie it to previous)
+					if (unit->interceptor.hangar_link.next != nullptr) //untie the next interceptor/scarab from current interceptor/scarab (tie it to previous)
 						(unit->interceptor.hangar_link.next)->interceptor.hangar_link.prev = unit->interceptor.hangar_link.prev;
 					else {
 						if (unit->interceptor.isOutsideHangar)
@@ -434,13 +434,13 @@ void unitDestructorSpecialHook(CUnit* unit) {
 					else
 						unit->interceptor.parent->carrier.inHangarCount--;
 
-					if (unit->interceptor.hangar_link.prev != NULL)  //untie the previous interceptor/scarab from current interceptor/scarab (tie it to next)
+					if (unit->interceptor.hangar_link.prev != nullptr)  //untie the previous interceptor/scarab from current interceptor/scarab (tie it to next)
 						(unit->interceptor.hangar_link.prev)->interceptor.hangar_link.next = unit->interceptor.hangar_link.next;
 
 				}
 				else {
-					unit->interceptor.hangar_link.prev = NULL;
-					unit->interceptor.hangar_link.next = NULL;
+					unit->interceptor.hangar_link.prev = nullptr;
+					unit->interceptor.hangar_link.next = nullptr;
 				}
 
 			}
@@ -451,9 +451,9 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		//Is a Nuclear Silo
 		if (unit->id == UnitId::TerranNuclearSilo) {
 
-			if (unit->building.silo.nuke != NULL) {
+			if (unit->building.silo.nuke != nullptr) {
 				(unit->building.silo.nuke)->remove();
-				unit->building.silo.nuke = NULL;
+				unit->building.silo.nuke = nullptr;
 			}
 
 		}
@@ -464,8 +464,8 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		//Is a Nuclear Missile
 		if (unit->id == UnitId::TerranNuclearMissile) {
 
-			if (unit->connectedUnit != NULL && unit->connectedUnit->id == UnitId::TerranNuclearSilo) {
-				(unit->connectedUnit)->building.silo.nuke = NULL;
+			if (unit->connectedUnit != nullptr && unit->connectedUnit->id == UnitId::TerranNuclearSilo) {
+				(unit->connectedUnit)->building.silo.nuke = nullptr;
 				(unit->connectedUnit)->building.silo.isReady = false;
 			}
 
@@ -478,23 +478,23 @@ void unitDestructorSpecialHook(CUnit* unit) {
 			//code from hooks::removePsiField(CUnit* unit)
 			//copied because the content is hardcoded here
 
-			if (unit->building.pylonAura != NULL) {
+			if (unit->building.pylonAura != nullptr) {
 				unit->building.pylonAura->free();	//should be equivalent to SpriteDestructor @ 00497B40
-				unit->building.pylonAura = NULL;
+				unit->building.pylonAura = nullptr;
 			}
 
 			//begin hardcoding removeFromPsiProviderList @ 00493100 to avoid use of a helper
 
-			if (unit->psi_link.prev != NULL)  //untie the previous pylon from current pylon (tie it to next)
+			if (unit->psi_link.prev != nullptr)  //untie the previous pylon from current pylon (tie it to next)
 				(unit->psi_link.prev)->psi_link.next = unit->psi_link.next;
-			if (unit->psi_link.next != NULL)  //untie the next pylon from current pylon (tie it to previous)
+			if (unit->psi_link.next != nullptr)  //untie the next pylon from current pylon (tie it to previous)
 				(unit->psi_link.next)->psi_link.prev = unit->psi_link.prev;
 
 			if (unit == *firstPsiFieldProvider)
 				*firstPsiFieldProvider = unit->psi_link.next;
 
-			unit->psi_link.prev = NULL;
-			unit->psi_link.next = NULL;
+			unit->psi_link.prev = nullptr;
+			unit->psi_link.next = nullptr;
 
 			//end hardcoding removeFromPsiProviderList @ 00493100 to avoid use of a helper
 
@@ -505,9 +505,9 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		//Is a Nydus Canal
 		if (unit->id == UnitId::ZergNydusCanal) {
 			CUnit* nydusExit = unit->building.nydusExit;
-			if (nydusExit != NULL) {
-				unit->building.nydusExit = NULL;
-				nydusExit->building.nydusExit = NULL;
+			if (nydusExit != nullptr) {
+				unit->building.nydusExit = nullptr;
+				nydusExit->building.nydusExit = nullptr;
 				nydusExit->remove();
 			}
 		}

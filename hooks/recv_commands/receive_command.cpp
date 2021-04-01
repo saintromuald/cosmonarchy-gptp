@@ -50,7 +50,7 @@ namespace hooks {
 
 			*saved_unit = current_unit;
 
-			while(current_unit != NULL) {
+			while(current_unit != nullptr) {
 
 				bool jump_to_9AD7E = false;
 				bool bOrderAllowed;
@@ -110,7 +110,7 @@ namespace hooks {
 
 							if(!jump_to_9ac4e && !jump_to_9aca9) {
 
-								if(unitParam == NULL) {
+								if(unitParam == nullptr) {
 									jump_to_9ad09 = true;
 									loop_to_9ac0d = false;
 								}
@@ -142,7 +142,7 @@ namespace hooks {
 
 									//Attack command conversion
 
-									if(unitParam != NULL)
+									if(unitParam != nullptr)
 										*saved_order_3 = units_dat::AttackUnitOrder[current_unit->id];
 									else
 										*saved_order_3 = units_dat::AttackMoveOrder[current_unit->id];
@@ -154,7 +154,7 @@ namespace hooks {
 									else
 									if(current_unit->subunit->isSubunit()) {
 
-										if(unitParam != NULL) {
+										if(unitParam != nullptr) {
 											*saved_order_2 = units_dat::AttackUnitOrder[current_unit->subunit->id];
 											jump_to_9aca9 = true;
 										}
@@ -180,7 +180,7 @@ namespace hooks {
 
 									CUnit* target = unitParam;
 
-									if(target == NULL)
+									if(target == nullptr)
 										target = current_unit;
 
 									current_unit->rally.unit = target;
@@ -197,7 +197,7 @@ namespace hooks {
 
 									loop_to_9ac0d = false;
 
-									current_unit->rally.unit = NULL;
+									current_unit->rally.unit = nullptr;
 									current_unit->rally.pt.x = x;
 									current_unit->rally.pt.y = y;
 

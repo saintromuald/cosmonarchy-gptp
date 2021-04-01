@@ -197,7 +197,7 @@ bool AI_spellcasterHook(CUnit* unit, bool isUnitBeingAttacked) {
           return false;
 
         if (aiCastSpellOrder(unit, target, OrderId::SummonBroodlings)) {
-          unit->order(OrderId::Move, unit->getX(), unit->getY(), NULL, UnitId::None, false);
+          unit->order(OrderId::Move, unit->getX(), unit->getY(), nullptr, UnitId::None, false);
           return true;
         }*/
 
@@ -440,11 +440,11 @@ bool isNukeTimerReady(u8 playerId) {
 //without checking if the nuke is already linked to another ghost
 CUnit* getLoadedSilo(CUnit* ghost, Bool32 checkNukeAvailableForGhost) {
 
-	CUnit* return_value = NULL;
+	CUnit* return_value = nullptr;
 
 	CUnit* current_unit = firstPlayerUnit->unit[ghost->playerId];
 
-	while(current_unit != NULL && return_value == NULL) {
+	while(current_unit != nullptr && return_value == nullptr) {
 
 		if(	current_unit->id == UnitId::TerranNuclearSilo &&
 			current_unit->building.silo.isReady
@@ -455,7 +455,7 @@ CUnit* getLoadedSilo(CUnit* ghost, Bool32 checkNukeAvailableForGhost) {
 
 				CUnit* nuke = current_unit->building.silo.nuke;
 
-				if(	nuke->connectedUnit == NULL ||
+				if(	nuke->connectedUnit == nullptr ||
 					nuke->connectedUnit == ghost ||
 					nuke->connectedUnit->id == UnitId::TerranNuclearSilo
 				)
@@ -485,7 +485,7 @@ CUnit* getLoadedSilo(CUnit* ghost, Bool32 checkNukeAvailableForGhost) {
   //      return unit;
   //  }
   //}
-  //return NULL;
+  //return nullptr;
 }
 
 } //unnamed namespace

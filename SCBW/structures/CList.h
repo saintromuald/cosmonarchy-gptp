@@ -125,8 +125,8 @@ void unlink(T* &head, T* &tail, T *t) {
   if ((t->*link).next)
     ((t->*link).next->*link).prev = (t->*link).prev;
 
-  (t->*link).prev = NULL;
-  (t->*link).next = NULL;
+  (t->*link).prev = nullptr;
+  (t->*link).next = nullptr;
 }
 
 //Based on function @ 0x004D4E30

@@ -155,11 +155,11 @@ namespace hooks {
 					unit->spendUnitEnergy(cloakingEnergyCost);
 
 			}
-			else if (unit->id == UnitId::ProtossMindTyrant && scbw::get_aise_value(unit, NULL, AiseId::SumMindControlCost, 0, 0) > 0) {
-				auto sum = scbw::get_aise_value(unit, NULL, AiseId::SumMindControlCost, 0, 0) / 2;
+			else if (unit->id == UnitId::ProtossMindTyrant && scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0) {
+				auto sum = scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) / 2;
 				unit->spendUnitEnergy(std::min(unit->energy, (u16)(16 * sum)));
 				if (unit->energy == 0) {
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::FreeMindControlled, 0, 0, 0);
+					scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
 				}
 			}
 			else if (unit->id == UnitId::TerranAzazel && scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd) == 1) {
@@ -174,15 +174,15 @@ namespace hooks {
 					scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 0);
 				}
 			}
-/*			else if (unit->id == UnitId::ProtossClarion && scbw::get_generic_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {			
+/*			else if (unit->id == UnitId::ProtossClarion && scbw::get_generic_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {			
 				unit->spendUnitEnergy(13);
 				if(unit->energy==0) {
-					scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 0, 0, 0);
+					scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::SetPhaseLinkStatus, 0, 0, 0);
 				}
 			}*/
 
 			else { //EB526
-				if (unit == NULL) {
+				if (unit == nullptr) {
 					return;
 				}
 				int maxEnergy;
@@ -297,7 +297,7 @@ namespace hooks {
 	void updateUnitStateHook(CUnit* unit) {
 
 		
-		if (unit->pAI != NULL) {
+		if (unit->pAI != nullptr) {
 			hydra_unit_ai(unit);
 		}
 		//Timers
@@ -314,7 +314,7 @@ namespace hooks {
 
 			bool can_free_fire = true;
 			if (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::Attack2) {
-				if (unit->orderTarget.unit != NULL) {
+				if (unit->orderTarget.unit != nullptr) {
 					can_free_fire = false;
 				}
 			}
@@ -332,7 +332,7 @@ namespace hooks {
 					auto direction = scbw::getAngle(x, y, targ_x, targ_y);
 					if (scbw::getDistanceFast(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
 						seek_unit = false;
-						scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, NULL, targ_x, targ_y);
+						scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, nullptr, targ_x, targ_y);
 					}
 					else {
 						scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabOn, 0);
@@ -344,7 +344,7 @@ namespace hooks {
 						unit->getX() + range, unit->getY() + range,
 						unit, wyvernMatch(unit)
 					);
-					if (a != NULL) {
+					if (a != nullptr) {
 						auto direction = scbw::getAngle(x, y, a->getX(), a->getY());
 						scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, a, a->position);
 					}
@@ -356,7 +356,7 @@ namespace hooks {
 
 		if (unit->id == UnitId::ProtossAccantor) {
 			CUnit* scarab = unit->carrier.inHangarChild;
-			while (scarab != NULL) {
+			while (scarab != nullptr) {
 				if (scarab->id == UnitId::ProtossPlasmaShell) {
 					if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::Relocators) && 
 						!(scarab->status & UnitStatus::InAir)) {
@@ -368,7 +368,7 @@ namespace hooks {
 			}
 		}
 		if (unit->mainOrderId == OrderId::MiningMinerals) {
-			if (unit->orderTarget.unit != NULL) {
+			if (unit->orderTarget.unit != nullptr) {
 				//add mining status, decrease the regeneration rate
 				unit->orderTarget.unit->unusedTimer = 180;
 			}
@@ -384,7 +384,7 @@ namespace hooks {
 		if (unit->_unknown_0x08C & 0x1) {
 			unit->_unknown_0x08C &= ~0x1;
 			u32 overlayImageId = scbw::get_sized_overlay(unit,ImageId::Cowardice_Small);
-			if (!unit->getOverlay(overlayImageId) && scbw::get_aise_value(unit, NULL, AiseId::HasMalice, 0, 0) == 0) {
+			if (!unit->getOverlay(overlayImageId) && scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 0) {
 				unit->sprite->createTopOverlay(overlayImageId,
 					0, 0, 0);
 				scbw::set_generic_value(unit, ValueId::HierophantOverlay, 1);
@@ -393,7 +393,7 @@ namespace hooks {
 		if (scbw::get_generic_value(unit,ValueId::HierophantOverlay)==1) {
 			auto overlayId = scbw::get_sized_overlay(unit, ImageId::Cowardice_Small);
 			auto overlay = unit->getOverlay(overlayId);
-			if (scbw::get_aise_value(unit, NULL, AiseId::HasMalice, 0, 0) == 1) {
+			if (scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 1) {
 				if (unit->getOverlay(overlayId)) {
 					unit->removeOverlay(overlayId);
 				}
@@ -531,7 +531,7 @@ namespace hooks {
 					unit->hitPoints / 256 != unit->getMaxHpInGame()
 					) 
 				{
-					auto caster = scbw::get_aise_value(unit, NULL, AiseId::GetMatrixCasterPlayer, 0, 0);
+					auto caster = scbw::get_aise_value(unit, nullptr, AiseId::GetMatrixCasterPlayer, 0, 0);
 					
 					if (caster < 8) {						
 						unit->setHp(unit->hitPoints + 53);//256 * 5 / 24 = 53.333..
@@ -601,7 +601,7 @@ namespace hooks {
 
 						//...whose current HP is less or equal to 33% of max HP
 						if (unitHpIsInRedZone(unit))
-							unit->damageHp(20, NULL, unit->lastAttackingPlayer, true);
+							unit->damageHp(20, nullptr, unit->lastAttackingPlayer, true);
 
 					}
 
@@ -616,7 +616,7 @@ namespace hooks {
 
 					CThingy* emp_sprite;
 					emp_sprite = createThingy(371, unit->position.x, unit->position.y, 0);
-					if (emp_sprite != NULL) {
+					if (emp_sprite != nullptr) {
 						emp_sprite->sprite->elevationLevel = 19; //0x13
 						setThingyVisibilityFlags(emp_sprite);
 					}
@@ -644,11 +644,11 @@ namespace hooks {
 							area_of_effect.bottom = *maxBoxBottomValue;
 					unitsInAreaOfEffect = getAllUnitsInBounds(&area_of_effect);
 					current_unit = *unitsInAreaOfEffect;
-					while (current_unit != NULL) {
+					while (current_unit != nullptr) {
 						if (
 							current_unit != unit->irradiatedBy &&				//EMP doesn't affect the attacker
 							(
-								unit->irradiatedBy == NULL ||					//EMP doesn't affect the attacker
+								unit->irradiatedBy == nullptr ||					//EMP doesn't affect the attacker
 								current_unit != unit->irradiatedBy->subunit	//subunit
 								)
 							)
@@ -665,7 +665,7 @@ namespace hooks {
 
 									if (
 										current_unit->sprite->flags & CSprite_Flags::Selected &&
-										current_unit->sprite != NULL
+										current_unit->sprite != nullptr
 										)
 										setAllImageGroupFlagsPal11(current_unit->sprite);
 
@@ -813,7 +813,7 @@ namespace {
 
 		for (
 			CImage* current_image = sprite->images.head;
-			current_image != NULL;
+			current_image != nullptr;
 			current_image = current_image->link.next
 			)
 		{

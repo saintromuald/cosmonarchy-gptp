@@ -24,23 +24,23 @@ void orders_Die(CUnit* unit) {
 	if(unit->userActionFlags & 4)
 		hideAndDisableUnit(unit);
 
-	if(unit->subunit != NULL) {
+	if(unit->subunit != nullptr) {
 
 		clearUnitSprites(unit->sprite,unit->subunit->sprite);
 
-		if(unit->subunit->subunit != NULL) {
+		if(unit->subunit->subunit != nullptr) {
 
 			if(units_dat::BaseProperty[(unit->subunit->subunit)->id] & UnitProperty::Subunit) {
 				UnitDestructor(unit->subunit->subunit);
-				unit->subunit->subunit = NULL;
+				unit->subunit->subunit = nullptr;
 			}
 
 			
 			_UnitDestructor(unit->subunit);
 			unit->subunit->sprite->free();
 
-			unit->subunit->sprite = NULL;
-			unit->subunit = NULL;
+			unit->subunit->sprite = nullptr;
+			unit->subunit = nullptr;
 
 		}
 
@@ -69,7 +69,7 @@ void orders_Die(CUnit* unit) {
 					0
 				);
 
-			if(hallucination_smoke != NULL) {
+			if(hallucination_smoke != nullptr) {
 
 				//allow players to see smoke if could already see unit vanishing
 				function_00497480(hallucination_smoke->sprite,unit->sprite->visibilityFlags);
@@ -84,18 +84,18 @@ void orders_Die(CUnit* unit) {
 
 		hideAndDisableUnit(unit);
 
-		if(unit->subunit != NULL) {
+		if(unit->subunit != nullptr) {
 
 			if(units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit) {
 				UnitDestructor(unit->subunit);
-				unit->subunit = NULL;
+				unit->subunit = nullptr;
 			}
 
 		}
 
 		_UnitDestructor(unit);
 		unit->sprite->free();
-		unit->sprite = NULL;
+		unit->sprite = nullptr;
 
 	}
 	else {

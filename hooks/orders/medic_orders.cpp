@@ -31,7 +31,7 @@ namespace hooks {
 
 			CImage* current_image = unit->sprite->images.head;
 
-			while(current_image != NULL) {
+			while(current_image != nullptr) {
 				current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
 				current_image = current_image->link.next;
 			}
@@ -47,7 +47,7 @@ namespace hooks {
 		CUnit* target = unit->orderTarget.unit;
 		CUnit* oldTarget = unit->orderTarget.unit;
 
-		if(target != NULL) {
+		if(target != nullptr) {
 			if(AI_OrderHeal(unit,target) != 0) {
 				unit->orderComputerCL(OrderId::MedicHeal1);
 				unit->orderTarget.unit = target;
@@ -87,7 +87,7 @@ namespace hooks {
 				
 					newTarget = MedicHeal_TargetAcquire(unit);
 
-					if(newTarget != NULL) {
+					if(newTarget != nullptr) {
 
 						oldPos.x = unit->orderTarget.pt.x;
 						oldPos.y = unit->orderTarget.pt.y;
@@ -103,7 +103,7 @@ namespace hooks {
 						moveToTarget(unit,newTarget);
 						unitOrderMoveToTargetUnit(unit,newTarget);
 
-						if(oldTarget != NULL)
+						if(oldTarget != nullptr)
 							function_474940(unit,oldTarget,OrderId::HealMove);
 						else
 							function_4748E0(unit,oldPos.x,oldPos.y,OrderId::HealMove);		
@@ -123,19 +123,19 @@ namespace hooks {
 
 		bool bStopThere = false;
 
-		if(unit->pAI != NULL && AI_CastSpellBehaviour(unit,NULL) != 0)
+		if(unit->pAI != nullptr && AI_CastSpellBehaviour(unit, NULL) != 0)
 			bStopThere = true;
 		if(!bStopThere) {
 
 			CUnit* target = MedicHeal_TargetAcquire(unit);
 
-			if(target != NULL) {
+			if(target != nullptr) {
 
 				unit->userActionFlags |= 1;
 
 				if(unit->mainOrderId != OrderId::Die) {
 
-					bool bEndLoop = unit->orderQueueTail == NULL;
+					bool bEndLoop = unit->orderQueueTail == nullptr;
 
 					while(!bEndLoop) {
 
@@ -144,7 +144,7 @@ namespace hooks {
 							bEndLoop = true;
 						else {
 							removeOrderFromUnitQueue(unit,unit->orderQueueTail);
-							bEndLoop = (unit->orderQueueTail == NULL);
+							bEndLoop = (unit->orderQueueTail == nullptr);
 						}
 
 					}
@@ -153,7 +153,7 @@ namespace hooks {
 						OrderId::MedicHeal1,
 						0,
 						0,
-						NULL,
+						nullptr,
 						UnitId::None
 					);
 
@@ -171,7 +171,7 @@ namespace hooks {
 			}
 			else { //639BD
 
-				if(unit->pAI != NULL) {
+				if(unit->pAI != nullptr) {
 
 					if(*(u8*)((u32)unit->pAI + 8) != 1)
 						unit->orderComputerCL(OrderId::ComputerAI);
@@ -239,25 +239,25 @@ namespace hooks {
 		u32 doMedicHeal_result=0;
 		auto a = unit->hitPoints;
 		bool reqHeal = false;
-		if (target!=NULL && target->hitPoints < units_dat::MaxHitPoints[target->id]) {
+		if (target!=nullptr && target->hitPoints < units_dat::MaxHitPoints[target->id]) {
 			reqHeal = true;
 		}
 		doMedicHeal_result = doMedicHeal(unit, target);
 		if (doMedicHeal_result == 0) {
 			setNextWaypoint_Sub4EB290(unit);
-			if(unit->orderQueueHead != NULL) {
+			if(unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else
-			if(unit->pAI != NULL)
+			if(unit->pAI != nullptr)
 				unit->orderComputerCL(OrderId::ComputerAI);
 			else
 				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);		
 		}
 		else { //641D3
 			if(unit->mainOrderState == 0) {
-				if(	target != NULL &&
+				if(	target != nullptr &&
 					function_004EB900(unit,target) != 0 &&
 					unit->getMovableState() != 2 //unit not unmovable
 				) {
@@ -273,11 +273,11 @@ namespace hooks {
 				if(doMedicHeal_result == 1) {
 					if(!(unit->orderSignal & 1)) {
 						CImage* current_image = unit->sprite->images.head;
-						while(current_image != NULL) {
+						while(current_image != nullptr) {
 							current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 							current_image = current_image->link.next;
 						}
-						if(	unit->orderQueueHead == NULL ||
+						if(	unit->orderQueueHead == nullptr ||
 							unit->orderQueueHead->orderId != OrderId::MedicHeal2
 						)
 							orderImmediate(unit,OrderId::MedicHeal2);
@@ -300,7 +300,7 @@ namespace hooks {
 	}
 
 	bool AI_AcquireHealTarget(CUnit* medic, CUnit* target) {
-		if (target==NULL || target == medic || medic->status & UnitStatus::IsHallucination) {
+		if (target==nullptr || target == medic || medic->status & UnitStatus::IsHallucination) {
 			return 0;
 		}
 		int type = target->id;

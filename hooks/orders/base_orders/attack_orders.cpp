@@ -50,16 +50,16 @@ void orders_ReaverAttack1(CUnit* unit) {
 
 	CUnit* target = unit->orderTarget.unit;
 
-	if(target == NULL) {
+	if(target == nullptr) {
 
-		if(unit->orderQueueHead != NULL) {
+		if(unit->orderQueueHead != nullptr) {
 			//656A2:
 			unit->userActionFlags |= 1;
 			prepareForNextOrder(unit);
 		}
 		else {
 			//656B2:
-			if(unit->pAI != NULL)
+			if(unit->pAI != nullptr)
 				unit->orderComputerCL(OrderId::ComputerAI);
 			else
 				//656C6:
@@ -113,16 +113,16 @@ void orders_CarrierAttack1(CUnit* unit) {
 
 	CUnit* target = unit->orderTarget.unit;
 
-	if(target == NULL) {
+	if(target == nullptr) {
 
-		if(unit->orderQueueHead != NULL) {
+		if(unit->orderQueueHead != nullptr) {
 			//65966:
 			unit->userActionFlags |= 1;
 			prepareForNextOrder(unit);
 		}
 		else {
 			//65981
-			if(unit->pAI != NULL)
+			if(unit->pAI != nullptr)
 				unit->orderComputerCL(OrderId::ComputerAI);
 			else //65998
 				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
@@ -195,7 +195,7 @@ void orders_TurretAttack(CUnit* unit) {
 
 	target = unit->orderTarget.unit;
 
-	if(target != NULL) {
+	if(target != nullptr) {
 		unit->orderTarget.pt.x = target->sprite->position.x;
 		unit->orderTarget.pt.y = target->sprite->position.y;
 	}
@@ -206,7 +206,7 @@ void orders_TurretAttack(CUnit* unit) {
 		unit->lockdownTimer != 0 ||
 		unit->stasisTimer != 0 ||
 		unit->maelstromTimer != 0 ||
-		target == NULL ||
+		target == nullptr ||
 		target->status & UnitStatus::Invincible ||
 		target->sprite->flags & CSprite_Flags::Hidden ||
 		unitCantSeeCloakedTarget(unit, target)
@@ -259,7 +259,7 @@ void orders_TurretAttack(CUnit* unit) {
 
 			bool bStopLoop77A70 = false;
 
-			while(!bStopLoop77A70 && unit->orderQueueTail != NULL) {
+			while(!bStopLoop77A70 && unit->orderQueueTail != nullptr) {
 
 				if(
 					!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId] && 
@@ -298,7 +298,7 @@ void orders_TurretAttack(CUnit* unit) {
 
 		if(jump_to_77AB7) {
 			/*
-			if(unit->id == UnitId::ProtossArbiter && unit->pAI != NULL) {
+			if(unit->id == UnitId::ProtossArbiter && unit->pAI != nullptr) {
 				jump_to_77A45 = true;
 				bJumpToEarlierCode = true;
 			}
@@ -309,7 +309,7 @@ void orders_TurretAttack(CUnit* unit) {
 					current_unit_weaponId = units_dat::AirWeapon[current_unit->id]; //77AD2
 				else
 					current_unit_weaponId = current_unit->getGroundWeapon();		//77AE6
-				if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
+				if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
 					current_unit_weaponId = WeaponId::None;
 				}
 				//77AF6
@@ -320,7 +320,7 @@ void orders_TurretAttack(CUnit* unit) {
 				else
 					jump_to_77AFE = true;
 
-			//} //if(unit->id != UnitId::ProtossArbiter || unit->pAI == NULL)
+			//} //if(unit->id != UnitId::ProtossArbiter || unit->pAI == nullptr)
 
 		}
 
@@ -340,7 +340,7 @@ void orders_TurretAttack(CUnit* unit) {
 
 				if(
 					unit->id != UnitId::TerranPhalanxTankModeTurret ||
-					current_subunit->pAI == NULL ||
+					current_subunit->pAI == nullptr ||
 					(current_subunit->canUseTech(TechId::TankSiegeMode,unit->playerId) != TRUE) ||
 					!isUnitVisible(unit)
 				)
@@ -385,7 +385,7 @@ void orders_TurretAttack(CUnit* unit) {
 					bool jump_to_77C78 = false;
 					bool jump_to_77CA1 = false;
 
-					if(target != NULL) {
+					if(target != nullptr) {
 
 						if(isTargetVisible(unit,target)) {
 
@@ -399,7 +399,7 @@ void orders_TurretAttack(CUnit* unit) {
 								current_unit_weaponId = current_unit->getAirWeapon();
 							else
 								current_unit_weaponId = current_unit->getGroundWeapon(); //include the lurker special case so it's ok
-							if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
+							if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
 								current_unit_weaponId = WeaponId::None;
 							}
 							//77C40
@@ -431,7 +431,7 @@ void orders_TurretAttack(CUnit* unit) {
 						else
 							jump_to_77C78 = true;
 
-					} //if(target != NULL)
+					} //if(target != nullptr)
 					else
 						jump_to_77CA1 = true;
 
@@ -481,7 +481,7 @@ void orders_TurretAttack(CUnit* unit) {
 				OrderId::TurretGuard,
 				0,
 				0,
-				NULL,
+				nullptr,
 				UnitId::None
 			);
 
@@ -505,7 +505,7 @@ void orders_AttackFixedRange(CUnit* unit) {
 	bool jump_to_77E48 = false;
 	bool jump_to_77E99 = false;
 
-	if(unit->pAI != NULL)
+	if(unit->pAI != nullptr)
 		unit->orderTarget.unit = findBestAttackTarget(unit); //77D13
 	else
 		//perform lots of checks, possibly in an attempt to
@@ -515,7 +515,7 @@ void orders_AttackFixedRange(CUnit* unit) {
 	//77D25:
 	target = unit->orderTarget.unit;
 
-	if(target != NULL) {
+	if(target != nullptr) {
 		unit->orderTarget.pt.x = target->sprite->position.x;
 		unit->orderTarget.pt.y = target->sprite->position.y;
 	}
@@ -526,7 +526,7 @@ void orders_AttackFixedRange(CUnit* unit) {
 		unit->lockdownTimer != 0 ||
 		unit->stasisTimer != 0 ||
 		unit->maelstromTimer != 0 ||
-		target == NULL ||
+		target == nullptr ||
 		target->status & UnitStatus::Invincible ||
 		target->sprite->flags & CSprite_Flags::Hidden ||
 		unitCantSeeCloakedTarget(unit,target)
@@ -571,7 +571,7 @@ void orders_AttackFixedRange(CUnit* unit) {
 			else {
 
 				//77E09:
-				/*if(unit->id == UnitId::ProtossArbiter && unit->pAI != NULL)
+				/*if(unit->id == UnitId::ProtossArbiter && unit->pAI != nullptr)
 					jump_to_77E48 = true;
 				else {
 					*/
@@ -582,7 +582,7 @@ void orders_AttackFixedRange(CUnit* unit) {
 						currentWeaponId = current_unit->getAirWeapon();
 					else
 						currentWeaponId = current_unit->getGroundWeapon();
-					if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
+					if (current_unit->id == UnitId::ProtossClarion && scbw::get_aise_value(current_unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
 						currentWeaponId = WeaponId::None;
 					}
 					//77E44
@@ -601,12 +601,12 @@ void orders_AttackFixedRange(CUnit* unit) {
 
 	if(jump_to_77E48) {
 
-		if(unit->orderQueueHead != NULL) {
+		if(unit->orderQueueHead != nullptr) {
 			unit->userActionFlags |= 1;
 			prepareForNextOrder(unit);
 		}
 		else
-		if(unit->pAI != NULL) //77E6B
+		if(unit->pAI != nullptr) //77E6B
 			unit->orderComputerCL(OrderId::ComputerAI);
 		else //77E83
 			unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
@@ -633,7 +633,7 @@ void orders_AttackFixedRange(CUnit* unit) {
 
 		}
 		else
-		if(unit->pAI == NULL)
+		if(unit->pAI == nullptr)
 			unit->orderToIdle(); //77EC8
 		else
 			unit->orderTo(OrderId::AttackMove, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
@@ -648,20 +648,20 @@ void orders_SapUnit(CUnit* unit) {
 
 	CUnit* target = unit->orderTarget.unit;
 
-	if(target == NULL) { //788EB
+	if(target == nullptr) { //788EB
 
-		if(unit->orderQueueHead != NULL) {
+		if(unit->orderQueueHead != nullptr) {
 			unit->userActionFlags |= 1;
 			prepareForNextOrder(unit);
 		}
 		else {
 
-			if(unit->pAI != NULL)
+			if(unit->pAI != nullptr)
 				unit->orderComputerCL(OrderId::ComputerAI);
 			else
 				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 			
-		} //if(unit->orderQueueHead == NULL)
+		} //if(unit->orderQueueHead == nullptr)
 
 	}
 	else { //78928
@@ -724,7 +724,7 @@ void orders_SapUnit(CUnit* unit) {
 						unit->orderTarget.unit = unit;
 						CImage* current_image = unit->sprite->images.head;
 
-						while(current_image != NULL) {
+						while(current_image != nullptr) {
 							current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 							current_image = current_image->link.next;
 						}
@@ -750,7 +750,7 @@ void orders_SapUnit(CUnit* unit) {
 
 		} //if(unit->canAttackTarget(target,true))
 
-	} //if(target != NULL)
+	} //if(target != nullptr)
 
 } //void orders_SapUnit(CUnit* unit)
 
@@ -815,7 +815,7 @@ void orders_SapLocation(CUnit* unit) {
 
 				unit->orderTarget.unit = unit;
 
-				while(current_image != NULL) {
+				while(current_image != nullptr) {
 					current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 					current_image  = current_image->link.next;
 				}
@@ -943,7 +943,7 @@ void orders_AttackUnit(CUnit* unit) {
 		playerTable[unit->playerId].type != PlayerType::Computer 
 		||
 		(
-			unit->orderTarget.unit != NULL && 
+			unit->orderTarget.unit != nullptr && 
 			units_dat::BaseProperty[(unit->orderTarget.unit)->id] & UnitProperty::Building
 		) 
 		||
@@ -961,7 +961,7 @@ void orders_AttackUnit(CUnit* unit) {
 		//can be done
 		if(function_00478540(unit)) { //79C16
 
-			if(unit->pAI != NULL)
+			if(unit->pAI != nullptr)
 				AI_AttackUnit(unit);
 
 			getWeaponBeginIscript(unit,IscriptAnimation::GndAttkRpt);

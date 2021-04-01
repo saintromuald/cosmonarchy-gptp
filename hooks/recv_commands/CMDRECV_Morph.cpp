@@ -18,8 +18,8 @@ namespace hooks {
 		*selectionIndexStart = 0;
 		building = getActivePlayerNextSelection();
 		if (
-			building != NULL &&
-			getActivePlayerNextSelection() == NULL &&
+			building != nullptr &&
+			getActivePlayerNextSelection() == nullptr &&
 			building->id >= UnitId::ZergInfestedCommandCenter &&
 			building->id <= 227 &&
 			wUnitType >= UnitId::ZergInfestedCommandCenter &&
@@ -41,7 +41,7 @@ namespace hooks {
 		CUnit* current_unit;
 		*selectionIndexStart = 0;
 		current_unit = getActivePlayerNextSelection();
-		while (current_unit != NULL) {
+		while (current_unit != nullptr) {
 
 			bool bAllowMorph;
 			/*
@@ -74,7 +74,7 @@ namespace hooks {
 
 					while (bKeepLooping) {
 
-						if (current_unit->orderQueueTail == NULL)
+						if (current_unit->orderQueueTail == nullptr)
 							bKeepLooping = false;
 						else
 							if (orders_dat::CanBeInterrupted[current_unit->orderQueueTail->orderId] ||
@@ -86,7 +86,7 @@ namespace hooks {
 
 					}
 
-					current_unit->performAnotherOrder(OrderId::Morph1, 0, 0, NULL, UnitId::None, 0);
+					current_unit->performAnotherOrder(OrderId::Morph1, 0, 0, nullptr, UnitId::None, 0);
 
 				}
 

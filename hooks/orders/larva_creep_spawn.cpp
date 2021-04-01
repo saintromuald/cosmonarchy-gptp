@@ -63,7 +63,7 @@ namespace hooks {
 
 			CUnit* unit_created = CreateUnit(UnitId::ZergLarva, coords.x, coords.y, main_building->playerId);
 
-			if (unit_created != NULL) {
+			if (unit_created != nullptr) {
 
 				//update various stuff (set hp, set shield...) not finished on CreateUnit
 				function_004A01F0(unit_created);
@@ -76,10 +76,10 @@ namespace hooks {
 				//state with the connected building			
 				function_004E8DA0(unit_created);
 
-				if (main_building->pAI != NULL)
+				if (main_building->pAI != nullptr)
 					AI_TrainingOverlord(main_building, unit_created);
 
-			} //if(unit_created != NULL)
+			} //if(unit_created != nullptr)
 
 		} //if(function_004E8E10(main_building,&coords))
 
@@ -176,7 +176,7 @@ namespace hooks {
 						//EA830:
 						CUnit* new_larva = CreateUnit(UnitId::ZergLarva, coords_2.x, coords_2.y, unit->playerId);
 
-						if (new_larva != NULL) {
+						if (new_larva != nullptr) {
 
 							//update various stuff (set hp, set shield...) not finished on CreateUnit
 							function_004A01F0(new_larva);
@@ -189,10 +189,10 @@ namespace hooks {
 							//state with the connected building						
 							function_004E8DA0(new_larva);
 
-							if (unit->pAI != NULL)
+							if (unit->pAI != nullptr)
 								AI_TrainingOverlord(unit, new_larva);
 
-						} //if(new_larva != NULL)
+						} //if(new_larva != nullptr)
 
 					} //if(!function_004E8E10(unit,&coords_2))
 
@@ -321,7 +321,7 @@ namespace hooks {
 					unit->secondaryOrderId = orderId;
 					unit->secondaryOrderPos.y = 0;
 					unit->secondaryOrderPos.x = 0;
-					unit->currentBuildUnit = NULL;
+					unit->currentBuildUnit = nullptr;
 					unit->secondaryOrderState = 0;
 				}
 
@@ -530,7 +530,7 @@ namespace {
 	There is absolutely no guarantee that it will find the intended unit, 
 	or that it will find a unit at all */
 	CUnit* getUnitPointer() {
-		static CUnit* unit = NULL;
+		static CUnit* unit = nullptr;
 		__asm {
 			XOR EAX, EAX
 			SuperFunUnitFinder :

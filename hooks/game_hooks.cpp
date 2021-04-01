@@ -130,7 +130,7 @@ void spawnCreeper(CUnit* unit) {
 		CUnit* creep_spawned = CreateUnit(UnitId::BasiliskCreeper,
 			unit->position.x, unit->position.y,
 			unit->playerId);
-		if (creep_spawned == NULL) {
+		if (creep_spawned == nullptr) {
 			//scbw::printText("Error: Creeper");
 		}
 		else {
@@ -333,8 +333,8 @@ public:
 				overlayImageId = ImageId::RestorationHit_Large;
 			else
 				overlayImageId = ImageId::RestorationHit_Small;
-			CUnit* tgt = NULL;
-			if (unit->subunit != NULL)
+			CUnit* tgt = nullptr;
+			if (unit->subunit != nullptr)
 				tgt = unit->subunit;
 			else
 				tgt = unit;
@@ -519,17 +519,17 @@ namespace hooks {
 			//framework example, rework and use later
 			/*if (*elapsedTimeFrames == 1) {
 				char* name = "samase\\sprites_ext.txt";
-				const char* data = NULL;
+				const char* data = nullptr;
 				u32 len = 0;
 				auto data_ptr = &data;
 				auto len_ptr = &len;
 				u32 val = reinterpret_cast<u32>(name);
-				auto result = scbw::get_generic_value(NULL, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));				
-				auto result2 = scbw::get_generic_value(NULL, NULL, AiseId::ReadSamaseFile_Ptr, 0, 0);
+				auto result = scbw::get_generic_value(nullptr, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));				
+				auto result2 = scbw::get_generic_value(nullptr, nullptr, AiseId::ReadSamaseFile_Ptr, 0, 0);
 			}*/
 			
 			// Order debugger
-/*			if ((*activePortraitUnit) != NULL) {
+/*			if ((*activePortraitUnit) != nullptr) {
 				char buf[32];
 				sprintf(buf, "Current index: %d, order: %d",(*activePortraitUnit)->getIndex(),
 					(*activePortraitUnit)->mainOrderId);
@@ -615,7 +615,7 @@ namespace hooks {
 		// Mind Tyrant Rescind
 		if (unit->id == UnitId::ProtossMindTyrant) {
 			if (scbw::get_generic_value(unit, ValueId::RescindMindControl) == 1) {
-				scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::FreeMindControlled, 0, 0, 0);
+				scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
 				scbw::set_generic_value(unit, ValueId::RescindMindControl, 0);
 			}
 		}
@@ -640,7 +640,7 @@ namespace hooks {
 						/*
 						CThingy* thingy = scbw::createThingy(_set your id here_,
 							a->sprite->position.x,a->sprite->position.y, 11);
-						if (thingy != NULL) {
+						if (thingy != nullptr) {
 							thingy->sprite->elevationLevel = 11;
 							scbw::setThingyVisibilityFlags(thingy);
 						}*/
@@ -724,7 +724,7 @@ namespace hooks {
 						auto maxRange = weapons_dat::MaxRange[WeaponId::StarSovereignInterventionMissiles];
 						auto polar_x = unit->getX() + scbw::getPolarX(maxRange, scbw::dir_saturate(unit->currentDirection1, offset_direction));
 						auto polar_y = unit->getY() + scbw::getPolarY(maxRange, scbw::dir_saturate(unit->currentDirection1, offset_direction));
-						unit->orderTarget.unit = NULL;
+						unit->orderTarget.unit = nullptr;
 						unit->orderTarget.pt.x = polar_x;
 						unit->orderTarget.pt.y = polar_y;
 						scbw::createBullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->playerId,
@@ -822,9 +822,9 @@ namespace hooks {
 		else if (unit->id == UnitId::ProtossLanifect) {
 			auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
 			if (scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb)) {
-				if (web == NULL) {
+				if (web == nullptr) {
 					web = hooks::createDisruptionWeb(unit->playerId, unit->getX(), unit->getY());
-					if (web == NULL) {
+					if (web == nullptr) {
 						//CCMU case
 						scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 0);
 					}
@@ -838,7 +838,7 @@ namespace hooks {
 				}
 			}
 			else {
-				if (web != NULL) {
+				if (web != nullptr) {
 					web->remove();
 				}
 			}
@@ -860,7 +860,7 @@ namespace hooks {
 		else if (unit->id == UnitId::ProtossLegionnaire) {
 			// Legionnaire - Blade Vortex
 			//teleport jump
-			if (unit->orderTarget.unit != NULL && (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::AttackUnit)) {
+			if (unit->orderTarget.unit != nullptr && (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::AttackUnit)) {
 				auto target = unit->orderTarget.unit;
 				auto distance = unit->getDistanceToTarget(target);
 
@@ -905,7 +905,7 @@ namespace hooks {
 					auto source_x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
 					auto source_y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1)
 						- weapons_dat::VerticalOffset[10];
-					unit->orderTarget.unit = NULL;
+					unit->orderTarget.unit = nullptr;
 					unit->orderTarget.pt = missile_target;
 					auto range = 64;
 					//scbw::printFormattedText("Target? %d %d", tgt_x, tgt_y);
@@ -915,7 +915,7 @@ namespace hooks {
 						missile_target.x + range, missile_target.y + range,
 						unit, skyfall
 					);
-					if (targ != NULL) {
+					if (targ != nullptr) {
 						unit->orderTarget.unit = targ;
 					}
 					scbw::createBullet(10, unit, source_x, source_y, unit->playerId, unit->currentDirection1);
@@ -925,7 +925,7 @@ namespace hooks {
 
 		else if (unit->id == UnitId::ZergLakizilisk) {
 			//placeholder for seismic spines
-			if (unit->sprite != NULL && unit->mainOrderId != OrderId::Die
+			if (unit->sprite != nullptr && unit->mainOrderId != OrderId::Die
 				&& scbw::get_generic_timer(unit, ValueId::LurkerETA) == 1) {
 				auto position = unit->position;//new target
 				auto spr_position = unit->sprite->position;
@@ -934,7 +934,7 @@ namespace hooks {
 				pos.y = scbw::get_generic_value(unit, ValueId::SpineY);
 				unit->position = pos;
 				unit->sprite->position = pos;
-				scbw::artificalBulletFrom(WeaponId::SubterraneanSpines, unit->playerId, unit, NULL, spr_position);
+				scbw::artificalBulletFrom(WeaponId::SubterraneanSpines, unit->playerId, unit, nullptr, spr_position);
 				unit->position = position;
 				unit->sprite->position = spr_position;
 				auto spineCount = 0;
@@ -992,7 +992,7 @@ namespace hooks {
 		else if (unit->id == UnitId::TerranCentaur) {
 			if (unit->orderSignal & 0x20) {
 				unit->orderSignal &= ~0x20;
-				if (unit->orderTarget.unit != NULL) {
+				if (unit->orderTarget.unit != nullptr) {
 					if (unit->getDistanceToTarget(unit->orderTarget.unit) <= 128) {
 						unit->playIscriptAnim(IscriptAnimation::Unused1);
 					}
@@ -1025,11 +1025,11 @@ namespace hooks {
 			unit->acidSporeCount = count;
 			unit->removeAcidSpores();
 			CThingy* thingy = scbw::createThingy(SpriteId::Corrosive_Acid_Hit, unit->getX(), unit->getY(), 11);
-			if (thingy != NULL) {
+			if (thingy != nullptr) {
 				thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
 				scbw::setThingyVisibilityFlags(thingy);
 			}
-			unit->inflictDamage(30 * 256, NULL, -1, false, true, false, false);
+			unit->inflictDamage(30 * 256, nullptr, -1, false, true, false, false);
 		}
 
 		// Savant - Entropy Gauntlets
@@ -1042,7 +1042,7 @@ namespace hooks {
 					overlayImageId = 1109;
 				else
 					overlayImageId = 1107;
-			if (unit->subunit != NULL)
+			if (unit->subunit != nullptr)
 				unit->subunit->sprite->removeOverlay(overlayImageId);
 			else
 				unit->sprite->removeOverlay(overlayImageId);
@@ -1058,7 +1058,7 @@ namespace hooks {
 				unit, observance
 			);
 
-			if (a != NULL) {
+			if (a != nullptr) {
 				scbw::set_generic_timer(unit, ValueId::ObservanceTimerDebuff, (5 * 24) + 1);
 				if (scbw::get_generic_value(unit, ValueId::ObservanceRend) < 5) {
 					scbw::set_generic_value(unit, ValueId::ObservanceRend, scbw::get_generic_value(unit, ValueId::ObservanceRend) + 1);
@@ -1082,7 +1082,7 @@ namespace hooks {
 				unit->getX() + range, unit->getY() + range,
 				unit, victim
 			);
-			if (a != NULL
+			if (a != nullptr
 				&& unit->id == UnitId::TerranSeraph) {
 				unit->sprite->createOverlay(1230);
 				scbw::set_generic_timer(unit, ValueId::ObservanceOverlayTimer, 18);
@@ -1139,10 +1139,10 @@ namespace hooks {
 
 		// Hallucinating Visual Effect
 		u32 hallucinatingTimer = scbw::get_generic_timer(unit, ValueId::HallucinatingTimer);
-		if (unit != NULL && unit->sprite != NULL) {
+		if (unit != nullptr && unit->sprite != nullptr) {
 			if (hallucinatingTimer % 24 == 1) {
 				CSprite* sprite;
-				if (unit->subunit != NULL) {
+				if (unit->subunit != nullptr) {
 					sprite = unit->subunit->sprite;
 				}
 				else {
@@ -1218,8 +1218,8 @@ namespace hooks {
 			scbw::playSound(scbw::randBetween(1254, 1255), unit);
 		}
 
-		if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 0) {
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetPhaseLinkStatus, 1, 0, 0);
+		if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 0) {
+			scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::SetPhaseLinkStatus, 1, 0, 0);
 			unit->updateSpeed();
 		}
 

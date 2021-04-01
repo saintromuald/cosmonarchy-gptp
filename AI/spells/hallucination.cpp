@@ -40,7 +40,7 @@ class HallucinationTargetFinderProc: public scbw::UnitFinderCallbackMatchInterfa
 CUnit* findBestHallucinationTarget(CUnit* caster, bool isUnderAttack) {
 
   if (isUnderAttack)
-    return NULL;
+    return nullptr;
 
   int bounds = 32 * 32;
 

@@ -59,13 +59,13 @@ const int KOR_CHAR_MAX_HEIGHT = 32;
 
 //Loosely based on writeWindowText() @ 0x0041F2B0
 void Bitmap::blitKoreanChar(const char *ch, int &x, int &y, u8 fontSize, u8 color) {
-  static HFONT gulim_8pt = NULL, gulim_9pt = NULL, gulim_10pt = NULL, gulim_11pt = NULL;
-  static HDC bufferDc = NULL;
-  static HBITMAP bufferBmp = NULL; //Temporary bitmap to draw the character
+  static HFONT gulim_8pt = nullptr, gulim_9pt = nullptr, gulim_10pt = nullptr, gulim_11pt = nullptr;
+  static HDC bufferDc = nullptr;
+  static HBITMAP bufferBmp = nullptr; //Temporary bitmap to draw the character
   
   //Load Korean fonts
   if (!gulim_9pt) {
-    HDC screenDc = GetDC(NULL);
+    HDC screenDc = GetDC(nullptr);
     LOGFONT lFont = {};
 	strcpy_s(lFont.lfFaceName, "±¼¸²");
     lFont.lfCharSet = HANGUL_CHARSET;
@@ -84,7 +84,7 @@ void Bitmap::blitKoreanChar(const char *ch, int &x, int &y, u8 fontSize, u8 colo
     lFont.lfHeight = -MulDiv(11, GetDeviceCaps(screenDc, LOGPIXELSY), 72);
     gulim_11pt = CreateFontIndirect(&lFont);
     
-    ReleaseDC(NULL, screenDc);
+    ReleaseDC(nullptr, screenDc);
   }
   
   //Load main and buffer DCs

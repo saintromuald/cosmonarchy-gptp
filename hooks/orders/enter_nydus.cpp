@@ -21,7 +21,7 @@ namespace hooks {
 
 		bReturnValue =
 			(nydusCanal->status & UnitStatus::Completed)
-			&& nydusExit != NULL
+			&& nydusExit != nullptr
 			&& (nydusExit->status & UnitStatus::Completed)
 			&& (unit->playerId == nydusCanal->playerId
 				|| scbw::isAlliedTo(unit->playerId, nydusCanal->playerId))
@@ -50,7 +50,7 @@ namespace hooks {
 		scbw::prepareUnitMove(unit,true);
 		scbw::setUnitPosition(unit,aimedPos.x,aimedPos.y);
 
-		if(scbw::checkUnitCollisionPos(unit,&aimedPos,&finalPos,NULL,false,0)) { //EA201
+		if(scbw::checkUnitCollisionPos(unit,&aimedPos,&finalPos,nullptr,false,0)) { //EA201
 
 			scbw::playSound(SoundId::Misc_IntoNydus_wav,nydusCanal);
 
@@ -59,13 +59,13 @@ namespace hooks {
 
 			scbw::playSound(SoundId::Misc_IntoNydus_wav,nydusCanal->building.nydusExit);
 
-			if(unit->orderQueueHead != NULL) {
+			if(unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else { //EA253
 
-				if(unit->pAI != NULL)
+				if(unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
 				else
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
@@ -89,9 +89,9 @@ namespace hooks {
 		nydusCanal = unit->orderTarget.unit;
 
 		if( /*same tests as canEnterNydusCanal but left hardcoded like the original code*/
-			nydusCanal == NULL || 
+			nydusCanal == nullptr || 
 			!(nydusCanal->status & UnitStatus::Completed) ||
-			nydusCanal->building.nydusExit == NULL ||
+			nydusCanal->building.nydusExit == nullptr ||
 			!((nydusCanal->building.nydusExit)->status & UnitStatus::Completed) ||
 			(!scbw::isAlliedTo(unit->playerId, nydusCanal->playerId)) ||
 			unit->status & UnitStatus::InAir
@@ -99,13 +99,13 @@ namespace hooks {
 		)
 		{ //EA478
 
-			if(unit->orderQueueHead != NULL) {
+			if(unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else { //EA497
 
-				if(unit->pAI != NULL)
+				if(unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
 				else
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);

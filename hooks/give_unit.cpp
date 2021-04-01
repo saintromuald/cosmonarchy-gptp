@@ -50,27 +50,27 @@ namespace hooks {
 				DestroyUnitSelection(unit);
 			}
 
-			if(unit->player_link.prev != NULL)
+			if(unit->player_link.prev != nullptr)
 				(unit->player_link.prev)->player_link.next = unit->player_link.next;
 
-			if(unit->player_link.next != NULL)
+			if(unit->player_link.next != nullptr)
 				(unit->player_link.next)->player_link.prev = unit->player_link.prev;
 
 			if(unit == firstPlayerUnit->unit[unit->playerId])
 				firstPlayerUnit->unit[unit->playerId] = unit->player_link.next;
 
-			unit->player_link.prev = NULL;
-			unit->player_link.next = NULL;
+			unit->player_link.prev = nullptr;
+			unit->player_link.next = nullptr;
 			unit->playerId = playerId;
 
 			//maybe "if" not needed?
 			if(isSelected)
 				CreateUnitSelection(unit,selectionIndex);
 
-			unit->player_link.prev = NULL;
+			unit->player_link.prev = nullptr;
 			unit->player_link.next = firstPlayerUnit->unit[playerId];
 
-			if(firstPlayerUnit->unit[playerId] != NULL)
+			if(firstPlayerUnit->unit[playerId] != nullptr)
 				(firstPlayerUnit->unit[playerId])->player_link.prev = unit;
 
 			firstPlayerUnit->unit[playerId] = unit;
@@ -96,14 +96,14 @@ namespace hooks {
 
 			function_00463040(unit);
 
-			if(unit->subunit != NULL && units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit)
+			if(unit->subunit != nullptr && units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit)
 				GiveUnit(unit->subunit,playerId,unkScore);
 
 			ApplySpeedUpgradeFromUnitType(unit);
 
 			if(
 				units_dat::BaseProperty[unit->id] & UnitProperty::Worker &&
-				unit->worker.powerup != NULL &&
+				unit->worker.powerup != nullptr &&
 				(unit->worker.powerup)->id == UnitId::Powerup_Flag) 
 			{
 				if((unit->worker.powerup)->playerId == playerId || playerId >= 8)

@@ -782,11 +782,11 @@ class StringTbl {
     u16 getStringCount() const { return *buffer; }
 
     /// Returns the string at @p index in the TBL file.
-    /// If the @p index is 0, returns NULL.
+    /// If the @p index is 0, returns nullptr.
     /// If the @p index is out of bounds, returns an empty string.
     const char* getString(u16 index) const {
       //Based on function @ 0x004C36F0
-      if (index == 0) return NULL;
+      if (index == 0) return nullptr;
       else if (index <= getStringCount())
         return (const char*)(buffer) + buffer[index];
       else

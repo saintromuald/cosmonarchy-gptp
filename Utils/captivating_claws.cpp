@@ -28,7 +28,7 @@ namespace captivating_claws {
 	void clearCaptivatingClaws(CUnit* target) {
 		scbw::set_generic_value(target, ValueId::CaptivatingClawsStacks, 0);
 		for (int i = 0; i < 4; i++) {
-			scbw::set_generic_unit(target, captivatingClawSources[i], NULL);
+			scbw::set_generic_unit(target, captivatingClawSources[i], nullptr);
 		}
 	}
 }

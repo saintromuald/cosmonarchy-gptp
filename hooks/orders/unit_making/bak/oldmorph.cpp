@@ -46,13 +46,13 @@ void orders_ZergBirth(CUnit* unit) {
 		)
 			bTwinEggOrCocoon = false;
 
-		unit2 = NULL;
+		unit2 = nullptr;
 
 		if(units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg) {
 
 			unit2 = function_0045D910(unit);
 
-			if(unit2 != NULL)
+			if(unit2 != nullptr)
 				AI_TrainingUnit(unit,unit2);
 
 		}
@@ -103,7 +103,7 @@ void orders_ZergBirth(CUnit* unit) {
 
 			orderNewUnitToRally(unit,unit->connectedUnit);
 
-			if(unit2 != NULL)
+			if(unit2 != nullptr)
 				orderNewUnitToRally(unit2,unit->connectedUnit);
 
 		}
@@ -226,7 +226,7 @@ void orders_Morph1(CUnit* unit) {
 
 				current_image = unit->sprite->images.head;
 
-				while(current_image != NULL) {
+				while(current_image != nullptr) {
 					current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 					current_image = current_image->link.next;
 				}

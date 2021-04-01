@@ -244,7 +244,7 @@ CUnit* AttackPriorityData::findRandomTarget() const {
   while (targetCounts[priority] == 0) {
     ++priority;
     if (priority >= countof(targetCounts))
-      return NULL;
+      return nullptr;
   }
 
   if (targetCounts[priority] == 1)
@@ -262,7 +262,7 @@ CUnit* AttackPriorityData::findBestTarget(CUnit* attacker) const {
   while (targetCounts[priority] == 0) {
     ++priority;
     if (priority >= countof(targetCounts))
-      return NULL;
+      return nullptr;
   }
 
   if (targetCounts[priority] == 1)
@@ -367,7 +367,7 @@ bool cannotChaseTarget(CUnit* unit, CUnit* target) {
 
 //Identical to function @ 0x00440520
 u32 getMinimumRange(CUnit* unit) {
-  if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1) {
+  if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
       return 0;
   }
   u8 groundWeapon = unit->getGroundWeapon();

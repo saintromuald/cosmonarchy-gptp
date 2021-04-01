@@ -27,35 +27,35 @@ void orders_NukeTrack(CUnit* unit) {
 		if(unit->mainOrderState == 6) {
 
 			if(
-				unit->connectedUnit == NULL ||
+				unit->connectedUnit == nullptr ||
 				unit->connectedUnit->mainOrderState == 5
 			)
 			{ //64D3F
 
 				CImage* current_image = unit->sprite->images.head;
 
-				if(unit->orderQueueHead == NULL)
+				if(unit->orderQueueHead == nullptr)
 					unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id],false);
 
 				actUnitReturnToIdle(unit);
 				changeUnitButtonSet_Sub4E5D60(unit,unit->id);
 				scbw::refreshConsole();
 
-				while(current_image != NULL) {
+				while(current_image != nullptr) {
 					current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
 					current_image = current_image->link.next;
 				}
 
-				if(unit->building.ghostNukeMissile != NULL) {
+				if(unit->building.ghostNukeMissile != nullptr) {
 
 					current_image = (unit->building.ghostNukeMissile)->sprite->images.head; 
 
-					while(current_image != NULL) {
+					while(current_image != nullptr) {
 						current_image->playIscriptAnim(IscriptAnimation::Death);
 						current_image = current_image->link.next;
 					}
 
-					unit->building.ghostNukeMissile = NULL;
+					unit->building.ghostNukeMissile = nullptr;
 
 				}
 
@@ -82,7 +82,7 @@ void orders_NukeTrack(CUnit* unit) {
 
 		unit->building.ghostNukeMissile = (CUnit*)nukeDot;
 
-		if(nukeDot != NULL) {
+		if(nukeDot != nullptr) {
 			nukeDot->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
 			setThingyVisibilityFlags(nukeDot);
 		}
@@ -110,7 +110,7 @@ void orders_NukeGround(CUnit* unit) {
 
 	sightRange = unit->getSightRange(false) * 32;
 
-	if(unit->pAI != NULL) {
+	if(unit->pAI != nullptr) {
 
 		distance = scbw::getDistanceFast(
 			unit->orderTarget.pt.x * 256,
@@ -173,7 +173,7 @@ void orders_NukeGround(CUnit* unit) {
 
 			while(!bLoopEnd) {
 
-				if(current_unit == NULL)
+				if(current_unit == nullptr)
 					bLoopEnd = true;
 				else
 				if(	current_unit->id == UnitId::TerranNuclearSilo &&
@@ -185,13 +185,13 @@ void orders_NukeGround(CUnit* unit) {
 
 			}
 
-			if(current_unit == NULL)
+			if(current_unit == nullptr)
 				unit->orderToIdle();
 			else { //79333
 
 				CUnit* nuke = current_unit->building.silo.nuke;
 
-				current_unit->building.silo.nuke = NULL;
+				current_unit->building.silo.nuke = nullptr;
 				current_unit->building.silo.isReady = false;
 
 				scbw::playSound(SoundId::Terran_GHOST_TGhLas00_wav,unit);

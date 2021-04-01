@@ -40,7 +40,7 @@ void orders_MedicHoldPosition(CUnit* unit) {
 		//6407F:
 		unit->status |= UnitStatus::HoldingPosition;
 
-		if(unit->subunit != NULL)
+		if(unit->subunit != nullptr)
 			unit->subunit->status |= UnitStatus::HoldingPosition;
 
 		unit->mainOrderState = 1;
@@ -55,7 +55,7 @@ void orders_MedicHoldPosition(CUnit* unit) {
 	switchValue = doMedicHeal(unit,unit->orderTarget.unit);
 
 	if(switchValue == 3) //640C6
-		unit->orderTarget.unit = NULL;
+		unit->orderTarget.unit = nullptr;
 
 	if(switchValue == 0 || switchValue == 2 || switchValue == 3) //640CD
 		unit->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle,true);
@@ -70,7 +70,7 @@ void orders_MedicHoldPosition(CUnit* unit) {
 			unit->mainOrderTimer = 15;
 			unit->orderTarget.unit = MedicHeal_TargetAcquire(unit);
 
-			if(unit->orderTarget.unit != NULL) {
+			if(unit->orderTarget.unit != nullptr) {
 				unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
 				unit->orderTarget.pt.y = (unit->orderTarget.unit)->sprite->position.y;
 			}
@@ -84,13 +84,13 @@ void orders_MedicHoldPosition(CUnit* unit) {
 
 			CImage* current_image = unit->sprite->images.head;
 
-			while(current_image != NULL) {
+			while(current_image != nullptr) {
 				current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 				current_image = current_image->link.next;
 			}
 
 			if(
-				unit->orderQueueHead == NULL ||
+				unit->orderQueueHead == nullptr ||
 				unit->orderQueueHead->orderId != OrderId::MedicHeal2
 			) 	//6413D
 				orderImmediate(unit,OrderId::MedicHeal2); //return to idle after heal
@@ -131,7 +131,7 @@ void orders_ReaverStop(CUnit* unit) {
 	}
 
 	//65500
-	while(outHangarChild != NULL) {
+	while(outHangarChild != nullptr) {
 
 		outHangarChild->userActionFlags |= 1;
 
@@ -139,7 +139,7 @@ void orders_ReaverStop(CUnit* unit) {
 
 			bool bNotRemovableOrder = false;
 
-			while(outHangarChild->orderQueueTail != NULL && !bNotRemovableOrder) {
+			while(outHangarChild->orderQueueTail != nullptr && !bNotRemovableOrder) {
 
 				if(
 					!orders_dat::CanBeInterrupted[outHangarChild->orderQueueTail->orderId] &&
@@ -156,7 +156,7 @@ void orders_ReaverStop(CUnit* unit) {
 				OrderId::SelfDestrucing,
 				0,
 				0,
-				NULL,
+				nullptr,
 				UnitId::None
 			);
 
@@ -166,13 +166,13 @@ void orders_ReaverStop(CUnit* unit) {
 		prepareForNextOrder(outHangarChild);
 		outHangarChild = outHangarChild->interceptor.hangar_link.prev;
 
-	} //while(outHangarChild != NULL)
+	} //while(outHangarChild != nullptr)
 
 	//65565
 
 	unit->userActionFlags |= 1;
 
-	if(unit->orderTarget.unit != NULL) {
+	if(unit->orderTarget.unit != nullptr) {
 		pos.x = (unit->orderTarget.unit)->sprite->position.x;
 		pos.y = (unit->orderTarget.unit)->sprite->position.y;
 	}
@@ -186,7 +186,7 @@ void orders_ReaverStop(CUnit* unit) {
 
 		bool bNotRemovableOrder = false;
 
-		while(unit->orderQueueTail != NULL && !bNotRemovableOrder) {
+		while(unit->orderQueueTail != nullptr && !bNotRemovableOrder) {
 
 			if(
 				!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId] &&
@@ -227,7 +227,7 @@ void orders_Guard(CUnit* unit) {
 
 		unit->mainOrderId = OrderId::ComputerAI;
 
-		if(unit->pAI == NULL) {
+		if(unit->pAI == nullptr) {
 
 			if(units_dat::BaseProperty[unit->id] & UnitProperty::Hero)
 				unit->mainOrderId = OrderId::PlayerGuard;
@@ -268,7 +268,7 @@ void orders_TurretGuard(CUnit* unit) {
 //Guard related function, may be a poorly identified official guard order
 void function_004774A0(CUnit* unit) {
 
-	//if unit->autoTargetUnit != NULL, attack this target
+	//if unit->autoTargetUnit != nullptr, attack this target
 	//then disable the unit...I think
 	//That's why if it return true, nothing else is done
 	//since has already attacked
@@ -293,7 +293,7 @@ void function_004774A0(CUnit* unit) {
 
 				CUnit* target = findBestAttackTarget(unit);
 
-				if(target != NULL)
+				if(target != nullptr)
 					//attack target I think, also used by function_004770E0
 					function_00476FC0(unit, target, 0,1); 
 

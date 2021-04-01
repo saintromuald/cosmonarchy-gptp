@@ -40,7 +40,7 @@ namespace hooks {
 			//
 			//	CUnit* hal_unit = hallucinationHelpers::createHallucinationUnit(unit->orderTarget.unit,unit->playerId);
 			//
-			//	if(hal_unit == NULL)
+			//	if(hal_unit == nullptr)
 			//		counter = 0;
 			//	else
 			//	if(!hallucinationHelpers::function_004F66D0(hal_unit)) {
@@ -58,17 +58,17 @@ namespace hooks {
 
 			scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, target);
 
-			if(unit->orderTarget.unit->subunit != NULL)
+			if(unit->orderTarget.unit->subunit != nullptr)
 				target->subunit->sprite->createOverlay(ImageId::HallucinationHit,0,0,0);
 			else
 				target->sprite->createOverlay(ImageId::HallucinationHit,0,0,0);
 
-			if(unit->orderQueueHead != NULL) {
+			if(unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else
-			if(unit->pAI != NULL)
+			if(unit->pAI != nullptr)
 				unit->orderComputerCL(OrderId::ComputerAI);
 			else
 				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);

@@ -43,7 +43,7 @@ namespace hooks {
 
 		CUnit* target = unit->orderTarget.unit;
 		//bool parasite = false;
-		if(target == NULL)
+		if(target == nullptr)
 			jump_to_676C4 = true;
 		else
 		if(target->hitPoints >= units_dat::MaxHitPoints[target->id])
@@ -52,7 +52,7 @@ namespace hooks {
 		if(target->stasisTimer != 0)
 			jump_to_676C4 = true;
 		else
-		if(unit->pAI != NULL && target->status & UnitStatus::IsBuilding && target->orderTarget.unit != unit)
+		if(unit->pAI != nullptr && target->status & UnitStatus::IsBuilding && target->orderTarget.unit != unit)
 			jump_to_676C4 = true;
 		else
 		if(target->status & UnitStatus::InTransport)
@@ -225,7 +225,7 @@ namespace hooks {
 
 						CImage* current_image = unit->sprite->images.head;
 
-						while(current_image != NULL) {
+						while(current_image != nullptr) {
 							current_image->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
 							current_image = current_image->link.next;
 						}
@@ -250,7 +250,7 @@ namespace hooks {
 							
 							CImage* current_image = unit->sprite->images.head;
 
-							while(current_image != NULL) {
+							while(current_image != nullptr) {
 								current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
 								current_image = current_image->link.next;
 							}
@@ -293,19 +293,19 @@ namespace hooks {
 
 			if(!bEndThere) { //jump_to_676C4 CASE
 				/*
-				if (parasite && unit->playerId == *LOCAL_NATION_ID && *activePortraitUnit!=NULL) {
+				if (parasite && unit->playerId == *LOCAL_NATION_ID && *activePortraitUnit!=nullptr) {
 					char* message = (char*)statTxtTbl->getString(1101);
 					get_statTxt_Str_Func(*activePortraitUnit, *LOCAL_NATION_ID, message);
 				}*/
 
 				CImage* current_image = unit->sprite->images.head;
 
-				while(current_image != NULL) {
+				while(current_image != nullptr) {
 					current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
 					current_image = current_image->link.next;
 				}
 
-				if(unit->orderQueueHead != NULL) {
+				if(unit->orderQueueHead != nullptr) {
 					unit->userActionFlags |= 1;
 					prepareForNextOrder(unit);
 				}
@@ -313,7 +313,7 @@ namespace hooks {
 
 					u8 orderId;
 
-					if(unit->pAI == NULL)
+					if(unit->pAI == nullptr)
 						orderId = units_dat::ReturnToIdleOrder[unit->id];
 					else
 						orderId = OrderId::ComputerAI;
@@ -324,8 +324,8 @@ namespace hooks {
 
 				//6771B
 
-				if(target != NULL && !(target->status & UnitStatus::InTransport))
-					target->connectedUnit = NULL;
+				if(target != nullptr && !(target->status & UnitStatus::InTransport))
+					target->connectedUnit = nullptr;
 
 			}
 

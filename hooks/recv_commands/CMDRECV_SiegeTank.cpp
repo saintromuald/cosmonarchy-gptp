@@ -18,7 +18,7 @@ void CMDRECV_Siege(u8 bCommandType) {
 	*selectionIndexStart = 0;
 	current_selection = getActivePlayerNextSelection();
 
-	while(current_selection != NULL) {
+	while(current_selection != nullptr) {
 
 		if(
 			(current_selection->id == UnitId::TerranPhalanxTankMode ||
@@ -62,7 +62,7 @@ void CMDRECV_Unsiege(u8 bCommandType) {
 	*selectionIndexStart = 0;
 	current_selection = getActivePlayerNextSelection();
 
-	while(current_selection != NULL) {
+	while(current_selection != nullptr) {
 
 		if(
 			(current_selection->id == UnitId::TerranPhalanxSiegeMode ||

@@ -57,7 +57,7 @@ void orders_BuildingLand(CUnit* unit) {
 			bool bLoopBreak = false;
 
 			//643B0
-			while(unit->orderQueueTail != NULL && !bLoopBreak) {
+			while(unit->orderQueueTail != nullptr && !bLoopBreak) {
 
 				bLoopBreak =
 					!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId] &&
@@ -73,7 +73,7 @@ void orders_BuildingLand(CUnit* unit) {
 				OrderId::BuildingLiftoff, 
 				coords.x,
 				coords.y, 
-				NULL, 
+				nullptr, 
 				0
 			);
 
@@ -84,7 +84,7 @@ void orders_BuildingLand(CUnit* unit) {
 
 		if(unit->mainOrderId != OrderId::Die) {
 
-			while(unit->orderQueueTail != NULL && unit->orderQueueTail->orderId == OrderId::BuildingLand)
+			while(unit->orderQueueTail != nullptr && unit->orderQueueTail->orderId == OrderId::BuildingLand)
 				removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 
 			//6440A:
@@ -99,7 +99,7 @@ void orders_BuildingLand(CUnit* unit) {
 		}
 
 		//64422
-		unit->order(units_dat::ReturnToIdleOrder[unit->id],0,0,NULL,UnitId::None,false);
+		unit->order(units_dat::ReturnToIdleOrder[unit->id],0,0,nullptr,UnitId::None,false);
 
 	} //if( !(unit->status & UnitStatus::GroundedBuilding) )
 
@@ -144,7 +144,7 @@ void orders_BuildingLand(CUnit* unit) {
 				//probably play "landing sequence interrupted"
 				playBuildingLandSound(unit);
 
-				if(	unit->orderQueueHead != NULL &&
+				if(	unit->orderQueueHead != nullptr &&
 					unit->orderQueueHead->orderId != OrderId::PlaceAddon
 					)
 					removeOrderFromUnitQueue(unit, unit->orderQueueHead);
@@ -265,7 +265,7 @@ void orders_BuildingLand(CUnit* unit) {
 			//(tanks in siege, burrowed zerg)
 			function_00464300(unit);
 
-			if(unit->orderQueueHead != NULL) {
+			if(unit->orderQueueHead != nullptr) {
 
 				bool bGotMoveOrder;
 
@@ -281,13 +281,13 @@ void orders_BuildingLand(CUnit* unit) {
 					COrder* order = unit->orderQueueHead;
 
 					if(order->orderId != OrderId::PlaceAddon)
-						order = NULL;
+						order = nullptr;
 
 					while(unit->orderQueueTail != order)
 						removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 
 					//646AF
-					if(unit->orderQueueHead == NULL)
+					if(unit->orderQueueHead == nullptr)
 						unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 
 				}
@@ -298,7 +298,7 @@ void orders_BuildingLand(CUnit* unit) {
 					//execute the queued move/follow order
 					function_00474760(unit, unit->orderQueueHead, OrderId::BuildingLiftoff);
 
-			} //if(unit->orderQueueHead != NULL)
+			} //if(unit->orderQueueHead != nullptr)
 
 			//646CE
 
@@ -311,7 +311,7 @@ void orders_BuildingLand(CUnit* unit) {
 			actUnitReturnToIdle(unit);
 
 			addon = connectAddonCheck(unit);
-			if(addon != NULL)
+			if(addon != nullptr)
 				completeAddon(unit, addon);
 
 			//646EC
@@ -351,7 +351,7 @@ void orders_BuildingLiftoff(CUnit* unit) {
 	{
 
 		//649D5
-		if(unit->building.addon != NULL)
+		if(unit->building.addon != nullptr)
 			disconnectFromAddOn(unit);
 
 		if(unit->isFactory())
@@ -405,8 +405,8 @@ void orders_BuildingLiftoff(CUnit* unit) {
 	else {
 
 		//64AA2
-		if(unit->orderQueueHead == NULL)
-			unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, NULL, UnitId::None, 0);
+		if(unit->orderQueueHead == nullptr)
+			unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, 0);
 
 		actUnitReturnToIdle(unit);
 

@@ -62,7 +62,7 @@ void orders_TerranBuildSelf(CUnit* building) {
 
 		CImage* current_image = building->sprite->images.head;
 
-		while(current_image != NULL) {
+		while(current_image != nullptr) {
 			current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 			current_image = current_image->link.next;
 		}
@@ -79,7 +79,7 @@ void orders_TerranBuildSelf(CUnit* building) {
 
 		CImage* current_image = building->sprite->images.head;
 
-		while(current_image != NULL) {
+		while(current_image != nullptr) {
 			current_image->playIscriptAnim(IscriptAnimation::SpecialState2);
 			current_image = current_image->link.next;
 		}
@@ -99,7 +99,7 @@ void orders_TerranBuildSelf(CUnit* building) {
 
 		CImage* current_image = building->sprite->images.head;
 
-		while(current_image != NULL) {
+		while(current_image != nullptr) {
 			current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
 			current_image = current_image->link.next;
 		}
@@ -124,7 +124,7 @@ void orders_SCVBuild2(CUnit* unit) {
 
 	CUnit* builtUnit = unit->orderTarget.unit;
 
-	if(builtUnit != NULL && !(builtUnit->status & UnitStatus::Completed)) {
+	if(builtUnit != nullptr && !(builtUnit->status & UnitStatus::Completed)) {
 
 		bool jump_to_switch_1 = false;
 
@@ -151,7 +151,7 @@ void orders_SCVBuild2(CUnit* unit) {
 				scbw::refreshConsole();
 
 				if(
-					builtUnit->connectedUnit != NULL &&
+					builtUnit->connectedUnit != nullptr &&
 					builtUnit->connectedUnit != unit &&
 					(builtUnit->connectedUnit)->orderTarget.unit == builtUnit
 				)
@@ -326,7 +326,7 @@ void orders_SCVBuild2(CUnit* unit) {
 
 					unit->mainOrderTimer = (rand_value & 63) + 30;
 
-					while(current_image != NULL) {
+					while(current_image != nullptr) {
 						current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
 						current_image = current_image->link.next;
 					}
@@ -346,7 +346,7 @@ void orders_SCVBuild2(CUnit* unit) {
 
 				unit->mainOrderTimer = (rand_value & 63) + 30;
 
-				while(current_image != NULL) {
+				while(current_image != nullptr) {
 					current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
 					current_image = current_image->link.next;
 				}
@@ -366,7 +366,7 @@ void orders_SCVBuild2(CUnit* unit) {
 
 				CImage* current_image = unit->sprite->images.head;
 
-				while(current_image != NULL) {
+				while(current_image != nullptr) {
 					current_image->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
 					current_image = current_image->link.next;
 				}
@@ -393,16 +393,16 @@ void orders_SCVBuild2(CUnit* unit) {
 				CImage* current_image = unit->sprite->images.head;
 				bool bEndThere = false;
 
-				while(current_image != NULL) {
+				while(current_image != nullptr) {
 					current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
 					current_image = current_image->link.next;
 				}
 
-				if(builtUnit != NULL) {
+				if(builtUnit != nullptr) {
 
 					bool jump_to_67F3C = false;
 
-					builtUnit->connectedUnit = NULL;
+					builtUnit->connectedUnit = nullptr;
 					playBuildingCompleteSound(unit);
 
 					if(builtUnit->status & UnitStatus::Completed) {
@@ -438,12 +438,12 @@ void orders_SCVBuild2(CUnit* unit) {
 
 				if(!bEndThere) { //67F4C
 
-					if(!(unit->orderQueueHead == NULL)) {
+					if(!(unit->orderQueueHead == nullptr)) {
 						unit->userActionFlags |= 1;
 						prepareForNextOrder(unit);
 					}
 					else 
-					if(unit->pAI != NULL) //67F6F
+					if(unit->pAI != nullptr) //67F6F
 						unit->orderComputerCL(OrderId::ComputerAI);
 					else
 						unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
@@ -460,16 +460,16 @@ void orders_SCVBuild2(CUnit* unit) {
 		CImage* current_image = unit->sprite->images.head;
 		bool bEndThere = false;
 
-		while(current_image != NULL) {
+		while(current_image != nullptr) {
 			current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
 			current_image = current_image->link.next;
 		}
 
-		if(builtUnit != NULL) {
+		if(builtUnit != nullptr) {
 
 			bool jump_to_67F3C = false;
 
-			builtUnit->connectedUnit = NULL;
+			builtUnit->connectedUnit = nullptr;
 			playBuildingCompleteSound(builtUnit);
 
 			if(builtUnit->status & UnitStatus::Completed) {
@@ -505,12 +505,12 @@ void orders_SCVBuild2(CUnit* unit) {
 
 		if(!bEndThere) { //67F4C
 
-			if(!(unit->orderQueueHead == NULL)) {
+			if(!(unit->orderQueueHead == nullptr)) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else 
-			if(unit->pAI != NULL) //67F6F
+			if(unit->pAI != nullptr) //67F6F
 				unit->orderComputerCL(OrderId::ComputerAI);
 			else
 				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
@@ -528,7 +528,7 @@ void orders_SCVBuild(CUnit* unit) {
 
 	bool bEndThere = false;
 
-	if(unit->pAI != NULL)
+	if(unit->pAI != nullptr)
 		unit->status |= UnitStatus::IsGathering;
 
 	if(unit->mainOrderState == 1) {
@@ -556,9 +556,9 @@ void orders_SCVBuild(CUnit* unit) {
 				unit->status &= ~UnitStatus::IsNormal;
 				unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
 
-				if(unit->orderQueueHead == NULL) { //680A5
-					function_004749A0(unit,NULL,OrderId::ResetCollision1);
-					function_004749A0(unit,NULL,units_dat::ReturnToIdleOrder[unit->id]);
+				if(unit->orderQueueHead == nullptr) { //680A5
+					function_004749A0(unit,nullptr,OrderId::ResetCollision1);
+					function_004749A0(unit,nullptr,units_dat::ReturnToIdleOrder[unit->id]);
 				}
 				else
 					function_00474760(unit,unit->orderQueueHead,OrderId::ResetCollision1);
@@ -575,7 +575,7 @@ void orders_SCVBuild(CUnit* unit) {
 
 				unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 
-				if(builtUnit == NULL) {
+				if(builtUnit == nullptr) {
 					displayLastNetErrForPlayer(unit->playerId);
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 					bEndThere = true;
@@ -617,7 +617,7 @@ void orders_SCVBuild(CUnit* unit) {
 
 		scbw::refreshConsole();
 
-		if(unit->orderTarget.unit != NULL) {
+		if(unit->orderTarget.unit != nullptr) {
 			unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
 			unit->orderTarget.pt.y = (unit->orderTarget.unit)->sprite->position.y;
 		}
@@ -645,7 +645,7 @@ void orders_SCVBuild(CUnit* unit) {
 		s32 v0; // esi
 		s32 result; // eax
 
-/*		if (*activePortraitUnit == NULL) {
+/*		if (*activePortraitUnit == nullptr) {
 			return 0;
 		}*/
 

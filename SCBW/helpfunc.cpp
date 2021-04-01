@@ -50,7 +50,7 @@ namespace helpers {
 		}
 
 		addon_unit = unit->building.addon;
-		unit->building.addon = NULL;
+		unit->building.addon = nullptr;
 		scbw::refreshConsole();
 
 		__asm {
@@ -63,7 +63,7 @@ namespace helpers {
 		offset_006D11FC_backup = *offset_006D11FC;
 		*offset_006D11FC = unit->building.addon;
 
-		if(unit->building.addon->sprite->images.head != NULL) {
+		if(unit->building.addon->sprite->images.head != nullptr) {
 
 			CImage* current_image = unit->building.addon->sprite->images.head;
 
@@ -72,7 +72,7 @@ namespace helpers {
 				current_image->playIscriptAnim(IscriptAnimation::LiftOff);
 				current_image = current_image->link.next;
 
-			}while (current_image != NULL);
+			}while (current_image != nullptr);
 
 		}
 
@@ -84,34 +84,34 @@ namespace helpers {
 	void removeUnitRefsFromTarget(CUnit* unit, CUnit* target) {
 
 		if(unit == target->currentBuildUnit)
-			target->currentBuildUnit = NULL;
+			target->currentBuildUnit = nullptr;
 
 		if(unit == target->orderTarget.unit)
-			target->orderTarget.unit = NULL;
+			target->orderTarget.unit = nullptr;
 
 		if(unit == target->moveTarget.unit)
-			target->moveTarget.unit = NULL;
+			target->moveTarget.unit = nullptr;
 
 		if(unit == target->autoTargetUnit)
-			target->autoTargetUnit = NULL;
+			target->autoTargetUnit = nullptr;
 
 		if(unit == target->connectedUnit)
-			target->connectedUnit = NULL;
+			target->connectedUnit = nullptr;
 
 		if(unit == target->irradiatedBy)
-			target->irradiatedBy = NULL;
+			target->irradiatedBy = nullptr;
 
 		if(units_dat::BaseProperty[target->id] & UnitProperty::Worker) {
 
 			if(unit == target->worker.targetResource.unit)
-				target->worker.targetResource.unit = NULL;
+				target->worker.targetResource.unit = nullptr;
 
 			if(target->worker.isCarryingSomething) {
 
 				if(unit == target->worker.harvestTarget) {
 
 					target->worker.isCarryingSomething = false;
-					target->worker.harvestTarget = NULL;
+					target->worker.harvestTarget = nullptr;
 
 				}
 
@@ -119,30 +119,30 @@ namespace helpers {
 
 		}else
 		if( (target->status & UnitStatus::GroundedBuilding) && (target->building.addon == unit) )
-			target->building.addon = NULL;
+			target->building.addon = nullptr;
 
 		
 		if( (units_dat::GroupFlags[target->id].isFactory) && //equivalent condition to a call to "StarCraft.exe+7B2E0 unitIsFactoryUnit" internal function
 			(unit == target->rally.unit) ) {
 
-			target->rally.unit = NULL;
+			target->rally.unit = nullptr;
 			target->rally.pt.x = unit->sprite->position.x;
 			target->rally.pt.y = unit->sprite->position.y;
 
 		}
 
-		if(target->subunit != NULL) {
+		if(target->subunit != nullptr) {
 
 			if(units_dat::BaseProperty[target->subunit->id] & UnitProperty::Subunit)
 				removeUnitRefsFromTarget(unit,target); //the snake is biting his tail?
 
 		}
 
-		if(target->orderQueueHead != NULL) {
+		if(target->orderQueueHead != nullptr) {
 
 			COrder* current_order = target->orderQueueHead;
 
-			while(current_order != NULL) {
+			while(current_order != nullptr) {
 
 				//instruction "mov [ebp-08], ecx (==current_order->target)" is lost there
 				//I hope it wasn't important...at least it's not used by removeOrderFromUnitQueue()
@@ -234,10 +234,10 @@ namespace helpers {
 			//from here, connecting the previous and next units of the player link
 			//to each other, disconnecting the current unit from the chain
 
-			if(unit->player_link.prev != NULL)
+			if(unit->player_link.prev != nullptr)
 				unit->player_link.prev->player_link.next = unit->player_link.next;
 
-			if(unit->player_link.next != NULL)
+			if(unit->player_link.next != nullptr)
 				unit->player_link.next->player_link.prev = unit->player_link.prev;
 
 			//Here, disconnecting the unit from the list based on
@@ -249,8 +249,8 @@ namespace helpers {
 
 			//Finish to disconnect and change the owner
 
-			unit->player_link.prev = NULL;
-			unit->player_link.next = NULL;
+			unit->player_link.prev = nullptr;
+			unit->player_link.next = nullptr;
 			unit->playerId = playerId_param;
 
 			if(bWasUnitSelected) {
@@ -272,14 +272,14 @@ namespace helpers {
 			}
 
 			//for some reason, Starcraft do that again
-			unit->player_link.prev = NULL;
+			unit->player_link.prev = nullptr;
 
 			//connect the unit to the list of units of
 			//player identified by playerId_param...
 			unit->player_link.next = firstPlayerUnit->unit[playerId_param];
 
 			//...and connect the list back to the unit
-			if(firstPlayerUnit->unit[playerId_param] != NULL)
+			if(firstPlayerUnit->unit[playerId_param] != nullptr)
 				firstPlayerUnit->unit[playerId_param]->player_link.prev = unit;
 
 			firstPlayerUnit->unit[playerId_param] = unit;
@@ -333,7 +333,7 @@ namespace helpers {
 			}
 
 			if(
-				unit->subunit != NULL &&
+				unit->subunit != nullptr &&
 				units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit
 				)
 					readUnitsArray_Sub49EFA0(unit->subunit, playerId_param, unknown_param);
@@ -347,7 +347,7 @@ namespace helpers {
 
 			if (
 				units_dat::BaseProperty[unit->id] & UnitProperty::Worker &&
-				unit->worker.powerup != NULL && 
+				unit->worker.powerup != nullptr && 
 				unit->worker.powerup->id == UnitId::Powerup_Flag
 				) 
 			{
@@ -443,7 +443,7 @@ namespace helpers {
 							!(units_dat::BaseProperty[unit->id] & UnitStatus::CanNotReceiveOrders))
 							jump_to_A2052 = true;
 						else
-						if(firstPlayerUnit->unit[unit->playerId] == NULL)
+						if(firstPlayerUnit->unit[unit->playerId] == nullptr)
 							jump_to_A20B2 = true;
 
 					}
@@ -456,7 +456,7 @@ namespace helpers {
 
 							//A1FD4:
 
-							if(localFirstPlayerUnit->sprite != NULL &&
+							if(localFirstPlayerUnit->sprite != nullptr &&
 								localFirstPlayerUnit->mainOrderId != 0)
 							{
 
@@ -483,9 +483,9 @@ namespace helpers {
 								localFirstPlayerUnit->userActionFlags |= 1;
 
 								if(localFirstPlayerUnit->status & UnitStatus::InBuilding)
-									localFirstPlayerUnit->order(OrderId::BunkerGuard, 0, 0, NULL, UnitId::None, true);
+									localFirstPlayerUnit->order(OrderId::BunkerGuard, 0, 0, nullptr, UnitId::None, true);
 								else
-									localFirstPlayerUnit->order(units_dat::HumanIdleOrder[localFirstPlayerUnit->id] , 0, 0, NULL, UnitId::None, true);
+									localFirstPlayerUnit->order(units_dat::HumanIdleOrder[localFirstPlayerUnit->id] , 0, 0, nullptr, UnitId::None, true);
 
 								prepareForNextOrder(localFirstPlayerUnit);
 
@@ -495,10 +495,10 @@ namespace helpers {
 
 							localFirstPlayerUnit = localFirstPlayerUnit->player_link.next;
 
-							if(localFirstPlayerUnit == NULL)
+							if(localFirstPlayerUnit == nullptr)
 								jump_to_A20B2 = true;
 
-						}while (localFirstPlayerUnit != NULL);
+						}while (localFirstPlayerUnit != nullptr);
 
 					} //if(!jump_to_A2052 && !jump_to_A20B2) {
 
@@ -528,9 +528,9 @@ namespace helpers {
 						unit->userActionFlags |= 1;
 
 						if(unit->status & UnitStatus::InBuilding)
-							unit->order(OrderId::BunkerGuard, 0, 0, NULL, UnitId::None, true);
+							unit->order(OrderId::BunkerGuard, 0, 0, nullptr, UnitId::None, true);
 						else
-							unit->order(units_dat::HumanIdleOrder[unit->id] , 0, 0, NULL, UnitId::None, true);
+							unit->order(units_dat::HumanIdleOrder[unit->id] , 0, 0, nullptr, UnitId::None, true);
 
 						prepareForNextOrder(unit);
 
@@ -591,13 +591,13 @@ namespace helpers {
 
 		if( !(unit->sprite->flags & CSprite_Flags::Hidden) ) {
 
-			if(*firstVisibleUnit != NULL) {
+			if(*firstVisibleUnit != nullptr) {
 
 				CUnit* current_unit = firstVisibleUnit[0];
 
 				removeUnitRefsFromTarget(unit, current_unit); //49E590
 
-				while(current_unit->link.next != NULL) {
+				while(current_unit->link.next != nullptr) {
 
 					current_unit = current_unit->link.next;
 
@@ -605,7 +605,7 @@ namespace helpers {
 
 				}
 
-			} //if(*firstVisibleUnit != NULL)
+			} //if(*firstVisibleUnit != nullptr)
 
 			if(unit->sprite->flags & CSprite_Flags::Hidden) {
 
@@ -613,9 +613,9 @@ namespace helpers {
 
 				dialog_structure = (BinDlg**)0x0068AC98;
 
-				if( (*dialog_structure != NULL) && ((CUnit*)((*dialog_structure)->user) == unit) ) {
+				if( (*dialog_structure != nullptr) && ((CUnit*)((*dialog_structure)->user) == unit) ) {
 
-						(*dialog_structure)->user = NULL;
+						(*dialog_structure)->user = nullptr;
 						(*dialog_structure)->graphic = 0xFFFF;
 
 						__asm {
@@ -650,7 +650,7 @@ namespace helpers {
 
 						MOV EDI, unit
 						MOV EAX, [EDI+0x0C]				//EAX = unit->sprite
-						XOR EDX, EDX					//EDX = NULL
+						XOR EDX, EDX					//EDX = nullptr
 						MOV DX, [EAX+0x16]				//DX = unit->sprite->position.y
 						MOVSX EAX, WORD PTR [EAX+0x14]	//EAX = 0xFFFF0000 + unit->sprite->position.x
 						PUSH EDX						//use 0x00000000 + unit->sprite->position.y as arg
@@ -704,7 +704,7 @@ namespace helpers {
 
 				}
 
-				if( *firstHiddenUnit != NULL) {
+				if( *firstHiddenUnit != nullptr) {
 
 					CUnit** unknownUnitStorage = (CUnit**)0x00628428;
 
@@ -714,7 +714,7 @@ namespace helpers {
 					unit->link.prev = *firstHiddenUnit;
 					unit->link.next = (*firstHiddenUnit)->link.next;
 
-					if((*firstHiddenUnit)->link.next != NULL)
+					if((*firstHiddenUnit)->link.next != nullptr)
 						(*firstHiddenUnit)->link.next->link.prev = unit;
 
 					(*firstHiddenUnit)->link.next = unit;
@@ -733,11 +733,11 @@ namespace helpers {
 					PUSHAD
 
 					MOV EAX, unit
-					XOR EBX, EBX			//set EBX as NULL as it is normally at this point
+					XOR EBX, EBX			//set EBX as nullptr as it is normally at this point
 					MOV EAX, [EAX+0x0C]		//EAX = unit->sprite
 					MOV DL, [EAX+0x0E]		//DL = unit->sprite->flags
 					OR DL, 0x20				//set CSprite_Flags::Hidden on DL
-					PUSH EBX				//NULL pushed as arg
+					PUSH EBX				//nullptr pushed as arg
 					MOV EBX, EAX			//EBX = unit->sprite
 					MOV [EAX+0x0E], DL		//unit->sprite->flags = DL
 					CALL Func_Sub_497480_GetSpriteUnderlay
@@ -746,7 +746,7 @@ namespace helpers {
 
 				}
 
-				if(unit->subunit != NULL) {
+				if(unit->subunit != nullptr) {
 
 					CUnit* currentSubUnit = unit->subunit;
 
@@ -790,8 +790,8 @@ namespace helpers {
 			PUSH EBX
 			PUSH ESI
 			MOV ESI,[STARCRAFT.EXE+228430]	//ESI = firstVisibleUnit
-			XOR EBX,EBX						//EBX = NULL
-			CMP ESI,EBX						//if (ESI == NULL)
+			XOR EBX,EBX						//EBX = nullptr
+			CMP ESI,EBX						//if (ESI == nullptr)
 			JE STARCRAFT.EXE+E636F			//jump
 			MOV EDI,EDI						//unit = unit
 
@@ -801,7 +801,7 @@ namespace helpers {
 			CALL STARCRAFT.EXE+9E590		//0049E590 sub_49E590 nicknamed RemoveUnitRefsFromTarget()
 
 			MOV ESI,[ESI+04]				//ESI = firstVisibleUnit->link.next
-			CMP ESI,EBX						//if(ESI != NULL)
+			CMP ESI,EBX						//if(ESI != nullptr)
 			JNE STARCRAFT.EXE+E6360			//loop
 
 			//StarCraft.exe+E636F 
@@ -816,7 +816,7 @@ namespace helpers {
 			CMP EDI,[ESI+26]				//if unit != (const->0x26) (constant holding units?)
 			JNE STARCRAFT.EXE+E6395			//jump
 
-			MOV [ESI+26],EBX				//[ESI+26] = NULL
+			MOV [ESI+26],EBX				//[ESI+26] = nullptr
 			MOV WORD PTR [ESI+24],FFFF		//[ESI+24] = FFFF
 			CALL STARCRAFT.EXE+18700		//00418700 HideDialog
 
@@ -836,7 +836,7 @@ namespace helpers {
 			JE STARCRAFT.EXE+E63CE			//jump
 
 			MOV EAX,[EDI+0C]				//EAX = unit->sprite
-			XOR EDX,EDX						//EDX = NULL
+			XOR EDX,EDX						//EDX = nullptr
 			MOV DX,[EAX+16]					//DX = unit->sprite->position.y
 			MOVSX EAX,WORD PTR [EAX+14]		//EAX = 0xFFFF0000 + unit->sprite->position.x
 			PUSH EDX						//use 0x00000000 + unit->sprite->position.y as arg
@@ -857,7 +857,7 @@ namespace helpers {
 
 			MOV ECX,[EDI+0C]				//ECX = unit->sprite
 			MOV AL,[EDI+00000105]			//AL = unit->pathingFlags
-			MOV [EDI+00000097],BL			//unit->movementState = BL (BL == NULL ? )
+			MOV [EDI+00000097],BL			//unit->movementState = BL (BL == nullptr ? )
 			CMP BYTE PTR [ECX+0D],0C		//cmp(unit->sprite->elevationLevel,12)
 			SETB DL							//set DL to 1 if below, else set it to 0
 			XOR DL,AL						//DL = (0 or 1) | (unit->pathingFlags usually 0 or 1)
@@ -868,7 +868,7 @@ namespace helpers {
 			CALL STARCRAFT.EXE+9DEA0		//0049DEA0 sub_49DEA0 under airTrainingProc
 
 			MOV EAX,[STARCRAFT.EXE+2283EC]	//EAX = *firstHiddenUnit
-			CMP EAX,EBX						//if EAX == NULL
+			CMP EAX,EBX						//if EAX == nullptr
 			JE STARCRAFT.EXE+E643C			//jump
 
 			CMP [STARCRAFT.EXE+228428],EAX	//cmp some const with *firstHiddenUnit
@@ -881,7 +881,7 @@ namespace helpers {
 			MOV ECX,[EAX+04]				//ECX = firstHiddenUnit->link.next
 			MOV [EDI+04],ECX				//unit->link.next = firstHiddenUnit->link.next
 			MOV ECX,[EAX+04]				//ECX = firstHiddenUnit->link.next
-			CMP ECX,EBX						//if firstHiddenUnit->link.next == NULL
+			CMP ECX,EBX						//if firstHiddenUnit->link.next == nullptr
 			JE STARCRAFT.EXE+E6437			//jump
 
 			MOV [ECX],EDI					//firstHiddenUnit->link.next->link.prev = unit
@@ -898,13 +898,13 @@ namespace helpers {
 			MOV EAX,[EDI+0C]				//EAX = unit->sprite
 			MOV DL,[EAX+0E]					//DL = unit->sprite->flags
 			OR DL,20						//set CSprite_Flags::Hidden on DL
-			PUSH EBX						//NULL pushed as arg
+			PUSH EBX						//nullptr pushed as arg
 			MOV EBX,EAX						//EBX = unit->sprite
 			MOV [EAX+0E],DL					//unit->sprite->flags = DL
 			CALL STARCRAFT.EXE+97480		//00497480 sub_497480 under getSpriteUnderlay
 
 			MOV EDI,[EDI+70]				//EDI = unit->subunit
-			TEST EDI,EDI					//if EDI == NULL
+			TEST EDI,EDI					//if EDI == nullptr
 			JE STARCRAFT.EXE+E6484			//jump
 
 			MOVZX EDX,WORD PTR [EDI+64]		//EDX = 0x00000000 + unit->subunit->id
@@ -937,7 +937,7 @@ namespace helpers {
 
 			unit->sprite->flags -= CSprite_Flags::Hidden;
 
-			if(unit->subunit != NULL) {
+			if(unit->subunit != nullptr) {
 
 				if(units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit)
 					unit->subunit->sprite->flags -= CSprite_Flags::Hidden;
@@ -966,9 +966,9 @@ namespace helpers {
 					PUSHAD
 					MOV EDI, unit
 					MOV EAX, [EDI+0x0C]					//EAX = unit->sprite
-					XOR ECX, ECX						//ECX = NULL
+					XOR ECX, ECX						//ECX = nullptr
 					MOV CX, [EAX+0x16]					//CX = unit->sprite->position.y
-					XOR EDX, EDX						//EDX = NULL
+					XOR EDX, EDX						//EDX = nullptr
 					MOV DX, [EAX+0x14]					//DX = unit->sprite->position.x
 					MOV EAX, EDI						//EAX = unit
 					PUSH ECX							//PUSH unit->sprite->position.y as arg
@@ -1022,7 +1022,7 @@ namespace helpers {
 				POPAD
 			}
 
-			if(unit->subunit != NULL) {
+			if(unit->subunit != nullptr) {
 
 				CUnit* subunit = unit->subunit;
 
@@ -1067,7 +1067,7 @@ namespace helpers {
 
 			}
 
-			if( *firstVisibleUnit == NULL) {
+			if( *firstVisibleUnit == nullptr) {
 
 				CUnit** unknown_memory_area = (CUnit**)0x0059CC9C;
 
@@ -1085,7 +1085,7 @@ namespace helpers {
 				unit->link.prev = *firstVisibleUnit;
 				unit->link.next = (*firstVisibleUnit)->link.next;
 
-				if((*firstVisibleUnit)->link.next != NULL)
+				if((*firstVisibleUnit)->link.next != nullptr)
 					(*firstVisibleUnit)->link.next->link.prev = unit;
 
 				(*firstVisibleUnit)->link.next = unit;
@@ -1110,7 +1110,7 @@ namespace helpers {
 
 			unit->moveTarget.pt.x = unit->position.x;
 			unit->moveTarget.pt.y = unit->position.y;
-			unit->moveTarget.unit = NULL;
+			unit->moveTarget.unit = nullptr;
 			unit->nextMovementWaypoint = unit->moveTarget.pt;
 
 			unit->movementFlags &= -0x71;	//binary: 10001111

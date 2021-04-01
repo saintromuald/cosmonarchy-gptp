@@ -33,12 +33,12 @@ namespace hooks {
 //equivalent to 0x004BFA80, but not identical
 CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, u32 units_list_length) {
 
-	CUnit* nearest_unit = NULL;	//was ebp-04
+	CUnit* nearest_unit = nullptr;	//was ebp-04
 	u32 best_distance = MAXINT32;
 
 	for(u32 i = 0; i < units_list_length; i++) {
 
-		if(units_list[i] != NULL) {
+		if(units_list[i] != nullptr) {
 
 			u32 x_distance, y_distance;
 
@@ -63,7 +63,7 @@ CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, u32 units_list_lengt
 
 			}
 
-		} //if(units_list[i] != NULL)
+		} //if(units_list[i] != nullptr)
 
 	} //for(int i = units_list_length; i >= 0; i--)
 
@@ -90,14 +90,14 @@ void orders_CompletingArchonSummon(CUnit* unit) {
 
 			unit->sprite->flags &= ~CSprite_Flags::IscriptCode;	//unset that flag
 
-			if(unit->sprite->images.head != NULL) {
+			if(unit->sprite->images.head != nullptr) {
 
 				CImage* current_image = unit->sprite->images.head;
 
 				do {
 					current_image->playIscriptAnim(IscriptAnimation::Init);
 					current_image = current_image->link.next;
-				}while (current_image != NULL);
+				}while (current_image != nullptr);
 
 			}
 
@@ -120,11 +120,11 @@ void orders_CompletingArchonSummon(CUnit* unit) {
 		*bCanUpdateCurrentButtonSet = 1;
 		*bCanUpdateSelectedUnitPortrait = 1;
 		*bCanUpdateStatDataDialog = 1;
-		*someDialogUnknown = NULL;
-		*someDialogUnknownUser = NULL;
+		*someDialogUnknown = nullptr;
+		*someDialogUnknownUser = nullptr;
 
 		playMorphingCompleteSound(unit);
-		unit->order(units_dat::HumanIdleOrder[unit->id],0,0,NULL,UnitId::None,0);
+		unit->order(units_dat::HumanIdleOrder[unit->id],0,0,nullptr,UnitId::None,0);
 		actUnitReturnToIdle(unit);
 		if (unit->id == UnitId::ProtossAugur) {
 			unit->status |= UnitStatus::Completed;
@@ -141,7 +141,7 @@ void orders_WarpingDarkArchon(CUnit* unit) {
 	CUnit* targetUnit = unit->orderTarget.unit;
 
 	if(
-		targetUnit == NULL || 
+		targetUnit == nullptr || 
 		unit->playerId != targetUnit->playerId ||
 		targetUnit->mainOrderId != OrderId::WarpingDarkArchon ||
 		targetUnit->orderTarget.unit != unit
@@ -163,7 +163,7 @@ void orders_WarpingDarkArchon(CUnit* unit) {
 
 		//9485F
 
-		if(unit->orderQueueHead != NULL) {
+		if(unit->orderQueueHead != nullptr) {
 
 			//94866
 
@@ -174,7 +174,7 @@ void orders_WarpingDarkArchon(CUnit* unit) {
 		else {
 
 			//9487D
-			if(unit->pAI != NULL)
+			if(unit->pAI != nullptr)
 				unit->orderComputerCL(OrderId::ComputerAI);
 			else
 				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
@@ -288,14 +288,14 @@ void orders_WarpingDarkArchon(CUnit* unit) {
 
 			unit->sprite->flags &= ~CSprite_Flags::IscriptCode; //disable the flag if set
 
-			if(unit->sprite->images.head != NULL) {
+			if(unit->sprite->images.head != nullptr) {
 
 				CImage* current_image = unit->sprite->images.head;
 
 				do {
 					current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 					current_image = current_image->link.next;
-				}while (current_image != NULL);
+				}while (current_image != nullptr);
 
 			}
 
@@ -327,7 +327,7 @@ void orders_WarpingArchon(CUnit* unit) {
 
 	CUnit* targetUnit = unit->orderTarget.unit;
 	if(
-		targetUnit == NULL || 
+		targetUnit == nullptr || 
 		unit->playerId != targetUnit->playerId ||
 		targetUnit->mainOrderId != OrderId::WarpingArchon ||
 		targetUnit->orderTarget.unit != unit
@@ -349,7 +349,7 @@ void orders_WarpingArchon(CUnit* unit) {
 
 		//94A66
 
-		if(unit->orderQueueHead != NULL) {
+		if(unit->orderQueueHead != nullptr) {
 
 			//94866
 			unit->userActionFlags |= 1;	//set flag
@@ -359,7 +359,7 @@ void orders_WarpingArchon(CUnit* unit) {
 		else {
 
 			//94A84
-			if(unit->pAI != NULL)
+			if(unit->pAI != nullptr)
 				unit->orderComputerCL(OrderId::ComputerAI);
 			else
 				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
@@ -471,14 +471,14 @@ void orders_WarpingArchon(CUnit* unit) {
 
 			unit->sprite->flags &= ~CSprite_Flags::IscriptCode; //disable the flag if set
 
-			if(unit->sprite->images.head != NULL) {
+			if(unit->sprite->images.head != nullptr) {
 
 				CImage* current_image = unit->sprite->images.head;
 
 				do {
 					current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 					current_image = current_image->link.next;
-				}while (current_image != NULL);
+				}while (current_image != nullptr);
 
 			}
 

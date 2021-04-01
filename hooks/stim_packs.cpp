@@ -30,7 +30,7 @@ void CMDACT_Stimpack() {
 		currentClientSelectionUnit = clientSelectionGroup->unit[i];
 
 		if(
-			currentClientSelectionUnit != NULL && 
+			currentClientSelectionUnit != nullptr && 
 			currentClientSelectionUnit->hitPoints > MIN_HITPOINTS_FOR_STIMPACKS
 		) 
 			bFoundUnitAbleToStimpack = true;
@@ -62,7 +62,7 @@ void useStimPacksAIHook(CUnit* unit) {
 			unit
 		);
 
-		unit->damageHp(MIN_HITPOINTS_FOR_STIMPACKS,NULL,-1,true);
+		unit->damageHp(MIN_HITPOINTS_FOR_STIMPACKS,nullptr,-1,true);
 
 		if (unit->stimTimer < 37) {
 			unit->stimTimer = 37;
@@ -86,7 +86,7 @@ void CMDRECV_StimPack() {
 	*selectionIndexStart = 0;
 	activePlayerCurrentSelection = getActivePlayerNextSelection();
 
-	while(activePlayerCurrentSelection != NULL) {
+	while(activePlayerCurrentSelection != nullptr) {
 
 		if(
 			activePlayerCurrentSelection->canUseTech(TechId::Stimpacks,*ACTIVE_NATION_ID) == 1 &&
@@ -116,7 +116,7 @@ void CMDRECV_StimPack() {
 
 			scbw::playSound(SoundId::Terran_MARINE_TMaSti00_WAV + random_value, activePlayerCurrentSelection);
 
-			activePlayerCurrentSelection->damageHp(MIN_HITPOINTS_FOR_STIMPACKS,NULL,-1,true);
+			activePlayerCurrentSelection->damageHp(MIN_HITPOINTS_FOR_STIMPACKS,nullptr,-1,true);
 
 			if (activePlayerCurrentSelection->stimTimer < 37) {
 				activePlayerCurrentSelection->stimTimer = 37;

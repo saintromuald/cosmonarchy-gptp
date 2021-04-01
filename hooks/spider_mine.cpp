@@ -74,7 +74,7 @@ namespace hooks {
 	const int SPIDERMINE_DETONATE_RANGE = 30;
 
 	//Return the best target for the Spider Mine. If there is no suitable target,
-	//return NULL instead.
+	//return nullptr instead.
 	CUnit* findBestSpiderMineTargetHook(CUnit* spiderMine) {
 
 		//Default StarCraft behavior
@@ -82,7 +82,7 @@ namespace hooks {
 
 		//Don't search for a target if the spider mine is under a Disruption Web
 		if (spiderMine->status & UnitStatus::CanNotAttack)
-			return NULL;
+			return nullptr;
 
 		range = 32 * spiderMine->getSeekRange();
 
@@ -129,7 +129,7 @@ namespace hooks {
 		if(unit->mainOrderState == 3) {
 			CUnit* target = SpiderMine_AcquireTarget(unit);
 
-			if(target != NULL) {
+			if(target != nullptr) {
 
 				unit->orderTarget.unit = target;
 
@@ -156,7 +156,7 @@ namespace hooks {
 				//disabled NoCollide flag if was still on
 				unit->status &= ~UnitStatus::NoCollide;
 
-				if(unit->orderTarget.unit != NULL) {
+				if(unit->orderTarget.unit != nullptr) {
 
 					//probably trigger movement/acceleration of unit
 					//toward the target
@@ -179,7 +179,7 @@ namespace hooks {
 
 			function_004E99D0(unit); //related to movement, similar to function_004E9A30
 
-			if(unit->orderTarget.unit != NULL) {
+			if(unit->orderTarget.unit != nullptr) {
 
 				if(unit->isTargetWithinMinRange(unit->orderTarget.unit,SPIDERMINE_SEEKING_RANGE)) {
 
@@ -206,7 +206,7 @@ namespace hooks {
 
 				CImage* current_image;
 
-				unit->orderTarget.unit = NULL;
+				unit->orderTarget.unit = nullptr;
 				unit->orderTarget.pt.x = unit->sprite->position.x;
 				unit->orderTarget.pt.y = unit->sprite->position.y;
 
@@ -215,7 +215,7 @@ namespace hooks {
 				if (unit->id == UnitId::TerranLobotomyMine) {
 					anim = IscriptAnimation::Unused1;
 				}
-				while(current_image != NULL) {
+				while(current_image != nullptr) {
 					current_image->playIscriptAnim(anim);
 					current_image = current_image->link.next;
 				}

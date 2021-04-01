@@ -18,7 +18,7 @@ void CMDRECV_TrainFighter() {
 	*selectionIndexStart = 0;
 	current_selection = getActivePlayerNextSelection();
 
-	while(current_selection != NULL) {
+	while(current_selection != nullptr) {
 
 		u32 unitToBuild;
 
@@ -44,7 +44,7 @@ void CMDRECV_TrainFighter() {
 					current_selection->secondaryOrderId = OrderId::TrainFighter;
 					current_selection->secondaryOrderPos.y = 0;
 					current_selection->secondaryOrderPos.x = 0;
-					current_selection->currentBuildUnit = NULL;
+					current_selection->currentBuildUnit = nullptr;
 					current_selection->secondaryOrderState = 0;
 				}
 
@@ -69,7 +69,7 @@ void CMDRECV_Train(u16 wUnitType) {
 	*selectionIndexStart = 0;
 	builder = getActivePlayerNextSelection();
 
-	if(builder != NULL && getActivePlayerNextSelection() == NULL) {
+	if(builder != nullptr && getActivePlayerNextSelection() == nullptr) {
 
 		if(builder->canMakeUnit(wUnitType,*ACTIVE_NATION_ID) == 1 /*&&
 			wUnitType <= UnitId::Spell_DisruptionWeb*/ //id before buildings id //must be disabled for paladins

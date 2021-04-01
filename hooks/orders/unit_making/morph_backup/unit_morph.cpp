@@ -67,13 +67,13 @@ namespace hooks {
 				)
 				bTwinEggOrCocoon = false;
 
-			unit2 = NULL;
+			unit2 = nullptr;
 
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg && !vorvaling) {
 
 				unit2 = function_0045D910(unit);//zerg dual birth
 
-				if (unit2 != NULL)
+				if (unit2 != nullptr)
 					AI_TrainingUnit(unit, unit2);
 
 			}
@@ -118,7 +118,7 @@ namespace hooks {
 
 				orderNewUnitToRally(unit, unit->connectedUnit);
 
-				if (unit2 != NULL)
+				if (unit2 != nullptr)
 					orderNewUnitToRally(unit2, unit->connectedUnit);
 
 			}
@@ -228,12 +228,12 @@ namespace hooks {
 						if (unit->id == UnitId::ProtossHighTemplar) {
 							replaceUnitWithType(unit, UnitId::ProtossAugur);
 							unit->sprite->flags &= ~CSprite_Flags::IscriptCode;
-							if(unit->sprite->images.head != NULL) {
+							if(unit->sprite->images.head != nullptr) {
 								CImage* current_image = unit->sprite->images.head;
 								do {
 									current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 									current_image = current_image->link.next;
-								}while (current_image != NULL);
+								}while (current_image != nullptr);
 							}
 							changeUnitButtonSet_Sub4E5D60(unit,UnitId::None);
 							scbw::refreshConsole();
@@ -309,7 +309,7 @@ namespace hooks {
 
 							current_image = unit->sprite->images.head;
 
-							while (current_image != NULL) {
+							while (current_image != nullptr) {
 								current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 								current_image = current_image->link.next;
 							}
