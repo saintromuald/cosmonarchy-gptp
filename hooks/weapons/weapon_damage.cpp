@@ -423,12 +423,12 @@ namespace hooks {
 		if (data.target == nullptr || data.target->hitPoints == 0 || data.target->status & UnitStatus::Invincible)
 			return;
 
-		bool canDamage = true; // debug only!
 		if (scbw::isCheatEnabled(CheatFlags::PowerOverwhelming) &&			 // If Power Overwhelming is enabled
 			playerTable[data.target->playerId].type == PlayerType::Human) {		 // and the data.target player is a human player
 			data.finalDamage = 0;
 		}
 
+		bool canDamage = true; // debug only!
 		if (data.target->pAI != nullptr) {
 			WorkerAi* ai = (WorkerAi*)data.target->pAI;
 			if (ai->type == 2 || ai->type == 3) {
@@ -438,6 +438,8 @@ namespace hooks {
 				}
 			}
 		}
+
+		weaponDamage_damageModifiers(data);
 
 		// Hallucinations deal half damage
 		if (data.attacker != nullptr) {
@@ -465,8 +467,6 @@ namespace hooks {
 		if (data.damageType != DamageType::IgnoreArmor) {
 			data.finalDamage -= std::min(scbw::getCliffAdvantage(data.attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
 		}
-
-		weaponDamage_damageModifiers(data);
 
 		// Reduce Plasma Shields...but not just yet
 		s32 shieldReduceAmount = 0;
@@ -532,16 +532,13 @@ namespace hooks {
 		}
 
 		// Deal damage, except for Independent damage, which always deals 0
-		if (data.damageType != DamageType::Independent && data.target->defensiveMatrixHp == 0) {
-			if (canDamage) {
-				data.target->damageHp(data.damage, data.attacker, data.attackingPlayerId, data.weaponId != WeaponId::Irradiate);
-				// Prevent Science Vessels from being continuously revealed to the irradiated target
-			}
+		if (data.damageType != DamageType::Independent && data.target->defensiveMatrixHp == 0 && canDamage) {
+			data.target->damageHp(data.finalDamage, data.attacker, data.attackingPlayerId, data.weaponId != WeaponId::Irradiate);
+			// Prevent Science Vessels from being continuously revealed to the irradiated target
 		}
 
 		// Reduce shields
-		if (shieldReduceAmount != 0
-		&&	canDamage) {
+		if (shieldReduceAmount != 0 && canDamage) {
 			if (scbw::get_aise_value(data.target, nullptr, AiseId::HasClarionLink, 0, 0)) {
 				scbw::sendGPTP_aise_cmd(data.target, nullptr, GptpId::SpreadClarionDamage, shieldReduceAmount, data.damageType, data.direction);
 			}
@@ -600,7 +597,7 @@ namespace hooks {
 				mul = 1.0 / 9.0; // glave wurm 4th bounce
 				break;
 			};
-			data.finalDamage = data.finalDamage * mul + data.target->acidSporeCount * 256;
+			data.finalDamage = data.finalDamage * mul + (int)data.target->acidSporeCount * 256;
 			break;
 		}
 		case WeaponId::KalkaliskViscousAcid: {
