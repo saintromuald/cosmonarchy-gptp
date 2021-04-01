@@ -385,14 +385,27 @@ namespace hooks {
 	);
 
 	static void weaponDamage_behaviors(
-		s32& damage,
+		s32 damage,
+		s32 reducedDamage,
+		s32	shieldReduceAmount,
+		CUnit* target,
+		u8 weaponId,
+		CUnit* attacker,
+		u8 attackingPlayerId,
+		s8 direction,
+		u8 dmgDivisor,
+		u8 damageType
+	);
+	
+	static void weaponDamage_subcalc(
+		s32 damage,
 		s32& reducedDamage,
 		s32	shieldReduceAmount,
 		CUnit* target,
-		u8& weaponId,
+		u8 weaponId,
 		CUnit* attacker,
-		u8& attackingPlayerId,
-		s8& direction,
+		u8 attackingPlayerId,
+		s8 direction,
 		u8& dmgDivisor,
 		u8& damageType
 	);
@@ -534,6 +547,7 @@ namespace hooks {
 			reducedDamage = 128;
 		}
 
+		weaponDamage_subcalc(damage, reducedDamage, shieldReduceAmount, target, weaponId, attacker, attackingPlayerId, direction, dmgDivisor, damageType);
 		weaponDamage_behaviors(damage, reducedDamage, shieldReduceAmount, target, weaponId, attacker, attackingPlayerId, direction, dmgDivisor, damageType);
 		if (attacker != nullptr) { // lifesteal 
 			weaponDamage_lifesteal(reducedDamage, target, weaponId, attacker, attackingPlayerId, direction, dmgDivisor, damageType);
@@ -572,24 +586,23 @@ namespace hooks {
 		target->groundStrength = getUnitStrength(target, true);
 	}
 
-	static void weaponDamage_behaviors(
-		s32&	damage,
-		s32&	reducedDamage,
-		s32		shieldReduceAmount,
-		CUnit*	target,
-		u8&		weaponId,
-		CUnit*	attacker,
-		u8&		attackingPlayerId,
-		s8&		direction,
-		u8&		dmgDivisor,
-		u8&		damageType
+	static void weaponDamage_subcalc(
+		s32 damage,
+		s32& reducedDamage,
+		s32	shieldReduceAmount,
+		CUnit* target,
+		u8 weaponId,
+		CUnit* attacker,
+		u8 attackingPlayerId,
+		s8 direction,
+		u8& dmgDivisor,
+		u8& damageType
 	) {
 		// Dark Swarm - Defiler Ability
 		if (scbw::isUnderDarkSwarm(target) && weapons_dat::MaxRange[weaponId] > 32 && (dmgDivisor == 1 || weaponId == WeaponId::AcidSpore) && weaponId != WeaponId::SubterraneanSpines) {
 			damageType = DamageType::Independent;
 		}
 
-		// TODO: maybe move this switch and dark swarm to seperate func? so damage, dmgDivisor and damageType aren't passed as references
 		switch (weaponId) {
 		case WeaponId::ArchitectDispersiveSalvo: {
 			// Reactive Payload - Architect behavior
@@ -597,13 +610,13 @@ namespace hooks {
 			if (dmgDivisor != 0) {
 				div = (double)dmgDivisor;
 			}
-			int dmg = ((double)damage / div);
-			damage = dmg + (target->acidSporeCount * 256);
+			int dmg = ((double)reducedDamage / div);
+			reducedDamage = dmg + (target->acidSporeCount * 256);
 			break;
 		}
 		case WeaponId::AcidSpore: {
 			// Searing Acid - Guardian behavior
-			damage = damage + (target->acidSporeCount * 256) + (dmgDivisor * 10 * 256);
+			reducedDamage = reducedDamage + (target->acidSporeCount * 256) + (dmgDivisor * 10 * 256);
 			break;
 		}
 		case WeaponId::GlaveWurm: {
@@ -623,8 +636,7 @@ namespace hooks {
 				mul = 1.0 / 9.0; // glave wurm 4th bounce
 				break;
 			};
-			int dmg = ((double)damage * mul);
-			damage = dmg + (target->acidSporeCount * 256);
+			reducedDamage = reducedDamage * mul + target->acidSporeCount * 256;
 			break;
 		}
 		case WeaponId::KalkaliskViscousAcid: {
@@ -647,7 +659,20 @@ namespace hooks {
 			damage = damage / divisor + (target->acidSporeCount * 256);
 		}
 		}
+	}
 
+	static void weaponDamage_behaviors(
+		s32		damage,
+		s32		reducedDamage,
+		s32		shieldReduceAmount,
+		CUnit*	target,
+		u8		weaponId,
+		CUnit*	attacker,
+		u8		attackingPlayerId,
+		s8		direction,
+		u8		dmgDivisor,
+		u8		damageType
+	) {
 		switch (weaponId) {
 		case WeaponId::QuaziliskAcridBarbs: {
 			// Quazilisk - Melting Points
@@ -664,6 +689,35 @@ namespace hooks {
 			}
 			break;
 		}
+		}
+
+		// Petrification - Gorgon behavior
+		if (GorgonCondition(attacker, target)) {
+			scbw::refreshDebuffs(target);
+		}
+
+
+		// Ensnaring Brood - Queen enchantment ability
+		if (scbw::get_generic_timer(attacker, ValueId::EnsnaringBroodTimer) > 0
+			&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
+			applyEnsnare(target);
+		}
+
+		// Cabalist - Silent Kill
+		if ((units_dat::BaseProperty[attacker->id] & UnitProperty::PermanentCloak
+			|| attacker->status & UnitStatus::CloakingForFree)
+			&& attacker->playerId
+			&& attacker->id != UnitId::ZergLakizilisk) {
+			bool silent_kill = false;
+			if (reducedDamage >= target->hitPoints
+				&& attacker->id == UnitId::ProtossCabalist) {
+				silent_kill = true;
+			}
+			if (!silent_kill && !(attacker->visibilityStatus & 1 << target->playerId)) {
+				attacker->visibilityStatus |= (1 << target->playerId);
+				makeSpriteVisible(attacker->sprite);
+				scbw::set_generic_timer(attacker, ValueId::PermanentCloakTimer, 48 + 1);
+			}
 		}
 
 		if (attacker != nullptr) {
@@ -773,38 +827,14 @@ namespace hooks {
 					scbw::set_generic_value(target, ValueId::Amitosis, 0);
 				}
 			}*/
-			}
-
-			// Ensnaring Brood - Queen enchantment ability
-			if (scbw::get_generic_timer(attacker, ValueId::EnsnaringBroodTimer) > 0
-				&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
-				applyEnsnare(target);
-			}
-		}
-
-		// Petrification - Gorgon behavior
-		if (GorgonCondition(attacker, target)) {
-			scbw::refreshDebuffs(target);
-		}
-
-		if (attacker != nullptr) {
-			if ((units_dat::BaseProperty[attacker->id] & UnitProperty::PermanentCloak
-				|| attacker->status & UnitStatus::CloakingForFree)
-				&& attacker->playerId
-				&& attacker->id != UnitId::ZergLakizilisk) {
-				bool silent_kill = false;
-				if (reducedDamage >= target->hitPoints
-					&& attacker->id == UnitId::ProtossCabalist) {
-					silent_kill = true;
+			case UnitId::ProtossSimulacrum: {
+				// Autovitality - Simulacrum behavior
+				if (!scbw::isAlliedTo(target->playerId, attacker->playerId)
+					&& scbw::get_generic_timer(target, ValueId::SimulacrumCloneTimer == 0)) {
+					scbw::set_generic_timer(target, ValueId::SimulacrumCloneTimer, 5 * 24); // 5 seconds may be too long, needs testing
 				}
-				if (!silent_kill && !(attacker->visibilityStatus & 1 << target->playerId)) {
-					attacker->visibilityStatus |= (1 << target->playerId);
-					makeSpriteVisible(attacker->sprite);
-					scbw::set_generic_timer(attacker, ValueId::PermanentCloakTimer, 48 + 1);
-				}
+				break;
 			}
-
-			switch (weaponId) {
 			case WeaponId::NuclearMissile: {
 				// Nuclear Missile - Ground Zero
 				if (target->hitPoints > reducedDamage && irradiateTarget(target)) {
@@ -843,10 +873,7 @@ namespace hooks {
 					}
 				}
 				break;
-			}			
 			}
-
-			switch (weaponId) {
 			case WeaponId::GorgrokorSerratedCleavers: {
 				// Essence Drain - Gorgoleth Energy Steal
 				if (units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster) {
@@ -870,17 +897,6 @@ namespace hooks {
 				scbw::UnitFinder unitFinder(target->getX() - range, target->getY() - range, target->getX() + range, target->getY() + range);
 				unitFinder.forEach(bloodTitheProc(attacker, target));
 				//}
-				break;
-			}
-			}
-
-			switch (target->id) {
-			case UnitId::ProtossSimulacrum: {
-				// Autovitality - Simulacrum behavior
-				if (!scbw::isAlliedTo(target->playerId, attacker->playerId)
-					&& scbw::get_generic_timer(target, ValueId::SimulacrumCloneTimer == 0)) {
-					scbw::set_generic_timer(target, ValueId::SimulacrumCloneTimer, 5 * 24); // 5 seconds may be too long, needs testing
-				}
 				break;
 			}
 			}
@@ -1028,9 +1044,7 @@ namespace hooks {
 		}
 		case UnitId::ProtossAugur: {
 			// Augur - Death behavior
-			if (target->id == UnitId::ProtossAugur) {
-				augurSacrifice(target);
-			}
+			augurSacrifice(target);
 		}
 		}
 
