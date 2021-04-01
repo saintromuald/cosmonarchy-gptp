@@ -721,32 +721,6 @@ namespace hooks {
 							}
 						}
 					}
-
-					// Blind Judge relic
-					/*if (units_dat::BaseProperty[attacker->id] & UnitProperty::Hero &&
-						scbw::get_generic_value(attacker, NULL, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1
-						&& (units_dat::BaseProperty[target->id] & UnitProperty::Organic)
-						&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)) {
-							scbw::sendGPTP_aise_cmd(attacker, target, GptpId::BlindJudgeTimedEffect, target->energy, 0, 0);
-						
-						u32 energy = target->energy;
-						Point16 pos = target->position;
-						CUnit* resurrected_unit;
-						//fixTargetLocation(&pos, target->id);
-						resurrected_unit = CreateUnit_09D0(target->id, pos.x, pos.y, attacker->playerId);
-						if (resurrected_unit == NULL) {
-							displayneterr_49E530(attacker->playerId);
-						}
-						else {
-							function_004A01F0_copy(resurrected_unit);
-							updateStrength_49FA40(resurrected_unit);
-							resurrected_unit->removeTimer = 360;
-							resurrected_unit->energy = energy;
-							resurrected_unit->setHp(units_dat::MaxHitPoints[resurrected_unit->id]);
-							if (attacker->pAI != NULL)
-								AI_Train_4A2830(attacker, resurrected_unit);
-						}
-					}*/	
 				}
 			}
 
@@ -862,21 +836,21 @@ namespace hooks {
 				scbw::set_generic_timer(target, ValueId::SimulacrumCloneTimer, 5 * 24); // 5 seconds may be too long, needs testing
 			}
 
-			if (attacker != NULL) { // looks like target will always be alive if this function was called?
+			if (attacker != nullptr) { // looks like target will always be alive if this function was called?
 				if (scbw::get_generic_timer(target, ValueId::HallucinatingTimer) >= 1) {
 					CUnit* haluAttacker = attacker;
 					if ((haluAttacker->id == UnitId::ProtossSteward
 						|| haluAttacker->id == UnitId::ProtossPlasmaShell)
-						&& attacker->interceptor.parent != NULL) {
+						&& attacker->interceptor.parent != nullptr) {
 						haluAttacker = attacker->interceptor.parent;
 					}
-					if (scbw::get_generic_unit(haluAttacker, ValueId::HallucinationPointer) == NULL
+					if (scbw::get_generic_unit(haluAttacker, ValueId::HallucinationPointer) == nullptr
 					&& !(haluAttacker->status & UnitStatus::IsHallucination)) {
 						u32 haluPlayer = scbw::get_generic_value(target, ValueId::HallucinatingSourcePlayer);
 						if (haluPlayer != haluAttacker->playerId && !scbw::isAlliedTo(haluPlayer, haluAttacker->playerId)) return;
 
 						CUnit* hal_unit = createHallucination(haluAttacker, haluPlayer);
-						if (hal_unit != NULL) {
+						if (hal_unit != nullptr) {
 							hal_unit->sprite->createOverlay(ImageId::HallucinationDeath3);
 							scbw::set_generic_unit(haluAttacker, ValueId::HallucinationPointer, hal_unit);
 
@@ -952,8 +926,8 @@ namespace hooks {
 			// Reduce shields (finally)
 			if (shieldReduceAmount != 0
 			&&	canDamage) {
-				if (scbw::get_aise_value(target, NULL, AiseId::HasClarionLink, 0, 0)) {
-					scbw::sendGPTP_aise_cmd(target, NULL, GptpId::SpreadClarionDamage, shieldReduceAmount, damageType, direction);
+				if (scbw::get_aise_value(target, nullptr, AiseId::HasClarionLink, 0, 0)) {
+					scbw::sendGPTP_aise_cmd(target, nullptr, GptpId::SpreadClarionDamage, shieldReduceAmount, damageType, direction);
 				}
 				else {
 					target->shields -= shieldReduceAmount;
