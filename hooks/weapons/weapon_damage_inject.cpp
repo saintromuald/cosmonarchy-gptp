@@ -5,7 +5,6 @@ extern const u32 Func_DoWeaponDamage; //Defined in CUnit.cpp
 
 namespace {
 
-	//Inject with JmpPatch
 	void __declspec(naked) weaponDamageWrapper() {
 		static CUnit* target;
 		static CUnit* attacker;
@@ -54,13 +53,27 @@ namespace {
 		}
 	}
 
+	void __declspec(naked) updateCorrosiveSpores_Wrapper() { // 004F4480
+		static CUnit* target;
+		static uint32_t result;
+		__asm {
+			MOV target, EBX
+			PUSHAD
+		}
+		result = hooks::updateCorrosiveSpores(target);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 } //unnamed namespace
 
 namespace hooks {
-
-void injectWeaponDamageHook() {
-	jmpPatch(weaponDamageWrapper,	0x00479930, 1);
-	jmpPatch(applyEnsnare_Wrapper,	0x004F45E0, 2);
-}
-
+	void injectWeaponDamageHook() {
+		jmpPatch(weaponDamageWrapper,				0x00479930, 1);
+		jmpPatch(applyEnsnare_Wrapper,				0x004F45E0, 2);
+		jmpPatch(updateCorrosiveSpores_Wrapper,		0x004F4480, 1);
+	}
 } //hooks

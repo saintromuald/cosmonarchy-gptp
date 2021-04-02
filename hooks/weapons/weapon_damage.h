@@ -11,9 +11,12 @@ namespace hooks {
                           u8      attackingPlayerId,
                           s8      direction,
                           u8      dmgDivisor);
-    // Hooked to allow for modifying Ensnare duration - Pr0nogo
+    
     void applyEnsnare(CUnit* a1);													// 004F45E0
+    int32_t updateCorrosiveSpores(CUnit* target);                                   // 004F4480
+
     bool GorgonCondition(CUnit* attacker, CUnit* target);
+
     void injectWeaponDamageHook();
 
 } //hooks
