@@ -385,7 +385,7 @@ void CUnit::setHp(s32 hitPoints) {
 	}
 }
 
-void CUnit::heal(s32 hitPoints, CUnit* source = nullptr) {
+void CUnit::heal(s32 hitPoints, CUnit* source) {
 	assert(this);
 	if (this->hitPoints == this->getMaxHpRaw()) { // skip healing if max hp already
 		return;
