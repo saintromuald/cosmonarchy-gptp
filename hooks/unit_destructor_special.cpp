@@ -11,66 +11,6 @@
 #include <SCBW/UnitFinder.h>
 #include "globals.h"
 
-class customPlagueProc_2 : public scbw::UnitFinderCallbackProcInterface
-	{
-	private:
-	CUnit* defiler;
-
-	public:
-	customPlagueProc_2(CUnit* defiler)
-		: defiler(defiler) {}
-	void proc(CUnit* unit)
-	{
-		if(unit->plagueTimer > 0){
-			unit->newFlags1 |= NewFlags1::Metastasis;
-		}
-	}
-};
-
-class vassalProc : public scbw::UnitFinderCallbackProcInterface
-{
-private:
-	CUnit* vassal;
-
-public:
-	vassalProc(CUnit* vassal)
-		: vassal(vassal) {}
-	void proc(CUnit* unit)
-	{
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit)) {
-			return;
-		}
-		if (!scbw::isAlliedTo(vassal->playerId, unit->playerId)) {
-			return;
-		}
-		scbw::add_generic_value(unit, ValueId::TerminalSurge, 1);
-	}
-};
-
-class lastBreathProc : public scbw::UnitFinderCallbackProcInterface
-{
-private:
-	CUnit* victim;
-
-public:
-	lastBreathProc(CUnit* victim)
-		: victim(victim) {}
-	void proc(CUnit* unit)
-	{
-		if (unit->id != UnitId::TerranApostle) {
-			return;
-		}
-		if (unit == victim) {
-			return;
-		}
-		if (!scbw::isAlliedTo(victim->playerId, unit->playerId)) {
-			return;
-		}
-		unit->energy += 5*256;
-		unit->sprite->createUnderlay(425);
-	}
-};
-
 void killAllHangarUnits(CUnit* unit) {
 
 	u32 random_value;
@@ -311,21 +251,43 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	// Vassal Autovitality behavior
 	if (unit->id == UnitId::ProtossVassal) {
 		u32 range = 5*32;
-		scbw::UnitFinder unitFinder(unit->getX() - range,
+		scbw::UnitFinder(
+			unit->getX() - range,
 			unit->getY() - range,
 			unit->getX() + range,
-			unit->getY() + range);
-		unitFinder.forEach(vassalProc(unit));
+			unit->getY() + range
+		).forEach([&](CUnit* target) {
+			if (!(units_dat::BaseProperty[target->id] & UnitProperty::RoboticUnit)) {
+				return;
+			}
+			if (!scbw::isAlliedTo(unit->playerId, target->playerId)) {
+				return;
+			}
+			scbw::add_generic_value(target, ValueId::TerminalSurge, 1);
+		});
 	}
 
 	// Apostle Last Breath behavior
 	if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic) {
 		u32 range = 4 * 32;
-		scbw::UnitFinder unitFinder(unit->getX() - range,
+		scbw::UnitFinder(
+			unit->getX() - range,
 			unit->getY() - range,
 			unit->getX() + range,
-			unit->getY() + range);
-		unitFinder.forEach(lastBreathProc(unit));
+			unit->getY() + range
+		).forEach([&](CUnit* target) {
+			if (target->id != UnitId::TerranApostle) {
+				return;
+			}
+			if (target == unit) {
+				return;
+			}
+			if (!scbw::isAlliedTo(unit->playerId, target->playerId)) {
+				return;
+			}
+			target->energy += 5 * 256;
+			target->sprite->createUnderlay(425);
+		});
 	}
 
 	// Clarion Phase Link behavior
@@ -363,13 +325,17 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		coords.top = unit->position.y -48;
 		coords.right = unit->position.x + 48;
 		IterateUnitsAtLocationTargetProc_Plague(unit, &coords);
-		customPlagueProc_2 UpgPlague = customPlagueProc_2(unit);
 		u32 range = 48;
-		scbw::UnitFinder unitFinder(unit->getX() - range,
+		scbw::UnitFinder(
+			unit->getX() - range,
 			unit->getY() - range,
 			unit->getX() + range,
-			unit->getY() + range);
-		unitFinder.forEach(UpgPlague);
+			unit->getY() + range
+		).forEach([&](CUnit* target) {
+			if (target->plagueTimer > 0) {
+				target->newFlags1 |= NewFlags1::Metastasis;
+			}
+		});
 		//add finder later to trace plague flag
 	}
 

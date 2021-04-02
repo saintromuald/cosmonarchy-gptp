@@ -166,30 +166,30 @@ namespace hooks {
 						y - range,
 						x + range,
 						y + range);
-					unitFinder_collect.forEach([&](CUnit* foundUnit) {
+					unitFinder_collect.forEach([&](CUnit* target) {
 						constexpr u32 ENERGY_PROC_MAX = 50 * 256;
 						if (energy == ENERGY_PROC_MAX) {
 							return;
 						}
-						if (foundUnit == unit) {
+						if (target == unit) {
 							return;
 						}
-						if (!(units_dat::BaseProperty[foundUnit->id] & UnitProperty::Spellcaster)) {
+						if (!(units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster)) {
 							return;
 						}
-						if (foundUnit->energy == 0) {
+						if (target->energy == 0) {
 							return;
 						}
 						u32 energyLeft = ENERGY_PROC_MAX - energy;
-						u32 drain = MathUtils::clamp<u32>(foundUnit->energy, 0, energyLeft);
+						u32 drain = MathUtils::clamp<u32>(target->energy, 0, energyLeft);
 						energy += drain;
-						foundUnit->spendUnitEnergy(drain);
-						u8 overlaySize = scbw::hasOverlay(foundUnit);
-						if (foundUnit->subunit != nullptr) {
-							foundUnit->subunit->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
+						target->spendUnitEnergy(drain);
+						u8 overlaySize = scbw::hasOverlay(target);
+						if (target->subunit != nullptr) {
+							target->subunit->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
 						}
 						else {
-							foundUnit->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
+							target->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
 						}
 					});
 					range = 4 * 32;
@@ -197,21 +197,21 @@ namespace hooks {
 						unit->getY() - range,
 						unit->getX() + range,
 						unit->getY() + range);
-					u32 matchCount = unitFinder_distribute.getMatchUnitCount([&](CUnit* foundUnit) {
-						return powerSiphonDistributeMatch(unit, foundUnit);
+					u32 matchCount = unitFinder_distribute.getMatchUnitCount([&](CUnit* target) {
+						return powerSiphonDistributeMatch(unit, target);
 					});
 					if (matchCount != 0 && energy > 0) {
 						u32 perEach = energy / matchCount;
 						u32 extra = energy % matchCount;
-						CUnit* unit = unitFinder_distribute.getFirst([&](CUnit* foundUnit) {
-							return powerSiphonDistributeMatch(unit, foundUnit);
+						CUnit* unit = unitFinder_distribute.getFirst([&](CUnit* target) {
+							return powerSiphonDistributeMatch(unit, target);
 						});
 						if (unit != nullptr) {
 							unit->addUnitEnergy(extra);
 						}
 						u32 unspent = 0;
-						unitFinder_distribute.forEachInMatch([&](CUnit* foundUnit) {
-							return powerSiphonDistributeMatch(unit, foundUnit);
+						unitFinder_distribute.forEachInMatch([&](CUnit* target) {
+							return powerSiphonDistributeMatch(unit, target);
 						}, [&](CUnit* u) {
 							u->addUnitEnergy(unspent);
 							energy -= unspent;
@@ -229,8 +229,8 @@ namespace hooks {
 							unspent = perEach - howMuch;
 						});
 						if (energy > 0) {
-							CUnit* unit = unitFinder_distribute.getFirst([&](CUnit* foundUnit) {
-								return powerSiphonDistributeMatch(unit, foundUnit);
+							CUnit* unit = unitFinder_distribute.getFirst([&](CUnit* target) {
+								return powerSiphonDistributeMatch(unit, target);
 							});
 							if (unit != nullptr) {
 								unit->addUnitEnergy(extra);
@@ -357,7 +357,6 @@ namespace hooks {
 						scbw::doDeconstructionDamage(unit, weaponId);
 					}
 					auto old = unit->orderTarget.unit;
-					auto finderMatch = madrigalFuriaMatch(unit);
 					auto range = weapons_dat::MaxRange[weaponId];
 					auto count = 0;
 					scbw::UnitFinder unitsInSplash(unit->getX() - range, unit->getY() - range, unit->getX() + range, unit->getY() + range);
@@ -398,16 +397,16 @@ namespace hooks {
 				auto a = scbw::UnitFinder::getNearestTarget(
 					unit->getX() - range, unit->getY() - range,
 					unit->getX() + range, unit->getY() + range,
-					unit, [&](CUnit* foundUnit) {
-						if (foundUnit == unit) {
+					unit, [&](CUnit* target) {
+						if (target == unit) {
 							return false;
 						}
-						if (foundUnit == unit->orderTarget.unit) {
+						if (target == unit->orderTarget.unit) {
 							return false;
 						}
-						if (scbw::isAlliedTo(unit->playerId, foundUnit->playerId))
+						if (scbw::isAlliedTo(unit->playerId, target->playerId))
 							return false;
-						return scbw::canWeaponTargetUnit(weaponId, foundUnit, unit);
+						return scbw::canWeaponTargetUnit(weaponId, target, unit);
 					}
 				);
 				if (a != nullptr) {
@@ -446,7 +445,9 @@ namespace hooks {
 				auto seekTarget = scbw::UnitFinder::getNearestTarget(
 					bullet->position.x - range, bullet->position.y - range,
 					bullet->position.x + range, bullet->position.y + range,
-					bullet, alkajSporeMatch(bullet)
+					bullet, [&](CUnit* unit) {
+						return alkajSporeMatch(bullet, unit);
+					}
 				);
 				if (seekTarget != nullptr) {
 					bullet->attackTarget.unit = seekTarget;

@@ -28,29 +28,23 @@ namespace {
 		}
 	}
 
-	/*class empyreanInterceptionMatch : public scbw::UnitFinderCallbackMatchInterface {
-	private:
-		CBullet* missile;
-	public:
-		empyreanInterceptionMatch(CBullet* missile)
-			: missile(missile) {}
-
-		bool match(CUnit* unit) {
-			if (unit == savant) {
-				return false;
-			}
-			if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster)) {
-				return false;
-			}
-			if (!scbw::isAlliedTo(savant->playerId, unit->playerId)) {
-				return false;
-			}
-			if (unit->energy == unit->getMaxEnergy()) {
-				return false;
-			}
+	/*
+	bool empyreanInterceptionMatch(CUnit* unit) {
+		if (unit == savant) {
 			return false;
 		}
-	};*/
+		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster)) {
+			return false;
+		}
+		if (!scbw::isAlliedTo(savant->playerId, unit->playerId)) {
+			return false;
+		}
+		if (unit->energy == unit->getMaxEnergy()) {
+			return false;
+		}
+		return false;
+	}
+	*/
 
 	void __declspec(naked) progressBulletFlight_Wrapper() {
 		static CBullet* bullet;

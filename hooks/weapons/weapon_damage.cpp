@@ -162,35 +162,6 @@ void imgul(CSprite* sprite, u32 imageId, u32 unk1, u32 unk2, u32 unk3) {
 //
 #include "SCBW\UnitFinder.h"
 
-class augurDeathProc : public scbw::UnitFinderCallbackMatchInterface {
-	CUnit* augur;
-
-public:
-	//Check if @p unit is a suitable target for the @p spiderMine.
-	bool match(CUnit* target) {
-
-		//Don't attack friendly / allied units
-		if (target->sprite == nullptr) {
-			return false;
-		}
-		if (target->playerId == augur->playerId) {
-			return false;
-		}
-		if (scbw::isAlliedTo(target->playerId, augur->playerId)) {
-			return false;
-		}
-		if (target->status & UnitStatus::Invincible) {
-			return false;
-		}
-		return true;
-
-	}
-
-	//Constructor
-	augurDeathProc(CUnit* augur) : augur(augur) {}
-};
-
-
 bool irradiateTarget(CUnit* unit) {
 
 /*	if (scbw::isZergEggNew(unit))
@@ -202,10 +173,24 @@ bool irradiateTarget(CUnit* unit) {
 void augurSacrifice(CUnit* target) {
 	if (scbw::get_generic_value(target, ValueId::AugurSafetyCheck) == 0) {
 		scbw::set_generic_value(target, ValueId::AugurSafetyCheck, 1);
-		augurDeathProc Orders = augurDeathProc(target);
 		scbw::UnitFinder unitFinder(target->getX() - 384, target->getY() - 384,
 			target->getX() + 384, target->getY() + 384);
-		CUnit* nearest = unitFinder.getNearestTarget(target, Orders);
+		CUnit* nearest = unitFinder.getNearestTarget(target, [&](CUnit* unit) {
+			//Don't attack friendly / allied units
+			if (unit->sprite == nullptr) {
+				return false;
+			}
+			if (unit->playerId == target->playerId) {
+				return false;
+			}
+			if (scbw::isAlliedTo(unit->playerId, target->playerId)) {
+				return false;
+			}
+			if (unit->status & UnitStatus::Invincible) {
+				return false;
+			}
+			return true;
+		});
 		if (nearest != nullptr) {
 			target->orderTarget.unit = nearest;
 			scbw::createBullet(WeaponId::AugurFinalHour, target, target->position.x, target->position.y, target->playerId,

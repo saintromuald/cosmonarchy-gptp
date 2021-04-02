@@ -1493,16 +1493,16 @@ u16 random() {
 						unit->getY() - range,
 						unit->getX() + range,
 						unit->getY() + range);
-					unitFinder.forEach([&](CUnit* foundUnit) {
-						if (foundUnit->id != UnitId::ZergMatraleth) {
+					unitFinder.forEach([&](CUnit* target) {
+						if (target->id != UnitId::ZergMatraleth) {
 							return;
 						}
-						if (!scbw::isAlliedTo(unit->playerId, foundUnit->playerId)) {
+						if (!scbw::isAlliedTo(unit->playerId, target->playerId)) {
 							return;
 						}
-						if (foundUnit->energy < 200 * 256) {
-							foundUnit->energy = std::min((u16)(foundUnit->energy + (u16)5 * (u16)256), foundUnit->getMaxEnergy());
-							foundUnit->sprite->createUnderlay(425);
+						if (target->energy < 200 * 256) {
+							target->energy = std::min((u16)(target->energy + (u16)5 * (u16)256), target->getMaxEnergy());
+							target->sprite->createUnderlay(425);
 						}
 					});
 				}

@@ -3,109 +3,39 @@
 #include <SCBW/UnitFinder.h>
 #include "hooks/weapons/wpnspellhit.h"
 #include "globals.h"
-class irradiateProc : public scbw::UnitFinderCallbackProcInterface {
 
-	private:
-		CUnit* irradiatedUnit;
+void irradiateProc(CUnit* unit, CUnit* target) {
+	//Damage organic units only
+	if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic))
+		return;
 
-	public:
-		irradiateProc(CUnit* irradiatedUnit)
-			: irradiatedUnit(irradiatedUnit) {}
+	//Don't damage buildings
+	if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
+		return;
 
-	void proc(CUnit* unit) {
-		//Damage organic units only
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic))
-			return;
-
-		//Don't damage buildings
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
-			return;
-
-		//Don't damage larvae, eggs, and lurker eggs
+	//Don't damage larvae, eggs, and lurker eggs
 /*		if(scbw::isZergEggNew(unit,true,true))
 			return;*/
 
-		//Irradiate splash damage does not affect burrowed units
-		if (unit != irradiatedUnit && unit->status & UnitStatus::Burrowed)
-			return;
+			//Irradiate splash damage does not affect burrowed units
+	if (unit != target && unit->status & UnitStatus::Burrowed)
+		return;
 
-		//Check if the unit is within distance, or is inside the same transport
-		if (irradiatedUnit->status & UnitStatus::InTransport
-			|| irradiatedUnit->getDistanceToTarget(unit) <= 32)
-		{
-//			const s32 damage = weapons_dat::DamageAmount[WeaponId::Irradiate] * 256 / weapons_dat::Cooldown[WeaponId::Irradiate];
-			s32 damage = (125*256)/24;
-			if(irradiatedUnit!=nullptr){
-				if(irradiatedUnit->irradiateTimer==0){
-					damage += (125*256)%24;
-					//scbw::printText("Add additional damage");
-				}
+	//Check if the unit is within distance, or is inside the same transport
+	if (target->status & UnitStatus::InTransport
+		|| target->getDistanceToTarget(unit) <= 32)
+	{
+		//			const s32 damage = weapons_dat::DamageAmount[WeaponId::Irradiate] * 256 / weapons_dat::Cooldown[WeaponId::Irradiate];
+		s32 damage = (125 * 256) / 24;
+		if (target != nullptr) {
+			if (target->irradiateTimer == 0) {
+				damage += (125 * 256) % 24;
+				//scbw::printText("Add additional damage");
 			}
-			unit->damageWith(damage, WeaponId::Irradiate, irradiatedUnit->irradiatedBy, irradiatedUnit->irradiatePlayerId);
 		}
-		}
-};
-
-
-class sublimeShepherdProc : public scbw::UnitFinderCallbackProcInterface {
-
-private:
-	CUnit* shepherd;
-
-public:
-	sublimeShepherdProc(CUnit* shepherd)
-		: shepherd(shepherd) {}
-
-	void proc(CUnit* unit) {
-		if (unit == shepherd) {
-			return;
-		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
-			return;
-		scbw::sendGPTP_aise_cmd(shepherd, unit, GptpId::SetSublimeShepherd, 1, 0, 0);
+		unit->damageWith(damage, WeaponId::Irradiate, target->irradiatedBy, target->irradiatePlayerId);
 	}
-};
-
-class resourceBoostProc : public scbw::UnitFinderCallbackProcInterface {
-private:
-	CUnit* booster;
-
-public:
-	resourceBoostProc(CUnit* booster)
-		: booster(booster) {}
-
-	void proc(CUnit* unit) {
-		if (booster == unit) {
-			return;
-		}
-		if (!(booster->status & UnitStatus::Completed)) {
-			return;
-		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::ResourceContainer) {
-			scbw::set_generic_timer(unit, ValueId::MineralSpecialRegenTimer, 24);
-		}
-	}
-};
-class othstolethProc : public scbw::UnitFinderCallbackProcInterface {
-private:
-	CUnit* booster;
-
-public:
-	othstolethProc(CUnit* booster)
-		: booster(booster) {}
-
-	void proc(CUnit* unit) {
-		if (booster == unit) {
-			return;
-		}
-		if (!(booster->status & UnitStatus::Completed)) {
-			return;
-		}
-		if (scbw::isAlliedTo(unit->playerId, booster->playerId) && scbw::isZergEggNew(unit,true,false)) {
-			scbw::set_generic_timer(unit, ValueId::EggBoostTimer, 24);
-		}
-	}
-};
+}
 
 namespace hooks {
 
@@ -113,11 +43,10 @@ namespace hooks {
 void doIrradiateDamage(CUnit* irradiatedUnit) {
 	//Default StarCraft behavior
 
-	irradiateProc irradiation=irradiateProc(irradiatedUnit);
 
 	//No splash if burrowed
 	if (irradiatedUnit->status & UnitStatus::Burrowed) {
-		irradiation.proc(irradiatedUnit);
+		irradiateProc(irradiatedUnit, irradiatedUnit);
 	}
 	//If inside a transport, damage all units loaded within
 	else if (irradiatedUnit->status & UnitStatus::InTransport) {
@@ -128,7 +57,7 @@ void doIrradiateDamage(CUnit* irradiatedUnit) {
 			for (int i = 0; i < units_dat::SpaceProvided[transport->id]; ++i) {
 				CUnit* loadedUnit = transport->getLoadedUnit(i);
 				if (loadedUnit)
-			irradiation.proc(loadedUnit);
+					irradiateProc(irradiatedUnit, loadedUnit);
 			}
 		}
 
@@ -136,10 +65,12 @@ void doIrradiateDamage(CUnit* irradiatedUnit) {
 	//Find and iterate nearby units
 	else {
 		scbw::UnitFinder unitFinder(irradiatedUnit->getX() - 160,
-									irradiatedUnit->getY() - 160,
-									irradiatedUnit->getX() + 160,
-									irradiatedUnit->getY() + 160);
-		unitFinder.forEach(irradiation);
+			irradiatedUnit->getY() - 160,
+			irradiatedUnit->getX() + 160,
+			irradiatedUnit->getY() + 160);
+		unitFinder.forEach([&](CUnit* target) {
+			irradiateProc(irradiatedUnit, target);
+		});
 	}
 }
 
@@ -225,31 +156,23 @@ bool func_dounitscollide(CUnit* first, CUnit* second){
 	return result;
 }
 
-
-class safetyUnburrow : public scbw::UnitFinderCallbackMatchInterface {
-
-	CUnit* burrower;
-
-public:
-	//Check if @p unit is suitable unburrow target.
-	bool match(CUnit* target) {
-		if (!(target->status & UnitStatus::GroundedBuilding)) {
-			return false;
-		}
-		if (target->id == UnitId::BasiliskCreeper) {
-			return false;
-		}
-		if (target == burrower) {
-			return false;
-		}
-		if (!func_dounitscollide(burrower, target)) {
-			return false;
-		}
-		return true;
+/*
+bool safetyUnburrowMatch(CUnit* burrower, CUnit* target) {
+	if (!(target->status & UnitStatus::GroundedBuilding)) {
+		return false;
 	}
-	//Constructor
-	safetyUnburrow(CUnit* burrower) : burrower(burrower) {}
-};
+	if (target->id == UnitId::BasiliskCreeper) {
+		return false;
+	}
+	if (target == burrower) {
+		return false;
+	}
+	if (!func_dounitscollide(burrower, target)) {
+		return false;
+	}
+	return true;
+}
+*/
 
 const u32 Func_Sub_4E97C0 = 0x004E97C0;
 void unburrow(CUnit* unit) {
@@ -261,6 +184,22 @@ void unburrow(CUnit* unit) {
 		POPAD
 	}
 
+}
+
+static bool safetyUnburrowCheck(CUnit* unit, CUnit* target) {
+	if (!(target->status & UnitStatus::GroundedBuilding)) {
+		return false;
+	}
+	if (target->id == UnitId::BasiliskCreeper) {
+		return false;
+	}
+	if (target == unit) {
+		return false;
+	}
+	if (!func_dounitscollide(unit, target)) {
+		return false;
+	}
+	return true;
 }
 
 ;
@@ -309,11 +248,14 @@ void updateStatusEffects(CUnit* unit) {
 	if (unit->status & UnitStatus::Burrowed) {
 		auto tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
 		if (tile.currentlyOccupied) {
-			safetyUnburrow Unburrow = safetyUnburrow(unit);
-			CUnit* nearest = scbw::UnitFinder::getNearestTarget(unit->getLeft()-32,
-				unit->getTop()-32,
-				unit->getRight()+32,
-				unit->getBottom()+32, unit, Unburrow);
+			CUnit* nearest = scbw::UnitFinder::getNearestTarget(
+				unit->getLeft()-32,
+				unit->getTop() - 32,
+				unit->getRight() + 32,
+				unit->getBottom() + 32,
+				unit, [&](CUnit* target) {
+					return safetyUnburrowCheck(unit, target);
+				});
 			bool canBurrowAfter = false;
 			//from Ai_Burrowable
 			//
@@ -327,12 +269,19 @@ void updateStatusEffects(CUnit* unit) {
 	// Azazel - Sublime Shepherd ability
 	if (unit->id == UnitId::TerranAzazel) {
 		if (scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd) == 1) {
-			sublimeShepherdProc Heal = sublimeShepherdProc(unit);
-			scbw::UnitFinder unitFinder(unit->getX() - 96,
+			scbw::UnitFinder(
+				unit->getX() - 96,
 				unit->getY() - 96,
 				unit->getX() + 96,
-				unit->getY() + 96);
-			unitFinder.forEach(Heal);
+				unit->getY() + 96
+			).forEach([&](CUnit* target) {
+				if (target == unit) {
+					return;
+				}
+				if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+					return;
+				scbw::sendGPTP_aise_cmd(unit, target, GptpId::SetSublimeShepherd, 1, 0, 0);
+			});
 		}
 	}
 
@@ -354,23 +303,43 @@ void updateStatusEffects(CUnit* unit) {
 			radius = 160;
 		}
 
-		resourceBoostProc Boost = resourceBoostProc(unit);
-		scbw::UnitFinder unitFinder(unit->getX() - radius,
+		scbw::UnitFinder(
+			unit->getX() - radius,
 			unit->getY() - radius,
 			unit->getX() + radius,
-			unit->getY() + radius);
-		unitFinder.forEach(Boost);
+			unit->getY() + radius
+		).forEach([&](CUnit* target) {
+			if (unit == target) {
+				return;
+			}
+			if (!(unit->status & UnitStatus::Completed)) {
+				return;
+			}
+			if (units_dat::BaseProperty[target->id] & UnitProperty::ResourceContainer) {
+				scbw::set_generic_timer(target, ValueId::MineralSpecialRegenTimer, 24);
+			}
+		});
 	}
 
 	// Othstoleth morph speed increase aura
 	if (unit->id == UnitId::ZergOthstoleth) {
 		u32 radius = 224;
-		othstolethProc eggBoost = othstolethProc(unit);
-		scbw::UnitFinder unitFinder(unit->getX() - radius,
+		scbw::UnitFinder(
+			unit->getX() - radius,
 			unit->getY() - radius,
 			unit->getX() + radius,
-			unit->getY() + radius);
-		unitFinder.forEach(eggBoost);
+			unit->getY() + radius
+		).forEach([&](CUnit* target) {
+			if (unit == target) {
+				return;
+			}
+			if (!(unit->status & UnitStatus::Completed)) {
+				return;
+			}
+			if (scbw::isAlliedTo(target->playerId, unit->playerId) && scbw::isZergEggNew(target, true, false)) {
+				scbw::set_generic_timer(target, ValueId::EggBoostTimer, 24);
+			}
+		});
 	}
 
 	// Ghost Somatic Implants behavior
@@ -716,11 +685,16 @@ void AI_Burrower(CUnit* a1) {
 					bool canBurrow = true;
 					auto tile = scbw::getActiveTileAt(a1->position.x, a1->position.y);
 					if (tile.currentlyOccupied) {
-						safetyUnburrow Unburrow = safetyUnburrow(a1);
-						CUnit* nearest = scbw::UnitFinder::getNearestTarget(a1->getLeft() - 32,
+						CUnit* nearest = scbw::UnitFinder::getNearestTarget(
+							a1->getLeft() - 32,
 							a1->getTop() - 32,
 							a1->getRight() + 32,
-							a1->getBottom() + 32, a1, Unburrow);
+							a1->getBottom() + 32,
+							a1,
+							[&](CUnit* target) {
+								return safetyUnburrowCheck(a1, target);
+							}
+						);
 						if (nearest != nullptr) {
 							canBurrow = false;
 						}

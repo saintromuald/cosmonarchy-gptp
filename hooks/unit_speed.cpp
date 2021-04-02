@@ -10,33 +10,6 @@
 #include "MathUtils.h"
 #include "Utils/captivating_claws.h"
 
-class vorvalingProc : public scbw::UnitFinderCallbackProcInterface
-{
-private:
-	CUnit* vorvaling;
-
-public:
-	vorvalingProc(CUnit* vorvaling)
-		: vorvaling(vorvaling) {}
-	void proc(CUnit* unit)
-	{
-		if (scbw::isAlliedTo(vorvaling->playerId, unit->playerId)
-		||	units_dat::BaseProperty[unit->id] & UnitProperty::Flyer) {
-			return;
-		}
-		u16 angle = scbw::getAngle(vorvaling->position.x, vorvaling->position.y,
-			unit->position.x, unit->position.y);
-		u16 unit_angle = vorvaling->velocityDirection1;
-		int arc = (double)60 / 1.40625;
-		//120 degrees
-		int delta = unit_angle - angle;
-		delta = abs((delta + 128) % 256 - 128);
-		if (delta <= arc) {
-			vorvaling->_padding_0x132 |= 0x2;
-		}
-	}
-};
-
 namespace hooks {
 
 	/// Calculates the unit's modified movement speed, factoring in upgrades and status effects.
@@ -102,7 +75,22 @@ namespace hooks {
 				unit->getY() - range,
 				unit->getX() + range,
 				unit->getY() + range);
-			unitFinder.forEach(vorvalingProc(unit));
+			unitFinder.forEach([&](CUnit* target) {
+				if (scbw::isAlliedTo(unit->playerId, target->playerId)
+					|| units_dat::BaseProperty[target->id] & UnitProperty::Flyer) {
+					return;
+				}
+				u16 angle = scbw::getAngle(unit->position.x, unit->position.y,
+					target->position.x, target->position.y);
+				u16 unit_angle = unit->velocityDirection1;
+				int arc = (double)60 / 1.40625;
+				//120 degrees
+				int delta = unit_angle - angle;
+				delta = abs((delta + 128) % 256 - 128);
+				if (delta <= arc) {
+					unit->_padding_0x132 |= 0x2;
+				}
+			});
 			if (unit->_padding_0x132 & 0x2) {
 				//speed += (speed / 2);
 				speed *= 2;

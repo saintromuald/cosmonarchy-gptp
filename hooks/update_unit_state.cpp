@@ -75,30 +75,7 @@ void removeoverlays2(u32 from, u32 to, CUnit* unit) {
 
 #include "SCBW\UnitFinder.h"
 #include "SCBW\api.h"
-class wyvernMatch : public scbw::UnitFinderCallbackMatchInterface {
-private:
-	CUnit* gunship;
-public:
-	wyvernMatch(CUnit* gunship)
-		: gunship(gunship) {}
 
-	bool match(CUnit* unit) {
-		if (unit == gunship) {
-			return false;
-		}
-		if (unit->status & UnitStatus::InAir) {
-			return false;
-		}
-		if (scbw::isAlliedTo(gunship->playerId, unit->playerId)) {
-			return false;
-		}
-		if (scbw::getDistanceFast(unit->sprite->position.x, unit->sprite->position.y,
-			gunship->sprite->position.x, gunship->sprite->position.y) > weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon]) {
-			return false;
-		}
-		return true;
-	}
-};
 namespace hooks {
 
 	/// This function regenerates energy for spellcasters and drains energy for
@@ -272,24 +249,8 @@ namespace hooks {
 		}
 
 	}
+
 	;
-
-	class matchPylon : public scbw::UnitFinderCallbackMatchInterface {
-		u8 _playerId;
-	public:
-		matchPylon(u8 playerId) {
-			playerId = _playerId;
-		}
-
-		bool match(CUnit* unit) {
-			if (unit->playerId == _playerId
-				&& unit->id == UnitId::pylon
-				&& unit->status & UnitStatus::Completed) {
-				return true;
-			}
-			return false;
-		}
-	};
 
 
 	/// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
@@ -342,7 +303,22 @@ namespace hooks {
 					auto a = scbw::UnitFinder::getNearestTarget(
 						unit->getX() - range, unit->getY() - range,
 						unit->getX() + range, unit->getY() + range,
-						unit, wyvernMatch(unit)
+						unit, [&](CUnit* target) {
+							if (target == unit) {
+								return false;
+							}
+							if (target->status & UnitStatus::InAir) {
+								return false;
+							}
+							if (scbw::isAlliedTo(unit->playerId, target->playerId)) {
+								return false;
+							}
+							if (scbw::getDistanceFast(target->sprite->position.x, target->sprite->position.y,
+								unit->sprite->position.x, unit->sprite->position.y) > weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon]) {
+								return false;
+							}
+							return true;
+						}
 					);
 					if (a != nullptr) {
 						auto direction = scbw::getAngle(x, y, a->getX(), a->getY());
