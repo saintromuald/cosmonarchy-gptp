@@ -161,79 +161,6 @@ void imgul(CSprite* sprite, u32 imageId, u32 unk1, u32 unk2, u32 unk3) {
 
 //
 #include "SCBW\UnitFinder.h"
-class ascendancyProc : public scbw::UnitFinderCallbackProcInterface {
-
-private:
-public:
-	void proc(CUnit* unit) {
-		if (unit->id != UnitId::ProtossCantavis) {
-			return;
-		}
-		if (
-			unit->status & UnitStatus::DoodadStatesThing ||
-			unit->lockdownTimer != 0 ||
-			unit->stasisTimer != 0 ||
-			unit->maelstromTimer != 0
-			) {
-			return;
-		}
-		bool show = true;
-		if (unit->energy == unit->getMaxEnergy()) {
-			show = false;
-		}
-		unit->addUnitEnergy(5 * 256);
-		if (show) {
-			imgul(unit->sprite, 425, 0, 0, 0);
-		}
-	}
-};
-
-class astralaegisProc : public scbw::UnitFinderCallbackProcInterface {
-
-private:
-public:
-	void proc(CUnit* unit) {
-		if (!units_dat::ShieldsEnabled[unit->id]) {
-			return;
-		}
-		u32 value = 50 * 256;
-		if (unit->shields + value >= (u32)units_dat::MaxShieldPoints[unit->id] * 256)
-			unit->shields = units_dat::MaxShieldPoints[unit->id] * 256;
-		else
-			unit->shields += value;
-	}
-};
-
-class lastordersProc2 : public scbw::UnitFinderCallbackMatchInterface {
-	CUnit* martyr;
-
-public:
-	//Check if @p unit is a suitable target for the @p spiderMine.
-	bool match(CUnit* target) {
-
-		//Don't attack friendly / allied units
-		if (target->playerId == martyr->playerId) {
-			return false;
-		}
-		if (scbw::isAlliedTo(target->playerId, martyr->playerId)) {
-			return false;
-		}
-		if (target->status & UnitStatus::Invincible) {
-			return false;
-		}
-		if (target->status & UnitStatus::InAir) {
-			return false;
-		}
-		if (scbw::getDistanceFast(martyr->position.x, martyr->position.y, target->position.x, target->position.y) > 288) {
-			return false;
-		}
-		return true;
-
-	}
-
-	//Constructor
-	lastordersProc2(CUnit* martyr) : martyr(martyr) {}
-};
 
 class augurDeathProc : public scbw::UnitFinderCallbackMatchInterface {
 	CUnit* augur;
@@ -271,83 +198,6 @@ bool irradiateTarget(CUnit* unit) {
 
 	return true;
 }
-
-class ecclesiastProc : public scbw::UnitFinderCallbackProcInterface {
-private:
-	int _stacks = 0;
-	int _playerID = 0;
-
-public:
-	ecclesiastProc(int stacks, int playerID) {
-		_stacks = stacks;
-		_playerID = playerID;
-	}
-
-	void proc(CUnit* unit) {
-		if (_playerID != unit->playerId && !scbw::isAlliedTo(_playerID, unit->playerId)) {
-			return; // Ally Check
-		}
-		if (units_dat::ShieldsEnabled[unit->id] && unit->shields < units_dat::MaxShieldPoints[unit->id] * 256) { // Shield Check for default behavior
-			imgul(unit->sprite, 425, 0, 0, 0);
-		}
-		else { // Return if both checks failed
-			return;
-		}
-		int healAmount = (5 * (_stacks + 1)) * 256;
-		if (units_dat::ShieldsEnabled[unit->id]) { // Shield Heal
-			unit->shields = std::min(unit->shields + healAmount, units_dat::MaxShieldPoints[unit->id] * 256);
-		}
-	}
-};
-
-class nathrokorProc : public scbw::UnitFinderCallbackProcInterface {
-private:
-	int _playerId = 0;
-
-public:
-	nathrokorProc(int playerId) {
-		_playerId = playerId;
-	}
-
-	void proc(CUnit* unit) {
-		if (unit == nullptr
-		|| (_playerId != unit->playerId && !scbw::isAlliedTo(_playerId, unit->playerId))
-		|| !(units_dat::BaseProperty[unit->id] & UnitProperty::Organic)) {
-			return;
-		}
-		scbw::set_generic_timer(unit, ValueId::NathrokorTimer, (4 * 24) + 1);
-		unit->updateSpeed();
-	}
-};
-
-class bloodTitheProc : public scbw::UnitFinderCallbackProcInterface {
-	CUnit* attacker;
-	CUnit* target;
-
-private:
-public:
-	void proc(CUnit* unit) {
-		if (!(scbw::isAlliedTo(attacker->playerId, unit->playerId))	// Return if recipient is not allied, or if recipient is the target
-		||	unit == target) {
-			return;
-		}
-		if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic)	// Return if recipient or target are not organic
-		||	!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic)) {
-			return;
-		}
-		u32 value = 0;
-		if (units_dat::ShieldsEnabled[target->id]) {
-			value = (units_dat::MaxHitPoints[target->id] + (units_dat::MaxShieldPoints[target->id] * 256)) * 0.10;
-		}
-		else {
-			value = (units_dat::MaxHitPoints[target->id] * 0.10);
-		}
-		unit->heal(value);
-	}
-
-	//Constructor
-	bloodTitheProc(CUnit* attacker, CUnit* target) : attacker(attacker), target(target) {}
-};
 
 void augurSacrifice(CUnit* target) {
 	if (scbw::get_generic_value(target, ValueId::AugurSafetyCheck) == 0) {
@@ -844,7 +694,24 @@ namespace hooks {
 				//if (scbw::getDistanceFast(data.attacker->position.x, data.attacker->position.y, data.target->position.x, data.target->position.y) >= 160 ) {
 				u32 range = 3 * 32;
 				scbw::UnitFinder unitFinder(data.target->getX() - range, data.target->getY() - range, data.target->getX() + range, data.target->getY() + range);
-				unitFinder.forEach(bloodTitheProc(data.attacker, data.target));
+				unitFinder.forEach([&data](CUnit* unit) {
+					if (!(scbw::isAlliedTo(data.attacker->playerId, unit->playerId))	// Return if recipient is not allied, or if recipient is the target
+						|| unit == data.target) {
+						return;
+					}
+					if (!(units_dat::BaseProperty[data.target->id] & UnitProperty::Organic)	// Return if recipient or target are not organic
+						|| !(units_dat::BaseProperty[unit->id] & UnitProperty::Organic)) {
+						return;
+					}
+					u32 value = 0;
+					if (units_dat::ShieldsEnabled[data.target->id]) {
+						value = (units_dat::MaxHitPoints[data.target->id] + (units_dat::MaxShieldPoints[data.target->id] * 256)) * 0.10;
+					}
+					else {
+						value = (units_dat::MaxHitPoints[data.target->id] * 0.10);
+					}
+					unit->heal(value);
+				});
 				//}
 				break;
 			}
@@ -917,13 +784,30 @@ namespace hooks {
 			// Cantavis - Ascendancy
 			if (data.weaponId == WeaponId::PsiStorm || Halluc) {
 				//psi mastery effect
-				scbw::UnitFinder unitFinder(
+				scbw::UnitFinder(
 					data.target->getX() - 288,
 					data.target->getY() - 288,
 					data.target->getX() + 288,
 					data.target->getY() + 288
-				);
-				unitFinder.forEach(ascendancyProc());
+				).forEach([&](CUnit * unit){
+					if (unit->id != UnitId::ProtossCantavis) {
+						return;
+					}
+					if (unit->status & UnitStatus::DoodadStatesThing ||
+						unit->lockdownTimer != 0 ||
+						unit->stasisTimer != 0 ||
+						unit->maelstromTimer != 0) {
+						return;
+					}
+					bool show = true;
+					if (unit->energy == unit->getMaxEnergy()) {
+						show = false;
+					}
+					unit->addUnitEnergy(5 * 256);
+					if (show) {
+						imgul(unit->sprite, 425, 0, 0, 0);
+					}
+				});
 			}
 		}
 
@@ -949,33 +833,73 @@ namespace hooks {
 				data.target->getY() - range,
 				data.target->getX() + range,
 				data.target->getY() + range
-			).forEach(ecclesiastProc(stacks, player));
+			).forEach([&](CUnit* unit) {
+				if (player != unit->playerId && !scbw::isAlliedTo(player, unit->playerId)) {
+					return; // Ally Check
+				}
+				if (units_dat::ShieldsEnabled[unit->id] && unit->shields < units_dat::MaxShieldPoints[unit->id] * 256) { // Shield Check for default behavior
+					imgul(unit->sprite, 425, 0, 0, 0);
+				}
+				else { // Return if both checks failed
+					return;
+				}
+				int healAmount = (5 * (stacks + 1)) * 256;
+				if (units_dat::ShieldsEnabled[unit->id]) { // Shield Heal
+					unit->shields = std::min(unit->shields + healAmount, units_dat::MaxShieldPoints[unit->id] * 256);
+				}
+			});
 		}
 
 		switch (data.target->id) { // TARGET SWITCH! MUST BE UNIT
 		case UnitId::ProtossArchon: {
 			// Archon - Astral Aegis
-			astralaegisProc Aegis = astralaegisProc();
 			scbw::UnitFinder(
 				data.target->getX() - 96,
 				data.target->getY() - 96,
 				data.target->getX() + 96,
 				data.target->getY() + 96
-			).forEach(Aegis);
+			).forEach([&](CUnit* unit) {
+				if (!units_dat::ShieldsEnabled[unit->id]) {
+					return;
+				}
+				u32 value = 50 * 256;
+				if (unit->shields + value >= (u32)units_dat::MaxShieldPoints[unit->id] * 256)
+					unit->shields = units_dat::MaxShieldPoints[unit->id] * 256;
+				else
+					unit->shields += value;
+			});
 			break;
 		}
 		case UnitId::ProtossAurora: {
 			// Last Orders - Aurora behavior
 			if (scbw::get_generic_value(data.target, ValueId::LastOrdersInit) == 0) {
 				scbw::set_generic_value(data.target, ValueId::LastOrdersInit, 1);
-				lastordersProc2 Orders = lastordersProc2(data.target);
-				scbw::UnitFinder unitFinder(
+				//Check if @p unit is a suitable target for the @p spiderMine.
+				CUnit* nearest = scbw::UnitFinder(
 					data.target->getX() - 288,
 					data.target->getY() - 288,
 					data.target->getX() + 288,
 					data.target->getY() + 288
-				);
-				CUnit* nearest = unitFinder.getNearestTarget(data.target, Orders);
+				).getNearestTarget(data.target, [&](CUnit* unit) {
+					//Don't attack friendly / allied units
+					if (unit->playerId == data.target->playerId) {
+						return false;
+					}
+					if (scbw::isAlliedTo(data.target->playerId, data.target->playerId)) {
+						return false;
+					}
+					if (unit->status & UnitStatus::Invincible) {
+						return false;
+					}
+					if (unit->status & UnitStatus::InAir) {
+						return false;
+					}
+					// Is this needed??? seems like it's already guranteed
+					if (scbw::getDistanceFast(data.target->position.x, data.target->position.y, unit->position.x, unit->position.y) > 288) { 
+						return false;
+					}
+					return true;
+				});
 				if (nearest != nullptr) {
 					data.finalDamage = 0;
 					data.target->setHp(units_dat::MaxHitPoints[data.target->id] / 2);
@@ -1003,7 +927,20 @@ namespace hooks {
 				// Adrenal Frenzy - Nathrokor behavior
 				int player = data.attacker->playerId;
 				const int range = 48;
-				scbw::UnitFinder(data.attacker->getX() - range, data.attacker->getY() - range, data.attacker->getX() + range, data.attacker->getY() + range).forEach(nathrokorProc(player));
+				scbw::UnitFinder(
+					data.attacker->getX() - range,
+					data.attacker->getY() - range,
+					data.attacker->getX() + range,
+					data.attacker->getY() + range
+				).forEach([&](CUnit* unit) {
+					if (unit == nullptr
+						|| (player != unit->playerId && !scbw::isAlliedTo(player, unit->playerId))
+						|| !(units_dat::BaseProperty[unit->id] & UnitProperty::Organic)) {
+						return;
+					}
+					scbw::set_generic_timer(unit, ValueId::NathrokorTimer, (4 * 24) + 1);
+					unit->updateSpeed();
+				});
 				break;
 			}
 			case WeaponId::ToxicSpores:

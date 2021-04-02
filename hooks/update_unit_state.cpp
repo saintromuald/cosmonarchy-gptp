@@ -551,7 +551,8 @@ namespace hooks {
 			//Self-destruct timer
 			if (unit->id == UnitId::ProtossAugur && unit->shields == 0) {
 				//unit->remove();
-				augurSacrifice(unit);
+				// Augur - Death behavior
+				augurSacrifice(unit); // why is this called twice? (also in weaponDamage)
 				//add final hour code later
 				bStopHere = true;
 			}

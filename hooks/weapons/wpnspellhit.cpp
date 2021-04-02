@@ -7,28 +7,6 @@
 #include <algorithm>
 //Helper functions definitions
 
-
-class customPlagueProc : public scbw::UnitFinderCallbackProcInterface {
-private:
-	CUnit* defiler;
-
-public:
-	customPlagueProc(CUnit* defiler)
-		: defiler(defiler) {}
-	void proc(CUnit* unit)
-	{
-		if(unit->plagueTimer>0){
-			unit->newFlags1 |= NewFlags1::Metastasis;
-		}
-		if (defiler != nullptr
-			&& scbw::get_generic_timer(defiler, ValueId::EnsnaringBroodTimer) > 0
-			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building)) {
-			scbw::applyEnsnare(unit);
-		}
-	}
-};
-
-
 namespace {
 
 	void fixTargetLocation(Point16* coords, u32 unitId);										//0x00401FA0
@@ -747,7 +725,16 @@ namespace hooks {
 				y - range,
 				x + range,
 				y + range);
-			unitFinder.forEach(UpgPlague);
+			unitFinder.forEach([&](CUnit* unit) {
+				if (unit->plagueTimer > 0) {
+					unit->newFlags1 |= NewFlags1::Metastasis;
+				}
+				if (attacker != nullptr
+					&& scbw::get_generic_timer(attacker, ValueId::EnsnaringBroodTimer) > 0
+					&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building)) {
+					scbw::applyEnsnare(unit);
+				}
+			});
 		}
 
 	} //void PlagueHit(CUnit* attacker, int x, int y, CBullet* bullet)

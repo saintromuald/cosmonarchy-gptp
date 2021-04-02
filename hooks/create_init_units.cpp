@@ -96,36 +96,6 @@ void CreateInitialMeleeBuildings(u8 raceId, u32 playerId) {
 
 ;
 
-class MineralFieldAveragePosProc : public scbw::UnitFinderCallbackProcInterface
-{
-private:
-	const u16 refX;
-	const u16 refY;
-	u8 cliffLevel;
-	int& sumX;
-	int& sumY;
-	u32& count;
-
-public:
-	MineralFieldAveragePosProc(const u16& refX, const u16& refY, int& sumX, int& sumY, u32& count) :
-		refX(refX), refY(refY), sumX(sumX), sumY(sumY), count(count)
-	{
-		cliffLevel = scbw::getActiveTileAt(refX, refY).groundHeight;
-	}
-
-	void proc(CUnit* unit) override {
-		if ((unit->id == UnitId::ResourceMineralField
-		  || unit->id == UnitId::ResourceMineralFieldType2
-		  || unit->id == UnitId::ResourceMineralFieldType3)
-		  && scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight == cliffLevel) {
-			Point16 pos = unit->position;
-			sumX += pos.x - refX;
-			sumY += pos.y - refY;
-			count += 1;
-		}
-	}
-};
-
 double Sign(double x) {
 	return x < 0.0 ? -1.0 : x > 0.0 ? 1.0 : 0.0;
 }
@@ -138,8 +108,24 @@ Point16 FindWorkerSpawnPositions(int townhallId, const u16& startX, const u16& s
 	u32 count = 0;
 
 	scbw::UnitFinder unitFinder;
-	unitFinder.search(startX - 10 * 32, startY - 10 * 32, startX + 10 * 32, startY + 10 * 32);
-	unitFinder.forEach(MineralFieldAveragePosProc(startX, startY, sumX, sumY, count));
+	unitFinder.search(
+		startX - 10 * 32,
+		startY - 10 * 32,
+		startX + 10 * 32,
+		startY + 10 * 32
+	);
+	u8 cliffLevel = scbw::getActiveTileAt(startX, startY).groundHeight;
+	unitFinder.forEach([&](CUnit* unit) {
+		if ((unit->id == UnitId::ResourceMineralField
+			|| unit->id == UnitId::ResourceMineralFieldType2
+			|| unit->id == UnitId::ResourceMineralFieldType3)
+			&& scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight == cliffLevel) {
+			Point16 pos = unit->position;
+			sumX += pos.x - startX;
+			sumY += pos.y - startY;
+			count += 1;
+		}
+	});
 
 	if (count == 0) { // default to bottom horizontal
 		count = 1;

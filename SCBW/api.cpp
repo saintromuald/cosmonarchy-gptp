@@ -9,34 +9,6 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-class DarkSwarmFinderProc : public scbw::UnitFinderCallbackMatchInterface {
-	public:
-		bool match(CUnit* unit) {
-			return unit->id == UnitId::Spell_DarkSwarm;
-		}
-};
-
-class gameteMeiosisProc : public scbw::UnitFinderCallbackProcInterface {
-private:
-	CUnit* broodling;
-
-public:
-	gameteMeiosisProc(CUnit* broodling)
-		: broodling(broodling) {}
-	void proc(CUnit* unit) {
-		if (unit->id != UnitId::ZergMatraleth) {
-			return;
-		}
-		if (!scbw::isAlliedTo(broodling->playerId, unit->playerId)) {
-			return;
-		}
-		if (unit->energy < 200 * 256) {
-			unit->energy = std::min((u16)(unit->energy + (u16)5 * (u16)256), unit->getMaxEnergy());
-			unit->sprite->createUnderlay(425);
-		}
-	}
-};
-
 namespace scbw {
 
 	const u32 Func_ApplySpores = 0x004F4480;
@@ -416,18 +388,22 @@ bool isUnderDarkSwarm(CUnit* unit) {
 	return getDarkSwarm(unit) != nullptr;
 }
 
+bool IsDarkswarm(CUnit* unit) {
+	return unit->id == UnitId::Spell_DarkSwarm;
+}
+
 CUnit* getDarkSwarm(CUnit* unit) {
 	static UnitFinder darkSwarmFinder;
 	darkSwarmFinder.search(unit->getLeft(), unit->getTop(), unit->getRight(), unit->getBottom());
 
-	CUnit* darkSwarm = darkSwarmFinder.getFirst(DarkSwarmFinderProc());
+	CUnit* darkSwarm = darkSwarmFinder.getFirst(IsDarkswarm);
 	return darkSwarm;
 }
 
 CUnit* getDarkSwarm(u16 x, u16 y, u16 radius) {
 	UnitFinder darkSwarmFinder;
 	darkSwarmFinder.search(x-radius,y-radius,x+radius,y+radius);
-	CUnit* darkSwarm = darkSwarmFinder.getFirst(DarkSwarmFinderProc());
+	CUnit* darkSwarm = darkSwarmFinder.getFirst(IsDarkswarm);
 	return darkSwarm;
 
 }
@@ -1512,11 +1488,23 @@ u16 random() {
 						unit->removeTimer = removeTimer;
 					}
 					u32 range = 6 * 32;
-					scbw::UnitFinder unitFinder(unit->getX() - range,
+					scbw::UnitFinder unitFinder(
+						unit->getX() - range,
 						unit->getY() - range,
 						unit->getX() + range,
 						unit->getY() + range);
-					unitFinder.forEach(gameteMeiosisProc(unit));
+					unitFinder.forEach([&](CUnit* foundUnit) {
+						if (foundUnit->id != UnitId::ZergMatraleth) {
+							return;
+						}
+						if (!scbw::isAlliedTo(unit->playerId, foundUnit->playerId)) {
+							return;
+						}
+						if (foundUnit->energy < 200 * 256) {
+							foundUnit->energy = std::min((u16)(foundUnit->energy + (u16)5 * (u16)256), foundUnit->getMaxEnergy());
+							foundUnit->sprite->createUnderlay(425);
+						}
+					});
 				}
 				else if (unitId == UnitId::ProtossSimulacrum) {
 					if (creator != nullptr) {

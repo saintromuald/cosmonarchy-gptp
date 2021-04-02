@@ -28,7 +28,7 @@ namespace {
 		}
 	}
 
-	class empyreanInterceptionMatch : public scbw::UnitFinderCallbackMatchInterface {
+	/*class empyreanInterceptionMatch : public scbw::UnitFinderCallbackMatchInterface {
 	private:
 		CBullet* missile;
 	public:
@@ -36,7 +36,7 @@ namespace {
 			: missile(missile) {}
 
 		bool match(CUnit* unit) {
-			/*if (unit == savant) {
+			if (unit == savant) {
 				return false;
 			}
 			if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster)) {
@@ -47,10 +47,10 @@ namespace {
 			}
 			if (unit->energy == unit->getMaxEnergy()) {
 				return false;
-			}*/
+			}
 			return false;
 		}
-	};
+	};*/
 
 	void __declspec(naked) progressBulletFlight_Wrapper() {
 		static CBullet* bullet;

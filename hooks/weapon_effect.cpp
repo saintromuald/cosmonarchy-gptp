@@ -500,21 +500,6 @@ namespace hooks {
 		weaponBulletShot(bullet->attackTarget.unit, bullet, 1);
 	}
 
-	class parasiteProc : public scbw::UnitFinderCallbackProcInterface {
-	private:
-		u8 playerID;
-		CUnit* queen;
-	public:
-		parasiteProc(u8 playerID, CUnit* queen) {
-			this->playerID = playerID;
-			this->queen = queen;
-		}
-
-		void proc(CUnit* unit) {
-			scbw::applyParasite(unit, playerID, queen);
-		}
-	};
-
   void parasite(CBullet* bullet, u32 weaponId) {
 	  if (bullet->sourceUnit == nullptr) return;
       constexpr int radius = 96;
@@ -522,7 +507,14 @@ namespace hooks {
       int right = bullet->position.x + radius / 2;
       int top = bullet->position.y - radius / 2;
       int bottom = bullet->position.y + radius / 2;
-      scbw::UnitFinder(left, top, right, bottom).forEach(parasiteProc(bullet->sourceUnit->playerId, bullet->sourceUnit));
+	  scbw::UnitFinder(
+		  left,
+		  top,
+		  right,
+		  bottom
+	  ).forEach([&](CUnit* unit) {
+		  scbw::applyParasite(unit, bullet->sourceUnit->playerId, bullet->sourceUnit);
+	  });
   }
   
   void broodlings(CBullet* bullet, u32 weaponId) {
