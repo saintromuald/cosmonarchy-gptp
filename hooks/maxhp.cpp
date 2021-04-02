@@ -584,7 +584,7 @@ namespace hooks {
 						|| v2->irradiateTimer
 						|| v2->lockdownTimer
 						|| v2->maelstromTimer
-						|| v2->acidSporeCount))	{
+						|| v2->corrosiveSporeCount))	{
 					result = 1;
 				}
 			}

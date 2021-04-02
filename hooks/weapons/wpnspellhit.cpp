@@ -462,7 +462,7 @@ namespace hooks {
 		if (bullet->attackTarget.unit != nullptr) {
 			scbw::ApplySpores(bullet->attackTarget.unit);
 			
-			if (bullet->attackTarget.unit->acidSporeCount >= 6
+			if (bullet->attackTarget.unit->corrosiveSporeCount >= 6
 				&& scbw::get_generic_timer(bullet->attackTarget.unit, ValueId::CorrosiveSporeDelay) == 0) {
 				scbw::set_generic_timer(bullet->attackTarget.unit, ValueId::CorrosiveSporeDelay, 25);
 				

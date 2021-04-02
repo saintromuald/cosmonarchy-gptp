@@ -573,7 +573,7 @@ struct CUnitLayout {
 /*0x124*/ u8        maelstromTimer;
 /*0x125*/ u8        unusedTimer;        // Used on resources for regeneration delay, and for overcharge
 					//custom slow timer
-/*0x126*/ u8        acidSporeCount;
+/*0x126*/ u8        corrosiveSporeCount;
 /*0x127*/ u8        acidSporeTime[9];
 /*0x130*/ u16       offsetIndex3by3;    // Cycles between 0-12 for each bullet fired by this unit (if it uses a "Attack 3x3 area" weapon)
 /*0x132*/ u8       _padding_0x132;	//HYDRA - different flags

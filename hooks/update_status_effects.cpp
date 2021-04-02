@@ -626,7 +626,7 @@ void updateStatusEffects(CUnit* unit) {
 		unit->isUnderStorm--;
 
 	//hardcoding effect of unreferenced_sub_4F42C0 @ 0x004F42C0
-	u8 previousAcidSporeCount = unit->acidSporeCount;
+	u8 previousAcidSporeCount = unit->corrosiveSporeCount;
 	for (int i = 0; i <= 8; ++i) {
 
 		if (unit->acidSporeTime[i] != 0) {
@@ -634,15 +634,15 @@ void updateStatusEffects(CUnit* unit) {
 			unit->acidSporeTime[i]--;
 
 			if (unit->acidSporeTime[i] == 0)
-				unit->acidSporeCount--;
+				unit->corrosiveSporeCount--;
 
 		}
 
 	}
-	if (unit->acidSporeCount != 0) {
+	if (unit->corrosiveSporeCount != 0) {
 
 		//Calculate the appropriate overlay ID
-		u32 acidOverlayId = std::min(3, unit->acidSporeCount / 2)
+		u32 acidOverlayId = std::min(3, unit->corrosiveSporeCount / 2)
 							+ 4 * scbw::getUnitOverlayAdjustment(unit)
 							+ ImageId::AcidSpores_1_Overlay_Small;
 

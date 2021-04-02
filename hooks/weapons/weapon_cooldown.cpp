@@ -15,14 +15,14 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 	u32 cooldown = weapons_dat::Cooldown[weaponId];
 
 	// Devourer - Corrosive Spores: lower attack speed of victim
-	if (unit->acidSporeCount != 0) {
+	if (unit->corrosiveSporeCount != 0) {
 
 		u32 increaseAmt = cooldown / 8;
 
 		if (increaseAmt < 3) 
 			increaseAmt = 3;
 
-		cooldown += increaseAmt * unit->acidSporeCount;
+		cooldown += increaseAmt * unit->corrosiveSporeCount;
 	}
 	
 	// Set modifier based on Stim (increase), Ensnare (decrease), and attackspeed upgrades (increase)

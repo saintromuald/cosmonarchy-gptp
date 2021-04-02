@@ -425,6 +425,7 @@ namespace hooks {
 
 		// Vanilla Timer + Value
 		addStatus(statuses, "Defensive Matrix", unit->defensiveMatrixHp / 256, unit->defensiveMatrixTimer);
+		addStatus(statuses, "Corrosive Spores", unit->corrosiveSporeCount, unit->acidSporeTime[unit->corrosiveSporeCount-1]);
 
 		// Vanilla Timers
 		addStatus(statuses, "Stimpack", -1, unit->stimTimer);
@@ -432,7 +433,6 @@ namespace hooks {
 		addStatus(statuses, "Ensnared", -1, unit->ensnareTimer);
 		addStatus(statuses, "Lobotomized", -1, unit->lockdownTimer);
 		addStatus(statuses, "Maelstromed", -1, unit->maelstromTimer);
-		addStatus(statuses, "Corrosive Spores", unit->acidSporeCount);
 		addStatus(statuses, "Plagued", -1, unit->plagueTimer);
 		addStatus(statuses, "Stasis", -1, unit->stasisTimer);
 		addStatus(statuses, "Timed Life", -1, unit->removeTimer, TimerType::RemoveTimer);

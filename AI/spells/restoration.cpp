@@ -31,7 +31,7 @@ namespace AI {
 					|| target->irradiateTimer
 					|| target->lockdownTimer
 					|| target->maelstromTimer
-					|| target->acidSporeCount)
+					|| target->corrosiveSporeCount)
 					return true;
 
 				return false;
