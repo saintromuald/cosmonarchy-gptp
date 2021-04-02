@@ -612,7 +612,7 @@ namespace scbw {
 		if (unit->maelstromTimer != 0)
 			unit->maelstromTimer = 12;
 
-		// Reset Devourer Acid Spores
+		// Reset Devourer Corrosive Spores
 		if (unit->corrosiveSporeCount != 0)
 			for (int i = 0; i < unit->corrosiveSporeCount; i++)
 				unit->acidSporeTime[i] = 30;
@@ -697,9 +697,13 @@ namespace scbw {
 		if (parent->maelstromTimer != 0)
 			child->maelstromTimer = parent->maelstromTimer;
 
-		// Inherit Devourer Acid Spores
-		if (parent->corrosiveSporeCount != 0)
+		// Inherit Devourer Corrosive Spores
+		if (parent->corrosiveSporeCount != 0) {
 			child->corrosiveSporeCount = parent->corrosiveSporeCount;
+			for (int i = 0; i < parent->corrosiveSporeCount; i++)
+				child->acidSporeTime[i] = parent->acidSporeTime[i];
+		}
+
 
 		// Inherit Irradiate
 		if (parent->irradiateTimer != 0)
@@ -894,7 +898,7 @@ namespace scbw {
 		// Remove Maelstrom
 		unit->removeMaelstrom();
 
-		// Remove Devourer Acid Spores
+		// Remove Devourer Corrosive Spores
 		unit->removeAcidSpores();
 
 		// Remove Deconstruction

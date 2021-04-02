@@ -832,7 +832,6 @@ namespace hooks {
 
 		// Devourer - Critical Mass
 		if (scbw::get_generic_timer(unit, ValueId::CorrosiveSporeDelay) == 1) {
-			int count = unit->corrosiveSporeCount;
 			unit->corrosiveSporeCount -= 2;
 			int range = 160;
 			scbw::UnitFinder(
@@ -850,15 +849,10 @@ namespace hooks {
 				if (target->status & UnitStatus::Invincible) {
 					return;
 				}
-				auto count = std::min(4, (int)unit->corrosiveSporeCount);
-				for (int i = 0; i < count; i++) {
-					if (target->corrosiveSporeCount < 9) {
-						scbw::ApplySpores(target);
-					}
+				for (int i = 0; i < (int)unit->corrosiveSporeCount; i++) {
+					scbw::ApplySpores(target);
 				}
 			});
-			unit->corrosiveSporeCount = count;
-			unit->acidSporeTime[unit->corrosiveSporeCount-1] = 30;
 			unit->removeAcidSpores();
 			CThingy* thingy = scbw::createThingy(SpriteId::Corrosive_Acid_Hit, unit->getX(), unit->getY(), 11);
 			if (thingy != nullptr) {
