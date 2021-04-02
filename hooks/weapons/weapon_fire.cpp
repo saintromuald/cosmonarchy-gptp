@@ -193,10 +193,12 @@ namespace hooks {
 						}
 					});
 					range = 4 * 32;
-					scbw::UnitFinder unitFinder_distribute(unit->getX() - range,
+					scbw::UnitFinder unitFinder_distribute(
+						unit->getX() - range,
 						unit->getY() - range,
 						unit->getX() + range,
-						unit->getY() + range);
+						unit->getY() + range
+					);
 					u32 matchCount = unitFinder_distribute.getMatchUnitCount([&](CUnit* target) {
 						return powerSiphonDistributeMatch(unit, target);
 					});
@@ -251,14 +253,17 @@ namespace hooks {
 						auto range = hooks::getMaxWeaponRangeHook(unit, WeaponId::MinotaurAsterionLaserBattery) + 32;
 						auto n = unitRangeCount(unit, CFlags::Enemy | CFlags::FrontalArc, {});
 						auto newTarget = scbw::UnitFinder::getNearestTarget(
-							unit->getX() - range, unit->getY() - range,
-							unit->getX() + range, unit->getY() + range,
-							unit, [&](CUnit* unit) {
-								if (unit == unit
-									|| monoceros.find(unit) != monoceros.end()
-									|| scbw::isAlliedTo(unit->playerId, unit->playerId)
-									|| !unit->canAttackTarget(unit)
-									|| monoceros.count(unit) >= 5) {
+							unit->getX() - range,
+							unit->getY() - range,
+							unit->getX() + range,
+							unit->getY() + range,
+							unit,
+							[&](CUnit* target) {
+								if (target == unit
+									|| monoceros.find(target) != monoceros.end()
+									|| scbw::isAlliedTo(target->playerId, unit->playerId)
+									|| !unit->canAttackTarget(target)
+									|| monoceros.count(target) >= 5) {
 									return false;
 								}
 								return true;
@@ -443,9 +448,12 @@ namespace hooks {
 			if (bullet->attackTarget.unit == nullptr) {
 				u32 range = 8*32;//seek range
 				auto seekTarget = scbw::UnitFinder::getNearestTarget(
-					bullet->position.x - range, bullet->position.y - range,
-					bullet->position.x + range, bullet->position.y + range,
-					bullet, [&](CUnit* unit) {
+					bullet->position.x - range,
+					bullet->position.y - range,
+					bullet->position.x + range,
+					bullet->position.y + range,
+					bullet,
+					[&](CUnit* unit) {
 						return alkajSporeMatch(bullet, unit);
 					}
 				);

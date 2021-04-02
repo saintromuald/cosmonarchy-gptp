@@ -503,15 +503,11 @@ namespace hooks {
   void parasite(CBullet* bullet, u32 weaponId) {
 	  if (bullet->sourceUnit == nullptr) return;
       constexpr int radius = 96;
-      int left = bullet->position.x - radius / 2;
-      int right = bullet->position.x + radius / 2;
-      int top = bullet->position.y - radius / 2;
-      int bottom = bullet->position.y + radius / 2;
 	  scbw::UnitFinder(
-		  left,
-		  top,
-		  right,
-		  bottom
+		  bullet->position.x - radius / 2,
+		  bullet->position.x + radius / 2,
+		  bullet->position.x + radius / 2,
+	      bullet->position.y + radius / 2
 	  ).forEach([&](CUnit* unit) {
 		  scbw::applyParasite(unit, bullet->sourceUnit->playerId, bullet->sourceUnit);
 	  });

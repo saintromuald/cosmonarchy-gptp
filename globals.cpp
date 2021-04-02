@@ -910,7 +910,7 @@ namespace scbw {
 	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen) {
 		if (!scbw::canBeParasited(unit)) return;
 		int playerFlag = 1 << playerID;
-		if (unit->parasiteFlags != playerFlag) { // <- Prevent overwriting timer for already parasited units by same player
+		if (unit->parasiteFlags != playerFlag) { // <- Prevent restarting arm timer
 			scbw::set_generic_timer(unit, ValueId::ParasiteArmTimer, DefaultArmParasiteTimer);
 			unit->sprite->createOverlay(1031, 0, 0, 0);
 		}

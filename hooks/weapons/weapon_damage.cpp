@@ -304,7 +304,6 @@ namespace hooks {
 		}
 
 		// Reduce Plasma Shields...but not just yet
-		s32 shieldReduceAmount = 0;
 		if (units_dat::ShieldsEnabled[data.target->id] && data.target->shields >= 256) {
 			if (data.damageType != DamageType::IgnoreArmor) {
 				s32 plasmaShieldUpg = scbw::getUpgradeLevel(data.target->playerId, UpgradeId::ProtossPlasmaShields) * 256;
@@ -315,8 +314,8 @@ namespace hooks {
 					data.finalDamage = 128;
 				}
 			}
-			shieldReduceAmount = std::min(data.finalDamage, data.target->shields);
-			data.finalDamage -= shieldReduceAmount;
+			data.shieldReduceAmount = std::min(data.finalDamage, data.target->shields);
+			data.finalDamage -= data.shieldReduceAmount;
 		}
 
 		// Apply armor
@@ -354,7 +353,7 @@ namespace hooks {
 		}
 
 		data.finalDamage = (data.finalDamage * damage_factor) / 256;
-		if (shieldReduceAmount == 0 && data.finalDamage < 128) {
+		if (data.shieldReduceAmount == 0 && data.finalDamage < 128) {
 			data.finalDamage = 128;
 		}
 
@@ -373,12 +372,12 @@ namespace hooks {
 		}
 
 		// Reduce shields
-		if (shieldReduceAmount != 0 && canDamage) {
+		if (data.shieldReduceAmount != 0 && canDamage) {
 			if (scbw::get_aise_value(data.target, nullptr, AiseId::HasClarionLink, 0, 0)) {
-				scbw::sendGPTP_aise_cmd(data.target, nullptr, GptpId::SpreadClarionDamage, shieldReduceAmount, data.damageType, data.direction);
+				scbw::sendGPTP_aise_cmd(data.target, nullptr, GptpId::SpreadClarionDamage, data.shieldReduceAmount, data.damageType, data.direction);
 			}
 			else {
-				data.target->shields -= shieldReduceAmount;
+				data.target->shields -= data.shieldReduceAmount;
 				if (data.damageType != DamageType::Independent && data.target->shields != 0) {
 					shield_overlay = true;
 				}
@@ -432,7 +431,8 @@ namespace hooks {
 				mul = 1.0 / 9.0; // glave wurm 4th bounce
 				break;
 			};
-			data.finalDamage = data.finalDamage * mul + (int)data.target->acidSporeCount * 256;
+			data.finalDamage *= mul;
+			data.finalDamage += (int)data.target->acidSporeCount * 256;
 			break;
 		}
 		case WeaponId::KalkaliskViscousAcid: {
@@ -474,37 +474,44 @@ namespace hooks {
 		}
 		}
 
-		// Decloak behavior, Cabalist - Silent Kill
-		if ((units_dat::BaseProperty[data.attacker->id] & UnitProperty::PermanentCloak
-			|| data.attacker->status & UnitStatus::CloakingForFree)
-			&& data.attacker->playerId
-			&& data.attacker->id != UnitId::ZergLakizilisk) {
-			bool silent_kill = false;
-			if (data.finalDamage >= data.target->hitPoints
-				&& data.attacker->id == UnitId::ProtossCabalist) {
-				silent_kill = true;
-			}
-			if (!silent_kill && !(data.attacker->visibilityStatus & 1 << data.target->playerId)) {
-				data.attacker->visibilityStatus |= (1 << data.target->playerId);
-				makeSpriteVisible(data.attacker->sprite);
-				scbw::set_generic_timer(data.attacker, ValueId::PermanentCloakTimer, 48 + 1);
+		if (data.attacker != nullptr) {
+			// Decloak behavior, Cabalist - Silent Kill
+			if ((units_dat::BaseProperty[data.attacker->id] & UnitProperty::PermanentCloak
+				|| data.attacker->status & UnitStatus::CloakingForFree)
+				&& data.attacker->playerId
+				&& data.attacker->id != UnitId::ZergLakizilisk) {
+				bool silent_kill = false;
+				if (data.finalDamage >= data.target->hitPoints
+					&& data.attacker->id == UnitId::ProtossCabalist) {
+					silent_kill = true;
+				}
+				if (!silent_kill && !(data.attacker->visibilityStatus & 1 << data.target->playerId)) {
+					data.attacker->visibilityStatus |= (1 << data.target->playerId);
+					makeSpriteVisible(data.attacker->sprite);
+					scbw::set_generic_timer(data.attacker, ValueId::PermanentCloakTimer, 48 + 1);
+				}
 			}
 		}
 	}
 
 	static void weaponDamage_behaviors(WeaponDamageData& data) {
-		// Petrification - Gorgon behavior
-		if (GorgonCondition(data.attacker, data.target)) {
-			scbw::refreshDebuffs(data.target);
-		}
-
-		// Ensnaring Brood - Queen enchantment ability
-		if (scbw::get_generic_timer(data.attacker, ValueId::EnsnaringBroodTimer) > 0
-			&& !(units_dat::BaseProperty[data.target->id] & UnitProperty::Building)) {
-			applyEnsnare(data.target);
-		}
-
 		if (data.attacker != nullptr) {
+			// Petrification - Gorgon behavior
+			if (GorgonCondition(data.attacker, data.target)) {
+				scbw::refreshDebuffs(data.target);
+			}
+
+			// Ensnaring Brood - Queen enchantment ability
+			if (scbw::get_generic_timer(data.attacker, ValueId::EnsnaringBroodTimer) > 0
+				&& !(units_dat::BaseProperty[data.target->id] & UnitProperty::Building)) {
+				applyEnsnare(data.target);
+			}
+
+			// Phase Rush - Manifold behavior
+			if (units_dat::BaseProperty[data.attacker->id] & UnitProperty::RoboticUnit) {
+				scbw::set_generic_timer(data.target, ValueId::PhaseRushTimerArrayStart + data.attacker->playerId, 5 * 24);
+			}
+
 			switch (data.weaponId) {
 			case WeaponId::KonviliskSowingSpines: {
 				// Fertile Spines - Konvilisk behavior
@@ -626,15 +633,6 @@ namespace hooks {
 				}
 				break;
 			}
-			case WeaponId::AlkajeliskPlasmidSpores:
-			case WeaponId::AlkajeliskParasiticSpores: {
-				// Alkajelisk - Parasite
-				if ((data.weaponId == WeaponId::AlkajeliskPlasmidSpores || data.weaponId == WeaponId::AlkajeliskParasiticSpores) && data.finalDamage >= data.target->hitPoints) {
-					scbw::set_generic_value(data.target, ValueId::AlkajeliskParasite, 1);
-					scbw::set_generic_value(data.target, ValueId::AlkajeliskParasitePlayer, data.attacker->playerId);
-				}
-				break;
-			}
 			case WeaponId::SeraphObservance: {
 				// Observance - Science Vessel ability
 				if (data.weaponId == WeaponId::SeraphObservance
@@ -702,11 +700,6 @@ namespace hooks {
 			}
 			}
 
-			// Phase Rush - Manifold behavior
-			if (units_dat::BaseProperty[data.attacker->id] & UnitProperty::RoboticUnit) {
-				scbw::set_generic_timer(data.target, ValueId::PhaseRushTimerArrayStart + data.attacker->playerId, 5 * 24);
-			}
-
 			// Cantavis - Hallucinating
 			if (scbw::get_generic_timer(data.target, ValueId::HallucinatingTimer) >= 1) {
 				CUnit* haluAttacker = data.attacker;
@@ -735,19 +728,18 @@ namespace hooks {
 	}
 
 	static void weaponDamage_lifesteal(WeaponDamageData& data) {
-		const u32 damage = data.finalDamage + data.shieldReduceAmount; 
-		u32 lifesteal;
+		u32 lifesteal = data.finalDamage + data.shieldReduceAmount;
 		switch (data.weaponId) {
 		case WeaponId::KaiserBlades: {
 			// Ultrakor Saber Siphon passive
-			lifesteal = damage / 2;
+			lifesteal *= 0.5;
 			break;
 		}
 		case WeaponId::WendigoFusionSaw: {
 			// Wendigo Automedicus passive (HP component)
 			if (!(units_dat::BaseProperty[data.target->id] & UnitProperty::Mechanical))
 				return;
-			lifesteal = damage / 2;
+			lifesteal *= 0.25;
 			break;
 		}
 		default: {
@@ -865,12 +857,13 @@ namespace hooks {
 					data.target->getY() - 288,
 					data.target->getX() + 288,
 					data.target->getY() + 288
-				).getNearestTarget(data.target, [&](CUnit* unit) {
+				).getNearestTarget(data.target,
+				[&](CUnit* unit) {
 					//Don't attack friendly / allied units
 					if (unit->playerId == data.target->playerId) {
 						return false;
 					}
-					if (scbw::isAlliedTo(data.target->playerId, data.target->playerId)) {
+					if (scbw::isAlliedTo(data.target->playerId, unit->playerId)) {
 						return false;
 					}
 					if (unit->status & UnitStatus::Invincible) {
@@ -902,6 +895,13 @@ namespace hooks {
 
 		if (data.attacker != nullptr) {
 			switch (data.weaponId) {
+			case WeaponId::AlkajeliskPlasmidSpores:
+			case WeaponId::AlkajeliskParasiticSpores: {
+				// Alkajelisk - Parasite
+				scbw::set_generic_value(data.target, ValueId::AlkajeliskParasite, 1);
+				scbw::set_generic_value(data.target, ValueId::AlkajeliskParasitePlayer, data.attacker->playerId);
+				break;
+			}
 			case WeaponId::KaiserBlades: {
 				// Kaiser Rampage - Ultralisk behavior
 				scbw::set_generic_timer(data.attacker, ValueId::KaiserRampage, 1 + (2 * 24));
@@ -933,12 +933,9 @@ namespace hooks {
 				// Incubators - Broodling/Broodlisk behavior
 				int type = data.attacker->id;
 				int supplyCount = scbw::canSpawnBroodling(data.target) ? 2 : 0;// scbw::getBroodlingCountFromSupply(data.target);
-				auto sourceQueen = scbw::getSourceQueens(data.attacker)[0];
-				if (sourceQueen) {
-					scbw::createUnitFromAbility(type, supplyCount, data.attacker->playerId,
-						data.target->position.x, data.target->position.y, data.attacker->removeTimer,
-						scbw::getSourceQueens(data.attacker)[0]);
-				}
+				scbw::createUnitFromAbility(type, supplyCount, data.attacker->playerId,
+					data.target->position.x, data.target->position.y, data.attacker->removeTimer,
+					scbw::getSourceQueens(data.attacker)[0]);
 				break;
 			}
 			case WeaponId::CyclopsFlakCannons: {
