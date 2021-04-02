@@ -33,7 +33,7 @@ constexpr int MadcapPassiveDecayTime = 0.5s;
 constexpr int MadcapMaxStacks = 10;
 constexpr double MadcapAttackSpeedPerStack = 0.05;
 
-// Corsair - Disruption Web - AI
+// Lanifect - Disruption Web - AI
 constexpr int AIWebSeekRange = 96;
 constexpr int AICorsairAllySeekRange = 128;
 constexpr int AICorsairEnemySeekRange = 128;
