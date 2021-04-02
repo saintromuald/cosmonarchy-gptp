@@ -265,7 +265,7 @@ namespace hooks {
 							}
 						);
 						if (newTarget != nullptr
-						&&	n.match(newTarget)) {
+						&&	n(newTarget)) {
 							monoceros.insert(newTarget);
 							unit->orderTarget.unit = newTarget;
 							auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),

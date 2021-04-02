@@ -208,7 +208,7 @@ namespace hooks {
 							builtUnit->position.x + r, builtUnit->position.y + r);
 						for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 							auto unit = unitsInSplash.getUnit(i);
-							if (n.match(unit)) {
+							if (n(unit)) {
 								scbw::set_generic_value(builtUnit, ValueId::Crucible, 5);//6 is ~100/15
 								buildingAddon(builtUnit, hpGain, TRUE);
 								if (builtUnit->status & UnitStatus::Completed) {

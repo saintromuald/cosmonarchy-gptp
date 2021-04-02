@@ -322,7 +322,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		Box16 coords;
 		coords.left = unit->position.x - 48;
 		coords.bottom = unit->position.y + 48;
-		coords.top = unit->position.y -48;
+		coords.top = unit->position.y - 48;
 		coords.right = unit->position.x + 48;
 		IterateUnitsAtLocationTargetProc_Plague(unit, &coords);
 		u32 range = 48;

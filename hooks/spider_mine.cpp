@@ -32,41 +32,6 @@ namespace {
 
 } //unnamed namespace
 
-//Helper class for findBestSpiderMineTargetHook()
-//Equivalent to 00440EC0  SpiderMine_EnemyProc
-
-class SpiderMineTargetFinder: public scbw::UnitFinderCallbackMatchInterface {
-
-  CUnit* spiderMine;
-
-  public:
-    //Check if @p unit is a suitable target for the @p spiderMine.
-    bool match(CUnit* target) {
-
-		//Don't attack friendly / allied units
-		if (!spiderMine->isTargetEnemy(target))
-			return false;
-
-		//Don't attack invincible units
-		if (target->status & UnitStatus::Invincible)
-			return false;
-
-		//Don't attack air units / buildings
-		if (target->status & (UnitStatus::InAir | UnitStatus::GroundedBuilding))
-			return false;
-
-		//Don't attack hovering units
-		if (units_dat::MovementFlags[target->id] == MovementFlags::HoverUnit)
-			return false;
-
-		return true;
-
-    }
-
-    //Constructor
-    SpiderMineTargetFinder(CUnit* spiderMine) : spiderMine(spiderMine) {}
-};
-
 namespace hooks {
 
 	const int SPIDERMINE_BURROW_TIME = 60;
@@ -90,7 +55,25 @@ namespace hooks {
 			scbw::UnitFinder::getNearestTarget(
 				spiderMine->getX() - range, spiderMine->getY() - range,
 				spiderMine->getX() + range, spiderMine->getY() + range,
-				spiderMine, SpiderMineTargetFinder(spiderMine)
+				spiderMine, [&](CUnit* target) {
+					//Don't attack friendly / allied units
+					if (!spiderMine->isTargetEnemy(target))
+						return false;
+
+					//Don't attack invincible units
+					if (target->status & UnitStatus::Invincible)
+						return false;
+
+					//Don't attack air units / buildings
+					if (target->status & (UnitStatus::InAir | UnitStatus::GroundedBuilding))
+						return false;
+
+					//Don't attack hovering units
+					if (units_dat::MovementFlags[target->id] == MovementFlags::HoverUnit)
+						return false;
+
+					return true;
+				}
 			);
 
 	};

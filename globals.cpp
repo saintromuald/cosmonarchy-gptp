@@ -253,7 +253,7 @@ void globals::frameHook() {
 						impact.position.x + r, impact.position.y + r);
 					for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 						auto unit = unitsInSplash.getUnit(i);
-						if (n.match(unit)) {
+						if (n(unit)) {
 							double damage_factor = unitSizeFactor[units_dat::SizeType[unit->id]];
 							double damage = (double)(weapons_dat::DamageAmount[WeaponId::SalamanderIncendiaryPayload] + weapons_dat::DamageUpgrade[WeaponId::SalamanderIncendiaryPayload]) * (damage_factor / 256.0);
 							unitsInSplash.getUnit(i)->inflictDamage(damage, nullptr, -1, false, true, true);
@@ -268,7 +268,7 @@ void globals::frameHook() {
 					impact.position.x + r, impact.position.y + r);
 				for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 					auto unit = unitsInSplash.getUnit(i);
-					if (n.match(unit)) {
+					if (n(unit)) {
 						unitsInSplash.getUnit(i)->inflictDamage(1777, nullptr, -1, false, true, true);
 						//1777 is [ 2500dmg*256 / 15sec*24 ]
 					}

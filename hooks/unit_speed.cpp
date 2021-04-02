@@ -177,7 +177,7 @@ namespace hooks {
 			bool accelerate = false;
 			for (int i = 0; i < unitsInFinder.getUnitCount(); i++) {
 				auto picked_unit = unitsInFinder.getUnit(i);
-				if (n.match(picked_unit)) {
+				if (n(picked_unit)) {
 					for (int p = 0; p < 8; p++) {
 						if (scbw::get_generic_timer(picked_unit, ValueId::PhaseRushTimerArrayStart + p) > 0 &&
 							scbw::isAlliedTo(unit->playerId,p)) {
@@ -235,7 +235,7 @@ namespace hooks {
 			bool accelerate = false;
 			for (int i = 0; i < unitsInFinder.getUnitCount(); i++) {
 				auto picked_unit = unitsInFinder.getUnit(i);
-				if (n.match(picked_unit)) {
+				if (n(picked_unit)) {
 					if (scbw::get_generic_timer(picked_unit, ValueId::SwarmingOmenTimer) > 0) {
 						accelerate = true;
 						scbw::set_generic_timer(unit, ValueId::SwarmingOmenStatus, 25);
@@ -257,7 +257,7 @@ namespace hooks {
 			bool accelerate = false;
 			for (int i = 0; i < unitsInFinder.getUnitCount(); i++) {
 				auto picked_unit = unitsInFinder.getUnit(i);
-				if (n.match(picked_unit)) {
+				if (n(picked_unit)) {
 					if (picked_unit->getCurrentHpInGame() < picked_unit->getMaxHpInGame()) {
 						accelerate = true;
 						scbw::set_generic_timer(unit, ValueId::ProtectiveInstinctsStatus, 25);

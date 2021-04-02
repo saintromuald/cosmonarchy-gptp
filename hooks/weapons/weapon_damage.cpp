@@ -859,7 +859,7 @@ namespace hooks {
 			// Last Orders - Aurora behavior
 			if (scbw::get_generic_value(data.target, ValueId::LastOrdersInit) == 0) {
 				scbw::set_generic_value(data.target, ValueId::LastOrdersInit, 1);
-				//Check if @p unit is a suitable target for the @p spiderMine.
+
 				CUnit* nearest = scbw::UnitFinder(
 					data.target->getX() - 288,
 					data.target->getY() - 288,

@@ -173,268 +173,53 @@ void spawnCreeper(CUnit* unit) {
 
 #include "SCBW\UnitFinder.h"
 
-class observanceMatch : public scbw::UnitFinderCallbackMatchInterface {
-private:
-	CUnit* observed;
-public:
-	observanceMatch(CUnit* observed)
-		: observed(observed) {}
-
-	bool match(CUnit* unit) {		
-		if (unit == observed
-		|| scbw::isAlliedTo(observed->playerId, unit->playerId)
-		|| unit->id != UnitId::TerranSeraph) {
-			return false;
-		}
-
-		return true;
-	}
-};
-
-class observanceVictimMatch : public scbw::UnitFinderCallbackMatchInterface {
-private:
-	CUnit* vessel;
-public:
-	observanceVictimMatch(CUnit* vessel)
-		: vessel(vessel) {}
-
-	bool match(CUnit* unit) {
-		if (unit == vessel
-		|| scbw::isAlliedTo(vessel->playerId, unit->playerId)
-		|| scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) <= 1) {
-			return false;
-		}
-
-		return true;
-	}
-};
-class skyfallMatch : public scbw::UnitFinderCallbackMatchInterface {
-private:
-	CUnit* paladin;
-public:
-	skyfallMatch(CUnit* paladin)
-		: paladin(paladin) {}
-
-	bool match(CUnit* unit) {
-
-		if (unit == paladin) {
-			return false;
-		}
-		if (scbw::isAlliedTo(paladin->playerId, unit->playerId)) {
-			return false;
-		}
-		if (unit->status & UnitStatus::Invincible) {
-			return false;
-		}
-		return true;
-	}
-};
-class corrosiveSporeProc : public scbw::UnitFinderCallbackProcInterface
+void shamanProc(CUnit* shaman, bool organic, u32 heal, CUnit* target)
 {
-
-private:
-	CUnit* victim;
-	
-public:
-	corrosiveSporeProc(CUnit* victim)
-		: victim(victim) {}
-	void proc(CUnit* unit)
-	{
-		if (unit == victim) {
-			return;
-		}
-		if (unit->status & UnitStatus::Burrowed) {
-			return;
-		}
-		if (unit->status & UnitStatus::Invincible) {
-			return;
-		}
-		auto count = std::min(4, (int)victim->acidSporeCount);
-		for (int i = 0; i < count; i++) {
-			if (unit->acidSporeCount < 9) {
-				scbw::ApplySpores(unit);
-			}
-		}
-	}
-};
-
-class penumbraProc : public scbw::UnitFinderCallbackProcInterface
-{
-
-private:
-	CUnit* penumbra;
-
-public:
-	penumbraProc(CUnit* penumbra)
-		: penumbra(penumbra) {}
-	void proc(CUnit* unit)
-	{
-		if (unit == penumbra) {
-			return;
-		}
-		if (unit->status & UnitStatus::Invincible) {
-			return;
-		}
-		if (unit->status & UnitStatus::InAir) {
-			return;
-		}
-		auto size = units_dat::SizeType[unit->id];
-		if (size != UnitSize::Small) {
-			return;
-		}
-		if (penumbra->killCount < 255) {
-			penumbra->killCount++;
-		}
-		unit->remove();
-		
-
-	}
-};
-class shamanProc : public scbw::UnitFinderCallbackProcInterface
-{
-
-private:
-	CUnit* shaman;
-	bool organic;
-	u32 heal;
-
-public:
-	shamanProc(CUnit* shaman, bool organic, u32 heal)
-		: shaman(shaman), organic(organic), heal(heal) {}
-	void proc(CUnit* unit)
-	{
-		if (unit->playerId != shaman->playerId) {
-			if (!scbw::isAlliedTo(unit->playerId, shaman->playerId)) {
-				return;
-			}
-		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
-			return;
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic) && organic)
-			return;
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Mechanical) && !organic)
-			return;
-		if (unit->stasisTimer) {
-			return;
-		}
-		if (unit == shaman) {
-			return;
-		}
-
-		u32 dist = scbw::getDistanceFast(unit->position.x, unit->position.y,
-			shaman->position.x, shaman->position.y);
-		//unit->isBeingHealed = true;
-		bool reqHeal = false;
-
-		if (unit->getCurrentHpInGame() < unit->getMaxHpInGame()) {
-			reqHeal = true;
-			u32 overlayImageId;
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
-				overlayImageId = ImageId::RestorationHit_Large;
-			else
-				overlayImageId = ImageId::RestorationHit_Small;
-			CUnit* tgt = nullptr;
-			if (unit->subunit != nullptr)
-				tgt = unit->subunit;
-			else
-				tgt = unit;
-			if (organic) {
-				(tgt->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
-			}
-			else {
-				(tgt->sprite)->createTopOverlay(1158, 0, 0, 0);
-			}
-
-		}
-		unit->heal(heal * 256);
-	}
-};
-
-const int TREASURY_INCREASE = 4;
-class treasuryProc : public scbw::UnitFinderCallbackProcInterface {
-	u8 _playerId;
-
-public:
-	treasuryProc(u8 playerId) {
-		_playerId = playerId;	
-	}
-
-	void proc(CUnit* unit) {
-		if (units_dat::SupplyProvided[unit->id] == 0) return;
-		if (unit->playerId != _playerId && !scbw::isAlliedTo(_playerId, unit->playerId)) return;
-		if (!(unit->status & UnitStatus::Completed)) return;
-
-		u32 stacks = scbw::get_generic_value(unit, ValueId::TreasuryStacks);
-		if (*elapsedTimeFrames % 36 == 0 && stacks == 0) {
-			unit->sprite->createUnderlay(1060, 0, 0, 0);
-		}
-
-		scbw::add_generic_value(unit, ValueId::TreasuryStacks, 1);
-		int supply = scbw::get_generic_value(unit, ValueId::SupplyProvided);
-		unit->setSupplyProvided(supply + TREASURY_INCREASE);
-	}
-};
-
-class barghestProc : public scbw::UnitFinderCallbackProcInterface {
-private:
-	CUnit* barghest;
-
-public:
-	barghestProc(CUnit* barghest)
-		: barghest(barghest) {}
-	void proc(CUnit* unit) {
-		if (!(unit->id == UnitId::ProtossBarghest
-		||	!(scbw::isAlliedTo(barghest->playerId, unit->playerId)))) {
+	if (target->playerId != shaman->playerId) {
+		if (!scbw::isAlliedTo(target->playerId, shaman->playerId)) {
 			return;
 		}
 	}
-};
-
-class ensnaringBroodProc : public scbw::UnitFinderCallbackProcInterface {
-private:
-	CUnit* queen;
-
-public:
-	ensnaringBroodProc(CUnit* queen)
-		: queen(queen) {}
-	void proc(CUnit* unit) {
-		if (!(scbw::isAlliedTo(unit->playerId, queen->playerId))) {
-			return;
-		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building
-		||	!(unit->status & UnitStatus::Completed)) {
-			return;
-		}
-		// Overlays
-		if (unit->getOverlay(1281)) {
-			unit->removeOverlay(1281);
-		}
-		scbw::set_generic_timer(unit, ValueId::EnsnaringBroodTimer, 12 * 24);
-		unit->sprite->createTopOverlay(1281);
+	if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+		return;
+	if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic) && organic)
+		return;
+	if (!(units_dat::BaseProperty[target->id] & UnitProperty::Mechanical) && !organic)
+		return;
+	if (target->stasisTimer) {
+		return;
 	}
-};
-
-class reconstitutionProc : public scbw::UnitFinderCallbackProcInterface {
-private:
-	CUnit* zoryusthaleth;
-
-public:
-	reconstitutionProc(CUnit* zoryusthaleth)
-		: zoryusthaleth(zoryusthaleth) {}
-	void proc(CUnit* unit) {
-		if (!(scbw::isAlliedTo(unit->playerId, zoryusthaleth->playerId))) {
-			return;
-		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building) {
-			return;
-		}
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic)) {
-			return;
-		}
-
-		unit->heal(0.1 * units_dat::MaxHitPoints[unit->id]);
+	if (target == shaman) {
+		return;
 	}
-};
+
+	u32 dist = scbw::getDistanceFast(target->position.x, target->position.y,
+		shaman->position.x, shaman->position.y);
+	//unit->isBeingHealed = true;
+	bool reqHeal = false;
+
+	if (target->getCurrentHpInGame() < target->getMaxHpInGame()) {
+		reqHeal = true;
+		u32 overlayImageId;
+		if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay)
+			overlayImageId = ImageId::RestorationHit_Large;
+		else
+			overlayImageId = ImageId::RestorationHit_Small;
+		CUnit* tgt = nullptr;
+		if (target->subunit != nullptr)
+			tgt = target->subunit;
+		else
+			tgt = target;
+		if (organic) {
+			(tgt->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
+		}
+		else {
+			(tgt->sprite)->createTopOverlay(1158, 0, 0, 0);
+		}
+
+	}
+	target->heal(heal * 256);
+}
 
 #include "logger.h"
 #include "limits/sfx_extender.h"
@@ -554,7 +339,7 @@ namespace hooks {
 				int supply = scbw::get_generic_value(unit, ValueId::SupplyProvided);
 				int stacks = scbw::get_generic_value(unit, ValueId::TreasuryStacks);
 				scbw::set_generic_value(unit, ValueId::TreasuryStacks, 0);
-				unit->setSupplyProvided(supply - stacks * TREASURY_INCREASE);
+				unit->setSupplyProvided(supply - stacks * TreasuryIncrease);
 			}
 
 			// Loop through bullets
@@ -637,13 +422,24 @@ namespace hooks {
 				for (auto a : corpseList) {
 					if (unit->energy >= 5 * 256 && !(a->sprite->flags & CSprite_Flags::Flag04)) {
 						unit->spendUnitEnergy(5 * 256);
-						auto corpseheal = reconstitutionProc(unit);
-						scbw::UnitFinder unitFinder(
+						scbw::UnitFinder(
 							unit->getX() - r,
 							unit->getY() - r,
 							unit->getX() + r,
-							unit->getY() + r);
-						unitFinder.forEach(corpseheal);
+							unit->getY() + r
+						).forEach([&](CUnit* target) {
+							if (!(scbw::isAlliedTo(target->playerId, unit->playerId))) {
+								return;
+							}
+							if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
+								return;
+							}
+							if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic)) {
+								return;
+							}
+
+							target->heal(0.1 * units_dat::MaxHitPoints[target->id]);
+						});
 						/*
 						CThingy* thingy = scbw::createThingy(_set your id here_,
 							a->sprite->position.x,a->sprite->position.y, 11);
@@ -706,7 +502,7 @@ namespace hooks {
 				bool enemiesDetected = false;
 				for (int i = 0; i < unitsInFinder.getUnitCount(); i++) {
 					auto picked_unit = unitsInFinder.getUnit(i);
-					if (n.match(picked_unit)) {
+					if (n(picked_unit)) {
 						enemiesDetected = true;
 						break;
 					}
@@ -815,7 +611,7 @@ namespace hooks {
 					unit->position.x + r, unit->position.y + r);
 				for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 					auto picked_unit = unitsInSplash.getUnit(i);
-					if (n.match(picked_unit)) {
+					if (n(picked_unit)) {
 						//apply lazarus agent
 						scbw::set_generic_value(picked_unit, ValueId::LazarusAgent, 1);
 						scbw::set_generic_value(picked_unit, ValueId::LazarusAgentApostleSrc, (u32)unit);
@@ -916,11 +712,24 @@ namespace hooks {
 					unit->orderTarget.pt = missile_target;
 					auto range = 64;
 					//scbw::printFormattedText("Target? %d %d", tgt_x, tgt_y);
-					auto skyfall = skyfallMatch(unit);
 					auto targ = scbw::UnitFinder::getNearestTarget(
-						missile_target.x - range, missile_target.y - range,
-						missile_target.x + range, missile_target.y + range,
-						unit, skyfall
+						missile_target.x - range,
+						missile_target.y - range,
+						missile_target.x + range,
+						missile_target.y + range,
+						unit,
+						[&](CUnit* target) {
+							if (target == unit) {
+								return false;
+							}
+							if (scbw::isAlliedTo(unit->playerId, target->playerId)) {
+								return false;
+							}
+							if (target->status & UnitStatus::Invincible) {
+								return false;
+							}
+							return true;
+						}
 					);
 					if (targ != nullptr) {
 						unit->orderTarget.unit = targ;
@@ -961,12 +770,14 @@ namespace hooks {
 				if (timer == 0) {
 					scbw::set_generic_timer(unit, ValueId::NaniteFieldTimer, 24);
 					unit->sprite->playIscriptAnim(IscriptAnimation::CastSpell);
-					shamanProc Heal = shamanProc(unit, false, 2);
-					scbw::UnitFinder unitFinder(unit->getX() - 128,
+					scbw::UnitFinder(
+						unit->getX() - 128,
 						unit->getY() - 128,
 						unit->getX() + 128,
-						unit->getY() + 128);
-					unitFinder.forEach(Heal);
+						unit->getY() + 128
+					).forEach([&](CUnit* target) {
+						shamanProc(unit, false, 2, target);
+					});
 				}
 			}
 			else {
@@ -974,12 +785,14 @@ namespace hooks {
 				if (timer == 0) {
 					scbw::set_generic_timer(unit, ValueId::NewMedstimTimer, 24);
 					unit->sprite->playIscriptAnim(IscriptAnimation::CastSpell);
-					shamanProc Heal = shamanProc(unit, true, 6);
-					scbw::UnitFinder unitFinder(unit->getX() - 128,
+					scbw::UnitFinder(
+						unit->getX() - 128,
 						unit->getY() - 128,
 						unit->getX() + 128,
-						unit->getY() + 128);
-					unitFinder.forEach(Heal);
+						unit->getY() + 128
+					).forEach([&](CUnit* target) {
+						shamanProc(unit, true, 6, target);
+					});
 				}
 			}
 		}
@@ -1022,13 +835,28 @@ namespace hooks {
 			int count = unit->acidSporeCount;
 			unit->acidSporeCount -= 2;
 			int range = 160;
-			auto spores = corrosiveSporeProc(unit);
-			scbw::UnitFinder unitFinder(
+			scbw::UnitFinder(
 				unit->getX() - 96,
 				unit->getY() - 96,
 				unit->getX() + 96,
-				unit->getY() + 96);
-			unitFinder.forEach(spores);
+				unit->getY() + 96
+			).forEach([&](CUnit* target) {
+				if (target == unit) {
+					return;
+				}
+				if (target->status & UnitStatus::Burrowed) {
+					return;
+				}
+				if (target->status & UnitStatus::Invincible) {
+					return;
+				}
+				auto count = std::min(4, (int)unit->acidSporeCount);
+				for (int i = 0; i < count; i++) {
+					if (target->acidSporeCount < 9) {
+						scbw::ApplySpores(target);
+					}
+				}
+			});
 			unit->acidSporeCount = count;
 			unit->removeAcidSpores();
 			CThingy* thingy = scbw::createThingy(SpriteId::Corrosive_Acid_Hit, unit->getX(), unit->getY(), 11);
@@ -1058,11 +886,20 @@ namespace hooks {
 		// Science Vessel Observance - ability
 		if (scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) == 1) {
 			auto range = 192;
-			auto observance = observanceMatch(unit);
 			auto a = scbw::UnitFinder::getNearestTarget(
-				unit->getX() - range, unit->getY() - range,
-				unit->getX() + range, unit->getY() + range,
-				unit, observance
+				unit->getX() - range,
+				unit->getY() - range,
+				unit->getX() + range,
+				unit->getY() + range,
+				unit,
+				[&](CUnit* target) {
+					if (target == unit
+						|| scbw::isAlliedTo(unit->playerId, target->playerId)
+						|| target->id != UnitId::TerranSeraph) {
+						return false;
+					}
+					return true;
+				}
 			);
 
 			if (a != nullptr) {
@@ -1083,11 +920,19 @@ namespace hooks {
 		// Science Vessel Observance - persistant overlay creation
 		if (scbw::get_generic_timer(unit, ValueId::ObservanceOverlayTimer) <= 1) {
 			auto range = 192;
-			auto victim = observanceVictimMatch(unit);
 			auto a = scbw::UnitFinder::getNearestTarget(
 				unit->getX() - range, unit->getY() - range,
 				unit->getX() + range, unit->getY() + range,
-				unit, victim
+				unit,
+				[&](CUnit* target) {
+					if (target == unit
+						|| scbw::isAlliedTo(unit->playerId, target->playerId)
+						|| scbw::get_generic_timer(target, ValueId::ObservanceTimerDebuff) <= 1) {
+						return false;
+					}
+
+					return true;
+				}
 			);
 			if (a != nullptr
 				&& unit->id == UnitId::TerranSeraph) {
@@ -1178,7 +1023,25 @@ namespace hooks {
 			&& (unit->status & UnitStatus::GroundedBuilding)) {
 			Point16 pos = unit->position;
 			int radius = (10 * 32) / 2;
-			scbw::UnitFinder(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius).forEach(treasuryProc(unit->playerId));
+			scbw::UnitFinder(
+				pos.x - radius,
+				pos.y - radius,
+				pos.x + radius,
+				pos.y + radius
+			).forEach([&](CUnit* target) {
+				if (units_dat::SupplyProvided[target->id] == 0) return;
+				if (target->playerId != unit->playerId && !scbw::isAlliedTo(unit->playerId, target->playerId)) return;
+				if (!(target->status & UnitStatus::Completed)) return;
+
+				u32 stacks = scbw::get_generic_value(target, ValueId::TreasuryStacks);
+				if (*elapsedTimeFrames % 36 == 0 && stacks == 0) {
+					target->sprite->createUnderlay(1060, 0, 0, 0);
+				}
+
+				scbw::add_generic_value(target, ValueId::TreasuryStacks, 1);
+				int supply = scbw::get_generic_value(target, ValueId::SupplyProvided);
+				target->setSupplyProvided(supply + TreasuryIncrease);
+			});
 		}
 
 		// Permanently Cloaked units recloak after 2 seconds of being out of combat
@@ -1241,7 +1104,26 @@ namespace hooks {
 			Point16 pos = unit->position;
 			int radius = 6 * 32;
 			scbw::set_generic_rust_value(unit, ValueId::EnsnaringBroodAbility, 0);
-			scbw::UnitFinder(pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius).forEach(ensnaringBroodProc(unit));
+			scbw::UnitFinder(
+				pos.x - radius,
+				pos.y - radius,
+				pos.x + radius,
+				pos.y + radius
+			).forEach([&](CUnit* target) {
+				if (!(scbw::isAlliedTo(target->playerId, unit->playerId))) {
+					return;
+				}
+				if (units_dat::BaseProperty[target->id] & UnitProperty::Building
+					|| !(target->status & UnitStatus::Completed)) {
+					return;
+				}
+				// Overlays
+				if (target->getOverlay(1281)) {
+					target->removeOverlay(1281);
+				}
+				scbw::set_generic_timer(target, ValueId::EnsnaringBroodTimer, 12 * 24);
+				target->sprite->createTopOverlay(1281);
+			});
 			unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::EnsnaringBrood] * 256);
 		}
 

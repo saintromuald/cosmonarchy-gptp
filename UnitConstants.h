@@ -58,3 +58,6 @@ constexpr double LarvalColonyMultiplier = 0.75;
 
 // Matraleth - Parasite
 constexpr int DefaultArmParasiteTimer = (24 * 2) + 1;
+
+// Treasury - Passive
+constexpr int TreasuryIncrease = 4;

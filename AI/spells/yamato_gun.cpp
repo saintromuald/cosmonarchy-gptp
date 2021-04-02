@@ -5,49 +5,42 @@
 
 namespace AI {
 
-	class YamatoGunTargetFinderProc: public scbw::UnitFinderCallbackMatchInterface {
-
-	  private:
-		CUnit* caster;
-
-	  public:
-		YamatoGunTargetFinderProc(CUnit* caster)
-		  : caster(caster) {}
-
-		bool match(CUnit* target) {
+	CUnit* findBestYamatoGunTarget(CUnit* caster, bool isUnderAttack) {
+		auto match = [&](CUnit* target) {
 			if (!isTargetWorthHitting(target, caster))
-			  return false;
+				return false;
 
 			if ((target->status & UnitStatus::GroundedBuilding) && target->hasWeapon())
-			  return true;
+				return true;
 
 			if (target->id == UnitId::bunker && target->hasLoadedUnit())
-			  return true;
+				return true;
 
 			if (scbw::isZergEggNew(target))
-			  return false;
+				return false;
 
 			const int targetLife = target->getCurrentLifeInGame();
 			if (200 <= targetLife && targetLife <= 450
 				&& !(units_dat::BaseProperty[target->id] & UnitProperty::Hero))
-			  return true;
+				return true;
 
 			return false;
+		};
+
+		if (isUnderAttack) {
+			int bounds = 32 * 16;
+			return scbw::UnitFinder::getNearestTarget(
+				caster->getX() - bounds,
+				caster->getY() - bounds,
+				caster->getX() + bounds,
+				caster->getY() + bounds,
+				caster,
+				match
+			);
 		}
-	};
-
-	CUnit* findBestYamatoGunTarget(CUnit* caster, bool isUnderAttack) {
-
-	  if (isUnderAttack) {
-		int bounds = 32 * 16;
-		return scbw::UnitFinder::getNearestTarget(
-		  caster->getX() - bounds, caster->getY() - bounds,
-		  caster->getX() + bounds, caster->getY() + bounds,
-		  caster, YamatoGunTargetFinderProc(caster));
-	  }
-	  else {
-		return scbw::UnitFinder::getNearestTarget(caster, YamatoGunTargetFinderProc(caster));
-	  }
+		else {
+			return scbw::UnitFinder::getNearestTarget(caster, match);
+		}
 	}
 
 } //AI
