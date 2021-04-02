@@ -218,7 +218,7 @@ void shamanProc(CUnit* shaman, bool organic, u32 heal, CUnit* target)
 		}
 
 	}
-	target->heal(heal * 256);
+	target->heal(heal * 256, shaman);
 }
 
 #include "logger.h"
@@ -438,7 +438,7 @@ namespace hooks {
 								return;
 							}
 
-							target->heal(0.1 * units_dat::MaxHitPoints[target->id]);
+							target->heal(0.1 * units_dat::MaxHitPoints[target->id], unit);
 						});
 						/*
 						CThingy* thingy = scbw::createThingy(_set your id here_,

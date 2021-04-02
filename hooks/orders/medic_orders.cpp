@@ -223,7 +223,7 @@ namespace hooks {
 						return 2;
 					}
 					medic->spendUnitEnergy(energyCost);*/
-					target->heal(hpToHeal);
+					target->heal(hpToHeal, medic);
 					result = 1;
 					target->isBeingHealed = 1;
 					return result;

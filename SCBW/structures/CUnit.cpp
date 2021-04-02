@@ -385,13 +385,14 @@ void CUnit::setHp(s32 hitPoints) {
 	}
 }
 
-void CUnit::heal(s32 hitPoints) {
+void CUnit::heal(s32 hitPoints, CUnit* source = nullptr) {
 	assert(this);
 	if (this->hitPoints == this->getMaxHpRaw()) { // skip healing if max hp already
 		return;
 	}
 
-	if (id == UnitId::TerranCohort) {
+	// Cohort - Servile Vigor
+	if (id == UnitId::TerranCohort && this != source) {
 		hitPoints *= 2;
 	}
 

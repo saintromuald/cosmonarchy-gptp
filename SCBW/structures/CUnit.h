@@ -174,7 +174,7 @@ struct CUnit: public CUnitLayout {
   /// Sets the unit's HP, and also updates burning / bleeding graphics and unit
   /// strength data (used by the AI). HP is guaranteed not to overflow.
   void setHp(s32 hitPoints);
-  void heal(s32 hitPoints);
+  void heal(s32 hitPoints, CUnit* source = nullptr);
 
   /// Deals damage to this unit, using a specific weapons.dat ID.
   void damageWith(s32 damage,               ///< Amount of damage dealt to this unit.

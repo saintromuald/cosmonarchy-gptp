@@ -679,13 +679,13 @@ namespace hooks {
 				//if (scbw::getDistanceFast(data.attacker->position.x, data.attacker->position.y, data.target->position.x, data.target->position.y) >= 160 ) {
 				u32 range = 3 * 32;
 				scbw::UnitFinder unitFinder(data.target->getX() - range, data.target->getY() - range, data.target->getX() + range, data.target->getY() + range);
-				unitFinder.forEach([&data](CUnit* unit) {
-					if (!(scbw::isAlliedTo(data.attacker->playerId, unit->playerId))	// Return if recipient is not allied, or if recipient is the target
-						|| unit == data.target) {
+				unitFinder.forEach([&data](CUnit* foundUnit) {
+					if (!(scbw::isAlliedTo(data.attacker->playerId, foundUnit->playerId))	// Return if recipient is not allied, or if recipient is the target
+						|| foundUnit == data.target) {
 						return;
 					}
 					if (!(units_dat::BaseProperty[data.target->id] & UnitProperty::Organic)	// Return if recipient or target are not organic
-						|| !(units_dat::BaseProperty[unit->id] & UnitProperty::Organic)) {
+						|| !(units_dat::BaseProperty[foundUnit->id] & UnitProperty::Organic)) {
 						return;
 					}
 					u32 value = 0;
@@ -695,7 +695,7 @@ namespace hooks {
 					else {
 						value = (units_dat::MaxHitPoints[data.target->id] * 0.10);
 					}
-					unit->heal(value);
+					data.target->heal(value, data.target);
 				});
 				//}
 				break;
@@ -754,7 +754,7 @@ namespace hooks {
 			return;
 		}
 		}
-		data.attacker->heal(lifesteal);
+		data.attacker->heal(lifesteal, data.attacker);
 	}
 
 	static void weaponDamage_fatal(WeaponDamageData& data) {
