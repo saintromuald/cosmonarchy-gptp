@@ -3,7 +3,6 @@
 #include "SCBW\structures.h"
 #include "extender.h"
 #include <vector>
-//const int NEW_ARRAY_LENGTH = 16000;
 
 struct CCMUExtender : public Extender {
 	virtual std::vector<u32> get_address_list();
@@ -17,12 +16,13 @@ struct CCMUExtender : public Extender {
 	std::vector<u32> orderingYlist_off4();
 	std::vector<u32> orderingY_min18endlist();
 public:
-//	CUnitLayout units[NEW_ARRAY_LENGTH];
 	CUnitLayout units[UNIT_ARRAY_LENGTH];
 	UnitFinderData orderingX[UNIT_ARRAY_LENGTH * 2];
 	UnitFinderData orderingY[UNIT_ARRAY_LENGTH * 2];
 	CUnit* position_search_units[UNIT_ARRAY_LENGTH + 1];
 	u32 position_search_temp[UNIT_ARRAY_LENGTH + 1];
+	CUnit* air_splash_results[UNIT_ARRAY_LENGTH];
+
 	virtual void extend();
 	virtual int identifier(std::string str);
 	virtual u32 parse_entry_value(std::string str, int id);
