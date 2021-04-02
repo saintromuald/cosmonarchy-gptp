@@ -720,11 +720,12 @@ namespace hooks {
 		if(attacker!=nullptr){
 			//scbw::printText("Plague Metastasis is researched");
 			u32 range = 64;
-			scbw::UnitFinder unitFinder(x - range,
+			scbw::UnitFinder(
+				x - range,
 				y - range,
 				x + range,
-				y + range);
-			unitFinder.forEach([&](CUnit* unit) {
+				y + range
+			).forEach([&](CUnit* unit) {
 				if (unit->plagueTimer > 0) {
 					unit->newFlags1 |= NewFlags1::Metastasis;
 				}
