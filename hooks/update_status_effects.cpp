@@ -6,11 +6,11 @@
 
 void irradiateProc(CUnit* unit, CUnit* target) {
 	//Damage organic units only
-	if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic))
+	if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic))
 		return;
 
 	//Don't damage buildings
-	if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
+	if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
 		return;
 
 	//Don't damage larvae, eggs, and lurker eggs
@@ -18,22 +18,22 @@ void irradiateProc(CUnit* unit, CUnit* target) {
 			return;*/
 
 			//Irradiate splash damage does not affect burrowed units
-	if (unit != target && unit->status & UnitStatus::Burrowed)
+	if (target != unit && target->status & UnitStatus::Burrowed)
 		return;
 
 	//Check if the unit is within distance, or is inside the same transport
-	if (target->status & UnitStatus::InTransport
-		|| target->getDistanceToTarget(unit) <= 32)
+	if (unit->status & UnitStatus::InTransport
+		|| unit->getDistanceToTarget(target) <= 32)
 	{
 		//			const s32 damage = weapons_dat::DamageAmount[WeaponId::Irradiate] * 256 / weapons_dat::Cooldown[WeaponId::Irradiate];
 		s32 damage = (125 * 256) / 24;
-		if (target != nullptr) {
-			if (target->irradiateTimer == 0) {
+		if (unit != nullptr) {
+			if (unit->irradiateTimer == 0) {
 				damage += (125 * 256) % 24;
 				//scbw::printText("Add additional damage");
 			}
 		}
-		unit->damageWith(damage, WeaponId::Irradiate, target->irradiatedBy, target->irradiatePlayerId);
+		target->damageWith(damage, WeaponId::Irradiate, unit->irradiatedBy, unit->irradiatePlayerId);
 	}
 }
 
