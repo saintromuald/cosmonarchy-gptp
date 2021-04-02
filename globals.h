@@ -2,6 +2,7 @@
 #pragma pack(1)
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <sstream>
 #include <ostream>
 #include <istream>
@@ -76,52 +77,41 @@ public:
 	}
 };
 struct CustomUnitStruct {
-	std::vector<int> genericValues;
-	std::vector<int> genericTimers;
-	std::vector<CUnit*> genericUnits;
+	std::unordered_map<int, int> genericValues;
+	std::unordered_map<int, int> genericTimers;
+	std::unordered_map<int, CUnit*> genericUnits;
 
 	void setGenericValue(int variable, int value) {
-		if (variable >= genericValues.size()) {
-			genericValues.resize(variable + 1, 0);
-		}
 		genericValues[variable] = value;
 	}
-	void setGenericTimer(int variable, int value) {
-		if (variable >= genericTimers.size()) {
-			genericTimers.resize(variable + 1, 0);
-		}
-		genericTimers[variable] = value;
-
-	}
-
 	void addGenericValue(int variable, int value) {
-		if (variable >= genericValues.size()) {
-			genericValues.resize(variable + 1, 0);
-		}
 		genericValues[variable] += value;
 	}
+	void setGenericTimer(int variable, int value) {
+		genericTimers[variable] = value;
+	}
+	void setGenericUnit(int variable, CUnit* unit) {
+		genericUnits[variable] = unit;
+	}
+
 	int getGenericValue(int variable) {
-		if (variable < genericValues.size()) {
-			return genericValues[variable];
+		auto it = genericValues.find(variable);
+		if (it != genericValues.end()) {
+			return it->second;
 		}
 		return 0;
 	}
 	int getGenericTimer(int variable) {
-		if (variable < genericTimers.size()) {
-			return genericTimers[variable];
+		auto it = genericTimers.find(variable);
+		if (it != genericTimers.end()) {
+			return it->second;
 		}
 		return 0;
 	}
-
-	void setGenericUnit(int variable, CUnit* unit) {
-		if (variable >= genericUnits.size()) {
-			genericUnits.resize(variable + 1, nullptr);
-		}
-		genericUnits[variable] = unit;
-	}
 	CUnit* getGenericUnit(int variable) {
-		if (variable < genericUnits.size()) {
-			return genericUnits[variable];
+		auto it = genericUnits.find(variable);
+		if (it != genericUnits.end()) {
+			return it->second;
 		}
 		return nullptr;
 	}

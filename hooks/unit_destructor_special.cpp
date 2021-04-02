@@ -219,11 +219,6 @@ void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords) {
 
 //Hooked down there instead of a specific inject.cpp
 void unitDestructorSpecialHook(CUnit* unit) {
-
-	Globals.remove_unit_from_pariah_table(unit,false);
-	Globals.clear_ptr_in_apostle_table(unit);
-	Globals.unitDeathHook(unit);
-
 	// Aspirant Criticality behavior
 	if (unit->id == UnitId::TerranAspirant) {
 		scbw::createBullet(WeaponId::AspirantCriticality, unit, unit->position.x, unit->position.y, unit->playerId, 0);
@@ -473,6 +468,10 @@ void unitDestructorSpecialHook(CUnit* unit) {
 				nydusExit->remove();
 			}
 		}
+
+		Globals.remove_unit_from_pariah_table(unit, false);
+		Globals.clear_ptr_in_apostle_table(unit);
+		Globals.unitDeathHook(unit);
 	}
 }
 
