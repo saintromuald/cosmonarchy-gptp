@@ -41,6 +41,9 @@ static bool alkajSporeMatch(CBullet* bullet, CUnit* unit) {
 }
 
 bool powerSiphonDistributeMatch(CUnit* savant, CUnit* unit) {
+	if (!savant) {
+		return false;
+	}
 	if (unit == savant) {
 		return false;
 	}

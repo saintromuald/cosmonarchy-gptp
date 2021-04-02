@@ -989,8 +989,7 @@ namespace scbw {
 				return;
 			}
 		}
-		hooks::weaponDamageHook(selfDamage, deconstructionTarget, weaponId, deconstructionTarget, deconstructionTarget->playerId,
-			deconstructionTarget->playerId, 1);
+		hooks::weaponDamageHook(selfDamage, deconstructionTarget, 0, deconstructionTarget, deconstructionTarget->playerId, deconstructionTarget->playerId, 1);
 		if (playSound) {
 			scbw::playSound(1372, unit);
 		}

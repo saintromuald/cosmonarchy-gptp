@@ -865,13 +865,12 @@ namespace hooks {
 		// Savant - Entropy Gauntlets
 		if (scbw::get_generic_timer(unit, ValueId::EntropyGauntlets) == 1) {
 			u32 overlayImageId;
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
+				overlayImageId = 1109;
+			else if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
 				overlayImageId = 1108;
 			else
-				if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
-					overlayImageId = 1109;
-				else
-					overlayImageId = 1107;
+				overlayImageId = 1107;
 			if (unit->subunit != nullptr)
 				unit->subunit->sprite->removeOverlay(overlayImageId);
 			else

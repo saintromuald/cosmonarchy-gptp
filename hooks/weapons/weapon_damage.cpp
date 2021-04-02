@@ -557,13 +557,12 @@ namespace hooks {
 					scbw::set_generic_timer(data.target, ValueId::EntropyGauntlets, (5 * 24) + 1);
 					scbw::set_generic_unit(data.target, ValueId::DecaySavant, data.attacker);
 					u32 overlayImageId;
-					if (units_dat::BaseProperty[data.target->id] & UnitProperty::MediumOverlay)
+					if (units_dat::BaseProperty[data.target->id] & UnitProperty::LargeOverlay)
+						overlayImageId = 1109;
+					else if (units_dat::BaseProperty[data.target->id] & UnitProperty::MediumOverlay)
 						overlayImageId = 1108;
 					else
-						if (units_dat::BaseProperty[data.target->id] & UnitProperty::LargeOverlay)
-							overlayImageId = 1109;
-						else
-							overlayImageId = 1107;
+						overlayImageId = 1107;
 					if (data.target->subunit != nullptr) {
 						data.target->subunit->sprite->removeOverlay(overlayImageId);
 						data.target->subunit->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
