@@ -5,6 +5,7 @@
 #include <SCBW/api.h>
 #include "hooks/weapons/wpnspellhit.h"
 #include "globals.h"
+#include "limits/ccmu.h"
 namespace {	// helper declarations
 	bool isUnitDistanceWithin(CUnit* target, CBullet* bullet, u32 radius);
 	void weaponBulletShot(CUnit* target, CBullet* bullet, u32 dmgDivisor);
@@ -468,13 +469,23 @@ namespace hooks {
 					if (isUnitDistanceWithin(target, bullet, weapons_dat::OuterSplashRadius[weaponIdLoop]))	{
 						if (isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[weaponIdLoop])
 						&& target == bullet->attackTarget.unit)	{
-							airSplashList[0] = target;
+							if (Globals.extended_unit_table) {
+								new_unit_table.air_splash_results[0] = target;
+							}
+							else {
+								airSplashList[0] = target;
+							}
 							result = 1;
 							*airSplashListCount = 1;
 							break;
 						}
 						listCount = *airSplashListCount;
-						airSplashList[*airSplashListCount] = target;
+						if (Globals.extended_unit_table) {
+							new_unit_table.air_splash_results[*airSplashListCount] = target;
+						}
+						else {
+							airSplashList[*airSplashListCount] = target;
+						}
 						*airSplashListCount = listCount + 1;
 					}
 				}
@@ -487,7 +498,13 @@ namespace hooks {
 			else {
 				list = randomizeShort(58) % *airSplashListCount;
 			}
-			weaponBulletShot(target, bullet, (s32)airSplashList[list]);
+			if (Globals.extended_unit_table) {
+				weaponBulletShot(target, bullet, (s32)new_unit_table.air_splash_results[list]);
+			}
+			else {
+				weaponBulletShot(target, bullet, (s32)airSplashList[list]);
+			}
+			
 		}
 		// airSplashProc2
 		friendlySplash(bullet, weaponId, SplashType::FriendlyNew);

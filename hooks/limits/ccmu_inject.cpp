@@ -22,7 +22,7 @@ void CCMUExtender::extend() {
 	const u32 orderingYstart = reinterpret_cast<u32>(&new_unit_table.orderingY);
 	const u32 position_search_units_start = reinterpret_cast<u32>(&new_unit_table.position_search_units);
 	const u32 position_search_temp_start = reinterpret_cast<u32>(&new_unit_table.position_search_temp);
-
+	const u32 air_splashes_start = reinterpret_cast<u32>(&new_unit_table.air_splash_results);
 //	const u32 table_end = table_start + 336*NEW_ARRAY_LENGTH;
 	const u32 table_end = table_start + 336 * UNIT_ARRAY_LENGTH;
 	Globals.extended_unit_table = 1;
@@ -47,10 +47,15 @@ void CCMUExtender::extend() {
 	memoryPatch(0x00430801 + 3, orderingYstart + 0xc);
 	memoryPatch(0x0046A1D9 + 3, orderingYstart + 0xc);
 	memoryPatch(0x0046A229 + 3, orderingYstart + 0xc);
-	memoryPatch(0x004E8C9D + 1, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
-	memoryPatch(0x004E8CA6 + 1, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
-	memoryPatch(0x004EA7D4 + 2, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
-	memoryPatch(0x004EA7E8 + 1, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
+	
+
+
+//	have nothing to do with units, this is larva integers, must not be extended at all
+//	memoryPatch(0x004E8C9D + 1, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
+//	memoryPatch(0x004E8CA6 + 1, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
+//	memoryPatch(0x004EA7D4 + 2, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
+//	memoryPatch(0x004EA7E8 + 1, orderingYstart + (UNIT_ARRAY_LENGTH * 16));
+
 	memoryPatch(0x0042FEA9 + 3, position_search_units_start);
 	memoryPatch(0x0042FEF6 + 1, position_search_units_start);
 	memoryPatch(0x0042FF9C + 3, position_search_units_start);
@@ -73,6 +78,10 @@ void CCMUExtender::extend() {
 	memoryPatch(0x00430A97 + 3, position_search_temp_start);
 	memoryPatch(0x004309F7 + 3, position_search_temp_start);
 	memoryPatch(0x00430AC5 + 3, position_search_temp_start);
+	//004309B5
+	memoryPatch(0x0048B1AF + 2, air_splashes_start);
+	memoryPatch(0x0048B1C7 + 3, air_splashes_start);
+	memoryPatch(0x0048B1AF + 2, air_splashes_start);
 	//
 	uplink(get_size_list(), UNIT_ARRAY_LENGTH);
 	uplink(table_start_list(), table_start);
@@ -524,7 +533,7 @@ std::vector<u32> CCMUExtender::table_end_list(){
 
 std::vector<u32> CCMUExtender::get_address_list() {//for -1, start
 	return{ 0x00402FD2 + 2, 0x004035DE +2, 0x004035FE+2, 0x0040361E+2, 0x0040363E+2,0x004037AC+2,0x0040383C+2,0x004038D9+2,0x0040397A+2,
-		    0x00403A1B+2,
+	    0x00403A1B+2,
 		0x00403CF8 + 2,
 		0x00403D18 + 2,
 		0x00403D38 + 2,
@@ -574,7 +583,7 @@ std::vector<u32> CCMUExtender::get_address_list() {//for -1, start
 		0x00448325 + 2,
 		0x00448348 + 2,
 		0x0044836B + 2,
-		//0x0045CE75 + 2,
+		0x0045CE75 + 2,
 		0x0045F89D + 2,
 		0x00469C32 + 2,
 		0x00469CA2 + 2,
@@ -590,7 +599,7 @@ std::vector<u32> CCMUExtender::get_address_list() {//for -1, start
 		0x00479EA5 + 2,
 		0x0047B21F + 2,
 		0x0047B249 + 2,
-		//0x0047D96B + 2,
+		0x0047D96B + 2,//
 		0x0048A8F6 + 2,
 		0x0048A939 + 2,
 		0x0048C78B + 2,
@@ -603,13 +612,13 @@ std::vector<u32> CCMUExtender::get_address_list() {//for -1, start
 		0x00496890 + 2,
 		0x00496A14 + 2,
 		0x00496BAA + 2,
-		//0x0049C60F + 2,
-		//0x0049C767 + 2,
+		0x0049C60F + 2,//
+		0x0049C767 + 2,//
 		0x0049FE57 + 2,
-		//0x004A3790 + 2,
-		//0x004A4E36 + 2,
-		//0x004A4EFB + 2,
-		//0x004A4FCF + 2,
+		0x004A3790 + 2,//
+		0x004A4E36 + 2,//
+		0x004A4EFB + 2,//
+		0x004A4FCF + 2,//
 		0x004BFB88 + 2,
 		0x004C2506 + 2,
 		0x004C2625 + 2,
@@ -664,9 +673,9 @@ std::vector<u32> CCMUExtender::get_address_list() {//for -1, start
 		0x004E8576 + 2,
 		0x004EB1EF + 2,
 		0x004EB390 + 2,
-		//0x004A4E00+1,
-		//0x004A4E74+1,
-		//0x004A4F48+1,
+		0x004A4E00+1,//
+		0x004A4E74+1,//
+		0x004A4F48+1,//
 	};
 }
 
@@ -675,7 +684,7 @@ namespace hooks {
 
 	void CCMUExtender() {
 		new_unit_table.extend();
-		//plugin code transfer notice: CCMU Extender also require CUnit.cpp (index) and load_unload_orders/load_unload_proc (0059cb58)
+		//plugin code transfer notice: CCMU Extender also require CUnit.cpp (index), weapon_effect and load_unload_orders/load_unload_proc (0059cb58)
 		//changes
 	}
 	void injectCCMUHooks() {
