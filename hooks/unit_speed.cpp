@@ -72,7 +72,7 @@ namespace hooks {
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
 			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::TerminalSurge), 0, 10) * 1.5;
 			if (stacks > 0) {
-				speed = (double)speed * ((10.0 + stacks) / 10.0);
+				speed *= (10.0 + stacks) / 10.0;
 			}
 		}
 
