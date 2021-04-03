@@ -78,13 +78,13 @@ public:
 };
 struct CustomUnitStruct {
 	// Timers
-	std::unordered_map<int, int> genericTimers;
+	std::unordered_map<uint32, uint32> genericTimers;
 
-	void setGenericTimer(int variable, int value) {
+	void setGenericTimer(uint32 variable, uint32 value) {
 		genericTimers[variable] = value;
 	}
 
-	int getGenericTimer(int variable) {
+	uint32 getGenericTimer(uint32 variable) {
 		auto it = genericTimers.find(variable);
 		if (it != genericTimers.end()) {
 			return it->second;
@@ -94,56 +94,69 @@ struct CustomUnitStruct {
 
 	// Generics
 	template <typename T>
-	std::unordered_map<int, T>& getGenericMap() {
-		static std::unordered_map<int, T> map;
+	std::unordered_map<uint32, T>& getGenericLookup() {
+		static std::unordered_map<uint32, T> map;
 		return map;
 	}
 
 	template <typename T>
-	T* getGeneric(int variable) {
-		auto& map = getGenericMap<T>();
+	T getGeneric(uint32 variable) {
+		auto& map = getGenericLookup<T>();
 		auto it = map.find(variable);
 		if (it != map.end()) {
-			return &it->second;
+			return it->second;
 		}
-		return nullptr;
+		return {};
 	}
 
 	template <typename T>
-	T* setGeneric(int variable, T value) {
-		auto& map = getGenericMap<T>();
+	void setGeneric(uint32 variable, T value) {
+		auto& map = getGenericLookup<T>();
 		map[variable] = value;
-		return &map[variable];
+	}
+
+	template <typename T>
+	T& setGenericRef(uint32 variable, T value) {
+		auto& map = getGenericLookup<T>();
+		map[variable] = value;
+		return map[variable];
+	}
+
+	template <typename T>
+	T& getGenericRef(uint32 variable) {
+		auto& map = getGenericLookup<T>();
+		auto it = map.find(variable);
+		if (it != map.end()) {
+			return it->second;
+		}
+		return setGenericRef(variable, {});
 	}
 
 	// Legacy Functions
-	void setGenericValue(int variable, int value) {
-		setGeneric<int>(variable, value);
+	void setGenericValue(uint32 variable, uint32 value) {
+		setGeneric<uint32>(variable, value);
 	}
 
-	void addGenericValue(int variable, int value) {
-		setGeneric<int>(variable, *getGeneric<int>(value) + 1);
+	void addGenericValue(uint32 variable, uint32 value) {
+		setGeneric<uint32>(variable, getGeneric<uint32>(value) + 1);
 	}
 
-	void setGenericUnit(int variable, CUnit* unit) {
+	void setGenericUnit(uint32 variable, CUnit* unit) {
 		setGeneric<CUnit*>(variable, unit);
 	}
 
-	int getGenericValue(int variable) {
-		return *getGeneric<int>(variable);
+	uint32 getGenericValue(uint32 variable) {
+		return getGeneric<uint32>(variable);
 	}
 
-	CUnit* getGenericUnit(int variable) {
-		return *getGeneric<CUnit*>(variable);
+	CUnit* getGenericUnit(uint32 variable) {
+		return getGeneric<CUnit*>(variable);
 	}
 
 	// Arrays
 	template<typename T>
-	std::vector<T>& getGenericVector(int variable) {
-		auto vec = getGeneric<std::vector<T>>(variable);
-		if (!vec) {
-			vec = setGeneric<std::vector<T>>({});
-		}
+	std::vector<T>& getGenericVector(uint32 variable) {
+		auto& vec = getGenericRef<std::vector<T>*>(variable);
 		return vec;
 	}
 };
@@ -166,8 +179,8 @@ public:
 	std::vector<pariahHit> pariahHits;
 	std::vector<multihitBullet> multihitBullets;
 	std::vector<apostleAgent> apostleAgents;
-	std::map<CUnit*, std::vector<CUnit*>> lurkerSpineHits;
-	std::map<CUnit*, CustomUnitStruct> unitStructs;
+	std::unordered_map<CUnit*, std::vector<CUnit*>> lurkerSpineHits;
+	std::unordered_map<CUnit*, CustomUnitStruct> unitStructs;
 	AttackExtender attackers;
 	
 	apostleAgent test;

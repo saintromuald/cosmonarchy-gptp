@@ -68,6 +68,14 @@ namespace hooks {
 			speed /= 2;
 		}
 
+		// Vassal Terminal Surge: increase movespeed when any nearby Simulacrum dies
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
+			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::TerminalSurge), 0, 10) * 1.5;
+			if (stacks > 0) {
+				speed = (double)speed * ((10.0 + stacks) / 10.0);
+			}
+		}
+
 		// Vorvaling Adrenal Surge: gains double movespeed when moving towards enemies
 		if (unit->id == UnitId::ZergVorvaling) {
 			uint32 range = unit->getSightRange(false) * 32;
@@ -154,14 +162,6 @@ namespace hooks {
 			speed += speed / 5;
 		}
 
-		// Vassal Terminal Surge: increase movespeed when any nearby Simulacrum dies
-		else if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
-			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::TerminalSurge), 0, 10)*1.5;
-			if (stacks > 0) {
-				speed = (double)speed * ((10.0 + stacks) / 10.0);
-			}
-		}
-
 		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby organic allies after kill
 		else if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0) {
 			speed += speed / 2;
@@ -206,7 +206,7 @@ namespace hooks {
 			uint32 health = unit->shields / 256;
 			uint32 maxHealth = units_dat::MaxShieldPoints[unit->id];
 			double multiplier = MathUtils::map(health, maxHealth, maxHealth - maxHealth, 1.0, 1.5, true);
-			speed = (uint32) ((double)speed * multiplier);
+			speed *= multiplier;
 		}
 
 		// Southpaw Knockout Drivers: reduces movement speed by 5% per stack
@@ -223,7 +223,7 @@ namespace hooks {
 
 		// Khaydarin Eclipse ability: slow Exemplar by 75%
 		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch)) {
-			speed = speed / 4;
+			speed /= 4;
 		}
 
 		// Swarming Omen ability: 150% movement speed when moving towards Zoryusthaleth
