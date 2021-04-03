@@ -29,7 +29,7 @@ namespace {
 	void unitDestructor(CUnit * unit);
 
 	// For updateCorrosiveSpores
-	uint32_t getCorrosiveSporesImage(CUnit* unit); // 004F41F0
+	uint32 getCorrosiveSporesImage(CUnit* unit); // 004F41F0
 
 } //unnamed namespace
 
@@ -997,17 +997,17 @@ namespace hooks {
 
 	// TODO: Refactor
 	// Hooked to change Corrosive Spore timer - Pr0nogo
-	int32_t updateCorrosiveSpores(CUnit* target) { // 004F4480
-		uint8_t sporeCount; // al
-		uint32_t overlayMultiplier; // eax
-		uint8_t overlayOffset; // cl
-		int32_t overlay; // eax
-		int32_t v6; // eax
+	int32 updateCorrosiveSpores(CUnit* target) { // 004F4480
+		uint8 sporeCount; // al
+		uint32 overlayMultiplier; // eax
+		uint8 overlayOffset; // cl
+		int32 overlay; // eax
+		int32 v6; // eax
 		CUnit* targetFinal; // ecx
-		uint32_t result_sub_1; // esi
-		uint32_t acidTimeMax; // edx
-		uint32_t result; // eax
-		uint32_t v11_acidSporeTime; // ecx
+		uint32 result_sub_1; // esi
+		uint32 acidTimeMax; // edx
+		uint32 result; // eax
+		uint32 v11_acidSporeTime; // ecx
 		CImage* image;
 		CSprite* spriteFinal;
 
