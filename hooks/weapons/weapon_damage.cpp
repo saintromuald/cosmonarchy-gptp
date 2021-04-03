@@ -496,6 +496,18 @@ namespace hooks {
 
 	static void weaponDamage_behaviors(WeaponDamageData& data) {
 		if (data.attacker != nullptr) {
+
+			switch (data.target->id) {
+			case UnitId::ProtossSimulacrum: {
+				// Autovitality - Simulacrum behavior
+				if (!scbw::isAlliedTo(data.target->playerId, data.attacker->playerId)
+					&& scbw::get_generic_timer(data.target, ValueId::SimulacrumCloneTimer) == 0) {
+					scbw::set_generic_timer(data.target, ValueId::SimulacrumCloneTimer, 5 * 24);
+				}
+				break;
+			}
+			}
+
 			// Petrification - Gorgon behavior
 			if (GorgonCondition(data.attacker, data.target)) {
 				scbw::refreshDebuffs(data.target);
@@ -548,9 +560,6 @@ namespace hooks {
 				data.attacker->shields = std::min(data.attacker->shields + healAmount, maxShields);
 				break;
 			}
-			}
-
-			switch (data.weaponId) {
 			case WeaponId::SavantDiscoidRailgun: {
 				// Savant Entropy Gauntlets behavior - Apply timer and overlay
 				if (units_dat::BaseProperty[data.target->id] & UnitProperty::Spellcaster) {
@@ -617,14 +626,6 @@ namespace hooks {
 					scbw::set_generic_value(data.target, ValueId::Amitosis, 0);
 				}
 			}*/
-			case UnitId::ProtossSimulacrum: {
-				// Autovitality - Simulacrum behavior
-				if (!scbw::isAlliedTo(data.target->playerId, data.attacker->playerId)
-					&& scbw::get_generic_timer(data.target, ValueId::SimulacrumCloneTimer == 0)) {
-					scbw::set_generic_timer(data.target, ValueId::SimulacrumCloneTimer, 5 * 24); // 5 seconds may be too long, needs testing
-				}
-				break;
-			}
 			case WeaponId::NuclearMissile: {
 				// Nuclear Missile - Ground Zero
 				if (data.target->hitPoints > data.finalDamage && irradiateTarget(data.target)) {

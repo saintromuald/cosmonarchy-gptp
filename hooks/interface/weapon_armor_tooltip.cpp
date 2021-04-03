@@ -392,6 +392,7 @@ namespace hooks {
 		addStatus(statuses, "Controlled Demolition", -1, scbw::get_generic_timer(unit, ValueId::ControlledDemolitionTimer), TimerType::Aise);
 		addStatus(statuses, "Emergency Detonation", -1, scbw::get_generic_timer(unit, ValueId::EmergencyDetonationTimer), TimerType::Aise);
 		addStatus(statuses, "Binding Grip", -1, scbw::get_generic_timer(unit, ValueId::BindingGripTimer), TimerType::Aise);
+		addStatus(statuses, "Autovitality", -1, scbw::get_generic_timer(unit, ValueId::SimulacrumCloneTimer), TimerType::Aise);
 
 		// Aise Value
 		addStatus(statuses, "Energy Decay", scbw::get_generic_value(unit, ValueId::EntropyGauntlets));
@@ -404,6 +405,9 @@ namespace hooks {
 		addStatus(statuses, "Khaydarian Eclipse", scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch));
 		addStatus(statuses, "Robotic Sapience", scbw::get_generic_value(unit, ValueId::RoboticSapience));
 		addStatus(statuses, "Reconstitution", scbw::get_generic_rust_value(unit, ValueId::Reconstitution));
+
+
+		// Aise Value - Gimmicked
 		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 0);
 		addStatus(statuses, "Dirge", scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 1);
 		addStatus(statuses, "Swarming Omen", scbw::get_generic_timer(unit, ValueId::SwarmingOmenStatus) > 0);
@@ -415,8 +419,6 @@ namespace hooks {
 		addStatus(statuses, "Cutaneous Barrier", scbw::get_generic_value(unit, ValueId::CutaneousBarrier) > 0);
 		addStatus(statuses, "Infested", scbw::get_generic_value(unit, ValueId::InfestedByAkistrokor) > 0);
 		addStatus(statuses, "Enthralling Assault", scbw::get_generic_value(unit, ValueId::EnthrallingTalons) > 0);
-
-		// Aise Value - Gimmicked
 		addStatus(statuses, "Phase Link", scbw::get_aise_value(unit, nullptr, AiseId::HasClarionLink, 0, 0));
 		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0); // for caster
 		bool malice = scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0);
