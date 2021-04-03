@@ -13,6 +13,8 @@
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
 
 #ifdef _MSC_VER
+typedef float             float32;
+typedef double            float64;
 typedef unsigned __int32  uint32;
 typedef unsigned __int16  uint16;
 typedef unsigned __int8   uint8;
