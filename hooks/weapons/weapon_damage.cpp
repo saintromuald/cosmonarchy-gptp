@@ -28,6 +28,9 @@ namespace {
 	bool placeHallucination(CUnit* unit);
 	void unitDestructor(CUnit * unit);
 
+	// For updateCorrosiveSpores
+	uint32_t getCorrosiveSporesImage(CUnit* unit); // 004F41F0
+
 } //unnamed namespace
 
 //copied from wpnspellhit and renamed
@@ -890,7 +893,7 @@ namespace hooks {
 		case UnitId::ProtossAugur: {
 			// Augur - Death behavior
 			augurSacrifice(data.target);
-		}
+			}
 		}
 
 		if (data.attacker != nullptr) {
@@ -986,6 +989,67 @@ namespace hooks {
 		}
 		return false;
 	}
+
+	// TODO: Refactor
+	// Hooked to change Corrosive Spore timer - Pr0nogo
+	int32_t updateCorrosiveSpores(CUnit* target) { // 004F4480
+		uint8_t sporeCount; // al
+		uint32_t overlayMultiplier; // eax
+		uint8_t overlayOffset; // cl
+		int32_t overlay; // eax
+		int32_t v6; // eax
+		CUnit* targetFinal; // ecx
+		uint32_t result_sub_1; // esi
+		uint32_t acidTimeMax; // edx
+		uint32_t result; // eax
+		uint32_t v11_acidSporeTime; // ecx
+		CImage* image;
+		CSprite* spriteFinal;
+
+		sporeCount = target->corrosiveSporeCount;
+		if (sporeCount < 9u) {
+			target->corrosiveSporeCount = sporeCount + 1;
+		}
+		overlayMultiplier = target->corrosiveSporeCount >> 1;
+		if (overlayMultiplier >= 3) {
+			overlayMultiplier = 3;
+		}
+		overlayOffset = scbw::getOverlayOffset(target->id);
+		image = target->getOverlay(overlayMultiplier + 4 * overlayOffset + ImageId::AcidSpores_1_Overlay_Small);
+		if (image) {
+			overlay = image->id;
+		}
+		if (!overlay) {
+			target->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
+			v6 = getCorrosiveSporesImage(target);
+			targetFinal = target->subunit;
+			if (!targetFinal)
+				targetFinal = target;
+			spriteFinal = targetFinal->sprite;
+			spriteFinal->createOverlay(v6, spriteFinal->position.x, spriteFinal->position.y, 0);
+		}
+
+		result_sub_1 = 0;
+		acidTimeMax = 99999;
+		result = 0;
+
+		while (1) {
+			v11_acidSporeTime = target->acidSporeTime[result];
+			if (!v11_acidSporeTime)
+				break;
+			if (v11_acidSporeTime < acidTimeMax) {
+				result_sub_1 = result;
+				acidTimeMax = v11_acidSporeTime;
+			}
+			if (++result >= 9) {
+				target->acidSporeTime[result_sub_1] = VithriliskCorrosiveSporeTimer;
+				return result;
+			}
+		}
+
+		target->acidSporeTime[result] = VithriliskCorrosiveSporeTimer;
+		return result;
+	}
 } //hooks
 
 namespace {
@@ -1058,6 +1122,20 @@ namespace {
 			CALL Func_unitDestructor
 			POPAD
 		}
+	}
+
+	// For updateCorrosiveSpores
+	const u32 Func_getCorrosiveSporesImage = 0x004F41F0;
+	uint32_t getCorrosiveSporesImage(CUnit* unit) {
+		static uint32_t result;
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			CALL Func_getCorrosiveSporesImage
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 
 } //unnamed namespace

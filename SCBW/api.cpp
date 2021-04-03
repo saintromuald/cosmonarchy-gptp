@@ -259,9 +259,7 @@ void playSound(u32 sfxId, CUnit* sourceUnit) {
 		CALL Func_PlaySound
 		POPAD
 	}
-
 }
-
 
 void print(std::string text, u32 color) {
 	printText(text.c_str(), color);

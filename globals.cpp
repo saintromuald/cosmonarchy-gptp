@@ -704,7 +704,6 @@ namespace scbw {
 				child->acidSporeTime[i] = parent->acidSporeTime[i];
 		}
 
-
 		// Inherit Irradiate
 		if (parent->irradiateTimer != 0)
 			child->irradiateTimer = parent->irradiateTimer;
