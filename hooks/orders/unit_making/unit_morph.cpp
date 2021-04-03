@@ -133,14 +133,10 @@ namespace hooks {
 	;
 
 	void orders_Morph1(CUnit* unit) {
-		//scbw::printText("Morph...");
 		if (unit->mainOrderState == 0) {
 
-			if (scbw::isConventionalUnitMorphSource(unit->id,true,true)
-				
-				)
+			if (scbw::isConventionalUnitMorphSource(unit->id,true,true))
 			{
-				//scbw::printText("Is Conventional");
 				if (!hasSuppliesForUnit(
 					unit->buildQueue[unit->buildQueueSlot],
 					unit->playerId,
@@ -152,7 +148,6 @@ namespace hooks {
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 				else {
-					//scbw::printText("Setup egg");
 					bool bStopThere = false;
 					uint16 eggId;
 					switch (unit->id) {
@@ -197,8 +192,7 @@ namespace hooks {
 					default:
 						if (unit->id != UnitId::ProtossCantavis) {
 							bStopThere = true;
-						}
-						
+						}						
 						break;
 					}
 					//scbw::printFormattedText("Stop status: %d", (int)bStopThere);
