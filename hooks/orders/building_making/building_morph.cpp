@@ -831,10 +831,6 @@ namespace hooks {
 			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLarvalColony, ignoreIncomplete);
 			break;
 
-		case UnitId::ZergAkisNest:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKonvilNest, ignoreIncomplete);
-			break;
-
 		case UnitId::ZergIrolIris:
 			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergOthstolOviform, ignoreIncomplete);
 			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlazilArbor, ignoreIncomplete);
@@ -867,6 +863,11 @@ namespace hooks {
 		case UnitId::ZergQuazilQuay:
 			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
 			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlmakAntre, ignoreIncomplete);
+			break;
+
+		case UnitId::ZergMatralNest:
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAkisNest, ignoreIncomplete);
+			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKonvilNest, ignoreIncomplete);
 			break;
 
 		case UnitId::ZergUltrakCavern:

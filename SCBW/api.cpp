@@ -670,19 +670,19 @@ bool isZergEgg(u16 id, bool allow_normal_eggs, bool allow_larvae) {
 }
 bool isConventionalUnitMorphResult(u16 id) {
 	switch (id) {
-	case UnitId::ZergAlkajelisk:
-	case UnitId::ZergKeskathalor:
-	case UnitId::ZergGeszithalor:
-	case UnitId::ZergVithrilisk:
-	case UnitId::ZergGorgrokor:
-	case UnitId::ZergVorvaling:
-	case UnitId::ZergNathrokor:
-	case UnitId::ZergKalkalisk:
-	case UnitId::ZergBactalisk:
-	case UnitId::ZergAlmaksalisk:
-	case UnitId::ZergLakizilisk:
 	case UnitId::ZergIroleth:
 	case UnitId::ZergOthstoleth:
+	case UnitId::ZergVorvaling:
+	case UnitId::ZergNathrokor:
+	case UnitId::ZergBactalisk:
+	case UnitId::ZergLakizilisk:
+	case UnitId::ZergVithrilisk:
+	case UnitId::ZergGorgrokor:
+	case UnitId::ZergGeszithalor:
+	case UnitId::ZergAlmaksalisk:
+	case UnitId::ZergKalkalisk:
+	case UnitId::ZergAlkajelisk:
+	case UnitId::ZergKeskathalor:
 	case UnitId::ZergIsthrathaleth:
 	case UnitId::ProtossAugur:
 		return true;
@@ -707,14 +707,15 @@ bool isAnyMorphMorphResult(u16 id) {
 }
 bool isConventionalUnitMorphSource(u16 id, bool allow_larvae, bool allow_high_templar) {
 	switch (id) {
-	case UnitId::ZergUltrakor:
+	case UnitId::ZergOvileth:
+	case UnitId::ZergIroleth:
+	case UnitId::ZergZergling:
+	case UnitId::ZergHydralisk:
 	case UnitId::ZergMutalisk:
 	case UnitId::ZergGorgrokor:
-	case UnitId::ZergHydralisk:
-	case UnitId::ZergZergling:
 	case UnitId::ZergQuazilisk:
-	case UnitId::ZergIroleth:
-	case UnitId::ZergOvileth:
+	case UnitId::ZergMatraleth:
+	case UnitId::ZergUltrakor:
 	case UnitId::ZergZoryusthaleth:
 		return true;
 	default:
@@ -733,23 +734,24 @@ bool isZergBuildingMorphResult(u16 id){
 	case UnitId::ZergSire:
 	case UnitId::ZergHive:
 	case UnitId::ZergLair:
+	case UnitId::ZergOthstolOviform:
+	case UnitId::ZergAlazilArbor:
 	case UnitId::ZergLarvalColony:
 	case UnitId::ZergSporeColony:
 	case UnitId::ZergSunkenColony:
+	case UnitId::ZergVorvalPond:
+	case UnitId::ZergNathrokLake:
+	case UnitId::ZergVithrilHaunt:
+	case UnitId::ZergGorgrokApiary:
+	case UnitId::ZergGeszithRoost:
+	case UnitId::ZergBactalDen:
+	case UnitId::ZergLakizDen:
+	case UnitId::ZergAlmakAntre:
+	case UnitId::ZergKalkathBloom:
+	case UnitId::ZergAkisNest:
 	case UnitId::ZergKonvilNest:
 	case UnitId::ZergKeskathGrotto:
 	case UnitId::ZergAlkajChasm:
-	case UnitId::ZergGeszithRoost:
-	case UnitId::ZergVithrilHaunt:
-	case UnitId::ZergGorgrokApiary:
-	case UnitId::ZergBactalDen:
-	case UnitId::ZergAlmakAntre:
-	case UnitId::ZergLakizDen:
-	case UnitId::ZergVorvalPond:
-	case UnitId::ZergNathrokLake:
-	case UnitId::ZergKalkathBloom:
-	case UnitId::ZergOthstolOviform:
-	case UnitId::ZergAlazilArbor:
 	case UnitId::ZergIsthrathMound:
 		return true;
 	default:
@@ -762,17 +764,17 @@ bool isZergBuildingMorphSource(u16 id){
 	case UnitId::ZergHive:
 	case UnitId::ZergLair:
 	case UnitId::ZergHatchery:
+	case UnitId::ZergIrolIris:
+	case UnitId::ZergOthstolOviform:
 	case UnitId::ZergCreepColony:
-	case UnitId::ZergAkisNest:
-	case UnitId::ZergUltrakCavern:
+	case UnitId::ZergSpawningPool:
 	case UnitId::ZergMutalSpire:
 	case UnitId::ZergGorgrokApiary:
 	case UnitId::ZergHydralDen:
 	case UnitId::ZergBactalDen:
-	case UnitId::ZergSpawningPool:
 	case UnitId::ZergQuazilQuay:
-	case UnitId::ZergIrolIris:
-	case UnitId::ZergOthstolOviform:
+	case UnitId::ZergMatralNest:
+	case UnitId::ZergUltrakCavern:
 	case UnitId::ZergZoryusShroud:
 		return true;
 	default:
