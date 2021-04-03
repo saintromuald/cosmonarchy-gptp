@@ -192,10 +192,9 @@ namespace hooks {
 					default:
 						if (unit->id != UnitId::ProtossCantavis) {
 							bStopThere = true;
-						}						
+						}
 						break;
 					}
-					//scbw::printFormattedText("Stop status: %d", (int)bStopThere);
 					if (!bStopThere) {
 						if (unit->id == UnitId::ProtossCantavis) {
 							replaceUnitWithType(unit, UnitId::ProtossAugur);
