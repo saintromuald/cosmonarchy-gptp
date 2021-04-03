@@ -78,7 +78,6 @@ public:
 };
 struct CustomUnitStruct {
 	// Timers
-
 	std::unordered_map<int, int> genericTimers;
 
 	void setGenericTimer(int variable, int value) {
@@ -94,7 +93,6 @@ struct CustomUnitStruct {
 	}
 
 	// Generics
-
 	template <typename T>
 	std::unordered_map<int, T>& getGenericMap() {
 		static std::unordered_map<int, T> map;
@@ -118,6 +116,7 @@ struct CustomUnitStruct {
 		return &map[variable];
 	}
 
+	// Legacy Functions
 	void setGenericValue(int variable, int value) {
 		setGeneric<int>(variable, value);
 	}
@@ -139,7 +138,6 @@ struct CustomUnitStruct {
 	}
 
 	// Arrays
-
 	template<typename T>
 	std::vector<T>& getGenericVector(int variable) {
 		auto vec = getGeneric<std::vector<T>>(variable);
