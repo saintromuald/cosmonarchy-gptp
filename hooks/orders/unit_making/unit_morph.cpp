@@ -225,9 +225,7 @@ namespace hooks {
 						unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 						unit->mainOrderState = 1;
 						auto origin = unit->eggOrigin;
-						if (origin == UnitId::ZergZergling
-							|| origin == UnitId::ZergNathrokor	  // Temporary
-							|| origin == UnitId::ZergVorvaling) { // Kalkaleth uses air cocoon
+						if (origin == UnitId::ZergZergling) {
 							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
 						}
 						else if (origin == UnitId::ZergUltrakor 
