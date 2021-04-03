@@ -368,16 +368,20 @@ namespace hooks {
 			weaponDamage_fatal(data);
 		}
 
+		
+
 		// Deal damage, except for Independent damage, which always deals 0
-		if (data.damageType != DamageType::Independent && data.target->defensiveMatrixHp == 0 && canDamage) {
+		// damageDivisor check needed to prevent recursive phase link calls (mutex crash)
+		if (data.damageDivisor != 0 && data.damageType != DamageType::Independent && data.target->defensiveMatrixHp == 0 && canDamage) {
 			data.target->damageHp(data.finalDamage, data.attacker, data.attackingPlayerId, data.weaponId != WeaponId::Irradiate);
 			// Prevent Science Vessels from being continuously revealed to the irradiated target
 		}
 
 		// Reduce shields
 		if (data.shieldReduceAmount != 0 && canDamage) {
-			if (scbw::get_aise_value(data.target, nullptr, AiseId::HasClarionLink, 0, 0)) {
-				scbw::sendGPTP_aise_cmd(data.target, nullptr, GptpId::SpreadClarionDamage, data.shieldReduceAmount, data.damageType, data.direction);
+			// damageDivisor check needed to prevent recursive phase link calls (mutex crash)
+			if (data.damageDivisor != 0 && scbw::get_aise_value(data.target, nullptr, AiseId::HasClarionLink, 0, 0)) {
+				scbw::sendGPTP_aise_cmd(data.target, data.attacker, GptpId::SpreadClarionDamage, data.shieldReduceAmount, data.damageType, data.direction);
 			}
 			else {
 				data.target->shields -= data.shieldReduceAmount;
@@ -386,7 +390,8 @@ namespace hooks {
 				}
 			}
 		}
-		if (shield_overlay) {
+		// damageDivisor check needed to prevent recursive phase link calls (mutex crash)
+		if (data.damageDivisor != 0 && shield_overlay) {
 			createShieldOverlay(data.target, data.direction);
 		}
 
