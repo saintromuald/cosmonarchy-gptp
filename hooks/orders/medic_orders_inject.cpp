@@ -88,7 +88,7 @@ namespace {
 	{
 		static CUnit* a1;
 		static CUnit* a2;
-		static u32 result;
+		static uint32 result;
 		__asm
 		{
 			MOV a1, EBX
@@ -107,7 +107,7 @@ namespace {
 	void __declspec(naked) doMedicHeal_Wrapper() {
 		static CUnit* medic;
 		static CUnit* target;
-		static u32 result;
+		static uint32 result;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP

@@ -7,22 +7,22 @@ namespace { // helpers
     void playImageIscript(CImage* a1, char a2); // 004D8470
 
     // For updateUnitStrengthAndApplyDefaultOrders
-    s16 incrementUnitScores(CUnit* a1, int a2); // 00488BF0
+    int16 incrementUnitScores(CUnit* a1, int a2); // 00488BF0
     void incrementUnitScoresEx(int a1, CUnit* a2, int a3); // 00488D50
     void playSoundFromDirection(CUnit* a1, int a2); // 0049B5B0
     void refreshUnitVision(CUnit* a1); // 004E5F30
     void initUnitTrapDoodad(CUnit* a1); // 004E6490
     COrder* removeOrderFromUnitQueue(COrder* a1, CUnit* a2); // 004742D0
-    COrder* performAnotherOrder(u8 a1, int a2, CUnit* a3, s16 a4, Point32* a5, CUnit* a6); // 004745F0
+    COrder* performAnotherOrder(uint8 a1, int a2, CUnit* a3, int16 a4, Point32* a5, CUnit* a6); // 004745F0
     void orders_Nothing2(CUnit* a1); // 00475000
-    void orderComputerClear(CUnit* a1, u8 a2); // 00475310
-    void order(int a1, CUnit* a2, s8 a3, Point32* a4, CUnit* a5, int a6); // 00474810
-    u32 getUnitStrength(CUnit* a1, int a2, bool a3); // 00431800
+    void orderComputerClear(CUnit* a1, uint8 a2); // 00475310
+    void order(int a1, CUnit* a2, int8 a3, Point32* a4, CUnit* a5, int a6); // 00474810
+    uint32 getUnitStrength(CUnit* a1, int a2, bool a3); // 00431800
 }
 
 namespace hooks {
 	bool unitIsFloorTrap(CUnit* unit) { // 0047B070
-		u16 id = unit->id;
+		uint16 id = unit->id;
         /*switch (id) {
         case UnitId::Special_FloorGunTrap:
         case UnitId::Special_FloorMissileTrap:
@@ -32,7 +32,7 @@ namespace hooks {
         }*/
         return false;
 	}
-    bool unitIsInstallationAsset(u16 id) {
+    bool unitIsInstallationAsset(uint16 id) {
 /*      
         //originally:
         if (id >= UnitId::Special_FloorMissileTrap && id <= UnitId::Special_RightWallFlameTrap) {
@@ -43,10 +43,10 @@ namespace hooks {
         }
         return false;
     }
-    s16 disableUnit(CUnit* pUnit) { // 0047B4B0
+    int16 disableUnit(CUnit* pUnit) { // 0047B4B0
         int unitFlags; // eax
         CImage* i; // esi
-        s16 unitType; // ax
+        int16 unitType; // ax
 
         unitFlags = pUnit->status;
         if (!(unitFlags & UnitStatus::DoodadStatesThing) && pUnit->lockdownTimer==0 && pUnit->stasisTimer==0 
@@ -67,12 +67,12 @@ namespace hooks {
             }
             /*
             ByteOperations::SetLowByte(unitFlags, pUnit->id);
-            if ((s16)unitFlags == UnitId::Special_FloorMissileTrap
-            || (s16)unitFlags == UnitId::Special_FloorGunTrap
-            || (s16)unitFlags == UnitId::Special_WallMissileTrap
-            || (s16)unitFlags == UnitId::Special_WallFlameTrap
-            || (s16)unitFlags == UnitId::Special_RightWallMissileTrap
-            || (s16)unitFlags == UnitId::Special_RightWallFlameTrap) {
+            if ((int16)unitFlags == UnitId::Special_FloorMissileTrap
+            || (int16)unitFlags == UnitId::Special_FloorGunTrap
+            || (int16)unitFlags == UnitId::Special_WallMissileTrap
+            || (int16)unitFlags == UnitId::Special_WallFlameTrap
+            || (int16)unitFlags == UnitId::Special_RightWallMissileTrap
+            || (int16)unitFlags == UnitId::Special_RightWallFlameTrap) {
             pUnit->status |= UnitStatus::Cloaked | UnitStatus::RequiresDetection;
                 pUnit->visibilityStatus = 0x80000000;
                 ByteOperations::SetLowByte(pUnit->secondaryOrderTimer, 0);
@@ -81,28 +81,28 @@ namespace hooks {
         return unitFlags;
     }
 
-    u32 updateUnitStrengthAndApplyDefaultOrders(CUnit* a1) { // 0049FA40
+    uint32 updateUnitStrengthAndApplyDefaultOrders(CUnit* a1) { // 0049FA40
         CUnit* v1; // esi
         int v2; // ecx
-        s16 v3; // ax
-        u16 v4; // cx
-        s8 v5; // al
+        int16 v3; // ax
+        uint16 v4; // cx
+        int8 v5; // al
         char v6; // al
         COrder* v7; // eax
-        u8 v8; // cl
+        uint8 v8; // cl
         CUnit* v9; // eax
         CUnit* v10; // eax
         CUnit* v11; // ecx
-        u8 v12; // cl
+        uint8 v12; // cl
         int v13; // ecx
         int v14; // eax
         CSprite* v15; // eax
-        u8 v16; // cl
-        u32 result; // eax
+        uint8 v16; // cl
+        uint32 result; // eax
         int v18; // ecx
 
         v1 = a1;
-        v2 = units_dat::BaseProperty[(u16)a1->id];
+        v2 = units_dat::BaseProperty[(uint16)a1->id];
         if (v2 & UnitProperty::TwoUnitsIn1Egg) {
             incrementUnitScores(a1, -1);
             v1->status |= UnitStatus::Completed;
@@ -113,7 +113,7 @@ namespace hooks {
         }
 
         incrementUnitScoresEx(1, v1, 1);
-        if (units_dat::BaseProperty[(u16)v1->id] & UnitProperty::PermanentCloak) {
+        if (units_dat::BaseProperty[(uint16)v1->id] & UnitProperty::PermanentCloak) {
             playSoundFromDirection(v1, 273);
         }
 
@@ -164,7 +164,7 @@ namespace hooks {
             v1->visibilityStatus = 0x80000000;
             ByteOperations::SetLowByte(v1->secondaryOrderTimer, 0);
         }*/
-        v5 = playerTable[(u8)v1->playerId].type;
+        v5 = playerTable[(uint8)v1->playerId].type;
         if (v5 == 3) { // Rescue Passive
             v6 = v1->mainOrderId;
             v1->userActionFlags |= 1u;
@@ -194,7 +194,7 @@ namespace hooks {
             }
             orderComputerClear(v1, v12);
         }
-        v13 = (u16)v1->id;
+        v13 = (uint16)v1->id;
         v14 = units_dat::BaseProperty[v13];
         if (v14 & UnitProperty::NeutralAccessories) {
             v15 = v1->sprite;
@@ -215,7 +215,7 @@ namespace hooks {
 namespace { // helper wrappers
     // For disableUnit
 
-    const u32 Func_playImageIscript = 0x004D8470;
+    const uint32 Func_playImageIscript = 0x004D8470;
     void playImageIscript(CImage* a1, char a2) {
         __asm {
             PUSHAD
@@ -228,8 +228,8 @@ namespace { // helper wrappers
 
     // For updateUnitStrengthAndApplyDefaultOrders
 
-    const u32 Func_incrementUnitScores = 0x00488BF0;
-    s16 incrementUnitScores(CUnit* a1, int a2) {
+    const uint32 Func_incrementUnitScores = 0x00488BF0;
+    int16 incrementUnitScores(CUnit* a1, int a2) {
         static int result;
         __asm {
             PUSHAD
@@ -239,11 +239,11 @@ namespace { // helper wrappers
             MOV result, EAX
             POPAD
         }
-        return (s16)result;
+        return (int16)result;
     }
 
 
-    const u32 Func_incrementUnitScoresEx = 0x00488D50;
+    const uint32 Func_incrementUnitScoresEx = 0x00488D50;
     void incrementUnitScoresEx(int a1, CUnit* a2, int a3) {
         __asm {
             PUSHAD
@@ -255,7 +255,7 @@ namespace { // helper wrappers
         }
     }
 
-    const u32 Func_playSoundFromDirection = 0x0049B5B0;
+    const uint32 Func_playSoundFromDirection = 0x0049B5B0;
     void playSoundFromDirection(CUnit* a1, int a2) {
         __asm {
             PUSHAD
@@ -266,7 +266,7 @@ namespace { // helper wrappers
         }
     }
 
-    const u32 Func_refreshUnitVision = 0x004E5F30;
+    const uint32 Func_refreshUnitVision = 0x004E5F30;
     void refreshUnitVision(CUnit* a1) {
         __asm {
             PUSHAD
@@ -276,7 +276,7 @@ namespace { // helper wrappers
         }
     }
 
-    const u32 Func_initUnitTrapDoodad = 0x004E6490;
+    const uint32 Func_initUnitTrapDoodad = 0x004E6490;
     void initUnitTrapDoodad(CUnit* a1) {
         __asm {
             PUSHAD
@@ -286,7 +286,7 @@ namespace { // helper wrappers
         }
     }
 
-    const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
+    const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
     COrder* removeOrderFromUnitQueue(COrder* a1, CUnit* a2) {
         static COrder* result;
         __asm {
@@ -300,8 +300,8 @@ namespace { // helper wrappers
         return result;
     }
 
-    const u32 Func_performAnotherOrder = 0x004745F0;
-    COrder* performAnotherOrder(u8 a1, int a2, CUnit* a3, s16 a4, Point32* a5, CUnit* a6) {
+    const uint32 Func_performAnotherOrder = 0x004745F0;
+    COrder* performAnotherOrder(uint8 a1, int a2, CUnit* a3, int16 a4, Point32* a5, CUnit* a6) {
         static COrder* result;
         __asm {
             PUSHAD
@@ -318,7 +318,7 @@ namespace { // helper wrappers
         return result;
     }
 
-    const u32 Func_orders_Nothing2 = 0x00475000;
+    const uint32 Func_orders_Nothing2 = 0x00475000;
     void orders_Nothing2(CUnit* a1) {
         __asm {
             PUSHAD
@@ -328,8 +328,8 @@ namespace { // helper wrappers
         }
     }
     
-    const u32 Func_orderComputerClear = 0x00475310;
-    void orderComputerClear(CUnit* a1, u8 a2) {
+    const uint32 Func_orderComputerClear = 0x00475310;
+    void orderComputerClear(CUnit* a1, uint8 a2) {
         __asm {
             PUSHAD
             MOV ESI, a1
@@ -339,8 +339,8 @@ namespace { // helper wrappers
         }
     }
 
-    const u32 Func_order = 0x00474810;
-    void order(int a1, CUnit* a2, s8 a3, Point32* a4, CUnit* a5, int a6) {
+    const uint32 Func_order = 0x00474810;
+    void order(int a1, CUnit* a2, int8 a3, Point32* a4, CUnit* a5, int a6) {
         __asm {
             PUSHAD
             MOV EAX, a1
@@ -354,9 +354,9 @@ namespace { // helper wrappers
         }
     }
 
-    const u32 Func_getUnitStrength = 0x00431800;
-    u32 getUnitStrength(CUnit* a1, int a2, bool a3) {
-        static u32 result;
+    const uint32 Func_getUnitStrength = 0x00431800;
+    uint32 getUnitStrength(CUnit* a1, int a2, bool a3) {
+        static uint32 result;
         __asm {
             PUSHAD
             MOV EAX, a1

@@ -5,7 +5,7 @@
 
 namespace {
 
-	void setUnitPathing(CUnit* unit, u8 unkPathRelated);															//0x00401360
+	void setUnitPathing(CUnit* unit, uint8 unkPathRelated);															//0x00401360
 	bool isUnitPositions2Equal(CUnit* unit);																		//0x00402160
 	CUnit* connectAddonCheck(CUnit* unit);																			//0x004404A0
 	void function_00463470(CUnit* unit);																			//0x00463470
@@ -18,9 +18,9 @@ namespace {
 	void function_00469F60(CUnit* unit, int x, int y);																//0x00469F60
 	void function_0046A560(CUnit* unit);																			//0x0046A560
 	void function_0046A5A0(CUnit* unit);																			//0x0046A5A0
-	u32 function_00473FB0(CUnit* unit, u8 playerId, int x, int y, u16 unitId, u8 unk1, u8 unk2, u8 unk3, u8 unk4 );	//0x00473FB0
+	uint32 function_00473FB0(CUnit* unit, uint8 playerId, int x, int y, uint16 unitId, uint8 unk1, uint8 unk2, uint8 unk3, uint8 unk4 );	//0x00473FB0
 	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);														//0x004742D0
-	void function_00474760(CUnit* unit, COrder* order, u8 orderId);													//0x00474760
+	void function_00474760(CUnit* unit, COrder* order, uint8 orderId);													//0x00474760
 	void actUnitReturnToIdle(CUnit* unit);																			//0x00475420
 	bool function_0047DF90(CUnit* unit);																			//0x0047DF90
 	void refreshLayer3And4();																						//0x0048D9A0
@@ -28,8 +28,8 @@ namespace {
 	void function_0048E310();																						//0x0048E310
 	void placebuildingProc();																						//0x0048E6E0
 	void playBuildingLandSound(CUnit* unit);																		//0x0048F5A0
-	void SetUnitMovementSpeed(CUnit* unit, u32 newSpeed);															//0x004951C0
-	void function_00498150(CSprite* sprite, u8 newVerticalOffset);													//0x00498150
+	void SetUnitMovementSpeed(CUnit* unit, uint32 newSpeed);															//0x004951C0
+	void function_00498150(CSprite* sprite, uint8 newVerticalOffset);													//0x00498150
 	void function_004997E0(CSprite* sprite);																		//0x004997E0
 	void function_004C3B40(CUnit* unit);																			//0x004C3B40
 	bool function_004EB9C0(CUnit* unit, int x, int y);																//0x004EB9C0
@@ -134,7 +134,7 @@ void orders_BuildingLand(CUnit* unit) {
 
 			//check for units occupying the landing zone before
 			//the final vertical movement started?
-			u32 return_00473FB0 = 
+			uint32 return_00473FB0 = 
 				function_00473FB0(unit,unit->playerId,x,y,unit->id,0,0,1,0);
 
 			if(return_00473FB0 != 0) {
@@ -422,8 +422,8 @@ void orders_BuildingLiftoff(CUnit* unit) {
 
 namespace {
 
-const u32 Func_SetUnitPathing = 0x00401360;
-void setUnitPathing(CUnit* unit, u8 unkPathRelated) {
+const uint32 Func_SetUnitPathing = 0x00401360;
+void setUnitPathing(CUnit* unit, uint8 unkPathRelated) {
 
 	__asm {
 		PUSHAD
@@ -450,7 +450,7 @@ bool isUnitPositions2Equal(CUnit* unit) {
 
 ;
 
-const u32 Func_ConnectAddonCheck = 0x004404A0;
+const uint32 Func_ConnectAddonCheck = 0x004404A0;
 CUnit* connectAddonCheck(CUnit* unit) {
 
 	CUnit* found_addon;
@@ -469,7 +469,7 @@ CUnit* connectAddonCheck(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub463470 = 0x00463470;
+const uint32 Func_Sub463470 = 0x00463470;
 void function_00463470(CUnit* unit) {
 
 	__asm {
@@ -483,7 +483,7 @@ void function_00463470(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub4634E0 = 0x004634E0;
+const uint32 Func_Sub4634E0 = 0x004634E0;
 void function_004634E0(CUnit* unit) {
 
 	__asm {
@@ -497,7 +497,7 @@ void function_004634E0(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub463640 = 0x00463640;
+const uint32 Func_Sub463640 = 0x00463640;
 void function_00463640(CUnit* unit) {
 
 	__asm {
@@ -511,7 +511,7 @@ void function_00463640(CUnit* unit) {
 
 ;
 
-const u32 Func_CompleteAddon = 0x00463D50;
+const uint32 Func_CompleteAddon = 0x00463D50;
 void completeAddon(CUnit* unit, CUnit* addon) {
 
 	__asm {
@@ -526,7 +526,7 @@ void completeAddon(CUnit* unit, CUnit* addon) {
 
 ;
 
-const u32 Func_Sub464300 = 0x00464300;
+const uint32 Func_Sub464300 = 0x00464300;
 void function_00464300(CUnit* unit) {
 
 	__asm {
@@ -540,7 +540,7 @@ void function_00464300(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub464930 = 0x00464930;
+const uint32 Func_Sub464930 = 0x00464930;
 void disconnectFromAddOn(CUnit* unit) {
 
   __asm {
@@ -554,7 +554,7 @@ void disconnectFromAddOn(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub469EC0 = 0x00469EC0;
+const uint32 Func_Sub469EC0 = 0x00469EC0;
 void function_00469EC0(CUnit* unit, int x, int y) {
 
 	__asm {
@@ -570,7 +570,7 @@ void function_00469EC0(CUnit* unit, int x, int y) {
 
 ;
 
-const u32 Func_Sub469F60 = 0x00469F60;
+const uint32 Func_Sub469F60 = 0x00469F60;
 void function_00469F60(CUnit* unit, int x, int y) {
 
 	__asm {
@@ -586,7 +586,7 @@ void function_00469F60(CUnit* unit, int x, int y) {
 
 ;
 
-const u32 Func_Sub46A560 = 0x0046A560;
+const uint32 Func_Sub46A560 = 0x0046A560;
 void function_0046A560(CUnit* unit) {
 
 	__asm {
@@ -600,7 +600,7 @@ void function_0046A560(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub46A5A0 = 0x0046A5A0;
+const uint32 Func_Sub46A5A0 = 0x0046A5A0;
 void function_0046A5A0(CUnit* unit) {
 
 	__asm {
@@ -614,10 +614,10 @@ void function_0046A5A0(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub473FB0 = 0x00473FB0;
-u32 function_00473FB0(CUnit* unit, u8 playerId, int x, int y, u16 unitId, u8 unk1, u8 unk2, u8 unk3, u8 unk4 ) {
+const uint32 Func_Sub473FB0 = 0x00473FB0;
+uint32 function_00473FB0(CUnit* unit, uint8 playerId, int x, int y, uint16 unitId, uint8 unk1, uint8 unk2, uint8 unk3, uint8 unk4 ) {
 
-	u32 return_value;
+	uint32 return_value;
 
 	__asm {
 		PUSHAD
@@ -647,7 +647,7 @@ u32 function_00473FB0(CUnit* unit, u8 playerId, int x, int y, u16 unitId, u8 unk
 
 ;
 
-const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
+const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
 void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 	__asm {
@@ -662,8 +662,8 @@ void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 ;
 
-const u32 Func_Sub474760 = 0x00474760;
-void function_00474760(CUnit* unit, COrder* order, u8 orderId) {
+const uint32 Func_Sub474760 = 0x00474760;
+void function_00474760(CUnit* unit, COrder* order, uint8 orderId) {
 
 	__asm {
 		PUSHAD
@@ -678,7 +678,7 @@ void function_00474760(CUnit* unit, COrder* order, u8 orderId) {
 
 ;
 
-const u32 Func_ActUnitReturnToIdle = 0x00475420;
+const uint32 Func_ActUnitReturnToIdle = 0x00475420;
 void actUnitReturnToIdle(CUnit* unit) {
 
   __asm {
@@ -692,10 +692,10 @@ void actUnitReturnToIdle(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub47DF90 = 0x0047DF90;
+const uint32 Func_Sub47DF90 = 0x0047DF90;
 bool function_0047DF90(CUnit* unit) {
 
-	Bool32 pre_return_value;
+	bool32 pre_return_value;
 
 	__asm {
 		PUSHAD
@@ -711,7 +711,7 @@ bool function_0047DF90(CUnit* unit) {
 
 ;
 
-const u32 Func_RefreshLayer3And4 = 0x0048D9A0;
+const uint32 Func_RefreshLayer3And4 = 0x0048D9A0;
 void refreshLayer3And4() {
 
 	__asm {
@@ -724,10 +724,10 @@ void refreshLayer3And4() {
 
 ;
 
-const u32 Func_Sub48DDA0 = 0x0048DDA0;
+const uint32 Func_Sub48DDA0 = 0x0048DDA0;
 bool function_0048DDA0() {
 
-	Bool32 pre_return_value;
+	bool32 pre_return_value;
 
 	__asm {
 		PUSHAD
@@ -742,7 +742,7 @@ bool function_0048DDA0() {
 
 ;
 
-const u32 Func_Sub48E310 = 0x0048E310;
+const uint32 Func_Sub48E310 = 0x0048E310;
 void function_0048E310() {
 
 	__asm {
@@ -755,7 +755,7 @@ void function_0048E310() {
 
 ;
 
-const u32 Func_PracebuildingProc = 0x0048E6E0;
+const uint32 Func_PracebuildingProc = 0x0048E6E0;
 void placebuildingProc() {
 
 	__asm {
@@ -768,7 +768,7 @@ void placebuildingProc() {
 
 ;
 
-const u32 Func_PlayBuildingLandSound = 0x0048F5A0;
+const uint32 Func_PlayBuildingLandSound = 0x0048F5A0;
 void playBuildingLandSound(CUnit* unit) {
 
 	__asm {
@@ -782,8 +782,8 @@ void playBuildingLandSound(CUnit* unit) {
 
 ;
 
-const u32 Func_SetUnitMovementSpeed = 0x004951C0;
-void SetUnitMovementSpeed(CUnit* unit, u32 newSpeed) {
+const uint32 Func_SetUnitMovementSpeed = 0x004951C0;
+void SetUnitMovementSpeed(CUnit* unit, uint32 newSpeed) {
 
 	__asm {
 		PUSHAD
@@ -797,8 +797,8 @@ void SetUnitMovementSpeed(CUnit* unit, u32 newSpeed) {
 
 ;
 
-const u32 Func_Sub498150 = 0x00498150;
-void function_00498150(CSprite* sprite, u8 newVerticalOffset) {
+const uint32 Func_Sub498150 = 0x00498150;
+void function_00498150(CSprite* sprite, uint8 newVerticalOffset) {
 
 	__asm {
 		PUSHAD
@@ -812,7 +812,7 @@ void function_00498150(CSprite* sprite, u8 newVerticalOffset) {
 
 ;
 
-const u32 Func_Sub4997E0 = 0x004997E0;
+const uint32 Func_Sub4997E0 = 0x004997E0;
 void function_004997E0(CSprite* sprite) {
 
 	__asm {
@@ -826,7 +826,7 @@ void function_004997E0(CSprite* sprite) {
 
 ;
 
-const u32 Func_Sub4C3B40 = 0x004C3B40;
+const uint32 Func_Sub4C3B40 = 0x004C3B40;
 void function_004C3B40(CUnit* unit) {
 
 	__asm {
@@ -840,10 +840,10 @@ void function_004C3B40(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub4EB9C0 = 0x004EB9C0;
+const uint32 Func_Sub4EB9C0 = 0x004EB9C0;
 bool function_004EB9C0(CUnit* unit, int x, int y) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD

@@ -6,7 +6,7 @@
 namespace graphics {
 
 FontChar* Font::getChar(char c) const {
-  u8 ch = (u8)c;
+  uint8 ch = (uint8)c;
   if (this != nullptr
       && this->low <= ch && ch <= this->high
       && this->chrs[ch - this->low] != (FontChar*)this)

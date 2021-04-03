@@ -7,7 +7,7 @@ namespace {
 
 void CancelResearch_Proc(CUnit* unit);			//53E30
 void CancelUpgrade_Proc(CUnit* unit);			//54280
-void refundQueueSlot(CUnit* unit, u16 slot);	//66A70
+void refundQueueSlot(CUnit* unit, uint16 slot);	//66A70
 void function_00466E40(CUnit* unit);			//66E40
 void AI_CancelStructure(CUnit* unit);			//68280
 void CancelAddon_Proc(CUnit* unit);				//E66E0
@@ -128,7 +128,7 @@ void CMDRECV_CancelResearch() {
 ;
 
 //hooked because the defaut code don't allow multiple selection
-void CMDRECV_CancelTrain(u16 wUnitID) {
+void CMDRECV_CancelTrain(uint16 wUnitID) {
 
 	CUnit* unit;
 
@@ -217,7 +217,7 @@ void CMDRECV_CancelConstruction() {
 
 namespace {
 	
-const u32 Func_Sub453E30 = 0x00453E30;
+const uint32 Func_Sub453E30 = 0x00453E30;
 void CancelResearch_Proc(CUnit* unit) {
 
 	__asm {
@@ -231,7 +231,7 @@ void CancelResearch_Proc(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub454280 = 0x00454280;
+const uint32 Func_Sub454280 = 0x00454280;
 void CancelUpgrade_Proc(CUnit* unit) {
 
 	__asm {
@@ -245,8 +245,8 @@ void CancelUpgrade_Proc(CUnit* unit) {
 
 ;
 
-const u32 Func_refundQueueSlot = 0x00466A70;
-void refundQueueSlot(CUnit* unit, u16 slot) {
+const uint32 Func_refundQueueSlot = 0x00466A70;
+void refundQueueSlot(CUnit* unit, uint16 slot) {
 
 	__asm {
 		PUSHAD
@@ -260,7 +260,7 @@ void refundQueueSlot(CUnit* unit, u16 slot) {
 
 ;
 
-const u32 Func_Sub466E40 = 0x00466E40;
+const uint32 Func_Sub466E40 = 0x00466E40;
 void function_00466E40(CUnit* unit) {
 
 	__asm {
@@ -274,7 +274,7 @@ void function_00466E40(CUnit* unit) {
 
 ;
 
-const u32 Func_AI_CancelStructure = 0x00468280;
+const uint32 Func_AI_CancelStructure = 0x00468280;
 void AI_CancelStructure(CUnit* unit) {
 
 	__asm {
@@ -288,7 +288,7 @@ void AI_CancelStructure(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub4E66E0 = 0x004E66E0;
+const uint32 Func_Sub4E66E0 = 0x004E66E0;
 void CancelAddon_Proc(CUnit* unit) {
 
 	__asm {

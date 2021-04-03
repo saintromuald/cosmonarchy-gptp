@@ -30,7 +30,7 @@ namespace {
 		}
 	};
 	void __declspec(naked) initGameLoad_Wrapper() { //004EF100
-		static u32 a1;
+		static uint32 a1;
 		static char a2;
 		static int result;
 		__asm {

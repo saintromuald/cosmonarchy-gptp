@@ -17,24 +17,24 @@ bool isInfestableUnit(CUnit* unit);																		//0x00402210
 bool unitCanInfest(CUnit* unit);																		//0x00402750
 void AI_AttackUnit(CUnit* unit);																		//0x0043FFD0
 CUnit* findBestAttackTarget(CUnit* unit);																//0x00443080
-bool function_00462EA0(CUnit* unit, u8 unknownByteValue);												//0x00462EA0
+bool function_00462EA0(CUnit* unit, uint8 unknownByteValue);												//0x00462EA0
 void function_00465780(CUnit* unit);																	//0x00465780
 void removeOrderFromUnitQueue(CUnit* unit, COrder* order);												//0x004742D0
-void function_00474A70(CUnit* unit, CUnit* target, u8 orderId);											//0x00474A70
-bool isTargetWithinMinMovementRange(CUnit* unit, CUnit* target, u32 range);								//0x004763D0
+void function_00474A70(CUnit* unit, CUnit* target, uint8 orderId);											//0x00474A70
+bool isTargetWithinMinMovementRange(CUnit* unit, CUnit* target, uint32 range);								//0x004763D0
 bool function_00476610(CUnit* unit, int x, int y);														//0x00476610
 bool isUnitInWeaponRange(CUnit* unit, CUnit* target);													//0x00476870
 void getWeaponBeginIscript(CUnit* unit, IscriptAnimation::Enum anim);									//0x00476ED0
 void function_00477510(CUnit* unit);																	//0x00477510
-void function_00477820(CUnit* unit, u8 orderId);														//0x00477820
-bool function_00478370(CUnit* unit, u8 orderId);														//0x00478370
+void function_00477820(CUnit* unit, uint8 orderId);														//0x00477820
+bool function_00478370(CUnit* unit, uint8 orderId);														//0x00478370
 bool function_00478540(CUnit* unit);																	//0x00478540
 bool isUnitCritter(CUnit* unit);																		//0x0047B450
 void function_00495400(CUnit* unit, CUnit* target);														//0x00495400
-u16 SAI_GetRegionIdFromPxEx(s32 x, s32 y);																//0x0049C9F0
+uint16 SAI_GetRegionIdFromPxEx(int32 x, int32 y);																//0x0049C9F0
 bool isUnitVisible(CUnit* unit);																		//0x004E5DB0
 bool isTargetVisible(CUnit* unit, CUnit* target);														//0x004E5E30
-u8 getRightClickActionOrder(CUnit* unit);																//0x004E5EA0
+uint8 getRightClickActionOrder(CUnit* unit);																//0x004E5EA0
 void setNextWaypoint_Sub4EB290(CUnit* unit);															//0x004EB290
 void makeToHoldPosition(CUnit* unit);																	//0x004EB5B0
 bool moveToTarget(CUnit* unit, CUnit* target);															//0x004EB720
@@ -75,8 +75,8 @@ void orders_ReaverAttack1(CUnit* unit) {
 		else {
 
 			//656F7:
-			u32 status_saved = (unit->status & UnitStatus::HoldingPosition) + (unit->status & UnitStatus::Disabled);
-			u8 newOrderId;
+			uint32 status_saved = (unit->status & UnitStatus::HoldingPosition) + (unit->status & UnitStatus::Disabled);
+			uint8 newOrderId;
 
 			if(unit->id == UnitId::ProtossAccantor) {
 				//65720:
@@ -137,8 +137,8 @@ void orders_CarrierAttack1(CUnit* unit) {
 		else {
 
 			//659CF
-			u32 status_saved = (unit->status & UnitStatus::Disabled) + (unit->status & UnitStatus::HoldingPosition);
-			u8 newOrderId;
+			uint32 status_saved = (unit->status & UnitStatus::Disabled) + (unit->status & UnitStatus::HoldingPosition);
+			uint8 newOrderId;
 
 			//give orders to interceptors/scarabs (through outHangarChild)
 			function_00465780(unit);
@@ -179,7 +179,7 @@ void orders_TurretAttack(CUnit* unit) {
 
 	CUnit* target;
 	CUnit* current_unit;
-	u8 current_unit_weaponId;
+	uint8 current_unit_weaponId;
 	
 	bool jump_to_77A45 = false;
 	bool jump_to_77A70 = false;
@@ -348,7 +348,7 @@ void orders_TurretAttack(CUnit* unit) {
 				else {
 
 					//77B5F:
-					u32 result_getMaxWpnRange = unit->getMaxWeaponRange(units_dat::GroundWeapon[UnitId::TerranPhalanxSiegeModeTurret]);
+					uint32 result_getMaxWpnRange = unit->getMaxWeaponRange(units_dat::GroundWeapon[UnitId::TerranPhalanxSiegeModeTurret]);
 
 					if(!isTargetWithinMinMovementRange(current_subunit,target,result_getMaxWpnRange))
 						jump_to_77BD7 = true;
@@ -575,7 +575,7 @@ void orders_AttackFixedRange(CUnit* unit) {
 					jump_to_77E48 = true;
 				else {
 					*/
-					u8 currentWeaponId;
+					uint8 currentWeaponId;
 
 					//77E1A:
 					if(target->status & UnitStatus::InAir)
@@ -787,7 +787,7 @@ void orders_SapLocation(CUnit* unit) {
 
 			if(unit->status & UnitStatus::Unmovable) { //78AB8
 
-				u32 distance = 
+				uint32 distance = 
 					scbw::getDistanceFast(
 						unit->orderTarget.pt.x * 256,
 						unit->orderTarget.pt.y * 256,
@@ -845,7 +845,7 @@ void orders_SapLocation(CUnit* unit) {
 
 void orders_AttackMoveEP(CUnit* unit) {
 
-	u8 saved_mainOrderId = unit->mainOrderId; //[EBP-0x14]
+	uint8 saved_mainOrderId = unit->mainOrderId; //[EBP-0x14]
 
 	//function_00478370:
 	//probably perform checks to see if the order
@@ -887,7 +887,7 @@ void orders_AttackMoveEP(CUnit* unit) {
 				)
 					jump_to_78EAE = true;
 				else //78E91
-				if(function_00476610(unit,(s32)unit->orderTarget.pt.x,(s32)unit->orderTarget.pt.y))
+				if(function_00476610(unit,(int32)unit->orderTarget.pt.x,(int32)unit->orderTarget.pt.y))
 					makeToHoldPosition(unit);
 
 			}
@@ -980,10 +980,10 @@ void orders_AttackUnit(CUnit* unit) {
 
 namespace {
 
-const u32 Func_unitCantSeeCloakedTarget = 0x00401D60;
+const uint32 Func_unitCantSeeCloakedTarget = 0x00401D60;
 bool unitCantSeeCloakedTarget(CUnit* unit, CUnit* target) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -1000,10 +1000,10 @@ bool unitCantSeeCloakedTarget(CUnit* unit, CUnit* target) {
 
 ;
 
-const u32 Func_IsInfestable = 0x00402210;
+const uint32 Func_IsInfestable = 0x00402210;
 bool isInfestableUnit(CUnit* unit) {
 
-  static Bool32 bPreResult;
+  static bool32 bPreResult;
   
   __asm {
     PUSHAD
@@ -1019,10 +1019,10 @@ bool isInfestableUnit(CUnit* unit) {
 
 ;
 
-const u32 Func_CanInfest = 0x00402750;
+const uint32 Func_CanInfest = 0x00402750;
 bool unitCanInfest(CUnit* unit) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -1038,7 +1038,7 @@ bool unitCanInfest(CUnit* unit) {
 
 ;
 
-const u32 Func_AI_AttackUnit = 0x0043FFD0;
+const uint32 Func_AI_AttackUnit = 0x0043FFD0;
 void AI_AttackUnit(CUnit* unit) {
 
 	__asm {
@@ -1052,7 +1052,7 @@ void AI_AttackUnit(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub443080 = 0x00443080;
+const uint32 Func_Sub443080 = 0x00443080;
 //named according to attack_priority_inject.cpp
 CUnit* findBestAttackTarget(CUnit* unit) {
 
@@ -1072,11 +1072,11 @@ CUnit* findBestAttackTarget(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub462EA0 = 0x00462EA0;
-bool function_00462EA0(CUnit* unit, u8 unknownByteValue) {
+const uint32 Func_Sub462EA0 = 0x00462EA0;
+bool function_00462EA0(CUnit* unit, uint8 unknownByteValue) {
 
-	static u32 _unknownByteValue;
-	static Bool32 bPreResult;
+	static uint32 _unknownByteValue;
+	static bool32 bPreResult;
 
 	_unknownByteValue = unknownByteValue;
 
@@ -1095,7 +1095,7 @@ bool function_00462EA0(CUnit* unit, u8 unknownByteValue) {
 
 ;
 
-const u32 Func_Sub465780 = 0x00465780;
+const uint32 Func_Sub465780 = 0x00465780;
 void function_00465780(CUnit* unit) {
 
 	__asm {
@@ -1109,7 +1109,7 @@ void function_00465780(CUnit* unit) {
 
 ;
 
-const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
+const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
 void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 	__asm {
@@ -1124,8 +1124,8 @@ void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 ;
 
-const u32 Func_Sub474A70 = 0x00474A70;
-void function_00474A70(CUnit* unit, CUnit* target, u8 orderId) {
+const uint32 Func_Sub474A70 = 0x00474A70;
+void function_00474A70(CUnit* unit, CUnit* target, uint8 orderId) {
 
 	__asm {
 		PUSHAD
@@ -1140,10 +1140,10 @@ void function_00474A70(CUnit* unit, CUnit* target, u8 orderId) {
 
 ;
 
-const u32 Func_isTargetWithinMinMovementRange = 0x004763D0;
-bool isTargetWithinMinMovementRange(CUnit* unit, CUnit* target, u32 range) {										// EDI = unit or subunit,ECX = MaxWpnRange,EAX = target
+const uint32 Func_isTargetWithinMinMovementRange = 0x004763D0;
+bool isTargetWithinMinMovementRange(CUnit* unit, CUnit* target, uint32 range) {										// EDI = unit or subunit,ECX = MaxWpnRange,EAX = target
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -1161,10 +1161,10 @@ bool isTargetWithinMinMovementRange(CUnit* unit, CUnit* target, u32 range) {				
 
 ;
 
-const u32 Func_Sub476610 = 0x00476610;
+const uint32 Func_Sub476610 = 0x00476610;
 bool function_00476610(CUnit* unit, int x, int y) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -1182,10 +1182,10 @@ bool function_00476610(CUnit* unit, int x, int y) {
 
 ;
 
-const u32 Func_isUnitInWeaponRange = 0x00476870;
+const uint32 Func_isUnitInWeaponRange = 0x00476870;
 bool isUnitInWeaponRange(CUnit* unit, CUnit* target) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -1202,7 +1202,7 @@ bool isUnitInWeaponRange(CUnit* unit, CUnit* target) {
 
 ;
 
-const u32 Func_getWeaponBeginIscript = 0x00476ED0;
+const uint32 Func_getWeaponBeginIscript = 0x00476ED0;
 void getWeaponBeginIscript(CUnit* unit, IscriptAnimation::Enum anim) {
 
 	__asm {
@@ -1217,7 +1217,7 @@ void getWeaponBeginIscript(CUnit* unit, IscriptAnimation::Enum anim) {
 
 ;
 
-const u32 Func_Sub477510 = 0x00477510;
+const uint32 Func_Sub477510 = 0x00477510;
 void function_00477510(CUnit* unit) {
 
 	__asm {
@@ -1231,10 +1231,10 @@ void function_00477510(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub477820 = 0x00477820;
-void function_00477820(CUnit* unit, u8 orderId) {
+const uint32 Func_Sub477820 = 0x00477820;
+void function_00477820(CUnit* unit, uint8 orderId) {
 
-	static u32 orderId_;
+	static uint32 orderId_;
 
 	orderId_ = orderId;
 
@@ -1250,11 +1250,11 @@ void function_00477820(CUnit* unit, u8 orderId) {
 
 ;
 
-const u32 Func_Sub478370 = 0x00478370;
-bool function_00478370(CUnit* unit, u8 orderId) {
+const uint32 Func_Sub478370 = 0x00478370;
+bool function_00478370(CUnit* unit, uint8 orderId) {
 
-	static Bool32 bPreResult;
-	static u32 orderId_;
+	static bool32 bPreResult;
+	static uint32 orderId_;
 
 	orderId_ = orderId;
 
@@ -1273,10 +1273,10 @@ bool function_00478370(CUnit* unit, u8 orderId) {
 
 ;
 
-const u32 Func_Sub478540 = 0x00478540;
+const uint32 Func_Sub478540 = 0x00478540;
 bool function_00478540(CUnit* unit) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -1315,7 +1315,7 @@ bool isUnitCritter(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub495400 = 0x00495400;
+const uint32 Func_Sub495400 = 0x00495400;
 void function_00495400(CUnit* unit, CUnit* target) {
 
 	__asm {
@@ -1330,10 +1330,10 @@ void function_00495400(CUnit* unit, CUnit* target) {
 
 ;
 
-const u32 Func_SAI_GetRegionIdFromPxEx = 0x0049C9F0;
-u16 SAI_GetRegionIdFromPxEx(s32 x, s32 y) {
+const uint32 Func_SAI_GetRegionIdFromPxEx = 0x0049C9F0;
+uint16 SAI_GetRegionIdFromPxEx(int32 x, int32 y) {
 
-	static u16 result;
+	static uint16 result;
 
 	__asm {
 		PUSHAD
@@ -1350,10 +1350,10 @@ u16 SAI_GetRegionIdFromPxEx(s32 x, s32 y) {
 
 ;
 
-const u32 Func_isUnitVisible = 0x004E5DB0;
+const uint32 Func_isUnitVisible = 0x004E5DB0;
 bool isUnitVisible(CUnit* unit) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -1369,10 +1369,10 @@ bool isUnitVisible(CUnit* unit) {
 
 ;
 
-const u32 Func_isTargetVisible = 0x004E5E30;
+const uint32 Func_isTargetVisible = 0x004E5E30;
 bool isTargetVisible(CUnit* unit, CUnit* target) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -1390,15 +1390,15 @@ bool isTargetVisible(CUnit* unit, CUnit* target) {
 ;
 
 //Identical to getRightClickActionOrder @ 0x004E5EA0;
-u8 getRightClickActionOrder(CUnit* unit) {
+uint8 getRightClickActionOrder(CUnit* unit) {
 
-	u8 result;
+	uint8 result;
 
 	if( unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed )
 		result = RightClickActions::NoMove_NormalAttack;
 	else {
 
-		u8 temp_result = units_dat::RightClickAction[unit->id];
+		uint8 temp_result = units_dat::RightClickAction[unit->id];
 
 		if(
 			temp_result == 0 &&
@@ -1419,7 +1419,7 @@ u8 getRightClickActionOrder(CUnit* unit) {
 
 //not related with assigning orders, but only with
 //destinations of orders
-const u32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
+const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
 void makeToHoldPosition(CUnit* unit) {
 
 	__asm {
@@ -1433,10 +1433,10 @@ void makeToHoldPosition(CUnit* unit) {
 
 ;
 
-const u32 Func_moveToTarget = 0x004EB720;
+const uint32 Func_moveToTarget = 0x004EB720;
 bool moveToTarget(CUnit* unit, CUnit* target) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -1453,10 +1453,10 @@ bool moveToTarget(CUnit* unit, CUnit* target) {
 
 ;
 
-const u32 Func_SetMoveTarget_xy = 0x004EB820;
+const uint32 Func_SetMoveTarget_xy = 0x004EB820;
 bool SetMoveTarget_xy(CUnit* unit, int x, int y) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -1475,7 +1475,7 @@ bool SetMoveTarget_xy(CUnit* unit, int x, int y) {
 ;
 
 //Related to path/movement decision
-const u32 Func_sub_4EB290 = 0x004EB290;
+const uint32 Func_sub_4EB290 = 0x004EB290;
 void setNextWaypoint_Sub4EB290(CUnit* unit) {
 
 	__asm {
@@ -1488,10 +1488,10 @@ void setNextWaypoint_Sub4EB290(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub4EB900 = 0x004EB900;
+const uint32 Func_Sub4EB900 = 0x004EB900;
 bool function_004EB900(CUnit* unit, CUnit* target) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -1508,10 +1508,10 @@ bool function_004EB900(CUnit* unit, CUnit* target) {
 
 ;
 
-const u32 Func_Sub4EB9C0 = 0x004EB9C0;
+const uint32 Func_Sub4EB9C0 = 0x004EB9C0;
 bool function_004EB9C0(CUnit* unit, int x, int y) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD

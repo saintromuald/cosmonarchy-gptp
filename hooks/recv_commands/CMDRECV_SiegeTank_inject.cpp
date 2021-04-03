@@ -6,7 +6,7 @@ namespace {
 
 void __declspec(naked) CMDRECV_SiegeWrapper() {
 
-	static u8 bCommandType;
+	static uint8 bCommandType;
 
 	__asm {
 		PUSH EBP
@@ -31,7 +31,7 @@ void __declspec(naked) CMDRECV_SiegeWrapper() {
 
 void __declspec(naked) CMDRECV_UnsiegeWrapper() {
 
-	static u8 bCommandType;
+	static uint8 bCommandType;
 
 	__asm {
 		PUSH EBP

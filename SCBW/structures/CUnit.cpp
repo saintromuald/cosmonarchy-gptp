@@ -8,11 +8,11 @@
 #include "MathUtils.h"
 //-------- Unit stats and properties --------//
 
-extern const u32 Func_CanDetect = 0x00403430; //unitHasNoStatusAilments
+extern const uint32 Func_CanDetect = 0x00403430; //unitHasNoStatusAilments
 //Behavior can be modified with detector hook
 bool CUnit::canDetect() const {
 	assert(this);
-	static u32 result;
+	static uint32 result;
 
 	__asm {
 		PUSHAD
@@ -25,25 +25,25 @@ bool CUnit::canDetect() const {
 	return result != 0;
 }
 
-u32 CUnit::getCurrentHpInGame() const {
+uint32 CUnit::getCurrentHpInGame() const {
 	assert(this);
 	return (this->hitPoints + 255) >> 8;
 }
 
-u32 CUnit::getCurrentShieldsInGame() const {
+uint32 CUnit::getCurrentShieldsInGame() const {
 	assert(this);
 	return this->shields >> 8;
 }
 
 //Identical to function @ 0x004026D0
-u32 CUnit::getCurrentLifeInGame() const {
+uint32 CUnit::getCurrentLifeInGame() const {
 	assert(this);
 	if (units_dat::ShieldsEnabled[this->id])
 		return getCurrentHpInGame() + getCurrentShieldsInGame();
 	else
 		return getCurrentHpInGame();
 };
-s32 CUnit::maxShields() const {
+int32 CUnit::maxShields() const {
 	assert(this);
 	return units_dat::MaxShieldPoints[this->id];
 }
@@ -57,7 +57,7 @@ bool CUnit::shieldsEnabledRaw() const {
 }
 
 //Identical to function @ 0x00475AD0
-u8 CUnit::getGroundWeapon() const {
+uint8 CUnit::getGroundWeapon() const {
 	assert(this);
 	if (this->id == UnitId::lurker && !(this->status & UnitStatus::Burrowed))
 		return WeaponId::None;
@@ -65,21 +65,21 @@ u8 CUnit::getGroundWeapon() const {
 		return units_dat::GroundWeapon[this->id];
 }
 
-u8 CUnit::getAirWeapon() const {
+uint8 CUnit::getAirWeapon() const {
 	assert(this);
 	return units_dat::AirWeapon[this->id];
 }
 
-u8 CUnit::getArmor() const {
+uint8 CUnit::getArmor() const {
 	assert(this);
 	return units_dat::ArmorAmount[this->id] + this->getArmorBonus();
 }
 
-extern const u32 Func_GetArmorBonus = 0x00453FC0;
-u8 CUnit::getArmorBonus() const {
+extern const uint32 Func_GetArmorBonus = 0x00453FC0;
+uint8 CUnit::getArmorBonus() const {
 	assert(this);
 
-	static u8 armorBonus;
+	static uint8 armorBonus;
 	__asm {
 		PUSHAD
 		MOV EAX, this
@@ -91,11 +91,11 @@ u8 CUnit::getArmorBonus() const {
 	return armorBonus;
 }
 
-extern const u32 Func_GetMaxEnergy = 0x00491870;
-u16 CUnit::getMaxEnergy() const {
+extern const uint32 Func_GetMaxEnergy = 0x00491870;
+uint16 CUnit::getMaxEnergy() const {
 	assert(this);
 	
-	static u16 result;
+	static uint16 result;
 
 	__asm {
 		PUSHAD
@@ -109,10 +109,10 @@ u16 CUnit::getMaxEnergy() const {
 }
 
 //Similar to function @ 0x00401400
-u32 CUnit::getMaxHpInGame() const {
+uint32 CUnit::getMaxHpInGame() const {
 	assert(this);
 	
-	u32 maxHp = units_dat::MaxHitPoints[this->id];
+	uint32 maxHp = units_dat::MaxHitPoints[this->id];
 	/*if (this->id == UnitId::firebat && scbw::getUpgradeLevel(playerId,UpgradeId::Heatshield)) {
 		maxHp += 15 * 256;
 	}*/
@@ -125,23 +125,23 @@ u32 CUnit::getMaxHpInGame() const {
 		maxHp = maxHp >> 8;
 	return maxHp;
 }
-u32 CUnit::getMaxHpRaw() const {
+uint32 CUnit::getMaxHpRaw() const {
 	assert(this);
 	return units_dat::MaxHitPoints[this->id];
 }
-u8 CUnit::getSpellCountdown() const {
+uint8 CUnit::getSpellCountdown() const {
 	assert(this);
 	if (this->id == UnitId::TerranWyvern) {
 		return this->groundWeaponCooldown;
 	}
 	return this->spellCooldown;
 }
-extern const u32 Func_GetMaxWeaponRange = 0x00475870;
-u32 CUnit::getMaxWeaponRange(u8 weaponId) const {
+extern const uint32 Func_GetMaxWeaponRange = 0x00475870;
+uint32 CUnit::getMaxWeaponRange(uint8 weaponId) const {
 	assert(this);
 	assert(weaponId < WEAPON_TYPE_COUNT);
 
-	static u32 maxWeaponRange;
+	static uint32 maxWeaponRange;
 
 	__asm {
 		PUSHAD
@@ -161,7 +161,7 @@ const char* CUnit::getName() const {
 }
 #include "SCBW/stat_txt_spec.h"
 //Based on function @ 0x0047B090
-const char* CUnit::getName(u16 unitId) {
+const char* CUnit::getName(uint16 unitId) {
 	assert(unitId < UNIT_TYPE_COUNT);
 
 	if (units_dat::MapStringId[unitId])
@@ -176,7 +176,7 @@ RaceId::Enum CUnit::getRace() const {
 }
 
 //Based on function at 0x0047B150
-RaceId::Enum CUnit::getRace(u16 unitId) {
+RaceId::Enum CUnit::getRace(uint16 unitId) {
 	assert(unitId < UNIT_TYPE_COUNT);
 
 	if (units_dat::GroupFlags[unitId].isZerg)
@@ -189,11 +189,11 @@ RaceId::Enum CUnit::getRace(u16 unitId) {
 		return RaceId::Neutral;
 }
 
-extern const u32 Func_GetSeekRange = 0x00476000;
-u8 CUnit::getSeekRange() const {
+extern const uint32 Func_GetSeekRange = 0x00476000;
+uint8 CUnit::getSeekRange() const {
 	assert(this);
 
-	static u8 seekRange;
+	static uint8 seekRange;
 
 	__asm {
 		PUSHAD
@@ -206,12 +206,12 @@ u8 CUnit::getSeekRange() const {
 	return seekRange;
 }
 
-extern const u32 Func_GetSightRange = 0x004E5B40;
-u32 CUnit::getSightRange(bool isForSpellCasting) const {
+extern const uint32 Func_GetSightRange = 0x004E5B40;
+uint32 CUnit::getSightRange(bool isForSpellCasting) const {
 	assert(this);
 
-	static u32 sightRange;
-	Bool32 ignoreStatusEffects = (isForSpellCasting ? 0 : 1);
+	static uint32 sightRange;
+	bool32 ignoreStatusEffects = (isForSpellCasting ? 0 : 1);
 
 	__asm {
 		PUSHAD
@@ -227,7 +227,7 @@ u32 CUnit::getSightRange(bool isForSpellCasting) const {
 
 //Similar to function Unit__HasEnergy @ 0x00491480
 //The original function returned 0 when got energy or code
-bool CUnit::hasEnergy(u32 energy) const {
+bool CUnit::hasEnergy(uint32 energy) const {
 
 	if(
 		scbw::isCheatEnabled(CheatFlags::TheGathering) ||
@@ -279,9 +279,9 @@ bool CUnit::isFrozen() const {
 
 }
 
-extern const u32 Func_IsRemorphingBuilding = 0x0045CD00;
+extern const uint32 Func_IsRemorphingBuilding = 0x0045CD00;
 bool CUnit::isRemorphingBuilding() const {
-	static Bool32 result;
+	static bool32 result;
 	assert(this);
 
 	__asm {
@@ -316,7 +316,7 @@ bool CUnit::isValidCaster() const {
 //Returns:	0 - Unit has not reached destination
 //					1 - Unit has reached destination
 //					2 - Unit cannot move
-u32 CUnit::getMovableState() {
+uint32 CUnit::getMovableState() {
 	if (this->moveTarget.pt != this->sprite->position)
 		return 0;
 	else 
@@ -328,52 +328,52 @@ u32 CUnit::getMovableState() {
 
 //-------- Positions and dimensions --------//
 
-u16 CUnit::getX() const {
+uint16 CUnit::getX() const {
 	assert(this);
 	assert(this->sprite);
 	return this->sprite->position.x;
 };
 
-u16 CUnit::getY() const {
+uint16 CUnit::getY() const {
 	assert(this);
 	assert(this->sprite);
 	return this->sprite->position.y;
 };
 
-u16 CUnit::getTileX() const {
+uint16 CUnit::getTileX() const {
 	assert(this);
 	return this->getX() / 32;
 };
 
-u16 CUnit::getTileY() const {
+uint16 CUnit::getTileY() const {
 	assert(this);
 	return this->getY() / 32;
 };
 
-s16 CUnit::getLeft() const {
+int16 CUnit::getLeft() const {
 	assert(this);
 	return this->getX() - units_dat::UnitBounds[this->id].left;
 }
 
-s16 CUnit::getRight() const {
+int16 CUnit::getRight() const {
 	assert(this);
 	return this->getX() + units_dat::UnitBounds[this->id].right;
 }
 
-s16 CUnit::getTop() const {
+int16 CUnit::getTop() const {
 	assert(this);
 	return this->getY() - units_dat::UnitBounds[this->id].top;
 }
 
-s16 CUnit::getBottom() const {
+int16 CUnit::getBottom() const {
 	assert(this);
 	return this->getY() + units_dat::UnitBounds[this->id].bottom;
 }
 
 //-------- Modifying unit state --------//
 
-const u32 Func_SetUnitHp = 0x00467340;
-void CUnit::setHp(s32 hitPoints) {
+const uint32 Func_SetUnitHp = 0x00467340;
+void CUnit::setHp(int32 hitPoints) {
 	assert(this);
 
 	__asm {
@@ -385,7 +385,7 @@ void CUnit::setHp(s32 hitPoints) {
 	}
 }
 
-void CUnit::heal(s32 hitPoints, CUnit* source) {
+void CUnit::heal(int32 hitPoints, CUnit* source) {
 	assert(this);
 	if (this->hitPoints == this->getMaxHpRaw()) { // skip healing if max hp already
 		return;
@@ -396,7 +396,7 @@ void CUnit::heal(s32 hitPoints, CUnit* source) {
 		hitPoints *= 2;
 	}
 
-	setHp(std::min((u32)(this->hitPoints) + (u32)(hitPoints), this->getMaxHpRaw()));
+	setHp(std::min((uint32)(this->hitPoints) + (uint32)(hitPoints), this->getMaxHpRaw()));
 
 	// If heals to full clear debuffs
 	if (this->hitPoints == this->getMaxHpRaw()) {
@@ -404,17 +404,17 @@ void CUnit::heal(s32 hitPoints, CUnit* source) {
 	}
 }
 
-const u32 Func_DoWeaponDamage = 0x00479930; //Note: hooked in hooks/weapons/weapon_damage files
-void CUnit::damageWith(s32 damage, u8 weaponId, CUnit* attacker,
-											 u8 attackingPlayer, s8 direction, u8 damageDivisor) {
+const uint32 Func_DoWeaponDamage = 0x00479930; //Note: hooked in hooks/weapons/weapon_damage files
+void CUnit::damageWith(int32 damage, uint8 weaponId, CUnit* attacker,
+											 uint8 attackingPlayer, int8 direction, uint8 damageDivisor) {
 	assert(this);
 	assert(weaponId < WEAPON_TYPE_COUNT);
 //	assert(damageDivisor != 0);
 
-	u32 weaponId_				 = weaponId;
-	s32 attackingPlayer_	= attackingPlayer;
-	s32 direction_				= direction;
-	s32 damageDivisor_		= damageDivisor;
+	uint32 weaponId_				 = weaponId;
+	int32 attackingPlayer_	= attackingPlayer;
+	int32 direction_				= direction;
+	int32 damageDivisor_		= damageDivisor;
 
 	__asm {
 		PUSHAD
@@ -429,10 +429,10 @@ void CUnit::damageWith(s32 damage, u8 weaponId, CUnit* attacker,
 		POPAD		
 	}
 }
-void CUnit::inflictDamage(s32 dmg, CUnit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, int direction,
+void CUnit::inflictDamage(int32 dmg, CUnit* attacker, int32 attackingPlayer, bool notify, bool shield_overlay, int direction,
 	bool ignoreDmg128Overflow) {
 	auto damage = dmg;
-	s32 shieldReduceAmount = 0;
+	int32 shieldReduceAmount = 0;
 	if (scbw::get_generic_value(this, ValueId::GodsMadeFlesh) > 0) {
 		return;
 	}
@@ -452,18 +452,18 @@ void CUnit::inflictDamage(s32 dmg, CUnit* attacker, s32 attackingPlayer, bool no
 
 		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayShieldPtr,
 																					this->sprite->mainGraphic->id));
-		u32 frameAngle = (direction - 124) / 8 % 32;
+		uint32 frameAngle = (direction - 124) / 8 % 32;
 		Point8 offset = shield_lo->getOffset(this->sprite->mainGraphic->direction, frameAngle);
 		this->sprite->createOverlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
 	}
 	damageHp(damage, attacker, attackingPlayer, notify);
 }
 
-const u32 Func_DamageUnitHp = 0x004797B0;
-void CUnit::damageHp(s32 damage, CUnit* attacker, s32 attackingPlayer, bool notify) {
+const uint32 Func_DamageUnitHp = 0x004797B0;
+void CUnit::damageHp(int32 damage, CUnit* attacker, int32 attackingPlayer, bool notify) {
 	assert(this);
 
-	u32 notify_ = notify ? 1 : 0;
+	uint32 notify_ = notify ? 1 : 0;
 
 	__asm {
 		PUSHAD
@@ -478,7 +478,7 @@ void CUnit::damageHp(s32 damage, CUnit* attacker, s32 attackingPlayer, bool noti
 }
 
 //Logically equivalent to function @ 0x00454ED0
-void CUnit::reduceDefensiveMatrixHp(s32 amount) {
+void CUnit::reduceDefensiveMatrixHp(int32 amount) {
 
 	assert(this);
 
@@ -520,7 +520,7 @@ void CUnit::reduceDefensiveMatrixHp(s32 amount) {
 
 }
 
-const u32 Func_RemoveUnit = 0x00475710; //AKA orders_SelfDestructing()
+const uint32 Func_RemoveUnit = 0x00475710; //AKA orders_SelfDestructing()
 void CUnit::remove() {
 
 	assert(this);
@@ -534,7 +534,7 @@ void CUnit::remove() {
 
 }
 
-const u32 Func_RemoveLockdown = 0x00454D90;
+const uint32 Func_RemoveLockdown = 0x00454D90;
 void CUnit::removeLockdown() {
 
 	assert(this);
@@ -548,7 +548,7 @@ void CUnit::removeLockdown() {
 
 }
 
-const u32 Func_RemoveMaelstrom = 0x00454D20;
+const uint32 Func_RemoveMaelstrom = 0x00454D20;
 void CUnit::removeMaelstrom() {
 
 	assert(this);
@@ -562,7 +562,7 @@ void CUnit::removeMaelstrom() {
 
 }
 
-const u32 Func_RemoveStasisField = 0x004F62D0;
+const uint32 Func_RemoveStasisField = 0x004F62D0;
 void CUnit::removeStasisField() {
 
 	assert(this);
@@ -576,7 +576,7 @@ void CUnit::removeStasisField() {
 
 }
 
-const u32 Func_RemoveAcidSpores = 0x004F4160;
+const uint32 Func_RemoveAcidSpores = 0x004F4160;
 void CUnit::removeAcidSpores() {
 
 	assert(this);
@@ -592,7 +592,7 @@ void CUnit::removeAcidSpores() {
 
 ///Identical to Unit__SpendEnergy @ 0x00491460
 ///May underflow if alone
-void CUnit::spendUnitEnergy(u32 energySpent) {
+void CUnit::spendUnitEnergy(uint32 energySpent) {
 	if (!(*CHEAT_STATE & CheatFlags::TheGathering)) {
 		if (this->energy > energySpent) {
 			this->energy -= energySpent;
@@ -605,19 +605,19 @@ void CUnit::spendUnitEnergy(u32 energySpent) {
 		this->inflictDamage(energySpent, scbw::get_generic_unit(this, ValueId::DecaySavant), -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
 	}
 }
-void CUnit::addUnitEnergy(u32 energy) {
-	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, this->getMaxEnergy());
+void CUnit::addUnitEnergy(uint32 energy) {
+	this->energy = MathUtils::clamp<uint32>(this->energy + energy, 0, this->getMaxEnergy());
 }
-void CUnit::addUnitEnergy(u32 energy, u32 energyMax) {
-	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, energyMax);
+void CUnit::addUnitEnergy(uint32 energy, uint32 energyMax) {
+	this->energy = MathUtils::clamp<uint32>(this->energy + energy, 0, energyMax);
 }
 
 // Identical to getTotalHitPointsPlusShields @ 00402710
-s32 CUnit::getTotalHitPointsPlusShields() {
+int32 CUnit::getTotalHitPointsPlusShields() {
 	assert(this);
-	s32 id = this->id;
-	s32 shields = 0;
-	s32 hp = units_dat::MaxHitPoints[id] >> 8;
+	int32 id = this->id;
+	int32 shields = 0;
+	int32 hp = units_dat::MaxHitPoints[id] >> 8;
 	if (units_dat::ShieldsEnabled[id]) {
 		shields = units_dat::MaxShieldPoints[id];
 	}
@@ -631,11 +631,11 @@ s32 CUnit::getTotalHitPointsPlusShields() {
 }
 
 // Identical to isAIControllerNotABuilding @ 004381D0
-s32 CUnit::isUnitAINonBuilding() {
+int32 CUnit::isUnitAINonBuilding() {
 	assert(this);
 	UnitAi* ai = (UnitAi*)this->pAI;
 	MilitaryAi* mai = (MilitaryAi*)ai;
-	s32 result = 1;
+	int32 result = 1;
 	if (!ai
 	||	ai->type != 4
 	||	mai->parent != this
@@ -651,7 +651,7 @@ s32 CUnit::isUnitAINonBuilding() {
 //ESI = this
 //EAX = target
 //[ebp+08] = orderId
-void CUnit::orderTo(u8 orderId, CUnit* target) {
+void CUnit::orderTo(uint8 orderId, CUnit* target) {
 	assert(this);
 
 	this->userActionFlags |= 0x1;
@@ -664,7 +664,7 @@ void CUnit::orderTo(u8 orderId, CUnit* target) {
 }
 
 //Logically equivalent to function @ 0x00475260
-void CUnit::orderTo(u8 orderId, u16 x, u16 y) {
+void CUnit::orderTo(uint8 orderId, uint16 x, uint16 y) {
 	assert(this);
 
 	this->userActionFlags |= 0x1;
@@ -674,19 +674,19 @@ void CUnit::orderTo(u8 orderId, u16 x, u16 y) {
 
 //Logically equivalent to function orderComputer_cl @ 0x00475310
 //used in hooks so not doing assert, mind it if used in mods
-void CUnit::orderComputerCL(u8 orderId) {
+void CUnit::orderComputerCL(uint8 orderId) {
 	this->userActionFlags |= 1;
 	this->order(orderId,0,0,nullptr,UnitId::None,true);
 	prepareForNextOrder(this);
 }
 
 //Equivalent to 00474D60 __order function
-void CUnit::orderSimple(u8 orderId, bool stopPreviousOrders) {
+void CUnit::orderSimple(uint8 orderId, bool stopPreviousOrders) {
 	this->order(orderId,0,0,nullptr,UnitId::None,stopPreviousOrders);
 }
 
 //Equivalent to 00474D10 issueQueuedOrderTarget function
-void CUnit::issueQueuedOrderTarget(u8 orderId, CUnit* target, bool stopPreviousOrders) {
+void CUnit::issueQueuedOrderTarget(uint8 orderId, CUnit* target, bool stopPreviousOrders) {
 	if(target == nullptr)
 		this->order(orderId,0,0,nullptr,UnitId::None,stopPreviousOrders);
 	else
@@ -711,11 +711,11 @@ void CUnit::orderToIdle() {
 
 }
 
-const u32 Func_Order = 0x00474810;
-void CUnit::order(u8 orderId, u16 x, u16 y, CUnit* target, u16 targetUnitId, bool stopPreviousOrders) {
+const uint32 Func_Order = 0x00474810;
+void CUnit::order(uint8 orderId, uint16 x, uint16 y, CUnit* target, uint16 targetUnitId, bool stopPreviousOrders) {
 	assert(this);
 	static Point16 pos;
-	static u32 targetUnitId_;
+	static uint32 targetUnitId_;
 	pos.x = x, pos.y = y;
 	targetUnitId_ = targetUnitId;
 
@@ -732,8 +732,8 @@ void CUnit::order(u8 orderId, u16 x, u16 y, CUnit* target, u16 targetUnitId, boo
 	}
 }
 
-const u32 Func_PerformAnotherOrder = 0x004745F0;
-void CUnit::performAnotherOrder(u8 orderId, s16 x, s16 y, CUnit* target, u16 targetUnitId, u32 unk) {
+const uint32 Func_PerformAnotherOrder = 0x004745F0;
+void CUnit::performAnotherOrder(uint8 orderId, int16 x, int16 y, CUnit* target, uint16 targetUnitId, uint32 unk) {
 
 	static Point16 pos;
 	pos.x = x;pos.y = y;
@@ -753,7 +753,7 @@ void CUnit::performAnotherOrder(u8 orderId, s16 x, s16 y, CUnit* target, u16 tar
 }
 
 //Identical to @ 0x004743D0
-void CUnit::setSecondaryOrder(u8 orderId) {
+void CUnit::setSecondaryOrder(uint8 orderId) {
 	assert(this);
 	if (this->secondaryOrderId == orderId)
 		return;
@@ -767,7 +767,7 @@ void CUnit::setSecondaryOrder(u8 orderId) {
 //-------- Graphics and animations --------//
 
 //Similar to function @ 0x004E5C90
-CImage* CUnit::getOverlay(u16 imageId) const {
+CImage* CUnit::getOverlay(uint16 imageId) const {
 	assert(this);
 
 	CImage *image = this->sprite->getOverlay(imageId);
@@ -782,7 +782,7 @@ void CUnit::playIscriptAnim(IscriptAnimation::Enum animation) {
 	this->sprite->playIscriptAnim(animation);
 }
 
-void CUnit::removeOverlay(u32 imageIdStart, u32 imageIdEnd) {
+void CUnit::removeOverlay(uint32 imageIdStart, uint32 imageIdEnd) {
 	assert(this);
 
 	this->sprite->removeOverlay(imageIdStart, imageIdEnd);
@@ -790,7 +790,7 @@ void CUnit::removeOverlay(u32 imageIdStart, u32 imageIdEnd) {
 		this->subunit->sprite->removeOverlay(imageIdStart, imageIdEnd);
 }
 
-void CUnit::removeOverlay(u32 imageId) {
+void CUnit::removeOverlay(uint32 imageId) {
 	assert(this);
 
 	this->sprite->removeOverlay(imageId);
@@ -858,7 +858,7 @@ graphics::ColorId CUnit::getColor() {
 graphics::ColorId CUnit::getColor(CUnit* unit) {
 
 	//getColourID internal function
-	const u32 Func_getColourID = 0x0049B0E0;
+	const uint32 Func_getColourID = 0x0049B0E0;
 
 	graphics::ColorId return_value;
 
@@ -897,7 +897,7 @@ graphics::ColorId CUnit::getColor(CUnit* unit) {
 
 //-------- Distances and terrain --------//
 
-u32 CUnit::getDistanceToTarget(CUnit* target) const {
+uint32 CUnit::getDistanceToTarget(CUnit* target) const {
 
 	assert(this);
 	assert(target);
@@ -907,14 +907,14 @@ u32 CUnit::getDistanceToTarget(CUnit* target) const {
 	if (this->isSubunit())
 		unit = this->subunit; // Current unit is a turret, so use it's base instead
 
-	s32 dx = unit->getLeft() - target->getRight() - 1;
+	int32 dx = unit->getLeft() - target->getRight() - 1;
 	if (dx < 0) {
 		dx = target->getLeft() - unit->getRight() - 1;
 		if (dx < 0)
 			dx = 0;
 	}
 
-	s32 dy = unit->getTop() - target->getBottom() - 1;
+	int32 dy = unit->getTop() - target->getBottom() - 1;
 	if (dy < 0) {
 		dy = target->getTop() - unit->getBottom() - 1;
 		if (dy < 0)
@@ -924,10 +924,10 @@ u32 CUnit::getDistanceToTarget(CUnit* target) const {
 	return scbw::getDistanceFast(0, 0, dx, dy);
 }
 
-const u32 Func_HasPathToPos = 0x0049CB60; //AKA unitHasPathToDest()
-bool CUnit::hasPathToPos(u32 x, u32 y) const {
+const uint32 Func_HasPathToPos = 0x0049CB60; //AKA unitHasPathToDest()
+bool CUnit::hasPathToPos(uint32 x, uint32 y) const {
 	assert(this);
-	u32 result;
+	uint32 result;
 
 	__asm {
 		PUSHAD
@@ -942,11 +942,11 @@ bool CUnit::hasPathToPos(u32 x, u32 y) const {
 	return result != 0;
 }
 
-const u32 Func_HasPathToTarget = 0x0049CBB0; //AKA unitHasPathToUnit()
+const uint32 Func_HasPathToTarget = 0x0049CBB0; //AKA unitHasPathToUnit()
 bool CUnit::hasPathToUnit(CUnit* target) const {
 	assert(this);
 	assert(target);
-	u32 result;
+	uint32 result;
 
 	__asm {
 		PUSHAD
@@ -960,10 +960,10 @@ bool CUnit::hasPathToUnit(CUnit* target) const {
 	return result != 0;
 }
 
-const u32 Func_IsTargetWithinMinRange = 0x00430F10;
-bool CUnit::isTargetWithinMinRange(CUnit* target, u32 range) {
+const uint32 Func_IsTargetWithinMinRange = 0x00430F10;
+bool CUnit::isTargetWithinMinRange(CUnit* target, uint32 range) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -981,11 +981,11 @@ bool CUnit::isTargetWithinMinRange(CUnit* target, u32 range) {
 
 //-------- DAT Requirements --------//
 
-const u32 Func_CanMakeUnit = 0x0046E1C0;
-int CUnit::canMakeUnit(u16 unitId, u8 playerId) const {
+const uint32 Func_CanMakeUnit = 0x0046E1C0;
+int CUnit::canMakeUnit(uint16 unitId, uint8 playerId) const {
 	assert(this);
-	s32 playerId_ = playerId;
-	static s32 result;
+	int32 playerId_ = playerId;
+	static int32 result;
 
 	__asm {
 		PUSHAD
@@ -1000,12 +1000,12 @@ int CUnit::canMakeUnit(u16 unitId, u8 playerId) const {
 	return result;
 }
 
-const u32 Func_CanUseTech = 0x0046DD80;
-int CUnit::canUseTech(u8 techId, u8 playerId) const {
+const uint32 Func_CanUseTech = 0x0046DD80;
+int CUnit::canUseTech(uint8 techId, uint8 playerId) const {
 	assert(this);
-	s32 playerId_ = playerId;
-	u32 _techId = techId;
-	static s32 result;
+	int32 playerId_ = playerId;
+	uint32 _techId = techId;
+	static int32 result;
 
 	__asm {
 		PUSHAD
@@ -1022,13 +1022,13 @@ int CUnit::canUseTech(u8 techId, u8 playerId) const {
 
 //-------- Utility methods --------//
 
-const u32 Func_CanUnitAttackTarget = 0x00476730;
+const uint32 Func_CanUnitAttackTarget = 0x00476730;
 bool CUnit::canAttackTarget(CUnit* target, bool checkVisibility) const {
 	assert(this);
 	assert(target);
 
-	u32 _checkVisibility = checkVisibility ? 1 : 0;
-	static u32 result;
+	uint32 _checkVisibility = checkVisibility ? 1 : 0;
+	static uint32 result;
 
 	__asm {
 		PUSHAD
@@ -1043,12 +1043,12 @@ bool CUnit::canAttackTarget(CUnit* target, bool checkVisibility) const {
 	return result != 0;
 }
 
-extern const u32 Func_FireUnitWeapon = 0x00479C90;
-void CUnit::fireWeapon(u8 weaponId) const {
+extern const uint32 Func_FireUnitWeapon = 0x00479C90;
+void CUnit::fireWeapon(uint8 weaponId) const {
 
 	assert(this);
 
-	static u32 weaponId_;
+	static uint32 weaponId_;
 
 	weaponId_ = weaponId;
 
@@ -1064,7 +1064,7 @@ void CUnit::fireWeapon(u8 weaponId) const {
 
 
 
-CUnit* CUnit::getFromIndex(u16 index) {
+CUnit* CUnit::getFromIndex(uint16 index) {
 	if (Globals.extended_unit_table == 1) {
 		if (1 <= index && index <= UNIT_ARRAY_LENGTH /* NEW_ARRAY_LENGTH*/)
 		{
@@ -1077,14 +1077,14 @@ CUnit* CUnit::getFromIndex(u16 index) {
 	return nullptr;
 }
 
-u16 CUnit::getIndex() const {
+uint16 CUnit::getIndex() const {
 	if (Globals.extended_unit_table == 1) {
 		return this - (CUnit*)&new_unit_table.units[0] + 1;
 	}
 	return this - unitTable + 1;
 }
 
-u8 CUnit::getLastOwnerId() const {
+uint8 CUnit::getLastOwnerId() const {
 	assert(this);
 	assert(this->sprite);
 	if (this->playerId == 11) //The owner has left the game
@@ -1130,11 +1130,11 @@ bool CUnit::hasLoadedUnit() const {
 }
 
 namespace {
-typedef u32 (__stdcall *GiveUnitToPlayerFunc)(CUnit* unit, u32 playerId);
+typedef uint32 (__stdcall *GiveUnitToPlayerFunc)(CUnit* unit, uint32 playerId);
 GiveUnitToPlayerFunc const giveUnitToPlayer = (GiveUnitToPlayerFunc) 0x004C8040;
 } //unnamed namespace
 
-bool CUnit::giveTo(u8 playerId) {
+bool CUnit::giveTo(uint8 playerId) {
 	assert(this);
 	assert(playerId < 12);
 
@@ -1153,12 +1153,12 @@ bool CUnit::isTargetEnemy(CUnit* target) const {
 	return scbw::isUnitEnemy(this->playerId, target);
 }
 
-bool CUnit::isVisibleTo(u8 playerId) const {
+bool CUnit::isVisibleTo(uint8 playerId) const {
 	assert(this);
 	return (this->visibilityStatus & (1 << playerId)) != 0;
 }
 
-const u32 Func_UpdateSpeed = 0x00454310;
+const uint32 Func_UpdateSpeed = 0x00454310;
 void CUnit::updateSpeed() {
 	assert(this);
 
@@ -1170,9 +1170,9 @@ void CUnit::updateSpeed() {
 	}
 }
 
-void CUnit::setSupplyProvided(u8 amount) { // overwrites previous supply provided
-	u32 race = this->getRace();
-	u32 previous_supply = scbw::get_generic_value(this, ValueId::SupplyProvided);
+void CUnit::setSupplyProvided(uint8 amount) { // overwrites previous supply provided
+	uint32 race = this->getRace();
+	uint32 previous_supply = scbw::get_generic_value(this, ValueId::SupplyProvided);
 	if (previous_supply)
 		raceSupply[race].provided[this->playerId] -= previous_supply;
 	raceSupply[race].provided[this->playerId] += amount;

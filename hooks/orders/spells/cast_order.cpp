@@ -5,13 +5,13 @@
 
 namespace {
 
-u32 getUpgradedWpnCooldown(CUnit* unit, u8 weaponId);													//0x00475DC0
-bool function_00476640(CUnit* unit, u32 weaponId);														//0x00476640
+uint32 getUpgradedWpnCooldown(CUnit* unit, uint8 weaponId);													//0x00475DC0
+bool function_00476640(CUnit* unit, uint32 weaponId);														//0x00476640
 void setUnitStatTxtErrorMsg(char* message);																//0x0048CCB0
-u32 get_statTxt_Str_0(CUnit* unit, u32 playerId, char* message);										//0x0048EF30
+uint32 get_statTxt_Str_0(CUnit* unit, uint32 playerId, char* message);										//0x0048EF30
 bool canCastSpell_0(CUnit* unit);																		//0x00492140
-u32 function_00492620(CUnit* unit, Bool32 wasMainOrderStateZero);										//0x00492620
-u32 RandomizeShort(u32 unknown_index);																	//0x004DC4A0
+uint32 function_00492620(CUnit* unit, bool32 wasMainOrderStateZero);										//0x00492620
+uint32 RandomizeShort(uint32 unknown_index);																	//0x004DC4A0
 void setNextWaypoint_Sub4EB290(CUnit* unit);															//0x004EB290
 
 } //unnamed namespace
@@ -20,8 +20,8 @@ namespace hooks {
 
 void orders_Spell(CUnit* unit) {
 
-	s32 spellCost;
-	u8 orderWeaponId = orders_dat::OrderWeaponId[unit->mainOrderId];
+	int32 spellCost;
+	uint8 orderWeaponId = orders_dat::OrderWeaponId[unit->mainOrderId];
 	CUnit* target = unit->orderTarget.unit;
 	if (unit->id == UnitId::TerranPaladin) {
 		if (unit->orderSignal & 0x20) {
@@ -102,7 +102,7 @@ void orders_Spell(CUnit* unit) {
 		else { //9291A
 			//scbw::printText("Continue...");
 			
-			u8 techUsed = orders_dat::TechUsed[unit->mainOrderId];
+			uint8 techUsed = orders_dat::TechUsed[unit->mainOrderId];
 
 			if(techUsed >= TechId::None)
 				spellCost = 0;
@@ -115,7 +115,7 @@ void orders_Spell(CUnit* unit) {
 			)
 			{
 				//scbw::printText("energy < spellcost");
-				u8 raceId;
+				uint8 raceId;
 				char* message;
 
 				if(units_dat::GroupFlags[unit->id].isZerg)
@@ -147,7 +147,7 @@ void orders_Spell(CUnit* unit) {
 			}
 			else { //929C2
 
-				u32 result_00492620;
+				uint32 result_00492620;
 				//scbw::printText("energy >= spellcost");
 				//may initiate movement from unit depending on
 				//mainOrderState
@@ -195,19 +195,19 @@ void orders_Spell(CUnit* unit) {
 							if(orderWeaponId <= WeaponId::Maelstrom) { //Maelstrom is the last spell-related weapon
 
 								//array bound to the function
-								const u8* const array_00492B44 = (u8*)(0x00492B44);
+								const uint8* const array_00492B44 = (uint8*)(0x00492B44);
 
 								//this code would not work for weapons id of NuclearMissile, YamatoGun 
 								//and weapons id before those, they must be excluded somewhere else
 								//Maybe the switch and array use could be removed in a future version
 								//since enough elements use default value (switch 6)
-								u32 switch_value = array_00492B44[orderWeaponId - 0x20];
+								uint32 switch_value = array_00492B44[orderWeaponId - 0x20];
 								//scbw::printText("Get switch value");
 
 								if(switch_value != 6) {
 
 									//no idea why irradiate is so important
-									u32 analyzed_target_status = target->irradiateTimer;
+									uint32 analyzed_target_status = target->irradiateTimer;
 
 									if(switch_value == 2)
 										analyzed_target_status |= target->parasiteFlags;
@@ -239,15 +239,15 @@ void orders_Spell(CUnit* unit) {
 						if(!bStopHere) { //92AA3
 
 //							scbw::printText("Spend energy");
-							u8 cooldown;
-							u32 random_value;
+							uint8 cooldown;
+							uint32 random_value;
 
 							unit->spendUnitEnergy(spellCost);
 							cooldown = getUpgradedWpnCooldown(unit,orderWeaponId);
 
 							//a complicated way to add between -1 and 2 to the cooldown
 							random_value = RandomizeShort(49);
-							cooldown += ( ((u8)random_value) & 3 ) - 1;
+							cooldown += ( ((uint8)random_value) & 3 ) - 1;
 
 							unit->spellCooldown = cooldown;
 							if (unit->id == UnitId::TerranWyvern) {
@@ -301,10 +301,10 @@ void orders_Spell(CUnit* unit) {
 
 namespace {
 
-const u32 Func_getUpgradedWpnCooldown = 0x00475DC0;
-u32 getUpgradedWpnCooldown(CUnit* unit, u8 weaponId) {
+const uint32 Func_getUpgradedWpnCooldown = 0x00475DC0;
+uint32 getUpgradedWpnCooldown(CUnit* unit, uint8 weaponId) {
 
-	static u32 return_value;
+	static uint32 return_value;
 
 	__asm {
 		PUSHAD
@@ -321,10 +321,10 @@ u32 getUpgradedWpnCooldown(CUnit* unit, u8 weaponId) {
 
 ;
 
-const u32 Func_Sub476640 = 0x00476640;
-bool function_00476640(CUnit* unit, u32 weaponId) {
+const uint32 Func_Sub476640 = 0x00476640;
+bool function_00476640(CUnit* unit, uint32 weaponId) {
 
-	static Bool32 pre_result;
+	static bool32 pre_result;
 
 	__asm {
 		PUSHAD
@@ -341,7 +341,7 @@ bool function_00476640(CUnit* unit, u32 weaponId) {
 
 ;
 
-const u32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
+const uint32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
 void setUnitStatTxtErrorMsg(char* message) {
 
 	__asm {
@@ -355,10 +355,10 @@ void setUnitStatTxtErrorMsg(char* message) {
 
 ;
 
-const u32 Func_get_statTxt_Str_0 = 0x0048EF30;
-u32 get_statTxt_Str_0(CUnit* unit, u32 playerId, char* message) {
+const uint32 Func_get_statTxt_Str_0 = 0x0048EF30;
+uint32 get_statTxt_Str_0(CUnit* unit, uint32 playerId, char* message) {
 
-	static u32 return_value;
+	static uint32 return_value;
 
 	__asm {
 		PUSHAD
@@ -376,10 +376,10 @@ u32 get_statTxt_Str_0(CUnit* unit, u32 playerId, char* message) {
 
 ;
 
-const u32 Func_canCastSpell_0 = 0x00492140;
+const uint32 Func_canCastSpell_0 = 0x00492140;
 bool canCastSpell_0(CUnit* unit) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -396,10 +396,10 @@ bool canCastSpell_0(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub492620 = 0x00492620;
-u32 function_00492620(CUnit* unit, Bool32 wasMainOrderStateZero) {
+const uint32 Func_Sub492620 = 0x00492620;
+uint32 function_00492620(CUnit* unit, bool32 wasMainOrderStateZero) {
 
-	static u32 return_value;
+	static uint32 return_value;
 
 	__asm {
 		PUSHAD
@@ -416,10 +416,10 @@ u32 function_00492620(CUnit* unit, Bool32 wasMainOrderStateZero) {
 
 ;
 
-const u32 Func_RandomizeShort = 0x004DC4A0;
-u32 RandomizeShort(u32 unknown_index) {
+const uint32 Func_RandomizeShort = 0x004DC4A0;
+uint32 RandomizeShort(uint32 unknown_index) {
 
-	static u32 return_value;
+	static uint32 return_value;
 
 	__asm {
 		PUSHAD
@@ -436,7 +436,7 @@ u32 RandomizeShort(u32 unknown_index) {
 ;
 
 //Related to path/movement decision
-const u32 Func_sub_4EB290 = 0x004EB290;
+const uint32 Func_sub_4EB290 = 0x004EB290;
 void setNextWaypoint_Sub4EB290(CUnit* unit) {
 
 	__asm {

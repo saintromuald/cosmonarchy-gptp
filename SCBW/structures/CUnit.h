@@ -10,28 +10,28 @@
 
 struct CFlingy {
     /*0x000*/ CLink<CUnit> link;
-    /*0x008*/ s32       value;                ///for unit it's hitpoints
+    /*0x008*/ int32       value;                ///for unit it's hitpoints
     /*0x00C*/ CSprite* sprite;
     /*0x010*/ Target    moveTarget;           ///< The position or unit to move to. It is NOT an order target.
     /*0x018*/ Point16   nextMovementWaypoint; ///< The next way point in the path the unit is following to get to its destination.
                                               ///< Equal to moveToPos for air units since they don't need to navigate around buildings.
     /*0x01C*/ Point16   nextTargetWaypoint;   ///< The desired position
-    /*0x020*/ u8        movementFlags;		  /// Flags specifying movement type, MovementFlags::Enum contains possible explanations
-    /*0x021*/ u8        currentDirection1;	  /// The current direction the unit is facing
-    /*0x022*/ u8        flingyTurnSpeed;      //AKA flingy turn radius
-    /*0x023*/ u8        velocityDirection1;	  
-    /*0x024*/ u16       flingyId;
-    /*0x026*/ u8        _unknown_0x026;            		
-    /*0x027*/ u8        flingyMovementType;
+    /*0x020*/ uint8        movementFlags;		  /// Flags specifying movement type, MovementFlags::Enum contains possible explanations
+    /*0x021*/ uint8        currentDirection1;	  /// The current direction the unit is facing
+    /*0x022*/ uint8        flingyTurnSpeed;      //AKA flingy turn radius
+    /*0x023*/ uint8        velocityDirection1;	  
+    /*0x024*/ uint16       flingyId;
+    /*0x026*/ uint8        _unknown_0x026;            		
+    /*0x027*/ uint8        flingyMovementType;
     /*0x028*/ Point16   position;			  
     /*0x02C*/ Point32   halt;
-    /*0x034*/ u32       flingyTopSpeed;       
-    /*0x038*/ u32       current_speed1;       
-    /*0x03C*/ u32       current_speed2;       
+    /*0x034*/ uint32       flingyTopSpeed;       
+    /*0x038*/ uint32       current_speed1;       
+    /*0x03C*/ uint32       current_speed2;       
     /*0x040*/ Point32   current_velocity;
-    /*0x048*/ u16       flingyAcceleration;
-    /*0x04A*/ u8        currentDirection2;    
-    /*0x04B*/ u8        velocityDirection2;   
+    /*0x048*/ uint16       flingyAcceleration;
+    /*0x04A*/ uint8        currentDirection2;    
+    /*0x04B*/ uint8        velocityDirection2;   
 };
 
 
@@ -46,44 +46,44 @@ struct CUnit: public CUnitLayout {
   
   /// Returns the amount of HP displayed in-game. This is equal to
   /// (this->hitPoints + 255) / 256.
-  u32 getCurrentHpInGame() const;
+  uint32 getCurrentHpInGame() const;
 
   /// Returns the amount of shield points displayed in-game. This is equal to
   /// unit->shields / 256.
-  u32 getCurrentShieldsInGame() const;
+  uint32 getCurrentShieldsInGame() const;
 
   /// Returns the amount of HP + shields displayed in game. If the unit does not
   /// have shields enabled, this returns the amount of HP displayed.
-  u32 getCurrentLifeInGame() const;
+  uint32 getCurrentLifeInGame() const;
   
   /// Returns the unit's ground weapon ID. If the unit is an unburrowed Lurker,
   /// returns WeaponId::None instead.
-  u8 getGroundWeapon() const;
+  uint8 getGroundWeapon() const;
 
   /// Returns the unit's air weapon ID. This is identical to reading the value
   /// from units_dat::AirWeapon[unit->id].
-  u8 getAirWeapon() const;
+  uint8 getAirWeapon() const;
   
   /// Returns the total armor amount of this unit (with upgrades).
   /// To retrieve a unit's base armor amount, use units_dat::ArmorAmount[].
-  u8 getArmor() const;
+  uint8 getArmor() const;
 
   /// Returns the bonus armor amount of this unit (from upgrades).
   /// To retrieve a unit's base armor amount, use units_dat::ArmorAmount[].
-  u8 getArmorBonus() const;
+  uint8 getArmorBonus() const;
   
   /// Returns the maximum energy amount of this unit (with upgrades).
-  u16 getMaxEnergy() const;
+  uint16 getMaxEnergy() const;
 
   /// Returns the maximum HP amount displayed in-game. This is equal to
   /// units_dat::MaxHitPoints[unit->id] >> 8 (minimum value is 1).
-  u32 getMaxHpInGame() const;
-  u32 getMaxHpRaw() const;
+  uint32 getMaxHpInGame() const;
+  uint32 getMaxHpRaw() const;
   
   /// Returns the maximum range of a weapon in pixels. The weapon is assumed to
   /// be attached to this unit for calculating upgrade effects.
   /// This is affected by the Weapon Range hook module.
-  u32 getMaxWeaponRange(u8 weaponId) const;
+  uint32 getMaxWeaponRange(uint8 weaponId) const;
   
   /// Retrieves the in-game name of this unit. In UMS maps, this returns custom
   /// names (if they exist).
@@ -91,7 +91,7 @@ struct CUnit: public CUnitLayout {
 
   /// Retrieves the in-game name of the unit with @p unitId. In UMS maps, this
   /// returns custom unit names (if they exist).
-  static const char* getName(u16 unitId);
+  static const char* getName(uint16 unitId);
 
   /// Returns the race of the current unit.
   /// @return   RaceId::Terran, Zerg, Protoss, or Neutral.
@@ -99,20 +99,20 @@ struct CUnit: public CUnitLayout {
   
   /// Returns the race of the unit with @p unitId.
   /// @return   RaceId::Terran, Zerg, Protoss, or Neutral.
-  static RaceId::Enum getRace(u16 unitId);
+  static RaceId::Enum getRace(uint16 unitId);
   
   /// Returns the unit's seek range (AKA target acquisition range) in matrices.
   /// This is affected by the Weapon Range hook module.
-  u8 getSeekRange() const;
+  uint8 getSeekRange() const;
   
   /// Returns the sight range of this unit (with upgrades).
   /// If @p isForSpellCasting is true, also factors in status effects.
-  u32 getSightRange(bool isForSpellCasting = false) const;
+  uint32 getSightRange(bool isForSpellCasting = false) const;
   
   ///Return true if:
   /// * THE GATHERING cheat is enabled or
   /// * unit has at least @p energy available.
-  bool hasEnergy(u32 energy) const;
+  bool hasEnergy(uint32 energy) const;
 
   /// Returns true if:
   /// * The unit has a weapon, or
@@ -140,7 +140,7 @@ struct CUnit: public CUnitLayout {
 
   /// Checks if the unit is at move destination (0), or if the unit is
   /// unmovable (2) or not (1)
-  u32 getMovableState() ;
+  uint32 getMovableState() ;
   
   //////////////////////////////////////////////////////////////// @}
 
@@ -148,23 +148,23 @@ struct CUnit: public CUnitLayout {
   //////////////////////////////////////////////////////////////// @{
 
   /// Returns the X position of the unit's sprite on the map.
-  u16 getX() const;
+  uint16 getX() const;
   /// Returns the Y position of the unit's sprite on the map.
-  u16 getY() const;
+  uint16 getY() const;
 
   /// Returns the X position of the tile that the unit's sprite is on.
-  u16 getTileX() const;
+  uint16 getTileX() const;
   /// Returns the Y position of the tile that the unit's sprite is on.
-  u16 getTileY() const;
+  uint16 getTileY() const;
 
   /// Returns the position of the left edge of the unit's collision box.
-  s16 getLeft() const;
+  int16 getLeft() const;
   /// Returns the position of the right edge of the unit's collision box.
-  s16 getRight() const;
+  int16 getRight() const;
   /// Returns the position of the top edge of the unit's collision box.
-  s16 getTop() const;
+  int16 getTop() const;
   /// Returns the position of the bottom edge of the unit's collision box.
-  s16 getBottom() const;
+  int16 getBottom() const;
 
   //////////////////////////////////////////////////////////////// @}
 
@@ -173,30 +173,30 @@ struct CUnit: public CUnitLayout {
 
   /// Sets the unit's HP, and also updates burning / bleeding graphics and unit
   /// strength data (used by the AI). HP is guaranteed not to overflow.
-  void setHp(s32 hitPoints);
-  void heal(s32 hitPoints, CUnit* source = nullptr);
+  void setHp(int32 hitPoints);
+  void heal(int32 hitPoints, CUnit* source = nullptr);
 
   /// Deals damage to this unit, using a specific weapons.dat ID.
-  void damageWith(s32 damage,               ///< Amount of damage dealt to this unit.
-                  u8 weaponId,              ///< weapons.dat ID to use.
+  void damageWith(int32 damage,               ///< Amount of damage dealt to this unit.
+                  uint8 weaponId,              ///< weapons.dat ID to use.
                   CUnit* attacker = nullptr,   ///< Attacking unit (for increasing kill count)
-                  u8 attackingPlayer = -1,  ///< Attacking player (for increasing kill score)
-                  s8 direction = 0,         ///< Attacked direction (for shield flicker overlays)
-                  u8 damageDivisor = 1      ///< Damage divisor (for splash damage / glave wurm calculations)
+                  uint8 attackingPlayer = -1,  ///< Attacking player (for increasing kill score)
+                  int8 direction = 0,         ///< Attacked direction (for shield flicker overlays)
+                  uint8 damageDivisor = 1      ///< Damage divisor (for splash damage / glave wurm calculations)
                   );
 
   /// Deals damage directly to unit HP, killing it if possible.
-  void damageHp(s32 damage, CUnit* attacker = nullptr,
-                s32 attackingPlayer = -1, bool notify = true);
+  void damageHp(int32 damage, CUnit* attacker = nullptr,
+                int32 attackingPlayer = -1, bool notify = true);
 
 	/// Deals damage to shields and hp
-  void inflictDamage(s32 damage, CUnit* attacker = nullptr,
-	  s32 attackingPlayer = -1, bool notify = true, bool shield_overlay = false, int direction = 0, bool ignoreDmg128Overflow = false);
+  void inflictDamage(int32 damage, CUnit* attacker = nullptr,
+	  int32 attackingPlayer = -1, bool notify = true, bool shield_overlay = false, int direction = 0, bool ignoreDmg128Overflow = false);
   
 
 
   /// Reduces Defensive Matrix by @p amount, removing it if possible.
-  void reduceDefensiveMatrixHp(s32 amount);
+  void reduceDefensiveMatrixHp(int32 amount);
 
   /// Immediately kills the unit. To silently remove the unit, use:
   ///   unit->userActionFlags |= 0x4;
@@ -216,9 +216,9 @@ struct CUnit: public CUnitLayout {
   void removeAcidSpores();
   
   /// Spend an amount of energy, if no THE GATHERING cheat.
-  void spendUnitEnergy(u32 energy);
-  void addUnitEnergy(u32 energy);
-  void addUnitEnergy(u32 energy, u32 max);
+  void spendUnitEnergy(uint32 energy);
+  void addUnitEnergy(uint32 energy);
+  void addUnitEnergy(uint32 energy, uint32 max);
 
   //////////////////////////////////////////////////////////////// @}
 
@@ -226,31 +226,31 @@ struct CUnit: public CUnitLayout {
   //////////////////////////////////////////////////////////////// @{
 
   /// Issue the @p order to the unit, using the given @p target unit.
-  void orderTo(u8 orderId, CUnit* target = nullptr);
+  void orderTo(uint8 orderId, CUnit* target = nullptr);
 
   /// Issue the @p order to the unit, using the given position as the target.
-  void orderTo(u8 orderId, u16 x, u16 y);
+  void orderTo(uint8 orderId, uint16 x, uint16 y);
 
   //  Issue the @p order to the unit, without a target
-  void orderComputerCL(u8 orderId);
+  void orderComputerCL(uint8 orderId);
 
   //  Issue the @p order to the unit and specify if previous orders should be stopped
-  void orderSimple(u8 orderId, bool stopPreviousOrders);
+  void orderSimple(uint8 orderId, bool stopPreviousOrders);
 
   //  Issue the @p order to the unit, using the given @p target unit and specify if previous orders should be stopped
-  void issueQueuedOrderTarget(u8 orderId, CUnit* target, bool stopPreviousOrders);
+  void issueQueuedOrderTarget(uint8 orderId, CUnit* target, bool stopPreviousOrders);
 
   /// Causes the unit to become idle.
   void orderToIdle();
 
   /// Issues a new order to the unit.
-  void order(u8 orderId, u16 x, u16 y, CUnit* target, u16 targetUnitId, bool stopPreviousOrders);
+  void order(uint8 orderId, uint16 x, uint16 y, CUnit* target, uint16 targetUnitId, bool stopPreviousOrders);
     
   /// Probably add the @p order to the orders queue
-  void performAnotherOrder(u8 orderId, s16 x, s16 y, CUnit* target, u16 targetUnitId, u32 unk = NULL);
+  void performAnotherOrder(uint8 orderId, int16 x, int16 y, CUnit* target, uint16 targetUnitId, uint32 unk = NULL);
 
   /// Used by several hooks, details not completely understood.
-  void setSecondaryOrder(u8 orderId);
+  void setSecondaryOrder(uint8 orderId);
 
   //////////////////////////////////////////////////////////////// @}
   
@@ -261,8 +261,8 @@ struct CUnit: public CUnitLayout {
   
   /// Returns the overlay image of this unit's sprite (or its subunit's sprite)
   /// that matches the @p imageId. If the image cannot be found, returns nullptr.
-  CImage* getOverlay(u16 imageId) const;
-  s32 maxShields() const;
+  CImage* getOverlay(uint16 imageId) const;
+  int32 maxShields() const;
   bool shieldsEnabled() const;
   bool shieldsEnabledRaw() const;
 
@@ -271,10 +271,10 @@ struct CUnit: public CUnitLayout {
 
   /// Removes the first image overlay with an ID value between @p imageIdStart
   /// and @p imageIdEnd.
-  void removeOverlay(u32 imageIdStart, u32 imageIdEnd);
+  void removeOverlay(uint32 imageIdStart, uint32 imageIdEnd);
 
   /// Removes the first image overlay with the given image ID.
-  void removeOverlay(u32 imageId);
+  void removeOverlay(uint32 imageId);
 
   /// Get the faction (brood,tribe,squad...) color of current unit
   graphics::ColorId getFactionColor();
@@ -296,18 +296,18 @@ struct CUnit: public CUnitLayout {
   /// Returns the distance between this unit and the @p target, taking unit
   /// collision size in units.dat into account.
   /// Internally, this function uses scbw::getDistanceFast().
-  u32 getDistanceToTarget(CUnit* target) const;
+  uint32 getDistanceToTarget(CUnit* target) const;
 
   /// Checks whether this unit can reach the target position. This checks only
   /// for terrain, and does not consider obstacles (units and buildings).
-  bool hasPathToPos(u32 x, u32 y) const;
+  bool hasPathToPos(uint32 x, uint32 y) const;
   
   /// Checks whether this unit can reach the @p target unit. This checks only
   /// for terrain, and does not consider obstacles (units and buildings).
   bool hasPathToUnit(CUnit* target) const;
 
   ///  Checks whether the @p target unit is within the @p range from the unit.
-  bool isTargetWithinMinRange(CUnit* target, u32 range);
+  bool isTargetWithinMinRange(CUnit* target, uint32 range);
   
   //////////////////////////////////////////////////////////////// @}
 
@@ -320,7 +320,7 @@ struct CUnit: public CUnitLayout {
   ///
   /// If the unit can build / train / morph, returns 1. If the tech needs to be
   /// researched, returns -1. If the unit cannot use the tech at all, returns 0.
-  int canMakeUnit(u16 unitId, u8 playerId) const;
+  int canMakeUnit(uint16 unitId, uint8 playerId) const;
 
   /// Checks the following:
   ///  * If the unit is actually owned by the commanding @p playerId
@@ -331,7 +331,7 @@ struct CUnit: public CUnitLayout {
   ///
   /// If the unit can use the tech, returns 1. If the tech needs to be
   /// researched, returns -1. If the unit cannot use the tech at all, returns 0.
-  int canUseTech(u8 techId, u8 playerId) const;
+  int canUseTech(uint8 techId, uint8 playerId) const;
   
   //////////////////////////////////////////////////////////////// @}
 
@@ -355,20 +355,20 @@ struct CUnit: public CUnitLayout {
   /// unit's weapon cooldown. The spawned weapon sprite obeys the weapon
   /// behavior properties in weapons.dat.
   /// Note: This function is affected by the Fire Weapon hook module.
-  void fireWeapon(u8 weaponId) const;
+  void fireWeapon(uint8 weaponId) const;
 
   /// Retrieves the unit pointer by @p index from the unit table (first unit is
   /// indexed at 1). If invalid, returns nullptr instead.
-  static CUnit* getFromIndex(u16 index);
+  static CUnit* getFromIndex(uint16 index);
 
   /// Returns the index of this unit in the unit table. First unit == index 1.
-  u16 getIndex() const;
+  uint16 getIndex() const;
 
   /// Returns the ID of the last player to own this unit. This is usually the
   /// same as CUnit::playerId, but if the unit belongs to a defeated player,
   /// this returns the correct player ID (instead of 11).
   /// @deprecated   Will be removed in v2.42. Use CUnit::isTargetEnemy().
-  u8 getLastOwnerId() const;
+  uint8 getLastOwnerId() const;
 
   /// Returns the loaded unit at @p index (value between 0-7). If no unit is
   /// loaded at the slot, returns nullptr instead.
@@ -384,7 +384,7 @@ struct CUnit: public CUnitLayout {
   /// Transfers ownership of this unit to @p playerId. This function is
   /// identical to Mind Control and the "Give Units To Player" trigger action.
   /// @return   true if successful, false otherwise.
-  bool giveTo(u8 playerId);
+  bool giveTo(uint8 playerId);
 
   /// Checks if the unit has an associated sprite and is not running the
   /// OrderId::Die order.
@@ -396,20 +396,20 @@ struct CUnit: public CUnitLayout {
   
   /// Checks whether this unit can be seen by @playerId (i.e. not covered by the
   /// fog-of-war and is detectable).
-  bool isVisibleTo(u8 playerId) const;
+  bool isVisibleTo(uint8 playerId) const;
   
   /// Updates the unit's actual speed. This function should be called after
   /// changing any properties and status effects that affect movement speed.
   void updateSpeed();
 
   /// For Wyvern Land Grab
-  u8 getSpellCountdown() const;
+  uint8 getSpellCountdown() const;
 
   //////////////////////////////////////////////////////////////// @}
 
-  void setSupplyProvided(u8 amount);
-  s32 getTotalHitPointsPlusShields();
-  s32 CUnit::isUnitAINonBuilding();
+  void setSupplyProvided(uint8 amount);
+  int32 getTotalHitPointsPlusShields();
+  int32 CUnit::isUnitAINonBuilding();
 };
 
 C_ASSERT(sizeof(CFlingy) == 0x4c);

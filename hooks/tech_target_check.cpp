@@ -11,10 +11,10 @@ bool isInfestableUnit(CUnit* unit);
 namespace hooks {
 
 //Should be equivalent to getSpellStatString @ 0x00491E80
-u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayerId, u16 techId) {
+uint16 getTechUseErrorMessageHook(CUnit* target, uint8 castingPlayerId, uint16 techId) {
 
 
-	u16 stringId;
+	uint16 stringId;
 	if(target->stasisTimer != 0)
 		stringId = 900; //Units in stasis can't be targeted.<0>
 	else
@@ -129,10 +129,10 @@ u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayerId, u16 techId) {
 //-------- Helper function definitions. Do NOT modify! --------//
 namespace {
 
-const u32 Func_IsInfestable = 0x00402210;
+const uint32 Func_IsInfestable = 0x00402210;
 bool isInfestableUnit(CUnit* unit) {
 
-	static Bool32 result;
+	static bool32 result;
 
 	__asm {
 		PUSHAD

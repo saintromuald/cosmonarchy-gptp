@@ -14,13 +14,13 @@ void __stdcall DrawHook(graphics::Bitmap *surface, Bounds *bounds) {
   }
   /*
   if (deathTable[0].player[11] == 1) {
-	  u16 l = deathTable[1].player[11];
-	  u16 t = deathTable[2].player[11];
-	  u16 r = deathTable[3].player[11];
-	  u16 b = deathTable[4].player[11];
-	  u16 x = deathTable[6].player[11];
-	  u16 y = deathTable[7].player[11];
-	  u16 unit= deathTable[5].player[11];
+	  uint16 l = deathTable[1].player[11];
+	  uint16 t = deathTable[2].player[11];
+	  uint16 r = deathTable[3].player[11];
+	  uint16 b = deathTable[4].player[11];
+	  uint16 x = deathTable[6].player[11];
+	  uint16 y = deathTable[7].player[11];
+	  uint16 unit= deathTable[5].player[11];
 	  //graphics::drawBox(l, t, r, b, graphics::YELLOW, graphics::ON_MAP);
 	//  graphics::drawDot(x, y, graphics::GREEN, graphics::ON_MAP);
   }*/

@@ -3,11 +3,11 @@
 
 namespace hooks {
 
-	const u32 jmp_34c53 = 0x00434C53;
-	const u32 jmp_4C80_ret = 0x00434C80;
+	const uint32 jmp_34c53 = 0x00434C53;
+	const uint32 jmp_4C80_ret = 0x00434C80;
 	void __declspec(naked) Ai_ProgressSpendingQueue_JmpWrapper() {
-		static u32 unit_id;
-		static u32 result;
+		static uint32 unit_id;
+		static uint32 result;
 		__asm {
 			MOV unit_id, EAX
 			PUSHAD
@@ -52,8 +52,8 @@ namespace hooks {
 
 	//Ai_GetDefaultWorkerFromRace
 	void __declspec(naked) Ai_GetDefaultWorkerFromRace() {
-		static u32 unit_id;
-		static u32 race;
+		static uint32 unit_id;
+		static uint32 race;
 		__asm {
 			MOV race,EAX
 			PUSHAD
@@ -66,14 +66,14 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_33F7E = 0x00433F7E;
-	const u32 jmp_33FD1_ret = 0x00433FD1;
-//	const u32 jmp_33F7A = 0x00433F7A;
-	const u32 jmp_33F77 = 0x00433F77;
+	const uint32 jmp_33F7E = 0x00433F7E;
+	const uint32 jmp_33FD1_ret = 0x00433FD1;
+//	const uint32 jmp_33F7A = 0x00433F7A;
+	const uint32 jmp_33F77 = 0x00433F77;
 	void __declspec(naked) AddUnitAi_JmpWrapper() {
-		static u8 race;
-		static u16 unit_id;//not in original function
-		static u32 cmp_id;
+		static uint8 race;
+		static uint16 unit_id;//not in original function
+		static uint32 cmp_id;
 		static CUnit* unit;
 		__asm {
 			MOV race,AL
@@ -115,10 +115,10 @@ namespace hooks {
 		//}
 		
 	}
-	const u32 jmp_3660D = 0x0043660D;
+	const uint32 jmp_3660D = 0x0043660D;
 	void __declspec(naked) Ai_UpgradesFinished_JmpWrapper() {
-		static u8 race;
-		static u32 unit_id;
+		static uint8 race;
+		static uint32 unit_id;
 		__asm {
 			MOV race, AL
 			PUSHAD
@@ -135,10 +135,10 @@ namespace hooks {
 	}
 
 
-	const u32 jmp_38f8 = 0x004438F8;
-	const u32 jmp_3889 = 0x00443889;
+	const uint32 jmp_38f8 = 0x004438F8;
+	const uint32 jmp_3889 = 0x00443889;
 	void __declspec(naked) Ai_RemoveDangerousRegions_JmpWrapper() {
-		static u32 unit_id;
+		static uint32 unit_id;
 		__asm {
 			MOV unit_id, EAX
 			PUSHAD
@@ -156,10 +156,10 @@ namespace hooks {
 			}
 		}
 	}
-	const u32 jmp_27a = 0x0044627A;
-	const u32 jmp_240 = 0x00446240;
+	const uint32 jmp_27a = 0x0044627A;
+	const uint32 jmp_240 = 0x00446240;
 	void __declspec(naked) Ai_GetBuildLocation_JmpWrapper() {
-		static u32 unit_id;
+		static uint32 unit_id;
 		__asm {
 			MOV unit_id, EBX
 			PUSHAD
@@ -177,10 +177,10 @@ namespace hooks {
 			}
 		}
 	}
-	const u32 jmp_920 = 0x00434920;
-	const u32 jmp_c80 = 0x00434C80;
+	const uint32 jmp_920 = 0x00434920;
+	const uint32 jmp_c80 = 0x00434C80;
 	void __declspec(naked) Ai_TryProgressSpendingQueue_WorkerJmpWrapper() {
-		static u16 unit_id;
+		static uint16 unit_id;
 		static CUnit* worker;
 		__asm {
 			MOV worker,EDI
@@ -205,10 +205,10 @@ namespace hooks {
 		}
 	}
 	void __declspec(naked) AI_AddTownSpendingRequest_Wrapper() { // 00448400
-		static s32 result;
-		static s32 playerId;
-		static s32 priority;
-		static s32 unitId;
+		static int32 result;
+		static int32 playerId;
+		static int32 priority;
+		static int32 unitId;
 		static void* param;
 		__asm {
 			PUSH EBP
@@ -246,10 +246,10 @@ namespace hooks {
 	void injectSupplyDepotHooks() {
 		jmpPatch(Ai_TryProgressSpendingQueue_WorkerJmpWrapper, 0x00434912, 3);
 	}
-	const u32 jmp_00467F24 = 0x00467F24;
-	const u32 jmp_00467F2C = 0x00467F2C;
+	const uint32 jmp_00467F24 = 0x00467F24;
+	const uint32 jmp_00467F2C = 0x00467F2C;
 	void __declspec(naked) orders_SCVBuild2_Wrapper() {
-		static u16 id;	
+		static uint16 id;	
 		__asm {
 			MOV id,AX
 			PUSHAD
@@ -269,7 +269,7 @@ namespace hooks {
 	}
 	void __declspec(naked) orders_isGeyserTopUnitHookWrapper() {
 		static CUnit* unit;
-		static u32 result;
+		static uint32 result;
 		__asm {
 			MOV unit,EAX
 			PUSHAD
@@ -281,10 +281,10 @@ namespace hooks {
 			RETN
 		}
 	}
-	const u32 jmp_00468952 = 0x00468952;
-	const u32 jmp_00468966 = 0x00468966;
+	const uint32 jmp_00468952 = 0x00468952;
+	const uint32 jmp_00468966 = 0x00468966;
 	void __declspec(naked) orders_isGeyserTopUnitEx_Wrapper() {
-		static u16 id;
+		static uint16 id;
 		__asm {
 			MOV id, AX
 			PUSHAD

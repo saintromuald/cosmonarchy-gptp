@@ -37,7 +37,7 @@ void orderNewUnitToRally(CUnit* unit, CUnit* factory) {
 ;
 
 /// Called when the player sets the rally point on the ground.
-void setRallyPosition(CUnit* unit, u16 x, u16 y) {
+void setRallyPosition(CUnit* unit, uint16 x, uint16 y) {
 	unit->rally.unit = nullptr;
 	unit->rally.pt.x = x;
 	unit->rally.pt.y = y;

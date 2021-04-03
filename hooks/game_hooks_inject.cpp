@@ -7,9 +7,9 @@ bool isGameOn = false;
 
 /******** Game Start ********/
 
-const u32 Hook_OnGameStart = 0x004C9A51;
-const u32 Hook_OnGameStartBack = Hook_OnGameStart + 5;
-const u32 Func_CompileSCode = 0x00417C20;
+const uint32 Hook_OnGameStart = 0x004C9A51;
+const uint32 Hook_OnGameStartBack = Hook_OnGameStart + 5;
+const uint32 Func_CompileSCode = 0x00417C20;
 void __declspec(naked) onGameStart() { // From BWAPI by Kovarex, slightly modified
 	__asm PUSHAD;
 	{
@@ -26,7 +26,7 @@ void __declspec(naked) onGameStart() { // From BWAPI by Kovarex, slightly modifi
 
 /******** Game End ********/
 
-const u32 Func_DeleteSCode = 0x00416D90;
+const uint32 Func_DeleteSCode = 0x00416D90;
 void __declspec(naked) onGameEnd() { // From BWAPI by Kovarex, slightly modified
 	__asm PUSHAD;
 	{

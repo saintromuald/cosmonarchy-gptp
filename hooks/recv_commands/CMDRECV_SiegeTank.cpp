@@ -5,13 +5,13 @@
 
 namespace {
 
-void function_004754F0(CUnit* unit,u32 unitId,u32 unk1,u32 unk2,u32 orderId,u32 unk3,u32 unk4,u32 unk5);	//754F0
+void function_004754F0(CUnit* unit,uint32 unitId,uint32 unk1,uint32 unk2,uint32 orderId,uint32 unk3,uint32 unk4,uint32 unk5);	//754F0
 
 } //unnamed namespace
 
 namespace hooks {
 
-void CMDRECV_Siege(u8 bCommandType) {
+void CMDRECV_Siege(uint8 bCommandType) {
 
 	CUnit* current_selection;
 
@@ -36,8 +36,8 @@ void CMDRECV_Siege(u8 bCommandType) {
 				function_004754F0(
 					current_selection,
 					UnitId::None,
-					*(u32*)(0x006D5C24),
-					*(u32*)(0x006D5C20),
+					*(uint32*)(0x006D5C24),
+					*(uint32*)(0x006D5C20),
 					OrderId::SiegeMode,
 					0,
 					bCommandType,
@@ -55,7 +55,7 @@ void CMDRECV_Siege(u8 bCommandType) {
 
 ;
 
-void CMDRECV_Unsiege(u8 bCommandType) {
+void CMDRECV_Unsiege(uint8 bCommandType) {
 
 	CUnit* current_selection;
 
@@ -80,8 +80,8 @@ void CMDRECV_Unsiege(u8 bCommandType) {
 				function_004754F0(
 					current_selection,
 					UnitId::None,
-					*(u32*)(0x006D5C24),
-					*(u32*)(0x006D5C20),
+					*(uint32*)(0x006D5C24),
+					*(uint32*)(0x006D5C20),
 					OrderId::TankMode,
 					0,
 					bCommandType,
@@ -109,8 +109,8 @@ namespace {
 	//some things are hardcoded because it's hard to tell what is used or
 	//not.
 	//Basically, used elsewhere, the function would be implemented differently
-	const u32 Func_Sub_4754F0 = 0x004754F0;
-	void function_004754F0(CUnit* unit,u32 unitId,u32 unk1,u32 unk2,u32 orderId,u32 unk3,u32 unk4,u32 unk5) {
+	const uint32 Func_Sub_4754F0 = 0x004754F0;
+	void function_004754F0(CUnit* unit,uint32 unitId,uint32 unk1,uint32 unk2,uint32 orderId,uint32 unk3,uint32 unk4,uint32 unk5) {
 
 		__asm {
 			PUSHAD

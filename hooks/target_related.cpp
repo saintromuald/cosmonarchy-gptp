@@ -40,14 +40,14 @@ namespace {
 
 	// for genericRightClickUnitProc2
 	bool unitIsActiveTransport(CUnit* unit);											// 004E6BA0
-	s32 isOrderValid(char a1, CUnit* a2, s32 a3, CUnit* a4, s32 a5);					// 00474D90
+	int32 isOrderValid(char a1, CUnit* a2, int32 a3, CUnit* a4, int32 a5);					// 00474D90
 	bool canEnterTransport(CUnit* a1, CUnit* a2);										// 004E6E00
-	u16 getUnitAbilityErrorStatString(CUnit* a1, char a2, s32 a3);						// 00491E80
+	uint16 getUnitAbilityErrorStatString(CUnit* a1, char a2, int32 a3);						// 00491E80
 
 	// for CMDRECV_HoldPosition
 	CUnit* getActivePlayerFirstSelection();												// 0049A850
-	s32 orderAllowed(CUnit* a1, u16 a2, s32 a3);										// 0046DC20
-	void targetedOrder(s16 a1, s32 a2, CUnit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10);	// 004754F0
+	int32 orderAllowed(CUnit* a1, uint16 a2, int32 a3);										// 0046DC20
+	void targetedOrder(int16 a1, int32 a2, CUnit* a3, int16 a4, int32 a5, int32 a6, char a7, int32 a8, int32 a9, int32 a10);	// 004754F0
 }
 
 namespace hooks {
@@ -377,8 +377,8 @@ namespace hooks {
 		}
 	}
 
-	s32 genericRightClickUnitProc2(CUnit* unit, s32 a2, s16 a3, CUnit* target, s16 unitID) { // 00455E00
-		s32 result; // eax
+	int32 genericRightClickUnitProc2(CUnit* unit, int32 a2, int16 a3, CUnit* target, int16 unitID) { // 00455E00
+		int32 result; // eax
 		CUnit* targetVar; // esi
 
 		if (unit->status & UnitStatus::GroundedBuilding) {
@@ -404,7 +404,7 @@ namespace hooks {
 			|| targetVar->status & UnitStatus::Invincible
 			|| getUnitAbilityErrorStatString(targetVar, unit->playerId, 12) != 0)
 		{
-			result = (u8)(unit->id != UnitId::TerranCleric ? 0 : 0x80) + OrderId::Follow;
+			result = (uint8)(unit->id != UnitId::TerranCleric ? 0 : 0x80) + OrderId::Follow;
 		}
 		else
 		{
@@ -413,13 +413,13 @@ namespace hooks {
 		return result;
 	}
 
-	CUnit* CMDRECV_HoldPosition(s32 a1) { // 004C20C0
+	CUnit* CMDRECV_HoldPosition(int32 a1) { // 004C20C0
 		CUnit* result; // eax
 		CUnit* i; // esi
-		s16 unitId; // ax
-		u8 orderId; // al
+		int16 unitId; // ax
+		uint8 orderId; // al
 
-		*((s8*)&mapHeightPixels + 2) = 0;
+		*((int8*)&mapHeightPixels + 2) = 0;
 		result = getActivePlayerFirstSelection();
 		for (i = result; result; i = result)
 		{
@@ -444,21 +444,21 @@ namespace hooks {
 				orderId = OrderId::HoldPosition1;
 			}
 			if (orderAllowed(i, orderId, *ACTIVE_NATION_ID) == 1)
-				targetedOrder(0, UnitId::None, i, 0, 1, *(s8*)(a1 + 1) != 0, orderId, 0, *orderType4Position, *orderType4Target);
+				targetedOrder(0, UnitId::None, i, 0, 1, *(int8*)(a1 + 1) != 0, orderId, 0, *orderType4Position, *orderType4Target);
 			result = getActivePlayerFirstSelection();
 		}
 		return result;
 	}
 
-	u32 unitCanSeeCloakedTarget(CUnit* target, CUnit* unit) { // 00401D60, hooked for cloak rewrite - Pr0nogo
-		u32 flags = target->status; // BYTE1() & 3 == check if unit is cloaked/requires detect
+	uint32 unitCanSeeCloakedTarget(CUnit* target, CUnit* unit) { // 00401D60, hooked for cloak rewrite - Pr0nogo
+		uint32 flags = target->status; // BYTE1() & 3 == check if unit is cloaked/requires detect
 		return flags & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
 	}
 }
 
 namespace {
 	// for isUnitTargetOutOfMaxRange
-	const u32 Func_isTargetVisible = 0x004E5E30;
+	const uint32 Func_isTargetVisible = 0x004E5E30;
 	unsigned int isTargetVisible(CUnit* a1, CUnit* a2) {
 		static unsigned int result;
 
@@ -473,7 +473,7 @@ namespace {
 		return result;
 	};
 
-	const u32 Func_getUnitMaxWeaponRange = 0x00475870;
+	const uint32 Func_getUnitMaxWeaponRange = 0x00475870;
 	int getUnitMaxWeaponRange(CUnit* a1, unsigned __int8 a2) {
 		static int result;
 
@@ -488,7 +488,7 @@ namespace {
 		return result;
 	};
 
-	const u32 Func_isTargetWithinMinMovementRange = 0x004763D0;
+	const uint32 Func_isTargetWithinMinMovementRange = 0x004763D0;
 	bool isTargetWithinMinMovementRange(CUnit* a1, unsigned int a2, CUnit* a3) {
 		static int result;
 		static bool result2;
@@ -506,7 +506,7 @@ namespace {
 	};
 
 	// for isReadyToAttack
-	const u32 Func_getDistanceToUnit = 0x00430D30;
+	const uint32 Func_getDistanceToUnit = 0x00430D30;
 	unsigned int getDistanceToUnit(CUnit* a1, CUnit* a2) {
 		static unsigned int result;
 
@@ -521,7 +521,7 @@ namespace {
 		return result;
 	};
 
-	const u32 Func_distanceFromDboxCorner = 0x0043E50;
+	const uint32 Func_distanceFromDboxCorner = 0x0043E50;
 	unsigned int distanceFromDboxCorner(CUnit* a1, __int16 a2, __int16 a3) {
 		static unsigned int result;
 
@@ -537,7 +537,7 @@ namespace {
 		return result;
 	};
 
-	const u32 Func_isAngleInAttackAngle = 0x00475BE0;
+	const uint32 Func_isAngleInAttackAngle = 0x00475BE0;
 	bool isAngleInAttackAngle(int a1, int a2, CUnit* a3, unsigned __int8 a4) {
 		static int result;
 		static bool result2;
@@ -556,7 +556,7 @@ namespace {
 	};
 
 	// for canCastOrderedSpellNow
-	const u32 Func_isUnitVisible = 0x004E5DB0;
+	const uint32 Func_isUnitVisible = 0x004E5DB0;
 	int isUnitVisible(CUnit* a1) {
 		static int result;
 
@@ -570,7 +570,7 @@ namespace {
 		return result;
 	};
 
-	const u32 Func_isTargetWithinMinRange = 0x00430F10;
+	const uint32 Func_isTargetWithinMinRange = 0x00430F10;
 	bool isTargetWithinMinRange(CUnit* a1, unsigned int a2, CUnit* a3) {
 		static int result;
 		static bool result2;
@@ -587,7 +587,7 @@ namespace {
 		return result = (bool)result;
 	};
 
-	const u32 Func_getFlingyHaltDistaince = 0x00494F90;
+	const uint32 Func_getFlingyHaltDistaince = 0x00494F90;
 	int getFlingyHaltDistance(int a1) {
 		static int result;
 		__asm {
@@ -600,7 +600,7 @@ namespace {
 		return result;
 	};
 
-	const u32 Func_getDistanceFast = 0x0040C360;
+	const uint32 Func_getDistanceFast = 0x0040C360;
 	unsigned int getDistanceFast(int a1, int a2, int a3, int a4) {
 		static unsigned int result;
 
@@ -618,7 +618,7 @@ namespace {
 	};
 
 	// for ordersWatchTarget
-	const u32 Func_unitCanAttackTarget = 0x00476730;
+	const uint32 Func_unitCanAttackTarget = 0x00476730;
 	bool unitCanAttackTarget(CUnit* a1, CUnit* a2, int a3) {
 		static int result;
 		static bool result2;
@@ -635,7 +635,7 @@ namespace {
 		return result2 = (bool)result;
 	};
 
-	const u32 Func_getRightClickActionOrder = 0x004E5EA0;
+	const uint32 Func_getRightClickActionOrder = 0x004E5EA0;
 	char getRightClickActionOrder(CUnit* a1) {
 		static int result;
 		static char result2;
@@ -650,7 +650,7 @@ namespace {
 		return result2 = (char)result;
 	};
 
-	const u32 Func_unknownOrdersFunc = 0x00475350;
+	const uint32 Func_unknownOrdersFunc = 0x00475350;
 	void unknownOrdersFunc(int a1, __int16 a2, __int16 a3) {
 
 		__asm {
@@ -664,7 +664,7 @@ namespace {
 	};
 	
 	// for ordersStayInRange
-	const u32 Func_prependOrderTargetingGround = 0x00474A20;
+	const uint32 Func_prependOrderTargetingGround = 0x00474A20;
 	void prependOrderTargetingGround(__int8 a1, __int16 a2, __int16 a3, int a4) {
 
 		__asm {
@@ -678,7 +678,7 @@ namespace {
 		}
 	};
 	
-	const u32 Func_toIdle = 0x004753A0;
+	const uint32 Func_toIdle = 0x004753A0;
 	void toIdle(CUnit* a1) {
 
 		__asm {
@@ -689,7 +689,7 @@ namespace {
 		}
 	};
 
-	const u32 Func_moveTowards = 0x004EB900;
+	const uint32 Func_moveTowards = 0x004EB900;
 	signed int moveTowards(CUnit* a1, CUnit* a2) {
 		static signed int result;
 
@@ -704,7 +704,7 @@ namespace {
 		return result;
 	};
 
-	const u32 Func_ordersHoldPositionSuicidal = 0x004EB5B0;
+	const uint32 Func_ordersHoldPositionSuicidal = 0x004EB5B0;
 	int ordersHoldPositionSuicidal(CUnit* a1) {
 		static int result;
 
@@ -718,7 +718,7 @@ namespace {
 		return result;
 	};
 
-	const u32 Func_moveToTarget = 0x004EB720;
+	const uint32 Func_moveToTarget = 0x004EB720;
 	signed int moveToTarget(CUnit* a1, CUnit* a2) {
 		static signed int result;
 
@@ -733,7 +733,7 @@ namespace {
 		return result;
 	};
 
-	const u32 Func_getDirectionFromPoints = 0x00495300;
+	const uint32 Func_getDirectionFromPoints = 0x00495300;
 	int getDirectionFromPoints(int a1, int a2, int a3, int a4) {
 		static int result;
 		__asm {
@@ -749,7 +749,7 @@ namespace {
 		return result;
 	};
 
-	const u32 Func_setSecondaryWaypoint = 0x00494BB0;
+	const uint32 Func_setSecondaryWaypoint = 0x00494BB0;
 	CUnit* setSecondaryWaypoint(CUnit* a1, int a2, int a3) {
 		static CUnit* result;
 
@@ -765,7 +765,7 @@ namespace {
 		return result;
 	};
 
-	const u32 Func_setResourceTarget = 0x004EB290;
+	const uint32 Func_setResourceTarget = 0x004EB290;
 	Point32 setResourceTarget(CUnit* a1) {
 		static __int32 result;
 		static Point32 resultPoint;
@@ -780,7 +780,7 @@ namespace {
 		return resultPoint = *(Point32*)&result;
 	};
 
-	const u32 Func_ordersNothing2 = 0x00475000;
+	const uint32 Func_ordersNothing2 = 0x00475000;
 	void ordersNothing2(CUnit* a1) {
 
 		__asm {
@@ -791,7 +791,7 @@ namespace {
 		}
 	};
 
-	const u32 Func_orderComputerClear = 0x00475310;
+	const uint32 Func_orderComputerClear = 0x00475310;
 	void orderComputerClear(CUnit* a1, __int8 a2) {
 
 		__asm {
@@ -804,9 +804,9 @@ namespace {
 	}
 
 	// for genericRightClickUnitProc2
-	const u32 Func_unitIsActiveTransport = 0x004E6BA0;
+	const uint32 Func_unitIsActiveTransport = 0x004E6BA0;
 	bool unitIsActiveTransport(CUnit* unit) {
-		static s32 result;
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -817,9 +817,9 @@ namespace {
 		return (bool)result;
 	}
 
-	const u32 Func_isOrderValid = 0x00474D90;
-	s32 isOrderValid(char a1, CUnit* a2, s32 a3, CUnit* a4, s32 a5) {
-		static s32 result;
+	const uint32 Func_isOrderValid = 0x00474D90;
+	int32 isOrderValid(char a1, CUnit* a2, int32 a3, CUnit* a4, int32 a5) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH a5
@@ -834,9 +834,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_canEnterTransport = 0x004E6E00;
+	const uint32 Func_canEnterTransport = 0x004E6E00;
 	bool canEnterTransport(CUnit* a1, CUnit* a2) {
-		static s32 result;
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH a2
@@ -848,9 +848,9 @@ namespace {
 		return (bool)result;
 	}
 
-	const u32 Func_getUnitAbilityErrorStatString = 0x00491E80;
-	u16 getUnitAbilityErrorStatString(CUnit* a1, char a2, s32 a3) {
-		static u32 result;
+	const uint32 Func_getUnitAbilityErrorStatString = 0x00491E80;
+	uint16 getUnitAbilityErrorStatString(CUnit* a1, char a2, int32 a3) {
+		static uint32 result;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -860,11 +860,11 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (u16)result;
+		return (uint16)result;
 	}
 
 	// for CMDRECV_HoldPosition
-	const u32 Func_getActivePlayerFirstSelection = 0x0049A850;
+	const uint32 Func_getActivePlayerFirstSelection = 0x0049A850;
 	CUnit* getActivePlayerFirstSelection() {
 		static CUnit* result;
 		__asm {
@@ -876,9 +876,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_orderAllowed = 0x0046DC20;
-	s32 orderAllowed(CUnit* a1, u16 a2, s32 a3) {
-		static s32 result;
+	const uint32 Func_orderAllowed = 0x0046DC20;
+	int32 orderAllowed(CUnit* a1, uint16 a2, int32 a3) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -891,8 +891,8 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_targetedOrder = 0x004754F0;
-	void targetedOrder(s16 a1, s32 a2, CUnit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10) {
+	const uint32 Func_targetedOrder = 0x004754F0;
+	void targetedOrder(int16 a1, int32 a2, CUnit* a3, int16 a4, int32 a5, int32 a6, char a7, int32 a8, int32 a9, int32 a10) {
 		__asm {
 			PUSHAD
 			PUSH a10

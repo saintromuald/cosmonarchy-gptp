@@ -14,7 +14,7 @@
 //The following unit types cannot make psi fields
 //  workers, factories, resource containers, ghosts, nydus canals, silos,
 //  hatcheries, and powerups
-bool isValidPsiProviderType(u16 unitId) {
+bool isValidPsiProviderType(uint16 unitId) {
 
 	if (unitId >= UNIT_TYPE_COUNT) 
 		return false;
@@ -52,8 +52,8 @@ bool isValidPsiProviderType(u16 unitId) {
 bool addPsiFieldSprite(CUnit* unit) {
   if (!unit) return false;
 
-  const u32 Func_addPsiFieldSprite = 0x00493BF0;
-  static u32 result;
+  const uint32 Func_addPsiFieldSprite = 0x00493BF0;
+  static uint32 result;
 
   __asm {
     PUSHAD
@@ -114,7 +114,7 @@ void removePsiField(CUnit* unit) {
 //-------- Update psi field position --------//
 
 void refreshSpriteData(CSprite *sprite) {
-  const u32 Func_refreshSpriteData = 0x004983A0;
+  const uint32 Func_refreshSpriteData = 0x004983A0;
 
   __asm {
     PUSHAD

@@ -54,7 +54,7 @@ class CListExtern {
     T* &tail;
     CListExtern(T **head, T **tail) : head(*head), tail(*tail) {};
     CListExtern(T* &head, T* &tail) : head(head), tail(tail) {};
-    CListExtern(u32 head, u32 tail) : head(*(T**)head), tail(*(T**)tail) {};
+    CListExtern(uint32 head, uint32 tail) : head(*(T**)head), tail(*(T**)tail) {};
 
     /// Inserts @p t into the linked list, before the @p target.
     void insertBefore(T *t, T *target) const;

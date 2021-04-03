@@ -6,9 +6,9 @@
 namespace {
 
 void parseOrdersDatReqs();																							//6D450
-int parseRequirementOpcodes(CUnit* unit, u32 orderId, u32 playerId, u32 address, u32 req_offset);						//6D610
+int parseRequirementOpcodes(CUnit* unit, uint32 orderId, uint32 playerId, uint32 address, uint32 req_offset);						//6D610
 void removeOrderFromUnitQueue(CUnit* unit, COrder* order);															//742D0
-void function_004754F0(CUnit* unit,u32 unitId,u32 unk1,u32 unk2,u32 orderId,u32 unk3,u32 bCommandType,u32 unk5);	//754F0
+void function_004754F0(CUnit* unit,uint32 unitId,uint32 unk1,uint32 unk2,uint32 orderId,uint32 unk3,uint32 bCommandType,uint32 unk5);	//754F0
 
 } //unnamed namespace
 
@@ -21,7 +21,7 @@ namespace hooks {
 void CMDRECV_ReaverStop() {
 
 	CUnit* current_unit;
-	static u32* u32_0066FF60 = (u32*)0x0066FF60;
+	static uint32* u32_0066FF60 = (uint32*)0x0066FF60;
 
 	*selectionIndexStart = 0;
 
@@ -126,7 +126,7 @@ void CMDRECV_ReaverStop() {
 void CMDRECV_CarrierStop() {
 
 	CUnit* current_unit;
-	static u32* u32_0066FF60 = (u32*)0x0066FF60;
+	static uint32* u32_0066FF60 = (uint32*)0x0066FF60;
 
 	*selectionIndexStart = 0;
 
@@ -228,10 +228,10 @@ void CMDRECV_CarrierStop() {
 
 ;
 
-void CMDRECV_Stop(u8 bCommandType) {
+void CMDRECV_Stop(uint8 bCommandType) {
 
 	CUnit* current_unit;
-	static u32* u32_0066FF60 = (u32*)0x0066FF60;
+	static uint32* u32_0066FF60 = (uint32*)0x0066FF60;
 
 	*selectionIndexStart = 0;
 
@@ -294,8 +294,8 @@ void CMDRECV_Stop(u8 bCommandType) {
 			function_004754F0(
 				current_unit,
 				UnitId::None,
-				*(u32*)(0x006D5C24),
-				*(u32*)(0x006D5C20),
+				*(uint32*)(0x006D5C24),
+				*(uint32*)(0x006D5C20),
 				OrderId::Stop,
 				0,
 				bCommandType != 0, //true (1) if Queued Order
@@ -316,7 +316,7 @@ void CMDRECV_Stop(u8 bCommandType) {
 
 namespace {
 
-const u32 Func_parseOrdersDatReqs = 0x0046D450;
+const uint32 Func_parseOrdersDatReqs = 0x0046D450;
 void parseOrdersDatReqs() {
 
 	__asm {
@@ -329,8 +329,8 @@ void parseOrdersDatReqs() {
 
 ;
 
-const u32 Func_parseRequirementOpcodes = 0x0046D610;
-int parseRequirementOpcodes(CUnit* unit, u32 orderId, u32 playerId, u32 address, u32 req_offset) {
+const uint32 Func_parseRequirementOpcodes = 0x0046D610;
+int parseRequirementOpcodes(CUnit* unit, uint32 orderId, uint32 playerId, uint32 address, uint32 req_offset) {
 
 	static int return_value;
 
@@ -352,7 +352,7 @@ int parseRequirementOpcodes(CUnit* unit, u32 orderId, u32 playerId, u32 address,
 
 ;
 
-const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
+const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
 void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 	__asm {
@@ -371,8 +371,8 @@ void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 //some things are hardcoded because it's hard to tell what is used or
 //not.
 //Basically, used elsewhere, the function would be implemented differently
-const u32 Func_Sub_4754F0 = 0x004754F0;
-void function_004754F0(CUnit* unit,u32 unitId,u32 unk1,u32 unk2,u32 orderId,u32 unk3,u32 bCommandType,u32 unk5) {
+const uint32 Func_Sub_4754F0 = 0x004754F0;
+void function_004754F0(CUnit* unit,uint32 unitId,uint32 unk1,uint32 unk2,uint32 orderId,uint32 unk3,uint32 bCommandType,uint32 unk5) {
 
 	__asm {
 		PUSHAD

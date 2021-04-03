@@ -10,11 +10,11 @@
 
 namespace {
 
-void* SMemAlloc(u32 amount, u32 unkFilename, u32 unkLine, u32 defaultValue);	//1006A (based on Storm.dll definition)
-void SetCallbackTimer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3);			//16090
+void* SMemAlloc(uint32 amount, uint32 unkFilename, uint32 unkLine, uint32 defaultValue);	//1006A (based on Storm.dll definition)
+void SetCallbackTimer(BinDlg* dialog, uint32 unk1, uint32 unk2, uint32 unk3);			//16090
 void function_0049A7F0(CUnit* unit);											//9A7F0
 
-u32 fxnInteract(BinDlg* dialog, u32 data_struct_offset);
+uint32 fxnInteract(BinDlg* dialog, uint32 data_struct_offset);
 
 } //unnamed namespace
 
@@ -24,13 +24,13 @@ namespace hooks {
 void InitializeDialog(BinDlg* dialog, void* dlgFunc) {
 
 	struct {
-		u32 unknown_value;		//[EBP-0x14]	[00]
-		u32 always_zero_here;	//[EBP-0x10]	[04]
-		u32 not_allocated_2;	//[EBP-0x0C]	[08]
-		u16 always_14_here;		//[EBP-0x08]	[0C]
-		s16 mouseX;				//[EBP-0x06]	[0E]
-		s16 mouseY;				//[EBP-0x04]	[10]
-		u16 not_allocated_1;	//[EBP-0x02]	[12]
+		uint32 unknown_value;		//[EBP-0x14]	[00]
+		uint32 always_zero_here;	//[EBP-0x10]	[04]
+		uint32 not_allocated_2;	//[EBP-0x0C]	[08]
+		uint16 always_14_here;		//[EBP-0x08]	[0C]
+		int16 mouseX;				//[EBP-0x06]	[0E]
+		int16 mouseY;				//[EBP-0x04]	[10]
+		uint16 not_allocated_1;	//[EBP-0x02]	[12]
 	} stack_placeholder;
 
 	//not allocated on original code, but result
@@ -45,7 +45,7 @@ void InitializeDialog(BinDlg* dialog, void* dlgFunc) {
 	if(dlgFunc != nullptr)
 		dialog->fxnInteract = dlgFunc;
 
-	dialog->onInitDialog0x36.responseAreaBitArray = (u32*)
+	dialog->onInitDialog0x36.responseAreaBitArray = (uint32*)
 		SMemAlloc(
 		dialog->onInitDialog0x36.responseAreaWidth * dialog->onInitDialog0x36.responseAreaHeight,
 			0x00505F98,
@@ -61,7 +61,7 @@ void InitializeDialog(BinDlg* dialog, void* dlgFunc) {
 	stack_placeholder.always_zero_here = 0;
 	stack_placeholder.mouseY = mouse->y;
 
-	fxnInteract(dialog, (u32)&stack_placeholder);
+	fxnInteract(dialog, (uint32)&stack_placeholder);
 
 	dialog->bounds.right += dialog->bounds.left;
 	dialog->bounds.bottom += dialog->bounds.top;
@@ -72,7 +72,7 @@ void InitializeDialog(BinDlg* dialog, void* dlgFunc) {
 	stack_placeholder.always_zero_here = 0;
 	stack_placeholder.mouseX = mouse->x;
 
-	fxnInteract(dialog, (u32)&stack_placeholder);
+	fxnInteract(dialog, (uint32)&stack_placeholder);
 
 	stack_placeholder.mouseX = mouse->x;
 	stack_placeholder.always_14_here = 14;	//0x000E
@@ -80,7 +80,7 @@ void InitializeDialog(BinDlg* dialog, void* dlgFunc) {
 	stack_placeholder.always_zero_here = 0;
 	stack_placeholder.mouseY = mouse->y;
 	
-	fxnInteract(dialog, (u32)&stack_placeholder);
+	fxnInteract(dialog, (uint32)&stack_placeholder);
 
 	SetCallbackTimer(dialog,12,100,0);
 
@@ -128,8 +128,8 @@ CUnit* getActivePlayerFirstSelection() {
 		unit = nullptr;
 	else {
 
-		s32 playerId = *ACTIVE_PLAYER_ID;
-		u8 index = *selectionIndexStart;
+		int32 playerId = *ACTIVE_PLAYER_ID;
+		uint8 index = *selectionIndexStart;
 		bool bStopLoop = false;
 
 		while(!bStopLoop) {
@@ -172,8 +172,8 @@ namespace {
 	
 //Risk of memory leaks or memory corruption or stuff if such a thing is
 //used the wrong way or in the wrong place!
-const u32 Func_SMemAlloc = 0x0041006A;
-void* SMemAlloc(u32 amount, u32 unkFilename, u32 unkLine, u32 defaultValue) {
+const uint32 Func_SMemAlloc = 0x0041006A;
+void* SMemAlloc(uint32 amount, uint32 unkFilename, uint32 unkLine, uint32 defaultValue) {
 
 	static void* pointer_on_allocated_memory;
 
@@ -195,8 +195,8 @@ void* SMemAlloc(u32 amount, u32 unkFilename, u32 unkLine, u32 defaultValue) {
 ;
 
 //Likely to call SMemAlloc!
-const u32 Func_SetCallbackTimer = 0x00416090;
-void SetCallbackTimer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3) {
+const uint32 Func_SetCallbackTimer = 0x00416090;
+void SetCallbackTimer(BinDlg* dialog, uint32 unk1, uint32 unk2, uint32 unk3) {
 
 	__asm {
 		PUSHAD
@@ -212,7 +212,7 @@ void SetCallbackTimer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3) {
 
 ;	
 
-const u32 Func_Sub49A7F0 = 0x0049A7F0;
+const uint32 Func_Sub49A7F0 = 0x0049A7F0;
 void function_0049A7F0(CUnit* unit) {
 
 	__asm {
@@ -226,12 +226,12 @@ void function_0049A7F0(CUnit* unit) {
 
 ;
 	
-u32 fxnInteract(BinDlg* dialog, u32 data_struct_offset) {
+uint32 fxnInteract(BinDlg* dialog, uint32 data_struct_offset) {
 
-	static u32 return_value;
-	static u32 fxnInteract;
+	static uint32 return_value;
+	static uint32 fxnInteract;
 
-	fxnInteract = (u32)dialog->fxnInteract;
+	fxnInteract = (uint32)dialog->fxnInteract;
 
 	__asm {
 		PUSHAD

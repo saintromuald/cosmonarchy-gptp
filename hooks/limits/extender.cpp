@@ -1,6 +1,6 @@
 #include "extender.h"
 
-void Extender::uplink(std::vector<u32> address_list, u32 data){
+void Extender::uplink(std::vector<uint32> address_list, uint32 data){
 	for (auto a : address_list) {
 		memoryPatch(a, data);
 	}
@@ -35,19 +35,19 @@ std::string to_lowercase(std::string line) {
 	return str;
 }
 #include <logger.h>
-int Extender::get_file_entry_count(char* name, u32 entries) {
+int Extender::get_file_entry_count(char* name, uint32 entries) {
 //	std::string str = scbw::readSamaseFile(name);
 	const char* data = nullptr;
-	u32 len = 0;
+	uint32 len = 0;
 	auto data_ptr = &data;
 	auto len_ptr = &len;
-	u32 val = reinterpret_cast<u32>(name);
+	uint32 val = reinterpret_cast<uint32>(name);
 	//GPTP::logger << "log1...\n";
 	auto length = scbw::get_aise_value(nullptr, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));
 	char* buf = (char*)scbw::get_aise_value(nullptr, nullptr, AiseId::ReadSamaseFile_Ptr, 0, 0);
 	//GPTP::logger << "log2...\n";
 	
-	GPTP::logger << "Read samase file: " << (u32)buf << " " << length << '\n';
+	GPTP::logger << "Read samase file: " << (uint32)buf << " " << length << '\n';
 
 	std::string str;
 	str = std::string(buf, length);
@@ -62,7 +62,7 @@ int Extender::get_file_entry_count(char* name, u32 entries) {
 	if (str.size() > 0) {
 		GPTP::logger << str << '\n';
 	}*/
-	u32 count = 0;
+	uint32 count = 0;
 	for (auto line : lines) {
 
 		if (starts_with(line, '#') || starts_with(line, ';') || line.length() == 0) {
@@ -105,29 +105,29 @@ bool last_char(std::string s, char c) {
 	}
 	return false;
 }
-void Extender::parse_set(char* name, u32 default_max_limit, u32 entries) {
+void Extender::parse_set(char* name, uint32 default_max_limit, uint32 entries) {
 	//std::string str = scbw::readSamaseFile(name);
 
 
 
 	const char* data = nullptr;
-	u32 len = 0;
+	uint32 len = 0;
 	auto data_ptr = &data;
 	auto len_ptr = &len;
-	u32 val = reinterpret_cast<u32>(name);
+	uint32 val = reinterpret_cast<uint32>(name);
 	//GPTP::logger << "log1...\n";
 	auto length = scbw::get_aise_value(nullptr, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));
 	char* buf = (char*)scbw::get_aise_value(nullptr, nullptr, AiseId::ReadSamaseFile_Ptr, 0, 0);
 	//GPTP::logger << "log2...\n";
-	GPTP::logger << "Read samase file2: " << (u32)buf << " " << length << '\n';
+	GPTP::logger << "Read samase file2: " << (uint32)buf << " " << length << '\n';
 	std::string str;
 	str = std::string(buf, length);
 
 
 
 	std::vector<std::string> lines = split_by(str, '\n');
-	u32 entry_count = 0;
-	u32 current_entry = default_max_limit;
+	uint32 entry_count = 0;
+	uint32 current_entry = default_max_limit;
 	GPTP::logger << "parse set reader2: " << lines.size() << '\n';
 	for (auto line : lines) {
 		if (starts_with(line, '#') || starts_with(line, ';') || line.length() == 0) {
@@ -151,7 +151,7 @@ void Extender::parse_set(char* name, u32 default_max_limit, u32 entries) {
 			}
 			else {
 				GPTP::logger << "Is integer id\n";
-				u32 val = parse_entry_value(value_string, id);
+				uint32 val = parse_entry_value(value_string, id);
 				set_value(current_entry, id, val);
 			}
 			entry_count += 1;

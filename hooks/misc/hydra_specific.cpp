@@ -48,10 +48,10 @@ namespace ReqOpcode {
 	};
 }
 
-//u32 parseUnitDatReqs() {
+//uint32 parseUnitDatReqs() {
 void parseUnitDatReqs(){
-//	static u32 result;
-	const u32 parseUnitFunc = 0x0046e100;
+//	static uint32 result;
+	const uint32 parseUnitFunc = 0x0046e100;
 	__asm {
 		PUSHAD
 		CALL parseUnitFunc
@@ -73,9 +73,9 @@ bool isConstructingAddon(const CUnit* building) {
 		&& !(building->currentBuildUnit->status & UnitStatus::Completed);
 }
 
-const u32 Func_getHangerTrainCount = 0x00465270;
-u8 getHangerTrainCount(CUnit* unit) {
-	static u8 result = 0;
+const uint32 Func_getHangerTrainCount = 0x00465270;
+uint8 getHangerTrainCount(CUnit* unit) {
+	static uint8 result = 0;
 	__asm {
 		PUSHAD
 		MOV EDX,unit
@@ -84,9 +84,9 @@ u8 getHangerTrainCount(CUnit* unit) {
 		POPAD
 	}
 }
-const u32 Func_unitIsReaver = 0x00401490;
+const uint32 Func_unitIsReaver = 0x00401490;
 bool unitIsReaver(CUnit* a1) {
-	static s32 result;
+	static int32 result;
 	__asm {
 		PUSHAD
 		MOV EAX, a1
@@ -96,9 +96,9 @@ bool unitIsReaver(CUnit* a1) {
 	}
 	return (bool)result;
 }
-const u32 Func_unitIsCarrier = 0x00401470;
+const uint32 Func_unitIsCarrier = 0x00401470;
 bool unitIsCarrier(CUnit* a1) {
-	static s32 result;
+	static int32 result;
 	__asm {
 		PUSHAD
 		MOV EAX, a1
@@ -109,8 +109,8 @@ bool unitIsCarrier(CUnit* a1) {
 	return (bool)result;
 }
 bool unitIsTrainingOrMorphing(CUnit* unit) {
-	const u32 Func_unitIsTrainingOrMorphing = 0x00401500;
-	static u32 result;
+	const uint32 Func_unitIsTrainingOrMorphing = 0x00401500;
+	static uint32 result;
 	__asm {
 		PUSHAD
 		MOV ECX,unit
@@ -119,19 +119,19 @@ bool unitIsTrainingOrMorphing(CUnit* unit) {
 		POPAD
 	}
 }
-const u32 Func_initializeRandomizerInfo = 0x0047E410;
-u8 initializeRandomizerInfo() {
-	static u32 result;
+const uint32 Func_initializeRandomizerInfo = 0x0047E410;
+uint8 initializeRandomizerInfo() {
+	static uint32 result;
 	__asm {
 		PUSHAD
 		CALL Func_initializeRandomizerInfo
 		MOV result, EAX
 		POPAD
 	}
-	return (u8)result;
+	return (uint8)result;
 }
 
-const u32 Func_AI_Loop = 0x004A2B00;
+const uint32 Func_AI_Loop = 0x004A2B00;
 void AI_Loop() {
 	__asm {
 		PUSHAD
@@ -140,9 +140,9 @@ void AI_Loop() {
 	}
 }
 
-const u32 Func_updateActiveTileInfo = 0x0049C4C0;
-s32 updateActiveTileInfo() {
-	static s32 result;
+const uint32 Func_updateActiveTileInfo = 0x0049C4C0;
+int32 updateActiveTileInfo() {
+	static int32 result;
 	__asm {
 		PUSHAD
 		CALL Func_updateActiveTileInfo
@@ -152,9 +152,9 @@ s32 updateActiveTileInfo() {
 	return result;
 }
 
-const u32 Func_removeFOWCheat = 0x00480880;
-s32 removeFOWCheat() {
-	static s32 result;
+const uint32 Func_removeFOWCheat = 0x00480880;
+int32 removeFOWCheat() {
+	static int32 result;
 	__asm {
 		PUSHAD
 		CALL Func_removeFOWCheat
@@ -164,7 +164,7 @@ s32 removeFOWCheat() {
 	return result;
 }
 
-const u32 Func_updateUnits = 0x004ED000;
+const uint32 Func_updateUnits = 0x004ED000;
 void updateUnits() {
 	__asm {
 		PUSHAD
@@ -173,9 +173,9 @@ void updateUnits() {
 	}
 }
 
-const u32 Func_imageDrawingBulletDrawing = 0x0048C3D0;
-s32 imageDrawingBulletDrawing() {
-	static s32 result;
+const uint32 Func_imageDrawingBulletDrawing = 0x0048C3D0;
+int32 imageDrawingBulletDrawing() {
+	static int32 result;
 	__asm {
 		PUSHAD
 		CALL Func_imageDrawingBulletDrawing
@@ -185,7 +185,7 @@ s32 imageDrawingBulletDrawing() {
 	return result;
 }
 
-const u32 Func_updateImages = 0x00496330;
+const uint32 Func_updateImages = 0x00496330;
 void updateImages() {
 	__asm {
 		PUSHAD
@@ -194,7 +194,7 @@ void updateImages() {
 	}
 }
 
-const u32 Func_updateThingys = 0x00488510;
+const uint32 Func_updateThingys = 0x00488510;
 void updateThingys() {
 	__asm {
 		PUSHAD
@@ -238,7 +238,7 @@ namespace hooks {
 			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, i);
 			if (offset.x == 127 && offset.y == 127)
 				continue;
-			u32 overlay_id = ImageId::FirstMajorDamageOverlay + i;
+			uint32 overlay_id = ImageId::FirstMajorDamageOverlay + i;
 			bool found = false;
 			for (CImage* image = sprite->images.head; image; image = image->link.next) {
 				if (image->id == overlay_id) {
@@ -259,7 +259,7 @@ namespace hooks {
 		}
 	}
 
-	u32 checkUnitDatRequirements(u8 playerId, u16 unit_id, CUnit* unit) {
+	uint32 checkUnitDatRequirements(uint8 playerId, uint16 unit_id, CUnit* unit) {
 		//
 		//
 		// Warning: This hook don't points to firegraft offsets. Firegraft offsets must be taken into account and added to hook
@@ -267,8 +267,8 @@ namespace hooks {
 		//
 		//
 		auto v3 = unit_id;
-		static u32* lastError = (u32*)0x0066FF60;
-		static u16* reqTable = (u16*)0x00514178;
+		static uint32* lastError = (uint32*)0x0066FF60;
+		static uint16* reqTable = (uint16*)0x00514178;
 		*lastError = 0;
 		if (unit_id >= UnitId::None) {
 			*lastError = 16;
@@ -305,7 +305,7 @@ namespace hooks {
 		if (units_dat::unitsDat43[unit->id] == ReqOpcode::EndOfSublist){
 			parseUnitDatReqs();
 		}
-		int v7 = (u16)units_dat::unitsDat43[unit->id];
+		int v7 = (uint16)units_dat::unitsDat43[unit->id];
 
 		if (units_dat::unitsDat43[unit->id] == 0)
 		{
@@ -331,7 +331,7 @@ namespace hooks {
 		auto requiredId = 0;
 /*		while (true)
 		{
-			v8 = (u16)v8;
+			v8 = (uint16)v8;
 			switch (v8)
 			{
 			case ReqOpcode::CurrentUnitIs:
@@ -525,17 +525,17 @@ namespace hooks {
 		return 0;
 	}
 
-	u32 realTopSpeed(CFlingy* flingy, u32 flingyId) {
-		u32 speed = scbw::getFlingyData(FlingyDatEntries::TopSpeed, flingyId);
+	uint32 realTopSpeed(CFlingy* flingy, uint32 flingyId) {
+		uint32 speed = scbw::getFlingyData(FlingyDatEntries::TopSpeed, flingyId);
 		return speed;
 	}
 
-	u16 realAcceleration(CFlingy* flingy, u32 flingyId) {
-		u16 acceleration = scbw::getFlingyData(FlingyDatEntries::Acceleration, flingyId);
+	uint16 realAcceleration(CFlingy* flingy, uint32 flingyId) {
+		uint16 acceleration = scbw::getFlingyData(FlingyDatEntries::Acceleration, flingyId);
 		return acceleration;
 	}
 
-	bool is_high_templar_conduit(u16 unitId) {
+	bool is_high_templar_conduit(uint16 unitId) {
 		switch (unitId) {
 		case UnitId::ProtossArchon:
 		case UnitId::ProtossAugur:
@@ -546,27 +546,27 @@ namespace hooks {
 		return false;
 	}
 
-	u32 weapon_flingy(u32 weaponId, u8 player_id) {
+	uint32 weapon_flingy(uint32 weaponId, uint8 player_id) {
 		Globals.flingy_init_bullet_id = weaponId;
 		Globals.flingy_init_player_id = player_id;
 		return weapons_dat::FlingyId[weaponId];
 	}
 
-	u32 getFlingyHaltDistance(CFlingy* flingy) {
+	uint32 getFlingyHaltDistance(CFlingy* flingy) {
 		auto speed = flingy->current_speed2;
 		if (speed == 0 || flingy->flingyMovementType != 0) {
 			return 0;
 		}
 		auto flingy_id = flingy->flingyId;
 		if (speed != realTopSpeed(flingy, flingy_id) || flingy->flingyAcceleration != realAcceleration(flingy, flingy_id)) {
-			return speed * speed / (2 * (u16)flingy->flingyAcceleration);
+			return speed * speed / (2 * (uint16)flingy->flingyAcceleration);
 		}
 		else {
 			return scbw::getFlingyData(FlingyDatEntries::HaltDistance, flingy_id);
 		}
 	}
 
-	bool is_unused_order(u8 orderId) {
+	bool is_unused_order(uint8 orderId) {
 		switch (orderId) {
 		case OrderId::GuardianAspect:
 		case OrderId::Skyfall://OrderId::AttackTile
@@ -589,13 +589,13 @@ namespace hooks {
 		}
 	}
 
-	u32 get_mine_id(CUnit* unit) {
+	uint32 get_mine_id(CUnit* unit) {
 		if (unit->id == UnitId::TerranEidolon) {
 			return UnitId::TerranLobotomyMine;
 		}
 		return UnitId::TerranSpiderMine;
 	}
-	u32 extend_tech_target_check(u32 orig_result, CUnit* caster, CUnit* target, u8 techId) {
+	uint32 extend_tech_target_check(uint32 orig_result, CUnit* caster, CUnit* target, uint8 techId) {
 		if (orig_result == 0) {//Valid Target
 			scbw::printText("Can cast");
 			if (techId == TechId::Lockdown) {
@@ -606,7 +606,7 @@ namespace hooks {
 	}
 	//replaces CTFCop2 order
 	void order_PhaseLink(CUnit* unit) {
-		u32 status = 0;
+		uint32 status = 0;
 		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell; //might be  changed later if required
 		if (unit->id == UnitId::ProtossClarion) {
 			if (scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
@@ -709,7 +709,7 @@ namespace hooks {
 			}
 		}
 	}
-	bool canAttackTarget_EndChunk(CUnit* source, u32 target_flags) {
+	bool canAttackTarget_EndChunk(CUnit* source, uint32 target_flags) {
 		if (source->id == UnitId::ProtossClarion && scbw::get_aise_value(source, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
 			return false;
 		}
@@ -728,7 +728,7 @@ namespace hooks {
 		return false;
 	}
 
-	s32 gameLoop() { // 004D94B0 - hooked for lag testing - Pr0nogo
+	int32 gameLoop() { // 004D94B0 - hooked for lag testing - Pr0nogo
 		bool v0;
 		win32::Stopwatch sw;
 		sw.Start();

@@ -4,7 +4,7 @@
 namespace {
 	
 	void __declspec(naked) openMapFile_Wrapper() {
-		static s32 a1; // needs documentation
+		static int32 a1; // needs documentation
 		static bool result;
 		__asm {
 			MOV a1, EAX
@@ -18,10 +18,10 @@ namespace {
 	}
 
 	void __declspec(naked) loadMap_Wrapper() {
-		static s32 result;
-		static s32 a1;
+		static int32 result;
+		static int32 a1;
 		static char* a2;
-		static s32 a3;
+		static int32 a3;
 		__asm {
 			MOV a3, ESI
 			MOV a2, EDI

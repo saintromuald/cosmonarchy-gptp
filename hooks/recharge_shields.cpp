@@ -5,8 +5,8 @@
 
 //-------- Helper function declarations. Do NOT modify! --------//
 namespace {
-	void insertFirstOrder(CUnit* unit, u8 orderId);			//0x004749D0
-	u8 hasOverlay(CUnit* unit);								//0x0047B720
+	void insertFirstOrder(CUnit* unit, uint8 orderId);			//0x004749D0
+	uint8 hasOverlay(CUnit* unit);								//0x0047B720
 	void makeToHoldPosition(CUnit* unit);					//0x004EB5B0
 	bool orderToMoveToTarget(CUnit* unit, CUnit* target);	//0x004EB980
 	bool isHangarUnit(CUnit* unit);
@@ -17,9 +17,9 @@ namespace {
 //Not hooked
 void rechargeShieldsProc(CUnit* target, CUnit* battery) {
 
-	const s32 maxShields = units_dat::MaxShieldPoints[target->id] * 256;
+	const int32 maxShields = units_dat::MaxShieldPoints[target->id] * 256;
 
-	s32 shieldGain = 1280, energySpent = 640;
+	int32 shieldGain = 1280, energySpent = 640;
 
 	if (maxShields - target->shields < shieldGain) {
 
@@ -54,9 +54,9 @@ void rechargeShieldsProc(CUnit* target, CUnit* battery) {
 namespace hooks {
 
 /// Decides whether the @p target can recharge shields from the @p battery.
-Bool32 unitCanRechargeShieldsHook(CUnit* target, CUnit* battery) {
+bool32 unitCanRechargeShieldsHook(CUnit* target, CUnit* battery) {
 
-	Bool32 result;
+	bool32 result;
 
 	//Check target conditions
 	if (	!scbw::isAlliedTo(target->playerId, battery->playerId)					//Is not owned by the player (NEW: or the player's allies)
@@ -134,7 +134,7 @@ void orderRechargeShieldsHook(CUnit* unit) {
 		else
 		if(unit->mainOrderState == 1) {
 
-			u32 movableState = unit->getMovableState();
+			uint32 movableState = unit->getMovableState();
 
 			if(movableState == 0) { //not reached destination
 				if(!unit->isTargetWithinMinRange(battery, BATTERY_RANGE))
@@ -154,7 +154,7 @@ void orderRechargeShieldsHook(CUnit* unit) {
 
 		if(!bStopThere && unit->mainOrderState == 2) {
 
-			u8 overlaysCounter;
+			uint8 overlaysCounter;
 
 			if(battery->secondaryOrderId != OrderId::ShieldBattery)
 				battery->setSecondaryOrder(OrderId::ShieldBattery);
@@ -203,8 +203,8 @@ void orderRechargeShieldsHook(CUnit* unit) {
 
 namespace {
 
-const u32 Helper_InsertFirstOrder = 0x004749D0;
-void insertFirstOrder(CUnit* unit, u8 orderId) {
+const uint32 Helper_InsertFirstOrder = 0x004749D0;
+void insertFirstOrder(CUnit* unit, uint8 orderId) {
 
 	__asm {
 		PUSHAD
@@ -218,11 +218,11 @@ void insertFirstOrder(CUnit* unit, u8 orderId) {
 
 ;
 
-const u32 Func_hasOverlay = 0x0047B720;
+const uint32 Func_hasOverlay = 0x0047B720;
 /// Return the count of overlays
-u8 hasOverlay(CUnit* unit) {
+uint8 hasOverlay(CUnit* unit) {
 
-	static u8 result;
+	static uint8 result;
 
 	__asm {
 		PUSHAD
@@ -238,7 +238,7 @@ u8 hasOverlay(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub4934B0 = 0x004934B0;
+const uint32 Func_Sub4934B0 = 0x004934B0;
 void function_004934B0(CUnit* unit, CUnit* battery) {
 
 	__asm {
@@ -253,10 +253,10 @@ void function_004934B0(CUnit* unit, CUnit* battery) {
 
 ;
 
-const u32 Func__moveToTarget = 0x004EB980;
+const uint32 Func__moveToTarget = 0x004EB980;
 bool orderToMoveToTarget(CUnit* unit, CUnit* target) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
   
 	__asm {
 		PUSHAD
@@ -273,7 +273,7 @@ bool orderToMoveToTarget(CUnit* unit, CUnit* target) {
 
 ;
 
-const u32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
+const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
 void makeToHoldPosition(CUnit* unit) {
 
   __asm {

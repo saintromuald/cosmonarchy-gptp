@@ -3,7 +3,7 @@
 
 namespace hooks {
 
-	CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, u32 units_list_length);	//004BFA80
+	CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, uint32 units_list_length);	//004BFA80
 
 	void orders_CompletingArchonSummon(CUnit* unit);									//00493B10
 	void orders_WarpingDarkArchon(CUnit* unit);											//00494690

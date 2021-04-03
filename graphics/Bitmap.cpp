@@ -11,22 +11,22 @@
 
 namespace graphics {
 
-u16 Bitmap::getWidth() const {
+uint16 Bitmap::getWidth() const {
   assert(this);
   return this->width;
 }
 
-u16 Bitmap::getHeight() const {
+uint16 Bitmap::getHeight() const {
   assert(this);
   return this->height;
 }
 
-u8 gbColorTable[] = {
+uint8 gbColorTable[] = {
    0,  0,  0,  1,  2,  3,  4,  5,  8,  0,  0,  0,  0,  0,  9, 10,
   11, 12,  0,  0,  0, 13, 14, 15, 16, 17,  0, 18, 19, 20, 21, 23
 };
 
-u8 gbFontColors[24][8] = {
+uint8 gbFontColors[24][8] = {
   { 0xC0, 0x9B, 0x9A, 0x95, 0x43, 0x00, 0x00, 0x28 },
   { 0x56, 0xA7, 0x6D, 0x65, 0x5C, 0x00, 0x00, 0x8A },
   { 0x41, 0xFF, 0x53, 0x97, 0x47, 0x00, 0x00, 0x8A },
@@ -58,7 +58,7 @@ const int KOR_CHAR_MAX_WIDTH  = 32;
 const int KOR_CHAR_MAX_HEIGHT = 32;
 
 //Loosely based on writeWindowText() @ 0x0041F2B0
-void Bitmap::blitKoreanChar(const char *ch, int &x, int &y, u8 fontSize, u8 color) {
+void Bitmap::blitKoreanChar(const char *ch, int &x, int &y, uint8 fontSize, uint8 color) {
   static HFONT gulim_8pt = nullptr, gulim_9pt = nullptr, gulim_10pt = nullptr, gulim_11pt = nullptr;
   static HDC bufferDc = nullptr;
   static HBITMAP bufferBmp = nullptr; //Temporary bitmap to draw the character
@@ -120,7 +120,7 @@ void Bitmap::blitKoreanChar(const char *ch, int &x, int &y, u8 fontSize, u8 colo
   SelectObject(bufferDc, currentFont);
   
   char koreanChars[3];
-  *(u16*)koreanChars = *(u16*) ch;
+  *(uint16*)koreanChars = *(uint16*) ch;
   koreanChars[2] = '\0';
 
   //Retrieve the size of the rectangular area to draw the character
@@ -134,7 +134,7 @@ void Bitmap::blitKoreanChar(const char *ch, int &x, int &y, u8 fontSize, u8 colo
   DrawText(bufferDc, koreanChars, strlen(koreanChars), &chRect, 0);
 
   //Copy pixel data from temporary bitmap into temporary buffer
-  static u8 bitmapBuffer[KOR_CHAR_MAX_WIDTH * KOR_CHAR_MAX_HEIGHT];
+  static uint8 bitmapBuffer[KOR_CHAR_MAX_WIDTH * KOR_CHAR_MAX_HEIGHT];
   GetBitmapBits(bufferBmp, KOR_CHAR_MAX_WIDTH * chRect.bottom, bitmapBuffer);
   
   //Copy pixels from temporary buffer into StarCraft's own buffer
@@ -151,7 +151,7 @@ void Bitmap::blitKoreanChar(const char *ch, int &x, int &y, u8 fontSize, u8 colo
   x += chRect.right;
 }
 
-bool Bitmap::blitString(const char *pszStr, int x, int y, u8 size) {
+bool Bitmap::blitString(const char *pszStr, int x, int y, uint8 size) {
   // verify valid size index
   if (size > 3 || !pszStr)
     return false;
@@ -168,9 +168,9 @@ bool Bitmap::blitString(const char *pszStr, int x, int y, u8 size) {
     return false;
 
   // Reference an unsigned character array
-  const u8 *pbChars = (u8*) pszStr;
+  const uint8 *pbChars = (uint8*) pszStr;
 
-  u8 lastColor = 0, color = 0;
+  uint8 lastColor = 0, color = 0;
   int Xoffset = x, Yoffset = y;
 
   // Iterate all characters in the message
@@ -190,7 +190,7 @@ bool Bitmap::blitString(const char *pszStr, int x, int y, u8 size) {
         continue;
       case 11:      // invisible
       case 20:
-        color = (u8)~0;
+        color = (uint8)~0;
         continue;
       case '\f':    // 12   formfeed
         break;

@@ -2,14 +2,14 @@
 #include "../hook_tools.h"
 #include "SCBW/enumerations.h"
 
-const u32 Addr_WeaponsDatEffectCount = 0x0048B785 +2;
-const u32 Addr_WeaponsDatEffectSwitch = 0x0048B790 +3;
+const uint32 Addr_WeaponsDatEffectCount = 0x0048B785 +2;
+const uint32 Addr_WeaponsDatEffectSwitch = 0x0048B790 +3;
 
 namespace {
 
 	void __declspec(naked) friendlySplashWrapper(){
 		static CBullet* bullet;
-		static u32 weaponId;
+		static uint32 weaponId;
 		__asm {
 			MOV bullet, EBX
 			MOV weaponId, ECX
@@ -33,7 +33,7 @@ namespace {
 
 	void __declspec(naked) enemySplashWrapper(){
 		static CBullet* bullet;
-		static u32 weaponId;
+		static uint32 weaponId;
 		__asm {
 			MOV bullet, EBX
 			MOV weaponId, ECX
@@ -55,7 +55,7 @@ namespace {
 
 	void __declspec(naked) radialSplashWrapper(){
 		static CBullet* bullet;
-		static u32 weaponId;
+		static uint32 weaponId;
 		__asm {
 			MOV bullet, EBX
 			MOV weaponId, ECX
@@ -78,7 +78,7 @@ namespace {
 
 	void __declspec(naked) normalWrapper(){
 		static CBullet* bullet;
-		static u32 weaponId;
+		static uint32 weaponId;
 		__asm {
 			MOV bullet, EBX
 			MOV weaponId, ECX
@@ -96,7 +96,7 @@ namespace {
 
 	void __declspec(naked) yamatoWrapper(){
 		static CBullet* bullet;
-		static u32 weaponId;
+		static uint32 weaponId;
 		__asm {
 			MOV bullet, EBX
 			MOV weaponId, ECX
@@ -114,7 +114,7 @@ namespace {
 
 	void __declspec(naked) parasiteWrapper() {
 		static CBullet* bullet;
-		static u32 weaponId;
+		static uint32 weaponId;
 		__asm {
 			MOV bullet, EBX
 			MOV weaponId, ECX
@@ -131,7 +131,7 @@ namespace {
 	}
 	void __declspec(naked) broodlingsWrapper() {
 		static CBullet* bullet;
-		static u32 weaponId;
+		static uint32 weaponId;
 		__asm {
 			MOV bullet, EBX
 			MOV weaponId, ECX
@@ -148,7 +148,7 @@ namespace {
 	}
 	void __declspec(naked) lockdownWrapper() {
 		static CBullet* bullet;
-		static u32 weaponId;
+		static uint32 weaponId;
 		__asm {
 			MOV bullet, EBX
 			MOV weaponId, ECX
@@ -165,7 +165,7 @@ namespace {
 	}
 	void __declspec(naked) airSplashWrapper() {
 		static CBullet* bullet;
-		static u32 weaponId;
+		static uint32 weaponId;
 		__asm {
 			MOV bullet, EBX
 			MOV weaponId, ECX
@@ -223,9 +223,9 @@ namespace {
 
 namespace hooks {
   void injectWeaponEffectHook(){
-    u8 maxID = ARRAY_SIZE(WeaponEffects_SwitchTable)-1;
-	u8 data[4];
-	*(u32*)data = (u32)WeaponEffects_SwitchTable;
+    uint8 maxID = ARRAY_SIZE(WeaponEffects_SwitchTable)-1;
+	uint8 data[4];
+	*(uint32*)data = (uint32)WeaponEffects_SwitchTable;
     memoryPatch(Addr_WeaponsDatEffectCount, maxID);
     memoryPatch(Addr_WeaponsDatEffectSwitch, data, 4); // load pointer to address table
   }

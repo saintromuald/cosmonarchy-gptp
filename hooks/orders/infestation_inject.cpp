@@ -8,7 +8,7 @@ namespace {
 void __declspec(naked) unitCanInfestWrapper() {
 
   static CUnit* unit;
-  static u32 result;
+  static uint32 result;
 
   __asm {
     PUSHAD
@@ -32,7 +32,7 @@ void __declspec(naked) unitCanInfestWrapper() {
 void __declspec(naked) unitCanBeInfestedWrapper() {
 
   static CUnit* unit;
-  static u32 result;
+  static uint32 result;
 
   __asm {
     PUSHAD

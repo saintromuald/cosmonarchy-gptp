@@ -3,7 +3,7 @@
 
 //Helper functions
 void updateMineralPatchImage(CUnit* mineralPatch);
-void setResourceAmountCarried(CUnit* worker, u8 amountCarried, u32 chunkImageId, bool isMineral);
+void setResourceAmountCarried(CUnit* worker, uint8 amountCarried, uint32 chunkImageId, bool isMineral);
 
 //-------- Actual hooks --------//
 
@@ -15,7 +15,7 @@ const int RESOURCE_HARVESTED = 8;
 //worker should carry.
 //Identical to sub_469650
 
-bool isGasContainer(u16 unitId) {
+bool isGasContainer(uint16 unitId) {
 	if (unitId == UnitId::assimilator)
 		return true;
 	if (unitId == UnitId::refinery)
@@ -25,16 +25,16 @@ bool isGasContainer(u16 unitId) {
 	return false;
 }
 
-u8 harvestResourceFrom(CUnit* resource, bool isMineral) {
+uint8 harvestResourceFrom(CUnit* resource, bool isMineral) {
 
-	u8 return_value;
+	uint8 return_value;
 
 	if (resource->building.resource.resourceAmount < RESOURCE_HARVESTED) {
 
 		if (isMineral) {
 //			resource->remove();
 			resource->building.resource.resourceAmount = 2;
-			return_value = (u8)(resource->building.resource.resourceAmount);
+			return_value = (uint8)(resource->building.resource.resourceAmount);
 		}
 		else {
 			resource->building.resource.resourceAmount = 0;
@@ -66,7 +66,7 @@ u8 harvestResourceFrom(CUnit* resource, bool isMineral) {
 
 	return return_value;
 
-} //u8 harvestResourceFrom(CUnit* resource, bool isMineral)
+} //uint8 harvestResourceFrom(CUnit* resource, bool isMineral)
 
 ;
 
@@ -75,7 +75,7 @@ void transferResourceToWorkerHook(CUnit* worker, CUnit* resource) {
 
 	if(resource->id >= UnitId::TerranReservoir && resource->id <= UnitId::ResourceMineralFieldType3) {
 
-		u32 chunkImageId;
+		uint32 chunkImageId;
 		bool isMineral = false;
 		bool bEndThere = false;
 
@@ -101,7 +101,7 @@ void transferResourceToWorkerHook(CUnit* worker, CUnit* resource) {
 
 		if(!bEndThere) {
 
-			u8 resourceAmount = harvestResourceFrom(resource, isMineral);
+			uint8 resourceAmount = harvestResourceFrom(resource, isMineral);
 
 			if (resourceAmount < RESOURCE_HARVESTED)
 				chunkImageId += 1;	//Use depleted (smaller) chunk image
@@ -195,7 +195,7 @@ void updateMineralPatchImage(CUnit* mineralPatch) {
 
 void updateImagePositionOffset(CImage *image) {
 
-	const u32 Func_updateImagePositionOffset = 0x004D5A00;
+	const uint32 Func_updateImagePositionOffset = 0x004D5A00;
 
 	__asm {
 		PUSHAD
@@ -207,7 +207,7 @@ void updateImagePositionOffset(CImage *image) {
 }
 
 //Identical to function @ 0x004F3AF0
-void setResourceAmountCarried(CUnit* worker, u8 amountCarried, u32 chunkImageId, bool isMineral) {
+void setResourceAmountCarried(CUnit* worker, uint8 amountCarried, uint32 chunkImageId, bool isMineral) {
 
 	if (worker->resourceType != 0) 
 		return;

@@ -6,7 +6,7 @@ namespace {
 
 void __declspec(naked) CMDRECV_BuildingMorphWrapper() {
 
-	static u16 wUnitType;
+	static uint16 wUnitType;
 
 	__asm {
 		MOV AX, [EAX+0x01]
@@ -27,7 +27,7 @@ void __declspec(naked) CMDRECV_BuildingMorphWrapper() {
 
 void __declspec(naked) CMDRECV_UnitMorphWrapper() {
 
-	static u16 wUnitType;
+	static uint16 wUnitType;
 
 	__asm {
 		PUSH EBP

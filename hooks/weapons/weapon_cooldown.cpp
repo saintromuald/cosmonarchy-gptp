@@ -10,14 +10,14 @@ namespace hooks {
 /// Calculates the unit's weapon cooldown, factoring in upgrades and status effects.
 ///
 /// @return		The modified cooldown value.
-u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
+uint32 getModifiedWeaponCooldownHook(CUnit* unit, uint8 weaponId) {
 
-	u32 cooldown = weapons_dat::Cooldown[weaponId];
+	uint32 cooldown = weapons_dat::Cooldown[weaponId];
 
 	// Devourer - Corrosive Spores: lower attack speed of victim
 	if (unit->corrosiveSporeCount != 0) {
 
-		u32 increaseAmt = cooldown / 8;
+		uint32 increaseAmt = cooldown / 8;
 
 		if (increaseAmt < 3) 
 			increaseAmt = 3;
@@ -40,7 +40,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 
 	// Madcap Maverick Feeders behavior: increase weapon speed while stationary
 	if (unit->id == UnitId::TerranMadcap) {
-		u32 stacks = ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime);
+		uint32 stacks = ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime);
 		if (stacks > 0) {
 			//scbw::print(std::to_string(stacks) + ", " + std::to_string(scbw::get_generic_value(unit, ValueId::MadcapStacks)));
 			double newCooldown = (double)cooldown * (1.0 - stacks * MadcapAttackSpeedPerStack);
@@ -50,9 +50,9 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 
 	// Blackjack Wear and Tear: reduce weapon speed based on missing health
 	else if (unit->id == UnitId::TerranBlackjack) {
-		const u32 health = unit->hitPoints / 256;
-		const u32 maxHealth = unit->getMaxHpInGame();
-		const double multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
+		const uint32 health = unit->hitPoints / 256;
+		const uint32 maxHealth = unit->getMaxHpInGame();
+		const double multiplier = MathUtils::map(health, (uint32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
 		cooldown /= multiplier;
 	}
 
@@ -86,7 +86,7 @@ u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 	if (unit->stimTimer) {		// Fixes aice-related Stimpack issue
 		cooldown += 2;
 	}
-	u32 adrenalStacks = scbw::get_generic_value(unit, ValueId::AdrenalStacks);
+	uint32 adrenalStacks = scbw::get_generic_value(unit, ValueId::AdrenalStacks);
 	if (adrenalStacks) {
 		cooldown -= adrenalStacks / 2;
 	}

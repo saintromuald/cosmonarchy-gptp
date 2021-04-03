@@ -5,18 +5,18 @@
 
 namespace {
 
-Bool32 OrderAllowed(CUnit* unit, u16 order, u32 nationID);														//6DC20
-u32 function_00473FB0(CUnit* unit, u8 playerId, int x, int y, u16 unitId, u8 unk1, u8 unk2, u8 unk3, u8 unk4 );	//73FB0
-bool placeBuildingMsg(u32 result_function_473FB0);																//8D930
-bool CMDRECV_PlaceBuildingAllowedHelper(CUnit* unit, u8 orderId, u16 builtUnitId);								//8DBD0
-void function_0048DE70(CUnit* unit, u32 orderId, u16 dimensionX, u16 dimensionY, u32 builtUnitId);				//8DE70
-void cmdRECV_PlaceBuilding(s16 x, s16 y, u8 orderId, u16 builtUnitId);											//8E190
+bool32 OrderAllowed(CUnit* unit, uint16 order, uint32 nationID);														//6DC20
+uint32 function_00473FB0(CUnit* unit, uint8 playerId, int x, int y, uint16 unitId, uint8 unk1, uint8 unk2, uint8 unk3, uint8 unk4 );	//73FB0
+bool placeBuildingMsg(uint32 result_function_473FB0);																//8D930
+bool CMDRECV_PlaceBuildingAllowedHelper(CUnit* unit, uint8 orderId, uint16 builtUnitId);								//8DBD0
+void function_0048DE70(CUnit* unit, uint32 orderId, uint16 dimensionX, uint16 dimensionY, uint32 builtUnitId);				//8DE70
+void cmdRECV_PlaceBuilding(int16 x, int16 y, uint8 orderId, uint16 builtUnitId);											//8E190
 
 } //unnamed namespace
 
 namespace hooks {
 
-bool CMDRECV_PlaceBuildingAllowed(CUnit* builder, u8 orderId, u16 builtUnitId) {
+bool CMDRECV_PlaceBuildingAllowed(CUnit* builder, uint8 orderId, uint16 builtUnitId) {
 
 	bool bReturnValue = false;
 
@@ -56,10 +56,10 @@ bool CMDRECV_PlaceBuildingAllowed(CUnit* builder, u8 orderId, u16 builtUnitId) {
 
 ;
 
-void cmdRECV_PlaceBuildingNormal(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
+void cmdRECV_PlaceBuildingNormal(int16 x, int16 y, uint32 orderId, uint32 builtUnitId) {
 
 	CUnit* builder;
-	u32 result_function_00473FB0;
+	uint32 result_function_00473FB0;
 
 	*selectionIndexStart = 0;
 	builder = getActivePlayerNextSelection();
@@ -79,9 +79,9 @@ void cmdRECV_PlaceBuildingNormal(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
 
 	if(placeBuildingMsg(result_function_00473FB0)) {
 
-		s32 DimensionX, DimensionY;
+		int32 DimensionX, DimensionY;
 
-		DimensionX = (s16)units_dat::BuildingDimensions[builtUnitId].x;
+		DimensionX = (int16)units_dat::BuildingDimensions[builtUnitId].x;
 
 		if(DimensionX < 0)
 			DimensionX++;
@@ -90,7 +90,7 @@ void cmdRECV_PlaceBuildingNormal(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
 
 		DimensionX += (x * 32);
 
-		DimensionY = (s16)units_dat::BuildingDimensions[builtUnitId].y;
+		DimensionY = (int16)units_dat::BuildingDimensions[builtUnitId].y;
 
 		if(DimensionY < 0)
 			DimensionY++;
@@ -107,12 +107,12 @@ void cmdRECV_PlaceBuildingNormal(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
 
 ;
 
-void cmdRECV_PlaceBuildingAddon(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
+void cmdRECV_PlaceBuildingAddon(int16 x, int16 y, uint32 orderId, uint32 builtUnitId) {
 
 	CUnit* builder;
-	u32 result_function_00473FB0;
+	uint32 result_function_00473FB0;
 
-	u16 addonPlaceX = 0, addonPlaceY = 0;
+	uint16 addonPlaceX = 0, addonPlaceY = 0;
 
 	*selectionIndexStart = 0;
 	builder = getActivePlayerNextSelection();
@@ -132,7 +132,7 @@ void cmdRECV_PlaceBuildingAddon(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
 
 	if(result_function_00473FB0 == 0) {
 
-		addonPlaceX = (s16)units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].x;
+		addonPlaceX = (int16)units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].x;
 		/*if (builtUnitId == UnitId::TerranFutureStation) {
 			if (builder->id == UnitId::academy || builder->id == UnitId::armory) {
 				addonPlaceX = 96;
@@ -153,7 +153,7 @@ void cmdRECV_PlaceBuildingAddon(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
 
 		addonPlaceX = x - addonPlaceX;
 
-		addonPlaceY = (s16)units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].y;
+		addonPlaceY = (int16)units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].y;
 		/*if (builtUnitId == UnitId::TerranFutureStation) {
 			if (builder->id == UnitId::academy || builder->id == UnitId::armory) {
 				addonPlaceY = 0;
@@ -190,9 +190,9 @@ void cmdRECV_PlaceBuildingAddon(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
 
 	if(placeBuildingMsg(result_function_00473FB0)) {
 
-		s32 DimensionX, DimensionY;
+		int32 DimensionX, DimensionY;
 
-		DimensionX = (s16)units_dat::BuildingDimensions[builder->id].x;
+		DimensionX = (int16)units_dat::BuildingDimensions[builder->id].x;
 
 		if(DimensionX < 0)
 			DimensionX++;
@@ -203,7 +203,7 @@ void cmdRECV_PlaceBuildingAddon(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
 
 		DimensionX += addonPlaceX;
 
-		DimensionY = (s16)units_dat::BuildingDimensions[builder->id].y;
+		DimensionY = (int16)units_dat::BuildingDimensions[builder->id].y;
 
 		if(DimensionY < 0)
 			DimensionY++;
@@ -222,7 +222,7 @@ void cmdRECV_PlaceBuildingAddon(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
 
 ;
 
-void CMDRECV_Build(u8 orderId, s16 x, s16 y, u16 builtUnitId) {
+void CMDRECV_Build(uint8 orderId, int16 x, int16 y, uint16 builtUnitId) {
 
 	CUnit* builder;
 	
@@ -254,10 +254,10 @@ void CMDRECV_Build(u8 orderId, s16 x, s16 y, u16 builtUnitId) {
 
 namespace {
 
-const u32 Func_OrderAllowed = 0x0046DC20;
-Bool32 OrderAllowed(CUnit* unit, u16 order, u32 nationID) {
+const uint32 Func_OrderAllowed = 0x0046DC20;
+bool32 OrderAllowed(CUnit* unit, uint16 order, uint32 nationID) {
 
-	static Bool32 bResult;
+	static bool32 bResult;
 
 	__asm {
 		PUSHAD
@@ -275,10 +275,10 @@ Bool32 OrderAllowed(CUnit* unit, u16 order, u32 nationID) {
 
 ;
 
-const u32 Func_Sub473FB0 = 0x00473FB0;
-u32 function_00473FB0(CUnit* unit, u8 playerId, int x, int y, u16 unitId, u8 unk1, u8 unk2, u8 unk3, u8 unk4 ) {
+const uint32 Func_Sub473FB0 = 0x00473FB0;
+uint32 function_00473FB0(CUnit* unit, uint8 playerId, int x, int y, uint16 unitId, uint8 unk1, uint8 unk2, uint8 unk3, uint8 unk4 ) {
 
-	u32 return_value;
+	uint32 return_value;
 
 	__asm {
 		PUSHAD
@@ -308,10 +308,10 @@ u32 function_00473FB0(CUnit* unit, u8 playerId, int x, int y, u16 unitId, u8 unk
 
 ;
 
-const u32 Func_placeBuildingMsg = 0x0048D930;
-bool placeBuildingMsg(u32 result_function_473FB0) {
+const uint32 Func_placeBuildingMsg = 0x0048D930;
+bool placeBuildingMsg(uint32 result_function_473FB0) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -327,10 +327,10 @@ bool placeBuildingMsg(u32 result_function_473FB0) {
 
 ;
 
-const u32 Func_CMDRECV_PlaceBuildingAllowed = 0x0048DBD0;
-bool CMDRECV_PlaceBuildingAllowedHelper(CUnit* unit, u8 orderId, u16 builtUnitId) {
+const uint32 Func_CMDRECV_PlaceBuildingAllowed = 0x0048DBD0;
+bool CMDRECV_PlaceBuildingAllowedHelper(CUnit* unit, uint8 orderId, uint16 builtUnitId) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -348,8 +348,8 @@ bool CMDRECV_PlaceBuildingAllowedHelper(CUnit* unit, u8 orderId, u16 builtUnitId
 
 ;
 
-const u32 Func_Sub48DE70 = 0x0048DE70;
-void function_0048DE70(CUnit* unit, u32 orderId, u16 dimensionX, u16 dimensionY, u32 builtUnitId) {
+const uint32 Func_Sub48DE70 = 0x0048DE70;
+void function_0048DE70(CUnit* unit, uint32 orderId, uint16 dimensionX, uint16 dimensionY, uint32 builtUnitId) {
 
 	static Point16 dim;
 
@@ -369,8 +369,8 @@ void function_0048DE70(CUnit* unit, u32 orderId, u16 dimensionX, u16 dimensionY,
 
 ;
 
-const u32 Func_cmdRECV_PlaceBuilding = 0x0048E190;
-void cmdRECV_PlaceBuilding(s16 x, s16 y, u8 orderId, u16 builtUnitId) {
+const uint32 Func_cmdRECV_PlaceBuilding = 0x0048E190;
+void cmdRECV_PlaceBuilding(int16 x, int16 y, uint8 orderId, uint16 builtUnitId) {
 
 	static Point16 pos;
 

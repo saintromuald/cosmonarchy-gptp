@@ -13,13 +13,13 @@
 
 namespace {
 
-	u32 getHPGainForRepair(CUnit* unit);										//02C40
-	void refundUnitTrainCost(u32 unitId, u8 playerId);							//2CEC0
-	void function_00432430(CUnit* unit, u32 buildQueueSlot);					//32430
+	uint32 getHPGainForRepair(CUnit* unit);										//02C40
+	void refundUnitTrainCost(uint32 unitId, uint8 playerId);							//2CEC0
+	void function_00432430(CUnit* unit, uint32 buildQueueSlot);					//32430
 	void addHangarUnit(CUnit* main_unit, CUnit* added_unit);					//66300
 	void orderNewUnitToRally(CUnit* unit, CUnit* factory);						//66F50
-	Bool32 buildingAddon(CUnit* unit, u32 hpGain, Bool32 canBeAborted);			//679A0
-	CUnit* attemptTrainHatchUnit(CUnit* trainer, u32 builtUnitID, u32 flag);	//68200
+	bool32 buildingAddon(CUnit* unit, uint32 hpGain, bool32 canBeAborted);			//679A0
+	CUnit* attemptTrainHatchUnit(CUnit* trainer, uint32 builtUnitID, uint32 flag);	//68200
 	void AI_CancelStructure(CUnit* unit);										//68280
 	void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit);				//A2830
 	void hideAndDisableUnit(CUnit* unit);										//E6340
@@ -30,7 +30,7 @@ namespace {
 
 
 namespace hooks {
-	int isQueueSlotActive(CUnit* unit, u32 slot) {
+	int isQueueSlotActive(CUnit* unit, uint32 slot) {
 		//return unit->buildQueue[(slot + unit->buildQueueSlot) % 5] <= UnitId::Spell_DisruptionWeb;
 		return unit->buildQueue[(slot + unit->buildQueueSlot) % 5] < UnitId::None;
 	}
@@ -74,7 +74,7 @@ namespace hooks {
 			if(unit->secondaryOrderState == 2) {
 
 				CUnit* builtUnit = unit->currentBuildUnit;
-				u32 hpGain;
+				uint32 hpGain;
 
 				if(builtUnit != nullptr) {
 				
@@ -123,7 +123,7 @@ namespace hooks {
 
 					if(inHangarChild != nullptr) {
 
-						s32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossSteward];
+						int32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossSteward];
 
 						while(inHangarChild != nullptr && inHangarChild->hitPoints >= hpInterceptor)
 							inHangarChild = inHangarChild->interceptor.hangar_link.next;
@@ -198,7 +198,7 @@ namespace hooks {
 				CUnit* builtUnit = unit->currentBuildUnit;
 
 				if(builtUnit != nullptr) {
-					u32 hpGain = getHPGainForRepair(builtUnit);
+					uint32 hpGain = getHPGainForRepair(builtUnit);
 					bool extraBuild = false;
 					if (scbw::get_generic_value(builtUnit, ValueId::Crucible) == 0) {
 						auto r = 256;
@@ -246,13 +246,13 @@ namespace hooks {
 					}
 					else { //unit was canceled due to lack of space around the building
 
-						u32 queueSlot = unit->buildQueueSlot % 5;
+						uint32 queueSlot = unit->buildQueueSlot % 5;
 
 						if(unit->buildQueue[queueSlot] == UnitId::None)
 							jump_to_685D8 = true;
 						else {
 
-							u8 counter = 4;
+							uint8 counter = 4;
 
 							if(unit->currentBuildUnit != nullptr)
 								AI_CancelStructure(unit->currentBuildUnit);
@@ -268,9 +268,9 @@ namespace hooks {
 								counter--;
 								unit->buildQueue[unit->buildQueueSlot] = unit->buildQueue[(unit->buildQueueSlot + 1) % 5];
 
-								if(unit->pAI != nullptr && *(u8*)((u32)unit->pAI + 8) == 3) {
-									*(u8*)((u32)unit->pAI + unit->buildQueueSlot + 9) = *(u8*)((u32)unit->pAI + (unit->buildQueueSlot + 1) % 5 + 9);
-									*(u32*)((u32)unit->pAI + unit->buildQueueSlot * 4 + 0x18) = *(u32*)((u32)unit->pAI + ((unit->buildQueueSlot + 1) % 5) * 4 + 0x18);
+								if(unit->pAI != nullptr && *(uint8*)((uint32)unit->pAI + 8) == 3) {
+									*(uint8*)((uint32)unit->pAI + unit->buildQueueSlot + 9) = *(uint8*)((uint32)unit->pAI + (unit->buildQueueSlot + 1) % 5 + 9);
+									*(uint32*)((uint32)unit->pAI + unit->buildQueueSlot * 4 + 0x18) = *(uint32*)((uint32)unit->pAI + ((unit->buildQueueSlot + 1) % 5) * 4 + 0x18);
 								}
 
 
@@ -292,7 +292,7 @@ namespace hooks {
 					if (builtUnit!=nullptr && builtUnit->id == UnitId::ProtossSolarion) {
 						int interceptors = 12;
 
-						u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+						uint8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
 						buf[0] = 0x99;//new general command
 						buf[1] = NewGameCommand::CarrierPrebuild;
 						buf[2] = interceptors;
@@ -315,8 +315,8 @@ namespace hooks {
 	}
 
 	char getMaxHangerSpace(CUnit* a1) { // 0x004653D0
-		u16 id; // ax
-		s32 hangarSpace; // eax
+		uint16 id; // ax
+		int32 hangarSpace; // eax
 
 		id = a1->id;
 		if (id != UnitId::ProtossSolarion) {
@@ -340,7 +340,7 @@ namespace hooks {
 namespace {
 
 	//Identical to getHPGainForRepair @ 0x00402C40
-	u32 getHPGainForRepair(CUnit* unit) {
+	uint32 getHPGainForRepair(CUnit* unit) {
 
 		if(*CHEAT_STATE & CheatFlags::OperationCwal)
 			return unit->buildRepairHpGain * 16;
@@ -349,8 +349,8 @@ namespace {
 
 	}
 
-	const u32 Func_refundUnitTrainCost = 0x0042CEC0;
-	void refundUnitTrainCost(u32 unitId, u8 playerId) {
+	const uint32 Func_refundUnitTrainCost = 0x0042CEC0;
+	void refundUnitTrainCost(uint32 unitId, uint8 playerId) {
 
 		__asm {
 			PUSHAD
@@ -362,8 +362,8 @@ namespace {
 
 	}
 
-	const u32 Func_Sub432430 = 0x00432430;
-	void function_00432430(CUnit* unit, u32 buildQueueSlot) {
+	const uint32 Func_Sub432430 = 0x00432430;
+	void function_00432430(CUnit* unit, uint32 buildQueueSlot) {
 
 		__asm {
 			PUSHAD
@@ -375,7 +375,7 @@ namespace {
 
 	}
 
-	const u32 Func_addHangerUnit = 0x00466300;
+	const uint32 Func_addHangerUnit = 0x00466300;
 	void addHangarUnit(CUnit* main_unit, CUnit* added_unit) {
 
 		__asm {
@@ -388,7 +388,7 @@ namespace {
 
 	}
 
-	const u32 Func_Sub466F50 = 0x00466F50;
+	const uint32 Func_Sub466F50 = 0x00466F50;
 	void orderNewUnitToRally(CUnit* unit, CUnit* factory) {
 
 		__asm {
@@ -401,12 +401,12 @@ namespace {
 
 	}
 
-	const u32 Func_buildingAddon = 0x004679A0;
+	const uint32 Func_buildingAddon = 0x004679A0;
 	//if canBeAborted is TRUE, the unit can be aborted because there's
 	//no room around the constructing building
-	Bool32 buildingAddon(CUnit* unit, u32 hpGain, Bool32 canBeAborted) {
+	bool32 buildingAddon(CUnit* unit, uint32 hpGain, bool32 canBeAborted) {
 
-		static Bool32 bResult;
+		static bool32 bResult;
 
 		__asm {
 			PUSHAD
@@ -422,8 +422,8 @@ namespace {
 
 	}
 
-	const u32 Func_attemptTrainHatchUnit = 0x00468200;
-	CUnit* attemptTrainHatchUnit(CUnit* trainer, u32 builtUnitID, u32 flag) {
+	const uint32 Func_attemptTrainHatchUnit = 0x00468200;
+	CUnit* attemptTrainHatchUnit(CUnit* trainer, uint32 builtUnitID, uint32 flag) {
 
 		static CUnit* builtUnit;
 
@@ -441,7 +441,7 @@ namespace {
 
 	}
 
-	const u32 Func_AI_CancelStructure = 0x00468280;
+	const uint32 Func_AI_CancelStructure = 0x00468280;
 	void AI_CancelStructure(CUnit* unit) {
 
 		__asm {
@@ -453,7 +453,7 @@ namespace {
 
 	}
 
-	const u32 Func_AI_TrainingUnit = 0x004A2830;
+	const uint32 Func_AI_TrainingUnit = 0x004A2830;
 	void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit) {
 		__asm {
 			PUSHAD
@@ -464,7 +464,7 @@ namespace {
 		}
 	}
 
-	const u32 Func_unitDeathSomething_0 = 0x004E6340;
+	const uint32 Func_unitDeathSomething_0 = 0x004E6340;
 	void hideAndDisableUnit(CUnit* unit) {
 
 		__asm {

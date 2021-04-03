@@ -6,8 +6,8 @@
 namespace {
 
 bool isUnitPositions2Equal(CUnit* unit);																	//02160
-void getRepairInfo(CUnit* repairTarget, u32* repairCostMineral, u32* repairCostGas, s16* unkRepairInfo);	//66D10
-bool verifyResources(u32 mineralCost, u32 gasCost, u32 playerId);											//66EE0
+void getRepairInfo(CUnit* repairTarget, uint32* repairCostMineral, uint32* repairCostGas, int16* unkRepairInfo);	//66D10
+bool verifyResources(uint32 mineralCost, uint32 gasCost, uint32 playerId);											//66EE0
 bool ord_repair_subtract(CUnit* worker, CUnit* target);														//66FB0
 void unitOrderMoveToTargetUnit(CUnit* unit, CUnit* target);													//79FE0
 void refreshLayer3And4();																					//8D9A0
@@ -18,10 +18,10 @@ bool function_004EB900(CUnit* unit, CUnit* target);															//EB900
 bool orderToMoveToTarget(CUnit* unit, CUnit* target);														//EB980
 
 } //unnamed namespace
-const u32 Func_get_statTxt_Str_0 = 0x0048EF30;
-u32 get_statTxt_Str_Func(CUnit* unit, u32 playerId, char* message) {
+const uint32 Func_get_statTxt_Str_0 = 0x0048EF30;
+uint32 get_statTxt_Str_Func(CUnit* unit, uint32 playerId, char* message) {
 
-	static u32 return_value;
+	static uint32 return_value;
 	__asm {
 		PUSHAD
 		MOV EAX, message
@@ -95,8 +95,8 @@ namespace hooks {
 
 				if(!jump_to_default_switch && unit->mainOrderState == 0) {
 
-					s16 unkRepairInfo = 0;
-					u32 repairCostMinerals = 0, repairCostGas = 0;
+					int16 unkRepairInfo = 0;
+					uint32 repairCostMinerals = 0, repairCostGas = 0;
 
 					getRepairInfo(target,&repairCostMinerals,&repairCostGas,&unkRepairInfo);
 
@@ -174,8 +174,8 @@ namespace hooks {
 
 						if(!isUnitPositions2Equal(unit)) {
 
-							s32 angleReturned, currentAngle;
-							u8 weaponId;
+							int32 angleReturned, currentAngle;
+							uint8 weaponId;
 
 							angleReturned = 
 								scbw::getAngle(
@@ -268,7 +268,7 @@ namespace hooks {
 
 					if (bDoRepair) { // //67692
 
-						u32 hpGain = target->buildRepairHpGain;
+						uint32 hpGain = target->buildRepairHpGain;
 
 						if (*CHEAT_STATE & CheatFlags::OperationCwal)
 							hpGain *= 16;
@@ -311,7 +311,7 @@ namespace hooks {
 				}
 				else { //676FE
 
-					u8 orderId;
+					uint8 orderId;
 
 					if(unit->pAI == nullptr)
 						orderId = units_dat::ReturnToIdleOrder[unit->id];
@@ -355,9 +355,9 @@ bool isUnitPositions2Equal(CUnit* unit) {
 
 ;
 
-const u32 Func_getRepairInfo = 0x00466D10;
+const uint32 Func_getRepairInfo = 0x00466D10;
 //unkRepairInfo may be related to unit->worker.repairResourceLossTimer
-void getRepairInfo(CUnit* repairTarget, u32* repairCostMineral, u32* repairCostGas, s16* unkRepairInfo) {
+void getRepairInfo(CUnit* repairTarget, uint32* repairCostMineral, uint32* repairCostGas, int16* unkRepairInfo) {
 
 	__asm {
 		PUSHAD
@@ -373,10 +373,10 @@ void getRepairInfo(CUnit* repairTarget, u32* repairCostMineral, u32* repairCostG
 
 ;
 
-const u32 Func_ord_repair_subtract = 0x00466FB0;
+const uint32 Func_ord_repair_subtract = 0x00466FB0;
 bool ord_repair_subtract(CUnit* worker, CUnit* target) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -393,11 +393,11 @@ bool ord_repair_subtract(CUnit* worker, CUnit* target) {
 
 ;
 
-const u32 Func_verifyResources = 0x00466EE0;
+const uint32 Func_verifyResources = 0x00466EE0;
 //display an error message and return false if not enough resources
-bool verifyResources(u32 mineralCost, u32 gasCost, u32 playerId) {
+bool verifyResources(uint32 mineralCost, uint32 gasCost, uint32 playerId) {
 
-	Bool32 bPreResult;
+	bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -415,7 +415,7 @@ bool verifyResources(u32 mineralCost, u32 gasCost, u32 playerId) {
 
 ;
 
-const u32 Func_unitOrderMoveToTargetUnit = 0x00479FE0;
+const uint32 Func_unitOrderMoveToTargetUnit = 0x00479FE0;
 void unitOrderMoveToTargetUnit(CUnit* unit, CUnit* target) {
 
 	__asm {
@@ -430,7 +430,7 @@ void unitOrderMoveToTargetUnit(CUnit* unit, CUnit* target) {
 
 ;
 
-const u32 Func_RefreshLayer3And4 = 0x0048D9A0;
+const uint32 Func_RefreshLayer3And4 = 0x0048D9A0;
 void refreshLayer3And4() {
 
 	__asm {
@@ -443,10 +443,10 @@ void refreshLayer3And4() {
 
 ;
 
-const u32 Func_Sub48DDA0 = 0x0048DDA0;
+const uint32 Func_Sub48DDA0 = 0x0048DDA0;
 bool function_0048DDA0() {
 
-	Bool32 pre_return_value;
+	bool32 pre_return_value;
 
 	__asm {
 		PUSHAD
@@ -461,7 +461,7 @@ bool function_0048DDA0() {
 
 ;
 
-const u32 Func_Sub48E310 = 0x0048E310;
+const uint32 Func_Sub48E310 = 0x0048E310;
 void function_0048E310() {
 
 	__asm {
@@ -474,7 +474,7 @@ void function_0048E310() {
 
 ;
 
-const u32 Func_Sub494BB0 = 0x00494BB0;
+const uint32 Func_Sub494BB0 = 0x00494BB0;
 void function_00494BB0(CUnit* unit,int x, int y) {
 
 	__asm {
@@ -490,10 +490,10 @@ void function_00494BB0(CUnit* unit,int x, int y) {
 
 ;
 
-const u32 Func_Sub4EB900 = 0x004EB900;
+const uint32 Func_Sub4EB900 = 0x004EB900;
 bool function_004EB900(CUnit* unit, CUnit* target) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -510,10 +510,10 @@ bool function_004EB900(CUnit* unit, CUnit* target) {
 
 ;
 
-const u32 Func__moveToTarget = 0x004EB980;
+const uint32 Func__moveToTarget = 0x004EB980;
 bool orderToMoveToTarget(CUnit* unit, CUnit* target) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
   
 	__asm {
 		PUSHAD

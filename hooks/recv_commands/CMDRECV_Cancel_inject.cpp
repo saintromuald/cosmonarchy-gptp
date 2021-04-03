@@ -66,7 +66,7 @@ void __declspec(naked) CMDRECV_CancelResearchWrapper() {
 
 void __declspec(naked) CMDRECV_CancelTrainWrapper() {
 
-	static u16 wUnitID;
+	static uint16 wUnitID;
 
 	__asm {
 		PUSH EBP

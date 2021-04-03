@@ -30,10 +30,10 @@ namespace {
 //0x00429210
 void __declspec(naked) cloakingTechWrapper_IsCloaked() {
 
-	static Bool32 return_value;
-	static u32 playerId;
+	static bool32 return_value;
+	static uint32 playerId;
 	static CUnit* unit;	//unused in original function
-	static u16 reqVar;	//unused in original function
+	static uint16 reqVar;	//unused in original function
 
 	__asm {
 		PUSH EBP
@@ -62,10 +62,10 @@ void __declspec(naked) cloakingTechWrapper_IsCloaked() {
 //0x004292C0
 void __declspec(naked) cloakingTechWrapper_CanCloak() {
 
-	static Bool32 return_value;
-	static u32 playerId;
+	static bool32 return_value;
+	static uint32 playerId;
 	static CUnit* unit;	//unused in original function
-	static u16 reqVar;	//unused in original function
+	static uint16 reqVar;	//unused in original function
 
 	__asm {
 		PUSH EBP
@@ -100,7 +100,7 @@ void applyCloakingOrderHook(CUnit* unit) {
 		return;
 
 	//original code is hardcoded instead of using a function like getCloakingTech
-	const u16 energyCost = techdata_dat::EnergyCost[hooks::getCloakingTech(unit)] * 256;
+	const uint16 energyCost = techdata_dat::EnergyCost[hooks::getCloakingTech(unit)] * 256;
 
 	if (scbw::isCheatEnabled(CheatFlags::TheGathering) || unit->energy >= energyCost) {
 
@@ -142,7 +142,7 @@ void __cdecl cloakingTechWrapper_CMDRECV_Cloak() {
 ;
 
 
-const u32 Func_ApplyCloak = 0x00491B30;
+const uint32 Func_ApplyCloak = 0x00491B30;
 void applyCloakingOrderFunc(CUnit* unit) {
 	__asm {
 		PUSHAD
@@ -195,7 +195,7 @@ void __cdecl cloakingTechWrapper_CMDRECV_Decloak() {
 void __declspec(naked) getCloakingTechWrapper() {
 
 	static CUnit* unit;
-	static u8 result;
+	static uint8 result;
 
 	__asm {
 		MOV unit, EAX
@@ -226,7 +226,7 @@ void __declspec(naked) cloakingTech_ApplyCloakingOrder() {
 	}
 }
 
-Bool32 __cdecl currentUnitSelectionCanCloakWrapper() {
+bool32 __cdecl currentUnitSelectionCanCloakWrapper() {
 
 	RaceId::Enum race;
 

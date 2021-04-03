@@ -9,7 +9,7 @@ namespace {
 	void __declspec(naked) orders_isMorphingWrapper() {
 
 		static CUnit* building;
-		static Bool32 result;
+		static bool32 result;
 
 		__asm {
 			MOV building, EAX
@@ -110,10 +110,10 @@ namespace {
 
 	//-------- UnitStatAct_ProgressBarIconText --------//
 
-	const u32 Hook_IsMorphedBuilding_ConsoleProgressBarTextBack = 0x00426B74;
+	const uint32 Hook_IsMorphedBuilding_ConsoleProgressBarTextBack = 0x00426B74;
 	void __declspec(naked) isMorphedBuildingWrapper_ConsoleProgressBarText() {
 		static const CUnit *unit;
-		static u16 tblErrorMessage;
+		static uint16 tblErrorMessage;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
@@ -125,7 +125,7 @@ namespace {
 			tblErrorMessage = 828;    //<6>Disabled<0>
 		}
 		else {
-			u16 unitId = unit->buildQueue[unit->buildQueueSlot];
+			uint16 unitId = unit->buildQueue[unit->buildQueueSlot];
 			if (unit->status & UnitStatus::Completed
 				|| !hooks::isMorphedBuildingHook(unitId))
 				unitId = unit->id;
@@ -146,9 +146,9 @@ namespace {
 
 	//-------- AI_MorphBehavior() --------//
 
-	const u32 Hook_AI_MorphBehavior_IsMorphedBuildingYes = 0x0043508B;
+	const uint32 Hook_AI_MorphBehavior_IsMorphedBuildingYes = 0x0043508B;
 	void __declspec(naked) isMorphedBuildingWrapper_AI_MorphBehavior() {
-		static u16 buildUnitId;
+		static uint16 buildUnitId;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
@@ -175,10 +175,10 @@ namespace {
 
 	//-------- statdata_UnitWireframeUpdate() --------//
 
-	const u32 Hook_IsMorphedBuilding_ConsoleWireframeUpdateBack = 0x00456955;
+	const uint32 Hook_IsMorphedBuilding_ConsoleWireframeUpdateBack = 0x00456955;
 	void __declspec(naked) isMorphedBuildingWrapper_ConsoleWireFrameUpdate() {
 		static CUnit *unit;
-		static u16 buildUnitId;
+		static uint16 buildUnitId;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
@@ -199,10 +199,10 @@ namespace {
 
 	//-------- orders_ZergBuildSelf() --------//
 
-	const u32 Hook_isMorphedBuilding_ZergBuildSelf_GetTypeBack = 0x0045D53F;
+	const uint32 Hook_isMorphedBuilding_ZergBuildSelf_GetTypeBack = 0x0045D53F;
 	void __declspec(naked) isMorphedBuildingWrapper_ZergBuildSelf_GetType() {
 		static CUnit *unit;
-		static u16 buildUnitId;
+		static uint16 buildUnitId;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
@@ -221,7 +221,7 @@ namespace {
 	}
 
 	void __declspec(naked) isMorphedBuildingWrapper_ZergBuildSelf_Complete() {
-		static u16 unitId;
+		static uint16 unitId;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
@@ -245,16 +245,16 @@ namespace {
 	}
 
 	//This was moved out of the naked function to prevent stack corruption bug
-	void zergBuildSelf_UpdateBuildTimerAndHp(CUnit *unit, u16 unitId) {
+	void zergBuildSelf_UpdateBuildTimerAndHp(CUnit *unit, uint16 unitId) {
 		bool isOperationCwalEnabled = scbw::isCheatEnabled(CheatFlags::OperationCwal);
 		if (unit->remainingBuildTime) {
 			if (isOperationCwalEnabled)
-				unit->remainingBuildTime -= std::min<u16>(unit->remainingBuildTime, 16);
+				unit->remainingBuildTime -= std::min<uint16>(unit->remainingBuildTime, 16);
 			else
 				unit->remainingBuildTime--;
 		}
 		if (!hooks::isMorphedBuildingHook(unitId)) {
-			u32 hpGain = unit->buildRepairHpGain;
+			uint32 hpGain = unit->buildRepairHpGain;
 			if (isOperationCwalEnabled)
 				hpGain *= 16;
 			unit->setHp(unit->hitPoints + hpGain);
@@ -263,7 +263,7 @@ namespace {
 
 	void __declspec(naked) isMorphedBuildingWrapper_ZergBuildSelf_SetTimer() {
 		static CUnit *unit;
-		static u16 unitId;
+		static uint16 unitId;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
@@ -284,8 +284,8 @@ namespace {
 
 	//-------- cancelZergBuilding --------//
 
-	const u32 Hook_IsMorphedBuilding_CancelZergBuildingContinue = 0x0045DA93;
-	const u32 Func_CancelZergBuildingRemorph = 0x0045D410;
+	const uint32 Hook_IsMorphedBuilding_CancelZergBuildingContinue = 0x0045DA93;
+	const uint32 Func_CancelZergBuildingRemorph = 0x0045D410;
 	void __declspec(naked) isMorphedBuildingWrapper_CancelZergBuilding() {
 		static CUnit *unit;
 		__asm {
@@ -320,12 +320,12 @@ namespace {
 	//-------- AI_GetWaitBuildUnitCount --------//
 
 	//Inject @ 0x00433286
-	const u32 Hook_AI_GetWaitBuildUnitCount_Return = 0x004333D3;
+	const uint32 Hook_AI_GetWaitBuildUnitCount_Return = 0x004333D3;
 	void __declspec(naked) getMorphBuildingTypeCountWrapper_AI_GetWaitBuildUnitCount() {
 		static CUnit *unit;
-		static u16 unitId;
-		static Bool32 ignoreIncomplete;
-		static u32 unitCount;
+		static uint16 unitId;
+		static bool32 ignoreIncomplete;
+		static uint32 unitCount;
 
 		__asm {
 			PUSHAD
@@ -346,11 +346,11 @@ namespace {
 	//-------- AI_GetUnitCount --------//
 
 	//Inject @ 0x004334D9
-	const u32 Hook_AI_GetUnitCount_Return = 0x00433588;
+	const uint32 Hook_AI_GetUnitCount_Return = 0x00433588;
 	void __declspec(naked) getMorphBuildingTypeCountWrapper_AI_GetUnitCount() {
 		static CUnit *unit;
-		static u16 unitId;
-		static u32 unitCount;
+		static uint16 unitId;
+		static uint32 unitCount;
 
 		__asm {
 			PUSHAD
@@ -372,7 +372,7 @@ namespace {
 
 	//Inject @ 0x00436439
 
-	const u32 Hook_MorphSpecialStateContinue = 0x0045D2B1;
+	const uint32 Hook_MorphSpecialStateContinue = 0x0045D2B1;
 	void __declspec(naked) MorphSpecialStateSetup_Wrapper() {
 		static CSprite* sprite;
 		__asm {
@@ -386,11 +386,11 @@ namespace {
 		}
 	}
 
-	const u32 Hook_AI_ManageBases_Return = 0x004364F7;
+	const uint32 Hook_AI_ManageBases_Return = 0x004364F7;
 	void __declspec(naked) getMorphBuildingTypeCountWrapper_AI_ManageBases() {
 		static CUnit *unit;
-		static u16 unitId;
-		static u32 unitCount;
+		static uint16 unitId;
+		static uint32 unitCount;
 
 		__asm {
 			PUSHAD
@@ -412,7 +412,7 @@ namespace {
 } //unnamed namespace
 
 
-extern const u32 Func_IsRemorphingBuilding;
+extern const uint32 Func_IsRemorphingBuilding;
 namespace hooks {
 
 	void injectBuildingMorphHooks() {

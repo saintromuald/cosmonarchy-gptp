@@ -10,7 +10,7 @@
 //helper functions def
 
 
-u32 Func_Sub46A820 = 0x0046A820;
+uint32 Func_Sub46A820 = 0x0046A820;
 u8 setArchonPathing(CUnit* unit) {
 	static u8 result;
 	__asm {
@@ -27,8 +27,8 @@ u8 setArchonPathing(CUnit* unit) {
 
 namespace {
 
-	void fixTargetLocation(Point16* coords, u32 unitId);							//01FA0
-	bool hasSuppliesForUnit(u32 unitId, u32 playerId, Bool32 canShowErrorMessage);	//2CF70
+	void fixTargetLocation(Point16* coords, uint32 unitId);							//01FA0
+	bool hasSuppliesForUnit(uint32 unitId, uint32 playerId, Bool32 canShowErrorMessage);	//2CF70
 	CUnit* function_0045D910(CUnit* unit);											//5D910
 	void orderNewUnitToRally(CUnit* unit, CUnit* factory);							//66F50
 	bool advanceRemainingBuildTime_Sub466940(CUnit* unit);							//66940
@@ -567,7 +567,7 @@ namespace hooks {
 
 		const RaceId::Enum raceId = CUnit::getRace(unitId);
 		assert(raceId <= 2);
-		const u32 supplyUsed = raceSupply[raceId].used[playerId];
+		const uint32 supplyUsed = raceSupply[raceId].used[playerId];
 
 		//Must construct additional pylons
 		if (supplyUsed + supplyCost > raceSupply[raceId].max[playerId]) {
@@ -595,8 +595,8 @@ namespace hooks {
 
 namespace {
 
-	const u32 Func_fixTargetLocation = 0x00401FA0;
-	void fixTargetLocation(Point16* coords, u32 unitId) {
+	const uint32 Func_fixTargetLocation = 0x00401FA0;
+	void fixTargetLocation(Point16* coords, uint32 unitId) {
 
 		__asm {
 			PUSHAD
@@ -610,8 +610,8 @@ namespace {
 
 	;
 
-	const u32 Func_hasSuppliesForUnit = 0x0042CF70;
-	bool hasSuppliesForUnit(u32 unitId, u32 playerId, Bool32 canShowErrorMessage) {
+	const uint32 Func_hasSuppliesForUnit = 0x0042CF70;
+	bool hasSuppliesForUnit(uint32 unitId, uint32 playerId, Bool32 canShowErrorMessage) {
 
 		static Bool32 bPreResult;
 
@@ -631,7 +631,7 @@ namespace {
 
 	;
 
-	const u32 Func_Sub45D910 = 0x0045D910;
+	const uint32 Func_Sub45D910 = 0x0045D910;
 	CUnit* function_0045D910(CUnit* unit) {
 
 		static CUnit* rValue;
@@ -650,7 +650,7 @@ namespace {
 
 	;
 
-	u32 Func_Sub466940 = 0x00466940;
+	uint32 Func_Sub466940 = 0x00466940;
 	//return true if remainingBuildTime was 0 when called,
 	//remainingBuildTime change affected by cheating
 	bool advanceRemainingBuildTime_Sub466940(CUnit* unit) {
@@ -671,7 +671,7 @@ namespace {
 
 	;
 
-	const u32 Func_RefundAllQueueSlots = 0x00466E80;
+	const uint32 Func_RefundAllQueueSlots = 0x00466E80;
 	void refundAllQueueSlots(CUnit* unit) {
 
 		__asm {
@@ -685,7 +685,7 @@ namespace {
 
 	;
 
-	const u32 Func_Sub466F50 = 0x00466F50;
+	const uint32 Func_Sub466F50 = 0x00466F50;
 	void orderNewUnitToRally(CUnit* unit, CUnit* factory) {
 
 		__asm {
@@ -700,7 +700,7 @@ namespace {
 
 	;
 
-	const u32 Func_ActUnitReturnToIdle = 0x00475420;
+	const uint32 Func_ActUnitReturnToIdle = 0x00475420;
 	void actUnitReturnToIdle(CUnit* unit) {
 
 		__asm {
@@ -714,7 +714,7 @@ namespace {
 
 	;
 
-	const u32 Func_incrementUnitScoresEx = 0x00488D50;
+	const uint32 Func_incrementUnitScoresEx = 0x00488D50;
 	//unk1 is ECX, unk2 is pushed value
 	void incrementUnitScoresEx(CUnit* unit, s32 count, s32 unk2) {
 
@@ -731,7 +731,7 @@ namespace {
 
 	;
 
-	const u32 Func_PlayMorphingCompleteSound = 0x0048F440;
+	const uint32 Func_PlayMorphingCompleteSound = 0x0048F440;
 	void playMorphingCompleteSound(CUnit* unit) {
 
 		__asm {
@@ -745,7 +745,7 @@ namespace {
 
 	;
 
-	const u32 Func_UpdateUnitStrength = 0x0049FA40;
+	const uint32 Func_UpdateUnitStrength = 0x0049FA40;
 	void updateUnitStrength(CUnit* unit) {
 
 		__asm {
@@ -759,9 +759,9 @@ namespace {
 
 	;
 
-	const u32 Func_ReplaceUnitWithType = 0x0049FED0;
+	const uint32 Func_ReplaceUnitWithType = 0x0049FED0;
 	void replaceUnitWithType(CUnit* unit, u16 newUnitId) {
-		u32 newUnitId_ = newUnitId;
+		uint32 newUnitId_ = newUnitId;
 
 		__asm {
 			PUSHAD
@@ -775,7 +775,7 @@ namespace {
 
 	;
 
-	const u32 Func_Sub4A01F0 = 0x004A01F0;
+	const uint32 Func_Sub4A01F0 = 0x004A01F0;
 	void function_004A01F0(CUnit* unit) {
 
 		__asm {
@@ -789,7 +789,7 @@ namespace {
 
 	;
 
-	const u32 Func_AI_TrainingUnit = 0x004A2830;
+	const uint32 Func_AI_TrainingUnit = 0x004A2830;
 	void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit) {
 		__asm {
 			PUSHAD
@@ -802,7 +802,7 @@ namespace {
 
 	;
 
-	const u32 Func_Sub4E5D60 = 0x004E5D60;
+	const uint32 Func_Sub4E5D60 = 0x004E5D60;
 	void changeUnitButtonSet_Sub4E5D60(CUnit* unit, u16 buttonSetId) {
 
 		__asm {
@@ -817,7 +817,7 @@ namespace {
 
 	;
 
-	const u32 Func_Sub4E65E0 = 0x004E65E0;
+	const uint32 Func_Sub4E65E0 = 0x004E65E0;
 	void function_004E65E0(CUnit* unit, Bool32 flag) {
 
 		__asm {

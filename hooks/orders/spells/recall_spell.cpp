@@ -7,12 +7,12 @@
 namespace {
 
 	bool setThingyVisibilityFlags(CThingy* thingy);									//0x004878F0
-	CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);				//0x00488210
+	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);				//0x00488210
 	void setUnitStatTxtErrorMsg(char* message);										//0x0048CCB0
-	void playUnitSFX(u32 soundId, u16 x, u16 y, u32 unk1, u32 unk2);				//0x0048EC10
-	u32 RandomizeShort(u32 unknown_index);											//0x004DC4A0
-	u32 IterateUnitsAtLocationTargetProc_RecallTargets(CUnit* unit, Box16* coords);	//0x004E8280
-	void function_004EBAE0(CUnit* unit, s32 x, s32 y);								//0x004EBAE0
+	void playUnitSFX(uint32 soundId, uint16 x, uint16 y, uint32 unk1, uint32 unk2);				//0x0048EC10
+	uint32 RandomizeShort(uint32 unknown_index);											//0x004DC4A0
+	uint32 IterateUnitsAtLocationTargetProc_RecallTargets(CUnit* unit, Box16* coords);	//0x004E8280
+	void function_004EBAE0(CUnit* unit, int32 x, int32 y);								//0x004EBAE0
 
 } //unnamed namespace
 
@@ -25,7 +25,7 @@ namespace hooks {
 	//Do the actual unit movement
 	void spells_Recall_ActionOnValidTargetForRecall(CUnit* target, CUnit* caster) {
 
-		static Bool32* const bAtLeast1UnitWasRecalled = (Bool32*)(0x0063FF50);
+		static bool32* const bAtLeast1UnitWasRecalled = (bool32*)(0x0063FF50);
 
 		Point16 previous_pos, new_pos;
 
@@ -115,7 +115,7 @@ namespace hooks {
 
 	void orders_Recall(CUnit* unit) {
 
-		static Bool32* const bAtLeast1UnitWasRecalled = (Bool32*)(0x0063FF50);
+		static bool32* const bAtLeast1UnitWasRecalled = (bool32*)(0x0063FF50);
 
 		//unit has started casting Recall (== went through the other condition)
 		if(unit->mainOrderState == 1) {
@@ -162,7 +162,7 @@ namespace hooks {
 			) 
 			{
 
-				u8 raceId;
+				uint8 raceId;
 				char* message;
 
 				if(units_dat::GroupFlags[unit->id].isZerg)
@@ -191,7 +191,7 @@ namespace hooks {
 			else { //945B9
 
 				CThingy* recall_effect_sprite;
-				u32 random_value;
+				uint32 random_value;
 				
 				if(!scbw::isCheatEnabled(CheatFlags::TheGathering))
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::Recall] * 256);
@@ -220,8 +220,8 @@ namespace hooks {
 					//hardcoded (not using a function) RNG use, like
 					//the original code do
 
-					static u32* const u32_0051C654 = (u32*)0x0051C654;
-					static u32* const u32_0051CA18 = (u32*)0x0051CA18;
+					static uint32* const u32_0051C654 = (uint32*)0x0051C654;
+					static uint32* const u32_0051CA18 = (uint32*)0x0051CA18;
 
 					*u32_0051C654 = *u32_0051C654 + 1;
 					*u32_0051CA18 = *u32_0051CA18 + 1;
@@ -279,10 +279,10 @@ namespace {
 
 	//original referenced name was sub_4878F0, but using
 	//the name from bunker_hooks.cpp since it got meaning
-	const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
+	const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
 	bool setThingyVisibilityFlags(CThingy* thingy) {
 
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 
 		__asm {
 			PUSHAD
@@ -300,11 +300,11 @@ namespace {
 
 	//original referenced name was replaceSprite (but this one is probably
 	//more accurate since it does create something rather than replacing)
-	const u32 Func_CreateThingy = 0x00488210;
-	CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId) {
+	const uint32 Func_CreateThingy = 0x00488210;
+	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
 
 		static CThingy* thingy;
-		s32 x_ = x;
+		int32 x_ = x;
 
 		__asm {
 			PUSHAD
@@ -323,8 +323,8 @@ namespace {
 
 	;
 
-	const u32 Func_playUnitSFX = 0x0048EC10;
-	void playUnitSFX(u32 soundId, u16 x, u16 y, u32 unk1, u32 unk2) {
+	const uint32 Func_playUnitSFX = 0x0048EC10;
+	void playUnitSFX(uint32 soundId, uint16 x, uint16 y, uint32 unk1, uint32 unk2) {
 
 		static Point16 pos;
 
@@ -344,10 +344,10 @@ namespace {
 	
 	;
 
-	const u32 Func_RandomizeShort = 0x004DC4A0;
-	u32 RandomizeShort(u32 unknown_index) {
+	const uint32 Func_RandomizeShort = 0x004DC4A0;
+	uint32 RandomizeShort(uint32 unknown_index) {
 
-		static u32 return_value;
+		static uint32 return_value;
 
 		__asm {
 			PUSHAD
@@ -363,11 +363,11 @@ namespace {
 
 	;
 
-	const u32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
+	const uint32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
 	//hardcoding the recall targets selection function
-	u32 IterateUnitsAtLocationTargetProc_RecallTargets(CUnit* unit, Box16* coords) {
+	uint32 IterateUnitsAtLocationTargetProc_RecallTargets(CUnit* unit, Box16* coords) {
 
-		static u32 return_value;
+		static uint32 return_value;
 
 		__asm {
 			PUSHAD
@@ -385,7 +385,7 @@ namespace {
 
 	;
 
-	const u32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
+	const uint32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
 	void setUnitStatTxtErrorMsg(char* message) {
 
 		__asm {
@@ -399,8 +399,8 @@ namespace {
 
 	;
 
-	const u32 Func_Sub4EBAE0 = 0x004EBAE0;
-	void function_004EBAE0(CUnit* unit, s32 x, s32 y) {
+	const uint32 Func_Sub4EBAE0 = 0x004EBAE0;
+	void function_004EBAE0(CUnit* unit, int32 x, int32 y) {
 
 		__asm {
 			PUSHAD

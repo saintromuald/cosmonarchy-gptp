@@ -13,7 +13,7 @@
 #include "hooks/hydraFinder.h"
 #include "globals.h"
 const int hyperTrigger = 0x006509A0;
-const u32 Func_Sub4A01F0 = 0x004A01F0;
+const uint32 Func_Sub4A01F0 = 0x004A01F0;
 void function_004A01F0g(CUnit* unit) {
 
 	__asm {
@@ -25,7 +25,7 @@ void function_004A01F0g(CUnit* unit) {
 
 }
 
-const u32 Func_98A10= 0x00498A10;
+const uint32 Func_98A10= 0x00498A10;
 void makeSpriteInvisible(CSprite* sprite) {
 
 	__asm {
@@ -37,7 +37,7 @@ void makeSpriteInvisible(CSprite* sprite) {
 
 }
 
-const u32 Func_UpdateUnitStrength = 0x0049FA40;
+const uint32 Func_UpdateUnitStrength = 0x0049FA40;
 void updateUnitStrengthg(CUnit* unit) {
 	__asm {
 		PUSHAD
@@ -47,8 +47,8 @@ void updateUnitStrengthg(CUnit* unit) {
 	}
 }
 
-const u32 Func_CreateUnit = 0x004A09D0;
-CUnit* CreateUnit(u32 unitId, int x, int y, u32 playerId) {
+const uint32 Func_CreateUnit = 0x004A09D0;
+CUnit* CreateUnit(uint32 unitId, int x, int y, uint32 playerId) {
 	static CUnit* unit_created;
 	__asm {
 		PUSHAD
@@ -63,8 +63,8 @@ CUnit* CreateUnit(u32 unitId, int x, int y, u32 playerId) {
 	return unit_created;
 }
 
-const u32 Func_Sub4148F0 = 0x004148F0;
-void function_004148F0_(int x, int y, u32 unitId) {
+const uint32 Func_Sub4148F0 = 0x004148F0;
+void function_004148F0_(int x, int y, uint32 unitId) {
 
 	__asm {
 		PUSHAD
@@ -77,7 +77,7 @@ void function_004148F0_(int x, int y, u32 unitId) {
 
 }
 
-const u32 Func_Sub47D770 = 0x0047D770;
+const uint32 Func_Sub47D770 = 0x0047D770;
 void func_0047D770(CUnit* unit) {
 
 	__asm {
@@ -89,9 +89,9 @@ void func_0047D770(CUnit* unit) {
 
 }
 
-const u32 Func_updateNewUnitVision = 0x0045CE90;
+const uint32 Func_updateNewUnitVision = 0x0045CE90;
 void funcupdateNewUnitVision(CUnit* unit, int x, int y) {
-	static u32 id = unit->id;
+	static uint32 id = unit->id;
 	__asm {
 		PUSHAD
 		MOV ECX, id
@@ -103,10 +103,10 @@ void funcupdateNewUnitVision(CUnit* unit, int x, int y) {
 
 }
 
-const u32 Func_ReplaceUnitWithType = 0x0049FED0;
-void replaceUnitWithType(CUnit* unit, u16 newUnitId) {
+const uint32 Func_ReplaceUnitWithType = 0x0049FED0;
+void replaceUnitWithType(CUnit* unit, uint16 newUnitId) {
 
-	u32 newUnitId_ = newUnitId;
+	uint32 newUnitId_ = newUnitId;
 
 	__asm {
 		PUSHAD
@@ -120,7 +120,7 @@ void replaceUnitWithType(CUnit* unit, u16 newUnitId) {
 
 ;
 
-const u32 Func_Irradiate = 0x00454E00;
+const uint32 Func_Irradiate = 0x00454E00;
 void spawnCreeper(CUnit* unit) {
 
 	int width = mapTileSize->width * 32;
@@ -137,8 +137,8 @@ void spawnCreeper(CUnit* unit) {
 			function_004A01F0g(creep_spawned);
 			updateUnitStrengthg(creep_spawned);
 
-			u32 tile_x = creep_spawned->sprite->position.x / 32;
-			u32 tile_y = creep_spawned->sprite->position.y / 32;
+			uint32 tile_x = creep_spawned->sprite->position.x / 32;
+			uint32 tile_y = creep_spawned->sprite->position.y / 32;
 
 			function_004148F0_(
 				tile_x * 32,
@@ -173,7 +173,7 @@ void spawnCreeper(CUnit* unit) {
 
 #include "SCBW\UnitFinder.h"
 
-void shamanProc(CUnit* shaman, bool organic, u32 heal, CUnit* target)
+void shamanProc(CUnit* shaman, bool organic, uint32 heal, CUnit* target)
 {
 	if (target->playerId != shaman->playerId) {
 		if (!scbw::isAlliedTo(target->playerId, shaman->playerId)) {
@@ -193,14 +193,14 @@ void shamanProc(CUnit* shaman, bool organic, u32 heal, CUnit* target)
 		return;
 	}
 
-	u32 dist = scbw::getDistanceFast(target->position.x, target->position.y,
+	uint32 dist = scbw::getDistanceFast(target->position.x, target->position.y,
 		shaman->position.x, shaman->position.y);
 	//unit->isBeingHealed = true;
 	bool reqHeal = false;
 
 	if (target->getCurrentHpInGame() < target->getMaxHpInGame()) {
 		reqHeal = true;
-		u32 overlayImageId;
+		uint32 overlayImageId;
 		if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay)
 			overlayImageId = ImageId::RestorationHit_Large;
 		else
@@ -305,10 +305,10 @@ namespace hooks {
 			/*if (*elapsedTimeFrames == 1) {
 				char* name = "samase\\sprites_ext.txt";
 				const char* data = nullptr;
-				u32 len = 0;
+				uint32 len = 0;
 				auto data_ptr = &data;
 				auto len_ptr = &len;
-				u32 val = reinterpret_cast<u32>(name);
+				uint32 val = reinterpret_cast<uint32>(name);
 				auto result = scbw::get_generic_value(nullptr, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));				
 				auto result2 = scbw::get_generic_value(nullptr, nullptr, AiseId::ReadSamaseFile_Ptr, 0, 0);
 			}*/
@@ -514,7 +514,7 @@ namespace hooks {
 					for (int arc = 0; arc < 6; arc++) {
 						const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlaySpecialPtr,
 							unit->sprite->mainGraphic->id));
-						u8 frameDirection = unit->sprite->mainGraphic->direction;
+						uint8 frameDirection = unit->sprite->mainGraphic->direction;
 						Point8 offset = loFile->getOffset(frameDirection, 5 - arc);
 						if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
 							offset.x = -offset.x;
@@ -540,9 +540,9 @@ namespace hooks {
 			}
 
 			// Star Sovereign - blast effects
-			u32 player = unit->playerId;
-			u16 X = unit->position.x;
-			u16 Y = unit->position.y;
+			uint32 player = unit->playerId;
+			uint16 X = unit->position.x;
+			uint16 Y = unit->position.y;
 			if (unit->orderSignal & 8) {
 				unit->orderSignal &= ~8;
 				scbw::createThingy(635, X + 32, Y + 32, player);
@@ -614,7 +614,7 @@ namespace hooks {
 					if (n(picked_unit)) {
 						//apply lazarus agent
 						scbw::set_generic_value(picked_unit, ValueId::LazarusAgent, 1);
-						scbw::set_generic_value(picked_unit, ValueId::LazarusAgentApostleSrc, (u32)unit);
+						scbw::set_generic_value(picked_unit, ValueId::LazarusAgentApostleSrc, (uint32)unit);
 						picked_unit->sprite->createTopOverlay(1265);
 					}
 				}
@@ -683,15 +683,15 @@ namespace hooks {
 			if (scbw::get_generic_timer(unit, ValueId::SkyfallTimer) == 1
 				&& scbw::get_generic_timer(unit, ValueId::SkyfallTimer) == 1
 				&& !unit->isFrozen()) {
-				u8 missile = scbw::get_generic_value(unit, ValueId::SkyfallStacks);
+				uint8 missile = scbw::get_generic_value(unit, ValueId::SkyfallStacks);
 				scbw::add_generic_value(unit, ValueId::SkyfallStacks, 1);
 				if (missile == 20) {
 					scbw::set_generic_value(unit, ValueId::SkyfallStacks, 0);
 				}
 				else {
 					scbw::set_generic_timer(unit, ValueId::SkyfallTimer, 2 + 1);
-					u32 tgt_x = scbw::get_generic_value(unit, ValueId::SkyfallX);
-					u32 tgt_y = scbw::get_generic_value(unit, ValueId::SkyfallY);
+					uint32 tgt_x = scbw::get_generic_value(unit, ValueId::SkyfallX);
+					uint32 tgt_y = scbw::get_generic_value(unit, ValueId::SkyfallY);
 					//scbw::printFormattedText("Read X Y %d %d [a]", tgt_x, tgt_y);
 					auto column = missile / 4;
 					auto row = missile % 4;
@@ -704,7 +704,7 @@ namespace hooks {
 					Point16 missile_target;
 					missile_target.x = tgt_x + product.x;
 					missile_target.y = tgt_y + product.y;
-					s32 forwardOffset = weapons_dat::ForwardOffset[10];
+					int32 forwardOffset = weapons_dat::ForwardOffset[10];
 					auto source_x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
 					auto source_y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1)
 						- weapons_dat::VerticalOffset[10];
@@ -864,7 +864,7 @@ namespace hooks {
 
 		// Savant - Entropy Gauntlets
 		if (scbw::get_generic_timer(unit, ValueId::EntropyGauntlets) == 1) {
-			u32 overlayImageId;
+			uint32 overlayImageId;
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
 				overlayImageId = 1109;
 			else if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
@@ -937,7 +937,7 @@ namespace hooks {
 
 		// Dark Archon - Malediction (Maelstrom)
 		if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) == 1) {
-			u32 overlayImageId;
+			uint32 overlayImageId;
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
 				overlayImageId = ImageId::Malediction_Medium;
 			else
@@ -984,7 +984,7 @@ namespace hooks {
 
 
 		// Hallucinating Visual Effect
-		u32 hallucinatingTimer = scbw::get_generic_timer(unit, ValueId::HallucinatingTimer);
+		uint32 hallucinatingTimer = scbw::get_generic_timer(unit, ValueId::HallucinatingTimer);
 		if (unit != nullptr && unit->sprite != nullptr) {
 			if (hallucinatingTimer % 24 == 1) {
 				CSprite* sprite;
@@ -1007,7 +1007,7 @@ namespace hooks {
 		// Nexus behavior: increase psi generated by Pylons
 		if (unit->id == UnitId::ProtossPylon
 			&& (unit->status & UnitStatus::Completed)) {
-			u32 nexusCount = unitCountTable[UnitId::ProtossNexus].player[unit->playerId];
+			uint32 nexusCount = unitCountTable[UnitId::ProtossNexus].player[unit->playerId];
 			unit->setSupplyProvided((7 + nexusCount) * 2);
 		}
 
@@ -1027,7 +1027,7 @@ namespace hooks {
 				if (target->playerId != unit->playerId && !scbw::isAlliedTo(unit->playerId, target->playerId)) return;
 				if (!(target->status & UnitStatus::Completed)) return;
 
-				u32 stacks = scbw::get_generic_value(target, ValueId::TreasuryStacks);
+				uint32 stacks = scbw::get_generic_value(target, ValueId::TreasuryStacks);
 				if (*elapsedTimeFrames % 36 == 0 && stacks == 0) {
 					target->sprite->createUnderlay(1060, 0, 0, 0);
 				}
@@ -1141,7 +1141,7 @@ namespace hooks {
 		// Controlled Demolition - initial cast
 		/*if (conditional) { // ability cast
 			scbw::set_generic_timer(unit, ValueId::ControlledDemolition, 10*24);
-			s32 overlayOffset = scbw::getOverlaySize(unit->id);
+			int32 overlayOffset = scbw::getOverlaySize(unit->id);
 		//	unit->sprite->createOverlay(ImageId::ControlledDemolitionOverlay_Small + overlayOffset);
 		}
 		*/
@@ -1154,8 +1154,8 @@ namespace hooks {
 
 		// Emergency Detonation - initial cast
 		/*if (conditional) { // ability cast
-			scbw::set_generic_timer(unit, ValueId::EmergencyDetonation, (u32)(0.5 * scbw::get_generic_timer(unit, ValueId::ControlledDemolition)));
-			s32 overlayOffset = scbw::getOverlaySize(unit->id);
+			scbw::set_generic_timer(unit, ValueId::EmergencyDetonation, (uint32)(0.5 * scbw::get_generic_timer(unit, ValueId::ControlledDemolition)));
+			int32 overlayOffset = scbw::getOverlaySize(unit->id);
 		//	unit->sprite->createOverlay(ImageId::EmergencyDetonationOverlay_Small + overlayOffset);
 		}
 		*/

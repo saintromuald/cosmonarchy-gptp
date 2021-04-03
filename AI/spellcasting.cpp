@@ -5,11 +5,11 @@
 //-------- Helper function declarations. Do NOT modify! --------//
 namespace {
 
-bool canCastSpellOrder(CUnit* unit, u8 techId, u8 orderId);
-bool aiCastSpellOrder(CUnit* unit, CUnit* target, u8 orderId, u8 aiActionFlag = 1);
-u16 getOrderEnergyCost(u8 orderId);
-bool isNukeTimerReady(u8 playerId);
-CUnit* getLoadedSilo(CUnit* ghost, Bool32 checkNukeAvailableForGhost = 1);
+bool canCastSpellOrder(CUnit* unit, uint8 techId, uint8 orderId);
+bool aiCastSpellOrder(CUnit* unit, CUnit* target, uint8 orderId, uint8 aiActionFlag = 1);
+uint16 getOrderEnergyCost(uint8 orderId);
+bool isNukeTimerReady(uint8 playerId);
+CUnit* getLoadedSilo(CUnit* ghost, bool32 checkNukeAvailableForGhost = 1);
 
 } //unnamed namespace
 
@@ -22,7 +22,7 @@ bool AI_spellcasterHook(CUnit* unit, bool isUnitBeingAttacked) {
       && AIScriptController[unit->playerId].spellcasterTimer != 0)
     return false;
 
-  u16 energyReserve;
+  uint16 energyReserve;
 
   switch (unit->id) {
 
@@ -396,8 +396,8 @@ bool AI_spellcasterHook(CUnit* unit, bool isUnitBeingAttacked) {
 namespace {
 
 //Logically equivalent to function @ 0x004A11E0
-bool canCastSpellOrder(CUnit* unit, u8 techId, u8 orderId) {
-  u16 energyCost = 0;
+bool canCastSpellOrder(CUnit* unit, uint8 techId, uint8 orderId) {
+  uint16 energyCost = 0;
   if (orders_dat::TechUsed[orderId] < TechId::None)
     energyCost = techdata_dat::EnergyCost[orders_dat::TechUsed[orderId]] * 256;
   if (techId == TechId::Lockdown && unit->vulture.spiderMineCount == 0) {
@@ -410,7 +410,7 @@ bool canCastSpellOrder(CUnit* unit, u8 techId, u8 orderId) {
 }
 
 //Logically equivalent to function @ 0x004A1290
-bool aiCastSpellOrder(CUnit* unit, CUnit* target, u8 orderId, u8 aiActionFlag) {
+bool aiCastSpellOrder(CUnit* unit, CUnit* target, uint8 orderId, uint8 aiActionFlag) {
   if (!target || target->aiActionFlags & aiActionFlag)
     return false;
 
@@ -422,7 +422,7 @@ bool aiCastSpellOrder(CUnit* unit, CUnit* target, u8 orderId, u8 aiActionFlag) {
 }
 
 //Logically equivalent to function @ 0x0049E1C0
-u16 getOrderEnergyCost(u8 orderId) {
+uint16 getOrderEnergyCost(uint8 orderId) {
   if (orders_dat::TechUsed[orderId] < TechId::None)
     return techdata_dat::EnergyCost[orders_dat::TechUsed[orderId]] * 256;
   else
@@ -430,7 +430,7 @@ u16 getOrderEnergyCost(u8 orderId) {
 }
 
 //Logically equivalent to function @ 0x00446E50
-bool isNukeTimerReady(u8 playerId) {
+bool isNukeTimerReady(uint8 playerId) {
   return *elapsedTimeSeconds >= AIScriptController[playerId].AI_LastNukeTime + 60 * AIScriptController[playerId].AI_NukeRate;
 }
 
@@ -438,7 +438,7 @@ bool isNukeTimerReady(u8 playerId) {
 //checkNukeAvailableForGhost is 1 by default
 //if checkNukeAvailableForGhost is 0, only check for a loaded silo
 //without checking if the nuke is already linked to another ghost
-CUnit* getLoadedSilo(CUnit* ghost, Bool32 checkNukeAvailableForGhost) {
+CUnit* getLoadedSilo(CUnit* ghost, bool32 checkNukeAvailableForGhost) {
 
 	CUnit* return_value = nullptr;
 

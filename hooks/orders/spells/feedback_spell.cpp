@@ -5,8 +5,8 @@
 
 namespace {
 																				//7B720
-bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 sightRange,u32 error_message_index);	//926D0
-void replaceFeedbackSprite(CUnit* unit, u32 spriteId);																//F6350
+bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange,uint32 error_message_index);	//926D0
+void replaceFeedbackSprite(CUnit* unit, uint32 spriteId);																//F6350
 
 } //unnamed namespace
 
@@ -23,7 +23,7 @@ void orders_Feedback(CUnit* unit) {
 	) 
 	{
 
-		u16 techCost;
+		uint16 techCost;
 		int sightRange = unit->getSightRange(true);
 
 		if(
@@ -38,7 +38,7 @@ void orders_Feedback(CUnit* unit) {
 		{
 
 			if(target->status & UnitStatus::IsHallucination) {
-				u8 overlaySize = scbw::hasOverlay(target);
+				uint8 overlaySize = scbw::hasOverlay(target);
 				replaceFeedbackSprite(target,overlaySize + SpriteId::Feedback_Hit_Small);
 				unit->spendUnitEnergy(techCost);
 				target->remove();
@@ -57,7 +57,7 @@ void orders_Feedback(CUnit* unit) {
 
 					if(!target->isDead()) {
 
-						u8 overlaySize = scbw::hasOverlay(target);
+						uint8 overlaySize = scbw::hasOverlay(target);
 
 						if(target->subunit != nullptr)
 							target->subunit->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small,0,0,0);
@@ -68,7 +68,7 @@ void orders_Feedback(CUnit* unit) {
 
 					}
 					else { //F6E6D
-						u8 overlaySize = scbw::hasOverlay(target);
+						uint8 overlaySize = scbw::hasOverlay(target);
 						replaceFeedbackSprite(target,overlaySize + SpriteId::Feedback_Hit_Small);
 						unit->orderToIdle();
 					}
@@ -106,10 +106,10 @@ void orders_Feedback(CUnit* unit) {
 namespace {
 
 
-const u32 Func_Sub_4926D0 = 0x004926D0;
-bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 sightRange,u32 error_message_index) {
+const uint32 Func_Sub_4926D0 = 0x004926D0;
+bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange,uint32 error_message_index) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -129,8 +129,8 @@ bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 si
 
 ;
 
-const u32 Func_replaceFeedbackSprite = 0x004F6350;
-void replaceFeedbackSprite(CUnit* unit, u32 spriteId) {
+const uint32 Func_replaceFeedbackSprite = 0x004F6350;
+void replaceFeedbackSprite(CUnit* unit, uint32 spriteId) {
 
 	__asm {
 		PUSHAD

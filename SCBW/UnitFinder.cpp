@@ -65,7 +65,7 @@ UnitFinderData* UnitFinder::getEndY() {
 void UnitFinder::search(int left, int top, int right, int bottom) {
   //0: No match, 1: Passed X iteration, 2: Passed Y iteration
   //(Necessary because each UnitFinderData array has 2 entries per unit)
-  u8 unitSearchFlags[UNIT_ARRAY_LENGTH + 1] = {0};
+  uint8 unitSearchFlags[UNIT_ARRAY_LENGTH + 1] = {0};
 
   int r = right, b = bottom;
   const bool isWidthExtended  = right - left - 1 < *MAX_UNIT_WIDTH;

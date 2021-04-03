@@ -3,7 +3,7 @@
 
 namespace {
 
-	const u32 Func_function_0046F3A0 = 0x0046F3A0;
+	const uint32 Func_function_0046F3A0 = 0x0046F3A0;
 	void __declspec(naked) function_0046FB40_Wrapper() {
 
 		static CUnit* clicked_unit;
@@ -49,7 +49,7 @@ namespace {
 		static CUnit* unit;
 		static CUnit** unit_list;
 		static CUnit** units_in_bounds;
-		static u32 result;
+		static uint32 result;
 
 		__asm {
 			PUSH EBP

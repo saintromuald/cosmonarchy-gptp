@@ -14,33 +14,33 @@
 namespace {
 
 	bool advanceRemainingBuildTime_Sub466940(CUnit* unit);					//0x00466940
-	u8 function_0046A820(CUnit* unit);										//0x0046A820
-	void orderImmediate(CUnit* unit, u8 order);								//0x00474B40
+	uint8 function_0046A820(CUnit* unit);										//0x0046A820
+	void orderImmediate(CUnit* unit, uint8 order);								//0x00474B40
 	void actUnitReturnToIdle(CUnit* unit);									//0x00475420
 	void playMorphingCompleteSound(CUnit* unit);							//0x0048F440
 	void mergeStatusIntoUnit_Sub493180(CUnit* unit_dst, CUnit* unit_src);	//0x00493180
-	void function_0049B440(CUnit* unit, u32 soundId);			 			//0x0049B440
-	void replaceUnitWithType(CUnit* unit, u16 newUnitId);					//0x0049FED0
-	void changeUnitButtonSet_Sub4E5D60(CUnit* unit, u16 unitId);			//0x004E5D60
+	void function_0049B440(CUnit* unit, uint32 soundId);			 			//0x0049B440
+	void replaceUnitWithType(CUnit* unit, uint16 newUnitId);					//0x0049FED0
+	void changeUnitButtonSet_Sub4E5D60(CUnit* unit, uint16 unitId);			//0x004E5D60
 	void setNextWaypoint_Sub4EB290(CUnit* unit);							//0x004EB290
 	void makeToHoldPosition(CUnit* unit);									//0x004EB5B0
-	bool delayedSetMoveTarget_xy_Sub4EB960(CUnit* unit, u16 x, u16 y);		//0x004EB960
+	bool delayedSetMoveTarget_xy_Sub4EB960(CUnit* unit, uint16 x, uint16 y);		//0x004EB960
 
 } //unnamed namespace
 
 namespace hooks {
 
 //equivalent to 0x004BFA80, but not identical
-CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, u32 units_list_length) {
+CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, uint32 units_list_length) {
 
 	CUnit* nearest_unit = nullptr;	//was ebp-04
-	u32 best_distance = MAXINT32;
+	uint32 best_distance = MAXINT32;
 
-	for(u32 i = 0; i < units_list_length; i++) {
+	for(uint32 i = 0; i < units_list_length; i++) {
 
 		if(units_list[i] != nullptr) {
 
-			u32 x_distance, y_distance;
+			uint32 x_distance, y_distance;
 
 			x_distance = 
 				std::max(unit->sprite->position.x,units_list[i]->sprite->position.x) -
@@ -75,9 +75,9 @@ CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, u32 units_list_lengt
 
 void orders_CompletingArchonSummon(CUnit* unit) {
 
-	u32*  const bCanUpdateCurrentButtonSet      = (u32*)	0x0068C1B0;
-	u8*   const bCanUpdateSelectedUnitPortrait  = (u8*)		0x0068AC74;
-	u8*   const bCanUpdateStatDataDialog        = (u8*)		0x0068C1F8;
+	uint32*  const bCanUpdateCurrentButtonSet      = (uint32*)	0x0068C1B0;
+	uint8*   const bCanUpdateSelectedUnitPortrait  = (uint8*)		0x0068AC74;
+	uint8*   const bCanUpdateStatDataDialog        = (uint8*)		0x0068C1F8;
 	BinDlg**  const someDialogUnknown           = (BinDlg**)0x0068C1E8;
 	BinDlg**  const someDialogUnknownUser       = (BinDlg**)0x0068C1EC;
 
@@ -185,7 +185,7 @@ void orders_WarpingDarkArchon(CUnit* unit) {
 	else {
 
 		//946BE
-		u32 distanceBetweenUnits;
+		uint32 distanceBetweenUnits;
 
 		if(unit->status & UnitStatus::IsNormal) {
 			if(unit->isTargetWithinMinRange(targetUnit,(2 * unit->current_speed2)/256)) {
@@ -230,7 +230,7 @@ void orders_WarpingDarkArchon(CUnit* unit) {
 					//I'm not sure what that stuff did and if I converted it
 					//properly)
 
-					s32 x,y;
+					int32 x,y;
 
 					if(unit->sprite->position.x > MAXINT16)
 						x = (0xFFFF0000) + unit->sprite->position.x;
@@ -260,15 +260,15 @@ void orders_WarpingDarkArchon(CUnit* unit) {
 
 					x /= 2; y /= 2;
 
-					if( (u16)x > MAXINT16 )
-						x = 0xFFFF0000 + (u16)x;
+					if( (uint16)x > MAXINT16 )
+						x = 0xFFFF0000 + (uint16)x;
 					else
-						x = (u16)x;
+						x = (uint16)x;
 
-					if( (u16)y > MAXINT16 )
-						y = 0xFFFF0000 + (u16)y;
+					if( (uint16)y > MAXINT16 )
+						y = 0xFFFF0000 + (uint16)y;
 					else
-						y = (u16)y;
+						y = (uint16)y;
 
 					delayedSetMoveTarget_xy_Sub4EB960(unit,x,y);
 
@@ -370,7 +370,7 @@ void orders_WarpingArchon(CUnit* unit) {
 	else {
 
 		//948EA
-		u32 distanceBetweenUnits;
+		uint32 distanceBetweenUnits;
 
 		if(unit->status & UnitStatus::IsNormal) {
 			if(unit->isTargetWithinMinRange(targetUnit,(2 * unit->current_speed2)/256)) {
@@ -416,7 +416,7 @@ void orders_WarpingArchon(CUnit* unit) {
 					//I'm not sure what that stuff did and if I converted it
 					//properly)
 
-					s32 x,y;
+					int32 x,y;
 
 					if(unit->sprite->position.x > MAXINT16)
 						x = (0xFFFF0000) + unit->sprite->position.x;
@@ -446,15 +446,15 @@ void orders_WarpingArchon(CUnit* unit) {
 
 					x /= 2; y /= 2;
 
-					if( (u16)x > MAXINT16 )
-						x = 0xFFFF0000 + (u16)x;
+					if( (uint16)x > MAXINT16 )
+						x = 0xFFFF0000 + (uint16)x;
 					else
-						x = (u16)x;
+						x = (uint16)x;
 
-					if( (u16)y > MAXINT16 )
-						y = 0xFFFF0000 + (u16)y;
+					if( (uint16)y > MAXINT16 )
+						y = 0xFFFF0000 + (uint16)y;
 					else
-						y = (u16)y;
+						y = (uint16)y;
 
 					delayedSetMoveTarget_xy_Sub4EB960(unit,x,y);
 
@@ -510,12 +510,12 @@ void orders_WarpingArchon(CUnit* unit) {
 
 namespace {
 
-u32 Func_Sub466940 = 0x00466940;
+uint32 Func_Sub466940 = 0x00466940;
 //return true if remainingBuildTime was 0 when called,
 //remainingBuildTime change affected by cheating
 bool advanceRemainingBuildTime_Sub466940(CUnit* unit) {
 
-	static Bool32 bTimeWasZero;
+	static bool32 bTimeWasZero;
 
 	__asm {
 		PUSHAD
@@ -531,11 +531,11 @@ bool advanceRemainingBuildTime_Sub466940(CUnit* unit) {
 
 ;
 
-u32 Func_Sub46A820 = 0x0046A820;
+uint32 Func_Sub46A820 = 0x0046A820;
 //return value may be useless since it's the exact value of pathingFlags
-u8 function_0046A820(CUnit* unit) {
+uint8 function_0046A820(CUnit* unit) {
 
-	static u8 result;
+	static uint8 result;
 
 	__asm {
 		PUSHAD
@@ -551,8 +551,8 @@ u8 function_0046A820(CUnit* unit) {
 
 ;
 
-u32 Func_OrderImmediate = 0x00474B40;
-void orderImmediate(CUnit* unit, u8 order) {
+uint32 Func_OrderImmediate = 0x00474B40;
+void orderImmediate(CUnit* unit, uint8 order) {
 
 	__asm {
 		PUSHAD
@@ -566,7 +566,7 @@ void orderImmediate(CUnit* unit, u8 order) {
 
 ;
 
-const u32 Func_ActUnitReturnToIdle = 0x00475420;
+const uint32 Func_ActUnitReturnToIdle = 0x00475420;
 void actUnitReturnToIdle(CUnit* unit) {
 
   __asm {
@@ -580,7 +580,7 @@ void actUnitReturnToIdle(CUnit* unit) {
 
 ;
 
-const u32 Func_PlayMorphingCompleteSound = 0x0048F440;
+const uint32 Func_PlayMorphingCompleteSound = 0x0048F440;
 void playMorphingCompleteSound(CUnit* unit) {
 
 	__asm {
@@ -594,7 +594,7 @@ void playMorphingCompleteSound(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub493180 = 0x00493180;
+const uint32 Func_Sub493180 = 0x00493180;
 //get status (defensiveMatrixHp to acidSporeTime) of unit_src
 //and give it to unit_dst
 void mergeStatusIntoUnit_Sub493180(CUnit* unit_dst, CUnit* unit_src) {
@@ -611,8 +611,8 @@ void mergeStatusIntoUnit_Sub493180(CUnit* unit_dst, CUnit* unit_src) {
 
 ;
 
-const u32 Func_Sub49B440 = 0x0049B440;
-void function_0049B440(CUnit* unit, u32 soundId) {
+const uint32 Func_Sub49B440 = 0x0049B440;
+void function_0049B440(CUnit* unit, uint32 soundId) {
 
 	__asm {
 		PUSHAD
@@ -626,10 +626,10 @@ void function_0049B440(CUnit* unit, u32 soundId) {
 
 ;
 
-const u32 Func_ReplaceUnitWithType = 0x0049FED0;
-void replaceUnitWithType(CUnit* unit, u16 newUnitId) {
+const uint32 Func_ReplaceUnitWithType = 0x0049FED0;
+void replaceUnitWithType(CUnit* unit, uint16 newUnitId) {
 
-	u32 newUnitId_ = newUnitId;
+	uint32 newUnitId_ = newUnitId;
 
   __asm {
     PUSHAD
@@ -643,8 +643,8 @@ void replaceUnitWithType(CUnit* unit, u16 newUnitId) {
 
 ;
 
-const u32 Func_Sub4E5D60 = 0x004E5D60;
-void changeUnitButtonSet_Sub4E5D60(CUnit* unit, u16 buttonSetId) {
+const uint32 Func_Sub4E5D60 = 0x004E5D60;
+void changeUnitButtonSet_Sub4E5D60(CUnit* unit, uint16 buttonSetId) {
 
 	__asm {
 		PUSHAD
@@ -658,7 +658,7 @@ void changeUnitButtonSet_Sub4E5D60(CUnit* unit, u16 buttonSetId) {
 
 ;
 
-const u32 Func_Sub4EB290 = 0x004EB290;
+const uint32 Func_Sub4EB290 = 0x004EB290;
 //Related to path/movement decision
 void setNextWaypoint_Sub4EB290(CUnit* unit) {
 
@@ -673,7 +673,7 @@ void setNextWaypoint_Sub4EB290(CUnit* unit) {
 
 ;
 
-const u32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
+const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
 void makeToHoldPosition(CUnit* unit) {
 
   __asm {
@@ -686,12 +686,12 @@ void makeToHoldPosition(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub4EB960 = 0x004EB960;
+const uint32 Func_Sub4EB960 = 0x004EB960;
 //return true if waiting for recentOrderTimer to reach 0 or
 //if setMoveTarget_xy returned true
-bool delayedSetMoveTarget_xy_Sub4EB960(CUnit* unit, u16 x, u16 y) {
+bool delayedSetMoveTarget_xy_Sub4EB960(CUnit* unit, uint16 x, uint16 y) {
 
-	Bool32 bPreResult;
+	bool32 bPreResult;
 
 	__asm {
 		PUSHAD

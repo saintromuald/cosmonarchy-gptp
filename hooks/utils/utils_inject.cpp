@@ -33,7 +33,7 @@ void __declspec(naked) InitializeDialogWrapper() {
 void __declspec(naked) unit_IsStandardAndMovableWrapper() {
 
 	static CUnit* unit;
-	static Bool32 result;
+	static bool32 result;
 
 	__asm {
 		MOV unit, ECX

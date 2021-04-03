@@ -9,30 +9,30 @@
 
 namespace {
 
-	bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, u32 distance);									//01240
-	Bool32 function_00438E70(CUnit* unit, int x, int y);																//38E70
+	bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, uint32 distance);									//01240
+	bool32 function_00438E70(CUnit* unit, int x, int y);																//38E70
 	void function_0043DF30(CUnit* unit);																				//3DF30
 	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);															//742D0
-	void unknownSpecialOrder(CUnit* unit, COrder* order, u8 orderId, s16 x, s16 y, CUnit* target, u16 targetUnitId);	//74540
-	void function_00474A70(CUnit* unit, CUnit* target, u8 orderId);														//74A70
-	void orderImmediate(CUnit* unit, u8 order);																			//74B40
-	void _doOrder(CUnit* unit, u32 orderId, int x, int y, bool stopPreviousOrders);										//74C70
-	Bool32 function_00477160(CUnit* unit, u32 unk1, u32 unk2, u32 unk3);												//77160
+	void unknownSpecialOrder(CUnit* unit, COrder* order, uint8 orderId, int16 x, int16 y, CUnit* target, uint16 targetUnitId);	//74540
+	void function_00474A70(CUnit* unit, CUnit* target, uint8 orderId);														//74A70
+	void orderImmediate(CUnit* unit, uint8 order);																			//74B40
+	void _doOrder(CUnit* unit, uint32 orderId, int x, int y, bool stopPreviousOrders);										//74C70
+	bool32 function_00477160(CUnit* unit, uint32 unk1, uint32 unk2, uint32 unk3);												//77160
 	void function_00494BB0(CUnit* unit,int x, int y);																	//94BB0
 	bool unitIsActiveTransport(CUnit* unit);																			//E6BA0
 	CUnit* getLoadedUnitFromIndex(CUnit* transport, int index);															//E6C40
-	Bool32 getFirstLoadedWorker(CUnit* transport);																		//E6D90
-	Bool32 function_004E6EF0(CUnit* unit, CUnit** unitTargetOffset);													//E6EF0
-	u32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos);											//E76C0
+	bool32 getFirstLoadedWorker(CUnit* transport);																		//E6D90
+	bool32 function_004E6EF0(CUnit* unit, CUnit** unitTargetOffset);													//E6EF0
+	uint32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos);											//E76C0
 	void loadUnitProc(CUnit* unit, CUnit* unitToLoad);																	//E78E0	(Hooked)
-	Bool32 unloadUnitProc(CUnit* unit);																					//E7F70 (Hooked)
+	bool32 unloadUnitProc(CUnit* unit);																					//E7F70 (Hooked)
 	void makeToHoldPosition(CUnit* unit);																				//EB5B0
 	bool SetMoveTarget_xy(CUnit* unit, int x, int y);																	//EB820
 	bool function_004EB900(CUnit* unit, CUnit* target);																	//EB900
 	bool orderToMoveToTarget(CUnit* unit, CUnit* target);																//EB980
 
 	// For canEnterTransport
-	s8 unitGetRace(CUnit* a1); // 0047B150
+	int8 unitGetRace(CUnit* a1); // 0047B150
 
 } //unnamed namespace
 
@@ -64,7 +64,7 @@ namespace hooks {
 
 				while(!bStopLoop) {
 
-					u8 orderId = (u8)unit->orderQueueTail->orderId;
+					uint8 orderId = (uint8)unit->orderQueueTail->orderId;
 
 					if(
 						orders_dat::CanBeInterrupted[orderId] == 0 &&
@@ -185,7 +185,7 @@ namespace hooks {
 	//occured during testing
 	void orders_MoveUnload(CUnit* unit) {
 
-		u32 distance;
+		uint32 distance;
 
 		if(
 			unit->mainOrderState == 0 &&
@@ -235,7 +235,7 @@ namespace hooks {
 
 			if(unit->pAI != nullptr) {
 
-				u32 groundHeightAtPxPos1 =
+				uint32 groundHeightAtPxPos1 =
 					scbw::getGroundHeightAtPos(
 						unit->sprite->position.x,
 						unit->sprite->position.y
@@ -492,7 +492,7 @@ namespace hooks {
 		static CUnit* unitTable_0059CB58 = (CUnit*)(0x0059CB58);
 		static CUnit* unitTable_0059CB64 = (CUnit*)(0x0059CB64);
 		if (Globals.extended_unit_table == 1) {
-			const u32 index_start = reinterpret_cast<u32>(&new_unit_table.units[0])-336;
+			const uint32 index_start = reinterpret_cast<uint32>(&new_unit_table.units[0])-336;
 			unitTable_0059CB58 = (CUnit*)index_start;
 			unitTable_0059CB64 = (CUnit*)(index_start + 12);
 		}
@@ -504,11 +504,11 @@ namespace hooks {
 		{
 
 			int counter = 0;
-			u32 result_E7F70 = 0;
+			uint32 result_E7F70 = 0;
 			bool bEndLoop = false;
 			bool bFoundUnitToUnload = false;
 
-			u32* loadedUnitOffset;
+			uint32* loadedUnitOffset;
 
 			bool jump_to_E8191 = false;
 			bool jump_to_E8195 = false;
@@ -516,7 +516,7 @@ namespace hooks {
 
 			while(!bEndLoop) {
 
-				loadedUnitOffset = (u32*)&unit->loadedUnit[counter];
+				loadedUnitOffset = (uint32*)&unit->loadedUnit[counter];
 
 				if(	*loadedUnitOffset != 0  &&
 					unitTable_0059CB64[unit->loadedUnit[counter].index].link.prev != nullptr //sprite check
@@ -629,10 +629,10 @@ namespace hooks {
 
 	bool canEnterTransport(CUnit* a1, CUnit* a2) { // 004E6E00
 		CUnit* v4; // edx
-		u32 v7; // edi
-		u32 v8; // esi
+		uint32 v7; // edi
+		uint32 v8; // esi
 		CUnit* v9; // eax
-		s32 v10; // [esp+4h] [ebp-4h]
+		int32 v10; // [esp+4h] [ebp-4h]
 		
 		if (!(a1->status & UnitStatus::Completed)) {
 			return 0;
@@ -657,7 +657,7 @@ namespace hooks {
 				return 0;
 			}	
 		}
-//		&& (unitGetRace(a2) != 1 || units_dat::SpaceRequired[(u16)v4->id] > 1u) // Original code
+//		&& (unitGetRace(a2) != 1 || units_dat::SpaceRequired[(uint16)v4->id] > 1u) // Original code
 		v7 = units_dat::SpaceProvided[a1->id];
 		v8 = 0;
 		v10 = 0;
@@ -665,12 +665,12 @@ namespace hooks {
 			do {
 				v9 = getLoadedUnitFromIndex(a1, v8);
 				if (v9)
-					v10 += units_dat::SpaceRequired[(u16)v9->id];
+					v10 += units_dat::SpaceRequired[(uint16)v9->id];
 				++v8;
 			} while (v8 < v7);
 			v4 = a2;
 		}
-		return v7 - v10 >= units_dat::SpaceRequired[(u16)v4->id];
+		return v7 - v10 >= units_dat::SpaceRequired[(uint16)v4->id];
 	}
 
 } //namespace hooks
@@ -681,10 +681,10 @@ namespace hooks {
 
 namespace {
 
-const u32 Func_isDistanceGreaterThanHaltDistance = 0x00401240;
-bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, u32 distance) {
+const uint32 Func_isDistanceGreaterThanHaltDistance = 0x00401240;
+bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, uint32 distance) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -703,10 +703,10 @@ bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, u32 distance) 
 
 ;
 
-const u32 Func_sub_438E70 = 0x00438E70;
-Bool32 function_00438E70(CUnit* unit, int x, int y) {
+const uint32 Func_sub_438E70 = 0x00438E70;
+bool32 function_00438E70(CUnit* unit, int x, int y) {
 
-	static Bool32 result;
+	static bool32 result;
 
 	__asm {
 		PUSHAD
@@ -724,7 +724,7 @@ Bool32 function_00438E70(CUnit* unit, int x, int y) {
 
 ;
 
-const u32 Func_Sub43DF30 = 0x0043DF30;
+const uint32 Func_Sub43DF30 = 0x0043DF30;
 void function_0043DF30(CUnit* unit) {
 
 	__asm {
@@ -738,7 +738,7 @@ void function_0043DF30(CUnit* unit) {
 
 ;
 
-const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
+const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
 void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 	__asm {
@@ -753,8 +753,8 @@ void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 ;
 
-const u32 Func_unknownSpecialOrder = 0x00474540;
-void unknownSpecialOrder(CUnit* unit, COrder* order, u8 orderId, s16 x, s16 y, CUnit* target, u16 targetUnitId) {
+const uint32 Func_unknownSpecialOrder = 0x00474540;
+void unknownSpecialOrder(CUnit* unit, COrder* order, uint8 orderId, int16 x, int16 y, CUnit* target, uint16 targetUnitId) {
 
 	static Point16 pos;
 	pos.x = x;pos.y = y;
@@ -775,8 +775,8 @@ void unknownSpecialOrder(CUnit* unit, COrder* order, u8 orderId, s16 x, s16 y, C
 
 ;
 
-const u32 Func_Sub474A70 = 0x00474A70;
-void function_00474A70(CUnit* unit, CUnit* target, u8 orderId) {
+const uint32 Func_Sub474A70 = 0x00474A70;
+void function_00474A70(CUnit* unit, CUnit* target, uint8 orderId) {
 
 	__asm {
 		PUSHAD
@@ -791,8 +791,8 @@ void function_00474A70(CUnit* unit, CUnit* target, u8 orderId) {
 
 ;
 
-const u32 Func_OrderImmediate = 0x00474B40;
-void orderImmediate(CUnit* unit, u8 order) {
+const uint32 Func_OrderImmediate = 0x00474B40;
+void orderImmediate(CUnit* unit, uint8 order) {
 
 	__asm {
 		PUSHAD
@@ -806,10 +806,10 @@ void orderImmediate(CUnit* unit, u8 order) {
 
 ;
 
-const u32 Func__doOrder = 0x00474C70;
-void _doOrder(CUnit* unit, u32 orderId, int x, int y, bool stopPreviousOrders) {
+const uint32 Func__doOrder = 0x00474C70;
+void _doOrder(CUnit* unit, uint32 orderId, int x, int y, bool stopPreviousOrders) {
 
-	Bool32 bStopPreviousOrders = stopPreviousOrders ? 1 : 0;
+	bool32 bStopPreviousOrders = stopPreviousOrders ? 1 : 0;
 
 	__asm {
 		PUSHAD
@@ -826,8 +826,8 @@ void _doOrder(CUnit* unit, u32 orderId, int x, int y, bool stopPreviousOrders) {
 
 ;
 
-const u32 Func_Sub477160 = 0x00477160;
-Bool32 function_00477160(CUnit* unit, u32 unk1, u32 unk2, u32 unk3) {
+const uint32 Func_Sub477160 = 0x00477160;
+bool32 function_00477160(CUnit* unit, uint32 unk1, uint32 unk2, uint32 unk3) {
 
 	__asm {
 		PUSHAD
@@ -843,7 +843,7 @@ Bool32 function_00477160(CUnit* unit, u32 unk1, u32 unk2, u32 unk3) {
 
 ;
 
-const u32 Func_Sub494BB0 = 0x00494BB0;
+const uint32 Func_Sub494BB0 = 0x00494BB0;
 void function_00494BB0(CUnit* unit,int x, int y) {
 
 	__asm {
@@ -884,7 +884,7 @@ bool unitIsActiveTransport(CUnit* unit) {
 
 ;
 
-const u32 Func_getLoadedUnitFromIndex = 0x004E6C40;
+const uint32 Func_getLoadedUnitFromIndex = 0x004E6C40;
 CUnit* getLoadedUnitFromIndex(CUnit* transport, int index) {
 
 	static CUnit* return_value;
@@ -904,10 +904,10 @@ CUnit* getLoadedUnitFromIndex(CUnit* transport, int index) {
 
 ;
 
-const u32 Func_getFirstLoadedWorker = 0x004E6D90;
-Bool32 getFirstLoadedWorker(CUnit* transport) {
+const uint32 Func_getFirstLoadedWorker = 0x004E6D90;
+bool32 getFirstLoadedWorker(CUnit* transport) {
 
-	static Bool32 return_value;
+	static bool32 return_value;
 
 	__asm {
 		PUSHAD
@@ -923,10 +923,10 @@ Bool32 getFirstLoadedWorker(CUnit* transport) {
 
 ;
 
-const u32 Func_Sub4E6EF0 = 0x004E6EF0;
-Bool32 function_004E6EF0(CUnit* unit, CUnit** unitTargetOffset) {
+const uint32 Func_Sub4E6EF0 = 0x004E6EF0;
+bool32 function_004E6EF0(CUnit* unit, CUnit** unitTargetOffset) {
 
-	Bool32 result;
+	bool32 result;
 
 	__asm {
 		PUSHAD
@@ -943,10 +943,10 @@ Bool32 function_004E6EF0(CUnit* unit, CUnit** unitTargetOffset) {
 
 ;
 
-const u32 Func_Sub4E76C0 = 0x004E76C0;
-u32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos) {
+const uint32 Func_Sub4E76C0 = 0x004E76C0;
+uint32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos) {
 
-	static u32 result;
+	static uint32 result;
 
 	__asm {
 		PUSHAD
@@ -964,7 +964,7 @@ u32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos) {
 
 ;
 
-const u32 Func_Sub4E78E0 = 0x004E78E0;
+const uint32 Func_Sub4E78E0 = 0x004E78E0;
 void loadUnitProc(CUnit* unit, CUnit* unitToLoad) {
 
 	__asm {
@@ -979,10 +979,10 @@ void loadUnitProc(CUnit* unit, CUnit* unitToLoad) {
 
 ;
 
-const u32 Func_Sub4E7F70 = 0x004E7F70;
-Bool32 unloadUnitProc(CUnit* unit) {
+const uint32 Func_Sub4E7F70 = 0x004E7F70;
+bool32 unloadUnitProc(CUnit* unit) {
 
-	static Bool32 return_value;
+	static bool32 return_value;
 
 	__asm {
 		PUSHAD
@@ -1000,7 +1000,7 @@ Bool32 unloadUnitProc(CUnit* unit) {
 
 //not related with assigning orders, but only with
 //destinations of orders
-const u32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
+const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
 void makeToHoldPosition(CUnit* unit) {
 
 	__asm {
@@ -1014,10 +1014,10 @@ void makeToHoldPosition(CUnit* unit) {
 
 ;
 
-const u32 Func_SetMoveTarget_xy = 0x004EB820;
+const uint32 Func_SetMoveTarget_xy = 0x004EB820;
 bool SetMoveTarget_xy(CUnit* unit, int x, int y) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -1035,10 +1035,10 @@ bool SetMoveTarget_xy(CUnit* unit, int x, int y) {
 
 ;
 
-const u32 Func_Sub4EB900 = 0x004EB900;
+const uint32 Func_Sub4EB900 = 0x004EB900;
 bool function_004EB900(CUnit* unit, CUnit* target) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -1056,10 +1056,10 @@ bool function_004EB900(CUnit* unit, CUnit* target) {
 
 ;
 
-const u32 Func__moveToTarget = 0x004EB980;
+const uint32 Func__moveToTarget = 0x004EB980;
 bool orderToMoveToTarget(CUnit* unit, CUnit* target) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
   
 	__asm {
 		PUSHAD
@@ -1075,9 +1075,9 @@ bool orderToMoveToTarget(CUnit* unit, CUnit* target) {
 }
 
 	// For canEnterTransport
-	const u32 Func_unitGetRace = 0x0047B150;
-	s8 unitGetRace(CUnit* a1) {
-		static s32 result;
+	const uint32 Func_unitGetRace = 0x0047B150;
+	int8 unitGetRace(CUnit* a1) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -1085,7 +1085,7 @@ bool orderToMoveToTarget(CUnit* unit, CUnit* target) {
 			MOV result, EAX
 			POPAD
 		}
-		return (s8)result;
+		return (int8)result;
 	}
 
 } //Unnamed namespace

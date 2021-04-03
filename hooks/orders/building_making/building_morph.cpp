@@ -10,26 +10,26 @@
 
 namespace {
 
-	void refundBuildingCost(u16 unitId, u8 playerId);					//2CE70
+	void refundBuildingCost(uint16 unitId, uint8 playerId);					//2CE70
 	void function_00433FE0(CUnit* unit);								//33FE0
-	bool isValidMorph(u16 buildingId);									//5CC60
-	void updateNewUnitVision(u32 id, int x, int y);				//5CE90
+	bool isValidMorph(uint16 buildingId);									//5CC60
+	void updateNewUnitVision(uint32 id, int x, int y);				//5CE90
 	void zergPlaceBuildingCntd(CUnit* unit);							//5D410
 	void function_0047D770(CUnit* unit);								//7D770
-	void function_0047DE40(CSprite* sprite, u32 unitId, int x, int y);	//7DE40
-	CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);	//88210
-	void incrementUnitScoresEx(CUnit* building, s32 unk1, s32 unk2);	//88D50
+	void function_0047DE40(CSprite* sprite, uint32 unitId, int x, int y);	//7DE40
+	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);	//88210
+	void incrementUnitScoresEx(CUnit* building, int32 unk1, int32 unk2);	//88D50
 	void playBuildingCompleteSound(CUnit* building);					//8F310
 	void refreshSpriteData(CSprite* sprite);							//983A0
-	void displayLastNetErrForPlayer(u32 playerId);						//9E530
+	void displayLastNetErrForPlayer(uint32 playerId);						//9E530
 	void updateUnitStrength(CUnit* unit);								//9FA40
-	void replaceUnitWithType(CUnit* unit, u16 newUnitId);				//9FED0
+	void replaceUnitWithType(CUnit* unit, uint16 newUnitId);				//9FED0
 	void function_004A01F0(CUnit* unit);								//A01F0
-	CUnit* createUnit(u32 unitId, int x, int y, u32 playerId);			//A09D0
+	CUnit* createUnit(uint32 unitId, int x, int y, uint32 playerId);			//A09D0
 
 } //unnamed namespace
 
-const u32 Func_Sub4D8500 = 0x004D8500;
+const uint32 Func_Sub4D8500 = 0x004D8500;
 void function_004D8500_copy(CImage* image) {
 
 	__asm {
@@ -44,8 +44,8 @@ void function_004D8500_copy(CImage* image) {
 ;
 
 
-const u32 Func_iscript_OpcodeCases = 0x004D74C0;
-void iscript_OpcodeCases_copy(CImage* image, u32 offset_, u32 unk1, u32 unk2) {
+const uint32 Func_iscript_OpcodeCases = 0x004D74C0;
+void iscript_OpcodeCases_copy(CImage* image, uint32 offset_, uint32 unk1, uint32 unk2) {
 
 	__asm {
 		PUSHAD
@@ -76,8 +76,8 @@ namespace hooks {
 		return bIsMorphing;
 	};
 
-	const u32 Func_Sub499BB0 = 0x00499BB0;
-	void replaceSpriteImages_copy(CSprite* sprite, u32 imageId, u32 imageDirection) {
+	const uint32 Func_Sub499BB0 = 0x00499BB0;
+	void replaceSpriteImages_copy(CSprite* sprite, uint32 imageId, uint32 imageDirection) {
 		__asm {
 			PUSHAD
 			PUSH imageDirection
@@ -92,7 +92,7 @@ namespace hooks {
 
 		const int OPCWAL_PROGRESS_INCREASE = 16;
 
-		u16 buildingId;
+		uint16 buildingId;
 		bool jump_to_5D56C = false;
 		bool jump_to_5D718 = false;
 		bool jump_to_5D720 = false;
@@ -205,13 +205,13 @@ namespace hooks {
 				if (building->orderSignal & 1) {
 					//scbw::printText("sigorder 1 found");
 				}
-				s32 hpAfterMorph;
+				int32 hpAfterMorph;
 				CImage* current_image;
 				building->orderSignal -= 4;
 				if (isValidMorph(buildingId)) {
 					//save hp before some functions modify them
 					hpAfterMorph = building->hitPoints;
-					u32 save_shields = building->shields;
+					uint32 save_shields = building->shields;
 					//update score
 					building->status |= UnitStatus::Completed;
 					incrementUnitScoresEx(building, -1, 0);
@@ -291,7 +291,7 @@ namespace hooks {
 			if (!scbw::isZergBuildingMorphResult(buildingId))
 			{
 
-				s32 hpGain = building->buildRepairHpGain;
+				int32 hpGain = building->buildRepairHpGain;
 
 				if (scbw::isCheatEnabled(CheatFlags::OperationCwal))
 					hpGain *= OPCWAL_PROGRESS_INCREASE;
@@ -308,8 +308,8 @@ namespace hooks {
 
 
 
-	const u32 Func_CreateUnit = 0x004A09D0;
-	CUnit* CreateUnit_copy(u32 unitId, int x, int y, u32 playerId) {
+	const uint32 Func_CreateUnit = 0x004A09D0;
+	CUnit* CreateUnit_copy(uint32 unitId, int x, int y, uint32 playerId) {
 
 		static CUnit* unit_created;
 
@@ -330,7 +330,7 @@ namespace hooks {
 
 	;
 
-	const u32 Func_Sub4A01F0 = 0x004A01F0;
+	const uint32 Func_Sub4A01F0 = 0x004A01F0;
 	void function_004A01F0_copy(CUnit* unit) {
 
 		__asm {
@@ -344,7 +344,7 @@ namespace hooks {
 
 	;
 
-	const u32 Func_UpdateUnitStrength = 0x0049FA40;
+	const uint32 Func_UpdateUnitStrength = 0x0049FA40;
 	void updateUnitStrength_copy(CUnit* unit) {
 
 		__asm {
@@ -365,7 +365,7 @@ namespace hooks {
 		//scbw::printText("ZergPlace");
 		if (!(unit->status & UnitStatus::Completed)) {
 
-			u16 builtUnitId = unit->buildQueue[unit->buildQueueSlot];
+			uint16 builtUnitId = unit->buildQueue[unit->buildQueueSlot];
 
 			//original code was hardcoded instead of using isValidMorph
 			if (isValidMorph(builtUnitId)) {
@@ -379,8 +379,8 @@ namespace hooks {
 					unit->status |= UnitStatus::Completed;
 					incrementUnitScoresEx(unit, -1, 0);
 					unit->status -= UnitStatus::Completed;
-					u32 hp = unit->hitPoints;
-					u32 shield = unit->shields;
+					uint32 hp = unit->hitPoints;
+					uint32 shield = unit->shields;
 					function_004A01F0(unit);
 					updateUnitStrength(unit);
 					unit->hitPoints = hp;
@@ -413,9 +413,9 @@ namespace hooks {
 
 		if (!bStopThere) {
 
-			static u32* const u32_00581E44 = (u32*)0x00581E44;
-			static u32* const u32_00581ED4 = (u32*)0x00581ED4;
-			static u16* const u16_0066345A = (u16*)0x0066345A;
+			static uint32* const u32_00581E44 = (uint32*)0x00581E44;
+			static uint32* const u32_00581ED4 = (uint32*)0x00581ED4;
+			static uint16* const u16_0066345A = (uint16*)0x0066345A;
 
 			refundBuildingCost(unit->id, unit->playerId);
 
@@ -517,8 +517,8 @@ namespace hooks {
 #include "SCBW/api.h"
 namespace {
 
-	const u32 Func_refundBuildingCost = 0x0042CE70;
-	void refundBuildingCost(u16 unitId, u8 playerId) {
+	const uint32 Func_refundBuildingCost = 0x0042CE70;
+	void refundBuildingCost(uint16 unitId, uint8 playerId) {
 
 		__asm {
 			PUSHAD
@@ -532,7 +532,7 @@ namespace {
 
 	;
 
-	const u32 Func_Sub433FE0 = 0x00433FE0;
+	const uint32 Func_Sub433FE0 = 0x00433FE0;
 	void function_00433FE0(CUnit* unit) {
 
 		__asm {
@@ -547,7 +547,7 @@ namespace {
 	;
 
 	//Identical to isValidMorph @ 0x0045CC60;
-	bool isValidMorph(u16 buildingId) {
+	bool isValidMorph(uint16 buildingId) {
 
 		bool result;
 
@@ -562,8 +562,8 @@ namespace {
 
 	;
 
-	const u32 Func_updateNewUnitVision = 0x0045CE90;
-	void updateNewUnitVision(u32 id, int x, int y) {
+	const uint32 Func_updateNewUnitVision = 0x0045CE90;
+	void updateNewUnitVision(uint32 id, int x, int y) {
 		__asm {
 			PUSHAD
 			MOV ECX, id
@@ -577,7 +577,7 @@ namespace {
 
 	;
 
-	const u32 Func_ZergPlaceBuildingCntd = 0x0045D410;
+	const uint32 Func_ZergPlaceBuildingCntd = 0x0045D410;
 	void zergPlaceBuildingCntd(CUnit* unit) {
 
 		__asm {
@@ -591,7 +591,7 @@ namespace {
 
 	;
 
-	const u32 Func_Sub47D770 = 0x0047D770;
+	const uint32 Func_Sub47D770 = 0x0047D770;
 	void function_0047D770(CUnit* unit) {
 
 		__asm {
@@ -605,8 +605,8 @@ namespace {
 
 	;
 
-	const u32 Func_Sub47DE40 = 0x0047DE40;
-	void function_0047DE40(CSprite* sprite, u32 unitId, int x, int y) {
+	const uint32 Func_Sub47DE40 = 0x0047DE40;
+	void function_0047DE40(CSprite* sprite, uint32 unitId, int x, int y) {
 
 		__asm {
 			PUSHAD
@@ -624,11 +624,11 @@ namespace {
 
 	//original referenced name was replaceSprite (but this one is probably
 	//more accurate since it does create something rather than replacing)
-	const u32 Func_CreateThingy = 0x00488210;
-	CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId) {
+	const uint32 Func_CreateThingy = 0x00488210;
+	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
 
 		static CThingy* thingy;
-		s32 x_ = x;
+		int32 x_ = x;
 
 		__asm {
 			PUSHAD
@@ -647,9 +647,9 @@ namespace {
 
 	;
 
-	const u32 Func_incrementUnitScoresEx = 0x00488D50;
+	const uint32 Func_incrementUnitScoresEx = 0x00488D50;
 	//unk1 is ECX, unk2 is pushed value
-	void incrementUnitScoresEx(CUnit* building, s32 unk1, s32 unk2) {
+	void incrementUnitScoresEx(CUnit* building, int32 unk1, int32 unk2) {
 
 		__asm {
 			PUSHAD
@@ -664,7 +664,7 @@ namespace {
 
 	;
 
-	const u32 Func_PlayBuildingCompleteSound = 0x0048F310;
+	const uint32 Func_PlayBuildingCompleteSound = 0x0048F310;
 	void playBuildingCompleteSound(CUnit* building) {
 
 		__asm {
@@ -678,7 +678,7 @@ namespace {
 
 	;
 
-	const u32 Func_refreshSpriteData = 0x004983A0;
+	const uint32 Func_refreshSpriteData = 0x004983A0;
 	void refreshSpriteData(CSprite* sprite) {
 
 		__asm {
@@ -692,8 +692,8 @@ namespace {
 
 	;
 
-	const u32 Func_displayLastNetErrForPlayer = 0x0049E530;
-	void displayLastNetErrForPlayer(u32 playerId) {
+	const uint32 Func_displayLastNetErrForPlayer = 0x0049E530;
+	void displayLastNetErrForPlayer(uint32 playerId) {
 		__asm {
 			PUSHAD
 			PUSH playerId
@@ -704,7 +704,7 @@ namespace {
 
 	;
 
-	const u32 Func_UpdateUnitStrength = 0x0049FA40;
+	const uint32 Func_UpdateUnitStrength = 0x0049FA40;
 	void updateUnitStrength(CUnit* unit) {
 
 		__asm {
@@ -718,10 +718,10 @@ namespace {
 
 	;
 
-	const u32 Func_ReplaceUnitWithType = 0x0049FED0;
-	void replaceUnitWithType(CUnit* unit, u16 newUnitId) {
+	const uint32 Func_ReplaceUnitWithType = 0x0049FED0;
+	void replaceUnitWithType(CUnit* unit, uint16 newUnitId) {
 
-		u32 newUnitId_ = newUnitId;
+		uint32 newUnitId_ = newUnitId;
 
 		__asm {
 			PUSHAD
@@ -735,7 +735,7 @@ namespace {
 
 	;
 
-	const u32 Func_Sub4A01F0 = 0x004A01F0;
+	const uint32 Func_Sub4A01F0 = 0x004A01F0;
 	void function_004A01F0(CUnit* unit) {
 
 		__asm {
@@ -749,8 +749,8 @@ namespace {
 
 	;
 
-	const u32 Func_CreateUnit = 0x004A09D0;
-	CUnit* createUnit(u32 unitId, int x, int y, u32 playerId) {
+	const uint32 Func_CreateUnit = 0x004A09D0;
+	CUnit* createUnit(uint32 unitId, int x, int y, uint32 playerId) {
 
 		static CUnit* unit_created;
 
@@ -781,7 +781,7 @@ namespace {
 //-------- Helper function declarations. Do NOT modify! ---------//
 
 namespace {
-	int BuildingHelper::getNumberOfUnitType(const CUnit* unit, u16 unitId, bool ignoreIncomplete);
+	int BuildingHelper::getNumberOfUnitType(const CUnit* unit, uint16 unitId, bool ignoreIncomplete);
 } //unnamed namespace
 
 
@@ -791,7 +791,7 @@ namespace hooks {
 
 	//Checks if @p unitId is a building that can be morphed from another building.
 	//Note: This hook affects the behavior of CUnit::isRemorphingBuilding().
-	bool isMorphedBuildingHook(u16 unitId) {
+	bool isMorphedBuildingHook(uint16 unitId) {
 		//Default StarCraft behavior
 
 		if (scbw::isZergBuildingMorphResult(unitId))
@@ -804,7 +804,7 @@ namespace hooks {
 	//@p unit. This hook is used by StarCraft's AI for counting units and buildings.
 	//For example, Greater Spires are counted as Spires, so that the AI would not
 	//try to rebuild another Spire after morphing one into a Greater Spire.
-	int getMorphBuildingTypeCountHook(const CUnit* unit, u16 unitId, bool ignoreIncomplete) {
+	int getMorphBuildingTypeCountHook(const CUnit* unit, uint16 unitId, bool ignoreIncomplete) {
 		//Default StarCraft behavior
 
 		int unitCount = BuildingHelper::getNumberOfUnitType(unit, unitId, ignoreIncomplete);

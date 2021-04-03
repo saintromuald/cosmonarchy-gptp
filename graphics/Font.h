@@ -17,8 +17,8 @@ class FontChar {
     int pixelOffset(int index) const;
 
   private:
-    u8  width, height, x, y;
-    u8  data[1];
+    uint8  width, height, x, y;
+    uint8  data[1];
 };
 
 class Font {
@@ -33,9 +33,9 @@ class Font {
     static int getTextHeight(const char *pszStr, int size);
 
   private:
-    u32 magic;
-    u8  low, high;
-    u8  xMax, yMax;
+    uint32 magic;
+    uint8  low, high;
+    uint8  xMax, yMax;
     FontChar* chrs[1];
 };
 

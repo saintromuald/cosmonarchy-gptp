@@ -159,7 +159,7 @@ namespace ImagesDatEntries {
 
 
 namespace RaceId {
-enum Enum : u8 {
+enum Enum : uint8 {
   Zerg    = 0,
   Terran  = 1,
   Protoss = 2,
@@ -190,7 +190,7 @@ enum Enum {
 
 //Based on BWAPI; for use with units_dat::BaseProperty[]
 namespace UnitProperty {
-enum Enum : u32 {
+enum Enum : uint32 {
   Building            = 0x00000001,
   Addon               = 0x00000002,
   Flyer               = 0x00000004,
@@ -228,7 +228,7 @@ enum Enum : u32 {
 
 //Based on BWAPI; For use with the CUnit::status member
 namespace UnitStatus {
-enum Enum : u32 {
+enum Enum : uint32 {
   Completed             = 0x00000001,
   GroundedBuilding      = 0x00000002, // a building that is on the ground
   InAir                 = 0x00000004,
@@ -266,7 +266,7 @@ enum Enum : u32 {
 
 //For various newFlags fields
 namespace NewFlags1 {
-enum Enum : u8 {
+enum Enum : uint8 {
 	Unused1				= 0x1,
 	RadiationShockwave	= 0x2,
 	Metastasis			= 0x4,
@@ -274,7 +274,7 @@ enum Enum : u8 {
 }
 
 namespace NewFlags2 {
-	enum Enum : u8 {
+	enum Enum : uint8 {
 		Unused1 = 0x1,
 		Unused2 = 0x2,
 		Unused4 = 0x4,
@@ -345,7 +345,7 @@ enum Enum {
 
 // For use with scbw::playIscriptAnim()
 namespace IscriptAnimation {
-enum Enum : u8 {
+enum Enum : uint8 {
 Init          = 0x00,
 Death         = 0x01,
 GndAttkInit   = 0x02,
@@ -584,7 +584,7 @@ enum Enum {
 
 //Use with units_dat::RightClickAction
 namespace RightClickActions {
-	enum Enum : u8 {
+	enum Enum : uint8 {
 		NoCommand_AutoAttack = 0,
 		NormalMove_NormalAttack = 1,
 		NormalMove_NoAttack = 2,

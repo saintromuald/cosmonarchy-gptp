@@ -10,7 +10,7 @@ namespace graphics {
 
 //Based on BWAPI's ColorId.h and ColorId.cpp
 //No strongly typed enum because we're at pre-C++11
-typedef u8 ColorId;
+typedef uint8 ColorId;
 const ColorId RED     = 111;  //Player 1 color					(0x67)
 const ColorId BLUE    = 165;  //Player 2 color					(0xA5)
 const ColorId TEAL    = 159;  //Player 3 color					(0x9F)

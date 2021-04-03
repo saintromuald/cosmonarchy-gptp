@@ -5,16 +5,16 @@
 
 namespace {
 
-	bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 sightRange,u32 error_message_index);	// 926D0
+	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange,uint32 error_message_index);	// 926D0
 	void UnitDestructor(CUnit* unit);																					// A0990
 	bool function_004F66D0(CUnit* unit);																				// 004F66D0	// called PlaceHallucination in Neiv's list
 
 	// for createHallucination
-	CUnit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId);														// 004A09D0
+	CUnit* createUnit(int16 unitType, int32 x, int32 y, int32 playerId);														// 004A09D0
 	void applyHallucinationStats(CUnit* halUnit);																		// 004F6180
-	s32 hallucinateScarabs(CUnit* a1, CUnit* a2);																		// 004F65B0
+	int32 hallucinateScarabs(CUnit* a1, CUnit* a2);																		// 004F65B0
 	void AI_TrainingUnit(CUnit* result, CUnit* parent);																	// 004A2830
-	void displayLastNetErrForPlayer(u8 a1);																				// 0049E530
+	void displayLastNetErrForPlayer(uint8 a1);																				// 0049E530
 
 } //unnamed namespace
 
@@ -22,7 +22,7 @@ namespace hooks {
 
 	void orders_Hallucination1(CUnit* unit) {
 		int sightRange = unit->getSightRange(true);
-		u16 techCost;
+		uint16 techCost;
 		if(
 			ordersSpell_Sub_4926D0(
 				unit,
@@ -76,14 +76,14 @@ namespace hooks {
 	}
 
 	// Hooked to rule out AI issues -- Pr0nogo
-	CUnit* createHallucination(CUnit* source, s32 player) {
+	CUnit* createHallucination(CUnit* source, int32 player) {
 		CUnit* halUnit; // eax
 		CUnit* v3; // edi
 		CUnit* halUnit2; // esi
 		CUnit* result; // eax
-		u16 halTimer; // cx
-		u16 currentHalTimer; // ax
-		s16 unitType; // ax
+		uint16 halTimer; // cx
+		uint16 currentHalTimer; // ax
+		int16 unitType; // ax
 
 		v3 = source;
 		halUnit = createUnit(source->id, source->sprite->position.x, source->sprite->position.y, player);
@@ -114,9 +114,9 @@ namespace hooks {
 
 namespace {
 
-	const u32 Func_Sub_4926D0 = 0x004926D0;
-	bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index) {
-		static Bool32 bPreResult;
+	const uint32 Func_Sub_4926D0 = 0x004926D0;
+	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index) {
+		static bool32 bPreResult;
 		__asm {
 			PUSHAD
 			PUSH techEnergyCost
@@ -131,7 +131,7 @@ namespace {
 		return (bPreResult != 0);
 	}
 
-	const u32 Func_UnitDestructor = 0x004A0990;
+	const uint32 Func_UnitDestructor = 0x004A0990;
 	void UnitDestructor(CUnit* unit) {
 		__asm {
 			PUSHAD
@@ -141,9 +141,9 @@ namespace {
 		}
 	}
 
-	const u32 Func_sub_4F66D0 = 0x004F66D0;
+	const uint32 Func_sub_4F66D0 = 0x004F66D0;
 	bool function_004F66D0(CUnit* unit) {
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -156,8 +156,8 @@ namespace {
 
 	// for createHallucination
 
-	const u32 Func_createUnit = 0x004A09D0;
-	CUnit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId) {
+	const uint32 Func_createUnit = 0x004A09D0;
+	CUnit* createUnit(int16 unitType, int32 x, int32 y, int32 playerId) {
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -172,7 +172,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_applyHallucinationStats = 0x004F6180;
+	const uint32 Func_applyHallucinationStats = 0x004F6180;
 	void applyHallucinationStats(CUnit* halUnit) {
 		__asm {
 			PUSHAD
@@ -182,9 +182,9 @@ namespace {
 		}
 	}
 
-	const u32 Func_hallucinateScarabs = 0x004F65B0;
-	s32 hallucinateScarabs(CUnit* a1, CUnit* a2) {
-		static s32 result;
+	const uint32 Func_hallucinateScarabs = 0x004F65B0;
+	int32 hallucinateScarabs(CUnit* a1, CUnit* a2) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH a2
@@ -196,7 +196,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_TrainingUnit = 0x004A2830;
+	const uint32 Func_AI_TrainingUnit = 0x004A2830;
 	void AI_TrainingUnit(CUnit* result, CUnit* parent) {
 		__asm {
 			PUSHAD
@@ -207,8 +207,8 @@ namespace {
 		}
 	}
 
-	const u32 Func_displayLastNetErrForPlayer = 0x0049E530;
-	void displayLastNetErrForPlayer(u8 a1) {
+	const uint32 Func_displayLastNetErrForPlayer = 0x0049E530;
+	void displayLastNetErrForPlayer(uint8 a1) {
 		__asm {
 			PUSHAD
 			PUSH a1

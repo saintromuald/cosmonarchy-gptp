@@ -3,11 +3,11 @@
 #include "hook_tools.h"
 
 namespace hooks {
-	const u32 jmp_0x0040140B = 0x0040140B;
+	const uint32 jmp_0x0040140B = 0x0040140B;
 	void __declspec(naked) getMaxHpWrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EAX
 			MOV unit, ECX
@@ -21,11 +21,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x0040227B = 0x0040227B;
+	const uint32 jmp_0x0040227B = 0x0040227B;
 	void __declspec(naked) isOnYellowHealthWrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EAX
 			MOV unit, EDX
@@ -39,11 +39,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x004022CB = 0x004022CB;
+	const uint32 jmp_0x004022CB = 0x004022CB;
 	void _declspec(naked) isOnBurningHealthWrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EAX
 			MOV unit, ECX
@@ -57,11 +57,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x00402731 = 0x00402731;
+	const uint32 jmp_0x00402731 = 0x00402731;
 	void _declspec(naked) getMaxHealthWrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EAX
 			MOV unit, EDX
@@ -75,11 +75,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x004263F7 = 0x004263F7;
+	const uint32 jmp_0x004263F7 = 0x004263F7;
 	void _declspec(naked) ssDrawHpEnergyWrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EDI
 			MOV unit, ESI
@@ -93,11 +93,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x00431291 = 0x00431291;
+	const uint32 jmp_0x00431291 = 0x00431291;
 	void _declspec(naked) calculateBaseStrengthWrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, ECX
 			MOV unit, EAX
@@ -111,11 +111,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x00433CBA = 0x00433CBA;
+	const uint32 jmp_0x00433CBA = 0x00433CBA;
 	void _declspec(naked) aiRepairSomethingWrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EAX
 			MOV unit, ESI
@@ -129,11 +129,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x00440037 = 0x00440037;
+	const uint32 jmp_0x00440037 = 0x00440037;
 	void _declspec(naked) aiStimIfNeededWrapper() {
-		static u16 id;
+		static uint16 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, CX
 			MOV unit, EDI
@@ -147,11 +147,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x0045673B = 0x0045673B;
+	const uint32 jmp_0x0045673B = 0x0045673B;
 	void _declspec(naked) unkWireRandomDraw56730_Wrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EAX
 			MOV unit, ECX
@@ -165,11 +165,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x004567EE = 0x004567EE;
+	const uint32 jmp_0x004567EE = 0x004567EE;
 	void _declspec(naked) unkWireRandomDraw567C0_Wrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EAX
 			MOV unit, ESI
@@ -183,11 +183,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x00463CCF = 0x00463CCF;
+	const uint32 jmp_0x00463CCF = 0x00463CCF;
 	void _declspec(naked) doMedicWrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, ECX
 			MOV unit, ESI
@@ -201,11 +201,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x00466D73 = 0x00466D73;
+	const uint32 jmp_0x00466D73 = 0x00466D73;
 	void _declspec(naked) getRepairInfoWrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EAX
 			MOV unit, EBX
@@ -219,11 +219,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x00467351 = 0x00467351;
+	const uint32 jmp_0x00467351 = 0x00467351;
 	void _declspec(naked) setHpWrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EAX
 			MOV unit, ESI
@@ -237,11 +237,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x0047A87E = 0x0047A87E;
+	const uint32 jmp_0x0047A87E = 0x0047A87E;
 	void _declspec(naked) DrawImage_HpBar_Wrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EDI
 			MOV unit, ESI
@@ -255,11 +255,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x0047A90D = 0x0047A90D;
+	const uint32 jmp_0x0047A90D = 0x0047A90D;
 	void _declspec(naked) DrawImage_HpBar_Wrapper2() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EDI
 			MOV unit, ESI
@@ -273,11 +273,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x0047A913 = 0x0047A913;
+	const uint32 jmp_0x0047A913 = 0x0047A913;
 	void _declspec(naked) setBuildHpWrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EAX
 			MOV unit, EDI
@@ -291,11 +291,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x0047C814 = 0x0047C814;
+	const uint32 jmp_0x0047C814 = 0x0047C814;
 	void _declspec(naked) orderFollowWrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, ECX
 			MOV unit, ESI
@@ -309,11 +309,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x0048AD44 = 0x0048AD44;
+	const uint32 jmp_0x0048AD44 = 0x0048AD44;
 	void _declspec(naked) getUnitBulletDamageWrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, ECX
 			MOV unit, ESI
@@ -327,11 +327,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x0049ECC6 = 0x0049ECC6;
+	const uint32 jmp_0x0049ECC6 = 0x0049ECC6;
 	void _declspec(naked) showFinishedUnitWrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, ECX
 			MOV unit, EAX
@@ -345,11 +345,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x0049F22F = 0x0049F22F;
+	const uint32 jmp_0x0049F22F = 0x0049F22F;
 	void _declspec(naked) transformUnit_Main_Wrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EDX
 			MOV unit, ESI
@@ -363,11 +363,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x0049F242 = 0x0049F242;
+	const uint32 jmp_0x0049F242 = 0x0049F242;
 	void _declspec(naked) transformUnit_Main_Wrapper2() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EDX
 			MOV unit, ESI
@@ -381,11 +381,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x004A019E = 0x004A019E;
+	const uint32 jmp_0x004A019E = 0x004A019E;
 	void _declspec(naked) unk_ai_subunit_Destructor_Wrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EAX
 			MOV unit, EDI
@@ -399,11 +399,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x004A020A = 0x004A020A;
+	const uint32 jmp_0x004A020A = 0x004A020A;
 	void _declspec(naked) updateUnitStatsFinishBuilding_Wrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EAX
 			MOV unit, EDI
@@ -417,11 +417,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x004C7B84 = 0x004C7B84;
+	const uint32 jmp_0x004C7B84 = 0x004C7B84;
 	void _declspec(naked) modifyUnitHp_Wrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EAX
 			MOV unit, ESI
@@ -435,11 +435,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x004E609D = 0x004E609D;
+	const uint32 jmp_0x004E609D = 0x004E609D;
 	void _declspec(naked) updateUnitDamageOverlay_Wrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EAX
 			MOV unit, ESI
@@ -453,11 +453,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x004E6F8F = 0x004E6F8F;
+	const uint32 jmp_0x004E6F8F = 0x004E6F8F;
 	void _declspec(naked) ai_findTransport_Wrapper() {
-		static u16 id;
+		static uint16 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, AX
 			MOV unit, ESI
@@ -471,11 +471,11 @@ namespace hooks {
 		}
 	}
 
-	const u32 jmp_0x004F61EE = 0x004F61EE;
+	const uint32 jmp_0x004F61EE = 0x004F61EE;
 	void _declspec(naked) ConvertToHallucination_Wrapper() {
-		static u32 id;
+		static uint32 id;
 		static CUnit* unit;
-		static u32 hp;
+		static uint32 hp;
 		__asm {
 			MOV id, EDX
 			MOV unit, EDI
@@ -491,7 +491,7 @@ namespace hooks {
 
 	void __declspec(naked) getTotalHitPointsPlusShields_Wrapper() {
 		static CUnit* a1;
-		static u32 result;
+		static uint32 result;
 		__asm {
 			MOV a1, EDX
 			PUSHAD
@@ -564,7 +564,7 @@ namespace hooks {
 
 	void __declspec(naked) calcUnitStrength_Wrapper() {
 		static int a1;
-		static u8 a2;
+		static uint8 a2;
 		static int result;
 		__asm {
 			MOV a1, EAX
@@ -651,7 +651,7 @@ namespace hooks {
 	void __declspec(naked) attackOverlayAndNotify_Wrapper() {
 		static CUnit* a1;
 		static CUnit* a2;
-		static u8 a3;
+		static uint8 a3;
 		static char a4;
 		static char result;
 		__asm {
@@ -741,7 +741,7 @@ namespace hooks {
 
 	void __declspec(naked) canCastSpell_Wrapper() {
 		static CUnit* a1;
-		static s32 result;
+		static int32 result;
 		__asm {
 			MOV a1, EDI
 			PUSHAD
@@ -757,7 +757,7 @@ namespace hooks {
 	void __declspec(naked) modifyUnitShields_Wrapper() {
 		static int a1;
 		static int a2;
-		static s32 result;
+		static int32 result;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -806,7 +806,7 @@ namespace hooks {
 	void __declspec(naked) AI_FindTransport_Wrapper() {
 		static CUnit* a1;
 		static int a2;
-		static s32 result;
+		static int32 result;
 		__asm {
 			MOV a1, EBX
 			PUSH EBP
@@ -832,7 +832,7 @@ namespace hooks {
 		static char a1;
 		static int a2;
 		static int a3;
-		static s32 result;
+		static int32 result;
 		__asm {
 			MOV a1, CL
 			MOV a2, EDX

@@ -7,7 +7,7 @@ void __declspec(naked) unitCanRechargeShieldsWrapper() {
 
 	static CUnit* target;
 	static CUnit* battery;
-	static Bool32 result;
+	static bool32 result;
 
 	__asm {
 		MOV battery, EDI

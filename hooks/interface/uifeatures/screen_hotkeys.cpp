@@ -4,19 +4,19 @@
 
 namespace {
 	int moveScreen(int x, int y);
-	void centerviewUnitGroup(u8 a1);
-	int selectUnitGroup(u8 a2);
+	void centerviewUnitGroup(uint8 a1);
+	int selectUnitGroup(uint8 a2);
 }
 
 namespace hooks {
 	void initializeScreenLocations() {
 		for (Point16& point : screen_hotkeys) {
-			point = {(u16)*MoveToX, (u16)*MoveToY};
+			point = {(uint16)*MoveToX, (uint16)*MoveToY};
 		}
 	}
 
 	int saveScreenLocation(int id) {
-		screen_hotkeys[id] = {(u16)*MoveToX, (u16)*MoveToY};
+		screen_hotkeys[id] = {(uint16)*MoveToX, (uint16)*MoveToY};
 		return id;
 	}
 
@@ -70,7 +70,7 @@ namespace hooks {
 }
 
 namespace {
-	const u32 moveScreen_function = 0x0049C440;
+	const uint32 moveScreen_function = 0x0049C440;
 	int moveScreen(int x, int y) {
 		static int result;
 		_asm {
@@ -85,8 +85,8 @@ namespace {
 	}
 
 
-	const u32 centerviewUnitGroup_function = 0x004967E0;
-	void centerviewUnitGroup(u8 a1) {
+	const uint32 centerviewUnitGroup_function = 0x004967E0;
+	void centerviewUnitGroup(uint8 a1) {
 		_asm {
 			PUSHAD
 			PUSH a1
@@ -95,8 +95,8 @@ namespace {
 		}
 	}
 
-	const u32 selectUnitGroup_function = 0x00496B40;
-	int selectUnitGroup(u8 a2) {
+	const uint32 selectUnitGroup_function = 0x00496B40;
+	int selectUnitGroup(uint8 a2) {
 		static int result;
 		_asm {
 			PUSHAD

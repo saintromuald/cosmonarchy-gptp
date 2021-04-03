@@ -102,10 +102,10 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 			scbw::get_generic_timer(unit,ValueId::AI_QueenTimer)==0) {
 			hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Parasite],
 				CFlags::NotSelf, {}, [&](CUnit* u) {
-				std::vector<std::pair<CUnit*,u32>> group;
+				std::vector<std::pair<CUnit*,uint32>> group;
 				int supply = 0;
 				hydraFinderLoop(u, u->position, 128, 0, {}, [&](CUnit* u2) {
-					u32 priority = units_dat::SupplyRequired[u->id]*100;
+					uint32 priority = units_dat::SupplyRequired[u->id]*100;
 					if (u->status & UnitStatus::InAir) {
 						priority /= 4;
 					}
@@ -220,7 +220,7 @@ Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a gr
 					auto distance = scbw::getDistanceFast(source.x, source.y, target.x, target.y);
 					if (distance >= 64) {
 						double fraction = (distance - 64) / distance;
-						u16 resultX, resultY;
+						uint16 resultX, resultY;
 						resultX = MathUtils::lerp(fraction, source.x, target.x, false);
 						resultY = MathUtils::lerp(fraction, source.y, target.y, false);
 						unit->orderTo(OrderId::Skyfall, u->position.x, u->position.y);

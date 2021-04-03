@@ -1,19 +1,19 @@
 #include "hooks/limits/sfx_extender.h"
 #include "globals.h"
 
-UNK* makeCleanSFXDAT_Unknown(int count) {
-    UNK* _Unknown = new UNK[count];
+unknown_byte* makeCleanSFXDAT_Unknown(int count) {
+    unknown_byte* _Unknown = new unknown_byte[count];
     for (int x = 0; x < count; ++x)
         _Unknown[x] = NULL;
     return _Unknown;
 }
 
-u8* SFXDAT_Volume;
-u8* SFXDAT_Flags;
-u16* SFXDAT_Race;
-u8* SFXDAT_Type;
-u32* SFXDAT_SoundFile;
-UNK* SFXDAT_Unknown;
+uint8* SFXDAT_Volume;
+uint8* SFXDAT_Flags;
+uint16* SFXDAT_Race;
+uint8* SFXDAT_Type;
+uint32* SFXDAT_SoundFile;
+unknown_byte* SFXDAT_Unknown;
 
 namespace hooks {
     void sfxExtenderGetCount() {
@@ -22,11 +22,11 @@ namespace hooks {
     }
     void newSfxExtender() {
         NEW_SOUND_TYPE_COUNT = 20000;   //Define your length here (change later to custom func reading sfxdata)
-        SFXDAT_Volume = new u8[NEW_SOUND_TYPE_COUNT];
-        SFXDAT_Flags = new u8[NEW_SOUND_TYPE_COUNT];
-        SFXDAT_Race = new u16[NEW_SOUND_TYPE_COUNT];
-        SFXDAT_Type = new u8[NEW_SOUND_TYPE_COUNT];
-        SFXDAT_SoundFile = new u32[NEW_SOUND_TYPE_COUNT];
+        SFXDAT_Volume = new uint8[NEW_SOUND_TYPE_COUNT];
+        SFXDAT_Flags = new uint8[NEW_SOUND_TYPE_COUNT];
+        SFXDAT_Race = new uint16[NEW_SOUND_TYPE_COUNT];
+        SFXDAT_Type = new uint8[NEW_SOUND_TYPE_COUNT];
+        SFXDAT_SoundFile = new uint32[NEW_SOUND_TYPE_COUNT];
         SFXDAT_Unknown = makeCleanSFXDAT_Unknown(NEW_SOUND_TYPE_COUNT * 16);
 
         memoryPatch(0x0045F042, NEW_SOUND_TYPE_COUNT);
@@ -43,9 +43,9 @@ namespace hooks {
         memoryPatch(0x005154D0, NEW_SOUND_TYPE_COUNT);
 
         memoryPatch(0x00455BDC, SFXDAT_Volume);
-        memoryPatch(0x0048D0F0, ((u32)SFXDAT_Volume) + 0x17);
-        memoryPatch(0x0048D16C, ((u32)SFXDAT_Volume) + 2);
-        memoryPatch(0x0048D409, ((u32)SFXDAT_Volume) + 0x17);
+        memoryPatch(0x0048D0F0, ((uint32)SFXDAT_Volume) + 0x17);
+        memoryPatch(0x0048D16C, ((uint32)SFXDAT_Volume) + 2);
+        memoryPatch(0x0048D409, ((uint32)SFXDAT_Volume) + 0x17);
         memoryPatch(0x0048ECED, SFXDAT_Volume);
         memoryPatch(0x0048EDD7, SFXDAT_Volume);
         memoryPatch(0x0048EE5C, SFXDAT_Volume);
@@ -75,27 +75,27 @@ namespace hooks {
         memoryPatch(0x0048F127, SFXDAT_Race);
         memoryPatch(0x0048F204, SFXDAT_Race);
         memoryPatch(0x0048F2EB, SFXDAT_Race);
-        memoryPatch(0x0048F376, ((u32)SFXDAT_Race) + 0x10E);
+        memoryPatch(0x0048F376, ((uint32)SFXDAT_Race) + 0x10E);
         memoryPatch(0x0048F3D2, SFXDAT_Race);
-        memoryPatch(0x0048F41B, ((u32)SFXDAT_Race) + 0x10E);
+        memoryPatch(0x0048F41B, ((uint32)SFXDAT_Race) + 0x10E);
         memoryPatch(0x0048F4A0, SFXDAT_Race);
         memoryPatch(0x0048F572, SFXDAT_Race);
         memoryPatch(0x0048F607, SFXDAT_Race);
         memoryPatch(0x0048F697, SFXDAT_Race);
         memoryPatch(0x0048F732, SFXDAT_Race);
         memoryPatch(0x0048F822, SFXDAT_Race);
-        memoryPatch(0x0048F8E3, ((u32)SFXDAT_Race) + 0x104);
+        memoryPatch(0x0048F8E3, ((uint32)SFXDAT_Race) + 0x104);
         memoryPatch(0x0048FAEB, SFXDAT_Race);
         memoryPatch(0x005154BC, SFXDAT_Race);
         memoryPatch(0x004BBEC3, SFXDAT_Type);
         memoryPatch(0x004BC0D3, SFXDAT_Type);
         memoryPatch(0x004BC813, SFXDAT_Type);
         memoryPatch(0x005154A4, SFXDAT_Type);
-        memoryPatch(0x0046102D, ((u32)SFXDAT_SoundFile) + 0x58);
-        memoryPatch(0x0046116D, ((u32)SFXDAT_SoundFile) + 0x54);
+        memoryPatch(0x0046102D, ((uint32)SFXDAT_SoundFile) + 0x58);
+        memoryPatch(0x0046116D, ((uint32)SFXDAT_SoundFile) + 0x54);
         memoryPatch(0x004BC690, SFXDAT_SoundFile);
         memoryPatch(0x004BCA3C, SFXDAT_SoundFile);
-        memoryPatch(0x004BCB2A, ((u32)SFXDAT_SoundFile) + 0x3C);
+        memoryPatch(0x004BCB2A, ((uint32)SFXDAT_SoundFile) + 0x3C);
         memoryPatch(0x004DB0E6, SFXDAT_SoundFile);
         memoryPatch(0x00515498, SFXDAT_SoundFile);
         memoryPatch(0x004BB8E8, SFXDAT_Unknown);
@@ -103,20 +103,20 @@ namespace hooks {
         memoryPatch(0x004BC077, SFXDAT_Unknown);
         memoryPatch(0x004BC674, SFXDAT_Unknown);
         memoryPatch(0x004BCAA6, SFXDAT_Unknown);
-        memoryPatch(0x0045EF66, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F11D, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F1FA, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F2DE, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F3CA, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F498, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F56A, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F5FF, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F68F, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F72A, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F81A, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048FAE3, ((u32)SFXDAT_Unknown) + 8);
-        memoryPatch(0x0048F8DA, ((u32)SFXDAT_Unknown) + 0x828);
-        memoryPatch(0x0048F36F, ((u32)SFXDAT_Unknown) + 0x878);
-        memoryPatch(0x0048F412, ((u32)SFXDAT_Unknown) + 0x878);
+        memoryPatch(0x0045EF66, ((uint32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F11D, ((uint32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F1FA, ((uint32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F2DE, ((uint32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F3CA, ((uint32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F498, ((uint32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F56A, ((uint32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F5FF, ((uint32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F68F, ((uint32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F72A, ((uint32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F81A, ((uint32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048FAE3, ((uint32)SFXDAT_Unknown) + 8);
+        memoryPatch(0x0048F8DA, ((uint32)SFXDAT_Unknown) + 0x828);
+        memoryPatch(0x0048F36F, ((uint32)SFXDAT_Unknown) + 0x878);
+        memoryPatch(0x0048F412, ((uint32)SFXDAT_Unknown) + 0x878);
     }
 }

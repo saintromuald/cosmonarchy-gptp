@@ -10,9 +10,9 @@ namespace hooks {
 	//the unit, the special case being that zerg morphing
 	//buildings show the wireframe of the new building
 	//before construction is complete
-	u16 statdata_UnitWireframeUpdate_Fragment(CUnit* unit) {
+	uint16 statdata_UnitWireframeUpdate_Fragment(CUnit* unit) {
 
-		u16 unitId;
+		uint16 unitId;
 		bool bUseCurrentUnitId = true;
 
 		if (!(unit->status & UnitStatus::Completed)) {
@@ -37,8 +37,8 @@ namespace hooks {
 
 		return unitId;
 	}
-	u16 getLastQueueSlotType(CUnit* unit) {
-		u16 unitId;
+	uint16 getLastQueueSlotType(CUnit* unit) {
+		uint16 unitId;
 		if (unit->status & UnitStatus::Completed)
 			unitId = unit->id;
 		else {
@@ -49,17 +49,17 @@ namespace hooks {
 		return unitId;
 	};
 
-	u8 wireframeShields(CUnit* unit) {
+	uint8 wireframeShields(CUnit* unit) {
 		auto eax = unit->id;
-		u8 al = 0;
+		uint8 al = 0;
 		if (units_dat::ShieldsEnabled[unit->id]) {
 			auto lastSlot = scbw::getLastQueueSlotType(unit);
-			u32 maxShields = units_dat::MaxShieldPoints[lastSlot];
+			uint32 maxShields = units_dat::MaxShieldPoints[lastSlot];
 			if (lastSlot == unit->id) {
 				maxShields = unit->maxShields();//for stasis, later
 			}
 			if (maxShields) {
-				u32 shields = (u32)unit->shields >> 8;
+				uint32 shields = (uint32)unit->shields >> 8;
 				shields *= 7;
 				shields /= maxShields;
 				auto wireConst = wireframeConstants[shields*2];

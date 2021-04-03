@@ -9,9 +9,9 @@ namespace {
 		static int x;
 		static int y;
 		static CUnit* unitParam;
-		static u32 wUnitType;
-		static u32 bActionOrder;
-		static u32 bCommandType;
+		static uint32 wUnitType;
+		static uint32 bActionOrder;
+		static uint32 bCommandType;
 
 		__asm {
 

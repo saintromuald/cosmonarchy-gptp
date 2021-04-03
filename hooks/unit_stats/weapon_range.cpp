@@ -10,11 +10,11 @@ namespace hooks {
 /// Note: Seek ranges are measured in matrices (1 matrix = 32 pixels).
 /// This hook affects the behavior of CUnit::getSeekRange().
 /// Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
-u8 getSeekRangeHook(CUnit* unit) {
+uint8 getSeekRangeHook(CUnit* unit) {
 
-	u16 unitId = unit->id;
-	u32 seekRange;
-	u8 bonusAmount = 0;
+	uint16 unitId = unit->id;
+	uint32 seekRange;
+	uint8 bonusAmount = 0;
 
 	switch (unitId) {
 		case UnitId::ProtossExemplar:
@@ -34,7 +34,7 @@ u8 getSeekRangeHook(CUnit* unit) {
 
 	// Robotic Sapience - Barghest behavior
 /*	if (scbw::get_generic_value(unit, ValueId::RoboticSapience)) {
-		u32 stacks = scbw::get_generic_value(unit, ValueId::RoboticSapience);
+		uint32 stacks = scbw::get_generic_value(unit, ValueId::RoboticSapience);
 		if (stacks >= 10) {
 			bonusAmount += 5;
 		}
@@ -89,10 +89,10 @@ u8 getSeekRangeHook(CUnit* unit) {
 ///
 /// @param	weapon		The weapons.dat ID of the weapon.
 /// @param	unit			The unit that owns the weapon. Use this to check upgrades.
-u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
+uint32 getMaxWeaponRangeHook(CUnit* unit, uint8 weaponId) {
 	//Default StarCraft behavior
 
-	u32 bonusAmount = 0;
+	uint32 bonusAmount = 0;
 
 
 	//Give bonus range to units inside Bunkers

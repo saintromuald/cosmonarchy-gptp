@@ -5,7 +5,7 @@ namespace hooks {
 
 //Returns the tech ID used by this unit for the cloaking spell.
 //For the cloaking energy consumption, see energy_regeneration.cpp
-u8 getCloakingTech(CUnit* unit) {
+uint8 getCloakingTech(CUnit* unit) {
   //Default StarCraft behavior
 
   if (unit->id == UnitId::ghost
@@ -30,9 +30,9 @@ u8 getCloakingTech(CUnit* unit) {
 #define FALSE 0
 #endif
 
-Bool32 BTNSCOND_IsCloaked(CUnit* unit, u32 playerId, u16 reqVar) {
+bool32 BTNSCOND_IsCloaked(CUnit* unit, uint32 playerId, uint16 reqVar) {
 	
-	Bool32 bReturnValue = TRUE;
+	bool32 bReturnValue = TRUE;
 	CUnit* unit_from_selection;
 
 
@@ -43,7 +43,7 @@ Bool32 BTNSCOND_IsCloaked(CUnit* unit, u32 playerId, u16 reqVar) {
 		if(unit_from_selection != nullptr) {
 
 			//original code is hardcoded, not using a function
-			u8 techId = getCloakingTech(unit_from_selection); 
+			uint8 techId = getCloakingTech(unit_from_selection); 
 
 			if(unit_from_selection->canUseTech(techId,playerId) == TRUE) {
 
@@ -66,11 +66,11 @@ Bool32 BTNSCOND_IsCloaked(CUnit* unit, u32 playerId, u16 reqVar) {
 
 	return bReturnValue;
 
-} //Bool32 BTNSCOND_IsCloaked(CUnit* unit, u32 playerId, u16 reqVar)
+} //bool32 BTNSCOND_IsCloaked(CUnit* unit, uint32 playerId, uint16 reqVar)
 
-Bool32 BTNSCOND_CanCloak(CUnit* unit, u32 playerId, u16 reqVar) {
+bool32 BTNSCOND_CanCloak(CUnit* unit, uint32 playerId, uint16 reqVar) {
 	
-	Bool32 bReturnValue = FALSE;
+	bool32 bReturnValue = FALSE;
 	CUnit* unit_from_selection;
 
 	for(int i = 0; i < SELECTION_ARRAY_LENGTH && (bReturnValue == FALSE); i++) {
@@ -80,7 +80,7 @@ Bool32 BTNSCOND_CanCloak(CUnit* unit, u32 playerId, u16 reqVar) {
 		if(unit_from_selection != nullptr) {
 
 			//original code is hardcoded, not using a function
-			u8 techId = getCloakingTech(unit_from_selection); 
+			uint8 techId = getCloakingTech(unit_from_selection); 
 
 			if(
 				unit_from_selection->canUseTech(techId,playerId) == TRUE &&				//must be able to use cloaking tech for more checks to be necessary
@@ -96,6 +96,6 @@ Bool32 BTNSCOND_CanCloak(CUnit* unit, u32 playerId, u16 reqVar) {
 
 	return bReturnValue;
 
-} //Bool32 BTNSCOND_CanCloak(CUnit* unit, u32 playerId, u16 reqVar)
+} //bool32 BTNSCOND_CanCloak(CUnit* unit, uint32 playerId, uint16 reqVar)
 
 } //hooks

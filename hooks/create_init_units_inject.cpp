@@ -6,8 +6,8 @@ namespace {
 
 	void __declspec(naked) CreateInitialMeleeBuildingsWrapper() {
 
-		static u32 playerId;
-		static u8 raceId;
+		static uint32 playerId;
+		static uint8 raceId;
 
 		__asm {
 
@@ -58,7 +58,7 @@ namespace {
 
 	void __declspec(naked) CreateInitialOverlordWrapper() {
 
-		static u8 playerId;
+		static uint8 playerId;
 
 		__asm {
 

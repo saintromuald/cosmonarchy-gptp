@@ -123,7 +123,7 @@ namespace hooks {
 			else
 			if(unit->mainOrderState == 1) { //EA43B
 
-				u8 movableState = unit->getMovableState();
+				uint8 movableState = unit->getMovableState();
 
 				if(movableState == 1)	//reached destination
 					unit->mainOrderState = 2;
@@ -150,10 +150,10 @@ namespace hooks {
 
 namespace {
 
-	const u32 Func__moveToTarget = 0x004EB980;
+	const uint32 Func__moveToTarget = 0x004EB980;
 	bool orderToMoveToTarget(CUnit* unit, CUnit* target) {
 
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 	  
 		__asm {
 			PUSHAD

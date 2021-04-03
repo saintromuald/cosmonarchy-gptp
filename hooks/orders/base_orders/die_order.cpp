@@ -6,9 +6,9 @@
 
 namespace {
 
-CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);		//0x00488210
+CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);		//0x00488210
 void clearUnitSprites(CSprite* unit_sprite, CSprite* subunit_sprite);	//0x00496F00
-void function_00497480(CSprite* thingySprite, u32 visibility_flags);	//0x00497480
+void function_00497480(CSprite* thingySprite, uint32 visibility_flags);	//0x00497480
 void _UnitDestructor(CUnit* unit);										//0x004A0740
 void UnitDestructor(CUnit* unit);										//0x004A0990
 void hideAndDisableUnit(CUnit* unit);									//0x004E6340
@@ -115,11 +115,11 @@ namespace {
 
 //original referenced name was replaceSprite (but this one is probably
 //more accurate since it does create something rather than replacing)
-const u32 Func_CreateThingy = 0x00488210;
-CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId) {
+const uint32 Func_CreateThingy = 0x00488210;
+CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
 
 	static CThingy* thingy;
-	s32 x_ = x;
+	int32 x_ = x;
 
 	__asm {
 		PUSHAD
@@ -138,7 +138,7 @@ CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId) {
 
 ;
 
-const u32 Func_clearUnitSprites = 0x00496F00;
+const uint32 Func_clearUnitSprites = 0x00496F00;
 void clearUnitSprites(CSprite* unit_sprite, CSprite* subunit_sprite) {
 
 	__asm {
@@ -153,8 +153,8 @@ void clearUnitSprites(CSprite* unit_sprite, CSprite* subunit_sprite) {
 
 ;
 
-const u32 Func_Sub497480 = 0x00497480;
-void function_00497480(CSprite* thingySprite, u32 visibility_flags) {
+const uint32 Func_Sub497480 = 0x00497480;
+void function_00497480(CSprite* thingySprite, uint32 visibility_flags) {
 
 	__asm {
 		PUSHAD
@@ -168,7 +168,7 @@ void function_00497480(CSprite* thingySprite, u32 visibility_flags) {
 
 ;
 
-const u32 Func__UnitDestructor = 0x004A0740;
+const uint32 Func__UnitDestructor = 0x004A0740;
 void _UnitDestructor(CUnit* unit) {
 
 	__asm {
@@ -182,7 +182,7 @@ void _UnitDestructor(CUnit* unit) {
 
 ;
 
-const u32 Func_UnitDestructor = 0x004A0990;
+const uint32 Func_UnitDestructor = 0x004A0990;
 void UnitDestructor(CUnit* unit) {
 
 	__asm {
@@ -196,7 +196,7 @@ void UnitDestructor(CUnit* unit) {
 
 ;
 
-const u32 Func_unitDeathSomething_0 = 0x004E6340;
+const uint32 Func_unitDeathSomething_0 = 0x004E6340;
 void hideAndDisableUnit(CUnit* unit) {
 
 	__asm {

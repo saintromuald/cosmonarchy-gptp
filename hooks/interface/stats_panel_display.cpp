@@ -7,13 +7,13 @@
 namespace {
 
 	void hideDialog(BinDlg* dialog);								//18700
-	void StatsNukesCount(BinDlg* dialog, u32 index);				//25310
-	void StatHangerCount(BinDlg* dialog, u32 index);				//253D0
-	void StatsShieldLevel(BinDlg* dialog, u32 index);				//25510
-	void StatsArmorLevel(BinDlg* dialog, u32 index);				//25600
-	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weaponId);	//25790
-	bool StatSpidermineCount(BinDlg* dialog, u32 index);			//26300
-	u16 getLastQueueSlotType(CUnit* unit);							//7B270
+	void StatsNukesCount(BinDlg* dialog, uint32 index);				//25310
+	void StatHangerCount(BinDlg* dialog, uint32 index);				//253D0
+	void StatsShieldLevel(BinDlg* dialog, uint32 index);				//25510
+	void StatsArmorLevel(BinDlg* dialog, uint32 index);				//25600
+	void StatsWeaponLevel(BinDlg* dialog, uint32 index, uint32 weaponId);	//25790
+	bool StatSpidermineCount(BinDlg* dialog, uint32 index);			//26300
+	uint16 getLastQueueSlotType(CUnit* unit);							//7B270
 
 	// For getUnitRankString
 	__int8 unitGetRace(CUnit* a1);									//0047B150
@@ -23,7 +23,7 @@ namespace {
 
 namespace hooks {
 
-	bool StatLobotomyMineCount(BinDlg* dialog, u32 index) {
+	bool StatLobotomyMineCount(BinDlg* dialog, uint32 index) {
 		auto v2 = *activePortraitUnit;
 		auto v3 = dialog;
 		/*if (scbw::hasTechResearched(v2->playerId, TechId::LobotomyMine) == 0) {
@@ -77,7 +77,7 @@ namespace hooks {
 
 		BinDlg* current_dialog;
 		CUnit* activeUnit = *activePortraitUnit;
-		u32 index = 0;
+		uint32 index = 0;
 
 		if (
 			!(activeUnit->status & UnitStatus::IsHallucination) ||
@@ -87,11 +87,11 @@ namespace hooks {
 
 			bool bNoAirWeaponDisplay;
 
-			u32 airWeapon;			//[EBP-01] then [EBP-05]
-			u8 airWeaponMainUnit;	//BL
-			u8 airWeaponSubunit;	//AL
+			uint32 airWeapon;			//[EBP-01] then [EBP-05]
+			uint8 airWeaponMainUnit;	//BL
+			uint8 airWeaponSubunit;	//AL
 
-			u16 unitId = getLastQueueSlotType(activeUnit);
+			uint16 unitId = getLastQueueSlotType(activeUnit);
 
 			if (units_dat::ArmorUpgrade[unitId] != UpgradeId::GlobalUpgrade60) {
 				StatsArmorLevel(dialog, index);
@@ -111,14 +111,14 @@ namespace hooks {
 
 				bool bNoGroundWeaponDisplay = false;
 
-				u32 groundWeapon;													//[EBP-05]
-				u8 groundWeaponMainUnit = units_dat::GroundWeapon[activeUnit->id];	//BL
+				uint32 groundWeapon;													//[EBP-05]
+				uint8 groundWeaponMainUnit = units_dat::GroundWeapon[activeUnit->id];	//BL
 				if (activeUnit->id == UnitId::TerranMadrigal
 					&& scbw::get_generic_rust_value(activeUnit, ValueId::TempoChange)
 					&& groundWeaponMainUnit == WeaponId::MadrigalFuriaMissiles) {
 					groundWeaponMainUnit = WeaponId::MadrigalImperiosoMissiles;
 				}
-				u8 groundWeaponSubunit;												//CL
+				uint8 groundWeaponSubunit;												//CL
 
 				if (groundWeaponMainUnit == WeaponId::None) {
 					if (activeUnit->subunit == nullptr)
@@ -188,7 +188,7 @@ namespace hooks {
 
 				if (!bNoAirWeaponDisplay) {
 
-					u8 groundWeapon;	//AL
+					uint8 groundWeapon;	//AL
 
 					//26DBE
 					if (activeUnit->id == UnitId::ZergLakizilisk && !(activeUnit->status & UnitStatus::Burrowed))
@@ -329,7 +329,7 @@ namespace hooks {
 
 namespace {
 
-	const u32 Func_HideDialog = 0x00418700;
+	const uint32 Func_HideDialog = 0x00418700;
 	void hideDialog(BinDlg* dialog) {
 
 		__asm {
@@ -343,8 +343,8 @@ namespace {
 
 	;
 
-	const u32 Func_Sub425310 = 0x00425310;
-	void StatsNukesCount(BinDlg* dialog, u32 index) {
+	const uint32 Func_Sub425310 = 0x00425310;
+	void StatsNukesCount(BinDlg* dialog, uint32 index) {
 
 		__asm {
 			PUSHAD
@@ -358,8 +358,8 @@ namespace {
 
 	;
 
-	const u32 Func_StatHangerCount = 0x004253D0;
-	void StatHangerCount(BinDlg* dialog, u32 index) {
+	const uint32 Func_StatHangerCount = 0x004253D0;
+	void StatHangerCount(BinDlg* dialog, uint32 index) {
 
 		__asm {
 			PUSHAD
@@ -373,8 +373,8 @@ namespace {
 
 	;
 
-	const u32 Func_Sub425510 = 0x00425510;
-	void StatsShieldLevel(BinDlg* dialog, u32 index) {
+	const uint32 Func_Sub425510 = 0x00425510;
+	void StatsShieldLevel(BinDlg* dialog, uint32 index) {
 
 		__asm {
 			PUSHAD
@@ -388,8 +388,8 @@ namespace {
 
 	;
 
-	const u32 Func_Sub425600 = 0x00425600;
-	void StatsArmorLevel(BinDlg* dialog, u32 index) {
+	const uint32 Func_Sub425600 = 0x00425600;
+	void StatsArmorLevel(BinDlg* dialog, uint32 index) {
 
 		__asm {
 			PUSHAD
@@ -403,8 +403,8 @@ namespace {
 
 	;
 
-	const u32 Func_Sub425790 = 0x00425790;
-	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weaponId) {
+	const uint32 Func_Sub425790 = 0x00425790;
+	void StatsWeaponLevel(BinDlg* dialog, uint32 index, uint32 weaponId) {
 
 		__asm {
 			PUSHAD
@@ -419,10 +419,10 @@ namespace {
 
 	;
 
-	const u32 Func_StatSpidermineCount = 0x00426300;
-	bool StatSpidermineCount(BinDlg* dialog, u32 index) {
+	const uint32 Func_StatSpidermineCount = 0x00426300;
+	bool StatSpidermineCount(BinDlg* dialog, uint32 index) {
 
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 
 		__asm {
 			PUSHAD
@@ -443,9 +443,9 @@ namespace {
 	//a level 2/3 zerg building, return the
 	//id of the building morphed into, else
 	//return the normal unit id.
-	u16 getLastQueueSlotType(CUnit* unit) {
+	uint16 getLastQueueSlotType(CUnit* unit) {
 
-		u16 unitId;
+		uint16 unitId;
 
 		if (unit->status & UnitStatus::Completed)
 			unitId = unit->id;
@@ -461,7 +461,7 @@ namespace {
 
 	// For getUnitRankString
 
-	const u32 Func_unitGetRace = 0x0047B150;
+	const uint32 Func_unitGetRace = 0x0047B150;
 	__int8 unitGetRace(CUnit* a1) {
 		static int result;
 		__asm {
@@ -474,7 +474,7 @@ namespace {
 		return (__int8)result;
 	}
 
-	const u32 Func_getStatTxtString = 0x004C36F0;
+	const uint32 Func_getStatTxtString = 0x004C36F0;
 	char* getStatTxtString(__int16 a1) {
 		static int result;
 		__asm {

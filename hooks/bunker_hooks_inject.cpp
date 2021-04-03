@@ -3,7 +3,7 @@
 
 namespace {
 
-const u32 Hook_UnitCanAttackInsideBunkerYes = 0x004790DC;
+const uint32 Hook_UnitCanAttackInsideBunkerYes = 0x004790DC;
 void __declspec(naked) unitCanAttackInsideBunkerWrapper() {
 
 	static CUnit* unit;

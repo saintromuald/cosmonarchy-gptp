@@ -7,19 +7,19 @@ namespace { // Helper declarations
 
     // For initGame
     void switchAllAvailableComputerSlotsToOpen();           // 004DBBE0
-    bool setLastOpenSlotToComputer(s8 race);                // 004DBB70
+    bool setLastOpenSlotToComputer(int8 race);                // 004DBB70
 
     // For startGame
-    s32 bootReason(u8 a1);                                  // 004B8870
-    s32 isAuthedMap(void* a1);                              // 004C4870
+    int32 bootReason(uint8 a1);                                  // 004B8870
+    int32 isAuthedMap(void* a1);                              // 004C4870
     void setTimerFunc();                                    // 00472E00
-    s32 getTickCount();                                     // 004FE0C4 // CAUSES CRASH when accessed, is it instead a variable to be defined in scbwdata?
+    int32 getTickCount();                                     // 004FE0C4 // CAUSES CRASH when accessed, is it instead a variable to be defined in scbwdata?
 }
 
 namespace hooks {
 
-    s32 initGame() { // 004EE110
-        s32 v1; // esi
+    int32 initGame() { // 004EE110
+        int32 v1; // esi
 
         if (*multiPlayerMode) {
             return 0;
@@ -47,10 +47,10 @@ namespace hooks {
         return 1;
     }
 
-    s32 startGame(void* a1, s32 a2) { // 00472060
-        u8 v2; // al
-        s32 result; // eax
-        s32 v4; // eax
+    int32 startGame(void* a1, int32 a2) { // 00472060
+        uint8 v2; // al
+        int32 result; // eax
+        int32 v4; // eax
 
         a1 = gameState;
         v2 = 4;
@@ -97,7 +97,7 @@ namespace hooks {
 namespace { // Helper definitions
 
     // For initGame
-    const u32 Func_switchAllAvailableComputerSlotsToOpen = 0x004DBBE0;
+    const uint32 Func_switchAllAvailableComputerSlotsToOpen = 0x004DBBE0;
     void switchAllAvailableComputerSlotsToOpen() {
         __asm {
             PUSHAD
@@ -106,9 +106,9 @@ namespace { // Helper definitions
         }
     }
 
-    const u32 Func_setLastOpenSlotToComputer = 0x004DBB70;
-    bool setLastOpenSlotToComputer(s8 race) {
-        static s32 result;
+    const uint32 Func_setLastOpenSlotToComputer = 0x004DBB70;
+    bool setLastOpenSlotToComputer(int8 race) {
+        static int32 result;
         __asm {
             PUSHAD
             PUSH race
@@ -120,9 +120,9 @@ namespace { // Helper definitions
     }
 
     // For startGame
-    const u32 Func_bootReason = 0x004B8870;
-    s32 bootReason(u8 a1) {
-        static s32 result;
+    const uint32 Func_bootReason = 0x004B8870;
+    int32 bootReason(uint8 a1) {
+        static int32 result;
         __asm {
             PUSHAD
             MOVZX AL, a1
@@ -133,9 +133,9 @@ namespace { // Helper definitions
         return result;
     }
 
-    const u32 Func_isAuthedMap = 0x004C4870;
-    s32 isAuthedMap(void* a1) {
-        static s32 result;
+    const uint32 Func_isAuthedMap = 0x004C4870;
+    int32 isAuthedMap(void* a1) {
+        static int32 result;
         __asm {
             PUSHAD
             MOV EAX, a1
@@ -146,7 +146,7 @@ namespace { // Helper definitions
         return result;
     }
 
-    const u32 Func_setTimerFunc = 0x00472E00;
+    const uint32 Func_setTimerFunc = 0x00472E00;
     void setTimerFunc() {
         __asm {
             PUSHAD
@@ -155,9 +155,9 @@ namespace { // Helper definitions
         }
     }
 
-    s32 getTickCount() {
-        static s32 result;
-        static u32 Func_getTickCount = *(u32*)0x004FE0C4;
+    int32 getTickCount() {
+        static int32 result;
+        static uint32 Func_getTickCount = *(uint32*)0x004FE0C4;
         __asm {
             PUSHAD
             CALL Func_getTickCount

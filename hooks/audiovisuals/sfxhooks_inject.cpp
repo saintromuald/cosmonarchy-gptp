@@ -5,7 +5,7 @@
 namespace {
 
 	void __declspec(naked) getResponseSfx_Wrapper() { // 0048EA20
-		static s32 a1;
+		static int32 a1;
 		static int a2;
 		static int result;
 		__asm {
@@ -22,7 +22,7 @@ namespace {
 	}
 
 	void __declspec(naked) getRandYesSFX_Wrapper() { // 0048EAB0
-		static s32 a1;
+		static int32 a1;
 		static int result;
 		__asm {
 			MOV a1, ECX

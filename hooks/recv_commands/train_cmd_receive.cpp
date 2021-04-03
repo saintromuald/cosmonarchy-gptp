@@ -5,7 +5,7 @@
 
 namespace {
 
-bool HasMoneyCanMake(CUnit* builder, u32 unitToBuild);	//67250
+bool HasMoneyCanMake(CUnit* builder, uint32 unitToBuild);	//67250
 
 } //unnamed namespace
 
@@ -20,7 +20,7 @@ void CMDRECV_TrainFighter() {
 
 	while(current_selection != nullptr) {
 
-		u32 unitToBuild;
+		uint32 unitToBuild;
 
 		//the original code was messy, simplified/optimized version here
 		if(current_selection->id == UnitId::ProtossSolarion)
@@ -62,7 +62,7 @@ void CMDRECV_TrainFighter() {
 ;
 
 //Note: the default function isn't compatible with multiple selection
-void CMDRECV_Train(u16 wUnitType) {
+void CMDRECV_Train(uint16 wUnitType) {
 
 	CUnit* builder;
 
@@ -92,10 +92,10 @@ void CMDRECV_Train(u16 wUnitType) {
 
 namespace {
 
-const u32 Func_HasMoneyCanMake = 0x00467250;
-bool HasMoneyCanMake(CUnit* builder, u32 unitToBuild) {
+const uint32 Func_HasMoneyCanMake = 0x00467250;
+bool HasMoneyCanMake(CUnit* builder, uint32 unitToBuild) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD

@@ -6,7 +6,7 @@
 namespace {
 
 void removeOrderFromUnitQueue(CUnit* unit, COrder* order);							//742D0
-CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, u32 units_list_length);	//BFA80
+CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, uint32 units_list_length);	//BFA80
 
 } //unnamed namespace
 
@@ -278,7 +278,7 @@ void CMDRECV_MergeArchon() {
 
 namespace {
 
-const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
+const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
 void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 	__asm {
@@ -293,8 +293,8 @@ void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 ;
 
-const u32 Func_templarMergePartner = 0x004BFA80;
-CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, u32 units_list_length) {
+const uint32 Func_templarMergePartner = 0x004BFA80;
+CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, uint32 units_list_length) {
 
 	static CUnit* return_value;
 

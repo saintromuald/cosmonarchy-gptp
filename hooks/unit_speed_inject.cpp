@@ -7,7 +7,7 @@ namespace {
 void __declspec(naked) getModifiedUnitSpeedWrapper() {
 
 	static CUnit* unit;
-	static u32 speed;
+	static uint32 speed;
 
 	__asm {
 		MOV unit, EDX
@@ -29,7 +29,7 @@ void __declspec(naked) getModifiedUnitSpeedWrapper() {
 void __declspec(naked) getModifiedUnitAccelerationWrapper() {
 
 	static CUnit* unit;
-	static u32 acceleration;
+	static uint32 acceleration;
 
 	__asm {
 		MOV unit, ECX
@@ -50,7 +50,7 @@ void __declspec(naked) getModifiedUnitAccelerationWrapper() {
 void __declspec(naked) getModifiedUnitTurnSpeedWrapper() {
 
 	static CUnit* unit;
-	static u32 turnSpeed;
+	static uint32 turnSpeed;
 
 	__asm {
 		MOV unit, ECX

@@ -148,7 +148,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 		return FALSE;
 
 	// quick drop timeout
-	memoryPatch(0x004A345D+2, (u32)0);
+	memoryPatch(0x004A345D+2, (uint32)0);
 
 	//disable powerup hardcod
 	// FLAG id only

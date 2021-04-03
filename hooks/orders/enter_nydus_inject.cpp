@@ -8,7 +8,7 @@ namespace {
 
 		static CUnit* unit;
 		static CUnit* nydusCanal;
-		static Bool32 bReturnValue;
+		static bool32 bReturnValue;
 
 		__asm {
 			MOV unit, EAX

@@ -3,12 +3,12 @@
 
 namespace {
 
-const u32 Hook_GetAttackPriority = 0x00442160;
+const uint32 Hook_GetAttackPriority = 0x00442160;
 //Inject with jmpPatch()
 void __declspec(naked) getAttackPriorityWrapper() {
 
 	static CUnit* target, *attacker;
-	static u32 result;
+	static uint32 result;
 
 	__asm {
 		MOV target, EDI
@@ -26,7 +26,7 @@ void __declspec(naked) getAttackPriorityWrapper() {
 
 }
 
-const u32 Hook_FindBestAttackTarget = 0x00443080;
+const uint32 Hook_FindBestAttackTarget = 0x00443080;
 //Inject with jmpPatch()
 void __declspec(naked) findBestAttackTargetWrapper() {
 
@@ -52,7 +52,7 @@ void __declspec(naked) findBestAttackTargetWrapper() {
 
 }
 
-const u32 Hook_FindRandomAttackTarget = 0x00442FC0;
+const uint32 Hook_FindRandomAttackTarget = 0x00442FC0;
 //Inject with jmpPatch()
 void __declspec(naked) findRandomAttackTargetWrapper() {
 

@@ -38,7 +38,7 @@ namespace BuildingHelper {
 	}
 
 	//Identical to function @ 0x00466B70
-	int getNumberOfUnitTypeInBuildQueue(const CUnit* unit, u16 unitId) {
+	int getNumberOfUnitTypeInBuildQueue(const CUnit* unit, uint16 unitId) {
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker) {
 			if (getConstructRepairTarget(unit) == nullptr
 				&& unit->buildQueue[unit->buildQueueSlot % 5] == unitId
@@ -65,7 +65,7 @@ namespace BuildingHelper {
 		return unitCount;
 	}
 
-	int getNumberOfUnitType(const CUnit* unit, u16 unitId, bool ignoreIncomplete) {
+	int getNumberOfUnitType(const CUnit* unit, uint16 unitId, bool ignoreIncomplete) {
 		if (!ignoreIncomplete || unit->status & UnitStatus::Completed) {
 			if (unit->id == unitId)
 				return 1;

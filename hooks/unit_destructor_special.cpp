@@ -13,7 +13,7 @@
 
 void killAllHangarUnits(CUnit* unit) {
 
-	u32 random_value;
+	uint32 random_value;
 
 	while(unit->carrier.inHangarCount != 0) {
 		CUnit* childInside = unit->carrier.inHangarChild;
@@ -33,13 +33,13 @@ void killAllHangarUnits(CUnit* unit) {
 		//Kill interceptors only (Scarabs will defuse anyway)
 		if (childOutside->id != UnitId::scarab) {
 
-			u16 randomDeathTimer;
+			uint16 randomDeathTimer;
 
 			//hardcoded RNG management
 			if(*IS_IN_GAME_LOOP) {
 
-				static u32* randomnessCounter_0051C6AC = (u32*)0x0051C6AC;
-				static u32* randomnessCounter_0051CA18 = (u32*)0x0051CA18;
+				static uint32* randomnessCounter_0051C6AC = (uint32*)0x0051C6AC;
+				static uint32* randomnessCounter_0051CA18 = (uint32*)0x0051CA18;
 
 				*randomnessCounter_0051C6AC = *randomnessCounter_0051C6AC + 1;
 				*randomnessCounter_0051CA18 = *randomnessCounter_0051CA18 + 1;
@@ -108,11 +108,11 @@ void freeResourceContainer(CUnit* resource) {
 
 
 
-const u32 Func_CreateThingy = 0x00488210;
-CThingy* createThingyFunc(u32 spriteId, s16 x, s16 y, u32 playerId) {
+const uint32 Func_CreateThingy = 0x00488210;
+CThingy* createThingyFunc(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
 
 	static CThingy* thingy;
-	s32 x_ = x;
+	int32 x_ = x;
 
 	__asm {
 		PUSHAD
@@ -132,7 +132,7 @@ CThingy* createThingyFunc(u32 spriteId, s16 x, s16 y, u32 playerId) {
 ;
 
 
-const u32 Func_GetAllUnitsInBounds = 0x0042FF80;
+const uint32 Func_GetAllUnitsInBounds = 0x0042FF80;
 CUnit** getAllUnitsInBounds_copy(Box16* coords) {
 
 	static CUnit** units_in_bounds;
@@ -168,10 +168,10 @@ void setAllImageGroupFlagsPal11(CSprite* sprite) {
 
 ;
 
-const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
+const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
 bool setThingyVisibilityFlagsFunc(CThingy* thingy) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -187,10 +187,10 @@ bool setThingyVisibilityFlagsFunc(CThingy* thingy) {
 ;
 
 
-const u32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
+const uint32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
 void IterateUnitsAtLocationTargetProc_EnsnareFunc(CUnit* attacker, Box16* coords) {
 
-	const u32 EnsnareProc_function = 0x004F46C0;
+	const uint32 EnsnareProc_function = 0x004F46C0;
 
 	__asm {
 		PUSHAD
@@ -204,7 +204,7 @@ void IterateUnitsAtLocationTargetProc_EnsnareFunc(CUnit* attacker, Box16* coords
 }
 void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords) {
 
-	const u32 PlagueProc_function = 0x004F4AF0;
+	const uint32 PlagueProc_function = 0x004F4AF0;
 
 	__asm {
 		PUSHAD
@@ -245,7 +245,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 
 	// Vassal Autovitality behavior
 	if (unit->id == UnitId::ProtossVassal) {
-		u32 range = 5*32;
+		uint32 range = 5*32;
 		scbw::UnitFinder(
 			unit->getX() - range,
 			unit->getY() - range,
@@ -264,7 +264,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 
 	// Apostle Last Breath behavior
 	if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic) {
-		u32 range = 4 * 32;
+		uint32 range = 4 * 32;
 		scbw::UnitFinder(
 			unit->getX() - range,
 			unit->getY() - range,
@@ -316,7 +316,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		coords.top = unit->position.y - 48;
 		coords.right = unit->position.x + 48;
 		IterateUnitsAtLocationTargetProc_Plague(unit, &coords);
-		u32 range = 48;
+		uint32 range = 48;
 		scbw::UnitFinder(
 			unit->getX() - range,
 			unit->getY() - range,

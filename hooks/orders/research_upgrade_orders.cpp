@@ -6,11 +6,11 @@
 namespace {
 
 	bool isUnitUpgradeAvailable(CUnit* unit);															//033D0
-	void ApplySpeedUpgradeFromUpgradeType(CUnit* unit, u8 upgradeType);									//54540
+	void ApplySpeedUpgradeFromUpgradeType(CUnit* unit, uint8 upgradeType);									//54540
 	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);											//742D0
 	void playUpgradeCompleteSound();																	//8F070
 	void playResearchCompleteSound();																	//8F150
-	void setUpgradeLevel(u32 playerId, u32 upgradeType, u8 upgradeLevel);								//CE770
+	void setUpgradeLevel(uint32 playerId, uint32 upgradeType, uint8 upgradeLevel);								//CE770
 	
 } //unnamed namespace
 
@@ -30,7 +30,7 @@ namespace hooks {
 
 			if(unit->building.upgradeResearchTime != 0xFFFF) {
 
-				u8 upgradeLevel;
+				uint8 upgradeLevel;
 
 				if(unit->building.upgradeType >= UpgradeId::PrismaticShield)
 					upgradeLevel = UpgradesBw->currentLevel[unit->playerId][unit->building.upgradeType - UpgradeId::PrismaticShield];
@@ -46,7 +46,7 @@ namespace hooks {
 			//5471D
 			if(!bStopThere) {
 
-				u8 upgradeLevel;
+				uint8 upgradeLevel;
 				
 				playUpgradeCompleteSound();
 
@@ -168,7 +168,7 @@ namespace hooks {
 
 			if(unit->building.upgradeResearchTime != 0xFFFF) {
 
-				u8 bIsResearched;
+				uint8 bIsResearched;
 
 				if(unit->building.techType < TechId::Restoration)
 					bIsResearched = TechSc->isResearched[unit->playerId][unit->building.techType];
@@ -292,10 +292,10 @@ namespace hooks {
 
 namespace {
 
-	const u32 Func_isUnitUpgradeAvailable = 0x004033D0;
+	const uint32 Func_isUnitUpgradeAvailable = 0x004033D0;
 	bool isUnitUpgradeAvailable(CUnit* unit) {
 
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 
 		__asm {
 			PUSHAD
@@ -311,8 +311,8 @@ namespace {
 
 	;
 
-	const u32 Func_ApplySpeedUpgradeFromUpgradeType = 0x00454540;
-	void ApplySpeedUpgradeFromUpgradeType(CUnit* unit, u8 upgradeType) {
+	const uint32 Func_ApplySpeedUpgradeFromUpgradeType = 0x00454540;
+	void ApplySpeedUpgradeFromUpgradeType(CUnit* unit, uint8 upgradeType) {
 
 		__asm {
 			PUSHAD
@@ -326,7 +326,7 @@ namespace {
 
 	;
 
-	const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
+	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
 	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 		__asm {
@@ -341,7 +341,7 @@ namespace {
 
 	;
 
-	const u32 Func_playUpgradeCompleteSound = 0x0048F070;
+	const uint32 Func_playUpgradeCompleteSound = 0x0048F070;
 	void playUpgradeCompleteSound() {
 
 		__asm {
@@ -354,7 +354,7 @@ namespace {
 
 	;
 
-	const u32 Func_playResearchCompleteSound = 0x0048F150;
+	const uint32 Func_playResearchCompleteSound = 0x0048F150;
 	void playResearchCompleteSound() {
 
 		__asm {
@@ -367,8 +367,8 @@ namespace {
 
 	;
 
-	const u32 Func_setUpgradeLevel = 0x004CE770;
-	void setUpgradeLevel(u32 playerId, u32 upgradeType, u8 upgradeLevel) {
+	const uint32 Func_setUpgradeLevel = 0x004CE770;
+	void setUpgradeLevel(uint32 playerId, uint32 upgradeType, uint8 upgradeLevel) {
 
 		__asm {
 			PUSHAD

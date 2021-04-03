@@ -7,7 +7,7 @@ namespace {
 void __declspec(naked) getSeekRangeWrapper() {
 
 	static CUnit* unit;
-	static u8 seekRange;
+	static uint8 seekRange;
 
 	__asm {
 		MOV unit, EDX
@@ -28,8 +28,8 @@ void __declspec(naked) getSeekRangeWrapper() {
 void __declspec(naked) getMaxWeaponRangeWrapper() {
 
 	static CUnit* unit;
-	static u8 weaponId;
-	static u32 maxWeaponRange;
+	static uint8 weaponId;
+	static uint32 maxWeaponRange;
 
 	__asm {
 		MOV unit, EAX
@@ -50,8 +50,8 @@ void __declspec(naked) getMaxWeaponRangeWrapper() {
 } //unnamed namespace
 
 //Defined in SCBW/structures/CUnit.cpp
-extern const u32 Func_GetMaxWeaponRange;
-extern const u32 Func_GetSeekRange;
+extern const uint32 Func_GetMaxWeaponRange;
+extern const uint32 Func_GetSeekRange;
 
 namespace hooks {
 

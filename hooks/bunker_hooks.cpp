@@ -7,10 +7,10 @@
 namespace {
 
 CUnit* findRandomAttackTarget(CUnit* unit);							//0x00442FC0
-Bool32 attackApplyCooldown(CUnit* unit);							//0x00478B40
+bool32 attackApplyCooldown(CUnit* unit);							//0x00478B40
 void setThingyVisibilityFlags(CThingy *thingy);						//0x004878F0
-CThingy* createThingy(u16 spriteId, s16 x, s16 y, u8 playerId = 0);	//0x00488210
-void setImageDirection(CImage *image, s8 direction);				//0x004D5F80
+CThingy* createThingy(uint16 spriteId, int16 x, int16 y, uint8 playerId = 0);	//0x00488210
+void setImageDirection(CImage *image, int8 direction);				//0x004D5F80
 
 
 } //unnamed namespace
@@ -35,7 +35,7 @@ void unitAttackFromInsideBunkerHook(CUnit* unit) {
 		||	unit->id == UnitId::ZergKeskathalor
 	) {
 
-		Bool32 resultApplyCooldown;
+		bool32 resultApplyCooldown;
 		unit->status |= UnitStatus::HoldingPosition;
 		if(unit->subunit != nullptr)
 			(unit->subunit)->status |= UnitStatus::HoldingPosition;
@@ -63,7 +63,7 @@ void createBunkerAttackThingyHook(CUnit* unit) {
 
 	CImage *bunkerImage = unit->connectedUnit->sprite->mainGraphic;
 
-	u8 frameDirection = (unit->currentDirection1 + 16) / 32 % 8;
+	uint8 frameDirection = (unit->currentDirection1 + 16) / 32 % 8;
 
 //	const LO_Header *loFile = lo_files->attackOverlays[bunkerImage->id];
 
@@ -74,8 +74,8 @@ void createBunkerAttackThingyHook(CUnit* unit) {
 	if (bunkerImage->flags & CImage_Flags::Mirrored) //Is inverted
 		offset.x = -offset.x;
 
-	u8 frameAngle;
-	u16 spriteId;
+	uint8 frameAngle;
+	uint16 spriteId;
 
 	if (unit->id == UnitId::TerranHarakan) {
 		frameAngle = ((unit->currentDirection1 + 8) / 16 % 16) * 16;
@@ -114,7 +114,7 @@ void createBunkerAttackThingyHook(CUnit* unit) {
 
 namespace {
 
-const u32 Func_findRandomAttackTarget = 0x00442FC0;
+const uint32 Func_findRandomAttackTarget = 0x00442FC0;
 CUnit* findRandomAttackTarget(CUnit* unit) {
 
 	static CUnit* target;
@@ -132,10 +132,10 @@ CUnit* findRandomAttackTarget(CUnit* unit) {
 }
 
 
-const u32 Func_attackApplyCooldown = 0x00478B40;
-Bool32 attackApplyCooldown(CUnit* unit) {
+const uint32 Func_attackApplyCooldown = 0x00478B40;
+bool32 attackApplyCooldown(CUnit* unit) {
 
-	static u32 result;
+	static uint32 result;
 
 	__asm {
 		PUSHAD
@@ -149,7 +149,7 @@ Bool32 attackApplyCooldown(CUnit* unit) {
 
 }
 
-const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
+const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
 void setThingyVisibilityFlags(CThingy *thingy) {
 
 	__asm {
@@ -163,13 +163,13 @@ void setThingyVisibilityFlags(CThingy *thingy) {
 
 ;
 
-const u32 Func_CreateThingy = 0x00488210;
-CThingy* createThingy(u16 spriteId, s16 x, s16 y, u8 playerId) {
+const uint32 Func_CreateThingy = 0x00488210;
+CThingy* createThingy(uint16 spriteId, int16 x, int16 y, uint8 playerId) {
 
 	static CThingy* thingy;
-	static s32 x_;
-	static s32 playerId_;
-	static u32 spriteId_;
+	static int32 x_;
+	static int32 playerId_;
+	static uint32 spriteId_;
 
 	x_ = x;
 	playerId_ = playerId;
@@ -192,10 +192,10 @@ CThingy* createThingy(u16 spriteId, s16 x, s16 y, u8 playerId) {
 
 ;
 
-const u32 Func_SetImageDirection = 0x004D5F80;
-void setImageDirection(CImage *image, s8 direction) {
+const uint32 Func_SetImageDirection = 0x004D5F80;
+void setImageDirection(CImage *image, int8 direction) {
 
-	static u32 direction_;
+	static uint32 direction_;
 
 	direction_ = direction;
 

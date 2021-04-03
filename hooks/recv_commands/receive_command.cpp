@@ -5,13 +5,13 @@
 
 namespace {
 
-Bool32 OrderAllowed(CUnit* unit, u16 orderId, u32 nationID);							//0x0046DC20
-void function_004756B0(CUnit* unit, u8 orderId, u32 unk1, u32 unk2, u32 bCommandType);	//0x004756B0
-void function_004756E0(CUnit* unit, CUnit* target, u32 orderId, u32 bCommandType);		//0x004756E0
-u32 function_0049A410(CUnit* unit, u8 orderId);											//0x0049A410
-bool CanTargetSelf(CUnit* unit, u8 orderId);											//0x0049A480
-void function_0049A500(CUnit* unit,	u8* array_of_data);									//0x0049A500
-void function_0049A8C0(u8* array_of_data,Bool32 bCanBeObstructed);						//0x0049A8C0
+bool32 OrderAllowed(CUnit* unit, uint16 orderId, uint32 nationID);							//0x0046DC20
+void function_004756B0(CUnit* unit, uint8 orderId, uint32 unk1, uint32 unk2, uint32 bCommandType);	//0x004756B0
+void function_004756E0(CUnit* unit, CUnit* target, uint32 orderId, uint32 bCommandType);		//0x004756E0
+uint32 function_0049A410(CUnit* unit, uint8 orderId);											//0x0049A410
+bool CanTargetSelf(CUnit* unit, uint8 orderId);											//0x0049A480
+void function_0049A500(CUnit* unit,	uint8* array_of_data);									//0x0049A500
+void function_0049A8C0(uint8* array_of_data,bool32 bCanBeObstructed);						//0x0049A8C0
 
 } //unnamed namespace
 
@@ -19,31 +19,31 @@ namespace hooks {
 
 	//this function receives the Attack/Attack Move commands and
 	//the spells commands, maybe more
-	void receive_command(int x, int y, CUnit* unitParam, u32 wUnitType, u32 bActionOrder, u32 bCommandType) {
+	void receive_command(int x, int y, CUnit* unitParam, uint32 wUnitType, uint32 bActionOrder, uint32 bCommandType) {
 
-		u8 array_of_data[0x30];
-		u16* saved_x = (u16*)&array_of_data[0];					//[EBP-0x30]
-		u16* saved_y = (u16*)&array_of_data[2];					//[EBP-0x2E]
-		u32* saved_unknown_1 = (u32*)&array_of_data[0];			//[EBP-0x30] 
-		u32* saved_unknown_2 = (u32*)&array_of_data[4];			//[EBP-0x2C] 
-		u32* saved_bCommandType = (u32*)&array_of_data[0x1C];	//[EBP-0x14]
-		u32* saved_order = (u32*)&array_of_data[0x20];			//[EBP-0x10]
-		u32* saved_order_2 = (u32*)&array_of_data[0x24];		//[EBP-0x0C]
-		u32* saved_order_3 = (u32*)&array_of_data[0x28];		//[EBP-0x08]
+		uint8 array_of_data[0x30];
+		uint16* saved_x = (uint16*)&array_of_data[0];					//[EBP-0x30]
+		uint16* saved_y = (uint16*)&array_of_data[2];					//[EBP-0x2E]
+		uint32* saved_unknown_1 = (uint32*)&array_of_data[0];			//[EBP-0x30] 
+		uint32* saved_unknown_2 = (uint32*)&array_of_data[4];			//[EBP-0x2C] 
+		uint32* saved_bCommandType = (uint32*)&array_of_data[0x1C];	//[EBP-0x14]
+		uint32* saved_order = (uint32*)&array_of_data[0x20];			//[EBP-0x10]
+		uint32* saved_order_2 = (uint32*)&array_of_data[0x24];		//[EBP-0x0C]
+		uint32* saved_order_3 = (uint32*)&array_of_data[0x28];		//[EBP-0x08]
 		CUnit** saved_unit = (CUnit**)&array_of_data[0x2C];		//[EBP-0x04]
 
-		u8* switch_value = (u8*)0x0049ADA0;
+		uint8* switch_value = (uint8*)0x0049ADA0;
 
 		*saved_x = x;
 		*saved_y = y;
 		*saved_order = bActionOrder;
 
-		function_0049A8C0((u8*)&array_of_data[0],orders_dat::CanBeObstructed[bActionOrder]);
+		function_0049A8C0((uint8*)&array_of_data[0],orders_dat::CanBeObstructed[bActionOrder]);
 
 		if(bActionOrder > OrderId::CTFCOP2 || switch_value[bActionOrder] == 1) {
 
 			CUnit* current_unit;
-			u32 current_order = bActionOrder;	//EBX
+			uint32 current_order = bActionOrder;	//EBX
 
 			*selectionIndexStart = 0;
 			current_unit = getActivePlayerNextSelection();
@@ -218,7 +218,7 @@ namespace hooks {
 							*saved_y = y;
 
 							if(wUnitType == UnitId::None)
-								function_0049A500(current_unit,(u8*)&array_of_data[0]);
+								function_0049A500(current_unit,(uint8*)&array_of_data[0]);
 							else
 								*saved_unknown_2 = *saved_unknown_1;
 
@@ -285,10 +285,10 @@ namespace hooks {
 
 namespace {
 
-const u32 Func_OrderAllowed = 0x0046DC20;
-Bool32 OrderAllowed(CUnit* unit, u16 orderId, u32 nationID) {
+const uint32 Func_OrderAllowed = 0x0046DC20;
+bool32 OrderAllowed(CUnit* unit, uint16 orderId, uint32 nationID) {
 
-	static Bool32 bResult;
+	static bool32 bResult;
 
 	__asm {
 		PUSHAD
@@ -306,8 +306,8 @@ Bool32 OrderAllowed(CUnit* unit, u16 orderId, u32 nationID) {
 
 ;
 
-const u32 Func_Sub4756B0 = 0x004756B0;
-void function_004756B0(CUnit* unit, u8 orderId, u32 unk1, u32 unk2, u32 bCommandType) {
+const uint32 Func_Sub4756B0 = 0x004756B0;
+void function_004756B0(CUnit* unit, uint8 orderId, uint32 unk1, uint32 unk2, uint32 bCommandType) {
 
 	__asm {
 		PUSHAD
@@ -324,8 +324,8 @@ void function_004756B0(CUnit* unit, u8 orderId, u32 unk1, u32 unk2, u32 bCommand
 
 ;
 
-const u32 Func_Sub4756E0 = 0x004756E0;
-void function_004756E0(CUnit* unit, CUnit* target, u32 orderId, u32 bCommandType) {
+const uint32 Func_Sub4756E0 = 0x004756E0;
+void function_004756E0(CUnit* unit, CUnit* target, uint32 orderId, uint32 bCommandType) {
 
 	__asm {
 		PUSHAD
@@ -341,10 +341,10 @@ void function_004756E0(CUnit* unit, CUnit* target, u32 orderId, u32 bCommandType
 
 ;
 
-const u32 Func_Sub49A410 = 0x0049A410;
-u32 function_0049A410(CUnit* unit, u8 orderId) {
+const uint32 Func_Sub49A410 = 0x0049A410;
+uint32 function_0049A410(CUnit* unit, uint8 orderId) {
 
-	static u32 result; 
+	static uint32 result; 
 
 	__asm {
 		PUSHAD
@@ -362,7 +362,7 @@ u32 function_0049A410(CUnit* unit, u8 orderId) {
 ;
 
 //Logically identical to 0049A480 sub_49A480
-bool CanTargetSelf(CUnit* unit, u8 orderId) {
+bool CanTargetSelf(CUnit* unit, uint8 orderId) {
 
 	bool return_value;
 
@@ -401,8 +401,8 @@ bool CanTargetSelf(CUnit* unit, u8 orderId) {
 
 ;
 
-const u32 Func_Sub49A500 = 0x0049A500;
-void function_0049A500(CUnit* unit,	u8* array_of_data) {
+const uint32 Func_Sub49A500 = 0x0049A500;
+void function_0049A500(CUnit* unit,	uint8* array_of_data) {
 
 	__asm {
 		PUSHAD
@@ -416,8 +416,8 @@ void function_0049A500(CUnit* unit,	u8* array_of_data) {
 
 ;
 
-const u32 Func_Sub49A8C0 = 0x0049A8C0;
-void function_0049A8C0(u8* array_of_data, Bool32 bCanBeObstructed) {
+const uint32 Func_Sub49A8C0 = 0x0049A8C0;
+void function_0049A8C0(uint8* array_of_data, bool32 bCanBeObstructed) {
 
 	__asm {
 		PUSHAD

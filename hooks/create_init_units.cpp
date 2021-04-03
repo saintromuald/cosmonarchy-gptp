@@ -7,18 +7,18 @@
 
 namespace {
 
-Bool32 spreadsCreep(u32 unitId, Bool32 defaultReturn);		//13870
-void function_004148F0(int x, int y, u32 unitId);			//148F0
+bool32 spreadsCreep(uint32 unitId, bool32 defaultReturn);		//13870
+void function_004148F0(int x, int y, uint32 unitId);			//148F0
 void CreateBuildingLarva(CUnit* main_building);				//9D660
-Bool32 function_0049EC30(CUnit* unit);						//9EC30
+bool32 function_0049EC30(CUnit* unit);						//9EC30
 void updateUnitStrength(CUnit* unit);						//9FA40
 void function_004A01F0(CUnit* unit);						//A01F0
-CUnit* createUnit(u32 unitId, int x, int y, u32 playerId);	//A09D0
-CUnit* FindBestUnit(Box16* coords, u32 searchProc);			//E8830
+CUnit* createUnit(uint32 unitId, int x, int y, uint32 playerId);	//A09D0
+CUnit* FindBestUnit(Box16* coords, uint32 searchProc);			//E8830
 	
 } //unnamed namespace
 
-u8 GetRaceTownhall(u8 raceId) {
+uint8 GetRaceTownhall(uint8 raceId) {
 	if (raceId == RaceId::Zerg)
 		return UnitId::ZergHatchery;
 	else if (raceId == RaceId::Terran)
@@ -29,7 +29,7 @@ u8 GetRaceTownhall(u8 raceId) {
 		return UnitId::None;
 }
 
-u8 GetRaceWorker(u8 raceId) {
+uint8 GetRaceWorker(uint8 raceId) {
 	if (raceId == RaceId::Zerg)
 		return UnitId::ZergDroleth;
 	else if (raceId == RaceId::Terran)
@@ -42,9 +42,9 @@ u8 GetRaceWorker(u8 raceId) {
 
 namespace hooks {
 
-void CreateInitialMeleeBuildings(u8 raceId, u32 playerId) {
-	u8 buildingId = GetRaceTownhall(raceId);
-	s32 buildingSizeX, buildingSizeY;
+void CreateInitialMeleeBuildings(uint8 raceId, uint32 playerId) {
+	uint8 buildingId = GetRaceTownhall(raceId);
+	int32 buildingSizeX, buildingSizeY;
 	Box16 searchBox; 
 	CUnit* created_unit;
 
@@ -56,10 +56,10 @@ void CreateInitialMeleeBuildings(u8 raceId, u32 playerId) {
 	if (buildingSizeY < 0)
 		buildingSizeY++;
 
-	searchBox.left = (startPositions[playerId].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0;
-	searchBox.top = (startPositions[playerId].y - (s16)(buildingSizeY / 2)) & 0x0000FFE0;
-	searchBox.bottom = buildingSizeY / 2 + ((startPositions[playerId].y - (s16)(buildingSizeY / 2)) & 0x0000FFE0)  + buildingSizeY / 2 - 1;
-	searchBox.right = buildingSizeX / 2 + ((startPositions[playerId].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2 - 1;
+	searchBox.left = (startPositions[playerId].x - (int16)(buildingSizeX / 2)) & 0x0000FFE0;
+	searchBox.top = (startPositions[playerId].y - (int16)(buildingSizeY / 2)) & 0x0000FFE0;
+	searchBox.bottom = buildingSizeY / 2 + ((startPositions[playerId].y - (int16)(buildingSizeY / 2)) & 0x0000FFE0)  + buildingSizeY / 2 - 1;
+	searchBox.right = buildingSizeX / 2 + ((startPositions[playerId].x - (int16)(buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2 - 1;
 
 	//yes, the return value is unused for some reason
 	FindBestUnit(&searchBox,0x0049D640);
@@ -100,12 +100,12 @@ double Sign(double x) {
 	return x < 0.0 ? -1.0 : x > 0.0 ? 1.0 : 0.0;
 }
 
-Point16 FindWorkerSpawnPositions(int townhallId, const u16& startX, const u16& startY, bool& horizontal)
+Point16 FindWorkerSpawnPositions(int townhallId, const uint16& startX, const uint16& startY, bool& horizontal)
 {
 	std::vector<Point16> positions;
 	int sumX = 0;
 	int sumY = 0;
-	u32 count = 0;
+	uint32 count = 0;
 
 	scbw::UnitFinder unitFinder;
 	unitFinder.search(
@@ -114,7 +114,7 @@ Point16 FindWorkerSpawnPositions(int townhallId, const u16& startX, const u16& s
 		startX + 10 * 32,
 		startY + 10 * 32
 	);
-	u8 cliffLevel = scbw::getActiveTileAt(startX, startY).groundHeight;
+	uint8 cliffLevel = scbw::getActiveTileAt(startX, startY).groundHeight;
 	unitFinder.forEach([&](CUnit* unit) {
 		if ((unit->id == UnitId::ResourceMineralField
 			|| unit->id == UnitId::ResourceMineralFieldType2
@@ -180,28 +180,28 @@ Point16 FindWorkerSpawnPositions(int townhallId, const u16& startX, const u16& s
 		horizontal = false;
 	}
 
-	return Point16{ (u16)(startX + offsetX), (u16)(startY + offsetY) };
+	return Point16{ (uint16)(startX + offsetX), (uint16)(startY + offsetY) };
 }
 
 void CreateInitialMeleeUnits() {
-	u32 playerId;
-	u8* raceIdOffset;
+	uint32 playerId;
+	uint8* raceIdOffset;
 
 	playerId = 8;
-	raceIdOffset = (u8*)0x0057F009;
+	raceIdOffset = (uint8*)0x0057F009;
 
-	while(raceIdOffset != (u8*)0x0057EEE9) {
+	while(raceIdOffset != (uint8*)0x0057EEE9) {
 
 		raceIdOffset -= 0x24;
 		playerId--;
 
 		if(*(raceIdOffset-1) == 2 || *(raceIdOffset-1) == 1) {
 			//0 is use map settings,1 is Workers, 2 is Workers + Main Building
-			u8 startingUnits = (u8)(*(u16*)(0x00596871));
+			uint8 startingUnits = (uint8)(*(uint16*)(0x00596871));
 
-			static u8* victory_conditions = (u8*)0x0059686D;
-			static u8* tournament_mode = (u8*)0x00596877;
-			static u8* user_select_slots = (u8*)0x0059BDA8;
+			static uint8* victory_conditions = (uint8*)0x0059686D;
+			static uint8* tournament_mode = (uint8*)0x00596877;
+			static uint8* user_select_slots = (uint8*)0x0059BDA8;
 
 			if (*victory_conditions == 0					// check triggers for conditions
 			  && startingUnits == 0 					// use map units
@@ -221,8 +221,8 @@ void CreateInitialMeleeUnits() {
 
 			if (startingUnits == 1 || startingUnits == 2) {
 
-				u8 unitId = GetRaceWorker(*raceIdOffset);
-				u8 townhallId = GetRaceTownhall(*raceIdOffset);
+				uint8 unitId = GetRaceWorker(*raceIdOffset);
+				uint8 townhallId = GetRaceTownhall(*raceIdOffset);
 				CUnit* created_unit;
 				
 				if (unitId != UnitId::None) {
@@ -258,9 +258,9 @@ void CreateInitialMeleeUnits() {
 
 ;
 
-void CreateInitialOverlord(u8 playerId) {
-	static u16* const maxBoxRightValue = (u16*) 0x00628450;
-	static u16* const maxBoxBottomValue = (u16*) 0x006284B4;
+void CreateInitialOverlord(uint8 playerId) {
+	static uint16* const maxBoxRightValue = (uint16*) 0x00628450;
+	static uint16* const maxBoxBottomValue = (uint16*) 0x006284B4;
 
 	int overlordStartX, overlordStartY;
 	CUnit* created_unit;
@@ -297,10 +297,10 @@ void CreateInitialOverlord(u8 playerId) {
 
 namespace {
 
-const u32 Func_spreadsCreep = 0x00413870;
-Bool32 spreadsCreep(u32 unitId, Bool32 defaultReturn) {
+const uint32 Func_spreadsCreep = 0x00413870;
+bool32 spreadsCreep(uint32 unitId, bool32 defaultReturn) {
 
-	Bool32 bReturnValue;
+	bool32 bReturnValue;
 
 	__asm {
 		PUSHAD
@@ -317,8 +317,8 @@ Bool32 spreadsCreep(u32 unitId, Bool32 defaultReturn) {
 
 ;
 
-const u32 Func_Sub4148F0 = 0x004148F0;
-void function_004148F0(int x, int y, u32 unitId) {
+const uint32 Func_Sub4148F0 = 0x004148F0;
+void function_004148F0(int x, int y, uint32 unitId) {
 
 	__asm {
 		PUSHAD
@@ -333,7 +333,7 @@ void function_004148F0(int x, int y, u32 unitId) {
 
 ;
 
-const u32 Func_Sub49D660 = 0x0049D660;
+const uint32 Func_Sub49D660 = 0x0049D660;
 void CreateBuildingLarva(CUnit* main_building) {
 
 	__asm {
@@ -347,10 +347,10 @@ void CreateBuildingLarva(CUnit* main_building) {
 
 ;
 
-const u32 Func_Sub49EC30 = 0x0049EC30;
-Bool32 function_0049EC30(CUnit* unit) {
+const uint32 Func_Sub49EC30 = 0x0049EC30;
+bool32 function_0049EC30(CUnit* unit) {
 
-	Bool32 bResult;
+	bool32 bResult;
 
 	__asm {
 		PUSHAD
@@ -366,7 +366,7 @@ Bool32 function_0049EC30(CUnit* unit) {
 
 ;
 
-const u32 Func_UpdateUnitStrength = 0x0049FA40;
+const uint32 Func_UpdateUnitStrength = 0x0049FA40;
 void updateUnitStrength(CUnit* unit) {
 
 	__asm {
@@ -380,7 +380,7 @@ void updateUnitStrength(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub4A01F0 = 0x004A01F0;
+const uint32 Func_Sub4A01F0 = 0x004A01F0;
 void function_004A01F0(CUnit* unit) {
 
 	__asm {
@@ -394,8 +394,8 @@ void function_004A01F0(CUnit* unit) {
 
 ;
 
-const u32 Func_CreateUnit = 0x004A09D0;
-CUnit* createUnit(u32 unitId, int x, int y, u32 playerId) {
+const uint32 Func_CreateUnit = 0x004A09D0;
+CUnit* createUnit(uint32 unitId, int x, int y, uint32 playerId) {
 
 	static CUnit* unit_created;
 
@@ -416,8 +416,8 @@ CUnit* createUnit(u32 unitId, int x, int y, u32 playerId) {
 
 ;
 
-const u32 Func_FindBestUnit = 0x004E8830;
-CUnit* FindBestUnit(Box16* coords, u32 searchProc) {
+const uint32 Func_FindBestUnit = 0x004E8830;
+CUnit* FindBestUnit(Box16* coords, uint32 searchProc) {
 
 	static CUnit* unit;
 

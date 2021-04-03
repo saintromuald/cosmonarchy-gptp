@@ -5,14 +5,14 @@
 
 namespace {
 
-	bool HasMoneyCanMake(CUnit* builder, u32 unitToBuild);		//67250
+	bool HasMoneyCanMake(CUnit* builder, uint32 unitToBuild);		//67250
 	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);	//742D0
 
 } //unnamed namespace
 
 namespace hooks {
 
-	void CMDRECV_BuildingMorph(u16 wUnitType) {
+	void CMDRECV_BuildingMorph(uint16 wUnitType) {
 
 		CUnit* building;
 		*selectionIndexStart = 0;
@@ -37,7 +37,7 @@ namespace hooks {
 
 	;
 
-	void CMDRECV_UnitMorph(u16 wUnitType) {
+	void CMDRECV_UnitMorph(uint16 wUnitType) {
 		CUnit* current_unit;
 		*selectionIndexStart = 0;
 		current_unit = getActivePlayerNextSelection();
@@ -110,10 +110,10 @@ namespace hooks {
 
 namespace {
 
-	const u32 Func_HasMoneyCanMake = 0x00467250;
-	bool HasMoneyCanMake(CUnit* builder, u32 unitToBuild) {
+	const uint32 Func_HasMoneyCanMake = 0x00467250;
+	bool HasMoneyCanMake(CUnit* builder, uint32 unitToBuild) {
 
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 
 		__asm {
 			PUSHAD
@@ -130,7 +130,7 @@ namespace {
 
 	;
 
-	const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
+	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
 	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 		__asm {

@@ -36,13 +36,13 @@ void getCloakedTargetVisibility(CUnit* detector, DetectorCheckParam* param) {
 	) 
 	{
 
-		u8 visibilityFlags = (1 << detector->playerId);
+		uint8 visibilityFlags = (1 << detector->playerId);
 
 		//only continue if the target sprite is visible (else it's
 		//not a cloaking issue that hide the unit)
 		if(target->sprite->visibilityFlags & visibilityFlags) {
 
-			u32 detectionRange;
+			uint32 detectionRange;
 
 			if(detector->status & UnitStatus::GroundedBuilding)
 				detectionRange = 224; //0xE0, 32 * 7

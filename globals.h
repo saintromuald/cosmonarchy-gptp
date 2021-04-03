@@ -12,7 +12,7 @@
 class globals;
 
 struct SaveState {
-	u32 len;
+	uint32 len;
 	const char* ptr;
 
 	SaveState() {
@@ -31,10 +31,10 @@ namespace ImpactId {
 class persistImpact {
 public:
 	Point32 position;
-	u8 elevation;
-	u32 timer;
-	u32 repeatsLeft;
-	u8 impactId;
+	uint8 elevation;
+	uint32 timer;
+	uint32 repeatsLeft;
+	uint8 impactId;
 };
 class pariahHit {
 public:
@@ -49,24 +49,24 @@ public:
 	multihitBullet(){
 		divider = 0;
 	}
-	multihitBullet(CBullet* bullet,std::vector<CUnit*> already_hit,u32 divider): bullet(bullet),already_hit(already_hit),divider(divider){}
+	multihitBullet(CBullet* bullet,std::vector<CUnit*> already_hit,uint32 divider): bullet(bullet),already_hit(already_hit),divider(divider){}
 };
 
 class apostleAgent {
 public:
 	Point32 position;
-	u32 timer;
-	u32 unitId;
-	u8 playerId;
-	u32 energy;
+	uint32 timer;
+	uint32 unitId;
+	uint8 playerId;
+	uint32 energy;
 	CUnit* creator;
 };
 
 
 class AttackExtender {
 public:
-//	std::vector<std::vector<u16>> attacks;
-	u16 attacks[PLAYABLE_PLAYER_COUNT][ATTACK_LIMIT];
+//	std::vector<std::vector<uint16>> attacks;
+	uint16 attacks[PLAYABLE_PLAYER_COUNT][ATTACK_LIMIT];
 	AttackExtender() {
 		
 		for (int i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
@@ -157,8 +157,8 @@ public:
 	double updateUnitStateDbg;
 	double updateStatusEffectsDbg;*/
 	//serializable data
-	u32 extended_unit_table;
-	u32 extended_sfx;
+	uint32 extended_unit_table;
+	uint32 extended_sfx;
 	bool tbl_extender;
 	bool unitid_extender;
 
@@ -174,11 +174,11 @@ public:
 
 	//non-serializable data (exists only temporarily in memory in wrapper/hook flow)
 	int flingy_init_bullet_id;
-	u8 flingy_init_player_id;
+	uint8 flingy_init_player_id;
 	CBullet* bounce_bullet;
 //	SaveState aise_save();
 	void aise_save();
-	void aise_load(const char* ptr, u32 len);
+	void aise_load(const char* ptr, uint32 len);
 	globals() {
 		extended_unit_table = 0;
 		extended_sfx = 0;
@@ -198,16 +198,16 @@ public:
 	bool was_hit_by_pariah(CUnit* source, CUnit* target);
 
 	void register_pariah_hit(CUnit* source, CUnit* target);
-	void createSalamanderFire(int x, int y, u8 player, u8 elevation, bool addImpactValue);
-	void createIonField(int x, int y, u8 player, u8 elevation, bool addImpactValue);
-	void createPlanetCracker(int x, int y, u8 player, u8 elevation);
+	void createSalamanderFire(int x, int y, uint8 player, uint8 elevation, bool addImpactValue);
+	void createIonField(int x, int y, uint8 player, uint8 elevation, bool addImpactValue);
+	void createPlanetCracker(int x, int y, uint8 player, uint8 elevation);
 	bool was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target);
 	bool multihit_bullet_is_set(CBullet* bullet);
-	u32 get_multihit_count(CBullet* bullet);
+	uint32 get_multihit_count(CBullet* bullet);
 	void add_multihit_empty_bullet(CBullet* bullet, int divider);
 	void add_bullet_multihit(CBullet* bullet, CUnit* target);
 	void add_incremental_bullet_multihit(CBullet* bullet, CUnit* target);
-	void initLazarusAgent(int x, int y, u8 player, u32 unitId, u32 energy, CUnit* unit);
+	void initLazarusAgent(int x, int y, uint8 player, uint32 unitId, uint32 energy, CUnit* unit);
 	void clear_ptr_in_apostle_table(CUnit* unit);
 	void remove_multihit_bullet(CBullet* bullet);
 	int get_divider(CBullet* bullet);
@@ -223,21 +223,21 @@ static SaveState saveState;
 extern globals Globals;
 
 namespace scbw {
-	CUnit* get_generic_unit(CUnit* unit, u32 id);
-	u32 get_generic_value(CUnit* u, u32 val);
-	u32 get_generic_timer(CUnit* u, u32 val);
-	void set_generic_unit(CUnit* unit, u32 id, CUnit* targ);
-	void set_generic_value(CUnit* u, u32 id, u32 val);
-	void set_generic_timer(CUnit* u, u32 id, u32 val);
-	void add_generic_value(CUnit* u, u32 id, int val);
-	CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset);
+	CUnit* get_generic_unit(CUnit* unit, uint32 id);
+	uint32 get_generic_value(CUnit* u, uint32 val);
+	uint32 get_generic_timer(CUnit* u, uint32 val);
+	void set_generic_unit(CUnit* unit, uint32 id, CUnit* targ);
+	void set_generic_value(CUnit* u, uint32 id, uint32 val);
+	void set_generic_timer(CUnit* u, uint32 id, uint32 val);
+	void add_generic_value(CUnit* u, uint32 id, int val);
+	CBullet* setMissileSourcePosRet(CUnit* unit, uint32 weaponId, uint32 valueId, int32 rotateCount, uint32 overlayType, uint32 frameset_offset);
 	bool isSlowed(CUnit* unit);
 	void refreshDebuffs(CUnit* unit);
 	void inheritDebuffs(CUnit* parent, CUnit* child);
 	bool isDebuffed(CUnit* unit);
 	void restoreFunc(CUnit* unit);
-	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen);
-	void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound);
-	void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset);
+	void applyParasite(CUnit* unit, uint8 playerID, CUnit* queen);
+	void doDeconstructionDamage(CUnit* unit, uint16 weaponId, bool playSound);
+	void setMissileSourcePos(CUnit* unit, uint32 weaponId, uint32 valueId, int32 rotateCount, uint32 overlayType, uint32 frameset_offset);
 	CUnit** getSourceQueens(CUnit* unit);
 }

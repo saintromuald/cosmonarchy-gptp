@@ -7,12 +7,12 @@ namespace {
 
 CUnit* MedicHeal_TargetAcquire(CUnit* medic);															//0x004422A0
 CUnit* findBestAttackTarget(CUnit* unit);																//0x00443080
-u32 doMedicHeal(CUnit* unit, CUnit* target);															//0x00463C40
+uint32 doMedicHeal(CUnit* unit, CUnit* target);															//0x00463C40
 void removeOrderFromUnitQueue(CUnit* unit, COrder* order);												//0x004742D0
-void orderImmediate(CUnit* unit, u8 order);																//0x00474B40
-void function_00476FC0(CUnit* unit, CUnit* target, u32 unk1, u32 unk2);									//0x00476FC0
-Bool32 function_004770E0(CUnit* unit);																	//0x004770E0
-u32 RandBetween(u32 min, u32 max, u32 someIndex);														//0x004DC550
+void orderImmediate(CUnit* unit, uint8 order);																//0x00474B40
+void function_00476FC0(CUnit* unit, CUnit* target, uint32 unk1, uint32 unk2);									//0x00476FC0
+bool32 function_004770E0(CUnit* unit);																	//0x004770E0
+uint32 RandBetween(uint32 min, uint32 max, uint32 someIndex);														//0x004DC550
 void setNextWaypoint_Sub4EB290(CUnit* unit);															//0x004EB290
 
 } //unnamed namespace
@@ -21,7 +21,7 @@ namespace hooks {
 
 void orders_MedicHoldPosition(CUnit* unit) {
 
-	u32 switchValue;
+	uint32 switchValue;
 
 	if(unit->mainOrderState == 0) {
 
@@ -218,12 +218,12 @@ void orders_ReaverStop(CUnit* unit) {
 
 void orders_Guard(CUnit* unit) {
 
-	unit->mainOrderTimer = (u8)RandBetween(0,15,29);
+	unit->mainOrderTimer = (uint8)RandBetween(0,15,29);
 
 	if(playerTable[unit->playerId].type == PlayerType::Computer) {
 
 		//since details about pAI structure are unknown, have to use this
-		u8* const pAI_subparameter = (u8*)( ( (int)(unit->pAI) ) + 8 );
+		uint8* const pAI_subparameter = (uint8*)( ( (int)(unit->pAI) ) + 8 );
 
 		unit->mainOrderId = OrderId::ComputerAI;
 
@@ -315,7 +315,7 @@ void function_004774A0(CUnit* unit) {
 
 namespace {
 
-const u32 Func_MedicHeal_TargetAcquire = 0x004422A0;
+const uint32 Func_MedicHeal_TargetAcquire = 0x004422A0;
 CUnit* MedicHeal_TargetAcquire(CUnit* medic) {
 
 	static CUnit* target;
@@ -334,7 +334,7 @@ CUnit* MedicHeal_TargetAcquire(CUnit* medic) {
 
 ;
 
-const u32 Func_Sub443080 = 0x00443080;
+const uint32 Func_Sub443080 = 0x00443080;
 //named according to attack_priority_inject.cpp
 CUnit* findBestAttackTarget(CUnit* unit) {
 
@@ -354,10 +354,10 @@ CUnit* findBestAttackTarget(CUnit* unit) {
 
 ;
 
-const u32 Func_doMedicHeal = 0x00463C40;
-u32 doMedicHeal(CUnit* unit, CUnit* target) {
+const uint32 Func_doMedicHeal = 0x00463C40;
+uint32 doMedicHeal(CUnit* unit, CUnit* target) {
 
-	static u32 return_value;
+	static uint32 return_value;
 
 	__asm {
 		PUSHAD
@@ -374,7 +374,7 @@ u32 doMedicHeal(CUnit* unit, CUnit* target) {
 
 ;
 
-const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
+const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
 void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 	__asm {
@@ -389,8 +389,8 @@ void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 ;
 
-const u32 Func_OrderImmediate = 0x00474B40;
-void orderImmediate(CUnit* unit, u8 order) {
+const uint32 Func_OrderImmediate = 0x00474B40;
+void orderImmediate(CUnit* unit, uint8 order) {
 
 	__asm {
 		PUSHAD
@@ -404,8 +404,8 @@ void orderImmediate(CUnit* unit, u8 order) {
 
 ;
 
-const u32 Func_Sub476FC0 = 0x00476FC0;
-void function_00476FC0(CUnit* unit, CUnit* target, u32 unk1, u32 unk2) {
+const uint32 Func_Sub476FC0 = 0x00476FC0;
+void function_00476FC0(CUnit* unit, CUnit* target, uint32 unk1, uint32 unk2) {
 
 	__asm {
 		PUSHAD
@@ -421,10 +421,10 @@ void function_00476FC0(CUnit* unit, CUnit* target, u32 unk1, u32 unk2) {
 
 ;
 
-const u32 Func_Sub4770E0 = 0x004770E0;
-Bool32 function_004770E0(CUnit* unit) {
+const uint32 Func_Sub4770E0 = 0x004770E0;
+bool32 function_004770E0(CUnit* unit) {
 
-	static Bool32 return_value;
+	static bool32 return_value;
 
 	__asm {
 		PUSHAD
@@ -440,10 +440,10 @@ Bool32 function_004770E0(CUnit* unit) {
 
 ;
 
-const u32 Func_RandBetween = 0x004DC550;
-u32 RandBetween(u32 min, u32 max, u32 someIndex) {
+const uint32 Func_RandBetween = 0x004DC550;
+uint32 RandBetween(uint32 min, uint32 max, uint32 someIndex) {
 
-	static u32 return_value;
+	static uint32 return_value;
 
 	__asm {
 		PUSHAD
@@ -462,7 +462,7 @@ u32 RandBetween(u32 min, u32 max, u32 someIndex) {
 ;
 
 //Related to path/movement decision
-const u32 Func_sub_4EB290 = 0x004EB290;
+const uint32 Func_sub_4EB290 = 0x004EB290;
 void setNextWaypoint_Sub4EB290(CUnit* unit) {
 
 	__asm {

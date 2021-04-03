@@ -6,16 +6,16 @@
 namespace {
 
 CUnit* MedicHeal_TargetAcquire(CUnit* medic);											//422A0
-Bool32 AI_OrderHeal(CUnit* unit, CUnit* target);										//63530
-u32 doMedicHeal(CUnit* unit, CUnit* target);											//63C40
+bool32 AI_OrderHeal(CUnit* unit, CUnit* target);										//63530
+uint32 doMedicHeal(CUnit* unit, CUnit* target);											//63C40
 void removeOrderFromUnitQueue(CUnit* unit, COrder* order);								//742D0
-void function_4748E0(CUnit* unit, int x, int y, u8 orderId);							//748E0
-void function_474940(CUnit* unit, CUnit* target, u8 orderId);							//74940
-void orderImmediate(CUnit* unit, u8 order);												//74B40
-void orderInterrupt(CUnit* unit, CUnit* target, u16 x, u16 y, u32 orderId);				//74C30
+void function_4748E0(CUnit* unit, int x, int y, uint8 orderId);							//748E0
+void function_474940(CUnit* unit, CUnit* target, uint8 orderId);							//74940
+void orderImmediate(CUnit* unit, uint8 order);												//74B40
+void orderInterrupt(CUnit* unit, CUnit* target, uint16 x, uint16 y, uint32 orderId);				//74C30
 void actUnitReturnToIdle(CUnit* unit);													//75420
 void unitOrderMoveToTargetUnit(CUnit* unit, CUnit* target);								//79FE0
-Bool32 AI_CastSpellBehaviour(CUnit* unit, u32 unknown);									//A13C0
+bool32 AI_CastSpellBehaviour(CUnit* unit, uint32 unknown);									//A13C0
 void setNextWaypoint_Sub4EB290(CUnit* unit);											//EB290
 bool moveToTarget(CUnit* unit, CUnit* target);											//EB720
 bool SetMoveTarget_xy(CUnit* unit, int x, int y);										//EB820
@@ -173,16 +173,16 @@ namespace hooks {
 
 				if(unit->pAI != nullptr) {
 
-					if(*(u8*)((u32)unit->pAI + 8) != 1)
+					if(*(uint8*)((uint32)unit->pAI + 8) != 1)
 						unit->orderComputerCL(OrderId::ComputerAI);
 					else
-					if(	unit->sprite->position.x != *(u16*)((u32)unit->pAI + 0x12) ||
-						unit->sprite->position.y != *(u16*)((u32)unit->pAI + 0x14)
+					if(	unit->sprite->position.x != *(uint16*)((uint32)unit->pAI + 0x12) ||
+						unit->sprite->position.y != *(uint16*)((uint32)unit->pAI + 0x14)
 					)
 						unit->orderTo(
 							OrderId::ComputerReturn,
-							*(u16*)((u32)unit->pAI + 0x12),
-							*(u16*)((u32)unit->pAI + 0x14)
+							*(uint16*)((uint32)unit->pAI + 0x12),
+							*(uint16*)((uint32)unit->pAI + 0x14)
 						);
 
 				}
@@ -196,7 +196,7 @@ namespace hooks {
 //void orders_MedicHoldPosition(CUnit* unit)
 //in base_orders/stopholdpos_orders.cpp
 
-	u32 doMedicHeal_Func(CUnit* medic, CUnit* target) { // 00463C40
+	uint32 doMedicHeal_Func(CUnit* medic, CUnit* target) { // 00463C40
 		auto v3 = medic;
 		auto result = medic->canUseTech(TechId::Healing, medic->playerId);
 		if (result) {
@@ -236,7 +236,7 @@ namespace hooks {
 
 	void orders_MedicHeal1(CUnit* unit) {
 		CUnit* target = unit->orderTarget.unit;
-		u32 doMedicHeal_result=0;
+		uint32 doMedicHeal_result=0;
 		auto a = unit->hitPoints;
 		bool reqHeal = false;
 		if (target!=nullptr && target->hitPoints < units_dat::MaxHitPoints[target->id]) {
@@ -327,7 +327,7 @@ namespace hooks {
 
 namespace {
 
-	const u32 Func_MedicHeal_TargetAcquire = 0x004422A0;
+	const uint32 Func_MedicHeal_TargetAcquire = 0x004422A0;
 	CUnit* MedicHeal_TargetAcquire(CUnit* medic) {
 		static CUnit* target;
 		__asm {
@@ -340,9 +340,9 @@ namespace {
 		return target;	
 	}
 
-	const u32 Func_AI_OrderHeal = 0x00463530;
-	Bool32 AI_OrderHeal(CUnit* unit, CUnit* target) {
-		static Bool32 result;
+	const uint32 Func_AI_OrderHeal = 0x00463530;
+	bool32 AI_OrderHeal(CUnit* unit, CUnit* target) {
+		static bool32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, target
@@ -354,9 +354,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_doMedicHeal = 0x00463C40;
-	u32 doMedicHeal(CUnit* unit, CUnit* target) {
-		static u32 return_value;
+	const uint32 Func_doMedicHeal = 0x00463C40;
+	uint32 doMedicHeal(CUnit* unit, CUnit* target) {
+		static uint32 return_value;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -368,7 +368,7 @@ namespace {
 		return return_value;
 	}
 
-	const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
+	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
 	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 		__asm {
 			PUSHAD
@@ -380,8 +380,8 @@ namespace {
 
 	}
 
-	const u32 Func_sub4748E0 = 0x004748E0;
-	void function_4748E0(CUnit* unit, int x, int y, u8 orderId) {
+	const uint32 Func_sub4748E0 = 0x004748E0;
+	void function_4748E0(CUnit* unit, int x, int y, uint8 orderId) {
 		__asm {
 			PUSHAD
 			MOV BL, orderId
@@ -394,8 +394,8 @@ namespace {
 		}
 	}
 
-	const u32 Func_sub474940 = 0x00474940;
-	void function_474940(CUnit* unit, CUnit* target, u8 orderId) {
+	const uint32 Func_sub474940 = 0x00474940;
+	void function_474940(CUnit* unit, CUnit* target, uint8 orderId) {
 		__asm {
 			PUSHAD
 			MOV BL, orderId
@@ -407,8 +407,8 @@ namespace {
 		}
 	}
 
-	const u32 Func_OrderImmediate = 0x00474B40;
-	void orderImmediate(CUnit* unit, u8 order) {
+	const uint32 Func_OrderImmediate = 0x00474B40;
+	void orderImmediate(CUnit* unit, uint8 order) {
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -418,8 +418,8 @@ namespace {
 		}
 	}
 
-	const u32 Func_orderInterrupt = 0x00474C30;
-	void orderInterrupt(CUnit* unit, CUnit* target, u16 x, u16 y, u32 orderId) {
+	const uint32 Func_orderInterrupt = 0x00474C30;
+	void orderInterrupt(CUnit* unit, CUnit* target, uint16 x, uint16 y, uint32 orderId) {
 		static Point16 pos;
 		pos.x = x;pos.y = y;
 		__asm {
@@ -433,7 +433,7 @@ namespace {
 		}
 	}
 
-	const u32 Func_ActUnitReturnToIdle = 0x00475420;
+	const uint32 Func_ActUnitReturnToIdle = 0x00475420;
 	void actUnitReturnToIdle(CUnit* unit) {
 		__asm {
 		PUSHAD
@@ -443,7 +443,7 @@ namespace {
 		}
 	}
 
-	const u32 Func_unitOrderMoveToTargetUnit = 0x00479FE0;
+	const uint32 Func_unitOrderMoveToTargetUnit = 0x00479FE0;
 	void unitOrderMoveToTargetUnit(CUnit* unit, CUnit* target) {
 		__asm {
 			PUSHAD
@@ -454,9 +454,9 @@ namespace {
 		}
 	}
 
-	const u32 Func_AI_CastSpellBehaviour = 0x004A13C0;
-	Bool32 AI_CastSpellBehaviour(CUnit* unit, u32 unknown) {
-		static Bool32 result;
+	const uint32 Func_AI_CastSpellBehaviour = 0x004A13C0;
+	bool32 AI_CastSpellBehaviour(CUnit* unit, uint32 unknown) {
+		static bool32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -471,7 +471,7 @@ namespace {
 	}
 
 	//Related to path/movement decision
-	const u32 Func_sub_4EB290 = 0x004EB290;
+	const uint32 Func_sub_4EB290 = 0x004EB290;
 	void setNextWaypoint_Sub4EB290(CUnit* unit) {
 		__asm {
 			PUSHAD
@@ -481,9 +481,9 @@ namespace {
 		}
 	}
 
-	const u32 Func_moveToTarget = 0x004EB720;
+	const uint32 Func_moveToTarget = 0x004EB720;
 	bool moveToTarget(CUnit* unit, CUnit* target) {
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -495,9 +495,9 @@ namespace {
 		return (bPreResult != 0);
 	}
 
-	const u32 Func_SetMoveTarget_xy = 0x004EB820;
+	const uint32 Func_SetMoveTarget_xy = 0x004EB820;
 	bool SetMoveTarget_xy(CUnit* unit, int x, int y) {
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -510,9 +510,9 @@ namespace {
 		return (bPreResult != 0);
 	}
 
-	const u32 Func_Sub4EB900 = 0x004EB900;
+	const uint32 Func_Sub4EB900 = 0x004EB900;
 	bool function_004EB900(CUnit* unit, CUnit* target) {
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EAX, target

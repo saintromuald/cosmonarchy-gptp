@@ -46,7 +46,7 @@ bool isTargetAttackingAlly(CUnit* target, CUnit* unit) {
   return false;
 }
 
-bool isUmsMode(u8 playerId) {
+bool isUmsMode(uint8 playerId) {
   assert(playerId < 8);
   return AIScriptController[playerId].AI_Flags.isUseMapSettings;
 }
@@ -54,9 +54,9 @@ bool isUmsMode(u8 playerId) {
 //-------- isUnitInUnsafeRegion() --------//
 
 //Internal use only
-const u32 Func_GetRegionIdAtPosEx = 0x0049C9F0;
-u16 getRegionIdAtPosEx(s32 x, s32 y) {
-  static u16 result;
+const uint32 Func_GetRegionIdAtPosEx = 0x0049C9F0;
+uint16 getRegionIdAtPosEx(int32 x, int32 y) {
+  static uint16 result;
 
   __asm {
     PUSHAD
@@ -72,7 +72,7 @@ u16 getRegionIdAtPosEx(s32 x, s32 y) {
 
 //Based on code @ 0x00440BB0 (not a real independant function)
 bool isUnitInUnsafeRegion(CUnit* unit) {
-  u16 currentRegion = getRegionIdAtPosEx(unit->getX(), unit->getY());
+  uint16 currentRegion = getRegionIdAtPosEx(unit->getX(), unit->getY());
   AiCaptain *currentAiCaptain = &AiRegionCaptains[unit->playerId][currentRegion];
   return currentAiCaptain->captainType == 3
     || currentAiCaptain->airTarget
@@ -97,7 +97,7 @@ scbw::UnitFinder unitStatTotalFinder;
 //In original functions:
 //0x00695604 would contains weaponId
 //0x00695798 would contains totalEnemyLife
-int getTotalEnemyLifeInArea(int x, int y, int searchBounds, CUnit* caster, u8 weaponId) {
+int getTotalEnemyLifeInArea(int x, int y, int searchBounds, CUnit* caster, uint8 weaponId) {
 
 	unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
                              x + searchBounds, y + searchBounds);
@@ -170,7 +170,7 @@ int getTotalEnemyLifeInArea(int x, int y, int searchBounds, CUnit* caster, u8 we
 
 //Loop content based on AIAllyUnitHPAccumulatorProc @ 0x00440D60
 //0x00695798 would contains totalAllyLife
-int getTotalAllyLifeInArea(int x, int y, int searchBounds, CUnit* caster, u8 weaponId) {
+int getTotalAllyLifeInArea(int x, int y, int searchBounds, CUnit* caster, uint8 weaponId) {
 
 	unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
 							 x + searchBounds, y + searchBounds);

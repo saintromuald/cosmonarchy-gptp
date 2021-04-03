@@ -48,7 +48,7 @@ void __declspec(naked) CMDRECV_CarrierStopWrapper() {
 
 void __declspec(naked) CMDRECV_StopWrapper() {
 
-	static u8 bCommandType;
+	static uint8 bCommandType;
 
 	__asm {
 		MOV AL, [EDI+0x01]

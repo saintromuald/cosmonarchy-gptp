@@ -4,24 +4,24 @@ namespace {
 
 	// 
 	int refundAllQueueSlots(CUnit* a1);																			// 00466E80
-	int Ai_HasBuildingsNeedingPower(u32 player);																// 00433410
-	int Ai_CountEconomyUnits(u32 player, u32 unit_id);															// 00433470
-	int getSuppliesRemaining(u8 player, u16 unit_id);															// 004889D0
-	int getSuppliesUsed(int byte_data, u8 player);																// 004888C0
+	int Ai_HasBuildingsNeedingPower(uint32 player);																// 00433410
+	int Ai_CountEconomyUnits(uint32 player, uint32 unit_id);															// 00433470
+	int getSuppliesRemaining(uint8 player, uint16 unit_id);															// 004889D0
+	int getSuppliesUsed(int byte_data, uint8 player);																// 004888C0
 
 	// For AI_AddTownSpendingRequest
-	s32 AI_AddCostToNeeds(s32 a1, s32 a2, s32 a3);																// 00447DC0
-	s32 AI_AddSpendingRequest(s16 a1, s32 a2, char a3, char a4, void* a5);										// 00447980
+	int32 AI_AddCostToNeeds(int32 a1, int32 a2, int32 a3);																// 00447DC0
+	int32 AI_AddSpendingRequest(int16 a1, int32 a2, char a3, char a4, void* a5);										// 00447980
 
 	// For AI_AddSpendingRequest
-	bool isAIAllowedToBuild(s32 a1, s32 a2);																	// 00447830
+	bool isAIAllowedToBuild(int32 a1, int32 a2);																	// 00447830
 
 }
 
 namespace hooks {
 
-	u32 get_order_from_unit_id(u32 unit_id) {
-		u32 order = 0;
+	uint32 get_order_from_unit_id(uint32 unit_id) {
+		uint32 order = 0;
 		switch (unit_id) {
 		case UnitId::TerranMason://0x7
 /*		case UnitId::mole:
@@ -40,8 +40,8 @@ namespace hooks {
 		return order;
 	}
 
-	u32 get_townhall_from_race(u32 race) {
-		u32 id = 0xe4;
+	uint32 get_townhall_from_race(uint32 race) {
+		uint32 id = 0xe4;
 		switch (race) {
 		case RaceId::Terran:
 			id = UnitId::TerranCommandCenter;
@@ -59,7 +59,7 @@ namespace hooks {
 		return id;
 	}
 
-	bool unit_is_correct_townhall(u32 unit_id, u32 cmp_id, CUnit* unit) {
+	bool unit_is_correct_townhall(uint32 unit_id, uint32 cmp_id, CUnit* unit) {
 		//unit is unused. this is function is supposed to be used for custom faction workers
 		switch (unit_id) {
 		case UnitId::TerranCommandCenter:
@@ -76,7 +76,7 @@ namespace hooks {
 		//return (unit_id == cmp_id);
 	}
 
-	bool is_townhall(u32 unit_id) {
+	bool is_townhall(uint32 unit_id) {
 		switch (unit_id) {
 		case UnitId::TerranCommandCenter:
 		case UnitId::ProtossNexus:
@@ -88,7 +88,7 @@ namespace hooks {
 		return false;
 	}
 
-	bool is_terran_supply(u16 unit_id, CUnit* worker) {
+	bool is_terran_supply(uint16 unit_id, CUnit* worker) {
 		//worker is not used originally in regards of supply, but may be required for custom race support
 		if (unit_id == UnitId::TerranSupplyDepot) {
 			return true;
@@ -96,7 +96,7 @@ namespace hooks {
 		return false;
 	}
 
-	bool is_vespene_top_structure(u16 unit_id) {
+	bool is_vespene_top_structure(uint16 unit_id) {
 		switch (unit_id) {
 		case UnitId::TerranReservoir:
 		case UnitId::ProtossAquifer:
@@ -107,7 +107,7 @@ namespace hooks {
 		}
 	}
 
-	bool is_gasholder_structure(u16 unit_id){
+	bool is_gasholder_structure(uint16 unit_id){
 		switch (unit_id) {
 		case UnitId::TerranReservoir:
 		case UnitId::ProtossAquifer:
@@ -119,8 +119,8 @@ namespace hooks {
 		}
 	}
 
-	u32 get_worker_from_race(u32 race) {
-		u32 id = 0xe4;
+	uint32 get_worker_from_race(uint32 race) {
+		uint32 id = 0xe4;
 		switch (race) {
 		case RaceId::Terran:
 			id = UnitId::TerranMason;
@@ -138,8 +138,8 @@ namespace hooks {
 		return id;
 	}
 
-	u32 get_supply_structure_from_race(u32 race, u8 player) {
-		u32 id = 0xe4;
+	uint32 get_supply_structure_from_race(uint32 race, uint8 player) {
+		uint32 id = 0xe4;
 		//player is not used originally but may be required for custom race support
 		switch (race) {
 		case RaceId::Terran:
@@ -161,14 +161,14 @@ namespace hooks {
 	// Veeq7
 
 	// Returns town race judging by main town, first checks if it has buildings assigned
-	u8 GetTownRace(AiTown* town) {
+	uint8 GetTownRace(AiTown* town) {
 		if (!town) return RaceId::Neutral;
 		if (!town->main_building) return RaceId::Neutral; // can't tell from main town, might want to check from buildings maybe
 		return town->main_building->getRace();
 	}
 
 	// Checks if worker is valid (exists && correct race)
-	bool IsValidWorker(const WorkerAi& worker, u8 raceId) {
+	bool IsValidWorker(const WorkerAi& worker, uint8 raceId) {
 		if (!worker.parent) return false;
 		if (worker.parent->getRace() != raceId) return false;
 		return true;
@@ -177,7 +177,7 @@ namespace hooks {
 	// Checks if town has a free worker of given race
 	// First checks SC's first free worker var; If invalid iterates over all free workers
 	// This was needed since first free worker is sometimes null.
-	bool HasFreeWorker(AiTown* town, u8 raceId) {
+	bool HasFreeWorker(AiTown* town, uint8 raceId) {
 		WorkerAi* first = town->free_workers->first_free_worker;
 		if (first) {
 			if (IsValidWorker(*first, raceId)) {
@@ -191,7 +191,7 @@ namespace hooks {
 	}
 
 	// Checks if town is eligible for supply building (correct race && has correct free worker)
-	bool IsTownEligible(AiTown* town, u8 raceId) {
+	bool IsTownEligible(AiTown* town, uint8 raceId) {
 		if (!town) return false;
 		if (town->in_battle) return false; // We probably don't want supplies to be built in attacked towns. We might want to ommit this condition if it's the only eligable town
 		if (GetTownRace(town) != raceId) return false;
@@ -204,7 +204,7 @@ namespace hooks {
 
 	// First checks if main town is eligible for supply building
 	// If not then iterates on every player's town and then checks if it's eligible for supply building
-	AiTown* GetFirstEligibleTown(AiTown* mainTown, u8 playerId, u8 raceId) {			
+	AiTown* GetFirstEligibleTown(AiTown* mainTown, uint8 playerId, uint8 raceId) {			
 		if (mainTown) {
 			if (IsTownEligible(mainTown, raceId)) {
 				return mainTown;
@@ -227,8 +227,8 @@ namespace hooks {
 
 	void Ai_BuildSupplies(AiTown* town) {
 		// Tidomann
-		u8 race_;
-		u8 player_;
+		uint8 race_;
+		uint8 player_;
 		bool hasTerran_ = false;
 		bool hasZerg_ = false;
 		bool hasProtoss_ = false;
@@ -292,13 +292,13 @@ namespace hooks {
 		}
 	}
 
-	bool checkSupplyNeed(u8 player_, u8 race_) {
+	bool checkSupplyNeed(uint8 player_, uint8 race_) {
 		unsigned int checkEcoUnits_;
 		int supplyRemaining_;
-		u32 workerUnit = get_worker_from_race(race_);
+		uint32 workerUnit = get_worker_from_race(race_);
 		int supplyUsedCompare_;
-		u8 townHallSupply_;
-		u32 supplyUnit_ = get_supply_structure_from_race(race_, player_);
+		uint8 townHallSupply_;
+		uint32 supplyUnit_ = get_supply_structure_from_race(race_, player_);
 
 		supplyRemaining_ = getSuppliesRemaining(player_, workerUnit);
 
@@ -325,7 +325,7 @@ namespace hooks {
 		return false;
 	}
 
-	u32 orders_isGeyserTopUnitHook(CUnit* unit) {
+	uint32 orders_isGeyserTopUnitHook(CUnit* unit) {
 		if (unit->status & UnitStatus::Completed) {
 			if (is_vespene_top_structure(unit->id)) {
 				return true;
@@ -334,11 +334,11 @@ namespace hooks {
 		return false;
 	}
 
-	s32 AI_AddTownSpendingRequest(s32 playerId, s32 priority, s32 unitId, void* param) { // 00448400
+	int32 AI_AddTownSpendingRequest(int32 playerId, int32 priority, int32 unitId, void* param) { // 00448400
 		int battleTime;
-		s8 race;
+		int8 race;
 		int result;
-		s32 reqType;
+		int32 reqType;
 
 		battleTime = AIScriptController[playerId].lastIndividualUpdateTime;
 		if (!battleTime
@@ -358,17 +358,17 @@ namespace hooks {
 		return result;
 	}
 	/*
-	s32 AI_AddSpendingRequest(s16 a1, s32 a2, char a3, char a4, void* a5) { // 00447980
+	int32 AI_AddSpendingRequest(int16 a1, int32 a2, char a3, char a4, void* a5) { // 00447980
 		char v5; // bl
-		s16 v6; // di
-		s32 v7; // esi
-		s32 result; // eax
-		u8 v9; // al
+		int16 v6; // di
+		int32 v7; // esi
+		int32 result; // eax
+		uint8 v9; // al
 		AI_Main* v10; // ecx
-		s32 v11; // esi
-		s32 v12; // edx
-		s32 v13; // edi
-		s32 v14; // [esp+Ch] [ebp-8h]
+		int32 v11; // esi
+		int32 v12; // edx
+		int32 v13; // edi
+		int32 v14; // [esp+Ch] [ebp-8h]
 
 		v6 = a1;
 		v5 = a3;
@@ -399,19 +399,19 @@ namespace hooks {
 				v11 = v9;
 				v10->waitForceCount = v9 + 1;
 			}
-			*((s32*)&v10->unknown_0x18 + 2 * v11) = v14;
+			*((int32*)&v10->unknown_0x18 + 2 * v11) = v14;
 			result = (v11 - 1) / 2;
-			for (*((s32*)&v10->pTownMain + 2 * v11) = a5; v11 > 0; result = (result - 1) / 2)
+			for (*((int32*)&v10->pTownMain + 2 * v11) = a5; v11 > 0; result = (result - 1) / 2)
 			{
 				if ((unsigned __int8)*(&v10->unknown_0x18 + 8 * v11) <= *(&v10->unknown_0x18 + 8 * result))
 					break;
-				v12 = *((s32*)&v10->unknown_0x18 + 2 * v11);
-				v13 = *((s32*)&v10->pTownMain + 2 * v11);
-				*((s32*)&v10->unknown_0x18 + 2 * v11) = *((s32*)&v10->unknown_0x18 + 2 * result);
-				*((s32*)&v10->pTownMain + 2 * v11) = *((s32*)&v10->pTownMain + 2 * result);
+				v12 = *((int32*)&v10->unknown_0x18 + 2 * v11);
+				v13 = *((int32*)&v10->pTownMain + 2 * v11);
+				*((int32*)&v10->unknown_0x18 + 2 * v11) = *((int32*)&v10->unknown_0x18 + 2 * result);
+				*((int32*)&v10->pTownMain + 2 * v11) = *((int32*)&v10->pTownMain + 2 * result);
 				v11 = result;
-				*((s32*)&v10->unknown_0x18 + 2 * result) = v12;
-				*((s32*)&v10->pTownMain + 2 * result) = v13;
+				*((int32*)&v10->unknown_0x18 + 2 * result) = v12;
+				*((int32*)&v10->pTownMain + 2 * result) = v13;
 			}
 			break;
 		}
@@ -433,8 +433,8 @@ namespace hooks {
 
 namespace {
 
-	const u32 Func_0x00433410 = 0x00433410;
-	int Ai_HasBuildingsNeedingPower(u32 player) {
+	const uint32 Func_0x00433410 = 0x00433410;
+	int Ai_HasBuildingsNeedingPower(uint32 player) {
 		static int result;
 		__asm {
 			PUSHAD
@@ -446,8 +446,8 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_0x00433470 = 0x00433470;
-	int Ai_CountEconomyUnits(u32 player, u32 unit_id) {
+	const uint32 Func_0x00433470 = 0x00433470;
+	int Ai_CountEconomyUnits(uint32 player, uint32 unit_id) {
 		static int result;
 		__asm {
 			PUSHAD
@@ -460,8 +460,8 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_0x004889D0 = 0x004889D0;
-	int getSuppliesRemaining(u8 player, u16 unit_id) {
+	const uint32 Func_0x004889D0 = 0x004889D0;
+	int getSuppliesRemaining(uint8 player, uint16 unit_id) {
 		static int result;
 		__asm {
 			PUSHAD
@@ -474,9 +474,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_4888c0 = 0x004888C0;
-	int getSuppliesUsed(int byte_data, u8 player) {
-		static u32 result;
+	const uint32 Func_4888c0 = 0x004888C0;
+	int getSuppliesUsed(int byte_data, uint8 player) {
+		static uint32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, byte_data
@@ -488,9 +488,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_AddCostToNeeds = 0x00447DC0;
-	s32 AI_AddCostToNeeds(s32 a1, s32 a2, s32 a3) {
-		static s32 result;
+	const uint32 Func_AI_AddCostToNeeds = 0x00447DC0;
+	int32 AI_AddCostToNeeds(int32 a1, int32 a2, int32 a3) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -503,9 +503,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_AddSpendingRequest = 0x00447980;
-	s32 AI_AddSpendingRequest(s16 a1, s32 a2, char a3, char a4, void* a5) {
-		static s32 result;
+	const uint32 Func_AI_AddSpendingRequest = 0x00447980;
+	int32 AI_AddSpendingRequest(int16 a1, int32 a2, char a3, char a4, void* a5) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH a5
@@ -521,9 +521,9 @@ namespace {
 	}
 
 	// For AI_AddSpendingRequest
-	const u32 Func_isAIAllowedToBuild = 0x00447830;
-	bool isAIAllowedToBuild(s32 a1, s32 a2) {
-		static s32 result;
+	const uint32 Func_isAIAllowedToBuild = 0x00447830;
+	bool isAIAllowedToBuild(int32 a1, int32 a2) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, a2

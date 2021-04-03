@@ -9,13 +9,13 @@
 #include "logger.h"
 namespace {
 	//Helper functions
-	void createShieldOverlay(CUnit* unit, u32 attackDirection);
-	u16 getUnitStrength(CUnit* unit, bool useGroundStrength);
+	void createShieldOverlay(CUnit* unit, uint32 attackDirection);
+	uint16 getUnitStrength(CUnit* unit, bool useGroundStrength);
 
 	/// Definition of damage factors (explosive, concussive, etc.)
 	struct {
-		s32 damageType;
-		s32 unitSizeFactor[4];	 //Order: {independent, small, medium, large}
+		int32 damageType;
+		int32 unitSizeFactor[4];	 //Order: {independent, small, medium, large}
 	} const damageFactor[5] = {
 		{0, 0, 0,	0,	 0},			//Independent
 		{1, 0, 128, 192, 256},			//Explosive
@@ -24,7 +24,7 @@ namespace {
 		{4, 0, 256, 256, 256}			//IgnoreArmor
 	};
 
-	CUnit* createHallucination(CUnit* target, u32 playerId);
+	CUnit* createHallucination(CUnit* target, uint32 playerId);
 	bool placeHallucination(CUnit* unit);
 	void unitDestructor(CUnit * unit);
 
@@ -34,8 +34,8 @@ namespace {
 } //unnamed namespace
 
 //copied from wpnspellhit and renamed
-const u32 Func_displayLastNetErrForPlayer = 0x0049E530;
-void displayneterr_49E530(u32 playerId) {
+const uint32 Func_displayLastNetErrForPlayer = 0x0049E530;
+void displayneterr_49E530(uint32 playerId) {
 	__asm {
 		PUSHAD
 		PUSH playerId
@@ -44,7 +44,7 @@ void displayneterr_49E530(u32 playerId) {
 	}
 }
 
-const u32 Func_UpdateUnitStrength = 0x0049FA40;
+const uint32 Func_UpdateUnitStrength = 0x0049FA40;
 void updateStrength_49FA40(CUnit* unit) {
 
 	__asm {
@@ -56,7 +56,7 @@ void updateStrength_49FA40(CUnit* unit) {
 
 }
 
-const u32 Func_Sub4A01F0 = 0x004A01F0;
+const uint32 Func_Sub4A01F0 = 0x004A01F0;
 void function_004A01F0_copy(CUnit* unit) {
 
 	__asm {
@@ -68,7 +68,7 @@ void function_004A01F0_copy(CUnit* unit) {
 
 }
 
-const u32 Func_497ED0 = 0x00497ED0;
+const uint32 Func_497ED0 = 0x00497ED0;
 void makeSpriteVisible(CSprite* sprite) {
 
 	__asm {
@@ -80,7 +80,7 @@ void makeSpriteVisible(CSprite* sprite) {
 
 }
 
-const u32 Func_AI_TrainingUnit = 0x004A2830;
+const uint32 Func_AI_TrainingUnit = 0x004A2830;
 void AI_Train_4A2830(CUnit* unit_creator, CUnit* created_unit) {
 	__asm {
 		PUSHAD
@@ -91,8 +91,8 @@ void AI_Train_4A2830(CUnit* unit_creator, CUnit* created_unit) {
 	}
 }
 
-const u32 Func_CreateUnit = 0x004A09D0;
-CUnit* CreateUnit_09D0(u32 unitId, int x, int y, u32 playerId) {
+const uint32 Func_CreateUnit = 0x004A09D0;
+CUnit* CreateUnit_09D0(uint32 unitId, int x, int y, uint32 playerId) {
 	static CUnit* unit_created;
 
 	__asm {
@@ -111,11 +111,11 @@ CUnit* CreateUnit_09D0(u32 unitId, int x, int y, u32 playerId) {
 }
 
 //copied from recall_spell, replace later
-const u32 Func_CreateThingy = 0x00488210;
-CThingy* function_00488210(u32 spriteId, s16 x, s16 y, u32 playerId) {
+const uint32 Func_CreateThingy = 0x00488210;
+CThingy* function_00488210(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
 
 	static CThingy* thingy;
-	s32 x_ = x;
+	int32 x_ = x;
 	__asm {
 		PUSHAD
 		PUSH playerId
@@ -129,10 +129,10 @@ CThingy* function_00488210(u32 spriteId, s16 x, s16 y, u32 playerId) {
 	return thingy;
 }
 ;
-const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
+const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
 bool function_004878f0(CThingy* thingy) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -146,8 +146,8 @@ bool function_004878f0(CThingy* thingy) {
 
 }
 
-const u32 Func_Sub498D70 = 0x00498D70;
-void imgul(CSprite* sprite, u32 imageId, u32 unk1, u32 unk2, u32 unk3) {
+const uint32 Func_Sub498D70 = 0x00498D70;
+void imgul(CSprite* sprite, uint32 imageId, uint32 unk1, uint32 unk2, uint32 unk3) {
 
 	__asm {
 		PUSHAD
@@ -212,17 +212,17 @@ void augurSacrifice(CUnit* target) {
 
 namespace hooks {
 	struct WeaponDamageData {
-		const s32 damage;
-		s32 finalDamage;
-		s32 shieldReduceAmount;
-		u8 damageType;
-		u8 damageDivisor;
-		u8 weaponId;
-		s8 direction;
+		const int32 damage;
+		int32 finalDamage;
+		int32 shieldReduceAmount;
+		uint8 damageType;
+		uint8 damageDivisor;
+		uint8 weaponId;
+		int8 direction;
 
 		CUnit* target;
 		CUnit* attacker;
-		u8 attackingPlayerId;
+		uint8 attackingPlayerId;
 	};
 
 	static void weaponDamage_root(WeaponDamageData& data);
@@ -233,13 +233,13 @@ namespace hooks {
 
 	/// Hooks into the CUnit::damageWith() function.
 	void weaponDamageHook(
-		s32 damage,
+		int32 damage,
 		CUnit* target,
-		u8 weaponId,
+		uint8 weaponId,
 		CUnit* attacker,
-		u8 attackingPlayerId,
-		s8 direction,
-		u8 damageDivisor
+		uint8 attackingPlayerId,
+		int8 direction,
+		uint8 damageDivisor
 	) {
 		WeaponDamageData data = {
 			damage,
@@ -292,7 +292,7 @@ namespace hooks {
 
 		// Reduce Defensive Matrix
 		if (data.target->defensiveMatrixHp != 0) {
-			s32 d_matrix_reduceAmount;
+			int32 d_matrix_reduceAmount;
 			if (data.target->defensiveMatrixHp > data.finalDamage)
 				d_matrix_reduceAmount = data.finalDamage;
 			else
@@ -309,7 +309,7 @@ namespace hooks {
 		// Reduce Plasma Shields...but not just yet
 		if (units_dat::ShieldsEnabled[data.target->id] && data.target->shields >= 256) {
 			if (data.damageType != DamageType::IgnoreArmor) {
-				s32 plasmaShieldUpg = scbw::getUpgradeLevel(data.target->playerId, UpgradeId::ProtossPlasmaShields) * 256;
+				int32 plasmaShieldUpg = scbw::getUpgradeLevel(data.target->playerId, UpgradeId::ProtossPlasmaShields) * 256;
 				if (data.finalDamage > plasmaShieldUpg) { //Weird logic, Blizzard dev must have been sleepy
 					data.finalDamage -= plasmaShieldUpg;
 				}
@@ -324,13 +324,13 @@ namespace hooks {
 		// Apply armor
 		bool shield_overlay = false;
 		if (data.damageType != DamageType::IgnoreArmor) {
-			s32 armorTotal = data.target->getArmor() * 256;
+			int32 armorTotal = data.target->getArmor() * 256;
 			if (data.attacker != nullptr) {
 				armorTotal += scbw::get_aise_value(data.target, nullptr, AiseId::GetShepherds, 0, 0) * 256;
 				if (data.target->id == UnitId::TerranMinotaur) {
-					u16 angle = scbw::getAngle(data.target->position.x, data.target->position.y,
+					uint16 angle = scbw::getAngle(data.target->position.x, data.target->position.y,
 						data.attacker->position.x, data.attacker->position.y);
-					u16 unit_angle = data.target->velocityDirection1;
+					uint16 unit_angle = data.target->velocityDirection1;
 					int arc = (double)45 / 1.40625;	//90 degrees
 					int delta = unit_angle - angle;
 					delta = abs((delta + 128) % 256 - 128);
@@ -346,7 +346,7 @@ namespace hooks {
 		}
 
 		//Apply damage type/unit size factor (not checked by UndeadStar, I will hope it work)
-		s32 damage_factor = damageFactor[data.damageType].unitSizeFactor[units_dat::SizeType[data.target->id]];
+		int32 damage_factor = damageFactor[data.damageType].unitSizeFactor[units_dat::SizeType[data.target->id]];
 		if (data.attacker != nullptr) {
 			if (data.attacker->id == UnitId::firebat) {
 				if (units_dat::BaseProperty[data.target->id] & UnitProperty::Building) {
@@ -455,7 +455,7 @@ namespace hooks {
 			break;
 		}
 		default: {
-			u32 divisor = data.damageDivisor;
+			uint32 divisor = data.damageDivisor;
 			if (divisor == 0) {
 				divisor = 1;
 				scbw::printFormattedText("Incorrect weapon hit %d", data.weaponId);
@@ -546,7 +546,7 @@ namespace hooks {
 
 					scbw::set_generic_value(data.target, ValueId::Deconstruction, 1);
 					scbw::set_generic_value(data.target, ValueId::DeconstructionPlayer, data.attacker->playerId);
-					s32 overlayOffset = scbw::getOverlayOffset(data.target->id);
+					int32 overlayOffset = scbw::getOverlayOffset(data.target->id);
 					if (data.target->subunit != nullptr) {
 						scbw::set_generic_value(data.target->subunit, ValueId::Deconstruction, 1);
 						scbw::set_generic_value(data.target->subunit, ValueId::DeconstructionPlayer, data.attacker->playerId);
@@ -560,11 +560,11 @@ namespace hooks {
 			}
 			case WeaponId::AmaranthPsiCleaver: {
 				// Eternal Service - Amaranth behavior
-				s32 hp = data.attacker->hitPoints / 256;
-				s32 maxHp = data.attacker->getMaxHpInGame();
+				int32 hp = data.attacker->hitPoints / 256;
+				int32 maxHp = data.attacker->getMaxHpInGame();
 				double shieldStealRate = MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
-				s32 healAmount = data.damage * shieldStealRate;
-				s32 maxShields = units_dat::MaxShieldPoints[data.attacker->id] * 256;
+				int32 healAmount = data.damage * shieldStealRate;
+				int32 maxShields = units_dat::MaxShieldPoints[data.attacker->id] * 256;
 				data.attacker->shields = std::min(data.attacker->shields + healAmount, maxShields);
 				break;
 			}
@@ -573,7 +573,7 @@ namespace hooks {
 				if (units_dat::BaseProperty[data.target->id] & UnitProperty::Spellcaster) {
 					scbw::set_generic_timer(data.target, ValueId::EntropyGauntlets, (5 * 24) + 1);
 					scbw::set_generic_unit(data.target, ValueId::DecaySavant, data.attacker);
-					u32 overlayImageId;
+					uint32 overlayImageId;
 					if (units_dat::BaseProperty[data.target->id] & UnitProperty::LargeOverlay)
 						overlayImageId = 1109;
 					else if (units_dat::BaseProperty[data.target->id] & UnitProperty::MediumOverlay)
@@ -667,7 +667,7 @@ namespace hooks {
 			case WeaponId::GorgrokorSerratedCleavers: {
 				// Essence Drain - Gorgoleth Energy Steal
 				if (units_dat::BaseProperty[data.target->id] & UnitProperty::Spellcaster) {
-					u16 energy = std::min(data.target->energy, (u16)(data.finalDamage + data.shieldReduceAmount));
+					uint16 energy = std::min(data.target->energy, (uint16)(data.finalDamage + data.shieldReduceAmount));
 					data.target->energy -= energy;
 					data.attacker->energy += energy;
 				}
@@ -683,7 +683,7 @@ namespace hooks {
 			case WeaponId::ApostleCharonRifle: {
 				// Blood Tithe - Apostle behavior
 				//if (scbw::getDistanceFast(data.attacker->position.x, data.attacker->position.y, data.target->position.x, data.target->position.y) >= 160 ) {
-				u32 range = 3 * 32;
+				uint32 range = 3 * 32;
 				scbw::UnitFinder unitFinder(data.target->getX() - range, data.target->getY() - range, data.target->getX() + range, data.target->getY() + range);
 				unitFinder.forEach([&data](CUnit* foundUnit) {
 					if (!(scbw::isAlliedTo(data.attacker->playerId, foundUnit->playerId))	// Return if recipient is not allied, or if recipient is the target
@@ -694,7 +694,7 @@ namespace hooks {
 						|| !(units_dat::BaseProperty[foundUnit->id] & UnitProperty::Organic)) {
 						return;
 					}
-					u32 value = 0;
+					uint32 value = 0;
 					if (units_dat::ShieldsEnabled[data.target->id]) {
 						value = (units_dat::MaxHitPoints[data.target->id] + (units_dat::MaxShieldPoints[data.target->id] * 256)) * 0.10;
 					}
@@ -718,7 +718,7 @@ namespace hooks {
 				}
 				if (scbw::get_generic_unit(haluAttacker, ValueId::HallucinationPointer) == nullptr
 					&& !(haluAttacker->status & UnitStatus::IsHallucination)) {
-					u32 haluPlayer = scbw::get_generic_value(data.target, ValueId::HallucinatingSourcePlayer);
+					uint32 haluPlayer = scbw::get_generic_value(data.target, ValueId::HallucinatingSourcePlayer);
 					if (haluPlayer != haluAttacker->playerId && !scbw::isAlliedTo(haluPlayer, haluAttacker->playerId)) return;
 
 					CUnit* hal_unit = createHallucination(haluAttacker, haluPlayer);
@@ -736,7 +736,7 @@ namespace hooks {
 	}
 
 	static void weaponDamage_lifesteal(WeaponDamageData& data) {
-		u32 lifesteal = data.finalDamage + data.shieldReduceAmount;
+		uint32 lifesteal = data.finalDamage + data.shieldReduceAmount;
 		switch (data.weaponId) {
 		case WeaponId::KaiserBlades: {
 			// Ultrakor Saber Siphon passive
@@ -847,8 +847,8 @@ namespace hooks {
 				if (!units_dat::ShieldsEnabled[unit->id]) {
 					return;
 				}
-				u32 value = 50 * 256;
-				if (unit->shields + value >= (u32)units_dat::MaxShieldPoints[unit->id] * 256)
+				uint32 value = 50 * 256;
+				if (unit->shields + value >= (uint32)units_dat::MaxShieldPoints[unit->id] * 256)
 					unit->shields = units_dat::MaxShieldPoints[unit->id] * 256;
 				else
 					unit->shields += value;
@@ -957,8 +957,8 @@ namespace hooks {
 	}
 
 	void applyEnsnare(CUnit* a1) { // 004F45E0
-		s32 baseProperty; // eax
-		u8 overlayPadding; // al
+		int32 baseProperty; // eax
+		uint8 overlayPadding; // al
 		CUnit* victim; // ecx
 
 		if (!(a1->ensnareTimer)
@@ -1061,11 +1061,11 @@ namespace {
 
 	//Creates the Plasma Shield flickering effect.
 	//Identical to function @ 0x004E6140
-	void createShieldOverlay(CUnit* unit, u32 attackDirection) {
+	void createShieldOverlay(CUnit* unit, uint32 attackDirection) {
 
 		//const LO_Header* shield_lo = shieldOverlays[unit->sprite->mainGraphic->id];
 		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayShieldPtr, unit->sprite->mainGraphic->id));
-		u32 frameAngle = (attackDirection - 124) / 8 % 32;
+		uint32 frameAngle = (attackDirection - 124) / 8 % 32;
 
 		Point8 offset = shield_lo->getOffset(unit->sprite->mainGraphic->direction, frameAngle);
 
@@ -1074,10 +1074,10 @@ namespace {
 	}
 
 	//Somehow related to AI stuff; details unknown.
-	const u32 Helper_GetUnitStrength = 0x00431800;
-	u16 getUnitStrength(CUnit* unit, bool useGroundStrength) {
-		static u16 strength;
-		static u32 useGroundStrength_;
+	const uint32 Helper_GetUnitStrength = 0x00431800;
+	uint16 getUnitStrength(CUnit* unit, bool useGroundStrength) {
+		static uint16 strength;
+		static uint32 useGroundStrength_;
 		useGroundStrength_ = useGroundStrength ? 1 : 0;
 		__asm {
 			PUSHAD
@@ -1092,8 +1092,8 @@ namespace {
 
 	// Hallucination-related
 	// Moved here instead of including an entire other file...
-	const u32 Func_createHallucination = 0x004F6B90;
-	CUnit* createHallucination(CUnit* target, u32 playerId) {
+	const uint32 Func_createHallucination = 0x004F6B90;
+	CUnit* createHallucination(CUnit* target, uint32 playerId) {
 		static CUnit* return_value;
 		__asm {
 			PUSHAD
@@ -1106,9 +1106,9 @@ namespace {
 		return return_value;
 	}
 
-	const u32 Func_placeHallucination = 0x004F66D0;
+	const uint32 Func_placeHallucination = 0x004F66D0;
 	bool placeHallucination(CUnit* unit) {
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -1119,7 +1119,7 @@ namespace {
 		return (bPreResult != 0);
 	}
 
-	const u32 Func_unitDestructor = 0x004A0990;
+	const uint32 Func_unitDestructor = 0x004A0990;
 	void unitDestructor(CUnit* unit) {
 		__asm {
 			PUSHAD
@@ -1130,7 +1130,7 @@ namespace {
 	}
 
 	// For updateCorrosiveSpores
-	const u32 Func_getCorrosiveSporesImage = 0x004F41F0;
+	const uint32 Func_getCorrosiveSporesImage = 0x004F41F0;
 	uint32_t getCorrosiveSporesImage(CUnit* unit) {
 		static uint32_t result;
 		__asm {

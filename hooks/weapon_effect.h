@@ -11,19 +11,19 @@ namespace SplashType {
 
 namespace hooks {
   
-	void friendlySplash(CBullet* bullet, u32 weaponId, u8 splash, CUnit* guaranteed_hit=nullptr);
-	void friendlyLurkerSplash(CBullet* bullet, u32 weaponId, u8 splash);
+	void friendlySplash(CBullet* bullet, uint32 weaponId, uint8 splash, CUnit* guaranteed_hit=nullptr);
+	void friendlyLurkerSplash(CBullet* bullet, uint32 weaponId, uint8 splash);
 
 	void injectWeaponEffectHook();
-	void normalDamage(CBullet* bullet, u32 weaponId);
-	void yamatoDamage(CBullet* bullet, u32 weaponId);
-	void airSplash(CBullet* bullet, u32 weaponId);
+	void normalDamage(CBullet* bullet, uint32 weaponId);
+	void yamatoDamage(CBullet* bullet, uint32 weaponId);
+	void airSplash(CBullet* bullet, uint32 weaponId);
 
 	// HYDRA-specific
-	bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId);
-	bool isUnsafeCyprianBullet(CBullet* bullet, u32 weaponId);
-	void parasite(CBullet* bullet, u32 weaponId);
-	void broodlings(CBullet* bullet, u32 weaponId);
-	void lockdown(CBullet* bullet, u32 weaponId);
+	bool isChargedGorgolethBullet(CBullet* bullet, uint32 weaponId);
+	bool isUnsafeCyprianBullet(CBullet* bullet, uint32 weaponId);
+	void parasite(CBullet* bullet, uint32 weaponId);
+	void broodlings(CBullet* bullet, uint32 weaponId);
+	void lockdown(CBullet* bullet, uint32 weaponId);
 
 } //hooks

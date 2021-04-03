@@ -3,7 +3,7 @@
 
 namespace hooks {
 
-u16 getUnitMaxEnergyHook(CUnit* const unit);
+uint16 getUnitMaxEnergyHook(CUnit* const unit);
 
 void injectUnitMaxEnergyHook();
 

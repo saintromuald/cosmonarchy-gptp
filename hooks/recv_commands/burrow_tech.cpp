@@ -7,7 +7,7 @@ namespace {
 
 	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);													//742D0
 	void actUnitReturnToIdle(CUnit* unit);																		//75420
-	void function_004754F0(CUnit* unit,u32 unitId,u32 unk1,u32 unk2,u32 orderId,u32 unk3,u32 unk4,u32 unk5);	//754F0
+	void function_004754F0(CUnit* unit,uint32 unitId,uint32 unk1,uint32 unk2,uint32 orderId,uint32 unk3,uint32 unk4,uint32 unk5);	//754F0
 	void function_004E97C0(CUnit* unit);																		//E97C0
 
 } //unnamed namespace
@@ -37,7 +37,7 @@ namespace hooks {
 
 	;
 
-	void CMDRECV_Burrow(u8 bCommandType) {
+	void CMDRECV_Burrow(uint8 bCommandType) {
 
 		CUnit* selected_unit;
 
@@ -62,8 +62,8 @@ namespace hooks {
 				function_004754F0(
 					selected_unit,
 					UnitId::None,
-					*(u32*)(0x006D5C24),
-					*(u32*)(0x006D5C20),
+					*(uint32*)(0x006D5C24),
+					*(uint32*)(0x006D5C20),
 					OrderId::Burrow,
 					0,
 					bCommandType,
@@ -128,7 +128,7 @@ namespace hooks {
 
 namespace {
 
-	const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
+	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
 	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 		__asm {
@@ -143,7 +143,7 @@ namespace {
 
 	;
 
-	const u32 Func_ActUnitReturnToIdle = 0x00475420;
+	const uint32 Func_ActUnitReturnToIdle = 0x00475420;
 	void actUnitReturnToIdle(CUnit* unit) {
 
 	  __asm {
@@ -157,7 +157,7 @@ namespace {
 
 	;
 
-	const u32 Func_Sub_4E97C0 = 0x004E97C0;
+	const uint32 Func_Sub_4E97C0 = 0x004E97C0;
 	void function_004E97C0(CUnit* unit) {
 
 		__asm {
@@ -175,8 +175,8 @@ namespace {
 	//some things are hardcoded because it's hard to tell what is used or
 	//not.
 	//Basically, used elsewhere, the function would be implemented differently
-	const u32 Func_Sub_4754F0 = 0x004754F0;
-	void function_004754F0(CUnit* unit,u32 unitId,u32 unk1,u32 unk2,u32 orderId,u32 unk3,u32 unk4,u32 unk5) {
+	const uint32 Func_Sub_4754F0 = 0x004754F0;
+	void function_004754F0(CUnit* unit,uint32 unitId,uint32 unk1,uint32 unk2,uint32 orderId,uint32 unk3,uint32 unk4,uint32 unk5) {
 
 		__asm {
 			PUSHAD

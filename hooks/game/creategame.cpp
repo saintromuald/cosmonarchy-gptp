@@ -223,7 +223,7 @@ namespace hooks {
 }
 
 namespace {/*
-	const u32 Func_switchComputerToOpen = 0x004DBBE0;
+	const uint32 Func_switchComputerToOpen = 0x004DBBE0;
 	void switchComputerToOpen() {
 		__asm {
 			PUSHAD
@@ -232,7 +232,7 @@ namespace {/*
 		}
 	};
 
-	const u32 Func_setLastOpenSlotToComputer = 0x004DBB70;
+	const uint32 Func_setLastOpenSlotToComputer = 0x004DBB70;
 	bool setLastOpenSlotToComputer(char a1) {
 		static char a1;
 		static bool result;

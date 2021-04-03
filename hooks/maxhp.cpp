@@ -40,16 +40,16 @@ namespace {
 
 	// For drawUnitInfo
 	void hideOptionalStatusScreenControls(BinDlg* a1);											// 00457310
-	void showControlGroup(BinDlg* a1, s16 a2, s16 a3);											// 00457250
-	void addTextToDialog(int a1, s16 a2, int a3);												// 004258B0
-	void drawShieldUpgrade(int a1, u16 a2);														// 00425510
+	void showControlGroup(BinDlg* a1, int16 a2, int16 a3);											// 00457250
+	void addTextToDialog(int a1, int16 a2, int a3);												// 004258B0
+	void drawShieldUpgrade(int a1, uint16 a2);														// 00425510
 	void hideDialog(BinDlg* a1);																// 00418700
 
 	// For drawSupplyUnitInfo
 	int getSuppliesUsed();																		// 00424732
-	u16 getLastQueueSlotType(CUnit* a1);														// 0047B270
-	u32 getSuppliesAvailable(u8 a1, int a2);													// 00488900
-	void drawArmor(int a1, int a2, u16 a3);														// 00425600
+	uint16 getLastQueueSlotType(CUnit* a1);														// 0047B270
+	uint32 getSuppliesAvailable(uint8 a1, int a2);													// 00488900
+	void drawArmor(int a1, int a2, uint16 a3);														// 00425600
 	void unitStatAct_Standard(void* a1);														// 00426F50
 
 	// For AI_TargetEnemyProc
@@ -70,9 +70,9 @@ namespace {
 	void drawUpgradeProgress(BinDlg* a1);														// 00426500
 	bool unitIsGeyser(CUnit* a1);																// 004688B0
 	void drawGasQuantity(BinDlg* a1);															// 00426190
-	s8 unitGetGroundWeapon(CUnit* a1);															// 00475AD0
+	int8 unitGetGroundWeapon(CUnit* a1);															// 00475AD0
 	void drawDisplayButtons(int a1);															// 00426C60
-	BinDlg* getControlFromIndex(BinDlg* a1, s16 a2);											// 00418080
+	BinDlg* getControlFromIndex(BinDlg* a1, int16 a2);											// 00418080
 	void setTextStr(int a1);																	// 004263E0
 	void setUnitStatusStrText(int a1);															// 00425B50
 	int unitGetName(CUnit* a1);																	// 0047B5A0
@@ -83,11 +83,11 @@ namespace {
 	int getMaxHP(CUnit* a1);																	// 00401400
 
 	// For AI_RestorationRequirementsProc
-	int canWeaponTargetUnit(u8 a1, CUnit* a2, CUnit* a3);										// 00475CE0
+	int canWeaponTargetUnit(uint8 a1, CUnit* a2, CUnit* a3);										// 00475CE0
 
 	// For AI_EMPShieldRequirementsProc
-	s32 AI_TargetUnitIsWorthHitting(CUnit* a1, CUnit* a2);										// 00440E30
-	int createSplashWeaponProc(s16 a1, s16 a2, s16 a3, int (__fastcall* a4)(int, int), int a5);	// 004E82E0
+	int32 AI_TargetUnitIsWorthHitting(CUnit* a1, CUnit* a2);										// 00440E30
+	int createSplashWeaponProc(int16 a1, int16 a2, int16 a3, int (__fastcall* a4)(int, int), int a5);	// 004E82E0
 	int unitShieldsClumpInAreaAccumulatorProc(CUnit* a1, CUnit* a2);							// 00440A60
 
 	// For hallucinationHit
@@ -96,18 +96,18 @@ namespace {
 	CImage* createShieldOverlay(int a1, CUnit* a2);												// 004E6140
 
 	// For drawImageHPBar
-	int unk_billions(int a1, s32 a2, int a3, int a4);											// 0047A750
-	int unk_billions2(int a1, s32 a2, int a3, int a4);											// 0047A6E0
+	int unk_billions(int a1, int32 a2, int a3, int a4);											// 0047A750
+	int unk_billions2(int a1, int32 a2, int a3, int a4);											// 0047A6E0
 	int hpBarSurfaceBuffer(int a1, int a2, int* a3, int a4, int a5);							// 0047A350
-	int hpBarSurfaceBuffer2(int a1, int a2, u16 a3, int a4);									// 0047A2C3
+	int hpBarSurfaceBuffer2(int a1, int a2, uint16 a3, int a4);									// 0047A2C3
 	int renderHPBar(int a1, int a2, int* a3, int a4, int a5);									// 0047A4E0
-	s32 getUnitMaxEnergy(CUnit* a1);															// 00491870
-	int getHpBarDrawSizes(int a1, s32 a2, int a3, int a4);										// 0047A670
+	int32 getUnitMaxEnergy(CUnit* a1);															// 00491870
+	int getHpBarDrawSizes(int a1, int32 a2, int a3, int a4);										// 0047A670
 
 	// For canCastSpell
 	bool unitIsFrozen(CUnit* a1);																// 004020B0
 	bool isUnitCasterNotHallucination(CUnit* a1);												// 00401210
-	bool getActiveTileFlag(s16 a1, s16 a2, int a3, int a4);										// 00472F80
+	bool getActiveTileFlag(int16 a1, int16 a2, int a3, int a4);										// 00472F80
 	CUnit* getTargetUnitAbilityErrorStatString(CUnit* a1, char a2, int a3);						// 00491E80
 
 	// For modifyUnitShields
@@ -119,43 +119,43 @@ namespace {
 
 	// For AI_FindTransport
 	bool canEnterTransport(CUnit* a1, CUnit* a2);												// 004E6E00
-	s16 SAI_GetRegionIdFromPxEx(s32 a1, s32 a2);												// 0049C9F0
-	s32 getUnitDistanceToHalt(int a1, CUnit* a2, int a3);										// 00402140
+	int16 SAI_GetRegionIdFromPxEx(int32 a1, int32 a2);												// 0049C9F0
+	int32 getUnitDistanceToHalt(int a1, CUnit* a2, int a3);										// 00402140
 
 	// For mapDataTransfer
-	s32 dataTransfer00(int a1, char a2, int a3);												// 00472A00
-	int dataTransfer01(u32 a1, int a2, u32 a3);													// 0045A600
-	s32 dataTransfer02(int a1, int a2, char a3);												// 0045A230
-	s32 dataTransfer03(int a1, char a2, int a3);												// 0045A1F0
-	int dataTransfer04(u32 a1, int a2, int a3);													// 0045A390
-	s32 dataTransfer05(int a1, int a2);															// 0045A190
+	int32 dataTransfer00(int a1, char a2, int a3);												// 00472A00
+	int dataTransfer01(uint32 a1, int a2, uint32 a3);													// 0045A600
+	int32 dataTransfer02(int a1, int a2, char a3);												// 0045A230
+	int32 dataTransfer03(int a1, char a2, int a3);												// 0045A1F0
+	int dataTransfer04(uint32 a1, int a2, int a3);													// 0045A390
+	int32 dataTransfer05(int a1, int a2);															// 0045A190
 	vectorHead* vectorTransfer(char a1, char a2);												// 0045A010
 	int dataTransfer06(int a1);																	// 00472900
 }
 
 namespace hooks {
-	u32 maxhp(int id, int playerId) {
-		u32 result = units_dat::MaxHitPoints[id];
+	uint32 maxhp(int id, int playerId) {
+		uint32 result = units_dat::MaxHitPoints[id];
 		//if (id==UnitId::firebat && scbw::getUpgradeLevel(playerId, UpgradeId::Heatshield)) {
 		//	result += 15 * 256;
 		//}
 		return result;
 	}
 
-	u32 maxshields(int id, int playerId) {
-		u32 result = units_dat::MaxShieldPoints[id];
+	uint32 maxshields(int id, int playerId) {
+		uint32 result = units_dat::MaxShieldPoints[id];
 		//if (units_dat::BaseProperty[id] & UnitProperty::RoboticUnit && scbw::getUpgradeLevel(playerId, UpgradeId::Autovitality)) {
 		//	result += result / 2;
 		//}
 		return result;
 	}
 
-	u32 getTotalHitPointsPlusShields(CUnit* a1) { // 00402710
+	uint32 getTotalHitPointsPlusShields(CUnit* a1) { // 00402710
 		int v1; // eax
 		int v2; // ecx
 		int v3; // eax
 
-		v1 = (u16)a1->id;
+		v1 = (uint16)a1->id;
 		if (units_dat::ShieldsEnabled[v1])
 			v2 = units_dat::MaxShieldPoints[v1];
 		else
@@ -171,9 +171,9 @@ namespace hooks {
 
 	void drawUnitInfo(BinDlg* a1) { // 00426190
 		BinDlg* v1; // ebx
-		s16 v2; // ax
+		int16 v2; // ax
 		const char* v3; // eax
-		u16 v4; // cx
+		uint16 v4; // cx
 		const char* v5; // eax
 		BinDlg* v6; // eax
 		int v7; // [esp-8h] [ebp-10h]
@@ -190,12 +190,12 @@ namespace hooks {
 		addTextToDialog((int)v1, -12, 0);
 		addTextToDialog((int)v1, -13, 0);
 		v2 = (*activePortraitUnit)->id;
-		if ((u16)v2 >= 0xB0u && (u16)v2 <= 0xB2u) {
+		if ((uint16)v2 >= 0xB0u && (uint16)v2 <= 0xB2u) {
 			if (*statTxtTbl > 0x31Bu)
 				v3 = (char*)statTxtTbl + statTxtTbl[796];
 			else
 				v3 = "";
-			v7 = (u16)(*activePortraitUnit)->building.resource.resourceAmount;
+			v7 = (uint16)(*activePortraitUnit)->building.resource.resourceAmount;
 		LABEL_14:
 			sprintf_s(struct_Char->buf, 260, "%s %d", v3, v7);
 			v8 = struct_Char;
@@ -243,29 +243,29 @@ namespace hooks {
 		BinDlg* v1; // ebx
 		CUnit* v2; // esi
 		GroupFlag v3; // al
-		u8 v4; // cl
+		uint8 v4; // cl
 		int v5; // edx
-		s16 v6; // ax
+		int16 v6; // ax
 		const char* v7; // ecx
-		s16 v8; // ax
+		int16 v8; // ax
 		const char* v9; // esi
-		u16 v10; // ax
+		uint16 v10; // ax
 		int v11; // ecx
 		const char* v12; // esi
 		int v13; // eax
 		GroupFlag v14; // al
 		int v15; // ecx
-		s16 v16; // ax
+		int16 v16; // ax
 		const char* v17; // eax
-		u16 v18; // ax
+		uint16 v18; // ax
 		BinDlg* v19; // eax
 		int v20; // [esp+0h] [ebp-8h]
-		u8 v21; // [esp+7h] [ebp-1h]
-		u8 v22; // [esp+7h] [ebp-1h]
+		uint8 v21; // [esp+7h] [ebp-1h]
+		uint8 v22; // [esp+7h] [ebp-1h]
 
 		v1 = (BinDlg*)a1;
 		v2 = *activePortraitUnit;
-		if (IS_IN_REPLAY || (u8)(*activePortraitUnit)->playerId == *LOCAL_NATION_ID) {
+		if (IS_IN_REPLAY || (uint8)(*activePortraitUnit)->playerId == *LOCAL_NATION_ID) {
 			getSuppliesUsed();
 			if (*statusScreenFunc != 12) {
 				hideOptionalStatusScreenControls(v1);
@@ -273,7 +273,7 @@ namespace hooks {
 				v2 = *activePortraitUnit;
 				*statusScreenFunc = 12;
 			}
-			v3 = units_dat::GroupFlags[(u16)v2->id];
+			v3 = units_dat::GroupFlags[(uint16)v2->id];
 			if (v3.isZerg) {
 				v21 = 0;
 			}
@@ -326,9 +326,9 @@ namespace hooks {
 			if (v21 == -818) {
 				v12 = 0;
 			}
-			else if ((u16)v11 < *statTxtTbl) {
-				v11 = (u16)v11;
-				v12 = (char*)statTxtTbl + statTxtTbl[(u16)v11 + 1];
+			else if ((uint16)v11 < *statTxtTbl) {
+				v11 = (uint16)v11;
+				v12 = (char*)statTxtTbl + statTxtTbl[(uint16)v11 + 1];
 			}
 			else {
 				v12 = "";
@@ -352,7 +352,7 @@ namespace hooks {
 				v15 = 0;
 			}
 			v16 = v20 + 823;
-			if ((s16)v20 == -824) {
+			if ((int16)v20 == -824) {
 				v17 = 0;
 			}
 			else if (v16 < *statTxtTbl) {
@@ -398,10 +398,10 @@ namespace hooks {
 	}
 
 	bool AI_TargetEnemyProc(CUnit* a1, CUnit* a2) { // 00440A20
-		s8 v2; // dl
-		s8 v3; // bl
+		int8 v2; // dl
+		int8 v3; // bl
 		int v4; // eax
-		s8 result; // eax
+		int8 result; // eax
 
 		result = 0;
 		if (a1 != a2) {
@@ -435,15 +435,15 @@ namespace hooks {
 		*redrawTransportUI = needRedrawUI();
 		genericStatusUpdateDrawnValues();
 		ByteOperations::SetLowWord(v4, v1->id);
-		if ((u16)v4 >= 0xB0u && (u16)v4 <= 0xB2u || (s16)v4 == 188)
+		if ((uint16)v4 >= 0xB0u && (uint16)v4 <= 0xB2u || (int16)v4 == 188)
 			goto LABEL_35;
-		if (!IS_IN_REPLAY && (u8)v1->id != *LOCAL_NATION_ID)
+		if (!IS_IN_REPLAY && (uint8)v1->id != *LOCAL_NATION_ID)
 			goto LABEL_6;
 		if (!(v1->status & 1)) {
 			drawProgressBar((int)v2);
 			goto LABEL_32;
 		}
-		if ((s16)v4 == 108) {
+		if ((int16)v4 == 108) {
 			drawNukeSiloInfo((int)v2);
 			goto LABEL_32;
 		}
@@ -466,8 +466,8 @@ namespace hooks {
 			drawUpgradeProgress(v2);
 			goto LABEL_32;
 		}
-		v4 = (u16)v4;
-		if (units_dat::SupplyProvided[(u16)v4]) {
+		v4 = (uint16)v4;
+		if (units_dat::SupplyProvided[(uint16)v4]) {
 			drawSupplyUnitInfo((int)v2);
 			goto LABEL_32;
 		}
@@ -502,11 +502,11 @@ namespace hooks {
 		addTextToDialog((int)v2, -5, v8);
 	}
 
-	int calcUnitStrength(int a1, u8 a2) { // 00431270
+	int calcUnitStrength(int a1, uint8 a2) { // 00431270
 		int v2; // ecx
 		unsigned _int64 v3; // rax
 		int v4; // ebx
-		u32 v5; // esi
+		uint32 v5; // esi
 		int v6; // edi
 		int v7; // eax
 		int totalHits; // [esp+0h] [ebp-4h]
@@ -520,17 +520,17 @@ namespace hooks {
 
 		totalHits = v2 + (units_dat::MaxHitPoints[a1] >> 8);
 		if (totalHits) {
-			v4 = (u8)weapons_dat::DamageFactor[a2];
+			v4 = (uint8)weapons_dat::DamageFactor[a2];
 			v5 = weapons_dat::Cooldown[a2];
 			v6 = weapons_dat::DamageAmount[a2];
 			if (a2 == -126) {
 				v7 = 0;
 			}
 			else {
-				v7 = (v6 * v4 << 11) / (s32)v5;
+				v7 = (v6 * v4 << 11) / (int32)v5;
 			}
 			v3 = (unsigned _int64)(sqrt((double)(v6 * v4 * (weapons_dat::MaxRange[a2] / v5)
-				+ ((u32)(totalHits * v7) >> 8)))
+				+ ((uint32)(totalHits * v7) >> 8)))
 				* 7.58);
 		}
 		else {
@@ -539,17 +539,17 @@ namespace hooks {
 		return v3;
 	}
 
-	u32 getUnitStrength(CUnit* a1, int a2, bool a3) { // 00431800
+	uint32 getUnitStrength(CUnit* a1, int a2, bool a3) { // 00431800
 		CUnit* v3; // edi
 		int v4; // esi
 		int v5; // ebx
 		int v7; // ebx
 		int v8; // esi
-		u32 v9; // ecx
+		uint32 v9; // ecx
 		int groundAir; // [esp+10h] [ebp+8h]
 
 		v3 = a1;
-		v4 = (u16)a1->id;
+		v4 = (uint16)a1->id;
 		if (v4 == UnitId::ZergLarva || v4 == UnitId::ZergEgg || v4 == UnitId::ZergCocoon)
 			return 0;
 		if (a1->status & UnitStatus::IsHallucination) {
@@ -577,7 +577,7 @@ namespace hooks {
 		result = 0;
 		if (a1->playerId == a2->playerId) {
 			if (canWeaponTargetUnit(WeaponId::Restoration, a1, a2))	{
-				v3 = units_dat::ShieldsEnabled[(u16)v2->id] ? v2->shields >> 8 : 0;
+				v3 = units_dat::ShieldsEnabled[(uint16)v2->id] ? v2->shields >> 8 : 0;
 				if (v3 + ((v2->hitPoints + 255) >> 8) > 60
 					&& (v2->ensnareTimer
 						|| v2->plagueTimer
@@ -596,13 +596,13 @@ namespace hooks {
 		CUnit* v2; // esi
 		CUnit* v3; // edi
 		CSprite* v5; // edx
-		s16 v6; // cx
-		s16 spriteX;
+		int16 v6; // cx
+		int16 spriteX;
 
 		v2 = a1;
 		v3 = a2;
 		if (!AI_TargetUnitIsWorthHitting(a1, a2)
-			|| !units_dat::ShieldsEnabled[(u16)v2->id]
+			|| !units_dat::ShieldsEnabled[(uint16)v2->id]
 			|| !canWeaponTargetUnit(WeaponId::EMP_Shockwave, v2, v3)) {
 			return 0;
 		}
@@ -620,8 +620,8 @@ namespace hooks {
 		return *tempHPShields >= 200;
 	}
 
-	char attackOverlayAndNotify(CUnit* a1, CUnit* a2, u8 a3, char a4) { // 00479730
-		s32* v4; // eax
+	char attackOverlayAndNotify(CUnit* a1, CUnit* a2, uint8 a3, char a4) { // 00479730
+		int32* v4; // eax
 		CUnit* v5; // ebx
 		char returnValue = 0;
 
@@ -634,7 +634,7 @@ namespace hooks {
 					if (a3 != WeaponId::Irradiate && v5->playerId != a2->playerId)
 						doAttackNotifyEvent(v5);
 				}
-				if (units_dat::ShieldsEnabled[(u16)v5->id]) {
+				if (units_dat::ShieldsEnabled[(uint16)v5->id]) {
 					if (v5->shields >= 256) {
 						*v4 = a3;
 						if (weapons_dat::DamageType[a3]) {
@@ -656,19 +656,19 @@ namespace hooks {
 		int v10; // eax
 		unk_61* v11; // ecx
 		int v12; // edx
-		u8 v13; // dl
+		uint8 v13; // dl
 		int v14; // eax
 		int v15; // ecx
 		int v16; // ebx
 		unk_62* v17; // eax
 		int v18; // ecx
-		u16 v19; // di
+		uint16 v19; // di
 		int v20; // ebx
-		u16 v21; // ax
+		uint16 v21; // ax
 		int v22; // ebx
 		int v23; // edi
 		signed int v24; // ecx
-		u16 v25; // ax
+		uint16 v25; // ax
 		int v26; // eax
 		int v27; // ebx
 		int v28; // edx
@@ -686,7 +686,7 @@ namespace hooks {
 
 		v37 = screenX;
 		v5 = colorData;
-		v6 = *(u16*)(colorData + 100);
+		v6 = *(uint16*)(colorData + 100);
 		v33 = grpRect->left;
 		v34 = grpRect->top;
 		v7 = units_dat::ShieldsEnabled[v6];
@@ -697,9 +697,9 @@ namespace hooks {
 			v36 = 7;
 			if (v8 <= 7)
 				v36 = v8;
-			v13 = sprites_dat::IsVisible[*(u16*)(*(int*)(colorData + 12) + 8) + 390];
+			v13 = sprites_dat::IsVisible[*(uint16*)(*(int*)(colorData + 12) + 8) + 390];
 			v14 = units_dat::MaxHitPoints[v6] >> 8;
-			ByteOperations::SetHighByte(colorData, sprites_dat::IsVisible[*(u16*)(*(int*)(colorData + 12) + 8) + 390]);
+			ByteOperations::SetHighByte(colorData, sprites_dat::IsVisible[*(uint16*)(*(int*)(colorData + 12) + 8) + 390]);
 			if (v14) {
 				v15 = v14;
 			}
@@ -711,9 +711,9 @@ namespace hooks {
 			v16 = unk_billions((*(int*)(v5 + 8) + 255) >> 8, v15, (int)&v39, v13);
 			unk_billions2(*(int*)(v5 + 96) >> 8, units_dat::MaxShieldPoints[v6], (int)&colorData, HIBYTE(colorData));
 			v17 = struct_5140E8;
-			if (v16 < (u8)(*struct_5140E8).anonymous_0) {
+			if (v16 < (uint8)(*struct_5140E8).anonymous_0) {
 				do {
-					v18 = (u8)v17[1].anonymous_0;
+					v18 = (uint8)v17[1].anonymous_0;
 					++v17;
 				} while (v16 < v18);
 			}
@@ -721,7 +721,7 @@ namespace hooks {
 			v20 = v37;
 			hpBarSurfaceBuffer(v37, v38, &v33, v39, (int)v17);
 			hpBarSurfaceBuffer2(colorData, v20, v19, (int)&v33);
-			ByteOperations::SetHighByte(colorData, (u8)8);
+			ByteOperations::SetHighByte(colorData, (uint8)8);
 		}
 		else {
 			v36 = 5;
@@ -739,23 +739,23 @@ namespace hooks {
 				(*(int*)(colorData + 8) + 255) >> 8,
 				v9,
 				(int)&v39,
-				(u8)sprites_dat::IsVisible[*(u16*)(*(int*)(colorData + 12) + 8) + 390]);
+				(uint8)sprites_dat::IsVisible[*(uint16*)(*(int*)(colorData + 12) + 8) + 390]);
 			v11 = struct_5140C4;
-			if (v10 < (u8)(*struct_5140C4).anonymous_0) {
+			if (v10 < (uint8)(*struct_5140C4).anonymous_0) {
 				do {
-					v12 = (u8)v11[1].anonymous_0;
+					v12 = (uint8)v11[1].anonymous_0;
 					++v11;
 				} while (v10 < v12);
 			}
 			renderHPBar(v37, v38, &v33, v39, (int)v11);
 			ByteOperations::SetHighByte(colorData, 6);
 		}
-		v21 = *(s16*)(v5 + 100);
+		v21 = *(int16*)(v5 + 100);
 		v22 = units_dat::BaseProperty[v21] & UnitProperty::Spellcaster;
 		if (v22 && (v23 = (*(int*)(v5 + 220) >> 30) & 1) == 0
 			|| (v23 = (*(int*)(v5 + 220) >> 30) & 1) != 0
 			|| v21 == 40) {
-			if (*(u8*)(v5 + 76) == *LOCAL_NATION_ID) {
+			if (*(uint8*)(v5 + 76) == *LOCAL_NATION_ID) {
 				if (v22) {
 					if (!v23) {
 						v24 = getUnitMaxEnergy((CUnit*)v5) >> 8;
@@ -771,9 +771,9 @@ namespace hooks {
 				v24 = v25;
 			LABEL_32:
 				if (!v22 || v23)
-					v26 = *(u16*)(v5 + 272);
+					v26 = *(uint16*)(v5 + 272);
 				else
-					v26 = *(u8*)(v5 + 163);
+					v26 = *(uint8*)(v5 + 163);
 				v27 = HIBYTE(colorData);
 				v28 = grpRect->bottom - HIBYTE(colorData);
 				v29 = grpRect->bottom == HIBYTE(colorData);
@@ -784,11 +784,11 @@ namespace hooks {
 						v26,
 						v24,
 						(int)&v39,
-						(u8)sprites_dat::IsVisible[*(u16*)(*(int*)(v5 + 12) + 8) + 390]);
+						(uint8)sprites_dat::IsVisible[*(uint16*)(*(int*)(v5 + 12) + 8) + 390]);
 					v31 = struct_5140D8;
-					if (v30 < (u8)(*struct_5140D8).anonymous_0) {
+					if (v30 < (uint8)(*struct_5140D8).anonymous_0) {
 						do {
-							v32 = (u8)v31[1].anonymous_0;
+							v32 = (uint8)v31[1].anonymous_0;
 							++v31;
 						} while (v30 < v32);
 					}
@@ -801,20 +801,20 @@ namespace hooks {
 
 	void setBuildShieldGain(CUnit* a1) { // 0047B6A0
 		int _type; // edi
-		u16 v2; // dx
+		uint16 v2; // dx
 		int v3; // ecx
-		u32 v4; // edx
-		u32 v5; // eax
+		uint32 v4; // edx
+		uint32 v5; // eax
 
-		_type = (u16)a1->id;
+		_type = (uint16)a1->id;
 		if (units_dat::ShieldsEnabled[_type]) {
 			if (a1->status & UnitStatus::GroundedBuilding) {
-				v4 = (s32)((unsigned __int64)(1717986919i64 * (units_dat::MaxShieldPoints[_type] << 8)) >> 0x20) >> 2;
+				v4 = (int32)((unsigned __int64)(1717986919i64 * (units_dat::MaxShieldPoints[_type] << 8)) >> 0x20) >> 2;
 				v3 = v4 + (v4 >> 31);
 				a1->shields = v3;
 				v2 = units_dat::TimeCost[_type];
 				if (!v2
-					|| (v5 = (((u32)units_dat::MaxShieldPoints[_type] << 8) - v3) / v2, (a1->buildRepairHpGain = v5) == 0)) {
+					|| (v5 = (((uint32)units_dat::MaxShieldPoints[_type] << 8) - v3) / v2, (a1->buildRepairHpGain = v5) == 0)) {
 					a1->buildRepairHpGain = 1;
 				}
 			}
@@ -828,7 +828,7 @@ namespace hooks {
 		int v5; // eax
 		unsigned __int16 v6; // cx
 		int v7; // esi
-		s8 v8; // cl
+		int8 v8; // cl
 		int result; // eax
 		int v10; // eax
 		int unitType; // ecx
@@ -837,10 +837,10 @@ namespace hooks {
 		signed int v14; // eax
 		int v15; // eax
 
-		v2 = (u8)bullet->weaponType;
+		v2 = (uint8)bullet->weaponType;
 		v3 = victim;
 		if (weapons_dat::ExplosionType[v2] == WeaponEffect::NuclearMissile)	{
-			unitType = (u16)victim->id;
+			unitType = (uint16)victim->id;
 			v10 = units_dat::MaxHitPoints[unitType];
 			if (units_dat::ShieldsEnabled[unitType]) {
 				v12 = v10 >> 8;
@@ -866,11 +866,11 @@ namespace hooks {
 			result = v15 << 8;
 		}
 		else {
-			v5 = (u8)bullet->weaponType;
+			v5 = (uint8)bullet->weaponType;
 			v6 = weapons_dat::DamageUpgrade[v5];
 			v7 = weapons_dat::DamageAmount[v5];
-			v4 = (u8)bullet->srcPlayer;
-			if (v6 >= (u16)BwUpgrade::UnusedUpgrade46)
+			v4 = (uint8)bullet->srcPlayer;
+			if (v6 >= (uint16)BwUpgrade::UnusedUpgrade46)
 				/*v8 = upgradesLevelBW[v4][v6];
 			else
 				v8 = upgradesLevelSC[v4][v6];*/
@@ -879,17 +879,17 @@ namespace hooks {
 		return result;
 	}
 
-	s32 canCastSpell(CUnit* a1) { // 00492140
-		u8 v1; // al
+	int32 canCastSpell(CUnit* a1) { // 00492140
+		uint8 v1; // al
 		int v2; // ebx
 		CUnit* v3; // esi
 		signed int result; // eax
 		int v5; // eax
 		int v6; // eax
 		bool v7; // eax
-		s16 v8; // [esp+8h] [ebp-Ch]
-		s16 v9; // [esp+Ch] [ebp-8h]
-		u8 v10; // [esp+13h] [ebp-1h]
+		int16 v8; // [esp+8h] [ebp-Ch]
+		int16 v9; // [esp+Ch] [ebp-8h]
+		uint8 v10; // [esp+13h] [ebp-1h]
 
 		v1 = a1->mainOrderId;
 		v2 = v1;
@@ -918,7 +918,7 @@ namespace hooks {
 					if (HIBYTE(v3->energy) >= 0x64u)
 						goto LABEL_23;
 				}
-				if (units_dat::ShieldsEnabled[(u16)v3->id] && (s32)(v3->shields & 0xFFFFFF00) >= 25600)
+				if (units_dat::ShieldsEnabled[(uint16)v3->id] && (int32)(v3->shields & 0xFFFFFF00) >= 25600)
 					goto LABEL_23;
 			LABEL_17:
 				result = 1;
@@ -951,9 +951,9 @@ namespace hooks {
 			}
 			else {
 				ByteOperations::SetLowByte(v6, orders_dat::TechUsed[v2]);
-				if ((u8)v6 < (u8)TechId::None) {
-					v6 = (u8)v6;
-					switch ((u8)v6) {
+				if ((uint8)v6 < (uint8)TechId::None) {
+					v6 = (uint8)v6;
+					switch ((uint8)v6) {
 					case TechId::EMPShockwave:
 					case TechId::ScannerSweep:
 					case TechId::DarkSwarm:
@@ -966,13 +966,13 @@ namespace hooks {
 					case TechId::Maelstrom:
 						break;
 					default:
-						if ((u8)v6 == TechId::SpiderMines) {
+						if ((uint8)v6 == TechId::SpiderMines) {
 							ByteOperations::SetLowByte(v7, getActiveTileFlag(v8, v9, 0x410000, 0));
 						}
 						else {
 							if (!v3 || v3->status & 0x4000000)
 								goto LABEL_17;
-							v7 = (u16)getTargetUnitAbilityErrorStatString(v3, a1->playerId, v6) == 0;
+							v7 = (uint16)getTargetUnitAbilityErrorStatString(v3, a1->playerId, v6) == 0;
 						}
 						if (!v7)
 							goto LABEL_17;
@@ -985,7 +985,7 @@ namespace hooks {
 		return result;
 	}
 
-	s32 modifyUnitShields(int a1, int a2) { // 004C5A20
+	int32 modifyUnitShields(int a1, int a2) { // 004C5A20
 		int v3; // eax
 		signed int v4; // ecx
 
@@ -993,12 +993,12 @@ namespace hooks {
 			SErrSetLastError(87);
 			return 0;
 		}
-		v3 = *(u16*)(a1 + 100);
+		v3 = *(uint16*)(a1 + 100);
 		if (!units_dat::ShieldsEnabled[v3])
 			return 0;
 		v4 = units_dat::MaxShieldPoints[v3];
-		if (v4 >= (s32)(a2 * v4 / 0x64u))
-			v4 = a2 * (u32)units_dat::MaxShieldPoints[v3] / 0x64;
+		if (v4 >= (int32)(a2 * v4 / 0x64u))
+			v4 = a2 * (uint32)units_dat::MaxShieldPoints[v3] / 0x64;
 		*(int*)(a1 + 96) = v4 << 8;
 		return 1;
 	}
@@ -1006,67 +1006,67 @@ namespace hooks {
 	void compileHealthBar(int a1, int a2) { // 004D6010
 		int v2; // eax
 		CUnit* v3; // edi
-		u8 v4; // cl
+		uint8 v4; // cl
 		int v5; // eax
-		u16 v6; // ax
+		uint16 v6; // ax
 		int v7; // eax
 		char v8; // cl
 		char v9; // cl
-		s32* v10; // edx
+		int32* v10; // edx
 
-		v2 = *(u16*)(a2 + 8);
-		v3 = activePlayerSelection->unit[*(u8*)(a2 + 11)];
+		v2 = *(uint16*)(a2 + 8);
+		v3 = activePlayerSelection->unit[*(uint8*)(a2 + 11)];
 		v4 = sprites_dat::IsVisible[v2 + 390];
-		*(s8*)(a1 + 15) = sprites_dat::HpBarSize[v2 + 262]
-			+ (imageGrpGraphics[(u8)orders_dat::Unused3[v2 + 62] + 561]->frames[0].height >> 1)
+		*(int8*)(a1 + 15) = sprites_dat::HpBarSize[v2 + 262]
+			+ (imageGrpGraphics[(uint8)orders_dat::Unused3[v2 + 62] + 561]->frames[0].height >> 1)
 			+ 8;
-		*(s8*)(*(s32*)(a1 + 44) + 6) = 0;
-		*(s8*)(*(s32*)(a1 + 44) + 7) = 0;
-		*(s8*)(*(s32*)(a1 + 44) + 8) = v4 - (v4 - 1) % 3;
-		v5 = *(s32*)(a1 + 44);
-		if (*(s8*)(v5 + 8) < 0x13u)
-			*(s8*)(v5 + 8) = 19;
-		*(s8*)(*(s32*)(a1 + 44) + 9) = 0;
+		*(int8*)(*(int32*)(a1 + 44) + 6) = 0;
+		*(int8*)(*(int32*)(a1 + 44) + 7) = 0;
+		*(int8*)(*(int32*)(a1 + 44) + 8) = v4 - (v4 - 1) % 3;
+		v5 = *(int32*)(a1 + 44);
+		if (*(int8*)(v5 + 8) < 0x13u)
+			*(int8*)(v5 + 8) = 19;
+		*(int8*)(*(int32*)(a1 + 44) + 9) = 0;
 		v6 = v3->id;
 		if (units_dat::BaseProperty[v6] & 0x200000 && !(v3->status & 0x40000000)
 			|| v3->status & 0x40000000
 			|| v6 == 40) {
-			*(s8*)(*(s32*)(a1 + 44) + 9) += 6;
+			*(int8*)(*(int32*)(a1 + 44) + 9) += 6;
 		}
-		v7 = *(s32*)(a1 + 44);
-		v8 = *(s8*)(v7 + 9);
+		v7 = *(int32*)(a1 + 44);
+		v8 = *(int8*)(v7 + 9);
 		if (units_dat::ShieldsEnabled[(unsigned __int16)v3->id])
 			v9 = v8 + 7;
 		else
 			v9 = v8 + 5;
-		*(s8*)(v7 + 9) = v9;
-		*(s16*)(*(s32*)(a1 + 44) + 2) = *(unsigned __int8*)(*(s32*)(a1 + 44) + 8);
-		*(s16*)(*(s32*)(a1 + 44) + 4) = *(unsigned __int8*)(*(s32*)(a1 + 44) + 9);
-		*(s32*)(a1 + 60) = a2;
-		*(s16*)(a1 + 12) = 0;
-		v10 = (s32*)(a1 + 36);
+		*(int8*)(v7 + 9) = v9;
+		*(int16*)(*(int32*)(a1 + 44) + 2) = *(unsigned __int8*)(*(int32*)(a1 + 44) + 8);
+		*(int16*)(*(int32*)(a1 + 44) + 4) = *(unsigned __int8*)(*(int32*)(a1 + 44) + 9);
+		*(int32*)(a1 + 60) = a2;
+		*(int16*)(a1 + 12) = 0;
+		v10 = (int32*)(a1 + 36);
 		*v10 = 0;
 		v10[1] = 0;
-//		*(s32*)(a1 + 48) = v3;
+//		*(int32*)(a1 + 48) = v3;
 		updateImageDrawData((CImage*)a1);
-		*(s8*)(a1 + 12) |= 1u;
+		*(int8*)(a1 + 12) |= 1u;
 		playImageIscript((CImage*)a1, 0);
 	}
 
-	s32 AI_FindTransport(CUnit* a1, int a2) { // 004E6EF0
+	int32 AI_FindTransport(CUnit* a1, int a2) { // 004E6EF0
 		CUnit* v2; // esi
-		s32 v3; // ecx
-		u16 v4; // ax
+		int32 v3; // ecx
+		uint16 v4; // ax
 		int v5; // edi
 		int v6; // eax
 		char v7; // al
-		s16 v8; // ST16_2
-		u32 v9; // eax
-		s32 v11; // [esp+8h] [ebp-Ch]
-		u32 v12; // [esp+Ch] [ebp-8h]
+		int16 v8; // ST16_2
+		uint32 v9; // eax
+		int32 v11; // [esp+8h] [ebp-Ch]
+		uint32 v12; // [esp+Ch] [ebp-8h]
 
-		*(s32*)a2 = 0;
-		v2 = firstPlayerUnit->unit[(u8)a1->playerId];
+		*(int32*)a2 = 0;
+		v2 = firstPlayerUnit->unit[(uint8)a1->playerId];
 		v11 = 0;
 		v12 = 99999999;
 		if (!v2)
@@ -1076,7 +1076,7 @@ namespace hooks {
 			if (v3 & 0x40000000)
 				goto LABEL_22;
 			v4 = v2->id;
-//			if (v4 == 42 && !upgradesLevelSC[(u8)v2->playerId][24])
+//			if (v4 == 42 && !upgradesLevelSC[(uint8)v2->playerId][24])
 				goto LABEL_22;
 			v5 = v4;
 			if (!units_dat::SpaceProvided[v4] || !(v3 & 1) || !(v3 & 0x20000))
@@ -1100,7 +1100,7 @@ namespace hooks {
 						{
 							v9 = getUnitDistanceToHalt(v2->sprite->position.y, a1, v2->sprite->position.x);
 							if (v9 < v12) {
-//								*(s32*)a2 = v2;
+//								*(int32*)a2 = v2;
 								v12 = v9;
 							}
 						}
@@ -1112,13 +1112,13 @@ namespace hooks {
 			if (!v2)
 				return v11;
 		}
-//		*(s32*)a2 = v2;
+//		*(int32*)a2 = v2;
 		return 1;
 	}
 
-	s32 mapDataTransfer(char a1, int a2, int a3) { // 004EAFE0
+	int32 mapDataTransfer(char a1, int a2, int a3) { // 004EAFE0
 		int v3; // eax
-		s32 result; // eax
+		int32 result; // eax
 
 		if (!a2 || !a3)
 			return 0;
@@ -1143,8 +1143,8 @@ namespace hooks {
 			result = dataTransfer05(a3, a2);
 			break;
 		case 6u:
-			if (a3 == 3 && (v3 = (int)vectorTransfer(*(s8*)(a2 + 2), *(s8*)(a2 + 1))) != 0) {
-				*(s8*)(v3 + 52) &= 0xFDu;
+			if (a3 == 3 && (v3 = (int)vectorTransfer(*(int8*)(a2 + 2), *(int8*)(a2 + 1))) != 0) {
+				*(int8*)(v3 + 52) &= 0xFDu;
 				dataTransfer06(v3);
 				result = 1;
 			}
@@ -1163,7 +1163,7 @@ namespace { // Helpers
 
 	// For drawUnitInfo
 
-	const u32 Func_hideOptionalStatusScreenControls = 0x00457310;
+	const uint32 Func_hideOptionalStatusScreenControls = 0x00457310;
 	void hideOptionalStatusScreenControls(BinDlg* a1) {
 		__asm {
 			PUSHAD
@@ -1173,8 +1173,8 @@ namespace { // Helpers
 		}
 	}
 
-	const u32 Func_showControlGroup = 0x00457250;
-	void showControlGroup(BinDlg* a1, s16 a2, s16 a3) {
+	const uint32 Func_showControlGroup = 0x00457250;
+	void showControlGroup(BinDlg* a1, int16 a2, int16 a3) {
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -1185,8 +1185,8 @@ namespace { // Helpers
 		}
 	}
 
-	const u32 Func_addTextToDialog = 0x004258B0;
-	void addTextToDialog(int a1, s16 a2, int a3) {
+	const uint32 Func_addTextToDialog = 0x004258B0;
+	void addTextToDialog(int a1, int16 a2, int a3) {
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -1197,8 +1197,8 @@ namespace { // Helpers
 		}
 	}
 
-	const u32 Func_drawShieldUpgrade = 0x00425510;
-	void drawShieldUpgrade(int a1, u16 a2) {
+	const uint32 Func_drawShieldUpgrade = 0x00425510;
+	void drawShieldUpgrade(int a1, uint16 a2) {
 		__asm {
 			PUSHAD
 			PUSH a2
@@ -1208,7 +1208,7 @@ namespace { // Helpers
 		}
 	}
 
-	const u32 Func_hideDialog = 0x00418700;
+	const uint32 Func_hideDialog = 0x00418700;
 	void hideDialog(BinDlg* a1) {
 		__asm {
 			PUSHAD
@@ -1220,7 +1220,7 @@ namespace { // Helpers
 
 	// For drawSupplyUnitInfo
 
-	const u32 Func_getSuppliesUsed = 0x00424732;
+	const uint32 Func_getSuppliesUsed = 0x00424732;
 	int getSuppliesUsed() {
 		static int result;
 		__asm {
@@ -1232,9 +1232,9 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_getLastQueueSlotType = 0x0047B270;
-	u16 getLastQueueSlotType(CUnit* a1) {
-		static u32 result;
+	const uint32 Func_getLastQueueSlotType = 0x0047B270;
+	uint16 getLastQueueSlotType(CUnit* a1) {
+		static uint32 result;
 		__asm {
 			PUSHAD
 			MOV EDX, a1
@@ -1242,12 +1242,12 @@ namespace { // Helpers
 			MOV result, EAX
 			POPAD
 		}
-		return (u16)result;
+		return (uint16)result;
 	}
 
-	const u32 Func_getSuppliesAvailable = 0x00488900;
-	u32 getSuppliesAvailable(u8 a1, int a2) {
-		static u32 result;
+	const uint32 Func_getSuppliesAvailable = 0x00488900;
+	uint32 getSuppliesAvailable(uint8 a1, int a2) {
+		static uint32 result;
 		__asm {
 			PUSHAD
 			MOVZX AL, a1
@@ -1259,8 +1259,8 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_drawArmor = 0x00425600;
-	void drawArmor(int a1, int a2, u16 a3) {
+	const uint32 Func_drawArmor = 0x00425600;
+	void drawArmor(int a1, int a2, uint16 a3) {
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -1271,7 +1271,7 @@ namespace { // Helpers
 		}
 	}
 
-	const u32 Func_unitStatAct_Standard = 0x00426F50;
+	const uint32 Func_unitStatAct_Standard = 0x00426F50;
 	void unitStatAct_Standard(void* a1) {
 		__asm {
 			PUSHAD
@@ -1283,7 +1283,7 @@ namespace { // Helpers
 
 	// For AI_TargetEnemyProc
 
-	const u32 Func_AI_UnitCanAttack = 0x00476180;
+	const uint32 Func_AI_UnitCanAttack = 0x00476180;
 	bool AI_UnitCanAttack(CUnit* a1) {
 		static int result;
 		__asm {
@@ -1298,7 +1298,7 @@ namespace { // Helpers
 
 	// For drawBuildingInfo
 
-	const u32 Func_needRedrawUI = 0x00424A10;
+	const uint32 Func_needRedrawUI = 0x00424A10;
 	int needRedrawUI() {
 		static int result;
 		__asm {
@@ -1310,7 +1310,7 @@ namespace { // Helpers
 		return result;
 	}
 	
-	const u32 Func_genericStatusUpdateDrawnValues = 0x004248F0;
+	const uint32 Func_genericStatusUpdateDrawnValues = 0x004248F0;
 	CUnit* genericStatusUpdateDrawnValues() {
 		static CUnit* result;
 		__asm {
@@ -1322,7 +1322,7 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_drawProgressBar = 0x004260C0;
+	const uint32 Func_drawProgressBar = 0x004260C0;
 	void drawProgressBar(int a1) {
 		__asm {
 			PUSHAD
@@ -1332,7 +1332,7 @@ namespace { // Helpers
 		}
 	}
 
-	const u32 Func_drawNukeSiloInfo = 0x00426FF0;
+	const uint32 Func_drawNukeSiloInfo = 0x00426FF0;
 	void drawNukeSiloInfo(int a1) {
 		__asm {
 			PUSHAD
@@ -1342,7 +1342,7 @@ namespace { // Helpers
 		}
 	}
 
-	const u32 Func_unitIsActiveTransport = 0x004E6BA0;
+	const uint32 Func_unitIsActiveTransport = 0x004E6BA0;
 	bool unitIsActiveTransport(CUnit* a1) {
 		static int result;
 		__asm {
@@ -1355,7 +1355,7 @@ namespace { // Helpers
 		return (bool)result;
 	}
 
-	const u32 Func_isQueueSlotActive = 0x00401E70;
+	const uint32 Func_isQueueSlotActive = 0x00401E70;
 	bool isQueueSlotActive(CUnit* a1, int a2) {
 		static int result;
 		__asm {
@@ -1369,7 +1369,7 @@ namespace { // Helpers
 		return (bool)result;
 	}
 
-	const u32 Func_drawTrainingProgress = 0x004268D0;
+	const uint32 Func_drawTrainingProgress = 0x004268D0;
 	void drawTrainingProgress(BinDlg* a1) {
 		__asm {
 			PUSHAD
@@ -1379,7 +1379,7 @@ namespace { // Helpers
 		}
 	}
 
-	const u32 Func_isConstructingAddon = 0x004E66B0;
+	const uint32 Func_isConstructingAddon = 0x004E66B0;
 	bool isConstructingAddon(CUnit* a1) {
 		static int result;
 		__asm {
@@ -1392,7 +1392,7 @@ namespace { // Helpers
 		return (bool)result;
 	}
 
-	const u32 Func_isAttemptingProtossBuild = 0x004E4C40;
+	const uint32 Func_isAttemptingProtossBuild = 0x004E4C40;
 	bool isAttemptingProtossBuild(CUnit* a1) {
 		static int result;
 		__asm {
@@ -1405,7 +1405,7 @@ namespace { // Helpers
 		return (bool)result;
 	}
 
-	const u32 Func_drawAddonProgress = 0x00425F30;
+	const uint32 Func_drawAddonProgress = 0x00425F30;
 	void drawAddonProgress(int a1) {
 		__asm {
 			PUSHAD
@@ -1415,7 +1415,7 @@ namespace { // Helpers
 		}
 	}
 
-	const u32 Func_drawTechProgress = 0x004266F0;
+	const uint32 Func_drawTechProgress = 0x004266F0;
 	void drawTechProgress(int a1) {
 		__asm {
 			PUSHAD
@@ -1425,7 +1425,7 @@ namespace { // Helpers
 		}
 	}
 
-	const u32 Func_drawUpgradeProgress = 0x00426500;
+	const uint32 Func_drawUpgradeProgress = 0x00426500;
 	void drawUpgradeProgress(BinDlg* a1) {
 		__asm {
 			PUSHAD
@@ -1435,7 +1435,7 @@ namespace { // Helpers
 		}
 	}
 
-	const u32 Func_unitIsGeyser = 0x004688B0;
+	const uint32 Func_unitIsGeyser = 0x004688B0;
 	bool unitIsGeyser(CUnit* a1) {
 		static int result;
 		__asm {
@@ -1448,7 +1448,7 @@ namespace { // Helpers
 		return (bool)result;
 	}
 
-	const u32 Func_drawGasQuantity = 0x00426190;
+	const uint32 Func_drawGasQuantity = 0x00426190;
 	void drawGasQuantity(BinDlg* a1) {
 		__asm {
 			PUSHAD
@@ -1458,8 +1458,8 @@ namespace { // Helpers
 		}
 	}
 
-	const u32 Func_unitGetGroundWeapon = 0x00475AD0;
-	s8 unitGetGroundWeapon(CUnit* a1) {
+	const uint32 Func_unitGetGroundWeapon = 0x00475AD0;
+	int8 unitGetGroundWeapon(CUnit* a1) {
 		static int result;
 		__asm {
 			PUSHAD
@@ -1468,10 +1468,10 @@ namespace { // Helpers
 			MOV result, EAX
 			POPAD
 		}
-		return (s8)result;
+		return (int8)result;
 	}
 
-	const u32 Func_drawDisplayButtons = 0x00426C60;
+	const uint32 Func_drawDisplayButtons = 0x00426C60;
 	void drawDisplayButtons(int a1) {
 		__asm {
 			PUSHAD
@@ -1481,8 +1481,8 @@ namespace { // Helpers
 		}
 	}
 
-	const u32 Func_getControlFromIndex = 0x00418080;
-	BinDlg* getControlFromIndex(BinDlg* a1, s16 a2) {
+	const uint32 Func_getControlFromIndex = 0x00418080;
+	BinDlg* getControlFromIndex(BinDlg* a1, int16 a2) {
 		static BinDlg* result;
 		__asm {
 			PUSHAD
@@ -1495,7 +1495,7 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_setTextStr = 0x004263E0;
+	const uint32 Func_setTextStr = 0x004263E0;
 	void setTextStr(int a1) {
 		__asm {
 			PUSHAD
@@ -1505,7 +1505,7 @@ namespace { // Helpers
 		}
 	}
 
-	const u32 Func_setUnitStatusStrText = 0x00425B50;
+	const uint32 Func_setUnitStatusStrText = 0x00425B50;
 	void setUnitStatusStrText(int a1) {
 		__asm {
 			PUSHAD
@@ -1515,7 +1515,7 @@ namespace { // Helpers
 		}
 	}
 	
-	const u32 Func_unitGetName = 0x0047B5A0;
+	const uint32 Func_unitGetName = 0x0047B5A0;
 	int unitGetName(CUnit* a1) {
 		static int result;
 		__asm {
@@ -1529,7 +1529,7 @@ namespace { // Helpers
 	}
 
 	// For getUnitStrength
-	const u32 Func_getCurrentHitPointsPlusShields = 0x004026D0;
+	const uint32 Func_getCurrentHitPointsPlusShields = 0x004026D0;
 	int getCurrentHitPointsPlusShields(CUnit* a1) {
 		static int result;
 		__asm {
@@ -1542,7 +1542,7 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_getBaseStrength = 0x004316D0;
+	const uint32 Func_getBaseStrength = 0x004316D0;
 	int getBaseStrength(int a1, CUnit* a2) {
 		static int result;
 		__asm {
@@ -1556,7 +1556,7 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_getMaxHP = 0x00401400;
+	const uint32 Func_getMaxHP = 0x00401400;
 	int getMaxHP(CUnit* a1) {
 		static int result;
 		__asm {
@@ -1570,8 +1570,8 @@ namespace { // Helpers
 	}
 
 	// For AI_RestorationRequirementsProc
-	const u32 Func_canWeaponTargetUnit = 0x00475CE0;
-	int canWeaponTargetUnit(u8 a1, CUnit* a2, CUnit* a3) {
+	const uint32 Func_canWeaponTargetUnit = 0x00475CE0;
+	int canWeaponTargetUnit(uint8 a1, CUnit* a2, CUnit* a3) {
 		static int result;
 		__asm {
 			PUSHAD
@@ -1587,9 +1587,9 @@ namespace { // Helpers
 
 	// For AI_EMPShieldRequirementsProc
 
-	const u32 Func_AI_TargetUnitIsWorthHitting = 0x00440E30;
-	s32 AI_TargetUnitIsWorthHitting(CUnit* a1, CUnit* a2) {
-		static s32 result;
+	const uint32 Func_AI_TargetUnitIsWorthHitting = 0x00440E30;
+	int32 AI_TargetUnitIsWorthHitting(CUnit* a1, CUnit* a2) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -1601,8 +1601,8 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_createSplashWeaponProc = 0x004E82E0;
-	int createSplashWeaponProc(s16 a1, s16 a2, s16 a3, int(__fastcall* a4)(int, int), int a5) {
+	const uint32 Func_createSplashWeaponProc = 0x004E82E0;
+	int createSplashWeaponProc(int16 a1, int16 a2, int16 a3, int(__fastcall* a4)(int, int), int a5) {
 		static int result;
 		__asm {
 			PUSHAD
@@ -1618,7 +1618,7 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_unitShieldsClumpInAreaAccumulatorProc = 0x00440A60;
+	const uint32 Func_unitShieldsClumpInAreaAccumulatorProc = 0x00440A60;
 	int unitShieldsClumpInAreaAccumulatorProc(CUnit* a1, CUnit* a2) {
 		static int result;
 		__asm {
@@ -1633,7 +1633,7 @@ namespace { // Helpers
 	}
 
 	// For hallucinationHit
-	const u32 Func_unitWasHit = 0x004795D0;
+	const uint32 Func_unitWasHit = 0x004795D0;
 	void unitWasHit(CUnit* a1, CUnit* a2, int a3) {
 		__asm {
 			PUSHAD
@@ -1645,7 +1645,7 @@ namespace { // Helpers
 		}
 	}
 
-	const u32 Func_doAttackNotifyEvent = 0x0048F230;
+	const uint32 Func_doAttackNotifyEvent = 0x0048F230;
 	void doAttackNotifyEvent(CUnit* a1) {
 		__asm {
 			PUSHAD
@@ -1655,7 +1655,7 @@ namespace { // Helpers
 		}
 	}
 
-	const u32 Func_createShieldOverlay = 0x004E6140;
+	const uint32 Func_createShieldOverlay = 0x004E6140;
 	CImage* createShieldOverlay(int a1, CUnit* a2) {
 		static CImage* result;
 		__asm {
@@ -1670,8 +1670,8 @@ namespace { // Helpers
 	}
 
 	// For drawImageHPBar
-	const u32 Func_unk_billions = 0x0047A750;
-	int unk_billions(int a1, s32 a2, int a3, int a4) {
+	const uint32 Func_unk_billions = 0x0047A750;
+	int unk_billions(int a1, int32 a2, int a3, int a4) {
 		static int result;
 		__asm {
 			PUSHAD
@@ -1686,8 +1686,8 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_unk_billions2 = 0x0047A6E0;
-	int unk_billions2(int a1, s32 a2, int a3, int a4) {
+	const uint32 Func_unk_billions2 = 0x0047A6E0;
+	int unk_billions2(int a1, int32 a2, int a3, int a4) {
 		static int result;
 		__asm {
 			PUSHAD
@@ -1702,7 +1702,7 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_hpBarSurfaceBuffer = 0x0047A350;
+	const uint32 Func_hpBarSurfaceBuffer = 0x0047A350;
 	int hpBarSurfaceBuffer(int a1, int a2, int* a3, int a4, int a5) {
 		static int result;
 		__asm {
@@ -1719,8 +1719,8 @@ namespace { // Helpers
 		return result;
 	}
 	
-	const u32 Func_hpBarSurfaceBuffer2 = 0x0047A120;
-	int hpBarSurfaceBuffer2(int a1, int a2, u16 a3, int a4) {
+	const uint32 Func_hpBarSurfaceBuffer2 = 0x0047A120;
+	int hpBarSurfaceBuffer2(int a1, int a2, uint16 a3, int a4) {
 		static int result;
 		__asm {
 			PUSHAD
@@ -1735,7 +1735,7 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_renderHPBar = 0x0047A4E0;
+	const uint32 Func_renderHPBar = 0x0047A4E0;
 	int renderHPBar(int a1, int a2, int* a3, int a4, int a5) {
 		static int result;
 		__asm {
@@ -1752,9 +1752,9 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_getUnitMaxEnergy = 0x00491870;
-	s32 getUnitMaxEnergy(CUnit* a1) {
-		static s32 result;
+	const uint32 Func_getUnitMaxEnergy = 0x00491870;
+	int32 getUnitMaxEnergy(CUnit* a1) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -1765,8 +1765,8 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_getHpBarDrawSizes = 0x0047A670;
-	int getHpBarDrawSizes(int a1, s32 a2, int a3, int a4) {
+	const uint32 Func_getHpBarDrawSizes = 0x0047A670;
+	int getHpBarDrawSizes(int a1, int32 a2, int a3, int a4) {
 		static int result;
 		__asm {
 			PUSHAD
@@ -1782,7 +1782,7 @@ namespace { // Helpers
 	}
 
 	// For canCastSpell
-	const u32 Func_unitIsFrozen = 0x004020B0;
+	const uint32 Func_unitIsFrozen = 0x004020B0;
 	bool unitIsFrozen(CUnit* a1) {
 		static int result;
 		__asm {
@@ -1795,7 +1795,7 @@ namespace { // Helpers
 		return (bool)result;
 	}
 
-	const u32 Func_isUnitCasterNotHallucination = 0x00401210;
+	const uint32 Func_isUnitCasterNotHallucination = 0x00401210;
 	bool isUnitCasterNotHallucination(CUnit* a1) {
 		static int result;
 		__asm {
@@ -1808,8 +1808,8 @@ namespace { // Helpers
 		return (bool)result;
 	}
 
-	const u32 Func_getActiveTileFlag = 0x00472F80;
-	bool getActiveTileFlag(s16 a1, s16 a2, int a3, int a4) {
+	const uint32 Func_getActiveTileFlag = 0x00472F80;
+	bool getActiveTileFlag(int16 a1, int16 a2, int a3, int a4) {
 		static int result;
 		__asm {
 			PUSHAD
@@ -1824,7 +1824,7 @@ namespace { // Helpers
 		return (bool)result;
 	}
 
-	const u32 Func_getTargetUnitAbilityErrorStatString = 0x00491E80;
+	const uint32 Func_getTargetUnitAbilityErrorStatString = 0x00491E80;
 	CUnit* getTargetUnitAbilityErrorStatString(CUnit* a1, char a2, int a3) {
 		static CUnit* result;
 		__asm {
@@ -1840,7 +1840,7 @@ namespace { // Helpers
 	}
 
 	// For modifyUnitShields
-	const u32 Func_SErrSetLastError = 0x00410172;
+	const uint32 Func_SErrSetLastError = 0x00410172;
 	int SErrSetLastError(char a1) {
 		static int result;
 		__asm {
@@ -1855,7 +1855,7 @@ namespace { // Helpers
 
 	// For compileHealthBar
 
-	const u32 Func_updateImageDrawData = 0x004D57B0;
+	const uint32 Func_updateImageDrawData = 0x004D57B0;
 	void updateImageDrawData(CImage* a1) {
 		__asm {
 			PUSHAD
@@ -1865,7 +1865,7 @@ namespace { // Helpers
 		}
 	}
 
-	const u32 Func_playImageIscript = 0x004D8470;
+	const uint32 Func_playImageIscript = 0x004D8470;
 	void playImageIscript(CImage* a1, char a2) {
 		__asm {
 			PUSHAD
@@ -1877,7 +1877,7 @@ namespace { // Helpers
 	}
 
 	// For AI_FindTransport
-	const u32 Func_canEnterTransport = 0x004E6E00;
+	const uint32 Func_canEnterTransport = 0x004E6E00;
 	bool canEnterTransport(CUnit* a1, CUnit* a2) {
 		static int result;
 		__asm {
@@ -1891,9 +1891,9 @@ namespace { // Helpers
 		return (bool)result;
 	}
 
-	const u32 Func_SAI_GetRegionIdFromPxEx = 0x0049C9F0;
-	s16 SAI_GetRegionIdFromPxEx(s32 a1, s32 a2) {
-		static s32 result;
+	const uint32 Func_SAI_GetRegionIdFromPxEx = 0x0049C9F0;
+	int16 SAI_GetRegionIdFromPxEx(int32 a1, int32 a2) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV EDI, a1
@@ -1902,12 +1902,12 @@ namespace { // Helpers
 			MOV result, EAX
 			POPAD
 		}
-		return (s16)result;
+		return (int16)result;
 	}
 
-	const u32 Func_getUnitDistanceToHalt = 0x00402140;
-	s32 getUnitDistanceToHalt(int a1, CUnit* a2, int a3) {
-		static s32 result;
+	const uint32 Func_getUnitDistanceToHalt = 0x00402140;
+	int32 getUnitDistanceToHalt(int a1, CUnit* a2, int a3) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -1921,9 +1921,9 @@ namespace { // Helpers
 	}
 
 	// For mapDataTransfer
-	const u32 Func_dataTransfer00 = 0x00472A00;
-	s32 dataTransfer00(int a1, char a2, int a3) {
-		static s32 result;
+	const uint32 Func_dataTransfer00 = 0x00472A00;
+	int32 dataTransfer00(int a1, char a2, int a3) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -1936,8 +1936,8 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_dataTransfer01 = 0x0045A600;
-	int dataTransfer01(u32 a1, int a2, u32 a3) {
+	const uint32 Func_dataTransfer01 = 0x0045A600;
+	int dataTransfer01(uint32 a1, int a2, uint32 a3) {
 		static int result;
 		__asm {
 			PUSHAD
@@ -1951,9 +1951,9 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_dataTransfer02 = 0x0045A230;
-	s32 dataTransfer02(int a1, int a2, char a3) {
-		static s32 result;
+	const uint32 Func_dataTransfer02 = 0x0045A230;
+	int32 dataTransfer02(int a1, int a2, char a3) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -1966,9 +1966,9 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_dataTransfer03 = 0x0045A1F0;
-	s32 dataTransfer03(int a1, char a2, int a3) {
-		static s32 result;
+	const uint32 Func_dataTransfer03 = 0x0045A1F0;
+	int32 dataTransfer03(int a1, char a2, int a3) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -1981,8 +1981,8 @@ namespace { // Helpers
 		return result;
 	}
 	
-	const u32 Func_dataTransfer04 = 0x0045A390;
-	int dataTransfer04(u32 a1, int a2, int a3) {
+	const uint32 Func_dataTransfer04 = 0x0045A390;
+	int dataTransfer04(uint32 a1, int a2, int a3) {
 		static int result;
 		__asm {
 			PUSHAD
@@ -1996,9 +1996,9 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_dataTransfer05 = 0x0045A190;
-	s32 dataTransfer05(int a1, int a2) {
-		static s32 result;
+	const uint32 Func_dataTransfer05 = 0x0045A190;
+	int32 dataTransfer05(int a1, int a2) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -2010,7 +2010,7 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_vectorTransfer = 0x0045A010;
+	const uint32 Func_vectorTransfer = 0x0045A010;
 	vectorHead* vectorTransfer(char a1, char a2) {
 		static vectorHead* result;
 		__asm {
@@ -2024,7 +2024,7 @@ namespace { // Helpers
 		return result;
 	}
 
-	const u32 Func_dataTransfer06 = 0x00472900;
+	const uint32 Func_dataTransfer06 = 0x00472900;
 	int dataTransfer06(int a1) {
 		static int result;
 		__asm {

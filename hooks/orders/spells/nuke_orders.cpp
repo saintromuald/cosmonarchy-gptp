@@ -5,13 +5,13 @@
 
 namespace {
 
-void setAllOverlayDirectionsGeneric(CUnit* unit, u32 unk);						//01140
+void setAllOverlayDirectionsGeneric(CUnit* unit, uint32 unk);						//01140
 void AI_orderUnitCloaking(CUnit* unit);											//3B970
-u32 function_0043DB50(CUnit* unit);												//3DB50
+uint32 function_0043DB50(CUnit* unit);												//3DB50
 void actUnitReturnToIdle(CUnit* unit);											//75420
 bool setThingyVisibilityFlags(CThingy* thingy);									//878F0
-CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);				//88210
-void changeUnitButtonSet_Sub4E5D60(CUnit* unit, u16 unitId);					//E5D60
+CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);				//88210
+void changeUnitButtonSet_Sub4E5D60(CUnit* unit, uint16 unitId);					//E5D60
 void showAndEnableUnit(CUnit* unit);											//E6490
 void setNextWaypoint_Sub4EB290(CUnit* unit);									//EB290
 bool SetMoveTarget_xy(CUnit* unit, int x, int y);								//EB820
@@ -97,7 +97,7 @@ void orders_NukeTrack(CUnit* unit) {
 
 void orders_NukeGround(CUnit* unit) {
 
-	u32 sightRange, distance;
+	uint32 sightRange, distance;
 
 	if(
 		unit->nextTargetWaypoint.x != unit->orderTarget.pt.x ||
@@ -140,7 +140,7 @@ void orders_NukeGround(CUnit* unit) {
 	}
 	else { //792AE
 
-		s32 direction;
+		int32 direction;
 		bool bEndThere = false;
 
 		setNextWaypoint_Sub4EB290(unit);
@@ -236,8 +236,8 @@ void orders_NukeGround(CUnit* unit) {
 
 namespace {
 
-const u32 Func_setAllOverlayDirectionsGeneric = 0x00401140;
-void setAllOverlayDirectionsGeneric(CUnit* unit, u32 unk) {
+const uint32 Func_setAllOverlayDirectionsGeneric = 0x00401140;
+void setAllOverlayDirectionsGeneric(CUnit* unit, uint32 unk) {
 
 	__asm {
 		PUSHAD
@@ -251,7 +251,7 @@ void setAllOverlayDirectionsGeneric(CUnit* unit, u32 unk) {
 
 ;
 
-const u32 Func_AI_orderUnitCloaking = 0x0043B970;
+const uint32 Func_AI_orderUnitCloaking = 0x0043B970;
 void AI_orderUnitCloaking(CUnit* unit) {
 
 	__asm {
@@ -265,10 +265,10 @@ void AI_orderUnitCloaking(CUnit* unit) {
 
 ;
 
-const u32 Func_Sub43DB50 = 0x0043DB50;
-u32 function_0043DB50(CUnit* unit) {
+const uint32 Func_Sub43DB50 = 0x0043DB50;
+uint32 function_0043DB50(CUnit* unit) {
 
-	static u32 return_value;
+	static uint32 return_value;
 
 	__asm {
 		PUSHAD
@@ -284,7 +284,7 @@ u32 function_0043DB50(CUnit* unit) {
 
 ;
 
-const u32 Func_ActUnitReturnToIdle = 0x00475420;
+const uint32 Func_ActUnitReturnToIdle = 0x00475420;
 void actUnitReturnToIdle(CUnit* unit) {
 
   __asm {
@@ -300,10 +300,10 @@ void actUnitReturnToIdle(CUnit* unit) {
 
 //original referenced name was sub_4878F0, but using
 //the name from bunker_hooks.cpp since it got meaning
-const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
+const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
 bool setThingyVisibilityFlags(CThingy* thingy) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -321,11 +321,11 @@ bool setThingyVisibilityFlags(CThingy* thingy) {
 
 //original referenced name was replaceSprite (but this one is probably
 //more accurate since it does create something rather than replacing)
-const u32 Func_CreateThingy = 0x00488210;
-CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId) {
+const uint32 Func_CreateThingy = 0x00488210;
+CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
 
 	static CThingy* thingy;
-	s32 x_ = x;
+	int32 x_ = x;
 
 	__asm {
 		PUSHAD
@@ -345,8 +345,8 @@ CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId) {
 ;
 
 
-const u32 Func_Sub4E5D60 = 0x004E5D60;
-void changeUnitButtonSet_Sub4E5D60(CUnit* unit, u16 buttonSetId) {
+const uint32 Func_Sub4E5D60 = 0x004E5D60;
+void changeUnitButtonSet_Sub4E5D60(CUnit* unit, uint16 buttonSetId) {
 
 	__asm {
 		PUSHAD
@@ -360,7 +360,7 @@ void changeUnitButtonSet_Sub4E5D60(CUnit* unit, u16 buttonSetId) {
 
 ;
 
-const u32 Func_InitUnitTrapDoodad = 0x004E6490;
+const uint32 Func_InitUnitTrapDoodad = 0x004E6490;
 void showAndEnableUnit(CUnit* unit) {
 
   __asm {
@@ -374,7 +374,7 @@ void showAndEnableUnit(CUnit* unit) {
 ;
 
 //Related to path/movement decision
-const u32 Func_sub_4EB290 = 0x004EB290;
+const uint32 Func_sub_4EB290 = 0x004EB290;
 void setNextWaypoint_Sub4EB290(CUnit* unit) {
 
 	__asm {
@@ -387,10 +387,10 @@ void setNextWaypoint_Sub4EB290(CUnit* unit) {
 
 ;
 
-const u32 Func_SetMoveTarget_xy = 0x004EB820;
+const uint32 Func_SetMoveTarget_xy = 0x004EB820;
 bool SetMoveTarget_xy(CUnit* unit, int x, int y) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD

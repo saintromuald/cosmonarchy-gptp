@@ -4,8 +4,8 @@
 //helper functions def
 namespace {
 
-u32 get_statTxt_Str_0(CUnit* unit, u32 playerId, char* message);	//0x0048EF30
-u32 RandBetween(u32 min, u32 max, u32 someIndex);					//0x004DC550
+uint32 get_statTxt_Str_0(CUnit* unit, uint32 playerId, char* message);	//0x0048EF30
+uint32 RandBetween(uint32 min, uint32 max, uint32 someIndex);					//0x004DC550
 
 } //unnamed namespace
 
@@ -38,7 +38,7 @@ void CMDACT_Stimpack() {
 	}
 
 	if(bFoundUnitAbleToStimpack) {
-		static u8 opcode[] = { 0x36 };	//packet opcode for stimpack is 0x36, no others args
+		static uint8 opcode[] = { 0x36 };	//packet opcode for stimpack is 0x36, no others args
 		QueueGameCommand(&opcode[0], 1);
 
 	}
@@ -100,8 +100,8 @@ void CMDRECV_StimPack() {
 				random_value = 0;
 			else {
 
-				static u32* randomnessCounter_0051C68C = (u32*)0x0051C68C;
-				static u32* randomnessCounter_0051CA18 = (u32*)0x0051CA18;
+				static uint32* randomnessCounter_0051C68C = (uint32*)0x0051C68C;
+				static uint32* randomnessCounter_0051CA18 = (uint32*)0x0051CA18;
 
 				*randomnessCounter_0051C68C = (*randomnessCounter_0051C68C) + 1;
 				*randomnessCounter_0051CA18 = (*randomnessCounter_0051CA18) + 1;
@@ -142,8 +142,8 @@ void CMDRECV_StimPack() {
 
 namespace {
 
-const u32 Func_QueueGameCommand = 0x00485BD0;
-void QueueGameCommand(u8* params, u32 param_length) {
+const uint32 Func_QueueGameCommand = 0x00485BD0;
+void QueueGameCommand(uint8* params, uint32 param_length) {
 
 	__asm {
 		PUSHAD
@@ -157,10 +157,10 @@ void QueueGameCommand(u8* params, u32 param_length) {
 
 ;
 
-const u32 Func_get_statTxt_Str_0 = 0x0048EF30;
-u32 get_statTxt_Str_0(CUnit* unit, u32 playerId, char* message) {
+const uint32 Func_get_statTxt_Str_0 = 0x0048EF30;
+uint32 get_statTxt_Str_0(CUnit* unit, uint32 playerId, char* message) {
 
-	static u32 return_value;
+	static uint32 return_value;
 
 	__asm {
 		PUSHAD
@@ -178,10 +178,10 @@ u32 get_statTxt_Str_0(CUnit* unit, u32 playerId, char* message) {
 
 ;
 
-const u32 Func_RandBetween = 0x004DC550;
-u32 RandBetween(u32 min, u32 max, u32 someIndex) {
+const uint32 Func_RandBetween = 0x004DC550;
+uint32 RandBetween(uint32 min, uint32 max, uint32 someIndex) {
 
-	static u32 return_value;
+	static uint32 return_value;
 
 	__asm {
 		PUSHAD

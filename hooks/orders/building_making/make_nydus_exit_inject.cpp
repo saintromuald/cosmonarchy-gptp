@@ -2,7 +2,7 @@
 #include <hook_tools.h>
 #include "globals.h"
 
-static u32 playerCache = 0;//not the best solution of transfusion case, it's temporary until hook is available
+static uint32 playerCache = 0;//not the best solution of transfusion case, it's temporary until hook is available
 
 namespace {
 
@@ -30,7 +30,7 @@ namespace {
 
 	;
 
-	const u32 jmp_7315c = 0x0047315C;
+	const uint32 jmp_7315c = 0x0047315C;
 	void __declspec(naked) nydusPlaceExitTileCheckWrapper1() {
 		__asm {
 			MOVZX EAX, AL
@@ -40,10 +40,10 @@ namespace {
 		}
 
 	}
-	const u32 jmp_731C8 = 0x004731C8;
+	const uint32 jmp_731C8 = 0x004731C8;
 	void __declspec(naked) nydusPlaceExitTileCheckWrapper2() {
-		static u32 tile_flags;
-		static u32 player_id;
+		static uint32 tile_flags;
+		static uint32 player_id;
 		__asm {
 			ADD ECX,0x00400000
 			MOV tile_flags,ECX

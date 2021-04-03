@@ -6,8 +6,8 @@ namespace {
 void __declspec(naked) AI_spellcasterWrapper() {
 
   static CUnit* unit;
-  static Bool32 isUnderAttack;
-  static Bool32 result;
+  static bool32 isUnderAttack;
+  static bool32 result;
 
   __asm {
     PUSH EBP

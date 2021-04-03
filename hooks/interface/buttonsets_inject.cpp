@@ -129,11 +129,11 @@ void __declspec(naked) statbtn_BIN_CustomCtrlIDWrapper() {
 //Don't replace the entire function
 //You can (and should) disable this if you're
 //already using the hooked 4591D0 function.
-const u32 Func_Sub_4591ED = 0x004591ED;
-const u32 Patch_For_Sub4591D0_Back = 0x004591F4;
+const uint32 Func_Sub_4591ED = 0x004591ED;
+const uint32 Patch_For_Sub4591D0_Back = 0x004591F4;
 void __declspec(naked) getButtonSetPatch_For_Sub4591D0() {
 
-	static u32 index;
+	static uint32 index;
 	static BUTTON_SET* returnValue;
 
 	__asm {
@@ -164,7 +164,7 @@ void __declspec(naked) getButtonSetPatch_For_Sub4591D0() {
 } //unnamed namespace
 
 void __declspec(naked) get_stattxt_string_Wrapper() {
-	static u16 stringId;
+	static uint16 stringId;
 	static const char* message;
 	__asm {
 		

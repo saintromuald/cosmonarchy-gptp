@@ -4,13 +4,13 @@
 void augurSacrifice(CUnit* target);
 namespace hooks {
 
-    void weaponDamageHook(s32     damage,
+    void weaponDamageHook(int32     damage,
                           CUnit*  target,
-                          u8      weaponId,
+                          uint8      weaponId,
                           CUnit*  attacker,
-                          u8      attackingPlayerId,
-                          s8      direction,
-                          u8      dmgDivisor);
+                          uint8      attackingPlayerId,
+                          int8      direction,
+                          uint8      dmgDivisor);
     
     void applyEnsnare(CUnit* a1);													// 004F45E0
     int32_t updateCorrosiveSpores(CUnit* target);                                   // 004F4480

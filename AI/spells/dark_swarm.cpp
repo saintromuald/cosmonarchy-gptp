@@ -5,13 +5,13 @@
 
 namespace AI {
 
-	Bool32 weaponBehaviourCanHitTargetCheck(CUnit* caster, CUnit* attacker, CUnit* target) {
+	bool32 weaponBehaviourCanHitTargetCheck(CUnit* caster, CUnit* attacker, CUnit* target) {
 
-		Bool32 returnValue;
+		bool32 returnValue;
 
-		const u32* offset_0x005873F0 = (u32*)0x005873F0;
+		const uint32* offset_0x005873F0 = (uint32*)0x005873F0;
 
-		u8 isUnderDarkSwarmStatus;
+		uint8 isUnderDarkSwarmStatus;
 
 		//code equivalent to isUnderDarkSwarm @ 0x00476210, a function different 
 		//from scbw::isUnderDarkSwarm(target) that just seek a nearby 
@@ -27,8 +27,8 @@ namespace AI {
 				)
 			{
 
-				s32 targetX = target->getX();
-				s32 targetY = target->getY();
+				int32 targetX = target->getX();
+				int32 targetY = target->getY();
 
 				if (targetX < 0)
 					targetX += 31;
@@ -88,7 +88,7 @@ namespace AI {
 					)
 				{
 
-					u8 totGroundWeapon = targetOfTarget->getGroundWeapon();
+					uint8 totGroundWeapon = targetOfTarget->getGroundWeapon();
 
 					if (
 						totGroundWeapon != WeaponId::None &&
@@ -96,7 +96,7 @@ namespace AI {
 						)
 					{
 
-						u8 targetGroundWeapon;
+						uint8 targetGroundWeapon;
 
 						if (target->subunit->isSubunit())
 							target = target->subunit;
@@ -105,7 +105,7 @@ namespace AI {
 
 						if (targetGroundWeapon != WeaponId::None) {
 
-							u8 weapon_behavior = weapons_dat::Behavior[targetGroundWeapon];
+							uint8 weapon_behavior = weapons_dat::Behavior[targetGroundWeapon];
 
 							if (
 								weapons_dat::Behavior[targetGroundWeapon] == WeaponBehavior::Fly_DoNotFollowTarget ||
@@ -159,7 +159,7 @@ namespace AI {
 		//if (targetOfTarget->status & UnitStatus::InAir)
 		//  return false;
 
-		//u8 totGroundWeapon = targetOfTarget->getGroundWeapon();
+		//uint8 totGroundWeapon = targetOfTarget->getGroundWeapon();
 
 		//if (totGroundWeapon == WeaponId::None)
 		//  return false;
@@ -170,7 +170,7 @@ namespace AI {
 		//if (target->subunit->isSubunit())
 		//  target = target->subunit;
 
-		//u8 targetGroundWeapon = target->getGroundWeapon();
+		//uint8 targetGroundWeapon = target->getGroundWeapon();
 
 		//if (targetGroundWeapon == WeaponId::None)
 		//  return false;
@@ -197,8 +197,8 @@ namespace AI {
 
 		//	if (!(targetOfTarget->status & UnitStatus::InAir || target->status & UnitStatus::InAir))
 		//	{
-		//	  u32 targGndHeight = scbw::getGroundHeightAtPos(target->getX(), target->getY());
-		//	  u32 totGndHeight = scbw::getGroundHeightAtPos(targetOfTarget->getX(), targetOfTarget->getY());
+		//	  uint32 targGndHeight = scbw::getGroundHeightAtPos(target->getX(), target->getY());
+		//	  uint32 totGndHeight = scbw::getGroundHeightAtPos(targetOfTarget->getX(), targetOfTarget->getY());
 		//	  if (targGndHeight < totGndHeight)
 		//		return true;
 		//	}

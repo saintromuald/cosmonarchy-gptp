@@ -3,7 +3,7 @@
 
 namespace hooks {
 
-	std::vector<u32> offset_list() {
+	std::vector<uint32> offset_list() {
 		return {
 			// Address math \\
 
@@ -254,7 +254,7 @@ namespace hooks {
 			
 		};
 	}
-	std::vector<u32> patch_convention() {
+	std::vector<uint32> patch_convention() {
 		return {
 			/*
 			HEADER FOR PATCH CONVENTION TYPES
@@ -555,7 +555,7 @@ namespace hooks {
 			ReadArgs,
 		};
 	}
-	void memoryPatchVec(u32 address, std::vector<u8> &patch) {
+	void memoryPatchVec(uint32 address, std::vector<uint8> &patch) {
 		for (int i = 0; i < patch.size();i++) {
 			memoryPatch(address+i, patch[i]);
 		}
@@ -569,15 +569,15 @@ namespace hooks {
 00423503  |.  B8 7D1B5000   MOV EAX,00501B7D
 
 
-static u32 wrapJumpAddressIf;
-static u32 wrapJumpAddressAfter;
-static u32 wrapComparison; (0x369 for example)
+static uint32 wrapJumpAddressIf;
+static uint32 wrapJumpAddressAfter;
+static uint32 wrapComparison; (0x369 for example)
 static char tblNew[] = "rez\\stat_txt.tblex";
 */
 	/*void __declspec(naked) ecx_callset() {
-		static u32 currentWrap;
-		static u32 currentAddressIf;
-		static u32 currentAddressAfter;
+		static uint32 currentWrap;
+		static uint32 currentAddressIf;
+		static uint32 currentAddressAfter;
 		__asm {
 			PUSHAD
 		}
@@ -595,9 +595,9 @@ static char tblNew[] = "rez\\stat_txt.tblex";
 		}
 	}
 	void __declspec(naked) ecx_jbe_callset() {
-		static u32 currentWrap;
-		static u32 currentAddressIf;
-		static u32 currentAddressAfter;
+		static uint32 currentWrap;
+		static uint32 currentAddressIf;
+		static uint32 currentAddressAfter;
 		__asm {
 			PUSHAD
 		}
@@ -656,8 +656,8 @@ static char tblNew[] = "rez\\stat_txt.tblex";
 	}*/
 	void patchTblList() {
 		int read_status = ConvReadStatus::ReadHeader;
-		std::vector<u32> args;
-		std::vector<u32> vars;
+		std::vector<uint32> args;
+		std::vector<uint32> vars;
 		int varCount = 0;
 		int argCount = 0;
 		int currentVarCount = 0;
@@ -666,8 +666,8 @@ static char tblNew[] = "rez\\stat_txt.tblex";
 		int currentHeader = -1;
 		
 		auto patch_list = patch_convention();
-		std::vector<u8> patch;
-		std::vector<u32> sequence_lengths;
+		std::vector<uint8> patch;
+		std::vector<uint32> sequence_lengths;
 		for (int i = 0; i < patch_list.size(); i++) {
 			if (read_status == ConvReadStatus::ReadHeader) {
 				sequence_lengths.clear();
@@ -695,9 +695,9 @@ static char tblNew[] = "rez\\stat_txt.tblex";
 							i++;
 						}*/
 						patch.clear();
-						u32 address = patch_list[i];
+						uint32 address = patch_list[i];
 						if (currentHeader == TblPatchType::CmpPatch/* && currentWrapPatch < wrapPatchMax*/) {
-							u8 byte_off = *reinterpret_cast<u8*>((patch_list[i + 2] + 1));
+							uint8 byte_off = *reinterpret_cast<uint8*>((patch_list[i + 2] + 1));
 							auto address_if = byte_off + patch_list[i + 2];
 							auto address_else = patch_list[i + 2] + 0x2;
 							auto comparison = patch_list[i + 1];
@@ -711,7 +711,7 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 							*/
 							//unsafe!	
 							//probably must be handled with class extender to delete the allocated memory on exit
-							//u8* const byte_wrapper = new u8[20];
+							//uint8* const byte_wrapper = new uint8[20];
 							// SET WRAPPER STUFF
 							// MODIFY WRAPPER
 							// INJECT WRAPPER
@@ -723,7 +723,7 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 							/*
 								let executable = exe.exec_alloc(code.len());
 								//
-									pub fn exec_alloc(&mut self, size: usize) -> &'static mut [u8] {
+									pub fn exec_alloc(&mut self, size: usize) -> &'static mut [uint8] {
 										let mem = self.parent.state.exec_heap.allocate(size);
 										unsafe { ::std::slice::from_raw_parts_mut(mem, size) }
 									}
@@ -732,13 +732,13 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 									exe.nop(nop_address, nops);
 								}
 								executable.copy_from_slice(&code);
-								let diff = (executable.as_ptr() as u32).wrapping_sub(address as u32+5);
+								let diff = (executable.as_ptr() as uint32).wrapping_sub(address as uint32+5);
 								exe.replace_val(address+1, diff);
-								exe.replace_val(address, 0xe8 as u8);
+								exe.replace_val(address, 0xe8 as uint8);
 							*/
 
 
-							/*u8 byte_off = *reinterpret_cast<u8*>((patch_list[i + 2]+1));
+							/*uint8 byte_off = *reinterpret_cast<uint8*>((patch_list[i + 2]+1));
 							wrapJumpAddressIf[currentWrapPatch] = byte_off + patch_list[i + 2];
 							wrapJumpAddressAfter[currentWrapPatch] = patch_list[i + 2] + 0x2;
 							wrapComparison[currentWrapPatch] = patch_list[i + 1];
@@ -764,9 +764,9 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 						}
 						else if (currentHeader == TblPatchType::PtrWriting) {
 							
-							u16 string_id = patch_list[i + 1];
-							u8 bl = patch_list[i + 1] & 0xff;
-							u8 bu = (patch_list[i + 1] & 0xff00) >> 8;
+							uint16 string_id = patch_list[i + 1];
+							uint8 bl = patch_list[i + 1] & 0xff;
+							uint8 bu = (patch_list[i + 1] & 0xff00) >> 8;
 							patch = { 0x8b,0x82,bl,bu,0x00,0x00,0x90 };
 							if (vars[0] == Reg::_EAX) {
 								if (vars[1] == Reg::_ECX) {
@@ -884,7 +884,7 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 							}
 						}
 						else if (currentHeader == TblPatchType::JmpPatch) {
-							u8 jump = patch_list[i + 1];
+							uint8 jump = patch_list[i + 1];
 							patch = { 0xeb };
 							if (jump == Jmp::JBE) {
 								patch = { 0x90,0x90 };
@@ -914,7 +914,7 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 		auto ptr_list = offset_list();
 		//DATA MUST BE INITIALIZED
 		/*for (int i = 0; i < ptr_list.size(); i++) {
-			memoryPatch(ptr_list[i], (u32)&extendedTbl);
+			memoryPatch(ptr_list[i], (uint32)&extendedTbl);
 		}*/
 		patchTblList();
 		memoryPatch(0x004C3A6A + 1, &tblNew);

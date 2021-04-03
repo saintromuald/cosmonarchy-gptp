@@ -5,11 +5,11 @@
 namespace {
 
 
-const u32 Func_CreateContextHelp = 0x00481510;
+const uint32 Func_CreateContextHelp = 0x00481510;
 //Identical to function @ 0x00457350
 void createContextHelpFromDialog(BinDlg* dialog, const char *text) {
 
-	u32 x = dialog->bounds.right, y = dialog->bounds.bottom;
+	uint32 x = dialog->bounds.right, y = dialog->bounds.bottom;
 
 	if (dialog->controlType != 0) {
 		x += dialog->parent->bounds.left;
@@ -35,7 +35,7 @@ void __stdcall statdatalUserInteractWrapper(BinDlg *consoleIcon) {
 	switch (gui->overlayType) {
 		case 0:
 			createContextHelpFromDialog(consoleIcon,
-				hooks::getWeaponTooltipString((u8) gui->id, *activePortraitUnit));
+				hooks::getWeaponTooltipString((uint8) gui->id, *activePortraitUnit));
 			break;
 		case 1:
 			createContextHelpFromDialog(consoleIcon,

@@ -6,7 +6,7 @@
 
 void __declspec(naked) UseTechWrapper()
 {
-	static u16 id;
+	static uint16 id;
 	static GrpHead* grphead;
 	__asm
 	{
@@ -24,14 +24,14 @@ void __declspec(naked) UseTechWrapper()
 }
 
 
-const u32 Hook_Jump_SkipUpgradeOp = 0x0046D5CC;
-const u32 Hook_Jump_UpgradeFunctionality = 0x0046D5BE;
+const uint32 Hook_Jump_SkipUpgradeOp = 0x0046D5CC;
+const uint32 Hook_Jump_UpgradeFunctionality = 0x0046D5BE;
 void __declspec(naked) UpgradeIdComparison_Wrapper() {
 
 	//EDX (0xffff), CX (firegraft shift), EAX (1)
-	static u32 edx_0xffff;
-	static u16 opcode;
-	static u32 eax_res;
+	static uint32 edx_0xffff;
+	static uint16 opcode;
+	static uint32 eax_res;
 	__asm {
 		MOV edx_0xffff, EAX
 		MOV opcode, CX

@@ -11,90 +11,90 @@ namespace {
 	void AI_TrainingNormal(CUnit* result, CUnit* parent);											// 00435DB0
 
 	// for AI_AddMilitary
-	s16 SAI_GetRegionIdFromPxEx(s32 x, s32 y);														// 0049C9F0
+	int16 SAI_GetRegionIdFromPxEx(int32 x, int32 y);														// 0049C9F0
 	void AI_OrderToDestination(CUnit* unit, int orderId, int x, int y);								// 0043D5D0
 	void AI_AssignCaptainToSlowestUnit(AiCaptain* region);											// 00436F70
 
 	// for AI_CreateNuke
-	CUnit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId);									// 004A09D0
+	CUnit* createUnit(int16 unitType, int32 x, int32 y, int32 playerId);									// 004A09D0
 	void updateUnitStatsFinishBuilding(CUnit* unit);												// 004A01F0
-	u32 updateUnitStrengthAndApplyDefaultOrders(CUnit* unit);										// 0049FA40
+	uint32 updateUnitStrengthAndApplyDefaultOrders(CUnit* unit);										// 0049FA40
 	void hideUnit(CUnit* unit);																		// 004E6340
 
 	// for AI_TrainingBroodling
-	void AI_AssignMilitary(s32 regionType, AiCaptain* region);										// 004390A0
-	void AI_AddMilitary(AiCaptain* region, CUnit* unit, s32 always_this_region);					// 0043DA20
+	void AI_AssignMilitary(int32 regionType, AiCaptain* region);										// 004390A0
+	void AI_AddMilitary(AiCaptain* region, CUnit* unit, int32 always_this_region);					// 0043DA20
 
 	// for AI_AddUnitAi
 	UnitAi* AI_CreateBuildingAi(BuildingAiArray* buildingAI);										// 004044C0
-	void orderComputerClear(CUnit* unit, u8 orderId);												// 00475310
+	void orderComputerClear(CUnit* unit, uint8 orderId);												// 00475310
 	CUnit* setSecondaryOrder(CUnit* result, char orderId);											// 004743D0
-	void AI_MakeGuard(s32 playerId, CUnit* unit);													// 0043A010
+	void AI_MakeGuard(int32 playerId, CUnit* unit);													// 0043A010
 	bool unitIsActiveResourceDepot(CUnit* unit);													// 00401CF0
-	s32 getPlayerDefaultRefineryUnitType(s32 playerId);												// 004320D0
+	int32 getPlayerDefaultRefineryUnitType(int32 playerId);												// 004320D0
 
 	// for AI_UnitWasHit // some of these should probably be methods in api/etc
 	char AI_CancelStructure(CUnit* structure);														// 00468280
 	CUnit* AI_GetActualTarget(CUnit* attacker, CUnit* target);										// 0043AD60
-	CUnit* checkArbiterCloakingRange(CUnit* unit, u16 id);											// 004410C0
+	CUnit* checkArbiterCloakingRange(CUnit* unit, uint16 id);											// 004410C0
 	void AI_OrderUnitCloaking(CUnit* unit);															// 0043B970
 	void AI_OrderLurkerBurrow(CUnit* unit);															// 0043C230
-	bool AI_IsUnderAttack(CUnit* unit, s32 flag);													// 00436E70
+	bool AI_IsUnderAttack(CUnit* unit, int32 flag);													// 00436E70
 	bool unitIsActiveTransport(CUnit* unit);														// 004E6BA0
-	s32 isUnitLoaded(CUnit* unit);																	// 004E7110
-	s32 AI_TryReturnHome(CUnit* unit, s32 dontIssueOrder);											// 00462EA0
-	s32 AI_TransportAction(CUnit* unit);															// 0043DB50
-	s32 AI_AskForHelp(CUnit* self, CUnit* attacker, s32 onlyNearbyGuards);							// 0043ADA0
-	s16 getRegionIdFromUnit(CUnit* unit);															// 0049CB40
-	s32 getEnemyAirStrengthInRegion(u16 regionId, s32 player);										// 00431D00
-	s32 getEnemyStrengthInRegion(u16 regionId, s32 player, s32 includeAir);							// 004318E0
+	int32 isUnitLoaded(CUnit* unit);																	// 004E7110
+	int32 AI_TryReturnHome(CUnit* unit, int32 dontIssueOrder);											// 00462EA0
+	int32 AI_TransportAction(CUnit* unit);															// 0043DB50
+	int32 AI_AskForHelp(CUnit* self, CUnit* attacker, int32 onlyNearbyGuards);							// 0043ADA0
+	int16 getRegionIdFromUnit(CUnit* unit);															// 0049CB40
+	int32 getEnemyAirStrengthInRegion(uint16 regionId, int32 player);										// 00431D00
+	int32 getEnemyStrengthInRegion(uint16 regionId, int32 player, int32 includeAir);							// 004318E0
 	bool unitIsPerformingUnbreakableCode(CUnit* unit);												// 00402310
 	bool AI_CastSpellBehavior(CUnit* unit, bool isAggro);											// 004A13C0
-	s32 AI_Flee(CUnit* unit, CUnit* enemy);															// 0043E400
-	bool unitHasGroundPath(CUnit* unit, s16 x, s16 y);												// 0042FA00
-	bool AI_HasNoDefenseBuild(s32 player);															// 00447370
+	int32 AI_Flee(CUnit* unit, CUnit* enemy);															// 0043E400
+	bool unitHasGroundPath(CUnit* unit, int16 x, int16 y);												// 0042FA00
+	bool AI_HasNoDefenseBuild(int32 player);															// 00447370
 	bool unitCanSeeCloakedTarget(CUnit* target, CUnit* unit);										// 00401D60
 	void AI_RespondToCloakedThreat(CUnit* threat, CUnit* unit);										// 0043C580
-	bool unitCanAttackTarget(CUnit* target, CUnit* unit, s32 checkDetection);						// 00476730
-	s32 AI_UpdateAttackTarget(CUnit* unit, s32 acceptIfSieged, s32 acceptCritters, s32 mustReach);	// 00477160
+	bool unitCanAttackTarget(CUnit* target, CUnit* unit, int32 checkDetection);						// 00476730
+	int32 AI_UpdateAttackTarget(CUnit* unit, int32 acceptIfSieged, int32 acceptCritters, int32 mustReach);	// 00477160
 //	__int64 AI_PrepareToFlee(CUnit* unit, CUnit* enemy);											// 00476A50
-	void orderInterrupt(CUnit* unit, u8 orderId, Point32* pos, CUnit* target);						// 00474C30
+	void orderInterrupt(CUnit* unit, uint8 orderId, Point32* pos, CUnit* target);						// 00474C30
 
 	// for AI_IterateBuildingAI
-	u16 AI_RemoveFromTowns(CUnit* worker);															// 00432760
+	uint16 AI_RemoveFromTowns(CUnit* worker);															// 00432760
 	BuildingAi* AI_DeleteBuildingAI(BuildingAi* building, BuildingAiArray* buildingList);			// 00404500
-	s32 AI_GetQueuedCount(CUnit* builder, u32 unitId);												// 00466B70
-	void AI_PrepareGuardAI(u16 y, u32 player, u16 unitId, u16 x);									// 00462670
+	int32 AI_GetQueuedCount(CUnit* builder, uint32 unitId);												// 00466B70
+	void AI_PrepareGuardAI(uint16 y, uint32 player, uint16 unitId, uint16 x);									// 00462670
 	
 	// Attack extender
 
 	// for AI_TrainAttackForce
-	s32 AI_AddRegionToMilitary(AiCaptain* region, s32 unitId, s32 priority);						// 0043E2E0
-	u32 AI_FindUnit(u32 unitId, u32 playerId, u32 type);											// 00447DC0
-	u32 AI_AddSpendingRequest(u16 unitId, u32 type, u8 player, char priority, void* value);			// 00447980
-	u32 AI_AddBaseUnitSpendingRequest(u32 unitId, u32 player, AiCaptain* region, char priority);	// 004484A0
+	int32 AI_AddRegionToMilitary(AiCaptain* region, int32 unitId, int32 priority);						// 0043E2E0
+	uint32 AI_FindUnit(uint32 unitId, uint32 playerId, uint32 type);											// 00447DC0
+	uint32 AI_AddSpendingRequest(uint16 unitId, uint32 type, uint8 player, char priority, void* value);			// 00447980
+	uint32 AI_AddBaseUnitSpendingRequest(uint32 unitId, uint32 player, AiCaptain* region, char priority);	// 004484A0
 
 	// for AIRegion_GroupForAttack
-	u32 AI_RecalculateRegionStrength(AiCaptain* region);											// 0043A390
+	uint32 AI_RecalculateRegionStrength(AiCaptain* region);											// 0043A390
 	CUnit* AI_TargetEnemyInRegion(AiCaptain* region);												// 0043CC40
-	s32 AI_MoveMilitaryToDefend(AiCaptain* region);													// 0043DE40
-	void AI_GetRegionMilitaryTypes(AiCaptain* region, s32* hasGroundMilitary,						// 00438FC0
-		s32* cantAttackGround, s32* cantAttackAir);
-	s32 AI_CanTravelToRegion(AiCaptain* region1, AiCaptain* region2);								// 0043A790
+	int32 AI_MoveMilitaryToDefend(AiCaptain* region);													// 0043DE40
+	void AI_GetRegionMilitaryTypes(AiCaptain* region, int32* hasGroundMilitary,						// 00438FC0
+		int32* cantAttackGround, int32* cantAttackAir);
+	int32 AI_CanTravelToRegion(AiCaptain* region1, AiCaptain* region2);								// 0043A790
 	CUnit* AI_PickAttackTarget_NoBuildings(AiCaptain* region);										// 0043A510
-	u32 AI_MoveMilitaryToOtherRegion(AiCaptain* target, AiCaptain* source, u32 pullUnitsNearRegion,	// 0043E580
-		u32 sendPureSpellcasters, u32 dontSendFromBunkers);
+	uint32 AI_MoveMilitaryToOtherRegion(AiCaptain* target, AiCaptain* source, uint32 pullUnitsNearRegion,	// 0043E580
+		uint32 sendPureSpellcasters, uint32 dontSendFromBunkers);
 	AiTown* AI_IterateTownSomething(AiCaptain* region);												// 0043DD20
-	u32 AI_AttackTimerDecrement(u32 player);														// 00447090
-	s32 AI_HasForcesMovingToAttack(u32 player);														// 0043A2E0
+	uint32 AI_AttackTimerDecrement(uint32 player);														// 00447090
+	int32 AI_HasForcesMovingToAttack(uint32 player);														// 0043A2E0
 
 	// for AI_AttackManager
-	u16 PopulateRegionsWithOwn(char* regionData, u32 player);										// 00438B30
-	void PopulateRegionsWithEnemy(u32 player, char* regionData);									// 00439B50
-	s32 AI_GetNeighborRegionTypes(char* regionData);												// 00436D80
+	uint16 PopulateRegionsWithOwn(char* regionData, uint32 player);										// 00438B30
+	void PopulateRegionsWithEnemy(uint32 player, char* regionData);									// 00439B50
+	int32 AI_GetNeighborRegionTypes(char* regionData);												// 00436D80
 	void AI_FinishRegionAccessibility(char* regionData);											// 00436CF0
-	s32 AI_SetAttackGroupingRegion(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,	// 004399D0
-		s32 x, s32 y, u32 alwaysOverwriteLastAttack);
+	int32 AI_SetAttackGroupingRegion(uint32 airAttack, uint32 alsoVeryNear, uint32 player, char* regionData,	// 004399D0
+		int32 x, int32 y, uint32 alwaysOverwriteLastAttack);
 
 }
 #include "logger.h"
@@ -164,8 +164,8 @@ namespace hooks {
 		}
 	}*/
 	
-/*	void AI_AddMilitary(AiCaptain* region, CUnit* unit, s32 alwaysThisRegion) {		// 0043DA20
-	// alwaysThisRegion acts as a bool, not sure why IDA thinks it's s32
+/*	void AI_AddMilitary(AiCaptain* region, CUnit* unit, int32 alwaysThisRegion) {		// 0043DA20
+	// alwaysThisRegion acts as a bool, not sure why IDA thinks it's int32
 	// I assumed medicAI was UnitAI* but IDA tries to assign town values to it later
 	// Looking at the aise version of this hook didn't help as it's more akin to a rewrite: https://pastebin.com/raw/8xNTUCuv
 		AiCaptain* regionNew; // esi
@@ -177,7 +177,7 @@ namespace hooks {
 
 		regionNew = region;
 		if (region->captainType == 3 && !alwaysThisRegion) {
-			regionNew = &AiRegionCaptains[(u8)unit->playerId][SAI_GetRegionIdFromPxEx(
+			regionNew = &AiRegionCaptains[(uint8)unit->playerId][SAI_GetRegionIdFromPxEx(
 				unit->sprite->position.x,
 				unit->sprite->position.y)];
 		}
@@ -199,13 +199,13 @@ namespace hooks {
 				medicAI->parent = unit;
 				medicAI->captain = regionNew;
 				if (!(unit->status & 4))
-					++* (s32*)&regionNew->unknown_0xA;
+					++* (int32*)&regionNew->unknown_0xA;
 				unit->pAI = medicAI;
 				AI_OrderToDestination(
 					unit,
 					unit->id != UnitId::TerranMedic ? 157 : 177,
-					SAI_Paths->regions[(u16)regionNew->region].rgnCenterX >> 8,
-					SAI_Paths->regions[(u16)regionNew->region].rgnCenterY >> 8);
+					SAI_Paths->regions[(uint16)regionNew->region].rgnCenterX >> 8,
+					SAI_Paths->regions[(uint16)regionNew->region].rgnCenterY >> 8);
 				if (regionNew->captainType == 8 || regionNew->captainType == 9 || regionNew->captainType == 1 || regionNew->captainType == 2)
 					assignCaptainToSlowestUnit(v3);
 			}
@@ -218,8 +218,8 @@ namespace hooks {
 		CUnit* nuke; // eax
 		CUnit* nuke2; // esi
 
-		if (silo->id == UnitId::TerranNuclearSilo && !*(s32*)&silo->building.silo.isReady) {
-			nuke = createUnit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (u8)silo->playerId);
+		if (silo->id == UnitId::TerranNuclearSilo && !*(int32*)&silo->building.silo.isReady) {
+			nuke = createUnit(UnitId::TerranNuclearMissile, silo->sprite->position.x, silo->sprite->position.y, (uint8)silo->playerId);
 			nuke2 = nuke;
 			if (nuke) {
 				updateUnitStatsFinishBuilding(nuke);
@@ -236,9 +236,9 @@ namespace hooks {
 	// Hooked to add region null check - Pr0nogo
 	void AI_TrainingBroodling(CUnit* parent, CUnit* result) {						// 0043E280
 		AiCaptain* region; // esi
-		s16 regionType; // ax
+		int16 regionType; // ax
 		AiCaptain* playerRegion; // ecx
-		s32 regionId; // esi
+		int32 regionId; // esi
 		int pX, pY;
 		if (result->sprite != nullptr) {
 			pX = result->sprite->position.x;
@@ -269,16 +269,16 @@ namespace hooks {
 
 	// Hooked to investigate crashes - Pr0nogo
 /*	void AI_TrainingNormal(CUnit* a1, CUnit* a2) {									// 00435DB0
-		s16 v2; // dx
+		int16 v2; // dx
 		CUnit* v3; // esi
-		s16 regionId; // ax
+		int16 regionId; // ax
 		UnitAi* v5; // ebx
 		UnitAi* v6; // eax
-		s32 v7; // edi
+		int32 v7; // edi
 		AiTown* v8; // ebx
 		AiCaptain* v9; // eax
-		s16 v10; // dx
-		s16 v11; // cx
+		int16 v10; // dx
+		int16 v11; // cx
 		UnitAi* v12; // [esp+4h] [ebp-4h]
 
 		v3 = a1;
@@ -321,16 +321,16 @@ namespace hooks {
 						v7 = 0;
 					}
 					else {
-						v7 = (u8)a2->buildQueueSlot;
+						v7 = (uint8)a2->buildQueueSlot;
 					}
 					v9 = (AiCaptain*)*(&v5->field_18 + v7);
 					if (*(&v5->field_9 + v7) == 2)
 					{
-						if (!*(s32*)&v9->field_C)
+						if (!*(int32*)&v9->field_C)
 						{
 							v10 = v9->fullAirStrength;
 							v11 = v9->field_18;
-							*(s32*)&v9->field_C = v3;
+							*(int32*)&v9->field_C = v3;
 							v9->regionAirStrength = v10;
 							v9->fullGndStrength = v11;
 							v3->pAI = (UnitAi*)v9;
@@ -357,10 +357,10 @@ namespace hooks {
 		WorkerAiArray* workerAIArray;
 		UnitAi* previous1;
 		int* buildingQueueValues; 
-		u8* buildingQueueTypes; // was char*
-		s8 playerRACE;
-		s32 playerID;
-		u16 unitType;
+		uint8* buildingQueueTypes; // was char*
+		int8 playerRACE;
+		int32 playerID;
+		uint16 unitType;
 		
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker) {
 			workerAIArray = town->free_workers;
@@ -423,7 +423,7 @@ namespace hooks {
 						setSecondaryOrder(unit, OrderId::SpreadCreep);
 					}
 				}
-				if (!(AIScriptController[(u8)town->player].AI_Flags.isUseMapSettings) // CONTROLLER_IS_CAMPAIGN
+				if (!(AIScriptController[(uint8)town->player].AI_Flags.isUseMapSettings) // CONTROLLER_IS_CAMPAIGN
 					|| unit->status & UnitStatus::GroundedBuilding
 					&& (unit->id != UnitId::TerranWatchdog)
 					&& unit->id != UnitId::TerranBunker
@@ -483,11 +483,11 @@ namespace hooks {
 		}
 	}
 
-	void AI_BuildTechUpgrade(AiTown* town, s32 method, s32 amount, s32 id, s32 priority, s32 need) { // 00431F90
-		s32 itr = 0; // eax
+	void AI_BuildTechUpgrade(AiTown* town, int32 method, int32 amount, int32 id, int32 priority, int32 need) { // 00431F90
+		int32 itr = 0; // eax
 		constexpr int BuildCountFlag = 0xF8; //0xf8 are upper flags of 0xff, 0x1/0x2/0x4 are used by other flags
 		TownReq* townUnits; // edx
-		if (playerTable[(u8)town->player].type == PlayerType::Computer)
+		if (playerTable[(uint8)town->player].type == PlayerType::Computer)
 		{
 			townUnits = town->town_units;
 			bool setNeed = false;
@@ -515,46 +515,46 @@ namespace hooks {
 	}
 
 	// Hooked to modify AI behavior such as cancelling structures, withdrawing hurt high-value targets, etc -- Pr0nogo
-	void AI_UnitWasHit(CUnit* self, CUnit* attacker, s32 mainTargetReactions, s32 dontCallHelp) { // 0043F320
+	void AI_UnitWasHit(CUnit* self, CUnit* attacker, int32 mainTargetReactions, int32 dontCallHelp) { // 0043F320
 		BuildingAi* selfBuildingAi; // eax
-		s32 quartTotalHP; // edi
+		int32 quartTotalHP; // edi
 		CUnit* target; // eax
-		s32 v11; // eax
+		int32 v11; // eax
 		UnitAi* v12; // esi
-		s32 v13; // eax
+		int32 v13; // eax
 		AiCaptain* v14; // esi
-		s32 v15; // edx
-		s32 v16; // eax
+		int32 v15; // edx
+		int32 v16; // eax
 		AiCaptain* selfRegion; // edi
 		char v18; // al
-		s16 v19; // ax
-		s16 v20; // di
-		s32 v21; // esi
-		s32 v22; // eax
-		s32 v23; // edi
-		s32 v24; // eax
-		s32 v25; // esi
-		s32 v26; // esi
+		int16 v19; // ax
+		int16 v20; // di
+		int32 v21; // esi
+		int32 v22; // eax
+		int32 v23; // edi
+		int32 v24; // eax
+		int32 v25; // esi
+		int32 v26; // esi
 		CUnit* v27; // esi
-		u16 v29; // ax
+		uint16 v29; // ax
 		__int64 v33; // rax
 		CUnit* v34; // esi
-		s32 v35; // eax
+		int32 v35; // eax
 		CUnit* v36; // esi
 		CUnit* v37; // eax
-		s32 v38; // eax
-		s32 v39; // [esp+Ch] [ebp-14h]
-		s32 v40; // [esp+Ch] [ebp-14h]
-		s32 v41; // [esp+14h] [ebp-Ch]
-		s32 v42; // [esp+14h] [ebp-Ch]
+		int32 v38; // eax
+		int32 v39; // [esp+Ch] [ebp-14h]
+		int32 v40; // [esp+Ch] [ebp-14h]
+		int32 v41; // [esp+14h] [ebp-Ch]
+		int32 v42; // [esp+14h] [ebp-Ch]
 		CUnit* realTarget; // [esp+1Ch] [ebp-4h]
-		s32 v44; // [esp+2Ch] [ebp+Ch]
+		int32 v44; // [esp+2Ch] [ebp+Ch]
 		MilitaryAi* militaryAi;
 
 		if (playerTable[self->playerId].type != PlayerType::Computer || self->playerId >= 8u) {
 			return;
 		}
-		if (units_dat::BaseProperty[(u16)self->id] & UnitProperty::Building) {
+		if (units_dat::BaseProperty[(uint16)self->id] & UnitProperty::Building) {
 			if (self->pAI) {
 				AIScriptController[self->playerId].lastIndividualUpdateTime = *elapsedTimeSeconds;
 				selfBuildingAi = (BuildingAi*)self->pAI;
@@ -562,7 +562,7 @@ namespace hooks {
 					selfBuildingAi->town->in_battle = 1;
 				if (mainTargetReactions) {
 					if (attacker) {
-						if (units_dat::BaseProperty[(u16)self->id] & UnitProperty::Worker // cancel structure code
+						if (units_dat::BaseProperty[(uint16)self->id] & UnitProperty::Worker // cancel structure code
 							&& !(self->mainOrderId) // Original function call checks if unit has a sprite??? 00475A50
 							&& !(self->status & UnitStatus::Completed))
 						{
@@ -618,10 +618,10 @@ namespace hooks {
 		}
 		if (AI_TryReturnHome(self, 0) || !AI_TransportAction(self))
 		{
-			if (AIScriptController[(u8)self->playerId].AI_Flags.isUseMapSettings)
+			if (AIScriptController[(uint8)self->playerId].AI_Flags.isUseMapSettings)
 				v39 = 1;
 		LABEL_37:
-			v14 = &AiRegionCaptains[(u8)self->playerId][SAI_GetRegionIdFromPxEx(
+			v14 = &AiRegionCaptains[(uint8)self->playerId][SAI_GetRegionIdFromPxEx(
 				self->sprite->position.x,
 				self->sprite->position.y)];
 			if (!v39)
@@ -632,12 +632,12 @@ namespace hooks {
 				{
 					if (!self->pAI
 						|| AI_IsUnderAttack(self, 0)
-						|| (v42 = 1, *(s8*)(v15 + 8) == 1)
-						&& AIScriptController[(u8)self->playerId].AI_Flags.isUseMapSettings)
+						|| (v42 = 1, *(int8*)(v15 + 8) == 1)
+						&& AIScriptController[(uint8)self->playerId].AI_Flags.isUseMapSettings)
 					{
 						v42 = 0;
 					}
-					selfRegion = &AiRegionCaptains[(u8)self->playerId][getRegionIdFromUnit(realTarget)];
+					selfRegion = &AiRegionCaptains[(uint8)self->playerId][getRegionIdFromUnit(realTarget)];
 					if (v42) {
 						v18 = v14->captainType;
 						if (v18 == 5 || v18 == 4)
@@ -649,8 +649,8 @@ namespace hooks {
 						}
 					}
 					if (!dontCallHelp) {
-						selfRegion->enemyAirStrength = getEnemyAirStrengthInRegion(selfRegion->region, (u8)self->playerId);
-						selfRegion->enemyGroundStrength = getEnemyStrengthInRegion(selfRegion->region, (u8)self->playerId, 0);
+						selfRegion->enemyAirStrength = getEnemyAirStrengthInRegion(selfRegion->region, (uint8)self->playerId);
+						selfRegion->enemyGroundStrength = getEnemyStrengthInRegion(selfRegion->region, (uint8)self->playerId, 0);
 						v19 = selfRegion->neededAirStrength;
 						if (v19 > v14->neededAirStrength)
 							v14->neededAirStrength = v19;
@@ -663,13 +663,13 @@ namespace hooks {
 			v14->captainFlags |= 0x20u;
 			if (self->status & UnitStatus::Completed)
 			{
-				v21 = (u8)self->mainOrderId;
-				v40 = (u8)self->mainOrderId;
+				v21 = (uint8)self->mainOrderId;
+				v40 = (uint8)self->mainOrderId;
 				if (v21 != OrderId::CompletingArchonSummon && v21 != OrderId::ResetCollision1 && v21 != OrderId::ConstructingBuilding)
 				{
 					if (mainTargetReactions || !scbw::orderIsSpell(v21))
 					{
-						v23 = (u16)self->id;
+						v23 = (uint16)self->id;
 						if (self->id || v21 != OrderId::EnterTransport)
 						{
 							v44 = unitIsPerformingUnbreakableCode(self);
@@ -680,11 +680,11 @@ namespace hooks {
 									if (!mainTargetReactions)
 										goto LABEL_126;
 									if (v23 != UnitId::ProtossSolarion
-//										|| (u8)(LOBYTE(self->field_C8) + BYTE1(self->carrier.inHangarCount)) > 2u
+//										|| (uint8)(LOBYTE(self->field_C8) + BYTE1(self->carrier.inHangarCount)) > 2u
 										|| !AI_TransportAction(self))
 									{
 										if (realTarget && realTarget->status & UnitStatus::IsBuilding // Attempt to return to base when below an HP threshold
-											|| AIScriptController[(u8)self->playerId].AI_Flags.isUseMapSettings
+											|| AIScriptController[(uint8)self->playerId].AI_Flags.isUseMapSettings
 											|| ((v25 = 3 * self->getTotalHitPointsPlusShields() / 4, self->getCurrentLifeInGame() > v25)
 												|| v23 != UnitId::ProtossDidact && v23 != UnitId::TerranWraith && v23 != UnitId::ZergMutalisk
 												|| !AI_TransportAction(self))
@@ -711,10 +711,10 @@ namespace hooks {
 											{
 											LABEL_126:
 												if (self->orderTarget.unit != realTarget) { // Responding with workers
-													if (!(units_dat::BaseProperty[(u16)self->id] & UnitProperty::Worker)
+													if (!(units_dat::BaseProperty[(uint16)self->id] & UnitProperty::Worker)
 														|| (v29 = realTarget->id, units_dat::BaseProperty[v29] & UnitProperty::Worker)
 														|| v29 == UnitId::ZergZergling
-														|| AI_HasNoDefenseBuild((u8)self->id))
+														|| AI_HasNoDefenseBuild((uint8)self->id))
 													{
 														if (mainTargetReactions) {
 															if (self->pAI) {
@@ -733,7 +733,7 @@ namespace hooks {
 															}
 															else if (self->pAI) {
 																if (v40 != 159
-//																	|| (v33 = AI_PrepareToFlee(realTarget, self), (s32)v33 == *(s32*)&self->sprite->position)
+//																	|| (v33 = AI_PrepareToFlee(realTarget, self), (int32)v33 == *(int32*)&self->sprite->position)
 																	)
 																{
 																	if (mainTargetReactions) {
@@ -776,15 +776,15 @@ namespace hooks {
 		AiTown* removeBuildingTown; // edi
 		CUnit* workerUnit; // esi
 		CUnit* workerTarget; // ecx
-		s32 queueCount; // eax
-		s32 queueCount2;
+		int32 queueCount; // eax
+		int32 queueCount2;
 		BuildingAi* j; // esi
 		CUnit* builderUnit; // ecx
-		u32 i; // [esp+8h] [ebp-4h]
+		uint32 i; // [esp+8h] [ebp-4h]
 		WorkerAi* worker;
 		BuildingAi* building;
 
-		if (playerTable[(u8)parent->playerId].type == PlayerType::Computer) {
+		if (playerTable[(uint8)parent->playerId].type == PlayerType::Computer) {
 			parentAI = (UnitAi*)parent->pAI;
 			if (parentAI) {
 				if (parentAI->type == 2) {
@@ -823,7 +823,7 @@ namespace hooks {
 								queueCount = 1;
 							else
 								queueCount = AI_GetQueuedCount(workerTarget, UnitId::TerranWatchdog);
-//							workerUnit = *(u32*)workerUnit; // not sure if this is even necessary, does v8 need to be iterated upon every loop?
+//							workerUnit = *(uint32*)workerUnit; // not sure if this is even necessary, does v8 need to be iterated upon every loop?
 						}
 						for (j = parentTown->buildings; j; i += queueCount2)
 						{
@@ -835,36 +835,36 @@ namespace hooks {
 							j = j->link.prev;
 						}
 						if (i >= 4) {
-							AI_PrepareGuardAI(result->sprite->position.y, (u8)result->playerId, 1, result->sprite->position.x);
+							AI_PrepareGuardAI(result->sprite->position.y, (uint8)result->playerId, 1, result->sprite->position.x);
 						}
 					}
 				}
 				else {
-					AI_PrepareGuardAI(result->sprite->position.y, (u8)result->playerId, 5, result->sprite->position.x);
-					AI_PrepareGuardAI(result->sprite->position.y, (u8)result->playerId, 1, result->sprite->position.x);
+					AI_PrepareGuardAI(result->sprite->position.y, (uint8)result->playerId, 5, result->sprite->position.x);
+					AI_PrepareGuardAI(result->sprite->position.y, (uint8)result->playerId, 1, result->sprite->position.x);
 				}
 			}
 		}
 	}
 
 	// hooked for attack extender
-//	0x0043E670 => train_attack_force(@eax *mut AiRegion)->u32;
-	u32 AI_TrainAttackForce(AiCaptain* region) {					// 0043E670
-		u32 result; // eax
-		u32 v2; // edi
+//	0x0043E670 => train_attack_force(@eax *mut AiRegion)->uint32;
+	uint32 AI_TrainAttackForce(AiCaptain* region) {					// 0043E670
+		uint32 result; // eax
+		uint32 v2; // edi
 		AiCaptain* v3; // esi
-		u16 v4; // bx
-		u32 v5; // edi
-		u32 v6; // ebx
-		u32 v7; // edi
-		u32 v8; // ebx
-		u32 v9[63]; // [esp+Ch] [ebp-108h]
-		u32 v10; // [esp+108h] [ebp-Ch]
-		u32 v11; // [esp+10Ch] [ebp-8h]
-		u32 v12; // [esp+110h] [ebp-4h]
+		uint16 v4; // bx
+		uint32 v5; // edi
+		uint32 v6; // ebx
+		uint32 v7; // edi
+		uint32 v8; // ebx
+		uint32 v9[63]; // [esp+Ch] [ebp-108h]
+		uint32 v10; // [esp+108h] [ebp-Ch]
+		uint32 v11; // [esp+10Ch] [ebp-8h]
+		uint32 v12; // [esp+110h] [ebp-4h]
 
 		v3 = region;
-		v2 = (u8)region->playerId;
+		v2 = (uint8)region->playerId;
 		result = AI_GetMissingAttackForceUnits(region, v9, AIScriptController[v2].AI_Flags.isUseMapSettings);
 		v10 = result;
 		if (AIScriptController[v2].AI_Flags.isUseMapSettings
@@ -882,7 +882,7 @@ namespace hooks {
 			do {
 				v7 = v9[v6];
 				if (v7 < UnitId::None && !AI_AddRegionToMilitary(v3, v7, v11)) {
-					v8 = (u8)v3->playerId;
+					v8 = (uint8)v3->playerId;
 					AIScriptController[v8].AI_Flags.flag_0x40 = 1; // Might be wrong
 					AI_FindUnit(v7, v8, 1);
 					AI_AddSpendingRequest(v7, v8, 1, 60, v3);
@@ -901,15 +901,15 @@ namespace hooks {
 		AiCaptain* regionVar; // esi
 		CUnit* attackTarget; // eax
 		AiCaptain* targetRegion; // esi
-		u32 missingUnits; // eax
-		u32 attackUnit; // ecx
-		u16 regionId; // ax
+		uint32 missingUnits; // eax
+		uint32 attackUnit; // ecx
+		uint16 regionId; // ax
 		AiCaptain* targetRegion2; // esi
 		AiCaptain* targetRegion3; // edi
-		u32 attackWave[63]; // [esp+8h] [ebp-108h]
-		s32 a3; // [esp+104h] [ebp-Ch]
-		s32 a4; // [esp+108h] [ebp-8h]
-		s32 a2; // [esp+10Ch] [ebp-4h]
+		uint32 attackWave[63]; // [esp+8h] [ebp-108h]
+		int32 a3; // [esp+104h] [ebp-Ch]
+		int32 a4; // [esp+108h] [ebp-8h]
+		int32 a2; // [esp+10Ch] [ebp-4h]
 
 		AI_RecalculateRegionStrength(region);
 		AI_TargetEnemyInRegion(region);
@@ -923,7 +923,7 @@ namespace hooks {
 			AI_AssignMilitary(0, region);
 			attackTarget = AI_PickAttackTarget_NoBuildings(region);
 			if (attackTarget) {
-				targetRegion = &AiRegionCaptains[(u8)region->playerId][SAI_GetRegionIdFromPxEx(
+				targetRegion = &AiRegionCaptains[(uint8)region->playerId][SAI_GetRegionIdFromPxEx(
 					attackTarget->sprite->position.x,
 					attackTarget->sprite->position.y)];
 				AI_AssignMilitary(9, targetRegion);
@@ -934,11 +934,11 @@ namespace hooks {
 			}
 			return;
 		}
-		if (AI_AttackTimerDecrement((u8)region->playerId)) {
+		if (AI_AttackTimerDecrement((uint8)region->playerId)) {
 		LABEL_15:
 			regionId = region->targetRegion;
 			if (regionId) {
-				targetRegion2 = &AiRegionCaptains[(u8)region->playerId][regionId];
+				targetRegion2 = &AiRegionCaptains[(uint8)region->playerId][regionId];
 				AI_AssignMilitary(1, targetRegion2);
 				targetRegion3 = targetRegion2;
 				regionVar = region;
@@ -951,36 +951,36 @@ namespace hooks {
 		attackUnit = 0;
 		if (!missingUnits) {
 		LABEL_14:
-			if (AI_HasForcesMovingToAttack((u8)region->playerId))
+			if (AI_HasForcesMovingToAttack((uint8)region->playerId))
 				return;
 			goto LABEL_15;
 		}
-		while ((u32)attackWave[attackUnit] >= 0xE4) {
+		while ((uint32)attackWave[attackUnit] >= 0xE4) {
 			if (++attackUnit >= missingUnits)
 				goto LABEL_14;
 		}
 	}
 
-//	0x00438050 => get_missing_attack_force_units_hook(*mut AiRegion,*mut u32,bool)->u32;
-	u32 AI_GetMissingAttackForceUnits(AiCaptain* region, u32* unitIds, u32 isCampaign) { // 00438050
-		s16 v3; // dx
-		u16* v4; // ecx
-		u32 i; // edi
-		u32 v6; // eax
+//	0x00438050 => get_missing_attack_force_units_hook(*mut AiRegion,*mut uint32,bool)->uint32;
+	uint32 AI_GetMissingAttackForceUnits(AiCaptain* region, uint32* unitIds, uint32 isCampaign) { // 00438050
+		int16 v3; // dx
+		uint16* v4; // ecx
+		uint32 i; // edi
+		uint32 v6; // eax
 		CUnit* v7; // esi
-		s8 v8; // bl
-		u32 v9; // ecx
-		u32 v10; // edx // was unitIDs, not sure what it should be here
-		s32 v11; // eax
-		u32 v12; // esi
-		s32 v13; // ecx
+		int8 v8; // bl
+		uint32 v9; // ecx
+		uint32 v10; // edx // was unitIDs, not sure what it should be here
+		int32 v11; // eax
+		uint32 v12; // esi
+		int32 v13; // ecx
 		UnitAi* v14; // ecx
-		u32 v15; // esi
-		u32 v16; // ecx
+		uint32 v15; // esi
+		uint32 v16; // ecx
 		CUnit* v18; // [esp+8h] [ebp-4h]
 		MilitaryAi* military;
 
-		v4 = AIScriptController[(u8)region->playerId].attackers;
+		v4 = AIScriptController[(uint8)region->playerId].attackers;
 		v3 = *v4;
 		for (i = 0; *v4; ++i)
 		{
@@ -988,7 +988,7 @@ namespace hooks {
 			++v4;
 			v3 = *v4;
 		}
-		v6 = (u8)region->playerId;
+		v6 = (uint8)region->playerId;
 		v7 = firstPlayerUnit->unit[v6];
 		v18 = firstPlayerUnit->unit[v6];
 		if (v7) {
@@ -996,7 +996,7 @@ namespace hooks {
 				if (v7->sprite) {
 					v8 = v7->mainOrderId;
 					if (v8) {
-						v9 = (u16)v7->id;
+						v9 = (uint16)v7->id;
 						if (!(units_dat::BaseProperty[v9] & UnitProperty::Subunit))
 							break;
 					}
@@ -1007,7 +1007,7 @@ namespace hooks {
 					return i;
 				v7 = v7->player_link.next;
 			}
-			v10 = (u16)v7->id;
+			v10 = (uint16)v7->id;
 			if (v9 == UnitId::TerranPhalanxSiegeMode)
 				v10 = UnitId::TerranPhalanxTankMode;
 			v11 = 1;
@@ -1020,7 +1020,7 @@ namespace hooks {
 					goto LABEL_37;
 				}
 				if (v10 == UnitId::ZergEgg || v10 == UnitId::ZergCocoon) {
-					v10 = (u16)v18->buildQueue[(u8)v18->buildQueueSlot];
+					v10 = (uint16)v18->buildQueue[(uint8)v18->buildQueueSlot];
 					v13 = units_dat::BaseProperty[v10];
 					if (v13 & 0x400)
 						v11 = 2;
@@ -1060,13 +1060,13 @@ namespace hooks {
 		return i;
 	}
 
-//	0x00447230 => ai_add_to_attackforce(@edi u32,@eax u32,@ecx u32);
-	void AI_AddToAttack(u32 result, u32 player, u32 unitId) { // 00447230
-		u32 counter; // esi
-		u32 index; // eax
-		u32 plOffset; // edx
-		u16* atkGroups; // ecx
-		u16* atkFinal; // ecx
+//	0x00447230 => ai_add_to_attackforce(@edi uint32,@eax uint32,@ecx uint32);
+	void AI_AddToAttack(uint32 result, uint32 player, uint32 unitId) { // 00447230
+		uint32 counter; // esi
+		uint32 index; // eax
+		uint32 plOffset; // edx
+		uint16* atkGroups; // ecx
+		uint16* atkFinal; // ecx
 
 		counter = result;
 		if (player < 8 && result < 63 && unitId < UnitId::None) {
@@ -1098,18 +1098,18 @@ namespace hooks {
 		}
 	}
 
-//	0x0043ABB0 => ai_attack_to_hook(u32,i32,i32,bool,bool)->u32;
-	bool AI_AttackManager(u32 player, s32 x1, s32 y1, u32 alywaysOverwriteLastAttack, u32 allowFallbackAirOnly) { // 0043ABB0
-		u16 attackWave; // ax
-		u16* attackWave2; // ecx
+//	0x0043ABB0 => ai_attack_to_hook(uint32,i32,i32,bool,bool)->uint32;
+	bool AI_AttackManager(uint32 player, int32 x1, int32 y1, uint32 alywaysOverwriteLastAttack, uint32 allowFallbackAirOnly) { // 0043ABB0
+		uint16 attackWave; // ax
+		uint16* attackWave2; // ecx
 		char regionsList[2500]; // [esp+4h] [ebp-9C8h]
-		u32 waveBool; // [esp+9C8h] [ebp-4h]
+		uint32 waveBool; // [esp+9C8h] [ebp-4h]
 
 		if (AIScriptController[player].supplyCollection) {
 			return 1;
 		}
 		if (AIScriptController[player].AI_AttackGroup) {
-			return *((u8*)&AiRegionCaptains[player][(u16)AIScriptController[player].AI_AttackGroup] - 47) != 8;
+			return *((uint8*)&AiRegionCaptains[player][(uint16)AIScriptController[player].AI_AttackGroup] - 47) != 8;
 		}
 		memset(regionsList, 0, sizeof(regionsList));
 		PopulateRegionsWithOwn(regionsList, player);
@@ -1149,19 +1149,19 @@ namespace hooks {
 		return 0;
 	}
 
-//	0x00437F20 => has_units_for_attack_force_hook(@edx u32)->u32;
-	s32 AI_HasUnitsForAttackForce(u32 player) { // 00437F20
-		u16* v2; // eax
-		u16 v3; // cx
-		u32 i; // edi
+//	0x00437F20 => has_units_for_attack_force_hook(@edx uint32)->uint32;
+	int32 AI_HasUnitsForAttackForce(uint32 player) { // 00437F20
+		uint16* v2; // eax
+		uint16 v3; // cx
+		uint32 i; // edi
 		CUnit* v5; // edx
-		u32 v6; // eax
-		u8 v7; // bl
-		u32 v8; // ecx
-		s32 v9; // esi
-		u32 v10; // ecx
-		u32 v11; // ecx
-		u32 v13[63]; // [esp+4h] [ebp-FCh]
+		uint32 v6; // eax
+		uint8 v7; // bl
+		uint32 v8; // ecx
+		int32 v9; // esi
+		uint32 v10; // ecx
+		uint32 v11; // ecx
+		uint32 v13[63]; // [esp+4h] [ebp-FCh]
 
 		v2 = AIScriptController[player].attackers;
 		v3 = *v2;
@@ -1182,10 +1182,10 @@ namespace hooks {
 					v7 = v5->mainOrderId;
 					if (v7)
 					{
-						v8 = (u16)v5->id;
+						v8 = (uint16)v5->id;
 						if (!(units_dat::BaseProperty[v8] & 0x10))
 						{
-							v9 = (u16)v5->id;
+							v9 = (uint16)v5->id;
 							if (v8 == 30)
 								v9 = 5;
 							if (!(units_dat::ComputerAIInternal[v9] & 1))
@@ -1233,11 +1233,11 @@ namespace hooks {
 		return 0;
 	}
 
-//	0x00447040 => ai_remove_from_attack(@eax u32,@edx u32);
-/*	void AI_RemoveFromAttack(s32 unitId, u32 player) { // 00447040
-		u32 v2; // esi
-		u32 v3; // ecx
-		u16* v4; // eax
+//	0x00447040 => ai_remove_from_attack(@eax uint32,@edx uint32);
+/*	void AI_RemoveFromAttack(int32 unitId, uint32 player) { // 00447040
+		uint32 v2; // esi
+		uint32 v3; // ecx
+		uint16* v4; // eax
 
 		if (unitId == UnitId::TerranSiegeTankSiegeMode)
 			unitId = UnitId::TerranSiegeTankTankMode;
@@ -1257,9 +1257,9 @@ namespace hooks {
 
 namespace {
 	// for AI_TrainUnit
-	const u32 Func_AI_TrainingWorker = 0x00435700;
+	const uint32 Func_AI_TrainingWorker = 0x00435700;
 	char AI_TrainingWorker(CUnit* result, CUnit* parent) {
-		static s32 resultFunc;
+		static int32 resultFunc;
 		__asm {
 			PUSHAD
 			MOV EAX, result
@@ -1271,7 +1271,7 @@ namespace {
 		return resultFunc;
 	}
 
-	const u32 Func_AI_TrainingOverlord = 0x00435770;
+	const uint32 Func_AI_TrainingOverlord = 0x00435770;
 	void AI_TrainingOverlord(CUnit* result, CUnit* parent) {
 		__asm {
 			PUSHAD
@@ -1282,7 +1282,7 @@ namespace {
 		}
 	}
 
-	const u32 Func_AI_TrainingNormal = 0x00435DB0;
+	const uint32 Func_AI_TrainingNormal = 0x00435DB0;
 	void AI_TrainingNormal(CUnit* result, CUnit* parent) {
 		__asm {
 			PUSHAD
@@ -1295,9 +1295,9 @@ namespace {
 
 	// For AI_AddMilitary
 
-	const u32 Func_SAI_GetRegionIdFromPxEx = 0x0049C9F0;
-	s16 SAI_GetRegionIdFromPxEx(s32 x, s32 y) {
-		static s32 result;
+	const uint32 Func_SAI_GetRegionIdFromPxEx = 0x0049C9F0;
+	int16 SAI_GetRegionIdFromPxEx(int32 x, int32 y) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV EDI, x
@@ -1306,10 +1306,10 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (s16)result;
+		return (int16)result;
 	}
 
-	const u32 Func_AI_OrderToDestination = 0x0043D5D0;
+	const uint32 Func_AI_OrderToDestination = 0x0043D5D0;
 	void AI_OrderToDestination(CUnit* unit, int orderId, int x, int y) {
 		__asm {
 			PUSHAD
@@ -1322,7 +1322,7 @@ namespace {
 		}
 	}
 
-	const u32 Func_AI_AssignCaptainToSlowestUnit = 0x00436F70;
+	const uint32 Func_AI_AssignCaptainToSlowestUnit = 0x00436F70;
 	void AI_AssignCaptainToSlowestUnit(AiCaptain* region) {
 		__asm {
 			PUSHAD
@@ -1334,8 +1334,8 @@ namespace {
 
 	// for AI_CreateNuke
 
-	const u32 Func_createUnit = 0x004A09D0;
-	CUnit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId) {
+	const uint32 Func_createUnit = 0x004A09D0;
+	CUnit* createUnit(int16 unitType, int32 x, int32 y, int32 playerId) {
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -1350,7 +1350,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_updateUnitStatsFinishBuilding = 0x004A01F0;
+	const uint32 Func_updateUnitStatsFinishBuilding = 0x004A01F0;
 	void updateUnitStatsFinishBuilding(CUnit* unit) {
 		__asm {
 			PUSHAD
@@ -1360,9 +1360,9 @@ namespace {
 		}
 	}
 
-	const u32 Func_updateUnitStrengthAndApplyDefaultOrders = 0x0049FA40;
-	u32 updateUnitStrengthAndApplyDefaultOrders(CUnit* unit) {
-		static u32 result;
+	const uint32 Func_updateUnitStrengthAndApplyDefaultOrders = 0x0049FA40;
+	uint32 updateUnitStrengthAndApplyDefaultOrders(CUnit* unit) {
+		static uint32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -1373,7 +1373,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_hideUnit = 0x004E6340;
+	const uint32 Func_hideUnit = 0x004E6340;
 	void hideUnit(CUnit* unit) {
 		__asm {
 			PUSHAD
@@ -1385,8 +1385,8 @@ namespace {
 
 	// for AI_TrainingBroodling
 
-	const u32 Func_AI_AssignMilitary = 0x004390A0;
-	void AI_AssignMilitary(s32 regionType, AiCaptain* region) {
+	const uint32 Func_AI_AssignMilitary = 0x004390A0;
+	void AI_AssignMilitary(int32 regionType, AiCaptain* region) {
 		__asm {
 			PUSHAD
 			MOV EBX, regionType
@@ -1396,8 +1396,8 @@ namespace {
 		}
 	}
 
-	const u32 Func_AI_AddMilitary = 0x0043DA20;
-	void AI_AddMilitary(AiCaptain* region, CUnit* unit, s32 always_this_region) {
+	const uint32 Func_AI_AddMilitary = 0x0043DA20;
+	void AI_AddMilitary(AiCaptain* region, CUnit* unit, int32 always_this_region) {
 		__asm {
 			PUSHAD
 			PUSH always_this_region
@@ -1410,7 +1410,7 @@ namespace {
 
 	// for AI_AddUnitAi
 
-	const u32 Func_AI_CreateBuildingAi = 0x004044C0;
+	const uint32 Func_AI_CreateBuildingAi = 0x004044C0;
 	UnitAi* AI_CreateBuildingAi(BuildingAiArray* buildingAI) {
 		static UnitAi* result;
 		__asm {
@@ -1423,8 +1423,8 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_orderComputerClear = 0x00475310;
-	void orderComputerClear(CUnit* unit, u8 orderId) {
+	const uint32 Func_orderComputerClear = 0x00475310;
+	void orderComputerClear(CUnit* unit, uint8 orderId) {
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -1434,7 +1434,7 @@ namespace {
 		}
 	}
 
-	const u32 Func_setSecondaryOrder = 0x004743D0;
+	const uint32 Func_setSecondaryOrder = 0x004743D0;
 	CUnit* setSecondaryOrder(CUnit* result, char orderId) {
 		static CUnit* result2;
 		__asm {
@@ -1448,8 +1448,8 @@ namespace {
 		return result2;
 	}
 
-	const u32 Func_AI_MakeGuard = 0x0043A010;
-	void AI_MakeGuard(s32 playerId, CUnit* unit) {
+	const uint32 Func_AI_MakeGuard = 0x0043A010;
+	void AI_MakeGuard(int32 playerId, CUnit* unit) {
 		__asm {
 			PUSHAD
 			PUSH unit
@@ -1459,9 +1459,9 @@ namespace {
 		}
 	}
 
-	const u32 Func_unitIsActiveResourceDepot = 0x00401CF0;
+	const uint32 Func_unitIsActiveResourceDepot = 0x00401CF0;
 	bool unitIsActiveResourceDepot(CUnit* unit) {
-		static s32 result;
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV EDX, unit
@@ -1472,9 +1472,9 @@ namespace {
 		return (bool)result;
 	}
 
-	const u32 Func_getPlayerDefaultRefineryUnitType = 0x004320D0;
-	s32 getPlayerDefaultRefineryUnitType(s32 playerId) {
-		static s32 result;
+	const uint32 Func_getPlayerDefaultRefineryUnitType = 0x004320D0;
+	int32 getPlayerDefaultRefineryUnitType(int32 playerId) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, playerId
@@ -1486,9 +1486,9 @@ namespace {
 	}
 
 	// for AI_UnitWasHit // some of these should probably be methods in api/etc
-	const u32 Func_AI_CancelStructure = 0x00468280;
+	const uint32 Func_AI_CancelStructure = 0x00468280;
 	char AI_CancelStructure(CUnit* structure) {
-		static u32 result;
+		static uint32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, structure
@@ -1499,7 +1499,7 @@ namespace {
 		return (char)result;
 	}
 
-	const u32 Func_AI_GetActualTarget = 0x0043AD60;
+	const uint32 Func_AI_GetActualTarget = 0x0043AD60;
 	CUnit* AI_GetActualTarget(CUnit* attacker, CUnit* target) {
 		static CUnit* result;
 		__asm {
@@ -1513,8 +1513,8 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_checkArbiterCloakingRange = 0x004410C0;
-	CUnit* checkArbiterCloakingRange(CUnit* unit, u16 id) {
+	const uint32 Func_checkArbiterCloakingRange = 0x004410C0;
+	CUnit* checkArbiterCloakingRange(CUnit* unit, uint16 id) {
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -1527,7 +1527,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_OrderUnitCloaking = 0x0043B970;
+	const uint32 Func_AI_OrderUnitCloaking = 0x0043B970;
 	void AI_OrderUnitCloaking(CUnit* unit) {
 		__asm {
 			PUSHAD
@@ -1537,7 +1537,7 @@ namespace {
 		}
 	}
 
-	const u32 Func_AI_OrderLurkerBurrow = 0x0043C230;
+	const uint32 Func_AI_OrderLurkerBurrow = 0x0043C230;
 	void AI_OrderLurkerBurrow(CUnit* unit) {
 		__asm {
 			PUSHAD
@@ -1547,9 +1547,9 @@ namespace {
 		}
 	}
 
-	const u32 Func_AI_IsUnderAttack = 0x00436E70;
-	bool AI_IsUnderAttack(CUnit* unit, s32 flag) {
-		static u32 result;
+	const uint32 Func_AI_IsUnderAttack = 0x00436E70;
+	bool AI_IsUnderAttack(CUnit* unit, int32 flag) {
+		static uint32 result;
 		__asm {
 			PUSHAD
 			PUSH flag
@@ -1561,9 +1561,9 @@ namespace {
 		return (bool)result;
 	}
 
-	const u32 Func_unitIsActiveTransport = 0x004E6BA0;
+	const uint32 Func_unitIsActiveTransport = 0x004E6BA0;
 	bool unitIsActiveTransport(CUnit* unit) {
-		static u32 result;
+		static uint32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -1574,9 +1574,9 @@ namespace {
 		return (bool)result;
 	}
 
-	const u32 Func_isUnitLoaded = 0x004E7110;
-	s32 isUnitLoaded(CUnit* unit) {
-		static s32 result;
+	const uint32 Func_isUnitLoaded = 0x004E7110;
+	int32 isUnitLoaded(CUnit* unit) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -1587,9 +1587,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_TryReturnHome = 0x00462EA0;
-	s32 AI_TryReturnHome(CUnit* unit, s32 dontIssueOrder) {
-		static s32 result;
+	const uint32 Func_AI_TryReturnHome = 0x00462EA0;
+	int32 AI_TryReturnHome(CUnit* unit, int32 dontIssueOrder) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH dontIssueOrder
@@ -1601,9 +1601,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_TransportAction = 0x0043DB50;
-	s32 AI_TransportAction(CUnit* unit) {
-		static s32 result;
+	const uint32 Func_AI_TransportAction = 0x0043DB50;
+	int32 AI_TransportAction(CUnit* unit) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -1614,9 +1614,9 @@ namespace {
 		return result;
 	}
 	
-	const u32 Func_AI_AskForHelp = 0x0043ADA0;
-	s32 AI_AskForHelp(CUnit* self, CUnit* attacker, s32 onlyNearbyGuards) {
-		static s32 result;
+	const uint32 Func_AI_AskForHelp = 0x0043ADA0;
+	int32 AI_AskForHelp(CUnit* self, CUnit* attacker, int32 onlyNearbyGuards) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH onlyNearbyGuards
@@ -1629,9 +1629,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_getRegionIdFromUnit = 0x0049CB40;
-	s16 getRegionIdFromUnit(CUnit* unit) {
-		static s32 result;
+	const uint32 Func_getRegionIdFromUnit = 0x0049CB40;
+	int16 getRegionIdFromUnit(CUnit* unit) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -1639,12 +1639,12 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (s16)result;
+		return (int16)result;
 	}
 
-	const u32 Func_getEnemyAirStrengthInRegion = 0x00431D00;
-	s32 getEnemyAirStrengthInRegion(u16 regionId, s32 player) {
-		static s32 result;
+	const uint32 Func_getEnemyAirStrengthInRegion = 0x00431D00;
+	int32 getEnemyAirStrengthInRegion(uint16 regionId, int32 player) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH player
@@ -1656,9 +1656,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_getEnemyStrengthInRegion = 0x004318E0;
-	s32 getEnemyStrengthInRegion(u16 regionId, s32 player, s32 includeAir) {
-		static s32 result;
+	const uint32 Func_getEnemyStrengthInRegion = 0x004318E0;
+	int32 getEnemyStrengthInRegion(uint16 regionId, int32 player, int32 includeAir) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH includeAir
@@ -1671,9 +1671,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_unitIsPerformingUnbreakableCode = 0x00402310;
+	const uint32 Func_unitIsPerformingUnbreakableCode = 0x00402310;
 	bool unitIsPerformingUnbreakableCode(CUnit* unit) {
-		static u32 result;
+		static uint32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -1684,9 +1684,9 @@ namespace {
 		return (bool)result;
 	}
 
-	const u32 Func_AI_CastSpellBehavior = 0x004A13C0;
+	const uint32 Func_AI_CastSpellBehavior = 0x004A13C0;
 	bool AI_CastSpellBehavior(CUnit* unit, bool isAggro) {
-		static u32 result;
+		static uint32 result;
 		__asm {
 			PUSHAD
 			PUSH isAggro
@@ -1698,9 +1698,9 @@ namespace {
 		return (bool)result;
 	}
 
-	const u32 Func_AI_Flee = 0x0043E400;
-	s32 AI_Flee(CUnit* unit, CUnit* enemy) {
-		static s32 result;
+	const uint32 Func_AI_Flee = 0x0043E400;
+	int32 AI_Flee(CUnit* unit, CUnit* enemy) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH enemy
@@ -1712,9 +1712,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_unitHasGroundPath = 0x0042FA00;
-	bool unitHasGroundPath(CUnit* unit, s16 x, s16 y) {
-		static u32 result;
+	const uint32 Func_unitHasGroundPath = 0x0042FA00;
+	bool unitHasGroundPath(CUnit* unit, int16 x, int16 y) {
+		static uint32 result;
 		__asm {
 			PUSHAD
 			PUSH y
@@ -1727,9 +1727,9 @@ namespace {
 		return (bool)result;
 	}
 
-	const u32 Func_AI_HasNoDefenseBuild = 0x00447370;
-	bool AI_HasNoDefenseBuild(s32 player) {
-		static u32 result;
+	const uint32 Func_AI_HasNoDefenseBuild = 0x00447370;
+	bool AI_HasNoDefenseBuild(int32 player) {
+		static uint32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, player
@@ -1740,9 +1740,9 @@ namespace {
 		return (bool)result;
 	}
 
-	const u32 Func_unitCanSeeCloakedTarget = 0x00401D60;
+	const uint32 Func_unitCanSeeCloakedTarget = 0x00401D60;
 	bool unitCanSeeCloakedTarget(CUnit* target, CUnit* unit) {
-		static u32 result;
+		static uint32 result;
 		__asm {
 			PUSHAD
 			PUSH unit
@@ -1754,7 +1754,7 @@ namespace {
 		return (bool)result;
 	}
 
-	const u32 Func_AI_RespondToCloakedThreat = 0x0043C580;
+	const uint32 Func_AI_RespondToCloakedThreat = 0x0043C580;
 	void AI_RespondToCloakedThreat(CUnit* threat, CUnit* unit) {
 		__asm {
 			PUSHAD
@@ -1765,9 +1765,9 @@ namespace {
 		}
 	}
 
-	const u32 Func_unitCanAttackTarget = 0x00476730;
-	bool unitCanAttackTarget(CUnit* target, CUnit* unit, s32 checkDetection) {
-		static u32 result;
+	const uint32 Func_unitCanAttackTarget = 0x00476730;
+	bool unitCanAttackTarget(CUnit* target, CUnit* unit, int32 checkDetection) {
+		static uint32 result;
 		__asm {
 			PUSHAD
 			PUSH checkDetection
@@ -1780,9 +1780,9 @@ namespace {
 		return (bool)result;
 	}
 
-	const u32 Func_AI_UpdateAttackTarget = 0x00477160;
-	s32 AI_UpdateAttackTarget(CUnit* unit, s32 acceptIfSieged, s32 acceptCritters, s32 mustReach) {
-		static s32 result;
+	const uint32 Func_AI_UpdateAttackTarget = 0x00477160;
+	int32 AI_UpdateAttackTarget(CUnit* unit, int32 acceptIfSieged, int32 acceptCritters, int32 mustReach) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH mustReach
@@ -1796,7 +1796,7 @@ namespace {
 		return result;
 	}
 
-/*	const u32 Func_AI_PrepareToFlee = 0x00476A50;
+/*	const uint32 Func_AI_PrepareToFlee = 0x00476A50;
 	__int64 AI_PrepareToFlee(CUnit* enemy, CUnit* unit) {
 		static __int64 result;
 		__asm {
@@ -1809,8 +1809,8 @@ namespace {
 		return result;
 	}*/
 
-	const u32 Func_orderInterrupt = 0x00474C30;
-	void orderInterrupt(CUnit* unit, u8 orderId, Point32* pos, CUnit* target) {
+	const uint32 Func_orderInterrupt = 0x00474C30;
+	void orderInterrupt(CUnit* unit, uint8 orderId, Point32* pos, CUnit* target) {
 		__asm {
 			PUSHAD
 			PUSH target
@@ -1823,9 +1823,9 @@ namespace {
 	}
 
 	// for AI_IterateBuildingAI
-	const u32 Func_AI_RemoveFromTowns = 0x00432760;
-	u16 AI_RemoveFromTowns(CUnit* worker) {
-		static u32 result;
+	const uint32 Func_AI_RemoveFromTowns = 0x00432760;
+	uint16 AI_RemoveFromTowns(CUnit* worker) {
+		static uint32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, worker
@@ -1833,10 +1833,10 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (u16)result;
+		return (uint16)result;
 	}
 
-	const u32 Func_AI_DeleteBuildingAI = 0x00404500;
+	const uint32 Func_AI_DeleteBuildingAI = 0x00404500;
 	BuildingAi* AI_DeleteBuildingAI(BuildingAi* building, BuildingAiArray* buildingList) {
 		static BuildingAi* result;
 		__asm {
@@ -1850,9 +1850,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_GetQueuedCount = 0x00466B70;
-	s32 AI_GetQueuedCount(CUnit* builder, u32 unitId) {
-		static s32 result;
+	const uint32 Func_AI_GetQueuedCount = 0x00466B70;
+	int32 AI_GetQueuedCount(CUnit* builder, uint32 unitId) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, builder
@@ -1864,8 +1864,8 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_PrepareGuardAI = 0x00462670;
-	void AI_PrepareGuardAI(u16 y, u32 player, u16 unitId, u16 x) {
+	const uint32 Func_AI_PrepareGuardAI = 0x00462670;
+	void AI_PrepareGuardAI(uint16 y, uint32 player, uint16 unitId, uint16 x) {
 		__asm {
 			PUSHAD
 			PUSH x
@@ -1880,9 +1880,9 @@ namespace {
 	// Attack extender
 
 	// for AI_TrainAttackForce
-	const u32 Func_AI_AddRegionToMilitary = 0x0043E2E0;
-	s32 AI_AddRegionToMilitary(AiCaptain* region, s32 unitId, s32 priority) {
-		static s32 result;
+	const uint32 Func_AI_AddRegionToMilitary = 0x0043E2E0;
+	int32 AI_AddRegionToMilitary(AiCaptain* region, int32 unitId, int32 priority) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH priority
@@ -1895,10 +1895,10 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_FindUnit = 0x00447DC0;
-	u32 AI_FindUnit(u32 unitId, u32 playerId, u32 type) {
-		static u32 typeXD = type;
-		static u32 result;
+	const uint32 Func_AI_FindUnit = 0x00447DC0;
+	uint32 AI_FindUnit(uint32 unitId, uint32 playerId, uint32 type) {
+		static uint32 typeXD = type;
+		static uint32 result;
 		__asm {
 			PUSHAD
 			PUSH typeXD
@@ -1911,10 +1911,10 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_AddSpendingRequest = 0x00447980;
-	u32 AI_AddSpendingRequest(u16 unitId, u32 type, u8 player, char priority, void* value) {
-		static u32 typeXD = type;
-		static u32 result;
+	const uint32 Func_AI_AddSpendingRequest = 0x00447980;
+	uint32 AI_AddSpendingRequest(uint16 unitId, uint32 type, uint8 player, char priority, void* value) {
+		static uint32 typeXD = type;
+		static uint32 result;
 		__asm {
 			PUSHAD
 			PUSH value
@@ -1929,9 +1929,9 @@ namespace {
 		return result;
 	}
 	
-	const u32 Func_AI_AddBaseUnitSpendingRequest = 0x004484A0;
-	u32 AI_AddBaseUnitSpendingRequest(u32 unitId, u32 player, AiCaptain* region, char priority) {
-		static u32 result;
+	const uint32 Func_AI_AddBaseUnitSpendingRequest = 0x004484A0;
+	uint32 AI_AddBaseUnitSpendingRequest(uint32 unitId, uint32 player, AiCaptain* region, char priority) {
+		static uint32 result;
 		__asm {
 			PUSHAD
 			PUSH priority
@@ -1946,9 +1946,9 @@ namespace {
 	}
 
 	// for AIRegion_GroupForAttack
-	const u32 Func_AI_RecalculateRegionStrength = 0x0043A390;
-	u32 AI_RecalculateRegionStrength(AiCaptain* region) {
-		static u32 result;
+	const uint32 Func_AI_RecalculateRegionStrength = 0x0043A390;
+	uint32 AI_RecalculateRegionStrength(AiCaptain* region) {
+		static uint32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, region
@@ -1959,7 +1959,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_TargetEnemyInRegion = 0x0043CC40;
+	const uint32 Func_AI_TargetEnemyInRegion = 0x0043CC40;
 	CUnit* AI_TargetEnemyInRegion(AiCaptain* region) {
 		static CUnit* result;
 		__asm {
@@ -1972,9 +1972,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_MoveMilitaryToDefend = 0x0043DE40;
-	s32 AI_MoveMilitaryToDefend(AiCaptain* region) {
-		static s32 result;
+	const uint32 Func_AI_MoveMilitaryToDefend = 0x0043DE40;
+	int32 AI_MoveMilitaryToDefend(AiCaptain* region) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV EDI, region
@@ -1985,9 +1985,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_GetRegionMilitaryTypes = 0x00438FC0;
-	void AI_GetRegionMilitaryTypes(AiCaptain* region, s32* hasGroundMilitary,
-		s32* cantAttackGround, s32* cantAttackAir) {
+	const uint32 Func_AI_GetRegionMilitaryTypes = 0x00438FC0;
+	void AI_GetRegionMilitaryTypes(AiCaptain* region, int32* hasGroundMilitary,
+		int32* cantAttackGround, int32* cantAttackAir) {
 		__asm {
 			PUSHAD
 			MOV EAX, region
@@ -1999,9 +1999,9 @@ namespace {
 		}
 	}
 
-	const u32 Func_AI_CanTravelToRegion = 0x0043A790;
-	s32 AI_CanTravelToRegion(AiCaptain* region1, AiCaptain* region2) {
-		static s32 result;
+	const uint32 Func_AI_CanTravelToRegion = 0x0043A790;
+	int32 AI_CanTravelToRegion(AiCaptain* region1, AiCaptain* region2) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH region2
@@ -2013,7 +2013,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_PickAttackTarget_NoBuildings = 0x0043A510;
+	const uint32 Func_AI_PickAttackTarget_NoBuildings = 0x0043A510;
 	CUnit* AI_PickAttackTarget_NoBuildings(AiCaptain* region) {
 		static CUnit* result;
 		__asm {
@@ -2026,10 +2026,10 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_MoveMilitaryToOtherRegion = 0x0043E580;
-	u32 AI_MoveMilitaryToOtherRegion(AiCaptain* target, AiCaptain* source, u32 pullUnitsNearRegion,
-		u32 sendPureSpellcasters, u32 dontSendFromBunkers) {
-		static u32 result;
+	const uint32 Func_AI_MoveMilitaryToOtherRegion = 0x0043E580;
+	uint32 AI_MoveMilitaryToOtherRegion(AiCaptain* target, AiCaptain* source, uint32 pullUnitsNearRegion,
+		uint32 sendPureSpellcasters, uint32 dontSendFromBunkers) {
+		static uint32 result;
 		__asm {
 			PUSHAD
 			PUSH dontSendFromBunkers
@@ -2044,7 +2044,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_IterateTownSomething = 0x0043DD20;
+	const uint32 Func_AI_IterateTownSomething = 0x0043DD20;
 	AiTown* AI_IterateTownSomething(AiCaptain* region) {
 		static AiTown* result;
 		__asm {
@@ -2057,9 +2057,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_AttackTimerDecrement = 0x00447090;
-	u32 AI_AttackTimerDecrement(u32 player) {
-		static u32 result;
+	const uint32 Func_AI_AttackTimerDecrement = 0x00447090;
+	uint32 AI_AttackTimerDecrement(uint32 player) {
+		static uint32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, player
@@ -2070,9 +2070,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_HasForcesMovingToAttack = 0x0043A2E0;
-	s32 AI_HasForcesMovingToAttack(u32 player) {
-		static s32 result;
+	const uint32 Func_AI_HasForcesMovingToAttack = 0x0043A2E0;
+	int32 AI_HasForcesMovingToAttack(uint32 player) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, player
@@ -2084,9 +2084,9 @@ namespace {
 	}
 
 	// for AI_AttackManager
-	const u32 Func_PopulateRegionsWithOwn = 0x00438B30;
-	u16 PopulateRegionsWithOwn(char* regionData, u32 player) {
-		static u32 result;
+	const uint32 Func_PopulateRegionsWithOwn = 0x00438B30;
+	uint16 PopulateRegionsWithOwn(char* regionData, uint32 player) {
+		static uint32 result;
 		__asm {
 			PUSHAD
 			PUSH player
@@ -2095,11 +2095,11 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (u16)result;
+		return (uint16)result;
 	}
 
-	const u32 Func_PopulateRegionsWithEnemy = 0x00439B50;
-	void PopulateRegionsWithEnemy(u32 player, char* regionData) {
+	const uint32 Func_PopulateRegionsWithEnemy = 0x00439B50;
+	void PopulateRegionsWithEnemy(uint32 player, char* regionData) {
 		__asm {
 			PUSHAD
 			PUSH regionData
@@ -2109,9 +2109,9 @@ namespace {
 		}
 	}
 
-	const u32 Func_AI_GetNeighborRegionTypes = 0x00436D80;
-	s32 AI_GetNeighborRegionTypes(char* regionData) {
-		static s32 result;
+	const uint32 Func_AI_GetNeighborRegionTypes = 0x00436D80;
+	int32 AI_GetNeighborRegionTypes(char* regionData) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV EBX, regionData
@@ -2122,7 +2122,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_FinishRegionAccessibility = 0x00436CF0;
+	const uint32 Func_AI_FinishRegionAccessibility = 0x00436CF0;
 	void AI_FinishRegionAccessibility(char* regionData) {
 		__asm {
 			PUSHAD
@@ -2132,10 +2132,10 @@ namespace {
 		}
 	}
 
-	const u32 Func_AI_SetAttackGroupingRegion = 0x004399D0;
-	s32 AI_SetAttackGroupingRegion(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,
-		s32 x, s32 y, u32 alwaysOverwriteLastAttack) {
-		static s32 result;
+	const uint32 Func_AI_SetAttackGroupingRegion = 0x004399D0;
+	int32 AI_SetAttackGroupingRegion(uint32 airAttack, uint32 alsoVeryNear, uint32 player, char* regionData,
+		int32 x, int32 y, uint32 alwaysOverwriteLastAttack) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH alwaysOverwriteLastAttack

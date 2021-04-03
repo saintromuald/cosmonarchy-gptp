@@ -9,9 +9,9 @@ namespace graphics {
 
 class Bitmap {
   public:
-    bool blitString(const char *pszStr, int x, int y, u8 size);
-    u16 getWidth() const;
-    u16 getHeight() const;
+    bool blitString(const char *pszStr, int x, int y, uint8 size);
+    uint16 getWidth() const;
+    uint16 getHeight() const;
 
     void drawDot(int x, int y, ColorId color);
     void drawLine(int x1, int y1, int x2, int y2, ColorId color);
@@ -24,8 +24,8 @@ class Bitmap {
     void drawDottedEllipse(int left, int top, int right, int bottom, ColorId color);
 
   private:
-    u16 width, height;
-    u8* data;
+    uint16 width, height;
+    uint8* data;
 
     void drawHorizontalLine(int x1, int x2, int y, ColorId color);
     void drawVerticalLine(int x, int y1, int y2, ColorId color);
@@ -33,7 +33,7 @@ class Bitmap {
     void drawHorizontalLineUnsafe(int x1, int x2, int y, ColorId color);
     void drawVerticalLineUnsafe(int x, int y1, int y2, ColorId color);
 
-    void blitKoreanChar(const char *ch, int &x, int &y, u8 fontSize, u8 color);
+    void blitKoreanChar(const char *ch, int &x, int &y, uint8 fontSize, uint8 color);
 
     //Trivially checks whether the line should be drawn; based on the trivial
     //check in the Cohen-Sutherland line clipping algorithm.

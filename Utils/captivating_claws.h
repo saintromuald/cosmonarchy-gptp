@@ -3,7 +3,7 @@
 #include "SCBW/api.h"
 
 namespace captivating_claws {
-	u32 getCaptivatingClawsStacks(CUnit* target);
+	uint32 getCaptivatingClawsStacks(CUnit* target);
 	void applyCaptivatingClaws(CUnit* source, CUnit* target);
 	void clearCaptivatingClaws(CUnit* target);
 }

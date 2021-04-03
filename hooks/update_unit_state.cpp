@@ -12,10 +12,10 @@ namespace {
 	void setAllImageGroupFlagsPal11(CSprite* sprite);		//0x00497430
 
 	// For AI_Burrower
-	void techUseAllowed(CUnit* a1, s16 a2, s32 a3);			//0046DD80
+	void techUseAllowed(CUnit* a1, int16 a2, int32 a3);			//0046DD80
 
 	// For irradiate function
-	CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);
+	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);
 	bool setThingyVisibilityFlags(CThingy* thingy);
 	CUnit** getAllUnitsInBounds(Box16* coords);
 } //unnamed namespace
@@ -23,9 +23,9 @@ namespace {
 
   //copied from recall_spell, replace later
 /*
-const u32 Func_DoWeaponDamage = 0x00479930;
-void func_479930(CUnit* attacker, CUnit* target, u32 base_damage, 
-				u32 direction, u32 dmg_divide, u32 weapon_id, u32 player) {
+const uint32 Func_DoWeaponDamage = 0x00479930;
+void func_479930(CUnit* attacker, CUnit* target, uint32 base_damage, 
+				uint32 direction, uint32 dmg_divide, uint32 weapon_id, uint32 player) {
 	_asm {
 		PUSHAD
 		MOV EAX, base_damage
@@ -40,11 +40,11 @@ void func_479930(CUnit* attacker, CUnit* target, u32 base_damage,
 	}
 }
 
-const u32 Func_CreateThingy = 0x00488210;
-CThingy* function_createthingy(u32 spriteId, s16 x, s16 y, u32 playerId) {
+const uint32 Func_CreateThingy = 0x00488210;
+CThingy* function_createthingy(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
 
 	static CThingy* thingy;
-	s32 x_ = x;
+	int32 x_ = x;
 	__asm {
 		PUSHAD
 		PUSH playerId
@@ -59,8 +59,8 @@ CThingy* function_createthingy(u32 spriteId, s16 x, s16 y, u32 playerId) {
 }
 ;
 */
-const u32 Func_RemoveOverlays2 = 0x00492370;
-void removeoverlays2(u32 from, u32 to, CUnit* unit) {
+const uint32 Func_RemoveOverlays2 = 0x00492370;
+void removeoverlays2(uint32 from, uint32 to, CUnit* unit) {
 	__asm {
 		PUSHAD
 		MOV EAX,from
@@ -99,7 +99,7 @@ namespace hooks {
 				)
 			{
 
-				u16 cloakingEnergyCost;
+				uint16 cloakingEnergyCost;
 
 				//Equivalent to getCloakingEnergyConsumption @ 0x00491A90
 				if (unit->id == UnitId::TerranEidolon
@@ -134,19 +134,19 @@ namespace hooks {
 			}
 			else if (unit->id == UnitId::ProtossMindTyrant && scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0) {
 				auto sum = scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) / 2;
-				unit->spendUnitEnergy(std::min(unit->energy, (u16)(16 * sum)));
+				unit->spendUnitEnergy(std::min(unit->energy, (uint16)(16 * sum)));
 				if (unit->energy == 0) {
 					scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
 				}
 			}
 			else if (unit->id == UnitId::TerranAzazel && scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd) == 1) {
-				unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
+				unit->spendUnitEnergy(std::min(unit->energy, (uint16)13));
 				if (unit->energy == 0) {
 					scbw::set_generic_rust_value(unit, ValueId::SublimeShepherd, 0);
 				}
 			}
 			else if (unit->id == UnitId::corsair && scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb)) {
-				unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
+				unit->spendUnitEnergy(std::min(unit->energy, (uint16)13));
 				if (unit->energy == 0) {
 					scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 0);
 				}
@@ -237,8 +237,8 @@ namespace hooks {
 
 
 
-	const u32 Func_SetUnitPathing = 0x00401360;
-	void setUnitPathing(CUnit* unit, u8 unkPathRelated) {
+	const uint32 Func_SetUnitPathing = 0x00401360;
+	void setUnitPathing(CUnit* unit, uint8 unkPathRelated) {
 
 		__asm {
 			PUSHAD
@@ -281,7 +281,7 @@ namespace hooks {
 			}
 			if (can_free_fire) {
 				auto range = weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon];
-				s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernJacksonCannon];
+				int32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernJacksonCannon];
 				auto x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
 				auto y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1);
 				
@@ -359,7 +359,7 @@ namespace hooks {
 		// Cowardice / Malice overlays
 		if (unit->_unknown_0x08C & 0x1) {
 			unit->_unknown_0x08C &= ~0x1;
-			u32 overlayImageId = scbw::get_sized_overlay(unit,ImageId::Cowardice_Small);
+			uint32 overlayImageId = scbw::get_sized_overlay(unit,ImageId::Cowardice_Small);
 			if (!unit->getOverlay(overlayImageId) && scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 0) {
 				unit->sprite->createTopOverlay(overlayImageId,
 					0, 0, 0);
@@ -373,7 +373,7 @@ namespace hooks {
 				if (unit->getOverlay(overlayId)) {
 					unit->removeOverlay(overlayId);
 				}
-				u32 maliceId = scbw::get_sized_overlay(unit, ImageId::Malice_Small);
+				uint32 maliceId = scbw::get_sized_overlay(unit, ImageId::Malice_Small);
 				if (!unit->getOverlay(maliceId)) {
 					unit->sprite->createTopOverlay(maliceId, 0, 0, 0);
 				}
@@ -383,8 +383,8 @@ namespace hooks {
 		//Clear Malice/Cowardice overlays
 		if (unit->_unknown_0x08C & 0x2) {
 			unit->_unknown_0x08C &= ~0x2;
-			u32 maliceId = scbw::get_sized_overlay(unit, ImageId::Malice_Small);
-			u32 cowardiceId = scbw::get_sized_overlay(unit, ImageId::Cowardice_Small);
+			uint32 maliceId = scbw::get_sized_overlay(unit, ImageId::Malice_Small);
+			uint32 cowardiceId = scbw::get_sized_overlay(unit, ImageId::Cowardice_Small);
 			scbw::set_generic_value(unit, ValueId::HierophantOverlay, 0);
 			if (unit->getOverlay(maliceId)) {
 				unit->removeOverlay(maliceId);
@@ -445,7 +445,7 @@ namespace hooks {
 		//Shield regeneration
 		if (units_dat::ShieldsEnabled[unit->id] != 0) {
 
-			s32 maxShields = (s32)(units_dat::MaxShieldPoints[unit->id]) * 256;
+			int32 maxShields = (int32)(units_dat::MaxShieldPoints[unit->id]) * 256;
 			if (unit->id == UnitId::ProtossAugur && unit->status & UnitStatus::Completed) {
 				unit->shields -= std::min(14, unit->shields);
 			}
@@ -598,15 +598,15 @@ namespace hooks {
 						setThingyVisibilityFlags(emp_sprite);
 					}
 
-					static u16* const maxBoxRightValue = (u16*)0x00628450;
-					static u16* const maxBoxBottomValue = (u16*)0x006284B4;
+					static uint16* const maxBoxRightValue = (uint16*)0x00628450;
+					static uint16* const maxBoxBottomValue = (uint16*)0x006284B4;
 					Box16 area_of_effect;
 					CUnit** unitsInAreaOfEffect;
 					CUnit* current_unit;
-					area_of_effect.left = (u16)unit->sprite->position.x - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-					area_of_effect.right = (u16)unit->sprite->position.x + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-					area_of_effect.top = (u16)unit->sprite->position.y - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-					area_of_effect.bottom = (u16)unit->sprite->position.y + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+					area_of_effect.left = (uint16)unit->sprite->position.x - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+					area_of_effect.right = (uint16)unit->sprite->position.x + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+					area_of_effect.top = (uint16)unit->sprite->position.y - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+					area_of_effect.bottom = (uint16)unit->sprite->position.y + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
 					if (area_of_effect.left < 0)
 						area_of_effect.left = 0;
 					else
@@ -636,7 +636,7 @@ namespace hooks {
 							else
 								if (current_unit->stasisTimer == 0) { //don't work against units in stasis
 
-									s32 energyBig = current_unit->energy;
+									int32 energyBig = current_unit->energy;
 									current_unit->energy -= std::min(100*256, energyBig);
 									current_unit->shields -= std::min(100*256, current_unit->shields);
 
@@ -694,7 +694,7 @@ namespace hooks {
 		}
 
 		if (*elapsedTimeFrames > 0) {
-			u32 supply_new = scbw::get_generic_value(unit, ValueId::SupplyProvided);
+			uint32 supply_new = scbw::get_generic_value(unit, ValueId::SupplyProvided);
 			if (supply_new)
 				supply = supply_new;
 			scbw::set_generic_value(unit, ValueId::SupplyProvided, supply);
@@ -756,10 +756,10 @@ namespace {
 
 	/**** Helper function definitions. Do not modify anything below this! ****/
 
-	const u32 Helper_UnitHpIsInRedZone = 0x004022C0;
+	const uint32 Helper_UnitHpIsInRedZone = 0x004022C0;
 	bool unitHpIsInRedZone(CUnit* unit) {
 
-		static Bool32 result;
+		static bool32 result;
 
 		__asm {
 			PUSHAD
@@ -773,7 +773,7 @@ namespace {
 	}
 
 	//hooked by hooks\update_status_effects.cpp
-	const u32 Func_RestoreAllUnitStats = 0x00492F70;
+	const uint32 Func_RestoreAllUnitStats = 0x00492F70;
 	void RestoreAllUnitStats(CUnit* unit) {
 
 		__asm {
@@ -802,8 +802,8 @@ namespace {
 
 	// For AI_Burrower
 
-	const u32 Func_techUseAllowed = 0x0046DD80;
-	void techUseAllowed(CUnit* a1, s16 a2, s32 a3) {
+	const uint32 Func_techUseAllowed = 0x0046DD80;
+	void techUseAllowed(CUnit* a1, int16 a2, int32 a3) {
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -816,11 +816,11 @@ namespace {
 
 	// For irradiate function
 
-	const u32 Func_CreateThingy = 0x00488210;
-	CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId) {
+	const uint32 Func_CreateThingy = 0x00488210;
+	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
 
 		static CThingy* thingy;
-		s32 x_ = x;
+		int32 x_ = x;
 
 		__asm {
 			PUSHAD
@@ -835,10 +835,10 @@ namespace {
 		return thingy;
 	}
 
-	const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
+	const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
 	bool setThingyVisibilityFlags(CThingy* thingy) {
 
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 
 		__asm {
 			PUSHAD
@@ -850,7 +850,7 @@ namespace {
 		return (bPreResult != 0);
 	}
 
-	const u32 Func_GetAllUnitsInBounds = 0x0042FF80;
+	const uint32 Func_GetAllUnitsInBounds = 0x0042FF80;
 	CUnit** getAllUnitsInBounds(Box16* coords) {
 
 		static CUnit** units_in_bounds;

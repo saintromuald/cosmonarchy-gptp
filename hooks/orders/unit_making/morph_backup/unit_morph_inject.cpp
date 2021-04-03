@@ -9,11 +9,11 @@ namespace {
 
 	//-------- CMDRECV_UnitMorph --------//
 
-	const u32 Func_AddUnitToBuildQueue = 0x00467250;
+	const uint32 Func_AddUnitToBuildQueue = 0x00467250;
 	bool addUnitToBuildQueue(CUnit* unit, u16 unitId) {
 
-		static u32 result;
-		static u32 unitId_;
+		static uint32 result;
+		static uint32 unitId_;
 
 		unitId_ = unitId;
 
@@ -58,7 +58,7 @@ namespace {
 
 	//-------- Orders_Morph1 --------//
 
-	const u32 Hook_Orders_Morph1_Check_Success = 0x0045DFCA;
+	const uint32 Hook_Orders_Morph1_Check_Success = 0x0045DFCA;
 	void __declspec(naked) unitMorphWrapper_Orders_Morph1_Check() {
 
 		static CUnit* unit;
@@ -86,11 +86,11 @@ namespace {
 		}
 	}
 
-	const u32 Hook_Orders_Morph1_EggType_Return = 0x0045E048;
+	const uint32 Hook_Orders_Morph1_EggType_Return = 0x0045E048;
 	void __declspec(naked) unitMorphWrapper_Orders_Morph1_EggType() {
 
 		static CUnit* unit;
-		static u32 morphEggType;
+		static uint32 morphEggType;
 
 		__asm {
 			PUSHAD
@@ -122,10 +122,10 @@ namespace {
 	typedef void(__stdcall *CancelZergBuildingFunc)(CUnit*);
 	CancelZergBuildingFunc cancelZergBuilding = (CancelZergBuildingFunc)0x0045DA40;
 
-	const u32 Func_ChangeUnitType = 0x0049FED0;
+	const uint32 Func_ChangeUnitType = 0x0049FED0;
 	void changeUnitType(CUnit* unit, u16 newUnitId) {
 
-		static u32 newUnitId_ = newUnitId;
+		static uint32 newUnitId_ = newUnitId;
 
 		newUnitId_ = newUnitId;
 
@@ -139,11 +139,11 @@ namespace {
 
 	}
 
-	const u32 Func_ReplaceSpriteImages = 0x00499BB0;
+	const uint32 Func_ReplaceSpriteImages = 0x00499BB0;
 	void replaceSpriteImages(CSprite *sprite, u16 imageId, u8 imageDirection) {
 
-		static u32 imageId_;
-		static u32 imageDirection_;
+		static uint32 imageId_;
+		static uint32 imageDirection_;
 
 		imageId_ = imageId;
 		imageDirection_ = imageDirection;
@@ -272,7 +272,7 @@ namespace {
 	//-------- orders_zergBirth --------//
 
 	//Inject @ 0x0045DE00
-	const u32 Hook_GetUnitVerticalOffsetOnBirth_Return = 0x0045DE2C;
+	const uint32 Hook_GetUnitVerticalOffsetOnBirth_Return = 0x0045DE2C;
 	void __declspec(naked) getUnitVerticalOffsetOnBirthWrapper() {
 
 		static CUnit* unit;
@@ -294,8 +294,8 @@ namespace {
 	}
 
 	//Inject @ 0x0045DE57
-	const u32 Hook_IsRallyableEggUnit_Yes = 0x0045DE6C;
-	const u32 Hook_IsRallyableEggUnit_No = 0x0045DE8B;
+	const uint32 Hook_IsRallyableEggUnit_Yes = 0x0045DE6C;
+	const uint32 Hook_IsRallyableEggUnit_No = 0x0045DE8B;
 	void __declspec(naked) isRallyableEggUnitWrapper() {
 
 		static CUnit* unit;

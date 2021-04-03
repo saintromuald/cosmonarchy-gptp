@@ -16,8 +16,8 @@ namespace hooks {
 	///
 	/// @return		The modified speed value.
 	/// Logically equivalent to GetModifiedUnitSpeed @ 0047B5F0  
-	u32 getModifiedUnitSpeedHook(CUnit* unit, u32 baseSpeed) {
-		u32 speed = baseSpeed;
+	uint32 getModifiedUnitSpeedHook(CUnit* unit, uint32 baseSpeed) {
+		uint32 speed = baseSpeed;
 		/*
 		int speedModifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)-(unit->unusedTimer ? 1 : 0)
 		+ (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);*/
@@ -70,7 +70,7 @@ namespace hooks {
 
 		// Vorvaling Adrenal Surge: gains double movespeed when moving towards enemies
 		if (unit->id == UnitId::ZergVorvaling) {
-			u32 range = unit->getSightRange(false) * 32;
+			uint32 range = unit->getSightRange(false) * 32;
 			scbw::UnitFinder unitFinder(unit->getX() - range,
 				unit->getY() - range,
 				unit->getX() + range,
@@ -80,9 +80,9 @@ namespace hooks {
 					|| units_dat::BaseProperty[target->id] & UnitProperty::Flyer) {
 					return;
 				}
-				u16 angle = scbw::getAngle(unit->position.x, unit->position.y,
+				uint16 angle = scbw::getAngle(unit->position.x, unit->position.y,
 					target->position.x, target->position.y);
-				u16 unit_angle = unit->velocityDirection1;
+				uint16 unit_angle = unit->velocityDirection1;
 				int arc = (double)60 / 1.40625;
 				//120 degrees
 				int delta = unit_angle - angle;
@@ -165,7 +165,7 @@ namespace hooks {
 		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby organic allies after kill
 		else if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0) {
 			speed += speed / 2;
-//			scbw::printFormattedText("SPEED | Unit id: %d", (u32)unit->id);
+//			scbw::printFormattedText("SPEED | Unit id: %d", (uint32)unit->id);
 		}
 
 		// Manifold Phase Rush: gains 150% increased movespeed when moving towards enemies attacked by allied robotics
@@ -195,28 +195,28 @@ namespace hooks {
 
 		// Blackjack Wear and Tear: reduce movement speed based on missing health
 		else if (unit->id == UnitId::TerranBlackjack) {
-			const u32 health = unit->hitPoints / 256;
-			const u32 maxHealth = unit->getMaxHpInGame();
-			const double multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
+			const uint32 health = unit->hitPoints / 256;
+			const uint32 maxHealth = unit->getMaxHpInGame();
+			const double multiplier = MathUtils::map(health, (uint32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
 			speed *= multiplier;
 		}
 
 		// Golem Deathless Procession: gains increased movespeed based on missing shields
 		else if (unit->id == UnitId::ProtossGolem) {
-			u32 health = unit->shields / 256;
-			u32 maxHealth = units_dat::MaxShieldPoints[unit->id];
+			uint32 health = unit->shields / 256;
+			uint32 maxHealth = units_dat::MaxShieldPoints[unit->id];
 			double multiplier = MathUtils::map(health, maxHealth, maxHealth - maxHealth, 1.0, 1.5, true);
-			speed = (u32) ((double)speed * multiplier);
+			speed = (uint32) ((double)speed * multiplier);
 		}
 
 		// Southpaw Knockout Drivers: reduces movement speed by 5% per stack
 		if (scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks) > 0) {
-			u32 knockoutValue = scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks);
+			uint32 knockoutValue = scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks);
 			speed -= speed * (0.05 * knockoutValue);
 		}
 
 		// Vorvaling Captivating Claws: reduces movement speed by 25% per unique attacker
-		u32 captivatingClawsStacks = captivating_claws::getCaptivatingClawsStacks(unit);
+		uint32 captivatingClawsStacks = captivating_claws::getCaptivatingClawsStacks(unit);
 		if (captivatingClawsStacks > 0) {
 			speed -= speed * (0.25 * captivatingClawsStacks);
 		}
@@ -294,12 +294,12 @@ namespace hooks {
 	///
 	/// @return		The modified acceleration value.
 	/// Logically equivalent to getModifiedUnitAcceleration @ 0047B8A0 
-	u32 getModifiedUnitAccelerationHook(CUnit* unit) {
+	uint32 getModifiedUnitAccelerationHook(CUnit* unit) {
 
 
-		//u32 acceleration = flingy_dat::Acceleration[units_dat::Graphic[unit->id]];
-//		u32 acceleration = scbw::getFlingyData(FlingyDatEntries::Acceleration, units_dat::Graphic[unit->id]);
-		u32 acceleration = scbw::getFlingyData(FlingyDatEntries::Acceleration, scbw::getUnitData(UnitsDatEntries::Flingy,unit->id));
+		//uint32 acceleration = flingy_dat::Acceleration[units_dat::Graphic[unit->id]];
+//		uint32 acceleration = scbw::getFlingyData(FlingyDatEntries::Acceleration, units_dat::Graphic[unit->id]);
+		uint32 acceleration = scbw::getFlingyData(FlingyDatEntries::Acceleration, scbw::getUnitData(UnitsDatEntries::Flingy,unit->id));
 		/*
 		int modifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
 		+ (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);*/
@@ -350,12 +350,12 @@ namespace hooks {
 	///
 	/// @return		The modified turning speed value.
 	/// Logically equivalent to getModifiedUnitTurnRadius @ 0047B850 
-	u32 getModifiedUnitTurnSpeedHook(CUnit* unit) {
+	uint32 getModifiedUnitTurnSpeedHook(CUnit* unit) {
 
 
-		//u32 turnSpeed = flingy_dat::TurnSpeed[units_dat::Graphic[unit->id]];
-//		u32 turnSpeed = scbw::getFlingyData(FlingyDatEntries::TurnRadius, units_dat::Graphic[unit->id]);
-		u32 turnSpeed = scbw::getFlingyData(FlingyDatEntries::TurnRadius, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id));
+		//uint32 turnSpeed = flingy_dat::TurnSpeed[units_dat::Graphic[unit->id]];
+//		uint32 turnSpeed = scbw::getFlingyData(FlingyDatEntries::TurnRadius, units_dat::Graphic[unit->id]);
+		uint32 turnSpeed = scbw::getFlingyData(FlingyDatEntries::TurnRadius, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id));
 		/*
 		int modifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
 		+ (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);*/

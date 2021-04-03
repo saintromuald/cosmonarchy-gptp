@@ -7,7 +7,7 @@ namespace {
 	void __declspec(naked) fireWeaponWrapper() {
 
 		static CUnit* unit;
-		static u8 weaponId;
+		static uint8 weaponId;
 
 		__asm {
 			PUSH EBP
@@ -104,7 +104,7 @@ namespace {
 	*/
 } //Unnamed namespace
 
-extern const u32 Func_FireUnitWeapon;
+extern const uint32 Func_FireUnitWeapon;
 
 namespace hooks {
 

@@ -7,15 +7,15 @@
 #include "globals.h"
 #include "limits/ccmu.h"
 namespace {	// helper declarations
-	bool isUnitDistanceWithin(CUnit* target, CBullet* bullet, u32 radius);
-	void weaponBulletShot(CUnit* target, CBullet* bullet, u32 dmgDivisor);
-	void doWeaponHit(CUnit* target, CUnit* attacker, u8 dmgDivisor);
-	void Ai_UnitWasHit(u32 main_target_reaction, u32 dont_call_help, CUnit* attacker, CUnit* target);
+	bool isUnitDistanceWithin(CUnit* target, CBullet* bullet, uint32 radius);
+	void weaponBulletShot(CUnit* target, CBullet* bullet, uint32 dmgDivisor);
+	void doWeaponHit(CUnit* target, CUnit* attacker, uint8 dmgDivisor);
+	void Ai_UnitWasHit(uint32 main_target_reaction, uint32 dont_call_help, CUnit* attacker, CUnit* target);
 
 	// for airSplash
-	CUnit* findBestUnit(Box16* radius, s32 bullet, s32(__fastcall* func)(s32, s32));					// 004E8830
-	s16 randomizeShort(s32 counts);																		// 004DC4A0
-	s32 splashFunc(CBullet* bullet, CUnit* unit);														// 0048B570
+	CUnit* findBestUnit(Box16* radius, int32 bullet, int32(__fastcall* func)(int32, int32));					// 004E8830
+	int16 randomizeShort(int32 counts);																		// 004DC4A0
+	int32 splashFunc(CBullet* bullet, CUnit* unit);														// 0048B570
 
 	// SC internal data for Lurker spines
 	struct SpineHitTable {
@@ -25,8 +25,8 @@ namespace {	// helper declarations
 		} hits[32][16];
 	};
 	SpineHitTable* const spineHitTable = (SpineHitTable*)(0x0064DEC8);
-	u32* const spineHitRow = (u32*)(0x64EEC8);
-	u32* const spineHitCol = (u32*)(0x64DEA8);
+	uint32* const spineHitRow = (uint32*)(0x64EEC8);
+	uint32* const spineHitCol = (uint32*)(0x64DEA8);
 
 }//unnamed namespace
 
@@ -34,11 +34,11 @@ namespace hooks {
 
 
 
-   void darkSwarmDamage(u16 x, u16 y, u16 r, CBullet* bullet, u32 weaponId) {
+   void darkSwarmDamage(uint16 x, uint16 y, uint16 r, CBullet* bullet, uint32 weaponId) {
 	    CUnit* dsw = scbw::getDarkSwarm(x,y,r);
 	    if(dsw!=nullptr){
 			//scbw::printText("Dark swarm detected");
-			u32 damage = (weapons_dat::DamageAmount[weaponId]*256)+
+			uint32 damage = (weapons_dat::DamageAmount[weaponId]*256)+
 					(weapons_dat::DamageBonus[weaponId]*256*scbw::getUpgradeLevel(bullet->srcPlayer,weapons_dat::DamageUpgrade[weaponId]));
 			if(bullet->hitFlags & 2){
 				//hallucination
@@ -49,7 +49,7 @@ namespace hooks {
 				//scbw::printText("Destroy dark swarm");
 			}
 			else {
-				u32 old = dsw->hitPoints;
+				uint32 old = dsw->hitPoints;
 				dsw->hitPoints-=damage;
 				//char buf[64];
 				//sprintf(buf,"Dark swarm hit: %d --> %d",old,dsw->hitPoints);
@@ -63,9 +63,9 @@ namespace hooks {
 	   }
 	   if (bullet->weaponType == WeaponId::NathrokorPlasmidBreath) {
 		   CUnit* nathrokor = bullet->sourceUnit;
-		   u16 angle = scbw::getAngle(nathrokor->position.x, nathrokor->position.y,
+		   uint16 angle = scbw::getAngle(nathrokor->position.x, nathrokor->position.y,
 			   target->position.x, target->position.y);
-		   u16 unit_angle = nathrokor->velocityDirection1;
+		   uint16 unit_angle = nathrokor->velocityDirection1;
 		   int arc = (double)15 / 1.40625;
 		   //30 degrees
 		   int delta = unit_angle - angle;
@@ -78,7 +78,7 @@ namespace hooks {
 	   }
 	   return true;
    }
-	void friendlySplash(CBullet* bullet, u32 weaponId, u8 splash_type, CUnit* guaranteed_hit){
+	void friendlySplash(CBullet* bullet, uint32 weaponId, uint8 splash_type, CUnit* guaranteed_hit){
 		int splash = splash_type;
 		if (bullet->sourceUnit != nullptr && bullet->sourceUnit->sprite!=nullptr) {
 			if (bullet->sourceUnit->isBlind) {
@@ -102,7 +102,7 @@ namespace hooks {
 			}*/
 		}
 		
-		s16 x,y,r;
+		int16 x,y,r;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;
 		r = weapons_dat::OuterSplashRadius[weaponId];
@@ -154,7 +154,7 @@ namespace hooks {
 			if(!scbw::canWeaponTargetUnit(bullet->weaponType, target, target)) continue;
 
 			// We found units in a square around the target, but is the target within the splash radius?
-			s16 outer = weapons_dat::OuterSplashRadius[bullet->weaponType];
+			int16 outer = weapons_dat::OuterSplashRadius[bullet->weaponType];
 
 			// Probing Incisors - Gorgoleth passive
 			if (isChargedGorgolethBullet(bullet, weaponId)) {
@@ -168,8 +168,8 @@ namespace hooks {
 
 			if (weaponId == WeaponId::HeraclesJavelinCannons) {
 				const double splashBase = weapons_dat::OuterSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
-				outer = (s16)(splashBase * (1 + 0.1 * stacks));
+				const uint32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
+				outer = (int16)(splashBase * (1 + 0.1 * stacks));
 			}
 
 			if(!isUnitDistanceWithin(target, bullet, outer)) continue;
@@ -181,7 +181,7 @@ namespace hooks {
 			}
 
 			// Inner radius 
-			s16 inner = weapons_dat::InnerSplashRadius[bullet->weaponType];
+			int16 inner = weapons_dat::InnerSplashRadius[bullet->weaponType];
 
 			// Probing Incisors - Gorgoleth passive
 			if (isChargedGorgolethBullet(bullet, weaponId)) {
@@ -190,8 +190,8 @@ namespace hooks {
 
 			if (weaponId == WeaponId::HeraclesJavelinCannons) {
 				const double splashBase = weapons_dat::InnerSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
-				inner = (s16)(splashBase * (1 + 0.1 * stacks));
+				const uint32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
+				inner = (int16)(splashBase * (1 + 0.1 * stacks));
 			}
 
 			if (isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet,target)){
@@ -203,7 +203,7 @@ namespace hooks {
 			if(target->status & UnitStatus::Burrowed) continue;
 
 			// Medium radius
-			s16 medium = weapons_dat::MediumSplashRadius[bullet->weaponType];
+			int16 medium = weapons_dat::MediumSplashRadius[bullet->weaponType];
 
 			// Probing Incisors - Gorgoleth passive
 			if (isChargedGorgolethBullet(bullet, weaponId)) {
@@ -212,8 +212,8 @@ namespace hooks {
 
 			if (weaponId == WeaponId::HeraclesJavelinCannons) {
 				const double splashBase = weapons_dat::MediumSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
-				medium = (s16)(splashBase * (1 + 0.1 * stacks));
+				const uint32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
+				medium = (int16)(splashBase * (1 + 0.1 * stacks));
 			}
 
 			if (weaponId == WeaponId::NathrokorPlasmidBreath) {
@@ -232,8 +232,8 @@ namespace hooks {
 		}
 	}
 
-	void friendlyLurkerSplash(CBullet* bullet, u32 weaponId, u8 splash) {
-		s16 x, y, r;
+	void friendlyLurkerSplash(CBullet* bullet, uint32 weaponId, uint8 splash) {
+		int16 x, y, r;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;
 		r = weapons_dat::OuterSplashRadius[weaponId];
@@ -299,7 +299,7 @@ namespace hooks {
 		}
 	}
 
-	bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId) {
+	bool isChargedGorgolethBullet(CBullet* bullet, uint32 weaponId) {
 		if (weaponId == WeaponId::GorgrokorSerratedCleavers) {
 			if (bullet != nullptr && bullet->sourceUnit != nullptr && bullet->sourceUnit->id==UnitId::ZergGorgrokor) {
 //				if (bullet->sourceUnit->energy >= 5 * 256) {
@@ -310,7 +310,7 @@ namespace hooks {
 		return false;
 	}
 
-	bool isUnsafeCyprianBullet(CBullet* bullet, u32 weaponId){
+	bool isUnsafeCyprianBullet(CBullet* bullet, uint32 weaponId){
 		if(weaponId==26){
 			if(bullet!=nullptr){
 				if(bullet->sourceUnit!=nullptr) {
@@ -323,7 +323,7 @@ namespace hooks {
 		return false;
 	}
 
-	const u32 Func_turnUnit = 0x00495F20;
+	const uint32 Func_turnUnit = 0x00495F20;
 	void turnUnit(CUnit* a1, char a2) {
 		__asm {
 			PUSHAD
@@ -335,7 +335,7 @@ namespace hooks {
 	}
 
 	// clone of 'Normal' damage for reference
-	void normalDamage(CBullet* bullet, u32 weaponId) {
+	void normalDamage(CBullet* bullet, uint32 weaponId) {
 		// Create Lobotomy Mines
 		if (bullet->sourceUnit != nullptr && weaponId == WeaponId::Lockdown) {
 			CUnit* mine = scbw::createUnitIngame(UnitId::TerranLobotomyMine, bullet->srcPlayer, bullet->position.x, bullet->position.y);
@@ -361,7 +361,7 @@ namespace hooks {
 		darkSwarmDamage(bullet->attackTarget.unit->position.x, bullet->attackTarget.unit->position.y, 1, bullet, weaponId);
 
 		// 
-		u8 divisor = 1;
+		uint8 divisor = 1;
 		if (weaponId == WeaponId::ArchitectDispersiveSalvo) {
 			divisor = Globals.get_divider(bullet);
 		}
@@ -429,16 +429,16 @@ namespace hooks {
 	}
 
 //  case WPNEffect_Splash_Air:
-	void airSplash(CBullet* bullet, u32 weaponId) { // 0048B790
+	void airSplash(CBullet* bullet, uint32 weaponId) { // 0048B790
 		CUnit* target = bullet->attackTarget.unit;
 		if (target == nullptr) {
 			return;
 		}
-		s16 radius = weapons_dat::OuterSplashRadius[weaponId];
+		int16 radius = weapons_dat::OuterSplashRadius[weaponId];
 		CSprite* bulletSprite = bullet->sprite;
-		s16 posX = bulletSprite->position.x;
-		s16 posY = bulletSprite->position.y;
-		s32 list;
+		int16 posX = bulletSprite->position.x;
+		int16 posY = bulletSprite->position.y;
+		int32 list;
 		Box16* searchRadius;
 		
 		*airSplashListCount = 0;
@@ -447,7 +447,7 @@ namespace hooks {
 		searchRadius->right = radius + posX;
 		searchRadius->bottom = radius + posY;
 
-		s16 x, y, r;
+		int16 x, y, r;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;
 		r = weapons_dat::OuterSplashRadius[weaponId];
@@ -456,11 +456,11 @@ namespace hooks {
 		//
 		darkSwarmDamage(x, y, r, bullet, weaponId);
 		//
-		s32 result;
+		int32 result;
 		for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 			// airSplashProc
-			s8 weaponIdLoop; // bl
-			s32 listCount; // eax
+			int8 weaponIdLoop; // bl
+			int32 listCount; // eax
 			CUnit* target = unitsInSplash.getUnit(i);
 
 			weaponIdLoop = bullet->weaponType;
@@ -499,10 +499,10 @@ namespace hooks {
 				list = randomizeShort(58) % *airSplashListCount;
 			}
 			if (Globals.extended_unit_table) {
-				weaponBulletShot(target, bullet, (s32)new_unit_table.air_splash_results[list]);
+				weaponBulletShot(target, bullet, (int32)new_unit_table.air_splash_results[list]);
 			}
 			else {
-				weaponBulletShot(target, bullet, (s32)airSplashList[list]);
+				weaponBulletShot(target, bullet, (int32)airSplashList[list]);
 			}
 			
 		}
@@ -511,13 +511,13 @@ namespace hooks {
 	}
 
   // clone of 'Yamato' damage for reference
-  void yamatoDamage(CBullet* bullet, u32 weaponId) {
+  void yamatoDamage(CBullet* bullet, uint32 weaponId) {
 		if (bullet->attackTarget.unit == nullptr) return;
 		darkSwarmDamage(bullet->attackTarget.unit->position.x,bullet->attackTarget.unit->position.y,1,bullet,weaponId);
 		weaponBulletShot(bullet->attackTarget.unit, bullet, 1);
 	}
 
-  void parasite(CBullet* bullet, u32 weaponId) {
+  void parasite(CBullet* bullet, uint32 weaponId) {
 	  if (bullet->sourceUnit == nullptr) return;
       constexpr int radius = 96;
 	  scbw::UnitFinder(
@@ -530,7 +530,7 @@ namespace hooks {
 	  });
   }
   
-  void broodlings(CBullet* bullet, u32 weaponId) {
+  void broodlings(CBullet* bullet, uint32 weaponId) {
 	  if (bullet->sourceUnit == nullptr) return;
 	  CUnit* target = bullet->attackTarget.unit;
 	// if (target != nullptr) {
@@ -542,7 +542,7 @@ namespace hooks {
 	//  }
   }
 
-	void lockdown(CBullet* bullet, u32 weaponId) {
+	void lockdown(CBullet* bullet, uint32 weaponId) {
 	/*	CUnit* target = bullet->attackTarget.unit; 
 		//original code 
 		if (target) {
@@ -551,7 +551,7 @@ namespace hooks {
 			}
 		}*/
 		auto targPos = bullet->targetPosition;
-		s16 x, y, r;
+		int16 x, y, r;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;
 		r = weapons_dat::OuterSplashRadius[WeaponId::LobotomyMineExplosion];
@@ -576,8 +576,8 @@ namespace hooks {
 
 namespace {
 	/*** helper functions that I couldn't find in gptp ***/
-	const u32 Func_0043F320 = 0x0043F320;
-	void Ai_UnitWasHit(u32 main_target_reaction, u32 dont_call_help, CUnit* attacker, CUnit* target) {
+	const uint32 Func_0043F320 = 0x0043F320;
+	void Ai_UnitWasHit(uint32 main_target_reaction, uint32 dont_call_help, CUnit* attacker, CUnit* target) {
 		__asm {
 			PUSHAD
 			PUSH main_target_reaction
@@ -590,10 +590,10 @@ namespace {
 	}
 
 	// checks if the distance between target and bullet's positions is < radius
-	const u32 Helper_IsUnitDistanceWithin = 0x0048ADB0;
-	bool isUnitDistanceWithin(CUnit* target, CBullet* bullet, u32 radius) {
+	const uint32 Helper_IsUnitDistanceWithin = 0x0048ADB0;
+	bool isUnitDistanceWithin(CUnit* target, CBullet* bullet, uint32 radius) {
 
-		u32 result;
+		uint32 result;
 		__asm {
 			PUSHAD
 			PUSH radius;
@@ -607,8 +607,8 @@ namespace {
 	}
   
 	// creates attack overlay & deals damage from the bullet (just calls overlayAndNotify if the weapon deals no damage, or calls target->damageWith if it does
-	const u32 Helper_WeaponBulletShot = 0x00479AE0;
-	void weaponBulletShot(CUnit* target, CBullet* bullet, u32 dmgDivisor) {
+	const uint32 Helper_WeaponBulletShot = 0x00479AE0;
+	void weaponBulletShot(CUnit* target, CBullet* bullet, uint32 dmgDivisor) {
 
 		if (bullet != nullptr && target!=nullptr && bullet->sourceUnit && bullet->weaponType == WeaponId::PariahIconoclastBlades) {
 			if (!Globals.was_hit_by_pariah(bullet->sourceUnit, target)) {
@@ -628,10 +628,10 @@ namespace {
 		}
 	}
 
-	const u32 Helper_DoWeaponHit = 0x004795D0;
-	void doWeaponHit(CUnit* target, CUnit* attacker, u8 dmgDivisor) {
+	const uint32 Helper_DoWeaponHit = 0x004795D0;
+	void doWeaponHit(CUnit* target, CUnit* attacker, uint8 dmgDivisor) {
 
-	u32 divisor = dmgDivisor;
+	uint32 divisor = dmgDivisor;
 	__asm {
 		PUSHAD
 		PUSH divisor
@@ -644,8 +644,8 @@ namespace {
 
 	// for airSplash
 
-	const u32 Func_findBestUnit = 0x004E8830;
-	CUnit* findBestUnit(Box16* radius, s32 bullet, s32(__fastcall* func)(s32, s32)) {
+	const uint32 Func_findBestUnit = 0x004E8830;
+	CUnit* findBestUnit(Box16* radius, int32 bullet, int32(__fastcall* func)(int32, int32)) {
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -659,9 +659,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_randomizeShort = 0x004DC4A0;
-	s16 randomizeShort(s32 counts) {
-		static s32 result;
+	const uint32 Func_randomizeShort = 0x004DC4A0;
+	int16 randomizeShort(int32 counts) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, counts
@@ -669,12 +669,12 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (s16)result;
+		return (int16)result;
 	}
 
-	const u32 Func_splashFunc = 0x0048B570;
-	s32 splashFunc(CBullet* bullet, CUnit* unit) {
-		static s32 result;
+	const uint32 Func_splashFunc = 0x0048B570;
+	int32 splashFunc(CBullet* bullet, CUnit* unit) {
+		static int32 result;
 
 		__asm {
 			PUSHAD

@@ -43,7 +43,7 @@ namespace hooks {
 	CUnit* findBestSpiderMineTargetHook(CUnit* spiderMine) {
 
 		//Default StarCraft behavior
-		s32 range;
+		int32 range;
 
 		//Don't search for a target if the spider mine is under a Disruption Web
 		if (spiderMine->status & UnitStatus::CanNotAttack)
@@ -327,7 +327,7 @@ namespace {
 
 	CUnit* SpiderMine_AcquireTarget(CUnit* spiderMine) {
 
-		const u32 Func_SpiderMine_AcquireTarget = 0x00441270;
+		const uint32 Func_SpiderMine_AcquireTarget = 0x00441270;
 	
 		static CUnit* target;
 
@@ -343,7 +343,7 @@ namespace {
 
 	};
 
-	const u32 Func_Sub495400 = 0x00495400;
+	const uint32 Func_Sub495400 = 0x00495400;
 	void function_00495400(CUnit* unit, CUnit* target) {
 
 		__asm {
@@ -358,7 +358,7 @@ namespace {
 
 	void function_0049B1E0(CUnit* unit) {
 
-		const u32 Func_Sub49B1E0 = 0x0049B1E0;
+		const uint32 Func_Sub49B1E0 = 0x0049B1E0;
 
 		__asm {
 			PUSHAD
@@ -371,7 +371,7 @@ namespace {
 
 	void function_004E99D0(CUnit* unit) {
 
-		const u32 Func_Sub4E99D0 = 0x004E99D0;
+		const uint32 Func_Sub4E99D0 = 0x004E99D0;
 
 		__asm {
 			PUSHAD
@@ -384,7 +384,7 @@ namespace {
 
 	void function_004E9A30(CUnit* unit) {
 
-		const u32 Func_Sub4E9A30 = 0x004E9A30;
+		const uint32 Func_Sub4E9A30 = 0x004E9A30;
 
 		__asm {
 			PUSHAD
@@ -396,7 +396,7 @@ namespace {
 	};
 
 	//Related to path/movement decision
-	const u32 Func_sub_4EB290 = 0x004EB290;
+	const uint32 Func_sub_4EB290 = 0x004EB290;
 	void setNextWaypoint_Sub4EB290(CUnit* unit) {
 
 		__asm {
@@ -408,7 +408,7 @@ namespace {
 	};
 
 	// For orders_PlaceMine
-	const u32 Func_techUseAllowed = 0x0046DD80;
+	const uint32 Func_techUseAllowed = 0x0046DD80;
 	int techUseAllowed(CUnit* a1, __int16 a2, int a3) {
 		static int result;
 		__asm {
@@ -423,7 +423,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_getDistanceFast = 0x0040C360;
+	const uint32 Func_getDistanceFast = 0x0040C360;
 	unsigned int getDistanceFast(int a1, int a2, int a3, int a4) {
 		static unsigned int result;
 		__asm {
@@ -439,7 +439,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_orders_HoldPosSuicidal = 0x004EB5B0;
+	const uint32 Func_orders_HoldPosSuicidal = 0x004EB5B0;
 	int orders_HoldPosSuicidal(CUnit* a1) {
 		static int result;
 		__asm {
@@ -452,7 +452,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_fixTargetLocation = 0x00401FA0;
+	const uint32 Func_fixTargetLocation = 0x00401FA0;
 	void fixTargetLocation(unsigned __int16 a1, Point32* a2) {
 		__asm {
 			PUSHAD
@@ -463,7 +463,7 @@ namespace {
 		}
 	}
 
-	const u32 Func_createUnit = 0x004A09D0;
+	const uint32 Func_createUnit = 0x004A09D0;
 	CUnit* createUnit(__int16 a1, int a2, int a3, int a4) {
 		static CUnit* result;
 		__asm {
@@ -478,7 +478,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_updateUnitStatsFinishBuilding = 0x004A01F0;
+	const uint32 Func_updateUnitStatsFinishBuilding = 0x004A01F0;
 	void updateUnitStatsFinishBuilding(CUnit* a1) {
 		__asm {
 			PUSHAD
@@ -488,7 +488,7 @@ namespace {
 		}
 	}
 
-	const u32 Func_updateUnitStrengthAndApplyDefaultOrders = 0x0049FA40;
+	const uint32 Func_updateUnitStrengthAndApplyDefaultOrders = 0x0049FA40;
 	unsigned int updateUnitStrengthAndApplyDefaultOrders(CUnit* a1) {
 		static unsigned int result;
 		__asm {
@@ -501,7 +501,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_turnUnit = 0x00495F20;
+	const uint32 Func_turnUnit = 0x00495F20;
 	void turnUnit(CUnit* a1, char a2) {
 		__asm {
 			PUSHAD
@@ -512,7 +512,7 @@ namespace {
 		}
 	}
 
-	const u32 Func_displayLastNetErrorForPlayer = 0x0049E530;
+	const uint32 Func_displayLastNetErrorForPlayer = 0x0049E530;
 	void displayLastNetErrorForPlayer(unsigned __int8 a1) {
 		__asm {
 			PUSHAD
@@ -522,7 +522,7 @@ namespace {
 		}
 	}
 
-	const u32 Func_toIdle = 0x004753A0;
+	const uint32 Func_toIdle = 0x004753A0;
 	void toIdle(CUnit* a1) {
 		__asm {
 			PUSHAD
@@ -532,7 +532,7 @@ namespace {
 		}
 	}
 
-	const u32 Func_isUnitMovable = 0x00401DC0;
+	const uint32 Func_isUnitMovable = 0x00401DC0;
 	int isUnitMovable(CUnit* a1) {
 		static int result;
 		__asm {
@@ -545,7 +545,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_orders_Nothing2 = 0x00475000;
+	const uint32 Func_orders_Nothing2 = 0x00475000;
 	void orders_Nothing2(CUnit* a1) {
 		__asm {
 			PUSHAD
@@ -555,7 +555,7 @@ namespace {
 		}
 	}
 
-	const u32 Func_orderComputerClear = 0x00475310;
+	const uint32 Func_orderComputerClear = 0x00475310;
 	void orderComputerClear(CUnit* a1, unsigned __int8 a2) {
 		__asm {
 			PUSHAD
@@ -566,7 +566,7 @@ namespace {
 		}
 	}
 
-	const u32 Func_moveToTarget = 0x004EB720;
+	const uint32 Func_moveToTarget = 0x004EB720;
 	signed int moveToTarget(CUnit* a1, CUnit* a2) {
 		static signed int result;
 		__asm {
@@ -580,7 +580,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_setMoveTargetXY = 0x004EB820;
+	const uint32 Func_setMoveTargetXY = 0x004EB820;
 	bool setMoveTargetXY(int a1, int a2, CUnit* a3) {
 		static int result;
 		__asm {

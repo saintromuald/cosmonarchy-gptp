@@ -25,8 +25,8 @@ void irradiateProc(CUnit* unit, CUnit* target) {
 	if (unit->status & UnitStatus::InTransport
 		|| unit->getDistanceToTarget(target) <= 32)
 	{
-		//			const s32 damage = weapons_dat::DamageAmount[WeaponId::Irradiate] * 256 / weapons_dat::Cooldown[WeaponId::Irradiate];
-		s32 damage = (125 * 256) / 24;
+		//			const int32 damage = weapons_dat::DamageAmount[WeaponId::Irradiate] * 256 / weapons_dat::Cooldown[WeaponId::Irradiate];
+		int32 damage = (125 * 256) / 24;
 		if (unit != nullptr) {
 			if (unit->irradiateTimer == 0) {
 				damage += (125 * 256) % 24;
@@ -78,11 +78,11 @@ void doIrradiateDamage(CUnit* irradiatedUnit) {
 //Note: This function is called every 8 ticks (when unit->cycleCounter reaches 8 == 0)
 
 
-const u32 Func_CreateThingy = 0x00488210;
-CThingy* createThingyFunc(u32 spriteId, s16 x, s16 y, u32 playerId) {
+const uint32 Func_CreateThingy = 0x00488210;
+CThingy* createThingyFunc(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
 
 	static CThingy* thingy;
-	s32 x_ = x;
+	int32 x_ = x;
 
 	__asm {
 		PUSHAD
@@ -102,7 +102,7 @@ CThingy* createThingyFunc(u32 spriteId, s16 x, s16 y, u32 playerId) {
 ;
 
 
-const u32 Func_GetAllUnitsInBounds = 0x0042FF80;
+const uint32 Func_GetAllUnitsInBounds = 0x0042FF80;
 CUnit** getAllUnitsInBounds_copy(Box16* coords) {
 
 	static CUnit** units_in_bounds;
@@ -142,9 +142,9 @@ void setAllImageGroupFlagsPal11(CSprite* sprite) {
 
 //00469B60 = DoUnitsCollide(), ecx Unit *first, eax Unit *second
 
-const u32 Func_DoUnitsCollide = 0x00469B60;
+const uint32 Func_DoUnitsCollide = 0x00469B60;
 bool func_dounitscollide(CUnit* first, CUnit* second){
-	static u32 result = 0;
+	static uint32 result = 0;
 	__asm {
 		PUSHAD
 		MOV EAX,first
@@ -174,7 +174,7 @@ bool safetyUnburrowMatch(CUnit* burrower, CUnit* target) {
 }
 */
 
-const u32 Func_Sub_4E97C0 = 0x004E97C0;
+const uint32 Func_Sub_4E97C0 = 0x004E97C0;
 void unburrow(CUnit* unit) {
 
 	__asm {
@@ -206,7 +206,7 @@ static bool safetyUnburrowCheck(CUnit* unit, CUnit* target) {
 void updateStatusEffects(CUnit* unit) {
 
 	if (unit->subunit != nullptr) {
-		scbw::set_generic_value(unit->subunit, ValueId::TurretParentLink, (u32)unit);
+		scbw::set_generic_value(unit->subunit, ValueId::TurretParentLink, (uint32)unit);
 	}
 
 	// Decrement Stasis Field timer (and remove effect if 0)
@@ -292,7 +292,7 @@ void updateStatusEffects(CUnit* unit) {
 			|| unit->id == UnitId::ZergOthstoleth
 			|| unit->id == UnitId::ProtossPennant)) {
 		
-		u32 radius;
+		uint32 radius;
 		if (unit->id == UnitId::TerranQuarry) {
 			radius = 320;
 		}
@@ -323,7 +323,7 @@ void updateStatusEffects(CUnit* unit) {
 
 	// Othstoleth morph speed increase aura
 	if (unit->id == UnitId::ZergOthstoleth) {
-		u32 radius = 224;
+		uint32 radius = 224;
 		scbw::UnitFinder(
 			unit->getX() - radius,
 			unit->getY() - radius,
@@ -432,15 +432,15 @@ void updateStatusEffects(CUnit* unit) {
 					scbw::setThingyVisibilityFlags(emp_sprite);
 				}				
 
-				static u16* const maxBoxRightValue =			(u16*) 0x00628450;
-				static u16* const maxBoxBottomValue =			(u16*) 0x006284B4;	
+				static uint16* const maxBoxRightValue =			(uint16*) 0x00628450;
+				static uint16* const maxBoxBottomValue =			(uint16*) 0x006284B4;	
 				Box16 area_of_effect;	
 				CUnit** unitsInAreaOfEffect;
 				CUnit* current_unit;	
-				area_of_effect.left = (u16)unit->sprite->position.x -  weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-				area_of_effect.right = (u16)unit->sprite->position.x +  weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-				area_of_effect.top = (u16)unit->sprite->position.y -  weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-				area_of_effect.bottom = (u16)unit->sprite->position.y +  weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+				area_of_effect.left = (uint16)unit->sprite->position.x -  weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+				area_of_effect.right = (uint16)unit->sprite->position.x +  weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+				area_of_effect.top = (uint16)unit->sprite->position.y -  weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+				area_of_effect.bottom = (uint16)unit->sprite->position.y +  weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
 				if(area_of_effect.left < 0)
 					area_of_effect.left = 0;
 				else
@@ -470,7 +470,7 @@ void updateStatusEffects(CUnit* unit) {
 						else
 						if(current_unit->stasisTimer == 0) { //don't work against units in stasis
 
-							s32 energyBig = current_unit->energy;
+							int32 energyBig = current_unit->energy;
 							current_unit->energy -= std::min(100 * 256, energyBig);
 							current_unit->shields -= std::min(100 * 256, current_unit->shields);
 									
@@ -519,7 +519,7 @@ void updateStatusEffects(CUnit* unit) {
 			if (scbw::get_generic_value(unit, ValueId::Malediction)) {
 				scbw::set_generic_value(unit, ValueId::Malediction, 0);
 				scbw::set_generic_timer(unit, ValueId::MaledictionSlow, (24*4)+1);
-				u32 overlayImageId;
+				uint32 overlayImageId;
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
 					overlayImageId = ImageId::Malediction_Medium;
 				else
@@ -543,9 +543,9 @@ void updateStatusEffects(CUnit* unit) {
 		}
 		if (!(unit->status & UnitStatus::Invincible)) {
 
-			//s32 damage = (weapons_dat::DamageAmount[WeaponId::Plague] << 8) / 76;
+			//int32 damage = (weapons_dat::DamageAmount[WeaponId::Plague] << 8) / 76;
 
-			s32 damage = (weapons_dat::DamageAmount[WeaponId::Plague]*256)/30;
+			int32 damage = (weapons_dat::DamageAmount[WeaponId::Plague]*256)/30;
 			
 			/*
 			if (true) {//defiler plague upgrade (unknown id), add condition later
@@ -558,7 +558,7 @@ void updateStatusEffects(CUnit* unit) {
 			}
 			/*
 			//original bw plague code, disabled
-			s32 damage = weapons_dat::DamageAmount[WeaponId::Plague];
+			int32 damage = weapons_dat::DamageAmount[WeaponId::Plague];
 			//randomize?
 			__asm {
 				PUSHAD
@@ -626,7 +626,7 @@ void updateStatusEffects(CUnit* unit) {
 		unit->isUnderStorm--;
 
 	//hardcoding effect of unreferenced_sub_4F42C0 @ 0x004F42C0
-	u8 previousAcidSporeCount = unit->corrosiveSporeCount;
+	uint8 previousAcidSporeCount = unit->corrosiveSporeCount;
 	for (int i = 0; i <= 8; ++i) {
 
 		if (unit->acidSporeTime[i] != 0) {
@@ -642,7 +642,7 @@ void updateStatusEffects(CUnit* unit) {
 	if (unit->corrosiveSporeCount != 0) {
 
 		//Calculate the appropriate overlay ID
-		u32 acidOverlayId = std::min(3, unit->corrosiveSporeCount / 2)
+		uint32 acidOverlayId = std::min(3, unit->corrosiveSporeCount / 2)
 							+ 4 * scbw::getUnitOverlayAdjustment(unit)
 							+ ImageId::AcidSpores_1_Overlay_Small;
 
@@ -663,8 +663,8 @@ void updateStatusEffects(CUnit* unit) {
 	}
 }
 
-const u32 Func_orderComputerClear = 0x00475310;
-void orderComputerClear(CUnit* a1, u8 a2) {
+const uint32 Func_orderComputerClear = 0x00475310;
+void orderComputerClear(CUnit* a1, uint8 a2) {
 	__asm {
 		PUSHAD
 		MOV ESI, a1
@@ -680,7 +680,7 @@ void AI_Burrower(CUnit* a1) {
 				if (a1->moveTarget.pt.x == a1->sprite->position.x
 					&& a1->moveTarget.pt.y == a1->sprite->position.y
 					&& ((a1->status & UnitStatus::Unmovable) != 0) != -1
-					//&& techUseAllowed(a1, TechId::Burrowing, (u8)a1->playerId) == 1
+					//&& techUseAllowed(a1, TechId::Burrowing, (uint8)a1->playerId) == 1
 					) {
 					bool canBurrow = true;
 					auto tile = scbw::getActiveTileAt(a1->position.x, a1->position.y);

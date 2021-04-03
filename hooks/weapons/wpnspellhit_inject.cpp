@@ -8,7 +8,7 @@ namespace {
 
 		static CUnit* attacker;
 		static CUnit* target;
-		static u8 attackingPlayerId;
+		static uint8 attackingPlayerId;
 
 		__asm {
 
@@ -42,7 +42,7 @@ namespace {
 	void __declspec(naked) OpticalFlareHitWrapper() {
 
 		static CUnit* target;
-		static u32 attackingPlayerId;
+		static uint32 attackingPlayerId;
 		static CBullet* bullet;
 
 		__asm {
@@ -98,7 +98,7 @@ namespace {
 	void __declspec(naked) LockdownHitWrapper() {
 
 		static CUnit* target;
-		static u8 previousLockdownTimer;
+		static uint8 previousLockdownTimer;
 		static CBullet* bullet;
 
 		__asm {
@@ -157,7 +157,7 @@ namespace {
 
 		static CBullet* bullet;
 		static CUnit* target;
-		static u32 hitFlags;
+		static uint32 hitFlags;
 
 		__asm {
 
@@ -227,7 +227,7 @@ namespace {
 
 		static int x;
 		static int y;
-		static u32 playerId;
+		static uint32 playerId;
 		static CBullet* bullet;
 
 		__asm {
@@ -324,7 +324,7 @@ namespace {
 
 		static int x;
 		static int y;
-		static u32 attackingPlayerId;
+		static uint32 attackingPlayerId;
 		static CBullet* bullet;
 
 		__asm {
@@ -541,7 +541,7 @@ namespace {
 
 		static int x;
 		static int y;
-		static u32 playerId;
+		static uint32 playerId;
 		static CBullet* bullet;
 
 		__asm {
@@ -608,7 +608,7 @@ namespace {
 
 	void __declspec(naked) stasisFieldOverlayWrapper() {
 		static CUnit* unit;
-		static u32 a2;
+		static uint32 a2;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP

@@ -9,12 +9,12 @@ void disconnectFromAddOn(CUnit* unit);												//0x00464930
 void refundAllQueueSlots(CUnit* unit);												//0x00466E80
 void removeOrderFromUnitQueue(CUnit* unit, COrder* order);							//0x004742D0
 void actUnitReturnToIdle(CUnit* unit);												//0x00475420
-void incrementUnitDeathScores(CUnit* unit, u8 player);								//0x00488AF0
-void incrementUnitScores(CUnit* unit, s32 unkScore);								//0x00488BF0
-void incrementUnitScoresEx(CUnit* unit, s32 unkScore, s32 unk2);					//0x00488D50
-void initializeEmptyUnitsLinkedListRef_Sub49E4E0(CUnit* unit, u8 playerId);			//0x0049E4E0
-void GiveUnitHelper(CUnit* unit, u32 playerId, s32 unkScore);						//0x0049EFA0
-void changeUnitButtonSet_Sub_4E5D60(CUnit* unit, u16 unitId);						//0x004E5D60
+void incrementUnitDeathScores(CUnit* unit, uint8 player);								//0x00488AF0
+void incrementUnitScores(CUnit* unit, int32 unkScore);								//0x00488BF0
+void incrementUnitScoresEx(CUnit* unit, int32 unkScore, int32 unk2);					//0x00488D50
+void initializeEmptyUnitsLinkedListRef_Sub49E4E0(CUnit* unit, uint8 playerId);			//0x0049E4E0
+void GiveUnitHelper(CUnit* unit, uint32 playerId, int32 unkScore);						//0x0049EFA0
+void changeUnitButtonSet_Sub_4E5D60(CUnit* unit, uint16 unitId);						//0x004E5D60
 void hideAndDisableUnit(CUnit* unit);												//0x004E6340
 void showAndEnableUnit(CUnit* unit);												//0x004E6490
 void setNextWaypoint_Sub4EB290(CUnit* unit);										//0x004EB290
@@ -31,8 +31,8 @@ namespace hooks {
 
 	//replace 0x00402210 CC_CanBeInfested
 	bool isInfestableUnit(CUnit* unit) {
-		u32 unitHpTest;
-		u32 unitMaxHp;
+		uint32 unitHpTest;
+		uint32 unitMaxHp;
 		bool returnValue;
 
 		returnValue = (unit->status & UnitStatus::Completed) && (unit->id == UnitId::TerranCommandCenter);
@@ -54,8 +54,8 @@ namespace hooks {
 	void orderMorphIntoInfested(CUnit* unitInfested) {
 		bool bErrorReturnToIdle;
 		bool bStopFunction = false;
-		u16 infestedUnitNewId;
-		u16 infestationOverlayId;
+		uint16 infestedUnitNewId;
+		uint16 infestationOverlayId;
 		CUnit* unitInfesting = unitInfested->orderTarget.unit;
 		bErrorReturnToIdle = (unitInfesting == nullptr || !isInfestableUnit(unitInfested));
 
@@ -85,7 +85,7 @@ namespace hooks {
 					if(unitInfested->isFactory())
 						unitInfested->rally.unit = unitInfested;
 
-					//original code was *(u16*)(0x006648AC + 2*unitInfested->id);
+					//original code was *(uint16*)(0x006648AC + 2*unitInfested->id);
 					infestedUnitNewId = units_dat::InfestedUnitPartial[unitInfested->id - UnitId::TerranCommandCenter];
 
 					//update number of kills/casualties for endgame score
@@ -254,7 +254,7 @@ namespace hooks {
 
 namespace {
 
-const u32 Func_Sub_464930 = 0x00464930;
+const uint32 Func_Sub_464930 = 0x00464930;
 void disconnectFromAddOn(CUnit* unit) {
 
 	__asm {
@@ -268,7 +268,7 @@ void disconnectFromAddOn(CUnit* unit) {
 
 ;
 
-const u32 Func_RefundAllQueueSlots = 0x00466E80;
+const uint32 Func_RefundAllQueueSlots = 0x00466E80;
 void refundAllQueueSlots(CUnit* unit) {
 
 	__asm {
@@ -282,7 +282,7 @@ void refundAllQueueSlots(CUnit* unit) {
 
 ;
 
-const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
+const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
 void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 	__asm {
@@ -297,7 +297,7 @@ void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 ;
 
-const u32 Func_ActUnitReturnToIdle = 0x00475420;
+const uint32 Func_ActUnitReturnToIdle = 0x00475420;
 void actUnitReturnToIdle(CUnit* unit) {
 
 	__asm {
@@ -312,7 +312,7 @@ void actUnitReturnToIdle(CUnit* unit) {
 ;
 
 //Related to path/movement decision
-const u32 Func_sub_4EB290 = 0x004EB290;
+const uint32 Func_sub_4EB290 = 0x004EB290;
 void setNextWaypoint_Sub4EB290(CUnit* unit) {
 
 	__asm {
@@ -325,8 +325,8 @@ void setNextWaypoint_Sub4EB290(CUnit* unit) {
 
 ;
 
-const u32 Func_IncrementUnitDeathScores = 0x00488AF0;
-void incrementUnitDeathScores(CUnit* unit, u8 player) {
+const uint32 Func_IncrementUnitDeathScores = 0x00488AF0;
+void incrementUnitDeathScores(CUnit* unit, uint8 player) {
 
 	__asm {
 		PUSHAD
@@ -340,8 +340,8 @@ void incrementUnitDeathScores(CUnit* unit, u8 player) {
 
 ;
 
-const u32 Func_incrementUnitScores = 0x00488BF0;
-void incrementUnitScores(CUnit* unit, s32 unkScore) {
+const uint32 Func_incrementUnitScores = 0x00488BF0;
+void incrementUnitScores(CUnit* unit, int32 unkScore) {
 
 	__asm {
 		PUSHAD
@@ -355,8 +355,8 @@ void incrementUnitScores(CUnit* unit, s32 unkScore) {
 
 ;
 
-const u32 Func_incrementUnitScoresEx = 0x00488D50;
-void incrementUnitScoresEx(CUnit* unit, s32 unkScore, s32 unk2) {
+const uint32 Func_incrementUnitScoresEx = 0x00488D50;
+void incrementUnitScoresEx(CUnit* unit, int32 unkScore, int32 unk2) {
 
 	__asm {
 		PUSHAD
@@ -371,8 +371,8 @@ void incrementUnitScoresEx(CUnit* unit, s32 unkScore, s32 unk2) {
 
 ;
 
-const u32 Func_Sub_49E4E0 = 0x0049E4E0;
-void initializeEmptyUnitsLinkedListRef_Sub49E4E0(CUnit* unit, u8 playerId) {
+const uint32 Func_Sub_49E4E0 = 0x0049E4E0;
+void initializeEmptyUnitsLinkedListRef_Sub49E4E0(CUnit* unit, uint8 playerId) {
 
 	__asm {
 
@@ -391,8 +391,8 @@ void initializeEmptyUnitsLinkedListRef_Sub49E4E0(CUnit* unit, u8 playerId) {
 
 ;
 
-const u32 Func_Sub_49EFA0 = 0x0049EFA0;
-void GiveUnitHelper(CUnit* unit, u32 playerId, s32 unkScore) {
+const uint32 Func_Sub_49EFA0 = 0x0049EFA0;
+void GiveUnitHelper(CUnit* unit, uint32 playerId, int32 unkScore) {
 
 	__asm {
 		PUSHAD
@@ -407,8 +407,8 @@ void GiveUnitHelper(CUnit* unit, u32 playerId, s32 unkScore) {
 
 ;
 
-const u32 Func_Sub_4E5D60 = 0x004E5D60;
-void changeUnitButtonSet_Sub_4E5D60(CUnit* unit, u16 buttonSetId) {
+const uint32 Func_Sub_4E5D60 = 0x004E5D60;
+void changeUnitButtonSet_Sub_4E5D60(CUnit* unit, uint16 buttonSetId) {
 
 	__asm {
 		PUSHAD
@@ -423,7 +423,7 @@ void changeUnitButtonSet_Sub_4E5D60(CUnit* unit, u16 buttonSetId) {
 ;
 
 //This is what hide the infesting unit
-const u32 Func_unitDeathSomething_0 = 0x004E6340;
+const uint32 Func_unitDeathSomething_0 = 0x004E6340;
 void hideAndDisableUnit(CUnit* unit) {
 
 	__asm {
@@ -438,7 +438,7 @@ void hideAndDisableUnit(CUnit* unit) {
 ;
 
 //What make the target reappear
-const u32 Func_InitUnitTrapDoodad = 0x004E6490;
+const uint32 Func_InitUnitTrapDoodad = 0x004E6490;
 void showAndEnableUnit(CUnit* unit) {
 
 	__asm {
@@ -455,7 +455,7 @@ void showAndEnableUnit(CUnit* unit) {
 
 //not related with assigning orders, but only with
 //destinations of orders
-const u32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
+const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
 void makeToHoldPosition(CUnit* unit) {
 
 	__asm {
