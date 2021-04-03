@@ -192,10 +192,9 @@ namespace hooks {
 					default:
 						if (unit->id != UnitId::ProtossCantavis) {
 							bStopThere = true;
-						}						
+						}
 						break;
 					}
-					//scbw::printFormattedText("Stop status: %d", (int)bStopThere);
 					if (!bStopThere) {
 						if (unit->id == UnitId::ProtossCantavis) {
 							replaceUnitWithType(unit, UnitId::ProtossAugur);
@@ -225,9 +224,7 @@ namespace hooks {
 						unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 						unit->mainOrderState = 1;
 						auto origin = unit->eggOrigin;
-						if (origin == UnitId::ZergZergling
-							|| origin == UnitId::ZergNathrokor	  // Temporary
-							|| origin == UnitId::ZergVorvaling) { // Kalkaleth uses air cocoon
+						if (origin == UnitId::ZergZergling) {
 							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
 						}
 						else if (origin == UnitId::ZergUltrakor 
