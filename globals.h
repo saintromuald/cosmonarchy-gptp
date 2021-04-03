@@ -77,30 +77,14 @@ public:
 	}
 };
 struct CustomUnitStruct {
-	std::unordered_map<int, int> genericValues;
-	std::unordered_map<int, int> genericTimers;
-	std::unordered_map<int, CUnit*> genericUnits;
+	// Timers
 
-	void setGenericValue(int variable, int value) {
-		genericValues[variable] = value;
-	}
-	void addGenericValue(int variable, int value) {
-		genericValues[variable] += value;
-	}
+	std::unordered_map<int, int> genericTimers;
+
 	void setGenericTimer(int variable, int value) {
 		genericTimers[variable] = value;
 	}
-	void setGenericUnit(int variable, CUnit* unit) {
-		genericUnits[variable] = unit;
-	}
 
-	int getGenericValue(int variable) {
-		auto it = genericValues.find(variable);
-		if (it != genericValues.end()) {
-			return it->second;
-		}
-		return 0;
-	}
 	int getGenericTimer(int variable) {
 		auto it = genericTimers.find(variable);
 		if (it != genericTimers.end()) {
@@ -108,12 +92,61 @@ struct CustomUnitStruct {
 		}
 		return 0;
 	}
-	CUnit* getGenericUnit(int variable) {
-		auto it = genericUnits.find(variable);
-		if (it != genericUnits.end()) {
-			return it->second;
+
+	// Generics
+
+	template <typename T>
+	std::unordered_map<int, T>& getGenericMap() {
+		static std::unordered_map<int, T> map;
+		return map;
+	}
+
+	template <typename T>
+	T* getGeneric(int variable) {
+		auto& map = getGenericMap<T>();
+		auto it = map.find(variable);
+		if (it != map.end()) {
+			return &it->second;
 		}
 		return nullptr;
+	}
+
+	template <typename T>
+	T* setGeneric(int variable, T value) {
+		auto& map = getGenericMap<T>();
+		map[variable] = value;
+		return &map[variable];
+	}
+
+	void setGenericValue(int variable, int value) {
+		setGeneric<int>(variable, value);
+	}
+
+	void addGenericValue(int variable, int value) {
+		setGeneric<int>(variable, *getGeneric<int>(value) + 1);
+	}
+
+	void setGenericUnit(int variable, CUnit* unit) {
+		setGeneric<CUnit*>(variable, unit);
+	}
+
+	int getGenericValue(int variable) {
+		return *getGeneric<int>(variable);
+	}
+
+	CUnit* getGenericUnit(int variable) {
+		return *getGeneric<CUnit*>(variable);
+	}
+
+	// Arrays
+
+	template<typename T>
+	std::vector<T>& getGenericVector(int variable) {
+		auto vec = getGeneric<std::vector<T>>(variable);
+		if (!vec) {
+			vec = setGeneric<std::vector<T>>({});
+		}
+		return vec;
 	}
 };
 class globals {
