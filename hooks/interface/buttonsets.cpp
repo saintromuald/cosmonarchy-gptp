@@ -1230,6 +1230,11 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::ZergKonvilisk &&  //Konvilisk Fertile Spines passive
+									current_button->iconID == IconId::Subterranean_Tentacle)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::ZergUltrakor &&  //Ultrakor Saber Siphon passive
 									current_button->iconID == IconId::KaiserBlades)
 								{
