@@ -55,9 +55,7 @@ void iscript_OpcodeCases_copy(CImage* image, uint32 offset_, uint32 unk1, uint32
 namespace hooks {
 
 	bool isMorphing(CUnit* building) {
-
 		bool bIsMorphing;
-
 		if (!(building->status & UnitStatus::Completed))
 			//was hardcoded instead of using isValidMorph in original code
 			bIsMorphing = isValidMorph(building->buildQueue[building->buildQueueSlot]);
@@ -342,7 +340,6 @@ namespace hooks {
 				}
 				bStopThere = true;
 			}
-
 		}
 
 		if (!bStopThere) {
