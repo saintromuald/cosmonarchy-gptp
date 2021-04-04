@@ -188,7 +188,7 @@ namespace hooks {
 				}
 			}
 			if (accelerate) {
-				speed += speed / 2;
+				speed *= 1.5;
 			}
 
 		}
@@ -223,7 +223,7 @@ namespace hooks {
 
 		// Khaydarin Eclipse ability: slow Exemplar by 75%
 		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch)) {
-			speed /= 4;
+			speed *= 0.25;
 		}
 
 		// Swarming Omen ability: 150% movement speed when moving towards Zoryusthaleth
@@ -244,7 +244,7 @@ namespace hooks {
 				}
 			}
 			if (accelerate) {
-				speed += speed / 2;
+				speed *= 1.5;
 			}
 		}
 
@@ -266,7 +266,7 @@ namespace hooks {
 				}
 			}
 			if (accelerate) {
-				speed += speed / 2;
+				speed *= 1.5;
 			}
 		}
 
@@ -328,18 +328,17 @@ namespace hooks {
 		//Clarion acceleration shield boost
 		else if (unit->id == UnitId::ProtossClarion) {
 			double fraction = (double)unit->shields / ((double)units_dat::MaxShieldPoints[unit->id] * 256);
-			double newAcc = (double)acceleration * (1.0 + fraction);
-			acceleration = newAcc;
+			acceleration *= 1.0 + fraction;
 		}
 
 		// Nathrokor Adrenal Frenzy: increase acceleration of all nearby organic allies after kill
 		else if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0) {
-			acceleration += acceleration / 2;
+			acceleration *= 0.5;
 		}
 
 		// Khaydarin Eclipse ability: slow Exemplar by 75%
 		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch)) {
-			acceleration = acceleration / 4;
+			acceleration *= 0.25;
 		}
 		return acceleration;
 
