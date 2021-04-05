@@ -530,6 +530,7 @@ enum Enum {
 	SalamanderImpact						= 596,
 	PlanetCrackerBeam						= 634,
 	PlanetCrackerBlastLoop					= 635,
+	AugurDeathExplosion						= 642,
 	IonField								= 900,
 
 	// CORPSE \\

@@ -1149,7 +1149,11 @@ enum Enum {
 
 
 	// HYDRA \\
-
+		
+	AugurDeath01				= 1235,
+	AugurDeath02				= 1236,
+	AugurDeath03				= 1237,
+	AugurDeath04				= 1238,
 	Simulacrum_Clone_01			= 1332,
 };
 }

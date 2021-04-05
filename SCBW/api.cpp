@@ -1389,9 +1389,7 @@ uint16 random() {
 
 	const uint32 Func_hasOverlay = 0x0047B720;
 	uint8 hasOverlay(CUnit* unit) {
-
 		static uint8 result;
-
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -1399,9 +1397,7 @@ uint16 random() {
 			MOV result, AL
 			POPAD
 		}
-
 		return result;
-
 	}
 
 	void createUnitFromAbility(int unitId, int count, uint16 playerId, int32 x, int32 y, uint32 removeTimer, CUnit* creator) {
