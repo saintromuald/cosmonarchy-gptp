@@ -251,7 +251,7 @@ public:
 				case SpriteId::Corpse_Bactalisk:
 				case SpriteId::Corpse_Broodling:
 				case SpriteId::Corpse_Isthrathaleth:
-				case SpriteId::Corpse_Dragoon:
+				case SpriteId::Corpse_Dracadin:
 				case SpriteId::Corpse_Droleth:
 				case SpriteId::Corpse_Egg:
 				case SpriteId::Corpse_Harakan:
