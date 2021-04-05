@@ -1,7 +1,6 @@
 #pragma once
 #pragma pack(1)
 #include <vector>
-#include <map>
 #include <unordered_map>
 #include <sstream>
 #include <ostream>
@@ -77,14 +76,35 @@ public:
 	}
 };
 struct CustomUnitStruct {
-	// Timers
-	std::unordered_map<uint32, uint32> genericTimers;
+	std::unordered_map<int, int>					genericValues;
+	std::unordered_map<int, int>					genericTimers;
+	std::unordered_map<int, CUnit*>					genericUnits;
+	std::unordered_map<int, std::vector<int>>		genericValueVectors;
+	std::unordered_map<int, std::vector<int>>		genericTimerVectors;
+	std::unordered_map<int, std::vector<CUnit*>>	genericUnitVectors;
 
-	void setGenericTimer(uint32 variable, uint32 value) {
+	void setGenericValue(uint32_t variable, uint32_t value) {
+		genericValues[variable] = value;
+	}
+	void addGenericValue(uint32_t variable, uint32_t value) {
+		genericValues[variable] += value;
+	}
+	void setGenericTimer(uint32_t variable, uint32_t value) {
 		genericTimers[variable] = value;
 	}
+	void setGenericUnit(uint32_t variable, CUnit* unit) {
+		genericUnits[variable] = unit;
+	}
 
-	uint32 getGenericTimer(uint32 variable) {
+	uint32_t getGenericValue(uint32_t variable) {
+		auto it = genericValues.find(variable);
+		if (it != genericValues.end()) {
+			return it->second;
+		}
+		return 0;
+	}
+
+	uint32_t getGenericTimer(uint32_t variable) {
 		auto it = genericTimers.find(variable);
 		if (it != genericTimers.end()) {
 			return it->second;
@@ -92,73 +112,41 @@ struct CustomUnitStruct {
 		return 0;
 	}
 
-	// Generics
-	template <typename T>
-	std::unordered_map<uint32, T>& getGenericLookup() {
-		static std::unordered_map<uint32, T> map;
-		return map;
-	}
-
-	template <typename T>
-	T getGeneric(uint32 variable) {
-		auto& map = getGenericLookup<T>();
-		auto it = map.find(variable);
-		if (it != map.end()) {
+	CUnit* getGenericUnit(uint32_t variable) {
+		auto it = genericUnits.find(variable);
+		if (it != genericUnits.end()) {
 			return it->second;
 		}
-		return {};
+		return nullptr;
 	}
 
-	template <typename T>
-	void setGeneric(uint32 variable, T value) {
-		auto& map = getGenericLookup<T>();
-		map[variable] = value;
-	}
-
-	template <typename T>
-	T& setGenericRef(uint32 variable, T value) {
-		auto& map = getGenericLookup<T>();
-		map[variable] = value;
-		return map[variable];
-	}
-
-	template <typename T>
-	T& getGenericRef(uint32 variable) {
-		auto& map = getGenericLookup<T>();
-		auto it = map.find(variable);
-		if (it != map.end()) {
+	std::vector<int>& getGenericValueVector(uint32_t variable) {
+		auto it = genericValueVectors.find(variable);
+		if (it != genericValueVectors.end()) {
 			return it->second;
 		}
-		return setGenericRef(variable, {});
+		genericValueVectors[variable] = {};
+		return genericValueVectors[variable];
 	}
 
-	// Legacy Functions
-	void setGenericValue(uint32 variable, uint32 value) {
-		setGeneric<uint32>(variable, value);
+	std::vector<int>& getGenericTimerVector(uint32_t variable) {
+		auto it = genericTimerVectors.find(variable);
+		if (it != genericTimerVectors.end()) {
+			return it->second;
+		}
+		genericTimerVectors[variable] = {};
+		return genericTimerVectors[variable];
 	}
 
-	void addGenericValue(uint32 variable, uint32 value) {
-		setGeneric<uint32>(variable, getGeneric<uint32>(value) + 1);
+	std::vector<CUnit*>& getGenericUnitVector(uint32_t variable) {
+		auto it = genericUnitVectors.find(variable);
+		if (it != genericUnitVectors.end()) {
+			return it->second;
+		}
+		genericUnitVectors[variable] = {};
+		return genericUnitVectors[variable];
 	}
 
-	void setGenericUnit(uint32 variable, CUnit* unit) {
-		setGeneric<CUnit*>(variable, unit);
-	}
-
-	uint32 getGenericValue(uint32 variable) {
-		return getGeneric<uint32>(variable);
-	}
-
-	CUnit* getGenericUnit(uint32 variable) {
-		return getGeneric<CUnit*>(variable);
-	}
-
-	// Arrays
-	template<typename T>
-	std::vector<T>& getGenericVector(uint32 variable) {
-		auto& vec = getGenericRef<std::vector<T>*>(variable);
-		return vec;
-	}
 };
 class globals {
 	std::string output;

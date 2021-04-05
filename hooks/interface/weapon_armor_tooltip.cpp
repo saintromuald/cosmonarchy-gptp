@@ -4,6 +4,7 @@
 #include <cstdio>
 #include "../unit_speed.h"
 #include "../weapons/weapon_cooldown.h"
+#include "../unit_stats/weapon_range.h"
 #include "../config.h"
 #include <Windows.h>
 
@@ -63,13 +64,13 @@ const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrI
 
 	uint8 damageFactor = getDamageFactorForTooltip(weaponId, unit);
 	uint8 upgradeLevel = scbw::getUpgradeLevel(unit->playerId, weapons_dat::DamageUpgrade[weaponId]);
-	uint16 baseDamage = weapons_dat::DamageAmount[weaponId];
-	uint16 bonusDamage = weapons_dat::DamageBonus[weaponId] * upgradeLevel;
 	uint8 damageType = weapons_dat::DamageType[weaponId];
+	uint32 baseDamage = weapons_dat::DamageAmount[weaponId];
+	uint32 bonusDamage = weapons_dat::DamageBonus[weaponId] * upgradeLevel;
 
-	uint32 minRange = weapons_dat::MinRange[weaponId] / 32;
-	uint32 range = weapons_dat::MaxRange[weaponId] / 32;
-	uint32 bonusRange = 0;
+	float minRange = weapons_dat::MinRange[weaponId] / 32.0;
+	float range = weapons_dat::MaxRange[weaponId] / 32.0;
+	float bonusRange = hooks::getMaxWeaponRangeHook(unit, weaponId) / 32.0 - range;
 
 	std::string damageModifiers = "";
 	double attackCd = (double)weapons_dat::Cooldown[weaponId] / 24;
@@ -84,29 +85,6 @@ const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrI
 
 	bool isSuicideUnit = unit->id == UnitId::ZergInfestedTerran ||
 						 unit->id == UnitId::ZergSkryling;
-
-	if (scbw::get_generic_value(unit, ValueId::RoboticSapience)) {
-		uint32 stacks = scbw::get_generic_value(unit, ValueId::RoboticSapience);
-		if (stacks >= 10) {
-			bonusRange += 5;
-		}
-		else {
-			bonusRange += stacks * 0.5;
-		}
-	}
-	switch (weaponId) {
-
-	case UnitId::ZergBactalisk:	{
-		ActiveTile tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
-		if (tile.hasCreep || tile.creepReceeding) {
-			bonusRange += 2;
-		}
-		break;
-	}
-	default:
-		bonusRange += 0;
-		break;
-	}
 
 	switch (damageType) {
 	case DamageType::Normal:
@@ -225,11 +203,13 @@ const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrI
 	// Range
 	text += "\nRange: ";
 	if (range > 0) {
+		ss.str("");
 		if (minRange > 0) {
-			text += std::to_string(minRange) + "-";
+			ss << minRange << "-";
 		}
-		text += std::to_string(range);
-		if (bonusRange > 0) text += "+" + std::to_string(bonusRange);
+		ss << range;
+		if (bonusRange > 0) ss << "+" << bonusRange;
+		text += ss.str();
 	}
 	else text += "Melee";
 
@@ -385,8 +365,8 @@ namespace hooks {
 		addStatus(statuses, "Observance", -1, scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff), TimerType::Aise);
 		addStatus(statuses, "Kaiser Rampage", -1, scbw::get_generic_timer(unit, ValueId::KaiserRampage), TimerType::Aise);
 		addStatus(statuses, "Hallucinating", -1, scbw::get_generic_timer(unit, ValueId::HallucinatingTimer), TimerType::Aise);
-//		addStatus(statuses, "Ectomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::EggBoostTimer), TimerType::Aise); // currently can't read tooltips from eggs
-//		addStatus(statuses, "Endomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer), TimerType::Aise); // nor mineral fields
+//		addStatus(statuses, "Ectomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::EggBoostTimer), TimerType::Aise);				// currently can't read tooltips from eggs
+//		addStatus(statuses, "Endomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer), TimerType::Aise);	// nor mineral fields
 		addStatus(statuses, "Adrenaline Packs", -1, scbw::get_generic_timer(unit, ValueId::Adrenaline), TimerType::Aise);
 		addStatus(statuses, "Adrenal Frenzy", -1, scbw::get_generic_timer(unit, ValueId::NathrokorTimer), TimerType::Aise);
 		addStatus(statuses, "Controlled Demolition", -1, scbw::get_generic_timer(unit, ValueId::ControlledDemolitionTimer), TimerType::Aise);
@@ -403,9 +383,9 @@ namespace hooks {
 		addStatus(statuses, "Lazarus Agent", scbw::get_generic_value(unit, ValueId::LazarusAgent));
 		addStatus(statuses, "Expanded Storage", scbw::get_generic_value(unit, ValueId::TreasuryStacks)); // currently only works for Ovileth and its morphs
 		addStatus(statuses, "Khaydarian Eclipse", scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch));
-		addStatus(statuses, "Robotic Sapience", scbw::get_generic_value(unit, ValueId::RoboticSapience));
 		addStatus(statuses, "Reconstitution", scbw::get_generic_rust_value(unit, ValueId::Reconstitution));
-
+		addStatus(statuses, "Robotic Sapience", scbw::get_generic_value(unit, ValueId::RoboticSapience));
+		addStatus(statuses, "Stellar Enforcement", scbw::get_generic_value(unit, ValueId::StellarEnforcement));
 
 		// Aise Value - Gimmicked
 		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 0);

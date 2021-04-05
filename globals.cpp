@@ -181,6 +181,7 @@ void globals::reset() {
 	multihitBullets.clear();
 	apostleAgents.clear();
 	lurkerSpineHits.clear();
+	unitStructs.clear();
 }
 void globals::unitFrameHook(CUnit* unit) {
 	if (unit->id == UnitId::ProtossPariah && unit->orderSignal & 0x20) {
@@ -209,8 +210,16 @@ void globals::frameHook() {
 	for (auto & a : unitStructs) {
 		for (auto& timerPair : a.second.genericTimers) {
 			if (timerPair.second > 0) {
-//				scbw::printFormattedText("Timer decrease: %d %d", i, a.second.genericTimers[i]);
+				// scbw::printFormattedText("Timer decrease: %d %d", i, a.second.genericTimers[i]);
 				timerPair.second--;
+			}
+		}
+		for (auto& timerVecPair : a.second.genericTimerVectors) {
+			for (auto& timer : timerVecPair.second) {
+				if (timer > 0) {
+					// scbw::printFormattedText("Timer decrease: %d %d", i, a.second.genericTimers[i]);
+					timer--;
+				}
 			}
 		}
 	}
