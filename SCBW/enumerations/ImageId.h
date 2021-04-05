@@ -1031,7 +1031,7 @@ enum Enum {
 	KhaydarinEclipseOverlayMedium		= 1271,
 	EnsnaringBroodOverlay				= 1281,
 	KhaydarinEclipseOverlaySmall		= 1272,
-	LegionnaireTeleportEffect			= 1367,
+	LegionnaireTeleportEffect			= 1358,
 
 	FirstMinorDamageOverlay				= 450,
 	LastMinorDamageOverlay			    = 471,
