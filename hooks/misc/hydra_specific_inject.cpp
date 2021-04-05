@@ -571,10 +571,10 @@ namespace hooks {
         static CSprite* sprite;
         __asm {
             PUSH EBP
-            MOV EBP,ESP
+            MOV EBP, ESP
             PUSH EAX
-            MOV EAX,[EBP+0x08]
-            MOV sprite,EAX
+            MOV EAX, [EBP+0x08]
+            MOV sprite, EAX
             POP EAX
             PUSHAD
         }
@@ -622,9 +622,9 @@ namespace hooks {
             MOV EAX, [EBP + 0x10]
             MOV tile_y, EAX
             MOV EAX, [EBP + 0x14]
-            MOV dontIgnoreReacting, EAX
+            MOV dontIgnoreReacting, AL
             MOV EAX, [EBP + 0x18]
-            MOV alsoInvisible, EAX
+            MOV alsoInvisible, AL
             POP EAX
             MOV unitArray, EAX
             PUSHAD
