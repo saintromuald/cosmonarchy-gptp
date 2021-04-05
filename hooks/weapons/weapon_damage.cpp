@@ -197,10 +197,8 @@ void augurSacrifice(CUnit* target) {
 }
 
 namespace hooks {
-	static void weaponDamage_root(WeaponDamageData& data);
 	static void weaponDamage_damageModifiers(WeaponDamageData& data);
 	static void weaponDamage_lifesteal(WeaponDamageData& data);
-	void weaponDamage_targetBased(WeaponDamageData& data); // dependent on target not attacker, procs on phase link
 	static void weaponDamage_behaviors(WeaponDamageData& data);
 	static void weaponDamage_fatal(WeaponDamageData& data);
 
@@ -224,6 +222,7 @@ namespace hooks {
 			direction,
 			target,
 			attacker,
+			false
 		};
 
 		weaponDamage_root(data);
@@ -250,7 +249,9 @@ namespace hooks {
 			}
 		}
 
-		weaponDamage_damageModifiers(data);
+		if (!data.dontProcPhaseLink) { // damage from phase link was already calculated
+			weaponDamage_damageModifiers(data);
+		}
 
 		// Hallucinations deal half damage
 		if (data.attacker != nullptr) {
@@ -335,7 +336,6 @@ namespace hooks {
 			data.finalDamage = 128;
 		}
 
-		weaponDamage_targetBased(data);
 		weaponDamage_behaviors(data);
 		if (data.attacker != nullptr) { // lifesteal 
 			weaponDamage_lifesteal(data);
@@ -352,7 +352,7 @@ namespace hooks {
 
 		// Reduce shields
 		if (data.shieldReduceAmount != 0 && canDamage) {
-			if (scbw::hasClarionLinks(data.target)) {
+			if (scbw::hasClarionLinks(data.target) && !data.dontProcPhaseLink) {
 				scbw::spreadClarionDamage(data);
 			}
 			else {
@@ -474,18 +474,8 @@ namespace hooks {
 		}
 	}
 
-	void weaponDamage_targetBased(WeaponDamageData& data) {
+	static void weaponDamage_behaviors(WeaponDamageData& data) {
 		if (data.attacker != nullptr) {
-			switch (data.target->id) {
-			case UnitId::ProtossSimulacrum: {
-				// Autovitality - Simulacrum behavior
-				if (!scbw::isAlliedTo(data.target->playerId, data.attacker->playerId)
-					&& scbw::get_generic_timer(data.target, ValueId::SimulacrumCloneTimer) == 0) {
-					scbw::set_generic_timer(data.target, ValueId::SimulacrumCloneTimer, 5 * 24);
-				}
-				break;
-			}
-			}
 
 			// Cantavis - Hallucinating
 			if (scbw::get_generic_timer(data.target, ValueId::HallucinatingTimer) >= 1) {
@@ -511,11 +501,7 @@ namespace hooks {
 					}
 				}
 			}
-		}
-	}
 
-	static void weaponDamage_behaviors(WeaponDamageData& data) {
-		if (data.attacker != nullptr) {
 			// Petrification - Gorgon behavior
 			if (GorgonCondition(data.attacker, data.target)) {
 				scbw::refreshDebuffs(data.target);
@@ -530,6 +516,18 @@ namespace hooks {
 			// Phase Rush - Manifold behavior
 			if (units_dat::BaseProperty[data.attacker->id] & UnitProperty::RoboticUnit) {
 				scbw::set_generic_timer(data.target, ValueId::PhaseRushTimerArrayStart + data.attacker->playerId, 5 * 24);
+			}
+
+			switch (data.target->id) {
+				case UnitId::ProtossSimulacrum:
+				{
+					// Autovitality - Simulacrum behavior
+					if (!scbw::isAlliedTo(data.target->playerId, data.attacker->playerId)
+						&& scbw::get_generic_timer(data.target, ValueId::SimulacrumCloneTimer) == 0) {
+						scbw::set_generic_timer(data.target, ValueId::SimulacrumCloneTimer, 5 * 24);
+					}
+					break;
+				}
 			}
 
 			switch (data.weaponId) {

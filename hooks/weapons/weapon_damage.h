@@ -26,9 +26,10 @@ namespace hooks {
         CUnit* target;
         CUnit* attacker;
         uint8 attackingPlayerId;
+        bool dontProcPhaseLink;
     };
 
-    void weaponDamage_targetBased(WeaponDamageData& data);
+    void weaponDamage_root(WeaponDamageData& data);
     
     void applyEnsnare(CUnit* a1);													// 004F45E0
     int32_t updateCorrosiveSpores(CUnit* target);                                   // 004F4480

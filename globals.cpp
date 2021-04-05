@@ -1136,9 +1136,7 @@ namespace scbw {
 				img = 1102;
 			}
 
-			if (!target->sprite->getOverlay(img)) {
-				target->sprite->createOverlay(img, 0, 0, 0);
-			}
+			target->sprite->createOverlay(img, 0, 0, 0);
 			scbw::set_generic_unit(target, ValueId::ClarionLinkUnit, unit);
 		});
 	}
@@ -1147,20 +1145,21 @@ namespace scbw {
 		return scbw::get_generic_unit(unit, ValueId::ClarionLinkUnit);
 	}
 
-	void notifyDamage(CUnit* unit, hooks::WeaponDamageData& data) {
+	void phaseLinkDamage(CUnit* unit, int32 damage, hooks::WeaponDamageData& data) {
 		hooks::WeaponDamageData newData = {
-			0,
-			0,
+			damage,
+			damage,
 			0,
 			data.damageType,
-			0,
-			0,
-			0,
+			data.damageDivisor,
+			data.weaponId,
+			data.direction,
 			unit,
 			data.attacker,
-			data.attackingPlayerId
+			data.attackingPlayerId,
+			true
 		};
-		hooks::weaponDamage_targetBased(newData);
+		hooks::weaponDamage_root(newData);
 	}
 
 	void spreadClarionDamage(hooks::WeaponDamageData& data) {
@@ -1168,19 +1167,11 @@ namespace scbw {
 		if (auto clarion = scbw::get_generic_unit(unit, ValueId::ClarionLinkUnit)) {
 			auto& vec = scbw::get_generic_unit_vector(clarion, ValueId::ClarionLinkFeedback);
 			if (vec.size() == 0) {
-				if (data.damageType != 0 && unit->shields != 0) {
-					scbw::createShieldOverlay(unit, data.direction);
-				}
-				unit->shields -= data.shieldReduceAmount;
-				notifyDamage(unit, data);
+				phaseLinkDamage(unit, data.shieldReduceAmount, data);
 			} else {
 				int divided = data.shieldReduceAmount / vec.size();
 				for (CUnit* vecUnit : vec) {
-					if (data.damageType != 0 && vecUnit->shields != 0) {
-						scbw::createShieldOverlay(vecUnit, data.direction);
-					}
-					vecUnit->shields -= std::min(divided, unit->shields);
-					notifyDamage(vecUnit, data);
+					phaseLinkDamage(vecUnit, divided, data);
 				}
 			}
 		}
