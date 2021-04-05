@@ -371,10 +371,10 @@ SCBW_DATA(const DatLoad*, unitsDat, 0x00513C30);
 
 SCBW_DATA(uint8*,			Graphic,				unitsDat[0].address);	//006644F8
 SCBW_DATA(uint16*,			SubUnit,				unitsDat[1].address);	//006607C0
-//SCBW_DATA(uint16*,		???,					unitsDat[2].address);	//00660C38 //Subunit 2 according to EUDDB
-SCBW_DATA(uint16*,			InfestedUnitPartial,	unitsDat[3].address);	//00664980, (Id - UnitId::TerranCommandCenter) for it to work, last valid id is UnitId::Special_OvermindCocoon
+//SCBW_DATA(uint16*,		???,					unitsDat[2].address);	//00660C38 // Subunit 2 according to EUDDB
+SCBW_DATA(uint16*,			InfestedUnitPartial,	unitsDat[3].address);	//00664980 // (Id - UnitId::TerranCommandCenter) for it to work, last valid id is UnitId::Special_OvermindCocoon
 SCBW_DATA(uint32*,			ConstructionGraphic,	unitsDat[4].address);	//006610B0
-SCBW_DATA(uint8*,			StartDirection,			unitsDat[5].address);	//006605F0  Direction unit will face after it is created. From 0 (top) to 31 (before top turning clockwise).32 means random.
+SCBW_DATA(uint8*,			StartDirection,			unitsDat[5].address);	//006605F0 // Direction unit will face after it is created. From 0 (top) to 31 (before top turning clockwise). 32 means random
 SCBW_DATA(uint8*,			ShieldsEnabled,			unitsDat[6].address);	//006647B0
 SCBW_DATA(uint16*,			MaxShieldPoints,		unitsDat[7].address);	//00660E00
 SCBW_DATA(int32*,			MaxHitPoints,			unitsDat[8].address);	//00662350
@@ -390,9 +390,9 @@ SCBW_DATA(uint8*,			GroundWeapon,			unitsDat[17].address);	//006636B8
 SCBW_DATA(uint8*,			MaxGroundHits,			unitsDat[18].address);	//006645E0
 SCBW_DATA(uint8*,			AirWeapon,				unitsDat[19].address);	//006616E0
 SCBW_DATA(uint8*,			MaxAirHits,				unitsDat[20].address);	//0065FC18
-SCBW_DATA(uint8*,			ComputerAIInternal,		unitsDat[21].address);	//00660178 //"Computer AI Unit Type" according to EUDDB
-SCBW_DATA(uint32*,			BaseProperty,			unitsDat[22].address);  //00664080 AKA SpecialAbilityFlags, UnitProperty, etc. Use with UnitProperty::Enum.
-SCBW_DATA(uint8*,			SeekRange,				unitsDat[23].address);  //00662DB8 AKA Target Acquisition Range, Acquire Target Range, etc.
+SCBW_DATA(uint8*,			ComputerAIInternal,		unitsDat[21].address);	//00660178 // "Computer AI Unit Type" according to EUDDB
+SCBW_DATA(uint32*,			BaseProperty,			unitsDat[22].address);  //00664080 // AKA SpecialAbilityFlags, UnitProperty, etc. Use with UnitProperty::Enum.
+SCBW_DATA(uint8*,			SeekRange,				unitsDat[23].address);  //00662DB8 // AKA Target Acquisition Range, Acquire Target Range, etc.
 SCBW_DATA(uint8*,			SightRange,				unitsDat[24].address);	//00663238
 SCBW_DATA(uint8*,			ArmorUpgrade,			unitsDat[25].address);	//006635D0
 SCBW_DATA(uint8*,			SizeType,				unitsDat[26].address);	//00662180
@@ -405,24 +405,24 @@ SCBW_DATA(uint16*,			SoundAnnoyedFirst,		unitsDat[32].address);	//00663B38
 SCBW_DATA(uint16*,			SoundAnnoyedLast,		unitsDat[33].address);	//00661EE8
 SCBW_DATA(uint16*,			SoundYesFirst,			unitsDat[34].address);	//00663C10
 SCBW_DATA(uint16*,			SoundYesLast,			unitsDat[35].address);	//00661440
-SCBW_DATA(Point16*,		BuildingDimensions,		unitsDat[36].address);	//00662860
-SCBW_DATA(Point16*,		AddonPlacement,			unitsDat[37].address);	//006626E0 
-SCBW_DATA(Box16*,		UnitBounds,				unitsDat[38].address);	//006617C8
-//SCBW_DATA(uint16*,		???,					unitsDat[39].address);	//00662F88 //Portrait according to EUDDB
+SCBW_DATA(Point16*,			BuildingDimensions,		unitsDat[36].address);	//00662860
+SCBW_DATA(Point16*,			AddonPlacement,			unitsDat[37].address);	//006626E0 
+SCBW_DATA(Box16*,			UnitBounds,				unitsDat[38].address);	//006617C8
+//SCBW_DATA(uint16*,		???,					unitsDat[39].address);	//00662F88 // Portrait according to EUDDB
 SCBW_DATA(uint16*,			MineralCost,			unitsDat[40].address);	//00663888
 SCBW_DATA(uint16*,			GasCost,				unitsDat[41].address);	//0065FD00
 SCBW_DATA(uint16*,			TimeCost,				unitsDat[42].address);	//00660428
-SCBW_DATA(uint16*,			unitsDat43,				unitsDat[43].address);	//00660A70 //"Restriction Address" according to EUDDB
-SCBW_DATA(GroupFlag*,	GroupFlags,			unitsDat[44].address);	//006637A0
-SCBW_DATA(uint8*,			SupplyProvided,			unitsDat[45].address);  //006646C8 Supply shown in-game is (true supply) / 2; e.g. Zerglings have 1 true supply, Marines have 2 true supply, etc.
-SCBW_DATA(uint8*,			SupplyRequired,			unitsDat[46].address);  //00663CE8 Supply shown in-game is (true supply) / 2; e.g. Zerglings have 1 true supply, Marines have 2 true supply, etc.
+SCBW_DATA(uint16*,			unitsDat43,				unitsDat[43].address);	//00660A70 // "Restriction Address" according to EUDDB
+SCBW_DATA(GroupFlag*,		GroupFlags,				unitsDat[44].address);	//006637A0
+SCBW_DATA(uint8*,			SupplyProvided,			unitsDat[45].address);  //006646C8 // Supply shown in-game is (true supply) / 2; e.g. Zerglings have 1 true supply, Marines have 2 true supply, etc.
+SCBW_DATA(uint8*,			SupplyRequired,			unitsDat[46].address);  //00663CE8
 SCBW_DATA(uint8*,			SpaceRequired,			unitsDat[47].address);	//00664410
 SCBW_DATA(uint8*,			SpaceProvided,			unitsDat[48].address);	//00660988
 SCBW_DATA(uint16*,			BuildScore,				unitsDat[49].address);	//00663408
 SCBW_DATA(uint16*,			DestroyScore,			unitsDat[50].address);	//00663EB8
 SCBW_DATA(uint16*,			MapStringId,			unitsDat[51].address);	//00660260
 SCBW_DATA(uint8*,			BroodwarOnly,			unitsDat[52].address);	//006606D8
-SCBW_DATA(uint16*,			StarEditAvailFlags,		unitsDat[53].address);	//00661518 //"Staredit Availability Flags" according to EUDDB
+SCBW_DATA(uint16*,			StarEditAvailFlags,		unitsDat[53].address);	//00661518 // "Staredit Availability Flags" according to EUDDB
 } //units_dat (last entry at 0x00513EAC)
 
 namespace flingy_dat {

@@ -1466,7 +1466,6 @@ uint16 random() {
 
 	bool canSpawnBroodling(CUnit* target) {
 		if (units_dat::GroupFlags[target->id].isBuilding) return false;
-		if (units_dat::SupplyProvided[target->id] > 0) return false;
 		return true;
 	}
 
@@ -1478,10 +1477,8 @@ uint16 random() {
 		return ceil(std::max(((int) units_dat::SupplyRequired[target->id]), 1) * multiplier);
 	}
 
-
 	const uint32 Func_unitDeathSomething_0 = 0x004E6340;
 	void hideAndDisableUnit(CUnit* unit) {
-
 		__asm {
 			PUSHAD
 			MOV EAX, unit
