@@ -352,7 +352,7 @@ namespace hooks {
 
 		// Reduce shields
 		if (data.shieldReduceAmount != 0 && canDamage) {
-			if (scbw::get_generic_unit) {
+			if (scbw::hasClarionLinks(data.target)) {
 				scbw::spreadClarionDamage(data);
 			}
 			else {

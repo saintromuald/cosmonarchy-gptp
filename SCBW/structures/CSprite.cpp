@@ -119,6 +119,9 @@ void updateImageDirection(CImage* image, uint32 direction) {
 //Identical to function @ 0x00498E00
 CImage* CSprite::createOverlay(uint32 imageId, int8 x, int8 y, uint32 direction) {
 	assert(this);
+	if (unusedImages.head == nullptr) {
+		return nullptr;
+	}
 	CImage* overlay = unusedImages.popHead();
 
 	if (overlay) {
@@ -138,6 +141,9 @@ CImage* CSprite::createOverlay(uint32 imageId, int8 x, int8 y, uint32 direction)
 
 CImage* CSprite::createUnderlay(uint32 imageId, int8 x, int8 y, uint32 direction) {
 	assert(this);
+	if (unusedImages.head == nullptr) {
+		return nullptr;
+	}
 	CImage* underlay = unusedImages.popHead();
 
 	if (underlay) {
@@ -158,6 +164,9 @@ CImage* CSprite::createUnderlay(uint32 imageId, int8 x, int8 y, uint32 direction
 //Identical to function @ 0x00498EA0
 CImage* CSprite::createTopOverlay(uint32 imageId, int8 x, int8 y, uint32 direction) {
 	assert(this);
+	if (unusedImages.head == nullptr) {
+		return nullptr;
+	}
 	CImage* overlay = unusedImages.popHead();
 
 	if (overlay) {
@@ -176,6 +185,9 @@ CImage* CSprite::createTopOverlay(uint32 imageId, int8 x, int8 y, uint32 directi
 }
 CImage* CSprite::createTopUnderlay(uint32 imageId, int8 x, int8 y, uint32 direction) {
 	assert(this);
+	if (unusedImages.head == nullptr) {
+		return nullptr;
+	}
 	CImage* underlay = unusedImages.popHead();
 
 	if (underlay) {

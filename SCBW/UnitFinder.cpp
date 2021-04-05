@@ -562,7 +562,7 @@ namespace scbw {
                 units[newUnitCount++] = unit;
             }
         }
-        this->unitCount = unitCount;
+        this->unitCount = newUnitCount;
         return *this;
     }
 

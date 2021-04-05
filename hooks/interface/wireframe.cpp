@@ -62,7 +62,9 @@ namespace hooks {
 				uint32 shields = (uint32)unit->shields >> 8;
 				shields *= 7;
 				shields /= maxShields;
-				auto wireConst = wireframeConstants[shields*2];
+				if (shields * 2 + 1 >= 40)
+					return al; // safety check
+				auto wireConst = wireframeConstants[shields * 2];
 				auto wireConstShift = wireframeConstants[(shields * 2) + 1];
 				auto buf1 = charBuffer[wireConst];//CL
 				al = charBuffer[wireConstShift];//AL

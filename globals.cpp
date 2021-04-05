@@ -1088,19 +1088,24 @@ namespace scbw {
 
 	void clearClarionLinks(CUnit* unit) {
 		auto& vec = scbw::get_generic_unit_vector(unit, ValueId::ClarionLinkFeedback);
-		for (CUnit* unitPtr : vec) {
-			scbw::set_generic_unit(unit, ValueId::ClarionLinkUnit, nullptr);
-			removeoverlays2(1102, 1104, unit);
+		for (CUnit* vecUnit : vec) {
+			if (scbw::get_generic_unit(vecUnit, ValueId::ClarionLinkUnit) == unit) {
+				scbw::set_generic_unit(vecUnit, ValueId::ClarionLinkUnit, nullptr);
+				//removeoverlays2(1102, 1104, vecUnit);
+			}
 		}
+		vec.clear();
 	}
 
 	void placeClarionLinks(CUnit* unit) {
+		bool isClarion = unit->id == UnitId::ProtossClarion;
 		auto& vec = scbw::get_generic_unit_vector(unit, ValueId::ClarionLinkFeedback);
 
+		clearClarionLinks(unit);
 		scbw::UnitFinder(
 			unit->getX() - 128,
-			unit->getX() + 128,
 			unit->getY() - 128,
+			unit->getX() + 128,
 			unit->getY() + 128
 		).filter([&](CUnit* target) {
 			if (!scbw::isAlliedTo(unit->playerId, target->playerId)) {
@@ -1131,15 +1136,15 @@ namespace scbw {
 				img = 1102;
 			}
 
-			//unit->sprite->createOverlay(img, 0, 0, 0);
+			if (!target->sprite->getOverlay(img)) {
+				target->sprite->createOverlay(img, 0, 0, 0);
+			}
 			scbw::set_generic_unit(target, ValueId::ClarionLinkUnit, unit);
 		});
-		clearClarionLinks(unit);
 	}
 
 	bool hasClarionLinks(CUnit* unit) {
-		auto& vec = scbw::get_generic_unit_vector(unit, ValueId::ClarionLinkFeedback);
-		return vec.size() != 0;
+		return scbw::get_generic_unit(unit, ValueId::ClarionLinkUnit);
 	}
 
 	void notifyDamage(CUnit* unit, hooks::WeaponDamageData& data) {
@@ -1158,19 +1163,13 @@ namespace scbw {
 		hooks::weaponDamage_targetBased(newData);
 	}
 
-	/*
-	TODO: Finish phase link port
-	- Figure out what AiseId::SendClarionValue is
-	- Figure out why phase link is applying in enormous area
-	- Figure out why spawning overlays in those functions crash (possibly because of so many units being affected?)
-	*/
 	void spreadClarionDamage(hooks::WeaponDamageData& data) {
 		CUnit* unit = data.target;
 		if (auto clarion = scbw::get_generic_unit(unit, ValueId::ClarionLinkUnit)) {
 			auto& vec = scbw::get_generic_unit_vector(clarion, ValueId::ClarionLinkFeedback);
 			if (vec.size() == 0) {
 				if (data.damageType != 0 && unit->shields != 0) {
-					//createShieldOverlay(unit, data.direction);
+					scbw::createShieldOverlay(unit, data.direction);
 				}
 				unit->shields -= data.shieldReduceAmount;
 				notifyDamage(unit, data);
@@ -1178,9 +1177,9 @@ namespace scbw {
 				int divided = data.shieldReduceAmount / vec.size();
 				for (CUnit* vecUnit : vec) {
 					if (data.damageType != 0 && vecUnit->shields != 0) {
-						//scbw::createShieldOverlay(vecUnit, data.direction);
+						scbw::createShieldOverlay(vecUnit, data.direction);
 					}
-					vecUnit->shields -= std::min(data.shieldReduceAmount, unit->shields);
+					vecUnit->shields -= std::min(divided, unit->shields);
 					notifyDamage(vecUnit, data);
 				}
 			}
