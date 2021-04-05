@@ -9,38 +9,38 @@
 
 namespace {
 
-	void fixTargetLocation(Point16* coords, uint32 unitId);										//0x00401FA0
-	bool function_0042D810(int x, int y, uint32 unitId);											//0x0042D810
-	CUnit** getAllUnitsInBounds(Box16* coords);													//0x0042FF80
-	void incrementUnitKillCount(CUnit* unit);													//0x004759C0
-	uint32 getUnitDamageBonus(CUnit* unit, uint8 weaponId);											//0x00475EC0
+	void fixTargetLocation(Point16* coords, uint32 unitId);												//0x00401FA0
+	bool function_0042D810(int x, int y, uint32 unitId);												//0x0042D810
+	CUnit** getAllUnitsInBounds(Box16* coords);															//0x0042FF80
+	void incrementUnitKillCount(CUnit* unit);															//0x004759C0
+	uint32 getUnitDamageBonus(CUnit* unit, uint8 weaponId);												//0x00475EC0
 	void attackOverlayAndNotify(CUnit* attacker, CUnit* target, uint32 weaponType, uint32 direction);	//0x00479730
-	bool setThingyVisibilityFlags(CThingy* thingy);												//0x004878F0
+	bool setThingyVisibilityFlags(CThingy* thingy);														//0x004878F0
 	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);							//0x00488210
-	void incrementUnitDeathScores(CUnit* unit, uint8 player);										//0x00488AF0
-	uint32 GetUnitBulletDamage(CBullet* bullet, CUnit* target);									//0x0048ACD0
-	uint32 getSpellStatString(CUnit* target, uint32 techId, uint8 playerId);								//0x00491E80
-	void function_492CC0(CUnit* unit);															//0x00492CC0
-	uint8 function_492CC0_ret(CUnit* unit);															//0x00492CC0
-	void setAllImageGroupFlagsPal11(CSprite* sprite);											//0x00497430
-	void displayLastNetErrForPlayer(uint32 playerId);												//0x0049E530
-	void updateUnitStrength(CUnit* unit);														//0x0049FA40
-	void function_004A01F0(CUnit* unit);														//0x004A01F0
+	void incrementUnitDeathScores(CUnit* unit, uint8 player);											//0x00488AF0
+	uint32 GetUnitBulletDamage(CBullet* bullet, CUnit* target);											//0x0048ACD0
+	uint32 getSpellStatString(CUnit* target, uint32 techId, uint8 playerId);							//0x00491E80
+	void function_492CC0(CUnit* unit);																	//0x00492CC0
+	uint8 function_492CC0_ret(CUnit* unit);																//0x00492CC0
+	void setAllImageGroupFlagsPal11(CSprite* sprite);													//0x00497430
+	void displayLastNetErrForPlayer(uint32 playerId);													//0x0049E530
+	void updateUnitStrength(CUnit* unit);																//0x0049FA40
+	void function_004A01F0(CUnit* unit);																//0x004A01F0
 	CUnit* CreateUnit(uint32 unitId, int x, int y, uint32 playerId);									//0x004A09D0
-	void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit);								//0x004A2830
-	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(uint32 attackingPlayerId,Box16* coords);	//0x004E8280
-	void IterateUnitsAtLocationTargetProc_Ensnare(CUnit* attacker,Box16* coords);				//0x004E8280
-	void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker,Box16* coords);				//0x004E8280
-	void IterateUnitsAtLocationTargetProc_Maelstrom(CUnit* attacker,Box16* coords);				//0x004E8280
-	void IterateUnitsAtLocationTargetProc_StasisField(CUnit* attacker,Box16* coords);			//0x004E8280
-	void createEnsnareOverlay(CUnit* a1);														//0x004F45E0
+	void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit);										//0x004A2830
+	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(uint32 attackingPlayerId,Box16* coords);		//0x004E8280
+	void IterateUnitsAtLocationTargetProc_Ensnare(CUnit* attacker,Box16* coords);						//0x004E8280
+	void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker,Box16* coords);						//0x004E8280
+	void IterateUnitsAtLocationTargetProc_Maelstrom(CUnit* attacker,Box16* coords);						//0x004E8280
+	void IterateUnitsAtLocationTargetProc_StasisField(CUnit* attacker,Box16* coords);					//0x004E8280
+	void createEnsnareOverlay(CUnit* a1);																//0x004F45E0
 
 	// For createScanner
-	void ordersNothing2(CUnit* a1);																// 00475000
-	void orderComputerClear(CUnit* a1, uint8 a2);													// 00475310
-	int32 setUnitStatTxtErrorMsg(int32 a1);															// 0048CCB0
+	void ordersNothing2(CUnit* a1);																		// 00475000
+	void orderComputerClear(CUnit* a1, uint8 a2);														// 00475310
+	int32 setUnitStatTxtErrorMsg(int32 a1);																// 0048CCB0
 	int32 playSoundFromSource(int32 a1, CUnit* a2, int32 a3, int32 a4);									// 0048ED50
-	void toIdle(CUnit* a1);																		// 004753A0
+	void toIdle(CUnit* a1);																				// 004753A0
 
 } //unnamed namespace
 
@@ -140,8 +140,6 @@ namespace hooks {
 
 	} //void RestoreHit(CUnit* target)
 
-	;
-
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
 	//...
@@ -185,8 +183,6 @@ namespace hooks {
 		function_492CC0(target);
 
 	} //void LockdownHit(CUnit* target, uint32 previousLockdownTimer)
-
-	;
 
 	// TODO: Cleanup
 	//was called "Shot" instead of "Hit", changed due to the context
@@ -265,8 +261,6 @@ namespace hooks {
 			}
 		}*/
 	} //void WeaponBulletHit(CBullet* bullet, CUnit* target, uint32 hitFlags)
-
-	;
 
 	uint16 GetUnitWidth(CUnit* unit) {
 		return unit->getRight() - unit->getLeft();
@@ -362,8 +356,6 @@ namespace hooks {
 
 	} //void MeleeAttackHit(CUnit* attacker)
 
-	;
-
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
 	///...
@@ -443,8 +435,6 @@ namespace hooks {
 
 	} //void EMPShockwaveHit(CUnit* attacker, int x, int y)
 
-	;
-
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
 
@@ -472,22 +462,6 @@ namespace hooks {
 
 	} //void CorrosiveAcidHit(uint32 attackingPlayerId, int x, int y, CBullet* bullet)
 
-	;
-
-
-/*
-				uint32 energyMax =  attacker->getMaxEnergy();
-				uint32 diff = energyMax-attacker->energy;
-				if(power > diff ) {
-					attacker->energy = energyMax;
-					power -= diff;
-					attacker->setHp(attacker->hitPoints + power);
-				}
-				else {
-					attacker->energy += power;
-				}
-*/
-
 	//no bullet because the code normally calling this function lose the 
 	//easily available information (and getting it the hard way seems overkill)
 	void ConsumeHit(CUnit* attacker, CUnit* target) {
@@ -510,9 +484,7 @@ namespace hooks {
 			!(target->status & UnitStatus::Invincible) &&
 			getSpellStatString(target,TechId::Consume,attacker->playerId) == 0 //returning a value != 0 means there was an error
 		) 
-		{
-
-			
+		{						
 			incrementUnitDeathScores(target,attacker->playerId);
 			uint32 power = target->hitPoints;
 			target->remove();
@@ -542,8 +514,6 @@ namespace hooks {
 		}
 
 	} //void ConsumeHit(CUnit* attacker, CUnit* target)
-
-	;
 
 
 	//bullet is not normally part of the function, so if the function is called
@@ -608,8 +578,6 @@ namespace hooks {
 		}
 
 	} //void DarkSwarmHit(int x, int y, uint32 attackingPlayerId, CBullet* bullet)
-
-	;
 
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
@@ -703,8 +671,6 @@ namespace hooks {
 
 	} //void BroodlingHit(CUnit* attacker, CUnit* target, CBullet* bullet)
 
-	;
-
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
 	void PlagueHit(CUnit* attacker, int x, int y, CBullet* bullet) {
@@ -739,8 +705,6 @@ namespace hooks {
 
 	} //void PlagueHit(CUnit* attacker, int x, int y, CBullet* bullet)
 
-	;
-
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
 	void MaelstromHit(CUnit* attacker, int x, int y, CBullet* bullet) {
@@ -764,8 +728,6 @@ namespace hooks {
 
 	} //void MaelstromHit(CUnit* attacker, int x, int y, CBullet* bullet)
 
-	;
-
 	//no bullet because this function is called in another context without bullet
 	void MindControlHit(CUnit* attacker, CUnit* target) {
 
@@ -782,8 +744,6 @@ namespace hooks {
 		}
 
 	} //void MindControlHit(CUnit* attacker, CUnit* target)
-
-	;
 
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
@@ -863,7 +823,7 @@ namespace hooks {
 			if (!v4)
 				v4 = a1;
 			a1->sprite->createOverlay(ImageId::StasisField_Small + v3, 0, 0, 0);
-			a1->status |= UnitStatus::Invincible;//remove
+			a1->status |= UnitStatus::Invincible; // remove
 		}
 		v5 = a1->stasisTimer;
 		if (a2 > v5)

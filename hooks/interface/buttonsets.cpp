@@ -988,6 +988,16 @@ namespace hooks {
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
+								if ((*activePortraitUnit)->id == UnitId::TerranClaymore &&  // Claymore Kelvin Munitions passive 
+									current_button->iconID == IconId::Fusion_Cutter_Harvest)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranSiren &&  // Siren Discovered Attacks passive 
+									current_button->iconID == IconId::PhaseDisruptorCannon)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
 								if ((*activePortraitUnit)->id == UnitId::TerranQuarry &&  // Quarry Meskalloid Stimulant passive 
 									current_button->iconID == IconId::Argus_Jewel)
 								{

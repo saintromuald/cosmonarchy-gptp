@@ -519,7 +519,7 @@ namespace hooks {
 
   void parasite(CBullet* bullet, uint32 weaponId) {
 	  if (bullet->sourceUnit == nullptr) return;
-      constexpr int radius = 96;
+      constexpr uint32 radius = 96;
 	  scbw::UnitFinder(
 		  bullet->position.x - radius / 2,
 		  bullet->position.x + radius / 2,

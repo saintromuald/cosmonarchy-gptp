@@ -1322,11 +1322,11 @@ uint16 random() {
 	//Logically equivalent to function @ 0x004C36C0
 	void refreshConsole() {
 
-		static uint32*	const bCanUpdateCurrentButtonSet		= (uint32*)		0x0068C1B0;
-		static uint8*	 const bCanUpdateSelectedUnitPortrait	= (uint8*)			0x0068AC74;
-		static uint8*	 const bCanUpdateStatDataDialog			= (uint8*)			0x0068C1F8;
-		static BinDlg**	const someDialogUnknown				= (BinDlg**)	0x0068C1E8;
-		static BinDlg**	const someDialogUnknownUser			= (BinDlg**)	0x0068C1EC;
+		static uint32*	const bCanUpdateCurrentButtonSet		= (uint32*)			0x0068C1B0;
+		static uint8*	const bCanUpdateSelectedUnitPortrait	= (uint8*)			0x0068AC74;
+		static uint8*	const bCanUpdateStatDataDialog			= (uint8*)			0x0068C1F8;
+		static BinDlg**	const someDialogUnknown					= (BinDlg**)		0x0068C1E8;
+		static BinDlg**	const someDialogUnknownUser				= (BinDlg**)		0x0068C1EC;
 
 		*bCanUpdateCurrentButtonSet = 1;
 		*bCanUpdateSelectedUnitPortrait = 1;
@@ -1389,9 +1389,7 @@ uint16 random() {
 
 	const uint32 Func_hasOverlay = 0x0047B720;
 	uint8 hasOverlay(CUnit* unit) {
-
 		static uint8 result;
-
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -1399,9 +1397,7 @@ uint16 random() {
 			MOV result, AL
 			POPAD
 		}
-
 		return result;
-
 	}
 
 	void createUnitFromAbility(int unitId, int count, uint16 playerId, int32 x, int32 y, uint32 removeTimer, CUnit* creator) {
@@ -1466,7 +1462,6 @@ uint16 random() {
 
 	bool canSpawnBroodling(CUnit* target) {
 		if (units_dat::GroupFlags[target->id].isBuilding) return false;
-		if (units_dat::SupplyProvided[target->id] > 0) return false;
 		return true;
 	}
 
@@ -1478,10 +1473,8 @@ uint16 random() {
 		return ceil(std::max(((int) units_dat::SupplyRequired[target->id]), 1) * multiplier);
 	}
 
-
 	const uint32 Func_unitDeathSomething_0 = 0x004E6340;
 	void hideAndDisableUnit(CUnit* unit) {
-
 		__asm {
 			PUSHAD
 			MOV EAX, unit

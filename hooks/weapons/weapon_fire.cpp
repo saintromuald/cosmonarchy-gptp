@@ -113,7 +113,7 @@ namespace hooks {
 		//Retrieve the spawning position for the bullet.
 		int32 x, y;
 		uint8 behavior = weapons_dat::Behavior[weaponId];
-		if (weaponId == WeaponId::SavantPowerSiphon || weaponId==WeaponId::SavantEnergyDecay) {
+		if (weaponId == WeaponId::SavantPowerSiphon) {
 			behavior = WeaponBehavior::AppearOnTargetSite;
 		}
 		if (behavior == WeaponBehavior::AppearOnTargetUnit) {
@@ -153,7 +153,7 @@ namespace hooks {
 				if (unit->orderTarget.unit != nullptr) {
 					scbw::set_generic_value(unit, ValueId::LurkerPickTarget, (uint32)unit->orderTarget.unit);
 				}
-				Globals.clear_lurker(unit);
+				Globals.clear_lakizilisk(unit);
 			}
 			if (good) {
 				// Madrigal Tempo Change weapon switch
@@ -342,7 +342,10 @@ namespace hooks {
 				else if (weaponId == WeaponId::IonCannon) {
 					// Ion Cannon projectile spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::IonCannonProjectilePos, 1, 
-						ImagesDatEntries::OverlaySpecialPtr, 1);//1 is frameset offset
+						ImagesDatEntries::OverlaySpecialPtr, 1); // 1 is frameset offset
+				}
+				else if (weaponId == WeaponId::SirenCharybdalRifle) {
+					// TODO: Implement multi-unit targeting without inlining Adaptive Amitosis behavior
 				}
 				else if (weaponId == WeaponId::SalamanderPerditionBarrage) {
 					// Salamander missile target positions
@@ -398,7 +401,7 @@ namespace hooks {
 					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 				}				
 			}
-			// Adaptive Amitosis
+			// Chasmal Colony - Adaptive Amitosis ability
 			if (unit->orderTarget.unit != nullptr
 			&&	scbw::get_generic_value(unit, ValueId::AdaptiveAmitosis) > 0) {
 				auto range = weapons_dat::MaxRange[weaponId];

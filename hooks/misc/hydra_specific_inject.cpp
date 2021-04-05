@@ -571,10 +571,10 @@ namespace hooks {
         static CSprite* sprite;
         __asm {
             PUSH EBP
-            MOV EBP,ESP
+            MOV EBP, ESP
             PUSH EAX
-            MOV EAX,[EBP+0x08]
-            MOV sprite,EAX
+            MOV EAX, [EBP+0x08]
+            MOV sprite, EAX
             POP EAX
             PUSHAD
         }
@@ -589,6 +589,7 @@ namespace hooks {
     void damageOverlayDebug() {
        jmpPatch(createDamageOverlay_Wrapper, 0x004993C0);
     }
+
     void __declspec(naked) gameLoop_Wrapper() {
         static int32 result;
         __asm {
@@ -601,8 +602,45 @@ namespace hooks {
             RETN
         }
     }
+
+    void __declspec(naked) isTileBlockedBy_Wrapper() { // 00473300
+        static int32 result;
+        static CUnit** unitArray;
+        static CUnit* builder;
+        static int32 tile_x;
+        static int32 tile_y;
+        static int8 dontIgnoreReacting;
+        static int8 alsoInvisible;
+        __asm {
+            PUSH EBP
+            MOV EBP, ESP
+            PUSH EAX
+            MOV EAX, [EBP + 0x08]
+            MOV builder, EAX
+            MOV EAX, [EBP + 0xC]
+            MOV tile_x, EAX
+            MOV EAX, [EBP + 0x10]
+            MOV tile_y, EAX
+            MOV EAX, [EBP + 0x14]
+            MOV dontIgnoreReacting, AL
+            MOV EAX, [EBP + 0x18]
+            MOV alsoInvisible, AL
+            POP EAX
+            MOV unitArray, EAX
+            PUSHAD
+        }
+        result = hooks::isTileBlockedBy(unitArray, builder, tile_x, tile_y, dontIgnoreReacting, alsoInvisible);
+        __asm {
+            POPAD
+            MOV EAX, result
+            MOV ESP, EBP
+            POP EBP
+            RETN 0x14
+        }
+    }
+
     void injectHydraSpecific() {
-        //jmpPatch(checkUnitDatRequirements_Wrapper, 0x0046E1C0, 1);//must be finished first (+add firegraft offsets)
+        //jmpPatch(checkUnitDatRequirements_Wrapper, 0x0046E1C0, 1); // must be finished first (and add Firegraft offsets)
         
         flingySpeedPatches();
         desyncTesting();
@@ -621,6 +659,7 @@ namespace hooks {
         
         archonHardcodePatches();
 //      jmpPatch(gameLoop_Wrapper, 0x004D94B0, 3);
+//      jmpPatch(isTileBlockedBy_Wrapper, 0x00473300, 0);
 
         // TODO: Cleanup
         /*

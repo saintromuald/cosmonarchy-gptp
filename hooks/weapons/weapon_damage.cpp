@@ -94,7 +94,6 @@ void AI_Train_4A2830(CUnit* unit_creator, CUnit* created_unit) {
 const uint32 Func_CreateUnit = 0x004A09D0;
 CUnit* CreateUnit_09D0(uint32 unitId, int x, int y, uint32 playerId) {
 	static CUnit* unit_created;
-
 	__asm {
 		PUSHAD
 		PUSH playerId
@@ -105,15 +104,12 @@ CUnit* CreateUnit_09D0(uint32 unitId, int x, int y, uint32 playerId) {
 		MOV unit_created, EAX
 		POPAD
 	}
-
 	return unit_created;
-
 }
 
 //copied from recall_spell, replace later
 const uint32 Func_CreateThingy = 0x00488210;
 CThingy* function_00488210(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
-
 	static CThingy* thingy;
 	int32 x_ = x;
 	__asm {
@@ -131,9 +127,7 @@ CThingy* function_00488210(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
 ;
 const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
 bool function_004878f0(CThingy* thingy) {
-
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		MOV ESI, thingy
@@ -141,14 +135,12 @@ bool function_004878f0(CThingy* thingy) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
 
 }
 
 const uint32 Func_Sub498D70 = 0x00498D70;
 void imgul(CSprite* sprite, uint32 imageId, uint32 unk1, uint32 unk2, uint32 unk3) {
-
 	__asm {
 		PUSHAD
 		MOV EAX, sprite
@@ -159,18 +151,13 @@ void imgul(CSprite* sprite, uint32 imageId, uint32 unk1, uint32 unk2, uint32 unk
 		CALL Func_Sub498D70
 		POPAD
 	}
-
 }
 
 //
 #include "SCBW\UnitFinder.h"
 
 bool irradiateTarget(CUnit* unit) {
-
-/*	if (scbw::isZergEggNew(unit))
-		return false;*/
-
-	return true;
+	return true; // Originally prohibited targeting eggs
 }
 
 void augurSacrifice(CUnit* target) {
@@ -201,8 +188,8 @@ void augurSacrifice(CUnit* target) {
 
 			scbw::hideAndDisableUnit(target);
 			target->status |= UnitStatus::Invincible;
-			scbw::createThingy(642, target->getX(), target->getY(), target->playerId);
-			scbw::playSound(scbw::randBetween(1235, 1238), target);
+			scbw::createThingy(SpriteId::AugurDeathExplosion, target->getX(), target->getY(), target->playerId);
+			scbw::playSound(scbw::randBetween(SoundId::AugurDeath01, SoundId::AugurDeath04), target);
 			target->removeTimer = 5 * 32;
 			target->userActionFlags |= 0x4;
 			return;
@@ -257,7 +244,7 @@ namespace hooks {
 	}
 
 	void weaponDamage_root(WeaponDamageData& data) {
-		//the unit must neither be already dead nor invincible
+		// the unit must neither be already dead nor invincible
 		if (data.target == nullptr || data.target->hitPoints == 0 || data.target->status & UnitStatus::Invincible)
 			return;
 
@@ -310,7 +297,7 @@ namespace hooks {
 		if (units_dat::ShieldsEnabled[data.target->id] && data.target->shields >= 256) {
 			if (data.damageType != DamageType::IgnoreArmor) {
 				int32 plasmaShieldUpg = scbw::getUpgradeLevel(data.target->playerId, UpgradeId::ProtossPlasmaShields) * 256;
-				if (data.finalDamage > plasmaShieldUpg) { //Weird logic, Blizzard dev must have been sleepy
+				if (data.finalDamage > plasmaShieldUpg) { // Weird logic, Blizzard dev must have been sleepq7
 					data.finalDamage -= plasmaShieldUpg;
 				}
 				else {
@@ -345,10 +332,10 @@ namespace hooks {
 			data.finalDamage += rend;
 		}
 
-		//Apply damage type/unit size factor (not checked by UndeadStar, I will hope it work)
+		// Apply damage type/unit size factor
 		int32 damage_factor = damageFactor[data.damageType].unitSizeFactor[units_dat::SizeType[data.target->id]];
 		if (data.attacker != nullptr) {
-			if (data.attacker->id == UnitId::firebat) {
+			if (data.attacker->id == UnitId::TerranHarakan) { // TODO: Replace check with weaponid?
 				if (units_dat::BaseProperty[data.target->id] & UnitProperty::Building) {
 					damage_factor = 256;
 				}
@@ -367,8 +354,6 @@ namespace hooks {
 		if (data.finalDamage >= data.target->hitPoints) { // <- keep this as hitPoints, because the damage is already calculated to include armor, shields and damage factor calculations
 			weaponDamage_fatal(data);
 		}
-
-		
 
 		// Deal damage, except for Independent damage, which always deals 0
 		// damageDivisor check needed to prevent recursive phase link calls (mutex crash)
@@ -390,6 +375,7 @@ namespace hooks {
 				}
 			}
 		}
+
 		// damageDivisor check needed to prevent recursive phase link calls (mutex crash)
 		if (data.damageDivisor != 0 && shield_overlay) {
 			createShieldOverlay(data.target, data.direction);
@@ -623,17 +609,17 @@ namespace hooks {
 				if (scbw::get_generic_value(data.target, ValueId::EcclesiastStack) < 10) {
 					scbw::add_generic_value(data.target, ValueId::EcclesiastStack, 1);
 				}
-				scbw::set_generic_timer(data.target, ValueId::EcclesiastTimer, 49); //49 is 2 seconds (48) + 1
+				scbw::set_generic_timer(data.target, ValueId::EcclesiastTimer, 49);
 				scbw::set_generic_value(data.target, ValueId::EcclesiastPlayer, data.attacker->playerId);
 				break;
 			}
-			/*case WeaponId::SubterraneanTentacle: {
-				// Tendril Amitosis - Sunken Colony upgrade
-				if (scbw::get_generic_value(data.target, ValueId::Amitosis) == 1) {
-					data.reducedDamage /= 2;
-					scbw::set_generic_value(data.target, ValueId::Amitosis, 0);
+			case WeaponId::SubterraneanTentacle:
+			case WeaponId::SeekerSpores: {
+				if (scbw::get_generic_value(data.attacker, ValueId::Amitosis) == 1) {
+				//	data.damage /= 2; // TODO: Fix compiler error
+					scbw::set_generic_value(data.attacker, ValueId::Amitosis, 0);
 				}
-			}*/
+			}
 			case WeaponId::NuclearMissile: {
 				// Nuclear Missile - Ground Zero
 				if (data.target->hitPoints > data.finalDamage && irradiateTarget(data.target)) {

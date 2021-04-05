@@ -1010,6 +1010,8 @@ enum Enum {
 
 	// HYDRA \\
 
+	HallucinationOverlay				= 1035,
+	TreasurySupplyOverlay				= 1060,
 	Cowardice_Small					    = 1061,
 	Cowardice_Medium					= 1062,
 	Cowardice_Large						= 1063,
@@ -1019,7 +1021,17 @@ enum Enum {
 	Malediction_Small					= 1067,
 	Malediction_Medium					= 1068,
 	Malediction_Large					= 1069,
-
+	EntropyGauntletsOverlayLarge		= 1109,
+	EntropyGauntletsOverlayMedium		= 1110,
+	EntropyGauntletsOverlaySmall		= 1111,
+	ObservanceOverlayLarge				= 1231,
+	ObservanceOverlayMedium				= 1232,
+	ObservanceOverlaySmall				= 1233,
+	KhaydarinEclipseOverlayLarge		= 1270,
+	KhaydarinEclipseOverlayMedium		= 1271,
+	EnsnaringBroodOverlay				= 1281,
+	KhaydarinEclipseOverlaySmall		= 1272,
+	LegionnaireTeleportEffect			= 1358,
 
 	FirstMinorDamageOverlay				= 450,
 	LastMinorDamageOverlay			    = 471,
