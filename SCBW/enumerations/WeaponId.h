@@ -164,14 +164,16 @@ enum Enum {
     LobotomyMineExplosion						= 89,			// Lobotomy Mine weapon
 	CyclopsFlakCannons							= 93,			// Cyclops weapon
 	PhobosArgosLaserBatteries					= 94,			// Phobos weapon
+	SirenCharybdalRifle							= 96,			// Siren weapon
 	SavantPowerSiphon							= 101,			// Savant ability targeting
 	CyclopsFragmentaryShells					= 116,			// Cyclops behavior damage
+	ClaymoreHarpoonRailgun						= 120,			// Claymore weapon
 	SeraphObservance							= 122,			// Seraph ability targeting
 	MadrigalDirge								= 123,			// Madrigal Dirge damage
 	SalamanderIncendiaryPayload					= 124,			// Salamander behavior damage
 	WyvernJacksonCannon							= 125,			// Wyvern weapon + Wyvern ability targeting
 	PaladinSkyfall								= 126,			// Paladin ability targeting
-	SavantEnergyDecay							= 127,			// Savant ability targeting
+	SirenTertiaryEyes							= 127,			// Siren ability targeting
 	IonCannon									= 129,			// Ion Cannon weapon
 
 	// Protoss \\

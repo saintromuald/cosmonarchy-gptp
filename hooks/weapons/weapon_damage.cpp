@@ -609,17 +609,17 @@ namespace hooks {
 				if (scbw::get_generic_value(data.target, ValueId::EcclesiastStack) < 10) {
 					scbw::add_generic_value(data.target, ValueId::EcclesiastStack, 1);
 				}
-				scbw::set_generic_timer(data.target, ValueId::EcclesiastTimer, 49); //49 is 2 seconds (48) + 1
+				scbw::set_generic_timer(data.target, ValueId::EcclesiastTimer, 49);
 				scbw::set_generic_value(data.target, ValueId::EcclesiastPlayer, data.attacker->playerId);
 				break;
 			}
-			/*case WeaponId::SubterraneanTentacle: {
-				// Tendril Amitosis - Sunken Colony upgrade
-				if (scbw::get_generic_value(data.target, ValueId::Amitosis) == 1) {
-					data.reducedDamage /= 2;
-					scbw::set_generic_value(data.target, ValueId::Amitosis, 0);
+			case WeaponId::SubterraneanTentacle:
+			case WeaponId::SeekerSpores: {
+				if (scbw::get_generic_value(data.attacker, ValueId::Amitosis) == 1) {
+				//	data.damage /= 2; // TODO: Fix compiler error
+					scbw::set_generic_value(data.attacker, ValueId::Amitosis, 0);
 				}
-			}*/
+			}
 			case WeaponId::NuclearMissile: {
 				// Nuclear Missile - Ground Zero
 				if (data.target->hitPoints > data.finalDamage && irradiateTarget(data.target)) {
