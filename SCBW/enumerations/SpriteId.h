@@ -540,7 +540,8 @@ enum Enum {
 	Corpse_Apostle							= 565,
 	Corpse_Harakan							= 615,
 
-	Corpse_Dragoon							= 192,
+	Corpse_Dracadin							= 192,
+	Corpse_Scribe							= 691,
 
 	Corpse_Broodling						= 134,
 	Corpse_Isthrathaleth					= 139,
@@ -552,6 +553,7 @@ enum Enum {
 	Corpse_Zergling							= 160,
 	Corpse_Lakizilisk						= 484,
 	Corpse_Bactalisk						= 617,
+	Corpse_Konvilisk						= 689,
 
 	Corpse_ZergBuildingSmall				= 186,
 	Corpse_ZergBuildingLarge				= 187,
