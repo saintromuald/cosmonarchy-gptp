@@ -291,8 +291,9 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	}
 
 	// Irradiate Radiation Shockwave enhancement
-	if (unit->irradiateTimer > 0) {
+	if (scbw::get_generic_value(unit, ValueId::RadiationShockwaveTimer) > 1) {
 		scbw::set_generic_value(unit, ValueId::RadiationShockwaveCount, 1);
+		scbw::set_generic_value(unit, ValueId::RadiationShockwaveTimer, 0);
 	}
 
 	// Parasite - spawn broodlings on death

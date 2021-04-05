@@ -537,7 +537,7 @@ namespace hooks {
 	//	  if (!target->isDead()) {
 //			  Ai_UnitWasHit(1, 0, bullet->sourceUnit, target);
 			 // BroodlingHit(bullet->sourceUnit, target,bullet);
-	  hooks::BroodlingHit(bullet->sourceUnit, target, bullet);
+	hooks::BroodlingHit(bullet->sourceUnit, target, bullet);
 	//	  }
 	//  }
   }

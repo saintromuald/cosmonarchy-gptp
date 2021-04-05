@@ -860,6 +860,9 @@ namespace scbw {
 			//specific updates following irradiate removal
 			unit->irradiatedBy = nullptr;
 			unit->irradiatePlayerId = 8;
+
+			scbw::set_generic_value(unit, ValueId::RadiationShockwaveCount, 0);
+			scbw::set_generic_value(unit, ValueId::RadiationShockwaveTimer, 0);
 		}
 
 		// Remove armor rend (generic)

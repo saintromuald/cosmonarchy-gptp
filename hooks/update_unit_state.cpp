@@ -590,6 +590,7 @@ namespace hooks {
 			if (unit->irradiateTimer > 0) {
 				if (scbw::get_generic_value(unit, ValueId::RadiationShockwaveCount)) {
 					scbw::set_generic_value(unit, ValueId::RadiationShockwaveCount, 0);
+					scbw::set_generic_value(unit, ValueId::RadiationShockwaveTimer, 0);
 
 					CThingy* emp_sprite;
 					emp_sprite = createThingy(371, unit->position.x, unit->position.y, 0);

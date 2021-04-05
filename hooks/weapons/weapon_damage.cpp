@@ -783,8 +783,9 @@ namespace hooks {
 		}
 
 		// Radiation Shockwave on death
-		if (data.target->irradiateTimer > 0) {
+		if (scbw::get_generic_value(data.target, ValueId::RadiationShockwaveTimer) > 1) {
 			scbw::set_generic_value(data.target, ValueId::RadiationShockwaveCount, 1);
+			scbw::set_generic_value(data.target, ValueId::RadiationShockwaveTimer, 0);
 		}
 
 		// Apostle - Lazarus Agent
