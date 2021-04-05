@@ -529,7 +529,8 @@ enum Enum {
 	MadrigalMissile2						= 549,
 	SalamanderImpact						= 596,
 	PlanetCrackerBeam						= 634,
-	IonField								= 900, //placeholder
+	PlanetCrackerBlastLoop					= 635,
+	IonField								= 900,
 
 	// CORPSE \\
 		

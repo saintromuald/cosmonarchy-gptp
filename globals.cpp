@@ -467,7 +467,7 @@ void globals::createIonField(int x, int y, uint8 player, uint8 elevationLevel, b
 }
 
 
-void globals::clear_lurker(CUnit* lurker) {
+void globals::clear_lakizilisk(CUnit* lurker) {
 	lurkerSpineHits[lurker].clear();
 
 }

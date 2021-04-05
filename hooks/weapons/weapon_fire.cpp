@@ -153,7 +153,7 @@ namespace hooks {
 				if (unit->orderTarget.unit != nullptr) {
 					scbw::set_generic_value(unit, ValueId::LurkerPickTarget, (uint32)unit->orderTarget.unit);
 				}
-				Globals.clear_lurker(unit);
+				Globals.clear_lakizilisk(unit);
 			}
 			if (good) {
 				// Madrigal Tempo Change weapon switch

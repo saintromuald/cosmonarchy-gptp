@@ -1,5 +1,3 @@
-/// This is where the magic happens; program your plug-in's core behavior here.
-
 #include "game_hooks.h"
 #include <graphics/graphics.h>
 #include <SCBW/api.h>
@@ -292,46 +290,13 @@ namespace hooks {
 			hooks::updatePsiFieldProviders();
 			*(int*)hyperTrigger = 0; // Single frame hypertriggers
 
-			//This block is executed once every game.
+			//This block is executed once every game
 			if (*elapsedTimeFrames == 0) {
 				firstFrame();
 			}
 			hooks::handleScreenHotkeys();
-			scbw::refreshScreen(); // refreshes screen, needed for game clock and apm timer to update every frame
+			scbw::refreshScreen(); // Needed for game clock and APM timer to update every frame
 			scbw::refreshConsole();
-			
-			// TODO: consider if removing this is possible?
-			//framework example, rework and use later
-			/*if (*elapsedTimeFrames == 1) {
-				char* name = "samase\\sprites_ext.txt";
-				const char* data = nullptr;
-				uint32 len = 0;
-				auto data_ptr = &data;
-				auto len_ptr = &len;
-				uint32 val = reinterpret_cast<uint32>(name);
-				auto result = scbw::get_generic_value(nullptr, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));				
-				auto result2 = scbw::get_generic_value(nullptr, nullptr, AiseId::ReadSamaseFile_Ptr, 0, 0);
-			}*/
-			
-			// Order debugger
-/*			if ((*activePortraitUnit) != nullptr) {
-				char buf[32];
-				sprintf(buf, "Current index: %d, order: %d",(*activePortraitUnit)->getIndex(),
-					(*activePortraitUnit)->mainOrderId);
-				scbw::printText(buf);
-			}*/
-
-			// Tileset debugger
-/*			char b[32];
-			sprintf(b, "Tiles: %d %d %d %d %d", (*tileGroup + 0x2)[1].megatiles[0],
-												(*tileGroup + 0x2)[1].megatiles[1],
-				(*tileGroup + 0x2)[1].megatiles[2],
-				(*tileGroup + 0x2)[1].megatiles[3],
-				(*tileGroup + 0x2)[1].megatiles[4]
-
-				);
-			scbw::printText(b);*/
-
 			Globals.frameHook();
 			
 			// Reset Treasury Stacks, before unit loop
@@ -358,21 +323,11 @@ namespace hooks {
 				}
 			}
 
-			// Loop through hidden units
-			/*for (CUnit* unit = *firstHiddenUnit; unit; unit = unit->link.next) {
-				if (unit->id == UnitId::ProtossAugur && scbw::get_generic_timer(unit, ValueId::AugurGimmickTimer) == 1) {
-					scbw::printText("Gimmick: remove augur");
-					unit->userActionFlags |= 0x4;
-					unit->remove();
-				}
-			}*/
-
-			// Loop through all visible units in the game.
-
 			//Sort corpses
 			CorpseFinder corpses;
 			corpses.sortAllCorpses();
 
+			// Loop through all visible units in the game.
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
 				tickUnit(unit, corpses);
 			}
@@ -404,7 +359,7 @@ namespace hooks {
 			scbw::set_generic_value(unit, ValueId::IsReviving, 0);
 		}
 
-		// Mind Tyrant Rescind
+		// Mind Tyrant Rescind Control
 		if (unit->id == UnitId::ProtossMindTyrant) {
 			if (scbw::get_generic_value(unit, ValueId::RescindMindControl) == 1) {
 				scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
@@ -453,6 +408,8 @@ namespace hooks {
 				}
 			}
 		}
+
+		// Gimmick to allow the Ultrakor morph cancellation animation to play correctly
 		else if (unit->id == UnitId::ZergUltrakor || unit->id == UnitId::ZergEgg) {
 			if (scbw::get_generic_timer(unit, ValueId::UltrakorCancelGimmick)) {
 				if (unit->sprite->mainGraphic->animation != IscriptAnimation::CastSpell) {
@@ -478,13 +435,13 @@ namespace hooks {
 		// Exemplar overlay
 		else if (unit->id == UnitId::ProtossExemplar) {
 			if (scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch) == 1) {
-				if (!unit->getOverlay(1271)) {
-					unit->sprite->createTopOverlay(1271);
+				if (!unit->getOverlay(ImageId::KhaydarinEclipseOverlayMedium)) {
+					unit->sprite->createTopOverlay(ImageId::KhaydarinEclipseOverlayMedium);
 				}
 			}
 			else {
-				if (unit->getOverlay(1271)) {
-					unit->sprite->removeOverlay(1271);
+				if (unit->getOverlay(ImageId::KhaydarinEclipseOverlayMedium)) {
+					unit->sprite->removeOverlay(ImageId::KhaydarinEclipseOverlayMedium);
 				}
 			}
 		}
@@ -545,52 +502,52 @@ namespace hooks {
 			uint16 Y = unit->position.y;
 			if (unit->orderSignal & 8) {
 				unit->orderSignal &= ~8;
-				scbw::createThingy(635, X + 32, Y + 32, player);
-				scbw::createThingy(635, X - 32, Y + 32, player);
-				scbw::createThingy(635, X + 32, Y - 32, player);
-				scbw::createThingy(635, X - 32, Y - 32, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 32, Y + 32, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 32, Y + 32, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 32, Y - 32, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 32, Y - 32, player);
 			}
 			else if (unit->orderSignal & 16) {
 				unit->orderSignal &= ~16;
-				scbw::createThingy(635, X + 80, Y + 80, player);
-				scbw::createThingy(635, X - 80, Y + 80, player);
-				scbw::createThingy(635, X + 80, Y - 80, player);
-				scbw::createThingy(635, X - 80, Y - 80, player);
-				scbw::createThingy(635, X + 144, Y + 80, player);
-				scbw::createThingy(635, X - 144, Y + 80, player);
-				scbw::createThingy(635, X + 144, Y - 80, player);
-				scbw::createThingy(635, X - 144, Y - 80, player);
-				scbw::createThingy(635, X + 144, Y - 0, player);
-				scbw::createThingy(635, X - 144, Y - 0, player);
-				scbw::createThingy(635, X + 0, Y - 144, player);
-				scbw::createThingy(635, X - 0, Y + 144, player);
-				scbw::createThingy(635, X + 80, Y + 144, player);
-				scbw::createThingy(635, X - 80, Y + 144, player);
-				scbw::createThingy(635, X + 80, Y - 144, player);
-				scbw::createThingy(635, X - 80, Y + 144, player);
-				scbw::createThingy(635, X + 80, Y + 0, player);
-				scbw::createThingy(635, X - 80, Y + 0, player);
-				scbw::createThingy(635, X + 0, Y + 80, player);
-				scbw::createThingy(635, X - 0, Y + 80, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y + 80, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 80, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y - 80, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y - 80, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y + 80, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 80, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 80, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 80, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 0, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 0, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 0, Y - 144, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 0, Y + 144, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y + 144, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 144, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y - 144, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 144, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y + 0, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 0, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 0, Y + 80, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 0, Y + 80, player);
 			}
 			else if (unit->orderSignal & 32) {
 				unit->orderSignal &= ~32;
-				scbw::createThingy(635, X + 144, Y + 144, player);
-				scbw::createThingy(635, X - 144, Y + 144, player);
-				scbw::createThingy(635, X + 144, Y - 144, player);
-				scbw::createThingy(635, X - 144, Y - 144, player);
-				scbw::createThingy(635, X + 208, Y + 144, player);
-				scbw::createThingy(635, X - 208, Y + 144, player);
-				scbw::createThingy(635, X + 208, Y - 144, player);
-				scbw::createThingy(635, X - 208, Y - 144, player);
-				scbw::createThingy(635, X + 208, Y - 0, player);
-				scbw::createThingy(635, X - 208, Y - 0, player);
-				scbw::createThingy(635, X + 0, Y - 208, player);
-				scbw::createThingy(635, X - 0, Y + 208, player);
-				scbw::createThingy(635, X + 144, Y + 208, player);
-				scbw::createThingy(635, X - 144, Y + 208, player);
-				scbw::createThingy(635, X + 144, Y - 208, player);
-				scbw::createThingy(635, X - 144, Y - 208, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y + 144, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 144, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 144, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 144, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 208, Y + 144, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 208, Y + 144, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 208, Y - 144, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 208, Y - 144, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 208, Y - 0, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 208, Y - 0, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 0, Y - 208, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 0, Y + 208, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y + 208, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 208, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 208, player);
+				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 208, player);
 			}
 			else if (unit->orderSignal & 64) {
 				unit->orderSignal &= ~64;
@@ -670,8 +627,8 @@ namespace hooks {
 				if (distance > 15 && distance <= 96) {
 					if (scbw::get_aise_value(unit, target, AiseId::GetLegionnaireMarks, 0, 0) > 0) {
 						bool teleport = scbw::teleport(unit, target->sprite->position, 0, true);
-						if (!unit->getOverlay(276) && teleport) {
-							unit->sprite->createTopOverlay(276);
+						if (!unit->getOverlay(ImageId::LegionnaireTeleportEffect) && teleport) {
+							unit->sprite->createTopOverlay(ImageId::LegionnaireTeleportEffect);
 						}
 					}
 				}
@@ -692,7 +649,7 @@ namespace hooks {
 					scbw::set_generic_timer(unit, ValueId::SkyfallTimer, 2 + 1);
 					uint32 tgt_x = scbw::get_generic_value(unit, ValueId::SkyfallX);
 					uint32 tgt_y = scbw::get_generic_value(unit, ValueId::SkyfallY);
-					//scbw::printFormattedText("Read X Y %d %d [a]", tgt_x, tgt_y);
+
 					auto column = missile / 4;
 					auto row = missile % 4;
 					auto distance = scbw::getDistanceFast(unit->getX(), unit->getY(), tgt_x, tgt_y);
@@ -704,6 +661,7 @@ namespace hooks {
 					Point16 missile_target;
 					missile_target.x = tgt_x + product.x;
 					missile_target.y = tgt_y + product.y;
+
 					int32 forwardOffset = weapons_dat::ForwardOffset[10];
 					auto source_x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
 					auto source_y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1)
@@ -711,7 +669,7 @@ namespace hooks {
 					unit->orderTarget.unit = nullptr;
 					unit->orderTarget.pt = missile_target;
 					auto range = 64;
-					//scbw::printFormattedText("Target? %d %d", tgt_x, tgt_y);
+
 					auto targ = scbw::UnitFinder::getNearestTarget(
 						missile_target.x - range,
 						missile_target.y - range,
@@ -734,16 +692,15 @@ namespace hooks {
 					if (targ != nullptr) {
 						unit->orderTarget.unit = targ;
 					}
-					scbw::createBullet(10, unit, source_x, source_y, unit->playerId, unit->currentDirection1);
+					scbw::createBullet(WeaponId::PaladinCrusaderMissiles, unit, source_x, source_y, unit->playerId, unit->currentDirection1);
 				}
 			}
 		}
 
 		else if (unit->id == UnitId::ZergLakizilisk) {
-			//placeholder for seismic spines
 			if (unit->sprite != nullptr && unit->mainOrderId != OrderId::Die
 				&& scbw::get_generic_timer(unit, ValueId::LurkerETA) == 1) {
-				auto position = unit->position;//new target
+				auto position = unit->position; // new target
 				auto spr_position = unit->sprite->position;
 				Point16 pos;
 				pos.x = scbw::get_generic_value(unit, ValueId::SpineX);
@@ -754,7 +711,7 @@ namespace hooks {
 				unit->position = position;
 				unit->sprite->position = spr_position;
 				auto spineCount = 0;
-				Globals.clear_lurker(unit);
+				Globals.clear_lakizilisk(unit);
 			}
 		}
 
@@ -797,6 +754,7 @@ namespace hooks {
 			}
 		}
 
+		// TODO: Fix!!!
 		// Basilisk - Biogenesis
 		else if (unit->id == UnitId::ZergBactalisk) {
 			if (unit->status & UnitStatus::Burrowed) {
@@ -862,15 +820,10 @@ namespace hooks {
 			unit->inflictDamage(30 * 256, nullptr, -1, false, true, false, false);
 		}
 
-		// Savant - Entropy Gauntlets
+		// Savant - Entropy Gauntlets - remove overlay at end of effect
 		if (scbw::get_generic_timer(unit, ValueId::EntropyGauntlets) == 1) {
-			uint32 overlayImageId;
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
-				overlayImageId = 1109;
-			else if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
-				overlayImageId = 1108;
-			else
-				overlayImageId = 1107;
+			uint32 overlayOffset = scbw::getOverlayOffset(unit->id);
+			uint32 overlayImageId = ImageId::EntropyGauntletsOverlaySmall - overlayOffset;
 			if (unit->subunit != nullptr)
 				unit->subunit->sprite->removeOverlay(overlayImageId);
 			else
@@ -906,7 +859,7 @@ namespace hooks {
 				}
 				else {
 					scbw::set_generic_value(unit, ValueId::ObservanceRend, 0);
-					unit->removeOverlay(1231, 1233);
+					unit->removeOverlay(ImageId::ObservanceOverlayLarge, ImageId::ObservanceOverlaySmall);
 				}
 			}
 		}
@@ -981,8 +934,6 @@ namespace hooks {
 			}
 		}
 
-
-
 		// Hallucinating Visual Effect
 		uint32 hallucinatingTimer = scbw::get_generic_timer(unit, ValueId::HallucinatingTimer);
 		if (unit != nullptr && unit->sprite != nullptr) {
@@ -994,7 +945,7 @@ namespace hooks {
 				else {
 					sprite = unit->sprite;
 				}
-				sprite->createOverlay(1035, 0, 0, 0);
+				sprite->createOverlay(ImageId::HallucinationOverlay, 0, 0, 0);
 			}
 		}
 
@@ -1029,7 +980,7 @@ namespace hooks {
 
 				uint32 stacks = scbw::get_generic_value(target, ValueId::TreasuryStacks);
 				if (*elapsedTimeFrames % 36 == 0 && stacks == 0) {
-					target->sprite->createUnderlay(1060, 0, 0, 0);
+					target->sprite->createUnderlay(ImageId::TreasurySupplyOverlay, 0, 0, 0);
 				}
 
 				scbw::add_generic_value(target, ValueId::TreasuryStacks, 1);
@@ -1053,7 +1004,7 @@ namespace hooks {
 			}
 		}
 
-		// Remove all Titan Reactors stacks after not attacking for 5 seconds
+		// Remove all Nemean Reactors stacks after not attacking for 5 seconds
 		if (scbw::get_generic_timer(unit, ValueId::NemeanReactorsTimer) == 1) {
 			scbw::set_generic_value(unit, ValueId::NemeanReactorsStack, 0);
 			// remove overlay later
@@ -1076,12 +1027,7 @@ namespace hooks {
 			scbw::set_generic_value(unit, ValueId::RadiationShockwaveCount, 1);
 		}
 
-		// Clarion SFX
-		if (scbw::get_generic_value(unit, ValueId::ClarionSFX) > 0) {
-			scbw::set_generic_value(unit, ValueId::ClarionSFX, 0);
-			scbw::playSound(scbw::randBetween(1254, 1255), unit);
-		}
-
+		// TODO: Remove? Don't think this code runs as Phase Link is perpetually active
 		if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 0) {
 			scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::SetPhaseLinkStatus, 1, 0, 0);
 			unit->updateSpeed();
@@ -1092,7 +1038,7 @@ namespace hooks {
 			scbw::createUnitFromAbility(UnitId::ProtossSimulacrum, 1, unit->playerId, unit->position.x, unit->position.y, 0, unit);
 		}
 
-		// Queen - Ensnaring Brood ability
+		// Matraleth - Ensnaring Brood ability
 		if (unit->id == UnitId::ZergMatraleth
 			&& scbw::get_generic_rust_value(unit, ValueId::EnsnaringBroodAbility) == 1) {
 			Point16 pos = unit->position;
@@ -1112,18 +1058,18 @@ namespace hooks {
 					return;
 				}
 				// Overlays
-				if (target->getOverlay(1281)) {
-					target->removeOverlay(1281);
+				if (target->getOverlay(ImageId::EnsnaringBroodOverlay)) {
+					target->removeOverlay(ImageId::EnsnaringBroodOverlay);
 				}
 				scbw::set_generic_timer(target, ValueId::EnsnaringBroodTimer, 12 * 24);
-				target->sprite->createTopOverlay(1281);
+				target->sprite->createTopOverlay(ImageId::EnsnaringBroodOverlay);
 			});
 			unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::EnsnaringBrood] * 256);
 		}
 
 		// Remove Ensnaring Brood overlay
 		if (scbw::get_generic_timer(unit, ValueId::EnsnaringBroodTimer) == 1) {
-			unit->removeOverlay(1281);
+			unit->removeOverlay(ImageId::EnsnaringBroodOverlay);
 		}
 
 		// Zoryusthaleth - Swarming Omen ability
@@ -1138,10 +1084,11 @@ namespace hooks {
 			//					unit->removeOverlay();
 		}
 
+		// TODO: Finish
 		// Controlled Demolition - initial cast
 		/*if (conditional) { // ability cast
 			scbw::set_generic_timer(unit, ValueId::ControlledDemolition, 10*24);
-			int32 overlayOffset = scbw::getOverlaySize(unit->id);
+			int32 overlayOffset = scbw::getOverlayOffset(unit->id);
 		//	unit->sprite->createOverlay(ImageId::ControlledDemolitionOverlay_Small + overlayOffset);
 		}
 		*/
@@ -1155,13 +1102,14 @@ namespace hooks {
 		// Emergency Detonation - initial cast
 		/*if (conditional) { // ability cast
 			scbw::set_generic_timer(unit, ValueId::EmergencyDetonation, (uint32)(0.5 * scbw::get_generic_timer(unit, ValueId::ControlledDemolition)));
-			int32 overlayOffset = scbw::getOverlaySize(unit->id);
+			int32 overlayOffset = scbw::getOverlayOffset(unit->id);
 		//	unit->sprite->createOverlay(ImageId::EmergencyDetonationOverlay_Small + overlayOffset);
 		}
 		*/
 
+		// Emergency Detonation - destroy structure
 		if (scbw::get_generic_timer(unit, ValueId::EmergencyDetonationTimer) == 1) {
-			//	scbw::createBullet(WeaponId::EmergencyDetonation, unit, unit->position.x, unit->position.y, unit->playerId); // Have to select a weapon entry
+		//	scbw::createBullet(WeaponId::EmergencyDetonation, unit, unit->position.x, unit->position.y, unit->playerId);
 			unit->remove();
 		}
 	}

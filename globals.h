@@ -224,7 +224,7 @@ public:
 	void clear_ptr_in_apostle_table(CUnit* unit);
 	void remove_multihit_bullet(CBullet* bullet);
 	int get_divider(CBullet* bullet);
-	void clear_lurker(CUnit* lurker);
+	void clear_lakizilisk(CUnit* lurker);
 	void add_lurker_spine_pair(CUnit* lurker, CUnit* target);
 	bool spine_pair_exists(CUnit* lurker, CUnit* target);
 
