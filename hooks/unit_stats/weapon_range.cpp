@@ -125,7 +125,8 @@ uint32 getMaxWeaponRangeHook(CUnit* unit, uint8 weaponId) {
 
 	// Stellar Enforcement - Magister behavior
 	if (unit->orderTarget.unit != nullptr
-	&&	scbw::get_generic_value(unit->orderTarget.unit, ValueId::StellarEnforcement)) {
+	&& scbw::get_generic_value(unit->orderTarget.unit, ValueId::StellarEnforcement)
+	&& weapons_dat::MaxRange[unit->getGroundWeapon()] > 32) {
 		bonusAmount += 64;
 	}
 
