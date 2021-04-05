@@ -76,27 +76,27 @@ public:
 	}
 };
 struct CustomUnitStruct {
-	std::unordered_map<int, int>					genericValues;
-	std::unordered_map<int, int>					genericTimers;
-	std::unordered_map<int, CUnit*>					genericUnits;
-	std::unordered_map<int, std::vector<int>>		genericValueVectors;
-	std::unordered_map<int, std::vector<int>>		genericTimerVectors;
-	std::unordered_map<int, std::vector<CUnit*>>	genericUnitVectors;
+	std::unordered_map<uint32, int>					genericValues;
+	std::unordered_map<uint32, int>					genericTimers;
+	std::unordered_map<uint32, CUnit*>					genericUnits;
+	std::unordered_map<uint32, std::vector<int>>		genericValueVectors;
+	std::unordered_map<uint32, std::vector<int>>		genericTimerVectors;
+	std::unordered_map<uint32, std::vector<CUnit*>>	genericUnitVectors;
 
-	void setGenericValue(uint32_t variable, uint32_t value) {
+	void setGenericValue(uint32 variable, uint32_t value) {
 		genericValues[variable] = value;
 	}
-	void addGenericValue(uint32_t variable, uint32_t value) {
+	void addGenericValue(uint32 variable, uint32_t value) {
 		genericValues[variable] += value;
 	}
-	void setGenericTimer(uint32_t variable, uint32_t value) {
+	void setGenericTimer(uint32 variable, uint32_t value) {
 		genericTimers[variable] = value;
 	}
-	void setGenericUnit(uint32_t variable, CUnit* unit) {
+	void setGenericUnit(uint32 variable, CUnit* unit) {
 		genericUnits[variable] = unit;
 	}
 
-	uint32_t getGenericValue(uint32_t variable) {
+	uint32_t getGenericValue(uint32 variable) {
 		auto it = genericValues.find(variable);
 		if (it != genericValues.end()) {
 			return it->second;
@@ -104,7 +104,7 @@ struct CustomUnitStruct {
 		return 0;
 	}
 
-	uint32_t getGenericTimer(uint32_t variable) {
+	uint32_t getGenericTimer(uint32 variable) {
 		auto it = genericTimers.find(variable);
 		if (it != genericTimers.end()) {
 			return it->second;
@@ -112,7 +112,7 @@ struct CustomUnitStruct {
 		return 0;
 	}
 
-	CUnit* getGenericUnit(uint32_t variable) {
+	CUnit* getGenericUnit(uint32 variable) {
 		auto it = genericUnits.find(variable);
 		if (it != genericUnits.end()) {
 			return it->second;
@@ -120,7 +120,7 @@ struct CustomUnitStruct {
 		return nullptr;
 	}
 
-	std::vector<int>& getGenericValueVector(uint32_t variable) {
+	std::vector<int>& getGenericValueVector(uint32 variable) {
 		auto it = genericValueVectors.find(variable);
 		if (it != genericValueVectors.end()) {
 			return it->second;
@@ -129,7 +129,7 @@ struct CustomUnitStruct {
 		return genericValueVectors[variable];
 	}
 
-	std::vector<int>& getGenericTimerVector(uint32_t variable) {
+	std::vector<int>& getGenericTimerVector(uint32 variable) {
 		auto it = genericTimerVectors.find(variable);
 		if (it != genericTimerVectors.end()) {
 			return it->second;
@@ -138,7 +138,7 @@ struct CustomUnitStruct {
 		return genericTimerVectors[variable];
 	}
 
-	std::vector<CUnit*>& getGenericUnitVector(uint32_t variable) {
+	std::vector<CUnit*>& getGenericUnitVector(uint32 variable) {
 		auto it = genericUnitVectors.find(variable);
 		if (it != genericUnitVectors.end()) {
 			return it->second;
@@ -223,6 +223,10 @@ void injectGlobalsHooks();
 static SaveState saveState;
 extern globals Globals;
 
+namespace hooks {
+	struct WeaponDamageData;
+}
+
 namespace scbw {
 	CUnit* get_generic_unit(CUnit* unit, uint32 id);
 	uint32 get_generic_value(CUnit* u, uint32 val);
@@ -231,6 +235,9 @@ namespace scbw {
 	void set_generic_value(CUnit* u, uint32 id, uint32 val);
 	void set_generic_timer(CUnit* u, uint32 id, uint32 val);
 	void add_generic_value(CUnit* u, uint32 id, int val);
+	std::vector<int>& get_generic_value_vector(CUnit* u, uint32 id);
+	std::vector<int>& get_generic_timer_vector(CUnit* u, uint32 id);
+	std::vector<CUnit*>& get_generic_unit_vector(CUnit* u, uint32 id);
 	CBullet* setMissileSourcePosRet(CUnit* unit, uint32 weaponId, uint32 valueId, int32 rotateCount, uint32 overlayType, uint32 frameset_offset);
 	bool isSlowed(CUnit* unit);
 	void refreshDebuffs(CUnit* unit);
@@ -241,4 +248,9 @@ namespace scbw {
 	void doDeconstructionDamage(CUnit* unit, uint16 weaponId, bool playSound);
 	void setMissileSourcePos(CUnit* unit, uint32 weaponId, uint32 valueId, int32 rotateCount, uint32 overlayType, uint32 frameset_offset);
 	CUnit** getSourceQueens(CUnit* unit);
+
+	void clearClarionLinks(CUnit* unit);
+	void placeClarionLinks(CUnit* unit);
+	bool hasClarionLinks(CUnit* unit);
+	void spreadClarionDamage(hooks::WeaponDamageData& data);
 }

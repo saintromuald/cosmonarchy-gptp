@@ -399,7 +399,7 @@ namespace hooks {
 		addStatus(statuses, "Cutaneous Barrier", scbw::get_generic_value(unit, ValueId::CutaneousBarrier) > 0);
 		addStatus(statuses, "Infested", scbw::get_generic_value(unit, ValueId::InfestedByAkistrokor) > 0);
 		addStatus(statuses, "Enthralling Assault", scbw::get_generic_value(unit, ValueId::EnthrallingTalons) > 0);
-		addStatus(statuses, "Phase Link", scbw::get_aise_value(unit, nullptr, AiseId::HasClarionLink, 0, 0));
+		addStatus(statuses, "Phase Link", scbw::hasClarionLinks(unit));
 		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0); // for caster
 		bool malice = scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0);
 		addStatus(statuses, "Cowardice", scbw::get_generic_value(unit, ValueId::HierophantOverlay) || malice);

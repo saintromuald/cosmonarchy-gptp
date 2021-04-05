@@ -9,7 +9,6 @@
 #include "logger.h"
 namespace {
 	//Helper functions
-	void createShieldOverlay(CUnit* unit, uint32 attackDirection);
 	uint16 getUnitStrength(CUnit* unit, bool useGroundStrength);
 
 	/// Definition of damage factors (explosive, concussive, etc.)
@@ -198,23 +197,10 @@ void augurSacrifice(CUnit* target) {
 }
 
 namespace hooks {
-	struct WeaponDamageData {
-		const int32 damage;
-		int32 finalDamage;
-		int32 shieldReduceAmount;
-		uint8 damageType;
-		uint8 damageDivisor;
-		uint8 weaponId;
-		int8 direction;
-
-		CUnit* target;
-		CUnit* attacker;
-		uint8 attackingPlayerId;
-	};
-
 	static void weaponDamage_root(WeaponDamageData& data);
 	static void weaponDamage_damageModifiers(WeaponDamageData& data);
 	static void weaponDamage_lifesteal(WeaponDamageData& data);
+	void weaponDamage_targetBased(WeaponDamageData& data); // dependent on target not attacker, procs on phase link
 	static void weaponDamage_behaviors(WeaponDamageData& data);
 	static void weaponDamage_fatal(WeaponDamageData& data);
 
@@ -335,10 +321,12 @@ namespace hooks {
 		// Apply damage type/unit size factor
 		int32 damage_factor = damageFactor[data.damageType].unitSizeFactor[units_dat::SizeType[data.target->id]];
 		if (data.attacker != nullptr) {
-			if (data.attacker->id == UnitId::TerranHarakan) { // TODO: Replace check with weaponid?
+			switch(data.attacker->id)
+			case UnitId::TerranHarakan: {
 				if (units_dat::BaseProperty[data.target->id] & UnitProperty::Building) {
 					damage_factor = 256;
 				}
+				break;
 			}
 		}
 
@@ -347,6 +335,7 @@ namespace hooks {
 			data.finalDamage = 128;
 		}
 
+		weaponDamage_targetBased(data);
 		weaponDamage_behaviors(data);
 		if (data.attacker != nullptr) { // lifesteal 
 			weaponDamage_lifesteal(data);
@@ -356,7 +345,6 @@ namespace hooks {
 		}
 
 		// Deal damage, except for Independent damage, which always deals 0
-		// TODO: do a check to prevent recursive phase link calls (mutex crash)
 		if (data.damageType != DamageType::Independent && data.target->defensiveMatrixHp == 0 && canDamage) {
 			data.target->damageHp(data.finalDamage, data.attacker, data.attackingPlayerId, data.weaponId != WeaponId::Irradiate);
 			// Prevent Science Vessels from being continuously revealed to the irradiated target
@@ -364,9 +352,8 @@ namespace hooks {
 
 		// Reduce shields
 		if (data.shieldReduceAmount != 0 && canDamage) {
-			// TODO: do a check to prevent recursive phase link calls (mutex crash)
-			if (scbw::get_aise_value(data.target, nullptr, AiseId::HasClarionLink, 0, 0)) {
-				scbw::sendGPTP_aise_cmd(data.target, data.attacker, GptpId::SpreadClarionDamage, data.shieldReduceAmount, data.damageType, data.direction);
+			if (scbw::get_generic_unit) {
+				scbw::spreadClarionDamage(data);
 			}
 			else {
 				data.target->shields -= data.shieldReduceAmount;
@@ -376,9 +363,8 @@ namespace hooks {
 			}
 		}
 
-		// TODO: do a check to prevent recursive phase link calls (mutex crash)
 		if (shield_overlay) {
-			createShieldOverlay(data.target, data.direction);
+			scbw::createShieldOverlay(data.target, data.direction);
 		}
 
 		//Update unit strength data
@@ -488,9 +474,8 @@ namespace hooks {
 		}
 	}
 
-	static void weaponDamage_behaviors(WeaponDamageData& data) {
+	void weaponDamage_targetBased(WeaponDamageData& data) {
 		if (data.attacker != nullptr) {
-
 			switch (data.target->id) {
 			case UnitId::ProtossSimulacrum: {
 				// Autovitality - Simulacrum behavior
@@ -502,6 +487,35 @@ namespace hooks {
 			}
 			}
 
+			// Cantavis - Hallucinating
+			if (scbw::get_generic_timer(data.target, ValueId::HallucinatingTimer) >= 1) {
+				CUnit* haluAttacker = data.attacker;
+				if ((haluAttacker->id == UnitId::ProtossSteward
+					|| haluAttacker->id == UnitId::ProtossPlasmaShell)
+					&& data.attacker->interceptor.parent != nullptr) {
+					haluAttacker = data.attacker->interceptor.parent;
+				}
+				if (scbw::get_generic_unit(haluAttacker, ValueId::HallucinationPointer) == nullptr
+					&& !(haluAttacker->status & UnitStatus::IsHallucination)) {
+					uint32 haluPlayer = scbw::get_generic_value(data.target, ValueId::HallucinatingSourcePlayer);
+					if (haluPlayer != haluAttacker->playerId && !scbw::isAlliedTo(haluPlayer, haluAttacker->playerId)) return;
+
+					CUnit* hal_unit = createHallucination(haluAttacker, haluPlayer);
+					if (hal_unit != nullptr) {
+						hal_unit->sprite->createOverlay(ImageId::HallucinationDeath3);
+						scbw::set_generic_unit(haluAttacker, ValueId::HallucinationPointer, hal_unit);
+
+						if (!placeHallucination(hal_unit)) {
+							unitDestructor(hal_unit);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	static void weaponDamage_behaviors(WeaponDamageData& data) {
+		if (data.attacker != nullptr) {
 			// Petrification - Gorgon behavior
 			if (GorgonCondition(data.attacker, data.target)) {
 				scbw::refreshDebuffs(data.target);
@@ -692,31 +706,6 @@ namespace hooks {
 				//}
 				break;
 			}
-			}
-
-			// Cantavis - Hallucinating
-			if (scbw::get_generic_timer(data.target, ValueId::HallucinatingTimer) >= 1) {
-				CUnit* haluAttacker = data.attacker;
-				if ((haluAttacker->id == UnitId::ProtossSteward
-					|| haluAttacker->id == UnitId::ProtossPlasmaShell)
-					&& data.attacker->interceptor.parent != nullptr) {
-					haluAttacker = data.attacker->interceptor.parent;
-				}
-				if (scbw::get_generic_unit(haluAttacker, ValueId::HallucinationPointer) == nullptr
-					&& !(haluAttacker->status & UnitStatus::IsHallucination)) {
-					uint32 haluPlayer = scbw::get_generic_value(data.target, ValueId::HallucinatingSourcePlayer);
-					if (haluPlayer != haluAttacker->playerId && !scbw::isAlliedTo(haluPlayer, haluAttacker->playerId)) return;
-
-					CUnit* hal_unit = createHallucination(haluAttacker, haluPlayer);
-					if (hal_unit != nullptr) {
-						hal_unit->sprite->createOverlay(ImageId::HallucinationDeath3);
-						scbw::set_generic_unit(haluAttacker, ValueId::HallucinationPointer, hal_unit);
-
-						if (!placeHallucination(hal_unit)) {
-							unitDestructor(hal_unit);
-						}
-					}
-				}
 			}
 		}
 	}
@@ -1045,21 +1034,6 @@ namespace hooks {
 } //hooks
 
 namespace {
-
-	//Creates the Plasma Shield flickering effect.
-	//Identical to function @ 0x004E6140
-	void createShieldOverlay(CUnit* unit, uint32 attackDirection) {
-
-		//const LO_Header* shield_lo = shieldOverlays[unit->sprite->mainGraphic->id];
-		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayShieldPtr, unit->sprite->mainGraphic->id));
-		uint32 frameAngle = (attackDirection - 124) / 8 % 32;
-
-		Point8 offset = shield_lo->getOffset(unit->sprite->mainGraphic->direction, frameAngle);
-
-		unit->sprite->createOverlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
-
-	}
-
 	//Somehow related to AI stuff; details unknown.
 	const uint32 Helper_GetUnitStrength = 0x00431800;
 	uint16 getUnitStrength(CUnit* unit, bool useGroundStrength) {

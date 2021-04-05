@@ -619,8 +619,8 @@ void updateStatusEffects(CUnit* unit) {
 
 	}
 	if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0)==1) {
-//		scbw::printText("Place clarion links");
-		scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::PlaceClarionLinksForUnit, 0, 0, 0);//clears, then places all clarion links
+		// scbw::printText("Place clarion links");
+		scbw::placeClarionLinks(unit); //clears, then places all clarion links
 	}
 	if (unit->isUnderStorm != 0)
 		unit->isUnderStorm--;

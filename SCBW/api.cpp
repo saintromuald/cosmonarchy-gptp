@@ -1670,4 +1670,16 @@ uint16 random() {
 		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Building)
 			&& !(unit->status & UnitStatus::Burrowed);
 	}
+
+	//Creates the Plasma Shield flickering effect.
+	//Identical to function @ 0x004E6140
+	void createShieldOverlay(CUnit* unit, uint32 attackDirection) {
+		//const LO_Header* shield_lo = shieldOverlays[unit->sprite->mainGraphic->id];
+		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayShieldPtr, unit->sprite->mainGraphic->id));
+		uint32 frameAngle = (attackDirection - 124) / 8 % 32;
+
+		Point8 offset = shield_lo->getOffset(unit->sprite->mainGraphic->direction, frameAngle);
+
+		unit->sprite->createOverlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
+	}
 } //scbw
