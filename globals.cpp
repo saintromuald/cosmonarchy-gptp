@@ -2,7 +2,8 @@
 #include "hook_tools.h"
 #include "hooks/hydraFinder.h"
 #include "hooks/limits/attack_extender.h"
-#include <hooks/weapons/weapon_damage.h>
+#include "hooks/weapons/weapon_damage.h"
+#include <algorithm>
 globals Globals;
 
 void globals::refreshDebuggingInfo() {
@@ -191,6 +192,19 @@ void globals::unitFrameHook(CUnit* unit) {
 }
 void globals::unitDeathHook(CUnit* unit) {
 	unitStructs.erase(unit);
+	for (auto& a : unitStructs) { // set dead unit pointers to nullptr and erase them from unit vectors
+		for (auto& unitPair : a.second.genericUnits) {
+			if (unitPair.second == unit) {
+				unitPair.second = nullptr;
+			}
+		}
+		for (auto& unitVecPair : a.second.genericUnitVectors) {
+			auto& vec = unitVecPair.second;
+			vec.erase(std::remove_if(vec.begin(), vec.end(), [&](CUnit* vecUnit) {
+				return vecUnit == unit;
+			}), vec.end());
+		}
+	}
 	for (int i = 0; i < this->apostleAgents.size(); i++) {
 		if (apostleAgents[i].creator == unit) {
 			apostleAgents[i].creator=nullptr;
@@ -229,7 +243,7 @@ void globals::frameHook() {
 			agent.timer--;
 		}
 		else {
-			//revive unit
+			//revive u
 //			scbw::printFormattedText("Agent Creator: 0x%X", agent.creator);
 			auto revived = scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y, agent.creator);
 			if (revived) {
@@ -533,38 +547,68 @@ void injectGlobalsHooks() {
 }
 
 namespace scbw {
-	CUnit* get_generic_unit(CUnit* unit, uint32 id) {
-		auto find = Globals.unitStructs.find(unit);
+	CUnit* get_generic_unit(CUnit* u, uint32 id) {
+		auto find = Globals.unitStructs.find(u);
 		if (find != Globals.unitStructs.end()) {
 			return find->second.getGenericUnit(id);
 		}
 		return nullptr;
 	}
-	uint32 get_generic_value(CUnit* u, uint32 val) {
+
+	uint32 get_generic_value(CUnit* u, uint32 id) {
 		auto find = Globals.unitStructs.find(u);
 		if (find != Globals.unitStructs.end()) {
-			return find->second.getGenericValue(val);
+			return find->second.getGenericValue(id);
 		}
 		return 0;
 	}
-	uint32 get_generic_timer(CUnit* u, uint32 val) {
+
+	uint32 get_generic_timer(CUnit* u, uint32 id) {
 		auto find = Globals.unitStructs.find(u);
 		if (find != Globals.unitStructs.end()) {
-			return find->second.getGenericTimer(val);
+			return find->second.getGenericTimer(id);
 		}
 		return 0;
 	}
-	void set_generic_unit(CUnit* unit, uint32 id, CUnit* targ) {
-		Globals.unitStructs[unit].setGenericUnit(id, targ);
+
+	void set_generic_unit(CUnit* u, uint32 id, CUnit* val) {
+		Globals.unitStructs[u].setGenericUnit(id, val);
 	}
+
 	void set_generic_value(CUnit* u, uint32 id, uint32 val) {
 		Globals.unitStructs[u].setGenericValue(id, val);
 	}
+
 	void set_generic_timer(CUnit* u, uint32 id, uint32 val) {
 		Globals.unitStructs[u].setGenericTimer(id, val);
 	}
+
 	void add_generic_value(CUnit* u, uint32 id, int val) {
 		Globals.unitStructs[u].addGenericValue(id, val);
+	}
+
+	std::vector<int>& get_generic_value_vector(CUnit* u, uint32 id) {
+		auto& find = Globals.unitStructs.find(u);
+		if (find == Globals.unitStructs.end()) {
+			Globals.unitStructs[u] = {};
+		}
+		return find->second.getGenericValueVector(id);
+	}
+
+	std::vector<int>& get_generic_timer_vector(CUnit* u, uint32 id) {
+		auto& find = Globals.unitStructs.find(u);
+		if (find == Globals.unitStructs.end()) {
+			Globals.unitStructs[u] = {};
+		}
+		return find->second.getGenericTimerVector(id);
+	}
+
+	std::vector<CUnit*>& get_generic_unit_vector(CUnit* u, uint32 id) {
+		auto& find = Globals.unitStructs.find(u);
+		if (find == Globals.unitStructs.end()) {
+			Globals.unitStructs[u] = {};
+		}
+		return find->second.getGenericUnitVector(id);
 	}
 
 	void refreshDebuffs(CUnit* unit) {
@@ -1030,4 +1074,116 @@ namespace scbw {
 
 	}
 
+	const uint32 Func_RemoveOverlays2 = 0x00492370;
+	void removeoverlays2(uint32 from, uint32 to, CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV EAX, from
+			MOV EBX, unit
+			PUSH to
+			CALL Func_RemoveOverlays2
+			POPAD
+		}
+	}
+
+	void clearClarionLinks(CUnit* unit) {
+		auto& vec = scbw::get_generic_unit_vector(unit, ValueId::ClarionLinkFeedback);
+		for (CUnit* unitPtr : vec) {
+			scbw::set_generic_unit(unit, ValueId::ClarionLinkUnit, nullptr);
+			removeoverlays2(1102, 1104, unit);
+		}
+	}
+
+	void placeClarionLinks(CUnit* unit) {
+		auto& vec = scbw::get_generic_unit_vector(unit, ValueId::ClarionLinkFeedback);
+
+		scbw::UnitFinder(
+			unit->getX() - 128,
+			unit->getX() + 128,
+			unit->getY() - 128,
+			unit->getY() + 128
+		).filter([&](CUnit* target) {
+			if (!scbw::isAlliedTo(unit->playerId, target->playerId)) {
+				return false;
+			}
+			if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
+				return false;
+			}
+			if (!target->shieldsEnabled()) {
+				return false;
+			}
+			if (target->shields <= 0) {
+				return false;
+			}
+			if (scbw::getDistanceFast(target->getX(), target->getY(), unit->getX(), unit->getY()) > 128) {
+				return false;
+			}
+			return true;
+		}).forEach([&](CUnit* target) {
+			vec.push_back(target);
+
+			int img;
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay) {
+				img = 1104;
+			} else if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay) {
+				img = 1103;
+			} else {
+				img = 1102;
+			}
+
+			//unit->sprite->createOverlay(img, 0, 0, 0);
+			scbw::set_generic_unit(target, ValueId::ClarionLinkUnit, unit);
+		});
+		clearClarionLinks(unit);
+	}
+
+	bool hasClarionLinks(CUnit* unit) {
+		auto& vec = scbw::get_generic_unit_vector(unit, ValueId::ClarionLinkFeedback);
+		return vec.size() != 0;
+	}
+
+	void notifyDamage(CUnit* unit, hooks::WeaponDamageData& data) {
+		hooks::WeaponDamageData newData = {
+			0,
+			0,
+			0,
+			data.damageType,
+			0,
+			0,
+			0,
+			unit,
+			data.attacker,
+			data.attackingPlayerId
+		};
+		hooks::weaponDamage_targetBased(newData);
+	}
+
+	/*
+	TODO: Finish phase link port
+	- Figure out what AiseId::SendClarionValue is
+	- Figure out why phase link is applying in enormous area
+	- Figure out why spawning overlays in those functions crash (possibly because of so many units being affected?)
+	*/
+	void spreadClarionDamage(hooks::WeaponDamageData& data) {
+		CUnit* unit = data.target;
+		if (auto clarion = scbw::get_generic_unit(unit, ValueId::ClarionLinkUnit)) {
+			auto& vec = scbw::get_generic_unit_vector(clarion, ValueId::ClarionLinkFeedback);
+			if (vec.size() == 0) {
+				if (data.damageType != 0 && unit->shields != 0) {
+					//createShieldOverlay(unit, data.direction);
+				}
+				unit->shields -= data.shieldReduceAmount;
+				notifyDamage(unit, data);
+			} else {
+				int divided = data.shieldReduceAmount / vec.size();
+				for (CUnit* vecUnit : vec) {
+					if (data.damageType != 0 && vecUnit->shields != 0) {
+						//scbw::createShieldOverlay(vecUnit, data.direction);
+					}
+					vecUnit->shields -= std::min(data.shieldReduceAmount, unit->shields);
+					notifyDamage(vecUnit, data);
+				}
+			}
+		}
+	}
 }

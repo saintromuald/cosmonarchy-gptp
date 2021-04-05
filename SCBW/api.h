@@ -398,8 +398,7 @@ uint16 random();
     bool orderIsSpell(int32 orderId);
     void doDeconstructionDamage(CUnit* unit, uint16 weaponId, bool playSound = true);
     bool canBeParasited(CUnit* unit);
-    bool unitIsParasited(CUnit* unit);
-    bool unitIsParasitedAndArmed(CUnit* unit);
     void applyParasite(CUnit* unit, uint8 playerID, CUnit* queen);
+    void createShieldOverlay(CUnit* unit, uint32 attackDirection);
 
 } //scbw

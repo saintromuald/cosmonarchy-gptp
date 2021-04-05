@@ -287,7 +287,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 
 	// Clarion Phase Link behavior
 	if (unit->id == UnitId::ProtossClarion) {
-		scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::ClearClarionLinks, 0, 0, 0);
+		scbw::clearClarionLinks(unit);
 	}
 
 	// Irradiate Radiation Shockwave enhancement
