@@ -228,7 +228,7 @@ class CorpseFinder {
 public:
 	//
 	//
-	// Right now finder is very inefficient performance-wise, it should be improved later
+	// This finder is very inefficient performance-wise, it should be improved later
 	//
 	//
 	std::vector<CThingy*> corpses;
@@ -318,7 +318,7 @@ namespace hooks {
 				if (bullet->weaponType == WeaponId::AspirantCriticality) {
 					if (bullet->orderSignal & 0x80) {
 						bullet->orderSignal &= ~0x80;
-						scbw::printText("u");
+						scbw::printText("Aspirant Criticality *should* expire here");
 					}
 				}
 			}
