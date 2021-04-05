@@ -250,18 +250,18 @@ public:
 				case SpriteId::Corpse_Apostle:
 				case SpriteId::Corpse_Bactalisk:
 				case SpriteId::Corpse_Broodling:
-				case SpriteId::Corpse_Defiler:
+				case SpriteId::Corpse_Isthrathaleth:
 				case SpriteId::Corpse_Dragoon:
-				case SpriteId::Corpse_Drone:
+				case SpriteId::Corpse_Droleth:
 				case SpriteId::Corpse_Egg:
-				case SpriteId::Corpse_Firebat:
-				case SpriteId::Corpse_Ghost:
+				case SpriteId::Corpse_Harakan:
+				case SpriteId::Corpse_Eidolon:
 				case SpriteId::Corpse_Hydralisk:
 				case SpriteId::Corpse_Larva:
-				case SpriteId::Corpse_Lurker:
-				case SpriteId::Corpse_Marine:
-				case SpriteId::Corpse_Medic:
-				case SpriteId::Corpse_Ultralisk:
+				case SpriteId::Corpse_Lakizilisk:
+				case SpriteId::Corpse_Maverick:
+				case SpriteId::Corpse_Cleric:
+				case SpriteId::Corpse_Ultrakor:
 				case SpriteId::Corpse_ZergBuildingLarge:
 				case SpriteId::Corpse_ZergBuildingSmall:
 				case SpriteId::Corpse_Zergling:
