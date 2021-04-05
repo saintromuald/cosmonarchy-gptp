@@ -386,6 +386,7 @@ namespace hooks {
 		addStatus(statuses, "Reconstitution", scbw::get_generic_rust_value(unit, ValueId::Reconstitution));
 		addStatus(statuses, "Robotic Sapience", scbw::get_generic_value(unit, ValueId::RoboticSapience));
 		addStatus(statuses, "Stellar Enforcement", scbw::get_generic_value(unit, ValueId::StellarEnforcement));
+		addStatus(statuses, "Terminal Surge", scbw::get_generic_value(unit, ValueId::TerminalSurge));
 
 		// Aise Value - Gimmicked
 		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 0);
