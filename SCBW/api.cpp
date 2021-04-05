@@ -1400,43 +1400,65 @@ uint16 random() {
 		return result;
 	}
 
+	const uint32 Func_ApplyHallucinationStats = 0x004F6180;
+	void ApplyHallucinationStats(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_ApplyHallucinationStats
+			POPAD
+		}
+	}
+
 	void createUnitFromAbility(int unitId, int count, uint16 playerId, int32 x, int32 y, uint32 removeTimer, CUnit* creator) {
 		for (int i = 0; i < count; i++) {
 			CUnit* unit = scbw::createUnitIngame(unitId, playerId, x, y, creator);
-			if (unit != nullptr) {
-				if (unitId == UnitId::ZergBroodling
-				 || unitId == UnitId::ZergBroodlisk) { // Parasite & Incubators
-					scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
-					if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
-						unit->removeTimer = removeTimer;
-					}
-					uint32 range = 6 * 32;
-					scbw::UnitFinder(
-						unit->getX() - range,
-						unit->getY() - range,
-						unit->getX() + range,
-						unit->getY() + range
-					).forEach([&](CUnit* target) {
-						if (target->id != UnitId::ZergMatraleth) {
-							return;
-						}
-						if (!scbw::isAlliedTo(unit->playerId, target->playerId)) {
-							return;
-						}
-						if (target->energy < 200 * 256) {
-							target->energy = std::min((uint16)(target->energy + (uint16)5 * (uint16)256), target->getMaxEnergy());
-							target->sprite->createUnderlay(425);
-						}
-					});
+			if (unit == nullptr) {
+				return;
+			}
+			if (creator != nullptr) {
+				if (creator->status & UnitStatus::IsHallucination) {
+					ApplyHallucinationStats(unit);
+					unit->status |= UnitStatus::IsHallucination;
+					unit->removeTimer = 1350;
+					unit->sprite->createOverlay(ImageId::HallucinationDeath3);
 				}
-				else if (unitId == UnitId::ProtossSimulacrum) {
-					if (creator != nullptr) {
-						unit->hitPoints = std::max(256, creator->hitPoints);
-						unit->shields = std::max(256, creator->shields);
-						scbw::inheritDebuffs(creator, unit);
-					}
-					scbw::playSound(SoundId::Simulacrum_Clone_01, unit);
+			}
+			switch (unitId) {
+			case UnitId::ZergBroodling:
+			case UnitId::ZergBroodlisk: {
+				scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
+				if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
+					unit->removeTimer = removeTimer;
 				}
+				uint32 range = 6 * 32;
+				scbw::UnitFinder(
+					unit->getX() - range,
+					unit->getY() - range,
+					unit->getX() + range,
+					unit->getY() + range
+				).forEach([&](CUnit* target) {
+					if (target->id != UnitId::ZergMatraleth) {
+						return;
+					}
+					if (!scbw::isAlliedTo(unit->playerId, target->playerId)) {
+						return;
+					}
+					if (target->energy < 200 * 256) {
+						target->energy = std::min((uint16)(target->energy + (uint16)5 * (uint16)256), target->getMaxEnergy());
+						target->sprite->createUnderlay(425);
+					}
+				});
+				break;
+			}
+			case UnitId::ProtossSimulacrum: {
+				if (creator != nullptr) {
+					unit->hitPoints = std::max(256, creator->hitPoints);
+					unit->shields = std::max(256, creator->shields);
+					scbw::inheritDebuffs(creator, unit);
+				}
+				scbw::playSound(SoundId::Simulacrum_Clone_01, unit);
+			}
 			}
 		}
 	}
