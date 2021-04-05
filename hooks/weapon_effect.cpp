@@ -522,8 +522,8 @@ namespace hooks {
       constexpr uint32 radius = 96;
 	  scbw::UnitFinder(
 		  bullet->position.x - radius / 2,
-		  bullet->position.x + radius / 2,
 		  bullet->position.y - radius / 2,
+		  bullet->position.x + radius / 2,
 	      bullet->position.y + radius / 2
 	  ).forEach([&](CUnit* unit) {
 		  scbw::applyParasite(unit, bullet->sourceUnit->playerId, bullet->sourceUnit);
