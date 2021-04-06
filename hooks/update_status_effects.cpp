@@ -524,65 +524,24 @@ namespace hooks {
 				}
 				unit->updateSpeed();
 			}
-
 		}
-
 
 		if (unit->plagueTimer != 0) {
 			unit->plagueTimer--;
 			if (unit->plagueTimer <= 45) {
 				unit->plagueTimer = 0;
 			}
+
 			if (!(unit->status & UnitStatus::Invincible)) {
-
-				//int32 damage = (weapons_dat::DamageAmount[WeaponId::Plague] << 8) / 76;
-
 				int32 damage = (weapons_dat::DamageAmount[WeaponId::Plague] * 256) / 30;
-
-				/*
-				if (true) {//defiler plague upgrade (unknown id), add condition later
-					unit->_padding_0x132 |= 0x40;
-				}*/
-
 				if (unit->plagueTimer == 0) {
-
 					damage += (weapons_dat::DamageAmount[WeaponId::Plague] * 256) % 30;
 				}
-				/*
-				//original bw plague code, disabled
-				int32 damage = weapons_dat::DamageAmount[WeaponId::Plague];
-				//randomize?
-				__asm {
-					PUSHAD
-					MOV ECX, damage
-					SHL ECX, 0x08
-					MOV EAX, 0x6BCA1AF3
-					IMUL ECX
-					SAR EDX, 0x05
-					MOV EAX, EDX
-					SHR EAX, 0x1F
-					ADD EAX, EDX
-					MOV damage, EAX
-					POPAD
-				}*/
 				if (unit->hitPoints > damage) {
 					if (damage > 0) {
 						unit->damageWith(damage, WeaponId::Plague);
 					}
-
-					//defiler plague upgrade  - add requirement later
-					/*
-					if (unit->plagueTimer == 0 && unit->_padding_0x132 & 0x40) {
-						unit->_padding_0x132 &= ~0x40;
-					}*/
-				} else {
-					//defiler plague upgrade  - add requirement later
-					/*
-					if (true) {//defiler plague upgrade (unknown id), add condition later
-						unit->remove();
-					}*/
 				}
-
 			}
 
 			if (unit->plagueTimer == 0) {
@@ -593,12 +552,14 @@ namespace hooks {
 			}
 
 		}
+
 		if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
-			// scbw::printText("Place clarion links");
 			scbw::placeClarionLinks(unit); //clears, then places all clarion links
 		}
-		if (unit->isUnderStorm != 0)
+
+		if (unit->isUnderStorm != 0) {
 			unit->isUnderStorm--;
+		}
 
 		//hardcoding effect of unreferenced_sub_4F42C0 @ 0x004F42C0
 		uint8 previousAcidSporeCount = unit->corrosiveSporeCount;
