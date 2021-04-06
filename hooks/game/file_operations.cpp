@@ -24,7 +24,7 @@ namespace hooks {
 		char FileName; // [esp+8h] [ebp-104h]
 
 		SStrCopy(&FileName, mapsFolder, 0x104u);
-		SStrNCat(&FileName, (const char*) (vector + 20), 0x104u);
+		SStrNCat(&FileName, (const char*)(vector + 20), 0x104u);
 		strrchr(&FileName, 92);
 		SStrCopy(CurrentMapFileName, &FileName, 0x104u);
 		*campaignIndex = 0;
@@ -37,8 +37,8 @@ namespace hooks {
 		if (fclose(map)) {
 			DeleteFileA(&FileName);
 			result = 0;
-		}         else {
-			if (!lockwrite(*(const void**) (vector + 68), (size_t*) (vector + 12), (size_t*) 1u, map))
+		} else {
+			if (!lockwrite(*(const void**)(vector + 68), (size_t*)(vector + 12), (size_t*)1u, map))
 				DeleteFileA(&FileName);
 			result = 0;
 		}
@@ -54,11 +54,11 @@ namespace hooks {
 		int32 v7; // [esp+0h] [ebp-4h]
 
 		v7 = a1;
-		if (IS_IN_REPLAY)         {
+		if (IS_IN_REPLAY) {
 			v3 = *scenarioCHKSize;
 			v4 = scenarioChk;
 			v7 = 0;
-			result = readMapChunks(0, (int32) scenarioChk, (int32*) &v7, *scenarioCHKSize);
+			result = readMapChunks(0, (int32)scenarioChk, (int32*)&v7, *scenarioCHKSize);
 			if (result) {
 				if (gameData->victoryCondition || gameData->startingUnits || gameData->tournamentModeEnabled)
 					v6 = &stru_500574[5 * v7];
@@ -66,9 +66,9 @@ namespace hooks {
 					v6 = &stru_50057C[5 * v7];
 				result = readChunkNodes(v6->chkStructCount, v3, v6->chkStruct, v4, 0);
 			}
-		}         else if (CurrentMapFileName[0]) {
+		} else if (CurrentMapFileName[0]) {
 			result = unkNetworkFunc(CurrentMapFileName, a2, a3) != 0;
-		}         else {
+		} else {
 			result = 0;
 		}
 		return result;
@@ -118,7 +118,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (char*) result;
+		return (char*)result;
 	}
 
 	const uint32 Func_createDirectory = 0x0041EAB0;

@@ -232,7 +232,7 @@ namespace hooks {
 		bool hasTerran_ = false;
 		bool hasZerg_ = false;
 		bool hasProtoss_ = false;
-		if (town) 		{
+		if (town) {
 			player_ = town->player;
 			race_ = playerTable[player_].race;
 			//Race Checks, Allows main race to continue to function, but will consider other races if there is supply exists
@@ -271,21 +271,21 @@ namespace hooks {
 				if (checkSupplyNeed(player_, RaceId::Protoss)) {
 					town = GetFirstEligibleTown(town, player_, RaceId::Protoss);
 					if (town)
-						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player_), (void*) town);
+						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player_), (void*)town);
 				}
 			}
 			if (hasZerg_) {
 				if (checkSupplyNeed(player_, RaceId::Zerg)) {
 					town = GetFirstEligibleTown(town, player_, RaceId::Zerg);
 					if (town)
-						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player_), (void*) town);
+						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player_), (void*)town);
 				}
 			}
 			if (hasTerran_) {
 				if (checkSupplyNeed(player_, RaceId::Terran)) {
 					town = GetFirstEligibleTown(town, player_, RaceId::Terran);
 					if (town)
-						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player_), (void*) town);
+						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player_), (void*)town);
 				}
 			}
 		}
@@ -343,10 +343,10 @@ namespace hooks {
 		if (!battleTime
 			|| *elapsedTimeSeconds - battleTime >= 0x1E // in_battle flag? just a coincidence?
 			|| ((race = playerTable[playerId].race, race != 1) ? (result = 8 * (race != 0) + 149) : (result = 110),
-				unitId == result || priority == 140)) 		{
+				unitId == result || priority == 140)) {
 			if (units_dat::BaseProperty[unitId] & UnitProperty::Worker) {
 				reqType = 4;
-			} 			else {
+			} else {
 				reqType = 2 * (units_dat::BaseProperty[unitId] & UnitProperty::Addon) | 3; // 3 = UnitProperty::Addon + UnitProperty::Building
 			}
 			AI_AddCostToNeeds(unitId, playerId, reqType);
@@ -529,6 +529,6 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool) result;
+		return (bool)result;
 	}
 }

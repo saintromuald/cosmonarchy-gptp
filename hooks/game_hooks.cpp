@@ -130,7 +130,7 @@ void spawnCreeper(CUnit* unit) {
 			unit->playerId);
 		if (creep_spawned == nullptr) {
 			//scbw::printText("Error: Creeper");
-		} 		else {
+		} else {
 			function_004A01F0g(creep_spawned);
 			updateUnitStrengthg(creep_spawned);
 
@@ -208,7 +208,7 @@ void shamanProc(CUnit* shaman, bool organic, uint32 heal, CUnit* target) {
 			tgt = target;
 		if (organic) {
 			(tgt->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
-		} 		else {
+		} else {
 			(tgt->sprite)->createTopOverlay(1158, 0, 0, 0);
 		}
 
@@ -285,7 +285,7 @@ namespace hooks {
 			scbw::setInGameLoopState(true); // Needed for scbw::random() to work
 			graphics::resetAllGraphics();
 			hooks::updatePsiFieldProviders();
-			*(int*) hyperTrigger = 0; // Single frame hypertriggers
+			*(int*)hyperTrigger = 0; // Single frame hypertriggers
 
 			//This block is executed once every game
 			if (*elapsedTimeFrames == 0) {
@@ -421,7 +421,7 @@ namespace hooks {
 				if (!unit->getOverlay(1267)) {
 					unit->sprite->createTopOverlay(1267);
 				}
-			} 			else {
+			} else {
 				if (unit->getOverlay(1267)) {
 					unit->sprite->removeOverlay(1267);
 				}
@@ -434,7 +434,7 @@ namespace hooks {
 				if (!unit->getOverlay(ImageId::KhaydarinEclipseOverlayMedium)) {
 					unit->sprite->createTopOverlay(ImageId::KhaydarinEclipseOverlayMedium);
 				}
-			} 			else {
+			} else {
 				if (unit->getOverlay(ImageId::KhaydarinEclipseOverlayMedium)) {
 					unit->sprite->removeOverlay(ImageId::KhaydarinEclipseOverlayMedium);
 				}
@@ -501,7 +501,7 @@ namespace hooks {
 				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 32, Y + 32, player);
 				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 32, Y - 32, player);
 				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 32, Y - 32, player);
-			} 			else if (unit->orderSignal & 16) {
+			} else if (unit->orderSignal & 16) {
 				unit->orderSignal &= ~16;
 				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y + 80, player);
 				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 80, player);
@@ -523,7 +523,7 @@ namespace hooks {
 				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 0, player);
 				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 0, Y + 80, player);
 				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 0, Y + 80, player);
-			} 			else if (unit->orderSignal & 32) {
+			} else if (unit->orderSignal & 32) {
 				unit->orderSignal &= ~32;
 				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y + 144, player);
 				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 144, player);
@@ -541,7 +541,7 @@ namespace hooks {
 				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 208, player);
 				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 208, player);
 				scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 208, player);
-			} 			else if (unit->orderSignal & 64) {
+			} else if (unit->orderSignal & 64) {
 				unit->orderSignal &= ~64;
 			}
 		}
@@ -563,7 +563,7 @@ namespace hooks {
 					if (n(picked_unit)) {
 						//apply lazarus agent
 						scbw::set_generic_value(picked_unit, ValueId::LazarusAgent, 1);
-						scbw::set_generic_value(picked_unit, ValueId::LazarusAgentApostleSrc, (uint32) unit);
+						scbw::set_generic_value(picked_unit, ValueId::LazarusAgentApostleSrc, (uint32)unit);
 						picked_unit->sprite->createTopOverlay(1265);
 					}
 				}
@@ -579,14 +579,14 @@ namespace hooks {
 					if (web == nullptr) {
 						//CCMU case
 						scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 0);
-					} 					else {
+					} else {
 						scbw::set_generic_unit(unit, ValueId::AttachedDisruptionWeb, web);
 					}
-				} 				else {
+				} else {
 					//web attached
 					scbw::moveUnit(web, unit->getX(), unit->getY());
 				}
-			} 			else {
+			} else {
 				if (web != nullptr) {
 					web->remove();
 				}
@@ -633,7 +633,7 @@ namespace hooks {
 				scbw::add_generic_value(unit, ValueId::SkyfallStacks, 1);
 				if (missile == 20) {
 					scbw::set_generic_value(unit, ValueId::SkyfallStacks, 0);
-				} 				else {
+				} else {
 					scbw::set_generic_timer(unit, ValueId::SkyfallTimer, 2 + 1);
 					uint32 tgt_x = scbw::get_generic_value(unit, ValueId::SkyfallX);
 					uint32 tgt_y = scbw::get_generic_value(unit, ValueId::SkyfallY);
@@ -724,7 +724,7 @@ namespace hooks {
 						shamanProc(unit, false, 2, target);
 					});
 				}
-			} 			else {
+			} else {
 				auto timer = scbw::get_generic_timer(unit, ValueId::NewMedstimTimer);
 				if (timer == 0) {
 					scbw::set_generic_timer(unit, ValueId::NewMedstimTimer, 24);
@@ -745,7 +745,7 @@ namespace hooks {
 		// Basilisk - Biogenesis
 		else if (unit->id == UnitId::ZergBactalisk) {
 			if (unit->status & UnitStatus::Burrowed) {
-				if (!(unit->_padding_0x132 & HydraFlags1::BasiliskBurrowed)) 				{
+				if (!(unit->_padding_0x132 & HydraFlags1::BasiliskBurrowed)) {
 					unit->_padding_0x132 |= HydraFlags1::BasiliskBurrowed;
 					spawnCreeper(unit);
 				}
@@ -798,7 +798,7 @@ namespace hooks {
 				if (target->status & UnitStatus::Invincible) {
 					return;
 				}
-				for (int i = 0; i < (int) unit->corrosiveSporeCount; i++) {
+				for (int i = 0; i < (int)unit->corrosiveSporeCount; i++) {
 					scbw::ApplySpores(target);
 				}
 			});
@@ -847,7 +847,7 @@ namespace hooks {
 					if (scbw::get_generic_value(unit, ValueId::ObservanceRend) < 5) {
 						scbw::add_generic_value(unit, ValueId::ObservanceRend, 1);
 					}
-				} 				else {
+				} else {
 					scbw::set_generic_value(unit, ValueId::ObservanceRend, 0);
 					unit->removeOverlay(ImageId::ObservanceOverlayLarge, ImageId::ObservanceOverlaySmall);
 				}
@@ -908,10 +908,10 @@ namespace hooks {
 		if (unit->mainOrderId == OrderId::Harvest1
 			|| unit->mainOrderId == OrderId::HarvestGas1
 			|| unit->mainOrderId == OrderId::ReturnMinerals
-			|| unit->mainOrderId == OrderId::ReturnGas) 		{
+			|| unit->mainOrderId == OrderId::ReturnGas) {
 			if (unit->status & UnitStatus::IsGathering) {
 				unit->status |= UnitStatus::NoCollide;
-			} 			else {
+			} else {
 				unit->status &= ~UnitStatus::NoCollide;
 			}
 		}
@@ -923,7 +923,7 @@ namespace hooks {
 				CSprite* sprite;
 				if (unit->subunit != nullptr) {
 					sprite = unit->subunit->sprite;
-				} 				else {
+				} else {
 					sprite = unit->sprite;
 				}
 				sprite->createOverlay(ImageId::HallucinationOverlay, 0, 0, 0);

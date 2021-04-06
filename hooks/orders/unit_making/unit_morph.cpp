@@ -112,7 +112,7 @@ namespace hooks {
 
 			if (
 				!scbw::isZergEggNew(unit, true, false, unit->previousUnitType)
-				) 			{
+				) {
 				auto origin = unit->eggOrigin;
 				if (origin == UnitId::ZergLarva) {
 					orderNewUnitToRally(unit, unit->connectedUnit);
@@ -134,16 +134,16 @@ namespace hooks {
 	void orders_Morph1(CUnit* unit) {
 		if (unit->mainOrderState == 0) {
 
-			if (scbw::isConventionalUnitMorphSource(unit->id, true, true)) 			{
+			if (scbw::isConventionalUnitMorphSource(unit->id, true, true)) {
 				if (!hasSuppliesForUnit(
 					unit->buildQueue[unit->buildQueueSlot],
 					unit->playerId,
 					1
 				)
-					) 				{
+					) {
 					refundAllQueueSlots(unit);
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
-				} 				else {
+				} else {
 					bool bStopThere = false;
 					uint16 eggId;
 					switch (unit->id) {
@@ -181,7 +181,7 @@ namespace hooks {
 						case UnitId::ZergMatraleth:
 							if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergKonvilisk) {
 								eggId = UnitId::ZergEgg;
-							} 						else {
+							} else {
 								eggId = UnitId::ZergCocoon;
 							}
 						default:
@@ -208,7 +208,7 @@ namespace hooks {
 							setArchonPathing(unit);
 							unit->orderComputerCL(OrderId::CompletingArchonSummon);
 							return;
-						} 						else {
+						} else {
 							unit->eggOrigin = unit->id;
 							//morph into egg from source unit
 							replaceUnitWithType(unit, eggId);
@@ -220,10 +220,10 @@ namespace hooks {
 						auto origin = unit->eggOrigin;
 						if (origin == UnitId::ZergZergling) {
 							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
-						} 						else if (origin == UnitId::ZergUltrakor
+						} else if (origin == UnitId::ZergUltrakor
 							|| origin == UnitId::ZergOvileth) { // Iroleth uses air cocoon
 							unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
-						} 						else if (origin == UnitId::ZergLarva) {
+						} else if (origin == UnitId::ZergLarva) {
 							unit->sprite->playIscriptAnim(IscriptAnimation::Walking, true);
 						}
 					}
@@ -232,7 +232,7 @@ namespace hooks {
 
 			}
 
-		} 		else
+		} else
 			if (unit->mainOrderState == 1) {
 				//advance
 				if (advanceRemainingBuildTime_Sub466940(unit)) {
@@ -244,7 +244,7 @@ namespace hooks {
 					unit->sprite->playIscriptAnim(anim, true);
 					unit->mainOrderState = 2;
 				}
-			} 			else
+			} else
 				if (unit->mainOrderState == 2) {
 
 					if (unit->orderSignal & 4) {
@@ -290,7 +290,7 @@ namespace hooks {
 
 							unit->orderComputerCL(OrderId::ZergBirth);
 
-						} 						else { //5DF60
+						} else { //5DF60
 
 							//update various stuff (set hp, set shield...) not finished on Morph
 
@@ -489,7 +489,7 @@ namespace hooks {
 
 		if (units_dat::BaseProperty[unitId] & UnitProperty::Flyer) {
 			return UnitId::ZergCocoon;
-		} 		else {
+		} else {
 			return UnitId::ZergEgg;
 		}
 		return UnitId::None;
@@ -583,7 +583,7 @@ namespace hooks {
 			//			|| unit->id==UnitId::Hero_Warbringer
 			|| scbw::isLarvalEgg(unit))//just egg previously
 		{
-			if (hasSuppliesForUnit(unit_id, unit->playerId, notify_error)) 			{
+			if (hasSuppliesForUnit(unit_id, unit->playerId, notify_error)) {
 				CUnit* result = scbw::CreateUnit(unit_id, unit->getX(), unit->getY(), unit->playerId);
 				if (result)
 					return result;

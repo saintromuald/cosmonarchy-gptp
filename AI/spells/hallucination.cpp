@@ -25,7 +25,7 @@ namespace AI {
 			if (target->status & UnitStatus::Invincible)
 				return false;
 
-			if (scbw::getTechUseErrorMessage((CUnit*) target, caster->playerId, TechId::Hallucination) != 0)
+			if (scbw::getTechUseErrorMessage((CUnit*)target, caster->playerId, TechId::Hallucination) != 0)
 				return false;
 
 			if (target->id == UnitId::carrier

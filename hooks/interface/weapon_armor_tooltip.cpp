@@ -74,8 +74,8 @@ const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrI
 	float bonusRange = hooks::getMaxWeaponRangeHook(unit, weaponId) / 32.0 - range;
 
 	std::string damageModifiers = "";
-	double attackCd = (double) weapons_dat::Cooldown[weaponId] / 24;
-	double attackCdModifier = ((double) hooks::getModifiedWeaponCooldownHook(unit, weaponId) / 24) - attackCd;
+	double attackCd = (double)weapons_dat::Cooldown[weaponId] / 24;
+	double attackCdModifier = ((double)hooks::getModifiedWeaponCooldownHook(unit, weaponId) / 24) - attackCd;
 
 	int splashInner = weapons_dat::InnerSplashRadius[weaponId];
 	int splashMedium = weapons_dat::MediumSplashRadius[weaponId];
@@ -163,7 +163,7 @@ const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrI
 		text += std::string(damageStr) + " " + std::to_string(damageFactor) + "x(" + std::to_string(baseDamage);
 		if (bonusDamage > 0) text += "+" + std::to_string(bonusDamage);
 		text += ")";
-	} 	else {
+	} else {
 		text += std::string(damageStr) + " " + std::to_string(damageFactor * baseDamage);
 		if (bonusDamage > 0) text += "+" + std::to_string(damageFactor * bonusDamage);
 	}
@@ -195,7 +195,7 @@ const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrI
 	if (!isSuicideUnit && extended) {
 		ss.str("");
 		double cd = (attackCd + attackCdModifier);
-		ss << ((double) damageFactor * (baseDamage + bonusDamage) / cd);
+		ss << ((double)damageFactor * (baseDamage + bonusDamage) / cd);
 		text += "\nDPS: " + modifierColor + ss.str() + "\002";
 	}
 
@@ -209,7 +209,7 @@ const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrI
 		ss << range;
 		if (bonusRange > 0) ss << "+" << bonusRange;
 		text += ss.str();
-	} 	else text += "Melee";
+	} else text += "Melee";
 
 	// Target
 	text += "\nTargets: " + targetFlagsText;
@@ -374,7 +374,7 @@ namespace hooks {
 		// Aise Value
 		addStatus(statuses, "Energy Decay", scbw::get_generic_value(unit, ValueId::EntropyGauntlets));
 		addStatus(statuses, "Armor Reduction", scbw::get_generic_value(unit, ValueId::ArmorReduce));
-		addStatus(statuses, "Cabeirus Feeders", ceil((double) scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime));
+		addStatus(statuses, "Cabeirus Feeders", ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime));
 		addStatus(statuses, "Reverse Thrust", scbw::get_generic_value(unit, ValueId::ReverseThrust));
 		addStatus(statuses, "Sublime Shepherd", scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd));
 		addStatus(statuses, "Lazarus Agent", scbw::get_generic_value(unit, ValueId::LazarusAgent));
@@ -419,7 +419,7 @@ namespace hooks {
 
 		// Vanilla Value
 		addStatus(statuses, "Parasited", unit->parasiteFlags != 0);
-		addStatus(statuses, "Blinded", (bool) unit->isBlind);
+		addStatus(statuses, "Blinded", (bool)unit->isBlind);
 
 		// Case Specific
 		addStatus(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode);

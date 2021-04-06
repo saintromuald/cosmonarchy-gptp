@@ -46,10 +46,10 @@ namespace hooks {
 
 		if (unitToLoad != nullptr &&
 			scbw::canBeEnteredBy(unit, unitToLoad)
-			) 		{
+			) {
 			function_00474A70(unit, unitToLoad, OrderId::Pickup2);
 			prepareForNextOrder(unit);
-		} 		else
+		} else
 			if (unit->pAI != nullptr) {
 
 				Point16 pos = {0,0};
@@ -62,7 +62,7 @@ namespace hooks {
 
 					while (!bStopLoop) {
 
-						uint8 orderId = (uint8) unit->orderQueueTail->orderId;
+						uint8 orderId = (uint8)unit->orderQueueTail->orderId;
 
 						if (
 							orders_dat::CanBeInterrupted[orderId] == 0 &&
@@ -99,14 +99,14 @@ namespace hooks {
 			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			} 			else {
+			} else {
 				if (unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
 				else
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 
-		} 		else { //E73F4
+		} else { //E73F4
 
 			if (scbw::canBeEnteredBy(unit, unitToLoad))
 				unitToLoad->orderTo(OrderId::EnterTransport, unit);
@@ -130,14 +130,14 @@ namespace hooks {
 			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			} 			else {
+			} else {
 				if (unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
 				else
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 
-		} 		else { //E761F
+		} else { //E761F
 			if (
 				unitToLoad->pAI == nullptr ||
 				unitToLoad->mainOrderId == OrderId::Pickup4
@@ -163,10 +163,10 @@ namespace hooks {
 								}
 							}
 						}
-					} 					else
+					} else
 						unit->orderToIdle();
 				}
-			} 			else //E7642
+			} else //E7642
 				unit->orderToIdle();
 		}
 	}
@@ -182,7 +182,7 @@ namespace hooks {
 		if (
 			unit->mainOrderState == 0 &&
 			unit->orderTarget.unit != nullptr
-			) 		{
+			) {
 			unit->mainOrderState = 1;
 			unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
 			unit->orderTarget.pt.y = (unit->orderTarget.unit)->sprite->position.y;
@@ -204,19 +204,19 @@ namespace hooks {
 			if (unit->orderQueueHead != nullptr) {
 				unknownSpecialOrder(unit, unit->orderQueueHead, OrderId::Unload, 0, 0, nullptr, UnitId::None);
 				prepareForNextOrder(unit);
-			} 			else {
+			} else {
 				unit->performAnotherOrder(OrderId::Unload, 0, 0, nullptr, UnitId::None);
 				prepareForNextOrder(unit);
 			}
 
-		} 		else { //E77B4
+		} else { //E77B4
 
 			SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 			if (
 				unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
 				unit->orderTarget.pt.y != unit->nextTargetWaypoint.y
-				) 			{
+				) {
 				unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
 				unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
 			}
@@ -233,7 +233,7 @@ namespace hooks {
 					scbw::getGroundHeightAtPos(
 						unit->orderTarget.pt.x,
 						unit->orderTarget.pt.y
-					)) 				{
+					)) {
 
 					distance = scbw::getDistanceFast(
 						unit->orderTarget.pt.x * 256,
@@ -248,7 +248,7 @@ namespace hooks {
 						distance <= 0xCA000 &&
 						function_00438E70(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0 &&
 						getFirstLoadedWorker(unit) == 0
-						) 					{
+						) {
 
 						int index = 0;
 						bool bStopLoop = false;
@@ -323,10 +323,10 @@ namespace hooks {
 
 			prepareForNextOrder(unit);
 
-		} 		else
+		} else
 			if (!(unit->status & UnitStatus::InTransport) &&
 				function_00477160(unit, 1, 0, 0) == 0
-				) 		{ //E7BEB
+				) { //E7BEB
 
 				CUnit* target = unit->orderTarget.unit;
 				bool jump_to_E7C2B = false;
@@ -339,7 +339,7 @@ namespace hooks {
 					if (function_004E6EF0(unit, &target) == 0) {
 						unit->orderToIdle();
 						bEndThere = true;
-					} 				else
+					} else
 						if (target != nullptr)
 							jump_to_E7C2B = true;
 
@@ -385,7 +385,7 @@ namespace hooks {
 								);
 
 
-						} 					else { //E7C94
+						} else { //E7C94
 
 							function_00474A70(target, unit, OrderId::Pickup2);
 							prepareForNextOrder(target);
@@ -421,12 +421,12 @@ namespace hooks {
 				UpgradesSc->currentLevel[unit->playerId][UpgradeId::VentralSacs] != 0) &&
 			units_dat::SpaceProvided[target->id] != 0 &&
 			scbw::canBeEnteredBy(target, unit)
-			) 		{ //E7D51
+			) { //E7D51
 
 			if (
 				unit->mainOrderState == 0 &&
 				target->mainOrderId != OrderId::Pickup2
-				) 			{
+				) {
 
 				if (target->status & UnitStatus::IsBuilding) {
 					function_00474A70(target, unit, OrderId::Pickup2);
@@ -438,7 +438,7 @@ namespace hooks {
 			}
 
 			if (target->sprite->position.x != unit->nextTargetWaypoint.x ||
-				target->sprite->position.y != unit->nextTargetWaypoint.y) 			{
+				target->sprite->position.y != unit->nextTargetWaypoint.y) {
 				unit->nextTargetWaypoint.x = target->sprite->position.x;
 				unit->nextTargetWaypoint.y = target->sprite->position.y;
 			}
@@ -448,11 +448,11 @@ namespace hooks {
 			if (unit->isTargetWithinMinRange(target, 1))
 				loadUnitProc(target, unit);
 
-		} 		else {
+		} else {
 			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			} 			else
+			} else
 				if (unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
 				else
@@ -466,18 +466,18 @@ namespace hooks {
 
 	void orders_Unload(CUnit* unit) {
 
-		static CUnit* unitTable_0059CB58 = (CUnit*) (0x0059CB58);
-		static CUnit* unitTable_0059CB64 = (CUnit*) (0x0059CB64);
+		static CUnit* unitTable_0059CB58 = (CUnit*)(0x0059CB58);
+		static CUnit* unitTable_0059CB64 = (CUnit*)(0x0059CB64);
 		if (Globals.extended_unit_table == 1) {
 			const uint32 index_start = reinterpret_cast<uint32>(&new_unit_table.units[0]) - 336;
-			unitTable_0059CB58 = (CUnit*) index_start;
-			unitTable_0059CB64 = (CUnit*) (index_start + 12);
+			unitTable_0059CB58 = (CUnit*)index_start;
+			unitTable_0059CB64 = (CUnit*)(index_start + 12);
 		}
 
 		if (
 			unit->status & UnitStatus::GroundedBuilding ||
 			unit->mainOrderTimer == 0
-			) 		{
+			) {
 
 			int counter = 0;
 			uint32 result_E7F70 = 0;
@@ -492,11 +492,11 @@ namespace hooks {
 
 			while (!bEndLoop) {
 
-				loadedUnitOffset = (uint32*) &unit->loadedUnit[counter];
+				loadedUnitOffset = (uint32*)&unit->loadedUnit[counter];
 
 				if (*loadedUnitOffset != 0 &&
 					unitTable_0059CB64[unit->loadedUnit[counter].index].link.prev != nullptr //sprite check
-					) 				{
+					) {
 
 					CUnit* unitToUnload = &(unitTable_0059CB58[unit->loadedUnit[counter].index]);
 
@@ -560,7 +560,7 @@ namespace hooks {
 				if (unit->orderQueueHead != nullptr) {
 					unit->userActionFlags |= 1;
 					prepareForNextOrder(unit);
-				} 				else
+				} else
 					if (unit->pAI != nullptr) { //E81DE
 						unit->userActionFlags |= 1;
 						if (unit->mainOrderId == OrderId::Die)
@@ -571,9 +571,9 @@ namespace hooks {
 								if (
 									orders_dat::CanBeInterrupted[(unit->orderQueueTail)->orderId] ||
 									unit->orderQueueTail->orderId == OrderId::ComputerAI
-									) 							{
+									) {
 									removeOrderFromUnitQueue(unit, unit->orderQueueTail);
-								} 							else
+								} else
 									bEndLoop = true;
 
 								if (!bEndLoop)
@@ -582,7 +582,7 @@ namespace hooks {
 							unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
 							prepareForNextOrder(unit);
 						}
-					} 				else { //E823A
+					} else { //E823A
 						unit->userActionFlags |= 1;
 						unit->order(
 							units_dat::ReturnToIdleOrder[unit->id],
@@ -636,12 +636,12 @@ namespace hooks {
 			do {
 				v9 = getLoadedUnitFromIndex(a1, v8);
 				if (v9)
-					v10 += units_dat::SpaceRequired[(uint16) v9->id];
+					v10 += units_dat::SpaceRequired[(uint16)v9->id];
 				++v8;
 			} while (v8 < v7);
 			v4 = a2;
 		}
-		return v7 - v10 >= units_dat::SpaceRequired[(uint16) v4->id];
+		return v7 - v10 >= units_dat::SpaceRequired[(uint16)v4->id];
 	}
 
 } //namespace hooks
@@ -840,7 +840,7 @@ namespace {
 			if (
 				unit->id != UnitId::ZergOvileth ||
 				UpgradesSc->currentLevel[unit->playerId][UpgradeId::VentralSacs] != 0
-				) 		{
+				) {
 				if (units_dat::SpaceProvided[unit->id] != 0)
 					result = true;
 			}
@@ -1055,7 +1055,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (int8) result;
+		return (int8)result;
 	}
 
 } //Unnamed namespace

@@ -113,7 +113,7 @@ namespace AI {
 				!(target->status & UnitStatus::Invincible) &&
 				scbw::canWeaponTargetUnit(weaponId, target, caster) &&
 				caster->isTargetEnemy(target)
-				) 		{
+				) {
 
 				//specific to AIEnemyUnitHPAccumulatorProc @ 0x00440DC0
 				if (weaponId == WeaponId::Plague)
@@ -129,7 +129,7 @@ namespace AI {
 							)
 							totalEnemyLife += target->getCurrentLifeInGame();
 
-					} 			else
+					} else
 						totalEnemyLife += target->getCurrentLifeInGame();
 
 			}
@@ -262,7 +262,7 @@ namespace AI {
 			if (
 				!(target->status & UnitStatus::Invincible) &&
 				caster->isTargetEnemy(target)
-				) 		{
+				) {
 
 				if ((units_dat::BaseProperty[target->id] & UnitProperty::Worker) ||
 					(!(target->status & UnitStatus::IsBuilding))

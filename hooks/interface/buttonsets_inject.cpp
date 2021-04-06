@@ -218,7 +218,7 @@ void __declspec(naked) get_stattxt_string_Wrapper() {
 		}
 	}
 
-	message = (char*) statTxtTblNew->getString(stringId);
+	message = (char*)statTxtTblNew->getString(stringId);
 
 	__asm {
 		POPAD

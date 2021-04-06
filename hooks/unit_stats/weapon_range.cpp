@@ -53,7 +53,7 @@ namespace hooks {
 		seekRange = units_dat::SeekRange[unitId] + bonusAmount;
 
 		if (unit->orderTarget.unit != nullptr
-			&& !(units_dat::BaseProperty[unit->orderTarget.unit->id] & UnitProperty::Flyer)) 	{
+			&& !(units_dat::BaseProperty[unit->orderTarget.unit->id] & UnitProperty::Flyer)) {
 			// Height advantage
 			seekRange += 2;
 			seekRange -= (2 - std::max(scbw::getCliffAdvantage(unit), 0));

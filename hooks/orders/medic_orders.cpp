@@ -55,7 +55,7 @@ namespace hooks {
 				unit->orderTarget.pt.y = target->sprite->position.y;
 				moveToTarget(unit, target);
 				bStopThere = true;
-			} 			else { //63801
+			} else { //63801
 				unit->orderTarget.pt.x = target->sprite->position.x;
 				unit->orderTarget.pt.y = target->sprite->position.y;
 			}
@@ -167,20 +167,20 @@ namespace hooks {
 
 				moveToTarget(unit, target);
 
-			} 			else { //639BD
+			} else { //639BD
 
 				if (unit->pAI != nullptr) {
 
-					if (*(uint8*) ((uint32) unit->pAI + 8) != 1)
+					if (*(uint8*)((uint32)unit->pAI + 8) != 1)
 						unit->orderComputerCL(OrderId::ComputerAI);
 					else
-						if (unit->sprite->position.x != *(uint16*) ((uint32) unit->pAI + 0x12) ||
-							unit->sprite->position.y != *(uint16*) ((uint32) unit->pAI + 0x14)
+						if (unit->sprite->position.x != *(uint16*)((uint32)unit->pAI + 0x12) ||
+							unit->sprite->position.y != *(uint16*)((uint32)unit->pAI + 0x14)
 							)
 							unit->orderTo(
 								OrderId::ComputerReturn,
-								*(uint16*) ((uint32) unit->pAI + 0x12),
-								*(uint16*) ((uint32) unit->pAI + 0x14)
+								*(uint16*)((uint32)unit->pAI + 0x12),
+								*(uint16*)((uint32)unit->pAI + 0x14)
 							);
 
 				}
@@ -246,12 +246,12 @@ namespace hooks {
 			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			} 			else
+			} else
 				if (unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
 				else
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
-		} 		else { //641D3
+		} else { //641D3
 			if (unit->mainOrderState == 0) {
 				if (target != nullptr &&
 					function_004EB900(unit, target) != 0 &&
@@ -261,9 +261,9 @@ namespace hooks {
 						setNextWaypoint_Sub4EB290(unit);
 						unit->mainOrderState = 1;
 					}
-				} 				else //64216
+				} else //64216
 					unit->orderToIdle();
-			} 			else { //6421E
+			} else { //6421E
 				if (doMedicHeal_result == 1) {
 					if (!(unit->orderSignal & 1)) {
 						CImage* current_image = unit->sprite->images.head;
@@ -286,7 +286,7 @@ namespace hooks {
 						unit->nextTargetWaypoint.x = target->position.x;
 						unit->nextTargetWaypoint.y = target->position.y;
 					}
-				} 				else //64283
+				} else //64283
 					unit->mainOrderState = 0;
 			}
 		}

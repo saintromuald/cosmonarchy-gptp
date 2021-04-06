@@ -22,23 +22,23 @@ namespace hooks {
 	void receive_command(int x, int y, CUnit* unitParam, uint32 wUnitType, uint32 bActionOrder, uint32 bCommandType) {
 
 		uint8 array_of_data[0x30];
-		uint16* saved_x = (uint16*) &array_of_data[0];					//[EBP-0x30]
-		uint16* saved_y = (uint16*) &array_of_data[2];					//[EBP-0x2E]
-		uint32* saved_unknown_1 = (uint32*) &array_of_data[0];			//[EBP-0x30] 
-		uint32* saved_unknown_2 = (uint32*) &array_of_data[4];			//[EBP-0x2C] 
-		uint32* saved_bCommandType = (uint32*) &array_of_data[0x1C];	//[EBP-0x14]
-		uint32* saved_order = (uint32*) &array_of_data[0x20];			//[EBP-0x10]
-		uint32* saved_order_2 = (uint32*) &array_of_data[0x24];		//[EBP-0x0C]
-		uint32* saved_order_3 = (uint32*) &array_of_data[0x28];		//[EBP-0x08]
-		CUnit** saved_unit = (CUnit**) &array_of_data[0x2C];		//[EBP-0x04]
+		uint16* saved_x = (uint16*)&array_of_data[0];					//[EBP-0x30]
+		uint16* saved_y = (uint16*)&array_of_data[2];					//[EBP-0x2E]
+		uint32* saved_unknown_1 = (uint32*)&array_of_data[0];			//[EBP-0x30] 
+		uint32* saved_unknown_2 = (uint32*)&array_of_data[4];			//[EBP-0x2C] 
+		uint32* saved_bCommandType = (uint32*)&array_of_data[0x1C];	//[EBP-0x14]
+		uint32* saved_order = (uint32*)&array_of_data[0x20];			//[EBP-0x10]
+		uint32* saved_order_2 = (uint32*)&array_of_data[0x24];		//[EBP-0x0C]
+		uint32* saved_order_3 = (uint32*)&array_of_data[0x28];		//[EBP-0x08]
+		CUnit** saved_unit = (CUnit**)&array_of_data[0x2C];		//[EBP-0x04]
 
-		uint8* switch_value = (uint8*) 0x0049ADA0;
+		uint8* switch_value = (uint8*)0x0049ADA0;
 
 		*saved_x = x;
 		*saved_y = y;
 		*saved_order = bActionOrder;
 
-		function_0049A8C0((uint8*) &array_of_data[0], orders_dat::CanBeObstructed[bActionOrder]);
+		function_0049A8C0((uint8*)&array_of_data[0], orders_dat::CanBeObstructed[bActionOrder]);
 
 		if (bActionOrder > OrderId::CTFCOP2 || switch_value[bActionOrder] == 1) {
 
@@ -67,7 +67,7 @@ namespace hooks {
 							jump_to_9AD7E = true;
 					}
 
-				} 				else
+				} else
 					jump_to_9AD7E = true;
 
 				if (!jump_to_9AD7E) { //9ABC4:
@@ -97,10 +97,10 @@ namespace hooks {
 
 									*saved_order_3 = OrderId::HealMove;
 
-								} 							else
+								} else
 									jump_to_9aca9 = true;
 
-							} 						else
+							} else
 								jump_to_9ac4e = true;
 
 							while (loop_to_9ac0d) {
@@ -110,14 +110,14 @@ namespace hooks {
 									if (unitParam == nullptr) {
 										jump_to_9ad09 = true;
 										loop_to_9ac0d = false;
-									} 								else {
+									} else {
 
 										function_004756E0(current_unit, unitParam, *saved_order_3, bCommandType);
 
 										if (*saved_order_2 == OrderId::Nothing2) {
 											jump_to_9ad74 = true;
 											loop_to_9ac0d = false;
-										} 									else {
+										} else {
 											function_004756E0(current_unit->subunit, unitParam, *saved_order_2, bCommandType);
 											jump_to_9ad74 = true;
 											loop_to_9ac0d = false;
@@ -145,18 +145,18 @@ namespace hooks {
 										if (*saved_order_3 == OrderId::Nothing2) {
 											jump_to_9AD7E = true;
 											loop_to_9ac0d = false;
-										} 									else
+										} else
 											if (current_unit->subunit->isSubunit()) {
 
 												if (unitParam != nullptr) {
 													*saved_order_2 = units_dat::AttackUnitOrder[current_unit->subunit->id];
 													jump_to_9aca9 = true;
-												} 										else {
+												} else {
 													*saved_order_2 = units_dat::AttackMoveOrder[current_unit->subunit->id];
 													jump_to_9aca9 = true;
 												}
 
-											} 									else
+											} else
 												jump_to_9aca9 = true;
 
 									}
@@ -210,7 +210,7 @@ namespace hooks {
 								*saved_y = y;
 
 								if (wUnitType == UnitId::None)
-									function_0049A500(current_unit, (uint8*) &array_of_data[0]);
+									function_0049A500(current_unit, (uint8*)&array_of_data[0]);
 								else
 									*saved_unknown_2 = *saved_unknown_1;
 
@@ -249,7 +249,7 @@ namespace hooks {
 								current_unit->userActionFlags |= 2;
 								jump_to_9AD7E = true;
 							}
-						} 					else
+						} else
 							jump_to_9AD7E = true;
 
 				}

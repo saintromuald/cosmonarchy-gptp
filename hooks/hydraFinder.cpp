@@ -100,7 +100,7 @@ scbw::UnitFinderCallbackMatchInterface unitRangeCount(CUnit* center, uint32 cont
 				uint16 angle = scbw::getAngle(center->position.x, center->position.y,
 					unit->position.x, unit->position.y);
 				uint16 unit_angle = center->velocityDirection1;
-				int arc = (double) 45 / 1.40625;
+				int arc = (double)45 / 1.40625;
 				//90 degrees
 				int delta = unit_angle - angle;
 				delta = abs((delta + 128) % 256 - 128);

@@ -76,7 +76,7 @@ namespace hooks {
 				units_dat::GroupFlags[target->id].isProtoss ||
 				!(units_dat::GroupFlags[target->id].isTerran /*||
 					target->parasiteFlags*/)
-				) 			{
+				) {
 				unit->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
 				unit->orderToIdle();
 				bEndThere = true;
@@ -123,7 +123,7 @@ namespace hooks {
 
 						bEndThere = true;
 
-					} 					else {
+					} else {
 
 						if (orderToMoveToTarget(unit, target)) {
 							unitOrderMoveToTargetUnit(unit, target);
@@ -141,12 +141,12 @@ namespace hooks {
 					if (unit->getMovableState() == 0) { //not reached destination
 						function_004EB900(unit, target); //may cause unit to move or become idle
 						bEndThere = true;
-					} 					else { //reached destination or unmovable
+					} else { //reached destination or unmovable
 
 						if (!(unit->isTargetWithinMinRange(target, 5))) {
 							unit->mainOrderState = 1; //don't continue directly into this case
 							bEndThere = true;
-						} 						else {
+						} else {
 							function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
 							unitOrderMoveToTargetUnit(unit, target);
 							unit->mainOrderState = 7; //don't continue directly into this case
@@ -162,7 +162,7 @@ namespace hooks {
 					if (!(unit->isTargetWithinMinRange(target, 5))) {
 						unit->mainOrderState = 1;
 						bEndThere = true;
-					} 					else {
+					} else {
 
 						function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
 						unitOrderMoveToTargetUnit(unit, target);
@@ -255,7 +255,7 @@ namespace hooks {
 
 						}
 
-					} 					else {
+					} else {
 						unit->worker.repairResourceLossTimer--;
 						bDoRepair = true;
 					}
@@ -302,7 +302,7 @@ namespace hooks {
 				if (unit->orderQueueHead != nullptr) {
 					unit->userActionFlags |= 1;
 					prepareForNextOrder(unit);
-				} 				else { //676FE
+				} else { //676FE
 
 					uint8 orderId;
 

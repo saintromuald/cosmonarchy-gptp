@@ -209,7 +209,7 @@ namespace hooks {
 	//units are selected
 	void updateButtonSetEx() {
 
-		uint16* const BUTTONSET_CURRENT_BUTTONSETID = (uint16*) 0x0068C1C4;
+		uint16* const BUTTONSET_CURRENT_BUTTONSETID = (uint16*)0x0068C1C4;
 
 		uint8 countWorkers = 0;
 		uint8 countCloakables = 0;
@@ -269,7 +269,7 @@ namespace hooks {
 							if (activeUnitButtonSet->connectedUnit == selectedButtonSetId) {
 								activeButtonSetId = selectedButtonSetId;
 								*BUTTONSET_CURRENT_BUTTONSETID = selectedButtonSetId;
-							} 							else
+							} else
 								*BUTTONSET_CURRENT_BUTTONSETID = UnitId::Buttons_GroupMixed;
 						}
 
@@ -307,10 +307,10 @@ namespace hooks {
 	//Last function called within updateCurrentButtonSet
 	void updateButtonSet_Sub458D50() {
 
-		BinDlg** const BUTTONSET_DIALOG = (BinDlg**) 0x0068C148;
-		uint8* const BUTTONSET_SUBUNIT_MAINORDERID = (uint8*) 0x0068C1B8;
-		uint16* const BUTTONSET_MAINBUTTONGRAPHIC = (uint16*) 0x0068C1BC;
-		uint8* const BUTTONSET_UNIT_MAINORDERID = (uint8*) 0x0068C1E4;
+		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
+		uint8* const BUTTONSET_SUBUNIT_MAINORDERID = (uint8*)0x0068C1B8;
+		uint16* const BUTTONSET_MAINBUTTONGRAPHIC = (uint16*)0x0068C1BC;
+		uint8* const BUTTONSET_UNIT_MAINORDERID = (uint8*)0x0068C1E4;
 
 		uint8 currentUnitMainOrderId;
 		uint8 currentSubUnitMainOrderId;
@@ -342,7 +342,7 @@ namespace hooks {
 			else
 				usedButtonIcon = currentSubUnitButtonIcon;
 
-		} 		else
+		} else
 			usedButtonIcon = currentSubUnitButtonIcon;
 
 		if (currentButtonDlg != nullptr) {
@@ -361,7 +361,7 @@ namespace hooks {
 					else
 						bStopLooping = true;
 
-				} 				else
+				} else
 					currentButtonDlg = currentButtonDlg->next;
 
 			} while (!bStopLooping && currentButtonDlg != nullptr);
@@ -393,11 +393,11 @@ namespace hooks {
 	//updateSelectedUnitData (004C38B0)
 	void updateButtonSet() {
 
-		uint16* const BUTTONSET_PORTRAIT_BUTTONSETID = (uint16*) 0x0068C14C;
-		uint16* const BUTTONSET_CURRENT_BUTTONSETID = (uint16*) 0x0068C1C4;
-		uint16* const BUTTONSET_SPECIAL_BUTTONSETID = (uint16*) 0x0068C1C8; //replay, cancel building...
+		uint16* const BUTTONSET_PORTRAIT_BUTTONSETID = (uint16*)0x0068C14C;
+		uint16* const BUTTONSET_CURRENT_BUTTONSETID = (uint16*)0x0068C1C4;
+		uint16* const BUTTONSET_SPECIAL_BUTTONSETID = (uint16*)0x0068C1C8; //replay, cancel building...
 
-		bool8* const bDoingCancellableTargetOrder = (bool8*) 0x00641694;
+		bool8* const bDoingCancellableTargetOrder = (bool8*)0x00641694;
 
 		*BUTTONSET_SPECIAL_BUTTONSETID = UnitId::Buttons_Blank;
 		*BUTTONSET_PORTRAIT_BUTTONSETID = UnitId::Buttons_Blank;
@@ -409,12 +409,12 @@ namespace hooks {
 				if (*bDoingCancellableTargetOrder == 0) {
 					if (*IS_PLACING_BUILDING)
 						*BUTTONSET_SPECIAL_BUTTONSETID = UnitId::Buttons_CancelPlaceBuilding;
-				} 				else
+				} else
 					*BUTTONSET_SPECIAL_BUTTONSETID = UnitId::Buttons_Cancel;
 
 			}
 
-		} 		else {
+		} else {
 
 			if (*IS_REPLAY_PAUSED != 0)
 				*BUTTONSET_SPECIAL_BUTTONSETID = UnitId::Buttons_ReplayPaused;
@@ -448,14 +448,14 @@ namespace hooks {
 	//call updateButtonSet() and others
 	void updateCurrentButtonset() {
 
-		BinDlg** const BUTTONSET_DIALOG = (BinDlg**) 0x0068C148;
-		uint16* const BUTTONSET_PORTRAIT_BUTTONSETID = (uint16*) 0x0068C14C;
-		uint8* const BUTTONSET_SUBUNIT_MAINORDERID = (uint8*) 0x0068C1B8;
-		uint16* const BUTTONSET_CURRENT_BUTTONSETID = (uint16*) 0x0068C1C4;
-		uint16* const BUTTONSET_SPECIAL_BUTTONSETID = (uint16*) 0x0068C1C8; //replay, cancel building...
-		uint8* const BUTTONSET_UNIT_MAINORDERID = (uint8*) 0x0068C1E4;
+		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
+		uint16* const BUTTONSET_PORTRAIT_BUTTONSETID = (uint16*)0x0068C14C;
+		uint8* const BUTTONSET_SUBUNIT_MAINORDERID = (uint8*)0x0068C1B8;
+		uint16* const BUTTONSET_CURRENT_BUTTONSETID = (uint16*)0x0068C1C4;
+		uint16* const BUTTONSET_SPECIAL_BUTTONSETID = (uint16*)0x0068C1C8; //replay, cancel building...
+		uint8* const BUTTONSET_UNIT_MAINORDERID = (uint8*)0x0068C1E4;
 
-		uint32* const bCanUpdateCurrentButtonSet = (uint32*) 0x0068C1B0;
+		uint32* const bCanUpdateCurrentButtonSet = (uint32*)0x0068C1B0;
 
 		bool jumpTo59A38 = false;
 		bool jumpTo59A9F = false;
@@ -474,7 +474,7 @@ namespace hooks {
 			if (*BUTTONSET_SPECIAL_BUTTONSETID != UnitId::Buttons_Blank) {
 				if (*IS_IN_REPLAY)
 					bNeedUpdateButtonSet = true;
-			} 			else
+			} else
 				bNeedUpdateButtonSet = true;
 
 			if (bNeedUpdateButtonSet)
@@ -654,14 +654,14 @@ namespace hooks {
 
 	void updateButtonSet_Sub4591D0() {
 
-		BinDlg** const BUTTONSET_DIALOG = (BinDlg**) 0x0068C148;
-		uint16* const BUTTONSET_PORTRAIT_BUTTONSETID = (uint16*) 0x0068C14C;
+		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
+		uint16* const BUTTONSET_PORTRAIT_BUTTONSETID = (uint16*)0x0068C14C;
 		auto buttonsetId = *BUTTONSET_PORTRAIT_BUTTONSETID;
 		if (buttonsetId == 215) {
 			buttonsetId = UnitId::Special_StartLocation;
 		}
 		BUTTON_SET* const current_buttonset = getButtonSet(buttonsetId);
-		uint32* const unknown_0066FF60 = (uint32*) 0x0066FF60;
+		uint32* const unknown_0066FF60 = (uint32*)0x0066FF60;
 
 		bool bStopThere = false;
 		bool jumpto59336 = false;
@@ -703,68 +703,60 @@ namespace hooks {
 
 					while (current_button_state == BUTTON_STATE::Invisible && (buttons_count < current_buttonset->buttonsInSet)) {
 
-						current_button_state = req_check((uint32) current_button->reqFunc, (uint8) current_button->reqVar, (uint8) *LOCAL_NATION_ID, *activePortraitUnit);
-						if (current_button->reqFunc == (REQ_FUNC*) ButtonRequirements::Upgrade_Not_At_Max_Level) {
+						current_button_state = req_check((uint32)current_button->reqFunc, (uint8)current_button->reqVar, (uint8)*LOCAL_NATION_ID, *activePortraitUnit);
+						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Upgrade_Not_At_Max_Level) {
 							// Escalations were here
 						}
 
-						if (current_button->reqFunc == (REQ_FUNC*) ButtonRequirements::Can_Create_UnitorBuilding) {
+						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Can_Create_UnitorBuilding) {
 
 							// Barracks buttonset handling
 							if (current_button->reqVar == UnitId::TerranCleric
 								|| current_button->reqVar == UnitId::TerranShaman) {
 								if ((*activePortraitUnit)->building.addon == nullptr) {
 									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMedbay) {
+								} else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMedbay) {
 									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else {
+								} else {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 							}
-							
+
 							else
-							if (current_button->reqVar == UnitId::TerranEidolon
-								|| current_button->reqVar == UnitId::TerranSavant) {
-								if ((*activePortraitUnit)->building.addon == nullptr) {
-									current_button_state = BUTTON_STATE::Invisible;
+								if (current_button->reqVar == UnitId::TerranEidolon
+									|| current_button->reqVar == UnitId::TerranSavant) {
+									if ((*activePortraitUnit)->building.addon == nullptr) {
+										current_button_state = BUTTON_STATE::Invisible;
+									} else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranCovertOps) {
+										current_button_state = BUTTON_STATE::Invisible;
+									} else {
+										current_button_state = BUTTON_STATE::Enabled;
+									}
 								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranCovertOps) {
-									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else {
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-							}
 
 							// Factory buttonset handling
 							if (current_button->reqVar == UnitId::TerranPhalanxTankMode
 								|| current_button->reqVar == UnitId::TerranGoliath) {
 								if ((*activePortraitUnit)->building.addon == nullptr) {
 									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMachineShop) {
+								} else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMachineShop) {
 									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else {
+								} else {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 							}
-							
+
 							else
-							if (current_button->reqVar == UnitId::TerranMadrigal
-								|| current_button->reqVar == UnitId::TerranPaladin) {
-								if ((*activePortraitUnit)->building.addon == nullptr) {
+								if (current_button->reqVar == UnitId::TerranMadrigal
+									|| current_button->reqVar == UnitId::TerranPaladin) {
+									if ((*activePortraitUnit)->building.addon == nullptr) {
 										current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranSalvoYard) {
+									} else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranSalvoYard) {
 										current_button_state = BUTTON_STATE::Invisible;
-								}
-								else {
+									} else {
 										current_button_state = BUTTON_STATE::Enabled;
+									}
 								}
-							}
 
 							// Starport buttonset handling
 							if (current_button->reqVar == UnitId::TerranSalamander
@@ -772,46 +764,40 @@ namespace hooks {
 								|| current_button->reqVar == UnitId::TerranValkyrie) {
 								if ((*activePortraitUnit)->building.addon == nullptr) {
 									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMunitionsBay) {
+								} else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranMunitionsBay) {
 									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else {
+								} else {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 							}
-							
+
 							else
-							if (current_button->reqVar == UnitId::TerranAzazel
-								|| current_button->reqVar == UnitId::TerranSeraph) {
-								if ((*activePortraitUnit)->building.addon == nullptr) {
+								if (current_button->reqVar == UnitId::TerranAzazel
+									|| current_button->reqVar == UnitId::TerranSeraph) {
+									if ((*activePortraitUnit)->building.addon == nullptr) {
 										current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranControlTower) {
+									} else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranControlTower) {
 										current_button_state = BUTTON_STATE::Invisible;
-								}
-								else {
+									} else {
 										current_button_state = BUTTON_STATE::Enabled;
+									}
 								}
-							}
 
 							// Scrapyard buttonset handling
 							if (current_button->reqVar == UnitId::TerranClaymore
 								|| current_button->reqVar == UnitId::TerranSiren) {
 								if ((*activePortraitUnit)->building.addon == NULL) {
 									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranFutureStation) {
+								} else if ((*activePortraitUnit)->building.addon->id != UnitId::TerranFutureStation) {
 									current_button_state = BUTTON_STATE::Invisible;
-								}
-								else {
+								} else {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 							}
 						}
 
 						// Passive icons (yes, it's quite ugly)
-						if (current_button->reqFunc == (REQ_FUNC*) ButtonRequirements::Spell_Researched) {
+						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Spell_Researched) {
 							if (current_button->iconID == IconId::Lockdown
 								&& (*activePortraitUnit)->vulture.spiderMineCount == 0) {
 								current_button_state = BUTTON_STATE::Invisible;
@@ -1206,12 +1192,12 @@ namespace hooks {
 						}
 
 						// Form switch/mode change?
-						if (current_button->actFunc == (ACT_FUNC*) ButtonActions::Use_Technology) {
+						if (current_button->actFunc == (ACT_FUNC*)ButtonActions::Use_Technology) {
 							if (current_button->actVar == TechId::Restoration) {
 								if ((*activePortraitUnit)->_padding_0x132 & 0x8) {
 									current_button->actStringID = 1052;
 									current_button->iconID = 236;
-								} 								else {
+								} else {
 									current_button->actStringID = 1248;
 									current_button->iconID = 365;
 								}
@@ -1233,7 +1219,7 @@ namespace hooks {
 										else {*/
 										if (scbw::get_generic_rust_value(*activePortraitUnit, toggle_values[i]) == 1) {
 											current_button->iconID = button_toggle_off[i];
-										} 											else {
+										} else {
 											current_button->iconID = button_toggle_on[i];
 										}
 										//	}
@@ -1321,7 +1307,7 @@ namespace hooks {
 							stack_placeholder.buttonState = current_button_state;
 							stack_placeholder.buttonset = current_buttonset;
 
-							fxnInteract(current_dialog, (uint32) &stack_placeholder);
+							fxnInteract(current_dialog, (uint32)&stack_placeholder);
 
 							current_button_state = stack_placeholder.buttonState;
 
@@ -1340,7 +1326,7 @@ namespace hooks {
 								current_button++;	//select next button (advance by sizeof(BUTTON)
 								buttons_count++;
 								jumpto5934E = true;
-							} 							else
+							} else
 								jumpto59336 = true;
 
 						}
@@ -1402,7 +1388,7 @@ namespace hooks {
 	//May need a special case using the original array adress and size
 	//when in replay if modified
 	void statbtn_BIN_CustomCtrlID(BinDlg* dialog) {
-		registerUserDialogAction(dialog, (uint32) &Btn_fxnInteractFuncs, sizeof(Btn_fxnInteractFuncs));
+		registerUserDialogAction(dialog, (uint32)&Btn_fxnInteractFuncs, sizeof(Btn_fxnInteractFuncs));
 		BINDLG_BlitSurface(dialog);
 	}
 
@@ -1500,7 +1486,7 @@ namespace {
 		static uint32 return_value;
 		static uint32 fxnInteract;
 
-		fxnInteract = (uint32) dialog->fxnInteract;
+		fxnInteract = (uint32)dialog->fxnInteract;
 
 		__asm {
 			PUSHAD

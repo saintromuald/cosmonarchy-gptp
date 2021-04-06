@@ -23,7 +23,7 @@ void irradiateProc(CUnit* unit, CUnit* target) {
 
 	//Check if the unit is within distance, or is inside the same transport
 	if (unit->status & UnitStatus::InTransport
-		|| unit->getDistanceToTarget(target) <= 32) 	{
+		|| unit->getDistanceToTarget(target) <= 32) {
 		//			const int32 damage = weapons_dat::DamageAmount[WeaponId::Irradiate] * 256 / weapons_dat::Cooldown[WeaponId::Irradiate];
 		int32 damage = (125 * 256) / 24;
 		if (unit != nullptr) {
@@ -127,7 +127,7 @@ namespace hooks {
 			CImage* current_image = sprite->images.head;
 			current_image != nullptr;
 			current_image = current_image->link.next
-			) 	{
+			) {
 			if (current_image->paletteType == PaletteType::RLE_HPFLOATDRAW)
 				current_image->flags |= CImage_Flags::Redraw;
 		}
@@ -204,7 +204,7 @@ namespace hooks {
 	void updateStatusEffects(CUnit* unit) {
 
 		if (unit->subunit != nullptr) {
-			scbw::set_generic_value(unit->subunit, ValueId::TurretParentLink, (uint32) unit);
+			scbw::set_generic_value(unit->subunit, ValueId::TurretParentLink, (uint32)unit);
 		}
 
 		// Decrement Stasis Field timer (and remove effect if 0)
@@ -293,9 +293,9 @@ namespace hooks {
 			uint32 radius;
 			if (unit->id == UnitId::TerranQuarry) {
 				radius = 320;
-			} 		else if (unit->id == UnitId::ZergIroleth || unit->id == UnitId::ZergOthstoleth) {
+			} else if (unit->id == UnitId::ZergIroleth || unit->id == UnitId::ZergOthstoleth) {
 				radius = 224;
-			} 		else if (unit->id == UnitId::ProtossPennant) {
+			} else if (unit->id == UnitId::ProtossPennant) {
 				radius = 160;
 			}
 
@@ -341,7 +341,7 @@ namespace hooks {
 		// Ghost Somatic Implants behavior
 		if (unit->id == UnitId::TerranEidolon) {
 			if (
-				!(unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))) 		{
+				!(unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))) {
 				if (scbw::get_generic_value(unit, ValueId::SomaticImplants) == 1) {
 
 					unit->updateSpeed();
@@ -427,15 +427,15 @@ namespace hooks {
 						scbw::setThingyVisibilityFlags(emp_sprite);
 					}
 
-					static uint16* const maxBoxRightValue = (uint16*) 0x00628450;
-					static uint16* const maxBoxBottomValue = (uint16*) 0x006284B4;
+					static uint16* const maxBoxRightValue = (uint16*)0x00628450;
+					static uint16* const maxBoxBottomValue = (uint16*)0x006284B4;
 					Box16 area_of_effect;
 					CUnit** unitsInAreaOfEffect;
 					CUnit* current_unit;
-					area_of_effect.left = (uint16) unit->sprite->position.x - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-					area_of_effect.right = (uint16) unit->sprite->position.x + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-					area_of_effect.top = (uint16) unit->sprite->position.y - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-					area_of_effect.bottom = (uint16) unit->sprite->position.y + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+					area_of_effect.left = (uint16)unit->sprite->position.x - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+					area_of_effect.right = (uint16)unit->sprite->position.x + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+					area_of_effect.top = (uint16)unit->sprite->position.y - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+					area_of_effect.bottom = (uint16)unit->sprite->position.y + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
 					if (area_of_effect.left < 0)
 						area_of_effect.left = 0;
 					else
@@ -457,7 +457,7 @@ namespace hooks {
 								unit->irradiatedBy == nullptr ||					//EMP doesn't affect the attacker
 								current_unit != unit->irradiatedBy->subunit	//subunit
 								)
-							) 					{
+							) {
 
 							if (current_unit->status & UnitStatus::IsHallucination)
 								current_unit->remove();
@@ -484,7 +484,7 @@ namespace hooks {
 					}
 					*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
 					*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[*tempUnitsListArraysCountsListLastIndex];
-				} 			else {
+				} else {
 					//scbw::printText("Radiation Shockwave is not detected");
 				}
 
@@ -506,7 +506,7 @@ namespace hooks {
 
 		if (unit->maelstromTimer != 0) {
 			unit->maelstromTimer--;
-			if (unit->maelstromTimer == 0) 		{
+			if (unit->maelstromTimer == 0) {
 				unit->removeMaelstrom();
 				if (scbw::get_generic_value(unit, ValueId::Malediction)) {
 					scbw::set_generic_value(unit, ValueId::Malediction, 0);
@@ -565,12 +565,12 @@ namespace hooks {
 					MOV damage, EAX
 					POPAD
 				}*/
-				if (unit->hitPoints > damage) 			{
+				if (unit->hitPoints > damage) {
 					if (unit->shields >= 256 && units_dat::ShieldsEnabled[unit->id]) {
 						if (unit->shields > damage) {
 							unit->shields -= damage;
 							damage = 0;
-						} 					else {
+						} else {
 							damage -= unit->shields;
 							unit->shields = 0;
 						}
@@ -589,7 +589,7 @@ namespace hooks {
 					if (unit->plagueTimer == 0 && unit->_padding_0x132 & 0x40) {
 						unit->_padding_0x132 &= ~0x40;
 					}*/
-				} 			else {
+				} else {
 					//defiler plague upgrade  - add requirement later
 					/*
 					if (true) {//defiler plague upgrade (unknown id), add condition later
@@ -646,7 +646,7 @@ namespace hooks {
 
 			}
 
-		} 	else if (previousAcidSporeCount != 0) {
+		} else if (previousAcidSporeCount != 0) {
 			unit->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
 		}
 	}

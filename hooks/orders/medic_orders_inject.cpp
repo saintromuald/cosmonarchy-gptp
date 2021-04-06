@@ -84,7 +84,7 @@ namespace {
 
 	}
 
-	void __declspec(naked) AI_AcquireHealTarget_Wrapper() 	{
+	void __declspec(naked) AI_AcquireHealTarget_Wrapper() {
 		static CUnit* a1;
 		static CUnit* a2;
 		static uint32 result;

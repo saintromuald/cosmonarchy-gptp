@@ -876,7 +876,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool) result;
+		return (bool)result;
 	}
 
 	const uint32 Func_SFileCloseArchive = 0x004100BE;
@@ -889,7 +889,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool) result;
+		return (bool)result;
 	}
 
 	const uint32 Func_SFileOpenFileEx = 0x004100C4;
@@ -905,7 +905,7 @@ namespace {
 			MOV result, eAX
 			POPAD
 		}
-		return (bool) result;
+		return (bool)result;
 	}
 
 	const uint32 Func_SFileCloseFile = 0x4100b8;
@@ -918,7 +918,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool) result;
+		return (bool)result;
 	}
 
 }

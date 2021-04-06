@@ -21,7 +21,7 @@ namespace hooks {
 			factory->isFactory() &&
 			factory->rally.unit != factory &&
 			factory->rally.pt.x != 0
-			) 	{
+			) {
 
 			//Following should be allowed only on friendly units
 			if (factory->rally.unit != nullptr && (factory->rally.unit)->playerId == unit->playerId)

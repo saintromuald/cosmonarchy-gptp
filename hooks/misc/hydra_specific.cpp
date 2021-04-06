@@ -94,7 +94,7 @@ bool unitIsReaver(CUnit* a1) {
 		MOV result, EAX
 		POPAD
 	}
-	return (bool) result;
+	return (bool)result;
 }
 const uint32 Func_unitIsCarrier = 0x00401470;
 bool unitIsCarrier(CUnit* a1) {
@@ -106,7 +106,7 @@ bool unitIsCarrier(CUnit* a1) {
 		MOV result, EAX
 		POPAD
 	}
-	return (bool) result;
+	return (bool)result;
 }
 bool unitIsTrainingOrMorphing(CUnit* unit) {
 	const uint32 Func_unitIsTrainingOrMorphing = 0x00401500;
@@ -128,7 +128,7 @@ uint8 initializeRandomizerInfo() {
 		MOV result, EAX
 		POPAD
 	}
-	return (uint8) result;
+	return (uint8)result;
 }
 
 const uint32 Func_AI_Loop = 0x004A2B00;
@@ -317,8 +317,8 @@ namespace hooks {
 		//
 		//
 		auto v3 = unit_id;
-		static uint32* lastError = (uint32*) 0x0066FF60;
-		static uint16* reqTable = (uint16*) 0x00514178;
+		static uint32* lastError = (uint32*)0x0066FF60;
+		static uint16* reqTable = (uint16*)0x00514178;
 		*lastError = 0;
 		if (unit_id >= UnitId::None) {
 			*lastError = 16;
@@ -355,7 +355,7 @@ namespace hooks {
 		if (units_dat::unitsDat43[unit->id] == ReqOpcode::EndOfSublist) {
 			parseUnitDatReqs();
 		}
-		int v7 = (uint16) units_dat::unitsDat43[unit->id];
+		int v7 = (uint16)units_dat::unitsDat43[unit->id];
 
 		if (units_dat::unitsDat43[unit->id] == 0) {
 		LABEL_93:
@@ -608,7 +608,7 @@ namespace hooks {
 		}
 		auto flingy_id = flingy->flingyId;
 		if (speed != realTopSpeed(flingy, flingy_id) || flingy->flingyAcceleration != realAcceleration(flingy, flingy_id)) {
-			return speed * speed / (2 * (uint16) flingy->flingyAcceleration);
+			return speed * speed / (2 * (uint16)flingy->flingyAcceleration);
 		} else {
 			return scbw::getFlingyData(FlingyDatEntries::HaltDistance, flingy_id);
 		}

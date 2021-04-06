@@ -36,7 +36,7 @@ namespace hooks {
 					current_unit->id == UnitId::ZergLarva &&
 					current_unit->connectedUnit == *activePortraitUnit &&
 					!(current_unit->sprite->flags & CSprite_Flags::Hidden)
-					) 				{
+					) {
 					outputList[current_index] = current_unit;
 					current_index++;
 					bStopLoop = (current_index >= SELECTION_ARRAY_LENGTH);

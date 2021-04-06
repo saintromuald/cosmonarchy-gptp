@@ -25,7 +25,7 @@ namespace hooks {
 	//Do the actual unit movement
 	void spells_Recall_ActionOnValidTargetForRecall(CUnit* target, CUnit* caster) {
 
-		static bool32* const bAtLeast1UnitWasRecalled = (bool32*) (0x0063FF50);
+		static bool32* const bAtLeast1UnitWasRecalled = (bool32*)(0x0063FF50);
 
 		Point16 previous_pos, new_pos;
 
@@ -66,12 +66,12 @@ namespace hooks {
 				target->id == UnitId::Hero_AlexeiStukov ||
 				target->id == UnitId::Hero_SamirDuran ||
 				target->id == UnitId::Hero_InfestedDuran
-				) 			{
+				) {
 
 				if (
 					target->connectedUnit != nullptr &&
 					target->connectedUnit->id == UnitId::TerranNuclearMissile
-					) 				{
+					) {
 					(target->connectedUnit)->connectedUnit = nullptr;
 					target->connectedUnit = nullptr;
 				}
@@ -113,7 +113,7 @@ namespace hooks {
 
 	void orders_Recall(CUnit* unit) {
 
-		static bool32* const bAtLeast1UnitWasRecalled = (bool32*) (0x0063FF50);
+		static bool32* const bAtLeast1UnitWasRecalled = (bool32*)(0x0063FF50);
 
 		//unit has started casting Recall (== went through the other condition)
 		if (unit->mainOrderState == 1) {
@@ -151,12 +151,12 @@ namespace hooks {
 
 			}
 
-		} 		else { //94505
+		} else { //94505
 
 			if (
 				!scbw::isCheatEnabled(CheatFlags::TheGathering) &&
 				unit->energy < techdata_dat::EnergyCost[TechId::Recall] * 256
-				) 			{
+				) {
 
 				uint8 raceId;
 				char* message;
@@ -172,7 +172,7 @@ namespace hooks {
 						else
 							raceId = RaceId::Neutral;
 
-				message = (char*) statTxtTblNew->getString(864 + raceId);	//"Not enough energy" text
+				message = (char*)statTxtTblNew->getString(864 + raceId);	//"Not enough energy" text
 
 				if (
 					message != nullptr &&
@@ -183,7 +183,7 @@ namespace hooks {
 
 				unit->orderToIdle();
 
-			} 			else { //945B9
+			} else { //945B9
 
 				CThingy* recall_effect_sprite;
 				uint32 random_value;
@@ -215,8 +215,8 @@ namespace hooks {
 					//hardcoded (not using a function) RNG use, like
 					//the original code do
 
-					static uint32* const u32_0051C654 = (uint32*) 0x0051C654;
-					static uint32* const u32_0051CA18 = (uint32*) 0x0051CA18;
+					static uint32* const u32_0051C654 = (uint32*)0x0051C654;
+					static uint32* const u32_0051CA18 = (uint32*)0x0051CA18;
 
 					*u32_0051C654 = *u32_0051C654 + 1;
 					*u32_0051CA18 = *u32_0051CA18 + 1;
@@ -224,7 +224,7 @@ namespace hooks {
 
 					random_value = ((*lastRandomNumber) / 65536) & 0x7FFF;
 
-				} 				else
+				} else
 					random_value = 0;
 
 				//original code added (random_value & 1) to the base sound

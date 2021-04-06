@@ -53,7 +53,7 @@ namespace graphics {
 	  { 0x8A, 0x80, 0x34, 0x31, 0x2E, 0x8A, 0x8A, 0x8A }
 	};
 
-	const HWND* hWndMainSC = (HWND*) 0x0051BFB0;
+	const HWND* hWndMainSC = (HWND*)0x0051BFB0;
 	const int KOR_CHAR_MAX_WIDTH = 32;
 	const int KOR_CHAR_MAX_HEIGHT = 32;
 
@@ -120,7 +120,7 @@ namespace graphics {
 		SelectObject(bufferDc, currentFont);
 
 		char koreanChars[3];
-		*(uint16*) koreanChars = *(uint16*) ch;
+		*(uint16*)koreanChars = *(uint16*)ch;
 		koreanChars[2] = '\0';
 
 		//Retrieve the size of the rectangular area to draw the character
@@ -168,7 +168,7 @@ namespace graphics {
 			return false;
 
 		// Reference an unsigned character array
-		const uint8* pbChars = (uint8*) pszStr;
+		const uint8* pbChars = (uint8*)pszStr;
 
 		uint8 lastColor = 0, color = 0;
 		int Xoffset = x, Yoffset = y;
@@ -190,7 +190,7 @@ namespace graphics {
 						continue;
 					case 11:      // invisible
 					case 20:
-						color = (uint8) ~0;
+						color = (uint8)~0;
 						continue;
 					case '\f':    // 12   formfeed
 						break;
@@ -217,7 +217,7 @@ namespace graphics {
 			if (GetUserDefaultLangID() == MAKELANGID(LANG_KOREAN, SUBLANG_KOREAN)
 				&& IsDBCSLeadByte(pbChars[c])
 				&& !(pbChars[c] == 169 || pbChars[c] == 153)) {
-				this->blitKoreanChar((char*) &pbChars[c], Xoffset, Yoffset, size, color);
+				this->blitKoreanChar((char*)&pbChars[c], Xoffset, Yoffset, size, color);
 				if (pbChars[++c])
 					continue;
 				break;
@@ -229,9 +229,9 @@ namespace graphics {
 				continue;
 
 			// If the colour is not "invisible"
-			if (color != ~0)     {
+			if (color != ~0) {
 				// begin drawing character process
-				for (int i = 0, pos = 0; pos < fntChr->getHeight() * fntChr->getWidth(); ++i, ++pos)       {
+				for (int i = 0, pos = 0; pos < fntChr->getHeight() * fntChr->getWidth(); ++i, ++pos) {
 					// font position
 					pos += fntChr->pixelOffset(i);
 
@@ -544,7 +544,7 @@ namespace graphics {
 				this->drawDot(x1 + 1, y0++, color); //this->drawDot(x1+1, y0++, color); 
 				this->drawDot(x0 - 1, y1, color);
 				this->drawDot(x1 + 1, y1--, color);//this->drawDot(x1+1, y1--, color); 
-			} 		else {
+			} else {
 				y0++; y1--;
 			}
 
@@ -599,14 +599,14 @@ namespace graphics {
 				return OUTCODE_LEFT | OUTCODE_BOTTOM;
 			else
 				return OUTCODE_LEFT;
-		}   else if (x >= this->getWidth()) {
+		} else if (x >= this->getWidth()) {
 			if (y < 0)
 				return OUTCODE_RIGHT | OUTCODE_TOP;
 			else if (y >= this->getHeight())
 				return OUTCODE_RIGHT | OUTCODE_BOTTOM;
 			else
 				return OUTCODE_RIGHT;
-		}   else {
+		} else {
 			if (y < 0)
 				return OUTCODE_TOP;
 			else if (y >= this->getHeight())

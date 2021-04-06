@@ -102,17 +102,17 @@ namespace hooks {
 		int v18; // ecx
 
 		v1 = a1;
-		v2 = units_dat::BaseProperty[(uint16) a1->id];
+		v2 = units_dat::BaseProperty[(uint16)a1->id];
 		if (v2 & UnitProperty::TwoUnitsIn1Egg) {
 			incrementUnitScores(a1, -1);
 			v1->status |= UnitStatus::Completed;
 			incrementUnitScores(v1, 1);
-		}         else {
+		} else {
 			a1->status |= UnitStatus::Completed;
 		}
 
 		incrementUnitScoresEx(1, v1, 1);
-		if (units_dat::BaseProperty[(uint16) v1->id] & UnitProperty::PermanentCloak) {
+		if (units_dat::BaseProperty[(uint16)v1->id] & UnitProperty::PermanentCloak) {
 			playSoundFromDirection(v1, 273);
 		}
 
@@ -140,12 +140,12 @@ namespace hooks {
 					v11->link.prev = v1;
 				v10->link.next = v1;
 				refreshUnitVision(v1);
-			}             else {
+			} else {
 				*lastScannerSweep = v1;
 				*firstScannerSweep = v1;
 				refreshUnitVision(v1);
 			}
-		}         else if (v1->sprite->flags & 0x20) {
+		} else if (v1->sprite->flags & 0x20) {
 			if (v3 != UnitId::ProtossSteward && v3 != UnitId::ProtossPlasmaShell) {
 				initUnitTrapDoodad(v1);
 			}
@@ -161,7 +161,7 @@ namespace hooks {
 			v1->visibilityStatus = 0x80000000;
 			ByteOperations::SetLowByte(v1->secondaryOrderTimer, 0);
 		}*/
-		v5 = playerTable[(uint8) v1->playerId].type;
+		v5 = playerTable[(uint8)v1->playerId].type;
 		if (v5 == 3) { // Rescue Passive
 			v6 = v1->mainOrderId;
 			v1->userActionFlags |= 1u;
@@ -178,17 +178,17 @@ namespace hooks {
 				performAnotherOrder(OrderId::RescuePassive, 0, v1, 228, 0, 0);
 			}
 			orders_Nothing2(v1);
-		}         else {
+		} else {
 			if (v5 == 7) { // Neutral
 				v12 = OrderId::Neutral;
-			}             else if (v5 == 1) { // Computer Game
+			} else if (v5 == 1) { // Computer Game
 				v12 = units_dat::ComputerIdleOrder[v4];
-			}             else {
+			} else {
 				v12 = units_dat::HumanIdleOrder[v4];
 			}
 			orderComputerClear(v1, v12);
 		}
-		v13 = (uint16) v1->id;
+		v13 = (uint16)v1->id;
 		v14 = units_dat::BaseProperty[v13];
 		if (v14 & UnitProperty::NeutralAccessories) {
 			v15 = v1->sprite;
@@ -233,7 +233,7 @@ namespace { // helper wrappers
 			MOV result, EAX
 			POPAD
 		}
-		return (int16) result;
+		return (int16)result;
 	}
 
 

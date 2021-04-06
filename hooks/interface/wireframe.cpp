@@ -59,7 +59,7 @@ namespace hooks {
 				maxShields = unit->maxShields();//for stasis, later
 			}
 			if (maxShields) {
-				uint32 shields = (uint32) unit->shields >> 8;
+				uint32 shields = (uint32)unit->shields >> 8;
 				shields *= 7;
 				shields /= maxShields;
 				if (shields * 2 + 1 >= 40)
@@ -71,7 +71,7 @@ namespace hooks {
 				*off_50CE81 = buf1;
 				*off_50CE82 = al;
 			}
-		} 		else {
+		} else {
 			al = *byteShieldStr;
 			*off_50CE81 = al;
 			*off_50CE82 = al;

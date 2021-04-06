@@ -39,10 +39,10 @@ void hydra_unit_ai(CUnit* unit) {
 	*/
 	if (unit->id == UnitId::TerranApostle) {
 		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256) &&
-			scbw::get_generic_timer(unit, ValueId::AI_LazarusTimer) == 0) 		{
+			scbw::get_generic_timer(unit, ValueId::AI_LazarusTimer) == 0) {
 			int count = 0;
 			hydraFinderLoop(nullptr, unit->position, 128, CFlags::NoBuilding | CFlags::Ally |
-				CFlags::OnlyOrganic, {}, [&](CUnit* u) 			{
+				CFlags::OnlyOrganic, {}, [&](CUnit* u) {
 				if (scbw::get_generic_value(u, ValueId::LazarusAgent) != 1) {
 					count++;
 				}
@@ -52,9 +52,9 @@ void hydra_unit_ai(CUnit* unit) {
 				scbw::set_generic_timer(unit, ValueId::AI_LazarusTimer, 24);
 			}
 		}
-	} 	else if (unit->id == UnitId::TerranEidolon) {
+	} else if (unit->id == UnitId::TerranEidolon) {
 		//mines
-	} 	else if (unit->id == UnitId::TerranSavant) {
+	} else if (unit->id == UnitId::TerranSavant) {
 		if (scbw::get_generic_timer(unit, ValueId::AI_SiphonTimer) == 0 && unit->mainOrderId != OrderId::PowerSiphon) {
 			int count = 0;
 			hydraFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::SavantPowerSiphon],
@@ -125,7 +125,7 @@ void hydra_unit_ai(CUnit* unit) {
 				}
 			});
 		}
-	} 	else if (unit->id == UnitId::ProtossStarSovereign && scbw::get_generic_timer(unit, ValueId::AI_GriefOfAllGodsTimer) == 0) {
+	} else if (unit->id == UnitId::ProtossStarSovereign && scbw::get_generic_timer(unit, ValueId::AI_GriefOfAllGodsTimer) == 0) {
 		auto enemyUnitsHealth = 0;
 		auto alliedUnitsHealth = 0;
 		bool alliedBuildings = false;
@@ -149,7 +149,7 @@ void hydra_unit_ai(CUnit* unit) {
 			unit->orderTarget.pt = unit->sprite->position;
 			unit->mainOrderState = 0;
 		}
-	} 	else if (unit->id == UnitId::ProtossLanifect) {
+	} else if (unit->id == UnitId::ProtossLanifect) {
 		auto web_state = scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb);
 		if (scbw::get_generic_value(unit, ValueId::ExecutingCorsairMoveOrder) != 0) {
 			if (unit->mainOrderId != OrderId::Move) {
@@ -159,8 +159,8 @@ void hydra_unit_ai(CUnit* unit) {
 		auto webs = hydraUnitCount(unit, unit->sprite->position, AIWebSeekRange, 0, {UnitId::Spell_DisruptionWeb});
 		auto allies = hydraUnitCount(unit, unit->sprite->position, AICorsairAllySeekRange, CFlags::Ally | CFlags::NotSelf, {});
 		auto enemies = hydraUnitCount(unit, unit->sprite->position, AICorsairEnemySeekRange, CFlags::Enemy, {});
-		auto percentage = (double) (unit->hitPoints + unit->shields) /
-			(double) (units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id] * 256);
+		auto percentage = (double)(unit->hitPoints + unit->shields) /
+			(double)(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id] * 256);
 		if (web_state == 0) {
 			if (webs == 0 && unit->energy >= AIWebMinEnergy * 256 && percentage >= AICorsairLifePercentage
 				&& allies >= AIWebAllyMinCount && enemies >= AIWebEnemyMinCount) {
@@ -180,7 +180,7 @@ void hydra_unit_ai(CUnit* unit) {
 					scbw::set_generic_timer(unit, ValueId::AI_CorsairDweb_Timer, AIWebTimer);
 				}
 			}
-		} 		else {
+		} else {
 			if (!(allies >= AIWebAllyMinCount && enemies >= AIWebEnemyMinCount)) {
 				if (scbw::get_generic_timer(unit, ValueId::AI_CorsairDweb_Timer) == 0) {
 					scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 0);

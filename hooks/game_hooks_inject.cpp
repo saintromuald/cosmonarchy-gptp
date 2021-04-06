@@ -58,7 +58,7 @@ void __declspec(naked) nextFrameHook() { // From BWAPI by Kovarex, slightly modi
 			MOV EAX, 1
 			RETN
 		}
-	}   else {
+	} else {
 		__asm {
 			POPAD
 			MOV EAX, 0

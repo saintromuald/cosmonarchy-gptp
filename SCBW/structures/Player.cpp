@@ -10,7 +10,7 @@
 
 graphics::ColorId PLAYER::getColor() {
 	assert(this);
-	return playersColors[(uint8) this->id];
+	return playersColors[(uint8)this->id];
 }
 
 graphics::ColorId PLAYER::getColor(uint8 playerId) {
@@ -44,7 +44,7 @@ graphics::ColorId PLAYER::getFactionColor(uint8 playerId) {
 		if (*CURRENT_TILESET == TilesetType::Ice && return_value == 6)
 			return_value = 8;
 
-	} 	else
+	} else
 		return_value = playerId;
 
 	if (playerId < PLAYER_COUNT)

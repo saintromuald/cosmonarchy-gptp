@@ -31,12 +31,12 @@ namespace {
 	}
 
 	void __stdcall unitMorphWrapper_CMDRECV_UnitMorph(uint8* commandData) {
-		const uint16 morphUnitId = *((uint16*) &commandData[1]);
+		const uint16 morphUnitId = *((uint16*)&commandData[1]);
 		*selectionIndexStart = 0;
 		while (CUnit* unit = getActivePlayerNextSelection()) {
 			if (hooks::unitCanMorphHook(unit, morphUnitId)
 				&& unit->mainOrderId != OrderId::Morph1
-				&& addUnitToBuildQueue(unit, morphUnitId)) 			{
+				&& addUnitToBuildQueue(unit, morphUnitId)) {
 				unit->orderTo(OrderId::Morph1);
 			}
 		}
@@ -72,7 +72,7 @@ namespace {
 				POPAD
 				JMP Hook_Orders_Morph1_Check_Success
 			}
-		} 		else {
+		} else {
 			__asm {
 				POPAD
 				POP EDI
@@ -118,7 +118,7 @@ namespace {
 	//-------- cancelBuild --------//
 
 	typedef void(__stdcall* CancelZergBuildingFunc)(CUnit*);
-	CancelZergBuildingFunc cancelZergBuilding = (CancelZergBuildingFunc) 0x0045DA40;
+	CancelZergBuildingFunc cancelZergBuilding = (CancelZergBuildingFunc)0x0045DA40;
 
 	const uint32 Func_ChangeUnitType = 0x0049FED0;
 	void changeUnitType(CUnit* unit, uint16 newUnitId) {
@@ -184,7 +184,7 @@ namespace {
 			}
 			resources->minerals[unit->playerId] += units_dat::MineralCost[unit->id] * 3 / 4;
 			resources->gas[unit->playerId] += units_dat::GasCost[unit->id] * 3 / 4;
-		} 		else {
+		} else {
 			uint16 refundUnitId;
 			if (scbw::isZergEggNew(unit, true, false))
 				refundUnitId = unit->buildQueue[unit->buildQueueSlot % 5];
@@ -207,7 +207,7 @@ namespace {
 				scbw::refreshConsole();
 			}
 			unit->remove();
-		} 		else {
+		} else {
 			changeUnitType(unit, cancelChangeUnitId);
 			unit->remainingBuildTime = 0;
 			unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
@@ -223,12 +223,12 @@ namespace {
 			if (unit->id == UnitId::ZergZergling
 				|| unit->id == UnitId::ZergVorvaling) {
 				unit->playIscriptAnim(IscriptAnimation::Unused2);
-			} 			else if (unit->id == UnitId::ZergNathrokor) {
+			} else if (unit->id == UnitId::ZergNathrokor) {
 				unit->playIscriptAnim(IscriptAnimation::Unused2);
-			} 			else if (unit->id == UnitId::ZergUltrakor) {
+			} else if (unit->id == UnitId::ZergUltrakor) {
 				unit->playIscriptAnim(IscriptAnimation::CastSpell);
 				scbw::set_generic_timer(unit, ValueId::UltrakorCancelGimmick, 4);
-			} 			else {
+			} else {
 				unit->playIscriptAnim(IscriptAnimation::SpecialState2);
 			}
 
@@ -310,7 +310,7 @@ namespace {
 				POPAD
 				JMP Hook_IsRallyableEggUnit_Yes
 			}
-		} 		else {
+		} else {
 			__asm {
 				POPAD
 				JMP Hook_IsRallyableEggUnit_No
@@ -406,7 +406,7 @@ namespace {
 				POPAD
 				JMP Jmp_IsEgg
 			}
-		} 	else {
+		} else {
 			__asm {
 				POPAD
 				JMP Jmp_IsNotEgg
@@ -427,7 +427,7 @@ namespace {
 				POPAD
 				JMP Jmp_UnitAi_IsEgg
 			}
-		} 	else {
+		} else {
 			__asm {
 				POPAD
 				JMP Jmp_UnitAi_IsNotEgg
@@ -475,7 +475,7 @@ namespace {
 				POPAD
 				JMP Jmp_UnitTask_IsEgg
 			}
-		} 	else {
+		} else {
 			__asm {
 				POPAD
 				JMP Jmp_UnitTask_IsEgg
@@ -496,7 +496,7 @@ namespace {
 				POPAD
 				JMP Jmp_PrepSuicide_IsEgg
 			}
-		} 	else {
+		} else {
 			__asm {
 				POPAD
 				JMP Jmp_PrepSuicide_IsEgg

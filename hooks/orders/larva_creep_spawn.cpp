@@ -21,15 +21,15 @@ namespace {
 	bool function_004E8E10(CUnit* unit, Point32* coords);						//0x004E8E10
 
 																				// SC Variables and Buffers used in this file
-	uint32* const mapTileBufWidth = (uint32*) (0x006D0F08);
-	uint32* const mapTileBufHeight = (uint32*) (0x006D0C6C);
-	uint16** const mapTileBuf = (uint16**) (0x006D0E84);
-	Point32* const someCreepPointBuf = (Point32*) (0x006D7578);
+	uint32* const mapTileBufWidth = (uint32*)(0x006D0F08);
+	uint32* const mapTileBufHeight = (uint32*)(0x006D0C6C);
+	uint16** const mapTileBuf = (uint16**)(0x006D0E84);
+	Point32* const someCreepPointBuf = (Point32*)(0x006D7578);
 
 	typedef uint32(*isTileVisible_func)(uint32 x, uint32 y);
 	typedef bool(*setCreepRelationalData_callback)(uint16* tileBackup, uint8* creepOverlayVal, uint32* retval, uint16* tile, uint32 arg);
 
-	isTileVisible_func* const isTileVisible_ptr = (isTileVisible_func*) (0x006D0C78);
+	isTileVisible_func* const isTileVisible_ptr = (isTileVisible_func*)(0x006D0C78);
 
 
 	uint32 getNumSurroundingCreepTiles(uint32 x, uint32 y); // 0x00414290
@@ -90,7 +90,7 @@ namespace hooks {
 	//filter for larva in internal game searches, use the limit of 3 larvas
 	bool function_004E8C80(CUnit* unit, CUnit* main_building) {
 
-		uint16* const LARVA_COUNTER = (uint16*) 0x0067D3F8;
+		uint16* const LARVA_COUNTER = (uint16*)0x0067D3F8;
 
 		//while bReturnValue == false, the calling function keep calling,
 		//so it return true only when max amount of larvas was counted,
@@ -110,7 +110,7 @@ namespace hooks {
 					bReturnValue = (*LARVA_COUNTER > 3);
 				}
 
-		} 		else
+		} else
 			bReturnValue = false;
 
 		return bReturnValue;
@@ -121,7 +121,7 @@ namespace hooks {
 
 	void secondaryOrd_SpawningLarva(CUnit* unit) {
 
-		uint16* const LARVA_COUNTER = (uint16*) 0x0067D3F8;
+		uint16* const LARVA_COUNTER = (uint16*)0x0067D3F8;
 
 		if (unit->orderQueueTimer == 0 && unit->playerId != 11) {
 
@@ -159,10 +159,10 @@ namespace hooks {
 					if (unit->id == UnitId::ZergLair && unit->mainOrderId != OrderId::Morph2 ||
 						unit->id == UnitId::ZergHive && unit->mainOrderId == OrderId::Morph2) {
 						unit->building.larvaTimer = 27;
-					} 					else if (unit->id == UnitId::ZergHive && unit->mainOrderId != OrderId::Morph2 ||
+					} else if (unit->id == UnitId::ZergHive && unit->mainOrderId != OrderId::Morph2 ||
 						unit->id == UnitId::ZergSire && unit->mainOrderId == OrderId::Morph2) {
 						unit->building.larvaTimer = 18;
-					} 					else if (unit->id == UnitId::ZergSire && unit->mainOrderId != OrderId::Morph2) {
+					} else if (unit->id == UnitId::ZergSire && unit->mainOrderId != OrderId::Morph2) {
 						unit->building.larvaTimer = 12;
 					}
 
@@ -217,10 +217,10 @@ namespace hooks {
 		if (unit->building.creepTimer != 0) {
 			if (unit->building.creepTimer >= 2) {
 				unit->building.creepTimer -= 2;
-			} 			else {
+			} else {
 				unit->building.creepTimer = 0;
 			}
-		} 		else {
+		} else {
 			//EA8B6:
 			uint8 result_00414680;
 
@@ -275,7 +275,7 @@ namespace hooks {
 
 							if (a.hasCreep || a.temporaryCreep || a.creepReceeding) {
 								//
-							} 							else {
+							} else {
 								//can spread
 								if (!a.alwaysUnbuildable && a.isWalkable) {
 
@@ -345,12 +345,12 @@ namespace hooks {
 			rect->bottom = (y + maxCreepAreaDown) / 32;
 			if (rect->left < 0) {
 				rect->left = 0;
-			} 			else if (rect->right >= *mapTileBufWidth) {
+			} else if (rect->right >= *mapTileBufWidth) {
 				rect->right = *mapTileBufWidth - 1;
 			}
 			if (rect->top < 0) {
 				rect->top = 0;
-			} 			else if (rect->bottom >= *mapTileBufHeight) {
+			} else if (rect->bottom >= *mapTileBufHeight) {
 				rect->bottom = *mapTileBufHeight - 1;
 			}
 			return true;
@@ -363,12 +363,12 @@ namespace hooks {
 		rect->bottom = rect->top + h - 1;
 		if (rect->left < 0) {
 			rect->left = 0;
-		} 		else if (rect->right >= *mapTileBufWidth) {
+		} else if (rect->right >= *mapTileBufWidth) {
 			rect->right = *mapTileBufWidth - 1;
 		}
 		if (rect->top < 0) {
 			rect->top = 0;
-		} 		else if (rect->bottom >= *mapTileBufHeight) {
+		} else if (rect->bottom >= *mapTileBufHeight) {
 			rect->bottom = *mapTileBufHeight - 1;
 		}
 		return false;
@@ -441,7 +441,7 @@ namespace hooks {
 		// use of std::rand() can cause desyncs
 		if ((std::rand() % 100) >= 4) {
 			creepTile = std::rand() % 6; // normal tiles
-		} 		else {
+		} else {
 			creepTile = (std::rand() % 7) + 6; // clutter tiles
 		}
 		*tile = creepTile + 0x10; // tile in creep group

@@ -62,7 +62,7 @@ namespace hooks {
 			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			} 			else { //EA253
+			} else { //EA253
 
 				if (unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
@@ -71,7 +71,7 @@ namespace hooks {
 
 			}
 
-		} 		else {	//collision detected, restore old position
+		} else {	//collision detected, restore old position
 			scbw::setUnitPosition(unit, oldPos.x, oldPos.y);
 			scbw::refreshUnitAfterMove(unit);
 		}
@@ -94,12 +94,12 @@ namespace hooks {
 			(!scbw::isAlliedTo(unit->playerId, nydusCanal->playerId)) ||
 			unit->status & UnitStatus::InAir
 			//	unit->getRace() != RaceId::Zerg
-			) 		{ //EA478
+			) { //EA478
 
 			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			} 			else { //EA497
+			} else { //EA497
 
 				if (unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
@@ -108,12 +108,12 @@ namespace hooks {
 
 			}
 
-		} 		else 		{ //EA428
+		} else { //EA428
 
 			if (unit->mainOrderState == 0) {	//EA464
 				if (orderToMoveToTarget(unit, nydusCanal))
 					unit->mainOrderState = 1;
-			} 			else
+			} else
 				if (unit->mainOrderState == 1) { //EA43B
 
 					uint8 movableState = unit->getMovableState();

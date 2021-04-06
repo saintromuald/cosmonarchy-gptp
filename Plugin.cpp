@@ -89,7 +89,7 @@ BOOL Plugin::checkStarCraftExeVersion(LPCSTR exePath) const {
 		UINT fileInfoSize;
 
 		if (GetFileVersionInfo(exePath, NULL, fileVersionInfoBufferSize, fileVersionInfoBuffer)
-			&& VerQueryValue(fileVersionInfoBuffer, "\\", (LPVOID*) &fileInfo, &fileInfoSize))     {
+			&& VerQueryValue(fileVersionInfoBuffer, "\\", (LPVOID*)&fileInfo, &fileInfoSize)) {
 			//The FileVersion of StarCraft.exe must be 1.16.1.1
 			const WORD requiredVersion[4] = {1, 16, 1, 1};
 			const WORD currentVersion[4] = {
@@ -100,13 +100,13 @@ BOOL Plugin::checkStarCraftExeVersion(LPCSTR exePath) const {
 			if (requiredVersion[0] == currentVersion[0]
 				&& requiredVersion[1] == currentVersion[1]
 				&& requiredVersion[2] == currentVersion[2]
-				&& requiredVersion[3] == currentVersion[3])       {
+				&& requiredVersion[3] == currentVersion[3]) {
 				result = TRUE;
-			}       else
+			} else
 				if (currentVersion[0] == 1
 					&& currentVersion[1] == 0
 					&& currentVersion[2] == 0
-					&& currentVersion[3] == 2)       {
+					&& currentVersion[3] == 2) {
 					sprintf_s(
 						errorMessage,
 						"Error: GPTP cannot patch %s"
@@ -116,7 +116,7 @@ BOOL Plugin::checkStarCraftExeVersion(LPCSTR exePath) const {
 						"\n with the map editor than mods not using GPTP.",
 						exePath
 					);
-				}       else {
+				} else {
 					sprintf_s(errorMessage,
 						"Error: Cannot patch %s"
 						"\n"
@@ -129,11 +129,11 @@ BOOL Plugin::checkStarCraftExeVersion(LPCSTR exePath) const {
 						currentVersion[0], currentVersion[1], currentVersion[2], currentVersion[3],
 						requiredVersion[0], requiredVersion[1], requiredVersion[2], requiredVersion[3]);
 				}
-		}     else {
+		} else {
 			sprintf_s(errorMessage, "Cannot retrieve version information from:\n  %s", exePath);
 		}
 		delete[] fileVersionInfoBuffer;
-	}   else {
+	} else {
 		sprintf_s(errorMessage, "Cannot retrieve version information size from:\n  %s", exePath);
 	}
 

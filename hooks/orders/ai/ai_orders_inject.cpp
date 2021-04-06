@@ -79,14 +79,14 @@ namespace {
 			MOV free, EDX
 			PUSHAD
 		}
-		if ((uint32) free <= 0x100000) {
+		if ((uint32)free <= 0x100000) {
 			scbw::printText("Corrupted pointer in AddUnitAi!");
 			__asm {
 				POPAD
 				POP ESI
 				RETN
 			}
-		} 		else {
+		} else {
 			__asm {
 				POPAD
 				MOV EAX, [EDX + 0x5DC0]

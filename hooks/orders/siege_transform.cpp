@@ -37,7 +37,7 @@ namespace hooks {
 
 				}
 
-			} 			else {
+			} else {
 				bStopThere = true;
 				unit->orderToIdle();
 			}
@@ -103,7 +103,7 @@ namespace hooks {
 
 				unit->mainOrderState = 1;
 
-			} 			else {
+			} else {
 
 				unit->orderToIdle();
 				bStopThere = true;

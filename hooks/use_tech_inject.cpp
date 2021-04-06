@@ -43,7 +43,7 @@ void __declspec(naked) UpgradeIdComparison_Wrapper() {
 			POPAD
 			JMP Hook_Jump_UpgradeFunctionality
 		}
-	} 	else {
+	} else {
 		__asm {
 			POPAD
 			JMP Hook_Jump_SkipUpgradeOp
@@ -53,7 +53,7 @@ void __declspec(naked) UpgradeIdComparison_Wrapper() {
 
 
 namespace hooks {
-	void injectUseTechHooks() 	{
+	void injectUseTechHooks() {
 		jmpPatch(UseTechWrapper, 0x00423F70);
 		jmpPatch(UpgradeIdComparison_Wrapper, 0x0046D5B8);
 	}

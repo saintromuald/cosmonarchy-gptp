@@ -117,7 +117,7 @@ void __declspec(naked) packUnitData_PsiProvider() {
 
 	if (hooks::canMakePsiField(unitId)) {
 		if (unit->building.pylonAura != nullptr)
-			*((uint32*) &unit->building.pylonAura) = (unit->building.pylonAura - spriteTable) / sizeof(CSprite) + 1;
+			*((uint32*)&unit->building.pylonAura) = (unit->building.pylonAura - spriteTable) / sizeof(CSprite) + 1;
 	}
 
 	__asm {
@@ -142,7 +142,7 @@ void __declspec(naked) unpackUnitData_PsiProvider() {
 
 	if (hooks::canMakePsiField(unitId))
 		if (unit->building.pylonAura != nullptr)
-			unit->building.pylonAura = &spriteTable[(int) unit->building.pylonAura];
+			unit->building.pylonAura = &spriteTable[(int)unit->building.pylonAura];
 
 	__asm {
 		POPAD

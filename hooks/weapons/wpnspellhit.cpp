@@ -79,7 +79,7 @@ namespace hooks {
 	void OpticalFlareHit(CUnit* target, uint32 attackingPlayerId, CBullet* bullet) {
 
 		//can take the value 100 (0x64), thus not bool32
-		static uint32* const u32_0051CE98 = (uint32*) 0x0051CE98;
+		static uint32* const u32_0051CE98 = (uint32*)0x0051CE98;
 
 		if (target->status & UnitStatus::IsHallucination)
 			target->remove();
@@ -91,7 +91,7 @@ namespace hooks {
 			//blindness is applied for a specific player
 			//just like parasite, but due to how it's used,
 			//a blind unit is still blind for all players
-			target->isBlind |= (uint8) (1 << attackingPlayerId);
+			target->isBlind |= (uint8)(1 << attackingPlayerId);
 
 			//playing the impact sound
 			scbw::playSound(SoundId::Terran_Medic_Miopia1_wav, target);
@@ -224,10 +224,10 @@ namespace hooks {
 					bullet->direction1,
 					damageDivisor
 				);
-			} 			else {
+			} else {
 				attackOverlayAndNotify(bullet->sourceUnit, target, bullet->weaponType, bullet->direction1); //no damage, but still ask for retaliation
 			}
-		} 		else {
+		} else {
 			uint32 base_damage = GetUnitBulletDamage(bullet, target);
 			target->damageWith(
 				base_damage,
@@ -307,7 +307,7 @@ namespace hooks {
 					|| attacker->status & UnitStatus::InBuilding)
 				) { // Attempt to allow Lurkers to attack from within Bunkers
 				weaponId = units_dat::GroundWeapon[attacker->id];
-			} 			else {
+			} else {
 				weaponId = WeaponId::None;
 			}
 
@@ -321,7 +321,7 @@ namespace hooks {
 				}
 				if (ephemeralBlades) {
 					uint32 damage = getUnitDamageBonus(attacker, weaponId);
-					damage = ((uint16) damage + weapons_dat::DamageAmount[weaponId]) * 256;
+					damage = ((uint16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
 					target->damageWith(
 						damage,
 						weaponId,
@@ -330,12 +330,12 @@ namespace hooks {
 						attacker->currentDirection1,
 						1
 					);
-				} 				else {
+				} else {
 					attackOverlayAndNotify(attacker, target, weaponId, attacker->currentDirection1); //no damage, but still ask for retaliation
 				}
-			} 			else {
+			} else {
 				uint32 damage = getUnitDamageBonus(attacker, weaponId);
-				damage = ((uint16) damage + weapons_dat::DamageAmount[weaponId]) * 256;
+				damage = ((uint16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
 				target->damageWith(
 					damage,
 					weaponId,
@@ -359,8 +359,8 @@ namespace hooks {
 	//x and y from bullet->sprite->position
 	void EMPShockwaveHit(CUnit* attacker, int x, int y, CBullet* bullet) {
 
-		static uint16* const maxBoxRightValue = (uint16*) 0x00628450;	//should usually be mapTileSize->width * 32
-		static uint16* const maxBoxBottomValue = (uint16*) 0x006284B4;	//should usually be mapTileSize->height * 32
+		static uint16* const maxBoxRightValue = (uint16*)0x00628450;	//should usually be mapTileSize->width * 32
+		static uint16* const maxBoxBottomValue = (uint16*)0x006284B4;	//should usually be mapTileSize->height * 32
 
 		Box16 area_of_effect;
 
@@ -368,10 +368,10 @@ namespace hooks {
 		CUnit* current_unit;
 
 		//define the base area of effect
-		area_of_effect.left = (uint16) x - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-		area_of_effect.right = (uint16) x + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-		area_of_effect.top = (uint16) y - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-		area_of_effect.bottom = (uint16) y + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+		area_of_effect.left = (uint16)x - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+		area_of_effect.right = (uint16)x + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+		area_of_effect.top = (uint16)y - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+		area_of_effect.bottom = (uint16)y + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
 
 		//check and fix effect if beyond width of map
 		if (area_of_effect.left < 0)
@@ -398,7 +398,7 @@ namespace hooks {
 					attacker == nullptr ||					//EMP doesn't affect the attacker
 					current_unit != attacker->subunit	//subunit
 					)
-				) 			{
+				) {
 
 				if (current_unit->status & UnitStatus::IsHallucination)
 					current_unit->remove();
@@ -463,7 +463,7 @@ namespace hooks {
 		if (attacker == nullptr
 			|| target == nullptr) {
 			return;
-		} 		else {
+		} else {
 			if (getSpellStatString(target, TechId::Consume, attacker->playerId) != 0) {
 				//char buf[32];
 				//ebx/bl  = player id, arg 1 = 0x10, eax = edi (target)
@@ -476,7 +476,7 @@ namespace hooks {
 			target != nullptr &&
 			!(target->status & UnitStatus::Invincible) &&
 			getSpellStatString(target, TechId::Consume, attacker->playerId) == 0 //returning a value != 0 means there was an error
-			) 		{
+			) {
 			incrementUnitDeathScores(target, attacker->playerId);
 			uint32 power = target->hitPoints;
 			target->remove();
@@ -497,7 +497,7 @@ namespace hooks {
 					attacker->energy = energyMax;
 					power -= diff;
 					attacker->setHp(attacker->hitPoints + power);
-				} 				else {
+				} else {
 					attacker->energy += power;
 				}
 			}
@@ -626,7 +626,7 @@ namespace hooks {
 				if (created_broodling == nullptr) {
 					displayLastNetErrForPlayer(attacker->playerId);
 					jump_to_end_of_loop = true;
-				} 				else { //F4A26
+				} else { //F4A26
 					scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, created_broodling);
 
 					uint32 timerBeforeDisappearance;
@@ -802,7 +802,7 @@ namespace hooks {
 		CUnit* v4; // ecx
 		unsigned __int8 v5; // al
 
-		if (!a1->stasisTimer) 		{
+		if (!a1->stasisTimer) {
 			v2 = units_dat::BaseProperty[a1->id];
 			if (v2 & UnitProperty::MediumOverlay)
 				v3 = 1;
@@ -841,12 +841,12 @@ namespace hooks {
 			v3 = v1->energy >= v2;
 			//			a2 = (Point32)(v1->energy < v2);		// check this out
 			if (!v3) {
-				v4 = units_dat::GroupFlags[(uint16) v1->id];
+				v4 = units_dat::GroupFlags[(uint16)v1->id];
 				if (v4.isZerg) {
 					v5 = 0;
-				} 				else if (v4.isTerran) {
+				} else if (v4.isTerran) {
 					v5 = 1;
-				} 				else {
+				} else {
 					v5 = (v4.isProtoss) != 0 ? 2 : 4;
 				}
 				v6 = v5 + 864;
@@ -854,24 +854,24 @@ namespace hooks {
 				if (!v6)
 					goto LABEL_15;
 				if (v7 < *statTxtTbl) {
-					v8 = (char*) statTxtTbl + statTxtTbl[v7 + 1];
+					v8 = (char*)statTxtTbl + statTxtTbl[v7 + 1];
 					if (!v8) {
 					LABEL_15:
 						if (v1->orderQueueHead) {
 							v1->userActionFlags |= 1u;
 							ordersNothing2(v1);
-						} 						else if (v1->pAI) {
+						} else if (v1->pAI) {
 							orderComputerClear(v1, 0x9Cu);
-						} 						else {
-							orderComputerClear(v1, units_dat::ReturnToIdleOrder[(uint16) v1->id]);
+						} else {
+							orderComputerClear(v1, units_dat::ReturnToIdleOrder[(uint16)v1->id]);
 						}
 						return;
 					}
-				} 				else {
+				} else {
 					v8 = "";
 				}
-				if ((uint8) v1->playerId == *LOCAL_NATION_ID && *ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
-					setUnitStatTxtErrorMsg((int32) v8);
+				if ((uint8)v1->playerId == *LOCAL_NATION_ID && *ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
+					setUnitStatTxtErrorMsg((int32)v8);
 				goto LABEL_15;
 			}
 		}
@@ -879,7 +879,7 @@ namespace hooks {
 		a2.y = v1->orderTarget.pt.y;
 		a2.x = v9;
 		fixTargetLocation(&a2, UnitId::Spell_ScannerSweep);
-		v10 = CreateUnit(0x21u, a2.x, a2.y, (uint8) v1->playerId);
+		v10 = CreateUnit(0x21u, a2.x, a2.y, (uint8)v1->playerId);
 		v11 = v10;
 		if (v10) {
 			function_004A01F0(v10);
@@ -889,7 +889,7 @@ namespace hooks {
 				v1->spendUnitEnergy(techdata_dat::EnergyCost[4] * 256);
 			}
 			toIdle(v1);
-		} 		else {
+		} else {
 			displayLastNetErrForPlayer(v1->playerId);
 			toIdle(v1);
 		}
@@ -1152,7 +1152,7 @@ namespace {
 			CImage* current_image = sprite->images.head;
 			current_image != nullptr;
 			current_image = current_image->link.next
-			) 		{
+			) {
 			if (current_image->paletteType == PaletteType::RLE_HPFLOATDRAW)
 				current_image->flags |= CImage_Flags::Redraw;
 		}

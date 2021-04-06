@@ -24,9 +24,9 @@ namespace {	// helper declarations
 			CUnit* target;
 		} hits[32][16];
 	};
-	SpineHitTable* const spineHitTable = (SpineHitTable*) (0x0064DEC8);
-	uint32* const spineHitRow = (uint32*) (0x64EEC8);
-	uint32* const spineHitCol = (uint32*) (0x64DEA8);
+	SpineHitTable* const spineHitTable = (SpineHitTable*)(0x0064DEC8);
+	uint32* const spineHitRow = (uint32*)(0x64EEC8);
+	uint32* const spineHitCol = (uint32*)(0x64DEA8);
 
 }//unnamed namespace
 
@@ -47,7 +47,7 @@ namespace hooks {
 			if (damage >= dsw->hitPoints) {
 				dsw->remove();
 				//scbw::printText("Destroy dark swarm");
-			} 			else {
+			} else {
 				uint32 old = dsw->hitPoints;
 				dsw->hitPoints -= damage;
 				//char buf[64];
@@ -65,13 +65,13 @@ namespace hooks {
 			uint16 angle = scbw::getAngle(nathrokor->position.x, nathrokor->position.y,
 				target->position.x, target->position.y);
 			uint16 unit_angle = nathrokor->velocityDirection1;
-			int arc = (double) 15 / 1.40625;
+			int arc = (double)15 / 1.40625;
 			//30 degrees
 			int delta = unit_angle - angle;
 			delta = abs((delta + 128) % 256 - 128);
 			if (delta > arc) {
 				return false;
-			} 		   else {
+			} else {
 			}
 		}
 		return true;
@@ -167,7 +167,7 @@ namespace hooks {
 			if (weaponId == WeaponId::HeraclesJavelinCannons) {
 				const double splashBase = weapons_dat::OuterSplashRadius[WeaponId::HeraclesJavelinCannons];
 				const uint32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
-				outer = (int16) (splashBase * (1 + 0.1 * stacks));
+				outer = (int16)(splashBase * (1 + 0.1 * stacks));
 			}
 
 			if (!isUnitDistanceWithin(target, bullet, outer)) continue;
@@ -189,7 +189,7 @@ namespace hooks {
 			if (weaponId == WeaponId::HeraclesJavelinCannons) {
 				const double splashBase = weapons_dat::InnerSplashRadius[WeaponId::HeraclesJavelinCannons];
 				const uint32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
-				inner = (int16) (splashBase * (1 + 0.1 * stacks));
+				inner = (int16)(splashBase * (1 + 0.1 * stacks));
 			}
 
 			if (isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet, target)) {
@@ -211,7 +211,7 @@ namespace hooks {
 			if (weaponId == WeaponId::HeraclesJavelinCannons) {
 				const double splashBase = weapons_dat::MediumSplashRadius[WeaponId::HeraclesJavelinCannons];
 				const uint32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
-				medium = (int16) (splashBase * (1 + 0.1 * stacks));
+				medium = (int16)(splashBase * (1 + 0.1 * stacks));
 			}
 
 			if (weaponId == WeaponId::NathrokorPlasmidBreath) {
@@ -249,9 +249,9 @@ namespace hooks {
 		//     if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
 			if (splash == SplashType::Enemy) {
 				if (bullet->srcPlayer == target->playerId && target != bullet->attackTarget.unit) continue;
-			} 		else if (splash == SplashType::FriendlyNew) {
+			} else if (splash == SplashType::FriendlyNew) {
 				bool lurkerOverride = false;
-				if (bullet->sourceUnit && (CUnit*) scbw::get_generic_value(bullet->sourceUnit, ValueId::LurkerPickTarget) == target) {
+				if (bullet->sourceUnit && (CUnit*)scbw::get_generic_value(bullet->sourceUnit, ValueId::LurkerPickTarget) == target) {
 					lurkerOverride = true;
 				}
 				if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && !lurkerOverride && target != bullet->attackTarget.unit) {
@@ -399,7 +399,7 @@ namespace hooks {
 					if (bullet->sourceUnit->id == 129) {
 						if (bullet->remainingBounces <= 1) {
 							mutalisk = false;
-						} 						else {
+						} else {
 							bounces = false;
 						}
 					}
@@ -414,7 +414,7 @@ namespace hooks {
 						}*/
 						//1-3-9  2-1-0 - old
 						//1-2-3  2-1-0 - new
-					} 					else {
+					} else {
 						divisor *= 3;
 					}
 				}
@@ -466,7 +466,7 @@ namespace hooks {
 							&& target == bullet->attackTarget.unit) {
 							if (Globals.extended_unit_table) {
 								new_unit_table.air_splash_results[0] = target;
-							} 							else {
+							} else {
 								airSplashList[0] = target;
 							}
 							result = 1;
@@ -476,7 +476,7 @@ namespace hooks {
 						listCount = *airSplashListCount;
 						if (Globals.extended_unit_table) {
 							new_unit_table.air_splash_results[*airSplashListCount] = target;
-						} 						else {
+						} else {
 							airSplashList[*airSplashListCount] = target;
 						}
 						*airSplashListCount = listCount + 1;
@@ -487,13 +487,13 @@ namespace hooks {
 		if (airSplashListCount) {
 			if (*airSplashListCount == 1) {
 				list = 0;
-			} 			else {
+			} else {
 				list = randomizeShort(58) % *airSplashListCount;
 			}
 			if (Globals.extended_unit_table) {
-				weaponBulletShot(target, bullet, (int32) new_unit_table.air_splash_results[list]);
-			} 			else {
-				weaponBulletShot(target, bullet, (int32) airSplashList[list]);
+				weaponBulletShot(target, bullet, (int32)new_unit_table.air_splash_results[list]);
+			} else {
+				weaponBulletShot(target, bullet, (int32)airSplashList[list]);
 			}
 
 		}
@@ -556,7 +556,7 @@ namespace hooks {
 				&& target->id != UnitId::TerranLobotomyMine) {
 				if (units_dat::BaseProperty[target->id] & UnitProperty::Organic) {
 					scbw::set_generic_timer(target, ValueId::LobotomySlow, 6 * 24);
-				} 					else {
+				} else {
 					hooks::LockdownHit(target, 18, bullet);
 				}
 			}
@@ -603,7 +603,7 @@ namespace {
 		if (bullet != nullptr && target != nullptr && bullet->sourceUnit && bullet->weaponType == WeaponId::PariahIconoclastBlades) {
 			if (!Globals.was_hit_by_pariah(bullet->sourceUnit, target)) {
 				Globals.register_pariah_hit(bullet->sourceUnit, target);
-			} 			else {
+			} else {
 				return;
 			}
 		}
@@ -658,7 +658,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (int16) result;
+		return (int16)result;
 	}
 
 	const uint32 Func_splashFunc = 0x0048B570;

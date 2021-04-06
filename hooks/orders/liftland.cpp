@@ -109,7 +109,7 @@ namespace hooks {
 				//plan vertical movement toward ground
 				function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y - unit->sprite->images.tail->verticalOffset);
 				unit->mainOrderState = 1;
-			} 	else
+			} else
 				if (unit->mainOrderState == 1) {
 
 					//6448A
@@ -151,7 +151,7 @@ namespace hooks {
 							unit->orderToIdle();
 
 
-						} 			else {
+						} else {
 
 							//6452B:
 
@@ -345,7 +345,7 @@ namespace hooks {
 
 		if ((unit->status & UnitStatus::GroundedBuilding) &&
 			(units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding)
-			) 	{
+			) {
 
 			//649D5
 			if (unit->building.addon != nullptr)
@@ -379,7 +379,7 @@ namespace hooks {
 
 			if (unit->sprite->position.x != unit->nextTargetWaypoint.x ||
 				unit->sprite->position.y - 42 != unit->nextTargetWaypoint.y
-				) 		{
+				) {
 				//64A76
 				unit->nextTargetWaypoint.x = unit->sprite->position.x;
 				unit->nextTargetWaypoint.y = unit->sprite->position.y - 42;

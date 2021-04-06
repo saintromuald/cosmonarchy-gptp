@@ -79,7 +79,7 @@ namespace {
 		//If the unit can't turn around, check if the target is within the attack angle.
 		if (!(actualUnit->status & UnitStatus::CanTurnAroundToAttack)) {
 			if (!isTargetPosWithinAttackAngle(target->getX(), target->getY(),
-				actualUnit, units_dat::GroundWeapon[actualUnit->id]))             {
+				actualUnit, units_dat::GroundWeapon[actualUnit->id])) {
 				return false;
 			}
 		}
@@ -255,7 +255,7 @@ CUnit* AttackPriorityData::findBestTarget(CUnit* attacker) const {
 				bestTargetLife = currentTargetLife;
 			}
 		}
-	}     else {
+	} else {
 		//Find the nearest target (don't use unit box sizes)
 		uint32 bestTargetDistance = scbw::getDistanceFast(
 			attacker->getX(), attacker->getY(),
@@ -353,7 +353,7 @@ namespace {
 				return 0;
 			else
 				return weapons_dat::MinRange[airWeapon];
-		}         else {
+		} else {
 			if (airWeapon == WeaponId::None)
 				return weapons_dat::MinRange[groundWeapon];
 			else

@@ -119,7 +119,7 @@ namespace {
 			//original code is hardcoded instead of using a function like setSecondaryOrder
 			if (unit->secondaryOrderId != OrderId::Cloak) {
 				unit->setSecondaryOrder(OrderId::Cloak);
-			} 		else if (unit->pAI != nullptr) {
+			} else if (unit->pAI != nullptr) {
 				scbw::set_generic_value(unit, ValueId::AICloakGimmick, 0);
 			}
 		}

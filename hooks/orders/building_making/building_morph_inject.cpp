@@ -91,13 +91,13 @@ namespace {
 		}
 
 		if (!(unit->status & UnitStatus::Completed)
-			&& hooks::isMorphedBuildingHook(unit->buildQueue[unit->buildQueueSlot])) 		{
+			&& hooks::isMorphedBuildingHook(unit->buildQueue[unit->buildQueueSlot])) {
 			__asm {
 				POPAD
 				MOV EAX, 1
 				RETN
 			}
-		} 		else {
+		} else {
 			__asm {
 				POPAD
 				XOR EAX, EAX;//Set EAX to 0
@@ -118,9 +118,9 @@ namespace {
 		}
 
 		unit = *activePortraitUnit;
-		if (unit->status & UnitStatus::GroundedBuilding && unit->isFrozen()) 		{
+		if (unit->status & UnitStatus::GroundedBuilding && unit->isFrozen()) {
 			tblErrorMessage = 828;    //<6>Disabled<0>
-		} 		else {
+		} else {
 			uint16 unitId = unit->buildQueue[unit->buildQueueSlot];
 			if (unit->status & UnitStatus::Completed
 				|| !hooks::isMorphedBuildingHook(unitId))
@@ -156,7 +156,7 @@ namespace {
 				POPAD
 				JMP Hook_AI_MorphBehavior_IsMorphedBuildingYes
 			}
-		} 		else {  //Code at 0x00435122
+		} else {  //Code at 0x00435122
 			__asm {
 				POPAD
 				POP EDI
@@ -229,7 +229,7 @@ namespace {
 				MOV EAX, 1
 				RETN
 			}
-		} 		else {
+		} else {
 			__asm {
 				POPAD
 				XOR EAX, EAX;//Set EAX to 0
@@ -289,7 +289,7 @@ namespace {
 		}
 
 		if (!(unit->status & UnitStatus::Completed)
-			&& hooks::isMorphedBuildingHook(unit->buildQueue[unit->buildQueueSlot])) 		{
+			&& hooks::isMorphedBuildingHook(unit->buildQueue[unit->buildQueueSlot])) {
 			//scbw::printText("Morph detected");
 			__asm {
 				POPAD
@@ -300,7 +300,7 @@ namespace {
 				POP EBP
 				RETN 4
 			}
-		} 		else {
+		} else {
 			//scbw::printText("Morph is not detected");
 			__asm {
 				POPAD

@@ -97,7 +97,7 @@ namespace hooks {
 			unit->sprite->free();
 			unit->sprite = nullptr;
 
-		} 	else {
+		} else {
 			unit->sprite->playIscriptAnim(IscriptAnimation::Death, true);
 			_UnitDestructor(unit);
 		}

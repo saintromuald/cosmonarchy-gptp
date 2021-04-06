@@ -3,7 +3,7 @@
 #include <algorithm>
 
 uint32 captivatingClawsGetStacks(CUnit* target) {
-	return std::min((int) scbw::get_generic_unit_timer_map(target, ValueId::CaptivatingClawsMap).size(), 4);
+	return std::min((int)scbw::get_generic_unit_timer_map(target, ValueId::CaptivatingClawsMap).size(), 4);
 }
 
 uint32 captivatingClawsGetHighestTimer(CUnit* target) {

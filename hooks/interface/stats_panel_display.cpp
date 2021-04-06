@@ -34,15 +34,15 @@ namespace hooks {
 			v3 = v3->parent;
 		auto v5 = v3->childrenDlg;
 		bool jump = false;
-		if (v5) 		{
-			while (v5->index != index + 9) 			{
+		if (v5) {
+			while (v5->index != index + 9) {
 				v5 = v5->next;
 				if (!v5) {
 					v5 = nullptr;
 					break;
 				}
 			}
-		} 		else 		{
+		} else {
 			v5 = nullptr;
 		}
 		scbw::showDialog(v5);
@@ -58,7 +58,7 @@ namespace hooks {
 		statData->id = 13;
 		auto v8 = v5->flags;
 		v5->pszText = statusscreen_infobtn[index];
-		if (!(v8 & 1)) 		{
+		if (!(v8 & 1)) {
 			v5->flags = v8 | 1;
 			scbw::updateDialog(v5);
 		}
@@ -77,7 +77,7 @@ namespace hooks {
 		if (
 			!(activeUnit->status & UnitStatus::IsHallucination) ||
 			(!*IS_IN_REPLAY && activeUnit->playerId != *LOCAL_NATION_ID)
-			) 		{
+			) {
 
 			bool bNoAirWeaponDisplay;
 
@@ -100,7 +100,7 @@ namespace hooks {
 			if (
 				activeUnit->id != UnitId::ZergLakizilisk ||
 				activeUnit->status & UnitStatus::Burrowed
-				) 			{
+				) {
 
 				bool bNoGroundWeaponDisplay = false;
 
@@ -118,7 +118,7 @@ namespace hooks {
 						bNoGroundWeaponDisplay = true;
 					else
 						groundWeaponSubunit = units_dat::GroundWeapon[activeUnit->subunit->id];
-				} 				else
+				} else
 					groundWeaponSubunit = groundWeaponMainUnit;
 
 				if (!bNoGroundWeaponDisplay) {
@@ -225,7 +225,7 @@ namespace hooks {
 				//				||	activeUnit->id == UnitId::Hero_Gantrithor
 				|| activeUnit->id == UnitId::ProtossAccantor
 				//				||	activeUnit->id == UnitId::Hero_Warbringer
-				) 			{
+				) {
 				StatHangerCount(dialog, index);
 				index++;
 			}
@@ -234,7 +234,7 @@ namespace hooks {
 				activeUnit->id == UnitId::TerranVulture /*||
 				activeUnit->id == UnitId::Hero_JimRaynorVulture*/	//disable hardcode for Southpaws, 
 				//though without mines it shouldn't show in any case
-				) 			{
+				) {
 				if (StatSpidermineCount(dialog, index))
 					index++; //don't increase the index if not displaying
 			}
@@ -304,13 +304,13 @@ namespace hooks {
 			|| !(units_dat::BaseProperty[_type] & UnitProperty::Hero)
 			|| !units_dat::MapStringId[_type]) {
 			if (unitGetRace(a2) == 1) {                 // Terran
-				return getStatTxtString((unsigned __int8) (a2->rankIncrease + units_dat::Rank[_type]) + 1302);
+				return getStatTxtString((unsigned __int8)(a2->rankIncrease + units_dat::Rank[_type]) + 1302);
 			}
 			return 0;
 		}
 		if (statTxtTblNew->getString(570))
 			return "";
-		return (char*) statTxtTblNew->getString(571); // "Admiral"
+		return (char*)statTxtTblNew->getString(571); // "Admiral"
 	}
 
 } //namespace hooks
@@ -461,7 +461,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (__int8) result;
+		return (__int8)result;
 	}
 
 	const uint32 Func_getStatTxtString = 0x004C36F0;
@@ -474,7 +474,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (char*) result;
+		return (char*)result;
 	}
 
 

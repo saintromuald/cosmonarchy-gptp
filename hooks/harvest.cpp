@@ -34,24 +34,24 @@ namespace hooks {
 			if (isMineral) {
 				//			resource->remove();
 				resource->building.resource.resourceAmount = 2;
-				return_value = (uint8) (resource->building.resource.resourceAmount);
-			} 		else {
+				return_value = (uint8)(resource->building.resource.resourceAmount);
+			} else {
 				resource->building.resource.resourceAmount = 0;
 				return_value = 2;
 			}
 
-		} 	else {
+		} else {
 
 			resource->building.resource.resourceAmount -= RESOURCE_HARVESTED;
 
 			if (isMineral) {
 				if (resource->building.resource.resourceAmount > 0)
 					updateMineralPatchImage(resource);	//equivalent to setResourceCount @ 68830 ?
-				else 			{
+				else {
 					resource->building.resource.resourceAmount = 2;
 					//resource->remove();
 				}
-			} 		else
+			} else
 				if (resource->building.resource.resourceAmount < RESOURCE_HARVESTED &&
 					isGasContainer(resource->id))
 					scbw::showErrorMessageWithSfx(resource->playerId, 875, 20); //Gas depleted message and sound
@@ -78,10 +78,10 @@ namespace hooks {
 			if (
 				resource->id >= UnitId::ResourceMineralField &&
 				resource->id <= UnitId::ResourceMineralFieldType3
-				) 		{	//Is a mineral patch
+				) {	//Is a mineral patch
 				chunkImageId = ImageId::MineralChunkType1;
 				isMineral = true;
-			} 		else
+			} else
 				if (resource->id == UnitId::assimilator)
 					chunkImageId = ImageId::ProtossGasOrbType1;
 				else

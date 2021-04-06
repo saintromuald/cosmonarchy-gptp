@@ -66,7 +66,7 @@ namespace hooks {
 			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			} 			else
+			} else
 				if (unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
 				else
@@ -101,7 +101,7 @@ namespace hooks {
 				hallucinateScarabs(halUnit2, v3);
 			AI_TrainingUnit(halUnit2, halUnit2);
 			result = halUnit2;
-		} 		else {
+		} else {
 			displayLastNetErrForPlayer(player);
 			result = 0;
 		}

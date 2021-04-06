@@ -91,10 +91,10 @@ namespace hooks {
 	}
 	uint32 buildingVisionSyncHook() {
 		int result = 0;
-		uint8* visHash = (uint8*) 0x0063fd30;
-		uint32* bWantVisibilityHashUpdate = (uint32*) 0x00629d90;
-		uint8* regionVisionHash = (uint8*) 0x0063fe38;
-		int* nCurrentHashOffset = (int*) 0x0063fd28;
+		uint8* visHash = (uint8*)0x0063fd30;
+		uint32* bWantVisibilityHashUpdate = (uint32*)0x00629d90;
+		uint8* regionVisionHash = (uint8*)0x0063fe38;
+		int* nCurrentHashOffset = (int*)0x0063fd28;
 		//
 		memset(visHash, 0, 64);
 		*bWantVisibilityHashUpdate = 0;
@@ -252,7 +252,7 @@ namespace hooks {
 				POPAD
 				JMP AIAddToAttack_NullJmp
 			}
-		} 		else {
+		} else {
 			//			arrayOffset = reinterpret_cast<uint32>(&AIScriptController[playerId].attackers[0]);
 			arrayOffset = reinterpret_cast<uint32>(&Globals.attackers.attacks[playerId][0]);
 			__asm {

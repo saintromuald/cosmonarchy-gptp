@@ -118,7 +118,7 @@ namespace hooks {
 						uint16 angle = scbw::getAngle(unit->position.x, unit->position.y,
 							target->position.x, target->position.y);
 						uint16 unit_angle = unit->velocityDirection1;
-						int arc = (double) 60 / 1.40625;
+						int arc = (double)60 / 1.40625;
 						// 120 degrees
 						int delta = unit_angle - angle;
 						delta = abs((delta + 128) % 256 - 128);
@@ -156,7 +156,7 @@ namespace hooks {
 			case UnitId::ProtossClarion:
 			{
 				// Clarion Harmony Drive: gains increased movement speed based on shields
-				double fraction = (double) unit->shields / ((double) units_dat::MaxShieldPoints[unit->id] * 256);
+				double fraction = (double)unit->shields / ((double)units_dat::MaxShieldPoints[unit->id] * 256);
 				speed *= 1.0 + fraction;
 				break;
 			}
@@ -190,7 +190,7 @@ namespace hooks {
 				// Blackjack Wear and Tear: reduce movement speed based on missing health
 				const uint32 health = unit->hitPoints / 256;
 				const uint32 maxHealth = unit->getMaxHpInGame();
-				const double multiplier = MathUtils::map(health, (uint32) 0, maxHealth, 0.66, 1.0, true); // nice casting tbh
+				const double multiplier = MathUtils::map(health, (uint32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
 				speed *= multiplier;
 				break;
 			}

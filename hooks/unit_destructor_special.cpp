@@ -38,8 +38,8 @@ void killAllHangarUnits(CUnit* unit) {
 			//hardcoded RNG management
 			if (*IS_IN_GAME_LOOP) {
 
-				static uint32* randomnessCounter_0051C6AC = (uint32*) 0x0051C6AC;
-				static uint32* randomnessCounter_0051CA18 = (uint32*) 0x0051CA18;
+				static uint32* randomnessCounter_0051C6AC = (uint32*)0x0051C6AC;
+				static uint32* randomnessCounter_0051CA18 = (uint32*)0x0051CA18;
 
 				*randomnessCounter_0051C6AC = *randomnessCounter_0051C6AC + 1;
 				*randomnessCounter_0051CA18 = *randomnessCounter_0051CA18 + 1;
@@ -48,7 +48,7 @@ void killAllHangarUnits(CUnit* unit) {
 				//number between 0 and 32766
 				random_value = (*lastRandomNumber / 65536) & 0x7FFF;
 
-			} 			else
+			} else
 				random_value = 0;
 
 			//should produce a number between 15 and 45 (or maybe 46)
@@ -157,7 +157,7 @@ void setAllImageGroupFlagsPal11(CSprite* sprite) {
 		CImage* current_image = sprite->images.head;
 		current_image != nullptr;
 		current_image = current_image->link.next
-		) 	{
+		) {
 		if (current_image->paletteType == PaletteType::RLE_HPFLOATDRAW)
 			current_image->flags |= CImage_Flags::Redraw;
 	}
@@ -347,7 +347,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 				unit->building.ghostNukeMissile = nullptr;
 			}
 
-		} 	else
+		} else
 
 			// Is a harvestable mineral patch or gas building
 			if (
@@ -355,9 +355,9 @@ void unitDestructorSpecialHook(CUnit* unit) {
 				((unit->id == UnitId::TerranReservoir || unit->id == UnitId::ProtossAquifer || unit->id == UnitId::ZergExtractor)
 					&& unit->status & UnitStatus::Completed
 					)	/*this is equivalent to function unit_isGeyserUnit @ 004688B0*/
-				) 	{
+				) {
 				freeResourceContainer(unit);
-			} 	else
+			} else
 
 				if (unit->id >= UnitId::TerranNuclearMissile && unit->id <= UnitId::ProtossPylon) {
 
@@ -393,14 +393,14 @@ void unitDestructorSpecialHook(CUnit* unit) {
 								if (unit->interceptor.hangar_link.prev != nullptr)  //untie the previous interceptor/scarab from current interceptor/scarab (tie it to next)
 									(unit->interceptor.hangar_link.prev)->interceptor.hangar_link.next = unit->interceptor.hangar_link.next;
 
-							} 				else {
+							} else {
 								unit->interceptor.hangar_link.prev = nullptr;
 								unit->interceptor.hangar_link.next = nullptr;
 							}
 
 						}
 
-					} 		else
+					} else
 
 						//Is a Nuclear Silo
 						if (unit->id == UnitId::TerranNuclearSilo) {
@@ -410,7 +410,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 								unit->building.silo.nuke = nullptr;
 							}
 
-						} 		else
+						} else
 
 
 
@@ -422,7 +422,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 									(unit->connectedUnit)->building.silo.isReady = false;
 								}
 
-							} 		else
+							} else
 
 								//Is a Protoss Pylon
 								if (unit->id == UnitId::ProtossPylon) {
@@ -452,7 +452,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 
 									*canUpdatePoweredStatus = true;
 
-								} 		else
+								} else
 									//Is a Nydus Canal
 									if (unit->id == UnitId::ZergNydusCanal) {
 										CUnit* nydusExit = unit->building.nydusExit;

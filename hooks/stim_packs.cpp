@@ -41,8 +41,8 @@ namespace hooks {
 			static uint8 opcode[] = {0x36};	//packet opcode for stimpack is 0x36, no others args
 			QueueGameCommand(&opcode[0], 1);
 
-		} 	else {
-			char* message = (char*) statTxtTblNew->getString(874); //not enough life remaining
+		} else {
+			char* message = (char*)statTxtTblNew->getString(874); //not enough life remaining
 			get_statTxt_Str_0(*activePortraitUnit, *LOCAL_NATION_ID, message);
 		}
 
@@ -90,7 +90,7 @@ namespace hooks {
 			if (
 				activePlayerCurrentSelection->canUseTech(TechId::Stimpacks, *ACTIVE_NATION_ID) == 1 &&
 				activePlayerCurrentSelection->hitPoints > MIN_HITPOINTS_FOR_STIMPACKS
-				) 		{
+				) {
 
 				int random_value;
 
@@ -98,8 +98,8 @@ namespace hooks {
 					random_value = 0;
 				else {
 
-					static uint32* randomnessCounter_0051C68C = (uint32*) 0x0051C68C;
-					static uint32* randomnessCounter_0051CA18 = (uint32*) 0x0051CA18;
+					static uint32* randomnessCounter_0051C68C = (uint32*)0x0051C68C;
+					static uint32* randomnessCounter_0051CA18 = (uint32*)0x0051CA18;
 
 					*randomnessCounter_0051C68C = (*randomnessCounter_0051C68C) + 1;
 					*randomnessCounter_0051CA18 = (*randomnessCounter_0051CA18) + 1;

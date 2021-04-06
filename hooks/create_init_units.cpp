@@ -56,10 +56,10 @@ namespace hooks {
 		if (buildingSizeY < 0)
 			buildingSizeY++;
 
-		searchBox.left = (startPositions[playerId].x - (int16) (buildingSizeX / 2)) & 0x0000FFE0;
-		searchBox.top = (startPositions[playerId].y - (int16) (buildingSizeY / 2)) & 0x0000FFE0;
-		searchBox.bottom = buildingSizeY / 2 + ((startPositions[playerId].y - (int16) (buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2 - 1;
-		searchBox.right = buildingSizeX / 2 + ((startPositions[playerId].x - (int16) (buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2 - 1;
+		searchBox.left = (startPositions[playerId].x - (int16)(buildingSizeX / 2)) & 0x0000FFE0;
+		searchBox.top = (startPositions[playerId].y - (int16)(buildingSizeY / 2)) & 0x0000FFE0;
+		searchBox.bottom = buildingSizeY / 2 + ((startPositions[playerId].y - (int16)(buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2 - 1;
+		searchBox.right = buildingSizeX / 2 + ((startPositions[playerId].x - (int16)(buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2 - 1;
 
 		//yes, the return value is unused for some reason
 		FindBestUnit(&searchBox, 0x0049D640);
@@ -80,7 +80,7 @@ namespace hooks {
 				updateUnitStrength(created_unit);
 
 			if (spreadsCreep(created_unit->id, 1)
-				|| units_dat::BaseProperty[created_unit->id] & UnitProperty::CreepBuilding) 		{
+				|| units_dat::BaseProperty[created_unit->id] & UnitProperty::CreepBuilding) {
 				function_004148F0(
 					created_unit->sprite->position.x,
 					created_unit->sprite->position.y,
@@ -131,8 +131,8 @@ namespace hooks {
 			sumY = 1;
 		}
 
-		double averageX = (double) sumX / count;
-		double averageY = (double) sumY / count;
+		double averageX = (double)sumX / count;
+		double averageY = (double)sumY / count;
 		double distance = pow(pow(averageX, 2) + pow(averageY, 2), 0.5);
 
 		double offsetX = averageX / distance;
@@ -144,13 +144,13 @@ namespace hooks {
 
 		if (offsetX < 0) {
 			width *= units_dat::UnitBounds[townhallId].left;
-		} 	else {
+		} else {
 			width *= units_dat::UnitBounds[townhallId].right;
 		}
 
 		if (offsetY < 0) {
 			height *= units_dat::UnitBounds[townhallId].top;
-		} 	else {
+		} else {
 			height *= units_dat::UnitBounds[townhallId].bottom;
 		}
 
@@ -176,7 +176,7 @@ namespace hooks {
 			horizontal = false;
 		}
 
-		return Point16{(uint16) (startX + offsetX), (uint16) (startY + offsetY)};
+		return Point16{(uint16)(startX + offsetX), (uint16)(startY + offsetY)};
 	}
 
 	void CreateInitialMeleeUnits() {
@@ -184,20 +184,20 @@ namespace hooks {
 		uint8* raceIdOffset;
 
 		playerId = 8;
-		raceIdOffset = (uint8*) 0x0057F009;
+		raceIdOffset = (uint8*)0x0057F009;
 
-		while (raceIdOffset != (uint8*) 0x0057EEE9) {
+		while (raceIdOffset != (uint8*)0x0057EEE9) {
 
 			raceIdOffset -= 0x24;
 			playerId--;
 
 			if (*(raceIdOffset - 1) == 2 || *(raceIdOffset - 1) == 1) {
 				//0 is use map settings,1 is Workers, 2 is Workers + Main Building
-				uint8 startingUnits = (uint8) (*(uint16*) (0x00596871));
+				uint8 startingUnits = (uint8)(*(uint16*)(0x00596871));
 
-				static uint8* victory_conditions = (uint8*) 0x0059686D;
-				static uint8* tournament_mode = (uint8*) 0x00596877;
-				static uint8* user_select_slots = (uint8*) 0x0059BDA8;
+				static uint8* victory_conditions = (uint8*)0x0059686D;
+				static uint8* tournament_mode = (uint8*)0x00596877;
+				static uint8* user_select_slots = (uint8*)0x0059BDA8;
 
 				if (*victory_conditions == 0					// check triggers for conditions
 					&& startingUnits == 0 					// use map units
@@ -255,8 +255,8 @@ namespace hooks {
 	;
 
 	void CreateInitialOverlord(uint8 playerId) {
-		static uint16* const maxBoxRightValue = (uint16*) 0x00628450;
-		static uint16* const maxBoxBottomValue = (uint16*) 0x006284B4;
+		static uint16* const maxBoxRightValue = (uint16*)0x00628450;
+		static uint16* const maxBoxBottomValue = (uint16*)0x006284B4;
 
 		int overlordStartX, overlordStartY;
 		CUnit* created_unit;

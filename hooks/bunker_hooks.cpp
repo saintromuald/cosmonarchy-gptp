@@ -46,7 +46,7 @@ namespace hooks {
 					unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
 					unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
 				}
-			} 		else {
+			} else {
 				if (unit->mainOrderTimer == 0) {
 					unit->mainOrderTimer = 15;
 					unit->orderTarget.unit = findRandomAttackTarget(unit);
@@ -79,7 +79,7 @@ namespace hooks {
 		if (unit->id == UnitId::TerranHarakan) {
 			frameAngle = ((unit->currentDirection1 + 8) / 16 % 16) * 16;
 			spriteId = 378; //Firebat flamethrower graphics
-		} 	else {
+		} else {
 			frameAngle = frameDirection * 32;
 			spriteId = 377; //Bunker attack overlay
 		}
@@ -96,7 +96,7 @@ namespace hooks {
 			CImage* image = bunkerAttackEffect->sprite->images.head;
 			image != nullptr;
 			image = image->link.next
-			) 	{
+			) {
 			setImageDirection(image, frameAngle);
 		}
 

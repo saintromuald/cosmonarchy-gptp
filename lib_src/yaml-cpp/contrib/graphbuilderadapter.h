@@ -37,7 +37,7 @@ namespace YAML {
 		GraphBuilderAdapter& operator=(GraphBuilderAdapter&&) = delete;
 
 		virtual void OnDocumentStart(const Mark& mark) {
-			(void) mark;
+			(void)mark;
 		}
 		virtual void OnDocumentEnd() {}
 

@@ -61,7 +61,7 @@ namespace hooks {
 		stack_placeholder.always_zero_here = 0;
 		stack_placeholder.mouseY = mouse->y;
 
-		fxnInteract(dialog, (uint32) &stack_placeholder);
+		fxnInteract(dialog, (uint32)&stack_placeholder);
 
 		dialog->bounds.right += dialog->bounds.left;
 		dialog->bounds.bottom += dialog->bounds.top;
@@ -72,7 +72,7 @@ namespace hooks {
 		stack_placeholder.always_zero_here = 0;
 		stack_placeholder.mouseX = mouse->x;
 
-		fxnInteract(dialog, (uint32) &stack_placeholder);
+		fxnInteract(dialog, (uint32)&stack_placeholder);
 
 		stack_placeholder.mouseX = mouse->x;
 		stack_placeholder.always_14_here = 14;	//0x000E
@@ -80,7 +80,7 @@ namespace hooks {
 		stack_placeholder.always_zero_here = 0;
 		stack_placeholder.mouseY = mouse->y;
 
-		fxnInteract(dialog, (uint32) &stack_placeholder);
+		fxnInteract(dialog, (uint32)&stack_placeholder);
 
 		SetCallbackTimer(dialog, 12, 100, 0);
 
@@ -231,7 +231,7 @@ namespace {
 		static uint32 return_value;
 		static uint32 fxnInteract;
 
-		fxnInteract = (uint32) dialog->fxnInteract;
+		fxnInteract = (uint32)dialog->fxnInteract;
 
 		__asm {
 			PUSHAD

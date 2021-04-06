@@ -11,12 +11,12 @@ namespace {
 namespace hooks {
 	void initializeScreenLocations() {
 		for (Point16& point : screen_hotkeys) {
-			point = {(uint16) *MoveToX, (uint16) *MoveToY};
+			point = {(uint16)*MoveToX, (uint16)*MoveToY};
 		}
 	}
 
 	int saveScreenLocation(int id) {
-		screen_hotkeys[id] = {(uint16) *MoveToX, (uint16) *MoveToY};
+		screen_hotkeys[id] = {(uint16)*MoveToX, (uint16)*MoveToY};
 		return id;
 	}
 

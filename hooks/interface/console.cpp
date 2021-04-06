@@ -34,31 +34,31 @@ namespace hooks {
 			if (*consoleIndex == 1) {
 				dialogGrpConstruct(
 					178,
-					(int) "Starcraft\\SWAR\\lang\\game.cpp",
-					(int) "dlgs\\terran.grp",
+					(int)"Starcraft\\SWAR\\lang\\game.cpp",
+					(int)"dlgs\\terran.grp",
 					(int(__fastcall*)(int, int, int, int))loadGraphic);
 				*currentMusicId = 4;
-			} 			else if (*consoleIndex == 2) {
+			} else if (*consoleIndex == 2) {
 				dialogGrpConstruct(
 					183,
-					(int) "Starcraft\\SWAR\\lang\\game.cpp",
-					(int) "dlgs\\protoss.grp",
+					(int)"Starcraft\\SWAR\\lang\\game.cpp",
+					(int)"dlgs\\protoss.grp",
 					(int(__fastcall*)(int, int, int, int))loadGraphic);
 				*currentMusicId = 7;
 			}
-		} 		else {
+		} else {
 			dialogGrpConstruct(
 				173,
-				(int) "Starcraft\\SWAR\\lang\\game.cpp",
-				(int) "dlgs\\zerg.grp",
+				(int)"Starcraft\\SWAR\\lang\\game.cpp",
+				(int)"dlgs\\zerg.grp",
 				(int(__fastcall*)(int, int, int, int))loadGraphic);
 			*currentMusicId = 1;
 		}
 		v0 = *campaignIndex;
 		if (campaignIndex) {
-			if (*campaignIndex > (uint16) 0x1F) {
+			if (*campaignIndex > (uint16)0x1F) {
 				conrace = xCampaignFirstMission[*consoleIndex];
-			} 			else {
+			} else {
 				conrace = campaignFirstMission[*consoleIndex];
 			}
 			v0 = (*campaignIndex - conrace) / 3;
@@ -102,7 +102,7 @@ namespace hooks {
 			|| units_dat::MaxShieldPoints[v2] > 0x270Fu
 			|| v1->status & UnitStatus::IsHallucination) {
 			v10 = 0;
-		} 		else {
+		} else {
 			if (unitHPbelow33_percent(*activePortraitUnit))
 				v5 = 6;
 			else
@@ -112,7 +112,7 @@ namespace hooks {
 				v8 = (v1->hitPoints + 255) >> 8;
 				v9 = getLastQueueSlotType(v1);
 				sprintf_s("", 32, "%d/%d %c%d/%d", v1->shields >> 8, units_dat::MaxShieldPoints[v9], v5, v8, v7);
-			} 			else {
+			} else {
 				v6 = getMaxHP(v1);
 				sprintf_s("", 32, "%c%d/%d", v5, (v1->hitPoints + 255) >> 8, v6);
 			}
@@ -191,7 +191,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool) result;
+		return (bool)result;
 	}
 
 	const uint32 Func_unitHPBetween33_66Percent = 0x00402270;
@@ -206,7 +206,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool) result;
+		return (bool)result;
 	}
 
 	const uint32 Func_getMaxHP = 0x00401400;
@@ -233,13 +233,13 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (uint16) result;
+		return (uint16)result;
 
 	}
 
 	const uint32 Func_addTextToDialog = 0x004258B0;
 	void addTextToDialog(int32 a1, int16 a2, const char* a3) {
-		static int32 _a3 = (int) a3;
+		static int32 _a3 = (int)a3;
 		__asm {
 			PUSHAD
 			MOV EAX, a1

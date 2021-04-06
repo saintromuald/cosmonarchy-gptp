@@ -30,12 +30,12 @@ namespace {
 	//Replaces function @ 0x004576A0
 	void __stdcall statdatalUserInteractWrapper(BinDlg* consoleIcon) {
 
-		GuiOverlay* gui = (GuiOverlay*) consoleIcon->user;
+		GuiOverlay* gui = (GuiOverlay*)consoleIcon->user;
 
 		switch (gui->overlayType) {
 			case 0:
 				createContextHelpFromDialog(consoleIcon,
-					hooks::getWeaponTooltipString((uint8) gui->id, *activePortraitUnit));
+					hooks::getWeaponTooltipString((uint8)gui->id, *activePortraitUnit));
 				break;
 			case 1:
 				createContextHelpFromDialog(consoleIcon,

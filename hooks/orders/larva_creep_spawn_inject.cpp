@@ -49,7 +49,7 @@ namespace {
 			POPAD
 			MOV EAX, 0x00000001
 			RET
-		} 		else
+		} else
 			__asm {
 				POPAD
 				XOR EAX, EAX
@@ -268,7 +268,7 @@ namespace {
 				POPAD
 				JMP func_ret
 			}
-		} 		else {
+		} else {
 			__asm {
 				POPAD
 				MOVZX ECX, [ESI + 0x12]
@@ -315,23 +315,23 @@ namespace hooks {
 		const uint32 offs_f = 0x00413850;
 
 		// Insert function offset
-		*(uint32*) (&func_a[22]) = (uint32) (&inCreepArea_Call) - (offs_a + 22 + 4);
+		*(uint32*)(&func_a[22]) = (uint32)(&inCreepArea_Call) - (offs_a + 22 + 4);
 		memoryPatch(offs_a, func_a, 31);
 
-		*(uint32*) (&func_bcd[18]) = (uint32) (&inCreepArea_Call) - (offs_b + 18 + 4);
+		*(uint32*)(&func_bcd[18]) = (uint32)(&inCreepArea_Call) - (offs_b + 18 + 4);
 		memoryPatch(offs_b, func_bcd, 25);
 
-		*(uint32*) (&func_bcd[18]) = (uint32) (&inCreepArea_Call) - (offs_d + 18 + 4);
+		*(uint32*)(&func_bcd[18]) = (uint32)(&inCreepArea_Call) - (offs_d + 18 + 4);
 		memoryPatch(offs_d, func_bcd, 25);
 
 		func_bcd[16] = 0xD6;
-		*(uint32*) (&func_bcd[18]) = (uint32) (&inCreepArea_Call) - (offs_c + 18 + 4);
+		*(uint32*)(&func_bcd[18]) = (uint32)(&inCreepArea_Call) - (offs_c + 18 + 4);
 		memoryPatch(offs_c, func_bcd, 25);
 
-		*(uint32*) (&func_e[16]) = (uint32) (&inCreepArea_Call) - (offs_e + 16 + 4);
+		*(uint32*)(&func_e[16]) = (uint32)(&inCreepArea_Call) - (offs_e + 16 + 4);
 		memoryPatch(offs_e, func_e, 25);
 
-		*(uint32*) (&func_f[3]) = (uint32) (&inCreepArea_Call) - (offs_f + 3 + 4);
+		*(uint32*)(&func_f[3]) = (uint32)(&inCreepArea_Call) - (offs_f + 3 + 4);
 		memoryPatch(offs_f, func_f, sizeof(func_f));
 	}
 }

@@ -47,7 +47,7 @@ std::ostream& operator<<(std::ostream& stream, std::vector<T>& vec) {
 
 template <typename T> // Undefined Object
 std::ostream& operator<<(std::ostream& stream, T& object) {
-	stream << *(char*) &object << "\0";
+	stream << *(char*)&object << "\0";
 	return stream;
 }
 
@@ -59,7 +59,7 @@ std::istream& operator>>(std::istream& stream, T const* arr) {
 	int i = 0;
 	do {
 		stream >> str;
-		arr[i++] = *(T*) &str;
+		arr[i++] = *(T*)&str;
 	} while (str != "");
 	return stream;
 }
@@ -72,7 +72,7 @@ std::istream& operator>>(std::istream& stream, T const** arr) {
 	do {
 		do {
 			stream >> str;
-			arr[i][j++] = *(T*) &str;
+			arr[i][j++] = *(T*)&str;
 		} while (str != "");
 		i++;
 		j = 0;
@@ -86,7 +86,7 @@ std::istream& operator>>(std::istream& stream, std::map<T, Y>& map) {
 	std::string value;
 	do {
 		stream >> key >> value;
-		map.put(*(T*) &key, *(Y*) &value)
+		map.put(*(T*)&key, *(Y*)&value)
 	} while (str != "");
 		return stream;
 }
@@ -96,7 +96,7 @@ std::istream& operator>>(std::istream& stream, std::vector<T, Y>& vec) {
 	std::string str;
 	do {
 		stream >> str;
-		vec.push_back(*(T*) &str);
+		vec.push_back(*(T*)&str);
 	} while (str != "");
 	return stream;
 }
@@ -104,6 +104,6 @@ std::istream& operator>>(std::istream& stream, std::vector<T, Y>& vec) {
 
 template <typename T> // Undefined Object
 std::istream& operator>>(std::istream& stream, T& object) {
-	stream >> *(char*) &object;
+	stream >> *(char*)&object;
 	return stream;
 }

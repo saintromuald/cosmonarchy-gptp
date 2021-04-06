@@ -33,17 +33,17 @@ namespace hooks {
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
 			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::TerminalSurge), 0, 10);
 			if (stacks > 0) {
-				double newCooldown = (double) cooldown * (1.0 - stacks / 13.333);
+				double newCooldown = (double)cooldown * (1.0 - stacks / 13.333);
 				cooldown = newCooldown;
 			}
 		}
 
 		// Madcap Maverick Feeders behavior: increase weapon speed while stationary
 		if (unit->id == UnitId::TerranMadcap) {
-			uint32 stacks = ceil((double) scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime);
+			uint32 stacks = ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime);
 			if (stacks > 0) {
 				//scbw::print(std::to_string(stacks) + ", " + std::to_string(scbw::get_generic_value(unit, ValueId::MadcapStacks)));
-				double newCooldown = (double) cooldown * (1.0 - stacks * MadcapAttackSpeedPerStack);
+				double newCooldown = (double)cooldown * (1.0 - stacks * MadcapAttackSpeedPerStack);
 				cooldown = newCooldown;
 			}
 		}
@@ -52,7 +52,7 @@ namespace hooks {
 		else if (unit->id == UnitId::TerranBlackjack) {
 			const uint32 health = unit->hitPoints / 256;
 			const uint32 maxHealth = unit->getMaxHpInGame();
-			const double multiplier = MathUtils::map(health, (uint32) 0, maxHealth, 0.66, 1.0, true); // nice casting tbh
+			const double multiplier = MathUtils::map(health, (uint32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
 			cooldown /= multiplier;
 		}
 

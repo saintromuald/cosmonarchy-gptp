@@ -75,11 +75,11 @@ namespace hooks {
 
 	void orders_CompletingArchonSummon(CUnit* unit) {
 
-		uint32* const bCanUpdateCurrentButtonSet = (uint32*) 0x0068C1B0;
-		uint8* const bCanUpdateSelectedUnitPortrait = (uint8*) 0x0068AC74;
-		uint8* const bCanUpdateStatDataDialog = (uint8*) 0x0068C1F8;
-		BinDlg** const someDialogUnknown = (BinDlg**) 0x0068C1E8;
-		BinDlg** const someDialogUnknownUser = (BinDlg**) 0x0068C1EC;
+		uint32* const bCanUpdateCurrentButtonSet = (uint32*)0x0068C1B0;
+		uint8* const bCanUpdateSelectedUnitPortrait = (uint8*)0x0068AC74;
+		uint8* const bCanUpdateStatDataDialog = (uint8*)0x0068C1F8;
+		BinDlg** const someDialogUnknown = (BinDlg**)0x0068C1E8;
+		BinDlg** const someDialogUnknownUser = (BinDlg**)0x0068C1EC;
 
 		bool stopFunction = false;
 
@@ -145,7 +145,7 @@ namespace hooks {
 			unit->playerId != targetUnit->playerId ||
 			targetUnit->mainOrderId != OrderId::WarpingDarkArchon ||
 			targetUnit->orderTarget.unit != unit
-			) 	{	//conditions for merge not ok
+			) {	//conditions for merge not ok
 
 			//94838
 			setNextWaypoint_Sub4EB290(unit);
@@ -153,7 +153,7 @@ namespace hooks {
 			if (
 				unit->moveTarget.pt.x != unit->nextTargetWaypoint.x ||
 				unit->moveTarget.pt.y != unit->nextTargetWaypoint.y
-				) 		{
+				) {
 				//94857
 				unit->nextTargetWaypoint.x = unit->moveTarget.pt.x;
 				unit->nextTargetWaypoint.y = unit->moveTarget.pt.y;
@@ -168,7 +168,7 @@ namespace hooks {
 				unit->userActionFlags |= 1;	//set flag
 				prepareForNextOrder(unit);
 
-			} 		else {
+			} else {
 
 				//9487D
 				if (unit->pAI != nullptr)
@@ -178,7 +178,7 @@ namespace hooks {
 
 			}
 
-		} 	else {
+		} else {
 
 			//946BE
 			uint32 distanceBetweenUnits;
@@ -207,7 +207,7 @@ namespace hooks {
 				if (unit->mainOrderState != 0 && unit->getMovableState() == 2) {
 					makeToHoldPosition(unit);
 					unit->orderToIdle();
-				} 			else {
+				} else {
 
 					//94746
 
@@ -255,15 +255,15 @@ namespace hooks {
 
 						x /= 2; y /= 2;
 
-						if ((uint16) x > MAXINT16)
-							x = 0xFFFF0000 + (uint16) x;
+						if ((uint16)x > MAXINT16)
+							x = 0xFFFF0000 + (uint16)x;
 						else
-							x = (uint16) x;
+							x = (uint16)x;
 
-						if ((uint16) y > MAXINT16)
-							y = 0xFFFF0000 + (uint16) y;
+						if ((uint16)y > MAXINT16)
+							y = 0xFFFF0000 + (uint16)y;
 						else
-							y = (uint16) y;
+							y = (uint16)y;
 
 						delayedSetMoveTarget_xy_Sub4EB960(unit, x, y);
 
@@ -326,7 +326,7 @@ namespace hooks {
 			unit->playerId != targetUnit->playerId ||
 			targetUnit->mainOrderId != OrderId::WarpingArchon ||
 			targetUnit->orderTarget.unit != unit
-			) 	{	//conditions for merge not ok
+			) {	//conditions for merge not ok
 
 			//94A3F
 			setNextWaypoint_Sub4EB290(unit);
@@ -334,7 +334,7 @@ namespace hooks {
 			if (
 				unit->moveTarget.pt.x != unit->nextTargetWaypoint.x ||
 				unit->moveTarget.pt.y != unit->nextTargetWaypoint.y
-				) 		{
+				) {
 				//94A5E
 				unit->nextTargetWaypoint.x = unit->moveTarget.pt.x;
 				unit->nextTargetWaypoint.y = unit->moveTarget.pt.y;
@@ -348,7 +348,7 @@ namespace hooks {
 				unit->userActionFlags |= 1;	//set flag
 				prepareForNextOrder(unit);
 
-			} 		else {
+			} else {
 
 				//94A84
 				if (unit->pAI != nullptr)
@@ -358,7 +358,7 @@ namespace hooks {
 
 			}
 
-		} 	else {
+		} else {
 
 			//948EA
 			uint32 distanceBetweenUnits;
@@ -387,7 +387,7 @@ namespace hooks {
 				if (unit->mainOrderState != 0 && unit->getMovableState() == 2) {
 					makeToHoldPosition(unit);
 					unit->orderToIdle();
-				} 			else {
+				} else {
 
 					//94966
 
@@ -436,15 +436,15 @@ namespace hooks {
 
 						x /= 2; y /= 2;
 
-						if ((uint16) x > MAXINT16)
-							x = 0xFFFF0000 + (uint16) x;
+						if ((uint16)x > MAXINT16)
+							x = 0xFFFF0000 + (uint16)x;
 						else
-							x = (uint16) x;
+							x = (uint16)x;
 
-						if ((uint16) y > MAXINT16)
-							y = 0xFFFF0000 + (uint16) y;
+						if ((uint16)y > MAXINT16)
+							y = 0xFFFF0000 + (uint16)y;
 						else
-							y = (uint16) y;
+							y = (uint16)y;
 
 						delayedSetMoveTarget_xy_Sub4EB960(unit, x, y);
 

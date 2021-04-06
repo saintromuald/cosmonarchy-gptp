@@ -108,7 +108,7 @@ namespace scbw {
 		Point16 pick;
 		if (target != nullptr && target_unit != nullptr) {
 			source->orderTarget.pt = target_unit->sprite->position;
-		} 		else {
+		} else {
 			source->orderTarget.pt = target_pt;
 		}
 		createBullet(weaponId, source, source->sprite->position.x, source->sprite->position.y, playerId,
@@ -182,11 +182,11 @@ namespace scbw {
 				u->id == UnitId::Hero_AlexeiStukov ||
 				u->id == UnitId::Hero_SamirDuran ||
 				u->id == UnitId::Hero_InfestedDuran
-				) 		{
+				) {
 				if (
 					u->connectedUnit != nullptr &&
 					u->connectedUnit->id == UnitId::TerranNuclearMissile
-					) 			{
+					) {
 					(u->connectedUnit)->connectedUnit = nullptr;
 					u->connectedUnit = nullptr;
 				}
@@ -472,7 +472,7 @@ namespace scbw {
 
 		do {
 
-			if ((unsigned int) slope <= tangentTable[angle])
+			if ((unsigned int)slope <= tangentTable[angle])
 				max = angle;
 			else
 				min = angle + 1;
@@ -498,7 +498,7 @@ namespace scbw {
 		if (dx < 0) {
 			angle += 192;
 			return angle == 256 ? 0 : angle;
-		} 	else
+		} else
 			return angle + 64;
 
 	}
@@ -517,7 +517,7 @@ namespace scbw {
 
 
 	double bw_angle_to_normal(int32 bw_angle) {
-		double angle = (double) bw_angle * 1.40625;
+		double angle = (double)bw_angle * 1.40625;
 		return angle;
 	}
 	int32 getPolarX(int32 distance, uint8 angle) {
@@ -786,11 +786,11 @@ namespace scbw {
 		auto len_ptr = &len;
 		uint32 val = reinterpret_cast<uint32>(name);
 		auto length = scbw::get_aise_value(nullptr, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));
-		char* buf = (char*) scbw::get_aise_value(nullptr, nullptr, AiseId::ReadSamaseFile_Ptr, 0, 0);
+		char* buf = (char*)scbw::get_aise_value(nullptr, nullptr, AiseId::ReadSamaseFile_Ptr, 0, 0);
 		std::string str;
 		if (length == 0) {
 			return str;
-		} 	else {
+		} else {
 			str = std::string(buf, length);
 		}
 		return str;
@@ -851,7 +851,7 @@ namespace scbw {
 			return UpgradesSc->currentLevel[playerId][upgradeId];
 		/*else if (upgradeId<UpgradeId::None)
 			return UpgradesBw->currentLevel[playerId][upgradeId - UpgradeId::PStructurePlating];*/
-		else 	{
+		else {
 			uint32 result = 0;
 			uint32 player_u32 = playerId;
 			uint32 upgrade_u32 = upgradeId;
@@ -917,7 +917,7 @@ namespace scbw {
 			MOV result, EAX
 			POPAD
 		}
-		return (uint16) result;
+		return (uint16)result;
 	}
 	void setOffsetToParentSpecialOverlay(CImage* image) {
 
@@ -989,7 +989,7 @@ namespace scbw {
 			setUnitPosition(unit, actualPos.x, actualPos.y);
 			refreshUnitAfterMove(unit);
 			return true;
-		} 	else {
+		} else {
 			setUnitPosition(unit, prevPos.x, prevPos.y);
 			return false;
 		}
@@ -1228,7 +1228,7 @@ namespace scbw {
 		unit = CreateUnit(unitId, pos.x, pos.y, playerId);
 		if (unit == nullptr) {
 			displayLastNetErrForPlayer(playerId);
-		} 	else {
+		} else {
 			FinishUnit_Pre(unit);
 			updateUnitStrength(unit);
 			if (creator != nullptr && creator->pAI != nullptr) {
@@ -1304,7 +1304,7 @@ namespace scbw {
 		if (*IS_IN_GAME_LOOP) {
 			*lastRandomNumber = 22695477 * (*lastRandomNumber) + 1;
 			return (*lastRandomNumber >> 16) % 32768;	//Make a number between 0 and 32767
-		} 	else
+		} else
 			return 0;
 	}
 
@@ -1313,11 +1313,11 @@ namespace scbw {
 		//Logically equivalent to function @ 0x004C36C0
 	void refreshConsole() {
 
-		static uint32* const bCanUpdateCurrentButtonSet = (uint32*) 0x0068C1B0;
-		static uint8* const bCanUpdateSelectedUnitPortrait = (uint8*) 0x0068AC74;
-		static uint8* const bCanUpdateStatDataDialog = (uint8*) 0x0068C1F8;
-		static BinDlg** const someDialogUnknown = (BinDlg**) 0x0068C1E8;
-		static BinDlg** const someDialogUnknownUser = (BinDlg**) 0x0068C1EC;
+		static uint32* const bCanUpdateCurrentButtonSet = (uint32*)0x0068C1B0;
+		static uint8* const bCanUpdateSelectedUnitPortrait = (uint8*)0x0068AC74;
+		static uint8* const bCanUpdateStatDataDialog = (uint8*)0x0068C1F8;
+		static BinDlg** const someDialogUnknown = (BinDlg**)0x0068C1E8;
+		static BinDlg** const someDialogUnknownUser = (BinDlg**)0x0068C1EC;
 
 		*bCanUpdateCurrentButtonSet = 1;
 		*bCanUpdateSelectedUnitPortrait = 1;
@@ -1337,8 +1337,8 @@ namespace scbw {
 
 			int x, y;
 
-			x = (int16) unit->sprite->position.x;
-			y = (int16) unit->sprite->position.y;
+			x = (int16)unit->sprite->position.x;
+			y = (int16)unit->sprite->position.y;
 
 			if (x < 0)
 				x += 31;
@@ -1437,7 +1437,7 @@ namespace scbw {
 							return;
 						}
 						if (target->energy < 200 * 256) {
-							target->energy = std::min((uint16) (target->energy + (uint16) 5 * (uint16) 256), target->getMaxEnergy());
+							target->energy = std::min((uint16)(target->energy + (uint16)5 * (uint16)256), target->getMaxEnergy());
 							target->sprite->createUnderlay(425);
 						}
 					});
@@ -1485,7 +1485,7 @@ namespace scbw {
 		bool ground = !(target->status & UnitStatus::InAir);
 		bool onCreep = scbw::getActiveTileAt(target->getX(), target->getY()).hasCreep;
 		double multiplier = (ground && onCreep) ? 1.5 : 1;
-		return ceil(std::max(((int) units_dat::SupplyRequired[target->id]), 1) * multiplier);
+		return ceil(std::max(((int)units_dat::SupplyRequired[target->id]), 1) * multiplier);
 	}
 
 	const uint32 Func_unitDeathSomething_0 = 0x004E6340;
@@ -1611,7 +1611,7 @@ namespace scbw {
 		uint32 overlayOffset = 0;
 		if (units_dat::BaseProperty[unitId] & UnitProperty::MediumOverlay) {
 			overlayOffset = 1;
-		} 		else if (units_dat::BaseProperty[unitId] & UnitProperty::LargeOverlay) {
+		} else if (units_dat::BaseProperty[unitId] & UnitProperty::LargeOverlay) {
 			overlayOffset = 2;
 		}
 		return overlayOffset;
@@ -1620,7 +1620,7 @@ namespace scbw {
 	int32 getFinalDamage(CUnit* unit, uint16 weaponId) {
 		int32 upgType = getUpgradeType(unit);
 		int32 baseDamage = weapons_dat::DamageAmount[weaponId];
-		double bonusDamage = (double) weapons_dat::DamageBonus[weaponId] * (double) scbw::getUpgradeLevel(unit->playerId, upgType);
+		double bonusDamage = (double)weapons_dat::DamageBonus[weaponId] * (double)scbw::getUpgradeLevel(unit->playerId, upgType);
 		double finalDamage = baseDamage;
 		if (bonusDamage) {
 			finalDamage = baseDamage + bonusDamage;
@@ -1639,13 +1639,13 @@ namespace scbw {
 	bool orderIsSpell(int32 orderId) {
 		return orderId == OrderId::Plague
 			|| orderId == OrderId::DarkSwarm
-		//	|| orderId == OrderId::Ensnare				// Land Grab
+			//	|| orderId == OrderId::Ensnare				// Land Grab
 			|| orderId == OrderId::Irradiate
 			|| orderId == OrderId::StasisField
 			|| orderId == OrderId::EmpShockwave			// Observance
 			|| orderId == OrderId::MagnaPulse			// Lobotomy Mine
 			|| orderId == OrderId::PsiStorm
-		//	|| orderId == OrderId::SummonBroodlings		// unused
+			//	|| orderId == OrderId::SummonBroodlings		// unused
 			|| orderId == OrderId::FireYamatoGun1;
 	}
 

@@ -45,7 +45,7 @@ namespace hooks {
 					scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabOn, 1);
 					scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabX, unit->orderTarget.pt.x);
 					scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabY, unit->orderTarget.pt.y);
-				} 			else {
+				} else {
 					scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabOn, 0);
 				}
 
@@ -62,7 +62,7 @@ namespace hooks {
 
 				unit->orderSignal -= 2;
 				unit->orderToIdle();
-			} 		else { //92886
+			} else { //92886
 				//scbw::printText("No Signal 2 yet");
 				if (target != nullptr) {
 					//scbw::printText("Target exists");
@@ -73,7 +73,7 @@ namespace hooks {
 					if (
 						target->sprite->position.x != unit->nextTargetWaypoint.x ||
 						target->sprite->position.y != unit->nextTargetWaypoint.y
-						) 				{ //928C1
+						) { //928C1
 						unit->nextTargetWaypoint.x = target->sprite->position.x;
 						unit->nextTargetWaypoint.y = target->sprite->position.y;
 					}
@@ -82,10 +82,10 @@ namespace hooks {
 
 			}
 
-		} 	else { //928CF
+		} else { //928CF
 			//scbw::printText("State != 2");
 			if (!canCastSpell_0(unit)) {
-				char* message = (char*) statTxtTblNew->getString(876); //Invalid Target
+				char* message = (char*)statTxtTblNew->getString(876); //Invalid Target
 
 				//do the actual transmission corresponding to the message
 				get_statTxt_Str_0(unit, unit->playerId, message);
@@ -94,7 +94,7 @@ namespace hooks {
 				setNextWaypoint_Sub4EB290(unit);
 				unit->orderToIdle();
 
-			} 		else { //9291A
+			} else { //9291A
 				//scbw::printText("Continue...");
 
 				uint8 techUsed = orders_dat::TechUsed[unit->mainOrderId];
@@ -107,7 +107,7 @@ namespace hooks {
 				if (
 					!(*CHEAT_STATE & CheatFlags::TheGathering) &&
 					unit->energy < spellCost
-					) 			{
+					) {
 					//scbw::printText("energy < spellcost");
 					uint8 raceId;
 					char* message;
@@ -123,7 +123,7 @@ namespace hooks {
 							else
 								raceId = RaceId::Neutral;
 
-					message = (char*) statTxtTblNew->getString(864 + raceId); //Not Enough Energy
+					message = (char*)statTxtTblNew->getString(864 + raceId); //Not Enough Energy
 
 					if (message != nullptr) {
 
@@ -138,7 +138,7 @@ namespace hooks {
 
 					unit->orderToIdle();
 
-				} 			else { //929C2
+				} else { //929C2
 
 					uint32 result_00492620;
 					//scbw::printText("energy >= spellcost");
@@ -165,7 +165,7 @@ namespace hooks {
 							unit->orderToIdle();
 						}
 
-					} 				else { //92A01
+					} else { //92A01
 
 						if (
 							unit->getSpellCountdown() == 0 &&
@@ -173,7 +173,7 @@ namespace hooks {
 							function_00476640(unit, orderWeaponId) && //is ready to fire weapon (angle,range...) maybe?
 							!(unit->movementFlags & MovementFlags::Accelerating) &&
 							unit->getMovableState() != 0
-							) 					{ //92A38
+							) { //92A38
 								//scbw::printText("Conditions good");
 							bool bStopHere = false;
 
@@ -186,7 +186,7 @@ namespace hooks {
 								if (orderWeaponId <= WeaponId::Maelstrom) { //Maelstrom is the last spell-related weapon
 
 									//array bound to the function
-									const uint8* const array_00492B44 = (uint8*) (0x00492B44);
+									const uint8* const array_00492B44 = (uint8*)(0x00492B44);
 
 									//this code would not work for weapons id of NuclearMissile, YamatoGun 
 									//and weapons id before those, they must be excluded somewhere else
@@ -238,7 +238,7 @@ namespace hooks {
 
 								//a complicated way to add between -1 and 2 to the cooldown
 								random_value = RandomizeShort(49);
-								cooldown += (((uint8) random_value) & 3) - 1;
+								cooldown += (((uint8)random_value) & 3) - 1;
 
 								unit->spellCooldown = cooldown;
 								if (unit->id == UnitId::TerranWyvern) {
@@ -254,7 +254,7 @@ namespace hooks {
 								if (unit->sprite->images.head != nullptr) {
 
 									CImage* current_image = unit->sprite->images.head;
-									IscriptAnimation::Enum anim = (IscriptAnimation::Enum) orders_dat::OrderIscriptAnim[unit->mainOrderId];
+									IscriptAnimation::Enum anim = (IscriptAnimation::Enum)orders_dat::OrderIscriptAnim[unit->mainOrderId];
 									if (techUsed == TechId::Lockdown && unit->vulture.spiderMineCount > 0) {
 										unit->vulture.spiderMineCount--;
 									}

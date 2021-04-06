@@ -51,7 +51,7 @@ namespace hooks {
 				selected_unit->canUseTech(TechId::Burrowing, *ACTIVE_NATION_ID) == 1 &&
 				!(selected_unit->status & UnitStatus::Burrowed) &&
 				selected_unit->mainOrderId != OrderId::Burrow
-				) 			{
+				) {
 
 				if (bCommandType != 0)
 					bCommandType = 1;
@@ -61,8 +61,8 @@ namespace hooks {
 				function_004754F0(
 					selected_unit,
 					UnitId::None,
-					*(uint32*) (0x006D5C24),
-					*(uint32*) (0x006D5C20),
+					*(uint32*)(0x006D5C24),
+					*(uint32*)(0x006D5C20),
 					OrderId::Burrow,
 					0,
 					bCommandType,
@@ -85,7 +85,7 @@ namespace hooks {
 		if (unit->mainOrderId == OrderId::Burrow ||
 			unit->mainOrderId == OrderId::Burrowed ||
 			unit->id == UnitId::ZergLakizilisk
-			) 		{
+			) {
 
 			if (unit->id == UnitId::ZergLakizilisk)
 				unit->status |= UnitStatus::CanNotReceiveOrders;

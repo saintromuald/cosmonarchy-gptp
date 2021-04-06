@@ -33,7 +33,7 @@ namespace hooks {
 			!(detector->status & UnitStatus::IsHallucination) &&	//hallucinations cannot detect
 			detector->canDetect() &&								//detector must be in a state to detect
 			detector != target										//detector don't try to detect itself
-			) 	{
+			) {
 
 			uint8 visibilityFlags = (1 << detector->playerId);
 

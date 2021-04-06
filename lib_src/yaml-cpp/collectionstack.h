@@ -31,7 +31,7 @@ namespace YAML {
 		}
 		void PopCollectionType(CollectionType::value type) {
 			assert(type == GetCurCollectionType());
-			(void) type;
+			(void)type;
 			collectionStack.pop();
 		}
 

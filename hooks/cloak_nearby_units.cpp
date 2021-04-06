@@ -16,8 +16,8 @@ namespace hooks {
 	void cloakNearbyUnitsHook(CUnit* cloaker) {
 
 		bool needsRefresh = false;
-		static uint16* const maxBoxRightValue = (uint16*) 0x00628450;	//should usually be mapTileSize->width * 32
-		static uint16* const maxBoxBottomValue = (uint16*) 0x006284B4;	//should usually be mapTileSize->height * 32
+		static uint16* const maxBoxRightValue = (uint16*)0x00628450;	//should usually be mapTileSize->width * 32
+		static uint16* const maxBoxBottomValue = (uint16*)0x006284B4;	//should usually be mapTileSize->height * 32
 
 		Box16 area_of_effect;
 
@@ -56,7 +56,7 @@ namespace hooks {
 				&& current_unit->mainOrderId != OrderId::Warpin											// Don't cloak units doing order WarpIn
 				&& scbw::isAlliedTo(current_unit->playerId, cloaker->playerId)							// (or allied to Cloaker owner)
 				&& cloaker->isTargetWithinMinRange(current_unit, cloakRadius)							// Check again if unit in range of cloaking
-				) 		{
+				) {
 				secondaryOrder_Cloak(current_unit);
 				if (!(current_unit->status & UnitStatus::CloakingForFree)) {
 					current_unit->status |= UnitStatus::CloakingForFree;
@@ -85,7 +85,7 @@ namespace {
 
 	//Equivalent to secondaryOrd_Cloak @ 0x00491790
 	void secondaryOrder_Cloak(CUnit* unit) {
-		static CUnit** const firstBurrowedUnit = (CUnit**) 0x0063FF5C;
+		static CUnit** const firstBurrowedUnit = (CUnit**)0x0063FF5C;
 
 		unit->isCloaked++;
 
@@ -93,7 +93,7 @@ namespace {
 			unit->isCloaked == 1 &&
 			!(unit->status & UnitStatus::RequiresDetection) &&
 			unit->burrow_link.next == nullptr
-			) 	{
+			) {
 
 			unit->burrow_link.next = *firstBurrowedUnit;
 			unit->burrow_link.prev = nullptr;

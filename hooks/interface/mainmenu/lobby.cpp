@@ -116,7 +116,7 @@ namespace { // Helper definitions
 			MOV result, EAX
 			POPAD
 		}
-		return (bool) result;
+		return (bool)result;
 	}
 
 	// For startGame
@@ -157,7 +157,7 @@ namespace { // Helper definitions
 
 	int32 getTickCount() {
 		static int32 result;
-		static uint32 Func_getTickCount = *(uint32*) 0x004FE0C4;
+		static uint32 Func_getTickCount = *(uint32*)0x004FE0C4;
 		__asm {
 			PUSHAD
 			CALL Func_getTickCount

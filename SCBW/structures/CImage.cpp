@@ -6,7 +6,7 @@
 
 void CImage::playIscriptAnim(IscriptAnimation::Enum animation) {
 	assert(this);
-	uint32 animation_ = (uint8) animation;
+	uint32 animation_ = (uint8)animation;
 
 	const uint32 Func_PlayIscriptAnim = 0x004D8470;  //AKA playImageIscript();
 	__asm {
@@ -77,7 +77,7 @@ void CImage::initializeData(CSprite* parent, uint16 imageId, int8 x, int8 y) {
 		this->coloringData = colorShift[images_dat::Remapping[imageId]].data;*/
 
 	if (scbw::getImageData(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_PLAYER_SIDE)
-		*(uint32*) (&this->coloringData) = parent->playerId;
+		*(uint32*)(&this->coloringData) = parent->playerId;
 	if (scbw::getImageData(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_EFFECT)
 		this->coloringData = colorShift[scbw::getImageData(ImagesDatEntries::DrawRemap, imageId)].data;
 }

@@ -41,13 +41,13 @@ namespace hooks {
 			unit->id == UnitId::Hero_Gantrithor ||
 			unit->id == UnitId::ProtossAccantor ||
 			unit->id == UnitId::Hero_Warbringer
-			) 		{
+			) {
 			if (unit->secondaryOrderState == 0 || unit->secondaryOrderState == 1) {
 
 				if (unit->buildQueue[unit->buildQueueSlot] == UnitId::None) {
 					unit->secondaryOrderState = 3;
 					unit->currentBuildUnit = nullptr;
-				} 				else {
+				} else {
 
 					CUnit* builtUnit;
 
@@ -67,7 +67,7 @@ namespace hooks {
 
 				}
 
-			} 			else
+			} else
 				if (unit->secondaryOrderState == 2) {
 
 					CUnit* builtUnit = unit->currentBuildUnit;
@@ -96,7 +96,7 @@ namespace hooks {
 
 						}
 
-					} 				else {
+					} else {
 
 						scbw::refreshConsole();
 
@@ -105,7 +105,7 @@ namespace hooks {
 
 					}
 
-				} 			else
+				} else
 					if (unit->secondaryOrderState == 3) {
 
 						if (unit->id == UnitId::ProtossAccantor ||
@@ -147,7 +147,7 @@ namespace hooks {
 			(!units_dat::GroupFlags[unit->id].isZerg ||
 				unit->id == UnitId::ZergInfestedCommandCenter
 				)
-			) 		{
+			) {
 
 			bool jump_to_685D8 = false;
 
@@ -156,7 +156,7 @@ namespace hooks {
 				if (unit->buildQueue[unit->buildQueueSlot] == UnitId::None) {
 					unit->setSecondaryOrder(OrderId::Nothing2);
 					unit->sprite->playIscriptAnim(IscriptAnimation::WorkingToIdle, true);
-				} 				else {
+				} else {
 
 					CUnit* builtUnit;
 
@@ -184,7 +184,7 @@ namespace hooks {
 
 				}
 
-			} 			else
+			} else
 				if (unit->secondaryOrderState == 2) {
 
 					CUnit* builtUnit = unit->currentBuildUnit;
@@ -209,7 +209,7 @@ namespace hooks {
 									break;
 								}
 							}
-						} 					else {
+						} else {
 							scbw::add_generic_value(builtUnit, ValueId::Crucible, -1);
 						}
 						if (extraBuild || buildingAddon(builtUnit, hpGain, TRUE)) {
@@ -234,7 +234,7 @@ namespace hooks {
 
 							}
 
-						} 					else { //unit was canceled due to lack of space around the building
+						} else { //unit was canceled due to lack of space around the building
 
 							uint32 queueSlot = unit->buildQueueSlot % 5;
 
@@ -258,9 +258,9 @@ namespace hooks {
 									counter--;
 									unit->buildQueue[unit->buildQueueSlot] = unit->buildQueue[(unit->buildQueueSlot + 1) % 5];
 
-									if (unit->pAI != nullptr && *(uint8*) ((uint32) unit->pAI + 8) == 3) {
-										*(uint8*) ((uint32) unit->pAI + unit->buildQueueSlot + 9) = *(uint8*) ((uint32) unit->pAI + (unit->buildQueueSlot + 1) % 5 + 9);
-										*(uint32*) ((uint32) unit->pAI + unit->buildQueueSlot * 4 + 0x18) = *(uint32*) ((uint32) unit->pAI + ((unit->buildQueueSlot + 1) % 5) * 4 + 0x18);
+									if (unit->pAI != nullptr && *(uint8*)((uint32)unit->pAI + 8) == 3) {
+										*(uint8*)((uint32)unit->pAI + unit->buildQueueSlot + 9) = *(uint8*)((uint32)unit->pAI + (unit->buildQueueSlot + 1) % 5 + 9);
+										*(uint32*)((uint32)unit->pAI + unit->buildQueueSlot * 4 + 0x18) = *(uint32*)((uint32)unit->pAI + ((unit->buildQueueSlot + 1) % 5) * 4 + 0x18);
 									}
 
 
@@ -274,7 +274,7 @@ namespace hooks {
 
 						}
 
-					} 				else
+					} else
 						jump_to_685D8 = true;
 
 					if (jump_to_685D8) {
@@ -311,10 +311,10 @@ namespace hooks {
 		if (id != UnitId::ProtossSolarion) {
 			if (id != UnitId::ProtossAccantor) {
 				hangarSpace = 0;
-			} 			else {
+			} else {
 				hangarSpace = 5;
 			}
-		} 		else {
+		} else {
 			hangarSpace = 12;
 		}
 		return hangarSpace;

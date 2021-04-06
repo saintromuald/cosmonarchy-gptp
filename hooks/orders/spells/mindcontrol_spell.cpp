@@ -21,14 +21,14 @@ namespace hooks {
 			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			} 			else {
+			} else {
 				if (unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
 				else
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 
-		} 		else {
+		} else {
 
 			//F69B4
 

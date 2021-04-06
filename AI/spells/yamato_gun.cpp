@@ -37,7 +37,7 @@ namespace AI {
 				caster,
 				match
 			);
-		} 		else {
+		} else {
 			return scbw::UnitFinder::getNearestTarget(caster, match);
 		}
 	}

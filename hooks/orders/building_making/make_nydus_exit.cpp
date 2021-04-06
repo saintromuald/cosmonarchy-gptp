@@ -57,13 +57,13 @@ namespace hooks {
 			if (nydus_canal->orderQueueHead != nullptr) {
 				nydus_canal->userActionFlags |= 1;
 				prepareForNextOrder(nydus_canal);
-			} 			else
+			} else
 				if (nydus_canal->pAI != nullptr)
 					nydus_canal->orderComputerCL(OrderId::ComputerAI);
 				else
 					nydus_canal->orderComputerCL(units_dat::ReturnToIdleOrder[nydus_canal->id]);
 
-		} 		else { //5DCDB
+		} else { //5DCDB
 
 			CUnit* nydusExit =
 				createUnit(
@@ -76,7 +76,7 @@ namespace hooks {
 			if (nydusExit == nullptr) {
 				displayLastNetErrForPlayer(nydus_canal->playerId);
 				nydus_canal->orderToIdle();
-			} 			else {
+			} else {
 
 				function_004E65E0(nydusExit, 1);
 

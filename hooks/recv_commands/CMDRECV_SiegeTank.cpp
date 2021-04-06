@@ -24,7 +24,7 @@ namespace hooks {
 				(current_selection->id == UnitId::TerranPhalanxTankMode ||
 					current_selection->id == UnitId::Hero_EdmundDukeTankMode) &&
 				current_selection->mainOrderId != OrderId::SiegeMode
-				) 		{
+				) {
 				if (current_selection->canUseTech(TechId::TankSiegeMode, *ACTIVE_NATION_ID) == 1) {
 
 					if (bCommandType != 0)
@@ -35,8 +35,8 @@ namespace hooks {
 					function_004754F0(
 						current_selection,
 						UnitId::None,
-						*(uint32*) (0x006D5C24),
-						*(uint32*) (0x006D5C20),
+						*(uint32*)(0x006D5C24),
+						*(uint32*)(0x006D5C20),
 						OrderId::SiegeMode,
 						0,
 						bCommandType,
@@ -67,7 +67,7 @@ namespace hooks {
 				(current_selection->id == UnitId::TerranPhalanxSiegeMode ||
 					current_selection->id == UnitId::Hero_EdmundDukeSiegeMode) &&
 				current_selection->mainOrderId != OrderId::TankMode
-				) 		{
+				) {
 				if (current_selection->canUseTech(TechId::TankSiegeMode, *ACTIVE_NATION_ID) == 1) {
 
 					if (bCommandType != 0)
@@ -78,8 +78,8 @@ namespace hooks {
 					function_004754F0(
 						current_selection,
 						UnitId::None,
-						*(uint32*) (0x006D5C24),
-						*(uint32*) (0x006D5C20),
+						*(uint32*)(0x006D5C24),
+						*(uint32*)(0x006D5C20),
 						OrderId::TankMode,
 						0,
 						bCommandType,

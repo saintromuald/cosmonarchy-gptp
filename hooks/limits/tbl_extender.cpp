@@ -681,7 +681,7 @@ namespace hooks {
 				}
 				i += 3 + currentSequenceCount;
 				read_status = ConvReadStatus::ReadArgs;
-			} 			else if (read_status == ConvReadStatus::ReadArgs) {
+			} else if (read_status == ConvReadStatus::ReadArgs) {
 				for (int a = 0; a < currentSequenceCount; a++) {
 					vars.clear();
 					for (int j = 0; j < currentVarCount; j++) {
@@ -760,7 +760,7 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 								jmpPatch(esi_callset, address);
 							}
 							currentWrapPatch++;*/
-						} 						else if (currentHeader == TblPatchType::PtrWriting) {
+						} else if (currentHeader == TblPatchType::PtrWriting) {
 
 							uint16 string_id = patch_list[i + 1];
 							uint8 bl = patch_list[i + 1] & 0xff;
@@ -769,91 +769,91 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 							if (vars[0] == Reg::_EAX) {
 								if (vars[1] == Reg::_ECX) {
 									patch[1] = 0x81;
-								} 								else if (vars[1] == Reg::_EDX) {
+								} else if (vars[1] == Reg::_EDX) {
 									patch[1] = 0x82;
-								} 								else if (vars[1] == Reg::_ESI) {
+								} else if (vars[1] == Reg::_ESI) {
 									patch[1] = 0x86;
 								}
-							} 							else if (vars[0] == Reg::_ECX) {
+							} else if (vars[0] == Reg::_ECX) {
 								if (vars[1] == Reg::_ESI) {
 									patch[1] = 0x8e;
-								} 								else if (vars[1] == Reg::_EDX) {
+								} else if (vars[1] == Reg::_EDX) {
 									patch[1] = 0x8a;
 								}
-							} 							else if (vars[0] == Reg::_EDI && vars[1] == Reg::_ECX) {
+							} else if (vars[0] == Reg::_EDI && vars[1] == Reg::_ECX) {
 								patch[1] = 0xb9;
-							} 							else if (vars[0] == Reg::_EBX && vars[1] == Reg::_ECX) {
+							} else if (vars[0] == Reg::_EBX && vars[1] == Reg::_ECX) {
 								patch[1] = 0x99;
-							} 							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_EAX) {
+							} else if (vars[0] == Reg::_ESI && vars[1] == Reg::_EAX) {
 								patch[1] = 0xb0;
 							}
-						} 						else if (currentHeader == TblPatchType::PtrMathWriting) {
+						} else if (currentHeader == TblPatchType::PtrMathWriting) {
 							patch = {0x8b, 0x44, 0x81, 0x04, 0x90};
 							if (vars[0] == Reg::_EAX && vars[1] == Reg::_ECX && vars[2] == Reg::_EAX) {
 								//0x81
-							} 							else if (vars[0] == Reg::_EAX && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
+							} else if (vars[0] == Reg::_EAX && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
 								patch[2] = 0x91;
-							} 							else if (vars[0] == Reg::_EAX && vars[1] == Reg::_ESI && vars[2] == Reg::_EAX) {
+							} else if (vars[0] == Reg::_EAX && vars[1] == Reg::_ESI && vars[2] == Reg::_EAX) {
 								patch[2] = 0x86;
-							} 							else if (vars[0] == Reg::_EAX && vars[1] == Reg::_EDX && vars[2] == Reg::_EAX) {
+							} else if (vars[0] == Reg::_EAX && vars[1] == Reg::_EDX && vars[2] == Reg::_EAX) {
 								patch[2] = 0x82;
-							} 							else if (vars[0] == Reg::_EDX && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
+							} else if (vars[0] == Reg::_EDX && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
 								patch[1] = 0x54;
 								patch[2] = 0x91;
-							} 							else if (vars[0] == Reg::_ECX && vars[1] == Reg::_ESI && vars[2] == Reg::_EAX) {
+							} else if (vars[0] == Reg::_ECX && vars[1] == Reg::_ESI && vars[2] == Reg::_EAX) {
 								patch[1] = 0x4c;
 								patch[2] = 0x86;
-							} 							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
+							} else if (vars[0] == Reg::_ESI && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
 								patch[1] = 0x74;
 								patch[2] = 0x91;
-							} 							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_EDX && vars[2] == Reg::_ECX) {
+							} else if (vars[0] == Reg::_ESI && vars[1] == Reg::_EDX && vars[2] == Reg::_ECX) {
 								patch[1] = 0x74;
 								patch[2] = 0x8a;
 								//
-							} 							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_ECX && vars[2] == Reg::_EAX) {
+							} else if (vars[0] == Reg::_ESI && vars[1] == Reg::_ECX && vars[2] == Reg::_EAX) {
 								patch[1] = 0x74;
 								patch[2] = 0x81;
 							}
-						} 						else if (currentHeader == TblPatchType::RegisterPointerCmp) {
+						} else if (currentHeader == TblPatchType::RegisterPointerCmp) {
 							patch = {0x3b, 0x01, 0x90};
 							if (vars[0] == Reg::L_AX) {
 								if (vars[1] == Reg::_ECX) {
 									//0x01
-								} 								else if (vars[1] == Reg::_ESI) {
+								} else if (vars[1] == Reg::_ESI) {
 									patch[1] = 0x06;
-								} 								else if (vars[1] == Reg::_EDX) {
+								} else if (vars[1] == Reg::_EDX) {
 									patch[1] = 0x02;
 								}
-							} 							else if (vars[0] == Reg::L_CX) {
+							} else if (vars[0] == Reg::L_CX) {
 								if (vars[1] == Reg::_ECX) {
 									patch[1] = 0x0a;
-								} 								else if (vars[1] == Reg::_ESI) {
+								} else if (vars[1] == Reg::_ESI) {
 									patch[1] = 0x0e;
 								}
 							}
-						} 						else if (currentHeader == TblPatchType::RegisterPointerMov) {
+						} else if (currentHeader == TblPatchType::RegisterPointerMov) {
 							patch = {0x8b, 0x39, 0x90};//DI, ECX
 							if (vars[0] == Reg::L_DX && vars[1] == Reg::_ECX) {
 								patch[1] = 0x11;
 							}
-						} 						else if (currentHeader == TblPatchType::RegisterCmp) {
+						} else if (currentHeader == TblPatchType::RegisterCmp) {
 							//require wrappers
 							//reads cmp
-						} 						else if (currentHeader == TblPatchType::RegisterWriting) {
+						} else if (currentHeader == TblPatchType::RegisterWriting) {
 							patch = {0x89, 0xc2, 0x90};
 							if (vars[0] == Reg::_ECX) {
 								patch[1] = 0xc1;
 							}
-						} 						else if (currentHeader == TblPatchType::NopPatch) {
+						} else if (currentHeader == TblPatchType::NopPatch) {
 							patch = {0x90,0x90,0x90};
-						} 						else if (currentHeader == TblPatchType::AddPatch) {
+						} else if (currentHeader == TblPatchType::AddPatch) {
 							patch = {0x83, 0xC0, 0xFF, 0x90, 0x90};
 							if (vars[0] == Reg::_EAX) {
 
-							} 							else if (vars[0] = Reg::_ECX) {
+							} else if (vars[0] = Reg::_ECX) {
 								patch[1] = 0xc1;
 							}
-						} 						else if (currentHeader == TblPatchType::JmpPatch) {
+						} else if (currentHeader == TblPatchType::JmpPatch) {
 							uint8 jump = patch_list[i + 1];
 							patch = {0xeb};
 							if (jump == Jmp::JBE) {

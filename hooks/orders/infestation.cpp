@@ -72,7 +72,7 @@ namespace hooks {
 					//advancing timer
 					unitInfested->remainingBuildTime--;
 					bStopFunction = true;
-				} 				else {
+				} else {
 					//will become 0xffff, this is used by internal functions
 					unitInfested->remainingBuildTime--;
 
@@ -170,9 +170,9 @@ namespace hooks {
 			if (unitInfesting->remainingBuildTime != 0) {
 				unitInfesting->remainingBuildTime--;
 				bStopFunction = true;
-			} 			else
+			} else
 				bBuildTimeReachedZero = true;
-		} 		else
+		} else
 			if (unitInfesting->mainOrderState != 0) // if ==0, wait for EA33F to start infestation logic
 				bStopFunction = true;
 		if (!bStopFunction && bBuildTimeReachedZero) {
@@ -190,9 +190,9 @@ namespace hooks {
 				if (unitInfesting->orderQueueHead == nullptr) {
 					unitInfesting->orderSimple(units_dat::ReturnToIdleOrder[unitInfesting->id], false);
 					bReturnToIdle = true;
-				} 				else
+				} else
 					bReturnToIdle = true;
-			} 			else
+			} else
 				bStopFunction = true;
 		} //if(!bStopFunction && bBuildTimeReachedZero) {
 
@@ -204,7 +204,7 @@ namespace hooks {
 
 				if (unitInfested != nullptr &&
 					isInfestableUnit(unitInfested) &&
-					unitInfested->mainOrderId != OrderId::InfestMine1) 			{
+					unitInfested->mainOrderId != OrderId::InfestMine1) {
 					hideAndDisableUnit(unitInfesting);								//hide the infesting unit
 					unitInfested->orderTo(OrderId::InfestMine1, unitInfesting);		//order the target to be infested, giving it the infesting unit as order target
 					unitInfesting->mainOrderState = 3;
@@ -217,7 +217,7 @@ namespace hooks {
 					//"move to invalid target" logic...I think
 					setNextWaypoint_Sub4EB290(unitInfesting);
 					if (unitInfesting->moveTarget.pt.x != unitInfesting->nextTargetWaypoint.x ||
-						unitInfesting->moveTarget.pt.y != unitInfesting->nextTargetWaypoint.y) 				{
+						unitInfesting->moveTarget.pt.y != unitInfesting->nextTargetWaypoint.y) {
 						unitInfesting->nextTargetWaypoint.x = unitInfesting->moveTarget.pt.x;
 						unitInfesting->nextTargetWaypoint.y = unitInfesting->moveTarget.pt.y;
 

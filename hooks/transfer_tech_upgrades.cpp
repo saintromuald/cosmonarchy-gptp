@@ -8,7 +8,7 @@
 namespace {
 
 	typedef int(__stdcall* SErrSetLastErrorFunc)(int);
-	SErrSetLastErrorFunc const SErrSetLastError = (SErrSetLastErrorFunc) 0x00410172;
+	SErrSetLastErrorFunc const SErrSetLastError = (SErrSetLastErrorFunc)0x00410172;
 
 	struct TechTransferData {
 		uint16 unitId;
@@ -126,7 +126,7 @@ namespace hooks {
 			bool bBreakSubLoop;
 
 			//Browse through TechTransferData structures
-			for (TechTransferData* data = (TechTransferData*) techDataArrayPosBegin; !bBreakMainLoop && (data != techDataArrayPosEnd); data++) {
+			for (TechTransferData* data = (TechTransferData*)techDataArrayPosBegin; !bBreakMainLoop && (data != techDataArrayPosEnd); data++) {
 
 				if (sourceUnit->id == data->unitId) {
 
@@ -189,7 +189,7 @@ namespace hooks {
 			bool bBreakSubLoop;
 
 			//Browse through UpgradeTransferData structures
-			for (UpgradeTransferData* data = (UpgradeTransferData*) upgradeDataArrayPosBegin; !bBreakMainLoop && (data != upgradeDataArrayPosEnd); data++) {
+			for (UpgradeTransferData* data = (UpgradeTransferData*)upgradeDataArrayPosBegin; !bBreakMainLoop && (data != upgradeDataArrayPosEnd); data++) {
 
 				if (sourceUnit->id == data->unitId) {
 

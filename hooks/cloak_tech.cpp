@@ -56,7 +56,7 @@ namespace hooks {
 						if (!(unit_from_selection->status & UnitStatus::RequiresDetection))
 							bReturnValue = FALSE;
 
-				} 			else
+				} else
 					bReturnValue = FALSE;
 
 			}

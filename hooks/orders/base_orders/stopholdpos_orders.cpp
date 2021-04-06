@@ -31,7 +31,7 @@ namespace hooks {
 			if (
 				unit->nextTargetWaypoint.x != unit->moveTarget.pt.x ||
 				unit->nextTargetWaypoint.y != unit->moveTarget.pt.y
-				) 		{
+				) {
 				unit->nextTargetWaypoint.x = unit->moveTarget.pt.x;
 				unit->nextTargetWaypoint.y = unit->moveTarget.pt.y;
 			}
@@ -76,7 +76,7 @@ namespace hooks {
 
 			}
 
-		} 	else { //64109 (switchValue == 1)
+		} else { //64109 (switchValue == 1)
 
 			if (!(unit->orderSignal & 1)) {
 
@@ -99,7 +99,7 @@ namespace hooks {
 			if (
 				(unit->orderTarget.unit)->sprite->position.x != unit->nextTargetWaypoint.x ||
 				(unit->orderTarget.unit)->sprite->position.y != unit->nextTargetWaypoint.y
-				) 		{
+				) {
 				unit->nextTargetWaypoint.x = (unit->orderTarget.unit)->sprite->position.x;
 				unit->nextTargetWaypoint.y = (unit->orderTarget.unit)->sprite->position.y;
 			}
@@ -121,7 +121,7 @@ namespace hooks {
 		if (
 			unit->moveTarget.pt.x != unit->nextTargetWaypoint.x ||
 			unit->moveTarget.pt.y != unit->nextTargetWaypoint.y
-			) 	{
+			) {
 			unit->nextTargetWaypoint.x = unit->moveTarget.pt.x;
 			unit->nextTargetWaypoint.y = unit->moveTarget.pt.y;
 		}
@@ -171,7 +171,7 @@ namespace hooks {
 		if (unit->orderTarget.unit != nullptr) {
 			pos.x = (unit->orderTarget.unit)->sprite->position.x;
 			pos.y = (unit->orderTarget.unit)->sprite->position.y;
-		} 	else {
+		} else {
 			pos.x = 0;
 			pos.y = 0;
 		}
@@ -213,12 +213,12 @@ namespace hooks {
 
 	void orders_Guard(CUnit* unit) {
 
-		unit->mainOrderTimer = (uint8) RandBetween(0, 15, 29);
+		unit->mainOrderTimer = (uint8)RandBetween(0, 15, 29);
 
 		if (playerTable[unit->playerId].type == PlayerType::Computer) {
 
 			//since details about pAI structure are unknown, have to use this
-			uint8* const pAI_subparameter = (uint8*) (((int) (unit->pAI)) + 8);
+			uint8* const pAI_subparameter = (uint8*)(((int)(unit->pAI)) + 8);
 
 			unit->mainOrderId = OrderId::ComputerAI;
 
@@ -227,11 +227,11 @@ namespace hooks {
 				if (units_dat::BaseProperty[unit->id] & UnitProperty::Hero)
 					unit->mainOrderId = OrderId::PlayerGuard;
 
-			} 		else //75BD6
+			} else //75BD6
 				if (*pAI_subparameter == 1)
 					unit->mainOrderId = OrderId::GuardPost;
 
-		} 	else
+		} else
 			unit->mainOrderId = OrderId::PlayerGuard;
 
 	} //void orders_Guard(CUnit* unit)
@@ -246,7 +246,7 @@ namespace hooks {
 		if (
 			unit->subunit->nextTargetWaypoint.x != unit->nextTargetWaypoint.x ||
 			unit->subunit->nextTargetWaypoint.y != unit->nextTargetWaypoint.y
-			) 	{
+			) {
 			unit->nextTargetWaypoint.x = unit->subunit->nextTargetWaypoint.x;
 			unit->nextTargetWaypoint.y = unit->subunit->nextTargetWaypoint.y;
 		}
@@ -274,7 +274,7 @@ namespace hooks {
 					if (
 						unit->subunit->nextTargetWaypoint.x != unit->nextTargetWaypoint.x ||
 						unit->subunit->nextTargetWaypoint.y != unit->nextTargetWaypoint.y
-						) 				{
+						) {
 						unit->nextTargetWaypoint.x = unit->subunit->nextTargetWaypoint.x;
 						unit->nextTargetWaypoint.y = unit->subunit->nextTargetWaypoint.y;
 					}

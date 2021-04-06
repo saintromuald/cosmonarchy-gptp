@@ -36,15 +36,15 @@ namespace hooks {
 							stringId = 0; //valid target
 
 
-				} 		else
+				} else
 					if (techId == TechId::MindControl) {
 
 						if (target->playerId == castingPlayerId) {
 							stringId = 1327; // Must target enemy units<0>
-						} 			else
+						} else
 							if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
 								stringId = 877; // Unable to target structure.<0>
-							} 			else
+							} else
 								if (target->id == UnitId::TerranSpiderMine
 									|| target->id == UnitId::TerranLobotomyMine
 									|| target->id == UnitId::ZergLarva
@@ -54,10 +54,10 @@ namespace hooks {
 									|| target->id == UnitId::ProtossPlasmaShell
 									) {
 									stringId = 876; //Invalid target.<0>
-								} 			else {
+								} else {
 									stringId = 0; //valid target
 								}
-					} 		else
+					} else
 						if (techId == TechId::Hallucination) {
 							if (target->id == UnitId::ProtossSteward)
 								stringId = 876; // Invalid target.<0>
@@ -69,23 +69,23 @@ namespace hooks {
 										stringId = 1327; // Must target enemy units<0>
 									else
 										stringId = 0; //valid target
-						} 		else
+						} else
 							if (techId == TechId::DefensiveMatrix ||
 								techId == TechId::Irradiate ||
 								techId == TechId::Restoration ||
 								techId == TechId::OpticalFlare
-								) 		{
+								) {
 								if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
 									stringId = 877; //Unable to target structure.<0>
 								else
 									stringId = 0; //valid target
-							} 		else
+							} else
 								if (techId == TechId::Infestation) {
 									if (!isInfestableUnit(target))
 										stringId = 870;	//Must target severely damaged Terran Command Center.<0>
 									else
 										stringId = 0; //valid target
-								} 		else
+								} else
 									if (techId == TechId::Consume) {
 										if (
 											units_dat::BaseProperty[target->id] & UnitProperty::Building
@@ -97,9 +97,9 @@ namespace hooks {
 										else
 											stringId = 0; //valid target
 
-									} 		else if (techId == TechId::PowerTransfer) {
+									} else if (techId == TechId::PowerTransfer) {
 										stringId = 0;
-									} 		else
+									} else
 										stringId = 876; //Invalid target.<0>
 
 			}

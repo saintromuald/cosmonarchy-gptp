@@ -61,7 +61,7 @@ bool powerSiphonDistributeMatch(CUnit* savant, CUnit* unit) {
 
 namespace { // Helper functions
 	typedef void(__stdcall* GetWeaponHitPosFunc)(CUnit* unit, int32* x, int32* y);
-	GetWeaponHitPosFunc const getWeaponHitPos = (GetWeaponHitPosFunc) 0x004762C0;
+	GetWeaponHitPosFunc const getWeaponHitPos = (GetWeaponHitPosFunc)0x004762C0;
 	void createBullet(uint8 weaponId, CUnit* source, int16 x, int16 y, uint8 attackingPlayer, uint8 direction);
 
 	// For progressBulletFlight
@@ -121,10 +121,10 @@ namespace hooks {
 				return;
 			}
 			getWeaponHitPos(unit, &x, &y);
-		} 		else if (behavior == WeaponBehavior::AppearOnTargetSite) {
+		} else if (behavior == WeaponBehavior::AppearOnTargetSite) {
 			x = unit->orderTarget.pt.x;
 			y = unit->orderTarget.pt.y;
-		} 		else {
+		} else {
 			int32 forwardOffset = weapons_dat::ForwardOffset[weaponId];
 
 			x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
@@ -149,7 +149,7 @@ namespace hooks {
 				scbw::set_generic_value(unit, ValueId::SpineX, targ_x);
 				scbw::set_generic_value(unit, ValueId::SpineY, targ_y);
 				if (unit->orderTarget.unit != nullptr) {
-					scbw::set_generic_value(unit, ValueId::LurkerPickTarget, (uint32) unit->orderTarget.unit);
+					scbw::set_generic_value(unit, ValueId::LurkerPickTarget, (uint32)unit->orderTarget.unit);
 				}
 				Globals.clear_lakizilisk(unit);
 			}
@@ -188,7 +188,7 @@ namespace hooks {
 						uint8 overlaySize = scbw::hasOverlay(target);
 						if (target->subunit != nullptr) {
 							target->subunit->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
-						} 						else {
+						} else {
 							target->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
 						}
 					});
@@ -224,7 +224,7 @@ namespace hooks {
 							uint8 overlaySize = scbw::hasOverlay(u);
 							if (u->subunit != nullptr) {
 								u->subunit->sprite->createTopOverlay(overlaySize + ImageId::MindControlHit_Small, 0, 0, 0);
-							} 							else {
+							} else {
 								u->sprite->createTopOverlay(overlaySize + ImageId::MindControlHit_Small, 0, 0, 0);
 							}
 							unspent = perEach - howMuch;
@@ -278,7 +278,7 @@ namespace hooks {
 							if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
 								scbw::doDeconstructionDamage(unit, weaponId, false);
 							}
-						} 						else {
+						} else {
 							break;
 						}
 					}
@@ -297,10 +297,10 @@ namespace hooks {
 				if (weaponId == WeaponId::EmpyreanPlasmaBarrage) {
 					// Empyrean missile spawn positions
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::EmpyreanMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
-				} 				else if (weaponId == WeaponId::CentaurSunchaserMissiles) {
+				} else if (weaponId == WeaponId::CentaurSunchaserMissiles) {
 					// Centaur missile spawn positions
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::CentaurMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
-				} 				else if (weaponId == WeaponId::PhobosArgosLaserBatteries) {
+				} else if (weaponId == WeaponId::PhobosArgosLaserBatteries) {
 					// Phobos - Argent Capacitors passive
 					if (unit->id == UnitId::TerranPhobos && scbw::get_generic_value(unit, ValueId::PhobosDischarge) == 0) {
 						unit->addUnitEnergy(5 * 256);
@@ -310,34 +310,34 @@ namespace hooks {
 					}
 					// Phobos laser spawn positions
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::PhobosLaserPos, 4, ImagesDatEntries::OverlayAttackPtr);
-				} 				else if (weaponId == WeaponId::KalkaliskViscousAcid) {
+				} else if (weaponId == WeaponId::KalkaliskViscousAcid) {
 					// Kalkaleth missile spawn position
 					auto bullet = scbw::setMissileSourcePosRet(unit, weaponId, ValueId::KalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 					Globals.remove_multihit_bullet(bullet);
-				} 				else if (weaponId == WeaponId::KeskathalorScreamingVenom) {
+				} else if (weaponId == WeaponId::KeskathalorScreamingVenom) {
 					// Keskathalor missile spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::KeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
-				} 				else if (weaponId == WeaponId::StarSovereignCelestialCannon) {
+				} else if (weaponId == WeaponId::StarSovereignCelestialCannon) {
 					// Star Sovereign laser spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::SovereignCannonPos, 2, ImagesDatEntries::OverlayAttackPtr);
-				} 				else if (weaponId == WeaponId::PenumbraErebolShockCannon) {
+				} else if (weaponId == WeaponId::PenumbraErebolShockCannon) {
 					// Penumbra laser spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::PenumbraLaserPos, 1, ImagesDatEntries::OverlayAttackPtr);
-				} 				else if (weaponId == WeaponId::BurstLasers) {
+				} else if (weaponId == WeaponId::BurstLasers) {
 					// Wraith laser spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::WraithLaserPos, 3, ImagesDatEntries::OverlayAttackPtr);
-				} 				else if (weaponId == WeaponId::IonCannon) {
+				} else if (weaponId == WeaponId::IonCannon) {
 					// Ion Cannon projectile spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::IonCannonProjectilePos, 1,
 						ImagesDatEntries::OverlaySpecialPtr, 1); // 1 is frameset offset
-				} 				else if (weaponId == WeaponId::SirenCharybdalRifle) {
+				} else if (weaponId == WeaponId::SirenCharybdalRifle) {
 					// TODO: Implement multi-unit targeting without inlining Adaptive Amitosis behavior
-				} 				else if (weaponId == WeaponId::SalamanderPerditionBarrage) {
+				} else if (weaponId == WeaponId::SalamanderPerditionBarrage) {
 					// Salamander missile target positions
 					auto rotate = scbw::get_generic_value(unit, ValueId::SalamanderAtkPos);
 					if (rotate == 1) {
 						createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
-					} 					else {
+					} else {
 						scbw::rangeModifiedFire(weaponId, unit, x, y, 32 - 32 * rotate);
 					}
 					rotate++;
@@ -345,7 +345,7 @@ namespace hooks {
 						rotate = 0;
 					}
 					scbw::set_generic_value(unit, ValueId::SalamanderAtkPos, rotate);
-				} 				else if (weaponId == WeaponId::MadrigalFuriaMissiles && unit->orderTarget.unit != nullptr) {
+				} else if (weaponId == WeaponId::MadrigalFuriaMissiles && unit->orderTarget.unit != nullptr) {
 					scbw::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 					if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
 						scbw::doDeconstructionDamage(unit, weaponId);
@@ -370,7 +370,7 @@ namespace hooks {
 						}
 					};
 					unit->orderTarget.unit = old;
-				} 				else {
+				} else {
 					// Madcap - Maverick Feeders passive
 					if (unit->id == UnitId::TerranMadcap) {
 						int stacks = scbw::get_generic_value(unit, ValueId::MadcapStacks);
@@ -454,10 +454,10 @@ namespace hooks {
 					bullet->targetPosition2 = seekTarget->position;
 					progressBulletMovement_func(bullet);
 				}
-			} 			else {
+			} else {
 				progressBulletMovement_func(bullet);
 			}
-		} 		else {
+		} else {
 			progressBulletMovement_func(bullet);
 		}
 		uint8 time = bullet->time_remaining--;
@@ -562,7 +562,7 @@ namespace hooks {
 				bullet->attackTarget.unit = collisionTarget;
 				bEnd = true;
 			}
-		} 		else if (bullet->weaponType == WeaponId::StarSovereignInterventionMissiles) {
+		} else if (bullet->weaponType == WeaponId::StarSovereignInterventionMissiles) {
 			uint32 range = 128;
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
 				bullet->position.x - range, bullet->position.y - range,
@@ -594,7 +594,7 @@ namespace hooks {
 				bullet->attackTarget.unit = collisionTarget;
 				bEnd = true;
 			}
-		} 		else if (bullet->weaponType == WeaponId::KalkaliskViscousAcid || bullet->weaponType == WeaponId::PenumbraErebolShockCannon) {
+		} else if (bullet->weaponType == WeaponId::KalkaliskViscousAcid || bullet->weaponType == WeaponId::PenumbraErebolShockCannon) {
 			//for missiles hitting targets on its way.
 			uint32 range = 128;
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
@@ -633,14 +633,14 @@ namespace hooks {
 			if (collisionTarget != nullptr) {
 				if (bullet->weaponType == WeaponId::PenumbraErebolShockCannon) {
 					Globals.add_bullet_multihit(bullet, collisionTarget);
-				} 				else {
+				} else {
 					Globals.add_incremental_bullet_multihit(bullet, collisionTarget);
 				}
 				if (bullet->weaponType == WeaponId::PenumbraErebolShockCannon) {
 					//Penumbra Behavior
 					scbw::createThingy(644, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					scbw::weaponBulletShot(collisionTarget, bullet, 2);
-				} 				else {
+				} else {
 					//Kalkaleth Behavior
 //					auto divider = Globals.get_multihit_count(bullet);
 					scbw::weaponBulletShot(collisionTarget, bullet, 2);
@@ -665,7 +665,7 @@ namespace hooks {
 			if (target != nullptr) {
 				bullet->attackTarget.pt.x = target->sprite->position.x;
 				bullet->attackTarget.pt.y = target->sprite->position.y;
-			} 			else {
+			} else {
 				bullet->attackTarget.unit = 0;
 			}
 			v4 = bullet->sprite;
@@ -712,7 +712,7 @@ namespace hooks {
 				}
 				//				scbw::printText("Bounce");
 				a1->attackTarget.unit = v3;
-			} 			else {
+			} else {
 				//				scbw::printText("NoJump");
 				if (a1->weaponType == WeaponId::GladiusPlasmaFlurry) {
 					Globals.remove_multihit_bullet(a1);
@@ -722,7 +722,7 @@ namespace hooks {
 				if (v5) {
 					a1->attackTarget.pt.x = v5->sprite->position.x;
 					a1->attackTarget.pt.y = v5->sprite->position.y;
-				} 				else {
+				} else {
 					a1->attackTarget.unit = 0;
 				}
 				v6 = a1->sprite;
@@ -786,7 +786,7 @@ namespace hooks {
 		if (pSrc->subunit != nullptr
 			&& unitIsSubunit(pSrc->subunit)) {
 			v5 = pSrc->subunit;
-		} 		else {
+		} else {
 			v5 = pSrc;
 		}
 		if (!(unitIsCarrier(pSrc))) {
@@ -794,18 +794,18 @@ namespace hooks {
 				if (_pIterator->status & UnitStatus::InAir)
 					return 0;
 				v9 = unitHasPathToUnit(pSrc, _pIterator);
-			} 			else {
+			} else {
 				if (canInfest(pSrc)) {
 					v9 = canBeInfested(v11, _pIterator) != 0; // v11 is not used..?
-				} 				else {
+				} else {
 					/*if (pSrc->id == UnitId::ProtossArbiter && pSrc->pAI) {
 
 						return 0;
 					}*/
 					if (_pIterator->status & UnitStatus::InAir) {
-						v9 = units_dat::AirWeapon[(uint16) v5->id] != -126;
-					} 					else {
-						v9 = units_dat::GroundWeapon[(uint16) v5->id] != -126;
+						v9 = units_dat::AirWeapon[(uint16)v5->id] != -126;
+					} else {
+						v9 = units_dat::GroundWeapon[(uint16)v5->id] != -126;
 					}
 				}
 			}
@@ -818,7 +818,7 @@ namespace hooks {
 			return 0;
 		}
 		v14 = _pIterator->playerId == 11 ? _pIterator->sprite->playerId : _pIterator->playerId;
-		if (playerAlliance[(uint8) pSrc->playerId].flags[v14] || *bulletBounceMissileTarget == _pIterator) {
+		if (playerAlliance[(uint8)pSrc->playerId].flags[v14] || *bulletBounceMissileTarget == _pIterator) {
 			return 0;
 		}
 
@@ -832,13 +832,13 @@ namespace hooks {
 				if (Globals.was_already_hit_by_multihit_bullet(Globals.bounce_bullet, _pIterator)) {
 					//scbw::printText("NoItr - Already hit");
 					return false;
-				} 				else {
+				} else {
 					//scbw::printFormattedText("Add hit %d",Globals.bounce_bullet);
 					Globals.add_bullet_multihit(Globals.bounce_bullet, _pIterator);
 					return *bulletBounceMissileNext != _pIterator;
 
 				}
-			} 			else {
+			} else {
 				//scbw::printText("bad bullet");
 			}
 		}
@@ -864,13 +864,13 @@ namespace hooks {
 		v5 = v4->position.y;
 		v6 = v4->position.x;
 		*bulletBounceMissileNext = v2;
-		_a1.left = (int16) v6 - 96;
-		_a1.top = (int16) v6 + 96;
-		_a1.right = (int16) v5 - 96;
-		_a1.bottom = (int16) v5 + 96;
+		_a1.left = (int16)v6 - 96;
+		_a1.top = (int16)v6 + 96;
+		_a1.right = (int16)v5 - 96;
+		_a1.bottom = (int16)v5 + 96;
 		//		return (CUnit*)iterateUnitsAtLocationTargetProc(&_a1, (int(__fastcall*)(int32, int32))findNextBounceTargetProc, 0);
-		GPTP::logger << (uint32) (*bulletBounceMissileNext) << " " << (uint32) (*bulletBounceMissileSource) << " " << (uint32) (*bulletBounceMissileTarget) << '\n';
-		return (CUnit*) iterateUnitsAtLocationTargetProc(&_a1, (int(__fastcall*)(int32, int32))findNextBounceTargetProc, 0);
+		GPTP::logger << (uint32)(*bulletBounceMissileNext) << " " << (uint32)(*bulletBounceMissileSource) << " " << (uint32)(*bulletBounceMissileTarget) << '\n';
+		return (CUnit*)iterateUnitsAtLocationTargetProc(&_a1, (int(__fastcall*)(int32, int32))findNextBounceTargetProc, 0);
 	}
 
 	/*
@@ -979,29 +979,29 @@ namespace {
 				|| source->sprite->mainGraphic->direction == 3) {
 				x_ = source->sprite->position.x + 6;
 				y_ = source->sprite->position.y - 45;
-			} 			else if (source->sprite->mainGraphic->direction == 4
+			} else if (source->sprite->mainGraphic->direction == 4
 				|| source->sprite->mainGraphic->direction == 5) {
 				x_ = source->sprite->position.x + 4;
 				y_ = source->sprite->position.y - 44;
-			} 			else if (source->sprite->mainGraphic->direction == 6
+			} else if (source->sprite->mainGraphic->direction == 6
 				|| source->sprite->mainGraphic->direction == 7
 				|| source->sprite->mainGraphic->direction == 8
 				|| source->sprite->mainGraphic->direction == 9) {
 				x_ = source->sprite->position.x + 1;
 				y_ = source->sprite->position.y - 43;
-			} 			else if (source->sprite->mainGraphic->direction == 10
+			} else if (source->sprite->mainGraphic->direction == 10
 				|| source->sprite->mainGraphic->direction == 11) {
 				x_ = source->sprite->position.x - 3;
 				y_ = source->sprite->position.y - 42;
-			} 			else if (source->sprite->mainGraphic->direction == 12
+			} else if (source->sprite->mainGraphic->direction == 12
 				|| source->sprite->mainGraphic->direction == 13) {
 				x_ = source->sprite->position.x - 6;
 				y_ = source->sprite->position.y - 41;
-			} 			else if (source->sprite->mainGraphic->direction == 14
+			} else if (source->sprite->mainGraphic->direction == 14
 				|| source->sprite->mainGraphic->direction == 15) {
 				x_ = source->sprite->position.x - 8;
 				y_ = source->sprite->position.y - 44;
-			} 			else if (source->sprite->mainGraphic->direction == 16) {
+			} else if (source->sprite->mainGraphic->direction == 16) {
 				x_ = source->sprite->position.x - 8;
 				y_ = source->sprite->position.y - 48;
 			}
@@ -1084,7 +1084,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool) result;
+		return (bool)result;
 	}
 
 	const uint32 Func_unitIsSubunit = 0x00401D40;
@@ -1097,7 +1097,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool) result;
+		return (bool)result;
 	}
 
 	const uint32 Func_unitIsCarrier = 0x00401470;
@@ -1110,7 +1110,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool) result;
+		return (bool)result;
 	}
 
 	const uint32 Func_unitIsReaver = 0x00401490;
@@ -1123,7 +1123,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool) result;
+		return (bool)result;
 	}
 
 	const uint32 Func_unitHasPathToUnit = 0x0049CBB0;
@@ -1137,7 +1137,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool) result;
+		return (bool)result;
 	}
 
 	const uint32 Func_canInfest = 0x00402750;
@@ -1150,7 +1150,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool) result;
+		return (bool)result;
 	}
 
 	const uint32 Func_canBeInfested = 0x00402210;

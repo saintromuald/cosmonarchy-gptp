@@ -29,7 +29,7 @@ namespace hooks {
 			// Why is it like this? We should instead check if the unit has a connected nuke, rather than doing insipid hardcode.
 			if (current_unit->id == UnitId::TerranEidolon
 				|| current_unit->id == UnitId::TerranSeraph
-				) 		{
+				) {
 
 				CUnit* nuke = current_unit->connectedUnit;
 
@@ -60,7 +60,7 @@ namespace hooks {
 			getActivePlayerNextSelection() == nullptr &&
 			unit->secondaryOrderId == OrderId::BuildAddon &&
 			unit->status & UnitStatus::GroundedBuilding
-			) 	{
+			) {
 
 			CUnit* addon = unit->currentBuildUnit;
 
@@ -68,7 +68,7 @@ namespace hooks {
 				!(addon->status & UnitStatus::Completed) &&
 				unit->status & UnitStatus::Completed &&
 				unit->playerId == *ACTIVE_NATION_ID
-				) 		{
+				) {
 				CancelAddon_Proc(unit);
 				scbw::refreshConsole();
 			}
@@ -91,7 +91,7 @@ namespace hooks {
 			getActivePlayerNextSelection() == nullptr &&
 			unit->status & UnitStatus::Completed &&
 			unit->playerId == *ACTIVE_NATION_ID
-			) 	{
+			) {
 			CancelUpgrade_Proc(unit);
 			scbw::refreshConsole();
 		}
@@ -113,7 +113,7 @@ namespace hooks {
 			units_dat::BaseProperty[unit->id] & UnitProperty::Building &&
 			unit->status & UnitStatus::Completed &&
 			unit->playerId == *ACTIVE_NATION_ID
-			) 	{
+			) {
 			CancelResearch_Proc(unit);
 			scbw::refreshConsole();
 		}
@@ -140,12 +140,12 @@ namespace hooks {
 			unit->id != UnitId::ZergCreepColony &&
 			unit->status & UnitStatus::Completed &&
 			unit->playerId == *ACTIVE_NATION_ID
-			) 	{
+			) {
 
 			if (wUnitID == 0xFE) {
 				function_00466E40(unit);
 				scbw::refreshConsole();
-			} 		else
+			} else
 				if (wUnitID == 0xFF)
 					scbw::refreshConsole();
 				else {
@@ -195,7 +195,7 @@ namespace hooks {
 		if (unit != nullptr &&
 			getActivePlayerNextSelection() == nullptr &&
 			unit->playerId == *ACTIVE_NATION_ID
-			) 	{
+			) {
 			AI_CancelStructure(unit);
 		}
 

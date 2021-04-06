@@ -30,7 +30,7 @@ namespace hooks {
 	///
 	uint32 SortAllUnits(CUnit* unit, CUnit** unit_list, CUnit** units_in_bounds) {
 
-		const uint32* VISIBILITY_CHECK_0057F0B0 = (uint32*) 0x0057F0B0;
+		const uint32* VISIBILITY_CHECK_0057F0B0 = (uint32*)0x0057F0B0;
 
 		CUnit* current_unit;
 		CUnit* backup_current_unit;
@@ -47,7 +47,7 @@ namespace hooks {
 		if (unit != nullptr) {
 			unit_list[0] = unit;
 			current_index_in_unit_list = 1;
-		} 		else
+		} else
 			current_index_in_unit_list = 0;
 
 		//work with the first unit from units_in_bounds
@@ -96,7 +96,7 @@ namespace hooks {
 
 					//if the unit sprite is visible, perform additionnal visibility test,
 					//else skip the unit
-					if (current_unit->sprite->visibilityFlags & (uint8) *VISIBILITY_CHECK_0057F0B0) {
+					if (current_unit->sprite->visibilityFlags & (uint8)*VISIBILITY_CHECK_0057F0B0) {
 
 						//if the unit is cloaked and visibility status test (detection by detectors
 						//units probably) fail, the unit is skipped
@@ -104,7 +104,7 @@ namespace hooks {
 							if (!(current_unit->visibilityStatus & *VISIBILITY_CHECK_0057F0B0))
 								bDontAddToList = true;
 
-					} 					else
+					} else
 						bDontAddToList = true;
 
 					if (!bDontAddToList) {
@@ -122,7 +122,7 @@ namespace hooks {
 								else
 									if (current_unit->playerId != *LOCAL_NATION_ID)
 										bKeepForEmptyListCase = true; //skip the unit for the list, unless it's the only available
-									else 						{
+									else {
 
 										//6F1C5
 
@@ -251,7 +251,7 @@ namespace hooks {
 				if (unit != nullptr) {
 					unit_list[0] = unit;
 					current_index_in_unit_list = 1; //return 1 (the clicked unit alone)
-				} 				else {
+				} else {
 					unit_list[0] = backup_current_unit;
 					current_index_in_unit_list = 1; //return 1 (an unit preserved by bKeepForEmptyListCase)
 				}
@@ -269,14 +269,14 @@ namespace hooks {
 	///
 	void function_0046FB40(CUnit* clicked_unit) {
 
-		bool32* const IS_DOUBLE_CLICKING = (bool32*) 0x0066FF58;
+		bool32* const IS_DOUBLE_CLICKING = (bool32*)0x0066FF58;
 
-		bool8* const bCanUpdateSelectedUnitData = (bool8*) 0x0059723C;
-		bool8* const bCanUpdateSelectedUnitPortrait = (bool8*) 0x0068AC74;
-		bool32* const bCanUpdateCurrentButtonSet = (bool32*) 0x0068C1B0;
-		BinDlg** const someDialogUnknown = (BinDlg**) 0x0068C1E8; //related to MouseOver?
-		bool8* const bCanUpdateStatDataDialog = (bool8*) 0x0068C1F8;
-		BinDlg** const someDialogUnknownUser = (BinDlg**) 0x0068C1EC; //related to MouseOver? Usually someDialogUnknown->user if not 0 or -1
+		bool8* const bCanUpdateSelectedUnitData = (bool8*)0x0059723C;
+		bool8* const bCanUpdateSelectedUnitPortrait = (bool8*)0x0068AC74;
+		bool32* const bCanUpdateCurrentButtonSet = (bool32*)0x0068C1B0;
+		BinDlg** const someDialogUnknown = (BinDlg**)0x0068C1E8; //related to MouseOver?
+		bool8* const bCanUpdateStatDataDialog = (bool8*)0x0068C1F8;
+		BinDlg** const someDialogUnknownUser = (BinDlg**)0x0068C1EC; //related to MouseOver? Usually someDialogUnknown->user if not 0 or -1
 
 		CUnit* local_temp_array_1[SELECTION_ARRAY_LENGTH];	//used instead of an array starting from [EBP-3C]
 		CUnit* local_temp_array_2[SELECTION_ARRAY_LENGTH];	//used instead of an array starting from [EBP-6C]
@@ -293,7 +293,7 @@ namespace hooks {
 		if (
 			isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit ||
 			(*IS_HOLDING_SHIFT && (activePlayerSelection->unit[0] != nullptr))
-			) 		{
+			) {
 
 			if (!*IS_HOLDING_SHIFT) {
 
@@ -414,7 +414,7 @@ namespace hooks {
 							unitIsOwnedByCurrentPlayer(local_temp_array_1[0]) &&
 							unit_IsStandardAndMovable(clicked_unit) &&
 							unitIsOwnedByCurrentPlayer(clicked_unit)
-							) 						{
+							) {
 
 							//new unit is added at end of array, and the index
 							//is increased to be used as new array length
@@ -426,7 +426,7 @@ namespace hooks {
 
 						}
 
-					} 					else {
+					} else {
 
 						//6FD77
 
@@ -445,8 +445,8 @@ namespace hooks {
 						//Copy the elements on the right of the one to delete one step left
 						//to overwrite the one to delete
 						SC_memcpy_0(
-							(uint32) &local_temp_array_1[clicked_unit->sprite->selectionIndex],
-							(uint32) &local_temp_array_1[clicked_unit->sprite->selectionIndex + 1],
+							(uint32)&local_temp_array_1[clicked_unit->sprite->selectionIndex],
+							(uint32)&local_temp_array_1[clicked_unit->sprite->selectionIndex + 1],
 							memcpy_size
 						);
 

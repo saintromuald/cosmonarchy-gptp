@@ -23,7 +23,7 @@ namespace hooks {
 
 		if (unit->status & UnitStatus::GroundedBuilding &&
 			unit->building.upgradeType != UpgradeId::None
-			) 		{
+			) {
 
 			unit->building.upgradeResearchTime--;
 
@@ -139,12 +139,12 @@ namespace hooks {
 
 				prepareForNextOrder(unit);
 
-			} 			else { //54875
+			} else { //54875
 
 				if (unit->orderQueueHead != nullptr) {
 					unit->userActionFlags |= 1;
 					prepareForNextOrder(unit);
-				} 				else //54896
+				} else //54896
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 
 			}
@@ -263,12 +263,12 @@ namespace hooks {
 
 				prepareForNextOrder(unit);
 
-			} 			else { //54A47
+			} else { //54A47
 
 				if (unit->orderQueueHead != nullptr) {
 					unit->userActionFlags |= 1;
 					prepareForNextOrder(unit);
-				} 				else
+				} else
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 
 			}

@@ -18,7 +18,7 @@ namespace hooks {
 				POPAD
 				JMP jmp_4C80_ret
 			}
-		} 		else {
+		} else {
 			__asm {
 				POPAD
 				MOV EAX, result
@@ -87,7 +87,7 @@ namespace hooks {
 				POPAD
 				JMP jmp_33FD1_ret
 			}
-		} 		else {
+		} else {
 			__asm {
 				POPAD
 				JMP jmp_33F7E
@@ -146,7 +146,7 @@ namespace hooks {
 				POPAD
 				JMP jmp_38f8
 			}
-		} 		else {
+		} else {
 			__asm {
 				POPAD
 				JMP jmp_3889
@@ -166,7 +166,7 @@ namespace hooks {
 				POPAD
 				JMP jmp_27a
 			}
-		} 		else {
+		} else {
 			__asm {
 				POPAD
 				JMP jmp_240
@@ -192,7 +192,7 @@ namespace hooks {
 				JMP jmp_920
 			}
 
-		} 		else {
+		} else {
 			__asm {
 				POPAD
 				JMP jmp_c80
@@ -254,7 +254,7 @@ namespace hooks {
 				POPAD
 				JMP jmp_00467F24
 			}
-		} 		else {
+		} else {
 			__asm {
 				POPAD
 				JMP jmp_00467F2C
@@ -288,7 +288,7 @@ namespace hooks {
 				POPAD
 				JMP jmp_00468952
 			}
-		} 		else {
+		} else {
 			__asm {
 				POPAD
 				JMP jmp_00468966

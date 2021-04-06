@@ -54,7 +54,7 @@ namespace AI {
 					return false;
 
 				return true;
-			} 				else
+			} else
 				return false;
 		});
 	}

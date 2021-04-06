@@ -29,7 +29,7 @@ namespace hooks {
 				if (
 					unit->connectedUnit == nullptr ||
 					unit->connectedUnit->mainOrderState == 5
-					) 			{ //64D3F
+					) { //64D3F
 
 					CImage* current_image = unit->sprite->images.head;
 
@@ -65,7 +65,7 @@ namespace hooks {
 
 			}
 
-		} 	else { //64DE3
+		} else { //64DE3
 
 			CThingy* nukeDot;
 
@@ -78,7 +78,7 @@ namespace hooks {
 				unit->playerId
 			);
 
-			unit->building.ghostNukeMissile = (CUnit*) nukeDot;
+			unit->building.ghostNukeMissile = (CUnit*)nukeDot;
 
 			if (nukeDot != nullptr) {
 				nukeDot->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
@@ -100,7 +100,7 @@ namespace hooks {
 		if (
 			unit->nextTargetWaypoint.x != unit->orderTarget.pt.x ||
 			unit->nextTargetWaypoint.y != unit->orderTarget.pt.y
-			) 	{
+			) {
 			unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
 			unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
 		}
@@ -134,7 +134,7 @@ namespace hooks {
 			if (unit->recentOrderTimer == 0)
 				SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
-		} 	else { //792AE
+		} else { //792AE
 
 			int32 direction;
 			bool bEndThere = false;
@@ -144,7 +144,7 @@ namespace hooks {
 			if (
 				unit->nextTargetWaypoint.x != unit->position.x ||
 				unit->nextTargetWaypoint.y != unit->position.y
-				) 		{
+				) {
 
 				direction =
 					unit->currentDirection1 -
@@ -204,11 +204,11 @@ namespace hooks {
 						unit->lockdownTimer != 0 ||
 						unit->stasisTimer != 0 ||
 						unit->maelstromTimer != 0
-						) 				{ //793C4
+						) { //793C4
 
 						if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
 							unit->currentButtonSet = UnitId::Buttons_CancelNukeStrike;
-					} 				else
+					} else
 						unit->currentButtonSet = UnitId::Buttons_CancelNukeStrike;
 
 					scbw::refreshConsole();

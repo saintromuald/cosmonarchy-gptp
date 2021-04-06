@@ -135,7 +135,7 @@ namespace AI {
 						return true;
 
 					if (unit == AIScriptController[unit->id].mainMedic
-						&& unit->mainOrderId != OrderId::Restoration)         {
+						&& unit->mainOrderId != OrderId::Restoration) {
 						CUnit* targetSituational = findBestRestorationTargetSituational(unit, isUnitBeingAttacked);
 						if (aiCastSpellOrder(unit, targetSituational, OrderId::Restoration))
 							return true;
@@ -162,7 +162,7 @@ namespace AI {
 
 			case UnitId::queen:
 				//Parasite
-				if (isUmsMode(unit->playerId) ? scbw::random() % 256 == 1 : unit->getMaxEnergy() == unit->energy)       {
+				if (isUmsMode(unit->playerId) ? scbw::random() % 256 == 1 : unit->getMaxEnergy() == unit->energy) {
 
 					if (canCastSpellOrder(unit, TechId::Parasite, OrderId::CastParasite)) {
 
@@ -203,7 +203,7 @@ namespace AI {
 
 				//Ensnare
 				if ((isUmsMode(unit->playerId) || unit->getMaxEnergy() == unit->energy)
-					&& canCastSpellOrder(unit, TechId::Ensnare, OrderId::Ensnare))       {
+					&& canCastSpellOrder(unit, TechId::Ensnare, OrderId::Ensnare)) {
 
 					CUnit* target = findBestEnsnareTarget(unit, isUnitBeingAttacked);
 
@@ -347,7 +347,7 @@ namespace AI {
 				energyReserve = std::min(energyReserve, unit->getMaxEnergy());
 
 				if ((unit->energy >= energyReserve || scbw::isCheatEnabled(CheatFlags::TheGathering))
-					&& unit->canUseTech(TechId::Maelstrom, unit->playerId) != 1)       {
+					&& unit->canUseTech(TechId::Maelstrom, unit->playerId) != 1) {
 
 					CUnit* target = findBestMaelstromTarget(unit, isUnitBeingAttacked);
 
@@ -444,7 +444,7 @@ namespace {
 
 			if (current_unit->id == UnitId::TerranNuclearSilo &&
 				current_unit->building.silo.isReady
-				) 		{
+				) {
 
 				if (!checkNukeAvailableForGhost) {
 
@@ -456,7 +456,7 @@ namespace {
 						)
 						return_value = current_unit;
 
-				} 			else
+				} else
 					return_value = current_unit;
 
 			}

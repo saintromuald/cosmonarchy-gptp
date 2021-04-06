@@ -81,7 +81,7 @@ namespace hooks {
 				MOV AL, 0x6A
 				JMP jmp_004295F8
 			}
-		}         else {
+		} else {
 			__asm {
 				POPAD
 				MOV AL, 0x6A
@@ -109,7 +109,7 @@ namespace hooks {
 				POPAD
 				JMP spellOrderCases
 			}
-		}         else {
+		} else {
 			__asm {
 				POPAD
 				JMP progressOrderSwitch_e71b
@@ -237,26 +237,26 @@ namespace hooks {
 		jmpPatch(ShouldStopOrderedSpell_JmpWrapper, 0x004922DC);
 	}
 	void trapJumpWrappers() {
-		memoryPatch(0x00401438, (uint8) 0xEB);//change to jump
+		memoryPatch(0x00401438, (uint8)0xEB);//change to jump
 		uint8 patchb030[] = {0x33, 0xc0, 0x90, 0x90};
 		memoryPatch(0x0047B030, patchb030);//xor eax, eax; nop; nop
 		memoryPatch(0x0047B070, patchb030);//xor eax, eax; nop; nop
 		//
-		memoryPatch(0x004EBE99, (uint8) 0xEB);
-		memoryPatch(0x004A4B4D, (uint8) 0xEB);
-		memoryPatch(0x004A491B, (uint8) 0xEB);
-		memoryPatch(0x004A4829, (uint8) 0xEB);
-		memoryPatch(0x004A46CA, (uint8) 0xEB);
-		memoryPatch(0x004A0307, (uint8) 0xEB);
-		memoryPatch(0x004A3E04, (uint8) 0xEB);
+		memoryPatch(0x004EBE99, (uint8)0xEB);
+		memoryPatch(0x004A4B4D, (uint8)0xEB);
+		memoryPatch(0x004A491B, (uint8)0xEB);
+		memoryPatch(0x004A4829, (uint8)0xEB);
+		memoryPatch(0x004A46CA, (uint8)0xEB);
+		memoryPatch(0x004A0307, (uint8)0xEB);
+		memoryPatch(0x004A3E04, (uint8)0xEB);
 		//
 		uint8 jmpp[] = {0xEB, 0x3d};
 		memoryPatch(0x0049FAEF, jmpp);
 
 		//        memoryPatch(0x0049FAEF, (uint8)0x75);//JNZ
 				//
-		memoryPatch(0x0047C05D + 2, (uint8) 0xe4);//floor gun trap
-		memoryPatch(0x0047C069 + 2, (uint8) 0xe4);//floor missile trap
+		memoryPatch(0x0047C05D + 2, (uint8)0xe4);//floor gun trap
+		memoryPatch(0x0047C069 + 2, (uint8)0xe4);//floor missile trap
 
 
 		uint8 jmpp2[] = {0xeb,0x2c};
@@ -266,7 +266,7 @@ namespace hooks {
 		uint8 jmpToEnd[] = {0xC3,0x90,0x90,0x90};//RETN, NOP (3)
 		memoryPatch(0x0047B556, jmpToEnd);
 		//
-		memoryPatch(0x0047B7B1 + 2, (uint8) 0xE4);
+		memoryPatch(0x0047B7B1 + 2, (uint8)0xE4);
 		nops(0x0047B7B7, 6);
 		//
 		//0047BDCB
@@ -354,7 +354,7 @@ namespace hooks {
 				POPAD
 				JMP jmp_skip
 			}
-		}         else {
+		} else {
 			__asm {
 				POPAD
 				JMP jmp_continue
@@ -495,7 +495,7 @@ namespace hooks {
 		uint8 byte[0x109];
 	};
 	static_assert(sizeof(hashStruct) == 0x10C, "Invalid hashStruct Size");
-	hashStruct* hashList = (hashStruct*) 0x0065EB30;
+	hashStruct* hashList = (hashStruct*)0x0065EB30;
 	//
 	static bool warningOnce03_00 = false;
 	static bool warningOnce03_01 = false;
@@ -517,14 +517,14 @@ namespace hooks {
 
 		isSucceeded = true;
 
-		if (hashList[hashStructIndex].hash != *(uint16*) (data + 2) && !warningOnce03_00) {
+		if (hashList[hashStructIndex].hash != *(uint16*)(data + 2) && !warningOnce03_00) {
 			isSucceeded = false;
 			sprintf_s(buffer, "Invalid Hash!!\nhashStructIndex: %u\nHashType1 = %u\nHash1 = 0x%04x\nHashType2 = %u\nHash2 = 0x%04x",
 				hashStructIndex,
 				hashList[hashStructIndex].hashType,
 				hashList[hashStructIndex].hash,
 				hashType & 0x0F,
-				*(uint16*) (data + 2));
+				*(uint16*)(data + 2));
 			scbw::printText(buffer, GameTextColor::Red);
 			warningOnce03_00 = true;
 		}
@@ -544,7 +544,7 @@ namespace hooks {
 				POP EBX
 				RETN
 			}
-		}         else {
+		} else {
 			__asm {
 				POPAD
 				POP ESI

@@ -56,7 +56,7 @@ namespace hooks {
 		if (building->mainOrderState == 0) {
 			if (building->hitPoints > 20 * units_dat::MaxHitPoints[building->id] / 100)
 				building->mainOrderState = 1;
-		} 	else
+		} else
 			if (building->mainOrderState == 1) {
 
 				CImage* current_image = building->sprite->images.head;
@@ -67,11 +67,11 @@ namespace hooks {
 				}
 
 				building->mainOrderState = 2;
-			} 	else
+			} else
 				if (building->mainOrderState == 2) {
 					if (building->hitPoints > 40 * units_dat::MaxHitPoints[building->id] / 100)
 						building->mainOrderState = 3;
-				} 	else
+				} else
 					if (building->mainOrderState == 3) {
 
 						CImage* current_image = building->sprite->images.head;
@@ -83,11 +83,11 @@ namespace hooks {
 
 						building->mainOrderState = 4;
 
-					} 	else
+					} else
 						if (building->mainOrderState == 4) {
 							if (building->hitPoints > 60 * units_dat::MaxHitPoints[building->id] / 100)
 								building->mainOrderState = 5;
-						} 	else
+						} else
 							if (building->mainOrderState == 5) {
 
 								function_004E65E0(building, 0);
@@ -101,7 +101,7 @@ namespace hooks {
 
 								building->mainOrderState = 6;
 
-							} 	else
+							} else
 								if (building->mainOrderState == 6) {
 
 									if (building->hitPoints > 80 * units_dat::MaxHitPoints[building->id] / 100)
@@ -176,7 +176,7 @@ namespace hooks {
 				if (unit->mainOrderState == 3) {
 					if (unit->getMovableState() != 0)
 						unit->mainOrderState = 4;
-				} 		else
+				} else
 					if (unit->mainOrderState == 4) {
 
 						int16 ebp_18, ebp_16, ebp_14, ebp_12, x_min, y_min, x_max, y_max;
@@ -230,7 +230,7 @@ namespace hooks {
 								unit->orderTarget.pt.x - unit->sprite->position.x,
 								unit->orderTarget.pt.y - unit->sprite->position.y
 							) != 0
-							) 			{
+							) {
 
 							unit->orderTarget.pt.x = RandBetween(x_min, x_max, 9);
 							unit->orderTarget.pt.y = RandBetween(y_min, y_max, 9);
@@ -242,7 +242,7 @@ namespace hooks {
 						if (
 							function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y)
 							!= 0
-							) 			{
+							) {
 							unit->mainOrderState = 5;
 							jump_to_switch_1 = true;
 						}
@@ -252,7 +252,7 @@ namespace hooks {
 						if (unit->mainOrderState == 5) {
 							unit->mainOrderState = 6;
 							jump_to_switch_1 = true;
-						} 		else
+						} else
 							if (unit->mainOrderState == 6) {
 
 								if (!isDistanceGreaterThanHaltDistance(
@@ -289,7 +289,7 @@ namespace hooks {
 
 								}
 
-							} 		else
+							} else
 								if (unit->mainOrderState == 7) {
 
 									if (!isUnitPositions2Equal(unit)) {
@@ -327,7 +327,7 @@ namespace hooks {
 										}
 
 
-									} 			else {
+									} else {
 
 										uint8 rand_value = RandomizeShort(10);
 										CImage* current_image = unit->sprite->images.head;
@@ -344,7 +344,7 @@ namespace hooks {
 
 									}
 
-								} 		else
+								} else
 									if (unit->mainOrderState == 8) {
 
 										if (unit->mainOrderTimer != 0)
@@ -398,7 +398,7 @@ namespace hooks {
 													builtUnit->id == UnitId::TerranReservoir ||
 													builtUnit->id == UnitId::ProtossAquifer ||
 													builtUnit->id == UnitId::ZergExtractor
-													) 						{
+													) {
 													if (builtUnit->playerId == unit->playerId)
 														jump_to_67F3C = true;
 												}
@@ -427,7 +427,7 @@ namespace hooks {
 											if (!(unit->orderQueueHead == nullptr)) {
 												unit->userActionFlags |= 1;
 												prepareForNextOrder(unit);
-											} 					else
+											} else
 												if (unit->pAI != nullptr) //67F6F
 													unit->orderComputerCL(OrderId::ComputerAI);
 												else
@@ -439,7 +439,7 @@ namespace hooks {
 
 								}
 
-		} 	else { //67ED0
+		} else { //67ED0
 
 			CImage* current_image = unit->sprite->images.head;
 			bool bEndThere = false;
@@ -462,7 +462,7 @@ namespace hooks {
 						builtUnit->id == UnitId::TerranReservoir ||
 						builtUnit->id == UnitId::ProtossAquifer ||
 						builtUnit->id == UnitId::ZergExtractor
-						) 				{
+						) {
 						if (builtUnit->playerId == unit->playerId)
 							jump_to_67F3C = true;
 					}
@@ -491,7 +491,7 @@ namespace hooks {
 				if (!(unit->orderQueueHead == nullptr)) {
 					unit->userActionFlags |= 1;
 					prepareForNextOrder(unit);
-				} 			else
+				} else
 					if (unit->pAI != nullptr) //67F6F
 						unit->orderComputerCL(OrderId::ComputerAI);
 					else
@@ -518,7 +518,7 @@ namespace hooks {
 			if (
 				unit->sprite->position.x == unit->moveTarget.pt.x &&
 				unit->sprite->position.y == unit->moveTarget.pt.y
-				) 		{
+				) {
 
 				if (
 					!(unit->status & UnitStatus::Unmovable) &&
@@ -529,7 +529,7 @@ namespace hooks {
 						128
 					) &&
 					function_00467030(unit)
-					) 			{
+					) {
 
 					CUnit* builtUnit;
 
@@ -539,7 +539,7 @@ namespace hooks {
 					if (unit->orderQueueHead == nullptr) { //680A5
 						function_004749A0(unit, nullptr, OrderId::ResetCollision1);
 						function_004749A0(unit, nullptr, units_dat::ReturnToIdleOrder[unit->id]);
-					} 				else
+					} else
 						function_00474760(unit, unit->orderQueueHead, OrderId::ResetCollision1);
 
 					if (unit->buildQueue[unit->buildQueueSlot] == UnitId::TerranReservoir)
@@ -558,7 +558,7 @@ namespace hooks {
 						displayLastNetErrForPlayer(unit->playerId);
 						unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 						bEndThere = true;
-					} 				else { //68131
+					} else { //68131
 
 						builtUnit->connectedUnit = unit;
 						unit->mainOrderId = OrderId::ConstructingBuilding;
@@ -606,7 +606,7 @@ namespace hooks {
 				(unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
 					unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
 				&& !(unit->orderTarget.pt.x == 0 && unit->orderTarget.pt.y == 0)
-				) 		{
+				) {
 				unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
 				unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
 			}
@@ -688,7 +688,7 @@ namespace hooks {
 		if (*IS_PLACING_BUILDING) {
 			auto y = mouse->y;
 			auto x = mouse->x;
-			auto mouse_pos = Point16{(uint16) mouse->x, (uint16) mouse->y};
+			auto mouse_pos = Point16{(uint16)mouse->x, (uint16)mouse->y};
 			if (initPlacementBoxPos(&mouse_pos)) {
 				*placeBuildingMessageId = updatePlacementStateForPlacementBox_Func();
 				refreshLayer3And4();
@@ -705,7 +705,7 @@ namespace hooks {
 					unk_buildingPlacementRelated(0, &addon_point);
 				}
 				result = refreshLayer3And4();
-			} 			else {
+			} else {
 				unk_buildingPlacementRelatedMouse(0, 1);
 				result = unk_buildingPlacementRelatedMouse(0, 0);
 			}
@@ -869,7 +869,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (char) result;
+		return (char)result;
 	};
 
 	const uint32 Func_Sub48DDA0 = 0x0048DDA0;
@@ -1162,7 +1162,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (char) result;
+		return (char)result;
 	}
 
 } //Unnamed namespace

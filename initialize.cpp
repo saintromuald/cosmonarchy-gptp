@@ -118,7 +118,7 @@ namespace {
 		hDll = LoadLibrary("./WMODE_FIX.dll");
 	}
 
-	void runWMode(bool hidePrompt, bool preferWmode) 	{
+	void runWMode(bool hidePrompt, bool preferWmode) {
 		if (!hidePrompt) {
 			//KYSXD W-Mode start
 			int msgboxID = MessageBox(nullptr, "Do you want to play in windowed mode?", PLUGIN_NAME, MB_YESNOCANCEL);
@@ -129,7 +129,7 @@ namespace {
 				case IDCANCEL:
 					exit(0);
 			}//KYSXD W-Mode end
-		} 		else {
+		} else {
 			if (preferWmode) loadWMode();
 		}
 	}
@@ -150,7 +150,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 		return FALSE;
 
 	// quick drop timeout -- Veeq7
-	memoryPatch(0x004A345D + 2, (uint32) 0);
+	memoryPatch(0x004A345D + 2, (uint32)0);
 
 	//iquare, start
 	// disable powerup hardcode
@@ -224,7 +224,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x004E3DCA, &jmp, 1); // JA
 
 	const uint8 moveaxpatch[5] = {0xb8,  0x00, 0x00, 0x00, 0x00};
-	memoryPatch((void*) 0x00487C93, moveaxpatch, sizeof(moveaxpatch));//disable unit selectable check in placement function
+	memoryPatch((void*)0x00487C93, moveaxpatch, sizeof(moveaxpatch));//disable unit selectable check in placement function
 
 	//disable terran structure building transport condition
 	const uint8 fourth = 0x3;
@@ -414,9 +414,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	for (; i <= 64; i++) swtab[i] = 0;
 	for (; i <= 128; i++) swtab[i] = 1;
 	for (; i <= 192; i++) swtab[i] = 2;
-	memoryPatch((void*) (0x004A4424 + 2), &b74, sizeof(uint8));
-	memoryPatch((void*) 0x004A4584, swtab, sizeof(swtab));
-	memoryPatch((void*) 0x004A441B, nop3, sizeof(nop3));
+	memoryPatch((void*)(0x004A4424 + 2), &b74, sizeof(uint8));
+	memoryPatch((void*)0x004A4584, swtab, sizeof(swtab));
+	memoryPatch((void*)0x004A441B, nop3, sizeof(nop3));
 
 	//allow display of extended tile groups
 	const uint8 nop = 0x90;
@@ -426,42 +426,42 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	const uint8 b00 = 0x00; // easy workaround
 	const uint8 b01 = 0x01;
 
-	memoryPatch((void*) (0x0047E347 + 3), &b0F, sizeof(uint8));
-	memoryPatch((void*) (0x0047E38F + 2), &b0F, sizeof(uint8));
-	memoryPatch((void*) (0x0049C563 + 3), &b0F, sizeof(uint8));
-	memoryPatch((void*) (0x0049C6AC + 3), &b0F, sizeof(uint8));
-	memoryPatch((void*) (0x004BCEE0 + 2), &b0F, sizeof(uint8));
-	memoryPatch((void*) (0x004BD13F + 3), &b0F, sizeof(uint8));
-	memoryPatch((void*) (0x0049C595 + 3), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x0049C6DA + 3), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x0047E347 + 3), &b0F, sizeof(uint8));
+	memoryPatch((void*)(0x0047E38F + 2), &b0F, sizeof(uint8));
+	memoryPatch((void*)(0x0049C563 + 3), &b0F, sizeof(uint8));
+	memoryPatch((void*)(0x0049C6AC + 3), &b0F, sizeof(uint8));
+	memoryPatch((void*)(0x004BCEE0 + 2), &b0F, sizeof(uint8));
+	memoryPatch((void*)(0x004BD13F + 3), &b0F, sizeof(uint8));
+	memoryPatch((void*)(0x0049C595 + 3), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x0049C6DA + 3), &bFF, sizeof(uint8));
 
-	memoryPatch((void*) 0x0047E3BA, nop6, sizeof(nop6));
-	memoryPatch((void*) 0x0049C580, nop6, sizeof(nop6));
-	memoryPatch((void*) 0x0049C6C9, nop6, sizeof(nop6));
-	memoryPatch((void*) 0x004BCF1E, nop6, sizeof(nop6));
+	memoryPatch((void*)0x0047E3BA, nop6, sizeof(nop6));
+	memoryPatch((void*)0x0049C580, nop6, sizeof(nop6));
+	memoryPatch((void*)0x0049C6C9, nop6, sizeof(nop6));
+	memoryPatch((void*)0x004BCF1E, nop6, sizeof(nop6));
 
 	//allow building on extended tile groups
-	memoryPatch((void*) (0x004BCF34 + 4), &b00, sizeof(uint8));
-	memoryPatch((void*) (0x00413F38 + 2), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x00413F8D + 2), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x00414210 + 2), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x00414252 + 2), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x004142C5 + 3), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x004142EF + 3), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x00414326 + 3), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x0041435A + 3), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x00414390 + 3), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x004143C6 + 3), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x004143F2 + 3), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x0041441A + 2), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x00414467 + 2), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x004145D5 + 3), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x00414720 + 3), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x00414882 + 2), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x0047D75A + 2), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x0047DC99 + 2), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x0047DED5 + 3), &bFF, sizeof(uint8));
-	memoryPatch((void*) (0x0047E045 + 3), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x004BCF34 + 4), &b00, sizeof(uint8));
+	memoryPatch((void*)(0x00413F38 + 2), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x00413F8D + 2), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x00414210 + 2), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x00414252 + 2), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x004142C5 + 3), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x004142EF + 3), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x00414326 + 3), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x0041435A + 3), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x00414390 + 3), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x004143C6 + 3), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x004143F2 + 3), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x0041441A + 2), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x00414467 + 2), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x004145D5 + 3), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x00414720 + 3), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x00414882 + 2), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x0047D75A + 2), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x0047DC99 + 2), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x0047DED5 + 3), &bFF, sizeof(uint8));
+	memoryPatch((void*)(0x0047E045 + 3), &bFF, sizeof(uint8));
 	//
 	//FaRTy1billion, end
 	//

@@ -28,17 +28,17 @@ namespace hooks {
 				orderId == OrderId::BuildProtoss1 ||
 				orderId == OrderId::BuildProtoss2 ||
 				orderId == OrderId::PlaceAddon
-				) 		{
+				) {
 				if (builder->canMakeUnit(builtUnitId, *ACTIVE_NATION_ID))
 					bReturnValue = (OrderAllowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
-			} 		else
+			} else
 				if (
 					orderId == OrderId::Build5 ||		//Build Nydus Exit
 					orderId == OrderId::BuildingLand
-					) 		{
+					) {
 					if (builder->id == builtUnitId)
 						bReturnValue = (OrderAllowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
-				} 		else
+				} else
 					if (orderId == OrderId::CTFCOP2) {	//Create flag beacon
 						if (*elapsedTimeSeconds <= 600 && builder->id == builtUnitId)
 							bReturnValue = (OrderAllowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
@@ -77,7 +77,7 @@ namespace hooks {
 
 			int32 DimensionX, DimensionY;
 
-			DimensionX = (int16) units_dat::BuildingDimensions[builtUnitId].x;
+			DimensionX = (int16)units_dat::BuildingDimensions[builtUnitId].x;
 
 			if (DimensionX < 0)
 				DimensionX++;
@@ -86,7 +86,7 @@ namespace hooks {
 
 			DimensionX += (x * 32);
 
-			DimensionY = (int16) units_dat::BuildingDimensions[builtUnitId].y;
+			DimensionY = (int16)units_dat::BuildingDimensions[builtUnitId].y;
 
 			if (DimensionY < 0)
 				DimensionY++;
@@ -128,7 +128,7 @@ namespace hooks {
 
 		if (result_function_00473FB0 == 0) {
 
-			addonPlaceX = (int16) units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].x;
+			addonPlaceX = (int16)units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].x;
 			/*if (builtUnitId == UnitId::TerranFutureStation) {
 				if (builder->id == UnitId::academy || builder->id == UnitId::armory) {
 					addonPlaceX = 96;
@@ -149,7 +149,7 @@ namespace hooks {
 
 			addonPlaceX = x - addonPlaceX;
 
-			addonPlaceY = (int16) units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].y;
+			addonPlaceY = (int16)units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].y;
 			/*if (builtUnitId == UnitId::TerranFutureStation) {
 				if (builder->id == UnitId::academy || builder->id == UnitId::armory) {
 					addonPlaceY = 0;
@@ -188,7 +188,7 @@ namespace hooks {
 
 			int32 DimensionX, DimensionY;
 
-			DimensionX = (int16) units_dat::BuildingDimensions[builder->id].x;
+			DimensionX = (int16)units_dat::BuildingDimensions[builder->id].x;
 
 			if (DimensionX < 0)
 				DimensionX++;
@@ -199,7 +199,7 @@ namespace hooks {
 
 			DimensionX += addonPlaceX;
 
-			DimensionY = (int16) units_dat::BuildingDimensions[builder->id].y;
+			DimensionY = (int16)units_dat::BuildingDimensions[builder->id].y;
 
 			if (DimensionY < 0)
 				DimensionY++;

@@ -56,7 +56,7 @@ namespace hooks {
 				//656A2:
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			} 		else {
+			} else {
 				//656B2:
 				if (unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
@@ -65,7 +65,7 @@ namespace hooks {
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 
-		} 	else {
+		} else {
 
 			//656D8:
 			if (!unit->canAttackTarget(target, true))
@@ -82,7 +82,7 @@ namespace hooks {
 						newOrderId = OrderId::ReaverHold;
 					else
 						newOrderId = OrderId::ReaverFight;
-				} 			else {
+				} else {
 					//65730
 					if (unit->mainOrderId == OrderId::HoldPosition1)
 						newOrderId = OrderId::HoldPosition1;
@@ -116,7 +116,7 @@ namespace hooks {
 				//65966:
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			} 		else {
+			} else {
 				//65981
 				if (unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
@@ -124,7 +124,7 @@ namespace hooks {
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 
-		} 	else {
+		} else {
 
 			//659AD:
 			if (!unit->canAttackTarget(target, true))
@@ -144,7 +144,7 @@ namespace hooks {
 						newOrderId = OrderId::ReaverHold;
 					else
 						newOrderId = OrderId::ReaverFight;
-				} 			else {
+				} else {
 					//65A13:
 					if (unit->mainOrderId == OrderId::HoldPosition1)
 						newOrderId = OrderId::HoldPosition1;
@@ -282,7 +282,7 @@ namespace hooks {
 						bJumpToEarlierCode = true;
 					}
 
-				} 			else
+				} else
 					jump_to_77AB7 = true;
 
 			}
@@ -309,7 +309,7 @@ namespace hooks {
 				if (current_unit_weaponId == WeaponId::None) {
 					jump_to_77A45 = true;
 					bJumpToEarlierCode = true;
-				} 				else
+				} else
 					jump_to_77AFE = true;
 
 				//} //if(unit->id != UnitId::ProtossArbiter || unit->pAI == nullptr)
@@ -323,7 +323,7 @@ namespace hooks {
 				if (!isTargetVisible(unit, target)) {
 					jump_to_77A45 = true;
 					bJumpToEarlierCode = true;
-				} 			else {
+				} else {
 
 					//77B0E
 					CUnit* current_subunit = unit->subunit;
@@ -443,7 +443,7 @@ namespace hooks {
 
 							if (unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
 								unit->orderTarget.pt.y != unit->nextTargetWaypoint.y
-								) 						{
+								) {
 								unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
 								unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
 							}
@@ -557,7 +557,7 @@ namespace hooks {
 						jump_to_77E99 = true;
 					else
 						jump_to_77E48 = true;
-				} 			else {
+				} else {
 
 					//77E09:
 					/*if(unit->id == UnitId::ProtossArbiter && unit->pAI != nullptr)
@@ -593,7 +593,7 @@ namespace hooks {
 			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			} 		else
+			} else
 				if (unit->pAI != nullptr) //77E6B
 					unit->orderComputerCL(OrderId::ComputerAI);
 				else //77E83
@@ -611,14 +611,14 @@ namespace hooks {
 				//77ED6
 				if (unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
 					unit->orderTarget.pt.y != unit->nextTargetWaypoint.y
-					) 			{
+					) {
 					unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
 					unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
 				}
 
 				getWeaponBeginIscript(unit, IscriptAnimation::GndAttkRpt);
 
-			} 		else
+			} else
 				if (unit->pAI == nullptr)
 					unit->orderToIdle(); //77EC8
 				else
@@ -639,7 +639,7 @@ namespace hooks {
 			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			} 		else {
+			} else {
 
 				if (unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
@@ -648,7 +648,7 @@ namespace hooks {
 
 			} //if(unit->orderQueueHead == nullptr)
 
-		} 	else { //78928
+		} else { //78928
 
 			if (!unit->canAttackTarget(target, true))
 				unit->orderTo(OrderId::Move, target->sprite->position.x, target->sprite->position.y);
@@ -668,7 +668,7 @@ namespace hooks {
 					if (
 						!unit->isTargetWithinMinRange(target, 4) &&
 						unit->getMovableState() != 2
-						) 				{ //78998
+						) { //78998
 
 						if (
 							unit->isTargetWithinMinRange(target, 256) &&
@@ -687,7 +687,7 @@ namespace hooks {
 
 						bStopThere = true;
 
-					} 				else { //789CC
+					} else { //789CC
 
 						setNextWaypoint_Sub4EB290(unit);
 
@@ -696,10 +696,10 @@ namespace hooks {
 							target,
 							weapons_dat::OuterSplashRadius[WeaponId::Suicide_InfestedTerran]
 						)
-							) 					{
+							) {
 							unit->orderToIdle();
 							bStopThere = true;
-						} 					else { //789F4
+						} else { //789F4
 
 							unit->orderTarget.unit = unit;
 							CImage* current_image = unit->sprite->images.head;
@@ -746,7 +746,7 @@ namespace hooks {
 
 			if (unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
 				unit->orderTarget.pt.y != unit->nextTargetWaypoint.y
-				) 		{
+				) {
 				unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
 				unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
 			}
@@ -832,7 +832,7 @@ namespace hooks {
 
 		if (function_00478370(unit, unit->mainOrderId) &&
 			unit->mainOrderTimer == 0
-			) 	{ //78E0B
+			) { //78E0B
 
 			unit->mainOrderTimer = 15;
 
@@ -840,10 +840,10 @@ namespace hooks {
 				SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y)
 				==
 				SAI_GetRegionIdFromPxEx(unit->orderTarget.pt.x, unit->orderTarget.pt.y)
-				) 		{
+				) {
 				makeToHoldPosition(unit);
 				unit->orderToIdle();
-			} 		else { //78E65
+			} else { //78E65
 
 				bool jump_to_78EAE = false;
 
@@ -851,7 +851,7 @@ namespace hooks {
 					unit->getMovableState() != 0 &&
 					(unit->orderTarget.pt.x != unit->sprite->position.x ||
 						unit->orderTarget.pt.y != unit->sprite->position.y)
-					) 			{ //78E80
+					) { //78E80
 
 					if (
 						function_004EB9C0(				//return value is actually from 
@@ -862,10 +862,10 @@ namespace hooks {
 						)
 						jump_to_78EAE = true;
 					else //78E91
-						if (function_00476610(unit, (int32) unit->orderTarget.pt.x, (int32) unit->orderTarget.pt.y))
+						if (function_00476610(unit, (int32)unit->orderTarget.pt.x, (int32)unit->orderTarget.pt.y))
 							makeToHoldPosition(unit);
 
-				} 			else
+				} else
 					jump_to_78EAE = true;
 
 				if (jump_to_78EAE)
@@ -889,7 +889,7 @@ namespace hooks {
 		if (
 			function_00478370(unit, unit->mainOrderId) != 0 &&
 			unit->mainOrderTimer == 0
-			) 	{ //79058
+			) { //79058
 
 			unit->mainOrderTimer = 15;
 
@@ -922,7 +922,7 @@ namespace hooks {
 			||
 			!function_00462EA0(unit, 0)	//if unit controlled by AI, do lots of things and
 										//return true after/if validating a final order
-			) 	{ //79C05
+			) { //79C05
 
 				//perform lots of checks, possibly in an attempt to
 				//auto-select a better target if the unit has choice

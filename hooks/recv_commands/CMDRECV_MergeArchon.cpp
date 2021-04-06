@@ -25,7 +25,7 @@ namespace hooks {
 		current_unit = getActivePlayerNextSelection();
 
 		if (current_unit != nullptr &&
-			current_unit->canUseTech(TechId::DarkArchonMeld, *ACTIVE_NATION_ID) == 1) 	{
+			current_unit->canUseTech(TechId::DarkArchonMeld, *ACTIVE_NATION_ID) == 1) {
 
 			for (int i = 0; i < SELECTION_ARRAY_LENGTH; i++)
 				templars_stored[i] = nullptr;
@@ -154,7 +154,7 @@ namespace hooks {
 		current_unit = getActivePlayerNextSelection();
 
 		if (current_unit != nullptr &&
-			current_unit->canUseTech(TechId::ArchonWarp, *ACTIVE_NATION_ID) == 1) 	{
+			current_unit->canUseTech(TechId::ArchonWarp, *ACTIVE_NATION_ID) == 1) {
 
 			for (int i = 0; i < SELECTION_ARRAY_LENGTH; i++)
 				templars_stored[i] = nullptr;

@@ -42,7 +42,7 @@ CUnit* CreateUnit2(uint32 unitId, int x, int y, uint32 playerId) {
 
 extern const uint32 Func_TriTargetOrder = 0x0048CAF0;
 const void IssueTriTargetOrder(uint8 order1, uint8 order2, uint8 order3) {
-	if (order2 == 0) 	{
+	if (order2 == 0) {
 		_asm
 		{
 			PUSHAD
@@ -52,8 +52,8 @@ const void IssueTriTargetOrder(uint8 order1, uint8 order2, uint8 order3) {
 			CALL Func_TriTargetOrder
 			POPAD
 		}
-	} 	else 	{
-		if (order3 == 0) 		{
+	} else {
+		if (order3 == 0) {
 			_asm
 			{
 				PUSHAD
@@ -63,7 +63,7 @@ const void IssueTriTargetOrder(uint8 order1, uint8 order2, uint8 order3) {
 				CALL Func_TriTargetOrder
 				POPAD
 			}
-		} 		else 		{
+		} else {
 			_asm
 			{
 				PUSHAD
@@ -92,7 +92,7 @@ int Ui_CheckEnergyForTechUse(int tech_id) {
 	return result;
 }
 namespace hooks {
-	void BTNSACT_UseTech(uint16 tech, GrpHead* head) 	{
+	void BTNSACT_UseTech(uint16 tech, GrpHead* head) {
 		//replacement for proc 0x00423660
 		bool TechCapableUnit = false;
 		/*CUnit* currentClientSelectionUnit;
@@ -159,14 +159,14 @@ namespace hooks {
 					TechCapableUnit = true;
 				}
 			}
-			if (!TechCapableUnit) 			{
-				char* message = (char*) statTxtTblNew->getString(864);
+			if (!TechCapableUnit) {
+				char* message = (char*)statTxtTblNew->getString(864);
 				CUnit* portrait_unit = playersSelections->unit[*ACTIVE_NATION_ID][0];
 				get_statTxt_Str_0(*activePortraitUnit, (*activePortraitUnit)->playerId, message);
 				return;
 			}
 		}
-		switch (tech) 		{
+		switch (tech) {
 			case TechId::ScannerSweep:
 				IssueTriTargetOrder(OrderId::PlaceScanner, 0, 0);
 				break;
@@ -327,7 +327,7 @@ namespace hooks {
 					buf[3] = *ACTIVE_PLAYER_ID;
 					buf[4] = ValueId::Reconstitution;
 					scbw::SendCommand(buf, 0xc);
-				} 			else {
+				} else {
 					uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
 					buf[0] = 0x99;//new general command
 					buf[1] = NewGameCommand::GenericSwitchAbility;
@@ -428,7 +428,7 @@ namespace hooks {
 						buf[2] = action;
 						buf[3] = *ACTIVE_PLAYER_ID;
 						scbw::SendCommand(buf, 0xc);
-					} 				else {//exemplar
+					} else {//exemplar
 						int action = 1;//on
 						if (scbw::get_generic_rust_value(firstInList, ValueId::ExemplarSwitch) == 1) {
 							action = 0;//off

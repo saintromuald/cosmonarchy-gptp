@@ -27,7 +27,7 @@ namespace hooks {
 			building->canMakeUnit(wUnitType, *ACTIVE_NATION_ID) == 1 &&
 			HasMoneyCanMake(building, wUnitType) && //start construction if successful
 			building->mainOrderId != OrderId::Morph2
-			) 		{
+			) {
 			building->orderComputerCL(OrderId::Morph2);
 			scbw::refreshConsole();
 		}
@@ -54,14 +54,14 @@ namespace hooks {
 				) {
 
 				bAllowMorph = current_unit->canMakeUnit(wUnitType, *ACTIVE_NATION_ID) == 1;
-			} 			else {
+			} else {
 				bAllowMorph = false;
 			}
 			if (
 				bAllowMorph &&
 				current_unit->mainOrderId != OrderId::Morph1 &&
 				HasMoneyCanMake(current_unit, wUnitType) //start construction if successful
-				) 			{
+				) {
 
 				current_unit->userActionFlags |= 1;
 

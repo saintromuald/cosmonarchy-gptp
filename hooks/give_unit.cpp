@@ -104,7 +104,7 @@ namespace hooks {
 			if (
 				units_dat::BaseProperty[unit->id] & UnitProperty::Worker &&
 				unit->worker.powerup != nullptr &&
-				(unit->worker.powerup)->id == UnitId::Powerup_Flag) 			{
+				(unit->worker.powerup)->id == UnitId::Powerup_Flag) {
 				if ((unit->worker.powerup)->playerId == playerId || playerId >= 8)
 					function_004F3B70(unit->worker.powerup); //return the flag to initial position?
 			}

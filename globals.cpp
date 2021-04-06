@@ -253,7 +253,7 @@ void globals::frameHook() {
 		auto& agent = apostleAgents[a];
 		if (agent.timer > 0) {
 			agent.timer--;
-		} 		else {
+		} else {
 			// scbw::printFormattedText("Agent Creator: 0x%X", agent.creator);
 			auto revived = scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y, agent.creator);
 			if (revived) {
@@ -288,12 +288,12 @@ void globals::frameHook() {
 						auto unit = unitsInSplash.getUnit(i);
 						if (n(unit)) {
 							double damage_factor = unitSizeFactor[units_dat::SizeType[unit->id]];
-							double damage = (double) (weapons_dat::DamageAmount[WeaponId::SalamanderIncendiaryPayload] + weapons_dat::DamageUpgrade[WeaponId::SalamanderIncendiaryPayload]) * (damage_factor / 256.0);
+							double damage = (double)(weapons_dat::DamageAmount[WeaponId::SalamanderIncendiaryPayload] + weapons_dat::DamageUpgrade[WeaponId::SalamanderIncendiaryPayload]) * (damage_factor / 256.0);
 							unitsInSplash.getUnit(i)->inflictDamage(damage, nullptr, -1, false, true, true);
 						}
 					}
 				}
-			} 			else if (impact.impactId == ImpactId::Planetcracker) {
+			} else if (impact.impactId == ImpactId::Planetcracker) {
 				int r = 8 * 32;
 				auto n = unitRangeCount(nullptr, CFlags::NoInvincible | CFlags::NoAir, {});
 				scbw::UnitFinder unitsInSplash(impact.position.x - r, impact.position.y - r,
@@ -307,12 +307,12 @@ void globals::frameHook() {
 				}
 			}
 			impact.timer--;
-		} 		else {
+		} else {
 			if (impact.repeatsLeft > 0) {
 				impact.repeatsLeft--;
 				impact.timer = 24;
 				createSalamanderFire(impact.position.x, impact.position.y, 11, impact.elevation, false);
-			} 			else {
+			} else {
 				persistImpacts.erase(persistImpacts.begin() + a);
 				a--;
 			}
@@ -1048,10 +1048,10 @@ namespace scbw {
 
 	void doDeconstructionDamage(CUnit* unit, uint16 weaponId, bool playSound) {
 		// Deconstruction - Pazuzu passive
-		double selfDamage = (0.25 * (double) (weapons_dat::DamageAmount[weaponId] * 256.0));
+		double selfDamage = (0.25 * (double)(weapons_dat::DamageAmount[weaponId] * 256.0));
 		auto deconstructionTarget = unit;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
-			deconstructionTarget = (CUnit*) scbw::get_generic_value(unit, ValueId::TurretParentLink);
+			deconstructionTarget = (CUnit*)scbw::get_generic_value(unit, ValueId::TurretParentLink);
 			if (deconstructionTarget == nullptr) {
 				return;
 			}

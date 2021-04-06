@@ -9,7 +9,7 @@ namespace AI {
 
 		bool32 returnValue;
 
-		const uint32* offset_0x005873F0 = (uint32*) 0x005873F0;
+		const uint32* offset_0x005873F0 = (uint32*)0x005873F0;
 
 		uint8 isUnderDarkSwarmStatus;
 
@@ -24,7 +24,7 @@ namespace AI {
 				(units_dat::BaseProperty[target->id] & UnitProperty::Building) ||
 				(*offset_0x005873F0 == 0) ||
 				!scbw::isUnderDarkSwarm(target)
-				) 			{
+				) {
 
 				int32 targetX = target->getX();
 				int32 targetY = target->getY();
@@ -39,7 +39,7 @@ namespace AI {
 				else
 					isUnderDarkSwarmStatus = 0;
 
-			} 			else
+			} else
 				isUnderDarkSwarmStatus = 0xFF;
 
 			//back to weaponBehaviourCanHitTargetCheck code
@@ -83,14 +83,14 @@ namespace AI {
 					!caster->isTargetEnemy(targetOfTarget) &&
 					targetOfTarget->subunit == nullptr &&
 					!(targetOfTarget->status & UnitStatus::InAir)
-					) 				{
+					) {
 
 					uint8 totGroundWeapon = targetOfTarget->getGroundWeapon();
 
 					if (
 						totGroundWeapon != WeaponId::None &&
 						weapons_dat::Behavior[totGroundWeapon] == WeaponBehavior::AppearOnAttacker
-						) 					{
+						) {
 
 						uint8 targetGroundWeapon;
 
@@ -114,19 +114,19 @@ namespace AI {
 							else
 								bReturnValue = false;
 
-						} 						else
+						} else
 							bReturnValue = false;
 
-					} 					else
+					} else
 						bReturnValue = false;
 
-				} 				else
+				} else
 					bReturnValue = false;
 
-			} 			else
+			} else
 				bReturnValue = false;
 
-		} 		else
+		} else
 			bReturnValue = false;
 
 		return bReturnValue;
