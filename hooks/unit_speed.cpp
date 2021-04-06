@@ -307,7 +307,7 @@ namespace hooks {
 	/// @return		The modified turning speed value.
 	/// Logically equivalent to getModifiedUnitTurnRadius @ 0047B850 
 	uint32 getModifiedUnitTurnSpeedHook(CUnit* unit) {
-		return scbw::getFlingyData(FlingyDatEntries::TurnRadius, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit);
+		return std::max(scbw::getFlingyData(FlingyDatEntries::TurnRadius, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit), 1.0);
 	}
 
 } //hooks
