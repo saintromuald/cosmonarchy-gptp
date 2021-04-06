@@ -30,7 +30,7 @@ namespace {
 	// For updateCorrosiveSpores
 	uint32 getCorrosiveSporesImage(CUnit* unit); // 004F41F0
 
-} //unnamed namespace
+}
 
 //copied from wpnspellhit and renamed
 const uint32 Func_displayLastNetErrForPlayer = 0x0049E530;
@@ -45,38 +45,32 @@ void displayneterr_49E530(uint32 playerId) {
 
 const uint32 Func_UpdateUnitStrength = 0x0049FA40;
 void updateStrength_49FA40(CUnit* unit) {
-
 	__asm {
 		PUSHAD
 		MOV EAX, unit
 		CALL Func_UpdateUnitStrength
 		POPAD
 	}
-
 }
 
 const uint32 Func_Sub4A01F0 = 0x004A01F0;
 void function_004A01F0_copy(CUnit* unit) {
-
 	__asm {
 		PUSHAD
 		MOV EAX, unit
 		CALL Func_Sub4A01F0
 		POPAD
 	}
-
 }
 
 const uint32 Func_497ED0 = 0x00497ED0;
 void makeSpriteVisible(CSprite* sprite) {
-
 	__asm {
 		PUSHAD
 		MOV EAX, sprite
 		CALL Func_497ED0
 		POPAD
 	}
-
 }
 
 const uint32 Func_AI_TrainingUnit = 0x004A2830;
@@ -123,7 +117,7 @@ CThingy* function_00488210(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
 	}
 	return thingy;
 }
-;
+
 const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
 bool function_004878f0(CThingy* thingy) {
 	static bool32 bPreResult;
@@ -135,7 +129,6 @@ bool function_004878f0(CThingy* thingy) {
 		POPAD
 	}
 	return (bPreResult != 0);
-
 }
 
 const uint32 Func_Sub498D70 = 0x00498D70;
