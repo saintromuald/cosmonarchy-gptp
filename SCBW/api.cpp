@@ -1569,21 +1569,13 @@ namespace scbw {
 		if (!(unit->ensnareTimer)
 			&& !(unit->status & UnitStatus::Burrowed)) {
 
-			// Calculate overlay ID offset based on units_dat flags
-			overlayPadding = 0;
-			baseProperty = units_dat::BaseProperty[unit->id];
-			if (baseProperty & UnitProperty::MediumOverlay) {
-				overlayPadding = 1;
-			} 			else if (baseProperty & UnitProperty::LargeOverlay) {
-				overlayPadding = 2;
-			}
 			victim = unit;
 			if (unit->subunit != nullptr) {
 				victim = unit->subunit;
 			}
 
 			// Create overlay
-			victim->sprite->createOverlay(ImageId::EnsnareOverlay_Small + overlayPadding);
+			victim->sprite->createOverlay(ImageId::EnsnareOverlay_Small + scbw::getOverlayOffset(unit->id));
 		}
 
 		// Apply effect
@@ -1647,13 +1639,13 @@ namespace scbw {
 	bool orderIsSpell(int32 orderId) {
 		return orderId == OrderId::Plague
 			|| orderId == OrderId::DarkSwarm
-			|| orderId == OrderId::Ensnare
+		//	|| orderId == OrderId::Ensnare				// Land Grab
 			|| orderId == OrderId::Irradiate
 			|| orderId == OrderId::StasisField
-			|| orderId == OrderId::EmpShockwave
-			|| orderId == OrderId::MagnaPulse
+			|| orderId == OrderId::EmpShockwave			// Observance
+			|| orderId == OrderId::MagnaPulse			// Lobotomy Mine
 			|| orderId == OrderId::PsiStorm
-			|| orderId == OrderId::SummonBroodlings
+		//	|| orderId == OrderId::SummonBroodlings		// unused
 			|| orderId == OrderId::FireYamatoGun1;
 	}
 
