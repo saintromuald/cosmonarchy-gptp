@@ -951,7 +951,6 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 
-
 								// PROTOSS \\
 								
 								if ((*activePortraitUnit)->id == UnitId::ProtossClarion &&  //Clarion Phase Link passive
@@ -1205,21 +1204,10 @@ namespace hooks {
 								}
 							}
 
-							if (current_button->actVar == TechId::SwarmingOmen) {
-								if ((*activePortraitUnit)->id == UnitId::TerranCyprian) {
-									if (scbw::get_aise_value(*activePortraitUnit, nullptr, AiseId::SendCyprianValue, 0, 0) == 1) {
-										//current_button->actStringID = 1633;
-										current_button->iconID = 375;
-									} 									else {
-										//current_button->actStringID = 1632;
-										current_button->iconID = 374;
-									}
-								}
-							}
-
 							if ((*activePortraitUnit)->id != UnitId::ProtossMindTyrant) {
 								for (int i = 0; i < generictoggles; i++) {
 									if (current_button->actVar == toggle_abilities[i]) {
+										// TODO: Cleanup
 										/*auto vId = toggle_values[i];
 										if (vId == ValueId::TempoChange) {
 											if (scbw::get_generic_value(*activePortraitUnit, toggle_values[i]) == 1) {
