@@ -303,7 +303,6 @@ namespace hooks {
 		const char* sizeText = "";
 
 		const uint8 transportSpace = units_dat::SpaceRequired[unit->id];
-
 		const int sightRange = units_dat::SightRange[unit->id];
 
 		switch (unitSize) {
