@@ -4,31 +4,35 @@
 #include <cstdio>
 #include "../unit_speed.h"
 #include "../weapons/weapon_cooldown.h"
+#include "../unit_stats/weapon_range.h"
 #include "../config.h"
 #include <Windows.h>
+#include <Utils/captivating_claws.h>
 
 
 char buffer[256];
 
 //Returns the special damage multiplier factor for units that don't use the
 //"Damage Factor" property in weapons.dat.
-u8 getDamageFactorForTooltip(u8 weaponId, CUnit* unit) {
+uint8 getDamageFactorForTooltip(uint8 weaponId, CUnit* unit) {
 
 	//Default StarCraft behavior
-	if (unit->id == UnitId::TerranHarakan
-	||	unit->id == UnitId::ProtossZealot
-	||	unit->id == UnitId::ProtossLegionnaire
-	||	unit->id == UnitId::ProtossAmaranth
-	||	unit->id == UnitId::ProtossGolem
-	||	unit->id == UnitId::ProtossPariah
-	||	unit->id == UnitId::ZergBactalisk
-	||	unit->id == UnitId::ZergAlmaksalisk
-	||	weaponId == WeaponId::CelestialCannon
-		)
+	if (weaponId == WeaponId::FlameThrower
+		|| weaponId == WeaponId::CohortGaussPistols
+		|| weaponId == WeaponId::PsiBlades
+		|| weaponId == WeaponId::LegionnairePsiSabers
+		|| weaponId == WeaponId::AmaranthPsiCleaver
+		|| weaponId == WeaponId::GolemBloodlessAssault
+		|| weaponId == WeaponId::PariahIconoclastBlades
+		|| weaponId == WeaponId::StarSovereignCelestialCannon
+		|| weaponId == WeaponId::AlmaksaliskPiercingSpines
+		) {
 		return 2;
+	}
 
-	if (unit->id == UnitId::TerranValkyrie)
+	if (weaponId == WeaponId::HaloRockets) {
 		return 1;
+	}
 
 	return weapons_dat::DamageFactor[weaponId];
 }
@@ -51,7 +55,7 @@ static std::string formatStringVector(std::vector<std::string> strings) {
 	return result;
 }
 
-const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) {
+const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrIndex) {
 	const bool extended = GetKeyState(VK_SHIFT) & 0x8000 || config.always_show_extended_tooltips;
 
 	// Get game strings
@@ -60,15 +64,15 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	const char* perRocketStr = statTxtTblNew->getString(1301);				//"per rocket"
 	const char* typeName = "";
 
-	u8 damageFactor = getDamageFactorForTooltip(weaponId, unit);
-	u8 upgradeLevel = scbw::getUpgradeLevel(unit->playerId, weapons_dat::DamageUpgrade[weaponId]);
-	u16 baseDamage = weapons_dat::DamageAmount[weaponId];
-	u16 bonusDamage = weapons_dat::DamageBonus[weaponId] * upgradeLevel;
-	u8 damageType = weapons_dat::DamageType[weaponId];
+	uint8 damageFactor = getDamageFactorForTooltip(weaponId, unit);
+	uint8 upgradeLevel = scbw::getUpgradeLevel(unit->playerId, weapons_dat::DamageUpgrade[weaponId]);
+	uint8 damageType = weapons_dat::DamageType[weaponId];
+	uint32 baseDamage = weapons_dat::DamageAmount[weaponId];
+	uint32 bonusDamage = weapons_dat::DamageBonus[weaponId] * upgradeLevel;
 
-	u32 minRange = weapons_dat::MinRange[weaponId] / 32;
-	u32 range = weapons_dat::MaxRange[weaponId] / 32;
-	u32 bonusRange = 0;
+	float minRange = weapons_dat::MinRange[weaponId] / 32.0;
+	float range = weapons_dat::MaxRange[weaponId] / 32.0;
+	float bonusRange = hooks::getMaxWeaponRangeHook(unit, weaponId) / 32.0 - range;
 
 	std::string damageModifiers = "";
 	double attackCd = (double)weapons_dat::Cooldown[weaponId] / 24;
@@ -81,81 +85,57 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	int splashType = weapons_dat::ExplosionType[weaponId];
 	std::string splashTypeValue = "";
 
-	bool isSuicideUnit = unit->id == UnitId::ZergInfestedTerran ||
-						 unit->id == UnitId::ZergSkryling;
-
-	if (scbw::get_generic_value(unit, ValueId::RoboticSapience)) {
-		u32 stacks = scbw::get_generic_value(unit, ValueId::RoboticSapience);
-		if (stacks >= 10) {
-			bonusRange += 5;
-		}
-		else {
-			bonusRange += stacks * 0.5;
-		}
-	}
-	switch (weaponId) {
-
-	case UnitId::ZergBactalisk:	{
-		ActiveTile tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
-		if (tile.hasCreep || tile.creepReceeding) {
-			bonusRange += 2;
-		}
-		break;
-	}
-	default:
-		bonusRange += 0;
-		break;
-	}
+	bool isSuicideUnit = unit->id == UnitId::ZergSkryling;
 
 	switch (damageType) {
-	case DamageType::Normal:
-		// Yellow
-		typeName = "\003Normal\002";
-		break;
-	case DamageType::Explosive:
-		// Orange
-		typeName = "\021Explosive\002";
-		damageModifiers = "\01750\002/\00375\002/\021100\002";
-		break;
-	case DamageType::Concussive:
-		// Teal
-		typeName = "\017Concussive\002";
-		damageModifiers = "\017100\002/\00375\002/\02150\002";
-		break;
-	case DamageType::Independent:
-		// White
-		typeName = "\004Independent\002";
-		break;
-	case DamageType::IgnoreArmor:
-		// White
-		typeName = "\004Ignores Armor\002";
-		break;
-	default:
-		typeName = "None";
-		break;
+		case DamageType::Normal:
+			// Yellow
+			typeName = "\003Normal\002";
+			break;
+		case DamageType::Explosive:
+			// Orange
+			typeName = "\021Explosive\002";
+			damageModifiers = "\01750\002/\00375\002/\021100\002";
+			break;
+		case DamageType::Concussive:
+			// Teal
+			typeName = "\017Concussive\002";
+			damageModifiers = "\017100\002/\00375\002/\02150\002";
+			break;
+		case DamageType::Independent:
+			// White
+			typeName = "\004Independent\002";
+			break;
+		case DamageType::IgnoreArmor:
+			// White
+			typeName = "\004Ignores Armor\002";
+			break;
+		default:
+			typeName = "None";
+			break;
 	};
 
 	switch (splashType) {
-	case WeaponEffect::SplashRadial:
-		// Red
-		splashTypeValue = "\006Unsafe\002";
-		break;
-	case WeaponEffect::SplashEnemy:
-		// Green
-		splashTypeValue = "\007Safe\002";
-		break;
-	case WeaponEffect::Unknown_Crash:
-		// Green
-		splashTypeValue = "\007Ally Safe\002";
-		break;
-	case WeaponEffect::SplashAir:
-		// Yellow
-		splashTypeValue = "\003Air Only\002";
-		break;
-	default:
-		// White
-		splashTypeValue = "\004Normal Hit\002";
-		break;
+		case WeaponEffect::SplashRadial:
+			// Red
+			splashTypeValue = "\006Unsafe\002";
+			break;
+		case WeaponEffect::SplashEnemy:
+			// Green
+			splashTypeValue = "\007Safe\002";
+			break;
+		case WeaponEffect::Unknown_Crash:
+			// Green
+			splashTypeValue = "\007Ally Safe\002";
+			break;
+		case WeaponEffect::SplashAir:
+			// Yellow
+			splashTypeValue = "\003Air Only\002";
+			break;
+		default:
+			// White
+			splashTypeValue = "\004Normal Hit\002";
+			break;
 	};
 
 	std::vector<std::string> targetFlags;
@@ -184,16 +164,15 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 		text += std::string(damageStr) + " " + std::to_string(damageFactor) + "x(" + std::to_string(baseDamage);
 		if (bonusDamage > 0) text += "+" + std::to_string(bonusDamage);
 		text += ")";
-	}
-	else {
+	} else {
 		text += std::string(damageStr) + " " + std::to_string(damageFactor * baseDamage);
 		if (bonusDamage > 0) text += "+" + std::to_string(damageFactor * bonusDamage);
 	}
-	
+
 	if (!extended && weaponId == WeaponId::HaloRockets) text += " " + std::string(perRocketStr);
 
 	// Cooldown
-	std::string modifierColor = attackCdModifier > 0 ? "\006" : attackCdModifier < 0 ? "\005" : "\002";
+	std::string modifierColor = attackCdModifier > 0 ? "\006" : attackCdModifier < 0 ? "\007" : "\002";
 	std::stringstream ss;
 	ss << std::setprecision(4);
 	if (!isSuicideUnit) {
@@ -224,13 +203,14 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 	// Range
 	text += "\nRange: ";
 	if (range > 0) {
+		ss.str("");
 		if (minRange > 0) {
-			text += std::to_string(minRange) + "-";
+			ss << minRange << "-";
 		}
-		text += std::to_string(range);
-		if (bonusRange > 0) text += "+" + std::to_string(bonusRange);
-	}
-	else text += "Melee";
+		ss << range;
+		if (bonusRange > 0) ss << "+" << bonusRange;
+		text += ss.str();
+	} else text += "Melee";
 
 	// Target
 	text += "\nTargets: " + targetFlagsText;
@@ -259,7 +239,7 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) 
 namespace hooks {
 
 	//Returns the C-string for the tooltip text of the unit's weapon icon.
-	const char* getWeaponTooltipString(u8 weaponId, CUnit* unit) {
+	const char* getWeaponTooltipString(uint8 weaponId, CUnit* unit) {
 		return getDamageTooltipString(weaponId, unit, weapons_dat::Label[weaponId]);
 	}
 
@@ -312,37 +292,36 @@ namespace hooks {
 	const char* getArmorTooltipString(CUnit* unit) {
 		const bool extended = GetKeyState(VK_SHIFT) & 0x8000 || config.always_show_extended_tooltips;
 
-		const u16 labelId = upgrades_dat::Label[units_dat::ArmorUpgrade[unit->id]];
+		const uint16 labelId = upgrades_dat::Label[units_dat::ArmorUpgrade[unit->id]];
 		const char* armorUpgradeName = statTxtTblNew->getString(labelId);
 		const char* armorStr = statTxtTblNew->getString(778);						//"Armor:"
 
-		const u8 baseArmor = units_dat::ArmorAmount[unit->id];
-		const u8 bonusArmor = unit->getArmorBonus();
-		const u8 unitSize = units_dat::SizeType[unit->id];
+		const uint8 baseArmor = units_dat::ArmorAmount[unit->id];
+		const uint8 bonusArmor = unit->getArmorBonus();
+		const uint8 unitSize = units_dat::SizeType[unit->id];
 		const char* sizeLabel = "Size:";
 		const char* sizeText = "";
 
-		const u8 transportSpace = units_dat::SpaceRequired[unit->id];
-
+		const uint8 transportSpace = units_dat::SpaceRequired[unit->id];
 		const int sightRange = units_dat::SightRange[unit->id];
 
 		switch (unitSize) {
-		case 1:
-			// Teal
-			sizeText = "\017Small\002";
-			break;
-		case 2:
-			// Yellow
-			sizeText = "\003Medium\002";
-			break;
-		case 3:
-			// Orange
-			sizeText = "\021Large\002";
-			break;
-		default:
-			// White
-			sizeText = "\004Unknown\002";
-			break;
+			case 1:
+				// Teal
+				sizeText = "\017Small\002";
+				break;
+			case 2:
+				// Yellow
+				sizeText = "\003Medium\002";
+				break;
+			case 3:
+				// Orange
+				sizeText = "\021Large\002";
+				break;
+			default:
+				// White
+				sizeText = "\004Unknown\002";
+				break;
 		}
 
 		std::stringstream ss;
@@ -373,7 +352,7 @@ namespace hooks {
 		addStatus(statuses, "Knockout Drivers", scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks), scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer), TimerType::Aise);
 		addStatus(statuses, "Adrenal Glands", scbw::get_generic_value(unit, ValueId::AdrenalStacks), scbw::get_generic_timer(unit, ValueId::AdrenalTimer), TimerType::Aise);
 		addStatus(statuses, "Astral Blessing", scbw::get_generic_value(unit, ValueId::EcclesiastStack), scbw::get_generic_timer(unit, ValueId::EcclesiastTimer), TimerType::Aise);
-		addStatus(statuses, "Captivating Claws", scbw::get_generic_value(unit, ValueId::CaptivatingClawsStacks), scbw::get_generic_timer(unit, ValueId::CaptivatingClawsTimer), TimerType::Aise);
+		addStatus(statuses, "Captivating Claws", captivatingClawsGetStacks(unit), captivatingClawsGetHighestTimer(unit), TimerType::Aise);
 		addStatus(statuses, "Swarming Omen Aura", scbw::get_generic_value(unit, ValueId::SwarmingOmenAbility), scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer), TimerType::Aise);
 		addStatus(statuses, "Nemean Reactors", scbw::get_generic_value(unit, ValueId::NemeanReactorsStack), scbw::get_generic_timer(unit, ValueId::NemeanReactorsTimer), TimerType::Aise);
 
@@ -384,27 +363,32 @@ namespace hooks {
 		addStatus(statuses, "Observance", -1, scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff), TimerType::Aise);
 		addStatus(statuses, "Kaiser Rampage", -1, scbw::get_generic_timer(unit, ValueId::KaiserRampage), TimerType::Aise);
 		addStatus(statuses, "Hallucinating", -1, scbw::get_generic_timer(unit, ValueId::HallucinatingTimer), TimerType::Aise);
-//		addStatus(statuses, "Ectomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::EggBoostTimer), TimerType::Aise); // currently can't read tooltips from eggs
-//		addStatus(statuses, "Endomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer), TimerType::Aise); // nor mineral fields
+		// addStatus(statuses, "Ectomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::EggBoostTimer), TimerType::Aise); // currently can't read tooltips from  eggs
+		// addStatus(statuses, "Endomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer), TimerType::Aise); // nor mineral fields
 		addStatus(statuses, "Adrenaline Packs", -1, scbw::get_generic_timer(unit, ValueId::Adrenaline), TimerType::Aise);
 		addStatus(statuses, "Adrenal Frenzy", -1, scbw::get_generic_timer(unit, ValueId::NathrokorTimer), TimerType::Aise);
 		addStatus(statuses, "Controlled Demolition", -1, scbw::get_generic_timer(unit, ValueId::ControlledDemolitionTimer), TimerType::Aise);
 		addStatus(statuses, "Emergency Detonation", -1, scbw::get_generic_timer(unit, ValueId::EmergencyDetonationTimer), TimerType::Aise);
 		addStatus(statuses, "Binding Grip", -1, scbw::get_generic_timer(unit, ValueId::BindingGripTimer), TimerType::Aise);
+		addStatus(statuses, "Autovitality", -1, scbw::get_generic_timer(unit, ValueId::SimulacrumCloneTimer), TimerType::Aise);
 
 		// Aise Value
 		addStatus(statuses, "Energy Decay", scbw::get_generic_value(unit, ValueId::EntropyGauntlets));
 		addStatus(statuses, "Armor Reduction", scbw::get_generic_value(unit, ValueId::ArmorReduce));
 		addStatus(statuses, "Cabeirus Feeders", ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime));
 		addStatus(statuses, "Reverse Thrust", scbw::get_generic_value(unit, ValueId::ReverseThrust));
-		addStatus(statuses, "Sublime Shepherd", scbw::get_generic_value(unit, ValueId::SublimeShepherd));
+		addStatus(statuses, "Sublime Shepherd", scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd));
 		addStatus(statuses, "Lazarus Agent", scbw::get_generic_value(unit, ValueId::LazarusAgent));
 		addStatus(statuses, "Expanded Storage", scbw::get_generic_value(unit, ValueId::TreasuryStacks)); // currently only works for Ovileth and its morphs
-		addStatus(statuses, "Khaydarian Eclipse", scbw::get_generic_value(unit, ValueId::ExemplarSwitch));
-		addStatus(statuses, "Robotic Sapience", scbw::get_generic_value(unit, ValueId::RoboticSapience));
-		addStatus(statuses, "Reconstitution", scbw::get_generic_value(unit, ValueId::Reconstitution));
-		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_value(unit, ValueId::TempoChange) == 0);
-		addStatus(statuses, "Dirge", scbw::get_generic_value(unit, ValueId::TempoChange) == 1);
+		addStatus(statuses, "Khaydarian Eclipse", scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch));
+		addStatus(statuses, "Reconstitution", scbw::get_generic_rust_value(unit, ValueId::Reconstitution));
+		addStatus(statuses, "Repentent Chorus", scbw::get_generic_value(unit, ValueId::RepententChorus));
+		addStatus(statuses, "Stellar Enforcement", scbw::get_generic_value(unit, ValueId::StellarEnforcement));
+		addStatus(statuses, "Terminal Surge", scbw::get_generic_value(unit, ValueId::TerminalSurge));
+
+		// Aise Value - Gimmicked
+		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 0);
+		addStatus(statuses, "Dirge", scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 1);
 		addStatus(statuses, "Swarming Omen", scbw::get_generic_timer(unit, ValueId::SwarmingOmenStatus) > 0);
 		addStatus(statuses, "Protective Instincts", scbw::get_generic_timer(unit, ValueId::ProtectiveInstinctsStatus) > 0);
 		addStatus(statuses, "Deconstructing", scbw::get_generic_value(unit, ValueId::Deconstruction) > 0);
@@ -414,16 +398,15 @@ namespace hooks {
 		addStatus(statuses, "Cutaneous Barrier", scbw::get_generic_value(unit, ValueId::CutaneousBarrier) > 0);
 		addStatus(statuses, "Infested", scbw::get_generic_value(unit, ValueId::InfestedByAkistrokor) > 0);
 		addStatus(statuses, "Enthralling Assault", scbw::get_generic_value(unit, ValueId::EnthrallingTalons) > 0);
-
-		// Aise Value - Gimmicked
-		addStatus(statuses, "Phase Link", scbw::get_aise_value(unit, NULL, AiseId::HasClarionLink, 0, 0));
-		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, NULL, AiseId::SumMindControlCost, 0, 0) > 0); // for caster
-		bool malice = scbw::get_aise_value(unit, NULL, AiseId::HasMalice, 0, 0);
+		addStatus(statuses, "Phase Link", scbw::hasClarionLinks(unit));
+		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0); // for caster
+		bool malice = scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0);
 		addStatus(statuses, "Cowardice", scbw::get_generic_value(unit, ValueId::HierophantOverlay) || malice);
 		addStatus(statuses, "Malice", malice);
 
 		// Vanilla Timer + Value
 		addStatus(statuses, "Defensive Matrix", unit->defensiveMatrixHp / 256, unit->defensiveMatrixTimer);
+		addStatus(statuses, "Corrosive Spores", unit->corrosiveSporeCount, unit->acidSporeTime[unit->corrosiveSporeCount - 1]);
 
 		// Vanilla Timers
 		addStatus(statuses, "Stimpack", -1, unit->stimTimer);
@@ -431,14 +414,13 @@ namespace hooks {
 		addStatus(statuses, "Ensnared", -1, unit->ensnareTimer);
 		addStatus(statuses, "Lobotomized", -1, unit->lockdownTimer);
 		addStatus(statuses, "Maelstromed", -1, unit->maelstromTimer);
-		addStatus(statuses, "Corrosive Spores", unit->acidSporeCount);
 		addStatus(statuses, "Plagued", -1, unit->plagueTimer);
 		addStatus(statuses, "Stasis", -1, unit->stasisTimer);
 		addStatus(statuses, "Timed Life", -1, unit->removeTimer, TimerType::RemoveTimer);
 
 		// Vanilla Value
 		addStatus(statuses, "Parasited", unit->parasiteFlags != 0);
-		addStatus(statuses, "Blinded", (bool) unit->isBlind);
+		addStatus(statuses, "Blinded", (bool)unit->isBlind);
 
 		// Case Specific
 		addStatus(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode);
@@ -509,11 +491,11 @@ namespace hooks {
 	const char* getShieldTooltipString(CUnit* unit) {
 		//Default StarCraft behavior
 
-		const u16 labelId = upgrades_dat::Label[UpgradeId::ProtossPlasmaShields];
+		const uint16 labelId = upgrades_dat::Label[UpgradeId::ProtossPlasmaShields];
 		const char* shieldUpgradeName = statTxtTblNew->getString(labelId);
 		const char* shieldStr = statTxtTblNew->getString(779);					 //"Shields:"
 
-		u8 shieldUpgradeLevel = scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossPlasmaShields);
+		uint8 shieldUpgradeLevel = scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossPlasmaShields);
 
 		std::string text = "\004" + std::string(shieldUpgradeName) + "\002";
 		text += "\n" + std::string(shieldStr) + " 0";
@@ -527,7 +509,7 @@ namespace hooks {
 	//Returns the C-string for the tooltip text of the Interceptor icon (Carriers),
 	//Scarab icon (Reavers), Nuclear Missile icon (Nuclear Silos), and Spider Mine
 	//icon (Vultures).
-	const char* getSpecialTooltipString(u16 iconUnitId, CUnit* unit) {
+	const char* getSpecialTooltipString(uint16 iconUnitId, CUnit* unit) {
 		//Default StarCraft behavior
 
 		if (iconUnitId == UnitId::ProtossSteward)
@@ -541,11 +523,11 @@ namespace hooks {
 
 		if (iconUnitId == UnitId::TerranSpiderMine)
 			return getDamageTooltipString(WeaponId::SpiderMines, unit, 794);		//"Spider Mines"
-		
-		if (iconUnitId == UnitId::TerranLobotomyMine){
-			return getDamageTooltipString(WeaponId::LobotomyMine, unit, 794);
+
+		if (iconUnitId == UnitId::TerranLobotomyMine) {
+			return getDamageTooltipString(WeaponId::LobotomyMineExplosion, unit, 794);
 		}
-		
+
 
 
 		//Should never reach here

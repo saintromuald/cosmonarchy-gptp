@@ -24,9 +24,9 @@
 /// @param  nops      Optional. The number of additional bytes to write NOPs.
 void jmpPatch(const void* target, void* position, unsigned int nops = 0);
 inline void jmpPatch(const void* target, DWORD position, unsigned int nops = 0) {
-  jmpPatch(target, (void*)position, nops);
+	jmpPatch(target, (void*)position, nops);
 }
-void nops(const u32 address, u32 number);
+void nops(const uint32 address, uint32 number);
 
 /// Injects a CALL to [target] at the [position], optionally overwriting [nops]
 /// bytes with NOPs.
@@ -46,28 +46,28 @@ void nops(const u32 address, u32 number);
 /// @param  nops      Optional. The number of additional bytes to write NOPs.
 void callPatch(const void* target, void* position, unsigned int nops = 0);
 inline void callPatch(const void* target, DWORD position, unsigned int nops = 0) {
-  callPatch(target, (void*)position, nops);
+	callPatch(target, (void*)position, nops);
 }
 
 /// Patches the specified address with the given data using memcpy().
 template <typename T>
-void memoryPatch(const u32 address, const T& data) {
-  memoryPatch(address, (u8*)&data, sizeof(T));
+void memoryPatch(const uint32 address, const T& data) {
+	memoryPatch(address, (uint8*)&data, sizeof(T));
 }
 
 /// Inject an array of bytes, using the given size.
-void memoryPatch(void* const address, const u8* data, const size_t size);
-inline void memoryPatch(const u32 address, const u8* data, const size_t size) {
-  memoryPatch((void*)address, data, size);
+void memoryPatch(void* const address, const uint8* data, const size_t size);
+inline void memoryPatch(const uint32 address, const uint8* data, const size_t size) {
+	memoryPatch((void*)address, data, size);
 }
 
-void wrapperPatch(const u8* code, u32 len, const u32 position, unsigned int nops = 0);
+void wrapperPatch(const uint8* code, uint32 len, const uint32 position, unsigned int nops = 0);
 
 class ByteWrapperMemory {
 public:
-	std::vector<std::shared_ptr<u8[]>> wrapper_memory;
+	std::vector<std::shared_ptr<uint8[]>> wrapper_memory;
 
-	u8* exec_alloc(u32 len);
+	uint8* exec_alloc(uint32 len);
 };
 
 extern ByteWrapperMemory wrapperMemory;

@@ -4,7 +4,7 @@
 namespace { // Wrappers
 
 	void __declspec(naked) initGame_Wrapper() { // 004EE110
-		static s32 result;
+		static int32 result;
 		__asm {
 			PUSHAD
 		}
@@ -17,9 +17,9 @@ namespace { // Wrappers
 	}
 
 	void __declspec(naked) startGame_Wrapper() { // 00472060
-		static s32 result;
+		static int32 result;
 		static void* a1;
-		static s32 a2;
+		static int32 a2;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -45,7 +45,7 @@ namespace { // Wrappers
 namespace hooks {
 
 	void injectLobbyHooks() {
-		jmpPatch(initGame_Wrapper,		0x004EE110,		1);
-		jmpPatch(startGame_Wrapper,		0x00472060,		4);
+		jmpPatch(initGame_Wrapper, 0x004EE110, 1);
+		jmpPatch(startGame_Wrapper, 0x00472060, 4);
 	}
 }

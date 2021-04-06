@@ -10,7 +10,7 @@ namespace {
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV EAX, [EBP+0x08]
+			MOV EAX, [EBP + 0x08]
 			MOV dialog, EAX
 			PUSHAD
 		}

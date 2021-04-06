@@ -55,8 +55,8 @@ namespace {
 namespace hooks {
 
 	void injectResearchUpgradeOrdersHooks() {
-		jmpPatch(orders_UpgradeWrapper,			0x004546A0, 1);
-		jmpPatch(orders_ResearchTechWrapper,	0x004548B0, 1);
+		jmpPatch(orders_UpgradeWrapper, 0x004546A0, 1);
+		jmpPatch(orders_ResearchTechWrapper, 0x004548B0, 1);
 	}
 
 } //hooks

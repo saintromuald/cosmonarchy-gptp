@@ -25,8 +25,8 @@ void __declspec(naked) cloakNearbyUnitsWrapper() {
 
 namespace hooks {
 
-void injectCloakNearbyUnits() {
-	jmpPatch(cloakNearbyUnitsWrapper, 0x00491C20, 1);
-}
+	void injectCloakNearbyUnits() {
+		jmpPatch(cloakNearbyUnitsWrapper, 0x00491C20, 1);
+	}
 
 } //hooks

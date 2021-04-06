@@ -88,7 +88,7 @@ std::istream& operator>>(std::istream& stream, std::map<T, Y>& map) {
 		stream >> key >> value;
 		map.put(*(T*)&key, *(Y*)&value)
 	} while (str != "");
-	return stream;
+		return stream;
 }
 
 template <typename T, typename Y> // Vector

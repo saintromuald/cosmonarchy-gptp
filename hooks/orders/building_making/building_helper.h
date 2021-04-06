@@ -7,7 +7,7 @@ namespace BuildingHelper {
 	bool isWarpingInProtossBuilding(const CUnit* probe) {
 		return probe->mainOrderId == OrderId::BuildProtoss1
 			&& probe->status & UnitStatus::GroundedBuilding
-			&& probe->orderTarget.unit != NULL
+			&& probe->orderTarget.unit != nullptr
 			&& !(probe->orderTarget.unit->status & UnitStatus::Completed);
 	}
 
@@ -16,7 +16,7 @@ namespace BuildingHelper {
 	bool isConstructingAddon(const CUnit* building) {
 		return building->secondaryOrderId == OrderId::BuildAddon
 			&& building->status & UnitStatus::GroundedBuilding
-			&& building->currentBuildUnit != NULL
+			&& building->currentBuildUnit != nullptr
 			&& !(building->currentBuildUnit->status & UnitStatus::Completed);
 	}
 
@@ -34,13 +34,13 @@ namespace BuildingHelper {
 			|| isConstructingAddon(unit))
 			return unit->currentBuildUnit;
 
-		return NULL;
+		return nullptr;
 	}
 
 	//Identical to function @ 0x00466B70
-	int getNumberOfUnitTypeInBuildQueue(const CUnit* unit, u16 unitId) {
+	int getNumberOfUnitTypeInBuildQueue(const CUnit* unit, uint16 unitId) {
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker) {
-			if (getConstructRepairTarget(unit) == NULL
+			if (getConstructRepairTarget(unit) == nullptr
 				&& unit->buildQueue[unit->buildQueueSlot % 5] == unitId
 				&& (unit->mainOrderId == OrderId::BuildTerran
 					|| unit->mainOrderId == OrderId::BuildProtoss1
@@ -65,7 +65,7 @@ namespace BuildingHelper {
 		return unitCount;
 	}
 
-	int getNumberOfUnitType(const CUnit* unit, u16 unitId, bool ignoreIncomplete) {
+	int getNumberOfUnitType(const CUnit* unit, uint16 unitId, bool ignoreIncomplete) {
 		if (!ignoreIncomplete || unit->status & UnitStatus::Completed) {
 			if (unit->id == unitId)
 				return 1;

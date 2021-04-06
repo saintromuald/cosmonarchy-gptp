@@ -3,8 +3,8 @@
 
 namespace hooks {
 
-void receive_command(int x, int y, CUnit* unitParam, u32 wUnitType, u32 bActionOrder, u32 bCommandType); //0x0049AB00
+	void receive_command(int x, int y, CUnit* unitParam, uint32 wUnitType, uint32 bActionOrder, uint32 bCommandType); //0x0049AB00
 
-void injectRecvCmdHook();
+	void injectRecvCmdHook();
 
 } //hooks

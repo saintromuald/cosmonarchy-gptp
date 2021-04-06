@@ -4,7 +4,7 @@
 namespace {
 	void __declspec(naked) unitMovementDormant_Wrapper() { // 0046A8D0
 		static CUnit* unit;
-		static s32 result;
+		static int32 result;
 
 		__asm {
 			MOV unit, EAX

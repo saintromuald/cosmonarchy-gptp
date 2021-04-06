@@ -5,7 +5,7 @@
 
 namespace {
 
-	void QueueGameCommand(u8* params, u32 param_length);				//0x00485BD0
+	void QueueGameCommand(uint8* params, uint32 param_length);				//0x00485BD0
 
 }
 

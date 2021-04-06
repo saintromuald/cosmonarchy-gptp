@@ -5,21 +5,21 @@
 
 namespace {
 
-	bool HasMoneyCanMake(CUnit* builder, u32 unitToBuild);		//67250
+	bool HasMoneyCanMake(CUnit* builder, uint32 unitToBuild);		//67250
 	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);	//742D0
 
 } //unnamed namespace
 
 namespace hooks {
 
-	void CMDRECV_BuildingMorph(u16 wUnitType) {
+	void CMDRECV_BuildingMorph(uint16 wUnitType) {
 
 		CUnit* building;
 		*selectionIndexStart = 0;
 		building = getActivePlayerNextSelection();
 		if (
-			building != NULL &&
-			getActivePlayerNextSelection() == NULL &&
+			building != nullptr &&
+			getActivePlayerNextSelection() == nullptr &&
 			building->id >= UnitId::ZergInfestedCommandCenter &&
 			building->id <= 227 &&
 			wUnitType >= UnitId::ZergInfestedCommandCenter &&
@@ -27,8 +27,7 @@ namespace hooks {
 			building->canMakeUnit(wUnitType, *ACTIVE_NATION_ID) == 1 &&
 			HasMoneyCanMake(building, wUnitType) && //start construction if successful
 			building->mainOrderId != OrderId::Morph2
-			)
-		{
+			) {
 			building->orderComputerCL(OrderId::Morph2);
 			scbw::refreshConsole();
 		}
@@ -37,11 +36,11 @@ namespace hooks {
 
 	;
 
-	void CMDRECV_UnitMorph(u16 wUnitType) {
+	void CMDRECV_UnitMorph(uint16 wUnitType) {
 		CUnit* current_unit;
 		*selectionIndexStart = 0;
 		current_unit = getActivePlayerNextSelection();
-		while (current_unit != NULL) {
+		while (current_unit != nullptr) {
 
 			bool bAllowMorph;
 			/*
@@ -51,20 +50,18 @@ namespace hooks {
 			)
 				bAllowMorph = current_unit->canUseTech(TechId::LurkerAspect,*ACTIVE_NATION_ID) == 1;
 			else*/
-			if ((current_unit->id,true)
+			if ((current_unit->id, true)
 				) {
 
 				bAllowMorph = current_unit->canMakeUnit(wUnitType, *ACTIVE_NATION_ID) == 1;
-			}
-			else {
+			} else {
 				bAllowMorph = false;
 			}
 			if (
 				bAllowMorph &&
 				current_unit->mainOrderId != OrderId::Morph1 &&
 				HasMoneyCanMake(current_unit, wUnitType) //start construction if successful
-				)
-			{
+				) {
 
 				current_unit->userActionFlags |= 1;
 
@@ -74,7 +71,7 @@ namespace hooks {
 
 					while (bKeepLooping) {
 
-						if (current_unit->orderQueueTail == NULL)
+						if (current_unit->orderQueueTail == nullptr)
 							bKeepLooping = false;
 						else
 							if (orders_dat::CanBeInterrupted[current_unit->orderQueueTail->orderId] ||
@@ -86,7 +83,7 @@ namespace hooks {
 
 					}
 
-					current_unit->performAnotherOrder(OrderId::Morph1, 0, 0, NULL, UnitId::None, 0);
+					current_unit->performAnotherOrder(OrderId::Morph1, 0, 0, nullptr, UnitId::None, 0);
 
 				}
 
@@ -110,10 +107,10 @@ namespace hooks {
 
 namespace {
 
-	const u32 Func_HasMoneyCanMake = 0x00467250;
-	bool HasMoneyCanMake(CUnit* builder, u32 unitToBuild) {
+	const uint32 Func_HasMoneyCanMake = 0x00467250;
+	bool HasMoneyCanMake(CUnit* builder, uint32 unitToBuild) {
 
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 
 		__asm {
 			PUSHAD
@@ -130,7 +127,7 @@ namespace {
 
 	;
 
-	const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
+	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
 	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 		__asm {

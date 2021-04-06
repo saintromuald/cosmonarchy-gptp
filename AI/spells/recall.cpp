@@ -5,42 +5,31 @@
 
 namespace AI {
 
-class RecallTargetFinderProc: public scbw::UnitFinderCallbackMatchInterface {
+	CUnit* findBestRecallTarget(CUnit* caster, bool isUnderAttack) {
 
-  private:
-    CUnit* caster;
+		if (isUnitInUnsafeRegion(caster))
+			return nullptr;
 
-  public:
-    RecallTargetFinderProc(CUnit* caster)
-      : caster(caster) {}
+		return scbw::UnitFinder::getNearestTarget(caster,
+			[&](CUnit* target) {
 
-	bool match(CUnit* target) {
+			if (target->playerId != caster->playerId && !scbw::isAlliedTo(target->playerId, caster->playerId))
+				return false;
 
-		if (target->playerId != caster->playerId && !scbw::isAlliedTo(target->playerId, caster->playerId))
-		  return false;
+			if (!target->orderTarget.unit)
+				return false;
 
-		if (!target->orderTarget.unit)
-		  return false;
+			if (target->id == UnitId::carrier
+				|| target->id == UnitId::gantrithor
+				|| target->id == UnitId::reaver
+				|| target->id == UnitId::warbringer) {
+				if (target->getCurrentShieldsInGame() <= 10)
+					return true;
+			}
 
-		if (target->id == UnitId::carrier
-			|| target->id == UnitId::gantrithor
-			|| target->id == UnitId::reaver
-			|| target->id == UnitId::warbringer) {
-		  if (target->getCurrentShieldsInGame() <= 10)
-			return true;
-		}
+			return false;
 
-		return false;
-
-    }
-};
-
-CUnit* findBestRecallTarget(CUnit* caster, bool isUnderAttack) {
-
-  if (isUnitInUnsafeRegion(caster))
-    return NULL;
-
-  return scbw::UnitFinder::getNearestTarget(caster, RecallTargetFinderProc(caster));
-}
+		});
+	}
 
 } //AI

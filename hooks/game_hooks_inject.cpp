@@ -7,15 +7,15 @@ bool isGameOn = false;
 
 /******** Game Start ********/
 
-const u32 Hook_OnGameStart = 0x004C9A51;
-const u32 Hook_OnGameStartBack = Hook_OnGameStart + 5;
-const u32 Func_CompileSCode = 0x00417C20;
+const uint32 Hook_OnGameStart = 0x004C9A51;
+const uint32 Hook_OnGameStartBack = Hook_OnGameStart + 5;
+const uint32 Func_CompileSCode = 0x00417C20;
 void __declspec(naked) onGameStart() { // From BWAPI by Kovarex, slightly modified
 	__asm PUSHAD;
 	{
 		isGameOn = true;
-    hooks::gameOn();
-    GPTP::logger.startGame();
+		hooks::gameOn();
+		GPTP::logger.startGame();
 	}
 	__asm {
 		POPAD
@@ -26,13 +26,13 @@ void __declspec(naked) onGameStart() { // From BWAPI by Kovarex, slightly modifi
 
 /******** Game End ********/
 
-const u32 Func_DeleteSCode = 0x00416D90;
+const uint32 Func_DeleteSCode = 0x00416D90;
 void __declspec(naked) onGameEnd() { // From BWAPI by Kovarex, slightly modified
 	__asm PUSHAD;
 	{
 		isGameOn = false;
-    hooks::gameEnd();
-    GPTP::logger.endGame();
+		hooks::gameEnd();
+		GPTP::logger.endGame();
 	}
 	__asm {
 		POPAD
@@ -49,33 +49,32 @@ void __declspec(naked) nextFrameHook() { // From BWAPI by Kovarex, slightly modi
 		MOV EBP, ESP
 	}
 	{
-    hooks::nextFrame();
+		hooks::nextFrame();
 	}
 
-  if (scbw::isGamePaused()) {
-	  __asm {
-		  POPAD
-      MOV EAX, 1
-		  RETN
-	  }
-  }
-  else {
-	  __asm {
-		  POPAD
-      MOV EAX, 0
-		  RETN
-	  }
-  }
+	if (scbw::isGamePaused()) {
+		__asm {
+			POPAD
+			MOV EAX, 1
+			RETN
+		}
+	} else {
+		__asm {
+			POPAD
+			MOV EAX, 0
+			RETN
+		}
+	}
 }
 
 //-------- Hook injector --------//
 
 namespace hooks {
 
-void injectGameHooks() {
-  jmpPatch(onGameStart,     Hook_OnGameStart);
-  callPatch(onGameEnd,      0x004EE983);
-  callPatch(nextFrameHook,  0x004D974E);
-}
+	void injectGameHooks() {
+		jmpPatch(onGameStart, Hook_OnGameStart);
+		callPatch(onGameEnd, 0x004EE983);
+		callPatch(nextFrameHook, 0x004D974E);
+	}
 
 } //hooks

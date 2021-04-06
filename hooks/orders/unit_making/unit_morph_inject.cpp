@@ -3,17 +3,17 @@
 #include <cassert>
 #include "hooks\orders\building_making\building_morph.h"
 #include "hooks\orders\unit_making\unit_morph.h"
-
+#include "globals.h"
 
 namespace {
 
 	//-------- CMDRECV_UnitMorph --------//
 
-	const u32 Func_AddUnitToBuildQueue = 0x00467250;
-	bool addUnitToBuildQueue(CUnit* unit, u16 unitId) {
+	const uint32 Func_AddUnitToBuildQueue = 0x00467250;
+	bool addUnitToBuildQueue(CUnit* unit, uint16 unitId) {
 
-		static u32 result;
-		static u32 unitId_;
+		static uint32 result;
+		static uint32 unitId_;
 
 		unitId_ = unitId;
 
@@ -25,19 +25,18 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		
+
 		return result != 0;
 
 	}
 
-	void __stdcall unitMorphWrapper_CMDRECV_UnitMorph(u8 *commandData) {
-		const u16 morphUnitId = *((u16*)&commandData[1]);
+	void __stdcall unitMorphWrapper_CMDRECV_UnitMorph(uint8* commandData) {
+		const uint16 morphUnitId = *((uint16*)&commandData[1]);
 		*selectionIndexStart = 0;
 		while (CUnit* unit = getActivePlayerNextSelection()) {
 			if (hooks::unitCanMorphHook(unit, morphUnitId)
 				&& unit->mainOrderId != OrderId::Morph1
-				&& addUnitToBuildQueue(unit, morphUnitId))
-			{
+				&& addUnitToBuildQueue(unit, morphUnitId)) {
 				unit->orderTo(OrderId::Morph1);
 			}
 		}
@@ -47,7 +46,7 @@ namespace {
 
 	//-------- BTNSCOND_CanBuildUnit --------//
 
-	s32 __fastcall unitMorphWrapper_BTNSCOND_CanBuildUnit(u16 buildUnitId, s32 playerId, CUnit* unit) {
+	int32 __fastcall unitMorphWrapper_BTNSCOND_CanBuildUnit(uint16 buildUnitId, int32 playerId, CUnit* unit) {
 
 		if (*clientSelectionCount <= 1
 			|| hooks::getUnitMorphEggTypeHook(unit->id, unit, unit->buildQueue[0]) != UnitId::None)
@@ -58,7 +57,7 @@ namespace {
 
 	//-------- Orders_Morph1 --------//
 
-	const u32 Hook_Orders_Morph1_Check_Success = 0x0045DFCA;
+	const uint32 Hook_Orders_Morph1_Check_Success = 0x0045DFCA;
 	void __declspec(naked) unitMorphWrapper_Orders_Morph1_Check() {
 
 		static CUnit* unit;
@@ -73,8 +72,7 @@ namespace {
 				POPAD
 				JMP Hook_Orders_Morph1_Check_Success
 			}
-		}
-		else {
+		} else {
 			__asm {
 				POPAD
 				POP EDI
@@ -86,11 +84,11 @@ namespace {
 		}
 	}
 
-	const u32 Hook_Orders_Morph1_EggType_Return = 0x0045E048;
+	const uint32 Hook_Orders_Morph1_EggType_Return = 0x0045E048;
 	void __declspec(naked) unitMorphWrapper_Orders_Morph1_EggType() {
 
 		static CUnit* unit;
-		static u32 morphEggType;
+		static uint32 morphEggType;
 
 		__asm {
 			PUSHAD
@@ -99,8 +97,8 @@ namespace {
 		}
 
 		unit->status &= ~(UnitStatus::Completed);
-		morphEggType = hooks::getUnitMorphEggTypeHook(unit->id, unit,unit->buildQueue[0]);
-		assert(scbw::isZergEggNew(unit,true,false, morphEggType));
+		morphEggType = hooks::getUnitMorphEggTypeHook(unit->id, unit, unit->buildQueue[0]);
+		assert(scbw::isZergEggNew(unit, true, false, morphEggType));
 		__asm {
 			POPAD
 			PUSH morphEggType
@@ -110,7 +108,7 @@ namespace {
 
 	//-------- hasSuppliesForUnit --------//
 
-	Bool32 __stdcall hasSuppliesForUnitWrapper(u8 playerId, u16 unitId, Bool32 canShowErrorMessage) {
+	bool32 __stdcall hasSuppliesForUnitWrapper(uint8 playerId, uint16 unitId, bool32 canShowErrorMessage) {
 		if (hooks::hasSuppliesForUnitHook(playerId, unitId, canShowErrorMessage != 0))
 			return 1;
 		else
@@ -119,13 +117,13 @@ namespace {
 
 	//-------- cancelBuild --------//
 
-	typedef void(__stdcall *CancelZergBuildingFunc)(CUnit*);
+	typedef void(__stdcall* CancelZergBuildingFunc)(CUnit*);
 	CancelZergBuildingFunc cancelZergBuilding = (CancelZergBuildingFunc)0x0045DA40;
 
-	const u32 Func_ChangeUnitType = 0x0049FED0;
-	void changeUnitType(CUnit* unit, u16 newUnitId) {
+	const uint32 Func_ChangeUnitType = 0x0049FED0;
+	void changeUnitType(CUnit* unit, uint16 newUnitId) {
 
-		static u32 newUnitId_ = newUnitId;
+		static uint32 newUnitId_ = newUnitId;
 
 		newUnitId_ = newUnitId;
 
@@ -139,11 +137,11 @@ namespace {
 
 	}
 
-	const u32 Func_ReplaceSpriteImages = 0x00499BB0;
-	void replaceSpriteImages(CSprite *sprite, u16 imageId, u8 imageDirection) {
+	const uint32 Func_ReplaceSpriteImages = 0x00499BB0;
+	void replaceSpriteImages(CSprite* sprite, uint16 imageId, uint8 imageDirection) {
 
-		static u32 imageId_;
-		static u32 imageDirection_;
+		static uint32 imageId_;
+		static uint32 imageDirection_;
 
 		imageId_ = imageId;
 		imageDirection_ = imageDirection;
@@ -169,7 +167,7 @@ namespace {
 		if (unit->status & UnitStatus::Completed)
 			return;
 
-		if (unit->id == UnitId::ZergNydusCanal && unit->building.nydusExit != NULL)
+		if (unit->id == UnitId::ZergNydusCanal && unit->building.nydusExit != nullptr)
 			return;
 
 		//Don't bother if unit is not morphed yet
@@ -181,14 +179,13 @@ namespace {
 			return;
 		if (unit->status & UnitStatus::GroundedBuilding) {
 			if (unit->getRace() == RaceId::Zerg) {
-					cancelZergBuilding(unit);
-					return;
+				cancelZergBuilding(unit);
+				return;
 			}
 			resources->minerals[unit->playerId] += units_dat::MineralCost[unit->id] * 3 / 4;
 			resources->gas[unit->playerId] += units_dat::GasCost[unit->id] * 3 / 4;
-		}
-		else {
-			u16 refundUnitId;
+		} else {
+			uint16 refundUnitId;
 			if (scbw::isZergEggNew(unit, true, false))
 				refundUnitId = unit->buildQueue[unit->buildQueueSlot % 5];
 			else
@@ -197,57 +194,53 @@ namespace {
 			resources->gas[unit->playerId] += units_dat::GasCost[refundUnitId];
 		}
 
-		u16 cancelChangeUnitId = hooks::getCancelMorphRevertTypeHook(unit);
-//		scbw::printFormattedText("Revert unit id: %d", cancelChangeUnitId);
+		uint16 cancelChangeUnitId = hooks::getCancelMorphRevertTypeHook(unit);
+		//		scbw::printFormattedText("Revert unit id: %d", cancelChangeUnitId);
 		if (cancelChangeUnitId == UnitId::None) {
 			//scbw::printText("Remove the unit");
 			if (unit->id == UnitId::TerranNuclearMissile) {
 				CUnit* silo = unit->connectedUnit;
 				if (silo) {
-					silo->building.silo.nuke = NULL;
+					silo->building.silo.nuke = nullptr;
 					silo->mainOrderState = 0;
 				}
 				scbw::refreshConsole();
 			}
 			unit->remove();
-		}
-		else {
+		} else {
 			changeUnitType(unit, cancelChangeUnitId);
 			unit->remainingBuildTime = 0;
 			unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 			/*replaceSpriteImages(unit->sprite,
 				sprites_dat::ImageId[flingy_dat::SpriteID[units_dat::Graphic[unit->previousUnitType]]], 0);*/
-//			auto index = units_dat::Graphic[unit->previousUnitType];
+				//			auto index = units_dat::Graphic[unit->previousUnitType];
 			auto index = scbw::getUnitData(UnitsDatEntries::Flingy, unit->previousUnitType);
-//			replaceSpriteImages(unit->sprite, sprites_dat::ImageId[scbw::getFlingyData(FlingyDatEntries::SpriteId, index)], 0);
+			//			replaceSpriteImages(unit->sprite, sprites_dat::ImageId[scbw::getFlingyData(FlingyDatEntries::SpriteId, index)], 0);
 			auto fl_sId = scbw::getFlingyData(FlingyDatEntries::SpriteId, index);
 			//scbw::getSpriteData(SpritesDatEntries::ImageId,building->sprite->spriteId),
 			replaceSpriteImages(unit->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, fl_sId), 0);
 			unit->orderSignal &= ~0x4;
-			if (unit->id == UnitId::ZergZergling 
-				|| unit->id==UnitId::ZergVorvaling) {
+			if (unit->id == UnitId::ZergZergling
+				|| unit->id == UnitId::ZergVorvaling) {
 				unit->playIscriptAnim(IscriptAnimation::Unused2);
-			}
-			else if (unit->id == UnitId::ZergNathrokor) {
+			} else if (unit->id == UnitId::ZergNathrokor) {
 				unit->playIscriptAnim(IscriptAnimation::Unused2);
-			}
-			else if (unit->id == UnitId::ZergUltrakor) {
+			} else if (unit->id == UnitId::ZergUltrakor) {
 				unit->playIscriptAnim(IscriptAnimation::CastSpell);
 				scbw::set_generic_timer(unit, ValueId::UltrakorCancelGimmick, 4);
-			}
-			else {
+			} else {
 				unit->playIscriptAnim(IscriptAnimation::SpecialState2);
 			}
-			
+
 			unit->orderTo(OrderId::ZergBirth);
 		}
 	}
 
 	//-------- getRemainingBuildTimePct --------//
 
-	s32 getRemainingBuildTimePctHook(CUnit* unit) {
-		u16 unitId = unit->id;
-		if (scbw::isZergEggNew(unit,true,false) || unit->isRemorphingBuilding())
+	int32 getRemainingBuildTimePctHook(CUnit* unit) {
+		uint16 unitId = unit->id;
+		if (scbw::isZergEggNew(unit, true, false) || unit->isRemorphingBuilding())
 			unitId = unit->buildQueue[unit->buildQueueSlot];
 		return 100 * (units_dat::TimeCost[unitId] - unit->remainingBuildTime) / units_dat::TimeCost[unitId];
 	}
@@ -256,7 +249,7 @@ namespace {
 	void __declspec(naked) getRemainingBuildTimePctWrapper() {
 
 		static CUnit* unit;
-		static s32 percentage;
+		static int32 percentage;
 
 		__asm {
 			PUSHAD
@@ -277,11 +270,11 @@ namespace {
 	//-------- orders_zergBirth --------//
 
 	//Inject @ 0x0045DE00
-	const u32 Hook_GetUnitVerticalOffsetOnBirth_Return = 0x0045DE2C;
+	const uint32 Hook_GetUnitVerticalOffsetOnBirth_Return = 0x0045DE2C;
 	void __declspec(naked) getUnitVerticalOffsetOnBirthWrapper() {
 
 		static CUnit* unit;
-		static s16 yOffset;
+		static int16 yOffset;
 
 		__asm {
 			PUSHAD
@@ -299,8 +292,8 @@ namespace {
 	}
 
 	//Inject @ 0x0045DE57
-	const u32 Hook_IsRallyableEggUnit_Yes = 0x0045DE6C;
-	const u32 Hook_IsRallyableEggUnit_No = 0x0045DE8B;
+	const uint32 Hook_IsRallyableEggUnit_Yes = 0x0045DE6C;
+	const uint32 Hook_IsRallyableEggUnit_No = 0x0045DE8B;
 	void __declspec(naked) isRallyableEggUnitWrapper() {
 
 		static CUnit* unit;
@@ -317,8 +310,7 @@ namespace {
 				POPAD
 				JMP Hook_IsRallyableEggUnit_Yes
 			}
-		}
-		else {
+		} else {
 			__asm {
 				POPAD
 				JMP Hook_IsRallyableEggUnit_No
@@ -333,188 +325,184 @@ namespace {
 
 namespace {
 
-void __declspec(naked) orders_ZergBirthWrapper() {
+	void __declspec(naked) orders_ZergBirthWrapper() {
 
-	static CUnit* unit;
+		static CUnit* unit;
 
-	__asm {
-		PUSH EBP
-		MOV EBP, ESP
-		MOV unit, EAX
-		PUSHAD
-	}
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV unit, EAX
+			PUSHAD
+		}
 
-	hooks::orders_ZergBirth(unit);
+		hooks::orders_ZergBirth(unit);
 
-	__asm {
-		POPAD
-		MOV ESP, EBP
-		POP EBP
-		RETN
-	}
-
-}
-
-;
-
-void __declspec(naked) orders_Morph1Wrapper() {
-
-	static CUnit* unit;
-
-	__asm {
-		PUSH EBP
-		MOV EBP, ESP
-		MOV unit, EAX
-		PUSHAD
-	}
-
-	hooks::orders_Morph1(unit);
-
-	__asm {
-		POPAD
-		MOV ESP, EBP
-		POP EBP
-		RETN
-	}
-
-}
-;
-
-/*void __declspec(naked) RemoveWorkerOrBuildingAiWrapper() {
-	static CUnit* unit;
-	static u32 assert_is_building;
-	static u32 result;
-	__asm {
-		MOV unit,EDI
-		PUSH EAX
-		MOV EAX,[EBP+0x08]
-		POP EAX
-		PUSHAD
-	}
-	result = hooks::remove_worker_or_building_ai(unit,assert_is_building);
-	__asm {
-		POPAD
-		MOV EAX, result
-		RETN
-	}
-}
-;*/
-
-
-const u32 Jmp_IsEgg = 0x00434CF1;
-const u32 Jmp_IsNotEgg = 0x00434CD6;
-void __declspec(naked) deleteBuildingWorkerAiEggJmpWrapper() {
-	static CUnit* unit;
-	__asm {
-		MOV unit,EDI
-		PUSHAD
-	}
-	if (scbw::isLarvalEgg(unit)) {
 		__asm {
 			POPAD
-			JMP Jmp_IsEgg
+			MOV ESP, EBP
+			POP EBP
+			RETN
 		}
+
 	}
-	else {
+
+	;
+
+	void __declspec(naked) orders_Morph1Wrapper() {
+
+		static CUnit* unit;
+
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV unit, EAX
+			PUSHAD
+		}
+
+		hooks::orders_Morph1(unit);
+
 		__asm {
 			POPAD
-			JMP Jmp_IsNotEgg
+			MOV ESP, EBP
+			POP EBP
+			RETN
 		}
+
 	}
-	
-}
-const u32 Jmp_UnitAi_IsEgg = 0x00433E74;
-const u32 Jmp_UnitAi_IsNotEgg = 0x00433E6A;
-void __declspec(naked) addUnitAiEggJmpWrapper() {
-	static CUnit* unit;
-	__asm {
-		MOV unit, EBX
-		PUSHAD
-	}
-	if (scbw::isLarvalEgg(unit)) {
+	;
+
+	/*void __declspec(naked) RemoveWorkerOrBuildingAiWrapper() {
+		static CUnit* unit;
+		static uint32 assert_is_building;
+		static uint32 result;
+		__asm {
+			MOV unit,EDI
+			PUSH EAX
+			MOV EAX,[EBP+0x08]
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::remove_worker_or_building_ai(unit,assert_is_building);
 		__asm {
 			POPAD
-			JMP Jmp_UnitAi_IsEgg
+			MOV EAX, result
+			RETN
 		}
 	}
-	else {
-		__asm {
-			POPAD
-			JMP Jmp_UnitAi_IsNotEgg
-		}
-	}
-}
+	;*/
 
 
-void __declspec(naked) beginTrainWrapper() {
-	static u32 notify_error;
-	static CUnit* unit;
-	static CUnit* result;
-	static u16 unit_id;
-	__asm {
-		PUSH EBP
-		MOV EBP,ESP
-		MOV unit,ESI
-		MOV unit_id,DI
-		PUSH EAX
-		MOV EAX,[EBP+0x08]
-		MOV notify_error,EAX
-		POP EAX
-		PUSHAD
-	}
-	result = hooks::beginTrain(unit, unit_id, notify_error);
-	__asm {
-		POPAD
-		MOV EAX,result
-		MOV ESP,EBP
-		POP EBP
-		RETN 4
-	}
-}
+	const uint32 Jmp_IsEgg = 0x00434CF1;
+	const uint32 Jmp_IsNotEgg = 0x00434CD6;
+	void __declspec(naked) deleteBuildingWorkerAiEggJmpWrapper() {
+		static CUnit* unit;
+		__asm {
+			MOV unit, EDI
+			PUSHAD
+		}
+		if (scbw::isLarvalEgg(unit)) {
+			__asm {
+				POPAD
+				JMP Jmp_IsEgg
+			}
+		} else {
+			__asm {
+				POPAD
+				JMP Jmp_IsNotEgg
+			}
+		}
 
-const u32 Jmp_UnitTask_IsEgg = 0x00434CF1;
-const u32 Jmp_UnitTask_IsNotEgg = 0x00434CD6;
-void __declspec(naked) detachUnitTask_EggJmpWrapper() {
-	static CUnit* unit;
-	__asm {
-		MOV unit, EDI
-		PUSHAD
 	}
-	if (scbw::isLarvalEgg(unit)) {
+	const uint32 Jmp_UnitAi_IsEgg = 0x00433E74;
+	const uint32 Jmp_UnitAi_IsNotEgg = 0x00433E6A;
+	void __declspec(naked) addUnitAiEggJmpWrapper() {
+		static CUnit* unit;
 		__asm {
-			POPAD
-			JMP Jmp_UnitTask_IsEgg
+			MOV unit, EBX
+			PUSHAD
+		}
+		if (scbw::isLarvalEgg(unit)) {
+			__asm {
+				POPAD
+				JMP Jmp_UnitAi_IsEgg
+			}
+		} else {
+			__asm {
+				POPAD
+				JMP Jmp_UnitAi_IsNotEgg
+			}
 		}
 	}
-	else {
-		__asm {
-			POPAD
-			JMP Jmp_UnitTask_IsEgg
-		}
-	}
-}
 
-const u32 Jmp_PrepSuicide_IsEgg = 0x0043D218;
-const u32 Jmp_PrepSuicide_IsNotEgg = 0x0043D212;
-void __declspec(naked) prepSuicide_EggJmpWrapper() {
-	static CUnit* unit;
-	__asm {
-		MOV unit, ESI
-		PUSHAD
-	}
-	if (scbw::isLarvalEgg(unit)) {
+
+	void __declspec(naked) beginTrainWrapper() {
+		static uint32 notify_error;
+		static CUnit* unit;
+		static CUnit* result;
+		static uint16 unit_id;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV unit, ESI
+			MOV unit_id, DI
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV notify_error, EAX
+			POP EAX
+			PUSHAD
+		}
+		result = hooks::beginTrain(unit, unit_id, notify_error);
 		__asm {
 			POPAD
-			JMP Jmp_PrepSuicide_IsEgg
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
 		}
 	}
-	else {
+
+	const uint32 Jmp_UnitTask_IsEgg = 0x00434CF1;
+	const uint32 Jmp_UnitTask_IsNotEgg = 0x00434CD6;
+	void __declspec(naked) detachUnitTask_EggJmpWrapper() {
+		static CUnit* unit;
 		__asm {
-			POPAD
-			JMP Jmp_PrepSuicide_IsEgg
+			MOV unit, EDI
+			PUSHAD
+		}
+		if (scbw::isLarvalEgg(unit)) {
+			__asm {
+				POPAD
+				JMP Jmp_UnitTask_IsEgg
+			}
+		} else {
+			__asm {
+				POPAD
+				JMP Jmp_UnitTask_IsEgg
+			}
 		}
 	}
-}
+
+	const uint32 Jmp_PrepSuicide_IsEgg = 0x0043D218;
+	const uint32 Jmp_PrepSuicide_IsNotEgg = 0x0043D212;
+	void __declspec(naked) prepSuicide_EggJmpWrapper() {
+		static CUnit* unit;
+		__asm {
+			MOV unit, ESI
+			PUSHAD
+		}
+		if (scbw::isLarvalEgg(unit)) {
+			__asm {
+				POPAD
+				JMP Jmp_PrepSuicide_IsEgg
+			}
+		} else {
+			__asm {
+				POPAD
+				JMP Jmp_PrepSuicide_IsEgg
+			}
+		}
+	}
 
 
 }; //unnamed namespace
@@ -523,8 +511,8 @@ void __declspec(naked) prepSuicide_EggJmpWrapper() {
 namespace hooks {
 
 	void injectUnitMorphHooks() {
-		jmpPatch(orders_ZergBirthWrapper,	0x0045DD60, 1);
-		jmpPatch(orders_Morph1Wrapper,		0x0045DEA0, 0);
+		jmpPatch(orders_ZergBirthWrapper, 0x0045DD60, 1);
+		jmpPatch(orders_Morph1Wrapper, 0x0045DEA0, 0);
 		callPatch(unitMorphWrapper_CMDRECV_UnitMorph, 0x00486B50);	//jmp 004C1990  CMDRECV_UnitMorph
 		jmpPatch(unitMorphWrapper_BTNSCOND_CanBuildUnit, 0x00428E60);	//00428E60  BTNSCOND_CanBuildUnit
 		jmpPatch(unitMorphWrapper_Orders_Morph1_Check, 0x0045DFB0);	//0045DEA0  orders_Morph1 within	
@@ -534,9 +522,9 @@ namespace hooks {
 		jmpPatch(getRemainingBuildTimePctWrapper, 0x004669E0);	//004669E0  sub_4669E0 EXACT
 		jmpPatch(getUnitVerticalOffsetOnBirthWrapper, 0x0045DE00);	//0045DD60  orders_ZergBirth within
 		jmpPatch(isRallyableEggUnitWrapper, 0x0045DE57);	//0045DD60  orders_ZergBirth within
-		
+
 		//												
-		jmpPatch(beginTrainWrapper, 0x00468200); 
+		jmpPatch(beginTrainWrapper, 0x00468200);
 		jmpPatch(detachUnitTask_EggJmpWrapper, 0x00434CD0, 1);
 		jmpPatch(prepSuicide_EggJmpWrapper, 0x0043D20C, 1);
 		//has unfinished disabled bugged hook in aise

@@ -10,7 +10,7 @@ namespace hooks {
 	void orders_MedicHeal1(CUnit* unit);				//00464180
 //	void findHealTarget(CUnit* unit);					//004422A0
 	bool AI_AcquireHealTarget(CUnit* a1, CUnit* a2);	//00463530
-	u32 doMedicHeal_Func(CUnit* medic, CUnit* target);	//00463C40
+	uint32 doMedicHeal_Func(CUnit* medic, CUnit* target);	//00463C40
 	void injectMedicOrdersHooks();
 
 } //hooks

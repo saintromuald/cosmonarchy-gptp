@@ -7,7 +7,7 @@ struct Config {
 	// Launch Settings
 	bool disable_wmode_prompt = false;
 	bool prefer_wmode = true;
-	
+
 	// UI
 	bool show_timer = true;
 	bool extended_camera_hotkeys = true;
@@ -15,7 +15,7 @@ struct Config {
 
 	// Hotkeys
 	bool grid_hotkeys = false;
-	std::array<std::string, 3> layout = { "QWE", "ASD", "ZXC" };
+	std::array<std::string, 3> layout = {"QWE", "ASD", "ZXC"};
 
 	// Debug
 	bool verbose = false;

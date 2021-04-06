@@ -7,12 +7,12 @@ namespace {
 	void __declspec(naked) fireWeaponWrapper() {
 
 		static CUnit* unit;
-		static u8 weaponId;
+		static uint8 weaponId;
 
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOVZX EAX, [EBP+0x08]
+			MOVZX EAX, [EBP + 0x08]
 			MOV weaponId, AL
 			MOV unit, ESI
 			PUSHAD
@@ -27,30 +27,6 @@ namespace {
 			RETN 4
 		}
 	}
-
-	class empyreanInterceptionMatch : public scbw::UnitFinderCallbackMatchInterface {
-	private:
-		CBullet* missile;
-	public:
-		empyreanInterceptionMatch(CBullet* missile)
-			: missile(missile) {}
-
-		bool match(CUnit* unit) {
-			/*if (unit == savant) {
-				return false;
-			}
-			if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster)) {
-				return false;
-			}
-			if (!scbw::isAlliedTo(savant->playerId, unit->playerId)) {
-				return false;
-			}
-			if (unit->energy == unit->getMaxEnergy()) {
-				return false;
-			}*/
-			return false;
-		}
-	};
 
 	void __declspec(naked) progressBulletFlight_Wrapper() {
 		static CBullet* bullet;
@@ -128,15 +104,15 @@ namespace {
 	*/
 } //Unnamed namespace
 
-extern const u32 Func_FireUnitWeapon;
+extern const uint32 Func_FireUnitWeapon;
 
 namespace hooks {
 
-void injectWeaponFireHooks() {
-	jmpPatch(fireWeaponWrapper, Func_FireUnitWeapon, 0);
-	jmpPatch(progressBulletFlight_Wrapper, 0x0048B3B0, 3);
-	jmpPatch(bulletBehaviour_Bounce_Wrapper, 0x0048B2D0, 0);
-	jmpPatch(findNextBounceTargetProc_Wrapper, 0x0048AFD0, 3);//proc
-//	jmpPatch(findNextBounceTarget_Wrapper, 0x0048B1E0, 1);
+	void injectWeaponFireHooks() {
+		jmpPatch(fireWeaponWrapper, Func_FireUnitWeapon, 0);
+		jmpPatch(progressBulletFlight_Wrapper, 0x0048B3B0, 3);
+		jmpPatch(bulletBehaviour_Bounce_Wrapper, 0x0048B2D0, 0);
+		jmpPatch(findNextBounceTargetProc_Wrapper, 0x0048AFD0, 3);//proc
+	//	jmpPatch(findNextBounceTarget_Wrapper, 0x0048B1E0, 1);
 	}
 } //hooks

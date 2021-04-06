@@ -31,8 +31,8 @@ namespace {
 
 namespace hooks {
 
-void injectRepairOrderHook() {
-	jmpPatch(orders_Repair1Wrapper,	0x004673D0,	1);
-}
+	void injectRepairOrderHook() {
+		jmpPatch(orders_Repair1Wrapper, 0x004673D0, 1);
+	}
 
 } //hooks

@@ -3,8 +3,8 @@
 
 //Helper functions
 namespace {
-void secondaryOrder_Cloak(CUnit* unit);			//0x00491790
-CUnit** getAllUnitsInBounds(Box16* coords);		//0x0042FF80
+	void secondaryOrder_Cloak(CUnit* unit);			//0x00491790
+	CUnit** getAllUnitsInBounds(Box16* coords);		//0x0042FF80
 } //unnamed namespace
 
 namespace hooks {
@@ -13,70 +13,69 @@ namespace hooks {
 
 
 	// 1
-void cloakNearbyUnitsHook(CUnit* cloaker) {
+	void cloakNearbyUnitsHook(CUnit* cloaker) {
 
-	bool needsRefresh = false;
-	static u16* const maxBoxRightValue =	(u16*) 0x00628450;	//should usually be mapTileSize->width * 32
-	static u16* const maxBoxBottomValue =	(u16*) 0x006284B4;	//should usually be mapTileSize->height * 32
+		bool needsRefresh = false;
+		static uint16* const maxBoxRightValue = (uint16*)0x00628450;	//should usually be mapTileSize->width * 32
+		static uint16* const maxBoxBottomValue = (uint16*)0x006284B4;	//should usually be mapTileSize->height * 32
 
-	Box16 area_of_effect;
+		Box16 area_of_effect;
 
-	CUnit** unitsInAreaOfEffect;
-	CUnit* current_unit;
+		CUnit** unitsInAreaOfEffect;
+		CUnit* current_unit;
 
-	//Use the unit's air weapon range
-	u32 cloakRadius = cloaker->getMaxWeaponRange(cloaker->getAirWeapon());
+		//Use the unit's air weapon range
+		uint32 cloakRadius = cloaker->getMaxWeaponRange(cloaker->getAirWeapon());
 
-	area_of_effect.left = cloaker->sprite->position.x - cloakRadius;
-	area_of_effect.right = cloaker->sprite->position.x + cloakRadius;
-	area_of_effect.top = cloaker->sprite->position.y - cloakRadius;
-	area_of_effect.bottom = cloaker->sprite->position.y + cloakRadius;
+		area_of_effect.left = cloaker->sprite->position.x - cloakRadius;
+		area_of_effect.right = cloaker->sprite->position.x + cloakRadius;
+		area_of_effect.top = cloaker->sprite->position.y - cloakRadius;
+		area_of_effect.bottom = cloaker->sprite->position.y + cloakRadius;
 
-	if(area_of_effect.left < 0)
-		area_of_effect.left = 0;
-	if(area_of_effect.top < 0)
-		area_of_effect.top = 0;
-	if(area_of_effect.right > *maxBoxRightValue)
-		area_of_effect.right = *maxBoxRightValue;
-	if(area_of_effect.bottom > *maxBoxBottomValue)
-		area_of_effect.bottom = *maxBoxBottomValue;
+		if (area_of_effect.left < 0)
+			area_of_effect.left = 0;
+		if (area_of_effect.top < 0)
+			area_of_effect.top = 0;
+		if (area_of_effect.right > *maxBoxRightValue)
+			area_of_effect.right = *maxBoxRightValue;
+		if (area_of_effect.bottom > *maxBoxBottomValue)
+			area_of_effect.bottom = *maxBoxBottomValue;
 
-	unitsInAreaOfEffect = getAllUnitsInBounds(&area_of_effect);
+		unitsInAreaOfEffect = getAllUnitsInBounds(&area_of_effect);
 
-	current_unit = *unitsInAreaOfEffect;
-	while(current_unit != NULL) {
-		if (
-			current_unit != cloaker																	// Don't cloak self
-			&& !(units_dat::BaseProperty[current_unit->id] & UnitProperty::NeutralAccessories)		// Don't cloak items
-			&& current_unit->id != UnitId::TerranNuclearMissile										// Don't cloak nukes
-			&& current_unit->id != UnitId::ResourceMineralField										// Don't cloak resources
-			&& current_unit->id != UnitId::ResourceMineralFieldType2								//
-			&& current_unit->id != UnitId::ResourceMineralFieldType3								//
-			&& current_unit->id != UnitId::ResourceVespeneGeyser									//
-			&& current_unit->mainOrderId != OrderId::Warpin											// Don't cloak units doing order WarpIn
-			&& scbw::isAlliedTo(current_unit->playerId, cloaker->playerId)							// (or allied to Cloaker owner)
-			&& cloaker->isTargetWithinMinRange(current_unit, cloakRadius)							// Check again if unit in range of cloaking
-		)
-		{
-			secondaryOrder_Cloak(current_unit);
-			if(!(current_unit->status & UnitStatus::CloakingForFree)) {
-				current_unit->status |= UnitStatus::CloakingForFree;
-				needsRefresh = true;
+		current_unit = *unitsInAreaOfEffect;
+		while (current_unit != nullptr) {
+			if (
+				current_unit != cloaker																	// Don't cloak self
+				&& !(units_dat::BaseProperty[current_unit->id] & UnitProperty::NeutralAccessories)		// Don't cloak items
+				&& current_unit->id != UnitId::TerranNuclearMissile										// Don't cloak nukes
+				&& current_unit->id != UnitId::ResourceMineralField										// Don't cloak resources
+				&& current_unit->id != UnitId::ResourceMineralFieldType2								//
+				&& current_unit->id != UnitId::ResourceMineralFieldType3								//
+				&& current_unit->id != UnitId::ResourceVespeneGeyser									//
+				&& current_unit->mainOrderId != OrderId::Warpin											// Don't cloak units doing order WarpIn
+				&& scbw::isAlliedTo(current_unit->playerId, cloaker->playerId)							// (or allied to Cloaker owner)
+				&& cloaker->isTargetWithinMinRange(current_unit, cloakRadius)							// Check again if unit in range of cloaking
+				) {
+				secondaryOrder_Cloak(current_unit);
+				if (!(current_unit->status & UnitStatus::CloakingForFree)) {
+					current_unit->status |= UnitStatus::CloakingForFree;
+					needsRefresh = true;
+				}
 			}
+
+			unitsInAreaOfEffect++;
+			current_unit = *unitsInAreaOfEffect;
+
 		}
 
-		unitsInAreaOfEffect++;
-		current_unit = *unitsInAreaOfEffect;
+		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[*tempUnitsListArraysCountsListLastIndex];
+		*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
+
+		if (needsRefresh)
+			scbw::refreshConsole();
 
 	}
-
-	*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[*tempUnitsListArraysCountsListLastIndex];
-	*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
-
-	if (needsRefresh)
-		scbw::refreshConsole();
-
-}
 
 } //hooks
 
@@ -84,52 +83,51 @@ void cloakNearbyUnitsHook(CUnit* cloaker) {
 
 namespace {
 
-//Equivalent to secondaryOrd_Cloak @ 0x00491790
-void secondaryOrder_Cloak(CUnit* unit) {
-	static CUnit** const firstBurrowedUnit = (CUnit**) 0x0063FF5C;
+	//Equivalent to secondaryOrd_Cloak @ 0x00491790
+	void secondaryOrder_Cloak(CUnit* unit) {
+		static CUnit** const firstBurrowedUnit = (CUnit**)0x0063FF5C;
 
-	unit->isCloaked++;
+		unit->isCloaked++;
 
-	if (
-		unit->isCloaked == 1 &&
-		!(unit->status & UnitStatus::RequiresDetection) &&
-		unit->burrow_link.next == NULL
-		)
-	{
+		if (
+			unit->isCloaked == 1 &&
+			!(unit->status & UnitStatus::RequiresDetection) &&
+			unit->burrow_link.next == nullptr
+			) {
 
-		unit->burrow_link.next = *firstBurrowedUnit;
-		unit->burrow_link.prev = NULL;
+			unit->burrow_link.next = *firstBurrowedUnit;
+			unit->burrow_link.prev = nullptr;
 
-		if (*firstBurrowedUnit != NULL)
-			(*firstBurrowedUnit)->burrow_link.prev = unit;
+			if (*firstBurrowedUnit != nullptr)
+				(*firstBurrowedUnit)->burrow_link.prev = unit;
 
-		*firstBurrowedUnit = unit;
+			*firstBurrowedUnit = unit;
 
-		scbw::refreshConsole();
+			scbw::refreshConsole();
+
+		}
 
 	}
-	
-}
 
-;
+	;
 
-const u32 Func_GetAllUnitsInBounds = 0x0042FF80;
-CUnit** getAllUnitsInBounds(Box16* coords) {
+	const uint32 Func_GetAllUnitsInBounds = 0x0042FF80;
+	CUnit** getAllUnitsInBounds(Box16* coords) {
 
-	static CUnit** units_in_bounds;
+		static CUnit** units_in_bounds;
 
-	__asm {
-		PUSHAD
-		MOV EAX, coords
-		CALL Func_GetAllUnitsInBounds
-		MOV units_in_bounds, EAX
-		POPAD
+		__asm {
+			PUSHAD
+			MOV EAX, coords
+			CALL Func_GetAllUnitsInBounds
+			MOV units_in_bounds, EAX
+			POPAD
+		}
+
+		return units_in_bounds;
+
 	}
 
-	return units_in_bounds;
-
-}
-
-;
+	;
 
 } //unnamed namespace

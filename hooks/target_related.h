@@ -2,12 +2,12 @@
 #include "SCBW/api.h"
 #include "SCBW/scbwdata.h"
 namespace hooks {
-/*	s32 __fastcall setUnderDisruptionWeb(s32 a1);
-	*/
-//	s32 setUnderDisruptionWeb(CUnit* a1);
-//	s32 updateDisruptionWebStatus();
-	s32 genericRightClickUnitProc2(CUnit* unit, s32 a2, s16 a3, CUnit* target, s16 unitID); // 00455E00
-	CUnit* CMDRECV_HoldPosition(s32 a1); // 004C20C0
-	u32 unitCanSeeCloakedTarget(CUnit* target, CUnit* unit); // 00401D60
+	/*	int32 __fastcall setUnderDisruptionWeb(int32 a1);
+		*/
+		//	int32 setUnderDisruptionWeb(CUnit* a1);
+		//	int32 updateDisruptionWebStatus();
+	int32 genericRightClickUnitProc2(CUnit* unit, int32 a2, int16 a3, CUnit* target, int16 unitID); // 00455E00
+	CUnit* CMDRECV_HoldPosition(int32 a1); // 004C20C0
+	uint32 unitCanSeeCloakedTarget(CUnit* target, CUnit* unit); // 00401D60
 	extern void injectTargetRelatedHooks();
 }

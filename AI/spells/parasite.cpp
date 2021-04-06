@@ -5,64 +5,55 @@
 
 namespace AI {
 
-	class ParasiteTargetFinderProc: public scbw::UnitFinderCallbackMatchInterface {
+	CUnit* findBestParasiteTarget(CUnit* caster, bool isUnderAttack) {
 
-	  private:
-		CUnit* caster;
+		int bounds;
 
-	  public:
-		ParasiteTargetFinderProc(CUnit* caster)
-		  : caster(caster) {}
+		if (isUnderAttack)
+			bounds = 32 * 9;
+		else
+			bounds = 32 * 64;
 
-		bool match(CUnit* target) {
+		return scbw::UnitFinder::getNearestTarget(
+			caster->getX() - bounds,
+			caster->getY() - bounds,
+			caster->getX() + bounds,
+			caster->getY() + bounds,
+			caster,
+			[&](CUnit* target) {
 
 			if (!isTargetWorthHitting(target, caster))
-			  return false;
+				return false;
 
 			if (isUmsMode(caster->playerId) && target->parasiteFlags)
-			  return false;
+				return false;
 
 			if (target->parasiteFlags & (1 << caster->playerId))
-			  return false;
+				return false;
 
 			if (!scbw::canWeaponTargetUnit(WeaponId::Parasite, target, caster))
-			  return false;
+				return false;
 
 			if (target->canDetect())
-			  return true;
+				return true;
 
 			if (!(target->status & UnitStatus::IsHallucination)
 				&& (target->id != UnitId::ZergOvileth || scbw::getUpgradeLevel(target->playerId, UpgradeId::VentralSacs))
 				&& units_dat::SpaceProvided[target->id] > 0)
-			  return true;
+				return true;
 
 			if (target->isValidCaster())
-			  return true;
+				return true;
 
 			if (units_dat::BaseProperty[target->id] & UnitProperty::Worker)
-			  return true;
+				return true;
 
 			if (target->getCurrentLifeInGame() >= 300)
-			  return true;
+				return true;
 
 			return false;
 
-		}
-	};
-
-	CUnit* findBestParasiteTarget(CUnit* caster, bool isUnderAttack) {
-
-	  int bounds;
-
-	  if (isUnderAttack)
-		bounds = 32 * 9;
-	  else
-		bounds = 32 * 64;
-
-	  return scbw::UnitFinder::getNearestTarget(
-		caster->getX() - bounds, caster->getY() - bounds,
-		caster->getX() + bounds, caster->getY() + bounds,
-		caster, ParasiteTargetFinderProc(caster));
+		});
 	}
 
 

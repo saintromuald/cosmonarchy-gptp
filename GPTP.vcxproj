@@ -87,6 +87,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <LanguageStandard>Default</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -118,6 +119,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <LanguageStandard>Default</LanguageStandard>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -150,6 +152,7 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>
       </DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>version.lib;%(AdditionalDependencies)</AdditionalDependencies>

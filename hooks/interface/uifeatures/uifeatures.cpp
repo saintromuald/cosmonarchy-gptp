@@ -7,31 +7,31 @@
 #include "config.h"
 
 namespace {
-	s32 BWFXN_PrintXY(const char* text, s32 x, s32 y);
-	s32 GetColorHandle(u8 color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
+	int32 BWFXN_PrintXY(const char* text, int32 x, int32 y);
+	int32 GetColorHandle(uint8 color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
 
-	s32* const fonts = (s32*)0x006CE0F4;
+	int32* const fonts = (int32*)0x006CE0F4;
 	char* const printXYAlignment = (char*)0x006CE110;
 	Box16* const drawTextBox = (Box16*)0x006CE0C8;
 
 	// For targetedOrder
-	COrder* queueNewOrder(COrder* a1, s16 a2, s16 a3, CUnit* a4, u8 a5, s32 a6, s16 a7, Point32* a8, CUnit* a9);	//00474B90
-	s32 showStatTxtToPlayer(s32 a1, s32 a2); //0048CF00
-	void setOrderTarget(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, CUnit* a6, s32 a7, Point32* a8, CUnit* a9); //00475470
+	COrder* queueNewOrder(COrder* a1, int16 a2, int16 a3, CUnit* a4, uint8 a5, int32 a6, int16 a7, Point32* a8, CUnit* a9);	//00474B90
+	int32 showStatTxtToPlayer(int32 a1, int32 a2); //0048CF00
+	void setOrderTarget(uint8 a1, int16 a2, int16 a3, int32 a4, int32 a5, CUnit* a6, int32 a7, Point32* a8, CUnit* a9); //00475470
 
 	// For selectUnits
-	u32 CUnitToUnitID(CUnit* a1); //0047B1D0
-	s32 selectSingleUnitFromID(s32 a1); //00496D30
-	s32 selectMultipleUnitsFromUnitList(s32 a1, CUnit** a2, u8 a3, s32 a4); //0049AEF0
-	s32 SNetGetTurnsInTransit(u32* turns);
-	u8 sendTurn();
-	s32 SErrGetLastError();
-	u8 packetErrHandle(s32 result, s32 a1, const char* a3, s32 a4, s32 a5);
+	uint32 CUnitToUnitID(CUnit* a1); //0047B1D0
+	int32 selectSingleUnitFromID(int32 a1); //00496D30
+	int32 selectMultipleUnitsFromUnitList(int32 a1, CUnit** a2, uint8 a3, int32 a4); //0049AEF0
+	int32 SNetGetTurnsInTransit(uint32* turns);
+	uint8 sendTurn();
+	int32 SErrGetLastError();
+	uint8 packetErrHandle(int32 result, int32 a1, const char* a3, int32 a4, int32 a5);
 }
 
 namespace {
 	//struct Action {
-	//	u32 frame; // timestamp
+	//	uint32 frame; // timestamp
 	//};
 	//
 	//std::vector<Action> actions;
@@ -40,7 +40,7 @@ namespace {
 }
 
 namespace hooks {
-	void drawText(const char* text, s32 x, s32 y, s32 width, s32 height, char color = 2) {
+	void drawText(const char* text, int32 x, int32 y, int32 width, int32 height, char color = 2) {
 		GetColorHandle(color);
 		*printXYAlignment = 0x11;
 		drawTextBox->left = x;
@@ -50,7 +50,7 @@ namespace hooks {
 		BWFXN_PrintXY(text, x, y);
 	}
 
-	std::string numberWithLeadingZero(u32 n) {
+	std::string numberWithLeadingZero(uint32 n) {
 		std::string str = std::to_string(n);
 		if (n < 10) {
 			str = std::string("0") + str;
@@ -58,10 +58,10 @@ namespace hooks {
 		return str;
 	}
 
-	std::string getFormattedTime(u32 seconds) {
-		u32 sec = seconds % 60;
-		u32 min = seconds / 60;
-		u32 hrs = seconds / 60 / 60;
+	std::string getFormattedTime(uint32 seconds) {
+		uint32 sec = seconds % 60;
+		uint32 min = seconds / 60;
+		uint32 hrs = seconds / 60 / 60;
 		return numberWithLeadingZero(hrs) + std::string(":") + numberWithLeadingZero(min) + std::string(":") + numberWithLeadingZero(sec);
 	}
 	/*
@@ -86,8 +86,8 @@ namespace hooks {
 		totalActions = 0;
 	}
 
-	u32 getAPM() {
-		u32 actionCount = totalActions;//actions.size();
+	uint32 getAPM() {
+		uint32 actionCount = totalActions;//actions.size();
 		double divider = (*elapsedTimeFrames) / 24.0 / 60.0;
 
 		return actionCount / divider;
@@ -107,20 +107,20 @@ namespace hooks {
 		for (int i = 0; i < 12; i++) {
 			if (CurrentUnitSelection->unit[i] == unit) {
 				return true;
-			} else if (CurrentUnitSelection->unit[i] != NULL) {
+			} else if (CurrentUnitSelection->unit[i] != nullptr) {
 				return false;
 			}
 		}
 		return false;
 	}
 
-	u8 QueueGameCommand(const void* a1, u32 a2) {
-		u32 v2; // eax
-		u32 len; // ebx
+	uint8 QueueGameCommand(const void* a1, uint32 a2) {
+		uint32 v2; // eax
+		uint32 len; // ebx
 		const void* buffer; // esi
-		s32 v5; // eax
-		u32 _sgdwBytesInCmdQueue; // eax
-		u32 turns; // [esp+8h] [ebp-4h]
+		int32 v5; // eax
+		uint32 _sgdwBytesInCmdQueue; // eax
+		uint32 turns; // [esp+8h] [ebp-4h]
 
 		len = a2;
 		buffer = a1;
@@ -134,7 +134,7 @@ namespace hooks {
 			if (turns >= 16 - *provider_LatencyCalls)
 				return v2;
 			sendTurn();
-LABEL_8:
+		LABEL_8:
 			_sgdwBytesInCmdQueue = *sgdwBytesInCmdQueue;
 			memcpy((void*)&TurnBuffer[*sgdwBytesInCmdQueue], buffer, len);
 			v2 = len + _sgdwBytesInCmdQueue;
@@ -149,56 +149,45 @@ LABEL_8:
 		return v2;
 	}
 
-	void targetedOrder(s16 a1, s32 a2, CUnit* a3, s16 a4, s32 a5, s32 a6, u8 a7, s32 a8, s32 a9, s32 a10)
-	{
-		if (a6 && orders_dat::CanBeQueued[(u8)a7])
-		{
-			switch (a3->mainOrderId)
-			{
-			case 2:
-			case 3:
-			case 23:
-			case 93:
-			case 152:
-			case 175:
-				goto LABEL_15;
-			default:
-				if (a3->orderQueueCount < 8u)
-				{
-					if (*COrderCount < 1800)
-					{
-						queueNewOrder((COrder*)a5, a1, a4, a3, a7, a8, a2, (Point32*)a9, (CUnit*)a10);
-					}
-					else
-					{
-						u8 v11 = a3->playerId;
-						if (*statTxtTbl > 0x368u)
-							showStatTxtToPlayer(*statTxtTbl + statTxtTbl[873], v11);
+	void targetedOrder(int16 a1, int32 a2, CUnit* a3, int16 a4, int32 a5, int32 a6, uint8 a7, int32 a8, int32 a9, int32 a10) {
+		if (a6 && orders_dat::CanBeQueued[(uint8)a7]) {
+			switch (a3->mainOrderId) {
+				case 2:
+				case 3:
+				case 23:
+				case 93:
+				case 152:
+				case 175:
+					goto LABEL_15;
+				default:
+					if (a3->orderQueueCount < 8u) {
+						if (*COrderCount < 1800) {
+							queueNewOrder((COrder*)a5, a1, a4, a3, a7, a8, a2, (Point32*)a9, (CUnit*)a10);
+						} else {
+							uint8 v11 = a3->playerId;
+							if (*statTxtTbl > 0x368u)
+								showStatTxtToPlayer(*statTxtTbl + statTxtTbl[873], v11);
+							else
+								showStatTxtToPlayer((int32)"", v11);
+						}
+					} else {
+						uint8 v10 = a3->playerId;
+						if (*statTxtTbl > 0x366u)
+							showStatTxtToPlayer(*statTxtTbl + statTxtTbl[871], v10);
 						else
-							showStatTxtToPlayer((s32)"", v11);
+							showStatTxtToPlayer((int32)"", v10);
 					}
-				}
-				else
-				{
-					u8 v10 = a3->playerId;
-					if (*statTxtTbl > 0x366u)
-						showStatTxtToPlayer(*statTxtTbl + statTxtTbl[871], v10);
-					else
-						showStatTxtToPlayer((s32)"", v10);
-				}
-				break;
+					break;
 			}
-		}
-		else
-		{
+		} else {
 		LABEL_15:
-			setOrderTarget(a7, a1, a4, a5, (s32)a3, (CUnit*)a8, (u16)a2, (Point32*)a9, (CUnit*)a10);
+			setOrderTarget(a7, a1, a4, a5, (int32)a3, (CUnit*)a8, (uint16)a2, (Point32*)a9, (CUnit*)a10);
 		}
 	}
 
-	s32 selectUnits(CUnit** a1, s32 a2, u8 a3, s32 a4) {
-		s32 v4 = CUnitToUnitID(*a1);
-		s32 result = selectSingleUnitFromID(v4); // eax
+	int32 selectUnits(CUnit** a1, int32 a2, uint8 a3, int32 a4) {
+		int32 v4 = CUnitToUnitID(*a1);
+		int32 result = selectSingleUnitFromID(v4); // eax
 
 		if (a2 != 1 || !IS_KEYCODE_USED[18] || result == 0)
 			result = selectMultipleUnitsFromUnitList(a2, a1, a3, a4);
@@ -207,9 +196,9 @@ LABEL_8:
 }
 
 namespace {
-	const u32 BWFXN_PrintXY_function = 0x004202B0;
-	s32 BWFXN_PrintXY(const char* text, s32 x, s32 y) {
-		static s32 result;
+	const uint32 BWFXN_PrintXY_function = 0x004202B0;
+	int32 BWFXN_PrintXY(const char* text, int32 x, int32 y) {
+		static int32 result;
 		_asm {
 			PUSHAD
 			PUSH y
@@ -222,8 +211,8 @@ namespace {
 		return result;
 	}
 
-	const u32 GetColorHandle_function = 0x0041F610;
-	s32 GetColorHandle(u8 color) {
+	const uint32 GetColorHandle_function = 0x0041F610;
+	int32 GetColorHandle(uint8 color) {
 		static int result;
 		_asm {
 			PUSHAD
@@ -237,8 +226,8 @@ namespace {
 
 	// For targetedOrder
 
-	const u32 Func_queueNewOrder = 0x00474B90;
-	COrder* queueNewOrder(COrder* a1, s16 a2, s16 a3, CUnit* a4, u8 a5, s32 a6, s16 a7, Point32* a8, CUnit* a9) {
+	const uint32 Func_queueNewOrder = 0x00474B90;
+	COrder* queueNewOrder(COrder* a1, int16 a2, int16 a3, CUnit* a4, uint8 a5, int32 a6, int16 a7, Point32* a8, CUnit* a9) {
 		static COrder* result;
 		__asm {
 			PUSHAD
@@ -258,9 +247,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_showStatTxtToPlayer = 0x0048CF00;
-	s32 showStatTxtToPlayer(s32 a1, s32 a2) {
-		static s32 result;
+	const uint32 Func_showStatTxtToPlayer = 0x0048CF00;
+	int32 showStatTxtToPlayer(int32 a1, int32 a2) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -272,8 +261,8 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_setOrderTarget = 0x00475470;
-	void setOrderTarget(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, CUnit* a6, s32 a7, Point32* a8, CUnit* a9) {
+	const uint32 Func_setOrderTarget = 0x00475470;
+	void setOrderTarget(uint8 a1, int16 a2, int16 a3, int32 a4, int32 a5, CUnit* a6, int32 a7, Point32* a8, CUnit* a9) {
 		__asm {
 			PUSHAD
 			MOV CL, a1
@@ -292,9 +281,9 @@ namespace {
 
 	// For selectUnits
 
-	const u32 Func_CUnitToUnitId = 0x0047B1D0;
-	u32 CUnitToUnitID(CUnit* a1) {
-		static u32 result;
+	const uint32 Func_CUnitToUnitId = 0x0047B1D0;
+	uint32 CUnitToUnitID(CUnit* a1) {
+		static uint32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, a1
@@ -305,9 +294,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_selectSingleUnitFromID = 0x00496D30;
-	s32 selectSingleUnitFromID(s32 a1) {
-		static s32 result;
+	const uint32 Func_selectSingleUnitFromID = 0x00496D30;
+	int32 selectSingleUnitFromID(int32 a1) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH a1
@@ -318,9 +307,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_selectMultipleUnitsFromUnitList = 0x0049AEF0;
-	s32 selectMultipleUnitsFromUnitList(s32 a1, CUnit** a2, u8 a3, s32 a4) {
-		static s32 result;
+	const uint32 Func_selectMultipleUnitsFromUnitList = 0x0049AEF0;
+	int32 selectMultipleUnitsFromUnitList(int32 a1, CUnit** a2, uint8 a3, int32 a4) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH a4
@@ -334,9 +323,9 @@ namespace {
 		return result;
 	}
 
-	const u32 SNetGetTurnsInTransit_function = 0x00410275;
-	s32 SNetGetTurnsInTransit(u32* turns) {
-		static s32 result;
+	const uint32 SNetGetTurnsInTransit_function = 0x00410275;
+	int32 SNetGetTurnsInTransit(uint32* turns) {
+		static int32 result;
 		_asm {
 			PUSHAD
 			PUSH turns
@@ -347,9 +336,9 @@ namespace {
 		return result;
 	}
 
-	const u32 sendTurn_function = 0x00485A40;
-	u8 sendTurn() {
-		static u32 result;
+	const uint32 sendTurn_function = 0x00485A40;
+	uint8 sendTurn() {
+		static uint32 result;
 		_asm {
 			PUSHAD
 			CALL sendTurn_function
@@ -359,9 +348,9 @@ namespace {
 		return result;
 	}
 
-	const u32 SErrGetLastError_function = 0x004100FA;
-	s32 SErrGetLastError() {
-		static s32 result;
+	const uint32 SErrGetLastError_function = 0x004100FA;
+	int32 SErrGetLastError() {
+		static int32 result;
 		_asm {
 			PUSHAD
 			CALL SErrGetLastError_function
@@ -371,9 +360,9 @@ namespace {
 		return result;
 	}
 
-	const u32 packetErrHandle_function = 0x004BB0B0;
-	u8 packetErrHandle(s32 result_arg, s32 a1, const char* a3, s32 a4, s32 a5) {
-		static u32 result;
+	const uint32 packetErrHandle_function = 0x004BB0B0;
+	uint8 packetErrHandle(int32 result_arg, int32 a1, const char* a3, int32 a4, int32 a5) {
+		static uint32 result;
 		_asm {
 			PUSHAD
 			MOV EAX, result_arg

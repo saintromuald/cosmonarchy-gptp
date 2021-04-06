@@ -4,32 +4,32 @@ namespace {
 	CImage* CreateHealthBar(int a1, CSprite* a2);
 	void RemoveHPBar(CImage* a1);
 	void updateImageDrawData(CImage* result);
-	void playImageIscript(CImage* img, u8 iscriptAnim);
+	void playImageIscript(CImage* img, uint8 iscriptAnim);
 }
 
 namespace hooks {
 	void ShowHealthBar(CUnit* unit) {
-		if (unit == NULL) return;
+		if (unit == nullptr) return;
 		RemoveHPBar(unit->sprite->images.head);
 		_unitTemp = unit;
 		CreateHealthBar(0, unit->sprite);
-		_unitTemp = NULL;
+		_unitTemp = nullptr;
 	}
 
 	void compileHealthBar(CImage* a1, CSprite* a2) {
 		/*
 		CSprite v2;// eax
 		CUnit* v3;	// edi
-		u8 v4;		// cl
-		s32 v5;		// eax
-		u16 v6;		// ax
-		s32 v7;		// eax
-		u8 v8;		// cl
-		u8 v9;		// cl
-		u32* v10;	// edx
+		uint8 v4;		// cl
+		int32 v5;		// eax
+		uint16 v6;		// ax
+		int32 v7;		// eax
+		uint8 v8;		// cl
+		uint8 v9;		// cl
+		uint32* v10;	// edx
 
 		v2 = *(a2 + 8);
-		if (_unitTemp != NULL) {
+		if (_unitTemp != nullptr) {
 			v3 = _unitTemp;
 		} else {
 			v3 = CurrentUnitSelection[*(a2 + 11)];
@@ -76,7 +76,7 @@ namespace hooks {
 }
 
 namespace {
-	const u32 CreateHealthBar_function = 0x004D6420;
+	const uint32 CreateHealthBar_function = 0x004D6420;
 	CImage* CreateHealthBar(int a1, CSprite* a2) {
 		static CImage* result;
 		_asm {
@@ -90,7 +90,7 @@ namespace {
 		return result;
 	}
 
-	const u32 RemoveHPBar_function = 0x004D5030;
+	const uint32 RemoveHPBar_function = 0x004D5030;
 	void RemoveHPBar(CImage* a1) {
 		_asm {
 			PUSHAD
@@ -100,7 +100,7 @@ namespace {
 		}
 	}
 
-	const u32 updateImageDrawData_function = 0x004D57B0;
+	const uint32 updateImageDrawData_function = 0x004D57B0;
 	void updateImageDrawData(CImage* result) {
 		_asm {
 			PUSHAD
@@ -110,8 +110,8 @@ namespace {
 		}
 	}
 
-	const u32 playImageIscript_function = 0x004D8470;
-	void playImageIscript(CImage* img, u8 iscriptAnim) {
+	const uint32 playImageIscript_function = 0x004D8470;
+	void playImageIscript(CImage* img, uint8 iscriptAnim) {
 		_asm {
 			PUSHAD
 			PUSH iscriptAnim

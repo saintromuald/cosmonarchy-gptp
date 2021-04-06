@@ -18,70 +18,76 @@
 #include "yaml-cpp/eventhandler.h"
 
 namespace YAML {
-class GraphBuilderInterface;
-struct Mark;
+	class GraphBuilderInterface;
+	struct Mark;
 }  // namespace YAML
 
 namespace YAML {
-class GraphBuilderAdapter : public EventHandler {
- public:
-  GraphBuilderAdapter(GraphBuilderInterface& builder)
-      : m_builder(builder),
-        m_containers{},
-        m_anchors{},
-        m_pRootNode(nullptr),
-        m_pKeyNode(nullptr) {}
-  GraphBuilderAdapter(const GraphBuilderAdapter&) = delete;
-  GraphBuilderAdapter(GraphBuilderAdapter&&) = delete;
-  GraphBuilderAdapter& operator=(const GraphBuilderAdapter&) = delete;
-  GraphBuilderAdapter& operator=(GraphBuilderAdapter&&) = delete;
+	class GraphBuilderAdapter : public EventHandler {
+	public:
+		GraphBuilderAdapter(GraphBuilderInterface& builder)
+			: m_builder(builder),
+			m_containers{},
+			m_anchors{},
+			m_pRootNode(nullptr),
+			m_pKeyNode(nullptr) {}
+		GraphBuilderAdapter(const GraphBuilderAdapter&) = delete;
+		GraphBuilderAdapter(GraphBuilderAdapter&&) = delete;
+		GraphBuilderAdapter& operator=(const GraphBuilderAdapter&) = delete;
+		GraphBuilderAdapter& operator=(GraphBuilderAdapter&&) = delete;
 
-  virtual void OnDocumentStart(const Mark& mark) { (void)mark; }
-  virtual void OnDocumentEnd() {}
+		virtual void OnDocumentStart(const Mark& mark) {
+			(void)mark;
+		}
+		virtual void OnDocumentEnd() {}
 
-  virtual void OnNull(const Mark& mark, anchor_t anchor);
-  virtual void OnAlias(const Mark& mark, anchor_t anchor);
-  virtual void OnScalar(const Mark& mark, const std::string& tag,
-                        anchor_t anchor, const std::string& value);
+		virtual void OnNull(const Mark& mark, anchor_t anchor);
+		virtual void OnAlias(const Mark& mark, anchor_t anchor);
+		virtual void OnScalar(const Mark& mark, const std::string& tag,
+			anchor_t anchor, const std::string& value);
 
-  virtual void OnSequenceStart(const Mark& mark, const std::string& tag,
-                               anchor_t anchor, EmitterStyle::value style);
-  virtual void OnSequenceEnd();
+		virtual void OnSequenceStart(const Mark& mark, const std::string& tag,
+			anchor_t anchor, EmitterStyle::value style);
+		virtual void OnSequenceEnd();
 
-  virtual void OnMapStart(const Mark& mark, const std::string& tag,
-                          anchor_t anchor, EmitterStyle::value style);
-  virtual void OnMapEnd();
+		virtual void OnMapStart(const Mark& mark, const std::string& tag,
+			anchor_t anchor, EmitterStyle::value style);
+		virtual void OnMapEnd();
 
-  void* RootNode() const { return m_pRootNode; }
+		void* RootNode() const {
+			return m_pRootNode;
+		}
 
- private:
-  struct ContainerFrame {
-    ContainerFrame(void* pSequence)
-        : pContainer(pSequence), pPrevKeyNode(&sequenceMarker) {}
-    ContainerFrame(void* pMap, void* pPreviousKeyNode)
-        : pContainer(pMap), pPrevKeyNode(pPreviousKeyNode) {}
+	private:
+		struct ContainerFrame {
+			ContainerFrame(void* pSequence)
+				: pContainer(pSequence), pPrevKeyNode(&sequenceMarker) {}
+			ContainerFrame(void* pMap, void* pPreviousKeyNode)
+				: pContainer(pMap), pPrevKeyNode(pPreviousKeyNode) {}
 
-    void* pContainer;
-    void* pPrevKeyNode;
+			void* pContainer;
+			void* pPrevKeyNode;
 
-    bool isMap() const { return pPrevKeyNode != &sequenceMarker; }
+			bool isMap() const {
+				return pPrevKeyNode != &sequenceMarker;
+			}
 
-   private:
-    static int sequenceMarker;
-  };
-  typedef std::stack<ContainerFrame> ContainerStack;
-  typedef AnchorDict<void*> AnchorMap;
+		private:
+			static int sequenceMarker;
+		};
+		typedef std::stack<ContainerFrame> ContainerStack;
+		typedef AnchorDict<void*> AnchorMap;
 
-  GraphBuilderInterface& m_builder;
-  ContainerStack m_containers;
-  AnchorMap m_anchors;
-  void* m_pRootNode;
-  void* m_pKeyNode;
+		GraphBuilderInterface& m_builder;
+		ContainerStack m_containers;
+		AnchorMap m_anchors;
+		void* m_pRootNode;
+		void* m_pKeyNode;
 
-  void* GetCurrentParent() const;
-  void RegisterAnchor(anchor_t anchor, void* pNode);
-  void DispositionNode(void* pNode);
-};
+		void* GetCurrentParent() const;
+		void RegisterAnchor(anchor_t anchor, void* pNode);
+		void DispositionNode(void* pNode);
+	};
 }  // namespace YAML
 
 #endif  // GRAPHBUILDERADAPTER_H_62B23520_7C8E_11DE_8A39_0800200C9A66

@@ -6,8 +6,8 @@ namespace {
 
 	void __declspec(naked) CreateInitialMeleeBuildingsWrapper() {
 
-		static u32 playerId;
-		static u8 raceId;
+		static uint32 playerId;
+		static uint8 raceId;
 
 		__asm {
 
@@ -16,13 +16,13 @@ namespace {
 
 			MOV raceId, AL
 
-			MOV EAX, [EBP+0x08]
+			MOV EAX, [EBP + 0x08]
 			MOV playerId, EAX
 
 			PUSHAD
 		}
 
-		hooks::CreateInitialMeleeBuildings(raceId,playerId);
+		hooks::CreateInitialMeleeBuildings(raceId, playerId);
 
 		__asm {
 			POPAD
@@ -58,14 +58,14 @@ namespace {
 
 	void __declspec(naked) CreateInitialOverlordWrapper() {
 
-		static u8 playerId;
+		static uint8 playerId;
 
 		__asm {
 
 			PUSH EBP
 			MOV EBP, ESP
 
-			MOV AL, byte ptr [EBP+0x08]
+			MOV AL, byte ptr[EBP + 0x08]
 			MOV playerId, AL
 
 			PUSHAD
@@ -89,9 +89,9 @@ namespace {
 namespace hooks {
 
 	void injectCreateInitUnitsHooks() {
-		jmpPatch(CreateInitialMeleeBuildingsWrapper,0x0049D7C0, 1);
-		jmpPatch(CreateInitialMeleeUnitsWrapper,	0x0049DA40, 1);
-		jmpPatch(CreateInitialOverlordWrapper,		0x0049D6C0, 3);
+		jmpPatch(CreateInitialMeleeBuildingsWrapper, 0x0049D7C0, 1);
+		jmpPatch(CreateInitialMeleeUnitsWrapper, 0x0049DA40, 1);
+		jmpPatch(CreateInitialOverlordWrapper, 0x0049D6C0, 3);
 	}
 
 } //hooks

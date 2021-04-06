@@ -24,13 +24,13 @@ namespace hooks {
 
 	void injectMissChanceHooks() {
 		// remove misschange when on height disadvantage
-		jmpPatch(canHitTargetCheck_Wrapper, 0x004765B0, 1); 
+		jmpPatch(canHitTargetCheck_Wrapper, 0x004765B0, 1);
 
 		// remove misschance for hitscan
-		memoryPatch(0x0048C0C7, (u8)0x90);
-		memoryPatch(0x0048C0C7+1, (u8)0xE9);
+		memoryPatch(0x0048C0C7, (uint8)0x90);
+		memoryPatch(0x0048C0C7 + 1, (uint8)0xE9);
 
 		// remove misschance for bullets
-		memoryPatch(0x0048C1DB, (u8)0xEB);
+		memoryPatch(0x0048C1DB, (uint8)0xEB);
 	}
 }

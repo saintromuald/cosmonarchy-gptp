@@ -10,7 +10,7 @@ void CSprite::playIscriptAnim(IscriptAnimation::Enum animation, bool bReplaceCur
 	assert(this);
 
 	if (bReplaceCurrentScript || !(this->flags & CSprite_Flags::IscriptCode))
-		for (CImage* img = this->images.head; img != NULL; img = img->link.next)
+		for (CImage* img = this->images.head; img != nullptr; img = img->link.next)
 			img->playIscriptAnim(animation);
 
 }
@@ -21,15 +21,15 @@ void CSprite::free() {
 	assert(this);
 
 	CImage* image = this->images.head;
-	s32 sprite_row_position;
+	int32 sprite_row_position;
 
-	while (image != NULL) {
+	while (image != nullptr) {
 		CImage* nextImage = image->link.next;
 		image->free();
 		image = nextImage;
 	}
 
-	if (((s32)this->position.y) < 0)
+	if (((int32)this->position.y) < 0)
 		sprite_row_position = (this->position.y + 31) / 32;
 	else
 		sprite_row_position = (this->position.y) / 32;
@@ -48,14 +48,14 @@ void CSprite::free() {
 		spritesOnTileRow->tails[sprite_row_position] = this->link.prev;
 
 	//untie the sprite from the previous and next one
-	if (this->link.prev != NULL)
+	if (this->link.prev != nullptr)
 		(this->link.prev)->link.next = this->link.next;
 
-	if (this->link.next != NULL)
+	if (this->link.next != nullptr)
 		(this->link.next)->link.prev = this->link.prev;
 
-	this->link.prev = NULL;
-	this->link.next = NULL;
+	this->link.prev = nullptr;
+	this->link.next = nullptr;
 
 	//perform identically to original code
 	unusedSprites->insertAfterHead<&CSprite::link>(this);
@@ -63,7 +63,7 @@ void CSprite::free() {
 }
 
 
-void CSprite::setPosition(u16 x, u16 y) {
+void CSprite::setPosition(uint16 x, uint16 y) {
 	assert(this);
 	if (this->position.x == x && this->position.y == y) return;
 
@@ -92,7 +92,7 @@ void CSprite::setPosition(u16 x, u16 y) {
 //-------- Create overlay --------//
 
 void createUpdateImageSomething(CImage* image) {
-	const u32 Func_createUpdateImageSomething = 0x004D66B0;
+	const uint32 Func_createUpdateImageSomething = 0x004D66B0;
 
 	__asm {
 		PUSHAD
@@ -102,8 +102,8 @@ void createUpdateImageSomething(CImage* image) {
 	}
 }
 
-void updateImageDirection(CImage* image, u32 direction) {
-	const u32 Func_updateImageDirection = 0x004D5EA0;
+void updateImageDirection(CImage* image, uint32 direction) {
+	const uint32 Func_updateImageDirection = 0x004D5EA0;
 
 	__asm {
 		PUSHAD
@@ -117,8 +117,11 @@ void updateImageDirection(CImage* image, u32 direction) {
 //-------- Create overlay --------//
 
 //Identical to function @ 0x00498E00
-CImage* CSprite::createOverlay(u32 imageId, s8 x, s8 y, u32 direction) {
+CImage* CSprite::createOverlay(uint32 imageId, int8 x, int8 y, uint32 direction) {
 	assert(this);
+	if (unusedImages.head == nullptr) {
+		return nullptr;
+	}
 	CImage* overlay = unusedImages.popHead();
 
 	if (overlay) {
@@ -136,8 +139,11 @@ CImage* CSprite::createOverlay(u32 imageId, s8 x, s8 y, u32 direction) {
 	return overlay;
 }
 
-CImage* CSprite::createUnderlay(u32 imageId, s8 x, s8 y, u32 direction) {
+CImage* CSprite::createUnderlay(uint32 imageId, int8 x, int8 y, uint32 direction) {
 	assert(this);
+	if (unusedImages.head == nullptr) {
+		return nullptr;
+	}
 	CImage* underlay = unusedImages.popHead();
 
 	if (underlay) {
@@ -156,8 +162,11 @@ CImage* CSprite::createUnderlay(u32 imageId, s8 x, s8 y, u32 direction) {
 }
 
 //Identical to function @ 0x00498EA0
-CImage* CSprite::createTopOverlay(u32 imageId, s8 x, s8 y, u32 direction) {
+CImage* CSprite::createTopOverlay(uint32 imageId, int8 x, int8 y, uint32 direction) {
 	assert(this);
+	if (unusedImages.head == nullptr) {
+		return nullptr;
+	}
 	CImage* overlay = unusedImages.popHead();
 
 	if (overlay) {
@@ -174,8 +183,11 @@ CImage* CSprite::createTopOverlay(u32 imageId, s8 x, s8 y, u32 direction) {
 	}
 	return overlay;
 }
-CImage* CSprite::createTopUnderlay(u32 imageId, s8 x, s8 y, u32 direction) {
+CImage* CSprite::createTopUnderlay(uint32 imageId, int8 x, int8 y, uint32 direction) {
 	assert(this);
+	if (unusedImages.head == nullptr) {
+		return nullptr;
+	}
 	CImage* underlay = unusedImages.popHead();
 
 	if (underlay) {
@@ -197,7 +209,7 @@ CImage* CSprite::createTopUnderlay(u32 imageId, s8 x, s8 y, u32 direction) {
 //-------- Remove overlay --------//
 
 //Based on function @ 0x004E5CF0
-void CSprite::removeOverlay(u32 imageIdStart, u32 imageIdEnd) {
+void CSprite::removeOverlay(uint32 imageIdStart, uint32 imageIdEnd) {
 	assert(this);
 	assert(imageIdStart <= imageIdEnd);
 
@@ -209,7 +221,7 @@ void CSprite::removeOverlay(u32 imageIdStart, u32 imageIdEnd) {
 	}
 }
 
-void CSprite::removeOverlay(u32 imageId) {
+void CSprite::removeOverlay(uint32 imageId) {
 	assert(this);
 
 	for (CImage* image = this->images.head; image; image = image->link.next) {
@@ -219,7 +231,7 @@ void CSprite::removeOverlay(u32 imageId) {
 		}
 	}
 }
-void CSprite::playForOverlay(u32 imageId, u8 anim) {
+void CSprite::playForOverlay(uint32 imageId, uint8 anim) {
 	assert(this);
 
 	for (CImage* image = this->images.head; image; image = image->link.next) {
@@ -232,19 +244,19 @@ void CSprite::playForOverlay(u32 imageId, u8 anim) {
 //-------- Get overlay --------//
 
 //Identical to function @ 0x00497460
-CImage* CSprite::getOverlay(u16 imageId) const {
+CImage* CSprite::getOverlay(uint16 imageId) const {
 	assert(this);
 
 	for (CImage* image = this->images.head; image; image = image->link.next)
 		if (image->id == imageId)
 			return image;
 
-	return NULL;
+	return nullptr;
 }
 
 //-------- Other --------//
 
-bool CSprite::isVisibleTo(u8 playerId) const {
+bool CSprite::isVisibleTo(uint8 playerId) const {
 	assert(this);
 	return (this->visibilityFlags & (1 << playerId)) != 0;
 }

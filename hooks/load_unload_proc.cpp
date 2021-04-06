@@ -6,11 +6,11 @@
 
 namespace {
 
-	u32 getUpgradedWpnCooldown(CUnit* unit, u8 weaponId);							//75DC0
+	uint32 getUpgradedWpnCooldown(CUnit* unit, uint8 weaponId);							//75DC0
 	void IgnoreAllScriptAndGotoIdle(CUnit* unit);									//76550
 	void hideAndDisableUnit(CUnit* unit);											//E6340
-	u32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos);		//E76C0
-	void function_004E7E10(CUnit* unit, u32 unk);									//E7E10
+	uint32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos);		//E76C0
+	void function_004E7E10(CUnit* unit, uint32 unk);									//E7E10
 
 } //unnamed namespace
 
@@ -20,8 +20,8 @@ namespace hooks {
 	//the transport is "unit", the target is "unitToLoad"
 	void loadUnitProc(CUnit* unit, CUnit* unitToLoad) {
 
-		u8 unitRaceId;
-		u32 loaded_index;
+		uint8 unitRaceId;
+		uint32 loaded_index;
 		int counter = 0;
 		//before CCMU extender change
 //		static const CUnit* unitTable_0059CB58 = (CUnit*)0x0059CB58;
@@ -29,31 +29,31 @@ namespace hooks {
 		static CUnit* unitTable_0059CB58 = (CUnit*)0x0059CB58;
 		static CUnit* unitTable_0059CB64 = (CUnit*)0x0059CB64;
 		if (Globals.extended_unit_table == 1) {
-			const u32 index_start = reinterpret_cast<u32>(&new_unit_table.units[0])-336;
+			const uint32 index_start = reinterpret_cast<uint32>(&new_unit_table.units[0]) - 336;
 			unitTable_0059CB58 = (CUnit*)index_start;
-			unitTable_0059CB64 = (CUnit*)(index_start+12);
+			unitTable_0059CB64 = (CUnit*)(index_start + 12);
 		}
-		static u32* u32_0x006BEE84 = (u32*)(0x006BEE84);
-		static u32* u32_0x006BEE8C = (u32*)(0x006BEE8C);
+		static uint32* u32_0x006BEE84 = (uint32*)(0x006BEE84);
+		static uint32* u32_0x006BEE8C = (uint32*)(0x006BEE8C);
 
 		if (units_dat::SpaceProvided[unit->id] != 0) {
 
 			bool bEndLoop = false;
-			u32* loadedUnitOffset;
+			uint32* loadedUnitOffset;
 
 			while (!bEndLoop) {
 
-				loadedUnitOffset = (u32*)&unit->loadedUnit[counter];
+				loadedUnitOffset = (uint32*)&unit->loadedUnit[counter];
 
 				if (*loadedUnitOffset == 0)
 					bEndLoop = true;
 				else {
 
-					if (unitTable_0059CB64[unit->loadedUnit[counter].index].link.prev == NULL)
+					if (unitTable_0059CB64[unit->loadedUnit[counter].index].link.prev == nullptr)
 						bEndLoop = true;
 					else {
 
-						CUnit* current_loaded_unit = (CUnit*) & (unitTable_0059CB58[unit->loadedUnit[counter].index]);
+						CUnit* current_loaded_unit = (CUnit*)&(unitTable_0059CB58[unit->loadedUnit[counter].index]);
 
 						if (
 							current_loaded_unit->mainOrderId == OrderId::Die &&
@@ -99,11 +99,11 @@ namespace hooks {
 
 		if (unitToLoad->id == UnitId::TerranMason) {
 
-			if (unitToLoad->pAI != NULL) {
+			if (unitToLoad->pAI != nullptr) {
 
-				u32* pAI_0x14 = (u32*)((u32)unitToLoad->pAI + 0x14);
+				uint32* pAI_0x14 = (uint32*)((uint32)unitToLoad->pAI + 0x14);
 
-				if (*pAI_0x14 == (u32)unitToLoad)
+				if (*pAI_0x14 == (uint32)unitToLoad)
 					*pAI_0x14 = NULL;
 
 			}
@@ -119,7 +119,7 @@ namespace hooks {
 		__asm {
 			PUSHAD
 			MOV ECX, unitToLoad
-//			SUB ECX, unitTable
+			//			SUB ECX, unitTable
 			SUB ECX, new_table
 			MOV EAX, 0x86186187
 			MUL ECX
@@ -140,22 +140,21 @@ namespace hooks {
 		if (loaded_index < UNIT_ARRAY_LENGTH) {
 			unit->loadedUnit[counter].index = loaded_index;
 			unit->loadedUnit[counter].unitId = unitToLoad->targetOrderSpecial;
-		}
-		else {
+		} else {
 			unit->loadedUnit[counter].index = 0;
 			unit->loadedUnit[counter].unitId = 0;
 		}
 
 		if (unit->id == UnitId::ZergCreepColony
-		|| unit->id == UnitId::ZergSunkenColony
-		|| unit->id == UnitId::ZergSporeColony) {
+			|| unit->id == UnitId::ZergSunkenColony
+			|| unit->id == UnitId::ZergSporeColony) {
 			// TODO: inform creep about missing colony?
 		} else if (unit->id == UnitId::ProtossPylon) {
 			// TODO: enable nearby disabled structures, update energy sprite position
 		} else if (unit->id == UnitId::TerranBunker) {
 			for (int i = 0; i < 8; i++) {
 				CUnit* cargoUnit = unit->getLoadedUnit(i);
-				if (cargoUnit == NULL) continue;
+				if (cargoUnit == nullptr) continue;
 				// TODO: disable cargo units
 				//scbw::setUnitPosition(cargoUnit, pos.x, pos.y); // <- does not work
 			}
@@ -168,7 +167,7 @@ namespace hooks {
 		if (unit->id == UnitId::TerranBunker) {
 			for (int i = 0; i < 8; i++) {
 				CUnit* cargoUnit = unit->getLoadedUnit(i);
-				if (cargoUnit == NULL) continue;
+				if (cargoUnit == nullptr) continue;
 				// TODO: Disable cargo units
 			}
 		}
@@ -179,19 +178,19 @@ namespace hooks {
 
 			unitToLoad->status = (unitToLoad->status & ~UnitStatus::IsBuilding) | UnitStatus::InBuilding;
 
-			if (unitToLoad->path != NULL) {
+			if (unitToLoad->path != nullptr) {
 
-				u32* path_0x4 = (u32*)((u32)unitToLoad->path + 4);
+				uint32* path_0x4 = (uint32*)((uint32)unitToLoad->path + 4);
 
-				*path_0x4 = ((u32)unitToLoad->path - *u32_0x006BEE8C) / 128 + 1;
+				*path_0x4 = ((uint32)unitToLoad->path - *u32_0x006BEE8C) / 128 + 1;
 
 				if (*u32_0x006BEE84 == 0)
-					unitToLoad->path = NULL;
+					unitToLoad->path = nullptr;
 				else
 					unitToLoad->path = (void*)((*u32_0x006BEE84 - *u32_0x006BEE8C) / 128 + 1);
 
-				*u32_0x006BEE84 = (u32)unitToLoad->path;
-				unitToLoad->path = NULL;
+				*u32_0x006BEE84 = (uint32)unitToLoad->path;
+				unitToLoad->path = nullptr;
 
 			}
 
@@ -204,10 +203,9 @@ namespace hooks {
 				unitToLoad->pathingFlags &= ~1;
 
 			if (
-				unitToLoad->subunit != NULL &&
+				unitToLoad->subunit != nullptr &&
 				units_dat::BaseProperty[unitToLoad->subunit->id] & UnitProperty::Subunit
-				)
-			{
+				) {
 
 				CUnit* subUnit = unitToLoad->subunit;
 
@@ -215,19 +213,19 @@ namespace hooks {
 
 				subUnit->status = (subUnit->status & ~UnitStatus::IsBuilding) | UnitStatus::InBuilding;
 
-				if (subUnit->path != NULL) {
+				if (subUnit->path != nullptr) {
 
-					u32* path_0x4 = (u32*)((u32)subUnit->path + 4);
+					uint32* path_0x4 = (uint32*)((uint32)subUnit->path + 4);
 
-					*path_0x4 = ((u32)subUnit->path - *u32_0x006BEE8C) / 128 + 1;
+					*path_0x4 = ((uint32)subUnit->path - *u32_0x006BEE8C) / 128 + 1;
 
 					if (*u32_0x006BEE84 == 0)
-						subUnit->path = NULL;
+						subUnit->path = nullptr;
 					else
 						subUnit->path = (void*)((*u32_0x006BEE84 - *u32_0x006BEE8C) / 128 + 1);
 
-					*u32_0x006BEE84 = (u32)subUnit->path;
-					subUnit->path = NULL;
+					*u32_0x006BEE84 = (uint32)subUnit->path;
+					subUnit->path = nullptr;
 
 				}
 
@@ -239,8 +237,7 @@ namespace hooks {
 				else
 					subUnit->pathingFlags &= ~1;
 
-			}
-			else //E7B51
+			} else //E7B51
 				scbw::setUnitPosition(unitToLoad, unit->sprite->position.x, unit->sprite->position.y);
 
 		}
@@ -253,22 +250,21 @@ namespace hooks {
 	//the transported unit is "unit", the transport is
 	//accessed through unit->connectedUnit
 	//Has a boolean return value
-	Bool32 unloadUnitProc(CUnit* unit) {
+	bool32 unloadUnitProc(CUnit* unit) {
 
-		Bool32 return_value = 0;
+		bool32 return_value = 0;
 
-		if (unit->connectedUnit != NULL) {
+		if (unit->connectedUnit != nullptr) {
 
 			CUnit* transport = unit->connectedUnit;
 
 			if ((transport->mainOrderTimer == 0 || transport->status & UnitStatus::GroundedBuilding)
-			 && !(transport->status & UnitStatus::DoodadStatesThing)
-			 && transport->lockdownTimer == 0
-			 && transport->stasisTimer == 0
-			 && transport->maelstromTimer == 0)
-			{ //E7FDC
+				&& !(transport->status & UnitStatus::DoodadStatesThing)
+				&& transport->lockdownTimer == 0
+				&& transport->stasisTimer == 0
+				&& transport->maelstromTimer == 0) { //E7FDC
 
-				Point16 pos = { 0,0 };
+				Point16 pos = {0,0};
 
 				//probably check where unit can be spawned
 				if (function_004E76C0(transport, unit, &pos) != 0) {
@@ -276,17 +272,15 @@ namespace hooks {
 					if (transport->id == UnitId::TerranTrojan) {
 						if (transport->getCurrentLifeInGame() <= (transport->getMaxHpInGame() * 0.5)) {
 							transport->mainOrderTimer = 7;
-						}
-						else {
+						} else {
 							transport->mainOrderTimer = 10;
 						}
-					}
-					else {
+					} else {
 						transport->mainOrderTimer = 15;
 					}
 
 					if ((unit->status & UnitStatus::IsBuilding) == 0) {
-						u16* coords[2] = {&pos.x, &pos.y};
+						uint16* coords[2] = {&pos.x, &pos.y};
 						double corrections[2] = {32.0, 32.0};
 
 						if (unit->id == UnitId::TerranBunker) {
@@ -298,8 +292,8 @@ namespace hooks {
 						}
 
 						if (unit->id == UnitId::ZergCreepColony
-						|| unit->id == UnitId::ZergSunkenColony
-						|| unit->id == UnitId::ZergSporeColony) {
+							|| unit->id == UnitId::ZergSunkenColony
+							|| unit->id == UnitId::ZergSporeColony) {
 							// TODO: spawn creep
 						} else if (unit->id == UnitId::ProtossPhotonCannon) {
 							// TODO: check if pylon power is around, enable or disable the structure
@@ -308,7 +302,7 @@ namespace hooks {
 						} else if (unit->id == UnitId::TerranBunker) {
 							for (int i = 0; i < 8; i++) {
 								CUnit* cargoUnit = unit->getLoadedUnit(i);
-								if (cargoUnit == NULL) continue;
+								if (cargoUnit == nullptr) continue;
 								// TODO: enable and update cargo units and their position
 								//scbw::setUnitPosition(cargoUnit, pos.x, pos.y); // <- does not work
 							}
@@ -316,14 +310,14 @@ namespace hooks {
 					}
 					scbw::setUnitPosition(unit, pos.x, pos.y);
 
-					if (unit->subunit != NULL)
+					if (unit->subunit != nullptr)
 						scbw::setUnitPosition(unit->subunit, pos.x, pos.y);
 
 					IgnoreAllScriptAndGotoIdle(unit);
 
 					function_004E7E10(unit, 0);
 
-					if (unit->pAI == NULL)
+					if (unit->pAI == nullptr)
 						unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 					else
 						unit->orderComputerCL(OrderId::ComputerAI);
@@ -336,7 +330,7 @@ namespace hooks {
 
 						if (unit->id != UnitId::ProtossAccantor) {
 
-							u8 weaponId = unit->getGroundWeapon();
+							uint8 weaponId = unit->getGroundWeapon();
 
 							if (weaponId != WeaponId::None)
 								unit->groundWeaponCooldown = getUpgradedWpnCooldown(unit, weaponId);
@@ -348,8 +342,7 @@ namespace hooks {
 
 							unit->spellCooldown = 30;
 
-						}
-						else
+						} else
 							unit->mainOrderTimer = 30;
 
 					}
@@ -374,10 +367,10 @@ namespace hooks {
 
 namespace {
 
-	const u32 Func_getUpgradedWpnCooldown = 0x00475DC0;
-	u32 getUpgradedWpnCooldown(CUnit* unit, u8 weaponId) {
+	const uint32 Func_getUpgradedWpnCooldown = 0x00475DC0;
+	uint32 getUpgradedWpnCooldown(CUnit* unit, uint8 weaponId) {
 
-		static u32 return_value;
+		static uint32 return_value;
 
 		__asm {
 			PUSHAD
@@ -394,7 +387,7 @@ namespace {
 
 	;
 
-	const u32 Func_IgnoreAllScriptAndGotoIdle = 0x00476550;
+	const uint32 Func_IgnoreAllScriptAndGotoIdle = 0x00476550;
 	void IgnoreAllScriptAndGotoIdle(CUnit* unit) {
 
 		__asm {
@@ -408,7 +401,7 @@ namespace {
 
 	;
 
-	const u32 Func_unitDeathSomething_0 = 0x004E6340;
+	const uint32 Func_unitDeathSomething_0 = 0x004E6340;
 	void hideAndDisableUnit(CUnit* unit) {
 
 		__asm {
@@ -422,10 +415,10 @@ namespace {
 
 	;
 
-	const u32 Func_Sub4E76C0 = 0x004E76C0;
-	u32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos) {
+	const uint32 Func_Sub4E76C0 = 0x004E76C0;
+	uint32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos) {
 
-		static u32 result;
+		static uint32 result;
 
 		__asm {
 			PUSHAD
@@ -443,8 +436,8 @@ namespace {
 
 	;
 
-	const u32 Func_Sub4E7E10 = 0x004E7E10;
-	void function_004E7E10(CUnit* unit, u32 unk) {
+	const uint32 Func_Sub4E7E10 = 0x004E7E10;
+	void function_004E7E10(CUnit* unit, uint32 unk) {
 
 		__asm {
 			PUSHAD

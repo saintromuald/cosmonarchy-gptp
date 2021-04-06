@@ -5,54 +5,44 @@
 
 namespace AI {
 
-	class PlagueTargetFinderProc: public scbw::UnitFinderCallbackMatchInterface {
+	CUnit* findBestPlagueTarget(CUnit* caster, bool isUnderAttack) {
 
-	  private:
-		CUnit* caster;
-		bool isUnderAttack;
+		int bounds;
 
-	  public:
-		PlagueTargetFinderProc(CUnit* caster, bool isUnderAttack)
-		  : caster(caster), isUnderAttack(isUnderAttack) {}
+		if (isUnderAttack)
+			bounds = 32 * 9;
+		else
+			bounds = 32 * 128;
 
-		bool match(CUnit* target) {
+		return scbw::UnitFinder::getNearestTarget(
+			caster->getX() - bounds,
+			caster->getY() - bounds,
+			caster->getX() + bounds,
+			caster->getY() + bounds,
+			caster,
+			[&](CUnit* target) {
 			if (!isTargetWorthHitting(target, caster))
-			  return false;
+				return false;
 
 			if (!scbw::canWeaponTargetUnit(WeaponId::Plague, target, caster))
-			  return false;
+				return false;
 
 			if (target->plagueTimer)
-			  return false;
+				return false;
 
 			if (units_dat::BaseProperty[target->id] & UnitProperty::Hero)
-			  return false;
+				return false;
 
 			const int totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Plague);
 			if (!isUnderAttack && totalEnemyLife < 250)
-			  return false;
+				return false;
 
 			const int totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Plague);
 			if (totalAllyLife * 2 >= totalEnemyLife)
-			  return false;
+				return false;
 
 			return true;
-		}
-	};
-
-	CUnit* findBestPlagueTarget(CUnit* caster, bool isUnderAttack) {
-
-	  int bounds;
-
-	  if (isUnderAttack)
-		bounds = 32 * 9;
-	  else
-		bounds = 32 * 128;
-
-	  return scbw::UnitFinder::getNearestTarget(
-		caster->getX() - bounds, caster->getY() - bounds,
-		caster->getX() + bounds, caster->getY() + bounds,
-		caster, PlagueTargetFinderProc(caster,isUnderAttack));
+		});
 	}
 
 } //AI

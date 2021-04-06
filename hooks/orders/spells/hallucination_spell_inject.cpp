@@ -29,7 +29,7 @@ namespace {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
-			MOV EAX, [EBP+0x08]
+			MOV EAX, [EBP + 0x08]
 			MOV player, EAX
 			POP EAX
 			MOV source, ECX
@@ -50,8 +50,8 @@ namespace {
 namespace hooks {
 
 	void injectHallucinationSpellHook() {
-		jmpPatch(orders_Hallucination1Wrapper,		0x004F6C40, 0);
-		jmpPatch(createHallucination_Wrapper,		0x004F6B90, 2);
+		jmpPatch(orders_Hallucination1Wrapper, 0x004F6C40, 0);
+		jmpPatch(createHallucination_Wrapper, 0x004F6B90, 2);
 	}
 
 } //hooks

@@ -4,50 +4,40 @@
 //V241 for VS2008
 
 namespace AI {
+	CUnit* findBestHallucinationTarget(CUnit* caster, bool isUnderAttack) {
 
-class HallucinationTargetFinderProc: public scbw::UnitFinderCallbackMatchInterface {
+		if (isUnderAttack)
+			return nullptr;
 
-  private:
-    CUnit* caster;
+		int bounds = 32 * 32;
 
-  public:
-    HallucinationTargetFinderProc(CUnit* caster)
-      : caster(caster) {}
+		return scbw::UnitFinder::getNearestTarget(
+			caster->getX() - bounds,
+			caster->getY() - bounds,
+			caster->getX() + bounds,
+			caster->getY() + bounds,
+			caster,
+			[&](CUnit* target) {
 
-    bool match(CUnit* target) {
+			if (target->playerId != caster->playerId)
+				return false;
 
-		if (target->playerId != caster->playerId)
-		  return false;
+			if (target->status & UnitStatus::Invincible)
+				return false;
 
-		if (target->status & UnitStatus::Invincible)
-		  return false;
+			if (scbw::getTechUseErrorMessage((CUnit*)target, caster->playerId, TechId::Hallucination) != 0)
+				return false;
 
-		if (scbw::getTechUseErrorMessage((CUnit*)target, caster->playerId, TechId::Hallucination) != 0)
-		  return false;
+			if (target->id == UnitId::carrier
+				|| target->id == UnitId::scout
+				|| target->id == UnitId::arbiter
+				|| target->id == UnitId::archon
+				|| target->id == UnitId::ProtossAugur)
+				return true;
 
-		if (target->id == UnitId::carrier
-			|| target->id == UnitId::scout
-			|| target->id == UnitId::arbiter
-			|| target->id == UnitId::archon
-			|| target->id == UnitId::ProtossAugur)
-		  return true;
+			return false;
 
-		return false;
-
-    }
-};
-
-CUnit* findBestHallucinationTarget(CUnit* caster, bool isUnderAttack) {
-
-  if (isUnderAttack)
-    return NULL;
-
-  int bounds = 32 * 32;
-
-  return scbw::UnitFinder::getNearestTarget(
-    caster->getX() - bounds, caster->getY() - bounds,
-    caster->getX() + bounds, caster->getY() + bounds,
-    caster, HallucinationTargetFinderProc(caster));
-}
+		});
+	}
 
 } //AI

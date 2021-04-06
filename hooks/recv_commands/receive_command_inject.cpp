@@ -9,38 +9,38 @@ namespace {
 		static int x;
 		static int y;
 		static CUnit* unitParam;
-		static u32 wUnitType;
-		static u32 bActionOrder;
-		static u32 bCommandType;
+		static uint32 wUnitType;
+		static uint32 bActionOrder;
+		static uint32 bCommandType;
 
 		__asm {
 
 			PUSH EBP
 			MOV EBP, ESP
 
-			MOV EAX, [EBP+0x08]
+			MOV EAX, [EBP + 0x08]
 			MOV x, EAX
 
-			MOV EAX, [EBP+0x0C]
+			MOV EAX, [EBP + 0x0C]
 			MOV y, EAX
 
-			MOV EAX, [EBP+0x10]
+			MOV EAX, [EBP + 0x10]
 			MOV unitParam, EAX
 
-			MOV EAX, [EBP+0x14]
+			MOV EAX, [EBP + 0x14]
 			MOV wUnitType, EAX
 
-			MOV EAX, [EBP+0x18]
+			MOV EAX, [EBP + 0x18]
 			MOV bActionOrder, EAX
 
-			MOV EAX, [EBP+0x1C]
+			MOV EAX, [EBP + 0x1C]
 			MOV bCommandType, EAX
 
 			PUSHAD
 
 		}
 
-		hooks::receive_command(x,y,unitParam,wUnitType,bActionOrder,bCommandType);
+		hooks::receive_command(x, y, unitParam, wUnitType, bActionOrder, bCommandType);
 
 		__asm {
 			POPAD
@@ -58,7 +58,7 @@ namespace {
 namespace hooks {
 
 	void injectRecvCmdHook() {
-		jmpPatch(receive_commandWrapper,	0x0049AB00, 1);
+		jmpPatch(receive_commandWrapper, 0x0049AB00, 1);
 	}
 
 } //hooks

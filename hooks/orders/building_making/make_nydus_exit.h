@@ -4,7 +4,7 @@
 namespace hooks {
 
 	void orders_Build5(CUnit* nydus_canal); //0x0045DC20
-	u32 adjustFlags(u32 flags, u32 player);
+	uint32 adjustFlags(uint32 flags, uint32 player);
 	void injectMakeNydusExitHook();
 
 } //hooks

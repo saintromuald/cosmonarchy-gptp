@@ -7,6 +7,6 @@ namespace hooks {
 	void function_00468420(CUnit* unit);			// 0x00468420
 
 	void injectUnitTrainHooks();
-	int isQueueSlotActive(CUnit* unit, u32 slot);
+	int isQueueSlotActive(CUnit* unit, uint32 slot);
 	char getMaxHangerSpace(CUnit* a1);				// 0x004653D0
 } //hooks

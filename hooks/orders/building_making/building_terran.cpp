@@ -13,639 +13,616 @@
 
 namespace {
 
-	bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, u32 distance);	//01240
-	void fixTargetLocation(Point16* coords, u32 unitId);								//01FA0
+	bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, uint32 distance);	//01240
+	void fixTargetLocation(Point16* coords, uint32 unitId);								//01FA0
 	bool isUnitPositions2Equal(CUnit* unit);											//02160
 	void AI_TrainingOverlord(CUnit* main_unit, CUnit* created_unit);					//35770
 	bool function_00467030(CUnit* unit);												//67030
-	CUnit* function_004678A0(CUnit* unit, u32 unitId);									//678A0
-	Bool32 buildingAddon(CUnit* unit, u32 hpGain, Bool32 canBeAborted);					//679A0
-	void function_00474760(CUnit* unit, COrder* order, u8 orderId);						//74760
-	void function_004749A0(CUnit* unit, COrder* order, u8 orderId);						//749A0
+	CUnit* function_004678A0(CUnit* unit, uint32 unitId);									//678A0
+	bool32 buildingAddon(CUnit* unit, uint32 hpGain, bool32 canBeAborted);					//679A0
+	void function_00474760(CUnit* unit, COrder* order, uint8 orderId);						//74760
+	void function_004749A0(CUnit* unit, COrder* order, uint8 orderId);						//749A0
 	char refreshLayer3And4();															//8D9A0
 	bool function_0048DDA0();															//8DDA0
 	void function_0048E310();															//8E310
 	void playBuildingCompleteSound(CUnit* building);									//8F310
-	void function_00494BB0(CUnit* unit,int x, int y);									//94BB0
-	void displayLastNetErrForPlayer(u32 playerId);										//9E530
-	CUnit* createUnit(u32 unitId, int x, int y, u32 playerId);							//A09D0
-	u32 RandomizeShort(u32 unknown_index);												//DC4A0
-	u32 RandBetween(u32 min, u32 max, u32 someIndex);									//DC550
-	void function_004E65E0(CUnit* unit, Bool32 flag);									//E65E0
+	void function_00494BB0(CUnit* unit, int x, int y);									//94BB0
+	void displayLastNetErrForPlayer(uint32 playerId);										//9E530
+	CUnit* createUnit(uint32 unitId, int x, int y, uint32 playerId);							//A09D0
+	uint32 RandomizeShort(uint32 unknown_index);												//DC4A0
+	uint32 RandBetween(uint32 min, uint32 max, uint32 someIndex);									//DC550
+	void function_004E65E0(CUnit* unit, bool32 flag);									//E65E0
 	void setNextWaypoint_Sub4EB290(CUnit* unit);										//EB290
 	bool SetMoveTarget_xy(CUnit* unit, int x, int y);									//EB820
 	bool orderToMoveToTarget(CUnit* unit, CUnit* target);								//EB980
 	bool function_004EB9C0(CUnit* unit, int x, int y);									//EB9C0
-	Bool32 function_004F1870(CUnit* unit, int x, int y);								//F1870
+	bool32 function_004F1870(CUnit* unit, int x, int y);								//F1870
 
 	// For updatePlacementStateForPlacementBox
-	s32 canBuildOnTileLocation(CUnit* a1, s32 player, s32 x_tile, s32 y_tile, s32 unitType,
-		s32 placement_state_entry, s32 check_vision, s32 also_invisible, s32 without_vision);//00473FB0
+	int32 canBuildOnTileLocation(CUnit* a1, int32 player, int32 x_tile, int32 y_tile, int32 unitType,
+		int32 placement_state_entry, int32 check_vision, int32 also_invisible, int32 without_vision);//00473FB0
 	// For refreshScreen
-	s32 updatePlacementStateForPlacementBox_Func(); // 0048DCE0
-	s32 unk_buildingPlacementRelated(s32 a1, Point16* a2); // 0048D7F0
-	s32 initPlacementBoxPos(Point16* in_out); // 0048D660
-	char unk_buildingPlacementRelatedMouse(s32 a1, s32 a2); // 0048D7B0
+	int32 updatePlacementStateForPlacementBox_Func(); // 0048DCE0
+	int32 unk_buildingPlacementRelated(int32 a1, Point16* a2); // 0048D7F0
+	int32 initPlacementBoxPos(Point16* in_out); // 0048D660
+	char unk_buildingPlacementRelatedMouse(int32 a1, int32 a2); // 0048D7B0
 
 } //unnamed namespace
 
 namespace hooks {
 
-void orders_TerranBuildSelf(CUnit* building) {
+	void orders_TerranBuildSelf(CUnit* building) {
 
-	if(building->mainOrderState == 0) {
-		if(building->hitPoints > 20 * units_dat::MaxHitPoints[building->id] / 100)
-			building->mainOrderState = 1;
-	}
-	else
-	if(building->mainOrderState == 1) {
+		if (building->mainOrderState == 0) {
+			if (building->hitPoints > 20 * units_dat::MaxHitPoints[building->id] / 100)
+				building->mainOrderState = 1;
+		} else
+			if (building->mainOrderState == 1) {
 
-		CImage* current_image = building->sprite->images.head;
+				CImage* current_image = building->sprite->images.head;
 
-		while(current_image != NULL) {
-			current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
-			current_image = current_image->link.next;
-		}
+				while (current_image != nullptr) {
+					current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
+					current_image = current_image->link.next;
+				}
 
-		building->mainOrderState = 2;
-	}
-	else
-	if(building->mainOrderState == 2) {
-		if(building->hitPoints > 40 * units_dat::MaxHitPoints[building->id] / 100)
-			building->mainOrderState = 3;
-	}
-	else
-	if(building->mainOrderState == 3) {
+				building->mainOrderState = 2;
+			} else
+				if (building->mainOrderState == 2) {
+					if (building->hitPoints > 40 * units_dat::MaxHitPoints[building->id] / 100)
+						building->mainOrderState = 3;
+				} else
+					if (building->mainOrderState == 3) {
 
-		CImage* current_image = building->sprite->images.head;
+						CImage* current_image = building->sprite->images.head;
 
-		while(current_image != NULL) {
-			current_image->playIscriptAnim(IscriptAnimation::SpecialState2);
-			current_image = current_image->link.next;
-		}
+						while (current_image != nullptr) {
+							current_image->playIscriptAnim(IscriptAnimation::SpecialState2);
+							current_image = current_image->link.next;
+						}
 
-		building->mainOrderState = 4;
+						building->mainOrderState = 4;
 
-	}
-	else
-	if(building->mainOrderState == 4) {
-		if(building->hitPoints > 60 * units_dat::MaxHitPoints[building->id] / 100)
-			building->mainOrderState = 5;
-	}
-	else
-	if(building->mainOrderState == 5) {
+					} else
+						if (building->mainOrderState == 4) {
+							if (building->hitPoints > 60 * units_dat::MaxHitPoints[building->id] / 100)
+								building->mainOrderState = 5;
+						} else
+							if (building->mainOrderState == 5) {
 
-		function_004E65E0(building,0);
+								function_004E65E0(building, 0);
 
-		CImage* current_image = building->sprite->images.head;
+								CImage* current_image = building->sprite->images.head;
 
-		while(current_image != NULL) {
-			current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
-			current_image = current_image->link.next;
-		}
+								while (current_image != nullptr) {
+									current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
+									current_image = current_image->link.next;
+								}
 
-		building->mainOrderState = 6;
+								building->mainOrderState = 6;
 
-	}
-	else
-	if(building->mainOrderState == 6) {
+							} else
+								if (building->mainOrderState == 6) {
 
-		if(building->hitPoints > 80 * units_dat::MaxHitPoints[building->id] / 100)
-			building->orderComputerCL(OrderId::Nothing2);
+									if (building->hitPoints > 80 * units_dat::MaxHitPoints[building->id] / 100)
+										building->orderComputerCL(OrderId::Nothing2);
+
+								}
 
 	}
 
-}
+	;
 
-;
+	//Go to build on an existing building
+	void orders_SCVBuild2(CUnit* unit) {
 
-//Go to build on an existing building
-void orders_SCVBuild2(CUnit* unit) {
+		CUnit* builtUnit = unit->orderTarget.unit;
 
-	CUnit* builtUnit = unit->orderTarget.unit;
+		if (builtUnit != nullptr && !(builtUnit->status & UnitStatus::Completed)) {
 
-	if(builtUnit != NULL && !(builtUnit->status & UnitStatus::Completed)) {
+			bool jump_to_switch_1 = false;
 
-		bool jump_to_switch_1 = false;
-
-		if(
-			unit->mainOrderState > 8 ||
-			unit->mainOrderState == 1
-		)
-			jump_to_switch_1 = true;
-
-		if(unit->mainOrderState == 0) {
-			if(orderToMoveToTarget(unit,builtUnit))
-				unit->mainOrderState = 2;
-		}
-		
-		if(unit->mainOrderState == 2) {
-
-			u32 movableState = unit->getMovableState();
-
-			if(movableState == 2) //unmovable
-				unit->orderToIdle();
-			else
-			if(movableState == 1) { //reached destination
-
-				scbw::refreshConsole();
-
-				if(
-					builtUnit->connectedUnit != NULL &&
-					builtUnit->connectedUnit != unit &&
-					(builtUnit->connectedUnit)->orderTarget.unit == builtUnit
+			if (
+				unit->mainOrderState > 8 ||
+				unit->mainOrderState == 1
 				)
-					unit->orderToIdle(); //another SCV is already on the job
-				else { //67AF9
-
-					builtUnit->connectedUnit = unit;
-					unit->status &= ~UnitStatus::IsNormal;	//remove UnitStatus::IsNormal if present
-					unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
-
-					unit->orderSimple(OrderId::ResetCollision1,false);
-					unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id],false);
-
-					if(
-						function_004EB9C0(	unit,
-						builtUnit->sprite->position.x,
-						builtUnit->sprite->position.y
-						)
-					)
-						unit->mainOrderState = 3;
-
-				}
-
-			}
-
-		} //if(unit->mainOrderState == 2)
-		else
-		if(unit->mainOrderState == 3) {
-			if(unit->getMovableState() != 0)
-				unit->mainOrderState = 4;
-		}
-		else
-		if(unit->mainOrderState == 4) {
-
-			s16 ebp_18,ebp_16,ebp_14,ebp_12,x_min,y_min,x_max,y_max;
-			s32 ebp_08;
-
-			ebp_18 = builtUnit->sprite->position.x - builtUnit->sprite->width / 2;
-			ebp_14 = builtUnit->sprite->position.x + builtUnit->sprite->width / 2 - 1;
-			ebp_16 = builtUnit->sprite->position.y - builtUnit->sprite->height / 2;
-			ebp_12 = builtUnit->sprite->position.y + builtUnit->sprite->height / 2 - 1;
-			ebp_08 = units_dat::BuildingDimensions[builtUnit->id].x;
-
-			if(ebp_08 < 0)
-				x_min = builtUnit->sprite->position.x - (ebp_08 - 0xFFFFFFFF) / 2;
-			else
-				x_min = builtUnit->sprite->position.x - ebp_08 / 2;
-
-			x_max = ebp_08 + x_min - 1;
-
-			if(units_dat::BuildingDimensions[builtUnit->id].y < 0)
-				y_min = builtUnit->sprite->position.y - (units_dat::BuildingDimensions[builtUnit->id].y - 0xFFFFFFFF) / 2;
-			else
-				y_min = builtUnit->sprite->position.y - units_dat::BuildingDimensions[builtUnit->id].y / 2;
-
-			y_max = units_dat::BuildingDimensions[builtUnit->id].y + y_min - 1;
-
-			x_min = x_min + units_dat::UnitBounds[unit->id].left + 1;
-			x_max = x_max + (0xFFFF - units_dat::UnitBounds[unit->id].right);
-			y_min = y_min + units_dat::UnitBounds[unit->id].top + 1;
-			y_max = y_max + (0xFFFF -units_dat::UnitBounds[unit->id].bottom);
-
-			if(x_min < ebp_18)
-				x_min = ebp_18;
-
-			if(y_min < ebp_16)
-				y_min = ebp_16;
-
-			if(x_max > ebp_14)
-				x_max = ebp_14;
-
-			if(y_max > ebp_12)
-				y_max = ebp_12;
-
-			unit->orderTarget.pt.x = RandBetween(ebp_18,ebp_14,9);
-			unit->orderTarget.pt.y = RandBetween(ebp_16,ebp_12,9);
-
-			fixTargetLocation(&unit->orderTarget.pt,unit->id);
-
-			if(
-				function_004F1870(
-					unit,
-					unit->orderTarget.pt.x - unit->sprite->position.x,
-					unit->orderTarget.pt.y - unit->sprite->position.y
-				) != 0
-			) 
-			{
-
-				unit->orderTarget.pt.x = RandBetween(x_min,x_max,9);
-				unit->orderTarget.pt.y = RandBetween(y_min,y_max,9);
-
-				fixTargetLocation(&unit->orderTarget.pt,unit->id);
-
-			}
-
-			if(
-				function_004EB9C0(unit,unit->orderTarget.pt.x,unit->orderTarget.pt.y)
-				!= 0
-			)
-			{
-				unit->mainOrderState = 5;
-				jump_to_switch_1 = true;
-			}
-
-		} //mainOrderState == 4
-		else
-		if(unit->mainOrderState == 5) {
-			unit->mainOrderState = 6;
-			jump_to_switch_1 = true;
-		}
-		else
-		if(unit->mainOrderState == 6) {
-
-			if(!isDistanceGreaterThanHaltDistance(
-					unit,
-					unit->orderTarget.pt.x,
-					unit->orderTarget.pt.y,
-					20
-				)
-			)
-				jump_to_switch_1 = true;
-			else {
-
-				s32 angle;
-
-				setNextWaypoint_Sub4EB290(unit);
-
-				function_00494BB0(
-					unit,
-					(unit->orderTarget.unit)->sprite->position.x,
-					(unit->orderTarget.unit)->sprite->position.y
-				);
-
-				angle = scbw::getAngle(
-					unit->sprite->position.x,
-					unit->sprite->position.y,
-					unit->nextTargetWaypoint.x,
-					unit->nextTargetWaypoint.y
-					);
-
-				unit->orderTarget.pt.x = (angleDistance[angle].x * 20) / 256 + unit->sprite->position.x;
-				unit->orderTarget.pt.y = (angleDistance[angle].y * 20) / 256 + unit->sprite->position.y;
-				unit->mainOrderState = 7;
 				jump_to_switch_1 = true;
 
+			if (unit->mainOrderState == 0) {
+				if (orderToMoveToTarget(unit, builtUnit))
+					unit->mainOrderState = 2;
 			}
 
-		}
-		else
-		if(unit->mainOrderState == 7) {
+			if (unit->mainOrderState == 2) {
 
-			if(!isUnitPositions2Equal(unit)) {
+				uint32 movableState = unit->getMovableState();
 
-				s32 angle = scbw::getAngle(
-								unit->sprite->position.x,
-								unit->sprite->position.y,
-								unit->nextTargetWaypoint.x,
-								unit->nextTargetWaypoint.y
-				);
+				if (movableState == 2) //unmovable
+					unit->orderToIdle();
+				else
+					if (movableState == 1) { //reached destination
 
-				angle = unit->currentDirection1 - angle;
+						scbw::refreshConsole();
 
-				if(angle < 0)
-					angle += 256;
+						if (
+							builtUnit->connectedUnit != nullptr &&
+							builtUnit->connectedUnit != unit &&
+							(builtUnit->connectedUnit)->orderTarget.unit == builtUnit
+							)
+							unit->orderToIdle(); //another SCV is already on the job
+						else { //67AF9
 
-				if(angle > weapons_dat::AttackAngle[unit->getGroundWeapon()])
-					jump_to_switch_1 = true;
-				else { //67E4A
+							builtUnit->connectedUnit = unit;
+							unit->status &= ~UnitStatus::IsNormal;	//remove UnitStatus::IsNormal if present
+							unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
 
-					u8 rand_value = RandomizeShort(10);
-					CImage* current_image = unit->sprite->images.head;
+							unit->orderSimple(OrderId::ResetCollision1, false);
+							unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
 
-					unit->mainOrderTimer = (rand_value & 63) + 30;
+							if (
+								function_004EB9C0(unit,
+									builtUnit->sprite->position.x,
+									builtUnit->sprite->position.y
+								)
+								)
+								unit->mainOrderState = 3;
 
-					while(current_image != NULL) {
-						current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
-						current_image = current_image->link.next;
-					}
-
-					unit->mainOrderState = 8;
-					jump_to_switch_1 = true;
-
-
-				}
-
-
-			}
-			else {
-
-				u8 rand_value = RandomizeShort(10);
-				CImage* current_image = unit->sprite->images.head;
-
-				unit->mainOrderTimer = (rand_value & 63) + 30;
-
-				while(current_image != NULL) {
-					current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
-					current_image = current_image->link.next;
-				}
-
-				unit->mainOrderState = 8;
-				jump_to_switch_1 = true;
-
-			}
-
-		}
-		else
-		if(unit->mainOrderState == 8) {
-
-			if(unit->mainOrderTimer != 0)
-				jump_to_switch_1 = true;
-			else {
-
-				CImage* current_image = unit->sprite->images.head;
-
-				while(current_image != NULL) {
-					current_image->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
-					current_image = current_image->link.next;
-				}
-
-				unit->mainOrderState = 4;
-
-				jump_to_switch_1 = true;
-
-			}
-
-		}
-
-		if(jump_to_switch_1) {
-
-			u32 hpGain = builtUnit->buildRepairHpGain;
-
-			if(*CHEAT_STATE & CheatFlags::OperationCwal)
-				hpGain *= 16;
-
-			buildingAddon(builtUnit,hpGain,FALSE);
-
-			if(builtUnit->status & UnitStatus::Completed) {
-
-				CImage* current_image = unit->sprite->images.head;
-				bool bEndThere = false;
-
-				while(current_image != NULL) {
-					current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
-					current_image = current_image->link.next;
-				}
-
-				if(builtUnit != NULL) {
-
-					bool jump_to_67F3C = false;
-
-					builtUnit->connectedUnit = NULL;
-					playBuildingCompleteSound(unit);
-
-					if(builtUnit->status & UnitStatus::Completed) {
-
-						if(
-							builtUnit->id == UnitId::TerranRefinery ||
-							builtUnit->id == UnitId::ProtossAssimilator ||
-							builtUnit->id == UnitId::ZergExtractor
-						)
-						{
-							if(builtUnit->playerId == unit->playerId)
-								jump_to_67F3C = true;
 						}
 
 					}
 
-					if(!jump_to_67F3C) { //67F2C
+			} //if(unit->mainOrderState == 2)
+			else
+				if (unit->mainOrderState == 3) {
+					if (unit->getMovableState() != 0)
+						unit->mainOrderState = 4;
+				} else
+					if (unit->mainOrderState == 4) {
 
-						if(	
-							builtUnit->id >= UnitId::ResourceMineralField &&
-							builtUnit->id <= UnitId::ResourceMineralFieldType3
-						)
+						int16 ebp_18, ebp_16, ebp_14, ebp_12, x_min, y_min, x_max, y_max;
+						int32 ebp_08;
+
+						ebp_18 = builtUnit->sprite->position.x - builtUnit->sprite->width / 2;
+						ebp_14 = builtUnit->sprite->position.x + builtUnit->sprite->width / 2 - 1;
+						ebp_16 = builtUnit->sprite->position.y - builtUnit->sprite->height / 2;
+						ebp_12 = builtUnit->sprite->position.y + builtUnit->sprite->height / 2 - 1;
+						ebp_08 = units_dat::BuildingDimensions[builtUnit->id].x;
+
+						if (ebp_08 < 0)
+							x_min = builtUnit->sprite->position.x - (ebp_08 - 0xFFFFFFFF) / 2;
+						else
+							x_min = builtUnit->sprite->position.x - ebp_08 / 2;
+
+						x_max = ebp_08 + x_min - 1;
+
+						if (units_dat::BuildingDimensions[builtUnit->id].y < 0)
+							y_min = builtUnit->sprite->position.y - (units_dat::BuildingDimensions[builtUnit->id].y - 0xFFFFFFFF) / 2;
+						else
+							y_min = builtUnit->sprite->position.y - units_dat::BuildingDimensions[builtUnit->id].y / 2;
+
+						y_max = units_dat::BuildingDimensions[builtUnit->id].y + y_min - 1;
+
+						x_min = x_min + units_dat::UnitBounds[unit->id].left + 1;
+						x_max = x_max + (0xFFFF - units_dat::UnitBounds[unit->id].right);
+						y_min = y_min + units_dat::UnitBounds[unit->id].top + 1;
+						y_max = y_max + (0xFFFF - units_dat::UnitBounds[unit->id].bottom);
+
+						if (x_min < ebp_18)
+							x_min = ebp_18;
+
+						if (y_min < ebp_16)
+							y_min = ebp_16;
+
+						if (x_max > ebp_14)
+							x_max = ebp_14;
+
+						if (y_max > ebp_12)
+							y_max = ebp_12;
+
+						unit->orderTarget.pt.x = RandBetween(ebp_18, ebp_14, 9);
+						unit->orderTarget.pt.y = RandBetween(ebp_16, ebp_12, 9);
+
+						fixTargetLocation(&unit->orderTarget.pt, unit->id);
+
+						if (
+							function_004F1870(
+								unit,
+								unit->orderTarget.pt.x - unit->sprite->position.x,
+								unit->orderTarget.pt.y - unit->sprite->position.y
+							) != 0
+							) {
+
+							unit->orderTarget.pt.x = RandBetween(x_min, x_max, 9);
+							unit->orderTarget.pt.y = RandBetween(y_min, y_max, 9);
+
+							fixTargetLocation(&unit->orderTarget.pt, unit->id);
+
+						}
+
+						if (
+							function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y)
+							!= 0
+							) {
+							unit->mainOrderState = 5;
+							jump_to_switch_1 = true;
+						}
+
+					} //mainOrderState == 4
+					else
+						if (unit->mainOrderState == 5) {
+							unit->mainOrderState = 6;
+							jump_to_switch_1 = true;
+						} else
+							if (unit->mainOrderState == 6) {
+
+								if (!isDistanceGreaterThanHaltDistance(
+									unit,
+									unit->orderTarget.pt.x,
+									unit->orderTarget.pt.y,
+									20
+								)
+									)
+									jump_to_switch_1 = true;
+								else {
+
+									int32 angle;
+
+									setNextWaypoint_Sub4EB290(unit);
+
+									function_00494BB0(
+										unit,
+										(unit->orderTarget.unit)->sprite->position.x,
+										(unit->orderTarget.unit)->sprite->position.y
+									);
+
+									angle = scbw::getAngle(
+										unit->sprite->position.x,
+										unit->sprite->position.y,
+										unit->nextTargetWaypoint.x,
+										unit->nextTargetWaypoint.y
+									);
+
+									unit->orderTarget.pt.x = (angleDistance[angle].x * 20) / 256 + unit->sprite->position.x;
+									unit->orderTarget.pt.y = (angleDistance[angle].y * 20) / 256 + unit->sprite->position.y;
+									unit->mainOrderState = 7;
+									jump_to_switch_1 = true;
+
+								}
+
+							} else
+								if (unit->mainOrderState == 7) {
+
+									if (!isUnitPositions2Equal(unit)) {
+
+										int32 angle = scbw::getAngle(
+											unit->sprite->position.x,
+											unit->sprite->position.y,
+											unit->nextTargetWaypoint.x,
+											unit->nextTargetWaypoint.y
+										);
+
+										angle = unit->currentDirection1 - angle;
+
+										if (angle < 0)
+											angle += 256;
+
+										if (angle > weapons_dat::AttackAngle[unit->getGroundWeapon()])
+											jump_to_switch_1 = true;
+										else { //67E4A
+
+											uint8 rand_value = RandomizeShort(10);
+											CImage* current_image = unit->sprite->images.head;
+
+											unit->mainOrderTimer = (rand_value & 63) + 30;
+
+											while (current_image != nullptr) {
+												current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
+												current_image = current_image->link.next;
+											}
+
+											unit->mainOrderState = 8;
+											jump_to_switch_1 = true;
+
+
+										}
+
+
+									} else {
+
+										uint8 rand_value = RandomizeShort(10);
+										CImage* current_image = unit->sprite->images.head;
+
+										unit->mainOrderTimer = (rand_value & 63) + 30;
+
+										while (current_image != nullptr) {
+											current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
+											current_image = current_image->link.next;
+										}
+
+										unit->mainOrderState = 8;
+										jump_to_switch_1 = true;
+
+									}
+
+								} else
+									if (unit->mainOrderState == 8) {
+
+										if (unit->mainOrderTimer != 0)
+											jump_to_switch_1 = true;
+										else {
+
+											CImage* current_image = unit->sprite->images.head;
+
+											while (current_image != nullptr) {
+												current_image->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
+												current_image = current_image->link.next;
+											}
+
+											unit->mainOrderState = 4;
+
+											jump_to_switch_1 = true;
+
+										}
+
+									}
+
+								if (jump_to_switch_1) {
+
+									uint32 hpGain = builtUnit->buildRepairHpGain;
+
+									if (*CHEAT_STATE & CheatFlags::OperationCwal)
+										hpGain *= 16;
+
+									buildingAddon(builtUnit, hpGain, FALSE);
+
+									if (builtUnit->status & UnitStatus::Completed) {
+
+										CImage* current_image = unit->sprite->images.head;
+										bool bEndThere = false;
+
+										while (current_image != nullptr) {
+											current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
+											current_image = current_image->link.next;
+										}
+
+										if (builtUnit != nullptr) {
+
+											bool jump_to_67F3C = false;
+
+											builtUnit->connectedUnit = nullptr;
+											playBuildingCompleteSound(unit);
+
+											if (builtUnit->status & UnitStatus::Completed) {
+
+												if (
+													builtUnit->id == UnitId::TerranReservoir ||
+													builtUnit->id == UnitId::ProtossAquifer ||
+													builtUnit->id == UnitId::ZergExtractor
+													) {
+													if (builtUnit->playerId == unit->playerId)
+														jump_to_67F3C = true;
+												}
+
+											}
+
+											if (!jump_to_67F3C) { //67F2C
+
+												if (
+													builtUnit->id >= UnitId::ResourceMineralField &&
+													builtUnit->id <= UnitId::ResourceMineralFieldType3
+													)
+													jump_to_67F3C = true;
+
+											}
+
+											if (jump_to_67F3C) {
+												unit->orderTo(OrderId::Harvest1, builtUnit);
+												bEndThere = true;
+											}
+
+										}
+
+										if (!bEndThere) { //67F4C
+
+											if (!(unit->orderQueueHead == nullptr)) {
+												unit->userActionFlags |= 1;
+												prepareForNextOrder(unit);
+											} else
+												if (unit->pAI != nullptr) //67F6F
+													unit->orderComputerCL(OrderId::ComputerAI);
+												else
+													unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+
+										}
+
+									}
+
+								}
+
+		} else { //67ED0
+
+			CImage* current_image = unit->sprite->images.head;
+			bool bEndThere = false;
+
+			while (current_image != nullptr) {
+				current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
+				current_image = current_image->link.next;
+			}
+
+			if (builtUnit != nullptr) {
+
+				bool jump_to_67F3C = false;
+
+				builtUnit->connectedUnit = nullptr;
+				playBuildingCompleteSound(builtUnit);
+
+				if (builtUnit->status & UnitStatus::Completed) {
+
+					if (
+						builtUnit->id == UnitId::TerranReservoir ||
+						builtUnit->id == UnitId::ProtossAquifer ||
+						builtUnit->id == UnitId::ZergExtractor
+						) {
+						if (builtUnit->playerId == unit->playerId)
 							jump_to_67F3C = true;
-
-					}
-
-					if(jump_to_67F3C) {
-						unit->orderTo(OrderId::Harvest1,builtUnit);
-						bEndThere = true;
 					}
 
 				}
 
-				if(!bEndThere) { //67F4C
+				if (!jump_to_67F3C) { //67F2C
 
-					if(!(unit->orderQueueHead == NULL)) {
-						unit->userActionFlags |= 1;
-						prepareForNextOrder(unit);
-					}
-					else 
-					if(unit->pAI != NULL) //67F6F
+					if (
+						builtUnit->id >= UnitId::ResourceMineralField &&
+						builtUnit->id <= UnitId::ResourceMineralFieldType3
+						)
+						jump_to_67F3C = true;
+
+				}
+
+				if (jump_to_67F3C) {
+					unit->orderTo(OrderId::Harvest1, builtUnit);
+					bEndThere = true;
+				}
+
+			}
+
+			if (!bEndThere) { //67F4C
+
+				if (!(unit->orderQueueHead == nullptr)) {
+					unit->userActionFlags |= 1;
+					prepareForNextOrder(unit);
+				} else
+					if (unit->pAI != nullptr) //67F6F
 						unit->orderComputerCL(OrderId::ComputerAI);
 					else
 						unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 
-				}
-
 			}
 
 		}
 
 	}
-	else { //67ED0
 
-		CImage* current_image = unit->sprite->images.head;
+	;
+
+	////Go to build a not yet existing building
+	void orders_SCVBuild(CUnit* unit) {
+
 		bool bEndThere = false;
 
-		while(current_image != NULL) {
-			current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
-			current_image = current_image->link.next;
-		}
+		if (unit->pAI != nullptr)
+			unit->status |= UnitStatus::IsGathering;
 
-		if(builtUnit != NULL) {
+		if (unit->mainOrderState == 1) {
 
-			bool jump_to_67F3C = false;
+			if (
+				unit->sprite->position.x == unit->moveTarget.pt.x &&
+				unit->sprite->position.y == unit->moveTarget.pt.y
+				) {
 
-			builtUnit->connectedUnit = NULL;
-			playBuildingCompleteSound(builtUnit);
+				if (
+					!(unit->status & UnitStatus::Unmovable) &&
+					isDistanceGreaterThanHaltDistance(
+						unit,
+						unit->orderTarget.pt.x,
+						unit->orderTarget.pt.y,
+						128
+					) &&
+					function_00467030(unit)
+					) {
 
-			if(builtUnit->status & UnitStatus::Completed) {
+					CUnit* builtUnit;
 
-				if(
-					builtUnit->id == UnitId::TerranRefinery ||
-					builtUnit->id == UnitId::ProtossAssimilator ||
-					builtUnit->id == UnitId::ZergExtractor
-				)
-				{
-					if(builtUnit->playerId == unit->playerId)
-						jump_to_67F3C = true;
-				}
+					unit->status &= ~UnitStatus::IsNormal;
+					unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
 
-			}
+					if (unit->orderQueueHead == nullptr) { //680A5
+						function_004749A0(unit, nullptr, OrderId::ResetCollision1);
+						function_004749A0(unit, nullptr, units_dat::ReturnToIdleOrder[unit->id]);
+					} else
+						function_00474760(unit, unit->orderQueueHead, OrderId::ResetCollision1);
 
-			if(!jump_to_67F3C) { //67F2C
+					if (unit->buildQueue[unit->buildQueueSlot] == UnitId::TerranReservoir)
+						builtUnit = function_004678A0(unit, UnitId::TerranReservoir);
+					else
+						builtUnit = createUnit(
+							unit->buildQueue[unit->buildQueueSlot],
+							unit->orderTarget.pt.x,
+							unit->orderTarget.pt.y,
+							unit->playerId
+						);
 
-				if(	
-					builtUnit->id >= UnitId::ResourceMineralField &&
-					builtUnit->id <= UnitId::ResourceMineralFieldType3
-				)
-					jump_to_67F3C = true;
+					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 
-			}
+					if (builtUnit == nullptr) {
+						displayLastNetErrForPlayer(unit->playerId);
+						unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+						bEndThere = true;
+					} else { //68131
 
-			if(jump_to_67F3C) {
-				unit->orderTo(OrderId::Harvest1,builtUnit);
-				bEndThere = true;
-			}
+						builtUnit->connectedUnit = unit;
+						unit->mainOrderId = OrderId::ConstructingBuilding;
+						unit->mainOrderState = 3;
+						unit->orderTarget.unit = builtUnit;
 
-		}
-
-		if(!bEndThere) { //67F4C
-
-			if(!(unit->orderQueueHead == NULL)) {
-				unit->userActionFlags |= 1;
-				prepareForNextOrder(unit);
-			}
-			else 
-			if(unit->pAI != NULL) //67F6F
-				unit->orderComputerCL(OrderId::ComputerAI);
-			else
-				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
-
-		}
-
-	}
-
-}
-
-;
-
-////Go to build a not yet existing building
-void orders_SCVBuild(CUnit* unit) {
-
-	bool bEndThere = false;
-
-	if(unit->pAI != NULL)
-		unit->status |= UnitStatus::IsGathering;
-
-	if(unit->mainOrderState == 1) {
-
-		if(
-			unit->sprite->position.x == unit->moveTarget.pt.x &&
-			unit->sprite->position.y == unit->moveTarget.pt.y
-		)
-		{
-
-			if(
-				!(unit->status & UnitStatus::Unmovable) &&
-				isDistanceGreaterThanHaltDistance(
-					unit,
-					unit->orderTarget.pt.x,
-					unit->orderTarget.pt.y,
-					128
-				) &&
-				function_00467030(unit)
-			)
-			{
-
-				CUnit* builtUnit;
-
-				unit->status &= ~UnitStatus::IsNormal;
-				unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
-
-				if(unit->orderQueueHead == NULL) { //680A5
-					function_004749A0(unit,NULL,OrderId::ResetCollision1);
-					function_004749A0(unit,NULL,units_dat::ReturnToIdleOrder[unit->id]);
-				}
-				else
-					function_00474760(unit,unit->orderQueueHead,OrderId::ResetCollision1);
-
-				if(unit->buildQueue[unit->buildQueueSlot] == UnitId::TerranRefinery)
-					builtUnit = function_004678A0(unit,UnitId::TerranRefinery);
-				else
-					builtUnit = createUnit(
-									unit->buildQueue[unit->buildQueueSlot],
-									unit->orderTarget.pt.x,
-									unit->orderTarget.pt.y,
-									unit->playerId
-								);
-
-				unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
-
-				if(builtUnit == NULL) {
-					displayLastNetErrForPlayer(unit->playerId);
-					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
-					bEndThere = true;
-				}
-				else { //68131
-
-					builtUnit->connectedUnit = unit;
-					unit->mainOrderId = OrderId::ConstructingBuilding;
-					unit->mainOrderState = 3;
-					unit->orderTarget.unit = builtUnit;
-
-					if(*IS_PLACING_BUILDING) {
-						if(!function_0048DDA0()) {
-							refreshLayer3And4();
-							function_0048E310();
+						if (*IS_PLACING_BUILDING) {
+							if (!function_0048DDA0()) {
+								refreshLayer3And4();
+								function_0048E310();
+							}
 						}
+
+						scbw::refreshConsole();
+						builtUnit->orderComputerCL(OrderId::BuildSelf1);
+						AI_TrainingOverlord(unit, builtUnit);
+						bEndThere = true;
+
 					}
 
-					scbw::refreshConsole();
-					builtUnit->orderComputerCL(OrderId::BuildSelf1);
-					AI_TrainingOverlord(unit,builtUnit);
-					bEndThere = true;
-
 				}
+
+				if (!bEndThere)
+					unit->orderToIdle();
+
 
 			}
 
-			if(!bEndThere)
-				unit->orderToIdle();
-
-
 		}
 
-	}
+		if (!bEndThere && unit->mainOrderState == 0) { //68188
 
-	if(!bEndThere && unit->mainOrderState == 0) { //68188
+			bool bMoveTargetResult;
 
-		bool bMoveTargetResult;
+			scbw::refreshConsole();
 
-		scbw::refreshConsole();
+			if (unit->orderTarget.unit != nullptr) {
+				unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
+				unit->orderTarget.pt.y = (unit->orderTarget.unit)->sprite->position.y;
+			}
 
-		if(unit->orderTarget.unit != NULL) {
-			unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
-			unit->orderTarget.pt.y = (unit->orderTarget.unit)->sprite->position.y;
-		}
+			bMoveTargetResult = SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
-		bMoveTargetResult = SetMoveTarget_xy(unit,unit->orderTarget.pt.x,unit->orderTarget.pt.y);
+			if (
+				(unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
+					unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
+				&& !(unit->orderTarget.pt.x == 0 && unit->orderTarget.pt.y == 0)
+				) {
+				unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
+				unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
+			}
 
-		if(
-			(unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
-			unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
-			&& !(unit->orderTarget.pt.x==0 && unit->orderTarget.pt.y==0)
-			) 
-		{
-			unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
-			unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
-		}
-
-		if(bMoveTargetResult)
-			unit->mainOrderState = 1;
+			if (bMoveTargetResult)
+				unit->mainOrderState = 1;
 
 		}
 
 	};
 
-	s32 updatePlacementStateForPlacementBox() { // 0x0048DCE0
-		s32 v0; // esi
-		s32 result; // eax
+	int32 updatePlacementStateForPlacementBox() { // 0x0048DCE0
+		int32 v0; // esi
+		int32 result; // eax
 
-/*		if (*activePortraitUnit == NULL) {
+/*		if (*activePortraitUnit == nullptr) {
 			return 0;
 		}*/
 
@@ -662,30 +639,30 @@ void orders_SCVBuild(CUnit* unit) {
 			0);
 		scbw::printText("First call over");
 
-/*		if (*isPlacingAddon) {
-			u32 source = *placeBuildBaseType;
-			u32 target = *placeBuildingUnitType;
-			u16 addon_x = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
-			u16 addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
-			scbw::adjustAddonCoordinates(target, source, addon_x, addon_y);
-			result = canBuildOnTileLocation(
-				*activePortraitUnit,
-				*unk_placementRelated,
-				addon_x,
-				addon_y,
-				source,
-				0,
-				1,
-				0,
-				0);
-		}
-		else {
-			result = v0;
-		}*/
-		u32 source = *placeBuildBaseType;
-		u32 target = *placeBuildingUnitType;
-		u16 addon_x = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
-		u16 addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
+		/*		if (*isPlacingAddon) {
+					uint32 source = *placeBuildBaseType;
+					uint32 target = *placeBuildingUnitType;
+					uint16 addon_x = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
+					uint16 addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
+					scbw::adjustAddonCoordinates(target, source, addon_x, addon_y);
+					result = canBuildOnTileLocation(
+						*activePortraitUnit,
+						*unk_placementRelated,
+						addon_x,
+						addon_y,
+						source,
+						0,
+						1,
+						0,
+						0);
+				}
+				else {
+					result = v0;
+				}*/
+		uint32 source = *placeBuildBaseType;
+		uint32 target = *placeBuildingUnitType;
+		uint16 addon_x = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
+		uint16 addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
 		scbw::adjustAddonCoordinates(source, target, addon_x, addon_y);
 		if (!*isPlacingAddon
 			|| (result = canBuildOnTileLocation(
@@ -704,14 +681,14 @@ void orders_SCVBuild(CUnit* unit) {
 		return result;
 	}
 
-	char refreshScreen(s32 ecx0) { // 0048DDC0
+	char refreshScreen(int32 ecx0) { // 0048DDC0
 
 		auto v6 = ecx0;
 		auto result = *IS_PLACING_BUILDING;
 		if (*IS_PLACING_BUILDING) {
 			auto y = mouse->y;
 			auto x = mouse->x;
-			auto mouse_pos = Point16{ (u16)mouse->x, (u16)mouse->y };
+			auto mouse_pos = Point16{(uint16)mouse->x, (uint16)mouse->y};
 			if (initPlacementBoxPos(&mouse_pos)) {
 				*placeBuildingMessageId = updatePlacementStateForPlacementBox_Func();
 				refreshLayer3And4();
@@ -728,8 +705,7 @@ void orders_SCVBuild(CUnit* unit) {
 					unk_buildingPlacementRelated(0, &addon_point);
 				}
 				result = refreshLayer3And4();
-			}
-			else {
+			} else {
 				unk_buildingPlacementRelatedMouse(0, 1);
 				result = unk_buildingPlacementRelatedMouse(0, 0);
 			}
@@ -742,10 +718,10 @@ void orders_SCVBuild(CUnit* unit) {
 
 namespace {
 
-	const u32 Func_isDistanceGreaterThanHaltDistance = 0x00401240;
-	bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, u32 distance) {
+	const uint32 Func_isDistanceGreaterThanHaltDistance = 0x00401240;
+	bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, uint32 distance) {
 
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 
 		__asm {
 			PUSHAD
@@ -762,8 +738,8 @@ namespace {
 
 	};
 
-	const u32 Func_fixTargetLocation = 0x00401FA0;
-	void fixTargetLocation(Point16* coords, u32 unitId) {
+	const uint32 Func_fixTargetLocation = 0x00401FA0;
+	void fixTargetLocation(Point16* coords, uint32 unitId) {
 
 		__asm {
 			PUSHAD
@@ -781,12 +757,12 @@ namespace {
 		return (
 			unit->nextTargetWaypoint.x == unit->position.x &&
 			unit->nextTargetWaypoint.y == unit->position.y
-		);
+			);
 
 
 	};
 
-	const u32 Func_AI_TrainingOverlord = 0x00435770;
+	const uint32 Func_AI_TrainingOverlord = 0x00435770;
 	void AI_TrainingOverlord(CUnit* main_unit, CUnit* created_unit) {
 
 		__asm {
@@ -799,10 +775,10 @@ namespace {
 
 	};
 
-	const u32 Func_Sub467030 = 0x00467030;
+	const uint32 Func_Sub467030 = 0x00467030;
 	bool function_00467030(CUnit* unit) {
 
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 
 		__asm {
 			PUSHAD
@@ -816,8 +792,8 @@ namespace {
 
 	};
 
-	const u32 Func_Sub4678A0 = 0x004678A0;
-	CUnit* function_004678A0(CUnit* unit, u32 unitId) {
+	const uint32 Func_Sub4678A0 = 0x004678A0;
+	CUnit* function_004678A0(CUnit* unit, uint32 unitId) {
 
 		static CUnit* newUnit;
 
@@ -834,12 +810,12 @@ namespace {
 
 	};
 
-	const u32 Func_buildingAddon = 0x004679A0;
+	const uint32 Func_buildingAddon = 0x004679A0;
 	//if canBeAborted is TRUE, the unit can be aborted because there's
 	//no room around the constructing building
-	Bool32 buildingAddon(CUnit* unit, u32 hpGain, Bool32 canBeAborted) {
+	bool32 buildingAddon(CUnit* unit, uint32 hpGain, bool32 canBeAborted) {
 
-		static Bool32 bResult;
+		static bool32 bResult;
 
 		__asm {
 			PUSHAD
@@ -855,8 +831,8 @@ namespace {
 
 	};
 
-	const u32 Func_Sub474760 = 0x00474760;
-	void function_00474760(CUnit* unit, COrder* order, u8 orderId) {
+	const uint32 Func_Sub474760 = 0x00474760;
+	void function_00474760(CUnit* unit, COrder* order, uint8 orderId) {
 
 		__asm {
 			PUSHAD
@@ -869,8 +845,8 @@ namespace {
 
 	};
 
-	const u32 Func_Sub4749A0 = 0x004749A0;
-	void function_004749A0(CUnit* unit, COrder* order, u8 orderId) {
+	const uint32 Func_Sub4749A0 = 0x004749A0;
+	void function_004749A0(CUnit* unit, COrder* order, uint8 orderId) {
 
 		__asm {
 			PUSHAD
@@ -883,7 +859,7 @@ namespace {
 
 	};
 
-	const u32 Func_RefreshLayer3And4 = 0x0048D9A0;
+	const uint32 Func_RefreshLayer3And4 = 0x0048D9A0;
 	char refreshLayer3And4() {
 		static int result;
 
@@ -896,10 +872,10 @@ namespace {
 		return (char)result;
 	};
 
-	const u32 Func_Sub48DDA0 = 0x0048DDA0;
+	const uint32 Func_Sub48DDA0 = 0x0048DDA0;
 	bool function_0048DDA0() {
 
-		Bool32 pre_return_value;
+		bool32 pre_return_value;
 
 		__asm {
 			PUSHAD
@@ -912,7 +888,7 @@ namespace {
 
 	};
 
-	const u32 Func_Sub48E310 = 0x0048E310;
+	const uint32 Func_Sub48E310 = 0x0048E310;
 	void function_0048E310() {
 
 		__asm {
@@ -923,7 +899,7 @@ namespace {
 
 	};
 
-	const u32 Func_PlayBuildingCompleteSound = 0x0048F310;
+	const uint32 Func_PlayBuildingCompleteSound = 0x0048F310;
 	void playBuildingCompleteSound(CUnit* building) {
 
 		__asm {
@@ -935,8 +911,8 @@ namespace {
 
 	};
 
-	const u32 Func_Sub494BB0 = 0x00494BB0;
-	void function_00494BB0(CUnit* unit,int x, int y) {
+	const uint32 Func_Sub494BB0 = 0x00494BB0;
+	void function_00494BB0(CUnit* unit, int x, int y) {
 
 		__asm {
 			PUSHAD
@@ -949,8 +925,8 @@ namespace {
 
 	};
 
-	const u32 Func_displayLastNetErrForPlayer = 0x0049E530;
-	void displayLastNetErrForPlayer(u32 playerId) {
+	const uint32 Func_displayLastNetErrForPlayer = 0x0049E530;
+	void displayLastNetErrForPlayer(uint32 playerId) {
 		__asm {
 			PUSHAD
 			PUSH playerId
@@ -959,8 +935,8 @@ namespace {
 		}
 	};
 
-	const u32 Func_CreateUnit = 0x004A09D0;
-	CUnit* createUnit(u32 unitId, int x, int y, u32 playerId) {
+	const uint32 Func_CreateUnit = 0x004A09D0;
+	CUnit* createUnit(uint32 unitId, int x, int y, uint32 playerId) {
 
 		static CUnit* unit_created;
 
@@ -979,10 +955,10 @@ namespace {
 
 	};
 
-	const u32 Func_RandomizeShort = 0x004DC4A0;
-	u32 RandomizeShort(u32 unknown_index) {
+	const uint32 Func_RandomizeShort = 0x004DC4A0;
+	uint32 RandomizeShort(uint32 unknown_index) {
 
-		static u32 return_value;
+		static uint32 return_value;
 
 		__asm {
 			PUSHAD
@@ -996,10 +972,10 @@ namespace {
 
 	};
 
-	const u32 Func_RandBetween = 0x004DC550;
-	u32 RandBetween(u32 min, u32 max, u32 someIndex) {
+	const uint32 Func_RandBetween = 0x004DC550;
+	uint32 RandBetween(uint32 min, uint32 max, uint32 someIndex) {
 
-		static u32 return_value;
+		static uint32 return_value;
 
 		__asm {
 			PUSHAD
@@ -1015,8 +991,8 @@ namespace {
 
 	};
 
-	const u32 Func_Sub4E65E0 = 0x004E65E0;
-	void function_004E65E0(CUnit* unit, Bool32 flag) {
+	const uint32 Func_Sub4E65E0 = 0x004E65E0;
+	void function_004E65E0(CUnit* unit, bool32 flag) {
 
 		__asm {
 			PUSHAD
@@ -1029,7 +1005,7 @@ namespace {
 	};
 
 	//Related to path/movement decision
-	const u32 Func_sub_4EB290 = 0x004EB290;
+	const uint32 Func_sub_4EB290 = 0x004EB290;
 	void setNextWaypoint_Sub4EB290(CUnit* unit) {
 
 		__asm {
@@ -1040,10 +1016,10 @@ namespace {
 		}
 	};
 
-	const u32 Func_SetMoveTarget_xy = 0x004EB820;
+	const uint32 Func_SetMoveTarget_xy = 0x004EB820;
 	bool SetMoveTarget_xy(CUnit* unit, int x, int y) {
 
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 
 		__asm {
 			PUSHAD
@@ -1059,11 +1035,11 @@ namespace {
 
 	};
 
-	const u32 Func__moveToTarget = 0x004EB980;
+	const uint32 Func__moveToTarget = 0x004EB980;
 	bool orderToMoveToTarget(CUnit* unit, CUnit* target) {
 
-		static Bool32 bPreResult;
-  
+		static bool32 bPreResult;
+
 		__asm {
 			PUSHAD
 			MOV EAX, target
@@ -1077,9 +1053,9 @@ namespace {
 
 	};
 
-	const u32 Func_Sub4EB9C0 = 0x004EB9C0;
+	const uint32 Func_Sub4EB9C0 = 0x004EB9C0;
 	bool function_004EB9C0(CUnit* unit, int x, int y) {
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EDX, unit
@@ -1092,9 +1068,9 @@ namespace {
 		return (bPreResult != 0);
 	};
 
-	const u32 Func_Sub4F1870 = 0x004F1870;
-	Bool32 function_004F1870(CUnit* unit, int x, int y) {
-		static Bool32 rValue;
+	const uint32 Func_Sub4F1870 = 0x004F1870;
+	bool32 function_004F1870(CUnit* unit, int x, int y) {
+		static bool32 rValue;
 		__asm {
 			PUSHAD
 			PUSH y
@@ -1110,10 +1086,10 @@ namespace {
 
 	// For updatePlacementStateForPlacementBox
 
-	const u32 Func_canBuildOnTileLocation = 0x00473FB0;
-	s32 canBuildOnTileLocation(CUnit* a1, s32 player, s32 x_tile, s32 y_tile, s32 unitType,
-		s32 placement_state_entry, s32 check_vision, s32 also_invisible, s32 without_vision) {
-		static s32 result;
+	const uint32 Func_canBuildOnTileLocation = 0x00473FB0;
+	int32 canBuildOnTileLocation(CUnit* a1, int32 player, int32 x_tile, int32 y_tile, int32 unitType,
+		int32 placement_state_entry, int32 check_vision, int32 also_invisible, int32 without_vision) {
+		static int32 result;
 
 		__asm {
 			PUSHAD
@@ -1135,9 +1111,9 @@ namespace {
 
 	// For refreshScreen
 
-	const u32 Func_updatePlacementStateForPlacementBox = 0x0048DCE0;
-	s32 updatePlacementStateForPlacementBox_Func() {
-		static s32 result;
+	const uint32 Func_updatePlacementStateForPlacementBox = 0x0048DCE0;
+	int32 updatePlacementStateForPlacementBox_Func() {
+		static int32 result;
 		__asm {
 			PUSHAD
 			CALL Func_updatePlacementStateForPlacementBox
@@ -1147,9 +1123,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_unk_buildingPlacementRelated = 0x0048D7F0;
-	s32 unk_buildingPlacementRelated(s32 a1, Point16* a2) {
-		static s32 result;
+	const uint32 Func_unk_buildingPlacementRelated = 0x0048D7F0;
+	int32 unk_buildingPlacementRelated(int32 a1, Point16* a2) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH a2
@@ -1161,12 +1137,12 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_initPlacementBoxPos = 0x0048D660;
-	s32 initPlacementBoxPos(Point16* in_out) {
-		static s32 result;
+	const uint32 Func_initPlacementBoxPos = 0x0048D660;
+	int32 initPlacementBoxPos(Point16* in_out) {
+		static int32 result;
 		__asm {
 			PUSHAD
-//			MOV ECX, a1
+			//			MOV ECX, a1
 			MOV EDX, in_out
 			CALL Func_initPlacementBoxPos
 			MOV result, EAX
@@ -1175,9 +1151,9 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_unk_buildingPlacementRelatedMouse = 0x0048D7B0;
-	char unk_buildingPlacementRelatedMouse(s32 a1, s32 a2) {
-		static s32 result;
+	const uint32 Func_unk_buildingPlacementRelatedMouse = 0x0048D7B0;
+	char unk_buildingPlacementRelatedMouse(int32 a1, int32 a2) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, a1

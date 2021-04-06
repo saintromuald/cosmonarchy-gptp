@@ -3,7 +3,7 @@
 
 namespace {
 	void __declspec(naked) loadRaceUI_Wrapper() { // 004EE2D0
-		static s32 result;
+		static int32 result;
 		__asm {
 			PUSHAD
 		}
@@ -16,7 +16,7 @@ namespace {
 	}
 
 	void __declspec(naked) setTextStr_Wrapper() { // 004263E0
-		static s32 a1;
+		static int32 a1;
 
 		__asm {
 			PUSH EBP

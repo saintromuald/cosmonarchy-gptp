@@ -6,20 +6,21 @@
 #include <SCBW/scbwdata.h>
 
 namespace hooks {
-	u32 realTopSpeed(CFlingy* flingy, u32 flingyId);
-	u16 realAcceleration(CFlingy* flingy, u32 flingyId);
-	bool is_high_templar_conduit(u16 unitId);
-	u32 weapon_flingy(u32 weaponId, u8 playerId);
-	u32 getFlingyHaltDistance(CFlingy* flingy);
-	bool is_unused_order(u8 orderId);
+	uint32 realTopSpeed(CFlingy* flingy, uint32 flingyId);
+	uint16 realAcceleration(CFlingy* flingy, uint32 flingyId);
+	bool is_high_templar_conduit(uint16 unitId);
+	uint32 weapon_flingy(uint32 weaponId, uint8 playerId);
+	uint32 getFlingyHaltDistance(CFlingy* flingy);
+	bool is_unused_order(uint8 orderId);
 	void setupSpiderMines(CUnit* unit);
-	u32 get_mine_id(CUnit* unit);
-	u32 extend_tech_target_check(u32 orig_result, CUnit* caster, CUnit* target, u8 techId);
+	uint32 get_mine_id(CUnit* unit);
+	uint32 extend_tech_target_check(uint32 orig_result, CUnit* caster, CUnit* target, uint8 techId);
 	void order_PhaseLink(CUnit* unit);
-	bool canAttackTarget_EndChunk(CUnit* source, u32 target_flags);
+	bool canAttackTarget_EndChunk(CUnit* source, uint32 target_flags);
 	void createDamageOverlay(CSprite* sprite);
-	u32 checkUnitDatRequirements(u8 playerId, u16 unit_id, CUnit* parent);
-	s32 gameLoop(); // 004D94B0
+	uint32 checkUnitDatRequirements(uint8 playerId, uint16 unit_id, CUnit* parent);
+	int32 isTileBlockedBy(CUnit** unitArray, CUnit* builder, int32 x_tile, int32 y_tile, int8 dontIgnoreReacting, int8 alsoInvisible); // 00473300
+	int32 gameLoop(); // 004D94B0
 }
 
 namespace hooks {

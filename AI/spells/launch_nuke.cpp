@@ -5,35 +5,24 @@
 
 namespace AI {
 
-	class NukeLaunchTargetFinderProc: public scbw::UnitFinderCallbackMatchInterface {
-
-	  private:
-		CUnit* caster;
-
-	  public:
-		NukeLaunchTargetFinderProc(CUnit* caster)
-		  : caster(caster) {}
-
-		bool match(CUnit* target) {
+	CUnit* findBestNukeLaunchTarget(CUnit* caster, bool isUnderAttack) {
+		return scbw::UnitFinder::getNearestTarget(caster,
+			[&](CUnit* target) {
 
 			if ((target->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection))
 				&& !target->isVisibleTo(caster->playerId))
-			  return false;
+				return false;
 
 			if (!caster->isTargetEnemy(target))
-			  return false;
+				return false;
 
 			const int totalEnemyClumpValue = getTotalEnemyNukeValueInArea(target->getX(), target->getY(), 192, caster);
 			if (totalEnemyClumpValue >= 800)
-			  return true;
+				return true;
 
 			return false;
 
-		}
-	};
-
-	CUnit* findBestNukeLaunchTarget(CUnit* caster, bool isUnderAttack) {
-	  return scbw::UnitFinder::getNearestTarget(caster, NukeLaunchTargetFinderProc(caster));
+		});
 	}
 
 } //AI

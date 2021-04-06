@@ -2,7 +2,7 @@
 #include <SCBW/structures.h>
 
 namespace hooks {
-	s32 decrementRemainingBuildTime(CUnit* unit);
+	int32 decrementRemainingBuildTime(CUnit* unit);
 
 	void injectBuildTimeHooks();
 }

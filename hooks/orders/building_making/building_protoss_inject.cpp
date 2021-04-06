@@ -52,8 +52,8 @@ namespace {
 namespace hooks {
 
 	void injectBuildingProtossHooks() {
-		jmpPatch(orders_ProbeBuildWrapper,		0x004E4D00, 1);
-		jmpPatch(orders_BuildSelf2Wrapper,		0x004E4F40, 0);
+		jmpPatch(orders_ProbeBuildWrapper, 0x004E4D00, 1);
+		jmpPatch(orders_BuildSelf2Wrapper, 0x004E4F40, 0);
 	}
 
 }; //hooks

@@ -7,13 +7,13 @@
 namespace {
 
 	void hideDialog(BinDlg* dialog);								//18700
-	void StatsNukesCount(BinDlg* dialog, u32 index);				//25310
-	void StatHangerCount(BinDlg* dialog, u32 index);				//253D0
-	void StatsShieldLevel(BinDlg* dialog, u32 index);				//25510
-	void StatsArmorLevel(BinDlg* dialog, u32 index);				//25600
-	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weaponId);	//25790
-	bool StatSpidermineCount(BinDlg* dialog, u32 index);			//26300
-	u16 getLastQueueSlotType(CUnit* unit);							//7B270
+	void StatsNukesCount(BinDlg* dialog, uint32 index);				//25310
+	void StatHangerCount(BinDlg* dialog, uint32 index);				//253D0
+	void StatsShieldLevel(BinDlg* dialog, uint32 index);				//25510
+	void StatsArmorLevel(BinDlg* dialog, uint32 index);				//25600
+	void StatsWeaponLevel(BinDlg* dialog, uint32 index, uint32 weaponId);	//25790
+	bool StatSpidermineCount(BinDlg* dialog, uint32 index);			//26300
+	uint16 getLastQueueSlotType(CUnit* unit);							//7B270
 
 	// For getUnitRankString
 	__int8 unitGetRace(CUnit* a1);									//0047B150
@@ -23,7 +23,7 @@ namespace {
 
 namespace hooks {
 
-	bool StatLobotomyMineCount(BinDlg* dialog, u32 index) {
+	bool StatLobotomyMineCount(BinDlg* dialog, uint32 index) {
 		auto v2 = *activePortraitUnit;
 		auto v3 = dialog;
 		/*if (scbw::hasTechResearched(v2->playerId, TechId::LobotomyMine) == 0) {
@@ -34,20 +34,16 @@ namespace hooks {
 			v3 = v3->parent;
 		auto v5 = v3->childrenDlg;
 		bool jump = false;
-		if (v5)
-		{
-			while (v5->index != index + 9)
-			{
+		if (v5) {
+			while (v5->index != index + 9) {
 				v5 = v5->next;
 				if (!v5) {
-					v5 = NULL;
+					v5 = nullptr;
 					break;
 				}
 			}
-		}
-		else
-		{
-			v5 = NULL;
+		} else {
+			v5 = nullptr;
 		}
 		scbw::showDialog(v5);
 		scbw::disableDialog(v5);
@@ -55,15 +51,14 @@ namespace hooks {
 		auto v7 = *cmdicons_grp;
 		v5->graphic = UnitId::TerranLobotomyMine - 1;//or set icon id
 		statData->button_grp = v7;
-//		statData->grp_frame = UnitId::LobotomyMine;
+		//		statData->grp_frame = UnitId::LobotomyMine;
 		statData->grp_frame = 13;
 		statData->type = 3;
-//		statData->id = UnitId::LobotomyMine;
+		//		statData->id = UnitId::LobotomyMine;
 		statData->id = 13;
 		auto v8 = v5->flags;
 		v5->pszText = statusscreen_infobtn[index];
-		if (!(v8 & 1))
-		{
+		if (!(v8 & 1)) {
 			v5->flags = v8 | 1;
 			scbw::updateDialog(v5);
 		}
@@ -77,21 +72,20 @@ namespace hooks {
 
 		BinDlg* current_dialog;
 		CUnit* activeUnit = *activePortraitUnit;
-		u32 index = 0;
+		uint32 index = 0;
 
 		if (
 			!(activeUnit->status & UnitStatus::IsHallucination) ||
 			(!*IS_IN_REPLAY && activeUnit->playerId != *LOCAL_NATION_ID)
-			)
-		{
+			) {
 
 			bool bNoAirWeaponDisplay;
 
-			u32 airWeapon;			//[EBP-01] then [EBP-05]
-			u8 airWeaponMainUnit;	//BL
-			u8 airWeaponSubunit;	//AL
+			uint32 airWeapon;			//[EBP-01] then [EBP-05]
+			uint8 airWeaponMainUnit;	//BL
+			uint8 airWeaponSubunit;	//AL
 
-			u16 unitId = getLastQueueSlotType(activeUnit);
+			uint16 unitId = getLastQueueSlotType(activeUnit);
 
 			if (units_dat::ArmorUpgrade[unitId] != UpgradeId::GlobalUpgrade60) {
 				StatsArmorLevel(dialog, index);
@@ -106,27 +100,25 @@ namespace hooks {
 			if (
 				activeUnit->id != UnitId::ZergLakizilisk ||
 				activeUnit->status & UnitStatus::Burrowed
-				)
-			{
+				) {
 
 				bool bNoGroundWeaponDisplay = false;
 
-				u32 groundWeapon;													//[EBP-05]
-				u8 groundWeaponMainUnit = units_dat::GroundWeapon[activeUnit->id];	//BL
+				uint32 groundWeapon;													//[EBP-05]
+				uint8 groundWeaponMainUnit = units_dat::GroundWeapon[activeUnit->id];	//BL
 				if (activeUnit->id == UnitId::TerranMadrigal
-					&& scbw::get_generic_value(activeUnit, ValueId::TempoChange)
-					&& groundWeaponMainUnit == WeaponId::FuriaMissiles) {
-					groundWeaponMainUnit = WeaponId::ImperiosoMissiles;
+					&& scbw::get_generic_rust_value(activeUnit, ValueId::TempoChange)
+					&& groundWeaponMainUnit == WeaponId::MadrigalFuriaMissiles) {
+					groundWeaponMainUnit = WeaponId::MadrigalImperiosoMissiles;
 				}
-				u8 groundWeaponSubunit;												//CL
+				uint8 groundWeaponSubunit;												//CL
 
 				if (groundWeaponMainUnit == WeaponId::None) {
-					if (activeUnit->subunit == NULL)
+					if (activeUnit->subunit == nullptr)
 						bNoGroundWeaponDisplay = true;
 					else
 						groundWeaponSubunit = units_dat::GroundWeapon[activeUnit->subunit->id];
-				}
-				else
+				} else
 					groundWeaponSubunit = groundWeaponMainUnit;
 
 				if (!bNoGroundWeaponDisplay) {
@@ -140,7 +132,7 @@ namespace hooks {
 							if (groundWeaponMainUnit != WeaponId::None)
 								groundWeapon = groundWeaponMainUnit;	//26D35
 							else
-								if (activeUnit->subunit == NULL)
+								if (activeUnit->subunit == nullptr)
 									groundWeapon = WeaponId::None;			//26D41
 								else
 									groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id];	//26D51
@@ -151,7 +143,7 @@ namespace hooks {
 						index++;
 						// Display additional weapons
 						if (activeUnit->id == UnitId::TerranCentaur) {
-							StatsWeaponLevel(dialog, index, WeaponId::SunchaserMissiles);
+							StatsWeaponLevel(dialog, index, WeaponId::CentaurSunchaserMissiles);
 							index++;
 						}
 					}
@@ -167,7 +159,7 @@ namespace hooks {
 			if (airWeaponMainUnit != WeaponId::None)
 				airWeaponSubunit = airWeaponMainUnit;	//26D79
 			else
-				if (activeUnit->subunit == NULL)
+				if (activeUnit->subunit == nullptr)
 					bNoAirWeaponDisplay = true;				//26D82
 				else
 					airWeaponSubunit = units_dat::AirWeapon[activeUnit->subunit->id];	//26D8C
@@ -180,7 +172,7 @@ namespace hooks {
 					if (airWeaponMainUnit != WeaponId::None)
 						airWeapon = airWeaponMainUnit;	//26DA2
 					else {
-						if (activeUnit->subunit == NULL)
+						if (activeUnit->subunit == nullptr)
 							airWeapon = WeaponId::None;	//26DAF
 						else
 							airWeapon = units_dat::AirWeapon[activeUnit->subunit->id];
@@ -188,7 +180,7 @@ namespace hooks {
 
 				if (!bNoAirWeaponDisplay) {
 
-					u8 groundWeapon;	//AL
+					uint8 groundWeapon;	//AL
 
 					//26DBE
 					if (activeUnit->id == UnitId::ZergLakizilisk && !(activeUnit->status & UnitStatus::Burrowed))
@@ -197,7 +189,7 @@ namespace hooks {
 
 						groundWeapon = units_dat::GroundWeapon[activeUnit->id];
 
-						if (groundWeapon == WeaponId::None && activeUnit->subunit != NULL)
+						if (groundWeapon == WeaponId::None && activeUnit->subunit != nullptr)
 							groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id]; //26DE6
 
 					}
@@ -211,7 +203,7 @@ namespace hooks {
 						else
 							if (airWeaponMainUnit == WeaponId::None) { //26DFF
 
-								if (activeUnit->subunit == NULL)
+								if (activeUnit->subunit == nullptr)
 									airWeapon = WeaponId::None;	//26E06
 								else
 									airWeapon = units_dat::AirWeapon[activeUnit->subunit->id]; //26E16
@@ -230,11 +222,10 @@ namespace hooks {
 			//26E31
 			if (
 				activeUnit->id == UnitId::ProtossSolarion
-//				||	activeUnit->id == UnitId::Hero_Gantrithor
-				||	activeUnit->id == UnitId::ProtossAccantor
-//				||	activeUnit->id == UnitId::Hero_Warbringer
-				)
-			{
+				//				||	activeUnit->id == UnitId::Hero_Gantrithor
+				|| activeUnit->id == UnitId::ProtossAccantor
+				//				||	activeUnit->id == UnitId::Hero_Warbringer
+				) {
 				StatHangerCount(dialog, index);
 				index++;
 			}
@@ -242,20 +233,19 @@ namespace hooks {
 			if (
 				activeUnit->id == UnitId::TerranVulture /*||
 				activeUnit->id == UnitId::Hero_JimRaynorVulture*/	//disable hardcode for Southpaws, 
-																	//though without mines it shouldn't show in any case
-				)
-			{
+				//though without mines it shouldn't show in any case
+				) {
 				if (StatSpidermineCount(dialog, index))
 					index++; //don't increase the index if not displaying
 			}
-			
+
 			if (activeUnit->id == UnitId::ghost) {
 				if (StatLobotomyMineCount(dialog, index)) {
 					index++;
 				}
 			}
 			//placeholder code, disabled for now
-			
+
 			unitId = getLastQueueSlotType(activeUnit);
 
 			if (unitId == UnitId::TerranNuclearSilo) {
@@ -272,14 +262,14 @@ namespace hooks {
 		else
 			current_dialog = dialog->parent;
 
-		if (current_dialog->childrenDlg != NULL) {
+		if (current_dialog->childrenDlg != nullptr) {
 
 			current_dialog = current_dialog->childrenDlg;
 
-			while (current_dialog != NULL && current_dialog->index != index + 9)
+			while (current_dialog != nullptr && current_dialog->index != index + 9)
 				current_dialog = current_dialog->next;
 
-			while (index < 4 && current_dialog != NULL) {
+			while (index < 4 && current_dialog != nullptr) {
 				hideDialog(current_dialog);
 				current_dialog = current_dialog->next;
 				index++;
@@ -297,22 +287,22 @@ namespace hooks {
 
 		_type = a2->id;
 		if (units_dat::BaseProperty[_type] & UnitProperty::NeutralAccessories
-		|| _type == UnitId::TerranLobotomyMine
-		|| _type == UnitId::TerranSpiderMine)
+			|| _type == UnitId::TerranLobotomyMine
+			|| _type == UnitId::TerranSpiderMine)
 			return 0;
-/*		if (_type == UnitId::Hero_Gantrithor)
-		{
-			if (!units_dat::MapStringId[82])          // Gantrithor
-			{
-				if (statTxtTblNew->getString(572))
-					return (char*)statTxtTblNew->getString(572);
-				return "";
-			}
-			return 0;
-		}*/
+		/*		if (_type == UnitId::Hero_Gantrithor)
+				{
+					if (!units_dat::MapStringId[82])          // Gantrithor
+					{
+						if (statTxtTblNew->getString(572))
+							return (char*)statTxtTblNew->getString(572);
+						return "";
+					}
+					return 0;
+				}*/
 		if (_type != UnitId::TerranMinotaur && _type != UnitId::Hero_NoradII && _type != UnitId::Hero_Hyperion
-		|| !(units_dat::BaseProperty[_type] & UnitProperty::Hero)
-		|| !units_dat::MapStringId[_type]) {
+			|| !(units_dat::BaseProperty[_type] & UnitProperty::Hero)
+			|| !units_dat::MapStringId[_type]) {
 			if (unitGetRace(a2) == 1) {                 // Terran
 				return getStatTxtString((unsigned __int8)(a2->rankIncrease + units_dat::Rank[_type]) + 1302);
 			}
@@ -329,7 +319,7 @@ namespace hooks {
 
 namespace {
 
-	const u32 Func_HideDialog = 0x00418700;
+	const uint32 Func_HideDialog = 0x00418700;
 	void hideDialog(BinDlg* dialog) {
 
 		__asm {
@@ -343,8 +333,8 @@ namespace {
 
 	;
 
-	const u32 Func_Sub425310 = 0x00425310;
-	void StatsNukesCount(BinDlg* dialog, u32 index) {
+	const uint32 Func_Sub425310 = 0x00425310;
+	void StatsNukesCount(BinDlg* dialog, uint32 index) {
 
 		__asm {
 			PUSHAD
@@ -358,8 +348,8 @@ namespace {
 
 	;
 
-	const u32 Func_StatHangerCount = 0x004253D0;
-	void StatHangerCount(BinDlg* dialog, u32 index) {
+	const uint32 Func_StatHangerCount = 0x004253D0;
+	void StatHangerCount(BinDlg* dialog, uint32 index) {
 
 		__asm {
 			PUSHAD
@@ -373,8 +363,8 @@ namespace {
 
 	;
 
-	const u32 Func_Sub425510 = 0x00425510;
-	void StatsShieldLevel(BinDlg* dialog, u32 index) {
+	const uint32 Func_Sub425510 = 0x00425510;
+	void StatsShieldLevel(BinDlg* dialog, uint32 index) {
 
 		__asm {
 			PUSHAD
@@ -388,8 +378,8 @@ namespace {
 
 	;
 
-	const u32 Func_Sub425600 = 0x00425600;
-	void StatsArmorLevel(BinDlg* dialog, u32 index) {
+	const uint32 Func_Sub425600 = 0x00425600;
+	void StatsArmorLevel(BinDlg* dialog, uint32 index) {
 
 		__asm {
 			PUSHAD
@@ -403,8 +393,8 @@ namespace {
 
 	;
 
-	const u32 Func_Sub425790 = 0x00425790;
-	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weaponId) {
+	const uint32 Func_Sub425790 = 0x00425790;
+	void StatsWeaponLevel(BinDlg* dialog, uint32 index, uint32 weaponId) {
 
 		__asm {
 			PUSHAD
@@ -419,10 +409,10 @@ namespace {
 
 	;
 
-	const u32 Func_StatSpidermineCount = 0x00426300;
-	bool StatSpidermineCount(BinDlg* dialog, u32 index) {
+	const uint32 Func_StatSpidermineCount = 0x00426300;
+	bool StatSpidermineCount(BinDlg* dialog, uint32 index) {
 
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 
 		__asm {
 			PUSHAD
@@ -443,9 +433,9 @@ namespace {
 	//a level 2/3 zerg building, return the
 	//id of the building morphed into, else
 	//return the normal unit id.
-	u16 getLastQueueSlotType(CUnit* unit) {
+	uint16 getLastQueueSlotType(CUnit* unit) {
 
-		u16 unitId;
+		uint16 unitId;
 
 		if (unit->status & UnitStatus::Completed)
 			unitId = unit->id;
@@ -461,7 +451,7 @@ namespace {
 
 	// For getUnitRankString
 
-	const u32 Func_unitGetRace = 0x0047B150;
+	const uint32 Func_unitGetRace = 0x0047B150;
 	__int8 unitGetRace(CUnit* a1) {
 		static int result;
 		__asm {
@@ -474,7 +464,7 @@ namespace {
 		return (__int8)result;
 	}
 
-	const u32 Func_getStatTxtString = 0x004C36F0;
+	const uint32 Func_getStatTxtString = 0x004C36F0;
 	char* getStatTxtString(__int16 a1) {
 		static int result;
 		__asm {

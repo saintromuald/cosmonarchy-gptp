@@ -33,7 +33,10 @@ constexpr int MadcapPassiveDecayTime = 0.5s;
 constexpr int MadcapMaxStacks = 10;
 constexpr double MadcapAttackSpeedPerStack = 0.05;
 
-// Corsair - Disruption Web - AI
+// Treasury - Passive
+constexpr int TreasuryIncrease = 4;
+
+// Lanifect - Disruption Web - AI
 constexpr int AIWebSeekRange = 96;
 constexpr int AICorsairAllySeekRange = 128;
 constexpr int AICorsairEnemySeekRange = 128;
@@ -58,3 +61,6 @@ constexpr double LarvalColonyMultiplier = 0.75;
 
 // Matraleth - Parasite
 constexpr int DefaultArmParasiteTimer = (24 * 2) + 1;
+
+// Vithrilisk - Corrosive Spores
+constexpr int VithriliskCorrosiveSporeTimer = 30;

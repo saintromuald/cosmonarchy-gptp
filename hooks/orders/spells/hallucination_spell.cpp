@@ -1,20 +1,20 @@
 #include "hallucination_spell.h"
 #include <SCBW/api.h>
-
+#include "globals.h"
 //helper functions def
 
 namespace {
 
-	bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 sightRange,u32 error_message_index);	// 926D0
+	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index);	// 926D0
 	void UnitDestructor(CUnit* unit);																					// A0990
 	bool function_004F66D0(CUnit* unit);																				// 004F66D0	// called PlaceHallucination in Neiv's list
 
 	// for createHallucination
-	CUnit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId);														// 004A09D0
+	CUnit* createUnit(int16 unitType, int32 x, int32 y, int32 playerId);														// 004A09D0
 	void applyHallucinationStats(CUnit* halUnit);																		// 004F6180
-	s32 hallucinateScarabs(CUnit* a1, CUnit* a2);																		// 004F65B0
+	int32 hallucinateScarabs(CUnit* a1, CUnit* a2);																		// 004F65B0
 	void AI_TrainingUnit(CUnit* result, CUnit* parent);																	// 004A2830
-	void displayLastNetErrForPlayer(u8 a1);																				// 0049E530
+	void displayLastNetErrForPlayer(uint8 a1);																				// 0049E530
 
 } //unnamed namespace
 
@@ -22,8 +22,8 @@ namespace hooks {
 
 	void orders_Hallucination1(CUnit* unit) {
 		int sightRange = unit->getSightRange(true);
-		u16 techCost;
-		if(
+		uint16 techCost;
+		if (
 			ordersSpell_Sub_4926D0(
 				unit,
 				TechId::Hallucination,
@@ -31,7 +31,7 @@ namespace hooks {
 				sightRange * 32,
 				0x899 //Invalid Target
 			)
-		) {
+			) {
 			int counter = 1;
 			// TODO: cleanup
 			//while(counter > 0) {
@@ -40,7 +40,7 @@ namespace hooks {
 			//
 			//	CUnit* hal_unit = hallucinationHelpers::createHallucinationUnit(unit->orderTarget.unit,unit->playerId);
 			//
-			//	if(hal_unit == NULL)
+			//	if(hal_unit == nullptr)
 			//		counter = 0;
 			//	else
 			//	if(!hallucinationHelpers::function_004F66D0(hal_unit)) {
@@ -50,40 +50,39 @@ namespace hooks {
 			//
 			//}
 			CUnit* target = unit->orderTarget.unit;
-			scbw::sendGPTP_aise_cmd(target, 0, GptpId::SetGenericValue, ValueId::HallucinatingSourcePlayer, unit->playerId, 0);
-			scbw::sendGPTP_aise_cmd(target, 0, GptpId::SetGenericTimer, ValueId::HallucinatingTimer, (30 * 24) + 1, 0);
+			scbw::set_generic_value(target, ValueId::HallucinatingSourcePlayer, unit->playerId);
+			scbw::set_generic_timer(target, ValueId::HallucinatingTimer, (30 * 24) + 1);
 
-			if(!(*CHEAT_STATE & CheatFlags::TheGathering))
+			if (!(*CHEAT_STATE & CheatFlags::TheGathering))
 				unit->spendUnitEnergy(techCost);
 
 			scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, target);
 
-			if(unit->orderTarget.unit->subunit != NULL)
-				target->subunit->sprite->createOverlay(ImageId::HallucinationHit,0,0,0);
+			if (unit->orderTarget.unit->subunit != nullptr)
+				target->subunit->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
 			else
-				target->sprite->createOverlay(ImageId::HallucinationHit,0,0,0);
+				target->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
 
-			if(unit->orderQueueHead != NULL) {
+			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			}
-			else
-			if(unit->pAI != NULL)
-				unit->orderComputerCL(OrderId::ComputerAI);
-			else
-				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+			} else
+				if (unit->pAI != nullptr)
+					unit->orderComputerCL(OrderId::ComputerAI);
+				else
+					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 		}
 	}
 
 	// Hooked to rule out AI issues -- Pr0nogo
-	CUnit* createHallucination(CUnit* source, s32 player) {
+	CUnit* createHallucination(CUnit* source, int32 player) {
 		CUnit* halUnit; // eax
 		CUnit* v3; // edi
 		CUnit* halUnit2; // esi
 		CUnit* result; // eax
-		u16 halTimer; // cx
-		u16 currentHalTimer; // ax
-		s16 unitType; // ax
+		uint16 halTimer; // cx
+		uint16 currentHalTimer; // ax
+		int16 unitType; // ax
 
 		v3 = source;
 		halUnit = createUnit(source->id, source->sprite->position.x, source->sprite->position.y, player);
@@ -102,8 +101,7 @@ namespace hooks {
 				hallucinateScarabs(halUnit2, v3);
 			AI_TrainingUnit(halUnit2, halUnit2);
 			result = halUnit2;
-		}
-		else {
+		} else {
 			displayLastNetErrForPlayer(player);
 			result = 0;
 		}
@@ -114,9 +112,9 @@ namespace hooks {
 
 namespace {
 
-	const u32 Func_Sub_4926D0 = 0x004926D0;
-	bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index) {
-		static Bool32 bPreResult;
+	const uint32 Func_Sub_4926D0 = 0x004926D0;
+	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index) {
+		static bool32 bPreResult;
 		__asm {
 			PUSHAD
 			PUSH techEnergyCost
@@ -131,7 +129,7 @@ namespace {
 		return (bPreResult != 0);
 	}
 
-	const u32 Func_UnitDestructor = 0x004A0990;
+	const uint32 Func_UnitDestructor = 0x004A0990;
 	void UnitDestructor(CUnit* unit) {
 		__asm {
 			PUSHAD
@@ -141,9 +139,9 @@ namespace {
 		}
 	}
 
-	const u32 Func_sub_4F66D0 = 0x004F66D0;
+	const uint32 Func_sub_4F66D0 = 0x004F66D0;
 	bool function_004F66D0(CUnit* unit) {
-		static Bool32 bPreResult;
+		static bool32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -156,8 +154,8 @@ namespace {
 
 	// for createHallucination
 
-	const u32 Func_createUnit = 0x004A09D0;
-	CUnit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId) {
+	const uint32 Func_createUnit = 0x004A09D0;
+	CUnit* createUnit(int16 unitType, int32 x, int32 y, int32 playerId) {
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -172,7 +170,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_applyHallucinationStats = 0x004F6180;
+	const uint32 Func_applyHallucinationStats = 0x004F6180;
 	void applyHallucinationStats(CUnit* halUnit) {
 		__asm {
 			PUSHAD
@@ -182,9 +180,9 @@ namespace {
 		}
 	}
 
-	const u32 Func_hallucinateScarabs = 0x004F65B0;
-	s32 hallucinateScarabs(CUnit* a1, CUnit* a2) {
-		static s32 result;
+	const uint32 Func_hallucinateScarabs = 0x004F65B0;
+	int32 hallucinateScarabs(CUnit* a1, CUnit* a2) {
+		static int32 result;
 		__asm {
 			PUSHAD
 			PUSH a2
@@ -196,7 +194,7 @@ namespace {
 		return result;
 	}
 
-	const u32 Func_AI_TrainingUnit = 0x004A2830;
+	const uint32 Func_AI_TrainingUnit = 0x004A2830;
 	void AI_TrainingUnit(CUnit* result, CUnit* parent) {
 		__asm {
 			PUSHAD
@@ -207,8 +205,8 @@ namespace {
 		}
 	}
 
-	const u32 Func_displayLastNetErrForPlayer = 0x0049E530;
-	void displayLastNetErrForPlayer(u8 a1) {
+	const uint32 Func_displayLastNetErrForPlayer = 0x0049E530;
+	void displayLastNetErrForPlayer(uint8 a1) {
 		__asm {
 			PUSHAD
 			PUSH a1

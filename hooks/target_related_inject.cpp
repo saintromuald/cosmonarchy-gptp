@@ -4,12 +4,12 @@
 
 namespace {
 	void __declspec(naked) genericRightClickUnitProc2_Wrapper() { // 00455E00
-		static s32 result;
+		static int32 result;
 		static CUnit* unit;
-		static s32 a2;
-		static s16 a3;
+		static int32 a2;
+		static int16 a3;
 		static CUnit* target;
-		static s16 unitID;
+		static int16 unitID;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -37,7 +37,7 @@ namespace {
 
 	void __declspec(naked) CMDRECV_HoldPosition_Wrapper() { // 004C20C0
 		static CUnit* result;
-		static s32 a1;
+		static int32 a1;
 		__asm {
 			MOV a1, EDI
 			PUSHAD
@@ -53,7 +53,7 @@ namespace {
 	void __declspec(naked) unitCanSeeCloakedTarget_Wrapper() { // 00401D60
 		static CUnit* target;
 		static CUnit* unit;
-		static u32 result;
+		static uint32 result;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -78,10 +78,10 @@ namespace {
 namespace hooks {
 
 	void injectTargetHooks() {
-//		jmpPatch(genericRightClickUnitProc2_Wrapper, 0x00455E00, 1);
-//		jmpPatch(genericRightClickUnitProc2_Wrapper, 0x004C20C0, 0);
-        nops(0x004EB176, 8);//disruption web
-        nops(0x004EB316, 2);//disruption web
+		//		jmpPatch(genericRightClickUnitProc2_Wrapper, 0x00455E00, 1);
+		//		jmpPatch(genericRightClickUnitProc2_Wrapper, 0x004C20C0, 0);
+		nops(0x004EB176, 8);//disruption web
+		nops(0x004EB316, 2);//disruption web
 
 		jmpPatch(unitCanSeeCloakedTarget_Wrapper, 0x00401D60, 4);
 	}

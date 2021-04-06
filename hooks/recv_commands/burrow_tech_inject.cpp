@@ -21,13 +21,13 @@ namespace {
 
 	void __declspec(naked) CMDRECV_BurrowWrapper() {
 
-		static u8 bCommandType;
+		static uint8 bCommandType;
 
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV EAX, [EBP+0x08]
-			MOV AL, [EAX+1]
+			MOV EAX, [EBP + 0x08]
+			MOV AL, [EAX + 1]
 			MOV bCommandType, AL
 			PUSHAD
 		}
@@ -73,9 +73,9 @@ namespace {
 namespace hooks {
 
 	void injectBurrowTechHooks() {
-		jmpPatch(CMDRECV_UnburrowWrapper,	0x004C1AC0, 3);
-		jmpPatch(CMDRECV_BurrowWrapper,		0x004C1FA0, 6);
-		jmpPatch(Unburrow_ProcWrapper,		0x004E97C0, 1);
+		jmpPatch(CMDRECV_UnburrowWrapper, 0x004C1AC0, 3);
+		jmpPatch(CMDRECV_BurrowWrapper, 0x004C1FA0, 6);
+		jmpPatch(Unburrow_ProcWrapper, 0x004E97C0, 1);
 	}
 
 } //hooks

@@ -6,9 +6,9 @@
 
 void CImage::playIscriptAnim(IscriptAnimation::Enum animation) {
 	assert(this);
-	u32 animation_ = (u8)animation;
+	uint32 animation_ = (uint8)animation;
 
-	const u32 Func_PlayIscriptAnim = 0x004D8470;  //AKA playImageIscript();
+	const uint32 Func_PlayIscriptAnim = 0x004D8470;  //AKA playImageIscript();
 	__asm {
 		PUSHAD
 		PUSH animation_
@@ -19,8 +19,7 @@ void CImage::playIscriptAnim(IscriptAnimation::Enum animation) {
 }
 
 //should be equivalent to ImageDestructor @ 0x004D4CE0 with ESI = sprite
-void CImage::free()
-{
+void CImage::free() {
 
 	assert(this);
 
@@ -34,7 +33,7 @@ void CImage::free()
 			//perform identically to original code
 	this->parentSprite->images.unlink<&CImage::link>(this);
 
-	this->grpOffset = NULL;
+	this->grpOffset = nullptr;
 
 	//perform identically to original code
 	unusedImages.insertAfterHead(this);
@@ -47,13 +46,13 @@ void CImage::setRemapping(ColorRemapping::Enum remapping) {
 	this->coloringData = colorShift[remapping].data;
 }
 //Identical to function @ 0x004D5A50
-void CImage::initializeData(CSprite *parent, u16 imageId, s8 x, s8 y) {
+void CImage::initializeData(CSprite* parent, uint16 imageId, int8 x, int8 y) {
 	assert(this);
 	this->id = imageId;
 
-//	this->grpOffset = imageGrpGraphics[imageId];
+	//	this->grpOffset = imageGrpGraphics[imageId];
 	this->grpOffset = reinterpret_cast<GrpHead*>(scbw::getImageData(ImagesDatEntries::ImagePtr, imageId));
-//	this->flags = ((images_dat::IsTurnable[imageId] & 1) << 3) | ((images_dat::IsClickable[imageId] & 1) << 5);
+	//	this->flags = ((images_dat::IsTurnable[imageId] & 1) << 3) | ((images_dat::IsClickable[imageId] & 1) << 5);
 	this->flags = ((scbw::getImageData(ImagesDatEntries::Turnable, imageId) & 1) << 3) |
 		((scbw::getImageData(ImagesDatEntries::Clickable, imageId) & 1) << 5);
 	this->frameSet = 0;
@@ -73,21 +72,21 @@ void CImage::initializeData(CSprite *parent, u16 imageId, s8 x, s8 y) {
 	this->wait = 0;
 	/*
 	if (images_dat::RLE_Function[imageId] == PaletteType::RLE_PLAYER_SIDE)
-		*(u32*)(&this->coloringData) = parent->playerId;
+		*(uint32*)(&this->coloringData) = parent->playerId;
 	if (images_dat::RLE_Function[imageId] == PaletteType::RLE_EFFECT)
 		this->coloringData = colorShift[images_dat::Remapping[imageId]].data;*/
 
-	if (scbw::getImageData(ImagesDatEntries::DrawFunc,imageId) == PaletteType::RLE_PLAYER_SIDE)
-		*(u32*)(&this->coloringData) = parent->playerId;
+	if (scbw::getImageData(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_PLAYER_SIDE)
+		*(uint32*)(&this->coloringData) = parent->playerId;
 	if (scbw::getImageData(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_EFFECT)
-		this->coloringData = colorShift[scbw::getImageData(ImagesDatEntries::DrawRemap,imageId)].data;
+		this->coloringData = colorShift[scbw::getImageData(ImagesDatEntries::DrawRemap, imageId)].data;
 }
 
 
 ///same as function 0x004D5EA0, direction is 0-31
-void CImage::setImageDirection(u8 direction) {
+void CImage::setImageDirection(uint8 direction) {
 	assert(this);
-	constexpr u32 Func_setDir = 0x004D5EA0;
+	constexpr uint32 Func_setDir = 0x004D5EA0;
 	__asm {
 		PUSHAD
 		MOV EAX, this

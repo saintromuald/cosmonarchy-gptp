@@ -59,8 +59,8 @@ namespace {
 namespace hooks {
 
 	void injectLiftLandHooks() {
-		jmpPatch(orders_BuildingLandWrapper,	0x00464360, 1);
-		jmpPatch(orders_BuildingLiftoffWrapper,	0x004649B0, 1);
+		jmpPatch(orders_BuildingLandWrapper, 0x00464360, 1);
+		jmpPatch(orders_BuildingLiftoffWrapper, 0x004649B0, 1);
 	}
 
 }

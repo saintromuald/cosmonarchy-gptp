@@ -3,8 +3,8 @@
 
 namespace hooks {
 
-	s32 initGame();							// 004EE110
-	s32 startGame(void* a1, s32 a2);		// 00472060
+	int32 initGame();							// 004EE110
+	int32 startGame(void* a1, int32 a2);		// 00472060
 
 	void injectLobbyHooks();
 }

@@ -7,7 +7,7 @@ namespace {
 
 	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);													//742D0
 	void actUnitReturnToIdle(CUnit* unit);																		//75420
-	void function_004754F0(CUnit* unit,u32 unitId,u32 unk1,u32 unk2,u32 orderId,u32 unk3,u32 unk4,u32 unk5);	//754F0
+	void function_004754F0(CUnit* unit, uint32 unitId, uint32 unk1, uint32 unk2, uint32 orderId, uint32 unk3, uint32 unk4, uint32 unk5);	//754F0
 	void function_004E97C0(CUnit* unit);																		//E97C0
 
 } //unnamed namespace
@@ -21,12 +21,12 @@ namespace hooks {
 		*selectionIndexStart = 0;
 		selected_unit = getActivePlayerNextSelection();
 
-		while(selected_unit != NULL) {
+		while (selected_unit != nullptr) {
 
-			if(
+			if (
 				units_dat::BaseProperty[selected_unit->id] & UnitProperty::Burrowable &&
-				selected_unit->canUseTech(TechId::Burrowing,*ACTIVE_NATION_ID) == 1
-			) 
+				selected_unit->canUseTech(TechId::Burrowing, *ACTIVE_NATION_ID) == 1
+				)
 				function_004E97C0(selected_unit);
 
 			selected_unit = getActivePlayerNextSelection();
@@ -37,24 +37,23 @@ namespace hooks {
 
 	;
 
-	void CMDRECV_Burrow(u8 bCommandType) {
+	void CMDRECV_Burrow(uint8 bCommandType) {
 
 		CUnit* selected_unit;
 
 		*selectionIndexStart = 0;
 		selected_unit = getActivePlayerNextSelection();
 
-		while(selected_unit != NULL) {
+		while (selected_unit != nullptr) {
 
-			if(
+			if (
 				units_dat::BaseProperty[selected_unit->id] & UnitProperty::Burrowable &&
-				selected_unit->canUseTech(TechId::Burrowing,*ACTIVE_NATION_ID) == 1 &&
+				selected_unit->canUseTech(TechId::Burrowing, *ACTIVE_NATION_ID) == 1 &&
 				!(selected_unit->status & UnitStatus::Burrowed) &&
 				selected_unit->mainOrderId != OrderId::Burrow
-			)
-			{
+				) {
 
-				if(bCommandType != 0)
+				if (bCommandType != 0)
 					bCommandType = 1;
 				else
 					bCommandType = 0;
@@ -62,8 +61,8 @@ namespace hooks {
 				function_004754F0(
 					selected_unit,
 					UnitId::None,
-					*(u32*)(0x006D5C24),
-					*(u32*)(0x006D5C20),
+					*(uint32*)(0x006D5C24),
+					*(uint32*)(0x006D5C20),
 					OrderId::Burrow,
 					0,
 					bCommandType,
@@ -83,32 +82,31 @@ namespace hooks {
 	//was sub_4E97C0
 	void Unburrow_Proc(CUnit* unit) {
 
-		if(	unit->mainOrderId == OrderId::Burrow ||
+		if (unit->mainOrderId == OrderId::Burrow ||
 			unit->mainOrderId == OrderId::Burrowed ||
 			unit->id == UnitId::ZergLakizilisk
-			) 
-		{
+			) {
 
-			if(unit->id == UnitId::ZergLakizilisk)
+			if (unit->id == UnitId::ZergLakizilisk)
 				unit->status |= UnitStatus::CanNotReceiveOrders;
 
 			unit->userActionFlags |= 1;
 
-			if(unit->mainOrderId != OrderId::Die) {
+			if (unit->mainOrderId != OrderId::Die) {
 
 				bool bStopLoop = false;
 
-				while(unit->orderQueueTail != NULL && !bStopLoop) {
-					if(
+				while (unit->orderQueueTail != nullptr && !bStopLoop) {
+					if (
 						!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId] &&
 						unit->orderQueueTail->orderId != OrderId::Unburrow
-					)
+						)
 						bStopLoop = true;
 					else
-						removeOrderFromUnitQueue(unit,unit->orderQueueTail);
+						removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 				}
 
-				unit->performAnotherOrder(OrderId::Unburrow,0,0,NULL,UnitId::None);
+				unit->performAnotherOrder(OrderId::Unburrow, 0, 0, nullptr, UnitId::None);
 
 			}
 
@@ -128,7 +126,7 @@ namespace hooks {
 
 namespace {
 
-	const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
+	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
 	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
 		__asm {
@@ -143,21 +141,21 @@ namespace {
 
 	;
 
-	const u32 Func_ActUnitReturnToIdle = 0x00475420;
+	const uint32 Func_ActUnitReturnToIdle = 0x00475420;
 	void actUnitReturnToIdle(CUnit* unit) {
 
-	  __asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_ActUnitReturnToIdle
-		POPAD
-	  }
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_ActUnitReturnToIdle
+			POPAD
+		}
 
 	}
 
 	;
 
-	const u32 Func_Sub_4E97C0 = 0x004E97C0;
+	const uint32 Func_Sub_4E97C0 = 0x004E97C0;
 	void function_004E97C0(CUnit* unit) {
 
 		__asm {
@@ -170,13 +168,13 @@ namespace {
 	}
 
 	;
-	
+
 	//Note: this function was made from what was seen in this case of use,
 	//some things are hardcoded because it's hard to tell what is used or
 	//not.
 	//Basically, used elsewhere, the function would be implemented differently
-	const u32 Func_Sub_4754F0 = 0x004754F0;
-	void function_004754F0(CUnit* unit,u32 unitId,u32 unk1,u32 unk2,u32 orderId,u32 unk3,u32 unk4,u32 unk5) {
+	const uint32 Func_Sub_4754F0 = 0x004754F0;
+	void function_004754F0(CUnit* unit, uint32 unitId, uint32 unk1, uint32 unk2, uint32 orderId, uint32 unk3, uint32 unk4, uint32 unk5) {
 
 		__asm {
 			PUSHAD

@@ -11,7 +11,7 @@
 
 void showAllPsiFields() {
 
-	static const u32 Func_showAllPsiFields = 0x00493640;
+	static const uint32 Func_showAllPsiFields = 0x00493640;
 
 	__asm {
 		PUSHAD
@@ -23,7 +23,7 @@ void showAllPsiFields() {
 
 void hideAllPsiFields() {
 
-	static const u32 Func_hideAllPsiFields = 0x00494100;
+	static const uint32 Func_hideAllPsiFields = 0x00494100;
 
 	__asm {
 		PUSHAD
@@ -49,7 +49,7 @@ void hideAllPsiFieldsOnUnselect(CUnit* unit) {
 
 	if (!scbw::isInReplay() && unit->playerId == *LOCAL_NATION_ID) {
 		if ((unit->status & UnitStatus::Completed) && hooks::isReadyToMakePsiField(unit)) {
-			 hideAllPsiFields();
+			hideAllPsiFields();
 		}
 	}
 
@@ -104,11 +104,11 @@ void __declspec(naked) hideAllPsiFieldsOnUnselectWrapper() {
 //0x004E3935
 void __declspec(naked) packUnitData_PsiProvider() {
 
-	static const u32 packUnitData_PsiProvider_Return = 0x004E3961;
+	static const uint32 packUnitData_PsiProvider_Return = 0x004E3961;
 
 	static CUnit* unit;
-	static u16 unitId;
-	
+	static uint16 unitId;
+
 	__asm {
 		MOV unitId, CX
 		MOV unit, ESI
@@ -116,8 +116,8 @@ void __declspec(naked) packUnitData_PsiProvider() {
 	}
 
 	if (hooks::canMakePsiField(unitId)) {
-		if (unit->building.pylonAura != NULL)
-			*((u32*)&unit->building.pylonAura) = (unit->building.pylonAura - spriteTable) / sizeof(CSprite) + 1;
+		if (unit->building.pylonAura != nullptr)
+			*((uint32*)&unit->building.pylonAura) = (unit->building.pylonAura - spriteTable) / sizeof(CSprite) + 1;
 	}
 
 	__asm {
@@ -129,10 +129,10 @@ void __declspec(naked) packUnitData_PsiProvider() {
 //0x004E3182
 void __declspec(naked) unpackUnitData_PsiProvider() {
 
-	static const u32 unpackUnitData_PsiProvider_Return = 0x004E31A3;
+	static const uint32 unpackUnitData_PsiProvider_Return = 0x004E31A3;
 
 	static CUnit* unit;
-	static u16 unitId;
+	static uint16 unitId;
 
 	__asm {
 		MOV unitId, CX
@@ -141,7 +141,7 @@ void __declspec(naked) unpackUnitData_PsiProvider() {
 	}
 
 	if (hooks::canMakePsiField(unitId))
-		if (unit->building.pylonAura != NULL)
+		if (unit->building.pylonAura != nullptr)
 			unit->building.pylonAura = &spriteTable[(int)unit->building.pylonAura];
 
 	__asm {
@@ -154,11 +154,11 @@ void __declspec(naked) unpackUnitData_PsiProvider() {
 //-------- Hook injector --------//
 namespace hooks {
 
-void injectPsiFieldHooks() {
-	jmpPatch(showAllPsiFieldsOnSelectWrapper,	0x004E6224, 0);
-	jmpPatch(hideAllPsiFieldsOnUnselectWrapper,	0x004E62BE, 0);
-	jmpPatch(packUnitData_PsiProvider,			0x004E3935, 0);
-	jmpPatch(unpackUnitData_PsiProvider,		0x004E3182, 0);
-}
+	void injectPsiFieldHooks() {
+		jmpPatch(showAllPsiFieldsOnSelectWrapper, 0x004E6224, 0);
+		jmpPatch(hideAllPsiFieldsOnUnselectWrapper, 0x004E62BE, 0);
+		jmpPatch(packUnitData_PsiProvider, 0x004E3935, 0);
+		jmpPatch(unpackUnitData_PsiProvider, 0x004E3182, 0);
+	}
 
 } //hooks

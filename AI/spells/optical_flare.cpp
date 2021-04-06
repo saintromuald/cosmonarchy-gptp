@@ -5,50 +5,41 @@
 
 namespace AI {
 
-	class OpticalFlareTargetFinderProc: public scbw::UnitFinderCallbackMatchInterface {
+	CUnit* findBestOpticalFlareTarget(CUnit* caster, bool isUnderAttack) {
 
-	  private:
-		CUnit* caster;
+		int bounds;
 
-	  public:
-		OpticalFlareTargetFinderProc(CUnit* caster)
-		  : caster(caster) {}
+		if (isUnderAttack)
+			bounds = 32 * 9;
+		else
+			bounds = 32 * 32;
 
-		bool match(CUnit* target) {
+		return scbw::UnitFinder::getNearestTarget(
+			caster->getX() - bounds,
+			caster->getY() - bounds,
+			caster->getX() + bounds,
+			caster->getY() + bounds,
+			caster,
+			[&](CUnit* target) {
 
 			if (!isTargetWorthHitting(target, caster))
-			  return false;
+				return false;
 
 			if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
-			  return false;
+				return false;
 
 			if (target->isBlind)
-			  return false;
+				return false;
 
 			if (target->canDetect())
-			  return true;
+				return true;
 
 			if (target->getCurrentLifeInGame() > 80)
-			  return true;
+				return true;
 
 			return false;
 
-		}
-	};
-
-	CUnit* findBestOpticalFlareTarget(CUnit* caster, bool isUnderAttack) {
-
-	  int bounds;
-
-	  if (isUnderAttack)
-		bounds = 32 * 9;
-	  else
-		bounds = 32 * 32;
-
-	  return scbw::UnitFinder::getNearestTarget(
-		caster->getX() - bounds, caster->getY() - bounds,
-		caster->getX() + bounds, caster->getY() + bounds,
-		caster, OpticalFlareTargetFinderProc(caster));
+		});
 	}
 
 

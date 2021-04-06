@@ -12,13 +12,13 @@ namespace {
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV EAX, [EBP+0x08]
+			MOV EAX, [EBP + 0x08]
 			MOV caster, EAX
 			MOV target, EBX
 			PUSHAD
 		}
 
-		hooks::spells_Recall_ActionOnValidTargetForRecall(target,caster);
+		hooks::spells_Recall_ActionOnValidTargetForRecall(target, caster);
 
 		__asm {
 			POPAD
@@ -42,7 +42,7 @@ namespace {
 			PUSHAD
 		}
 
-		hooks::spells_Recall_ActionOnTargetInRange(target,caster);
+		hooks::spells_Recall_ActionOnTargetInRange(target, caster);
 
 		__asm {
 			POPAD
@@ -61,7 +61,7 @@ namespace {
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV EAX, [EBP+0x08]
+			MOV EAX, [EBP + 0x08]
 			MOV unit, EAX
 			PUSHAD
 		}
@@ -84,9 +84,9 @@ namespace {
 namespace hooks {
 
 	void injectRecallSpellHooks() {
-		jmpPatch(spells_Recall_ActionOnValidTargetForRecallWrapper,	0x004942D0, 1);
-		jmpPatch(spells_Recall_ActionOnTargetInRangeWrapper,		0x00494400, 3);
-		jmpPatch(orders_RecallWrapper,								0x00494470,	1);
+		jmpPatch(spells_Recall_ActionOnValidTargetForRecallWrapper, 0x004942D0, 1);
+		jmpPatch(spells_Recall_ActionOnTargetInRangeWrapper, 0x00494400, 3);
+		jmpPatch(orders_RecallWrapper, 0x00494470, 1);
 	}
 
 } //hooks

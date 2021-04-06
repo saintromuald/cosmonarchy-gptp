@@ -5,302 +5,294 @@
 
 namespace {
 
-void CancelResearch_Proc(CUnit* unit);			//53E30
-void CancelUpgrade_Proc(CUnit* unit);			//54280
-void refundQueueSlot(CUnit* unit, u16 slot);	//66A70
-void function_00466E40(CUnit* unit);			//66E40
-void AI_CancelStructure(CUnit* unit);			//68280
-void CancelAddon_Proc(CUnit* unit);				//E66E0
+	void CancelResearch_Proc(CUnit* unit);			//53E30
+	void CancelUpgrade_Proc(CUnit* unit);			//54280
+	void refundQueueSlot(CUnit* unit, uint16 slot);	//66A70
+	void function_00466E40(CUnit* unit);			//66E40
+	void AI_CancelStructure(CUnit* unit);			//68280
+	void CancelAddon_Proc(CUnit* unit);				//E66E0
 
 } //unnamed namespace
 
 namespace hooks {
 
-//hooked to allow non-ghosts units to cancel nukes
-void CMDRECV_CancelNuke() {
+	//hooked to allow non-ghosts units to cancel nukes
+	void CMDRECV_CancelNuke() {
 
-	CUnit* current_unit;
+		CUnit* current_unit;
 
-	*selectionIndexStart = 0;
-	current_unit = getActivePlayerNextSelection();
+		*selectionIndexStart = 0;
+		current_unit = getActivePlayerNextSelection();
 
-	while(current_unit != NULL) {
+		while (current_unit != nullptr) {
 
-		// Why is it like this? We should instead check if the unit has a connected nuke, rather than doing insipid hardcode.
-		if(current_unit->id == UnitId::TerranEidolon
-		|| current_unit->id == UnitId::TerranSeraph
-		)
-		{
+			// Why is it like this? We should instead check if the unit has a connected nuke, rather than doing insipid hardcode.
+			if (current_unit->id == UnitId::TerranEidolon
+				|| current_unit->id == UnitId::TerranSeraph
+				) {
 
-			CUnit* nuke = current_unit->connectedUnit;
+				CUnit* nuke = current_unit->connectedUnit;
 
-			if(nuke != NULL && nuke->id == UnitId::TerranNuclearMissile) {
-				current_unit->connectedUnit = NULL;
-				nuke->connectedUnit = NULL;
+				if (nuke != nullptr && nuke->id == UnitId::TerranNuclearMissile) {
+					current_unit->connectedUnit = nullptr;
+					nuke->connectedUnit = nullptr;
+				}
+
+			}
+
+			current_unit = getActivePlayerNextSelection();
+
+		}
+
+	}
+
+	;
+
+	//hooked because the defaut code don't allow multiple selection
+	void CMDRECV_CancelAddon() {
+
+		CUnit* unit;
+
+		*selectionIndexStart = 0;
+		unit = getActivePlayerNextSelection();
+
+		if (unit != nullptr &&
+			getActivePlayerNextSelection() == nullptr &&
+			unit->secondaryOrderId == OrderId::BuildAddon &&
+			unit->status & UnitStatus::GroundedBuilding
+			) {
+
+			CUnit* addon = unit->currentBuildUnit;
+
+			if (addon != nullptr &&
+				!(addon->status & UnitStatus::Completed) &&
+				unit->status & UnitStatus::Completed &&
+				unit->playerId == *ACTIVE_NATION_ID
+				) {
+				CancelAddon_Proc(unit);
+				scbw::refreshConsole();
 			}
 
 		}
 
-		current_unit = getActivePlayerNextSelection();
-
 	}
 
-}
+	;
 
-;
+	//hooked because the defaut code don't allow multiple selection
+	void CMDRECV_CancelUpgrade() {
 
-//hooked because the defaut code don't allow multiple selection
-void CMDRECV_CancelAddon() {
+		CUnit* unit;
 
-	CUnit* unit;
+		*selectionIndexStart = 0;
+		unit = getActivePlayerNextSelection();
 
-	*selectionIndexStart = 0;
-	unit = getActivePlayerNextSelection();
-
-	if(	unit != NULL &&
-		getActivePlayerNextSelection() == NULL &&
-		unit->secondaryOrderId == OrderId::BuildAddon &&
-		unit->status & UnitStatus::GroundedBuilding
-	)
-	{
-
-		CUnit* addon = unit->currentBuildUnit;
-
-		if(	addon != NULL &&
-			!(addon->status & UnitStatus::Completed) &&
+		if (unit != nullptr &&
+			getActivePlayerNextSelection() == nullptr &&
 			unit->status & UnitStatus::Completed &&
 			unit->playerId == *ACTIVE_NATION_ID
-		)
-		{
-			CancelAddon_Proc(unit);
+			) {
+			CancelUpgrade_Proc(unit);
 			scbw::refreshConsole();
 		}
 
 	}
 
-}
+	;
 
-;
+	//hooked because the defaut code don't allow multiple selection
+	void CMDRECV_CancelResearch() {
 
-//hooked because the defaut code don't allow multiple selection
-void CMDRECV_CancelUpgrade() {
+		CUnit* unit;
 
-	CUnit* unit;
+		*selectionIndexStart = 0;
+		unit = getActivePlayerNextSelection();
 
-	*selectionIndexStart = 0;
-	unit = getActivePlayerNextSelection();
-
-	if(	unit != NULL &&
-		getActivePlayerNextSelection() == NULL &&
-		unit->status & UnitStatus::Completed &&
-		unit->playerId == *ACTIVE_NATION_ID
-	)
-	{
-		CancelUpgrade_Proc(unit);
-		scbw::refreshConsole();
-	}
-
-}
-
-;
-
-//hooked because the defaut code don't allow multiple selection
-void CMDRECV_CancelResearch() {
-
-	CUnit* unit;
-
-	*selectionIndexStart = 0;
-	unit = getActivePlayerNextSelection();
-
-	if(	unit != NULL &&
-		getActivePlayerNextSelection() == NULL &&
-		units_dat::BaseProperty[unit->id] & UnitProperty::Building &&
-		unit->status & UnitStatus::Completed &&
-		unit->playerId == *ACTIVE_NATION_ID
-	)
-	{
-		CancelResearch_Proc(unit);
-		scbw::refreshConsole();
-	}
-
-}
-
-;
-
-//hooked because the defaut code don't allow multiple selection
-void CMDRECV_CancelTrain(u16 wUnitID) {
-
-	CUnit* unit;
-
-	*selectionIndexStart = 0;
-	unit = getActivePlayerNextSelection();
-	if(	unit != NULL &&
-		getActivePlayerNextSelection() == NULL &&
-		unit->id != UnitId::ZergLarva &&
-		unit->id != UnitId::ZergMutalisk &&
-		unit->id != UnitId::ZergHydralisk &&
-		unit->id != UnitId::ZergHatchery &&
-		unit->id != UnitId::ZergLair &&
-		unit->id != UnitId::ZergMutalSpire &&
-		unit->id != UnitId::ZergCreepColony &&
-		unit->status & UnitStatus::Completed &&
-		unit->playerId == *ACTIVE_NATION_ID
-	)
-	{
-
-		if(wUnitID == 0xFE) {
-			function_00466E40(unit);
-			scbw::refreshConsole();
-		}
-		else
-		if(wUnitID == 0xFF)
-			scbw::refreshConsole();
-		else {
-			refundQueueSlot(unit,wUnitID);
+		if (unit != nullptr &&
+			getActivePlayerNextSelection() == nullptr &&
+			units_dat::BaseProperty[unit->id] & UnitProperty::Building &&
+			unit->status & UnitStatus::Completed &&
+			unit->playerId == *ACTIVE_NATION_ID
+			) {
+			CancelResearch_Proc(unit);
 			scbw::refreshConsole();
 		}
 
 	}
-}
 
-;
+	;
 
-void CMDRECV_CancelUnitMorph() {
+	//hooked because the defaut code don't allow multiple selection
+	void CMDRECV_CancelTrain(uint16 wUnitID) {
 
-	CUnit* current_unit;
+		CUnit* unit;
 
-	*selectionIndexStart = 0;
-	current_unit = getActivePlayerNextSelection();
+		*selectionIndexStart = 0;
+		unit = getActivePlayerNextSelection();
+		if (unit != nullptr &&
+			getActivePlayerNextSelection() == nullptr &&
+			unit->id != UnitId::ZergLarva &&
+			unit->id != UnitId::ZergMutalisk &&
+			unit->id != UnitId::ZergHydralisk &&
+			unit->id != UnitId::ZergHatchery &&
+			unit->id != UnitId::ZergLair &&
+			unit->id != UnitId::ZergMutalSpire &&
+			unit->id != UnitId::ZergCreepColony &&
+			unit->status & UnitStatus::Completed &&
+			unit->playerId == *ACTIVE_NATION_ID
+			) {
 
-	while(current_unit != NULL) {
-		if(current_unit->playerId == *ACTIVE_NATION_ID)
-			AI_CancelStructure(current_unit);
+			if (wUnitID == 0xFE) {
+				function_00466E40(unit);
+				scbw::refreshConsole();
+			} else
+				if (wUnitID == 0xFF)
+					scbw::refreshConsole();
+				else {
+					refundQueueSlot(unit, wUnitID);
+					scbw::refreshConsole();
+				}
 
+		}
+	}
+
+	;
+
+	void CMDRECV_CancelUnitMorph() {
+
+		CUnit* current_unit;
+
+		*selectionIndexStart = 0;
 		current_unit = getActivePlayerNextSelection();
 
-	}
+		while (current_unit != nullptr) {
+			if (current_unit->playerId == *ACTIVE_NATION_ID)
+				AI_CancelStructure(current_unit);
 
-}
+			current_unit = getActivePlayerNextSelection();
 
-;
-#include "hooks\orders\building_making\building_morph.h"
-//hooked because the defaut code don't allow multiple selection
-void CMDRECV_CancelConstruction() {
-
-	CUnit* unit;
-
-	*selectionIndexStart = 0;
-	unit = getActivePlayerNextSelection();
-	if(unit!=NULL){
-		if(unit->id==158 || unit->id==161){
-			if (unit->getOverlay(ImageId::WarpAnchor)) {				
-				unit->removeOverlay(ImageId::WarpAnchor);				
-			} 
 		}
-	}
-	//scbw::printText("Debug Cancel Structure");
-	if(	unit != NULL &&
-		getActivePlayerNextSelection() == NULL &&
-		unit->playerId == *ACTIVE_NATION_ID
-	)
-	{
-		AI_CancelStructure(unit);
+
 	}
 
-}
+	;
+#include "hooks\orders\building_making\building_morph.h"
+	//hooked because the defaut code don't allow multiple selection
+	void CMDRECV_CancelConstruction() {
 
-;
+		CUnit* unit;
+
+		*selectionIndexStart = 0;
+		unit = getActivePlayerNextSelection();
+		if (unit != nullptr) {
+			if (unit->id == 158 || unit->id == 161) {
+				if (unit->getOverlay(ImageId::WarpAnchor)) {
+					unit->removeOverlay(ImageId::WarpAnchor);
+				}
+			}
+		}
+		//scbw::printText("Debug Cancel Structure");
+		if (unit != nullptr &&
+			getActivePlayerNextSelection() == nullptr &&
+			unit->playerId == *ACTIVE_NATION_ID
+			) {
+			AI_CancelStructure(unit);
+		}
+
+	}
+
+	;
 
 } //namespace hooks
 
 //-------- Helper function definitions. Do NOT modify! --------//
 
 namespace {
-	
-const u32 Func_Sub453E30 = 0x00453E30;
-void CancelResearch_Proc(CUnit* unit) {
 
-	__asm {
-		PUSHAD
-		MOV EDX, unit
-		CALL Func_Sub453E30
-		POPAD
+	const uint32 Func_Sub453E30 = 0x00453E30;
+	void CancelResearch_Proc(CUnit* unit) {
+
+		__asm {
+			PUSHAD
+			MOV EDX, unit
+			CALL Func_Sub453E30
+			POPAD
+		}
+
 	}
 
-}
+	;
 
-;
+	const uint32 Func_Sub454280 = 0x00454280;
+	void CancelUpgrade_Proc(CUnit* unit) {
 
-const u32 Func_Sub454280 = 0x00454280;
-void CancelUpgrade_Proc(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_Sub454280
+			POPAD
+		}
 
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_Sub454280
-		POPAD
 	}
 
-}
+	;
 
-;
+	const uint32 Func_refundQueueSlot = 0x00466A70;
+	void refundQueueSlot(CUnit* unit, uint16 slot) {
 
-const u32 Func_refundQueueSlot = 0x00466A70;
-void refundQueueSlot(CUnit* unit, u16 slot) {
+		__asm {
+			PUSHAD
+			MOV EDI, unit
+			MOVZX EAX, slot
+			CALL Func_refundQueueSlot
+			POPAD
+		}
 
-	__asm {
-		PUSHAD
-		MOV EDI, unit
-		MOVZX EAX, slot
-		CALL Func_refundQueueSlot
-		POPAD
 	}
 
-}
+	;
 
-;
+	const uint32 Func_Sub466E40 = 0x00466E40;
+	void function_00466E40(CUnit* unit) {
 
-const u32 Func_Sub466E40 = 0x00466E40;
-void function_00466E40(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_Sub466E40
+			POPAD
+		}
 
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_Sub466E40
-		POPAD
 	}
 
-}
+	;
 
-;
+	const uint32 Func_AI_CancelStructure = 0x00468280;
+	void AI_CancelStructure(CUnit* unit) {
 
-const u32 Func_AI_CancelStructure = 0x00468280;
-void AI_CancelStructure(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			CALL Func_AI_CancelStructure
+			POPAD
+		}
 
-	__asm {
-		PUSHAD
-		MOV ECX, unit
-		CALL Func_AI_CancelStructure
-		POPAD
 	}
 
-}
+	;
 
-;
+	const uint32 Func_Sub4E66E0 = 0x004E66E0;
+	void CancelAddon_Proc(CUnit* unit) {
 
-const u32 Func_Sub4E66E0 = 0x004E66E0;
-void CancelAddon_Proc(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_Sub4E66E0
+			POPAD
+		}
 
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_Sub4E66E0
-		POPAD
 	}
 
-}
-
-;
+	;
 
 } //unnamed namespace
 

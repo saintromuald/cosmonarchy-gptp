@@ -11,75 +11,15 @@
 #include <SCBW/UnitFinder.h>
 #include "globals.h"
 
-class customPlagueProc_2 : public scbw::UnitFinderCallbackProcInterface
-	{
-	private:
-	CUnit* defiler;
-
-	public:
-	customPlagueProc_2(CUnit* defiler)
-		: defiler(defiler) {}
-	void proc(CUnit* unit)
-	{
-		if(unit->plagueTimer > 0){
-			unit->newFlags1 |= NewFlags1::Metastasis;
-		}
-	}
-};
-
-class vassalProc : public scbw::UnitFinderCallbackProcInterface
-{
-private:
-	CUnit* vassal;
-
-public:
-	vassalProc(CUnit* vassal)
-		: vassal(vassal) {}
-	void proc(CUnit* unit)
-	{
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit)) {
-			return;
-		}
-		if (!scbw::isAlliedTo(vassal->playerId, unit->playerId)) {
-			return;
-		}
-		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::AddGenericValue, ValueId::TerminalSurge, 1, 0);
-	}
-};
-
-class lastBreathProc : public scbw::UnitFinderCallbackProcInterface
-{
-private:
-	CUnit* victim;
-
-public:
-	lastBreathProc(CUnit* victim)
-		: victim(victim) {}
-	void proc(CUnit* unit)
-	{
-		if (unit->id != UnitId::TerranApostle) {
-			return;
-		}
-		if (unit == victim) {
-			return;
-		}
-		if (!scbw::isAlliedTo(victim->playerId, unit->playerId)) {
-			return;
-		}
-		unit->energy += 5*256;
-		unit->sprite->createUnderlay(425);
-	}
-};
-
 void killAllHangarUnits(CUnit* unit) {
 
-	u32 random_value;
+	uint32 random_value;
 
-	while(unit->carrier.inHangarCount != 0) {
+	while (unit->carrier.inHangarCount != 0) {
 		CUnit* childInside = unit->carrier.inHangarChild;
 		unit->carrier.inHangarChild = childInside->interceptor.hangar_link.prev;
-		childInside->interceptor.parent = NULL;
-//		GPTP::logger << "Removehangar -" << std::endl;
+		childInside->interceptor.parent = nullptr;
+		//		GPTP::logger << "Removehangar -" << std::endl;
 		childInside->remove();
 		unit->carrier.inHangarCount--;
 	}
@@ -88,18 +28,18 @@ void killAllHangarUnits(CUnit* unit) {
 
 		CUnit* childOutside = unit->carrier.outHangarChild;
 
-		childOutside->interceptor.parent = NULL;
+		childOutside->interceptor.parent = nullptr;
 
 		//Kill interceptors only (Scarabs will defuse anyway)
 		if (childOutside->id != UnitId::scarab) {
 
-			u16 randomDeathTimer;
+			uint16 randomDeathTimer;
 
 			//hardcoded RNG management
-			if(*IS_IN_GAME_LOOP) {
+			if (*IS_IN_GAME_LOOP) {
 
-				static u32* randomnessCounter_0051C6AC = (u32*)0x0051C6AC;
-				static u32* randomnessCounter_0051CA18 = (u32*)0x0051CA18;
+				static uint32* randomnessCounter_0051C6AC = (uint32*)0x0051C6AC;
+				static uint32* randomnessCounter_0051CA18 = (uint32*)0x0051CA18;
 
 				*randomnessCounter_0051C6AC = *randomnessCounter_0051C6AC + 1;
 				*randomnessCounter_0051CA18 = *randomnessCounter_0051CA18 + 1;
@@ -108,30 +48,29 @@ void killAllHangarUnits(CUnit* unit) {
 				//number between 0 and 32766
 				random_value = (*lastRandomNumber / 65536) & 0x7FFF;
 
-			}
-			else
+			} else
 				random_value = 0;
 
 			//should produce a number between 15 and 45 (or maybe 46)
-			randomDeathTimer = ( (random_value * 31) / 32768 ) + 15;
+			randomDeathTimer = ((random_value * 31) / 32768) + 15;
 
 			if (
-				childOutside->removeTimer == 0 || 
+				childOutside->removeTimer == 0 ||
 				randomDeathTimer < childOutside->removeTimer
-			)
+				)
 				childOutside->removeTimer = randomDeathTimer;
 
 		}
 
 		//66239
 		unit->carrier.outHangarChild = childOutside->interceptor.hangar_link.prev;
-		childOutside->interceptor.hangar_link.prev = NULL;
-		childOutside->interceptor.hangar_link.next = NULL;
+		childOutside->interceptor.hangar_link.prev = nullptr;
+		childOutside->interceptor.hangar_link.next = nullptr;
 		unit->carrier.outHangarCount--;
 
 	} //while (unit->carrier.outHangarCount != 0)
 
-	unit->carrier.outHangarChild = NULL;
+	unit->carrier.outHangarChild = nullptr;
 }
 
 //Identical to 00468770 sub_468770
@@ -143,21 +82,21 @@ void freeResourceContainer(CUnit* resource) {
 	CUnit* worker = resource->building.resource.nextGatherer;
 	CUnit* nextWorker;
 
-	while (worker != NULL) {
+	while (worker != nullptr) {
 
-		if (worker->worker.harvest_link.prev != NULL) //untie the previous worker from current worker (tie it to next)
+		if (worker->worker.harvest_link.prev != nullptr) //untie the previous worker from current worker (tie it to next)
 			(worker->worker.harvest_link.prev)->worker.harvest_link.next = worker->worker.harvest_link.next;
 		else
 			resource->building.resource.nextGatherer = worker->worker.harvest_link.next;
 
-		if (worker->worker.harvest_link.next != NULL) //untie the next worker from current worker (tie it to previous)
+		if (worker->worker.harvest_link.next != nullptr) //untie the next worker from current worker (tie it to previous)
 			(worker->worker.harvest_link.next)->worker.harvest_link.prev = worker->worker.harvest_link.prev;
 
 		nextWorker = worker->worker.harvest_link.next;
 
-		worker->worker.harvestTarget = NULL;
-		worker->worker.harvest_link.prev = NULL;
-		worker->worker.harvest_link.next = NULL;
+		worker->worker.harvestTarget = nullptr;
+		worker->worker.harvest_link.prev = nullptr;
+		worker->worker.harvest_link.next = nullptr;
 
 		worker = nextWorker;
 
@@ -168,11 +107,11 @@ void freeResourceContainer(CUnit* resource) {
 
 
 
-const u32 Func_CreateThingy = 0x00488210;
-CThingy* createThingyFunc(u32 spriteId, s16 x, s16 y, u32 playerId) {
+const uint32 Func_CreateThingy = 0x00488210;
+CThingy* createThingyFunc(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
 
 	static CThingy* thingy;
-	s32 x_ = x;
+	int32 x_ = x;
 
 	__asm {
 		PUSHAD
@@ -192,7 +131,7 @@ CThingy* createThingyFunc(u32 spriteId, s16 x, s16 y, u32 playerId) {
 ;
 
 
-const u32 Func_GetAllUnitsInBounds = 0x0042FF80;
+const uint32 Func_GetAllUnitsInBounds = 0x0042FF80;
 CUnit** getAllUnitsInBounds_copy(Box16* coords) {
 
 	static CUnit** units_in_bounds;
@@ -214,13 +153,12 @@ CUnit** getAllUnitsInBounds_copy(Box16* coords) {
 //Identical to setAllImageGroupFlagsPal11 @ 0x00497430;
 void setAllImageGroupFlagsPal11(CSprite* sprite) {
 
-	for(
-		CImage* current_image = sprite->images.head; 
-		current_image != NULL;
+	for (
+		CImage* current_image = sprite->images.head;
+		current_image != nullptr;
 		current_image = current_image->link.next
-	)
-	{
-		if(current_image->paletteType == PaletteType::RLE_HPFLOATDRAW)
+		) {
+		if (current_image->paletteType == PaletteType::RLE_HPFLOATDRAW)
 			current_image->flags |= CImage_Flags::Redraw;
 	}
 
@@ -228,10 +166,10 @@ void setAllImageGroupFlagsPal11(CSprite* sprite) {
 
 ;
 
-const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
+const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
 bool setThingyVisibilityFlagsFunc(CThingy* thingy) {
 
-	static Bool32 bPreResult;
+	static bool32 bPreResult;
 
 	__asm {
 		PUSHAD
@@ -247,10 +185,10 @@ bool setThingyVisibilityFlagsFunc(CThingy* thingy) {
 ;
 
 
-const u32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
+const uint32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
 void IterateUnitsAtLocationTargetProc_EnsnareFunc(CUnit* attacker, Box16* coords) {
 
-	const u32 EnsnareProc_function = 0x004F46C0;
+	const uint32 EnsnareProc_function = 0x004F46C0;
 
 	__asm {
 		PUSHAD
@@ -264,7 +202,7 @@ void IterateUnitsAtLocationTargetProc_EnsnareFunc(CUnit* attacker, Box16* coords
 }
 void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords) {
 
-	const u32 PlagueProc_function = 0x004F4AF0;
+	const uint32 PlagueProc_function = 0x004F4AF0;
 
 	__asm {
 		PUSHAD
@@ -279,231 +217,257 @@ void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords) {
 
 //Hooked down there instead of a specific inject.cpp
 void unitDestructorSpecialHook(CUnit* unit) {
+	// Aspirant Criticality behavior
+	if (unit->id == UnitId::TerranAspirant) {
+		scbw::createBullet(WeaponId::AspirantCriticality, unit, unit->position.x, unit->position.y, unit->playerId, 0);
+	}
 
-	Globals.remove_unit_from_pariah_table(unit,false);
-	Globals.clear_ptr_in_apostle_table(unit);
-	Globals.unitDeathHook(unit);
+	// Remove Disruption Fields
 	if (unit->id == UnitId::ProtossLanifect) {
 		auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
-		if (web != NULL) {
+		if (web != nullptr) {
 			web->removeTimer = 5 * 24;
 		}
 	}
 
+	// Alkajelisk Parasitic Spores behavior
 	if (scbw::get_generic_value(unit, ValueId::AlkajeliskParasite) == 1) {
 		unit->orderTarget.pt.x = unit->position.x + 1;
 		unit->orderTarget.pt.y = unit->position.y;
-		auto bullet = scbw::createBulletRet(WeaponId::ParasiticSpores, unit, unit->position.x, unit->position.y,
+		auto bullet = scbw::createBulletRet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y,
 			scbw::get_generic_value(unit, ValueId::AlkajeliskParasitePlayer), 0);
-		if (bullet != NULL) {
+		if (bullet != nullptr) {
 			bullet->time_remaining = 255;
 		}
 	}
 
 	// Vassal Autovitality behavior
 	if (unit->id == UnitId::ProtossVassal) {
-		u32 range = 5*32;
-		scbw::UnitFinder unitFinder(unit->getX() - range,
+		uint32 range = 5 * 32;
+		scbw::UnitFinder(
+			unit->getX() - range,
 			unit->getY() - range,
 			unit->getX() + range,
-			unit->getY() + range);
-		unitFinder.forEach(vassalProc(unit));
+			unit->getY() + range
+		).forEach([&](CUnit* target) {
+			if (!(units_dat::BaseProperty[target->id] & UnitProperty::RoboticUnit)) {
+				return;
+			}
+			if (!scbw::isAlliedTo(unit->playerId, target->playerId)) {
+				return;
+			}
+			scbw::add_generic_value(target, ValueId::TerminalSurge, 1);
+			target->updateSpeed();
+		});
 	}
 
 	// Apostle Last Breath behavior
 	if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic) {
-		u32 range = 4 * 32;
-		scbw::UnitFinder unitFinder(unit->getX() - range,
+		uint32 range = 4 * 32;
+		scbw::UnitFinder(
+			unit->getX() - range,
 			unit->getY() - range,
 			unit->getX() + range,
-			unit->getY() + range);
-		unitFinder.forEach(lastBreathProc(unit));
+			unit->getY() + range
+		).forEach([&](CUnit* target) {
+			if (target->id != UnitId::TerranApostle) {
+				return;
+			}
+			if (target == unit) {
+				return;
+			}
+			if (!scbw::isAlliedTo(unit->playerId, target->playerId)) {
+				return;
+			}
+			target->energy += 5 * 256;
+			target->sprite->createUnderlay(425);
+		});
 	}
 
 	// Clarion Phase Link behavior
-	if (unit->id == UnitId::ProtossClarion/* && scbw::get_aise_value(unit, NULL, AiseId::SendClarionValue, 0, 0) == 1*/) {
-		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::ClearClarionLinks, 0, 0, 0);
+	if (unit->id == UnitId::ProtossClarion) {
+		scbw::clearClarionLinks(unit);
 	}
 
 	// Irradiate Radiation Shockwave enhancement
-	if (unit->irradiateTimer > 0) {
-		scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericValue, ValueId::RadiationShockwaveCount, 1, 0);
+	if (scbw::get_generic_value(unit, ValueId::RadiationShockwaveTimer) > 1) {
+		scbw::set_generic_value(unit, ValueId::RadiationShockwaveCount, 1);
+		scbw::set_generic_value(unit, ValueId::RadiationShockwaveTimer, 0);
 	}
 
 	// Parasite - spawn broodlings on death
 	if (unit->parasiteFlags != 0) {
-		int supplyCount = scbw::getBroodlingCountFromSupply(unit);
-		int type = unit->status & UnitStatus::InAir ? UnitId::ZergBroodlisk : UnitId::ZergBroodling;
-		for (int player = 0; player < PLAYER_COUNT; player++) {
-			if (unit->parasiteFlags & (1 << player) && scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::ParasiteArmTimer, 0) <= 1) {
-				auto sourceQueen = scbw::getSourceQueens(unit)[1];
-				if (sourceQueen) {
-					scbw::createUnitFromAbility(type, supplyCount, player, unit->position.x, unit->position.y,
-						720, scbw::getSourceQueens(unit)[1]);
-				}
+		uint32 supplyCount = scbw::getBroodlingCountFromSupply(unit);
+		uint16 type = UnitId::ZergBroodling;
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Flyer) {
+			type = UnitId::ZergBroodlisk;
+		}
+		for (uint32 player = 0; player < PLAYER_COUNT; player++) {
+			if (unit->parasiteFlags & (1 << player) && scbw::get_generic_timer(unit, ValueId::ParasiteArmTimer) <= 1) {
+				scbw::createUnitFromAbility(type, supplyCount, player, unit->position.x, unit->position.y, 720);
 			}
 		}
 	}
 
 	// Metastasis - Plague spreads when a unit dies
 	if ((unit->newFlags1 & NewFlags1::Metastasis) && unit->plagueTimer > 0) {
-		scbw::createBullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->playerId, 
-			unit->currentDirection1);	
+		scbw::createBullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->playerId,
+			unit->currentDirection1);
 		Box16 coords;
 		coords.left = unit->position.x - 48;
 		coords.bottom = unit->position.y + 48;
-		coords.top = unit->position.y -48;
+		coords.top = unit->position.y - 48;
 		coords.right = unit->position.x + 48;
 		IterateUnitsAtLocationTargetProc_Plague(unit, &coords);
-		customPlagueProc_2 UpgPlague = customPlagueProc_2(unit);
-		u32 range = 48;
-		scbw::UnitFinder unitFinder(unit->getX() - range,
+		uint32 range = 48;
+		scbw::UnitFinder(
+			unit->getX() - range,
 			unit->getY() - range,
 			unit->getX() + range,
-			unit->getY() + range);
-		unitFinder.forEach(UpgPlague);
+			unit->getY() + range
+		).forEach([&](CUnit* target) {
+			if (target->plagueTimer > 0) {
+				target->newFlags1 |= NewFlags1::Metastasis;
+			}
+		});
 		//add finder later to trace plague flag
 	}
 
-	//Destroy interceptors and scarabs
+	// Destroy interceptors and scarabs
 	if (unit->id == UnitId::ProtossSolarion
-	||  unit->id == UnitId::ProtossAccantor) {
+		|| unit->id == UnitId::ProtossAccantor) {
 		killAllHangarUnits(unit);
 	}
 
-	//Destroy nuclear missiles mid-launch
+	// Destroy nuclear missiles mid-launch
 	else
-	if (unit->id == UnitId::TerranEidolon
-	||  unit->id == UnitId::TerranSeraph) {
-		if (unit->building.ghostNukeMissile != NULL) {
-			(unit->building.ghostNukeMissile)->sprite->playIscriptAnim(IscriptAnimation::Death, true);
-			unit->building.ghostNukeMissile = NULL;
-		} 
+		if (unit->id == UnitId::TerranEidolon
+			|| unit->id == UnitId::TerranSeraph) {
+			if (unit->building.ghostNukeMissile != nullptr) {
+				(unit->building.ghostNukeMissile)->sprite->playIscriptAnim(IscriptAnimation::Death, true);
+				unit->building.ghostNukeMissile = nullptr;
+			}
 
-	}
-	else
+		} else
 
-	//Is a harvestable mineral patch or gas building
-	if (
-		(unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3) ||
-		(	(unit->id == UnitId::TerranRefinery || unit->id == UnitId::ProtossAssimilator || unit->id == UnitId::ZergExtractor)
-			&& unit->status & UnitStatus::Completed
-		)	/*this test is equivalent to function unit_isGeyserUnit @ 004688B0*/
-	  ) 
-	{
-		freeResourceContainer(unit);
-	}
-	else
+			// Is a harvestable mineral patch or gas building
+			if (
+				(unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3) ||
+				((unit->id == UnitId::TerranReservoir || unit->id == UnitId::ProtossAquifer || unit->id == UnitId::ZergExtractor)
+					&& unit->status & UnitStatus::Completed
+					)	/*this is equivalent to function unit_isGeyserUnit @ 004688B0*/
+				) {
+				freeResourceContainer(unit);
+			} else
 
-	if(unit->id >= UnitId::TerranNuclearMissile && unit->id <= UnitId::ProtossPylon) {
+				if (unit->id >= UnitId::TerranNuclearMissile && unit->id <= UnitId::ProtossPylon) {
 
-		//In original code, this part is handled by an internal id_based array and a
-		//switch-like system to execute the code corresponding to the unit
-		//If the id were within the previous test, the resource units would go through
-		//those tests
+					//In original code, this part is handled by an internal id_based array and a
+					//switch-like system to execute the code corresponding to the unit
+					//If the id were within the previous test, the resource units would go through
+					//those tests
 
-		//Is a scarab or interceptor
-		if (unit->id == UnitId::ProtossPlasmaShell || unit->id == UnitId::ProtossSteward) {
+					//Is a scarab or interceptor
+					if (unit->id == UnitId::ProtossPlasmaShell || unit->id == UnitId::ProtossSteward) {
 
-			if (unit->status & UnitStatus::Completed) {
+						if (unit->status & UnitStatus::Completed) {
 
-				//following code is equivalent to a jump to function 004652A0
-				//with unit as parameter in EAX
+							//following code is equivalent to a jump to function 004652A0
+							//with unit as parameter in EAX
 
-				if (unit->interceptor.parent != NULL) {
+							if (unit->interceptor.parent != nullptr) {
 
-					if (unit->interceptor.hangar_link.next != NULL) //untie the next interceptor/scarab from current interceptor/scarab (tie it to previous)
-						(unit->interceptor.hangar_link.next)->interceptor.hangar_link.prev = unit->interceptor.hangar_link.prev;
-					else {
-						if (unit->interceptor.isOutsideHangar)
-							unit->interceptor.parent->carrier.outHangarChild = unit->interceptor.hangar_link.prev;
-						else
-							unit->interceptor.parent->carrier.inHangarChild = unit->interceptor.hangar_link.prev;
-					}
+								if (unit->interceptor.hangar_link.next != nullptr) //untie the next interceptor/scarab from current interceptor/scarab (tie it to previous)
+									(unit->interceptor.hangar_link.next)->interceptor.hangar_link.prev = unit->interceptor.hangar_link.prev;
+								else {
+									if (unit->interceptor.isOutsideHangar)
+										unit->interceptor.parent->carrier.outHangarChild = unit->interceptor.hangar_link.prev;
+									else
+										unit->interceptor.parent->carrier.inHangarChild = unit->interceptor.hangar_link.prev;
+								}
 
-					if (unit->interceptor.isOutsideHangar)
-						unit->interceptor.parent->carrier.outHangarCount--;
-					else
-						unit->interceptor.parent->carrier.inHangarCount--;
+								if (unit->interceptor.isOutsideHangar)
+									unit->interceptor.parent->carrier.outHangarCount--;
+								else
+									unit->interceptor.parent->carrier.inHangarCount--;
 
-					if (unit->interceptor.hangar_link.prev != NULL)  //untie the previous interceptor/scarab from current interceptor/scarab (tie it to next)
-						(unit->interceptor.hangar_link.prev)->interceptor.hangar_link.next = unit->interceptor.hangar_link.next;
+								if (unit->interceptor.hangar_link.prev != nullptr)  //untie the previous interceptor/scarab from current interceptor/scarab (tie it to next)
+									(unit->interceptor.hangar_link.prev)->interceptor.hangar_link.next = unit->interceptor.hangar_link.next;
 
+							} else {
+								unit->interceptor.hangar_link.prev = nullptr;
+								unit->interceptor.hangar_link.next = nullptr;
+							}
+
+						}
+
+					} else
+
+						//Is a Nuclear Silo
+						if (unit->id == UnitId::TerranNuclearSilo) {
+
+							if (unit->building.silo.nuke != nullptr) {
+								(unit->building.silo.nuke)->remove();
+								unit->building.silo.nuke = nullptr;
+							}
+
+						} else
+
+
+
+							//Is a Nuclear Missile
+							if (unit->id == UnitId::TerranNuclearMissile) {
+
+								if (unit->connectedUnit != nullptr && unit->connectedUnit->id == UnitId::TerranNuclearSilo) {
+									(unit->connectedUnit)->building.silo.nuke = nullptr;
+									(unit->connectedUnit)->building.silo.isReady = false;
+								}
+
+							} else
+
+								//Is a Protoss Pylon
+								if (unit->id == UnitId::ProtossPylon) {
+
+									//code from hooks::removePsiField(CUnit* unit)
+									//copied because the content is hardcoded here
+
+									if (unit->building.pylonAura != nullptr) {
+										unit->building.pylonAura->free();	//should be equivalent to SpriteDestructor @ 00497B40
+										unit->building.pylonAura = nullptr;
+									}
+
+									//begin hardcoding removeFromPsiProviderList @ 00493100 to avoid use of a helper
+
+									if (unit->psi_link.prev != nullptr)  //untie the previous pylon from current pylon (tie it to next)
+										(unit->psi_link.prev)->psi_link.next = unit->psi_link.next;
+									if (unit->psi_link.next != nullptr)  //untie the next pylon from current pylon (tie it to previous)
+										(unit->psi_link.next)->psi_link.prev = unit->psi_link.prev;
+
+									if (unit == *firstPsiFieldProvider)
+										*firstPsiFieldProvider = unit->psi_link.next;
+
+									unit->psi_link.prev = nullptr;
+									unit->psi_link.next = nullptr;
+
+									//end hardcoding removeFromPsiProviderList @ 00493100 to avoid use of a helper
+
+									*canUpdatePoweredStatus = true;
+
+								} else
+									//Is a Nydus Canal
+									if (unit->id == UnitId::ZergNydusCanal) {
+										CUnit* nydusExit = unit->building.nydusExit;
+										if (nydusExit != nullptr) {
+											unit->building.nydusExit = nullptr;
+											nydusExit->building.nydusExit = nullptr;
+											nydusExit->remove();
+										}
+									}
+
+								Globals.remove_unit_from_pariah_table(unit, false);
+								Globals.clear_ptr_in_apostle_table(unit);
+								Globals.unitDeathHook(unit);
 				}
-				else {
-					unit->interceptor.hangar_link.prev = NULL;
-					unit->interceptor.hangar_link.next = NULL;
-				}
-
-			}
-
-		}
-		else
-
-		//Is a Nuclear Silo
-		if (unit->id == UnitId::TerranNuclearSilo) {
-
-			if (unit->building.silo.nuke != NULL) {
-				(unit->building.silo.nuke)->remove();
-				unit->building.silo.nuke = NULL;
-			}
-
-		}
-		else
-
-
-
-		//Is a Nuclear Missile
-		if (unit->id == UnitId::TerranNuclearMissile) {
-
-			if (unit->connectedUnit != NULL && unit->connectedUnit->id == UnitId::TerranNuclearSilo) {
-				(unit->connectedUnit)->building.silo.nuke = NULL;
-				(unit->connectedUnit)->building.silo.isReady = false;
-			}
-
-		}
-		else
-
-		//Is a Protoss Pylon
-		if (unit->id == UnitId::ProtossPylon) {
-
-			//code from hooks::removePsiField(CUnit* unit)
-			//copied because the content is hardcoded here
-
-			if (unit->building.pylonAura != NULL) {
-				unit->building.pylonAura->free();	//should be equivalent to SpriteDestructor @ 00497B40
-				unit->building.pylonAura = NULL;
-			}
-
-			//begin hardcoding removeFromPsiProviderList @ 00493100 to avoid use of a helper
-
-			if (unit->psi_link.prev != NULL)  //untie the previous pylon from current pylon (tie it to next)
-				(unit->psi_link.prev)->psi_link.next = unit->psi_link.next;
-			if (unit->psi_link.next != NULL)  //untie the next pylon from current pylon (tie it to previous)
-				(unit->psi_link.next)->psi_link.prev = unit->psi_link.prev;
-
-			if (unit == *firstPsiFieldProvider)
-				*firstPsiFieldProvider = unit->psi_link.next;
-
-			unit->psi_link.prev = NULL;
-			unit->psi_link.next = NULL;
-
-			//end hardcoding removeFromPsiProviderList @ 00493100 to avoid use of a helper
-
-			*canUpdatePoweredStatus = true;
-
-		}
-		else
-		//Is a Nydus Canal
-		if (unit->id == UnitId::ZergNydusCanal) {
-			CUnit* nydusExit = unit->building.nydusExit;
-			if (nydusExit != NULL) {
-				unit->building.nydusExit = NULL;
-				nydusExit->building.nydusExit = NULL;
-				nydusExit->remove();
-			}
-		}
-	}
 }
 
 //-------- Actual hooking --------//
@@ -522,13 +486,13 @@ void __declspec(naked) unitDestructorSpecialWrapper() {
 	__asm {
 		POPAD
 		RETN
-  }
+	}
 }
 
 namespace hooks {
 
-void injectUnitDestructorSpecial() {
-	jmpPatch(unitDestructorSpecialWrapper, 0x0049F4A0, 2);
-}
+	void injectUnitDestructorSpecial() {
+		jmpPatch(unitDestructorSpecialWrapper, 0x0049F4A0, 2);
+	}
 
 } //hooks
