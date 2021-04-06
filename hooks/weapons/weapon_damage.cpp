@@ -613,7 +613,7 @@ namespace hooks {
 			}
 			case WeaponId::VorvalingClaws: {
 				// Captivating Claws - Vorvaling behavior
-				captivating_claws::applyCaptivatingClaws(data.attacker, data.target);
+				captivatingClawsApply(data.attacker, data.target);
 				break;
 			}
 			case WeaponId::EcclesiastAstralBlaster: {

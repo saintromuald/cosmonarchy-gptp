@@ -76,12 +76,13 @@ public:
 	}
 };
 struct CustomUnitStruct {
-	std::unordered_map<uint32, int>					genericValues;
-	std::unordered_map<uint32, int>					genericTimers;
-	std::unordered_map<uint32, CUnit*>					genericUnits;
-	std::unordered_map<uint32, std::vector<int>>		genericValueVectors;
-	std::unordered_map<uint32, std::vector<int>>		genericTimerVectors;
-	std::unordered_map<uint32, std::vector<CUnit*>>	genericUnitVectors;
+	std::unordered_map<uint32, int> genericValues;
+	std::unordered_map<uint32, int> genericTimers;
+	std::unordered_map<uint32, CUnit*> genericUnits;
+	std::unordered_map<uint32, std::vector<int>> genericValueVectors;
+	std::unordered_map<uint32, std::vector<int>> genericTimerVectors;
+	std::unordered_map<uint32, std::vector<CUnit*>> genericUnitVectors;
+	std::unordered_map<uint32, std::unordered_map<CUnit*, int>>	genericUnitTimerMap;
 
 	void setGenericValue(uint32 variable, uint32_t value) {
 		genericValues[variable] = value;
@@ -147,6 +148,16 @@ struct CustomUnitStruct {
 		return genericUnitVectors[variable];
 	}
 
+	std::unordered_map<CUnit*, int>& getGenericUnitTimerMap(uint32 variable) {
+		if (!genericUnitTimerMap.empty()) {
+			auto it = genericUnitTimerMap.find(variable);
+			if (it != genericUnitTimerMap.end()) {
+				return it->second;
+			}
+		}
+		genericUnitTimerMap[variable] = {};
+		return genericUnitTimerMap[variable];
+	}
 };
 class globals {
 	std::string output;
@@ -238,6 +249,7 @@ namespace scbw {
 	std::vector<int>& get_generic_value_vector(CUnit* u, uint32 id);
 	std::vector<int>& get_generic_timer_vector(CUnit* u, uint32 id);
 	std::vector<CUnit*>& get_generic_unit_vector(CUnit* u, uint32 id);
+	std::unordered_map<CUnit*, int>& get_generic_unit_timer_map(CUnit* u, uint32 id);
 	CBullet* setMissileSourcePosRet(CUnit* unit, uint32 weaponId, uint32 valueId, int32 rotateCount, uint32 overlayType, uint32 frameset_offset);
 	bool isSlowed(CUnit* unit);
 	void refreshDebuffs(CUnit* unit);

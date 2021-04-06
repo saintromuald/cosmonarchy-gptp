@@ -202,13 +202,7 @@ namespace ValueId {
 		SkyfallX									= 54,
 		SkyfallY									= 55,
 
-		CaptivatingClawsSource1						= 56,
-		CaptivatingClawsSource2						= 57,
-		CaptivatingClawsSource3						= 58,
-		CaptivatingClawsSource4						= 59,
-		CaptivatingClawsTimer						= 60,
-		CaptivatingClawsIndex						= 61,
-		CaptivatingClawsStacks						= 62,
+		CaptivatingClawsMap						= 56,
 
 		EntropyGauntlets							= 63,
 		RadiationShockwaveCount						= 64,

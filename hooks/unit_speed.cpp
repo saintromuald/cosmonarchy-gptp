@@ -19,28 +19,6 @@ namespace hooks {
 		int increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 		int decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
 
-		// Ultrakor Kaiser Rampage: gains 150% movespeed on kill for 1 second
-		if (unit->id == UnitId::ZergUltrakor) {
-			if (scbw::get_generic_timer(unit, ValueId::KaiserRampage) > 0) {
-				speed += speed;
-			}
-		}
-
-		// Flingy-related code
-		if (increase > 0) {
-
-			if (unit->id == UnitId::ProtossPanoptus || unit->id == UnitId::Hero_Mojo || unit->id == UnitId::Hero_Artanis) {
-				speed = 1707;
-			} else {
-				for (int i = 0; i < increase; i++) {
-					speed += (speed / 2);
-				}
-				if (speed < 853) {
-					speed = 853;
-				}
-			}
-		}
-
 		if (decrease > 0) {
 			for (int i = 0; i < decrease; i++) {
 				speed *= 0.5;
@@ -57,7 +35,6 @@ namespace hooks {
 			speed *= 0.5;
 		}
 
-
 		// Vassal Terminal Surge: increase movespeed when any nearby Simulacrum dies
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
 			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::TerminalSurge), 0, 10) * 1.5;
@@ -65,7 +42,16 @@ namespace hooks {
 				speed *= (10.0 + stacks) / 10.0;
 			}
 		}
+
 		switch (unit->id) {
+			case UnitId::ZergUltrakor:
+			{
+				// Ultrakor Kaiser Rampage: gains 150% movespeed on kill for 1 second
+				if (scbw::get_generic_timer(unit, ValueId::KaiserRampage) > 0) {
+					speed *= 2;
+				}
+				break;
+			}
 			case UnitId::TerranWyvern:
 			{
 				// Wyvern Reverse Thrust ability: reduce movespeed
@@ -209,14 +195,6 @@ namespace hooks {
 				}
 				break;
 			}
-			case UnitId::ProtossPanoptus:
-			case UnitId::Hero_Mojo:
-			case UnitId::Hero_Artanis:
-			{
-				// Leftover movement speed code
-				speed = 1707;
-				break;
-			}
 			// Hardcode ideal movement speeds
 			case UnitId::TerranCyprian:
 			case UnitId::ProtossAmaranth:
@@ -250,7 +228,7 @@ namespace hooks {
 		}
 
 		// Vorvaling Captivating Claws: reduces movement speed by 25% per unique attacker
-		uint32 captivatingClawsStacks = captivating_claws::getCaptivatingClawsStacks(unit);
+		uint32 captivatingClawsStacks = captivatingClawsGetStacks(unit);
 		if (captivatingClawsStacks > 0) {
 			speed -= speed * (0.25 * captivatingClawsStacks);
 		}
@@ -285,6 +263,34 @@ namespace hooks {
 	/// @return		The modified speed value.
 	/// Logically equivalent to GetModifiedUnitSpeed @ 0047B5F0  
 	uint32 getModifiedUnitSpeedHook(CUnit* unit, uint32 baseSpeed) {
+		int increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
+
+		// Flingy-related code
+		if (increase > 0) {
+
+			if (unit->id == UnitId::ProtossPanoptus || unit->id == UnitId::ProtossAurora || unit->id == UnitId::ProtossVassal) {
+				baseSpeed = 1707;
+			} else {
+				for (int i = 0; i < increase; i++) {
+					baseSpeed *= 1.5;
+				}
+				if (baseSpeed < 853) {
+					baseSpeed = 853;
+				}
+			}
+		}
+
+		switch (unit->id) {
+			case UnitId::ProtossPanoptus:
+			case UnitId::ProtossAurora:
+			case UnitId::ProtossVassal:
+			{
+				// Leftover movement speed code
+				baseSpeed = 1707;
+				break;
+			}
+		}
+
 		return baseSpeed * getSpeedMultiplier(unit);
 	}
 
@@ -301,7 +307,7 @@ namespace hooks {
 	/// @return		The modified turning speed value.
 	/// Logically equivalent to getModifiedUnitTurnRadius @ 0047B850 
 	uint32 getModifiedUnitTurnSpeedHook(CUnit* unit) {
-		return scbw::getFlingyData(FlingyDatEntries::TurnRadius, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit);
+		return scbw::getFlingyData(FlingyDatEntries::TurnRadius, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id));// * getSpeedMultiplier(unit);
 	}
 
 } //hooks

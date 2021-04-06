@@ -4,6 +4,7 @@
 #include "hooks/limits/attack_extender.h"
 #include "hooks/weapons/weapon_damage.h"
 #include <algorithm>
+#include <Utils/captivating_claws.h>
 globals Globals;
 
 void globals::refreshDebuggingInfo() {
@@ -204,6 +205,10 @@ void globals::unitDeathHook(CUnit* unit) {
 				return vecUnit == unit;
 			}), vec.end());
 		}
+		for (auto& unitMapPair : a.second.genericUnitTimerMap) {
+			auto& map = unitMapPair.second;
+			map.erase(unit);
+		}
 	}
 	for (int i = 0; i < this->apostleAgents.size(); i++) {
 		if (apostleAgents[i].creator == unit) {
@@ -224,15 +229,22 @@ void globals::frameHook() {
 	for (auto & a : unitStructs) {
 		for (auto& timerPair : a.second.genericTimers) {
 			if (timerPair.second > 0) {
-				// scbw::printFormattedText("Timer decrease: %d %d", i, a.second.genericTimers[i]);
 				timerPair.second--;
 			}
 		}
 		for (auto& timerVecPair : a.second.genericTimerVectors) {
 			for (auto& timer : timerVecPair.second) {
 				if (timer > 0) {
-					// scbw::printFormattedText("Timer decrease: %d %d", i, a.second.genericTimers[i]);
 					timer--;
+				}
+			}
+		}
+		for (auto& timerVecPair : a.second.genericUnitTimerMap) {
+			for (auto& timer : timerVecPair.second) {
+				if (timer.second > 0) {
+					timer.second--;
+				} else {
+					timerVecPair.second.erase(timer.first);
 				}
 			}
 		}
@@ -243,15 +255,14 @@ void globals::frameHook() {
 			agent.timer--;
 		}
 		else {
-			//revive u
-//			scbw::printFormattedText("Agent Creator: 0x%X", agent.creator);
+			// scbw::printFormattedText("Agent Creator: 0x%X", agent.creator);
 			auto revived = scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y, agent.creator);
 			if (revived) {
 				revived->setHp(units_dat::MaxHitPoints[revived->id] / 2);
 				revived->energy = agent.energy;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
 				scbw::set_generic_value(revived, ValueId::LazarusNoHeal, 1);
-			//	revived->status |= UnitStatus::Invincible;
+				// revived->status |= UnitStatus::Invincible;
 				scbw::set_generic_value(revived, ValueId::IsReviving, 1);
 
 				
@@ -263,9 +274,9 @@ void globals::frameHook() {
 	for (int a = 0; a < persistImpacts.size();a++) {
 		auto& impact = persistImpacts[a];
 		if (impact.timer > 0) {
-			//deals 20 concussive damage per 5 seconds
-			//deals 4 (1024) concussive damage per second
-			//deals [128] concussive damage per 1/3 seconds (8 frames)
+			// deals 20 concussive damage per 5 seconds
+			// deals 4 (1024) concussive damage per second
+			// deals [128] concussive damage per 1/3 seconds (8 frames)
 			if (impact.impactId == ImpactId::Salamander) {
 				if (impact.timer % 3 == 0) {
 					constexpr int unitSizeFactor[5] = { 2, 0, 256, 192, 128 };//Concussive damage
@@ -547,20 +558,20 @@ void injectGlobalsHooks() {
 }
 
 namespace scbw {
-	CUnit* get_generic_unit(CUnit* u, uint32 id) {
-		auto find = Globals.unitStructs.find(u);
-		if (find != Globals.unitStructs.end()) {
-			return find->second.getGenericUnit(id);
-		}
-		return nullptr;
-	}
-
 	uint32 get_generic_value(CUnit* u, uint32 id) {
 		auto find = Globals.unitStructs.find(u);
 		if (find != Globals.unitStructs.end()) {
 			return find->second.getGenericValue(id);
 		}
 		return 0;
+	}
+
+	void set_generic_value(CUnit* u, uint32 id, uint32 val) {
+		Globals.unitStructs[u].setGenericValue(id, val);
+	}
+
+	void add_generic_value(CUnit* u, uint32 id, int val) {
+		Globals.unitStructs[u].addGenericValue(id, val);
 	}
 
 	uint32 get_generic_timer(CUnit* u, uint32 id) {
@@ -571,20 +582,20 @@ namespace scbw {
 		return 0;
 	}
 
-	void set_generic_unit(CUnit* u, uint32 id, CUnit* val) {
-		Globals.unitStructs[u].setGenericUnit(id, val);
-	}
-
-	void set_generic_value(CUnit* u, uint32 id, uint32 val) {
-		Globals.unitStructs[u].setGenericValue(id, val);
-	}
-
 	void set_generic_timer(CUnit* u, uint32 id, uint32 val) {
 		Globals.unitStructs[u].setGenericTimer(id, val);
 	}
 
-	void add_generic_value(CUnit* u, uint32 id, int val) {
-		Globals.unitStructs[u].addGenericValue(id, val);
+	CUnit* get_generic_unit(CUnit* u, uint32 id) {
+		auto find = Globals.unitStructs.find(u);
+		if (find != Globals.unitStructs.end()) {
+			return find->second.getGenericUnit(id);
+		}
+		return nullptr;
+	}
+
+	void set_generic_unit(CUnit* u, uint32 id, CUnit* val) {
+		Globals.unitStructs[u].setGenericUnit(id, val);
 	}
 
 	std::vector<int>& get_generic_value_vector(CUnit* u, uint32 id) {
@@ -592,7 +603,7 @@ namespace scbw {
 		if (find == Globals.unitStructs.end()) {
 			Globals.unitStructs[u] = {};
 		}
-		return find->second.getGenericValueVector(id);
+		return Globals.unitStructs[u].getGenericValueVector(id);
 	}
 
 	std::vector<int>& get_generic_timer_vector(CUnit* u, uint32 id) {
@@ -600,7 +611,7 @@ namespace scbw {
 		if (find == Globals.unitStructs.end()) {
 			Globals.unitStructs[u] = {};
 		}
-		return find->second.getGenericTimerVector(id);
+		return Globals.unitStructs[u].getGenericTimerVector(id);
 	}
 
 	std::vector<CUnit*>& get_generic_unit_vector(CUnit* u, uint32 id) {
@@ -608,7 +619,15 @@ namespace scbw {
 		if (find == Globals.unitStructs.end()) {
 			Globals.unitStructs[u] = {};
 		}
-		return find->second.getGenericUnitVector(id);
+		return Globals.unitStructs[u].getGenericUnitVector(id);
+	}
+
+	std::unordered_map<CUnit*, int>& get_generic_unit_timer_map(CUnit* u, uint32 id) {
+		auto& find = Globals.unitStructs.find(u);
+		if (find == Globals.unitStructs.end()) {
+			Globals.unitStructs[u] = {};
+		}
+		return Globals.unitStructs[u].getGenericUnitTimerMap(id);
 	}
 
 	void refreshDebuffs(CUnit* unit) {
@@ -648,8 +667,11 @@ namespace scbw {
 		}
 
 		// Reset Captivating Claws
-		if (scbw::get_generic_timer(unit, ValueId::CaptivatingClawsTimer) > 0) {
-			scbw::set_generic_timer(unit, ValueId::CaptivatingClawsTimer, 1 * 24);
+		{
+			auto& map = get_generic_unit_timer_map(unit, ValueId::CaptivatingClawsMap);
+			for (auto& pair : map) {
+				pair.second = 1 * 24;
+			}
 		}
 
 		// Reset Lobotomy Mine slow
@@ -732,9 +754,10 @@ namespace scbw {
 			scbw::set_generic_timer(child, ValueId::HallucinatingTimer, scbw::get_generic_timer(parent, ValueId::HallucinatingTimer));
 		}
 
-		// Inherit Captivating Claws
-		if (scbw::get_generic_timer(parent, ValueId::CaptivatingClawsTimer) > 0) {
-			scbw::set_generic_timer(child, ValueId::CaptivatingClawsTimer, scbw::get_generic_timer(parent, ValueId::CaptivatingClawsTimer));
+		{ // Inherit Captivating Claws
+			auto& parentMap = scbw::get_generic_unit_timer_map(parent, ValueId::CaptivatingClawsMap);
+			auto& childMap = scbw::get_generic_unit_timer_map(parent, ValueId::CaptivatingClawsMap);
+			childMap = parentMap;
 		}
 
 		// Inherit Lobotomy Mine slow
@@ -838,11 +861,11 @@ namespace scbw {
 	bool isDebuffed(CUnit* unit) {
 		return scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 0
 			|| scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) > 0
-			|| scbw::get_generic_timer(unit, ValueId::CaptivatingClawsTimer) > 0
 			|| scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0
 			|| scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) > 0
 			|| scbw::get_generic_value(unit, ValueId::EntropyGauntlets) > 0
 			|| scbw::get_generic_value(unit, ValueId::ArmorReduce) > 0
+			|| captivatingClawsGetHighestTimer(unit) > 0
 			|| unit->irradiateTimer != 0
 			|| unit->ensnareTimer != 0
 			|| unit->lockdownTimer != 0
@@ -937,9 +960,8 @@ namespace scbw {
 			scbw::set_generic_timer(unit, ValueId::HallucinatingTimer, 1);
 		}
 
-		// Remove Captivating Claws
-		if (scbw::get_generic_timer(unit, ValueId::CaptivatingClawsTimer) > 0) {
-			scbw::set_generic_timer(unit, ValueId::CaptivatingClawsTimer, 1);
+		{ // Remove Captivating Claws
+			scbw::get_generic_unit_timer_map(unit, ValueId::CaptivatingClawsMap) = {};
 		}
 
 		// Remove Lobotomy Mine slow
