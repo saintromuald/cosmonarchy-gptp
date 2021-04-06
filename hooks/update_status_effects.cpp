@@ -159,10 +159,10 @@ namespace hooks {
 			}
 		}
 
-		// Update speed based on upgrades or status effects
+		//// Update speed based on behaviors or status effects
 		
+		// This switch statement is for units that can change speeds at will (e.g. on toggle)
 		switch (unit->id) {
-			case UnitId::ProtossClarion:
 			case UnitId::ProtossExemplar:
 			{
 				unit->updateSpeed();
@@ -171,16 +171,6 @@ namespace hooks {
 			default:
 			{
 			}
-		}
-
-		// Knockout Drivers: Southpaw slow per stack
-		if (scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks) > 0) {
-			unit->updateSpeed();
-		}
-
-		// Terminal Surge: Vassal enhancement on death
-		if (scbw::get_generic_value(unit, ValueId::TerminalSurge) > 0) {
-			unit->updateSpeed();
 		}
 
 		// Forcibly unburrow units that collide with buildings

@@ -257,6 +257,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 				return;
 			}
 			scbw::add_generic_value(target, ValueId::TerminalSurge, 1);
+			target->updateSpeed();
 		});
 	}
 

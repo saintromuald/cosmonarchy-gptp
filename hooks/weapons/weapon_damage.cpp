@@ -617,6 +617,7 @@ namespace hooks {
 						scbw::add_generic_value(data.target, ValueId::KnockoutDriversStacks, 1);
 					}
 					scbw::set_generic_timer(data.target, ValueId::KnockoutDriversTimer, 49); //49 is 2 seconds (48) + 1
+					data.target->updateSpeed();
 					break;
 				}
 				case WeaponId::MadrigalImperiosoMissiles:
