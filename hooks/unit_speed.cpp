@@ -43,6 +43,45 @@ namespace hooks {
 			}
 		}
 
+		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby organic allies after kill
+		if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0) {
+			speed *= 1.5;
+		}
+
+		// Southpaw Knockout Drivers: reduces movement speed by 5% per stack
+		if (scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks) > 0) {
+			uint32 knockoutValue = scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks);
+			speed -= speed * (0.05 * knockoutValue);
+		}
+
+		// Vorvaling Captivating Claws: reduces movement speed by 25% per unique attacker
+		uint32 captivatingClawsStacks = captivatingClawsGetStacks(unit);
+		if (captivatingClawsStacks > 0) {
+			speed -= speed * (0.25 * captivatingClawsStacks);
+		}
+
+		// Swarming Omen ability: 150% movement speed when moving towards Zoryusthaleth
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic) {
+			auto r = 10 * 32;
+			auto n = unitRangeCount(unit, CFlags::Ally | CFlags::FrontalArc, {UnitId::ZergZoryusthaleth});
+			scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
+				unit->position.x + r, unit->position.y + r);
+			bool accelerate = false;
+			for (int i = 0; i < unitsInFinder.getUnitCount(); i++) {
+				auto picked_unit = unitsInFinder.getUnit(i);
+				if (n(picked_unit)) {
+					if (scbw::get_generic_timer(picked_unit, ValueId::SwarmingOmenTimer) > 0) {
+						accelerate = true;
+						scbw::set_generic_timer(unit, ValueId::SwarmingOmenStatus, 25);
+						break;
+					}
+				}
+			}
+			if (accelerate) {
+				speed *= 1.5;
+			}
+		}
+
 		switch (unit->id) {
 			case UnitId::ZergUltrakor:
 			{
@@ -213,45 +252,6 @@ namespace hooks {
 			{
 				speed *= 1.5;
 				break;
-			}
-		}
-
-		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby organic allies after kill
-		if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0) {
-			speed *= 1.5;
-		}
-
-		// Southpaw Knockout Drivers: reduces movement speed by 5% per stack
-		if (scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks) > 0) {
-			uint32 knockoutValue = scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks);
-			speed -= speed * (0.05 * knockoutValue);
-		}
-
-		// Vorvaling Captivating Claws: reduces movement speed by 25% per unique attacker
-		uint32 captivatingClawsStacks = captivatingClawsGetStacks(unit);
-		if (captivatingClawsStacks > 0) {
-			speed -= speed * (0.25 * captivatingClawsStacks);
-		}
-
-		// Swarming Omen ability: 150% movement speed when moving towards Zoryusthaleth
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic) {
-			auto r = 10 * 32;
-			auto n = unitRangeCount(unit, CFlags::Ally | CFlags::FrontalArc, {UnitId::ZergZoryusthaleth});
-			scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
-				unit->position.x + r, unit->position.y + r);
-			bool accelerate = false;
-			for (int i = 0; i < unitsInFinder.getUnitCount(); i++) {
-				auto picked_unit = unitsInFinder.getUnit(i);
-				if (n(picked_unit)) {
-					if (scbw::get_generic_timer(picked_unit, ValueId::SwarmingOmenTimer) > 0) {
-						accelerate = true;
-						scbw::set_generic_timer(unit, ValueId::SwarmingOmenStatus, 25);
-						break;
-					}
-				}
-			}
-			if (accelerate) {
-				speed *= 1.5;
 			}
 		}
 
