@@ -801,16 +801,16 @@ namespace scbw {
 			if (child->subunit != nullptr) {
 				scbw::set_generic_value(child->subunit, ValueId::Deconstruction, scbw::get_generic_value(parent, ValueId::Deconstruction));
 			}
-			if (!(child->sprite->getOverlay(1332 + overlayOffset))) {
-				child->sprite->createOverlay(1332 + overlayOffset);
+			if (!(child->sprite->getOverlay(ImageId::DeconstructionSmall + overlayOffset))) {
+				child->sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
 			}
 		}
 
 		// Inherit Entropy Gauntlets
 		if (scbw::get_generic_timer(parent, ValueId::EntropyGauntlets) > 0) {
 			scbw::set_generic_timer(child, ValueId::EntropyGauntlets, scbw::get_generic_timer(parent, ValueId::EntropyGauntlets));
-			if (!(child->sprite->getOverlay(1107 + overlayOffset))) {
-				child->sprite->createOverlay(1107 + overlayOffset);
+			if (!(child->sprite->getOverlay(ImageId::EntropyGauntletsOverlaySmall + overlayOffset))) {
+				child->sprite->createOverlay(ImageId::EntropyGauntletsOverlaySmall + overlayOffset);
 			}
 		}
 
@@ -877,18 +877,12 @@ namespace scbw {
 		// TODO: cowardice, malice + also add them to status tooltip
 	}
 	void restoreFunc(CUnit* unit) {
-		uint32 overlayImageId;
 		CUnit* overlayTargetUnit;
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
-			overlayImageId = ImageId::RestorationHit_Medium;
-		else if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
-			overlayImageId = ImageId::RestorationHit_Large;
-		else
-			overlayImageId = ImageId::RestorationHit_Small;
 		if (unit->subunit != nullptr)
 			overlayTargetUnit = unit->subunit;
 		else
 			overlayTargetUnit = unit;
+		uint32 overlayImageId = ImageId::RestorationHit_Small + scbw::getOverlayOffset(overlayTargetUnit->id);;
 		(overlayTargetUnit->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
 
 		//remove status effects and corresponding overlays
@@ -897,7 +891,7 @@ namespace scbw {
 		// Remove Parasite
 		if (scbw::get_generic_timer(unit, ValueId::ParasiteArmTimer) > 0) {
 			scbw::set_generic_timer(unit, ValueId::ParasiteArmTimer, 0);
-			unit->removeOverlay(1031);
+			unit->removeOverlay(ImageId::ParasiteOverlay);
 		}
 		scbw::set_generic_unit(unit, ValueId::ParasiteSource, nullptr);
 
@@ -980,10 +974,10 @@ namespace scbw {
 
 		// Remove Deconstruction
 		scbw::set_generic_value(unit, ValueId::Deconstruction, 0);
-		unit->removeOverlay(1332);
+		unit->removeOverlay(ImageId::DeconstructionSmall, ImageId::DeconstructionLarge);
 		if (unit->subunit) {
 			scbw::set_generic_value(unit->subunit, ValueId::Deconstruction, 0);
-			unit->subunit->removeOverlay(1332);
+			unit->subunit->removeOverlay(ImageId::DeconstructionSmall, ImageId::DeconstructionLarge);
 		}
 
 		//was hardcoded in original code
@@ -994,7 +988,7 @@ namespace scbw {
 		int playerFlag = 1 << playerID;
 		if (unit->parasiteFlags != playerFlag) { // <- Prevent restarting arm timer
 			scbw::set_generic_timer(unit, ValueId::ParasiteArmTimer, DefaultArmParasiteTimer);
-			unit->sprite->createOverlay(1031, 0, 0, 0);
+			unit->sprite->createOverlay(ImageId::ParasiteOverlay, 0, 0, 0);
 		}
 		scbw::set_generic_unit(unit, ValueId::ParasiteSource, queen);
 		unit->parasiteFlags = playerFlag; // Parasite now overwrites other player's parasite
