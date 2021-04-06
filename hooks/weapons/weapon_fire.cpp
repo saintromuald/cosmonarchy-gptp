@@ -132,8 +132,10 @@ namespace hooks {
 				- weapons_dat::VerticalOffset[weaponId];
 		}
 
-		if (unit->id != UnitId::ProtossCabalist)
+		// Cloaked Units - Decloak
+		if (unit->id != UnitId::ProtossCabalist) {
 			scbw::decloakProc(unit);
+		}
 
 		if (weapons_dat::FlingyId[weaponId] != 0) {
 			bool good = true;

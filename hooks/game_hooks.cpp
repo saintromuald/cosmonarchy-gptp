@@ -1001,27 +1001,18 @@ namespace hooks {
 			auto timer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::PermanentCloakTimer, 0);
 			if (timer > 1) {
 				makeSpriteVisible(unit->sprite);
-				unit->status &= ~UnitStatus::Cloaked;
-				unit->status &= ~UnitStatus::CloakingForFree;
-				unit->status &= ~UnitStatus::RequiresDetection;
 				for (int i = 0; i < 8; i++) {
 					unit->visibilityStatus |= (1 << i);
 				}
 			} else if (timer == 1) {
 				makeSpriteInvisible(unit->sprite);
-				unit->status |= UnitStatus::Cloaked;
-				unit->status |= UnitStatus::CloakingForFree;
-				unit->status |= UnitStatus::RequiresDetection;
 				for (int i = 0; i < 8; i++) {
-					if (scbw::isAlliedTo(unit->playerId, i)) {
-						unit->visibilityStatus |= (1 << i);
-					} else {
+					if (!scbw::isAlliedTo(unit->playerId, i)) {
 						unit->visibilityStatus &= ~(1 << i);
 					}
 				}
 			}
 		}
-
 
 		// Remove all Nemean Reactors stacks after not attacking for 5 seconds
 		if (scbw::get_generic_timer(unit, ValueId::NemeanReactorsTimer) == 1) {

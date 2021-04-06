@@ -159,8 +159,11 @@ bool irradiateTarget(CUnit* unit) {
 void augurSacrifice(CUnit* target) {
 	if (scbw::get_generic_value(target, ValueId::AugurSafetyCheck) == 0) {
 		scbw::set_generic_value(target, ValueId::AugurSafetyCheck, 1);
-		scbw::UnitFinder unitFinder(target->getX() - 384, target->getY() - 384,
-			target->getX() + 384, target->getY() + 384);
+		scbw::UnitFinder unitFinder(
+			target->getX() - 384,
+			target->getY() - 384,
+			target->getX() + 384,
+			target->getY() + 384);
 		CUnit* nearest = unitFinder.getNearestTarget(target, [&](CUnit* unit) {
 			//Don't attack friendly / allied units
 			if (unit->sprite == nullptr) {
@@ -188,8 +191,7 @@ void augurSacrifice(CUnit* target) {
 			target->removeTimer = 5 * 32;
 			target->userActionFlags |= 0x4;
 			return;
-		}
-		else {
+		} else {
 			target->remove();
 		}
 	}
@@ -462,16 +464,15 @@ namespace hooks {
 				break;
 			}
 		}
-
-		if (data.attacker != nullptr) {
-			// Decloak behavior, Cabalist - Silent Kill
-			if (data.damage < data.target->hitPoints && data.attacker->id == UnitId::ProtossCabalist)
-				scbw::decloakProc(data.attacker);
-		}
 	}
 
 	static void weaponDamage_behaviors(WeaponDamageData& data) {
 		if (data.attacker != nullptr) {
+
+			// Cabalist - Decloak, Silent Kill
+			if (data.attacker->id == UnitId::ProtossCabalist && data.finalDamage < data.target->hitPoints) {
+				scbw::decloakProc(data.attacker);
+			}
 
 			// Cantavis - Hallucinating
 			if (scbw::get_generic_timer(data.target, ValueId::HallucinatingTimer) >= 1) {
