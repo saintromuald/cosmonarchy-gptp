@@ -99,11 +99,11 @@ uint32 getMaxWeaponRangeHook(CUnit* unit, uint8 weaponId) {
 			break;
 	}
 
-	// Robotic Sapience - Barghest behavior
+	// Repentent Chorus - Barghest behavior
 	if (unit->id == UnitId::ProtossBarghest) {
 		int r = 5 * 32;
 		auto barghestCount = hydraUnitCount(unit, unit->position, 5 * 32, CFlags::Ally | CFlags::NotSelf, { UnitId::ProtossBarghest });
-		scbw::set_generic_value(unit, ValueId::RoboticSapience, barghestCount); // used for status tooltip
+		scbw::set_generic_value(unit, ValueId::RepententChorus, barghestCount); // used for status tooltip
 		bonusAmount += barghestCount * 8;
 	}
 
