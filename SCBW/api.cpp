@@ -1569,21 +1569,13 @@ namespace scbw {
 		if (!(unit->ensnareTimer)
 			&& !(unit->status & UnitStatus::Burrowed)) {
 
-			// Calculate overlay ID offset based on units_dat flags
-			overlayPadding = 0;
-			baseProperty = units_dat::BaseProperty[unit->id];
-			if (baseProperty & UnitProperty::MediumOverlay) {
-				overlayPadding = 1;
-			} 			else if (baseProperty & UnitProperty::LargeOverlay) {
-				overlayPadding = 2;
-			}
 			victim = unit;
 			if (unit->subunit != nullptr) {
 				victim = unit->subunit;
 			}
 
 			// Create overlay
-			victim->sprite->createOverlay(ImageId::EnsnareOverlay_Small + overlayPadding);
+			victim->sprite->createOverlay(ImageId::EnsnareOverlay_Small + scbw::getOverlayOffset(unit->id));
 		}
 
 		// Apply effect

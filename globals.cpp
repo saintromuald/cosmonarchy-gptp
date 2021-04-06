@@ -878,7 +878,7 @@ namespace scbw {
 			overlayTargetUnit = unit->subunit;
 		else
 			overlayTargetUnit = unit;
-		uint32 overlayImageId = ImageId::RestorationHit_Small + scbw::getOverlayOffset(overlayTargetUnit->id);;
+		uint32 overlayImageId = ImageId::RestorationHit_Small + scbw::getOverlayOffset(unit->id);;
 		(overlayTargetUnit->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
 
 		//remove status effects and corresponding overlays
