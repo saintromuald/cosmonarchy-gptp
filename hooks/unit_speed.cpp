@@ -25,7 +25,7 @@ namespace hooks {
 			}
 		}
 
-		// Mind Tyrant Malediction: Apply movespeed slow to Maelstrom victims once stun wears off
+		// Mind Tyrant Malediction: Apply movespeed slow to non-organic targets
 		if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 1) {
 			speed *= 0.5;
 		}
@@ -268,7 +268,7 @@ namespace hooks {
 		// Flingy-related code
 		if (increase > 0) {
 
-			if (unit->id == UnitId::ProtossPanoptus || unit->id == UnitId::ProtossAurora || unit->id == UnitId::ProtossVassal) {
+			if (unit->id == UnitId::ProtossPanoptus) {
 				baseSpeed = 1707;
 			} else {
 				for (int i = 0; i < increase; i++) {
@@ -282,8 +282,6 @@ namespace hooks {
 
 		switch (unit->id) {
 			case UnitId::ProtossPanoptus:
-			case UnitId::ProtossAurora:
-			case UnitId::ProtossVassal:
 			{
 				// Leftover movement speed code
 				baseSpeed = 1707;

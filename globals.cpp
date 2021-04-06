@@ -1149,15 +1149,7 @@ namespace scbw {
 		}).forEach([&](CUnit* target) {
 			vec.push_back(target);
 
-			int img;
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay) {
-				img = 1104;
-			} else if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay) {
-				img = 1103;
-			} else {
-				img = 1102;
-			}
-
+			int img = ImageId::PhaseLinkSmall + scbw::getOverlayOffset(target->id);
 			target->sprite->createOverlay(img, 0, 0, 0);
 			scbw::set_generic_unit(target, ValueId::ClarionLinkUnit, unit);
 		});
