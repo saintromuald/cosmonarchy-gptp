@@ -160,16 +160,13 @@ namespace hooks {
 		}
 
 		//// Update speed based on behaviors or status effects
-		
+
 		// This switch statement is for units that can change speeds at will (e.g. on toggle)
 		switch (unit->id) {
 			case UnitId::ProtossExemplar:
 			{
 				unit->updateSpeed();
 				break;
-			}
-			default:
-			{
 			}
 		}
 
@@ -274,7 +271,6 @@ namespace hooks {
 			if (
 				!(unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))) {
 				if (scbw::get_generic_value(unit, ValueId::SomaticImplants) == 1) {
-
 					unit->updateSpeed();
 					scbw::set_generic_value(unit, ValueId::SomaticImplants, 0);
 				}
