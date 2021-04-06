@@ -6,10 +6,10 @@
 #include "hooks/hydra_unit_ai.h"
 #include "globals.h"
 namespace {
-	//Helper function: Returns true if the unit's HP <= 33%.
-	bool unitHpIsInRedZone(CUnit* unit);					//0x004022C0
-	void RestoreAllUnitStats(CUnit* unit);					//0x00492F70 (hooked by hooks\update_status_effects.cpp)
-	void setAllImageGroupFlagsPal11(CSprite* sprite);		//0x00497430
+
+	bool unitHpIsInRedZone(CUnit* unit);						//0x004022C0
+	void RestoreAllUnitStats(CUnit* unit);						//0x00492F70 (hooked by hooks\update_status_effects.cpp)
+	void setAllImageGroupFlagsPal11(CSprite* sprite);			//0x00497430
 
 	// For AI_Burrower
 	void techUseAllowed(CUnit* a1, int16 a2, int32 a3);			//0046DD80
@@ -18,47 +18,8 @@ namespace {
 	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);
 	bool setThingyVisibilityFlags(CThingy* thingy);
 	CUnit** getAllUnitsInBounds(Box16* coords);
-} //unnamed namespace
-
-
-  //copied from recall_spell, replace later
-/*
-const uint32 Func_DoWeaponDamage = 0x00479930;
-void func_479930(CUnit* attacker, CUnit* target, uint32 base_damage,
-				uint32 direction, uint32 dmg_divide, uint32 weapon_id, uint32 player) {
-	_asm {
-		PUSHAD
-		MOV EAX, base_damage
-		MOV EDI, target
-		PUSH player
-		PUSH attacker
-		PUSH direction
-		PUSH dmg_divide
-		PUSH weapon_id
-		CALL Func_DoWeaponDamage
-		POPAD
-	}
 }
 
-const uint32 Func_CreateThingy = 0x00488210;
-CThingy* function_createthingy(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
-
-	static CThingy* thingy;
-	int32 x_ = x;
-	__asm {
-		PUSHAD
-		PUSH playerId
-		MOVSX EDI, y
-		PUSH x_
-		PUSH spriteId
-		CALL Func_CreateThingy
-		MOV thingy, EAX
-		POPAD
-	}
-	return thingy;
-}
-;
-*/
 const uint32 Func_RemoveOverlays2 = 0x00492370;
 void removeoverlays2(uint32 from, uint32 to, CUnit* unit) {
 	__asm {
@@ -71,34 +32,27 @@ void removeoverlays2(uint32 from, uint32 to, CUnit* unit) {
 	}
 }
 
-
-
 #include "SCBW\UnitFinder.h"
 #include "SCBW\api.h"
 
 namespace hooks {
 
-	/// This function regenerates energy for spellcasters and drains energy for
-	/// cloaking units.
+	/// This function regenerates energy for spellcasters and drains energy for cloaking units.
 	/// Equivalent to function sub_4EB4B0 @ 0x004EB4B0
 
 	void updateUnitEnergy(CUnit* unit) {
-
 		//was hardcoded instead of function calling in original code
-		if (
-			unit->isValidCaster() &&				//If the unit is hallucination or not a spellcaster, don't regenerate energy
-			(unit->status & UnitStatus::Completed)	//If the unit is not fully constructed, don't regenerate energy
-			) {
-
+		if (unit->isValidCaster()
+			&& (unit->status & UnitStatus::Completed))
+		{
 			bool bStopHere = false;
 			//Spend energy for cloaked units
 			if (
-				unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)	//If the unit is cloaked
-				&& !(unit->status & UnitStatus::CloakingForFree)							//...and must consume energy to stay cloaked (i.e. not under an Arbiter)
-				) {
-
+				unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)		// If the unit is cloaked
+				&& !(unit->status & UnitStatus::CloakingForFree)							// ...and must consume energy to stay cloaked (i.e. not under an Arbiter)
+				) 
+			{
 				uint16 cloakingEnergyCost;
-
 				//Equivalent to getCloakingEnergyConsumption @ 0x00491A90
 				if (unit->id == UnitId::TerranEidolon
 					|| unit->id == UnitId::Hero_SarahKerrigan
@@ -107,50 +61,51 @@ namespace hooks {
 					|| unit->id == UnitId::Hero_InfestedDuran
 					|| unit->id == UnitId::Hero_AlexeiStukov
 					)
+				{
 					cloakingEnergyCost = 10;
+				}
 				else
-					if (unit->id == UnitId::TerranWraith
-						|| unit->id == UnitId::Hero_TomKazansky
-						)
+				if (unit->id == UnitId::TerranWraith)
+					{
 						cloakingEnergyCost = 13;
-					else
-						cloakingEnergyCost = 0;
-
-				if (!(unit->hasEnergy(cloakingEnergyCost))) {
-
-					if (unit->secondaryOrderId == OrderId::Cloak)
-						unit->setSecondaryOrder(OrderId::Nothing2); //Supposedly, immediately decloaks the unit.
-
-					bStopHere = true;
-
+					}
+				else
+				{
+					cloakingEnergyCost = 0;
 				}
 
-				if (!bStopHere)	//the function prevent energy consumption if THE GATHERING enabled
+				if (!(unit->hasEnergy(cloakingEnergyCost))) {
+					if (unit->secondaryOrderId == OrderId::Cloak) {
+						unit->setSecondaryOrder(OrderId::Nothing2); // Supposedly, immediately decloaks the unit.
+					}
+					bStopHere = true;
+				}
+				if (!bStopHere) { // the function prevent energy consumption if THE GATHERING enabled
 					unit->spendUnitEnergy(cloakingEnergyCost);
-
-			} else if (unit->id == UnitId::ProtossMindTyrant && scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0) {
+				}
+			}
+			else
+			if (unit->id == UnitId::ProtossMindTyrant && scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0) {
 				auto sum = scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) / 2;
 				unit->spendUnitEnergy(std::min(unit->energy, (uint16)(16 * sum)));
 				if (unit->energy == 0) {
 					scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
 				}
-			} else if (unit->id == UnitId::TerranAzazel && scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd) == 1) {
+			}
+			else
+			if (unit->id == UnitId::TerranAzazel && scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd) == 1) {
 				unit->spendUnitEnergy(std::min(unit->energy, (uint16)13));
 				if (unit->energy == 0) {
 					scbw::set_generic_rust_value(unit, ValueId::SublimeShepherd, 0);
 				}
-			} else if (unit->id == UnitId::corsair && scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb)) {
+			}
+			else
+			if (unit->id == UnitId::corsair && scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb)) {
 				unit->spendUnitEnergy(std::min(unit->energy, (uint16)13));
 				if (unit->energy == 0) {
 					scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 0);
 				}
 			}
-			/*			else if (unit->id == UnitId::ProtossClarion && scbw::get_generic_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
-							unit->spendUnitEnergy(13);
-							if(unit->energy==0) {
-								scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::SetPhaseLinkStatus, 0, 0, 0);
-							}
-						}*/
 
 			else { //EB526
 				if (unit == nullptr) {
@@ -159,81 +114,59 @@ namespace hooks {
 				int maxEnergy;
 				if (unit->id == UnitId::ProtossMindTyrant
 					&& unit->mainOrderId == OrderId::CompletingArchonSummon
-					&& unit->mainOrderState == 0
-					)
+					&& unit->mainOrderState == 0) {
 					maxEnergy = 12800;  //50 * 256; Identical to energy amount on spawn
-				else
+				}
+				else {
 					maxEnergy = unit->getMaxEnergy();
+				}
 				bool phobosCondition = false;
 				if (unit->id == UnitId::TerranPhobos && scbw::get_generic_value(unit, ValueId::PhobosDischarge) > 0) {
-					unit->spendUnitEnergy(426);//(200 * 256) / (5 * 24)  ~ 426.66
+					unit->spendUnitEnergy(426); // (200 * 256) / (5 * 24)  ~ 426.66
 					if (unit->energy < 426) {
 						unit->energy = 0;
 						scbw::set_generic_value(unit, ValueId::PhobosDischarge, 0);
-
 					}
 					phobosCondition = true;
 				}
-
-				if (unit->energy == maxEnergy && !phobosCondition)
+				if (unit->energy == maxEnergy && !phobosCondition) {
 					bStopHere = true;
-				else {
-
-					//unit->energy += 8;
-
-					//Omitting hardcoded recalculation of maxEnergy
-
-					//Omitting recalculation of maxEnergy through
-					//GetDarkArchonEnergy @ 0x00491C00 since it
-					//calculate maxEnergy the same way the previous
-					//code did, and nothing could have changed the
-					//parameters used since the calculation
-					/*if (unit->energy > maxEnergy)
-						unit->energy = maxEnergy;*/
-
-					unit->addUnitEnergy(8, maxEnergy);
-
-
 				}
-
+				else {
+					unit->addUnitEnergy(8, maxEnergy);
+				}
 			}
 
 			//If the unit is currently selected, redraw its graphics
-			if (!bStopHere && unit->sprite->flags & CSprite_Flags::Selected)
+			if (!bStopHere && unit->sprite->flags & CSprite_Flags::Selected) {
 				setAllImageGroupFlagsPal11(unit->sprite);
-
+			}
 		}
-
 	}
-
-	;
 
 	void updateMineralPatchImage(CUnit* mineralPatch) {
 		IscriptAnimation::Enum anim;
 		if (mineralPatch->building.resource.resourceAmount >= 750)
 			anim = IscriptAnimation::WorkingToIdle;
 		else
-			if (mineralPatch->building.resource.resourceAmount >= 500)
-				anim = IscriptAnimation::AlmostBuilt;
-			else
-				if (mineralPatch->building.resource.resourceAmount >= 250)
-					anim = IscriptAnimation::SpecialState2;
-				else
-					if (mineralPatch->building.resource.resourceAmount >= 50)
-						anim = IscriptAnimation::SpecialState1;
-					else
-						anim = IscriptAnimation::Landing;
+		if (mineralPatch->building.resource.resourceAmount >= 500)
+			anim = IscriptAnimation::AlmostBuilt;
+		else
+		if (mineralPatch->building.resource.resourceAmount >= 250)
+			anim = IscriptAnimation::SpecialState2;
+		else
+		if (mineralPatch->building.resource.resourceAmount >= 50)
+			anim = IscriptAnimation::SpecialState1;
+		else
+			anim = IscriptAnimation::Landing;
 		if (anim != mineralPatch->building.resource.resourceIscript) {
 			mineralPatch->building.resource.resourceIscript = anim;
 			mineralPatch->sprite->playIscriptAnim(anim);
 		}
 	}
 
-
-
 	const uint32 Func_SetUnitPathing = 0x00401360;
 	void setUnitPathing(CUnit* unit, uint8 unkPathRelated) {
-
 		__asm {
 			PUSHAD
 			MOV AL, unkPathRelated
@@ -241,32 +174,29 @@ namespace hooks {
 			CALL Func_SetUnitPathing
 			POPAD
 		}
-
 	}
-
-	;
-
 
 	/// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
 	/// Identical to function @ 0x004EC290
 	void updateUnitStateHook(CUnit* unit) {
-
-
 		if (unit->pAI != nullptr) {
 			hydra_unit_ai(unit);
 		}
 		//Timers
-		if (unit->mainOrderTimer)
+		if (unit->mainOrderTimer) {
 			unit->mainOrderTimer--;
-		if (unit->groundWeaponCooldown)
+		}
+		if (unit->groundWeaponCooldown) {
 			unit->groundWeaponCooldown--;
-		if (unit->airWeaponCooldown)
+		}
+		if (unit->airWeaponCooldown) {
 			unit->airWeaponCooldown--;
-		if (unit->spellCooldown)
+		}
+		if (unit->spellCooldown) {
 			unit->spellCooldown--;
+		}
 		if (unit->id == UnitId::TerranWyvern && scbw::get_generic_rust_value(unit, ValueId::ReverseThrust) == 1
 			&& unit->groundWeaponCooldown == 0) {
-
 			bool can_free_fire = true;
 			if (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::Attack2) {
 				if (unit->orderTarget.unit != nullptr) {
@@ -288,7 +218,8 @@ namespace hooks {
 					if (scbw::getDistanceFast(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
 						seek_unit = false;
 						scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, nullptr, targ_x, targ_y);
-					} else {
+					}
+					else {
 						scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabOn, 0);
 					}
 				}
@@ -296,7 +227,8 @@ namespace hooks {
 					auto a = scbw::UnitFinder::getNearestTarget(
 						unit->getX() - range, unit->getY() - range,
 						unit->getX() + range, unit->getY() + range,
-						unit, [&](CUnit* target) {
+						unit, [&](CUnit* target)
+					{
 						if (target == unit) {
 							return false;
 						}
@@ -311,8 +243,7 @@ namespace hooks {
 							return false;
 						}
 						return true;
-					}
-					);
+					});
 					if (a != nullptr) {
 						auto direction = scbw::getAngle(x, y, a->getX(), a->getY());
 						scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, a, a->position);
@@ -320,7 +251,6 @@ namespace hooks {
 				}
 				unit->updateSpeed();
 			}
-
 		}
 
 		if (unit->id == UnitId::ProtossAccantor) {
@@ -359,6 +289,7 @@ namespace hooks {
 				scbw::set_generic_value(unit, ValueId::HierophantOverlay, 1);
 			}
 		}
+
 		if (scbw::get_generic_value(unit, ValueId::HierophantOverlay) == 1) {
 			auto overlayId = scbw::get_sized_overlay(unit, ImageId::Cowardice_Small);
 			auto overlay = unit->getOverlay(overlayId);
@@ -373,6 +304,7 @@ namespace hooks {
 				scbw::set_generic_value(unit, ValueId::HierophantOverlay, 0);
 			}
 		}
+
 		//Clear Malice/Cowardice overlays
 		if (unit->_unknown_0x08C & 0x2) {
 			unit->_unknown_0x08C &= ~0x2;
@@ -392,9 +324,7 @@ namespace hooks {
 			scbw::refreshConsole();
 		}
 
-
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::ResourceContainer) {
-
 			// Decrement resource regen timers
 			if (unit->unusedTimer > 0) {
 				unit->unusedTimer--;
@@ -408,13 +338,13 @@ namespace hooks {
 					if (scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer) > 0) {
 						unit->_unknown_0x066 = 36;
 					}
-				} else {
+				}
+				else {
 					unit->_unknown_0x066 = 36;
 					if (scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer) > 0) {
 						unit->_unknown_0x066 = 18;
 					}
 				}
-
 				// Actual resource regeneration
 				bool update_image = true;
 				if (unit->building.resource.resourceAmount < 5000
@@ -434,101 +364,88 @@ namespace hooks {
 
 		//Shield regeneration
 		if (units_dat::ShieldsEnabled[unit->id] != 0) {
-
 			int32 maxShields = (int32)(units_dat::MaxShieldPoints[unit->id]) * 256;
 			if (unit->id == UnitId::ProtossAugur && unit->status & UnitStatus::Completed) {
 				unit->shields -= std::min(14, unit->shields);
-			} else {
+			}
+			else {
 				if (unit->shields != maxShields && unit->id != UnitId::scarab) {
 					unit->shields += 7;
-
-					if (unit->shields > maxShields)
+					if (unit->shields > maxShields) {
 						unit->shields = maxShields;
-
-					if (unit->sprite->flags & CSprite_Flags::Selected)  //If the unit is currently selected, redraw its graphics
+					}
+					if (unit->sprite->flags & CSprite_Flags::Selected) {  // If the unit is currently selected, redraw its graphics
 						setAllImageGroupFlagsPal11(unit->sprite);
-
+					}
 				}
 			}
 		}
 
 		//Supposedly, allows Zerglings to attack after unburrowing without delay.
 		if (unit->id == UnitId::ZergZergling || unit->id == UnitId::Hero_DevouringOne)
-			if (unit->groundWeaponCooldown == 0)
+			if (unit->groundWeaponCooldown == 0) {
 				unit->orderQueueTimer = 0;
+			}
 
 		//Clear the healing flag every frame
 		unit->isBeingHealed = 0;
 
 		//Update unit status effects (stim, maelstrom, plague, etc.)
 		if (unit->status & UnitStatus::Completed || !(unit->sprite->flags & CSprite_Flags::Hidden)) {
-
 			unit->cycleCounter++;
-
 			if (unit->cycleCounter >= 8) {
 				unit->cycleCounter = 0;
 				RestoreAllUnitStats(unit); //use update_status_effects hook if available
 			}
-
 		}
 
 		//Only for fully-constructed units and buildings
 		if (unit->status & UnitStatus::Completed) {
-
 			bool bStopHere = false;
 
 			// TODO: Finish Defensive Matrix changes
-
 			if (unit->defensiveMatrixTimer == 168) {
 				scbw::restoreFunc(unit);
 			}
 
 			//HP regeneration
-			if (
-				units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP &&
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP &&
 				unit->hitPoints > 0 &&
-				unit->hitPoints / 256 != unit->getMaxHpInGame()
-				)
+				unit->hitPoints / 256 != unit->getMaxHpInGame())
+			{
 				unit->setHp(unit->hitPoints + 4);
+			}
 			if (unit->defensiveMatrixHp != 0) {
-				if (
-					unit->hitPoints > 0 &&
-					unit->hitPoints / 256 != unit->getMaxHpInGame()
-					) {
+				if (unit->hitPoints > 0 &&
+					unit->hitPoints / 256 != unit->getMaxHpInGame())
+				{
 					auto caster = scbw::get_aise_value(unit, nullptr, AiseId::GetMatrixCasterPlayer, 0, 0);
-
 					if (caster < 8) {
-						unit->setHp(unit->hitPoints + 53);//256 * 5 / 24 = 53.333..
+						unit->setHp(unit->hitPoints + 53); //256 * 5 / 24 = 53.333..
 					}
 				}
-
 			}
 
-			//Update unit energy (energy regen/drain)
-			//call StarCraft.exe+EB4B0		//sub_4EB4B0
+			// Update unit energy (energy regen/drain)
 			updateUnitEnergy(unit);
 
-			//Recent order timer
-			if (unit->recentOrderTimer != 0)
+			// Recent order timer
+			if (unit->recentOrderTimer != 0) {
 				unit->recentOrderTimer--;
+			}
 
-			//Self-destruct timer
+			// Self-destruct timer
 			if (unit->id == UnitId::ProtossAugur && unit->shields == 0) {
-				//unit->remove();
-				// Augur - Death behavior
-				augurSacrifice(unit); // why is this called twice? (also in weaponDamage)
-				//add final hour code later
+				augurSacrifice(unit);
 				bStopHere = true;
 			}
+
 			if (unit->removeTimer != 0) {
-
 				unit->removeTimer--;
-
 				if (unit->removeTimer == 0) {
 					unit->remove();
 					bStopHere = true;
 				}
-
 			}
 
 			// Last Orders - Aurora passive
@@ -544,34 +461,24 @@ namespace hooks {
 						unit->remove();
 					}
 				}
-
 			}
 
 			//Terran building burn-down
 			if (!bStopHere) {
-
 				RaceId::Enum raceId = unit->getRace();
-
-				if (
-					raceId != RaceId::Zerg &&
-					raceId != RaceId::Protoss &&
-					raceId == RaceId::Terran
-					)
+				if (raceId != RaceId::Zerg
+					&& raceId != RaceId::Protoss
+					&& raceId == RaceId::Terran)
 
 					//Check if the unit is a grounded or lifted building
-					if (
-						unit->status & UnitStatus::GroundedBuilding ||
-						units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding) {
-
+					if (unit->status & UnitStatus::GroundedBuilding
+						|| units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding) {
 						//...whose current HP is less or equal to 33% of max HP
-						if (unitHpIsInRedZone(unit))
+						if (unitHpIsInRedZone(unit)) {
 							unit->damageHp(20, nullptr, unit->lastAttackingPlayer, true);
-
+						}
 					}
-
 			} //if (unit->getRace() == RaceId::Terran)
-
-
 
 			// Radiation Shockwave - Irradiate enhancement
 			if (unit->irradiateTimer > 0) {
@@ -595,65 +502,55 @@ namespace hooks {
 					area_of_effect.right = (uint16)unit->sprite->position.x + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
 					area_of_effect.top = (uint16)unit->sprite->position.y - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
 					area_of_effect.bottom = (uint16)unit->sprite->position.y + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-					if (area_of_effect.left < 0)
+					if (area_of_effect.left < 0) {
 						area_of_effect.left = 0;
+					}
 					else
-						if (area_of_effect.right > *maxBoxRightValue)
+					if (area_of_effect.right > *maxBoxRightValue) {
 							area_of_effect.right = *maxBoxRightValue;
+					}
 
 					//check and fix effect if beyond height of map
-					if (area_of_effect.top < 0)
+					if (area_of_effect.top < 0) {
 						area_of_effect.top = 0;
+					}
 					else
-						if (area_of_effect.bottom > *maxBoxBottomValue)
+					if (area_of_effect.bottom > *maxBoxBottomValue) {
 							area_of_effect.bottom = *maxBoxBottomValue;
+					}
 					unitsInAreaOfEffect = getAllUnitsInBounds(&area_of_effect);
 					current_unit = *unitsInAreaOfEffect;
 					while (current_unit != nullptr) {
-						if (
-							current_unit != unit->irradiatedBy &&				//EMP doesn't affect the attacker
-							(
-								unit->irradiatedBy == nullptr ||					//EMP doesn't affect the attacker
-								current_unit != unit->irradiatedBy->subunit	//subunit
-								)
-							) {
-
-							if (current_unit->status & UnitStatus::IsHallucination)
+						if (current_unit != unit->irradiatedBy &&					//EMP doesn't affect the attacker
+							(unit->irradiatedBy == nullptr ||						//EMP doesn't affect the attacker
+							 current_unit != unit->irradiatedBy->subunit)
+							)
+						{
+							if (current_unit->status & UnitStatus::IsHallucination) {
 								current_unit->remove();
+							}
 							else
-								if (current_unit->stasisTimer == 0) { //don't work against units in stasis
-
+							if (current_unit->stasisTimer == 0) { //don't work against units in stasis
 									int32 energyBig = current_unit->energy;
 									current_unit->energy -= std::min(100 * 256, energyBig);
 									current_unit->shields -= std::min(100 * 256, current_unit->shields);
-
-									if (
-										current_unit->sprite->flags & CSprite_Flags::Selected &&
-										current_unit->sprite != nullptr
-										)
+									if (current_unit->sprite->flags & CSprite_Flags::Selected &&
+										current_unit->sprite != nullptr) {
 										setAllImageGroupFlagsPal11(current_unit->sprite);
-
-								}
-
+									}
+							}
 						}
-
-						unitsInAreaOfEffect++;					//go on next unit of the list (or null)
+						unitsInAreaOfEffect++; // go on next unit of the list (or null)
 						current_unit = *unitsInAreaOfEffect;
-
 					}
 					*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
 					*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[*tempUnitsListArraysCountsListLastIndex];
-				} else {
-					//scbw::printText("Radiation Shockwave is not detected");
 				}
 			}
-
-		} //if (unit->status & UnitStatus::Completed) {
-
+		}
 	};
 
 	void incrementUnitScoresEx(int count, CUnit* unit, int increment_scores) { // 0x00488D50
-
 		if (unit->status & UnitStatus::IsHallucination) {
 			return;
 		}
@@ -666,7 +563,6 @@ namespace hooks {
 
 		int race = unit->getRace();
 		int supply = units_dat::SupplyProvided[unit->id];
-
 		if (scbw::isZergEggNew(unit, false, false)) {
 			if (unit->buildQueue[unit->buildQueueSlot % 5] == UnitId::ZergIroleth) {
 				supply = units_dat::SupplyProvided[UnitId::ZergOvileth];
@@ -681,8 +577,9 @@ namespace hooks {
 
 		if (*elapsedTimeFrames > 0) {
 			uint32 supply_new = scbw::get_generic_value(unit, ValueId::SupplyProvided);
-			if (supply_new)
+			if (supply_new) {
 				supply = supply_new;
+			}
 			scbw::set_generic_value(unit, ValueId::SupplyProvided, supply);
 			auto supply_overlord_modifier = scbw::get_generic_value(unit, ValueId::OverlordSupplyGimmick);
 			if (supply_overlord_modifier > 0) {
@@ -696,12 +593,13 @@ namespace hooks {
 					default:
 						break;
 				}
-			} else if (unit->id == UnitId::ZergOthstoleth) {
+			}
+			else
+			if (unit->id == UnitId::ZergOthstoleth) {
 				supply = units_dat::SupplyProvided[unit->id];
 			}
 			scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 0);
 		}
-		//
 		if (race <= RaceId::Protoss) {
 			raceSupply[race].provided[player] += count * supply;
 		}
@@ -731,20 +629,13 @@ namespace hooks {
 			completed_unit_counts[unit_id].player[unit->playerId] = 0;
 		}
 	}
-
-
-
 } //hooks
 
 namespace {
 
-	/**** Helper function definitions. Do not modify anything below this! ****/
-
 	const uint32 Helper_UnitHpIsInRedZone = 0x004022C0;
 	bool unitHpIsInRedZone(CUnit* unit) {
-
 		static bool32 result;
-
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -752,26 +643,22 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-
 		return result != 0;
 	}
 
 	//hooked by hooks\update_status_effects.cpp
 	const uint32 Func_RestoreAllUnitStats = 0x00492F70;
 	void RestoreAllUnitStats(CUnit* unit) {
-
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_RestoreAllUnitStats
 			POPAD
 		}
-
 	}
 
 	//Identical to setAllImageGroupFlagsPal11 @ 0x00497430;
 	void setAllImageGroupFlagsPal11(CSprite* sprite) {
-
 		for (
 			CImage* current_image = sprite->images.head;
 			current_image != nullptr;
@@ -780,11 +667,9 @@ namespace {
 			if (current_image->paletteType == PaletteType::RLE_HPFLOATDRAW)
 				current_image->flags |= CImage_Flags::Redraw;
 		}
-
 	}
 
 	// For AI_Burrower
-
 	const uint32 Func_techUseAllowed = 0x0046DD80;
 	void techUseAllowed(CUnit* a1, int16 a2, int32 a3) {
 		__asm {
@@ -798,13 +683,10 @@ namespace {
 	}
 
 	// For irradiate function
-
 	const uint32 Func_CreateThingy = 0x00488210;
 	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
-
 		static CThingy* thingy;
 		int32 x_ = x;
-
 		__asm {
 			PUSHAD
 			PUSH playerId
@@ -820,9 +702,7 @@ namespace {
 
 	const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
 	bool setThingyVisibilityFlags(CThingy* thingy) {
-
 		static bool32 bPreResult;
-
 		__asm {
 			PUSHAD
 			MOV ESI, thingy
@@ -835,9 +715,7 @@ namespace {
 
 	const uint32 Func_GetAllUnitsInBounds = 0x0042FF80;
 	CUnit** getAllUnitsInBounds(Box16* coords) {
-
 		static CUnit** units_in_bounds;
-
 		__asm {
 			PUSHAD
 			MOV EAX, coords
@@ -847,6 +725,5 @@ namespace {
 		}
 		return units_in_bounds;
 	}
-
 }
 

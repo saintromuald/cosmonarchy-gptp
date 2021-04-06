@@ -152,7 +152,6 @@ void imgul(CSprite* sprite, uint32 imageId, uint32 unk1, uint32 unk2, uint32 unk
 	}
 }
 
-//
 #include "SCBW\UnitFinder.h"
 
 bool irradiateTarget(CUnit* unit) {
@@ -180,17 +179,16 @@ void augurSacrifice(CUnit* target) {
 			}
 			return true;
 		});
+		target->removeTimer = 5 * 32;
+		target->userActionFlags |= 0x4;
 		if (nearest != nullptr) {
 			target->orderTarget.unit = nearest;
 			scbw::createBullet(WeaponId::AugurFinalHour, target, target->position.x, target->position.y, target->playerId,
 				scbw::getAngle(target->position.x, target->position.y, nearest->getX(), nearest->getY()));
-
 			scbw::hideAndDisableUnit(target);
 			target->status |= UnitStatus::Invincible;
 			scbw::createThingy(SpriteId::AugurDeathExplosion, target->getX(), target->getY(), target->playerId);
 			scbw::playSound(scbw::randBetween(SoundId::AugurDeath01, SoundId::AugurDeath04), target);
-			target->removeTimer = 5 * 32;
-			target->userActionFlags |= 0x4;
 			return;
 		}
 	}
@@ -224,17 +222,17 @@ namespace hooks {
 			attacker,
 			false
 		};
-
 		weaponDamage_root(data);
 	}
 
 	void weaponDamage_root(WeaponDamageData& data) {
 		// the unit must neither be already dead nor invincible
-		if (data.target == nullptr || data.target->hitPoints == 0 || data.target->status & UnitStatus::Invincible)
+		if (data.target == nullptr || data.target->hitPoints == 0 || data.target->status & UnitStatus::Invincible) {
 			return;
+		}
 
-		if (scbw::isCheatEnabled(CheatFlags::PowerOverwhelming) &&			 // If Power Overwhelming is enabled
-			playerTable[data.target->playerId].type == PlayerType::Human) {		 // and the data.target player is a human player
+		if (scbw::isCheatEnabled(CheatFlags::PowerOverwhelming)							// If Power Overwhelming is enabled
+			&& playerTable[data.target->playerId].type == PlayerType::Human) {			// and the data.target player is a human player
 			data.finalDamage = 0;
 		}
 
@@ -875,7 +873,8 @@ namespace hooks {
 						if (unit->status & UnitStatus::InAir) {
 							return false;
 						}
-						// Is this needed??? seems like it's already guranteed
+						// TODO: iquare consultation
+						// Is this needed? Seems like it's already guaranteed
 						if (scbw::getDistanceFast(data.target->position.x, data.target->position.y, unit->position.x, unit->position.y) > 288) {
 							return false;
 						}
