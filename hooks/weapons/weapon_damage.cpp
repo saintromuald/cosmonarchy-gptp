@@ -45,14 +45,12 @@ void displayneterr_49E530(uint32 playerId) {
 
 const uint32 Func_UpdateUnitStrength = 0x0049FA40;
 void updateStrength_49FA40(CUnit* unit) {
-
 	__asm {
 		PUSHAD
 		MOV EAX, unit
 		CALL Func_UpdateUnitStrength
 		POPAD
 	}
-
 }
 
 const uint32 Func_Sub4A01F0 = 0x004A01F0;
