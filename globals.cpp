@@ -1148,9 +1148,7 @@ namespace scbw {
 			return true;
 		}).forEach([&](CUnit* target) {
 			vec.push_back(target);
-
-			int img = ImageId::PhaseLinkSmall + scbw::getOverlayOffset(target->id);
-			target->sprite->createOverlay(img, 0, 0, 0);
+			target->sprite->createOverlay(ImageId::PhaseLinkSmall + scbw::getOverlayOffset(target->id), 0, 0, 0);
 			scbw::set_generic_unit(target, ValueId::ClarionLinkUnit, unit);
 		});
 	}
