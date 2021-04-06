@@ -26,11 +26,13 @@ uint8 getDamageFactorForTooltip(uint8 weaponId, CUnit* unit) {
 		|| weaponId == WeaponId::PariahIconoclastBlades
 		|| weaponId == WeaponId::StarSovereignCelestialCannon
 		|| weaponId == WeaponId::AlmaksaliskPiercingSpines
-		)
+		) {
 		return 2;
+	}
 
-	if (weaponId == WeaponId::HaloRockets)
+	if (weaponId == WeaponId::HaloRockets) {
 		return 1;
+	}
 
 	return weapons_dat::DamageFactor[weaponId];
 }
