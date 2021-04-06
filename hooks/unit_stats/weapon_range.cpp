@@ -75,9 +75,7 @@ uint8 getSeekRangeHook(CUnit* unit) { // seek range is measured in tiles, unfort
 /// @param	unit			The unit that owns the weapon. Use this to check upgrades.
 uint32 getMaxWeaponRangeHook(CUnit* unit, uint8 weaponId) {
 	//Default StarCraft behavior
-
 	uint32 bonusAmount = 0;
-
 
 	//Give bonus range to units inside Bunkers
 	if (unit->status & UnitStatus::InBuilding) {
