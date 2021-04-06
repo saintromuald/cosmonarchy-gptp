@@ -32,15 +32,12 @@ void irradiateProc(CUnit* unit, CUnit* target) {
 
 namespace hooks {
 
-	//Applies Irradiate effects for @p unit (which is Irradiated)
 	void doIrradiateDamage(CUnit* irradiatedUnit) {
-		//Default StarCraft behavior
-
-
 		//No splash if burrowed
 		if (irradiatedUnit->status & UnitStatus::Burrowed) {
 			irradiateProc(irradiatedUnit, irradiatedUnit);
 		}
+
 		//If inside a transport, damage all units loaded within
 		else if (irradiatedUnit->status & UnitStatus::InTransport) {
 
@@ -67,16 +64,10 @@ namespace hooks {
 		}
 	}
 
-	//Hook function for UpdateStatusEffects() (AKA RestoreAllUnitStats())
-	//Note: This function is called every 8 ticks (when unit->cycleCounter reaches 8 == 0)
-
-
 	const uint32 Func_CreateThingy = 0x00488210;
 	CThingy* createThingyFunc(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
-
 		static CThingy* thingy;
 		int32 x_ = x;
-
 		__asm {
 			PUSHAD
 			PUSH playerId
@@ -87,19 +78,12 @@ namespace hooks {
 			MOV thingy, EAX
 			POPAD
 		}
-
 		return thingy;
-
 	}
-
-	;
-
 
 	const uint32 Func_GetAllUnitsInBounds = 0x0042FF80;
 	CUnit** getAllUnitsInBounds_copy(Box16* coords) {
-
 		static CUnit** units_in_bounds;
-
 		__asm {
 			PUSHAD
 			MOV EAX, coords
@@ -107,16 +91,11 @@ namespace hooks {
 			MOV units_in_bounds, EAX
 			POPAD
 		}
-
 		return units_in_bounds;
-
 	}
-
-	;
 
 	//Identical to setAllImageGroupFlagsPal11 @ 0x00497430;
 	void setAllImageGroupFlagsPal11(CSprite* sprite) {
-
 		for (
 			CImage* current_image = sprite->images.head;
 			current_image != nullptr;
@@ -125,14 +104,7 @@ namespace hooks {
 			if (current_image->paletteType == PaletteType::RLE_HPFLOATDRAW)
 				current_image->flags |= CImage_Flags::Redraw;
 		}
-
 	}
-
-	;
-
-
-
-	//00469B60 = DoUnitsCollide(), ecx Unit *first, eax Unit *second
 
 	const uint32 Func_DoUnitsCollide = 0x00469B60;
 	bool func_dounitscollide(CUnit* first, CUnit* second) {
@@ -148,34 +120,14 @@ namespace hooks {
 		return result;
 	}
 
-	/*
-	bool safetyUnburrowMatch(CUnit* burrower, CUnit* target) {
-		if (!(target->status & UnitStatus::GroundedBuilding)) {
-			return false;
-		}
-		if (target->id == UnitId::BasiliskCreeper) {
-			return false;
-		}
-		if (target == burrower) {
-			return false;
-		}
-		if (!func_dounitscollide(burrower, target)) {
-			return false;
-		}
-		return true;
-	}
-	*/
-
 	const uint32 Func_Sub_4E97C0 = 0x004E97C0;
 	void unburrow(CUnit* unit) {
-
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_Sub_4E97C0
 			POPAD
 		}
-
 	}
 
 	static bool safetyUnburrowCheck(CUnit* unit, CUnit* target) {
@@ -194,45 +146,40 @@ namespace hooks {
 		return true;
 	}
 
-	;
 	void updateStatusEffects(CUnit* unit) {
-
 		if (unit->subunit != nullptr) {
 			scbw::set_generic_value(unit->subunit, ValueId::TurretParentLink, (uint32)unit);
 		}
 
 		// Decrement Stasis Field timer (and remove effect if 0)
 		if (unit->stasisTimer != 0) {
-
 			unit->stasisTimer--;
-
-			if (unit->stasisTimer == 0)
+			if (unit->stasisTimer == 0) {
 				unit->removeStasisField();
+			}
 		}
 
 		// Update speed based on upgrades or status effects
-
-		// Passenger Insurance: Dropship acceleration
-		if (unit->id == UnitId::TerranTrojan) {
-			unit->updateSpeed();
-		}
-
-		//Clarion speed adjust
-		if (unit->id == UnitId::ProtossClarion) {
-			unit->updateSpeed();
-		}
-		//Update speed adjust
-		if (unit->id == UnitId::ProtossExemplar) {
-			unit->updateSpeed();
-		}
-
-		// Ion Propulsion: Vulture slow while over impassable terrain
-		else if (unit->id == UnitId::TerranVulture && scbw::getUpgradeLevel(unit->playerId, UpgradeId::IonPropulsion)) {
-			unit->updateSpeed();
+		
+		switch (unit->id) {
+			case UnitId::ProtossClarion:
+			case UnitId::ProtossExemplar:
+			{
+				unit->updateSpeed();
+				break;
+			}
+			default:
+			{
+			}
 		}
 
 		// Knockout Drivers: Southpaw slow per stack
-		else if (scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks) > 0) {
+		if (scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks) > 0) {
+			unit->updateSpeed();
+		}
+
+		// Terminal Surge: Vassal enhancement on death
+		if (scbw::get_generic_value(unit, ValueId::TerminalSurge) > 0) {
 			unit->updateSpeed();
 		}
 
