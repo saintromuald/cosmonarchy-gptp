@@ -1647,13 +1647,13 @@ namespace scbw {
 	bool orderIsSpell(int32 orderId) {
 		return orderId == OrderId::Plague
 			|| orderId == OrderId::DarkSwarm
-			|| orderId == OrderId::Ensnare
+		//	|| orderId == OrderId::Ensnare				// Land Grab
 			|| orderId == OrderId::Irradiate
 			|| orderId == OrderId::StasisField
-			|| orderId == OrderId::EmpShockwave
-			|| orderId == OrderId::MagnaPulse
+			|| orderId == OrderId::EmpShockwave			// Observance
+			|| orderId == OrderId::MagnaPulse			// Lobotomy Mine
 			|| orderId == OrderId::PsiStorm
-			|| orderId == OrderId::SummonBroodlings
+		//	|| orderId == OrderId::SummonBroodlings		// unused
 			|| orderId == OrderId::FireYamatoGun1;
 	}
 
