@@ -1010,6 +1010,7 @@ enum Enum {
 
 	// HYDRA \\
 
+	ParasiteOverlay						= 1031,
 	HallucinationOverlay				= 1035,
 	TreasurySupplyOverlay				= 1060,
 	Cowardice_Small					    = 1061,
@@ -1034,6 +1035,9 @@ enum Enum {
 	KhaydarinEclipseOverlayMedium		= 1271,
 	EnsnaringBroodOverlay				= 1281,
 	KhaydarinEclipseOverlaySmall		= 1272,
+	DeconstructionSmall					= 1332,
+	DeconstructionMedium				= 1333,
+	DeconstructionLarge					= 1334,
 	LegionnaireTeleportEffect			= 1358,
 
 	FirstMinorDamageOverlay				= 450,
