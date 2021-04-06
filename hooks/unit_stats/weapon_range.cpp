@@ -96,8 +96,9 @@ uint32 getMaxWeaponRangeHook(CUnit* unit, uint8 weaponId) {
 				bonusAmount += 4*32;
 			}
 		}
-		default:
+		default: {
 			break;
+		}
 	}
 
 	// Repentent Chorus - Barghest behavior
