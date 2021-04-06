@@ -265,27 +265,25 @@ namespace hooks {
 	uint32 getModifiedUnitSpeedHook(CUnit* unit, uint32 baseSpeed) {
 		int increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 
-		// Flingy-related code
-		if (increase > 0) {
-
-			if (unit->id == UnitId::ProtossPanoptus) {
-				baseSpeed = 1707;
-			} else {
-				for (int i = 0; i < increase; i++) {
-					baseSpeed *= 1.5;
-				}
-				if (baseSpeed < 853) {
-					baseSpeed = 853;
-				}
-			}
-		}
-
+		
 		switch (unit->id) {
 			case UnitId::ProtossPanoptus:
 			{
 				// Leftover movement speed code
 				baseSpeed = 1707;
 				break;
+			}
+			default:
+			{
+				// Flingy-related code
+				if (increase > 0) {
+					for (int i = 0; i < increase; i++) {
+						baseSpeed *= 1.5;
+					}
+					if (baseSpeed < 853) {
+						baseSpeed = 853;
+					}
+				}
 			}
 		}
 
