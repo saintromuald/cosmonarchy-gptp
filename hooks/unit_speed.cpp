@@ -25,7 +25,7 @@ namespace hooks {
 			}
 		}
 
-		// Mind Tyrant Malediction: Apply movespeed slow to Maelstrom victims once stun wears off
+		// Mind Tyrant Malediction: Apply movespeed slow to non-organic targets
 		if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 1) {
 			speed *= 0.5;
 		}
