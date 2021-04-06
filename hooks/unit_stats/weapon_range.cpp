@@ -32,7 +32,7 @@ uint8 getSeekRangeHook(CUnit* unit) {
 			bonusAmount += 0;
 	}
 	
-	// Robotic Sapience - Barghest Behavior
+	// Repentant Chorus - Barghest Behavior
 	auto barghestCount = hydraUnitCount(unit, unit->position, 5 * 32, CFlags::Ally | CFlags::NotSelf, { UnitId::ProtossBarghest });
 	bonusAmount += barghestCount / 4; // seek range is measured in tiles, unfortunately
 
