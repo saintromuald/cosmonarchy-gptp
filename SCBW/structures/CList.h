@@ -54,7 +54,7 @@ public:
 	T*& tail;
 	CListExtern(T** head, T** tail) : head(*head), tail(*tail) {};
 	CListExtern(T*& head, T*& tail) : head(head), tail(tail) {};
-	CListExtern(uint32 head, uint32 tail) : head(*(T**) head), tail(*(T**) tail) {};
+	CListExtern(uint32 head, uint32 tail) : head(*(T**)head), tail(*(T**)tail) {};
 
 	/// Inserts @p t into the linked list, before the @p target.
 	void insertBefore(T* t, T* target) const;
@@ -89,7 +89,7 @@ namespace CListFuncs {
 			if ((target->*link).prev)
 				((target->*link).prev->*link).next = t;
 			(target->*link).prev = t;
-		}   else {
+		} else {
 			head = t;
 			tail = t;
 		}
@@ -105,7 +105,7 @@ namespace CListFuncs {
 			if ((target->*link).next)
 				((target->*link).next->*link).prev = t;
 			(target->*link).next = t;
-		}   else {
+		} else {
 			head = t;
 			tail = t;
 		}
