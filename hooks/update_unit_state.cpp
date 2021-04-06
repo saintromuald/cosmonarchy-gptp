@@ -516,7 +516,7 @@ namespace hooks {
 			if (unit->id == UnitId::ProtossAugur && unit->shields == 0) {
 				//unit->remove();
 				// Augur - Death behavior
-				augurSacrifice(unit); // why is this called twice? (also in weaponDamage)
+				augurSacrifice(unit);
 				//add final hour code later
 				bStopHere = true;
 			}

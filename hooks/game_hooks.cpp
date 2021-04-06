@@ -119,7 +119,7 @@ void replaceUnitWithType(CUnit* unit, uint16 newUnitId) {
 ;
 
 const uint32 Func_497ED0 = 0x00497ED0;
-void makeSpriteVisible(CSprite* sprite) {
+static void makeSpriteVisible(CSprite* sprite) {
 
 	__asm {
 		PUSHAD

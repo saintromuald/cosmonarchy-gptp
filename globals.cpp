@@ -1061,6 +1061,7 @@ namespace scbw {
 			scbw::playSound(1372, unit);
 		}
 	}
+
 	void setMissileSourcePos(CUnit* unit, uint32 weaponId, uint32 valueId, int32 rotateCount, uint32 overlayType, uint32 frameset_offset) {
 		if (unit->sprite == nullptr || unit->orderTarget.unit == nullptr) {
 			return;
@@ -1082,8 +1083,6 @@ namespace scbw {
 		auto Y = unit->getY() + offset.y;
 		createBullet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y,
 			unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
-
-
 	}
 
 	const uint32 Func_RemoveOverlays2 = 0x00492370;
