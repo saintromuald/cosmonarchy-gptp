@@ -138,22 +138,22 @@ namespace hooks {
 
 		// Hardcode ideal movement speeds
 		else if (unit->id == UnitId::TerranCyprian) {
-			speed *= 2.5;
+			speed *= 1.2;
 		}
 		else if (unit->id == UnitId::ZergHydralisk) {
 			speed *= 1.5;
 		}
 		else if (unit->id == UnitId::ProtossZealot) {
-			speed *= 2;
+			speed *= 1.25;
 		}
 		else if (unit->id == UnitId::ProtossLegionnaire) {
 			speed *= 1.5;
 		}
 		else if (unit->id == UnitId::ProtossCabalist) {
-			speed *= 2.5;
+			speed *= 1.2;
 		}
 		else if (unit->id == UnitId::ProtossAmaranth) {
-			speed *= 2.5;
+			speed *= 1.2;
 		}
 
 		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby organic allies after kill
