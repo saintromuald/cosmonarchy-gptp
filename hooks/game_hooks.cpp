@@ -801,14 +801,14 @@ namespace hooks {
 				for (int i = 0; i < (int)unit->corrosiveSporeCount; i++) {
 					scbw::ApplySpores(target);
 				}
+				target->removeAcidSpores();
+				CThingy* thingy = scbw::createThingy(SpriteId::Corrosive_Acid_Hit, unit->getX(), unit->getY(), 11);
+				if (thingy != nullptr) {
+					thingy->sprite->elevationLevel = target->sprite->elevationLevel + 1;
+					scbw::setThingyVisibilityFlags(thingy);
+				}
+				target->damageWith(30 * 256, WeaponId::PsiStorm, unit, unit->playerId);
 			});
-			unit->removeAcidSpores();
-			CThingy* thingy = scbw::createThingy(SpriteId::Corrosive_Acid_Hit, unit->getX(), unit->getY(), 11);
-			if (thingy != nullptr) {
-				thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
-				scbw::setThingyVisibilityFlags(thingy);
-			}
-			unit->inflictDamage(30 * 256, nullptr, -1, false, true, false, false);
 		}
 
 		// Savant - Entropy Gauntlets: remove overlay at end of effect

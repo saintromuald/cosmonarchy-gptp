@@ -289,7 +289,7 @@ void globals::frameHook() {
 						if (n(unit)) {
 							double damage_factor = unitSizeFactor[units_dat::SizeType[unit->id]];
 							double damage = (double)(weapons_dat::DamageAmount[WeaponId::SalamanderIncendiaryPayload] + weapons_dat::DamageUpgrade[WeaponId::SalamanderIncendiaryPayload]) * (damage_factor / 256.0);
-							unitsInSplash.getUnit(i)->inflictDamage(damage, nullptr, -1, false, true, true);
+							unitsInSplash.getUnit(i)->damageWith(damage, WeaponId::PsiStorm);
 						}
 					}
 				}
@@ -301,7 +301,7 @@ void globals::frameHook() {
 				for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 					auto unit = unitsInSplash.getUnit(i);
 					if (n(unit)) {
-						unitsInSplash.getUnit(i)->inflictDamage(1777, nullptr, -1, false, true, true);
+						unitsInSplash.getUnit(i)->damageWith(1777, WeaponId::PsiStorm);
 						//1777 is [ 2500dmg*256 / 15sec*24 ]
 					}
 				}
