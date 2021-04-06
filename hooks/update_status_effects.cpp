@@ -6,20 +6,14 @@
 
 void irradiateProc(CUnit* unit, CUnit* target) {
 	//Damage organic units only
-	if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic))
+	if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic)) {
 		return;
+	}
 
-	//Don't damage buildings
-	if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+	//Irradiate splash damage does not affect burrowed units
+	if (target != unit && target->status & UnitStatus::Burrowed) {
 		return;
-
-	//Don't damage larvae, eggs, and lurker eggs
-/*		if(scbw::isZergEggNew(unit,true,true))
-			return;*/
-
-			//Irradiate splash damage does not affect burrowed units
-	if (target != unit && target->status & UnitStatus::Burrowed)
-		return;
+	}
 
 	//Check if the unit is within distance, or is inside the same transport
 	if (unit->status & UnitStatus::InTransport
