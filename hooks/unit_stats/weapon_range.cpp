@@ -31,27 +31,10 @@ uint8 getSeekRangeHook(CUnit* unit) {
 		default:
 			bonusAmount += 0;
 	}
-
-	// Robotic Sapience - Barghest behavior
-/*	if (scbw::get_generic_value(unit, ValueId::RoboticSapience)) {
-		uint32 stacks = scbw::get_generic_value(unit, ValueId::RoboticSapience);
-		if (stacks >= 10) {
-			bonusAmount += 5;
-		}
-		else {
-			bonusAmount += stacks * 0.5;
-		}
-	}*/
 	
 	//Repentent Chorus - Barghest Behavior
 	auto barghestCount = hydraUnitCount(unit, unit->position, 5 * 32, CFlags::Ally | CFlags::NotSelf, { UnitId::ProtossBarghest });
-	bonusAmount += barghestCount / 4;//seek range is measured in tiles, unfortunately
-	/*
-	int r = 16;
-					auto n = unitRangeCount(nullptr, CFlags::NoInvincible | CFlags::Enemy | CFlags::NoAir, {});
-					scbw::UnitFinder unitsInSplash(impact.position.x - r, impact.position.y - r,
-						impact.position.x + r, impact.position.y + r);
-	*/
+	bonusAmount += barghestCount / 4; // seek range is measured in tiles, unfortunately
 
 	// Stellar Enforcement - Magister behavior
 	if (unit->orderTarget.unit != nullptr
