@@ -674,7 +674,6 @@ namespace hooks {
 
 		IterateUnitsAtLocationTargetProc_Plague(attacker, &coords);
 		if (attacker != nullptr) {
-			//scbw::printText("Plague Metastasis is researched");
 			uint32 range = 64;
 			scbw::UnitFinder(
 				x - range,
