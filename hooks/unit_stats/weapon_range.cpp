@@ -10,7 +10,7 @@ namespace hooks {
 /// Note: Seek ranges are measured in matrices (1 matrix = 32 pixels).
 /// This hook affects the behavior of CUnit::getSeekRange().
 /// Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
-uint8 getSeekRangeHook(CUnit* unit) {
+uint8 getSeekRangeHook(CUnit* unit) { // seek range is measured in tiles, unfortunately
 
 	uint16 unitId = unit->id;
 	uint32 seekRange;
@@ -29,12 +29,13 @@ uint8 getSeekRangeHook(CUnit* unit) {
 			}
 		}
 		default:
+		{
 			bonusAmount += 0;
+		}
 	}
 	
 	// Repentant Chorus - Barghest Behavior
-	auto barghestCount = hydraUnitCount(unit, unit->position, 5 * 32, CFlags::Ally | CFlags::NotSelf, { UnitId::ProtossBarghest });
-	bonusAmount += barghestCount / 4; // seek range is measured in tiles, unfortunately
+	bonusAmount += scbw::get_generic_value(unit, ValueId::RepententChorus) / 4;
 
 	// Stellar Enforcement - Magister behavior
 	if (unit->orderTarget.unit != nullptr
@@ -101,10 +102,7 @@ uint32 getMaxWeaponRangeHook(CUnit* unit, uint8 weaponId) {
 
 	// Repentent Chorus - Barghest behavior
 	if (unit->id == UnitId::ProtossBarghest) {
-		int r = 5 * 32;
-		auto barghestCount = hydraUnitCount(unit, unit->position, 5 * 32, CFlags::Ally | CFlags::NotSelf, { UnitId::ProtossBarghest });
-		scbw::set_generic_value(unit, ValueId::RepententChorus, barghestCount); // used for status tooltip
-		bonusAmount += barghestCount * 8;
+		bonusAmount += scbw::get_generic_value(unit, ValueId::RepententChorus) * 8;
 	}
 
 	// Stellar Enforcement - Magister behavior

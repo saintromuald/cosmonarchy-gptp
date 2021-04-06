@@ -229,7 +229,7 @@ namespace ValueId {
 		CentaurMissilePos							= 80,
 		LazarusAgent								= 81,
 		NathrokorTimer								= 82,
-		RoboticSapience								= 83,
+		RepententChorus								= 83,
 		StellarEnforcement							= 84,
 		DisruptionWebDamage							= 85,
 		CastLazarusAgent							= 86,

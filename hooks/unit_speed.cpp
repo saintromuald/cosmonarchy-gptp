@@ -18,9 +18,6 @@ namespace hooks {
 	/// Logically equivalent to GetModifiedUnitSpeed @ 0047B5F0  
 	uint32 getModifiedUnitSpeedHook(CUnit* unit, uint32 baseSpeed) {
 		uint32 speed = baseSpeed;
-		/*
-		int speedModifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)-(unit->unusedTimer ? 1 : 0)
-		+ (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);*/
 
 		// Set additives based on status effects and movespeed upgrades
 		int increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
@@ -36,36 +33,37 @@ namespace hooks {
 		// Flingy-related code
 		if (increase > 0) {
 
-			if (unit->id == UnitId::ProtossPanoptus || unit->id == UnitId::Hero_Mojo || unit->id == UnitId::Hero_Artanis)
+			if (unit->id == UnitId::ProtossPanoptus || unit->id == UnitId::Hero_Mojo || unit->id == UnitId::Hero_Artanis) {
 				speed = 1707;
-			else {
+			} else {
 				for (int i = 0; i<increase; i++) {
 					speed += (speed / 2);
 				}
-				if (speed < 853)
+				if (speed < 853) {
 					speed = 853;
+				}
 			}
 		}
 
 		if (decrease > 0) {
 			for (int i = 0; i<decrease; i++) {
-				speed /= 2;
+				speed *= 0.5;
 			}
 		}
 
 		// Mind Tyrant Malediction: Apply movespeed slow to Maelstrom victims once stun wears off
 		if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 1) {
-			speed /= 2;
+			speed *= 0.5;
 		}
 
 		// Lobotomy Mine slow
 		if (scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 1) {
-			speed /= 2;
+			speed *= 0.5;
 		}
 
 		// Wyvern Reverse Thrust ability: reduce movespeed
 		if (unit->id == UnitId::TerranWyvern && scbw::get_generic_rust_value(unit, ValueId::ReverseThrust) == 1) {
-			speed /= 2;
+			speed *= 0.5;
 		}
 
 		// Vassal Terminal Surge: increase movespeed when any nearby Simulacrum dies
@@ -92,7 +90,7 @@ namespace hooks {
 					target->position.x, target->position.y);
 				uint16 unit_angle = unit->velocityDirection1;
 				int arc = (double)60 / 1.40625;
-				//120 degrees
+				// 120 degrees
 				int delta = unit_angle - angle;
 				delta = abs((delta + 128) % 256 - 128);
 				if (delta <= arc) {
@@ -100,12 +98,8 @@ namespace hooks {
 				}
 			});
 			if (unit->_padding_0x132 & 0x2) {
-				//speed += (speed / 2);
 				speed *= 2;
 				unit->_padding_0x132 &= ~0x2;
-			}
-			else {
-				//speed += (speed / 4);
 			}
 		}
 
@@ -114,7 +108,7 @@ namespace hooks {
 			auto tile = scbw::getActiveTileAt(unit->getX(), unit->getY());
 			if (tile.isUnwalkable || !tile.isWalkable) {
 				if (scbw::getUpgradeLevel(unit->playerId,UpgradeId::IonPropulsion)) {
-					speed /= 2;
+					speed *= 0.5;
 				}
 			}
 		}
@@ -144,28 +138,27 @@ namespace hooks {
 
 		// Hardcode ideal movement speeds
 		else if (unit->id == UnitId::TerranCyprian) {
-			speed += (speed / 5);
+			speed *= 2.5;
 		}
 		else if (unit->id == UnitId::ZergHydralisk) {
-			speed += speed / 2;
+			speed *= 1.5;
 		}
 		else if (unit->id == UnitId::ProtossZealot) {
-			speed += speed / 4;
+			speed *= 2;
 		}
 		else if (unit->id == UnitId::ProtossLegionnaire) {
-			speed += speed / 2;
+			speed *= 1.5;
 		}
 		else if (unit->id == UnitId::ProtossCabalist) {
-			speed += speed / 5;
+			speed *= 2.5;
 		}
 		else if (unit->id == UnitId::ProtossAmaranth) {
-			speed += speed / 5;
+			speed *= 2.5;
 		}
 
 		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby organic allies after kill
 		else if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0) {
-			speed += speed / 2;
-//			scbw::printFormattedText("SPEED | Unit id: %d", (uint32)unit->id);
+			speed *= 1.5;
 		}
 
 		// Manifold Phase Rush: gains 150% increased movespeed when moving towards enemies attacked by allied robotics
@@ -295,25 +288,14 @@ namespace hooks {
 	/// @return		The modified acceleration value.
 	/// Logically equivalent to getModifiedUnitAcceleration @ 0047B8A0 
 	uint32 getModifiedUnitAccelerationHook(CUnit* unit) {
-
-
-		//uint32 acceleration = flingy_dat::Acceleration[units_dat::Graphic[unit->id]];
-//		uint32 acceleration = scbw::getFlingyData(FlingyDatEntries::Acceleration, units_dat::Graphic[unit->id]);
 		uint32 acceleration = scbw::getFlingyData(FlingyDatEntries::Acceleration, scbw::getUnitData(UnitsDatEntries::Flingy,unit->id));
-		/*
-		int modifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
-		+ (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);*/
 
 		// Set additives based on status effects and movespeed upgrades
 		int increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 		int decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
 
-		// 
 		if (increase > 0)
 			acceleration *= 2;
-
-		//else
-		//
 		if (decrease > 0)
 			acceleration = acceleration - (acceleration / 4);
 
@@ -325,7 +307,7 @@ namespace hooks {
 			}
 		}
 
-		//Clarion acceleration shield boost
+		// Clarion acceleration shield boost
 		else if (unit->id == UnitId::ProtossClarion) {
 			double fraction = (double)unit->shields / ((double)units_dat::MaxShieldPoints[unit->id] * 256);
 			acceleration *= 1.0 + fraction;
@@ -340,9 +322,8 @@ namespace hooks {
 		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch)) {
 			acceleration *= 0.25;
 		}
+
 		return acceleration;
-
-
 	}
 
 	/// Calculates the unit's turn speed, factoring in upgrades and status effects.
@@ -350,25 +331,17 @@ namespace hooks {
 	/// @return		The modified turning speed value.
 	/// Logically equivalent to getModifiedUnitTurnRadius @ 0047B850 
 	uint32 getModifiedUnitTurnSpeedHook(CUnit* unit) {
-
-
-		//uint32 turnSpeed = flingy_dat::TurnSpeed[units_dat::Graphic[unit->id]];
-//		uint32 turnSpeed = scbw::getFlingyData(FlingyDatEntries::TurnRadius, units_dat::Graphic[unit->id]);
 		uint32 turnSpeed = scbw::getFlingyData(FlingyDatEntries::TurnRadius, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id));
-		/*
-		int modifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
-		+ (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);*/
 		int increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 		int decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
+
 		if (increase > 0)
 			turnSpeed *= 2;
 
-		//else if (modifier < 0)
 		if (decrease > 0)
 			turnSpeed = turnSpeed - (turnSpeed / 4);
 
 		return turnSpeed;
-
 	}
 
 } //hooks

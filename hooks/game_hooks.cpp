@@ -766,6 +766,11 @@ namespace hooks {
 			}
 		}
 
+		// Repentent Chorus - Barghest behavior
+		else if (unit->id == UnitId::ProtossBarghest) {
+			scbw::set_generic_value(unit, ValueId::RepententChorus, hydraUnitCount(unit, unit->position, 5 * 32, CFlags::Ally | CFlags::NotSelf, {UnitId::ProtossBarghest})); 
+		}
+
 		// Centaur - Sunchaser Missiles animation
 		else if (unit->id == UnitId::TerranCentaur) {
 			if (unit->orderSignal & 0x20) {
@@ -778,7 +783,7 @@ namespace hooks {
 			}
 		}
 
-		// Lazarus Agent revive
+		// Apostle - Lazarus Agent revive
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic &&
 			scbw::get_generic_value(unit, ValueId::LazarusNoHeal) == 1) {
 			if (unit->sprite && unit->sprite->mainGraphic
@@ -820,7 +825,7 @@ namespace hooks {
 			unit->inflictDamage(30 * 256, nullptr, -1, false, true, false, false);
 		}
 
-		// Savant - Entropy Gauntlets - remove overlay at end of effect
+		// Savant - Entropy Gauntlets: remove overlay at end of effect
 		if (scbw::get_generic_timer(unit, ValueId::EntropyGauntlets) == 1) {
 			uint32 overlayOffset = scbw::getOverlayOffset(unit->id);
 			uint32 overlayImageId = ImageId::EntropyGauntletsOverlaySmall - overlayOffset;
@@ -830,7 +835,7 @@ namespace hooks {
 				unit->sprite->removeOverlay(overlayImageId);
 		}
 
-		// Science Vessel Observance - ability
+		// Science Vessel - Observance ability
 		if (scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) == 1) {
 			auto range = 192;
 			auto a = scbw::UnitFinder::getNearestTarget(
@@ -864,7 +869,7 @@ namespace hooks {
 			}
 		}
 
-		// Science Vessel Observance - persistant overlay creation
+		// Science Vessel - Observance persistant overlay creation
 		if (scbw::get_generic_timer(unit, ValueId::ObservanceOverlayTimer) <= 1) {
 			auto range = 192;
 			auto a = scbw::UnitFinder::getNearestTarget(
@@ -919,8 +924,7 @@ namespace hooks {
 			captivating_claws::clearCaptivatingClaws(unit);
 		}
 
-		// GAME RULE
-		// Workers do not provide collision while harvesting, moving to harvest, or moving to return resources
+		// Game Rule -  Workers do not provide collision while harvesting, moving to harvest, or moving to return resources
 		if (unit->mainOrderId == OrderId::Harvest1
 			|| unit->mainOrderId == OrderId::HarvestGas1
 			|| unit->mainOrderId == OrderId::ReturnMinerals

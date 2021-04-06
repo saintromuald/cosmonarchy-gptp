@@ -13,7 +13,6 @@ namespace hooks {
 /// Note: sight ranges cannot exceed 11, unless extended.
 /// Equivalent to getUpgradedSightRange @ 004E5B40  
 uint32 getSightRangeHook(CUnit* unit, bool isForSpellCasting) {
-
 	uint32 sightRange;
 
 	//Check if the unit is a constructing building (exclude remorphing buildings)
@@ -30,7 +29,6 @@ uint32 getSightRangeHook(CUnit* unit, bool isForSpellCasting) {
 		sightRange = units_dat::SightRange[unit->id];
 
 	return sightRange;
-
 }
 
 } //hooks
