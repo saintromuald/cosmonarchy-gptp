@@ -177,8 +177,6 @@ void augurSacrifice(CUnit* target) {
 			}
 			return true;
 		});
-		target->removeTimer = 5 * 32;
-		target->userActionFlags |= 0x4;
 		if (nearest != nullptr) {
 			target->orderTarget.unit = nearest;
 			scbw::createBullet(WeaponId::AugurFinalHour, target, target->position.x, target->position.y, target->playerId,
@@ -187,7 +185,12 @@ void augurSacrifice(CUnit* target) {
 			target->status |= UnitStatus::Invincible;
 			scbw::createThingy(SpriteId::AugurDeathExplosion, target->getX(), target->getY(), target->playerId);
 			scbw::playSound(scbw::randBetween(SoundId::AugurDeath01, SoundId::AugurDeath04), target);
+			target->removeTimer = 5 * 32;
+			target->userActionFlags |= 0x4;
 			return;
+		}
+		else {
+			target->remove();
 		}
 	}
 }
