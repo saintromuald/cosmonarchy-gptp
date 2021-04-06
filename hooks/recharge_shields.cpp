@@ -37,10 +37,7 @@ void rechargeShieldsProc(CUnit* target, CUnit* battery) {
 		shieldGain = energySpent * 2;
 	}
 
-	target->shields = target->shields + shieldGain;
-
-	if (target->shields > maxShields)
-		target->shields = maxShields;
+	target->healShields(shieldGain, battery);
 
 	if (!scbw::isCheatEnabled(CheatFlags::TheGathering))
 		battery->spendUnitEnergy(energySpent);
@@ -108,15 +105,15 @@ result = 0;
 			if (unit->orderQueueHead == nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			} 		else {
+			} else {
 				if (unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
 				else
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 
-		} 	else
-			if (unit->mainOrderState <= 3) 	{
+		} else
+			if (unit->mainOrderState <= 3) {
 
 				bool bStopThere = false;
 
@@ -127,7 +124,7 @@ result = 0;
 
 					bStopThere = true;
 
-				} 		else
+				} else
 					if (unit->mainOrderState == 1) {
 
 						uint32 movableState = unit->getMovableState();
@@ -135,11 +132,11 @@ result = 0;
 						if (movableState == 0) { //not reached destination
 							if (!unit->isTargetWithinMinRange(battery, BATTERY_RANGE))
 								bStopThere = true;
-						} 			else
+						} else
 							if (movableState == 1) { //unit reached destination
 								makeToHoldPosition(unit);
 								unit->mainOrderState = 2;
-							} 			else { //probably movableState == 2 == unit unmovable
+							} else { //probably movableState == 2 == unit unmovable
 								unit->orderToIdle();
 								bStopThere = true;
 							}
@@ -174,7 +171,7 @@ result = 0;
 					if (
 						unit->shields >= units_dat::MaxShieldPoints[unit->id] * 256 ||
 						battery->energy == 0
-						) 			{
+						) {
 
 						if (battery->orderTarget.unit == unit)
 							battery->orderTarget.unit = nullptr;

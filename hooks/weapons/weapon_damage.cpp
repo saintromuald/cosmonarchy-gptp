@@ -240,7 +240,7 @@ namespace hooks {
 
 		bool canDamage = true; // debug only!
 		if (data.target->pAI != nullptr) {
-			WorkerAi* ai = (WorkerAi*) data.target->pAI;
+			WorkerAi* ai = (WorkerAi*)data.target->pAI;
 			if (ai->type == 2 || ai->type == 3) {
 				if (ai->town == nullptr) {
 					scbw::printFormattedText("Ai_ReactToHit crash! Attacker id %d, data.target id %d", data.attacker->id, data.target->id);
@@ -286,7 +286,7 @@ namespace hooks {
 				int32 plasmaShieldUpg = scbw::getUpgradeLevel(data.target->playerId, UpgradeId::ProtossPlasmaShields) * 256;
 				if (data.finalDamage > plasmaShieldUpg) { // Weird logic, Blizzard dev must have been sleepq7
 					data.finalDamage -= plasmaShieldUpg;
-				} 				else {
+				} else {
 					data.finalDamage = 128;
 				}
 			}
@@ -304,7 +304,7 @@ namespace hooks {
 					uint16 angle = scbw::getAngle(data.target->position.x, data.target->position.y,
 						data.attacker->position.x, data.attacker->position.y);
 					uint16 unit_angle = data.target->velocityDirection1;
-					int arc = (double) 45 / 1.40625;	//90 degrees
+					int arc = (double)45 / 1.40625;	//90 degrees
 					int delta = unit_angle - angle;
 					delta = abs((delta + 128) % 256 - 128);
 					if (delta <= arc) {
@@ -354,7 +354,7 @@ namespace hooks {
 		if (data.shieldReduceAmount != 0 && canDamage) {
 			if (scbw::hasClarionLinks(data.target) && !data.dontProcPhaseLink) {
 				scbw::spreadClarionDamage(data);
-			} 			else {
+			} else {
 				data.target->shields -= data.shieldReduceAmount;
 				if (data.damageType != DamageType::Independent && data.target->shields != 0) {
 					shield_overlay = true;
@@ -383,9 +383,9 @@ namespace hooks {
 				// Reactive Payload - Architect behavior
 				double div = 1.0;
 				if (data.damageDivisor != 0) {
-					div = (double) data.damageDivisor;
+					div = (double)data.damageDivisor;
 				}
-				int dmg = ((double) data.finalDamage / div);
+				int dmg = ((double)data.finalDamage / div);
 				data.finalDamage = dmg + (data.target->corrosiveSporeCount * 256);
 				break;
 			}
@@ -414,7 +414,7 @@ namespace hooks {
 						break;
 				};
 				data.finalDamage *= mul;
-				data.finalDamage += (int) data.target->corrosiveSporeCount * 256;
+				data.finalDamage += (int)data.target->corrosiveSporeCount * 256;
 				break;
 			}
 			case WeaponId::KalkaliskViscousAcid:
@@ -423,7 +423,7 @@ namespace hooks {
 				int decrement = data.damageDivisor * 256;
 				if (decrement < data.damage) {
 					data.finalDamage = data.finalDamage - decrement + (data.target->corrosiveSporeCount * 256);
-				} 			else {
+				} else {
 					data.finalDamage = data.finalDamage + (data.target->corrosiveSporeCount * 256);
 				}
 				break;
@@ -443,7 +443,7 @@ namespace hooks {
 			case WeaponId::QuaziliskAcridBarbs:
 			{
 				// Quazilisk - Melting Points
-				float missingFactor = 1 - ((float) data.target->hitPoints / data.target->getMaxHpRaw());
+				float missingFactor = 1 - ((float)data.target->hitPoints / data.target->getMaxHpRaw());
 				float damageIncrease = floor(missingFactor / QuazaliskPassiveFactor);
 				//scbw::print("Damage Increase: " + std::to_string(damageIncrease));
 				data.finalDamage += damageIncrease * HealthMultiplier;
@@ -556,7 +556,7 @@ namespace hooks {
 							scbw::set_generic_value(data.target->subunit, ValueId::Deconstruction, 1);
 							scbw::set_generic_value(data.target->subunit, ValueId::DeconstructionPlayer, data.attacker->playerId);
 							data.target->subunit->sprite->createOverlay(1332 + overlayOffset);
-						} 					else {
+						} else {
 							data.target->sprite->createOverlay(1332 + overlayOffset);
 						}
 					}
@@ -570,7 +570,7 @@ namespace hooks {
 					double shieldStealRate = MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
 					int32 healAmount = data.damage * shieldStealRate;
 					int32 maxShields = units_dat::MaxShieldPoints[data.attacker->id] * 256;
-					data.attacker->shields = std::min(data.attacker->shields + healAmount, maxShields);
+					data.attacker->healShields(healAmount, data.attacker);
 					break;
 				}
 				case WeaponId::SavantDiscoidRailgun:
@@ -589,7 +589,7 @@ namespace hooks {
 						if (data.target->subunit != nullptr) {
 							data.target->subunit->sprite->removeOverlay(overlayImageId);
 							data.target->subunit->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
-						} 					else {
+						} else {
 							data.target->sprite->removeOverlay(overlayImageId);
 							data.target->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
 						}
@@ -664,7 +664,7 @@ namespace hooks {
 								int overlay = 1233;
 								if (units_dat::BaseProperty[data.target->id] & UnitProperty::LargeOverlay) {
 									overlay -= 2;
-								} 							else if (units_dat::BaseProperty[data.target->id] & UnitProperty::MediumOverlay) {
+								} else if (units_dat::BaseProperty[data.target->id] & UnitProperty::MediumOverlay) {
 									overlay -= 1;
 								}
 								data.target->sprite->createOverlay(overlay);
@@ -678,7 +678,7 @@ namespace hooks {
 				{
 					// Essence Drain - Gorgoleth Energy Steal
 					if (units_dat::BaseProperty[data.target->id] & UnitProperty::Spellcaster) {
-						uint16 energy = std::min(data.target->energy, (uint16) (data.finalDamage + data.shieldReduceAmount));
+						uint16 energy = std::min(data.target->energy, (uint16)(data.finalDamage + data.shieldReduceAmount));
 						data.target->energy -= energy;
 						data.attacker->energy += energy;
 					}
@@ -710,7 +710,7 @@ namespace hooks {
 						uint32 value = 0;
 						if (units_dat::ShieldsEnabled[data.target->id]) {
 							value = (units_dat::MaxHitPoints[data.target->id] + (units_dat::MaxShieldPoints[data.target->id] * 256)) * 0.10;
-						} 					else {
+						} else {
 							value = (units_dat::MaxHitPoints[data.target->id] * 0.10);
 						}
 						data.target->heal(value, data.target);
@@ -796,7 +796,7 @@ namespace hooks {
 		if (scbw::get_generic_value(data.target, ValueId::LazarusAgent) == 1) {
 			Globals.initLazarusAgent(data.target->position.x, data.target->position.y,
 				data.target->playerId, data.target->id, data.target->energy,
-				(CUnit*) scbw::get_generic_value(data.target, ValueId::LazarusAgentApostleSrc));
+				(CUnit*)scbw::get_generic_value(data.target, ValueId::LazarusAgentApostleSrc));
 		}
 
 		// Ecclesiast - Astral Blessing proc
@@ -815,12 +815,12 @@ namespace hooks {
 				}
 				if (units_dat::ShieldsEnabled[unit->id] && unit->shields < units_dat::MaxShieldPoints[unit->id] * 256) { // Shield Check for default behavior
 					imgul(unit->sprite, 425, 0, 0, 0);
-				} 				else { // Return if both checks failed
+				} else { // Return if both checks failed
 					return;
 				}
 				int healAmount = (stacks + 1) * 256;
 				if (units_dat::ShieldsEnabled[unit->id]) { // Shield Heal
-					unit->shields = std::min(unit->shields + healAmount, units_dat::MaxShieldPoints[unit->id] * 256);
+					unit->healShields(healAmount, data.target);
 				}
 			});
 		}
@@ -839,10 +839,7 @@ namespace hooks {
 						return;
 					}
 					uint32 value = 50 * 256;
-					if (unit->shields + value >= (uint32) units_dat::MaxShieldPoints[unit->id] * 256)
-						unit->shields = units_dat::MaxShieldPoints[unit->id] * 256;
-					else
-						unit->shields += value;
+					unit->healShields(value, data.target);
 				});
 				break;
 			}
@@ -966,7 +963,7 @@ namespace hooks {
 			baseProperty = units_dat::BaseProperty[a1->id];
 			if (baseProperty & UnitProperty::MediumOverlay) {
 				overlayPadding = 1;
-			} 			else if (baseProperty & UnitProperty::LargeOverlay) {
+			} else if (baseProperty & UnitProperty::LargeOverlay) {
 				overlayPadding = 2;
 			}
 			victim = a1;

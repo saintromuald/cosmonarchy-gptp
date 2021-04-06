@@ -33,7 +33,7 @@ namespace hooks {
 		if (unit->mainOrderState == 0) {
 			if (function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
 				unit->mainOrderState = 1;
-		} 		else
+		} else
 			if (unit->mainOrderState == 1) {
 
 				uint32 distance, distance_wanted;
@@ -50,12 +50,12 @@ namespace hooks {
 					if (unit->getMovableState() != 0)
 						function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
-				} 			else { //E4DA9
+				} else { //E4DA9
 					makeToHoldPosition(unit);
 					unit->mainOrderState = 2;
 				}
 
-			} 		else
+			} else
 				if (unit->mainOrderState == 2) {
 
 					if (!(unit->movementFlags & MovementFlags::Accelerating)) {
@@ -73,7 +73,7 @@ namespace hooks {
 							if (unit->getMovableState() != 0)
 								function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
-						} 				else {
+						} else {
 
 							if (function_00467030(unit)) {
 
@@ -94,7 +94,7 @@ namespace hooks {
 								if (builtUnit == nullptr) {
 									displayLastNetErrForPlayer(unit->playerId);
 									unit->orderToIdle();
-								} 						else { //E4E63
+								} else { //E4E63
 
 									replaceSpriteImages(builtUnit->sprite, ImageId::WarpAnchor, 0);
 
@@ -112,14 +112,14 @@ namespace hooks {
 
 								}
 
-							} 					else
+							} else
 								unit->orderToIdle();
 
 						}
 
 					}
 
-				} 		else
+				} else
 					if (unit->mainOrderState == 3) {
 
 						CUnit* target = unit->orderTarget.unit;
@@ -164,13 +164,13 @@ namespace hooks {
 
 						if (current_image->flags & CImage_Flags::Flag04) {
 
-							const uint32* u32_006D1200 = (uint32*) 0x006D1200;
+							const uint32* u32_006D1200 = (uint32*)0x006D1200;
 
 							current_image->animation = IscriptAnimation::SpecialState1;
-							current_image->iscriptOffset = *(uint16*) (*u32_006D1200 + current_image->iscriptHeaderOffset + 0x22);
+							current_image->iscriptOffset = *(uint16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x22);
 							current_image->wait = 0;
 							current_image->unknown14 = 0;
-							iscript_OpcodeCases(current_image, (uint32) &current_image->iscriptHeaderOffset, 0, 0);
+							iscript_OpcodeCases(current_image, (uint32)&current_image->iscriptHeaderOffset, 0, 0);
 
 						}
 
@@ -182,10 +182,10 @@ namespace hooks {
 					building->mainOrderState = 1;
 					jump_to_E50EE = true;
 
-				} 			else
+				} else
 					jump_to_E50EE = true;
 
-			} 		else
+			} else
 				if (building->mainOrderState == 1) {
 
 					if (building->orderSignal & 1) {
@@ -205,7 +205,7 @@ namespace hooks {
 
 					}
 
-				} 		else
+				} else
 					if (building->mainOrderState == 2) {
 
 						if (building->orderSignal & 1) {
@@ -227,13 +227,13 @@ namespace hooks {
 
 								if (current_image->flags & CImage_Flags::Flag04) {
 
-									const uint32* u32_006D1200 = (uint32*) 0x006D1200;
+									const uint32* u32_006D1200 = (uint32*)0x006D1200;
 
 									current_image->animation = IscriptAnimation::WarpIn;
-									current_image->iscriptOffset = *(uint16*) (*u32_006D1200 + current_image->iscriptHeaderOffset + 0x32);
+									current_image->iscriptOffset = *(uint16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x32);
 									current_image->wait = 0;
 									current_image->unknown14 = 0;
-									iscript_OpcodeCases(current_image, (uint32) &current_image->iscriptHeaderOffset, 0, 0);
+									iscript_OpcodeCases(current_image, (uint32)&current_image->iscriptHeaderOffset, 0, 0);
 
 								}
 
@@ -246,7 +246,7 @@ namespace hooks {
 
 						}
 
-					} 		else
+					} else
 						if (building->mainOrderState == 3) {
 
 							if (building->orderSignal & 1) {
@@ -265,13 +265,13 @@ namespace hooks {
 
 										if (current_image->flags & CImage_Flags::Flag04) {
 
-											const uint32* u32_006D1200 = (uint32*) 0x006D1200;
+											const uint32* u32_006D1200 = (uint32*)0x006D1200;
 
 											current_image->animation = IscriptAnimation::Disable;
-											current_image->iscriptOffset = *(uint16*) (*u32_006D1200 + current_image->iscriptHeaderOffset + 0x38);
+											current_image->iscriptOffset = *(uint16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x38);
 											current_image->wait = 0;
 											current_image->unknown14 = 0;
-											iscript_OpcodeCases(current_image, (uint32) &current_image->iscriptHeaderOffset, 0, 0);
+											iscript_OpcodeCases(current_image, (uint32)&current_image->iscriptHeaderOffset, 0, 0);
 
 										}
 
@@ -281,7 +281,7 @@ namespace hooks {
 
 									jump_to_E50EE = true;
 
-								} 				else
+								} else
 									jump_to_E50EE = true;
 
 							}
@@ -298,7 +298,7 @@ namespace hooks {
 									building->remainingBuildTime -= 16;
 								else
 									building->remainingBuildTime = 0;
-							} 				else
+							} else
 								building->remainingBuildTime--;
 						}
 
@@ -314,7 +314,7 @@ namespace hooks {
 						else
 							shieldGain = building->shieldGain;
 
-						if (building->shields + shieldGain >= (uint32) units_dat::MaxShieldPoints[building->id] * 256)
+						if (building->shields + shieldGain >= (uint32)units_dat::MaxShieldPoints[building->id] * 256)
 							building->shields = units_dat::MaxShieldPoints[building->id] * 256;
 						else
 							building->shields += shieldGain;

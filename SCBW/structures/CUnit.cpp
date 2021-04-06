@@ -120,7 +120,7 @@ uint32 CUnit::getMaxHpInGame() const {
 		maxHp = this->getCurrentHpInGame();
 		if (maxHp == 0)
 			maxHp = 1;
-	} 	else
+	} else
 		maxHp = maxHp >> 8;
 	return maxHp;
 }
@@ -395,10 +395,24 @@ void CUnit::heal(int32 hitPoints, CUnit* source) {
 		hitPoints *= 2;
 	}
 
-	setHp(std::min((uint32) (this->hitPoints) + (uint32) (hitPoints), this->getMaxHpRaw()));
+	setHp(std::min((uint32)(this->hitPoints) + (uint32)(hitPoints), this->getMaxHpRaw()));
 
 	// If heals to full clear debuffs
 	if (this->hitPoints == this->getMaxHpRaw()) {
+		scbw::restoreFunc(this);
+	}
+}
+
+void CUnit::healShields(int32 shields, CUnit* source) {
+	assert(this);
+	if (this->shields == this->maxShields() * 256) { // skip healing if max shields already
+		return;
+	}
+
+	this->shields = std::min(this->shields + shields, this->maxShields() * 256);
+
+	// If heals to full clear debuffs
+	if (this->shields == this->maxShields() * 256) {
 		scbw::restoreFunc(this);
 	}
 }
@@ -439,7 +453,7 @@ void CUnit::inflictDamage(int32 dmg, CUnit* attacker, int32 attackingPlayer, boo
 		shieldReduceAmount = std::min(damage, this->shields);
 		damage -= shieldReduceAmount;
 	}
-	if (shieldReduceAmount == 0 && damage < 128 && !ignoreDmg128Overflow) 	{
+	if (shieldReduceAmount == 0 && damage < 128 && !ignoreDmg128Overflow) {
 		damage = 128;
 	}
 	if (shieldReduceAmount != 0) {
@@ -594,7 +608,7 @@ void CUnit::spendUnitEnergy(uint32 energySpent) {
 	if (!(*CHEAT_STATE & CheatFlags::TheGathering)) {
 		if (this->energy > energySpent) {
 			this->energy -= energySpent;
-		} 		else {
+		} else {
 			this->energy = 0;
 		}
 	}
@@ -630,8 +644,8 @@ int32 CUnit::getTotalHitPointsPlusShields() {
 // Identical to isAIControllerNotABuilding @ 004381D0
 int32 CUnit::isUnitAINonBuilding() {
 	assert(this);
-	UnitAi* ai = (UnitAi*) this->pAI;
-	MilitaryAi* mai = (MilitaryAi*) ai;
+	UnitAi* ai = (UnitAi*)this->pAI;
+	MilitaryAi* mai = (MilitaryAi*)ai;
 	int32 result = 1;
 	if (!ai
 		|| ai->type != 4
@@ -698,7 +712,7 @@ void CUnit::orderToIdle() {
 	if (this->orderQueueHead) {
 		this->userActionFlags |= 1;
 		prepareForNextOrder(this);
-	} 	else {
+	} else {
 		if (this->pAI)
 			this->orderTo(OrderId::ComputerAI);
 		else
@@ -838,7 +852,7 @@ graphics::ColorId CUnit::getFactionColor(CUnit* unit) {
 		else
 			return_value = graphics::BLACK; // will return 0/black if abnormal playerId
 
-	} 	else
+	} else
 		return_value = graphics::BLACK; // will return 0/black if null pointer is the argument
 
 	return return_value;
@@ -878,10 +892,10 @@ graphics::ColorId CUnit::getColor(CUnit* unit) {
 
 			return_value = playersColors[return_value];
 
-		} 		else
+		} else
 			return_value = graphics::BLACK; // will return 0/black if abnormal playerId
 
-	} 	else
+	} else
 		return_value = graphics::BLACK; // will return 0/black if unit is nullptr
 
 	return return_value;
@@ -895,7 +909,7 @@ uint32 CUnit::getDistanceToTarget(CUnit* target) const {
 	assert(this);
 	assert(target);
 
-	CUnit* unit = (CUnit*) this;
+	CUnit* unit = (CUnit*)this;
 
 	if (this->isSubunit())
 		unit = this->subunit; // Current unit is a turret, so use it's base instead
@@ -1059,8 +1073,8 @@ void CUnit::fireWeapon(uint8 weaponId) const {
 
 CUnit* CUnit::getFromIndex(uint16 index) {
 	if (Globals.extended_unit_table == 1) {
-		if (1 <= index && index <= UNIT_ARRAY_LENGTH /* NEW_ARRAY_LENGTH*/) 		{
-			return (CUnit*) &new_unit_table.units[index - 1];
+		if (1 <= index && index <= UNIT_ARRAY_LENGTH /* NEW_ARRAY_LENGTH*/) {
+			return (CUnit*)&new_unit_table.units[index - 1];
 		}
 		return nullptr;
 	}
@@ -1071,7 +1085,7 @@ CUnit* CUnit::getFromIndex(uint16 index) {
 
 uint16 CUnit::getIndex() const {
 	if (Globals.extended_unit_table == 1) {
-		return this - (CUnit*) &new_unit_table.units[0] + 1;
+		return this - (CUnit*)&new_unit_table.units[0] + 1;
 	}
 	return this - unitTable + 1;
 }
@@ -1123,7 +1137,7 @@ bool CUnit::hasLoadedUnit() const {
 
 namespace {
 	typedef uint32(__stdcall* GiveUnitToPlayerFunc)(CUnit* unit, uint32 playerId);
-	GiveUnitToPlayerFunc const giveUnitToPlayer = (GiveUnitToPlayerFunc) 0x004C8040;
+	GiveUnitToPlayerFunc const giveUnitToPlayer = (GiveUnitToPlayerFunc)0x004C8040;
 } //unnamed namespace
 
 bool CUnit::giveTo(uint8 playerId) {

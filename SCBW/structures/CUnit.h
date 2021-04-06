@@ -175,6 +175,7 @@ struct CUnit : public CUnitLayout {
 	/// strength data (used by the AI). HP is guaranteed not to overflow.
 	void setHp(int32 hitPoints);
 	void heal(int32 hitPoints, CUnit* source = nullptr);
+	void healShields(int32 shields, CUnit* source = nullptr);
 
 	/// Deals damage to this unit, using a specific weapons.dat ID.
 	void damageWith(int32 damage,               ///< Amount of damage dealt to this unit.
