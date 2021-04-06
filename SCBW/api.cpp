@@ -1668,22 +1668,17 @@ namespace scbw {
 
 	const uint32 Func_497ED0 = 0x00497ED0;
 	static void makeSpriteVisible(CSprite* sprite) {
-
 		__asm {
 			PUSHAD
 			MOV EAX, sprite
 			CALL Func_497ED0
 			POPAD
 		}
-
 	}
 
 	void decloakProc(CUnit* unit) {
-		if ((units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak
-			|| unit->status & UnitStatus::CloakingForFree)
-			&& unit->playerId
-			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Burrowable)) {
-			makeSpriteVisible(unit->sprite);
+		if ((units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak || unit->status & UnitStatus::CloakingForFree)
+			&& unit->playerId && !(units_dat::BaseProperty[unit->id] & UnitProperty::Burrowable)) {
 			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::PermanentCloakTimer, 48 + 1, 0);
 		}
 	}
