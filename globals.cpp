@@ -1166,16 +1166,22 @@ namespace scbw {
 
 	void spreadClarionDamage(hooks::WeaponDamageData& data) {
 		CUnit* unit = data.target;
-		if (auto clarion = scbw::get_generic_unit(unit, ValueId::ClarionLinkUnit)) {
-			auto& vec = scbw::get_generic_unit_vector(clarion, ValueId::ClarionLinkFeedback);
-			if (vec.size() == 0) {
-				phaseLinkDamage(unit, data.shieldReduceAmount, data);
-			} else {
-				int divided = data.shieldReduceAmount / vec.size();
-				for (CUnit* vecUnit : vec) {
-					phaseLinkDamage(vecUnit, divided, data);
-				}
+		auto& vec = getClarionLinks(unit);
+		if (vec.size() == 0) {
+			phaseLinkDamage(unit, data.shieldReduceAmount, data);
+		} else {
+			int divided = data.shieldReduceAmount / vec.size();
+			for (CUnit* vecUnit : vec) {
+				phaseLinkDamage(vecUnit, divided, data);
 			}
 		}
+	}
+
+	std::vector<CUnit*> getClarionLinks(CUnit* unit) {
+		if (unit->id == UnitId::ProtossClarion) {
+			return scbw::get_generic_unit_vector(unit, ValueId::ClarionLinkFeedback);
+		}
+		auto clarion = scbw::get_generic_unit(unit, ValueId::ClarionLinkUnit);
+		return scbw::get_generic_unit_vector(clarion, ValueId::ClarionLinkFeedback);
 	}
 }

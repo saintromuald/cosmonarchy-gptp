@@ -573,7 +573,7 @@ namespace hooks {
 
 
 
-		// Radiation Shockwave - Irradiate enhancement
+			// Radiation Shockwave - Irradiate enhancement
 			if (unit->irradiateTimer > 0) {
 				if (scbw::get_generic_value(unit, ValueId::RadiationShockwaveCount)) {
 					scbw::set_generic_value(unit, ValueId::RadiationShockwaveCount, 0);

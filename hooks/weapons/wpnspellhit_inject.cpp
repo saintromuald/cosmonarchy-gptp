@@ -1,6 +1,7 @@
 //Injector source file for the Weapon/Spell Hit hook module.
 #include "wpnspellhit.h"
 #include <hook_tools.h>
+#include <globals.h>
 
 namespace {
 

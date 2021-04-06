@@ -566,23 +566,9 @@ namespace hooks {
 					POPAD
 				}*/
 				if (unit->hitPoints > damage) {
-					if (unit->shields >= 256 && units_dat::ShieldsEnabled[unit->id]) {
-						if (unit->shields > damage) {
-							unit->shields -= damage;
-							damage = 0;
-						} else {
-							damage -= unit->shields;
-							unit->shields = 0;
-						}
-						unit->sprite->createOverlay(ImageId::ShieldOverlay, 0, 0, 0);
-					}
 					if (damage > 0) {
-						unit->damageHp(damage, nullptr, -1, true);
+						unit->damageWith(damage, WeaponId::Plague);
 					}
-
-
-
-
 
 					//defiler plague upgrade  - add requirement later
 					/*

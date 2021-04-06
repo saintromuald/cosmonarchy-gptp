@@ -48,7 +48,8 @@ public:
 	multihitBullet() {
 		divider = 0;
 	}
-	multihitBullet(CBullet* bullet, std::vector<CUnit*> already_hit, uint32 divider) : bullet(bullet), already_hit(already_hit), divider(divider) {}
+	multihitBullet(CBullet* bullet, std::vector<CUnit*> already_hit, uint32 divider) : bullet(bullet), already_hit(already_hit), divider(divider) {
+	}
 };
 
 class apostleAgent {
@@ -264,5 +265,6 @@ namespace scbw {
 	void clearClarionLinks(CUnit* unit);
 	void placeClarionLinks(CUnit* unit);
 	bool hasClarionLinks(CUnit* unit);
+	std::vector<CUnit*> getClarionLinks(CUnit* unit);
 	void spreadClarionDamage(hooks::WeaponDamageData& data);
 }

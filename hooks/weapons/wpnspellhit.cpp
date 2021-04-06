@@ -48,18 +48,16 @@ namespace hooks {
 
 	//no bullet because this function can be called in another context without bullet
 	void IrradiateHit(CUnit* attacker, CUnit* target, uint8 attackingPlayerId) {
-
 		//if not already irradiated and not burrowed, add the irradiate overlay
 		if (target->irradiateTimer == 0 && !(target->status & UnitStatus::Burrowed)) {
 			uint32 irradiateImageId;
 			CUnit* unitWithOverlay;
 			if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay)
 				irradiateImageId = ImageId::Irradiate_Medium;
+			else if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay)
+				irradiateImageId = ImageId::Irradiate_Large;
 			else
-				if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay)
-					irradiateImageId = ImageId::Irradiate_Large;
-				else
-					irradiateImageId = ImageId::Irradiate_Small;
+				irradiateImageId = ImageId::Irradiate_Small;
 			if (target->subunit != nullptr)
 				unitWithOverlay = target->subunit;
 			else
@@ -444,12 +442,18 @@ namespace hooks {
 		//IterateUnitsAtLocationTargetProc_CorrosiveAcid(attackingPlayerId,&coords);
 		//spreads originally
 		if (bullet->attackTarget.unit != nullptr) {
-			scbw::ApplySpores(bullet->attackTarget.unit);
+			auto vec = scbw::getClarionLinks(bullet->attackTarget.unit);
+			if (vec.size() != 0) {
+				for (auto unit : vec) {
+					scbw::ApplySpores(unit);
+				}
+			} else {
+				scbw::ApplySpores(bullet->attackTarget.unit);
+			}
 
 			if (bullet->attackTarget.unit->corrosiveSporeCount >= 6
 				&& scbw::get_generic_timer(bullet->attackTarget.unit, ValueId::CorrosiveSporeDelay) == 0) {
 				scbw::set_generic_timer(bullet->attackTarget.unit, ValueId::CorrosiveSporeDelay, 25);
-
 			}
 		}
 
