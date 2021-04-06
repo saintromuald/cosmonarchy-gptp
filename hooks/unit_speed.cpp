@@ -39,7 +39,7 @@ namespace hooks {
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
 			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::TerminalSurge), 0, 10) * 1.5;
 			if (stacks > 0) {
-				speed *= (10.0 + stacks) / 10.0;
+				speed *= 1.0 + stacks * 0.1;
 			}
 		}
 
@@ -299,7 +299,7 @@ namespace hooks {
 	/// @return		The modified acceleration value.
 	/// Logically equivalent to getModifiedUnitAcceleration @ 0047B8A0 
 	uint32 getModifiedUnitAccelerationHook(CUnit* unit) {
-		return scbw::getFlingyData(FlingyDatEntries::Acceleration, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit);
+		return std::max(scbw::getFlingyData(FlingyDatEntries::Acceleration, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit), 1.0);
 	}
 
 	/// Calculates the unit's turn speed, factoring in upgrades and status effects.
@@ -307,7 +307,7 @@ namespace hooks {
 	/// @return		The modified turning speed value.
 	/// Logically equivalent to getModifiedUnitTurnRadius @ 0047B850 
 	uint32 getModifiedUnitTurnSpeedHook(CUnit* unit) {
-		return scbw::getFlingyData(FlingyDatEntries::TurnRadius, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id));// * getSpeedMultiplier(unit);
+		return scbw::getFlingyData(FlingyDatEntries::TurnRadius, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit);
 	}
 
 } //hooks
