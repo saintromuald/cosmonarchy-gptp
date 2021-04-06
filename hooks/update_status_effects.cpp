@@ -350,7 +350,6 @@ namespace hooks {
 			}
 		}
 
-		// 
 		if (unit->stimTimer != 0) {
 
 			unit->stimTimer--;
@@ -359,7 +358,6 @@ namespace hooks {
 				unit->updateSpeed();
 		}
 
-		// 
 		if (unit->id == UnitId::ZergVorvaling || unit->id == UnitId::TerranShaman || unit->id == UnitId::ZergOvileth) {
 			unit->updateSpeed();
 		}
@@ -408,17 +406,13 @@ namespace hooks {
 		// Irradiate ability and Radiation Shockwave upgrade
 		if (unit->irradiateTimer != 0) {
 			char buf[32];
-			//sprintf(buf,"Irradiate timer: %d",unit->irradiateTimer);
-			//scbw::printText(buf);
 			unit->irradiateTimer--;
 
-			doIrradiateDamage(unit);	//assumed to work, not checked in details
+			doIrradiateDamage(unit);
 
 			if (unit->irradiateTimer == 0) {
 				if (unit->newFlags1 & NewFlags1::RadiationShockwave) {
 					unit->newFlags1 &= ~NewFlags1::RadiationShockwave;
-					//radiation shockwave
-					//scbw::printText("Radiation Shockwave detected");
 
 					CThingy* emp_sprite;
 					emp_sprite = createThingyFunc(371, unit->position.x, unit->position.y, 0);
@@ -452,9 +446,9 @@ namespace hooks {
 					current_unit = *unitsInAreaOfEffect;
 					while (current_unit != nullptr) {
 						if (
-							current_unit != unit->irradiatedBy &&				//EMP doesn't affect the attacker
+							current_unit != unit->irradiatedBy && //EMP doesn't affect the attacker
 							(
-								unit->irradiatedBy == nullptr ||					//EMP doesn't affect the attacker
+								unit->irradiatedBy == nullptr || //EMP doesn't affect the attacker
 								current_unit != unit->irradiatedBy->subunit	//subunit
 								)
 							) {
@@ -478,14 +472,12 @@ namespace hooks {
 
 						}
 
-						unitsInAreaOfEffect++;					//go on next unit of the list (or null)
+						unitsInAreaOfEffect++; //go on next unit of the list (or null)
 						current_unit = *unitsInAreaOfEffect;
 
 					}
 					*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
 					*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[*tempUnitsListArraysCountsListLastIndex];
-				} else {
-					//scbw::printText("Radiation Shockwave is not detected");
 				}
 
 				unit->removeOverlay(ImageId::Irradiate_Small, ImageId::Irradiate_Large);
@@ -534,13 +526,13 @@ namespace hooks {
 
 			if (!(unit->status & UnitStatus::Invincible)) {
 				int32 damage = (weapons_dat::DamageAmount[WeaponId::Plague] * 256) / 30;
+
 				if (unit->plagueTimer == 0) {
 					damage += (weapons_dat::DamageAmount[WeaponId::Plague] * 256) % 30;
 				}
-				if (unit->hitPoints > damage) {
-					if (damage > 0) {
-						unit->damageWith(damage, WeaponId::Plague);
-					}
+
+				if (damage > 0) {
+					unit->damageWith(damage, WeaponId::Plague);
 				}
 			}
 
