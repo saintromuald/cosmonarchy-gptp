@@ -686,7 +686,7 @@ namespace scbw {
 		// Reset Devourer Corrosive Spores
 		if (unit->corrosiveSporeCount != 0)
 			for (int i = 0; i < unit->corrosiveSporeCount; i++)
-				unit->acidSporeTime[i] = 30;
+				unit->acidSporeTime[i] = VithriliskCorrosiveSporeTimer;
 
 		// Reset Irradiate
 		if (unit->irradiateTimer != 0)
