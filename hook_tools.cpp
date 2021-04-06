@@ -5,31 +5,33 @@
 //Injects a relative CALL to [target] at the [position].
 //Original function from BWAPI by Kovarex; Modified by pastelmind
 void callPatch(const void* target, void* position, const unsigned int nops) {
-  uint8* const data = new uint8[5 + nops];
-  data[0] = 0xE8; //Relative CALL instruction
-  const uint32 address = (uint32)target - (uint32)position - 5;  //Relative address
-  *(uint32*)(&data[1]) = address;
-  for (unsigned int i = 0; i < nops; ++i)
-    data[5 + i] = 0x90; //NOP instruction
-  memoryPatch(position, data, 5 + nops);
-  delete [] data;
+	uint8* const data = new uint8[5 + nops];
+	data[0] = 0xE8; //Relative CALL instruction
+	const uint32 address = (uint32) target - (uint32) position - 5;  //Relative address
+	*(uint32*) (&data[1]) = address;
+	for (unsigned int i = 0; i < nops; ++i)
+		data[5 + i] = 0x90; //NOP instruction
+	memoryPatch(position, data, 5 + nops);
+	delete[] data;
 }
 void nops(const uint32 address, uint32 number) {
 	uint8 nop = 0x90;
-	for (int i = 0; i<number; i++) { memoryPatch((void*)(address + i), &nop, sizeof(uint8)); }
+	for (int i = 0; i < number; i++) {
+		memoryPatch((void*) (address + i), &nop, sizeof(uint8));
+	}
 }
 
 //Injects a relative JMP to [target] at the [position].
 //Original function from BWAPI by Kovarex; Modified by pastelmind
 void jmpPatch(const void* target, void* position, unsigned int nops) {
-  uint8* const data = new uint8[5 + nops];
-  data[0] = 0xE9; //Relative JMP instruction
-  const int32 address = (int32)target - (int32)position - 5;  //Relative address
-  *(int32*)(&data[1]) = address;
-  for (unsigned int i = 0; i < nops; ++i)
-    data[5 + i] = 0x90; //NOP instruction
-  memoryPatch(position, data, 5 + nops);
-  delete [] data;
+	uint8* const data = new uint8[5 + nops];
+	data[0] = 0xE9; //Relative JMP instruction
+	const int32 address = (int32) target - (int32) position - 5;  //Relative address
+	*(int32*) (&data[1]) = address;
+	for (unsigned int i = 0; i < nops; ++i)
+		data[5 + i] = 0x90; //NOP instruction
+	memoryPatch(position, data, 5 + nops);
+	delete[] data;
 }
 
 void wrapperPatch(const uint8* code, uint32 len, const uint32 address, unsigned int nop) {
@@ -41,9 +43,9 @@ void wrapperPatch(const uint8* code, uint32 len, const uint32 address, unsigned 
 	for (int i = 0; i < len; i++) {
 		exe[i] = code[i];
 	}
-	uint32 diff = (uint32)exe - (address + 0x5);
+	uint32 diff = (uint32) exe - (address + 0x5);
 	memoryPatch(address + 0x1, diff);
-	memoryPatch(address, (uint8)0xe8);
+	memoryPatch(address, (uint8) 0xe8);
 }
 
 //Inject an array of bytes, using the given length.

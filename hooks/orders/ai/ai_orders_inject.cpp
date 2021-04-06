@@ -76,25 +76,24 @@ namespace {
 	void __declspec(naked) AI_AddUnitAi_FreeWorkerCheck_JmpWrapper() {
 		static WorkerAiArray* free;
 		__asm {
-			MOV free,EDX
+			MOV free, EDX
 			PUSHAD
 		}
-		if ((uint32)free <= 0x100000) {
+		if ((uint32) free <= 0x100000) {
 			scbw::printText("Corrupted pointer in AddUnitAi!");
 			__asm {
 				POPAD
 				POP ESI
 				RETN
 			}
-		}
-		else {
+		} 		else {
 			__asm {
 				POPAD
 				MOV EAX, [EDX + 0x5DC0]
 				JMP addUnitAiShortJump
 			}
 		}
-		
+
 	}
 
 	void __declspec(naked) AI_BuildTechUpgrade_Wrapper() { // 00431F90
@@ -157,7 +156,7 @@ namespace {
 			RETN 8
 		}
 	}
-	
+
 	void __declspec(naked) AI_IterateBuildingAI_Wrapper() { // 00435770
 		static CUnit* result;
 		static CUnit* parent;
@@ -282,7 +281,7 @@ namespace {
 		result = hooks::AI_AttackManager(player, x, y, alwaysOverwriteLastAttack, allowFallbackAirOnly);
 		__asm {
 			POPAD
-			MOV EAX,result
+			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 0x14
@@ -304,41 +303,41 @@ namespace {
 		}
 	}
 
-/*	void __declspec(naked) AI_RemoveFromAttack_Wrapper() { // 00447040
-		static int32 unitId;
-		static uint32 player;
-		__asm {
-			MOV unitId, EAX
-			MOV player, EDX
-			PUSHAD
-		}
-		hooks::AI_RemoveFromAttack(unitId, player);
-		__asm {
-			POPAD
-			RETN
-		}
-	}*/
+	/*	void __declspec(naked) AI_RemoveFromAttack_Wrapper() { // 00447040
+			static int32 unitId;
+			static uint32 player;
+			__asm {
+				MOV unitId, EAX
+				MOV player, EDX
+				PUSHAD
+			}
+			hooks::AI_RemoveFromAttack(unitId, player);
+			__asm {
+				POPAD
+				RETN
+			}
+		}*/
 }
 
 namespace hooks {
 
 	void injectAIOrdersHooks() {
-		jmpPatch(AI_TrainingUnit_Wrapper,					0x004A2830, 2);
-//		jmpPatch(AI_CreateNuke_Wrapper,						0x0045B7A0, 0);
-		jmpPatch(AI_TrainingBroodling_Wrapper,				0x0043E280, 1);
-//		jmpPatch(AI_AddUnitAi_Wrapper,						0x00433DD0, 2);
-		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper,	0x00433DE7, 1);
-//		jmpPatch(AI_BuildTechUpgrade_Wrapper,				0x00431F90, 2);
-//		jmpPatch(AI_UnitWasHit_Wrapper,						0x0043F320, 1);
-//		jmpPatch(AI_IterateBuildingAI_Wrapper,				0x00435770, 1);
-		/*
-		jmpPatch(AI_TrainAttackForce_Wrapper,				0x0043E670, 4);
-		jmpPatch(AI_GroupingForAttack_Wrapper,				0x0043EEC0, 4);
-		jmpPatch(AI_GetMissingAttackForceUnits_Wrapper,		0x00438050, 2);
-		jmpPatch(AI_AddToAttack_Wrapper,					0x00447230, 1);
-		jmpPatch(AI_AttackManager_Wrapper,					0x0043ABB0, 4);
-		jmpPatch(AI_HasUnitsForAttackForce_Wrapper,			0x00437F20, 4);*/
+		jmpPatch(AI_TrainingUnit_Wrapper, 0x004A2830, 2);
+		//		jmpPatch(AI_CreateNuke_Wrapper,						0x0045B7A0, 0);
+		jmpPatch(AI_TrainingBroodling_Wrapper, 0x0043E280, 1);
+		//		jmpPatch(AI_AddUnitAi_Wrapper,						0x00433DD0, 2);
+		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper, 0x00433DE7, 1);
+		//		jmpPatch(AI_BuildTechUpgrade_Wrapper,				0x00431F90, 2);
+		//		jmpPatch(AI_UnitWasHit_Wrapper,						0x0043F320, 1);
+		//		jmpPatch(AI_IterateBuildingAI_Wrapper,				0x00435770, 1);
+				/*
+				jmpPatch(AI_TrainAttackForce_Wrapper,				0x0043E670, 4);
+				jmpPatch(AI_GroupingForAttack_Wrapper,				0x0043EEC0, 4);
+				jmpPatch(AI_GetMissingAttackForceUnits_Wrapper,		0x00438050, 2);
+				jmpPatch(AI_AddToAttack_Wrapper,					0x00447230, 1);
+				jmpPatch(AI_AttackManager_Wrapper,					0x0043ABB0, 4);
+				jmpPatch(AI_HasUnitsForAttackForce_Wrapper,			0x00437F20, 4);*/
 
-		//jmpPatch(AI_RemoveFromAttack_Wrapper,				0x00447040, 0);
+				//jmpPatch(AI_RemoveFromAttack_Wrapper,				0x00447040, 0);
 	}
 }

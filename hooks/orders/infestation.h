@@ -11,7 +11,7 @@ namespace hooks {
 
 	//infestation order used by the unit that infest
 	void orderInfestTarget(CUnit* unitInfesting);
-	
+
 	//The injector function that should be called in initialize.cpp
 	void injectInfestationHooks();
 

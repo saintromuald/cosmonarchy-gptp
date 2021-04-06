@@ -8,7 +8,7 @@ namespace hooks {
 	void ZergPlaceBuilding(CUnit* drone);		//0x0045DA40	
 	//from unhooked
 	bool isMorphedBuildingHook(uint16 unitId);
-	int getMorphBuildingTypeCountHook(const CUnit *unit, uint16 unitId, bool ignoreIncomplete);
+	int getMorphBuildingTypeCountHook(const CUnit* unit, uint16 unitId, bool ignoreIncomplete);
 	void injectBuildingMorphHooks();
 	void SetSpecialState1(CSprite* sprite);
 } //hooks

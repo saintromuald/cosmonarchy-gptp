@@ -28,7 +28,7 @@ namespace {
 		result = hooks::unitIsFloorTrap(unit);
 		__asm {
 			POPAD
-			MOV EAX,result
+			MOV EAX, result
 			RETN
 		}
 	}
@@ -68,7 +68,7 @@ namespace hooks {
 	void injectTrapHooks() {
 		jmpPatch(unitIsInstallationAsset_Wrapper, 0x00401430, 3);
 		jmpPatch(unitIsFloorTrap_Wrapper, 0x0047B070, 3);
-		
+
 		//jmpPatch(disableUnit_Wrapper, 0x0047B4B0, 1); 
 
 
@@ -102,7 +102,7 @@ namespace hooks {
 0047BDE9   .  75 07         JNZ SHORT 0047BDF2
 		-enableDoodad order
 		*/
-		
+
 
 		/*
 		0047C05D   .  66:3D CB00    CMP AX,0CB
@@ -114,9 +114,9 @@ namespace hooks {
 		*/
 
 
-//		jmpPatch(updateUnitStrengthAndApplyDefaultOrders_Wrapper, 0x0049FA40, 1);
+		//		jmpPatch(updateUnitStrengthAndApplyDefaultOrders_Wrapper, 0x0049FA40, 1);
 
-		//209 - 213
+				//209 - 213
 
 
 

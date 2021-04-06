@@ -17,7 +17,7 @@ Notes:
 	I don't think there is need for hooks in most cases, making those would probably take ages
 	we must also make sure that conditions check for 18 instead 12, so the new array is
 	properly iterated on.
-	
+
 	I am not sure 100% sure about `All Player Selection Groups`, it is serialized within the
 	game's logic, and that controls loading the selection, we should probably leave those
 	(last few addresses in 3rd block) as they are, and serialize the extended ones using aise
@@ -30,15 +30,15 @@ Notes:
 
 	Line 138572: 0x0045D04D  |.  BE B8846200   MOV ESI,006284B8
 
-	Line 165630: 0x0046FA97  |.  A1 B8846200   MOV EAX,DWORD PTR DS:[6284B8]			
-	Line 165635: 0x0046FAA7  |.  BE B8846200   MOV ESI,006284B8							
+	Line 165630: 0x0046FA97  |.  A1 B8846200   MOV EAX,DWORD PTR DS:[6284B8]
+	Line 165635: 0x0046FAA7  |.  BE B8846200   MOV ESI,006284B8
 
 	Line 165738: 0x0046FBAA  |.  A1 B8846200   MOV EAX,DWORD PTR DS:[6284B8]			// hooked in selection
-	Line 165803: 0x0046FC95  |.  BE B8846200   MOV ESI,006284B8							
-	Line 165837: 0x0046FCF6  |>  B9 B8846200   MOV ECX,006284B8							
+	Line 165803: 0x0046FC95  |.  BE B8846200   MOV ESI,006284B8
+	Line 165837: 0x0046FCF6  |>  B9 B8846200   MOV ECX,006284B8
 
 	Line 229198: 0x00499A70  |>  8B349D B88462>/MOV ESI,DWORD PTR DS:[EBX*4+6284B8]		// memory patch address and cmp 12
-	Line 229209: 0x00499A98  |.  89148D B88462>|MOV DWORD PTR DS:[ECX*4+6284B8],EDX		
+	Line 229209: 0x00499A98  |.  89148D B88462>|MOV DWORD PTR DS:[ECX*4+6284B8],EDX
 
 	Line 230030: 0x0049A2C6  |.  BA B8846200   MOV EDX,006284B8							// memory patch address
 

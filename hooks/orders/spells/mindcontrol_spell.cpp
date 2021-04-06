@@ -5,8 +5,8 @@
 
 namespace {
 	//7B720
-bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange,uint32 error_message_index);	//926D0
-void MindControlHit(CUnit* attacker, CUnit* target);																//F6910
+	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index);	//926D0
+	void MindControlHit(CUnit* attacker, CUnit* target);																//F6910
 
 } //unnamed namespace
 
@@ -16,25 +16,23 @@ namespace hooks {
 
 		CUnit* target = unit->orderTarget.unit;
 
-		if(target == nullptr) {
+		if (target == nullptr) {
 
-			if(unit->orderQueueHead != nullptr) {
+			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			}
-			else {
-				if(unit->pAI != nullptr)
+			} 			else {
+				if (unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
 				else
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 
-		}
-		else {
+		} 		else {
 
 			//F69B4
 
-			if(unit->playerId == target->playerId)
+			if (unit->playerId == target->playerId)
 				unit->orderToIdle();
 			else {
 
@@ -51,9 +49,9 @@ namespace hooks {
 				//Corresponding error message is "Invalid Target"
 				spellCastSuccess = ordersSpell_Sub_4926D0(unit, TechId::MindControl, &techEnergyCost, unitSightRangeForSpell, 0x052E);
 
-				if(spellCastSuccess) {
+				if (spellCastSuccess) {
 
-					if(target->status & UnitStatus::IsHallucination)
+					if (target->status & UnitStatus::IsHallucination)
 						target->remove();
 					else {
 
@@ -70,14 +68,14 @@ namespace hooks {
 						//else
 						//	overlayId = ImageId::MindControlHit_Small;
 
-						if(target->subunit != nullptr)
+						if (target->subunit != nullptr)
 							target->subunit->sprite->createTopOverlay(overlayId, 0, 0, 0);
 						else
 							target->sprite->createTopOverlay(overlayId, 0, 0, 0);
 						scbw::sendGPTP_aise_cmd(unit, target, GptpId::SetMindControlLink, 0, 0, 0);
 						MindControlHit(unit, target);
 						//scbw::printText("Set...");
-						
+
 						target->orderToIdle();
 
 					}
@@ -112,43 +110,43 @@ namespace hooks {
 
 namespace {
 
-const uint32 Func_Sub_4926D0 = 0x004926D0;
-bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange,uint32 error_message_index) {
+	const uint32 Func_Sub_4926D0 = 0x004926D0;
+	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index) {
 
-	static bool32 bPreResult;
+		static bool32 bPreResult;
 
-	__asm {
-		PUSHAD
-		PUSH techEnergyCost
-		PUSH sightRange
-		PUSH techId
-		MOV EAX, error_message_index
-		MOV EBX, unit
-		CALL Func_Sub_4926D0
-		MOV bPreResult, EAX
-		POPAD
+		__asm {
+			PUSHAD
+			PUSH techEnergyCost
+			PUSH sightRange
+			PUSH techId
+			MOV EAX, error_message_index
+			MOV EBX, unit
+			CALL Func_Sub_4926D0
+			MOV bPreResult, EAX
+			POPAD
+		}
+
+		return (bPreResult != 0);
+
 	}
 
-	return (bPreResult != 0);
+	;
 
-}
+	const uint32 Func_MindControl_Hit = 0x004F6910;
+	void MindControlHit(CUnit* attacker, CUnit* target) {
 
-;
+		__asm {
+			PUSHAD
+			MOV ESI, target
+			PUSH attacker
+			CALL Func_MindControl_Hit
+			POPAD
+		}
 
-const uint32 Func_MindControl_Hit = 0x004F6910;
-void MindControlHit(CUnit* attacker, CUnit* target) {
-
-	__asm {
-		PUSHAD
-		MOV ESI, target
-		PUSH attacker
-		CALL Func_MindControl_Hit
-		POPAD
 	}
 
-}
-
-;
+	;
 
 } //Unnamed namespace
 

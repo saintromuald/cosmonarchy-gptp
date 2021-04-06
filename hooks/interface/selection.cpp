@@ -12,8 +12,8 @@ namespace {
 	void function_00468670(CUnit* unit);																		//0x00468670
 	bool unit_isUnselectable(uint16 unitId);																		//00x046ED80
 	void function_0046F040(CUnit* current_unit, CUnit** unit_list, CUnit* clicked_unit, uint32 list_length);		//00x046F040
-	uint32 combineLists_Sub_6F290(CUnit* unit,CUnit** unit_list_1,CUnit** unit_list_2,uint32 list_length);			//0x0046F290
-	void applyNewSelect_Sub_6FA00(CUnit** unit_list,uint32 unit_list_length);										//0x0046FA00
+	uint32 combineLists_Sub_6F290(CUnit* unit, CUnit** unit_list_1, CUnit** unit_list_2, uint32 list_length);			//0x0046F290
+	void applyNewSelect_Sub_6FA00(CUnit** unit_list, uint32 unit_list_length);										//0x0046FA00
 	uint32 CUnitToUnitID(CUnit* unit);																				//0x0047B1D0
 	bool unit_IsStandardAndMovable(CUnit* unit); 																//0x0047B770
 	void selectBuildingSFX(CUnit* unit);																		//0x0048F910
@@ -28,10 +28,10 @@ namespace hooks {
 	///
 	/// Function used by Ctrl+Click (select all units of same type)
 	///
-	uint32 SortAllUnits(CUnit* unit,CUnit** unit_list,CUnit** units_in_bounds) {
+	uint32 SortAllUnits(CUnit* unit, CUnit** unit_list, CUnit** units_in_bounds) {
 
-		const uint32* VISIBILITY_CHECK_0057F0B0 = (uint32*)0x0057F0B0;
-		
+		const uint32* VISIBILITY_CHECK_0057F0B0 = (uint32*) 0x0057F0B0;
+
 		CUnit* current_unit;
 		CUnit* backup_current_unit;
 		uint32 current_index_in_unit_list;
@@ -44,34 +44,33 @@ namespace hooks {
 		backup_current_unit = nullptr;
 
 		//if unit not null, become first entry of unit_list
-		if(unit != nullptr) {
+		if (unit != nullptr) {
 			unit_list[0] = unit;
 			current_index_in_unit_list = 1;
-		}
-		else
+		} 		else
 			current_index_in_unit_list = 0;
 
 		//work with the first unit from units_in_bounds
 		current_unit = *units_in_bounds;
 
-		if(current_unit == nullptr)
+		if (current_unit == nullptr)
 			bStopBigLoop = true;
 
-		while(!bStopBigLoop) {
+		while (!bStopBigLoop) {
 
-			if(current_unit != unit) {
+			if (current_unit != unit) {
 
-				 //if current_unit==unit, then it's already in
-				//unit_list
+				//if current_unit==unit, then it's already in
+			   //unit_list
 
-				if(current_unit->subunit != nullptr) {
+				if (current_unit->subunit != nullptr) {
 
 					//if what got selected is the turret or another subunit, swap
 					//the unit and the subunit as current_unit
-					if(units_dat::BaseProperty[current_unit->id] & UnitProperty::Subunit)
+					if (units_dat::BaseProperty[current_unit->id] & UnitProperty::Subunit)
 						current_unit = current_unit->subunit;
 
-					if(current_index_in_unit_list != 0) {
+					if (current_index_in_unit_list != 0) {
 
 						//6F150
 
@@ -82,126 +81,124 @@ namespace hooks {
 							index--;
 
 							//if the unit is already in the list, skip it
-							if(unit_list[index] == current_unit)
+							if (unit_list[index] == current_unit)
 								bDontAddToList = true;
 
-						}while (index != 0 && !bDontAddToList);
+						} while (index != 0 && !bDontAddToList);
 
 					}
 
 				} //if(current_unit->subunit != nullptr)
 
-				if(!bDontAddToList) {
+				if (!bDontAddToList) {
 
 					//6F161
-					
+
 					//if the unit sprite is visible, perform additionnal visibility test,
 					//else skip the unit
-					if(current_unit->sprite->visibilityFlags & (uint8)*VISIBILITY_CHECK_0057F0B0) {
+					if (current_unit->sprite->visibilityFlags & (uint8) *VISIBILITY_CHECK_0057F0B0) {
 
 						//if the unit is cloaked and visibility status test (detection by detectors
 						//units probably) fail, the unit is skipped
-						if(current_unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))
-							if( !(current_unit->visibilityStatus & *VISIBILITY_CHECK_0057F0B0) )
+						if (current_unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))
+							if (!(current_unit->visibilityStatus & *VISIBILITY_CHECK_0057F0B0))
 								bDontAddToList = true;
 
-					}
-					else
+					} 					else
 						bDontAddToList = true;
 
-					if(!bDontAddToList) {
+					if (!bDontAddToList) {
 
 						//6F18C
 
-						if(unit_isUnselectable(current_unit->id))
+						if (unit_isUnselectable(current_unit->id))
 							bDontAddToList = true;
 						else
-						if(!unit_IsStandardAndMovable(current_unit))
-							bKeepForEmptyListCase = true; //skip the unit for the list, unless it's the only available
-						else 
-						if(*IS_IN_REPLAY)
-							bKeepForEmptyListCase = true; //skip the unit for the list, unless it's the only available
-						else
-						if(current_unit->playerId != *LOCAL_NATION_ID)
-							bKeepForEmptyListCase = true; //skip the unit for the list, unless it's the only available
-						else
-						{
-
-							//6F1C5
-
-							if(unit != nullptr) {
-
-								//all units should belong to the same player (the one owning the clicked unit)
-								if(unit->playerId != current_unit->playerId)
-									bDontAddToList = true;
+							if (!unit_IsStandardAndMovable(current_unit))
+								bKeepForEmptyListCase = true; //skip the unit for the list, unless it's the only available
+							else
+								if (*IS_IN_REPLAY)
+									bKeepForEmptyListCase = true; //skip the unit for the list, unless it's the only available
 								else
-								//select only units with same Id
-								if(unit->id != current_unit->id)
-									bDontAddToList = true;
-								else {
+									if (current_unit->playerId != *LOCAL_NATION_ID)
+										bKeepForEmptyListCase = true; //skip the unit for the list, unless it's the only available
+									else 						{
 
-									//6F1D9
+										//6F1C5
 
-									//equivalent to " unit->status XOR current_unit->status "
-									//keep the flags appearing in only 1 of the variables
-									uint32 mixed_flags =
-										( ~(unit->status) & current_unit->status ) | 
-										( unit->status & ~(current_unit->status) )
-										;
+										if (unit != nullptr) {
 
-									//Only select all burrowed OR all unburrowed
-									//units.The test exclude current_unit if the
-									//burrowed state differ from the one of unit.
-									if( mixed_flags & UnitStatus::Burrowed )
-										bDontAddToList = true;
-									else {
-
-										//6F1E8
-										if( !isUnitBurrowed(current_unit) ) {
-
-											//Only select all detectables OR all undetectables
-											//units.The test exclude current_unit if the
-											//detectable state differ from the one of unit.
-											if(mixed_flags & UnitStatus::RequiresDetection)
+											//all units should belong to the same player (the one owning the clicked unit)
+											if (unit->playerId != current_unit->playerId)
 												bDontAddToList = true;
+											else
+												//select only units with same Id
+												if (unit->id != current_unit->id)
+													bDontAddToList = true;
+												else {
+
+													//6F1D9
+
+													//equivalent to " unit->status XOR current_unit->status "
+													//keep the flags appearing in only 1 of the variables
+													uint32 mixed_flags =
+														(~(unit->status) & current_unit->status) |
+														(unit->status & ~(current_unit->status))
+														;
+
+													//Only select all burrowed OR all unburrowed
+													//units.The test exclude current_unit if the
+													//burrowed state differ from the one of unit.
+													if (mixed_flags & UnitStatus::Burrowed)
+														bDontAddToList = true;
+													else {
+
+														//6F1E8
+														if (!isUnitBurrowed(current_unit)) {
+
+															//Only select all detectables OR all undetectables
+															//units.The test exclude current_unit if the
+															//detectable state differ from the one of unit.
+															if (mixed_flags & UnitStatus::RequiresDetection)
+																bDontAddToList = true;
+
+														}
+
+														if (!bDontAddToList) {
+
+															//6F1F8
+
+															//Only select hallucinations OR non-hallucinations
+															//units.The test exclude current_unit if the
+															//hallucination state differ from the one of unit.
+															if (mixed_flags & UnitStatus::IsHallucination)
+																bDontAddToList = true;
+
+														}
+
+													}
+
+												}
+
+										} //if(unit != nullptr)
+
+										if (!bDontAddToList) {
+
+											//6F203
+
+											//0x0046F208 (use of SELECTION_ARRAY_LENGTH)
+											if (current_index_in_unit_list >= SELECTION_ARRAY_LENGTH) //action when unit_list is full
+												function_0046F040(current_unit, unit_list, unit, current_index_in_unit_list);
+											else {
+												//6F217
+												//Add current_unit to unit_list
+												unit_list[current_index_in_unit_list] = current_unit;
+												current_index_in_unit_list++;
+											}
 
 										}
 
-										if(!bDontAddToList) {
-
-											//6F1F8
-
-											//Only select hallucinations OR non-hallucinations
-											//units.The test exclude current_unit if the
-											//hallucination state differ from the one of unit.
-											if(mixed_flags & UnitStatus::IsHallucination)
-												bDontAddToList = true;
-
-										}
-
-									}
-
-								}
-
-							} //if(unit != nullptr)
-
-							if(!bDontAddToList) {
-
-								//6F203
-
-								//0x0046F208 (use of SELECTION_ARRAY_LENGTH)
-								if(current_index_in_unit_list >= SELECTION_ARRAY_LENGTH) //action when unit_list is full
-									function_0046F040(current_unit, unit_list, unit, current_index_in_unit_list);
-								else {
-									//6F217
-									//Add current_unit to unit_list
-									unit_list[current_index_in_unit_list] = current_unit;
-									current_index_in_unit_list++;
-								}
-
-							}
-
-						} //several ifs
+									} //several ifs
 
 					} //if(!bDontAddToList) => 6F18C
 
@@ -209,7 +206,7 @@ namespace hooks {
 
 			} //if(current_unit != unit)
 
-			if(bKeepForEmptyListCase)
+			if (bKeepForEmptyListCase)
 				backup_current_unit = current_unit;
 
 			//6F226
@@ -222,23 +219,23 @@ namespace hooks {
 			bDontAddToList = false;
 
 			//continue until current_unit is nullptr
-			if(current_unit == nullptr)
+			if (current_unit == nullptr)
 				bStopBigLoop = true;
 
 		} //loop back at 6F237
 
 		//6F242
 
-		if(current_index_in_unit_list == 0) {
+		if (current_index_in_unit_list == 0) {
 
 			//if current_index_in_unit_list == 0, the list is empty
 			//and cannot be used, so another solution is found here.
 
-			if(backup_current_unit == nullptr) {
+			if (backup_current_unit == nullptr) {
 
 				//6F24E
 
-				if(unit == nullptr)
+				if (unit == nullptr)
 					current_index_in_unit_list = 0; //return 0 (no list)
 				else {
 					//6F252
@@ -251,11 +248,10 @@ namespace hooks {
 
 				//6F264
 
-				if(unit != nullptr) {
+				if (unit != nullptr) {
 					unit_list[0] = unit;
 					current_index_in_unit_list = 1; //return 1 (the clicked unit alone)
-				}
-				else {
+				} 				else {
 					unit_list[0] = backup_current_unit;
 					current_index_in_unit_list = 1; //return 1 (an unit preserved by bKeepForEmptyListCase)
 				}
@@ -273,38 +269,37 @@ namespace hooks {
 	///
 	void function_0046FB40(CUnit* clicked_unit) {
 
-		bool32* const IS_DOUBLE_CLICKING =	(bool32*)	0x0066FF58;
+		bool32* const IS_DOUBLE_CLICKING = (bool32*) 0x0066FF58;
 
-		bool8* const bCanUpdateSelectedUnitData		= (bool8*)	0x0059723C;
-		bool8* const bCanUpdateSelectedUnitPortrait	= (bool8*)	0x0068AC74;
-		bool32* const bCanUpdateCurrentButtonSet	= (bool32*)	0x0068C1B0;
-		BinDlg** const someDialogUnknown			= (BinDlg**)0x0068C1E8; //related to MouseOver?
-		bool8* const bCanUpdateStatDataDialog		= (bool8*)	0x0068C1F8;
-		BinDlg** const someDialogUnknownUser		= (BinDlg**)0x0068C1EC; //related to MouseOver? Usually someDialogUnknown->user if not 0 or -1
+		bool8* const bCanUpdateSelectedUnitData = (bool8*) 0x0059723C;
+		bool8* const bCanUpdateSelectedUnitPortrait = (bool8*) 0x0068AC74;
+		bool32* const bCanUpdateCurrentButtonSet = (bool32*) 0x0068C1B0;
+		BinDlg** const someDialogUnknown = (BinDlg**) 0x0068C1E8; //related to MouseOver?
+		bool8* const bCanUpdateStatDataDialog = (bool8*) 0x0068C1F8;
+		BinDlg** const someDialogUnknownUser = (BinDlg**) 0x0068C1EC; //related to MouseOver? Usually someDialogUnknown->user if not 0 or -1
 
 		CUnit* local_temp_array_1[SELECTION_ARRAY_LENGTH];	//used instead of an array starting from [EBP-3C]
 		CUnit* local_temp_array_2[SELECTION_ARRAY_LENGTH];	//used instead of an array starting from [EBP-6C]
 
 		Box16 local_temp_box16_structure;	//used instead of using from [EBP-0C] to [EBP-06]
 
-		bool isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit = 
-			*IS_HOLDING_CTRL || 
-			( *IS_DOUBLE_CLICKING && (clicked_unit->sprite->flags & CSprite_Flags::Selected) );
+		bool isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit =
+			*IS_HOLDING_CTRL ||
+			(*IS_DOUBLE_CLICKING && (clicked_unit->sprite->flags & CSprite_Flags::Selected));
 
-		for(int i = 0; i < SELECTION_ARRAY_LENGTH; i++)
+		for (int i = 0; i < SELECTION_ARRAY_LENGTH; i++)
 			local_temp_array_1[i] = nullptr;
 
-		if(
+		if (
 			isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit ||
-			( *IS_HOLDING_SHIFT && (activePlayerSelection->unit[0] != nullptr) )
-			) 
-		{
+			(*IS_HOLDING_SHIFT && (activePlayerSelection->unit[0] != nullptr))
+			) 		{
 
-			if( !*IS_HOLDING_SHIFT ) {
+			if (!*IS_HOLDING_SHIFT) {
 
 				//6FE07
 
-				if(isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit) {
+				if (isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit) {
 
 					//Ctrl+click on unit or double-click on already
 					//selected unit without other key
@@ -321,25 +316,25 @@ namespace hooks {
 					local_temp_box16_structure.right = *MoveToX + 640;
 					local_temp_box16_structure.bottom = *MoveToY + 400;
 					units_in_bounds = getAllUnitsInBounds(&local_temp_box16_structure);
-					sorted_list_length = SortAllUnits(clicked_unit,local_temp_array_1,units_in_bounds);
+					sorted_list_length = SortAllUnits(clicked_unit, local_temp_array_1, units_in_bounds);
 
 					//reload the previous temporary unit list from before the call to getAllUnitsInBounds
 					*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
 					*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[*tempUnitsListArraysCountsListLastIndex];
 
-					if(sorted_list_length != 0) {
+					if (sorted_list_length != 0) {
 
 						//turn the local array as the newly applied selection
-						applyNewSelect_Sub_6FA00(local_temp_array_1,sorted_list_length);
+						applyNewSelect_Sub_6FA00(local_temp_array_1, sorted_list_length);
 
 						//this is what make the rally point briefly appear when
 						//selecting a building with one.
 						//maybe can do others things?
-						if(
+						if (
 							sorted_list_length == 1 &&
 							clicked_unit->playerId == *ACTIVE_NATION_ID &&
 							clicked_unit->isFactory()
-							) 
+							)
 							function_00468670(clicked_unit);
 
 					}
@@ -351,7 +346,7 @@ namespace hooks {
 
 				//holding SHIFT (if not holding CTRL, then there's an active selection too)
 
-				if(isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit) {
+				if (isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit) {
 
 					//{Ctrl+Shift+click on unit} OR {Shift+double-click on 
 					//selected unit WHILE having an active selection}
@@ -368,26 +363,26 @@ namespace hooks {
 					local_temp_box16_structure.bottom = *MoveToY + 400;
 
 					//save existing selection to a temporary array
-					for(int i = 0; i < SELECTION_ARRAY_LENGTH; i++)
+					for (int i = 0; i < SELECTION_ARRAY_LENGTH; i++)
 						local_temp_array_2[i] = activePlayerSelection->unit[i];
 
 					//locate surrounding units for selection
 					units_in_bounds = getAllUnitsInBounds(&local_temp_box16_structure);
-					sorted_list_length = SortAllUnits(clicked_unit,local_temp_array_1,units_in_bounds);
+					sorted_list_length = SortAllUnits(clicked_unit, local_temp_array_1, units_in_bounds);
 
 					//reload the previous temporary unit list from before the call to getAllUnitsInBounds
 					*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
 					*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[*tempUnitsListArraysCountsListLastIndex];
 
-					if(sorted_list_length != 0) {
+					if (sorted_list_length != 0) {
 
 						//6FCD4
 
 						//recombine current selection and newly selectable items in local_temp_array_2
-						uint32 list_remixed_length = combineLists_Sub_6F290(clicked_unit,local_temp_array_1,local_temp_array_2,sorted_list_length);
+						uint32 list_remixed_length = combineLists_Sub_6F290(clicked_unit, local_temp_array_1, local_temp_array_2, sorted_list_length);
 
 						//turn local_temp_array_2 as the newly applied selection
-						applyNewSelect_Sub_6FA00(local_temp_array_2,list_remixed_length);
+						applyNewSelect_Sub_6FA00(local_temp_array_2, list_remixed_length);
 
 					}
 
@@ -404,23 +399,22 @@ namespace hooks {
 					int arrayIndex;
 
 					//copy the existing selection into the local array
-					for(arrayIndex = 0 ; arrayIndex < SELECTION_ARRAY_LENGTH && activePlayerSelection->unit[arrayIndex] != nullptr; arrayIndex++)
+					for (arrayIndex = 0; arrayIndex < SELECTION_ARRAY_LENGTH && activePlayerSelection->unit[arrayIndex] != nullptr; arrayIndex++)
 						local_temp_array_1[arrayIndex] = activePlayerSelection->unit[arrayIndex];
 
-					if( !(clicked_unit->sprite->flags & CSprite_Flags::Selected) ) {	
-						
+					if (!(clicked_unit->sprite->flags & CSprite_Flags::Selected)) {
+
 						//0x0046FD13 (getting unit sprite) and 0x0046FD18 (middle of the test with the flag)
-						
+
 						//unit not selected, so it's added to current selection if valid
 
-						if(
-							arrayIndex < SELECTION_ARRAY_LENGTH && 
-							unit_IsStandardAndMovable(local_temp_array_1[0]) && 
+						if (
+							arrayIndex < SELECTION_ARRAY_LENGTH &&
+							unit_IsStandardAndMovable(local_temp_array_1[0]) &&
 							unitIsOwnedByCurrentPlayer(local_temp_array_1[0]) &&
-							unit_IsStandardAndMovable(clicked_unit) && 
+							unit_IsStandardAndMovable(clicked_unit) &&
 							unitIsOwnedByCurrentPlayer(clicked_unit)
-							)
-						{
+							) 						{
 
 							//new unit is added at end of array, and the index
 							//is increased to be used as new array length
@@ -428,12 +422,11 @@ namespace hooks {
 							arrayIndex++;
 
 							//turn local_temp_array_1 as the newly applied selection
-							applyNewSelect_Sub_6FA00(local_temp_array_1,arrayIndex);
+							applyNewSelect_Sub_6FA00(local_temp_array_1, arrayIndex);
 
 						}
 
-					}
-					else {
+					} 					else {
 
 						//6FD77
 
@@ -452,18 +445,18 @@ namespace hooks {
 						//Copy the elements on the right of the one to delete one step left
 						//to overwrite the one to delete
 						SC_memcpy_0(
-							(uint32)&local_temp_array_1[clicked_unit->sprite->selectionIndex], 
-							(uint32)&local_temp_array_1[clicked_unit->sprite->selectionIndex+1], 
+							(uint32) &local_temp_array_1[clicked_unit->sprite->selectionIndex],
+							(uint32) &local_temp_array_1[clicked_unit->sprite->selectionIndex + 1],
 							memcpy_size
 						);
 
 						//either erase the element to delete or one that was repeated
 						//after memcpy
 						local_temp_array_1[arrayIndex] = nullptr;
-						
-						if(arrayIndex == 1) {
 
-							if(*IS_HOLDING_ALT) {
+						if (arrayIndex == 1) {
+
+							if (*IS_HOLDING_ALT) {
 
 								//It seems you can unselect things with Shift+Alt like
 								//with shift alone, UNTIL you have 2 units selected.
@@ -473,19 +466,19 @@ namespace hooks {
 
 								uint32 unitIndex = CUnitToUnitID(local_temp_array_1[0]);
 
-								if(selectSingleUnitFromID(unitIndex) != 0)
+								if (selectSingleUnitFromID(unitIndex) != 0)
 									bUpdateSelection = false;
 
 							}
 
 						}
 
-						if(bUpdateSelection) {
+						if (bUpdateSelection) {
 
 							//Create a new unit selection (since the clicked unit is unselected)
 							//and choose it as current selection)
-							CreateNewUnitSelectionsFromList(local_temp_array_1,arrayIndex);
-							CMDACT_Select(local_temp_array_1,arrayIndex);
+							CreateNewUnitSelectionsFromList(local_temp_array_1, arrayIndex);
+							CMDACT_Select(local_temp_array_1, arrayIndex);
 
 							//tell the GUI to update stuff
 							*someDialogUnknown = nullptr;
@@ -513,30 +506,30 @@ namespace hooks {
 
 			bool bRecreatedSelectionThroughAltClick = false;
 
-			if(*IS_HOLDING_ALT) {
+			if (*IS_HOLDING_ALT) {
 
 				//Recall the selection the unit belong to if there's one
 				//In this case, skip the code for a single unit handling
 
 				uint32 temp_unit_index = CUnitToUnitID(clicked_unit);
 
-				if(selectSingleUnitFromID(temp_unit_index) != 0)
+				if (selectSingleUnitFromID(temp_unit_index) != 0)
 					bRecreatedSelectionThroughAltClick = true;
 
 			}
 
-			if(!bRecreatedSelectionThroughAltClick) {
+			if (!bRecreatedSelectionThroughAltClick) {
 
 				//6FBD1
 
 				//Create a new selection containing only the clicked unit
-				CreateNewUnitSelectionsFromList(&clicked_unit,1);
+				CreateNewUnitSelectionsFromList(&clicked_unit, 1);
 
 				//play the sound of the unit (don't need to be a building)
 				selectBuildingSFX(clicked_unit);
 
 				//select the unit
-				CMDACT_Select(&clicked_unit,1);
+				CMDACT_Select(&clicked_unit, 1);
 
 				//tell the GUI to update stuff
 				*bCanUpdateSelectedUnitData = 1;
@@ -553,7 +546,7 @@ namespace hooks {
 			//this is what make the rally point briefly appear when
 			//selecting a building with one.
 			//maybe can do others things?
-			if( clicked_unit->playerId == *ACTIVE_NATION_ID &&
+			if (clicked_unit->playerId == *ACTIVE_NATION_ID &&
 				clicked_unit->isFactory()
 				)
 				function_00468670(clicked_unit);
@@ -576,7 +569,7 @@ namespace {
 
 		bool return_value;
 
-		if(*IS_IN_REPLAY != 0 || unit->playerId != *LOCAL_NATION_ID)
+		if (*IS_IN_REPLAY != 0 || unit->playerId != *LOCAL_NATION_ID)
 			return_value = false;
 		else
 			return_value = true;
@@ -586,14 +579,14 @@ namespace {
 	}
 
 	;
-	
+
 	//Identical to 0x00402A70
 	bool isUnitBurrowed(CUnit* unit) {
 		return (unit->status & (UnitStatus::CloakingForFree + UnitStatus::Burrowed)) != 0;
 	}
 
 	;
-	
+
 	const uint32 Func_memcpy_0 = 0x00408FD0;
 	void SC_memcpy_0(uint32 dest, uint32 src, uint32 memsize) {
 
@@ -610,7 +603,7 @@ namespace {
 	}
 
 	;
-	
+
 	const uint32 Func_GetAllUnitsInBounds = 0x0042FF80;
 	CUnit** getAllUnitsInBounds(Box16* coords) {
 
@@ -629,7 +622,7 @@ namespace {
 	}
 
 	;
-	
+
 	const uint32 Func_Sub_468670 = 0x00468670;
 	void function_00468670(CUnit* unit) {
 
@@ -643,7 +636,7 @@ namespace {
 	}
 
 	;
-	
+
 	const uint32 Func_Unit_isUnselectable = 0x0046ED80;
 	bool unit_isUnselectable(uint16 unitId) {
 
@@ -663,7 +656,7 @@ namespace {
 	}
 
 	;
-	
+
 	const uint32 Func_Sub_6F040 = 0x0046F040;
 	void function_0046F040(CUnit* current_unit, CUnit** unit_list, CUnit* clicked_unit, uint32 list_length) {																//
 
@@ -680,9 +673,9 @@ namespace {
 	}
 
 	;
-	
+
 	const uint32 Func_Sub_46F290 = 0x0046F290;
-	uint32 combineLists_Sub_6F290(CUnit* unit,CUnit** unit_list_1,CUnit** unit_list_2,uint32 list_length) {
+	uint32 combineLists_Sub_6F290(CUnit* unit, CUnit** unit_list_1, CUnit** unit_list_2, uint32 list_length) {
 
 		uint32 return_value;
 
@@ -702,9 +695,9 @@ namespace {
 	}
 
 	;
-	
+
 	const uint32 Func_Sub_46FA00 = 0x0046FA00;
-	void applyNewSelect_Sub_6FA00(CUnit** unit_list,uint32 unit_list_length) {
+	void applyNewSelect_Sub_6FA00(CUnit** unit_list, uint32 unit_list_length) {
 
 		__asm {
 			PUSHAD
@@ -717,7 +710,7 @@ namespace {
 		}
 
 	}
-	
+
 	;
 
 	const uint32 Func_CUnitToUnitID = 0x0047B1D0;
@@ -738,7 +731,7 @@ namespace {
 	}
 
 	;
-	
+
 	const uint32 Func_Unit_IsStandardAndMovable = 0x0047B770;
 	bool unit_IsStandardAndMovable(CUnit* unit) {
 
@@ -760,7 +753,7 @@ namespace {
 	}
 
 	;
-	
+
 	const uint32 Func_SelectBuildingSFX = 0x0048F910;
 	void selectBuildingSFX(CUnit* unit) {
 
@@ -774,7 +767,7 @@ namespace {
 	}
 
 	;
-	
+
 	const uint32 Func_SelectSingleUnitFromID = 0x00496D30;
 	bool32 selectSingleUnitFromID(uint32 unitIndex) {
 
@@ -793,7 +786,7 @@ namespace {
 	}
 
 	;
-	
+
 	const uint32 Func_CreateNewUnitSelectionsFromList = 0x0049AE40;
 	void CreateNewUnitSelectionsFromList(CUnit** unit_list, uint32 unit_list_length) {
 
@@ -805,10 +798,10 @@ namespace {
 			POPAD
 		}
 
-	}	
+	}
 
 	;
-	
+
 	const uint32 Func_CMDACT_Select = 0x004C0860;
 	void CMDACT_Select(CUnit** unit_list, uint32 unit_list_length) {
 

@@ -16,10 +16,10 @@
 
 // Shorthand for in-game seconds (1 second - 24 frames). only works in this file to avoid potential conflicts.
 static constexpr int operator "" s(unsigned long long amount) {
-	return (int)(amount * 24);
+	return (int) (amount * 24);
 }
 static constexpr int operator "" s(long double amount) {
-	return (int)(amount * 24);
+	return (int) (amount * 24);
 }
 
 // Constants

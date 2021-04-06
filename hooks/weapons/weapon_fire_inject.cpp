@@ -12,7 +12,7 @@ namespace {
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOVZX EAX, [EBP+0x08]
+			MOVZX EAX, [EBP + 0x08]
 			MOV weaponId, AL
 			MOV unit, ESI
 			PUSHAD
@@ -108,11 +108,11 @@ extern const uint32 Func_FireUnitWeapon;
 
 namespace hooks {
 
-void injectWeaponFireHooks() {
-	jmpPatch(fireWeaponWrapper, Func_FireUnitWeapon, 0);
-	jmpPatch(progressBulletFlight_Wrapper, 0x0048B3B0, 3);
-	jmpPatch(bulletBehaviour_Bounce_Wrapper, 0x0048B2D0, 0);
-	jmpPatch(findNextBounceTargetProc_Wrapper, 0x0048AFD0, 3);//proc
-//	jmpPatch(findNextBounceTarget_Wrapper, 0x0048B1E0, 1);
+	void injectWeaponFireHooks() {
+		jmpPatch(fireWeaponWrapper, Func_FireUnitWeapon, 0);
+		jmpPatch(progressBulletFlight_Wrapper, 0x0048B3B0, 3);
+		jmpPatch(bulletBehaviour_Bounce_Wrapper, 0x0048B2D0, 0);
+		jmpPatch(findNextBounceTargetProc_Wrapper, 0x0048AFD0, 3);//proc
+	//	jmpPatch(findNextBounceTarget_Wrapper, 0x0048B1E0, 1);
 	}
 } //hooks

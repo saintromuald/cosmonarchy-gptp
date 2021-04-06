@@ -3,8 +3,8 @@
 
 namespace hooks {
 
-void GiveUnit(CUnit* unit, uint32 playerId, uint32 unkScore);	//0049EFA0
+	void GiveUnit(CUnit* unit, uint32 playerId, uint32 unkScore);	//0049EFA0
 
-void injectGiveUnitHook();
+	void injectGiveUnitHook();
 
 } //hooks

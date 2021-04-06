@@ -23,19 +23,19 @@ namespace hooks {
 	uint32 get_order_from_unit_id(uint32 unit_id) {
 		uint32 order = 0;
 		switch (unit_id) {
-		case UnitId::TerranMason://0x7
-/*		case UnitId::mole:
-		case UnitId::engineer:*/
-			order = OrderId::BuildTerran;
-			break;
-		case UnitId::ZergDroleth://0x29
-			order = OrderId::DroneStartBuild;
-			break;
-		case UnitId::ProtossScribe://0x40
-			order = OrderId::BuildProtoss1;
-			break;
-		default:
-			break;
+			case UnitId::TerranMason://0x7
+	/*		case UnitId::mole:
+			case UnitId::engineer:*/
+				order = OrderId::BuildTerran;
+				break;
+			case UnitId::ZergDroleth://0x29
+				order = OrderId::DroneStartBuild;
+				break;
+			case UnitId::ProtossScribe://0x40
+				order = OrderId::BuildProtoss1;
+				break;
+			default:
+				break;
 		};
 		return order;
 	}
@@ -43,18 +43,18 @@ namespace hooks {
 	uint32 get_townhall_from_race(uint32 race) {
 		uint32 id = 0xe4;
 		switch (race) {
-		case RaceId::Terran:
-			id = UnitId::TerranCommandCenter;
-			break;
-		case RaceId::Protoss:
-			id = UnitId::ProtossNexus;
-			break;
-		case RaceId::Zerg:
-			id = UnitId::ZergHatchery;
-			break;
-		default:
-			id = UnitId::ZergHatchery;
-			break;
+			case RaceId::Terran:
+				id = UnitId::TerranCommandCenter;
+				break;
+			case RaceId::Protoss:
+				id = UnitId::ProtossNexus;
+				break;
+			case RaceId::Zerg:
+				id = UnitId::ZergHatchery;
+				break;
+			default:
+				id = UnitId::ZergHatchery;
+				break;
 		}
 		return id;
 	}
@@ -62,15 +62,15 @@ namespace hooks {
 	bool unit_is_correct_townhall(uint32 unit_id, uint32 cmp_id, CUnit* unit) {
 		//unit is unused. this is function is supposed to be used for custom faction workers
 		switch (unit_id) {
-		case UnitId::TerranCommandCenter:
-//		case UnitId::KelmorianTacticalCenter:
-//		case UnitId::UmojanGarrison:
-//		case UnitId::KelmorianMiningStation:		
-		case UnitId::ProtossNexus:
-		case UnitId::ZergHatchery:
-			return true;
-		default:
-			break;
+			case UnitId::TerranCommandCenter:
+				//		case UnitId::KelmorianTacticalCenter:
+				//		case UnitId::UmojanGarrison:
+				//		case UnitId::KelmorianMiningStation:		
+			case UnitId::ProtossNexus:
+			case UnitId::ZergHatchery:
+				return true;
+			default:
+				break;
 		}
 		return false;
 		//return (unit_id == cmp_id);
@@ -78,12 +78,12 @@ namespace hooks {
 
 	bool is_townhall(uint32 unit_id) {
 		switch (unit_id) {
-		case UnitId::TerranCommandCenter:
-		case UnitId::ProtossNexus:
-		case UnitId::ZergHatchery://lairs and hives are not required
-			return true;
-		default:
-			break;
+			case UnitId::TerranCommandCenter:
+			case UnitId::ProtossNexus:
+			case UnitId::ZergHatchery://lairs and hives are not required
+				return true;
+			default:
+				break;
 		};
 		return false;
 	}
@@ -98,42 +98,42 @@ namespace hooks {
 
 	bool is_vespene_top_structure(uint16 unit_id) {
 		switch (unit_id) {
-		case UnitId::TerranReservoir:
-		case UnitId::ProtossAquifer:
-		case UnitId::ZergExtractor:
-			return true;
-		default:
-			break;
+			case UnitId::TerranReservoir:
+			case UnitId::ProtossAquifer:
+			case UnitId::ZergExtractor:
+				return true;
+			default:
+				break;
 		}
 	}
 
-	bool is_gasholder_structure(uint16 unit_id){
+	bool is_gasholder_structure(uint16 unit_id) {
 		switch (unit_id) {
-		case UnitId::TerranReservoir:
-		case UnitId::ProtossAquifer:
-		case UnitId::ZergExtractor:
-//		case UnitId::KelMorianGasPump:
-			return true;
-		default:
-			break;
+			case UnitId::TerranReservoir:
+			case UnitId::ProtossAquifer:
+			case UnitId::ZergExtractor:
+				//		case UnitId::KelMorianGasPump:
+				return true;
+			default:
+				break;
 		}
 	}
 
 	uint32 get_worker_from_race(uint32 race) {
 		uint32 id = 0xe4;
 		switch (race) {
-		case RaceId::Terran:
-			id = UnitId::TerranMason;
-			break;
-		case RaceId::Protoss:
-			id = UnitId::ProtossScribe;
-			break;
-		case RaceId::Zerg:
-			id = UnitId::ZergDroleth;
-			break;
-		default:
-			id = UnitId::ZergDroleth;
-			break;
+			case RaceId::Terran:
+				id = UnitId::TerranMason;
+				break;
+			case RaceId::Protoss:
+				id = UnitId::ProtossScribe;
+				break;
+			case RaceId::Zerg:
+				id = UnitId::ZergDroleth;
+				break;
+			default:
+				id = UnitId::ZergDroleth;
+				break;
 		}
 		return id;
 	}
@@ -142,18 +142,18 @@ namespace hooks {
 		uint32 id = 0xe4;
 		//player is not used originally but may be required for custom race support
 		switch (race) {
-		case RaceId::Terran:
-			id = UnitId::TerranSupplyDepot;
-			break;
-		case RaceId::Protoss:
-			id = UnitId::ProtossPylon;
-			break;
-		case RaceId::Zerg:
-			id = UnitId::ZergOvileth;
-			break;
-		default:
-			id = UnitId::ZergOvileth;
-			break;
+			case RaceId::Terran:
+				id = UnitId::TerranSupplyDepot;
+				break;
+			case RaceId::Protoss:
+				id = UnitId::ProtossPylon;
+				break;
+			case RaceId::Zerg:
+				id = UnitId::ZergOvileth;
+				break;
+			default:
+				id = UnitId::ZergOvileth;
+				break;
 		}
 		return id;
 	}
@@ -204,7 +204,7 @@ namespace hooks {
 
 	// First checks if main town is eligible for supply building
 	// If not then iterates on every player's town and then checks if it's eligible for supply building
-	AiTown* GetFirstEligibleTown(AiTown* mainTown, uint8 playerId, uint8 raceId) {			
+	AiTown* GetFirstEligibleTown(AiTown* mainTown, uint8 playerId, uint8 raceId) {
 		if (mainTown) {
 			if (IsTownEligible(mainTown, raceId)) {
 				return mainTown;
@@ -232,61 +232,60 @@ namespace hooks {
 		bool hasTerran_ = false;
 		bool hasZerg_ = false;
 		bool hasProtoss_ = false;
-		if (town)
-		{
+		if (town) 		{
 			player_ = town->player;
 			race_ = playerTable[player_].race;
 			//Race Checks, Allows main race to continue to function, but will consider other races if there is supply exists
 			//and supply is provided
 			switch (race_) {
-			case RaceId::Terran:
-				hasTerran_ = true;
-				if (raceSupply[RaceId::Zerg].used[player_] != 0 && raceSupply[RaceId::Zerg].provided[player_] != 0) {
-					hasZerg_ = true;
-				}
-				if (raceSupply[RaceId::Protoss].used[player_] != 0 && raceSupply[RaceId::Protoss].provided[player_] != 0) {
-					hasProtoss_ = true;
-				}
-				break;
-			case RaceId::Zerg:
-				hasZerg_ = true;
-				if (raceSupply[RaceId::Terran].used[player_] != 0 && raceSupply[RaceId::Terran].provided[player_] != 0) {
+				case RaceId::Terran:
 					hasTerran_ = true;
-				}
-				if (raceSupply[RaceId::Protoss].used[player_] != 0 && raceSupply[RaceId::Protoss].provided[player_] != 0) {
-					hasProtoss_ = true;
-				}
-				break;
-			case RaceId::Protoss:
-				hasProtoss_ = true;
-				if (raceSupply[RaceId::Terran].used[player_] != 0 && raceSupply[RaceId::Terran].provided[player_] != 0) {
-					hasTerran_ = true;
-				}
-				if (raceSupply[RaceId::Zerg].used[player_] != 0 && raceSupply[RaceId::Zerg].provided[player_] != 0) {
+					if (raceSupply[RaceId::Zerg].used[player_] != 0 && raceSupply[RaceId::Zerg].provided[player_] != 0) {
+						hasZerg_ = true;
+					}
+					if (raceSupply[RaceId::Protoss].used[player_] != 0 && raceSupply[RaceId::Protoss].provided[player_] != 0) {
+						hasProtoss_ = true;
+					}
+					break;
+				case RaceId::Zerg:
 					hasZerg_ = true;
-				}
-				break;
+					if (raceSupply[RaceId::Terran].used[player_] != 0 && raceSupply[RaceId::Terran].provided[player_] != 0) {
+						hasTerran_ = true;
+					}
+					if (raceSupply[RaceId::Protoss].used[player_] != 0 && raceSupply[RaceId::Protoss].provided[player_] != 0) {
+						hasProtoss_ = true;
+					}
+					break;
+				case RaceId::Protoss:
+					hasProtoss_ = true;
+					if (raceSupply[RaceId::Terran].used[player_] != 0 && raceSupply[RaceId::Terran].provided[player_] != 0) {
+						hasTerran_ = true;
+					}
+					if (raceSupply[RaceId::Zerg].used[player_] != 0 && raceSupply[RaceId::Zerg].provided[player_] != 0) {
+						hasZerg_ = true;
+					}
+					break;
 			}
 
 			if (hasProtoss_) {
 				if (checkSupplyNeed(player_, RaceId::Protoss)) {
 					town = GetFirstEligibleTown(town, player_, RaceId::Protoss);
 					if (town)
-						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player_), (void*)town);
+						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Protoss) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Protoss, player_), (void*) town);
 				}
 			}
 			if (hasZerg_) {
 				if (checkSupplyNeed(player_, RaceId::Zerg)) {
 					town = GetFirstEligibleTown(town, player_, RaceId::Zerg);
 					if (town)
-						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player_), (void*)town);
+						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Zerg) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Zerg, player_), (void*) town);
 				}
 			}
 			if (hasTerran_) {
 				if (checkSupplyNeed(player_, RaceId::Terran)) {
 					town = GetFirstEligibleTown(town, player_, RaceId::Terran);
 					if (town)
-						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player_), (void*)town);
+						AI_AddTownSpendingRequest(player_, scbw::getSupplyRemaining(player_, RaceId::Terran) > 8 ? 120 : 140, get_supply_structure_from_race(RaceId::Terran, player_), (void*) town);
 				}
 			}
 		}
@@ -344,12 +343,10 @@ namespace hooks {
 		if (!battleTime
 			|| *elapsedTimeSeconds - battleTime >= 0x1E // in_battle flag? just a coincidence?
 			|| ((race = playerTable[playerId].race, race != 1) ? (result = 8 * (race != 0) + 149) : (result = 110),
-				unitId == result || priority == 140))
-		{
+				unitId == result || priority == 140)) 		{
 			if (units_dat::BaseProperty[unitId] & UnitProperty::Worker) {
 				reqType = 4;
-			}
-			else {
+			} 			else {
 				reqType = 2 * (units_dat::BaseProperty[unitId] & UnitProperty::Addon) | 3; // 3 = UnitProperty::Addon + UnitProperty::Building
 			}
 			AI_AddCostToNeeds(unitId, playerId, reqType);
@@ -420,14 +417,14 @@ namespace hooks {
 
 	/*   TODO: Worker-related hooks
 	Line 78684: 00434C36  |.  83F8 29       CMP EAX,29
-    Line 80051: 00435A88  |.  83C0 29       ADD EAX,29
-    Line 81026: 0043655E  |.  83C1 29       ADD ECX,29
-    Line 107167: 00447AAE  |.  83C0 29       ADD EAX,29
-    Line 108426: 004488FF  |.  83C0 29       ADD EAX,29
-    Line 211601: 0048DE9C  |.  66:83FA 29    CMP DX,29
-    Line 240222: 004A134E   .  66:837E 64 29 CMP WORD PTR DS:[ESI+64],29
-    Line 285431: 004BFDB6  |.  C645 FC 29    MOV BYTE PTR SS:[EBP-4],29
-    Line 347662: 004E9EC0   >  66:83F9 29    CMP CX,29
+	Line 80051: 00435A88  |.  83C0 29       ADD EAX,29
+	Line 81026: 0043655E  |.  83C1 29       ADD ECX,29
+	Line 107167: 00447AAE  |.  83C0 29       ADD EAX,29
+	Line 108426: 004488FF  |.  83C0 29       ADD EAX,29
+	Line 211601: 0048DE9C  |.  66:83FA 29    CMP DX,29
+	Line 240222: 004A134E   .  66:837E 64 29 CMP WORD PTR DS:[ESI+64],29
+	Line 285431: 004BFDB6  |.  C645 FC 29    MOV BYTE PTR SS:[EBP-4],29
+	Line 347662: 004E9EC0   >  66:83F9 29    CMP CX,29
 	*/
 }
 
@@ -532,6 +529,6 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool)result;
+		return (bool) result;
 	}
 }

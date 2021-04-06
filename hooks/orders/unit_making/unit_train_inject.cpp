@@ -43,8 +43,8 @@ namespace {
 		static uint32 slot;
 		static uint32 result;
 		__asm {
-			MOV unit,ECX
-			MOV slot,EDX
+			MOV unit, ECX
+			MOV slot, EDX
 			PUSHAD
 		}
 		result = hooks::isQueueSlotActive(unit, slot);
@@ -76,9 +76,9 @@ namespace hooks {
 
 	void injectUnitTrainHooks() {
 		jmpPatch(queueSlotActiveWrapper, 0x00401E70, 2);
-		jmpPatch(secondaryOrd_TrainFighterWrapper,	0x00466790, 2);
-		jmpPatch(function_00468420Wrapper,			0x00468420, 4);
-		jmpPatch(getMaxHangarSpace_Wrapper, 		0x004653D0, 3);
+		jmpPatch(secondaryOrd_TrainFighterWrapper, 0x00466790, 2);
+		jmpPatch(function_00468420Wrapper, 0x00468420, 4);
+		jmpPatch(getMaxHangarSpace_Wrapper, 0x004653D0, 3);
 	}
 
 }; //hooks

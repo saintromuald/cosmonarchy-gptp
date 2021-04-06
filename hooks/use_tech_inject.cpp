@@ -4,8 +4,7 @@
 #include "hook_tools.h"
 
 
-void __declspec(naked) UseTechWrapper()
-{
+void __declspec(naked) UseTechWrapper() {
 	static uint16 id;
 	static GrpHead* grphead;
 	__asm
@@ -14,7 +13,7 @@ void __declspec(naked) UseTechWrapper()
 		MOV grphead, ESI
 		PUSHAD
 	}
-       //grphead framecount (1-9) is button number in command card
+	//grphead framecount (1-9) is button number in command card
 	hooks::BTNSACT_UseTech(id, grphead);
 	__asm
 	{
@@ -39,13 +38,12 @@ void __declspec(naked) UpgradeIdComparison_Wrapper() {
 		PUSHAD
 	}
 	//
-	if(opcode < scbw::get_aise_value(nullptr,nullptr,AiseId::UpgradeLength,0,0)){
+	if (opcode < scbw::get_aise_value(nullptr, nullptr, AiseId::UpgradeLength, 0, 0)) {
 		__asm {
 			POPAD
 			JMP Hook_Jump_UpgradeFunctionality
 		}
-	}
-	else {
+	} 	else {
 		__asm {
 			POPAD
 			JMP Hook_Jump_SkipUpgradeOp
@@ -54,10 +52,8 @@ void __declspec(naked) UpgradeIdComparison_Wrapper() {
 }
 
 
-namespace hooks
-{
-	void injectUseTechHooks()
-	{
+namespace hooks {
+	void injectUseTechHooks() 	{
 		jmpPatch(UseTechWrapper, 0x00423F70);
 		jmpPatch(UpgradeIdComparison_Wrapper, 0x0046D5B8);
 	}

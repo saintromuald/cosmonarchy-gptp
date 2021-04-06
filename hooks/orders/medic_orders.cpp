@@ -5,21 +5,21 @@
 
 namespace {
 
-CUnit* MedicHeal_TargetAcquire(CUnit* medic);											//422A0
-bool32 AI_OrderHeal(CUnit* unit, CUnit* target);										//63530
-uint32 doMedicHeal(CUnit* unit, CUnit* target);											//63C40
-void removeOrderFromUnitQueue(CUnit* unit, COrder* order);								//742D0
-void function_4748E0(CUnit* unit, int x, int y, uint8 orderId);							//748E0
-void function_474940(CUnit* unit, CUnit* target, uint8 orderId);							//74940
-void orderImmediate(CUnit* unit, uint8 order);												//74B40
-void orderInterrupt(CUnit* unit, CUnit* target, uint16 x, uint16 y, uint32 orderId);				//74C30
-void actUnitReturnToIdle(CUnit* unit);													//75420
-void unitOrderMoveToTargetUnit(CUnit* unit, CUnit* target);								//79FE0
-bool32 AI_CastSpellBehaviour(CUnit* unit, uint32 unknown);									//A13C0
-void setNextWaypoint_Sub4EB290(CUnit* unit);											//EB290
-bool moveToTarget(CUnit* unit, CUnit* target);											//EB720
-bool SetMoveTarget_xy(CUnit* unit, int x, int y);										//EB820
-bool function_004EB900(CUnit* unit, CUnit* target);										//EB900
+	CUnit* MedicHeal_TargetAcquire(CUnit* medic);											//422A0
+	bool32 AI_OrderHeal(CUnit* unit, CUnit* target);										//63530
+	uint32 doMedicHeal(CUnit* unit, CUnit* target);											//63C40
+	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);								//742D0
+	void function_4748E0(CUnit* unit, int x, int y, uint8 orderId);							//748E0
+	void function_474940(CUnit* unit, CUnit* target, uint8 orderId);							//74940
+	void orderImmediate(CUnit* unit, uint8 order);												//74B40
+	void orderInterrupt(CUnit* unit, CUnit* target, uint16 x, uint16 y, uint32 orderId);				//74C30
+	void actUnitReturnToIdle(CUnit* unit);													//75420
+	void unitOrderMoveToTargetUnit(CUnit* unit, CUnit* target);								//79FE0
+	bool32 AI_CastSpellBehaviour(CUnit* unit, uint32 unknown);									//A13C0
+	void setNextWaypoint_Sub4EB290(CUnit* unit);											//EB290
+	bool moveToTarget(CUnit* unit, CUnit* target);											//EB720
+	bool SetMoveTarget_xy(CUnit* unit, int x, int y);										//EB820
+	bool function_004EB900(CUnit* unit, CUnit* target);										//EB900
 
 } //unnamed namespace
 
@@ -27,11 +27,11 @@ namespace hooks {
 
 	void orders_MedicHeal2(CUnit* unit) {
 
-		if(!(unit->movementFlags & MovementFlags::Accelerating)) {
+		if (!(unit->movementFlags & MovementFlags::Accelerating)) {
 
 			CImage* current_image = unit->sprite->images.head;
 
-			while(current_image != nullptr) {
+			while (current_image != nullptr) {
 				current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
 				current_image = current_image->link.next;
 			}
@@ -47,69 +47,68 @@ namespace hooks {
 		CUnit* target = unit->orderTarget.unit;
 		CUnit* oldTarget = unit->orderTarget.unit;
 
-		if(target != nullptr) {
-			if(AI_OrderHeal(unit,target) != 0) {
+		if (target != nullptr) {
+			if (AI_OrderHeal(unit, target) != 0) {
 				unit->orderComputerCL(OrderId::MedicHeal1);
 				unit->orderTarget.unit = target;
 				unit->orderTarget.pt.x = target->sprite->position.x;
 				unit->orderTarget.pt.y = target->sprite->position.y;
-				moveToTarget(unit,target);
+				moveToTarget(unit, target);
 				bStopThere = true;
-			}
-			else { //63801
+			} 			else { //63801
 				unit->orderTarget.pt.x = target->sprite->position.x;
 				unit->orderTarget.pt.y = target->sprite->position.y;
 			}
 
 		}
 
-		if(!bStopThere) { //63817
+		if (!bStopThere) { //63817
 
-			if(unit->recentOrderTimer == 0) {
-				if(!SetMoveTarget_xy(unit,unit->orderTarget.pt.x,unit->orderTarget.pt.y))
+			if (unit->recentOrderTimer == 0) {
+				if (!SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
 					bStopThere = true;
 			}
 
 			//63842
-			if(!bStopThere) {
+			if (!bStopThere) {
 
-				if(	unit->moveTarget.pt.x == unit->sprite->position.x &&
+				if (unit->moveTarget.pt.x == unit->sprite->position.x &&
 					unit->moveTarget.pt.y == unit->sprite->position.y
-				)
+					)
 					unit->orderToIdle();
 				else
-				if(unit->mainOrderTimer == 0) {
+					if (unit->mainOrderTimer == 0) {
 
-					CUnit* newTarget;
-					Point16 oldPos;
+						CUnit* newTarget;
+						Point16 oldPos;
 
-					unit->mainOrderTimer = 15;
-				
-					newTarget = MedicHeal_TargetAcquire(unit);
+						unit->mainOrderTimer = 15;
 
-					if(newTarget != nullptr) {
+						newTarget = MedicHeal_TargetAcquire(unit);
 
-						oldPos.x = unit->orderTarget.pt.x;
-						oldPos.y = unit->orderTarget.pt.y;
+						if (newTarget != nullptr) {
 
-						orderInterrupt(
-							unit,
-							unit->orderTarget.unit,
-							unit->orderTarget.pt.x,
-							unit->orderTarget.pt.y,
-							OrderId::MedicHeal1
-						);
+							oldPos.x = unit->orderTarget.pt.x;
+							oldPos.y = unit->orderTarget.pt.y;
 
-						moveToTarget(unit,newTarget);
-						unitOrderMoveToTargetUnit(unit,newTarget);
+							orderInterrupt(
+								unit,
+								unit->orderTarget.unit,
+								unit->orderTarget.pt.x,
+								unit->orderTarget.pt.y,
+								OrderId::MedicHeal1
+							);
 
-						if(oldTarget != nullptr)
-							function_474940(unit,oldTarget,OrderId::HealMove);
-						else
-							function_4748E0(unit,oldPos.x,oldPos.y,OrderId::HealMove);		
+							moveToTarget(unit, newTarget);
+							unitOrderMoveToTargetUnit(unit, newTarget);
+
+							if (oldTarget != nullptr)
+								function_474940(unit, oldTarget, OrderId::HealMove);
+							else
+								function_4748E0(unit, oldPos.x, oldPos.y, OrderId::HealMove);
+						}
+
 					}
-
-				}
 
 
 			}
@@ -123,27 +122,27 @@ namespace hooks {
 
 		bool bStopThere = false;
 
-		if(unit->pAI != nullptr && AI_CastSpellBehaviour(unit, NULL) != 0)
+		if (unit->pAI != nullptr && AI_CastSpellBehaviour(unit, NULL) != 0)
 			bStopThere = true;
-		if(!bStopThere) {
+		if (!bStopThere) {
 
 			CUnit* target = MedicHeal_TargetAcquire(unit);
 
-			if(target != nullptr) {
+			if (target != nullptr) {
 
 				unit->userActionFlags |= 1;
 
-				if(unit->mainOrderId != OrderId::Die) {
+				if (unit->mainOrderId != OrderId::Die) {
 
 					bool bEndLoop = unit->orderQueueTail == nullptr;
 
-					while(!bEndLoop) {
+					while (!bEndLoop) {
 
-						if(	!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId] &&
+						if (!orders_dat::CanBeInterrupted[unit->orderQueueTail->orderId] &&
 							unit->orderQueueTail->orderId != OrderId::MedicHeal1)
 							bEndLoop = true;
 						else {
-							removeOrderFromUnitQueue(unit,unit->orderQueueTail);
+							removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 							bEndLoop = (unit->orderQueueTail == nullptr);
 						}
 
@@ -166,24 +165,23 @@ namespace hooks {
 				unit->orderTarget.pt.x = target->sprite->position.x;
 				unit->orderTarget.pt.y = target->sprite->position.y;
 
-				moveToTarget(unit,target);
+				moveToTarget(unit, target);
 
-			}
-			else { //639BD
+			} 			else { //639BD
 
-				if(unit->pAI != nullptr) {
+				if (unit->pAI != nullptr) {
 
-					if(*(uint8*)((uint32)unit->pAI + 8) != 1)
+					if (*(uint8*) ((uint32) unit->pAI + 8) != 1)
 						unit->orderComputerCL(OrderId::ComputerAI);
 					else
-					if(	unit->sprite->position.x != *(uint16*)((uint32)unit->pAI + 0x12) ||
-						unit->sprite->position.y != *(uint16*)((uint32)unit->pAI + 0x14)
-					)
-						unit->orderTo(
-							OrderId::ComputerReturn,
-							*(uint16*)((uint32)unit->pAI + 0x12),
-							*(uint16*)((uint32)unit->pAI + 0x14)
-						);
+						if (unit->sprite->position.x != *(uint16*) ((uint32) unit->pAI + 0x12) ||
+							unit->sprite->position.y != *(uint16*) ((uint32) unit->pAI + 0x14)
+							)
+							unit->orderTo(
+								OrderId::ComputerReturn,
+								*(uint16*) ((uint32) unit->pAI + 0x12),
+								*(uint16*) ((uint32) unit->pAI + 0x14)
+							);
 
 				}
 
@@ -193,8 +191,8 @@ namespace hooks {
 
 	}
 
-//void orders_MedicHoldPosition(CUnit* unit)
-//in base_orders/stopholdpos_orders.cpp
+	//void orders_MedicHoldPosition(CUnit* unit)
+	//in base_orders/stopholdpos_orders.cpp
 
 	uint32 doMedicHeal_Func(CUnit* medic, CUnit* target) { // 00463C40
 		auto v3 = medic;
@@ -206,7 +204,7 @@ namespace hooks {
 					goto LABEL_7;
 				auto v5 = MedicHeal_TargetAcquire(v3);
 				auto v6 = v5;
-				if (v5)	{
+				if (v5) {
 					unitOrderMoveToTargetUnit(v3, v5);
 					moveToTarget(v6, v3);
 					v4 = v6;
@@ -218,11 +216,11 @@ namespace hooks {
 					if (hpToHeal > 200) {
 						hpToHeal = 200;
 					}
-/*					auto energyCost = hpToHeal >> 1;
-					if (!medic->hasEnergy(energyCost)) {
-						return 2;
-					}
-					medic->spendUnitEnergy(energyCost);*/
+					/*					auto energyCost = hpToHeal >> 1;
+										if (!medic->hasEnergy(energyCost)) {
+											return 2;
+										}
+										medic->spendUnitEnergy(energyCost);*/
 					target->heal(hpToHeal, medic);
 					result = 1;
 					target->isBeingHealed = 1;
@@ -231,76 +229,71 @@ namespace hooks {
 			}
 			result = 0;
 		}
-		return result;			
+		return result;
 	}
 
 	void orders_MedicHeal1(CUnit* unit) {
 		CUnit* target = unit->orderTarget.unit;
-		uint32 doMedicHeal_result=0;
+		uint32 doMedicHeal_result = 0;
 		auto a = unit->hitPoints;
 		bool reqHeal = false;
-		if (target!=nullptr && target->hitPoints < units_dat::MaxHitPoints[target->id]) {
+		if (target != nullptr && target->hitPoints < units_dat::MaxHitPoints[target->id]) {
 			reqHeal = true;
 		}
 		doMedicHeal_result = doMedicHeal(unit, target);
 		if (doMedicHeal_result == 0) {
 			setNextWaypoint_Sub4EB290(unit);
-			if(unit->orderQueueHead != nullptr) {
+			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			}
-			else
-			if(unit->pAI != nullptr)
-				unit->orderComputerCL(OrderId::ComputerAI);
-			else
-				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);		
-		}
-		else { //641D3
-			if(unit->mainOrderState == 0) {
-				if(	target != nullptr &&
-					function_004EB900(unit,target) != 0 &&
+			} 			else
+				if (unit->pAI != nullptr)
+					unit->orderComputerCL(OrderId::ComputerAI);
+				else
+					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+		} 		else { //641D3
+			if (unit->mainOrderState == 0) {
+				if (target != nullptr &&
+					function_004EB900(unit, target) != 0 &&
 					unit->getMovableState() != 2 //unit not unmovable
-				) {
-					if(unit->isTargetWithinMinRange(target,30)) {
+					) {
+					if (unit->isTargetWithinMinRange(target, 30)) {
 						setNextWaypoint_Sub4EB290(unit);
 						unit->mainOrderState = 1;
 					}
-				}
-				else //64216
+				} 				else //64216
 					unit->orderToIdle();
-			}
-			else { //6421E
-				if(doMedicHeal_result == 1) {
-					if(!(unit->orderSignal & 1)) {
+			} 			else { //6421E
+				if (doMedicHeal_result == 1) {
+					if (!(unit->orderSignal & 1)) {
 						CImage* current_image = unit->sprite->images.head;
-						while(current_image != nullptr) {
+						while (current_image != nullptr) {
 							current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 							current_image = current_image->link.next;
 						}
-						if(	unit->orderQueueHead == nullptr ||
+						if (unit->orderQueueHead == nullptr ||
 							unit->orderQueueHead->orderId != OrderId::MedicHeal2
-						)
-							orderImmediate(unit,OrderId::MedicHeal2);
+							)
+							orderImmediate(unit, OrderId::MedicHeal2);
 					}
 
 					//6425B
 					target = unit->orderTarget.unit;
 
-					if(	target->position.x != unit->nextTargetWaypoint.x ||
+					if (target->position.x != unit->nextTargetWaypoint.x ||
 						target->position.y != unit->nextTargetWaypoint.y
-					) {
+						) {
 						unit->nextTargetWaypoint.x = target->position.x;
 						unit->nextTargetWaypoint.y = target->position.y;
 					}
-				}
-				else //64283
+				} 				else //64283
 					unit->mainOrderState = 0;
 			}
 		}
 	}
 
 	bool AI_AcquireHealTarget(CUnit* medic, CUnit* target) {
-		if (target==nullptr || target == medic || medic->status & UnitStatus::IsHallucination) {
+		if (target == nullptr || target == medic || medic->status & UnitStatus::IsHallucination) {
 			return 0;
 		}
 		int type = target->id;
@@ -315,7 +308,7 @@ namespace hooks {
 			|| medic->playerId >= 8
 			|| target->hitPoints >= units_dat::MaxHitPoints[type]
 			|| target->isFrozen()
-			|| scbw::get_generic_value(target,ValueId::LazarusNoHeal)==1) {
+			|| scbw::get_generic_value(target, ValueId::LazarusNoHeal) == 1) {
 			return 0;
 		}
 		return true;
@@ -337,7 +330,7 @@ namespace {
 			MOV target, EAX
 			POPAD
 		}
-		return target;	
+		return target;
 	}
 
 	const uint32 Func_AI_OrderHeal = 0x00463530;
@@ -421,7 +414,7 @@ namespace {
 	const uint32 Func_orderInterrupt = 0x00474C30;
 	void orderInterrupt(CUnit* unit, CUnit* target, uint16 x, uint16 y, uint32 orderId) {
 		static Point16 pos;
-		pos.x = x;pos.y = y;
+		pos.x = x; pos.y = y;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -436,10 +429,10 @@ namespace {
 	const uint32 Func_ActUnitReturnToIdle = 0x00475420;
 	void actUnitReturnToIdle(CUnit* unit) {
 		__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_ActUnitReturnToIdle
-		POPAD
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_ActUnitReturnToIdle
+			POPAD
 		}
 	}
 

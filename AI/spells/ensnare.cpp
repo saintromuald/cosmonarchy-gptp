@@ -21,31 +21,31 @@ namespace AI {
 			caster->getX() + bounds, caster->getY() + bounds,
 			caster,
 			[&](CUnit* target) {
-				if (!isTargetWorthHitting(target, caster))
-					return false;
+			if (!isTargetWorthHitting(target, caster))
+				return false;
 
-				if (!scbw::canWeaponTargetUnit(WeaponId::Ensnare, target, caster))
-					return false;
+			if (!scbw::canWeaponTargetUnit(WeaponId::Ensnare, target, caster))
+				return false;
 
-				if (target->ensnareTimer)
-					return false;
+			if (target->ensnareTimer)
+				return false;
 
-				if (!(target->status & UnitStatus::IsBuilding)) //??
-					return false;
+			if (!(target->status & UnitStatus::IsBuilding)) //??
+				return false;
 
-				if (!isTargetAttackingAlly(target, caster))
-					return false;
+			if (!isTargetAttackingAlly(target, caster))
+				return false;
 
-				const int totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Ensnare);
-				if (!isUnderAttack && totalEnemyLife < 250)
-					return false;
+			const int totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Ensnare);
+			if (!isUnderAttack && totalEnemyLife < 250)
+				return false;
 
-				const int totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Ensnare);
-				if (totalAllyLife * 2 >= totalEnemyLife)
-					return false;
+			const int totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Ensnare);
+			if (totalAllyLife * 2 >= totalEnemyLife)
+				return false;
 
-				return true;
-			});
+			return true;
+		});
 	}
 
 } //AI

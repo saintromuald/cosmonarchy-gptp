@@ -16,7 +16,7 @@ namespace hooks {
 		if (scbw::get_generic_timer(unit, ValueId::EggBoostTimer) % 2 == 1) {
 			multiplier *= 2;
 		}
-		unit->remainingBuildTime -= std::min(multiplier,unit->remainingBuildTime);
+		unit->remainingBuildTime -= std::min(multiplier, unit->remainingBuildTime);
 		return 0;
 	}
 

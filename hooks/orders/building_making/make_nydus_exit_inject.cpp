@@ -34,8 +34,8 @@ namespace {
 	void __declspec(naked) nydusPlaceExitTileCheckWrapper1() {
 		__asm {
 			MOVZX EAX, AL
-			LEA ECX, DWORD PTR[EAX+EAX*0x8]
-			MOV playerCache,EAX
+			LEA ECX, DWORD PTR[EAX + EAX * 0x8]
+			MOV playerCache, EAX
 			JMP jmp_7315c
 		}
 
@@ -45,8 +45,8 @@ namespace {
 		static uint32 tile_flags;
 		static uint32 player_id;
 		__asm {
-			ADD ECX,0x00400000
-			MOV tile_flags,ECX
+			ADD ECX, 0x00400000
+			MOV tile_flags, ECX
 			PUSHAD
 		}
 		//
@@ -55,7 +55,7 @@ namespace {
 		tile_flags = hooks::adjustFlags(tile_flags, playerCache);
 		__asm {
 			POPAD
-			MOV ECX,tile_flags
+			MOV ECX, tile_flags
 			JMP jmp_731C8
 		}
 		//ecx is tile_flags, ebx is flags in question, [ebp+8] is player id, required for nydus transfusion
@@ -66,7 +66,7 @@ namespace {
 namespace hooks {
 
 	void injectMakeNydusExitHook() {
-		jmpPatch(orders_Build5Wrapper,		0x0045DC20, 2);
+		jmpPatch(orders_Build5Wrapper, 0x0045DC20, 2);
 		jmpPatch(nydusPlaceExitTileCheckWrapper1, 0x00473156, 1);
 		jmpPatch(nydusPlaceExitTileCheckWrapper2, 0x004731C2, 1);
 

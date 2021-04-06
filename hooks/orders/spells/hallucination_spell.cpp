@@ -5,7 +5,7 @@
 
 namespace {
 
-	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange,uint32 error_message_index);	// 926D0
+	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index);	// 926D0
 	void UnitDestructor(CUnit* unit);																					// A0990
 	bool function_004F66D0(CUnit* unit);																				// 004F66D0	// called PlaceHallucination in Neiv's list
 
@@ -23,7 +23,7 @@ namespace hooks {
 	void orders_Hallucination1(CUnit* unit) {
 		int sightRange = unit->getSightRange(true);
 		uint16 techCost;
-		if(
+		if (
 			ordersSpell_Sub_4926D0(
 				unit,
 				TechId::Hallucination,
@@ -31,7 +31,7 @@ namespace hooks {
 				sightRange * 32,
 				0x899 //Invalid Target
 			)
-		) {
+			) {
 			int counter = 1;
 			// TODO: cleanup
 			//while(counter > 0) {
@@ -53,25 +53,24 @@ namespace hooks {
 			scbw::set_generic_value(target, ValueId::HallucinatingSourcePlayer, unit->playerId);
 			scbw::set_generic_timer(target, ValueId::HallucinatingTimer, (30 * 24) + 1);
 
-			if(!(*CHEAT_STATE & CheatFlags::TheGathering))
+			if (!(*CHEAT_STATE & CheatFlags::TheGathering))
 				unit->spendUnitEnergy(techCost);
 
 			scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, target);
 
-			if(unit->orderTarget.unit->subunit != nullptr)
-				target->subunit->sprite->createOverlay(ImageId::HallucinationHit,0,0,0);
+			if (unit->orderTarget.unit->subunit != nullptr)
+				target->subunit->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
 			else
-				target->sprite->createOverlay(ImageId::HallucinationHit,0,0,0);
+				target->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
 
-			if(unit->orderQueueHead != nullptr) {
+			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			}
-			else
-			if(unit->pAI != nullptr)
-				unit->orderComputerCL(OrderId::ComputerAI);
-			else
-				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+			} 			else
+				if (unit->pAI != nullptr)
+					unit->orderComputerCL(OrderId::ComputerAI);
+				else
+					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 		}
 	}
 
@@ -102,8 +101,7 @@ namespace hooks {
 				hallucinateScarabs(halUnit2, v3);
 			AI_TrainingUnit(halUnit2, halUnit2);
 			result = halUnit2;
-		}
-		else {
+		} 		else {
 			displayLastNetErrForPlayer(player);
 			result = 0;
 		}

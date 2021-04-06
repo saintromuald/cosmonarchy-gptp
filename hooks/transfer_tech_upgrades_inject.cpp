@@ -4,85 +4,85 @@
 
 namespace {
 
-void __declspec(naked) transferUnitUpgradesToPlayerWrapper() {
+	void __declspec(naked) transferUnitUpgradesToPlayerWrapper() {
 
-	static CUnit* sourceUnit;
-	static uint8 targetPlayerId;
-	static uint32 researchUpgradeFunc;
+		static CUnit* sourceUnit;
+		static uint8 targetPlayerId;
+		static uint32 researchUpgradeFunc;
 
-	__asm {
+		__asm {
 
-		PUSH EBP
-		MOV EBP, ESP
+			PUSH EBP
+			MOV EBP, ESP
 
-		MOV EAX, [EBP+0x08]
-		MOV researchUpgradeFunc, EAX	//2 possibilities, see header file with default values
+			MOV EAX, [EBP + 0x08]
+			MOV researchUpgradeFunc, EAX	//2 possibilities, see header file with default values
 
-		MOV sourceUnit, EBX
+			MOV sourceUnit, EBX
 
-		MOV EAX, [EBP+0x0C]
-		MOV targetPlayerId, AL
-		
-		PUSHAD
+			MOV EAX, [EBP + 0x0C]
+			MOV targetPlayerId, AL
 
-	}
+			PUSHAD
 
-	hooks::transferUnitUpgradesToPlayerHook(sourceUnit, targetPlayerId, researchUpgradeFunc);
+		}
 
-	__asm {
-		POPAD
-		MOV ESP, EBP
-		POP EBP
-		RETN 0x08
-	}
+		hooks::transferUnitUpgradesToPlayerHook(sourceUnit, targetPlayerId, researchUpgradeFunc);
 
-}
-	
-;
-
-void __declspec(naked) transferUnitTechToPlayerWrapper() {
-
-	static CUnit* sourceUnit;
-	static uint8 targetPlayerId;
-	static uint32 researchTechFunc;
-
-	__asm {
-
-		PUSH EBP
-		MOV EBP, ESP
-
-		MOV EAX, [EBP+0x08]
-		MOV researchTechFunc, EAX		//usually researchTech @ 0047B3C0
-
-		MOV sourceUnit, EBX
-
-		MOV EAX, [EBP+0x0C]
-		MOV targetPlayerId, AL
-		
-		PUSHAD
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
 
 	}
 
-	hooks::transferUnitTechToPlayerHook(sourceUnit, targetPlayerId, researchTechFunc);
+	;
 
-	__asm {
-		POPAD
-		MOV ESP, EBP
-		POP EBP
-		RETN 0x08
+	void __declspec(naked) transferUnitTechToPlayerWrapper() {
+
+		static CUnit* sourceUnit;
+		static uint8 targetPlayerId;
+		static uint32 researchTechFunc;
+
+		__asm {
+
+			PUSH EBP
+			MOV EBP, ESP
+
+			MOV EAX, [EBP + 0x08]
+			MOV researchTechFunc, EAX		//usually researchTech @ 0047B3C0
+
+			MOV sourceUnit, EBX
+
+			MOV EAX, [EBP + 0x0C]
+			MOV targetPlayerId, AL
+
+			PUSHAD
+
+		}
+
+		hooks::transferUnitTechToPlayerHook(sourceUnit, targetPlayerId, researchTechFunc);
+
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x08
+		}
+
 	}
 
-}
-	
-;
+	;
 
 } //Unnamed namespace
 
 namespace hooks {
 
-void injectTransferTechAndUpgradesHooks() {
-  jmpPatch(transferUnitUpgradesToPlayerWrapper,	0x004E2B50, 1);
-  jmpPatch(transferUnitTechToPlayerWrapper,		0x004E2C00, 1);
-}
+	void injectTransferTechAndUpgradesHooks() {
+		jmpPatch(transferUnitUpgradesToPlayerWrapper, 0x004E2B50, 1);
+		jmpPatch(transferUnitTechToPlayerWrapper, 0x004E2C00, 1);
+	}
 
 } //hooks

@@ -5,7 +5,7 @@
 //Inject with jmpPatch()
 void __declspec(naked) unitTransformIntoTankModeOrder() {
 
-	static CUnit* unitTransforming; 
+	static CUnit* unitTransforming;
 
 	__asm {
 		PUSHAD
@@ -25,7 +25,7 @@ void __declspec(naked) unitTransformIntoTankModeOrder() {
 //Inject with jmpPatch()
 void __declspec(naked) unitTransformIntoSiegeModeOrder() {
 
-	static CUnit* unitTransforming; 
+	static CUnit* unitTransforming;
 
 	__asm {
 		PUSHAD
@@ -45,8 +45,8 @@ void __declspec(naked) unitTransformIntoSiegeModeOrder() {
 namespace hooks {
 
 	void injectSiegeTransformHooks() {
-		jmpPatch(unitTransformIntoTankModeOrder,	0x00464AE0, 1);
-		jmpPatch(unitTransformIntoSiegeModeOrder,	0x00464BD0, 1);
+		jmpPatch(unitTransformIntoTankModeOrder, 0x00464AE0, 1);
+		jmpPatch(unitTransformIntoSiegeModeOrder, 0x00464BD0, 1);
 	}
 
 }

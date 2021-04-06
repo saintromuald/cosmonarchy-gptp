@@ -5,20 +5,20 @@
 
 namespace {
 
-void disconnectFromAddOn(CUnit* unit);												//0x00464930
-void refundAllQueueSlots(CUnit* unit);												//0x00466E80
-void removeOrderFromUnitQueue(CUnit* unit, COrder* order);							//0x004742D0
-void actUnitReturnToIdle(CUnit* unit);												//0x00475420
-void incrementUnitDeathScores(CUnit* unit, uint8 player);								//0x00488AF0
-void incrementUnitScores(CUnit* unit, int32 unkScore);								//0x00488BF0
-void incrementUnitScoresEx(CUnit* unit, int32 unkScore, int32 unk2);					//0x00488D50
-void initializeEmptyUnitsLinkedListRef_Sub49E4E0(CUnit* unit, uint8 playerId);			//0x0049E4E0
-void GiveUnitHelper(CUnit* unit, uint32 playerId, int32 unkScore);						//0x0049EFA0
-void changeUnitButtonSet_Sub_4E5D60(CUnit* unit, uint16 unitId);						//0x004E5D60
-void hideAndDisableUnit(CUnit* unit);												//0x004E6340
-void showAndEnableUnit(CUnit* unit);												//0x004E6490
-void setNextWaypoint_Sub4EB290(CUnit* unit);										//0x004EB290
-void makeToHoldPosition(CUnit* unit);												//0x004EB5B0
+	void disconnectFromAddOn(CUnit* unit);												//0x00464930
+	void refundAllQueueSlots(CUnit* unit);												//0x00466E80
+	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);							//0x004742D0
+	void actUnitReturnToIdle(CUnit* unit);												//0x00475420
+	void incrementUnitDeathScores(CUnit* unit, uint8 player);								//0x00488AF0
+	void incrementUnitScores(CUnit* unit, int32 unkScore);								//0x00488BF0
+	void incrementUnitScoresEx(CUnit* unit, int32 unkScore, int32 unk2);					//0x00488D50
+	void initializeEmptyUnitsLinkedListRef_Sub49E4E0(CUnit* unit, uint8 playerId);			//0x0049E4E0
+	void GiveUnitHelper(CUnit* unit, uint32 playerId, int32 unkScore);						//0x0049EFA0
+	void changeUnitButtonSet_Sub_4E5D60(CUnit* unit, uint16 unitId);						//0x004E5D60
+	void hideAndDisableUnit(CUnit* unit);												//0x004E6340
+	void showAndEnableUnit(CUnit* unit);												//0x004E6490
+	void setNextWaypoint_Sub4EB290(CUnit* unit);										//0x004EB290
+	void makeToHoldPosition(CUnit* unit);												//0x004EB5B0
 
 } //unnamed namespace
 
@@ -41,7 +41,7 @@ namespace hooks {
 			unitHpTest = unit->getCurrentHpInGame();
 
 			//if HP/maxHP higher or equal than 50%, not damaged enough
-			if( ( (100 * unitHpTest) / unitMaxHp ) >= 50 )
+			if (((100 * unitHpTest) / unitMaxHp) >= 50)
 				returnValue = false;
 
 		}
@@ -59,30 +59,29 @@ namespace hooks {
 		CUnit* unitInfesting = unitInfested->orderTarget.unit;
 		bErrorReturnToIdle = (unitInfesting == nullptr || !isInfestableUnit(unitInfested));
 
-		if(!bErrorReturnToIdle) {
-			if(unitInfested->mainOrderState == 0) {
+		if (!bErrorReturnToIdle) {
+			if (unitInfested->mainOrderState == 0) {
 				//init timer
 				unitInfested->remainingBuildTime = 3;
 				unitInfested->mainOrderState = 2;
 				bStopFunction = true;
 			}
 
-			if(!bStopFunction) {
-				if(unitInfested->remainingBuildTime != 0) {
+			if (!bStopFunction) {
+				if (unitInfested->remainingBuildTime != 0) {
 					//advancing timer
 					unitInfested->remainingBuildTime--;
 					bStopFunction = true;
-				}
-				else {
+				} 				else {
 					//will become 0xffff, this is used by internal functions
 					unitInfested->remainingBuildTime--;
 
 					//disconnect terran buildings from their add-on
-					if(unitInfested->building.addon != nullptr)
+					if (unitInfested->building.addon != nullptr)
 						disconnectFromAddOn(unitInfested);
 
 					//this is the same as calling 0047B2E0 unitIsFactoryUnit like original code but faster
-					if(unitInfested->isFactory())
+					if (unitInfested->isFactory())
 						unitInfested->rally.unit = unitInfested;
 
 					//original code was *(uint16*)(0x006648AC + 2*unitInfested->id);
@@ -92,17 +91,17 @@ namespace hooks {
 					incrementUnitDeathScores(unitInfested, unitInfesting->playerId);
 
 					//effect unknown, don't seem to affect score screen at endgame
-					incrementUnitScores(unitInfested,-1);
-					if(unitInfested->status & UnitStatus::Completed)
-						incrementUnitScoresEx(unitInfested,0,-1);
+					incrementUnitScores(unitInfested, -1);
+					if (unitInfested->status & UnitStatus::Completed)
+						incrementUnitScoresEx(unitInfested, 0, -1);
 
 					//the unit receive the new id (infested id)
 					unitInfested->id = infestedUnitNewId;
 
 					//effect unknown, don't seem to affect score screen at endgame
-					incrementUnitScores(unitInfested,1);
-					if(unitInfested->status & UnitStatus::Completed)
-						incrementUnitScoresEx(unitInfested,0,1);
+					incrementUnitScores(unitInfested, 1);
+					if (unitInfested->status & UnitStatus::Completed)
+						incrementUnitScoresEx(unitInfested, 0, 1);
 
 					//I don't really know, advanced internal mechanics, just have to work with it
 					GiveUnitHelper(unitInfested, unitInfesting->playerId, 1);
@@ -122,13 +121,13 @@ namespace hooks {
 
 					//clear the orders queue of the unit (hardcoding function @ 0x004744D0)
 					//original code used the actual function instead of hardcoding
-					while(unitInfested->orderQueueHead != nullptr)
+					while (unitInfested->orderQueueHead != nullptr)
 						removeOrderFromUnitQueue(unitInfested, unitInfested->orderQueueHead);
 
-					if(unitInfested->status & UnitStatus::GroundedBuilding) {
+					if (unitInfested->status & UnitStatus::GroundedBuilding) {
 						CImage* current_image = unitInfested->sprite->images.head;
 
-						while(current_image != nullptr) {
+						while (current_image != nullptr) {
 							//script 0x14 in asm code
 							current_image->playIscriptAnim(IscriptAnimation::WorkingToIdle);
 
@@ -142,7 +141,7 @@ namespace hooks {
 					//default infestation overlay for any target.
 					infestationOverlayId = units_dat::ConstructionGraphic[infestedUnitNewId];
 
-					if(infestationOverlayId < ImageId::None)
+					if (infestationOverlayId < ImageId::None)
 						unitInfested->sprite->createOverlay(infestationOverlayId);
 
 					unitInfested->setHp(units_dat::MaxHitPoints[infestedUnitNewId]);
@@ -154,7 +153,7 @@ namespace hooks {
 				} //if(unitInfested->remainingBuildTime == 0)
 			} //if(!bStopFunction)
 		} //if(!bErrorReturnToIdle)
-		if(!bStopFunction)
+		if (!bStopFunction)
 			actUnitReturnToIdle(unitInfested);
 	}
 
@@ -166,84 +165,78 @@ namespace hooks {
 		bool bReturnToIdle = false;
 		Point16 actualpos;
 
-		if(unitInfesting->mainOrderState == 3) {
+		if (unitInfesting->mainOrderState == 3) {
 			//infesting in progress, dealing with timer			
-			if(unitInfesting->remainingBuildTime != 0) {
+			if (unitInfesting->remainingBuildTime != 0) {
 				unitInfesting->remainingBuildTime--;
 				bStopFunction = true;
-			}
-			else
+			} 			else
 				bBuildTimeReachedZero = true;
-		}
-		else
-		if(unitInfesting->mainOrderState != 0) // if ==0, wait for EA33F to start infestation logic
-			bStopFunction = true;
-		if(!bStopFunction && bBuildTimeReachedZero) { 
+		} 		else
+			if (unitInfesting->mainOrderState != 0) // if ==0, wait for EA33F to start infestation logic
+				bStopFunction = true;
+		if (!bStopFunction && bBuildTimeReachedZero) {
 			//EA2CC
 			//Infestation timer ended
 
 			//using unitInfesting->sprite->position because the queen and command center are
 			//indeed at the same location, and more importantly, if the infested unit got
 			//destroyed, then access to unitInfested->sprite->position would cause a crash
-			if(scbw::checkUnitCollisionPos(unitInfesting, &unitInfesting->sprite->position, &actualpos)) {
+			if (scbw::checkUnitCollisionPos(unitInfesting, &unitInfesting->sprite->position, &actualpos)) {
 				scbw::setUnitPosition(unitInfesting, actualpos.x, actualpos.y);
 				makeToHoldPosition(unitInfesting);
 				showAndEnableUnit(unitInfesting);
 
-				if(unitInfesting->orderQueueHead == nullptr) {
-					unitInfesting->orderSimple(units_dat::ReturnToIdleOrder[unitInfesting->id],false);
+				if (unitInfesting->orderQueueHead == nullptr) {
+					unitInfesting->orderSimple(units_dat::ReturnToIdleOrder[unitInfesting->id], false);
 					bReturnToIdle = true;
-				}
-				else
+				} 				else
 					bReturnToIdle = true;
-			}
-			else
+			} 			else
 				bStopFunction = true;
 		} //if(!bStopFunction && bBuildTimeReachedZero) {
 
-		if(bReturnToIdle)
+		if (bReturnToIdle)
 			actUnitReturnToIdle(unitInfesting);
 		else
-		if(!bStopFunction) { //EA33F
-			//not started the infestation logic yet, doing it here
+			if (!bStopFunction) { //EA33F
+				//not started the infestation logic yet, doing it here
 
-			if(		unitInfested != nullptr && 
+				if (unitInfested != nullptr &&
 					isInfestableUnit(unitInfested) &&
-					unitInfested->mainOrderId != OrderId::InfestMine1)
-			{
-				hideAndDisableUnit(unitInfesting);								//hide the infesting unit
-				unitInfested->orderTo(OrderId::InfestMine1, unitInfesting);		//order the target to be infested, giving it the infesting unit as order target
-				unitInfesting->mainOrderState = 3;
-				unitInfesting->remainingBuildTime = 60; //timer before reappearing
-				bStopFunction = true;
-
-			}
-
-			if(!bStopFunction) { //EA377
-				//"move to invalid target" logic...I think
-				setNextWaypoint_Sub4EB290(unitInfesting);
-				if(	unitInfesting->moveTarget.pt.x != unitInfesting->nextTargetWaypoint.x ||
-					unitInfesting->moveTarget.pt.y != unitInfesting->nextTargetWaypoint.y)
-				{
-					unitInfesting->nextTargetWaypoint.x = unitInfesting->moveTarget.pt.x;
-					unitInfesting->nextTargetWaypoint.y = unitInfesting->moveTarget.pt.y;
+					unitInfested->mainOrderId != OrderId::InfestMine1) 			{
+					hideAndDisableUnit(unitInfesting);								//hide the infesting unit
+					unitInfested->orderTo(OrderId::InfestMine1, unitInfesting);		//order the target to be infested, giving it the infesting unit as order target
+					unitInfesting->mainOrderState = 3;
+					unitInfesting->remainingBuildTime = 60; //timer before reappearing
+					bStopFunction = true;
 
 				}
-				//EA39E
-				if(unitInfesting->orderQueueHead != nullptr)
-					actUnitReturnToIdle(unitInfesting);
-				else {
-					unitInfesting->order(
-						units_dat::ReturnToIdleOrder[unitInfesting->id],
-						0, 
-						0, 
-						nullptr, 
-						UnitId::None, 
-						false);
-					actUnitReturnToIdle(unitInfesting);
+
+				if (!bStopFunction) { //EA377
+					//"move to invalid target" logic...I think
+					setNextWaypoint_Sub4EB290(unitInfesting);
+					if (unitInfesting->moveTarget.pt.x != unitInfesting->nextTargetWaypoint.x ||
+						unitInfesting->moveTarget.pt.y != unitInfesting->nextTargetWaypoint.y) 				{
+						unitInfesting->nextTargetWaypoint.x = unitInfesting->moveTarget.pt.x;
+						unitInfesting->nextTargetWaypoint.y = unitInfesting->moveTarget.pt.y;
+
+					}
+					//EA39E
+					if (unitInfesting->orderQueueHead != nullptr)
+						actUnitReturnToIdle(unitInfesting);
+					else {
+						unitInfesting->order(
+							units_dat::ReturnToIdleOrder[unitInfesting->id],
+							0,
+							0,
+							nullptr,
+							UnitId::None,
+							false);
+						actUnitReturnToIdle(unitInfesting);
+					}
 				}
-			}
-		} //if(!bStopFunction && bBuildTimeReachedZero)
+			} //if(!bStopFunction && bBuildTimeReachedZero)
 	} //void orderInfestTarget(CUnit* unitInfesting)
 
 } //hooks
@@ -254,220 +247,220 @@ namespace hooks {
 
 namespace {
 
-const uint32 Func_Sub_464930 = 0x00464930;
-void disconnectFromAddOn(CUnit* unit) {
+	const uint32 Func_Sub_464930 = 0x00464930;
+	void disconnectFromAddOn(CUnit* unit) {
 
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_Sub_464930
-		POPAD
-	}
-
-}
-
-;
-
-const uint32 Func_RefundAllQueueSlots = 0x00466E80;
-void refundAllQueueSlots(CUnit* unit) {
-
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_RefundAllQueueSlots
-		POPAD
-	}
-
-}
-
-;
-
-const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
-void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
-
-	__asm {
-		PUSHAD
-		MOV ECX, unit
-		MOV EAX, order
-		CALL Func_removeOrderFromUnitQueue
-		POPAD
-	}
-
-}
-
-;
-
-const uint32 Func_ActUnitReturnToIdle = 0x00475420;
-void actUnitReturnToIdle(CUnit* unit) {
-
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_ActUnitReturnToIdle
-		POPAD
-	}
-
-}
-
-;
-
-//Related to path/movement decision
-const uint32 Func_sub_4EB290 = 0x004EB290;
-void setNextWaypoint_Sub4EB290(CUnit* unit) {
-
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_sub_4EB290
-		POPAD
-	}
-}
-
-;
-
-const uint32 Func_IncrementUnitDeathScores = 0x00488AF0;
-void incrementUnitDeathScores(CUnit* unit, uint8 player) {
-
-	__asm {
-		PUSHAD
-		MOV EDI, unit
-		MOVZX EDX, player
-		CALL Func_IncrementUnitDeathScores
-		POPAD
-	}
-
-}
-
-;
-
-const uint32 Func_incrementUnitScores = 0x00488BF0;
-void incrementUnitScores(CUnit* unit, int32 unkScore) {
-
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		PUSH unkScore
-		CALL Func_incrementUnitScores
-		POPAD
-	}
-
-}
-
-;
-
-const uint32 Func_incrementUnitScoresEx = 0x00488D50;
-void incrementUnitScoresEx(CUnit* unit, int32 unkScore, int32 unk2) {
-
-	__asm {
-		PUSHAD
-		MOV EDI, unit
-		MOV ECX, unk2
-		PUSH unkScore
-		CALL Func_incrementUnitScoresEx
-		POPAD
-	}
-
-}
-
-;
-
-const uint32 Func_Sub_49E4E0 = 0x0049E4E0;
-void initializeEmptyUnitsLinkedListRef_Sub49E4E0(CUnit* unit, uint8 playerId) {
-
-	__asm {
-
-		PUSHAD
-
-		MOV DL, playerId
-		MOV ECX, unit
-
-		CALL Func_Sub_49E4E0
-
-		POPAD
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_Sub_464930
+			POPAD
+		}
 
 	}
 
-}
+	;
 
-;
+	const uint32 Func_RefundAllQueueSlots = 0x00466E80;
+	void refundAllQueueSlots(CUnit* unit) {
 
-const uint32 Func_Sub_49EFA0 = 0x0049EFA0;
-void GiveUnitHelper(CUnit* unit, uint32 playerId, int32 unkScore) {
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_RefundAllQueueSlots
+			POPAD
+		}
 
-	__asm {
-		PUSHAD
-		PUSH unkScore
-		MOV ECX, unit
-		PUSH playerId
-		CALL Func_Sub_49EFA0
-		POPAD
 	}
 
-}
+	;
 
-;
+	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
+	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
-const uint32 Func_Sub_4E5D60 = 0x004E5D60;
-void changeUnitButtonSet_Sub_4E5D60(CUnit* unit, uint16 buttonSetId) {
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			MOV EAX, order
+			CALL Func_removeOrderFromUnitQueue
+			POPAD
+		}
 
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		MOV CX, buttonSetId
-		CALL Func_Sub_4E5D60
-		POPAD
 	}
 
-}
+	;
 
-;
+	const uint32 Func_ActUnitReturnToIdle = 0x00475420;
+	void actUnitReturnToIdle(CUnit* unit) {
 
-//This is what hide the infesting unit
-const uint32 Func_unitDeathSomething_0 = 0x004E6340;
-void hideAndDisableUnit(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_ActUnitReturnToIdle
+			POPAD
+		}
 
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_unitDeathSomething_0
-		POPAD
-	  }
-
-}
-
-;
-
-//What make the target reappear
-const uint32 Func_InitUnitTrapDoodad = 0x004E6490;
-void showAndEnableUnit(CUnit* unit) {
-
-	__asm {
-		PUSHAD
-		MOV EDI, unit
-		CALL Func_InitUnitTrapDoodad
-		POPAD
 	}
 
-}
+	;
 
+	//Related to path/movement decision
+	const uint32 Func_sub_4EB290 = 0x004EB290;
+	void setNextWaypoint_Sub4EB290(CUnit* unit) {
 
-;
-
-//not related with assigning orders, but only with
-//destinations of orders
-const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
-void makeToHoldPosition(CUnit* unit) {
-
-	__asm {
-		PUSHAD
-		MOV ESI, unit
-		CALL Func_OrdersHoldPositionSuicidal
-		POPAD
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_sub_4EB290
+			POPAD
+		}
 	}
 
-}
+	;
 
-;
+	const uint32 Func_IncrementUnitDeathScores = 0x00488AF0;
+	void incrementUnitDeathScores(CUnit* unit, uint8 player) {
+
+		__asm {
+			PUSHAD
+			MOV EDI, unit
+			MOVZX EDX, player
+			CALL Func_IncrementUnitDeathScores
+			POPAD
+		}
+
+	}
+
+	;
+
+	const uint32 Func_incrementUnitScores = 0x00488BF0;
+	void incrementUnitScores(CUnit* unit, int32 unkScore) {
+
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			PUSH unkScore
+			CALL Func_incrementUnitScores
+			POPAD
+		}
+
+	}
+
+	;
+
+	const uint32 Func_incrementUnitScoresEx = 0x00488D50;
+	void incrementUnitScoresEx(CUnit* unit, int32 unkScore, int32 unk2) {
+
+		__asm {
+			PUSHAD
+			MOV EDI, unit
+			MOV ECX, unk2
+			PUSH unkScore
+			CALL Func_incrementUnitScoresEx
+			POPAD
+		}
+
+	}
+
+	;
+
+	const uint32 Func_Sub_49E4E0 = 0x0049E4E0;
+	void initializeEmptyUnitsLinkedListRef_Sub49E4E0(CUnit* unit, uint8 playerId) {
+
+		__asm {
+
+			PUSHAD
+
+			MOV DL, playerId
+			MOV ECX, unit
+
+			CALL Func_Sub_49E4E0
+
+			POPAD
+
+		}
+
+	}
+
+	;
+
+	const uint32 Func_Sub_49EFA0 = 0x0049EFA0;
+	void GiveUnitHelper(CUnit* unit, uint32 playerId, int32 unkScore) {
+
+		__asm {
+			PUSHAD
+			PUSH unkScore
+			MOV ECX, unit
+			PUSH playerId
+			CALL Func_Sub_49EFA0
+			POPAD
+		}
+
+	}
+
+	;
+
+	const uint32 Func_Sub_4E5D60 = 0x004E5D60;
+	void changeUnitButtonSet_Sub_4E5D60(CUnit* unit, uint16 buttonSetId) {
+
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			MOV CX, buttonSetId
+			CALL Func_Sub_4E5D60
+			POPAD
+		}
+
+	}
+
+	;
+
+	//This is what hide the infesting unit
+	const uint32 Func_unitDeathSomething_0 = 0x004E6340;
+	void hideAndDisableUnit(CUnit* unit) {
+
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_unitDeathSomething_0
+			POPAD
+		}
+
+	}
+
+	;
+
+	//What make the target reappear
+	const uint32 Func_InitUnitTrapDoodad = 0x004E6490;
+	void showAndEnableUnit(CUnit* unit) {
+
+		__asm {
+			PUSHAD
+			MOV EDI, unit
+			CALL Func_InitUnitTrapDoodad
+			POPAD
+		}
+
+	}
+
+
+	;
+
+	//not related with assigning orders, but only with
+	//destinations of orders
+	const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
+	void makeToHoldPosition(CUnit* unit) {
+
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL Func_OrdersHoldPositionSuicidal
+			POPAD
+		}
+
+	}
+
+	;
 
 } //Unnamed namespace
 

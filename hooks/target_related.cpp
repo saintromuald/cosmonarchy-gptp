@@ -63,14 +63,11 @@ namespace hooks {
 		if (!isTargetVisible(a2, a1))
 			return 1;
 		finalUnit = _unit->subunit;
-		if (!finalUnit || !(units_dat::GroupFlags[(unsigned __int16)finalUnit->id].isBuilding))
+		if (!finalUnit || !(units_dat::GroupFlags[(unsigned __int16) finalUnit->id].isBuilding))
 			finalUnit = _unit;
-		if (a2->status & UnitStatus::InAir)
-		{
-			_wpn = units_dat::AirWeapon[(unsigned __int16)finalUnit->id];
-		}
-		else
-		{
+		if (a2->status & UnitStatus::InAir) 		{
+			_wpn = units_dat::AirWeapon[(unsigned __int16) finalUnit->id];
+		} 		else 		{
 			_id = finalUnit->id;
 			if (_id != UnitId::ZergLakizilisk || finalUnit->status & 0x10)
 				_wpn = units_dat::GroundWeapon[_id];
@@ -113,7 +110,7 @@ namespace hooks {
 		}
 		return 1;
 	}
-	
+
 	bool isUnitInWeaponRange(CUnit* a1, CUnit* a2) { // 00476870
 		CUnit* v2; // edi
 		CUnit* v4; // esi
@@ -131,19 +128,18 @@ namespace hooks {
 		if (!isTargetVisible(v2, a2))
 			return 0;
 		v4 = a2->subunit;
-		if (!v4 || !(units_dat::GroupFlags[(unsigned __int16)v4->id].isBuilding))
+		if (!v4 || !(units_dat::GroupFlags[(unsigned __int16) v4->id].isBuilding))
 			v4 = a2;
 		if (v2->status & UnitStatus::InAir) {
-			v5 = units_dat::AirWeapon[(unsigned __int16)v4->id];
-		}
-		else {
+			v5 = units_dat::AirWeapon[(unsigned __int16) v4->id];
+		} 		else {
 			v6 = v4->id;
 			if (v6 != UnitId::ZergLakizilisk || v4->status & 0x10)
 				v5 = units_dat::GroundWeapon[v6];
 			else
 				v5 = -126;
 		}
-		if (v5 >= (unsigned __int8)0x82)
+		if (v5 >= (unsigned __int8) 0x82)
 			return 0;
 		v7 = weapons_dat::MinRange[v5];
 		if (v7) {
@@ -170,24 +166,23 @@ namespace hooks {
 		if (v2) {
 			v3 = v1->orderTarget.unit;
 			if (v3) {
-				v4 = getUnitMaxWeaponRange(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->mainOrderId]);
+				v4 = getUnitMaxWeaponRange(v1, orders_dat::OrderWeaponId[(unsigned __int8) v1->mainOrderId]);
 				if (v1->movementFlags & 2) {
 					if (!(v3->movementFlags & 2))
 						goto LABEL_14;
-					v5 = (unsigned __int8)(v3->velocityDirection1 - v1->velocityDirection1);
+					v5 = (unsigned __int8) (v3->velocityDirection1 - v1->velocityDirection1);
 					if (v5 > 128)
 						v5 = 256 - v5;
 					if (v5 > 32)
 						LABEL_14:
-					v4 += getFlingyHaltDistance((int)v1) >> 8;
+					v4 += getFlingyHaltDistance((int) v1) >> 8;
 				}
 				//ByteOperations::SetLowByte((UINT32)v2, (UINT8)isTargetWithinMinRange(v1, v4, v3)); // Needs fixing
-			}
-			else {
+			} 			else {
 				v6 = v1->orderTarget.pt.y;
 				v7 = v1->orderTarget.pt.x;
-				v8 = getUnitMaxWeaponRange(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->mainOrderId]);
-				v9 = (getFlingyHaltDistance((int)v1) >> 8) + v8;
+				v8 = getUnitMaxWeaponRange(v1, orders_dat::OrderWeaponId[(unsigned __int8) v1->mainOrderId]);
+				v9 = (getFlingyHaltDistance((int) v1) >> 8) + v8;
 				v2 = v9 >= getDistanceFast(v1->halt.x, v7 << 8, v1->halt.y, v6 << 8) >> 8;
 			}
 		}
@@ -220,25 +215,24 @@ namespace hooks {
 			if (!isTargetVisible(v4, v1))
 				goto LABEL_23;
 			v5 = v1->subunit;
-			if (!v5 || !(units_dat::GroupFlags[(unsigned __int16)v5->id].isBuilding))
+			if (!v5 || !(units_dat::GroupFlags[(unsigned __int16) v5->id].isBuilding))
 				v5 = v1;
 			if (v4->status & 4) {
-				v6 = units_dat::AirWeapon[(unsigned __int16)v5->id];
-			}
-			else {
+				v6 = units_dat::AirWeapon[(unsigned __int16) v5->id];
+			} 			else {
 				v7 = v5->id;
 				if (v7 != 103 || v5->status & 0x10)
 					v6 = units_dat::GroundWeapon[v7];
 				else
 					v6 = 0x82;
 			}
-			if (v6 >= (unsigned __int8)0x82
+			if (v6 >= (unsigned __int8) 0x82
 				|| (v8 = weapons_dat::MinRange[v6]) != 0 && isTargetWithinMinRange(v5, v8, target)
 				|| (v9 = getUnitMaxWeaponRange(v1, v6), ByteOperations::SetLowByte(v10, (isTargetWithinMinMovementRange(target, v9, v5), !v10)))) {
 			LABEL_23:
 				if (getRightClickActionOrder(v1) == 3)
 					LABEL_22 :
-					unknownOrdersFunc((int)v1, v1->orderTarget.pt.x, v1->orderTarget.pt.y);
+					unknownOrdersFunc((int) v1, v1->orderTarget.pt.x, v1->orderTarget.pt.y);
 			}
 		}
 	}
@@ -270,44 +264,42 @@ namespace hooks {
 
 		v1 = a1;
 		v2 = a1->orderTarget.unit;
-		if (v2)	{
+		if (v2) {
 			a1->orderTarget.pt.x = v2->sprite->position.x;
 			a1->orderTarget.pt.y = v2->sprite->position.y;
 			ByteOperations::SetLowByte(v3, unitCanAttackTarget(v2, a1, 1));
 			if (!v3) {
 				if (!(v1->status & 0x8000000) && !v1->pAI)
-					prependOrderTargetingGround(6u, v1->orderTarget.pt.x, v1->orderTarget.pt.y, (int)v1);
+					prependOrderTargetingGround(6u, v1->orderTarget.pt.x, v1->orderTarget.pt.y, (int) v1);
 				toIdle(v1);
 				return;
 			}
 			v4 = v1->orderTarget.unit;
 			target = v1->orderTarget.unit;
-			if (v1->mainOrderState)	{
+			if (v1->mainOrderState) {
 				if (!v4)
 					goto LABEL_62;
 				if (!isTargetVisible(v4, v1))
 					goto LABEL_63;
 				v11 = v1->subunit;
-				if (!v11 || !(units_dat::GroupFlags[(unsigned __int16)v11->id].isBuilding))
+				if (!v11 || !(units_dat::GroupFlags[(unsigned __int16) v11->id].isBuilding))
 					v11 = v1;
-				if (v4->status & 4)	{
-					v12 = units_dat::AirWeapon[(unsigned __int16)v11->id];
-				}
-				else {
+				if (v4->status & 4) {
+					v12 = units_dat::AirWeapon[(unsigned __int16) v11->id];
+				} 				else {
 					v13 = v11->id;
 					if (v13 != UnitId::ZergLakizilisk || v11->status & 0x10)
 						v12 = units_dat::GroundWeapon[v13];
 					else
 						v12 = 0x82;
 				}
-				if (v12 >= (unsigned __int8)0x82
+				if (v12 >= (unsigned __int8) 0x82
 					|| (v14 = weapons_dat::MinRange[v12]) != 0 && isTargetWithinMinRange(v11, v14, target)
 					|| (v15 = getUnitMaxWeaponRange(v1, v12), ByteOperations::SetLowByte(v16, (isTargetWithinMinMovementRange(target, v15, v11), !v16)))) {
 				LABEL_63:
 					if (!moveTowards(v1->orderTarget.unit, v1))
 						return;
-				}
-				else {
+				} 				else {
 				LABEL_62:
 					ordersHoldPositionSuicidal(v1);
 				}
@@ -317,19 +309,18 @@ namespace hooks {
 				goto LABEL_64;
 			if (isTargetVisible(v4, v1)) {
 				v5 = v1->subunit;
-				if (!v5 || !(units_dat::GroupFlags[(unsigned __int16)v5->id].isBuilding))
+				if (!v5 || !(units_dat::GroupFlags[(unsigned __int16) v5->id].isBuilding))
 					v5 = v1;
 				if (v4->status & 4) {
-					v6 = units_dat::AirWeapon[(unsigned __int16)v5->id];
-				}
-				else {
+					v6 = units_dat::AirWeapon[(unsigned __int16) v5->id];
+				} 				else {
 					v7 = v5->id;
 					if (v7 != 103 || v5->status & 0x10)
 						v6 = units_dat::GroundWeapon[v7];
 					else
 						v6 = 0x82;
 				}
-				if (v6 < (unsigned __int8)0x82) {
+				if (v6 < (unsigned __int8) 0x82) {
 					v8 = weapons_dat::MinRange[v6];
 					if (!v8 || !isTargetWithinMinRange(v5, v8, target)) {
 						v9 = getUnitMaxWeaponRange(v1, v6);
@@ -355,24 +346,21 @@ namespace hooks {
 				}
 				return;
 			}
-		}
-		else {
+		} 		else {
 			setResourceTarget(a1);
 			v21 = v1->moveTarget.pt.x;
 			v22 = v1->moveTarget.pt.y;
-			if (v21 != v1->nextTargetWaypoint.x || v22 != v1->nextTargetWaypoint.y)	{
+			if (v21 != v1->nextTargetWaypoint.x || v22 != v1->nextTargetWaypoint.y) {
 				v1->nextTargetWaypoint.x = v21;
 				v1->nextTargetWaypoint.y = v22;
 			}
-			if (v1->orderQueueHead)	{
+			if (v1->orderQueueHead) {
 				v1->userActionFlags |= 1u;
 				ordersNothing2(v1);
-			}
-			else if (v1->pAI) {
+			} 			else if (v1->pAI) {
 				orderComputerClear(v1, 0x9Cu);
-			}
-			else {
-				orderComputerClear(v1, units_dat::ReturnToIdleOrder[(unsigned __int16)v1->id]);
+			} 			else {
+				orderComputerClear(v1, units_dat::ReturnToIdleOrder[(unsigned __int16) v1->id]);
 			}
 		}
 	}
@@ -402,12 +390,9 @@ namespace hooks {
 			return OrderId::Move;
 		if (unit->id != UnitId::ZergMatraleth
 			|| targetVar->status & UnitStatus::Invincible
-			|| getUnitAbilityErrorStatString(targetVar, unit->playerId, 12) != 0)
-		{
-			result = (uint8)(unit->id != UnitId::TerranCleric ? 0 : 0x80) + OrderId::Follow;
-		}
-		else
-		{
+			|| getUnitAbilityErrorStatString(targetVar, unit->playerId, 12) != 0) 		{
+			result = (uint8) (unit->id != UnitId::TerranCleric ? 0 : 0x80) + OrderId::Follow;
+		} 		else 		{
 			result = OrderId::InfestMine2;
 		}
 		return result;
@@ -419,10 +404,9 @@ namespace hooks {
 		int16 unitId; // ax
 		uint8 orderId; // al
 
-		*((int8*)&mapHeightPixels + 2) = 0;
+		*((int8*) &mapHeightPixels + 2) = 0;
 		result = getActivePlayerFirstSelection();
-		for (i = result; result; i = result)
-		{
+		for (i = result; result; i = result) 		{
 			unitId = i->id;
 			if (unitId != UnitId::ProtossSolarion) {
 				if (unitId != UnitId::ProtossAccantor) {
@@ -431,20 +415,17 @@ namespace hooks {
 							orderId = unitId != UnitId::TerranCleric ? 107 : 178;
 						else
 							orderId = OrderId::HoldPosition4;
-					}
-					else {
+					} 					else {
 						orderId = OrderId::HoldPosition3;
 					}
-				}
-				else {
+				} 				else {
 					orderId = OrderId::ReaverHold;
 				}
-			}
-			else {
+			} 			else {
 				orderId = OrderId::HoldPosition1;
 			}
 			if (orderAllowed(i, orderId, *ACTIVE_NATION_ID) == 1)
-				targetedOrder(0, UnitId::None, i, 0, 1, *(int8*)(a1 + 1) != 0, orderId, 0, *orderType4Position, *orderType4Target);
+				targetedOrder(0, UnitId::None, i, 0, 1, *(int8*) (a1 + 1) != 0, orderId, 0, *orderType4Position, *orderType4Target);
 			result = getActivePlayerFirstSelection();
 		}
 		return result;
@@ -502,7 +483,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return result2 = (bool)result;
+		return result2 = (bool) result;
 	};
 
 	// for isReadyToAttack
@@ -552,7 +533,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return result2 = (bool)result;
+		return result2 = (bool) result;
 	};
 
 	// for canCastOrderedSpellNow
@@ -584,7 +565,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return result = (bool)result;
+		return result = (bool) result;
 	};
 
 	const uint32 Func_getFlingyHaltDistaince = 0x00494F90;
@@ -632,7 +613,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return result2 = (bool)result;
+		return result2 = (bool) result;
 	};
 
 	const uint32 Func_getRightClickActionOrder = 0x004E5EA0;
@@ -647,7 +628,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return result2 = (char)result;
+		return result2 = (char) result;
 	};
 
 	const uint32 Func_unknownOrdersFunc = 0x00475350;
@@ -662,7 +643,7 @@ namespace {
 			POPAD
 		}
 	};
-	
+
 	// for ordersStayInRange
 	const uint32 Func_prependOrderTargetingGround = 0x00474A20;
 	void prependOrderTargetingGround(__int8 a1, __int16 a2, __int16 a3, int a4) {
@@ -677,7 +658,7 @@ namespace {
 			POPAD
 		}
 	};
-	
+
 	const uint32 Func_toIdle = 0x004753A0;
 	void toIdle(CUnit* a1) {
 
@@ -777,7 +758,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return resultPoint = *(Point32*)&result;
+		return resultPoint = *(Point32*) &result;
 	};
 
 	const uint32 Func_ordersNothing2 = 0x00475000;
@@ -814,7 +795,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool)result;
+		return (bool) result;
 	}
 
 	const uint32 Func_isOrderValid = 0x00474D90;
@@ -845,7 +826,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool)result;
+		return (bool) result;
 	}
 
 	const uint32 Func_getUnitAbilityErrorStatString = 0x00491E80;
@@ -860,7 +841,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (uint16)result;
+		return (uint16) result;
 	}
 
 	// for CMDRECV_HoldPosition

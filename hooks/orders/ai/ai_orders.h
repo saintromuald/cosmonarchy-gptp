@@ -10,7 +10,7 @@ namespace hooks {
 	void AI_BuildTechUpgrade(AiTown* town, int32 method, int32 amount, int32 id, int32 priority, int32 need);			// 00431F90
 	void AI_UnitWasHit(CUnit* self, CUnit* attacker, int32 mainTargetReactions, int32 dontCallHelp);			// 0043F320
 	void AI_IterateBuildingAI(CUnit* result, CUnit* parent);												// 00435770
-	
+
 	// Attack extender
 	uint32 AI_TrainAttackForce(AiCaptain* region);																// 0043E670
 	void AI_GroupingForAttack(AiCaptain* region);															// 0043EEC0
@@ -20,6 +20,6 @@ namespace hooks {
 		uint32 allowFallbackAirOnly);
 	int32 AI_HasUnitsForAttackForce(uint32 player);																// 00437F20
 //	void AI_RemoveFromAttack(int32 unitId, uint32 player);														// 00447040
-	
+
 	void injectAIOrdersHooks();
 }

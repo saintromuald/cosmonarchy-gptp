@@ -16,28 +16,28 @@ namespace AI {
 			caster->getY() - bounds,
 			caster->getX() + bounds,
 			caster->getY() + bounds,
-			caster, 
+			caster,
 			[&](CUnit* target) {
 
-				if (target->playerId != caster->playerId)
-					return false;
-
-				if (target->status & UnitStatus::Invincible)
-					return false;
-
-				if (scbw::getTechUseErrorMessage((CUnit*)target, caster->playerId, TechId::Hallucination) != 0)
-					return false;
-
-				if (target->id == UnitId::carrier
-					|| target->id == UnitId::scout
-					|| target->id == UnitId::arbiter
-					|| target->id == UnitId::archon
-					|| target->id == UnitId::ProtossAugur)
-					return true;
-
+			if (target->playerId != caster->playerId)
 				return false;
 
-			});
+			if (target->status & UnitStatus::Invincible)
+				return false;
+
+			if (scbw::getTechUseErrorMessage((CUnit*) target, caster->playerId, TechId::Hallucination) != 0)
+				return false;
+
+			if (target->id == UnitId::carrier
+				|| target->id == UnitId::scout
+				|| target->id == UnitId::arbiter
+				|| target->id == UnitId::archon
+				|| target->id == UnitId::ProtossAugur)
+				return true;
+
+			return false;
+
+		});
 	}
 
 } //AI

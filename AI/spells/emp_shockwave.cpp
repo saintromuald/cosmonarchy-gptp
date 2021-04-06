@@ -5,22 +5,22 @@
 
 namespace AI {
 
-CUnit* findBestEmpShockwaveTarget(CUnit* caster, bool isUnderAttack) {
+	CUnit* findBestEmpShockwaveTarget(CUnit* caster, bool isUnderAttack) {
 
-	int bounds;
+		int bounds;
 
-	if (isUnderAttack)
-		bounds = 32 * 9;
-	else
-		bounds = 32 * 64;
+		if (isUnderAttack)
+			bounds = 32 * 9;
+		else
+			bounds = 32 * 64;
 
-	CUnit* result = scbw::UnitFinder::getNearestTarget(
-		caster->getX() - bounds,
-		caster->getY() - bounds,
-		caster->getX() + bounds,
-		caster->getY() + bounds,
-		caster,
-		[&](CUnit* target) {
+		CUnit* result = scbw::UnitFinder::getNearestTarget(
+			caster->getX() - bounds,
+			caster->getY() - bounds,
+			caster->getX() + bounds,
+			caster->getY() + bounds,
+			caster,
+			[&](CUnit* target) {
 			if (!isTargetWorthHitting(target, caster))
 				return false;
 
@@ -37,16 +37,16 @@ CUnit* findBestEmpShockwaveTarget(CUnit* caster, bool isUnderAttack) {
 			return false;
 		});
 
-	if (result || isUnderAttack)
-		return result;
+		if (result || isUnderAttack)
+			return result;
 
-	return scbw::UnitFinder::getNearestTarget(
-		caster->getX() - bounds,
-		caster->getY() - bounds,
-		caster->getX() + bounds,
-		caster->getY() + bounds,
-		caster,
-		[&](CUnit* target) {
+		return scbw::UnitFinder::getNearestTarget(
+			caster->getX() - bounds,
+			caster->getY() - bounds,
+			caster->getX() + bounds,
+			caster->getY() + bounds,
+			caster,
+			[&](CUnit* target) {
 			if (!isTargetWorthHitting(target, caster))
 				return false;
 
@@ -62,6 +62,6 @@ CUnit* findBestEmpShockwaveTarget(CUnit* caster, bool isUnderAttack) {
 
 			return false;
 		});
-}
+	}
 
 } //AI

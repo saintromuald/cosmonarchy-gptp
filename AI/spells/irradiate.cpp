@@ -19,39 +19,39 @@ namespace AI {
 			caster->getY() - bounds,
 			caster->getX() + bounds,
 			caster->getY() + bounds,
-			caster, 
+			caster,
 			[&](CUnit* target) {
 
-				if (!isTargetWorthHitting(target, caster))
-					return false;
-
-				if (target->irradiateTimer)
-					return false;
-
-				if (!scbw::canWeaponTargetUnit(WeaponId::Irradiate, target, caster))
-					return false;
-
-				if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic))
-					return false;
-
-				if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
-					return false;
-
-				if (scbw::isZergEggNew(target))
-					return false;
-
-				if (isUnderAttack || !isUmsMode(caster->playerId))
-					return true;
-
-				if (units_dat::BaseProperty[target->id] & UnitProperty::Worker)
-					return true;
-
-				if (target->id == UnitId::overlord || target->id == UnitId::medic)
-					return true;
-
+			if (!isTargetWorthHitting(target, caster))
 				return false;
 
-			});
+			if (target->irradiateTimer)
+				return false;
+
+			if (!scbw::canWeaponTargetUnit(WeaponId::Irradiate, target, caster))
+				return false;
+
+			if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic))
+				return false;
+
+			if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+				return false;
+
+			if (scbw::isZergEggNew(target))
+				return false;
+
+			if (isUnderAttack || !isUmsMode(caster->playerId))
+				return true;
+
+			if (units_dat::BaseProperty[target->id] & UnitProperty::Worker)
+				return true;
+
+			if (target->id == UnitId::overlord || target->id == UnitId::medic)
+				return true;
+
+			return false;
+
+		});
 	}
 
 } //AI

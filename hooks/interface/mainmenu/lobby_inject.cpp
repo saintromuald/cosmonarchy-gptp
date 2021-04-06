@@ -45,7 +45,7 @@ namespace { // Wrappers
 namespace hooks {
 
 	void injectLobbyHooks() {
-		jmpPatch(initGame_Wrapper,		0x004EE110,		1);
-		jmpPatch(startGame_Wrapper,		0x00472060,		4);
+		jmpPatch(initGame_Wrapper, 0x004EE110, 1);
+		jmpPatch(startGame_Wrapper, 0x00472060, 4);
 	}
 }

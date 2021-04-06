@@ -21,15 +21,15 @@ namespace {
 	bool function_004E8E10(CUnit* unit, Point32* coords);						//0x004E8E10
 
 																				// SC Variables and Buffers used in this file
-	uint32* const mapTileBufWidth = (uint32*)(0x006D0F08);
-	uint32* const mapTileBufHeight = (uint32*)(0x006D0C6C);
-	uint16** const mapTileBuf = (uint16**)(0x006D0E84);
-	Point32* const someCreepPointBuf = (Point32*)(0x006D7578);
+	uint32* const mapTileBufWidth = (uint32*) (0x006D0F08);
+	uint32* const mapTileBufHeight = (uint32*) (0x006D0C6C);
+	uint16** const mapTileBuf = (uint16**) (0x006D0E84);
+	Point32* const someCreepPointBuf = (Point32*) (0x006D7578);
 
 	typedef uint32(*isTileVisible_func)(uint32 x, uint32 y);
 	typedef bool(*setCreepRelationalData_callback)(uint16* tileBackup, uint8* creepOverlayVal, uint32* retval, uint16* tile, uint32 arg);
 
-	isTileVisible_func* const isTileVisible_ptr = (isTileVisible_func*)(0x006D0C78);
+	isTileVisible_func* const isTileVisible_ptr = (isTileVisible_func*) (0x006D0C78);
 
 
 	uint32 getNumSurroundingCreepTiles(uint32 x, uint32 y); // 0x00414290
@@ -37,10 +37,10 @@ namespace {
 	uint32 iterateDirectionalCreepData(uint32 x, uint32 y, uint32 callback, uint32 arg); // 0x00413B30
 
 	// for applyCreepAtLocationFromUnitType
-	int32 modifyCreepState(int32 x_tile, int32 y_tile, int32 (__stdcall* creepChange)(int32, int32, int32, int32, int32), void* param);	// 00413FA0
+	int32 modifyCreepState(int32 x_tile, int32 y_tile, int32(__stdcall* creepChange)(int32, int32, int32, int32, int32), void* param);	// 00413FA0
 	int32 runCreepRandomizer(int16* originalTile, int32 creepTileBorders, int32* outCreepStatus, int16* currentTile, int32 unused);	// 004140A0 // "note possible desync"
 	int32 unkCreepBorders(int32 a1, int32 a2);																				// 006D0C78
-	uint32 forEachAdjacentTile(int32 (__stdcall* callback)(int32, int32, int32, int32, void*), void* param, int32 x_tile, int32 y_tile);	// 00413B30
+	uint32 forEachAdjacentTile(int32(__stdcall* callback)(int32, int32, int32, int32, void*), void* param, int32 x_tile, int32 y_tile);	// 00413B30
 	int32 unkCreepTile(int32 pos, int32 originalTile, int32 x_tile, int32 y_tile, void* param);									// 00414440
 	char unkSpreadCreep(int32 a1, int32 a2, int16 a3);																		// 00414680
 
@@ -90,7 +90,7 @@ namespace hooks {
 	//filter for larva in internal game searches, use the limit of 3 larvas
 	bool function_004E8C80(CUnit* unit, CUnit* main_building) {
 
-		uint16* const LARVA_COUNTER = (uint16*)0x0067D3F8;
+		uint16* const LARVA_COUNTER = (uint16*) 0x0067D3F8;
 
 		//while bReturnValue == false, the calling function keep calling,
 		//so it return true only when max amount of larvas was counted,
@@ -110,8 +110,7 @@ namespace hooks {
 					bReturnValue = (*LARVA_COUNTER > 3);
 				}
 
-		}
-		else
+		} 		else
 			bReturnValue = false;
 
 		return bReturnValue;
@@ -122,8 +121,8 @@ namespace hooks {
 
 	void secondaryOrd_SpawningLarva(CUnit* unit) {
 
-		uint16* const LARVA_COUNTER = (uint16*)0x0067D3F8;
-		
+		uint16* const LARVA_COUNTER = (uint16*) 0x0067D3F8;
+
 		if (unit->orderQueueTimer == 0 && unit->playerId != 11) {
 
 			//EA79E
@@ -148,24 +147,22 @@ namespace hooks {
 
 					Point32 coords_2;
 					//EA80E:
-					unit->building.larvaTimer = 37; 
+					unit->building.larvaTimer = 37;
 					/*0x25*/
 
 					if (unit->id == UnitId::ZergLarvalColony) {
 						unit->building.larvaTimer = 37 / LarvalColonyMultiplier;
 					}
 
-													//if failed to find a spawn point for larva
-													//set the timer before retry to 3
-					if (unit->id == UnitId::ZergLair && unit->mainOrderId != OrderId::Morph2 || 
+					//if failed to find a spawn point for larva
+					//set the timer before retry to 3
+					if (unit->id == UnitId::ZergLair && unit->mainOrderId != OrderId::Morph2 ||
 						unit->id == UnitId::ZergHive && unit->mainOrderId == OrderId::Morph2) {
 						unit->building.larvaTimer = 27;
-					}
-					else if (unit->id == UnitId::ZergHive && unit->mainOrderId != OrderId::Morph2 ||
-							 unit->id == UnitId::ZergSire && unit->mainOrderId == OrderId::Morph2) {
+					} 					else if (unit->id == UnitId::ZergHive && unit->mainOrderId != OrderId::Morph2 ||
+						unit->id == UnitId::ZergSire && unit->mainOrderId == OrderId::Morph2) {
 						unit->building.larvaTimer = 18;
-					}
-					else if (unit->id == UnitId::ZergSire && unit->mainOrderId != OrderId::Morph2) {
+					} 					else if (unit->id == UnitId::ZergSire && unit->mainOrderId != OrderId::Morph2) {
 						unit->building.larvaTimer = 12;
 					}
 
@@ -208,24 +205,22 @@ namespace hooks {
 
 	void secondaryOrd_SpreadCreepSpawningLarva(CUnit* unit) {
 
-		
+
 		if (unit->id == UnitId::ZergHatchery
-		||  unit->id == UnitId::ZergLair
-		||  unit->id == UnitId::ZergHive
-		||  unit->id == UnitId::ZergSire
-		|| (unit->id == UnitId::ZergInfestedCommandCenter && !(unit->status & UnitStatus::InAir))
-		||	unit->id == UnitId::ZergLarvalColony) {
+			|| unit->id == UnitId::ZergLair
+			|| unit->id == UnitId::ZergHive
+			|| unit->id == UnitId::ZergSire
+			|| (unit->id == UnitId::ZergInfestedCommandCenter && !(unit->status & UnitStatus::InAir))
+			|| unit->id == UnitId::ZergLarvalColony) {
 			secondaryOrd_SpawningLarva(unit);
 		}
 		if (unit->building.creepTimer != 0) {
 			if (unit->building.creepTimer >= 2) {
 				unit->building.creepTimer -= 2;
-			}
-			else {
+			} 			else {
 				unit->building.creepTimer = 0;
 			}
-		}
-		else {
+		} 		else {
 			//EA8B6:
 			uint8 result_00414680;
 
@@ -249,16 +244,16 @@ namespace hooks {
 				int width_x = 6;
 				int width_y = 4;
 				uint8 mustspread = 0;
-				int x1 = current_tile_x-width_x;
-				int y1 = current_tile_y-width_x;
-				int x2 = current_tile_x+width_x;
-				int y2 = current_tile_y+width_y;
+				int x1 = current_tile_x - width_x;
+				int y1 = current_tile_y - width_x;
+				int x2 = current_tile_x + width_x;
+				int y2 = current_tile_y + width_y;
 
-				if(x1<0){
-					x1=0;
+				if (x1 < 0) {
+					x1 = 0;
 				}
-				if(y1<0){
-					y1=0;
+				if (y1 < 0) {
+					y1 = 0;
 				}
 				if (x2 >= mapTileSize->width) {
 					x2 = mapTileSize->width - 1;
@@ -267,33 +262,32 @@ namespace hooks {
 					y2 = mapTileSize->height - 1;
 				}
 				for (int i = x1; i <= x2; i++) {
-					for (int j = y1; j <= y2; j++) {						
+					for (int j = y1; j <= y2; j++) {
 						int x = (i * 32) + 16;
 						int y = (j * 32) + 16;
-						int X = (x-(current_tile_x*32));
-						int Y = (y-(current_tile_y*32));
-						bool in_range = ((256 * X*X) + (100 * Y*Y)) < 1300000;
+						int X = (x - (current_tile_x * 32));
+						int Y = (y - (current_tile_y * 32));
+						bool in_range = ((256 * X * X) + (100 * Y * Y)) < 1300000;
 						//adjust value 1300000 to get slightly different radius
 
 						if (in_range) {
-							ActiveTile a = scbw::getActiveTileAt(i*32, j*32);
-							
+							ActiveTile a = scbw::getActiveTileAt(i * 32, j * 32);
+
 							if (a.hasCreep || a.temporaryCreep || a.creepReceeding) {
 								//
-							}
-							else{
+							} 							else {
 								//can spread
-								if (!a.alwaysUnbuildable && a.isWalkable ) {	
-														
+								if (!a.alwaysUnbuildable && a.isWalkable) {
+
 									mustspread = 1;
 								}
 							}
 						}
-						
+
 					}
 				}
 				char buf[64];
-				sprintf(buf,"Limits: %d %d %d %d, status: %d",x1,y1,x2,y2,mustspread);
+				sprintf(buf, "Limits: %d %d %d %d, status: %d", x1, y1, x2, y2, mustspread);
 				//scbw::printText(buf);	
 				if (!mustspread) {
 					result_00414680 = 0;
@@ -309,7 +303,7 @@ namespace hooks {
 					unit->id == UnitId::ZergLair ||
 					unit->id == UnitId::ZergHive ||
 					unit->id == UnitId::ZergSire ||
-					(unit->id==UnitId::ZergInfestedCommandCenter && !(unit->status & UnitStatus::InAir)) ||
+					(unit->id == UnitId::ZergInfestedCommandCenter && !(unit->status & UnitStatus::InAir)) ||
 					unit->id == UnitId::ZergLarvalColony;
 
 				if (isZergMainBuilding)
@@ -351,14 +345,12 @@ namespace hooks {
 			rect->bottom = (y + maxCreepAreaDown) / 32;
 			if (rect->left < 0) {
 				rect->left = 0;
-			}
-			else if (rect->right >= *mapTileBufWidth) {
+			} 			else if (rect->right >= *mapTileBufWidth) {
 				rect->right = *mapTileBufWidth - 1;
 			}
 			if (rect->top < 0) {
 				rect->top = 0;
-			}
-			else if (rect->bottom >= *mapTileBufHeight) {
+			} 			else if (rect->bottom >= *mapTileBufHeight) {
 				rect->bottom = *mapTileBufHeight - 1;
 			}
 			return true;
@@ -371,14 +363,12 @@ namespace hooks {
 		rect->bottom = rect->top + h - 1;
 		if (rect->left < 0) {
 			rect->left = 0;
-		}
-		else if (rect->right >= *mapTileBufWidth) {
+		} 		else if (rect->right >= *mapTileBufWidth) {
 			rect->right = *mapTileBufWidth - 1;
 		}
 		if (rect->top < 0) {
 			rect->top = 0;
-		}
-		else if (rect->bottom >= *mapTileBufHeight) {
+		} 		else if (rect->bottom >= *mapTileBufHeight) {
 			rect->bottom = *mapTileBufHeight - 1;
 		}
 		return false;
@@ -388,25 +378,25 @@ namespace hooks {
 	// Determines which unit IDs are a creep source (i.e. spreads creap, not just requires it)
 	// Base buildings built by a drone return the value of "isComplete", which is an argument that is true if the unit status flag has "Completed" set -- the building only spawns creep once it has been built
 	bool spreadsCreep(uint16 unitId, bool isComplete) {
-		
+
 
 		switch (unitId) {
-		case UnitId::ZergHatchery:
-		case UnitId::ZergCreepColony:
-		case UnitId::ZergInfestedCommandCenter:
-			return isComplete;
+			case UnitId::ZergHatchery:
+			case UnitId::ZergCreepColony:
+			case UnitId::ZergInfestedCommandCenter:
+				return isComplete;
 
-		case UnitId::ZergSire:
-		case UnitId::ZergHive:
-		case UnitId::ZergLair:
-		case UnitId::ZergSporeColony:
-		case UnitId::ZergSunkenColony:
+			case UnitId::ZergSire:
+			case UnitId::ZergHive:
+			case UnitId::ZergLair:
+			case UnitId::ZergSporeColony:
+			case UnitId::ZergSunkenColony:
 
-		case UnitId::BasiliskCreeper:
-			return true;
+			case UnitId::BasiliskCreeper:
+				return true;
 
-		default:
-			return false;
+			default:
+				return false;
 		}
 	}
 
@@ -417,7 +407,7 @@ namespace hooks {
 		// Default function:
 		CUnit* unit = getUnitPointer();
 
-		return (x*x * 100 + y*y * 256) <= 10240000;
+		return (x * x * 100 + y * y * 256) <= 10240000;
 
 		// Per-unit function example
 /*		CUnit* unit = getUnitPointer();
@@ -451,8 +441,7 @@ namespace hooks {
 		// use of std::rand() can cause desyncs
 		if ((std::rand() % 100) >= 4) {
 			creepTile = std::rand() % 6; // normal tiles
-		}
-		else {
+		} 		else {
 			creepTile = (std::rand() % 7) + 6; // clutter tiles
 		}
 		*tile = creepTile + 0x10; // tile in creep group
@@ -526,8 +515,8 @@ namespace hooks {
 
 namespace {
 
-	/* !!! WARNING !!! Use EXTREME caution when calling this. 
-	There is absolutely no guarantee that it will find the intended unit, 
+	/* !!! WARNING !!! Use EXTREME caution when calling this.
+	There is absolutely no guarantee that it will find the intended unit,
 	or that it will find a unit at all */
 	CUnit* getUnitPointer() {
 		static CUnit* unit = nullptr;

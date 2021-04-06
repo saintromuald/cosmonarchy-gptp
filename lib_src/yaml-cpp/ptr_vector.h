@@ -14,32 +14,48 @@
 
 namespace YAML {
 
-// TODO: This class is no longer needed
-template <typename T>
-class ptr_vector {
- public:
-  ptr_vector() : m_data{} {}
-  ptr_vector(const ptr_vector&) = delete;
-  ptr_vector(ptr_vector&&) = default;
-  ptr_vector& operator=(const ptr_vector&) = delete;
-  ptr_vector& operator=(ptr_vector&&) = default;
+	// TODO: This class is no longer needed
+	template <typename T>
+	class ptr_vector {
+	public:
+		ptr_vector() : m_data{} {}
+		ptr_vector(const ptr_vector&) = delete;
+		ptr_vector(ptr_vector&&) = default;
+		ptr_vector& operator=(const ptr_vector&) = delete;
+		ptr_vector& operator=(ptr_vector&&) = default;
 
-  void clear() { m_data.clear(); }
+		void clear() {
+			m_data.clear();
+		}
 
-  std::size_t size() const { return m_data.size(); }
-  bool empty() const { return m_data.empty(); }
+		std::size_t size() const {
+			return m_data.size();
+		}
+		bool empty() const {
+			return m_data.empty();
+		}
 
-  void push_back(std::unique_ptr<T>&& t) { m_data.push_back(std::move(t)); }
-  T& operator[](std::size_t i) { return *m_data[i]; }
-  const T& operator[](std::size_t i) const { return *m_data[i]; }
+		void push_back(std::unique_ptr<T>&& t) {
+			m_data.push_back(std::move(t));
+		}
+		T& operator[](std::size_t i) {
+			return *m_data[i];
+		}
+		const T& operator[](std::size_t i) const {
+			return *m_data[i];
+		}
 
-  T& back() { return *(m_data.back().get()); }
+		T& back() {
+			return *(m_data.back().get());
+		}
 
-  const T& back() const { return *(m_data.back().get()); }
+		const T& back() const {
+			return *(m_data.back().get());
+		}
 
- private:
-  std::vector<std::unique_ptr<T>> m_data;
-};
+	private:
+		std::vector<std::unique_ptr<T>> m_data;
+	};
 }  // namespace YAML
 
 #endif  // PTR_VECTOR_H_62B23520_7C8E_11DE_8A39_0800200C9A66

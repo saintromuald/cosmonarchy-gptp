@@ -4,98 +4,92 @@
 //helper functions def
 
 namespace {
-																				//7B720
-bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange,uint32 error_message_index);	//926D0
-void replaceFeedbackSprite(CUnit* unit, uint32 spriteId);																//F6350
+	//7B720
+	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index);	//926D0
+	void replaceFeedbackSprite(CUnit* unit, uint32 spriteId);																//F6350
 
 } //unnamed namespace
 
 namespace hooks {
 
-void orders_Feedback(CUnit* unit) {
+	void orders_Feedback(CUnit* unit) {
 
-	CUnit* target = unit->orderTarget.unit;
+		CUnit* target = unit->orderTarget.unit;
 
-	if(
-		target != nullptr &&
-		units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster &&
-		!(target->status & UnitStatus::IsHallucination)
-	) 
-	{
+		if (
+			target != nullptr &&
+			units_dat::BaseProperty[target->id] & UnitProperty::Spellcaster &&
+			!(target->status & UnitStatus::IsHallucination)
+			) 	{
 
-		uint16 techCost;
-		int sightRange = unit->getSightRange(true);
+			uint16 techCost;
+			int sightRange = unit->getSightRange(true);
 
-		if(
-			ordersSpell_Sub_4926D0(
-				unit,
-				TechId::Feedback,
-				&techCost,
-				sightRange * 32,
-				0x532 //Must target units with energy
-			)
-		)
-		{
+			if (
+				ordersSpell_Sub_4926D0(
+					unit,
+					TechId::Feedback,
+					&techCost,
+					sightRange * 32,
+					0x532 //Must target units with energy
+				)
+				) 		{
 
-			if(target->status & UnitStatus::IsHallucination) {
-				uint8 overlaySize = scbw::hasOverlay(target);
-				replaceFeedbackSprite(target,overlaySize + SpriteId::Feedback_Hit_Small);
-				unit->spendUnitEnergy(techCost);
-				target->remove();
-				unit->orderToIdle();
-			}
-			else { //F6DE3
-
-				if(target->energy <= 0)
-					unit->orderToIdle();
-				else {
-
-					target->damageWith(target->energy,WeaponId::Feedback,unit,unit->playerId,1,1);
-					target->energy = 0;
+				if (target->status & UnitStatus::IsHallucination) {
+					uint8 overlaySize = scbw::hasOverlay(target);
+					replaceFeedbackSprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
 					unit->spendUnitEnergy(techCost);
-					scbw::playSound(SoundId::Protoss_Darchon_feedback_wav,target);
+					target->remove();
+					unit->orderToIdle();
+				} 			else { //F6DE3
 
-					if(!target->isDead()) {
-
-						uint8 overlaySize = scbw::hasOverlay(target);
-
-						if(target->subunit != nullptr)
-							target->subunit->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small,0,0,0);
-						else
-							target->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small,0,0,0);
-
+					if (target->energy <= 0)
 						unit->orderToIdle();
+					else {
 
-					}
-					else { //F6E6D
-						uint8 overlaySize = scbw::hasOverlay(target);
-						replaceFeedbackSprite(target,overlaySize + SpriteId::Feedback_Hit_Small);
-						unit->orderToIdle();
+						target->damageWith(target->energy, WeaponId::Feedback, unit, unit->playerId, 1, 1);
+						target->energy = 0;
+						unit->spendUnitEnergy(techCost);
+						scbw::playSound(SoundId::Protoss_Darchon_feedback_wav, target);
+
+						if (!target->isDead()) {
+
+							uint8 overlaySize = scbw::hasOverlay(target);
+
+							if (target->subunit != nullptr)
+								target->subunit->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
+							else
+								target->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
+
+							unit->orderToIdle();
+
+						} 					else { //F6E6D
+							uint8 overlaySize = scbw::hasOverlay(target);
+							replaceFeedbackSprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
+							unit->orderToIdle();
+						}
+
 					}
 
 				}
 
 			}
 
+
+		} 	else {	//F6E92
+
+			if (unit->orderQueueHead != nullptr) {
+				unit->userActionFlags |= 1;
+				prepareForNextOrder(unit);
+			} 		else
+				if (unit->pAI != nullptr)
+					unit->orderComputerCL(OrderId::ComputerAI);
+				else
+					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+
 		}
 
-
 	}
-	else {	//F6E92
-
-		if(unit->orderQueueHead != nullptr) {
-			unit->userActionFlags |= 1;
-			prepareForNextOrder(unit);
-		}
-		else
-		if(unit->pAI != nullptr)
-			unit->orderComputerCL(OrderId::ComputerAI);
-		else
-			unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
-
-	}
-
-}
 
 } //namespace hooks
 
@@ -106,43 +100,43 @@ void orders_Feedback(CUnit* unit) {
 namespace {
 
 
-const uint32 Func_Sub_4926D0 = 0x004926D0;
-bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange,uint32 error_message_index) {
+	const uint32 Func_Sub_4926D0 = 0x004926D0;
+	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index) {
 
-	static bool32 bPreResult;
+		static bool32 bPreResult;
 
-	__asm {
-		PUSHAD
-		PUSH techEnergyCost
-		PUSH sightRange
-		PUSH techId
-		MOV EAX, error_message_index
-		MOV EBX, unit
-		CALL Func_Sub_4926D0
-		MOV bPreResult, EAX
-		POPAD
+		__asm {
+			PUSHAD
+			PUSH techEnergyCost
+			PUSH sightRange
+			PUSH techId
+			MOV EAX, error_message_index
+			MOV EBX, unit
+			CALL Func_Sub_4926D0
+			MOV bPreResult, EAX
+			POPAD
+		}
+
+		return (bPreResult != 0);
+
 	}
 
-	return (bPreResult != 0);
+	;
 
-}
+	const uint32 Func_replaceFeedbackSprite = 0x004F6350;
+	void replaceFeedbackSprite(CUnit* unit, uint32 spriteId) {
 
-;
+		__asm {
+			PUSHAD
+			MOV EBX, unit
+			PUSH spriteId
+			CALL Func_replaceFeedbackSprite
+			POPAD
+		}
 
-const uint32 Func_replaceFeedbackSprite = 0x004F6350;
-void replaceFeedbackSprite(CUnit* unit, uint32 spriteId) {
-
-	__asm {
-		PUSHAD
-		MOV EBX, unit
-		PUSH spriteId
-		CALL Func_replaceFeedbackSprite
-		POPAD
 	}
 
-}
-
-;
+	;
 
 } //Unnamed namespace
 

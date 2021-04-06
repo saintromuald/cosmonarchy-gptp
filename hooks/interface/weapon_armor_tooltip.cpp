@@ -18,15 +18,15 @@ uint8 getDamageFactorForTooltip(uint8 weaponId, CUnit* unit) {
 
 	//Default StarCraft behavior
 	if (weaponId == WeaponId::FlameThrower
-	||	weaponId == WeaponId::CohortGaussPistols
-	||	weaponId == WeaponId::PsiBlades
-	||	weaponId == WeaponId::LegionnairePsiSabers
-	||	weaponId == WeaponId::AmaranthPsiCleaver
-	||	weaponId == WeaponId::GolemBloodlessAssault
-	||	weaponId == WeaponId::PariahIconoclastBlades
-	||	weaponId == WeaponId::StarSovereignCelestialCannon
-	||	weaponId == WeaponId::CorrosiveAcid
-	||	weaponId == WeaponId::AlmaksaliskPiercingSpines
+		|| weaponId == WeaponId::CohortGaussPistols
+		|| weaponId == WeaponId::PsiBlades
+		|| weaponId == WeaponId::LegionnairePsiSabers
+		|| weaponId == WeaponId::AmaranthPsiCleaver
+		|| weaponId == WeaponId::GolemBloodlessAssault
+		|| weaponId == WeaponId::PariahIconoclastBlades
+		|| weaponId == WeaponId::StarSovereignCelestialCannon
+		|| weaponId == WeaponId::CorrosiveAcid
+		|| weaponId == WeaponId::AlmaksaliskPiercingSpines
 		)
 		return 2;
 
@@ -74,8 +74,8 @@ const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrI
 	float bonusRange = hooks::getMaxWeaponRangeHook(unit, weaponId) / 32.0 - range;
 
 	std::string damageModifiers = "";
-	double attackCd = (double)weapons_dat::Cooldown[weaponId] / 24;
-	double attackCdModifier = ((double)hooks::getModifiedWeaponCooldownHook(unit, weaponId) / 24) - attackCd;
+	double attackCd = (double) weapons_dat::Cooldown[weaponId] / 24;
+	double attackCdModifier = ((double) hooks::getModifiedWeaponCooldownHook(unit, weaponId) / 24) - attackCd;
 
 	int splashInner = weapons_dat::InnerSplashRadius[weaponId];
 	int splashMedium = weapons_dat::MediumSplashRadius[weaponId];
@@ -87,54 +87,54 @@ const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrI
 	bool isSuicideUnit = unit->id == UnitId::ZergSkryling;
 
 	switch (damageType) {
-	case DamageType::Normal:
-		// Yellow
-		typeName = "\003Normal\002";
-		break;
-	case DamageType::Explosive:
-		// Orange
-		typeName = "\021Explosive\002";
-		damageModifiers = "\01750\002/\00375\002/\021100\002";
-		break;
-	case DamageType::Concussive:
-		// Teal
-		typeName = "\017Concussive\002";
-		damageModifiers = "\017100\002/\00375\002/\02150\002";
-		break;
-	case DamageType::Independent:
-		// White
-		typeName = "\004Independent\002";
-		break;
-	case DamageType::IgnoreArmor:
-		// White
-		typeName = "\004Ignores Armor\002";
-		break;
-	default:
-		typeName = "None";
-		break;
+		case DamageType::Normal:
+			// Yellow
+			typeName = "\003Normal\002";
+			break;
+		case DamageType::Explosive:
+			// Orange
+			typeName = "\021Explosive\002";
+			damageModifiers = "\01750\002/\00375\002/\021100\002";
+			break;
+		case DamageType::Concussive:
+			// Teal
+			typeName = "\017Concussive\002";
+			damageModifiers = "\017100\002/\00375\002/\02150\002";
+			break;
+		case DamageType::Independent:
+			// White
+			typeName = "\004Independent\002";
+			break;
+		case DamageType::IgnoreArmor:
+			// White
+			typeName = "\004Ignores Armor\002";
+			break;
+		default:
+			typeName = "None";
+			break;
 	};
 
 	switch (splashType) {
-	case WeaponEffect::SplashRadial:
-		// Red
-		splashTypeValue = "\006Unsafe\002";
-		break;
-	case WeaponEffect::SplashEnemy:
-		// Green
-		splashTypeValue = "\007Safe\002";
-		break;
-	case WeaponEffect::Unknown_Crash:
-		// Green
-		splashTypeValue = "\007Ally Safe\002";
-		break;
-	case WeaponEffect::SplashAir:
-		// Yellow
-		splashTypeValue = "\003Air Only\002";
-		break;
-	default:
-		// White
-		splashTypeValue = "\004Normal Hit\002";
-		break;
+		case WeaponEffect::SplashRadial:
+			// Red
+			splashTypeValue = "\006Unsafe\002";
+			break;
+		case WeaponEffect::SplashEnemy:
+			// Green
+			splashTypeValue = "\007Safe\002";
+			break;
+		case WeaponEffect::Unknown_Crash:
+			// Green
+			splashTypeValue = "\007Ally Safe\002";
+			break;
+		case WeaponEffect::SplashAir:
+			// Yellow
+			splashTypeValue = "\003Air Only\002";
+			break;
+		default:
+			// White
+			splashTypeValue = "\004Normal Hit\002";
+			break;
 	};
 
 	std::vector<std::string> targetFlags;
@@ -163,12 +163,11 @@ const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrI
 		text += std::string(damageStr) + " " + std::to_string(damageFactor) + "x(" + std::to_string(baseDamage);
 		if (bonusDamage > 0) text += "+" + std::to_string(bonusDamage);
 		text += ")";
-	}
-	else {
+	} 	else {
 		text += std::string(damageStr) + " " + std::to_string(damageFactor * baseDamage);
 		if (bonusDamage > 0) text += "+" + std::to_string(damageFactor * bonusDamage);
 	}
-	
+
 	if (!extended && weaponId == WeaponId::HaloRockets) text += " " + std::string(perRocketStr);
 
 	// Cooldown
@@ -196,7 +195,7 @@ const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrI
 	if (!isSuicideUnit && extended) {
 		ss.str("");
 		double cd = (attackCd + attackCdModifier);
-		ss << ((double)damageFactor * (baseDamage + bonusDamage) / cd);
+		ss << ((double) damageFactor * (baseDamage + bonusDamage) / cd);
 		text += "\nDPS: " + modifierColor + ss.str() + "\002";
 	}
 
@@ -210,8 +209,7 @@ const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrI
 		ss << range;
 		if (bonusRange > 0) ss << "+" << bonusRange;
 		text += ss.str();
-	}
-	else text += "Melee";
+	} 	else text += "Melee";
 
 	// Target
 	text += "\nTargets: " + targetFlagsText;
@@ -307,22 +305,22 @@ namespace hooks {
 		const int sightRange = units_dat::SightRange[unit->id];
 
 		switch (unitSize) {
-		case 1:
-			// Teal
-			sizeText = "\017Small\002";
-			break;
-		case 2:
-			// Yellow
-			sizeText = "\003Medium\002";
-			break;
-		case 3:
-			// Orange
-			sizeText = "\021Large\002";
-			break;
-		default:
-			// White
-			sizeText = "\004Unknown\002";
-			break;
+			case 1:
+				// Teal
+				sizeText = "\017Small\002";
+				break;
+			case 2:
+				// Yellow
+				sizeText = "\003Medium\002";
+				break;
+			case 3:
+				// Orange
+				sizeText = "\021Large\002";
+				break;
+			default:
+				// White
+				sizeText = "\004Unknown\002";
+				break;
 		}
 
 		std::stringstream ss;
@@ -364,8 +362,8 @@ namespace hooks {
 		addStatus(statuses, "Observance", -1, scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff), TimerType::Aise);
 		addStatus(statuses, "Kaiser Rampage", -1, scbw::get_generic_timer(unit, ValueId::KaiserRampage), TimerType::Aise);
 		addStatus(statuses, "Hallucinating", -1, scbw::get_generic_timer(unit, ValueId::HallucinatingTimer), TimerType::Aise);
-	    // addStatus(statuses, "Ectomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::EggBoostTimer), TimerType::Aise); // currently can't read tooltips from  eggs
-	    // addStatus(statuses, "Endomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer), TimerType::Aise); // nor mineral fields
+		// addStatus(statuses, "Ectomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::EggBoostTimer), TimerType::Aise); // currently can't read tooltips from  eggs
+		// addStatus(statuses, "Endomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer), TimerType::Aise); // nor mineral fields
 		addStatus(statuses, "Adrenaline Packs", -1, scbw::get_generic_timer(unit, ValueId::Adrenaline), TimerType::Aise);
 		addStatus(statuses, "Adrenal Frenzy", -1, scbw::get_generic_timer(unit, ValueId::NathrokorTimer), TimerType::Aise);
 		addStatus(statuses, "Controlled Demolition", -1, scbw::get_generic_timer(unit, ValueId::ControlledDemolitionTimer), TimerType::Aise);
@@ -376,7 +374,7 @@ namespace hooks {
 		// Aise Value
 		addStatus(statuses, "Energy Decay", scbw::get_generic_value(unit, ValueId::EntropyGauntlets));
 		addStatus(statuses, "Armor Reduction", scbw::get_generic_value(unit, ValueId::ArmorReduce));
-		addStatus(statuses, "Cabeirus Feeders", ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime));
+		addStatus(statuses, "Cabeirus Feeders", ceil((double) scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime));
 		addStatus(statuses, "Reverse Thrust", scbw::get_generic_value(unit, ValueId::ReverseThrust));
 		addStatus(statuses, "Sublime Shepherd", scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd));
 		addStatus(statuses, "Lazarus Agent", scbw::get_generic_value(unit, ValueId::LazarusAgent));
@@ -407,7 +405,7 @@ namespace hooks {
 
 		// Vanilla Timer + Value
 		addStatus(statuses, "Defensive Matrix", unit->defensiveMatrixHp / 256, unit->defensiveMatrixTimer);
-		addStatus(statuses, "Corrosive Spores", unit->corrosiveSporeCount, unit->acidSporeTime[unit->corrosiveSporeCount-1]);
+		addStatus(statuses, "Corrosive Spores", unit->corrosiveSporeCount, unit->acidSporeTime[unit->corrosiveSporeCount - 1]);
 
 		// Vanilla Timers
 		addStatus(statuses, "Stimpack", -1, unit->stimTimer);
@@ -524,11 +522,11 @@ namespace hooks {
 
 		if (iconUnitId == UnitId::TerranSpiderMine)
 			return getDamageTooltipString(WeaponId::SpiderMines, unit, 794);		//"Spider Mines"
-		
-		if (iconUnitId == UnitId::TerranLobotomyMine){
+
+		if (iconUnitId == UnitId::TerranLobotomyMine) {
 			return getDamageTooltipString(WeaponId::LobotomyMineExplosion, unit, 794);
 		}
-		
+
 
 
 		//Should never reach here

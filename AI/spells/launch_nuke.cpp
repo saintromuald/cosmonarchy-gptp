@@ -22,7 +22,7 @@ namespace AI {
 
 			return false;
 
-			});
+		});
 	}
 
 } //AI

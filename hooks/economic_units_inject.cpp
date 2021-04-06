@@ -13,22 +13,21 @@ namespace hooks {
 			PUSHAD
 		}
 		result = get_order_from_unit_id(unit_id);
-		if(result==0){//default case
+		if (result == 0) {//default case
 			__asm {
 				POPAD
 				JMP jmp_4C80_ret
 			}
-		}
-		else {
+		} 		else {
 			__asm {
 				POPAD
-				MOV EAX,result
+				MOV EAX, result
 				JMP jmp_34c53
 			}
 		}
 	}
 
-		
+
 	//probably is going to be hook instead
 	void __declspec(naked) Ai_BuildSupplies_Wrapper() {
 		static AiTown* town;
@@ -55,20 +54,20 @@ namespace hooks {
 		static uint32 unit_id;
 		static uint32 race;
 		__asm {
-			MOV race,EAX
+			MOV race, EAX
 			PUSHAD
 		}
 		unit_id = get_worker_from_race(race);
 		__asm {
 			POPAD
-			MOV EAX,unit_id
+			MOV EAX, unit_id
 			RETN
 		}
 	}
 
 	const uint32 jmp_33F7E = 0x00433F7E;
 	const uint32 jmp_33FD1_ret = 0x00433FD1;
-//	const uint32 jmp_33F7A = 0x00433F7A;
+	//	const uint32 jmp_33F7A = 0x00433F7A;
 	const uint32 jmp_33F77 = 0x00433F77;
 	void __declspec(naked) AddUnitAi_JmpWrapper() {
 		static uint8 race;
@@ -76,10 +75,10 @@ namespace hooks {
 		static uint32 cmp_id;
 		static CUnit* unit;
 		__asm {
-			MOV race,AL
-			MOV unit,EBX
-			MOV unit_id,CX
-			MOVZX ECX,CX
+			MOV race, AL
+			MOV unit, EBX
+			MOV unit_id, CX
+			MOVZX ECX, CX
 			PUSHAD
 		}
 		cmp_id = get_townhall_from_race(race);
@@ -88,8 +87,7 @@ namespace hooks {
 				POPAD
 				JMP jmp_33FD1_ret
 			}
-		}
-		else {
+		} 		else {
 			__asm {
 				POPAD
 				JMP jmp_33F7E
@@ -112,8 +110,8 @@ namespace hooks {
 				JMP jmp_33F77
 			}*/
 
-		//}
-		
+			//}
+
 	}
 	const uint32 jmp_3660D = 0x0043660D;
 	void __declspec(naked) Ai_UpgradesFinished_JmpWrapper() {
@@ -148,8 +146,7 @@ namespace hooks {
 				POPAD
 				JMP jmp_38f8
 			}
-		}
-		else {
+		} 		else {
 			__asm {
 				POPAD
 				JMP jmp_3889
@@ -169,8 +166,7 @@ namespace hooks {
 				POPAD
 				JMP jmp_27a
 			}
-		}
-		else {
+		} 		else {
 			__asm {
 				POPAD
 				JMP jmp_240
@@ -183,21 +179,20 @@ namespace hooks {
 		static uint16 unit_id;
 		static CUnit* worker;
 		__asm {
-			MOV worker,EDI
+			MOV worker, EDI
 			PUSH EAX
-			MOV AX,[ECX+0x68FF02]
-			MOV unit_id,AX
+			MOV AX, [ECX + 0x68FF02]
+			MOV unit_id, AX
 			POP EAX
 			PUSHAD
 		}
-		if (is_terran_supply(unit_id,worker)) {
+		if (is_terran_supply(unit_id, worker)) {
 			__asm {
 				POPAD
 				JMP jmp_920
 			}
 
-		}
-		else {
+		} 		else {
 			__asm {
 				POPAD
 				JMP jmp_c80
@@ -249,9 +244,9 @@ namespace hooks {
 	const uint32 jmp_00467F24 = 0x00467F24;
 	const uint32 jmp_00467F2C = 0x00467F2C;
 	void __declspec(naked) orders_SCVBuild2_Wrapper() {
-		static uint16 id;	
+		static uint16 id;
 		__asm {
-			MOV id,AX
+			MOV id, AX
 			PUSHAD
 		}
 		if (hooks::is_gasholder_structure(id)) {
@@ -259,8 +254,7 @@ namespace hooks {
 				POPAD
 				JMP jmp_00467F24
 			}
-		}
-		else {
+		} 		else {
 			__asm {
 				POPAD
 				JMP jmp_00467F2C
@@ -271,13 +265,13 @@ namespace hooks {
 		static CUnit* unit;
 		static uint32 result;
 		__asm {
-			MOV unit,EAX
+			MOV unit, EAX
 			PUSHAD
 		}
 		result = hooks::orders_isGeyserTopUnitHook(unit);
 		__asm {
 			POPAD
-			MOV EAX,result
+			MOV EAX, result
 			RETN
 		}
 	}
@@ -294,8 +288,7 @@ namespace hooks {
 				POPAD
 				JMP jmp_00468952
 			}
-		}
-		else {
+		} 		else {
 			__asm {
 				POPAD
 				JMP jmp_00468966

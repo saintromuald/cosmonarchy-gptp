@@ -24,7 +24,7 @@ namespace {
 		static uint16 wUnitType;
 
 		__asm {
-			MOV AX, [EAX+01]
+			MOV AX, [EAX + 01]
 			MOV wUnitType, AX
 			PUSHAD
 		}
@@ -46,8 +46,8 @@ namespace {
 namespace hooks {
 
 	void injectTrainCmdRecvHooks() {
-		jmpPatch(CMDRECV_TrainFighterWrapper,	0x004C1800, 5);
-		jmpPatch(CMDRECV_TrainWrapper,			0x004C1C20, 7);
+		jmpPatch(CMDRECV_TrainFighterWrapper, 0x004C1800, 5);
+		jmpPatch(CMDRECV_TrainWrapper, 0x004C1C20, 7);
 	}
 
 } //hooks

@@ -125,8 +125,7 @@
 	that function for more information.
 */
 #include <pshpack1.h>
-struct MPQDRAFTPLUGINMODULE
-{
+struct MPQDRAFTPLUGINMODULE {
 	/* dwComponentID: The ID of the plugin. Should be the same value as is
 	returned by IMPQDraftPlugin::Identify. Must be globally unique. */
 	DWORD dwComponentID;
@@ -148,8 +147,7 @@ struct MPQDRAFTPLUGINMODULE
 	A plugin will be given an IMPQDraftServer pointer when MPQDraft calls
 	IMPQDraftPlugin::InitializePlugin.
 */
-struct IMPQDraftServer
-{
+struct IMPQDraftServer {
 	/*
 		IMPQDraftServer::GetPluginModule
 
@@ -196,8 +194,7 @@ struct IMPQDraftServer
 	responses. In some places it may be legal to slightly depart from the
 	recommended specs (i.e. functions may fail instead of asserting).
 */
-struct IMPQDraftPlugin
-{
+struct IMPQDraftPlugin {
 	/*
 		IMPQDraftPlugin::Identify
 
@@ -341,7 +338,7 @@ struct IMPQDraftPlugin
 			- If lpPluginModules is nullptr, GetModules will give the exact
 			number of modules it will require in lpnNumModules, and succeed.
 	*/
-	virtual BOOL WINAPI GetModules(MPQDRAFTPLUGINMODULE *lpPluginModules, LPDWORD lpnNumModules) = 0;
+	virtual BOOL WINAPI GetModules(MPQDRAFTPLUGINMODULE* lpPluginModules, LPDWORD lpnNumModules) = 0;
 
 	/*
 		IMPQDraftPlugin::InitializePlugin
@@ -374,7 +371,7 @@ struct IMPQDraftPlugin
 			- If the patch was performed successfully, InitializePlugin will
 			return TRUE.
 	*/
-	virtual BOOL WINAPI InitializePlugin(IMPQDraftServer *lpMPQDraftServer) = 0;
+	virtual BOOL WINAPI InitializePlugin(IMPQDraftServer* lpMPQDraftServer) = 0;
 
 	/*
 		IMPQDraftPlugin::TerminatePlugin
@@ -419,6 +416,6 @@ struct IMPQDraftPlugin
 		to instantiate an IMPQDraftPlugin for each call. A single global
 		IMPQDraftPlugin is sufficient.
 */
-BOOL WINAPI GetMPQDraftPlugin(IMPQDraftPlugin **lppMPQDraftPlugin);
+BOOL WINAPI GetMPQDraftPlugin(IMPQDraftPlugin** lppMPQDraftPlugin);
 
 #endif // #ifndef QDPLUGIN_H

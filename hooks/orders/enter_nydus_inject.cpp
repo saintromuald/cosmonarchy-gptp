@@ -16,7 +16,7 @@ namespace {
 			PUSHAD
 		}
 
-		if(hooks::canEnterNydusCanal(unit,nydusCanal))
+		if (hooks::canEnterNydusCanal(unit, nydusCanal))
 			bReturnValue = 1;
 		else
 			bReturnValue = 0;
@@ -44,7 +44,7 @@ namespace {
 			PUSHAD
 		}
 
-		hooks::enterNydusCanal_Effect(unit,nydusCanal);
+		hooks::enterNydusCanal_Effect(unit, nydusCanal);
 
 		__asm {
 			POPAD
@@ -82,9 +82,9 @@ namespace {
 namespace hooks {
 
 	void injectEnterNydusHooks() {
-		jmpPatch(canEnterNydusCanalWrapper,		0x004E8C20, 2);
-		jmpPatch(enterNydusCanal_EffectWrapper,	0x004EA180, 1);
-		jmpPatch(orders_EnterNydusCanalWrapper,	0x004EA3E0, 0);
+		jmpPatch(canEnterNydusCanalWrapper, 0x004E8C20, 2);
+		jmpPatch(enterNydusCanal_EffectWrapper, 0x004EA180, 1);
+		jmpPatch(orders_EnterNydusCanalWrapper, 0x004EA3E0, 0);
 	}
 
 } //hooks

@@ -3,49 +3,49 @@
 
 namespace {
 
-//Inject with jmpPatch()
-void __declspec(naked) getSeekRangeWrapper() {
+	//Inject with jmpPatch()
+	void __declspec(naked) getSeekRangeWrapper() {
 
-	static CUnit* unit;
-	static uint8 seekRange;
+		static CUnit* unit;
+		static uint8 seekRange;
 
-	__asm {
-		MOV unit, EDX
-		PUSHAD
+		__asm {
+			MOV unit, EDX
+			PUSHAD
+		}
+
+		seekRange = hooks::getSeekRangeHook(unit);
+
+		__asm {
+			POPAD
+			MOVZX EAX, seekRange
+			RETN
+		}
+
 	}
 
-	seekRange = hooks::getSeekRangeHook(unit);
+	//Inject with jmpPatch()
+	void __declspec(naked) getMaxWeaponRangeWrapper() {
 
-	__asm {
-		POPAD
-		MOVZX EAX, seekRange
-		RETN
+		static CUnit* unit;
+		static uint8 weaponId;
+		static uint32 maxWeaponRange;
+
+		__asm {
+			MOV unit, EAX
+			MOV weaponId, BL
+			PUSHAD
+		}
+
+		maxWeaponRange = hooks::getMaxWeaponRangeHook(unit, weaponId);
+
+		__asm {
+			POPAD
+			MOV EAX, maxWeaponRange;
+			RETN
+		}
+
 	}
-
-}
-
-//Inject with jmpPatch()
-void __declspec(naked) getMaxWeaponRangeWrapper() {
-
-	static CUnit* unit;
-	static uint8 weaponId;
-	static uint32 maxWeaponRange;
-
-	__asm {
-		MOV unit, EAX
-		MOV weaponId, BL
-		PUSHAD
-	}
-
-	maxWeaponRange = hooks::getMaxWeaponRangeHook(unit, weaponId);
-
-	__asm {
-		POPAD
-		MOV EAX, maxWeaponRange;
-		RETN
-	}
-
-}
 
 } //unnamed namespace
 
@@ -55,9 +55,9 @@ extern const uint32 Func_GetSeekRange;
 
 namespace hooks {
 
-void injectWeaponRangeHooks() {
-	jmpPatch(getSeekRangeWrapper,		0x00476000, 3);
-	jmpPatch(getMaxWeaponRangeWrapper,	0x00475870, 1);
-}
+	void injectWeaponRangeHooks() {
+		jmpPatch(getSeekRangeWrapper, 0x00476000, 3);
+		jmpPatch(getMaxWeaponRangeWrapper, 0x00475870, 1);
+	}
 
 } //hooks

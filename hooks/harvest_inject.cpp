@@ -27,9 +27,9 @@ void __declspec(naked) transferResourceToWorkerWrapper() {
 
 namespace hooks {
 
-void injectHarvestResource() {
-	jmpPatch(transferResourceToWorkerWrapper, 0x004696D0, 0);
-}
+	void injectHarvestResource() {
+		jmpPatch(transferResourceToWorkerWrapper, 0x004696D0, 0);
+	}
 
 
 } //hooks

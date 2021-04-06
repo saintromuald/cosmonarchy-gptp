@@ -9,7 +9,7 @@ namespace {
 	char addItemToListing(char pszString, BinDlg* pDlg, __int8 bFlags);							//0041B760
 	void createDialogDropdown(BinDlg* a1);														//0041B410
 	void dlgSetSelected(unsigned __int8 a1, BinDlg* a2);										//0041A600
-	
+
 	//For initSingleplayerCustom
 	bool isMeleeGame(int8 a1, int16 a2, int8 a3);														//004AD850
 	PLAYER randomizePlayerSlot();																//004A9A30
@@ -181,7 +181,7 @@ namespace hooks {
 		}
 		return result;
 	};
-	
+
 	int initGameLoad(int a1, char a2) { // 004EF100 -- https://pastebin.com/raw/szn0Z6sp
 		int v2; // ecx
 		int v3; // eax
@@ -346,7 +346,7 @@ namespace hooks {
 				SFileCloseArchive(*mapArchiveHandle);
 		}
 	}
-	
+
 } //namespace hooks
 
 ;
@@ -456,7 +456,7 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_levelCheatCreate = 0x004EE5B0; 
+	const uint32 Func_levelCheatCreate = 0x004EE5B0;
 	signed int levelCheatCreate(char a1, int a2) {
 		static char a1;
 		static int a2;
@@ -876,7 +876,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool)result;
+		return (bool) result;
 	}
 
 	const uint32 Func_SFileCloseArchive = 0x004100BE;
@@ -889,7 +889,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool)result;
+		return (bool) result;
 	}
 
 	const uint32 Func_SFileOpenFileEx = 0x004100C4;
@@ -905,7 +905,7 @@ namespace {
 			MOV result, eAX
 			POPAD
 		}
-		return (bool)result;
+		return (bool) result;
 	}
 
 	const uint32 Func_SFileCloseFile = 0x4100b8;
@@ -918,7 +918,7 @@ namespace {
 			MOV result, EAX
 			POPAD
 		}
-		return (bool)result;
+		return (bool) result;
 	}
 
 }

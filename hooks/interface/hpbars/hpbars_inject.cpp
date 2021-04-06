@@ -8,7 +8,7 @@ namespace {
 		_asm {
 			MOV a1, ESI
 			PUSH EAX
-			MOV EAX, [EBP+0x8]
+			MOV EAX, [EBP + 0x8]
 			MOV a2, EAX
 			POP EAX
 			PUSHAD

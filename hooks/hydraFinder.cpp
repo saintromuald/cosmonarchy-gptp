@@ -11,8 +11,7 @@ bool rangeMatch(CUnit* unit, uint32 r, uint32 context, std::vector<uint16> allow
 	return a != nullptr;
 }
 
-uint32 hydraUnitCount(CUnit* unitPtr, Point16 pos, int r, uint32 flags, std::vector<uint16> unitIds)
-{
+uint32 hydraUnitCount(CUnit* unitPtr, Point16 pos, int r, uint32 flags, std::vector<uint16> unitIds) {
 	auto condition = unitRangeCount(unitPtr, flags, unitIds);
 	scbw::UnitFinder unitsInSplash(pos.x - r, pos.y - r,
 		pos.x + r, pos.y + r);
@@ -52,7 +51,7 @@ CUnit* rangeMatchPosition(Point32 position, uint32 r, uint32 context, std::vecto
 }
 
 scbw::UnitFinderCallbackMatchInterface unitRangeCount(CUnit* center, uint32 context, std::vector<uint16> allowedUnitIds) {
-	scbw::UnitFinderCallbackMatchInterface callback = [=](CUnit* unit) { 
+	scbw::UnitFinderCallbackMatchInterface callback = [=](CUnit* unit) {
 		if (unit == center && !(context & CFlags::IncludingSelf)) {
 			return false;
 		}
@@ -101,7 +100,7 @@ scbw::UnitFinderCallbackMatchInterface unitRangeCount(CUnit* center, uint32 cont
 				uint16 angle = scbw::getAngle(center->position.x, center->position.y,
 					unit->position.x, unit->position.y);
 				uint16 unit_angle = center->velocityDirection1;
-				int arc = (double)45 / 1.40625;
+				int arc = (double) 45 / 1.40625;
 				//90 degrees
 				int delta = unit_angle - angle;
 				delta = abs((delta + 128) % 256 - 128);

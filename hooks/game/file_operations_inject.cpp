@@ -2,7 +2,7 @@
 #include <hook_tools.h>
 
 namespace {
-	
+
 	void __declspec(naked) openMapFile_Wrapper() {
 		static int32 a1; // needs documentation
 		static bool result;
@@ -40,8 +40,8 @@ namespace {
 namespace hooks {
 
 	void injectFileOperationsHooks() {
-		jmpPatch(openMapFile_Wrapper,		0x0045A290, 4);
-		jmpPatch(loadMap_Wrapper,			0x004BF520, 4);
+		jmpPatch(openMapFile_Wrapper, 0x0045A290, 4);
+		jmpPatch(loadMap_Wrapper, 0x004BF520, 4);
 	}
 
 } //hooks

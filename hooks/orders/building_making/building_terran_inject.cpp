@@ -50,7 +50,7 @@ namespace {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
-			MOV EAX, [EBP+0x08]
+			MOV EAX, [EBP + 0x08]
 			MOV unit, EAX
 			POP EAX
 			PUSHAD
@@ -94,14 +94,14 @@ namespace {
 	void __declspec(naked) updatePlacementSimpleWrapper() {
 		static uint16 addonOffsetY;
 		__asm {
-			MOVSX EAX,[ECX+0x6626E2]//y
-			MOV addonOffsetY,AX
+			MOVSX EAX, [ECX + 0x6626E2]//y
+			MOV addonOffsetY, AX
 			PUSHAD
 		}
 		scbw::adjustAddonY(*placeBuildingUnitType, *placeBuildBaseType, addonOffsetY);
 		__asm {
 			POPAD
-			MOV AX,addonOffsetY
+			MOV AX, addonOffsetY
 			JMP updatePlacementWrapperJmp1
 		}
 	}
@@ -129,14 +129,14 @@ namespace {
 
 namespace hooks {
 
-void injectBuildingTerranHook() {
-	jmpPatch(orders_TerranBuildSelfWrapper,					0x00467760, 2);
-	jmpPatch(orders_SCVBuild2Wrapper,						0x00467A70, 1);
-	jmpPatch(orders_SCVBuildWrapper,						0x00467FD0, 0);
-	//placementSimpleWrappers();//causes insane bug
+	void injectBuildingTerranHook() {
+		jmpPatch(orders_TerranBuildSelfWrapper, 0x00467760, 2);
+		jmpPatch(orders_SCVBuild2Wrapper, 0x00467A70, 1);
+		jmpPatch(orders_SCVBuildWrapper, 0x00467FD0, 0);
+		//placementSimpleWrappers();//causes insane bug
 
-	//jmpPatch(updatePlacementStateForPlacementBox_Wrapper,	0x0048DCE0, 0);
-	//jmpPatch(refreshScreen_Wrapper,							0x0048DDC0, 4);
-}
+		//jmpPatch(updatePlacementStateForPlacementBox_Wrapper,	0x0048DCE0, 0);
+		//jmpPatch(refreshScreen_Wrapper,							0x0048DDC0, 4);
+	}
 
 } //hooks

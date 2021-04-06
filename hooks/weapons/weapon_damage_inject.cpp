@@ -19,20 +19,20 @@ namespace {
 			MOV EBP, ESP
 			MOV damage, EAX
 			MOV target, EDI
-			MOV EAX, [EBP+0x08]
+			MOV EAX, [EBP + 0x08]
 			MOV weaponId, EAX
-			MOV EAX, [EBP+0x0C]
+			MOV EAX, [EBP + 0x0C]
 			MOV damageDivisor, EAX
-			MOV EAX, [EBP+0x10]
+			MOV EAX, [EBP + 0x10]
 			MOV direction, EAX
-			MOV EAX, [EBP+0x14]
+			MOV EAX, [EBP + 0x14]
 			MOV attacker, EAX
-			MOV EAX, [EBP+0x18]
+			MOV EAX, [EBP + 0x18]
 			MOV attackingPlayerId, EAX
 			PUSHAD
 		}
 		hooks::weaponDamageHook(damage, target, weaponId, attacker, attackingPlayerId,
-								direction, damageDivisor);
+			direction, damageDivisor);
 		__asm {
 			POPAD
 			POP EBP
@@ -72,8 +72,8 @@ namespace {
 
 namespace hooks {
 	void injectWeaponDamageHook() {
-		jmpPatch(weaponDamageWrapper,				0x00479930, 1);
-		jmpPatch(applyEnsnare_Wrapper,				0x004F45E0, 2);
-		jmpPatch(updateCorrosiveSpores_Wrapper,		0x004F4480, 1);
+		jmpPatch(weaponDamageWrapper, 0x00479930, 1);
+		jmpPatch(applyEnsnare_Wrapper, 0x004F45E0, 2);
+		jmpPatch(updateCorrosiveSpores_Wrapper, 0x004F4480, 1);
 	}
 } //hooks

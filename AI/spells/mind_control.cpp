@@ -17,17 +17,17 @@ namespace AI {
 			caster,
 			[&](CUnit* target) {
 
-				if (!isTargetWorthHitting(target, caster))
-					return false;
+			if (!isTargetWorthHitting(target, caster))
+				return false;
 
-				if (units_dat::BaseProperty[target->id] & UnitProperty::Hero)
-					return false;
+			if (units_dat::BaseProperty[target->id] & UnitProperty::Hero)
+				return false;
 
-				if (target->id == UnitId::shuttle || target->id == UnitId::dropship)
-					if (target->hasLoadedUnit())
-						return true;
+			if (target->id == UnitId::shuttle || target->id == UnitId::dropship)
+				if (target->hasLoadedUnit())
+					return true;
 
-				switch (target->id) {
+			switch (target->id) {
 				case UnitId::shuttle:
 				case UnitId::dropship:
 					if (target->hasLoadedUnit())
@@ -57,10 +57,10 @@ namespace AI {
 						&& units_dat::GasCost[target->id] >= units_dat::GasCost[UnitId::dark_templar])
 						return true;
 					break;
-				}
-
-				return false;
 			}
+
+			return false;
+		}
 		);
 	}
 

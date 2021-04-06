@@ -3,54 +3,54 @@
 
 namespace {
 
-void __declspec(naked) unitCanRechargeShieldsWrapper() {
+	void __declspec(naked) unitCanRechargeShieldsWrapper() {
 
-	static CUnit* target;
-	static CUnit* battery;
-	static bool32 result;
+		static CUnit* target;
+		static CUnit* battery;
+		static bool32 result;
 
-	__asm {
-		MOV battery, EDI
-		MOV target, EAX
-		PUSHAD
+		__asm {
+			MOV battery, EDI
+			MOV target, EAX
+			PUSHAD
+		}
+
+		result = hooks::unitCanRechargeShieldsHook(target, battery);
+
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+
 	}
 
-	result = hooks::unitCanRechargeShieldsHook(target, battery);
+	//Inject with callPatch
+	void __declspec(naked) orderRechargeShieldsWrapper() {
 
-	__asm {
-		POPAD
-		MOV EAX, result
-		RETN
+		static CUnit* unit;
+
+		__asm {
+			MOV unit, EDI
+			PUSHAD
+		}
+
+		hooks::orderRechargeShieldsHook(unit);
+
+		__asm {
+			POPAD
+			RETN
+		}
+
 	}
-
-}
-
-//Inject with callPatch
-void __declspec(naked) orderRechargeShieldsWrapper() {
-
-	static CUnit* unit;
-
-	__asm {
-		MOV unit, EDI
-		PUSHAD
-	}
-
-	hooks::orderRechargeShieldsHook(unit);
-
-	__asm {
-		POPAD
-		RETN
-	}
-
-}
 
 } //unnamed namespace
 
 namespace hooks {
 
-void injectRechargeShieldsHooks() {
-	jmpPatch(unitCanRechargeShieldsWrapper,	0x00493520, 1);
-	//jmpPatch(orderRechargeShieldsWrapper,	0x00493DD0, 1);
-}
+	void injectRechargeShieldsHooks() {
+		jmpPatch(unitCanRechargeShieldsWrapper, 0x00493520, 1);
+		//jmpPatch(orderRechargeShieldsWrapper,	0x00493DD0, 1);
+	}
 
 } //hooks

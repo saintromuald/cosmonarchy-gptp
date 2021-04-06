@@ -7,48 +7,48 @@
 //V241 for VS2008
 
 struct Point8 {
-  int8 x;
-  int8 y;
+	int8 x;
+	int8 y;
 };
 
 struct Point16 {
-  uint16 x;
-  uint16 y;
+	uint16 x;
+	uint16 y;
 
-  bool operator ==(const Point16 &rhs) const {
-    return x == rhs.x && y == rhs.y;
-  }
-  bool operator !=(const Point16 &rhs) const {
-    return !(*this == rhs);
-  }
+	bool operator ==(const Point16& rhs) const {
+		return x == rhs.x && y == rhs.y;
+	}
+	bool operator !=(const Point16& rhs) const {
+		return !(*this == rhs);
+	}
 };
 
 struct Point32 {
-  int x;
-  int y;
+	int x;
+	int y;
 };
 
 struct Box16 {
-  int16 left;     // x
-  int16 top;      // y
-  int16 right;    // w
-  int16 bottom;   // h
+	int16 left;     // x
+	int16 top;      // y
+	int16 right;    // w
+	int16 bottom;   // h
 };
 
 struct Box32 {
-  int32 left;
-  int32 top;
-  int32 right;
-  int32 bottom;
+	int32 left;
+	int32 top;
+	int32 right;
+	int32 bottom;
 };
 
 struct Bounds {
-  uint16 left;
-  uint16 top;
-  uint16 right;
-  uint16 bottom;
-  uint16 width;
-  uint16 height;
+	uint16 left;
+	uint16 top;
+	uint16 right;
+	uint16 bottom;
+	uint16 width;
+	uint16 height;
 };
 
 C_ASSERT(sizeof(Point8) == 2);

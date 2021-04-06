@@ -265,7 +265,7 @@ namespace hooks {
 	uint32 getModifiedUnitSpeedHook(CUnit* unit, uint32 baseSpeed) {
 		int increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 
-		
+
 		switch (unit->id) {
 			case UnitId::ProtossPanoptus:
 			{

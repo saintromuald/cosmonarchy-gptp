@@ -22,24 +22,24 @@ namespace AI {
 			caster,
 			[&](CUnit* target) {
 
-				if (!isTargetWorthHitting(target, caster))
-					return false;
-
-				if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
-					return false;
-
-				if (target->isBlind)
-					return false;
-
-				if (target->canDetect())
-					return true;
-
-				if (target->getCurrentLifeInGame() > 80)
-					return true;
-
+			if (!isTargetWorthHitting(target, caster))
 				return false;
 
-			});
+			if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+				return false;
+
+			if (target->isBlind)
+				return false;
+
+			if (target->canDetect())
+				return true;
+
+			if (target->getCurrentLifeInGame() > 80)
+				return true;
+
+			return false;
+
+		});
 	}
 
 

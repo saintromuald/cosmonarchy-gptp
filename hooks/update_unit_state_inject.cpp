@@ -3,74 +3,74 @@
 
 namespace {
 
-void __declspec(naked) updateUnitEnergyWrapper() {
+	void __declspec(naked) updateUnitEnergyWrapper() {
 
-	static CUnit* unit;
+		static CUnit* unit;
 
-	__asm {
-		MOV unit, ESI
-		PUSHAD
+		__asm {
+			MOV unit, ESI
+			PUSHAD
+		}
+
+		hooks::updateUnitEnergy(unit);
+
+		__asm {
+			POPAD
+			RETN
+		}
+
 	}
 
-	hooks::updateUnitEnergy(unit);
 
-	__asm {
-		POPAD
-		RETN
+	void __declspec(naked) updateUnitStateWrapper() {
+
+		static CUnit* unit;
+
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+
+		hooks::updateUnitStateHook(unit);
+
+		__asm {
+			POPAD
+			RETN
+		}
+
 	}
 
-}
-
-
-void __declspec(naked) updateUnitStateWrapper() {
-
-	static CUnit* unit;
-
-	__asm {
-		MOV unit, EAX
-		PUSHAD
+	void __declspec(naked) incrementUnitScoresEx_Wrapper() { // 0x00488D50
+		static int count;
+		static CUnit* unit;
+		static int updateMorphMergeUnitScore;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV count, ECX
+			MOV unit, EDI
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV updateMorphMergeUnitScore, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::incrementUnitScoresEx(count, unit, updateMorphMergeUnitScore);
+		__asm {
+			POPAD
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
 	}
-
-	hooks::updateUnitStateHook(unit);
-
-	__asm {
-		POPAD
-		RETN
-	}
-
-}
-
-void __declspec(naked) incrementUnitScoresEx_Wrapper() { // 0x00488D50
-	static int count;
-	static CUnit* unit;
-	static int updateMorphMergeUnitScore;
-	__asm {
-		PUSH EBP
-		MOV EBP,ESP
-		MOV count, ECX
-		MOV unit, EDI
-		PUSH EAX
-		MOV EAX, [EBP + 0x08]
-		MOV updateMorphMergeUnitScore, EAX
-		POP EAX
-		PUSHAD
-	}
-	hooks::incrementUnitScoresEx(count, unit, updateMorphMergeUnitScore);
-	__asm {
-		POPAD
-		MOV ESP,EBP
-		POP EBP
-		RETN 4
-	}
-}
 } //unnamed namespace
 
 namespace hooks {
 
-void injectUpdateUnitState() {
-	jmpPatch(updateUnitEnergy,				0x004EB4B0, 0);
-	jmpPatch(updateUnitStateWrapper,		0x004EC290, 1);
-	jmpPatch(incrementUnitScoresEx_Wrapper, 0x00488D50, 1);
-}
+	void injectUpdateUnitState() {
+		jmpPatch(updateUnitEnergy, 0x004EB4B0, 0);
+		jmpPatch(updateUnitStateWrapper, 0x004EC290, 1);
+		jmpPatch(incrementUnitScoresEx_Wrapper, 0x00488D50, 1);
+	}
 
 } //hooks

@@ -14,10 +14,10 @@ namespace {
 			PUSH EBP
 			MOV EBP, ESP
 
-			MOV EAX, [EBP+0x08]
+			MOV EAX, [EBP + 0x08]
 			MOV playerId, EAX
 
-			MOV EAX, [EBP+0x0C]
+			MOV EAX, [EBP + 0x0C]
 			MOV unkScore, EAX
 
 			MOV unit, ECX
@@ -25,7 +25,7 @@ namespace {
 			PUSHAD
 		}
 
-		hooks::GiveUnit(unit,playerId,unkScore);
+		hooks::GiveUnit(unit, playerId, unkScore);
 
 		__asm {
 			POPAD
@@ -35,7 +35,7 @@ namespace {
 		}
 
 	}
-	
+
 	;
 
 }//unnamed namespace
@@ -43,7 +43,7 @@ namespace {
 namespace hooks {
 
 	void injectGiveUnitHook() {
-		jmpPatch(GiveUnitWrapper,0x0049EFA0, 1);
+		jmpPatch(GiveUnitWrapper, 0x0049EFA0, 1);
 	}
 
 } //hooks

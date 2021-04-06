@@ -10,9 +10,9 @@ namespace {
 	int32 BWFXN_PrintXY(const char* text, int32 x, int32 y);
 	int32 GetColorHandle(uint8 color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
 
-	int32* const fonts = (int32*)0x006CE0F4;
-	char* const printXYAlignment = (char*)0x006CE110;
-	Box16* const drawTextBox = (Box16*)0x006CE0C8;
+	int32* const fonts = (int32*) 0x006CE0F4;
+	char* const printXYAlignment = (char*) 0x006CE110;
+	Box16* const drawTextBox = (Box16*) 0x006CE0C8;
 
 	// For targetedOrder
 	COrder* queueNewOrder(COrder* a1, int16 a2, int16 a3, CUnit* a4, uint8 a5, int32 a6, int16 a7, Point32* a8, CUnit* a9);	//00474B90
@@ -134,9 +134,9 @@ namespace hooks {
 			if (turns >= 16 - *provider_LatencyCalls)
 				return v2;
 			sendTurn();
-LABEL_8:
+		LABEL_8:
 			_sgdwBytesInCmdQueue = *sgdwBytesInCmdQueue;
-			memcpy((void*)&TurnBuffer[*sgdwBytesInCmdQueue], buffer, len);
+			memcpy((void*) &TurnBuffer[*sgdwBytesInCmdQueue], buffer, len);
 			v2 = len + _sgdwBytesInCmdQueue;
 			*sgdwBytesInCmdQueue = v2;
 			return v2;
@@ -149,50 +149,39 @@ LABEL_8:
 		return v2;
 	}
 
-	void targetedOrder(int16 a1, int32 a2, CUnit* a3, int16 a4, int32 a5, int32 a6, uint8 a7, int32 a8, int32 a9, int32 a10)
-	{
-		if (a6 && orders_dat::CanBeQueued[(uint8)a7])
-		{
-			switch (a3->mainOrderId)
-			{
-			case 2:
-			case 3:
-			case 23:
-			case 93:
-			case 152:
-			case 175:
-				goto LABEL_15;
-			default:
-				if (a3->orderQueueCount < 8u)
-				{
-					if (*COrderCount < 1800)
-					{
-						queueNewOrder((COrder*)a5, a1, a4, a3, a7, a8, a2, (Point32*)a9, (CUnit*)a10);
-					}
-					else
-					{
-						uint8 v11 = a3->playerId;
-						if (*statTxtTbl > 0x368u)
-							showStatTxtToPlayer(*statTxtTbl + statTxtTbl[873], v11);
+	void targetedOrder(int16 a1, int32 a2, CUnit* a3, int16 a4, int32 a5, int32 a6, uint8 a7, int32 a8, int32 a9, int32 a10) 	{
+		if (a6 && orders_dat::CanBeQueued[(uint8) a7]) 		{
+			switch (a3->mainOrderId) 			{
+				case 2:
+				case 3:
+				case 23:
+				case 93:
+				case 152:
+				case 175:
+					goto LABEL_15;
+				default:
+					if (a3->orderQueueCount < 8u) 				{
+						if (*COrderCount < 1800) 					{
+							queueNewOrder((COrder*) a5, a1, a4, a3, a7, a8, a2, (Point32*) a9, (CUnit*) a10);
+						} 					else 					{
+							uint8 v11 = a3->playerId;
+							if (*statTxtTbl > 0x368u)
+								showStatTxtToPlayer(*statTxtTbl + statTxtTbl[873], v11);
+							else
+								showStatTxtToPlayer((int32) "", v11);
+						}
+					} 				else 				{
+						uint8 v10 = a3->playerId;
+						if (*statTxtTbl > 0x366u)
+							showStatTxtToPlayer(*statTxtTbl + statTxtTbl[871], v10);
 						else
-							showStatTxtToPlayer((int32)"", v11);
+							showStatTxtToPlayer((int32) "", v10);
 					}
-				}
-				else
-				{
-					uint8 v10 = a3->playerId;
-					if (*statTxtTbl > 0x366u)
-						showStatTxtToPlayer(*statTxtTbl + statTxtTbl[871], v10);
-					else
-						showStatTxtToPlayer((int32)"", v10);
-				}
-				break;
+					break;
 			}
-		}
-		else
-		{
+		} 		else 		{
 		LABEL_15:
-			setOrderTarget(a7, a1, a4, a5, (int32)a3, (CUnit*)a8, (uint16)a2, (Point32*)a9, (CUnit*)a10);
+			setOrderTarget(a7, a1, a4, a5, (int32) a3, (CUnit*) a8, (uint16) a2, (Point32*) a9, (CUnit*) a10);
 		}
 	}
 

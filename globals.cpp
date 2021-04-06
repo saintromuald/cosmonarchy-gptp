@@ -8,19 +8,19 @@
 globals Globals;
 
 void globals::refreshDebuggingInfo() {
-/*	unitSpeedDbg = 0;
-	weaponDamageDbg = 0;
-	gameHookDbg = 0;
-	updateUnitStateDbg = 0;
-	updateStatusEffectsDbg = 0;*/
+	/*	unitSpeedDbg = 0;
+		weaponDamageDbg = 0;
+		gameHookDbg = 0;
+		updateUnitStateDbg = 0;
+		updateStatusEffectsDbg = 0;*/
 }
 
 //SaveState globals::aise_save() {
 
 
-void globals::aise_save(){
+void globals::aise_save() {
 	output.clear();
-	std::ostringstream stream(std::stringstream::out|std::stringstream::binary);
+	std::ostringstream stream(std::stringstream::out | std::stringstream::binary);
 	stream.write(reinterpret_cast<const char*>(&extended_unit_table), sizeof(extended_unit_table));
 	stream.write(reinterpret_cast<const char*>(&extended_sfx), sizeof(extended_sfx));
 	stream.write(reinterpret_cast<const char*>(&tbl_extender), sizeof(tbl_extender));
@@ -28,7 +28,7 @@ void globals::aise_save(){
 
 	uint32 impactsSize = persistImpacts.size();
 	stream.write(reinterpret_cast<const char*>(&impactsSize), sizeof(impactsSize));
-	for (int i = 0; i < impactsSize;i++) {
+	for (int i = 0; i < impactsSize; i++) {
 		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].position.x), sizeof(persistImpacts[i].position.x));
 		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].position.y), sizeof(persistImpacts[i].position.y));
 		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].elevation), sizeof(persistImpacts[i].elevation));
@@ -80,21 +80,21 @@ void globals::aise_save(){
 			stream.write(reinterpret_cast<char*>(&value), sizeof(value));
 		}
 	}
-	
+
 	//
 	output = stream.rdbuf()->str();
 	if (output.length() == 0) {
-//		return state;
+		//		return state;
 		return;
 		//error
 	}
 	saveState.ptr = output.c_str();
 	saveState.len = output.size();
 	return;
-//	return state;
+	//	return state;
 }
-void globals::aise_load(const char* ptr, uint32 len){
-	if (len == 0 || ptr==0) {
+void globals::aise_load(const char* ptr, uint32 len) {
+	if (len == 0 || ptr == 0) {
 		return;//error
 	}
 	//scbw::printText("Load....");
@@ -106,7 +106,7 @@ void globals::aise_load(const char* ptr, uint32 len){
 	stream.read(reinterpret_cast<char*>(&extended_sfx), sizeof(extended_sfx));
 	stream.read(reinterpret_cast<char*>(&tbl_extender), sizeof(tbl_extender));
 	stream.read(reinterpret_cast<char*>(&unitid_extender), sizeof(unitid_extender));
-	
+
 	auto impactsSize = 0;
 	stream.read(reinterpret_cast<char*>(&impactsSize), sizeof(impactsSize));
 	for (int i = 0; i < impactsSize; i++) {
@@ -169,7 +169,7 @@ void globals::aise_load(const char* ptr, uint32 len){
 		CUnit* key = nullptr;
 		stream.read(reinterpret_cast<char*>(&key), sizeof(key));
 		uint32 valueCount = 0;
-		stream.read(reinterpret_cast<char*>(&valueCount), sizeof(valueCount));	
+		stream.read(reinterpret_cast<char*>(&valueCount), sizeof(valueCount));
 		for (int j = 0; j < valueCount; j++) {
 			CUnit* value = nullptr;
 			stream.read(reinterpret_cast<char*>(&value), sizeof(value));
@@ -212,7 +212,7 @@ void globals::unitDeathHook(CUnit* unit) {
 	}
 	for (int i = 0; i < this->apostleAgents.size(); i++) {
 		if (apostleAgents[i].creator == unit) {
-			apostleAgents[i].creator=nullptr;
+			apostleAgents[i].creator = nullptr;
 		}
 	}
 	lurkerSpineHits[unit].clear();
@@ -226,7 +226,7 @@ void globals::unitDeathHook(CUnit* unit) {
 	}
 }
 void globals::frameHook() {
-	for (auto & a : unitStructs) {
+	for (auto& a : unitStructs) {
 		for (auto& timerPair : a.second.genericTimers) {
 			if (timerPair.second > 0) {
 				timerPair.second--;
@@ -253,8 +253,7 @@ void globals::frameHook() {
 		auto& agent = apostleAgents[a];
 		if (agent.timer > 0) {
 			agent.timer--;
-		}
-		else {
+		} 		else {
 			// scbw::printFormattedText("Agent Creator: 0x%X", agent.creator);
 			auto revived = scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y, agent.creator);
 			if (revived) {
@@ -265,13 +264,13 @@ void globals::frameHook() {
 				// revived->status |= UnitStatus::Invincible;
 				scbw::set_generic_value(revived, ValueId::IsReviving, 1);
 
-				
+
 			}
 			apostleAgents.erase(apostleAgents.begin() + a);
 			a--;
 		}
 	}
-	for (int a = 0; a < persistImpacts.size();a++) {
+	for (int a = 0; a < persistImpacts.size(); a++) {
 		auto& impact = persistImpacts[a];
 		if (impact.timer > 0) {
 			// deals 20 concussive damage per 5 seconds
@@ -279,7 +278,7 @@ void globals::frameHook() {
 			// deals [128] concussive damage per 1/3 seconds (8 frames)
 			if (impact.impactId == ImpactId::Salamander) {
 				if (impact.timer % 3 == 0) {
-					constexpr int unitSizeFactor[5] = { 2, 0, 256, 192, 128 };//Concussive damage
+					constexpr int unitSizeFactor[5] = {2, 0, 256, 192, 128};//Concussive damage
 					auto count = 0;
 					int r = 16;
 					auto n = unitRangeCount(nullptr, CFlags::NoInvincible | CFlags::Enemy | CFlags::NoAir, {});
@@ -289,14 +288,13 @@ void globals::frameHook() {
 						auto unit = unitsInSplash.getUnit(i);
 						if (n(unit)) {
 							double damage_factor = unitSizeFactor[units_dat::SizeType[unit->id]];
-							double damage = (double)(weapons_dat::DamageAmount[WeaponId::SalamanderIncendiaryPayload] + weapons_dat::DamageUpgrade[WeaponId::SalamanderIncendiaryPayload]) * (damage_factor / 256.0);
+							double damage = (double) (weapons_dat::DamageAmount[WeaponId::SalamanderIncendiaryPayload] + weapons_dat::DamageUpgrade[WeaponId::SalamanderIncendiaryPayload]) * (damage_factor / 256.0);
 							unitsInSplash.getUnit(i)->inflictDamage(damage, nullptr, -1, false, true, true);
 						}
 					}
 				}
-			}
-			else if (impact.impactId == ImpactId::Planetcracker) {
-				int r = 8*32;
+			} 			else if (impact.impactId == ImpactId::Planetcracker) {
+				int r = 8 * 32;
 				auto n = unitRangeCount(nullptr, CFlags::NoInvincible | CFlags::NoAir, {});
 				scbw::UnitFinder unitsInSplash(impact.position.x - r, impact.position.y - r,
 					impact.position.x + r, impact.position.y + r);
@@ -309,14 +307,12 @@ void globals::frameHook() {
 				}
 			}
 			impact.timer--;
-		}
-		else {
+		} 		else {
 			if (impact.repeatsLeft > 0) {
 				impact.repeatsLeft--;
 				impact.timer = 24;
-				createSalamanderFire(impact.position.x, impact.position.y,11, impact.elevation, false);
-			}
-			else {
+				createSalamanderFire(impact.position.x, impact.position.y, 11, impact.elevation, false);
+			} 			else {
 				persistImpacts.erase(persistImpacts.begin() + a);
 				a--;
 			}
@@ -324,7 +320,7 @@ void globals::frameHook() {
 	}
 }
 
-void globals::remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly){
+void globals::remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly) {
 	for (int i = 0; i < pariahHits.size(); i++) {
 		if (pariahHits[i].source == unit || (pariahHits[i].target == unit && !sourceOnly)) {
 			pariahHits.erase(pariahHits.begin() + i);
@@ -340,7 +336,7 @@ void globals::remove_multihit_bullet(CBullet* bullet) {
 		}
 	}
 }
-bool globals::was_hit_by_pariah(CUnit* source, CUnit* target){
+bool globals::was_hit_by_pariah(CUnit* source, CUnit* target) {
 	for (auto a : pariahHits) {
 		if (source == a.source && target == a.target) {
 			return true;
@@ -348,7 +344,7 @@ bool globals::was_hit_by_pariah(CUnit* source, CUnit* target){
 	}
 	return false;
 }
-void globals::register_pariah_hit(CUnit* source, CUnit* target){
+void globals::register_pariah_hit(CUnit* source, CUnit* target) {
 	pariahHit hit;
 	hit.source = source;
 	hit.target = target;
@@ -363,7 +359,7 @@ void globals::clear_ptr_in_apostle_table(CUnit* ptr) {
 }
 
 bool globals::was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target) {
-	for (auto &a : multihitBullets) {
+	for (auto& a : multihitBullets) {
 		if (bullet == a.bullet) {
 			for (auto b : a.already_hit) {
 				if (b == target) {
@@ -383,13 +379,13 @@ bool globals::multihit_bullet_is_set(CBullet* bullet) {
 	return false;
 }
 void globals::add_bullet_multihit(CBullet* bullet, CUnit* target) {
-	for (auto &a : multihitBullets) {
+	for (auto& a : multihitBullets) {
 		if (a.bullet == bullet) {
 			a.already_hit.push_back(target);
 			return;
 		}
 	}
-	multihitBullet gb(bullet, { target },0);
+	multihitBullet gb(bullet, {target}, 0);
 	multihitBullets.push_back(gb);
 }
 void globals::add_incremental_bullet_multihit(CBullet* bullet, CUnit* target) {
@@ -399,7 +395,7 @@ void globals::add_incremental_bullet_multihit(CBullet* bullet, CUnit* target) {
 			return;
 		}
 	}
-	multihitBullet gb(bullet, { target }, 1);
+	multihitBullet gb(bullet, {target}, 1);
 	multihitBullets.push_back(gb);
 }
 int globals::get_divider(CBullet* bullet) {
@@ -421,7 +417,7 @@ uint32 globals::get_multihit_count(CBullet* bullet) {
 void globals::add_multihit_empty_bullet(CBullet* bullet, int divider) {
 	for (auto& a : multihitBullets) {
 		if (a.bullet == bullet) {
-			a.divider=divider;
+			a.divider = divider;
 			return;
 		}
 	}
@@ -437,24 +433,24 @@ void globals::initLazarusAgent(int x, int y, uint8 player, uint32 unitId, uint32
 	a.unitId = unitId;
 	a.energy = energy;
 	a.creator = unit;
-//	scbw::printFormattedText("Set creator to 0x%X", a.creator);
-//	scbw::printFormattedText("Try push back %d", apostleAgents.size());
+	//	scbw::printFormattedText("Set creator to 0x%X", a.creator);
+	//	scbw::printFormattedText("Try push back %d", apostleAgents.size());
 	apostleAgents.push_back(a);
 }
 
 void globals::createPlanetCracker(int x, int y, uint8 player, uint8 elevationLevel) {
 	persistImpact impact;
-	impact.position = Point32{ x,y };
+	impact.position = Point32{x,y};
 	impact.timer = 360;
 	impact.repeatsLeft = 0;
 	impact.elevation = elevationLevel;
 	impact.impactId = ImpactId::Planetcracker;
 	persistImpacts.push_back(impact);
 }
-void globals::createSalamanderFire(int x, int y, uint8 player,uint8 elevationLevel, bool addImpactValue) {
+void globals::createSalamanderFire(int x, int y, uint8 player, uint8 elevationLevel, bool addImpactValue) {
 	if (addImpactValue) {
 		for (auto a : persistImpacts) {
-			if (a.impactId==ImpactId::Salamander && scbw::getDistanceFast(x, y, a.position.x, a.position.y) < 12) {
+			if (a.impactId == ImpactId::Salamander && scbw::getDistanceFast(x, y, a.position.x, a.position.y) < 12) {
 				return;
 			}
 		}
@@ -465,7 +461,7 @@ void globals::createSalamanderFire(int x, int y, uint8 player,uint8 elevationLev
 		scbw::setThingyVisibilityFlags(thingy);
 		if (addImpactValue) {
 			persistImpact impact;
-			impact.position = Point32{ x,y };
+			impact.position = Point32{x,y};
 			impact.timer = 24;
 			impact.repeatsLeft = 5 - 1;
 			impact.elevation = elevationLevel;
@@ -479,7 +475,7 @@ void globals::createSalamanderFire(int x, int y, uint8 player,uint8 elevationLev
 void globals::createIonField(int x, int y, uint8 player, uint8 elevationLevel, bool addImpactValue) {
 	if (addImpactValue) {
 		for (auto a : persistImpacts) {
-			if (a.impactId==ImpactId::IonField && scbw::getDistanceFast(x, y, a.position.x, a.position.y) < 12) {
+			if (a.impactId == ImpactId::IonField && scbw::getDistanceFast(x, y, a.position.x, a.position.y) < 12) {
 				return;
 			}
 		}
@@ -490,7 +486,7 @@ void globals::createIonField(int x, int y, uint8 player, uint8 elevationLevel, b
 		scbw::setThingyVisibilityFlags(thingy);
 		if (addImpactValue) {
 			persistImpact impact;
-			impact.position = Point32{ x,y };
+			impact.position = Point32{x,y};
 			impact.timer = 24;
 			impact.repeatsLeft = 5 - 1;
 			impact.elevation = elevationLevel;
@@ -524,7 +520,7 @@ void __declspec(naked) Globals_SaveStateWrapper() {
 	__asm {
 		PUSHAD
 	}
-//	state = &Globals.aise_save();
+	//	state = &Globals.aise_save();
 	Globals.aise_save();
 	state = &saveState;
 	__asm {
@@ -538,8 +534,8 @@ void __declspec(naked) Globals_LoadStateWrapper() {
 	static const char* pointer;
 	static uint32 len;
 	__asm {
-		MOV len,ECX
-		MOV pointer,EAX
+		MOV len, ECX
+		MOV pointer, EAX
 		PUSHAD
 	}
 	Globals.aise_load(pointer, len);
@@ -552,9 +548,9 @@ void __declspec(naked) Globals_LoadStateWrapper() {
 void injectGlobalsHooks() {
 	jmpPatch(Globals_SaveStateWrapper, 0x004AAF23);
 	jmpPatch(Globals_LoadStateWrapper, 0x004AAE94);
-//	const uint8 retn = 0xc3;
-//	memoryPatch(0x004AAF23 + 5, &retn, 1);
-//	memoryPatch(0x004AAE94 + 5, &retn, 1);
+	//	const uint8 retn = 0xc3;
+	//	memoryPatch(0x004AAF23 + 5, &retn, 1);
+	//	memoryPatch(0x004AAE94 + 5, &retn, 1);
 }
 
 namespace scbw {
@@ -660,7 +656,7 @@ namespace scbw {
 		if (scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) > 0) {
 			scbw::set_generic_timer(unit, ValueId::KnockoutDriversTimer, 2 * 24);
 		}
-		
+
 		// Reset Hallucination
 		if (scbw::get_generic_timer(unit, ValueId::HallucinatingTimer) > 0) {
 			scbw::set_generic_timer(unit, ValueId::HallucinatingTimer, 20 * 24);
@@ -1043,7 +1039,7 @@ namespace scbw {
 	}
 
 	CUnit** getSourceQueens(CUnit* unit) {
-		CUnit* queens[2] = { nullptr };
+		CUnit* queens[2] = {nullptr};
 		if (unit == nullptr) return queens; // <- prevents crash from incubators, but does not fix the issue
 		queens[0] = scbw::get_generic_unit(unit, ValueId::BroodlingMother);
 		queens[1] = scbw::get_generic_unit(unit, ValueId::ParasiteSource);
@@ -1052,10 +1048,10 @@ namespace scbw {
 
 	void doDeconstructionDamage(CUnit* unit, uint16 weaponId, bool playSound) {
 		// Deconstruction - Pazuzu passive
-		double selfDamage = (0.25 * (double)(weapons_dat::DamageAmount[weaponId] * 256.0));
+		double selfDamage = (0.25 * (double) (weapons_dat::DamageAmount[weaponId] * 256.0));
 		auto deconstructionTarget = unit;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
-			deconstructionTarget = (CUnit*)scbw::get_generic_value(unit, ValueId::TurretParentLink);
+			deconstructionTarget = (CUnit*) scbw::get_generic_value(unit, ValueId::TurretParentLink);
 			if (deconstructionTarget == nullptr) {
 				return;
 			}

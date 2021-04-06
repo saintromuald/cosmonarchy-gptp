@@ -5,22 +5,22 @@
 
 namespace AI {
 
-CUnit* findBestDisruptionWebTarget(CUnit* caster, bool isUnderAttack) {
-	int bounds;
-	if (isUnderAttack)
-		bounds = 32 * 9;
-	else if (isUmsMode(caster->playerId))
-		bounds = 32 * 128;
-	else
-		bounds = 32 * 64;
+	CUnit* findBestDisruptionWebTarget(CUnit* caster, bool isUnderAttack) {
+		int bounds;
+		if (isUnderAttack)
+			bounds = 32 * 9;
+		else if (isUmsMode(caster->playerId))
+			bounds = 32 * 128;
+		else
+			bounds = 32 * 64;
 
-	return scbw::UnitFinder::getNearestTarget(
-		caster->getX() - bounds,
-		caster->getY() - bounds,
-		caster->getX() + bounds,
-		caster->getY() + bounds,
-		caster,
-		[&](CUnit* target) {
+		return scbw::UnitFinder::getNearestTarget(
+			caster->getX() - bounds,
+			caster->getY() - bounds,
+			caster->getX() + bounds,
+			caster->getY() + bounds,
+			caster,
+			[&](CUnit* target) {
 			if (!isTargetWorthHitting(target, caster))
 				return false;
 			CUnit* targetOfTarget;
@@ -46,6 +46,6 @@ CUnit* findBestDisruptionWebTarget(CUnit* caster, bool isUnderAttack) {
 				return true;
 			return false;
 		});
-}
+	}
 
 } //AI

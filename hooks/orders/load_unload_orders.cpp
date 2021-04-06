@@ -18,7 +18,7 @@ namespace {
 	void orderImmediate(CUnit* unit, uint8 order);																			//74B40
 	void _doOrder(CUnit* unit, uint32 orderId, int x, int y, bool stopPreviousOrders);										//74C70
 	bool32 function_00477160(CUnit* unit, uint32 unk1, uint32 unk2, uint32 unk3);												//77160
-	void function_00494BB0(CUnit* unit,int x, int y);																	//94BB0
+	void function_00494BB0(CUnit* unit, int x, int y);																	//94BB0
 	bool unitIsActiveTransport(CUnit* unit);																			//E6BA0
 	CUnit* getLoadedUnitFromIndex(CUnit* transport, int index);															//E6C40
 	bool32 getFirstLoadedWorker(CUnit* transport);																		//E6D90
@@ -44,48 +44,46 @@ namespace hooks {
 
 		CUnit* unitToLoad = unit->orderTarget.unit;
 
-		if(	unitToLoad != nullptr &&
+		if (unitToLoad != nullptr &&
 			scbw::canBeEnteredBy(unit, unitToLoad)
-		) 
-		{
+			) 		{
 			function_00474A70(unit, unitToLoad, OrderId::Pickup2);
 			prepareForNextOrder(unit);
-		}
-		else
-		if(unit->pAI != nullptr) {
+		} 		else
+			if (unit->pAI != nullptr) {
 
-			Point16 pos = {0,0};
+				Point16 pos = {0,0};
 
-			unit->userActionFlags |= 1;
+				unit->userActionFlags |= 1;
 
-			if(unit->mainOrderId != OrderId::Die) {
+				if (unit->mainOrderId != OrderId::Die) {
 
-				bool bStopLoop = (unit->orderQueueTail == nullptr);
+					bool bStopLoop = (unit->orderQueueTail == nullptr);
 
-				while(!bStopLoop) {
+					while (!bStopLoop) {
 
-					uint8 orderId = (uint8)unit->orderQueueTail->orderId;
+						uint8 orderId = (uint8) unit->orderQueueTail->orderId;
 
-					if(
-						orders_dat::CanBeInterrupted[orderId] == 0 &&
-						orderId != OrderId::ComputerAI
-					)
-						bStopLoop = true;
+						if (
+							orders_dat::CanBeInterrupted[orderId] == 0 &&
+							orderId != OrderId::ComputerAI
+							)
+							bStopLoop = true;
 
-					if(!bStopLoop) {
-						removeOrderFromUnitQueue(unit, unit->orderQueueTail);
-						bStopLoop = (unit->orderQueueTail == nullptr);
+						if (!bStopLoop) {
+							removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+							bStopLoop = (unit->orderQueueTail == nullptr);
+						}
+
 					}
+
+					unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
 
 				}
 
-				unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
+				prepareForNextOrder(unit);
 
 			}
-
-			prepareForNextOrder(unit);
-
-		}
 
 	}
 
@@ -96,23 +94,21 @@ namespace hooks {
 
 		CUnit* unitToLoad = unit->orderTarget.unit;
 
-		if(unitToLoad == nullptr) {
+		if (unitToLoad == nullptr) {
 
-			if(unit->orderQueueHead != nullptr) {
+			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			}
-			else {
-				if(unit->pAI != nullptr)
+			} 			else {
+				if (unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
 				else
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 
-		}
-		else { //E73F4
+		} 		else { //E73F4
 
-			if(scbw::canBeEnteredBy(unit, unitToLoad))
+			if (scbw::canBeEnteredBy(unit, unitToLoad))
 				unitToLoad->orderTo(OrderId::EnterTransport, unit);
 
 			unit->orderToIdle();
@@ -129,39 +125,37 @@ namespace hooks {
 
 		CUnit* unitToLoad = unit->orderTarget.unit;
 
-		if(unitToLoad == nullptr) {
+		if (unitToLoad == nullptr) {
 
-			if(unit->orderQueueHead != nullptr) {
+			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			}
-			else {
-				if(unit->pAI != nullptr)
+			} 			else {
+				if (unit->pAI != nullptr)
 					unit->orderComputerCL(OrderId::ComputerAI);
 				else
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 
-		}
-		else { //E761F
-			if(
+		} 		else { //E761F
+			if (
 				unitToLoad->pAI == nullptr ||
 				unitToLoad->mainOrderId == OrderId::Pickup4
-			) { //E762F
-				if(unit->mainOrderState == 0) {
-					if(scbw::canBeEnteredBy(unit,unitToLoad)) {
-						if(unit->mainOrderTimer == 0) {
+				) { //E762F
+				if (unit->mainOrderState == 0) {
+					if (scbw::canBeEnteredBy(unit, unitToLoad)) {
+						if (unit->mainOrderTimer == 0) {
 							unit->mainOrderTimer = 7;
-							if(!unit->isTargetWithinMinRange(unitToLoad, 1))
+							if (!unit->isTargetWithinMinRange(unitToLoad, 1))
 								orderToMoveToTarget(unit, unitToLoad);
 							else {
 								makeToHoldPosition(unit);
-								if(
+								if (
 									unitToLoad->mainOrderId != OrderId::EnterTransport &&
 									unitToLoad->mainOrderId != OrderId::Pickup4
-								)
+									)
 									unitToLoad->orderTo(OrderId::EnterTransport, unit);
-								if(unit->pAI != nullptr)
+								if (unit->pAI != nullptr)
 									unit->mainOrderState = 1;
 								else {
 									function_00474A70(unit, unitToLoad, OrderId::Pickup1);
@@ -169,12 +163,10 @@ namespace hooks {
 								}
 							}
 						}
-					}
-					else
+					} 					else
 						unit->orderToIdle();
 				}
-			}
-			else //E7642
+			} 			else //E7642
 				unit->orderToIdle();
 		}
 	}
@@ -187,11 +179,10 @@ namespace hooks {
 
 		uint32 distance;
 
-		if(
+		if (
 			unit->mainOrderState == 0 &&
 			unit->orderTarget.unit != nullptr
-		) 
-		{
+			) 		{
 			unit->mainOrderState = 1;
 			unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
 			unit->orderTarget.pt.y = (unit->orderTarget.unit)->sprite->position.y;
@@ -208,46 +199,42 @@ namespace hooks {
 
 		distance &= 0xFFFFFF00;
 
-		if(distance <= 0x1000) {
+		if (distance <= 0x1000) {
 
-			if(unit->orderQueueHead != nullptr) {
-				unknownSpecialOrder(unit,unit->orderQueueHead,OrderId::Unload,0,0,nullptr,UnitId::None);
+			if (unit->orderQueueHead != nullptr) {
+				unknownSpecialOrder(unit, unit->orderQueueHead, OrderId::Unload, 0, 0, nullptr, UnitId::None);
+				prepareForNextOrder(unit);
+			} 			else {
+				unit->performAnotherOrder(OrderId::Unload, 0, 0, nullptr, UnitId::None);
 				prepareForNextOrder(unit);
 			}
-			else {
-				unit->performAnotherOrder(OrderId::Unload,0,0,nullptr,UnitId::None);
-				prepareForNextOrder(unit);
-			}
 
-		}
-		else { //E77B4
+		} 		else { //E77B4
 
-			SetMoveTarget_xy(unit,unit->orderTarget.pt.x,unit->orderTarget.pt.y);
+			SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
-			if(
+			if (
 				unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
 				unit->orderTarget.pt.y != unit->nextTargetWaypoint.y
-			)
-			{
+				) 			{
 				unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
 				unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
 			}
 
-			if(unit->pAI != nullptr) {
+			if (unit->pAI != nullptr) {
 
 				uint32 groundHeightAtPxPos1 =
 					scbw::getGroundHeightAtPos(
 						unit->sprite->position.x,
 						unit->sprite->position.y
-						);
+					);
 
-				if(groundHeightAtPxPos1 !=
+				if (groundHeightAtPxPos1 !=
 					scbw::getGroundHeightAtPos(
-					unit->orderTarget.pt.x,
-					unit->orderTarget.pt.y
-					))
-				{
-					
+						unit->orderTarget.pt.x,
+						unit->orderTarget.pt.y
+					)) 				{
+
 					distance = scbw::getDistanceFast(
 						unit->orderTarget.pt.x * 256,
 						unit->orderTarget.pt.y * 256,
@@ -257,12 +244,11 @@ namespace hooks {
 
 					distance &= 0xFFFFFF00;
 
-					if(
+					if (
 						distance <= 0xCA000 &&
-						function_00438E70(unit,unit->orderTarget.pt.x,unit->orderTarget.pt.y) != 0 &&
+						function_00438E70(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0 &&
 						getFirstLoadedWorker(unit) == 0
-					)
-					{
+						) 					{
 
 						int index = 0;
 						bool bStopLoop = false;
@@ -276,34 +262,34 @@ namespace hooks {
 							);
 						Point16 pos = {0,0}; //unsure about this start value
 
-						while(!bStopLoop) {
+						while (!bStopLoop) {
 
-							CUnit* unitToUnload = getLoadedUnitFromIndex(unit,index);
+							CUnit* unitToUnload = getLoadedUnitFromIndex(unit, index);
 
-							if(unitToUnload != nullptr) {
+							if (unitToUnload != nullptr) {
 
-								if(unitToUnload->id == UnitId::ProtossAccantor && bIsDistanceGreaterThanHaltDistance)
+								if (unitToUnload->id == UnitId::ProtossAccantor && bIsDistanceGreaterThanHaltDistance)
 									bStopLoop = true;
-								else 
-								if(function_004E76C0(unit, unitToUnload, &pos) == 0) {
-									bStopAll = true;
-									bStopLoop = true;
-								}
+								else
+									if (function_004E76C0(unit, unitToUnload, &pos) == 0) {
+										bStopAll = true;
+										bStopLoop = true;
+									}
 
 
 
 							}
 
 							//E78BC
-							if(!bStopAll) {
+							if (!bStopAll) {
 								index++;
 								bStopLoop = (index < 8);
 							}
 
 						} //while(!bStopLoop)
 
-						if(!bStopAll) {
-							orderImmediate(unit,OrderId::Unload);
+						if (!bStopAll) {
+							orderImmediate(unit, OrderId::Unload);
 							prepareForNextOrder(unit);
 						}
 
@@ -324,93 +310,91 @@ namespace hooks {
 	//and nothing called this function)
 	void orders_Pickup4_0(CUnit* unit) {
 
-//		WRITE_TO_LOG("orders_Pickup4_0 START");
+		//		WRITE_TO_LOG("orders_Pickup4_0 START");
 
-		if(unit->playerId == 11) {
+		if (unit->playerId == 11) {
 
 			unit->userActionFlags |= 1;
 
-			if(unit->status & UnitStatus::InTransport)
-				unit->order(OrderId::Nothing2,0,0,nullptr,UnitId::None,1);
+			if (unit->status & UnitStatus::InTransport)
+				unit->order(OrderId::Nothing2, 0, 0, nullptr, UnitId::None, 1);
 			else
-				unit->order(units_dat::ReturnToIdleOrder[unit->id],0,0,nullptr,UnitId::None,1);
+				unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, 1);
 
 			prepareForNextOrder(unit);
 
-		}
-		else 
-		if(	!(unit->status & UnitStatus::InTransport) &&
-			function_00477160(unit,1,0,0) == 0
-		) 
-		{ //E7BEB
+		} 		else
+			if (!(unit->status & UnitStatus::InTransport) &&
+				function_00477160(unit, 1, 0, 0) == 0
+				) 		{ //E7BEB
 
-			CUnit* target = unit->orderTarget.unit;
-			bool jump_to_E7C2B = false;
-			bool jump_to_E7C37 = false;
-			bool jump_to_E7C44 = false;
-			bool bEndThere = false;
+				CUnit* target = unit->orderTarget.unit;
+				bool jump_to_E7C2B = false;
+				bool jump_to_E7C37 = false;
+				bool jump_to_E7C44 = false;
+				bool bEndThere = false;
 
-			if(target == nullptr) {
+				if (target == nullptr) {
 
-				if(function_004E6EF0(unit,&target) == 0) {
-					unit->orderToIdle();
-					bEndThere = true;
-				}
-				else
-				if(target != nullptr)
-					jump_to_E7C2B = true;
-
-			}
-
-			if(!bEndThere) {
-
-				if(!jump_to_E7C2B) { //E7C1B
-
-					if(!unitIsActiveTransport(target) ||
-						target->orderTarget.unit != unit
-					)
-						jump_to_E7C37 = true;
-					else
-						jump_to_E7C2B = true;
+					if (function_004E6EF0(unit, &target) == 0) {
+						unit->orderToIdle();
+						bEndThere = true;
+					} 				else
+						if (target != nullptr)
+							jump_to_E7C2B = true;
 
 				}
 
-				if(jump_to_E7C2B) {
-					if(scbw::canBeEnteredBy(target,unit))
-						jump_to_E7C44 = true;
-					else
-						jump_to_E7C37 = true;
-				}
+				if (!bEndThere) {
 
-				if(jump_to_E7C37)
-					unit->orderTarget.unit = nullptr;
+					if (!jump_to_E7C2B) { //E7C1B
 
-				if(jump_to_E7C44) {
-
-					if(unit->isTargetWithinMinRange(target,1)) { //E7C52
-
-						loadUnitProc(target,unit);
-						target->orderTo(OrderId::MoveUnload,unit->orderTarget.pt.x,unit->orderTarget.pt.y);
-
-						if(target->pAI != nullptr)
-							_doOrder(
-								target,
-								OrderId::Move,
-								target->sprite->position.x,
-								target->sprite->position.y,
-								false
-							);
-
+						if (!unitIsActiveTransport(target) ||
+							target->orderTarget.unit != unit
+							)
+							jump_to_E7C37 = true;
+						else
+							jump_to_E7C2B = true;
 
 					}
-					else { //E7C94
 
-						function_00474A70(target,unit,OrderId::Pickup2);
-						prepareForNextOrder(target);
+					if (jump_to_E7C2B) {
+						if (scbw::canBeEnteredBy(target, unit))
+							jump_to_E7C44 = true;
+						else
+							jump_to_E7C37 = true;
+					}
 
-						if(function_00438E70(unit,target->sprite->position.x,target->sprite->position.y) != 0) {
-							function_00494BB0(unit,target->sprite->position.x,target->sprite->position.y);
-							function_004EB900(unit,target);
+					if (jump_to_E7C37)
+						unit->orderTarget.unit = nullptr;
+
+					if (jump_to_E7C44) {
+
+						if (unit->isTargetWithinMinRange(target, 1)) { //E7C52
+
+							loadUnitProc(target, unit);
+							target->orderTo(OrderId::MoveUnload, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+
+							if (target->pAI != nullptr)
+								_doOrder(
+									target,
+									OrderId::Move,
+									target->sprite->position.x,
+									target->sprite->position.y,
+									false
+								);
+
+
+						} 					else { //E7C94
+
+							function_00474A70(target, unit, OrderId::Pickup2);
+							prepareForNextOrder(target);
+
+							if (function_00438E70(unit, target->sprite->position.x, target->sprite->position.y) != 0) {
+								function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
+								function_004EB900(unit, target);
+							}
+
 						}
 
 					}
@@ -419,9 +403,7 @@ namespace hooks {
 
 			}
 
-		}
-
-//		WRITE_TO_LOG("orders_Pickup4_0 END");
+		//		WRITE_TO_LOG("orders_Pickup4_0 END");
 
 	}
 
@@ -432,24 +414,22 @@ namespace hooks {
 
 		CUnit* target = unit->orderTarget.unit;
 
-		if(
+		if (
 			target != nullptr &&
 			!(target->status & UnitStatus::IsHallucination) &&
 			(target->id != UnitId::ZergOvileth ||
-			 UpgradesSc->currentLevel[unit->playerId][UpgradeId::VentralSacs] != 0) &&
+				UpgradesSc->currentLevel[unit->playerId][UpgradeId::VentralSacs] != 0) &&
 			units_dat::SpaceProvided[target->id] != 0 &&
-			scbw::canBeEnteredBy(target,unit)
-		) 
-		{ //E7D51
+			scbw::canBeEnteredBy(target, unit)
+			) 		{ //E7D51
 
-			if(
+			if (
 				unit->mainOrderState == 0 &&
 				target->mainOrderId != OrderId::Pickup2
-			)
-			{
+				) 			{
 
-				if(target->status & UnitStatus::IsBuilding) {
-					function_00474A70(target,unit,OrderId::Pickup2);
+				if (target->status & UnitStatus::IsBuilding) {
+					function_00474A70(target, unit, OrderId::Pickup2);
 					prepareForNextOrder(target);
 				}
 
@@ -457,29 +437,26 @@ namespace hooks {
 
 			}
 
-			if(	target->sprite->position.x != unit->nextTargetWaypoint.x ||
-				target->sprite->position.y != unit->nextTargetWaypoint.y)
-			{
+			if (target->sprite->position.x != unit->nextTargetWaypoint.x ||
+				target->sprite->position.y != unit->nextTargetWaypoint.y) 			{
 				unit->nextTargetWaypoint.x = target->sprite->position.x;
 				unit->nextTargetWaypoint.y = target->sprite->position.y;
 			}
 
-			function_004EB900(unit,target);
+			function_004EB900(unit, target);
 
-			if(unit->isTargetWithinMinRange(target,1))
-				loadUnitProc(target,unit);
+			if (unit->isTargetWithinMinRange(target, 1))
+				loadUnitProc(target, unit);
 
-		}
-		else {
-			if(unit->orderQueueHead != nullptr) {
+		} 		else {
+			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			}
-			else
-			if(unit->pAI != nullptr)
-				unit->orderComputerCL(OrderId::ComputerAI);
-			else
-				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+			} 			else
+				if (unit->pAI != nullptr)
+					unit->orderComputerCL(OrderId::ComputerAI);
+				else
+					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 
 		}
 
@@ -489,19 +466,18 @@ namespace hooks {
 
 	void orders_Unload(CUnit* unit) {
 
-		static CUnit* unitTable_0059CB58 = (CUnit*)(0x0059CB58);
-		static CUnit* unitTable_0059CB64 = (CUnit*)(0x0059CB64);
+		static CUnit* unitTable_0059CB58 = (CUnit*) (0x0059CB58);
+		static CUnit* unitTable_0059CB64 = (CUnit*) (0x0059CB64);
 		if (Globals.extended_unit_table == 1) {
-			const uint32 index_start = reinterpret_cast<uint32>(&new_unit_table.units[0])-336;
-			unitTable_0059CB58 = (CUnit*)index_start;
-			unitTable_0059CB64 = (CUnit*)(index_start + 12);
+			const uint32 index_start = reinterpret_cast<uint32>(&new_unit_table.units[0]) - 336;
+			unitTable_0059CB58 = (CUnit*) index_start;
+			unitTable_0059CB64 = (CUnit*) (index_start + 12);
 		}
 
-		if(
+		if (
 			unit->status & UnitStatus::GroundedBuilding ||
 			unit->mainOrderTimer == 0
-		)
-		{
+			) 		{
 
 			int counter = 0;
 			uint32 result_E7F70 = 0;
@@ -514,25 +490,24 @@ namespace hooks {
 			bool jump_to_E8195 = false;
 			bool jump_to_E81AD = false;
 
-			while(!bEndLoop) {
+			while (!bEndLoop) {
 
-				loadedUnitOffset = (uint32*)&unit->loadedUnit[counter];
+				loadedUnitOffset = (uint32*) &unit->loadedUnit[counter];
 
-				if(	*loadedUnitOffset != 0  &&
+				if (*loadedUnitOffset != 0 &&
 					unitTable_0059CB64[unit->loadedUnit[counter].index].link.prev != nullptr //sprite check
-				)
-				{
+					) 				{
 
 					CUnit* unitToUnload = &(unitTable_0059CB58[unit->loadedUnit[counter].index]);
 
-					if(unitToUnload->mainOrderId != 0 || unitToUnload->mainOrderState != 1) {
-						
-						if(unit->loadedUnit[counter].unitId == unitToUnload->targetOrderSpecial) {
+					if (unitToUnload->mainOrderId != 0 || unitToUnload->mainOrderState != 1) {
+
+						if (unit->loadedUnit[counter].unitId == unitToUnload->targetOrderSpecial) {
 
 							bFoundUnitToUnload = true;
 							result_E7F70 = unloadUnitProc(unitToUnload);
 
-							if(!(unit->status & UnitStatus::GroundedBuilding))
+							if (!(unit->status & UnitStatus::GroundedBuilding))
 								bEndLoop = true;
 
 						}
@@ -541,88 +516,84 @@ namespace hooks {
 
 				}
 
-				if(!bEndLoop) {
+				if (!bEndLoop) {
 
 					counter++;
 
-					if(counter >= 8)
+					if (counter >= 8)
 						bEndLoop = true;
 
 				}
 
 			} //while(!bEndLoop)
 
-			if(!bFoundUnitToUnload)
+			if (!bFoundUnitToUnload)
 				jump_to_E8191 = true;
 
-			if(!jump_to_E8191) {
+			if (!jump_to_E8191) {
 
-				if(result_E7F70 != 0)
+				if (result_E7F70 != 0)
 					jump_to_E8195 = true;
 				else
-				if(
-					unit->pAI == nullptr ||
-					unit->status & UnitStatus::GroundedBuilding
-				)
-					jump_to_E81AD = true;
-				else
-					function_0043DF30(unit);
+					if (
+						unit->pAI == nullptr ||
+						unit->status & UnitStatus::GroundedBuilding
+						)
+						jump_to_E81AD = true;
+					else
+						function_0043DF30(unit);
 			}
-			if(jump_to_E8191) {
-				if(result_E7F70 == 0)
+			if (jump_to_E8191) {
+				if (result_E7F70 == 0)
 					jump_to_E81AD = true;
 				else
 					jump_to_E8195 = true;
 			}
-			if(jump_to_E8195) {
-				if(
+			if (jump_to_E8195) {
+				if (
 					unit->status & UnitStatus::GroundedBuilding ||
 					!unit->hasLoadedUnit()
-				)
-				jump_to_E81AD = true;
+					)
+					jump_to_E81AD = true;
 			}
-			if(jump_to_E81AD) {
-				if(unit->orderQueueHead != nullptr) {
+			if (jump_to_E81AD) {
+				if (unit->orderQueueHead != nullptr) {
 					unit->userActionFlags |= 1;
 					prepareForNextOrder(unit);
-				}
-				else 
-				if(unit->pAI != nullptr) { //E81DE
-					unit->userActionFlags |= 1;
-					if(unit->mainOrderId == OrderId::Die)
-						prepareForNextOrder(unit);
-					else {
-						bEndLoop = (unit->orderQueueTail == nullptr);
-						while(!bEndLoop) {
-							if(
-								orders_dat::CanBeInterrupted[(unit->orderQueueTail)->orderId] ||
-								unit->orderQueueTail->orderId == OrderId::ComputerAI
-							)
-							{
-								removeOrderFromUnitQueue(unit, unit->orderQueueTail);
-							}
-							else
-								bEndLoop = true;
+				} 				else
+					if (unit->pAI != nullptr) { //E81DE
+						unit->userActionFlags |= 1;
+						if (unit->mainOrderId == OrderId::Die)
+							prepareForNextOrder(unit);
+						else {
+							bEndLoop = (unit->orderQueueTail == nullptr);
+							while (!bEndLoop) {
+								if (
+									orders_dat::CanBeInterrupted[(unit->orderQueueTail)->orderId] ||
+									unit->orderQueueTail->orderId == OrderId::ComputerAI
+									) 							{
+									removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+								} 							else
+									bEndLoop = true;
 
-							if(!bEndLoop)
-								bEndLoop = (unit->orderQueueTail == nullptr);
+								if (!bEndLoop)
+									bEndLoop = (unit->orderQueueTail == nullptr);
+							}
+							unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
+							prepareForNextOrder(unit);
 						}
-						unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
+					} 				else { //E823A
+						unit->userActionFlags |= 1;
+						unit->order(
+							units_dat::ReturnToIdleOrder[unit->id],
+							0,
+							0,
+							nullptr,
+							UnitId::None,
+							true
+						);
 						prepareForNextOrder(unit);
 					}
-				}
-				else { //E823A
-					unit->userActionFlags |= 1;
-					unit->order(
-						units_dat::ReturnToIdleOrder[unit->id],
-						0,
-						0,
-						nullptr,
-						UnitId::None,
-						true
-					);
-					prepareForNextOrder(unit);
-				}
 			}
 		}
 	}
@@ -633,7 +604,7 @@ namespace hooks {
 		uint32 v8; // esi
 		CUnit* v9; // eax
 		int32 v10; // [esp+4h] [ebp-4h]
-		
+
 		if (!(a1->status & UnitStatus::Completed)) {
 			return 0;
 		}
@@ -645,7 +616,7 @@ namespace hooks {
 		}
 		v4 = a2;
 		if (a2->status & UnitStatus::Burrowed
-//		|| a2->playerId != v3->playerId // Original code
+			//		|| a2->playerId != v3->playerId // Original code
 			) {
 			return 0;
 		}
@@ -655,9 +626,9 @@ namespace hooks {
 		if (units_dat::BaseProperty[a1->id] & UnitProperty::Building) {
 			if (!(units_dat::BaseProperty[a2->id] & UnitProperty::Organic)) {
 				return 0;
-			}	
+			}
 		}
-//		&& (unitGetRace(a2) != 1 || units_dat::SpaceRequired[(uint16)v4->id] > 1u) // Original code
+		//		&& (unitGetRace(a2) != 1 || units_dat::SpaceRequired[(uint16)v4->id] > 1u) // Original code
 		v7 = units_dat::SpaceProvided[a1->id];
 		v8 = 0;
 		v10 = 0;
@@ -665,12 +636,12 @@ namespace hooks {
 			do {
 				v9 = getLoadedUnitFromIndex(a1, v8);
 				if (v9)
-					v10 += units_dat::SpaceRequired[(uint16)v9->id];
+					v10 += units_dat::SpaceRequired[(uint16) v9->id];
 				++v8;
 			} while (v8 < v7);
 			v4 = a2;
 		}
-		return v7 - v10 >= units_dat::SpaceRequired[(uint16)v4->id];
+		return v7 - v10 >= units_dat::SpaceRequired[(uint16) v4->id];
 	}
 
 } //namespace hooks
@@ -681,398 +652,397 @@ namespace hooks {
 
 namespace {
 
-const uint32 Func_isDistanceGreaterThanHaltDistance = 0x00401240;
-bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, uint32 distance) {
+	const uint32 Func_isDistanceGreaterThanHaltDistance = 0x00401240;
+	bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, uint32 distance) {
 
-	static bool32 bPreResult;
+		static bool32 bPreResult;
 
-	__asm {
-		PUSHAD
-		PUSH x
-		PUSH distance
-		MOV EAX, y
-		MOV ECX, unit
-		CALL Func_isDistanceGreaterThanHaltDistance
-		MOV bPreResult, EAX
-		POPAD
-	}
-
-	return (bPreResult != 0);
-
-}
-
-;
-
-const uint32 Func_sub_438E70 = 0x00438E70;
-bool32 function_00438E70(CUnit* unit, int x, int y) {
-
-	static bool32 result;
-
-	__asm {
-		PUSHAD
-		PUSH y
-		PUSH x
-		MOV EAX, unit
-		CALL Func_sub_438E70
-		MOV result, EAX
-		POPAD
-	}
-
-	return result;
-
-}
-
-;
-
-const uint32 Func_Sub43DF30 = 0x0043DF30;
-void function_0043DF30(CUnit* unit) {
-
-	__asm {
-		PUSHAD
-		PUSH unit
-		CALL Func_Sub43DF30
-		POPAD
-	}
-
-}
-
-;
-
-const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
-void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
-
-	__asm {
-		PUSHAD
-		MOV ECX, unit
-		MOV EAX, order
-		CALL Func_removeOrderFromUnitQueue
-		POPAD
-	}
-
-}
-
-;
-
-const uint32 Func_unknownSpecialOrder = 0x00474540;
-void unknownSpecialOrder(CUnit* unit, COrder* order, uint8 orderId, int16 x, int16 y, CUnit* target, uint16 targetUnitId) {
-
-	static Point16 pos;
-	pos.x = x;pos.y = y;
-
-	__asm {
-		PUSHAD
-		PUSH target
-		PUSH pos
-		MOV BL, orderId
-		MOVZX EDX, targetUnitId
-		MOV ESI, unit
-		MOV EDI, order
-		CALL Func_unknownSpecialOrder
-		POPAD
-	}
-
-}
-
-;
-
-const uint32 Func_Sub474A70 = 0x00474A70;
-void function_00474A70(CUnit* unit, CUnit* target, uint8 orderId) {
-
-	__asm {
-		PUSHAD
-		MOV CL, orderId
-		MOV EDX, unit
-		MOV EAX, target
-		CALL Func_Sub474A70
-		POPAD
-	}
-
-}
-
-;
-
-const uint32 Func_OrderImmediate = 0x00474B40;
-void orderImmediate(CUnit* unit, uint8 order) {
-
-	__asm {
-		PUSHAD
-		MOV ECX, unit
-		MOV AL, order
-		CALL Func_OrderImmediate
-		POPAD
-	}
-
-}
-
-;
-
-const uint32 Func__doOrder = 0x00474C70;
-void _doOrder(CUnit* unit, uint32 orderId, int x, int y, bool stopPreviousOrders) {
-
-	bool32 bStopPreviousOrders = stopPreviousOrders ? 1 : 0;
-
-	__asm {
-		PUSHAD
-		PUSH bStopPreviousOrders
-		PUSH y
-		PUSH x
-		PUSH orderId
-		PUSH unit
-		CALL Func__doOrder
-		POPAD
-	}
-
-}
-
-;
-
-const uint32 Func_Sub477160 = 0x00477160;
-bool32 function_00477160(CUnit* unit, uint32 unk1, uint32 unk2, uint32 unk3) {
-
-	__asm {
-		PUSHAD
-		PUSH unk1
-		PUSH unk2
-		PUSH unk3
-		MOV ECX, unit
-		CALL Func_Sub477160
-		POPAD
-	}
-
-}
-
-;
-
-const uint32 Func_Sub494BB0 = 0x00494BB0;
-void function_00494BB0(CUnit* unit,int x, int y) {
-
-	__asm {
-		PUSHAD
-		MOV ECX, y
-		MOV EDX, x
-		MOV EAX, unit
-		CALL Func_Sub494BB0
-		POPAD
-	}
-
-}
-
-;
-
-//Equivalent to code unitIsActiveTransport @ 0x004E6BA0
-bool unitIsActiveTransport(CUnit* unit) {
-
-	bool result = false;
-
-	if(!(unit->status & UnitStatus::IsHallucination)) {
-
-		if(
-			unit->id != UnitId::ZergOvileth ||
-			UpgradesSc->currentLevel[unit->playerId][UpgradeId::VentralSacs] != 0
-		)
-		{
-			if(units_dat::SpaceProvided[unit->id] != 0)
-				result = true;
+		__asm {
+			PUSHAD
+			PUSH x
+			PUSH distance
+			MOV EAX, y
+			MOV ECX, unit
+			CALL Func_isDistanceGreaterThanHaltDistance
+			MOV bPreResult, EAX
+			POPAD
 		}
 
+		return (bPreResult != 0);
 
 	}
 
-	return result;
+	;
 
-}
+	const uint32 Func_sub_438E70 = 0x00438E70;
+	bool32 function_00438E70(CUnit* unit, int x, int y) {
 
-;
+		static bool32 result;
 
-const uint32 Func_getLoadedUnitFromIndex = 0x004E6C40;
-CUnit* getLoadedUnitFromIndex(CUnit* transport, int index) {
+		__asm {
+			PUSHAD
+			PUSH y
+			PUSH x
+			MOV EAX, unit
+			CALL Func_sub_438E70
+			MOV result, EAX
+			POPAD
+		}
 
-	static CUnit* return_value;
+		return result;
 
-	__asm {
-		PUSHAD
-		MOV ECX, index
-		MOV EAX, transport
-		CALL Func_getLoadedUnitFromIndex
-		MOV return_value, EAX
-		POPAD
 	}
 
-	return return_value;
+	;
 
-}
+	const uint32 Func_Sub43DF30 = 0x0043DF30;
+	void function_0043DF30(CUnit* unit) {
 
-;
+		__asm {
+			PUSHAD
+			PUSH unit
+			CALL Func_Sub43DF30
+			POPAD
+		}
 
-const uint32 Func_getFirstLoadedWorker = 0x004E6D90;
-bool32 getFirstLoadedWorker(CUnit* transport) {
-
-	static bool32 return_value;
-
-	__asm {
-		PUSHAD
-		MOV EAX, transport
-		CALL Func_getFirstLoadedWorker
-		MOV return_value, EAX
-		POPAD
 	}
 
-	return return_value;
+	;
 
-}
+	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
+	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 
-;
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			MOV EAX, order
+			CALL Func_removeOrderFromUnitQueue
+			POPAD
+		}
 
-const uint32 Func_Sub4E6EF0 = 0x004E6EF0;
-bool32 function_004E6EF0(CUnit* unit, CUnit** unitTargetOffset) {
-
-	bool32 result;
-
-	__asm {
-		PUSHAD
-		PUSH unitTargetOffset
-		MOV EBX, unit
-		CALL Func_Sub4E6EF0
-		MOV result, EAX
-		POPAD
 	}
 
-	return result;
+	;
 
-}
+	const uint32 Func_unknownSpecialOrder = 0x00474540;
+	void unknownSpecialOrder(CUnit* unit, COrder* order, uint8 orderId, int16 x, int16 y, CUnit* target, uint16 targetUnitId) {
 
-;
+		static Point16 pos;
+		pos.x = x; pos.y = y;
 
-const uint32 Func_Sub4E76C0 = 0x004E76C0;
-uint32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos) {
+		__asm {
+			PUSHAD
+			PUSH target
+			PUSH pos
+			MOV BL, orderId
+			MOVZX EDX, targetUnitId
+			MOV ESI, unit
+			MOV EDI, order
+			CALL Func_unknownSpecialOrder
+			POPAD
+		}
 
-	static uint32 result;
-
-	__asm {
-		PUSHAD
-		MOV EAX, transport
-		MOV ESI, loaded_unit
-		PUSH pos
-		CALL Func_Sub4E76C0
-		MOV result, EAX
-		POPAD
 	}
 
-	return result;
+	;
 
-}
+	const uint32 Func_Sub474A70 = 0x00474A70;
+	void function_00474A70(CUnit* unit, CUnit* target, uint8 orderId) {
 
-;
+		__asm {
+			PUSHAD
+			MOV CL, orderId
+			MOV EDX, unit
+			MOV EAX, target
+			CALL Func_Sub474A70
+			POPAD
+		}
 
-const uint32 Func_Sub4E78E0 = 0x004E78E0;
-void loadUnitProc(CUnit* unit, CUnit* unitToLoad) {
-
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		MOV ECX, unitToLoad
-		CALL Func_Sub4E78E0
-		POPAD
 	}
 
-}
+	;
 
-;
+	const uint32 Func_OrderImmediate = 0x00474B40;
+	void orderImmediate(CUnit* unit, uint8 order) {
 
-const uint32 Func_Sub4E7F70 = 0x004E7F70;
-bool32 unloadUnitProc(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			MOV AL, order
+			CALL Func_OrderImmediate
+			POPAD
+		}
 
-	static bool32 return_value;
-
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_Sub4E7F70
-		MOV return_value, EAX
-		POPAD
 	}
 
-	return return_value;
+	;
 
-}
+	const uint32 Func__doOrder = 0x00474C70;
+	void _doOrder(CUnit* unit, uint32 orderId, int x, int y, bool stopPreviousOrders) {
 
-;
+		bool32 bStopPreviousOrders = stopPreviousOrders ? 1 : 0;
 
-//not related with assigning orders, but only with
-//destinations of orders
-const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
-void makeToHoldPosition(CUnit* unit) {
+		__asm {
+			PUSHAD
+			PUSH bStopPreviousOrders
+			PUSH y
+			PUSH x
+			PUSH orderId
+			PUSH unit
+			CALL Func__doOrder
+			POPAD
+		}
 
-	__asm {
-		PUSHAD
-		MOV ESI, unit
-		CALL Func_OrdersHoldPositionSuicidal
-		POPAD
 	}
 
-}
+	;
 
-;
+	const uint32 Func_Sub477160 = 0x00477160;
+	bool32 function_00477160(CUnit* unit, uint32 unk1, uint32 unk2, uint32 unk3) {
 
-const uint32 Func_SetMoveTarget_xy = 0x004EB820;
-bool SetMoveTarget_xy(CUnit* unit, int x, int y) {
+		__asm {
+			PUSHAD
+			PUSH unk1
+			PUSH unk2
+			PUSH unk3
+			MOV ECX, unit
+			CALL Func_Sub477160
+			POPAD
+		}
 
-	static bool32 bPreResult;
-
-	__asm {
-		PUSHAD
-		MOV ESI, unit
-		MOV EBX, x
-		MOV EDI, y
-		CALL Func_SetMoveTarget_xy
-		MOV bPreResult, EAX
-		POPAD
 	}
 
-	return (bPreResult != 0);
+	;
 
-}
+	const uint32 Func_Sub494BB0 = 0x00494BB0;
+	void function_00494BB0(CUnit* unit, int x, int y) {
 
-;
+		__asm {
+			PUSHAD
+			MOV ECX, y
+			MOV EDX, x
+			MOV EAX, unit
+			CALL Func_Sub494BB0
+			POPAD
+		}
 
-const uint32 Func_Sub4EB900 = 0x004EB900;
-bool function_004EB900(CUnit* unit, CUnit* target) {
-
-	static bool32 bPreResult;
-
-	__asm {
-		PUSHAD
-		MOV EAX, target
-		MOV ECX, unit
-		CALL Func_Sub4EB900
-		MOV bPreResult, EAX
-		POPAD
 	}
 
-	return (bPreResult != 0);
+	;
 
-}
+	//Equivalent to code unitIsActiveTransport @ 0x004E6BA0
+	bool unitIsActiveTransport(CUnit* unit) {
+
+		bool result = false;
+
+		if (!(unit->status & UnitStatus::IsHallucination)) {
+
+			if (
+				unit->id != UnitId::ZergOvileth ||
+				UpgradesSc->currentLevel[unit->playerId][UpgradeId::VentralSacs] != 0
+				) 		{
+				if (units_dat::SpaceProvided[unit->id] != 0)
+					result = true;
+			}
 
 
-;
+		}
 
-const uint32 Func__moveToTarget = 0x004EB980;
-bool orderToMoveToTarget(CUnit* unit, CUnit* target) {
+		return result;
 
-	static bool32 bPreResult;
-  
-	__asm {
-		PUSHAD
-		MOV EAX, target
-		MOV ECX, unit
-		CALL Func__moveToTarget
-		MOV bPreResult, EAX
-		POPAD
 	}
 
-	return bPreResult != 0;
+	;
 
-}
+	const uint32 Func_getLoadedUnitFromIndex = 0x004E6C40;
+	CUnit* getLoadedUnitFromIndex(CUnit* transport, int index) {
+
+		static CUnit* return_value;
+
+		__asm {
+			PUSHAD
+			MOV ECX, index
+			MOV EAX, transport
+			CALL Func_getLoadedUnitFromIndex
+			MOV return_value, EAX
+			POPAD
+		}
+
+		return return_value;
+
+	}
+
+	;
+
+	const uint32 Func_getFirstLoadedWorker = 0x004E6D90;
+	bool32 getFirstLoadedWorker(CUnit* transport) {
+
+		static bool32 return_value;
+
+		__asm {
+			PUSHAD
+			MOV EAX, transport
+			CALL Func_getFirstLoadedWorker
+			MOV return_value, EAX
+			POPAD
+		}
+
+		return return_value;
+
+	}
+
+	;
+
+	const uint32 Func_Sub4E6EF0 = 0x004E6EF0;
+	bool32 function_004E6EF0(CUnit* unit, CUnit** unitTargetOffset) {
+
+		bool32 result;
+
+		__asm {
+			PUSHAD
+			PUSH unitTargetOffset
+			MOV EBX, unit
+			CALL Func_Sub4E6EF0
+			MOV result, EAX
+			POPAD
+		}
+
+		return result;
+
+	}
+
+	;
+
+	const uint32 Func_Sub4E76C0 = 0x004E76C0;
+	uint32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos) {
+
+		static uint32 result;
+
+		__asm {
+			PUSHAD
+			MOV EAX, transport
+			MOV ESI, loaded_unit
+			PUSH pos
+			CALL Func_Sub4E76C0
+			MOV result, EAX
+			POPAD
+		}
+
+		return result;
+
+	}
+
+	;
+
+	const uint32 Func_Sub4E78E0 = 0x004E78E0;
+	void loadUnitProc(CUnit* unit, CUnit* unitToLoad) {
+
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			MOV ECX, unitToLoad
+			CALL Func_Sub4E78E0
+			POPAD
+		}
+
+	}
+
+	;
+
+	const uint32 Func_Sub4E7F70 = 0x004E7F70;
+	bool32 unloadUnitProc(CUnit* unit) {
+
+		static bool32 return_value;
+
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_Sub4E7F70
+			MOV return_value, EAX
+			POPAD
+		}
+
+		return return_value;
+
+	}
+
+	;
+
+	//not related with assigning orders, but only with
+	//destinations of orders
+	const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
+	void makeToHoldPosition(CUnit* unit) {
+
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL Func_OrdersHoldPositionSuicidal
+			POPAD
+		}
+
+	}
+
+	;
+
+	const uint32 Func_SetMoveTarget_xy = 0x004EB820;
+	bool SetMoveTarget_xy(CUnit* unit, int x, int y) {
+
+		static bool32 bPreResult;
+
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			MOV EBX, x
+			MOV EDI, y
+			CALL Func_SetMoveTarget_xy
+			MOV bPreResult, EAX
+			POPAD
+		}
+
+		return (bPreResult != 0);
+
+	}
+
+	;
+
+	const uint32 Func_Sub4EB900 = 0x004EB900;
+	bool function_004EB900(CUnit* unit, CUnit* target) {
+
+		static bool32 bPreResult;
+
+		__asm {
+			PUSHAD
+			MOV EAX, target
+			MOV ECX, unit
+			CALL Func_Sub4EB900
+			MOV bPreResult, EAX
+			POPAD
+		}
+
+		return (bPreResult != 0);
+
+	}
+
+
+	;
+
+	const uint32 Func__moveToTarget = 0x004EB980;
+	bool orderToMoveToTarget(CUnit* unit, CUnit* target) {
+
+		static bool32 bPreResult;
+
+		__asm {
+			PUSHAD
+			MOV EAX, target
+			MOV ECX, unit
+			CALL Func__moveToTarget
+			MOV bPreResult, EAX
+			POPAD
+		}
+
+		return bPreResult != 0;
+
+	}
 
 	// For canEnterTransport
 	const uint32 Func_unitGetRace = 0x0047B150;
@@ -1085,7 +1055,7 @@ bool orderToMoveToTarget(CUnit* unit, CUnit* target) {
 			MOV result, EAX
 			POPAD
 		}
-		return (int8)result;
+		return (int8) result;
 	}
 
 } //Unnamed namespace

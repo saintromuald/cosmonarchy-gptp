@@ -22,36 +22,36 @@ namespace AI {
 			caster,
 			[&](CUnit* target) {
 
-				if (!isTargetWorthHitting(target, caster))
-					return false;
+			if (!isTargetWorthHitting(target, caster))
+				return false;
 
-				if (!scbw::canWeaponTargetUnit(WeaponId::StasisField, target, caster))
-					return false;
+			if (!scbw::canWeaponTargetUnit(WeaponId::StasisField, target, caster))
+				return false;
 
-				if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
-					return false;
+			if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+				return false;
 
-				CUnit* targetOfTarget = target->orderTarget.unit;
-				if (!targetOfTarget)
-					return false;
+			CUnit* targetOfTarget = target->orderTarget.unit;
+			if (!targetOfTarget)
+				return false;
 
-				if (targetOfTarget->playerId >= 8)
-					return false;
+			if (targetOfTarget->playerId >= 8)
+				return false;
 
-				if (caster->isTargetEnemy(targetOfTarget))
-					return false;
+			if (caster->isTargetEnemy(targetOfTarget))
+				return false;
 
-				const int totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::StasisField);
-				if (!isUnderAttack && totalEnemyLife < 250)
-					return false;
+			const int totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::StasisField);
+			if (!isUnderAttack && totalEnemyLife < 250)
+				return false;
 
-				const int totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::StasisField);
-				if (totalAllyLife * 2 >= totalEnemyLife)
-					return false;
+			const int totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::StasisField);
+			if (totalAllyLife * 2 >= totalEnemyLife)
+				return false;
 
-				return true;
+			return true;
 
-			});
+		});
 	}
 
 } //AI

@@ -6,13 +6,13 @@
 
 namespace hooks {
 
-void applyUpgradeFlagsToNewUnitHook(CUnit* unit);
-void applyUpgradeFlagsToExistingUnitsHook(CUnit* unit, uint8 upgradeId);
+	void applyUpgradeFlagsToNewUnitHook(CUnit* unit);
+	void applyUpgradeFlagsToExistingUnitsHook(CUnit* unit, uint8 upgradeId);
 
-void injectApplyUpgradeFlags();
+	void injectApplyUpgradeFlags();
 
-//Wrapper for the native version of applyUpgradeFlagsToExistingUnits().
-//Applies @upgradeId to all units that are owned by the owner of @p unit.
-void applyUpgradeFlagsToExistingUnits(CUnit* unit, uint8 upgradeId);
+	//Wrapper for the native version of applyUpgradeFlagsToExistingUnits().
+	//Applies @upgradeId to all units that are owned by the owner of @p unit.
+	void applyUpgradeFlagsToExistingUnits(CUnit* unit, uint8 upgradeId);
 
 } //hooks

@@ -36,31 +36,29 @@ namespace hooks {
 	}
 
 	void secondaryOrd_TrainFighter(CUnit* unit) {
-		if(
+		if (
 			unit->id == UnitId::ProtossSolarion ||
 			unit->id == UnitId::Hero_Gantrithor ||
 			unit->id == UnitId::ProtossAccantor ||
 			unit->id == UnitId::Hero_Warbringer
-		)
-		{
-			if(unit->secondaryOrderState == 0 || unit->secondaryOrderState == 1) {
+			) 		{
+			if (unit->secondaryOrderState == 0 || unit->secondaryOrderState == 1) {
 
-				if(unit->buildQueue[unit->buildQueueSlot] == UnitId::None) {
+				if (unit->buildQueue[unit->buildQueueSlot] == UnitId::None) {
 					unit->secondaryOrderState = 3;
 					unit->currentBuildUnit = nullptr;
-				}
-				else {
+				} 				else {
 
 					CUnit* builtUnit;
 
-					if(unit->secondaryOrderState == 0)
+					if (unit->secondaryOrderState == 0)
 						builtUnit = attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 1);
 					else
 						builtUnit = attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 0);
 
 					unit->currentBuildUnit = builtUnit;
 
-					if(builtUnit == nullptr)
+					if (builtUnit == nullptr)
 						unit->secondaryOrderState = 1;
 					else {
 						builtUnit->interceptor.parent = unit;
@@ -69,28 +67,36 @@ namespace hooks {
 
 				}
 
-			}
-			else
-			if(unit->secondaryOrderState == 2) {
+			} 			else
+				if (unit->secondaryOrderState == 2) {
 
-				CUnit* builtUnit = unit->currentBuildUnit;
-				uint32 hpGain;
+					CUnit* builtUnit = unit->currentBuildUnit;
+					uint32 hpGain;
 
-				if(builtUnit != nullptr) {
-				
-					hpGain = getHPGainForRepair(builtUnit);
-				
-					buildingAddon(builtUnit,hpGain,FALSE);
+					if (builtUnit != nullptr) {
 
-					if(builtUnit->status & UnitStatus::Completed) {
+						hpGain = getHPGainForRepair(builtUnit);
 
-						addHangarUnit(unit,builtUnit);
+						buildingAddon(builtUnit, hpGain, FALSE);
 
-						unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
-						unit->buildQueueSlot++;
+						if (builtUnit->status & UnitStatus::Completed) {
 
-						if(unit->buildQueueSlot >= 5)
-							unit->buildQueueSlot = 0;
+							addHangarUnit(unit, builtUnit);
+
+							unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
+							unit->buildQueueSlot++;
+
+							if (unit->buildQueueSlot >= 5)
+								unit->buildQueueSlot = 0;
+
+							scbw::refreshConsole();
+
+							unit->currentBuildUnit = nullptr;
+							unit->secondaryOrderState = 0;
+
+						}
+
+					} 				else {
 
 						scbw::refreshConsole();
 
@@ -99,43 +105,32 @@ namespace hooks {
 
 					}
 
-				}
-				else {
+				} 			else
+					if (unit->secondaryOrderState == 3) {
 
-					scbw::refreshConsole();
+						if (unit->id == UnitId::ProtossAccantor ||
+							unit->id == UnitId::Hero_Warbringer
+							)
+							unit->secondaryOrderState = 4;
+						else {
 
-					unit->currentBuildUnit = nullptr;
-					unit->secondaryOrderState = 0;
+							CUnit* inHangarChild = unit->carrier.inHangarChild;
 
-				}
+							if (inHangarChild != nullptr) {
 
-			}
-			else
-			if(unit->secondaryOrderState == 3) {
+								int32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossSteward];
 
-				if(	unit->id == UnitId::ProtossAccantor ||
-					unit->id == UnitId::Hero_Warbringer
-				)
-					unit->secondaryOrderState = 4;
-				else {
+								while (inHangarChild != nullptr && inHangarChild->hitPoints >= hpInterceptor)
+									inHangarChild = inHangarChild->interceptor.hangar_link.next;
 
-					CUnit* inHangarChild = unit->carrier.inHangarChild;
+								if (inHangarChild != nullptr)
+									inHangarChild->setHp(inHangarChild->hitPoints + 128);
 
-					if(inHangarChild != nullptr) {
+							}
 
-						int32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossSteward];
-
-						while(inHangarChild != nullptr && inHangarChild->hitPoints >= hpInterceptor)
-							inHangarChild = inHangarChild->interceptor.hangar_link.next;
-
-						if(inHangarChild != nullptr)
-							inHangarChild->setHp(inHangarChild->hitPoints + 128);
+						}
 
 					}
-
-				}
-
-			}
 
 		}
 
@@ -144,37 +139,35 @@ namespace hooks {
 	//generic unit training function
 	void function_00468420(CUnit* unit) {
 
-		if(
+		if (
 			!(unit->status & UnitStatus::DoodadStatesThing) &&
 			unit->lockdownTimer == 0 &&
 			unit->stasisTimer == 0 &&
 			unit->maelstromTimer == 0 &&
-			(	!units_dat::GroupFlags[unit->id].isZerg ||
+			(!units_dat::GroupFlags[unit->id].isZerg ||
 				unit->id == UnitId::ZergInfestedCommandCenter
-			)
-		)
-		{
+				)
+			) 		{
 
 			bool jump_to_685D8 = false;
 
-			if(unit->secondaryOrderState <= 1) {
+			if (unit->secondaryOrderState <= 1) {
 
-				if(unit->buildQueue[unit->buildQueueSlot] == UnitId::None) {
+				if (unit->buildQueue[unit->buildQueueSlot] == UnitId::None) {
 					unit->setSecondaryOrder(OrderId::Nothing2);
-					unit->sprite->playIscriptAnim(IscriptAnimation::WorkingToIdle,true);
-				}
-				else {
+					unit->sprite->playIscriptAnim(IscriptAnimation::WorkingToIdle, true);
+				} 				else {
 
 					CUnit* builtUnit;
 
-					if(unit->secondaryOrderState == 0)
-						builtUnit = attemptTrainHatchUnit(unit,unit->buildQueue[unit->buildQueueSlot],1);
+					if (unit->secondaryOrderState == 0)
+						builtUnit = attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 1);
 					else
-						builtUnit = attemptTrainHatchUnit(unit,unit->buildQueue[unit->buildQueueSlot],0);
-				
+						builtUnit = attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 0);
+
 					unit->currentBuildUnit = builtUnit;
 
-					if(builtUnit == nullptr)
+					if (builtUnit == nullptr)
 						unit->secondaryOrderState = 1;
 					else {
 
@@ -182,7 +175,7 @@ namespace hooks {
 
 						unit->secondaryOrderState = 2;
 
-						while(current_image != nullptr) {
+						while (current_image != nullptr) {
 							current_image->playIscriptAnim(IscriptAnimation::IsWorking);
 							current_image = current_image->link.next;
 						}
@@ -191,123 +184,119 @@ namespace hooks {
 
 				}
 
-			}
-			else
-			if(unit->secondaryOrderState == 2) {
+			} 			else
+				if (unit->secondaryOrderState == 2) {
 
-				CUnit* builtUnit = unit->currentBuildUnit;
+					CUnit* builtUnit = unit->currentBuildUnit;
 
-				if(builtUnit != nullptr) {
-					uint32 hpGain = getHPGainForRepair(builtUnit);
-					bool extraBuild = false;
-					if (scbw::get_generic_value(builtUnit, ValueId::Crucible) == 0) {
-						auto r = 256;
-						auto n = unitRangeCount(nullptr, CFlags::NoInvincible | CFlags::Ally | CFlags::Powered | CFlags::Completed, 
-							{ UnitId::ProtossCrucible });
-						scbw::UnitFinder unitsInSplash(builtUnit->position.x - r, builtUnit->position.y - r,
-							builtUnit->position.x + r, builtUnit->position.y + r);
-						for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
-							auto unit = unitsInSplash.getUnit(i);
-							if (n(unit)) {
-								scbw::set_generic_value(builtUnit, ValueId::Crucible, 5);//6 is ~100/15
-								buildingAddon(builtUnit, hpGain, TRUE);
-								if (builtUnit->status & UnitStatus::Completed) {
-									extraBuild = true;
+					if (builtUnit != nullptr) {
+						uint32 hpGain = getHPGainForRepair(builtUnit);
+						bool extraBuild = false;
+						if (scbw::get_generic_value(builtUnit, ValueId::Crucible) == 0) {
+							auto r = 256;
+							auto n = unitRangeCount(nullptr, CFlags::NoInvincible | CFlags::Ally | CFlags::Powered | CFlags::Completed,
+								{UnitId::ProtossCrucible});
+							scbw::UnitFinder unitsInSplash(builtUnit->position.x - r, builtUnit->position.y - r,
+								builtUnit->position.x + r, builtUnit->position.y + r);
+							for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
+								auto unit = unitsInSplash.getUnit(i);
+								if (n(unit)) {
+									scbw::set_generic_value(builtUnit, ValueId::Crucible, 5);//6 is ~100/15
+									buildingAddon(builtUnit, hpGain, TRUE);
+									if (builtUnit->status & UnitStatus::Completed) {
+										extraBuild = true;
+									}
+									break;
 								}
-								break;
 							}
+						} 					else {
+							scbw::add_generic_value(builtUnit, ValueId::Crucible, -1);
 						}
-					}
-					else {
-						scbw::add_generic_value(builtUnit, ValueId::Crucible, -1);
-					}
-					if(extraBuild || buildingAddon(builtUnit,hpGain,TRUE)) {
+						if (extraBuild || buildingAddon(builtUnit, hpGain, TRUE)) {
 
-						if(builtUnit->status & UnitStatus::Completed) {
+							if (builtUnit->status & UnitStatus::Completed) {
 
-							AI_TrainingUnit(unit,builtUnit);
+								AI_TrainingUnit(unit, builtUnit);
 
-							if(builtUnit->id == UnitId::TerranNuclearMissile)
-								hideAndDisableUnit(builtUnit);
-							else
-								orderNewUnitToRally(builtUnit,unit);
-						
-						
-						
-							function_00432430(unit,unit->buildQueueSlot);
+								if (builtUnit->id == UnitId::TerranNuclearMissile)
+									hideAndDisableUnit(builtUnit);
+								else
+									orderNewUnitToRally(builtUnit, unit);
 
-							unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
-							unit->buildQueueSlot = (unit->buildQueueSlot + 1) % 5;
-						
-							jump_to_685D8 = true;	
 
-						}
 
-					}
-					else { //unit was canceled due to lack of space around the building
+								function_00432430(unit, unit->buildQueueSlot);
 
-						uint32 queueSlot = unit->buildQueueSlot % 5;
+								unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
+								unit->buildQueueSlot = (unit->buildQueueSlot + 1) % 5;
 
-						if(unit->buildQueue[queueSlot] == UnitId::None)
-							jump_to_685D8 = true;
-						else {
+								jump_to_685D8 = true;
 
-							uint8 counter = 4;
+							}
 
-							if(unit->currentBuildUnit != nullptr)
-								AI_CancelStructure(unit->currentBuildUnit);
+						} 					else { //unit was canceled due to lack of space around the building
+
+							uint32 queueSlot = unit->buildQueueSlot % 5;
+
+							if (unit->buildQueue[queueSlot] == UnitId::None)
+								jump_to_685D8 = true;
 							else {
 
-								if(!units_dat::BaseProperty[unit->buildQueue[unit->buildQueueSlot % 5]] & UnitProperty::Building)
-									refundUnitTrainCost(unit->buildQueue[unit->buildQueueSlot % 5],unit->playerId);
+								uint8 counter = 4;
+
+								if (unit->currentBuildUnit != nullptr)
+									AI_CancelStructure(unit->currentBuildUnit);
+								else {
+
+									if (!units_dat::BaseProperty[unit->buildQueue[unit->buildQueueSlot % 5]] & UnitProperty::Building)
+										refundUnitTrainCost(unit->buildQueue[unit->buildQueueSlot % 5], unit->playerId);
+
+								}
+
+								do {
+
+									counter--;
+									unit->buildQueue[unit->buildQueueSlot] = unit->buildQueue[(unit->buildQueueSlot + 1) % 5];
+
+									if (unit->pAI != nullptr && *(uint8*) ((uint32) unit->pAI + 8) == 3) {
+										*(uint8*) ((uint32) unit->pAI + unit->buildQueueSlot + 9) = *(uint8*) ((uint32) unit->pAI + (unit->buildQueueSlot + 1) % 5 + 9);
+										*(uint32*) ((uint32) unit->pAI + unit->buildQueueSlot * 4 + 0x18) = *(uint32*) ((uint32) unit->pAI + ((unit->buildQueueSlot + 1) % 5) * 4 + 0x18);
+									}
+
+
+								} while (counter != 0);
+
+								unit->buildQueue[(unit->buildQueueSlot + 1) % 5] = UnitId::None;
+
+								jump_to_685D8 = true;
 
 							}
 
-							do {
-
-								counter--;
-								unit->buildQueue[unit->buildQueueSlot] = unit->buildQueue[(unit->buildQueueSlot + 1) % 5];
-
-								if(unit->pAI != nullptr && *(uint8*)((uint32)unit->pAI + 8) == 3) {
-									*(uint8*)((uint32)unit->pAI + unit->buildQueueSlot + 9) = *(uint8*)((uint32)unit->pAI + (unit->buildQueueSlot + 1) % 5 + 9);
-									*(uint32*)((uint32)unit->pAI + unit->buildQueueSlot * 4 + 0x18) = *(uint32*)((uint32)unit->pAI + ((unit->buildQueueSlot + 1) % 5) * 4 + 0x18);
-								}
-
-
-							}while(counter != 0);
-
-							unit->buildQueue[(unit->buildQueueSlot + 1) % 5] = UnitId::None;
-
-							jump_to_685D8 = true;
-
 						}
 
+					} 				else
+						jump_to_685D8 = true;
+
+					if (jump_to_685D8) {
+						if (builtUnit != nullptr && builtUnit->id == UnitId::ProtossSolarion) {
+							int interceptors = 12;
+
+							uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
+							buf[0] = 0x99;//new general command
+							buf[1] = NewGameCommand::CarrierPrebuild;
+							buf[2] = interceptors;
+							buf[3] = *ACTIVE_PLAYER_ID;
+							memcpy(&buf[4], &builtUnit, 4);
+
+							scbw::SendCommand(buf, 0xc);
+						}
+
+						scbw::refreshConsole();
+						unit->currentBuildUnit = nullptr;
+						unit->secondaryOrderState = 0;
 					}
 
 				}
-				else
-					jump_to_685D8 = true;			
-
-				if(jump_to_685D8) {
-					if (builtUnit!=nullptr && builtUnit->id == UnitId::ProtossSolarion) {
-						int interceptors = 12;
-
-						uint8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
-						buf[0] = 0x99;//new general command
-						buf[1] = NewGameCommand::CarrierPrebuild;
-						buf[2] = interceptors;
-						buf[3] = *ACTIVE_PLAYER_ID;
-						memcpy(&buf[4], &builtUnit, 4);
-
-						scbw::SendCommand(buf, 0xc);
-					}
-
-					scbw::refreshConsole();
-					unit->currentBuildUnit = nullptr;
-					unit->secondaryOrderState = 0;
-				}
-
-			}
 
 
 		}
@@ -322,12 +311,10 @@ namespace hooks {
 		if (id != UnitId::ProtossSolarion) {
 			if (id != UnitId::ProtossAccantor) {
 				hangarSpace = 0;
-			}
-			else {
+			} 			else {
 				hangarSpace = 5;
 			}
-		}
-		else {
+		} 		else {
 			hangarSpace = 12;
 		}
 		return hangarSpace;
@@ -342,7 +329,7 @@ namespace {
 	//Identical to getHPGainForRepair @ 0x00402C40
 	uint32 getHPGainForRepair(CUnit* unit) {
 
-		if(*CHEAT_STATE & CheatFlags::OperationCwal)
+		if (*CHEAT_STATE & CheatFlags::OperationCwal)
 			return unit->buildRepairHpGain * 16;
 		else
 			return unit->buildRepairHpGain;
@@ -472,7 +459,7 @@ namespace {
 			MOV EAX, unit
 			CALL Func_unitDeathSomething_0
 			POPAD
-		  }
+		}
 
 	}
 

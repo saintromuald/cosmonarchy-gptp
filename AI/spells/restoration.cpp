@@ -17,26 +17,26 @@ namespace AI {
 			caster,
 			[&](CUnit* target) {
 
-				if (target->playerId != caster->playerId)
-					return false;
-
-				if (!scbw::canWeaponTargetUnit(WeaponId::Restoration, target, caster))
-					return false;
-
-				if (target->getCurrentLifeInGame() <= 60)
-					return false;
-
-				if (target->ensnareTimer
-					|| target->plagueTimer
-					|| target->irradiateTimer
-					|| target->lockdownTimer
-					|| target->maelstromTimer
-					|| target->corrosiveSporeCount)
-					return true;
-
+			if (target->playerId != caster->playerId)
 				return false;
 
-			});
+			if (!scbw::canWeaponTargetUnit(WeaponId::Restoration, target, caster))
+				return false;
+
+			if (target->getCurrentLifeInGame() <= 60)
+				return false;
+
+			if (target->ensnareTimer
+				|| target->plagueTimer
+				|| target->irradiateTimer
+				|| target->lockdownTimer
+				|| target->maelstromTimer
+				|| target->corrosiveSporeCount)
+				return true;
+
+			return false;
+
+		});
 	}
 
 
@@ -58,7 +58,7 @@ namespace AI {
 
 			return true;
 
-			});
+		});
 	}
 
 } //AI

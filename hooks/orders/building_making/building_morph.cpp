@@ -97,8 +97,7 @@ namespace hooks {
 
 			jump_to_5D56C = true;
 
-		}
-		else
+		} 		else
 			if (building->mainOrderState > 6)
 				jump_to_5D56C = true;
 
@@ -121,24 +120,24 @@ namespace hooks {
 				CImage* overlay = building->sprite->getOverlay(ImageId::VespeneGeyser2);
 				if (overlay != nullptr)
 					overlay->free();
-			}				
+			}
 			building->sprite->playIscriptAnim(IscriptAnimation::SpecialState1, true);
 			building->mainOrderState = 2;
 			//scbw::printText("Set order state 2");
 			jump_to_5D56C = true;
 
-		}  else if (building->mainOrderState == 2) { // 005D5E2
-				if (building->remainingBuildTime < units_dat::TimeCost[buildingId] / 2) {
-					//scbw::printText("Set order state 3");
-					building->mainOrderState = 3;
-				}
-				jump_to_5D56C = true;
+		} else if (building->mainOrderState == 2) { // 005D5E2
+			if (building->remainingBuildTime < units_dat::TimeCost[buildingId] / 2) {
+				//scbw::printText("Set order state 3");
+				building->mainOrderState = 3;
+			}
+			jump_to_5D56C = true;
 
 		} else if (building->mainOrderState == 3) { // 005D603
-				building->sprite->playIscriptAnim(IscriptAnimation::SpecialState2, true);
-				building->mainOrderState = 4;
-				//scbw::printText("Set order state 4");
-				jump_to_5D56C = true;
+			building->sprite->playIscriptAnim(IscriptAnimation::SpecialState2, true);
+			building->mainOrderState = 4;
+			//scbw::printText("Set order state 4");
+			jump_to_5D56C = true;
 
 		} else if (building->mainOrderState == 4) { // 005D618
 
@@ -150,7 +149,7 @@ namespace hooks {
 			jump_to_5D56C = true;
 
 		} else if (building->mainOrderState == 5) { // 005D62F
-			
+
 			building->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
 			building->mainOrderState = 6;
 			playBuildingCompleteSound(building);
@@ -230,12 +229,10 @@ namespace hooks {
 
 			if (building->remainingBuildTime == 0) {
 				jump_to_5D720 = true;
-			}
-			else
+			} 			else
 				if (!scbw::isCheatEnabled(CheatFlags::OperationCwal)) {
 					jump_to_5D718 = true;
-				}
-				else {
+				} 				else {
 
 					if (building->remainingBuildTime >= OPCWAL_PROGRESS_INCREASE)
 						building->remainingBuildTime -= OPCWAL_PROGRESS_INCREASE;
@@ -253,8 +250,7 @@ namespace hooks {
 
 		if (jump_to_5D720) {
 			jump_to_5D720 = false;
-			if (!scbw::isZergBuildingMorphResult(buildingId))
-			{
+			if (!scbw::isZergBuildingMorphResult(buildingId)) 			{
 				int32 hpGain = building->buildRepairHpGain;
 				if (scbw::isCheatEnabled(CheatFlags::OperationCwal)) {
 					hpGain *= OPCWAL_PROGRESS_INCREASE;
@@ -311,8 +307,7 @@ namespace hooks {
 			if (isValidMorph(builtUnitId)) {
 				if (unit->getRace() == RaceId::Zerg) {
 					zergPlaceBuildingCntd(unit);
-				}
-				else {
+				} 				else {
 					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 					resources->minerals[unit->playerId] += (units_dat::MineralCost[builtUnitId] * 3) / 4;
 					resources->gas[unit->playerId] += (units_dat::GasCost[builtUnitId] * 3) / 4;
@@ -328,8 +323,7 @@ namespace hooks {
 					CImage* anchor = unit->getOverlay(ImageId::WarpAnchor);
 					if (anchor != nullptr) {
 						anchor->playIscriptAnim(IscriptAnimation::Death);
-					}
-					else {
+					} 					else {
 						unit->sprite->createTopOverlay(970);
 						anchor = unit->getOverlay(970);
 						if (anchor != nullptr) {
@@ -343,9 +337,9 @@ namespace hooks {
 		}
 
 		if (!bStopThere) {
-			static uint32* const u32_00581E44 = (uint32*)0x00581E44;
-			static uint32* const u32_00581ED4 = (uint32*)0x00581ED4;
-			static uint16* const u16_0066345A = (uint16*)0x0066345A;
+			static uint32* const u32_00581E44 = (uint32*) 0x00581E44;
+			static uint32* const u32_00581ED4 = (uint32*) 0x00581ED4;
+			static uint16* const u16_0066345A = (uint16*) 0x0066345A;
 			refundBuildingCost(unit->id, unit->playerId);
 
 			// possibly related to scores?
@@ -358,8 +352,7 @@ namespace hooks {
 					displayLastNetErrForPlayer(unit->playerId);
 					unit->remove();
 					bStopThere = true;
-				}
-				else {	// 005DB1E
+				} 				else {	// 005DB1E
 					// update various stuff (set hp, set shield...) not finished after createUnit
 					function_004A01F0(drone);
 					updateUnitStrength(drone);
@@ -387,8 +380,7 @@ namespace hooks {
 				updateUnitStrength(unit);
 
 				if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW &&
-					unit->sprite->images.tail->verticalOffset != 7)
-				{
+					unit->sprite->images.tail->verticalOffset != 7) 				{
 					unit->sprite->images.tail->flags |= CImage_Flags::Redraw;
 					unit->sprite->images.tail->verticalOffset = 7;
 				}
@@ -639,74 +631,74 @@ namespace hooks {
 		int unitCount = BuildingHelper::getNumberOfUnitType(unit, unitId, ignoreIncomplete);
 
 		switch (unitId) {
-		case UnitId::ZergHatchery:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLair, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergHive, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
-			break;
+			case UnitId::ZergHatchery:
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLair, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergHive, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
+				break;
 
-		case UnitId::ZergLair:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergHive, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
-			break;
+			case UnitId::ZergLair:
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergHive, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
+				break;
 
-		case UnitId::ZergHive:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
-			break;
+			case UnitId::ZergHive:
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
+				break;
 
-		case UnitId::ZergCreepColony:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSunkenColony, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSporeColony, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLarvalColony, ignoreIncomplete);
-			break;
+			case UnitId::ZergCreepColony:
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSunkenColony, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSporeColony, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLarvalColony, ignoreIncomplete);
+				break;
 
-		case UnitId::ZergIrolIris:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergOthstolOviform, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlazilArbor, ignoreIncomplete);
-			break;
+			case UnitId::ZergIrolIris:
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergOthstolOviform, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlazilArbor, ignoreIncomplete);
+				break;
 
-		case UnitId::ZergOthstolOviform:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlazilArbor, ignoreIncomplete);
-			break;
+			case UnitId::ZergOthstolOviform:
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlazilArbor, ignoreIncomplete);
+				break;
 
-		case UnitId::ZergSpawningPool:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergVorvalPond, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergNathrokLake, ignoreIncomplete);
-			break;
+			case UnitId::ZergSpawningPool:
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergVorvalPond, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergNathrokLake, ignoreIncomplete);
+				break;
 
-		case UnitId::ZergHydralDen:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergBactalDen, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLakizDen, ignoreIncomplete);
-			break;
+			case UnitId::ZergHydralDen:
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergBactalDen, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLakizDen, ignoreIncomplete);
+				break;
 
-		case UnitId::ZergMutalSpire:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGorgrokApiary, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergVithrilHaunt, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGeszithRoost, ignoreIncomplete);
-			break;
+			case UnitId::ZergMutalSpire:
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGorgrokApiary, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergVithrilHaunt, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGeszithRoost, ignoreIncomplete);
+				break;
 
-		case UnitId::ZergGorgrokApiary:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGeszithRoost, ignoreIncomplete);
-			break;
+			case UnitId::ZergGorgrokApiary:
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGeszithRoost, ignoreIncomplete);
+				break;
 
-		case UnitId::ZergQuazilQuay:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlmakAntre, ignoreIncomplete);
-			break;
+			case UnitId::ZergQuazilQuay:
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlmakAntre, ignoreIncomplete);
+				break;
 
-		case UnitId::ZergMatralNest:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAkisNest, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKonvilNest, ignoreIncomplete);
-			break;
+			case UnitId::ZergMatralNest:
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAkisNest, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKonvilNest, ignoreIncomplete);
+				break;
 
-		case UnitId::ZergUltrakCavern:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlkajChasm, ignoreIncomplete);
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKeskathGrotto, ignoreIncomplete);
-			break;
+			case UnitId::ZergUltrakCavern:
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlkajChasm, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKeskathGrotto, ignoreIncomplete);
+				break;
 
-		case UnitId::ZergZoryusShroud:
-			unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergIsthrathMound, ignoreIncomplete);
-			break;
+			case UnitId::ZergZoryusShroud:
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergIsthrathMound, ignoreIncomplete);
+				break;
 		}
 		return unitCount;
 	}

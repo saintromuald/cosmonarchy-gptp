@@ -2,9 +2,9 @@
 
 namespace hooks {
 
-void loadUnitProc(CUnit* unit, CUnit* unitToLoad);	//004E78E0
-bool32 unloadUnitProc(CUnit* unit);					//004E7F70
+	void loadUnitProc(CUnit* unit, CUnit* unitToLoad);	//004E78E0
+	bool32 unloadUnitProc(CUnit* unit);					//004E7F70
 
-void injectLoadUnloadProcHooks();
+	void injectLoadUnloadProcHooks();
 
 } //hooks

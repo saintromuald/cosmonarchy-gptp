@@ -7,28 +7,28 @@ const int MAX_SIGHT_RANGE = 11;
 
 namespace hooks {
 
-/// Returns the modified sight range of the unit, measured in matrices.
-/// StarCraft passes 1 for isForSpellCasting when using Feedback, Mind Control,
-/// and Hallucination (but not when launching Nukes).
-/// Note: sight ranges cannot exceed 11, unless extended.
-/// Equivalent to getUpgradedSightRange @ 004E5B40  
-uint32 getSightRangeHook(CUnit* unit, bool isForSpellCasting) {
-	uint32 sightRange;
+	/// Returns the modified sight range of the unit, measured in matrices.
+	/// StarCraft passes 1 for isForSpellCasting when using Feedback, Mind Control,
+	/// and Hallucination (but not when launching Nukes).
+	/// Note: sight ranges cannot exceed 11, unless extended.
+	/// Equivalent to getUpgradedSightRange @ 004E5B40  
+	uint32 getSightRangeHook(CUnit* unit, bool isForSpellCasting) {
+		uint32 sightRange;
 
-	//Check if the unit is a constructing building (exclude remorphing buildings)
-	if (	unit->status & UnitStatus::GroundedBuilding &&
+		//Check if the unit is a constructing building (exclude remorphing buildings)
+		if (unit->status & UnitStatus::GroundedBuilding &&
 			!(unit->status & UnitStatus::Completed) &&
 			!unit->isRemorphingBuilding()
-	)
-		sightRange = DEFAULT_SIGHT_RANGE;
-	else
-	//Check if the unit is blinded (don't bother if this is for spellcasting)
-	if (!isForSpellCasting && unit->isBlind)
-		sightRange = BLIND_SIGHT_RANGE;
-	else
-		sightRange = units_dat::SightRange[unit->id];
+			)
+			sightRange = DEFAULT_SIGHT_RANGE;
+		else
+			//Check if the unit is blinded (don't bother if this is for spellcasting)
+			if (!isForSpellCasting && unit->isBlind)
+				sightRange = BLIND_SIGHT_RANGE;
+			else
+				sightRange = units_dat::SightRange[unit->id];
 
-	return sightRange;
-}
+		return sightRange;
+	}
 
 } //hooks

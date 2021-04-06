@@ -251,7 +251,7 @@ namespace hooks {
 			//0048F862  |>  0FB7C0        MOVZX EAX,AX
 			//004927DF  |>  0FB7C1        MOVZX EAX,CX
 			//004C370C  |>  0FB7C0        MOVZX EAX,AX
-			
+
 		};
 	}
 	std::vector<uint32> patch_convention() {
@@ -454,7 +454,7 @@ namespace hooks {
 			Reg::L_DI,
 			0x004575C7, 0x324, 0x004575CC, Jmp::JA,
 			0x00457605, 0x325, 0x0045760A, Jmp::JA,
-			0x00457742, 0x514, 0x00457747, Jmp::JA,	
+			0x00457742, 0x514, 0x00457747, Jmp::JA,
 			//SERIOUS PROBLEM - 1 extra byte
 			TblPatchType::RegisterWriting,2,1,2,6,1,
 			Reg::_EDX,Reg::L_AX,
@@ -497,55 +497,55 @@ namespace hooks {
 			0x00494563,
 			Reg::_ECX,
 			0x004276E0,
-/*
-			TblPatchType::JmpPatch, 1, 2, 1, 35,//for Cmp patches
-			Reg::__NOP,
-			0x00423501, Jmp::JA,
-			0x00425B89, Jmp::JA,
-			0x00425CB9, Jmp::JA,
-			0x00425D0D, Jmp::JA,
-			0x00425D5D, Jmp::JA,
-			0x00425E40, Jmp::JA,
-			0x00425E45, Jmp::JA,
-			0x0042744F, Jmp::JA,
-			0x00427AE2, Jmp::JA,
-			0x00427BD8, Jmp::JA,
-			0x0042F3BA, Jmp::JBE,
-			0x0042F3F3, Jmp::JA,
-			0x004576F7, Jmp::JA,
-			0x00457D8c, Jmp::JA,
-			0x004647BF, Jmp::JA,
-			0x0047457B, Jmp::JA,
-			0x00474614, Jmp::JA,
-			0x00475546, Jmp::JA,
-			0x0047558A, Jmp::JA,
-			0x0048E514, Jmp::JA,
-			0x0048E66A, Jmp::JA,
-			0x004928E9, Jmp::JA,
-			0x004E997A, Jmp::JA,
-			0x004F4F7B, Jmp::JA,
-			0x00425C5C, Jmp::JA,
-			0x0042621F, Jmp::JA,
-			0x00426252, Jmp::JA,
-			0x004579DB, Jmp::JA,
-			0x00459175, Jmp::JA,
-			0x004A4C55, Jmp::JA,
-			0x004A5155, Jmp::JBE,
-			0x004A518D, Jmp::JA,
-			0x00457C38, Jmp::JA,
-			0x0045783f, Jmp::JA,
-			0x004578a4, Jmp::JA,
+			/*
+						TblPatchType::JmpPatch, 1, 2, 1, 35,//for Cmp patches
+						Reg::__NOP,
+						0x00423501, Jmp::JA,
+						0x00425B89, Jmp::JA,
+						0x00425CB9, Jmp::JA,
+						0x00425D0D, Jmp::JA,
+						0x00425D5D, Jmp::JA,
+						0x00425E40, Jmp::JA,
+						0x00425E45, Jmp::JA,
+						0x0042744F, Jmp::JA,
+						0x00427AE2, Jmp::JA,
+						0x00427BD8, Jmp::JA,
+						0x0042F3BA, Jmp::JBE,
+						0x0042F3F3, Jmp::JA,
+						0x004576F7, Jmp::JA,
+						0x00457D8c, Jmp::JA,
+						0x004647BF, Jmp::JA,
+						0x0047457B, Jmp::JA,
+						0x00474614, Jmp::JA,
+						0x00475546, Jmp::JA,
+						0x0047558A, Jmp::JA,
+						0x0048E514, Jmp::JA,
+						0x0048E66A, Jmp::JA,
+						0x004928E9, Jmp::JA,
+						0x004E997A, Jmp::JA,
+						0x004F4F7B, Jmp::JA,
+						0x00425C5C, Jmp::JA,
+						0x0042621F, Jmp::JA,
+						0x00426252, Jmp::JA,
+						0x004579DB, Jmp::JA,
+						0x00459175, Jmp::JA,
+						0x004A4C55, Jmp::JA,
+						0x004A5155, Jmp::JBE,
+						0x004A518D, Jmp::JA,
+						0x00457C38, Jmp::JA,
+						0x0045783f, Jmp::JA,
+						0x004578a4, Jmp::JA,
 
-			TblPatchType::JmpPatch, 1, 2, 1, 8,//for register cmp
-			Reg::__NOP,
-			0x004577BF, Jmp::JA,
-			0x0045793C, Jmp::JA,
-			0x00457953, Jmp::JA,
-			0x0045799B, Jmp::JA,
-			0x00457A33, Jmp::JA,
-			0x004575CC, Jmp::JA,
-			0x0045760A, Jmp::JA,
-			0x00457747, Jmp::JA,*/
+						TblPatchType::JmpPatch, 1, 2, 1, 8,//for register cmp
+						Reg::__NOP,
+						0x004577BF, Jmp::JA,
+						0x0045793C, Jmp::JA,
+						0x00457953, Jmp::JA,
+						0x0045799B, Jmp::JA,
+						0x00457A33, Jmp::JA,
+						0x004575CC, Jmp::JA,
+						0x0045760A, Jmp::JA,
+						0x00457747, Jmp::JA,*/
 		};
 	}
 	namespace ConvReadStatus {
@@ -555,25 +555,25 @@ namespace hooks {
 			ReadArgs,
 		};
 	}
-	void memoryPatchVec(uint32 address, std::vector<uint8> &patch) {
-		for (int i = 0; i < patch.size();i++) {
-			memoryPatch(address+i, patch[i]);
+	void memoryPatchVec(uint32 address, std::vector<uint8>& patch) {
+		for (int i = 0; i < patch.size(); i++) {
+			memoryPatch(address + i, patch[i]);
 		}
 	}
 
-//0x004234FC, 0x369, 0x00423501, Jmp::JA,
-/*
+	//0x004234FC, 0x369, 0x00423501, Jmp::JA,
+	/*
 
-004234FC  |.  66:8139 6903  CMP WORD PTR DS:[ECX],369
-00423501  |.  77 07         JA SHORT 0042350A
-00423503  |.  B8 7D1B5000   MOV EAX,00501B7D
+	004234FC  |.  66:8139 6903  CMP WORD PTR DS:[ECX],369
+	00423501  |.  77 07         JA SHORT 0042350A
+	00423503  |.  B8 7D1B5000   MOV EAX,00501B7D
 
 
-static uint32 wrapJumpAddressIf;
-static uint32 wrapJumpAddressAfter;
-static uint32 wrapComparison; (0x369 for example)
-static char tblNew[] = "rez\\stat_txt.tblex";
-*/
+	static uint32 wrapJumpAddressIf;
+	static uint32 wrapJumpAddressAfter;
+	static uint32 wrapComparison; (0x369 for example)
+	static char tblNew[] = "rez\\stat_txt.tblex";
+	*/
 	/*void __declspec(naked) ecx_callset() {
 		static uint32 currentWrap;
 		static uint32 currentAddressIf;
@@ -664,7 +664,7 @@ static char tblNew[] = "rez\\stat_txt.tblex";
 		int currentArgCount = 0;
 		int currentSequenceCount = 0;
 		int currentHeader = -1;
-		
+
 		auto patch_list = patch_convention();
 		std::vector<uint8> patch;
 		std::vector<uint32> sequence_lengths;
@@ -681,8 +681,7 @@ static char tblNew[] = "rez\\stat_txt.tblex";
 				}
 				i += 3 + currentSequenceCount;
 				read_status = ConvReadStatus::ReadArgs;
-			}
-			else if (read_status == ConvReadStatus::ReadArgs) {
+			} 			else if (read_status == ConvReadStatus::ReadArgs) {
 				for (int a = 0; a < currentSequenceCount; a++) {
 					vars.clear();
 					for (int j = 0; j < currentVarCount; j++) {
@@ -761,146 +760,117 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 								jmpPatch(esi_callset, address);
 							}
 							currentWrapPatch++;*/
-						}
-						else if (currentHeader == TblPatchType::PtrWriting) {
-							
+						} 						else if (currentHeader == TblPatchType::PtrWriting) {
+
 							uint16 string_id = patch_list[i + 1];
 							uint8 bl = patch_list[i + 1] & 0xff;
 							uint8 bu = (patch_list[i + 1] & 0xff00) >> 8;
-							patch = { 0x8b,0x82,bl,bu,0x00,0x00,0x90 };
+							patch = {0x8b,0x82,bl,bu,0x00,0x00,0x90};
 							if (vars[0] == Reg::_EAX) {
 								if (vars[1] == Reg::_ECX) {
 									patch[1] = 0x81;
-								}
-								else if (vars[1] == Reg::_EDX) {
+								} 								else if (vars[1] == Reg::_EDX) {
 									patch[1] = 0x82;
-								}
-								else if (vars[1] == Reg::_ESI) {
+								} 								else if (vars[1] == Reg::_ESI) {
 									patch[1] = 0x86;
 								}
-							}
-							else if (vars[0] == Reg::_ECX) {
+							} 							else if (vars[0] == Reg::_ECX) {
 								if (vars[1] == Reg::_ESI) {
 									patch[1] = 0x8e;
-								}
-								else if (vars[1] == Reg::_EDX) {
+								} 								else if (vars[1] == Reg::_EDX) {
 									patch[1] = 0x8a;
 								}
-							}
-							else if (vars[0] == Reg::_EDI && vars[1] == Reg::_ECX) {
+							} 							else if (vars[0] == Reg::_EDI && vars[1] == Reg::_ECX) {
 								patch[1] = 0xb9;
-							}
-							else if (vars[0] == Reg::_EBX && vars[1] == Reg::_ECX) {
+							} 							else if (vars[0] == Reg::_EBX && vars[1] == Reg::_ECX) {
 								patch[1] = 0x99;
-							}
-							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_EAX) {
+							} 							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_EAX) {
 								patch[1] = 0xb0;
 							}
-						}
-						else if (currentHeader == TblPatchType::PtrMathWriting) {
-							patch = { 0x8b, 0x44, 0x81, 0x04, 0x90 };
+						} 						else if (currentHeader == TblPatchType::PtrMathWriting) {
+							patch = {0x8b, 0x44, 0x81, 0x04, 0x90};
 							if (vars[0] == Reg::_EAX && vars[1] == Reg::_ECX && vars[2] == Reg::_EAX) {
 								//0x81
-							}
-							else if (vars[0] == Reg::_EAX && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
+							} 							else if (vars[0] == Reg::_EAX && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
 								patch[2] = 0x91;
-							}
-							else if (vars[0] == Reg::_EAX && vars[1] == Reg::_ESI && vars[2] == Reg::_EAX) {
+							} 							else if (vars[0] == Reg::_EAX && vars[1] == Reg::_ESI && vars[2] == Reg::_EAX) {
 								patch[2] = 0x86;
-							}
-							else if (vars[0] == Reg::_EAX && vars[1] == Reg::_EDX && vars[2] == Reg::_EAX) {
+							} 							else if (vars[0] == Reg::_EAX && vars[1] == Reg::_EDX && vars[2] == Reg::_EAX) {
 								patch[2] = 0x82;
-							}
-							else if (vars[0] == Reg::_EDX && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
+							} 							else if (vars[0] == Reg::_EDX && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
 								patch[1] = 0x54;
 								patch[2] = 0x91;
-							}
-							else if (vars[0] == Reg::_ECX && vars[1] == Reg::_ESI && vars[2] == Reg::_EAX) {
+							} 							else if (vars[0] == Reg::_ECX && vars[1] == Reg::_ESI && vars[2] == Reg::_EAX) {
 								patch[1] = 0x4c;
 								patch[2] = 0x86;
-							}
-							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
+							} 							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_ECX && vars[2] == Reg::_EDX) {
 								patch[1] = 0x74;
 								patch[2] = 0x91;
-							}
-							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_EDX && vars[2] == Reg::_ECX) {
+							} 							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_EDX && vars[2] == Reg::_ECX) {
 								patch[1] = 0x74;
 								patch[2] = 0x8a;
 								//
-							}
-							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_ECX && vars[2] == Reg::_EAX) {
+							} 							else if (vars[0] == Reg::_ESI && vars[1] == Reg::_ECX && vars[2] == Reg::_EAX) {
 								patch[1] = 0x74;
 								patch[2] = 0x81;
 							}
-						}
-						else if (currentHeader == TblPatchType::RegisterPointerCmp) {
-							patch = { 0x3b, 0x01, 0x90 };
+						} 						else if (currentHeader == TblPatchType::RegisterPointerCmp) {
+							patch = {0x3b, 0x01, 0x90};
 							if (vars[0] == Reg::L_AX) {
 								if (vars[1] == Reg::_ECX) {
 									//0x01
-								}
-								else if (vars[1] == Reg::_ESI) {
+								} 								else if (vars[1] == Reg::_ESI) {
 									patch[1] = 0x06;
-								}
-								else if (vars[1] == Reg::_EDX) {
+								} 								else if (vars[1] == Reg::_EDX) {
 									patch[1] = 0x02;
 								}
-							}
-							else if (vars[0] == Reg::L_CX) {
+							} 							else if (vars[0] == Reg::L_CX) {
 								if (vars[1] == Reg::_ECX) {
 									patch[1] = 0x0a;
-								}
-								else if (vars[1] == Reg::_ESI) {
+								} 								else if (vars[1] == Reg::_ESI) {
 									patch[1] = 0x0e;
 								}
 							}
-						}
-						else if (currentHeader == TblPatchType::RegisterPointerMov) {
-							patch = { 0x8b, 0x39, 0x90 };//DI, ECX
+						} 						else if (currentHeader == TblPatchType::RegisterPointerMov) {
+							patch = {0x8b, 0x39, 0x90};//DI, ECX
 							if (vars[0] == Reg::L_DX && vars[1] == Reg::_ECX) {
 								patch[1] = 0x11;
 							}
-						}
-						else if (currentHeader == TblPatchType::RegisterCmp) {
+						} 						else if (currentHeader == TblPatchType::RegisterCmp) {
 							//require wrappers
 							//reads cmp
-						}
-						else if (currentHeader == TblPatchType::RegisterWriting) {
-							patch = { 0x89, 0xc2, 0x90 };
+						} 						else if (currentHeader == TblPatchType::RegisterWriting) {
+							patch = {0x89, 0xc2, 0x90};
 							if (vars[0] == Reg::_ECX) {
 								patch[1] = 0xc1;
 							}
-						}
-						else if (currentHeader == TblPatchType::NopPatch) {
-							patch = { 0x90,0x90,0x90 };
-						}
-						else if (currentHeader == TblPatchType::AddPatch) {
-							patch = { 0x83, 0xC0, 0xFF, 0x90, 0x90};
+						} 						else if (currentHeader == TblPatchType::NopPatch) {
+							patch = {0x90,0x90,0x90};
+						} 						else if (currentHeader == TblPatchType::AddPatch) {
+							patch = {0x83, 0xC0, 0xFF, 0x90, 0x90};
 							if (vars[0] == Reg::_EAX) {
 
+							} 							else if (vars[0] = Reg::_ECX) {
+								patch[1] = 0xc1;
 							}
-							else if(vars[0]=Reg::_ECX) {
-								patch[1]=0xc1;
-							}
-						}
-						else if (currentHeader == TblPatchType::JmpPatch) {
+						} 						else if (currentHeader == TblPatchType::JmpPatch) {
 							uint8 jump = patch_list[i + 1];
-							patch = { 0xeb };
+							patch = {0xeb};
 							if (jump == Jmp::JBE) {
-								patch = { 0x90,0x90 };
+								patch = {0x90,0x90};
 							}
 						}
-/*						else if (currentHeader == TblPatchType::DecPatch) {
-							if (vars[0] == Reg::_EAX) {
-								patch = { 0x48,0x90,0x90,0x90,0x90 };
-							}
-						}*/
+						/*						else if (currentHeader == TblPatchType::DecPatch) {
+													if (vars[0] == Reg::_EAX) {
+														patch = { 0x48,0x90,0x90,0x90,0x90 };
+													}
+												}*/
 
 
-						
+
 						memoryPatchVec(address, patch);
-							//don't patch if wrapper offset
-						
+						//don't patch if wrapper offset
+
 						i += currentArgCount;
 					}
 				}

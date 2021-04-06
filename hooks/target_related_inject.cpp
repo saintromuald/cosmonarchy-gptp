@@ -78,10 +78,10 @@ namespace {
 namespace hooks {
 
 	void injectTargetHooks() {
-//		jmpPatch(genericRightClickUnitProc2_Wrapper, 0x00455E00, 1);
-//		jmpPatch(genericRightClickUnitProc2_Wrapper, 0x004C20C0, 0);
-        nops(0x004EB176, 8);//disruption web
-        nops(0x004EB316, 2);//disruption web
+		//		jmpPatch(genericRightClickUnitProc2_Wrapper, 0x00455E00, 1);
+		//		jmpPatch(genericRightClickUnitProc2_Wrapper, 0x004C20C0, 0);
+		nops(0x004EB176, 8);//disruption web
+		nops(0x004EB316, 2);//disruption web
 
 //		jmpPatch(unitCanSeeCloakedTarget_Wrapper, 0x00401D60, 4);
 	}

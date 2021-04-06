@@ -43,7 +43,7 @@ namespace hooks {
 		return 1;
 	};
 
-	signed int loadGameCreate(int a1, char a2) { //004EE520 -- 
+	signed int loadGameCreate(int a1, char a2) { //004EE520 --
 		signed int result; // eax
 		void* v3; // ecx
 

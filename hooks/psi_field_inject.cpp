@@ -49,7 +49,7 @@ void hideAllPsiFieldsOnUnselect(CUnit* unit) {
 
 	if (!scbw::isInReplay() && unit->playerId == *LOCAL_NATION_ID) {
 		if ((unit->status & UnitStatus::Completed) && hooks::isReadyToMakePsiField(unit)) {
-			 hideAllPsiFields();
+			hideAllPsiFields();
 		}
 	}
 
@@ -108,7 +108,7 @@ void __declspec(naked) packUnitData_PsiProvider() {
 
 	static CUnit* unit;
 	static uint16 unitId;
-	
+
 	__asm {
 		MOV unitId, CX
 		MOV unit, ESI
@@ -117,7 +117,7 @@ void __declspec(naked) packUnitData_PsiProvider() {
 
 	if (hooks::canMakePsiField(unitId)) {
 		if (unit->building.pylonAura != nullptr)
-			*((uint32*)&unit->building.pylonAura) = (unit->building.pylonAura - spriteTable) / sizeof(CSprite) + 1;
+			*((uint32*) &unit->building.pylonAura) = (unit->building.pylonAura - spriteTable) / sizeof(CSprite) + 1;
 	}
 
 	__asm {
@@ -142,7 +142,7 @@ void __declspec(naked) unpackUnitData_PsiProvider() {
 
 	if (hooks::canMakePsiField(unitId))
 		if (unit->building.pylonAura != nullptr)
-			unit->building.pylonAura = &spriteTable[(int)unit->building.pylonAura];
+			unit->building.pylonAura = &spriteTable[(int) unit->building.pylonAura];
 
 	__asm {
 		POPAD
@@ -154,11 +154,11 @@ void __declspec(naked) unpackUnitData_PsiProvider() {
 //-------- Hook injector --------//
 namespace hooks {
 
-void injectPsiFieldHooks() {
-	jmpPatch(showAllPsiFieldsOnSelectWrapper,	0x004E6224, 0);
-	jmpPatch(hideAllPsiFieldsOnUnselectWrapper,	0x004E62BE, 0);
-	jmpPatch(packUnitData_PsiProvider,			0x004E3935, 0);
-	jmpPatch(unpackUnitData_PsiProvider,		0x004E3182, 0);
-}
+	void injectPsiFieldHooks() {
+		jmpPatch(showAllPsiFieldsOnSelectWrapper, 0x004E6224, 0);
+		jmpPatch(hideAllPsiFieldsOnUnselectWrapper, 0x004E62BE, 0);
+		jmpPatch(packUnitData_PsiProvider, 0x004E3935, 0);
+		jmpPatch(unpackUnitData_PsiProvider, 0x004E3182, 0);
+	}
 
 } //hooks

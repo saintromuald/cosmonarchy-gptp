@@ -9,7 +9,7 @@ namespace AI {
 
 		bool32 returnValue;
 
-		const uint32* offset_0x005873F0 = (uint32*)0x005873F0;
+		const uint32* offset_0x005873F0 = (uint32*) 0x005873F0;
 
 		uint8 isUnderDarkSwarmStatus;
 
@@ -24,8 +24,7 @@ namespace AI {
 				(units_dat::BaseProperty[target->id] & UnitProperty::Building) ||
 				(*offset_0x005873F0 == 0) ||
 				!scbw::isUnderDarkSwarm(target)
-				)
-			{
+				) 			{
 
 				int32 targetX = target->getX();
 				int32 targetY = target->getY();
@@ -40,33 +39,32 @@ namespace AI {
 				else
 					isUnderDarkSwarmStatus = 0;
 
-			}
-			else
+			} 			else
 				isUnderDarkSwarmStatus = 0xFF;
 
-		//back to weaponBehaviourCanHitTargetCheck code
+			//back to weaponBehaviourCanHitTargetCheck code
 
-		if (attacker->status & UnitStatus::InAir)
-			returnValue = isUnderDarkSwarmStatus;
-		else
-			if (target->status & UnitStatus::InAir)
+			if (attacker->status & UnitStatus::InAir)
 				returnValue = isUnderDarkSwarmStatus;
-			else {
-
-				if (
-					scbw::getGroundHeightAtPos(attacker->getX(), attacker->getY()) >=
-					scbw::getGroundHeightAtPos(target->getX(), target->getY())
-					)
+			else
+				if (target->status & UnitStatus::InAir)
 					returnValue = isUnderDarkSwarmStatus;
-				else
-					if (isUnderDarkSwarmStatus <= OrderId::DarkSwarm)	/*code use 0x77, the order seems to fit,but maybe*/
-						returnValue = OrderId::DarkSwarm;				/*that's just an accident and it's unrelated*/
-					else
+				else {
+
+					if (
+						scbw::getGroundHeightAtPos(attacker->getX(), attacker->getY()) >=
+						scbw::getGroundHeightAtPos(target->getX(), target->getY())
+						)
 						returnValue = isUnderDarkSwarmStatus;
+					else
+						if (isUnderDarkSwarmStatus <= OrderId::DarkSwarm)	/*code use 0x77, the order seems to fit,but maybe*/
+							returnValue = OrderId::DarkSwarm;				/*that's just an accident and it's unrelated*/
+						else
+							returnValue = isUnderDarkSwarmStatus;
 
-			}
+				}
 
-		return returnValue;
+			return returnValue;
 
 	}
 
@@ -85,16 +83,14 @@ namespace AI {
 					!caster->isTargetEnemy(targetOfTarget) &&
 					targetOfTarget->subunit == nullptr &&
 					!(targetOfTarget->status & UnitStatus::InAir)
-					)
-				{
+					) 				{
 
 					uint8 totGroundWeapon = targetOfTarget->getGroundWeapon();
 
 					if (
 						totGroundWeapon != WeaponId::None &&
 						weapons_dat::Behavior[totGroundWeapon] == WeaponBehavior::AppearOnAttacker
-						)
-					{
+						) 					{
 
 						uint8 targetGroundWeapon;
 
@@ -118,24 +114,19 @@ namespace AI {
 							else
 								bReturnValue = false;
 
-						}
-						else
+						} 						else
 							bReturnValue = false;
 
-					}
-					else
+					} 					else
 						bReturnValue = false;
 
-				}
-				else
+				} 				else
 					bReturnValue = false;
 
-			}
-			else
+			} 			else
 				bReturnValue = false;
 
-		}
-		else
+		} 		else
 			bReturnValue = false;
 
 		return bReturnValue;
@@ -229,14 +220,14 @@ namespace AI {
 			caster->getY() + bounds,
 			caster,
 			[&](CUnit* target) {
-				return DarkSwarmTargetFinderMatch(caster, target);
-			});
+			return DarkSwarmTargetFinderMatch(caster, target);
+		});
 
-			//Specific to 0x00442840
-			if ((result != nullptr) && (result->status & UnitStatus::InAir))
-				result = result->orderTarget.unit;
+		//Specific to 0x00442840
+		if ((result != nullptr) && (result->status & UnitStatus::InAir))
+			result = result->orderTarget.unit;
 
-			return result;
+		return result;
 
 	}
 

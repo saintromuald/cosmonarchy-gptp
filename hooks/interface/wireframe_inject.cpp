@@ -3,57 +3,57 @@
 
 namespace {
 
-void __declspec(naked) statdata_UnitWireframeUpdate_FragmentWrapper() {
+	void __declspec(naked) statdata_UnitWireframeUpdate_FragmentWrapper() {
 
-	static const uint32 JUMPBACK_POINT_WIREFRAME = 0x00456955;
+		static const uint32 JUMPBACK_POINT_WIREFRAME = 0x00456955;
 
-	static CUnit* unit;
-	static uint16 unitId;
+		static CUnit* unit;
+		static uint16 unitId;
 
-	__asm {
-		MOV unit, ESI
-		PUSHAD
+		__asm {
+			MOV unit, ESI
+			PUSHAD
+		}
+
+		unitId = hooks::statdata_UnitWireframeUpdate_Fragment(unit);
+
+		__asm {
+			POPAD
+			MOVZX ECX, unitId
+			JMP JUMPBACK_POINT_WIREFRAME
+		}
+
 	}
 
-	unitId = hooks::statdata_UnitWireframeUpdate_Fragment(unit);
+	void __declspec(naked) wireframeShields_Wrapper() {
+		//
+		static CUnit* unit;
+		static uint8 result;
+		__asm {
+			MOV unit, EDX
+			PUSHAD
+		}
+		result = hooks::wireframeShields(unit);
+		__asm {
+			POPAD
+			MOV AL, result
+			RETN
+		}
 
-	__asm {
-		POPAD
-		MOVZX ECX, unitId
-		JMP JUMPBACK_POINT_WIREFRAME
 	}
-
-}
-
-void __declspec(naked) wireframeShields_Wrapper() {
-	//
-	static CUnit* unit;
-	static uint8 result;
-	__asm {
-		MOV unit, EDX
-		PUSHAD
-	}
-	result = hooks::wireframeShields(unit);
-	__asm {
-		POPAD
-		MOV AL,result
-		RETN
-	}
-
-}
 }; //unnamed namespace
 
 namespace hooks {
 
-void injectWireframeHook() {
+	void injectWireframeHook() {
 
-	//jmpPatch(statdata_UnitWireframeUpdate_FragmentWrapper, 0x00456911, 2);
-	//unused right now, must be updated for new unit ids if used
+		//jmpPatch(statdata_UnitWireframeUpdate_FragmentWrapper, 0x00456911, 2);
+		//unused right now, must be updated for new unit ids if used
 
-	//new
-	jmpPatch(wireframeShields_Wrapper, 0x004566B0, 5);
-}
+		//new
+		jmpPatch(wireframeShields_Wrapper, 0x004566B0, 5);
+	}
 
-;
+	;
 
 } //hooks

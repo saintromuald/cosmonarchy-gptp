@@ -7,7 +7,7 @@
 //helper functions def
 namespace {
 
-bool upgradeRestrictionProc(CUnit* unit, uint8 upgradeId, uint32 Func_UpgradeRestrictionProc);
+	bool upgradeRestrictionProc(CUnit* unit, uint8 upgradeId, uint32 Func_UpgradeRestrictionProc);
 
 } //unnamed namespace
 
@@ -19,11 +19,11 @@ namespace hooks {
 
 		bool8 bSpeedUpgrade = 0, bCooldownUpgrade = 0;
 
-	/*	if (unit->id == UnitId::vulture) {
-			if(scbw::getUpgradeLevel(unit->playerId,UpgradeId::IonPropulsion) && unit->sprite!=nullptr){
-				unit->sprite->elevationLevel = 12;
-			}
-		}*/
+		/*	if (unit->id == UnitId::vulture) {
+				if(scbw::getUpgradeLevel(unit->playerId,UpgradeId::IonPropulsion) && unit->sprite!=nullptr){
+					unit->sprite->elevationLevel = 12;
+				}
+			}*/
 
 		if (unit->id == UnitId::ZergLakizilisk)
 			bSpeedUpgrade = 1;

@@ -10,8 +10,8 @@ namespace SplashType {
 }
 
 namespace hooks {
-  
-	void friendlySplash(CBullet* bullet, uint32 weaponId, uint8 splash, CUnit* guaranteed_hit=nullptr);
+
+	void friendlySplash(CBullet* bullet, uint32 weaponId, uint8 splash, CUnit* guaranteed_hit = nullptr);
 	void friendlyLurkerSplash(CBullet* bullet, uint32 weaponId, uint8 splash);
 
 	void injectWeaponEffectHook();

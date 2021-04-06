@@ -31,7 +31,7 @@ namespace {
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV EAX, [EBP+0x08]
+			MOV EAX, [EBP + 0x08]
 			MOV unit, EAX
 			PUSHAD
 		}
@@ -94,10 +94,10 @@ namespace {
 namespace hooks {
 
 	void injectStopHoldPosOrdersHooks() {
-		jmpPatch(orders_MedicHoldPositionWrapper,	0x00464050, 0);
-		jmpPatch(orders_ReaverStopWrapper,			0x004654B0, 1);
-		jmpPatch(orders_GuardWrapper,				0x00475B90, 2);
-		jmpPatch(function_004774A0_Wrapper,			0x004774A0, 3);
+		jmpPatch(orders_MedicHoldPositionWrapper, 0x00464050, 0);
+		jmpPatch(orders_ReaverStopWrapper, 0x004654B0, 1);
+		jmpPatch(orders_GuardWrapper, 0x00475B90, 2);
+		jmpPatch(function_004774A0_Wrapper, 0x004774A0, 3);
 	}
 
 } //hooks

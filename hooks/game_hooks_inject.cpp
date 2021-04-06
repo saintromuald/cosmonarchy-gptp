@@ -14,8 +14,8 @@ void __declspec(naked) onGameStart() { // From BWAPI by Kovarex, slightly modifi
 	__asm PUSHAD;
 	{
 		isGameOn = true;
-    hooks::gameOn();
-    GPTP::logger.startGame();
+		hooks::gameOn();
+		GPTP::logger.startGame();
 	}
 	__asm {
 		POPAD
@@ -31,8 +31,8 @@ void __declspec(naked) onGameEnd() { // From BWAPI by Kovarex, slightly modified
 	__asm PUSHAD;
 	{
 		isGameOn = false;
-    hooks::gameEnd();
-    GPTP::logger.endGame();
+		hooks::gameEnd();
+		GPTP::logger.endGame();
 	}
 	__asm {
 		POPAD
@@ -49,33 +49,32 @@ void __declspec(naked) nextFrameHook() { // From BWAPI by Kovarex, slightly modi
 		MOV EBP, ESP
 	}
 	{
-    hooks::nextFrame();
+		hooks::nextFrame();
 	}
 
-  if (scbw::isGamePaused()) {
-	  __asm {
-		  POPAD
-      MOV EAX, 1
-		  RETN
-	  }
-  }
-  else {
-	  __asm {
-		  POPAD
-      MOV EAX, 0
-		  RETN
-	  }
-  }
+	if (scbw::isGamePaused()) {
+		__asm {
+			POPAD
+			MOV EAX, 1
+			RETN
+		}
+	}   else {
+		__asm {
+			POPAD
+			MOV EAX, 0
+			RETN
+		}
+	}
 }
 
 //-------- Hook injector --------//
 
 namespace hooks {
 
-void injectGameHooks() {
-  jmpPatch(onGameStart,     Hook_OnGameStart);
-  callPatch(onGameEnd,      0x004EE983);
-  callPatch(nextFrameHook,  0x004D974E);
-}
+	void injectGameHooks() {
+		jmpPatch(onGameStart, Hook_OnGameStart);
+		callPatch(onGameEnd, 0x004EE983);
+		callPatch(nextFrameHook, 0x004D974E);
+	}
 
 } //hooks

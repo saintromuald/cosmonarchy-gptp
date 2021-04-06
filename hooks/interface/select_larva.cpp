@@ -5,11 +5,11 @@
 
 namespace {
 
-uint32 getLarvaeUnitsFromList(CUnit** unitList, CUnit** outputList);									//0x00423190
-CUnit** getAllUnitsInBounds(Box16* coords);															//0x0042FF80
-uint32 CUnitToUnitID(CUnit* unit);																		//0x0047B1D0
-bool32 selectSingleUnitFromID(uint32 unitIndex);														//0x00496D30
-void selectMultipleUnitsFromUnitList(CUnit** unitList, uint32 unitsCount, bool32 unk1, bool32 unk2);	//0x0049AEF0
+	uint32 getLarvaeUnitsFromList(CUnit** unitList, CUnit** outputList);									//0x00423190
+	CUnit** getAllUnitsInBounds(Box16* coords);															//0x0042FF80
+	uint32 CUnitToUnitID(CUnit* unit);																		//0x0047B1D0
+	bool32 selectSingleUnitFromID(uint32 unitIndex);														//0x00496D30
+	void selectMultipleUnitsFromUnitList(CUnit** unitList, uint32 unitsCount, bool32 unk1, bool32 unk2);	//0x0049AEF0
 
 } //unnamed namespace
 
@@ -26,24 +26,23 @@ namespace hooks {
 		CUnit* current_unit = *unitList;
 		uint32 current_index = 0;
 
-		if(current_unit != nullptr) {
+		if (current_unit != nullptr) {
 
 			bool bStopLoop = false;
 
-			while(!bStopLoop) {
+			while (!bStopLoop) {
 
-				if(
+				if (
 					current_unit->id == UnitId::ZergLarva &&
 					current_unit->connectedUnit == *activePortraitUnit &&
 					!(current_unit->sprite->flags & CSprite_Flags::Hidden)
-				)
-				{
+					) 				{
 					outputList[current_index] = current_unit;
 					current_index++;
 					bStopLoop = (current_index >= SELECTION_ARRAY_LENGTH);
 				}
 
-				if(!bStopLoop) {
+				if (!bStopLoop) {
 					unitList++;
 					current_unit = *unitList;
 					bStopLoop = (current_unit == nullptr);
@@ -79,22 +78,22 @@ namespace hooks {
 
 		units_in_bounds = getAllUnitsInBounds(&coords);
 
-		larvaeCount = getLarvaeUnitsFromList(units_in_bounds,new_selection);
+		larvaeCount = getLarvaeUnitsFromList(units_in_bounds, new_selection);
 
 		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[*tempUnitsListArraysCountsListLastIndex];
 		*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
 
-		if(larvaeCount != 0) {
+		if (larvaeCount != 0) {
 
 			bool bJumpToEnd = false;
 
-			if(larvaeCount == 1 && *IS_HOLDING_ALT != 0) {
+			if (larvaeCount == 1 && *IS_HOLDING_ALT != 0) {
 				uint32 unitID = CUnitToUnitID(new_selection[0]);
 				bJumpToEnd = (selectSingleUnitFromID(unitID) != 0);
 			}
 
-			if(!bJumpToEnd)
-				selectMultipleUnitsFromUnitList(new_selection,larvaeCount,1,1);
+			if (!bJumpToEnd)
+				selectMultipleUnitsFromUnitList(new_selection, larvaeCount, 1, 1);
 
 		}
 

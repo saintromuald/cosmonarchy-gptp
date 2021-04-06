@@ -45,10 +45,10 @@ public:
 	CBullet* bullet;
 	int divider;
 	std::vector<CUnit*> already_hit;
-	multihitBullet(){
+	multihitBullet() {
 		divider = 0;
 	}
-	multihitBullet(CBullet* bullet,std::vector<CUnit*> already_hit,uint32 divider): bullet(bullet),already_hit(already_hit),divider(divider){}
+	multihitBullet(CBullet* bullet, std::vector<CUnit*> already_hit, uint32 divider) : bullet(bullet), already_hit(already_hit), divider(divider) {}
 };
 
 class apostleAgent {
@@ -64,10 +64,10 @@ public:
 
 class AttackExtender {
 public:
-//	std::vector<std::vector<uint16>> attacks;
+	//	std::vector<std::vector<uint16>> attacks;
 	uint16 attacks[PLAYABLE_PLAYER_COUNT][ATTACK_LIMIT];
 	AttackExtender() {
-		
+
 		for (int i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
 			for (int j = 0; j < ATTACK_LIMIT; j++) {
 				attacks[i][j] = 0;
@@ -181,14 +181,14 @@ public:
 	std::unordered_map<CUnit*, std::vector<CUnit*>> lurkerSpineHits;
 	std::unordered_map<CUnit*, CustomUnitStruct> unitStructs;
 	AttackExtender attackers;
-	
+
 	apostleAgent test;
 
 	//non-serializable data (exists only temporarily in memory in wrapper/hook flow)
 	int flingy_init_bullet_id;
 	uint8 flingy_init_player_id;
 	CBullet* bounce_bullet;
-//	SaveState aise_save();
+	//	SaveState aise_save();
 	void aise_save();
 	void aise_load(const char* ptr, uint32 len);
 	globals() {

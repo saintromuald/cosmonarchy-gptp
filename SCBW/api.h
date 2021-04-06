@@ -10,395 +10,395 @@ namespace hooks {
 	void IrradiateHit(CUnit* attacker, CUnit* target, uint8 attackingPlayerId);
 }
 namespace scbw {
-bool isAnyMorphMorphResult(uint16 id);
-bool isConventionalUnitMorphResult(uint16 id);
-bool isConventionalUnitMorphSource(uint16 id, bool allow_larvae=false, bool allow_high_templar=false);
-bool isZergBuildingMorphResult(uint16 id);
-bool isZergBuildingMorphSource(uint16 id);
-bool isLarvalEgg(CUnit* unit);
-bool isZergEggNew(CUnit* unit, bool allow_larval_eggs=true, bool allow_larvae=true, uint16 explicit_unit_id=UnitId::None);
-bool isZergEgg(uint16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
-void createBullet(uint8 weaponId, CUnit* source, int16 x, int16 y, uint8 attackingPlayer, uint8 direction);
-void ApplySpores(CUnit* unit);
-bool setThingyVisibilityFlags(CThingy* thingy);
-void artificalBulletFrom(uint8 weaponId, uint8 playerId, CUnit* source, CUnit* target, Point16 target_pt);
-void artificalBulletFrom(uint8 weaponId, uint8 playerId, CUnit* source, CUnit* target, uint16 x, uint16 y);
-std::string readSamaseFile(char* name);
-bool teleport(CUnit* u, Point16 target, uint16 spriteAnimation=0, bool preserveOrder=false);
-CFlingy* createFlingy(uint32 flingyId, uint32 playerId, uint32 x, uint32 y);
-CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);
-Point32 rotate_point(Point32 anchor, Point32 point, double angle_degrees);
-
-void SendCommand(uint8* params, uint32 param_length);
-/// @name Output functions
-//////////////////////////////////////////////////////////////// @{
-
-/// Plays the given sound from sfxdata.dat. If @p sourceUnit is provided, it is
-/// used as the source of the sound.
-void playSound(uint32 sfxId, CUnit* sourceUnit = nullptr);
-/// Prints text to the screen, optionally using the given text color.
-void print(std::string text, uint32 color = GameTextColor::White);
-void printText(const char* text, uint32 color = GameTextColor::White);
-void printFormattedText(const char* format, ...);
-void printFormattedColoredText(const char* format, uint32 color, ...);
-
-/// Displays an error message and plays a sound for the player.
-///
-/// @param  playerId  ID of the player who receives the message.
-/// @param  statTxtId ID of the error message string in stat_txt.tbl
-/// @param  sfxId     ID of the sound file in sfxdata.dat.
-void showErrorMessageWithSfx(uint32 playerId, uint32 statTxtId, uint32 sfxId);
-
-//////////////////////////////////////////////////////////////// @}
-
-uint8 hasOverlay(CUnit* unit);
-
-void disableDialog(BinDlg* dialog);															//18640
-void showDialog(BinDlg* dialog);															//186A0
-void hideDialog(BinDlg* dialog);															//18700
-void updateDialog(BinDlg* dialog);															//1C400
-/// @name Unit checks
-//////////////////////////////////////////////////////////////// @{
-
-/// Checks whether the transport can hold this unit.
-///
-/// This function checks whether [transport] has any status effects (Lockdown,
-/// Maelstrom, etc.), is owned by the same player, and has enough space for
-/// [unit]. It does NOT check whether [transport] is a hallucination, or is an
-/// Overlord without the transport upgrade, or whether the [unit] itself has any
-/// status effects. Note that this function is affected by the EXE edits
-/// "change bunker size check to organic flag check" and
-/// "remove bunker size check" in FireGraft.
-bool canBeEnteredBy(CUnit* transport, CUnit* unit);
-
-/// Checks weapons.dat targeting flags to see if the @p target can be hit by the
-/// @p weapon.
-///
-/// @param  weaponId  If this is an invalid weapons.dat ID, returns false.
-/// @param  target    If nullptr is passed, the function checks whether the
-///                   weapon can target a position on the ground. If @p target
-///                   is invincible, the function returns false.
-bool canWeaponTargetUnit(uint8 weaponId, CUnit* target = nullptr,
-                         CUnit* attacker = nullptr);
-
-/// Checks if @p unit is under a Dark Swarm. This does NOT check whether the
-/// unit is a ground unit or a building.
-bool isUnderDarkSwarm(CUnit* unit);
-CUnit* getDarkSwarm(CUnit* unit);
-CUnit* getDarkSwarm(uint16 x, uint16 y, uint16 radius);
-//Checks if the @p target can be targeted by player @p castingPlayer with
-//tech/spell @p techId
-//If yes, return 0, else return error message id in stat_txt.tbl to use
-uint16 getTechUseErrorMessage(CUnit* target, uint8 castingPlayer, uint16 techId);
-
-//////////////////////////////////////////////////////////////// @}
-
-/// @name Graphics and geometry
-//////////////////////////////////////////////////////////////// @{
-
-/// Calculates the angle (in binary radians) of the arrow that starts at
-/// (xStart, yStart) and ends at (xEnd, yEnd).
-int32 getAngle(int32 xStart, int32 yStart, int32 xEnd, int32 yEnd);
-
-double bw_angle_to_normal(int32 bw_angle);
-/// StarCraft's internal function used to quickly calculate distances between
-/// two points (x1, y1) and (x2, y2).
-/// Warning: This function is inaccurate for long distances.
-uint32 getDistanceFast(int32 x1, int32 y1, int32 x2, int32 y2);
-
-/// Calculates the X Cartesian coordinate from the given polar coordinates
-/// (distance, angle), using StarCraft's internal data.
-int32 getPolarX(int32 distance, uint8 angle);
-
-/// Calculates the Y Cartesian coordinate from the given polar coordinates
-/// (distance, angle), using StarCraft's internal data.
-int32 getPolarY(int32 distance, uint8 angle);
-
-//////////////////////////////////////////////////////////////// @}
-
-/// @name Game information
-//////////////////////////////////////////////////////////////// @{
-
-/// Checks whether the game is in Brood War mode (instead of vanilla StarCraft).
-inline bool isBroodWarMode() {
-  return (*IS_BROOD_WAR) != 0;
-}
-
-/// Checks whether the given cheat flag is enabled.
-inline bool isCheatEnabled(uint32 cheatFlag) {
-  return ((*CHEAT_STATE) & cheatFlag) != 0;
-}
-
-/// Checks whether the game is paused.
-inline bool isGamePaused() {
-  return (*IS_GAME_PAUSED) != 0;
-}
-
-/// Checks whether the game is in replay mode.
-inline bool isInReplay() {
-  return (*IS_IN_REPLAY) != 0;
-}
-
-//////////////////////////////////////////////////////////////// @}
-
-/// @name Player information
-//////////////////////////////////////////////////////////////// @{
-
-/// Checks whether @p playerB is recognized by @p playerA as an ally.
-/// Warning: The opposite may not necessarily be true!
-inline bool isAlliedTo(uint8 playerA, uint8 playerB) {
-  return 0 != playerAlliance[playerA].flags[playerB];
-}
-
-/// Checks whether the @p unit is recognized by @p playerId as an enemy.
-/// This will work even when the owner of the @p unit has left the game.
-/// @see CUnit::isTargetEnemy().
-inline bool isUnitEnemy(uint8 playerId, CUnit* unit) {
-  //Identical to function @ 0x0047B740
-  uint8 unitOwner = unit->playerId;
-    if (unitOwner == 11)
-      unitOwner = unit->sprite->playerId;
-  return 0 == playerAlliance[playerId].flags[unitOwner];
-}
-
-uint32 get_sized_overlay(CUnit* unit, uint32 initial);
-/// Returns the amount of remaining supply (total available - total used) for
-/// the @p playerId, using @p raceId to determine the appropriate race to use.
-/// This is affected by the "Food For Thought" cheat flag.
-int32 getSupplyRemaining(uint8 playerId, uint8 raceId);
-uint32 getFlingyData(uint32 entry, uint32 index);
-
-uint32 getSpriteData(uint32 entry, uint32 index);
-uint32 getImageData(uint32 entry, uint32 index);
-uint32 getUnitData(uint32 entry, uint32 index);
-//CUnit* get_generic_unit(CUnit* unit, uint32 id);
-uint32 get_generic_rust_value(CUnit* u, uint32 val);
-//uint32 get_generic_value(CUnit* u, uint32 val);
-void setSpriteData(uint32 entry, uint32 index, uint32 value);
-int get_generic_variable(uint32 val);
-//uint32 get_generic_timer(CUnit* u, uint32 val);
-uint32 get_aise_value(CUnit* unit1, CUnit* unit2, uint32 command, uint32 v1, uint32 v2);
-/*void set_generic_unit(CUnit* unit, uint32 id, CUnit* targ);
-void set_generic_value(CUnit* u, uint32 id, uint32 val);*/
-void set_generic_rust_value(CUnit* u, uint32 id, uint32 val);
-void set_generic_variable(uint32 id, int val);
-void set_generic_rust_unit(CUnit* unit, uint32 id, CUnit* targ);
-CUnit* get_generic_rust_unit(CUnit* unit, uint32 id);
-/*void set_generic_timer(CUnit* u, uint32 id, uint32 val);
-
-void add_generic_value(CUnit* u, uint32 id, int val);*/
-void makeToHoldPosition(CUnit* unit);
-
-void sendGPTP_aise_cmd(CUnit* unit1, CUnit* unit2, uint32 command, uint32 v1, uint32 v2, uint32 v3);
-/// Checks whether the @p playerId has the @p techId researched.
-/// Note: This uses TechId::Enum, instead of ScTech::Enum and BwTech::Enum.
-bool hasTechResearched(uint8 playerId, uint16 techId);
-
-/// Adjusts x,y addon coordinates of quarry and similar unit ids
-
-void adjustAddonX(uint16 addonId, uint16 sourceId, uint16& x);
-void adjustAddonY(uint16 addonId, uint16 sourceId, uint16& y);
-void adjustAddonCoordinates(uint16 addonId, uint16 sourceId, uint16 &x, uint16 &y);
-
-uint8 getUpgradeMaxLevel(uint8 playerId, uint8 upgradeId);
-bool hasTechAvailable(uint8 playerId, uint16 techId);
-//uint32 techUseAllowed(CUnit* unit, uint16 techId, uint32 playerId);
-/// Sets the player's tech research state for @p techId to @p isResearched.
-/// Note: This uses TechId::Enum, instead of ScTech::Enum and BwTech::Enum.
-void setTechResearchState(uint8 playerId, uint16 techId, bool isResearched);
-
-/// Returns the player's upgrade level of @p upgradeId. Note that this uses
-/// UpgradeId::Enum, instead of ScUpgrades::Enum and BwUpgrades::Enum.
-uint8 getUpgradeLevel(uint8 playerId, uint8 upgradeId);
-
-/// Sets the player's upgrade level of @p upgradeId. Note that this uses
-/// UpgradeId::Enum, instead of ScUpgrades::Enum and BwUpgrades::Enum.
-void setUpgradeLevel(uint8 playerId, uint8 upgradeId, uint8 level);
-
-//////////////////////////////////////////////////////////////// @}
-
-/// @name Map information
-//////////////////////////////////////////////////////////////// @{
-
-/// Returns the pointer to the active tile data at (x, y).
-inline ActiveTile& getActiveTileAt(int32 x, int32 y) {
-  return (*activeTileArray)[(x / 32) + mapTileSize->width * (y / 32)];
-}
-
-inline uint16& getTileIdAt(int32 x, int32 y) {
-	return (*tileIdArray)[(x/32)+mapTileSize->width*(y/32)];
-}
-
-/// Returns the elevation of the tile at (x, y). 0 for low terrain, 1 for
-/// medium, and 2 for high terrain.
-uint32 getGroundHeightAtPos(int32 x, int32 y);
-
-//////////////////////////////////////////////////////////////// @}
-
-/// @name Moving Units
-//////////////////////////////////////////////////////////////// @{
-
-/// Attempts to move the unit to @p (x, y), or to a nearby position if possible.
-///
-/// @return true if successful, false otherwise.
-bool moveUnit(CUnit* unit, int16 x, int16 y);
-
-/// Removes various references to the @p unit.
-/// Details not understood. See the source for moveUnit().
-void prepareUnitMove(CUnit* unit, bool hideUnit = false);
-
-/// Checks whether the given unit overlaps other units, and if so, whether it
-/// can be moved to an unoccupied nearby position. The resulting position is
-/// saved to @p outPos.
-///
-/// @return True if the unit does not collide with other units, or can be moved
-///         to a nearby non-colliding position.
-bool checkUnitCollisionPos(CUnit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea = nullptr, bool hideErrorMsg = false, uint32 someFlag = 0);
-
-/// Moves the unit's position to @p (x, y). If the unit is a ground unit and the
-/// the target position is on unwalkable terrain, this function moves the unit
-/// to the nearest walkable tile instead.
-void setUnitPosition(CUnit* unit, uint16 x, uint16 y);
-
-/// Updates pathing data and various information related to the @p unit.
-/// Details not understood.  See the source for moveUnit().
-void refreshUnitAfterMove(CUnit* unit);
-
-//////////////////////////////////////////////////////////////// @}
-
-/// @name Utility functions
-//////////////////////////////////////////////////////////////// @{
-void createBullet(uint8 weaponId, CUnit* source, int16 x, int16 y, uint8 attackingPlayer, uint8 direction);
-CBullet* createBulletRet(uint8 weaponId, CUnit* source, int16 x, int16 y, uint8 attackingPlayer, uint8 direction);
-
-/// Attempts to create a unit at the specified coordinates. If the unit cannot
-/// be created (e.g. there is no space), this function displays an error message
-/// and returns nullptr instead. This function is the same one used for creating
-/// pre-placed units in UMS maps.
-///
-/// @return           The created unit or nullptr if the unit cannot be created.
-CUnit* createUnitAtPos(uint16 unitType, uint16 playerId, uint32 x, uint32 y);
-//function used for broodlings and similar stuff
-CUnit* createUnitIngame(uint16 unitId, uint8 playerId, uint32 x, uint32 y, CUnit* creator=nullptr);
-//additional function calls
-void weaponBulletShot(CUnit* target, CBullet* bullet, uint32 dmgDivisor);
-void fixTargetLocation(Point16* coords, uint32 unitId);
-CUnit* CreateUnit(uint32 unitId, int x, int y, uint32 playerId);
-void displayLastNetErrForPlayer(uint32 playerId);
-void FinishUnit_Pre(CUnit* unit);
-void updateUnitStrength(CUnit* unit);
-void displayLastNetErrForPlayer(uint32 playerId);
-void InheritAI2(CUnit* result, CUnit* parent);
-/// Calculates the images.dat overlay adjustment for the given unit.
-/// This piece of code is used throughout StarCraft.exe for various status
-/// effects, such as Ensnare, Plague, and Defensive Matrix.
-uint32 getUnitOverlayAdjustment(CUnit* const unit);
-
-/// Refreshes the screen position within the given rectangle area in pixels.
-void refreshScreen(int left, int top, int right, int bottom);
-
-/// Refreshes the entire screen.
-void refreshScreen();
-
-/// Generates a pseudorandom number between min and max, inclusive. This is
-/// identical to the function used internally by StarCraft, and is guaranteed to
-/// generate the same sequence in a replay.
-/// NOTE: The RNG has a maximum range of 0 - 32767.
-uint32 randBetween(uint32 min, uint32 max);
-
-/// Generates a pseudorandom number between 0 and 32767, inclusive. This is
-/// identical to the function used internally by StarCraft, and is guaranteed to
-/// generate the same sequence in a replay.
-uint16 random();
-
-//////////////////////////////////////////////////////////////// @}
-
-/// @name Needs research
-//////////////////////////////////////////////////////////////// @{
-
-    /// Tells StarCraft to refresh the console (current button set, unit portrait,
-    /// and status bar). not completely understood.
-    void refreshConsole();
-
-    // Moves the camera/screen to the unit
-    void MoveScreenToUnit(CUnit* unit, uint32 playerId = 8);
-
-    // Creates a minimap ping at x,y (relative pos)
-    void minimapPing(uint32 x, uint32 y, int32 color, uint32 playerId = 8);
-
-// Functionally identical to the [playfram] opcode in iscript.bin.
-    inline void playFrame(CImage* image, uint16 frameset) {
-        if (image->frameSet != frameset) {
-            image->frameSet = frameset;
-            uint16 frameIndex = frameset + image->direction;
-            if (image->frameIndex != frameIndex) {
-		        image->flags |= CImage_Flags::Redraw;	//Order the game to redraw the image
-		        image->frameIndex = frameIndex;
-            }
-        }
-    }
-
-/// Sets the data of the Anywhere location.
-    inline void setAnywhereLocation() {
-        LOCATION* location = &locationTable[63];
-        location->dimensions.left   = 0;
-        location->dimensions.top    = 0;
-        location->dimensions.right  = 32 * mapTileSize->width;
-        location->dimensions.bottom = 32 * mapTileSize->height;
-        location->flags = 63;
-    }
-
-/// Sets the data of location @p locNumber.
-    inline void setLocation(int locNumber, int left, int top, int right, int bottom, int flags) {
-      LOCATION* location = &locationTable[locNumber];
-      location->dimensions.left   = left;
-      location->dimensions.top    = top;
-      location->dimensions.right  = right;
-      location->dimensions.bottom = bottom;
-      location->flags = flags;
-    }
-
-/// Sets or clears the "is currently inside the game loop" property.
-/// This must be called in nextFrame() to use scbw::random() there.
-    inline bool setInGameLoopState(bool newState) {
-      //Identical to function @ 0x004DC540
-      bool32 previousState = *IS_IN_GAME_LOOP;
-      *IS_IN_GAME_LOOP = (newState ? 1 : 0);
-      return previousState != 0;
-    }
-
-//////////////////////////////////////////////////////////////// @}
-
-    void rangeModifiedFire(uint8 weaponId, CUnit* unit, int16 x, int16 y, uint32 offset);
-    bool canSpawnBroodling(CUnit* target);
-    int getBroodlingCountFromSupply(CUnit* target);
-    void createUnitFromAbility(int unitId, int count, uint16 playerId, int32 x, int32 y, uint32 removeTimer = 1800, CUnit* creator = nullptr);
-    CUnit** getSourceQueens(CUnit* unit);
-    uint16 getLastQueueSlotType(CUnit* a1);
-    int dir_saturate(int direction, int value);
-    bool canUseCliffAdvantage(CUnit* unit, uint8 weapon = NULL);
-    int32 getCliffAdvantage(CUnit* unit, uint8 weapon = NULL);
-    int32 getCreepAdvantage(CUnit* unit, uint8 weapon = NULL);
-    void setOffsetToParentSpecialOverlay(CImage* image);
-    void setMissileSourcePos(CUnit* unit, uint32 weaponId, uint32 valueId, int32 rotateCount, uint32 overlayType, uint32 frameset_offset = 0);
-    CBullet* setMissileSourcePosRet(CUnit* unit, uint32 weaponId, uint32 valueId, int32 rotateCount, uint32 overlayType, uint32 frameset_offset = 0);
-    bool isSlowed(CUnit* unit);
-    bool isStunned(CUnit* unit);
-    void hideAndDisableUnit(CUnit* unit);
-    void restoreFunc(CUnit* unit);
-    void refreshDebuffs(CUnit* unit);
-    void inheritDebuffs(CUnit* parent, CUnit* child);
-    void applyEnsnare(CUnit* unit);
-    bool isEnabled(CUnit* unit);
-    bool isDebuffed(CUnit* unit);
-    int32 getUpgradeType(CUnit* unit);
-    int32 getOverlayOffset(uint16 unitId);
-    int32 getFinalDamage(CUnit* unit, uint16 weaponId);
-    bool unitIsPacifist(CUnit* unit);
-    bool orderIsSpell(int32 orderId);
-    void doDeconstructionDamage(CUnit* unit, uint16 weaponId, bool playSound = true);
-    bool canBeParasited(CUnit* unit);
-    void applyParasite(CUnit* unit, uint8 playerID, CUnit* queen);
-    void createShieldOverlay(CUnit* unit, uint32 attackDirection);
+	bool isAnyMorphMorphResult(uint16 id);
+	bool isConventionalUnitMorphResult(uint16 id);
+	bool isConventionalUnitMorphSource(uint16 id, bool allow_larvae = false, bool allow_high_templar = false);
+	bool isZergBuildingMorphResult(uint16 id);
+	bool isZergBuildingMorphSource(uint16 id);
+	bool isLarvalEgg(CUnit* unit);
+	bool isZergEggNew(CUnit* unit, bool allow_larval_eggs = true, bool allow_larvae = true, uint16 explicit_unit_id = UnitId::None);
+	bool isZergEgg(uint16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
+	void createBullet(uint8 weaponId, CUnit* source, int16 x, int16 y, uint8 attackingPlayer, uint8 direction);
+	void ApplySpores(CUnit* unit);
+	bool setThingyVisibilityFlags(CThingy* thingy);
+	void artificalBulletFrom(uint8 weaponId, uint8 playerId, CUnit* source, CUnit* target, Point16 target_pt);
+	void artificalBulletFrom(uint8 weaponId, uint8 playerId, CUnit* source, CUnit* target, uint16 x, uint16 y);
+	std::string readSamaseFile(char* name);
+	bool teleport(CUnit* u, Point16 target, uint16 spriteAnimation = 0, bool preserveOrder = false);
+	CFlingy* createFlingy(uint32 flingyId, uint32 playerId, uint32 x, uint32 y);
+	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);
+	Point32 rotate_point(Point32 anchor, Point32 point, double angle_degrees);
+
+	void SendCommand(uint8* params, uint32 param_length);
+	/// @name Output functions
+	//////////////////////////////////////////////////////////////// @{
+
+	/// Plays the given sound from sfxdata.dat. If @p sourceUnit is provided, it is
+	/// used as the source of the sound.
+	void playSound(uint32 sfxId, CUnit* sourceUnit = nullptr);
+	/// Prints text to the screen, optionally using the given text color.
+	void print(std::string text, uint32 color = GameTextColor::White);
+	void printText(const char* text, uint32 color = GameTextColor::White);
+	void printFormattedText(const char* format, ...);
+	void printFormattedColoredText(const char* format, uint32 color, ...);
+
+	/// Displays an error message and plays a sound for the player.
+	///
+	/// @param  playerId  ID of the player who receives the message.
+	/// @param  statTxtId ID of the error message string in stat_txt.tbl
+	/// @param  sfxId     ID of the sound file in sfxdata.dat.
+	void showErrorMessageWithSfx(uint32 playerId, uint32 statTxtId, uint32 sfxId);
+
+	//////////////////////////////////////////////////////////////// @}
+
+	uint8 hasOverlay(CUnit* unit);
+
+	void disableDialog(BinDlg* dialog);															//18640
+	void showDialog(BinDlg* dialog);															//186A0
+	void hideDialog(BinDlg* dialog);															//18700
+	void updateDialog(BinDlg* dialog);															//1C400
+	/// @name Unit checks
+	//////////////////////////////////////////////////////////////// @{
+
+	/// Checks whether the transport can hold this unit.
+	///
+	/// This function checks whether [transport] has any status effects (Lockdown,
+	/// Maelstrom, etc.), is owned by the same player, and has enough space for
+	/// [unit]. It does NOT check whether [transport] is a hallucination, or is an
+	/// Overlord without the transport upgrade, or whether the [unit] itself has any
+	/// status effects. Note that this function is affected by the EXE edits
+	/// "change bunker size check to organic flag check" and
+	/// "remove bunker size check" in FireGraft.
+	bool canBeEnteredBy(CUnit* transport, CUnit* unit);
+
+	/// Checks weapons.dat targeting flags to see if the @p target can be hit by the
+	/// @p weapon.
+	///
+	/// @param  weaponId  If this is an invalid weapons.dat ID, returns false.
+	/// @param  target    If nullptr is passed, the function checks whether the
+	///                   weapon can target a position on the ground. If @p target
+	///                   is invincible, the function returns false.
+	bool canWeaponTargetUnit(uint8 weaponId, CUnit* target = nullptr,
+		CUnit* attacker = nullptr);
+
+	/// Checks if @p unit is under a Dark Swarm. This does NOT check whether the
+	/// unit is a ground unit or a building.
+	bool isUnderDarkSwarm(CUnit* unit);
+	CUnit* getDarkSwarm(CUnit* unit);
+	CUnit* getDarkSwarm(uint16 x, uint16 y, uint16 radius);
+	//Checks if the @p target can be targeted by player @p castingPlayer with
+	//tech/spell @p techId
+	//If yes, return 0, else return error message id in stat_txt.tbl to use
+	uint16 getTechUseErrorMessage(CUnit* target, uint8 castingPlayer, uint16 techId);
+
+	//////////////////////////////////////////////////////////////// @}
+
+	/// @name Graphics and geometry
+	//////////////////////////////////////////////////////////////// @{
+
+	/// Calculates the angle (in binary radians) of the arrow that starts at
+	/// (xStart, yStart) and ends at (xEnd, yEnd).
+	int32 getAngle(int32 xStart, int32 yStart, int32 xEnd, int32 yEnd);
+
+	double bw_angle_to_normal(int32 bw_angle);
+	/// StarCraft's internal function used to quickly calculate distances between
+	/// two points (x1, y1) and (x2, y2).
+	/// Warning: This function is inaccurate for long distances.
+	uint32 getDistanceFast(int32 x1, int32 y1, int32 x2, int32 y2);
+
+	/// Calculates the X Cartesian coordinate from the given polar coordinates
+	/// (distance, angle), using StarCraft's internal data.
+	int32 getPolarX(int32 distance, uint8 angle);
+
+	/// Calculates the Y Cartesian coordinate from the given polar coordinates
+	/// (distance, angle), using StarCraft's internal data.
+	int32 getPolarY(int32 distance, uint8 angle);
+
+	//////////////////////////////////////////////////////////////// @}
+
+	/// @name Game information
+	//////////////////////////////////////////////////////////////// @{
+
+	/// Checks whether the game is in Brood War mode (instead of vanilla StarCraft).
+	inline bool isBroodWarMode() {
+		return (*IS_BROOD_WAR) != 0;
+	}
+
+	/// Checks whether the given cheat flag is enabled.
+	inline bool isCheatEnabled(uint32 cheatFlag) {
+		return ((*CHEAT_STATE) & cheatFlag) != 0;
+	}
+
+	/// Checks whether the game is paused.
+	inline bool isGamePaused() {
+		return (*IS_GAME_PAUSED) != 0;
+	}
+
+	/// Checks whether the game is in replay mode.
+	inline bool isInReplay() {
+		return (*IS_IN_REPLAY) != 0;
+	}
+
+	//////////////////////////////////////////////////////////////// @}
+
+	/// @name Player information
+	//////////////////////////////////////////////////////////////// @{
+
+	/// Checks whether @p playerB is recognized by @p playerA as an ally.
+	/// Warning: The opposite may not necessarily be true!
+	inline bool isAlliedTo(uint8 playerA, uint8 playerB) {
+		return 0 != playerAlliance[playerA].flags[playerB];
+	}
+
+	/// Checks whether the @p unit is recognized by @p playerId as an enemy.
+	/// This will work even when the owner of the @p unit has left the game.
+	/// @see CUnit::isTargetEnemy().
+	inline bool isUnitEnemy(uint8 playerId, CUnit* unit) {
+		//Identical to function @ 0x0047B740
+		uint8 unitOwner = unit->playerId;
+		if (unitOwner == 11)
+			unitOwner = unit->sprite->playerId;
+		return 0 == playerAlliance[playerId].flags[unitOwner];
+	}
+
+	uint32 get_sized_overlay(CUnit* unit, uint32 initial);
+	/// Returns the amount of remaining supply (total available - total used) for
+	/// the @p playerId, using @p raceId to determine the appropriate race to use.
+	/// This is affected by the "Food For Thought" cheat flag.
+	int32 getSupplyRemaining(uint8 playerId, uint8 raceId);
+	uint32 getFlingyData(uint32 entry, uint32 index);
+
+	uint32 getSpriteData(uint32 entry, uint32 index);
+	uint32 getImageData(uint32 entry, uint32 index);
+	uint32 getUnitData(uint32 entry, uint32 index);
+	//CUnit* get_generic_unit(CUnit* unit, uint32 id);
+	uint32 get_generic_rust_value(CUnit* u, uint32 val);
+	//uint32 get_generic_value(CUnit* u, uint32 val);
+	void setSpriteData(uint32 entry, uint32 index, uint32 value);
+	int get_generic_variable(uint32 val);
+	//uint32 get_generic_timer(CUnit* u, uint32 val);
+	uint32 get_aise_value(CUnit* unit1, CUnit* unit2, uint32 command, uint32 v1, uint32 v2);
+	/*void set_generic_unit(CUnit* unit, uint32 id, CUnit* targ);
+	void set_generic_value(CUnit* u, uint32 id, uint32 val);*/
+	void set_generic_rust_value(CUnit* u, uint32 id, uint32 val);
+	void set_generic_variable(uint32 id, int val);
+	void set_generic_rust_unit(CUnit* unit, uint32 id, CUnit* targ);
+	CUnit* get_generic_rust_unit(CUnit* unit, uint32 id);
+	/*void set_generic_timer(CUnit* u, uint32 id, uint32 val);
+
+	void add_generic_value(CUnit* u, uint32 id, int val);*/
+	void makeToHoldPosition(CUnit* unit);
+
+	void sendGPTP_aise_cmd(CUnit* unit1, CUnit* unit2, uint32 command, uint32 v1, uint32 v2, uint32 v3);
+	/// Checks whether the @p playerId has the @p techId researched.
+	/// Note: This uses TechId::Enum, instead of ScTech::Enum and BwTech::Enum.
+	bool hasTechResearched(uint8 playerId, uint16 techId);
+
+	/// Adjusts x,y addon coordinates of quarry and similar unit ids
+
+	void adjustAddonX(uint16 addonId, uint16 sourceId, uint16& x);
+	void adjustAddonY(uint16 addonId, uint16 sourceId, uint16& y);
+	void adjustAddonCoordinates(uint16 addonId, uint16 sourceId, uint16& x, uint16& y);
+
+	uint8 getUpgradeMaxLevel(uint8 playerId, uint8 upgradeId);
+	bool hasTechAvailable(uint8 playerId, uint16 techId);
+	//uint32 techUseAllowed(CUnit* unit, uint16 techId, uint32 playerId);
+	/// Sets the player's tech research state for @p techId to @p isResearched.
+	/// Note: This uses TechId::Enum, instead of ScTech::Enum and BwTech::Enum.
+	void setTechResearchState(uint8 playerId, uint16 techId, bool isResearched);
+
+	/// Returns the player's upgrade level of @p upgradeId. Note that this uses
+	/// UpgradeId::Enum, instead of ScUpgrades::Enum and BwUpgrades::Enum.
+	uint8 getUpgradeLevel(uint8 playerId, uint8 upgradeId);
+
+	/// Sets the player's upgrade level of @p upgradeId. Note that this uses
+	/// UpgradeId::Enum, instead of ScUpgrades::Enum and BwUpgrades::Enum.
+	void setUpgradeLevel(uint8 playerId, uint8 upgradeId, uint8 level);
+
+	//////////////////////////////////////////////////////////////// @}
+
+	/// @name Map information
+	//////////////////////////////////////////////////////////////// @{
+
+	/// Returns the pointer to the active tile data at (x, y).
+	inline ActiveTile& getActiveTileAt(int32 x, int32 y) {
+		return (*activeTileArray)[(x / 32) + mapTileSize->width * (y / 32)];
+	}
+
+	inline uint16& getTileIdAt(int32 x, int32 y) {
+		return (*tileIdArray)[(x / 32) + mapTileSize->width * (y / 32)];
+	}
+
+	/// Returns the elevation of the tile at (x, y). 0 for low terrain, 1 for
+	/// medium, and 2 for high terrain.
+	uint32 getGroundHeightAtPos(int32 x, int32 y);
+
+	//////////////////////////////////////////////////////////////// @}
+
+	/// @name Moving Units
+	//////////////////////////////////////////////////////////////// @{
+
+	/// Attempts to move the unit to @p (x, y), or to a nearby position if possible.
+	///
+	/// @return true if successful, false otherwise.
+	bool moveUnit(CUnit* unit, int16 x, int16 y);
+
+	/// Removes various references to the @p unit.
+	/// Details not understood. See the source for moveUnit().
+	void prepareUnitMove(CUnit* unit, bool hideUnit = false);
+
+	/// Checks whether the given unit overlaps other units, and if so, whether it
+	/// can be moved to an unoccupied nearby position. The resulting position is
+	/// saved to @p outPos.
+	///
+	/// @return True if the unit does not collide with other units, or can be moved
+	///         to a nearby non-colliding position.
+	bool checkUnitCollisionPos(CUnit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea = nullptr, bool hideErrorMsg = false, uint32 someFlag = 0);
+
+	/// Moves the unit's position to @p (x, y). If the unit is a ground unit and the
+	/// the target position is on unwalkable terrain, this function moves the unit
+	/// to the nearest walkable tile instead.
+	void setUnitPosition(CUnit* unit, uint16 x, uint16 y);
+
+	/// Updates pathing data and various information related to the @p unit.
+	/// Details not understood.  See the source for moveUnit().
+	void refreshUnitAfterMove(CUnit* unit);
+
+	//////////////////////////////////////////////////////////////// @}
+
+	/// @name Utility functions
+	//////////////////////////////////////////////////////////////// @{
+	void createBullet(uint8 weaponId, CUnit* source, int16 x, int16 y, uint8 attackingPlayer, uint8 direction);
+	CBullet* createBulletRet(uint8 weaponId, CUnit* source, int16 x, int16 y, uint8 attackingPlayer, uint8 direction);
+
+	/// Attempts to create a unit at the specified coordinates. If the unit cannot
+	/// be created (e.g. there is no space), this function displays an error message
+	/// and returns nullptr instead. This function is the same one used for creating
+	/// pre-placed units in UMS maps.
+	///
+	/// @return           The created unit or nullptr if the unit cannot be created.
+	CUnit* createUnitAtPos(uint16 unitType, uint16 playerId, uint32 x, uint32 y);
+	//function used for broodlings and similar stuff
+	CUnit* createUnitIngame(uint16 unitId, uint8 playerId, uint32 x, uint32 y, CUnit* creator = nullptr);
+	//additional function calls
+	void weaponBulletShot(CUnit* target, CBullet* bullet, uint32 dmgDivisor);
+	void fixTargetLocation(Point16* coords, uint32 unitId);
+	CUnit* CreateUnit(uint32 unitId, int x, int y, uint32 playerId);
+	void displayLastNetErrForPlayer(uint32 playerId);
+	void FinishUnit_Pre(CUnit* unit);
+	void updateUnitStrength(CUnit* unit);
+	void displayLastNetErrForPlayer(uint32 playerId);
+	void InheritAI2(CUnit* result, CUnit* parent);
+	/// Calculates the images.dat overlay adjustment for the given unit.
+	/// This piece of code is used throughout StarCraft.exe for various status
+	/// effects, such as Ensnare, Plague, and Defensive Matrix.
+	uint32 getUnitOverlayAdjustment(CUnit* const unit);
+
+	/// Refreshes the screen position within the given rectangle area in pixels.
+	void refreshScreen(int left, int top, int right, int bottom);
+
+	/// Refreshes the entire screen.
+	void refreshScreen();
+
+	/// Generates a pseudorandom number between min and max, inclusive. This is
+	/// identical to the function used internally by StarCraft, and is guaranteed to
+	/// generate the same sequence in a replay.
+	/// NOTE: The RNG has a maximum range of 0 - 32767.
+	uint32 randBetween(uint32 min, uint32 max);
+
+	/// Generates a pseudorandom number between 0 and 32767, inclusive. This is
+	/// identical to the function used internally by StarCraft, and is guaranteed to
+	/// generate the same sequence in a replay.
+	uint16 random();
+
+	//////////////////////////////////////////////////////////////// @}
+
+	/// @name Needs research
+	//////////////////////////////////////////////////////////////// @{
+
+		/// Tells StarCraft to refresh the console (current button set, unit portrait,
+		/// and status bar). not completely understood.
+	void refreshConsole();
+
+	// Moves the camera/screen to the unit
+	void MoveScreenToUnit(CUnit* unit, uint32 playerId = 8);
+
+	// Creates a minimap ping at x,y (relative pos)
+	void minimapPing(uint32 x, uint32 y, int32 color, uint32 playerId = 8);
+
+	// Functionally identical to the [playfram] opcode in iscript.bin.
+	inline void playFrame(CImage* image, uint16 frameset) {
+		if (image->frameSet != frameset) {
+			image->frameSet = frameset;
+			uint16 frameIndex = frameset + image->direction;
+			if (image->frameIndex != frameIndex) {
+				image->flags |= CImage_Flags::Redraw;	//Order the game to redraw the image
+				image->frameIndex = frameIndex;
+			}
+		}
+	}
+
+	/// Sets the data of the Anywhere location.
+	inline void setAnywhereLocation() {
+		LOCATION* location = &locationTable[63];
+		location->dimensions.left = 0;
+		location->dimensions.top = 0;
+		location->dimensions.right = 32 * mapTileSize->width;
+		location->dimensions.bottom = 32 * mapTileSize->height;
+		location->flags = 63;
+	}
+
+	/// Sets the data of location @p locNumber.
+	inline void setLocation(int locNumber, int left, int top, int right, int bottom, int flags) {
+		LOCATION* location = &locationTable[locNumber];
+		location->dimensions.left = left;
+		location->dimensions.top = top;
+		location->dimensions.right = right;
+		location->dimensions.bottom = bottom;
+		location->flags = flags;
+	}
+
+	/// Sets or clears the "is currently inside the game loop" property.
+	/// This must be called in nextFrame() to use scbw::random() there.
+	inline bool setInGameLoopState(bool newState) {
+		//Identical to function @ 0x004DC540
+		bool32 previousState = *IS_IN_GAME_LOOP;
+		*IS_IN_GAME_LOOP = (newState ? 1 : 0);
+		return previousState != 0;
+	}
+
+	//////////////////////////////////////////////////////////////// @}
+
+	void rangeModifiedFire(uint8 weaponId, CUnit* unit, int16 x, int16 y, uint32 offset);
+	bool canSpawnBroodling(CUnit* target);
+	int getBroodlingCountFromSupply(CUnit* target);
+	void createUnitFromAbility(int unitId, int count, uint16 playerId, int32 x, int32 y, uint32 removeTimer = 1800, CUnit* creator = nullptr);
+	CUnit** getSourceQueens(CUnit* unit);
+	uint16 getLastQueueSlotType(CUnit* a1);
+	int dir_saturate(int direction, int value);
+	bool canUseCliffAdvantage(CUnit* unit, uint8 weapon = NULL);
+	int32 getCliffAdvantage(CUnit* unit, uint8 weapon = NULL);
+	int32 getCreepAdvantage(CUnit* unit, uint8 weapon = NULL);
+	void setOffsetToParentSpecialOverlay(CImage* image);
+	void setMissileSourcePos(CUnit* unit, uint32 weaponId, uint32 valueId, int32 rotateCount, uint32 overlayType, uint32 frameset_offset = 0);
+	CBullet* setMissileSourcePosRet(CUnit* unit, uint32 weaponId, uint32 valueId, int32 rotateCount, uint32 overlayType, uint32 frameset_offset = 0);
+	bool isSlowed(CUnit* unit);
+	bool isStunned(CUnit* unit);
+	void hideAndDisableUnit(CUnit* unit);
+	void restoreFunc(CUnit* unit);
+	void refreshDebuffs(CUnit* unit);
+	void inheritDebuffs(CUnit* parent, CUnit* child);
+	void applyEnsnare(CUnit* unit);
+	bool isEnabled(CUnit* unit);
+	bool isDebuffed(CUnit* unit);
+	int32 getUpgradeType(CUnit* unit);
+	int32 getOverlayOffset(uint16 unitId);
+	int32 getFinalDamage(CUnit* unit, uint16 weaponId);
+	bool unitIsPacifist(CUnit* unit);
+	bool orderIsSpell(int32 orderId);
+	void doDeconstructionDamage(CUnit* unit, uint16 weaponId, bool playSound = true);
+	bool canBeParasited(CUnit* unit);
+	void applyParasite(CUnit* unit, uint8 playerID, CUnit* queen);
+	void createShieldOverlay(CUnit* unit, uint32 attackDirection);
 
 } //scbw

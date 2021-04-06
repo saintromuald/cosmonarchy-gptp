@@ -29,7 +29,7 @@ void CSprite::free() {
 		image = nextImage;
 	}
 
-	if (((int32)this->position.y) < 0)
+	if (((int32) this->position.y) < 0)
 		sprite_row_position = (this->position.y + 31) / 32;
 	else
 		sprite_row_position = (this->position.y) / 32;

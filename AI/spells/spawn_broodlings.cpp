@@ -19,29 +19,29 @@ namespace AI {
 			caster->getX() + bounds, caster->getY() + bounds,
 			caster, [&](CUnit* target) {
 
-				if (!isTargetWorthHitting(target, caster))
-					return false;
-
-				if (!scbw::canWeaponTargetUnit(WeaponId::SpawnBroodlings, target, caster))
-					return false;
-
-				if (units_dat::BaseProperty[target->id] & UnitProperty::Hero)
-					return false;
-
-				if (!isUnderAttack && target->getCurrentLifeInGame() < 100)
-					return false;
-
-				if (units_dat::BaseProperty[target->id] & UnitProperty::Worker
-					|| target->id == UnitId::siege_tank
-					|| target->id == UnitId::siege_tank_s
-					|| target->id == UnitId::medic
-					|| (target->mainOrderId == OrderId::NukeWait
-						|| target->mainOrderId == OrderId::NukeTrack))
-					return true;
-
+			if (!isTargetWorthHitting(target, caster))
 				return false;
 
-			});
+			if (!scbw::canWeaponTargetUnit(WeaponId::SpawnBroodlings, target, caster))
+				return false;
+
+			if (units_dat::BaseProperty[target->id] & UnitProperty::Hero)
+				return false;
+
+			if (!isUnderAttack && target->getCurrentLifeInGame() < 100)
+				return false;
+
+			if (units_dat::BaseProperty[target->id] & UnitProperty::Worker
+				|| target->id == UnitId::siege_tank
+				|| target->id == UnitId::siege_tank_s
+				|| target->id == UnitId::medic
+				|| (target->mainOrderId == OrderId::NukeWait
+					|| target->mainOrderId == OrderId::NukeTrack))
+				return true;
+
+			return false;
+
+		});
 	}
 
 } //AI

@@ -111,9 +111,8 @@ namespace hooks {
 				scbw::setUnitPosition(unit, pos.x, pos.y);
 
 			if (
-				!scbw::isZergEggNew(unit,true,false,unit->previousUnitType)
-				)
-			{
+				!scbw::isZergEggNew(unit, true, false, unit->previousUnitType)
+				) 			{
 				auto origin = unit->eggOrigin;
 				if (origin == UnitId::ZergLarva) {
 					orderNewUnitToRally(unit, unit->connectedUnit);
@@ -135,103 +134,96 @@ namespace hooks {
 	void orders_Morph1(CUnit* unit) {
 		if (unit->mainOrderState == 0) {
 
-			if (scbw::isConventionalUnitMorphSource(unit->id,true,true))
-			{
+			if (scbw::isConventionalUnitMorphSource(unit->id, true, true)) 			{
 				if (!hasSuppliesForUnit(
 					unit->buildQueue[unit->buildQueueSlot],
 					unit->playerId,
 					1
 				)
-					)
-				{
+					) 				{
 					refundAllQueueSlots(unit);
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
-				}
-				else {
+				} 				else {
 					bool bStopThere = false;
 					uint16 eggId;
 					switch (unit->id) {
-					case UnitId::ZergOvileth:
-					case UnitId::ZergIroleth:
-						break;
-					default:
-						incrementUnitScoresEx(unit, -1, 0);
-						break;
+						case UnitId::ZergOvileth:
+						case UnitId::ZergIroleth:
+							break;
+						default:
+							incrementUnitScoresEx(unit, -1, 0);
+							break;
 					}
-//					incrementUnitScoresEx(unit, -1, 0);
-					//was unit->status = unit->status & ~UnitStatus::Completed
-					//in original code
+					//					incrementUnitScoresEx(unit, -1, 0);
+										//was unit->status = unit->status & ~UnitStatus::Completed
+										//in original code
 					if (unit->status & UnitStatus::Completed)
 						unit->status -= UnitStatus::Completed;
 
 					switch (unit->id) {
-					case UnitId::ZergLarva:
-					case UnitId::ZergZergling:
-					case UnitId::ZergVorvaling:
-					case UnitId::ZergHydralisk:
-					case UnitId::ZergBactalisk:
-					case UnitId::ZergZoryusthaleth:
-					case UnitId::ZergUltrakor:
-					case UnitId::ZergQuazilisk:
-						eggId = UnitId::ZergEgg;
-						break;
-					case UnitId::ZergNathrokor:
-					case UnitId::ZergMutalisk:
-					case UnitId::ZergGorgrokor:
-					case UnitId::ZergOvileth:
-					case UnitId::ZergIroleth:
-						eggId = UnitId::ZergCocoon;
-						break;
-					case UnitId::ZergMatraleth:
-						if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergKonvilisk) {
+						case UnitId::ZergLarva:
+						case UnitId::ZergZergling:
+						case UnitId::ZergVorvaling:
+						case UnitId::ZergHydralisk:
+						case UnitId::ZergBactalisk:
+						case UnitId::ZergZoryusthaleth:
+						case UnitId::ZergUltrakor:
+						case UnitId::ZergQuazilisk:
 							eggId = UnitId::ZergEgg;
-						}
-						else {
+							break;
+						case UnitId::ZergNathrokor:
+						case UnitId::ZergMutalisk:
+						case UnitId::ZergGorgrokor:
+						case UnitId::ZergOvileth:
+						case UnitId::ZergIroleth:
 							eggId = UnitId::ZergCocoon;
-						}
-					default:
-						if (unit->id != UnitId::ProtossCantavis) {
-							bStopThere = true;
-						}
-						break;
+							break;
+						case UnitId::ZergMatraleth:
+							if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergKonvilisk) {
+								eggId = UnitId::ZergEgg;
+							} 						else {
+								eggId = UnitId::ZergCocoon;
+							}
+						default:
+							if (unit->id != UnitId::ProtossCantavis) {
+								bStopThere = true;
+							}
+							break;
 					}
 					if (!bStopThere) {
 						if (unit->id == UnitId::ProtossCantavis) {
 							replaceUnitWithType(unit, UnitId::ProtossAugur);
 							unit->sprite->flags &= ~CSprite_Flags::IscriptCode;
-							if(unit->sprite->images.head != nullptr) {
+							if (unit->sprite->images.head != nullptr) {
 								CImage* current_image = unit->sprite->images.head;
 								do {
-									
+
 									current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 									current_image = current_image->link.next;
-								}while (current_image != nullptr);
+								} while (current_image != nullptr);
 							}
-							changeUnitButtonSet_Sub4E5D60(unit,UnitId::None);
+							changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
 							scbw::refreshConsole();
 							unit->status &= ~UnitStatus::IsBuilding; //disable the flag if set
 							setArchonPathing(unit);
 							unit->orderComputerCL(OrderId::CompletingArchonSummon);
 							return;
-						}
-						else {
+						} 						else {
 							unit->eggOrigin = unit->id;
 							//morph into egg from source unit
 							replaceUnitWithType(unit, eggId);
 						}
-						
+
 						changeUnitButtonSet_Sub4E5D60(unit, unit->id);
 						unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 						unit->mainOrderState = 1;
 						auto origin = unit->eggOrigin;
 						if (origin == UnitId::ZergZergling) {
 							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
-						}
-						else if (origin == UnitId::ZergUltrakor 
-							|| origin==UnitId::ZergOvileth) { // Iroleth uses air cocoon
+						} 						else if (origin == UnitId::ZergUltrakor
+							|| origin == UnitId::ZergOvileth) { // Iroleth uses air cocoon
 							unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
-						}
-						else if (origin == UnitId::ZergLarva) {
+						} 						else if (origin == UnitId::ZergLarva) {
 							unit->sprite->playIscriptAnim(IscriptAnimation::Walking, true);
 						}
 					}
@@ -240,8 +232,7 @@ namespace hooks {
 
 			}
 
-		}
-		else
+		} 		else
 			if (unit->mainOrderState == 1) {
 				//advance
 				if (advanceRemainingBuildTime_Sub466940(unit)) {
@@ -253,8 +244,7 @@ namespace hooks {
 					unit->sprite->playIscriptAnim(anim, true);
 					unit->mainOrderState = 2;
 				}
-			}
-			else
+			} 			else
 				if (unit->mainOrderState == 2) {
 
 					if (unit->orderSignal & 4) {
@@ -262,14 +252,14 @@ namespace hooks {
 						unit->orderSignal -= 4;
 						auto origin = unit->eggOrigin;
 						switch (origin) {
-						case UnitId::ZergOvileth:
-							scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 1);
-							break;
-						case UnitId::ZergIroleth:
-							scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 2);
-							break;
-						default:
-							break;
+							case UnitId::ZergOvileth:
+								scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 1);
+								break;
+							case UnitId::ZergIroleth:
+								scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 2);
+								break;
+							default:
+								break;
 						}
 
 						replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
@@ -300,8 +290,7 @@ namespace hooks {
 
 							unit->orderComputerCL(OrderId::ZergBirth);
 
-						}
-						else { //5DF60
+						} 						else { //5DF60
 
 							//update various stuff (set hp, set shield...) not finished on Morph
 
@@ -309,7 +298,7 @@ namespace hooks {
 
 							updateUnitStrength(unit);
 							auto origin = unit->eggOrigin;
-							if (unit->id == UnitId::ZergEgg && origin==UnitId::ZergLarva)
+							if (unit->id == UnitId::ZergEgg && origin == UnitId::ZergLarva)
 								orderNewUnitToRally(unit, unit->connectedUnit);
 
 						}
@@ -328,7 +317,7 @@ namespace hooks {
 
 		if (unit->id == UnitId::ZergZergling) {
 			if (morphUnitId == UnitId::ZergVorvaling
-			||	morphUnitId == UnitId::ZergNathrokor) {
+				|| morphUnitId == UnitId::ZergNathrokor) {
 				return true;
 			}
 		}
@@ -355,7 +344,7 @@ namespace hooks {
 
 		if (unit->id == UnitId::ZergUltrakor) {
 			if (morphUnitId == UnitId::ZergKeskathalor
-			||	morphUnitId == UnitId::ZergAlkajelisk) {
+				|| morphUnitId == UnitId::ZergAlkajelisk) {
 				return true;
 			}
 		}
@@ -402,7 +391,7 @@ namespace hooks {
 	//Check if @p unitId is an egg unit that can be rallied
 	bool isRallyableEggUnitHook(uint16 unitId) {
 		//Default StarCraft behavior
-		if (scbw::isZergEggNew(nullptr,false,false,unitId))
+		if (scbw::isZergEggNew(nullptr, false, false, unitId))
 			return false;
 
 		return true;
@@ -412,7 +401,7 @@ namespace hooks {
 	void removeAITownGasReferences(CUnit* unit) {
 		__asm {
 			PUSHAD
-			MOV ECX,unit
+			MOV ECX, unit
 			CALL Func_RemoveGasRefs
 			POPAD
 		}
@@ -421,8 +410,8 @@ namespace hooks {
 	void deleteBuildingAi(void* building_ai_list, BuildingAi* ai) {
 		__asm {
 			PUSHAD
-			MOV EDX,building_ai_list
-			MOV EAX,ai
+			MOV EDX, building_ai_list
+			MOV EAX, ai
 			CALL Func_DeleteBuildingAi
 			POPAD
 		}
@@ -431,8 +420,8 @@ namespace hooks {
 	void deleteWorkerAi(void* worker_ai_list, WorkerAi* ai) {
 		__asm {
 			PUSHAD
-			MOV EDX,worker_ai_list
-			MOV EAX,ai
+			MOV EDX, worker_ai_list
+			MOV EAX, ai
 			CALL Func_DeleteWorkerAi
 			POPAD
 		}
@@ -441,67 +430,66 @@ namespace hooks {
 	void deleteAiTownIfNeeded(AiTown* town) {
 		__asm {
 			PUSHAD
-			MOV EAX,town
+			MOV EAX, town
 			CALL Func_DeleteAiTownIfNeeded
 			POPAD
 		}
 	}
-/*	uint32 remove_worker_or_building_ai(CUnit* unit, uint8 assert_is_building) {
-		BuildingAi* ai;
-		AiTown* town;
-		removeAITownGasReferences(unit);
-		ai = (BuildingAi*)unit->pAI;
-		auto result = 0;
-		if (ai)
-		{
-			if (assert_is_building
-				|| units_dat::BaseProperty[unit->id] & UnitProperty::Building && unit->id != UnitId::ResourceVespeneGeyser
-				|| unit->id == UnitId::ZergLarva
-				|| unit->id == UnitId::ZergEgg
-				//|| scbw::isLarvalEgg(unit)
-				|| unit->id == UnitId::ZergOverlord)
+	/*	uint32 remove_worker_or_building_ai(CUnit* unit, uint8 assert_is_building) {
+			BuildingAi* ai;
+			AiTown* town;
+			removeAITownGasReferences(unit);
+			ai = (BuildingAi*)unit->pAI;
+			auto result = 0;
+			if (ai)
 			{
-				town = ai->town;
-				auto free = town->free_buildings;
-				deleteBuildingAi(free, ai);
-			}
-			else
-			{
-				
-				if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Worker))
-					return 0;
-				town = ai->town;
-				deleteWorkerAi(town->free_workers, (WorkerAi*)ai);
-				town->worker_count--;
-			}
-			if (town)
-			{
-				if (unit == town->building_scv)
-					town->building_scv = nullptr;
-				if (unit == town->main_building)
-					town->main_building = nullptr;
-			}
-			if (!assert_is_building)
-			{
-				if (town)
-					deleteAiTownIfNeeded(town);
-			}
-			unit->pAI = nullptr;
-			result = 1;
-		}
-		return result;
-	}
-	*/
+				if (assert_is_building
+					|| units_dat::BaseProperty[unit->id] & UnitProperty::Building && unit->id != UnitId::ResourceVespeneGeyser
+					|| unit->id == UnitId::ZergLarva
+					|| unit->id == UnitId::ZergEgg
+					//|| scbw::isLarvalEgg(unit)
+					|| unit->id == UnitId::ZergOverlord)
+				{
+					town = ai->town;
+					auto free = town->free_buildings;
+					deleteBuildingAi(free, ai);
+				}
+				else
+				{
 
-	//Return the ID of the egg unit to use when morphing @p unitId.
-	//If the unit cannot morph, return UnitId::None.
+					if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Worker))
+						return 0;
+					town = ai->town;
+					deleteWorkerAi(town->free_workers, (WorkerAi*)ai);
+					town->worker_count--;
+				}
+				if (town)
+				{
+					if (unit == town->building_scv)
+						town->building_scv = nullptr;
+					if (unit == town->main_building)
+						town->main_building = nullptr;
+				}
+				if (!assert_is_building)
+				{
+					if (town)
+						deleteAiTownIfNeeded(town);
+				}
+				unit->pAI = nullptr;
+				result = 1;
+			}
+			return result;
+		}
+		*/
+
+		//Return the ID of the egg unit to use when morphing @p unitId.
+		//If the unit cannot morph, return UnitId::None.
 	uint16 getUnitMorphEggTypeHook(uint16 unitId, CUnit* unit, uint16 resultId) {
 		//Default StarCraft behavior
 
 		if (units_dat::BaseProperty[unitId] & UnitProperty::Flyer) {
 			return UnitId::ZergCocoon;
-		}
-		else {
+		} 		else {
 			return UnitId::ZergEgg;
 		}
 		return UnitId::None;
@@ -514,9 +502,9 @@ namespace hooks {
 
 		auto source = eggUnit->eggOrigin;
 		if (eggUnit->getRace() == RaceId::Zerg
-		&&  eggUnit->id != UnitId::ZergInfestedTerran) {
+			&& eggUnit->id != UnitId::ZergInfestedTerran) {
 			if (!(units_dat::BaseProperty[eggUnit->id] & UnitProperty::Building)
-			   && source != UnitId::ZergLarva) {
+				&& source != UnitId::ZergLarva) {
 				return source;
 			}
 		}
@@ -589,14 +577,13 @@ namespace hooks {
 
 	CUnit* beginTrain(CUnit* unit, uint16 unit_id, bool notify_error) {
 		if (unit->status & UnitStatus::GroundedBuilding
-			|| unit->id==UnitId::ProtossSolarion
-//			|| unit->id==UnitId::Hero_Gantrithor
-			|| unit->id==UnitId::ProtossAccantor
-//			|| unit->id==UnitId::Hero_Warbringer
+			|| unit->id == UnitId::ProtossSolarion
+			//			|| unit->id==UnitId::Hero_Gantrithor
+			|| unit->id == UnitId::ProtossAccantor
+			//			|| unit->id==UnitId::Hero_Warbringer
 			|| scbw::isLarvalEgg(unit))//just egg previously
 		{
-			if (hasSuppliesForUnit(unit_id,unit->playerId,notify_error))
-			{
+			if (hasSuppliesForUnit(unit_id, unit->playerId, notify_error)) 			{
 				CUnit* result = scbw::CreateUnit(unit_id, unit->getX(), unit->getY(), unit->playerId);
 				if (result)
 					return result;

@@ -28,7 +28,7 @@ namespace {
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV EAX, [EBP+0x08]
+			MOV EAX, [EBP + 0x08]
 			MOV unit, EAX
 			PUSHAD
 		}
@@ -84,8 +84,7 @@ namespace {
 
 	}
 
-	void __declspec(naked) AI_AcquireHealTarget_Wrapper()
-	{
+	void __declspec(naked) AI_AcquireHealTarget_Wrapper() 	{
 		static CUnit* a1;
 		static CUnit* a2;
 		static uint32 result;
@@ -112,8 +111,8 @@ namespace {
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
-			MOV EAX,[EBP+0x08]
-			MOV target,EAX
+			MOV EAX, [EBP + 0x08]
+			MOV target, EAX
 			POP EAX
 			MOV medic, EAX
 			PUSHAD
@@ -132,13 +131,13 @@ namespace {
 
 namespace hooks {
 
-void injectMedicOrdersHooks() {
-	jmpPatch(orders_MedicHeal2Wrapper,		0x00463740, 1);
-	jmpPatch(orders_HealMoveWrapper,		0x004637B0, 1);
-	jmpPatch(orders_MedicWrapper,			0x00463900, 1);
-	jmpPatch(orders_MedicHeal1Wrapper,		0x00464180, 1);
-	jmpPatch(AI_AcquireHealTarget_Wrapper,	0x00463530, 1);
-	jmpPatch(doMedicHeal_Wrapper,			0x00463C40, 1);
-}
+	void injectMedicOrdersHooks() {
+		jmpPatch(orders_MedicHeal2Wrapper, 0x00463740, 1);
+		jmpPatch(orders_HealMoveWrapper, 0x004637B0, 1);
+		jmpPatch(orders_MedicWrapper, 0x00463900, 1);
+		jmpPatch(orders_MedicHeal1Wrapper, 0x00464180, 1);
+		jmpPatch(AI_AcquireHealTarget_Wrapper, 0x00463530, 1);
+		jmpPatch(doMedicHeal_Wrapper, 0x00463C40, 1);
+	}
 
 } //hooks

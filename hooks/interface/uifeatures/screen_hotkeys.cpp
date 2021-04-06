@@ -11,12 +11,12 @@ namespace {
 namespace hooks {
 	void initializeScreenLocations() {
 		for (Point16& point : screen_hotkeys) {
-			point = {(uint16)*MoveToX, (uint16)*MoveToY};
+			point = {(uint16) *MoveToX, (uint16) *MoveToY};
 		}
 	}
 
 	int saveScreenLocation(int id) {
-		screen_hotkeys[id] = {(uint16)*MoveToX, (uint16)*MoveToY};
+		screen_hotkeys[id] = {(uint16) *MoveToX, (uint16) *MoveToY};
 		return id;
 	}
 
@@ -27,26 +27,26 @@ namespace hooks {
 
 	bool screenLocationSwitchCase(int n) {
 		switch (n) {
-		case 169:
-			//saveScreenLocation(0);
-			break;
-		case 170:
-			//saveScreenLocation(1);
-			break;
-		case 171:
-			//saveScreenLocation(2);
-			break;
-		case 172:
-			//recallScreenLocation(0);
-			break;
-		case 173:
-			//recallScreenLocation(1);
-			break;
-		case 174:
-			//recallScreenLocation(2);
-			break;
-		default:
-			return false;
+			case 169:
+				//saveScreenLocation(0);
+				break;
+			case 170:
+				//saveScreenLocation(1);
+				break;
+			case 171:
+				//saveScreenLocation(2);
+				break;
+			case 172:
+				//recallScreenLocation(0);
+				break;
+			case 173:
+				//recallScreenLocation(1);
+				break;
+			case 174:
+				//recallScreenLocation(2);
+				break;
+			default:
+				return false;
 		}
 		return true;
 	}
@@ -66,7 +66,7 @@ namespace hooks {
 		}
 	}
 
-	Point16 screen_hotkeys[8] = { {0, 0} };
+	Point16 screen_hotkeys[8] = {{0, 0}};
 }
 
 namespace {
