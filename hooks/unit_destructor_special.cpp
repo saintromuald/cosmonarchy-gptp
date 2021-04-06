@@ -217,7 +217,8 @@ void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords) {
 //Hooked down there instead of a specific inject.cpp
 void unitDestructorSpecialHook(CUnit* unit) {
 	// Aspirant Criticality behavior
-	if (unit->id == UnitId::TerranAspirant) {
+	if (unit->id == UnitId::TerranAspirant
+		&& unit->status & UnitStatus::Completed) {
 		scbw::createBullet(WeaponId::AspirantCriticality, unit, unit->position.x, unit->position.y, unit->playerId, 0);
 	}
 
