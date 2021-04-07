@@ -19,7 +19,6 @@ namespace hooks {
 	bool AI_AttackManager(uint32 _player, int32 x1, int32 y1, uint32 alywaysOverwriteLastAttack,				// 0043ABB0
 		uint32 allowFallbackAirOnly);
 	int32 AI_HasUnitsForAttackForce(uint32 player);																// 00437F20
-//	void AI_RemoveFromAttack(int32 unitId, uint32 player);														// 00447040
 
 	void injectAIOrdersHooks();
 }

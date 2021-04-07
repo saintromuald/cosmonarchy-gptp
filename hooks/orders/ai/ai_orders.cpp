@@ -1176,27 +1176,6 @@ namespace hooks {
 		}
 		return 0;
 	}
-
-	//	0x00447040 => ai_remove_from_attack(@eax uint32,@edx uint32);
-	/*	void AI_RemoveFromAttack(int32 unitId, uint32 player) { // 00447040
-			uint32 v2; // esi
-			uint32 v3; // ecx
-			uint16* v4; // eax
-
-			if (unitId == UnitId::TerranSiegeTankSiegeMode)
-				unitId = UnitId::TerranSiegeTankTankMode;
-			v2 = unitId + 1;
-			v3 = 0;
-			v4 = AIScriptController[player].attackers;
-			while (*v4 != v2)
-			{
-				++v3;
-				++v4;
-				if (v3 >= 63)
-					return;
-			}
-			AIScriptController[0].attackers[v3 + 628 * player] = 229;
-		}*/
 }
 
 namespace {

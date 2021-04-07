@@ -14,15 +14,13 @@ namespace hooks {
 		hooks::unitsDatWrapperPatches();
 	}
 
-
 	void AI_RemoveFromAttack(int32 unitId_, uint32 player) {
 		int unitId = unitId_;
-		if (unitId == UnitId::TerranPhalanxSiegeMode)
+		if (unitId == UnitId::TerranPhalanxSiegeMode) {
 			unitId = UnitId::TerranPhalanxTankMode;
+		}
 		unitId++;
 		for (int i = 0; i < ATTACK_LIMIT; i++) {
-			/*			if (AIScriptController[player].attackers[i] == unitId) {
-							AIScriptController[player].attackers[i] = UnitId::None + 1;*/
 			if (Globals.attackers.attacks[player][i] == unitId) {
 				Globals.attackers.attacks[player][i] = UnitId::None + 1;
 				return;
@@ -43,7 +41,7 @@ namespace hooks {
 		}
 	}
 	void __declspec(naked) FakeUnitFlingyIdState_Wrapper() {
-		//jmpPatch(FakeUnitFlingyIdState_Wrapper, 0x004AAF23);
+//		jmpPatch(FakeUnitFlingyIdState_Wrapper, 0x004AAF23);
 		static uint32 flingyId;
 		static uint32 index;
 		__asm {
@@ -139,19 +137,21 @@ namespace hooks {
 		jmpPatch(madnessSetFlingyId_Wrapper, 0x004AB147);
 
 		std::vector<uint8> eax_eax = {0x8b, 0x04, 0x85};
-		dumbCodeInject(0x00454317, fakeExtFlingyIds, eax_eax, 0);//+
+		dumbCodeInject(0x00454317, fakeExtFlingyIds, eax_eax, 0); // +
 		std::vector<uint8> ecx_edi = {0x8b, 0x0c, 0xbd};
 		dumbCodeInject(0x00463A71, fakeExtFlingyIds, ecx_edi, 0);
 		std::vector<uint8> edx_ecx = {0x8b, 0x14, 0x8d};
-		//	dumbCodeInject(0x004683C6, fakeExtFlingyIds, edx_ecx, 2);//unit_morph - AI Wrapper
+//	dumbCodeInject(0x004683C6, fakeExtFlingyIds, edx_ecx, 2); // unit_morph - AI Wrapper
 		std::vector<uint8> edx_eax = {0x8b, 0x14, 0x85};
-		//dumbCodeInject(0x0047B854, fakeExtFlingyIds, edx_eax, 2);
-		//dumbCodeInject(0x0047B8A4, fakeExtFlingyIds, edx_eax, 2);
-		//wrappers 3-5 if gptp speed hooks are enabled
+//		dumbCodeInject(0x0047B854, fakeExtFlingyIds, edx_eax, 2);
+//		dumbCodeInject(0x0047B8A4, fakeExtFlingyIds, edx_eax, 2);
+// 
+		// wrappers 3-5 if gptp speed hooks are enabled
 		std::vector<uint8> ecx_eax = {0x8b, 0x0c, 0x85};
 		dumbCodeInject(0x0047B8F4, fakeExtFlingyIds, ecx_eax, 0);
 		dumbCodeInject(0x0048D756, fakeExtFlingyIds, ecx_eax, 0);
 		dumbCodeInject(0x0048DA8A, fakeExtFlingyIds, ecx_eax, 0);
+
 		//building visibility
 //		jmpPatch(buildingVisionSyncHook_Wrapper, 0x00497110);
 
@@ -161,7 +161,7 @@ namespace hooks {
 		dumbCodeInject(0x004971BD, fakeExtFlingyIds + 3, edx_eax, 0);
 		dumbCodeInject(0x004971E4, fakeExtFlingyIds + 4, edx_eax, 0);
 		dumbCodeInject(0x0049720B, fakeExtFlingyIds + 5, edx_eax, 0);
-		//
+
 		std::vector<uint8> eax_ebx = {0x8b, 0x04, 0x9d};
 		dumbCodeInject(0x0049ED0B, fakeExtFlingyIds, eax_ebx, 0);//crashes hexrays
 		std::vector<uint8> eax_edx = {0x8b, 0x04, 0x95};
@@ -400,42 +400,42 @@ namespace hooks {
 
 
 	void newAttackExtender() {
-		jmpPatch(GetAttackUnit_Wrapper, 0x004171E5);//null int3 bytes
-		jmpPatch(GetAttackLength_Wrapper, 0x00417268);//null int3 bytes
-		jmpPatch(SetAttackUnit_Wrapper, 0x00417207);//null int3 bytes
-		//
+		jmpPatch(GetAttackUnit_Wrapper, 0x004171E5); // null int3 bytes
+		jmpPatch(GetAttackLength_Wrapper, 0x00417268); // null int3 bytes
+		jmpPatch(SetAttackUnit_Wrapper, 0x00417207); // null int3 bytes
+
 		uint32 attackSize = (ATTACK_LIMIT * 4) + 8;
 		memoryPatch(0x0043E673 + 2, attackSize);
 		memoryPatch(0x0043EEC3 + 2, attackSize);
 		jmpPatch(AI_GetMissingAttackForceUnits_JmpWrapper, 0x0043805B, 5);
+
 		//AI_AddToAttack
+
 		jmpPatch(AI_AddToAttack_JmpWrapper1, 0x0044724F, 3);
 		jmpPatch(AI_AddToAttack_JmpWrapper2, 0x0044727B, 2);
 		jmpPatch(AI_AttackManager_JmpWrapper, 0x0043AC54, 2);
 		jmpPatch(AI_HasUnitsForAttackForce_JmpWrapper, 0x00437F2B, 1);
 		jmpPatch(AI_RemoveFromAttack_Wrapper, 0x00447040, 0);
 		jmpPatch(AI_SendSuicide_JmpWrapper, 0x0043E1EE, 1);
-		jmpPatch(AI_Unk1_JmpWrapper, 0x0044816E, 0);//most likely do not execute
-		jmpPatch(AI_Unk2_Wrapper, 0x00447220, 0);//most likely do not execute
+		jmpPatch(AI_Unk1_JmpWrapper, 0x0044816E, 0); // most likely do not execute
+		jmpPatch(AI_Unk2_Wrapper, 0x00447220, 0); // most likely do not execute
 
-
-		//AI_RemoveFromAttack
 	}
 	void injectLimitHooks() {
 
-
-		//		hooks::injectCCMUHooks();
-		//		hooks::sfxExtender();
+//		hooks::injectCCMUHooks();
+//		hooks::sfxExtender();
 		newSfxExtender();
-		//		injectPortdataLimits();
-		//		hooks::injectTblExtender();
+//		injectPortdataLimits();
+//		hooks::injectTblExtender();
 		insaneFlingyIdExtender();
 
-		//		newAttackExtender();//if extended attack config option is not enabled in aise, will cause aise crashes
+//		newAttackExtender(); // if extended attack config option is not enabled in aise, will cause aise crashes
 
 		jmpPatch(preInitDataWrapper, 0x004DAF31);
 		/*
 		auto str = scbw::readSamaseFile("samase\\sfx_ext.txt");
-		GPTP::logger << "Read Test Len: " << str.size() << '\n';*/
+		GPTP::logger << "Read Test Len: " << str.size() << '\n';
+		*/
 	}
 }

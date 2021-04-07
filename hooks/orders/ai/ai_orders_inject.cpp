@@ -304,21 +304,6 @@ namespace {
 			RETN
 		}
 	}
-
-	/*	void __declspec(naked) AI_RemoveFromAttack_Wrapper() { // 00447040
-			static int32 unitId;
-			static uint32 player;
-			__asm {
-				MOV unitId, EAX
-				MOV player, EDX
-				PUSHAD
-			}
-			hooks::AI_RemoveFromAttack(unitId, player);
-			__asm {
-				POPAD
-				RETN
-			}
-		}*/
 }
 
 namespace hooks {
@@ -340,6 +325,5 @@ namespace hooks {
 		jmpPatch(AI_AttackManager_Wrapper,					0x0043ABB0, 4);
 		jmpPatch(AI_HasUnitsForAttackForce_Wrapper,			0x00437F20, 4);
 		*/
-//		jmpPatch(AI_RemoveFromAttack_Wrapper,				0x00447040, 0);
 	}
 }
