@@ -982,8 +982,8 @@ namespace hooks {
 		}
 
 		// Permanently Cloaked units recloak after 2 seconds of being out of combat
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak
-			|| unit->status & UnitStatus::CloakingForFree) {
+		if ((units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak || unit->status & UnitStatus::CloakingForFree)
+			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Burrowable)) {
 			auto timer = scbw::get_generic_timer(unit, ValueId::PermanentCloakTimer);
 			if (timer > 1) {
 				makeSpriteVisible(unit->sprite);
