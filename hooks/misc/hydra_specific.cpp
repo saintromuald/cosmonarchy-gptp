@@ -643,7 +643,7 @@ namespace hooks {
 		return UnitId::TerranSpiderMine;
 	}
 	uint32 extend_tech_target_check(uint32 orig_result, CUnit* caster, CUnit* target, uint8 techId) {
-		if (orig_result == 0) {//Valid Target
+		if (orig_result == 0) { // Valid Target
 			scbw::printText("Can cast");
 			if (techId == TechId::Lockdown) {
 				scbw::printFormattedText("Lockdown %d %d", caster->orderTarget.pt.x, caster->orderTarget.pt.y);
@@ -651,39 +651,45 @@ namespace hooks {
 		}
 		return orig_result;
 	}
+
 	//replaces CTFCop2 order
 	void order_PhaseLink(CUnit* unit) {
 		uint32 status = 0;
-		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell; //might be  changed later if required
+		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell; // might be changed later if required
 		if (unit->id == UnitId::ProtossClarion) {
 			if (scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
 				status = 1;//disable clarion
 			} else {
 				status = 0;//enable clarion
 			}
-		} else if (unit->id == UnitId::ProtossExemplar) {
+		}
+		else if (unit->id == UnitId::ProtossExemplar) {
 			status = scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch);
-		} else if (unit->id == UnitId::ProtossStarSovereign) {
+		}
+		else if (unit->id == UnitId::ProtossStarSovereign) {
 			auto order_state = scbw::get_generic_value(unit, ValueId::ProtossSwitchOrderState);
 			if (order_state == 0) {
 				if (unit->movementFlags & MovementFlags::Accelerating) {
 					scbw::makeToHoldPosition(unit);
 				}
 				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 1);
-			} else if (order_state == 1) {
+			}
+			else if (order_state == 1) {
 				if (!(unit->movementFlags & MovementFlags::Accelerating)) {
 					scbw::set_generic_timer(unit, ValueId::PlanetCrackerDelay, 24);
 					unit->status |= UnitStatus::CanNotReceiveOrders;
 					unit->status |= UnitStatus::CanNotAttack;
 					scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 2);
 				}
-			} else if (order_state == 2) {
+			}
+			else if (order_state == 2) {
 				if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerDelay) == 0) {
 					unit->playIscriptAnim(anim);
 					scbw::set_generic_timer(unit, ValueId::PlanetCrackerChannel, 121);
 					scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 3);
 				}
-			} else if (order_state == 3) {
+			}
+			else if (order_state == 3) {
 				if (unit->orderSignal & 4) {
 					unit->orderSignal &= ~0x4;
 					unit->status &= ~UnitStatus::CanNotReceiveOrders;
@@ -692,21 +698,6 @@ namespace hooks {
 					unit->orderToIdle();
 				}
 			}
-
-			/*			else if (order_state == 1) {
-							if (!(unit->movementFlags & MovementFlags::Accelerating)) {
-								unit->playIscriptAnim(anim);
-								scbw::set_generic_timer(unit, ValueId::PlanetCrackerChannel, 121);
-								scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 2);
-							}
-						}
-						else if (order_state == 2) {
-							if (unit->orderSignal & 4) {
-								unit->orderSignal &= ~0x4;
-								scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 0);
-								unit->orderToIdle();
-							}
-						}*/
 			return;
 		}
 
@@ -716,13 +707,15 @@ namespace hooks {
 				scbw::makeToHoldPosition(unit);
 			}
 			scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 1);
-		} else if (order_state == 1) {
+		}
+		else if (order_state == 1) {
 			if (!(unit->movementFlags & MovementFlags::Accelerating)) {
 				unit->playIscriptAnim(anim);
 				scbw::set_generic_timer(unit, ValueId::SwitchModeGimmickTimer, 5);
 				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 2);
 			}
-		} else if (order_state == 2) {
+		}
+		else if (order_state == 2) {
 			if (scbw::get_generic_timer(unit, ValueId::SwitchModeGimmickTimer) == 0) {
 				unit->orderSignal &= ~0x4;
 				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 0);
@@ -734,10 +727,12 @@ namespace hooks {
 						scbw::placeClarionLinks(unit);
 						scbw::clearClarionLinks(unit);
 					}
-				} else if (unit->id == UnitId::ProtossExemplar) {
+				}
+				else if (unit->id == UnitId::ProtossExemplar) {
 					if (status == 0) {
 						scbw::set_generic_rust_value(unit, ValueId::ExemplarSwitch, 1);
-					} else {
+					}
+					else {
 						scbw::set_generic_rust_value(unit, ValueId::ExemplarSwitch, 0);
 					}
 				}
@@ -746,6 +741,7 @@ namespace hooks {
 			}
 		}
 	}
+
 	bool canAttackTarget_EndChunk(CUnit* source, uint32 target_flags) {
 		if (source->id == UnitId::ProtossClarion && scbw::get_aise_value(source, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
 			return false;
@@ -754,13 +750,12 @@ namespace hooks {
 			if (source->getAirWeapon() != WeaponId::None) {
 				return true;
 			}
-		} else {
+		}
+		else {
 			if (source->getGroundWeapon() != WeaponId::None) {
 				return true;
 			}
 		}
-
-
 		return false;
 	}
 
@@ -798,9 +793,7 @@ namespace hooks {
 		updateThingys();
 		sw.Stop();
 		imageThingyLoop = sw.ElapsedMilliseconds();
-		//		if (*elapsedTimeFrames % 24 == 0) {
-		GPTP::logger << "aiLoop: " << aiLoop << ", unitLoop: " << unitLoop << ", " << "tile loop: " << tileLoop << ", thingy/bullet/imageLoop: " << imageThingyLoop << '\n';
-		//}
+		GPTP::logger << "aiLoop: " << aiLoop << ", unitLoop: " << unitLoop << ", " << "tile loop: " << tileLoop << ", thingy/bullet/imageLoop: " << imageThingyLoop << '\n';		
 		return scbw::setInGameLoopState(0);
 	}
 }
