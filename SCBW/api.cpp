@@ -1642,8 +1642,8 @@ namespace scbw {
 			//	|| orderId == OrderId::Ensnare				// Land Grab
 			|| orderId == OrderId::Irradiate
 			|| orderId == OrderId::StasisField
-			|| orderId == OrderId::EmpShockwave			// Observance
-			|| orderId == OrderId::MagnaPulse			// Lobotomy Mine
+			|| orderId == OrderId::EmpShockwave				// Observance
+			|| orderId == OrderId::MagnaPulse				// Lobotomy Mine
 			|| orderId == OrderId::PsiStorm
 			//	|| orderId == OrderId::SummonBroodlings		// unused
 			|| orderId == OrderId::FireYamatoGun1;
@@ -1664,5 +1664,23 @@ namespace scbw {
 		Point8 offset = shield_lo->getOffset(unit->sprite->mainGraphic->direction, frameAngle);
 
 		unit->sprite->createOverlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
+	}
+
+	const uint32 Func_497ED0 = 0x00497ED0;
+	static void makeSpriteVisible(CSprite* sprite) {
+		__asm {
+			PUSHAD
+			MOV EAX, sprite
+			CALL Func_497ED0
+			POPAD
+		}
+	}
+
+	void decloakProc(CUnit* unit) {
+		if ((units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak || unit->status & UnitStatus::CloakingForFree)
+			&& unit->playerId && !(units_dat::BaseProperty[unit->id] & UnitProperty::Burrowable)) {
+
+			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::PermanentCloakTimer, 48 + 1, 0);
+		}
 	}
 } //scbw

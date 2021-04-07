@@ -154,8 +154,11 @@ bool irradiateTarget(CUnit* unit) {
 void augurSacrifice(CUnit* target) {
 	if (scbw::get_generic_value(target, ValueId::AugurSafetyCheck) == 0) {
 		scbw::set_generic_value(target, ValueId::AugurSafetyCheck, 1);
-		scbw::UnitFinder unitFinder(target->getX() - 384, target->getY() - 384,
-			target->getX() + 384, target->getY() + 384);
+		scbw::UnitFinder unitFinder(
+			target->getX() - 384,
+			target->getY() - 384,
+			target->getX() + 384,
+			target->getY() + 384);
 		CUnit* nearest = unitFinder.getNearestTarget(target, [&](CUnit* unit) {
 			//Don't attack friendly / allied units
 			if (unit->sprite == nullptr) {
@@ -183,8 +186,7 @@ void augurSacrifice(CUnit* target) {
 			target->removeTimer = 5 * 32;
 			target->userActionFlags |= 0x4;
 			return;
-		}
-		else {
+		} else {
 			target->remove();
 		}
 	}
@@ -457,29 +459,15 @@ namespace hooks {
 				break;
 			}
 		}
-
-		if (data.attacker != nullptr) {
-			// Decloak behavior, Cabalist - Silent Kill
-			if ((units_dat::BaseProperty[data.attacker->id] & UnitProperty::PermanentCloak
-				|| data.attacker->status & UnitStatus::CloakingForFree)
-				&& data.attacker->playerId
-				&& data.attacker->id != UnitId::ZergLakizilisk) {
-				bool silent_kill = false;
-				if (data.finalDamage >= data.target->hitPoints
-					&& data.attacker->id == UnitId::ProtossCabalist) {
-					silent_kill = true;
-				}
-				if (!silent_kill && !(data.attacker->visibilityStatus & 1 << data.target->playerId)) {
-					data.attacker->visibilityStatus |= (1 << data.target->playerId);
-					makeSpriteVisible(data.attacker->sprite);
-					scbw::set_generic_timer(data.attacker, ValueId::PermanentCloakTimer, 48 + 1);
-				}
-			}
-		}
 	}
 
 	static void weaponDamage_behaviors(WeaponDamageData& data) {
 		if (data.attacker != nullptr) {
+
+			// Cabalist - Decloak, Silent Kill
+			if (data.attacker->id == UnitId::ProtossCabalist && data.finalDamage < data.target->hitPoints) {
+				scbw::decloakProc(data.attacker);
+			}
 
 			// Cantavis - Hallucinating
 			if (scbw::get_generic_timer(data.target, ValueId::HallucinatingTimer) >= 1) {

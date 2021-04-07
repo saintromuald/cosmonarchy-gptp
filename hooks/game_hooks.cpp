@@ -118,6 +118,32 @@ void replaceUnitWithType(CUnit* unit, uint16 newUnitId) {
 
 ;
 
+const uint32 Func_497ED0 = 0x00497ED0;
+static void makeSpriteVisible(CSprite* sprite) {
+
+	__asm {
+		PUSHAD
+		MOV EAX, sprite
+		CALL Func_497ED0
+		POPAD
+	}
+
+}
+
+;
+
+const uint32 Func_498A90 = 0x00498A90;
+void UpdateSpriteImagesForCloak(CSprite* sprite) {
+
+	__asm {
+		PUSHAD
+		MOV EDI, sprite
+		CALL Func_498A90
+		POPAD
+	}
+
+}
+
 const uint32 Func_Irradiate = 0x00454E00;
 void spawnCreeper(CUnit* unit) {
 
@@ -963,7 +989,6 @@ namespace hooks {
 				if (*elapsedTimeFrames % 36 == 0 && stacks == 0) {
 					target->sprite->createUnderlay(ImageId::TreasurySupplyOverlay, 0, 0, 0);
 				}
-
 				scbw::add_generic_value(target, ValueId::TreasuryStacks, 1);
 				int supply = scbw::get_generic_value(target, ValueId::SupplyProvided);
 				target->setSupplyProvided(supply + TreasuryIncrease);
@@ -973,13 +998,19 @@ namespace hooks {
 		// Permanently Cloaked units recloak after 2 seconds of being out of combat
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak
 			|| unit->status & UnitStatus::CloakingForFree) {
-			auto timer = scbw::get_generic_timer(unit, ValueId::PermanentCloakTimer);
-			if (timer == 1) {
+			auto timer = scbw::get_aise_value(unit, NULL, AiseId::GenericTimer, ValueId::PermanentCloakTimer, 0);
+			if (timer > 1) {
+				makeSpriteVisible(unit->sprite);
+				for (int i = 0; i < 8; i++) {
+					unit->visibilityStatus |= (1 << i);
+				}
+			} else if (timer == 1) {
+				makeSpriteInvisible(unit->sprite);
 				for (int i = 0; i < 8; i++) {
 					if (!scbw::isAlliedTo(unit->playerId, i)) {
-						if (unit->visibilityStatus & (1 << i)) {
-							unit->visibilityStatus &= ~(1 << i);
-						}
+						unit->visibilityStatus &= ~(1 << i);
+					} else {
+						unit->visibilityStatus |= (1 << i);
 					}
 				}
 			}

@@ -432,8 +432,11 @@ namespace hooks {
 	}
 
 	uint32 unitCanSeeCloakedTarget(CUnit* target, CUnit* unit) { // 00401D60, hooked for cloak rewrite - Pr0nogo
-		uint32 flags = target->status; // BYTE1() & 3 == check if unit is cloaked/requires detect
-		return flags & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
+		const bool isCloaked = target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus); // original condition
+		const bool isDecloaked = scbw::get_aise_value(unit, NULL, ValueId::PermanentCloakTimer, 0, 0) > 1;	  // temp decloak
+		return isCloaked && !isDecloaked;
+		//u32 flags = target->status; // BYTE1() & 3 == check if unit is cloaked/requires detect
+		//return flags & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
