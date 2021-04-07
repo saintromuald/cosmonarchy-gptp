@@ -73,17 +73,50 @@ namespace {
 			RETN 4
 		}
 	}
+
+	void __declspec(naked) isTargetVisible_Wrapper() { // 004E5E30
+		static uint32 result;
+		static CUnit* target;
+		static CUnit* unit;
+		__asm {
+			MOV target, EAX
+			MOV unit, ESI
+			PUSHAD
+		}
+		result = hooks::isTargetVisible(target, unit);
+		__asm {
+			POPAD
+			MOV result, EAX
+			RETN
+		}
+	}
+
+	void __declspec(naked) isUnitVisible_Wrapper() { // 004E5DB0
+		static uint32 result;
+		static CUnit* unit;
+		__asm {
+			MOV unit, ESI
+			PUSHAD
+		}
+		result = hooks::isUnitVisible(unit);
+		__asm {
+			POPAD
+			MOV result, EAX
+			RETN
+		}
+	}
 }
 
 namespace hooks {
 
 	void injectTargetHooks() {
-		//		jmpPatch(genericRightClickUnitProc2_Wrapper, 0x00455E00, 1);
-		//		jmpPatch(genericRightClickUnitProc2_Wrapper, 0x004C20C0, 0);
+//		jmpPatch(genericRightClickUnitProc2_Wrapper, 0x00455E00, 1);
+//		jmpPatch(genericRightClickUnitProc2_Wrapper, 0x004C20C0, 0);
 		nops(0x004EB176, 8);//disruption web
 		nops(0x004EB316, 2);//disruption web
-
 		jmpPatch(unitCanSeeCloakedTarget_Wrapper, 0x00401D60, 4);
+		jmpPatch(isTargetVisible_Wrapper, 0x004E5E30, 4);
+		jmpPatch(isUnitVisible_Wrapper, 0x004E5DB0, 1);
 	}
 	void injectTargetRelatedHooks() {
 		injectTargetHooks();

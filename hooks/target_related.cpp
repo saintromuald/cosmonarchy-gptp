@@ -440,7 +440,7 @@ namespace hooks {
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
-	uint32 isTargetVisible(CUnit* target, CUnit* unit) { // 004E5E30 - 4 nops 
+	uint32 isTargetVisible(CUnit* target, CUnit* unit) { // 004E5E30
 		int32 playerUnit; // ebx
 		uint32 result; // eax
 
@@ -450,7 +450,27 @@ namespace hooks {
 		}
 		if (!(target->status & 0x300) || playerUnit & target->visibilityStatus) {
 			result = (uint8)(playerUnit & target->sprite->visibilityFlags);
-		} else {
+		}
+		else {
+			result = 0;
+		}
+		return result;
+	}
+
+	uint32 isUnitVisible(CUnit* unit) { // 004E5DB0
+		CUnit* target; // eax
+		int32 playerUnit; // ebx
+		uint32 result; // eax
+
+		target = unit->orderTarget.unit;
+		playerUnit = 1 << unit->playerId;
+		if (!target) {
+			return playerUnit & ~(activeTileArray[unit->orderTarget.pt.x / 32 + mapTileSize->width * (unit->orderTarget.pt.y / 32)] & 0xFF);
+		}
+		if (!(target->status & 0x300) || playerUnit & target->visibilityStatus) {
+			result = (unsigned __int8)(playerUnit & target->sprite->visibilityFlags);
+		}
+		else {
 			result = 0;
 		}
 		return result;
