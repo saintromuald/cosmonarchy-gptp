@@ -211,11 +211,11 @@ namespace hooks {
 					if (matchCount != 0 && energy > 0) {
 						uint32 perEach = energy / matchCount;
 						uint32 extra = energy % matchCount;
-						CUnit* unit = unitFinder_distribute.getFirst([&](CUnit* target) {
+						CUnit* unitFirst = unitFinder_distribute.getFirst([&](CUnit* target) {
 							return powerSiphonDistributeMatch(unit, target);
 						});
-						if (unit != nullptr) {
-							unit->addUnitEnergy(extra);
+						if (unitFirst != nullptr) {
+							unitFirst->addUnitEnergy(extra);
 						}
 						uint32 unspent = 0;
 						unitFinder_distribute.forEachInMatch([&](CUnit* target) {
@@ -236,11 +236,11 @@ namespace hooks {
 							unspent = perEach - howMuch;
 						});
 						if (energy > 0) {
-							CUnit* unit = unitFinder_distribute.getFirst([&](CUnit* target) {
+							CUnit* unitNew = unitFinder_distribute.getFirst([&](CUnit* target) {
 								return powerSiphonDistributeMatch(unit, target);
 							});
-							if (unit != nullptr) {
-								unit->addUnitEnergy(extra);
+							if (unitNew != nullptr) {
+								unitNew->addUnitEnergy(extra);
 							}
 						}
 					}
