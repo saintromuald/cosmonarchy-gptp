@@ -1009,6 +1009,8 @@ namespace hooks {
 				for (int i = 0; i < 8; i++) {
 					if (!scbw::isAlliedTo(unit->playerId, i)) {
 						unit->visibilityStatus &= ~(1 << i);
+					} else {
+						unit->visibilityStatus |= (1 << i);
 					}
 				}
 			}
