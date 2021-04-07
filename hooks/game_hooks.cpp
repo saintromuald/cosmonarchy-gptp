@@ -850,8 +850,7 @@ namespace hooks {
 		}
 
 		// Seraph - Observance ability
-		if (scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) > 0) {
-			bool triggerVeeq = true;
+		if (scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) > 0) { // originally checked for timer = 1, but needs to refresh each frame (or very quickly at least)
 			auto range = 192;
 			auto a = scbw::UnitFinder::getNearestTarget(
 				unit->getX() - range,
@@ -863,15 +862,6 @@ namespace hooks {
 				if (target == unit
 					|| scbw::isAlliedTo(unit->playerId, target->playerId)
 					|| target->id != UnitId::TerranSeraph) {
-					triggerVeeq = false;
-				}
-				if (triggerVeeq == false
-					&& scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) = 1)
-				{
-					scbw::set_generic_value(unit, ValueId::ObservanceRend, 0);
-					unit->removeOverlay(ImageId::ObservanceOverlayLarge, ImageId::ObservanceOverlaySmall);
-					return false;
-				} else if (triggerVeeq == false) {
 					return false;
 				}
 				return true;
@@ -884,7 +874,7 @@ namespace hooks {
 			}
 		}
 
-		// Seraph - Create Observance overlays on afflicting Seraphs
+		// Seraph - Observance persistant overlay creation
 		if (scbw::get_generic_timer(unit, ValueId::ObservanceOverlayTimer) <= 1) {
 			auto range = 192;
 			auto a = scbw::UnitFinder::getNearestTarget(
