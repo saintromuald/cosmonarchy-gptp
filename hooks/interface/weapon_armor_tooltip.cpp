@@ -267,21 +267,32 @@ namespace hooks {
 		RemoveTimer
 	};
 
-	static void addStatus(std::vector<std::string>& vec, std::string name, int value = -1, int timer = -1, TimerType timerType = TimerType::Vanilla) {
+	// maxValue
+	// 0  - show value counter, no boundry
+	// 1  - never show value counter
+	// >1 - show value counter and boundary
+	static void addStatus(std::vector<std::string>& vec, std::string name, int value = -1, int maxValue = 0, int timer = -1, TimerType timerType = TimerType::Vanilla) {
 		if (timer > 0 || value > 0) {
 			std::string text = name;
-			if (timer > 0 || value > 1) {
+			if (timer > 0 || value > 1 || (value > 0 && maxValue != 1)) {
 				text += " (";
 				if (timer > 0) {
-					if (timerType == TimerType::Vanilla) text += timerToString(timer);
-					else if (timerType == TimerType::Aise) text += aisetimerToString(timer);
-					else text += removetimerToString(timer);
-					if (value > 1) {
+					if (timerType == TimerType::Vanilla) {
+						text += timerToString(timer);
+					} else if (timerType == TimerType::Aise) {
+						text += aisetimerToString(timer);
+					} else {
+						text += removetimerToString(timer);
+					}
+					if (value > 0 && maxValue != 1) {
 						text += ", ";
 					}
 				}
-				if (value > 1) {
+				if (value > 0 && maxValue != 1) {
 					text += std::to_string(value);
+					if (maxValue > 1) {
+						text += "/" + std::to_string(maxValue);
+					}
 				}
 				text += ")";
 			}
@@ -349,85 +360,85 @@ namespace hooks {
 			statuses.push_back("Cloaked");
 
 		// Aise Timer + Value
-		addStatus(statuses, "Knockout Drivers", scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks), scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer), TimerType::Aise);
-		addStatus(statuses, "Adrenal Glands", scbw::get_generic_value(unit, ValueId::AdrenalStacks), scbw::get_generic_timer(unit, ValueId::AdrenalTimer), TimerType::Aise);
-		addStatus(statuses, "Astral Blessing", scbw::get_generic_value(unit, ValueId::EcclesiastStack), scbw::get_generic_timer(unit, ValueId::EcclesiastTimer), TimerType::Aise);
-		addStatus(statuses, "Captivating Claws", captivatingClawsGetStacks(unit), captivatingClawsGetHighestTimer(unit), TimerType::Aise);
-		addStatus(statuses, "Swarming Omen Aura", scbw::get_generic_value(unit, ValueId::SwarmingOmenAbility), scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer), TimerType::Aise);
-		addStatus(statuses, "Nemean Reactors", scbw::get_generic_value(unit, ValueId::NemeanReactorsStack), scbw::get_generic_timer(unit, ValueId::NemeanReactorsTimer), TimerType::Aise);
-		addStatus(statuses, "Observance", scbw::get_generic_value(unit, ValueId::ObservanceRend), scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff), TimerType::Aise);
+		addStatus(statuses, "Knockout Drivers", scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks), 0, scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer), TimerType::Aise);
+		addStatus(statuses, "Adrenal Glands", scbw::get_generic_value(unit, ValueId::AdrenalStacks), 0, scbw::get_generic_timer(unit, ValueId::AdrenalTimer), TimerType::Aise);
+		addStatus(statuses, "Astral Blessing", scbw::get_generic_value(unit, ValueId::EcclesiastStack), 0, scbw::get_generic_timer(unit, ValueId::EcclesiastTimer), TimerType::Aise);
+		addStatus(statuses, "Captivating Claws", captivatingClawsGetStacks(unit), 4, captivatingClawsGetHighestTimer(unit), TimerType::Aise);
+		addStatus(statuses, "Swarming Omen Aura", scbw::get_generic_value(unit, ValueId::SwarmingOmenAbility), 1, scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer), TimerType::Aise);
+		addStatus(statuses, "Nemean Reactors", scbw::get_generic_value(unit, ValueId::NemeanReactorsStack), 0, scbw::get_generic_timer(unit, ValueId::NemeanReactorsTimer), TimerType::Aise);
+		addStatus(statuses, "Observance", scbw::get_generic_value(unit, ValueId::ObservanceRend), 0, scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff), TimerType::Aise);
 
 		// Aise Timer
-		addStatus(statuses, "Malediction", -1, scbw::get_generic_timer(unit, ValueId::MaledictionSlow), TimerType::Aise);
-		addStatus(statuses, "Ensnaring Brood", -1, scbw::get_generic_timer(unit, ValueId::EnsnaringBroodTimer), TimerType::Aise);
-		addStatus(statuses, "Lobotomy Slow", -1, scbw::get_generic_timer(unit, ValueId::LobotomySlow), TimerType::Aise);
-		addStatus(statuses, "Kaiser Rampage", -1, scbw::get_generic_timer(unit, ValueId::KaiserRampage), TimerType::Aise);
-		addStatus(statuses, "Hallucinating", -1, scbw::get_generic_timer(unit, ValueId::HallucinatingTimer), TimerType::Aise);
-//		addStatus(statuses, "Ectomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::EggBoostTimer), TimerType::Aise); // currently can't read tooltips from  eggs
-//		addStatus(statuses, "Endomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer), TimerType::Aise); // nor mineral fields
-		addStatus(statuses, "Adrenaline Packs", -1, scbw::get_generic_timer(unit, ValueId::Adrenaline), TimerType::Aise);
-		addStatus(statuses, "Adrenal Frenzy", -1, scbw::get_generic_timer(unit, ValueId::NathrokorTimer), TimerType::Aise);
-		addStatus(statuses, "Controlled Demolition", -1, scbw::get_generic_timer(unit, ValueId::ControlledDemolitionTimer), TimerType::Aise);
-		addStatus(statuses, "Emergency Detonation", -1, scbw::get_generic_timer(unit, ValueId::EmergencyDetonationTimer), TimerType::Aise);
-		addStatus(statuses, "Binding Grip", -1, scbw::get_generic_timer(unit, ValueId::BindingGripTimer), TimerType::Aise);
-		addStatus(statuses, "Autovitality", -1, scbw::get_generic_timer(unit, ValueId::SimulacrumCloneTimer), TimerType::Aise);
+		addStatus(statuses, "Malediction", -1, 1, scbw::get_generic_timer(unit, ValueId::MaledictionSlow), TimerType::Aise);
+		addStatus(statuses, "Ensnaring Brood", -1, 1, scbw::get_generic_timer(unit, ValueId::EnsnaringBroodTimer), TimerType::Aise);
+		addStatus(statuses, "Lobotomy Slow", -1, 1, scbw::get_generic_timer(unit, ValueId::LobotomySlow), TimerType::Aise);
+		addStatus(statuses, "Kaiser Rampage", -1, 1, scbw::get_generic_timer(unit, ValueId::KaiserRampage), TimerType::Aise);
+		addStatus(statuses, "Hallucinating", -1, 1, scbw::get_generic_timer(unit, ValueId::HallucinatingTimer), TimerType::Aise);
+		// addStatus(statuses, "Ectomorphic Accelerant", 0,  -1, scbw::get_generic_timer(unit, ValueId::EggBoostTimer), TimerType::Aise); // currently can't read tooltips from  eggs
+		// addStatus(statuses, "Endomorphic Accelerant", 0,  -1, scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer), TimerType::Aise); // nor mineral fields
+		addStatus(statuses, "Adrenaline Packs", -1, 1, scbw::get_generic_timer(unit, ValueId::Adrenaline), TimerType::Aise);
+		addStatus(statuses, "Adrenal Frenzy", -1, 1, scbw::get_generic_timer(unit, ValueId::NathrokorTimer), TimerType::Aise);
+		addStatus(statuses, "Controlled Demolition", -1, 1, scbw::get_generic_timer(unit, ValueId::ControlledDemolitionTimer), TimerType::Aise);
+		addStatus(statuses, "Emergency Detonation", -1, 1, scbw::get_generic_timer(unit, ValueId::EmergencyDetonationTimer), TimerType::Aise);
+		addStatus(statuses, "Binding Grip", -1, 1, scbw::get_generic_timer(unit, ValueId::BindingGripTimer), TimerType::Aise);
+		addStatus(statuses, "Autovitality", -1, 1, scbw::get_generic_timer(unit, ValueId::SimulacrumCloneTimer), TimerType::Aise);
 
 		// Aise Value
-		addStatus(statuses, "Energy Decay", scbw::get_generic_value(unit, ValueId::EntropyGauntlets));
-		addStatus(statuses, "Armor Reduction", scbw::get_generic_value(unit, ValueId::ArmorReduce));
-		addStatus(statuses, "Cabeirus Feeders", ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime));
-		addStatus(statuses, "Reverse Thrust", scbw::get_generic_value(unit, ValueId::ReverseThrust));
-		addStatus(statuses, "Sublime Shepherd", scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd));
-		addStatus(statuses, "Lazarus Agent", scbw::get_generic_value(unit, ValueId::LazarusAgent));
-		addStatus(statuses, "Expanded Storage", scbw::get_generic_value(unit, ValueId::TreasuryStacks)); // currently only works for Ovileth and its morphs
-		addStatus(statuses, "Khaydarian Eclipse", scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch));
-		addStatus(statuses, "Reconstitution", scbw::get_generic_rust_value(unit, ValueId::Reconstitution));
-		addStatus(statuses, "Repentent Chorus", scbw::get_generic_value(unit, ValueId::RepententChorus));
-		addStatus(statuses, "Stellar Enforcement", scbw::get_generic_value(unit, ValueId::StellarEnforcement));
-		addStatus(statuses, "Terminal Surge", scbw::get_generic_value(unit, ValueId::TerminalSurge));
+		addStatus(statuses, "Energy Decay", scbw::get_generic_value(unit, ValueId::EntropyGauntlets), 1);
+		addStatus(statuses, "Armor Reduction", scbw::get_generic_value(unit, ValueId::ArmorReduce), 1);
+		addStatus(statuses, "Cabeirus Feeders", ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime), 1);
+		addStatus(statuses, "Reverse Thrust", scbw::get_generic_value(unit, ValueId::ReverseThrust), 1);
+		addStatus(statuses, "Sublime Shepherd", scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd), 1);
+		addStatus(statuses, "Lazarus Agent", scbw::get_generic_value(unit, ValueId::LazarusAgent), 1);
+		addStatus(statuses, "Expanded Storage", scbw::get_generic_value(unit, ValueId::TreasuryStacks), 1); // currently only works for Ovileth and its morphs
+		addStatus(statuses, "Khaydarian Eclipse", scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch), 1);
+		addStatus(statuses, "Reconstitution", scbw::get_generic_rust_value(unit, ValueId::Reconstitution), 1);
+		addStatus(statuses, "Repentent Chorus", scbw::get_generic_value(unit, ValueId::RepententChorus), 1);
+		addStatus(statuses, "Stellar Enforcement", scbw::get_generic_value(unit, ValueId::StellarEnforcement), 1);
+		addStatus(statuses, "Terminal Surge", scbw::get_generic_value(unit, ValueId::TerminalSurge), 1);
 
 		// Aise Value - Gimmicked
-		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 0);
-		addStatus(statuses, "Dirge", scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 1);
-		addStatus(statuses, "Observing", scbw::get_generic_timer(unit, ValueId::ObservanceOverlayTimer) > 0);
-		addStatus(statuses, "Swarming Omen", scbw::get_generic_timer(unit, ValueId::SwarmingOmenStatus) > 0);
-		addStatus(statuses, "Protective Instincts", scbw::get_generic_timer(unit, ValueId::ProtectiveInstinctsStatus) > 0);
-		addStatus(statuses, "Deconstructing", scbw::get_generic_value(unit, ValueId::Deconstruction) > 0);
-		addStatus(statuses, "Worshiping", scbw::get_generic_value(unit, ValueId::WorshipStack) > 0);
-		addStatus(statuses, "Godlike", scbw::get_generic_value(unit, ValueId::GodsMadeFlesh) > 0);
-		addStatus(statuses, "Adaptive Amitosis", scbw::get_generic_value(unit, ValueId::AdaptiveAmitosis) > 0);
-		addStatus(statuses, "Cutaneous Barrier", scbw::get_generic_value(unit, ValueId::CutaneousBarrier) > 0);
-		addStatus(statuses, "Infested", scbw::get_generic_value(unit, ValueId::InfestedByAkistrokor) > 0);
-		addStatus(statuses, "Enthralling Assault", scbw::get_generic_value(unit, ValueId::EnthrallingTalons) > 0);
-		addStatus(statuses, "Phase Link", scbw::hasClarionLinks(unit));
-		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0); // for caster
+		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 0, 1);
+		addStatus(statuses, "Dirge", scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 1, 1);
+		addStatus(statuses, "Observing", scbw::get_generic_timer(unit, ValueId::ObservanceOverlayTimer) > 0, 1);
+		addStatus(statuses, "Swarming Omen", scbw::get_generic_timer(unit, ValueId::SwarmingOmenStatus) > 0, 1);
+		addStatus(statuses, "Protective Instincts", scbw::get_generic_timer(unit, ValueId::ProtectiveInstinctsStatus) > 0, 1);
+		addStatus(statuses, "Deconstructing", scbw::get_generic_value(unit, ValueId::Deconstruction) > 0, 1);
+		addStatus(statuses, "Worshiping", scbw::get_generic_value(unit, ValueId::WorshipStack) > 0, 1);
+		addStatus(statuses, "Godlike", scbw::get_generic_value(unit, ValueId::GodsMadeFlesh) > 0, 1);
+		addStatus(statuses, "Adaptive Amitosis", scbw::get_generic_value(unit, ValueId::AdaptiveAmitosis) > 0, 1);
+		addStatus(statuses, "Cutaneous Barrier", scbw::get_generic_value(unit, ValueId::CutaneousBarrier) > 0, 1);
+		addStatus(statuses, "Infested", scbw::get_generic_value(unit, ValueId::InfestedByAkistrokor) > 0, 1);
+		addStatus(statuses, "Enthralling Assault", scbw::get_generic_value(unit, ValueId::EnthrallingTalons) > 0, 1);
+		addStatus(statuses, "Phase Link", scbw::hasClarionLinks(unit), 0);
+		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0, 1); // for caster
 		bool malice = scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0);
-		addStatus(statuses, "Cowardice", scbw::get_generic_value(unit, ValueId::HierophantOverlay) || malice);
-		addStatus(statuses, "Malice", malice);
+		addStatus(statuses, "Cowardice", scbw::get_generic_value(unit, ValueId::HierophantOverlay) || malice, 1);
+		addStatus(statuses, "Malice", malice, 1);
 
 		// Vanilla Timer + Value
-		addStatus(statuses, "Defensive Matrix", unit->defensiveMatrixHp / 256, unit->defensiveMatrixTimer);
-		addStatus(statuses, "Corrosive Spores", unit->corrosiveSporeCount, unit->acidSporeTime[unit->corrosiveSporeCount - 1]);
+		addStatus(statuses, "Defensive Matrix", unit->defensiveMatrixHp / 256, 1, unit->defensiveMatrixTimer);
+		addStatus(statuses, "Corrosive Spores", unit->corrosiveSporeCount, 1, unit->acidSporeTime[unit->corrosiveSporeCount - 1]);
 
 		// Vanilla Timers
-		addStatus(statuses, "Stimpack", -1, unit->stimTimer);
-		addStatus(statuses, "Irradiated", -1, unit->irradiateTimer);
-		addStatus(statuses, "Ensnared", -1, unit->ensnareTimer);
-		addStatus(statuses, "Lobotomized", -1, unit->lockdownTimer);
-		addStatus(statuses, "Maelstromed", -1, unit->maelstromTimer);
-		addStatus(statuses, "Plagued", -1, unit->plagueTimer);
-		addStatus(statuses, "Stasis", -1, unit->stasisTimer);
-		addStatus(statuses, "Timed Life", -1, unit->removeTimer, TimerType::RemoveTimer);
+		addStatus(statuses, "Stimpack", -1, 1, unit->stimTimer);
+		addStatus(statuses, "Irradiated", -1, 1, unit->irradiateTimer);
+		addStatus(statuses, "Ensnared", -1, 1, unit->ensnareTimer);
+		addStatus(statuses, "Lobotomized", -1, 1, unit->lockdownTimer);
+		addStatus(statuses, "Maelstromed", -1, 1, unit->maelstromTimer);
+		addStatus(statuses, "Plagued", -1, 1, unit->plagueTimer);
+		addStatus(statuses, "Stasis", -1, 1, unit->stasisTimer);
+		addStatus(statuses, "Timed Life", -1, 1, unit->removeTimer, TimerType::RemoveTimer);
 
 		// Vanilla Value
-		addStatus(statuses, "Parasited", unit->parasiteFlags != 0);
-		addStatus(statuses, "Blinded", (bool)unit->isBlind);
+		addStatus(statuses, "Parasited", unit->parasiteFlags != 0, 1);
+		addStatus(statuses, "Blinded", (bool)unit->isBlind, 1);
 
 		// Case Specific
-		addStatus(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode);
+		addStatus(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode, 1);
 		if (scbw::isUnderDarkSwarm(unit)) {
 			CUnit* darkSwarm = scbw::getDarkSwarm(unit);
-			addStatus(statuses, "Under Dark Swarm", darkSwarm->hitPoints / 256, darkSwarm->removeTimer, TimerType::RemoveTimer);
+			addStatus(statuses, "Under Dark Swarm", darkSwarm->hitPoints / 256, 1, darkSwarm->removeTimer, TimerType::RemoveTimer);
 		}
 
 		std::string status = formatStringVector(statuses);
