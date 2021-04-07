@@ -213,16 +213,12 @@ namespace hooks {
 					if (!medic->isTargetWithinMinRange(v4, 30)) {
 						return 3;
 					}
-					auto hpToHeal = units_dat::MaxHitPoints[target->id] - target->hitPoints;
-					if (hpToHeal > 200) {
-						hpToHeal = 200;
-					}
 					/*auto energyCost = hpToHeal >> 1;
 					if (!medic->hasEnergy(energyCost)) {
 						return 2;
 					}
 					medic->spendUnitEnergy(energyCost);*/
-					target->heal(MathUtils::map((int)medic->hitPoints, 0, (int)medic->getMaxHpRaw(), 0, hpToHeal), medic);
+					target->heal(MathUtils::map((int)medic->hitPoints, 0, (int)medic->getMaxHpRaw(), 0, 200), medic);
 					result = 1;
 					target->isBeingHealed = 1;
 					return result;
