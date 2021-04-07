@@ -114,7 +114,7 @@ namespace hooks {
 //		jmpPatch(genericRightClickUnitProc2_Wrapper, 0x004C20C0, 0);
 		nops(0x004EB176, 8);//disruption web
 		nops(0x004EB316, 2);//disruption web
-//		jmpPatch(unitCanSeeCloakedTarget_Wrapper, 0x00401D60, 4);
+		jmpPatch(unitCanSeeCloakedTarget_Wrapper, 0x00401D60, 4);
 //		jmpPatch(isTargetVisible_Wrapper, 0x004E5E30, 4);
 //		jmpPatch(isUnitVisible_Wrapper, 0x004E5DB0, 1);
 	}
