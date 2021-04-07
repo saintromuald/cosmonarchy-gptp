@@ -1,6 +1,7 @@
 #include "medic_orders.h"
 #include <SCBW/api.h>
 #include "globals.h"
+#include <MathUtils.h>
 //helper functions def
 
 namespace {
@@ -216,12 +217,12 @@ namespace hooks {
 					if (hpToHeal > 200) {
 						hpToHeal = 200;
 					}
-					/*					auto energyCost = hpToHeal >> 1;
-										if (!medic->hasEnergy(energyCost)) {
-											return 2;
-										}
-										medic->spendUnitEnergy(energyCost);*/
-					target->heal(hpToHeal, medic);
+					/*auto energyCost = hpToHeal >> 1;
+					if (!medic->hasEnergy(energyCost)) {
+						return 2;
+					}
+					medic->spendUnitEnergy(energyCost);*/
+					target->heal(MathUtils::map((int)medic->hitPoints, 0, (int)medic->getMaxHpRaw(), 0, hpToHeal), medic);
 					result = 1;
 					target->isBeingHealed = 1;
 					return result;
