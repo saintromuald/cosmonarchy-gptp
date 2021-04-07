@@ -652,8 +652,8 @@ namespace hooks {
 						if (rend == 0) {
 							int overlay = ImageId::ObservanceOverlaySmall - scbw::getOverlayOffset(data.target->id);
 							data.target->sprite->createOverlay(overlay);
-							scbw::add_generic_value(data.target, ValueId::ObservanceRend, 1);
 						}
+						scbw::add_generic_value(data.target, ValueId::ObservanceRend, 1);
 					}
 					break;
 				}

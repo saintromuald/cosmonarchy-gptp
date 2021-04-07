@@ -853,22 +853,21 @@ namespace hooks {
 			auto timer = scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff);
 			if (timer > 1) {
 				const auto range = 192;
-				auto seraph = scbw::UnitFinder::getNearestTarget(
+				auto seraphs = scbw::UnitFinder(
 					unit->getX() - range,
 					unit->getY() - range,
 					unit->getX() + range,
-					unit->getY() + range,
-					unit,
-					[&](CUnit* target) {
+					unit->getY() + range
+				).filter([&](CUnit* target) {
 					if (unit->playerId == target->playerId
 						|| scbw::isAlliedTo(unit->playerId, target->playerId)
 						|| target->id != UnitId::TerranSeraph) {
 						return false;
 					}
 					return true;
-				});
+				}).getAllUnits();
 
-				if (seraph != nullptr) {
+				if (!seraphs.empty()) {
 					// Seraph - Observance timer
 					scbw::set_generic_timer(unit, ValueId::ObservanceTimerDebuff, (5 * 24) + 1);
 
@@ -879,9 +878,11 @@ namespace hooks {
 					}
 
 					// Seraph - Observance persistant overlay creation
-					if (seraph->id == UnitId::TerranSeraph && scbw::get_generic_timer(seraph, ValueId::ObservanceOverlayTimer) == 1) {
-						seraph->sprite->createOverlay(ImageId::SeraphRedOverlay);
-						scbw::set_generic_timer(seraph, ValueId::ObservanceOverlayTimer, 18);
+					for (auto seraph : seraphs) {
+						if (scbw::get_generic_timer(seraph, ValueId::ObservanceOverlayTimer) == 0) {
+							seraph->sprite->createOverlay(ImageId::SeraphRedOverlay);
+							scbw::set_generic_timer(seraph, ValueId::ObservanceOverlayTimer, 18);
+						}
 					}
 				}
 			} else if (timer == 1) {

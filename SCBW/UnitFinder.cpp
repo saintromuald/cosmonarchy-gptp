@@ -572,6 +572,14 @@ namespace scbw {
 		}
 	}
 
+	std::vector<CUnit*> UnitFinder::getAllUnits() {
+		std::vector<CUnit*> vec;
+		for (int i = 0; i < this->getUnitCount(); ++i) {
+			vec.push_back(this->getUnit(i));
+		}
+		return vec;
+	}
+
 	CUnit* UnitFinder::getFirst(UnitFinderCallbackMatchInterface callback) const {
 
 		for (int i = 0; i < this->getUnitCount(); ++i)
