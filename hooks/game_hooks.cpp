@@ -849,8 +849,9 @@ namespace hooks {
 				unit->sprite->removeOverlay(overlayImageId);
 		}
 
-		// Science Vessel - Observance ability
-		if (scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) == 1) {
+		// Seraph - Observance ability
+		if (scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) > 0) {
+			bool triggerVeeq = true;
 			auto range = 192;
 			auto a = scbw::UnitFinder::getNearestTarget(
 				unit->getX() - range,
@@ -862,6 +863,15 @@ namespace hooks {
 				if (target == unit
 					|| scbw::isAlliedTo(unit->playerId, target->playerId)
 					|| target->id != UnitId::TerranSeraph) {
+					triggerVeeq = false;
+				}
+				if (triggerVeeq == false
+					&& scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) = 1)
+				{
+					scbw::set_generic_value(unit, ValueId::ObservanceRend, 0);
+					unit->removeOverlay(ImageId::ObservanceOverlayLarge, ImageId::ObservanceOverlaySmall);
+					return false;
+				} else if (triggerVeeq == false) {
 					return false;
 				}
 				return true;
@@ -870,19 +880,11 @@ namespace hooks {
 
 			if (a != nullptr) {
 				scbw::set_generic_timer(unit, ValueId::ObservanceTimerDebuff, (5 * 24) + 1);
-				if (scbw::get_generic_value(unit, ValueId::ObservanceRend) < 5) {
-					scbw::set_generic_value(unit, ValueId::ObservanceRend, scbw::get_generic_value(unit, ValueId::ObservanceRend) + 1);
-					if (scbw::get_generic_value(unit, ValueId::ObservanceRend) < 5) {
-						scbw::add_generic_value(unit, ValueId::ObservanceRend, 1);
-					}
-				} else {
-					scbw::set_generic_value(unit, ValueId::ObservanceRend, 0);
-					unit->removeOverlay(ImageId::ObservanceOverlayLarge, ImageId::ObservanceOverlaySmall);
-				}
+				scbw::add_generic_value(unit, ValueId::ObservanceRend, 1); // originally capped at 5
 			}
 		}
 
-		// Science Vessel - Observance persistant overlay creation
+		// Seraph - Create Observance overlays on afflicting Seraphs
 		if (scbw::get_generic_timer(unit, ValueId::ObservanceOverlayTimer) <= 1) {
 			auto range = 192;
 			auto a = scbw::UnitFinder::getNearestTarget(
@@ -901,7 +903,7 @@ namespace hooks {
 			);
 			if (a != nullptr
 				&& unit->id == UnitId::TerranSeraph) {
-				unit->sprite->createOverlay(1230);
+				unit->sprite->createOverlay(ImageId::SeraphRedOverlay);
 				scbw::set_generic_timer(unit, ValueId::ObservanceOverlayTimer, 18);
 			}
 		}
