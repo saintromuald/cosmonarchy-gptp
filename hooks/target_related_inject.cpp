@@ -115,8 +115,8 @@ namespace hooks {
 		nops(0x004EB176, 8);//disruption web
 		nops(0x004EB316, 2);//disruption web
 		jmpPatch(unitCanSeeCloakedTarget_Wrapper, 0x00401D60, 4);
-		jmpPatch(isTargetVisible_Wrapper, 0x004E5E30, 4);
-		jmpPatch(isUnitVisible_Wrapper, 0x004E5DB0, 1);
+//		jmpPatch(isTargetVisible_Wrapper, 0x004E5E30, 4);
+//		jmpPatch(isUnitVisible_Wrapper, 0x004E5DB0, 1);
 	}
 	void injectTargetRelatedHooks() {
 		injectTargetHooks();
