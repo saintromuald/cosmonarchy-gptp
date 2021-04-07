@@ -434,7 +434,7 @@ namespace hooks {
 
 	uint32 unitCanSeeCloakedTarget(CUnit* target, CUnit* unit) { // 00401D60, hooked for cloak rewrite - Pr0nogo
 		const bool isCloaked = target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
-		const bool isDecloaked = scbw::get_generic_timer(unit, ValueId::PermanentCloakTimer) > 1;
+		const bool isDecloaked = scbw::get_generic_timer(target, ValueId::PermanentCloakTimer) > 1;
 		return isCloaked && !isDecloaked;
 	}
 
@@ -449,7 +449,7 @@ namespace hooks {
 		}
 
 		const bool isCloaked = target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
-		const bool isDecloaked = scbw::get_generic_timer(unit, ValueId::PermanentCloakTimer) > 1;
+		const bool isDecloaked = scbw::get_generic_timer(target, ValueId::PermanentCloakTimer) > 1;
 		if (isCloaked && !isDecloaked) {
 			result = (uint8)(playerUnit & target->sprite->visibilityFlags);
 		} else {
@@ -468,7 +468,7 @@ namespace hooks {
 		if (!target) {
 			return playerUnit & ~(activeTileArray[unit->orderTarget.pt.x / 32 + mapTileSize->width * (unit->orderTarget.pt.y / 32)]->visibilityFlags);
 		}
-		const bool isCloaked = target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
+		const bool isCloaked = unit->status & 0x300;
 		const bool isDecloaked = scbw::get_generic_timer(unit, ValueId::PermanentCloakTimer) > 1;
 		if (isCloaked && !isDecloaked) {
 			result = (uint8)(playerUnit & target->sprite->visibilityFlags);

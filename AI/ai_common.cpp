@@ -15,7 +15,7 @@ namespace AI {
 			return false;
 
 		//If the target is not detectable
-		const bool isCloaked = target->status & 0x300 && !((1 << target->playerId) & target->visibilityStatus);
+		const bool isCloaked = target->status & 0x300 && !((1 << attacker->playerId) & target->visibilityStatus);
 		const bool isDecloaked = scbw::get_generic_timer(target, ValueId::PermanentCloakTimer) > 1;
 		if (isCloaked && !isDecloaked && !target->isVisibleTo(attacker->playerId))
 			return false;
