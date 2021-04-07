@@ -355,16 +355,16 @@ namespace hooks {
 		addStatus(statuses, "Captivating Claws", captivatingClawsGetStacks(unit), captivatingClawsGetHighestTimer(unit), TimerType::Aise);
 		addStatus(statuses, "Swarming Omen Aura", scbw::get_generic_value(unit, ValueId::SwarmingOmenAbility), scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer), TimerType::Aise);
 		addStatus(statuses, "Nemean Reactors", scbw::get_generic_value(unit, ValueId::NemeanReactorsStack), scbw::get_generic_timer(unit, ValueId::NemeanReactorsTimer), TimerType::Aise);
+		addStatus(statuses, "Observance", scbw::get_generic_value(unit, ValueId::ObservanceRend), scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff), TimerType::Aise);
 
 		// Aise Timer
 		addStatus(statuses, "Malediction", -1, scbw::get_generic_timer(unit, ValueId::MaledictionSlow), TimerType::Aise);
 		addStatus(statuses, "Ensnaring Brood", -1, scbw::get_generic_timer(unit, ValueId::EnsnaringBroodTimer), TimerType::Aise);
 		addStatus(statuses, "Lobotomy Slow", -1, scbw::get_generic_timer(unit, ValueId::LobotomySlow), TimerType::Aise);
-		addStatus(statuses, "Observance", -1, scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff), TimerType::Aise);
 		addStatus(statuses, "Kaiser Rampage", -1, scbw::get_generic_timer(unit, ValueId::KaiserRampage), TimerType::Aise);
 		addStatus(statuses, "Hallucinating", -1, scbw::get_generic_timer(unit, ValueId::HallucinatingTimer), TimerType::Aise);
-		// addStatus(statuses, "Ectomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::EggBoostTimer), TimerType::Aise); // currently can't read tooltips from  eggs
-		// addStatus(statuses, "Endomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer), TimerType::Aise); // nor mineral fields
+//		addStatus(statuses, "Ectomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::EggBoostTimer), TimerType::Aise); // currently can't read tooltips from  eggs
+//		addStatus(statuses, "Endomorphic Accelerant", -1, scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer), TimerType::Aise); // nor mineral fields
 		addStatus(statuses, "Adrenaline Packs", -1, scbw::get_generic_timer(unit, ValueId::Adrenaline), TimerType::Aise);
 		addStatus(statuses, "Adrenal Frenzy", -1, scbw::get_generic_timer(unit, ValueId::NathrokorTimer), TimerType::Aise);
 		addStatus(statuses, "Controlled Demolition", -1, scbw::get_generic_timer(unit, ValueId::ControlledDemolitionTimer), TimerType::Aise);
@@ -389,6 +389,7 @@ namespace hooks {
 		// Aise Value - Gimmicked
 		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 0);
 		addStatus(statuses, "Dirge", scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 1);
+		addStatus(statuses, "Observing", scbw::get_generic_timer(unit, ValueId::ObservanceOverlayTimer) > 0);
 		addStatus(statuses, "Swarming Omen", scbw::get_generic_timer(unit, ValueId::SwarmingOmenStatus) > 0);
 		addStatus(statuses, "Protective Instincts", scbw::get_generic_timer(unit, ValueId::ProtectiveInstinctsStatus) > 0);
 		addStatus(statuses, "Deconstructing", scbw::get_generic_value(unit, ValueId::Deconstruction) > 0);
