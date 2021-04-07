@@ -849,52 +849,43 @@ namespace hooks {
 				unit->sprite->removeOverlay(overlayImageId);
 		}
 
-		// Seraph - Observance ability
-		if (scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) > 0) { // originally checked for timer = 1, but needs to refresh each frame (or very quickly at least)
-			auto range = 192;
-			auto a = scbw::UnitFinder::getNearestTarget(
-				unit->getX() - range,
-				unit->getY() - range,
-				unit->getX() + range,
-				unit->getY() + range,
-				unit,
-				[&](CUnit* target) {
-				if (target == unit
-					|| scbw::isAlliedTo(unit->playerId, target->playerId)
-					|| target->id != UnitId::TerranSeraph) {
-					return false;
+		{ // Seraph - Observence
+			auto timer = scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff);
+			if (timer > 1) {
+				const auto range = 192;
+				auto seraph = scbw::UnitFinder::getNearestTarget(
+					unit->getX() - range,
+					unit->getY() - range,
+					unit->getX() + range,
+					unit->getY() + range,
+					unit,
+					[&](CUnit* target) {
+					if (unit->playerId == target->playerId
+						|| scbw::isAlliedTo(unit->playerId, target->playerId)
+						|| target->id != UnitId::TerranSeraph) {
+						return false;
+					}
+					return true;
+				});
+
+				if (seraph != nullptr) {
+					// Seraph - Observance timer
+					scbw::set_generic_timer(unit, ValueId::ObservanceTimerDebuff, (5 * 24) + 1);
+
+					// Seraph - Observance ability
+					if (scbw::get_generic_timer(unit, ValueId::ObservanceTimerPeriod) == 1) {
+						scbw::set_generic_timer(unit, ValueId::ObservanceTimerPeriod, (5 * 24) + 1);
+						scbw::add_generic_value(unit, ValueId::ObservanceRend, 1);
+					}
+
+					// Seraph - Observance persistant overlay creation
+					if (seraph->id == UnitId::TerranSeraph && scbw::get_generic_timer(seraph, ValueId::ObservanceOverlayTimer) == 1) {
+						seraph->sprite->createOverlay(ImageId::SeraphRedOverlay);
+						scbw::set_generic_timer(seraph, ValueId::ObservanceOverlayTimer, 18);
+					}
 				}
-				return true;
-			}
-			);
-
-			if (a != nullptr) {
-				scbw::set_generic_timer(unit, ValueId::ObservanceTimerDebuff, (5 * 24) + 1);
-				scbw::add_generic_value(unit, ValueId::ObservanceRend, 1); // originally capped at 5
-			}
-		}
-
-		// Seraph - Observance persistant overlay creation
-		if (scbw::get_generic_timer(unit, ValueId::ObservanceOverlayTimer) <= 1) {
-			auto range = 192;
-			auto a = scbw::UnitFinder::getNearestTarget(
-				unit->getX() - range, unit->getY() - range,
-				unit->getX() + range, unit->getY() + range,
-				unit,
-				[&](CUnit* target) {
-				if (target == unit
-					|| scbw::isAlliedTo(unit->playerId, target->playerId)
-					|| scbw::get_generic_timer(target, ValueId::ObservanceTimerDebuff) <= 1) {
-					return false;
-				}
-
-				return true;
-			}
-			);
-			if (a != nullptr
-				&& unit->id == UnitId::TerranSeraph) {
-				unit->sprite->createOverlay(ImageId::SeraphRedOverlay);
-				scbw::set_generic_timer(unit, ValueId::ObservanceOverlayTimer, 18);
+			} else if (timer == 1) {
+				unit->sprite->removeOverlay(ImageId::ObservanceOverlayLarge, ImageId::ObservanceOverlaySmall);
 			}
 		}
 

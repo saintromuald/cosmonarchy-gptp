@@ -738,6 +738,8 @@ namespace scbw {
 		// Inherit Observance
 		if (scbw::get_generic_timer(parent, ValueId::ObservanceTimerDebuff) > 0) {
 			scbw::set_generic_timer(child, ValueId::ObservanceTimerDebuff, scbw::get_generic_timer(parent, ValueId::ObservanceTimerDebuff));
+			scbw::set_generic_timer(child, ValueId::ObservanceTimerPeriod, scbw::get_generic_timer(parent, ValueId::ObservanceTimerPeriod));
+			scbw::set_generic_timer(child, ValueId::ObservanceRend, scbw::get_generic_timer(parent, ValueId::ObservanceRend));
 		}
 
 		// Inherit Knockout Drivers
@@ -858,7 +860,7 @@ namespace scbw {
 		return scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 0
 			|| scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) > 0
 			|| scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0
-			|| scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) > 0
+			|| scbw::get_generic_timer(unit, ValueId::ObservanceTimerPeriod) > 0
 			|| scbw::get_generic_value(unit, ValueId::EntropyGauntlets) > 0
 			|| scbw::get_generic_value(unit, ValueId::ArmorReduce) > 0
 			|| captivatingClawsGetHighestTimer(unit) > 0

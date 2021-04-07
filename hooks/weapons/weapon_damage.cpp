@@ -645,19 +645,13 @@ namespace hooks {
 					// Observance - Science Vessel ability
 					if (data.weaponId == WeaponId::SeraphObservance
 						&& (!scbw::isAlliedTo(data.attacker->playerId, data.target->playerId))) {
-						scbw::set_generic_timer(data.attacker, ValueId::ObservanceOverlayTimer, 18);
+						scbw::set_generic_timer(data.attacker, ValueId::ObservanceOverlayTimer, 2);
 						scbw::set_generic_timer(data.target, ValueId::ObservanceTimerDebuff, 1 + (5 * 24));
+						scbw::set_generic_timer(data.target, ValueId::ObservanceTimerPeriod, 1 + (5 * 24));
 						int rend = scbw::get_generic_value(data.target, ValueId::ObservanceRend);
-						if (rend < 5) {
-							if (rend == 0) {
-								int overlay = 1233;
-								if (units_dat::BaseProperty[data.target->id] & UnitProperty::LargeOverlay) {
-									overlay -= 2;
-								} else if (units_dat::BaseProperty[data.target->id] & UnitProperty::MediumOverlay) {
-									overlay -= 1;
-								}
-								data.target->sprite->createOverlay(overlay);
-							}
+						if (rend == 0) {
+							int overlay = ImageId::ObservanceOverlaySmall - scbw::getOverlayOffset(data.target->id);
+							data.target->sprite->createOverlay(overlay);
 							scbw::add_generic_value(data.target, ValueId::ObservanceRend, 1);
 						}
 					}
