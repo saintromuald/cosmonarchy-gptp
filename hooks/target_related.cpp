@@ -435,6 +435,24 @@ namespace hooks {
 		uint32 flags = target->status; // BYTE1() & 3 == check if unit is cloaked/requires detect
 		return flags & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
 	}
+
+	// Hooked to help with cloak rewrite - Pr0nogo
+	uint32 isTargetVisible(CUnit* target, CUnit* unit) { // 004E5E30 - 4 nops 
+		int32 playerUnit; // ebx
+		uint32 result; // eax
+
+		playerUnit = 1 << unit->playerId;
+		if (!target) {
+			return playerUnit & ~(activeTileArray[unit->orderTarget.pt.x / 32 + mapTileSize * (unit->orderTarget.pt.y / 32)] & 0xFF);
+		}
+		if (!(target->status & 0x300) || playerUnit & target->visibilityStatus) {
+			result = (uint8)(playerUnit & target->sprite->visibilityFlags);
+		}
+		else {
+			result = 0;
+		}
+		return result;
+	}
 }
 
 namespace {
