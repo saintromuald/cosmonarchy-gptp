@@ -338,74 +338,7 @@ namespace hooks {
 			doIrradiateDamage(unit);
 
 			if (unit->irradiateTimer == 0) {
-				if (unit->newFlags1 & NewFlags1::RadiationShockwave) {
-					unit->newFlags1 &= ~NewFlags1::RadiationShockwave;
-
-					CThingy* emp_sprite;
-					emp_sprite = createThingyFunc(371, unit->position.x, unit->position.y, 0);
-					if (emp_sprite != nullptr) {
-						emp_sprite->sprite->elevationLevel = 19; //0x13
-						scbw::setThingyVisibilityFlags(emp_sprite);
-					}
-
-					static uint16* const maxBoxRightValue = (uint16*)0x00628450;
-					static uint16* const maxBoxBottomValue = (uint16*)0x006284B4;
-					Box16 area_of_effect;
-					CUnit** unitsInAreaOfEffect;
-					CUnit* current_unit;
-					area_of_effect.left = (uint16)unit->sprite->position.x - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-					area_of_effect.right = (uint16)unit->sprite->position.x + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-					area_of_effect.top = (uint16)unit->sprite->position.y - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-					area_of_effect.bottom = (uint16)unit->sprite->position.y + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-					if (area_of_effect.left < 0)
-						area_of_effect.left = 0;
-					else
-						if (area_of_effect.right > *maxBoxRightValue)
-							area_of_effect.right = *maxBoxRightValue;
-
-					//check and fix effect if beyond height of map
-					if (area_of_effect.top < 0)
-						area_of_effect.top = 0;
-					else
-						if (area_of_effect.bottom > *maxBoxBottomValue)
-							area_of_effect.bottom = *maxBoxBottomValue;
-					unitsInAreaOfEffect = getAllUnitsInBounds_copy(&area_of_effect);
-					current_unit = *unitsInAreaOfEffect;
-					while (current_unit != nullptr) {
-						if (
-							current_unit != unit->irradiatedBy && //EMP doesn't affect the attacker
-							(
-								unit->irradiatedBy == nullptr || //EMP doesn't affect the attacker
-								current_unit != unit->irradiatedBy->subunit	//subunit
-								)
-							) {
-
-							if (current_unit->status & UnitStatus::IsHallucination)
-								current_unit->remove();
-							else
-								if (current_unit->stasisTimer == 0) { //don't work against units in stasis
-
-									int32 energyBig = current_unit->energy;
-									current_unit->energy -= std::min(100 * 256, energyBig);
-									current_unit->shields -= std::min(100 * 256, current_unit->shields);
-
-									if (
-										current_unit->sprite->flags & CSprite_Flags::Selected &&
-										current_unit->sprite != nullptr
-										)
-										setAllImageGroupFlagsPal11(current_unit->sprite);
-
-								}
-
-						}
-
-						unitsInAreaOfEffect++; //go on next unit of the list (or null)
-						current_unit = *unitsInAreaOfEffect;
-
-					}
-					*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
-					*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[*tempUnitsListArraysCountsListLastIndex];
-				}
+				EMPShockwaveHit(nullptr, unit->getX(), unit->getY(), nullptr);
 
 				unit->removeOverlay(ImageId::Irradiate_Small, ImageId::Irradiate_Large);
 				unit->irradiatedBy = nullptr;

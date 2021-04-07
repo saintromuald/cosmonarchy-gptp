@@ -775,12 +775,6 @@ namespace hooks {
 			}
 		}
 
-		// Radiation Shockwave on death
-		if (scbw::get_generic_value(data.target, ValueId::RadiationShockwaveTimer) > 1) {
-			scbw::set_generic_value(data.target, ValueId::RadiationShockwaveCount, 1);
-			scbw::set_generic_value(data.target, ValueId::RadiationShockwaveTimer, 0);
-		}
-
 		// Apostle - Lazarus Agent
 		if (scbw::get_generic_value(data.target, ValueId::LazarusAgent) == 1) {
 			Globals.initLazarusAgent(data.target->position.x, data.target->position.y,

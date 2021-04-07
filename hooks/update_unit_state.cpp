@@ -43,13 +43,13 @@ namespace hooks {
 	void updateUnitEnergy(CUnit* unit) {
 		//was hardcoded instead of function calling in original code
 		if (unit->isValidCaster()
-			&& (unit->status & UnitStatus::Completed)) 		{
+			&& (unit->status & UnitStatus::Completed)) {
 			bool bStopHere = false;
 			//Spend energy for cloaked units
 			if (
 				unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)		// If the unit is cloaked
 				&& !(unit->status & UnitStatus::CloakingForFree)							// ...and must consume energy to stay cloaked (i.e. not under an Arbiter)
-				) 			{
+				) {
 				uint16 cloakingEnergyCost;
 				//Equivalent to getCloakingEnergyConsumption @ 0x00491A90
 				if (unit->id == UnitId::TerranEidolon
@@ -58,12 +58,12 @@ namespace hooks {
 					|| unit->id == UnitId::Hero_SamirDuran
 					|| unit->id == UnitId::Hero_InfestedDuran
 					|| unit->id == UnitId::Hero_AlexeiStukov
-					) 				{
+					) {
 					cloakingEnergyCost = 10;
-				} 				else
-					if (unit->id == UnitId::TerranWraith) 					{
+				} else
+					if (unit->id == UnitId::TerranWraith) {
 						cloakingEnergyCost = 13;
-					} 				else 				{
+					} else {
 						cloakingEnergyCost = 0;
 					}
 
@@ -76,20 +76,20 @@ namespace hooks {
 				if (!bStopHere) { // the function prevent energy consumption if THE GATHERING enabled
 					unit->spendUnitEnergy(cloakingEnergyCost);
 				}
-			} 			else
+			} else
 				if (unit->id == UnitId::ProtossMindTyrant && scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0) {
 					auto sum = scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) / 2;
 					unit->spendUnitEnergy(std::min(unit->energy, (uint16)(16 * sum)));
 					if (unit->energy == 0) {
 						scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
 					}
-				} 			else
+				} else
 					if (unit->id == UnitId::TerranAzazel && scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd) == 1) {
 						unit->spendUnitEnergy(std::min(unit->energy, (uint16)13));
 						if (unit->energy == 0) {
 							scbw::set_generic_rust_value(unit, ValueId::SublimeShepherd, 0);
 						}
-					} 			else
+					} else
 						if (unit->id == UnitId::corsair && scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb)) {
 							unit->spendUnitEnergy(std::min(unit->energy, (uint16)13));
 							if (unit->energy == 0) {
@@ -106,7 +106,7 @@ namespace hooks {
 								&& unit->mainOrderId == OrderId::CompletingArchonSummon
 								&& unit->mainOrderState == 0) {
 								maxEnergy = 12800;  //50 * 256; Identical to energy amount on spawn
-							} 				else {
+							} else {
 								maxEnergy = unit->getMaxEnergy();
 							}
 							bool phobosCondition = false;
@@ -120,7 +120,7 @@ namespace hooks {
 							}
 							if (unit->energy == maxEnergy && !phobosCondition) {
 								bStopHere = true;
-							} 				else {
+							} else {
 								unit->addUnitEnergy(8, maxEnergy);
 							}
 						}
@@ -206,7 +206,7 @@ namespace hooks {
 					if (scbw::getDistanceFast(unit->position.x, unit->position.y, targ_x, targ_y) <= range) {
 						seek_unit = false;
 						scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, nullptr, targ_x, targ_y);
-					} 					else {
+					} else {
 						scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabOn, 0);
 					}
 				}
@@ -214,7 +214,7 @@ namespace hooks {
 					auto a = scbw::UnitFinder::getNearestTarget(
 						unit->getX() - range, unit->getY() - range,
 						unit->getX() + range, unit->getY() + range,
-						unit, [&](CUnit* target) 					{
+						unit, [&](CUnit* target) {
 						if (target == unit) {
 							return false;
 						}
@@ -324,7 +324,7 @@ namespace hooks {
 					if (scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer) > 0) {
 						unit->_unknown_0x066 = 36;
 					}
-				} 				else {
+				} else {
 					unit->_unknown_0x066 = 36;
 					if (scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer) > 0) {
 						unit->_unknown_0x066 = 18;
@@ -352,7 +352,7 @@ namespace hooks {
 			int32 maxShields = (int32)(units_dat::MaxShieldPoints[unit->id]) * 256;
 			if (unit->id == UnitId::ProtossAugur && unit->status & UnitStatus::Completed) {
 				unit->shields -= std::min(14, unit->shields);
-			} 			else {
+			} else {
 				if (unit->shields != maxShields && unit->id != UnitId::scarab) {
 					unit->shields += 7;
 					if (unit->shields > maxShields) {
@@ -395,12 +395,12 @@ namespace hooks {
 			//HP regeneration
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP &&
 				unit->hitPoints > 0 &&
-				unit->hitPoints / 256 != unit->getMaxHpInGame()) 			{
+				unit->hitPoints / 256 != unit->getMaxHpInGame()) {
 				unit->setHp(unit->hitPoints + 4);
 			}
 			if (unit->defensiveMatrixHp != 0) {
 				if (unit->hitPoints > 0 &&
-					unit->hitPoints / 256 != unit->getMaxHpInGame()) 				{
+					unit->hitPoints / 256 != unit->getMaxHpInGame()) {
 					auto caster = scbw::get_aise_value(unit, nullptr, AiseId::GetMatrixCasterPlayer, 0, 0);
 					if (caster < 8) {
 						unit->setHp(unit->hitPoints + 53); //256 * 5 / 24 = 53.333..
@@ -461,70 +461,6 @@ namespace hooks {
 						}
 					}
 			} //if (unit->getRace() == RaceId::Terran)
-
-			// Radiation Shockwave - Irradiate enhancement
-			if (unit->irradiateTimer > 0) {
-				if (scbw::get_generic_value(unit, ValueId::RadiationShockwaveCount)) {
-					scbw::set_generic_value(unit, ValueId::RadiationShockwaveCount, 0);
-					scbw::set_generic_value(unit, ValueId::RadiationShockwaveTimer, 0);
-
-					CThingy* emp_sprite;
-					emp_sprite = createThingy(371, unit->position.x, unit->position.y, 0);
-					if (emp_sprite != nullptr) {
-						emp_sprite->sprite->elevationLevel = 19; //0x13
-						setThingyVisibilityFlags(emp_sprite);
-					}
-
-					static uint16* const maxBoxRightValue = (uint16*)0x00628450;
-					static uint16* const maxBoxBottomValue = (uint16*)0x006284B4;
-					Box16 area_of_effect;
-					CUnit** unitsInAreaOfEffect;
-					CUnit* current_unit;
-					area_of_effect.left = (uint16)unit->sprite->position.x - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-					area_of_effect.right = (uint16)unit->sprite->position.x + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-					area_of_effect.top = (uint16)unit->sprite->position.y - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-					area_of_effect.bottom = (uint16)unit->sprite->position.y + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-					if (area_of_effect.left < 0) {
-						area_of_effect.left = 0;
-					} 					else
-						if (area_of_effect.right > *maxBoxRightValue) {
-							area_of_effect.right = *maxBoxRightValue;
-						}
-
-					//check and fix effect if beyond height of map
-					if (area_of_effect.top < 0) {
-						area_of_effect.top = 0;
-					} 					else
-						if (area_of_effect.bottom > *maxBoxBottomValue) {
-							area_of_effect.bottom = *maxBoxBottomValue;
-						}
-					unitsInAreaOfEffect = getAllUnitsInBounds(&area_of_effect);
-					current_unit = *unitsInAreaOfEffect;
-					while (current_unit != nullptr) {
-						if (current_unit != unit->irradiatedBy &&					//EMP doesn't affect the attacker
-							(unit->irradiatedBy == nullptr ||						//EMP doesn't affect the attacker
-								current_unit != unit->irradiatedBy->subunit)
-							) 						{
-							if (current_unit->status & UnitStatus::IsHallucination) {
-								current_unit->remove();
-							} 							else
-								if (current_unit->stasisTimer == 0) { //don't work against units in stasis
-									int32 energyBig = current_unit->energy;
-									current_unit->energy -= std::min(100 * 256, energyBig);
-									current_unit->shields -= std::min(100 * 256, current_unit->shields);
-									if (current_unit->sprite->flags & CSprite_Flags::Selected &&
-										current_unit->sprite != nullptr) {
-										setAllImageGroupFlagsPal11(current_unit->sprite);
-									}
-								}
-						}
-						unitsInAreaOfEffect++; // go on next unit of the list (or null)
-						current_unit = *unitsInAreaOfEffect;
-					}
-					*tempUnitsListArraysCountsListLastIndex = *tempUnitsListArraysCountsListLastIndex - 1;
-					*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[*tempUnitsListArraysCountsListLastIndex];
-				}
-			}
 		}
 	};
 
@@ -571,7 +507,7 @@ namespace hooks {
 					default:
 						break;
 				}
-			} 			else
+			} else
 				if (unit->id == UnitId::ZergOthstoleth) {
 					supply = units_dat::SupplyProvided[unit->id];
 				}

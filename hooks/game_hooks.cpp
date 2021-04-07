@@ -1040,12 +1040,6 @@ namespace hooks {
 			unit->updateSpeed();
 		}
 
-		// Radiation Shockwave 5-second timer
-		if (scbw::get_generic_timer(unit, ValueId::RadiationShockwaveTimer) == 1) {
-			scbw::set_generic_timer(unit, ValueId::RadiationShockwaveTimer, 0);
-			scbw::set_generic_value(unit, ValueId::RadiationShockwaveCount, 1);
-		}
-
 		// TODO: Remove? Don't think this code runs as Phase Link is perpetually active
 		if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 0) {
 			scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::SetPhaseLinkStatus, 1, 0, 0);

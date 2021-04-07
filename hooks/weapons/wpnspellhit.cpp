@@ -64,12 +64,9 @@ namespace hooks {
 				unitWithOverlay = target;
 			(unitWithOverlay->sprite)->createTopOverlay(irradiateImageId, 0, 0, 0);
 		}
-		if (attacker != nullptr)
-			target->newFlags1 |= NewFlags1::RadiationShockwave;
 		target->irradiateTimer = 8 * 3;
 		target->irradiatedBy = attacker;
 		target->irradiatePlayerId = attackingPlayerId;
-		scbw::set_generic_timer(target, ValueId::RadiationShockwaveTimer, (4 * 24) + 1);
 	};
 
 	//bullet is not normally part of the function, so if the function is called
@@ -356,6 +353,11 @@ namespace hooks {
 	//attacker from bullet->sourceUnit
 	//x and y from bullet->sprite->position
 	void EMPShockwaveHit(CUnit* attacker, int x, int y, CBullet* bullet) {
+		CThingy* emp_sprite = scbw::createThingy(371, x, y, 0);
+		if (emp_sprite != nullptr) {
+			emp_sprite->sprite->elevationLevel = 19; //0x13
+			scbw::setThingyVisibilityFlags(emp_sprite);
+		}
 
 		static uint16* const maxBoxRightValue = (uint16*)0x00628450;	//should usually be mapTileSize->width * 32
 		static uint16* const maxBoxBottomValue = (uint16*)0x006284B4;	//should usually be mapTileSize->height * 32

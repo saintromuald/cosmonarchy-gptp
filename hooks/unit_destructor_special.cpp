@@ -10,6 +10,7 @@
 //Not hooked but used by hooked unitDestructorSpecialHook
 #include <SCBW/UnitFinder.h>
 #include "globals.h"
+#include "hooks\weapons\wpnspellhit.h"
 
 void killAllHangarUnits(CUnit* unit) {
 
@@ -290,9 +291,8 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	}
 
 	// Irradiate Radiation Shockwave enhancement
-	if (scbw::get_generic_value(unit, ValueId::RadiationShockwaveTimer) > 1) {
-		scbw::set_generic_value(unit, ValueId::RadiationShockwaveCount, 1);
-		scbw::set_generic_value(unit, ValueId::RadiationShockwaveTimer, 0);
+	if (unit->irradiateTimer > 0) {
+		hooks::EMPShockwaveHit(nullptr, unit->getX(), unit->getY(), nullptr);
 	}
 
 	// Parasite - spawn broodlings on death

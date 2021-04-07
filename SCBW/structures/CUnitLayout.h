@@ -184,7 +184,6 @@ namespace ValueId {
 		HallucinationPointer = 44,
 
 		TempoChange = 45,
-		RadiationShockwaveTimer = 46,
 		DirgeAttacker = 47,
 		EggBoostTimer = 48,
 		RemainingBuildTimeCopy = 49,
@@ -199,7 +198,6 @@ namespace ValueId {
 		CaptivatingClawsMap = 56,
 
 		EntropyGauntlets = 63,
-		RadiationShockwaveCount = 64,
 		KalkalethMissilePos = 65,
 		DecaySavant = 67,
 		TerminalSurge = 68,
