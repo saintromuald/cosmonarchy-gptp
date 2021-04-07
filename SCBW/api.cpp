@@ -1676,17 +1676,11 @@ namespace scbw {
 			POPAD
 		}
 	}
-}
-
-void UpdateSpriteImagesForCloak(CSprite* sprite);
-
-namespace scbw {
 
 	void decloakProc(CUnit* unit) {
 		if ((units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak || unit->status & UnitStatus::CloakingForFree)
-			&& unit->playerId && !(units_dat::BaseProperty[unit->id] & UnitProperty::Burrowable)) {
+			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Burrowable)) {
 
-			UpdateSpriteImagesForCloak(unit->sprite);
 			scbw::set_generic_timer(unit, ValueId::PermanentCloakTimer, 48 + 1);
 		}
 	}

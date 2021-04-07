@@ -144,6 +144,8 @@ void UpdateSpriteImagesForCloak(CSprite* sprite) {
 
 }
 
+;
+
 const uint32 Func_Irradiate = 0x00454E00;
 void spawnCreeper(CUnit* unit) {
 
@@ -1000,15 +1002,17 @@ namespace hooks {
 			|| unit->status & UnitStatus::CloakingForFree) {
 			auto timer = scbw::get_generic_timer(unit, ValueId::PermanentCloakTimer);
 			if (timer > 1) {
-				unit->status &= ~UnitStatus::Cloaked;
 				makeSpriteVisible(unit->sprite);
+				unit->status &= ~UnitStatus::Cloaked;
 				for (int i = 0; i < 8; i++) {
 					unit->visibilityStatus |= (1 << i);
 				}
 			} else if (timer == 1) {
 				unit->status |= UnitStatus::Cloaked;
-				UpdateSpriteImagesForCloak(unit->sprite);
-				makeSpriteInvisible(unit->sprite);
+				if (unit->playerId != *LOCAL_HUMAN_ID && !scbw::isAlliedTo(unit->playerId, *LOCAL_HUMAN_ID)) {
+					makeSpriteInvisible(unit->sprite);
+				}
+			} else {
 				for (int i = 0; i < 8; i++) {
 					if (!scbw::isAlliedTo(unit->playerId, i)) {
 						unit->visibilityStatus &= ~(1 << i);
