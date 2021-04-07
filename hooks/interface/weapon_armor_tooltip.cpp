@@ -267,10 +267,10 @@ namespace hooks {
 		RemoveTimer
 	};
 
-	// maxValue
-	// 0  - show value counter, no boundry
-	// 1  - never show value counter
-	// >1 - show value counter and boundary
+	// maxValue						value format
+	// 0  - unlimited stacks		x
+	// 1  - binary true / false
+	// >1 - limited stacks			x/max
 	static void addStatus(std::vector<std::string>& vec, std::string name, int value = -1, int maxValue = 0, int timer = -1, TimerType timerType = TimerType::Vanilla) {
 		if (timer > 0 || value > 0) {
 			std::string text = name;
@@ -360,12 +360,12 @@ namespace hooks {
 			statuses.push_back("Cloaked");
 
 		// Aise Timer + Value
-		addStatus(statuses, "Knockout Drivers", scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks), 0, scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer), TimerType::Aise);
-		addStatus(statuses, "Adrenal Glands", scbw::get_generic_value(unit, ValueId::AdrenalStacks), 0, scbw::get_generic_timer(unit, ValueId::AdrenalTimer), TimerType::Aise);
+		addStatus(statuses, "Knockout Drivers", scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks), 20, scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer), TimerType::Aise);
+		addStatus(statuses, "Adrenal Glands", scbw::get_generic_value(unit, ValueId::AdrenalStacks), 4, scbw::get_generic_timer(unit, ValueId::AdrenalTimer), TimerType::Aise);
 		addStatus(statuses, "Astral Blessing", scbw::get_generic_value(unit, ValueId::EcclesiastStack), 0, scbw::get_generic_timer(unit, ValueId::EcclesiastTimer), TimerType::Aise);
 		addStatus(statuses, "Captivating Claws", captivatingClawsGetStacks(unit), 4, captivatingClawsGetHighestTimer(unit), TimerType::Aise);
 		addStatus(statuses, "Swarming Omen Aura", scbw::get_generic_value(unit, ValueId::SwarmingOmenAbility), 1, scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer), TimerType::Aise);
-		addStatus(statuses, "Nemean Reactors", scbw::get_generic_value(unit, ValueId::NemeanReactorsStack), 0, scbw::get_generic_timer(unit, ValueId::NemeanReactorsTimer), TimerType::Aise);
+		addStatus(statuses, "Nemean Reactors", scbw::get_generic_value(unit, ValueId::NemeanReactorsStack), 5, scbw::get_generic_timer(unit, ValueId::NemeanReactorsTimer), TimerType::Aise);
 		addStatus(statuses, "Observance", scbw::get_generic_value(unit, ValueId::ObservanceRend), 0, scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff), TimerType::Aise);
 
 		// Aise Timer
@@ -385,17 +385,17 @@ namespace hooks {
 
 		// Aise Value
 		addStatus(statuses, "Energy Decay", scbw::get_generic_value(unit, ValueId::EntropyGauntlets), 1);
-		addStatus(statuses, "Armor Reduction", scbw::get_generic_value(unit, ValueId::ArmorReduce), 1);
-		addStatus(statuses, "Cabeirus Feeders", ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime), 1);
+		addStatus(statuses, "Armor Reduction", scbw::get_generic_value(unit, ValueId::ArmorReduce), 0);
+		addStatus(statuses, "Cabeirus Feeders", ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime), 10);
 		addStatus(statuses, "Reverse Thrust", scbw::get_generic_value(unit, ValueId::ReverseThrust), 1);
-		addStatus(statuses, "Sublime Shepherd", scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd), 1);
+		addStatus(statuses, "Sublime Shepherd", scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd), 0);
 		addStatus(statuses, "Lazarus Agent", scbw::get_generic_value(unit, ValueId::LazarusAgent), 1);
-		addStatus(statuses, "Expanded Storage", scbw::get_generic_value(unit, ValueId::TreasuryStacks), 1); // currently only works for Ovileth and its morphs
+		addStatus(statuses, "Expanded Storage", scbw::get_generic_value(unit, ValueId::TreasuryStacks), 0); // currently only works for Ovileth and its morphs
 		addStatus(statuses, "Khaydarian Eclipse", scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch), 1);
 		addStatus(statuses, "Reconstitution", scbw::get_generic_rust_value(unit, ValueId::Reconstitution), 1);
-		addStatus(statuses, "Repentent Chorus", scbw::get_generic_value(unit, ValueId::RepententChorus), 1);
+		addStatus(statuses, "Repentent Chorus", scbw::get_generic_value(unit, ValueId::RepententChorus), 0);
 		addStatus(statuses, "Stellar Enforcement", scbw::get_generic_value(unit, ValueId::StellarEnforcement), 1);
-		addStatus(statuses, "Terminal Surge", scbw::get_generic_value(unit, ValueId::TerminalSurge), 1);
+		addStatus(statuses, "Terminal Surge", scbw::get_generic_value(unit, ValueId::TerminalSurge), 10);
 
 		// Aise Value - Gimmicked
 		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 0, 1);
@@ -410,15 +410,15 @@ namespace hooks {
 		addStatus(statuses, "Cutaneous Barrier", scbw::get_generic_value(unit, ValueId::CutaneousBarrier) > 0, 1);
 		addStatus(statuses, "Infested", scbw::get_generic_value(unit, ValueId::InfestedByAkistrokor) > 0, 1);
 		addStatus(statuses, "Enthralling Assault", scbw::get_generic_value(unit, ValueId::EnthrallingTalons) > 0, 1);
-		addStatus(statuses, "Phase Link", scbw::hasClarionLinks(unit), 0);
+		addStatus(statuses, "Phase Link", scbw::hasClarionLinks(unit), 1);
 		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0, 1); // for caster
 		bool malice = scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0);
 		addStatus(statuses, "Cowardice", scbw::get_generic_value(unit, ValueId::HierophantOverlay) || malice, 1);
 		addStatus(statuses, "Malice", malice, 1);
 
 		// Vanilla Timer + Value
-		addStatus(statuses, "Defensive Matrix", unit->defensiveMatrixHp / 256, 1, unit->defensiveMatrixTimer);
-		addStatus(statuses, "Corrosive Spores", unit->corrosiveSporeCount, 1, unit->acidSporeTime[unit->corrosiveSporeCount - 1]);
+		addStatus(statuses, "Defensive Matrix", unit->defensiveMatrixHp / 256, 200, unit->defensiveMatrixTimer);
+		addStatus(statuses, "Corrosive Spores", unit->corrosiveSporeCount, 9, unit->acidSporeTime[unit->corrosiveSporeCount - 1]);
 
 		// Vanilla Timers
 		addStatus(statuses, "Stimpack", -1, 1, unit->stimTimer);
