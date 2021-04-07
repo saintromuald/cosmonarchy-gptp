@@ -465,10 +465,10 @@ namespace hooks {
 		target = unit->orderTarget.unit;
 		playerUnit = 1 << unit->playerId;
 		if (!target) {
-			return playerUnit & ~(activeTileArray[unit->orderTarget.pt.x / 32 + mapTileSize->width * (unit->orderTarget.pt.y / 32)] & 0xFF);
+			return playerUnit & ~(activeTileArray[unit->orderTarget.pt.x / 32 + mapTileSize->width * (unit->orderTarget.pt.y / 32)]->visibilityFlags);
 		}
 		if (!(target->status & 0x300) || playerUnit & target->visibilityStatus) {
-			result = (unsigned __int8)(playerUnit & target->sprite->visibilityFlags);
+			result = (uint8)(playerUnit & target->sprite->visibilityFlags);
 		}
 		else {
 			result = 0;
