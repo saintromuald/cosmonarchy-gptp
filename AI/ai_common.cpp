@@ -2,6 +2,7 @@
 #include <SCBW/enumerations.h>
 #include <SCBW/api.h>
 #include <SCBW/UnitFinder.h>
+#include <globals.h>
 #include <cassert>
 
 namespace AI {
@@ -14,8 +15,9 @@ namespace AI {
 			return false;
 
 		//If the target is not detectable
-		if (target->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)
-			&& !target->isVisibleTo(attacker->playerId))
+		const bool isCloaked = target->status & 0x300 && !((1 << target->playerId) & target->visibilityStatus);
+		const bool isDecloaked = scbw::get_generic_timer(target, ValueId::PermanentCloakTimer) > 1;
+		if (isCloaked && !isDecloaked && !target->isVisibleTo(attacker->playerId))
 			return false;
 
 		if (!attacker->isTargetEnemy(target))

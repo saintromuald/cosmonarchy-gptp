@@ -2,6 +2,7 @@
 #include <SCBW/api.h>
 #include <SCBW/structures.h>
 #include <SCBW/scbwdata.h>
+#include <globals.h>
 #include "byte_operations_utils.h"
 
 namespace {
@@ -432,11 +433,9 @@ namespace hooks {
 	}
 
 	uint32 unitCanSeeCloakedTarget(CUnit* target, CUnit* unit) { // 00401D60, hooked for cloak rewrite - Pr0nogo
-		const bool isCloaked = target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus); // original condition
-		const bool isDecloaked = scbw::get_aise_value(unit, NULL, ValueId::PermanentCloakTimer, 0, 0) > 1;	  // temp decloak
+		const bool isCloaked = target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
+		const bool isDecloaked = scbw::get_generic_timer(unit, ValueId::PermanentCloakTimer) > 1;
 		return isCloaked && !isDecloaked;
-		//u32 flags = target->status; // BYTE1() & 3 == check if unit is cloaked/requires detect
-		//return flags & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
@@ -448,10 +447,12 @@ namespace hooks {
 		if (!target) {
 			return playerUnit & ~(activeTileArray[unit->orderTarget.pt.x / 32 + mapTileSize->width * (unit->orderTarget.pt.y / 32)]->visibilityFlags);
 		}
-		if (!(target->status & 0x300) || playerUnit & target->visibilityStatus) {
+
+		const bool isCloaked = target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
+		const bool isDecloaked = scbw::get_generic_timer(unit, ValueId::PermanentCloakTimer) > 1;
+		if (isCloaked && !isDecloaked) {
 			result = (uint8)(playerUnit & target->sprite->visibilityFlags);
-		}
-		else {
+		} else {
 			result = 0;
 		}
 		return result;
@@ -467,10 +468,11 @@ namespace hooks {
 		if (!target) {
 			return playerUnit & ~(activeTileArray[unit->orderTarget.pt.x / 32 + mapTileSize->width * (unit->orderTarget.pt.y / 32)]->visibilityFlags);
 		}
-		if (!(target->status & 0x300) || playerUnit & target->visibilityStatus) {
+		const bool isCloaked = target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
+		const bool isDecloaked = scbw::get_generic_timer(unit, ValueId::PermanentCloakTimer) > 1;
+		if (isCloaked && !isDecloaked) {
 			result = (uint8)(playerUnit & target->sprite->visibilityFlags);
-		}
-		else {
+		} else {
 			result = 0;
 		}
 		return result;

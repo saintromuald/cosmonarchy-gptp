@@ -4,6 +4,7 @@
 #include <cassert>
 #include <utility>
 #include <hooks/weapons/weapon_damage.h>
+#include <globals.h>
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -1680,7 +1681,7 @@ namespace scbw {
 		if ((units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak || unit->status & UnitStatus::CloakingForFree)
 			&& unit->playerId && !(units_dat::BaseProperty[unit->id] & UnitProperty::Burrowable)) {
 
-			scbw::sendGPTP_aise_cmd(unit, NULL, GptpId::SetGenericTimer, ValueId::PermanentCloakTimer, 48 + 1, 0);
+			scbw::set_generic_timer(unit, ValueId::PermanentCloakTimer, 48 + 1);
 		}
 	}
 } //scbw
