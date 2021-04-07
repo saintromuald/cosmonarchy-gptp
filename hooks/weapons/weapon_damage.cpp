@@ -627,9 +627,10 @@ namespace hooks {
 				case WeaponId::SeekerSpores:
 				{
 					if (scbw::get_generic_value(data.attacker, ValueId::Amitosis) == 1) {
-						//	data.damage /= 2; // TODO: Fix compiler error
+						// data.damage /= 2; // TODO: Fix compiler error
 						scbw::set_generic_value(data.attacker, ValueId::Amitosis, 0);
 					}
+					break;
 				}
 				case WeaponId::NuclearMissile:
 				{
