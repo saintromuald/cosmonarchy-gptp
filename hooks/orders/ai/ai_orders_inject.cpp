@@ -325,21 +325,21 @@ namespace hooks {
 
 	void injectAIOrdersHooks() {
 		jmpPatch(AI_TrainingUnit_Wrapper,					0x004A2830, 2);
-		//		jmpPatch(AI_CreateNuke_Wrapper,						0x0045B7A0, 0);
+//		jmpPatch(AI_CreateNuke_Wrapper,						0x0045B7A0, 0);
 		jmpPatch(AI_TrainingBroodling_Wrapper,				0x0043E280, 1);
-		//jmpPatch(AI_AddUnitAi_Wrapper,						0x00433DD0, 2);
+//		jmpPatch(AI_AddUnitAi_Wrapper,						0x00433DD0, 2);
 		jmpPatch(AI_AddUnitAi_FreeWorkerCheck_JmpWrapper,	0x00433DE7, 1);
-		//		jmpPatch(AI_BuildTechUpgrade_Wrapper,				0x00431F90, 2);
-		//		jmpPatch(AI_UnitWasHit_Wrapper,						0x0043F320, 1);
-		//		jmpPatch(AI_IterateBuildingAI_Wrapper,				0x00435770, 1);
-				/*
-				jmpPatch(AI_TrainAttackForce_Wrapper,				0x0043E670, 4);
-				jmpPatch(AI_GroupingForAttack_Wrapper,				0x0043EEC0, 4);
-				jmpPatch(AI_GetMissingAttackForceUnits_Wrapper,		0x00438050, 2);
-				jmpPatch(AI_AddToAttack_Wrapper,					0x00447230, 1);
-				jmpPatch(AI_AttackManager_Wrapper,					0x0043ABB0, 4);
-				jmpPatch(AI_HasUnitsForAttackForce_Wrapper,			0x00437F20, 4);*/
-
-				//jmpPatch(AI_RemoveFromAttack_Wrapper,				0x00447040, 0);
+//		jmpPatch(AI_BuildTechUpgrade_Wrapper,				0x00431F90, 2);
+//		jmpPatch(AI_UnitWasHit_Wrapper,						0x0043F320, 1);
+//		jmpPatch(AI_IterateBuildingAI_Wrapper,				0x00435770, 1);
+		/*
+		jmpPatch(AI_TrainAttackForce_Wrapper,				0x0043E670, 4);
+		jmpPatch(AI_GroupingForAttack_Wrapper,				0x0043EEC0, 4);
+		jmpPatch(AI_GetMissingAttackForceUnits_Wrapper,		0x00438050, 2);
+		jmpPatch(AI_AddToAttack_Wrapper,					0x00447230, 1);
+		jmpPatch(AI_AttackManager_Wrapper,					0x0043ABB0, 4);
+		jmpPatch(AI_HasUnitsForAttackForce_Wrapper,			0x00437F20, 4);
+		*/
+//		jmpPatch(AI_RemoveFromAttack_Wrapper,				0x00447040, 0);
 	}
 }
