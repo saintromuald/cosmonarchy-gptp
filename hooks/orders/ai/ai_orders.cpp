@@ -345,13 +345,13 @@ namespace hooks {
 	}*/
 
 	// Hooked because iquare told me to - Pr0nogo
-	void AI_AddUnitAi(CUnit* unit, AiTown* town) { // 00433DD0
+	char AI_AddUnitAi(CUnit* unit, AiTown* town) { // 00433DD0
 		UnitAi* unitAI;
 		WorkerAi* unitAIWorker;
 		BuildingAi* unitAIBuilding;
 		WorkerAiArray* workerAIArray;
 		UnitAi* previous1;
-		int* buildingQueueValues;
+		uint32* buildingQueueValues;
 		uint8* buildingQueueTypes; // was char*
 		int8 playerRACE;
 		int32 playerID;
@@ -367,11 +367,11 @@ namespace hooks {
 				if (!prevIsNull)
 					previous1->link.next = 0;
 				if (unitAI != nullptr) {
-
 					unitAI->link.next = 0;
 					unitAI->link.prev = (UnitAi*)town->workers;
-					if (town->workers)
+					if (town->workers) {
 						town->workers->link.next = (WorkerAi*)unitAI;
+					}
 					town->workers = (WorkerAi*)unitAI;
 					unitAIWorker = (WorkerAi*)unitAI;
 					unitAIWorker->type = 2;
@@ -386,17 +386,18 @@ namespace hooks {
 					++town->worker_count;
 				}
 			}
-		} else if (units_dat::BaseProperty[unit->id] & 1 && unit->id != UnitId::ResourceVespeneGeyser
+		}
+		else if ((units_dat::BaseProperty[unit->id] & 1 && unit->id != UnitId::ResourceVespeneGeyser)
 			|| unit->id == UnitId::ZergLarva
 			|| unit->id == UnitId::ZergEgg
 			|| unit->id == UnitId::ZergOvileth) {
 			unitAI = AI_CreateBuildingAi(town->free_buildings);
 			if (unitAI) {
-				unitAI->type = 3; //building ai
+				unitAI->type = 3; // building ai
 				unitAIBuilding = (BuildingAi*)unitAI;
 				unitAIBuilding->parent = unit;
 				unitAIBuilding->town = town;
-				buildingQueueValues = (int*)unitAIBuilding->trainQueueValues;
+				buildingQueueValues = (uint32*)unitAIBuilding->trainQueueValues;
 				for (int i = 0; i < 5; i++) {
 					buildingQueueValues[i] = 0;
 				}
@@ -415,9 +416,9 @@ namespace hooks {
 						setSecondaryOrder(unit, OrderId::SpreadCreep);
 					}
 				}
-				if (!(AIScriptController[(uint8)town->player].AI_Flags.isUseMapSettings) // CONTROLLER_IS_CAMPAIGN
+				if (!(AIScriptController[(uint8)town->player].AI_Flags.isUseMapSettings)
 					|| unit->status & UnitStatus::GroundedBuilding
-					&& (unit->id != UnitId::TerranWatchdog)
+					&& unit->id != UnitId::TerranWatchdog
 					&& unit->id != UnitId::TerranBunker
 					&& unit->id != UnitId::ZergCreepColony
 					&& unit->id != UnitId::ZergSporeColony
@@ -438,34 +439,43 @@ namespace hooks {
 				playerRACE = playerTable[playerID].race;
 				if (playerRACE == RaceId::Terran) {
 					unitType = UnitId::TerranCommandCenter;
-				} else if (playerRACE == RaceId::Protoss) {
+				}
+				else if (playerRACE == RaceId::Protoss) {
 					unitType = UnitId::ProtossNexus;
-				} else {
+				}
+				else {
 					unitType = UnitId::ZergHatchery;
 				}
 				if (unit->id == unitType || unitIsActiveResourceDepot(unit)) {
 					unitAI = (UnitAi*)town->main_building->pAI;
-					if (!unitAI)
+					if (!unitAI) {
 						town->main_building = unit;
-				} else {
+					}
+				}
+				else {
 					auto gas_structure_id = getPlayerDefaultRefineryUnitType(playerID);
 					if (unit->id == gas_structure_id || unit->id == UnitId::ResourceVespeneGeyser) {
 						if (town->gas_buildings[0]) {
 							if (town->gas_buildings[1]) {
-								if (!town->gas_buildings[2])
+								if (!town->gas_buildings[2]) {
 									town->gas_buildings[2] = unit;
-							} else {
+								}
+							}
+							else {
 								town->gas_buildings[1] = unit;
 							}
-						} else {
+						}
+						else {
 							town->gas_buildings[0] = unit;
 						}
-						if (town->resource_area)
+						if (town->resource_area) {
 							town->resource_area_not_set = 1;
+						}
 					}
 				}
 			}
 		}
+		return (char)unit->id;
 	}
 
 	void AI_BuildTechUpgrade(AiTown* town, int32 method, int32 amount, int32 id, int32 priority, int32 need) { // 00431F90
@@ -760,10 +770,12 @@ namespace hooks {
 						removeBuildingTown = removeBuilding->town;
 						AI_DeleteBuildingAI(removeBuilding, removeBuildingTown->free_buildings);
 						if (removeBuildingTown) {
-							if (result == removeBuildingTown->building_scv)
+							if (result == removeBuildingTown->building_scv) {
 								removeBuildingTown->building_scv = 0;
-							if (result == removeBuildingTown->main_building)
+							}
+							if (result == removeBuildingTown->main_building) {
 								removeBuildingTown->main_building = 0;
+							}
 						}
 						result->pAI = 0;
 					}
@@ -774,25 +786,30 @@ namespace hooks {
 						workerUnit = parentTown->workers->parent;
 						for (i = 0; workerUnit; i += queueCount) {
 							workerTarget = workerUnit->moveTarget.unit;
-							if (workerTarget->id == UnitId::TerranWatchdog)
+							if (workerTarget->id == UnitId::TerranWatchdog) {
 								queueCount = 1;
-							else
+							}
+							else {
 								queueCount = AI_GetQueuedCount(workerTarget, UnitId::TerranWatchdog);
-							//							workerUnit = *(uint32*)workerUnit; // not sure if this is even necessary, does v8 need to be iterated upon every loop?
+							}
+							//workerUnit = *(uint32*)workerUnit; // not sure if this is even necessary, does v8 need to be iterated upon every loop?
 						}
 						for (j = parentTown->buildings; j; i += queueCount2) {
 							builderUnit = j->parent;
-							if (builderUnit->id == UnitId::TerranWatchdog)
+							if (builderUnit->id == UnitId::TerranWatchdog) {
 								queueCount2 = 1;
-							else
+							}
+							else {
 								queueCount2 = AI_GetQueuedCount(builderUnit, UnitId::TerranWatchdog);
+							}
 							j = j->link.prev;
 						}
 						if (i >= 4) {
 							AI_PrepareGuardAI(result->sprite->position.y, (uint8)result->playerId, 1, result->sprite->position.x);
 						}
 					}
-				} else {
+				}
+				else {
 					AI_PrepareGuardAI(result->sprite->position.y, (uint8)result->playerId, 5, result->sprite->position.x);
 					AI_PrepareGuardAI(result->sprite->position.y, (uint8)result->playerId, 1, result->sprite->position.x);
 				}
@@ -1159,27 +1176,6 @@ namespace hooks {
 		}
 		return 0;
 	}
-
-	//	0x00447040 => ai_remove_from_attack(@eax uint32,@edx uint32);
-	/*	void AI_RemoveFromAttack(int32 unitId, uint32 player) { // 00447040
-			uint32 v2; // esi
-			uint32 v3; // ecx
-			uint16* v4; // eax
-
-			if (unitId == UnitId::TerranSiegeTankSiegeMode)
-				unitId = UnitId::TerranSiegeTankTankMode;
-			v2 = unitId + 1;
-			v3 = 0;
-			v4 = AIScriptController[player].attackers;
-			while (*v4 != v2)
-			{
-				++v3;
-				++v4;
-				if (v3 >= 63)
-					return;
-			}
-			AIScriptController[0].attackers[v3 + 628 * player] = 229;
-		}*/
 }
 
 namespace {
