@@ -105,6 +105,19 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) checkUnitVisibility_Wrapper() { // 00443390
+		static CUnit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::checkUnitVisibility(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -117,6 +130,7 @@ namespace hooks {
 		jmpPatch(unitCanSeeCloakedTarget_Wrapper, 0x00401D60, 4);
 //		jmpPatch(isTargetVisible_Wrapper, 0x004E5E30, 4);
 //		jmpPatch(isUnitVisible_Wrapper, 0x004E5DB0, 1);
+		jmpPatch(checkUnitVisibility_Wrapper, 0x00443390, 3);
 	}
 	void injectTargetRelatedHooks() {
 		injectTargetHooks();

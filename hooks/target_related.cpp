@@ -40,15 +40,24 @@ namespace {
 	void orderComputerClear(CUnit* a1, __int8 a2);
 
 	// for genericRightClickUnitProc2
-	bool unitIsActiveTransport(CUnit* unit);											// 004E6BA0
-	int32 isOrderValid(char a1, CUnit* a2, int32 a3, CUnit* a4, int32 a5);					// 00474D90
-	bool canEnterTransport(CUnit* a1, CUnit* a2);										// 004E6E00
-	uint16 getUnitAbilityErrorStatString(CUnit* a1, char a2, int32 a3);						// 00491E80
+	bool unitIsActiveTransport(CUnit* unit);													// 004E6BA0
+	int32 isOrderValid(char a1, CUnit* a2, int32 a3, CUnit* a4, int32 a5);						// 00474D90
+	bool canEnterTransport(CUnit* a1, CUnit* a2);												// 004E6E00
+	uint16 getUnitAbilityErrorStatString(CUnit* a1, char a2, int32 a3);							// 00491E80
 
 	// for CMDRECV_HoldPosition
-	CUnit* getActivePlayerFirstSelection();												// 0049A850
-	int32 orderAllowed(CUnit* a1, uint16 a2, int32 a3);										// 0046DC20
+	CUnit* getActivePlayerFirstSelection();														// 0049A850
+	int32 orderAllowed(CUnit* a1, uint16 a2, int32 a3);											// 0046DC20
 	void targetedOrder(int16 a1, int32 a2, CUnit* a3, int16 a4, int32 a5, int32 a6, char a7, int32 a8, int32 a9, int32 a10);	// 004754F0
+
+	// for checkUnitVisibility
+	uint32 getDetectingPlayers(CUnit* unit);													// 
+	uint32 iteratePlayerUnitsSomething(uint32 aResult, CUnit* unit);							// 
+	void makeSpriteVisible(CSprite* sprite);													// 
+	int32 updateBuildingLandUnitSelection(uint32 unused, CUnit* selection);						// 
+	char removeSelectionCircle(CSprite* sprite);												// 
+	CImage* makeUndetected(CSprite* sprite);													// 
+
 }
 
 namespace hooks {
@@ -458,6 +467,7 @@ namespace hooks {
 		return result;
 	}
 
+	// Hooked to help with cloak rewrite - Pr0nogo
 	uint32 isUnitVisible(CUnit* unit) { // 004E5DB0
 		CUnit* target; // eax
 		int32 playerUnit; // ebx
@@ -476,6 +486,53 @@ namespace hooks {
 			result = 0;
 		}
 		return result;
+	}
+
+	// Hooked to help with cloak rewrite - Pr0nogo
+	void checkUnitVisibility(CUnit* unit) { // 00443390
+		CUnit* subunit; // esi
+		uint32 detectingPlayers; // eax
+		uint32 visStatus; // ecx
+		CUnit* unitVar; // esi
+		uint32 v5; // eax
+		uint32 v6; // edi
+		CUnit* v7; // esi
+
+		unitVar = unit;
+		detectingPlayers = getDetectingPlayers(unit);
+		visStatus = unitVar->visibilityStatus;
+		if (visStatus != detectingPlayers) {
+			if (visStatus == 0x80000000)
+			{
+				visStatus = ~(uint8)detectingPlayers;
+				unitVar->visibilityStatus = visStatus;
+			}
+			v6 = detectingPlayers ^ unitVar->visibilityStatus;
+			unitVar->visibilityStatus = detectingPlayers;
+			v5 = v6 & ~detectingPlayers;
+			if (v5) {
+				iteratePlayerUnitsSomething(v5, unitVar);
+			}
+			if (*playerVisions & v6) {
+				if (*playerVisions & unitVar->visibilityStatus) {
+					makeSpriteVisible(unitVar->sprite);
+					v7 = unitVar->subunit;
+					if (v7) {
+						makeSpriteVisible(v7->sprite);
+					}
+				} else {
+					if (unitVar->sprite->flags & 8) {
+						updateBuildingLandUnitSelection(visStatus, unitVar);
+					}
+					removeSelectionCircle(unitVar->sprite);
+					makeUndetected(unitVar->sprite);
+					subunit = unitVar->subunit;
+					if (subunit) {
+						makeUndetected(subunit->sprite);
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -931,5 +988,83 @@ namespace {
 			CALL Func_targetedOrder
 			POPAD
 		}
+	}
+
+	// For checkUnitVisibility
+	const uint32 Func_getDetectingPlayers = 0x00441130;
+	uint32 getDetectingPlayers(CUnit* unit) {
+		static uint32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_getDetectingPlayers
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const uint32 Func_iteratePlayerUnitsSomething = 0x0049E8A0;
+	uint32 iteratePlayerUnitsSomething(uint32 aResult, CUnit* unit) {
+		static uint32 result;
+		__asm {
+			PUSHAD
+			PUSH unit
+			MOV EAX, aResult
+			CALL Func_iteratePlayerUnitsSomething
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const uint32 Func_makeSpriteVisible = 0x00497ED0;
+	void makeSpriteVisible(CSprite* sprite) {
+		__asm {
+			PUSHAD
+			MOV EAX, sprite
+			CALL Func_makeSpriteVisible
+			POPAD
+		}
+	}
+
+	const uint32 Func_updateBuildingLandUnitSelection = 0x004C3B40;
+	int32 updateBuildingLandUnitSelection(uint32 unused, CUnit* selection) {
+		static int32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, unused
+			MOV EDX, selection
+			CALL Func_updateBuildingLandUnitSelection
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const uint32 Func_removeSelectionCircle = 0x004975D0;
+	char removeSelectionCircle(CSprite* sprite) {
+		static int32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, sprite
+			CALL Func_removeSelectionCircle
+			MOV result, EAX
+			POPAD
+		}
+		return (char)result;
+	}
+
+	const uint32 Func_makeUndetected = 0x00498A10;
+	CImage* makeUndetected(CSprite* sprite) {
+		static CImage* result;
+		__asm {
+			PUSHAD
+			MOV EAX, sprite
+			CALL Func_makeUndetected
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }
