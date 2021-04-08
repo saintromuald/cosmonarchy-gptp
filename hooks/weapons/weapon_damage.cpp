@@ -1030,7 +1030,7 @@ namespace hooks {
 		acidTimeMax = 99999;
 		result = 0;
 
-		scbw::set_generic_value(target, ValueId::CorrosiveTouchTimer, VithriliskCorrosiveSporeTimer);
+		scbw::set_generic_timer(target, ValueId::CorrosiveTouchTimer, VithriliskCorrosiveSporeTimer);
 		return result;
 	}
 } //hooks

@@ -879,6 +879,12 @@ namespace hooks {
 			unit->updateSpeed();
 		}
 
+		// Vithrilisk - Corrosive Touch Clear
+		if (scbw::get_generic_timer(unit, ValueId::CorrosiveTouchTimer) == 1) {
+			scbw::set_generic_value(unit, ValueId::CorrosiveTouchStacks, 0);
+			unit->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
+		}
+
 		// Zergling - Adrenal Glands
 		if (scbw::get_generic_timer(unit, ValueId::AdrenalTimer) == 1) {
 			scbw::set_generic_value(unit, ValueId::AdrenalStacks, 0);
