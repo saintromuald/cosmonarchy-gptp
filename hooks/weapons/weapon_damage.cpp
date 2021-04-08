@@ -338,7 +338,7 @@ namespace hooks {
 		}
 
 		weaponDamage_behaviors(data);
-		if (data.attacker != nullptr) { // lifesteal 
+		if (data.attacker != nullptr && !data.dontProcPhaseLink) { // lifesteal 
 			weaponDamage_lifesteal(data);
 		}
 		if (data.finalDamage >= data.target->hitPoints) { // <- keep this as hitPoints, because the damage is already calculated to include armor, shields and damage factor calculations
