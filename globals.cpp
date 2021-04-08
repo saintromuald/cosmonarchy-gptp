@@ -685,7 +685,7 @@ namespace scbw {
 
 		// Reset Devourer Corrosive Spores
 		if (scbw::get_generic_timer(unit, ValueId::CorrosiveTouchTimer) > 0) {
-			scbw::set_generic_timer(unit, ValueId::CorrosiveTouchTimer, VithriliskCorrosiveSporeTimer);
+			scbw::set_generic_timer(unit, ValueId::CorrosiveTouchTimer, VithriliskCorrosiveTouchTimer);
 		}
 
 		// Reset Irradiate

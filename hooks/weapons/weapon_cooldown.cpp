@@ -16,13 +16,7 @@ namespace hooks {
 
 		// Devourer - Corrosive Spores: lower attack speed of victim
 		if (scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks) != 0) {
-
-			uint32 increaseAmt = cooldown / 8;
-
-			if (increaseAmt < 3)
-				increaseAmt = 3;
-
-			cooldown += increaseAmt * scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks) * 0.5;
+			cooldown *= 1 + scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchCooldownIncrease;
 		}
 
 		// Set modifier based on Stim (increase), Ensnare (decrease), and attackspeed upgrades (increase)

@@ -387,13 +387,13 @@ namespace hooks {
 					div = (double)data.damageDivisor;
 				}
 				int dmg = ((double)data.finalDamage / div);
-				data.finalDamage = dmg + (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * 128);
+				data.finalDamage = dmg + scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks * VithriliskCorrosiveTouchArmorReduction);
 				break;
 			}
 			case WeaponId::AcidSpore:
 			{
 				// Searing Acid - Guardian behavior
-				data.finalDamage += (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * 128) + (data.damageDivisor * 10 * 256);
+				data.finalDamage += (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction) + (data.damageDivisor * 10 * 256);
 				break;
 			}
 			case WeaponId::GlaveWurm:
@@ -415,7 +415,7 @@ namespace hooks {
 						break;
 				};
 				data.finalDamage *= mul;
-				data.finalDamage += (int)scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * 128;
+				data.finalDamage += (int)scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction;
 				break;
 			}
 			case WeaponId::KalkaliskViscousAcid:
@@ -423,9 +423,9 @@ namespace hooks {
 				// Kalkalisk behavior
 				int decrement = data.damageDivisor * 256;
 				if (decrement < data.damage) {
-					data.finalDamage = data.finalDamage - decrement + (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * 128);
+					data.finalDamage = data.finalDamage - decrement + (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction);
 				} else {
-					data.finalDamage = data.finalDamage + (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * 128);
+					data.finalDamage = data.finalDamage + (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction);
 				}
 				break;
 			}
@@ -436,7 +436,7 @@ namespace hooks {
 					divisor = 1;
 					scbw::printFormattedText("Incorrect weapon hit %d", data.weaponId);
 				}
-				data.finalDamage = data.finalDamage / divisor + (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * 128);
+				data.finalDamage = data.finalDamage / divisor + (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction);
 			}
 		}
 
@@ -1027,7 +1027,7 @@ namespace hooks {
 		acidTimeMax = 99999;
 		result = 0;
 
-		scbw::set_generic_timer(target, ValueId::CorrosiveTouchTimer, VithriliskCorrosiveSporeTimer);
+		scbw::set_generic_timer(target, ValueId::CorrosiveTouchTimer, VithriliskCorrosiveTouchTimer);
 		return result;
 	}
 } //hooks
