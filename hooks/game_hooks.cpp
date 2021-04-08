@@ -860,14 +860,7 @@ namespace hooks {
 
 		// Dark Archon - Malediction (Maelstrom)
 		if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) == 1) {
-			uint32 overlayImageId;
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
-				overlayImageId = ImageId::Malediction_Medium;
-			else
-				if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
-					overlayImageId = ImageId::Malediction_Large;
-				else
-					overlayImageId = ImageId::Malediction_Small;
+			uint32 overlayImageId = ImageId::Malediction_Small + scbw::getOverlayOffset(unit->id);
 			while (unit->sprite->getOverlay(overlayImageId)) {
 				unit->sprite->removeOverlay(overlayImageId);
 			}
