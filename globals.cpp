@@ -684,9 +684,9 @@ namespace scbw {
 			unit->maelstromTimer = 12;
 
 		// Reset Devourer Corrosive Spores
-		if (unit->corrosiveSporeCount != 0)
-			for (int i = 0; i < unit->corrosiveSporeCount; i++)
-				unit->acidSporeTime[i] = VithriliskCorrosiveSporeTimer;
+		if (scbw::get_generic_timer(unit, ValueId::CorrosiveTouchTimer) > 0) {
+			scbw::set_generic_timer(unit, ValueId::CorrosiveTouchTimer, VithriliskCorrosiveSporeTimer);
+		}
 
 		// Reset Irradiate
 		if (unit->irradiateTimer != 0)
@@ -774,10 +774,9 @@ namespace scbw {
 			child->maelstromTimer = parent->maelstromTimer;
 
 		// Inherit Devourer Corrosive Spores
-		if (parent->corrosiveSporeCount != 0) {
-			child->corrosiveSporeCount = parent->corrosiveSporeCount;
-			for (int i = 0; i < parent->corrosiveSporeCount; i++)
-				child->acidSporeTime[i] = parent->acidSporeTime[i];
+		if (scbw::get_generic_timer(parent, ValueId::CorrosiveTouchTimer) != 0) {
+			scbw::set_generic_value(child, ValueId::CorrosiveTouchStacks, scbw::get_generic_value(parent, ValueId::CorrosiveTouchStacks));
+			scbw::set_generic_timer(child, ValueId::CorrosiveTouchTimer, scbw::get_generic_timer(parent, ValueId::CorrosiveTouchTimer));
 		}
 
 		// Inherit Irradiate
@@ -863,6 +862,7 @@ namespace scbw {
 			|| scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) > 0
 			|| scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0
 			|| scbw::get_generic_timer(unit, ValueId::ObservanceTimerPeriod) > 0
+			|| scbw::get_generic_timer(unit, ValueId::CorrosiveTouchTimer) > 0
 			|| scbw::get_generic_value(unit, ValueId::EntropyGauntlets) > 0
 			|| scbw::get_generic_value(unit, ValueId::ArmorReduce) > 0
 			|| captivatingClawsGetTimer(unit) > 0
@@ -870,7 +870,6 @@ namespace scbw {
 			|| unit->ensnareTimer != 0
 			|| unit->lockdownTimer != 0
 			|| unit->maelstromTimer != 0
-			|| unit->corrosiveSporeCount != 0
 			|| unit->plagueTimer != 0
 			|| unit->parasiteFlags
 			|| unit->isBlind;

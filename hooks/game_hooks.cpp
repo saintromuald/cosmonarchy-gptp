@@ -807,38 +807,6 @@ namespace hooks {
 			}
 		}
 
-		// Devourer - Critical Mass
-		if (scbw::get_generic_timer(unit, ValueId::CorrosiveSporeDelay) == 1) {
-			unit->corrosiveSporeCount -= 2;
-			int range = 160;
-			scbw::UnitFinder(
-				unit->getX() - 96,
-				unit->getY() - 96,
-				unit->getX() + 96,
-				unit->getY() + 96
-			).forEach([&](CUnit* target) {
-				if (target == unit) {
-					return;
-				}
-				if (target->status & UnitStatus::Burrowed) {
-					return;
-				}
-				if (target->status & UnitStatus::Invincible) {
-					return;
-				}
-				for (int i = 0; i < (int)unit->corrosiveSporeCount; i++) {
-					scbw::ApplySpores(target);
-				}
-				target->removeAcidSpores();
-				CThingy* thingy = scbw::createThingy(SpriteId::Corrosive_Acid_Hit, unit->getX(), unit->getY(), 11);
-				if (thingy != nullptr) {
-					thingy->sprite->elevationLevel = target->sprite->elevationLevel + 1;
-					scbw::setThingyVisibilityFlags(thingy);
-				}
-				target->damageWith(30 * 256, WeaponId::PsiStorm, unit, unit->playerId);
-			});
-		}
-
 		// Savant - Entropy Gauntlets: remove overlay at end of effect
 		if (scbw::get_generic_timer(unit, ValueId::EntropyGauntlets) == 1) {
 			uint32 overlayOffset = scbw::getOverlayOffset(unit->id);

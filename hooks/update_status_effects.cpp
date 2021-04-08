@@ -413,24 +413,10 @@ namespace hooks {
 			unit->isUnderStorm--;
 		}
 
-		//hardcoding effect of unreferenced_sub_4F42C0 @ 0x004F42C0
-		uint8 previousAcidSporeCount = unit->corrosiveSporeCount;
-		for (int i = 0; i <= 8; ++i) {
-
-			if (unit->acidSporeTime[i] != 0) {
-
-				unit->acidSporeTime[i]--;
-
-				if (unit->acidSporeTime[i] == 0)
-					unit->corrosiveSporeCount--;
-
-			}
-
-		}
-		if (unit->corrosiveSporeCount != 0) {
+		if (scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks) != 0) {
 
 			//Calculate the appropriate overlay ID
-			uint32 acidOverlayId = std::min(3, unit->corrosiveSporeCount / 2)
+			uint32 acidOverlayId = std::min((uint32)3, scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks) / 2)
 				+ 4 * scbw::getUnitOverlayAdjustment(unit)
 				+ ImageId::AcidSpores_1_Overlay_Small;
 
@@ -444,8 +430,10 @@ namespace hooks {
 				unit->sprite->createTopOverlay(acidOverlayId);
 
 			}
+		}
 
-		} else if (previousAcidSporeCount != 0) {
+		if (scbw::get_generic_timer(unit, ValueId::CorrosiveTouchTimer) == 1) {
+			scbw::set_generic_value(unit, ValueId::CorrosiveTouchStacks, 0);
 			unit->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
 		}
 	}

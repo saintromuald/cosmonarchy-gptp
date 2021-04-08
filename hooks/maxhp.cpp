@@ -3,6 +3,7 @@
 #include "SCBW\scbwdata.h"
 #include "hook_tools.h"
 #include "byte_operations_utils.h"
+#include <globals.h>
 
 /*
 	// Hooked elsewhere
@@ -553,12 +554,7 @@ namespace hooks {
 			if (canWeaponTargetUnit(WeaponId::Restoration, a1, a2)) {
 				v3 = units_dat::ShieldsEnabled[(uint16)v2->id] ? v2->shields >> 8 : 0;
 				if (v3 + ((v2->hitPoints + 255) >> 8) > 60
-					&& (v2->ensnareTimer
-						|| v2->plagueTimer
-						|| v2->irradiateTimer
-						|| v2->lockdownTimer
-						|| v2->maelstromTimer
-						|| v2->corrosiveSporeCount)) {
+					&& scbw::isDebuffed(v2)) {
 					result = 1;
 				}
 			}

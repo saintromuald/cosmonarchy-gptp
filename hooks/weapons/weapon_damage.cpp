@@ -224,7 +224,7 @@ namespace hooks {
 	}
 
 	void weaponDamage_root(WeaponDamageData& data) {
-		// the unit must neither be already dead nor invincible
+		// The unit must neither be already dead nor invincible
 		if (data.target == nullptr || data.target->hitPoints == 0 || data.target->status & UnitStatus::Invincible) {
 			return;
 		}
@@ -276,11 +276,11 @@ namespace hooks {
 			data.finalDamage -= std::min(scbw::getCliffAdvantage(data.attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
 		}
 
-		// Reduce Plasma Shields...but not just yet
+		// Reduce Plasma Shields
 		if (units_dat::ShieldsEnabled[data.target->id] && data.target->shields >= 256) {
 			if (data.damageType != DamageType::IgnoreArmor) {
 				int32 plasmaShieldUpg = scbw::getUpgradeLevel(data.target->playerId, UpgradeId::ProtossPlasmaShields) * 256;
-				if (data.finalDamage > plasmaShieldUpg) { // Weird logic, Blizzard dev must have been sleepq7
+				if (data.finalDamage > plasmaShieldUpg) {
 					data.finalDamage -= plasmaShieldUpg;
 				} else {
 					data.finalDamage = 128;
@@ -387,13 +387,13 @@ namespace hooks {
 					div = (double)data.damageDivisor;
 				}
 				int dmg = ((double)data.finalDamage / div);
-				data.finalDamage = dmg + (data.target->corrosiveSporeCount * 256);
+				data.finalDamage = dmg + (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * 256);
 				break;
 			}
 			case WeaponId::AcidSpore:
 			{
 				// Searing Acid - Guardian behavior
-				data.finalDamage += (data.target->corrosiveSporeCount * 256) + (data.damageDivisor * 10 * 256);
+				data.finalDamage += (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * 256) + (data.damageDivisor * 10 * 256);
 				break;
 			}
 			case WeaponId::GlaveWurm:
@@ -415,7 +415,7 @@ namespace hooks {
 						break;
 				};
 				data.finalDamage *= mul;
-				data.finalDamage += (int)data.target->corrosiveSporeCount * 256;
+				data.finalDamage += (int)scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * 256;
 				break;
 			}
 			case WeaponId::KalkaliskViscousAcid:
@@ -423,9 +423,9 @@ namespace hooks {
 				// Kalkalisk behavior
 				int decrement = data.damageDivisor * 256;
 				if (decrement < data.damage) {
-					data.finalDamage = data.finalDamage - decrement + (data.target->corrosiveSporeCount * 256);
+					data.finalDamage = data.finalDamage - decrement + (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * 256);
 				} else {
-					data.finalDamage = data.finalDamage + (data.target->corrosiveSporeCount * 256);
+					data.finalDamage = data.finalDamage + (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * 256);
 				}
 				break;
 			}
@@ -436,7 +436,7 @@ namespace hooks {
 					divisor = 1;
 					scbw::printFormattedText("Incorrect weapon hit %d", data.weaponId);
 				}
-				data.finalDamage = data.finalDamage / divisor + (data.target->corrosiveSporeCount * 256);
+				data.finalDamage = data.finalDamage / divisor + (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * 256);
 			}
 		}
 
@@ -463,6 +463,34 @@ namespace hooks {
 
 	static void weaponDamage_behaviors(WeaponDamageData& data) {
 		if (data.attacker != nullptr) {
+
+			// Vithrilisk - Critical Mass (procced by any attack now)
+			if (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks)) {
+				int range = 160;
+				scbw::UnitFinder(
+					data.target->getX() - 96,
+					data.target->getY() - 96,
+					data.target->getX() + 96,
+					data.target->getY() + 96
+				).forEach([&](CUnit* target) {
+					if (target == data.target) {
+						return;
+					}
+					if (target->status & UnitStatus::Burrowed) {
+						return;
+					}
+					if (target->status & UnitStatus::Invincible) {
+						return;
+					}
+					scbw::ApplySpores(target);
+					CThingy* thingy = scbw::createThingy(SpriteId::Corrosive_Acid_Hit, target->getX(), target->getY(), 11);
+					if (thingy != nullptr) {
+						thingy->sprite->elevationLevel = target->sprite->elevationLevel + 1;
+						scbw::setThingyVisibilityFlags(thingy);
+					}
+					//target->damageWith(30 * 256, WeaponId::PsiStorm, unit, unit->playerId);
+				});
+			}
 
 			// Cabalist - Decloak, Silent Kill
 			if (data.attacker->id == UnitId::ProtossCabalist && data.finalDamage < data.target->hitPoints) {
@@ -547,17 +575,6 @@ namespace hooks {
 							data.target->sprite->createOverlay(1332 + overlayOffset);
 						}
 					}
-					break;
-				}
-				case WeaponId::AmaranthPsiCleaver:
-				{
-					// Eternal Service - Amaranth behavior
-					int32 hp = data.attacker->hitPoints / 256;
-					int32 maxHp = data.attacker->getMaxHpInGame();
-					double shieldStealRate = MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
-					int32 healAmount = data.damage * shieldStealRate;
-					int32 maxShields = units_dat::MaxShieldPoints[data.attacker->id] * 256;
-					data.attacker->healShields(healAmount, data.attacker);
 					break;
 				}
 				case WeaponId::SavantDiscoidRailgun:
@@ -712,6 +729,7 @@ namespace hooks {
 			{
 				// Ultrakor Saber Siphon passive
 				lifesteal *= 0.5;
+				data.attacker->heal(lifesteal, data.attacker);
 				break;
 			}
 			case WeaponId::WendigoFusionSaw:
@@ -720,14 +738,19 @@ namespace hooks {
 				if (!(units_dat::BaseProperty[data.target->id] & UnitProperty::Mechanical))
 					return;
 				lifesteal *= 0.25;
+				data.attacker->heal(lifesteal, data.attacker);
 				break;
 			}
-			default:
+			case WeaponId::AmaranthPsiCleaver:
 			{
-				return;
+				// Eternal Service - Amaranth behavior
+				const int32 hp = data.attacker->hitPoints / 256;
+				const int32 maxHp = data.attacker->getMaxHpInGame();
+				lifesteal *= MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
+				data.attacker->healShields(lifesteal, data.attacker);
+				break;
 			}
 		}
-		data.attacker->heal(lifesteal, data.attacker);
 	}
 
 	static void weaponDamage_fatal(WeaponDamageData& data) {
@@ -969,7 +992,7 @@ namespace hooks {
 
 	// TODO: Refactor
 	// Hooked to change Corrosive Spore timer - Pr0nogo
-	int32 updateCorrosiveSpores(CUnit* target) { // 004F4480
+	int32 ApplySpores_hook(CUnit* target) { // 004F4480
 		uint8 sporeCount; // al
 		uint32 overlayMultiplier; // eax
 		uint8 overlayOffset; // cl
@@ -983,11 +1006,8 @@ namespace hooks {
 		CImage* image;
 		CSprite* spriteFinal;
 
-		sporeCount = target->corrosiveSporeCount;
-		if (sporeCount < 9u) {
-			target->corrosiveSporeCount = sporeCount + 1;
-		}
-		overlayMultiplier = target->corrosiveSporeCount >> 1;
+		scbw::add_generic_value(target, ValueId::CorrosiveTouchStacks, 1);
+		overlayMultiplier = scbw::get_generic_value(target, ValueId::CorrosiveTouchStacks) >> 1;
 		if (overlayMultiplier >= 3) {
 			overlayMultiplier = 3;
 		}
@@ -1010,21 +1030,7 @@ namespace hooks {
 		acidTimeMax = 99999;
 		result = 0;
 
-		while (1) {
-			v11_acidSporeTime = target->acidSporeTime[result];
-			if (!v11_acidSporeTime)
-				break;
-			if (v11_acidSporeTime < acidTimeMax) {
-				result_sub_1 = result;
-				acidTimeMax = v11_acidSporeTime;
-			}
-			if (++result >= 9) {
-				target->acidSporeTime[result_sub_1] = VithriliskCorrosiveSporeTimer;
-				return result;
-			}
-		}
-
-		target->acidSporeTime[result] = VithriliskCorrosiveSporeTimer;
+		scbw::set_generic_value(target, ValueId::CorrosiveTouchTimer, VithriliskCorrosiveSporeTimer);
 		return result;
 	}
 } //hooks

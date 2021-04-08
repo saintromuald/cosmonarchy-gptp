@@ -157,7 +157,6 @@ namespace ValueId {
 		ObservanceRend = 21,
 		UpgradeBoost = 22,
 		PermanentCloakTimer = 23,
-		CorrosiveSporeDelay = 24,
 		LurkerETA = 25,
 		SpineX = 26,
 		SpineY = 27,
@@ -197,6 +196,8 @@ namespace ValueId {
 
 		CaptivatingClawsUnitVector = 56,
 		CaptivatingClawsTimer = 57,
+		CorrosiveTouchStacks = 58,
+		CorrosiveTouchTimer = 59,
 
 		EntropyGauntlets = 63,
 		KalkalethMissilePos = 65,
@@ -560,8 +561,8 @@ struct CUnitLayout {
 	/*0x124*/ uint8        maelstromTimer;
 	/*0x125*/ uint8        unusedTimer;        // Used on resources for regeneration delay, and for overcharge
 						//custom slow timer
-	/*0x126*/ uint8        corrosiveSporeCount;
-	/*0x127*/ uint8        acidSporeTime[9];
+	/*0x126*/ uint8        corrosiveSporeCountUnused;   // replaced with generic_value
+	/*0x127*/ uint8        corrosiveSporeTimeUnused[9]; // replaced with generic_timer
 	/*0x130*/ uint16       offsetIndex3by3;    // Cycles between 0-12 for each bullet fired by this unit (if it uses a "Attack 3x3 area" weapon)
 	/*0x132*/ uint8       _padding_0x132;	//HYDRA - different flags
 						//0x1 - burrowed basilisk flag

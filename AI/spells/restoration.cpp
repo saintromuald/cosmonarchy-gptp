@@ -1,5 +1,6 @@
 #include "spells.h"
 #include <AI/ai_common.h>
+#include <globals.h>
 
 //V241 for VS2008
 
@@ -26,12 +27,7 @@ namespace AI {
 			if (target->getCurrentLifeInGame() <= 60)
 				return false;
 
-			if (target->ensnareTimer
-				|| target->plagueTimer
-				|| target->irradiateTimer
-				|| target->lockdownTimer
-				|| target->maelstromTimer
-				|| target->corrosiveSporeCount)
+			if (scbw::isDebuffed(target))
 				return true;
 
 			return false;

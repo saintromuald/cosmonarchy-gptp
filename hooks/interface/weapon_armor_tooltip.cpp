@@ -367,6 +367,7 @@ namespace hooks {
 		addStatus(statuses, "Swarming Omen Aura", scbw::get_generic_value(unit, ValueId::SwarmingOmenAbility), 1, scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer), TimerType::Aise);
 		addStatus(statuses, "Nemean Reactors", scbw::get_generic_value(unit, ValueId::NemeanReactorsStack), 5, scbw::get_generic_timer(unit, ValueId::NemeanReactorsTimer), TimerType::Aise);
 		addStatus(statuses, "Observance", scbw::get_generic_value(unit, ValueId::ObservanceRend), 0, scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff), TimerType::Aise);
+		addStatus(statuses, "Corrosive Spores", scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks), 0, scbw::get_generic_timer(unit, ValueId::CorrosiveTouchTimer), TimerType::Aise);
 
 		// Aise Timer
 		addStatus(statuses, "Malediction", -1, 1, scbw::get_generic_timer(unit, ValueId::MaledictionSlow), TimerType::Aise);
@@ -418,7 +419,6 @@ namespace hooks {
 
 		// Vanilla Timer + Value
 		addStatus(statuses, "Defensive Matrix", unit->defensiveMatrixHp / 256, 200, unit->defensiveMatrixTimer);
-		addStatus(statuses, "Corrosive Spores", unit->corrosiveSporeCount, 9, unit->acidSporeTime[unit->corrosiveSporeCount - 1]);
 
 		// Vanilla Timers
 		addStatus(statuses, "Stimpack", -1, 1, unit->stimTimer);

@@ -60,7 +60,7 @@ constexpr double QuazaliskPassiveFactor = 0.1;
 constexpr double LarvalColonyMultiplier = 0.75;
 
 // Matraleth - Parasite
-constexpr int DefaultArmParasiteTimer = (24 * 2) + 1;
+constexpr int DefaultArmParasiteTimer = 2 * 24 + 1;
 
 // Vithrilisk - Corrosive Spores
-constexpr int VithriliskCorrosiveSporeTimer = 30;
+constexpr int VithriliskCorrosiveSporeTimer = 10 * 24 + 1;
