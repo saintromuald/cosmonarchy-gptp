@@ -404,8 +404,6 @@ namespace scbw {
 
 	}
 
-
-
 	uint16 getTechUseErrorMessage(CUnit* target, uint8 castingPlayer, uint16 techId) {
 
 		static uint32 techId_;

@@ -401,6 +401,5 @@ namespace scbw {
 	void applyParasite(CUnit* unit, uint8 playerID, CUnit* queen);
 	void createShieldOverlay(CUnit* unit, uint32 attackDirection);
 	void decloakProc(CUnit* unit);
-	void doDeconstructionDamage(CUnit* unit, uint16 weaponId, bool playSound);
 
 } //scbw
