@@ -22,7 +22,7 @@ namespace hooks {
 			if (increaseAmt < 3)
 				increaseAmt = 3;
 
-			cooldown += increaseAmt * scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks);
+			cooldown += increaseAmt * scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks) * 0.5;
 		}
 
 		// Set modifier based on Stim (increase), Ensnare (decrease), and attackspeed upgrades (increase)
@@ -73,7 +73,7 @@ namespace hooks {
 		// Atreus Stalwart Stance behavior: gains 125% attack speed while shields remain intact
 		if (unit->id == UnitId::ProtossAtreus
 			&& unit->getCurrentShieldsInGame() > 1) { // Leaving it at 1 so incidental regen doesn't give the bonus
-			cooldown -= cooldown / 4;
+			cooldown /= 1.25;
 		}
 
 		if (cooldownModifier > 0)	// Lame hardcode for attackspeed upgrades
