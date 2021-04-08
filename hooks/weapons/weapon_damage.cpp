@@ -987,6 +987,15 @@ namespace hooks {
 		return false;
 	}
 
+	uint16 GetSporesOverlayId(CUnit* target) {
+		auto stacks = scbw::get_generic_value(target, ValueId::CorrosiveTouchStacks);
+		auto overlayMultiplier = 0;
+		if (stacks > 18) overlayMultiplier++;
+		if (stacks > 35) overlayMultiplier++;
+		if (stacks > 50) overlayMultiplier++;
+		return overlayMultiplier + 4 * scbw::getOverlayOffset(target->id) + ImageId::AcidSpores_1_Overlay_Small;
+	}
+
 	// TODO: Refactor
 	// Hooked to change Corrosive Spore timer - Pr0nogo
 	int32 ApplySpores_hook(CUnit* target) { // 004F4480
@@ -1004,12 +1013,7 @@ namespace hooks {
 		CSprite* spriteFinal;
 
 		scbw::add_generic_value(target, ValueId::CorrosiveTouchStacks, 1);
-		overlayMultiplier = scbw::get_generic_value(target, ValueId::CorrosiveTouchStacks) >> 1;
-		if (overlayMultiplier >= 3) {
-			overlayMultiplier = 3;
-		}
-		overlayOffset = scbw::getOverlayOffset(target->id);
-		image = target->getOverlay(overlayMultiplier + 4 * overlayOffset + ImageId::AcidSpores_1_Overlay_Small);
+		image = target->getOverlay(GetSporesOverlayId(target));
 		if (image) {
 			overlay = image->id;
 		}

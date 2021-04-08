@@ -31,8 +31,9 @@ namespace hooks {
 
 	void weaponDamage_root(WeaponDamageData& data);
 
-	void applyEnsnare(CUnit* a1);													// 004F45E0
-	int32_t ApplySpores_hook(CUnit* target);                                   // 004F4480
+	void applyEnsnare(CUnit* a1);
+	uint16 GetSporesOverlayId(CUnit* target);
+	int32_t ApplySpores_hook(CUnit* target); // 004F4480
 
 	bool GorgonCondition(CUnit* attacker, CUnit* target);
 

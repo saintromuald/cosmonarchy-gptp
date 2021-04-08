@@ -2,6 +2,7 @@
 #include <SCBW/api.h>
 #include <SCBW/UnitFinder.h>
 #include "hooks/weapons/wpnspellhit.h"
+#include "hooks/weapons/weapon_damage.h"
 #include "globals.h"
 
 void irradiateProc(CUnit* unit, CUnit* target) {
@@ -417,9 +418,7 @@ namespace hooks {
 		if (scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks) != 0) {
 
 			//Calculate the appropriate overlay ID
-			uint32 acidOverlayId = std::min((uint32)3, scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks) / 2)
-				+ 4 * scbw::getUnitOverlayAdjustment(unit)
-				+ ImageId::AcidSpores_1_Overlay_Small;
+			uint32 acidOverlayId = GetSporesOverlayId(unit);
 
 			if (!unit->getOverlay(acidOverlayId)) {
 
