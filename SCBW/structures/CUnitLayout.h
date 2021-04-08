@@ -291,7 +291,7 @@ namespace ValueId {
 		AdaptiveAmitosis = 156,
 		EnthrallingTalons = 157,
 		InfestedByAkistrokor = 158,
-		FertileSpines = 159,				// unused
+		WorshipDemiurge = 159,				// unit
 		TurretParentLink = 160,
 		BindingGripTimer = 161,
 		ClarionLinkUnit = 162,

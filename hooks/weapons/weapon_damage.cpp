@@ -257,8 +257,9 @@ namespace hooks {
 		}
 
 		// Minimum amount of damage that can be dealt
-		if (data.finalDamage < 128)
+		if (data.finalDamage < 128) {
 			data.finalDamage = 128;
+		}
 
 		// Reduce Defensive Matrix
 		if (data.target->defensiveMatrixHp != 0) {
@@ -435,6 +436,7 @@ namespace hooks {
 				if (data.target->getCurrentHpInGame() <= (data.target->getMaxHpInGame() / 2)) {
 					// TODO: implement unit transfer
 					scbw::set_generic_value(data.target, ValueId::WorshipStack, 1);
+					scbw::set_generic_unit(data.target, ValueId::WorshipDemiurge, data.attacker);
 					scbw::set_generic_value(data.target, ValueId::WorshipOriginalPlayer, data.target->playerId);
 				}
 			}

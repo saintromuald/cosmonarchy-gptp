@@ -1078,9 +1078,14 @@ namespace hooks {
 
 		// Emergency Detonation - destroy structure
 		if (scbw::get_generic_timer(unit, ValueId::EmergencyDetonationTimer) == 1) {
-			//	scbw::createBullet(WeaponId::EmergencyDetonation, unit, unit->position.x, unit->position.y, unit->playerId);
+			//scbw::createBullet(WeaponId::EmergencyDetonation, unit, unit->position.x, unit->position.y, unit->playerId);
 			unit->remove();
 		}
+
+		// Demiurge - Gods Made Flesh - initial cast
+		/*if (conditional) { // a linked Demiurge casts the ability
+			// unit finder?
+		}*/
 
 		// Demiurge - Gods Made Flesh - kill unit when the effect ends
 		if (scbw::get_generic_timer(unit, ValueId::GodsMadeFlesh) == 1) {
