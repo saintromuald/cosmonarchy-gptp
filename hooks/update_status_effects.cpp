@@ -413,7 +413,7 @@ namespace hooks {
 			unit->isUnderStorm--;
 		}
 
-		// Vithrilisk - Corrosive Touch Clear
+		// Vithrilisk - Corrosive Touch - update overlays
 		if (scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks) != 0) {
 
 			//Calculate the appropriate overlay ID
