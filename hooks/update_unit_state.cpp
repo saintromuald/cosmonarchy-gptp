@@ -3,6 +3,7 @@
 #include <SCBW/api.h>
 #include <algorithm>
 #include "hooks/weapons/weapon_damage.h"
+#include "hooks/weapon_effect.h"
 #include "hooks/hydra_unit_ai.h"
 #include "globals.h"
 namespace {
@@ -437,8 +438,9 @@ namespace hooks {
 						unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					if (distance < 32) {
 						unit->status |= UnitStatus::Invincible;
-						scbw::createBullet(WeaponId::AuroraLastOrders, unit, unit->position.x, unit->position.y, unit->playerId,
-							unit->currentDirection1);
+						CBullet* bullet = scbw::createBulletRet(WeaponId::AuroraLastOrders, unit, unit->position.x, unit->position.y, unit->playerId, unit->currentDirection1);
+						hooks::friendlySplash(bullet, WeaponId::AuroraLastOrders, SplashType::FriendlyNew, nullptr);
+						bullet->time_remaining = 0;
 						// TODO: Add impact graphic
 						unit->remove();
 					}
