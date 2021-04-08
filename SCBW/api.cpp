@@ -401,7 +401,6 @@ namespace scbw {
 		darkSwarmFinder.search(x - radius, y - radius, x + radius, y + radius);
 		CUnit* darkSwarm = darkSwarmFinder.getFirst(IsDarkswarm);
 		return darkSwarm;
-
 	}
 
 	uint16 getTechUseErrorMessage(CUnit* target, uint8 castingPlayer, uint16 techId) {

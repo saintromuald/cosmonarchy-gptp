@@ -32,8 +32,6 @@ namespace {	// helper declarations
 
 namespace hooks {
 
-
-
 	void darkSwarmDamage(uint16 x, uint16 y, uint16 r, CBullet* bullet, uint32 weaponId) {
 		CUnit* dsw = scbw::getDarkSwarm(x, y, r);
 		if (dsw != nullptr) {
@@ -56,6 +54,7 @@ namespace hooks {
 			}
 		}
 	}
+
 	bool nathrokorCondition(CBullet* bullet, CUnit* target) {
 		if (bullet->sourceUnit == nullptr || target == nullptr) {
 			return true;
@@ -76,6 +75,7 @@ namespace hooks {
 		}
 		return true;
 	}
+
 	void friendlySplash(CBullet* bullet, uint32 weaponId, uint8 splash_type, CUnit* guaranteed_hit) {
 		int splash = splash_type;
 		if (bullet->sourceUnit != nullptr && bullet->sourceUnit->sprite != nullptr) {
@@ -138,7 +138,7 @@ namespace hooks {
 			if (target == bullet->sourceUnit && bullet->weaponType != WeaponId::PsiStorm) continue;
 
 			// Don't hit allied units -- normally just checks target->playerId == bullet->srcPlayer (also checks if type is 'splash enemy' or 'nuclear missile')
-	//      if(scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
+			// if(scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
 
 			if (splash == SplashType::Enemy) {
 				if (bullet->srcPlayer == target->playerId && target != bullet->attackTarget.unit) continue;

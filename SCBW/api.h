@@ -18,7 +18,6 @@ namespace scbw {
 	bool isLarvalEgg(CUnit* unit);
 	bool isZergEggNew(CUnit* unit, bool allow_larval_eggs = true, bool allow_larvae = true, uint16 explicit_unit_id = UnitId::None);
 	bool isZergEgg(uint16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
-	void createBullet(uint8 weaponId, CUnit* source, int16 x, int16 y, uint8 attackingPlayer, uint8 direction);
 	void ApplySpores(CUnit* unit);
 	bool setThingyVisibilityFlags(CThingy* thingy);
 	void artificalBulletFrom(uint8 weaponId, uint8 playerId, CUnit* source, CUnit* target, Point16 target_pt);
