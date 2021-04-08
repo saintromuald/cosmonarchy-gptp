@@ -60,7 +60,7 @@ namespace {
 			MOV target, EBX
 			PUSHAD
 		}
-		result = hooks::updateCorrosiveSpores(target);
+		result = hooks::ApplySpores_hook(target);
 		__asm {
 			POPAD
 			MOV EAX, result

@@ -413,24 +413,24 @@ namespace hooks {
 			unit->isUnderStorm--;
 		}
 
-		if (scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks) != 0) {
-
-			//Calculate the appropriate overlay ID
-			uint32 acidOverlayId = std::min((uint32)3, scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks) / 2)
-				+ 4 * scbw::getUnitOverlayAdjustment(unit)
-				+ ImageId::AcidSpores_1_Overlay_Small;
-
-			if (!unit->getOverlay(acidOverlayId)) {
-
-				unit->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
-
-				if (unit->subunit != nullptr)
-					unit = unit->subunit;
-
-				unit->sprite->createTopOverlay(acidOverlayId);
-
-			}
-		}
+		//if (scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks) != 0) {
+		//
+		//	//Calculate the appropriate overlay ID
+		//	uint32 acidOverlayId = std::min((uint32)3, scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks) / 2)
+		//		+ 4 * scbw::getUnitOverlayAdjustment(unit)
+		//		+ ImageId::AcidSpores_1_Overlay_Small;
+		//
+		//	if (!unit->getOverlay(acidOverlayId)) {
+		//
+		//		unit->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
+		//
+		//		if (unit->subunit != nullptr)
+		//			unit = unit->subunit;
+		//
+		//		unit->sprite->createTopOverlay(acidOverlayId);
+		//
+		//	}
+		//}
 
 		if (scbw::get_generic_timer(unit, ValueId::CorrosiveTouchTimer) == 1) {
 			scbw::set_generic_value(unit, ValueId::CorrosiveTouchStacks, 0);
