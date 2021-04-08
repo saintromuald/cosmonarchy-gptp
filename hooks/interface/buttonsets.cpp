@@ -1119,8 +1119,12 @@ namespace hooks {
 									current_button->iconID == IconId::SubterraneanSpines) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergVithrilisk &&  //Vithrlisk Critical Mass passive
+								if ((*activePortraitUnit)->id == UnitId::ZergVithrilisk &&  //Vithrlisk Corrosive Touch passive
 									current_button->iconID == IconId::VenomUnused) {
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergVithrilisk &&  //Vithrlisk Critical Mass passive
+									current_button->iconID == IconId::Suicide_Infested_Terran) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								if ((*activePortraitUnit)->id == UnitId::ZergGorgrokor &&  //Gorgrokor Probing Incisors passive
