@@ -245,19 +245,19 @@ namespace hooks {
 
 	static std::string timerToString(int timer) {
 		std::stringstream ss;
-		ss << floor((timer * 0.042) * 8) << "s";
+		ss << round(timer * 0.042 * 8.0) << "s";
 		return ss.str();
 	}
 
-	static std::string aisetimerToString(int timer) {
+	static std::string aiseTimerToString(int timer) {
 		std::stringstream ss;
-		ss << ceil((timer - 1) / 24) << "s";
+		ss << round((timer - 1) / 24.0) << "s";
 		return ss.str();
 	}
 
-	static std::string removetimerToString(int timer) {
+	static std::string removeTimerToString(int timer) {
 		std::stringstream ss;
-		ss << ceil(timer / 24) << "s";
+		ss << round(timer / 24.0) << "s";
 		return ss.str();
 	}
 
@@ -280,9 +280,9 @@ namespace hooks {
 					if (timerType == TimerType::Vanilla) {
 						text += timerToString(timer);
 					} else if (timerType == TimerType::Aise) {
-						text += aisetimerToString(timer);
+						text += aiseTimerToString(timer);
 					} else {
-						text += removetimerToString(timer);
+						text += removeTimerToString(timer);
 					}
 					if (value > 0 && maxValue != 1) {
 						text += ", ";
