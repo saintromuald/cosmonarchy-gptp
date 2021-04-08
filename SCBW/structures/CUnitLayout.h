@@ -286,12 +286,12 @@ namespace ValueId {
 		EmergencyDetonationTimer = 151,
 		WorshipStack = 152,
 		WorshipOriginalPlayer = 153,
-		GodsMadeFlesh = 154,
+		GodsMadeFlesh = 154,				// timer
 		ChasmalColonyArteries = 155,
 		AdaptiveAmitosis = 156,
 		EnthrallingTalons = 157,
 		InfestedByAkistrokor = 158,
-		FertileSpines = 159, // unused
+		FertileSpines = 159,				// unused
 		TurretParentLink = 160,
 		BindingGripTimer = 161,
 		ClarionLinkUnit = 162,

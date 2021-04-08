@@ -229,8 +229,8 @@ namespace hooks {
 			return;
 		}
 
-		if (scbw::isCheatEnabled(CheatFlags::PowerOverwhelming)							// If Power Overwhelming is enabled
-			&& playerTable[data.target->playerId].type == PlayerType::Human) {			// and the data.target player is a human player
+		// Demiurge - Gods Made Flesh - target is impervious to damage
+		if (scbw::get_generic_timer(data.target, ValueId::GodsMadeFlesh) > 0) { // Power Overwhelming used to be here :wave_me_dad:
 			data.finalDamage = 0;
 		}
 
@@ -428,6 +428,15 @@ namespace hooks {
 					data.finalDamage = data.finalDamage + (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction);
 				}
 				break;
+			}
+			case WeaponId::DemiurgeGalacticWeaver:
+			{
+				// Demiurge - Worship
+				if (data.target->getCurrentHpInGame() <= (data.target->getMaxHpInGame() / 2)) {
+					// TODO: implement unit transfer
+					scbw::set_generic_value(data.target, ValueId::WorshipStack, 1);
+					scbw::set_generic_value(data.target, ValueId::WorshipOriginalPlayer, data.target->playerId);
+				}
 			}
 			default:
 			{
@@ -997,7 +1006,7 @@ namespace hooks {
 	}
 
 	// TODO: Refactor
-	// Hooked to change Corrosive Spore timer - Pr0nogo
+	// Hooked to change Corrosive Spores timer - Pr0nogo
 	int32 ApplySpores_hook(CUnit* target) { // 004F4480
 		uint8 sporeCount; // al
 		uint32 overlayMultiplier; // eax

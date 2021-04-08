@@ -1081,6 +1081,11 @@ namespace hooks {
 			//	scbw::createBullet(WeaponId::EmergencyDetonation, unit, unit->position.x, unit->position.y, unit->playerId);
 			unit->remove();
 		}
+
+		// Demiurge - Gods Made Flesh - kill unit when the effect ends
+		if (scbw::get_generic_timer(unit, ValueId::GodsMadeFlesh) == 1) {
+			unit->remove();
+		}
 	}
 
 	bool gameOn() {
