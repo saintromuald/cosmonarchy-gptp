@@ -420,7 +420,7 @@ namespace hooks {
 			}
 			case WeaponId::KalkaliskViscousAcid:
 			{
-				// Kalkaleth behavior
+				// Kalkalisk behavior
 				int decrement = data.damageDivisor * 256;
 				if (decrement < data.damage) {
 					data.finalDamage = data.finalDamage - decrement + (data.target->corrosiveSporeCount * 256);
