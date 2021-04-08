@@ -473,9 +473,6 @@ namespace hooks {
 					data.target->getX() + 96,
 					data.target->getY() + 96
 				).forEach([&](CUnit* target) {
-					if (target == data.target) {
-						return;
-					}
 					if (target->status & UnitStatus::Burrowed) {
 						return;
 					}
