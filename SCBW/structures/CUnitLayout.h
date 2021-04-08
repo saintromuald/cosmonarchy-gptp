@@ -195,7 +195,8 @@ namespace ValueId {
 		SkyfallX = 54,
 		SkyfallY = 55,
 
-		CaptivatingClawsMap = 56,
+		CaptivatingClawsUnitVector = 56,
+		CaptivatingClawsTimer = 57,
 
 		EntropyGauntlets = 63,
 		KalkalethMissilePos = 65,

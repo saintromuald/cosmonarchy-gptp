@@ -916,6 +916,11 @@ namespace hooks {
 			scbw::set_generic_value(unit, ValueId::AdrenalStacks, 0);
 		}
 
+		// Vorvaling - Captivating Claws
+		if (scbw::get_generic_timer(unit, ValueId::CaptivatingClawsTimer) == 1) {
+			scbw::get_generic_unit_vector(unit, ValueId::CaptivatingClawsUnitVector) = {};
+		}
+
 		// Game Rule -  Workers do not provide collision while harvesting, moving to harvest, or moving to return resources
 		if (unit->mainOrderId == OrderId::Harvest1
 			|| unit->mainOrderId == OrderId::HarvestGas1

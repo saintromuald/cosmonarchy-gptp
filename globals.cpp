@@ -238,6 +238,9 @@ void globals::frameHook() {
 					timer--;
 				}
 			}
+			timerVecPair.second.erase(std::remove_if(timerVecPair.second.begin(), timerVecPair.second.end(), [&](int& timer) {
+				if (timer == 0) return true;
+			}), timerVecPair.second.end());
 		}
 		for (auto& timerVecPair : a.second.genericUnitTimerMap) {
 			for (auto& timer : timerVecPair.second) {
@@ -663,11 +666,8 @@ namespace scbw {
 		}
 
 		// Reset Captivating Claws
-		{
-			auto& map = get_generic_unit_timer_map(unit, ValueId::CaptivatingClawsMap);
-			for (auto& pair : map) {
-				pair.second = 1 * 24;
-			}
+		if (get_generic_timer(unit, ValueId::CaptivatingClawsTimer) > 0) {
+			set_generic_timer(unit, ValueId::CaptivatingClawsTimer, 1 * 24);
 		}
 
 		// Reset Lobotomy Mine slow
@@ -752,10 +752,12 @@ namespace scbw {
 			scbw::set_generic_timer(child, ValueId::HallucinatingTimer, scbw::get_generic_timer(parent, ValueId::HallucinatingTimer));
 		}
 
-		{ // Inherit Captivating Claws
-			auto& parentMap = scbw::get_generic_unit_timer_map(parent, ValueId::CaptivatingClawsMap);
-			auto& childMap = scbw::get_generic_unit_timer_map(parent, ValueId::CaptivatingClawsMap);
-			childMap = parentMap;
+		// Inherit Captivating Claws
+		if (auto timer = scbw::get_generic_timer(parent, ValueId::CaptivatingClawsTimer)) {
+			scbw::set_generic_timer(child, ValueId::CaptivatingClawsTimer, timer);
+			auto& parentVec = scbw::get_generic_unit_vector(parent, ValueId::CaptivatingClawsUnitVector);
+			auto& childVec = scbw::get_generic_unit_vector(child, ValueId::CaptivatingClawsUnitVector);
+			childVec = parentVec;
 		}
 
 		// Inherit Lobotomy Mine slow
@@ -863,7 +865,7 @@ namespace scbw {
 			|| scbw::get_generic_timer(unit, ValueId::ObservanceTimerPeriod) > 0
 			|| scbw::get_generic_value(unit, ValueId::EntropyGauntlets) > 0
 			|| scbw::get_generic_value(unit, ValueId::ArmorReduce) > 0
-			|| captivatingClawsGetHighestTimer(unit) > 0
+			|| captivatingClawsGetTimer(unit) > 0
 			|| unit->irradiateTimer != 0
 			|| unit->ensnareTimer != 0
 			|| unit->lockdownTimer != 0
@@ -949,8 +951,10 @@ namespace scbw {
 			scbw::set_generic_timer(unit, ValueId::HallucinatingTimer, 1);
 		}
 
-		{ // Remove Captivating Claws
-			scbw::get_generic_unit_timer_map(unit, ValueId::CaptivatingClawsMap) = {};
+		// Remove Captivating Claws
+		if (scbw::get_generic_timer(unit, ValueId::CaptivatingClawsTimer) > 0) {
+			scbw::set_generic_timer(unit, ValueId::CaptivatingClawsTimer, 0);
+			scbw::get_generic_unit_vector(unit, ValueId::CaptivatingClawsUnitVector) = {};
 		}
 
 		// Remove Lobotomy Mine slow

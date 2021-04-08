@@ -3,25 +3,18 @@
 #include <algorithm>
 
 uint32 captivatingClawsGetStacks(CUnit* target) {
-	return std::min((int)scbw::get_generic_unit_timer_map(target, ValueId::CaptivatingClawsMap).size(), 4);
+	return std::min(scbw::get_generic_unit_vector(target, ValueId::CaptivatingClawsUnitVector).size(), (uint32)4);
 }
 
-uint32 captivatingClawsGetHighestTimer(CUnit* target) {
-	auto& map = scbw::get_generic_unit_timer_map(target, ValueId::CaptivatingClawsMap);
-
-	int max = 0;
-	for (auto& unit : map) {
-		if (unit.second > max) {
-			max = unit.second;
-		}
-	}
-	return max;
+uint32 captivatingClawsGetTimer(CUnit* target) {
+	return scbw::get_generic_timer(target, ValueId::CaptivatingClawsTimer);
 }
 
 void captivatingClawsApply(CUnit* source, CUnit* target) {
-	auto& map = scbw::get_generic_unit_timer_map(target, ValueId::CaptivatingClawsMap);
-
-	if (map[source] == 0) {
-		map[source] = (24 * 1) + 1;
+	scbw::set_generic_timer(target, ValueId::CaptivatingClawsTimer, 1 * 24);
+	auto& vec = scbw::get_generic_unit_vector(target, ValueId::CaptivatingClawsUnitVector);
+	auto find = std::find(vec.begin(), vec.end(), source);
+	if (find == vec.end()) {
+		vec.push_back(source);
 	}
 }

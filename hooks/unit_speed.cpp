@@ -55,9 +55,8 @@ namespace hooks {
 		}
 
 		// Vorvaling Captivating Claws: reduces movement speed by 25% per unique attacker
-		uint32 captivatingClawsStacks = captivatingClawsGetStacks(unit);
-		if (captivatingClawsStacks > 0) {
-			speed -= speed * (0.25 * captivatingClawsStacks);
+		if (captivatingClawsGetTimer(unit) > 0) {
+			speed -= speed * (0.25 * captivatingClawsGetStacks(unit));
 		}
 
 		// Swarming Omen ability: 150% movement speed when moving towards Zoryusthaleth

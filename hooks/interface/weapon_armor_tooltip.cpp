@@ -363,7 +363,7 @@ namespace hooks {
 		addStatus(statuses, "Knockout Drivers", scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks), 20, scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer), TimerType::Aise);
 		addStatus(statuses, "Adrenal Glands", scbw::get_generic_value(unit, ValueId::AdrenalStacks), 4, scbw::get_generic_timer(unit, ValueId::AdrenalTimer), TimerType::Aise);
 		addStatus(statuses, "Astral Blessing", scbw::get_generic_value(unit, ValueId::EcclesiastStack), 0, scbw::get_generic_timer(unit, ValueId::EcclesiastTimer), TimerType::Aise);
-		addStatus(statuses, "Captivating Claws", captivatingClawsGetStacks(unit), 4, captivatingClawsGetHighestTimer(unit), TimerType::Aise);
+		addStatus(statuses, "Captivating Claws", captivatingClawsGetStacks(unit), 4, captivatingClawsGetTimer(unit), TimerType::Aise);
 		addStatus(statuses, "Swarming Omen Aura", scbw::get_generic_value(unit, ValueId::SwarmingOmenAbility), 1, scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer), TimerType::Aise);
 		addStatus(statuses, "Nemean Reactors", scbw::get_generic_value(unit, ValueId::NemeanReactorsStack), 5, scbw::get_generic_timer(unit, ValueId::NemeanReactorsTimer), TimerType::Aise);
 		addStatus(statuses, "Observance", scbw::get_generic_value(unit, ValueId::ObservanceRend), 0, scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff), TimerType::Aise);
