@@ -91,14 +91,14 @@ namespace hooks {
 				if (bullet->attackTarget.unit != nullptr) {
 					hit = bullet->attackTarget.unit->position;
 				}
-				Globals.createSalamanderFire(hit.x, hit.y, 11, 5, true);
+				globals.createSalamanderFire(hit.x, hit.y, 11, 5, true);
 			}
 			/*			if (bullet->sourceUnit->id == WeaponId::IonCannon) {
 							auto hit = bullet->attackTarget.pt;
 							if (bullet->attackTarget.unit != nullptr) {
 								hit = bullet->attackTarget.unit->position;
 							}
-							Globals.createIonField(hit.x, hit.y, 11, 5, true);
+							globals.createIonField(hit.x, hit.y, 11, 5, true);
 						}*/
 		}
 
@@ -128,7 +128,7 @@ namespace hooks {
 		}
 		int divisor = 1;
 		if (weaponId == WeaponId::ArchitectDispersiveSalvo) {
-			divisor = Globals.get_divider(bullet);
+			divisor = globals.get_divider(bullet);
 		}
 		for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 			CUnit* target = unitsInSplash.getUnit(i);
@@ -286,13 +286,13 @@ namespace hooks {
 					(*spineHitCol)++;
 				}*/
 				bool cont = false;
-				if (Globals.spine_pair_exists(bullet->sourceUnit, target)) {
+				if (globals.spine_pair_exists(bullet->sourceUnit, target)) {
 					cont = true;
 					break;
 				}
 				if (cont)
 					continue;
-				Globals.add_lurker_spine_pair(bullet->sourceUnit, target);
+				globals.add_lurker_spine_pair(bullet->sourceUnit, target);
 			}
 			weaponBulletShot(target, bullet, 1);
 		}
@@ -362,12 +362,12 @@ namespace hooks {
 		// 
 		uint8 divisor = 1;
 		if (weaponId == WeaponId::ArchitectDispersiveSalvo) {
-			divisor = Globals.get_divider(bullet);
+			divisor = globals.get_divider(bullet);
 		}
 
 		// 
 		else if (weaponId == WeaponId::KalkaliskViscousAcid) {
-			//			divisor = Globals.get_multihit_count(bullet);
+			//			divisor = globals.get_multihit_count(bullet);
 			divisor = 1;
 			//			scbw::printFormattedText("Get divisor %d, bullet: %X",divisor,bullet);
 		}
@@ -466,7 +466,7 @@ namespace hooks {
 					if (isUnitDistanceWithin(target, bullet, weapons_dat::OuterSplashRadius[weaponIdLoop])) {
 						if (isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[weaponIdLoop])
 							&& target == bullet->attackTarget.unit) {
-							if (Globals.extended_unit_table) {
+							if (globals.extended_unit_table) {
 								new_unit_table.air_splash_results[0] = target;
 							} else {
 								airSplashList[0] = target;
@@ -476,7 +476,7 @@ namespace hooks {
 							break;
 						}
 						listCount = *airSplashListCount;
-						if (Globals.extended_unit_table) {
+						if (globals.extended_unit_table) {
 							new_unit_table.air_splash_results[*airSplashListCount] = target;
 						} else {
 							airSplashList[*airSplashListCount] = target;
@@ -492,7 +492,7 @@ namespace hooks {
 			} else {
 				list = randomizeShort(58) % *airSplashListCount;
 			}
-			if (Globals.extended_unit_table) {
+			if (globals.extended_unit_table) {
 				weaponBulletShot(target, bullet, (int32)new_unit_table.air_splash_results[list]);
 			} else {
 				weaponBulletShot(target, bullet, (int32)airSplashList[list]);
@@ -603,8 +603,8 @@ namespace {
 	void weaponBulletShot(CUnit* target, CBullet* bullet, uint32 dmgDivisor) {
 
 		if (bullet != nullptr && target != nullptr && bullet->sourceUnit && bullet->weaponType == WeaponId::PariahIconoclastBlades) {
-			if (!Globals.was_hit_by_pariah(bullet->sourceUnit, target)) {
-				Globals.register_pariah_hit(bullet->sourceUnit, target);
+			if (!globals.was_hit_by_pariah(bullet->sourceUnit, target)) {
+				globals.register_pariah_hit(bullet->sourceUnit, target);
 			} else {
 				return;
 			}

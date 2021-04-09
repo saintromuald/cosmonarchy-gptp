@@ -10,7 +10,7 @@ public:
 		return *extendedBuffer;
 	}
 	const char* getString(uint32 index) const {
-		if (Globals.tbl_extender) {
+		if (globals.tbl_extender) {
 			if (index == 0) return nullptr;
 			else if (index <= getStringCountExt())
 				return (const char*)(extendedBuffer)+extendedBuffer[index];

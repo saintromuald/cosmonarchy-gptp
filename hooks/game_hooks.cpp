@@ -322,7 +322,7 @@ namespace hooks {
 			hooks::handleScreenHotkeys();
 			scbw::refreshScreen(); // Needed for game clock and APM timer to update every frame
 			scbw::refreshConsole();
-			Globals.frameHook();
+			globals.frameHook();
 
 			// Reset Treasury Stacks, before unit loop
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
@@ -337,7 +337,7 @@ namespace hooks {
 				if (bullet->weaponType == WeaponId::KalkaliskViscousAcid) {
 					if (bullet->orderSignal & 0x80) {
 						bullet->orderSignal &= ~0x80;
-						Globals.remove_multihit_bullet(bullet);
+						globals.remove_multihit_bullet(bullet);
 					}
 				}
 				if (bullet->weaponType == WeaponId::AspirantCriticality) {
@@ -367,14 +367,14 @@ namespace hooks {
 		hooks::initializeScreenLocations();
 		hooks::clearActions();
 
-		Globals.reset();
+		globals.reset();
 		for (int i = 0; i < 8; i++) {
 			scbw::setUpgradeLevel(i, UpgradeId::VentralSacs, 1);
 		}
 	}
 
 	void tickUnit(CUnit* unit, CorpseFinder& corpses) {
-		Globals.unitFrameHook(unit);
+		globals.unitFrameHook(unit);
 		//hooks::ShowHealthBar(unit);
 
 		// Reviving from Lazarus Agent
@@ -472,7 +472,7 @@ namespace hooks {
 		// Star Sovereign Intervention Missiles behavior + Grief of All Gods
 		else if (unit->id == UnitId::ProtossStarSovereign) {
 			if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerChannel) == 1) {
-				Globals.createPlanetCracker(unit->position.x, unit->position.y, unit->playerId, unit->sprite->elevationLevel);
+				globals.createPlanetCracker(unit->position.x, unit->position.y, unit->playerId, unit->sprite->elevationLevel);
 			}
 			if (scbw::get_generic_timer(unit, ValueId::StarcallerInterceptionMissiles) == 0) {
 				auto r = 5 * 32;
@@ -727,7 +727,7 @@ namespace hooks {
 				unit->position = position;
 				unit->sprite->position = spr_position;
 				auto spineCount = 0;
-				Globals.clear_lakizilisk(unit);
+				globals.clear_lakizilisk(unit);
 			}
 		}
 
@@ -1050,7 +1050,7 @@ namespace hooks {
 
 		// Remove Swarming Omen overlay
 		if (scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer) == 1) {
-//			unit->removeOverlay();
+			//			unit->removeOverlay();
 		}
 
 		// TODO: Finish

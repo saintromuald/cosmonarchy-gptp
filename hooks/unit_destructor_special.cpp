@@ -74,8 +74,7 @@ void freeResourceContainer(CUnit* resource) {
 	while (worker != nullptr) {
 		if (worker->worker.harvest_link.prev != nullptr) { //untie the previous worker from current worker (tie it to next)
 			(worker->worker.harvest_link.prev)->worker.harvest_link.next = worker->worker.harvest_link.next;
-		}
-		else {
+		} 		else {
 			resource->building.resource.nextGatherer = worker->worker.harvest_link.next;
 		}
 
@@ -420,9 +419,9 @@ void unitDestructorSpecialHook(CUnit* unit) {
 										}
 									}
 
-								Globals.remove_unit_from_pariah_table(unit, false);
-								Globals.clear_ptr_in_apostle_table(unit);
-								Globals.unitDeathHook(unit);
+								globals.remove_unit_from_pariah_table(unit, false);
+								globals.clear_ptr_in_apostle_table(unit);
+								globals.unitDeathHook(unit);
 				}
 }
 

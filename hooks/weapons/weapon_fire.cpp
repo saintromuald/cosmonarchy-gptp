@@ -157,7 +157,7 @@ namespace hooks {
 				if (unit->orderTarget.unit != nullptr) {
 					scbw::set_generic_value(unit, ValueId::LurkerPickTarget, (uint32)unit->orderTarget.unit);
 				}
-				Globals.clear_lakizilisk(unit);
+				globals.clear_lakizilisk(unit);
 			}
 			if (good) {
 				// Madrigal Tempo Change weapon switch
@@ -319,7 +319,7 @@ namespace hooks {
 				} else if (weaponId == WeaponId::KalkaliskViscousAcid) {
 					// Kalkaleth missile spawn position
 					auto bullet = scbw::setMissileSourcePosRet(unit, weaponId, ValueId::KalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
-					Globals.remove_multihit_bullet(bullet);
+					globals.remove_multihit_bullet(bullet);
 				} else if (weaponId == WeaponId::KeskathalorScreamingVenom) {
 					// Keskathalor missile spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueId::KeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
@@ -487,8 +487,8 @@ namespace hooks {
 			bullet->attackTarget.unit->sprite && bullet->sourceUnit->sprite) {
 			CUnit* targ = bullet->attackTarget.unit;
 			if (scbw::getDistanceFast(bullet->position.x, bullet->position.y, targ->getX(), targ->getY()) < 3 * 32) {
-				if (!Globals.multihit_bullet_is_set(bullet)) {
-					Globals.add_multihit_empty_bullet(bullet, 1);
+				if (!globals.multihit_bullet_is_set(bullet)) {
+					globals.add_multihit_empty_bullet(bullet, 1);
 					auto old = bullet->sourceUnit->orderTarget.unit;
 					auto oldSpritePos = bullet->sourceUnit->sprite->position;
 					auto oldPos = bullet->sourceUnit->position;
@@ -517,7 +517,7 @@ namespace hooks {
 									bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
 								if (newBullet) {
 									newBullet->position = bullet->position;
-									Globals.add_multihit_empty_bullet(newBullet, count + 1);
+									globals.add_multihit_empty_bullet(newBullet, count + 1);
 								}
 							}
 						}
@@ -629,7 +629,7 @@ namespace hooks {
 				if (bullet->position.y > unit->getBottom()) {
 					return false;
 				}
-				if (Globals.was_already_hit_by_multihit_bullet(bullet, unit)) {
+				if (globals.was_already_hit_by_multihit_bullet(bullet, unit)) {
 					return false;
 				}
 
@@ -638,9 +638,9 @@ namespace hooks {
 			);
 			if (collisionTarget != nullptr) {
 				if (bullet->weaponType == WeaponId::PenumbraErebolShockCannon) {
-					Globals.add_bullet_multihit(bullet, collisionTarget);
+					globals.add_bullet_multihit(bullet, collisionTarget);
 				} else {
-					Globals.add_incremental_bullet_multihit(bullet, collisionTarget);
+					globals.add_incremental_bullet_multihit(bullet, collisionTarget);
 				}
 				if (bullet->weaponType == WeaponId::PenumbraErebolShockCannon) {
 					//Penumbra Behavior
@@ -648,9 +648,9 @@ namespace hooks {
 					scbw::weaponBulletShot(collisionTarget, bullet, 2);
 				} else {
 					//Kalkaleth Behavior
-//					auto divider = Globals.get_multihit_count(bullet);
+//					auto divider = globals.get_multihit_count(bullet);
 					scbw::weaponBulletShot(collisionTarget, bullet, 2);
-//					scbw::printFormattedText("Hit by bullet: %X", bullet);
+					//					scbw::printFormattedText("Hit by bullet: %X", bullet);
 					scbw::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					bullet->moveTarget.unit = bullet->attackTarget.unit;
 					if (bullet->moveTarget.unit != nullptr) {
@@ -663,7 +663,7 @@ namespace hooks {
 
 		if (bEnd) {
 			if (/*bullet->weaponType == WeaponId::ViscousAcid || */bullet->weaponType == WeaponId::ArchitectDispersiveSalvo) {
-				Globals.remove_multihit_bullet(bullet);
+				globals.remove_multihit_bullet(bullet);
 			}
 			target = bullet->attackTarget.unit;
 			bullet->behaviourTypeInternal = 5;
@@ -710,7 +710,7 @@ namespace hooks {
 			}
 			//
 			a1->remainingBounces = v2;
-			Globals.bounce_bullet = a1;
+			globals.bounce_bullet = a1;
 			//			scbw::printText("BounceHit");
 			if (v2 && (v3 = findNextBounceTarget_func(a1), a1->nextBounceUnit = a1->attackTarget.unit, v3)) {
 				for (i = a1->sprite->images.head; i; i = i->link.next) {
@@ -721,7 +721,7 @@ namespace hooks {
 			} else {
 				//				scbw::printText("NoJump");
 				if (a1->weaponType == WeaponId::GladiusPlasmaFlurry) {
-					Globals.remove_multihit_bullet(a1);
+					globals.remove_multihit_bullet(a1);
 				}
 				v5 = a1->attackTarget.unit;
 				a1->behaviourTypeInternal = 5;
@@ -831,16 +831,16 @@ namespace hooks {
 		// Gladius Binding Flurry behavior
 //		scbw::printFormattedText("Gladius code start %d %d",(uint32)bulletBounceMissileNext,(uint32)pIterator);
 
-		if (Globals.bounce_bullet->weaponType == WeaponId::GladiusPlasmaFlurry) {
+		if (globals.bounce_bullet->weaponType == WeaponId::GladiusPlasmaFlurry) {
 			if (pIterator != nullptr && *bulletBounceMissileNext != nullptr
 				&& (*bulletBounceMissileNext)->sprite != nullptr
 				&& _pIterator->sprite != nullptr) {
-				if (Globals.was_already_hit_by_multihit_bullet(Globals.bounce_bullet, _pIterator)) {
+				if (globals.was_already_hit_by_multihit_bullet(globals.bounce_bullet, _pIterator)) {
 					//scbw::printText("NoItr - Already hit");
 					return false;
 				} else {
-					//scbw::printFormattedText("Add hit %d",Globals.bounce_bullet);
-					Globals.add_bullet_multihit(Globals.bounce_bullet, _pIterator);
+					//scbw::printFormattedText("Add hit %d",globals.bounce_bullet);
+					globals.add_bullet_multihit(globals.bounce_bullet, _pIterator);
 					return *bulletBounceMissileNext != _pIterator;
 
 				}

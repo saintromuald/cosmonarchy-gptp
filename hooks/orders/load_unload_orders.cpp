@@ -468,7 +468,7 @@ namespace hooks {
 
 		static CUnit* unitTable_0059CB58 = (CUnit*)(0x0059CB58);
 		static CUnit* unitTable_0059CB64 = (CUnit*)(0x0059CB64);
-		if (Globals.extended_unit_table == 1) {
+		if (globals.extended_unit_table == 1) {
 			const uint32 index_start = reinterpret_cast<uint32>(&new_unit_table.units[0]) - 336;
 			unitTable_0059CB58 = (CUnit*)index_start;
 			unitTable_0059CB64 = (CUnit*)(index_start + 12);

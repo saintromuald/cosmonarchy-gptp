@@ -1072,7 +1072,7 @@ void CUnit::fireWeapon(uint8 weaponId) const {
 
 
 CUnit* CUnit::getFromIndex(uint16 index) {
-	if (Globals.extended_unit_table == 1) {
+	if (globals.extended_unit_table == 1) {
 		if (1 <= index && index <= UNIT_ARRAY_LENGTH /* NEW_ARRAY_LENGTH*/) {
 			return (CUnit*)&new_unit_table.units[index - 1];
 		}
@@ -1084,7 +1084,7 @@ CUnit* CUnit::getFromIndex(uint16 index) {
 }
 
 uint16 CUnit::getIndex() const {
-	if (Globals.extended_unit_table == 1) {
+	if (globals.extended_unit_table == 1) {
 		return this - (CUnit*)&new_unit_table.units[0] + 1;
 	}
 	return this - unitTable + 1;

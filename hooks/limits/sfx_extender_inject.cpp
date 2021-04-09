@@ -17,7 +17,7 @@ unknown_byte* SFXDAT_Unknown;
 
 namespace hooks {
 	void sfxExtenderGetCount() {
-		Globals.extended_sfx = 1;
+		globals.extended_sfx = 1;
 		//        auto sfx_data = scbw::readSamaseFile("arr\\sfxdata.dat");
 	}
 	void newSfxExtender() {

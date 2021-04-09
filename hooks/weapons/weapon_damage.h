@@ -29,8 +29,6 @@ namespace hooks {
 		bool dontProcPhaseLink;
 	};
 
-	int32 u;
-
 	void weaponDamage_root(WeaponDamageData& data);
 
 	void applyEnsnare(CUnit* a1);

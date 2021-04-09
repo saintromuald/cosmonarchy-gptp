@@ -33,28 +33,28 @@ namespace scbw {
 	}
 
 	UnitFinderData* UnitFinder::getStartX() {
-		if (Globals.extended_unit_table) {
+		if (globals.extended_unit_table) {
 			return new_unit_table.orderingX;
 		}
 		return unitOrderingX;
 	}
 
 	UnitFinderData* UnitFinder::getStartY() {
-		if (Globals.extended_unit_table) {
+		if (globals.extended_unit_table) {
 			return new_unit_table.orderingY;
 		}
 		return unitOrderingY;
 	}
 
 	UnitFinderData* UnitFinder::getEndX() {
-		if (Globals.extended_unit_table) {
+		if (globals.extended_unit_table) {
 			return new_unit_table.orderingX + *unitOrderingCount;
 		}
 		return unitOrderingX + *unitOrderingCount;
 	}
 
 	UnitFinderData* UnitFinder::getEndY() {
-		if (Globals.extended_unit_table) {
+		if (globals.extended_unit_table) {
 			return new_unit_table.orderingY + *unitOrderingCount;
 		}
 		return unitOrderingY + *unitOrderingCount;

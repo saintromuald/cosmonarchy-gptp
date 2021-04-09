@@ -880,7 +880,7 @@ f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 		}
 	}
 	void injectTblExtender() {
-		Globals.tbl_extender = true;
+		globals.tbl_extender = true;
 		auto ptr_list = offset_list();
 		//DATA MUST BE INITIALIZED
 		/*for (int i = 0; i < ptr_list.size(); i++) {

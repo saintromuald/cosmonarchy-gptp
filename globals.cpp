@@ -5,9 +5,9 @@
 #include "hooks/weapons/weapon_damage.h"
 #include <algorithm>
 #include <Utils/captivating_claws.h>
-globals Globals;
+Globals globals;
 
-void globals::refreshDebuggingInfo() {
+void Globals::refreshDebuggingInfo() {
 	/*	unitSpeedDbg = 0;
 		weaponDamageDbg = 0;
 		gameHookDbg = 0;
@@ -15,10 +15,10 @@ void globals::refreshDebuggingInfo() {
 		updateStatusEffectsDbg = 0;*/
 }
 
-//SaveState globals::aise_save() {
+//SaveState Globals::aise_save() {
 
 
-void globals::aise_save() {
+void Globals::aise_save() {
 	output.clear();
 	std::ostringstream stream(std::stringstream::out | std::stringstream::binary);
 	stream.write(reinterpret_cast<const char*>(&extended_unit_table), sizeof(extended_unit_table));
@@ -99,7 +99,7 @@ void globals::aise_save() {
 	return;
 	//	return state;
 }
-void globals::aise_load(const char* ptr, uint32 len) {
+void Globals::aise_load(const char* ptr, uint32 len) {
 	if (len == 0 || ptr == 0) {
 		return;//error
 	}
@@ -188,7 +188,7 @@ void globals::aise_load(const char* ptr, uint32 len) {
 	}*/
 }
 
-void globals::reset() {
+void Globals::reset() {
 	persistImpacts.clear();
 	pariahHits.clear();
 	multihitBullets.clear();
@@ -197,14 +197,14 @@ void globals::reset() {
 	unitStructs.clear();
 }
 
-void globals::unitFrameHook(CUnit* unit) {
+void Globals::unitFrameHook(CUnit* unit) {
 	if (unit->id == UnitId::ProtossPariah && unit->orderSignal & 0x20) {
 		unit->orderSignal &= ~0x20;
 		remove_unit_from_pariah_table(unit, true);
 	}
 }
 
-void globals::unitDeathHook(CUnit* unit) {
+void Globals::unitDeathHook(CUnit* unit) {
 	unitStructs.erase(unit);
 	for (auto& a : unitStructs) { // set dead unit pointers to nullptr and erase them from unit vectors
 		for (auto& unitPair : a.second.genericUnits) {
@@ -243,7 +243,7 @@ void globals::unitDeathHook(CUnit* unit) {
 	}
 }
 
-void globals::frameHook() {
+void Globals::frameHook() {
 	for (auto& a : unitStructs) {
 		for (auto& timerPair : a.second.genericTimers) {
 			if (timerPair.second > 0) {
@@ -343,7 +343,7 @@ void globals::frameHook() {
 	}
 }
 
-void globals::remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly) {
+void Globals::remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly) {
 	for (int i = 0; i < pariahHits.size(); i++) {
 		if (pariahHits[i].source == unit || (pariahHits[i].target == unit && !sourceOnly)) {
 			pariahHits.erase(pariahHits.begin() + i);
@@ -352,7 +352,7 @@ void globals::remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly) {
 	}
 }
 
-void globals::remove_multihit_bullet(CBullet* bullet) {
+void Globals::remove_multihit_bullet(CBullet* bullet) {
 	for (int i = 0; i < multihitBullets.size(); i++) {
 		if (multihitBullets[i].bullet == bullet) {
 			multihitBullets.erase(multihitBullets.begin() + i);
@@ -361,7 +361,7 @@ void globals::remove_multihit_bullet(CBullet* bullet) {
 	}
 }
 
-bool globals::was_hit_by_pariah(CUnit* source, CUnit* target) {
+bool Globals::was_hit_by_pariah(CUnit* source, CUnit* target) {
 	for (auto a : pariahHits) {
 		if (source == a.source && target == a.target) {
 			return true;
@@ -370,14 +370,14 @@ bool globals::was_hit_by_pariah(CUnit* source, CUnit* target) {
 	return false;
 }
 
-void globals::register_pariah_hit(CUnit* source, CUnit* target) {
+void Globals::register_pariah_hit(CUnit* source, CUnit* target) {
 	pariahHit hit;
 	hit.source = source;
 	hit.target = target;
 	pariahHits.push_back(hit);
 }
 
-void globals::clear_ptr_in_apostle_table(CUnit* ptr) {
+void Globals::clear_ptr_in_apostle_table(CUnit* ptr) {
 	for (auto& a : apostleAgents) {
 		if (a.creator == ptr) {
 			a.creator = nullptr;//agent values themselves must not be deleted to prevent non-working lazarus agent buffs
@@ -385,7 +385,7 @@ void globals::clear_ptr_in_apostle_table(CUnit* ptr) {
 	}
 }
 
-bool globals::was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target) {
+bool Globals::was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target) {
 	for (auto& a : multihitBullets) {
 		if (bullet == a.bullet) {
 			for (auto b : a.already_hit) {
@@ -398,7 +398,7 @@ bool globals::was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target)
 	return false;
 }
 
-bool globals::multihit_bullet_is_set(CBullet* bullet) {
+bool Globals::multihit_bullet_is_set(CBullet* bullet) {
 	for (auto& a : multihitBullets) {
 		if (bullet == a.bullet) {
 			return true;
@@ -407,7 +407,7 @@ bool globals::multihit_bullet_is_set(CBullet* bullet) {
 	return false;
 }
 
-void globals::add_bullet_multihit(CBullet* bullet, CUnit* target) {
+void Globals::add_bullet_multihit(CBullet* bullet, CUnit* target) {
 	for (auto& a : multihitBullets) {
 		if (a.bullet == bullet) {
 			a.already_hit.push_back(target);
@@ -418,7 +418,7 @@ void globals::add_bullet_multihit(CBullet* bullet, CUnit* target) {
 	multihitBullets.push_back(gb);
 }
 
-void globals::add_incremental_bullet_multihit(CBullet* bullet, CUnit* target) {
+void Globals::add_incremental_bullet_multihit(CBullet* bullet, CUnit* target) {
 	for (auto& a : multihitBullets) {
 		if (a.bullet == bullet) {
 			a.already_hit.push_back(target);
@@ -429,7 +429,7 @@ void globals::add_incremental_bullet_multihit(CBullet* bullet, CUnit* target) {
 	multihitBullets.push_back(gb);
 }
 
-int globals::get_divider(CBullet* bullet) {
+int Globals::get_divider(CBullet* bullet) {
 	for (auto& a : multihitBullets) {
 		if (a.bullet == bullet && a.divider != 0) {
 			return a.divider;
@@ -438,7 +438,7 @@ int globals::get_divider(CBullet* bullet) {
 	return 1;
 }
 
-uint32 globals::get_multihit_count(CBullet* bullet) {
+uint32 Globals::get_multihit_count(CBullet* bullet) {
 	for (auto& a : multihitBullets) {
 		if (a.bullet == bullet) {
 			return a.already_hit.size();
@@ -447,7 +447,7 @@ uint32 globals::get_multihit_count(CBullet* bullet) {
 	return 0;
 }
 
-void globals::add_multihit_empty_bullet(CBullet* bullet, int divider) {
+void Globals::add_multihit_empty_bullet(CBullet* bullet, int divider) {
 	for (auto& a : multihitBullets) {
 		if (a.bullet == bullet) {
 			a.divider = divider;
@@ -458,7 +458,7 @@ void globals::add_multihit_empty_bullet(CBullet* bullet, int divider) {
 	multihitBullets.push_back(gb);
 }
 
-void globals::initLazarusAgent(int x, int y, uint8 player, uint32 unitId, uint32 energy, CUnit* unit) {
+void Globals::initLazarusAgent(int x, int y, uint8 player, uint32 unitId, uint32 energy, CUnit* unit) {
 	apostleAgent a;
 	a.playerId = player;
 	a.position.x = x;
@@ -472,7 +472,7 @@ void globals::initLazarusAgent(int x, int y, uint8 player, uint32 unitId, uint32
 	apostleAgents.push_back(a);
 }
 
-void globals::createPlanetCracker(int x, int y, uint8 player, uint8 elevationLevel) {
+void Globals::createPlanetCracker(int x, int y, uint8 player, uint8 elevationLevel) {
 	persistImpact impact;
 	impact.position = Point32{x,y};
 	impact.timer = 360;
@@ -482,7 +482,7 @@ void globals::createPlanetCracker(int x, int y, uint8 player, uint8 elevationLev
 	persistImpacts.push_back(impact);
 }
 
-void globals::create_generic_persist_impact(persistImpact impact, uint32 spriteId, uint8 elevationLevel, uint32 merge_radius) {
+void Globals::createGenericPersistImpact(persistImpact impact, uint32 spriteId, uint8 elevationLevel, uint32 merge_radius) {
 	if (merge_radius != 0) {
 		for (auto other : persistImpacts) {
 			if (other.impactId == impact.impactId && scbw::getDistanceFast(impact.position.x, impact.position.y, other.position.x, other.position.y) < 12) {
@@ -500,7 +500,7 @@ void globals::create_generic_persist_impact(persistImpact impact, uint32 spriteI
 	}
 }
 
-void globals::createSalamanderFire(int x, int y, uint8 player, uint8 elevationLevel, bool addImpactValue) {
+void Globals::createSalamanderFire(int x, int y, uint8 player, uint8 elevationLevel, bool addImpactValue) {
 	if (addImpactValue) {
 		for (auto a : persistImpacts) {
 			if (a.impactId == ImpactId::Salamander && scbw::getDistanceFast(x, y, a.position.x, a.position.y) < 12) {
@@ -526,7 +526,7 @@ void globals::createSalamanderFire(int x, int y, uint8 player, uint8 elevationLe
 	}
 }
 
-void globals::createIonField(int x, int y, uint8 player, uint8 elevationLevel, bool addImpactValue) {
+void Globals::createIonField(int x, int y, uint8 player, uint8 elevationLevel, bool addImpactValue) {
 	if (addImpactValue) {
 		for (auto a : persistImpacts) {
 			if (a.impactId == ImpactId::IonField && scbw::getDistanceFast(x, y, a.position.x, a.position.y) < 12) {
@@ -551,16 +551,16 @@ void globals::createIonField(int x, int y, uint8 player, uint8 elevationLevel, b
 	}
 }
 
-void globals::clear_lakizilisk(CUnit* lurker) {
+void Globals::clear_lakizilisk(CUnit* lurker) {
 	lurkerSpineHits[lurker].clear();
 
 }
 
-void globals::add_lurker_spine_pair(CUnit* lurker, CUnit* target) {
+void Globals::add_lurker_spine_pair(CUnit* lurker, CUnit* target) {
 	lurkerSpineHits[lurker].push_back(target);
 }
 
-bool globals::spine_pair_exists(CUnit* lurker, CUnit* target) {
+bool Globals::spine_pair_exists(CUnit* lurker, CUnit* target) {
 	for (auto a : lurkerSpineHits) {
 		for (auto b : a.second) {
 			if (a.first == lurker && b == target) {
@@ -576,8 +576,8 @@ void __declspec(naked) Globals_SaveStateWrapper() {
 	__asm {
 		PUSHAD
 	}
-	//	state = &Globals.aise_save();
-	Globals.aise_save();
+	//	state = &globals.aise_save();
+	globals.aise_save();
 	state = &saveState;
 	__asm {
 		POPAD
@@ -594,7 +594,7 @@ void __declspec(naked) Globals_LoadStateWrapper() {
 		MOV pointer, EAX
 		PUSHAD
 	}
-	Globals.aise_load(pointer, len);
+	globals.aise_load(pointer, len);
 	__asm {
 		POPAD
 		RETN
@@ -611,75 +611,75 @@ void injectGlobalsHooks() {
 
 namespace scbw {
 	uint32 get_generic_value(CUnit* u, uint32 id) {
-		auto find = Globals.unitStructs.find(u);
-		if (find != Globals.unitStructs.end()) {
+		auto find = globals.unitStructs.find(u);
+		if (find != globals.unitStructs.end()) {
 			return find->second.getGenericValue(id);
 		}
 		return 0;
 	}
 
 	void set_generic_value(CUnit* u, uint32 id, uint32 val) {
-		Globals.unitStructs[u].setGenericValue(id, val);
+		globals.unitStructs[u].setGenericValue(id, val);
 	}
 
 	void add_generic_value(CUnit* u, uint32 id, int val) {
-		Globals.unitStructs[u].addGenericValue(id, val);
+		globals.unitStructs[u].addGenericValue(id, val);
 	}
 
 	uint32 get_generic_timer(CUnit* u, uint32 id) {
-		auto find = Globals.unitStructs.find(u);
-		if (find != Globals.unitStructs.end()) {
+		auto find = globals.unitStructs.find(u);
+		if (find != globals.unitStructs.end()) {
 			return find->second.getGenericTimer(id);
 		}
 		return 0;
 	}
 
 	void set_generic_timer(CUnit* u, uint32 id, uint32 val) {
-		Globals.unitStructs[u].setGenericTimer(id, val);
+		globals.unitStructs[u].setGenericTimer(id, val);
 	}
 
 	CUnit* get_generic_unit(CUnit* u, uint32 id) {
-		auto find = Globals.unitStructs.find(u);
-		if (find != Globals.unitStructs.end()) {
+		auto find = globals.unitStructs.find(u);
+		if (find != globals.unitStructs.end()) {
 			return find->second.getGenericUnit(id);
 		}
 		return nullptr;
 	}
 
 	void set_generic_unit(CUnit* u, uint32 id, CUnit* val) {
-		Globals.unitStructs[u].setGenericUnit(id, val);
+		globals.unitStructs[u].setGenericUnit(id, val);
 	}
 
 	std::vector<int>& get_generic_value_vector(CUnit* u, uint32 id) {
-		auto& find = Globals.unitStructs.find(u);
-		if (find == Globals.unitStructs.end()) {
-			Globals.unitStructs[u] = {};
+		auto& find = globals.unitStructs.find(u);
+		if (find == globals.unitStructs.end()) {
+			globals.unitStructs[u] = {};
 		}
-		return Globals.unitStructs[u].getGenericValueVector(id);
+		return globals.unitStructs[u].getGenericValueVector(id);
 	}
 
 	std::vector<int>& get_generic_timer_vector(CUnit* u, uint32 id) {
-		auto& find = Globals.unitStructs.find(u);
-		if (find == Globals.unitStructs.end()) {
-			Globals.unitStructs[u] = {};
+		auto& find = globals.unitStructs.find(u);
+		if (find == globals.unitStructs.end()) {
+			globals.unitStructs[u] = {};
 		}
-		return Globals.unitStructs[u].getGenericTimerVector(id);
+		return globals.unitStructs[u].getGenericTimerVector(id);
 	}
 
 	std::vector<CUnit*>& get_generic_unit_vector(CUnit* u, uint32 id) {
-		auto& find = Globals.unitStructs.find(u);
-		if (find == Globals.unitStructs.end()) {
-			Globals.unitStructs[u] = {};
+		auto& find = globals.unitStructs.find(u);
+		if (find == globals.unitStructs.end()) {
+			globals.unitStructs[u] = {};
 		}
-		return Globals.unitStructs[u].getGenericUnitVector(id);
+		return globals.unitStructs[u].getGenericUnitVector(id);
 	}
 
 	std::unordered_map<CUnit*, int>& get_generic_unit_timer_map(CUnit* u, uint32 id) {
-		auto& find = Globals.unitStructs.find(u);
-		if (find == Globals.unitStructs.end()) {
-			Globals.unitStructs[u] = {};
+		auto& find = globals.unitStructs.find(u);
+		if (find == globals.unitStructs.end()) {
+			globals.unitStructs[u] = {};
 		}
-		return Globals.unitStructs[u].getGenericUnitTimerMap(id);
+		return globals.unitStructs[u].getGenericUnitTimerMap(id);
 	}
 
 	void refreshDebuffs(CUnit* unit) {

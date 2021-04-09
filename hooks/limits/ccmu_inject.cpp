@@ -14,7 +14,7 @@ void CCMUExtender::set_extended_data() {}
 void CCMUExtender::set_value(int entry, int id, std::string str) {}
 void CCMUExtender::set_value(int entry, int id, int val) {}
 void CCMUExtender::extend() {
-//	const uint32 lim_ext = NEW_ARRAY_LENGTH + 1;
+	//	const uint32 lim_ext = NEW_ARRAY_LENGTH + 1;
 	const uint32 lim_ext = UNIT_ARRAY_LENGTH + 1;
 	const uint32 index_start = reinterpret_cast<uint32>(&new_unit_table.units[0]) - 336;
 	const uint32 table_start = reinterpret_cast<uint32>(&new_unit_table.units[0]);
@@ -23,9 +23,9 @@ void CCMUExtender::extend() {
 	const uint32 position_search_units_start = reinterpret_cast<uint32>(&new_unit_table.position_search_units);
 	const uint32 position_search_temp_start = reinterpret_cast<uint32>(&new_unit_table.position_search_temp);
 	const uint32 air_splashes_start = reinterpret_cast<uint32>(&new_unit_table.air_splash_results);
-//	const uint32 table_end = table_start + 336*NEW_ARRAY_LENGTH;
+	//	const uint32 table_end = table_start + 336*NEW_ARRAY_LENGTH;
 	const uint32 table_end = table_start + 336 * UNIT_ARRAY_LENGTH;
-	Globals.extended_unit_table = 1;
+	globals.extended_unit_table = 1;
 	memoryPatch(0x00402FD2 + 2, index_start);
 	memoryPatch(0x0042FEE5 + 1, lim_ext);
 	memoryPatch(0x0042FEF1 + 1, lim_ext);

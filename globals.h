@@ -8,7 +8,7 @@
 #include "SCBW\api.h"
 #include "hooks\limits\attack_extender.h"
 
-class globals;
+class Globals;
 
 struct SaveState {
 	uint32 len;
@@ -161,7 +161,7 @@ struct CustomUnitStruct {
 		return genericUnitTimerMap[variable];
 	}
 };
-class globals {
+class Globals {
 	std::string output;
 public:
 	//debugging data
@@ -193,7 +193,7 @@ public:
 	//	SaveState aise_save();
 	void aise_save();
 	void aise_load(const char* ptr, uint32 len);
-	globals() {
+	Globals() {
 		extended_unit_table = 0;
 		extended_sfx = 0;
 		tbl_extender = false;
@@ -212,7 +212,7 @@ public:
 	bool was_hit_by_pariah(CUnit* source, CUnit* target);
 
 	void register_pariah_hit(CUnit* source, CUnit* target);
-	void create_generic_persist_impact(persistImpact impact, uint32 spriteId, uint8 elevationLevel, uint32 merge_radius);
+	void createGenericPersistImpact(persistImpact impact, uint32 spriteId, uint8 elevationLevel, uint32 merge_radius);
 	void createSalamanderFire(int x, int y, uint8 player, uint8 elevation, bool addImpactValue);
 	void createIonField(int x, int y, uint8 player, uint8 elevation, bool addImpactValue);
 	void createPlanetCracker(int x, int y, uint8 player, uint8 elevation);
@@ -235,7 +235,7 @@ public:
 void injectGlobalsHooks();
 
 static SaveState saveState;
-extern globals Globals;
+extern Globals globals;
 
 namespace hooks {
 	struct WeaponDamageData;
