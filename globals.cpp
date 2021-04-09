@@ -63,7 +63,7 @@ void Globals::aise_save() {
 	uint32 multihitCount = multihitBullets.size();
 	stream.write(reinterpret_cast<char*>(&multihitCount), sizeof(multihitCount));
 	for (int i = 0; i < multihitCount; i++) {
-		multihitBullet bull = multihitBullets[i];
+		MultihitBullet bull = multihitBullets[i];
 		stream.write(reinterpret_cast<char*>(&bull.bullet), sizeof(bull.bullet));
 		stream.write(reinterpret_cast<char*>(&bull.divider), sizeof(bull.divider));
 		uint32 alreadyHitCount = bull.already_hit.size();
@@ -117,7 +117,7 @@ void Globals::aise_load(const char* ptr, uint32 len) {
 	auto impactsSize = 0;
 	stream.read(reinterpret_cast<char*>(&impactsSize), sizeof(impactsSize));
 	for (int i = 0; i < impactsSize; i++) {
-		persistImpact impact;
+		PersistImpact impact;
 		stream.read(reinterpret_cast<char*>(&impact.position.x), sizeof(impact.position.x));
 		stream.read(reinterpret_cast<char*>(&impact.position.y), sizeof(impact.position.y));
 		stream.read(reinterpret_cast<char*>(&impact.elevation), sizeof(impact.elevation));
@@ -130,7 +130,7 @@ void Globals::aise_load(const char* ptr, uint32 len) {
 	uint32 pariahHitsCount = 0;
 	stream.read(reinterpret_cast<char*>(&pariahHitsCount), sizeof(pariahHitsCount));
 	for (int i = 0; i < pariahHitsCount; i++) {
-		pariahHit hit;
+		PariahHit hit;
 		stream.read(reinterpret_cast<char*>(&hit.source), sizeof(hit.source));
 		stream.read(reinterpret_cast<char*>(&hit.target), sizeof(hit.target));
 		pariahHits.push_back(hit);
@@ -139,7 +139,7 @@ void Globals::aise_load(const char* ptr, uint32 len) {
 	uint32 apostleCount = 0;
 	stream.read(reinterpret_cast<char*>(&apostleCount), sizeof(apostleCount));
 	for (int i = 0; i < pariahHitsCount; i++) {
-		apostleAgent agent;
+		ApostleAgent agent;
 		stream.read(reinterpret_cast<char*>(&agent.creator), sizeof(agent.creator));
 		stream.read(reinterpret_cast<char*>(&agent.energy), sizeof(agent.energy));
 		stream.read(reinterpret_cast<char*>(&agent.playerId), sizeof(agent.playerId));
@@ -161,7 +161,7 @@ void Globals::aise_load(const char* ptr, uint32 len) {
 	//scbw::printFormattedText("Hits: %d", multihitCount);
 	/*
 	for (int i = 0; i < multihitCount; i++) {
-		multihitBullet bull;
+		MultihitBullet bull;
 		stream.read(reinterpret_cast<char*>(&bull.bullet), sizeof(bull.bullet));
 		stream.read(reinterpret_cast<char*>(&bull.divider), sizeof(bull.divider));
 		uint32 alreadyHitCount = 0;
@@ -371,7 +371,7 @@ bool Globals::was_hit_by_pariah(CUnit* source, CUnit* target) {
 }
 
 void Globals::register_pariah_hit(CUnit* source, CUnit* target) {
-	pariahHit hit;
+	PariahHit hit;
 	hit.source = source;
 	hit.target = target;
 	pariahHits.push_back(hit);
@@ -414,7 +414,7 @@ void Globals::add_bullet_multihit(CBullet* bullet, CUnit* target) {
 			return;
 		}
 	}
-	multihitBullet gb(bullet, {target}, 0);
+	MultihitBullet gb(bullet, {target}, 0);
 	multihitBullets.push_back(gb);
 }
 
@@ -425,7 +425,7 @@ void Globals::add_incremental_bullet_multihit(CBullet* bullet, CUnit* target) {
 			return;
 		}
 	}
-	multihitBullet gb(bullet, {target}, 1);
+	MultihitBullet gb(bullet, {target}, 1);
 	multihitBullets.push_back(gb);
 }
 
@@ -454,12 +454,12 @@ void Globals::add_multihit_empty_bullet(CBullet* bullet, int divider) {
 			return;
 		}
 	}
-	multihitBullet gb(bullet, {}, divider);
+	MultihitBullet gb(bullet, {}, divider);
 	multihitBullets.push_back(gb);
 }
 
 void Globals::initLazarusAgent(int x, int y, uint8 player, uint32 unitId, uint32 energy, CUnit* unit) {
-	apostleAgent a;
+	ApostleAgent a;
 	a.playerId = player;
 	a.position.x = x;
 	a.position.y = y;
@@ -473,7 +473,7 @@ void Globals::initLazarusAgent(int x, int y, uint8 player, uint32 unitId, uint32
 }
 
 void Globals::createPlanetCracker(int x, int y, uint8 player, uint8 elevationLevel) {
-	persistImpact impact;
+	PersistImpact impact;
 	impact.position = Point32{x,y};
 	impact.timer = 360;
 	impact.repeatsLeft = 0;
@@ -482,7 +482,7 @@ void Globals::createPlanetCracker(int x, int y, uint8 player, uint8 elevationLev
 	persistImpacts.push_back(impact);
 }
 
-void Globals::createGenericPersistImpact(persistImpact impact, uint32 spriteId, uint8 elevationLevel, uint32 merge_radius) {
+void Globals::createGenericPersistImpact(PersistImpact impact, uint32 spriteId, uint8 elevationLevel, uint32 merge_radius) {
 	if (merge_radius != 0) {
 		for (auto other : persistImpacts) {
 			if (other.impactId == impact.impactId && scbw::getDistanceFast(impact.position.x, impact.position.y, other.position.x, other.position.y) < 12) {
@@ -515,7 +515,7 @@ void Globals::createSalamanderFire(int x, int y, uint8 player, uint8 elevationLe
 		thingy->sprite->elevationLevel = elevationLevel;
 		scbw::setThingyVisibilityFlags(thingy);
 		if (addImpactValue) {
-			persistImpact impact;
+			PersistImpact impact;
 			impact.position = Point32{x,y};
 			impact.timer = 24;
 			impact.repeatsLeft = 5 - 1;
@@ -540,7 +540,7 @@ void Globals::createIonField(int x, int y, uint8 player, uint8 elevationLevel, b
 		thingy->sprite->elevationLevel = elevationLevel;
 		scbw::setThingyVisibilityFlags(thingy);
 		if (addImpactValue) {
-			persistImpact impact;
+			PersistImpact impact;
 			impact.position = Point32{x,y};
 			impact.timer = 24;
 			impact.repeatsLeft = 5 - 1;

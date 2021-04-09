@@ -29,7 +29,7 @@ namespace ImpactId {
 	};
 }
 
-class persistImpact {
+class PersistImpact {
 public:
 	Point32 position;
 	uint8 elevation;
@@ -37,23 +37,23 @@ public:
 	uint32 repeatsLeft;
 	uint8 impactId;
 };
-class pariahHit {
+class PariahHit {
 public:
 	CUnit* source;
 	CUnit* target;
 };
-class multihitBullet {
+class MultihitBullet {
 public:
 	CBullet* bullet;
 	int divider;
 	std::vector<CUnit*> already_hit;
-	multihitBullet() {
+	MultihitBullet() {
 		divider = 0;
 	}
-	multihitBullet(CBullet* bullet, std::vector<CUnit*> already_hit, uint32 divider) : bullet(bullet), already_hit(already_hit), divider(divider) {}
+	MultihitBullet(CBullet* bullet, std::vector<CUnit*> already_hit, uint32 divider) : bullet(bullet), already_hit(already_hit), divider(divider) {}
 };
 
-class apostleAgent {
+class ApostleAgent {
 public:
 	Point32 position;
 	uint32 timer;
@@ -176,15 +176,15 @@ public:
 	bool tbl_extender;
 	bool unitid_extender;
 
-	std::vector<persistImpact> persistImpacts;
-	std::vector<pariahHit> pariahHits;
-	std::vector<multihitBullet> multihitBullets;
-	std::vector<apostleAgent> apostleAgents;
+	std::vector<PersistImpact> persistImpacts;
+	std::vector<PariahHit> pariahHits;
+	std::vector<MultihitBullet> multihitBullets;
+	std::vector<ApostleAgent> apostleAgents;
 	std::unordered_map<CUnit*, std::vector<CUnit*>> lurkerSpineHits;
 	std::unordered_map<CUnit*, CustomUnitStruct> unitStructs;
 	AttackExtender attackers;
 
-	apostleAgent test;
+	ApostleAgent test;
 
 	//non-serializable data (exists only temporarily in memory in wrapper/hook flow)
 	int flingy_init_bullet_id;
@@ -212,7 +212,7 @@ public:
 	bool was_hit_by_pariah(CUnit* source, CUnit* target);
 
 	void register_pariah_hit(CUnit* source, CUnit* target);
-	void createGenericPersistImpact(persistImpact impact, uint32 spriteId, uint8 elevationLevel, uint32 merge_radius);
+	void createGenericPersistImpact(PersistImpact impact, uint32 spriteId, uint8 elevationLevel, uint32 merge_radius);
 	void createSalamanderFire(int x, int y, uint8 player, uint8 elevation, bool addImpactValue);
 	void createIonField(int x, int y, uint8 player, uint8 elevation, bool addImpactValue);
 	void createPlanetCracker(int x, int y, uint8 player, uint8 elevation);
