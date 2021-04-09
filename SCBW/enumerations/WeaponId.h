@@ -214,6 +214,7 @@ enum Enum {
 	GorgrokorSerratedCleavers					= 47,			// Gorgrokor weapon
 	AlkajeliskParasiticSpores					= 49,			// Alkajelisk behavior weapon
 	BactaliskCorrosiveAcid						= 50,			// Bactalisk weapon
+	KeskathalorCausticDischarge					= 54,			// Keskathalor behavior
 	BroodliskSwarmingSpores						= 81,			// Broodlisk weapon
 	KonviliskSowingSpines						= 95,			// Konvilisk weapon
 	QuaziliskAcridBarbs							= 102,			// Quazilisk weapon
