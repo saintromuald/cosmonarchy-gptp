@@ -1106,8 +1106,8 @@ namespace {
 
 	// For updateCorrosiveSpores
 	const uint32 Func_getCorrosiveSporesImage = 0x004F41F0;
-	uint32_t getCorrosiveSporesImage(CUnit* unit) {
-		static uint32_t result;
+	uint32 getCorrosiveSporesImage(CUnit* unit) {
+		static uint32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, unit

@@ -55,7 +55,7 @@ namespace {
 
 	void __declspec(naked) updateCorrosiveSpores_Wrapper() { // 004F4480
 		static CUnit* target;
-		static uint32_t result;
+		static uint32 result;
 		__asm {
 			MOV target, EBX
 			PUSHAD

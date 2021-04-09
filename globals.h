@@ -212,6 +212,7 @@ public:
 	bool was_hit_by_pariah(CUnit* source, CUnit* target);
 
 	void register_pariah_hit(CUnit* source, CUnit* target);
+	void create_generic_persist_impact(persistImpact impact, uint32 spriteId, uint8 elevationLevel, uint32 merge_radius);
 	void createSalamanderFire(int x, int y, uint8 player, uint8 elevation, bool addImpactValue);
 	void createIonField(int x, int y, uint8 player, uint8 elevation, bool addImpactValue);
 	void createPlanetCracker(int x, int y, uint8 player, uint8 elevation);

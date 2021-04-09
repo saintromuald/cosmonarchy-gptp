@@ -467,8 +467,8 @@ void globals::initLazarusAgent(int x, int y, uint8 player, uint32 unitId, uint32
 	a.unitId = unitId;
 	a.energy = energy;
 	a.creator = unit;
-//	scbw::printFormattedText("Set creator to 0x%X", a.creator);
-//	scbw::printFormattedText("Try push back %d", apostleAgents.size());
+	//	scbw::printFormattedText("Set creator to 0x%X", a.creator);
+	//	scbw::printFormattedText("Try push back %d", apostleAgents.size());
 	apostleAgents.push_back(a);
 }
 
@@ -482,10 +482,29 @@ void globals::createPlanetCracker(int x, int y, uint8 player, uint8 elevationLev
 	persistImpacts.push_back(impact);
 }
 
+void globals::create_generic_persist_impact(persistImpact impact, uint32 spriteId, uint8 elevationLevel, uint32 merge_radius) {
+	if (merge_radius != 0) {
+		for (auto other : persistImpacts) {
+			if (other.impactId == impact.impactId && scbw::getDistanceFast(impact.position.x, impact.position.y, other.position.x, other.position.y) < 12) {
+				other.repeatsLeft = impact.repeatsLeft;
+				return;
+			}
+		}
+	}
+
+	CThingy* thingy = scbw::createThingy(spriteId, impact.position.x, impact.position.y, 11);
+	if (thingy != nullptr) {
+		thingy->sprite->elevationLevel = elevationLevel;
+		scbw::setThingyVisibilityFlags(thingy);
+		persistImpacts.push_back(impact);
+	}
+}
+
 void globals::createSalamanderFire(int x, int y, uint8 player, uint8 elevationLevel, bool addImpactValue) {
 	if (addImpactValue) {
 		for (auto a : persistImpacts) {
 			if (a.impactId == ImpactId::Salamander && scbw::getDistanceFast(x, y, a.position.x, a.position.y) < 12) {
+				a.repeatsLeft = 5 - 1;
 				return;
 			}
 		}
