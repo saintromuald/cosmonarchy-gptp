@@ -24,6 +24,8 @@ namespace ImpactId {
 		Salamander,
 		GriefOfAllGods,
 		IonField,
+		Criticality,
+		CausticDischarge,
 	};
 }
 
