@@ -156,6 +156,8 @@ void Globals::aise_load(const char* ptr, uint32 len) {
 		}
 	}
 
+	// TODO: Serialize actual generics!!!
+
 	//uint32 multihitCount = 0;
 	//stream.read(reinterpret_cast<char*>(&multihitCount), sizeof(multihitCount));
 	//scbw::printFormattedText("Hits: %d", multihitCount);
@@ -485,7 +487,7 @@ void Globals::createPlanetCracker(int x, int y, uint8 player, uint8 elevationLev
 void Globals::createGenericPersistImpact(PersistImpact impact, uint32 spriteId, uint8 elevationLevel, uint32 merge_radius) {
 	if (merge_radius != 0) {
 		for (auto other : persistImpacts) {
-			if (other.impactId == impact.impactId && scbw::getDistanceFast(impact.position.x, impact.position.y, other.position.x, other.position.y) < 12) {
+			if (other.impactId == impact.impactId && scbw::getDistanceFast(impact.position.x, impact.position.y, other.position.x, other.position.y) < merge_radius) {
 				other.repeatsLeft = impact.repeatsLeft;
 				return;
 			}
