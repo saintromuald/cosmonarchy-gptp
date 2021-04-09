@@ -22,7 +22,7 @@ struct SaveState {
 namespace ImpactId {
 	enum {
 		Salamander,
-		Planetcracker,
+		GriefOfAllGods,
 		IonField,
 	};
 }
