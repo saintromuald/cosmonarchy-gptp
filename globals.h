@@ -50,8 +50,7 @@ public:
 	multihitBullet() {
 		divider = 0;
 	}
-	multihitBullet(CBullet* bullet, std::vector<CUnit*> already_hit, uint32 divider) : bullet(bullet), already_hit(already_hit), divider(divider) {
-	}
+	multihitBullet(CBullet* bullet, std::vector<CUnit*> already_hit, uint32 divider) : bullet(bullet), already_hit(already_hit), divider(divider) {}
 };
 
 class apostleAgent {

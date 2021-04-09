@@ -29,11 +29,13 @@ namespace hooks {
 		bool dontProcPhaseLink;
 	};
 
+	int32 u;
+
 	void weaponDamage_root(WeaponDamageData& data);
 
 	void applyEnsnare(CUnit* a1);
 	uint16 GetSporesOverlayId(CUnit* target);
-	int32_t ApplySpores_hook(CUnit* target); // 004F4480
+	int32 ApplySpores_hook(CUnit* target); // 004F4480
 
 	bool GorgonCondition(CUnit* attacker, CUnit* target);
 

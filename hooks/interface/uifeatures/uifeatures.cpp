@@ -36,7 +36,7 @@ namespace {
 	//
 	//std::vector<Action> actions;
 
-	uint64_t totalActions;
+	uint64 totalActions;
 }
 
 namespace hooks {
