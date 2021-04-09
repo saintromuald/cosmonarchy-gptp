@@ -1050,7 +1050,7 @@ namespace hooks {
 
 		// Remove Swarming Omen overlay
 		if (scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer) == 1) {
-			//					unit->removeOverlay();
+//			unit->removeOverlay();
 		}
 
 		// TODO: Finish
