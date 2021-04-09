@@ -176,6 +176,7 @@ namespace hooks {
 						case UnitId::ZergGorgrokor:
 						case UnitId::ZergOvileth:
 						case UnitId::ZergIroleth:
+						case UnitId::ZergOthstoleth:
 							eggId = UnitId::ZergCocoon;
 							break;
 						case UnitId::ZergMatraleth:
@@ -342,6 +343,13 @@ namespace hooks {
 			}
 		}
 
+		if (unit->id == UnitId::ZergMatraleth) {
+			if (morphUnitId == UnitId::ZergKonvilisk
+				|| morphUnitId == UnitId::ZergAkistrokor) {
+				return true;
+			}
+		}
+
 		if (unit->id == UnitId::ZergUltrakor) {
 			if (morphUnitId == UnitId::ZergKeskathalor
 				|| morphUnitId == UnitId::ZergAlkajelisk) {
@@ -367,11 +375,6 @@ namespace hooks {
 			}
 		}
 
-		if (unit->id == UnitId::ProtossCantavis) {
-			if (morphUnitId == UnitId::ProtossAugur) {
-				return true;
-			}
-		}
 		if (unit->id == UnitId::ZergMutalisk) {
 			if (morphUnitId == UnitId::ZergVithrilisk) {
 				return true;
@@ -380,8 +383,15 @@ namespace hooks {
 				return true;
 			}
 		}
+		
 		if (unit->id == UnitId::ZergLarva) {
 			if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1) {
+				return true;
+			}
+		}
+		
+		if (unit->id == UnitId::ProtossCantavis) {
+			if (morphUnitId == UnitId::ProtossAugur) {
 				return true;
 			}
 		}

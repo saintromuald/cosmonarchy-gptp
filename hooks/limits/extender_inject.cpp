@@ -40,6 +40,7 @@ namespace hooks {
 			JMP jmp_004DAF36
 		}
 	}
+
 	void __declspec(naked) FakeUnitFlingyIdState_Wrapper() {
 //		jmpPatch(FakeUnitFlingyIdState_Wrapper, 0x004AAF23);
 		static uint32 flingyId;
@@ -55,11 +56,13 @@ namespace hooks {
 			RETN
 		}
 	}
+
 	void fraudFlingyIdCopy() {
 		for (int i = 0; i < 228; i++) {
 			fakeExtFlingyIds[i] = units_dat::Graphic[i];
 		}
 	}
+
 	void __declspec(naked) psychosisFlingyId_Wrapper() {
 		__asm {
 			PUSHAD
@@ -70,9 +73,11 @@ namespace hooks {
 			RETN
 		}
 	}
+
 	void set_flingyid_value(uint32 index, uint32 value) {
 		fakeExtFlingyIds[index] = value;
 	}
+
 	void __declspec(naked) madnessSetFlingyId_Wrapper() {
 		static uint32 index;
 		static uint32 value;
@@ -87,6 +92,7 @@ namespace hooks {
 			RETN
 		}
 	}
+
 	uint32 buildingVisionSyncHook() {
 		int result = 0;
 		uint8* visHash = (uint8*)0x0063fd30;
@@ -111,6 +117,7 @@ namespace hooks {
 		} while (i < 228);
 		return i;
 	}
+
 	void __declspec(naked) buildingVisionSyncHook_Wrapper() {
 		static uint32 result;
 		__asm {
@@ -122,8 +129,8 @@ namespace hooks {
 			MOV EAX, result
 			RETN
 		}
-
 	}
+
 	void dumbCodeInject(uint32 address, uint32* ids, std::vector<uint8> code, uint32 nop) {
 		memoryPatch(address + code.size(), ids);
 		for (int i = 0; i < code.size(); i++) {
@@ -131,6 +138,7 @@ namespace hooks {
 		}
 		nops(address + code.size() + 4, nop);
 	}
+
 	void insaneFlingyIdExtender() {
 		jmpPatch(FakeUnitFlingyIdState_Wrapper, 0x004AAFE3);
 		jmpPatch(psychosisFlingyId_Wrapper, 0x004AB045);
@@ -141,7 +149,7 @@ namespace hooks {
 		std::vector<uint8> ecx_edi = {0x8b, 0x0c, 0xbd};
 		dumbCodeInject(0x00463A71, fakeExtFlingyIds, ecx_edi, 0);
 		std::vector<uint8> edx_ecx = {0x8b, 0x14, 0x8d};
-//	dumbCodeInject(0x004683C6, fakeExtFlingyIds, edx_ecx, 2); // unit_morph - AI Wrapper
+//		dumbCodeInject(0x004683C6, fakeExtFlingyIds, edx_ecx, 2); // unit_morph - AI Wrapper
 		std::vector<uint8> edx_eax = {0x8b, 0x14, 0x85};
 //		dumbCodeInject(0x0047B854, fakeExtFlingyIds, edx_eax, 2);
 //		dumbCodeInject(0x0047B8A4, fakeExtFlingyIds, edx_eax, 2);
@@ -163,13 +171,10 @@ namespace hooks {
 		dumbCodeInject(0x0049720B, fakeExtFlingyIds + 5, edx_eax, 0);
 
 		std::vector<uint8> eax_ebx = {0x8b, 0x04, 0x9d};
-		dumbCodeInject(0x0049ED0B, fakeExtFlingyIds, eax_ebx, 0);//crashes hexrays
+		dumbCodeInject(0x0049ED0B, fakeExtFlingyIds, eax_ebx, 0); // crashes hexrays
 		std::vector<uint8> eax_edx = {0x8b, 0x04, 0x95};
 		dumbCodeInject(0x004E9A10, fakeExtFlingyIds, eax_edx, 0);
-
-
 	}
-
 
 	void __declspec(naked) GetAttackUnit_Wrapper() {
 		static uint32 unitId;
@@ -182,7 +187,7 @@ namespace hooks {
 		}
 		assert(playerId < 8);
 		assert(index < ATTACK_LIMIT);
-		//unitId = AIScriptController[playerId].attackers[index];//is actually "unitId+1"
+//		unitId = AIScriptController[playerId].attackers[index]; // is actually "unitId+1"
 		unitId = Globals.attackers.attacks[playerId][index];
 		__asm {
 			POPAD
@@ -190,6 +195,7 @@ namespace hooks {
 			RETN
 		}
 	}
+
 	void __declspec(naked) GetAttackLength_Wrapper() {
 		__asm {
 			PUSHAD
@@ -200,6 +206,7 @@ namespace hooks {
 			RETN
 		}
 	}
+
 	void __declspec(naked) SetAttackUnit_Wrapper() {
 		static uint32 unitId;
 		static uint32 index;
@@ -219,8 +226,8 @@ namespace hooks {
 			RETN
 		}
 	}
-	const uint32 GetMissingJmpWrapper = 0x00438067;
 
+	const uint32 GetMissingJmpWrapper = 0x00438067;
 	void __declspec(naked) AI_GetMissingAttackForceUnits_JmpWrapper() {
 		static uint32 playerId;
 		static uint16* arrayStart;
@@ -228,7 +235,7 @@ namespace hooks {
 			MOV playerId, ECX
 			PUSHAD
 		}
-		//		arrayStart = &AIScriptController[playerId].attackers[0];
+//		arrayStart = &AIScriptController[playerId].attackers[0];
 		arrayStart = &Globals.attackers.attacks[playerId][0];
 		__asm {
 			POPAD
@@ -246,14 +253,14 @@ namespace hooks {
 			MOV playerId, ECX
 			PUSHAD
 		}
-		//		if (AIScriptController[playerId].attackers[0] == 0) {
+//		if (AIScriptController[playerId].attackers[0] == 0) {
 		if (Globals.attackers.attacks[playerId][0] == 0) {
 			__asm {
 				POPAD
 				JMP AIAddToAttack_NullJmp
 			}
 		} else {
-			//			arrayOffset = reinterpret_cast<uint32>(&AIScriptController[playerId].attackers[0]);
+//			arrayOffset = reinterpret_cast<uint32>(&AIScriptController[playerId].attackers[0]);
 			arrayOffset = reinterpret_cast<uint32>(&Globals.attackers.attacks[playerId][0]);
 			__asm {
 				POPAD
@@ -262,6 +269,7 @@ namespace hooks {
 			}
 		}
 	}
+
 	const uint32 AIAddAttackTo_LastJmp = 0x00447282;
 	void __declspec(naked) AI_AddToAttack_JmpWrapper2() {
 		static uint32 playerMul;
@@ -275,7 +283,7 @@ namespace hooks {
 		}
 		assert(index < ATTACK_LIMIT);
 		player = playerMul / (sizeof(AI_Main) / 2);
-		//		getUnit = AIScriptController[player].attackers[index];
+//		getUnit = AIScriptController[player].attackers[index];
 		getUnit = Globals.attackers.attacks[player][index];
 		__asm {
 			POPAD
@@ -283,6 +291,7 @@ namespace hooks {
 			JMP AIAddAttackTo_LastJmp
 		}
 	}
+
 	const uint32 AIAttackManager_Jmp = 0x0043AC61;
 	void __declspec(naked) AI_AttackManager_JmpWrapper() {
 		static uint32 offset;
@@ -296,8 +305,10 @@ namespace hooks {
 			POP EAX
 			PUSHAD
 		}
-		/*		unitId = AIScriptController[playerId].attackers[0];
-				arrayOffset = reinterpret_cast<uint32>(AIScriptController[playerId].attackers);*/
+		/*		
+		unitId = AIScriptController[playerId].attackers[0];
+		arrayOffset = reinterpret_cast<uint32>(AIScriptController[playerId].attackers);
+		*/
 		unitId = Globals.attackers.attacks[playerId][0];
 		arrayOffset = reinterpret_cast<uint32>(&Globals.attackers.attacks[playerId][0]);
 		__asm {
@@ -307,6 +318,7 @@ namespace hooks {
 			JMP AIAttackManager_Jmp
 		}
 	}
+
 	static uint32 AI_HasUnitsForAttack_Jmp = 0x00437F36;
 	void __declspec(naked) AI_HasUnitsForAttackForce_JmpWrapper() {
 		static uint32 playerId;
@@ -315,7 +327,7 @@ namespace hooks {
 			MOV playerId, EAX
 			PUSHAD
 		}
-		//		arrayOffset = reinterpret_cast<uint32>(AIScriptController[playerId].attackers);
+//		arrayOffset = reinterpret_cast<uint32>(AIScriptController[playerId].attackers);
 		arrayOffset = reinterpret_cast<uint32>(&Globals.attackers.attacks[playerId][0]);
 		__asm {
 			POPAD
@@ -323,8 +335,6 @@ namespace hooks {
 			JMP AI_HasUnitsForAttack_Jmp
 		}
 	}
-
-
 
 	void __declspec(naked) AI_RemoveFromAttack_Wrapper() { // 00447040
 		static uint32 unitId;
@@ -340,6 +350,7 @@ namespace hooks {
 			RETN
 		}
 	}
+
 	const uint32 Jmp_SendSuicide = 0x0043e1f9;
 	void __declspec(naked) AI_SendSuicide_JmpWrapper() {
 		static uint32 playerId;
@@ -397,8 +408,6 @@ namespace hooks {
 		}
 	}
 
-
-
 	void newAttackExtender() {
 		jmpPatch(GetAttackUnit_Wrapper, 0x004171E5); // null int3 bytes
 		jmpPatch(GetAttackLength_Wrapper, 0x00417268); // null int3 bytes
@@ -410,7 +419,6 @@ namespace hooks {
 		jmpPatch(AI_GetMissingAttackForceUnits_JmpWrapper, 0x0043805B, 5);
 
 		//AI_AddToAttack
-
 		jmpPatch(AI_AddToAttack_JmpWrapper1, 0x0044724F, 3);
 		jmpPatch(AI_AddToAttack_JmpWrapper2, 0x0044727B, 2);
 		jmpPatch(AI_AttackManager_JmpWrapper, 0x0043AC54, 2);
@@ -419,8 +427,8 @@ namespace hooks {
 		jmpPatch(AI_SendSuicide_JmpWrapper, 0x0043E1EE, 1);
 		jmpPatch(AI_Unk1_JmpWrapper, 0x0044816E, 0); // most likely do not execute
 		jmpPatch(AI_Unk2_Wrapper, 0x00447220, 0); // most likely do not execute
-
 	}
+
 	void injectLimitHooks() {
 
 //		hooks::injectCCMUHooks();

@@ -650,7 +650,7 @@ namespace hooks {
 					//Kalkaleth Behavior
 //					auto divider = Globals.get_multihit_count(bullet);
 					scbw::weaponBulletShot(collisionTarget, bullet, 2);
-					//					scbw::printFormattedText("Hit by bullet: %X", bullet);
+//					scbw::printFormattedText("Hit by bullet: %X", bullet);
 					scbw::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					bullet->moveTarget.unit = bullet->attackTarget.unit;
 					if (bullet->moveTarget.unit != nullptr) {

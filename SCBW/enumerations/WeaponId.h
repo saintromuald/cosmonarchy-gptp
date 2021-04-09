@@ -195,6 +195,7 @@ enum Enum {
 	EcclesiastAstralBlaster						= 97,			// Ecclesiast weapon
 	AtreusDauntlessDisruptorCannon				= 98,			// Atreus weapon
 	AmaranthPsiCleaver							= 99,			// Amaranth weapon
+	DemiurgeGalacticWeaver						= 106,			// Demiurge weapon
 	IdolPrismaticBlaster						= 112,			// Idol weapon
 	GolemBloodlessAssault						= 113,			// Golem weapon
 	BarghestRayOfAgony							= 114,			// Barghest weapon
