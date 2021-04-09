@@ -78,6 +78,8 @@ namespace hooks {
 
 	void friendlySplash(CBullet* bullet, uint32 weaponId, uint8 splash_type, CUnit* guaranteed_hit) {
 		int splash = splash_type;
+		if (bullet == nullptr)
+			return;
 		if (bullet->sourceUnit != nullptr && bullet->sourceUnit->sprite != nullptr) {
 			if (bullet->sourceUnit->isBlind) {
 				splash = SplashType::Radial;
