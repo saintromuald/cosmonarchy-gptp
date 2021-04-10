@@ -468,6 +468,7 @@ enum Enum {
 //Terran-Building
 	TerranMedbay									= 119,		// Starbase / Terran Unused 1
 	TerranMunitionsBay								= 121,		// Repair Bay / Terran Unused 2
+	TerranIonCannon									= 127,		// Ion Cannon
 	TerranQuarry									= 174,		// Protoss Temple
 	TerranSalvoYard									= 189,		// Warp Gate
 	TerranFutureStation								= 192,		// Terran Marker
