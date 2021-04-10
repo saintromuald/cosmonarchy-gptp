@@ -27,6 +27,7 @@ namespace hooks {
 		CUnit* attacker;
 		uint8 attackingPlayerId;
 		bool dontProcPhaseLink;
+		bool ignoreFlatArmor;
 	};
 
 	void weaponDamage_root(WeaponDamageData& data);

@@ -16,9 +16,9 @@ namespace {
 			;//MOV effect, EAX -- or weapons_dat::ExplosionType[weaponId]
 		}
 		if (weaponId == WeaponId::SubterraneanSpines) {
-			hooks::friendlyLurkerSplash(bullet, weaponId, SplashType::FriendlyNew);
+			hooks::lurkerSplash(bullet, weaponId, SplashType::FriendlyNew);
 		} else {
-			hooks::friendlySplash(bullet, weaponId, SplashType::FriendlyNew);
+			hooks::splash(bullet, weaponId, SplashType::FriendlyNew);
 		}
 		// Everything is conveniently already pushed!
 		__asm {
@@ -39,9 +39,9 @@ namespace {
 			MOV weaponId, ECX
 		}
 		if (weaponId == WeaponId::SubterraneanSpines) {
-			hooks::friendlyLurkerSplash(bullet, weaponId, SplashType::Enemy);
+			hooks::lurkerSplash(bullet, weaponId, SplashType::Enemy);
 		} else {
-			hooks::friendlySplash(bullet, weaponId, SplashType::Enemy);
+			hooks::splash(bullet, weaponId, SplashType::Enemy);
 		}
 		__asm {
 			POP EDI
@@ -61,9 +61,9 @@ namespace {
 			MOV weaponId, ECX
 		}
 		if (weaponId == WeaponId::SubterraneanSpines) {
-			hooks::friendlyLurkerSplash(bullet, weaponId, SplashType::Radial);
+			hooks::lurkerSplash(bullet, weaponId, SplashType::Radial);
 		} else {
-			hooks::friendlySplash(bullet, weaponId, SplashType::Radial);
+			hooks::splash(bullet, weaponId, SplashType::Radial);
 		}
 		__asm {
 			POP EDI

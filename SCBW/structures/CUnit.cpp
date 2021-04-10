@@ -4,6 +4,7 @@
 #include "../enumerations.h"
 #include "globals.h"
 #include "hooks\limits\ccmu.h"
+#include "hooks\weapons\weapon_damage.h"
 
 #include "MathUtils.h"
 //-------- Unit stats and properties --------//
@@ -418,8 +419,7 @@ void CUnit::healShields(int32 shields, CUnit* source) {
 }
 
 const uint32 Func_DoWeaponDamage = 0x00479930; //Note: hooked in hooks/weapons/weapon_damage files
-void CUnit::damageWith(uint8 weaponId, int32 damage, CUnit* attacker,
-	uint8 attackingPlayer, int8 direction, uint8 damageDivisor) {
+void CUnit::damageWith(uint8 weaponId, int32 damage, CUnit* attacker, uint8 attackingPlayer, int8 direction, uint8 damageDivisor) {
 	assert(this);
 	assert(weaponId < WEAPON_TYPE_COUNT);
 	//	assert(damageDivisor != 0);
@@ -429,7 +429,7 @@ void CUnit::damageWith(uint8 weaponId, int32 damage, CUnit* attacker,
 	int32 direction_ = direction;
 	int32 damageDivisor_ = damageDivisor;
 	if (damage < 0) {
-		damage = weapons_dat::DamageAmount[weaponId];
+		damage = weapons_dat::DamageAmount[weaponId] * 256;
 	}
 
 	__asm {
@@ -444,6 +444,28 @@ void CUnit::damageWith(uint8 weaponId, int32 damage, CUnit* attacker,
 		CALL Func_DoWeaponDamage
 		POPAD
 	}
+}
+void CUnit::damageWithIgnoreFlatArmor(uint8 weaponId, int32 damage, CUnit* attacker, uint8 attackingPlayer, int8 direction, uint8 damageDivisor) {
+	if (damage < 0) {
+		damage = weapons_dat::DamageAmount[weaponId] * 256;
+	}
+
+	hooks::WeaponDamageData data = {
+			damage,
+			damage,
+			0,
+			weapons_dat::DamageType[weaponId],
+			damageDivisor,
+			weaponId,
+			direction,
+			this,
+			attacker,
+			attackingPlayer,
+			false,
+			true
+	};
+
+	hooks::weaponDamage_root(data);
 }
 
 void CUnit::inflictDamage(int32 dmg, CUnit* attacker, int32 attackingPlayer, bool notify, bool shield_overlay, int direction,

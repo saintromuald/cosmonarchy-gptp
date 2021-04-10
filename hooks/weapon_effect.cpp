@@ -76,8 +76,8 @@ namespace hooks {
 		return true;
 	}
 
-	void friendlySplash(CBullet* bullet, uint32 weaponId, uint8 splash_type, CUnit* guaranteed_hit) {
-		int splash = splash_type;
+	void splash(CBullet* bullet, uint32 weaponId, uint8 splashType, CUnit* guaranteedHit) {
+		int splash = splashType;
 		if (bullet == nullptr)
 			return;
 		if (bullet->sourceUnit != nullptr && bullet->sourceUnit->sprite != nullptr) {
@@ -90,16 +90,7 @@ namespace hooks {
 				if (bullet->attackTarget.unit != nullptr) {
 					hit = bullet->attackTarget.unit->position;
 				}
-				PersistImpact impact;
-				impact.impactId = ImpactId::SalamanderFire;
-				impact.position = {hit.x, hit.y};
-				impact.mergeRadius = 12;
-				impact.timerStart = 24;
-				impact.timerMax = 24;
-				impact.repeats = 4;
-				impact.spriteId = SpriteId::SalamanderImpact;
-				impact.elevation = 5;
-				globals.createGenericPersistImpact(impact);
+				globals.createGenericPersistImpact(ImpactId::SalamanderFire, {hit.x, hit.y}, 12, 5 * 24, SpriteId::SalamanderImpact, 5);
 			}
 			/*
 			if (bullet->sourceUnit->id == WeaponId::IonCannon) {
@@ -111,29 +102,32 @@ namespace hooks {
 			}*/
 		}
 
-		int16 x, y, r;
+		int16 x, y, radius;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;
-		r = weapons_dat::OuterSplashRadius[weaponId];
+		radius = weapons_dat::OuterSplashRadius[weaponId];
 
 		// Probing Incisors - Gorgoleth passive
 		if (isChargedGorgolethBullet(bullet, weaponId)) {
-			r = 45;
+			radius = 45;
 		}
 		// Nathrokor weapon
 		if (weaponId == WeaponId::NathrokorPlasmidBreath) {
-			r = 32;
+			radius = 32;
 		}
 
 		// Get units within the outer splash radius
-		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
-		//
-		darkSwarmDamage(x, y, r, bullet, weaponId);
-		//
+		scbw::UnitFinder unitsInSplash(
+			x - radius,
+			y - radius,
+			x + radius,
+			y + radius
+		);
+		darkSwarmDamage(x, y, radius, bullet, weaponId);
 
-		bool hasGuaranteedHitUnit = guaranteed_hit != nullptr;
+		bool hasGuaranteedHitUnit = guaranteedHit != nullptr;
 		if (hasGuaranteedHitUnit && nathrokorCondition(bullet, bullet->attackTarget.unit)) {
-			weaponBulletShot(guaranteed_hit, bullet, 1);
+			weaponBulletShot(guaranteedHit, bullet, 1);
 		}
 		int divisor = 1;
 		if (weaponId == WeaponId::ArchitectDispersiveSalvo) {
@@ -141,7 +135,7 @@ namespace hooks {
 		}
 		for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 			CUnit* target = unitsInSplash.getUnit(i);
-			if (hasGuaranteedHitUnit && target == guaranteed_hit) { // skips target check if hasGuaranteedHitUnit is unset, just for little bit of performance
+			if (hasGuaranteedHitUnit && target == guaranteedHit) { // skips target check if hasGuaranteedHitUnit is unset, just for little bit of performance
 				continue; // guaranteed hit unit was already damaged before splash!
 			}
 
@@ -226,7 +220,7 @@ namespace hooks {
 			}
 
 			if (weaponId == WeaponId::NathrokorPlasmidBreath) {
-				r = 32;
+				radius = 32;
 			}
 
 			if (isUnitDistanceWithin(target, bullet, medium) && nathrokorCondition(bullet, target)) {
@@ -241,7 +235,7 @@ namespace hooks {
 		}
 	}
 
-	void friendlyLurkerSplash(CBullet* bullet, uint32 weaponId, uint8 splash) {
+	void lurkerSplash(CBullet* bullet, uint32 weaponId, uint8 splash) {
 		int16 x, y, r;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;
@@ -279,9 +273,9 @@ namespace hooks {
 			if (bullet->sourceUnit != nullptr) {
 				/*
 				bool cont = false; // supposed to be a return within the loops, but since we can't it's a bool
-				for (int r = 0; r < 32 && !cont; r++) {
+				for (int radius = 0; radius < 32 && !cont; radius++) {
 					for (int c = 0; c < 16; c++) {
-					if (spineHitTable->hits[r][c].source == bullet->sourceUnit && spineHitTable->hits[r][c].target == target) {
+					if (spineHitTable->hits[radius][c].source == bullet->sourceUnit && spineHitTable->hits[radius][c].target == target) {
 						cont = true; // unit has already been hit
 						break;
 					}
@@ -355,7 +349,7 @@ namespace hooks {
 		// 
 		if (isChargedGorgolethBullet(bullet, weaponId)) {
 			//			bullet->sourceUnit->spendUnitEnergy(5 * 256);
-			friendlySplash(bullet, weaponId, SplashType::FriendlyNew, bullet->attackTarget.unit);
+			splash(bullet, weaponId, SplashType::FriendlyNew, bullet->attackTarget.unit);
 			return;
 		}
 
@@ -509,7 +503,7 @@ namespace hooks {
 
 		}
 		// airSplashProc2
-		friendlySplash(bullet, weaponId, SplashType::FriendlyNew);
+		splash(bullet, weaponId, SplashType::FriendlyNew);
 	}
 
 	// clone of 'Yamato' damage for reference

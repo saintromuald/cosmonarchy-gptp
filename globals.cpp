@@ -32,12 +32,17 @@ void Globals::aise_save() {
 		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].position.x), sizeof(persistImpacts[i].position.x));
 		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].position.y), sizeof(persistImpacts[i].position.y));
 		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].elevation), sizeof(persistImpacts[i].elevation));
-		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].repeats), sizeof(persistImpacts[i].repeats));
-		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].timerStart), sizeof(persistImpacts[i].timerStart));
-		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].timerMax), sizeof(persistImpacts[i].timerMax));
-		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].impactId), sizeof(persistImpacts[i].impactId));
-		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].spriteId), sizeof(persistImpacts[i].spriteId));
-		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].mergeRadius), sizeof(persistImpacts[i].mergeRadius));
+		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].time), sizeof(persistImpacts[i].time));
+		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].time), sizeof(persistImpacts[i].time));
+
+		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].position.x), sizeof(persistImpacts[i].position.x));
+		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].position.y), sizeof(persistImpacts[i].position.y));
+		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].elevation), sizeof(persistImpacts[i].elevation));
+		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].period), sizeof(persistImpacts[i].period));
+		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].time), sizeof(persistImpacts[i].time));
+		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].impactId), sizeof(persistImpacts[i].impactId));
+		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].spriteId), sizeof(persistImpacts[i].spriteId));
+		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].mergeRadius), sizeof(persistImpacts[i].mergeRadius));
 	}
 
 	uint32 pariahHitCount = pariahHits.size();
@@ -120,17 +125,23 @@ void Globals::aise_load(const char* ptr, uint32 len) {
 	auto impactsSize = 0;
 	stream.read(reinterpret_cast<char*>(&impactsSize), sizeof(impactsSize));
 	for (int i = 0; i < impactsSize; i++) {
+		// this code was left here only to keep the proper stream offset, TODO: adjust aise to handle the new struct, or port aise side of this feature (if there still is any)
 		PersistImpact impact;
 		stream.read(reinterpret_cast<char*>(&impact.position.x), sizeof(impact.position.x));
 		stream.read(reinterpret_cast<char*>(&impact.position.y), sizeof(impact.position.y));
 		stream.read(reinterpret_cast<char*>(&impact.elevation), sizeof(impact.elevation));
-		stream.read(reinterpret_cast<char*>(&impact.repeats), sizeof(impact.repeats));
-		stream.read(reinterpret_cast<char*>(&impact.timerStart), sizeof(impact.timerStart));
-		stream.read(reinterpret_cast<char*>(&impact.timerMax), sizeof(impact.timerMax));
-		stream.read(reinterpret_cast<char*>(&impact.impactId), sizeof(impact.impactId));
-		stream.read(reinterpret_cast<char*>(&impact.spriteId), sizeof(impact.spriteId));
-		stream.read(reinterpret_cast<char*>(&impact.mergeRadius), sizeof(impact.mergeRadius));
-		persistImpacts.push_back(impact);
+		stream.read(reinterpret_cast<char*>(&impact.time), sizeof(impact.time));
+		stream.read(reinterpret_cast<char*>(&impact.time), sizeof(impact.time));
+
+		//stream.read(reinterpret_cast<char*>(&impact.position.x), sizeof(impact.position.x));
+		//stream.read(reinterpret_cast<char*>(&impact.position.y), sizeof(impact.position.y));
+		//stream.read(reinterpret_cast<char*>(&impact.elevation), sizeof(impact.elevation));
+		//stream.read(reinterpret_cast<char*>(&impact.period), sizeof(impact.period));
+		//stream.read(reinterpret_cast<char*>(&impact.time), sizeof(impact.time));
+		//stream.read(reinterpret_cast<char*>(&impact.impactId), sizeof(impact.impactId));
+		//stream.read(reinterpret_cast<char*>(&impact.spriteId), sizeof(impact.spriteId));
+		//stream.read(reinterpret_cast<char*>(&impact.mergeRadius), sizeof(impact.mergeRadius));
+		//persistImpacts.push_back(impact);
 	}
 
 	uint32 pariahHitsCount = 0;
@@ -161,8 +172,6 @@ void Globals::aise_load(const char* ptr, uint32 len) {
 			stream.write(reinterpret_cast<char*>(&attackers.attacks[i][j]), sizeof(uint16));
 		}
 	}
-
-	// TODO: Serialize actual generics!!!
 
 	//uint32 multihitCount = 0;
 	//stream.read(reinterpret_cast<char*>(&multihitCount), sizeof(multihitCount));
@@ -301,21 +310,22 @@ void Globals::frameHook() {
 
 	for (int i = 0; i < persistImpacts.size(); i++) {
 		auto& impact = persistImpacts[i];
-		if (impact.timerStart > 0) {
+		impact.time--;
+		const int framePeriod = 6;
+		if (impact.time % framePeriod == 1) {
+			const double damageMultiplier = 256.0 * (double)framePeriod / impact.internalTimeMax;
 			switch (impact.impactId) {
 				case ImpactId::SalamanderFire:
 				{
-					if (impact.timerStart % 3 == 0) {
-						const int radius = 16;
-						scbw::UnitFinder(
-							impact.position.x - radius,
-							impact.position.y - radius,
-							impact.position.x + radius,
-							impact.position.y + radius
-						).forEachInMatch(unitRangeCount(nullptr, CFlags::Enemy | CFlags::NoAir, {}), [&](CUnit* unit) {
-							unit->damageWith(WeaponId::SalamanderIncendiaryPayload);
-						});
-					}
+					const int radius = 0.5 * 32;
+					scbw::UnitFinder(
+						impact.position.x - radius,
+						impact.position.y - radius,
+						impact.position.x + radius,
+						impact.position.y + radius
+					).forEachInMatch(unitRangeCount(nullptr, CFlags::Enemy | CFlags::NoAir, {}), [&](CUnit* unit) {
+						unit->damageWithIgnoreFlatArmor(WeaponId::SalamanderIncendiaryPayload, weapons_dat::DamageAmount[WeaponId::SalamanderIncendiaryPayload] * damageMultiplier);
+					});
 					break;
 				}
 				case ImpactId::GriefOfAllGods:
@@ -327,7 +337,7 @@ void Globals::frameHook() {
 						impact.position.x + radius,
 						impact.position.y + radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit) {
-						unit->damageWith(WeaponId::StarSovereignGriefOfAllGods);
+						unit->damageWithIgnoreFlatArmor(WeaponId::StarSovereignGriefOfAllGods, weapons_dat::DamageAmount[WeaponId::StarSovereignGriefOfAllGods] * damageMultiplier);
 					});
 					break;
 				}
@@ -340,7 +350,7 @@ void Globals::frameHook() {
 						impact.position.x + radius,
 						impact.position.y + radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit) {
-						unit->damageWith(WeaponId::AspirantCriticality);
+						unit->damageWithIgnoreFlatArmor(WeaponId::AspirantCriticality, weapons_dat::DamageAmount[WeaponId::AspirantCriticality] * damageMultiplier);
 					});
 					break;
 				}
@@ -353,21 +363,15 @@ void Globals::frameHook() {
 						impact.position.x + radius,
 						impact.position.y + radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit) {
-						unit->damageWith(WeaponId::KeskathalorCausticDischarge);
+						unit->damageWithIgnoreFlatArmor(WeaponId::KeskathalorCausticDischarge, weapons_dat::DamageAmount[WeaponId::KeskathalorCausticDischarge] * damageMultiplier);
 					});
 					break;
 				}
 			}
-			impact.timerStart--;
-		} else {
-			if (impact.repeats > 0) {
-				impact.repeats--;
-				impact.timerStart = impact.timerMax;
-				createGenericPersistImpact(impact);
-			} else {
-				persistImpacts.erase(persistImpacts.begin() + i);
-				i--;
-			}
+		}
+		if (impact.time <= 0) {
+			persistImpacts.erase(persistImpacts.begin() + i);
+			i--;
 		}
 	}
 }
@@ -501,11 +505,20 @@ void Globals::initLazarusAgent(int x, int y, uint8 player, uint32 unitId, uint32
 	apostleAgents.push_back(a);
 }
 
-void Globals::createGenericPersistImpact(PersistImpact impact) {
+void Globals::createGenericPersistImpact(uint8 impactId, Point32 position, uint32 mergeRadius, uint32 time, int32 spriteId, uint8 elevation) {
+	PersistImpact impact;
+	impact.impactId = impactId;
+	impact.position = position;
+	impact.mergeRadius = mergeRadius;
+	impact.time = time;
+	impact.internalTimeMax = time;
+	impact.spriteId = spriteId;
+	impact.elevation = elevation;
+
 	if (impact.mergeRadius != 0) {
-		for (auto other : persistImpacts) {
+		for (auto& other : persistImpacts) {
 			if (other.impactId == impact.impactId && scbw::getDistanceFast(impact.position.x, impact.position.y, other.position.x, other.position.y) < impact.mergeRadius) {
-				other.repeats = impact.repeats;
+				other.time = impact.time;
 				return;
 			}
 		}
@@ -513,8 +526,9 @@ void Globals::createGenericPersistImpact(PersistImpact impact) {
 
 	if (impact.spriteId >= 0) {
 		CThingy* thingy = scbw::createThingy(impact.spriteId, impact.position.x, impact.position.y, 11);
-		if (thingy == nullptr)
+		if (thingy == nullptr) {
 			return;
+		}
 		thingy->sprite->elevationLevel = impact.elevation;
 		scbw::setThingyVisibilityFlags(thingy);
 	}
@@ -523,7 +537,6 @@ void Globals::createGenericPersistImpact(PersistImpact impact) {
 
 void Globals::clear_lakizilisk(CUnit* lurker) {
 	lurkerSpineHits[lurker].clear();
-
 }
 
 void Globals::add_lurker_spine_pair(CUnit* lurker, CUnit* target) {
@@ -653,7 +666,7 @@ namespace scbw {
 	}
 
 	void refreshDebuffs(CUnit* unit) {
-		// NOTE: classic timerStart formula is (([real seconds / 0.042) / 8)
+		// NOTE: classic period formula is (([real seconds / 0.042) / 8)
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
 
 		// Reset Ensnare
@@ -720,7 +733,7 @@ namespace scbw {
 	}
 
 	void inheritDebuffs(CUnit* parent, CUnit* child) {
-		// NOTE: classic timerStart formula is (([real seconds / 0.042) / 8)
+		// NOTE: classic period formula is (([real seconds / 0.042) / 8)
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
 
 		// Get overlay info
@@ -1008,7 +1021,7 @@ namespace scbw {
 	void applyParasite(CUnit* unit, uint8 playerID, CUnit* queen) {
 		if (!scbw::canBeParasited(unit)) return;
 		int playerFlag = 1 << playerID;
-		if (unit->parasiteFlags != playerFlag) { // <- Prevent restarting arm timerStart
+		if (unit->parasiteFlags != playerFlag) { // <- Prevent restarting arm period
 			scbw::set_generic_timer(unit, ValueId::ParasiteArmTimer, DefaultArmParasiteTimer);
 			unit->sprite->createOverlay(ImageId::ParasiteOverlay, 0, 0, 0);
 		}
@@ -1184,7 +1197,8 @@ namespace scbw {
 			unit,
 			data.attacker,
 			data.attackingPlayerId,
-			true
+			true,
+			false
 		};
 		hooks::weaponDamage_root(newData);
 	}

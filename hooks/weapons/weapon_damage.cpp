@@ -218,6 +218,7 @@ namespace hooks {
 			direction,
 			target,
 			attacker,
+			false,
 			false
 		};
 		weaponDamage_root(data);
@@ -273,13 +274,13 @@ namespace hooks {
 		}
 
 		// Cliff Advantage - Armor
-		if (data.damageType != DamageType::IgnoreArmor) {
+		if (data.damageType != DamageType::IgnoreArmor && !data.ignoreFlatArmor) {
 			data.finalDamage -= std::min(scbw::getCliffAdvantage(data.attacker), 0) * -256; // not passing weapon allows for melee, which is desirable with armor
 		}
 
 		// Reduce Plasma Shields
 		if (units_dat::ShieldsEnabled[data.target->id] && data.target->shields >= 256) {
-			if (data.damageType != DamageType::IgnoreArmor) {
+			if (data.damageType != DamageType::IgnoreArmor && !data.ignoreFlatArmor) {
 				int32 plasmaShieldUpg = scbw::getUpgradeLevel(data.target->playerId, UpgradeId::ProtossPlasmaShields) * 256;
 				if (data.finalDamage > plasmaShieldUpg) {
 					data.finalDamage -= plasmaShieldUpg;
@@ -293,7 +294,7 @@ namespace hooks {
 
 		// Apply armor
 		bool shield_overlay = false;
-		if (data.damageType != DamageType::IgnoreArmor) {
+		if (data.damageType != DamageType::IgnoreArmor && !data.ignoreFlatArmor) {
 			int32 armorTotal = data.target->getArmor() * 256;
 			if (data.attacker != nullptr) {
 				armorTotal += scbw::get_aise_value(data.target, nullptr, AiseId::GetShepherds, 0, 0) * 256;
@@ -561,16 +562,7 @@ namespace hooks {
 			switch (data.weaponId) {
 				case WeaponId::KeskathalorCausticDischarge:
 				{
-					PersistImpact impact;
-					impact.impactId = ImpactId::CausticDischarge;
-					impact.position = {data.target->getX(), data.target->getY()};
-					impact.mergeRadius = 12;
-					impact.timerStart = 24;
-					impact.timerMax = 24;
-					impact.repeats = 4;
-					impact.spriteId = SpriteId::CausticDischarge;
-					impact.elevation = 5;
-					globals.createGenericPersistImpact(impact);
+					globals.createGenericPersistImpact(ImpactId::CausticDischarge, {data.target->getX(), data.target->getY()}, 12, 5 * 24, SpriteId::CausticDischarge, 5);
 					break;
 				}
 				case WeaponId::KonviliskSowingSpines:

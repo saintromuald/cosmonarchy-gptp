@@ -174,16 +174,7 @@ void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords) {
 void unitDestructorSpecialHook(CUnit* unit) {
 	// Aspirant Criticality behavior
 	if (unit->id == UnitId::TerranAspirant && unit->status & UnitStatus::Completed) {
-		PersistImpact impact;
-		impact.impactId = ImpactId::Criticality;
-		impact.position = {unit->getX(), unit->getY()};
-		impact.mergeRadius = 12;
-		impact.timerStart = 24;
-		impact.timerMax = 24;
-		impact.repeats = 4;
-		impact.spriteId = SpriteId::Criticality;
-		impact.elevation = 5;
-		globals.createGenericPersistImpact(impact);
+		globals.createGenericPersistImpact(ImpactId::Criticality, {unit->getX(), unit->getY()}, 12, 5 * 24, SpriteId::Criticality, 5);
 	}
 
 	// Remove Disruption Fields

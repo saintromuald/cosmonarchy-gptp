@@ -320,7 +320,7 @@ namespace hooks {
 				firstFrame();
 			}
 			hooks::handleScreenHotkeys();
-			scbw::refreshScreen(); // Needed for game clock and APM timerStart to update every frame
+			scbw::refreshScreen(); // Needed for game clock and APM period to update every frame
 			scbw::refreshConsole();
 			globals.frameHook();
 
@@ -466,12 +466,7 @@ namespace hooks {
 		// Star Sovereign Intervention Missiles behavior + Grief of All Gods
 		else if (unit->id == UnitId::ProtossStarSovereign) {
 			if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerChannel) == 1) {
-				PersistImpact impact;
-				impact.position = {unit->position.x, unit->position.y};
-				impact.timerStart = 360;
-				impact.timerMax = 360;
-				impact.elevation = unit->sprite->elevationLevel;
-				globals.createGenericPersistImpact(impact);
+				globals.createGenericPersistImpact(ImpactId::GriefOfAllGods, {unit->position.x, unit->position.y}, 0, 360, -1, unit->sprite->elevationLevel);
 			}
 			if (scbw::get_generic_timer(unit, ValueId::StarcallerInterceptionMissiles) == 0) {
 				auto r = 5 * 32;
@@ -835,7 +830,7 @@ namespace hooks {
 				}).getAllUnits();
 
 				if (!seraphs.empty()) {
-					// Seraph - Observance timerStart
+					// Seraph - Observance period
 					scbw::set_generic_timer(unit, ValueId::ObservanceTimerDebuff, (5 * 24) + 1);
 
 					// Seraph - Observance ability
@@ -984,12 +979,12 @@ namespace hooks {
 			// remove overlay later
 		}
 
-		// Apply Ecclesiast - Astral Blessing stacks and timerStart
+		// Apply Ecclesiast - Astral Blessing stacks and period
 		if (scbw::get_generic_timer(unit, ValueId::EcclesiastTimer) == 1) {
 			scbw::set_generic_value(unit, ValueId::EcclesiastStack, 0);
 		}
 
-		// Update flingy speed when Adrenal Frenzy timerStart expires
+		// Update flingy speed when Adrenal Frenzy period expires
 		if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) == 1) {
 			scbw::set_generic_timer(unit, ValueId::NathrokorTimer, 0);
 			unit->updateSpeed();

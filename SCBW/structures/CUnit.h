@@ -187,6 +187,16 @@ struct CUnit : public CUnitLayout {
 		uint8 damageDivisor = 1      ///< Damage divisor (for splash damage / glave wurm calculations)
 	);
 
+	/// Deals damage to this unit, using a specific weapons.dat ID. Ignores flat armor
+	void damageWithIgnoreFlatArmor(
+		uint8 weaponId,              ///< weapons.dat ID to use.
+		int32 damage = -1,			 ///< Amount of damage dealt to this unit. -1 = inherit from weaponId
+		CUnit* attacker = nullptr,   ///< Attacking unit (for increasing kill count)
+		uint8 attackingPlayer = -1,  ///< Attacking player (for increasing kill score)
+		int8 direction = 0,          ///< Attacked direction (for shield flicker overlays)
+		uint8 damageDivisor = 1      ///< Damage divisor (for splash damage / glave wurm calculations)
+	);
+
 	/// Deals damage directly to unit HP, killing it if possible.
 	void damageHp(int32 damage, CUnit* attacker = nullptr,
 		int32 attackingPlayer = -1, bool notify = true);
