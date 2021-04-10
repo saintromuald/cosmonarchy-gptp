@@ -308,17 +308,18 @@ namespace hooks {
 				scbw::SendCommand(buf, 0xc);
 				break;
 			}
-			case TechId::Reconstitution://also rescind mind control
+			case TechId::Reconstitution:// also rescind mind control
 			{
 				auto zoryusthaleth = true;
 				if (firstInList->id == UnitId::ProtossMindTyrant) {
 					zoryusthaleth = false;
 				}
 
-				int action = 1;//on
+				int action = 1; // on
+				/*
 				if (zoryusthaleth) {
 					if (scbw::get_generic_rust_value(firstInList, ValueId::Reconstitution) == 1) {
-						action = 0;//off
+						action = 0; // off
 					}
 					uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
 					buf[0] = 0x99;//new general command
@@ -328,14 +329,15 @@ namespace hooks {
 					buf[4] = ValueId::Reconstitution;
 					scbw::SendCommand(buf, 0xc);
 				} else {
-					uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
-					buf[0] = 0x99;//new general command
-					buf[1] = NewGameCommand::GenericSwitchAbility;
-					buf[2] = action;
-					buf[3] = *ACTIVE_PLAYER_ID;
-					buf[4] = ValueId::RescindMindControl;
-					scbw::SendCommand(buf, 0xc);
-				}
+				*/
+				uint8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0}; // 12
+				buf[0] = 0x99; // new general command
+				buf[1] = NewGameCommand::GenericSwitchAbility;
+				buf[2] = action;
+				buf[3] = *ACTIVE_PLAYER_ID;
+				buf[4] = ValueId::RescindMindControl;
+				scbw::SendCommand(buf, 0xc);
+				//}
 				break;
 			}
 			/*		case TechId::UnusedTech26://Cyprian Safety Off/Safety On
@@ -396,7 +398,7 @@ namespace hooks {
 								}
 								break;
 							}*/
-			case TechId::UnusedTech39://observance
+			case TechId::UnusedTech39: // observance
 				IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
 
 				/*			if (firstInList != nullptr) {
@@ -412,29 +414,28 @@ namespace hooks {
 								scbw::SendCommand(buf, 0xc);
 							}*/
 				break;
-			case TechId::PhaseLink://and Khaydarin Eclipse
+			case TechId::PhaseLink: // and Khaydarin Eclipse
 			{
-
 				auto firstInList = clientSelectionGroup->unit[0];
 				if (firstInList != nullptr) {
 					if (firstInList->id == UnitId::ProtossClarion) {
-						int action = 0;//enable
+						int action = 0; // enable
 						if (scbw::get_aise_value(firstInList, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
-							action = 1;//disable
+							action = 1; // disable
 						}
-						uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
-						buf[0] = 0x99;//new general command
+						uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
+						buf[0] = 0x99; // new general command
 						buf[1] = NewGameCommand::PhaseLink;
 						buf[2] = action;
 						buf[3] = *ACTIVE_PLAYER_ID;
 						scbw::SendCommand(buf, 0xc);
-					} else {//exemplar
+					} else { // exemplar
 						int action = 1;//on
 						if (scbw::get_generic_rust_value(firstInList, ValueId::ExemplarSwitch) == 1) {
 							action = 0;//off
 						}
-						uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
-						buf[0] = 0x99;//new general command
+						uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
+						buf[0] = 0x99; // new general command
 						buf[1] = NewGameCommand::GenericSwitchAbility;
 						buf[2] = action;
 						buf[3] = *ACTIVE_PLAYER_ID;
@@ -472,7 +473,7 @@ namespace hooks {
 				scbw::SendCommand(buf, 0xc);
 				break;*/
 			}
-			case TechId::UnusedTech40://sublime shepherd
+			case TechId::UnusedTech40: // sublime shepherd
 			{
 
 				int action = 1;//on
@@ -501,7 +502,7 @@ namespace hooks {
 				//but it uses switch ability framework to not bother with rust
 				break;
 			}
-			case TechId::TempoChange://sublime shepherd
+			case TechId::TempoChange:
 			{
 
 				int action = 1;//on
