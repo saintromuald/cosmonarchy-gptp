@@ -343,7 +343,7 @@ void Globals::frameHook() {
 				}
 				case ImpactId::Criticality:
 				{
-					const int radius = 2 * 32;
+					const int radius = 1.25 * 32;
 					scbw::UnitFinder(
 						impact.position.x - radius,
 						impact.position.y - radius,
@@ -356,7 +356,7 @@ void Globals::frameHook() {
 				}
 				case ImpactId::CausticDischarge:
 				{
-					const int radius = 3 * 32;
+					const int radius = 1.5 * 32;
 					scbw::UnitFinder(
 						impact.position.x - radius,
 						impact.position.y - radius,
@@ -428,7 +428,7 @@ void Globals::register_pariah_hit(CUnit* source, CUnit* target) {
 void Globals::clear_ptr_in_apostle_table(CUnit* ptr) {
 	for (auto& a : apostleAgents) {
 		if (a.creator == ptr) {
-			a.creator = nullptr;//agent values themselves must not be deleted to prevent non-working lazarus agent buffs
+			a.creator = nullptr; // agent values themselves must not be deleted to prevent non-working lazarus agent buffs
 		}
 	}
 }
