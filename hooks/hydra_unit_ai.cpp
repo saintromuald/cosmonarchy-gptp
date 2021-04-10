@@ -130,7 +130,7 @@ void hydra_unit_ai(CUnit* unit) {
 		auto alliedUnitsHealth = 0;
 		bool alliedBuildings = false;
 		hydraFinderLoop(unit, unit->sprite->position, AIStarsovereignAbilSeekRange,
-			CFlags::NotSelf | CFlags::NoAir | CFlags::NoInvincible, {}, [&](CUnit* u) {
+			CFlags::NotSelf | CFlags::NoAir, {}, [&](CUnit* u) {
 			if (!scbw::isAlliedTo(unit->playerId, u->playerId)) {
 				enemyUnitsHealth += (u->hitPoints + u->shields) / 256;
 			}
@@ -201,7 +201,7 @@ void hydra_unit_ai(CUnit* unit) {
 	//				scbw::printText("Loop");
 					CUnit* tryTarget = u;
 					int innerCount = 0;
-					hydraFinderLoop(u, u->position, weapons_dat::MaxRange[WeaponId::Skyfall] , CFlags::Ally | CFlags::NoInvincible, {},
+					hydraFinderLoop(u, u->position, weapons_dat::MaxRange[WeaponId::Skyfall] , CFlags::Ally, {},
 						[&](CUnit* internalUnit) {
 						innerCount++;
 					});

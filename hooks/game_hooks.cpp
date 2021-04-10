@@ -320,7 +320,7 @@ namespace hooks {
 				firstFrame();
 			}
 			hooks::handleScreenHotkeys();
-			scbw::refreshScreen(); // Needed for game clock and APM timer to update every frame
+			scbw::refreshScreen(); // Needed for game clock and APM timerStart to update every frame
 			scbw::refreshConsole();
 			globals.frameHook();
 
@@ -338,12 +338,6 @@ namespace hooks {
 					if (bullet->orderSignal & 0x80) {
 						bullet->orderSignal &= ~0x80;
 						globals.remove_multihit_bullet(bullet);
-					}
-				}
-				if (bullet->weaponType == WeaponId::AspirantCriticality) {
-					if (bullet->orderSignal & 0x80) {
-						bullet->orderSignal &= ~0x80;
-						scbw::printText("Aspirant Criticality *should* expire here");
 					}
 				}
 			}
@@ -472,7 +466,12 @@ namespace hooks {
 		// Star Sovereign Intervention Missiles behavior + Grief of All Gods
 		else if (unit->id == UnitId::ProtossStarSovereign) {
 			if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerChannel) == 1) {
-				globals.createPlanetCracker(unit->position.x, unit->position.y, unit->playerId, unit->sprite->elevationLevel);
+				PersistImpact impact;
+				impact.position = {unit->position.x, unit->position.y};
+				impact.timerStart = 360;
+				impact.timerMax = 360;
+				impact.elevation = unit->sprite->elevationLevel;
+				globals.createGenericPersistImpact(impact);
 			}
 			if (scbw::get_generic_timer(unit, ValueId::StarcallerInterceptionMissiles) == 0) {
 				auto r = 5 * 32;
@@ -836,7 +835,7 @@ namespace hooks {
 				}).getAllUnits();
 
 				if (!seraphs.empty()) {
-					// Seraph - Observance timer
+					// Seraph - Observance timerStart
 					scbw::set_generic_timer(unit, ValueId::ObservanceTimerDebuff, (5 * 24) + 1);
 
 					// Seraph - Observance ability
@@ -985,12 +984,12 @@ namespace hooks {
 			// remove overlay later
 		}
 
-		// Apply Ecclesiast - Astral Blessing stacks and timer
+		// Apply Ecclesiast - Astral Blessing stacks and timerStart
 		if (scbw::get_generic_timer(unit, ValueId::EcclesiastTimer) == 1) {
 			scbw::set_generic_value(unit, ValueId::EcclesiastStack, 0);
 		}
 
-		// Update flingy speed when Adrenal Frenzy timer expires
+		// Update flingy speed when Adrenal Frenzy timerStart expires
 		if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) == 1) {
 			scbw::set_generic_timer(unit, ValueId::NathrokorTimer, 0);
 			unit->updateSpeed();

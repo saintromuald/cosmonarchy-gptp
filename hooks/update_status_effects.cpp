@@ -27,7 +27,7 @@ void irradiateProc(CUnit* unit, CUnit* target) {
 				//scbw::printText("Add additional damage");
 			}
 		}
-		target->damageWith(damage, WeaponId::Irradiate, unit->irradiatedBy, unit->irradiatePlayerId);
+		target->damageWith(WeaponId::Irradiate, damage, unit->irradiatedBy, unit->irradiatePlayerId);
 	}
 }
 
@@ -393,7 +393,7 @@ namespace hooks {
 				}
 
 				if (damage > 0) {
-					unit->damageWith(damage, WeaponId::Plague);
+					unit->damageWith(WeaponId::Plague, damage);
 				}
 			}
 

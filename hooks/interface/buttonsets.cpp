@@ -893,7 +893,7 @@ namespace hooks {
 									current_button->iconID == IconId::Argus_Jewel) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranSalamander &&  //Salamander Incendiary Payload passive
+								if ((*activePortraitUnit)->id == UnitId::TerranSalamander &&  //SalamanderFire Incendiary Payload passive
 									current_button->iconID == IconId::Flame_Thrower) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}

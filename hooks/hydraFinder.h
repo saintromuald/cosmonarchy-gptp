@@ -6,7 +6,7 @@
 
 namespace CFlags {
 	enum {
-		NoInvincible = 1 << 0,
+		Invincible = 1 << 0,
 		NoAir = 1 << 1,
 		NoGround = 1 << 2,
 		NoMechanical = 1 << 3,

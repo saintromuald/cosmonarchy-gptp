@@ -58,7 +58,7 @@ scbw::UnitFinderCallbackMatchInterface unitRangeCount(CUnit* center, uint32 cont
 		if (unit == center && context & CFlags::NotSelf) {
 			return false;
 		}
-		if (unit->status & UnitStatus::Invincible && context & CFlags::NoInvincible) {
+		if (unit->status & UnitStatus::Invincible && !(context & CFlags::Invincible)) {
 			return false;
 		}
 		if (unit->status & UnitStatus::InAir && context & CFlags::NoAir) {

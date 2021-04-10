@@ -418,7 +418,7 @@ void CUnit::healShields(int32 shields, CUnit* source) {
 }
 
 const uint32 Func_DoWeaponDamage = 0x00479930; //Note: hooked in hooks/weapons/weapon_damage files
-void CUnit::damageWith(int32 damage, uint8 weaponId, CUnit* attacker,
+void CUnit::damageWith(uint8 weaponId, int32 damage, CUnit* attacker,
 	uint8 attackingPlayer, int8 direction, uint8 damageDivisor) {
 	assert(this);
 	assert(weaponId < WEAPON_TYPE_COUNT);
@@ -428,6 +428,9 @@ void CUnit::damageWith(int32 damage, uint8 weaponId, CUnit* attacker,
 	int32 attackingPlayer_ = attackingPlayer;
 	int32 direction_ = direction;
 	int32 damageDivisor_ = damageDivisor;
+	if (damage < 0) {
+		damage = weapons_dat::DamageAmount[weaponId];
+	}
 
 	__asm {
 		PUSHAD
@@ -442,6 +445,7 @@ void CUnit::damageWith(int32 damage, uint8 weaponId, CUnit* attacker,
 		POPAD
 	}
 }
+
 void CUnit::inflictDamage(int32 dmg, CUnit* attacker, int32 attackingPlayer, bool notify, bool shield_overlay, int direction,
 	bool ignoreDmg128Overflow) {
 	auto damage = dmg;

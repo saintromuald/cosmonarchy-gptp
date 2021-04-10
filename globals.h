@@ -21,7 +21,7 @@ struct SaveState {
 };
 namespace ImpactId {
 	enum {
-		Salamander,
+		SalamanderFire,
 		GriefOfAllGods,
 		IonField,
 		Criticality,
@@ -31,17 +31,22 @@ namespace ImpactId {
 
 class PersistImpact {
 public:
-	Point32 position;
-	uint8 elevation;
-	uint32 timer;
-	uint32 repeatsLeft;
 	uint8 impactId;
+	Point32 position;
+	uint32 mergeRadius = 0;
+	uint32 timerStart = 24;
+	uint32 timerMax = 24;
+	uint32 repeats = 0;
+	int32 spriteId = -1;
+	uint8 elevation = 5;
 };
+
 class PariahHit {
 public:
 	CUnit* source;
 	CUnit* target;
 };
+
 class MultihitBullet {
 public:
 	CBullet* bullet;
@@ -212,10 +217,7 @@ public:
 	bool was_hit_by_pariah(CUnit* source, CUnit* target);
 
 	void register_pariah_hit(CUnit* source, CUnit* target);
-	void createGenericPersistImpact(PersistImpact impact, uint32 spriteId, uint8 elevationLevel, uint32 merge_radius);
-	void createSalamanderFire(int x, int y, uint8 player, uint8 elevation, bool addImpactValue);
-	void createIonField(int x, int y, uint8 player, uint8 elevation, bool addImpactValue);
-	void createPlanetCracker(int x, int y, uint8 player, uint8 elevation);
+	void createGenericPersistImpact(PersistImpact impact);
 	bool was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target);
 	bool multihit_bullet_is_set(CBullet* bullet);
 	uint32 get_multihit_count(CBullet* bullet);

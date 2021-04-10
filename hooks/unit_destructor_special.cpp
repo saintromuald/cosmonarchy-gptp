@@ -74,7 +74,7 @@ void freeResourceContainer(CUnit* resource) {
 	while (worker != nullptr) {
 		if (worker->worker.harvest_link.prev != nullptr) { //untie the previous worker from current worker (tie it to next)
 			(worker->worker.harvest_link.prev)->worker.harvest_link.next = worker->worker.harvest_link.next;
-		} 		else {
+		} else {
 			resource->building.resource.nextGatherer = worker->worker.harvest_link.next;
 		}
 
@@ -173,9 +173,17 @@ void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords) {
 //Hooked down there instead of a specific inject.cpp
 void unitDestructorSpecialHook(CUnit* unit) {
 	// Aspirant Criticality behavior
-	if (unit->id == UnitId::TerranAspirant
-		&& unit->status & UnitStatus::Completed) {
-		scbw::createBullet(WeaponId::AspirantCriticality, unit, unit->position.x, unit->position.y, unit->playerId, 0);
+	if (unit->id == UnitId::TerranAspirant && unit->status & UnitStatus::Completed) {
+		PersistImpact impact;
+		impact.impactId = ImpactId::Criticality;
+		impact.position = {unit->getX(), unit->getY()};
+		impact.mergeRadius = 12;
+		impact.timerStart = 24;
+		impact.timerMax = 24;
+		impact.repeats = 4;
+		impact.spriteId = SpriteId::Criticality;
+		impact.elevation = 5;
+		globals.createGenericPersistImpact(impact);
 	}
 
 	// Remove Disruption Fields

@@ -47,7 +47,7 @@ namespace hooks {
 						unit->orderToIdle();
 					else {
 
-						target->damageWith(target->energy, WeaponId::Feedback, unit, unit->playerId, 1, 1);
+						target->damageWith(WeaponId::Feedback, target->energy, unit, unit->playerId, 1, 1);
 						target->energy = 0;
 						unit->spendUnitEnergy(techCost);
 						scbw::playSound(SoundId::Protoss_Darchon_feedback_wav, target);

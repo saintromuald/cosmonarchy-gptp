@@ -194,7 +194,7 @@ namespace hooks {
 						bool extraBuild = false;
 						if (scbw::get_generic_value(builtUnit, ValueId::Crucible) == 0) {
 							auto r = 256;
-							auto n = unitRangeCount(nullptr, CFlags::NoInvincible | CFlags::Ally | CFlags::Powered | CFlags::Completed,
+							auto n = unitRangeCount(nullptr, CFlags::Ally | CFlags::Powered | CFlags::Completed,
 								{UnitId::ProtossCrucible});
 							scbw::UnitFinder unitsInSplash(builtUnit->position.x - r, builtUnit->position.y - r,
 								builtUnit->position.x + r, builtUnit->position.y + r);

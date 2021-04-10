@@ -212,8 +212,8 @@ namespace hooks {
 			if (ephemeralBlades) {
 				uint32 base_damage = GetUnitBulletDamage(bullet, target);
 				target->damageWith(
-					base_damage,
 					bullet->weaponType,
+					base_damage,
 					bullet->sourceUnit,
 					bullet->srcPlayer,
 					bullet->direction1,
@@ -225,8 +225,8 @@ namespace hooks {
 		} else {
 			uint32 base_damage = GetUnitBulletDamage(bullet, target);
 			target->damageWith(
-				base_damage,
 				bullet->weaponType,
+				base_damage,
 				bullet->sourceUnit,
 				bullet->srcPlayer,
 				bullet->direction1,
@@ -318,8 +318,8 @@ namespace hooks {
 					uint32 damage = getUnitDamageBonus(attacker, weaponId);
 					damage = ((uint16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
 					target->damageWith(
-						damage,
 						weaponId,
+						damage,
 						attacker,
 						attacker->playerId,
 						attacker->currentDirection1,
@@ -332,8 +332,8 @@ namespace hooks {
 				uint32 damage = getUnitDamageBonus(attacker, weaponId);
 				damage = ((uint16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
 				target->damageWith(
-					damage,
 					weaponId,
+					damage,
 					attacker,
 					attacker->playerId,
 					attacker->currentDirection1,

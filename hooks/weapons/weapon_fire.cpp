@@ -339,7 +339,7 @@ namespace hooks {
 				} else if (weaponId == WeaponId::SirenCharybdalRifle) {
 					// TODO: Implement multi-unit targeting without inlining Adaptive Amitosis behavior
 				} else if (weaponId == WeaponId::SalamanderPerditionBarrage) {
-					// Salamander missile target positions
+					// SalamanderFire missile target positions
 					auto rotate = scbw::get_generic_value(unit, ValueId::SalamanderAtkPos);
 					if (rotate == 1) {
 						createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);

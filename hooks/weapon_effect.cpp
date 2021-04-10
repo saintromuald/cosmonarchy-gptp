@@ -85,21 +85,30 @@ namespace hooks {
 				splash = SplashType::Radial;
 			}
 
-			//must be moved to aise
 			if (bullet->sourceUnit->id == UnitId::TerranSalamander) {
 				auto hit = bullet->attackTarget.pt;
 				if (bullet->attackTarget.unit != nullptr) {
 					hit = bullet->attackTarget.unit->position;
 				}
-				globals.createSalamanderFire(hit.x, hit.y, 11, 5, true);
+				PersistImpact impact;
+				impact.impactId = ImpactId::SalamanderFire;
+				impact.position = {hit.x, hit.y};
+				impact.mergeRadius = 12;
+				impact.timerStart = 24;
+				impact.timerMax = 24;
+				impact.repeats = 4;
+				impact.spriteId = SpriteId::SalamanderImpact;
+				impact.elevation = 5;
+				globals.createGenericPersistImpact(impact);
 			}
-			/*			if (bullet->sourceUnit->id == WeaponId::IonCannon) {
-							auto hit = bullet->attackTarget.pt;
-							if (bullet->attackTarget.unit != nullptr) {
-								hit = bullet->attackTarget.unit->position;
-							}
-							globals.createIonField(hit.x, hit.y, 11, 5, true);
-						}*/
+			/*
+			if (bullet->sourceUnit->id == WeaponId::IonCannon) {
+				auto hit = bullet->attackTarget.pt;
+				if (bullet->attackTarget.unit != nullptr) {
+					hit = bullet->attackTarget.unit->position;
+				}
+				globals.createIonField(hit.x, hit.y, 11, 5, true);
+			}*/
 		}
 
 		int16 x, y, r;

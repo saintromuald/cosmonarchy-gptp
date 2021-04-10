@@ -559,6 +559,20 @@ namespace hooks {
 			}
 
 			switch (data.weaponId) {
+				case WeaponId::KeskathalorCausticDischarge:
+				{
+					PersistImpact impact;
+					impact.impactId = ImpactId::CausticDischarge;
+					impact.position = {data.target->getX(), data.target->getY()};
+					impact.mergeRadius = 12;
+					impact.timerStart = 24;
+					impact.timerMax = 24;
+					impact.repeats = 4;
+					impact.spriteId = SpriteId::CausticDischarge;
+					impact.elevation = 5;
+					globals.createGenericPersistImpact(impact);
+					break;
+				}
 				case WeaponId::KonviliskSowingSpines:
 				{
 					// Fertile Spines - Konvilisk behavior

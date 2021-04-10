@@ -445,7 +445,7 @@ namespace hooks {
 
 		// TODO Statuses
 		//	make sublime shepard show on targets not only caster
-		//	add optical flare timer, mind control on target, last orders?, infested (when it's implemented)
+		//	add optical flare timerStart, mind control on target, last orders?, infested (when it's implemented)
 		//	properly track cowardice, malice timers
 		//	color code source player if possible
 
