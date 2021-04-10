@@ -350,6 +350,9 @@ SCBW_DATA(		int8*,				visionUpdated,					0x0051CE9C);
 // X405: For displayEstablishing Shot
 SCBW_DATA(		CampaignMission*,	campaignMissions,				0x004FFF60);
 
+// For statsWeaponLevel / statsArmorLevel
+SCBW_DATA(		int16*,				unkUpgradeCount,				0x006CA940);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data
@@ -489,7 +492,7 @@ SCBW_DATA(uint16*, GasCostFactor,      upgradesDat[3].address);	//006557C0
 SCBW_DATA(uint16*, TimeCostBase,       upgradesDat[4].address);	//00655B80
 SCBW_DATA(uint16*, TimeCostFactor,     upgradesDat[5].address);	//00655940
 //SCBW_DATA(uint16*, ???,              upgradesDat[6].address);	//006558C0	//Restriction Flags according to EUDDB
-//SCBW_DATA(uint16*, ???,              upgradesDat[7].address);	//00655AC0	//"Icon, cmdicons.grp frame" according to EUDDB
+SCBW_DATA(uint16*, UpgradeIcon,        upgradesDat[7].address);	//00655AC0	//"Icon, cmdicons.grp frame" according to EUDDB
 SCBW_DATA(uint16*, Label,              upgradesDat[8].address);	//00655A40
 SCBW_DATA(uint8*,  Race,               upgradesDat[9].address);	//00655BFC
 SCBW_DATA(uint8*,  MaxRepeats,         upgradesDat[10].address);	//00655700
