@@ -202,6 +202,7 @@ namespace hooks {
 				//but it uses switch ability framework to not bother with rust
 				break;
 			}
+			/*
 			case TechId::SwarmingOmen:
 			{
 				uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
@@ -214,6 +215,7 @@ namespace hooks {
 				//copied from Ensnaring Brood
 				break;
 			}
+			*/
 			case TechId::Parasite:
 				IssueTriTargetOrder(OrderId::CastParasite, 0, 0);
 				break;
