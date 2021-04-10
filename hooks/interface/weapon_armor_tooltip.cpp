@@ -383,6 +383,8 @@ namespace hooks {
 		addStatus(statuses, "Emergency Detonation", -1, 1, scbw::get_generic_timer(unit, ValueId::EmergencyDetonationTimer), TimerType::Aise);
 		addStatus(statuses, "Binding Grip", -1, 1, scbw::get_generic_timer(unit, ValueId::BindingGripTimer), TimerType::Aise);
 		addStatus(statuses, "Autovitality", -1, 1, scbw::get_generic_timer(unit, ValueId::SimulacrumCloneTimer), TimerType::Aise);
+		addStatus(statuses, "Caustic Discharge", -1, 1, scbw::get_generic_timer(unit, ValueId::CausticDischargeSpeed), TimerType::Aise);
+		addStatus(statuses, "Ion Field", -1, 1, scbw::get_generic_timer(unit, ValueId::IonFieldSpeed), TimerType::Aise);
 
 		// Aise Value
 		addStatus(statuses, "Energy Decay", scbw::get_generic_value(unit, ValueId::EntropyGauntlets), 1);

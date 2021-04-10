@@ -175,6 +175,7 @@ namespace WeaponId {
 			PaladinSkyfall = 126,			// Paladin ability targeting
 			SirenTertiaryEyes = 127,			// Siren ability targeting
 			IonCannon = 129,			// Ion Cannon weapon
+			IonField = 57,			// Ion Cannon behavior
 
 			// Protoss \\
 				

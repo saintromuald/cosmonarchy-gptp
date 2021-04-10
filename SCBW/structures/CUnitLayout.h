@@ -296,6 +296,8 @@ namespace ValueId {
 		BindingGripTimer = 161,
 		ClarionLinkUnit = 162,
 		ClarionLinkFeedback = 163,
+		CausticDischargeSpeed = 164,
+		IonFieldSpeed = 165,
 	};
 }
 #include "SCBW\enumerations\TechId.h"

@@ -70,27 +70,32 @@ namespace hooks {
 			cooldown /= 1.25;
 		}
 
-		if (cooldownModifier > 0)	// Lame hardcode for attackspeed upgrades
+		// Ion Cannon Ion Field: Attack Speed Buff
+		if (scbw::get_generic_timer(unit, ValueId::CausticDischargeSpeed) > 0) {
+			cooldown /= 1.5;
+		}
+
+		if (cooldownModifier > 0) {	// Lame hardcode for attackspeed upgrades
 			cooldown /= 2;
-		else
+		} else {
 			if (cooldownModifier < 0) {	// Presumably, lame hardcode for some slow
 				cooldown += cooldown / 4;
 
 			}
-		if (unit->stimTimer) {		// Fixes aice-related Stimpack issue
+		} if (unit->stimTimer) { // Fixes aice-related Stimpack issue
 			cooldown += 2;
 		}
 		uint32 adrenalStacks = scbw::get_generic_value(unit, ValueId::AdrenalStacks);
 		if (adrenalStacks) {
 			cooldown -= adrenalStacks / 2;
 		}
-		if (cooldown > 250)			// Max cutoff
+		if (cooldown > 250) { // Max cutoff
 			cooldown = 250;
-		else
-			if (cooldown < 3)			// Min cutoff (previously 5)
-				cooldown = 3;
-		return cooldown;
+		} else if (cooldown < 3) { // Min cutoff (previously 5)
+			cooldown = 3;
+		}
 
+		return cooldown;
 	}
 
 } //hooks

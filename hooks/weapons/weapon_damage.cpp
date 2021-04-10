@@ -560,11 +560,6 @@ namespace hooks {
 			}
 
 			switch (data.weaponId) {
-				case WeaponId::KeskathalorScreamingVenom:
-				{
-					globals.createGenericPersistImpact(ImpactId::CausticDischarge, {data.target->getX(), data.target->getY()}, 12, 5 * 24, SpriteId::CausticDischarge, 5);
-					break;
-				}
 				case WeaponId::KonviliskSowingSpines:
 				{
 					// Fertile Spines - Konvilisk behavior

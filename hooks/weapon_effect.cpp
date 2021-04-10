@@ -85,12 +85,26 @@ namespace hooks {
 				splash = SplashType::Radial;
 			}
 
-			if (bullet->sourceUnit->id == UnitId::TerranSalamander) {
-				auto hit = bullet->attackTarget.pt;
-				if (bullet->attackTarget.unit != nullptr) {
-					hit = bullet->attackTarget.unit->position;
+			auto hit = bullet->attackTarget.pt;
+			if (bullet->attackTarget.unit != nullptr) {
+				hit = bullet->attackTarget.unit->position;
+			}
+			switch (weaponId) {
+				case WeaponId::KeskathalorScreamingVenom:
+				{
+					globals.createGenericPersistImpact(ImpactId::CausticDischarge, {hit.x, hit.y}, 12, 5 * 24, SpriteId::CausticDischarge, 5);
+					break;
 				}
-				globals.createGenericPersistImpact(ImpactId::SalamanderFire, {hit.x, hit.y}, 12, 5 * 24, SpriteId::SalamanderImpact, 5);
+				case WeaponId::SalamanderIncendiaryPayload:
+				{
+					globals.createGenericPersistImpact(ImpactId::SalamanderFire, {hit.x, hit.y}, 12, 5 * 24, SpriteId::SalamanderImpact, 5);
+					break;
+				}
+				case WeaponId::IonCannon:
+				{
+					globals.createGenericPersistImpact(ImpactId::IonField, {hit.x, hit.y}, 12, 10 * 24, SpriteId::IonField, 5);
+					break;
+				}
 			}
 			/*
 			if (bullet->sourceUnit->id == WeaponId::IonCannon) {

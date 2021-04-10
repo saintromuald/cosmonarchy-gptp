@@ -51,12 +51,17 @@ namespace hooks {
 		// Southpaw Knockout Drivers: reduces movement speed by 5% per stack
 		if (scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks) > 0) {
 			uint32 knockoutValue = scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks);
-			speed -= speed * (0.05 * knockoutValue);
+			speed *= 1 - 0.05 * knockoutValue;
 		}
 
 		// Vorvaling Captivating Claws: reduces movement speed by 25% per unique attacker
 		if (captivatingClawsGetTimer(unit) > 0) {
-			speed -= speed * (0.25 * captivatingClawsGetStacks(unit));
+			speed *= 1 - 0.25 * captivatingClawsGetStacks(unit);
+		}
+
+		// Keskathalor Caustic Discharge: Speed Buff
+		if (scbw::get_generic_timer(unit, ValueId::CausticDischargeSpeed) > 0) {
+			speed *= 1.5;
 		}
 
 		// Swarming Omen ability: 150% movement speed when moving towards Zoryusthaleth

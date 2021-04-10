@@ -364,6 +364,21 @@ void Globals::frameHook() {
 						impact.position.y + radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit) {
 						unit->damageWithIgnoreFlatArmor(WeaponId::KeskathalorCausticDischarge, weapons_dat::DamageAmount[WeaponId::KeskathalorCausticDischarge] * damageMultiplier);
+						scbw::set_generic_timer(unit, ValueId::CausticDischargeSpeed, 5 * 24 + 1);
+					});
+					break;
+				}
+				case ImpactId::IonField:
+				{
+					const int radius = 3 * 32;
+					scbw::UnitFinder(
+						impact.position.x - radius,
+						impact.position.y - radius,
+						impact.position.x + radius,
+						impact.position.y + radius
+					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit) {
+						unit->damageWithIgnoreFlatArmor(WeaponId::IonField, weapons_dat::DamageAmount[WeaponId::IonField] * damageMultiplier);
+						scbw::set_generic_timer(unit, ValueId::IonFieldSpeed, 2 * 24 + 1);
 					});
 					break;
 				}
