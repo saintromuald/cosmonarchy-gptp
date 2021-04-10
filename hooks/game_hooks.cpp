@@ -13,26 +13,22 @@
 const int hyperTrigger = 0x006509A0;
 const uint32 Func_Sub4A01F0 = 0x004A01F0;
 void function_004A01F0g(CUnit* unit) {
-
 	__asm {
 		PUSHAD
 		MOV EAX, unit
 		CALL Func_Sub4A01F0
 		POPAD
 	}
-
 }
 
 const uint32 Func_98A10 = 0x00498A10;
 void makeSpriteInvisible(CSprite* sprite) {
-
 	__asm {
 		PUSHAD
 		MOV EAX, sprite
 		CALL Func_98A10
 		POPAD
 	}
-
 }
 
 const uint32 Func_UpdateUnitStrength = 0x0049FA40;
@@ -63,7 +59,6 @@ CUnit* CreateUnit(uint32 unitId, int x, int y, uint32 playerId) {
 
 const uint32 Func_Sub4148F0 = 0x004148F0;
 void function_004148F0_(int x, int y, uint32 unitId) {
-
 	__asm {
 		PUSHAD
 		PUSH y
@@ -72,19 +67,16 @@ void function_004148F0_(int x, int y, uint32 unitId) {
 		CALL Func_Sub4148F0
 		POPAD
 	}
-
 }
 
 const uint32 Func_Sub47D770 = 0x0047D770;
 void func_0047D770(CUnit* unit) {
-
 	__asm {
 		PUSHAD
 		PUSH unit
 		CALL Func_Sub47D770
 		POPAD
 	}
-
 }
 
 const uint32 Func_updateNewUnitVision = 0x0045CE90;
@@ -98,14 +90,11 @@ void funcupdateNewUnitVision(CUnit* unit, int x, int y) {
 		CALL Func_updateNewUnitVision
 		POPAD
 	}
-
 }
 
 const uint32 Func_ReplaceUnitWithType = 0x0049FED0;
 void replaceUnitWithType(CUnit* unit, uint16 newUnitId) {
-
 	uint32 newUnitId_ = newUnitId;
-
 	__asm {
 		PUSHAD
 		PUSH newUnitId_
@@ -113,10 +102,7 @@ void replaceUnitWithType(CUnit* unit, uint16 newUnitId) {
 		CALL Func_ReplaceUnitWithType
 		POPAD
 	}
-
 }
-
-;
 
 const uint32 Func_497ED0 = 0x00497ED0;
 static void makeSpriteVisible(CSprite* sprite) {
@@ -130,8 +116,6 @@ static void makeSpriteVisible(CSprite* sprite) {
 
 }
 
-;
-
 const uint32 Func_498A90 = 0x00498A90;
 void UpdateSpriteImagesForCloak(CSprite* sprite) {
 
@@ -144,11 +128,8 @@ void UpdateSpriteImagesForCloak(CSprite* sprite) {
 
 }
 
-;
-
 const uint32 Func_Irradiate = 0x00454E00;
 void spawnCreeper(CUnit* unit) {
-
 	int width = mapTileSize->width * 32;
 	int height = mapTileSize->height * 32;
 	if (unit->position.y >= 64 && unit->position.x >= 64 &&
@@ -191,13 +172,10 @@ void spawnCreeper(CUnit* unit) {
 				POPAD
 			}
 		}
-
 	}
 }
 
-
 #include "SCBW\UnitFinder.h"
-
 void shamanProc(CUnit* shaman, bool organic, uint32 heal, CUnit* target) {
 	if (target->playerId != shaman->playerId) {
 		if (!scbw::isAlliedTo(target->playerId, shaman->playerId)) {
@@ -239,7 +217,6 @@ void shamanProc(CUnit* shaman, bool organic, uint32 heal, CUnit* target) {
 		} else {
 			(tgt->sprite)->createTopOverlay(1158, 0, 0, 0);
 		}
-
 	}
 	target->heal(heal * 256, shaman);
 }
@@ -248,13 +225,10 @@ void shamanProc(CUnit* shaman, bool organic, uint32 heal, CUnit* target) {
 #include "limits/sfx_extender.h"
 #include "hooks/weapons/wpnspellhit.h"
 #include "globals.h"
-
 class CorpseFinder {
 public:
 	//
-	//
 	// This finder is very inefficient performance-wise, it should be improved later
-	//
 	//
 	std::vector<CThingy*> corpses;
 
@@ -301,7 +275,6 @@ public:
 };
 
 namespace hooks {
-
 	void firstFrame();
 	void tickUnit(CUnit* unit, CorpseFinder& corpses);
 
@@ -353,14 +326,12 @@ namespace hooks {
 			scbw::setInGameLoopState(false);
 		}
 		return true;
-
 	}
 
 	void firstFrame() {
 		//Write your code here
 		hooks::initializeScreenLocations();
 		hooks::clearActions();
-
 		globals.reset();
 		for (int i = 0; i < 8; i++) {
 			scbw::setUpgradeLevel(i, UpgradeId::VentralSacs, 1);
@@ -370,7 +341,7 @@ namespace hooks {
 	void tickUnit(CUnit* unit, CorpseFinder& corpses) {
 		globals.unitFrameHook(unit);
 		//hooks::ShowHealthBar(unit);
-
+		// 
 		// Reviving from Lazarus Agent
 		if (scbw::get_generic_value(unit, ValueId::IsReviving) == 1 &&
 			unit->sprite->mainGraphic->animation != IscriptAnimation::Unused1) {
@@ -388,42 +359,39 @@ namespace hooks {
 
 		// Zoryusthaleth - Reconstitution
 		else if (unit->id == UnitId::ZergZoryusthaleth) {
-			if (scbw::get_generic_rust_value(unit, ValueId::Reconstitution) == 1) {
-				auto r = 128;
-				std::vector<CThingy*> corpseList = corpses.findCorpses(unit->position.x - r,
-					unit->position.x + r, unit->position.y - r, unit->position.y + r
-				);
-				for (auto a : corpseList) {
-					if (unit->energy >= 5 * 256 && !(a->sprite->flags & CSprite_Flags::Flag04)) {
-						unit->spendUnitEnergy(5 * 256);
-						scbw::UnitFinder(
-							unit->getX() - r,
-							unit->getY() - r,
-							unit->getX() + r,
-							unit->getY() + r
-						).forEach([&](CUnit* target) {
-							if (!(scbw::isAlliedTo(target->playerId, unit->playerId))) {
-								return;
-							}
-							if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
-								return;
-							}
-							if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic)) {
-								return;
-							}
-
-							target->heal(0.1 * units_dat::MaxHitPoints[target->id], unit);
-						});
-						/*
-						CThingy* thingy = scbw::createThingy(_set your id here_,
-							a->sprite->position.x,a->sprite->position.y, 11);
-						if (thingy != nullptr) {
-							thingy->sprite->elevationLevel = 11;
-							scbw::setThingyVisibilityFlags(thingy);
-						}*/
-						a->sprite->flags |= CSprite_Flags::Flag04;
-						a->sprite->playIscriptAnim(IscriptAnimation::Death);
-					}
+			auto r = 128;
+			std::vector<CThingy*> corpseList = corpses.findCorpses(unit->position.x - r,
+				unit->position.x + r, unit->position.y - r, unit->position.y + r
+			);
+			for (auto a : corpseList) {
+				if (unit->energy >= 5 * 256 && !(a->sprite->flags & CSprite_Flags::Flag04)) {
+					unit->spendUnitEnergy(5 * 256);
+					scbw::UnitFinder(
+						unit->getX() - r,
+						unit->getY() - r,
+						unit->getX() + r,
+						unit->getY() + r
+					).forEach([&](CUnit* target) {
+						if (!(scbw::isAlliedTo(target->playerId, unit->playerId))) {
+							return;
+						}
+						if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
+							return;
+						}
+						if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic)) {
+							return;
+						}
+						target->heal(0.1 * units_dat::MaxHitPoints[target->id], unit);
+					});
+					/*
+					CThingy* thingy = scbw::createThingy(_set your id here_,
+						a->sprite->position.x,a->sprite->position.y, 11);
+					if (thingy != nullptr) {
+						thingy->sprite->elevationLevel = 11;
+						scbw::setThingyVisibilityFlags(thingy);
+					}*/
+					a->sprite->flags |= CSprite_Flags::Flag04;
+					a->sprite->playIscriptAnim(IscriptAnimation::Death);
 				}
 			}
 		}
@@ -577,10 +545,9 @@ namespace hooks {
 		else if (unit->id == UnitId::TerranApostle) {
 			if (scbw::get_generic_rust_value(unit, ValueId::CastLazarusAgent) == 1) {
 				scbw::set_generic_rust_value(unit, ValueId::CastLazarusAgent, 0);
-
-				//cast lazarus agent						
+				// Cast Lazarus Agent						
 				unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256);
-				auto r = 128;//radius
+				auto r = 4 * 32;
 				auto n = unitRangeCount(unit, CFlags::NoBuilding | CFlags::Ally |
 					CFlags::OnlyOrganic | CFlags::IncludingSelf, {});
 				scbw::UnitFinder unitsInSplash(unit->getX() - r, unit->getY() - r,
@@ -588,7 +555,7 @@ namespace hooks {
 				for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 					auto picked_unit = unitsInSplash.getUnit(i);
 					if (n(picked_unit)) {
-						//apply lazarus agent
+						// Apply Lazarus Agent
 						scbw::set_generic_value(picked_unit, ValueId::LazarusAgent, 1);
 						scbw::set_generic_value(picked_unit, ValueId::LazarusAgentApostleSrc, (uint32)unit);
 						picked_unit->sprite->createTopOverlay(1265);
@@ -919,7 +886,7 @@ namespace hooks {
 			unit->updateSpeed();
 		}
 
-		// Nexus behavior: increase psi generated by Pylons
+		// Pylon - Warp Matrix behavior: increase supply based on number of Nexuses
 		if (unit->id == UnitId::ProtossPylon
 			&& (unit->status & UnitStatus::Completed)) {
 			uint32 nexusCount = unitCountTable[UnitId::ProtossNexus].player[unit->playerId];
@@ -938,9 +905,15 @@ namespace hooks {
 				pos.x + radius,
 				pos.y + radius
 			).forEach([&](CUnit* target) {
-				if (units_dat::SupplyProvided[target->id] == 0) return;
-				if (target->playerId != unit->playerId && !scbw::isAlliedTo(unit->playerId, target->playerId)) return;
-				if (!(target->status & UnitStatus::Completed)) return;
+				if (units_dat::SupplyProvided[target->id] == 0) {
+					return;
+				}
+				if (target->playerId != unit->playerId && !scbw::isAlliedTo(unit->playerId, target->playerId)) {
+					return;
+				}
+				if (!(target->status & UnitStatus::Completed)) {
+					return;
+				}
 
 				uint32 stacks = scbw::get_generic_value(target, ValueId::TreasuryStacks);
 				if (*elapsedTimeFrames % 36 == 0 && stacks == 0) {
@@ -1041,20 +1014,21 @@ namespace hooks {
 		}
 
 		// Zoryusthaleth - Swarming Omen ability
-		if (scbw::get_generic_rust_value(unit, ValueId::SwarmingOmenAbility) == 1) {
+		if (unit->id == UnitId::ZergZoryusthaleth
+			&& !(scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer))
+			&& unit->getCurrentHpInGame() < unit->getMaxHpInGame() / 2) {
 			scbw::set_generic_timer(unit, ValueId::SwarmingOmenTimer, 15 * 24);
-			scbw::set_generic_rust_value(unit, ValueId::SwarmingOmenAbility, 0);
-			unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::SwarmingOmen] * 256);
 		}
 
 		// Remove Swarming Omen overlay
 		if (scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer) == 1) {
-			//			unit->removeOverlay();
+//			unit->removeOverlay();
 		}
 
 		// TODO: Finish
 		// Controlled Demolition - initial cast
-		/*if (conditional) { // ability cast
+		/*
+		if (conditional) { // ability cast
 			scbw::set_generic_timer(unit, ValueId::ControlledDemolition, 10*24);
 			int32 overlayOffset = scbw::getOverlayOffset(unit->id);
 		//	unit->sprite->createOverlay(ImageId::ControlledDemolitionOverlay_Small + overlayOffset);
@@ -1068,7 +1042,8 @@ namespace hooks {
 		}
 
 		// Emergency Detonation - initial cast
-		/*if (conditional) { // ability cast
+		/*
+		if (conditional) { // ability cast
 			scbw::set_generic_timer(unit, ValueId::EmergencyDetonation, (uint32)(0.5 * scbw::get_generic_timer(unit, ValueId::ControlledDemolition)));
 			int32 overlayOffset = scbw::getOverlayOffset(unit->id);
 		//	unit->sprite->createOverlay(ImageId::EmergencyDetonationOverlay_Small + overlayOffset);
@@ -1082,9 +1057,11 @@ namespace hooks {
 		}
 
 		// Demiurge - Gods Made Flesh - initial cast
-		/*if (conditional) { // a linked Demiurge casts the ability
+		/*
+		if (conditional) { // a linked Demiurge casts the ability
 			// unit finder?
-		}*/
+		}
+		*/
 
 		// Demiurge - Gods Made Flesh - kill unit when the effect ends
 		if (scbw::get_generic_timer(unit, ValueId::GodsMadeFlesh) == 1) {
