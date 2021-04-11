@@ -26,6 +26,7 @@ namespace scbw {
 	bool teleport(CUnit* u, Point16 target, uint16 spriteAnimation = 0, bool preserveOrder = false);
 	CFlingy* createFlingy(uint32 flingyId, uint32 playerId, uint32 x, uint32 y);
 	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);
+	CThingy* createAndInitThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId = 11, int elevationLevel = 11);
 	Point32 rotate_point(Point32 anchor, Point32 point, double angle_degrees);
 
 	void SendCommand(uint8* params, uint32 param_length);

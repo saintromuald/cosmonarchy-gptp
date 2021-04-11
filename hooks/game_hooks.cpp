@@ -226,26 +226,35 @@ void shamanProc(CUnit* shaman, bool organic, uint32 heal, CUnit* target) {
 #include "hooks/weapons/wpnspellhit.h"
 #include "globals.h"
 class CorpseFinder {
+private:
+	static bool sortCompareXPos(CThingy* a, CThingy* b) {
+		return a->sprite->position.x > b->sprite->position.x;
+	}
+
+	static bool sortCompareYPos(CThingy* a, CThingy* b) {
+		return a->sprite->position.y > b->sprite->position.y;
+	}
+
+	static bool lowerboundCompareXPos(CThingy* thingy, int value) {
+		return thingy->sprite->position.x < value;
+	}
+
+	static bool lowerboundCompareYPos(CThingy* thingy, int value) {
+		return thingy->sprite->position.y < value;
+	}
+
 public:
 	static std::vector<CThingy*> corpsesX;
 	static std::vector<CThingy*> corpsesY;
 
-	static bool compareXPos(CThingy* thingy, int value) {
-		return thingy->sprite->position.x < value;
-	}
-
-	static bool compareYPos(CThingy* thingy, int value) {
-		return thingy->sprite->position.y < value;
-	}
-
 	static std::vector<CThingy*> findCorpses(int left, int top, int right, int bottom) {
-		auto foundCorpsesXStart = std::lower_bound(corpsesX.begin(), corpsesX.end(), left, compareXPos);
-		auto foundCorpsesXEnd = std::upper_bound(foundCorpsesXStart, corpsesX.end(), right, compareXPos);
+		auto foundCorpsesXStart = std::lower_bound(corpsesX.begin(), corpsesX.end(), left, lowerboundCompareXPos);
+		auto foundCorpsesXEnd = std::lower_bound(foundCorpsesXStart, corpsesX.end(), right, lowerboundCompareXPos);
 		auto foundCorpsesX = std::vector<CThingy*>(foundCorpsesXStart, foundCorpsesXEnd);
 		std::sort(foundCorpsesX.begin(), foundCorpsesX.end());
 
-		auto foundCorpsesYStart = std::lower_bound(corpsesY.begin(), corpsesY.end(), top, compareYPos);
-		auto foundCorpsesYEnd = std::upper_bound(foundCorpsesYStart, corpsesY.end(), bottom, compareYPos);
+		auto foundCorpsesYStart = std::lower_bound(corpsesY.begin(), corpsesY.end(), top, lowerboundCompareYPos);
+		auto foundCorpsesYEnd = std::lower_bound(foundCorpsesYStart, corpsesY.end(), bottom, lowerboundCompareYPos);
 		auto foundCorpsesY = std::vector<CThingy*>(foundCorpsesYStart, foundCorpsesYEnd);
 		std::sort(foundCorpsesY.begin(), foundCorpsesY.end());
 
@@ -291,12 +300,8 @@ public:
 				}
 			}
 		}
-		std::sort(corpsesX.begin(), corpsesX.end(), [&](CThingy* a, CThingy* b) {
-			return a->sprite->position.x > a->sprite->position.x;
-		});
-		std::sort(corpsesY.begin(), corpsesY.end(), [&](CThingy* a, CThingy* b) {
-			return a->sprite->position.y > a->sprite->position.y;
-		});
+		std::sort(corpsesX.begin(), corpsesX.end(), sortCompareXPos);
+		std::sort(corpsesY.begin(), corpsesY.end(), sortCompareYPos);
 	}
 };
 
@@ -386,7 +391,7 @@ namespace hooks {
 		}
 
 		// Zoryusthaleth - Reconstitution
-		else if (unit->id == UnitId::ZergZoryusthaleth) {
+		else if (unit->id == UnitId::ZergZoryusthaleth && scbw::get_generic_timer(unit, ValueId::ReconstitutionCooldown) == 0) {
 			auto radius = 128;
 			std::vector<CThingy*> corpseList = CorpseFinder::findCorpses(
 				unit->position.x - radius,
@@ -394,36 +399,37 @@ namespace hooks {
 				unit->position.x + radius,
 				unit->position.y + radius
 			);
-			for (auto a : corpseList) {
-				if (unit->energy >= 5 * 256 && !(a->sprite->flags & CSprite_Flags::Flag04)) {
-					unit->spendUnitEnergy(5 * 256);
-					scbw::UnitFinder(
-						unit->getX() - radius,
-						unit->getY() - radius,
-						unit->getX() + radius,
-						unit->getY() + radius
-					).forEach([&](CUnit* target) {
-						if (!(scbw::isAlliedTo(target->playerId, unit->playerId))) {
-							return;
-						}
-						if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
-							return;
-						}
-						if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic)) {
-							return;
-						}
-						target->heal(0.1 * units_dat::MaxHitPoints[target->id], unit);
-					});
-					/*
-					CThingy* thingy = scbw::createThingy(_set your id here_,
-						a->sprite->position.x,a->sprite->position.y, 11);
-					if (thingy != nullptr) {
-						thingy->sprite->elevationLevel = 11;
-						scbw::setThingyVisibilityFlags(thingy);
-					}*/
-					a->sprite->flags |= CSprite_Flags::Flag04;
-					a->sprite->playIscriptAnim(IscriptAnimation::Death);
+			for (auto corpse : corpseList) {
+				if (unit->energy < 5 * 256) {
+					break;
 				}
+				if (corpse->sprite->flags & CSprite_Flags::Flag04) {
+					continue;
+				}
+				unit->spendUnitEnergy(5 * 256);
+				scbw::UnitFinder(
+					unit->getX() - radius,
+					unit->getY() - radius,
+					unit->getX() + radius,
+					unit->getY() + radius
+				).forEach([&](CUnit* target) {
+					if (!(scbw::isAlliedTo(target->playerId, unit->playerId))) {
+						return;
+					}
+					if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
+						return;
+					}
+					if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic)) {
+						return;
+					}
+					target->heal(0.1 * units_dat::MaxHitPoints[target->id], unit);
+					scbw::createAndInitThingy(SpriteId::White_Circle_Invisible, target->position.x, target->position.y);
+				});
+				scbw::createAndInitThingy(SpriteId::White_Circle_Invisible, corpse->sprite->position.x, corpse->sprite->position.y);
+				corpse->sprite->flags |= CSprite_Flags::Flag04;
+				corpse->sprite->playIscriptAnim(IscriptAnimation::Death);
+				scbw::set_generic_timer(unit, ValueId::ReconstitutionCooldown, 1 * 24);
+				break;
 			}
 		}
 
@@ -1084,7 +1090,7 @@ namespace hooks {
 
 		// Demiurge - Gods Made Flesh - initial cast
 		/*
-		if (conditional) { // a linked Demiurge casts the ability
+		if (conditional) { // corpse linked Demiurge casts the ability
 			// unit finder?
 		}
 		*/

@@ -229,6 +229,16 @@ namespace scbw {
 		}
 		return thingy;
 	}
+
+	CThingy* createAndInitThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId, int elevationLevel) {
+		CThingy* thingy = createThingy(spriteId, x, y, playerId);
+		if (thingy != nullptr) {
+			thingy->sprite->elevationLevel = elevationLevel;
+			scbw::setThingyVisibilityFlags(thingy);
+		}
+		return thingy;
+	}
+
 	;
 
 	const uint32 Func_SendCommand = 0x00485BD0;

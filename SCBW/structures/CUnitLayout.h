@@ -298,6 +298,7 @@ namespace ValueId {
 		ClarionLinkFeedback = 163,
 		CausticDischargeSpeed = 164,
 		IonFieldSpeed = 165,
+		ReconstitutionCooldown = 166,
 	};
 }
 #include "SCBW\enumerations\TechId.h"
