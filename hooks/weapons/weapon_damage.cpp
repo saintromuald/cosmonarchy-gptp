@@ -237,14 +237,17 @@ namespace hooks {
 		}
 
 		bool canDamage = true; // debug only!
+		// Ai_ReactToHit crash - null town
 		if (data.target->pAI != nullptr) {
+			// Ai_ReactToHit crash - null town
 			WorkerAi* ai = (WorkerAi*)data.target->pAI;
 			if (ai->type == 2 || ai->type == 3) {
 				if (ai->town == nullptr) {
-					scbw::printFormattedText("Ai_ReactToHit crash! Attacker id %d, data.target id %d", data.attacker->id, data.target->id);
+					scbw::printFormattedText("Ai_ReactToHit crash - null town! Attacker id %d, Attacker player %d, Target id %d, Target player %d",
+						data.attacker->id, data.attacker->playerId, data.target->id, data.target->playerId);
 					canDamage = false;
 				}
-			}
+			}			
 		}
 
 		if (!data.dontProcPhaseLink) { // damage from phase link was already calculated
