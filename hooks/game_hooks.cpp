@@ -233,24 +233,23 @@ public:
 	static std::vector<CThingy*> corpsesX;
 	static std::vector<CThingy*> corpsesY;
 
-	static bool compareXpos(CThingy* thingy, int value) {
+	static bool compareXPos(CThingy* thingy, int value) {
 		return thingy->sprite->position.x < value;
 	}
 
-	static bool compareYpos(CThingy* thingy, int value) {
+	static bool compareYPos(CThingy* thingy, int value) {
 		return thingy->sprite->position.y < value;
 	}
 
 	static std::vector<CThingy*> findCorpses(int left, int right, int top, int bottom) {
-		auto foundCorpsesX = std::vector<CThingy*>(
-			std::lower_bound(corpsesX.begin(), corpsesX.end(), left, compareXpos),
-			std::lower_bound(corpsesX.begin(), corpsesX.end(), right, compareXpos));
-
-		auto foundCorpsesY = std::vector<CThingy*>(
-			std::lower_bound(corpsesY.begin(), corpsesY.end(), top, compareYpos),
-			std::lower_bound(corpsesY.begin(), corpsesY.end(), bottom, compareYpos));
-
+		auto foundCorpsesXStart = std::lower_bound(corpsesX.begin(), corpsesX.end(), left, compareXPos);
+		auto foundCorpsesXEnd = std::upper_bound(foundCorpsesXStart, corpsesX.end(), right, compareXPos);
+		auto foundCorpsesX = std::vector<CThingy*>(foundCorpsesXStart, foundCorpsesXEnd);
 		std::sort(foundCorpsesX.begin(), foundCorpsesX.end());
+
+		auto foundCorpsesYStart = std::lower_bound(corpsesY.begin(), corpsesY.end(), top, compareYPos);
+		auto foundCorpsesYEnd = std::upper_bound(foundCorpsesYStart, corpsesY.end(), bottom, compareYPos);
+		auto foundCorpsesY = std::vector<CThingy*>(foundCorpsesYStart, foundCorpsesYEnd);
 		std::sort(foundCorpsesY.begin(), foundCorpsesY.end());
 
 		std::vector<CThingy*> foundCorpses(foundCorpsesX.size());
