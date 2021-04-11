@@ -3,6 +3,8 @@
 #include "globals.h"
 #include "hook_tools.h"
 #include "hooks/limits/fake_unitid_extender.h"
+#include <chrono>
+#include <thread>
 //Hook header files
 #include "hooks/game_hooks.h"
 #include "graphics/draw_hook.h"
@@ -38,7 +40,6 @@
 #include "hooks/unit_stats/weapon_range.h"
 #include "hooks/interface/weapon_armor_tooltip.h"
 
-//in alphabetical order
 #include "hooks/orders/ai/ai_orders.h"
 #include "hooks/orders/base_orders/attack_orders.h"
 #include "hooks/interface/btns_cond.h"
@@ -146,9 +147,15 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 		return FALSE;
 	}
 
-	if (!checkStarCraftExeVersion(exePath))
+	if (!checkStarCraftExeVersion(exePath)) {
 		return FALSE;
+	}
 
+	// Debug
+	/*
+	std::chrono::milliseconds sleepq7(15000);
+	std::this_thread::sleep_for(sleepq7);
+	*/
 	// quick drop timeout -- Veeq7
 	memoryPatch(0x004A345D + 2, (uint32)0);
 

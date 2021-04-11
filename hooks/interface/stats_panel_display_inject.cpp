@@ -4,9 +4,7 @@
 namespace {
 
 	void __declspec(naked) stats_panel_display_Wrapper() {
-
 		static BinDlg* dialog;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -14,17 +12,14 @@ namespace {
 			MOV dialog, EAX
 			PUSHAD
 		}
-
 		hooks::stats_panel_display(dialog);
-
 		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN 4
 		}
-
-	};
+	}
 
 	void __declspec(naked) getUnitRankString_Wrapper() { // 0042F370
 		static CUnit* a1;
@@ -41,6 +36,27 @@ namespace {
 		}
 	}
 
+	void __declspec(naked) statsArmorLevel_Wrapper() { // 00425600
+		static BinDlg* dialog;
+		static int32 unused;
+		static uint16 buttonRelated;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0x08]
+			MOV buttonRelated, EAX
+			POP EAX
+			MOV unused, EDX
+			MOV dialog, EAX
+			PUSHAD
+		}
+		hooks::statsArmorLevel(dialog, unused, buttonRelated);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
 }//unnamed namespace
 
 namespace hooks {
@@ -48,6 +64,7 @@ namespace hooks {
 	void injectStatsPanelDisplayHook() {
 		jmpPatch(stats_panel_display_Wrapper, 0x00426C60, 1);
 		jmpPatch(getUnitRankString_Wrapper, 0x0042F370, 2);
+//		jmpPatch(statsArmorLevel_Wrapper, 0x00425600, 1);
 	}
 
 } //hooks
