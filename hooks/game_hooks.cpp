@@ -423,9 +423,9 @@ namespace hooks {
 						return;
 					}
 					target->heal(0.1 * units_dat::MaxHitPoints[target->id], unit);
-					scbw::createAndInitThingy(SpriteId::White_Circle_Invisible, target->position.x, target->position.y);
+					//scbw::createAndInitThingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
 				});
-				scbw::createAndInitThingy(SpriteId::White_Circle_Invisible, corpse->sprite->position.x, corpse->sprite->position.y);
+				scbw::createAndInitThingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
 				corpse->sprite->flags |= CSprite_Flags::Flag04;
 				corpse->sprite->playIscriptAnim(IscriptAnimation::Death);
 				scbw::set_generic_timer(unit, ValueId::ReconstitutionCooldown, 1 * 24);
