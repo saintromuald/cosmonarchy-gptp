@@ -7,22 +7,17 @@
 namespace GPTP {
 
 	GameLogger logger;
-	bool doLogging = false;
+	bool doLogging = true;
 
 	bool GameLogger::startGame() {
 		if (doLogging) {
-
 			if (checkLogFile()) {
 				time_t currentTime;
 				time(&currentTime);
-
 				logFile << "Game started on " << ctime(&currentTime) << std::endl;
 			}
-
 			lastUpdatedFrame = -1;  //So logging is possible on frame 0
-
 		}
-
 		return true;
 	}
 
@@ -34,7 +29,6 @@ namespace GPTP {
 				logFile << "Game ended on " << ctime(&currentTime) << std::endl;
 			}
 		}
-
 		return true;
 	}
 
@@ -44,7 +38,6 @@ namespace GPTP {
 				if (updateFrame())
 					logFile << func;
 		}
-
 		return *this;
 	}
 
@@ -52,7 +45,6 @@ namespace GPTP {
 		if (doLogging) {
 			if (logFile.is_open())
 				return true;
-
 			time_t currentTime;
 			time(&currentTime);
 
@@ -62,7 +54,6 @@ namespace GPTP {
 
 			logFile.open(buffer);
 			return !logFile.fail();
-
 		} else {
 			return true;
 		}
@@ -70,17 +61,13 @@ namespace GPTP {
 
 	bool GameLogger::updateFrame() {
 		if (doLogging) {
-
 			const int currentFrame = *elapsedTimeFrames;
-
 			if (currentFrame > lastUpdatedFrame) {
 				lastUpdatedFrame = currentFrame;
 				logFile << "Frame " << currentFrame << ":\n";
 			}
-
 		}
-
 		return true;
 	}
 
-} //GPTP
+}
