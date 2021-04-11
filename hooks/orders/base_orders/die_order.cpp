@@ -1,125 +1,91 @@
 #include "die_order.h"
 #include <SCBW/api.h>
 
-
-//helper functions def
-
 namespace {
 
-	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);		//0x00488210
-	void clearUnitSprites(CSprite* unit_sprite, CSprite* subunit_sprite);	//0x00496F00
-	void function_00497480(CSprite* thingySprite, uint32 visibility_flags);	//0x00497480
-	void _UnitDestructor(CUnit* unit);										//0x004A0740
-	void UnitDestructor(CUnit* unit);										//0x004A0990
-	void hideAndDisableUnit(CUnit* unit);									//0x004E6340
+	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);		// 00488210
+	void clearUnitSprites(CSprite* unit_sprite, CSprite* subunit_sprite);			// 00496F00
+	void function_00497480(CSprite* thingySprite, uint32 visibility_flags);			// 00497480
+	void _UnitDestructor(CUnit* unit);												// 004A0740
+	void UnitDestructor(CUnit* unit);												// 004A0990
+	void hideAndDisableUnit(CUnit* unit);											// 004E6340
 
-} //unnamed namespace
+}
 
 namespace hooks {
 
 	void orders_Die(CUnit* unit) {
-
 		bool jump_to_795AB = false;
-
-		if (unit->userActionFlags & 4)
+		if (unit->userActionFlags & 4) {
 			hideAndDisableUnit(unit);
-
+		}
 		if (unit->subunit != nullptr) {
-
 			clearUnitSprites(unit->sprite, unit->subunit->sprite);
-
 			if (unit->subunit->subunit != nullptr) {
-
 				if (units_dat::BaseProperty[(unit->subunit->subunit)->id] & UnitProperty::Subunit) {
 					UnitDestructor(unit->subunit->subunit);
 					unit->subunit->subunit = nullptr;
 				}
-
-
 				_UnitDestructor(unit->subunit);
 				unit->subunit->sprite->free();
-
 				unit->subunit->sprite = nullptr;
 				unit->subunit = nullptr;
-
 			}
-
 		}
 
 		unit->mainOrderState = 1;
-
-		if (!(unit->sprite->flags & CSprite_Flags::Hidden)) {
-
-			if (
-				!(unit->status & UnitStatus::IsHallucination) ||
-				unit->status & UnitStatus::IsSelfDestructing
-				)
-				jump_to_795AB = true;
-			else {
-
-				CThingy* hallucination_smoke;
-
-				scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal01_WAV, unit);
-
-				hallucination_smoke =
-					createThingy(
-						SpriteId::Hallucination_Death1,
-						unit->getX(),
-						unit->getY(),
-						0
-					);
-
-				if (hallucination_smoke != nullptr) {
-
-					//allow players to see smoke if could already see unit vanishing
-					function_00497480(hallucination_smoke->sprite, unit->sprite->visibilityFlags);
-
+		if (unit->sprite != nullptr) {
+			if (!(unit->sprite->flags & CSprite_Flags::Hidden)) {
+				if (!(unit->status & UnitStatus::IsHallucination)
+					|| unit->status & UnitStatus::IsSelfDestructing) {
+					jump_to_795AB = true;
 				}
+				else {
+					CThingy* hallucination_smoke;
+					scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal01_WAV, unit);
+					hallucination_smoke =
+						createThingy(
+							SpriteId::Hallucination_Death1,
+							unit->getX(),
+							unit->getY(),
+							0
+						);
 
+					if (hallucination_smoke != nullptr) {
+						//allow players to see smoke if could already see unit vanishing
+						function_00497480(hallucination_smoke->sprite, unit->sprite->visibilityFlags);
+					}
+				}
 			}
-
 		}
 
 		if (!jump_to_795AB) {//79566
-
 			hideAndDisableUnit(unit);
-
 			if (unit->subunit != nullptr) {
-
 				if (units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit) {
 					UnitDestructor(unit->subunit);
 					unit->subunit = nullptr;
 				}
-
 			}
 
 			_UnitDestructor(unit);
 			unit->sprite->free();
 			unit->sprite = nullptr;
-
 		} else {
 			unit->sprite->playIscriptAnim(IscriptAnimation::Death, true);
 			_UnitDestructor(unit);
 		}
-
 	}
 
-	;
-
-} //namespace hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
+}
 
 namespace {
-
 	//original referenced name was replaceSprite (but this one is probably
 	//more accurate since it does create something rather than replacing)
 	const uint32 Func_CreateThingy = 0x00488210;
 	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
-
 		static CThingy* thingy;
 		int32 x_ = x;
-
 		__asm {
 			PUSHAD
 			PUSH playerId
@@ -130,16 +96,11 @@ namespace {
 			MOV thingy, EAX
 			POPAD
 		}
-
 		return thingy;
-
 	}
-
-	;
 
 	const uint32 Func_clearUnitSprites = 0x00496F00;
 	void clearUnitSprites(CSprite* unit_sprite, CSprite* subunit_sprite) {
-
 		__asm {
 			PUSHAD
 			MOV ECX, subunit_sprite
@@ -147,14 +108,10 @@ namespace {
 			CALL Func_clearUnitSprites
 			POPAD
 		}
-
 	}
-
-	;
 
 	const uint32 Func_Sub497480 = 0x00497480;
 	void function_00497480(CSprite* thingySprite, uint32 visibility_flags) {
-
 		__asm {
 			PUSHAD
 			MOV EBX, thingySprite
@@ -162,53 +119,36 @@ namespace {
 			CALL Func_Sub497480
 			POPAD
 		}
-
 	}
-
-	;
 
 	const uint32 Func__UnitDestructor = 0x004A0740;
 	void _UnitDestructor(CUnit* unit) {
-
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			CALL Func__UnitDestructor
 			POPAD
 		}
-
 	}
-
-	;
 
 	const uint32 Func_UnitDestructor = 0x004A0990;
 	void UnitDestructor(CUnit* unit) {
-
 		__asm {
 			PUSHAD
 			MOV ECX, unit
 			CALL Func_UnitDestructor
 			POPAD
 		}
-
 	}
-
-	;
 
 	const uint32 Func_unitDeathSomething_0 = 0x004E6340;
 	void hideAndDisableUnit(CUnit* unit) {
-
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_unitDeathSomething_0
 			POPAD
 		}
-
 	}
 
-	;
-
-} //Unnamed namespace
-
-//End of helper functions
+}
