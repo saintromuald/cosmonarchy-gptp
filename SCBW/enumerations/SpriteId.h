@@ -533,6 +533,7 @@ namespace SpriteId {
 		Criticality = 686,
 		CausticDischarge = 693,
 		IonField = 695,
+		ReconstitutionConsumption = 696,
 
 		// CORPSE \\
 
