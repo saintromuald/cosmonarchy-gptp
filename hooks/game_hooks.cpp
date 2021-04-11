@@ -230,19 +230,37 @@ public:
 	//
 	// This finder is very inefficient performance-wise, it should be improved later
 	//
-	std::vector<CThingy*> corpses;
+	static std::vector<CThingy*> corpsesX;
+	static std::vector<CThingy*> corpsesY;
 
-	std::vector<CThingy*> findCorpses(int left, int right, int top, int bottom) {
-		std::vector<CThingy*> corpseList;
-		for (auto a : corpses) {
-			if (a->sprite->position.x >= left && a->sprite->position.x <= right &&
-				a->sprite->position.y >= top && a->sprite->position.y <= bottom) {
-				corpseList.push_back(a);
-			}
-		}
-		return corpseList;
+	static std::vector<CThingy*> findCorpses(int left, int right, int top, int bottom) {
+		auto compareXpos = [](CThingy* thingy, int value) {
+			return thingy->sprite->position.x < value;
+		};
+		auto compareYpos = [](CThingy* thingy, int value) {
+			return thingy->sprite->position.y < value;
+		};
+
+		auto foundCorpsesX = std::vector<CThingy*>(
+			std::lower_bound(corpsesX.begin(), corpsesX.end(), left, compareXpos),
+			std::lower_bound(corpsesX.begin(), corpsesX.end(), right, compareXpos));
+
+		auto foundCorpsesY = std::vector<CThingy*>(
+			std::lower_bound(corpsesY.begin(), corpsesY.end(), top, compareYpos),
+			std::lower_bound(corpsesY.begin(), corpsesY.end(), bottom, compareYpos));
+
+		std::sort(foundCorpsesX.begin(), foundCorpsesX.end());
+		std::sort(foundCorpsesY.begin(), foundCorpsesY.end());
+
+		std::vector<CThingy*> foundCorpses(foundCorpsesX.size());
+		auto it = std::set_intersection(foundCorpsesX.begin(), foundCorpsesX.end(), foundCorpsesY.begin(), foundCorpsesY.end(), foundCorpses.begin());
+		foundCorpses.resize(it - foundCorpses.begin());
+		return foundCorpses;
 	}
-	void sortAllCorpses() {
+
+	static void sortAllCorpses() {
+		corpsesX.clear();
+		corpsesY.clear();
 		for (CThingy* ls = *first_lone_sprite; ls; ls = ls->next) {
 			if (ls->sprite) {
 				switch (ls->sprite->spriteId) {
@@ -264,19 +282,27 @@ public:
 					case SpriteId::Corpse_ZergBuildingLarge:
 					case SpriteId::Corpse_ZergBuildingSmall:
 					case SpriteId::Corpse_Zergling:
-						corpses.push_back(ls);
-						break;
-					default:
+						corpsesX.push_back(ls);
+						corpsesY.push_back(ls);
 						break;
 				}
 			}
 		}
+		std::sort(corpsesX.begin(), corpsesX.end(), [&](CThingy* a, CThingy* b) {
+			return a->sprite->position.x > a->sprite->position.x;
+		});
+		std::sort(corpsesY.begin(), corpsesY.end(), [&](CThingy* a, CThingy* b) {
+			return a->sprite->position.y > a->sprite->position.y;
+		});
 	}
 };
 
+std::vector<CThingy*> CorpseFinder::corpsesX;
+std::vector<CThingy*> CorpseFinder::corpsesY;
+
 namespace hooks {
 	void firstFrame();
-	void tickUnit(CUnit* unit, CorpseFinder& corpses);
+	void tickUnit(CUnit* unit);
 
 	/// This hook is called every frame
 	bool nextFrame() {
@@ -316,12 +342,11 @@ namespace hooks {
 			}
 
 			//Sort corpses
-			CorpseFinder corpses;
-			corpses.sortAllCorpses();
+			CorpseFinder::sortAllCorpses();
 
 			// Loop through all visible units in the game.
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
-				tickUnit(unit, corpses);
+				tickUnit(unit);
 			}
 			scbw::setInGameLoopState(false);
 		}
@@ -338,7 +363,7 @@ namespace hooks {
 		}
 	}
 
-	void tickUnit(CUnit* unit, CorpseFinder& corpses) {
+	void tickUnit(CUnit* unit) {
 		globals.unitFrameHook(unit);
 		//hooks::ShowHealthBar(unit);
 		// 
@@ -359,18 +384,21 @@ namespace hooks {
 
 		// Zoryusthaleth - Reconstitution
 		else if (unit->id == UnitId::ZergZoryusthaleth) {
-			auto r = 128;
-			std::vector<CThingy*> corpseList = corpses.findCorpses(unit->position.x - r,
-				unit->position.x + r, unit->position.y - r, unit->position.y + r
+			auto radius = 128;
+			std::vector<CThingy*> corpseList = CorpseFinder::findCorpses(
+				unit->position.x - radius,
+				unit->position.x + radius,
+				unit->position.y - radius,
+				unit->position.y + radius
 			);
 			for (auto a : corpseList) {
 				if (unit->energy >= 5 * 256 && !(a->sprite->flags & CSprite_Flags::Flag04)) {
 					unit->spendUnitEnergy(5 * 256);
 					scbw::UnitFinder(
-						unit->getX() - r,
-						unit->getY() - r,
-						unit->getX() + r,
-						unit->getY() + r
+						unit->getX() - radius,
+						unit->getY() - radius,
+						unit->getX() + radius,
+						unit->getY() + radius
 					).forEach([&](CUnit* target) {
 						if (!(scbw::isAlliedTo(target->playerId, unit->playerId))) {
 							return;
@@ -1017,7 +1045,7 @@ namespace hooks {
 
 		// Remove Swarming Omen overlay
 		if (scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer) == 1) {
-//			unit->removeOverlay();
+			//			unit->removeOverlay();
 		}
 
 		// TODO: Finish
