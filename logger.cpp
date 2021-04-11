@@ -7,7 +7,7 @@
 namespace GPTP {
 
 	GameLogger logger;
-	bool doLogging = true;
+	bool doLogging = false; // Now handled by 'verbose' config option in config.yml
 
 	bool GameLogger::startGame() {
 		if (doLogging) {
@@ -16,7 +16,7 @@ namespace GPTP {
 				time(&currentTime);
 				logFile << "Game started on " << ctime(&currentTime) << std::endl;
 			}
-			lastUpdatedFrame = -1;  //So logging is possible on frame 0
+			lastUpdatedFrame = -1;  // So logging is possible on frame 0
 		}
 		return true;
 	}
