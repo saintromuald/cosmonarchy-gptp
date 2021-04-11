@@ -266,23 +266,29 @@ public:
 			if (ls->sprite) {
 				switch (ls->sprite->spriteId) {
 					case SpriteId::Corpse_Apostle:
+					case SpriteId::Corpse_Aspirant:
 					case SpriteId::Corpse_Bactalisk:
 					case SpriteId::Corpse_Broodling:
-					case SpriteId::Corpse_Isthrathaleth:
+					case SpriteId::Corpse_Cleric:
 					case SpriteId::Corpse_Dracadin:
 					case SpriteId::Corpse_Droleth:
 					case SpriteId::Corpse_Egg:
-					case SpriteId::Corpse_Harakan:
 					case SpriteId::Corpse_Eidolon:
+					case SpriteId::Corpse_Harakan:
 					case SpriteId::Corpse_Hydralisk:
-					case SpriteId::Corpse_Larva:
+					case SpriteId::Corpse_Isthrathaleth:
 					case SpriteId::Corpse_Lakizilisk:
+					case SpriteId::Corpse_Larva:
 					case SpriteId::Corpse_Maverick:
-					case SpriteId::Corpse_Cleric:
+					case SpriteId::Corpse_Scribe:
 					case SpriteId::Corpse_Ultrakor:
+					case SpriteId::Corpse_Zergling:
+					case SpriteId::Corpse_TerranBuildingLarge:
+					case SpriteId::Corpse_TerranBuildingSmall:
+					case SpriteId::Corpse_ProtossBuildingLarge:
+					case SpriteId::Corpse_ProtossBuildingSmall:
 					case SpriteId::Corpse_ZergBuildingLarge:
 					case SpriteId::Corpse_ZergBuildingSmall:
-					case SpriteId::Corpse_Zergling:
 						corpsesX.push_back(ls);
 						corpsesY.push_back(ls);
 						break;
