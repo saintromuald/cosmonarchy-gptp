@@ -154,12 +154,13 @@ bool irradiateTarget(CUnit* unit) {
 void augurSacrifice(CUnit* target) {
 	if (scbw::get_generic_value(target, ValueId::AugurSafetyCheck) == 0) {
 		scbw::set_generic_value(target, ValueId::AugurSafetyCheck, 1);
-		CUnit* nearest = scbw::UnitFinder(
-			target->getX() - 384,
-			target->getY() - 384,
-			target->getX() + 384,
-			target->getY() + 384
-		).getNearestTarget(target, [&](CUnit* unit) {
+		const int radius = 6 * 32;
+		CUnit* nearest = scbw::UnitFinder::getNearestTarget(
+			target->getX() - radius,
+			target->getY() - radius,
+			target->getX() + radius,
+			target->getY() + radius,
+			target, [&](CUnit* unit) {
 			//Don't attack friendly / allied units
 			if (unit->sprite == nullptr) {
 				return false;
