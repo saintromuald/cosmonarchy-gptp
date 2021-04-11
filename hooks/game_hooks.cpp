@@ -255,7 +255,7 @@ public:
 		return foundCorpses;
 	}
 
-	static void sortAllCorpses() {
+	static void findCorpses() {
 		corpsesX.clear();
 		corpsesY.clear();
 		for (CThingy* ls = *first_lone_sprite; ls; ls = ls->next) {
@@ -344,8 +344,8 @@ namespace hooks {
 				}
 			}
 
-			//Sort corpses
-			CorpseFinder::sortAllCorpses();
+			// Find corpses
+			CorpseFinder::findCorpses();
 
 			// Loop through all visible units in the game.
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next) {
