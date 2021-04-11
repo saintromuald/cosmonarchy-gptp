@@ -227,9 +227,6 @@ void shamanProc(CUnit* shaman, bool organic, uint32 heal, CUnit* target) {
 #include "globals.h"
 class CorpseFinder {
 public:
-	//
-	// This finder is very inefficient performance-wise, it should be improved later
-	//
 	static std::vector<CThingy*> corpsesX;
 	static std::vector<CThingy*> corpsesY;
 
