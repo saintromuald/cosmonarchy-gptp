@@ -57,14 +57,37 @@ namespace {
 		}
 	}
 
-}//unnamed namespace
+	void __declspec(naked) statsWeaponLevel_Wrapper() { // 00425790
+		static BinDlg* dialog;
+		static uint16 buttonRelated;
+		static uint8 weaponId;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV EAX, [EBP + 0xC]
+			MOV weaponId, AL
+			MOV EAX, [EBP + 0x08]
+			MOV buttonRelated, AX
+			POP EAX
+			MOV dialog, EAX
+			PUSHAD
+		}
+		hooks::statsWeaponLevel(dialog, buttonRelated, weaponId);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
+
+}
 
 namespace hooks {
 
 	void injectStatsPanelDisplayHook() {
-		jmpPatch(stats_panel_display_Wrapper, 0x00426C60, 1);
-		jmpPatch(getUnitRankString_Wrapper, 0x0042F370, 2);
-//		jmpPatch(statsArmorLevel_Wrapper, 0x00425600, 1);
+		jmpPatch(stats_panel_display_Wrapper,		0x00426C60, 1);
+		jmpPatch(getUnitRankString_Wrapper,			0x0042F370, 2);
+//		jmpPatch(statsArmorLevel_Wrapper,			0x00425600, 1);
+//		jmpPatch(statsWeaponLevel_Wrapper,			0x00425790, 1);
 	}
 
-} //hooks
+} //

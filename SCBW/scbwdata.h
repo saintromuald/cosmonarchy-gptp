@@ -456,30 +456,30 @@ namespace sfx_dat {
 namespace weapons_dat {
 SCBW_DATA(const DatLoad*, weaponsDat, 0x00513868);
 
-SCBW_DATA(uint16*, Label,              weaponsDat[0].address); //006572E0
-SCBW_DATA(uint32*, FlingyId,           weaponsDat[1].address); //00656CA8
-//SCBW_DATA(uint8*, ???,				weaponsDat[2].address); //006573E8 //"Special Attack" according to EUDDB
-SCBW_DATA(TargetFlag*, TargetFlags, weaponsDat[3].address); //00657998
-SCBW_DATA(uint32*, MinRange,           weaponsDat[4].address); //00656A18
-SCBW_DATA(uint32*, MaxRange,           weaponsDat[5].address); //00657470
-SCBW_DATA(uint8*,  DamageUpgrade,      weaponsDat[6].address); //006571D0
-SCBW_DATA(uint8*,  DamageType,         weaponsDat[7].address); //00657258 Normal, Explosive, etc.. Use with DamageType::Enum.
-SCBW_DATA(uint8*,  Behavior,           weaponsDat[8].address); //00656670 Fly and follow target, appear on target unit, etc. Use with WeaponBehavior::Enum.
-SCBW_DATA(uint8*,  RemoveAfter,        weaponsDat[9].address); //00657040
-SCBW_DATA(uint8*,  ExplosionType,      weaponsDat[10].address);//006566F8 NormalHit, RadialSplash, EnemySplash, etc. Use with WeaponEffect::Enum.
-SCBW_DATA(uint16*, InnerSplashRadius,  weaponsDat[11].address);//00656888
-SCBW_DATA(uint16*, MediumSplashRadius, weaponsDat[12].address);//006570C8
-SCBW_DATA(uint16*, OuterSplashRadius,  weaponsDat[13].address);//00657780
-SCBW_DATA(uint16*, DamageAmount,       weaponsDat[14].address);//00656EB0
-SCBW_DATA(uint16*, DamageBonus,        weaponsDat[15].address);//00657678
-SCBW_DATA(uint8*,  Cooldown,           weaponsDat[16].address);//00656FB8
-SCBW_DATA(uint8*,  DamageFactor,       weaponsDat[17].address);//006564E0
-SCBW_DATA(uint8*,  AttackAngle,        weaponsDat[18].address);//00656990
-SCBW_DATA(uint8*,  LaunchSpin,         weaponsDat[19].address);//00657888
-SCBW_DATA(uint8*,  ForwardOffset,      weaponsDat[20].address);//00657910
-SCBW_DATA(uint8*,  VerticalOffset,     weaponsDat[21].address);//00656C20
-//SCBW_DATA(uint16*, ???,				weaponsDat[22].address);//00656568 //Target Error Message according to EUDDB
-//SCBW_DATA(uint16*, ???,				weaponsDat[23].address);//00656780 //Icon according to EUDDB
+SCBW_DATA(uint16*, Label,				weaponsDat[0].address);  // 006572E0
+SCBW_DATA(uint32*, FlingyId,			weaponsDat[1].address);  // 00656CA8
+SCBW_DATA(uint8*, SpecialAttack,		weaponsDat[2].address);  // 006573E8 //"Special Attack" according to EUDDB
+SCBW_DATA(TargetFlag*, TargetFlags,		weaponsDat[3].address);  // 00657998
+SCBW_DATA(uint32*, MinRange,			weaponsDat[4].address);  // 00656A18
+SCBW_DATA(uint32*, MaxRange,			weaponsDat[5].address);  // 00657470
+SCBW_DATA(uint8*,  DamageUpgrade,		weaponsDat[6].address);  // 006571D0
+SCBW_DATA(uint8*,  DamageType,			weaponsDat[7].address);  // 00657258 Normal, Explosive, etc.. Use with DamageType::Enum.
+SCBW_DATA(uint8*,  Behavior,			weaponsDat[8].address);  // 00656670 Fly and follow target, appear on target unit, etc. Use with WeaponBehavior::Enum.
+SCBW_DATA(uint8*,  RemoveAfter,			weaponsDat[9].address);  // 00657040
+SCBW_DATA(uint8*,  ExplosionType,		weaponsDat[10].address); // 006566F8 NormalHit, RadialSplash, EnemySplash, etc. Use with WeaponEffect::Enum.
+SCBW_DATA(uint16*, InnerSplashRadius,	weaponsDat[11].address); // 00656888
+SCBW_DATA(uint16*, MediumSplashRadius,	weaponsDat[12].address); // 006570C8
+SCBW_DATA(uint16*, OuterSplashRadius,	weaponsDat[13].address); // 00657780
+SCBW_DATA(uint16*, DamageAmount,		weaponsDat[14].address); // 00656EB0
+SCBW_DATA(uint16*, DamageBonus,			weaponsDat[15].address); // 00657678
+SCBW_DATA(uint8*,  Cooldown,			weaponsDat[16].address); // 00656FB8
+SCBW_DATA(uint8*,  DamageFactor,		weaponsDat[17].address); // 006564E0
+SCBW_DATA(uint8*,  AttackAngle,			weaponsDat[18].address); // 00656990
+SCBW_DATA(uint8*,  LaunchSpin,			weaponsDat[19].address); // 00657888
+SCBW_DATA(uint8*,  ForwardOffset,		weaponsDat[20].address); // 00657910
+SCBW_DATA(uint8*,  VerticalOffset,		weaponsDat[21].address); // 00656C20
+SCBW_DATA(uint16*, ErrorMessage,		weaponsDat[22].address); // 00656568 //Target Error Message according to EUDDB
+SCBW_DATA(uint16*, Icon,				weaponsDat[23].address); // 00656780 //Icon according to EUDDB
 } //weapons_dat (last entry at 0x0051397C)
 
 namespace upgrades_dat {

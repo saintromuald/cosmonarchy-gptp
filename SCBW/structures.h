@@ -443,15 +443,15 @@ C_ASSERT(sizeof(UnitFinderData) == 8);
 //That structure is variable depending on the content
 
 struct BinDlg {
-	/*0x00*/  BinDlg* next;
-	/*0x04*/  Bounds  bounds;			//0x4 left,0x6 top,0x8 right,0xA bottom,0xC width,0xE height
-	/*0x10*/  uint8* buffer;
-	/*0x14*/  char* pszText;
-	/*0x18*/  uint32     flags;			//use BinDlgFlags::Enum
-	/*0x1C*/  uint32     unk_1c;
-	/*0x20*/  uint16     index;
-	/*0x22*/  uint16     controlType;		//use DialogControlTypes::Enum
-	/*0x24*/  uint16     graphic;
+	/*0x00*/  BinDlg*	next;
+	/*0x04*/  Bounds	bounds;			//0x4 left,0x6 top,0x8 right,0xA bottom,0xC width,0xE height
+	/*0x10*/  uint8*	buffer;
+	/*0x14*/  char*		pszText;
+	/*0x18*/  uint32    flags;			//use BinDlgFlags::Enum
+	/*0x1C*/  uint32    unk_1c;
+	/*0x20*/  uint16    index;
+	/*0x22*/  uint16    controlType;	//use DialogControlTypes::Enum
+	/*0x24*/  uint16    graphic;
 
 	union {
 		/*0x26*/  uint32* user;
