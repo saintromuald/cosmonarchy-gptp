@@ -282,6 +282,7 @@ public:
 					case SpriteId::Corpse_Harakan:
 					case SpriteId::Corpse_Hydralisk:
 					case SpriteId::Corpse_Isthrathaleth:
+					case SpriteId::Corpse_Konvilisk:
 					case SpriteId::Corpse_Lakizilisk:
 					case SpriteId::Corpse_Larva:
 					case SpriteId::Corpse_Maverick:
