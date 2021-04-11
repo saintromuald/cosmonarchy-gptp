@@ -541,9 +541,16 @@ namespace SpriteId {
 		Corpse_Cleric = 490,
 		Corpse_Apostle = 565,
 		Corpse_Harakan = 615,
+		Corpse_Aspirant = 685,
+
+		Corpse_TerranBuildingSmall = 273,
+		Corpse_TerranBuildingLarge = 274,
 
 		Corpse_Dracadin = 192,
 		Corpse_Scribe = 691,
+
+		Corpse_ProtossBuildingSmall = 223,
+		Corpse_ProtossBuildingLarge = 224,
 
 		Corpse_Broodling = 134,
 		Corpse_Isthrathaleth = 139,

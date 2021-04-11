@@ -44,7 +44,7 @@ namespace {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV EAX, [EBP + 0x08]
-			MOV buttonRelated, EAX
+			MOV buttonRelated, AX
 			POP EAX
 			MOV unused, EDX
 			MOV dialog, EAX
