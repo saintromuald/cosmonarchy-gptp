@@ -619,14 +619,14 @@ C_ASSERT(sizeof(pathing) == 0x97a20);
 struct GuardAi {
 	CLink<GuardAi>	link;				// 0x0, 0x4
 	uint8 type;							// 0x8
-	uint8 timesDied;						// 0x9
-	uint8 unkA[2];							// 0xA
+	uint8 timesDied;					// 0x9
+	uint8 unkA[2];						// 0xA
 	CUnit* parent;						// 0xC
-	uint16 id;								// 0x10
+	uint16 id;							// 0x10
 	Point16 home;						// 0x12
 	Point16 unkPos;						// 0x16
 	uint8 unk1A[2];						// 0x1A
-	uint32 previousUpdate;					// 0x1C
+	uint32 previousUpdate;				// 0x1C
 };
 C_ASSERT(sizeof(GuardAi) == 32); // 0x20
 
@@ -634,10 +634,10 @@ struct AiTown; // declaring this here to avoid compiler errors
 struct WorkerAi {
 	CLink<WorkerAi>	link;				// 0x0, 0x4
 	uint8 type;							// 0x8
-	uint8 target_resource;					// 0x9
-	uint8 reassign_count;					// 0xA
-	uint8 waitTimer;						// 0xB
-	uint32 last_update_second;				// 0xC
+	uint8 target_resource;				// 0x9
+	uint8 reassign_count;				// 0xA
+	uint8 waitTimer;					// 0xB
+	uint32 last_update_second;			// 0xC
 	CUnit* parent;						// 0x10
 	AiTown* town;						// 0x14
 };
@@ -646,8 +646,8 @@ C_ASSERT(sizeof(WorkerAi) == 24); // 0x18
 struct BuildingAi {
 	CLink<BuildingAi>	link;			// 0x0, 0x4
 	uint8 type;							// 0x8
-	uint8 trainQueueTypes[5];				// 0x9
-	uint8 unkE[2];							// 0xE
+	uint8 trainQueueTypes[5];			// 0x9
+	uint8 unkE[2];						// 0xE
 	CUnit* parent;						// 0x10
 	AiTown* town;						// 0x14
 	void* trainQueueValues[5];			// 0x18
@@ -657,7 +657,8 @@ C_ASSERT(sizeof(BuildingAi) == 44); // 0x2C
 struct MilitaryAi {
 	CLink<MilitaryAi>	link;			// 0x0, 0x4
 	uint8 type;							// 0x8
-	uint8 padding[3];						// 0x9
+	uint8 padding1;						// 0x9
+	uint16 padding2;					// 0xA
 	CUnit* parent;						// 0xC
 	AiCaptain* region;					// 0x10
 };
@@ -685,14 +686,14 @@ struct AiTown {
 	WorkerAi* workers;							//	0xC
 	BuildingAiArray* free_buildings;			//	0x10
 	BuildingAi* buildings;						//	0x14
-	uint8 player;									//	0x18
-	uint8 inited;									//	0x19
+	uint8 player;								//	0x18
+	uint8 inited;								//	0x19
 	uint8 worker_count;							//	0x1a
 	uint8 worker_limit;							//	0x1b
-	uint8 resource_area;							//	0x1c
-	uint8 resource_area_not_set;					//	0x1d
-	uint8 in_battle;								//	0x1e
-	uint8 unk1f;									//	0x1f
+	uint8 resource_area;						//	0x1c
+	uint8 resource_area_not_set;				//	0x1d
+	uint8 in_battle;							//	0x1e
+	uint8 unk1f;								//	0x1f
 	Point16 position;							//	0x20
 	CUnit* main_building;						//	0x24
 	CUnit* building_scv;						//	0x28
@@ -730,14 +731,14 @@ struct AI_Main {
 	uint16 AI_LastNukeTime;
 	struct {
 		uint16 isSecureFinished : 1;	/*0001*/
-		uint16 isTownStarted : 1;	/*0002*/
+		uint16 isTownStarted : 1;		/*0002*/
 		uint16 isDefaultBuildOff : 1;	/*0004*/
-		uint16 isTransportsOff : 1;	/*0008*/
+		uint16 isTransportsOff : 1;		/*0008*/
 		uint16 isFarmsNotimingOn : 1;	/*0010*/
 		uint16 isUseMapSettings : 1;	/*0020*/
-		uint16 flag_0x40 : 1;	/*0040*/
-		uint16 spreadCreep : 1;	/*0080*/
-		uint16 flag_0x100 : 1;	/*0100*/
+		uint16 flag_0x40 : 1;			/*0040*/
+		uint16 spreadCreep : 1;			/*0080*/
+		uint16 flag_0x100 : 1;			/*0100*/
 		uint16 hasStrongestGndArmy : 1;	/*0200*/ //Set if the AI's ground army is stronger than the total strength of the strongest enemy force
 		uint16 bUpgradesFinished : 1;	/*0400*/
 		uint16 bTargetExpansion : 1;	/*0800*/
@@ -747,13 +748,13 @@ struct AI_Main {
 	uint16 AI_AttackGroup;
 	uint16 wanted_unit;
 	uint8 dc222[0x2];
-	uint32 lastIndividualUpdateTime; // 0x224
+	uint32 lastIndividualUpdateTime;	// 0x224
 	uint32 last_attack_seconds;
-	uint8 strategic_suicide; // 0x22c
+	uint8 strategic_suicide;			// 0x22c
 	uint8 spellcasterTimer;
 	uint8 attack_failed;
 	uint8 difficulty;
-	uint16 attackers[0x40]; // 0x230
+	uint16 attackers[0x40];				// 0x230
 	/*2B0*/  uint32 AI_DefenseBuild_GG[10];
 	/*2D8*/  uint32 AI_DefenseBuild_AG[10];
 	/*300*/  uint32 AI_DefenseBuild_GA[10];
@@ -762,8 +763,8 @@ struct AI_Main {
 	/*378*/  uint32 AI_DefenseUse_AG[10];
 	/*3A0*/  uint32 AI_DefenseUse_GA[10];
 	/*3C8*/  uint32 AI_DefenseUse_AA[10];
-	uint8 unit_build_limits[0xe4]; // 0x3f0
-	CUnit* mainMedic; // 0x4d4
+	uint8 unit_build_limits[0xe4];		// 0x3f0
+	CUnit* mainMedic;					// 0x4d4
 	uint8 unk4d8[0x10];
 };
 
@@ -788,10 +789,12 @@ public:
 	const char* getString(uint16 index) const {
 		//Based on function @ 0x004C36F0
 		if (index == 0) return nullptr;
-		else if (index <= getStringCount())
+		else if (index <= getStringCount()) {
 			return (const char*)(buffer)+buffer[index];
-		else
+		}
+		else {
 			return (const char*)0x00501B7D;	//StringEmpty in scbwdata.h, SC default empty string
+		}
 	}
 
 private:
