@@ -238,7 +238,7 @@ public:
 		return thingy->sprite->position.y < value;
 	}
 
-	static std::vector<CThingy*> findCorpses(int left, int right, int top, int bottom) {
+	static std::vector<CThingy*> findCorpses(int left, int top, int right, int bottom) {
 		auto foundCorpsesXStart = std::lower_bound(corpsesX.begin(), corpsesX.end(), left, compareXPos);
 		auto foundCorpsesXEnd = std::upper_bound(foundCorpsesXStart, corpsesX.end(), right, compareXPos);
 		auto foundCorpsesX = std::vector<CThingy*>(foundCorpsesXStart, foundCorpsesXEnd);
@@ -390,8 +390,8 @@ namespace hooks {
 			auto radius = 128;
 			std::vector<CThingy*> corpseList = CorpseFinder::findCorpses(
 				unit->position.x - radius,
-				unit->position.x + radius,
 				unit->position.y - radius,
+				unit->position.x + radius,
 				unit->position.y + radius
 			);
 			for (auto a : corpseList) {
