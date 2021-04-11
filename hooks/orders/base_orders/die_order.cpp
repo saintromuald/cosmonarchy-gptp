@@ -19,6 +19,7 @@ namespace hooks {
 		if (unit->userActionFlags & 4) {
 			hideAndDisableUnit(unit);
 		}
+
 		if (unit->subunit != nullptr) {
 			clearUnitSprites(unit->sprite, unit->subunit->sprite);
 			if (unit->subunit->subunit != nullptr) {
@@ -67,7 +68,6 @@ namespace hooks {
 					unit->subunit = nullptr;
 				}
 			}
-
 			_UnitDestructor(unit);
 			unit->sprite->free();
 			unit->sprite = nullptr;
