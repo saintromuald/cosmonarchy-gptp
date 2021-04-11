@@ -414,13 +414,6 @@ namespace hooks {
 						}
 						target->heal(0.1 * units_dat::MaxHitPoints[target->id], unit);
 					});
-					/*
-					CThingy* thingy = scbw::createThingy(_set your id here_,
-						a->sprite->position.x,a->sprite->position.y, 11);
-					if (thingy != nullptr) {
-						thingy->sprite->elevationLevel = 11;
-						scbw::setThingyVisibilityFlags(thingy);
-					}*/
 					a->sprite->flags |= CSprite_Flags::Flag04;
 					a->sprite->playIscriptAnim(IscriptAnimation::Death);
 				}
