@@ -233,14 +233,15 @@ public:
 	static std::vector<CThingy*> corpsesX;
 	static std::vector<CThingy*> corpsesY;
 
-	static std::vector<CThingy*> findCorpses(int left, int right, int top, int bottom) {
-		auto compareXpos = [](CThingy* thingy, int value) {
-			return thingy->sprite->position.x < value;
-		};
-		auto compareYpos = [](CThingy* thingy, int value) {
-			return thingy->sprite->position.y < value;
-		};
+	static bool compareXpos(CThingy* thingy, int value) {
+		return thingy->sprite->position.x < value;
+	}
 
+	static bool compareYpos(CThingy* thingy, int value) {
+		return thingy->sprite->position.y < value;
+	}
+
+	static std::vector<CThingy*> findCorpses(int left, int right, int top, int bottom) {
 		auto foundCorpsesX = std::vector<CThingy*>(
 			std::lower_bound(corpsesX.begin(), corpsesX.end(), left, compareXpos),
 			std::lower_bound(corpsesX.begin(), corpsesX.end(), right, compareXpos));
