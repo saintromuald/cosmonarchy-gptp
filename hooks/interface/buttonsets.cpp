@@ -1103,14 +1103,12 @@ namespace hooks {
 									current_button->iconID == IconId::AcidSpore) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergBactalisk && // Basilisk Genesis passive
+								/*
+								if ((*activePortraitUnit)->id == UnitId::ZergBactalisk && // Basilisk Biogenesis passive
 									current_button->iconID == IconId::ZergAdvancedBuildings) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergBactalisk && // Basilisk Corrosive Dispersion passive
-									current_button->iconID == IconId::ZergFlyerAttacks) {
-									current_button_state = BUTTON_STATE::Enabled;
-								}
+								*/
 								if ((*activePortraitUnit)->id == UnitId::ZergBactalisk && // Basilisk Caustic Fission passive
 									current_button->iconID == IconId::AcidSpore) {
 									current_button_state = BUTTON_STATE::Enabled;

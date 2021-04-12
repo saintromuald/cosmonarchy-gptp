@@ -1032,6 +1032,7 @@ enum Enum {
 	ObservanceOverlayLarge				= 1231,
 	ObservanceOverlayMedium				= 1232,
 	ObservanceOverlaySmall				= 1233,
+	LazarusAgentCast					= 1265,
 	KhaydarinEclipseOverlayLarge		= 1270,
 	KhaydarinEclipseOverlayMedium		= 1271,
 	EnsnaringBroodOverlay				= 1281,
@@ -1040,6 +1041,7 @@ enum Enum {
 	DeconstructionMedium				= 1333,
 	DeconstructionLarge					= 1334,
 	LegionnaireTeleportEffect			= 1358,
+	WarpFlashFade						= 1368,
 
 	FirstMinorDamageOverlay				= 450,
 	LastMinorDamageOverlay			    = 471,

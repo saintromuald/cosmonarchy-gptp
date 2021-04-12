@@ -438,8 +438,8 @@ namespace hooks {
 		/*
 		else if (unit->getRace() == RaceId::Protoss
 			&& units_dat::BaseProperty[unit->id] & UnitProperty::Building
-			&& unit->remainingBuildTime == (units_dat::TimeCost[unit->id] - 3 * 24)) {
-			//unit->sprite->createTopOverlay(x);
+			&& unit->remainingBuildTime == 1) {
+			unit->sprite->createTopOverlay(ImageId::WarpFlashFade);
 		}
 		*/
 
