@@ -74,7 +74,7 @@ namespace hooks {
 							target->sprite->createTopOverlay(overlayId, 0, 0, 0);
 						scbw::sendGPTP_aise_cmd(unit, target, GptpId::SetMindControlLink, 0, 0, 0);
 						MindControlHit(unit, target);
-						//scbw::printText("Set...");
+						//scbw::print("Set...");
 
 						target->orderToIdle();
 

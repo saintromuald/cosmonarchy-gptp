@@ -191,7 +191,7 @@ namespace hooks {
 				}
 			}
 		}
-		//scbw::printText("Debug Cancel Structure");
+		//scbw::print("Debug Cancel Structure");
 		if (unit != nullptr &&
 			getActivePlayerNextSelection() == nullptr &&
 			unit->playerId == *ACTIVE_NATION_ID

@@ -195,9 +195,9 @@ namespace {
 		}
 
 		uint16 cancelChangeUnitId = hooks::getCancelMorphRevertTypeHook(unit);
-		//		scbw::printFormattedText("Revert unit id: %d", cancelChangeUnitId);
+		//		scbw::printf("Revert unit id: %d", cancelChangeUnitId);
 		if (cancelChangeUnitId == UnitId::None) {
-			//scbw::printText("Remove the unit");
+			//scbw::print("Remove the unit");
 			if (unit->id == UnitId::TerranNuclearMissile) {
 				CUnit* silo = unit->connectedUnit;
 				if (silo) {

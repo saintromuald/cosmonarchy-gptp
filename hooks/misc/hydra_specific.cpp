@@ -218,7 +218,7 @@ namespace hooks {
 				int variation = image->id - ImageId::FirstMinorDamageOverlay;
 				image->free();
 				if (sprite->mainGraphic->frameIndex >= overlay->frameCount) {
-					scbw::printFormattedText("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
+					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
 						sprite->mainGraphic->frameIndex, sprite->mainGraphic->id);
 					return;
 				}
@@ -229,7 +229,7 @@ namespace hooks {
 		std::array<int, 22> results;
 		auto result_pos = results.begin();
 		if (sprite->mainGraphic->frameIndex >= overlay->frameCount) {
-			scbw::printFormattedText("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
+			scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
 				sprite->mainGraphic->frameIndex, sprite->mainGraphic->id);
 			return;
 		}
@@ -644,9 +644,9 @@ namespace hooks {
 	}
 	uint32 extend_tech_target_check(uint32 orig_result, CUnit* caster, CUnit* target, uint8 techId) {
 		if (orig_result == 0) { // Valid Target
-			scbw::printText("Can cast");
+			scbw::print("Can cast");
 			if (techId == TechId::Lockdown) {
-				scbw::printFormattedText("Lockdown %d %d", caster->orderTarget.pt.x, caster->orderTarget.pt.y);
+				scbw::printf("Lockdown %d %d", caster->orderTarget.pt.x, caster->orderTarget.pt.y);
 			}
 		}
 		return orig_result;
@@ -662,29 +662,29 @@ namespace hooks {
 			} else {
 				status = 0;//enable clarion
 			}
-		} 		else if (unit->id == UnitId::ProtossExemplar) {
+		} else if (unit->id == UnitId::ProtossExemplar) {
 			status = scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch);
-		} 		else if (unit->id == UnitId::ProtossStarSovereign) {
+		} else if (unit->id == UnitId::ProtossStarSovereign) {
 			auto order_state = scbw::get_generic_value(unit, ValueId::ProtossSwitchOrderState);
 			if (order_state == 0) {
 				if (unit->movementFlags & MovementFlags::Accelerating) {
 					scbw::makeToHoldPosition(unit);
 				}
 				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 1);
-			} 			else if (order_state == 1) {
+			} else if (order_state == 1) {
 				if (!(unit->movementFlags & MovementFlags::Accelerating)) {
 					scbw::set_generic_timer(unit, ValueId::PlanetCrackerDelay, 24);
 					unit->status |= UnitStatus::CanNotReceiveOrders;
 					unit->status |= UnitStatus::CanNotAttack;
 					scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 2);
 				}
-			} 			else if (order_state == 2) {
+			} else if (order_state == 2) {
 				if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerDelay) == 0) {
 					unit->playIscriptAnim(anim);
 					scbw::set_generic_timer(unit, ValueId::PlanetCrackerChannel, 121);
 					scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 3);
 				}
-			} 			else if (order_state == 3) {
+			} else if (order_state == 3) {
 				if (unit->orderSignal & 4) {
 					unit->orderSignal &= ~0x4;
 					unit->status &= ~UnitStatus::CanNotReceiveOrders;
@@ -702,13 +702,13 @@ namespace hooks {
 				scbw::makeToHoldPosition(unit);
 			}
 			scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 1);
-		} 		else if (order_state == 1) {
+		} else if (order_state == 1) {
 			if (!(unit->movementFlags & MovementFlags::Accelerating)) {
 				unit->playIscriptAnim(anim);
 				scbw::set_generic_timer(unit, ValueId::SwitchModeGimmickTimer, 5);
 				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 2);
 			}
-		} 		else if (order_state == 2) {
+		} else if (order_state == 2) {
 			if (scbw::get_generic_timer(unit, ValueId::SwitchModeGimmickTimer) == 0) {
 				unit->orderSignal &= ~0x4;
 				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 0);
@@ -720,10 +720,10 @@ namespace hooks {
 						scbw::placeClarionLinks(unit);
 						scbw::clearClarionLinks(unit);
 					}
-				} 				else if (unit->id == UnitId::ProtossExemplar) {
+				} else if (unit->id == UnitId::ProtossExemplar) {
 					if (status == 0) {
 						scbw::set_generic_rust_value(unit, ValueId::ExemplarSwitch, 1);
-					} 					else {
+					} else {
 						scbw::set_generic_rust_value(unit, ValueId::ExemplarSwitch, 0);
 					}
 				}
@@ -741,7 +741,7 @@ namespace hooks {
 			if (source->getAirWeapon() != WeaponId::None) {
 				return true;
 			}
-		} 		else {
+		} else {
 			if (source->getGroundWeapon() != WeaponId::None) {
 				return true;
 			}

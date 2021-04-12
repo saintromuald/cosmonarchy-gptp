@@ -24,7 +24,7 @@ void irradiateProc(CUnit* unit, CUnit* target) {
 		if (unit != nullptr) {
 			if (unit->irradiateTimer == 0) {
 				damage += (125 * 256) % 24;
-				//scbw::printText("Add additional damage");
+				//scbw::print("Add additional damage");
 			}
 		}
 		target->damageWith(WeaponId::Irradiate, damage, unit->irradiatedBy, unit->irradiatePlayerId);

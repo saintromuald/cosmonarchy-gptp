@@ -33,7 +33,7 @@ class PersistImpact {
 public:
 	uint8 impactId;
 	Point32 position;
-	uint32 mergeRadius;
+	uint32 radius;
 	uint32 time;
 	int32 spriteId;
 	uint8 elevation;
@@ -217,7 +217,7 @@ public:
 	bool was_hit_by_pariah(CUnit* source, CUnit* target);
 
 	void register_pariah_hit(CUnit* source, CUnit* target);
-	void createGenericPersistImpact(uint8 impactId, Point32 position, uint32 mergeRadius, uint32 time, int32 spriteId, uint8 elevation);
+	void createGenericPersistImpact(uint8 impactId, uint32 time, Point32 position, uint32 radius, int32 spriteId, uint8 elevation);
 	bool was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target);
 	bool multihit_bullet_is_set(CBullet* bullet);
 	uint32 get_multihit_count(CBullet* bullet);

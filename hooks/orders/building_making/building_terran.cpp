@@ -626,7 +626,7 @@ namespace hooks {
 			return 0;
 		}*/
 
-		scbw::printText("First call");
+		scbw::print("First call");
 		v0 = canBuildOnTileLocation(
 			*activePortraitUnit,
 			*unk_placementRelated,
@@ -637,7 +637,7 @@ namespace hooks {
 			1,
 			0,
 			0);
-		scbw::printText("First call over");
+		scbw::print("First call over");
 
 		/*		if (*isPlacingAddon) {
 					uint32 source = *placeBuildBaseType;

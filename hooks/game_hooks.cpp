@@ -138,7 +138,7 @@ void spawnCreeper(CUnit* unit) {
 			unit->position.x, unit->position.y,
 			unit->playerId);
 		if (creep_spawned == nullptr) {
-			//scbw::printText("Error: Creeper");
+			//scbw::print("Error: Creeper");
 		} else {
 			function_004A01F0g(creep_spawned);
 			updateUnitStrengthg(creep_spawned);
@@ -162,7 +162,7 @@ void spawnCreeper(CUnit* unit) {
 			creep_spawned->sprite->images.tail->flags |= 0x20;
 			creep_spawned->sprite->images.tail->flags |= 0x40;
 			//unit->connectedUnit = creep_spawned;
-			//scbw::printText("Burrow basilisk");
+			//scbw::print("Burrow basilisk");
 			__asm {
 				PUSHAD
 				MOV EDI, creep_spawned
@@ -472,7 +472,7 @@ namespace hooks {
 		// Star Sovereign Intervention Missiles behavior + Grief of All Gods
 		else if (unit->id == UnitId::ProtossStarSovereign) {
 			if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerChannel) == 1) {
-				globals.createGenericPersistImpact(ImpactId::GriefOfAllGods, {unit->position.x, unit->position.y}, 0, 360, -1, unit->sprite->elevationLevel);
+				globals.createGenericPersistImpact(ImpactId::GriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevationLevel);
 			}
 			if (scbw::get_generic_timer(unit, ValueId::StarcallerInterceptionMissiles) == 0) {
 				auto r = 5 * 32;

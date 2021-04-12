@@ -183,17 +183,17 @@ namespace hooks {
 	//was called "Shot" instead of "Hit", changed due to the context
 /*
 	CUnit* swarmsearch(CUnit* hitunit){
-		scbw::printText("Loop...");
+		scbw::print("Loop...");
 		for (CUnit *unit = *firstVisibleUnit; unit; unit = unit->link.next) {
 			if(unit->id==UnitId::Spell_DarkSwarm){
-				scbw::printText("dark swarm detected in the loop!");
+				scbw::print("dark swarm detected in the loop!");
 				char buf[64];
 				sprintf(buf,"Compare coords, unit: %d %d, swarm %d %d", hitunit->position.x,hitunit->position.y,
 																	  unit->position.x,unit->position.y);
-				scbw::printText(buf);
+				scbw::print(buf);
 				if(hitunit->position.x >= unit->getLeft() && hitunit->position.x <= unit->getRight()){
 					if(hitunit->position.y >= unit->getTop() && hitunit->position.y <= unit->getBottom()){
-						scbw::printText("Found!");
+						scbw::print("Found!");
 						return unit;
 					}
 				}
@@ -236,12 +236,12 @@ namespace hooks {
 
 		/*
 		if(swarmDamage>0){
-			scbw::printText("Swarm damage exists, Search for swarm");
+			scbw::print("Swarm damage exists, Search for swarm");
 //			CUnit* checkSwarm = scbw::getDarkSwarm(target);
 			if(checkSwarm != nullptr){
 				char buf[32];
 				sprintf(buf,"Damage to darkswarm: %d",swarmDamage);
-				scbw::printText(buf);
+				scbw::print(buf);
 				if(swarmDamage >= checkSwarm->hitPoints){
 					checkSwarm->remove();
 				}
@@ -250,7 +250,7 @@ namespace hooks {
 				}
 			}
 			else {
-				scbw::printText("Dark swarm not detected");
+				scbw::print("Dark swarm not detected");
 			}
 		}*/
 	} //void WeaponBulletHit(CBullet* bullet, CUnit* target, uint32 hitFlags)
@@ -273,14 +273,14 @@ namespace hooks {
 		uint16 horizontalRange = range + GetUnitWidth(source) / 2 + GetUnitWidth(target) / 2 + 1;
 		uint16 verticalRange = range + GetUnitHeight(source) / 2 + GetUnitHeight(target) / 2 + 1;
 
-		//scbw::printFormattedText("Difference: %i, %i", horizontalDifference, verticalDifference);
-		//scbw::printFormattedText("Range: %i, %i", horizontalRange, verticalRange);
+		//scbw::printf("Difference: %i, %i", horizontalDifference, verticalDifference);
+		//scbw::printf("Range: %i, %i", horizontalRange, verticalRange);
 		if (horizontalDifference > horizontalRange
 			|| verticalDifference > verticalRange) {
-			//scbw::printText("Out of range");
+			//scbw::print("Out of range");
 			return false;
 		} else {
-			//scbw::printText("In range");
+			//scbw::print("In range");
 			return true;
 		}
 	}
@@ -460,7 +460,7 @@ namespace hooks {
 	//no bullet because the code normally calling this function lose the 
 	//easily available information (and getting it the hard way seems overkill)
 	void ConsumeHit(CUnit* attacker, CUnit* target) {
-		//scbw::printText("Try consume");
+		//scbw::print("Try consume");
 		if (attacker == nullptr
 			|| target == nullptr) {
 			return;
@@ -469,7 +469,7 @@ namespace hooks {
 				//char buf[32];
 				//ebx/bl  = player id, arg 1 = 0x10, eax = edi (target)
 				//sprintf(buf,"Spell error: %d",getSpellStatString(target,TechId::Consume,attacker->playerId) );
-				//scbw::printText(buf);
+				//scbw::print(buf);
 			}
 		}
 

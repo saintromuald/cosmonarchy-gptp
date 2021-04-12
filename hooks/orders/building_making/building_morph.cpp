@@ -123,12 +123,12 @@ namespace hooks {
 			}
 			building->sprite->playIscriptAnim(IscriptAnimation::SpecialState1, true);
 			building->mainOrderState = 2;
-			//scbw::printText("Set order state 2");
+			//scbw::print("Set order state 2");
 			jump_to_5D56C = true;
 
 		} else if (building->mainOrderState == 2) { // 005D5E2
 			if (building->remainingBuildTime < units_dat::TimeCost[buildingId] / 2) {
-				//scbw::printText("Set order state 3");
+				//scbw::print("Set order state 3");
 				building->mainOrderState = 3;
 			}
 			jump_to_5D56C = true;
@@ -136,13 +136,13 @@ namespace hooks {
 		} else if (building->mainOrderState == 3) { // 005D603
 			building->sprite->playIscriptAnim(IscriptAnimation::SpecialState2, true);
 			building->mainOrderState = 4;
-			//scbw::printText("Set order state 4");
+			//scbw::print("Set order state 4");
 			jump_to_5D56C = true;
 
 		} else if (building->mainOrderState == 4) { // 005D618
 
 			if (building->remainingBuildTime == 0) {
-				//scbw::printText("Set order state 5");								
+				//scbw::print("Set order state 5");								
 
 				building->mainOrderState = 5;
 			}
@@ -165,7 +165,7 @@ namespace hooks {
 			function_004D8500_copy(building->sprite->mainGraphic);
 			//}
 			if (sEnd) {
-				//scbw::printText("Set order state 6");
+				//scbw::print("Set order state 6");
 				building->orderSignal |= 4;
 				building->mainOrderState = 6;
 				playBuildingCompleteSound(building);

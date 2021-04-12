@@ -198,14 +198,14 @@ void hydra_unit_ai(CUnit* unit) {
 				hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Skyfall],
 					CFlags::Enemy, {}, [&](CUnit* u) {
 
-	//				scbw::printText("Loop");
+	//				scbw::print("Loop");
 					CUnit* tryTarget = u;
 					int innerCount = 0;
 					hydraFinderLoop(u, u->position, weapons_dat::MaxRange[WeaponId::Skyfall] , CFlags::Ally, {},
 						[&](CUnit* internalUnit) {
 						innerCount++;
 					});
-					//scbw::printFormattedText("Count is %d", innerCount);
+					//scbw::printf("Count is %d", innerCount);
 					if (innerCount >= 6) {
 						Point16 source = unit->position;
 						Point16 target = u->position;

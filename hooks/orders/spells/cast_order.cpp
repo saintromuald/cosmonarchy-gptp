@@ -33,7 +33,7 @@ namespace hooks {
 					pt = unit->orderTarget.unit->position;
 					unit->orderTarget.unit = nullptr;
 				}
-				//scbw::printFormattedText("Fire skyfall %d %d -> %d %d",unit->getX(),unit->getY(),pt.x,pt.y);
+				//scbw::printf("Fire skyfall %d %d -> %d %d",unit->getX(),unit->getY(),pt.x,pt.y);
 				scbw::set_generic_value(unit, ValueId::SkyfallX, unit->orderTarget.pt.x);
 				scbw::set_generic_value(unit, ValueId::SkyfallY, unit->orderTarget.pt.y);
 			}
@@ -56,16 +56,16 @@ namespace hooks {
 			}
 		}
 		if (unit->mainOrderState == 2) {
-			//		scbw::printText("State 2");
+			//		scbw::print("State 2");
 			if (unit->orderSignal & 2) {
-				//			scbw::printText("Signal & 2");
+				//			scbw::print("Signal & 2");
 
 				unit->orderSignal -= 2;
 				unit->orderToIdle();
 			} else { //92886
-				//scbw::printText("No Signal 2 yet");
+				//scbw::print("No Signal 2 yet");
 				if (target != nullptr) {
-					//scbw::printText("Target exists");
+					//scbw::print("Target exists");
 
 					unit->orderTarget.pt.x = target->sprite->position.x;
 					unit->orderTarget.pt.y = target->sprite->position.y;
@@ -83,7 +83,7 @@ namespace hooks {
 			}
 
 		} else { //928CF
-			//scbw::printText("State != 2");
+			//scbw::print("State != 2");
 			if (!canCastSpell_0(unit)) {
 				char* message = (char*)statTxtTblNew->getString(876); //Invalid Target
 
@@ -95,7 +95,7 @@ namespace hooks {
 				unit->orderToIdle();
 
 			} else { //9291A
-				//scbw::printText("Continue...");
+				//scbw::print("Continue...");
 
 				uint8 techUsed = orders_dat::TechUsed[unit->mainOrderId];
 
@@ -108,7 +108,7 @@ namespace hooks {
 					!(*CHEAT_STATE & CheatFlags::TheGathering) &&
 					unit->energy < spellCost
 					) {
-					//scbw::printText("energy < spellcost");
+					//scbw::print("energy < spellcost");
 					uint8 raceId;
 					char* message;
 
@@ -141,10 +141,10 @@ namespace hooks {
 				} else { //929C2
 
 					uint32 result_00492620;
-					//scbw::printText("energy >= spellcost");
+					//scbw::print("energy >= spellcost");
 					//may initiate movement from unit depending on
 					//mainOrderState
-					//scbw::printFormattedText("Order state: %d", unit->mainOrderState);
+					//scbw::printf("Order state: %d", unit->mainOrderState);
 					if (unit->mainOrderState == 0)
 						result_00492620 = function_00492620(unit, 1);
 					else
@@ -161,7 +161,7 @@ namespace hooks {
 
 						if (unit->getMovableState() == 2) //unmovable
 						{
-							//scbw::printText("to Idle");
+							//scbw::print("to Idle");
 							unit->orderToIdle();
 						}
 
@@ -174,7 +174,7 @@ namespace hooks {
 							!(unit->movementFlags & MovementFlags::Accelerating) &&
 							unit->getMovableState() != 0
 							) { //92A38
-								//scbw::printText("Conditions good");
+								//scbw::print("Conditions good");
 							bool bStopHere = false;
 
 							//in case it was modified by a previous function,
@@ -193,7 +193,7 @@ namespace hooks {
 									//Maybe the switch and array use could be removed in a future version
 									//since enough elements use default value (switch 6)
 									uint32 switch_value = array_00492B44[orderWeaponId - 0x20];
-									//scbw::printText("Get switch value");
+									//scbw::print("Get switch value");
 
 									if (switch_value != 6) {
 
@@ -217,7 +217,7 @@ namespace hooks {
 
 										if (analyzed_target_status != 0) {
 											unit->orderToIdle();
-											//scbw::printText("Bad analysis");
+											//scbw::print("Bad analysis");
 											bStopHere = true;
 										}
 
@@ -229,7 +229,7 @@ namespace hooks {
 
 							if (!bStopHere) { //92AA3
 
-	//							scbw::printText("Spend energy");
+	//							scbw::print("Spend energy");
 								uint8 cooldown;
 								uint32 random_value;
 

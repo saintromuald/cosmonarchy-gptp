@@ -236,23 +236,23 @@ namespace hooks {
 		CUnit* v14; // edi
 		Point32 a2; // [esp+Ch] [ebp-4h]
 
-		//scbw::printText("Try place mine");
+		//scbw::print("Try place mine");
 		v1 = a1;
 		if (a1->mainOrderState) {
 			if (techUseAllowed(a1, 3u, (unsigned __int8)a1->playerId)
 				&& ((v11 = v1->sprite, v1->moveTarget.pt.x != v11->position.x)
 					|| v1->moveTarget.pt.y != v11->position.y
 					|| ((v1->status & UnitStatus::Unmovable) != 0) != 1)) {
-				//scbw::printFormattedText("distance %X %X", (getDistanceFast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00),
+				//scbw::printf("distance %X %X", (getDistanceFast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00),
 				//	0x1400);
 				if ((getDistanceFast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00) <= 0x1400) {
-					//scbw::printText("hold");
+					//scbw::print("hold");
 					orders_HoldPosSuicidal(v1);
 					v12 = v1->orderTarget.pt.y;
 					a2.x = v1->orderTarget.pt.x;
 					a2.y = v12;
 					fixTargetLocation(0xDu, &a2);
-					//scbw::printFormattedText("create at %d %d, order target is %d %d", a2.x, a2.y,v1->orderTarget.pt.x,v1->orderTarget.pt.y);
+					//scbw::printf("create at %d %d, order target is %d %d", a2.x, a2.y,v1->orderTarget.pt.x,v1->orderTarget.pt.y);
 					v13 = createUnit(0xDu, a2.x, a2.y, (unsigned __int8)v1->playerId);
 					v14 = v13;
 					if (v13) {

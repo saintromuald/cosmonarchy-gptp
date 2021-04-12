@@ -269,11 +269,11 @@ namespace scbw {
 		}
 	}
 
-	void print(std::string text, uint32 color) {
-		printText(text.c_str(), color);
+	void printString(std::string text, uint32 color) {
+		print(text.c_str(), color);
 	}
 
-	void printFormattedText(const char* format, ...) {
+	void printf(const char* format, ...) {
 		char buf[256];
 
 		va_list _ArgList;
@@ -281,10 +281,10 @@ namespace scbw {
 		vsnprintf(buf, sizeof(buf), format, _ArgList);
 		__crt_va_end(_ArgList);
 
-		printText(buf);
+		print(buf);
 	}
 
-	void printFormattedColoredText(const char* format, uint32 color, ...) {
+	void printfColor(const char* format, uint32 color, ...) {
 		char buf[256];
 
 		va_list _ArgList;
@@ -292,11 +292,11 @@ namespace scbw {
 		vsnprintf(buf, sizeof(buf), format, _ArgList);
 		__crt_va_end(_ArgList);
 
-		printText(buf, color);
+		print(buf, color);
 	}
 
 	const uint32 Func_PrintText = 0x0048CD30;
-	void printText(const char* text, uint32 color) {
+	void print(const char* text, uint32 color) {
 
 		if (!text)
 			return;
@@ -453,6 +453,10 @@ namespace scbw {
 
 		return (dMin * 3 >> 3) + (dMin * 3 >> 8) + dMax - (dMax >> 4) - (dMax >> 6);
 
+	}
+
+	uint32 getDistanceSquare(int32 x1, int32 y1, int32 x2, int32 y2) {
+		return std::max(abs(x1 - x2), abs(y1 - y2));
 	}
 
 	//Identical to function @ 0x00494C10

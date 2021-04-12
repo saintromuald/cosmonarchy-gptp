@@ -42,7 +42,7 @@ void Globals::aise_save() {
 		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].time), sizeof(persistImpacts[i].time));
 		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].impactId), sizeof(persistImpacts[i].impactId));
 		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].spriteId), sizeof(persistImpacts[i].spriteId));
-		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].mergeRadius), sizeof(persistImpacts[i].mergeRadius));
+		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].radius), sizeof(persistImpacts[i].radius));
 	}
 
 	uint32 pariahHitCount = pariahHits.size();
@@ -112,7 +112,7 @@ void Globals::aise_load(const char* ptr, uint32 len) {
 		return;//error
 	}
 
-	//scbw::printText("Load....");
+	//scbw::print("Load....");
 	std::stringstream stream(std::stringstream::in | std::stringstream::out | std::stringstream::binary);
 	std::string str(ptr, len);
 	stream << str;
@@ -140,7 +140,7 @@ void Globals::aise_load(const char* ptr, uint32 len) {
 		//stream.read(reinterpret_cast<char*>(&impact.time), sizeof(impact.time));
 		//stream.read(reinterpret_cast<char*>(&impact.impactId), sizeof(impact.impactId));
 		//stream.read(reinterpret_cast<char*>(&impact.spriteId), sizeof(impact.spriteId));
-		//stream.read(reinterpret_cast<char*>(&impact.mergeRadius), sizeof(impact.mergeRadius));
+		//stream.read(reinterpret_cast<char*>(&impact.radius), sizeof(impact.radius));
 		//persistImpacts.push_back(impact);
 	}
 
@@ -175,7 +175,7 @@ void Globals::aise_load(const char* ptr, uint32 len) {
 
 	//uint32 multihitCount = 0;
 	//stream.read(reinterpret_cast<char*>(&multihitCount), sizeof(multihitCount));
-	//scbw::printFormattedText("Hits: %d", multihitCount);
+	//scbw::printf("Hits: %d", multihitCount);
 	/*
 	for (int i = 0; i < multihitCount; i++) {
 		MultihitBullet bull;
@@ -260,6 +260,27 @@ void Globals::unitDeathHook(CUnit* unit) {
 	}
 }
 
+void Globals::createGenericPersistImpact(uint8 impactId, uint32 time, Point32 position, uint32 radius, int32 spriteId, uint8 elevation) {
+	PersistImpact impact;
+	impact.impactId = impactId;
+	impact.position = position;
+	impact.radius = radius;
+	impact.time = time;
+	impact.internalTimeMax = time;
+	impact.spriteId = spriteId;
+	impact.elevation = elevation;
+	impact.internalThingy = nullptr;
+
+	if (impact.spriteId >= 0) {
+		CThingy* thingy = scbw::createAndInitThingy(impact.spriteId, impact.position.x, impact.position.y);
+		if (thingy == nullptr) {
+			return;
+		}
+		impact.internalThingy = thingy;
+	}
+	persistImpacts.push_back(impact);
+}
+
 void Globals::frameHook() {
 	for (auto& unitStruct : unitStructs) {
 		for (auto& timerPair : unitStruct.second.genericTimers) {
@@ -293,7 +314,7 @@ void Globals::frameHook() {
 		if (agent.timer > 0) {
 			agent.timer--;
 		} else {
-			// scbw::printFormattedText("Agent Creator: 0x%X", agent.creator);
+			// scbw::printf("Agent Creator: 0x%X", agent.creator);
 			auto revived = scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y, agent.creator);
 			if (revived) {
 				revived->setHp(units_dat::MaxHitPoints[revived->id] / 2);
@@ -317,25 +338,23 @@ void Globals::frameHook() {
 			switch (impact.impactId) {
 				case ImpactId::SalamanderFire:
 				{
-					const int radius = 0.5 * 32;
 					scbw::UnitFinder(
-						impact.position.x - radius,
-						impact.position.y - radius,
-						impact.position.x + radius,
-						impact.position.y + radius
-					).forEachInMatch(unitRangeCount(nullptr, CFlags::Enemy | CFlags::NoAir, {}), [&](CUnit* unit) {
+						impact.position.x - impact.radius,
+						impact.position.y - impact.radius,
+						impact.position.x + impact.radius,
+						impact.position.y + impact.radius
+					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit) {
 						unit->damageWithIgnoreFlatArmor(WeaponId::SalamanderIncendiaryPayload, weapons_dat::DamageAmount[WeaponId::SalamanderIncendiaryPayload] * damageMultiplier);
 					});
 					break;
 				}
 				case ImpactId::GriefOfAllGods:
 				{
-					const int radius = 8 * 32;
 					scbw::UnitFinder(
-						impact.position.x - radius,
-						impact.position.y - radius,
-						impact.position.x + radius,
-						impact.position.y + radius
+						impact.position.x - impact.radius,
+						impact.position.y - impact.radius,
+						impact.position.x + impact.radius,
+						impact.position.y + impact.radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit) {
 						unit->damageWithIgnoreFlatArmor(WeaponId::StarSovereignGriefOfAllGods, weapons_dat::DamageAmount[WeaponId::StarSovereignGriefOfAllGods] * damageMultiplier);
 					});
@@ -343,12 +362,11 @@ void Globals::frameHook() {
 				}
 				case ImpactId::Criticality:
 				{
-					const int radius = 1.25 * 32;
 					scbw::UnitFinder(
-						impact.position.x - radius,
-						impact.position.y - radius,
-						impact.position.x + radius,
-						impact.position.y + radius
+						impact.position.x - impact.radius,
+						impact.position.y - impact.radius,
+						impact.position.x + impact.radius,
+						impact.position.y + impact.radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit) {
 						unit->damageWithIgnoreFlatArmor(WeaponId::AspirantCriticality, weapons_dat::DamageAmount[WeaponId::AspirantCriticality] * damageMultiplier);
 					});
@@ -356,12 +374,11 @@ void Globals::frameHook() {
 				}
 				case ImpactId::CausticDischarge:
 				{
-					const int radius = 1.5 * 32;
 					scbw::UnitFinder(
-						impact.position.x - radius,
-						impact.position.y - radius,
-						impact.position.x + radius,
-						impact.position.y + radius
+						impact.position.x - impact.radius,
+						impact.position.y - impact.radius,
+						impact.position.x + impact.radius,
+						impact.position.y + impact.radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit) {
 						unit->damageWithIgnoreFlatArmor(WeaponId::KeskathalorCausticDischarge, weapons_dat::DamageAmount[WeaponId::KeskathalorCausticDischarge] * damageMultiplier);
 						scbw::set_generic_timer(unit, ValueId::CausticDischargeSpeed, 5 * 24 + 1);
@@ -370,12 +387,11 @@ void Globals::frameHook() {
 				}
 				case ImpactId::IonField:
 				{
-					const int radius = 3 * 32;
 					scbw::UnitFinder(
-						impact.position.x - radius,
-						impact.position.y - radius,
-						impact.position.x + radius,
-						impact.position.y + radius
+						impact.position.x - impact.radius,
+						impact.position.y - impact.radius,
+						impact.position.x + impact.radius,
+						impact.position.y + impact.radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit) {
 						unit->damageWithIgnoreFlatArmor(WeaponId::IonField, weapons_dat::DamageAmount[WeaponId::IonField] * damageMultiplier);
 						scbw::set_generic_timer(unit, ValueId::IonFieldSpeed, 2 * 24 + 1);
@@ -385,6 +401,10 @@ void Globals::frameHook() {
 			}
 		}
 		if (impact.time <= 0) {
+			if (impact.internalThingy && impact.internalThingy->sprite) {
+				impact.internalThingy->sprite->playIscriptAnim(IscriptAnimation::Death);
+			}
+
 			persistImpacts.erase(persistImpacts.begin() + i);
 			i--;
 		}
@@ -515,39 +535,9 @@ void Globals::initLazarusAgent(int x, int y, uint8 player, uint32 unitId, uint32
 	a.unitId = unitId;
 	a.energy = energy;
 	a.creator = unit;
-	//	scbw::printFormattedText("Set creator to 0x%X", i.creator);
-	//	scbw::printFormattedText("Try push back %d", apostleAgents.size());
+	//	scbw::printf("Set creator to 0x%X", i.creator);
+	//	scbw::printf("Try push back %d", apostleAgents.size());
 	apostleAgents.push_back(a);
-}
-
-void Globals::createGenericPersistImpact(uint8 impactId, Point32 position, uint32 mergeRadius, uint32 time, int32 spriteId, uint8 elevation) {
-	PersistImpact impact;
-	impact.impactId = impactId;
-	impact.position = position;
-	impact.mergeRadius = mergeRadius;
-	impact.time = time;
-	impact.internalTimeMax = time;
-	impact.spriteId = spriteId;
-	impact.elevation = elevation;
-
-	if (impact.mergeRadius != 0) {
-		for (auto& other : persistImpacts) {
-			if (other.impactId == impact.impactId && scbw::getDistanceFast(impact.position.x, impact.position.y, other.position.x, other.position.y) < impact.mergeRadius) {
-				other.time = impact.time;
-				return;
-			}
-		}
-	}
-
-	if (impact.spriteId >= 0) {
-		CThingy* thingy = scbw::createThingy(impact.spriteId, impact.position.x, impact.position.y, 11);
-		if (thingy == nullptr) {
-			return;
-		}
-		thingy->sprite->elevationLevel = impact.elevation;
-		scbw::setThingyVisibilityFlags(thingy);
-	}
-	persistImpacts.push_back(impact);
 }
 
 void Globals::clear_lakizilisk(CUnit* lurker) {

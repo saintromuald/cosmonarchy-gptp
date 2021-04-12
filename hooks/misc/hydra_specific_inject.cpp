@@ -414,7 +414,7 @@ namespace hooks {
 
 		if (!warningOnce00) {
 			sprintf_s(buffer, "Invalid hashStructIndex!!\nhashStructIndex: %u", hashStructIndex);
-			scbw::printText(buffer, GameTextColor::Red);
+			scbw::print(buffer, GameTextColor::Red);
 			warningOnce00 = true;
 		}
 
@@ -441,7 +441,7 @@ namespace hooks {
 
 		if (!warningOnce01) {
 			sprintf_s(buffer, "Invalid PlayerFlag!!\nactiveNationID: %u", activeNationID);
-			scbw::printText(buffer, GameTextColor::Red);
+			scbw::print(buffer, GameTextColor::Red);
 			warningOnce01 = true;
 		}
 
@@ -472,9 +472,9 @@ namespace hooks {
 
 		if (!isSucceeded && !warningOnce02) {
 			//            sprintf_s(buffer, "Invalid SpriteVisibility!!\nactiveNationID: %u", *ACTIVE_NATION_ID);
-			 //           scbw::printText(buffer, GameTextColor::Red);
-			scbw::printFormattedText("Invalid SpriteVisibility!!\nactiveNationID: % u", *ACTIVE_NATION_ID);
-			scbw::printFormattedText("SpriteVisHash (from VisionSync) %d =/= visionHash (from CMD) %d", nationHash, visibilityHash);
+			 //           scbw::print(buffer, GameTextColor::Red);
+			scbw::printf("Invalid SpriteVisibility!!\nactiveNationID: % u", *ACTIVE_NATION_ID);
+			scbw::printf("SpriteVisHash (from VisionSync) %d =/= visionHash (from CMD) %d", nationHash, visibilityHash);
 			warningOnce02 = true;
 		}
 
@@ -525,14 +525,14 @@ namespace hooks {
 				hashList[hashStructIndex].hash,
 				hashType & 0x0F,
 				*(uint16*)(data + 2));
-			scbw::printText(buffer, GameTextColor::Red);
+			scbw::print(buffer, GameTextColor::Red);
 			warningOnce03_00 = true;
 		}
 
 		if (hashList[hashStructIndex].hashType != (hashType & 0x0F) && warningOnce03_01) {
 			isSucceeded = false;
 			sprintf_s(buffer, "Invalid HashType!!\nhashStructIndex: %u\nHashType = %u", hashStructIndex, hashList[hashStructIndex].hashType);
-			scbw::printText(buffer, GameTextColor::Red);
+			scbw::print(buffer, GameTextColor::Red);
 			warningOnce03_01 = true;
 		}
 

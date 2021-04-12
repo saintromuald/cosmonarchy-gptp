@@ -290,7 +290,7 @@ namespace {
 
 		if (!(unit->status & UnitStatus::Completed)
 			&& hooks::isMorphedBuildingHook(unit->buildQueue[unit->buildQueueSlot])) {
-			//scbw::printText("Morph detected");
+			//scbw::print("Morph detected");
 			__asm {
 				POPAD
 				MOV EAX, EBX
@@ -301,7 +301,7 @@ namespace {
 				RETN 4
 			}
 		} else {
-			//scbw::printText("Morph is not detected");
+			//scbw::print("Morph is not detected");
 			__asm {
 				POPAD
 				JMP Hook_IsMorphedBuilding_CancelZergBuildingContinue

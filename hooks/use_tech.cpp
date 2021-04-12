@@ -99,7 +99,7 @@ namespace hooks {
 
 		char buffer[32];
 		sprintf(buffer,"Tech: %d, energy test, cost: %d ",tech,techdata_dat::EnergyCost[tech]);
-		scbw::printText(buffer);
+		scbw::print(buffer);
 		*/
 
 
@@ -364,7 +364,7 @@ namespace hooks {
 					/*		case TechId::UnusedTech38:
 							{
 								//Equip - Empower hero with relic
-								scbw::printText("Try use Tech38");
+								scbw::print("Try use Tech38");
 								if (firstInList != nullptr) {
 									if (firstInList->id == 175) {//reliquary
 										uint8 relic_type = 0;
@@ -373,18 +373,18 @@ namespace hooks {
 										relic = scbw::get_aise_value(firstInList, nullptr, AiseId::GetRelicByIndex, button_number, 0);
 										char buf[64];
 										sprintf(buf, "Relic id: %d", relic);
-										scbw::printText(buf);
+										scbw::print(buf);
 
 										if (relic != 0) {
 											if (relic == 202) {
-												scbw::printText("Blind Judge");
+												scbw::print("Blind Judge");
 											}
 											scbw::sendGPTP_aise_cmd(firstInList, nullptr, GptpId::EmpowerHero, relic, 0, 0);
 											if (scbw::get_aise_value(firstInList, nullptr, AiseId::HasRelic, UpgradeId::BlindJudge, 0) == 1) {
-												scbw::printText("Found relic");
+												scbw::print("Found relic");
 											}
 											else {
-												scbw::printText("No relic!");
+												scbw::print("No relic!");
 											}
 											scbw::refreshConsole();
 										}
@@ -392,11 +392,11 @@ namespace hooks {
 									else {
 										char buf[64];
 										sprintf(buf, "Incorrect reliquary id %d", firstInList->id);
-										scbw::printText(buf);
+										scbw::print(buf);
 									}
 								}
 								else {
-									scbw::printText("No selected units");
+									scbw::print("No selected units");
 								}
 								break;
 							}*/

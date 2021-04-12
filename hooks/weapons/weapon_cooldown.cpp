@@ -36,7 +36,7 @@ namespace hooks {
 		if (unit->id == UnitId::TerranMadcap) {
 			uint32 stacks = ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime);
 			if (stacks > 0) {
-				//scbw::print(std::to_string(stacks) + ", " + std::to_string(scbw::get_generic_value(unit, ValueId::MadcapStacks)));
+				//scbw::printString(std::to_string(stacks) + ", " + std::to_string(scbw::get_generic_value(unit, ValueId::MadcapStacks)));
 				double newCooldown = (double)cooldown * (1.0 - stacks * MadcapAttackSpeedPerStack);
 				cooldown = newCooldown;
 			}

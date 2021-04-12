@@ -35,7 +35,7 @@ namespace hooks {
 	void darkSwarmDamage(uint16 x, uint16 y, uint16 r, CBullet* bullet, uint32 weaponId) {
 		CUnit* dsw = scbw::getDarkSwarm(x, y, r);
 		if (dsw != nullptr) {
-			//scbw::printText("Dark swarm detected");
+			//scbw::print("Dark swarm detected");
 			uint32 damage = (weapons_dat::DamageAmount[weaponId] * 256) +
 				(weapons_dat::DamageBonus[weaponId] * 256 * scbw::getUpgradeLevel(bullet->srcPlayer, weapons_dat::DamageUpgrade[weaponId]));
 			if (bullet->hitFlags & 2) {
@@ -44,13 +44,13 @@ namespace hooks {
 			}
 			if (damage >= dsw->hitPoints) {
 				dsw->remove();
-				//scbw::printText("Destroy dark swarm");
+				//scbw::print("Destroy dark swarm");
 			} else {
 				uint32 old = dsw->hitPoints;
 				dsw->hitPoints -= damage;
 				//char buf[64];
 				//sprintf(buf,"Dark swarm hit: %d --> %d",old,dsw->hitPoints);
-				//scbw::printText(buf);
+				//scbw::print(buf);
 			}
 		}
 	}
@@ -90,19 +90,19 @@ namespace hooks {
 				hit = bullet->attackTarget.unit->position;
 			}
 			switch (weaponId) {
-				case WeaponId::KeskathalorScreamingVenom:
+				case WeaponId::SalamanderPerditionBarrage:
 				{
-					globals.createGenericPersistImpact(ImpactId::CausticDischarge, {hit.x, hit.y}, 12, 5 * 24, SpriteId::CausticDischarge, 5);
+					globals.createGenericPersistImpact(ImpactId::SalamanderFire, 5 * 24, {hit.x, hit.y}, 0.5 * 32, SpriteId::SalamanderImpact, 5);
 					break;
 				}
-				case WeaponId::SalamanderIncendiaryPayload:
+				case WeaponId::KeskathalorScreamingVenom:
 				{
-					globals.createGenericPersistImpact(ImpactId::SalamanderFire, {hit.x, hit.y}, 12, 5 * 24, SpriteId::SalamanderImpact, 5);
+					globals.createGenericPersistImpact(ImpactId::CausticDischarge, 5 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::CausticDischarge, 5);
 					break;
 				}
 				case WeaponId::IonCannon:
 				{
-					globals.createGenericPersistImpact(ImpactId::IonField, {hit.x, hit.y}, 12, 10 * 24, SpriteId::IonField, 5);
+					globals.createGenericPersistImpact(ImpactId::IonField, 10 * 24, {hit.x, hit.y}, 3 * 32, SpriteId::IonField, 5);
 					break;
 				}
 			}
@@ -386,7 +386,7 @@ namespace hooks {
 		else if (weaponId == WeaponId::KalkaliskViscousAcid) {
 			//			divisor = globals.get_multihit_count(bullet);
 			divisor = 1;
-			//			scbw::printFormattedText("Get divisor %d, bullet: %X",divisor,bullet);
+			//			scbw::printf("Get divisor %d, bullet: %X",divisor,bullet);
 		}
 
 		// 

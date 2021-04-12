@@ -243,11 +243,11 @@ namespace hooks {
 			WorkerAi* ai = (WorkerAi*)data.target->pAI;
 			if (ai->type == 2 || ai->type == 3) {
 				if (ai->town == nullptr) {
-					scbw::printFormattedText("Ai_ReactToHit crash - null town! Attacker id %d, Attacker player %d, Target id %d, Target player %d",
+					scbw::printf("Ai_ReactToHit crash - null town! Attacker id %d, Attacker player %d, Target id %d, Target player %d",
 						data.attacker->id, data.attacker->playerId, data.target->id, data.target->playerId);
 					canDamage = false;
 				}
-			}			
+			}
 		}
 
 		if (!data.dontProcPhaseLink) { // damage from phase link was already calculated
@@ -450,7 +450,7 @@ namespace hooks {
 				uint32 divisor = data.damageDivisor;
 				if (divisor == 0) {
 					divisor = 1;
-					scbw::printFormattedText("Incorrect weapon hit %d", data.weaponId);
+					scbw::printf("Incorrect weapon hit %d", data.weaponId);
 				}
 				data.finalDamage = data.finalDamage / divisor + (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction);
 			}
@@ -462,7 +462,7 @@ namespace hooks {
 				// Quazilisk - Melting Points
 				float missingFactor = 1 - ((float)data.target->hitPoints / data.target->getMaxHpRaw());
 				float damageIncrease = floor(missingFactor / QuazaliskPassiveFactor);
-				//scbw::print("Damage Increase: " + std::to_string(damageIncrease));
+				//scbw::printString("Damage Increase: " + std::to_string(damageIncrease));
 				data.finalDamage += damageIncrease * HealthMultiplier;
 				break;
 			}

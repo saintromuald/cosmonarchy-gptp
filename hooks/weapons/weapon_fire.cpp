@@ -650,7 +650,7 @@ namespace hooks {
 					//Kalkaleth Behavior
 //					auto divider = globals.get_multihit_count(bullet);
 					scbw::weaponBulletShot(collisionTarget, bullet, 2);
-					//					scbw::printFormattedText("Hit by bullet: %X", bullet);
+					//					scbw::printf("Hit by bullet: %X", bullet);
 					scbw::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					bullet->moveTarget.unit = bullet->attackTarget.unit;
 					if (bullet->moveTarget.unit != nullptr) {
@@ -678,7 +678,7 @@ namespace hooks {
 			bullet->orderSignal |= 0x80;//new
 			bullet->unknown_0x4E = 0;
 			bullet->someUnitType = 228;
-			//			scbw::printFormattedText("Hit by bullet: %X", bullet);
+			//			scbw::printf("Hit by bullet: %X", bullet);
 			for (i = v4->images.head; i; i = i->link.next)
 				playImageIscript(i, 1);
 
@@ -711,15 +711,15 @@ namespace hooks {
 			//
 			a1->remainingBounces = v2;
 			globals.bounce_bullet = a1;
-			//			scbw::printText("BounceHit");
+			//			scbw::print("BounceHit");
 			if (v2 && (v3 = findNextBounceTarget_func(a1), a1->nextBounceUnit = a1->attackTarget.unit, v3)) {
 				for (i = a1->sprite->images.head; i; i = i->link.next) {
 					playImageIscript(i, IscriptAnimation::SpecialState1);
 				}
-				//				scbw::printText("Bounce");
+				//				scbw::print("Bounce");
 				a1->attackTarget.unit = v3;
 			} else {
-				//				scbw::printText("NoJump");
+				//				scbw::print("NoJump");
 				if (a1->weaponType == WeaponId::GladiusPlasmaFlurry) {
 					globals.remove_multihit_bullet(a1);
 				}
@@ -762,19 +762,19 @@ namespace hooks {
 		_pIterator = pIterator;
 		// The following checks disallowed bouncing if the source was disabled. This feature is removed in HYDRA.
 /*		if (nSrcStatus & UnitStatus::DoodadStatesThing) {
-			scbw::printText("Source unit is disabled (doodad state)");
+			scbw::print("Source unit is disabled (doodad state)");
 			return 0;
 		}
 		if ((*bulletBounceMissileSource)->lockdownTimer) {
-			scbw::printText("Source unit is disabled (lockdown)");
+			scbw::print("Source unit is disabled (lockdown)");
 			return 0;
 		}
 		if ((*bulletBounceMissileSource)->stasisTimer) {
-			scbw::printText("Source unit is disabled (stasis)");
+			scbw::print("Source unit is disabled (stasis)");
 			return 0;
 		}
 		if ((*bulletBounceMissileSource)->maelstromTimer) {
-			scbw::printText("Source unit is disabled (maelstrom)");
+			scbw::print("Source unit is disabled (maelstrom)");
 			return 0;
 		}*/
 		if (!pIterator) {
@@ -829,26 +829,26 @@ namespace hooks {
 		}
 
 		// Gladius Binding Flurry behavior
-//		scbw::printFormattedText("Gladius code start %d %d",(uint32)bulletBounceMissileNext,(uint32)pIterator);
+//		scbw::printf("Gladius code start %d %d",(uint32)bulletBounceMissileNext,(uint32)pIterator);
 
 		if (globals.bounce_bullet->weaponType == WeaponId::GladiusPlasmaFlurry) {
 			if (pIterator != nullptr && *bulletBounceMissileNext != nullptr
 				&& (*bulletBounceMissileNext)->sprite != nullptr
 				&& _pIterator->sprite != nullptr) {
 				if (globals.was_already_hit_by_multihit_bullet(globals.bounce_bullet, _pIterator)) {
-					//scbw::printText("NoItr - Already hit");
+					//scbw::print("NoItr - Already hit");
 					return false;
 				} else {
-					//scbw::printFormattedText("Add hit %d",globals.bounce_bullet);
+					//scbw::printf("Add hit %d",globals.bounce_bullet);
 					globals.add_bullet_multihit(globals.bounce_bullet, _pIterator);
 					return *bulletBounceMissileNext != _pIterator;
 
 				}
 			} else {
-				//scbw::printText("bad bullet");
+				//scbw::print("bad bullet");
 			}
 		}
-		//		scbw::printText("Gladius code end");
+		//		scbw::print("Gladius code end");
 		return *bulletBounceMissileNext != _pIterator;
 	}
 	CUnit* findNextBounceTarget(CBullet* a1) { // 0048B1E0

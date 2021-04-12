@@ -226,7 +226,7 @@ namespace hooks {
 
 			unit->building.creepTimer = 15; /*0F*/
 			if (unit->id == 180) {
-				//scbw::printText("spread basilisk creep");
+				//scbw::print("spread basilisk creep");
 				unit->building.creepTimer = 10;
 			}
 
@@ -238,7 +238,7 @@ namespace hooks {
 				result_00414680 = 0;
 			}
 			if (unit->id == 180 && result_00414680 != 0) {
-				//scbw::printText("Check the creep spread...");
+				//scbw::print("Check the creep spread...");
 				uint32 current_tile_x = unit->sprite->position.x / 32;
 				uint32 current_tile_y = unit->sprite->position.y / 32;
 				int width_x = 6;
@@ -288,7 +288,7 @@ namespace hooks {
 				}
 				char buf[64];
 				sprintf(buf, "Limits: %d %d %d %d, status: %d", x1, y1, x2, y2, mustspread);
-				//scbw::printText(buf);	
+				//scbw::print(buf);	
 				if (!mustspread) {
 					result_00414680 = 0;
 				}

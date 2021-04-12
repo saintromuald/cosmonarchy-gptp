@@ -37,10 +37,10 @@ namespace scbw {
 	/// used as the source of the sound.
 	void playSound(uint32 sfxId, CUnit* sourceUnit = nullptr);
 	/// Prints text to the screen, optionally using the given text color.
-	void print(std::string text, uint32 color = GameTextColor::White);
-	void printText(const char* text, uint32 color = GameTextColor::White);
-	void printFormattedText(const char* format, ...);
-	void printFormattedColoredText(const char* format, uint32 color, ...);
+	void printString(std::string text, uint32 color = GameTextColor::White);
+	void print(const char* text, uint32 color = GameTextColor::White);
+	void printf(const char* format, ...);
+	void printfColor(const char* format, uint32 color, ...);
 
 	/// Displays an error message and plays a sound for the player.
 	///
@@ -105,6 +105,9 @@ namespace scbw {
 	/// two points (x1, y1) and (x2, y2).
 	/// Warning: This function is inaccurate for long distances.
 	uint32 getDistanceFast(int32 x1, int32 y1, int32 x2, int32 y2);
+
+	/// Distance, but in a square instead of circle (max of x dist and y dist)
+	uint32 getDistanceSquare(int32 x1, int32 y1, int32 x2, int32 y2);
 
 	/// Calculates the X Cartesian coordinate from the given polar coordinates
 	/// (distance, angle), using StarCraft's internal data.
