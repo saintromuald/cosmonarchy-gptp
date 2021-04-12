@@ -375,7 +375,7 @@ namespace hooks {
 	void tickUnit(CUnit* unit) {
 		globals.unitFrameHook(unit);
 		//hooks::ShowHealthBar(unit);
-		// 
+				
 		// Reviving from Lazarus Agent
 		if (scbw::get_generic_value(unit, ValueId::IsReviving) == 1 &&
 			unit->sprite->mainGraphic->animation != IscriptAnimation::Unused1) {
@@ -433,6 +433,15 @@ namespace hooks {
 				break;
 			}
 		}
+
+		// Warp Flash overlay: begin 3 seconds before the graphic finishes warping in
+		/*
+		else if (unit->getRace() == RaceId::Protoss
+			&& units_dat::BaseProperty[unit->id] & UnitProperty::Building
+			&& unit->remainingBuildTime == (units_dat::TimeCost[unit->id] - 3 * 24)) {
+			//unit->sprite->createTopOverlay(x);
+		}
+		*/
 
 		// Gimmick to allow the Ultrakor morph cancellation animation to play correctly
 		else if (unit->id == UnitId::ZergUltrakor || unit->id == UnitId::ZergEgg) {
@@ -770,6 +779,7 @@ namespace hooks {
 
 		// TODO: Fix!!!
 		// Basilisk - Biogenesis
+		/*
 		else if (unit->id == UnitId::ZergBactalisk) {
 			if (unit->status & UnitStatus::Burrowed) {
 				if (!(unit->_padding_0x132 & HydraFlags1::BasiliskBurrowed)) {
@@ -778,6 +788,7 @@ namespace hooks {
 				}
 			}
 		}
+		*/
 
 		// Repentent Chorus - Barghest behavior
 		else if (unit->id == UnitId::ProtossBarghest) {

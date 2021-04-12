@@ -500,8 +500,12 @@ const uint32 Func_DamageUnitHp = 0x004797B0;
 void CUnit::damageHp(int32 damage, CUnit* attacker, int32 attackingPlayer, bool notify) {
 	assert(this);
 
+	// Logging
+	auto targetId = this->id;
+	auto targetPlayerId = this->playerId;
 	if (attacker != nullptr) {
-		GPTP::logger << "damageHp(damage (" << damage / 256 << "), attacker (" << attacker->id << "), attackingPlayerId (" << attackingPlayer << "), notify (" << notify << "))" << std::endl;
+		GPTP::logger << "damageHp(damage (" << damage / 256 << "), attackerId (" << attacker->id << "), attackingPlayerId (" << attackingPlayer << "), notify (" << notify
+			<< "), target (" << targetId << "), targetPlayerId (" << targetPlayerId << "))" << std::endl;
 	}
 
 	uint32 notify_ = notify ? 1 : 0;
