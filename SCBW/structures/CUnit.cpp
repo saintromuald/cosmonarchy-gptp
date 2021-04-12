@@ -486,10 +486,9 @@ void CUnit::inflictDamage(int32 dmg, CUnit* attacker, int32 attackingPlayer, boo
 		this->shields -= shieldReduceAmount;
 	}
 	if (shield_overlay && units_dat::ShieldsEnabled[this->id] && this->shields != 0) {
-		//const LO_Header* shield_lo = shieldOverlays[this->sprite->mainGraphic->id];
-
 		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayShieldPtr,
 			this->sprite->mainGraphic->id));
+
 		uint32 frameAngle = (direction - 124) / 8 % 32;
 		Point8 offset = shield_lo->getOffset(this->sprite->mainGraphic->direction, frameAngle);
 		this->sprite->createOverlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
@@ -502,8 +501,7 @@ void CUnit::damageHp(int32 damage, CUnit* attacker, int32 attackingPlayer, bool 
 	assert(this);
 
 	if (attacker != nullptr) {
-		GPTP::logger << "damageHp(finalDamage (%d), attacker (id %d), attackingPlayerId (%d), notify (%d))",
-			damage, attacker->id, attackingPlayer, notify;
+		GPTP::logger << "damageHp(damage (" << damage / 256 << "), attacker (" << attacker->id << "), attackingPlayerId (" << attackingPlayer << "), notify (" << notify << "))" << std::endl;
 	}
 
 	uint32 notify_ = notify ? 1 : 0;
