@@ -440,7 +440,9 @@ namespace hooks {
 						unit->status |= UnitStatus::Invincible;
 						CBullet* bullet = scbw::createBulletRet(WeaponId::AuroraLastOrders, unit, unit->position.x, unit->position.y, unit->playerId, unit->currentDirection1);
 						hooks::splash(bullet, WeaponId::AuroraLastOrders, SplashType::FriendlyNew, nullptr);
-						bullet->time_remaining = 0;
+						if (bullet) {
+							bullet->time_remaining = 0;
+						}
 						// TODO: Add impact graphic
 						unit->remove();
 					}
