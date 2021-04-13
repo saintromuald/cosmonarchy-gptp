@@ -99,7 +99,11 @@ namespace {
 }
 #include "logger.h"
 namespace hooks {
-	void AI_TrainingUnit(CUnit* result, CUnit* parent) {							// 004A2830
+	void AI_TrainingUnit(CUnit* result, CUnit* parent) { // 004A2830
+		bool isSuicideUnit = result->id == UnitId::ZergBroodling || result->id == UnitId::ZergBroodlisk || result->id == UnitId::ProtossSimulacrum;
+		if (result == nullptr) return;
+		if (parent == nullptr) return;
+		if (result == parent && !isSuicideUnit) return;
 		if (playerTable[parent->playerId].type == PlayerType::Computer) {
 			if (playerTable[result->playerId].type == PlayerType::Computer
 				&& result->id == UnitId::TerranCleric) {
@@ -111,7 +115,7 @@ namespace hooks {
 				AI_TrainingWorker(result, parent);
 			} else if (result->id == UnitId::ZergOvileth) {
 				AI_TrainingOverlord(result, parent); // replace with hook later
-			} else if (result->id == UnitId::ZergBroodling) {
+			} else if (isSuicideUnit) {
 				AI_TrainingBroodling(parent, result);
 			} else {
 				AI_TrainingNormal(result, parent);
@@ -386,8 +390,7 @@ namespace hooks {
 					++town->worker_count;
 				}
 			}
-		}
-		else if ((units_dat::BaseProperty[unit->id] & 1 && unit->id != UnitId::ResourceVespeneGeyser)
+		} else if ((units_dat::BaseProperty[unit->id] & 1 && unit->id != UnitId::ResourceVespeneGeyser)
 			|| unit->id == UnitId::ZergLarva
 			|| unit->id == UnitId::ZergEgg
 			|| unit->id == UnitId::ZergOvileth) {
@@ -439,11 +442,9 @@ namespace hooks {
 				playerRACE = playerTable[playerID].race;
 				if (playerRACE == RaceId::Terran) {
 					unitType = UnitId::TerranCommandCenter;
-				}
-				else if (playerRACE == RaceId::Protoss) {
+				} else if (playerRACE == RaceId::Protoss) {
 					unitType = UnitId::ProtossNexus;
-				}
-				else {
+				} else {
 					unitType = UnitId::ZergHatchery;
 				}
 				if (unit->id == unitType || unitIsActiveResourceDepot(unit)) {
@@ -451,8 +452,7 @@ namespace hooks {
 					if (!unitAI) {
 						town->main_building = unit;
 					}
-				}
-				else {
+				} else {
 					auto gas_structure_id = getPlayerDefaultRefineryUnitType(playerID);
 					if (unit->id == gas_structure_id || unit->id == UnitId::ResourceVespeneGeyser) {
 						if (town->gas_buildings[0]) {
@@ -460,12 +460,10 @@ namespace hooks {
 								if (!town->gas_buildings[2]) {
 									town->gas_buildings[2] = unit;
 								}
-							}
-							else {
+							} else {
 								town->gas_buildings[1] = unit;
 							}
-						}
-						else {
+						} else {
 							town->gas_buildings[0] = unit;
 						}
 						if (town->resource_area) {
@@ -788,8 +786,7 @@ namespace hooks {
 							workerTarget = workerUnit->moveTarget.unit;
 							if (workerTarget->id == UnitId::TerranWatchdog) {
 								queueCount = 1;
-							}
-							else {
+							} else {
 								queueCount = AI_GetQueuedCount(workerTarget, UnitId::TerranWatchdog);
 							}
 							//workerUnit = *(uint32*)workerUnit; // not sure if this is even necessary, does v8 need to be iterated upon every loop?
@@ -798,8 +795,7 @@ namespace hooks {
 							builderUnit = j->parent;
 							if (builderUnit->id == UnitId::TerranWatchdog) {
 								queueCount2 = 1;
-							}
-							else {
+							} else {
 								queueCount2 = AI_GetQueuedCount(builderUnit, UnitId::TerranWatchdog);
 							}
 							j = j->link.prev;
@@ -808,8 +804,7 @@ namespace hooks {
 							AI_PrepareGuardAI(result->sprite->position.y, (uint8)result->playerId, 1, result->sprite->position.x);
 						}
 					}
-				}
-				else {
+				} else {
 					AI_PrepareGuardAI(result->sprite->position.y, (uint8)result->playerId, 5, result->sprite->position.x);
 					AI_PrepareGuardAI(result->sprite->position.y, (uint8)result->playerId, 1, result->sprite->position.x);
 				}

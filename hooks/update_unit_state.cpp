@@ -449,7 +449,7 @@ namespace hooks {
 				}
 			}
 
-			//Terran building burn-down
+			// Terran building burn-down
 			if (!bStopHere) {
 				RaceId::Enum raceId = unit->getRace();
 				if (raceId != RaceId::Zerg
