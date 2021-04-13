@@ -219,6 +219,7 @@ namespace hooks {
 			direction,
 			target,
 			attacker,
+			attackingPlayerId,
 			false,
 			false
 		};
