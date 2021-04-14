@@ -873,7 +873,7 @@ namespace hooks {
 		return scbw::setInGameLoopState(0);
 	}
 
-	CUnit* createUnit(uint16 unitType, int32 x, int32 y, int32 playerId) { // 004A09D0 - 1 nop - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
+	CUnit* createUnit(uint16 unitType, int32 x, int32 y, int32 playerId) { // 004A09D0 - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
 		int32 v4; // edi
 		int32 v5; // esi
 		CUnit* v6; // eax
