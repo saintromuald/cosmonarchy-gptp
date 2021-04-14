@@ -889,7 +889,7 @@ namespace hooks {
 		if (IS_IN_GAME_LOOP) {
 			++randomCounts[14];
 			*lastRandomNumber = 0x15A4E35 * *lastRandomNumber + 1;
-			++(*randomCountsTotal); // TODO: Fix
+			++(*randomCountsTotal);
 			randomSeed = (*lastRandomNumber >> 16) & 0x7FFF;
 		}
 		else {
