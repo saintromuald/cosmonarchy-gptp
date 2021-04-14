@@ -1232,12 +1232,10 @@ namespace scbw {
 		}
 	};
 	CUnit* createUnitIngame(uint16 unitId, uint8 playerId, uint32 x, uint32 y, CUnit* creator) {
-		Point16 pos;
-		CUnit* unit;
-		pos.x = x;
-		pos.y = y;
+		if (*unitCount >= 1700) return nullptr; // prevent crashes, move to create unit later
+		Point16 pos = {x, y};
 		fixTargetLocation(&pos, unitId);
-		unit = CreateUnit(unitId, pos.x, pos.y, playerId);
+		CUnit* unit = CreateUnit(unitId, pos.x, pos.y, playerId);
 		if (unit == nullptr) {
 			displayLastNetErrForPlayer(playerId);
 		} else {
