@@ -874,23 +874,23 @@ namespace hooks {
 	}
 
 	CUnit* createUnit(uint16 unitType, int32 x, int32 y, int32 playerId) { // 004A09D0 - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
-		int32 v4; // edi
-		int32 v5; // esi
-		CUnit* v6; // eax
-		CUnit* v7; // ebx
-		uint16 v8; // ax
-		CUnit* v9; // eax
-		CUnit* v10; // esi
-		CUnit* result; // eax
-		int32* pointer; // [esp+Ch] [ebp-8h] // NOT initialized, unpushed arg??
-		uint32 randomSeed; // [esp+10h] [ebp-4h]
+		int32 v4;
+		int32 v5;
+		CUnit* v6;
+		CUnit* v7;
+		uint16 v8;
+		CUnit* v9;
+		CUnit* v10;
+		CUnit* result;
+		int32* pointer;
+		uint32 randomSeed;
 
 		v5 = x;
 		v4 = unitType;
 		if (IS_IN_GAME_LOOP) {
 			++randomCounts[14];
 			*lastRandomNumber = 0x15A4E35 * *lastRandomNumber + 1;
-//			++randomCountsTotal; // TODO: Fix
+			++(*randomCountsTotal); // TODO: Fix
 			randomSeed = (*lastRandomNumber >> 16) & 0x7FFF;
 		}
 		else {
@@ -923,7 +923,6 @@ namespace hooks {
 			}
 			v7->subunit = v9;
 			v9->subunit = v7;
-			// This function is weird
 			getImageAttackFrame(pointer, v7->sprite, 0, 2u);
 			setSpriteMainImageOffset(v10->sprite, *pointer, randomSeed);
 			result = v7;
