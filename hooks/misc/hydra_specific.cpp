@@ -261,8 +261,8 @@ CSprite* unitDestructor(CUnit* unit) {
 }
 
 const uint32 Func_getImageAttackFrame = 0x00401DF0;
-int32* getImageAttackFrame(int32* resultArg, CSprite* sprite, int32 index, uint8 playerId) {
-	static int32* result;
+void* getImageAttackFrame(void* resultArg, CSprite* sprite, int32 index, uint8 playerId) {
+	static void* result;
 	__asm {
 		PUSHAD
 		PUSH playerId
@@ -891,8 +891,7 @@ namespace hooks {
 			*lastRandomNumber = 0x15A4E35 * *lastRandomNumber + 1;
 			++(*randomCountsTotal); // TODO: Fix
 			randomSeed = (*lastRandomNumber >> 16) & 0x7FFF;
-		}
-		else {
+		} else {
 			randomSeed = 0;
 		}
 		v6 = unitConstructor(x, y, unitType, playerId, randomSeed);
@@ -902,21 +901,17 @@ namespace hooks {
 		}
 		if (v6->status & UnitStatus::GroundedBuilding) {
 			CListPushBackUsedUnitEntry(v6);
-		}
-		else {
+		} else {
 			CListPushBackHiddenUnitEntry(v6);
 		}
 		if (v4 > UnitId::Spell_DisruptionWeb
-			|| (v8 = units_dat::SubUnit[v4], v8 == UnitId::None))
-		{
+			|| (v8 = units_dat::SubUnit[v4], v8 == UnitId::None)) {
 			v7->subunit = 0;
 			result = v7;
-		}
-		else {
+		} else {
 			v9 = unitConstructor(v5, y, v8, playerId, randomSeed);
 			v10 = v9;
-			if (!v9)
-			{
+			if (!v9) {
 				unitDestructor(v7);
 				return 0;
 			}
