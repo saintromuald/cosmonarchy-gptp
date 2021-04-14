@@ -50,18 +50,14 @@ namespace hooks {
 	void IrradiateHit(CUnit* attacker, CUnit* target, uint8 attackingPlayerId) {
 		//if not already irradiated and not burrowed, add the irradiate overlay
 		if (target->irradiateTimer == 0 && !(target->status & UnitStatus::Burrowed)) {
-			uint32 irradiateImageId;
+			uint32 irradiateImageId = ImageId::IrradiateNew_Small + scbw::getOverlayOffset(target->id);
 			CUnit* unitWithOverlay;
-			if (units_dat::BaseProperty[target->id] & UnitProperty::MediumOverlay)
-				irradiateImageId = ImageId::Irradiate_Medium;
-			else if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay)
-				irradiateImageId = ImageId::Irradiate_Large;
-			else
-				irradiateImageId = ImageId::Irradiate_Small;
-			if (target->subunit != nullptr)
+			if (target->subunit != nullptr) {
 				unitWithOverlay = target->subunit;
-			else
+			}
+			else {
 				unitWithOverlay = target;
+			}
 			(unitWithOverlay->sprite)->createTopOverlay(irradiateImageId, 0, 0, 0);
 		}
 		target->irradiateTimer = 8 * 3;
