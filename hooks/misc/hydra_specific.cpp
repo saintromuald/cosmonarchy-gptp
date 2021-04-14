@@ -203,6 +203,92 @@ void updateThingys() {
 	}
 }
 
+// For createUnit
+const uint32 Func_unitConstructor = 0x004A06C0;
+CUnit* unitConstructor(int32 x, int32 y, uint16 unitType, int32 playerId, int32 unused) {
+	static CUnit* result;
+	__asm {
+		PUSHAD
+		PUSH unused
+		PUSH playerId
+		MOV DI, unitType
+		MOV EDX, y
+		MOV ESI, x
+		CALL Func_unitConstructor
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+const uint32 Func_CListPushBackUsedUnitEntry = 0x0049DCA0;
+CUnit* CListPushBackUsedUnitEntry(CUnit* unit) {
+	static CUnit* result;
+	__asm {
+		PUSHAD
+		MOV EAX, unit
+		CALL Func_CListPushBackUsedUnitEntry
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+const uint32 Func_CListPushBackHiddenUnitEntry = 0x0049DCE0;
+CUnit* CListPushBackHiddenUnitEntry(CUnit* unit) {
+	static CUnit* result;
+	__asm {
+		PUSHAD
+		MOV EAX, result
+		CALL Func_CListPushBackHiddenUnitEntry
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+const uint32 Func_unitDestructor = 0x004A0990;
+CSprite* unitDestructor(CUnit* unit) {
+	static CSprite* result;
+	__asm {
+		PUSHAD
+		MOV ECX, unit
+		CALL Func_unitDestructor
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+// This one is weird
+const uint32 Func_getImageAttackFrame = 0x00401DF0;
+int32* getImageAttackFrame(int32* resultArg, CSprite* sprite, int32 index, uint8 playerId) {
+	static int32* result;
+	__asm {
+		PUSHAD
+		PUSH playerId
+		MOV EDI, index
+		MOV ECX, sprite
+		MOV EAX, resultArg
+		CALL Func_getImageAttackFrame
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+const uint32 Func_setSpriteMainImageOffset = 0x00401E40;
+void setSpriteMainImageOffset(CSprite* sprite, char x, char y) {
+	__asm {
+		PUSHAD
+		PUSH y
+		PUSH x
+		MOV EAX, sprite
+		CALL Func_setSpriteMainImageOffset
+		POPAD
+	}
+}
+
 #include <array>
 namespace hooks {
 
@@ -785,6 +871,64 @@ namespace hooks {
 		imageThingyLoop = sw.ElapsedMilliseconds();
 		GPTP::logger << "aiLoop: " << aiLoop << ", unitLoop: " << unitLoop << ", " << "tile loop: " << tileLoop << ", thingy/bullet/imageLoop: " << imageThingyLoop << '\n';
 		return scbw::setInGameLoopState(0);
+	}
+
+	CUnit* createUnit(uint16 unitType, int32 x, int32 y, int32 playerId) { // 004A09D0 - 1 nop - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
+		int32 v4; // edi
+		int32 v5; // esi
+		CUnit* v6; // eax
+		CUnit* v7; // ebx
+		uint16 v8; // ax
+		CUnit* v9; // eax
+		CUnit* v10; // esi
+		CUnit* result; // eax
+		int32* pointer; // [esp+Ch] [ebp-8h] // NOT initialized, unpushed arg??
+		uint32 randomSeed; // [esp+10h] [ebp-4h]
+
+		v5 = x;
+		v4 = unitType;
+		if (IS_IN_GAME_LOOP) {
+			++randomCounts[14];
+			*lastRandomNumber = 0x15A4E35 * *lastRandomNumber + 1;
+//			++randomCountsTotal; // TODO: Fix
+			randomSeed = (*lastRandomNumber >> 16) & 0x7FFF;
+		}
+		else {
+			randomSeed = 0;
+		}
+		v6 = unitConstructor(x, y, unitType, playerId, randomSeed);
+		v7 = v6;
+		if (!v6) {
+			return 0;
+		}
+		if (v6->status & UnitStatus::GroundedBuilding) {
+			CListPushBackUsedUnitEntry(v6);
+		}
+		else {
+			CListPushBackHiddenUnitEntry(v6);
+		}
+		if (v4 > UnitId::Spell_DisruptionWeb
+			|| (v8 = units_dat::SubUnit[v4], v8 == UnitId::None))
+		{
+			v7->subunit = 0;
+			result = v7;
+		}
+		else {
+			v9 = unitConstructor(v5, y, v8, playerId, randomSeed);
+			v10 = v9;
+			if (!v9)
+			{
+				unitDestructor(v7);
+				return 0;
+			}
+			v7->subunit = v9;
+			v9->subunit = v7;
+			// This function is weird
+			getImageAttackFrame(pointer, v7->sprite, 0, 2u);
+			setSpriteMainImageOffset(v10->sprite, *pointer, randomSeed);
+			result = v7;
+		}
+		return result;
 	}
 }
 

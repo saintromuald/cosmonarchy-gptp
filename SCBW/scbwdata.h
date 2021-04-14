@@ -179,34 +179,34 @@ SCBW_DATA(char**,				statusscreen_infobtn,		0x00519F40);
 SCBW_DATA(GrpHead**,			cmdicons_grp,				0x0068C1E0);
 
 // For initGameLoad
-SCBW_DATA(		void*,			scenarioChk,				0x006D0F24);
-SCBW_DATA(const uint8*,			playerForce,				0x0059BDA8); // array of 0x8
-SCBW_DATA(const uint8*,			playerForceSomethingReplay,	0x006D11A1); // array of 0x8
-SCBW_DATA(const FILE*,			loadGameFileHandle,			0x006D1218);
-SCBW_DATA(const uint8*,			multiPlayerMode,			0x0057F0B4);
+SCBW_DATA(		void*,				scenarioChk,				0x006D0F24);
+SCBW_DATA(const uint8*,				playerForce,				0x0059BDA8); // array of 0x8
+SCBW_DATA(const uint8*,				playerForceSomethingReplay,	0x006D11A1); // array of 0x8
+SCBW_DATA(const FILE*,				loadGameFileHandle,			0x006D1218);
+SCBW_DATA(const uint8*,				multiPlayerMode,			0x0057F0B4);
 SCBW_DATA(const uint32*,			initialSeed,				0x0051CA10);
 SCBW_DATA(const uint32*,			replaySeed,					0x006D0F38);
 //SCBW_DATA(const func*,			mouseOverCallback,			0x006D5EAC); // how to define a func?
-SCBW_DATA(const uint32*,			randomCounts,				0x0051C610); // size of 0x400, array?
-SCBW_DATA(const uint32*,			randomCountsTotal,			0x0051CA18);
+SCBW_DATA(		uint32*,			randomCounts,				0x0051C610); // size of 0x400, array?
+SCBW_DATA(		uint32*,			randomCountsTotal,			0x0051CA18);
 SCBW_DATA(		uint16*,			campaignIndex,				0x0057F244);
-SCBW_DATA(		void**,			mapArchiveHandle,			0x00596BC4);
-SCBW_DATA(const GameData*,		gameData,					0x005967F8);
-SCBW_DATA(const uint8*,			mapStarted,					0x006D121C);
-SCBW_DATA(const uint8*,			playerHasLeft,				0x00581D62); // array of 0x8
-SCBW_DATA(const uint8*,			lossType,					0x00581D61);
-SCBW_DATA(const uint8*,			unkVictoryVariable,			0x00581D66);
+SCBW_DATA(		void**,				mapArchiveHandle,			0x00596BC4);
+SCBW_DATA(const GameData*,			gameData,					0x005967F8);
+SCBW_DATA(const uint8*,				mapStarted,					0x006D121C);
+SCBW_DATA(const uint8*,				playerHasLeft,				0x00581D62); // array of 0x8
+SCBW_DATA(const uint8*,				lossType,					0x00581D61);
+SCBW_DATA(const uint8*,				unkVictoryVariable,			0x00581D66);
 SCBW_DATA(const uint32*,			saveLoadSuccess,			0x006D5A68);
 SCBW_DATA(		uint32*,			elapstedTimeModifier,		0x006D5BCC);
 SCBW_DATA(const uint32*,			savedElapsedSeconds,		0x0057F240);
-SCBW_DATA(const Options*,		optionsList,				0x006CDFD4);
-SCBW_DATA(const ReplayData*,	replayData,					0x00596BBC);
+SCBW_DATA(const Options*,			optionsList,				0x006CDFD4);
+SCBW_DATA(const ReplayData*,		replayData,					0x00596BBC);
 SCBW_DATA(const uint32*,			replayVisions,				0x006D0F18);
 SCBW_DATA(const uint32*,			playerVisions,				0x0057F0B0);
 SCBW_DATA(const uint32*,			replayShowEntireMap,		0x006D0F1C); // dword bool...?
 SCBW_DATA(const uint32*,			nextReplayCommandFrame,		0x005136C8);
 SCBW_DATA(const uint32*,			playerExploredVisions,		0x0057EEB8);
-SCBW_DATA(		int*,			subTwoCheckTwo,				0x004EE0F0);
+SCBW_DATA(		int*,				subTwoCheckTwo,				0x004EE0F0);
 
 // For getResponseSfx
 SCBW_DATA(uint32*,					selectionSoundCounter,		0x00640548);
