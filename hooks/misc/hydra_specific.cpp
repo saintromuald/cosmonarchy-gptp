@@ -260,7 +260,6 @@ CSprite* unitDestructor(CUnit* unit) {
 	return result;
 }
 
-// This one is weird
 const uint32 Func_getImageAttackFrame = 0x00401DF0;
 int32* getImageAttackFrame(int32* resultArg, CSprite* sprite, int32 index, uint8 playerId) {
 	static int32* result;
