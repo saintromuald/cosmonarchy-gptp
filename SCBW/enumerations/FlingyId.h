@@ -212,7 +212,7 @@ namespace FlingyId {
 		Corrosive_Acid_Hit,
 		Neutron_Flare,
 		Uraj,
-		Khalis
+		Khalis,
 
 		// HYDRA \\
 
