@@ -150,7 +150,7 @@ namespace {
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_sub_4F66D0
+			CALL Func_placeHallucination
 			MOV bPreResult, EAX
 			POPAD
 		}
