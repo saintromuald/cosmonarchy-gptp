@@ -260,7 +260,24 @@ void Globals::unitDeathHook(CUnit* unit) {
 	}
 }
 
-void Globals::createGenericPersistImpact(uint8 impactId, uint32 time, Point32 position, uint32 radius, int32 spriteId, uint8 elevation) {
+void ApplyIrradiate(CUnit* unit, uint8 player, uint32 time) {
+	//if not already irradiated and not burrowed, add the irradiate overlay
+	if (unit->irradiateTimer == 0 && !(unit->status & UnitStatus::Burrowed)) {
+		uint32 irradiateImageId = ImageId::IrradiateNew_Small + scbw::getOverlayOffset(unit->id);
+		CUnit* unitWithOverlay;
+		if (unit->subunit != nullptr) {
+			unitWithOverlay = unit->subunit;
+		} else {
+			unitWithOverlay = unit;
+		}
+		(unitWithOverlay->sprite)->createTopOverlay(irradiateImageId, 0, 0, 0);
+	}
+	unit->irradiatedBy = nullptr;
+	unit->irradiatePlayerId = player;
+	unit->irradiateTimer = time;
+}
+
+void Globals::createGenericPersistImpact(uint8 impactId, uint32 time, Point32 position, uint32 radius, int32 spriteId, uint8 elevation, uint8 player) {
 	PersistImpact impact;
 	impact.impactId = impactId;
 	impact.position = position;
@@ -269,6 +286,7 @@ void Globals::createGenericPersistImpact(uint8 impactId, uint32 time, Point32 po
 	impact.internalTimeMax = time;
 	impact.spriteId = spriteId;
 	impact.elevation = elevation;
+	impact.player = player;
 	impact.internalThingy = nullptr;
 
 	if (impact.spriteId >= 0) {
@@ -395,6 +413,38 @@ void Globals::frameHook() {
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit) {
 						unit->damageWithIgnoreFlatArmor(WeaponId::IonField, weapons_dat::DamageAmount[WeaponId::IonField] * damageMultiplier);
 						scbw::set_generic_timer(unit, ValueId::IonFieldSpeed, 2 * 24 + 1);
+					});
+					break;
+				}
+				case ImpactId::Hallucination:
+				{
+					scbw::UnitFinder(
+						impact.position.x - impact.radius,
+						impact.position.y - impact.radius,
+						impact.position.x + impact.radius,
+						impact.position.y + impact.radius
+					).forEachInMatch(unitRangeCount(nullptr, 0, {}), [&](CUnit* unit) {
+						scbw::set_generic_value(unit, ValueId::HallucinatingSourcePlayer, impact.player);
+						scbw::set_generic_timer(unit, ValueId::HallucinatingTimer, 20 * 24);
+
+						scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit);
+						if (unit->orderTarget.unit->subunit != nullptr) {
+							unit->subunit->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
+						} else {
+							unit->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
+						}
+					});
+					break;
+				}
+				case ImpactId::Irradiate:
+				{
+					scbw::UnitFinder(
+						impact.position.x - impact.radius,
+						impact.position.y - impact.radius,
+						impact.position.x + impact.radius,
+						impact.position.y + impact.radius
+					).forEachInMatch(unitRangeCount(nullptr, 0, {}), [&](CUnit* unit) {
+						ApplyIrradiate(unit, impact.player, 10);
 					});
 					break;
 				}
@@ -731,7 +781,7 @@ namespace scbw {
 
 		// Reset Irradiate
 		if (unit->irradiateTimer != 0) {
-			unit->irradiateTimer = 24;
+			unit->irradiateTimer = 10;
 		}
 
 		//was hardcoded in original code

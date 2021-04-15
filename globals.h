@@ -26,17 +26,19 @@ namespace ImpactId {
 		IonField,
 		Criticality,
 		CausticDischarge,
+		Irradiate,
+		Hallucination,
 	};
 }
 
-class PersistImpact {
-public:
+struct PersistImpact {
 	uint8 impactId;
 	Point32 position;
 	uint32 radius;
 	uint32 time;
 	int32 spriteId;
 	uint8 elevation;
+	uint8 player;
 	uint32 internalTimeMax;
 	CThingy* internalThingy;
 };
@@ -217,7 +219,7 @@ public:
 	bool was_hit_by_pariah(CUnit* source, CUnit* target);
 
 	void register_pariah_hit(CUnit* source, CUnit* target);
-	void createGenericPersistImpact(uint8 impactId, uint32 time, Point32 position, uint32 radius, int32 spriteId, uint8 elevation);
+	void createGenericPersistImpact(uint8 impactId, uint32 time, Point32 position, uint32 radius, int32 spriteId, uint8 elevation, uint8 player);
 	bool was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target);
 	bool multihit_bullet_is_set(CBullet* bullet);
 	uint32 get_multihit_count(CBullet* bullet);
@@ -233,6 +235,8 @@ public:
 	bool spine_pair_exists(CUnit* lurker, CUnit* target);
 
 };
+
+void ApplyIrradiate(CUnit* unit, uint8 player, uint32 time);
 
 void injectGlobalsHooks();
 

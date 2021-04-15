@@ -480,7 +480,6 @@ namespace hooks {
 
 	static void weaponDamage_behaviors(WeaponDamageData& data) {
 		if (data.attacker != nullptr) {
-
 			// Vithrilisk - Critical Mass (procced by any attack now)
 			if (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks)) {
 				int range = 160;
@@ -565,6 +564,14 @@ namespace hooks {
 			}
 
 			switch (data.weaponId) {
+				case WeaponId::Irradiate:
+				{
+					// Seraph - Irradiate Spread
+					if (data.attacker->irradiateTimer) {
+						ApplyIrradiate(data.target, data.attackingPlayerId, data.attacker->irradiateTimer);
+					}
+					break;
+				}
 				case WeaponId::KonviliskSowingSpines:
 				{
 					// Fertile Spines - Konvilisk behavior

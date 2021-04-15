@@ -375,7 +375,7 @@ namespace hooks {
 	void tickUnit(CUnit* unit) {
 		globals.unitFrameHook(unit);
 		//hooks::ShowHealthBar(unit);
-				
+
 		// Reviving from Lazarus Agent
 		if (scbw::get_generic_value(unit, ValueId::IsReviving) == 1 &&
 			unit->sprite->mainGraphic->animation != IscriptAnimation::Unused1) {
@@ -481,7 +481,7 @@ namespace hooks {
 		// Star Sovereign Intervention Missiles behavior + Grief of All Gods
 		else if (unit->id == UnitId::ProtossStarSovereign) {
 			if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerChannel) == 1) {
-				globals.createGenericPersistImpact(ImpactId::GriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevationLevel);
+				globals.createGenericPersistImpact(ImpactId::GriefOfAllGods, 360, {unit->position.x, unit->position.y}, 8 * 32, -1, unit->sprite->elevationLevel, unit->playerId);
 			}
 			if (scbw::get_generic_timer(unit, ValueId::StarcallerInterceptionMissiles) == 0) {
 				auto r = 5 * 32;

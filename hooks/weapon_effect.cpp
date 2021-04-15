@@ -92,17 +92,17 @@ namespace hooks {
 			switch (weaponId) {
 				case WeaponId::SalamanderPerditionBarrage:
 				{
-					globals.createGenericPersistImpact(ImpactId::SalamanderFire, 5 * 24, {hit.x, hit.y}, 0.5 * 32, SpriteId::SalamanderImpact, 5);
+					globals.createGenericPersistImpact(ImpactId::SalamanderFire, 5 * 24, {hit.x, hit.y}, 0.5 * 32, SpriteId::SalamanderImpact, 5, bullet->srcPlayer);
 					break;
 				}
 				case WeaponId::KeskathalorScreamingVenom:
 				{
-					globals.createGenericPersistImpact(ImpactId::CausticDischarge, 5 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::CausticDischarge, 5);
+					globals.createGenericPersistImpact(ImpactId::CausticDischarge, 5 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::CausticDischarge, 5, bullet->srcPlayer);
 					break;
 				}
 				case WeaponId::IonCannon:
 				{
-					globals.createGenericPersistImpact(ImpactId::IonField, 10 * 24, {hit.x, hit.y}, 3 * 32, SpriteId::IonField, 5);
+					globals.createGenericPersistImpact(ImpactId::IonField, 10 * 24, {hit.x, hit.y}, 3 * 32, SpriteId::IonField, 5, bullet->srcPlayer);
 					break;
 				}
 			}

@@ -48,21 +48,7 @@ namespace hooks {
 
 	//no bullet because this function can be called in another context without bullet
 	void IrradiateHit(CUnit* attacker, CUnit* target, uint8 attackingPlayerId) {
-		//if not already irradiated and not burrowed, add the irradiate overlay
-		if (target->irradiateTimer == 0 && !(target->status & UnitStatus::Burrowed)) {
-			uint32 irradiateImageId = ImageId::IrradiateNew_Small + scbw::getOverlayOffset(target->id);
-			CUnit* unitWithOverlay;
-			if (target->subunit != nullptr) {
-				unitWithOverlay = target->subunit;
-			}
-			else {
-				unitWithOverlay = target;
-			}
-			(unitWithOverlay->sprite)->createTopOverlay(irradiateImageId, 0, 0, 0);
-		}
-		target->irradiateTimer = 8 * 3;
-		target->irradiatedBy = attacker;
-		target->irradiatePlayerId = attackingPlayerId;
+		globals.createGenericPersistImpact(ImpactId::Irradiate, 10 * 24, {target->getX(), target->getY()}, 1.5 * 32, SpriteId::IonField, 5, attackingPlayerId);
 	};
 
 	//bullet is not normally part of the function, so if the function is called

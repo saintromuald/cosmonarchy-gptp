@@ -10,11 +10,11 @@ namespace {
 	bool function_004F66D0(CUnit* unit);																				// 004F66D0	// called PlaceHallucination in Neiv's list
 
 	// for createHallucination
-	CUnit* createUnit(int16 unitType, int32 x, int32 y, int32 playerId);														// 004A09D0
+	CUnit* createUnit(int16 unitType, int32 x, int32 y, int32 playerId);												// 004A09D0
 	void applyHallucinationStats(CUnit* halUnit);																		// 004F6180
 	int32 hallucinateScarabs(CUnit* a1, CUnit* a2);																		// 004F65B0
 	void AI_TrainingUnit(CUnit* result, CUnit* parent);																	// 004A2830
-	void displayLastNetErrForPlayer(uint8 a1);																				// 0049E530
+	void displayLastNetErrForPlayer(uint8 a1);																			// 0049E530
 
 } //unnamed namespace
 
@@ -49,28 +49,30 @@ namespace hooks {
 			//	}
 			//
 			//}
-			CUnit* target = unit->orderTarget.unit;
-			scbw::set_generic_value(target, ValueId::HallucinatingSourcePlayer, unit->playerId);
-			scbw::set_generic_timer(target, ValueId::HallucinatingTimer, (30 * 24) + 1);
 
-			if (!(*CHEAT_STATE & CheatFlags::TheGathering))
+
+			Point32 hit;
+			if (CUnit* target = unit->orderTarget.unit) {
+				hit = {target->getX(), target->getY()};
+			} else {
+				Point16 pt = unit->orderTarget.pt;
+				hit = {pt.x, pt.y};
+			}
+
+			globals.createGenericPersistImpact(ImpactId::Hallucination, 20 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::Hallucination_Death1, 5, unit->playerId);
+
+			if (!(*CHEAT_STATE & CheatFlags::TheGathering)) {
 				unit->spendUnitEnergy(techCost);
-
-			scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, target);
-
-			if (unit->orderTarget.unit->subunit != nullptr)
-				target->subunit->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
-			else
-				target->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
+			}
 
 			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
-			} else
-				if (unit->pAI != nullptr)
-					unit->orderComputerCL(OrderId::ComputerAI);
-				else
-					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+			} else if (unit->pAI != nullptr) {
+				unit->orderComputerCL(OrderId::ComputerAI);
+			} else {
+				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+			}
 		}
 	}
 
