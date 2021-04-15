@@ -1,10 +1,9 @@
 #include "hallucination_spell.h"
 #include <SCBW/api.h>
 #include "globals.h"
-//helper functions def
 
 namespace {
-
+	// for orders_Hallucination1
 	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index);	// 004926D0
 	void UnitDestructor(CUnit* unit);																								// 004A0990
 	bool placeHallucination(CUnit* unit);																							// 004F66D0
@@ -16,7 +15,7 @@ namespace {
 	void AI_TrainingUnit(CUnit* result, CUnit* parent);																				// 004A2830
 	void displayLastNetErrForPlayer(uint8 a1);																						// 0049E530
 
-} //unnamed namespace
+}
 
 namespace hooks {
 
@@ -114,10 +113,10 @@ namespace hooks {
 		return result;
 	}
 
-} //namespace hooks
+}
 
 namespace {
-
+	// for orders_Hallucination1
 	const uint32 Func_Sub_4926D0 = 0x004926D0;
 	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index) {
 		static bool32 bPreResult;
