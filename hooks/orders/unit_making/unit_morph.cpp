@@ -133,17 +133,18 @@ namespace hooks {
 
 	void orders_Morph1(CUnit* unit) {
 		if (unit->mainOrderState == 0) {
-
 			if (scbw::isConventionalUnitMorphSource(unit->id, true, true)) {
-				if (!hasSuppliesForUnit(
+				if (!(hasSuppliesForUnit(
 					unit->buildQueue[unit->buildQueueSlot],
 					unit->playerId,
 					1
-				)
-					) {
+				)))
+				{
 					refundAllQueueSlots(unit);
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
-				} else {
+				} 
+				else 
+				{
 					bool bStopThere = false;
 					uint16 eggId;
 					switch (unit->id) {
@@ -185,6 +186,7 @@ namespace hooks {
 							} else {
 								eggId = UnitId::ZergCocoon;
 							}
+							break;
 						default:
 							if (unit->id != UnitId::ProtossCantavis) {
 								bStopThere = true;
@@ -214,7 +216,6 @@ namespace hooks {
 							//morph into egg from source unit
 							replaceUnitWithType(unit, eggId);
 						}
-
 						changeUnitButtonSet_Sub4E5D60(unit, unit->id);
 						unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 						unit->mainOrderState = 1;
@@ -228,12 +229,12 @@ namespace hooks {
 							unit->sprite->playIscriptAnim(IscriptAnimation::Walking, true);
 						}
 					}
-
 				}
 
 			}
 
 		} else
+
 			if (unit->mainOrderState == 1) {
 				//advance
 				if (advanceRemainingBuildTime_Sub466940(unit)) {
@@ -245,9 +246,9 @@ namespace hooks {
 					unit->sprite->playIscriptAnim(anim, true);
 					unit->mainOrderState = 2;
 				}
-			} else
+			}
+			else
 				if (unit->mainOrderState == 2) {
-
 					if (unit->orderSignal & 4) {
 
 						unit->orderSignal -= 4;
@@ -497,9 +498,12 @@ namespace hooks {
 	uint16 getUnitMorphEggTypeHook(uint16 unitId, CUnit* unit, uint16 resultId) {
 		//Default StarCraft behavior
 
-		if (units_dat::BaseProperty[unitId] & UnitProperty::Flyer) {
+		if (units_dat::BaseProperty[unitId] & UnitProperty::Flyer) 
+		{
 			return UnitId::ZergCocoon;
-		} else {
+		} 
+		else 
+		{
 			return UnitId::ZergEgg;
 		}
 		return UnitId::None;
