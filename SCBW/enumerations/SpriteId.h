@@ -702,6 +702,9 @@ namespace SpriteId {
 		ZergAlaszileth						= 694,
 		IonField							= 695,
 		ReconstitutionConsumption			= 696,
+		IrradiateNew_Small					= 697,
+		IrradiateNew_Medium					= 698,
+		IrradiateNew_Large					= 699,
 
 		// CORPSE \\
 
