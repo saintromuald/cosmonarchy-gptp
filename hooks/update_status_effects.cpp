@@ -331,21 +331,16 @@ namespace hooks {
 			}
 		}
 
-		// Irradiate ability and Radiation Shockwave upgrade
+		// Irradiate ability
 		if (unit->irradiateTimer != 0) {
-			char buf[32];
 			unit->irradiateTimer--;
 
 			doIrradiateDamage(unit);
-
 			if (unit->irradiateTimer == 0) {
-				EMPShockwaveHit(nullptr, unit->getX(), unit->getY(), nullptr);
-
 				unit->removeOverlay(ImageId::IrradiateNew_Small, ImageId::IrradiateNew_Large);
 				unit->irradiatedBy = nullptr;
 				unit->irradiatePlayerId = 8;
 			}
-
 		}
 
 		if (unit->lockdownTimer != 0) {

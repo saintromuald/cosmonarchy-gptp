@@ -14,213 +14,126 @@ namespace {
 } //unnamed namespace
 
 namespace AI {
-
 	//Attempts make the @p unit cast a spell.
 	bool AI_spellcasterHook(CUnit* unit, bool isUnitBeingAttacked) {
-
 		if (!isUnitBeingAttacked
 			&& AIScriptController[unit->playerId].spellcasterTimer != 0)
+		{
 			return false;
-
+		}
 		uint16 energyReserve;
 
 		switch (unit->id) {
-
-			case UnitId::battlecruiser:
-				//Yamato Gun
+			case UnitId::TerranPhobos:
+				// Yamato Cannon
 				if (canCastSpellOrder(unit, TechId::YamatoGun, OrderId::FireYamatoGun1)) {
-
 					CUnit* target = findBestYamatoGunTarget(unit, isUnitBeingAttacked);
-
 					if (unit->mainOrderId == OrderId::FireYamatoGun1
 						&& unit->orderTarget.unit == target)
+					{
 						return false;
-
+					}
 					if (aiCastSpellOrder(unit, target, OrderId::FireYamatoGun1))
+					{
 						return true;
-
+					}
 				}
-
 				break;
-
-			case UnitId::ghost:
-				//Lockdown
+			case UnitId::TerranEidolon:
+				// Lobotomy Mine
 				if (canCastSpellOrder(unit, TechId::Lockdown, OrderId::MagnaPulse) && unit->vulture.spiderMineCount > 0) {
-
 					CUnit* target = findBestLockdownTarget(unit, isUnitBeingAttacked);
-
 					if (unit->mainOrderId == OrderId::MagnaPulse
 						&& unit->orderTarget.unit == target)
+					{
 						return false;
-
+					}
 					if (aiCastSpellOrder(unit, target, OrderId::MagnaPulse))
+					{
 						return true;
-
+					}
 				}
 
-				//Launch Nuclear Missile
+				// Launch Nuclear Missile
 				if (isNukeTimerReady(unit->playerId)) {
-
 					CUnit* silo = getLoadedSilo(unit);
-					if (!silo) return false;
-
+					if (!silo) {
+						return false;
+					}
 					CUnit* target = findBestNukeLaunchTarget(unit, isUnitBeingAttacked);
-
 					if (aiCastSpellOrder(unit, target, OrderId::NukePaint)) {
 						silo->building.silo.nuke->connectedUnit = unit;
 						AIScriptController[unit->playerId].AI_LastNukeTime = *elapsedTimeSeconds;
 						return true;
 					}
-
 				}
-
 				break;
-
-			case UnitId::science_vessel:
-				//EMP Shockwave
-				if (canCastSpellOrder(unit, TechId::EMPShockwave, OrderId::EmpShockwave)) {
-
-					CUnit* target = findBestEmpShockwaveTarget(unit, isUnitBeingAttacked);
-
-					if (unit->mainOrderId == OrderId::EmpShockwave
-						&& unit->orderTarget.unit == target)
-						return false;
-
-					if (aiCastSpellOrder(unit, target, OrderId::EmpShockwave))
-						return true;
-
-				}
-
-				//Defensive Matrix
+			case UnitId::TerranAzazel:
+				// Defensive Matrix
 				if (canCastSpellOrder(unit, TechId::DefensiveMatrix, OrderId::DefensiveMatrix)) {
-
 					CUnit* target = findBestDefensiveMatrixTarget(unit, isUnitBeingAttacked);
-
 					if (unit->mainOrderId == OrderId::DefensiveMatrix
 						&& unit->orderTarget.unit == target)
+					{
 						return false;
-
+					}
 					if (aiCastSpellOrder(unit, target, OrderId::DefensiveMatrix))
+					{
 						return true;
-
+					}
 				}
-
-				//Irradiate
+				break;
+			case UnitId::TerranSeraph:
+				// Irradiate
 				if (canCastSpellOrder(unit, TechId::Irradiate, OrderId::Irradiate)) {
-
 					CUnit* target = findBestIrradiateTarget(unit, isUnitBeingAttacked);
-
 					if (unit->mainOrderId == OrderId::Irradiate
 						&& unit->orderTarget.unit == target)
+					{
 						return false;
-
-					if (aiCastSpellOrder(unit, target, OrderId::Irradiate))
-						return true;
-
-				}
-
-				break;
-
-			case UnitId::medic:
-				//Restoration
-				if (canCastSpellOrder(unit, TechId::Restoration, OrderId::Restoration)) {
-
-					CUnit* target = findBestRestorationTarget(unit, isUnitBeingAttacked);
-
-					if (unit->mainOrderId == OrderId::Restoration
-						&& unit->orderTarget.unit == target)
-						return false;
-
-					if (aiCastSpellOrder(unit, target, OrderId::Restoration))
-						return true;
-
-					if (unit == AIScriptController[unit->id].mainMedic
-						&& unit->mainOrderId != OrderId::Restoration) {
-						CUnit* targetSituational = findBestRestorationTargetSituational(unit, isUnitBeingAttacked);
-						if (aiCastSpellOrder(unit, targetSituational, OrderId::Restoration))
-							return true;
 					}
 
-				}
-
-				//Optical Flare
-				if (unit->getMaxEnergy() == unit->energy
-					&& canCastSpellOrder(unit, TechId::OpticalFlare, OrderId::CastOpticalFlare)) {
-
-					CUnit* target = findBestOpticalFlareTarget(unit, isUnitBeingAttacked);
-
-					if (unit->mainOrderId == OrderId::CastOpticalFlare
-						&& unit->orderTarget.unit == target)
-						return false;
-
-					if (aiCastSpellOrder(unit, target, OrderId::CastOpticalFlare))
+					if (aiCastSpellOrder(unit, target, OrderId::Irradiate))
+					{
 						return true;
-
+					}
 				}
 
+				// Launch Nuclear Missile
+				if (isNukeTimerReady(unit->playerId)) {
+					CUnit* silo = getLoadedSilo(unit);
+					if (!silo) {
+						return false;
+					}
+					CUnit* target = findBestNukeLaunchTarget(unit, isUnitBeingAttacked);
+					if (aiCastSpellOrder(unit, target, OrderId::NukePaint)) {
+						silo->building.silo.nuke->connectedUnit = unit;
+						AIScriptController[unit->playerId].AI_LastNukeTime = *elapsedTimeSeconds;
+						return true;
+					}
+				}
 				break;
-
-			case UnitId::queen:
-				//Parasite
-				if (isUmsMode(unit->playerId) ? scbw::random() % 256 == 1 : unit->getMaxEnergy() == unit->energy) {
-
+			case UnitId::ZergMatraleth:
+				// Parasite
+				if (unit->energy >= unit->getMaxEnergy() / 2) {
 					if (canCastSpellOrder(unit, TechId::Parasite, OrderId::CastParasite)) {
-
 						CUnit* target = findBestParasiteTarget(unit, isUnitBeingAttacked);
 
 						if (unit->mainOrderId == OrderId::CastParasite
 							&& unit->orderTarget.unit == target)
+						{
 							return false;
-
+						}
 						if (aiCastSpellOrder(unit, target, OrderId::CastParasite, 4))
+						{
 							return true;
-
+						}
 						return false;
-
 					}
-
-					if (isUmsMode(unit->playerId))
-						return false;
-
 				}
-
-				//Spawn Broodlings
-				if (canCastSpellOrder(unit, TechId::SpawnBroodlings, OrderId::SummonBroodlings)) {
-					return false;
-					/*
-				  CUnit* target = findBestSpawnBroodlingsTarget(unit, isUnitBeingAttacked);
-
-				  if (unit->mainOrderId == OrderId::SummonBroodlings
-					  && unit->orderTarget.unit == target)
-					return false;
-
-				  if (aiCastSpellOrder(unit, target, OrderId::SummonBroodlings)) {
-					unit->order(OrderId::Move, unit->getX(), unit->getY(), nullptr, UnitId::None, false);
-					return true;
-				  }*/
-
-				}
-
-				//Ensnare
-				if ((isUmsMode(unit->playerId) || unit->getMaxEnergy() == unit->energy)
-					&& canCastSpellOrder(unit, TechId::Ensnare, OrderId::Ensnare)) {
-
-					CUnit* target = findBestEnsnareTarget(unit, isUnitBeingAttacked);
-
-					if (unit->mainOrderId == OrderId::Ensnare
-						&& unit->orderTarget.unit == target)
-						return false;
-
-					if (aiCastSpellOrder(unit, target, OrderId::Ensnare))
-						return true;
-
-				}
-
 				break;
-
-			case UnitId::defiler:
-				//Plague
-
+			case UnitId::ZergIsthrathaleth:
+				// Plague
 				if (canCastSpellOrder(unit, TechId::Plague, OrderId::Plague)) {
 					CUnit* target = findBestPlagueTarget(unit, isUnitBeingAttacked);
 
@@ -233,159 +146,117 @@ namespace AI {
 
 				}
 
-				//Dark Swarm
+				// Dark Swarm
 				if (canCastSpellOrder(unit, TechId::DarkSwarm, OrderId::DarkSwarm)) {
-
 					CUnit* target = findBestDarkSwarmTarget(unit, isUnitBeingAttacked);
-
 					if (unit->mainOrderId == OrderId::DarkSwarm
 						&& unit->orderTarget.unit == target)
+					{
 						return false;
-
+					}
 					if (aiCastSpellOrder(unit, target, OrderId::DarkSwarm))
+					{
 						return true;
-
+					}
 				}
-
 				break;
-
-			case UnitId::high_templar:
-				//Psionic Storm
+			case UnitId::ProtossCantavis:
+				// Psionic Storm
 				if (canCastSpellOrder(unit, TechId::PsionicStorm, OrderId::PsiStorm)) {
-
 					CUnit* target = findBestPsiStormTarget(unit, isUnitBeingAttacked);
-
 					if (unit->mainOrderId == OrderId::PsiStorm
 						&& unit->orderTarget.unit == target)
+					{
 						return false;
-
+					}
 					if (aiCastSpellOrder(unit, target, OrderId::PsiStorm))
+					{
 						return true;
-
+					}
 				}
 
-				//Hallucination
+				// Hallucination
 				if (unit->getMaxEnergy() == unit->energy
-					&& canCastSpellOrder(unit, TechId::Hallucination, OrderId::Hallucianation1)) {
-
+					&& canCastSpellOrder(unit, TechId::Hallucination, OrderId::Hallucination1)) {
 					CUnit* target = findBestHallucinationTarget(unit, isUnitBeingAttacked);
-
-					if (unit->mainOrderId == OrderId::Hallucianation1
+					if (unit->mainOrderId == OrderId::Hallucination1
 						&& unit->orderTarget.unit == target)
+					{
 						return false;
-
-					if (aiCastSpellOrder(unit, target, OrderId::Hallucianation1))
+					}
+					if (aiCastSpellOrder(unit, target, OrderId::Hallucination1))
+					{
 						return true;
-
+					}
 				}
-
 				break;
-
-			case UnitId::arbiter:
-				//Stasis Field
+			case UnitId::ProtossDidact:
+				// Stasis Field
 				if (canCastSpellOrder(unit, TechId::StasisField, OrderId::StasisField)) {
-
 					CUnit* target = findBestStasisFieldTarget(unit, isUnitBeingAttacked);
-
 					if (unit->mainOrderId == OrderId::StasisField
 						&& unit->orderTarget.unit == target)
+					{
 						return false;
-
+					}
 					if (aiCastSpellOrder(unit, target, OrderId::StasisField))
+					{
 						return true;
-
+					}
 				}
 
-				//Recall
+				// Recall
 				if (canCastSpellOrder(unit, TechId::Recall, OrderId::Teleport)) {
-
 					CUnit* target = findBestRecallTarget(unit, isUnitBeingAttacked);
-
 					if (unit->mainOrderId == OrderId::Teleport
 						&& unit->orderTarget.unit == target)
+					{
 						return false;
-
+					}
 					if (aiCastSpellOrder(unit, target, OrderId::Teleport))
+					{
 						return true;
-
+					}
 				}
-
 				break;
-
-			case UnitId::dark_archon:
-				//Feedback
-				if (canCastSpellOrder(unit, TechId::Feedback, OrderId::CastFeedback)) {
-
-					CUnit* target = findBestFeedbackTarget(unit, isUnitBeingAttacked);
-
-					if (unit->mainOrderId == OrderId::CastFeedback
-						&& unit->orderTarget.unit == target)
-						return false;
-
-					if (aiCastSpellOrder(unit, target, OrderId::CastFeedback))
-						return true;
-
-				}
-
-				//Mind Control
+			case UnitId::ProtossMindTyrant:
+				// Mind Control
 				if (canCastSpellOrder(unit, TechId::MindControl, OrderId::CastMindControl)) {
-
 					CUnit* target = findBestMindControlTarget(unit, isUnitBeingAttacked);
-
 					if (unit->mainOrderId == OrderId::CastMindControl
 						&& unit->orderTarget.unit == target)
+					{
 						return false;
-
+					}
 					if (aiCastSpellOrder(unit, target, OrderId::CastMindControl))
+					{
 						return true;
-
+					}
 				}
 
-				//Maelstrom
+				// Maelstrom
 				energyReserve = getOrderEnergyCost(OrderId::CastMaelstrom)
-					+ getOrderEnergyCost(OrderId::CastMindControl);
+					+ (getOrderEnergyCost(OrderId::CastMindControl) / 2);
 				energyReserve = std::min(energyReserve, unit->getMaxEnergy());
 
 				if ((unit->energy >= energyReserve || scbw::isCheatEnabled(CheatFlags::TheGathering))
 					&& unit->canUseTech(TechId::Maelstrom, unit->playerId) != 1) {
-
 					CUnit* target = findBestMaelstromTarget(unit, isUnitBeingAttacked);
-
 					if (unit->mainOrderId == OrderId::CastMaelstrom
 						&& unit->orderTarget.unit == target)
+					{
 						return false;
-
+					}
 					if (aiCastSpellOrder(unit, target, OrderId::CastMaelstrom))
+					{
 						return true;
-
+					}
 				}
-
-				break;
-
-			case UnitId::corsair:
-				//Disruption Web
-				return false;
-				/*
-			  if (canCastSpellOrder(unit, TechId::DisruptionWeb, OrderId::CastDisruptionWeb)) {
-
-				CUnit* target = findBestDisruptionWebTarget(unit, isUnitBeingAttacked);
-
-				if (unit->mainOrderId == OrderId::CastDisruptionWeb
-					&& unit->orderTarget.unit == target)
-				  return false;
-
-				if (aiCastSpellOrder(unit, target, OrderId::CastDisruptionWeb))
-				  return true;
-
-			  }
-			  */
 				break;
 		}
-
 		return false;
 	}
-
-} //AI
+}
 
 
 //-------- Helper function definitions. Do NOT modify! --------//

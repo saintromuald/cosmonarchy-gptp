@@ -355,7 +355,7 @@ namespace hooks {
 		// Deal damage, except for Independent damage, which always deals 0
 		if (data.damageType != DamageType::Independent && data.target->defensiveMatrixHp == 0 && canDamage) {
 			data.target->damageHp(data.finalDamage, data.attacker, data.attackingPlayerId, data.weaponId != WeaponId::Irradiate);
-			// Prevent Science Vessels from being continuously revealed to the irradiated target
+			// Prevent Seraphs from being continuously revealed to the irradiated target
 		}
 
 		// Reduce shields
@@ -668,6 +668,7 @@ namespace hooks {
 					// Nuclear Missile - Ground Zero
 					if (data.target->hitPoints > data.finalDamage && irradiateTarget(data.target)) {
 						hooks::IrradiateHit(data.attacker, data.target, data.attacker->playerId);
+						// Create radiation fields here - thinking a set of 3 or 4, offset in some sort of pattern
 					}
 					break;
 				}

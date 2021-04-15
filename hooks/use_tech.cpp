@@ -264,7 +264,7 @@ namespace hooks {
 				IssueTriTargetOrder(OrderId::PsiStorm, 0, 0);
 				break;
 			case TechId::Hallucination:
-				IssueTriTargetOrder(OrderId::Hallucianation1, 0, 0);
+				IssueTriTargetOrder(OrderId::Hallucination1, 0, 0);
 				break;
 			case TechId::Restoration:
 			{
