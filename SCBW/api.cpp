@@ -687,6 +687,8 @@ namespace scbw {
 			case UnitId::ZergVithrilisk:
 			case UnitId::ZergGorgrokor:
 			case UnitId::ZergGeszithalor:
+			case UnitId::ZergAkistrokor:
+			case UnitId::ZergKonvilisk:
 			case UnitId::ZergAlmaksalisk:
 			case UnitId::ZergKalkalisk:
 			case UnitId::ZergAlkajelisk:
