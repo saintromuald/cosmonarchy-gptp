@@ -5,16 +5,16 @@
 
 namespace {
 
-	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index);	// 926D0
-	void UnitDestructor(CUnit* unit);																					// A0990
-	bool function_004F66D0(CUnit* unit);																				// 004F66D0	// called PlaceHallucination in Neiv's list
+	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index);	// 004926D0
+	void UnitDestructor(CUnit* unit);																								// 004A0990
+	bool placeHallucination(CUnit* unit);																							// 004F66D0
 
 	// for createHallucination
-	CUnit* createUnit(int16 unitType, int32 x, int32 y, int32 playerId);												// 004A09D0
-	void applyHallucinationStats(CUnit* halUnit);																		// 004F6180
-	int32 hallucinateScarabs(CUnit* a1, CUnit* a2);																		// 004F65B0
-	void AI_TrainingUnit(CUnit* result, CUnit* parent);																	// 004A2830
-	void displayLastNetErrForPlayer(uint8 a1);																			// 0049E530
+	CUnit* createUnit(int16 unitType, int32 x, int32 y, int32 playerId);															// 004A09D0
+	void applyHallucinationStats(CUnit* halUnit);																					// 004F6180
+	int32 hallucinateScarabs(CUnit* a1, CUnit* a2);																					// 004F65B0
+	void AI_TrainingUnit(CUnit* result, CUnit* parent);																				// 004A2830
+	void displayLastNetErrForPlayer(uint8 a1);																						// 0049E530
 
 } //unnamed namespace
 
@@ -29,27 +29,28 @@ namespace hooks {
 				TechId::Hallucination,
 				&techCost,
 				sightRange * 32,
-				0x899 //Invalid Target
-			)
+				0x899 // Invalid Target
+				)
 			) {
 			int counter = 1;
-			// TODO: cleanup
-			//while(counter > 0) {
-			//
-			//	counter--;
-			//
-			//	CUnit* hal_unit = hallucinationHelpers::createHallucinationUnit(unit->orderTarget.unit,unit->playerId);
-			//
-			//	if(hal_unit == nullptr)
-			//		counter = 0;
-			//	else
-			//	if(!hallucinationHelpers::function_004F66D0(hal_unit)) {
-			//		counter = 0;
-			//		hallucinationHelpers::UnitDestructor(hal_unit);
-			//	}
-			//
-			//}
 
+			// TODO: cleanup
+			/*
+			while(counter > 0) {
+			
+				counter--;
+			
+				CUnit* hal_unit = hallucinationHelpers::createHallucinationUnit(unit->orderTarget.unit,unit->playerId);
+			
+				if(hal_unit == nullptr)
+					counter = 0;
+				else
+				if(!hallucinationHelpers::function_004F66D0(hal_unit)) {
+					counter = 0;
+					hallucinationHelpers::UnitDestructor(hal_unit);
+				}			
+			}
+			*/
 
 			Point32 hit;
 			if (CUnit* target = unit->orderTarget.unit) {
@@ -60,7 +61,6 @@ namespace hooks {
 			}
 
 			globals.createGenericPersistImpact(ImpactId::Hallucination, 20 * 24, {hit.x, hit.y}, 1.5 * 32, -1, 5, unit->playerId); // TODO: Add Hallucination area sprite
-
 			if (!(*CHEAT_STATE & CheatFlags::TheGathering)) {
 				unit->spendUnitEnergy(techCost);
 			}
@@ -91,16 +91,20 @@ namespace hooks {
 		halUnit2 = halUnit;
 		if (halUnit) {
 			applyHallucinationStats(halUnit);
-			if (halUnit2->status & UnitStatus::IsHallucination)
+			if (halUnit2->status & UnitStatus::IsHallucination) {
 				halTimer = 1350;
-			else
+			}
+			else {
 				halTimer = halUnit2->id != UnitId::ZergBroodling ? 0 : 1800;
+			}
 			currentHalTimer = halUnit2->removeTimer;
-			if (!currentHalTimer || halTimer < currentHalTimer)
+			if (!currentHalTimer || halTimer < currentHalTimer) {
 				halUnit2->removeTimer = halTimer;
+			}
 			unitType = halUnit2->id;
-			if (unitType == UnitId::ProtossAccantor)	// Originally also ran for Warbringer ID
+			if (unitType == UnitId::ProtossAccantor) { // Originally also ran for Warbringer ID
 				hallucinateScarabs(halUnit2, v3);
+			}
 			AI_TrainingUnit(halUnit2, halUnit2);
 			result = halUnit2;
 		} else {
@@ -141,8 +145,8 @@ namespace {
 		}
 	}
 
-	const uint32 Func_sub_4F66D0 = 0x004F66D0;
-	bool function_004F66D0(CUnit* unit) {
+	const uint32 Func_placeHallucination = 0x004F66D0;
+	bool placeHallucination(CUnit* unit) {
 		static bool32 bPreResult;
 		__asm {
 			PUSHAD

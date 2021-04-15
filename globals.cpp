@@ -913,8 +913,8 @@ namespace scbw {
 			scbw::set_generic_value(child, ValueId::SublimeShepherd, scbw::get_generic_value(parent, ValueId::SublimeShepherd));
 		}
 
+		// TODO: Implement
 		// Inherit Cowardice
-
 		// Inherit Malice
 
 		// Inherit Terminal Surge
