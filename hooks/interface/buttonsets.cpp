@@ -901,10 +901,6 @@ namespace hooks {
 									current_button->iconID == IconId::Restoration_Research) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranSeraph &&  // Seraph Radiation Shockwave passive
-									current_button->iconID == IconId::EMPShockwave) {
-									current_button_state = BUTTON_STATE::Enabled;
-								}
 								if ((*activePortraitUnit)->id == UnitId::TerranCentaur &&  // Centaur Sunchaser Salvo passive
 									current_button->iconID == IconId::GeminiMissiles) {
 									current_button_state = BUTTON_STATE::Enabled;

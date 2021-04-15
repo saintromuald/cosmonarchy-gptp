@@ -894,7 +894,9 @@ namespace scbw {
 		}
 
 		// Inherit Kaiser Rampage
-
+		if (scbw::get_generic_timer(parent, ValueId::KaiserRampage) > 0) {
+			scbw::set_generic_value(child, ValueId::KaiserRampage, scbw::get_generic_timer(parent, ValueId::KaiserRampage));
+		}
 
 		//was hardcoded in original code
 		scbw::refreshConsole();

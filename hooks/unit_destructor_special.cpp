@@ -244,11 +244,6 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		scbw::clearClarionLinks(unit);
 	}
 
-	// Irradiate Radiation Shockwave enhancement
-	if (unit->irradiateTimer > 0) {
-		hooks::EMPShockwaveHit(nullptr, unit->getX(), unit->getY(), nullptr);
-	}
-
 	// Parasite - spawn broodlings on death
 	if (unit->parasiteFlags != 0) {
 		uint32 supplyCount = scbw::getBroodlingCountFromSupply(unit);
