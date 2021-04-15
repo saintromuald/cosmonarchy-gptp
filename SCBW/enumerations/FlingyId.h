@@ -217,7 +217,7 @@ namespace FlingyId {
 		// HYDRA \\
 
 		TerranQuarry						= 211,
-		Protoss Pennant						= 212,
+		ProtossPennant						= 212,
 		ZergIroleth							= 213,
 		ZergMutationPit						= 214, // unused
 		TerranPaladin						= 215,
