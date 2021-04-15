@@ -285,7 +285,7 @@ namespace FlingyId {
 		TerranCyclops						= 277,
 		PhobosMissile						= 278, // unused
 		PhobosLaser							= 279,
-		SalamanderMissile					= 280,
+		SalamanderMissile2					= 280,
 		ProtossSanctumOfSorrow				= 281,
 		ZergKeskathGrotto					= 282,
 		ZergVithrilHaunt					= 283,
