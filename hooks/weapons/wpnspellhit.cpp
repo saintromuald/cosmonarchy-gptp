@@ -48,7 +48,7 @@ namespace hooks {
 
 	//no bullet because this function can be called in another context without bullet
 	void IrradiateHit(CUnit* attacker, CUnit* target, uint8 attackingPlayerId) {
-		globals.createGenericPersistImpact(ImpactId::Irradiate, 10 * 24, {target->getX(), target->getY()}, 1.5 * 32, SpriteId::IonField, 5, attackingPlayerId);
+		// no longer handle here
 	};
 
 	//bullet is not normally part of the function, so if the function is called

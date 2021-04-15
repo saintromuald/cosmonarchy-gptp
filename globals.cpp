@@ -423,15 +423,17 @@ void Globals::frameHook() {
 						impact.position.y - impact.radius,
 						impact.position.x + impact.radius,
 						impact.position.y + impact.radius
-					).forEachInMatch(unitRangeCount(nullptr, 0, {}), [&](CUnit* unit) {
-						scbw::set_generic_value(unit, ValueId::HallucinatingSourcePlayer, impact.player);
-						scbw::set_generic_timer(unit, ValueId::HallucinatingTimer, 20 * 24);
+					).forEachInMatch(unitRangeCount(nullptr, CFlags::Enemy, {}), [&](CUnit* unit) {
+						if (scbw::get_generic_timer(unit, ValueId::HallucinatingTimer) < impact.time) {
+							scbw::set_generic_value(unit, ValueId::HallucinatingSourcePlayer, impact.player);
+							scbw::set_generic_timer(unit, ValueId::HallucinatingTimer, impact.time);
 
-						scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit);
-						if (unit->orderTarget.unit->subunit != nullptr) {
-							unit->subunit->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
-						} else {
-							unit->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
+							scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit);
+							if (unit->subunit != nullptr) {
+								unit->subunit->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
+							} else {
+								unit->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
+							}
 						}
 					});
 					break;
@@ -444,7 +446,7 @@ void Globals::frameHook() {
 						impact.position.x + impact.radius,
 						impact.position.y + impact.radius
 					).forEachInMatch(unitRangeCount(nullptr, 0, {}), [&](CUnit* unit) {
-						ApplyIrradiate(unit, impact.player, 10);
+						ApplyIrradiate(unit, impact.player, impact.time / 24.0);
 					});
 					break;
 				}

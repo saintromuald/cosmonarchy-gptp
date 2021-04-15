@@ -105,6 +105,11 @@ namespace hooks {
 					globals.createGenericPersistImpact(ImpactId::IonField, 10 * 24, {hit.x, hit.y}, 3 * 32, SpriteId::IonField, 5, bullet->srcPlayer);
 					break;
 				}
+				case WeaponId::Irradiate:
+				{
+					globals.createGenericPersistImpact(ImpactId::Irradiate, 10 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::IrradiateNew_Medium, 5, bullet->srcPlayer);
+					break;
+				}
 			}
 			/*
 			if (bullet->sourceUnit->id == WeaponId::IonCannon) {
