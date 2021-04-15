@@ -341,7 +341,7 @@ namespace hooks {
 			if (unit->irradiateTimer == 0) {
 				EMPShockwaveHit(nullptr, unit->getX(), unit->getY(), nullptr);
 
-				unit->removeOverlay(ImageId::Irradiate_Small, ImageId::Irradiate_Large);
+				unit->removeOverlay(ImageId::IrradiateNew_Small, ImageId::IrradiateNew_Large);
 				unit->irradiatedBy = nullptr;
 				unit->irradiatePlayerId = 8;
 			}

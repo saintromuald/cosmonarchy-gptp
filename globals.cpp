@@ -730,8 +730,9 @@ namespace scbw {
 		}
 
 		// Reset Irradiate
-		if (unit->irradiateTimer != 0)
+		if (unit->irradiateTimer != 0) {
 			unit->irradiateTimer = 24;
+		}
 
 		//was hardcoded in original code
 		scbw::refreshConsole();
@@ -821,8 +822,9 @@ namespace scbw {
 		}
 
 		// Inherit Irradiate
-		if (parent->irradiateTimer != 0)
+		if (parent->irradiateTimer != 0) {
 			child->irradiateTimer = parent->irradiateTimer;
+		}
 
 		// Inherit Defensive Matrix
 		if (parent->defensiveMatrixTimer > 0) {
@@ -956,7 +958,7 @@ namespace scbw {
 
 		// Remove Irradiate
 		if (unit->irradiateTimer != 0) {
-			unit->removeOverlay(ImageId::Irradiate_Small, ImageId::Irradiate_Large);
+			unit->removeOverlay(ImageId::IrradiateNew_Small, ImageId::IrradiateNew_Large);
 			unit->irradiateTimer = 0;
 
 			//specific updates following irradiate removal
