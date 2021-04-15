@@ -134,11 +134,11 @@ namespace hooks {
 	void orders_Morph1(CUnit* unit) {
 		if (unit->mainOrderState == 0) {
 			if (scbw::isConventionalUnitMorphSource(unit->id, true, true)) {
-				if (!(hasSuppliesForUnit(
+				if (!hasSuppliesForUnit(
 					unit->buildQueue[unit->buildQueueSlot],
 					unit->playerId,
 					1
-				)))
+				))
 				{
 					refundAllQueueSlots(unit);
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
