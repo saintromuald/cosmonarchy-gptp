@@ -12,6 +12,6 @@ namespace hooks {
 
 namespace {
 	void UnitDestructor(CUnit* unit);
-	bool function_004F66D0(CUnit* unit);
+	bool placeHallucination(CUnit* unit);
 	CUnit* createHallucinationUnit(CUnit* target, uint32 playerId);
 }
