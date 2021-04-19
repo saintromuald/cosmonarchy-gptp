@@ -269,8 +269,7 @@ namespace hooks {
 
 		// Ghost Somatic Implants behavior
 		if (unit->id == UnitId::TerranEidolon) {
-			if (
-				!(unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))) {
+			if (!(unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection))) {
 				if (scbw::get_generic_value(unit, ValueId::SomaticImplants) == 1) {
 					unit->updateSpeed();
 					scbw::set_generic_value(unit, ValueId::SomaticImplants, 0);
@@ -279,47 +278,32 @@ namespace hooks {
 		}
 
 		if (unit->stimTimer != 0) {
-
 			unit->stimTimer--;
-
-			if (unit->stimTimer == 0)
+			if (unit->stimTimer == 0) {
 				unit->updateSpeed();
+			}
 		}
 
-		if (unit->id == UnitId::ZergVorvaling || unit->id == UnitId::TerranShaman || unit->id == UnitId::ZergOvileth) {
+		// Why are we updating Vorvaling/Ovileth speed every frame?
+		if (unit->id == UnitId::ZergVorvaling || unit->id == UnitId::ZergOvileth) {
 			unit->updateSpeed();
 		}
 
 		// Decrement Ensnare timer (and remove effect if 0)
 		if (unit->ensnareTimer != 0) {
-
 			unit->ensnareTimer--;
-
 			if (unit->ensnareTimer == 0) {
 				unit->removeOverlay(ImageId::EnsnareOverlay_Small, ImageId::EnsnareOverlay_Large);
 				unit->updateSpeed();
 			}
-
-		}
-
-		// Shaman - Overcharge upgrade
-		if (unit->unusedTimer != 0) {
-			//overcharge timer
-			unit->unusedTimer--;
-			if (unit->unusedTimer == 0) {
-				unit->updateSpeed();
-			}
-
 		}
 
 		// Decrement Defensive Matrix timer (and remove effect if 0)
 		if (unit->defensiveMatrixTimer != 0) {
-
 			unit->defensiveMatrixTimer--;
-
-			if (unit->defensiveMatrixTimer == 0)
+			if (unit->defensiveMatrixTimer == 0) {
 				unit->reduceDefensiveMatrixHp(unit->defensiveMatrixHp);
-
+			}
 		}
 
 		// Redraw console/UI elements
@@ -334,7 +318,6 @@ namespace hooks {
 		// Irradiate ability
 		if (unit->irradiateTimer != 0) {
 			unit->irradiateTimer--;
-
 			doIrradiateDamage(unit);
 			if (unit->irradiateTimer == 0) {
 				unit->removeOverlay(ImageId::IrradiateNew_Small, ImageId::IrradiateNew_Large);
@@ -344,12 +327,10 @@ namespace hooks {
 		}
 
 		if (unit->lockdownTimer != 0) {
-
 			unit->lockdownTimer--;
-
-			if (unit->lockdownTimer == 0)
+			if (unit->lockdownTimer == 0) {
 				unit->removeLockdown();
-
+			}
 		}
 
 		if (unit->maelstromTimer != 0) {
@@ -359,16 +340,8 @@ namespace hooks {
 				if (scbw::get_generic_value(unit, ValueId::Malediction)) {
 					scbw::set_generic_value(unit, ValueId::Malediction, 0);
 					scbw::set_generic_timer(unit, ValueId::MaledictionSlow, (24 * 4) + 1);
-					uint32 overlayImageId;
-					if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
-						overlayImageId = ImageId::Malediction_Medium;
-					else
-						if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
-							overlayImageId = ImageId::Malediction_Large;
-						else
-							overlayImageId = ImageId::Malediction_Small;
-					unit->sprite->createTopOverlay(overlayImageId,
-						0, 0, 0);
+					uint32 overlayImageId = ImageId::Malediction_Small + scbw::getOverlayOffset(unit->id);
+					unit->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
 				}
 				unit->updateSpeed();
 			}
@@ -382,11 +355,9 @@ namespace hooks {
 
 			if (!(unit->status & UnitStatus::Invincible)) {
 				int32 damage = (weapons_dat::DamageAmount[WeaponId::Plague] * 256) / 30;
-
 				if (unit->plagueTimer == 0) {
 					damage += (weapons_dat::DamageAmount[WeaponId::Plague] * 256) % 30;
 				}
-
 				if (damage > 0) {
 					unit->damageWith(WeaponId::Plague, damage);
 				}
@@ -411,19 +382,14 @@ namespace hooks {
 
 		// Vithrilisk - Corrosive Touch - update overlays
 		if (scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks) != 0) {
-
-			//Calculate the appropriate overlay ID
+			// Calculate the appropriate overlay ID
 			uint32 acidOverlayId = GetSporesOverlayId(unit);
-
 			if (!unit->getOverlay(acidOverlayId)) {
-
 				unit->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
-
-				if (unit->subunit != nullptr)
+				if (unit->subunit != nullptr) {
 					unit = unit->subunit;
-
+				}
 				unit->sprite->createTopOverlay(acidOverlayId);
-
 			}
 		}
 	}
@@ -438,6 +404,7 @@ namespace hooks {
 			POPAD
 		}
 	}
+
 	void AI_Burrower(CUnit* a1) {
 		if (units_dat::BaseProperty[a1->id] & UnitProperty::Burrowable) {
 			if (!(a1->status & UnitStatus::Burrowed) && a1->id != UnitId::ZergDroleth) {
@@ -445,7 +412,7 @@ namespace hooks {
 					if (a1->moveTarget.pt.x == a1->sprite->position.x
 						&& a1->moveTarget.pt.y == a1->sprite->position.y
 						&& ((a1->status & UnitStatus::Unmovable) != 0) != -1
-						//&& techUseAllowed(a1, TechId::Burrowing, (uint8)a1->playerId) == 1
+						// Originally checked for burrow tech here
 						) {
 						bool canBurrow = true;
 						auto tile = scbw::getActiveTileAt(a1->position.x, a1->position.y);
@@ -472,5 +439,4 @@ namespace hooks {
 			}
 		}
 	}
-
-} //hooks
+}

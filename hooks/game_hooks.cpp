@@ -106,7 +106,6 @@ void replaceUnitWithType(CUnit* unit, uint16 newUnitId) {
 
 const uint32 Func_497ED0 = 0x00497ED0;
 static void makeSpriteVisible(CSprite* sprite) {
-
 	__asm {
 		PUSHAD
 		MOV EAX, sprite
@@ -118,7 +117,6 @@ static void makeSpriteVisible(CSprite* sprite) {
 
 const uint32 Func_498A90 = 0x00498A90;
 void UpdateSpriteImagesForCloak(CSprite* sprite) {
-
 	__asm {
 		PUSHAD
 		MOV EDI, sprite
@@ -150,7 +148,7 @@ void spawnCreeper(CUnit* unit) {
 				tile_x * 32,
 				tile_y * 32,
 				UnitId::ZergNydusCanal
-			);//apply creep
+			); // apply creep
 			func_0047D770(creep_spawned);
 
 			creep_spawned->status |= UnitStatus::Invincible;
@@ -194,29 +192,26 @@ void shamanProc(CUnit* shaman, bool organic, uint32 heal, CUnit* target) {
 	if (target == shaman) {
 		return;
 	}
-
 	uint32 dist = scbw::getDistanceFast(target->position.x, target->position.y,
 		shaman->position.x, shaman->position.y);
-	//unit->isBeingHealed = true;
+	
 	bool reqHeal = false;
-
 	if (target->getCurrentHpInGame() < target->getMaxHpInGame()) {
 		reqHeal = true;
 		uint32 overlayImageId;
-		if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay)
-			overlayImageId = ImageId::RestorationHit_Large;
-		else
-			overlayImageId = ImageId::RestorationHit_Small;
 		CUnit* tgt = nullptr;
-		if (target->subunit != nullptr)
+		if (target->subunit != nullptr) {
 			tgt = target->subunit;
-		else
-			tgt = target;
-		if (organic) {
-			(tgt->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
-		} else {
-			(tgt->sprite)->createTopOverlay(1158, 0, 0, 0);
 		}
+		else {
+			tgt = target;
+		}
+		if (organic) {
+			overlayImageId = ImageId::RestorationHit_Small + scbw::getOverlayOffset(target->id);
+		} else {
+			overlayImageId = ImageId::NaniteField;
+		}
+		(tgt->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
 	}
 	target->heal(heal * 256, shaman);
 }
@@ -739,7 +734,7 @@ namespace hooks {
 			}
 		}
 
-		// Shaman - Administer Medstims ability
+		// Shaman - Medstims ability
 		else if (unit->id == UnitId::TerranShaman) {
 			if (unit->_padding_0x132 & 0x8) {
 				unit->groundWeaponCooldown = 8;
@@ -757,7 +752,7 @@ namespace hooks {
 						unit->getX() + 128,
 						unit->getY() + 128
 					).forEach([&](CUnit* target) {
-						shamanProc(unit, false, 2, target);
+						shamanProc(unit, false, ShamanHealMechanical, target);
 					});
 				}
 			} else {
@@ -771,7 +766,7 @@ namespace hooks {
 						unit->getX() + 128,
 						unit->getY() + 128
 					).forEach([&](CUnit* target) {
-						shamanProc(unit, true, 6, target);
+						shamanProc(unit, true, ShamanHealOrganic, target);
 					});
 				}
 			}

@@ -811,10 +811,6 @@ namespace hooks {
 									current_button->iconID == IconId::Flyer_Attack) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranShaman && // Shaman Overcharge passive
-									current_button->iconID == IconId::RechargeShields) {
-									current_button_state = BUTTON_STATE::Enabled;
-								}
 								if ((*activePortraitUnit)->id == UnitId::TerranShaman &&  // Shaman Adrenaline Packs passive
 									current_button->iconID == IconId::TerranInfantryArmor) {
 									current_button_state = BUTTON_STATE::Enabled;
