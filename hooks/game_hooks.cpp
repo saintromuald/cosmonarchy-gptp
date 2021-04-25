@@ -829,20 +829,6 @@ namespace hooks {
 			}
 		}
 
-		// Dark Archon - Malediction (Maelstrom)
-		if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) == 1) {
-			uint32 overlayImageId = ImageId::Malediction_Small + scbw::getOverlayOffset(unit->id);
-			while (unit->sprite->getOverlay(overlayImageId)) {
-				unit->sprite->removeOverlay(overlayImageId);
-			}
-			unit->updateSpeed();
-		}
-
-		// Lobotomy Mine
-		if (scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0) {
-			unit->updateSpeed();
-		}
-
 		// Vithrilisk - Corrosive Touch Clear
 		if (scbw::get_generic_timer(unit, ValueId::CorrosiveTouchTimer) == 1) {
 			scbw::set_generic_value(unit, ValueId::CorrosiveTouchStacks, 0);

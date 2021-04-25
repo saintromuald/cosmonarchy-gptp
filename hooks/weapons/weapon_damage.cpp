@@ -784,10 +784,7 @@ namespace hooks {
 					if (unit->id != UnitId::ProtossCantavis) {
 						return;
 					}
-					if (unit->status & UnitStatus::DoodadStatesThing ||
-						unit->lockdownTimer != 0 ||
-						unit->stasisTimer != 0 ||
-						unit->maelstromTimer != 0) {
+					if (scbw::isStunned(unit)) {
 						return;
 					}
 					bool show = true;

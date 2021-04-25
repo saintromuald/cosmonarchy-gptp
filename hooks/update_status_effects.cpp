@@ -337,13 +337,6 @@ namespace hooks {
 			unit->maelstromTimer--;
 			if (unit->maelstromTimer == 0) {
 				unit->removeMaelstrom();
-				if (scbw::get_generic_value(unit, ValueId::Malediction)) {
-					scbw::set_generic_value(unit, ValueId::Malediction, 0);
-					scbw::set_generic_timer(unit, ValueId::MaledictionSlow, (24 * 4) + 1);
-					uint32 overlayImageId = ImageId::Malediction_Small + scbw::getOverlayOffset(unit->id);
-					unit->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
-				}
-				unit->updateSpeed();
 			}
 		}
 
