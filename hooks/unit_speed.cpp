@@ -39,7 +39,7 @@ namespace hooks {
 		{
 			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::TerminalSurge), 0, 10) * 1.5;
 			if (stacks > 0) {
-				speed *= 1.0 + stacks * 0.1;
+				speed *= 1.0 + stacks * 0.05;
 			}
 		}
 
