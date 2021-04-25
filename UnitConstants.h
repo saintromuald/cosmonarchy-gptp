@@ -37,10 +37,14 @@ constexpr int MadcapPassiveDecayTime = 0.5s;
 constexpr int MadcapMaxStacks = 10;
 constexpr double MadcapAttackSpeedPerStack = 0.05;
 
-// Treasury - Passive
+// Apostle
+constexpr int ApostleBloodTitheHealing = 5 * 256;
+constexpr int ApostleLastBreathEnergyGain = 5 * 256;
+
+// Treasury
 constexpr int TreasuryIncrease = 4;
 
-// Lanifect - Disruption Web - AI
+// Lanifect
 constexpr int AIWebSeekRange = 96;
 constexpr int AICorsairAllySeekRange = 128;
 constexpr int AICorsairEnemySeekRange = 128;
@@ -50,23 +54,26 @@ constexpr int AIWebAllyMinCount = 3;
 constexpr int AIWebEnemyMinCount = 2;
 constexpr int AIWebTimer = 3 * 24;
 
-// Star Sovereign - Grief of All Gods - AI
+// Star Sovereign
 constexpr int AIStarsovereignAbilSeekRange = 32 * 10;
 constexpr int AIStarsovereignAbilMinEnemyHealth = 2000;
 constexpr int AIStarsovereignAbilMaxAllyHealth = 2000;
 constexpr double AIStarsovereignAbilLifePercentage = 0.5;
 constexpr int AIStarsovereignAbilTimer = 612;
 
-// Quazilisk - Passive
+// Quazilisk
 constexpr double QuazaliskPassiveFactor = 0.1;
 
 // Larval Colony
 constexpr double LarvalColonyMultiplier = 0.75;
 
-// Matraleth - Parasite
+// Zoryusthaleth
+constexpr int ZoryusthalethReconstitutionHealing = 5 * 256;
+
+// Matraleth
 constexpr int DefaultArmParasiteTimer = 2 * 24 + 1;
 
-// Vithrilisk - Corrosive Spores
+// Vithrilisk
 constexpr int VithriliskCorrosiveTouchTimer = 10 * 24 + 1;
 constexpr double VithriliskCorrosiveTouchCooldownIncrease = 0.02;
 constexpr double VithriliskCorrosiveTouchArmorReduction = 0.2 * 256;

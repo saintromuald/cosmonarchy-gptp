@@ -811,8 +811,8 @@ namespace hooks {
 									current_button->iconID == IconId::Flyer_Attack) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranShaman &&  // Shaman Adrenaline Packs passive
-									current_button->iconID == IconId::TerranInfantryArmor) {
+								if ((*activePortraitUnit)->id == UnitId::TerranShaman &&  // Shaman Nanite Field passive
+									current_button->iconID == IconId::Restoration) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								if ((*activePortraitUnit)->id == UnitId::TerranEidolon &&  // Eidolon Somatic Implants passive
@@ -889,7 +889,11 @@ namespace hooks {
 									current_button->iconID == IconId::Argus_Jewel) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranSalamander &&  // SalamanderFire Incendiary Payload passive
+								if ((*activePortraitUnit)->id == UnitId::TerranWyvern &&  // Wyvern Reverse Thrust passive
+									current_button->iconID == IconId::Afterburners_ON_Unused) {
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranSalamander &&  // Salamander Incendiary Payload passive
 									current_button->iconID == IconId::Flame_Thrower) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}

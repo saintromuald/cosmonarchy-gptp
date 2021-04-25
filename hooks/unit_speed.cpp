@@ -43,9 +43,9 @@ namespace hooks {
 			}
 		}
 
-		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby organic allies after kill
+		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby allies after kill
 		if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0) {
-			speed *= 1.5;
+			speed *= 1.25;
 		}
 
 		// Southpaw Knockout Drivers: reduces movement speed by 5% per stack
@@ -64,8 +64,8 @@ namespace hooks {
 			speed *= 1.5;
 		}
 
-		// Swarming Omen ability: 150% movement speed when moving towards Zoryusthaleth
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic) {
+		// Swarming Omen ability: 125% movement speed when moving towards Zoryusthaleth
+		{
 			auto r = 10 * 32;
 			auto n = unitRangeCount(unit, CFlags::Ally | CFlags::FrontalArc, {UnitId::ZergZoryusthaleth});
 			scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
@@ -82,7 +82,7 @@ namespace hooks {
 				}
 			}
 			if (accelerate) {
-				speed *= 1.5;
+				speed *= 1.25;
 			}
 		}
 
@@ -215,33 +215,11 @@ namespace hooks {
 				}
 				break;
 			}
-			case UnitId::ZergZoryusthaleth:
-			{
-				// Zoryusthaleth Protective Instincts: 150% movement speed when moving towards wounded organic allies
-				auto r = 10 * 32;
-				auto n = unitRangeCount(unit, CFlags::Ally | CFlags::OnlyOrganic | CFlags::FrontalArc, {});
-				scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
-					unit->position.x + r, unit->position.y + r);
-				bool accelerate = false;
-				for (int i = 0; i < unitsInFinder.getUnitCount(); i++) {
-					auto picked_unit = unitsInFinder.getUnit(i);
-					if (n(picked_unit)) {
-						if (picked_unit->getCurrentHpInGame() < picked_unit->getMaxHpInGame()) {
-							accelerate = true;
-							scbw::set_generic_timer(unit, ValueId::ProtectiveInstinctsStatus, 25);
-							break;
-						}
-					}
-				}
-				if (accelerate) {
-					speed *= 1.5;
-				}
-				break;
-			}
 			// Hardcode ideal movement speeds
 			case UnitId::TerranCyprian:
 			case UnitId::ProtossAmaranth:
 			case UnitId::ProtossCabalist:
+			case UnitId::ZergZoryusthaleth:
 			{
 				speed *= 1.2;
 				break;
