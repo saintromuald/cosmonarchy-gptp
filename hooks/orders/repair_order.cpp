@@ -176,7 +176,7 @@ namespace hooks {
 					}
 				}
 
-				if (!bEndThere) { //jump_to_default_switch CASE
+				if (!bEndThere) { // jump_to_default_switch CASE
 					bool bDoRepair = false;
 					if (unit->worker.repairResourceLossTimer == 0) {
 						unit->worker.repairResourceLossTimer--;
@@ -200,9 +200,11 @@ namespace hooks {
 							hpGain *= 16;
 						}
 						// Talos - Advanced repair speed
-						/*if (unit->id == UnitId::TerranTalos) {
+						/*
+						if (unit->id == UnitId::TerranTalos) {
 							hpGain += hpGain/2;
-						}*/
+						}
+						*/
 						target->heal(hpGain, unit);
 						if (target->hitPoints < units_dat::MaxHitPoints[target->id]) {
 							bEndThere = true;
