@@ -196,7 +196,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		}
 	}
 
-	// Vassal Autovitality behavior
+	// Vassal Terminal Surge behavior
 	if (unit->id == UnitId::ProtossVassal) {
 		uint32 range = 5 * 32;
 		scbw::UnitFinder(
@@ -205,9 +205,6 @@ void unitDestructorSpecialHook(CUnit* unit) {
 			unit->getX() + range,
 			unit->getY() + range
 		).forEach([&](CUnit* target) {
-			if (!(units_dat::BaseProperty[target->id] & UnitProperty::RoboticUnit)) {
-				return;
-			}
 			if (!scbw::isAlliedTo(unit->playerId, target->playerId)) {
 				return;
 			}

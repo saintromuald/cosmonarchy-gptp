@@ -36,7 +36,7 @@ namespace hooks {
 		}
 
 		// Vassal Terminal Surge: increase movespeed when any nearby Simulacrum dies
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
+		{
 			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::TerminalSurge), 0, 10) * 1.5;
 			if (stacks > 0) {
 				speed *= 1.0 + stacks * 0.1;
@@ -164,31 +164,6 @@ namespace hooks {
 				speed *= 1.0 + fraction;
 				break;
 			}
-			case UnitId::ProtossManifold:
-			{
-				// Manifold Phase Rush: gains 150% increased movespeed when moving towards enemies attacked by allied robotics
-				auto r = unit->getSightRange(false) * 32;
-				auto n = unitRangeCount(unit, CFlags::Enemy | CFlags::FrontalArc, {});
-				scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
-					unit->position.x + r, unit->position.y + r);
-				bool accelerate = false;
-				for (int i = 0; i < unitsInFinder.getUnitCount(); i++) {
-					auto picked_unit = unitsInFinder.getUnit(i);
-					if (n(picked_unit)) {
-						for (int p = 0; p < 8; p++) {
-							if (scbw::get_generic_timer(picked_unit, ValueId::PhaseRushTimerArrayStart + p) > 0 &&
-								scbw::isAlliedTo(unit->playerId, p)) {
-								accelerate = true;
-								break;
-							}
-						}
-					}
-				}
-				if (accelerate) {
-					speed *= 1.5;
-				}
-				break;
-			}
 			case UnitId::TerranBlackjack:
 			{
 				// Blackjack Wear and Tear: reduce movement speed based on missing health
@@ -225,6 +200,7 @@ namespace hooks {
 				break;
 			}
 			case UnitId::ProtossZealot:
+			case UnitId::ProtossManifold:
 			{
 				speed *= 1.25;
 				break;
