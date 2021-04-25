@@ -58,16 +58,8 @@ namespace hooks {
 						if (target->status & UnitStatus::InTransport)
 							jump_to_676C4 = true;
 						else
-							if (!(units_dat::BaseProperty[target->id] & UnitProperty::Mechanical))
+							if (!(target->status & UnitStatus::Completed))
 								jump_to_676C4 = true;
-		/*else
-		if (target->parasiteFlags){
-			parasite = true;
-			jump_to_676C4 = true;
-		}*/
-							else
-								if (!(target->status & UnitStatus::Completed))
-									jump_to_676C4 = true;
 
 		if (!jump_to_676C4) {
 

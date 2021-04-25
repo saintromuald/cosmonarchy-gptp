@@ -747,8 +747,6 @@ namespace hooks {
 			case WeaponId::WendigoFusionSaw:
 			{
 				// Wendigo Automedicus passive (HP component)
-				if (!(units_dat::BaseProperty[data.target->id] & UnitProperty::Mechanical))
-					return;
 				lifesteal *= 0.25;
 				data.attacker->heal(lifesteal, data.attacker);
 				break;

@@ -29,8 +29,7 @@ static constexpr int operator "" s(long double amount) {
 constexpr int HealthMultiplier = 256;
 
 // Shaman
-constexpr int ShamanHealOrganic = 2;
-constexpr int ShamanHealMechanical = 2;
+constexpr int ShamanHeal = 2;
 
 // Madcap
 constexpr int MadcapPassiveDecayTime = 0.5s;

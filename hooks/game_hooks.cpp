@@ -734,7 +734,7 @@ namespace hooks {
 					unit->getX() + 128,
 					unit->getY() + 128
 				).forEach([&](CUnit* target) {
-					shamanProc(unit, ShamanHealMechanical, target);
+					shamanProc(unit, ShamanHeal, target);
 				});
 			}
 		}
