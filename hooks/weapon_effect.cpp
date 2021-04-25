@@ -578,11 +578,7 @@ namespace hooks {
 				&& !(units_dat::BaseProperty[target->id] & UnitProperty::ResourceContainer)
 				&& target->id != UnitId::TerranSpiderMine
 				&& target->id != UnitId::TerranLobotomyMine) {
-				if (units_dat::BaseProperty[target->id] & UnitProperty::Organic) {
-					scbw::set_generic_timer(target, ValueId::LobotomySlow, 6 * 24);
-				} else {
-					hooks::LockdownHit(target, 18, bullet);
-				}
+				hooks::LockdownHit(target, 18, bullet);
 			}
 		}
 	}
