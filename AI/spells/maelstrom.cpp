@@ -1,8 +1,6 @@
 #include "spells.h"
 #include <AI/ai_common.h>
 
-//V241 for VS2008
-
 namespace AI {
 
 	CUnit* findBestMaelstromTarget(CUnit* caster, bool isUnderAttack) {
