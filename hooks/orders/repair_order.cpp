@@ -104,7 +104,7 @@ namespace hooks {
 					if (unit->getMovableState() == 0) { // not reached destination
 						function_004EB900(unit, target); // may cause unit to move or become idle
 						bEndThere = true;
-					} else { //reached destination or unmovable
+					} else { // reached destination or unmovable
 						if (!(unit->isTargetWithinMinRange(target, 5))) {
 							unit->mainOrderState = 1; // don't continue directly into this case
 							bEndThere = true;
