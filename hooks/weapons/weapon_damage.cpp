@@ -724,9 +724,8 @@ namespace hooks {
 							|| foundUnit == data.target) {
 							return;
 						}
-						uint32 value = 0;
-						value = ApostleBloodTitheHealing;
-						data.target->heal(value, data.target);
+						data.target->heal(ApostleBloodTitheHealing, data.target);
+						scbw::print("Heal");
 					});
 					break;
 				}
