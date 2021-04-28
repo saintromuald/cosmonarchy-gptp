@@ -1689,11 +1689,23 @@ namespace scbw {
 	}
 
 	void decloakProc(CUnit* unit) {
-		if ((units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak || unit->status & UnitStatus::CloakingForFree)
-			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Burrowable)) {
-
+		if (isUncloakable(unit)) {
 			scbw::set_generic_timer(unit, ValueId::PermanentCloakTimer, 48 + 1);
 		}
+	}
+
+	// won't decloak on attack
+	bool isPermaCloaked(CUnit* unit) {
+		return unit->id == UnitId::TerranSpiderMine
+			|| unit->id == UnitId::TerranLobotomyMine
+			|| unit->status & UnitStatus::Burrowed;
+	}
+
+	// will decloak on attack
+	bool isUncloakable(CUnit* unit) {
+		return (units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak
+			|| unit->status & UnitStatus::CloakingForFree)
+			&& !isPermaCloaked(unit);
 	}
 
 } //scbw

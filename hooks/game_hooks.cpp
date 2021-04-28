@@ -917,8 +917,7 @@ namespace hooks {
 		}
 
 		// Permanently Cloaked units recloak after 2 seconds of being out of combat
-		if ((units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak || unit->status & UnitStatus::CloakingForFree)
-			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Burrowable)) {
+		if (scbw::isUncloakable(unit)) {
 			auto timer = scbw::get_generic_timer(unit, ValueId::PermanentCloakTimer);
 			if (timer > 1) {
 				makeSpriteVisible(unit->sprite);
@@ -933,7 +932,8 @@ namespace hooks {
 				}
 			} else {
 				for (int i = 0; i < 8; i++) {
-					if (!scbw::isAlliedTo(unit->playerId, i)) {
+					if (i != unit->playerId &&
+						!scbw::isVisionAlliedTo(unit->playerId, i)) {
 						unit->visibilityStatus &= ~(1 << i);
 					} else {
 						unit->visibilityStatus |= (1 << i);

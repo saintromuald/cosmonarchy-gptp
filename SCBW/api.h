@@ -152,6 +152,15 @@ namespace scbw {
 	inline bool isAlliedTo(uint8 playerA, uint8 playerB) {
 		return 0 != playerAlliance[playerA].flags[playerB];
 	}
+	inline bool isVisionAlliedTo(uint8 playerA, uint8 playerB) {
+		return 0 != playerVision[playerA].flags[playerB];
+	}
+
+	// won't decloak on attack
+	bool isPermaCloaked(CUnit* unit);
+
+	// will decloak on attack
+	bool isUncloakable(CUnit* unit);
 
 	/// Checks whether the @p unit is recognized by @p playerId as an enemy.
 	/// This will work even when the owner of the @p unit has left the game.
