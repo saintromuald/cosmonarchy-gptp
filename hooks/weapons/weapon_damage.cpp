@@ -725,7 +725,6 @@ namespace hooks {
 							return;
 						}
 						data.target->heal(ApostleBloodTitheHealing, data.target);
-						scbw::print("Heal");
 					});
 					break;
 				}

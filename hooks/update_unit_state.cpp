@@ -401,8 +401,8 @@ namespace hooks {
 			}
 
 			if (unit->defensiveMatrixHp != 0) {
-				if (unit->hitPoints > 0 &&
-					unit->hitPoints / 256 != unit->getMaxHpInGame()) {
+				if (unit->hitPoints > 0
+					&& unit->hitPoints / 256 != unit->getMaxHpInGame()) {
 					auto caster = scbw::get_aise_value(unit, nullptr, AiseId::GetMatrixCasterPlayer, 0, 0);
 					if (caster < 8) {
 						unit->heal(AzazelDefensiveMatrixHeal, nullptr);
