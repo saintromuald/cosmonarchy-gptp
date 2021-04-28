@@ -361,7 +361,7 @@ struct CUnit : public CUnitLayout {
 	///   to the @p target unit.
 	/// * AI-controlled Arbiters (not including Danimoths) always return false.
 	bool canAttackTarget(CUnit* target, bool checkVisibility = true) const;
-
+	
 	/// Makes the unit use the specified weapon to attack its current target unit
 	/// stored in the CUnit::orderTarget.unit member. This does not affect the
 	/// unit's weapon cooldown. The spawned weapon sprite obeys the weapon
