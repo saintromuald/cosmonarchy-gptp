@@ -366,45 +366,46 @@ namespace hooks {
 			}
 		}
 
-		//Supposedly, allows Zerglings to attack after unburrowing without delay.
-		if (unit->id == UnitId::ZergZergling || unit->id == UnitId::Hero_DevouringOne)
+		// Supposedly, allows Zerglings to attack after unburrowing without delay.
+		if (unit->id == UnitId::ZergZergling)
 			if (unit->groundWeaponCooldown == 0) {
 				unit->orderQueueTimer = 0;
 			}
 
-		//Clear the healing flag every frame
+		// Clear the healing flag every frame
 		unit->isBeingHealed = 0;
 
-		//Update unit status effects (stim, maelstrom, plague, etc.)
+		// Update unit status effects (stim, maelstrom, plague, etc.)
 		if (unit->status & UnitStatus::Completed || !(unit->sprite->flags & CSprite_Flags::Hidden)) {
 			unit->cycleCounter++;
 			if (unit->cycleCounter >= 8) {
 				unit->cycleCounter = 0;
-				RestoreAllUnitStats(unit); //use update_status_effects hook if available
+				RestoreAllUnitStats(unit); // use update_status_effects hook if available
 			}
 		}
 
-		//Only for fully-constructed units and buildings
+		// Only for fully-constructed units and buildings
 		if (unit->status & UnitStatus::Completed) {
 			bool bStopHere = false;
 
-			// TODO: Finish Defensive Matrix changes
+			// TODO: Reduce defensiveMatrixTimer
 			if (unit->defensiveMatrixTimer == 168) {
 				scbw::restoreFunc(unit);
 			}
 
-			//HP regeneration
+			// HP regeneration
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP &&
 				unit->hitPoints > 0 &&
 				unit->hitPoints / 256 != unit->getMaxHpInGame()) {
 				unit->setHp(unit->hitPoints + 4);
 			}
+
 			if (unit->defensiveMatrixHp != 0) {
 				if (unit->hitPoints > 0 &&
 					unit->hitPoints / 256 != unit->getMaxHpInGame()) {
 					auto caster = scbw::get_aise_value(unit, nullptr, AiseId::GetMatrixCasterPlayer, 0, 0);
 					if (caster < 8) {
-						unit->setHp(unit->hitPoints + 53); //256 * 5 / 24 = 53.333..
+						unit->heal(AzazelDefensiveMatrixHeal, nullptr);
 					}
 				}
 			}

@@ -40,6 +40,9 @@ constexpr double MadcapAttackSpeedPerStack = 0.05;
 constexpr int ApostleBloodTitheHealing = 5 * 256;
 constexpr int ApostleLastBreathEnergyGain = 5 * 256;
 
+// Azazel
+constexpr int AzazelDefensiveMatrixHeal = 53; // 256 * 5 / 24 = 53.333..
+
 // Treasury
 constexpr int TreasuryIncrease = 4;
 
