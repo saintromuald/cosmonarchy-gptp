@@ -106,7 +106,6 @@ void replaceUnitWithType(CUnit* unit, uint16 newUnitId) {
 
 const uint32 Func_497ED0 = 0x00497ED0;
 static void makeSpriteVisible(CSprite* sprite) {
-
 	__asm {
 		PUSHAD
 		MOV EAX, sprite
@@ -118,7 +117,6 @@ static void makeSpriteVisible(CSprite* sprite) {
 
 const uint32 Func_498A90 = 0x00498A90;
 void UpdateSpriteImagesForCloak(CSprite* sprite) {
-
 	__asm {
 		PUSHAD
 		MOV EDI, sprite
@@ -150,7 +148,7 @@ void spawnCreeper(CUnit* unit) {
 				tile_x * 32,
 				tile_y * 32,
 				UnitId::ZergNydusCanal
-			);//apply creep
+			); // apply creep
 			func_0047D770(creep_spawned);
 
 			creep_spawned->status |= UnitStatus::Invincible;
@@ -176,7 +174,7 @@ void spawnCreeper(CUnit* unit) {
 }
 
 #include "SCBW\UnitFinder.h"
-void shamanProc(CUnit* shaman, bool organic, uint32 heal, CUnit* target) {
+void shamanProc(CUnit* shaman, uint32 heal, CUnit* target) {
 	if (target->playerId != shaman->playerId) {
 		if (!scbw::isAlliedTo(target->playerId, shaman->playerId)) {
 			return;
@@ -184,39 +182,27 @@ void shamanProc(CUnit* shaman, bool organic, uint32 heal, CUnit* target) {
 	}
 	if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
 		return;
-	if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic) && organic)
-		return;
-	if (!(units_dat::BaseProperty[target->id] & UnitProperty::Mechanical) && !organic)
-		return;
 	if (target->stasisTimer) {
 		return;
 	}
 	if (target == shaman) {
 		return;
 	}
-
 	uint32 dist = scbw::getDistanceFast(target->position.x, target->position.y,
 		shaman->position.x, shaman->position.y);
-	//unit->isBeingHealed = true;
+	
 	bool reqHeal = false;
-
 	if (target->getCurrentHpInGame() < target->getMaxHpInGame()) {
 		reqHeal = true;
-		uint32 overlayImageId;
-		if (units_dat::BaseProperty[target->id] & UnitProperty::LargeOverlay)
-			overlayImageId = ImageId::RestorationHit_Large;
-		else
-			overlayImageId = ImageId::RestorationHit_Small;
+		uint32 overlayImageId = ImageId::NaniteField;
 		CUnit* tgt = nullptr;
-		if (target->subunit != nullptr)
+		if (target->subunit != nullptr) {
 			tgt = target->subunit;
-		else
-			tgt = target;
-		if (organic) {
-			(tgt->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
-		} else {
-			(tgt->sprite)->createTopOverlay(1158, 0, 0, 0);
 		}
+		else {
+			tgt = target;
+		}
+		(tgt->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
 	}
 	target->heal(heal * 256, shaman);
 }
@@ -379,7 +365,6 @@ namespace hooks {
 		// Reviving from Lazarus Agent
 		if (scbw::get_generic_value(unit, ValueId::IsReviving) == 1 &&
 			unit->sprite->mainGraphic->animation != IscriptAnimation::Unused1) {
-			//					unit->status &= ~UnitStatus::Invincible;
 			scbw::set_generic_value(unit, ValueId::IsReviving, 0);
 		}
 
@@ -417,13 +402,7 @@ namespace hooks {
 					if (!(scbw::isAlliedTo(target->playerId, unit->playerId))) {
 						return;
 					}
-					if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
-						return;
-					}
-					if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic)) {
-						return;
-					}
-					target->heal(0.1 * units_dat::MaxHitPoints[target->id], unit);
+					target->heal(ZoryusthalethReconstitutionHealing, unit);
 					//scbw::createAndInitThingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
 				});
 				scbw::createAndInitThingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
@@ -590,8 +569,7 @@ namespace hooks {
 				// Cast Lazarus Agent						
 				unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256);
 				auto r = 4 * 32;
-				auto n = unitRangeCount(unit, CFlags::NoBuilding | CFlags::Ally |
-					CFlags::OnlyOrganic | CFlags::IncludingSelf, {});
+				auto n = unitRangeCount(unit, CFlags::NoBuilding | CFlags::Ally | CFlags::IncludingSelf, {});
 				scbw::UnitFinder unitsInSplash(unit->getX() - r, unit->getY() - r,
 					unit->position.x + r, unit->position.y + r);
 				for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
@@ -739,41 +717,25 @@ namespace hooks {
 			}
 		}
 
-		// Shaman - Administer Medstims ability
+		// Shaman - Medstims ability
 		else if (unit->id == UnitId::TerranShaman) {
 			if (unit->_padding_0x132 & 0x8) {
 				unit->groundWeaponCooldown = 8;
 			}
-			if (scbw::get_generic_rust_value(unit, ValueId::NaniteField)) {
-				auto timer = scbw::get_generic_timer(unit, ValueId::NaniteFieldTimer);
-				unit->_padding_0x133 = 0;
-				unit->_padding_0x132 = 0;
-				if (timer == 0) {
-					scbw::set_generic_timer(unit, ValueId::NaniteFieldTimer, 24);
-					unit->sprite->playIscriptAnim(IscriptAnimation::CastSpell);
-					scbw::UnitFinder(
-						unit->getX() - 128,
-						unit->getY() - 128,
-						unit->getX() + 128,
-						unit->getY() + 128
-					).forEach([&](CUnit* target) {
-						shamanProc(unit, false, 2, target);
-					});
-				}
-			} else {
-				auto timer = scbw::get_generic_timer(unit, ValueId::NewMedstimTimer);
-				if (timer == 0) {
-					scbw::set_generic_timer(unit, ValueId::NewMedstimTimer, 24);
-					unit->sprite->playIscriptAnim(IscriptAnimation::CastSpell);
-					scbw::UnitFinder(
-						unit->getX() - 128,
-						unit->getY() - 128,
-						unit->getX() + 128,
-						unit->getY() + 128
-					).forEach([&](CUnit* target) {
-						shamanProc(unit, true, 6, target);
-					});
-				}
+			auto timer = scbw::get_generic_timer(unit, ValueId::NaniteFieldTimer);
+			unit->_padding_0x133 = 0;
+			unit->_padding_0x132 = 0;
+			if (timer == 0) {
+				scbw::set_generic_timer(unit, ValueId::NaniteFieldTimer, 24);
+				unit->sprite->playIscriptAnim(IscriptAnimation::CastSpell);
+				scbw::UnitFinder(
+					unit->getX() - 128,
+					unit->getY() - 128,
+					unit->getX() + 128,
+					unit->getY() + 128
+				).forEach([&](CUnit* target) {
+					shamanProc(unit, ShamanHeal, target);
+				});
 			}
 		}
 
@@ -808,8 +770,7 @@ namespace hooks {
 		}
 
 		// Apostle - Lazarus Agent revive
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic &&
-			scbw::get_generic_value(unit, ValueId::LazarusNoHeal) == 1) {
+		if (scbw::get_generic_value(unit, ValueId::LazarusNoHeal) == 1) {
 			if (unit->sprite && unit->sprite->mainGraphic
 				&& unit->sprite->mainGraphic->animation != IscriptAnimation::Unused1) {
 				//clear revival no-heal flag
@@ -866,20 +827,6 @@ namespace hooks {
 			} else if (timer == 1) {
 				unit->sprite->removeOverlay(ImageId::ObservanceOverlayLarge, ImageId::ObservanceOverlaySmall);
 			}
-		}
-
-		// Dark Archon - Malediction (Maelstrom)
-		if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) == 1) {
-			uint32 overlayImageId = ImageId::Malediction_Small + scbw::getOverlayOffset(unit->id);
-			while (unit->sprite->getOverlay(overlayImageId)) {
-				unit->sprite->removeOverlay(overlayImageId);
-			}
-			unit->updateSpeed();
-		}
-
-		// Lobotomy Mine
-		if (scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0) {
-			unit->updateSpeed();
 		}
 
 		// Vithrilisk - Corrosive Touch Clear

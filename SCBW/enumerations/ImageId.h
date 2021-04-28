@@ -1028,6 +1028,7 @@ enum Enum {
 	EntropyGauntletsOverlayLarge		= 1109,
 	EntropyGauntletsOverlayMedium		= 1110,
 	EntropyGauntletsOverlaySmall		= 1111,
+	NaniteField							= 1158,
 	SeraphRedOverlay					= 1230,
 	ObservanceOverlayLarge				= 1231,
 	ObservanceOverlayMedium				= 1232,

@@ -57,7 +57,7 @@ namespace hooks {
 			}
 		}
 
-		// Phobos behavior
+		// Phobos Argent Capacitors behavior
 		if (unit->id == UnitId::TerranPhobos) {
 			if (scbw::get_generic_value(unit, ValueId::PhobosDischarge) > 0) {
 				cooldown /= 2;

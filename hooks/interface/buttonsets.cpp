@@ -811,12 +811,8 @@ namespace hooks {
 									current_button->iconID == IconId::Flyer_Attack) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranShaman && // Shaman Overcharge passive
-									current_button->iconID == IconId::RechargeShields) {
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::TerranShaman &&  // Shaman Adrenaline Packs passive
-									current_button->iconID == IconId::TerranInfantryArmor) {
+								if ((*activePortraitUnit)->id == UnitId::TerranShaman &&  // Shaman Nanite Field passive
+									current_button->iconID == IconId::Restoration) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								if ((*activePortraitUnit)->id == UnitId::TerranEidolon &&  // Eidolon Somatic Implants passive
@@ -893,7 +889,11 @@ namespace hooks {
 									current_button->iconID == IconId::Argus_Jewel) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranSalamander &&  // SalamanderFire Incendiary Payload passive
+								if ((*activePortraitUnit)->id == UnitId::TerranWyvern &&  // Wyvern Reverse Thrust passive
+									current_button->iconID == IconId::Afterburners_ON_Unused) {
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::TerranSalamander &&  // Salamander Incendiary Payload passive
 									current_button->iconID == IconId::Flame_Thrower) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
@@ -1117,12 +1117,8 @@ namespace hooks {
 									current_button->iconID == IconId::SubterraneanSpines) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergVithrilisk &&  // Vithrlisk Corrosive Touch passive
-									current_button->iconID == IconId::VenomUnused) {
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::ZergVithrilisk &&  // Vithrlisk Critical Mass passive
-									current_button->iconID == IconId::Suicide_Infested_Terran) {
+								if ((*activePortraitUnit)->id == UnitId::ZergMutalisk &&  // Mutalisk Lithe Organelle passive
+									current_button->iconID == IconId::AcidSpore) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								if ((*activePortraitUnit)->id == UnitId::ZergGorgrokor &&  // Gorgrokor Probing Incisors passive
@@ -1131,6 +1127,14 @@ namespace hooks {
 								}
 								if ((*activePortraitUnit)->id == UnitId::ZergGorgrokor &&  // Gorgrokor Ravening Mandible passive
 									current_button->iconID == IconId::RoarUnused) {
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergVithrilisk &&  // Vithrlisk Corrosive Touch passive
+									current_button->iconID == IconId::VenomUnused) {
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergVithrilisk &&  // Vithrlisk Critical Mass passive
+									current_button->iconID == IconId::Suicide_Infested_Terran) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								if ((*activePortraitUnit)->id == UnitId::ZergGeszithalor &&  // Geszithalor Searing Acid passive

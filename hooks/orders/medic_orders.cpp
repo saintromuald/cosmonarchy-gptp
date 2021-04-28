@@ -292,8 +292,7 @@ namespace hooks {
 		int abilityFlags = units_dat::BaseProperty[type];
 		int enemyCheck;
 		bool result;
-		if (!(abilityFlags & UnitProperty::Organic)
-			|| abilityFlags & UnitProperty::Building
+		if	(abilityFlags & UnitProperty::Building
 			|| target->status & UnitStatus::InAir
 			|| !scbw::isAlliedTo(medic->playerId, target->playerId)
 			|| target->playerId >= 8

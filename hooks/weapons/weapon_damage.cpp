@@ -717,27 +717,15 @@ namespace hooks {
 				case WeaponId::ApostleCharonRifle:
 				{
 					// Blood Tithe - Apostle behavior
-					//if (scbw::getDistanceFast(data.attacker->position.x, data.attacker->position.y, data.target->position.x, data.target->position.y) >= 160 ) {
 					uint32 range = 3 * 32;
 					scbw::UnitFinder unitFinder(data.target->getX() - range, data.target->getY() - range, data.target->getX() + range, data.target->getY() + range);
 					unitFinder.forEach([&data](CUnit* foundUnit) {
-						if (!(scbw::isAlliedTo(data.attacker->playerId, foundUnit->playerId))	// Return if recipient is not allied, or if recipient is the target
+						if (!(scbw::isAlliedTo(data.attacker->playerId, foundUnit->playerId)) // Return if recipient is not allied, or if recipient is the target
 							|| foundUnit == data.target) {
 							return;
 						}
-						if (!(units_dat::BaseProperty[data.target->id] & UnitProperty::Organic)	// Return if recipient or target are not organic
-							|| !(units_dat::BaseProperty[foundUnit->id] & UnitProperty::Organic)) {
-							return;
-						}
-						uint32 value = 0;
-						if (units_dat::ShieldsEnabled[data.target->id]) {
-							value = (units_dat::MaxHitPoints[data.target->id] + (units_dat::MaxShieldPoints[data.target->id] * 256)) * 0.10;
-						} else {
-							value = (units_dat::MaxHitPoints[data.target->id] * 0.10);
-						}
-						data.target->heal(value, data.target);
+						data.target->heal(ApostleBloodTitheHealing, data.target);
 					});
-					//}
 					break;
 				}
 			}
@@ -757,8 +745,6 @@ namespace hooks {
 			case WeaponId::WendigoFusionSaw:
 			{
 				// Wendigo Automedicus passive (HP component)
-				if (!(units_dat::BaseProperty[data.target->id] & UnitProperty::Mechanical))
-					return;
 				lifesteal *= 0.25;
 				data.attacker->heal(lifesteal, data.attacker);
 				break;
@@ -796,10 +782,7 @@ namespace hooks {
 					if (unit->id != UnitId::ProtossCantavis) {
 						return;
 					}
-					if (unit->status & UnitStatus::DoodadStatesThing ||
-						unit->lockdownTimer != 0 ||
-						unit->stasisTimer != 0 ||
-						unit->maelstromTimer != 0) {
+					if (scbw::isStunned(unit)) {
 						return;
 					}
 					bool show = true;
@@ -943,8 +926,7 @@ namespace hooks {
 						data.attacker->getY() + range
 					).forEach([&](CUnit* unit) {
 						if (unit == nullptr
-							|| (player != unit->playerId && !scbw::isAlliedTo(player, unit->playerId))
-							|| !(units_dat::BaseProperty[unit->id] & UnitProperty::Organic)) {
+							|| (player != unit->playerId && !scbw::isAlliedTo(player, unit->playerId))) {
 							return;
 						}
 						scbw::set_generic_timer(unit, ValueId::NathrokorTimer, (4 * 24) + 1);

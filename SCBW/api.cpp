@@ -946,7 +946,7 @@ namespace scbw {
 	}
 
 	bool isStunned(CUnit* unit) {
-		if (unit->maelstromTimer || unit->stasisTimer) {
+		if (unit->maelstromTimer || unit->stasisTimer || unit->lockdownTimer || unit->status & UnitStatus::DoodadStatesThing) {
 			return true;
 		}
 		return false;
