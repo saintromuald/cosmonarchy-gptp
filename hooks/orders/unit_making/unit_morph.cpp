@@ -331,12 +331,6 @@ namespace hooks {
 			}
 		}
 
-		if (unit->id == UnitId::ZergGorgrokor) {
-			if (morphUnitId == UnitId::ZergGeszithalor) {
-				return true;
-			}
-		}
-
 		if (unit->id == UnitId::ZergQuazilisk) {
 			if (morphUnitId == UnitId::ZergKalkalisk
 				|| morphUnitId == UnitId::ZergAlmaksalisk) {
@@ -377,10 +371,9 @@ namespace hooks {
 		}
 
 		if (unit->id == UnitId::ZergMutalisk) {
-			if (morphUnitId == UnitId::ZergVithrilisk) {
-				return true;
-			}
-			if (morphUnitId == UnitId::ZergGorgrokor) {
+			if (morphUnitId == UnitId::ZergGorgrokor
+				|| morphUnitId == UnitId::ZergVithrilisk
+				|| morphUnitId == UnitId::ZergGeszithalor) {
 				return true;
 			}
 		}

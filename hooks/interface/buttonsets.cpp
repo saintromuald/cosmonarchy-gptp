@@ -1117,12 +1117,8 @@ namespace hooks {
 									current_button->iconID == IconId::SubterraneanSpines) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergVithrilisk &&  // Vithrlisk Corrosive Touch passive
-									current_button->iconID == IconId::VenomUnused) {
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::ZergVithrilisk &&  // Vithrlisk Critical Mass passive
-									current_button->iconID == IconId::Suicide_Infested_Terran) {
+								if ((*activePortraitUnit)->id == UnitId::ZergMutalisk &&  // Mutalisk Lithe Organelle passive
+									current_button->iconID == IconId::AcidSpore) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								if ((*activePortraitUnit)->id == UnitId::ZergGorgrokor &&  // Gorgrokor Probing Incisors passive
@@ -1131,6 +1127,14 @@ namespace hooks {
 								}
 								if ((*activePortraitUnit)->id == UnitId::ZergGorgrokor &&  // Gorgrokor Ravening Mandible passive
 									current_button->iconID == IconId::RoarUnused) {
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergVithrilisk &&  // Vithrlisk Corrosive Touch passive
+									current_button->iconID == IconId::VenomUnused) {
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergVithrilisk &&  // Vithrlisk Critical Mass passive
+									current_button->iconID == IconId::Suicide_Infested_Terran) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								if ((*activePortraitUnit)->id == UnitId::ZergGeszithalor &&  // Geszithalor Searing Acid passive
