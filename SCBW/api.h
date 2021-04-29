@@ -156,11 +156,8 @@ namespace scbw {
 		return 0 != playerVision[playerA].flags[playerB];
 	}
 
-	// won't decloak on attack
-	bool isPermaCloaked(CUnit* unit);
-
 	// will decloak on attack
-	bool isUncloakable(CUnit* unit);
+	bool isDecloakable(CUnit* unit);
 
 	/// Checks whether the @p unit is recognized by @p playerId as an enemy.
 	/// This will work even when the owner of the @p unit has left the game.
