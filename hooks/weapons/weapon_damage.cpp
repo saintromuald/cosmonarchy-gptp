@@ -725,7 +725,7 @@ namespace hooks {
 						data.target->getX() + range,
 						data.target->getY() + range
 					).forEach([&data](CUnit* foundUnit) {
-						if (!scbw::isAlliedTo(data.attacker->playerId, foundUnit->playerId)) {
+						if (foundUnit->playerId != data.target->playerId && !scbw::isAlliedTo(data.attacker->playerId, foundUnit->playerId)) {
 							return;
 						}
 						if (foundUnit == data.target) {
