@@ -719,13 +719,22 @@ namespace hooks {
 				{
 					// Blood Tithe - Apostle behavior
 					uint32 range = 3 * 32;
-					scbw::UnitFinder unitFinder(data.target->getX() - range, data.target->getY() - range, data.target->getX() + range, data.target->getY() + range);
-					unitFinder.forEach([&data](CUnit* foundUnit) {
-						if (!(scbw::isAlliedTo(data.attacker->playerId, foundUnit->playerId)) // Return if recipient is not allied, or if recipient is the target
-							|| foundUnit == data.target) {
+					scbw::UnitFinder(
+						data.target->getX() - range,
+						data.target->getY() - range,
+						data.target->getX() + range,
+						data.target->getY() + range
+					).forEach([&data](CUnit* foundUnit) {
+						if (!scbw::isAlliedTo(data.attacker->playerId, foundUnit->playerId)) {
 							return;
 						}
-						data.target->heal(ApostleBloodTitheHealing, data.target);
+						if (foundUnit == data.target) {
+							return;
+						}
+						if (units_dat::BaseProperty[data.target->id] & UnitProperty::Building) {
+							return;
+						}
+						foundUnit->heal(ApostleBloodTitheHealing, data.target);
 					});
 					break;
 				}

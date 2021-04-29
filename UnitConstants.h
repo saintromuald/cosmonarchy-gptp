@@ -14,14 +14,6 @@
 //		but we might want to limit the include scope for this one
 // - Maybe we should also move aise enums in here, I don't think it ever made sense for it to be in CUnit, since it's included everywhere.
 
-// Shorthand for in-game seconds (1 second - 24 frames). only works in this file to avoid potential conflicts.
-static constexpr int operator "" s(unsigned long long amount) {
-	return (int)(amount * 24);
-}
-static constexpr int operator "" s(long double amount) {
-	return (int)(amount * 24);
-}
-
 // Constants
 // Note: I would recommend having unit name as first segment of any related variable name.
 
@@ -32,7 +24,7 @@ constexpr int HealthMultiplier = 256;
 constexpr int ShamanHeal = 2;
 
 // Madcap
-constexpr int MadcapPassiveDecayTime = 0.5s;
+constexpr int MadcapPassiveDecayTime = 0.5 * 24;
 constexpr int MadcapMaxStacks = 10;
 constexpr double MadcapAttackSpeedPerStack = 0.05;
 
@@ -57,7 +49,7 @@ constexpr int AIWebEnemyMinCount = 2;
 constexpr int AIWebTimer = 3 * 24;
 
 // Star Sovereign
-constexpr int AIStarsovereignAbilSeekRange = 32 * 10;
+constexpr int AIStarsovereignAbilSeekRange = 10 * 32;
 constexpr int AIStarsovereignAbilMinEnemyHealth = 2000;
 constexpr int AIStarsovereignAbilMaxAllyHealth = 2000;
 constexpr double AIStarsovereignAbilLifePercentage = 0.5;
@@ -78,7 +70,7 @@ constexpr int ZoryusthalethReconstitutionHealing = 5 * 256;
 constexpr int DefaultArmParasiteTimer = 2 * 24 + 1;
 
 // Akistrokor
-constexpr int AkistrokorEnthrallingAssaultHeal = 213; // 20 HP per second | 256 * 20 / 24
+constexpr int AkistrokorEnthrallingAssaultHeal = 256 * 20 / 24; // 20 HP per second
 
 // Larval Colony
 constexpr double LarvalColonyMultiplier = 0.75;
