@@ -443,7 +443,7 @@ namespace hooks {
 
 	uint32 unitCanSeeCloakedTarget(CUnit* target, CUnit* unit) { // 00401D60, hooked for cloak rewrite - Pr0nogo
 		const bool isCloaked = target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
-		const bool isDecloaked = scbw::get_generic_timer(target, ValueId::PermanentCloakTimer) > 1;
+		const bool isDecloaked = scbw::get_generic_timer(target, ValueId::DecloakTimer) > 1;
 		return isCloaked && !isDecloaked;
 	}
 
@@ -458,7 +458,7 @@ namespace hooks {
 		}
 
 		const bool isCloaked = target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
-		const bool isDecloaked = scbw::get_generic_timer(target, ValueId::PermanentCloakTimer) > 1;
+		const bool isDecloaked = scbw::get_generic_timer(target, ValueId::DecloakTimer) > 1;
 		if (isCloaked && !isDecloaked) {
 			result = (uint8)(playerUnit & target->sprite->visibilityFlags);
 		} else {
@@ -479,7 +479,7 @@ namespace hooks {
 			return playerUnit & ~(activeTileArray[unit->orderTarget.pt.x / 32 + mapTileSize->width * (unit->orderTarget.pt.y / 32)]->visibilityFlags);
 		}
 		const bool isCloaked = unit->status & 0x300;
-		const bool isDecloaked = scbw::get_generic_timer(unit, ValueId::PermanentCloakTimer) > 1;
+		const bool isDecloaked = scbw::get_generic_timer(unit, ValueId::DecloakTimer) > 1;
 		if (isCloaked && !isDecloaked) {
 			result = (uint8)(playerUnit & target->sprite->visibilityFlags);
 		} else {
@@ -533,11 +533,6 @@ namespace hooks {
 	// Hooked to complete the cloak rewrite - Pr0nogo
 	// was __thiscall, does that matter?
 	int32 isUnitCloaking(CUnit* unit) { // 004916E0
-		if (scbw::isDecloakable(unit)
-			&& scbw::get_generic_timer(unit, ValueId::PermanentCloakTimer)) {
-			return 0;
-		}
-
 		if (unit->isCloaked) {
 			return 0;
 		}
@@ -566,10 +561,10 @@ namespace hooks {
 
 		if (redraw) {
 			*forceButtonRefresh = 1;
-			portraitRedraw[0] = (int8)1; // seems unrelated to it being an array, but idk
+			portraitRedraw[0] = (int8)1;
 			*statusScreenRedraw = 1;
 			*ctrlUnderMouse = 0;
-			*ctrlUnderMouseValue = 0; // void* in Neiv's list
+			*ctrlUnderMouseValue = 0;
 		}
 		return 1;
 	}
