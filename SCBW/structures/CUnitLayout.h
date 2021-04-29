@@ -299,6 +299,8 @@ namespace ValueId {
 		CausticDischargeSpeed = 164,
 		IonFieldSpeed = 165,
 		ReconstitutionCooldown = 166,
+		EnthrallingAssaultHeal = 167,		// timer
+		AttachedAkistrokor = 168,			// unit
 	};
 }
 #include "SCBW\enumerations\TechId.h"

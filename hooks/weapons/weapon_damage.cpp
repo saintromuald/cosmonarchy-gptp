@@ -772,7 +772,6 @@ namespace hooks {
 
 			// Cantavis - Ascendancy
 			if (data.weaponId == WeaponId::PsiStorm || Halluc) {
-				//psi mastery effect
 				scbw::UnitFinder(
 					data.target->getX() - 288,
 					data.target->getY() - 288,
@@ -828,6 +827,20 @@ namespace hooks {
 					unit->healShields(healAmount, data.target);
 				}
 			});
+		}
+
+		// Akistrokor - Enthralling Assault
+		if (scbw::get_generic_value(data.target, ValueId::EnthrallingTalons) > 0) {
+			// Preserve unit and start healing
+			data.finalDamage = 0;
+			data.target->setHp(256);
+			scbw::set_generic_timer(data.target, ValueId::EnthrallingAssaultHeal, 24 * 10);
+			// Transfer unit ownership
+			CUnit* akistrokor = scbw::get_generic_unit(data.target, ValueId::AttachedAkistrokor);
+			data.target->giveTo(akistrokor->playerId);
+			// Housekeeping
+			scbw::set_generic_unit(data.target, ValueId::AttachedAkistrokor, nullptr);
+			scbw::set_generic_value(data.target, ValueId::InfestedByAkistrokor, 1);
 		}
 
 		switch (data.target->id) { // TARGET SWITCH! MUST BE UNIT

@@ -171,7 +171,8 @@ namespace hooks {
 		if (unit->pAI != nullptr) {
 			hydra_unit_ai(unit);
 		}
-		//Timers
+
+		// Timers
 		if (unit->mainOrderTimer) {
 			unit->mainOrderTimer--;
 		}
@@ -184,14 +185,16 @@ namespace hooks {
 		if (unit->spellCooldown) {
 			unit->spellCooldown--;
 		}
-		if (unit->id == UnitId::TerranWyvern && scbw::get_generic_rust_value(unit, ValueId::ReverseThrust) == 1
-			&& unit->groundWeaponCooldown == 0) {
+
+		// Wyvern Reverse Thrust - fire while moving
+		if (unit->id == UnitId::TerranWyvern && unit->groundWeaponCooldown == 0) {
 			bool can_free_fire = true;
 			if (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::Attack2) {
 				if (unit->orderTarget.unit != nullptr) {
 					can_free_fire = false;
 				}
 			}
+
 			if (can_free_fire) {
 				auto range = weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon];
 				int32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernJacksonCannon];
@@ -211,6 +214,7 @@ namespace hooks {
 						scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabOn, 0);
 					}
 				}
+
 				if (seek_unit) {
 					auto a = scbw::UnitFinder::getNearestTarget(
 						unit->getX() - range, unit->getY() - range,
@@ -240,22 +244,20 @@ namespace hooks {
 			}
 		}
 
+		// Accantor Plasma Shells have shields equal to the Accantor that launches them
 		if (unit->id == UnitId::ProtossAccantor) {
 			CUnit* scarab = unit->carrier.inHangarChild;
 			while (scarab != nullptr) {
 				if (scarab->id == UnitId::ProtossPlasmaShell) {
-					if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::Relocators) &&
-						!(scarab->status & UnitStatus::InAir)) {
-						scarab->sprite->elevationLevel = 12;
-					}
 					scarab->shields = unit->shields;
 				}
 				scarab = scarab->interceptor.hangar_link.prev;
 			}
 		}
+
+		// Add mining status, decrease the regeneration rate
 		if (unit->mainOrderId == OrderId::MiningMinerals) {
 			if (unit->orderTarget.unit != nullptr) {
-				//add mining status, decrease the regeneration rate
 				unit->orderTarget.unit->unusedTimer = 180;
 			}
 		}
@@ -269,7 +271,7 @@ namespace hooks {
 		// Cowardice / Malice overlays
 		if (unit->_unknown_0x08C & 0x1) {
 			unit->_unknown_0x08C &= ~0x1;
-			uint32 overlayImageId = scbw::get_sized_overlay(unit, ImageId::Cowardice_Small);
+			uint32 overlayImageId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
 			if (!unit->getOverlay(overlayImageId) && scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 0) {
 				unit->sprite->createTopOverlay(overlayImageId,
 					0, 0, 0);
@@ -278,13 +280,13 @@ namespace hooks {
 		}
 
 		if (scbw::get_generic_value(unit, ValueId::HierophantOverlay) == 1) {
-			auto overlayId = scbw::get_sized_overlay(unit, ImageId::Cowardice_Small);
+			auto overlayId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
 			auto overlay = unit->getOverlay(overlayId);
 			if (scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 1) {
 				if (unit->getOverlay(overlayId)) {
 					unit->removeOverlay(overlayId);
 				}
-				uint32 maliceId = scbw::get_sized_overlay(unit, ImageId::Malice_Small);
+				uint32 maliceId = ImageId::Malice_Small + scbw::getOverlayOffset(unit->id);
 				if (!unit->getOverlay(maliceId)) {
 					unit->sprite->createTopOverlay(maliceId, 0, 0, 0);
 				}
@@ -292,11 +294,11 @@ namespace hooks {
 			}
 		}
 
-		//Clear Malice/Cowardice overlays
+		// Clear Malice & Cowardice overlays
 		if (unit->_unknown_0x08C & 0x2) {
 			unit->_unknown_0x08C &= ~0x2;
-			uint32 maliceId = scbw::get_sized_overlay(unit, ImageId::Malice_Small);
-			uint32 cowardiceId = scbw::get_sized_overlay(unit, ImageId::Cowardice_Small);
+			uint32 maliceId = ImageId::Malice_Small + scbw::getOverlayOffset(unit->id);
+			uint32 cowardiceId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
 			scbw::set_generic_value(unit, ValueId::HierophantOverlay, 0);
 			if (unit->getOverlay(maliceId)) {
 				unit->removeOverlay(maliceId);
@@ -306,6 +308,7 @@ namespace hooks {
 			}
 		}
 
+		// Something to do with player-specific Signify overlays?
 		if (unit->_padding_0x132 & 0x20 && unit == playersSelections->unit[*ACTIVE_NATION_ID][0]) {
 			unit->_padding_0x132 &= ~0x20;
 			scbw::refreshConsole();
@@ -316,6 +319,7 @@ namespace hooks {
 			if (unit->unusedTimer > 0) {
 				unit->unusedTimer--;
 			}
+
 			if (unit->_unknown_0x066 > 0) {
 				unit->_unknown_0x066--;
 			} else {
@@ -331,6 +335,7 @@ namespace hooks {
 						unit->_unknown_0x066 = 18;
 					}
 				}
+
 				// Actual resource regeneration
 				bool update_image = true;
 				if (unit->building.resource.resourceAmount < 5000
@@ -348,7 +353,7 @@ namespace hooks {
 			}
 		}
 
-		//Shield regeneration
+		// Shield regeneration
 		if (units_dat::ShieldsEnabled[unit->id] != 0) {
 			int32 maxShields = (int32)(units_dat::MaxShieldPoints[unit->id]) * 256;
 			if (unit->id == UnitId::ProtossAugur && unit->status & UnitStatus::Completed) {
@@ -367,10 +372,11 @@ namespace hooks {
 		}
 
 		// Supposedly, allows Zerglings to attack after unburrowing without delay.
-		if (unit->id == UnitId::ZergZergling)
+		if (unit->id == UnitId::ZergZergling) {
 			if (unit->groundWeaponCooldown == 0) {
 				unit->orderQueueTimer = 0;
 			}
+		}
 
 		// Clear the healing flag every frame
 		unit->isBeingHealed = 0;
@@ -388,25 +394,12 @@ namespace hooks {
 		if (unit->status & UnitStatus::Completed) {
 			bool bStopHere = false;
 
-			// TODO: Reduce defensiveMatrixTimer
-			if (unit->defensiveMatrixTimer == 168) {
-				scbw::restoreFunc(unit);
-			}
-
-			// HP regeneration
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP &&
-				unit->hitPoints > 0 &&
-				unit->hitPoints / 256 != unit->getMaxHpInGame()) {
-				unit->setHp(unit->hitPoints + 4);
-			}
-
-			if (unit->defensiveMatrixHp != 0) {
-				if (unit->hitPoints > 0
-					&& unit->hitPoints / 256 != unit->getMaxHpInGame()) {
-					auto caster = scbw::get_aise_value(unit, nullptr, AiseId::GetMatrixCasterPlayer, 0, 0);
-					if (caster < 8) {
-						unit->heal(AzazelDefensiveMatrixHeal, nullptr);
-					}
+			// Remove units with timed lives
+			if (unit->removeTimer != 0) {
+				unit->removeTimer--;
+				if (unit->removeTimer == 0) {
+					unit->remove();
+					bStopHere = true;
 				}
 			}
 
@@ -424,13 +417,42 @@ namespace hooks {
 				bStopHere = true;
 			}
 
-			if (unit->removeTimer != 0) {
-				unit->removeTimer--;
-				if (unit->removeTimer == 0) {
-					unit->remove();
-					bStopHere = true;
+			// TODO: Reduce defensiveMatrixTimer
+			// Cleanse debuffs on initial Defensive Matrix application
+			if (unit->defensiveMatrixTimer == 168) {
+				scbw::restoreFunc(unit);
+			}
+
+			// HP regeneration
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP &&
+				unit->hitPoints > 0 &&
+				unit->hitPoints / 256 != unit->getMaxHpInGame()) {
+				unit->setHp(unit->hitPoints + 4);
+			}
+
+			// Deliberate healing start
+			int32 tickHeal = 0;
+
+			// Azazel Innervating Matrices - heal over time
+			if (unit->defensiveMatrixHp != 0) {
+				if (unit->hitPoints > 0
+					&& unit->hitPoints / 256 != unit->getMaxHpInGame()) {
+					auto caster = scbw::get_aise_value(unit, nullptr, AiseId::GetMatrixCasterPlayer, 0, 0);
+					if (caster < 8) {
+						tickHeal += AzazelDefensiveMatrixHeal;
+					}
 				}
 			}
+
+			// Akistrokor - Enthralling Assault HP regeneration
+			if (scbw::get_generic_timer(unit, ValueId::EnthrallingAssaultHeal) > 0) {
+				tickHeal += AkistrokorEnthrallingAssaultHeal;
+			}
+
+			if (tickHeal) {
+				unit->heal(tickHeal);
+			}
+			// Deliberate healing end
 
 			// Last Orders - Aurora passive
 			if (unit->id == UnitId::ProtossAurora) {
@@ -446,26 +468,22 @@ namespace hooks {
 						}
 						// TODO: Add impact graphic
 						unit->remove();
+						bStopHere = true;
 					}
 				}
 			}
-
+			
 			// Terran building burn-down
 			if (!bStopHere) {
-				RaceId::Enum raceId = unit->getRace();
-				if (raceId != RaceId::Zerg
-					&& raceId != RaceId::Protoss
-					&& raceId == RaceId::Terran)
-
-					//Check if the unit is a grounded or lifted building
+				if (unit->getRace() == RaceId::Terran) {
 					if (unit->status & UnitStatus::GroundedBuilding
 						|| units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding) {
-						//...whose current HP is less or equal to 33% of max HP
 						if (unitHpIsInRedZone(unit)) {
 							unit->damageHp(20, nullptr, unit->lastAttackingPlayer, true);
 						}
 					}
-			} //if (unit->getRace() == RaceId::Terran)
+				}
+			}
 		}
 	};
 
