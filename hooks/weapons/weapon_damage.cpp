@@ -762,38 +762,43 @@ namespace hooks {
 	}
 
 	static void weaponDamage_fatal(WeaponDamageData& data) {
-		{
-			bool Halluc = false;
-			if (data.attacker != nullptr) {
-				if (data.attacker->status & UnitStatus::IsHallucination) {
-					Halluc = true;
-				}
-			}
 
-			// Cantavis - Ascendancy
-			if (data.weaponId == WeaponId::PsiStorm || Halluc) {
-				scbw::UnitFinder(
-					data.target->getX() - 288,
-					data.target->getY() - 288,
-					data.target->getX() + 288,
-					data.target->getY() + 288
-				).forEach([&](CUnit* unit) {
-					if (unit->id != UnitId::ProtossCantavis) {
-						return;
-					}
-					if (scbw::isStunned(unit)) {
-						return;
-					}
-					bool show = true;
-					if (unit->energy == unit->getMaxEnergy()) {
-						show = false;
-					}
-					unit->addUnitEnergy(5 * 256);
-					if (show) {
-						imgul(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
-					}
-				});
-			}
+		switch (data.weaponId) {
+			case WeaponId::Plague:
+			{
+				// Plague - Don't kill
+				if (data.finalDamage >= data.target->hitPoints) {
+					data.finalDamage = 0;
+					data.target->setHp(256);
+				}
+			} break;
+			case WeaponId::PsiStorm:
+			{
+				// Cantavis - Ascendancy
+				if (data.attacker != nullptr && (data.attacker->status & UnitStatus::IsHallucination)) {
+					scbw::UnitFinder(
+						data.target->getX() - 288,
+						data.target->getY() - 288,
+						data.target->getX() + 288,
+						data.target->getY() + 288
+					).forEach([&](CUnit* unit) {
+						if (unit->id != UnitId::ProtossCantavis) {
+							return;
+						}
+						if (scbw::isStunned(unit)) {
+							return;
+						}
+						bool show = true;
+						if (unit->energy == unit->getMaxEnergy()) {
+							show = false;
+						}
+						unit->addUnitEnergy(5 * 256);
+						if (show) {
+							imgul(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+						}
+					});
+				}
+			} break;
 		}
 
 		// Apostle - Lazarus Agent
