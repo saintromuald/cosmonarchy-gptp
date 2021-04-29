@@ -1692,10 +1692,13 @@ namespace scbw {
 
 	void decloakProc(CUnit* unit) {
 		if (isDecloakable(unit)) {
+			if (!scbw::get_generic_timer(unit, ValueId::DecloakTimer)) {
+				AnimDecloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
+			}
 			scbw::set_generic_timer(unit, ValueId::DecloakTimer, 48 + 1);
 			unit->visibilityStatus = 0xff;
 			hooks::updateUnitVisibility(unit);
-			AnimDecloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
+			
 		}
 	}
 

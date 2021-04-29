@@ -24,7 +24,7 @@ void function_004A01F0g(CUnit* unit) {
 }
 
 const uint32 Func_49B5B0 = 0x0049B5B0;
-void Cloak(CUnit* unit, int sound) {
+void AnimCloak(CUnit* unit, int sound) {
 	__asm {
 		PUSHAD
 		MOV EAX, unit
@@ -932,7 +932,7 @@ namespace hooks {
 		// Permanently Cloaked units recloak after 2 seconds of being out of combat
 		if (scbw::isDecloakable(unit) && scbw::get_generic_timer(unit, ValueId::DecloakTimer) == 1) {
 			checkUnitVisibility(unit);
-			Cloak(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
+			AnimCloak(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
 		}
 
 		// Remove all Nemean Reactors stacks after not attacking for 5 seconds
