@@ -611,18 +611,18 @@ namespace hooks {
 		*interceptorFocusedThisFrame = 0;
 		v0 = isSelectedUnitGroupEnabled();
 		if (v0) {
-			if (IS_PLACING_BUILDING) {
+			if (*IS_PLACING_BUILDING) {
 				refreshLayers3And4();
 				refreshPlaceBuildingLocation();
 			}
-			if (isTargeting) {
+			if (*isTargeting) {
 				cancelTargetOrder();
 			}
 		}
 		v1 = *firstVisibleUnit;
 		if (!--(*orderTimerReassignCount)) {
 			v2 = 0;
-			if (firstVisibleUnit) {
+			if (*firstVisibleUnit) {
 				do {
 					v1->orderQueueTimer = v2++;
 					if (v2 == 8)
@@ -643,14 +643,14 @@ namespace hooks {
 		}
 		updateDisruptionWebStatus();
 		v4 = *firstDyingUnit;
-		if (firstDyingUnit) {
+		if (*firstDyingUnit) {
 			do {
 				v5 = v4->link.next;
 				*activeIscriptEntity = v4;
 				*activeIscriptUnit = v4;
 				progressDyingUnitFrame(v4);
 				if (v4->sprite) {
-					if (visionUpdated) {
+					if (*visionUpdated) {
 						v6 = v4->playerId;
 						if (playerTable[v6].type == 2) { // PLAYER_OCCUPIED
 							revealSightAtLocation(
@@ -667,7 +667,7 @@ namespace hooks {
 			} while (v5);
 		}
 		v7 = *firstVisibleUnit;
-		if (firstVisibleUnit) {
+		if (*firstVisibleUnit) {
 			do {
 				*activeIscriptEntity = v7;
 				*activeIscriptUnit = v7;
@@ -678,7 +678,7 @@ namespace hooks {
 		}
 		if (visionUpdated) {
 			v8 = *firstScannerSweep;
-			if (firstScannerSweep) {
+			if (*firstScannerSweep) {
 				do {
 					v9 = v8->link.next;
 					*activeIscriptEntity = v8;
@@ -718,7 +718,7 @@ namespace hooks {
 			} while (v12);
 		}
 		v13 = *firstHiddenUnit;
-		if (firstHiddenUnit) {
+		if (*firstHiddenUnit) {
 			do {
 				v14 = v13->link.next;
 				if (v13->status & 0x300) {
@@ -740,7 +740,7 @@ namespace hooks {
 		memset(&lurkerSplashList[32 * v15], 0, 0x80u);
 		v16 = *firstScannerSweep;
 		*lastBulletIndex = 0;
-		if (firstScannerSweep) {
+		if (*firstScannerSweep) {
 			do {
 				v17 = v16->link.next;
 				*activeIscriptEntity = v16;
@@ -764,7 +764,7 @@ namespace hooks {
 
 		v0 = *firstInvisibleUnit;
 		v1 = 0;
-		if (firstInvisibleUnit) {
+		if (*firstInvisibleUnit) {
 			while (1) {
 				v2 = v0->burrow_link.next;
 				if (isUnitCloaking(v0)) {
