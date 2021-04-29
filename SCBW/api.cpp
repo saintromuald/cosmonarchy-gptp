@@ -1681,7 +1681,7 @@ namespace scbw {
 
 	void decloakProc(CUnit* unit) {
 		if (isDecloakable(unit)) {
-			scbw::set_generic_timer(unit, ValueId::PermanentCloakTimer, 48 + 1);
+			scbw::set_generic_timer(unit, ValueId::DecloakTimer, 48);
 		}
 	}
 

@@ -156,7 +156,7 @@ namespace ValueId {
 		ObservanceTimerPeriod = 21,
 		ObservanceRend = 21,
 		UpgradeBoost = 22,
-		PermanentCloakTimer = 23,
+		DecloakTimer = 23,
 		LurkerETA = 25,
 		SpineX = 26,
 		SpineY = 27,
