@@ -8,17 +8,35 @@
 #include "globals.h"
 namespace {
 
-	bool unitHpIsInRedZone(CUnit* unit);						//0x004022C0
-	void RestoreAllUnitStats(CUnit* unit);						//0x00492F70 (hooked by hooks\update_status_effects.cpp)
-	void setAllImageGroupFlagsPal11(CSprite* sprite);			//0x00497430
+	bool unitHpIsInRedZone(CUnit* unit);						// 0x004022C0
+	void RestoreAllUnitStats(CUnit* unit);						// 0x00492F70 (hooked by hooks\update_status_effects.cpp)
+	void setAllImageGroupFlagsPal11(CSprite* sprite);			// 0x00497430
 
 	// For AI_Burrower
-	void techUseAllowed(CUnit* a1, int16 a2, int32 a3);			//0046DD80
+	void techUseAllowed(CUnit* a1, int16 a2, int32 a3);			// 0046DD80
 
 	// For irradiate function
 	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);
 	bool setThingyVisibilityFlags(CThingy* thingy);
 	CUnit** getAllUnitsInBounds(Box16* coords);
+
+	// For updateUnits
+	bool isSelectedUnitGroupEnabled();																						// 0049A2C0
+	char refreshLayers3And4();																								// 0048D9A0
+	void refreshPlaceBuildingLocation();																					// 0048E310
+	void cancelTargetOrder();																								// 0048CA10
+	int32 updateDisruptionWebStatus();																						// 004EB2F0
+	CUnit* progressDyingUnitFrame(CUnit* unit);																				// 004EB5E0
+	void revealSightAtLocation(int32 sightRange, uint32 visionFlags, int32 ptX, int32 ptY, bool isAirUnit);					// 004806F0
+	void updateVisibility(CUnit* unit);																						// 004EBE10
+	void progressActiveUnitFrame(CUnit* unit);																				// 004EBC30
+	void refreshUnitVision(CUnit* unit);																					// 004E5F30
+	void checkUnitVisibility(CUnit* unit);																					// 00443390
+	void progressUnitFrame(CUnit* unit);																					// 004ECF70
+	void unitUpdate(CUnit* unit);																							// 004EC420
+	void updateBurrowingCloakingUnits();																					// 00492EB0
+	void updateUnitPower();																									// 00493790
+
 }
 
 const uint32 Func_RemoveOverlays2 = 0x00492370;
@@ -565,7 +583,173 @@ namespace hooks {
 			completed_unit_counts[unit_id].player[unit->playerId] = 0;
 		}
 	}
-} //hooks
+
+	// Hooked to help with the cloak rewrite - Pr0nogo
+	void updateUnits() { // 004ED000
+		int32 v0;
+		CUnit* v1; 
+		char v2;
+		char i;
+		CUnit* v4; 
+		CUnit* v5; 
+		int32 v6;
+		CUnit* v7; 
+		CUnit* v8; 
+		CUnit* v9; 
+		char v10;
+		CUnit* v11;
+		CUnit* v12;
+		CUnit* v13;
+		CUnit* v14;
+		int32 v15;
+		CUnit* v16;
+		CUnit* v17;
+
+		*interceptorFocusedThisFrame = 0;
+		v0 = isSelectedUnitGroupEnabled();
+		if (v0) {
+			if (IS_PLACING_BUILDING) {
+				refreshLayers3And4();
+				refreshPlaceBuildingLocation();
+			}
+			if (isTargeting) {
+				cancelTargetOrder();
+			}
+		}
+		v1 = *firstVisibleUnit;
+		if (!--(*orderTimerReassignCount)) {
+			v2 = 0;
+			if (firstVisibleUnit) {
+				do {
+					v1->orderQueueTimer = v2++;
+					if (v2 == 8)
+						v2 = 0;
+					v1 = v1->link.next;
+				} while (v1);
+				v1 = *firstVisibleUnit;
+			}
+			*orderTimerReassignCount = 150;
+		}
+		if (!--(*secondaryOrderTimerReassignCount)) {
+			for (i = 0; v1; v1 = v1->link.next) {
+				v1->secondaryOrderTimer = i++;
+				if (i == 30)
+					i = 0;
+			}
+			*secondaryOrderTimerReassignCount = 300;
+		}
+		updateDisruptionWebStatus();
+		v4 = *firstDyingUnit;
+		if (firstDyingUnit) {
+			do {
+				v5 = v4->link.next;
+				*activeIscriptEntity = v4;
+				*activeIscriptUnit = v4;
+				progressDyingUnitFrame(v4);
+				if (v4->sprite) {
+					if (visionUpdated) {
+						v6 = v4->playerId;
+						if (playerTable[v6].type == 2) { // PLAYER_OCCUPIED
+							revealSightAtLocation(
+								1,
+								playerVision[v6], // needs fixing
+								v4->sprite->position.x,
+								v4->sprite->position.y,
+								(v4->status >> 2) & 1); // is air unit
+						}
+					}
+					updateVisibility(v4);
+				}
+				v4 = v5;
+			} while (v5);
+		}
+		v7 = *firstVisibleUnit;
+		if (firstVisibleUnit) {
+			do {
+				*activeIscriptEntity = v7;
+				*activeIscriptUnit = v7;
+				progressActiveUnitFrame(v7);
+				v7 = v7->link.next;
+			} while (v7);
+			v7 = *firstVisibleUnit;
+		}
+		if (visionUpdated) {
+			v8 = *firstScannerSweep;
+			if (firstScannerSweep) {
+				do {
+					v9 = v8->link.next;
+					*activeIscriptEntity = v8;
+					*activeIscriptUnit = v8;
+					refreshUnitVision(v8);
+					v8 = v9;
+				} while (v9);
+				v7 = *firstVisibleUnit;
+			}
+		}
+		if (v7) {
+			do {
+				updateVisibility(v7);
+				if (v7->status & 0x300) {
+					v10 = v7->secondaryOrderTimer;
+					v7->isCloaked = 0;
+					if (v10) {
+						v7->secondaryOrderTimer = v10 - 1;
+					}
+					else {
+						checkUnitVisibility(v7);
+						v7->secondaryOrderTimer = 30;
+					}
+				}
+				v7 = v7->link.next;
+			} while (v7);
+			v7 = *firstVisibleUnit;
+		}
+		v11 = v7;
+		if (v7) {
+			do {
+				v12 = v11->link.next;
+				*activeIscriptEntity = v11;
+				*activeIscriptUnit = v11;
+				progressUnitFrame(v11);
+				v11 = v12;
+			} while (v12);
+		}
+		v13 = *firstHiddenUnit;
+		if (firstHiddenUnit) {
+			do {
+				v14 = v13->link.next;
+				if (v13->status & 0x300) {
+					v13->isCloaked = 0;
+				}
+				*activeIscriptEntity = v13;
+				*activeIscriptUnit = v13;
+				unitUpdate(v13);
+				v13 = v14;
+			} while (v14);
+		}
+		updateBurrowingCloakingUnits();
+		updateUnitPower();
+		v15 = (*lurkerSplashListIndex)++ + 1;
+		if (*lurkerSplashListIndex == 32) {
+			v15 = 0;
+			*lurkerSplashListIndex = 0;
+		}
+		memset(&lurkerSplashList[32 * v15], 0, 0x80u);
+		v16 = *firstScannerSweep;
+		*lastBulletIndex = 0;
+		if (firstScannerSweep) {
+			do {
+				v17 = v16->link.next;
+				*activeIscriptEntity = v16;
+				*activeIscriptUnit = v16;
+				progressUnitFrame(v16);
+				v16 = v17;
+			} while (v17);
+		}
+		*activeIscriptEntity = 0;
+		*activeIscriptUnit = 0;
+	}
+}
 
 namespace {
 
@@ -660,6 +844,167 @@ namespace {
 			POPAD
 		}
 		return units_in_bounds;
+	}
+
+	// For updateUnits
+
+	const uint32 Func_isSelectedUnitGroupEnabled = 0x0049A2C0;
+	bool isSelectedUnitGroupEnabled() {
+		static int32 result;
+		__asm {
+			PUSHAD
+			CALL Func_isSelectedUnitGroupEnabled
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	const uint32 Func_refreshLayers3And4 = 0x0048D9A0;
+	char refreshLayers3And4() {
+		static int32 result;
+		__asm {
+			PUSHAD
+			CALL Func_refreshLayers3And4
+			MOV result, EAX
+			POPAD
+		}
+		return (char)result;
+	}
+
+	const uint32 Func_refreshPlaceBuildingLocation = 0x0048E310;
+	void refreshPlaceBuildingLocation() {
+		__asm {
+			PUSHAD
+			CALL Func_refreshPlaceBuildingLocation
+			POPAD
+		}
+	}
+
+	const uint32 Func_cancelTargetOrder = 0x0048CA10;
+	void cancelTargetOrder() {
+		__asm {
+			PUSHAD
+			CALL Func_cancelTargetOrder
+			POPAD
+		}
+	}
+
+	const uint32 Func_UpdateDisruptionWebStatus = 0x004EB2F0;
+	int32 updateDisruptionWebStatus() {
+		int32 result;
+		__asm {
+			PUSHAD
+			CALL Func_UpdateDisruptionWebStatus
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const uint32 Func_progressDyingUnitFrame = 0x004EB5E0;
+	CUnit* progressDyingUnitFrame(CUnit* unit) {
+		CUnit* result;
+		__asm {
+			PUSHAD
+			MOV EBX, unit
+			CALL Func_progressDyingUnitFrame
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const uint32 Func_revealSightAtLocation = 0x004806F0;
+	void revealSightAtLocation(int32 sightRange, uint32 visionFlags, int32 ptX, int32 ptY, bool isAirUnit) {
+		__asm {
+			PUSHAD
+			PUSH isAirUnit
+			PUSH ptY
+			PUSH ptX
+			MOV ECX, visionFlags
+			MOV EAX, sightRange
+			CALL Func_revealSightAtLocation
+			POPAD
+		}
+	}
+
+	const uint32 Func_updateVisibility = 0x004EBE10;
+	void updateVisibility(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL Func_updateVisibility
+			POPAD
+		}
+	}
+
+	const uint32 Func_progressActiveUnitFrame = 0x004EBC30;
+	void progressActiveUnitFrame(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			CALL Func_progressActiveUnitFrame
+			POPAD
+		}
+	}
+
+	const uint32 Func_refreshUnitVision = 0x004E5F30;
+	void refreshUnitVision(CUnit* unit) {
+		__asm {
+			PUSHAD
+			PUSH unit
+			CALL Func_refreshUnitVision
+			POPAD
+		}
+	}
+
+	const uint32 Func_checkUnitVisibility = 0x00443390;
+	void checkUnitVisibility(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_checkUnitVisibility
+			POPAD
+		}
+	}
+
+	const uint32 Func_progressUnitFrame = 0x004ECF70;
+	void progressUnitFrame(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			CALL Func_progressUnitFrame
+			POPAD
+		}
+	}
+
+	const uint32 Func_unitUpdate = 0x004EC420;
+	void unitUpdate(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			CALL Func_unitUpdate
+			POPAD
+		}
+	}
+
+	const uint32 Func_updateBurrowingCloakingUnits = 0x00492EB0;
+	void updateBurrowingCloakingUnits() {
+		__asm {
+			PUSHAD
+			CALL Func_updateBurrowingCloakingUnits
+			POPAD
+		}
+	}
+
+	const uint32 Func_updateUnitPower = 0x00493790;
+	void updateUnitPower() {
+		__asm {
+			PUSHAD
+			CALL Func_updateUnitPower
+			POPAD
+		}
 	}
 }
 

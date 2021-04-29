@@ -28,7 +28,7 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) incrementUnitScoresEx_Wrapper() { // 0x00488D50
+	void __declspec(naked) incrementUnitScoresEx_Wrapper() { // 00488D50
 		static int count;
 		static CUnit* unit;
 		static int updateMorphMergeUnitScore;
@@ -51,12 +51,24 @@ namespace {
 			RETN 4
 		}
 	}
+	
+	void __declspec(naked) updateUnits_Wrapper() { // 004ED000
+		__asm {
+			PUSHAD
+		}
+		hooks::updateUnits();
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks {
 	void injectUpdateUnitState() {
-		jmpPatch(updateUnitEnergy, 0x004EB4B0, 0);
-		jmpPatch(updateUnitStateWrapper, 0x004EC290, 1);
+		jmpPatch(updateUnitEnergy,				0x004EB4B0, 0);
+		jmpPatch(updateUnitStateWrapper,		0x004EC290, 1);
 		jmpPatch(incrementUnitScoresEx_Wrapper, 0x00488D50, 1);
+		jmpPatch(updateUnits_Wrapper,			0x004ED000, 5);
 	}
 }

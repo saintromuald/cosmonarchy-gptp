@@ -364,6 +364,18 @@ SCBW_DATA(int8*,	statusScreenRedraw,		0x0068C1F8);
 SCBW_DATA(int32*,	ctrlUnderMouse,			0x0068C1E8);
 SCBW_DATA(int32*,	ctrlUnderMouseValue,	0x0068C1EC); // void* in Neiv's list
 
+// For updateUnits
+SCBW_DATA(int32*,	interceptorFocusedThisFrame,		0x006957D0);
+SCBW_DATA(int8*,	isTargeting,						0x00641694);
+SCBW_DATA(int32*,	orderTimerReassignCount,			0x0059CCA4);
+SCBW_DATA(int32*,	secondaryOrderTimerReassignCount,	0x006283E8);
+SCBW_DATA(CUnit**,	activeIscriptEntity,				0x006D11F4);
+SCBW_DATA(CUnit**,	activeIscriptUnit,					0x006D11FC);
+SCBW_DATA(CUnit**,	firstDyingUnit,						0x0062842C);
+SCBW_DATA(CUnit**,	lurkerSplashList,					0x0064DEC8); // sizeof 400
+SCBW_DATA(int32*,	lurkerSplashListIndex,				0x0064EEC8);
+SCBW_DATA(int32*,	lastBulletIndex,					0x0064DEA8);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data

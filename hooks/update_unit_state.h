@@ -3,9 +3,10 @@
 
 namespace hooks {
 
-void updateUnitEnergy(CUnit* unit);		//0x004EB4B0
-void updateUnitStateHook(CUnit* unit);	//0x004EC290
-void incrementUnitScoresEx(int count, CUnit* unit, int updateMorphMergeUnitScore); // 0x00488D50
+void updateUnitEnergy(CUnit* unit);		// 004EB4B0
+void updateUnitStateHook(CUnit* unit);	// 004EC290
+void incrementUnitScoresEx(int count, CUnit* unit, int updateMorphMergeUnitScore); // 00488D50
+void updateUnits(); // 004ED000
 
 void injectUpdateUnitState();
 
