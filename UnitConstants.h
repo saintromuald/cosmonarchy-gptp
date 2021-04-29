@@ -41,7 +41,7 @@ constexpr int ApostleBloodTitheHealing = 5 * 256;
 constexpr int ApostleLastBreathEnergyGain = 5 * 256;
 
 // Azazel
-constexpr int AzazelDefensiveMatrixHeal = 53; // 256 * 5 / 24 = 53.333..
+constexpr int AzazelDefensiveMatrixHeal = 53; // 5 HP per second | 256 * 5 / 24
 
 // Treasury
 constexpr int TreasuryIncrease = 4;
@@ -66,8 +66,10 @@ constexpr int AIStarsovereignAbilTimer = 612;
 // Quazilisk
 constexpr double QuazaliskPassiveFactor = 0.1;
 
-// Larval Colony
-constexpr double LarvalColonyMultiplier = 0.75;
+// Vithrilisk
+constexpr int VithriliskCorrosiveTouchTimer = 10 * 24 + 1;
+constexpr double VithriliskCorrosiveTouchCooldownIncrease = 0.02;
+constexpr double VithriliskCorrosiveTouchArmorReduction = 0.2 * 256;
 
 // Zoryusthaleth
 constexpr int ZoryusthalethReconstitutionHealing = 5 * 256;
@@ -75,7 +77,8 @@ constexpr int ZoryusthalethReconstitutionHealing = 5 * 256;
 // Matraleth
 constexpr int DefaultArmParasiteTimer = 2 * 24 + 1;
 
-// Vithrilisk
-constexpr int VithriliskCorrosiveTouchTimer = 10 * 24 + 1;
-constexpr double VithriliskCorrosiveTouchCooldownIncrease = 0.02;
-constexpr double VithriliskCorrosiveTouchArmorReduction = 0.2 * 256;
+// Akistrokor
+constexpr int AkistrokorEnthrallingAssaultHeal = 213; // 20 HP per second | 256 * 20 / 24
+
+// Larval Colony
+constexpr double LarvalColonyMultiplier = 0.75;
