@@ -144,11 +144,11 @@ namespace hooks {
 
 //		jmpPatch(genericRightClickUnitProc2_Wrapper,	0x00455E00, 1);
 //		jmpPatch(genericRightClickUnitProc2_Wrapper,	0x004C20C0, 0);
-		jmpPatch(unitCanSeeCloakedTarget_Wrapper,		0x00401D60, 4);
+//		jmpPatch(unitCanSeeCloakedTarget_Wrapper,		0x00401D60, 4);
 //		jmpPatch(isTargetVisible_Wrapper,				0x004E5E30, 4);
 //		jmpPatch(isUnitVisible_Wrapper,					0x004E5DB0, 1);
 		jmpPatch(checkUnitVisibility_Wrapper,			0x00443390, 3);
-		jmpPatch(isUnitCloaking_Wrapper,				0x004916E0, 0);
+//		jmpPatch(isUnitCloaking_Wrapper,				0x004916E0, 0);
 	}
 	void injectTargetRelatedHooks() {
 		injectTargetHooks();

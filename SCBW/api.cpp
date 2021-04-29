@@ -1681,13 +1681,14 @@ namespace scbw {
 
 	void decloakProc(CUnit* unit) {
 		if (isDecloakable(unit)) {
-			scbw::set_generic_timer(unit, ValueId::DecloakTimer, 48);
+			scbw::set_generic_timer(unit, ValueId::DecloakTimer, 48 + 1);
+			unit->visibilityStatus = 0xff;
+			hooks::updateUnitVisibility(unit);
 		}
 	}
 
 	bool isDecloakable(CUnit* unit) {
-		return (units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak
-			|| unit->status & UnitStatus::CloakingForFree)
+		return (units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak || unit->status & UnitStatus::CloakingForFree)
 			&& !(unit->status & UnitStatus::Burrowed);
 	}
 

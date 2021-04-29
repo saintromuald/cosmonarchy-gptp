@@ -918,31 +918,8 @@ namespace hooks {
 		}
 
 		// Permanently Cloaked units recloak after 2 seconds of being out of combat
-		if (scbw::isDecloakable(unit)) {
-			auto timer = scbw::get_generic_timer(unit, ValueId::DecloakTimer);
-			/*if (timer > 1) {
-				unit->status &= ~UnitStatus::Cloaked;
-				unit->visibilityStatus = 0xFF;
-				//updateUnitVisibility(unit);
-				makeSpriteVisible(unit->sprite);
-				CUnit* subunit = unit->subunit;
-				if (subunit) {
-					makeSpriteVisible(subunit->sprite);
-				}
-			} else if (timer == 1) {
-				unit->status |= UnitStatus::Cloaked;
-				for (int i = 0; i < 8; i++) {
-					if (i != unit->playerId && !scbw::isVisionAlliedT(unit-.>playerId, i)) {
-						unit->visibilityStatus &= ~(1 << i);
-					} else {
-						unit->visibilityStatus |= (1 << i);
-					}
-				}
-				checkUnitVisibility(unit);
-			}*/
-			if (timer == 1) {
-				unit->status |= 0x300;
-			}
+		if (scbw::isDecloakable(unit) && scbw::get_generic_timer(unit, ValueId::DecloakTimer) == 1) {
+			checkUnitVisibility(unit);
 		}
 
 		// Remove all Nemean Reactors stacks after not attacking for 5 seconds

@@ -676,7 +676,7 @@ namespace hooks {
 			} while (v7);
 			v7 = *firstVisibleUnit;
 		}
-		if (visionUpdated) {
+		if (*visionUpdated) {
 			v8 = *firstScannerSweep;
 			if (*firstScannerSweep) {
 				do {
@@ -692,7 +692,7 @@ namespace hooks {
 		if (v7) {
 			do {
 				updateVisibility(v7);
-				if (v7->status & 0x300) {
+				if (v7->status & 0x300 && scbw::get_generic_timer(v7, ValueId::DecloakTimer) == 0) {
 					v10 = v7->secondaryOrderTimer;
 					v7->isCloaked = 0;
 					if (v10) {
