@@ -449,9 +449,7 @@ namespace hooks {
 
 	// Hooked to help with cloak rewrite - Pr0nogo
 	uint32 isTargetVisible(CUnit* target, CUnit* unit) { // 004E5E30
-		int32 playerUnit; // ebx
-		uint32 result; // eax
-
+		int32 playerUnit;
 		playerUnit = 1 << unit->playerId;
 		if (!target) {
 			return playerUnit & ~(activeTileArray[unit->orderTarget.pt.x / 32 + mapTileSize->width * (unit->orderTarget.pt.y / 32)]->visibilityFlags);
@@ -459,6 +457,8 @@ namespace hooks {
 
 		const bool isCloaked = target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
 		const bool isDecloaked = scbw::get_generic_timer(target, ValueId::DecloakTimer) > 1;
+
+		uint32 result;
 		if (isCloaked && !isDecloaked) {
 			result = (uint8)(playerUnit & target->sprite->visibilityFlags);
 		} else {
