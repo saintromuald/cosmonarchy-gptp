@@ -1,5 +1,6 @@
 #include "cloak_nearby_units.h"
 #include <SCBW/api.h>
+#include <globals.h>
 
 //Helper functions
 namespace {
@@ -57,7 +58,9 @@ namespace hooks {
 				&& scbw::isAlliedTo(current_unit->playerId, cloaker->playerId)							// (or allied to Cloaker owner)
 				&& cloaker->isTargetWithinMinRange(current_unit, cloakRadius)							// Check again if unit in range of cloaking
 				) {
-				secondaryOrder_Cloak(current_unit);
+				if (!scbw::get_generic_timer(current_unit, ValueId::DecloakTimer)) {
+					secondaryOrder_Cloak(current_unit);
+				}
 				if (!(current_unit->status & UnitStatus::CloakingForFree)) {
 					current_unit->status |= UnitStatus::CloakingForFree;
 					needsRefresh = true;
