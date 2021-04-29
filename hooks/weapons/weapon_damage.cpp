@@ -339,13 +339,18 @@ namespace hooks {
 			data.finalDamage = 128;
 		}
 
+		if (!data.dontProcPhaseLink && scbw::hasClarionLinks(data.target)) {
+			scbw::spreadClarionDamage(data);
+			return;
+		}
+
 		// Never bleed damage from phase link to hp
 		if (data.dontProcPhaseLink) {
 			data.finalDamage = 0;
 		}
 
 		weaponDamage_behaviors(data);
-		if (data.attacker != nullptr && !data.dontProcPhaseLink) { // lifesteal 
+		if (data.attacker != nullptr) { // lifesteal 
 			weaponDamage_lifesteal(data);
 		}
 		if (data.finalDamage >= data.target->hitPoints) { // <- keep this as hitPoints, because the damage is already calculated to include armor, shields and damage factor calculations
@@ -360,13 +365,9 @@ namespace hooks {
 
 		// Reduce shields
 		if (data.shieldReduceAmount != 0 && canDamage) {
-			if (scbw::hasClarionLinks(data.target) && !data.dontProcPhaseLink) {
-				scbw::spreadClarionDamage(data);
-			} else {
-				data.target->shields -= data.shieldReduceAmount;
-				if (data.damageType != DamageType::Independent && data.target->shields != 0) {
-					shield_overlay = true;
-				}
+			data.target->shields -= data.shieldReduceAmount;
+			if (data.damageType != DamageType::Independent && data.target->shields != 0) {
+				shield_overlay = true;
 			}
 		}
 

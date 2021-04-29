@@ -1267,10 +1267,11 @@ namespace scbw {
 	void spreadClarionDamage(hooks::WeaponDamageData& data) {
 		CUnit* unit = data.target;
 		auto& vec = getClarionLinks(unit);
+		int32 damage = data.finalDamage + data.shieldReduceAmount;
 		if (vec.size() == 0) {
-			phaseLinkDamage(unit, data.shieldReduceAmount, data);
+			phaseLinkDamage(unit, damage, data);
 		} else {
-			int divided = data.shieldReduceAmount / vec.size();
+			int divided = damage / vec.size();
 			for (CUnit* vecUnit : vec) {
 				phaseLinkDamage(vecUnit, divided, data);
 			}
