@@ -37,6 +37,10 @@ namespace {
 	void updateBurrowingCloakingUnits();																					// 00492EB0
 	void updateUnitPower();																									// 00493790
 
+	// For updateBurrowingCloakingUnits
+	int32 isUnitCloaking(CUnit* unit);																						// 004916E0
+	void doCloak(CUnit* unit, int32 soundId);																				// 0049B440
+	void playSoundFromDirect(CUnit* unit, int32 soundId);																	// 0049B5B0
 }
 
 const uint32 Func_RemoveOverlays2 = 0x00492370;
@@ -749,6 +753,55 @@ namespace hooks {
 		*activeIscriptEntity = 0;
 		*activeIscriptUnit = 0;
 	}
+
+	// Hooked to help with the cloak rewrite - Pr0nogo
+	void updateBurrowingCloakingUnits() { // 00492EB0
+		CUnit* v0;
+		int32 v1;
+		CUnit* v2;
+		int32 v3;
+		int32 v4;
+		int32 v5;
+
+		v0 = *firstInvisibleUnit;
+		v1 = 0;
+		if (firstInvisibleUnit) {
+			while (1) {
+				v2 = v0->burrow_link.next;
+				if (isUnitCloaking(v0)) {
+					doCloak(v0, SoundId::Terran_PHOENIX_TPhClo01_WAV);
+				}
+				else {
+					v3 = v0->status;
+					if (v3 & UnitStatus::Burrowed || v0->secondaryOrderId != OrderId::Cloak || v0->isCloaked != 1 || !(v3 & 0x800)) {
+						v4 = 0;
+					}
+					else {
+						v0->status = v3 & 0xFFFFF7FF;
+						v4 = 1;
+					}
+					v1 |= v4;
+					v5 = v0->status;
+					if (v5 & 0x100)
+						goto LABEL_13;
+					playSoundFromDirect(v0, 273);
+				}
+				v1 = 1;
+			LABEL_13:
+				v0 = v2;
+				if (!v2) {
+					if (v1) {
+						*forceButtonRefresh = 1;
+						portraitRedraw[0] = 1;
+						*statusScreenRedraw = 1;
+						*ctrlUnderMouse = 0;
+						*ctrlUnderMouseValue = 0;
+					}
+					return;
+				}
+			}
+		}
+	}
 }
 
 namespace {
@@ -892,7 +945,7 @@ namespace {
 
 	const uint32 Func_UpdateDisruptionWebStatus = 0x004EB2F0;
 	int32 updateDisruptionWebStatus() {
-		int32 result;
+		static int32 result;
 		__asm {
 			PUSHAD
 			CALL Func_UpdateDisruptionWebStatus
@@ -904,7 +957,7 @@ namespace {
 
 	const uint32 Func_progressDyingUnitFrame = 0x004EB5E0;
 	CUnit* progressDyingUnitFrame(CUnit* unit) {
-		CUnit* result;
+		static CUnit* result;
 		__asm {
 			PUSHAD
 			MOV EBX, unit
@@ -1003,6 +1056,43 @@ namespace {
 		__asm {
 			PUSHAD
 			CALL Func_updateUnitPower
+			POPAD
+		}
+	}
+
+	// For updateBurrowingCloakingUnits
+
+	const uint32 Func_isUnitCloaking = 0x004916E0;
+	int32 isUnitCloaking(CUnit* unit) {
+		static int32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			CALL Func_isUnitCloaking
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const uint32 Func_doCloak = 0x0049B440;
+	void doCloak(CUnit* unit, int32 soundId) {
+		__asm {
+			PUSHAD
+			MOV EBX, soundId
+			MOV EAX, unit
+			CALL Func_doCloak
+			POPAD
+		}
+	}
+
+	const uint32 Func_playSoundFromDirect = 0x0049B5B0;
+	void playSoundFromDirect(CUnit* unit, int32 soundId) {
+		__asm {
+			PUSHAD
+			MOV ECX, soundId
+			MOV EAX, unit
+			CALL Func_playSoundFromDirect
 			POPAD
 		}
 	}

@@ -62,13 +62,25 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) updateBurrowingCloakingUnits_Wrapper() { // 00492EB0
+		__asm {
+			PUSHAD
+		}
+		hooks::updateBurrowingCloakingUnits();
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks {
 	void injectUpdateUnitState() {
-		jmpPatch(updateUnitEnergy,				0x004EB4B0, 0);
-		jmpPatch(updateUnitStateWrapper,		0x004EC290, 1);
-		jmpPatch(incrementUnitScoresEx_Wrapper, 0x00488D50, 1);
-		jmpPatch(updateUnits_Wrapper,			0x004ED000, 5);
+		jmpPatch(updateUnitEnergy,						0x004EB4B0, 0);
+		jmpPatch(updateUnitStateWrapper,				0x004EC290, 1);
+		jmpPatch(incrementUnitScoresEx_Wrapper,			0x00488D50, 1);
+		jmpPatch(updateUnits_Wrapper,					0x004ED000, 5);
+		jmpPatch(updateBurrowingCloakingUnits_Wrapper,	0x00492EB0, 3);
 	}
 }
