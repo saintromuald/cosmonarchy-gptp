@@ -534,6 +534,46 @@ namespace hooks {
 			}
 		}
 	}
+
+	// Hooked to complete the cloak rewrite - Pr0nogo
+	// was __thiscall, does that matter?
+	int32 isUnitCloaking(CUnit* unit) { // 004916E0
+		if (unit->isCloaked) {
+			return 0;
+		}
+
+		int32 redraw = 0;
+		int32 result = 1;
+		if (firstBurrowedUnit == unit) {
+			*firstBurrowedUnit = unit->burrow_link.next; // not sure why VS thinks this is const
+			redraw = 1;
+		}
+
+		CUnit* previousBurrowedUnit = unit->burrow_link.prev;
+		if (previousBurrowedUnit) {
+			previousBurrowedUnit->burrow_link.next = unit->burrow_link.next;
+			redraw = 1;
+		}
+
+		CUnit* nextBurrowedUnit = unit->burrow_link.next;
+		if (nextBurrowedUnit) {
+			nextBurrowedUnit->burrow_link.prev = unit->burrow_link.prev;
+			redraw = 1;
+		}
+
+		unit->status &= 0xFFFFF7FF;
+		unit->burrow_link.prev = 0;
+		unit->burrow_link.next = 0;
+
+		if (redraw) {
+			*forceButtonRefresh = 1;
+			*portraitRedraw[0] = 1; // seems unrelated to it being an array, but idk
+			*statusScreenRedraw = 1;
+			*ctrlUnderMouse = 0;
+			*ctrlUnderMouseValue = 0; // void* in Neiv's list
+		}
+		return result;
+	}
 }
 
 namespace {

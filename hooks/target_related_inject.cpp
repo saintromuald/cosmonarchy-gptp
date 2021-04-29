@@ -118,6 +118,21 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) isUnitCloaking_Wrapper() { // 004916E0
+		static CUnit* unit;
+		static int32 result;
+		__asm {
+			MOV unit, ECX
+			PUSHAD
+		}
+		hooks::isUnitCloaking(unit);
+		__asm {
+			POPAD
+			MOV result, EAX
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -131,6 +146,7 @@ namespace hooks {
 //		jmpPatch(isTargetVisible_Wrapper, 0x004E5E30, 4);
 //		jmpPatch(isUnitVisible_Wrapper, 0x004E5DB0, 1);
 		jmpPatch(checkUnitVisibility_Wrapper, 0x00443390, 3);
+		jmpPatch(isUnitCloaking_Wrapper, 0x004916E0, 1);
 	}
 	void injectTargetRelatedHooks() {
 		injectTargetHooks();

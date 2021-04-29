@@ -283,7 +283,6 @@ SCBW_DATA(char*, imgDrawPaletteIndex, 0x0050CEC1); // count of 256
 SCBW_DATA(uint8*, off_50CE81, 0x0050CE81);
 SCBW_DATA(uint8*, off_50CE82, 0x0050CE82);
 
-
 // For drawBuildingInfo
 SCBW_DATA(int32*, selectionGroupHP, 0x006CA94C);
 SCBW_DATA(int16*, userInterfaceEnergy, 0x006CAC0C);
@@ -302,7 +301,6 @@ SCBW_DATA(unk_62*, struct_5140E8, 0x005140E8);
 // For getUnitBulletDamage
 SCBW_DATA(char*, upgradesLevelSC, 0x0058D2B0);
 SCBW_DATA(char*, upgradesLevelBW, 0x0058F2FE);
-
 
 // For findNextBounceTargetProc
 SCBW_DATA(CUnit**, bulletBounceMissileSource, 0x0064EECC);
@@ -357,6 +355,14 @@ SCBW_DATA(CampaignMission*, campaignMissions, 0x004FFF60);
 
 // For statsWeaponLevel / statsArmorLevel
 SCBW_DATA(int16*, unkUpgradeCount, 0x006CA940);
+
+// For isUnitCloaked
+SCBW_DATA(CUnit*,	firstBurrowedUnit,		0x0063FF5C);
+SCBW_DATA(int32*,	forceButtonRefresh,		0x0068C1B0);
+SCBW_DATA(int8*,	portraitRedraw,			0x0068AC74); // sizeof 4
+SCBW_DATA(int8*,	statusScreenRedraw,		0x0068C1F8);
+SCBW_DATA(int32*,	ctrlUnderMouse,			0x0068C1E8);
+SCBW_DATA(int32*,	ctrlUnderMouseValue,	0x0068C1EC); // void* in Neiv's list
 
 //////////////////////////////////////////////////////////////// @}
 
