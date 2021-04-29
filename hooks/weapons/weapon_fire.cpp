@@ -268,24 +268,24 @@ namespace hooks {
 								|| monoceros.find(target) != monoceros.end()
 								|| scbw::isAlliedTo(target->playerId, unit->playerId)
 								|| !unit->canAttackTarget(target)
-								|| monoceros.count(target) >= 5) {
+								|| !n(target)) {
 								return false;
 							}
 							return true;
-						}
-						);
-						if (newTarget != nullptr
-							&& n(newTarget)) {
-							monoceros.insert(newTarget);
-							unit->orderTarget.unit = newTarget;
-							auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
-								newTarget->getX(), newTarget->getY());
-							scbw::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
-							if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
-								scbw::doDeconstructionDamage(unit, weaponId, false);
-							}
-						} else {
+						});
+						if (monoceros.size() >= 5) {
 							break;
+						}
+						if (newTarget == nullptr) {
+							break;
+						}
+						monoceros.insert(newTarget);
+						unit->orderTarget.unit = newTarget;
+						auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
+							newTarget->getX(), newTarget->getY());
+						scbw::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
+						if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
+							scbw::doDeconstructionDamage(unit, weaponId, false);
 						}
 					}
 					unit->orderTarget.unit = old;
