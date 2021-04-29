@@ -34,7 +34,6 @@ namespace {
 	void checkUnitVisibility(CUnit* unit);																					// 00443390
 	void progressUnitFrame(CUnit* unit);																					// 004ECF70
 	void unitUpdate(CUnit* unit);																							// 004EC420
-	void updateBurrowingCloakingUnits();																					// 00492EB0
 	void updateUnitPower();																									// 00493790
 
 	// For updateBurrowingCloakingUnits
@@ -1038,15 +1037,6 @@ namespace {
 			PUSHAD
 			MOV ECX, unit
 			CALL Func_unitUpdate
-			POPAD
-		}
-	}
-
-	const uint32 Func_updateBurrowingCloakingUnits = 0x00492EB0;
-	void updateBurrowingCloakingUnits() {
-		__asm {
-			PUSHAD
-			CALL Func_updateBurrowingCloakingUnits
 			POPAD
 		}
 	}
