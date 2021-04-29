@@ -933,6 +933,7 @@ namespace hooks {
 		if (scbw::isDecloakable(unit) && scbw::get_generic_timer(unit, ValueId::DecloakTimer) == 1) {
 			checkUnitVisibility(unit);
 			AnimCloak(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
+			scbw::set_generic_timer(unit, ValueId::DecloakTimer, 0);
 		}
 
 		// Remove all Nemean Reactors stacks after not attacking for 5 seconds
