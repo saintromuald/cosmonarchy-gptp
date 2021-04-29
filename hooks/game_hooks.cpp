@@ -11,6 +11,7 @@
 #include "hooks/hydraFinder.h"
 #include "globals.h"
 #include "target_related.h"
+
 const int hyperTrigger = 0x006509A0;
 const uint32 Func_Sub4A01F0 = 0x004A01F0;
 void function_004A01F0g(CUnit* unit) {
@@ -18,6 +19,17 @@ void function_004A01F0g(CUnit* unit) {
 		PUSHAD
 		MOV EAX, unit
 		CALL Func_Sub4A01F0
+		POPAD
+	}
+}
+
+const uint32 Func_49B5B0 = 0x0049B5B0;
+void Cloak(CUnit* unit, int sound) {
+	__asm {
+		PUSHAD
+		MOV EAX, unit
+		MOV ECX, sound
+		CALL Func_49B5B0
 		POPAD
 	}
 }
@@ -920,6 +932,7 @@ namespace hooks {
 		// Permanently Cloaked units recloak after 2 seconds of being out of combat
 		if (scbw::isDecloakable(unit) && scbw::get_generic_timer(unit, ValueId::DecloakTimer) == 1) {
 			checkUnitVisibility(unit);
+			Cloak(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
 		}
 
 		// Remove all Nemean Reactors stacks after not attacking for 5 seconds

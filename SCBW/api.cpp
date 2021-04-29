@@ -1679,11 +1679,23 @@ namespace scbw {
 		unit->sprite->createOverlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
 	}
 
+	const uint32 Func_49B440 = 0x0049B440;
+	void AnimDecloak(CUnit* unit, int sound) {
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			MOV EBX, sound
+			CALL Func_49B440
+			POPAD
+		}
+	}
+
 	void decloakProc(CUnit* unit) {
 		if (isDecloakable(unit)) {
 			scbw::set_generic_timer(unit, ValueId::DecloakTimer, 48 + 1);
 			unit->visibilityStatus = 0xff;
 			hooks::updateUnitVisibility(unit);
+			AnimDecloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 		}
 	}
 

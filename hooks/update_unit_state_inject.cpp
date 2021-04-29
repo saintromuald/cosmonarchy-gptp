@@ -97,6 +97,6 @@ namespace hooks {
 		jmpPatch(incrementUnitScoresEx_Wrapper,			0x00488D50, 1);
 		jmpPatch(updateUnits_Wrapper,					0x004ED000, 5);
 		//jmpPatch(updateBurrowingCloakingUnits_Wrapper,	0x00492EB0, 3);
-		jmpPatch(doCloak_Wrapper,						0x0049B440, 5);
+		//jmpPatch(doCloak_Wrapper,						0x0049B440, 5);
 	}
 }
