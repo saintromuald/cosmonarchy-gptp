@@ -790,7 +790,7 @@ namespace hooks {
 					}
 					unit->addUnitEnergy(5 * 256);
 					if (show) {
-						imgul(unit->sprite, 425, 0, 0, 0);
+						imgul(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 					}
 				});
 			}
@@ -818,7 +818,7 @@ namespace hooks {
 					return; // Ally Check
 				}
 				if (units_dat::ShieldsEnabled[unit->id] && unit->shields < units_dat::MaxShieldPoints[unit->id] * 256) { // Shield Check for default behavior
-					imgul(unit->sprite, 425, 0, 0, 0);
+					imgul(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 				} else { // Return if both checks failed
 					return;
 				}
