@@ -56,7 +56,7 @@ namespace {
 	void makeSpriteVisible(CSprite* sprite);													// 
 	int32 updateBuildingLandUnitSelection(uint32 unused, CUnit* selection);						// 
 	char removeSelectionCircle(CSprite* sprite);												// 
-	CImage* makeUndetected(CSprite* sprite);													// 
+	CImage* makeSpriteInvisible(CSprite* sprite);													// 
 
 }
 
@@ -488,76 +488,75 @@ namespace hooks {
 		return result;
 	}
 
-	// Hooked to help with cloak rewrite - Pr0nogo
-	void checkUnitVisibility(CUnit* unit) { // 00443390
-		CUnit* subunit; // esi
-		uint32 detectingPlayers; // eax
-		uint32 visStatus; // ecx
-		CUnit* unitVar; // esi
-		uint32 v5; // eax
-		uint32 v6; // edi
-		CUnit* v7; // esi
-
-		unitVar = unit;
-		detectingPlayers = getDetectingPlayers(unit);
-		visStatus = unitVar->visibilityStatus;
-		if (visStatus != detectingPlayers) {
-			if (visStatus == 0x80000000)
-			{
-				visStatus = ~(uint8)detectingPlayers;
-				unitVar->visibilityStatus = visStatus;
+	void updateUnitVisibility(CUnit* unit) {
+		if (*playerVisions & unit->visibilityStatus) {
+			makeSpriteVisible(unit->sprite);
+			CUnit* subunit = unit->subunit;
+			if (subunit) {
+				makeSpriteVisible(subunit->sprite);
 			}
-			v6 = detectingPlayers ^ unitVar->visibilityStatus;
-			unitVar->visibilityStatus = detectingPlayers;
-			v5 = v6 & ~detectingPlayers;
-			if (v5) {
-				iteratePlayerUnitsSomething(v5, unitVar);
+		} else {
+			if (unit->sprite->flags & CSprite_Flags::Selected) {
+				updateBuildingLandUnitSelection(unit->visibilityStatus, unit);
 			}
-			if (*playerVisions & v6) {
-				if (*playerVisions & unitVar->visibilityStatus) {
-					makeSpriteVisible(unitVar->sprite);
-					v7 = unitVar->subunit;
-					if (v7) {
-						makeSpriteVisible(v7->sprite);
-					}
-				} else {
-					if (unitVar->sprite->flags & 8) {
-						updateBuildingLandUnitSelection(visStatus, unitVar);
-					}
-					removeSelectionCircle(unitVar->sprite);
-					makeUndetected(unitVar->sprite);
-					subunit = unitVar->subunit;
-					if (subunit) {
-						makeUndetected(subunit->sprite);
-					}
-				}
+			removeSelectionCircle(unit->sprite);
+			makeSpriteInvisible(unit->sprite);
+			CUnit* subunit = unit->subunit;
+			if (subunit) {
+				makeSpriteInvisible(subunit->sprite);
 			}
 		}
+	}
+
+	// Hooked to help with cloak rewrite - Pr0nogo
+	void checkUnitVisibility(CUnit* unit) { // 00443390
+		uint32 detectingPlayers = getDetectingPlayers(unit);
+		if (unit->visibilityStatus != detectingPlayers) {
+			if (unit->visibilityStatus == 0x80000000)
+			{
+				unit->visibilityStatus = ~(uint8)detectingPlayers;
+			}
+			uint32 v6 = unit->visibilityStatus ^ detectingPlayers;
+			unit->visibilityStatus = detectingPlayers;
+
+			uint32 v5 = v6 & ~detectingPlayers;
+			if (v5) {
+				iteratePlayerUnitsSomething(v5, unit);
+			}
+
+			if (*playerVisions & v6) {
+				updateUnitVisibility(unit);
+			}
+		}		
 	}
 
 	// Hooked to complete the cloak rewrite - Pr0nogo
 	// was __thiscall, does that matter?
 	int32 isUnitCloaking(CUnit* unit) { // 004916E0
+		if (scbw::isDecloakable(unit)
+			&& scbw::get_generic_timer(unit, ValueId::PermanentCloakTimer)) {
+			return 0;
+		}
+
 		if (unit->isCloaked) {
 			return 0;
 		}
 
 		int32 redraw = 0;
-		int32 result = 1;
-		if (firstBurrowedUnit == unit) {
-			*firstBurrowedUnit = unit->burrow_link.next; // not sure why VS thinks this is const
+		if (*firstInvisibleUnit == unit) {
+			*firstInvisibleUnit = unit->burrow_link.next;
 			redraw = 1;
 		}
 
-		CUnit* previousBurrowedUnit = unit->burrow_link.prev;
-		if (previousBurrowedUnit) {
-			previousBurrowedUnit->burrow_link.next = unit->burrow_link.next;
+		CUnit* previousInvisibleUnit = unit->burrow_link.prev;
+		if (previousInvisibleUnit) {
+			previousInvisibleUnit->burrow_link.next = unit->burrow_link.next;
 			redraw = 1;
 		}
 
-		CUnit* nextBurrowedUnit = unit->burrow_link.next;
-		if (nextBurrowedUnit) {
-			nextBurrowedUnit->burrow_link.prev = unit->burrow_link.prev;
+		CUnit* nextInvisibleUnit = unit->burrow_link.next;
+		if (nextInvisibleUnit) {
+			nextInvisibleUnit->burrow_link.prev = unit->burrow_link.prev;
 			redraw = 1;
 		}
 
@@ -567,12 +566,12 @@ namespace hooks {
 
 		if (redraw) {
 			*forceButtonRefresh = 1;
-			*portraitRedraw[0] = 1; // seems unrelated to it being an array, but idk
+			portraitRedraw[0] = (int8)1; // seems unrelated to it being an array, but idk
 			*statusScreenRedraw = 1;
 			*ctrlUnderMouse = 0;
 			*ctrlUnderMouseValue = 0; // void* in Neiv's list
 		}
-		return result;
+		return 1;
 	}
 }
 
@@ -1096,7 +1095,7 @@ namespace {
 	}
 
 	const uint32 Func_makeUndetected = 0x00498A10;
-	CImage* makeUndetected(CSprite* sprite) {
+	CImage* makeSpriteInvisible(CSprite* sprite) {
 		static CImage* result;
 		__asm {
 			PUSHAD

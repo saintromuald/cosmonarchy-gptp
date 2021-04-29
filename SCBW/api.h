@@ -156,9 +156,6 @@ namespace scbw {
 		return 0 != playerVision[playerA].flags[playerB];
 	}
 
-	// will decloak on attack
-	bool isDecloakable(CUnit* unit);
-
 	/// Checks whether the @p unit is recognized by @p playerId as an enemy.
 	/// This will work even when the owner of the @p unit has left the game.
 	/// @see CUnit::isTargetEnemy().
@@ -410,5 +407,6 @@ namespace scbw {
 	void applyParasite(CUnit* unit, uint8 playerID, CUnit* queen);
 	void createShieldOverlay(CUnit* unit, uint32 attackDirection);
 	void decloakProc(CUnit* unit);
+	bool isDecloakable(CUnit* unit);
 
 } //scbw

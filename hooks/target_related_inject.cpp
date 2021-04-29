@@ -28,7 +28,7 @@ namespace {
 		result = hooks::genericRightClickUnitProc2(unit, a2, a3, target, unitID);
 		__asm {
 			POPAD
-			MOV result, EAX
+			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 0xC
@@ -45,7 +45,7 @@ namespace {
 		result = hooks::CMDRECV_HoldPosition(a1);
 		__asm {
 			POPAD
-			MOV result, EAX
+			MOV EAX, result
 			RETN
 		}
 	}
@@ -86,7 +86,7 @@ namespace {
 		result = hooks::isTargetVisible(target, unit);
 		__asm {
 			POPAD
-			MOV result, EAX
+			MOV EAX, result
 			RETN
 		}
 	}
@@ -101,7 +101,7 @@ namespace {
 		result = hooks::isUnitVisible(unit);
 		__asm {
 			POPAD
-			MOV result, EAX
+			MOV EAX, result
 			RETN
 		}
 	}
@@ -120,16 +120,16 @@ namespace {
 	}
 
 	void __declspec(naked) isUnitCloaking_Wrapper() { // 004916E0
-		static CUnit* unit;
 		static int32 result;
+		static CUnit* unit;
 		__asm {
 			MOV unit, ECX
 			PUSHAD
 		}
-		hooks::isUnitCloaking(unit);
+		result = hooks::isUnitCloaking(unit);
 		__asm {
 			POPAD
-			MOV result, EAX
+			MOV EAX, result
 			RETN
 		}
 	}
@@ -146,7 +146,7 @@ namespace hooks {
 //		jmpPatch(isTargetVisible_Wrapper, 0x004E5E30, 4);
 //		jmpPatch(isUnitVisible_Wrapper, 0x004E5DB0, 1);
 		jmpPatch(checkUnitVisibility_Wrapper, 0x00443390, 3);
-		jmpPatch(isUnitCloaking_Wrapper, 0x004916E0, 1);
+		jmpPatch(isUnitCloaking_Wrapper, 0x004916E0, 0);
 	}
 	void injectTargetRelatedHooks() {
 		injectTargetHooks();

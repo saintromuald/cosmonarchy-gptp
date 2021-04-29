@@ -13,5 +13,6 @@ namespace hooks {
 	uint32 isUnitVisible(CUnit* unit);																	// 004E5DB0
 	void checkUnitVisibility(CUnit* unit);																// 00443390
 	int32 isUnitCloaking(CUnit* unit);																	// 004916E0
+	void updateUnitVisibility(CUnit* unit);																// Extracted part of checkUnitVisibility
 	extern void injectTargetRelatedHooks();
 }

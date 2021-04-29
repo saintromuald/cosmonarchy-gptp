@@ -357,7 +357,7 @@ SCBW_DATA(CampaignMission*, campaignMissions, 0x004FFF60);
 SCBW_DATA(int16*, unkUpgradeCount, 0x006CA940);
 
 // For isUnitCloaked
-SCBW_DATA(CUnit*,	firstBurrowedUnit,		0x0063FF5C);
+SCBW_DATA(CUnit**,	firstInvisibleUnit,		0x0063FF5C);
 SCBW_DATA(int32*,	forceButtonRefresh,		0x0068C1B0);
 SCBW_DATA(int8*,	portraitRedraw,			0x0068AC74); // sizeof 4
 SCBW_DATA(int8*,	statusScreenRedraw,		0x0068C1F8);

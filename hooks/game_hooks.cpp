@@ -10,6 +10,7 @@
 #include "Utils/captivating_claws.h"
 #include "hooks/hydraFinder.h"
 #include "globals.h"
+#include "target_related.h"
 const int hyperTrigger = 0x006509A0;
 const uint32 Func_Sub4A01F0 = 0x004A01F0;
 void function_004A01F0g(CUnit* unit) {
@@ -919,25 +920,28 @@ namespace hooks {
 		// Permanently Cloaked units recloak after 2 seconds of being out of combat
 		if (scbw::isDecloakable(unit)) {
 			auto timer = scbw::get_generic_timer(unit, ValueId::PermanentCloakTimer);
-			if (timer > 1) {
-				makeSpriteVisible(unit->sprite);
+			/*if (timer > 1) {
 				unit->status &= ~UnitStatus::Cloaked;
-				for (int i = 0; i < 8; i++) {
-					unit->visibilityStatus |= (1 << i);
+				unit->visibilityStatus = 0xFF;
+				//updateUnitVisibility(unit);
+				makeSpriteVisible(unit->sprite);
+				CUnit* subunit = unit->subunit;
+				if (subunit) {
+					makeSpriteVisible(subunit->sprite);
 				}
 			} else if (timer == 1) {
 				unit->status |= UnitStatus::Cloaked;
-				if (unit->playerId != *LOCAL_HUMAN_ID && !scbw::isVisionAlliedTo(unit->playerId, *LOCAL_HUMAN_ID)) {
-					makeSpriteInvisible(unit->sprite);
-				}
-			} else {
 				for (int i = 0; i < 8; i++) {
-					if (i != unit->playerId && !scbw::isVisionAlliedTo(unit->playerId, i)) {
+					if (i != unit->playerId && !scbw::isVisionAlliedT(unit-.>playerId, i)) {
 						unit->visibilityStatus &= ~(1 << i);
 					} else {
 						unit->visibilityStatus |= (1 << i);
 					}
 				}
+				checkUnitVisibility(unit);
+			}*/
+			if (timer == 1) {
+				unit->status |= 0x300;
 			}
 		}
 

@@ -5,6 +5,7 @@
 #include <utility>
 #include <hooks/weapons/weapon_damage.h>
 #include <globals.h>
+#include "hooks/target_related.h"
 
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
@@ -1678,23 +1679,12 @@ namespace scbw {
 		unit->sprite->createOverlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
 	}
 
-	const uint32 Func_497ED0 = 0x00497ED0;
-	static void makeSpriteVisible(CSprite* sprite) {
-		__asm {
-			PUSHAD
-			MOV EAX, sprite
-			CALL Func_497ED0
-			POPAD
-		}
-	}
-
 	void decloakProc(CUnit* unit) {
 		if (isDecloakable(unit)) {
 			scbw::set_generic_timer(unit, ValueId::PermanentCloakTimer, 48 + 1);
 		}
 	}
 
-	// will decloak on attack
 	bool isDecloakable(CUnit* unit) {
 		return (units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak
 			|| unit->status & UnitStatus::CloakingForFree)
