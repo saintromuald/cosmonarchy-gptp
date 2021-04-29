@@ -927,13 +927,12 @@ namespace hooks {
 				}
 			} else if (timer == 1) {
 				unit->status |= UnitStatus::Cloaked;
-				if (unit->playerId != *LOCAL_HUMAN_ID && !scbw::isAlliedTo(unit->playerId, *LOCAL_HUMAN_ID)) {
+				if (unit->playerId != *LOCAL_HUMAN_ID && !scbw::isVisionAlliedTo(unit->playerId, *LOCAL_HUMAN_ID)) {
 					makeSpriteInvisible(unit->sprite);
 				}
 			} else {
 				for (int i = 0; i < 8; i++) {
-					if (i != unit->playerId &&
-						!scbw::isVisionAlliedTo(unit->playerId, i)) {
+					if (i != unit->playerId && !scbw::isVisionAlliedTo(unit->playerId, i)) {
 						unit->visibilityStatus &= ~(1 << i);
 					} else {
 						unit->visibilityStatus |= (1 << i);
