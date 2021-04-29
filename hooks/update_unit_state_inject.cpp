@@ -73,6 +73,21 @@ namespace {
 			RETN
 		}
 	}
+
+	void __declspec(naked) doCloak_Wrapper() { // 0049B440
+		static CUnit* unit;
+		static int32 soundId;
+		__asm {
+			MOV soundId, EBX
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::doCloak(unit, soundId);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 }
 
 namespace hooks {
@@ -82,5 +97,6 @@ namespace hooks {
 		jmpPatch(incrementUnitScoresEx_Wrapper,			0x00488D50, 1);
 		jmpPatch(updateUnits_Wrapper,					0x004ED000, 5);
 		jmpPatch(updateBurrowingCloakingUnits_Wrapper,	0x00492EB0, 3);
+		jmpPatch(doCloak_Wrapper,						0x0049B440, 5);
 	}
 }

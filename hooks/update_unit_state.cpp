@@ -38,8 +38,13 @@ namespace {
 
 	// For updateBurrowingCloakingUnits
 	int32 isUnitCloaking(CUnit* unit);																						// 004916E0
-	void doCloak(CUnit* unit, int32 soundId);																				// 0049B440
 	void playSoundFromDirect(CUnit* unit, int32 soundId);																	// 0049B5B0
+
+	// For doCloak
+	int32 playSoundFromSource(int32 soundId, CUnit* unit, int32 bPlay, int32 minVolume);									// 0048ED50
+	void updateSpriteFlagOnPalette(CSprite* sprite);																		// 00497E80
+	void showImagesHiddenByCloak(CSprite* sprite);																			// 00498170
+	void updateSpriteImagesForCloak(CSprite* sprite);																		// 00498A90
 }
 
 const uint32 Func_RemoveOverlays2 = 0x00492370;
@@ -801,6 +806,39 @@ namespace hooks {
 			}
 		}
 	}
+
+	// Hooked for cloak rewrite animations - Pr0nogo
+	void doCloak(CUnit* unit, int32 soundId) { // 0049B440
+		CUnit* v2;
+		CUnit* v3;
+
+		v2 = unit;
+		if (!(unit->status & UnitStatus::Burrowed)) {
+			playSoundFromSource(soundId, unit, 1, 0);
+		}
+		if (!IS_IN_REPLAY && v2->playerId == *LOCAL_NATION_ID)
+		{
+			*forceButtonRefresh = 1;
+			portraitRedraw[0] = 1;
+			*statusScreenRedraw = 1;
+			*ctrlUnderMouse = 0;
+			*ctrlUnderMouseValue = 0;
+		}
+		if (v2->status & UnitStatus::Burrowed) {
+			updateSpriteFlagOnPalette(v2->sprite);
+			showImagesHiddenByCloak(v2->sprite);
+			v2->status &= 0xFFFFFCFF;
+		}
+		else {
+			updateSpriteImagesForCloak(v2->sprite);
+			v2->status = v2->status & 0xFFFFFEFF | UnitStatus::Cloaked;
+			v3 = v2->subunit;
+			if (v3) {
+				updateSpriteImagesForCloak(v3->sprite);
+				v3->status = v3->status & 0xFFFFFEFF | UnitStatus::Cloaked;
+			}
+		}
+	}
 }
 
 namespace {
@@ -1065,17 +1103,6 @@ namespace {
 		return result;
 	}
 
-	const uint32 Func_doCloak = 0x0049B440;
-	void doCloak(CUnit* unit, int32 soundId) {
-		__asm {
-			PUSHAD
-			MOV EBX, soundId
-			MOV EAX, unit
-			CALL Func_doCloak
-			POPAD
-		}
-	}
-
 	const uint32 Func_playSoundFromDirect = 0x0049B5B0;
 	void playSoundFromDirect(CUnit* unit, int32 soundId) {
 		__asm {
@@ -1083,6 +1110,54 @@ namespace {
 			MOV ECX, soundId
 			MOV EAX, unit
 			CALL Func_playSoundFromDirect
+			POPAD
+		}
+	}
+
+	// For doCloak
+
+	const uint32 Func_playSoundFromSource = 0x0048ED50;
+	int32 playSoundFromSource(int32 soundId, CUnit* unit, int32 bPlay, int32 minVolume) {
+		static int32 result;
+		__asm {
+			PUSHAD
+			PUSH minVolume
+			PUSH bPlay
+			MOV ESI, unit
+			MOV EBX, soundId
+			CALL Func_playSoundFromSource
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const uint32 Func_updateSpriteFlagOnPalette = 0x00497E80;
+	void updateSpriteFlagOnPalette(CSprite* sprite) {
+		__asm {
+			PUSHAD
+			MOV EAX, sprite
+			CALL Func_updateSpriteFlagOnPalette
+			POPAD
+		}
+	}
+
+	const uint32 Func_showImagesHiddenByCloak = 0x00498170;
+	void showImagesHiddenByCloak(CSprite* sprite) {
+		__asm {
+			PUSHAD
+			MOV EAX, sprite
+			CALL Func_showImagesHiddenByCloak
+			POPAD
+		}
+	}
+	
+	const uint32 Func_updateSpriteImagesForCloak = 0x00498A90;
+	void updateSpriteImagesForCloak(CSprite* sprite) {
+		__asm {
+			PUSHAD
+			MOV EDI, sprite
+			CALL Func_updateSpriteImagesForCloak
 			POPAD
 		}
 	}
