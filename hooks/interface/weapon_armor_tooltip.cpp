@@ -25,6 +25,7 @@ uint8 getDamageFactorForTooltip(uint8 weaponId, CUnit* unit) {
 		|| weaponId == WeaponId::GolemBloodlessAssault
 		|| weaponId == WeaponId::PariahIconoclastBlades
 		|| weaponId == WeaponId::StarSovereignCelestialCannon
+		|| weaponId == WeaponId::BactaliskCorrosiveAcid
 		|| weaponId == WeaponId::AlmaksaliskPiercingSpines
 		|| weaponId == WeaponId::KeskathalorScreamingVenom
 		) {
@@ -527,25 +528,23 @@ namespace hooks {
 	const char* getSpecialTooltipString(uint16 iconUnitId, CUnit* unit) {
 		//Default StarCraft behavior
 
-		if (iconUnitId == UnitId::ProtossSteward)
-			return getDamageTooltipString(WeaponId::PulseCannon, unit, 791);		//"Interceptors"
-
-		if (iconUnitId == UnitId::ProtossPlasmaShell)
-			return getDamageTooltipString(WeaponId::Scarab, unit, 792);				//"Scarabs"
-
-		if (iconUnitId == UnitId::TerranNuclearMissile)
-			return statTxtTblNew->getString(793);										//"Nukes"
-
-		if (iconUnitId == UnitId::TerranSpiderMine)
-			return getDamageTooltipString(WeaponId::SpiderMines, unit, 794);		//"Spider Mines"
-
-		if (iconUnitId == UnitId::TerranLobotomyMine) {
-			return getDamageTooltipString(WeaponId::LobotomyMineExplosion, unit, 794);
+		if (iconUnitId == UnitId::ProtossSteward) {
+			return getDamageTooltipString(WeaponId::PulseCannon, unit, 791);				// "Interceptors"
+		}
+		if (iconUnitId == UnitId::ProtossPlasmaShell) {
+			return getDamageTooltipString(WeaponId::Scarab, unit, 792);						// "Scarabs"
+		}
+		if (iconUnitId == UnitId::TerranNuclearMissile) {
+			return statTxtTblNew->getString(793);											// "Nukes"
+		}
+		if (iconUnitId == UnitId::TerranSpiderMine && unit->id == UnitId::TerranVulture) {
+			return getDamageTooltipString(WeaponId::SpiderMines, unit, 794);				// "Spider Mines"
+		}
+		if (iconUnitId == UnitId::TerranSpiderMine && unit->id == UnitId::TerranEidolon) {
+			return getDamageTooltipString(WeaponId::LobotomyMineExplosion, unit, 794);		// "Lobotomy Mines"
 		}
 
-
-
-		//Should never reach here
+		// Should never reach here
 		return "";
 
 	}

@@ -5,29 +5,33 @@
 #include "byte_operations_utils.h"
 
 namespace {
-	CUnit* SpiderMine_AcquireTarget(CUnit* spiderMine);					//0x00441270
-	void function_00495400(CUnit* unit, CUnit* target);					//0x00495400
-	void function_0049B1E0(CUnit* unit);								//0x0049B1E0
-	void function_004E99D0(CUnit* unit);								//0x004E99D0
-	void function_004E9A30(CUnit* unit);								//0x004E9A30
-	void setNextWaypoint_Sub4EB290(CUnit* unit);						//0x004EB290
+	CUnit* SpiderMine_AcquireTarget(CUnit* spiderMine);					// 00441270
+	void function_00495400(CUnit* unit, CUnit* target);					// 00495400
+	void function_0049B1E0(CUnit* unit);								// 0049B1E0
+	void function_004E99D0(CUnit* unit);								// 004E99D0
+	void burrowGeneric(CUnit* unit);									// 004E9A30
+	void setNextWaypoint_Sub4EB290(CUnit* unit);						// 004EB290
 
 	// For orders_PlaceMine
-	int techUseAllowed(CUnit* a1, __int16 a2, int a3);					//0x0046DD80
-	unsigned int getDistanceFast(int a1, int a2, int a3, int a4);		//0x0040C360
-	int orders_HoldPosSuicidal(CUnit* a1);								//0x004EB5B0
-	void fixTargetLocation(unsigned __int16 a1, Point32* a2);			//0x00401FA0
-	CUnit* createUnit(__int16 a1, int a2, int a3, int a4);				//0x004A09D0
-	void updateUnitStatsFinishBuilding(CUnit* a1);						//0x004A01F0
-	unsigned int updateUnitStrengthAndApplyDefaultOrders(CUnit* a1);	//0x0049FA40
-	void turnUnit(CUnit* a1, char a2);									//0x00495F20
-	void displayLastNetErrorForPlayer(unsigned __int8 a1);				//0x0049E530
-	void toIdle(CUnit* a1);												//0x004753A0
-	int isUnitMovable(CUnit* a1);										//0x00401DC0
-	void orders_Nothing2(CUnit* a1);									//0x00475000
-	void orderComputerClear(CUnit* a1, unsigned __int8 a2);				//0x00475310
-	signed int moveToTarget(CUnit* a1, CUnit* a2);						//0x004EB720
-	bool setMoveTargetXY(int a1, int a2, CUnit* a3);					//0x004EB820
+	int techUseAllowed(CUnit* a1, __int16 a2, int a3);					// 0046DD80
+	unsigned int getDistanceFast(int a1, int a2, int a3, int a4);		// 0040C360
+	int orders_HoldPosSuicidal(CUnit* a1);								// 004EB5B0
+	void fixTargetLocation(unsigned __int16 a1, Point32* a2);			// 00401FA0
+	CUnit* createUnit(__int16 a1, int a2, int a3, int a4);				// 004A09D0
+	void updateUnitStatsFinishBuilding(CUnit* a1);						// 004A01F0
+	unsigned int updateUnitStrengthAndApplyDefaultOrders(CUnit* a1);	// 0049FA40
+	void turnUnit(CUnit* a1, char a2);									// 00495F20
+	void displayLastNetErrorForPlayer(unsigned __int8 a1);				// 0049E530
+	void toIdle(CUnit* a1);												// 004753A0
+	int isUnitMovable(CUnit* a1);										// 00401DC0
+	void orders_Nothing2(CUnit* a1);									// 00475000
+	void orderComputerClear(CUnit* a1, unsigned __int8 a2);				// 00475310
+	signed int moveToTarget(CUnit* a1, CUnit* a2);						// 004EB720
+	bool setMoveTargetXY(int a1, int a2, CUnit* a3);					// 004EB820
+
+	// For burrowGeneric
+	void toggleUnitPath(CUnit* unit);									// 004E42A0
+	char switchSpriteId(CSprite* sprite, int32 spriteId);				// 00499860
 }
 
 namespace hooks {
@@ -88,7 +92,7 @@ namespace hooks {
 		if (unit->mainOrderState == 2) {
 			if (!(unit->orderSignal & 4)) {
 				if (!(unit->status & UnitStatus::IsHallucination)) {
-					function_004E9A30(unit); // related to movement
+					burrowGeneric(unit); // related to movement
 					function_0049B1E0(unit); // related to cloaking/stealth
 				}
 				unit->mainOrderState = 3;
@@ -168,7 +172,6 @@ namespace hooks {
 		// state 5, so no else here
 		if (unit->mainOrderState == 6) {
 			if (unit->orderSignal & 1) {
-				//GPTP::logger << "SpiderMine - remove" << std::endl;
 				unit->remove();
 			}
 		}
@@ -257,16 +260,39 @@ namespace hooks {
 		}
 	}
 
+	// Hooked to try to fix mine burrowing - Pr0nogo
+	char burrowGeneric(CUnit* unit) { // 004E9A30
+		CUnit* unitVar = unit;
+		toggleUnitPath(unit);
+
+		CSprite* unitSprite = unitVar->sprite;
+		char unitPathing = unitVar->pathingFlags;
+		unitVar->movementState = 0;
+		unitVar->pathingFlags = (unitPathing ^ (unitSprite->elevationLevel < 12u)) & 1 ^ unitPathing;
+		unitVar->status |= UnitStatus::CloakingForFree | UnitStatus::Burrowed;
+		unitSprite->flags |= 0x40u; // image is hidden
+
+		CSprite* oldSprite = unitVar->sprite;
+		CSprite* newSprite;
+		if (unitVar->id == UnitId::ZergLakizilisk) {
+			// Warning, tism detected
+			// ByteOperations::SetLowByte(newSprite, switchSpriteId(oldSprite, SpriteId::White_Circle_Invisible));
+			unitVar->sprite->elevationLevel = 1;
+		}
+		else {
+			switchSpriteId(oldSprite, SpriteId::White_Circle_Invisible);
+			newSprite = unitVar->sprite;
+			newSprite->elevationLevel = 1;
+		}
+		return (char)newSprite;
+	}
 }
 
 namespace {
 
 	CUnit* SpiderMine_AcquireTarget(CUnit* spiderMine) {
-
 		const uint32 Func_SpiderMine_AcquireTarget = 0x00441270;
-
 		static CUnit* target;
-
 		__asm {
 			PUSHAD
 			MOV ESI, spiderMine
@@ -274,14 +300,11 @@ namespace {
 			MOV target, EAX
 			POPAD
 		}
-
 		return target;
-
-	};
+	}
 
 	const uint32 Func_Sub495400 = 0x00495400;
 	void function_00495400(CUnit* unit, CUnit* target) {
-
 		__asm {
 			PUSHAD
 			MOV EDI, unit
@@ -289,59 +312,38 @@ namespace {
 			CALL Func_Sub495400
 			POPAD
 		}
-
-	};
+	}
 
 	void function_0049B1E0(CUnit* unit) {
-
 		const uint32 Func_Sub49B1E0 = 0x0049B1E0;
-
 		__asm {
 			PUSHAD
 			MOV EDI, unit
 			CALL Func_Sub49B1E0
 			POPAD
 		}
-
-	};
+	}
 
 	void function_004E99D0(CUnit* unit) {
-
 		const uint32 Func_Sub4E99D0 = 0x004E99D0;
-
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_Sub4E99D0
 			POPAD
 		}
+	}
 
-	};
-
-	void function_004E9A30(CUnit* unit) {
-
-		const uint32 Func_Sub4E9A30 = 0x004E9A30;
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub4E9A30
-			POPAD
-		}
-
-	};
-
-	//Related to path/movement decision
+	// Related to path/movement decision
 	const uint32 Func_sub_4EB290 = 0x004EB290;
 	void setNextWaypoint_Sub4EB290(CUnit* unit) {
-
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			CALL Func_sub_4EB290
 			POPAD
 		}
-	};
+	}
 
 	// For orders_PlaceMine
 	const uint32 Func_techUseAllowed = 0x0046DD80;
@@ -531,6 +533,29 @@ namespace {
 		return (bool)result;
 	}
 
-} //Unnamed namespace
+	// For burrowGeneric
 
-//End of helper functions
+	const uint32 Func_toggleUnitPath = 0x004E42A0;
+	void toggleUnitPath(CUnit* unit) {
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL Func_toggleUnitPath
+			POPAD
+		}
+	}
+
+	const uint32 Func_switchSpriteId = 0x00499860;
+	char switchSpriteId(CSprite* sprite, int32 spriteId) {
+		static int32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, spriteId
+			MOV ECX, sprite
+			CALL Func_switchSpriteId
+			MOV result, EAX
+			POPAD
+		}
+		return (char)result;
+	}
+}
