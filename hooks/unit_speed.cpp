@@ -148,15 +148,6 @@ namespace hooks {
 				}
 				break;
 			}
-			case UnitId::TerranEidolon:
-			{
-				// Eidolon Somatic Implants: gains 125% movespeed while cloaked
-				if (unit->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection)) {
-					speed *= 1.25;
-					scbw::set_generic_value(unit, ValueId::SomaticImplants, 1);
-				}
-				break;
-			}
 			case UnitId::ProtossClarion:
 			{
 				// Clarion Harmony Drive: gains increased movement speed based on shields
@@ -192,6 +183,7 @@ namespace hooks {
 			}
 			// Hardcode ideal movement speeds
 			case UnitId::TerranCyprian:
+			case UnitId::TerranEidolon:
 			case UnitId::ProtossAmaranth:
 			case UnitId::ProtossCabalist:
 			case UnitId::ZergZoryusthaleth:
