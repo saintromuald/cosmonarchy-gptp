@@ -26,6 +26,7 @@ uint8 getDamageFactorForTooltip(uint8 weaponId, CUnit* unit) {
 		|| weaponId == WeaponId::PariahIconoclastBlades
 		|| weaponId == WeaponId::StarSovereignCelestialCannon
 		|| weaponId == WeaponId::AlmaksaliskPiercingSpines
+		|| weaponId == WeaponId::KeskathalorScreamingVenom
 		) {
 		return 2;
 	}
