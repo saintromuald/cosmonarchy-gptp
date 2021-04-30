@@ -66,9 +66,9 @@ namespace {
 namespace hooks {
 
 	void injectMakeNydusExitHook() {
-		jmpPatch(orders_Build5Wrapper, 0x0045DC20, 2);
-		jmpPatch(nydusPlaceExitTileCheckWrapper1, 0x00473156, 1);
-		jmpPatch(nydusPlaceExitTileCheckWrapper2, 0x004731C2, 1);
+		//jmpPatch(orders_Build5Wrapper, 0x0045DC20, 2);
+		//jmpPatch(nydusPlaceExitTileCheckWrapper1, 0x00473156, 1);
+		//jmpPatch(nydusPlaceExitTileCheckWrapper2, 0x004731C2, 1);
 
 	}
 
