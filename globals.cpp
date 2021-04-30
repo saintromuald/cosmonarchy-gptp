@@ -1269,27 +1269,26 @@ namespace scbw {
 
 	void spreadClarionDamage(hooks::WeaponDamageData& data) {
 		CUnit* unit = data.target;
-		auto& links = getClarionLinks(unit);
+		auto links = getClarionLinks(unit); // has to be copy
 		int32 damage = data.finalDamage;
 		if (links.size() == 0 || unit->shields < 256) {
 			phaseLinkDamage(unit, damage, data);
 		} else {
+			links.erase(std::remove_if(links.begin(), links.end(), [](CUnit* linkUnit) {
+				return linkUnit->shields < 256;
+			}), links.end());
 			int32 divided = damage / links.size();
+			links.erase(std::find(links.begin(), links.end(), unit));
 			for (CUnit* linkUnit : links) {
-				if (linkUnit == unit) {
-					continue;
-				}
 				int32 unitDamage = std::min(divided, linkUnit->shields);
 				damage -= unitDamage;
-				if (unitDamage > 0) {
-					phaseLinkDamage(linkUnit, unitDamage, data);
-				}
+				phaseLinkDamage(linkUnit, unitDamage, data);
 			}
 			phaseLinkDamage(unit, damage, data);
 		}
 	}
 
-	std::unordered_set<CUnit*> getClarionLinks(CUnit* unit) {
+	std::vector<CUnit*> getClarionLinks(CUnit* unit) {
 		std::unordered_set<CUnit*> links = {};
 		if (unit->id == UnitId::ProtossClarion) {
 			auto link = scbw::get_generic_unit_vector(unit, ValueId::PhaseLink);
@@ -1300,6 +1299,6 @@ namespace scbw {
 			auto link = scbw::get_generic_unit_vector(clarion, ValueId::PhaseLink);
 			links.insert(link.begin(), link.end());
 		}
-		return links;
+		return std::vector<CUnit*>(links.begin(), links.end());
 	}
 }
