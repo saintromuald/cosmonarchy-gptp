@@ -25,10 +25,9 @@ namespace hooks {
 
 		// Vassal Terminal Surge behavior
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
-			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::TerminalSurge), 0, 10);
+			double stacks = scbw::get_generic_value(unit, ValueId::TerminalSurge);
 			if (stacks > 0) {
-				double newCooldown = (double)cooldown * (1.0 - stacks / 13.333);
-				cooldown = newCooldown;
+				cooldown /= 1.0 + 0.05 * stacks;
 			}
 		}
 
