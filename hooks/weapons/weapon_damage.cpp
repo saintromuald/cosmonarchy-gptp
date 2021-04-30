@@ -235,6 +235,7 @@ namespace hooks {
 		// Demiurge - Gods Made Flesh - target is impervious to damage
 		if (scbw::get_generic_timer(data.target, ValueId::GodsMadeFlesh) > 0) { // Power Overwhelming used to be here :wave_me_dad:
 			data.finalDamage = 0;
+			data.damageType = DamageType::Independent;
 		}
 
 		bool canDamage = true; // debug only!
@@ -253,6 +254,11 @@ namespace hooks {
 
 		if (!data.dontProcPhaseLink) { // damage from phase link was already calculated
 			weaponDamage_damageModifiers(data);
+		}
+
+		if (!data.dontProcPhaseLink && scbw::hasClarionLinks(data.target)) {
+			scbw::spreadClarionDamage(data);
+			return;
 		}
 
 		// Hallucinations deal half damage
@@ -337,11 +343,6 @@ namespace hooks {
 		data.finalDamage = (data.finalDamage * damage_factor) / 256;
 		if (data.shieldReduceAmount == 0 && data.finalDamage < 128) {
 			data.finalDamage = 128;
-		}
-
-		if (!data.dontProcPhaseLink && scbw::hasClarionLinks(data.target)) {
-			scbw::spreadClarionDamage(data);
-			return;
 		}
 
 		weaponDamage_behaviors(data);

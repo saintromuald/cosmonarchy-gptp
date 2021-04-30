@@ -1259,7 +1259,7 @@ namespace scbw {
 			data.attacker,
 			data.attackingPlayerId,
 			true,
-			false
+			data.ignoreFlatArmor
 		};
 		hooks::weaponDamage_root(newData);
 	}
@@ -1267,8 +1267,8 @@ namespace scbw {
 	void spreadClarionDamage(hooks::WeaponDamageData& data) {
 		CUnit* unit = data.target;
 		auto& vec = getClarionLinks(unit);
-		int32 damage = data.finalDamage + data.shieldReduceAmount;
-		if (vec.size() == 0) {
+		int32 damage = data.finalDamage;
+		if (vec.size() == 0 || unit->shields < 256) {
 			phaseLinkDamage(unit, damage, data);
 		} else {
 			int32 divided = damage / vec.size();
@@ -1278,7 +1278,9 @@ namespace scbw {
 				}
 				int32 unitDamage = std::min(divided, vecUnit->shields);
 				damage -= unitDamage;
-				phaseLinkDamage(vecUnit, unitDamage, data);
+				if (unitDamage > 256) {
+					phaseLinkDamage(vecUnit, unitDamage, data);
+				}
 			}
 			phaseLinkDamage(unit, damage, data);
 		}
