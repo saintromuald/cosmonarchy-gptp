@@ -213,7 +213,7 @@ namespace hooks {
 		}
 
 		// Wyvern Reverse Thrust - fire while moving
-		if (unit->id == UnitId::TerranWyvern && unit->groundWeaponCooldown == 0) {
+		if (unit->id == UnitId::TerranWyvern && unit->groundWeaponCooldown == 0 && scbw::get_generic_value(unit, ValueId::ReverseThrust)) {
 			bool can_free_fire = true;
 			if (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::Attack2) {
 				if (unit->orderTarget.unit != nullptr) {
