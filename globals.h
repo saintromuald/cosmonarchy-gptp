@@ -36,12 +36,12 @@ struct PersistImpact {
 	uint8 impactId;
 	Point32 position;
 	uint32 radius;
-	uint32 time;
+	uint32 currentTime;
 	int32 spriteId;
 	uint8 elevation;
 	uint8 player;
-	uint32 internalTimeMax;
-	CThingy* internalThingy;
+	uint32 maxTime;
+	CThingy* thingy;
 };
 
 class PariahHit {

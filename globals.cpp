@@ -33,8 +33,8 @@ void Globals::aise_save() {
 		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].position.x), sizeof(persistImpacts[i].position.x));
 		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].position.y), sizeof(persistImpacts[i].position.y));
 		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].elevation), sizeof(persistImpacts[i].elevation));
-		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].time), sizeof(persistImpacts[i].time));
-		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].time), sizeof(persistImpacts[i].time));
+		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].currentTime), sizeof(persistImpacts[i].currentTime));
+		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].currentTime), sizeof(persistImpacts[i].currentTime));
 
 		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].position.x), sizeof(persistImpacts[i].position.x));
 		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].position.y), sizeof(persistImpacts[i].position.y));
@@ -131,8 +131,8 @@ void Globals::aise_load(const char* ptr, uint32 len) {
 		stream.read(reinterpret_cast<char*>(&impact.position.x), sizeof(impact.position.x));
 		stream.read(reinterpret_cast<char*>(&impact.position.y), sizeof(impact.position.y));
 		stream.read(reinterpret_cast<char*>(&impact.elevation), sizeof(impact.elevation));
-		stream.read(reinterpret_cast<char*>(&impact.time), sizeof(impact.time));
-		stream.read(reinterpret_cast<char*>(&impact.time), sizeof(impact.time));
+		stream.read(reinterpret_cast<char*>(&impact.currentTime), sizeof(impact.currentTime));
+		stream.read(reinterpret_cast<char*>(&impact.currentTime), sizeof(impact.currentTime));
 
 		//stream.read(reinterpret_cast<char*>(&impact.position.x), sizeof(impact.position.x));
 		//stream.read(reinterpret_cast<char*>(&impact.position.y), sizeof(impact.position.y));
@@ -283,19 +283,19 @@ void Globals::createGenericPersistImpact(uint8 impactId, uint32 time, Point32 po
 	impact.impactId = impactId;
 	impact.position = position;
 	impact.radius = radius;
-	impact.time = time;
-	impact.internalTimeMax = time;
+	impact.currentTime = time;
+	impact.maxTime = time;
 	impact.spriteId = spriteId;
 	impact.elevation = elevation;
 	impact.player = player;
-	impact.internalThingy = nullptr;
+	impact.thingy = nullptr;
 
 	if (impact.spriteId >= 0) {
 		CThingy* thingy = scbw::createAndInitThingy(impact.spriteId, impact.position.x, impact.position.y);
 		if (thingy == nullptr) {
 			return;
 		}
-		impact.internalThingy = thingy;
+		impact.thingy = thingy;
 	}
 	persistImpacts.push_back(impact);
 }
@@ -350,10 +350,10 @@ void Globals::frameHook() {
 
 	for (int i = 0; i < persistImpacts.size(); i++) {
 		auto& impact = persistImpacts[i];
-		impact.time--;
+		impact.currentTime--;
 		const int framePeriod = 6;
-		if (impact.time % framePeriod == 1) {
-			const double damageMultiplier = 256.0 * (double)framePeriod / impact.internalTimeMax;
+		if (impact.currentTime % framePeriod == 1) {
+			const double damageMultiplier = 256.0 * (double)framePeriod / impact.maxTime;
 			switch (impact.impactId) {
 				case ImpactId::SalamanderFire:
 				{
@@ -425,9 +425,9 @@ void Globals::frameHook() {
 						impact.position.x + impact.radius,
 						impact.position.y + impact.radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::Enemy, {}), [&](CUnit* unit) {
-						if (scbw::get_generic_timer(unit, ValueId::HallucinatingTimer) < impact.time) {
+						if (scbw::get_generic_timer(unit, ValueId::HallucinatingTimer) < impact.currentTime) {
 							scbw::set_generic_value(unit, ValueId::HallucinatingSourcePlayer, impact.player);
-							scbw::set_generic_timer(unit, ValueId::HallucinatingTimer, impact.time);
+							scbw::set_generic_timer(unit, ValueId::HallucinatingTimer, impact.currentTime);
 
 							scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit);
 							if (unit->subunit != nullptr) {
@@ -447,15 +447,15 @@ void Globals::frameHook() {
 						impact.position.x + impact.radius,
 						impact.position.y + impact.radius
 					).forEachInMatch(unitRangeCount(nullptr, 0, {}), [&](CUnit* unit) {
-						ApplyIrradiate(unit, impact.player, impact.time / 24.0);
+						ApplyIrradiate(unit, impact.player, impact.currentTime / 24.0);
 					});
 					break;
 				}
 			}
 		}
-		if (impact.time <= 0) {
-			if (impact.internalThingy && impact.internalThingy->sprite) {
-				impact.internalThingy->sprite->playIscriptAnim(IscriptAnimation::Death);
+		if (impact.currentTime <= 0) {
+			if (impact.thingy && impact.thingy->sprite) {
+				impact.thingy->sprite->playIscriptAnim(IscriptAnimation::Death);
 			}
 
 			persistImpacts.erase(persistImpacts.begin() + i);
