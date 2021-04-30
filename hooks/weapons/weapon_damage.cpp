@@ -161,7 +161,7 @@ void augurSacrifice(CUnit* target) {
 			target->getX() + radius,
 			target->getY() + radius,
 			target, [&](CUnit* unit) {
-			//Don't attack friendly / allied units
+			// Don't attack friendly / allied units
 			if (unit->sprite == nullptr) {
 				return false;
 			}
@@ -721,13 +721,10 @@ namespace hooks {
 						data.target->getX() + range,
 						data.target->getY() + range
 					).forEach([&data](CUnit* foundUnit) {
-						if (foundUnit->playerId != data.target->playerId && !scbw::isAlliedTo(data.attacker->playerId, foundUnit->playerId)) {
+						if (foundUnit->playerId != data.attacker->playerId && !scbw::isAlliedTo(data.attacker->playerId, foundUnit->playerId)) {
 							return;
 						}
 						if (foundUnit == data.target) {
-							return;
-						}
-						if (units_dat::BaseProperty[data.target->id] & UnitProperty::Building) {
 							return;
 						}
 						foundUnit->heal(ApostleBloodTitheHealing, data.target);
