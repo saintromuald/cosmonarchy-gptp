@@ -1,3 +1,4 @@
+#pragma once
 #include <AI/ai_common.h>
 
 namespace AI {

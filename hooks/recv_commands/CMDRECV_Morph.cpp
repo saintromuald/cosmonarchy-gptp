@@ -1,3 +1,4 @@
+#pragma once
 #include "CMDRECV_Morph.h"
 #include <SCBW/api.h>
 
@@ -102,46 +103,3 @@ namespace hooks {
 	;
 
 } //namespace hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_HasMoneyCanMake = 0x00467250;
-	bool HasMoneyCanMake(CUnit* builder, uint32 unitToBuild) {
-
-		static bool32 bPreResult;
-
-		__asm {
-			PUSHAD
-			PUSH unitToBuild
-			MOV EDI, builder
-			CALL Func_HasMoneyCanMake
-			MOV bPreResult, EAX
-			POPAD
-		}
-
-		return (bPreResult != 0);
-
-	}
-
-	;
-
-	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
-
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			MOV EAX, order
-			CALL Func_removeOrderFromUnitQueue
-			POPAD
-		}
-
-	}
-
-	;
-
-} //unnamed namespace
-
-//End of helper functions
