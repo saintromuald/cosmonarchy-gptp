@@ -344,11 +344,6 @@ namespace hooks {
 			return;
 		}
 
-		// Never bleed damage from phase link to hp
-		if (data.dontProcPhaseLink) {
-			data.finalDamage = 0;
-		}
-
 		weaponDamage_behaviors(data);
 		if (data.attacker != nullptr) { // lifesteal 
 			weaponDamage_lifesteal(data);

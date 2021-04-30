@@ -1271,10 +1271,16 @@ namespace scbw {
 		if (vec.size() == 0) {
 			phaseLinkDamage(unit, damage, data);
 		} else {
-			int divided = damage / vec.size();
+			int32 divided = damage / vec.size();
 			for (CUnit* vecUnit : vec) {
-				phaseLinkDamage(vecUnit, divided, data);
+				if (vecUnit == unit) {
+					continue;
+				}
+				int32 unitDamage = std::min(divided, vecUnit->shields);
+				damage -= unitDamage;
+				phaseLinkDamage(vecUnit, unitDamage, data);
 			}
+			phaseLinkDamage(unit, damage, data);
 		}
 	}
 
