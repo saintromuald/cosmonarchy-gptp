@@ -294,8 +294,8 @@ namespace ValueId {
 		WorshipDemiurge = 159,				// unit
 		TurretParentLink = 160,
 		BindingGripTimer = 161,
-		ClarionLinkUnit = 162,
-		ClarionLinkFeedback = 163,
+		PhaseLinkClarions = 162,
+		PhaseLink = 163,
 		CausticDischargeSpeed = 164,
 		IonFieldSpeed = 165,
 		ReconstitutionCooldown = 166,

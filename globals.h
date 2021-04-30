@@ -2,6 +2,7 @@
 #pragma pack(1)
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <sstream>
 #include <ostream>
 #include <istream>
@@ -273,6 +274,6 @@ namespace scbw {
 	void clearClarionLinks(CUnit* unit);
 	void placeClarionLinks(CUnit* unit);
 	bool hasClarionLinks(CUnit* unit);
-	std::vector<CUnit*> getClarionLinks(CUnit* unit);
+	std::unordered_set<CUnit*> getClarionLinks(CUnit* unit);
 	void spreadClarionDamage(hooks::WeaponDamageData& data);
 }

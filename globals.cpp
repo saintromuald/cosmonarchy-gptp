@@ -4,6 +4,7 @@
 #include "hooks/limits/attack_extender.h"
 #include "hooks/weapons/weapon_damage.h"
 #include <algorithm>
+#include <unordered_set>
 #include <Utils/captivating_claws.h>
 Globals globals;
 
@@ -1198,11 +1199,12 @@ namespace scbw {
 	}
 
 	void clearClarionLinks(CUnit* unit) {
-		auto& vec = scbw::get_generic_unit_vector(unit, ValueId::ClarionLinkFeedback);
+		auto& vec = scbw::get_generic_unit_vector(unit, ValueId::PhaseLink);
 		for (CUnit* vecUnit : vec) {
-			if (scbw::get_generic_unit(vecUnit, ValueId::ClarionLinkUnit) == unit) {
-				scbw::set_generic_unit(vecUnit, ValueId::ClarionLinkUnit, nullptr);
-				//removeoverlays2(1102, 1104, vecUnit);
+			auto& clarionVec = scbw::get_generic_unit_vector(vecUnit, ValueId::PhaseLinkClarions);
+			auto it = std::find(clarionVec.begin(), clarionVec.end(), unit);
+			if (it != clarionVec.end()) {
+				clarionVec.erase(it);
 			}
 		}
 		vec.clear();
@@ -1210,14 +1212,15 @@ namespace scbw {
 
 	void placeClarionLinks(CUnit* unit) {
 		bool isClarion = unit->id == UnitId::ProtossClarion;
-		auto& vec = scbw::get_generic_unit_vector(unit, ValueId::ClarionLinkFeedback);
+		auto& link = scbw::get_generic_unit_vector(unit, ValueId::PhaseLink);
 
 		clearClarionLinks(unit);
+		const int32 radius = 128;
 		scbw::UnitFinder(
-			unit->getX() - 128,
-			unit->getY() - 128,
-			unit->getX() + 128,
-			unit->getY() + 128
+			unit->getX() - radius,
+			unit->getY() - radius,
+			unit->getX() + radius,
+			unit->getY() + radius
 		).filter([&](CUnit* target) {
 			if (!scbw::isAlliedTo(unit->playerId, target->playerId)) {
 				return false;
@@ -1228,22 +1231,22 @@ namespace scbw {
 			if (!target->shieldsEnabled()) {
 				return false;
 			}
-			if (target->shields <= 0) {
+			if (target->shields < 256) {
 				return false;
 			}
-			if (scbw::getDistanceFast(target->getX(), target->getY(), unit->getX(), unit->getY()) > 128) {
+			if (scbw::getDistanceFast(target->getX(), target->getY(), unit->getX(), unit->getY()) > radius) {
 				return false;
 			}
 			return true;
 		}).forEach([&](CUnit* target) {
-			vec.push_back(target);
+			link.push_back(target);
 			target->sprite->createOverlay(ImageId::PhaseLinkSmall + scbw::getOverlayOffset(target->id), 0, 0, 0);
-			scbw::set_generic_unit(target, ValueId::ClarionLinkUnit, unit);
+			scbw::get_generic_unit_vector(target, ValueId::PhaseLinkClarions).push_back(unit);
 		});
 	}
 
 	bool hasClarionLinks(CUnit* unit) {
-		return scbw::get_generic_unit(unit, ValueId::ClarionLinkUnit);
+		return scbw::get_generic_unit_vector(unit, ValueId::PhaseLinkClarions).size();
 	}
 
 	void phaseLinkDamage(CUnit* unit, int32 damage, hooks::WeaponDamageData& data) {
@@ -1266,31 +1269,37 @@ namespace scbw {
 
 	void spreadClarionDamage(hooks::WeaponDamageData& data) {
 		CUnit* unit = data.target;
-		auto& vec = getClarionLinks(unit);
+		auto& links = getClarionLinks(unit);
 		int32 damage = data.finalDamage;
-		if (vec.size() == 0 || unit->shields < 256) {
+		if (links.size() == 0 || unit->shields < 256) {
 			phaseLinkDamage(unit, damage, data);
 		} else {
-			int32 divided = damage / vec.size();
-			for (CUnit* vecUnit : vec) {
-				if (vecUnit == unit) {
+			int32 divided = damage / links.size();
+			for (CUnit* linkUnit : links) {
+				if (linkUnit == unit) {
 					continue;
 				}
-				int32 unitDamage = std::min(divided, vecUnit->shields);
+				int32 unitDamage = std::min(divided, linkUnit->shields);
 				damage -= unitDamage;
-				if (unitDamage > 256) {
-					phaseLinkDamage(vecUnit, unitDamage, data);
+				if (unitDamage > 0) {
+					phaseLinkDamage(linkUnit, unitDamage, data);
 				}
 			}
 			phaseLinkDamage(unit, damage, data);
 		}
 	}
 
-	std::vector<CUnit*> getClarionLinks(CUnit* unit) {
+	std::unordered_set<CUnit*> getClarionLinks(CUnit* unit) {
+		std::unordered_set<CUnit*> links = {};
 		if (unit->id == UnitId::ProtossClarion) {
-			return scbw::get_generic_unit_vector(unit, ValueId::ClarionLinkFeedback);
+			auto link = scbw::get_generic_unit_vector(unit, ValueId::PhaseLink);
+			links.insert(link.begin(), link.end());
 		}
-		auto clarion = scbw::get_generic_unit(unit, ValueId::ClarionLinkUnit);
-		return scbw::get_generic_unit_vector(clarion, ValueId::ClarionLinkFeedback);
+		auto& clarions = scbw::get_generic_unit_vector(unit, ValueId::PhaseLinkClarions);
+		for (CUnit* clarion : clarions) {
+			auto link = scbw::get_generic_unit_vector(clarion, ValueId::PhaseLink);
+			links.insert(link.begin(), link.end());
+		}
+		return links;
 	}
 }
