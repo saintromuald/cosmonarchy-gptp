@@ -953,10 +953,13 @@ namespace hooks {
 			unit->updateSpeed();
 		}
 
-		// TODO: Remove? Don't think this code runs as Phase Link is perpetually active
-		if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 0) {
-			scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::SetPhaseLinkStatus, 1, 0, 0);
+		// Clarion update speed, handle phase link
+		if (unit->id == UnitId::ProtossClarion) {
 			unit->updateSpeed();
+
+			if (scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 0) {
+				scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::SetPhaseLinkStatus, 1, 0, 0);
+			}
 		}
 
 		// Autovitality - Simulacrum behavior
