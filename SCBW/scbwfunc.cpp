@@ -1,10 +1,8 @@
 #include "scbwfunc.h"
 
-const uint32 Func_HasMoneyCanMake = 0x00467250;
 bool HasMoneyCanMake(CUnit* builder, uint32 unitToBuild) {
-
+	const uint32 Func_HasMoneyCanMake = 0x00467250;
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		PUSH unitToBuild
@@ -13,27 +11,13 @@ bool HasMoneyCanMake(CUnit* builder, uint32 unitToBuild) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
-}
-
-const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
-void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
-
-	__asm {
-		PUSHAD
-		MOV ECX, unit
-		MOV EAX, order
-		CALL Func_removeOrderFromUnitQueue
-		POPAD
-	}
-
 }
 
 // For loadRaceUI
-const uint32 Func_getRaceSoundList = 0x0048FB40;
+
 void getRaceSoundList(int8 a1) {
+	const uint32 Func_getRaceSoundList = 0x0048FB40;
 	__asm {
 		PUSHAD
 		PUSH a1
@@ -42,8 +26,8 @@ void getRaceSoundList(int8 a1) {
 	}
 }
 
-const uint32 Func_dialogGrpConstruct = 0x004197B0;
 int32 dialogGrpConstruct(int32 a1, int32 a2, int32 a3, int32(__fastcall* a4)(int32, int32, int32, int32)) {
+	const uint32 Func_dialogGrpConstruct = 0x004197B0;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -58,8 +42,8 @@ int32 dialogGrpConstruct(int32 a1, int32 a2, int32 a3, int32(__fastcall* a4)(int
 	return result;
 }
 
-const uint32 Func_loadGraphic = 0x004D2B30;
 void loadGraphic(int8 a1, int32 a2, int32 a3, int8 a4, int32 a5) {
+	const uint32 Func_loadGraphic = 0x004D2B30;
 	__asm {
 		PUSHAD
 		PUSH a5
@@ -72,8 +56,8 @@ void loadGraphic(int8 a1, int32 a2, int32 a3, int8 a4, int32 a5) {
 	}
 }
 
-const uint32 Func_randFunc = 0x0040C7BD;
 int randFunc() {
+	const uint32 Func_randFunc = 0x0040C7BD;
 	static int result;
 	__asm {
 		PUSHAD
@@ -84,10 +68,9 @@ int randFunc() {
 	return result;
 }
 
-const uint32 Func_unitHPBelow33Percent = 0x004022C0;
 bool unitHPbelow33_percent(CUnit* a1) {
+	const uint32 Func_unitHPBelow33Percent = 0x004022C0;
 	static int result;
-
 	__asm {
 		PUSHAD
 		MOV ECX, a1
@@ -98,8 +81,8 @@ bool unitHPbelow33_percent(CUnit* a1) {
 	return (bool)result;
 }
 
-const uint32 Func_unitHPBetween33_66Percent = 0x00402270;
 bool unitHPbetween33_66_percent(int32 a1, CUnit* a2) {
+	const uint32 Func_unitHPBetween33_66Percent = 0x00402270;
 	static int32 result;
 
 	__asm {
@@ -113,10 +96,9 @@ bool unitHPbetween33_66_percent(int32 a1, CUnit* a2) {
 	return (bool)result;
 }
 
-const uint32 Func_getMaxHP = 0x00401400;
 int32 getMaxHP(CUnit* a1) {
+	const uint32 Func_getMaxHP = 0x00401400;
 	static int32 result;
-
 	__asm {
 		PUSHAD
 		MOV ECX, a1
@@ -127,8 +109,8 @@ int32 getMaxHP(CUnit* a1) {
 	return result;
 }
 
-const uint32 Func_getLastQueueSlotType = 0x0047B270;
 uint16 getLastQueueSlotType(CUnit* a1) {
+	const uint32 Func_getLastQueueSlotType = 0x0047B270;
 	static int result;
 	__asm {
 		PUSHAD
@@ -138,11 +120,10 @@ uint16 getLastQueueSlotType(CUnit* a1) {
 		POPAD
 	}
 	return (uint16)result;
-
 }
 
-const uint32 Func_addTextToDialog = 0x004258B0;
 void addTextToDialog(int32 a1, int16 a2, const char* a3) {
+	const uint32 Func_addTextToDialog = 0x004258B0;
 	static int32 _a3 = (int)a3;
 	__asm {
 		PUSHAD
@@ -154,8 +135,8 @@ void addTextToDialog(int32 a1, int16 a2, const char* a3) {
 	}
 }
 
-const uint32 Func_drawEnergy = 0x00425A30;
 void drawEnergy(int32 a1) {
+	const uint32 Func_drawEnergy = 0x00425A30;
 	__asm {
 		PUSHAD
 		MOV EBX, a1
@@ -164,8 +145,8 @@ void drawEnergy(int32 a1) {
 	}
 }
 
-const uint32 Func_hideOptionalStatusScreenControls = 0x00457310;
 void hideOptionalStatusScreenControls(BinDlg* a1) {
+	const uint32 Func_hideOptionalStatusScreenControls = 0x00457310;
 	__asm {
 		PUSHAD
 		MOV EAX, a1
@@ -174,8 +155,8 @@ void hideOptionalStatusScreenControls(BinDlg* a1) {
 	}
 }
 
-const uint32 Func_showControlGroup = 0x00457250;
 void showControlGroup(BinDlg* a1, int16 a2, int16 a3) {
+	const uint32 Func_showControlGroup = 0x00457250;
 	__asm {
 		PUSHAD
 		PUSH a3
@@ -186,8 +167,8 @@ void showControlGroup(BinDlg* a1, int16 a2, int16 a3) {
 	}
 }
 
-const uint32 Func_addTextToDialog = 0x004258B0;
 void addTextToDialog(int a1, int16 a2, int a3) {
+	const uint32 Func_addTextToDialog = 0x004258B0;
 	__asm {
 		PUSHAD
 		PUSH a3
@@ -198,8 +179,8 @@ void addTextToDialog(int a1, int16 a2, int a3) {
 	}
 }
 
-const uint32 Func_drawShieldUpgrade = 0x00425510;
 void drawShieldUpgrade(int a1, uint16 a2) {
+	const uint32 Func_drawShieldUpgrade = 0x00425510;
 	__asm {
 		PUSHAD
 		PUSH a2
@@ -209,8 +190,8 @@ void drawShieldUpgrade(int a1, uint16 a2) {
 	}
 }
 
-const uint32 Func_hideDialog = 0x00418700;
 void hideDialog(BinDlg* a1) {
+	const uint32 Func_hideDialog = 0x00418700;
 	__asm {
 		PUSHAD
 		MOV ESI, a1
@@ -221,8 +202,8 @@ void hideDialog(BinDlg* a1) {
 
 // For drawSupplyUnitInfo
 
-const uint32 Func_getSuppliesUsed = 0x00424732;
 int getSuppliesUsed() {
+	const uint32 Func_getSuppliesUsed = 0x00424732;
 	static int result;
 	__asm {
 		PUSHAD
@@ -233,21 +214,8 @@ int getSuppliesUsed() {
 	return result;
 }
 
-const uint32 Func_getLastQueueSlotType = 0x0047B270;
-uint16 getLastQueueSlotType(CUnit* a1) {
-	static uint32 result;
-	__asm {
-		PUSHAD
-		MOV EDX, a1
-		CALL Func_getLastQueueSlotType
-		MOV result, EAX
-		POPAD
-	}
-	return (uint16)result;
-}
-
-const uint32 Func_getSuppliesAvailable = 0x00488900;
 uint32 getSuppliesAvailable(uint8 a1, int a2) {
+	const uint32 Func_getSuppliesAvailable = 0x00488900;
 	static uint32 result;
 	__asm {
 		PUSHAD
@@ -260,8 +228,8 @@ uint32 getSuppliesAvailable(uint8 a1, int a2) {
 	return result;
 }
 
-const uint32 Func_drawArmor = 0x00425600;
 void drawArmor(int a1, int a2, uint16 a3) {
+	const uint32 Func_drawArmor = 0x00425600;
 	__asm {
 		PUSHAD
 		PUSH a3
@@ -272,8 +240,8 @@ void drawArmor(int a1, int a2, uint16 a3) {
 	}
 }
 
-const uint32 Func_unitStatAct_Standard = 0x00426F50;
 void unitStatAct_Standard(void* a1) {
+	const uint32 Func_unitStatAct_Standard = 0x00426F50;
 	__asm {
 		PUSHAD
 		MOV ECX, a1
@@ -284,8 +252,8 @@ void unitStatAct_Standard(void* a1) {
 
 // For AI_TargetEnemyProc
 
-const uint32 Func_AI_UnitCanAttack = 0x00476180;
 bool AI_UnitCanAttack(CUnit* a1) {
+	const uint32 Func_AI_UnitCanAttack = 0x00476180;
 	static int result;
 	__asm {
 		PUSHAD
@@ -299,8 +267,8 @@ bool AI_UnitCanAttack(CUnit* a1) {
 
 // For drawBuildingInfo
 
-const uint32 Func_needRedrawUI = 0x00424A10;
 int needRedrawUI() {
+	const uint32 Func_needRedrawUI = 0x00424A10;
 	static int result;
 	__asm {
 		PUSHAD
@@ -311,8 +279,8 @@ int needRedrawUI() {
 	return result;
 }
 
-const uint32 Func_genericStatusUpdateDrawnValues = 0x004248F0;
 CUnit* genericStatusUpdateDrawnValues() {
+	const uint32 Func_genericStatusUpdateDrawnValues = 0x004248F0;
 	static CUnit* result;
 	__asm {
 		PUSHAD
@@ -323,8 +291,8 @@ CUnit* genericStatusUpdateDrawnValues() {
 	return result;
 }
 
-const uint32 Func_drawProgressBar = 0x004260C0;
 void drawProgressBar(int a1) {
+	const uint32 Func_drawProgressBar = 0x004260C0;
 	__asm {
 		PUSHAD
 		MOV EDI, a1
@@ -333,8 +301,8 @@ void drawProgressBar(int a1) {
 	}
 }
 
-const uint32 Func_drawNukeSiloInfo = 0x00426FF0;
 void drawNukeSiloInfo(int a1) {
+	const uint32 Func_drawNukeSiloInfo = 0x00426FF0;
 	__asm {
 		PUSHAD
 		PUSH a1
@@ -343,8 +311,8 @@ void drawNukeSiloInfo(int a1) {
 	}
 }
 
-const uint32 Func_unitIsActiveTransport = 0x004E6BA0;
 bool unitIsActiveTransport(CUnit* a1) {
+	const uint32 Func_unitIsActiveTransport = 0x004E6BA0;
 	static int result;
 	__asm {
 		PUSHAD
@@ -356,8 +324,8 @@ bool unitIsActiveTransport(CUnit* a1) {
 	return (bool)result;
 }
 
-const uint32 Func_isQueueSlotActive = 0x00401E70;
 bool isQueueSlotActive(CUnit* a1, int a2) {
+	const uint32 Func_isQueueSlotActive = 0x00401E70;
 	static int result;
 	__asm {
 		PUSHAD
@@ -370,8 +338,8 @@ bool isQueueSlotActive(CUnit* a1, int a2) {
 	return (bool)result;
 }
 
-const uint32 Func_drawTrainingProgress = 0x004268D0;
 void drawTrainingProgress(BinDlg* a1) {
+	const uint32 Func_drawTrainingProgress = 0x004268D0;
 	__asm {
 		PUSHAD
 		PUSH a1
@@ -380,8 +348,8 @@ void drawTrainingProgress(BinDlg* a1) {
 	}
 }
 
-const uint32 Func_isConstructingAddon = 0x004E66B0;
 bool isConstructingAddon(CUnit* a1) {
+	const uint32 Func_isConstructingAddon = 0x004E66B0;
 	static int result;
 	__asm {
 		PUSHAD
@@ -393,8 +361,8 @@ bool isConstructingAddon(CUnit* a1) {
 	return (bool)result;
 }
 
-const uint32 Func_isAttemptingProtossBuild = 0x004E4C40;
 bool isAttemptingProtossBuild(CUnit* a1) {
+	const uint32 Func_isAttemptingProtossBuild = 0x004E4C40;
 	static int result;
 	__asm {
 		PUSHAD
@@ -406,8 +374,8 @@ bool isAttemptingProtossBuild(CUnit* a1) {
 	return (bool)result;
 }
 
-const uint32 Func_drawAddonProgress = 0x00425F30;
 void drawAddonProgress(int a1) {
+	const uint32 Func_drawAddonProgress = 0x00425F30;
 	__asm {
 		PUSHAD
 		MOV EDI, a1
@@ -416,8 +384,8 @@ void drawAddonProgress(int a1) {
 	}
 }
 
-const uint32 Func_drawTechProgress = 0x004266F0;
 void drawTechProgress(int a1) {
+	const uint32 Func_drawTechProgress = 0x004266F0;
 	__asm {
 		PUSHAD
 		PUSH a1
@@ -426,8 +394,8 @@ void drawTechProgress(int a1) {
 	}
 }
 
-const uint32 Func_drawUpgradeProgress = 0x00426500;
 void drawUpgradeProgress(BinDlg* a1) {
+	const uint32 Func_drawUpgradeProgress = 0x00426500;
 	__asm {
 		PUSHAD
 		PUSH a1
@@ -436,8 +404,8 @@ void drawUpgradeProgress(BinDlg* a1) {
 	}
 }
 
-const uint32 Func_unitIsGeyser = 0x004688B0;
 bool unitIsGeyser(CUnit* a1) {
+	const uint32 Func_unitIsGeyser = 0x004688B0;
 	static int result;
 	__asm {
 		PUSHAD
@@ -449,8 +417,8 @@ bool unitIsGeyser(CUnit* a1) {
 	return (bool)result;
 }
 
-const uint32 Func_drawGasQuantity = 0x00426190;
 void drawGasQuantity(BinDlg* a1) {
+	const uint32 Func_drawGasQuantity = 0x00426190;
 	__asm {
 		PUSHAD
 		MOV EAX, a1
@@ -459,8 +427,8 @@ void drawGasQuantity(BinDlg* a1) {
 	}
 }
 
-const uint32 Func_unitGetGroundWeapon = 0x00475AD0;
 int8 unitGetGroundWeapon(CUnit* a1) {
+	const uint32 Func_unitGetGroundWeapon = 0x00475AD0;
 	static int result;
 	__asm {
 		PUSHAD
@@ -472,8 +440,8 @@ int8 unitGetGroundWeapon(CUnit* a1) {
 	return (int8)result;
 }
 
-const uint32 Func_drawDisplayButtons = 0x00426C60;
 void drawDisplayButtons(int a1) {
+	const uint32 Func_drawDisplayButtons = 0x00426C60;
 	__asm {
 		PUSHAD
 		PUSH a1
@@ -482,8 +450,8 @@ void drawDisplayButtons(int a1) {
 	}
 }
 
-const uint32 Func_getControlFromIndex = 0x00418080;
 BinDlg* getControlFromIndex(BinDlg* a1, int16 a2) {
+	const uint32 Func_getControlFromIndex = 0x00418080;
 	static BinDlg* result;
 	__asm {
 		PUSHAD
@@ -496,8 +464,8 @@ BinDlg* getControlFromIndex(BinDlg* a1, int16 a2) {
 	return result;
 }
 
-const uint32 Func_setTextStr = 0x004263E0;
 void setTextStr(int a1) {
+	const uint32 Func_setTextStr = 0x004263E0;
 	__asm {
 		PUSHAD
 		PUSH a1
@@ -506,8 +474,8 @@ void setTextStr(int a1) {
 	}
 }
 
-const uint32 Func_setUnitStatusStrText = 0x00425B50;
 void setUnitStatusStrText(int a1) {
+	const uint32 Func_setUnitStatusStrText = 0x00425B50;
 	__asm {
 		PUSHAD
 		PUSH a1
@@ -516,8 +484,8 @@ void setUnitStatusStrText(int a1) {
 	}
 }
 
-const uint32 Func_unitGetName = 0x0047B5A0;
 int unitGetName(CUnit* a1) {
+	const uint32 Func_unitGetName = 0x0047B5A0;
 	static int result;
 	__asm {
 		PUSHAD
@@ -530,8 +498,9 @@ int unitGetName(CUnit* a1) {
 }
 
 // For getUnitStrength
-const uint32 Func_getCurrentHitPointsPlusShields = 0x004026D0;
+
 int getCurrentHitPointsPlusShields(CUnit* a1) {
+	const uint32 Func_getCurrentHitPointsPlusShields = 0x004026D0;
 	static int result;
 	__asm {
 		PUSHAD
@@ -543,8 +512,8 @@ int getCurrentHitPointsPlusShields(CUnit* a1) {
 	return result;
 }
 
-const uint32 Func_getBaseStrength = 0x004316D0;
 int getBaseStrength(int a1, CUnit* a2) {
+	const uint32 Func_getBaseStrength = 0x004316D0;
 	static int result;
 	__asm {
 		PUSHAD
@@ -557,22 +526,10 @@ int getBaseStrength(int a1, CUnit* a2) {
 	return result;
 }
 
-const uint32 Func_getMaxHP = 0x00401400;
-int getMaxHP(CUnit* a1) {
-	static int result;
-	__asm {
-		PUSHAD
-		MOV EAX, a1
-		CALL Func_getMaxHP
-		MOV result, EAX
-		POPAD
-	}
-	return result;
-}
-
 // For AI_RestorationRequirementsProc
-const uint32 Func_canWeaponTargetUnit = 0x00475CE0;
+
 int canWeaponTargetUnit(uint8 a1, CUnit* a2, CUnit* a3) {
+	const uint32 Func_canWeaponTargetUnit = 0x00475CE0;
 	static int result;
 	__asm {
 		PUSHAD
@@ -588,8 +545,8 @@ int canWeaponTargetUnit(uint8 a1, CUnit* a2, CUnit* a3) {
 
 // For AI_EMPShieldRequirementsProc
 
-const uint32 Func_AI_TargetUnitIsWorthHitting = 0x00440E30;
 int32 AI_TargetUnitIsWorthHitting(CUnit* a1, CUnit* a2) {
+	const uint32 Func_AI_TargetUnitIsWorthHitting = 0x00440E30;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -602,8 +559,8 @@ int32 AI_TargetUnitIsWorthHitting(CUnit* a1, CUnit* a2) {
 	return result;
 }
 
-const uint32 Func_createSplashWeaponProc = 0x004E82E0;
 int createSplashWeaponProc(int16 a1, int16 a2, int16 a3, int(__fastcall* a4)(int, int), int a5) {
+	const uint32 Func_createSplashWeaponProc = 0x004E82E0;
 	static int result;
 	__asm {
 		PUSHAD
@@ -619,8 +576,8 @@ int createSplashWeaponProc(int16 a1, int16 a2, int16 a3, int(__fastcall* a4)(int
 	return result;
 }
 
-const uint32 Func_unitShieldsClumpInAreaAccumulatorProc = 0x00440A60;
 int unitShieldsClumpInAreaAccumulatorProc(CUnit* a1, CUnit* a2) {
+	const uint32 Func_unitShieldsClumpInAreaAccumulatorProc = 0x00440A60;
 	static int result;
 	__asm {
 		PUSHAD
@@ -634,8 +591,9 @@ int unitShieldsClumpInAreaAccumulatorProc(CUnit* a1, CUnit* a2) {
 }
 
 // For hallucinationHit
-const uint32 Func_unitWasHit = 0x004795D0;
+
 void unitWasHit(CUnit* a1, CUnit* a2, int a3) {
+	const uint32 Func_unitWasHit = 0x004795D0;
 	__asm {
 		PUSHAD
 		PUSH a3
@@ -646,8 +604,8 @@ void unitWasHit(CUnit* a1, CUnit* a2, int a3) {
 	}
 }
 
-const uint32 Func_doAttackNotifyEvent = 0x0048F230;
 void doAttackNotifyEvent(CUnit* a1) {
+	const uint32 Func_doAttackNotifyEvent = 0x0048F230;
 	__asm {
 		PUSHAD
 		PUSH a1
@@ -656,8 +614,8 @@ void doAttackNotifyEvent(CUnit* a1) {
 	}
 }
 
-const uint32 Func_createShieldOverlay = 0x004E6140;
 CImage* createShieldOverlay(int a1, CUnit* a2) {
+	const uint32 Func_createShieldOverlay = 0x004E6140;
 	static CImage* result;
 	__asm {
 		PUSHAD
@@ -671,8 +629,9 @@ CImage* createShieldOverlay(int a1, CUnit* a2) {
 }
 
 // For drawImageHPBar
-const uint32 Func_unk_billions = 0x0047A750;
+
 int unk_billions(int a1, int32 a2, int a3, int a4) {
+	const uint32 Func_unk_billions = 0x0047A750;
 	static int result;
 	__asm {
 		PUSHAD
@@ -687,8 +646,8 @@ int unk_billions(int a1, int32 a2, int a3, int a4) {
 	return result;
 }
 
-const uint32 Func_unk_billions2 = 0x0047A6E0;
 int unk_billions2(int a1, int32 a2, int a3, int a4) {
+	const uint32 Func_unk_billions2 = 0x0047A6E0;
 	static int result;
 	__asm {
 		PUSHAD
@@ -703,8 +662,8 @@ int unk_billions2(int a1, int32 a2, int a3, int a4) {
 	return result;
 }
 
-const uint32 Func_hpBarSurfaceBuffer = 0x0047A350;
 int hpBarSurfaceBuffer(int a1, int a2, int* a3, int a4, int a5) {
+	const uint32 Func_hpBarSurfaceBuffer = 0x0047A350;
 	static int result;
 	__asm {
 		PUSHAD
@@ -720,8 +679,8 @@ int hpBarSurfaceBuffer(int a1, int a2, int* a3, int a4, int a5) {
 	return result;
 }
 
-const uint32 Func_hpBarSurfaceBuffer2 = 0x0047A120;
 int hpBarSurfaceBuffer2(int a1, int a2, uint16 a3, int a4) {
+	const uint32 Func_hpBarSurfaceBuffer2 = 0x0047A120;
 	static int result;
 	__asm {
 		PUSHAD
@@ -736,8 +695,8 @@ int hpBarSurfaceBuffer2(int a1, int a2, uint16 a3, int a4) {
 	return result;
 }
 
-const uint32 Func_renderHPBar = 0x0047A4E0;
 int renderHPBar(int a1, int a2, int* a3, int a4, int a5) {
+	const uint32 Func_renderHPBar = 0x0047A4E0;
 	static int result;
 	__asm {
 		PUSHAD
@@ -753,8 +712,8 @@ int renderHPBar(int a1, int a2, int* a3, int a4, int a5) {
 	return result;
 }
 
-const uint32 Func_getUnitMaxEnergy = 0x00491870;
 int32 getUnitMaxEnergy(CUnit* a1) {
+	const uint32 Func_getUnitMaxEnergy = 0x00491870;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -766,8 +725,8 @@ int32 getUnitMaxEnergy(CUnit* a1) {
 	return result;
 }
 
-const uint32 Func_getHpBarDrawSizes = 0x0047A670;
 int getHpBarDrawSizes(int a1, int32 a2, int a3, int a4) {
+	const uint32 Func_getHpBarDrawSizes = 0x0047A670;
 	static int result;
 	__asm {
 		PUSHAD
@@ -783,8 +742,9 @@ int getHpBarDrawSizes(int a1, int32 a2, int a3, int a4) {
 }
 
 // For canCastSpell
-const uint32 Func_unitIsFrozen = 0x004020B0;
+
 bool unitIsFrozen(CUnit* a1) {
+	const uint32 Func_unitIsFrozen = 0x004020B0;
 	static int result;
 	__asm {
 		PUSHAD
@@ -796,8 +756,8 @@ bool unitIsFrozen(CUnit* a1) {
 	return (bool)result;
 }
 
-const uint32 Func_isUnitCasterNotHallucination = 0x00401210;
 bool isUnitCasterNotHallucination(CUnit* a1) {
+	const uint32 Func_isUnitCasterNotHallucination = 0x00401210;
 	static int result;
 	__asm {
 		PUSHAD
@@ -809,8 +769,8 @@ bool isUnitCasterNotHallucination(CUnit* a1) {
 	return (bool)result;
 }
 
-const uint32 Func_getActiveTileFlag = 0x00472F80;
 bool getActiveTileFlag(int16 a1, int16 a2, int a3, int a4) {
+	const uint32 Func_getActiveTileFlag = 0x00472F80;
 	static int result;
 	__asm {
 		PUSHAD
@@ -825,8 +785,8 @@ bool getActiveTileFlag(int16 a1, int16 a2, int a3, int a4) {
 	return (bool)result;
 }
 
-const uint32 Func_getTargetUnitAbilityErrorStatString = 0x00491E80;
 CUnit* getTargetUnitAbilityErrorStatString(CUnit* a1, char a2, int a3) {
+	const uint32 Func_getTargetUnitAbilityErrorStatString = 0x00491E80;
 	static CUnit* result;
 	__asm {
 		PUSHAD
@@ -841,8 +801,9 @@ CUnit* getTargetUnitAbilityErrorStatString(CUnit* a1, char a2, int a3) {
 }
 
 // For modifyUnitShields
-const uint32 Func_SErrSetLastError = 0x00410172;
+
 int SErrSetLastError(char a1) {
+	const uint32 Func_SErrSetLastError = 0x00410172;
 	static int result;
 	__asm {
 		PUSHAD
@@ -856,8 +817,8 @@ int SErrSetLastError(char a1) {
 
 // For compileHealthBar
 
-const uint32 Func_updateImageDrawData = 0x004D57B0;
 void updateImageDrawData(CImage* a1) {
+	const uint32 Func_updateImageDrawData = 0x004D57B0;
 	__asm {
 		PUSHAD
 		MOV EAX, a1
@@ -866,8 +827,8 @@ void updateImageDrawData(CImage* a1) {
 	}
 }
 
-const uint32 Func_playImageIscript = 0x004D8470;
 void playImageIscript(CImage* a1, char a2) {
+	const uint32 Func_playImageIscript = 0x004D8470;
 	__asm {
 		PUSHAD
 		PUSH a2
@@ -878,8 +839,9 @@ void playImageIscript(CImage* a1, char a2) {
 }
 
 // For AI_FindTransport
-const uint32 Func_canEnterTransport = 0x004E6E00;
+
 bool canEnterTransport(CUnit* a1, CUnit* a2) {
+	const uint32 Func_canEnterTransport = 0x004E6E00;
 	static int result;
 	__asm {
 		PUSHAD
@@ -892,8 +854,8 @@ bool canEnterTransport(CUnit* a1, CUnit* a2) {
 	return (bool)result;
 }
 
-const uint32 Func_SAI_GetRegionIdFromPxEx = 0x0049C9F0;
 int16 SAI_GetRegionIdFromPxEx(int32 a1, int32 a2) {
+	const uint32 Func_SAI_GetRegionIdFromPxEx = 0x0049C9F0;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -906,8 +868,8 @@ int16 SAI_GetRegionIdFromPxEx(int32 a1, int32 a2) {
 	return (int16)result;
 }
 
-const uint32 Func_getUnitDistanceToHalt = 0x00402140;
 int32 getUnitDistanceToHalt(int a1, CUnit* a2, int a3) {
+	const uint32 Func_getUnitDistanceToHalt = 0x00402140;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -922,8 +884,9 @@ int32 getUnitDistanceToHalt(int a1, CUnit* a2, int a3) {
 }
 
 // For mapDataTransfer
-const uint32 Func_dataTransfer00 = 0x00472A00;
+
 int32 dataTransfer00(int a1, char a2, int a3) {
+	const uint32 Func_dataTransfer00 = 0x00472A00;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -937,8 +900,8 @@ int32 dataTransfer00(int a1, char a2, int a3) {
 	return result;
 }
 
-const uint32 Func_dataTransfer01 = 0x0045A600;
 int dataTransfer01(uint32 a1, int a2, uint32 a3) {
+	const uint32 Func_dataTransfer01 = 0x0045A600;
 	static int result;
 	__asm {
 		PUSHAD
@@ -952,8 +915,8 @@ int dataTransfer01(uint32 a1, int a2, uint32 a3) {
 	return result;
 }
 
-const uint32 Func_dataTransfer02 = 0x0045A230;
 int32 dataTransfer02(int a1, int a2, char a3) {
+	const uint32 Func_dataTransfer02 = 0x0045A230;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -967,8 +930,8 @@ int32 dataTransfer02(int a1, int a2, char a3) {
 	return result;
 }
 
-const uint32 Func_dataTransfer03 = 0x0045A1F0;
 int32 dataTransfer03(int a1, char a2, int a3) {
+	const uint32 Func_dataTransfer03 = 0x0045A1F0;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -982,8 +945,8 @@ int32 dataTransfer03(int a1, char a2, int a3) {
 	return result;
 }
 
-const uint32 Func_dataTransfer04 = 0x0045A390;
 int dataTransfer04(uint32 a1, int a2, int a3) {
+	const uint32 Func_dataTransfer04 = 0x0045A390;
 	static int result;
 	__asm {
 		PUSHAD
@@ -997,8 +960,8 @@ int dataTransfer04(uint32 a1, int a2, int a3) {
 	return result;
 }
 
-const uint32 Func_dataTransfer05 = 0x0045A190;
 int32 dataTransfer05(int a1, int a2) {
+	const uint32 Func_dataTransfer05 = 0x0045A190;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1011,8 +974,8 @@ int32 dataTransfer05(int a1, int a2) {
 	return result;
 }
 
-const uint32 Func_vectorTransfer = 0x0045A010;
 vectorHead* vectorTransfer(char a1, char a2) {
+	const uint32 Func_vectorTransfer = 0x0045A010;
 	static vectorHead* result;
 	__asm {
 		PUSHAD
@@ -1025,8 +988,8 @@ vectorHead* vectorTransfer(char a1, char a2) {
 	return result;
 }
 
-const uint32 Func_dataTransfer06 = 0x00472900;
 int dataTransfer06(int a1) {
+	const uint32 Func_dataTransfer06 = 0x00472900;
 	static int result;
 	__asm {
 		PUSHAD
@@ -1039,8 +1002,9 @@ int dataTransfer06(int a1) {
 }
 
 // For getRandYesSFX
-const uint32 Func_randGetSFXBetween = 0x0048E940;
+
 int randGetSFXBetween(int a1, int a2) {
+	const uint32 Func_randGetSFXBetween = 0x0048E940;
 	static int result;
 	__asm {
 		PUSHAD
@@ -1053,24 +1017,11 @@ int randGetSFXBetween(int a1, int a2) {
 	return result;
 }
 
-const uint32 Func_SAI_GetRegionIdFromPxEx = 0x0049C9F0;
-int16 SAI_GetRegionIdFromPxEx(int32 x, int32 y) {
-	static int32 result;
-	__asm {
-		PUSHAD
-		MOV EDI, x
-		MOV ECX, y
-		CALL Func_SAI_GetRegionIdFromPxEx
-		MOV result, EAX
-		POPAD
-	}
-	return (int16)result;
-}
-
 
 // for AI_TrainUnit
-const uint32 Func_AI_TrainingWorker = 0x00435700;
+
 char AI_TrainingWorker(CUnit* result, CUnit* parent) {
+	const uint32 Func_AI_TrainingWorker = 0x00435700;
 	static int32 resultFunc;
 	__asm {
 		PUSHAD
@@ -1083,8 +1034,8 @@ char AI_TrainingWorker(CUnit* result, CUnit* parent) {
 	return resultFunc;
 }
 
-const uint32 Func_AI_TrainingOverlord = 0x00435770;
 void AI_TrainingOverlord(CUnit* result, CUnit* parent) {
+	const uint32 Func_AI_TrainingOverlord = 0x00435770;
 	__asm {
 		PUSHAD
 		MOV EAX, result
@@ -1094,8 +1045,8 @@ void AI_TrainingOverlord(CUnit* result, CUnit* parent) {
 	}
 }
 
-const uint32 Func_AI_TrainingNormal = 0x00435DB0;
 void AI_TrainingNormal(CUnit* result, CUnit* parent) {
+	const uint32 Func_AI_TrainingNormal = 0x00435DB0;
 	__asm {
 		PUSHAD
 		MOV EAX, result
@@ -1105,8 +1056,8 @@ void AI_TrainingNormal(CUnit* result, CUnit* parent) {
 	}
 }
 
-const uint32 Func_AI_OrderToDestination = 0x0043D5D0;
 void AI_OrderToDestination(CUnit* unit, int orderId, int x, int y) {
+	const uint32 Func_AI_OrderToDestination = 0x0043D5D0;
 	__asm {
 		PUSHAD
 		PUSH y
@@ -1118,8 +1069,8 @@ void AI_OrderToDestination(CUnit* unit, int orderId, int x, int y) {
 	}
 }
 
-const uint32 Func_AI_AssignCaptainToSlowestUnit = 0x00436F70;
 void AI_AssignCaptainToSlowestUnit(AiCaptain* region) {
+	const uint32 Func_AI_AssignCaptainToSlowestUnit = 0x00436F70;
 	__asm {
 		PUSHAD
 		PUSH region
@@ -1130,8 +1081,8 @@ void AI_AssignCaptainToSlowestUnit(AiCaptain* region) {
 
 // for AI_CreateNuke
 
-const uint32 Func_createUnit = 0x004A09D0;
 CUnit* createUnit(int16 unitType, int32 x, int32 y, int32 playerId) {
+	const uint32 Func_createUnit = 0x004A09D0;
 	static CUnit* result;
 	__asm {
 		PUSHAD
@@ -1146,8 +1097,8 @@ CUnit* createUnit(int16 unitType, int32 x, int32 y, int32 playerId) {
 	return result;
 }
 
-const uint32 Func_updateUnitStatsFinishBuilding = 0x004A01F0;
 void updateUnitStatsFinishBuilding(CUnit* unit) {
+	const uint32 Func_updateUnitStatsFinishBuilding = 0x004A01F0;
 	__asm {
 		PUSHAD
 		MOV EAX, unit
@@ -1156,8 +1107,8 @@ void updateUnitStatsFinishBuilding(CUnit* unit) {
 	}
 }
 
-const uint32 Func_updateUnitStrengthAndApplyDefaultOrders = 0x0049FA40;
 uint32 updateUnitStrengthAndApplyDefaultOrders(CUnit* unit) {
+	const uint32 Func_updateUnitStrengthAndApplyDefaultOrders = 0x0049FA40;
 	static uint32 result;
 	__asm {
 		PUSHAD
@@ -1169,8 +1120,8 @@ uint32 updateUnitStrengthAndApplyDefaultOrders(CUnit* unit) {
 	return result;
 }
 
-const uint32 Func_hideUnit = 0x004E6340;
 void hideUnit(CUnit* unit) {
+	const uint32 Func_hideUnit = 0x004E6340;
 	__asm {
 		PUSHAD
 		MOV EAX, unit
@@ -1181,8 +1132,8 @@ void hideUnit(CUnit* unit) {
 
 // for AI_TrainingBroodling
 
-const uint32 Func_AI_AssignMilitary = 0x004390A0;
 void AI_AssignMilitary(int32 regionType, AiCaptain* region) {
+	const uint32 Func_AI_AssignMilitary = 0x004390A0;
 	__asm {
 		PUSHAD
 		MOV EBX, regionType
@@ -1192,8 +1143,8 @@ void AI_AssignMilitary(int32 regionType, AiCaptain* region) {
 	}
 }
 
-const uint32 Func_AI_AddMilitary = 0x0043DA20;
 void AI_AddMilitary(AiCaptain* region, CUnit* unit, int32 always_this_region) {
+	const uint32 Func_AI_AddMilitary = 0x0043DA20;
 	__asm {
 		PUSHAD
 		PUSH always_this_region
@@ -1206,8 +1157,8 @@ void AI_AddMilitary(AiCaptain* region, CUnit* unit, int32 always_this_region) {
 
 // for AI_AddUnitAi
 
-const uint32 Func_AI_CreateBuildingAi = 0x004044C0;
 UnitAi* AI_CreateBuildingAi(BuildingAiArray* buildingAI) {
+	const uint32 Func_AI_CreateBuildingAi = 0x004044C0;
 	static UnitAi* result;
 	__asm {
 		PUSHAD
@@ -1219,8 +1170,8 @@ UnitAi* AI_CreateBuildingAi(BuildingAiArray* buildingAI) {
 	return result;
 }
 
-const uint32 Func_orderComputerClear = 0x00475310;
 void orderComputerClear(CUnit* unit, uint8 orderId) {
+	const uint32 Func_orderComputerClear = 0x00475310;
 	__asm {
 		PUSHAD
 		MOV ESI, unit
@@ -1230,8 +1181,8 @@ void orderComputerClear(CUnit* unit, uint8 orderId) {
 	}
 }
 
-const uint32 Func_setSecondaryOrder = 0x004743D0;
 CUnit* setSecondaryOrder(CUnit* result, char orderId) {
+	const uint32 Func_setSecondaryOrder = 0x004743D0;
 	static CUnit* result2;
 	__asm {
 		PUSHAD
@@ -1244,8 +1195,8 @@ CUnit* setSecondaryOrder(CUnit* result, char orderId) {
 	return result2;
 }
 
-const uint32 Func_AI_MakeGuard = 0x0043A010;
 void AI_MakeGuard(int32 playerId, CUnit* unit) {
+	const uint32 Func_AI_MakeGuard = 0x0043A010;
 	__asm {
 		PUSHAD
 		PUSH unit
@@ -1255,8 +1206,8 @@ void AI_MakeGuard(int32 playerId, CUnit* unit) {
 	}
 }
 
-const uint32 Func_unitIsActiveResourceDepot = 0x00401CF0;
 bool unitIsActiveResourceDepot(CUnit* unit) {
+	const uint32 Func_unitIsActiveResourceDepot = 0x00401CF0;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1268,8 +1219,8 @@ bool unitIsActiveResourceDepot(CUnit* unit) {
 	return (bool)result;
 }
 
-const uint32 Func_getPlayerDefaultRefineryUnitType = 0x004320D0;
 int32 getPlayerDefaultRefineryUnitType(int32 playerId) {
+	const uint32 Func_getPlayerDefaultRefineryUnitType = 0x004320D0;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1281,9 +1232,11 @@ int32 getPlayerDefaultRefineryUnitType(int32 playerId) {
 	return result;
 }
 
-// for AI_UnitWasHit // some of these should probably be methods in api/etc
-const uint32 Func_AI_CancelStructure = 0x00468280;
+// for AI_UnitWasHit
+// some of these should probably be methods in api/etc
+
 char AI_CancelStructure(CUnit* structure) {
+	const uint32 Func_AI_CancelStructure = 0x00468280;
 	static uint32 result;
 	__asm {
 		PUSHAD
@@ -1295,8 +1248,8 @@ char AI_CancelStructure(CUnit* structure) {
 	return (char)result;
 }
 
-const uint32 Func_AI_GetActualTarget = 0x0043AD60;
 CUnit* AI_GetActualTarget(CUnit* attacker, CUnit* target) {
+	const uint32 Func_AI_GetActualTarget = 0x0043AD60;
 	static CUnit* result;
 	__asm {
 		PUSHAD
@@ -1309,8 +1262,8 @@ CUnit* AI_GetActualTarget(CUnit* attacker, CUnit* target) {
 	return result;
 }
 
-const uint32 Func_checkArbiterCloakingRange = 0x004410C0;
 CUnit* checkArbiterCloakingRange(CUnit* unit, uint16 id) {
+	const uint32 Func_checkArbiterCloakingRange = 0x004410C0;
 	static CUnit* result;
 	__asm {
 		PUSHAD
@@ -1323,8 +1276,8 @@ CUnit* checkArbiterCloakingRange(CUnit* unit, uint16 id) {
 	return result;
 }
 
-const uint32 Func_AI_OrderUnitCloaking = 0x0043B970;
 void AI_OrderUnitCloaking(CUnit* unit) {
+	const uint32 Func_AI_OrderUnitCloaking = 0x0043B970;
 	__asm {
 		PUSHAD
 		MOV ESI, unit
@@ -1333,8 +1286,8 @@ void AI_OrderUnitCloaking(CUnit* unit) {
 	}
 }
 
-const uint32 Func_AI_OrderLurkerBurrow = 0x0043C230;
 void AI_OrderLurkerBurrow(CUnit* unit) {
+	const uint32 Func_AI_OrderLurkerBurrow = 0x0043C230;
 	__asm {
 		PUSHAD
 		MOV EAX, unit
@@ -1343,8 +1296,8 @@ void AI_OrderLurkerBurrow(CUnit* unit) {
 	}
 }
 
-const uint32 Func_AI_IsUnderAttack = 0x00436E70;
 bool AI_IsUnderAttack(CUnit* unit, int32 flag) {
+	const uint32 Func_AI_IsUnderAttack = 0x00436E70;
 	static uint32 result;
 	__asm {
 		PUSHAD
@@ -1357,21 +1310,8 @@ bool AI_IsUnderAttack(CUnit* unit, int32 flag) {
 	return (bool)result;
 }
 
-const uint32 Func_unitIsActiveTransport = 0x004E6BA0;
-bool unitIsActiveTransport(CUnit* unit) {
-	static uint32 result;
-	__asm {
-		PUSHAD
-		MOV ECX, unit
-		CALL Func_unitIsActiveTransport
-		MOV result, EAX
-		POPAD
-	}
-	return (bool)result;
-}
-
-const uint32 Func_isUnitLoaded = 0x004E7110;
 int32 isUnitLoaded(CUnit* unit) {
+	const uint32 Func_isUnitLoaded = 0x004E7110;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1383,8 +1323,8 @@ int32 isUnitLoaded(CUnit* unit) {
 	return result;
 }
 
-const uint32 Func_AI_TryReturnHome = 0x00462EA0;
 int32 AI_TryReturnHome(CUnit* unit, int32 dontIssueOrder) {
+	const uint32 Func_AI_TryReturnHome = 0x00462EA0;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1397,8 +1337,8 @@ int32 AI_TryReturnHome(CUnit* unit, int32 dontIssueOrder) {
 	return result;
 }
 
-const uint32 Func_AI_TransportAction = 0x0043DB50;
 int32 AI_TransportAction(CUnit* unit) {
+	const uint32 Func_AI_TransportAction = 0x0043DB50;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1410,8 +1350,8 @@ int32 AI_TransportAction(CUnit* unit) {
 	return result;
 }
 
-const uint32 Func_AI_AskForHelp = 0x0043ADA0;
 int32 AI_AskForHelp(CUnit* self, CUnit* attacker, int32 onlyNearbyGuards) {
+	const uint32 Func_AI_AskForHelp = 0x0043ADA0;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1425,8 +1365,8 @@ int32 AI_AskForHelp(CUnit* self, CUnit* attacker, int32 onlyNearbyGuards) {
 	return result;
 }
 
-const uint32 Func_getRegionIdFromUnit = 0x0049CB40;
 int16 getRegionIdFromUnit(CUnit* unit) {
+	const uint32 Func_getRegionIdFromUnit = 0x0049CB40;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1438,8 +1378,8 @@ int16 getRegionIdFromUnit(CUnit* unit) {
 	return (int16)result;
 }
 
-const uint32 Func_getEnemyAirStrengthInRegion = 0x00431D00;
 int32 getEnemyAirStrengthInRegion(uint16 regionId, int32 player) {
+	const uint32 Func_getEnemyAirStrengthInRegion = 0x00431D00;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1452,8 +1392,8 @@ int32 getEnemyAirStrengthInRegion(uint16 regionId, int32 player) {
 	return result;
 }
 
-const uint32 Func_getEnemyStrengthInRegion = 0x004318E0;
 int32 getEnemyStrengthInRegion(uint16 regionId, int32 player, int32 includeAir) {
+	const uint32 Func_getEnemyStrengthInRegion = 0x004318E0;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1467,8 +1407,8 @@ int32 getEnemyStrengthInRegion(uint16 regionId, int32 player, int32 includeAir) 
 	return result;
 }
 
-const uint32 Func_unitIsPerformingUnbreakableCode = 0x00402310;
 bool unitIsPerformingUnbreakableCode(CUnit* unit) {
+	const uint32 Func_unitIsPerformingUnbreakableCode = 0x00402310;
 	static uint32 result;
 	__asm {
 		PUSHAD
@@ -1480,8 +1420,8 @@ bool unitIsPerformingUnbreakableCode(CUnit* unit) {
 	return (bool)result;
 }
 
-const uint32 Func_AI_CastSpellBehavior = 0x004A13C0;
 bool AI_CastSpellBehavior(CUnit* unit, bool isAggro) {
+	const uint32 Func_AI_CastSpellBehavior = 0x004A13C0;
 	static uint32 result;
 	__asm {
 		PUSHAD
@@ -1494,8 +1434,8 @@ bool AI_CastSpellBehavior(CUnit* unit, bool isAggro) {
 	return (bool)result;
 }
 
-const uint32 Func_AI_Flee = 0x0043E400;
 int32 AI_Flee(CUnit* unit, CUnit* enemy) {
+	const uint32 Func_AI_Flee = 0x0043E400;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1508,8 +1448,8 @@ int32 AI_Flee(CUnit* unit, CUnit* enemy) {
 	return result;
 }
 
-const uint32 Func_unitHasGroundPath = 0x0042FA00;
 bool unitHasGroundPath(CUnit* unit, int16 x, int16 y) {
+	const uint32 Func_unitHasGroundPath = 0x0042FA00;
 	static uint32 result;
 	__asm {
 		PUSHAD
@@ -1523,8 +1463,8 @@ bool unitHasGroundPath(CUnit* unit, int16 x, int16 y) {
 	return (bool)result;
 }
 
-const uint32 Func_AI_HasNoDefenseBuild = 0x00447370;
 bool AI_HasNoDefenseBuild(int32 player) {
+	const uint32 Func_AI_HasNoDefenseBuild = 0x00447370;
 	static uint32 result;
 	__asm {
 		PUSHAD
@@ -1536,8 +1476,8 @@ bool AI_HasNoDefenseBuild(int32 player) {
 	return (bool)result;
 }
 
-const uint32 Func_unitCanSeeCloakedTarget = 0x00401D60;
 bool unitCanSeeCloakedTarget(CUnit* target, CUnit* unit) {
+	const uint32 Func_unitCanSeeCloakedTarget = 0x00401D60;
 	static uint32 result;
 	__asm {
 		PUSHAD
@@ -1550,8 +1490,8 @@ bool unitCanSeeCloakedTarget(CUnit* target, CUnit* unit) {
 	return (bool)result;
 }
 
-const uint32 Func_AI_RespondToCloakedThreat = 0x0043C580;
 void AI_RespondToCloakedThreat(CUnit* threat, CUnit* unit) {
+	const uint32 Func_AI_RespondToCloakedThreat = 0x0043C580;
 	__asm {
 		PUSHAD
 		PUSH unit
@@ -1561,8 +1501,8 @@ void AI_RespondToCloakedThreat(CUnit* threat, CUnit* unit) {
 	}
 }
 
-const uint32 Func_unitCanAttackTarget = 0x00476730;
 bool unitCanAttackTarget(CUnit* target, CUnit* unit, int32 checkDetection) {
+	const uint32 Func_unitCanAttackTarget = 0x00476730;
 	static uint32 result;
 	__asm {
 		PUSHAD
@@ -1576,8 +1516,8 @@ bool unitCanAttackTarget(CUnit* target, CUnit* unit, int32 checkDetection) {
 	return (bool)result;
 }
 
-const uint32 Func_AI_UpdateAttackTarget = 0x00477160;
 int32 AI_UpdateAttackTarget(CUnit* unit, int32 acceptIfSieged, int32 acceptCritters, int32 mustReach) {
+	const uint32 Func_AI_UpdateAttackTarget = 0x00477160;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1592,21 +1532,8 @@ int32 AI_UpdateAttackTarget(CUnit* unit, int32 acceptIfSieged, int32 acceptCritt
 	return result;
 }
 
-/*	const uint32 Func_AI_PrepareToFlee = 0x00476A50;
-	__int64 AI_PrepareToFlee(CUnit* enemy, CUnit* unit) {
-		static __int64 result;
-		__asm {
-			PUSH unit
-			MOV EAX, enemy
-			CALL Func_AI_PrepareToFlee
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}*/
-
-const uint32 Func_orderInterrupt = 0x00474C30;
 void orderInterrupt(CUnit* unit, uint8 orderId, Point32* pos, CUnit* target) {
+	const uint32 Func_orderInterrupt = 0x00474C30;
 	__asm {
 		PUSHAD
 		PUSH target
@@ -1619,8 +1546,9 @@ void orderInterrupt(CUnit* unit, uint8 orderId, Point32* pos, CUnit* target) {
 }
 
 // for AI_IterateBuildingAI
-const uint32 Func_AI_RemoveFromTowns = 0x00432760;
+
 uint16 AI_RemoveFromTowns(CUnit* worker) {
+	const uint32 Func_AI_RemoveFromTowns = 0x00432760;
 	static uint32 result;
 	__asm {
 		PUSHAD
@@ -1632,8 +1560,8 @@ uint16 AI_RemoveFromTowns(CUnit* worker) {
 	return (uint16)result;
 }
 
-const uint32 Func_AI_DeleteBuildingAI = 0x00404500;
 BuildingAi* AI_DeleteBuildingAI(BuildingAi* building, BuildingAiArray* buildingList) {
+	const uint32 Func_AI_DeleteBuildingAI = 0x00404500;
 	static BuildingAi* result;
 	__asm {
 		PUSHAD
@@ -1646,8 +1574,8 @@ BuildingAi* AI_DeleteBuildingAI(BuildingAi* building, BuildingAiArray* buildingL
 	return result;
 }
 
-const uint32 Func_AI_GetQueuedCount = 0x00466B70;
 int32 AI_GetQueuedCount(CUnit* builder, uint32 unitId) {
+	const uint32 Func_AI_GetQueuedCount = 0x00466B70;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1660,8 +1588,8 @@ int32 AI_GetQueuedCount(CUnit* builder, uint32 unitId) {
 	return result;
 }
 
-const uint32 Func_AI_PrepareGuardAI = 0x00462670;
 void AI_PrepareGuardAI(uint16 y, uint32 player, uint16 unitId, uint16 x) {
+	const uint32 Func_AI_PrepareGuardAI = 0x00462670;
 	__asm {
 		PUSHAD
 		PUSH x
@@ -1673,11 +1601,12 @@ void AI_PrepareGuardAI(uint16 y, uint32 player, uint16 unitId, uint16 x) {
 	}
 }
 
-// Attack extender
+// AI attack wave extender
 
 // for AI_TrainAttackForce
-const uint32 Func_AI_AddRegionToMilitary = 0x0043E2E0;
+
 int32 AI_AddRegionToMilitary(AiCaptain* region, int32 unitId, int32 priority) {
+	const uint32 Func_AI_AddRegionToMilitary = 0x0043E2E0;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1691,8 +1620,8 @@ int32 AI_AddRegionToMilitary(AiCaptain* region, int32 unitId, int32 priority) {
 	return result;
 }
 
-const uint32 Func_AI_FindUnit = 0x00447DC0;
 uint32 AI_FindUnit(uint32 unitId, uint32 playerId, uint32 type) {
+	const uint32 Func_AI_FindUnit = 0x00447DC0;
 	static uint32 typeXD = type;
 	static uint32 result;
 	__asm {
@@ -1707,8 +1636,8 @@ uint32 AI_FindUnit(uint32 unitId, uint32 playerId, uint32 type) {
 	return result;
 }
 
-const uint32 Func_AI_AddSpendingRequest = 0x00447980;
 uint32 AI_AddSpendingRequest(uint16 unitId, uint32 type, uint8 player, char priority, void* value) {
+	const uint32 Func_AI_AddSpendingRequest = 0x00447980;
 	static uint32 typeXD = type;
 	static uint32 result;
 	__asm {
@@ -1725,8 +1654,8 @@ uint32 AI_AddSpendingRequest(uint16 unitId, uint32 type, uint8 player, char prio
 	return result;
 }
 
-const uint32 Func_AI_AddBaseUnitSpendingRequest = 0x004484A0;
 uint32 AI_AddBaseUnitSpendingRequest(uint32 unitId, uint32 player, AiCaptain* region, char priority) {
+	const uint32 Func_AI_AddBaseUnitSpendingRequest = 0x004484A0;
 	static uint32 result;
 	__asm {
 		PUSHAD
@@ -1742,8 +1671,9 @@ uint32 AI_AddBaseUnitSpendingRequest(uint32 unitId, uint32 player, AiCaptain* re
 }
 
 // for AIRegion_GroupForAttack
-const uint32 Func_AI_RecalculateRegionStrength = 0x0043A390;
+
 uint32 AI_RecalculateRegionStrength(AiCaptain* region) {
+	const uint32 Func_AI_RecalculateRegionStrength = 0x0043A390;
 	static uint32 result;
 	__asm {
 		PUSHAD
@@ -1755,8 +1685,8 @@ uint32 AI_RecalculateRegionStrength(AiCaptain* region) {
 	return result;
 }
 
-const uint32 Func_AI_TargetEnemyInRegion = 0x0043CC40;
 CUnit* AI_TargetEnemyInRegion(AiCaptain* region) {
+	const uint32 Func_AI_TargetEnemyInRegion = 0x0043CC40;
 	static CUnit* result;
 	__asm {
 		PUSHAD
@@ -1768,22 +1698,22 @@ CUnit* AI_TargetEnemyInRegion(AiCaptain* region) {
 	return result;
 }
 
-const uint32 Func_AI_MoveMilitaryToDefend = 0x0043DE40;
 int32 AI_MoveMilitaryToDefend(AiCaptain* region) {
+	const uint32 Func_AI_MoveMilitaryToDefend = 0x0043DE40;
 	static int32 result;
 	__asm {
 		PUSHAD
 		MOV EDI, region
-		CALL Func_AI_TargetEnemyInRegion
+		CALL Func_AI_MoveMilitaryToDefend
 		MOV result, EAX
 		POPAD
 	}
 	return result;
 }
 
-const uint32 Func_AI_GetRegionMilitaryTypes = 0x00438FC0;
 void AI_GetRegionMilitaryTypes(AiCaptain* region, int32* hasGroundMilitary,
 	int32* cantAttackGround, int32* cantAttackAir) {
+	const uint32 Func_AI_GetRegionMilitaryTypes = 0x00438FC0;
 	__asm {
 		PUSHAD
 		MOV EAX, region
@@ -1795,8 +1725,8 @@ void AI_GetRegionMilitaryTypes(AiCaptain* region, int32* hasGroundMilitary,
 	}
 }
 
-const uint32 Func_AI_CanTravelToRegion = 0x0043A790;
 int32 AI_CanTravelToRegion(AiCaptain* region1, AiCaptain* region2) {
+	const uint32 Func_AI_CanTravelToRegion = 0x0043A790;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1809,8 +1739,8 @@ int32 AI_CanTravelToRegion(AiCaptain* region1, AiCaptain* region2) {
 	return result;
 }
 
-const uint32 Func_AI_PickAttackTarget_NoBuildings = 0x0043A510;
 CUnit* AI_PickAttackTarget_NoBuildings(AiCaptain* region) {
+	const uint32 Func_AI_PickAttackTarget_NoBuildings = 0x0043A510;
 	static CUnit* result;
 	__asm {
 		PUSHAD
@@ -1822,9 +1752,9 @@ CUnit* AI_PickAttackTarget_NoBuildings(AiCaptain* region) {
 	return result;
 }
 
-const uint32 Func_AI_MoveMilitaryToOtherRegion = 0x0043E580;
 uint32 AI_MoveMilitaryToOtherRegion(AiCaptain* target, AiCaptain* source, uint32 pullUnitsNearRegion,
 	uint32 sendPureSpellcasters, uint32 dontSendFromBunkers) {
+	const uint32 Func_AI_MoveMilitaryToOtherRegion = 0x0043E580;
 	static uint32 result;
 	__asm {
 		PUSHAD
@@ -1840,8 +1770,8 @@ uint32 AI_MoveMilitaryToOtherRegion(AiCaptain* target, AiCaptain* source, uint32
 	return result;
 }
 
-const uint32 Func_AI_IterateTownSomething = 0x0043DD20;
 AiTown* AI_IterateTownSomething(AiCaptain* region) {
+	const uint32 Func_AI_IterateTownSomething = 0x0043DD20;
 	static AiTown* result;
 	__asm {
 		PUSHAD
@@ -1853,8 +1783,8 @@ AiTown* AI_IterateTownSomething(AiCaptain* region) {
 	return result;
 }
 
-const uint32 Func_AI_AttackTimerDecrement = 0x00447090;
 uint32 AI_AttackTimerDecrement(uint32 player) {
+	const uint32 Func_AI_AttackTimerDecrement = 0x00447090;
 	static uint32 result;
 	__asm {
 		PUSHAD
@@ -1866,8 +1796,8 @@ uint32 AI_AttackTimerDecrement(uint32 player) {
 	return result;
 }
 
-const uint32 Func_AI_HasForcesMovingToAttack = 0x0043A2E0;
 int32 AI_HasForcesMovingToAttack(uint32 player) {
+	const uint32 Func_AI_HasForcesMovingToAttack = 0x0043A2E0;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1880,8 +1810,9 @@ int32 AI_HasForcesMovingToAttack(uint32 player) {
 }
 
 // for AI_AttackManager
-const uint32 Func_PopulateRegionsWithOwn = 0x00438B30;
+
 uint16 PopulateRegionsWithOwn(char* regionData, uint32 player) {
+	const uint32 Func_PopulateRegionsWithOwn = 0x00438B30;
 	static uint32 result;
 	__asm {
 		PUSHAD
@@ -1894,8 +1825,8 @@ uint16 PopulateRegionsWithOwn(char* regionData, uint32 player) {
 	return (uint16)result;
 }
 
-const uint32 Func_PopulateRegionsWithEnemy = 0x00439B50;
 void PopulateRegionsWithEnemy(uint32 player, char* regionData) {
+	const uint32 Func_PopulateRegionsWithEnemy = 0x00439B50;
 	__asm {
 		PUSHAD
 		PUSH regionData
@@ -1905,8 +1836,8 @@ void PopulateRegionsWithEnemy(uint32 player, char* regionData) {
 	}
 }
 
-const uint32 Func_AI_GetNeighborRegionTypes = 0x00436D80;
 int32 AI_GetNeighborRegionTypes(char* regionData) {
+	const uint32 Func_AI_GetNeighborRegionTypes = 0x00436D80;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1918,8 +1849,8 @@ int32 AI_GetNeighborRegionTypes(char* regionData) {
 	return result;
 }
 
-const uint32 Func_AI_FinishRegionAccessibility = 0x00436CF0;
 void AI_FinishRegionAccessibility(char* regionData) {
+	const uint32 Func_AI_FinishRegionAccessibility = 0x00436CF0;
 	__asm {
 		PUSHAD
 		MOV EBX, regionData
@@ -1928,9 +1859,9 @@ void AI_FinishRegionAccessibility(char* regionData) {
 	}
 }
 
-const uint32 Func_AI_SetAttackGroupingRegion = 0x004399D0;
 int32 AI_SetAttackGroupingRegion(uint32 airAttack, uint32 alsoVeryNear, uint32 player, char* regionData,
 	int32 x, int32 y, uint32 alwaysOverwriteLastAttack) {
+	const uint32 Func_AI_SetAttackGroupingRegion = 0x004399D0;
 	static int32 result;
 	__asm {
 		PUSHAD
@@ -1948,11 +1879,9 @@ int32 AI_SetAttackGroupingRegion(uint32 airAttack, uint32 alsoVeryNear, uint32 p
 	return result;
 }
 
-const uint32 Func_unitCantSeeCloakedTarget = 0x00401D60;
 bool unitCantSeeCloakedTarget(CUnit* unit, CUnit* target) {
-
+	const uint32 Func_unitCantSeeCloakedTarget = 0x00401D60;
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		PUSH unit
@@ -1961,18 +1890,12 @@ bool unitCantSeeCloakedTarget(CUnit* unit, CUnit* target) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
-;
-
-const uint32 Func_IsInfestable = 0x00402210;
 bool isInfestableUnit(CUnit* unit) {
-
+	const uint32 Func_IsInfestable = 0x00402210;
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		MOV EDX, unit
@@ -1980,18 +1903,12 @@ bool isInfestableUnit(CUnit* unit) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
-;
-
-const uint32 Func_CanInfest = 0x00402750;
 bool unitCanInfest(CUnit* unit) {
-
+	const uint32 Func_CanInfest = 0x00402750;
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		MOV EAX, unit
@@ -1999,33 +1916,22 @@ bool unitCanInfest(CUnit* unit) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
-;
-
-const uint32 Func_AI_AttackUnit = 0x0043FFD0;
 void AI_AttackUnit(CUnit* unit) {
-
+	const uint32 Func_AI_AttackUnit = 0x0043FFD0;
 	__asm {
 		PUSHAD
 		PUSH unit
 		CALL Func_AI_AttackUnit
 		POPAD
 	}
-
 }
 
-;
-
-const uint32 Func_Sub443080 = 0x00443080;
-//named according to attack_priority_inject.cpp
 CUnit* findBestAttackTarget(CUnit* unit) {
-
+	const uint32 Func_Sub443080 = 0x00443080;
 	static CUnit* result;
-
 	__asm {
 		PUSHAD
 		MOV EAX, unit
@@ -2033,21 +1939,14 @@ CUnit* findBestAttackTarget(CUnit* unit) {
 		MOV result, EAX
 		POPAD
 	}
-
 	return result;
-
 }
 
-;
-
-const uint32 Func_Sub462EA0 = 0x00462EA0;
 bool function_00462EA0(CUnit* unit, uint8 unknownByteValue) {
-
+	const uint32 Func_Sub462EA0 = 0x00462EA0;
 	static uint32 _unknownByteValue;
 	static bool32 bPreResult;
-
 	_unknownByteValue = unknownByteValue;
-
 	__asm {
 		PUSHAD
 		MOV EAX, unit
@@ -2056,30 +1955,21 @@ bool function_00462EA0(CUnit* unit, uint8 unknownByteValue) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
-;
-
-const uint32 Func_Sub465780 = 0x00465780;
 void function_00465780(CUnit* unit) {
-
+	const uint32 Func_Sub465780 = 0x00465780;
 	__asm {
 		PUSHAD
 		MOV EDI, unit
 		CALL Func_Sub465780
 		POPAD
 	}
-
 }
 
-;
-
-const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
 void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
-
+	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
 	__asm {
 		PUSHAD
 		MOV ECX, unit
@@ -2087,14 +1977,10 @@ void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
 		CALL Func_removeOrderFromUnitQueue
 		POPAD
 	}
-
 }
 
-;
-
-const uint32 Func_Sub474A70 = 0x00474A70;
 void function_00474A70(CUnit* unit, CUnit* target, uint8 orderId) {
-
+	const uint32 Func_Sub474A70 = 0x00474A70;
 	__asm {
 		PUSHAD
 		MOV CL, orderId
@@ -2103,16 +1989,11 @@ void function_00474A70(CUnit* unit, CUnit* target, uint8 orderId) {
 		CALL Func_Sub474A70
 		POPAD
 	}
-
 }
 
-;
-
-const uint32 Func_isTargetWithinMinMovementRange = 0x004763D0;
-bool isTargetWithinMinMovementRange(CUnit* unit, CUnit* target, uint32 range) {										// EDI = unit or subunit,ECX = MaxWpnRange,EAX = target
-
+bool isTargetWithinMinMovementRange(CUnit* unit, CUnit* target, uint32 range) {
+	const uint32 Func_isTargetWithinMinMovementRange = 0x004763D0;
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		MOV EDI, unit
@@ -2122,18 +2003,12 @@ bool isTargetWithinMinMovementRange(CUnit* unit, CUnit* target, uint32 range) {	
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
-;
-
-const uint32 Func_Sub476610 = 0x00476610;
 bool function_00476610(CUnit* unit, int x, int y) {
-
+	const uint32 Func_Sub476610 = 0x00476610;
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		MOV ESI, unit
@@ -2143,18 +2018,12 @@ bool function_00476610(CUnit* unit, int x, int y) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
-;
-
-const uint32 Func_isUnitInWeaponRange = 0x00476870;
 bool isUnitInWeaponRange(CUnit* unit, CUnit* target) {
-
+	const uint32 Func_isUnitInWeaponRange = 0x00476870;
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		PUSH unit
@@ -2163,16 +2032,11 @@ bool isUnitInWeaponRange(CUnit* unit, CUnit* target) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
-;
-
-const uint32 Func_getWeaponBeginIscript = 0x00476ED0;
 void getWeaponBeginIscript(CUnit* unit, IscriptAnimation::Enum anim) {
-
+	const uint32 Func_getWeaponBeginIscript = 0x00476ED0;
 	__asm {
 		PUSHAD
 		MOV EAX, unit
@@ -2180,32 +2044,22 @@ void getWeaponBeginIscript(CUnit* unit, IscriptAnimation::Enum anim) {
 		CALL Func_getWeaponBeginIscript
 		POPAD
 	}
-
 }
 
-;
-
-const uint32 Func_Sub477510 = 0x00477510;
 void function_00477510(CUnit* unit) {
-
+	const uint32 Func_Sub477510 = 0x00477510;
 	__asm {
 		PUSHAD
 		PUSH unit
 		CALL Func_Sub477510
 		POPAD
 	}
-
 }
 
-;
-
-const uint32 Func_Sub477820 = 0x00477820;
 void function_00477820(CUnit* unit, uint8 orderId) {
-
+	const uint32 Func_Sub477820 = 0x00477820;
 	static uint32 orderId_;
-
 	orderId_ = orderId;
-
 	__asm {
 		PUSHAD
 		PUSH orderId_
@@ -2213,19 +2067,13 @@ void function_00477820(CUnit* unit, uint8 orderId) {
 		CALL Func_Sub477820
 		POPAD
 	}
-
 }
 
-;
-
-const uint32 Func_Sub478370 = 0x00478370;
 bool function_00478370(CUnit* unit, uint8 orderId) {
-
+	const uint32 Func_Sub478370 = 0x00478370;
 	static bool32 bPreResult;
 	static uint32 orderId_;
-
 	orderId_ = orderId;
-
 	__asm {
 		PUSHAD
 		MOV EAX, unit
@@ -2234,18 +2082,12 @@ bool function_00478370(CUnit* unit, uint8 orderId) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
-;
-
-const uint32 Func_Sub478540 = 0x00478540;
 bool function_00478540(CUnit* unit) {
-
+	const uint32 Func_Sub478540 = 0x00478540;
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		MOV EAX, unit
@@ -2253,39 +2095,31 @@ bool function_00478540(CUnit* unit) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
-;
-
-//Identical to Unit::isCritter() @ 0x0047B450
+// Identical to Unit::isCritter() @ 0x0047B450
 bool isUnitCritter(CUnit* unit) {
-
 	bool bReturnValue;
-
-	/*	if(
+	/*
+	if(
 			unit->id == UnitId::Critter_Rhynadon ||
 			unit->id == UnitId::Critter_Bengalaas ||
 			unit->id == UnitId::Critter_Ragnasaur ||
 			unit->id == UnitId::Critter_Kakaru ||
 			unit->id == UnitId::Critter_Scantid ||
 			unit->id == UnitId::Critter_Ursadon
-		)
+		) {
 			bReturnValue = true;
-		else*/
+		}
+		else
+		*/
 	bReturnValue = false;
-
 	return bReturnValue;
-
 }
-
-;
 
 const uint32 Func_Sub495400 = 0x00495400;
 void function_00495400(CUnit* unit, CUnit* target) {
-
 	__asm {
 		PUSHAD
 		MOV EDI, unit
@@ -2293,36 +2127,11 @@ void function_00495400(CUnit* unit, CUnit* target) {
 		CALL Func_Sub495400
 		POPAD
 	}
-
 }
-
-;
-
-const uint32 Func_SAI_GetRegionIdFromPxEx = 0x0049C9F0;
-uint16 SAI_GetRegionIdFromPxEx(int32 x, int32 y) {
-
-	static uint16 result;
-
-	__asm {
-		PUSHAD
-		MOV EDI, x
-		MOV ECX, y
-		CALL Func_SAI_GetRegionIdFromPxEx
-		MOV result, AX
-		POPAD
-	}
-
-	return result;
-
-}
-
-;
 
 const uint32 Func_isUnitVisible = 0x004E5DB0;
 bool isUnitVisible(CUnit* unit) {
-
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		MOV ESI, unit
@@ -2330,18 +2139,12 @@ bool isUnitVisible(CUnit* unit) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
-
-;
 
 const uint32 Func_isTargetVisible = 0x004E5E30;
 bool isTargetVisible(CUnit* unit, CUnit* target) {
-
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		MOV ESI, unit
@@ -2350,62 +2153,46 @@ bool isTargetVisible(CUnit* unit, CUnit* target) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
-;
-
-//Identical to getRightClickActionOrder @ 0x004E5EA0;
+// Identical to getRightClickActionOrder @ 0x004E5EA0;
 uint8 getRightClickActionOrder(CUnit* unit) {
-
 	uint8 result;
-
-	if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed)
+	if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed) {
 		result = RightClickActions::NoMove_NormalAttack;
+	}
 	else {
-
 		uint8 temp_result = units_dat::RightClickAction[unit->id];
-
 		if (
 			temp_result == 0 &&
 			unit->status & UnitStatus::GroundedBuilding &&
 			unit->isFactory()
-			)
+			) {
 			result = RightClickActions::NormalMove_NoAttack;
-		else
+		}
+		else {
 			result = temp_result;
-
+		}
 	}
-
 	return result;
-
 }
 
-;
-
-//not related with assigning orders, but only with
-//destinations of orders
-const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
+// not related with assigning orders, but only with
+// destinations of orders
 void makeToHoldPosition(CUnit* unit) {
-
+	const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
 	__asm {
 		PUSHAD
 		MOV ESI, unit
 		CALL Func_OrdersHoldPositionSuicidal
 		POPAD
 	}
-
 }
 
-;
-
-const uint32 Func_moveToTarget = 0x004EB720;
 bool moveToTarget(CUnit* unit, CUnit* target) {
-
+	const uint32 Func_moveToTarget = 0x004EB720;
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		MOV ESI, unit
@@ -2414,18 +2201,12 @@ bool moveToTarget(CUnit* unit, CUnit* target) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
-;
-
-const uint32 Func_SetMoveTarget_xy = 0x004EB820;
 bool SetMoveTarget_xy(CUnit* unit, int x, int y) {
-
+	const uint32 Func_SetMoveTarget_xy = 0x004EB820;
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		MOV ESI, unit
@@ -2435,17 +2216,12 @@ bool SetMoveTarget_xy(CUnit* unit, int x, int y) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
-;
-
-//Related to path/movement decision
-const uint32 Func_sub_4EB290 = 0x004EB290;
+// Related to path/movement decision
 void setNextWaypoint_Sub4EB290(CUnit* unit) {
-
+	const uint32 Func_sub_4EB290 = 0x004EB290;
 	__asm {
 		PUSHAD
 		MOV EAX, unit
@@ -2454,13 +2230,9 @@ void setNextWaypoint_Sub4EB290(CUnit* unit) {
 	}
 }
 
-;
-
-const uint32 Func_Sub4EB900 = 0x004EB900;
 bool function_004EB900(CUnit* unit, CUnit* target) {
-
+	const uint32 Func_Sub4EB900 = 0x004EB900;
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		MOV EAX, target
@@ -2469,18 +2241,12 @@ bool function_004EB900(CUnit* unit, CUnit* target) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
-;
-
-const uint32 Func_Sub4EB9C0 = 0x004EB9C0;
 bool function_004EB9C0(CUnit* unit, int x, int y) {
-
+	const uint32 Func_Sub4EB9C0 = 0x004EB9C0;
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		MOV EDX, unit
@@ -2490,16 +2256,12 @@ bool function_004EB9C0(CUnit* unit, int x, int y) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
-const uint32 Func_isDistanceGreaterThanHaltDistance = 0x00401240;
 bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, uint32 distance) {
-
+	const uint32 Func_isDistanceGreaterThanHaltDistance = 0x00401240;
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		PUSH x
@@ -2510,47 +2272,22 @@ bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, uint32 distanc
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
-;
-
-const uint32 Func_Sub42D9A0 = 0x0042D9A0;
 void function_0042D9A0(CUnit* unit) {
-
+	const uint32 Func_Sub42D9A0 = 0x0042D9A0;
 	__asm {
 		PUSHAD
 		MOV EAX, unit
 		CALL Func_Sub42D9A0
 		POPAD
 	}
-
 }
 
-;
-
-const uint32 Func_AI_TrainingOverlord = 0x00435770;
-void AI_TrainingOverlord(CUnit* main_unit, CUnit* created_unit) {
-
-	__asm {
-		PUSHAD
-		MOV EAX, created_unit
-		MOV ECX, main_unit
-		CALL Func_AI_TrainingOverlord
-		POPAD
-	}
-
-}
-
-;
-
-const uint32 Func_Sub467030 = 0x00467030;
 bool function_00467030(CUnit* unit) {
-
+	const uint32 Func_Sub467030 = 0x00467030;
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		MOV EAX, unit
@@ -2558,18 +2295,12 @@ bool function_00467030(CUnit* unit) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
-;
-
-const uint32 Func_Sub4678A0 = 0x004678A0;
 CUnit* function_004678A0(CUnit* unit, uint32 unitId) {
-
+	const uint32 Func_Sub4678A0 = 0x004678A0;
 	static CUnit* newUnit;
-
 	__asm {
 		PUSHAD
 		MOV EAX, unit
@@ -2578,17 +2309,12 @@ CUnit* function_004678A0(CUnit* unit, uint32 unitId) {
 		MOV newUnit, EAX
 		POPAD
 	}
-
 	return newUnit;
-
 }
 
-;
-
-//imageId may not be really a parameter
-const uint32 Func_Sub498D70 = 0x00498D70;
+// imageId may not be really a parameter
 void function_00498D70(CSprite* sprite, uint32 imageId, uint32 unk1, uint32 unk2, uint32 unk3) {
-
+	const uint32 Func_Sub498D70 = 0x00498D70;
 	__asm {
 		PUSHAD
 		MOV EAX, sprite
@@ -2599,14 +2325,10 @@ void function_00498D70(CSprite* sprite, uint32 imageId, uint32 unk1, uint32 unk2
 		CALL Func_Sub498D70
 		POPAD
 	}
-
 }
 
-;
-
-//named based on old removed unit_morph hooks set 
-const uint32 Func_Sub499BB0 = 0x00499BB0;
 void replaceSpriteImages(CSprite* sprite, uint32 imageId, uint32 imageDirection) {
+	const uint32 Func_Sub499BB0 = 0x00499BB0;
 	__asm {
 		PUSHAD
 		PUSH imageDirection
@@ -2617,10 +2339,8 @@ void replaceSpriteImages(CSprite* sprite, uint32 imageId, uint32 imageDirection)
 	}
 }
 
-;
-
-const uint32 Func_displayLastNetErrForPlayer = 0x0049E530;
 void displayLastNetErrForPlayer(uint32 playerId) {
+	const uint32 Func_displayLastNetErrForPlayer = 0x0049E530;
 	__asm {
 		PUSHAD
 		PUSH playerId
@@ -2629,39 +2349,28 @@ void displayLastNetErrForPlayer(uint32 playerId) {
 	}
 }
 
-;
-
-const uint32 Func_UpdateUnitStrength = 0x0049FA40;
 void updateUnitStrength(CUnit* unit) {
-
+	const uint32 Func_UpdateUnitStrength = 0x0049FA40;
 	__asm {
 		PUSHAD
 		MOV EAX, unit
 		CALL Func_UpdateUnitStrength
 		POPAD
 	}
-
 }
 
-;
-
-const uint32 Func_Sub4A01F0 = 0x004A01F0;
 void function_004A01F0(CUnit* unit) {
-
+	const uint32 Func_Sub4A01F0 = 0x004A01F0;
 	__asm {
 		PUSHAD
 		MOV EAX, unit
 		CALL Func_Sub4A01F0
 		POPAD
 	}
-
 }
 
-;
-
-const uint32 Func_iscript_OpcodeCases = 0x004D74C0;
 void iscript_OpcodeCases(CImage* image, uint32 offset_, uint32 unk1, uint32 unk2) {
-
+	const uint32 Func_iscript_OpcodeCases = 0x004D74C0;
 	__asm {
 		PUSHAD
 		PUSH unk1
@@ -2671,30 +2380,21 @@ void iscript_OpcodeCases(CImage* image, uint32 offset_, uint32 unk1, uint32 unk2
 		CALL Func_iscript_OpcodeCases
 		POPAD
 	}
-
 }
 
-;
-
-const uint32 Func_Sub4D8500 = 0x004D8500;
 void function_004D8500(CImage* image) {
-
+	const uint32 Func_Sub4D8500 = 0x004D8500;
 	__asm {
 		PUSHAD
 		MOV EAX, image
 		CALL Func_Sub4D8500
 		POPAD
 	}
-
 }
 
-;
-
-const uint32 Func_CreateUnit = 0x004A09D0;
 CUnit* createUnit(uint32 unitId, int x, int y, uint32 playerId) {
-
+	const uint32 Func_CreateUnit = 0x004A09D0;
 	static CUnit* unit_created;
-
 	__asm {
 		PUSHAD
 		PUSH playerId
@@ -2705,57 +2405,12 @@ CUnit* createUnit(uint32 unitId, int x, int y, uint32 playerId) {
 		MOV unit_created, EAX
 		POPAD
 	}
-
 	return unit_created;
-
 }
 
-;
-
-//not related with assigning orders, but only with
-//destinations of orders
-const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
-void makeToHoldPosition(CUnit* unit) {
-
-	__asm {
-		PUSHAD
-		MOV ESI, unit
-		CALL Func_OrdersHoldPositionSuicidal
-		POPAD
-	}
-
-}
-
-;
-
-const uint32 Func_Sub4EB9C0 = 0x004EB9C0;
-bool function_004EB9C0(CUnit* unit, int x, int y) {
-
-	static bool32 bPreResult;
-
-	__asm {
-		PUSHAD
-		MOV EDX, unit
-		MOV ECX, x
-		MOV EAX, y
-		CALL Func_Sub4EB9C0
-		MOV bPreResult, EAX
-		POPAD
-	}
-
-	return (bPreResult != 0);
-
-}
-
-;
-
-//original referenced name was sub_4878F0, but using
-	//the name from bunker_hooks.cpp since it got meaning
-const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
 bool setThingyVisibilityFlags(CThingy* thingy) {
-
+	const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
 	static bool32 bPreResult;
-
 	__asm {
 		PUSHAD
 		MOV ESI, thingy
@@ -2763,21 +2418,13 @@ bool setThingyVisibilityFlags(CThingy* thingy) {
 		MOV bPreResult, EAX
 		POPAD
 	}
-
 	return (bPreResult != 0);
-
 }
 
-;
-
-//original referenced name was replaceSprite (but this one is probably
-//more accurate since it does create something rather than replacing)
-const uint32 Func_CreateThingy = 0x00488210;
 CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
-
+	const uint32 Func_CreateThingy = 0x00488210;
 	static CThingy* thingy;
 	int32 x_ = x;
-
 	__asm {
 		PUSHAD
 		PUSH playerId
@@ -2788,20 +2435,13 @@ CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
 		MOV thingy, EAX
 		POPAD
 	}
-
 	return thingy;
-
 }
 
-;
-
-const uint32 Func_playUnitSFX = 0x0048EC10;
 void playUnitSFX(uint32 soundId, uint16 x, uint16 y, uint32 unk1, uint32 unk2) {
-
+	const uint32 Func_playUnitSFX = 0x0048EC10;
 	static Point16 pos;
-
 	pos.x = x; pos.y = y;
-
 	__asm {
 		PUSHAD
 		PUSH unk2
@@ -2811,16 +2451,11 @@ void playUnitSFX(uint32 soundId, uint16 x, uint16 y, uint32 unk1, uint32 unk2) {
 		CALL Func_playUnitSFX
 		POPAD
 	}
-
 }
 
-;
-
-const uint32 Func_RandomizeShort = 0x004DC4A0;
 uint32 RandomizeShort(uint32 unknown_index) {
-
+	const uint32 Func_RandomizeShort = 0x004DC4A0;
 	static uint32 return_value;
-
 	__asm {
 		PUSHAD
 		MOV EAX, unknown_index
@@ -2828,19 +2463,13 @@ uint32 RandomizeShort(uint32 unknown_index) {
 		MOV return_value, EAX
 		POPAD
 	}
-
 	return return_value;
-
 }
 
-;
-
-const uint32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
-//hardcoding the recall targets selection function
+// hardcodes the recall targets selection function
 uint32 IterateUnitsAtLocationTargetProc_RecallTargets(CUnit* unit, Box16* coords) {
-
+	const uint32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
 	static uint32 return_value;
-
 	__asm {
 		PUSHAD
 		PUSH unit
@@ -2850,30 +2479,21 @@ uint32 IterateUnitsAtLocationTargetProc_RecallTargets(CUnit* unit, Box16* coords
 		MOV return_value, EAX
 		POPAD
 	}
-
 	return return_value;
-
 }
 
-;
-
-const uint32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
 void setUnitStatTxtErrorMsg(char* message) {
-
+	const uint32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
 	__asm {
 		PUSHAD
 		MOV EAX, message
 		CALL Func_setUnitStatTxtErrorMsg
 		POPAD
 	}
-
 }
 
-;
-
-const uint32 Func_Sub4EBAE0 = 0x004EBAE0;
 void function_004EBAE0(CUnit* unit, int32 x, int32 y) {
-
+	const uint32 Func_Sub4EBAE0 = 0x004EBAE0;
 	__asm {
 		PUSHAD
 		MOV EDX, unit
@@ -2882,5 +2502,4 @@ void function_004EBAE0(CUnit* unit, int32 x, int32 y) {
 		CALL Func_Sub4EBAE0
 		POPAD
 	}
-
 }

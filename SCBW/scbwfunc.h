@@ -3,137 +3,54 @@
 
 bool HasMoneyCanMake(CUnit* builder, uint32 unitToBuild);
 
-
-void removeOrderFromUnitQueue(CUnit* unit, COrder* order);
-
 // For loadRaceUI
-
 void getRaceSoundList(int8 a1);
-
-
 int32 dialogGrpConstruct(int32 a1, int32 a2, int32 a3, int32(__fastcall* a4)(int32, int32, int32, int32));
-
-
 void loadGraphic(int8 a1, int32 a2, int32 a3, int8 a4, int32 a5);
 
-
 int randFunc();
-
-
 bool unitHPbelow33_percent(CUnit* a1);
-
-
 bool unitHPbetween33_66_percent(int32 a1, CUnit* a2);
-
-
 int32 getMaxHP(CUnit* a1);
-
-
 uint16 getLastQueueSlotType(CUnit* a1);
-
-
 void addTextToDialog(int32 a1, int16 a2, const char* a3);
-
-
 void drawEnergy(int32 a1);
-
-
 void hideOptionalStatusScreenControls(BinDlg* a1);
-
-
 void showControlGroup(BinDlg* a1, int16 a2, int16 a3);
-
-
 void addTextToDialog(int a1, int16 a2, int a3);
-
-
 void drawShieldUpgrade(int a1, uint16 a2);
-
-
 void hideDialog(BinDlg* a1);
 
 // For drawSupplyUnitInfo
-
-
 int getSuppliesUsed();
-
-
 uint16 getLastQueueSlotType(CUnit* a1);
-
-
 uint32 getSuppliesAvailable(uint8 a1, int a2);
-
-
 void drawArmor(int a1, int a2, uint16 a3);
-
-
 void unitStatAct_Standard(void* a1);
 
 // For AI_TargetEnemyProc
-
-
 bool AI_UnitCanAttack(CUnit* a1);
 
 // For drawBuildingInfo
-
-
 int needRedrawUI();
-
-
 CUnit* genericStatusUpdateDrawnValues();
-
-
 void drawProgressBar(int a1);
-
-
 void drawNukeSiloInfo(int a1);
-
-
 bool unitIsActiveTransport(CUnit* a1);
-
-
 bool isQueueSlotActive(CUnit* a1, int a2);
-
-
 void drawTrainingProgress(BinDlg* a1);
-
-
 bool isConstructingAddon(CUnit* a1);
-
-
 bool isAttemptingProtossBuild(CUnit* a1);
-
-
 void drawAddonProgress(int a1);
-
-
 void drawTechProgress(int a1);
-
-
 void drawUpgradeProgress(BinDlg* a1);
-
-
 bool unitIsGeyser(CUnit* a1);
-
-
 void drawGasQuantity(BinDlg* a1);
-
-
 int8 unitGetGroundWeapon(CUnit* a1);
-
-
 void drawDisplayButtons(int a1);
-
-
 BinDlg* getControlFromIndex(BinDlg* a1, int16 a2);
-
-
 void setTextStr(int a1);
-
-
 void setUnitStatusStrText(int a1);
-
-
 int unitGetName(CUnit* a1);
 
 // For getUnitStrength
@@ -470,8 +387,6 @@ void AI_FinishRegionAccessibility(char* regionData);
 int32 AI_SetAttackGroupingRegion(uint32 airAttack, uint32 alsoVeryNear, uint32 player, char* regionData,
 	int32 x, int32 y, uint32 alwaysOverwriteLastAttack);
 
-void AI_TrainingOverlord(CUnit* result, CUnit* parent);
-
 int16 SAI_GetRegionIdFromPxEx(int32 x, int32 y);
 
 CUnit* createUnit(int16 unitType, int32 x, int32 y, int32 playerId);
@@ -524,7 +439,6 @@ void function_004A01F0(CUnit* unit);												//A01F0
 CUnit* createUnit(uint32 unitId, int x, int y, uint32 playerId);							//A09D0
 void iscript_OpcodeCases(CImage* image, uint32 offset_, uint32 unk1, uint32 unk2);			//D74C0
 void function_004D8500(CImage* image);												//D8500
-void makeToHoldPosition(CUnit* unit);												//EB5B0
 bool function_004EB9C0(CUnit* unit, int x, int y);									//EB9C0
 bool setThingyVisibilityFlags(CThingy* thingy);									//0x004878F0
 CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);				//0x00488210
