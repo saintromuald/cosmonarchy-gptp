@@ -32,6 +32,11 @@ constexpr double MadcapAttackSpeedPerStack = 0.05;
 constexpr int ApostleBloodTitheHealing = 5 * 256;
 constexpr int ApostleLastBreathEnergyGain = 5 * 256;
 
+// Mines
+const int MineBurrowTime = 60;
+const int MineSeekRange = 576;
+const int MineDetonateRange = 30;
+
 // Azazel
 constexpr int AzazelDefensiveMatrixHeal = 53; // 5 HP per second | 256 * 5 / 24
 
