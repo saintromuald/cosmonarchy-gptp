@@ -3,8 +3,8 @@
 
 namespace hooks {
 
-CUnit* findBestSpiderMineTargetHook(CUnit* mine);
-void orders_VultureMine(CUnit* unit);
+CUnit* findBestTerranMineTarget(CUnit* mine);
+void orders_TerranMine(CUnit* unit);
 void orders_PlaceMine(CUnit* a1);
 
 void injectSpiderMineHooks();

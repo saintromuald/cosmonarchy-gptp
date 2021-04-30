@@ -32,7 +32,7 @@ namespace {
 
 namespace hooks {
 	// Return the best target for the Spider Mine. If there is no suitable target, return nullptr instead.
-	CUnit* findBestSpiderMineTargetHook(CUnit* spiderMine) {
+	CUnit* findBestTerranMineTarget(CUnit* spiderMine) {
 		// Default StarCraft behavior
 		int32 range;
 
@@ -70,7 +70,7 @@ namespace hooks {
 
 	};
 
-	void orders_VultureMine(CUnit* unit) {
+	void orders_TerranMine(CUnit* unit) {
 
 		if (unit->mainOrderState == 0) {
 			unit->groundWeaponCooldown = MineBurrowTime;
