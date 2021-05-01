@@ -20,7 +20,7 @@ namespace hooks {
 			if (unit_created != nullptr) {
 
 				//update various stuff (set hp, set shield...) not finished on CreateUnit
-				function_004A01F0(unit_created);
+				updateUnitStatsFinishBuilding(unit_created);
 
 				updateUnitStrength(unit_created);
 
@@ -130,7 +130,7 @@ namespace hooks {
 						if (new_larva != nullptr) {
 
 							//update various stuff (set hp, set shield...) not finished on CreateUnit
-							function_004A01F0(new_larva);
+							updateUnitStatsFinishBuilding(new_larva);
 
 							updateUnitStrength(new_larva);
 

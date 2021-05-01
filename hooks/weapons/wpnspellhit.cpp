@@ -423,7 +423,7 @@ namespace hooks {
 			dark_swarm_unit->sprite->elevationLevel = 11;
 
 			//update various stuff (set hp, set shield...) not finished on createUnit
-			function_004A01F0(dark_swarm_unit);
+			updateUnitStatsFinishBuilding(dark_swarm_unit);
 			updateUnitStrength(dark_swarm_unit);
 			if (dark_swarm_unit->removeTimer == 0
 				|| dark_swarm_unit->removeTimer > 900) {
@@ -489,7 +489,7 @@ namespace hooks {
 					uint32 timerBeforeDisappearance;
 
 					//update various stuff (set hp, set shield...) not finished on createUnit
-					function_004A01F0(created_broodling);
+					updateUnitStatsFinishBuilding(created_broodling);
 					updateUnitStrength(created_broodling);
 					timerBeforeDisappearance = 720;	//0x708
 					if (created_broodling->removeTimer == 0
@@ -601,7 +601,7 @@ namespace hooks {
 			disruption_web_unit->status |= UnitStatus::NoCollide;
 			disruption_web_unit->sprite->elevationLevel = 11;
 			//update various stuff (set hp, set shield...) not finished on createUnit
-			function_004A01F0(disruption_web_unit);
+			updateUnitStatsFinishBuilding(disruption_web_unit);
 			updateUnitStrength(disruption_web_unit);
 			if (disruption_web_unit->removeTimer == 0 ||
 				disruption_web_unit->removeTimer > 360
@@ -703,7 +703,7 @@ namespace hooks {
 		v10 = createUnit(0x21u, a2.x, a2.y, (uint8)v1->playerId);
 		v11 = v10;
 		if (v10) {
-			function_004A01F0(v10);
+			updateUnitStatsFinishBuilding(v10);
 			updateUnitStrength(v11);
 			playSoundFromSource(388, v1, 1, 0);
 			if (!(*CHEAT_STATE & 0x800)) {

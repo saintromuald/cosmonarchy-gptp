@@ -153,7 +153,7 @@ namespace hooks {
 				}
 				// 005D6CD
 				// update various stuff (set hp, set shield...) not finished on Morph
-				function_004A01F0(building);
+				updateUnitStatsFinishBuilding(building);
 				updateUnitStrength(building);
 				// relate to building placement / taking room around?
 				function_0047D770(building);
@@ -222,7 +222,7 @@ namespace hooks {
 					unit->status -= UnitStatus::Completed;
 					uint32 hp = unit->hitPoints;
 					uint32 shield = unit->shields;
-					function_004A01F0(unit);
+					updateUnitStatsFinishBuilding(unit);
 					updateUnitStrength(unit);
 					unit->hitPoints = hp;
 					unit->shields = shield;
@@ -260,7 +260,7 @@ namespace hooks {
 					bStopThere = true;
 				} else {	// 005DB1E
 					// update various stuff (set hp, set shield...) not finished after createUnit
-					function_004A01F0(drone);
+					updateUnitStatsFinishBuilding(drone);
 					updateUnitStrength(drone);
 					drone->setHp(unit->previousHp * 256);
 					unit->remove();
@@ -282,7 +282,7 @@ namespace hooks {
 				function_00433FE0(unit);
 
 				//update various stuff (set hp, set shield...) not finished after unit change
-				function_004A01F0(unit);
+				updateUnitStatsFinishBuilding(unit);
 				updateUnitStrength(unit);
 
 				if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW &&

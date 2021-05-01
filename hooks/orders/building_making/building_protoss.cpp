@@ -85,7 +85,7 @@ namespace hooks {
 									replaceSpriteImages(builtUnit->sprite, ImageId::WarpAnchor, 0);
 
 									if (isBuildingAssimilator)
-										function_00498D70(builtUnit->sprite, ImageId::VespeneGeyser, 0, 0, 0);
+										addOverlayBelowMain(builtUnit->sprite, ImageId::VespeneGeyser, 0, 0, 0);
 
 									unit->orderTarget.unit = builtUnit;
 
@@ -239,7 +239,7 @@ namespace hooks {
 
 								building->orderSignal -= 1;
 
-								function_004A01F0(building);
+								updateUnitStatsFinishBuilding(building);
 								updateUnitStrength(building);
 								function_0042D9A0(building);
 

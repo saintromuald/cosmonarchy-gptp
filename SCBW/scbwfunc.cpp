@@ -2300,8 +2300,8 @@ CUnit* function_004678A0(CUnit* unit, uint32 unitId) {
 }
 
 // imageId may not be really a parameter
-void function_00498D70(CSprite* sprite, uint32 imageId, uint32 unk1, uint32 unk2, uint32 unk3) {
-	const uint32 Func_Sub498D70 = 0x00498D70;
+void addOverlayBelowMain(CSprite* sprite, uint32 imageId, uint32 unk1, uint32 unk2, uint32 unk3) {
+	const uint32 Func_addOverlayBelowMain = 0x00498D70;
 	__asm {
 		PUSHAD
 		MOV EAX, sprite
@@ -2309,7 +2309,7 @@ void function_00498D70(CSprite* sprite, uint32 imageId, uint32 unk1, uint32 unk2
 		PUSH unk1
 		PUSH unk2
 		PUSH unk3
-		CALL Func_Sub498D70
+		CALL Func_addOverlayBelowMain
 		POPAD
 	}
 }
@@ -2342,16 +2342,6 @@ void updateUnitStrength(CUnit* unit) {
 		PUSHAD
 		MOV EAX, unit
 		CALL Func_UpdateUnitStrength
-		POPAD
-	}
-}
-
-void function_004A01F0(CUnit* unit) {
-	const uint32 Func_Sub4A01F0 = 0x004A01F0;
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_Sub4A01F0
 		POPAD
 	}
 }
@@ -2926,7 +2916,19 @@ uint32 RandBetween(uint32 min, uint32 max, uint32 someIndex) {
 	return return_value;
 }
 
-void function_004A01F0(CUnit* unit, bool32 flag) {
+char refreshLayers3And4() {
+	const uint32 Func_RefreshLayer3And4 = 0x0048D9A0;
+	static int result;
+	__asm {
+		PUSHAD
+		CALL Func_RefreshLayer3And4
+		MOV result, EAX
+		POPAD
+	}
+	return (char)result;
+}
+
+void function_004E65E0(CUnit* unit, bool32 flag) {
 	const uint32 Func_Sub4E65E0 = 0x004E65E0;
 	__asm {
 		PUSHAD
@@ -6776,4 +6778,165 @@ bool verifyResources(uint32 mineralCost, uint32 gasCost, uint32 playerId) {
 		POPAD
 	}
 	return (bPreResult != 0);
+}
+
+uint8 getHangerTrainCount(CUnit* unit) {
+	const uint32 Func_getHangerTrainCount = 0x00465270;
+	static uint8 result = 0;
+	__asm {
+		PUSHAD
+		MOV EDX, unit
+		CALL Func_getHangerTrainCount
+		MOV result, AL
+		POPAD
+	}
+}
+
+bool unitIsTrainingOrMorphing(CUnit* unit) {
+	const uint32 Func_unitIsTrainingOrMorphing = 0x00401500;
+	static uint32 result;
+	__asm {
+		PUSHAD
+		MOV ECX, unit
+		CALL Func_unitIsTrainingOrMorphing
+		MOV result, EAX
+		POPAD
+	}
+}
+
+uint8 initializeRandomizerInfo() {
+	const uint32 Func_initializeRandomizerInfo = 0x0047E410;
+	static uint32 result;
+	__asm {
+		PUSHAD
+		CALL Func_initializeRandomizerInfo
+		MOV result, EAX
+		POPAD
+	}
+	return (uint8)result;
+}
+
+void AI_Loop() {
+	const uint32 Func_AI_Loop = 0x004A2B00;
+	__asm {
+		PUSHAD
+		CALL Func_AI_Loop
+		POPAD
+	}
+}
+
+int32 updateActiveTileInfo() {
+	const uint32 Func_updateActiveTileInfo = 0x0049C4C0;
+	static int32 result;
+	__asm {
+		PUSHAD
+		CALL Func_updateActiveTileInfo
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+int32 removeFOWCheat() {
+	const uint32 Func_removeFOWCheat = 0x00480880;
+	static int32 result;
+	__asm {
+		PUSHAD
+		CALL Func_removeFOWCheat
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+void updateUnits() {
+	const uint32 Func_updateUnits = 0x004ED000;
+	__asm {
+		PUSHAD
+		CALL Func_updateUnits
+		POPAD
+	}
+}
+
+int32 imageDrawingBulletDrawing() {
+	const uint32 Func_imageDrawingBulletDrawing = 0x0048C3D0;
+	static int32 result;
+	__asm {
+		PUSHAD
+		CALL Func_imageDrawingBulletDrawing
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+void updateImages() {
+	const uint32 Func_updateImages = 0x00496330;
+	__asm {
+		PUSHAD
+		CALL Func_updateImages
+		POPAD
+	}
+}
+
+void updateThingys() {
+	const uint32 Func_updateThingys = 0x00488510;
+	__asm {
+		PUSHAD
+		CALL Func_updateThingys
+		POPAD
+	}
+}
+
+// AKA createPsiFieldSpriteForUnit()
+// Returns true if successful, false otherwise.
+bool addPsiFieldSprite(CUnit* unit) {
+	if (!unit) return false;
+	const uint32 Func_addPsiFieldSprite = 0x00493BF0;
+	static uint32 result;
+	__asm {
+		PUSHAD
+		MOV ECX, unit
+		CALL Func_addPsiFieldSprite
+		MOV result, EAX
+		POPAD
+	}
+	return result != 0;
+}
+
+void orderInterrupt(CUnit* unit, CUnit* target, uint16 x, uint16 y, uint32 orderId) {
+	const uint32 Func_orderInterrupt = 0x00474C30;
+	static Point16 pos;
+	pos.x = x; pos.y = y;
+	__asm {
+		PUSHAD
+		MOV ESI, unit
+		PUSH target
+		PUSH pos
+		PUSH orderId
+		CALL Func_orderInterrupt
+		POPAD
+	}
+}
+
+void unitOrderMoveToTargetUnit(CUnit* unit, CUnit* target) {
+	const uint32 Func_unitOrderMoveToTargetUnit = 0x00479FE0;
+	__asm {
+		PUSHAD
+		MOV EAX, unit
+		MOV ECX, target
+		CALL Func_unitOrderMoveToTargetUnit
+		POPAD
+	}
+}
+
+void QueueGameCommand(uint8* params, uint32 param_length) {
+	const uint32 Func_QueueGameCommand = 0x00485BD0;
+	__asm {
+		PUSHAD
+		MOV EDX, param_length
+		MOV ECX, params
+		CALL Func_QueueGameCommand
+		POPAD
+	}
 }

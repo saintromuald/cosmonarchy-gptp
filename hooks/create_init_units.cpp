@@ -59,7 +59,7 @@ namespace hooks {
 
 		if (created_unit != nullptr) {
 
-			function_004A01F0(created_unit);
+			updateUnitStatsFinishBuilding(created_unit);
 
 			if (function_0049EC30(created_unit) != 0)
 				updateUnitStrength(created_unit);
@@ -223,7 +223,7 @@ namespace hooks {
 							scbw::teleport(created_unit, pos);
 
 							if (created_unit != nullptr) {
-								function_004A01F0(created_unit);
+								updateUnitStatsFinishBuilding(created_unit);
 
 								if (function_0049EC30(created_unit) != 0)
 									updateUnitStrength(created_unit);
@@ -260,7 +260,7 @@ namespace hooks {
 
 		if (created_unit != nullptr) {
 
-			function_004A01F0(created_unit);
+			updateUnitStatsFinishBuilding(created_unit);
 
 			if (function_0049EC30(created_unit) != 0)
 				updateUnitStrength(created_unit);

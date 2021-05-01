@@ -50,7 +50,7 @@ namespace hooks {
 			function_004E65E0(unit, 0);
 
 			//update various stuff (set hp, set shield...) not finished on Morph
-			function_004A01F0(unit);
+			updateUnitStatsFinishBuilding(unit);
 			updateUnitStrength(unit);
 
 			pos.x = unit->sprite->position.x;
@@ -260,7 +260,7 @@ namespace hooks {
 
 							//update various stuff (set hp, set shield...) not finished on Morph
 
-							function_004A01F0(unit);
+							updateUnitStatsFinishBuilding(unit);
 
 							updateUnitStrength(unit);
 							auto origin = unit->eggOrigin;

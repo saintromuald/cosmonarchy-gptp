@@ -6,9 +6,11 @@
 #include <SCBW/enumerations.h>
 #include <string>
 #include <math.h>
+
 namespace hooks {
 	void IrradiateHit(CUnit* attacker, CUnit* target, uint8 attackingPlayerId);
 }
+
 namespace scbw {
 	bool isAnyMorphMorphResult(uint16 id);
 	bool isConventionalUnitMorphResult(uint16 id);

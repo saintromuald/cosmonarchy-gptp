@@ -5,6 +5,8 @@
 #include "hooks/orders/unit_making/unit_train.h"
 #include "stopwatch/Stopwatch.h"
 #include "logger.h"
+#include "SCBW/scbwdata.h"
+
 namespace ReqOpcode {
 	enum {
 
@@ -50,16 +52,17 @@ namespace ReqOpcode {
 
 //uint32 parseUnitDatReqs() {
 void parseUnitDatReqs() {
-	//	static uint32 result;
+//	static uint32 result;
 	const uint32 parseUnitFunc = 0x0046e100;
 	__asm {
 		PUSHAD
 		CALL parseUnitFunc
-		//		MOV result,EAX
+//		MOV result,EAX
 		POPAD
 	}
-	//return result;
+//	return result;
 }
+
 bool isAttemptingProtossBuild(const CUnit* probe) {
 	return probe->mainOrderId == OrderId::BuildProtoss1
 		&& probe->status & UnitStatus::GroundedBuilding
@@ -71,136 +74,6 @@ bool isConstructingAddon(const CUnit* building) {
 		&& building->status & UnitStatus::GroundedBuilding
 		&& building->currentBuildUnit != nullptr
 		&& !(building->currentBuildUnit->status & UnitStatus::Completed);
-}
-
-const uint32 Func_getHangerTrainCount = 0x00465270;
-uint8 getHangerTrainCount(CUnit* unit) {
-	static uint8 result = 0;
-	__asm {
-		PUSHAD
-		MOV EDX, unit
-		CALL Func_getHangerTrainCount
-		MOV result, AL
-		POPAD
-	}
-}
-const uint32 Func_unitIsReaver = 0x00401490;
-bool unitIsReaver(CUnit* a1) {
-	static int32 result;
-	__asm {
-		PUSHAD
-		MOV EAX, a1
-		CALL Func_unitIsReaver
-		MOV result, EAX
-		POPAD
-	}
-	return (bool)result;
-}
-const uint32 Func_unitIsCarrier = 0x00401470;
-bool unitIsCarrier(CUnit* a1) {
-	static int32 result;
-	__asm {
-		PUSHAD
-		MOV EAX, a1
-		CALL Func_unitIsCarrier
-		MOV result, EAX
-		POPAD
-	}
-	return (bool)result;
-}
-bool unitIsTrainingOrMorphing(CUnit* unit) {
-	const uint32 Func_unitIsTrainingOrMorphing = 0x00401500;
-	static uint32 result;
-	__asm {
-		PUSHAD
-		MOV ECX, unit
-		CALL Func_unitIsTrainingOrMorphing
-		MOV result, EAX
-		POPAD
-	}
-}
-const uint32 Func_initializeRandomizerInfo = 0x0047E410;
-uint8 initializeRandomizerInfo() {
-	static uint32 result;
-	__asm {
-		PUSHAD
-		CALL Func_initializeRandomizerInfo
-		MOV result, EAX
-		POPAD
-	}
-	return (uint8)result;
-}
-
-const uint32 Func_AI_Loop = 0x004A2B00;
-void AI_Loop() {
-	__asm {
-		PUSHAD
-		CALL Func_AI_Loop
-		POPAD
-	}
-}
-
-const uint32 Func_updateActiveTileInfo = 0x0049C4C0;
-int32 updateActiveTileInfo() {
-	static int32 result;
-	__asm {
-		PUSHAD
-		CALL Func_updateActiveTileInfo
-		MOV result, EAX
-		POPAD
-	}
-	return result;
-}
-
-const uint32 Func_removeFOWCheat = 0x00480880;
-int32 removeFOWCheat() {
-	static int32 result;
-	__asm {
-		PUSHAD
-		CALL Func_removeFOWCheat
-		MOV result, EAX
-		POPAD
-	}
-	return result;
-}
-
-const uint32 Func_updateUnits = 0x004ED000;
-void updateUnits() {
-	__asm {
-		PUSHAD
-		CALL Func_updateUnits
-		POPAD
-	}
-}
-
-const uint32 Func_imageDrawingBulletDrawing = 0x0048C3D0;
-int32 imageDrawingBulletDrawing() {
-	static int32 result;
-	__asm {
-		PUSHAD
-		CALL Func_imageDrawingBulletDrawing
-		MOV result, EAX
-		POPAD
-	}
-	return result;
-}
-
-const uint32 Func_updateImages = 0x00496330;
-void updateImages() {
-	__asm {
-		PUSHAD
-		CALL Func_updateImages
-		POPAD
-	}
-}
-
-const uint32 Func_updateThingys = 0x00488510;
-void updateThingys() {
-	__asm {
-		PUSHAD
-		CALL Func_updateThingys
-		POPAD
-	}
 }
 
 // For createUnit

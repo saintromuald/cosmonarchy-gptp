@@ -7,6 +7,7 @@
 #include "hooks/hydraFinder.h"
 #include "globals.h"
 #include "logger.h"
+
 namespace {
 	/// Definition of damage factors (explosive, concussive, etc.)
 	struct {
@@ -19,119 +20,6 @@ namespace {
 		{3, 0, 256, 256, 256},			//Normal
 		{4, 0, 256, 256, 256}			//IgnoreArmor
 	};
-}
-
-//copied from wpnspellhit and renamed
-const uint32 Func_displayLastNetErrForPlayer = 0x0049E530;
-void displayneterr_49E530(uint32 playerId) {
-	__asm {
-		PUSHAD
-		PUSH playerId
-		CALL Func_displayLastNetErrForPlayer
-		POPAD
-	}
-}
-
-const uint32 Func_UpdateUnitStrength = 0x0049FA40;
-void updateStrength_49FA40(CUnit* unit) {
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_UpdateUnitStrength
-		POPAD
-	}
-}
-
-const uint32 Func_Sub4A01F0 = 0x004A01F0;
-void function_004A01F0_copy(CUnit* unit) {
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_Sub4A01F0
-		POPAD
-	}
-}
-
-const uint32 Func_497ED0 = 0x00497ED0;
-void makeSpriteVisible(CSprite* sprite) {
-	__asm {
-		PUSHAD
-		MOV EAX, sprite
-		CALL Func_497ED0
-		POPAD
-	}
-}
-
-const uint32 Func_AI_TrainingUnit = 0x004A2830;
-void AI_Train_4A2830(CUnit* unit_creator, CUnit* created_unit) {
-	__asm {
-		PUSHAD
-		MOV EAX, created_unit
-		MOV ECX, unit_creator
-		CALL Func_AI_TrainingUnit
-		POPAD
-	}
-}
-
-const uint32 Func_CreateUnit = 0x004A09D0;
-CUnit* CreateUnit_09D0(uint32 unitId, int x, int y, uint32 playerId) {
-	static CUnit* unit_created;
-	__asm {
-		PUSHAD
-		PUSH playerId
-		PUSH y
-		MOV ECX, unitId
-		MOV EAX, x
-		CALL Func_CreateUnit
-		MOV unit_created, EAX
-		POPAD
-	}
-	return unit_created;
-}
-
-//copied from recall_spell, replace later
-const uint32 Func_CreateThingy = 0x00488210;
-CThingy* function_00488210(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
-	static CThingy* thingy;
-	int32 x_ = x;
-	__asm {
-		PUSHAD
-		PUSH playerId
-		MOVSX EDI, y
-		PUSH x_
-		PUSH spriteId
-		CALL Func_CreateThingy
-		MOV thingy, EAX
-		POPAD
-	}
-	return thingy;
-}
-
-const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
-bool function_004878f0(CThingy* thingy) {
-	static bool32 bPreResult;
-	__asm {
-		PUSHAD
-		MOV ESI, thingy
-		CALL Func_SetThingyVisibilityFlags
-		MOV bPreResult, EAX
-		POPAD
-	}
-	return (bPreResult != 0);
-}
-
-const uint32 Func_Sub498D70 = 0x00498D70;
-void imgul(CSprite* sprite, uint32 imageId, uint32 unk1, uint32 unk2, uint32 unk3) {
-	__asm {
-		PUSHAD
-		MOV EAX, sprite
-		MOV ESI, imageId
-		PUSH unk1
-		PUSH unk2
-		PUSH unk3
-		CALL Func_Sub498D70
-		POPAD
-	}
 }
 
 #include "SCBW\UnitFinder.h"
@@ -789,7 +677,7 @@ namespace hooks {
 						}
 						unit->addUnitEnergy(5 * 256);
 						if (show) {
-							imgul(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+							addOverlayBelowMain(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 						}
 					});
 				}
@@ -818,7 +706,7 @@ namespace hooks {
 					return; // Ally Check
 				}
 				if (units_dat::ShieldsEnabled[unit->id] && unit->shields < units_dat::MaxShieldPoints[unit->id] * 256) { // Shield Check for default behavior
-					imgul(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+					addOverlayBelowMain(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 				} else { // Return if both checks failed
 					return;
 				}

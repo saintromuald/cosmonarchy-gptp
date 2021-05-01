@@ -389,8 +389,6 @@ int32 AI_SetAttackGroupingRegion(uint32 airAttack, uint32 alsoVeryNear, uint32 p
 
 int16 SAI_GetRegionIdFromPxEx(int32 x, int32 y);
 
-void updateUnitStatsFinishBuilding(CUnit* unit);
-
 char AI_CancelStructure(CUnit* structure);
 
 bool unitCantSeeCloakedTarget(CUnit* unit, CUnit* target);												//0x00401D60
@@ -427,11 +425,10 @@ void function_0042D9A0(CUnit* unit);												//2D9A0
 void AI_TrainingOverlord(CUnit* main_unit, CUnit* created_unit);					//35770
 bool function_00467030(CUnit* unit);												//67030
 CUnit* function_004678A0(CUnit* unit, uint32 unitId);									//678A0
-void function_00498D70(CSprite* sprite, uint32 imageId, uint32 unk1, uint32 unk2, uint32 unk3);	//98D70
+void addOverlayBelowMain(CSprite* sprite, uint32 imageId, uint32 unk1, uint32 unk2, uint32 unk3);	//98D70
 void replaceSpriteImages(CSprite* sprite, uint32 imageId, uint32 imageDirection);			//99BB0
 void displayLastNetErrorForPlayer(uint32 playerId);										//9E530
 void updateUnitStrength(CUnit* unit);												//9FA40
-void function_004A01F0(CUnit* unit);												//A01F0
 void iscript_OpcodeCases(CImage* image, uint32 offset_, uint32 unk1, uint32 unk2);			//D74C0
 void function_004D8500(CImage* image);												//D8500
 bool function_004EB9C0(CUnit* unit, int x, int y);									//EB9C0
@@ -456,7 +453,6 @@ int techUseAllowed(CUnit* a1, __int16 a2, int a3);									// 0046DD80
 unsigned int getDistanceFast(int a1, int a2, int a3, int a4);						// 0040C360
 int orders_HoldPosSuicidal(CUnit* a1);												// 004EB5B0
 void fixTargetLocation(unsigned __int16 a1, Point32* a2);							// 00401FA0
-void updateUnitStatsFinishBuilding(CUnit* a1);										// 004A01F0
 void turnUnit(CUnit* a1, char a2);													// 00495F20
 void toIdle(CUnit* a1);																// 004753A0
 int isUnitMovable(CUnit* a1);														// 00401DC0
@@ -477,7 +473,6 @@ void playBuildingCompleteSound(CUnit* building);									// 008F310
 void refreshSpriteData(CSprite* sprite);											// 00983A0
 void displayLastNetErrorForPlayer(uint32 playerId);									// 009E530
 void replaceUnitWithType(CUnit* unit, uint16 newUnitId);							// 009FED0
-void function_004A01F0(CUnit* unit);												// 00A01F0
 
 //// building_terran
 
@@ -547,7 +542,6 @@ bool32 spreadsCreep(uint32 unitId, bool32 defaultReturn);																			// 0
 void function_004148F0(int x, int y, uint32 unitId);																				// 004148F0
 void CreateBuildingLarva(CUnit* main_building);																						// 0049D660
 bool32 function_0049EC30(CUnit* unit);																								// 0049EC30
-void function_004A01F0(CUnit* unit);																								// 004A01F0
 CUnit* FindBestUnit(Box16* coords, uint32 searchProc);																				// 004E8830
 
 //// larva_creep_spawn
@@ -556,7 +550,6 @@ CUnit* getUnitPointer();
 uint8 spreadCreep(uint32 unitId, int x, int y);																						// 00414680
 void AI_TrainingOverlord(CUnit* main_building, CUnit* larva);																		// 00435770
 void updateUnitStrength(CUnit* unit);																								// 0049FA40
-void function_004A01F0(CUnit* unit);																								// 004A01F0
 uint32 IterateUnitsAtLocationTargetProc_LarvaCount(CUnit* unit, Box16* coords);														// 004E8280
 void function_004E8DA0(CUnit* unit);																								// 004E8DA0
 bool function_004E8E10(CUnit* unit, Point32* coords);																				// 004E8E10
@@ -575,6 +568,7 @@ uint32 getNumSurroundingCreepTiles(uint32 x, uint32 y);																				// 00
 void setCreepRelationalData(uint32 x, uint32 y, setCreepRelationalData_callback callback, uint32 arg);								// 00413FA0
 uint32 iterateDirectionalCreepData(uint32 x, uint32 y, uint32 callback, uint32 arg);												// 00413B30
 
+// TODO: finish hook and add helpers for these functions
 // for applyCreepAtLocationFromUnitType
 int32 modifyCreepState(int32 x_tile, int32 y_tile, int32(__stdcall* creepChange)(int32, int32, int32, int32, int32), void* param);	// 00413FA0
 int32 runCreepRandomizer(int16* originalTile, int32 creepTileBorders, int32* outCreepStatus, int16* currentTile, int32 unused);		// 004140A0 // "note possible desync"
@@ -997,13 +991,13 @@ int32 BWFXN_PrintXY(const char* text, int32 x, int32 y);
 int32 GetColorHandle(uint8 color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
 
 // For targetedOrder
-COrder* queueNewOrder(COrder* a1, int16 a2, int16 a3, CUnit* a4, uint8 a5, int32 a6, int16 a7, Point32* a8, CUnit* a9);	//00474B90
-int32 showStatTxtToPlayer(int32 a1, int32 a2); //0048CF00
-void setOrderTarget(uint8 a1, int16 a2, int16 a3, int32 a4, int32 a5, CUnit* a6, int32 a7, Point32* a8, CUnit* a9); //00475470
+COrder* queueNewOrder(COrder* a1, int16 a2, int16 a3, CUnit* a4, uint8 a5, int32 a6, int16 a7, Point32* a8, CUnit* a9);	// 00474B90
+int32 showStatTxtToPlayer(int32 a1, int32 a2);																			// 0048CF00
+void setOrderTarget(uint8 a1, int16 a2, int16 a3, int32 a4, int32 a5, CUnit* a6, int32 a7, Point32* a8, CUnit* a9);		// 00475470
 
 // For selectUnits
-int32 selectSingleUnitFromID(int32 a1); //00496D30
-int32 selectMultipleUnitsFromUnitList(int32 a1, CUnit** a2, uint8 a3, int32 a4); //0049AEF0
+int32 selectSingleUnitFromID(int32 a1);																					// 00496D30
+int32 selectMultipleUnitsFromUnitList(int32 a1, CUnit** a2, uint8 a3, int32 a4);										// 0049AEF0
 int32 SNetGetTurnsInTransit(uint32* turns);
 uint8 sendTurn();
 int32 SErrGetLastError();
@@ -1011,6 +1005,26 @@ uint8 packetErrHandle(int32 result, int32 a1, const char* a3, int32 a4, int32 a5
 
 //// repair_order
 
-void getRepairInfo(CUnit* repairTarget, uint32* repairCostMineral, uint32* repairCostGas, int16* unkRepairInfo);	// 00466D10
-bool verifyResources(uint32 mineralCost, uint32 gasCost, uint32 playerId);											// 00466EE0
-bool ord_repair_subtract(CUnit* worker, CUnit* target);																// 00466FB0
+void getRepairInfo(CUnit* repairTarget, uint32* repairCostMineral, uint32* repairCostGas, int16* unkRepairInfo);		// 00466D10
+bool verifyResources(uint32 mineralCost, uint32 gasCost, uint32 playerId);												// 00466EE0
+bool ord_repair_subtract(CUnit* worker, CUnit* target);																	// 00466FB0
+
+//// hydra_specific
+uint8 getHangerTrainCount(CUnit* unit);
+bool unitIsTrainingOrMorphing(CUnit* unit);
+uint8 initializeRandomizerInfo();
+void AI_Loop();
+int32 updateActiveTileInfo();
+int32 removeFOWCheat();
+void updateUnits();
+int32 imageDrawingBulletDrawing();
+void updateImages();
+void updateThingys();
+
+//// psi_field_util
+
+bool addPsiFieldSprite(CUnit* unit);
+
+//// stim_packs
+
+void QueueGameCommand(uint8* params, uint32 param_length);

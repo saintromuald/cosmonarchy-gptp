@@ -14,7 +14,6 @@
 
 void killAllHangarUnits(CUnit* unit) {
 	uint32 random_value;
-
 	while (unit->carrier.inHangarCount != 0) {
 		CUnit* childInside = unit->carrier.inHangarChild;
 		unit->carrier.inHangarChild = childInside->interceptor.hangar_link.prev;
@@ -22,151 +21,62 @@ void killAllHangarUnits(CUnit* unit) {
 		childInside->remove();
 		unit->carrier.inHangarCount--;
 	}
-
 	while (unit->carrier.outHangarCount != 0) {
 		CUnit* childOutside = unit->carrier.outHangarChild;
 		childOutside->interceptor.parent = nullptr;
-
-		//Kill interceptors only (Scarabs will defuse anyway)
+		// Kill Stewards only (Plasma Shells will defuse anyway)
 		if (childOutside->id != UnitId::ProtossPlasmaShell) {
 			uint16 randomDeathTimer;
-			//hardcoded RNG management
+			// TODO: Remove RNG, make farthest Stewards detonate first
+			// hardcoded RNG management
 			if (*IS_IN_GAME_LOOP) {
 				static uint32* randomnessCounter_0051C6AC = (uint32*)0x0051C6AC;
 				static uint32* randomnessCounter_0051CA18 = (uint32*)0x0051CA18;
-
 				*randomnessCounter_0051C6AC = *randomnessCounter_0051C6AC + 1;
 				*randomnessCounter_0051CA18 = *randomnessCounter_0051CA18 + 1;
 				*lastRandomNumber = (*lastRandomNumber * 0x015A4E35) + 1;
-
-				//number between 0 and 32766
+				// number between 0 and 32766
 				random_value = (*lastRandomNumber / 65536) & 0x7FFF;
 			} else {
 				random_value = 0;
 			}
-			//should produce a number between 15 and 45 (or maybe 46)
+			// should produce a number between 15 and 45 (or maybe 46)
 			randomDeathTimer = ((random_value * 31) / 32768) + 15;
-			if (
-				childOutside->removeTimer == 0 ||
-				randomDeathTimer < childOutside->removeTimer
-				)
+			if (childOutside->removeTimer == 0 ||
+				randomDeathTimer < childOutside->removeTimer)
+			{
 				childOutside->removeTimer = randomDeathTimer;
+			}
 		}
-
 		//66239
 		unit->carrier.outHangarChild = childOutside->interceptor.hangar_link.prev;
 		childOutside->interceptor.hangar_link.prev = nullptr;
 		childOutside->interceptor.hangar_link.next = nullptr;
 		unit->carrier.outHangarCount--;
-
-	} //while (unit->carrier.outHangarCount != 0)
-
+	}
 	unit->carrier.outHangarChild = nullptr;
 }
 
-//Identical to 00468770 sub_468770
-//Not hooked but used by hooked unitDestructorSpecialHook
+// Identical to 00468770 sub_468770
+// Not hooked but used by hooked unitDestructorSpecialHook
 void freeResourceContainer(CUnit* resource) {
 	resource->building.resource.gatherQueueCount = 0;
 	CUnit* worker = resource->building.resource.nextGatherer;
 	CUnit* nextWorker;
-
 	while (worker != nullptr) {
 		if (worker->worker.harvest_link.prev != nullptr) { //untie the previous worker from current worker (tie it to next)
 			(worker->worker.harvest_link.prev)->worker.harvest_link.next = worker->worker.harvest_link.next;
 		} else {
 			resource->building.resource.nextGatherer = worker->worker.harvest_link.next;
 		}
-
 		if (worker->worker.harvest_link.next != nullptr) { //untie the next worker from current worker (tie it to previous)
 			(worker->worker.harvest_link.next)->worker.harvest_link.prev = worker->worker.harvest_link.prev;
 		}
-
 		nextWorker = worker->worker.harvest_link.next;
 		worker->worker.harvestTarget = nullptr;
 		worker->worker.harvest_link.prev = nullptr;
 		worker->worker.harvest_link.next = nullptr;
 		worker = nextWorker;
-
-	}
-}
-
-const uint32 Func_CreateThingy = 0x00488210;
-CThingy* createThingyFunc(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
-	static CThingy* thingy;
-	int32 x_ = x;
-	__asm {
-		PUSHAD
-		PUSH playerId
-		MOVSX EDI, y
-		PUSH x_
-		PUSH spriteId
-		CALL Func_CreateThingy
-		MOV thingy, EAX
-		POPAD
-	}
-	return thingy;
-}
-
-const uint32 Func_GetAllUnitsInBounds = 0x0042FF80;
-CUnit** getAllUnitsInBounds_copy(Box16* coords) {
-	static CUnit** units_in_bounds;
-	__asm {
-		PUSHAD
-		MOV EAX, coords
-		CALL Func_GetAllUnitsInBounds
-		MOV units_in_bounds, EAX
-		POPAD
-	}
-	return units_in_bounds;
-}
-
-//Identical to setAllImageGroupFlagsPal11 @ 0x00497430;
-void setAllImageGroupFlagsPal11(CSprite* sprite) {
-	for (
-		CImage* current_image = sprite->images.head;
-		current_image != nullptr;
-		current_image = current_image->link.next
-		) {
-		if (current_image->paletteType == PaletteType::RLE_HPFLOATDRAW)
-			current_image->flags |= CImage_Flags::Redraw;
-	}
-}
-
-const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
-bool setThingyVisibilityFlagsFunc(CThingy* thingy) {
-	static bool32 bPreResult;
-	__asm {
-		PUSHAD
-		MOV ESI, thingy
-		CALL Func_SetThingyVisibilityFlags
-		MOV bPreResult, EAX
-		POPAD
-	}
-	return (bPreResult != 0);
-}
-
-const uint32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
-void IterateUnitsAtLocationTargetProc_EnsnareFunc(CUnit* attacker, Box16* coords) {
-	const uint32 EnsnareProc_function = 0x004F46C0;
-	__asm {
-		PUSHAD
-		PUSH attacker
-		MOV EAX, coords
-		MOV EBX, EnsnareProc_function
-		CALL Func_IterateUnitsAtLocationTargetProc
-		POPAD
-	}
-}
-void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords) {
-	const uint32 PlagueProc_function = 0x004F4AF0;
-	__asm {
-		PUSHAD
-		PUSH attacker
-		MOV EAX, coords
-		MOV EBX, PlagueProc_function
-		CALL Func_IterateUnitsAtLocationTargetProc
-		POPAD
 	}
 }
 
