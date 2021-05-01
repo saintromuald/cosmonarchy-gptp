@@ -24,7 +24,7 @@ namespace hooks {
 					if (unit->getMovableState() != 0) {
 						helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					}
-				} else { //E4DA9
+				} else { // 004E4DA9
 					helper::makeToHoldPosition(unit);
 					unit->mainOrderState = 2;
 				}
@@ -61,7 +61,7 @@ namespace hooks {
 								if (builtUnit == nullptr) {
 									helper::displayLastNetErrorForPlayer(unit->playerId);
 									unit->orderToIdle();
-								} else { //E4E63
+								} else { // 004E4E63
 									helper::replaceSpriteImages(builtUnit->sprite, ImageId::WarpAnchor, 0);
 									if (isBuildingAssimilator) {
 										helper::addOverlayBelowMain(builtUnit->sprite, ImageId::VespeneGeyser, 0, 0, 0);
@@ -97,7 +97,7 @@ namespace hooks {
 					}
 	}
 
-	//Protoss building self-building
+	// Protoss building self-building
 	void orders_BuildSelf2(CUnit* building) {
 		bool jump_to_E50EE = false;
 		if (building->mainOrderState > 3) {
@@ -131,7 +131,7 @@ namespace hooks {
 						building->orderSignal -= 1;
 						helper::replaceSpriteImages(
 							building->sprite,
-							//					sprites_dat::ImageId[building->sprite->spriteId],
+//							sprites_dat::ImageId[building->sprite->spriteId],
 							scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId),
 							0
 							);
@@ -145,7 +145,7 @@ namespace hooks {
 							building->orderSignal -= 1;
 							helper::replaceSpriteImages(
 								building->sprite,
-								//					sprites_dat::ImageId[building->sprite->spriteId],
+//							sprites_dat::ImageId[building->sprite->spriteId],
 								scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId),
 								0
 								);
@@ -231,7 +231,6 @@ namespace hooks {
 						else {
 							building->shields += shieldGain;
 						}
-
 					}
 	}
 
