@@ -772,6 +772,8 @@ namespace helper {
     void getRepairInfo(CUnit* repairTarget, uint32* repairCostMineral, uint32* repairCostGas, int16* unkRepairInfo);		// 00466D10
     bool verifyResources(uint32 mineralCost, uint32 gasCost, uint32 playerId);												// 00466EE0
     bool ord_repair_subtract(CUnit* worker, CUnit* target);																	// 00466FB0
+    // For isOrderValid
+    bool unitIsResource(CUnit* unit);                                                                                       // 004688E0
 
     //// hydra_specific
     uint8 getHangerTrainCount(CUnit* unit);

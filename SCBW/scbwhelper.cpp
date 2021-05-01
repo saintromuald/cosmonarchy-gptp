@@ -7347,4 +7347,18 @@ namespace helper {
 			POPAD
 		}
 	}
+
+	// For isOrderValid
+	bool unitIsResource(CUnit* unit) {
+		const uint32 Func_unitIsResource = 0x004688E0;
+		static int32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_unitIsResource
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
 }

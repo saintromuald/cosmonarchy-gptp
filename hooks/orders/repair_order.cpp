@@ -207,4 +207,94 @@ namespace hooks {
 			}
 		}
 	}
+
+	// Hooked to allow for general Repair and some other shit - Pr0nogo
+	int32 isOrderValid(char orderId, CUnit* unit, int32 unused, CUnit* target, int32 bErrorFlag)
+	{
+		uint16 errorStringId;
+		int32 v6;
+		bool v7;
+		uint8 v8;
+		int32 v9;
+		int32 result;
+		int32 v11;
+		int32 v12;
+		uint16 v13;
+		int32 v14;
+		int32 v15;
+
+		switch (orderId)
+		{
+		case OrderId::Repair1:
+			errorStringId = 884;
+			if (!target)
+				goto LABEL_25;
+			if (target->getRace() != RaceId::Terran)
+				goto LABEL_25;
+			v11 = target->id;
+			errorStringId = 883;
+			if (!(units_dat::BaseProperty[v11] & UnitProperty::Mechanical) || !(target->status & UnitStatus::Completed))
+				goto LABEL_25;
+			v12 = target->hitPoints;
+			v8 = __OFSUB__(v12, units_dat::MaxHitPoints[v11]);
+			v7 = v12 - units_dat::MaxHitPoints[v11] < 0;
+			goto LABEL_7;
+		case OrderId::MoveToMinerals:
+			if (!target)
+				goto LABEL_8;
+			errorStringId = unit->getRace() + 893;
+			if (target->id == UnitId::ResourceVespeneGeyser)
+				goto LABEL_25;
+			v14 = helper::unitIsResource(target);
+			if (v14)
+				goto LABEL_8;
+			v15 = units_dat::BaseProperty[v13];
+			errorStringId = 892;
+			if (!(v15 & 0x2000))
+				goto LABEL_25;
+			errorStringId = 896;
+			if (unit->playerId != target->playerId)
+				goto LABEL_25;
+			return 1;
+		case OrderId::Pickup2:
+			errorStringId = 890;
+			if (!target || unit->playerId != target->playerId)
+				goto LABEL_25;
+			if (helper::canEnterTransport(unit, target))
+				goto LABEL_8;
+			if (units_dat::SpaceProvided[unit->id] >= units_dat::SpaceRequired[target->id])
+				errorStringId = 891;
+			goto LABEL_25;
+		case OrderId::HealMove:
+			if (!target)
+				goto LABEL_8;
+			if (!helper::techUseAllowed(unit, TechId::Healing, unit->playerId))
+				goto LABEL_27;
+			errorStringId = 1325;
+			if (!(target->status & 6))
+			{
+				v6 = target->id;
+				if (units_dat::BaseProperty[v6] & 0x10000)
+				{
+					v9 = target->hitPoints;
+					v8 = __OFSUB__(v9, units_dat::MaxHitPoints[v6]);
+					v7 = v9 - units_dat::MaxHitPoints[v6] < 0;
+				LABEL_7:
+					if (v7 ^ v8)
+						goto LABEL_8;
+				}
+			}
+		LABEL_25:
+			if (bErrorFlag)
+				*(int16*)bErrorFlag = errorStringId;
+		LABEL_27:
+			result = 0;
+			break;
+		default:
+		LABEL_8:
+			result = 1;
+			break;
+		}
+		return result;
+	}
 }
