@@ -47,7 +47,7 @@ namespace hooks {
 				)
 				helper::AI_TrainingUnit(unit, unit);
 
-			helper::function_004E65E0(unit, 0);
+			helper::initBuilding(unit, 0);
 
 			//update various stuff (set hp, set shield...) not finished on Morph
 			helper::updateUnitStatsFinishBuilding(unit);
@@ -241,7 +241,7 @@ namespace hooks {
 
 							CImage* current_image;
 
-							helper::function_004E65E0(unit, 1);
+							helper::initBuilding(unit, 1);
 
 							current_image = unit->sprite->images.head;
 

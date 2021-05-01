@@ -653,7 +653,7 @@ namespace hooks {
 
 					} else { //789CC
 
-						helper::setNextWaypoint_Sub4EB290(unit);
+						helper::setNextWaypoint(unit);
 
 						if (!unit->isTargetWithinMinRange
 						(

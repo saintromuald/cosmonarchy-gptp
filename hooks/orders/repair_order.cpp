@@ -55,9 +55,9 @@ namespace hooks {
 					if (!(target->status & UnitStatus::Completed)) {
 						unit->orderTo(OrderId::ConstructingBuilding, target);
 						if (*IS_PLACING_BUILDING) {
-							if (!helper::function_0048DDA0()) {
+							if (!helper::canStillPlaceBuilding()) {
 								helper::refreshLayers3And4();
-								helper::function_0048E310();
+								helper::endBuildingPlacement();
 							}
 						}
 						bEndThere = true;

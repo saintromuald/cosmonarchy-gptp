@@ -206,7 +206,7 @@ namespace hooks {
 		}
 		doMedicHeal_result = helper::doMedicHeal(unit, target);
 		if (doMedicHeal_result == 0) {
-			helper::setNextWaypoint_Sub4EB290(unit);
+			helper::setNextWaypoint(unit);
 			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
@@ -222,7 +222,7 @@ namespace hooks {
 					unit->getMovableState() != 2 //unit not unmovable
 					) {
 					if (unit->isTargetWithinMinRange(target, 30)) {
-						helper::setNextWaypoint_Sub4EB290(unit);
+						helper::setNextWaypoint(unit);
 						unit->mainOrderState = 1;
 					}
 				} else //64216

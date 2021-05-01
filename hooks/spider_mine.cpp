@@ -152,7 +152,7 @@ namespace hooks {
 				}
 
 				if (!bEndThere && !bIsCompletelyInRange) { //63F14
-					helper::setNextWaypoint_Sub4EB290(unit);
+					helper::setNextWaypoint(unit);
 					unit->mainOrderState = 1;
 				}
 

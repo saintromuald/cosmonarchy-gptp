@@ -189,7 +189,7 @@ namespace hooks {
 
 				if (!bStopFunction) { //EA377
 					//"move to invalid target" logic...I think
-					helper::setNextWaypoint_Sub4EB290(unitInfesting);
+					helper::setNextWaypoint(unitInfesting);
 					if (unitInfesting->moveTarget.pt.x != unitInfesting->nextTargetWaypoint.x ||
 						unitInfesting->moveTarget.pt.y != unitInfesting->nextTargetWaypoint.y) {
 						unitInfesting->nextTargetWaypoint.x = unitInfesting->moveTarget.pt.x;

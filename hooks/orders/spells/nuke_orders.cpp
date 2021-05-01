@@ -121,7 +121,7 @@ namespace hooks {
 			int32 direction;
 			bool bEndThere = false;
 
-			helper::setNextWaypoint_Sub4EB290(unit);
+			helper::setNextWaypoint(unit);
 
 			if (
 				unit->nextTargetWaypoint.x != unit->position.x ||

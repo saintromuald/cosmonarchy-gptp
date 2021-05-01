@@ -64,7 +64,7 @@ namespace hooks {
 				nydus_canal->orderToIdle();
 			} else {
 
-				helper::function_004E65E0(nydusExit, 1);
+				helper::initBuilding(nydusExit, 1);
 
 				//logically equivalent to a more complex original calculation
 				nydusExit->hitPoints = (10 * units_dat::MaxHitPoints[nydusExit->id]) / 100;

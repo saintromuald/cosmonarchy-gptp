@@ -259,7 +259,7 @@ namespace hooks {
 							//646C7
 							//this cause the landed building to immediately take off again to
 							//execute the queued move/follow order
-							helper::function_00474760(unit, unit->orderQueueHead, OrderId::BuildingLiftoff);
+							helper::prependOrderTargetingNothing(unit, unit->orderQueueHead, OrderId::BuildingLiftoff);
 
 					} //if(unit->orderQueueHead != nullptr)
 
@@ -286,13 +286,13 @@ namespace hooks {
 						//of landing building to update an
 						//ongoing attempt to choose a building
 						//or landing location?
-						if (!helper::function_0048DDA0()) {
+						if (!helper::canStillPlaceBuilding()) {
 
 							helper::refreshLayers3And4();
 
 							//refresh various stuff, including
 							//buttonset, dialogs...
-							helper::function_0048E310();
+							helper::endBuildingPlacement();
 
 						}
 

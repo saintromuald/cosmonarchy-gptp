@@ -76,7 +76,7 @@ namespace hooks {
 				helper::get_statTxt_Str_0(unit, unit->playerId, message);
 
 				//make the unit stop since the order failed
-				helper::setNextWaypoint_Sub4EB290(unit);
+				helper::setNextWaypoint(unit);
 				unit->orderToIdle();
 
 			} else { //9291A

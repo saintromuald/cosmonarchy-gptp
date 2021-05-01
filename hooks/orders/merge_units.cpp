@@ -126,7 +126,7 @@ namespace hooks {
 			) {	//conditions for merge not ok
 
 			//94838
-			helper::setNextWaypoint_Sub4EB290(unit);
+			helper::setNextWaypoint(unit);
 
 			if (
 				unit->moveTarget.pt.x != unit->nextTargetWaypoint.x ||
@@ -307,7 +307,7 @@ namespace hooks {
 			) {	//conditions for merge not ok
 
 			//94A3F
-			helper::setNextWaypoint_Sub4EB290(unit);
+			helper::setNextWaypoint(unit);
 
 			if (
 				unit->moveTarget.pt.x != unit->nextTargetWaypoint.x ||
