@@ -3,12 +3,6 @@
 
 //helper functions def
 
-namespace {
-
-	
-
-} //unnamed namespace
-
 namespace hooks {
 
 	void orders_ProbeBuild(CUnit* unit) {
