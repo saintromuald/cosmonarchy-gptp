@@ -158,6 +158,7 @@ namespace hooks {
 							unit->orderTarget.pt.y = helper::RandBetween(y_min, y_max, 9);
 							helper::fixTargetLocation(&unit->orderTarget.pt, unit->id);
 						}
+
 						if (helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0)
 						{
 							unit->mainOrderState = 5;
