@@ -92,6 +92,7 @@ namespace hooks {
 					switch (unit->id) {
 						case UnitId::ZergOvileth:
 						case UnitId::ZergIroleth:
+						case UnitId::ZergOthstoleth:
 							break;
 						default:
 							helper::incrementUnitScoresEx(unit, -1, 0);
@@ -176,7 +177,7 @@ namespace hooks {
 		} else
 			if (unit->mainOrderState == 1) {
 				// advance
-				if (helper::advanceRemainingBuildTime_Sub466940(unit)) {
+				if (helper::advanceRemainingBuildTime(unit)) {
 					auto origin = unit->eggOrigin;
 					auto anim = IscriptAnimation::SpecialState1;
 					/*
@@ -199,6 +200,9 @@ namespace hooks {
 								break;
 							case UnitId::ZergIroleth:
 								scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 2);
+								break;
+							case UnitId::ZergOthstoleth:
+								scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 3);
 								break;
 							default:
 								break;

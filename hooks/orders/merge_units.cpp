@@ -64,7 +64,7 @@ namespace hooks {
 		if (unit->mainOrderState == 0) {
 
 			//93BB2
-			if (helper::advanceRemainingBuildTime_Sub466940(unit)) {
+			if (helper::advanceRemainingBuildTime(unit)) {
 
 				unit->sprite->flags &= ~CSprite_Flags::IscriptCode;	//unset that flag
 
