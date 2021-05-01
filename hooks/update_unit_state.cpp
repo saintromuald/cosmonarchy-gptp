@@ -383,7 +383,6 @@ namespace hooks {
 
 			// Deliberate healing start
 			int32 tickHeal = 0;
-
 			// Azazel Innervating Matrices - heal over time
 			if (unit->defensiveMatrixHp != 0) {
 				if (unit->hitPoints > 0
@@ -394,9 +393,8 @@ namespace hooks {
 					}
 				}
 			}
-
 			// Akistrokor - Enthralling Assault HP regeneration
-			if (scbw::get_generic_timer(unit, ValueId::EnthrallingAssaultHeal) > 0) {
+			if (scbw::get_generic_timer(unit, ValueId::EnthrallingAssaultHealTimer) > 0) {
 				tickHeal += AkistrokorEnthrallingAssaultHeal;
 			}
 
