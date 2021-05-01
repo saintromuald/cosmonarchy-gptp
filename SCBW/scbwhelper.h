@@ -558,9 +558,13 @@ namespace helper {
     //// unit_morph
     uint8 setArchonPathing(CUnit* unit);																							// 0046A820
     bool hasSuppliesForUnit(uint32 unitId, uint32 playerId, bool32 canShowErrorMessage);											// 0042CF70
-    CUnit* function_0045D910(CUnit* unit);																							// 0045D910
+    CUnit* zergDualBirth(CUnit* unit);																							    // 0045D910
     void orderNewUnitToRally(CUnit* unit, CUnit* factory);																			// 00466F50
     void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit);																	// 004A2830
+    void removeAITownGasReferences(CUnit* unit);                                                                                    // 00432760
+    void deleteBuildingAi(void* building_ai_list, BuildingAi* ai);                                                                  // 00404500
+    void deleteWorkerAi(void* worker_ai_list, WorkerAi* ai);                                                                        // 00404470
+    void deleteAiTownIfNeeded(AiTown* town);                                                                                        // 004347E0
 
     //// hallucination_spell
     // for orders_Hallucination1

@@ -9,11 +9,8 @@
 #include "globals.h"
 
 namespace hooks {
-
 	void orders_ZergBirth(CUnit* unit) {
-
 		if (unit->orderSignal & 4) {
-
 			bool bTwinEggOrCocoon = true;
 			CUnit* unit2;
 			Point16 pos;
@@ -24,76 +21,57 @@ namespace hooks {
 			if (origin == UnitId::ZergZergling) {
 				vorvaling = true;
 			}
-
-			if (
-				units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg ||
-				unit->previousUnitType == UnitId::ZergCocoon || unit->previousUnitType == 179
-				)
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg ||
+				unit->previousUnitType == UnitId::ZergCocoon || unit->previousUnitType == 179)
+			{
 				bTwinEggOrCocoon = false;
-
-			unit2 = nullptr;
-
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg && !vorvaling) {
-				unit2 = helper::function_0045D910(unit);//zerg dual birth
-
-				if (unit2 != nullptr)
-					helper::AI_TrainingUnit(unit, unit2);
-
 			}
-
-			if (
-				unit->id != UnitId::ZergDroleth &&
-				unit->id != UnitId::ZergOvileth
-				)
+			unit2 = nullptr;
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg && !vorvaling) {
+				unit2 = helper::zergDualBirth(unit); // zerg dual birth
+				if (unit2 != nullptr) {
+					helper::AI_TrainingUnit(unit, unit2);
+				}
+			}
+			if (unit->id != UnitId::ZergDroleth &&
+				unit->id != UnitId::ZergOvileth)
+			{
 				helper::AI_TrainingUnit(unit, unit);
-
+			}
 			helper::initBuilding(unit, 0);
-
-			//update various stuff (set hp, set shield...) not finished on Morph
+			// update various stuff (set hp, set shield...) not finished on Morph
 			helper::updateUnitStatsFinishBuilding(unit);
 			helper::updateUnitStrength(unit);
-
 			pos.x = unit->sprite->position.x;
 			pos.y = unit->sprite->position.y;
 
 			if (bTwinEggOrCocoon) {
-
-				if (units_dat::MovementFlags[unit->id] == MovementFlags::HoverUnit)
+				if (units_dat::MovementFlags[unit->id] == MovementFlags::HoverUnit) {
 					pos.y -= 7;
+				}
 				else
-					if (unit->status & UnitStatus::InAir)
+					if (unit->status & UnitStatus::InAir) {
 						pos.y -= 42;
-
+					}
 			}
-
 			helper::fixTargetLocation(&pos, unit->id);
-
-			if (
-				pos.x != unit->sprite->position.x ||
-				pos.y != unit->sprite->position.y
-				)
+			if (pos.x != unit->sprite->position.x ||
+				pos.y != unit->sprite->position.y) {
 				scbw::setUnitPosition(unit, pos.x, pos.y);
-
-			if (
-				!scbw::isZergEggNew(unit, true, false, unit->previousUnitType)
-				) {
+			}
+			if (!scbw::isZergEggNew(unit, true, false, unit->previousUnitType))
+			{
 				auto origin = unit->eggOrigin;
 				if (origin == UnitId::ZergLarva) {
 					helper::orderNewUnitToRally(unit, unit->connectedUnit);
-
-					if (unit2 != nullptr)
+					if (unit2 != nullptr) {
 						helper::orderNewUnitToRally(unit2, unit->connectedUnit);
+					}
 				}
-
 			}
-
 			helper::actUnitReturnToIdle(unit);
-
 		}
-
 	}
-
-	;
 
 	void orders_Morph1(CUnit* unit) {
 		if (unit->mainOrderState == 0) {
@@ -194,19 +172,18 @@ namespace hooks {
 						}
 					}
 				}
-
 			}
-
 		} else
-
 			if (unit->mainOrderState == 1) {
-				//advance
+				// advance
 				if (helper::advanceRemainingBuildTime_Sub466940(unit)) {
 					auto origin = unit->eggOrigin;
 					auto anim = IscriptAnimation::SpecialState1;
-					/*if (origin == UnitId::ZergLarva) {
+					/*
+					if (origin == UnitId::ZergLarva) {
 						anim = IscriptAnimation::GndAttkInit;
-					}*/
+					}
+					*/
 					unit->sprite->playIscriptAnim(anim, true);
 					unit->mainOrderState = 2;
 				}
@@ -214,7 +191,6 @@ namespace hooks {
 			else
 				if (unit->mainOrderState == 2) {
 					if (unit->orderSignal & 4) {
-
 						unit->orderSignal -= 4;
 						auto origin = unit->eggOrigin;
 						switch (origin) {
@@ -227,133 +203,107 @@ namespace hooks {
 							default:
 								break;
 						}
-
 						helper::replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
-						if (
-							unit->id == UnitId::ZergDroleth ||
-							unit->id == UnitId::ZergOvileth
-							)
+						if (unit->id == UnitId::ZergDroleth
+							|| unit->id == UnitId::ZergOvileth) {
 							helper::AI_TrainingUnit(unit, unit);
-
+						}
 						helper::playMorphingCompleteSound(unit);
 						unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 						if (units_dat::ConstructionGraphic[unit->id] != 0) {
-
 							CImage* current_image;
-
 							helper::initBuilding(unit, 1);
-
 							current_image = unit->sprite->images.head;
-
 							while (current_image != nullptr) {
 								auto anim = IscriptAnimation::SpecialState1;
-								/*if (origin == UnitId::ZergLarva) {
+								/*
+								if (origin == UnitId::ZergLarva) {
 									anim = IscriptAnimation::GndAttkInit;
-								}*/
+								}
+								*/
 								current_image->playIscriptAnim(anim);
 								current_image = current_image->link.next;
 							}
-
 							unit->orderComputerCL(OrderId::ZergBirth);
-
-						} else { //5DF60
-
-							//update various stuff (set hp, set shield...) not finished on Morph
-
+						} else { // 0045DF60
+							// update various stuff (set hp, set shield...) not finished on Morph
 							helper::updateUnitStatsFinishBuilding(unit);
-
 							helper::updateUnitStrength(unit);
 							auto origin = unit->eggOrigin;
 							if (unit->id == UnitId::ZergEgg && origin == UnitId::ZergLarva)
+							{
 								helper::orderNewUnitToRally(unit, unit->connectedUnit);
-
+							}
 						}
-
 					}
-
 				}
-
 	}
 
-	;
-
-	//Check if @p unit can morph into @p morphUnitId.
+	// Check if @p unit can morph into @p morphUnitId.
 	bool unitCanMorphHook(CUnit* unit, uint16 morphUnitId) {
-		//Default StarCraft behavior
-
+		// Default StarCraft behavior
 		if (unit->id == UnitId::ZergZergling) {
 			if (morphUnitId == UnitId::ZergVorvaling
 				|| morphUnitId == UnitId::ZergNathrokor) {
 				return true;
 			}
 		}
-
 		if (unit->id == UnitId::ZergHydralisk) {
 			if (morphUnitId == UnitId::ZergBactalisk
 				|| morphUnitId == UnitId::ZergLakizilisk) {
 				return true;
 			}
 		}
-
 		if (unit->id == UnitId::ZergQuazilisk) {
 			if (morphUnitId == UnitId::ZergKalkalisk
 				|| morphUnitId == UnitId::ZergAlmaksalisk) {
 				return true;
 			}
 		}
-
 		if (unit->id == UnitId::ZergMatraleth) {
 			if (morphUnitId == UnitId::ZergKonvilisk
 				|| morphUnitId == UnitId::ZergAkistrokor) {
 				return true;
 			}
 		}
-
 		if (unit->id == UnitId::ZergUltrakor) {
 			if (morphUnitId == UnitId::ZergKeskathalor
 				|| morphUnitId == UnitId::ZergAlkajelisk) {
 				return true;
 			}
 		}
-
 		if (unit->id == UnitId::ZergZoryusthaleth) {
 			if (morphUnitId == UnitId::ZergIsthrathaleth) {
 				return true;
 			}
 		}
-
 		if (unit->id == UnitId::ZergOvileth) {
 			if (morphUnitId == UnitId::ZergIroleth) {
 				return true;
 			}
 		}
-
 		if (unit->id == UnitId::ZergIroleth) {
 			if (morphUnitId == UnitId::ZergOthstoleth) {
 				return true;
 			}
 		}
-
 		if (unit->id == UnitId::ZergOthstoleth) {
 			if (morphUnitId == UnitId::ZergAlaszileth) {
 				return true;
 			}
 		}
-
 		if (unit->id == UnitId::ZergMutalisk) {
 			if (morphUnitId == UnitId::ZergGorgrokor
 				|| morphUnitId == UnitId::ZergVithrilisk
 				|| morphUnitId == UnitId::ZergGeszithalor) {
 				return true;
 			}
-		}
-		
+		}		
 		if (unit->id == UnitId::ZergLarva) {
 			if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1) {
 				return true;
 			}
-		}
-		
+		}		
 		if (unit->id == UnitId::ProtossCantavis) {
 			if (morphUnitId == UnitId::ProtossAugur) {
 				return true;
@@ -362,54 +312,16 @@ namespace hooks {
 		return false;
 	}
 
-	//Check if @p unitId is an egg unit that can be rallied
+	// Check if @p unitId is an egg unit that can be rallied
 	bool isRallyableEggUnitHook(uint16 unitId) {
-		//Default StarCraft behavior
-		if (scbw::isZergEggNew(nullptr, false, false, unitId))
+		if (scbw::isZergEggNew(nullptr, false, false, unitId)) {
 			return false;
-
+		}
 		return true;
 	}
 
-	const uint32 Func_RemoveGasRefs = 0x00432760;
-	void removeAITownGasReferences(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			CALL Func_RemoveGasRefs
-			POPAD
-		}
-	}
-	const uint32 Func_DeleteBuildingAi = 0x00404500;
-	void deleteBuildingAi(void* building_ai_list, BuildingAi* ai) {
-		__asm {
-			PUSHAD
-			MOV EDX, building_ai_list
-			MOV EAX, ai
-			CALL Func_DeleteBuildingAi
-			POPAD
-		}
-	}
-	const uint32 Func_DeleteWorkerAi = 0x00404470;
-	void deleteWorkerAi(void* worker_ai_list, WorkerAi* ai) {
-		__asm {
-			PUSHAD
-			MOV EDX, worker_ai_list
-			MOV EAX, ai
-			CALL Func_DeleteWorkerAi
-			POPAD
-		}
-	}
-	const uint32 Func_DeleteAiTownIfNeeded = 0x004347E0;
-	void deleteAiTownIfNeeded(AiTown* town) {
-		__asm {
-			PUSHAD
-			MOV EAX, town
-			CALL Func_DeleteAiTownIfNeeded
-			POPAD
-		}
-	}
-	/*	uint32 remove_worker_or_building_ai(CUnit* unit, uint8 assert_is_building) {
+	/*
+	uint32 remove_worker_or_building_ai(CUnit* unit, uint8 assert_is_building) {
 			BuildingAi* ai;
 			AiTown* town;
 			removeAITownGasReferences(unit);
@@ -456,27 +368,24 @@ namespace hooks {
 		}
 		*/
 
-		//Return the ID of the egg unit to use when morphing @p unitId.
-		//If the unit cannot morph, return UnitId::None.
+	// Return the ID of the egg unit to use when morphing @p unitId.
+	// If the unit cannot morph, return UnitId::None.
 	uint16 getUnitMorphEggTypeHook(uint16 unitId, CUnit* unit, uint16 resultId) {
-		//Default StarCraft behavior
-
+		// Default StarCraft behavior
 		if (units_dat::BaseProperty[unitId] & UnitProperty::Flyer) 
 		{
 			return UnitId::ZergCocoon;
 		} 
-		else 
+		else
 		{
 			return UnitId::ZergEgg;
 		}
 		return UnitId::None;
 	}
 
-	//Determine the type (unit ID) of the unit to revert to when cancelling an
-	//@p eggUnit while it is morphing.
+	// Determine the type (unit ID) of the unit to revert to when cancelling an
+	// @p eggUnit while it is morphing.
 	uint16 getCancelMorphRevertTypeHook(CUnit* eggUnit) {
-		//Default StarCraft behavior
-
 		auto source = eggUnit->eggOrigin;
 		if (eggUnit->getRace() == RaceId::Zerg
 			&& eggUnit->id != UnitId::ZergInfestedTerran) {
@@ -488,82 +397,76 @@ namespace hooks {
 		return UnitId::None;  //Default (no revert for larvae)
 	}
 
-	//Determines the vertical (Y) offset by which the @p unit will be shifted to
-	//when it finishes morphing.
+	// Determines the vertical (Y) offset by which the @p unit will be shifted to
+	// when it finishes morphing.
 	int16 getUnitVerticalOffsetOnBirth(CUnit* unit) {
-		//Default StarCraft behavior
-
-		//No offset, birth offset is handled elsewhere
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg)
+		// No offset, birth offset is handled elsewhere
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg) {
 			return 0;
-
-		//No offset, since the morphed unit should stay where it is
+		}
+		// No offset, since the morphed unit should stay where it is
 		if (unit->previousUnitType == UnitId::ZergCocoon) {
 			return 0;
 		}
-
-		//Hovering units (?) float 7 pixels above ground
-		if (units_dat::MovementFlags[unit->id] == MovementFlags::HoverUnit)
+		// Hovering units (?) float 7 pixels above ground
+		if (units_dat::MovementFlags[unit->id] == MovementFlags::HoverUnit) {
 			return -7;
-
-		//Air units float 42 pixels above ground
-		if (unit->status & UnitStatus::InAir)
+		}
+		// Air units float 42 pixels above ground
+		if (unit->status & UnitStatus::InAir) {
 			return -42;
-
-		//Default for ground units
+		}
+		// Default for ground units
 		return 0;
 	}
 
-	//Check if @p playerId has enough supplies to build @p unitId.
+	// Check if @p playerId has enough supplies to build @p unitId.
 	bool hasSuppliesForUnitHook(uint8 playerId, uint16 unitId, bool canShowErrorMessage) {
-		//Default StarCraft behavior
+		// Default StarCraft behavior
 		int32 supplyCost = units_dat::SupplyRequired[unitId];
-
-		if (units_dat::BaseProperty[unitId] & UnitProperty::TwoUnitsIn1Egg)
+		if (units_dat::BaseProperty[unitId] & UnitProperty::TwoUnitsIn1Egg) {
 			supplyCost *= 2;
-
-		if (unitId == UnitId::ZergLakizilisk)
+		}
+		if (unitId == UnitId::ZergLakizilisk) {
 			supplyCost -= units_dat::SupplyRequired[UnitId::ZergHydralisk];
+		}
 
 		aiSupplyReserved[playerId] = supplyCost;
-
-		//No supply cost check needed
-		if (supplyCost == 0 || units_dat::BaseProperty[unitId] & UnitProperty::MorphFromOtherUnit)
+		// No supply cost check needed
+		if (supplyCost == 0 || units_dat::BaseProperty[unitId] & UnitProperty::MorphFromOtherUnit) {
 			return true;
-
+		}
 		const RaceId::Enum raceId = CUnit::getRace(unitId);
 		assert(raceId <= 2);
 		const uint32 supplyUsed = raceSupply[raceId].used[playerId];
-
-		//Must construct additional pylons
+		// Must construct additional pylons
 		if (supplyUsed + supplyCost > raceSupply[raceId].max[playerId]) {
-			if (canShowErrorMessage)
+			if (canShowErrorMessage) {
 				scbw::showErrorMessageWithSfx(playerId, 847 + raceId, 1 + raceId);
+			}
 			return false;
 		}
-
-		//Supply limit exceeded
+		// Supply limit exceeded
 		if (supplyCost > scbw::getSupplyRemaining(playerId, raceId)) {
-			if (canShowErrorMessage)
+			if (canShowErrorMessage) {
 				scbw::showErrorMessageWithSfx(playerId, 844 + raceId, 153 + raceId);
+			}
 			return false;
 		}
-
 		return true;
 	}
 
 	CUnit* beginTrain(CUnit* unit, uint16 unit_id, bool notify_error) {
 		if (unit->status & UnitStatus::GroundedBuilding
 			|| unit->id == UnitId::ProtossSolarion
-			//			|| unit->id==UnitId::Hero_Gantrithor
 			|| unit->id == UnitId::ProtossAccantor
-			//			|| unit->id==UnitId::Hero_Warbringer
-			|| scbw::isLarvalEgg(unit))//just egg previously
+			|| scbw::isLarvalEgg(unit)) // just egg
 		{
 			if (helper::hasSuppliesForUnit(unit_id, unit->playerId, notify_error)) {
 				CUnit* result = helper::createUnit(unit_id, unit->getX(), unit->getY(), unit->playerId);
-				if (result)
+				if (result) {
 					return result;
+				}
 				scbw::displayLastNetErrForPlayer(unit->playerId);
 			}
 		}

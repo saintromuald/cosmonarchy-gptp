@@ -301,6 +301,7 @@ namespace ValueId {
 		ReconstitutionCooldown = 166,
 		EnthrallingAssaultHeal = 167,		// timer
 		AttachedAkistrokor = 168,			// unit
+		PreMorphEnergy = 169,				
 	};
 }
 #include "SCBW\enumerations\TechId.h"

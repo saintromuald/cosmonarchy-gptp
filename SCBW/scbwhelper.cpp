@@ -5039,13 +5039,13 @@ namespace helper {
 		return (bPreResult != 0);
 	}
 
-	CUnit* function_0045D910(CUnit* unit) {
-		const uint32 Func_Sub45D910 = 0x0045D910;
+	CUnit* zergDualBirth(CUnit* unit) {
+		const uint32 Func_zergDualBirth = 0x0045D910;
 		static CUnit* rValue;
 		__asm {
 			PUSHAD
 			PUSH unit
-			CALL Func_Sub45D910
+			CALL Func_zergDualBirth
 			MOV rValue, EAX
 			POPAD
 		}
@@ -7304,5 +7304,47 @@ namespace helper {
 			POPAD
 		}
 		return (bool)result;
+	}
+
+	void removeAITownGasReferences(CUnit* unit) {
+		const uint32 Func_RemoveGasRefs = 0x00432760;
+		__asm {
+			PUSHAD
+			MOV ECX, unit
+			CALL Func_RemoveGasRefs
+			POPAD
+		}
+	}
+
+	void deleteBuildingAi(void* building_ai_list, BuildingAi* ai) {
+		const uint32 Func_DeleteBuildingAi = 0x00404500;
+		__asm {
+			PUSHAD
+			MOV EDX, building_ai_list
+			MOV EAX, ai
+			CALL Func_DeleteBuildingAi
+			POPAD
+		}
+	}
+
+	void deleteWorkerAi(void* worker_ai_list, WorkerAi* ai) {
+		const uint32 Func_DeleteWorkerAi = 0x00404470;
+		__asm {
+			PUSHAD
+			MOV EDX, worker_ai_list
+			MOV EAX, ai
+			CALL Func_DeleteWorkerAi
+			POPAD
+		}
+	}
+
+	void deleteAiTownIfNeeded(AiTown* town) {
+		const uint32 Func_DeleteAiTownIfNeeded = 0x004347E0;
+		__asm {
+			PUSHAD
+			MOV EAX, town
+			CALL Func_DeleteAiTownIfNeeded
+			POPAD
+		}
 	}
 }
