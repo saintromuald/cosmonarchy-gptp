@@ -12,13 +12,13 @@ namespace {
 	/// Definition of damage factors (explosive, concussive, etc.)
 	struct {
 		int32 damageType;
-		int32 unitSizeFactor[4];	 //Order: {independent, small, medium, large}
+		int32 unitSizeFactor[5];	 //Order: {independent, small, medium, large}
 	} const damageFactor[5] = {
-		{0, 0, 0,	0,	 0},			//Independent
-		{1, 0, 128, 192, 256},			//Explosive
-		{2, 0, 256, 192, 128},			//Concussive
-		{3, 0, 256, 256, 256},			//Normal
-		{4, 0, 256, 256, 256}			//IgnoreArmor
+		{0, 0, 0,	0,	 0,   0},			//Independent
+		{1, 0, 128, 192, 256, 256},			//Explosive
+		{2, 0, 256, 192, 128, 128},			//Concussive
+		{3, 0, 256, 256, 256, 192},			//Normal
+		{4, 0, 256, 256, 256, 256}			//IgnoreArmor
 	};
 }
 
