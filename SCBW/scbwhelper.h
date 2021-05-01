@@ -1064,4 +1064,12 @@ namespace helper {
 
     //Identical to function @ 0x004F3AF0
     void setResourceAmountCarried(CUnit* worker, uint8 amountCarried, uint32 chunkImageId, bool isMineral);
+
+    int Ai_HasBuildingsNeedingPower(uint32 player);
+    int Ai_CountEconomyUnits(uint32 player, uint32 unit_id);
+    int getSuppliesRemaining(uint8 player, uint16 unit_id);
+    int getSuppliesUsed(int byte_data, uint8 player);
+    int32 AI_AddCostToNeeds(int32 a1, int32 a2, int32 a3);
+    int32 AI_AddSpendingRequest(int16 a1, int32 a2, char a3, char a4, void* a5);
+    bool isAIAllowedToBuild(int32 a1, int32 a2);
 }

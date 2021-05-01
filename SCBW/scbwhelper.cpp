@@ -7223,4 +7223,105 @@ namespace helper {
 
 	}
 
+	const uint32 Func_0x00433410 = 0x00433410;
+	int Ai_HasBuildingsNeedingPower(uint32 player) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV EAX, player
+			CALL Func_0x00433410
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const uint32 Func_0x00433470 = 0x00433470;
+	int Ai_CountEconomyUnits(uint32 player, uint32 unit_id) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV EAX, player
+			PUSH unit_id
+			CALL Func_0x00433470
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const uint32 Func_0x004889D0 = 0x004889D0;
+	int getSuppliesRemaining(uint8 player, uint16 unit_id) {
+		static int result;
+		__asm {
+			PUSHAD
+			MOV BL, player
+			MOV DI, unit_id
+			CALL Func_0x004889D0
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const uint32 Func_4888c0 = 0x004888C0;
+	int getSuppliesUsed(int byte_data, uint8 player) {
+		static uint32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, byte_data
+			MOV CL, player
+			CALL Func_4888c0
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const uint32 Func_AI_AddCostToNeeds = 0x00447DC0;
+	int32 AI_AddCostToNeeds(int32 a1, int32 a2, int32 a3) {
+		static int32 result;
+		__asm {
+			PUSHAD
+			PUSH a3
+			MOV EBX, a2
+			MOV EAX, a1
+			CALL Func_AI_AddCostToNeeds
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	const uint32 Func_AI_AddSpendingRequest = 0x00447980;
+	int32 AI_AddSpendingRequest(int16 a1, int32 a2, char a3, char a4, void* a5) {
+		static int32 result;
+		__asm {
+			PUSHAD
+			PUSH a5
+			PUSH a4
+			MOVZX CL, a3
+			MOV EDX, a2
+			MOVZX AX, a1
+			CALL Func_AI_AddSpendingRequest
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	// For AI_AddSpendingRequest
+	const uint32 Func_isAIAllowedToBuild = 0x00447830;
+	bool isAIAllowedToBuild(int32 a1, int32 a2) {
+		static int32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, a2
+			MOV EAX, a1
+			CALL Func_isAIAllowedToBuild
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
 }
