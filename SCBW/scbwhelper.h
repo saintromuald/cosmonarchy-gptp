@@ -414,7 +414,7 @@ namespace helper {
     bool isUnitVisible(CUnit* unit);																		// 004E5DB0
     bool isTargetVisible(CUnit* unit, CUnit* target);														// 004E5E30
     uint8 getRightClickActionOrder(CUnit* unit);															// 004E5EA0
-    void setNextWaypoint_Sub4EB290(CUnit* unit);															// 004EB290
+    void setNextWaypoint(CUnit* unit);															// 004EB290
     void makeToHoldPosition(CUnit* unit);																	// 004EB5B0
     bool moveToTarget(CUnit* unit, CUnit* target);															// 004EB720
     bool SetMoveTarget_xy(CUnit* unit, int x, int y);														// 004EB820
@@ -677,7 +677,6 @@ namespace helper {
     void setAllOverlayDirectionsGeneric(CUnit* unit, uint32 unk);																		// 00401140
     void AI_orderUnitCloaking(CUnit* unit);																								// 0043B970
     uint32 function_0043DB50(CUnit* unit);																								// 0043DB50
-    void setNextWaypoint_Sub4EB290(CUnit* unit);																						// 004EB290
 
     //// target_related
 

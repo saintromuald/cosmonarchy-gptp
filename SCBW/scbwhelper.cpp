@@ -2230,12 +2230,12 @@ namespace helper {
 	}
 
 	// Related to path/movement decision
-	void setNextWaypoint_Sub4EB290(CUnit* unit) {
-		const uint32 Func_sub_4EB290 = 0x004EB290;
+	void setNextWaypoint(CUnit* unit) {
+		const uint32 Func_setNextWaypoint = 0x004EB290;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_sub_4EB290
+			CALL Func_setNextWaypoint
 			POPAD
 		}
 	}
