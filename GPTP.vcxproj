@@ -57,12 +57,12 @@
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'">$(SolutionDir)_Build\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='HYD FastDebug|Win32'">$(SolutionDir)_Build\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'">$(Configuration)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='HYD FastDebug|Win32'">$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'">_tmp\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='HYD FastDebug|Win32'">_tmp\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='HYD FastDebug|Win32'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">$(SolutionDir)_Build\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">_tmp\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'">
