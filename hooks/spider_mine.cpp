@@ -6,7 +6,7 @@
 
 namespace hooks {
 	// Return the best target for the Spider Mine. If there is no suitable target, return nullptr instead.
-	CUnit* findBestTerranMineTarget(CUnit* mine) {
+	CUnit* findBestTerranMineTarget(CUnit* mine) { // 00441270
 		// Default StarCraft behavior
 		int32 range;
 		// Don't search for a target if the mine is under a Disruption Web
@@ -35,7 +35,7 @@ namespace hooks {
 		});
 	}
 
-	void orders_TerranMine(CUnit* unit) {
+	void orders_TerranMine(CUnit* unit) { // 00463DF0
 		if (unit->mainOrderState == 0) {
 			unit->groundWeaponCooldown = MineBurrowTime;
 			unit->mainOrderState = 1;
@@ -140,7 +140,7 @@ namespace hooks {
 		}
 	}
 
-	void orders_PlaceMine(CUnit* a1) { // 0x00464FD0
+	void orders_PlaceMine(CUnit* a1) { // 00464FD0
 		CUnit* v1;
 		CUnit* v2;
 		signed int v3;
