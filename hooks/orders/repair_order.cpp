@@ -25,7 +25,7 @@ namespace hooks {
 			jump_to_676C4 = true;
 		}
 
-		if (!jump_to_676C4) {
+		if (jump_to_676C4) {
 			unit->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
 			unit->orderToIdle();
 			bEndThere = true;
