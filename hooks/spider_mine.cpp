@@ -6,46 +6,36 @@
 
 namespace hooks {
 	// Return the best target for the Spider Mine. If there is no suitable target, return nullptr instead.
-	CUnit* findBestTerranMineTarget(CUnit* spiderMine) {
+	CUnit* findBestTerranMineTarget(CUnit* mine) {
 		// Default StarCraft behavior
 		int32 range;
-
-		// Don't search for a target if the spider mine is under a Disruption Web
-		if (spiderMine->status & UnitStatus::CanNotAttack) {
+		// Don't search for a target if the mine is under a Disruption Web
+		if (mine->status & UnitStatus::CanNotAttack) {
 			return nullptr;
 		}
-
-		range = 32 * spiderMine->getSeekRange();
-
+		range = 32 * mine->getSeekRange();
 		return
 			scbw::UnitFinder::getNearestTarget(
-				spiderMine->getX() - range, spiderMine->getY() - range,
-				spiderMine->getX() + range, spiderMine->getY() + range,
-				spiderMine, [&](CUnit* target) {
+				mine->getX() - range, mine->getY() - range,
+				mine->getX() + range, mine->getY() + range,
+				mine, [&](CUnit* target) {
 			// Don't attack friendly or allied units
-			if (!spiderMine->isTargetEnemy(target))
+			if (!mine->isTargetEnemy(target))
 				return false;
-
 			// Don't attack invincible units
 			if (target->status & UnitStatus::Invincible)
 				return false;
-
 			// Don't attack air units / buildings
 			if (target->status & (UnitStatus::InAir | UnitStatus::GroundedBuilding))
 				return false;
-
 			// Don't attack hovering units
 			if (units_dat::MovementFlags[target->id] == MovementFlags::HoverUnit)
 				return false;
-
 			return true;
-		}
-		);
-
-	};
+		});
+	}
 
 	void orders_TerranMine(CUnit* unit) {
-
 		if (unit->mainOrderState == 0) {
 			unit->groundWeaponCooldown = MineBurrowTime;
 			unit->mainOrderState = 1;
@@ -63,7 +53,7 @@ namespace hooks {
 			if (!(unit->orderSignal & 4)) {
 				if (!(unit->status & UnitStatus::IsHallucination)) {
 					helper::function_004E9A30(unit); //related to movement
-					helper::function_0049B1E0(unit); //related to cloaking/stealth
+					helper::instantCloak(unit); //related to cloaking/stealth
 				}
 				unit->mainOrderState = 3;
 			}
@@ -89,7 +79,7 @@ namespace hooks {
 				if (unit->orderTarget.unit != nullptr) {
 					//probably trigger movement/acceleration of unit
 					//toward the target
-					helper::function_00495400(unit, unit->orderTarget.unit);
+					helper::moveToCollide(unit, unit->orderTarget.unit);
 
 					unit->mainOrderState = 5;
 				}
@@ -103,26 +93,21 @@ namespace hooks {
 			if (unit->mainOrderState == 5) {
 				bool bIsCompletelyInRange = false;
 				bool bEndThere = false;
-
-				helper::function_004E99D0(unit); //related to movement, similar to function_004E9A30
-
+				helper::unburrowGeneric(unit); // related to movement, similar to function_004E9A30
 				if (unit->orderTarget.unit != nullptr) {
-
-					if (unit->isTargetWithinMinRange(unit->orderTarget.unit, SPIDERMINE_SEEKING_RANGE)) {
-
+					if (unit->isTargetWithinMinRange(unit->orderTarget.unit, MineSeekRange)) {
 						//probably trigger movement/acceleration of unit
 						//toward the target
-						helper::function_00495400(unit, unit->orderTarget.unit);
-
-						if (unit->isTargetWithinMinRange(unit->orderTarget.unit, SPIDERMINE_DETONATE_RANGE))
-							bIsCompletelyInRange = true; //jump to 63F22
+						helper::moveToCollide(unit, unit->orderTarget.unit);
+						if (unit->isTargetWithinMinRange(unit->orderTarget.unit, MineDetonateRange)) {
+							bIsCompletelyInRange = true; // jump to 00463F22
+						}
 						else
 							if (unit->getMovableState() != 2) { // unit not unmovable
 								bEndThere = true;
 						}
 					}
 				}
-
 				if (!bEndThere && !bIsCompletelyInRange) { //63F14
 					helper::setNextWaypoint(unit);
 					unit->mainOrderState = 1;
@@ -153,7 +138,7 @@ namespace hooks {
 				unit->remove();
 			}
 		}
-	};
+	}
 
 	void orders_PlaceMine(CUnit* a1) { // 0x00464FD0
 		CUnit* v1;
@@ -171,7 +156,6 @@ namespace hooks {
 		CUnit* v13;
 		CUnit* v14;
 		Point32 a2;
-
 		v1 = a1;
 		if (a1->mainOrderState) {
 			if (helper::techUseAllowed(a1, 3u, (unsigned __int8)a1->playerId)
@@ -241,4 +225,32 @@ namespace hooks {
 			}
 		}
 	}
+
+	// Hooked to try to fix mine burrowing - Pr0nogo
+	char burrowGeneric(CUnit* unit) { // 004E9A30
+		CUnit* unitVar = unit;
+		helper::toggleUnitPath(unit);
+
+		CSprite* unitSprite = unitVar->sprite;
+		char unitPathing = unitVar->pathingFlags;
+		unitVar->movementState = 0;
+		unitVar->pathingFlags = (unitPathing ^ (unitSprite->elevationLevel < 12u)) & 1 ^ unitPathing;
+		unitVar->status |= UnitStatus::CloakingForFree | UnitStatus::Burrowed;
+		unitSprite->flags |= 0x40u; // image is hidden
+
+		CSprite* oldSprite = unitVar->sprite;
+		CSprite* newSprite;
+		if (unitVar->id == UnitId::ZergLakizilisk) {
+			// Warning, tism detected
+			// ByteOperations::SetLowByte(newSprite, switchSpriteId(oldSprite, SpriteId::White_Circle_Invisible));
+			unitVar->sprite->elevationLevel = 1;
+		}
+		else {
+			helper::switchSpriteId(oldSprite, SpriteId::White_Circle_Invisible);
+			newSprite = unitVar->sprite;
+			newSprite->elevationLevel = 1;
+		}
+		return (char)newSprite;
+	}
+
 }

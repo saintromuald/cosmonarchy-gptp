@@ -220,7 +220,7 @@ namespace helper {
     bool function_00478370(CUnit* unit, uint8 orderId);														// 00478370
     bool function_00478540(CUnit* unit);																	// 00478540
     bool isUnitCritter(CUnit* unit);																		// 0047B450
-    void function_00495400(CUnit* unit, CUnit* target);														// 00495400
+    void moveToCollide(CUnit* unit, CUnit* target);														    // 00495400
                                                                                                                
     bool isUnitVisible(CUnit* unit);																		// 004E5DB0
     bool isTargetVisible(CUnit* unit, CUnit* target);														// 004E5E30
@@ -252,9 +252,8 @@ namespace helper {
 
     //// spider_mine
     CUnit* SpiderMine_AcquireTarget(CUnit* spiderMine);									                    // 00441270
-    void function_00495400(CUnit* unit, CUnit* target);									                    // 00495400
-    void function_0049B1E0(CUnit* unit);												                    // 0049B1E0
-    void function_004E99D0(CUnit* unit);												                    // 004E99D0
+    void instantCloak(CUnit* unit);												                            // 0049B1E0
+    void unburrowGeneric(CUnit* unit);												                        // 004E99D0
     void function_004E9A30(CUnit* unit);												                    // 004E9A30
 
     // For orders_PlaceMine
@@ -267,6 +266,10 @@ namespace helper {
     int isUnitMovable(CUnit* a1);														                    // 00401DC0
     void orders_Nothing2(CUnit* a1);													                    // 00475000
     bool setMoveTargetXY(int a1, int a2, CUnit* a3);									                    // 004EB820
+
+    // For burrowGeneric
+    void toggleUnitPath(CUnit* unit);									                                    // 004E42A0
+    char switchSpriteId(CSprite* sprite, int32 spriteId);				                                    // 00499860
 
     //// building_morph
     void refundBuildingCost(uint16 unitId, uint8 playerId);								                    // 002CE70

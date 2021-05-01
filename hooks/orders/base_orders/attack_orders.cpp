@@ -640,7 +640,7 @@ namespace hooks {
 							)
 							//maybe trigger the acceleration of the infested
 							//terran, or something else related to distances?
-							helper::function_00495400(unit, target);
+							helper::moveToCollide(unit, target);
 
 						else //789BF
 							//may cause the unit to go to idle, or

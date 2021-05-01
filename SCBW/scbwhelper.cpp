@@ -2128,19 +2128,19 @@ namespace helper {
 		return bReturnValue;
 	}
 
-	const uint32 Func_Sub495400 = 0x00495400;
-	void function_00495400(CUnit* unit, CUnit* target) {
+	void moveToCollide(CUnit* unit, CUnit* target) {
+		const uint32 Func_moveToCollide = 0x00495400;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
 			MOV EAX, target
-			CALL Func_Sub495400
+			CALL Func_moveToCollide
 			POPAD
 		}
 	}
 
-	const uint32 Func_isUnitVisible = 0x004E5DB0;
 	bool isUnitVisible(CUnit* unit) {
+		const uint32 Func_isUnitVisible = 0x004E5DB0;
 		static bool32 bPreResult;
 		__asm {
 			PUSHAD
@@ -2152,8 +2152,8 @@ namespace helper {
 		return (bPreResult != 0);
 	}
 
-	const uint32 Func_isTargetVisible = 0x004E5E30;
 	bool isTargetVisible(CUnit* unit, CUnit* target) {
+		const uint32 Func_isTargetVisible = 0x004E5E30;
 		static bool32 bPreResult;
 		__asm {
 			PUSHAD
@@ -2501,22 +2501,22 @@ namespace helper {
 		return target;
 	}
 
-	void function_0049B1E0(CUnit* unit) {
-		const uint32 Func_Sub49B1E0 = 0x0049B1E0;
+	void instantCloak(CUnit* unit) {
+		const uint32 Func_instantCloak = 0x0049B1E0;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
-			CALL Func_Sub49B1E0
+			CALL Func_instantCloak
 			POPAD
 		}
 	}
 
-	void function_004E99D0(CUnit* unit) {
-		const uint32 Func_Sub4E99D0 = 0x004E99D0;
+	void unburrowGeneric(CUnit* unit) {
+		const uint32 Func_unburrowGeneric = 0x004E99D0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_Sub4E99D0
+			CALL Func_unburrowGeneric
 			POPAD
 		}
 	}
