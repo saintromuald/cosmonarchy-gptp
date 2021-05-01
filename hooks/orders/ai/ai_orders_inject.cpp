@@ -11,7 +11,7 @@ namespace {
 			MOV parent, ECX
 			PUSHAD
 		}
-		hooks::AI_TrainingUnitHook(result, parent);
+		hooks::AI_TrainingUnit(result, parent);
 		__asm {
 			POPAD
 			RETN

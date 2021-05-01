@@ -6,10 +6,16 @@
 
 #include "logger.h"
 namespace hooks {
-	void AI_TrainingUnitHook(CUnit* result, CUnit* parent) { // 004A2830
+	void AI_TrainingUnit(CUnit* result, CUnit* parent) { // 004A2830
 		bool isSuicideUnit = result->id == UnitId::ZergBroodling || result->id == UnitId::ZergBroodlisk || result->id == UnitId::ProtossSimulacrum;
 		if (result == nullptr) return;
-		if (parent == nullptr) return;
+		if (parent == nullptr) {
+			if (isSuicideUnit) {
+				parent = result;
+			} else {
+				return;
+			}
+		}
 		if (result == parent && !isSuicideUnit && !(units_dat::BaseProperty[result->id] & UnitProperty::Worker)) return;
 		if (playerTable[parent->playerId].type == PlayerType::Computer) {
 			if (playerTable[result->playerId].type == PlayerType::Computer
@@ -136,7 +142,7 @@ namespace hooks {
 				silo->building.silo.nuke = nuke2;
 				silo->building.silo.isReady = 1;
 				nuke2->connectedUnit = silo;
-				AI_TrainingUnitHook(nuke2, silo);
+				AI_TrainingUnit(nuke2, silo);
 			}
 		}
 	}
