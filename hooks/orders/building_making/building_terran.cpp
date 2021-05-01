@@ -180,7 +180,7 @@ namespace hooks {
 								}
 								else {
 									int32 angle;
-									helper::setNextWaypoint_Sub4EB290(unit);
+									helper::setNextWaypoint(unit);
 									helper::function_00494BB0(
 										unit,
 										(unit->orderTarget.unit)->sprite->position.x,
