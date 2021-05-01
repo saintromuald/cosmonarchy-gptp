@@ -455,7 +455,6 @@ namespace hooks {
 			CUnit* targ = bullet->attackTarget.unit;
 			if (scbw::getDistanceFast(bullet->position.x, bullet->position.y, targ->getX(), targ->getY()) < 3 * 32) {
 				if (!globals.multihit_bullet_is_set(bullet)) {
-					globals.add_multihit_empty_bullet(bullet, 1);
 					auto old = bullet->sourceUnit->orderTarget.unit;
 					auto oldSpritePos = bullet->sourceUnit->sprite->position;
 					auto oldPos = bullet->sourceUnit->position;
@@ -467,26 +466,36 @@ namespace hooks {
 					int count = 0;
 					for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 						CUnit* target = unitsInSplash.getUnit(i);
-						if (alkajSporeMatch(bullet, target)) {
-							if (target != nullptr) {
-								count++;
-							}
+						if (target == nullptr) {
+							continue;
 						}
+						if (target == targ) {
+							continue;
+						}
+						if (!alkajSporeMatch(bullet, target)) {
+							continue;
+						}
+						count++;
 					};
+					globals.add_multihit_empty_bullet(bullet, count);
 					for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 						CUnit* target = unitsInSplash.getUnit(i);
-						if (alkajSporeMatch(bullet, target)) {
-							if (target != nullptr) {
-								bullet->sourceUnit->orderTarget.unit = target;
-								auto newAngle = scbw::getAngle(bullet->position.x, bullet->position.y,
-									target->getX(), target->getY());
-								auto newBullet = helper::createBulletRet(WeaponId::ArchitectDispersiveSalvo, bullet->sourceUnit,
-									bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
-								if (newBullet) {
-									newBullet->position = bullet->position;
-									globals.add_multihit_empty_bullet(newBullet, count + 1);
-								}
-							}
+						if (target == nullptr) {
+							continue;
+						}
+						if (target == targ) {
+							continue;
+						}
+						if (!alkajSporeMatch(bullet, target)) {
+							continue;
+						}
+						bullet->sourceUnit->orderTarget.unit = target;
+						auto newAngle = scbw::getAngle(bullet->position.x, bullet->position.y, target->getX(), target->getY());
+						auto newBullet = helper::createBulletRet(WeaponId::ArchitectDispersiveSalvo,
+							bullet->sourceUnit, bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
+						if (newBullet) {
+							newBullet->position = bullet->position;
+							globals.add_multihit_empty_bullet(newBullet, count + 1);
 						}
 					};
 					bullet->sourceUnit->orderTarget.unit = old;
