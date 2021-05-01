@@ -9,24 +9,19 @@ namespace hooks {
 		if (target == nullptr) {
 			jump_to_676C4 = true;
 		}
-		else
-		if (target->hitPoints >= units_dat::MaxHitPoints[target->id]) {
+		else if (target->hitPoints >= units_dat::MaxHitPoints[target->id]) {
 			jump_to_676C4 = true;
 		}
-		else
-		if (target->stasisTimer != 0) {
+		else if (target->stasisTimer != 0) {
 			jump_to_676C4 = true;
 		}
-		else
-		if (unit->pAI != nullptr && target->status & UnitStatus::IsBuilding && target->orderTarget.unit != unit) {
+		else if (unit->pAI != nullptr && target->status & UnitStatus::IsBuilding && target->orderTarget.unit != unit) {
 			jump_to_676C4 = true;
 		}
-		else
-		if (target->status & UnitStatus::InTransport) {
+		else if (target->status & UnitStatus::InTransport) {
 			jump_to_676C4 = true;
 		}
-		else
-		if (!(target->status & UnitStatus::Completed)) {
+		else if (!(target->status & UnitStatus::Completed)) {
 			jump_to_676C4 = true;
 		}
 
@@ -172,7 +167,7 @@ namespace hooks {
 						// Talos - Advanced repair speed
 						/*
 						if (unit->id == UnitId::TerranTalos) {
-							hpGain += hpGain/2;
+							hpGain *= 1.5;
 						}
 						*/
 						target->heal(hpGain, unit);
