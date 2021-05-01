@@ -718,7 +718,6 @@ namespace helper {
     // For updateUnits
     bool isSelectedUnitGroupEnabled();																						// 0049A2C0
     char refreshLayers3And4();																								// 0048D9A0
-    void refreshPlaceBuildingLocation();																					// 0048E310
     void cancelTargetOrder();																								// 0048CA10
     int32 updateDisruptionWebStatus();																						// 004EB2F0
     CUnit* progressDyingUnitFrame(CUnit* unit);																				// 004EB5E0

@@ -543,7 +543,7 @@ namespace hooks {
 		if (v0) {
 			if (*IS_PLACING_BUILDING) {
 				helper::refreshLayers3And4();
-				helper::refreshPlaceBuildingLocation();
+				helper::endBuildingPlacement();
 			}
 			if (*isTargeting) {
 				helper::cancelTargetOrder();

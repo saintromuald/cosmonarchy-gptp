@@ -6369,15 +6369,6 @@ namespace helper {
 		return (bool)result;
 	}
 
-	void refreshPlaceBuildingLocation() {
-		const uint32 Func_refreshPlaceBuildingLocation = 0x0048E310;
-		__asm {
-			PUSHAD
-			CALL Func_refreshPlaceBuildingLocation
-			POPAD
-		}
-	}
-
 	void cancelTargetOrder() {
 		const uint32 Func_cancelTargetOrder = 0x0048CA10;
 		__asm {
