@@ -2683,17 +2683,6 @@ void iscript_OpcodeCases_copy(CImage* image, uint32 offset_, uint32 unk1, uint32
 	}
 }
 
-bool isMorphing(CUnit* building) {
-	bool bIsMorphing;
-	if (!(building->status & UnitStatus::Completed)) { // was hardcoded instead of using isValidMorph in original code
-		bIsMorphing = isValidMorph(building->buildQueue[building->buildQueueSlot]);
-	}
-	else {
-		bIsMorphing = false;
-	}
-	return bIsMorphing;
-}
-
 void replaceSpriteImages_copy(CSprite* sprite, uint32 imageId, uint32 imageDirection) {
 	const uint32 Func_Sub499BB0 = 0x00499BB0;
 	__asm {

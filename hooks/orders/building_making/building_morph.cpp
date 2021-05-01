@@ -9,6 +9,18 @@
 #include "logger.h"
 
 namespace hooks {
+	bool isMorphing(CUnit* building) {
+		bool bIsMorphing;
+		if (!(building->status & UnitStatus::Completed)) {
+			// was hardcoded instead of using isValidMorph in original code
+			bIsMorphing = isValidMorph(building->buildQueue[building->buildQueueSlot]);
+		}
+		else {
+			bIsMorphing = false;
+		}
+		return bIsMorphing;
+	}
+
 	void orders_ZergBuildSelf(CUnit* building) {
 		const int OPCWAL_PROGRESS_INCREASE = 16;
 

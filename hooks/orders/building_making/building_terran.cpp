@@ -10,22 +10,17 @@
 #endif
 
 namespace hooks {
-
 	void orders_TerranBuildSelf(CUnit* building) {
-
 		if (building->mainOrderState == 0) {
 			if (building->hitPoints > 20 * units_dat::MaxHitPoints[building->id] / 100)
 				building->mainOrderState = 1;
 		} else
 			if (building->mainOrderState == 1) {
-
 				CImage* current_image = building->sprite->images.head;
-
 				while (current_image != nullptr) {
 					current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 					current_image = current_image->link.next;
 				}
-
 				building->mainOrderState = 2;
 			} else
 				if (building->mainOrderState == 2) {
@@ -33,105 +28,80 @@ namespace hooks {
 						building->mainOrderState = 3;
 				} else
 					if (building->mainOrderState == 3) {
-
 						CImage* current_image = building->sprite->images.head;
-
 						while (current_image != nullptr) {
 							current_image->playIscriptAnim(IscriptAnimation::SpecialState2);
 							current_image = current_image->link.next;
 						}
-
 						building->mainOrderState = 4;
-
 					} else
 						if (building->mainOrderState == 4) {
 							if (building->hitPoints > 60 * units_dat::MaxHitPoints[building->id] / 100)
+							{
 								building->mainOrderState = 5;
+							}
 						} else
 							if (building->mainOrderState == 5) {
-
 								function_004E65E0(building, 0);
-
 								CImage* current_image = building->sprite->images.head;
-
 								while (current_image != nullptr) {
 									current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
 									current_image = current_image->link.next;
 								}
-
 								building->mainOrderState = 6;
-
 							} else
 								if (building->mainOrderState == 6) {
-
 									if (building->hitPoints > 80 * units_dat::MaxHitPoints[building->id] / 100)
+									{
 										building->orderComputerCL(OrderId::Nothing2);
-
+									}
 								}
-
 	}
-
-	;
 
 	//Go to build on an existing building
 	void orders_SCVBuild2(CUnit* unit) {
-
 		CUnit* builtUnit = unit->orderTarget.unit;
-
 		if (builtUnit != nullptr && !(builtUnit->status & UnitStatus::Completed)) {
-
 			bool jump_to_switch_1 = false;
-
-			if (
-				unit->mainOrderState > 8 ||
-				unit->mainOrderState == 1
-				)
+			if (unit->mainOrderState > 8 ||
+				unit->mainOrderState == 1)
+			{
 				jump_to_switch_1 = true;
-
+			}
 			if (unit->mainOrderState == 0) {
 				if (orderToMoveToTarget(unit, builtUnit))
 					unit->mainOrderState = 2;
 			}
-
 			if (unit->mainOrderState == 2) {
-
 				uint32 movableState = unit->getMovableState();
-
-				if (movableState == 2) //unmovable
+				if (movableState == 2) { // unmovable
 					unit->orderToIdle();
+				}
 				else
-					if (movableState == 1) { //reached destination
-
+					if (movableState == 1) { // reached destination
 						scbw::refreshConsole();
-
-						if (
-							builtUnit->connectedUnit != nullptr &&
+						if (builtUnit->connectedUnit != nullptr &&
 							builtUnit->connectedUnit != unit &&
-							(builtUnit->connectedUnit)->orderTarget.unit == builtUnit
-							)
-							unit->orderToIdle(); //another SCV is already on the job
-						else { //67AF9
-
+							(builtUnit->connectedUnit)->orderTarget.unit == builtUnit)
+						{
+							unit->orderToIdle(); // another SCV is already on the job
+						}
+						else { // 00467AF9
 							builtUnit->connectedUnit = unit;
-							unit->status &= ~UnitStatus::IsNormal;	//remove UnitStatus::IsNormal if present
+							unit->status &= ~UnitStatus::IsNormal;	// remove UnitStatus::IsNormal if present
 							unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
-
 							unit->orderSimple(OrderId::ResetCollision1, false);
 							unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
-
-							if (
-								function_004EB9C0(unit,
+							if (function_004EB9C0(unit,
 									builtUnit->sprite->position.x,
-									builtUnit->sprite->position.y
+									builtUnit->sprite->position.y)
 								)
-								)
+							{
 								unit->mainOrderState = 3;
-
+							}
 						}
-
 					}
-
-			} //if(unit->mainOrderState == 2)
+			}
 			else
 				if (unit->mainOrderState == 3) {
 					if (unit->getMovableState() != 0)
@@ -199,22 +169,18 @@ namespace hooks {
 
 						}
 
-						if (
-							function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y)
-							!= 0
-							) {
+						if (function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0)
+						{
 							unit->mainOrderState = 5;
 							jump_to_switch_1 = true;
 						}
-
-					} //mainOrderState == 4
+					} // mainOrderState == 4
 					else
 						if (unit->mainOrderState == 5) {
 							unit->mainOrderState = 6;
 							jump_to_switch_1 = true;
 						} else
 							if (unit->mainOrderState == 6) {
-
 								if (!isDistanceGreaterThanHaltDistance(
 									unit,
 									unit->orderTarget.pt.x,
@@ -519,7 +485,6 @@ namespace hooks {
 						unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 						bEndThere = true;
 					} else { //68131
-
 						builtUnit->connectedUnit = unit;
 						unit->mainOrderId = OrderId::ConstructingBuilding;
 						unit->mainOrderState = 3;
@@ -531,37 +496,26 @@ namespace hooks {
 								function_0048E310();
 							}
 						}
-
 						scbw::refreshConsole();
 						builtUnit->orderComputerCL(OrderId::BuildSelf1);
 						AI_TrainingOverlord(unit, builtUnit);
 						bEndThere = true;
-
 					}
-
 				}
-
-				if (!bEndThere)
+				if (!bEndThere) {
 					unit->orderToIdle();
-
-
+				}
 			}
-
 		}
 
 		if (!bEndThere && unit->mainOrderState == 0) { //68188
-
 			bool bMoveTargetResult;
-
 			scbw::refreshConsole();
-
 			if (unit->orderTarget.unit != nullptr) {
 				unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
 				unit->orderTarget.pt.y = (unit->orderTarget.unit)->sprite->position.y;
 			}
-
 			bMoveTargetResult = SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
-
 			if (
 				(unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
 					unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
@@ -570,13 +524,11 @@ namespace hooks {
 				unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
 				unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
 			}
-
-			if (bMoveTargetResult)
+			if (bMoveTargetResult) {
 				unit->mainOrderState = 1;
-
+			}
 		}
-
-	};
+	}
 
 	int32 updatePlacementStateForPlacementBox() { // 0x0048DCE0
 		int32 v0; // esi
@@ -642,7 +594,6 @@ namespace hooks {
 	}
 
 	char refreshScreen(int32 ecx0) { // 0048DDC0
-
 		auto v6 = ecx0;
 		auto result = *IS_PLACING_BUILDING;
 		if (*IS_PLACING_BUILDING) {

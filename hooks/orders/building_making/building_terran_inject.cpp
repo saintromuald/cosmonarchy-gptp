@@ -5,44 +5,34 @@
 namespace {
 
 	void __declspec(naked) orders_TerranBuildSelfWrapper() {
-
 		static CUnit* unit;
-
 		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::orders_TerranBuildSelf(unit);
-
 		__asm {
 			POPAD
 			RETN
 		}
-
-	};
+	}
 
 	void __declspec(naked) orders_SCVBuild2Wrapper() {
-
 		static CUnit* unit;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::orders_SCVBuild2(unit);
-
 		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN
 		}
-
-	};
+	}
 
 	void __declspec(naked) orders_SCVBuildWrapper() {
 		static CUnit* unit;
@@ -61,7 +51,7 @@ namespace {
 			POP EBP
 			RETN 4
 		}
-	};
+	}
 
 	void __declspec(naked) updatePlacementStateForPlacementBox_Wrapper() { // 0048DCE0
 		static int32 result;
@@ -90,11 +80,12 @@ namespace {
 			RETN
 		}
 	}
+
 	const uint32 updatePlacementWrapperJmp1 = 0x0048DD49;
 	void __declspec(naked) updatePlacementSimpleWrapper() {
 		static uint16 addonOffsetY;
 		__asm {
-			MOVSX EAX, [ECX + 0x6626E2]//y
+			MOVSX EAX, [ECX + 0x6626E2] // y
 			MOV addonOffsetY, AX
 			PUSHAD
 		}
@@ -110,7 +101,7 @@ namespace {
 	void __declspec(naked) updatePlacementSimpleWrapper2() {
 		static uint16 addonOffsetX;
 		__asm {
-			MOVSX EAX, [ECX + 0x6626E0]//x
+			MOVSX EAX, [ECX + 0x6626E0] // x
 			MOV addonOffsetX, AX
 			PUSHAD
 		}
@@ -121,21 +112,21 @@ namespace {
 			JMP updatePlacementWrapperJmp2
 		}
 	}
+
 	void placementSimpleWrappers() {
-		jmpPatch(updatePlacementSimpleWrapper, 0x0048DD42, 2);
+		jmpPatch(updatePlacementSimpleWrapper,	0x0048DD42, 2);
 		jmpPatch(updatePlacementSimpleWrapper2, 0x0048DD61, 2);
 	}
 }//unnamed namespace
 
 namespace hooks {
-
 	void injectBuildingTerranHook() {
 		jmpPatch(orders_TerranBuildSelfWrapper, 0x00467760, 2);
-		jmpPatch(orders_SCVBuild2Wrapper, 0x00467A70, 1);
-		jmpPatch(orders_SCVBuildWrapper, 0x00467FD0, 0);
-		//placementSimpleWrappers();//causes insane bug
+		jmpPatch(orders_SCVBuild2Wrapper,		0x00467A70, 1);
+		jmpPatch(orders_SCVBuildWrapper,		0x00467FD0, 0);
+//		placementSimpleWrappers(); // causes insane bug
 
-		//jmpPatch(updatePlacementStateForPlacementBox_Wrapper,	0x0048DCE0, 0);
+		//jmpPatch(updatePlacementStateForPlacementBox_Wrapper,		0x0048DCE0, 0);
 		//jmpPatch(refreshScreen_Wrapper,							0x0048DDC0, 4);
 	}
 
