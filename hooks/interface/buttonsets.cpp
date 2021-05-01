@@ -1168,12 +1168,18 @@ namespace hooks {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								if (((*activePortraitUnit)->id == UnitId::ZergIroleth
-									|| (*activePortraitUnit)->id == UnitId::ZergOthstoleth) &&  //Iroleth, Othstoleth Endomorphic Accelerant passive
+									|| (*activePortraitUnit)->id == UnitId::ZergOthstoleth
+									|| (*activePortraitUnit)->id == UnitId::ZergAlaszileth) &&  //Iroleth, Othstoleth, Alaszileth Endomorphic Accelerant passive
 									current_button->iconID == IconId::ZergBasicBuildings) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::ZergOthstoleth &&  // Othstoleth Ectomorphic Accelerant passive
+								if (((*activePortraitUnit)->id == UnitId::ZergOthstoleth
+									|| (*activePortraitUnit)->id == UnitId::ZergAlaszileth) &&  // Othstoleth, Alaszileth Ectomorphic Accelerant passive
 									current_button->iconID == IconId::ZergAdvancedBuildings) {
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::ZergAlaszileth &&  // Alaszileth Ectomorphic Accelerant passive
+									current_button->iconID == IconId::Consume) {
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								if (((*activePortraitUnit)->id == UnitId::ZergLair					// Lair, Hive, Sire Larval Gestation passive
