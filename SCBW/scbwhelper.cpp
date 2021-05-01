@@ -7361,4 +7361,23 @@ namespace helper {
 		}
 		return (bool)result;
 	}
+
+	// sign flag
+	int8 SETS(int x)
+	{
+		if (sizeof(int) == 1)
+			return int8(x) < 0;
+		if (sizeof(int) == 2)
+			return int16(x) < 0;
+		if (sizeof(int) == 4)
+			return int32(x) < 0;
+		return int64(x) < 0;
+	}
+
+	int8 OFSUB(int x, int y)
+	{
+		int y2 = y;
+		int8 sx = SETS(x);
+		return (sx ^ SETS(y2)) & (sx ^ SETS(x - y2));
+	}
 }

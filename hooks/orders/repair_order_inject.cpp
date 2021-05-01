@@ -36,7 +36,7 @@ namespace {
 			MOV target, ESI
 			MOV unused, EDI
 			MOV unit, EBX
-			MOVZX orderId, EAX
+			MOV orderId, AL
 			PUSHAD
 		}
 		result = hooks::isOrderValid(orderId, unit, unused, target, bErrorFlag);

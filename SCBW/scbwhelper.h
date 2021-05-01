@@ -828,4 +828,8 @@ namespace helper {
     int32 AI_AddCostToNeeds(int32 a1, int32 a2, int32 a3);
     int32 AI_AddSpendingRequest(int16 a1, int32 a2, char a3, char a4, void* a5);
     bool isAIAllowedToBuild(int32 a1, int32 a2);
+
+    //// misc
+    int8 SETS(int x);
+    int8 OFSUB(int x, int y);
 }

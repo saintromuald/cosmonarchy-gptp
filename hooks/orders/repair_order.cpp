@@ -236,7 +236,7 @@ namespace hooks {
 			if (!(units_dat::BaseProperty[v11] & UnitProperty::Mechanical) || !(target->status & UnitStatus::Completed))
 				goto LABEL_25;
 			v12 = target->hitPoints;
-			v8 = __OFSUB__(v12, units_dat::MaxHitPoints[v11]);
+			v8 = helper::OFSUB(v12, units_dat::MaxHitPoints[v11]);
 			v7 = v12 - units_dat::MaxHitPoints[v11] < 0;
 			goto LABEL_7;
 		case OrderId::MoveToMinerals:
@@ -277,7 +277,7 @@ namespace hooks {
 				if (units_dat::BaseProperty[v6] & 0x10000)
 				{
 					v9 = target->hitPoints;
-					v8 = __OFSUB__(v9, units_dat::MaxHitPoints[v6]);
+					v8 = helper::OFSUB(v9, units_dat::MaxHitPoints[v6]);
 					v7 = v9 - units_dat::MaxHitPoints[v6] < 0;
 				LABEL_7:
 					if (v7 ^ v8)
