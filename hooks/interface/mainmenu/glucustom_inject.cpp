@@ -15,9 +15,9 @@ namespace {
 			RETN
 		}
 	};
-	int __declspec(naked) initSingleplayerCustom_Wrapper() { //004AD850
+	s32 __declspec(naked) initSingleplayerCustom_Wrapper() { //004AD850
 		static BinDlg** dialog;
-		static int result;
+		static s32 result;
 		__asm {
 			MOV dialog, EAX
 			PUSHAD
@@ -30,9 +30,9 @@ namespace {
 		}
 	};
 	void __declspec(naked) initGameLoad_Wrapper() { //004EF100
-		static uint32 a1;
+		static u32 a1;
 		static char a2;
-		static int result;
+		static s32 result;
 		__asm {
 			MOV a1, ESI
 			MOV a2, EDI

@@ -9,24 +9,24 @@ namespace scbw {
 
 	UnitFinder::UnitFinder() : unitCount(0) {}
 
-	UnitFinder::UnitFinder(int left, int top, int right, int bottom)
+	UnitFinder::UnitFinder(s32 left, s32 top, s32 right, s32 bottom)
 		: unitCount(0) {
 		this->search(left, top, right, bottom);
 	}
 
-	int UnitFinder::getUnitCount() const {
+	s32 UnitFinder::getUnitCount() const {
 		return this->unitCount;
 	}
 
-	int UnitFinder::getUnitCount(UnitFinderCallbackMatchInterface callback) const {
-		int count = 0;
+	s32 UnitFinder::getUnitCount(UnitFinderCallbackMatchInterface callback) const {
+		s32 count = 0;
 		for (CUnit* unit : units) {
 			if (callback(unit)) count++;
 		}
 		return count;
 	}
 
-	CUnit* UnitFinder::getUnit(int index) const {
+	CUnit* UnitFinder::getUnit(s32 index) const {
 		if (0 <= index && index <= this->unitCount)
 			return this->units[index];
 		return nullptr;
@@ -62,12 +62,12 @@ namespace scbw {
 
 	// The heart and core of StarCraft's unit search engine.
 	// Based on BWAPI's Shared/Templates.h
-	void UnitFinder::search(int left, int top, int right, int bottom) {
+	void UnitFinder::search(s32 left, s32 top, s32 right, s32 bottom) {
 		//0: No match, 1: Passed X iteration, 2: Passed Y iteration
 		//(Necessary because each UnitFinderData array has 2 entries per unit)
-		uint8 unitSearchFlags[UNIT_ARRAY_LENGTH + 1] = {0};
+		u8 unitSearchFlags[UNIT_ARRAY_LENGTH + 1] = {0};
 
-		int r = right, b = bottom;
+		s32 r = right, b = bottom;
 		const bool isWidthExtended = right - left - 1 < *MAX_UNIT_WIDTH;
 		const bool isHeightExtended = top - bottom - 1 < *MAX_UNIT_HEIGHT;
 
@@ -122,13 +122,13 @@ namespace scbw {
 	//-------- UnitFinder::getNearest() family --------//
 
 	//Based on function @ 0x004E8320
-	CUnit* UnitFinder::getNearest(int x, int y,
-		int boundsLeft, int boundsTop, int boundsRight, int boundsBottom,
+	CUnit* UnitFinder::getNearest(s32 x, s32 y,
+		s32 boundsLeft, s32 boundsTop, s32 boundsRight, s32 boundsBottom,
 		UnitFinderData* left, UnitFinderData* top,
 		UnitFinderData* right, UnitFinderData* bottom,
 		UnitFinderCallbackMatchInterface match, CUnit* sourceUnit) {
 
-		int bestDistance = scbw::getDistanceFast(0, 0,
+		s32 bestDistance = scbw::getDistanceFast(0, 0,
 			std::max(x - boundsLeft, boundsRight - x),
 			std::max(y - boundsTop, boundsBottom - y));
 
@@ -146,7 +146,7 @@ namespace scbw {
 				if (boundsLeft <= unit->getX()) {
 					if (boundsTop <= unit->getY() && unit->getY() < boundsBottom) {
 						if (unit != sourceUnit && match(unit)) {
-							int distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance) {
 								bestDistance = distance;
 								bestUnit = unit;
@@ -168,7 +168,7 @@ namespace scbw {
 				if (unit->getX() < boundsRight) {
 					if (boundsTop <= unit->getY() && unit->getY() < boundsBottom) {
 						if (unit != sourceUnit && match(unit)) {
-							int distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance) {
 								bestDistance = distance;
 								bestUnit = unit;
@@ -190,7 +190,7 @@ namespace scbw {
 				if (boundsTop <= unit->getY()) {
 					if (boundsLeft <= unit->getX() && unit->getX() < boundsRight) {
 						if (unit != sourceUnit && match(unit)) {
-							int distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance) {
 								bestDistance = distance;
 								bestUnit = unit;
@@ -212,7 +212,7 @@ namespace scbw {
 				if (unit->getY() < boundsBottom) {
 					if (boundsLeft <= unit->getX() && unit->getX() < boundsRight) {
 						if (unit != sourceUnit && match(unit)) {
-							int distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance) {
 								bestDistance = distance;
 								bestUnit = unit;
@@ -242,13 +242,13 @@ namespace scbw {
 	//
 	// for bullets
 	//
-	CUnit* UnitFinder::getNearest(int x, int y,
-		int boundsLeft, int boundsTop, int boundsRight, int boundsBottom,
+	CUnit* UnitFinder::getNearest(s32 x, s32 y,
+		s32 boundsLeft, s32 boundsTop, s32 boundsRight, s32 boundsBottom,
 		UnitFinderData* left, UnitFinderData* top,
 		UnitFinderData* right, UnitFinderData* bottom,
 		UnitFinderCallbackMatchInterface match, CBullet* sourceBullet) {
 
-		int bestDistance = scbw::getDistanceFast(0, 0,
+		s32 bestDistance = scbw::getDistanceFast(0, 0,
 			std::max(x - boundsLeft, boundsRight - x),
 			std::max(y - boundsTop, boundsBottom - y));
 
@@ -266,7 +266,7 @@ namespace scbw {
 				if (boundsLeft <= unit->getX()) {
 					if (boundsTop <= unit->getY() && unit->getY() < boundsBottom) {
 						if (match(unit)) {
-							int distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance) {
 								bestDistance = distance;
 								bestUnit = unit;
@@ -288,7 +288,7 @@ namespace scbw {
 				if (unit->getX() < boundsRight) {
 					if (boundsTop <= unit->getY() && unit->getY() < boundsBottom) {
 						if (match(unit)) {
-							int distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance) {
 								bestDistance = distance;
 								bestUnit = unit;
@@ -310,7 +310,7 @@ namespace scbw {
 				if (boundsTop <= unit->getY()) {
 					if (boundsLeft <= unit->getX() && unit->getX() < boundsRight) {
 						if (match(unit)) {
-							int distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance) {
 								bestDistance = distance;
 								bestUnit = unit;
@@ -332,7 +332,7 @@ namespace scbw {
 				if (unit->getY() < boundsBottom) {
 					if (boundsLeft <= unit->getX() && unit->getX() < boundsRight) {
 						if (match(unit)) {
-							int distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance) {
 								bestDistance = distance;
 								bestUnit = unit;
@@ -359,13 +359,13 @@ namespace scbw {
 	}
 
 	//for points
-	CUnit* UnitFinder::getNearest(int x, int y,
-		int boundsLeft, int boundsTop, int boundsRight, int boundsBottom,
+	CUnit* UnitFinder::getNearest(s32 x, s32 y,
+		s32 boundsLeft, s32 boundsTop, s32 boundsRight, s32 boundsBottom,
 		UnitFinderData* left, UnitFinderData* top,
 		UnitFinderData* right, UnitFinderData* bottom,
 		UnitFinderCallbackMatchInterface match, Point32 sourcePosition) {
 
-		int bestDistance = scbw::getDistanceFast(0, 0,
+		s32 bestDistance = scbw::getDistanceFast(0, 0,
 			std::max(x - boundsLeft, boundsRight - x),
 			std::max(y - boundsTop, boundsBottom - y));
 
@@ -383,7 +383,7 @@ namespace scbw {
 				if (boundsLeft <= unit->getX()) {
 					if (boundsTop <= unit->getY() && unit->getY() < boundsBottom) {
 						if (match(unit)) {
-							int distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance) {
 								bestDistance = distance;
 								bestUnit = unit;
@@ -405,7 +405,7 @@ namespace scbw {
 				if (unit->getX() < boundsRight) {
 					if (boundsTop <= unit->getY() && unit->getY() < boundsBottom) {
 						if (match(unit)) {
-							int distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance) {
 								bestDistance = distance;
 								bestUnit = unit;
@@ -427,7 +427,7 @@ namespace scbw {
 				if (boundsTop <= unit->getY()) {
 					if (boundsLeft <= unit->getX() && unit->getX() < boundsRight) {
 						if (match(unit)) {
-							int distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance) {
 								bestDistance = distance;
 								bestUnit = unit;
@@ -449,7 +449,7 @@ namespace scbw {
 				if (unit->getY() < boundsBottom) {
 					if (boundsLeft <= unit->getX() && unit->getX() < boundsRight) {
 						if (match(unit)) {
-							int distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
+							s32 distance = scbw::getDistanceFast(x, y, unit->getX(), unit->getY());
 							if (distance < bestDistance) {
 								bestDistance = distance;
 								bestUnit = unit;
@@ -476,7 +476,7 @@ namespace scbw {
 	}
 
 
-	CUnit* UnitFinder::getNearestTarget(int left, int top, int right, int bottom,
+	CUnit* UnitFinder::getNearestTarget(s32 left, s32 top, s32 right, s32 bottom,
 		CUnit* sourceUnit, UnitFinderCallbackMatchInterface match) {
 		UnitFinderData* searchLeft, * searchTop, * searchRight, * searchBottom;
 
@@ -501,7 +501,7 @@ namespace scbw {
 			searchLeft, searchTop, searchRight, searchBottom,
 			match, sourceUnit);
 	}
-	CUnit* UnitFinder::getNearestTarget(int left, int top, int right, int bottom,
+	CUnit* UnitFinder::getNearestTarget(s32 left, s32 top, s32 right, s32 bottom,
 		CBullet* sourceBullet, UnitFinderCallbackMatchInterface match) {
 		UnitFinderData* searchLeft, * searchTop, * searchRight, * searchBottom;
 
@@ -520,7 +520,7 @@ namespace scbw {
 			searchLeft, searchTop, searchRight, searchBottom,
 			match, sourceBullet);
 	}
-	CUnit* UnitFinder::getNearestTarget(int left, int top, int right, int bottom,
+	CUnit* UnitFinder::getNearestTarget(s32 left, s32 top, s32 right, s32 bottom,
 		Point32 sourcePosition, UnitFinderCallbackMatchInterface match) {
 		UnitFinderData* searchLeft, * searchTop, * searchRight, * searchBottom;
 
@@ -544,9 +544,9 @@ namespace scbw {
 	}
 
 	//-------- Template member function definitions --------//
-	int UnitFinder::getMatchUnitCount(UnitFinderCallbackMatchInterface callback) {
-		int count = 0;
-		for (int i = 0; i < this->getUnitCount(); ++i) {
+	s32 UnitFinder::getMatchUnitCount(UnitFinderCallbackMatchInterface callback) {
+		s32 count = 0;
+		for (s32 i = 0; i < this->getUnitCount(); ++i) {
 			if (callback(this->getUnit(i))) {
 				count++;
 			}
@@ -555,8 +555,8 @@ namespace scbw {
 	}
 
 	UnitFinder& UnitFinder::filter(scbw::UnitFinderCallbackMatchInterface callback) {
-		int newUnitCount = 0;
-		for (int i = 0; i < this->getUnitCount(); ++i) {
+		s32 newUnitCount = 0;
+		for (s32 i = 0; i < this->getUnitCount(); ++i) {
 			CUnit* unit = this->getUnit(i);
 			if (callback(unit)) {
 				units[newUnitCount++] = unit;
@@ -567,14 +567,14 @@ namespace scbw {
 	}
 
 	void UnitFinder::forEach(scbw::UnitFinderCallbackProcInterface callback) const {
-		for (int i = 0; i < this->getUnitCount(); ++i) {
+		for (s32 i = 0; i < this->getUnitCount(); ++i) {
 			callback(this->getUnit(i));
 		}
 	}
 
 	std::vector<CUnit*> UnitFinder::getAllUnits() {
 		std::vector<CUnit*> vec;
-		for (int i = 0; i < this->getUnitCount(); ++i) {
+		for (s32 i = 0; i < this->getUnitCount(); ++i) {
 			vec.push_back(this->getUnit(i));
 		}
 		return vec;
@@ -582,7 +582,7 @@ namespace scbw {
 
 	CUnit* UnitFinder::getFirst(UnitFinderCallbackMatchInterface callback) const {
 
-		for (int i = 0; i < this->getUnitCount(); ++i)
+		for (s32 i = 0; i < this->getUnitCount(); ++i)
 			if (callback(this->getUnit(i)))
 				return this->getUnit(i);
 
@@ -592,12 +592,12 @@ namespace scbw {
 
 	CUnit* UnitFinder::getBest(scbw::UnitFinderCallbackScoreInterface callback) const {
 
-		int bestScore = -1;
+		s32 bestScore = -1;
 		CUnit* bestUnit = nullptr;
 
-		for (int i = 0; i < this->getUnitCount(); ++i) {
+		for (s32 i = 0; i < this->getUnitCount(); ++i) {
 
-			const int score = callback(this->getUnit(i));
+			const s32 score = callback(this->getUnit(i));
 
 			if (score > bestScore) {
 				bestUnit = this->getUnit(i);

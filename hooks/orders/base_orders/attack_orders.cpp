@@ -37,8 +37,8 @@ namespace hooks {
 			else {
 
 				//656F7:
-				uint32 status_saved = (unit->status & UnitStatus::HoldingPosition) + (unit->status & UnitStatus::Disabled);
-				uint8 newOrderId;
+				u32 status_saved = (unit->status & UnitStatus::HoldingPosition) + (unit->status & UnitStatus::Disabled);
+				u8 newOrderId;
 
 				if (unit->id == UnitId::ProtossAccantor) {
 					//65720:
@@ -96,8 +96,8 @@ namespace hooks {
 			else {
 
 				//659CF
-				uint32 status_saved = (unit->status & UnitStatus::Disabled) + (unit->status & UnitStatus::HoldingPosition);
-				uint8 newOrderId;
+				u32 status_saved = (unit->status & UnitStatus::Disabled) + (unit->status & UnitStatus::HoldingPosition);
+				u8 newOrderId;
 
 				//give orders to interceptors/scarabs (through outHangarChild)
 				helper::function_00465780(unit);
@@ -137,7 +137,7 @@ namespace hooks {
 
 		CUnit* target;
 		CUnit* current_unit;
-		uint8 current_unit_weaponId;
+		u8 current_unit_weaponId;
 
 		bool jump_to_77A45 = false;
 		bool jump_to_77A70 = false;
@@ -303,7 +303,7 @@ namespace hooks {
 					else {
 
 						//77B5F:
-						uint32 result_getMaxWpnRange = unit->getMaxWeaponRange(units_dat::GroundWeapon[UnitId::TerranPhalanxSiegeModeTurret]);
+						u32 result_getMaxWpnRange = unit->getMaxWeaponRange(units_dat::GroundWeapon[UnitId::TerranPhalanxSiegeModeTurret]);
 
 						if (!helper::isTargetWithinMinMovementRange(current_subunit, target, result_getMaxWpnRange))
 							jump_to_77BD7 = true;
@@ -528,7 +528,7 @@ namespace hooks {
 						jump_to_77E48 = true;
 					else {
 						*/
-					uint8 currentWeaponId;
+					u8 currentWeaponId;
 
 					//77E1A:
 					if (target->status & UnitStatus::InAir)
@@ -730,7 +730,7 @@ namespace hooks {
 
 				if (unit->status & UnitStatus::Unmovable) { //78AB8
 
-					uint32 distance =
+					u32 distance =
 						scbw::getDistanceFast(
 							unit->orderTarget.pt.x * 256,
 							unit->orderTarget.pt.y * 256,
@@ -788,7 +788,7 @@ namespace hooks {
 
 	void orders_AttackMoveEP(CUnit* unit) {
 
-		uint8 saved_mainOrderId = unit->mainOrderId; //[EBP-0x14]
+		u8 saved_mainOrderId = unit->mainOrderId; //[EBP-0x14]
 
 		//function_00478370:
 		//probably perform checks to see if the order
@@ -824,7 +824,7 @@ namespace hooks {
 						)
 						jump_to_78EAE = true;
 					else //78E91
-						if (helper::function_00476610(unit, (int32)unit->orderTarget.pt.x, (int32)unit->orderTarget.pt.y))
+						if (helper::function_00476610(unit, (s32)unit->orderTarget.pt.x, (s32)unit->orderTarget.pt.y))
 							helper::makeToHoldPosition(unit);
 
 				} else

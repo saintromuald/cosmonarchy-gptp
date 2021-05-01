@@ -5,8 +5,8 @@
 namespace hooks {
 	void orders_Spell(CUnit* unit) {
 
-		int32 spellCost;
-		uint8 orderWeaponId = orders_dat::OrderWeaponId[unit->mainOrderId];
+		s32 spellCost;
+		u8 orderWeaponId = orders_dat::OrderWeaponId[unit->mainOrderId];
 		CUnit* target = unit->orderTarget.unit;
 		if (unit->id == UnitId::TerranPaladin) {
 			if (unit->orderSignal & 0x20) {
@@ -82,7 +82,7 @@ namespace hooks {
 			} else { //9291A
 				//scbw::print("Continue...");
 
-				uint8 techUsed = orders_dat::TechUsed[unit->mainOrderId];
+				u8 techUsed = orders_dat::TechUsed[unit->mainOrderId];
 
 				if (techUsed >= TechId::None)
 					spellCost = 0;
@@ -94,7 +94,7 @@ namespace hooks {
 					unit->energy < spellCost
 					) {
 					//scbw::print("energy < spellcost");
-					uint8 raceId;
+					u8 raceId;
 					char* message;
 
 					if (units_dat::GroupFlags[unit->id].isZerg)
@@ -125,7 +125,7 @@ namespace hooks {
 
 				} else { //929C2
 
-					uint32 result_00492620;
+					u32 result_00492620;
 					//scbw::print("energy >= spellcost");
 					//may initiate movement from unit depending on
 					//mainOrderState
@@ -171,19 +171,19 @@ namespace hooks {
 								if (orderWeaponId <= WeaponId::Maelstrom) { //Maelstrom is the last spell-related weapon
 
 									//array bound to the function
-									const uint8* const array_00492B44 = (uint8*)(0x00492B44);
+									const u8* const array_00492B44 = (u8*)(0x00492B44);
 
 									//this code would not work for weapons id of NuclearMissile, YamatoGun 
 									//and weapons id before those, they must be excluded somewhere else
 									//Maybe the switch and array use could be removed in a future version
 									//since enough elements use default value (switch 6)
-									uint32 switch_value = array_00492B44[orderWeaponId - 0x20];
+									u32 switch_value = array_00492B44[orderWeaponId - 0x20];
 									//scbw::print("Get switch value");
 
 									if (switch_value != 6) {
 
 										//no idea why irradiate is so important
-										uint32 analyzed_target_status = target->irradiateTimer;
+										u32 analyzed_target_status = target->irradiateTimer;
 
 										if (switch_value == 2)
 											analyzed_target_status |= target->parasiteFlags;
@@ -215,15 +215,15 @@ namespace hooks {
 							if (!bStopHere) { //92AA3
 
 	//							scbw::print("Spend energy");
-								uint8 cooldown;
-								uint32 random_value;
+								u8 cooldown;
+								u32 random_value;
 
 								unit->spendUnitEnergy(spellCost);
 								cooldown = helper::getUpgradedWpnCooldown(unit, orderWeaponId);
 
 								//a complicated way to add between -1 and 2 to the cooldown
 								random_value = helper::RandomizeShort(49);
-								cooldown += (((uint8)random_value) & 3) - 1;
+								cooldown += (((u8)random_value) & 3) - 1;
 
 								unit->spellCooldown = cooldown;
 								if (unit->id == UnitId::TerranWyvern) {

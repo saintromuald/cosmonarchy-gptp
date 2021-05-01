@@ -6,8 +6,8 @@
 
 namespace graphics {
 
-const std::string& getStringFromIndex(int stringIndex);
+const std::string& getStringFromIndex(s32 stringIndex);
 
-int drawAllShapes();
+s32 drawAllShapes();
 
 } //graphics

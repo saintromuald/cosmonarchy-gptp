@@ -8,7 +8,7 @@ namespace AI {
 		if (isUnderAttack) {
 			return nullptr;
 		}
-		int bounds = 32 * 32;
+		s32 bounds = 32 * 32;
 		return scbw::UnitFinder::getNearestTarget(
 			caster->getX() - bounds,
 			caster->getY() - bounds,

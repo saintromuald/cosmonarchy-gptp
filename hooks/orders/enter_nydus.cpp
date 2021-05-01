@@ -109,7 +109,7 @@ namespace hooks {
 			} else
 				if (unit->mainOrderState == 1) { //EA43B
 
-					uint8 movableState = unit->getMovableState();
+					u8 movableState = unit->getMovableState();
 
 					if (movableState == 1)	//reached destination
 						unit->mainOrderState = 2;

@@ -5,8 +5,8 @@
 namespace hooks {
 
 	void orders_Hallucination1(CUnit* unit) {
-		int sightRange = unit->getSightRange(true);
-		uint16 techCost;
+		s32 sightRange = unit->getSightRange(true);
+		u16 techCost;
 		if (
 			helper::ordersSpell_Sub_4926D0(
 				unit,
@@ -16,7 +16,7 @@ namespace hooks {
 				0x899 // Invalid Target
 				)
 			) {
-			int counter = 1;
+			s32 counter = 1;
 
 			// TODO: cleanup
 			/*
@@ -61,14 +61,14 @@ namespace hooks {
 	}
 
 	// Hooked to rule out AI issues -- Pr0nogo
-	CUnit* createHallucination(CUnit* source, int32 player) {
+	CUnit* createHallucination(CUnit* source, s32 player) {
 		CUnit* halUnit; // eax
 		CUnit* v3; // edi
 		CUnit* halUnit2; // esi
 		CUnit* result; // eax
-		uint16 halTimer; // cx
-		uint16 currentHalTimer; // ax
-		int16 unitType; // ax
+		u16 halTimer; // cx
+		u16 currentHalTimer; // ax
+		s16 unitType; // ax
 
 		v3 = source;
 		halUnit = helper::createUnit(source->id, source->sprite->position.x, source->sprite->position.y, player);

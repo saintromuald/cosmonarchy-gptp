@@ -18,64 +18,64 @@
 // Note: I would recommend having unit name as first segment of any related variable name.
 
 // General
-constexpr int HealthMultiplier = 256;
+constexpr s32 HealthMultiplier = 256;
 
 // Shaman
-constexpr int ShamanHeal = 2;
+constexpr s32 ShamanHeal = 2;
 
 // Madcap
-constexpr int MadcapPassiveDecayTime = 0.5 * 24;
-constexpr int MadcapMaxStacks = 10;
-constexpr double MadcapAttackSpeedPerStack = 0.05;
+constexpr s32 MadcapPassiveDecayTime = 0.5 * 24;
+constexpr s32 MadcapMaxStacks = 10;
+constexpr f64 MadcapAttackSpeedPerStack = 0.05;
 
 // Apostle
-constexpr int ApostleBloodTitheHealing = 5 * 256;
-constexpr int ApostleLastBreathEnergyGain = 5 * 256;
+constexpr s32 ApostleBloodTitheHealing = 5 * 256;
+constexpr s32 ApostleLastBreathEnergyGain = 5 * 256;
 
 // Mines
-const int MineBurrowTime = 60;
-const int MineSeekRange = 576;
-const int MineDetonateRange = 30;
+const s32 MineBurrowTime = 60;
+const s32 MineSeekRange = 576;
+const s32 MineDetonateRange = 30;
 
 // Azazel
-constexpr int AzazelDefensiveMatrixHeal = 53; // 5 HP per second | 256 * 5 / 24
+constexpr s32 AzazelDefensiveMatrixHeal = 53; // 5 HP per second | 256 * 5 / 24
 
 // Treasury
-constexpr int TreasuryIncrease = 4;
+constexpr s32 TreasuryIncrease = 4;
 
 // Lanifect
-constexpr int AIWebSeekRange = 96;
-constexpr int AICorsairAllySeekRange = 128;
-constexpr int AICorsairEnemySeekRange = 128;
-constexpr double AICorsairLifePercentage = 0.5;
-constexpr int AIWebMinEnergy = 30;
-constexpr int AIWebAllyMinCount = 3;
-constexpr int AIWebEnemyMinCount = 2;
-constexpr int AIWebTimer = 3 * 24;
+constexpr s32 AIWebSeekRange = 96;
+constexpr s32 AICorsairAllySeekRange = 128;
+constexpr s32 AICorsairEnemySeekRange = 128;
+constexpr f64 AICorsairLifePercentage = 0.5;
+constexpr s32 AIWebMinEnergy = 30;
+constexpr s32 AIWebAllyMinCount = 3;
+constexpr s32 AIWebEnemyMinCount = 2;
+constexpr s32 AIWebTimer = 3 * 24;
 
 // Star Sovereign
-constexpr int AIStarsovereignAbilSeekRange = 10 * 32;
-constexpr int AIStarsovereignAbilMinEnemyHealth = 2000;
-constexpr int AIStarsovereignAbilMaxAllyHealth = 2000;
-constexpr double AIStarsovereignAbilLifePercentage = 0.5;
-constexpr int AIStarsovereignAbilTimer = 612;
+constexpr s32 AIStarsovereignAbilSeekRange = 10 * 32;
+constexpr s32 AIStarsovereignAbilMinEnemyHealth = 2000;
+constexpr s32 AIStarsovereignAbilMaxAllyHealth = 2000;
+constexpr f64 AIStarsovereignAbilLifePercentage = 0.5;
+constexpr s32 AIStarsovereignAbilTimer = 612;
 
 // Quazilisk
-constexpr double QuazaliskPassiveFactor = 0.1;
+constexpr f64 QuazaliskPassiveFactor = 0.1;
 
 // Vithrilisk
-constexpr int VithriliskCorrosiveTouchTimer = 10 * 24 + 1;
-constexpr double VithriliskCorrosiveTouchCooldownIncrease = 0.02;
-constexpr double VithriliskCorrosiveTouchArmorReduction = 0.2 * 256;
+constexpr s32 VithriliskCorrosiveTouchTimer = 10 * 24 + 1;
+constexpr f64 VithriliskCorrosiveTouchCooldownIncrease = 0.02;
+constexpr f64 VithriliskCorrosiveTouchArmorReduction = 0.2 * 256;
 
 // Zoryusthaleth
-constexpr int ZoryusthalethReconstitutionHealing = 5 * 256;
+constexpr s32 ZoryusthalethReconstitutionHealing = 5 * 256;
 
 // Matraleth
-constexpr int DefaultArmParasiteTimer = 2 * 24 + 1;
+constexpr s32 DefaultArmParasiteTimer = 2 * 24 + 1;
 
 // Akistrokor
-constexpr int AkistrokorEnthrallingAssaultHeal = 256 * 20 / 24; // 20 HP per second
+constexpr s32 AkistrokorEnthrallingAssaultHeal = 256 * 20 / 24; // 20 HP per second
 
 // Larval Colony
-constexpr double LarvalColonyMultiplier = 0.75;
+constexpr f64 LarvalColonyMultiplier = 0.75;

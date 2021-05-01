@@ -2,7 +2,7 @@
 #include <SCBW/api.h>
 
 namespace hooks {
-	bool CMDRECV_PlaceBuildingAllowed(CUnit* builder, uint8 orderId, uint16 builtUnitId) {
+	bool CMDRECV_PlaceBuildingAllowed(CUnit* builder, u8 orderId, u16 builtUnitId) {
 		bool bReturnValue = false;
 		if (orderId >= OrderId::DroneStartBuild && orderId <= OrderId::CTFCOP2) {
 			if (
@@ -30,10 +30,10 @@ namespace hooks {
 		return bReturnValue;
 	}
 
-	void cmdRECV_PlaceBuildingNormal(int16 x, int16 y, uint32 orderId, uint32 builtUnitId) {
+	void cmdRECV_PlaceBuildingNormal(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
 
 		CUnit* builder;
-		uint32 result_function_00473FB0;
+		u32 result_function_00473FB0;
 
 		*selectionIndexStart = 0;
 		builder = getActivePlayerNextSelection();
@@ -53,9 +53,9 @@ namespace hooks {
 
 		if (helper::placeBuildingMsg(result_function_00473FB0)) {
 
-			int32 DimensionX, DimensionY;
+			s32 DimensionX, DimensionY;
 
-			DimensionX = (int16)units_dat::BuildingDimensions[builtUnitId].x;
+			DimensionX = (s16)units_dat::BuildingDimensions[builtUnitId].x;
 
 			if (DimensionX < 0)
 				DimensionX++;
@@ -64,7 +64,7 @@ namespace hooks {
 
 			DimensionX += (x * 32);
 
-			DimensionY = (int16)units_dat::BuildingDimensions[builtUnitId].y;
+			DimensionY = (s16)units_dat::BuildingDimensions[builtUnitId].y;
 
 			if (DimensionY < 0)
 				DimensionY++;
@@ -81,12 +81,12 @@ namespace hooks {
 
 	;
 
-	void cmdRECV_PlaceBuildingAddon(int16 x, int16 y, uint32 orderId, uint32 builtUnitId) {
+	void cmdRECV_PlaceBuildingAddon(s16 x, s16 y, u32 orderId, u32 builtUnitId) {
 
 		CUnit* builder;
-		uint32 result_function_00473FB0;
+		u32 result_function_00473FB0;
 
-		uint16 addonPlaceX = 0, addonPlaceY = 0;
+		u16 addonPlaceX = 0, addonPlaceY = 0;
 
 		*selectionIndexStart = 0;
 		builder = getActivePlayerNextSelection();
@@ -106,7 +106,7 @@ namespace hooks {
 
 		if (result_function_00473FB0 == 0) {
 
-			addonPlaceX = (int16)units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].x;
+			addonPlaceX = (s16)units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].x;
 			/*if (builtUnitId == UnitId::TerranFutureStation) {
 				if (builder->id == UnitId::academy || builder->id == UnitId::armory) {
 					addonPlaceX = 96;
@@ -127,7 +127,7 @@ namespace hooks {
 
 			addonPlaceX = x - addonPlaceX;
 
-			addonPlaceY = (int16)units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].y;
+			addonPlaceY = (s16)units_dat::AddonPlacement[builtUnitId - UnitId::TerranCommandCenter].y;
 			/*if (builtUnitId == UnitId::TerranFutureStation) {
 				if (builder->id == UnitId::academy || builder->id == UnitId::armory) {
 					addonPlaceY = 0;
@@ -164,9 +164,9 @@ namespace hooks {
 
 		if (helper::placeBuildingMsg(result_function_00473FB0)) {
 
-			int32 DimensionX, DimensionY;
+			s32 DimensionX, DimensionY;
 
-			DimensionX = (int16)units_dat::BuildingDimensions[builder->id].x;
+			DimensionX = (s16)units_dat::BuildingDimensions[builder->id].x;
 
 			if (DimensionX < 0)
 				DimensionX++;
@@ -177,7 +177,7 @@ namespace hooks {
 
 			DimensionX += addonPlaceX;
 
-			DimensionY = (int16)units_dat::BuildingDimensions[builder->id].y;
+			DimensionY = (s16)units_dat::BuildingDimensions[builder->id].y;
 
 			if (DimensionY < 0)
 				DimensionY++;
@@ -196,7 +196,7 @@ namespace hooks {
 
 	;
 
-	void CMDRECV_Build(uint8 orderId, int16 x, int16 y, uint16 builtUnitId) {
+	void CMDRECV_Build(u8 orderId, s16 x, s16 y, u16 builtUnitId) {
 
 		CUnit* builder;
 

@@ -4,7 +4,7 @@
 
 namespace graphics {
 
-	int errorFlags;
+	s32 errorFlags;
 
 	void setError(GraphicsErrorId error) {
 		errorFlags |= error;

@@ -8,15 +8,15 @@ namespace graphics { class Bitmap; }
 struct bounds;
 
 struct Layer {
-/*00*/  uint8  buffers;
-//uint8  bits;
-/*01*/  uint8  hasBeenRefreshed  : 1;
-/*01*/  uint8  unk               : 7;
-/*02*/  uint16 left;
-/*04*/  uint16 top;
-/*06*/  uint16 width;
-/*08*/  uint16 height;
-/*0A*/  uint16 alignment;
+/*00*/  u8  buffers;
+//u8  bits;
+/*01*/  u8  hasBeenRefreshed  : 1;
+/*01*/  u8  unk               : 7;
+/*02*/  u16 left;
+/*04*/  u16 top;
+/*06*/  u16 width;
+/*08*/  u16 height;
+/*0A*/  u16 alignment;
 /*0C*/  graphics::Bitmap  *pSurface;
 /*10*/  void (__stdcall *pUpdate)(graphics::Bitmap *pSurface, bounds *pBounds);
 };

@@ -23,7 +23,7 @@ namespace hooks {
 				unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)		// If the unit is cloaked
 				&& !(unit->status & UnitStatus::CloakingForFree)							// ...and must consume energy to stay cloaked (i.e. not under an Arbiter)
 				) {
-				uint16 cloakingEnergyCost;
+				u16 cloakingEnergyCost;
 				//Equivalent to getCloakingEnergyConsumption @ 0x00491A90
 				if (unit->id == UnitId::TerranEidolon
 					|| unit->id == UnitId::Hero_SarahKerrigan
@@ -52,19 +52,19 @@ namespace hooks {
 			} else
 				if (unit->id == UnitId::ProtossMindTyrant && scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0) {
 					auto sum = scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) / 2;
-					unit->spendUnitEnergy(std::min(unit->energy, (uint16)(16 * sum)));
+					unit->spendUnitEnergy(std::min(unit->energy, (u16)(16 * sum)));
 					if (unit->energy == 0) {
 						scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
 					}
 				} else
 					if (unit->id == UnitId::TerranAzazel && scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd) == 1) {
-						unit->spendUnitEnergy(std::min(unit->energy, (uint16)13));
+						unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
 						if (unit->energy == 0) {
 							scbw::set_generic_rust_value(unit, ValueId::SublimeShepherd, 0);
 						}
 					} else
 						if (unit->id == UnitId::corsair && scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb)) {
-							unit->spendUnitEnergy(std::min(unit->energy, (uint16)13));
+							unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
 							if (unit->energy == 0) {
 								scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 0);
 							}
@@ -74,7 +74,7 @@ namespace hooks {
 							if (unit == nullptr) {
 								return;
 							}
-							int maxEnergy;
+							s32 maxEnergy;
 							if (unit->id == UnitId::ProtossMindTyrant
 								&& unit->mainOrderId == OrderId::CompletingArchonSummon
 								&& unit->mainOrderState == 0) {
@@ -105,8 +105,8 @@ namespace hooks {
 		}
 	}
 
-	const uint32 Func_SetUnitPathing = 0x00401360;
-	void setUnitPathing(CUnit* unit, uint8 unkPathRelated) {
+	const u32 Func_SetUnitPathing = 0x00401360;
+	void setUnitPathing(CUnit* unit, u8 unkPathRelated) {
 		__asm {
 			PUSHAD
 			MOV AL, unkPathRelated
@@ -148,7 +148,7 @@ namespace hooks {
 
 			if (can_free_fire) {
 				auto range = weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon];
-				int32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernJacksonCannon];
+				s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernJacksonCannon];
 				auto x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
 				auto y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1);
 
@@ -222,7 +222,7 @@ namespace hooks {
 		// Cowardice / Malice overlays
 		if (unit->_unknown_0x08C & 0x1) {
 			unit->_unknown_0x08C &= ~0x1;
-			uint32 overlayImageId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
+			u32 overlayImageId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
 			if (!unit->getOverlay(overlayImageId) && scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 0) {
 				unit->sprite->createTopOverlay(overlayImageId,
 					0, 0, 0);
@@ -237,7 +237,7 @@ namespace hooks {
 				if (unit->getOverlay(overlayId)) {
 					unit->removeOverlay(overlayId);
 				}
-				uint32 maliceId = ImageId::Malice_Small + scbw::getOverlayOffset(unit->id);
+				u32 maliceId = ImageId::Malice_Small + scbw::getOverlayOffset(unit->id);
 				if (!unit->getOverlay(maliceId)) {
 					unit->sprite->createTopOverlay(maliceId, 0, 0, 0);
 				}
@@ -248,8 +248,8 @@ namespace hooks {
 		// Clear Malice & Cowardice overlays
 		if (unit->_unknown_0x08C & 0x2) {
 			unit->_unknown_0x08C &= ~0x2;
-			uint32 maliceId = ImageId::Malice_Small + scbw::getOverlayOffset(unit->id);
-			uint32 cowardiceId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
+			u32 maliceId = ImageId::Malice_Small + scbw::getOverlayOffset(unit->id);
+			u32 cowardiceId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
 			scbw::set_generic_value(unit, ValueId::HierophantOverlay, 0);
 			if (unit->getOverlay(maliceId)) {
 				unit->removeOverlay(maliceId);
@@ -306,7 +306,7 @@ namespace hooks {
 
 		// Shield regeneration
 		if (units_dat::ShieldsEnabled[unit->id] != 0) {
-			int32 maxShields = (int32)(units_dat::MaxShieldPoints[unit->id]) * 256;
+			s32 maxShields = (s32)(units_dat::MaxShieldPoints[unit->id]) * 256;
 			if (unit->id == UnitId::ProtossAugur && unit->status & UnitStatus::Completed) {
 				unit->shields -= std::min(14, unit->shields);
 			} else {
@@ -382,7 +382,7 @@ namespace hooks {
 			}
 
 			// Deliberate healing start
-			int32 tickHeal = 0;
+			s32 tickHeal = 0;
 			// Azazel Innervating Matrices - heal over time
 			if (unit->defensiveMatrixHp != 0) {
 				if (unit->hitPoints > 0
@@ -436,7 +436,7 @@ namespace hooks {
 		}
 	};
 
-	void incrementUnitScoresEx(int count, CUnit* unit, int increment_scores) { // 0x00488D50
+	void incrementUnitScoresEx(s32 count, CUnit* unit, s32 increment_scores) { // 0x00488D50
 		if (unit->status & UnitStatus::IsHallucination) {
 			return;
 		}
@@ -447,8 +447,8 @@ namespace hooks {
 		auto unit_id = unit->id;
 		completed_unit_counts[unit->id].player[unit->playerId] += count;
 
-		int race = unit->getRace();
-		int supply = units_dat::SupplyProvided[unit->id];
+		s32 race = unit->getRace();
+		s32 supply = units_dat::SupplyProvided[unit->id];
 		if (scbw::isZergEggNew(unit, false, false)) {
 			if (unit->buildQueue[unit->buildQueueSlot % 5] == UnitId::ZergIroleth) {
 				supply = units_dat::SupplyProvided[UnitId::ZergOvileth];
@@ -462,7 +462,7 @@ namespace hooks {
 		}
 
 		if (*elapsedTimeFrames > 0) {
-			uint32 supply_new = scbw::get_generic_value(unit, ValueId::SupplyProvided);
+			u32 supply_new = scbw::get_generic_value(unit, ValueId::SupplyProvided);
 			if (supply_new) {
 				supply = supply_new;
 			}
@@ -520,13 +520,13 @@ namespace hooks {
 
 	// Hooked to help with the cloak rewrite - Pr0nogo
 	void updateUnits() { // 004ED000
-		int32 v0;
+		s32 v0;
 		CUnit* v1; 
 		char v2;
 		char i;
 		CUnit* v4; 
 		CUnit* v5; 
-		int32 v6;
+		s32 v6;
 		CUnit* v7; 
 		CUnit* v8; 
 		CUnit* v9; 
@@ -535,7 +535,7 @@ namespace hooks {
 		CUnit* v12;
 		CUnit* v13;
 		CUnit* v14;
-		int32 v15;
+		s32 v15;
 		CUnit* v16;
 		CUnit* v17;
 
@@ -687,11 +687,11 @@ namespace hooks {
 	// Hooked to help with the cloak rewrite - Pr0nogo
 	void updateBurrowingCloakingUnits() { // 00492EB0
 		CUnit* v0;
-		int32 v1;
+		s32 v1;
 		CUnit* v2;
-		int32 v3;
-		int32 v4;
-		int32 v5;
+		s32 v3;
+		s32 v4;
+		s32 v5;
 
 		v0 = *firstInvisibleUnit;
 		v1 = 0;
@@ -734,7 +734,7 @@ namespace hooks {
 	}
 
 	// Hooked for cloak rewrite animations - Pr0nogo
-	void doCloak(CUnit* unit, int32 soundId) { // 0049B440
+	void doCloak(CUnit* unit, s32 soundId) { // 0049B440
 		CUnit* v2;
 		CUnit* v3;
 

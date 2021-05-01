@@ -1,7 +1,7 @@
 #include "armor_bonus.h"
 #include <hook_tools.h>
 
-extern const uint32 Func_GetArmorBonus;	//Defined in CUnit.cpp
+extern const u32 Func_GetArmorBonus;	//Defined in CUnit.cpp
 
 namespace {
 
@@ -9,7 +9,7 @@ namespace {
 	void __declspec(naked) getArmorBonusWrapper() {
 
 		static CUnit* unit;
-		static uint8 armor;
+		static u8 armor;
 
 		__asm {
 			MOV unit, EAX

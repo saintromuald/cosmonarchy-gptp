@@ -8,25 +8,25 @@
 
 namespace hooks {
 	// no bullet because this function can be called in another context without bullet
-	void IrradiateHit(CUnit* attacker, CUnit* target, uint8 attackingPlayerId) {
+	void IrradiateHit(CUnit* attacker, CUnit* target, u8 attackingPlayerId) {
 		// no longer handled here
 	}
 
 	// bullet is not normally part of the function, so if the function is called
 	// in an unexpected way, it may not contain the correct value.
-	void OpticalFlareHit(CUnit* target, uint32 attackingPlayerId, CBullet* bullet) {
-		// can take the value 100 (0x64), thus not bool32
-		static uint32* const u32_0051CE98 = (uint32*)0x0051CE98;
+	void OpticalFlareHit(CUnit* target, u32 attackingPlayerId, CBullet* bullet) {
+		// can take the value 100 (0x64), thus not b32
+		static u32* const u32_0051CE98 = (u32*)0x0051CE98;
 		if (target->status & UnitStatus::IsHallucination)
 			target->remove();
 		else {
-			uint32 overlayImageId;
+			u32 overlayImageId;
 			CUnit* overlayTargetUnit;
 
 			//blindness is applied for a specific player
 			//just like parasite, but due to how it's used,
 			//a blind unit is still blind for all players
-			target->isBlind |= (uint8)(1 << attackingPlayerId);
+			target->isBlind |= (u8)(1 << attackingPlayerId);
 
 			//playing the impact sound
 			scbw::playSound(SoundId::Terran_Medic_Miopia1_wav, target);
@@ -77,11 +77,11 @@ namespace hooks {
 	//the timer is reset before this call 2 times out of 3 (with
 	//previousLockdownTimer holding the pre-reset value), and
 	//the 3rd case, previousLockdownTimer is set to 131 (0x83)
-	void LockdownHit(CUnit* target, uint8 previousLockdownTimer, CBullet* bullet) {
+	void LockdownHit(CUnit* target, u8 previousLockdownTimer, CBullet* bullet) {
 
 		//add lockdown overlay if no ongoing lockdown already
 		if (target->lockdownTimer == 0) {
-			uint32 overlayImageId = ImageId::LockdownField_Small + scbw::getOverlayOffset(target->id);
+			u32 overlayImageId = ImageId::LockdownField_Small + scbw::getOverlayOffset(target->id);
 			CUnit* overlayTargetUnit;
 			if (target->subunit != nullptr) {
 				overlayTargetUnit = target->subunit;
@@ -128,7 +128,7 @@ namespace hooks {
 		return nullptr;
 	}*/
 
-	void WeaponBulletHit(CBullet* bullet, CUnit* target, uint32 damageDivisor) {
+	void WeaponBulletHit(CBullet* bullet, CUnit* target, u32 damageDivisor) {
 		if (bullet->hitFlags & 2) {
 			//bullet doing no damage (shot from hallucination)
 			bool ephemeralBlades = false;
@@ -136,7 +136,7 @@ namespace hooks {
 				ephemeralBlades = true;
 			}
 			if (ephemeralBlades) {
-				uint32 base_damage = helper::GetUnitBulletDamage(bullet, target);
+				u32 base_damage = helper::GetUnitBulletDamage(bullet, target);
 				target->damageWith(
 					bullet->weaponType,
 					base_damage,
@@ -149,7 +149,7 @@ namespace hooks {
 				helper::attackOverlayAndNotify(bullet->sourceUnit, target, bullet->weaponType, bullet->direction1); // no damage, but still ask for retaliation
 			}
 		} else {
-			uint32 base_damage = helper::GetUnitBulletDamage(bullet, target);
+			u32 base_damage = helper::GetUnitBulletDamage(bullet, target);
 			target->damageWith(
 				bullet->weaponType,
 				base_damage,
@@ -162,23 +162,23 @@ namespace hooks {
 
 	}
 
-	uint16 GetUnitWidth(CUnit* unit) {
+	u16 GetUnitWidth(CUnit* unit) {
 		return unit->getRight() - unit->getLeft();
 	}
-	uint16 GetUnitHeight(CUnit* unit) {
+	u16 GetUnitHeight(CUnit* unit) {
 		return unit->getBottom() - unit->getTop();
 	}
 
-	bool IsInRange(CUnit* source, CUnit* target, uint32 range) {
-		uint16 sourceX = source->position.x;
-		uint16 sourceY = source->position.y;
-		uint16 targetX = target->position.x;
-		uint16 targetY = target->position.y;
+	bool IsInRange(CUnit* source, CUnit* target, u32 range) {
+		u16 sourceX = source->position.x;
+		u16 sourceY = source->position.y;
+		u16 targetX = target->position.x;
+		u16 targetY = target->position.y;
 
-		uint16 horizontalDifference = abs(sourceX - targetX);
-		uint16 verticalDifference = abs(sourceY - targetY);
-		uint16 horizontalRange = range + GetUnitWidth(source) / 2 + GetUnitWidth(target) / 2 + 1;
-		uint16 verticalRange = range + GetUnitHeight(source) / 2 + GetUnitHeight(target) / 2 + 1;
+		u16 horizontalDifference = abs(sourceX - targetX);
+		u16 verticalDifference = abs(sourceY - targetY);
+		u16 horizontalRange = range + GetUnitWidth(source) / 2 + GetUnitWidth(target) / 2 + 1;
+		u16 verticalRange = range + GetUnitHeight(source) / 2 + GetUnitHeight(target) / 2 + 1;
 
 		if (horizontalDifference > horizontalRange
 			|| verticalDifference > verticalRange) {
@@ -193,7 +193,7 @@ namespace hooks {
 	void MeleeAttackHit(CUnit* attacker) {
 		CUnit* target = attacker->orderTarget.unit;
 		if (target != nullptr) {
-			uint8 weaponId;
+			u8 weaponId;
 
 			// Lakizilisks can only attack while burrowed even if
 			// given a melee attack according to this code
@@ -212,8 +212,8 @@ namespace hooks {
 					ephemeralBlades = true;
 				}
 				if (ephemeralBlades) {
-					uint32 damage = helper::getUnitDamageBonus(attacker, weaponId);
-					damage = ((uint16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
+					u32 damage = helper::getUnitDamageBonus(attacker, weaponId);
+					damage = ((u16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
 					target->damageWith(
 						weaponId,
 						damage,
@@ -226,8 +226,8 @@ namespace hooks {
 					helper::attackOverlayAndNotify(attacker, target, weaponId, attacker->currentDirection1); //no damage, but still ask for retaliation
 				}
 			} else {
-				uint32 damage = helper::getUnitDamageBonus(attacker, weaponId);
-				damage = ((uint16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
+				u32 damage = helper::getUnitDamageBonus(attacker, weaponId);
+				damage = ((u16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
 				target->damageWith(
 					weaponId,
 					damage,
@@ -246,23 +246,23 @@ namespace hooks {
 	//In the original code, the parameters are gotten from CBullet as:
 	//attacker from bullet->sourceUnit
 	//x and y from bullet->sprite->position
-	void EMPShockwaveHit(CUnit* attacker, int x, int y, CBullet* bullet) {
+	void EMPShockwaveHit(CUnit* attacker, s32 x, s32 y, CBullet* bullet) {
 		CThingy* emp_sprite = scbw::createThingy(371, x, y, 0);
 		if (emp_sprite != nullptr) {
 			emp_sprite->sprite->elevationLevel = 19; //0x13
 			helper::setThingyVisibilityFlags(emp_sprite);
 		}
-		static uint16* const maxBoxRightValue = (uint16*)0x00628450;	//should usually be mapTileSize->width * 32
-		static uint16* const maxBoxBottomValue = (uint16*)0x006284B4;	//should usually be mapTileSize->height * 32
+		static u16* const maxBoxRightValue = (u16*)0x00628450;	//should usually be mapTileSize->width * 32
+		static u16* const maxBoxBottomValue = (u16*)0x006284B4;	//should usually be mapTileSize->height * 32
 		Box16 area_of_effect;
 		CUnit** unitsInAreaOfEffect;
 		CUnit* current_unit;
 
 		//define the base area of effect
-		area_of_effect.left = (uint16)x - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-		area_of_effect.right = (uint16)x + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-		area_of_effect.top = (uint16)y - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
-		area_of_effect.bottom = (uint16)y + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+		area_of_effect.left = (u16)x - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+		area_of_effect.right = (u16)x + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+		area_of_effect.top = (u16)y - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
+		area_of_effect.bottom = (u16)y + weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
 
 		//check and fix effect if beyond width of map
 		if (area_of_effect.left < 0) {
@@ -313,7 +313,7 @@ namespace hooks {
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
 
-	void CorrosiveAcidHit(uint32 attackingPlayerId, int x, int y, CBullet* bullet) {
+	void CorrosiveAcidHit(u32 attackingPlayerId, s32 x, s32 y, CBullet* bullet) {
 		Box16 coords;
 
 		coords.left = x - 64;
@@ -356,12 +356,12 @@ namespace hooks {
 			helper::getSpellStatString(target, TechId::Consume, attacker->playerId) == 0 //returning a value != 0 means there was an error
 			) {
 			helper::incrementUnitDeathScores(target, attacker->playerId);
-			uint32 power = target->hitPoints;
+			u32 power = target->hitPoints;
 			target->remove();
 
 			if (!(target->status & UnitStatus::IsHallucination)) {
-				uint32 energyMax = attacker->getMaxEnergy();
-				uint32 diff = energyMax - attacker->energy;
+				u32 energyMax = attacker->getMaxEnergy();
+				u32 diff = energyMax - attacker->energy;
 				if (power > diff) {
 					attacker->energy = energyMax;
 					power -= diff;
@@ -375,7 +375,7 @@ namespace hooks {
 
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
-	void EnsnareHit(CUnit* attacker, int x, int y, CBullet* bullet) {
+	void EnsnareHit(CUnit* attacker, s32 x, s32 y, CBullet* bullet) {
 		Box16 coords;
 		CThingy* ensnare_effect_sprite;
 		ensnare_effect_sprite = helper::createThingy(SpriteId::Ensnare, x, y, 0);
@@ -390,7 +390,7 @@ namespace hooks {
 		helper::IterateUnitsAtLocationTargetProc_Ensnare(attacker, &coords);
 	}
 
-	int ensnareProc(CUnit* target, CUnit* attacker) {
+	s32 ensnareProc(CUnit* target, CUnit* attacker) {
 		if (target != attacker
 			&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)
 			&& target->id != UnitId::ZergInfestedTerran) {
@@ -402,7 +402,7 @@ namespace hooks {
 
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
-	void DarkSwarmHit(int x, int y, uint32 attackingPlayerId, CBullet* bullet) {
+	void DarkSwarmHit(s32 x, s32 y, u32 attackingPlayerId, CBullet* bullet) {
 		Point16 coords;
 		CUnit* dark_swarm_unit;
 		coords.x = x;
@@ -435,13 +435,13 @@ namespace hooks {
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
 	void BroodlingHit(CUnit* attacker, CUnit* target, CBullet* bullet) {
-		uint32 broodlings_to_spawn = 3;
+		u32 broodlings_to_spawn = 3;
 		ActiveTile tile = scbw::getActiveTileAt(bullet->sprite->position.x, bullet->sprite->position.y);
 		if (tile.hasCreep || tile.creepReceeding) {
 			broodlings_to_spawn = 5;
 		}
-		int current_x = bullet->sprite->position.x - 2;
-		int current_y = bullet->sprite->position.y - 2;
+		s32 current_x = bullet->sprite->position.x - 2;
+		s32 current_y = bullet->sprite->position.y - 2;
 		while (broodlings_to_spawn > 0) {
 			bool jump_to_end_of_loop = false; //F4A82
 			//check various conditions before attempting to create a broodling
@@ -486,7 +486,7 @@ namespace hooks {
 				} else { //F4A26
 					scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, created_broodling);
 
-					uint32 timerBeforeDisappearance;
+					u32 timerBeforeDisappearance;
 
 					//update various stuff (set hp, set shield...) not finished on createUnit
 					helper::updateUnitStatsFinishBuilding(created_broodling);
@@ -512,7 +512,7 @@ namespace hooks {
 
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
-	void PlagueHit(CUnit* attacker, int x, int y, CBullet* bullet) {
+	void PlagueHit(CUnit* attacker, s32 x, s32 y, CBullet* bullet) {
 		Box16 coords;
 		coords.left = x - 64;
 		coords.bottom = y + 64;
@@ -521,7 +521,7 @@ namespace hooks {
 
 		helper::IterateUnitsAtLocationTargetProc_Plague(attacker, &coords);
 		if (attacker != nullptr) {
-			uint32 range = 64;
+			u32 range = 64;
 			scbw::UnitFinder(
 				x - range,
 				y - range,
@@ -542,7 +542,7 @@ namespace hooks {
 
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
-	void MaelstromHit(CUnit* attacker, int x, int y, CBullet* bullet) {
+	void MaelstromHit(CUnit* attacker, s32 x, s32 y, CBullet* bullet) {
 		Box16 coords;
 		CThingy* maelstrom_effect_sprite = helper::createThingy(SpriteId::Maelstrom_Hit, x, y, 0);
 		if (maelstrom_effect_sprite != nullptr) {
@@ -568,7 +568,7 @@ namespace hooks {
 
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
-	void StasisFieldHit(CUnit* attacker, int x, int y, CBullet* bullet) {
+	void StasisFieldHit(CUnit* attacker, s32 x, s32 y, CBullet* bullet) {
 		Box16 coords;
 		CThingy* stasisfield_effect_sprite = helper::createThingy(SpriteId::Stasis_Field_Hit, x, y, 0);
 		if (stasisfield_effect_sprite != nullptr) {
@@ -584,7 +584,7 @@ namespace hooks {
 
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
-	CUnit* createDisruptionWeb(uint32 attackingPlayerId, int x, int y) {
+	CUnit* createDisruptionWeb(u32 attackingPlayerId, s32 x, s32 y) {
 		Point16 coords;
 		CUnit* disruption_web_unit;
 		coords.x = x;
@@ -612,12 +612,12 @@ namespace hooks {
 		return disruption_web_unit;
 	}
 
-	void DisruptionWebHit(uint32 attackingPlayerId, int x, int y, CBullet* bullet) {
+	void DisruptionWebHit(u32 attackingPlayerId, s32 x, s32 y, CBullet* bullet) {
 		auto unit = createDisruptionWeb(attackingPlayerId, x, y);
 	}
 
-	uint8 stasisFieldOverlay(CUnit* a1, uint8 a2) {
-		uint32 v2;
+	u8 stasisFieldOverlay(CUnit* a1, u8 a2) {
+		u32 v2;
 		unsigned __int8 v3;
 		CUnit* v4;
 		unsigned __int8 v5;
@@ -643,17 +643,17 @@ namespace hooks {
 
 	void createScanner(CUnit* a1) { // 00464E40
 		CUnit* v1; // esi
-		uint16 v2; // ax
+		u16 v2; // ax
 		bool v3; // zf
 		GroupFlag v4; // al
-		uint8 v5; // al
-		int16 v6; // cx
-		int16 v7; // ax
+		u8 v5; // al
+		s16 v6; // cx
+		s16 v7; // ax
 		const char* v8; // eax
-		int16 v9; // cx
+		s16 v9; // cx
 		CUnit* v10; // eax
 		CUnit* v11; // ebx
-		int16 v12; // ax
+		s16 v12; // ax
 		Point16 a2; // [esp+4h] [ebp-4h]
 
 		v1 = a1;
@@ -662,7 +662,7 @@ namespace hooks {
 			v3 = v1->energy >= v2;
 			//			a2 = (Point32)(v1->energy < v2);		// check this out
 			if (!v3) {
-				v4 = units_dat::GroupFlags[(uint16)v1->id];
+				v4 = units_dat::GroupFlags[(u16)v1->id];
 				if (v4.isZerg) {
 					v5 = 0;
 				} else if (v4.isTerran) {
@@ -684,15 +684,15 @@ namespace hooks {
 						} else if (v1->pAI) {
 							helper::orderComputerClear(v1, 0x9Cu);
 						} else {
-							helper::orderComputerClear(v1, units_dat::ReturnToIdleOrder[(uint16)v1->id]);
+							helper::orderComputerClear(v1, units_dat::ReturnToIdleOrder[(u16)v1->id]);
 						}
 						return;
 					}
 				} else {
 					v8 = "";
 				}
-				if ((uint8)v1->playerId == *LOCAL_NATION_ID && *ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
-					helper::setUnitStatTxtErrorMsg((int32)v8);
+				if ((u8)v1->playerId == *LOCAL_NATION_ID && *ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
+					helper::setUnitStatTxtErrorMsg((s32)v8);
 				goto LABEL_15;
 			}
 		}
@@ -700,7 +700,7 @@ namespace hooks {
 		a2.y = v1->orderTarget.pt.y;
 		a2.x = v9;
 		helper::fixTargetLocation(&a2, UnitId::Spell_ScannerSweep);
-		v10 = helper::createUnit(0x21u, a2.x, a2.y, (uint8)v1->playerId);
+		v10 = helper::createUnit(0x21u, a2.x, a2.y, (u8)v1->playerId);
 		v11 = v10;
 		if (v10) {
 			helper::updateUnitStatsFinishBuilding(v10);

@@ -66,7 +66,7 @@ namespace {
 
 	void __declspec(naked) CMDRECV_CancelTrainWrapper() {
 
-		static uint16 wUnitID;
+		static u16 wUnitID;
 
 		__asm {
 			PUSH EBP

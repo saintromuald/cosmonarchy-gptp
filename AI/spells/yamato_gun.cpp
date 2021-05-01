@@ -19,7 +19,7 @@ namespace AI {
 			if (scbw::isZergEggNew(target))
 				return false;
 
-			const int targetLife = target->getCurrentLifeInGame();
+			const s32 targetLife = target->getCurrentLifeInGame();
 			if (200 <= targetLife && targetLife <= 450
 				&& !(units_dat::BaseProperty[target->id] & UnitProperty::Hero))
 				return true;
@@ -28,7 +28,7 @@ namespace AI {
 		};
 
 		if (isUnderAttack) {
-			int bounds = 32 * 16;
+			s32 bounds = 32 * 16;
 			return scbw::UnitFinder::getNearestTarget(
 				caster->getX() - bounds,
 				caster->getY() - bounds,

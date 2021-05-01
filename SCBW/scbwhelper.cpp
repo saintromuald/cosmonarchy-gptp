@@ -5,9 +5,9 @@
 
 namespace helper {
 
-	bool HasMoneyCanMake(CUnit* builder, uint32 unitToBuild) {
-		const uint32 Func_HasMoneyCanMake = 0x00467250;
-		static bool32 bPreResult;
+	bool HasMoneyCanMake(CUnit* builder, u32 unitToBuild) {
+		const u32 Func_HasMoneyCanMake = 0x00467250;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			PUSH unitToBuild
@@ -21,8 +21,8 @@ namespace helper {
 
 	// For loadRaceUI
 
-	void getRaceSoundList(int8 a1) {
-		const uint32 Func_getRaceSoundList = 0x0048FB40;
+	void getRaceSoundList(s8 a1) {
+		const u32 Func_getRaceSoundList = 0x0048FB40;
 		__asm {
 			PUSHAD
 			PUSH a1
@@ -31,9 +31,9 @@ namespace helper {
 		}
 	}
 
-	int32 dialogGrpConstruct(int32 a1, int32 a2, int32 a3, int32(__fastcall* a4)(int32, int32, int32, int32)) {
-		const uint32 Func_dialogGrpConstruct = 0x004197B0;
-		static int32 result;
+	s32 dialogGrpConstruct(s32 a1, s32 a2, s32 a3, s32(__fastcall* a4)(s32, s32, s32, s32)) {
+		const u32 Func_dialogGrpConstruct = 0x004197B0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a4
@@ -47,8 +47,8 @@ namespace helper {
 		return result;
 	}
 
-	void loadGraphic(int8 a1, int32 a2, int32 a3, int8 a4, int32 a5) {
-		const uint32 Func_loadGraphic = 0x004D2B30;
+	void loadGraphic(s8 a1, s32 a2, s32 a3, s8 a4, s32 a5) {
+		const u32 Func_loadGraphic = 0x004D2B30;
 		__asm {
 			PUSHAD
 			PUSH a5
@@ -61,9 +61,9 @@ namespace helper {
 		}
 	}
 
-	int randFunc() {
-		const uint32 Func_randFunc = 0x0040C7BD;
-		static int result;
+	s32 randFunc() {
+		const u32 Func_randFunc = 0x0040C7BD;
+		static s32 result;
 		__asm {
 			PUSHAD
 			CALL Func_randFunc
@@ -74,8 +74,8 @@ namespace helper {
 	}
 
 	bool unitHPbelow33_percent(CUnit* a1) {
-		const uint32 Func_unitHPBelow33Percent = 0x004022C0;
-		static int result;
+		const u32 Func_unitHPBelow33Percent = 0x004022C0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, a1
@@ -86,9 +86,9 @@ namespace helper {
 		return (bool)result;
 	}
 
-	bool unitHPbetween33_66_percent(int32 a1, CUnit* a2) {
-		const uint32 Func_unitHPBetween33_66Percent = 0x00402270;
-		static int32 result;
+	bool unitHPbetween33_66_percent(s32 a1, CUnit* a2) {
+		const u32 Func_unitHPBetween33_66Percent = 0x00402270;
+		static s32 result;
 
 		__asm {
 			PUSHAD
@@ -101,9 +101,9 @@ namespace helper {
 		return (bool)result;
 	}
 
-	int32 getMaxHP(CUnit* a1) {
-		const uint32 Func_getMaxHP = 0x00401400;
-		static int32 result;
+	s32 getMaxHP(CUnit* a1) {
+		const u32 Func_getMaxHP = 0x00401400;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, a1
@@ -114,9 +114,9 @@ namespace helper {
 		return result;
 	}
 
-	uint16 getLastQueueSlotType(CUnit* a1) {
-		const uint32 Func_getLastQueueSlotType = 0x0047B270;
-		static int result;
+	u16 getLastQueueSlotType(CUnit* a1) {
+		const u32 Func_getLastQueueSlotType = 0x0047B270;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EDX, a1
@@ -124,12 +124,12 @@ namespace helper {
 			MOV result, EAX
 			POPAD
 		}
-		return (uint16)result;
+		return (u16)result;
 	}
 
-	void addTextToDialog(int32 a1, int16 a2, const char* a3) {
-		const uint32 Func_addTextToDialog = 0x004258B0;
-		static int32 _a3 = (int)a3;
+	void addTextToDialog(s32 a1, s16 a2, const char* a3) {
+		const u32 Func_addTextToDialog = 0x004258B0;
+		static s32 _a3 = (s32)a3;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -140,8 +140,8 @@ namespace helper {
 		}
 	}
 
-	void drawEnergy(int32 a1) {
-		const uint32 Func_drawEnergy = 0x00425A30;
+	void drawEnergy(s32 a1) {
+		const u32 Func_drawEnergy = 0x00425A30;
 		__asm {
 			PUSHAD
 			MOV EBX, a1
@@ -151,7 +151,7 @@ namespace helper {
 	}
 
 	void hideOptionalStatusScreenControls(BinDlg* a1) {
-		const uint32 Func_hideOptionalStatusScreenControls = 0x00457310;
+		const u32 Func_hideOptionalStatusScreenControls = 0x00457310;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -160,8 +160,8 @@ namespace helper {
 		}
 	}
 
-	void showControlGroup(BinDlg* a1, int16 a2, int16 a3) {
-		const uint32 Func_showControlGroup = 0x00457250;
+	void showControlGroup(BinDlg* a1, s16 a2, s16 a3) {
+		const u32 Func_showControlGroup = 0x00457250;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -172,8 +172,8 @@ namespace helper {
 		}
 	}
 
-	void addTextToDialog(int a1, int16 a2, int a3) {
-		const uint32 Func_addTextToDialog = 0x004258B0;
+	void addTextToDialog(s32 a1, s16 a2, s32 a3) {
+		const u32 Func_addTextToDialog = 0x004258B0;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -184,8 +184,8 @@ namespace helper {
 		}
 	}
 
-	void drawShieldUpgrade(int a1, uint16 a2) {
-		const uint32 Func_drawShieldUpgrade = 0x00425510;
+	void drawShieldUpgrade(s32 a1, u16 a2) {
+		const u32 Func_drawShieldUpgrade = 0x00425510;
 		__asm {
 			PUSHAD
 			PUSH a2
@@ -196,7 +196,7 @@ namespace helper {
 	}
 
 	void hideDialog(BinDlg* a1) {
-		const uint32 Func_hideDialog = 0x00418700;
+		const u32 Func_hideDialog = 0x00418700;
 		__asm {
 			PUSHAD
 			MOV ESI, a1
@@ -207,9 +207,9 @@ namespace helper {
 
 	// For drawSupplyUnitInfo
 
-	int getSuppliesUsed() {
-		const uint32 Func_getSuppliesUsed = 0x00424732;
-		static int result;
+	s32 getSuppliesUsed() {
+		const u32 Func_getSuppliesUsed = 0x00424732;
+		static s32 result;
 		__asm {
 			PUSHAD
 			CALL Func_getSuppliesUsed
@@ -219,9 +219,9 @@ namespace helper {
 		return result;
 	}
 
-	uint32 getSuppliesAvailable(uint8 a1, int a2) {
-		const uint32 Func_getSuppliesAvailable = 0x00488900;
-		static uint32 result;
+	u32 getSuppliesAvailable(u8 a1, s32 a2) {
+		const u32 Func_getSuppliesAvailable = 0x00488900;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOVZX AL, a1
@@ -233,8 +233,8 @@ namespace helper {
 		return result;
 	}
 
-	void drawArmor(int a1, int a2, uint16 a3) {
-		const uint32 Func_drawArmor = 0x00425600;
+	void drawArmor(s32 a1, s32 a2, u16 a3) {
+		const u32 Func_drawArmor = 0x00425600;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -246,7 +246,7 @@ namespace helper {
 	}
 
 	void unitStatAct_Standard(void* a1) {
-		const uint32 Func_unitStatAct_Standard = 0x00426F50;
+		const u32 Func_unitStatAct_Standard = 0x00426F50;
 		__asm {
 			PUSHAD
 			MOV ECX, a1
@@ -258,8 +258,8 @@ namespace helper {
 	// For AI_TargetEnemyProc
 
 	bool AI_UnitCanAttack(CUnit* a1) {
-		const uint32 Func_AI_UnitCanAttack = 0x00476180;
-		static int result;
+		const u32 Func_AI_UnitCanAttack = 0x00476180;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, a1
@@ -272,9 +272,9 @@ namespace helper {
 
 	// For drawBuildingInfo
 
-	int needRedrawUI() {
-		const uint32 Func_needRedrawUI = 0x00424A10;
-		static int result;
+	s32 needRedrawUI() {
+		const u32 Func_needRedrawUI = 0x00424A10;
+		static s32 result;
 		__asm {
 			PUSHAD
 			CALL Func_needRedrawUI
@@ -285,7 +285,7 @@ namespace helper {
 	}
 
 	CUnit* genericStatusUpdateDrawnValues() {
-		const uint32 Func_genericStatusUpdateDrawnValues = 0x004248F0;
+		const u32 Func_genericStatusUpdateDrawnValues = 0x004248F0;
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -296,8 +296,8 @@ namespace helper {
 		return result;
 	}
 
-	void drawProgressBar(int a1) {
-		const uint32 Func_drawProgressBar = 0x004260C0;
+	void drawProgressBar(s32 a1) {
+		const u32 Func_drawProgressBar = 0x004260C0;
 		__asm {
 			PUSHAD
 			MOV EDI, a1
@@ -306,8 +306,8 @@ namespace helper {
 		}
 	}
 
-	void drawNukeSiloInfo(int a1) {
-		const uint32 Func_drawNukeSiloInfo = 0x00426FF0;
+	void drawNukeSiloInfo(s32 a1) {
+		const u32 Func_drawNukeSiloInfo = 0x00426FF0;
 		__asm {
 			PUSHAD
 			PUSH a1
@@ -326,9 +326,9 @@ namespace helper {
 		return result;
 	}
 
-	bool isQueueSlotActive(CUnit* a1, int a2) {
-		const uint32 Func_isQueueSlotActive = 0x00401E70;
-		static int result;
+	bool isQueueSlotActive(CUnit* a1, s32 a2) {
+		const u32 Func_isQueueSlotActive = 0x00401E70;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, a1
@@ -341,7 +341,7 @@ namespace helper {
 	}
 
 	void drawTrainingProgress(BinDlg* a1) {
-		const uint32 Func_drawTrainingProgress = 0x004268D0;
+		const u32 Func_drawTrainingProgress = 0x004268D0;
 		__asm {
 			PUSHAD
 			PUSH a1
@@ -351,8 +351,8 @@ namespace helper {
 	}
 
 	bool isConstructingAddon(const CUnit* a1) {
-		const uint32 Func_isConstructingAddon = 0x004E66B0;
-		static int result;
+		const u32 Func_isConstructingAddon = 0x004E66B0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -364,8 +364,8 @@ namespace helper {
 	}
 
 	bool isAttemptingProtossBuild(CUnit* a1) {
-		const uint32 Func_isAttemptingProtossBuild = 0x004E4C40;
-		static int result;
+		const u32 Func_isAttemptingProtossBuild = 0x004E4C40;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -376,8 +376,8 @@ namespace helper {
 		return (bool)result;
 	}
 
-	void drawAddonProgress(int a1) {
-		const uint32 Func_drawAddonProgress = 0x00425F30;
+	void drawAddonProgress(s32 a1) {
+		const u32 Func_drawAddonProgress = 0x00425F30;
 		__asm {
 			PUSHAD
 			MOV EDI, a1
@@ -386,8 +386,8 @@ namespace helper {
 		}
 	}
 
-	void drawTechProgress(int a1) {
-		const uint32 Func_drawTechProgress = 0x004266F0;
+	void drawTechProgress(s32 a1) {
+		const u32 Func_drawTechProgress = 0x004266F0;
 		__asm {
 			PUSHAD
 			PUSH a1
@@ -397,7 +397,7 @@ namespace helper {
 	}
 
 	void drawUpgradeProgress(BinDlg* a1) {
-		const uint32 Func_drawUpgradeProgress = 0x00426500;
+		const u32 Func_drawUpgradeProgress = 0x00426500;
 		__asm {
 			PUSHAD
 			PUSH a1
@@ -407,8 +407,8 @@ namespace helper {
 	}
 
 	bool unitIsGeyser(CUnit* a1) {
-		const uint32 Func_unitIsGeyser = 0x004688B0;
-		static int result;
+		const u32 Func_unitIsGeyser = 0x004688B0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -420,7 +420,7 @@ namespace helper {
 	}
 
 	void drawGasQuantity(BinDlg* a1) {
-		const uint32 Func_drawGasQuantity = 0x00426190;
+		const u32 Func_drawGasQuantity = 0x00426190;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -429,9 +429,9 @@ namespace helper {
 		}
 	}
 
-	int8 unitGetGroundWeapon(CUnit* a1) {
-		const uint32 Func_unitGetGroundWeapon = 0x00475AD0;
-		static int result;
+	s8 unitGetGroundWeapon(CUnit* a1) {
+		const u32 Func_unitGetGroundWeapon = 0x00475AD0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, a1
@@ -439,11 +439,11 @@ namespace helper {
 			MOV result, EAX
 			POPAD
 		}
-		return (int8)result;
+		return (s8)result;
 	}
 
-	void drawDisplayButtons(int a1) {
-		const uint32 Func_drawDisplayButtons = 0x00426C60;
+	void drawDisplayButtons(s32 a1) {
+		const u32 Func_drawDisplayButtons = 0x00426C60;
 		__asm {
 			PUSHAD
 			PUSH a1
@@ -452,8 +452,8 @@ namespace helper {
 		}
 	}
 
-	BinDlg* getControlFromIndex(BinDlg* a1, int16 a2) {
-		const uint32 Func_getControlFromIndex = 0x00418080;
+	BinDlg* getControlFromIndex(BinDlg* a1, s16 a2) {
+		const u32 Func_getControlFromIndex = 0x00418080;
 		static BinDlg* result;
 		__asm {
 			PUSHAD
@@ -466,8 +466,8 @@ namespace helper {
 		return result;
 	}
 
-	void setTextStr(int a1) {
-		const uint32 Func_setTextStr = 0x004263E0;
+	void setTextStr(s32 a1) {
+		const u32 Func_setTextStr = 0x004263E0;
 		__asm {
 			PUSHAD
 			PUSH a1
@@ -476,8 +476,8 @@ namespace helper {
 		}
 	}
 
-	void setUnitStatusStrText(int a1) {
-		const uint32 Func_setUnitStatusStrText = 0x00425B50;
+	void setUnitStatusStrText(s32 a1) {
+		const u32 Func_setUnitStatusStrText = 0x00425B50;
 		__asm {
 			PUSHAD
 			PUSH a1
@@ -486,9 +486,9 @@ namespace helper {
 		}
 	}
 
-	int unitGetName(CUnit* a1) {
-		const uint32 Func_unitGetName = 0x0047B5A0;
-		static int result;
+	s32 unitGetName(CUnit* a1) {
+		const u32 Func_unitGetName = 0x0047B5A0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, a1
@@ -501,9 +501,9 @@ namespace helper {
 
 	// For getUnitStrength
 
-	int getCurrentHitPointsPlusShields(CUnit* a1) {
-		const uint32 Func_getCurrentHitPointsPlusShields = 0x004026D0;
-		static int result;
+	s32 getCurrentHitPointsPlusShields(CUnit* a1) {
+		const u32 Func_getCurrentHitPointsPlusShields = 0x004026D0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -514,9 +514,9 @@ namespace helper {
 		return result;
 	}
 
-	int getBaseStrength(int a1, CUnit* a2) {
-		const uint32 Func_getBaseStrength = 0x004316D0;
-		static int result;
+	s32 getBaseStrength(s32 a1, CUnit* a2) {
+		const u32 Func_getBaseStrength = 0x004316D0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -530,9 +530,9 @@ namespace helper {
 
 	// For AI_RestorationRequirementsProc
 
-	int canWeaponTargetUnit(uint8 a1, CUnit* a2, CUnit* a3) {
-		const uint32 Func_canWeaponTargetUnit = 0x00475CE0;
-		static int result;
+	s32 canWeaponTargetUnit(u8 a1, CUnit* a2, CUnit* a3) {
+		const u32 Func_canWeaponTargetUnit = 0x00475CE0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV AL, a1
@@ -547,9 +547,9 @@ namespace helper {
 
 	// For AI_EMPShieldRequirementsProc
 
-	int32 AI_TargetUnitIsWorthHitting(CUnit* a1, CUnit* a2) {
-		const uint32 Func_AI_TargetUnitIsWorthHitting = 0x00440E30;
-		static int32 result;
+	s32 AI_TargetUnitIsWorthHitting(CUnit* a1, CUnit* a2) {
+		const u32 Func_AI_TargetUnitIsWorthHitting = 0x00440E30;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -561,9 +561,9 @@ namespace helper {
 		return result;
 	}
 
-	int createSplashWeaponProc(int16 a1, int16 a2, int16 a3, int(__fastcall* a4)(int, int), int a5) {
-		const uint32 Func_createSplashWeaponProc = 0x004E82E0;
-		static int result;
+	s32 createSplashWeaponProc(s16 a1, s16 a2, s16 a3, s32(__fastcall* a4)(s32, s32), s32 a5) {
+		const u32 Func_createSplashWeaponProc = 0x004E82E0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a5
@@ -578,9 +578,9 @@ namespace helper {
 		return result;
 	}
 
-	int unitShieldsClumpInAreaAccumulatorProc(CUnit* a1, CUnit* a2) {
-		const uint32 Func_unitShieldsClumpInAreaAccumulatorProc = 0x00440A60;
-		static int result;
+	s32 unitShieldsClumpInAreaAccumulatorProc(CUnit* a1, CUnit* a2) {
+		const u32 Func_unitShieldsClumpInAreaAccumulatorProc = 0x00440A60;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, a1
@@ -594,8 +594,8 @@ namespace helper {
 
 	// For hallucinationHit
 
-	void unitWasHit(CUnit* a1, CUnit* a2, int a3) {
-		const uint32 Func_unitWasHit = 0x004795D0;
+	void unitWasHit(CUnit* a1, CUnit* a2, s32 a3) {
+		const u32 Func_unitWasHit = 0x004795D0;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -607,7 +607,7 @@ namespace helper {
 	}
 
 	void doAttackNotifyEvent(CUnit* a1) {
-		const uint32 Func_doAttackNotifyEvent = 0x0048F230;
+		const u32 Func_doAttackNotifyEvent = 0x0048F230;
 		__asm {
 			PUSHAD
 			PUSH a1
@@ -616,8 +616,8 @@ namespace helper {
 		}
 	}
 
-	CImage* createShieldOverlay(int a1, CUnit* a2) {
-		const uint32 Func_createShieldOverlay = 0x004E6140;
+	CImage* createShieldOverlay(s32 a1, CUnit* a2) {
+		const u32 Func_createShieldOverlay = 0x004E6140;
 		static CImage* result;
 		__asm {
 			PUSHAD
@@ -632,9 +632,9 @@ namespace helper {
 
 	// For drawImageHPBar
 
-	int unk_billions(int a1, int32 a2, int a3, int a4) {
-		const uint32 Func_unk_billions = 0x0047A750;
-		static int result;
+	s32 unk_billions(s32 a1, s32 a2, s32 a3, s32 a4) {
+		const u32 Func_unk_billions = 0x0047A750;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a4
@@ -648,9 +648,9 @@ namespace helper {
 		return result;
 	}
 
-	int unk_billions2(int a1, int32 a2, int a3, int a4) {
-		const uint32 Func_unk_billions2 = 0x0047A6E0;
-		static int result;
+	s32 unk_billions2(s32 a1, s32 a2, s32 a3, s32 a4) {
+		const u32 Func_unk_billions2 = 0x0047A6E0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a4
@@ -664,9 +664,9 @@ namespace helper {
 		return result;
 	}
 
-	int hpBarSurfaceBuffer(int a1, int a2, int* a3, int a4, int a5) {
-		const uint32 Func_hpBarSurfaceBuffer = 0x0047A350;
-		static int result;
+	s32 hpBarSurfaceBuffer(s32 a1, s32 a2, s32* a3, s32 a4, s32 a5) {
+		const u32 Func_hpBarSurfaceBuffer = 0x0047A350;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a5
@@ -681,9 +681,9 @@ namespace helper {
 		return result;
 	}
 
-	int hpBarSurfaceBuffer2(int a1, int a2, uint16 a3, int a4) {
-		const uint32 Func_hpBarSurfaceBuffer2 = 0x0047A120;
-		static int result;
+	s32 hpBarSurfaceBuffer2(s32 a1, s32 a2, u16 a3, s32 a4) {
+		const u32 Func_hpBarSurfaceBuffer2 = 0x0047A120;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a4
@@ -697,9 +697,9 @@ namespace helper {
 		return result;
 	}
 
-	int renderHPBar(int a1, int a2, int* a3, int a4, int a5) {
-		const uint32 Func_renderHPBar = 0x0047A4E0;
-		static int result;
+	s32 renderHPBar(s32 a1, s32 a2, s32* a3, s32 a4, s32 a5) {
+		const u32 Func_renderHPBar = 0x0047A4E0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a5
@@ -714,9 +714,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 getUnitMaxEnergy(CUnit* a1) {
-		const uint32 Func_getUnitMaxEnergy = 0x00491870;
-		static int32 result;
+	s32 getUnitMaxEnergy(CUnit* a1) {
+		const u32 Func_getUnitMaxEnergy = 0x00491870;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -727,9 +727,9 @@ namespace helper {
 		return result;
 	}
 
-	int getHpBarDrawSizes(int a1, int32 a2, int a3, int a4) {
-		const uint32 Func_getHpBarDrawSizes = 0x0047A670;
-		static int result;
+	s32 getHpBarDrawSizes(s32 a1, s32 a2, s32 a3, s32 a4) {
+		const u32 Func_getHpBarDrawSizes = 0x0047A670;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a4
@@ -746,8 +746,8 @@ namespace helper {
 	// For canCastSpell
 
 	bool unitIsFrozen(CUnit* a1) {
-		const uint32 Func_unitIsFrozen = 0x004020B0;
-		static int result;
+		const u32 Func_unitIsFrozen = 0x004020B0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -759,8 +759,8 @@ namespace helper {
 	}
 
 	bool isUnitCasterNotHallucination(CUnit* a1) {
-		const uint32 Func_isUnitCasterNotHallucination = 0x00401210;
-		static int result;
+		const u32 Func_isUnitCasterNotHallucination = 0x00401210;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -771,9 +771,9 @@ namespace helper {
 		return (bool)result;
 	}
 
-	bool getActiveTileFlag(int16 a1, int16 a2, int a3, int a4) {
-		const uint32 Func_getActiveTileFlag = 0x00472F80;
-		static int result;
+	bool getActiveTileFlag(s16 a1, s16 a2, s32 a3, s32 a4) {
+		const u32 Func_getActiveTileFlag = 0x00472F80;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a4
@@ -787,8 +787,8 @@ namespace helper {
 		return (bool)result;
 	}
 
-	CUnit* getTargetUnitAbilityErrorStatString(CUnit* a1, char a2, int a3) {
-		const uint32 Func_getTargetUnitAbilityErrorStatString = 0x00491E80;
+	CUnit* getTargetUnitAbilityErrorStatString(CUnit* a1, char a2, s32 a3) {
+		const u32 Func_getTargetUnitAbilityErrorStatString = 0x00491E80;
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -804,9 +804,9 @@ namespace helper {
 
 	// For modifyUnitShields
 
-	int SErrSetLastError(char a1) {
-		const uint32 Func_SErrSetLastError = 0x00410172;
-		static int result;
+	s32 SErrSetLastError(char a1) {
+		const u32 Func_SErrSetLastError = 0x00410172;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a1
@@ -818,7 +818,7 @@ namespace helper {
 	}
 
 	void updateImageDrawData(CImage* a1) {
-		const uint32 Func_updateImageDrawData = 0x004D57B0;
+		const u32 Func_updateImageDrawData = 0x004D57B0;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -828,8 +828,8 @@ namespace helper {
 	}
 
 
-	const uint32 CreateHealthBar_function = 0x004D6420;
-	CImage* CreateHealthBar(int a1, CSprite* a2) {
+	const u32 CreateHealthBar_function = 0x004D6420;
+	CImage* CreateHealthBar(s32 a1, CSprite* a2) {
 		static CImage* result;
 		_asm {
 			PUSHAD
@@ -842,7 +842,7 @@ namespace helper {
 		return result;
 	}
 
-	const uint32 RemoveHPBar_function = 0x004D5030;
+	const u32 RemoveHPBar_function = 0x004D5030;
 	void RemoveHPBar(CImage* a1) {
 		_asm {
 			PUSHAD
@@ -852,8 +852,8 @@ namespace helper {
 		}
 	}
 
-	const uint32 playImageIscript_function = 0x004D8470;
-	void playImageIscript(CImage* img, uint8 iscriptAnim) {
+	const u32 playImageIscript_function = 0x004D8470;
+	void playImageIscript(CImage* img, u8 iscriptAnim) {
 		_asm {
 			PUSHAD
 			PUSH iscriptAnim
@@ -864,8 +864,8 @@ namespace helper {
 	}
 
 	bool canEnterTransport(CUnit* a1, CUnit* a2) {
-		const uint32 Func_canEnterTransport = 0x004E6E00;
-		static int result;
+		const u32 Func_canEnterTransport = 0x004E6E00;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a2
@@ -877,9 +877,9 @@ namespace helper {
 		return (bool)result;
 	}
 
-	int16 SAI_GetRegionIdFromPxEx(int32 a1, int32 a2) {
-		const uint32 Func_SAI_GetRegionIdFromPxEx = 0x0049C9F0;
-		static int32 result;
+	s16 SAI_GetRegionIdFromPxEx(s32 a1, s32 a2) {
+		const u32 Func_SAI_GetRegionIdFromPxEx = 0x0049C9F0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EDI, a1
@@ -888,12 +888,12 @@ namespace helper {
 			MOV result, EAX
 			POPAD
 		}
-		return (int16)result;
+		return (s16)result;
 	}
 
-	int32 getUnitDistanceToHalt(int a1, CUnit* a2, int a3) {
-		const uint32 Func_getUnitDistanceToHalt = 0x00402140;
-		static int32 result;
+	s32 getUnitDistanceToHalt(s32 a1, CUnit* a2, s32 a3) {
+		const u32 Func_getUnitDistanceToHalt = 0x00402140;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -908,9 +908,9 @@ namespace helper {
 
 	// For mapDataTransfer
 
-	int32 dataTransfer00(int a1, char a2, int a3) {
-		const uint32 Func_dataTransfer00 = 0x00472A00;
-		static int32 result;
+	s32 dataTransfer00(s32 a1, char a2, s32 a3) {
+		const u32 Func_dataTransfer00 = 0x00472A00;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -923,9 +923,9 @@ namespace helper {
 		return result;
 	}
 
-	int dataTransfer01(uint32 a1, int a2, uint32 a3) {
-		const uint32 Func_dataTransfer01 = 0x0045A600;
-		static int result;
+	s32 dataTransfer01(u32 a1, s32 a2, u32 a3) {
+		const u32 Func_dataTransfer01 = 0x0045A600;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -938,9 +938,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 dataTransfer02(int a1, int a2, char a3) {
-		const uint32 Func_dataTransfer02 = 0x0045A230;
-		static int32 result;
+	s32 dataTransfer02(s32 a1, s32 a2, char a3) {
+		const u32 Func_dataTransfer02 = 0x0045A230;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -953,9 +953,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 dataTransfer03(int a1, char a2, int a3) {
-		const uint32 Func_dataTransfer03 = 0x0045A1F0;
-		static int32 result;
+	s32 dataTransfer03(s32 a1, char a2, s32 a3) {
+		const u32 Func_dataTransfer03 = 0x0045A1F0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -968,9 +968,9 @@ namespace helper {
 		return result;
 	}
 
-	int dataTransfer04(uint32 a1, int a2, int a3) {
-		const uint32 Func_dataTransfer04 = 0x0045A390;
-		static int result;
+	s32 dataTransfer04(u32 a1, s32 a2, s32 a3) {
+		const u32 Func_dataTransfer04 = 0x0045A390;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -983,9 +983,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 dataTransfer05(int a1, int a2) {
-		const uint32 Func_dataTransfer05 = 0x0045A190;
-		static int32 result;
+	s32 dataTransfer05(s32 a1, s32 a2) {
+		const u32 Func_dataTransfer05 = 0x0045A190;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -998,7 +998,7 @@ namespace helper {
 	}
 
 	vectorHead* vectorTransfer(char a1, char a2) {
-		const uint32 Func_vectorTransfer = 0x0045A010;
+		const u32 Func_vectorTransfer = 0x0045A010;
 		static vectorHead* result;
 		__asm {
 			PUSHAD
@@ -1011,9 +1011,9 @@ namespace helper {
 		return result;
 	}
 
-	int dataTransfer06(int a1) {
-		const uint32 Func_dataTransfer06 = 0x00472900;
-		static int result;
+	s32 dataTransfer06(s32 a1) {
+		const u32 Func_dataTransfer06 = 0x00472900;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -1026,9 +1026,9 @@ namespace helper {
 
 	// For getRandYesSFX
 
-	int randGetSFXBetween(int a1, int a2) {
-		const uint32 Func_randGetSFXBetween = 0x0048E940;
-		static int result;
+	s32 randGetSFXBetween(s32 a1, s32 a2) {
+		const u32 Func_randGetSFXBetween = 0x0048E940;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EDI, a1
@@ -1044,8 +1044,8 @@ namespace helper {
 	// for AI_TrainUnit
 
 	char AI_TrainingWorker(CUnit* result, CUnit* parent) {
-		const uint32 Func_AI_TrainingWorker = 0x00435700;
-		static int32 resultFunc;
+		const u32 Func_AI_TrainingWorker = 0x00435700;
+		static s32 resultFunc;
 		__asm {
 			PUSHAD
 			MOV EAX, result
@@ -1058,7 +1058,7 @@ namespace helper {
 	}
 
 	void AI_TrainingOverlord(CUnit* result, CUnit* parent) {
-		const uint32 Func_AI_TrainingOverlord = 0x00435770;
+		const u32 Func_AI_TrainingOverlord = 0x00435770;
 		__asm {
 			PUSHAD
 			MOV EAX, result
@@ -1069,7 +1069,7 @@ namespace helper {
 	}
 
 	void AI_TrainingNormal(CUnit* result, CUnit* parent) {
-		const uint32 Func_AI_TrainingNormal = 0x00435DB0;
+		const u32 Func_AI_TrainingNormal = 0x00435DB0;
 		__asm {
 			PUSHAD
 			MOV EAX, result
@@ -1079,8 +1079,8 @@ namespace helper {
 		}
 	}
 
-	void AI_OrderToDestination(CUnit* unit, int orderId, int x, int y) {
-		const uint32 Func_AI_OrderToDestination = 0x0043D5D0;
+	void AI_OrderToDestination(CUnit* unit, s32 orderId, s32 x, s32 y) {
+		const u32 Func_AI_OrderToDestination = 0x0043D5D0;
 		__asm {
 			PUSHAD
 			PUSH y
@@ -1093,7 +1093,7 @@ namespace helper {
 	}
 
 	void AI_AssignCaptainToSlowestUnit(AiCaptain* region) {
-		const uint32 Func_AI_AssignCaptainToSlowestUnit = 0x00436F70;
+		const u32 Func_AI_AssignCaptainToSlowestUnit = 0x00436F70;
 		__asm {
 			PUSHAD
 			PUSH region
@@ -1104,8 +1104,8 @@ namespace helper {
 
 	// for AI_CreateNuke
 
-	CUnit* createUnit(int16 unitType, int32 x, int32 y, int32 playerId) {
-		const uint32 Func_createUnit = 0x004A09D0;
+	CUnit* createUnit(s16 unitType, s32 x, s32 y, s32 playerId) {
+		const u32 Func_createUnit = 0x004A09D0;
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -1121,7 +1121,7 @@ namespace helper {
 	}
 
 	void updateUnitStatsFinishBuilding(CUnit* unit) {
-		const uint32 Func_updateUnitStatsFinishBuilding = 0x004A01F0;
+		const u32 Func_updateUnitStatsFinishBuilding = 0x004A01F0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -1130,9 +1130,9 @@ namespace helper {
 		}
 	}
 
-	uint32 updateUnitStrengthAndApplyDefaultOrders(CUnit* unit) {
-		const uint32 Func_updateUnitStrengthAndApplyDefaultOrders = 0x0049FA40;
-		static uint32 result;
+	u32 updateUnitStrengthAndApplyDefaultOrders(CUnit* unit) {
+		const u32 Func_updateUnitStrengthAndApplyDefaultOrders = 0x0049FA40;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -1144,7 +1144,7 @@ namespace helper {
 	}
 
 	void hideUnit(CUnit* unit) {
-		const uint32 Func_hideUnit = 0x004E6340;
+		const u32 Func_hideUnit = 0x004E6340;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -1155,8 +1155,8 @@ namespace helper {
 
 	// for AI_TrainingBroodling
 
-	void AI_AssignMilitary(int32 regionType, AiCaptain* region) {
-		const uint32 Func_AI_AssignMilitary = 0x004390A0;
+	void AI_AssignMilitary(s32 regionType, AiCaptain* region) {
+		const u32 Func_AI_AssignMilitary = 0x004390A0;
 		__asm {
 			PUSHAD
 			MOV EBX, regionType
@@ -1166,8 +1166,8 @@ namespace helper {
 		}
 	}
 
-	void AI_AddMilitary(AiCaptain* region, CUnit* unit, int32 always_this_region) {
-		const uint32 Func_AI_AddMilitary = 0x0043DA20;
+	void AI_AddMilitary(AiCaptain* region, CUnit* unit, s32 always_this_region) {
+		const u32 Func_AI_AddMilitary = 0x0043DA20;
 		__asm {
 			PUSHAD
 			PUSH always_this_region
@@ -1181,7 +1181,7 @@ namespace helper {
 	// for AI_AddUnitAi
 
 	UnitAi* AI_CreateBuildingAi(BuildingAiArray* buildingAI) {
-		const uint32 Func_AI_CreateBuildingAi = 0x004044C0;
+		const u32 Func_AI_CreateBuildingAi = 0x004044C0;
 		static UnitAi* result;
 		__asm {
 			PUSHAD
@@ -1193,8 +1193,8 @@ namespace helper {
 		return result;
 	}
 
-	void orderComputerClear(CUnit* unit, uint8 orderId) {
-		const uint32 Func_orderComputerClear = 0x00475310;
+	void orderComputerClear(CUnit* unit, u8 orderId) {
+		const u32 Func_orderComputerClear = 0x00475310;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -1205,7 +1205,7 @@ namespace helper {
 	}
 
 	CUnit* setSecondaryOrder(CUnit* result, char orderId) {
-		const uint32 Func_setSecondaryOrder = 0x004743D0;
+		const u32 Func_setSecondaryOrder = 0x004743D0;
 		static CUnit* result2;
 		__asm {
 			PUSHAD
@@ -1218,8 +1218,8 @@ namespace helper {
 		return result2;
 	}
 
-	void AI_MakeGuard(int32 playerId, CUnit* unit) {
-		const uint32 Func_AI_MakeGuard = 0x0043A010;
+	void AI_MakeGuard(s32 playerId, CUnit* unit) {
+		const u32 Func_AI_MakeGuard = 0x0043A010;
 		__asm {
 			PUSHAD
 			PUSH unit
@@ -1230,8 +1230,8 @@ namespace helper {
 	}
 
 	bool unitIsActiveResourceDepot(CUnit* unit) {
-		const uint32 Func_unitIsActiveResourceDepot = 0x00401CF0;
-		static int32 result;
+		const u32 Func_unitIsActiveResourceDepot = 0x00401CF0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EDX, unit
@@ -1242,9 +1242,9 @@ namespace helper {
 		return (bool)result;
 	}
 
-	int32 getPlayerDefaultRefineryUnitType(int32 playerId) {
-		const uint32 Func_getPlayerDefaultRefineryUnitType = 0x004320D0;
-		static int32 result;
+	s32 getPlayerDefaultRefineryUnitType(s32 playerId) {
+		const u32 Func_getPlayerDefaultRefineryUnitType = 0x004320D0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, playerId
@@ -1259,8 +1259,8 @@ namespace helper {
 	// some of these should probably be methods in api/etc
 
 	char AI_CancelStructure(CUnit* structure) {
-		const uint32 Func_AI_CancelStructure = 0x00468280;
-		static uint32 result;
+		const u32 Func_AI_CancelStructure = 0x00468280;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, structure
@@ -1272,7 +1272,7 @@ namespace helper {
 	}
 
 	CUnit* AI_GetActualTarget(CUnit* attacker, CUnit* target) {
-		const uint32 Func_AI_GetActualTarget = 0x0043AD60;
+		const u32 Func_AI_GetActualTarget = 0x0043AD60;
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -1285,8 +1285,8 @@ namespace helper {
 		return result;
 	}
 
-	CUnit* checkArbiterCloakingRange(CUnit* unit, uint16 id) {
-		const uint32 Func_checkArbiterCloakingRange = 0x004410C0;
+	CUnit* checkArbiterCloakingRange(CUnit* unit, u16 id) {
+		const u32 Func_checkArbiterCloakingRange = 0x004410C0;
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -1300,7 +1300,7 @@ namespace helper {
 	}
 
 	void AI_OrderUnitCloaking(CUnit* unit) {
-		const uint32 Func_AI_OrderUnitCloaking = 0x0043B970;
+		const u32 Func_AI_OrderUnitCloaking = 0x0043B970;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -1310,7 +1310,7 @@ namespace helper {
 	}
 
 	void AI_OrderLurkerBurrow(CUnit* unit) {
-		const uint32 Func_AI_OrderLurkerBurrow = 0x0043C230;
+		const u32 Func_AI_OrderLurkerBurrow = 0x0043C230;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -1319,9 +1319,9 @@ namespace helper {
 		}
 	}
 
-	bool AI_IsUnderAttack(CUnit* unit, int32 flag) {
-		const uint32 Func_AI_IsUnderAttack = 0x00436E70;
-		static uint32 result;
+	bool AI_IsUnderAttack(CUnit* unit, s32 flag) {
+		const u32 Func_AI_IsUnderAttack = 0x00436E70;
+		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH flag
@@ -1333,9 +1333,9 @@ namespace helper {
 		return (bool)result;
 	}
 
-	int32 isUnitLoaded(CUnit* unit) {
-		const uint32 Func_isUnitLoaded = 0x004E7110;
-		static int32 result;
+	s32 isUnitLoaded(CUnit* unit) {
+		const u32 Func_isUnitLoaded = 0x004E7110;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -1346,9 +1346,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 AI_TryReturnHome(CUnit* unit, int32 dontIssueOrder) {
-		const uint32 Func_AI_TryReturnHome = 0x00462EA0;
-		static int32 result;
+	s32 AI_TryReturnHome(CUnit* unit, s32 dontIssueOrder) {
+		const u32 Func_AI_TryReturnHome = 0x00462EA0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH dontIssueOrder
@@ -1360,9 +1360,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 AI_TransportAction(CUnit* unit) {
-		const uint32 Func_AI_TransportAction = 0x0043DB50;
-		static int32 result;
+	s32 AI_TransportAction(CUnit* unit) {
+		const u32 Func_AI_TransportAction = 0x0043DB50;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -1373,9 +1373,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 AI_AskForHelp(CUnit* self, CUnit* attacker, int32 onlyNearbyGuards) {
-		const uint32 Func_AI_AskForHelp = 0x0043ADA0;
-		static int32 result;
+	s32 AI_AskForHelp(CUnit* self, CUnit* attacker, s32 onlyNearbyGuards) {
+		const u32 Func_AI_AskForHelp = 0x0043ADA0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH onlyNearbyGuards
@@ -1388,9 +1388,9 @@ namespace helper {
 		return result;
 	}
 
-	int16 getRegionIdFromUnit(CUnit* unit) {
-		const uint32 Func_getRegionIdFromUnit = 0x0049CB40;
-		static int32 result;
+	s16 getRegionIdFromUnit(CUnit* unit) {
+		const u32 Func_getRegionIdFromUnit = 0x0049CB40;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -1398,12 +1398,12 @@ namespace helper {
 			MOV result, EAX
 			POPAD
 		}
-		return (int16)result;
+		return (s16)result;
 	}
 
-	int32 getEnemyAirStrengthInRegion(uint16 regionId, int32 player) {
-		const uint32 Func_getEnemyAirStrengthInRegion = 0x00431D00;
-		static int32 result;
+	s32 getEnemyAirStrengthInRegion(u16 regionId, s32 player) {
+		const u32 Func_getEnemyAirStrengthInRegion = 0x00431D00;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH player
@@ -1415,9 +1415,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 getEnemyStrengthInRegion(uint16 regionId, int32 player, int32 includeAir) {
-		const uint32 Func_getEnemyStrengthInRegion = 0x004318E0;
-		static int32 result;
+	s32 getEnemyStrengthInRegion(u16 regionId, s32 player, s32 includeAir) {
+		const u32 Func_getEnemyStrengthInRegion = 0x004318E0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH includeAir
@@ -1431,8 +1431,8 @@ namespace helper {
 	}
 
 	bool unitIsPerformingUnbreakableCode(CUnit* unit) {
-		const uint32 Func_unitIsPerformingUnbreakableCode = 0x00402310;
-		static uint32 result;
+		const u32 Func_unitIsPerformingUnbreakableCode = 0x00402310;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -1444,8 +1444,8 @@ namespace helper {
 	}
 
 	bool AI_CastSpellBehavior(CUnit* unit, bool isAggro) {
-		const uint32 Func_AI_CastSpellBehavior = 0x004A13C0;
-		static uint32 result;
+		const u32 Func_AI_CastSpellBehavior = 0x004A13C0;
+		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH isAggro
@@ -1457,9 +1457,9 @@ namespace helper {
 		return (bool)result;
 	}
 
-	int32 AI_Flee(CUnit* unit, CUnit* enemy) {
-		const uint32 Func_AI_Flee = 0x0043E400;
-		static int32 result;
+	s32 AI_Flee(CUnit* unit, CUnit* enemy) {
+		const u32 Func_AI_Flee = 0x0043E400;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH enemy
@@ -1471,9 +1471,9 @@ namespace helper {
 		return result;
 	}
 
-	bool unitHasGroundPath(CUnit* unit, int16 x, int16 y) {
-		const uint32 Func_unitHasGroundPath = 0x0042FA00;
-		static uint32 result;
+	bool unitHasGroundPath(CUnit* unit, s16 x, s16 y) {
+		const u32 Func_unitHasGroundPath = 0x0042FA00;
+		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH y
@@ -1486,9 +1486,9 @@ namespace helper {
 		return (bool)result;
 	}
 
-	bool AI_HasNoDefenseBuild(int32 player) {
-		const uint32 Func_AI_HasNoDefenseBuild = 0x00447370;
-		static uint32 result;
+	bool AI_HasNoDefenseBuild(s32 player) {
+		const u32 Func_AI_HasNoDefenseBuild = 0x00447370;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, player
@@ -1500,8 +1500,8 @@ namespace helper {
 	}
 
 	bool unitCanSeeCloakedTarget(CUnit* target, CUnit* unit) {
-		const uint32 Func_unitCanSeeCloakedTarget = 0x00401D60;
-		static uint32 result;
+		const u32 Func_unitCanSeeCloakedTarget = 0x00401D60;
+		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH unit
@@ -1514,7 +1514,7 @@ namespace helper {
 	}
 
 	void AI_RespondToCloakedThreat(CUnit* threat, CUnit* unit) {
-		const uint32 Func_AI_RespondToCloakedThreat = 0x0043C580;
+		const u32 Func_AI_RespondToCloakedThreat = 0x0043C580;
 		__asm {
 			PUSHAD
 			PUSH unit
@@ -1524,9 +1524,9 @@ namespace helper {
 		}
 	}
 
-	bool unitCanAttackTarget(CUnit* target, CUnit* unit, int32 checkDetection) {
-		const uint32 Func_unitCanAttackTarget = 0x00476730;
-		static uint32 result;
+	bool unitCanAttackTarget(CUnit* target, CUnit* unit, s32 checkDetection) {
+		const u32 Func_unitCanAttackTarget = 0x00476730;
+		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH checkDetection
@@ -1539,9 +1539,9 @@ namespace helper {
 		return (bool)result;
 	}
 
-	int32 AI_UpdateAttackTarget(CUnit* unit, int32 acceptIfSieged, int32 acceptCritters, int32 mustReach) {
-		const uint32 Func_AI_UpdateAttackTarget = 0x00477160;
-		static int32 result;
+	s32 AI_UpdateAttackTarget(CUnit* unit, s32 acceptIfSieged, s32 acceptCritters, s32 mustReach) {
+		const u32 Func_AI_UpdateAttackTarget = 0x00477160;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH mustReach
@@ -1555,8 +1555,8 @@ namespace helper {
 		return result;
 	}
 
-	void orderInterrupt(CUnit* unit, uint8 orderId, Point32* pos, CUnit* target) {
-		const uint32 Func_orderInterrupt = 0x00474C30;
+	void orderInterrupt(CUnit* unit, u8 orderId, Point32* pos, CUnit* target) {
+		const u32 Func_orderInterrupt = 0x00474C30;
 		__asm {
 			PUSHAD
 			PUSH target
@@ -1570,9 +1570,9 @@ namespace helper {
 
 	// for AI_IterateBuildingAI
 
-	uint16 AI_RemoveFromTowns(CUnit* worker) {
-		const uint32 Func_AI_RemoveFromTowns = 0x00432760;
-		static uint32 result;
+	u16 AI_RemoveFromTowns(CUnit* worker) {
+		const u32 Func_AI_RemoveFromTowns = 0x00432760;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, worker
@@ -1580,11 +1580,11 @@ namespace helper {
 			MOV result, EAX
 			POPAD
 		}
-		return (uint16)result;
+		return (u16)result;
 	}
 
 	BuildingAi* AI_DeleteBuildingAI(BuildingAi* building, BuildingAiArray* buildingList) {
-		const uint32 Func_AI_DeleteBuildingAI = 0x00404500;
+		const u32 Func_AI_DeleteBuildingAI = 0x00404500;
 		static BuildingAi* result;
 		__asm {
 			PUSHAD
@@ -1597,9 +1597,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 AI_GetQueuedCount(CUnit* builder, uint32 unitId) {
-		const uint32 Func_AI_GetQueuedCount = 0x00466B70;
-		static int32 result;
+	s32 AI_GetQueuedCount(CUnit* builder, u32 unitId) {
+		const u32 Func_AI_GetQueuedCount = 0x00466B70;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, builder
@@ -1611,8 +1611,8 @@ namespace helper {
 		return result;
 	}
 
-	void AI_PrepareGuardAI(uint16 y, uint32 player, uint16 unitId, uint16 x) {
-		const uint32 Func_AI_PrepareGuardAI = 0x00462670;
+	void AI_PrepareGuardAI(u16 y, u32 player, u16 unitId, u16 x) {
+		const u32 Func_AI_PrepareGuardAI = 0x00462670;
 		__asm {
 			PUSHAD
 			PUSH x
@@ -1628,9 +1628,9 @@ namespace helper {
 
 	// for AI_TrainAttackForce
 
-	int32 AI_AddRegionToMilitary(AiCaptain* region, int32 unitId, int32 priority) {
-		const uint32 Func_AI_AddRegionToMilitary = 0x0043E2E0;
-		static int32 result;
+	s32 AI_AddRegionToMilitary(AiCaptain* region, s32 unitId, s32 priority) {
+		const u32 Func_AI_AddRegionToMilitary = 0x0043E2E0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH priority
@@ -1643,10 +1643,10 @@ namespace helper {
 		return result;
 	}
 
-	uint32 AI_FindUnit(uint32 unitId, uint32 playerId, uint32 type) {
-		const uint32 Func_AI_FindUnit = 0x00447DC0;
-		static uint32 typeXD = type;
-		static uint32 result;
+	u32 AI_FindUnit(u32 unitId, u32 playerId, u32 type) {
+		const u32 Func_AI_FindUnit = 0x00447DC0;
+		static u32 typeXD = type;
+		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH typeXD
@@ -1659,10 +1659,10 @@ namespace helper {
 		return result;
 	}
 
-	uint32 AI_AddSpendingRequest(uint16 unitId, uint32 type, uint8 player, char priority, void* value) {
-		const uint32 Func_AI_AddSpendingRequest = 0x00447980;
-		static uint32 typeXD = type;
-		static uint32 result;
+	u32 AI_AddSpendingRequest(u16 unitId, u32 type, u8 player, char priority, void* value) {
+		const u32 Func_AI_AddSpendingRequest = 0x00447980;
+		static u32 typeXD = type;
+		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH value
@@ -1677,9 +1677,9 @@ namespace helper {
 		return result;
 	}
 
-	uint32 AI_AddBaseUnitSpendingRequest(uint32 unitId, uint32 player, AiCaptain* region, char priority) {
-		const uint32 Func_AI_AddBaseUnitSpendingRequest = 0x004484A0;
-		static uint32 result;
+	u32 AI_AddBaseUnitSpendingRequest(u32 unitId, u32 player, AiCaptain* region, char priority) {
+		const u32 Func_AI_AddBaseUnitSpendingRequest = 0x004484A0;
+		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH priority
@@ -1695,9 +1695,9 @@ namespace helper {
 
 	// for AIRegion_GroupForAttack
 
-	uint32 AI_RecalculateRegionStrength(AiCaptain* region) {
-		const uint32 Func_AI_RecalculateRegionStrength = 0x0043A390;
-		static uint32 result;
+	u32 AI_RecalculateRegionStrength(AiCaptain* region) {
+		const u32 Func_AI_RecalculateRegionStrength = 0x0043A390;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, region
@@ -1709,7 +1709,7 @@ namespace helper {
 	}
 
 	CUnit* AI_TargetEnemyInRegion(AiCaptain* region) {
-		const uint32 Func_AI_TargetEnemyInRegion = 0x0043CC40;
+		const u32 Func_AI_TargetEnemyInRegion = 0x0043CC40;
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -1721,9 +1721,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 AI_MoveMilitaryToDefend(AiCaptain* region) {
-		const uint32 Func_AI_MoveMilitaryToDefend = 0x0043DE40;
-		static int32 result;
+	s32 AI_MoveMilitaryToDefend(AiCaptain* region) {
+		const u32 Func_AI_MoveMilitaryToDefend = 0x0043DE40;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EDI, region
@@ -1734,9 +1734,9 @@ namespace helper {
 		return result;
 	}
 
-	void AI_GetRegionMilitaryTypes(AiCaptain* region, int32* hasGroundMilitary,
-		int32* cantAttackGround, int32* cantAttackAir) {
-		const uint32 Func_AI_GetRegionMilitaryTypes = 0x00438FC0;
+	void AI_GetRegionMilitaryTypes(AiCaptain* region, s32* hasGroundMilitary,
+		s32* cantAttackGround, s32* cantAttackAir) {
+		const u32 Func_AI_GetRegionMilitaryTypes = 0x00438FC0;
 		__asm {
 			PUSHAD
 			MOV EAX, region
@@ -1748,9 +1748,9 @@ namespace helper {
 		}
 	}
 
-	int32 AI_CanTravelToRegion(AiCaptain* region1, AiCaptain* region2) {
-		const uint32 Func_AI_CanTravelToRegion = 0x0043A790;
-		static int32 result;
+	s32 AI_CanTravelToRegion(AiCaptain* region1, AiCaptain* region2) {
+		const u32 Func_AI_CanTravelToRegion = 0x0043A790;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH region2
@@ -1763,7 +1763,7 @@ namespace helper {
 	}
 
 	CUnit* AI_PickAttackTarget_NoBuildings(AiCaptain* region) {
-		const uint32 Func_AI_PickAttackTarget_NoBuildings = 0x0043A510;
+		const u32 Func_AI_PickAttackTarget_NoBuildings = 0x0043A510;
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -1775,10 +1775,10 @@ namespace helper {
 		return result;
 	}
 
-	uint32 AI_MoveMilitaryToOtherRegion(AiCaptain* target, AiCaptain* source, uint32 pullUnitsNearRegion,
-		uint32 sendPureSpellcasters, uint32 dontSendFromBunkers) {
-		const uint32 Func_AI_MoveMilitaryToOtherRegion = 0x0043E580;
-		static uint32 result;
+	u32 AI_MoveMilitaryToOtherRegion(AiCaptain* target, AiCaptain* source, u32 pullUnitsNearRegion,
+		u32 sendPureSpellcasters, u32 dontSendFromBunkers) {
+		const u32 Func_AI_MoveMilitaryToOtherRegion = 0x0043E580;
+		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH dontSendFromBunkers
@@ -1794,7 +1794,7 @@ namespace helper {
 	}
 
 	AiTown* AI_IterateTownSomething(AiCaptain* region) {
-		const uint32 Func_AI_IterateTownSomething = 0x0043DD20;
+		const u32 Func_AI_IterateTownSomething = 0x0043DD20;
 		static AiTown* result;
 		__asm {
 			PUSHAD
@@ -1806,9 +1806,9 @@ namespace helper {
 		return result;
 	}
 
-	uint32 AI_AttackTimerDecrement(uint32 player) {
-		const uint32 Func_AI_AttackTimerDecrement = 0x00447090;
-		static uint32 result;
+	u32 AI_AttackTimerDecrement(u32 player) {
+		const u32 Func_AI_AttackTimerDecrement = 0x00447090;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, player
@@ -1819,9 +1819,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 AI_HasForcesMovingToAttack(uint32 player) {
-		const uint32 Func_AI_HasForcesMovingToAttack = 0x0043A2E0;
-		static int32 result;
+	s32 AI_HasForcesMovingToAttack(u32 player) {
+		const u32 Func_AI_HasForcesMovingToAttack = 0x0043A2E0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, player
@@ -1834,9 +1834,9 @@ namespace helper {
 
 	// for AI_AttackManager
 
-	uint16 PopulateRegionsWithOwn(char* regionData, uint32 player) {
-		const uint32 Func_PopulateRegionsWithOwn = 0x00438B30;
-		static uint32 result;
+	u16 PopulateRegionsWithOwn(char* regionData, u32 player) {
+		const u32 Func_PopulateRegionsWithOwn = 0x00438B30;
+		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH player
@@ -1845,11 +1845,11 @@ namespace helper {
 			MOV result, EAX
 			POPAD
 		}
-		return (uint16)result;
+		return (u16)result;
 	}
 
-	void PopulateRegionsWithEnemy(uint32 player, char* regionData) {
-		const uint32 Func_PopulateRegionsWithEnemy = 0x00439B50;
+	void PopulateRegionsWithEnemy(u32 player, char* regionData) {
+		const u32 Func_PopulateRegionsWithEnemy = 0x00439B50;
 		__asm {
 			PUSHAD
 			PUSH regionData
@@ -1859,9 +1859,9 @@ namespace helper {
 		}
 	}
 
-	int32 AI_GetNeighborRegionTypes(char* regionData) {
-		const uint32 Func_AI_GetNeighborRegionTypes = 0x00436D80;
-		static int32 result;
+	s32 AI_GetNeighborRegionTypes(char* regionData) {
+		const u32 Func_AI_GetNeighborRegionTypes = 0x00436D80;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EBX, regionData
@@ -1873,7 +1873,7 @@ namespace helper {
 	}
 
 	void AI_FinishRegionAccessibility(char* regionData) {
-		const uint32 Func_AI_FinishRegionAccessibility = 0x00436CF0;
+		const u32 Func_AI_FinishRegionAccessibility = 0x00436CF0;
 		__asm {
 			PUSHAD
 			MOV EBX, regionData
@@ -1882,10 +1882,10 @@ namespace helper {
 		}
 	}
 
-	int32 AI_SetAttackGroupingRegion(uint32 airAttack, uint32 alsoVeryNear, uint32 player, char* regionData,
-		int32 x, int32 y, uint32 alwaysOverwriteLastAttack) {
-		const uint32 Func_AI_SetAttackGroupingRegion = 0x004399D0;
-		static int32 result;
+	s32 AI_SetAttackGroupingRegion(u32 airAttack, u32 alsoVeryNear, u32 player, char* regionData,
+		s32 x, s32 y, u32 alwaysOverwriteLastAttack) {
+		const u32 Func_AI_SetAttackGroupingRegion = 0x004399D0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH alwaysOverwriteLastAttack
@@ -1903,8 +1903,8 @@ namespace helper {
 	}
 
 	bool unitCantSeeCloakedTarget(CUnit* unit, CUnit* target) {
-		const uint32 Func_unitCantSeeCloakedTarget = 0x00401D60;
-		static bool32 bPreResult;
+		const u32 Func_unitCantSeeCloakedTarget = 0x00401D60;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			PUSH unit
@@ -1917,8 +1917,8 @@ namespace helper {
 	}
 
 	bool unitCanInfest(CUnit* unit) {
-		const uint32 Func_CanInfest = 0x00402750;
-		static bool32 bPreResult;
+		const u32 Func_CanInfest = 0x00402750;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -1930,7 +1930,7 @@ namespace helper {
 	}
 
 	void AI_AttackUnit(CUnit* unit) {
-		const uint32 Func_AI_AttackUnit = 0x0043FFD0;
+		const u32 Func_AI_AttackUnit = 0x0043FFD0;
 		__asm {
 			PUSHAD
 			PUSH unit
@@ -1940,7 +1940,7 @@ namespace helper {
 	}
 
 	CUnit* findBestAttackTarget(CUnit* unit) {
-		const uint32 Func_Sub443080 = 0x00443080;
+		const u32 Func_Sub443080 = 0x00443080;
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -1952,10 +1952,10 @@ namespace helper {
 		return result;
 	}
 
-	bool function_00462EA0(CUnit* unit, uint8 unknownByteValue) {
-		const uint32 Func_Sub462EA0 = 0x00462EA0;
-		static uint32 _unknownByteValue;
-		static bool32 bPreResult;
+	bool function_00462EA0(CUnit* unit, u8 unknownByteValue) {
+		const u32 Func_Sub462EA0 = 0x00462EA0;
+		static u32 _unknownByteValue;
+		static b32 bPreResult;
 		_unknownByteValue = unknownByteValue;
 		__asm {
 			PUSHAD
@@ -1969,7 +1969,7 @@ namespace helper {
 	}
 
 	void function_00465780(CUnit* unit) {
-		const uint32 Func_Sub465780 = 0x00465780;
+		const u32 Func_Sub465780 = 0x00465780;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
@@ -1979,7 +1979,7 @@ namespace helper {
 	}
 
 	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
-		const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
+		const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -1989,8 +1989,8 @@ namespace helper {
 		}
 	}
 
-	void function_00474A70(CUnit* unit, CUnit* target, uint8 orderId) {
-		const uint32 Func_Sub474A70 = 0x00474A70;
+	void function_00474A70(CUnit* unit, CUnit* target, u8 orderId) {
+		const u32 Func_Sub474A70 = 0x00474A70;
 		__asm {
 			PUSHAD
 			MOV CL, orderId
@@ -2001,9 +2001,9 @@ namespace helper {
 		}
 	}
 
-	bool isTargetWithinMinMovementRange(CUnit* unit, CUnit* target, uint32 range) {
-		const uint32 Func_isTargetWithinMinMovementRange = 0x004763D0;
-		static bool32 bPreResult;
+	bool isTargetWithinMinMovementRange(CUnit* unit, CUnit* target, u32 range) {
+		const u32 Func_isTargetWithinMinMovementRange = 0x004763D0;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
@@ -2016,9 +2016,9 @@ namespace helper {
 		return (bPreResult != 0);
 	}
 
-	bool function_00476610(CUnit* unit, int x, int y) {
-		const uint32 Func_Sub476610 = 0x00476610;
-		static bool32 bPreResult;
+	bool function_00476610(CUnit* unit, s32 x, s32 y) {
+		const u32 Func_Sub476610 = 0x00476610;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -2032,8 +2032,8 @@ namespace helper {
 	}
 
 	bool isUnitInWeaponRange(CUnit* unit, CUnit* target) {
-		const uint32 Func_isUnitInWeaponRange = 0x00476870;
-		static bool32 bPreResult;
+		const u32 Func_isUnitInWeaponRange = 0x00476870;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			PUSH unit
@@ -2046,7 +2046,7 @@ namespace helper {
 	}
 
 	void getWeaponBeginIscript(CUnit* unit, IscriptAnimation::Enum anim) {
-		const uint32 Func_getWeaponBeginIscript = 0x00476ED0;
+		const u32 Func_getWeaponBeginIscript = 0x00476ED0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -2057,7 +2057,7 @@ namespace helper {
 	}
 
 	void function_00477510(CUnit* unit) {
-		const uint32 Func_Sub477510 = 0x00477510;
+		const u32 Func_Sub477510 = 0x00477510;
 		__asm {
 			PUSHAD
 			PUSH unit
@@ -2066,9 +2066,9 @@ namespace helper {
 		}
 	}
 
-	void function_00477820(CUnit* unit, uint8 orderId) {
-		const uint32 Func_Sub477820 = 0x00477820;
-		static uint32 orderId_;
+	void function_00477820(CUnit* unit, u8 orderId) {
+		const u32 Func_Sub477820 = 0x00477820;
+		static u32 orderId_;
 		orderId_ = orderId;
 		__asm {
 			PUSHAD
@@ -2079,10 +2079,10 @@ namespace helper {
 		}
 	}
 
-	bool function_00478370(CUnit* unit, uint8 orderId) {
-		const uint32 Func_Sub478370 = 0x00478370;
-		static bool32 bPreResult;
-		static uint32 orderId_;
+	bool function_00478370(CUnit* unit, u8 orderId) {
+		const u32 Func_Sub478370 = 0x00478370;
+		static b32 bPreResult;
+		static u32 orderId_;
 		orderId_ = orderId;
 		__asm {
 			PUSHAD
@@ -2096,8 +2096,8 @@ namespace helper {
 	}
 
 	bool function_00478540(CUnit* unit) {
-		const uint32 Func_Sub478540 = 0x00478540;
-		static bool32 bPreResult;
+		const u32 Func_Sub478540 = 0x00478540;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -2129,7 +2129,7 @@ namespace helper {
 	}
 
 	void moveToCollide(CUnit* unit, CUnit* target) {
-		const uint32 Func_moveToCollide = 0x00495400;
+		const u32 Func_moveToCollide = 0x00495400;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
@@ -2140,8 +2140,8 @@ namespace helper {
 	}
 
 	bool isUnitVisible(CUnit* unit) {
-		const uint32 Func_isUnitVisible = 0x004E5DB0;
-		static bool32 bPreResult;
+		const u32 Func_isUnitVisible = 0x004E5DB0;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -2153,8 +2153,8 @@ namespace helper {
 	}
 
 	bool isTargetVisible(CUnit* unit, CUnit* target) {
-		const uint32 Func_isTargetVisible = 0x004E5E30;
-		static bool32 bPreResult;
+		const u32 Func_isTargetVisible = 0x004E5E30;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -2167,13 +2167,13 @@ namespace helper {
 	}
 
 	// Identical to getRightClickActionOrder @ 0x004E5EA0;
-	uint8 getRightClickActionOrder(CUnit* unit) {
-		uint8 result;
+	u8 getRightClickActionOrder(CUnit* unit) {
+		u8 result;
 		if (unit->id == UnitId::ZergLakizilisk && unit->status & UnitStatus::Burrowed) {
 			result = RightClickActions::NoMove_NormalAttack;
 		}
 		else {
-			uint8 temp_result = units_dat::RightClickAction[unit->id];
+			u8 temp_result = units_dat::RightClickAction[unit->id];
 			if (
 				temp_result == 0 &&
 				unit->status & UnitStatus::GroundedBuilding &&
@@ -2191,7 +2191,7 @@ namespace helper {
 	// not related with assigning orders, but only with
 	// destinations of orders
 	void makeToHoldPosition(CUnit* unit) {
-		const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
+		const u32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -2201,8 +2201,8 @@ namespace helper {
 	}
 
 	bool moveToTarget(CUnit* unit, CUnit* target) {
-		const uint32 Func_moveToTarget = 0x004EB720;
-		static bool32 bPreResult;
+		const u32 Func_moveToTarget = 0x004EB720;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -2214,9 +2214,9 @@ namespace helper {
 		return (bPreResult != 0);
 	}
 
-	bool SetMoveTarget_xy(CUnit* unit, int x, int y) {
-		const uint32 Func_SetMoveTarget_xy = 0x004EB820;
-		static bool32 bPreResult;
+	bool SetMoveTarget_xy(CUnit* unit, s32 x, s32 y) {
+		const u32 Func_SetMoveTarget_xy = 0x004EB820;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -2231,7 +2231,7 @@ namespace helper {
 
 	// Related to path/movement decision
 	void setNextWaypoint(CUnit* unit) {
-		const uint32 Func_setNextWaypoint = 0x004EB290;
+		const u32 Func_setNextWaypoint = 0x004EB290;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -2241,8 +2241,8 @@ namespace helper {
 	}
 
 	bool function_004EB900(CUnit* unit, CUnit* target) {
-		const uint32 Func_Sub4EB900 = 0x004EB900;
-		static bool32 bPreResult;
+		const u32 Func_Sub4EB900 = 0x004EB900;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EAX, target
@@ -2254,9 +2254,9 @@ namespace helper {
 		return (bPreResult != 0);
 	}
 
-	bool changeMovementTargetMoveTarget2(CUnit* unit, int x, int y) {
-		const uint32 Func_changeMovementTargetMoveTarget2 = 0x004EB9C0;
-		static bool32 bPreResult;
+	bool changeMovementTargetMoveTarget2(CUnit* unit, s32 x, s32 y) {
+		const u32 Func_changeMovementTargetMoveTarget2 = 0x004EB9C0;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EDX, unit
@@ -2269,9 +2269,9 @@ namespace helper {
 		return (bPreResult != 0);
 	}
 
-	bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, uint32 distance) {
-		const uint32 Func_isDistanceGreaterThanHaltDistance = 0x00401240;
-		static bool32 bPreResult;
+	bool isDistanceGreaterThanHaltDistance(CUnit* unit, s32 x, s32 y, u32 distance) {
+		const u32 Func_isDistanceGreaterThanHaltDistance = 0x00401240;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			PUSH x
@@ -2286,7 +2286,7 @@ namespace helper {
 	}
 
 	void checkUnstack(CUnit* unit) {
-		const uint32 Func_checkUnstack = 0x0042D9A0;
+		const u32 Func_checkUnstack = 0x0042D9A0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -2296,8 +2296,8 @@ namespace helper {
 	}
 
 	bool beginBuilding(CUnit* unit) {
-		const uint32 Func_beginBuilding = 0x00467030;
-		static bool32 bPreResult;
+		const u32 Func_beginBuilding = 0x00467030;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -2308,8 +2308,8 @@ namespace helper {
 		return (bPreResult != 0);
 	}
 
-	CUnit* beginGasBuilding(CUnit* unit, uint32 unitId) {
-		const uint32 Func_beginGasBuilding = 0x004678A0;
+	CUnit* beginGasBuilding(CUnit* unit, u32 unitId) {
+		const u32 Func_beginGasBuilding = 0x004678A0;
 		static CUnit* newUnit;
 		__asm {
 			PUSHAD
@@ -2323,8 +2323,8 @@ namespace helper {
 	}
 
 	// imageId may not be really a parameter
-	void addOverlayBelowMain(CSprite* sprite, uint32 imageId, uint32 unk1, uint32 unk2, uint32 unk3) {
-		const uint32 Func_addOverlayBelowMain = 0x00498D70;
+	void addOverlayBelowMain(CSprite* sprite, u32 imageId, u32 unk1, u32 unk2, u32 unk3) {
+		const u32 Func_addOverlayBelowMain = 0x00498D70;
 		__asm {
 			PUSHAD
 			MOV EAX, sprite
@@ -2337,8 +2337,8 @@ namespace helper {
 		}
 	}
 
-	void replaceSpriteImages(CSprite* sprite, uint32 imageId, uint32 imageDirection) {
-		const uint32 Func_Sub499BB0 = 0x00499BB0;
+	void replaceSpriteImages(CSprite* sprite, u32 imageId, u32 imageDirection) {
+		const u32 Func_Sub499BB0 = 0x00499BB0;
 		__asm {
 			PUSHAD
 			PUSH imageDirection
@@ -2349,8 +2349,8 @@ namespace helper {
 		}
 	}
 
-	void displayLastNetErrorForPlayer(uint32 playerId) {
-		const uint32 Func_displayLastNetErrorForPlayer = 0x0049E530;
+	void displayLastNetErrorForPlayer(u32 playerId) {
+		const u32 Func_displayLastNetErrorForPlayer = 0x0049E530;
 		__asm {
 			PUSHAD
 			PUSH playerId
@@ -2360,7 +2360,7 @@ namespace helper {
 	}
 
 	void updateUnitStrength(CUnit* unit) {
-		const uint32 Func_UpdateUnitStrength = 0x0049FA40;
+		const u32 Func_UpdateUnitStrength = 0x0049FA40;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -2369,8 +2369,8 @@ namespace helper {
 		}
 	}
 
-	void iscript_OpcodeCases(CImage* image, uint32 offset_, uint32 unk1, uint32 unk2) {
-		const uint32 Func_iscript_OpcodeCases = 0x004D74C0;
+	void iscript_OpcodeCases(CImage* image, u32 offset_, u32 unk1, u32 unk2) {
+		const u32 Func_iscript_OpcodeCases = 0x004D74C0;
 		__asm {
 			PUSHAD
 			PUSH unk1
@@ -2383,7 +2383,7 @@ namespace helper {
 	}
 
 	void switchToWarpTexture(CImage* image) {
-		const uint32 Func_switchToWarpTexture = 0x004D8500;
+		const u32 Func_switchToWarpTexture = 0x004D8500;
 		__asm {
 			PUSHAD
 			MOV EAX, image
@@ -2393,8 +2393,8 @@ namespace helper {
 	}
 
 	bool setThingyVisibilityFlags(CThingy* thingy) {
-		const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
-		static bool32 bPreResult;
+		const u32 Func_SetThingyVisibilityFlags = 0x004878F0;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV ESI, thingy
@@ -2405,10 +2405,10 @@ namespace helper {
 		return (bPreResult != 0);
 	}
 
-	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
-		const uint32 Func_CreateThingy = 0x00488210;
+	CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId) {
+		const u32 Func_CreateThingy = 0x00488210;
 		static CThingy* thingy;
-		int32 x_ = x;
+		s32 x_ = x;
 		__asm {
 			PUSHAD
 			PUSH playerId
@@ -2422,8 +2422,8 @@ namespace helper {
 		return thingy;
 	}
 
-	void playUnitSFX(uint32 soundId, uint16 x, uint16 y, uint32 unk1, uint32 unk2) {
-		const uint32 Func_playUnitSFX = 0x0048EC10;
+	void playUnitSFX(u32 soundId, u16 x, u16 y, u32 unk1, u32 unk2) {
+		const u32 Func_playUnitSFX = 0x0048EC10;
 		static Point16 pos;
 		pos.x = x; pos.y = y;
 		__asm {
@@ -2437,9 +2437,9 @@ namespace helper {
 		}
 	}
 
-	uint32 RandomizeShort(uint32 unknown_index) {
-		const uint32 Func_RandomizeShort = 0x004DC4A0;
-		static uint32 return_value;
+	u32 RandomizeShort(u32 unknown_index) {
+		const u32 Func_RandomizeShort = 0x004DC4A0;
+		static u32 return_value;
 		__asm {
 			PUSHAD
 			MOV EAX, unknown_index
@@ -2451,9 +2451,9 @@ namespace helper {
 	}
 
 	// hardcodes the recall targets selection function
-	uint32 IterateUnitsAtLocationTargetProc_RecallTargets(CUnit* unit, Box16* coords) {
-		const uint32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
-		static uint32 return_value;
+	u32 IterateUnitsAtLocationTargetProc_RecallTargets(CUnit* unit, Box16* coords) {
+		const u32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
+		static u32 return_value;
 		__asm {
 			PUSHAD
 			PUSH unit
@@ -2467,7 +2467,7 @@ namespace helper {
 	}
 
 	void setUnitStatTxtErrorMsg(char* message) {
-		const uint32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
+		const u32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
 		__asm {
 			PUSHAD
 			MOV EAX, message
@@ -2476,8 +2476,8 @@ namespace helper {
 		}
 	}
 
-	void function_004EBAE0(CUnit* unit, int32 x, int32 y) {
-		const uint32 Func_Sub4EBAE0 = 0x004EBAE0;
+	void function_004EBAE0(CUnit* unit, s32 x, s32 y) {
+		const u32 Func_Sub4EBAE0 = 0x004EBAE0;
 		__asm {
 			PUSHAD
 			MOV EDX, unit
@@ -2489,7 +2489,7 @@ namespace helper {
 	}
 
 	CUnit* SpiderMine_AcquireTarget(CUnit* spiderMine) {
-		const uint32 Func_SpiderMine_AcquireTarget = 0x00441270;
+		const u32 Func_SpiderMine_AcquireTarget = 0x00441270;
 		static CUnit* target;
 		__asm {
 			PUSHAD
@@ -2502,7 +2502,7 @@ namespace helper {
 	}
 
 	void instantCloak(CUnit* unit) {
-		const uint32 Func_instantCloak = 0x0049B1E0;
+		const u32 Func_instantCloak = 0x0049B1E0;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
@@ -2512,7 +2512,7 @@ namespace helper {
 	}
 
 	void unburrowGeneric(CUnit* unit) {
-		const uint32 Func_unburrowGeneric = 0x004E99D0;
+		const u32 Func_unburrowGeneric = 0x004E99D0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -2522,7 +2522,7 @@ namespace helper {
 	}
 
 	void function_004E9A30(CUnit* unit) {
-		const uint32 Func_Sub4E9A30 = 0x004E9A30;
+		const u32 Func_Sub4E9A30 = 0x004E9A30;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -2533,9 +2533,9 @@ namespace helper {
 
 	// For orders_PlaceMine
 
-	int techUseAllowed(CUnit* a1, __int16 a2, int a3) {
-		const uint32 Func_techUseAllowed = 0x0046DD80;
-		static int result;
+	s32 techUseAllowed(CUnit* a1, __int16 a2, s32 a3) {
+		const u32 Func_techUseAllowed = 0x0046DD80;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -2548,9 +2548,9 @@ namespace helper {
 		return result;
 	}
 
-	unsigned int getDistanceFast(int a1, int a2, int a3, int a4) {
-		const uint32 Func_getDistanceFast = 0x0040C360;
-		static unsigned int result;
+	u32 getDistanceFast(s32 a1, s32 a2, s32 a3, s32 a4) {
+		const u32 Func_getDistanceFast = 0x0040C360;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, a1
@@ -2564,9 +2564,9 @@ namespace helper {
 		return result;
 	}
 
-	int orders_HoldPosSuicidal(CUnit* a1) {
-		const uint32 Func_orders_HoldPosSuicidal = 0x004EB5B0;
-		static int result;
+	s32 orders_HoldPosSuicidal(CUnit* a1) {
+		const u32 Func_orders_HoldPosSuicidal = 0x004EB5B0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, a1
@@ -2578,7 +2578,7 @@ namespace helper {
 	}
 
 	void fixTargetLocation(unsigned __int16 a1, Point32* a2) {
-		const uint32 Func_fixTargetLocation = 0x00401FA0;
+		const u32 Func_fixTargetLocation = 0x00401FA0;
 		__asm {
 			PUSHAD
 			MOVZX AX, a1
@@ -2589,7 +2589,7 @@ namespace helper {
 	}
 
 	void turnUnit(CUnit* a1, char a2) {
-		const uint32 Func_turnUnit = 0x00495F20;
+		const u32 Func_turnUnit = 0x00495F20;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -2600,7 +2600,7 @@ namespace helper {
 	}
 
 	void toIdle(CUnit* a1) {
-		const uint32 Func_toIdle = 0x004753A0;
+		const u32 Func_toIdle = 0x004753A0;
 		__asm {
 			PUSHAD
 			MOV ECX, a1
@@ -2609,9 +2609,9 @@ namespace helper {
 		}
 	}
 
-	int isUnitMovable(CUnit* a1) {
-		const uint32 Func_isUnitMovable = 0x00401DC0;
-		static int result;
+	s32 isUnitMovable(CUnit* a1) {
+		const u32 Func_isUnitMovable = 0x00401DC0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -2623,7 +2623,7 @@ namespace helper {
 	}
 
 	void orders_Nothing2(CUnit* a1) {
-		const uint32 Func_orders_Nothing2 = 0x00475000;
+		const u32 Func_orders_Nothing2 = 0x00475000;
 		__asm {
 			PUSHAD
 			MOV ECX, a1
@@ -2632,9 +2632,9 @@ namespace helper {
 		}
 	}
 
-	bool setMoveTargetXY(int a1, int a2, CUnit* a3) {
-		const uint32 Func_setMoveTargetXY = 0x004EB820;
-		static int result;
+	bool setMoveTargetXY(s32 a1, s32 a2, CUnit* a3) {
+		const u32 Func_setMoveTargetXY = 0x004EB820;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EBX, a1
@@ -2650,7 +2650,7 @@ namespace helper {
 	// For burrowGeneric
 
 	void toggleUnitPath(CUnit* unit) {
-		const uint32 Func_toggleUnitPath = 0x004E42A0;
+		const u32 Func_toggleUnitPath = 0x004E42A0;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -2659,9 +2659,9 @@ namespace helper {
 		}
 	}
 
-	char switchSpriteId(CSprite* sprite, int32 spriteId) {
-		const uint32 Func_switchSpriteId = 0x00499860;
-		static int32 result;
+	char switchSpriteId(CSprite* sprite, s32 spriteId) {
+		const u32 Func_switchSpriteId = 0x00499860;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, spriteId
@@ -2673,8 +2673,8 @@ namespace helper {
 		return (char)result;
 	}
 
-	void iscript_OpcodeCases_copy(CImage* image, uint32 offset_, uint32 unk1, uint32 unk2) {
-		const uint32 Func_iscript_OpcodeCases = 0x004D74C0;
+	void iscript_OpcodeCases_copy(CImage* image, u32 offset_, u32 unk1, u32 unk2) {
+		const u32 Func_iscript_OpcodeCases = 0x004D74C0;
 		__asm {
 			PUSHAD
 			PUSH unk1
@@ -2686,8 +2686,8 @@ namespace helper {
 		}
 	}
 
-	void replaceSpriteImages_copy(CSprite* sprite, uint32 imageId, uint32 imageDirection) {
-		const uint32 Func_Sub499BB0 = 0x00499BB0;
+	void replaceSpriteImages_copy(CSprite* sprite, u32 imageId, u32 imageDirection) {
+		const u32 Func_Sub499BB0 = 0x00499BB0;
 		__asm {
 			PUSHAD
 			PUSH imageDirection
@@ -2698,8 +2698,8 @@ namespace helper {
 		}
 	}
 
-	void refundBuildingCost(uint16 unitId, uint8 playerId) {
-		const uint32 Func_refundBuildingCost = 0x0042CE70;
+	void refundBuildingCost(u16 unitId, u8 playerId) {
+		const u32 Func_refundBuildingCost = 0x0042CE70;
 		__asm {
 			PUSHAD
 			MOV AX, unitId
@@ -2710,7 +2710,7 @@ namespace helper {
 	}
 
 	void updateBuildingsAI(CUnit* unit) {
-		const uint32 Func_updateBuildingsAI = 0x00433FE0;
+		const u32 Func_updateBuildingsAI = 0x00433FE0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -2720,7 +2720,7 @@ namespace helper {
 	}
 
 	//Identical to isValidMorph @ 0x0045CC60;
-	bool isValidMorph(uint16 buildingId) {
+	bool isValidMorph(u16 buildingId) {
 		bool result;
 		if (scbw::isZergBuildingMorphResult(buildingId)) {
 			result = true;
@@ -2731,8 +2731,8 @@ namespace helper {
 		return result;
 	}
 
-	void updateNewUnitVision(uint32 id, int x, int y) {
-		const uint32 Func_updateNewUnitVision = 0x0045CE90;
+	void updateNewUnitVision(u32 id, s32 x, s32 y) {
+		const u32 Func_updateNewUnitVision = 0x0045CE90;
 		__asm {
 			PUSHAD
 			MOV ECX, id
@@ -2744,7 +2744,7 @@ namespace helper {
 	}
 
 	void zergPlaceBuildingCntd(CUnit* unit) {
-		const uint32 Func_ZergPlaceBuildingCntd = 0x0045D410;
+		const u32 Func_ZergPlaceBuildingCntd = 0x0045D410;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -2754,7 +2754,7 @@ namespace helper {
 	}
 
 	void stopCreepDisappearingAtBuilding(CUnit* unit) {
-		const uint32 Func_stopCreepDisappearingAtBuilding = 0x0047D770;
+		const u32 Func_stopCreepDisappearingAtBuilding = 0x0047D770;
 		__asm {
 			PUSHAD
 			PUSH unit
@@ -2763,8 +2763,8 @@ namespace helper {
 		}
 	}
 
-	void function_0047DE40(CSprite* sprite, uint32 unitId, int x, int y) {
-		const uint32 Func_Sub47DE40 = 0x0047DE40;
+	void function_0047DE40(CSprite* sprite, u32 unitId, s32 x, s32 y) {
+		const u32 Func_Sub47DE40 = 0x0047DE40;
 		__asm {
 			PUSHAD
 			MOV ECX, y
@@ -2777,8 +2777,8 @@ namespace helper {
 	}
 
 	//unk1 is ECX, unk2 is pushed value
-	void incrementUnitScoresEx(CUnit* building, int32 unk1, int32 unk2) {
-		const uint32 Func_incrementUnitScoresEx = 0x00488D50;
+	void incrementUnitScoresEx(CUnit* building, s32 unk1, s32 unk2) {
+		const u32 Func_incrementUnitScoresEx = 0x00488D50;
 		__asm {
 			PUSHAD
 			MOV EDI, building
@@ -2789,7 +2789,7 @@ namespace helper {
 		}
 	}
 
-	const uint32 Func_PlayBuildingCompleteSound = 0x0048F310;
+	const u32 Func_PlayBuildingCompleteSound = 0x0048F310;
 	void playBuildingCompleteSound(CUnit* building) {
 		__asm {
 			PUSHAD
@@ -2799,7 +2799,7 @@ namespace helper {
 		}
 	}
 
-	const uint32 Func_refreshSpriteData = 0x004983A0;
+	const u32 Func_refreshSpriteData = 0x004983A0;
 	void refreshSpriteData(CSprite* sprite) {
 		__asm {
 			PUSHAD
@@ -2809,9 +2809,9 @@ namespace helper {
 		}
 	}
 
-	const uint32 Func_ReplaceUnitWithType = 0x0049FED0;
-	void replaceUnitWithType(CUnit* unit, uint16 newUnitId) {
-		uint32 newUnitId_ = newUnitId;
+	const u32 Func_ReplaceUnitWithType = 0x0049FED0;
+	void replaceUnitWithType(CUnit* unit, u16 newUnitId) {
+		u32 newUnitId_ = newUnitId;
 		__asm {
 			PUSHAD
 			PUSH newUnitId_
@@ -2821,8 +2821,8 @@ namespace helper {
 		}
 	}
 
-	const uint32 Func_fixTargetLocation = 0x00401FA0;
-	void fixTargetLocation(Point16* coords, uint32 unitId) {
+	const u32 Func_fixTargetLocation = 0x00401FA0;
+	void fixTargetLocation(Point16* coords, u32 unitId) {
 		__asm {
 			PUSHAD
 			MOV EAX, unitId
@@ -2842,9 +2842,9 @@ namespace helper {
 
 	//if canBeAborted is TRUE, the unit can be aborted because there's
 	//no room around the constructing building
-	bool32 buildingAddon(CUnit* unit, uint32 hpGain, bool32 canBeAborted) {
-		const uint32 Func_buildingAddon = 0x004679A0;
-		static bool32 bResult;
+	b32 buildingAddon(CUnit* unit, u32 hpGain, b32 canBeAborted) {
+		const u32 Func_buildingAddon = 0x004679A0;
+		static b32 bResult;
 		__asm {
 			PUSHAD
 			MOV EDX, hpGain
@@ -2857,8 +2857,8 @@ namespace helper {
 		return bResult;
 	}
 
-	void prependOrderTargetingNothing(CUnit* unit, COrder* order, uint8 orderId) {
-		const uint32 Func_prependOrderTargetingNothing = 0x00474760;
+	void prependOrderTargetingNothing(CUnit* unit, COrder* order, u8 orderId) {
+		const u32 Func_prependOrderTargetingNothing = 0x00474760;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -2869,8 +2869,8 @@ namespace helper {
 		}
 	}
 
-	void addOrderTargetingNothing(CUnit* unit, COrder* order, uint8 orderId) {
-		const uint32 Func_addOrderTargetingNothing = 0x004749A0;
+	void addOrderTargetingNothing(CUnit* unit, COrder* order, u8 orderId) {
+		const u32 Func_addOrderTargetingNothing = 0x004749A0;
 		__asm {
 			PUSHAD
 			MOV BL, orderId
@@ -2882,8 +2882,8 @@ namespace helper {
 	}
 
 	bool canStillPlaceBuilding() {
-		const uint32 Func_canStillPlaceBuilding = 0x0048DDA0;
-		bool32 pre_return_value;
+		const u32 Func_canStillPlaceBuilding = 0x0048DDA0;
+		b32 pre_return_value;
 		__asm {
 			PUSHAD
 			CALL Func_canStillPlaceBuilding
@@ -2894,7 +2894,7 @@ namespace helper {
 	}
 
 	void endBuildingPlacement() {
-		const uint32 Func_endBuildingPlacement = 0x0048E310;
+		const u32 Func_endBuildingPlacement = 0x0048E310;
 		__asm {
 			PUSHAD
 			CALL Func_endBuildingPlacement
@@ -2902,8 +2902,8 @@ namespace helper {
 		}
 	}
 
-	void function_00494BB0(CUnit* unit, int x, int y) {
-		const uint32 Func_Sub494BB0 = 0x00494BB0;
+	void function_00494BB0(CUnit* unit, s32 x, s32 y) {
+		const u32 Func_Sub494BB0 = 0x00494BB0;
 		__asm {
 			PUSHAD
 			MOV ECX, y
@@ -2914,9 +2914,9 @@ namespace helper {
 		}
 	}
 
-	uint32 RandBetween(uint32 min, uint32 max, uint32 someIndex) {
-		const uint32 Func_RandBetween = 0x004DC550;
-		static uint32 return_value;
+	u32 RandBetween(u32 min, u32 max, u32 someIndex) {
+		const u32 Func_RandBetween = 0x004DC550;
+		static u32 return_value;
 		__asm {
 			PUSHAD
 			PUSH max
@@ -2930,8 +2930,8 @@ namespace helper {
 	}
 
 	char refreshLayers3And4() {
-		const uint32 Func_RefreshLayer3And4 = 0x0048D9A0;
-		static int result;
+		const u32 Func_RefreshLayer3And4 = 0x0048D9A0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			CALL Func_RefreshLayer3And4
@@ -2941,8 +2941,8 @@ namespace helper {
 		return (char)result;
 	}
 
-	void initBuilding(CUnit* unit, bool32 flag) {
-		const uint32 Func_initBuilding = 0x004E65E0;
+	void initBuilding(CUnit* unit, b32 flag) {
+		const u32 Func_initBuilding = 0x004E65E0;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
@@ -2953,8 +2953,8 @@ namespace helper {
 	}
 
 	bool orderToMoveToTarget(CUnit* unit, CUnit* target) {
-		const uint32 Func__moveToTarget = 0x004EB980;
-		static bool32 bPreResult;
+		const u32 Func__moveToTarget = 0x004EB980;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EAX, target
@@ -2966,9 +2966,9 @@ namespace helper {
 		return bPreResult != 0;
 	}
 
-	bool32 unk_terrainCollision2(CUnit* unit, int x, int y) {
-		const uint32 Func_unk_terrainCollision2 = 0x004F1870;
-		static bool32 rValue;
+	b32 unk_terrainCollision2(CUnit* unit, s32 x, s32 y) {
+		const u32 Func_unk_terrainCollision2 = 0x004F1870;
+		static b32 rValue;
 		__asm {
 			PUSHAD
 			PUSH y
@@ -2983,10 +2983,10 @@ namespace helper {
 
 	// For updatePlacementStateForPlacementBox
 
-	int32 canBuildOnTileLocation(CUnit* a1, int32 player, int32 x_tile, int32 y_tile, int32 unitType,
-		int32 placement_state_entry, int32 check_vision, int32 also_invisible, int32 without_vision) {
-		const uint32 Func_canBuildOnTileLocation = 0x00473FB0;
-		static int32 result;
+	s32 canBuildOnTileLocation(CUnit* a1, s32 player, s32 x_tile, s32 y_tile, s32 unitType,
+		s32 placement_state_entry, s32 check_vision, s32 also_invisible, s32 without_vision) {
+		const u32 Func_canBuildOnTileLocation = 0x00473FB0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH without_vision
@@ -3007,9 +3007,9 @@ namespace helper {
 
 	// For refreshScreen
 
-	int32 updatePlacementStateForPlacementBox_Func() {
-		const uint32 Func_updatePlacementStateForPlacementBox = 0x0048DCE0;
-		static int32 result;
+	s32 updatePlacementStateForPlacementBox_Func() {
+		const u32 Func_updatePlacementStateForPlacementBox = 0x0048DCE0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			CALL Func_updatePlacementStateForPlacementBox
@@ -3019,9 +3019,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 unk_buildingPlacementRelated(int32 a1, Point16* a2) {
-		const uint32 Func_unk_buildingPlacementRelated = 0x0048D7F0;
-		static int32 result;
+	s32 unk_buildingPlacementRelated(s32 a1, Point16* a2) {
+		const u32 Func_unk_buildingPlacementRelated = 0x0048D7F0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a2
@@ -3033,9 +3033,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 initPlacementBoxPos(Point16* in_out) {
-		const uint32 Func_initPlacementBoxPos = 0x0048D660;
-		static int32 result;
+	s32 initPlacementBoxPos(Point16* in_out) {
+		const u32 Func_initPlacementBoxPos = 0x0048D660;
+		static s32 result;
 		__asm {
 			PUSHAD
 			//			MOV ECX, a1
@@ -3047,9 +3047,9 @@ namespace helper {
 		return result;
 	}
 
-	char unk_buildingPlacementRelatedMouse(int32 a1, int32 a2) {
-		const uint32 Func_unk_buildingPlacementRelatedMouse = 0x0048D7B0;
-		static int32 result;
+	char unk_buildingPlacementRelatedMouse(s32 a1, s32 a2) {
+		const u32 Func_unk_buildingPlacementRelatedMouse = 0x0048D7B0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, a1
@@ -3060,8 +3060,8 @@ namespace helper {
 		}
 		return (char)result;
 	}
-	void setUnitPathing(CUnit* unit, uint8 unkPathRelated) {
-		const uint32 Func_SetUnitPathing = 0x00401360;
+	void setUnitPathing(CUnit* unit, u8 unkPathRelated) {
+		const u32 Func_SetUnitPathing = 0x00401360;
 		__asm {
 			PUSHAD
 			MOV AL, unkPathRelated
@@ -3072,7 +3072,7 @@ namespace helper {
 	}
 
 	CUnit* connectAddonCheck(CUnit* unit) {
-		const uint32 Func_ConnectAddonCheck = 0x004404A0;
+		const u32 Func_ConnectAddonCheck = 0x004404A0;
 		CUnit* found_addon;
 		__asm {
 			PUSHAD
@@ -3085,7 +3085,7 @@ namespace helper {
 	}
 
 	void function_00463470(CUnit* unit) {
-		const uint32 Func_Sub463470 = 0x00463470;
+		const u32 Func_Sub463470 = 0x00463470;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3095,7 +3095,7 @@ namespace helper {
 	}
 
 	void function_004634E0(CUnit* unit) {
-		const uint32 Func_Sub4634E0 = 0x004634E0;
+		const u32 Func_Sub4634E0 = 0x004634E0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3105,7 +3105,7 @@ namespace helper {
 	}
 
 	void function_00463640(CUnit* unit) {
-		const uint32 Func_Sub463640 = 0x00463640;
+		const u32 Func_Sub463640 = 0x00463640;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3115,7 +3115,7 @@ namespace helper {
 	}
 
 	void completeAddon(CUnit* unit, CUnit* addon) {
-		const uint32 Func_CompleteAddon = 0x00463D50;
+		const u32 Func_CompleteAddon = 0x00463D50;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
@@ -3126,7 +3126,7 @@ namespace helper {
 	}
 
 	void function_00464300(CUnit* unit) {
-		const uint32 Func_Sub464300 = 0x00464300;
+		const u32 Func_Sub464300 = 0x00464300;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -3136,7 +3136,7 @@ namespace helper {
 	}
 
 	void disconnectFromAddOn(CUnit* unit) {
-		const uint32 Func_Sub464930 = 0x00464930;
+		const u32 Func_Sub464930 = 0x00464930;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3145,8 +3145,8 @@ namespace helper {
 		}
 	}
 
-	void function_00469EC0(CUnit* unit, int x, int y) {
-		const uint32 Func_Sub469EC0 = 0x00469EC0;
+	void function_00469EC0(CUnit* unit, s32 x, s32 y) {
+		const u32 Func_Sub469EC0 = 0x00469EC0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3157,8 +3157,8 @@ namespace helper {
 		}
 	}
 
-	void function_00469F60(CUnit* unit, int x, int y) {
-		const uint32 Func_Sub469F60 = 0x00469F60;
+	void function_00469F60(CUnit* unit, s32 x, s32 y) {
+		const u32 Func_Sub469F60 = 0x00469F60;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3170,7 +3170,7 @@ namespace helper {
 	}
 
 	void function_0046A560(CUnit* unit) {
-		const uint32 Func_Sub46A560 = 0x0046A560;
+		const u32 Func_Sub46A560 = 0x0046A560;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3180,7 +3180,7 @@ namespace helper {
 	}
 
 	void function_0046A5A0(CUnit* unit) {
-		const uint32 Func_Sub46A5A0 = 0x0046A5A0;
+		const u32 Func_Sub46A5A0 = 0x0046A5A0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3189,9 +3189,9 @@ namespace helper {
 		}
 	}
 
-	uint32 function_00473FB0(CUnit* unit, uint8 playerId, int x, int y, uint16 unitId, uint8 unk1, uint8 unk2, uint8 unk3, uint8 unk4) {
-		const uint32 Func_Sub473FB0 = 0x00473FB0;
-		uint32 return_value;
+	u32 function_00473FB0(CUnit* unit, u8 playerId, s32 x, s32 y, u16 unitId, u8 unk1, u8 unk2, u8 unk3, u8 unk4) {
+		const u32 Func_Sub473FB0 = 0x00473FB0;
+		u32 return_value;
 		__asm {
 			PUSHAD
 			MOVZX EAX, unk4		/*28*/
@@ -3217,7 +3217,7 @@ namespace helper {
 	}
 
 	void actUnitReturnToIdle(CUnit* unit) {
-		const uint32 Func_ActUnitReturnToIdle = 0x00475420;
+		const u32 Func_ActUnitReturnToIdle = 0x00475420;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3227,8 +3227,8 @@ namespace helper {
 	}
 
 	bool function_0047DF90(CUnit* unit) {
-		const uint32 Func_Sub47DF90 = 0x0047DF90;
-		bool32 pre_return_value;
+		const u32 Func_Sub47DF90 = 0x0047DF90;
+		b32 pre_return_value;
 		__asm {
 			PUSHAD
 			PUSH unit
@@ -3240,7 +3240,7 @@ namespace helper {
 	}
 
 	void placebuildingProc() {
-		const uint32 Func_PracebuildingProc = 0x0048E6E0;
+		const u32 Func_PracebuildingProc = 0x0048E6E0;
 		__asm {
 			PUSHAD
 			CALL Func_PracebuildingProc
@@ -3249,7 +3249,7 @@ namespace helper {
 	}
 
 	void playBuildingLandSound(CUnit* unit) {
-		const uint32 Func_PlayBuildingLandSound = 0x0048F5A0;
+		const u32 Func_PlayBuildingLandSound = 0x0048F5A0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3258,8 +3258,8 @@ namespace helper {
 		}
 	}
 
-	void SetUnitMovementSpeed(CUnit* unit, uint32 newSpeed) {
-		const uint32 Func_SetUnitMovementSpeed = 0x004951C0;
+	void SetUnitMovementSpeed(CUnit* unit, u32 newSpeed) {
+		const u32 Func_SetUnitMovementSpeed = 0x004951C0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3269,8 +3269,8 @@ namespace helper {
 		}
 	}
 
-	void function_00498150(CSprite* sprite, uint8 newVerticalOffset) {
-		const uint32 Func_Sub498150 = 0x00498150;
+	void function_00498150(CSprite* sprite, u8 newVerticalOffset) {
+		const u32 Func_Sub498150 = 0x00498150;
 		__asm {
 			PUSHAD
 			MOV EAX, sprite
@@ -3281,7 +3281,7 @@ namespace helper {
 	}
 
 	void function_004997E0(CSprite* sprite) {
-		const uint32 Func_Sub4997E0 = 0x004997E0;
+		const u32 Func_Sub4997E0 = 0x004997E0;
 		__asm {
 			PUSHAD
 			MOV EAX, sprite
@@ -3291,7 +3291,7 @@ namespace helper {
 	}
 
 	void function_004C3B40(CUnit* unit) {
-		const uint32 Func_Sub4C3B40 = 0x004C3B40;
+		const u32 Func_Sub4C3B40 = 0x004C3B40;
 		__asm {
 			PUSHAD
 			MOV EDX, unit
@@ -3300,9 +3300,9 @@ namespace helper {
 		}
 	}
 
-	bool32 spreadsCreep(uint32 unitId, bool32 defaultReturn) {
-		const uint32 Func_spreadsCreep = 0x00413870;
-		bool32 bReturnValue;
+	b32 spreadsCreep(u32 unitId, b32 defaultReturn) {
+		const u32 Func_spreadsCreep = 0x00413870;
+		b32 bReturnValue;
 		__asm {
 			PUSHAD
 			MOV EAX, unitId
@@ -3314,8 +3314,8 @@ namespace helper {
 		return bReturnValue;
 	}
 
-	void function_004148F0(int x, int y, uint32 unitId) {
-		const uint32 Func_Sub4148F0 = 0x004148F0;
+	void function_004148F0(s32 x, s32 y, u32 unitId) {
+		const u32 Func_Sub4148F0 = 0x004148F0;
 		__asm {
 			PUSHAD
 			PUSH y
@@ -3327,7 +3327,7 @@ namespace helper {
 	}
 
 	void CreateBuildingLarva(CUnit* main_building) {
-		const uint32 Func_Sub49D660 = 0x0049D660;
+		const u32 Func_Sub49D660 = 0x0049D660;
 		__asm {
 			PUSHAD
 			MOV ESI, main_building
@@ -3336,9 +3336,9 @@ namespace helper {
 		}
 	}
 
-	bool32 function_0049EC30(CUnit* unit) {
-		const uint32 Func_Sub49EC30 = 0x0049EC30;
-		bool32 bResult;
+	b32 function_0049EC30(CUnit* unit) {
+		const u32 Func_Sub49EC30 = 0x0049EC30;
+		b32 bResult;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -3349,8 +3349,8 @@ namespace helper {
 		return bResult;
 	}
 
-	CUnit* FindBestUnit(Box16* coords, uint32 searchProc) {
-		const uint32 Func_FindBestUnit = 0x004E8830;
+	CUnit* FindBestUnit(Box16* coords, u32 searchProc) {
+		const u32 Func_FindBestUnit = 0x004E8830;
 		static CUnit* unit;
 		__asm {
 			PUSHAD
@@ -3381,9 +3381,9 @@ namespace helper {
 		return unit;
 	}
 
-	uint8 spreadCreep(uint32 unitId, int x, int y) {
-		const uint32 Func_Sub414680 = 0x00414680;
-		static uint8 return_value;
+	u8 spreadCreep(u32 unitId, s32 x, s32 y) {
+		const u32 Func_Sub414680 = 0x00414680;
+		static u8 return_value;
 		__asm {
 			PUSHAD
 			MOV ECX, x
@@ -3397,9 +3397,9 @@ namespace helper {
 	}
 
 	// hardcoding the larva count function, keeping the return value though it's unused here
-	uint32 IterateUnitsAtLocationTargetProc_LarvaCount(CUnit* unit, Box16* coords) {
-		const uint32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
-		static uint32 return_value;
+	u32 IterateUnitsAtLocationTargetProc_LarvaCount(CUnit* unit, Box16* coords) {
+		const u32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
+		static u32 return_value;
 		__asm {
 			PUSHAD
 			PUSH unit
@@ -3413,7 +3413,7 @@ namespace helper {
 	}
 
 	void function_004E8DA0(CUnit* unit) {
-		const uint32 Func_Sub4E8DA0 = 0x004E8DA0;
+		const u32 Func_Sub4E8DA0 = 0x004E8DA0;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
@@ -3423,8 +3423,8 @@ namespace helper {
 	}
 
 	bool function_004E8E10(CUnit* unit, Point32* coords) {
-		const uint32 Func_Sub4E8E10 = 0x004E8E10;
-		static bool32 return_pre_value;
+		const u32 Func_Sub4E8E10 = 0x004E8E10;
+		static b32 return_pre_value;
 		__asm {
 			PUSHAD
 			MOV EDI, coords
@@ -3436,9 +3436,9 @@ namespace helper {
 		return (return_pre_value != 0);
 	}
 
-	uint32 getNumSurroundingCreepTiles(uint32 x, uint32 y) {
-		const uint32 Func_getNumSurroundingCreepTiles = 0x00414290;
-		static uint32 return_val;
+	u32 getNumSurroundingCreepTiles(u32 x, u32 y) {
+		const u32 Func_getNumSurroundingCreepTiles = 0x00414290;
+		static u32 return_val;
 		__asm {
 			PUSHAD
 			PUSH y
@@ -3450,8 +3450,8 @@ namespace helper {
 		return return_val;
 	}
 
-	void setCreepRelationalData(uint32 x, uint32 y, setCreepRelationalData_callback callback, uint32 arg) {
-		const uint32 Func_setCreepRelationalData = 0x00413FA0;
+	void setCreepRelationalData(u32 x, u32 y, setCreepRelationalData_callback callback, u32 arg) {
+		const u32 Func_setCreepRelationalData = 0x00413FA0;
 		__asm {
 			PUSHAD
 			PUSH arg
@@ -3463,9 +3463,9 @@ namespace helper {
 		}
 	}
 
-	uint32 iterateDirectionalCreepData(uint32 x, uint32 y, uint32 callback, uint32 arg) {
-		const uint32 Func_iterateDirectionalCreepData = 0x00413B30;
-		static uint32 return_val;
+	u32 iterateDirectionalCreepData(u32 x, u32 y, u32 callback, u32 arg) {
+		const u32 Func_iterateDirectionalCreepData = 0x00413B30;
+		static u32 return_val;
 		__asm {
 			PUSHAD
 			PUSH y
@@ -3480,7 +3480,7 @@ namespace helper {
 	}
 
 	void function_004E97C0(CUnit* unit) {
-		const uint32 Func_Sub_4E97C0 = 0x004E97C0;
+		const u32 Func_Sub_4E97C0 = 0x004E97C0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3491,8 +3491,8 @@ namespace helper {
 
 	// Note: this function was made from what was seen in this case of use, some things are hardcoded because it's hard to tell what is used or not.
 	// Basically, used elsewhere, the function would be implemented differently
-	void function_004754F0(CUnit* unit, uint32 unitId, uint32 unk1, uint32 unk2, uint32 orderId, uint32 unk3, uint32 unk4, uint32 unk5) {
-		const uint32 Func_Sub_4754F0 = 0x004754F0;
+	void function_004754F0(CUnit* unit, u32 unitId, u32 unk1, u32 unk2, u32 orderId, u32 unk3, u32 unk4, u32 unk5) {
+		const u32 Func_Sub_4754F0 = 0x004754F0;
 		__asm {
 			PUSHAD
 			MOV EAX, 0
@@ -3511,7 +3511,7 @@ namespace helper {
 	}
 
 	void clearUnitSprites(CSprite* unit_sprite, CSprite* subunit_sprite) {
-		const uint32 Func_clearUnitSprites = 0x00496F00;
+		const u32 Func_clearUnitSprites = 0x00496F00;
 		__asm {
 			PUSHAD
 			MOV ECX, subunit_sprite
@@ -3521,8 +3521,8 @@ namespace helper {
 		}
 	}
 
-	void function_00497480(CSprite* thingySprite, uint32 visibility_flags) {
-		const uint32 Func_Sub497480 = 0x00497480;
+	void function_00497480(CSprite* thingySprite, u32 visibility_flags) {
+		const u32 Func_Sub497480 = 0x00497480;
 		__asm {
 			PUSHAD
 			MOV EBX, thingySprite
@@ -3533,7 +3533,7 @@ namespace helper {
 	}
 
 	void _UnitDestructor(CUnit* unit) {
-		const uint32 Func__UnitDestructor = 0x004A0740;
+		const u32 Func__UnitDestructor = 0x004A0740;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3543,7 +3543,7 @@ namespace helper {
 	}
 
 	void UnitDestructor(CUnit* unit) {
-		const uint32 Func_UnitDestructor = 0x004A0990;
+		const u32 Func_UnitDestructor = 0x004A0990;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -3553,7 +3553,7 @@ namespace helper {
 	}
 
 	void hideAndDisableUnit(CUnit* unit) {
-		const uint32 Func_unitDeathSomething_0 = 0x004E6340;
+		const u32 Func_unitDeathSomething_0 = 0x004E6340;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3563,7 +3563,7 @@ namespace helper {
 	}
 
 	void CancelResearch_Proc(CUnit* unit) {
-		const uint32 Func_Sub453E30 = 0x00453E30;
+		const u32 Func_Sub453E30 = 0x00453E30;
 		__asm {
 			PUSHAD
 			MOV EDX, unit
@@ -3573,7 +3573,7 @@ namespace helper {
 	}
 
 	void CancelUpgrade_Proc(CUnit* unit) {
-		const uint32 Func_Sub454280 = 0x00454280;
+		const u32 Func_Sub454280 = 0x00454280;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3582,8 +3582,8 @@ namespace helper {
 		}
 	}
 
-	void refundQueueSlot(CUnit* unit, uint16 slot) {
-		const uint32 Func_refundQueueSlot = 0x00466A70;
+	void refundQueueSlot(CUnit* unit, u16 slot) {
+		const u32 Func_refundQueueSlot = 0x00466A70;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
@@ -3594,7 +3594,7 @@ namespace helper {
 	}
 
 	void function_00466E40(CUnit* unit) {
-		const uint32 Func_Sub466E40 = 0x00466E40;
+		const u32 Func_Sub466E40 = 0x00466E40;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3604,7 +3604,7 @@ namespace helper {
 	}
 
 	void CancelAddon_Proc(CUnit* unit) {
-		const uint32 Func_Sub4E66E0 = 0x004E66E0;
+		const u32 Func_Sub4E66E0 = 0x004E66E0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3613,9 +3613,9 @@ namespace helper {
 		}
 	}
 
-	bool32 OrderAllowed(CUnit* unit, uint16 order, uint32 nationID) {
-		const uint32 Func_OrderAllowed = 0x0046DC20;
-		static bool32 bResult;
+	b32 OrderAllowed(CUnit* unit, u16 order, u32 nationID) {
+		const u32 Func_OrderAllowed = 0x0046DC20;
+		static b32 bResult;
 		__asm {
 			PUSHAD
 			MOV BX, order
@@ -3628,9 +3628,9 @@ namespace helper {
 		return bResult;
 	}
 
-	bool placeBuildingMsg(uint32 result_function_473FB0) {
-		const uint32 Func_placeBuildingMsg = 0x0048D930;
-		static bool32 bPreResult;
+	bool placeBuildingMsg(u32 result_function_473FB0) {
+		const u32 Func_placeBuildingMsg = 0x0048D930;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EAX, result_function_473FB0
@@ -3641,9 +3641,9 @@ namespace helper {
 		return (bPreResult != 0);
 	}
 
-	bool CMDRECV_PlaceBuildingAllowedHelper(CUnit* unit, uint8 orderId, uint16 builtUnitId) {
-		const uint32 Func_CMDRECV_PlaceBuildingAllowed = 0x0048DBD0;
-		static bool32 bPreResult;
+	bool CMDRECV_PlaceBuildingAllowedHelper(CUnit* unit, u8 orderId, u16 builtUnitId) {
+		const u32 Func_CMDRECV_PlaceBuildingAllowed = 0x0048DBD0;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV AX, builtUnitId
@@ -3656,8 +3656,8 @@ namespace helper {
 		return (bPreResult != 0);
 	}
 
-	void function_0048DE70(CUnit* unit, uint32 orderId, uint16 dimensionX, uint16 dimensionY, uint32 builtUnitId) {
-		const uint32 Func_Sub48DE70 = 0x0048DE70;
+	void function_0048DE70(CUnit* unit, u32 orderId, u16 dimensionX, u16 dimensionY, u32 builtUnitId) {
+		const u32 Func_Sub48DE70 = 0x0048DE70;
 		static Point16 dim;
 		dim.x = dimensionX; dim.y = dimensionY;
 		__asm {
@@ -3671,8 +3671,8 @@ namespace helper {
 		}
 	}
 
-	void cmdRECV_PlaceBuilding(int16 x, int16 y, uint8 orderId, uint16 builtUnitId) {
-		const uint32 Func_cmdRECV_PlaceBuilding = 0x0048E190;
+	void cmdRECV_PlaceBuilding(s16 x, s16 y, u8 orderId, u16 builtUnitId) {
+		const u32 Func_cmdRECV_PlaceBuilding = 0x0048E190;
 		static Point16 pos;
 		pos.x = x; pos.y = y;
 		__asm {
@@ -3685,8 +3685,8 @@ namespace helper {
 		}
 	}
 
-	CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, uint32 units_list_length) {
-		const uint32 Func_templarMergePartner = 0x004BFA80;
+	CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, u32 units_list_length) {
+		const u32 Func_templarMergePartner = 0x004BFA80;
 		static CUnit* return_value;
 		__asm {
 			PUSHAD
@@ -3701,7 +3701,7 @@ namespace helper {
 	}
 
 	void parseOrdersDatReqs() {
-		const uint32 Func_parseOrdersDatReqs = 0x0046D450;
+		const u32 Func_parseOrdersDatReqs = 0x0046D450;
 		__asm {
 			PUSHAD
 			CALL Func_parseOrdersDatReqs
@@ -3709,9 +3709,9 @@ namespace helper {
 		}
 	}
 
-	int parseRequirementOpcodes(CUnit* unit, uint32 orderId, uint32 playerId, uint32 address, uint32 req_offset) {
-		const uint32 Func_parseRequirementOpcodes = 0x0046D610;
-		static int return_value;
+	s32 parseRequirementOpcodes(CUnit* unit, u32 orderId, u32 playerId, u32 address, u32 req_offset) {
+		const u32 Func_parseRequirementOpcodes = 0x0046D610;
+		static s32 return_value;
 		__asm {
 			PUSHAD
 			MOV EAX, req_offset
@@ -3727,7 +3727,7 @@ namespace helper {
 	}
 
 	void ApplySpeedUpgradeFromUnitType(CUnit* unit) {
-		const uint32 Func_ApplySpeedUpgradeFromUnitType = 0x00454370;
+		const u32 Func_ApplySpeedUpgradeFromUnitType = 0x00454370;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -3737,7 +3737,7 @@ namespace helper {
 	}
 
 	void function_00463040(CUnit* unit) {
-		const uint32 Func_Sub463040 = 0x00463040;
+		const u32 Func_Sub463040 = 0x00463040;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3747,7 +3747,7 @@ namespace helper {
 	}
 
 	void function_00476D30(CUnit* unit) {
-		const uint32 Func_Sub476D30 = 0x00476D30;
+		const u32 Func_Sub476D30 = 0x00476D30;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
@@ -3756,8 +3756,8 @@ namespace helper {
 		}
 	}
 
-	void incrementUnitScores(CUnit* unit, int32 unkScore) {
-		const uint32 Func_incrementUnitScores = 0x00488BF0;
+	void incrementUnitScores(CUnit* unit, s32 unkScore) {
+		const u32 Func_incrementUnitScores = 0x00488BF0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3767,8 +3767,8 @@ namespace helper {
 		}
 	}
 
-	void function_004A1E50(CUnit* unit, uint32 unk) {
-		const uint32 Func_Sub4A1E50 = 0x004A1E50;
+	void function_004A1E50(CUnit* unit, u32 unk) {
+		const u32 Func_Sub4A1E50 = 0x004A1E50;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -3778,8 +3778,8 @@ namespace helper {
 		}
 	}
 
-	void CreateUnitSelection(CUnit* unit, uint32 selectionIndex) {
-		const uint32 Func_CreateUnitSelection = 0x004E6180;
+	void CreateUnitSelection(CUnit* unit, u32 selectionIndex) {
+		const u32 Func_CreateUnitSelection = 0x004E6180;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3790,7 +3790,7 @@ namespace helper {
 	}
 
 	void DestroyUnitSelection(CUnit* unit) {
-		const uint32 Func_DestroyUnitSelection = 0x004E6290;
+		const u32 Func_DestroyUnitSelection = 0x004E6290;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3800,7 +3800,7 @@ namespace helper {
 	}
 
 	void function_004F3B70(CUnit* powerup) {
-		const uint32 Func_Sub4F3B70 = 0x004F3B70;
+		const u32 Func_Sub4F3B70 = 0x004F3B70;
 		__asm {
 			PUSHAD
 			PUSH powerup
@@ -3809,9 +3809,9 @@ namespace helper {
 		}
 	}
 
-	uint32 getUpgradedWpnCooldown(CUnit* unit, uint8 weaponId) {
-		const uint32 Func_getUpgradedWpnCooldown = 0x00475DC0;
-		static uint32 return_value;
+	u32 getUpgradedWpnCooldown(CUnit* unit, u8 weaponId) {
+		const u32 Func_getUpgradedWpnCooldown = 0x00475DC0;
+		static u32 return_value;
 		__asm {
 			PUSHAD
 			MOV AL, weaponId
@@ -3823,9 +3823,9 @@ namespace helper {
 		return return_value;
 	}
 
-	bool function_00476640(CUnit* unit, uint32 weaponId) {
-		const uint32 Func_Sub476640 = 0x00476640;
-		static bool32 pre_result;
+	bool function_00476640(CUnit* unit, u32 weaponId) {
+		const u32 Func_Sub476640 = 0x00476640;
+		static b32 pre_result;
 		__asm {
 			PUSHAD
 			PUSH weaponId
@@ -3837,9 +3837,9 @@ namespace helper {
 		return (pre_result != 0);
 	}
 
-	uint32 get_statTxt_Str_0(CUnit* unit, uint32 playerId, char* message) {
-		const uint32 Func_get_statTxt_Str_0 = 0x0048EF30;
-		static uint32 return_value;
+	u32 get_statTxt_Str_0(CUnit* unit, u32 playerId, char* message) {
+		const u32 Func_get_statTxt_Str_0 = 0x0048EF30;
+		static u32 return_value;
 		__asm {
 			PUSHAD
 			MOV EAX, message
@@ -3853,8 +3853,8 @@ namespace helper {
 	}
 
 	bool canCastSpell_0(CUnit* unit) {
-		const uint32 Func_canCastSpell_0 = 0x00492140;
-		static bool32 bPreResult;
+		const u32 Func_canCastSpell_0 = 0x00492140;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
@@ -3866,9 +3866,9 @@ namespace helper {
 		return (bPreResult == 0);
 	}
 
-	uint32 function_00492620(CUnit* unit, bool32 wasMainOrderStateZero) {
-		const uint32 Func_Sub492620 = 0x00492620;
-		static uint32 return_value;
+	u32 function_00492620(CUnit* unit, b32 wasMainOrderStateZero) {
+		const u32 Func_Sub492620 = 0x00492620;
+		static u32 return_value;
 		__asm {
 			PUSHAD
 			PUSH wasMainOrderStateZero
@@ -3881,7 +3881,7 @@ namespace helper {
 	}
 
 	void refundAllQueueSlots(CUnit* unit) {
-		const uint32 Func_RefundAllQueueSlots = 0x00466E80;
+		const u32 Func_RefundAllQueueSlots = 0x00466E80;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3890,8 +3890,8 @@ namespace helper {
 		}
 	}
 
-	void incrementUnitDeathScores(CUnit* unit, uint8 player) {
-		const uint32 Func_IncrementUnitDeathScores = 0x00488AF0;
+	void incrementUnitDeathScores(CUnit* unit, u8 player) {
+		const u32 Func_IncrementUnitDeathScores = 0x00488AF0;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
@@ -3901,8 +3901,8 @@ namespace helper {
 		}
 	}
 
-	void initializeEmptyUnitsLinkedListRef_Sub49E4E0(CUnit* unit, uint8 playerId) {
-		const uint32 Func_Sub_49E4E0 = 0x0049E4E0;
+	void initializeEmptyUnitsLinkedListRef_Sub49E4E0(CUnit* unit, u8 playerId) {
+		const u32 Func_Sub_49E4E0 = 0x0049E4E0;
 		__asm {
 			PUSHAD
 			MOV DL, playerId
@@ -3912,8 +3912,8 @@ namespace helper {
 		}
 	}
 
-	const uint32 Func_Sub_49EFA0 = 0x0049EFA0;
-	void GiveUnitHelper(CUnit* unit, uint32 playerId, int32 unkScore) {
+	const u32 Func_Sub_49EFA0 = 0x0049EFA0;
+	void GiveUnitHelper(CUnit* unit, u32 playerId, s32 unkScore) {
 		__asm {
 			PUSHAD
 			PUSH unkScore
@@ -3924,8 +3924,8 @@ namespace helper {
 		}
 	}
 
-	void changeUnitButtonSet_Sub_4E5D60(CUnit* unit, uint16 buttonSetId) {
-		const uint32 Func_Sub_4E5D60 = 0x004E5D60;
+	void changeUnitButtonSet_Sub_4E5D60(CUnit* unit, u16 buttonSetId) {
+		const u32 Func_Sub_4E5D60 = 0x004E5D60;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -3937,7 +3937,7 @@ namespace helper {
 
 	// What make the target reappear
 	void showAndEnableUnit(CUnit* unit) {
-		const uint32 Func_InitUnitTrapDoodad = 0x004E6490;
+		const u32 Func_InitUnitTrapDoodad = 0x004E6490;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
@@ -3947,8 +3947,8 @@ namespace helper {
 	}
 
 	bool isInfestableUnit(CUnit* unit) {
-		const uint32 Func_IsInfestable = 0x00402210;
-		static bool32 result;
+		const u32 Func_IsInfestable = 0x00402210;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EDX, unit
@@ -3961,8 +3961,8 @@ namespace helper {
 
 	// For updateUnitStrengthAndApplyDefaultOrders
 
-	void playSoundFromDirection(CUnit* a1, int a2) {
-		const uint32 Func_playSoundFromDirection = 0x0049B5B0;
+	void playSoundFromDirection(CUnit* a1, s32 a2) {
+		const u32 Func_playSoundFromDirection = 0x0049B5B0;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -3973,7 +3973,7 @@ namespace helper {
 	}
 
 	void refreshUnitVision(CUnit* a1) {
-		const uint32 Func_refreshUnitVision = 0x004E5F30;
+		const u32 Func_refreshUnitVision = 0x004E5F30;
 		__asm {
 			PUSHAD
 			PUSH a1
@@ -3983,7 +3983,7 @@ namespace helper {
 	}
 
 	void initUnitTrapDoodad(CUnit* a1) {
-		const uint32 Func_initUnitTrapDoodad = 0x004E6490;
+		const u32 Func_initUnitTrapDoodad = 0x004E6490;
 		__asm {
 			PUSHAD
 			MOV EDI, a1
@@ -3993,7 +3993,7 @@ namespace helper {
 	}
 
 	COrder* removeOrderFromUnitQueue(COrder* a1, CUnit* a2) {
-		const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
+		const u32 Func_removeOrderFromUnitQueue = 0x004742D0;
 		static COrder* result;
 		__asm {
 			PUSHAD
@@ -4006,8 +4006,8 @@ namespace helper {
 		return result;
 	}
 
-	COrder* performAnotherOrder(uint8 a1, int a2, CUnit* a3, int16 a4, Point32* a5, CUnit* a6) {
-		const uint32 Func_performAnotherOrder = 0x004745F0;
+	COrder* performAnotherOrder(u8 a1, s32 a2, CUnit* a3, s16 a4, Point32* a5, CUnit* a6) {
+		const u32 Func_performAnotherOrder = 0x004745F0;
 		static COrder* result;
 		__asm {
 			PUSHAD
@@ -4024,8 +4024,8 @@ namespace helper {
 		return result;
 	}
 
-	void order(int a1, CUnit* a2, int8 a3, Point32* a4, CUnit* a5, int a6) {
-		const uint32 Func_order = 0x00474810;
+	void order(s32 a1, CUnit* a2, s8 a3, Point32* a4, CUnit* a5, s32 a6) {
+		const u32 Func_order = 0x00474810;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -4039,9 +4039,9 @@ namespace helper {
 		}
 	}
 
-	uint32 getUnitStrength(CUnit* a1, int a2, bool a3) {
-		const uint32 Func_getUnitStrength = 0x00431800;
-		static uint32 result;
+	u32 getUnitStrength(CUnit* a1, s32 a2, bool a3) {
+		const u32 Func_getUnitStrength = 0x00431800;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -4054,8 +4054,8 @@ namespace helper {
 		return result;
 	}
 
-	void playWorkerErrorSound(CUnit* unit, uint32 errorTextIndex) {
-		const uint32 Func_PlayWorkerErrorSound = 0x0048F6C0;
+	void playWorkerErrorSound(CUnit* unit, u32 errorTextIndex) {
+		const u32 Func_PlayWorkerErrorSound = 0x0048F6C0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -4066,8 +4066,8 @@ namespace helper {
 	}
 
 	bool isUnitUpgradeAvailable(CUnit* unit) {
-		const uint32 Func_isUnitUpgradeAvailable = 0x004033D0;
-		static bool32 bPreResult;
+		const u32 Func_isUnitUpgradeAvailable = 0x004033D0;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -4078,8 +4078,8 @@ namespace helper {
 		return (bPreResult != 0);
 	}
 
-	void ApplySpeedUpgradeFromUpgradeType(CUnit* unit, uint8 upgradeType) {
-		const uint32 Func_ApplySpeedUpgradeFromUpgradeType = 0x00454540;
+	void ApplySpeedUpgradeFromUpgradeType(CUnit* unit, u8 upgradeType) {
+		const u32 Func_ApplySpeedUpgradeFromUpgradeType = 0x00454540;
 		__asm {
 			PUSHAD
 			MOV AL, upgradeType
@@ -4090,7 +4090,7 @@ namespace helper {
 	}
 
 	void playUpgradeCompleteSound() {
-		const uint32 Func_playUpgradeCompleteSound = 0x0048F070;
+		const u32 Func_playUpgradeCompleteSound = 0x0048F070;
 		__asm {
 			PUSHAD
 			CALL Func_playUpgradeCompleteSound
@@ -4099,7 +4099,7 @@ namespace helper {
 	}
 
 	void playResearchCompleteSound() {
-		const uint32 Func_playResearchCompleteSound = 0x0048F150;
+		const u32 Func_playResearchCompleteSound = 0x0048F150;
 		__asm {
 			PUSHAD
 			CALL Func_playResearchCompleteSound
@@ -4107,8 +4107,8 @@ namespace helper {
 		}
 	}
 
-	void setUpgradeLevel(uint32 playerId, uint32 upgradeType, uint8 upgradeLevel) {
-		const uint32 Func_setUpgradeLevel = 0x004CE770;
+	void setUpgradeLevel(u32 playerId, u32 upgradeType, u8 upgradeLevel) {
+		const u32 Func_setUpgradeLevel = 0x004CE770;
 		__asm {
 			PUSHAD
 			MOV DL, upgradeLevel
@@ -4121,8 +4121,8 @@ namespace helper {
 
 	// return true if remainingBuildTime was 0 when called, remainingBuildTime change affected by cheating
 	bool advanceRemainingBuildTime(CUnit* unit) {
-		uint32 Func_advanceRemainingBuildTime = 0x00466940;
-		static bool32 bTimeWasZero;
+		u32 Func_advanceRemainingBuildTime = 0x00466940;
+		static b32 bTimeWasZero;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -4134,9 +4134,9 @@ namespace helper {
 	}
 
 	// return value may be useless since it's the exact value of pathingFlags
-	uint8 function_0046A820(CUnit* unit) {
-		uint32 Func_Sub46A820 = 0x0046A820;
-		static uint8 result;
+	u8 function_0046A820(CUnit* unit) {
+		u32 Func_Sub46A820 = 0x0046A820;
+		static u8 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -4148,8 +4148,8 @@ namespace helper {
 		return result;
 	}
 
-	void orderImmediate(CUnit* unit, uint8 order) {
-		uint32 Func_OrderImmediate = 0x00474B40;
+	void orderImmediate(CUnit* unit, u8 order) {
+		u32 Func_OrderImmediate = 0x00474B40;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -4160,7 +4160,7 @@ namespace helper {
 	}
 
 	void playMorphingCompleteSound(CUnit* unit) {
-		const uint32 Func_PlayMorphingCompleteSound = 0x0048F440;
+		const u32 Func_PlayMorphingCompleteSound = 0x0048F440;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -4171,7 +4171,7 @@ namespace helper {
 
 	// get status (defensiveMatrixHp to acidSporeTime) of unit_src and give it to unit_dst
 	void mergeStatusIntoUnit_Sub493180(CUnit* unit_dst, CUnit* unit_src) {
-		const uint32 Func_Sub493180 = 0x00493180;
+		const u32 Func_Sub493180 = 0x00493180;
 		__asm {
 			PUSHAD
 			MOV ECX, unit_src
@@ -4181,8 +4181,8 @@ namespace helper {
 		}
 	}
 
-	void function_0049B440(CUnit* unit, uint32 soundId) {
-		const uint32 Func_Sub49B440 = 0x0049B440;
+	void function_0049B440(CUnit* unit, u32 soundId) {
+		const u32 Func_Sub49B440 = 0x0049B440;
 		__asm {
 			PUSHAD
 			MOV EBX, soundId
@@ -4192,8 +4192,8 @@ namespace helper {
 		}
 	}
 
-	void changeUnitButtonSet_Sub4E5D60(CUnit* unit, uint16 buttonSetId) {
-		const uint32 Func_Sub4E5D60 = 0x004E5D60;
+	void changeUnitButtonSet_Sub4E5D60(CUnit* unit, u16 buttonSetId) {
+		const u32 Func_Sub4E5D60 = 0x004E5D60;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -4204,9 +4204,9 @@ namespace helper {
 	}
 
 	// return true if waiting for recentOrderTimer to reach 0 or if setMoveTarget_xy returned true
-	bool delayedSetMoveTarget_xy_Sub4EB960(CUnit* unit, uint16 x, uint16 y) {
-		const uint32 Func_Sub4EB960 = 0x004EB960;
-		bool32 bPreResult;
+	bool delayedSetMoveTarget_xy_Sub4EB960(CUnit* unit, u16 x, u16 y) {
+		const u32 Func_Sub4EB960 = 0x004EB960;
+		b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOVSX EDI, y
@@ -4219,8 +4219,8 @@ namespace helper {
 		return (bPreResult != 0);
 	}
 
-	void setAllOverlayDirectionsGeneric(CUnit* unit, uint32 unk) {
-		const uint32 Func_setAllOverlayDirectionsGeneric = 0x00401140;
+	void setAllOverlayDirectionsGeneric(CUnit* unit, u32 unk) {
+		const u32 Func_setAllOverlayDirectionsGeneric = 0x00401140;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -4232,7 +4232,7 @@ namespace helper {
 	}
 
 	void AI_orderUnitCloaking(CUnit* unit) {
-		const uint32 Func_AI_orderUnitCloaking = 0x0043B970;
+		const u32 Func_AI_orderUnitCloaking = 0x0043B970;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -4241,9 +4241,9 @@ namespace helper {
 		}
 	}
 
-	uint32 function_0043DB50(CUnit* unit) {
-		const uint32 Func_Sub43DB50 = 0x0043DB50;
-		static uint32 return_value;
+	u32 function_0043DB50(CUnit* unit) {
+		const u32 Func_Sub43DB50 = 0x0043DB50;
+		static u32 return_value;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -4254,9 +4254,9 @@ namespace helper {
 		return return_value;
 	}
 
-	int getUnitMaxWeaponRange(CUnit* a1, unsigned __int8 a2) {
-		const uint32 Func_getUnitMaxWeaponRange = 0x00475870;
-		static int result;
+	s32 getUnitMaxWeaponRange(CUnit* a1, unsigned __int8 a2) {
+		const u32 Func_getUnitMaxWeaponRange = 0x00475870;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -4268,9 +4268,9 @@ namespace helper {
 		return result;
 	}
 
-	bool isTargetWithinMinMovementRange(CUnit* a1, unsigned int a2, CUnit* a3) {
-		const uint32 Func_isTargetWithinMinMovementRange = 0x004763D0;
-		static int result;
+	bool isTargetWithinMinMovementRange(CUnit* a1, u32 a2, CUnit* a3) {
+		const u32 Func_isTargetWithinMinMovementRange = 0x004763D0;
+		static s32 result;
 		static bool result2;
 		__asm {
 			PUSHAD
@@ -4286,9 +4286,9 @@ namespace helper {
 
 	// for isReadyToAttack
 
-	unsigned int getDistanceToUnit(CUnit* a1, CUnit* a2) {
-		const uint32 Func_getDistanceToUnit = 0x00430D30;
-		static unsigned int result;
+	u32 getDistanceToUnit(CUnit* a1, CUnit* a2) {
+		const u32 Func_getDistanceToUnit = 0x00430D30;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -4300,9 +4300,9 @@ namespace helper {
 		return result;
 	}
 
-	unsigned int distanceFromDboxCorner(CUnit* a1, __int16 a2, __int16 a3) {
-		const uint32 Func_distanceFromDboxCorner = 0x0043E50;
-		static unsigned int result;
+	u32 distanceFromDboxCorner(CUnit* a1, __int16 a2, __int16 a3) {
+		const u32 Func_distanceFromDboxCorner = 0x0043E50;
+		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -4315,9 +4315,9 @@ namespace helper {
 		return result;
 	}
 
-	bool isAngleInAttackAngle(int a1, int a2, CUnit* a3, unsigned __int8 a4) {
-		const uint32 Func_isAngleInAttackAngle = 0x00475BE0;
-		static int result;
+	bool isAngleInAttackAngle(s32 a1, s32 a2, CUnit* a3, unsigned __int8 a4) {
+		const u32 Func_isAngleInAttackAngle = 0x00475BE0;
+		static s32 result;
 		static bool result2;
 		__asm {
 			PUSHAD
@@ -4334,9 +4334,9 @@ namespace helper {
 
 	// for canCastOrderedSpellNow
 
-	bool isTargetWithinMinRange(CUnit* a1, unsigned int a2, CUnit* a3) {
-		const uint32 Func_isTargetWithinMinRange = 0x00430F10;
-		static int result;
+	bool isTargetWithinMinRange(CUnit* a1, u32 a2, CUnit* a3) {
+		const u32 Func_isTargetWithinMinRange = 0x00430F10;
+		static s32 result;
 		static bool result2;
 
 		__asm {
@@ -4351,9 +4351,9 @@ namespace helper {
 		return result = (bool)result;
 	}
 
-	int getFlingyHaltDistance(int a1) {
-		const uint32 Func_getFlingyHaltDistaince = 0x00494F90;
-		static int result;
+	s32 getFlingyHaltDistance(s32 a1) {
+		const u32 Func_getFlingyHaltDistaince = 0x00494F90;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a1
@@ -4366,8 +4366,8 @@ namespace helper {
 
 	// for ordersWatchTarget
 
-	void unknownOrdersFunc(int a1, __int16 a2, __int16 a3) {
-		const uint32 Func_unknownOrdersFunc = 0x00475350;
+	void unknownOrdersFunc(s32 a1, __int16 a2, __int16 a3) {
+		const u32 Func_unknownOrdersFunc = 0x00475350;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -4380,8 +4380,8 @@ namespace helper {
 
 	// for ordersStayInRange
 
-	void prependOrderTargetingGround(__int8 a1, __int16 a2, __int16 a3, int a4) {
-		const uint32 Func_prependOrderTargetingGround = 0x00474A20;
+	void prependOrderTargetingGround(__int8 a1, __int16 a2, __int16 a3, s32 a4) {
+		const u32 Func_prependOrderTargetingGround = 0x00474A20;
 		__asm {
 			PUSHAD
 			PUSH a4
@@ -4393,9 +4393,9 @@ namespace helper {
 		}
 	}
 
-	signed int moveTowards(CUnit* a1, CUnit* a2) {
-		const uint32 Func_moveTowards = 0x004EB900;
-		static signed int result;
+	s32 moveTowards(CUnit* a1, CUnit* a2) {
+		const u32 Func_moveTowards = 0x004EB900;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -4407,9 +4407,9 @@ namespace helper {
 		return result;
 	}
 
-	int ordersHoldPositionSuicidal(CUnit* a1) {
-		const uint32 Func_ordersHoldPositionSuicidal = 0x004EB5B0;
-		static int result;
+	s32 ordersHoldPositionSuicidal(CUnit* a1) {
+		const u32 Func_ordersHoldPositionSuicidal = 0x004EB5B0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, a1
@@ -4420,9 +4420,9 @@ namespace helper {
 		return result;
 	}
 
-	int getDirectionFromPoints(int a1, int a2, int a3, int a4) {
-		const uint32 Func_getDirectionFromPoints = 0x00495300;
-		static int result;
+	s32 getDirectionFromPoints(s32 a1, s32 a2, s32 a3, s32 a4) {
+		const u32 Func_getDirectionFromPoints = 0x00495300;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a4
@@ -4436,8 +4436,8 @@ namespace helper {
 		return result;
 	}
 
-	CUnit* setSecondaryWaypoint(CUnit* a1, int a2, int a3) {
-		const uint32 Func_setSecondaryWaypoint = 0x00494BB0;
+	CUnit* setSecondaryWaypoint(CUnit* a1, s32 a2, s32 a3) {
+		const u32 Func_setSecondaryWaypoint = 0x00494BB0;
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -4452,7 +4452,7 @@ namespace helper {
 	}
 
 	Point32 setResourceTarget(CUnit* a1) {
-		const uint32 Func_setResourceTarget = 0x004EB290;
+		const u32 Func_setResourceTarget = 0x004EB290;
 		static __int32 result;
 		static Point32 resultPoint;
 		__asm {
@@ -4466,7 +4466,7 @@ namespace helper {
 	}
 
 	void ordersNothing2(CUnit* a1) {
-		const uint32 Func_ordersNothing2 = 0x00475000;
+		const u32 Func_ordersNothing2 = 0x00475000;
 		__asm {
 			PUSHAD
 			PUSH a1
@@ -4477,9 +4477,9 @@ namespace helper {
 
 	// for genericRightClickUnitProc2
 
-	int32 isOrderValid(char a1, CUnit* a2, int32 a3, CUnit* a4, int32 a5) {
-		const uint32 Func_isOrderValid = 0x00474D90;
-		static int32 result;
+	s32 isOrderValid(char a1, CUnit* a2, s32 a3, CUnit* a4, s32 a5) {
+		const u32 Func_isOrderValid = 0x00474D90;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a5
@@ -4494,9 +4494,9 @@ namespace helper {
 		return result;
 	}
 
-	uint16 getUnitAbilityErrorStatString(CUnit* a1, char a2, int32 a3) {
-		const uint32 Func_getUnitAbilityErrorStatString = 0x00491E80;
-		static uint32 result;
+	u16 getUnitAbilityErrorStatString(CUnit* a1, char a2, s32 a3) {
+		const u32 Func_getUnitAbilityErrorStatString = 0x00491E80;
+		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -4506,13 +4506,13 @@ namespace helper {
 			MOV result, EAX
 			POPAD
 		}
-		return (uint16)result;
+		return (u16)result;
 	}
 
 	// for CMDRECV_HoldPosition
 
 	CUnit* getActivePlayerFirstSelection() {
-		const uint32 Func_getActivePlayerFirstSelection = 0x0049A850;
+		const u32 Func_getActivePlayerFirstSelection = 0x0049A850;
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -4523,9 +4523,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 orderAllowed(CUnit* a1, uint16 a2, int32 a3) {
-		const uint32 Func_orderAllowed = 0x0046DC20;
-		static int32 result;
+	s32 orderAllowed(CUnit* a1, u16 a2, s32 a3) {
+		const u32 Func_orderAllowed = 0x0046DC20;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -4538,8 +4538,8 @@ namespace helper {
 		return result;
 	}
 
-	void targetedOrder(int16 a1, int32 a2, CUnit* a3, int16 a4, int32 a5, int32 a6, char a7, int32 a8, int32 a9, int32 a10) {
-		const uint32 Func_targetedOrder = 0x004754F0;
+	void targetedOrder(s16 a1, s32 a2, CUnit* a3, s16 a4, s32 a5, s32 a6, char a7, s32 a8, s32 a9, s32 a10) {
+		const u32 Func_targetedOrder = 0x004754F0;
 		__asm {
 			PUSHAD
 			PUSH a10
@@ -4559,9 +4559,9 @@ namespace helper {
 
 	// For checkUnitVisibility
 
-	uint32 getDetectingPlayers(CUnit* unit) {
-		const uint32 Func_getDetectingPlayers = 0x00441130;
-		static uint32 result;
+	u32 getDetectingPlayers(CUnit* unit) {
+		const u32 Func_getDetectingPlayers = 0x00441130;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -4572,9 +4572,9 @@ namespace helper {
 		return result;
 	}
 
-	uint32 iteratePlayerUnitsSomething(uint32 aResult, CUnit* unit) {
-		const uint32 Func_iteratePlayerUnitsSomething = 0x0049E8A0;
-		static uint32 result;
+	u32 iteratePlayerUnitsSomething(u32 aResult, CUnit* unit) {
+		const u32 Func_iteratePlayerUnitsSomething = 0x0049E8A0;
+		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH unit
@@ -4587,7 +4587,7 @@ namespace helper {
 	}
 
 	void makeSpriteVisible(CSprite* sprite) {
-		const uint32 Func_makeSpriteVisible = 0x00497ED0;
+		const u32 Func_makeSpriteVisible = 0x00497ED0;
 		__asm {
 			PUSHAD
 			MOV EAX, sprite
@@ -4596,9 +4596,9 @@ namespace helper {
 		}
 	}
 
-	int32 updateBuildingLandUnitSelection(uint32 unused, CUnit* selection) {
-		const uint32 Func_updateBuildingLandUnitSelection = 0x004C3B40;
-		static int32 result;
+	s32 updateBuildingLandUnitSelection(u32 unused, CUnit* selection) {
+		const u32 Func_updateBuildingLandUnitSelection = 0x004C3B40;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, unused
@@ -4611,8 +4611,8 @@ namespace helper {
 	}
 
 	char removeSelectionCircle(CSprite* sprite) {
-		const uint32 Func_removeSelectionCircle = 0x004975D0;
-		static int32 result;
+		const u32 Func_removeSelectionCircle = 0x004975D0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, sprite
@@ -4624,7 +4624,7 @@ namespace helper {
 	}
 
 	CImage* makeSpriteInvisible(CSprite* sprite) {
-		const uint32 Func_makeUndetected = 0x00498A10;
+		const u32 Func_makeUndetected = 0x00498A10;
 		static CImage* result;
 		__asm {
 			PUSHAD
@@ -4636,8 +4636,8 @@ namespace helper {
 		return result;
 	}
 
-	void function_004756B0(CUnit* unit, uint8 orderId, uint32 unk1, uint32 unk2, uint32 bCommandType) {
-		const uint32 Func_Sub4756B0 = 0x004756B0;
+	void function_004756B0(CUnit* unit, u8 orderId, u32 unk1, u32 unk2, u32 bCommandType) {
+		const u32 Func_Sub4756B0 = 0x004756B0;
 		__asm {
 			PUSHAD
 			MOV DL, orderId
@@ -4650,8 +4650,8 @@ namespace helper {
 		}
 	}
 
-	void function_004756E0(CUnit* unit, CUnit* target, uint32 orderId, uint32 bCommandType) {
-		const uint32 Func_Sub4756E0 = 0x004756E0;
+	void function_004756E0(CUnit* unit, CUnit* target, u32 orderId, u32 bCommandType) {
+		const u32 Func_Sub4756E0 = 0x004756E0;
 		__asm {
 			PUSHAD
 			MOV EDX, target
@@ -4663,9 +4663,9 @@ namespace helper {
 		}
 	}
 
-	uint32 function_0049A410(CUnit* unit, uint8 orderId) {
-		const uint32 Func_Sub49A410 = 0x0049A410;
-		static uint32 result;
+	u32 function_0049A410(CUnit* unit, u8 orderId) {
+		const u32 Func_Sub49A410 = 0x0049A410;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -4678,7 +4678,7 @@ namespace helper {
 	}
 
 	//Logically identical to 0049A480 sub_49A480
-	bool CanTargetSelf(CUnit* unit, uint8 orderId) {
+	bool CanTargetSelf(CUnit* unit, u8 orderId) {
 		bool return_value;
 		if (
 			unit->status & UnitStatus::GroundedBuilding &&
@@ -4711,8 +4711,8 @@ namespace helper {
 		return return_value;
 	}
 
-	void function_0049A500(CUnit* unit, uint8* array_of_data) {
-		const uint32 Func_Sub49A500 = 0x0049A500;
+	void function_0049A500(CUnit* unit, u8* array_of_data) {
+		const u32 Func_Sub49A500 = 0x0049A500;
 		__asm {
 			PUSHAD
 			PUSH array_of_data
@@ -4722,8 +4722,8 @@ namespace helper {
 		}
 	}
 
-	void function_0049A8C0(uint8* array_of_data, bool32 bCanBeObstructed) {
-		const uint32 Func_Sub49A8C0 = 0x0049A8C0;
+	void function_0049A8C0(u8* array_of_data, b32 bCanBeObstructed) {
+		const u32 Func_Sub49A8C0 = 0x0049A8C0;
 		__asm {
 			PUSHAD
 			PUSH bCanBeObstructed
@@ -4734,7 +4734,7 @@ namespace helper {
 	}
 
 	void IgnoreAllScriptAndGotoIdle(CUnit* unit) {
-		const uint32 Func_IgnoreAllScriptAndGotoIdle = 0x00476550;
+		const u32 Func_IgnoreAllScriptAndGotoIdle = 0x00476550;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -4743,9 +4743,9 @@ namespace helper {
 		}
 	}
 
-	uint32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos) {
-		const uint32 Func_Sub4E76C0 = 0x004E76C0;
-		static uint32 result;
+	u32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos) {
+		const u32 Func_Sub4E76C0 = 0x004E76C0;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, transport
@@ -4758,8 +4758,8 @@ namespace helper {
 		return result;
 	}
 
-	void function_004E7E10(CUnit* unit, uint32 unk) {
-		const uint32 Func_Sub4E7E10 = 0x004E7E10;
+	void function_004E7E10(CUnit* unit, u32 unk) {
+		const u32 Func_Sub4E7E10 = 0x004E7E10;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -4769,8 +4769,8 @@ namespace helper {
 		}
 	}
 
-	void StatsNukesCount(BinDlg* dialog, uint32 index) {
-		const uint32 Func_Sub425310 = 0x00425310;
+	void StatsNukesCount(BinDlg* dialog, u32 index) {
+		const u32 Func_Sub425310 = 0x00425310;
 		__asm {
 			PUSHAD
 			MOV EAX, dialog
@@ -4780,8 +4780,8 @@ namespace helper {
 		}
 	}
 
-	void StatHangerCount(BinDlg* dialog, uint32 index) {
-		const uint32 Func_StatHangerCount = 0x004253D0;
+	void StatHangerCount(BinDlg* dialog, u32 index) {
+		const u32 Func_StatHangerCount = 0x004253D0;
 		__asm {
 			PUSHAD
 			MOV EBX, dialog
@@ -4791,8 +4791,8 @@ namespace helper {
 		}
 	}
 
-	void StatsShieldLevel(BinDlg* dialog, uint32 index) {
-		const uint32 Func_Sub425510 = 0x00425510;
+	void StatsShieldLevel(BinDlg* dialog, u32 index) {
+		const u32 Func_Sub425510 = 0x00425510;
 		__asm {
 			PUSHAD
 			MOV EAX, dialog
@@ -4802,8 +4802,8 @@ namespace helper {
 		}
 	}
 
-	void StatsArmorLevel(BinDlg* dialog, uint32 index) {
-		const uint32 Func_Sub425600 = 0x00425600;
+	void StatsArmorLevel(BinDlg* dialog, u32 index) {
+		const u32 Func_Sub425600 = 0x00425600;
 		__asm {
 			PUSHAD
 			MOV EAX, dialog
@@ -4813,8 +4813,8 @@ namespace helper {
 		}
 	}
 
-	void StatsWeaponLevel(BinDlg* dialog, uint32 index, uint32 weaponId) {
-		const uint32 Func_Sub425790 = 0x00425790;
+	void StatsWeaponLevel(BinDlg* dialog, u32 index, u32 weaponId) {
+		const u32 Func_Sub425790 = 0x00425790;
 		__asm {
 			PUSHAD
 			MOV EAX, dialog
@@ -4825,9 +4825,9 @@ namespace helper {
 		}
 	}
 
-	bool StatSpidermineCount(BinDlg* dialog, uint32 index) {
-		const uint32 Func_StatSpidermineCount = 0x00426300;
-		static bool32 bPreResult;
+	bool StatSpidermineCount(BinDlg* dialog, u32 index) {
+		const u32 Func_StatSpidermineCount = 0x00426300;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EAX, dialog
@@ -4842,8 +4842,8 @@ namespace helper {
 	// For getUnitRankString
 
 	__int8 unitGetRace(CUnit* a1) {
-		const uint32 Func_unitGetRace = 0x0047B150;
-		static int result;
+		const u32 Func_unitGetRace = 0x0047B150;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -4855,8 +4855,8 @@ namespace helper {
 	}
 
 	char* getStatTxtString(__int16 a1) {
-		const uint32 Func_getStatTxtString = 0x004C36F0;
-		static int result;
+		const u32 Func_getStatTxtString = 0x004C36F0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOVZX CX, a1
@@ -4869,9 +4869,9 @@ namespace helper {
 
 	// For statsWeaponLevel / statsArmorLevel
 
-	char getArmorCount(CUnit* unit, int32 unused) {
-		const uint32 Func_getArmorCount = 0x00453FC0;
-		static int32 result;
+	char getArmorCount(CUnit* unit, s32 unused) {
+		const u32 Func_getArmorCount = 0x00453FC0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EDX, unused
@@ -4884,7 +4884,7 @@ namespace helper {
 	}
 
 	void showDialog(BinDlg* dialog) {
-		const uint32 Func_showDialog = 0x004186A0;
+		const u32 Func_showDialog = 0x004186A0;
 		__asm {
 			PUSHAD
 			MOV ESI, dialog
@@ -4893,9 +4893,9 @@ namespace helper {
 		}
 	}
 
-	int32 disableDialog(BinDlg* dialog) {
-		const uint32 Func_disableDialog = 0x00418640;
-		static int32 result;
+	s32 disableDialog(BinDlg* dialog) {
+		const u32 Func_disableDialog = 0x00418640;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, dialog
@@ -4907,7 +4907,7 @@ namespace helper {
 	}
 
 	void updateDialog(BinDlg* dialog) {
-		const uint32 Func_updateDialog = 0x0041C400;
+		const u32 Func_updateDialog = 0x0041C400;
 		__asm {
 			PUSHAD
 			MOV EAX, dialog
@@ -4917,7 +4917,7 @@ namespace helper {
 	}
 
 	CUnit* findRandomAttackTarget(CUnit* unit) {
-		const uint32 Func_findRandomAttackTarget = 0x00442FC0;
+		const u32 Func_findRandomAttackTarget = 0x00442FC0;
 		static CUnit* target;
 		__asm {
 			PUSHAD
@@ -4929,9 +4929,9 @@ namespace helper {
 		return target;
 	}
 
-	bool32 attackApplyCooldown(CUnit* unit) {
-		const uint32 Func_attackApplyCooldown = 0x00478B40;
-		static uint32 result;
+	b32 attackApplyCooldown(CUnit* unit) {
+		const u32 Func_attackApplyCooldown = 0x00478B40;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -4942,9 +4942,9 @@ namespace helper {
 		return result;
 	}
 
-	void setImageDirection(CImage* image, int8 direction) {
-		const uint32 Func_SetImageDirection = 0x004D5F80;
-		static uint32 direction_;
+	void setImageDirection(CImage* image, s8 direction) {
+		const u32 Func_SetImageDirection = 0x004D5F80;
+		static u32 direction_;
 		direction_ = direction;
 		__asm {
 			PUSHAD
@@ -4956,7 +4956,7 @@ namespace helper {
 	}
 
 	void ApplySpores(CUnit* unit) {
-		const uint32 Func_ApplySpores = 0x004F4480;
+		const u32 Func_ApplySpores = 0x004F4480;
 		__asm {
 			PUSHAD
 			MOV EBX, unit
@@ -4965,12 +4965,12 @@ namespace helper {
 		}
 	}
 
-	CBullet* createBulletRet(uint8 weaponId, CUnit* source, int16 x, int16 y, uint8 attackingPlayer, uint8 direction) {
-		const uint32 Helper_CreateBullet = 0x0048C260;
-		static uint32 attackingPlayer_;
-		static uint32 direction_;
-		static int32 x_;
-		static int32 y_;
+	CBullet* createBulletRet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction) {
+		const u32 Helper_CreateBullet = 0x0048C260;
+		static u32 attackingPlayer_;
+		static u32 direction_;
+		static s32 x_;
+		static s32 y_;
 		attackingPlayer_ = attackingPlayer;
 		direction_ = direction;
 		x_ = x; y_ = y;
@@ -4991,8 +4991,8 @@ namespace helper {
 	}
 
 	// creates attack overlay & deals damage from the bullet (just calls overlayAndNotify if the weapon deals no damage, or calls target->damageWith if it does
-	void weaponBulletShot(CUnit* target, CBullet* bullet, uint32 dmgDivisor) {
-		const uint32 Helper_WeaponBulletShot = 0x00479AE0;
+	void weaponBulletShot(CUnit* target, CBullet* bullet, u32 dmgDivisor) {
+		const u32 Helper_WeaponBulletShot = 0x00479AE0;
 		if (bullet != nullptr && target != nullptr && bullet->sourceUnit && bullet->weaponType == WeaponId::PariahIconoclastBlades) {
 			if (!globals.was_hit_by_pariah(bullet->sourceUnit, target)) {
 				globals.register_pariah_hit(bullet->sourceUnit, target);
@@ -5011,9 +5011,9 @@ namespace helper {
 		}
 	}
 
-	uint8 setArchonPathing(CUnit* unit) {
-		const uint32 Func_Sub46A820 = 0x0046A820;
-		static uint8 result;
+	u8 setArchonPathing(CUnit* unit) {
+		const u32 Func_Sub46A820 = 0x0046A820;
+		static u8 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -5024,9 +5024,9 @@ namespace helper {
 		return result;
 	}
 
-	bool hasSuppliesForUnit(uint32 unitId, uint32 playerId, bool32 canShowErrorMessage) {
-		const uint32 Func_hasSuppliesForUnit = 0x0042CF70;
-		static bool32 bPreResult;
+	bool hasSuppliesForUnit(u32 unitId, u32 playerId, b32 canShowErrorMessage) {
+		const u32 Func_hasSuppliesForUnit = 0x0042CF70;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			PUSH canShowErrorMessage
@@ -5040,7 +5040,7 @@ namespace helper {
 	}
 
 	CUnit* zergDualBirth(CUnit* unit) {
-		const uint32 Func_zergDualBirth = 0x0045D910;
+		const u32 Func_zergDualBirth = 0x0045D910;
 		static CUnit* rValue;
 		__asm {
 			PUSHAD
@@ -5053,7 +5053,7 @@ namespace helper {
 	}
 
 	void orderNewUnitToRally(CUnit* unit, CUnit* factory) {
-		const uint32 Func_Sub466F50 = 0x00466F50;
+		const u32 Func_Sub466F50 = 0x00466F50;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -5064,7 +5064,7 @@ namespace helper {
 	}
 
 	void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit) {
-		const uint32 Func_AI_TrainingUnit = 0x004A2830;
+		const u32 Func_AI_TrainingUnit = 0x004A2830;
 		__asm {
 			PUSHAD
 			MOV EAX, created_unit
@@ -5076,9 +5076,9 @@ namespace helper {
 
 	// for orders_Hallucination1
 
-	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index) {
-		const uint32 Func_Sub_4926D0 = 0x004926D0;
-		static bool32 bPreResult;
+	bool ordersSpell_Sub_4926D0(CUnit* unit, u32 techId, u16* techEnergyCost, u32 sightRange, u32 error_message_index) {
+		const u32 Func_Sub_4926D0 = 0x004926D0;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			PUSH techEnergyCost
@@ -5094,8 +5094,8 @@ namespace helper {
 	}
 
 	bool placeHallucination(CUnit* unit) {
-		const uint32 Func_placeHallucination = 0x004F66D0;
-		static bool32 bPreResult;
+		const u32 Func_placeHallucination = 0x004F66D0;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -5109,7 +5109,7 @@ namespace helper {
 	// for createHallucination
 
 	void applyHallucinationStats(CUnit* halUnit) {
-		const uint32 Func_applyHallucinationStats = 0x004F6180;
+		const u32 Func_applyHallucinationStats = 0x004F6180;
 		__asm {
 			PUSHAD
 			MOV EAX, halUnit
@@ -5118,9 +5118,9 @@ namespace helper {
 		}
 	}
 
-	int32 hallucinateScarabs(CUnit* a1, CUnit* a2) {
-		const uint32 Func_hallucinateScarabs = 0x004F65B0;
-		static int32 result;
+	s32 hallucinateScarabs(CUnit* a1, CUnit* a2) {
+		const u32 Func_hallucinateScarabs = 0x004F65B0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a2
@@ -5132,8 +5132,8 @@ namespace helper {
 		return result;
 	}
 
-	void replaceFeedbackSprite(CUnit* unit, uint32 spriteId) {
-		const uint32 Func_replaceFeedbackSprite = 0x004F6350;
+	void replaceFeedbackSprite(CUnit* unit, u32 spriteId) {
+		const u32 Func_replaceFeedbackSprite = 0x004F6350;
 		__asm {
 			PUSHAD
 			MOV EBX, unit
@@ -5143,8 +5143,8 @@ namespace helper {
 		}
 	}
 
-	void Ai_UnitWasHit(uint32 main_target_reaction, uint32 dont_call_help, CUnit* attacker, CUnit* target) {
-		const uint32 Func_0043F320 = 0x0043F320;
+	void Ai_UnitWasHit(u32 main_target_reaction, u32 dont_call_help, CUnit* attacker, CUnit* target) {
+		const u32 Func_0043F320 = 0x0043F320;
 		__asm {
 			PUSHAD
 			PUSH main_target_reaction
@@ -5157,9 +5157,9 @@ namespace helper {
 	}
 
 	// checks if the distance between target and bullet's positions is < radius
-	bool isUnitDistanceWithin(CUnit* target, CBullet* bullet, uint32 radius) {
-		const uint32 Helper_IsUnitDistanceWithin = 0x0048ADB0;
-		uint32 result;
+	bool isUnitDistanceWithin(CUnit* target, CBullet* bullet, u32 radius) {
+		const u32 Helper_IsUnitDistanceWithin = 0x0048ADB0;
+		u32 result;
 		__asm {
 			PUSHAD
 			PUSH radius;
@@ -5172,9 +5172,9 @@ namespace helper {
 		return result;
 	}
 
-	void doWeaponHit(CUnit* target, CUnit* attacker, uint8 dmgDivisor) {
-		const uint32 Helper_DoWeaponHit = 0x004795D0;
-		uint32 divisor = dmgDivisor;
+	void doWeaponHit(CUnit* target, CUnit* attacker, u8 dmgDivisor) {
+		const u32 Helper_DoWeaponHit = 0x004795D0;
+		u32 divisor = dmgDivisor;
 		__asm {
 			PUSHAD
 			PUSH divisor
@@ -5187,8 +5187,8 @@ namespace helper {
 
 	// for airSplash
 
-	CUnit* findBestUnit(Box16* radius, int32 bullet, int32(__fastcall* func)(int32, int32)) {
-		const uint32 Func_findBestUnit = 0x004E8830;
+	CUnit* findBestUnit(Box16* radius, s32 bullet, s32(__fastcall* func)(s32, s32)) {
+		const u32 Func_findBestUnit = 0x004E8830;
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -5202,9 +5202,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 splashFunc(CBullet* bullet, CUnit* unit) {
-		const uint32 Func_splashFunc = 0x0048B570;
-		static int32 result;
+	s32 splashFunc(CBullet* bullet, CUnit* unit) {
+		const u32 Func_splashFunc = 0x0048B570;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EDI, bullet
@@ -5217,7 +5217,7 @@ namespace helper {
 	}
 
 	void MindControlHit(CUnit* attacker, CUnit* target) {
-		const uint32 Func_MindControl_Hit = 0x004F6910;
+		const u32 Func_MindControl_Hit = 0x004F6910;
 		__asm {
 			PUSHAD
 			MOV ESI, target
@@ -5228,10 +5228,10 @@ namespace helper {
 	}
 
 	//Somehow related to AI stuff; details unknown.
-	uint16 getUnitStrength(CUnit* unit, bool useGroundStrength) {
-		const uint32 Helper_GetUnitStrength = 0x00431800;
-		static uint16 strength;
-		static uint32 useGroundStrength_;
+	u16 getUnitStrength(CUnit* unit, bool useGroundStrength) {
+		const u32 Helper_GetUnitStrength = 0x00431800;
+		static u16 strength;
+		static u32 useGroundStrength_;
 		useGroundStrength_ = useGroundStrength ? 1 : 0;
 		__asm {
 			PUSHAD
@@ -5246,8 +5246,8 @@ namespace helper {
 
 	// Hallucination-related
 	// Moved here instead of including an entire other file...
-	CUnit* createHallucination(CUnit* target, uint32 playerId) {
-		const uint32 Func_createHallucination = 0x004F6B90;
+	CUnit* createHallucination(CUnit* target, u32 playerId) {
+		const u32 Func_createHallucination = 0x004F6B90;
 		static CUnit* return_value;
 		__asm {
 			PUSHAD
@@ -5261,9 +5261,9 @@ namespace helper {
 	}
 
 	// For updateCorrosiveSpores
-	uint32 getCorrosiveSporesImage(CUnit* unit) {
-		const uint32 Func_getCorrosiveSporesImage = 0x004F41F0;
-		static uint32 result;
+	u32 getCorrosiveSporesImage(CUnit* unit) {
+		const u32 Func_getCorrosiveSporesImage = 0x004F41F0;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -5274,8 +5274,8 @@ namespace helper {
 		return result;
 	}
 
-	void insertFirstOrder(CUnit* unit, uint8 orderId) {
-		const uint32 Helper_InsertFirstOrder = 0x004749D0;
+	void insertFirstOrder(CUnit* unit, u8 orderId) {
+		const u32 Helper_InsertFirstOrder = 0x004749D0;
 		__asm {
 			PUSHAD
 			MOV AL, orderId
@@ -5286,9 +5286,9 @@ namespace helper {
 	}
 
 	/// Return the count of overlays
-	uint8 hasOverlay(CUnit* unit) {
-		const uint32 Func_hasOverlay = 0x0047B720;
-		static uint8 result;
+	u8 hasOverlay(CUnit* unit) {
+		const u32 Func_hasOverlay = 0x0047B720;
+		static u8 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -5300,7 +5300,7 @@ namespace helper {
 	}
 
 	void function_004934B0(CUnit* unit, CUnit* battery) {
-		const uint32 Func_Sub4934B0 = 0x004934B0;
+		const u32 Func_Sub4934B0 = 0x004934B0;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -5322,7 +5322,7 @@ namespace helper {
 	}
 
 	CUnit* MedicHeal_TargetAcquire(CUnit* medic) {
-		const uint32 Func_MedicHeal_TargetAcquire = 0x004422A0;
+		const u32 Func_MedicHeal_TargetAcquire = 0x004422A0;
 		static CUnit* target;
 		__asm {
 			PUSHAD
@@ -5334,9 +5334,9 @@ namespace helper {
 		return target;
 	}
 
-	uint32 doMedicHeal(CUnit* unit, CUnit* target) {
-		const uint32 Func_doMedicHeal = 0x00463C40;
-		static uint32 return_value;
+	u32 doMedicHeal(CUnit* unit, CUnit* target) {
+		const u32 Func_doMedicHeal = 0x00463C40;
+		static u32 return_value;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -5348,8 +5348,8 @@ namespace helper {
 		return return_value;
 	}
 
-	void function_00476FC0(CUnit* unit, CUnit* target, uint32 unk1, uint32 unk2) {
-		const uint32 Func_Sub476FC0 = 0x00476FC0;
+	void function_00476FC0(CUnit* unit, CUnit* target, u32 unk1, u32 unk2) {
+		const u32 Func_Sub476FC0 = 0x00476FC0;
 		__asm {
 			PUSHAD
 			PUSH unk1
@@ -5361,9 +5361,9 @@ namespace helper {
 		}
 	}
 
-	bool32 function_004770E0(CUnit* unit) {
-		const uint32 Func_Sub4770E0 = 0x004770E0;
-		static bool32 return_value;
+	b32 function_004770E0(CUnit* unit) {
+		const u32 Func_Sub4770E0 = 0x004770E0;
+		static b32 return_value;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -5375,9 +5375,9 @@ namespace helper {
 	}
 
 
-	bool32 AI_OrderHeal(CUnit* unit, CUnit* target) {
-		const uint32 Func_AI_OrderHeal = 0x00463530;
-		static bool32 result;
+	b32 AI_OrderHeal(CUnit* unit, CUnit* target) {
+		const u32 Func_AI_OrderHeal = 0x00463530;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV ESI, target
@@ -5389,8 +5389,8 @@ namespace helper {
 		return result;
 	}
 
-	void function_4748E0(CUnit* unit, int x, int y, uint8 orderId) {
-		const uint32 Func_sub4748E0 = 0x004748E0;
+	void function_4748E0(CUnit* unit, s32 x, s32 y, u8 orderId) {
+		const u32 Func_sub4748E0 = 0x004748E0;
 		__asm {
 			PUSHAD
 			MOV BL, orderId
@@ -5403,8 +5403,8 @@ namespace helper {
 		}
 	}
 
-	void function_474940(CUnit* unit, CUnit* target, uint8 orderId) {
-		const uint32 Func_sub474940 = 0x00474940;
+	void function_474940(CUnit* unit, CUnit* target, u8 orderId) {
+		const u32 Func_sub474940 = 0x00474940;
 		__asm {
 			PUSHAD
 			MOV BL, orderId
@@ -5416,9 +5416,9 @@ namespace helper {
 		}
 	}
 
-	bool32 AI_CastSpellBehaviour(CUnit* unit, uint32 unknown) {
-		const uint32 Func_AI_CastSpellBehaviour = 0x004A13C0;
-		static bool32 result;
+	b32 AI_CastSpellBehaviour(CUnit* unit, u32 unknown) {
+		const u32 Func_AI_CastSpellBehaviour = 0x004A13C0;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -5430,9 +5430,9 @@ namespace helper {
 		return result;
 	}
 
-	bool32 function_00438E70(CUnit* unit, int x, int y) {
-		const uint32 Func_sub_438E70 = 0x00438E70;
-		static bool32 result;
+	b32 function_00438E70(CUnit* unit, s32 x, s32 y) {
+		const u32 Func_sub_438E70 = 0x00438E70;
+		static b32 result;
 		__asm {
 			PUSHAD
 			PUSH y
@@ -5446,7 +5446,7 @@ namespace helper {
 	}
 
 	void function_0043DF30(CUnit* unit) {
-		const uint32 Func_Sub43DF30 = 0x0043DF30;
+		const u32 Func_Sub43DF30 = 0x0043DF30;
 		__asm {
 			PUSHAD
 			PUSH unit
@@ -5455,8 +5455,8 @@ namespace helper {
 		}
 	}
 
-	void unknownSpecialOrder(CUnit* unit, COrder* order, uint8 orderId, int16 x, int16 y, CUnit* target, uint16 targetUnitId) {
-		const uint32 Func_unknownSpecialOrder = 0x00474540;
+	void unknownSpecialOrder(CUnit* unit, COrder* order, u8 orderId, s16 x, s16 y, CUnit* target, u16 targetUnitId) {
+		const u32 Func_unknownSpecialOrder = 0x00474540;
 		static Point16 pos;
 		pos.x = x; pos.y = y;
 		__asm {
@@ -5472,9 +5472,9 @@ namespace helper {
 		}
 	}
 
-	void _doOrder(CUnit* unit, uint32 orderId, int x, int y, bool stopPreviousOrders) {
-		const uint32 Func__doOrder = 0x00474C70;
-		bool32 bStopPreviousOrders = stopPreviousOrders ? 1 : 0;
+	void _doOrder(CUnit* unit, u32 orderId, s32 x, s32 y, bool stopPreviousOrders) {
+		const u32 Func__doOrder = 0x00474C70;
+		b32 bStopPreviousOrders = stopPreviousOrders ? 1 : 0;
 		__asm {
 			PUSHAD
 			PUSH bStopPreviousOrders
@@ -5487,8 +5487,8 @@ namespace helper {
 		}
 	}
 
-	bool32 function_00477160(CUnit* unit, uint32 unk1, uint32 unk2, uint32 unk3) {
-		const uint32 Func_Sub477160 = 0x00477160;
+	b32 function_00477160(CUnit* unit, u32 unk1, u32 unk2, u32 unk3) {
+		const u32 Func_Sub477160 = 0x00477160;
 		__asm {
 			PUSHAD
 			PUSH unk1
@@ -5500,8 +5500,8 @@ namespace helper {
 		}
 	}
 
-	CUnit* getLoadedUnitFromIndex(CUnit* transport, int index) {
-		const uint32 Func_getLoadedUnitFromIndex = 0x004E6C40;
+	CUnit* getLoadedUnitFromIndex(CUnit* transport, s32 index) {
+		const u32 Func_getLoadedUnitFromIndex = 0x004E6C40;
 		static CUnit* return_value;
 		__asm {
 			PUSHAD
@@ -5514,9 +5514,9 @@ namespace helper {
 		return return_value;
 	}
 
-	bool32 getFirstLoadedWorker(CUnit* transport) {
-		const uint32 Func_getFirstLoadedWorker = 0x004E6D90;
-		static bool32 return_value;
+	b32 getFirstLoadedWorker(CUnit* transport) {
+		const u32 Func_getFirstLoadedWorker = 0x004E6D90;
+		static b32 return_value;
 		__asm {
 			PUSHAD
 			MOV EAX, transport
@@ -5527,9 +5527,9 @@ namespace helper {
 		return return_value;
 	}
 
-	bool32 function_004E6EF0(CUnit* unit, CUnit** unitTargetOffset) {
-		const uint32 Func_Sub4E6EF0 = 0x004E6EF0;
-		bool32 result;
+	b32 function_004E6EF0(CUnit* unit, CUnit** unitTargetOffset) {
+		const u32 Func_Sub4E6EF0 = 0x004E6EF0;
+		b32 result;
 		__asm {
 			PUSHAD
 			PUSH unitTargetOffset
@@ -5542,7 +5542,7 @@ namespace helper {
 	}
 
 	void loadUnitProc(CUnit* unit, CUnit* unitToLoad) {
-		const uint32 Func_Sub4E78E0 = 0x004E78E0;
+		const u32 Func_Sub4E78E0 = 0x004E78E0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -5552,9 +5552,9 @@ namespace helper {
 		}
 	}
 
-	bool32 unloadUnitProc(CUnit* unit) {
-		const uint32 Func_Sub4E7F70 = 0x004E7F70;
-		static bool32 return_value;
+	b32 unloadUnitProc(CUnit* unit) {
+		const u32 Func_Sub4E7F70 = 0x004E7F70;
+		static b32 return_value;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -5566,8 +5566,8 @@ namespace helper {
 	}
 
 	// angleValue is a guess
-	void unitSetRetreatPoint(CUnit* unit, uint8 angleValue) {
-		const uint32 Func_UnitSetRetreatPoint = 0x004011A0;
+	void unitSetRetreatPoint(CUnit* unit, u8 angleValue) {
+		const u32 Func_UnitSetRetreatPoint = 0x004011A0;
 		__asm {
 			PUSHAD
 			MOV AL, angleValue
@@ -5583,8 +5583,8 @@ namespace helper {
 	//"action inside the function" is, and how it's used to return
 	//true
 	bool getCloserToDestination_sub402BE0(CUnit* unit) {
-		const uint32 Func_Sub402BE0_GetCloserToDestination = 0x00402BE0;
-		static bool32 bResult;
+		const u32 Func_Sub402BE0_GetCloserToDestination = 0x00402BE0;
+		static b32 bResult;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -5595,7 +5595,7 @@ namespace helper {
 		return (bResult == 1);
 	}
 
-	const uint32 Func_OrderReturnToIdle = 0x00463770;
+	const u32 Func_OrderReturnToIdle = 0x00463770;
 	void orderReturnToIdle(CUnit* unit) {
 		__asm {
 			PUSHAD
@@ -5605,9 +5605,9 @@ namespace helper {
 		}
 	}
 
-	const uint32 Func_Sub464290_CheckForCloseUnit = 0x00464290;
+	const u32 Func_Sub464290_CheckForCloseUnit = 0x00464290;
 	bool checkForCloseUnit_sub464290(CUnit* unit) {
-		static bool32 bResult;
+		static b32 bResult;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -5619,8 +5619,8 @@ namespace helper {
 	}
 
 	void playSubunitIscript(CUnit* unit, IscriptAnimation::Enum anim) {
-		const uint32 Func_PlaySubunitIscript = 0x00474380;
-		uint32 anim_ = anim;
+		const u32 Func_PlaySubunitIscript = 0x00474380;
+		u32 anim_ = anim;
 		assert(unit->subunit);
 		__asm {
 			PUSHAD
@@ -5632,7 +5632,7 @@ namespace helper {
 	}
 
 	//Identical to getHPGainForRepair @ 0x00402C40
-	uint32 getHPGainForRepair(CUnit* unit) {
+	u32 getHPGainForRepair(CUnit* unit) {
 		if (*CHEAT_STATE & CheatFlags::OperationCwal) {
 			return unit->buildRepairHpGain * 16;
 		}
@@ -5641,8 +5641,8 @@ namespace helper {
 		}
 	}
 
-	void refundUnitTrainCost(uint32 unitId, uint8 playerId) {
-		const uint32 Func_refundUnitTrainCost = 0x0042CEC0;
+	void refundUnitTrainCost(u32 unitId, u8 playerId) {
+		const u32 Func_refundUnitTrainCost = 0x0042CEC0;
 		__asm {
 			PUSHAD
 			MOV ECX, unitId
@@ -5652,8 +5652,8 @@ namespace helper {
 		}
 	}
 
-	void function_00432430(CUnit* unit, uint32 buildQueueSlot) {
-		const uint32 Func_Sub432430 = 0x00432430;
+	void function_00432430(CUnit* unit, u32 buildQueueSlot) {
+		const u32 Func_Sub432430 = 0x00432430;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -5664,7 +5664,7 @@ namespace helper {
 	}
 
 	void addHangarUnit(CUnit* main_unit, CUnit* added_unit) {
-		const uint32 Func_addHangerUnit = 0x00466300;
+		const u32 Func_addHangerUnit = 0x00466300;
 		__asm {
 			PUSHAD
 			MOV EDI, main_unit
@@ -5674,8 +5674,8 @@ namespace helper {
 		}
 	}
 
-	CUnit* attemptTrainHatchUnit(CUnit* trainer, uint32 builtUnitID, uint32 flag) {
-		const uint32 Func_attemptTrainHatchUnit = 0x00468200;
+	CUnit* attemptTrainHatchUnit(CUnit* trainer, u32 builtUnitID, u32 flag) {
+		const u32 Func_attemptTrainHatchUnit = 0x00468200;
 		static CUnit* builtUnit;
 		__asm {
 			PUSHAD
@@ -5689,12 +5689,12 @@ namespace helper {
 		return builtUnit;
 	}
 
-	void createBullet(uint8 weaponId, CUnit* source, int16 x, int16 y, uint8 attackingPlayer, uint8 direction) {
-		const uint32 Helper_CreateBullet = 0x0048C260;
-		static uint32 attackingPlayer_;
-		static uint32 direction_;
-		static int32 x_;
-		static int32 y_;
+	void createBullet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction) {
+		const u32 Helper_CreateBullet = 0x0048C260;
+		static u32 attackingPlayer_;
+		static u32 direction_;
+		static s32 x_;
+		static s32 y_;
 		attackingPlayer_ = attackingPlayer;
 		direction_ = direction;
 		x_ = x; y_ = y;
@@ -5756,7 +5756,7 @@ namespace helper {
 	// For progressBulletMovement
 
 	void progressBulletMovement_func(CBullet* a1) {
-		const uint32 Func_progressBulletMovement = 0x0048B250;
+		const u32 Func_progressBulletMovement = 0x0048B250;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -5767,8 +5767,8 @@ namespace helper {
 
 	// For bulletBehavior_Bounce
 
-	CBullet* changeMovePos(CBullet* a1, int32 a2, int32 a3) {
-		const uint32 Func_changeMovePos = 0x00495240;
+	CBullet* changeMovePos(CBullet* a1, s32 a2, s32 a3) {
+		const u32 Func_changeMovePos = 0x00495240;
 		static CBullet* result;
 		__asm {
 			PUSHAD
@@ -5783,7 +5783,7 @@ namespace helper {
 	}
 
 	CUnit* findNextBounceTarget_func(CBullet* a1) {
-		const uint32 Func_findNextBounceTarget = 0x0048B1E0;
+		const u32 Func_findNextBounceTarget = 0x0048B1E0;
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -5796,8 +5796,8 @@ namespace helper {
 	}
 
 	bool unitIsSubunit(CUnit* a1) {
-		const uint32 Func_unitIsSubunit = 0x00401D40;
-		static int32 result;
+		const u32 Func_unitIsSubunit = 0x00401D40;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -5809,8 +5809,8 @@ namespace helper {
 	}
 
 	bool unitIsCarrier(CUnit* a1) {
-		const uint32 Func_unitIsCarrier = 0x00401470;
-		static int32 result;
+		const u32 Func_unitIsCarrier = 0x00401470;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -5822,8 +5822,8 @@ namespace helper {
 	}
 
 	bool unitIsReaver(CUnit* a1) {
-		const uint32 Func_unitIsReaver = 0x00401490;
-		static int32 result;
+		const u32 Func_unitIsReaver = 0x00401490;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -5835,8 +5835,8 @@ namespace helper {
 	}
 
 	bool unitHasPathToUnit(CUnit* a1, CUnit* a2) {
-		const uint32 Func_unitHasPathToUnit = 0x0049CBB0;
-		static int32 result;
+		const u32 Func_unitHasPathToUnit = 0x0049CBB0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -5848,9 +5848,9 @@ namespace helper {
 		return (bool)result;
 	}
 
-	int32 canBeInfested(CUnit* a1, CUnit* a2) {
-		const uint32 Func_canBeInfested = 0x00402210;
-		static int32 result;
+	s32 canBeInfested(CUnit* a1, CUnit* a2) {
+		const u32 Func_canBeInfested = 0x00402210;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, a1
@@ -5864,9 +5864,9 @@ namespace helper {
 
 	// For findNextBounceTarget
 
-	int32 iterateUnitsAtLocationTargetProc(Box32* a1, int32(__fastcall* a2)(int32, int32), CUnit* a3) {
-		const uint32 Func_iterateUnitsAtLocationTargetProc = 0x004E8280;
-		static int32 result;
+	s32 iterateUnitsAtLocationTargetProc(Box32* a1, s32(__fastcall* a2)(s32, s32), CUnit* a3) {
+		const u32 Func_iterateUnitsAtLocationTargetProc = 0x004E8280;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -5882,7 +5882,7 @@ namespace helper {
 	//for progressBullet
 
 	void doMissileDmg(CBullet* bullet) {
-		const uint32 func_doMissileDmg = 0x0048B770;
+		const u32 func_doMissileDmg = 0x0048B770;
 		__asm {
 			PUSHAD
 			PUSH bullet
@@ -5891,9 +5891,9 @@ namespace helper {
 		}
 	}
 
-	const uint32 Func_Sub42D810 = 0x0042D810;
-	bool function_0042D810(int x, int y, uint32 unitId) {
-		static bool32 bPreReturnValue;
+	const u32 Func_Sub42D810 = 0x0042D810;
+	bool function_0042D810(s32 x, s32 y, u32 unitId) {
+		static b32 bPreReturnValue;
 		__asm {
 			PUSHAD
 			MOV EAX, x
@@ -5906,7 +5906,7 @@ namespace helper {
 		return (bPreReturnValue != 0);
 	}
 
-	const uint32 Func_GetAllUnitsInBounds = 0x0042FF80;
+	const u32 Func_GetAllUnitsInBounds = 0x0042FF80;
 	CUnit** getAllUnitsInBounds(Box16* coords) {
 		static CUnit** units_in_bounds;
 		__asm {
@@ -5919,9 +5919,9 @@ namespace helper {
 		return units_in_bounds;
 	}
 
-	const uint32 Func_getUnitDamageBonus = 0x00475EC0;
-	uint32 getUnitDamageBonus(CUnit* unit, uint8 weaponId) {
-		static uint32 damageBonus;
+	const u32 Func_getUnitDamageBonus = 0x00475EC0;
+	u32 getUnitDamageBonus(CUnit* unit, u8 weaponId) {
+		static u32 damageBonus;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -5950,8 +5950,8 @@ namespace helper {
 		}
 	}
 
-	const uint32 Func_attackOverlayAndNotify = 0x00479730;
-	void attackOverlayAndNotify(CUnit* attacker, CUnit* target, uint32 weaponType, uint32 direction) {
+	const u32 Func_attackOverlayAndNotify = 0x00479730;
+	void attackOverlayAndNotify(CUnit* attacker, CUnit* target, u32 weaponType, u32 direction) {
 		__asm {
 			PUSHAD
 			MOV ESI, attacker
@@ -5963,9 +5963,9 @@ namespace helper {
 		}
 	}
 
-	const uint32 Func_GetUnitBulletDamage = 0x0048ACD0;
-	uint32 GetUnitBulletDamage(CBullet* bullet, CUnit* target) {
-		static uint32 return_value;
+	const u32 Func_GetUnitBulletDamage = 0x0048ACD0;
+	u32 GetUnitBulletDamage(CBullet* bullet, CUnit* target) {
+		static u32 return_value;
 		__asm {
 			PUSHAD
 			MOV EAX, target
@@ -5977,9 +5977,9 @@ namespace helper {
 		return return_value;
 	}
 
-	const uint32 Func_getSpellStatString = 0x00491E80;
-	uint32 getSpellStatString(CUnit* target, uint32 techId, uint8 playerId) {
-		static uint32 return_value;
+	const u32 Func_getSpellStatString = 0x00491E80;
+	u32 getSpellStatString(CUnit* target, u32 techId, u8 playerId) {
+		static u32 return_value;
 		__asm {
 			PUSHAD
 			MOV BL, playerId
@@ -5992,7 +5992,7 @@ namespace helper {
 		return return_value;
 	}
 
-	const uint32 Func_Sub492CC0 = 0x00492CC0;
+	const u32 Func_Sub492CC0 = 0x00492CC0;
 	void function_492CC0(CUnit* unit) {
 		__asm {
 			PUSHAD
@@ -6002,8 +6002,8 @@ namespace helper {
 		}
 	}
 
-	uint8 function_492CC0_ret(CUnit* unit) {
-		uint32 result;
+	u8 function_492CC0_ret(CUnit* unit) {
+		u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -6027,9 +6027,9 @@ namespace helper {
 		}
 	}
 
-	const uint32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
-	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(uint32 attackingPlayerId, Box16* coords) {
-		const uint32 CorrosiveAcidProc_function = 0x004F4670;
+	const u32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
+	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attackingPlayerId, Box16* coords) {
+		const u32 CorrosiveAcidProc_function = 0x004F4670;
 		__asm {
 			PUSHAD
 			PUSH attackingPlayerId
@@ -6041,7 +6041,7 @@ namespace helper {
 	}
 
 	void IterateUnitsAtLocationTargetProc_Ensnare(CUnit* attacker, Box16* coords) {
-		const uint32 EnsnareProc_function = 0x004F46C0;
+		const u32 EnsnareProc_function = 0x004F46C0;
 		__asm {
 			PUSHAD
 			PUSH attacker
@@ -6052,7 +6052,7 @@ namespace helper {
 		}
 	}
 	void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords) {
-		const uint32 PlagueProc_function = 0x004F4AF0;
+		const u32 PlagueProc_function = 0x004F4AF0;
 		__asm {
 			PUSHAD
 			PUSH attacker
@@ -6064,7 +6064,7 @@ namespace helper {
 	}
 
 	void IterateUnitsAtLocationTargetProc_Maelstrom(CUnit* attacker, Box16* coords) {
-		const uint32 MaelstromProc_function = 0x004F6760;
+		const u32 MaelstromProc_function = 0x004F6760;
 		__asm {
 			PUSHAD
 			PUSH attacker
@@ -6076,7 +6076,7 @@ namespace helper {
 	}
 
 	void IterateUnitsAtLocationTargetProc_StasisField(CUnit* attacker, Box16* coords) {
-		const uint32 StasisFieldProc_function = 0x004F68D0;
+		const u32 StasisFieldProc_function = 0x004F68D0;
 		__asm {
 			PUSHAD
 			PUSH attacker
@@ -6088,7 +6088,7 @@ namespace helper {
 	}
 
 	void createEnsnareOverlay(CUnit* a1) {
-		const uint32 Func_createEnsnareOverlay = 0x004F45E0;
+		const u32 Func_createEnsnareOverlay = 0x004F45E0;
 		__asm {
 			PUSHAD
 			MOV EDI, a1
@@ -6099,9 +6099,9 @@ namespace helper {
 
 	// For createScanner
 
-	int32 setUnitStatTxtErrorMsg(int32 a1) {
-		const uint32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
-		static int32 result;
+	s32 setUnitStatTxtErrorMsg(s32 a1) {
+		const u32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -6112,9 +6112,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 playSoundFromSource(int32 a1, CUnit* a2, int32 a3, int32 a4) {
-		const uint32 Func_playSoundFromSource = 0x0048ED50;
-		static int32 result;
+	s32 playSoundFromSource(s32 a1, CUnit* a2, s32 a3, s32 a4) {
+		const u32 Func_playSoundFromSource = 0x0048ED50;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a4
@@ -6145,8 +6145,8 @@ namespace helper {
 		return (unit->status & (UnitStatus::CloakingForFree + UnitStatus::Burrowed)) != 0;
 	}
 
-	void SC_memcpy_0(uint32 dest, uint32 src, uint32 memsize) {
-		const uint32 Func_memcpy_0 = 0x00408FD0;
+	void SC_memcpy_0(u32 dest, u32 src, u32 memsize) {
+		const u32 Func_memcpy_0 = 0x00408FD0;
 		__asm {
 			PUSHAD
 			PUSH memsize
@@ -6159,7 +6159,7 @@ namespace helper {
 	}
 
 	void function_00468670(CUnit* unit) {
-		const uint32 Func_Sub_468670 = 0x00468670;
+		const u32 Func_Sub_468670 = 0x00468670;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -6168,9 +6168,9 @@ namespace helper {
 		}
 	}
 
-	bool unit_isUnselectable(uint16 unitId) {
-		const uint32 Func_Unit_isUnselectable = 0x0046ED80;
-		bool32 bHalfReturnValue;
+	bool unit_isUnselectable(u16 unitId) {
+		const u32 Func_Unit_isUnselectable = 0x0046ED80;
+		b32 bHalfReturnValue;
 		__asm {
 			PUSHAD
 			XOR EBX, EBX
@@ -6183,8 +6183,8 @@ namespace helper {
 		return (bHalfReturnValue != 0);
 	}
 
-	void function_0046F040(CUnit* current_unit, CUnit** unit_list, CUnit* clicked_unit, uint32 list_length) {
-		const uint32 Func_Sub_6F040 = 0x0046F040;
+	void function_0046F040(CUnit* current_unit, CUnit** unit_list, CUnit* clicked_unit, u32 list_length) {
+		const u32 Func_Sub_6F040 = 0x0046F040;
 		__asm {
 			PUSHAD
 			PUSH clicked_unit
@@ -6196,9 +6196,9 @@ namespace helper {
 		}
 	}
 
-	uint32 combineLists_Sub_6F290(CUnit* unit, CUnit** unit_list_1, CUnit** unit_list_2, uint32 list_length) {
-		const uint32 Func_Sub_46F290 = 0x0046F290;
-		uint32 return_value;
+	u32 combineLists_Sub_6F290(CUnit* unit, CUnit** unit_list_1, CUnit** unit_list_2, u32 list_length) {
+		const u32 Func_Sub_46F290 = 0x0046F290;
+		u32 return_value;
 		__asm {
 			PUSHAD
 			PUSH unit
@@ -6212,8 +6212,8 @@ namespace helper {
 		return return_value;
 	}
 
-	void applyNewSelect_Sub_6FA00(CUnit** unit_list, uint32 unit_list_length) {
-		const uint32 Func_Sub_46FA00 = 0x0046FA00;
+	void applyNewSelect_Sub_6FA00(CUnit** unit_list, u32 unit_list_length) {
+		const u32 Func_Sub_46FA00 = 0x0046FA00;
 		__asm {
 			PUSHAD
 			PUSH 0x01
@@ -6225,9 +6225,9 @@ namespace helper {
 		}
 	}
 
-	uint32 CUnitToUnitID(CUnit* unit) {
-		const uint32 Func_CUnitToUnitID = 0x0047B1D0;
-		static uint32 return_value;
+	u32 CUnitToUnitID(CUnit* unit) {
+		const u32 Func_CUnitToUnitID = 0x0047B1D0;
+		static u32 return_value;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -6239,8 +6239,8 @@ namespace helper {
 	}
 
 	bool unit_IsStandardAndMovable(CUnit* unit) {
-		const uint32 Func_Unit_IsStandardAndMovable = 0x0047B770;
-		bool32 return_value_unconverted;
+		const u32 Func_Unit_IsStandardAndMovable = 0x0047B770;
+		b32 return_value_unconverted;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -6255,7 +6255,7 @@ namespace helper {
 	}
 
 	void selectBuildingSFX(CUnit* unit) {
-		const uint32 Func_SelectBuildingSFX = 0x0048F910;
+		const u32 Func_SelectBuildingSFX = 0x0048F910;
 		__asm {
 			PUSHAD
 			PUSH unit
@@ -6264,9 +6264,9 @@ namespace helper {
 		}
 	}
 
-	bool32 selectSingleUnitFromID(uint32 unitIndex) {
-		const uint32 Func_SelectSingleUnitFromID = 0x00496D30;
-		bool32 bReturnedValue;
+	b32 selectSingleUnitFromID(u32 unitIndex) {
+		const u32 Func_SelectSingleUnitFromID = 0x00496D30;
+		b32 bReturnedValue;
 		__asm {
 			PUSHAD
 			PUSH unitIndex
@@ -6277,8 +6277,8 @@ namespace helper {
 		return bReturnedValue;
 	}
 
-	void CreateNewUnitSelectionsFromList(CUnit** unit_list, uint32 unit_list_length) {
-		const uint32 Func_CreateNewUnitSelectionsFromList = 0x0049AE40;
+	void CreateNewUnitSelectionsFromList(CUnit** unit_list, u32 unit_list_length) {
+		const u32 Func_CreateNewUnitSelectionsFromList = 0x0049AE40;
 		__asm {
 			PUSHAD
 			PUSH unit_list_length
@@ -6288,8 +6288,8 @@ namespace helper {
 		}
 	}
 
-	void CMDACT_Select(CUnit** unit_list, uint32 unit_list_length) {
-		const uint32 Func_CMDACT_Select = 0x004C0860;
+	void CMDACT_Select(CUnit** unit_list, u32 unit_list_length) {
+		const u32 Func_CMDACT_Select = 0x004C0860;
 		__asm {
 			PUSHAD
 			PUSH unit_list
@@ -6319,8 +6319,8 @@ namespace helper {
 		}
 	}
 
-	void removeOverlays2(uint32 from, uint32 to, CUnit* unit) {
-		const uint32 Func_removeOverlays2 = 0x00492370;
+	void removeOverlays2(u32 from, u32 to, CUnit* unit) {
+		const u32 Func_removeOverlays2 = 0x00492370;
 		__asm {
 			PUSHAD
 			MOV EAX, from
@@ -6332,8 +6332,8 @@ namespace helper {
 	}
 
 	bool unitHpIsInRedZone(CUnit* unit) {
-		const uint32 Helper_UnitHpIsInRedZone = 0x004022C0;
-		static bool32 result;
+		const u32 Helper_UnitHpIsInRedZone = 0x004022C0;
+		static b32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -6346,7 +6346,7 @@ namespace helper {
 
 	//hooked by hooks\update_status_effects.cpp
 	void RestoreAllUnitStats(CUnit* unit) {
-		const uint32 Func_RestoreAllUnitStats = 0x00492F70;
+		const u32 Func_RestoreAllUnitStats = 0x00492F70;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -6358,8 +6358,8 @@ namespace helper {
 	// For updateUnits
 
 	bool isSelectedUnitGroupEnabled() {
-		const uint32 Func_isSelectedUnitGroupEnabled = 0x0049A2C0;
-		static int32 result;
+		const u32 Func_isSelectedUnitGroupEnabled = 0x0049A2C0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			CALL Func_isSelectedUnitGroupEnabled
@@ -6370,7 +6370,7 @@ namespace helper {
 	}
 
 	void cancelTargetOrder() {
-		const uint32 Func_cancelTargetOrder = 0x0048CA10;
+		const u32 Func_cancelTargetOrder = 0x0048CA10;
 		__asm {
 			PUSHAD
 			CALL Func_cancelTargetOrder
@@ -6378,9 +6378,9 @@ namespace helper {
 		}
 	}
 
-	int32 updateDisruptionWebStatus() {
-		const uint32 Func_UpdateDisruptionWebStatus = 0x004EB2F0;
-		static int32 result;
+	s32 updateDisruptionWebStatus() {
+		const u32 Func_UpdateDisruptionWebStatus = 0x004EB2F0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			CALL Func_UpdateDisruptionWebStatus
@@ -6391,7 +6391,7 @@ namespace helper {
 	}
 
 	CUnit* progressDyingUnitFrame(CUnit* unit) {
-		const uint32 Func_progressDyingUnitFrame = 0x004EB5E0;
+		const u32 Func_progressDyingUnitFrame = 0x004EB5E0;
 		static CUnit* result;
 		__asm {
 			PUSHAD
@@ -6403,8 +6403,8 @@ namespace helper {
 		return result;
 	}
 
-	void revealSightAtLocation(int32 sightRange, uint32 visionFlags, int32 ptX, int32 ptY, bool isAirUnit) {
-		const uint32 Func_revealSightAtLocation = 0x004806F0;
+	void revealSightAtLocation(s32 sightRange, u32 visionFlags, s32 ptX, s32 ptY, bool isAirUnit) {
+		const u32 Func_revealSightAtLocation = 0x004806F0;
 		__asm {
 			PUSHAD
 			PUSH isAirUnit
@@ -6418,7 +6418,7 @@ namespace helper {
 	}
 
 	void updateVisibility(CUnit* unit) {
-		const uint32 Func_updateVisibility = 0x004EBE10;
+		const u32 Func_updateVisibility = 0x004EBE10;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
@@ -6428,7 +6428,7 @@ namespace helper {
 	}
 
 	void progressActiveUnitFrame(CUnit* unit) {
-		const uint32 Func_progressActiveUnitFrame = 0x004EBC30;
+		const u32 Func_progressActiveUnitFrame = 0x004EBC30;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -6438,7 +6438,7 @@ namespace helper {
 	}
 
 	void checkUnitVisibility(CUnit* unit) {
-		const uint32 Func_checkUnitVisibility = 0x00443390;
+		const u32 Func_checkUnitVisibility = 0x00443390;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -6448,7 +6448,7 @@ namespace helper {
 	}
 
 	void progressUnitFrame(CUnit* unit) {
-		const uint32 Func_progressUnitFrame = 0x004ECF70;
+		const u32 Func_progressUnitFrame = 0x004ECF70;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -6458,7 +6458,7 @@ namespace helper {
 	}
 
 	void unitUpdate(CUnit* unit) {
-		const uint32 Func_unitUpdate = 0x004EC420;
+		const u32 Func_unitUpdate = 0x004EC420;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -6468,7 +6468,7 @@ namespace helper {
 	}
 
 	void updateUnitPower() {
-		const uint32 Func_updateUnitPower = 0x00493790;
+		const u32 Func_updateUnitPower = 0x00493790;
 		__asm {
 			PUSHAD
 			CALL Func_updateUnitPower
@@ -6478,9 +6478,9 @@ namespace helper {
 
 	// For updateBurrowingCloakingUnits
 
-	int32 isUnitCloaking(CUnit* unit) {
-		const uint32 Func_isUnitCloaking = 0x004916E0;
-		static int32 result;
+	s32 isUnitCloaking(CUnit* unit) {
+		const u32 Func_isUnitCloaking = 0x004916E0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -6491,8 +6491,8 @@ namespace helper {
 		return result;
 	}
 
-	void playSoundFromDirect(CUnit* unit, int32 soundId) {
-		const uint32 Func_playSoundFromDirect = 0x0049B5B0;
+	void playSoundFromDirect(CUnit* unit, s32 soundId) {
+		const u32 Func_playSoundFromDirect = 0x0049B5B0;
 		__asm {
 			PUSHAD
 			MOV ECX, soundId
@@ -6505,7 +6505,7 @@ namespace helper {
 	// For doCloak
 
 	void updateSpriteFlagOnPalette(CSprite* sprite) {
-		const uint32 Func_updateSpriteFlagOnPalette = 0x00497E80;
+		const u32 Func_updateSpriteFlagOnPalette = 0x00497E80;
 		__asm {
 			PUSHAD
 			MOV EAX, sprite
@@ -6515,7 +6515,7 @@ namespace helper {
 	}
 
 	void showImagesHiddenByCloak(CSprite* sprite) {
-		const uint32 Func_showImagesHiddenByCloak = 0x00498170;
+		const u32 Func_showImagesHiddenByCloak = 0x00498170;
 		__asm {
 			PUSHAD
 			MOV EAX, sprite
@@ -6525,7 +6525,7 @@ namespace helper {
 	}
 
 	void updateSpriteImagesForCloak(CSprite* sprite) {
-		const uint32 Func_updateSpriteImagesForCloak = 0x00498A90;
+		const u32 Func_updateSpriteImagesForCloak = 0x00498A90;
 		__asm {
 			PUSHAD
 			MOV EDI, sprite
@@ -6534,9 +6534,9 @@ namespace helper {
 		}
 	}
 
-	uint32 getLarvaeUnitsFromList(CUnit** unitList, CUnit** outputList) {
-		const uint32 Func_getLarvaeUnitsFromList = 0x00423190;
-		static uint32 larvaeList_Count;
+	u32 getLarvaeUnitsFromList(CUnit** unitList, CUnit** outputList) {
+		const u32 Func_getLarvaeUnitsFromList = 0x00423190;
+		static u32 larvaeList_Count;
 		__asm {
 			PUSHAD
 			MOV ESI, outputList
@@ -6548,8 +6548,8 @@ namespace helper {
 		return larvaeList_Count;
 	}
 
-	void selectMultipleUnitsFromUnitList(CUnit** unitList, uint32 unitsCount, bool32 unk1, bool32 unk2) {
-		const uint32 Func_selectMultipleUnitsFromUnitList = 0x0049AEF0;
+	void selectMultipleUnitsFromUnitList(CUnit** unitList, u32 unitsCount, b32 unk1, b32 unk2) {
+		const u32 Func_selectMultipleUnitsFromUnitList = 0x0049AEF0;
 		__asm {
 			PUSHAD
 			PUSH unk2
@@ -6561,9 +6561,9 @@ namespace helper {
 		}
 	}
 
-	int32 BWFXN_PrintXY(const char* text, int32 x, int32 y) {
-		const uint32 BWFXN_PrintXY_function = 0x004202B0;
-		static int32 result;
+	s32 BWFXN_PrintXY(const char* text, s32 x, s32 y) {
+		const u32 BWFXN_PrintXY_function = 0x004202B0;
+		static s32 result;
 		_asm {
 			PUSHAD
 			PUSH y
@@ -6576,9 +6576,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 GetColorHandle(uint8 color) {
-		const uint32 GetColorHandle_function = 0x0041F610;
-		static int result;
+	s32 GetColorHandle(u8 color) {
+		const u32 GetColorHandle_function = 0x0041F610;
+		static s32 result;
 		_asm {
 			PUSHAD
 			MOV AL, color
@@ -6591,8 +6591,8 @@ namespace helper {
 
 	// For targetedOrder
 
-	COrder* queueNewOrder(COrder* a1, int16 a2, int16 a3, CUnit* a4, uint8 a5, int32 a6, int16 a7, Point32* a8, CUnit* a9) {
-		const uint32 Func_queueNewOrder = 0x00474B90;
+	COrder* queueNewOrder(COrder* a1, s16 a2, s16 a3, CUnit* a4, u8 a5, s32 a6, s16 a7, Point32* a8, CUnit* a9) {
+		const u32 Func_queueNewOrder = 0x00474B90;
 		static COrder* result;
 		__asm {
 			PUSHAD
@@ -6612,9 +6612,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 showStatTxtToPlayer(int32 a1, int32 a2) {
-		const uint32 Func_showStatTxtToPlayer = 0x0048CF00;
-		static int32 result;
+	s32 showStatTxtToPlayer(s32 a1, s32 a2) {
+		const u32 Func_showStatTxtToPlayer = 0x0048CF00;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, a1
@@ -6626,8 +6626,8 @@ namespace helper {
 		return result;
 	}
 
-	void setOrderTarget(uint8 a1, int16 a2, int16 a3, int32 a4, int32 a5, CUnit* a6, int32 a7, Point32* a8, CUnit* a9) {
-		const uint32 Func_setOrderTarget = 0x00475470;
+	void setOrderTarget(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, CUnit* a6, s32 a7, Point32* a8, CUnit* a9) {
+		const u32 Func_setOrderTarget = 0x00475470;
 		__asm {
 			PUSHAD
 			MOV CL, a1
@@ -6646,9 +6646,9 @@ namespace helper {
 
 	// For selectUnits
 
-	int32 selectSingleUnitFromID(int32 a1) {
-		const uint32 Func_selectSingleUnitFromID = 0x00496D30;
-		static int32 result;
+	s32 selectSingleUnitFromID(s32 a1) {
+		const u32 Func_selectSingleUnitFromID = 0x00496D30;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a1
@@ -6659,9 +6659,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 selectMultipleUnitsFromUnitList(int32 a1, CUnit** a2, uint8 a3, int32 a4) {
-		const uint32 Func_selectMultipleUnitsFromUnitList = 0x0049AEF0;
-		static int32 result;
+	s32 selectMultipleUnitsFromUnitList(s32 a1, CUnit** a2, u8 a3, s32 a4) {
+		const u32 Func_selectMultipleUnitsFromUnitList = 0x0049AEF0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a4
@@ -6675,9 +6675,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 SNetGetTurnsInTransit(uint32* turns) {
-		const uint32 SNetGetTurnsInTransit_function = 0x00410275;
-		static int32 result;
+	s32 SNetGetTurnsInTransit(u32* turns) {
+		const u32 SNetGetTurnsInTransit_function = 0x00410275;
+		static s32 result;
 		_asm {
 			PUSHAD
 			PUSH turns
@@ -6688,9 +6688,9 @@ namespace helper {
 		return result;
 	}
 
-	uint8 sendTurn() {
-		const uint32 sendTurn_function = 0x00485A40;
-		static uint32 result;
+	u8 sendTurn() {
+		const u32 sendTurn_function = 0x00485A40;
+		static u32 result;
 		_asm {
 			PUSHAD
 			CALL sendTurn_function
@@ -6700,9 +6700,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 SErrGetLastError() {
-		const uint32 SErrGetLastError_function = 0x004100FA;
-		static int32 result;
+	s32 SErrGetLastError() {
+		const u32 SErrGetLastError_function = 0x004100FA;
+		static s32 result;
 		_asm {
 			PUSHAD
 			CALL SErrGetLastError_function
@@ -6712,9 +6712,9 @@ namespace helper {
 		return result;
 	}
 
-	uint8 packetErrHandle(int32 result_arg, int32 a1, const char* a3, int32 a4, int32 a5) {
-		const uint32 packetErrHandle_function = 0x004BB0B0;
-		static uint32 result;
+	u8 packetErrHandle(s32 result_arg, s32 a1, const char* a3, s32 a4, s32 a5) {
+		const u32 packetErrHandle_function = 0x004BB0B0;
+		static u32 result;
 		_asm {
 			PUSHAD
 			MOV EAX, result_arg
@@ -6730,8 +6730,8 @@ namespace helper {
 	}
 
 	// unkRepairInfo may be related to unit->worker.repairResourceLossTimer
-	void getRepairInfo(CUnit* repairTarget, uint32* repairCostMineral, uint32* repairCostGas, int16* unkRepairInfo) {
-		const uint32 Func_getRepairInfo = 0x00466D10;
+	void getRepairInfo(CUnit* repairTarget, u32* repairCostMineral, u32* repairCostGas, s16* unkRepairInfo) {
+		const u32 Func_getRepairInfo = 0x00466D10;
 		__asm {
 			PUSHAD
 			MOV EAX, repairTarget
@@ -6744,8 +6744,8 @@ namespace helper {
 	}
 
 	bool ord_repair_subtract(CUnit* worker, CUnit* target) {
-		const uint32 Func_ord_repair_subtract = 0x00466FB0;
-		static bool32 bPreResult;
+		const u32 Func_ord_repair_subtract = 0x00466FB0;
+		static b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV ESI, worker
@@ -6758,9 +6758,9 @@ namespace helper {
 	}
 
 	// display an error message and return false if not enough resources
-	bool verifyResources(uint32 mineralCost, uint32 gasCost, uint32 playerId) {
-		const uint32 Func_verifyResources = 0x00466EE0;
-		bool32 bPreResult;
+	bool verifyResources(u32 mineralCost, u32 gasCost, u32 playerId) {
+		const u32 Func_verifyResources = 0x00466EE0;
+		b32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EAX, mineralCost
@@ -6773,9 +6773,9 @@ namespace helper {
 		return (bPreResult != 0);
 	}
 
-	uint8 getHangerTrainCount(CUnit* unit) {
-		const uint32 Func_getHangerTrainCount = 0x00465270;
-		static uint8 result = 0;
+	u8 getHangerTrainCount(CUnit* unit) {
+		const u32 Func_getHangerTrainCount = 0x00465270;
+		static u8 result = 0;
 		__asm {
 			PUSHAD
 			MOV EDX, unit
@@ -6786,8 +6786,8 @@ namespace helper {
 	}
 
 	bool unitIsTrainingOrMorphing(CUnit* unit) {
-		const uint32 Func_unitIsTrainingOrMorphing = 0x00401500;
-		static uint32 result;
+		const u32 Func_unitIsTrainingOrMorphing = 0x00401500;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -6797,20 +6797,20 @@ namespace helper {
 		}
 	}
 
-	uint8 initializeRandomizerInfo() {
-		const uint32 Func_initializeRandomizerInfo = 0x0047E410;
-		static uint32 result;
+	u8 initializeRandomizerInfo() {
+		const u32 Func_initializeRandomizerInfo = 0x0047E410;
+		static u32 result;
 		__asm {
 			PUSHAD
 			CALL Func_initializeRandomizerInfo
 			MOV result, EAX
 			POPAD
 		}
-		return (uint8)result;
+		return (u8)result;
 	}
 
 	void AI_Loop() {
-		const uint32 Func_AI_Loop = 0x004A2B00;
+		const u32 Func_AI_Loop = 0x004A2B00;
 		__asm {
 			PUSHAD
 			CALL Func_AI_Loop
@@ -6818,9 +6818,9 @@ namespace helper {
 		}
 	}
 
-	int32 updateActiveTileInfo() {
-		const uint32 Func_updateActiveTileInfo = 0x0049C4C0;
-		static int32 result;
+	s32 updateActiveTileInfo() {
+		const u32 Func_updateActiveTileInfo = 0x0049C4C0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			CALL Func_updateActiveTileInfo
@@ -6830,9 +6830,9 @@ namespace helper {
 		return result;
 	}
 
-	int32 removeFOWCheat() {
-		const uint32 Func_removeFOWCheat = 0x00480880;
-		static int32 result;
+	s32 removeFOWCheat() {
+		const u32 Func_removeFOWCheat = 0x00480880;
+		static s32 result;
 		__asm {
 			PUSHAD
 			CALL Func_removeFOWCheat
@@ -6843,7 +6843,7 @@ namespace helper {
 	}
 
 	void updateUnits() {
-		const uint32 Func_updateUnits = 0x004ED000;
+		const u32 Func_updateUnits = 0x004ED000;
 		__asm {
 			PUSHAD
 			CALL Func_updateUnits
@@ -6851,9 +6851,9 @@ namespace helper {
 		}
 	}
 
-	int32 imageDrawingBulletDrawing() {
-		const uint32 Func_imageDrawingBulletDrawing = 0x0048C3D0;
-		static int32 result;
+	s32 imageDrawingBulletDrawing() {
+		const u32 Func_imageDrawingBulletDrawing = 0x0048C3D0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			CALL Func_imageDrawingBulletDrawing
@@ -6864,7 +6864,7 @@ namespace helper {
 	}
 
 	void updateImages() {
-		const uint32 Func_updateImages = 0x00496330;
+		const u32 Func_updateImages = 0x00496330;
 		__asm {
 			PUSHAD
 			CALL Func_updateImages
@@ -6873,7 +6873,7 @@ namespace helper {
 	}
 
 	void updateThingys() {
-		const uint32 Func_updateThingys = 0x00488510;
+		const u32 Func_updateThingys = 0x00488510;
 		__asm {
 			PUSHAD
 			CALL Func_updateThingys
@@ -6885,8 +6885,8 @@ namespace helper {
 	// Returns true if successful, false otherwise.
 	bool addPsiFieldSprite(CUnit* unit) {
 		if (!unit) return false;
-		const uint32 Func_addPsiFieldSprite = 0x00493BF0;
-		static uint32 result;
+		const u32 Func_addPsiFieldSprite = 0x00493BF0;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -6897,8 +6897,8 @@ namespace helper {
 		return result != 0;
 	}
 
-	void orderInterrupt(CUnit* unit, CUnit* target, uint16 x, uint16 y, uint32 orderId) {
-		const uint32 Func_orderInterrupt = 0x00474C30;
+	void orderInterrupt(CUnit* unit, CUnit* target, u16 x, u16 y, u32 orderId) {
+		const u32 Func_orderInterrupt = 0x00474C30;
 		static Point16 pos;
 		pos.x = x; pos.y = y;
 		__asm {
@@ -6913,7 +6913,7 @@ namespace helper {
 	}
 
 	void unitOrderMoveToTargetUnit(CUnit* unit, CUnit* target) {
-		const uint32 Func_unitOrderMoveToTargetUnit = 0x00479FE0;
+		const u32 Func_unitOrderMoveToTargetUnit = 0x00479FE0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -6923,8 +6923,8 @@ namespace helper {
 		}
 	}
 
-	void QueueGameCommand(uint8* params, uint32 param_length) {
-		const uint32 Func_QueueGameCommand = 0x00485BD0;
+	void QueueGameCommand(u8* params, u32 param_length) {
+		const u32 Func_QueueGameCommand = 0x00485BD0;
 		__asm {
 			PUSHAD
 			MOV EDX, param_length
@@ -6936,10 +6936,10 @@ namespace helper {
 
 
 
-	const uint32 Func_CreateThingy = 0x00488210;
-	CThingy* createThingyFunc(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
+	const u32 Func_CreateThingy = 0x00488210;
+	CThingy* createThingyFunc(u32 spriteId, s16 x, s16 y, u32 playerId) {
 		static CThingy* thingy;
-		int32 x_ = x;
+		s32 x_ = x;
 		__asm {
 			PUSHAD
 			PUSH playerId
@@ -6953,9 +6953,9 @@ namespace helper {
 		return thingy;
 	}
 
-	const uint32 Func_DoUnitsCollide = 0x00469B60;
+	const u32 Func_DoUnitsCollide = 0x00469B60;
 	bool func_dounitscollide(CUnit* first, CUnit* second) {
-		static uint32 result = 0;
+		static u32 result = 0;
 		__asm {
 			PUSHAD
 			MOV EAX, first
@@ -6967,7 +6967,7 @@ namespace helper {
 		return result;
 	}
 
-	const uint32 Func_Sub_4E97C0 = 0x004E97C0;
+	const u32 Func_Sub_4E97C0 = 0x004E97C0;
 	void unburrow(CUnit* unit) {
 		__asm {
 			PUSHAD
@@ -6977,8 +6977,8 @@ namespace helper {
 		}
 	}
 
-	const uint32 Func_SMemAlloc = 0x0041006A;
-	void* SMemAlloc(uint32 amount, uint32 unkFilename, uint32 unkLine, uint32 defaultValue) {
+	const u32 Func_SMemAlloc = 0x0041006A;
+	void* SMemAlloc(u32 amount, u32 unkFilename, u32 unkLine, u32 defaultValue) {
 
 		static void* pointer_on_allocated_memory;
 
@@ -7000,8 +7000,8 @@ namespace helper {
 	;
 
 	//Likely to call SMemAlloc!
-	const uint32 Func_SetCallbackTimer = 0x00416090;
-	void SetCallbackTimer(BinDlg* dialog, uint32 unk1, uint32 unk2, uint32 unk3) {
+	const u32 Func_SetCallbackTimer = 0x00416090;
+	void SetCallbackTimer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3) {
 
 		__asm {
 			PUSHAD
@@ -7017,7 +7017,7 @@ namespace helper {
 
 	;
 
-	const uint32 Func_Sub49A7F0 = 0x0049A7F0;
+	const u32 Func_Sub49A7F0 = 0x0049A7F0;
 	void function_0049A7F0(CUnit* unit) {
 
 		__asm {
@@ -7029,12 +7029,12 @@ namespace helper {
 
 	}
 
-	uint32 fxnInteract(BinDlg* dialog, uint32 data_struct_offset) {
+	u32 fxnInteract(BinDlg* dialog, u32 data_struct_offset) {
 
-		static uint32 return_value;
-		static uint32 fxnInteract;
+		static u32 return_value;
+		static u32 fxnInteract;
 
-		fxnInteract = (uint32)dialog->fxnInteract;
+		fxnInteract = (u32)dialog->fxnInteract;
 
 		__asm {
 			PUSHAD
@@ -7053,8 +7053,8 @@ namespace helper {
 
 	/**** Definitions of helper functions. Do NOT modify anything below! ****/
 
-	const uint32 Func_registerUserDialogAction = 0x00418100;
-	void registerUserDialogAction(BinDlg* dialog, uint32 array_of_fxnInteractFunc, uint32 sizeOfArray) {
+	const u32 Func_registerUserDialogAction = 0x00418100;
+	void registerUserDialogAction(BinDlg* dialog, u32 array_of_fxnInteractFunc, u32 sizeOfArray) {
 
 		__asm {
 			PUSHAD
@@ -7069,7 +7069,7 @@ namespace helper {
 
 	;
 
-	const uint32 Func_Sub418E00 = 0x00418E00;
+	const u32 Func_Sub418E00 = 0x00418E00;
 	void function_418E00(BinDlg* dialog) {
 
 		__asm {
@@ -7083,7 +7083,7 @@ namespace helper {
 
 	;
 
-	const uint32 Func_ReplayStatBtns = 0x00427A80;
+	const u32 Func_ReplayStatBtns = 0x00427A80;
 	void replayStatBtns(BinDlg* dialog) {
 		__asm {
 			PUSHAD
@@ -7095,7 +7095,7 @@ namespace helper {
 
 	;
 
-	const uint32 Func_Sub_4591D0 = 0x004591D0;
+	const u32 Func_Sub_4591D0 = 0x004591D0;
 	void function_4591D0() {
 
 		__asm {
@@ -7108,7 +7108,7 @@ namespace helper {
 
 	;
 
-	const uint32 Func_Sub_459770 = 0x00459770;
+	const u32 Func_Sub_459770 = 0x00459770;
 	void function_459770() {
 		__asm {
 			PUSHAD
@@ -7119,7 +7119,7 @@ namespace helper {
 
 	;
 
-	const uint32 Func_BINDLG_BlitSurface = 0x004C35F0;
+	const u32 Func_BINDLG_BlitSurface = 0x004C35F0;
 	void BINDLG_BlitSurface(BinDlg* dialog) {
 		__asm {
 			PUSHAD
@@ -7132,9 +7132,9 @@ namespace helper {
 	;
 
 	//dev info: examples of calls: 429520,428e60,428420,4287D0,4292C0
-	int32 req_check(uint32 reqFunc, uint16 reqVar, uint32 playerId, CUnit* unit) {
+	s32 req_check(u32 reqFunc, u16 reqVar, u32 playerId, CUnit* unit) {
 
-		static int32 return_value;
+		static s32 return_value;
 
 		__asm {
 			PUSHAD
@@ -7173,7 +7173,7 @@ namespace helper {
 
 	void updateImagePositionOffset(CImage* image) {
 
-		const uint32 Func_updateImagePositionOffset = 0x004D5A00;
+		const u32 Func_updateImagePositionOffset = 0x004D5A00;
 
 		__asm {
 			PUSHAD
@@ -7185,7 +7185,7 @@ namespace helper {
 	}
 
 	//Identical to function @ 0x004F3AF0
-	void setResourceAmountCarried(CUnit* worker, uint8 amountCarried, uint32 chunkImageId, bool isMineral) {
+	void setResourceAmountCarried(CUnit* worker, u8 amountCarried, u32 chunkImageId, bool isMineral) {
 
 		if (worker->resourceType != 0)
 			return;
@@ -7204,9 +7204,9 @@ namespace helper {
 
 	}
 
-	const uint32 Func_0x00433410 = 0x00433410;
-	int Ai_HasBuildingsNeedingPower(uint32 player) {
-		static int result;
+	const u32 Func_0x00433410 = 0x00433410;
+	s32 Ai_HasBuildingsNeedingPower(u32 player) {
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, player
@@ -7217,9 +7217,9 @@ namespace helper {
 		return result;
 	}
 
-	const uint32 Func_0x00433470 = 0x00433470;
-	int Ai_CountEconomyUnits(uint32 player, uint32 unit_id) {
-		static int result;
+	const u32 Func_0x00433470 = 0x00433470;
+	s32 Ai_CountEconomyUnits(u32 player, u32 unit_id) {
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, player
@@ -7231,9 +7231,9 @@ namespace helper {
 		return result;
 	}
 
-	const uint32 Func_0x004889D0 = 0x004889D0;
-	int getSuppliesRemaining(uint8 player, uint16 unit_id) {
-		static int result;
+	const u32 Func_0x004889D0 = 0x004889D0;
+	s32 getSuppliesRemaining(u8 player, u16 unit_id) {
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV BL, player
@@ -7245,9 +7245,9 @@ namespace helper {
 		return result;
 	}
 
-	const uint32 Func_4888c0 = 0x004888C0;
-	int getSuppliesUsed(int byte_data, uint8 player) {
-		static uint32 result;
+	const u32 Func_4888c0 = 0x004888C0;
+	s32 getSuppliesUsed(s32 byte_data, u8 player) {
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, byte_data
@@ -7259,9 +7259,9 @@ namespace helper {
 		return result;
 	}
 
-	const uint32 Func_AI_AddCostToNeeds = 0x00447DC0;
-	int32 AI_AddCostToNeeds(int32 a1, int32 a2, int32 a3) {
-		static int32 result;
+	const u32 Func_AI_AddCostToNeeds = 0x00447DC0;
+	s32 AI_AddCostToNeeds(s32 a1, s32 a2, s32 a3) {
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -7274,9 +7274,9 @@ namespace helper {
 		return result;
 	}
 
-	const uint32 Func_AI_AddSpendingRequest = 0x00447980;
-	int32 AI_AddSpendingRequest(int16 a1, int32 a2, char a3, char a4, void* a5) {
-		static int32 result;
+	const u32 Func_AI_AddSpendingRequest = 0x00447980;
+	s32 AI_AddSpendingRequest(s16 a1, s32 a2, char a3, char a4, void* a5) {
+		static s32 result;
 		__asm {
 			PUSHAD
 			PUSH a5
@@ -7292,9 +7292,9 @@ namespace helper {
 	}
 
 	// For AI_AddSpendingRequest
-	const uint32 Func_isAIAllowedToBuild = 0x00447830;
-	bool isAIAllowedToBuild(int32 a1, int32 a2) {
-		static int32 result;
+	const u32 Func_isAIAllowedToBuild = 0x00447830;
+	bool isAIAllowedToBuild(s32 a1, s32 a2) {
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV ECX, a2
@@ -7307,7 +7307,7 @@ namespace helper {
 	}
 
 	void removeAITownGasReferences(CUnit* unit) {
-		const uint32 Func_RemoveGasRefs = 0x00432760;
+		const u32 Func_RemoveGasRefs = 0x00432760;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
@@ -7317,7 +7317,7 @@ namespace helper {
 	}
 
 	void deleteBuildingAi(void* building_ai_list, BuildingAi* ai) {
-		const uint32 Func_DeleteBuildingAi = 0x00404500;
+		const u32 Func_DeleteBuildingAi = 0x00404500;
 		__asm {
 			PUSHAD
 			MOV EDX, building_ai_list
@@ -7328,7 +7328,7 @@ namespace helper {
 	}
 
 	void deleteWorkerAi(void* worker_ai_list, WorkerAi* ai) {
-		const uint32 Func_DeleteWorkerAi = 0x00404470;
+		const u32 Func_DeleteWorkerAi = 0x00404470;
 		__asm {
 			PUSHAD
 			MOV EDX, worker_ai_list
@@ -7339,7 +7339,7 @@ namespace helper {
 	}
 
 	void deleteAiTownIfNeeded(AiTown* town) {
-		const uint32 Func_DeleteAiTownIfNeeded = 0x004347E0;
+		const u32 Func_DeleteAiTownIfNeeded = 0x004347E0;
 		__asm {
 			PUSHAD
 			MOV EAX, town
@@ -7350,8 +7350,8 @@ namespace helper {
 
 	// For isOrderValid
 	bool unitIsResource(CUnit* unit) {
-		const uint32 Func_unitIsResource = 0x004688E0;
-		static int32 result;
+		const u32 Func_unitIsResource = 0x004688E0;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -7363,21 +7363,21 @@ namespace helper {
 	}
 
 	// sign flag
-	int8 SETS(int x)
+	s8 SETS(s32 x)
 	{
-		if (sizeof(int) == 1)
-			return int8(x) < 0;
-		if (sizeof(int) == 2)
-			return int16(x) < 0;
-		if (sizeof(int) == 4)
-			return int32(x) < 0;
-		return int64(x) < 0;
+		if (sizeof(s32) == 1)
+			return s8(x) < 0;
+		if (sizeof(s32) == 2)
+			return s16(x) < 0;
+		if (sizeof(s32) == 4)
+			return s32(x) < 0;
+		return s64(x) < 0;
 	}
 
-	int8 OFSUB(int x, int y)
+	s8 OFSUB(s32 x, s32 y)
 	{
-		int y2 = y;
-		int8 sx = SETS(x);
+		s32 y2 = y;
+		s8 sx = SETS(x);
 		return (sx ^ SETS(y2)) & (sx ^ SETS(x - y2));
 	}
 }

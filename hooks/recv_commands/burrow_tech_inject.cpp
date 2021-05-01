@@ -21,7 +21,7 @@ namespace {
 
 	void __declspec(naked) CMDRECV_BurrowWrapper() {
 
-		static uint8 bCommandType;
+		static u8 bCommandType;
 
 		__asm {
 			PUSH EBP

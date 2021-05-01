@@ -16,7 +16,7 @@ struct GrpFrame;
 
 /// Used by CImage.paletteType
 namespace PaletteType {
-	enum Enum : uint8 {
+	enum Enum : u8 {
 		RLE_NORMAL = 0,
 		RLE_1 = 1,
 		RLE_2 = 2,
@@ -41,7 +41,7 @@ namespace PaletteType {
 //note: the flag number is chosen according to the value used in 
 //<< flag operations, that's why it start with 0.
 namespace CImage_Flags {
-	enum Enum : uint16 {
+	enum Enum : u16 {
 		Redraw = 0x0001,				//flag 0   : 0x0001
 		Mirrored = 0x0002,				//flag 1   : 0x0002
 		DontUpdate = 0x0004,				//flag 2   : 0x0004
@@ -79,9 +79,9 @@ struct CImage {
 
 	/// Resets most of the data member values. This is meant to be used in other
 	/// functions, and should not be used by modders.
-	void initializeData(CSprite* parent, uint16 imageId, int8 x, int8 y);
+	void initializeData(CSprite* parent, u16 imageId, s8 x, s8 y);
 
-	void setImageDirection(uint8 direction);
+	void setImageDirection(u8 direction);
 
 	/// Return a pointer to the current frame when called
 	GrpFrame* getCurrentFrame() const;
@@ -90,29 +90,29 @@ struct CImage {
 	//Actual data structure
 
 	/*0x00*/  CLink<CImage>				link;
-	/*0x08*/  uint16						id;
+	/*0x08*/  u16						id;
 
 
 	/// ++Drawing function (values are the same as DataEdit)
 	/// officially "ubRLE"
-	/*0x0A*/  uint8						paletteType;				//Use PaletteType::Enum
-	/*0x0B*/  uint8						direction;
-	/*0x0C*/  uint16						flags;						// Use CImage_Flags enum
-	/*0x0E*/  uint8						horizontalOffset;
-	/*0x0F*/  uint8						verticalOffset;
-	/*0x10*/  uint16						iscriptHeaderOffset;
-	/*0x12*/  uint16						iscriptOffset;
-	/*0x14*/  uint16						unknown14;
-	/*0x16*/  uint8						animation;					//Use IscriptAnimation::Enum
-	/*0x17*/  uint8						wait;						// iscript sleep time
-	/*0x18*/  uint16						frameSet;
-	/*0x1A*/  uint16						frameIndex;
+	/*0x0A*/  u8						paletteType;				//Use PaletteType::Enum
+	/*0x0B*/  u8						direction;
+	/*0x0C*/  u16						flags;						// Use CImage_Flags enum
+	/*0x0E*/  u8						horizontalOffset;
+	/*0x0F*/  u8						verticalOffset;
+	/*0x10*/  u16						iscriptHeaderOffset;
+	/*0x12*/  u16						iscriptOffset;
+	/*0x14*/  u16						unknown14;
+	/*0x16*/  u8						animation;					//Use IscriptAnimation::Enum
+	/*0x17*/  u8						wait;						// iscript sleep time
+	/*0x18*/  u16						frameSet;
+	/*0x1A*/  u16						frameIndex;
 	/*0x1C*/  Point16					mapPosition;
 	/*0x20*/  Point16					screenPosition;
 	/*0x24*/  Box16						grpSize;					// Bounds for GRP frame, only different from normal when part of graphic is out of bounds.
 	/*0x2C*/  GrpHead* grpOffset;
 	/*0x30*/  void* coloringData;				//?
-	/*0x34*/  void* renderFunction;				// renderFunction(this->screenPosition.x, this->screenPosition.y, this->getCurrentFrame(), &rctDraw, (int)this->coloringData)
+	/*0x34*/  void* renderFunction;				// renderFunction(this->screenPosition.x, this->screenPosition.y, this->getCurrentFrame(), &rctDraw, (s32)this->coloringData)
 	/*0x38*/  void* updateFunction;
 	/*0x3C*/  CSprite* parentSprite;
 };

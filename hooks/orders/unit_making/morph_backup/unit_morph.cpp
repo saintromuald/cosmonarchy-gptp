@@ -223,7 +223,7 @@ namespace hooks {
 						
 						break;
 					}
-					//scbw::printFormattedText("Stop status: %d", (int)bStopThere);
+					//scbw::printFormattedText("Stop status: %d", (s32)bStopThere);
 					if (!bStopThere) {
 						if (unit->id == UnitId::ProtossHighTemplar) {
 							replaceUnitWithType(unit, UnitId::ProtossAugur);
@@ -536,11 +536,11 @@ namespace hooks {
 			return 0;
 		}
 
-		//Hovering units (?) float 7 pixels above ground
+		//Hovering units (?) f32 7 pixels above ground
 		if (units_dat::MovementFlags[unit->id] == MovementFlags::HoverUnit)
 			return -7;
 
-		//Air units float 42 pixels above ground
+		//Air units f32 42 pixels above ground
 		if (unit->status & UnitStatus::InAir)
 			return -42;
 

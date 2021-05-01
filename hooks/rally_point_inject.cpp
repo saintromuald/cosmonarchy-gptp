@@ -32,8 +32,8 @@ namespace {
 	void __declspec(naked) setRallyPositionWrapper() {
 
 		static CUnit* unit;
-		static uint16 x;
-		static uint16 y;
+		static u16 x;
+		static u16 y;
 
 		__asm {
 
@@ -97,11 +97,11 @@ namespace {
 
 	void __declspec(naked) setRallyPositionWrapper_Jmp1() {
 
-		static const uint32 Hook_SetRallyGenericJmpBack1 = 0x00456384;
+		static const u32 Hook_SetRallyGenericJmpBack1 = 0x00456384;
 
 		static CUnit* unit;
-		static uint16 x;
-		static uint16 y;
+		static u16 x;
+		static u16 y;
 
 		__asm {
 			MOV unit, EDI
@@ -127,11 +127,11 @@ namespace {
 
 	void __declspec(naked) setRallyPositionWrapper_Jmp2() {
 
-		static const uint32 Hook_SetRallyGenericJmpBack2 = 0x0049AD77;
+		static const u32 Hook_SetRallyGenericJmpBack2 = 0x0049AD77;
 
 		static CUnit* unit;
-		static uint16 x;
-		static uint16 y;
+		static u16 x;
+		static u16 y;
 
 		__asm {
 			MOV unit, ESI
@@ -158,7 +158,7 @@ namespace {
 
 	void __declspec(naked) setRallyUnitWrapper_Jmp1() {
 
-		static const uint32 Hook_SetRallyGenericJmpBack1 = 0x00456384;
+		static const u32 Hook_SetRallyGenericJmpBack1 = 0x00456384;
 
 		static CUnit* unit;
 		static CUnit* target;
@@ -187,7 +187,7 @@ namespace {
 
 	void __declspec(naked) setRallyUnitWrapper_Jmp2() {
 
-		static const uint32 Hook_SetRallyGenericJmpBack2 = 0x0049AD77;
+		static const u32 Hook_SetRallyGenericJmpBack2 = 0x0049AD77;
 
 		static CUnit* unit;
 		static CUnit* target;

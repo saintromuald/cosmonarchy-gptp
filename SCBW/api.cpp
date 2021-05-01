@@ -14,7 +14,7 @@
 
 namespace scbw {
 
-	void artificalBulletFrom(uint8 weaponId, uint8 playerId, CUnit* source, CUnit* target, Point16 target_pt) {
+	void artificalBulletFrom(u8 weaponId, u8 playerId, CUnit* source, CUnit* target, Point16 target_pt) {
 		auto target_unit = source->orderTarget.unit;
 		auto target_pos = source->orderTarget.pt;
 		source->orderTarget.unit = target;
@@ -30,14 +30,14 @@ namespace scbw {
 		source->orderTarget.unit = target_unit;
 		source->orderTarget.pt = target_pos;
 	}
-	void artificalBulletFrom(uint8 weaponId, uint8 playerId, CUnit* source, CUnit* target, uint16 x, uint16 y) {
+	void artificalBulletFrom(u8 weaponId, u8 playerId, CUnit* source, CUnit* target, u16 x, u16 y) {
 		Point16 tgt;
 		tgt.x = x;
 		tgt.y = y;
 		artificalBulletFrom(weaponId, playerId, source, target, tgt);
 	}
 
-	bool teleport(CUnit* u, Point16 target, uint16 spriteAnimation, bool preserveOrder) {
+	bool teleport(CUnit* u, Point16 target, u16 spriteAnimation, bool preserveOrder) {
 		Point16 previous_pos, new_pos;
 		bool result = false;
 		previous_pos.x = u->sprite->position.x;
@@ -95,8 +95,8 @@ namespace scbw {
 		}
 		return result;
 	}
-	const uint32 Func_CreateFlingy = 0x00496460;
-	CFlingy* createFlingy(uint32 flingyId, uint32 playerId, uint32 x, uint32 y) {
+	const u32 Func_CreateFlingy = 0x00496460;
+	CFlingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y) {
 		static CFlingy* flingy;
 		__asm {
 			PUSHAD
@@ -112,11 +112,11 @@ namespace scbw {
 	}
 
 
-	const uint32 Func_CreateThingy = 0x00488210;
-	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
+	const u32 Func_CreateThingy = 0x00488210;
+	CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId) {
 
 		static CThingy* thingy;
-		int32 x_ = x;
+		s32 x_ = x;
 		__asm {
 			PUSHAD
 			PUSH playerId
@@ -130,7 +130,7 @@ namespace scbw {
 		return thingy;
 	}
 
-	CThingy* createAndInitThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId, int elevationLevel) {
+	CThingy* createAndInitThingy(u32 spriteId, s16 x, s16 y, u32 playerId, s32 elevationLevel) {
 		CThingy* thingy = createThingy(spriteId, x, y, playerId);
 		if (thingy != nullptr) {
 			thingy->sprite->elevationLevel = elevationLevel;
@@ -141,8 +141,8 @@ namespace scbw {
 
 	;
 
-	const uint32 Func_SendCommand = 0x00485BD0;
-	void SendCommand(uint8* params, uint32 param_length) {
+	const u32 Func_SendCommand = 0x00485BD0;
+	void SendCommand(u8* params, u32 param_length) {
 
 		__asm {
 			PUSHAD
@@ -155,8 +155,8 @@ namespace scbw {
 	}
 	//-------- Output functions --------//
 
-	const uint32 Func_PlaySound = 0x0048ED50;
-	void playSound(uint32 sfxId, CUnit* sourceUnit) {
+	const u32 Func_PlaySound = 0x0048ED50;
+	void playSound(u32 sfxId, CUnit* sourceUnit) {
 
 		__asm {
 			PUSHAD
@@ -169,7 +169,7 @@ namespace scbw {
 		}
 	}
 
-	void printString(std::string text, uint32 color) {
+	void printString(std::string text, u32 color) {
 		print(text.c_str(), color);
 	}
 
@@ -184,7 +184,7 @@ namespace scbw {
 		print(buf);
 	}
 
-	void printfColor(const char* format, uint32 color, ...) {
+	void printfColor(const char* format, u32 color, ...) {
 		char buf[256];
 
 		va_list _ArgList;
@@ -195,8 +195,8 @@ namespace scbw {
 		print(buf, color);
 	}
 
-	const uint32 Func_PrintText = 0x0048CD30;
-	void print(const char* text, uint32 color) {
+	const u32 Func_PrintText = 0x0048CD30;
+	void print(const char* text, u32 color) {
 
 		if (!text)
 			return;
@@ -215,8 +215,8 @@ namespace scbw {
 
 	}
 
-	const uint32 Func_ShowErrorMessageWithSfx = 0x0048EE30;
-	void showErrorMessageWithSfx(uint32 playerId, uint32 statTxtId, uint32 sfxId) {
+	const u32 Func_ShowErrorMessageWithSfx = 0x0048EE30;
+	void showErrorMessageWithSfx(u32 playerId, u32 statTxtId, u32 sfxId) {
 
 		__asm {
 			PUSHAD
@@ -231,10 +231,10 @@ namespace scbw {
 
 	//-------- Unit checks --------//
 
-	const uint32 Func_CanBeEnteredBy = 0x004E6E00; //AKA CanEnterTransport()
+	const u32 Func_CanBeEnteredBy = 0x004E6E00; //AKA CanEnterTransport()
 	bool canBeEnteredBy(CUnit* transport, CUnit* unit) {
 
-		static uint32 result;
+		static u32 result;
 
 		__asm {
 			PUSHAD
@@ -250,7 +250,7 @@ namespace scbw {
 	}
 
 	//Identical to function @ 0x00475CE0
-	bool canWeaponTargetUnit(uint8 weaponId, CUnit* target, CUnit* attacker) {
+	bool canWeaponTargetUnit(u8 weaponId, CUnit* target, CUnit* attacker) {
 
 		if (weaponId >= WEAPON_TYPE_COUNT)
 			return false;
@@ -263,7 +263,7 @@ namespace scbw {
 			return false;
 
 		const TargetFlag tf = weapons_dat::TargetFlags[weaponId];
-		const uint32 targetProps = units_dat::BaseProperty[target->id];
+		const u32 targetProps = units_dat::BaseProperty[target->id];
 
 		if ((target->status & UnitStatus::InAir) ? !tf.air : !tf.ground)
 			return false;
@@ -306,19 +306,19 @@ namespace scbw {
 		return darkSwarm;
 	}
 
-	CUnit* getDarkSwarm(uint16 x, uint16 y, uint16 radius) {
+	CUnit* getDarkSwarm(u16 x, u16 y, u16 radius) {
 		UnitFinder darkSwarmFinder;
 		darkSwarmFinder.search(x - radius, y - radius, x + radius, y + radius);
 		CUnit* darkSwarm = darkSwarmFinder.getFirst(IsDarkswarm);
 		return darkSwarm;
 	}
 
-	uint16 getTechUseErrorMessage(CUnit* target, uint8 castingPlayer, uint16 techId) {
+	u16 getTechUseErrorMessage(CUnit* target, u8 castingPlayer, u16 techId) {
 
-		static uint32 techId_;
-		static uint16 errorMessage;
+		static u32 techId_;
+		static u16 errorMessage;
 
-		const uint32 Func_GetTechUseErrorMessage = 0x00491E80;
+		const u32 Func_GetTechUseErrorMessage = 0x00491E80;
 
 		techId_ = techId;
 
@@ -341,9 +341,9 @@ namespace scbw {
 	//Improved code from BWAPI's include/BWAPI/Position.h: getApproxDistance()
 	//Logically same as function @ 0x0040C360
 	//x1 = ECX;x2 = EDX;y1 = [EBP+08];y2 = [EBP+0C];
-	uint32 getDistanceFast(int32 x1, int32 y1, int32 x2, int32 y2) {
+	u32 getDistanceFast(s32 x1, s32 y1, s32 x2, s32 y2) {
 
-		int dMax = abs(x1 - x2), dMin = abs(y1 - y2);
+		s32 dMax = abs(x1 - x2), dMin = abs(y1 - y2);
 
 		if (dMax < dMin)
 			std::swap(dMax, dMin);
@@ -355,14 +355,14 @@ namespace scbw {
 
 	}
 
-	uint32 getDistanceSquare(int32 x1, int32 y1, int32 x2, int32 y2) {
+	u32 getDistanceSquare(s32 x1, s32 y1, s32 x2, s32 y2) {
 		return std::max(abs(x1 - x2), abs(y1 - y2));
 	}
 
 	//Identical to function @ 0x00494C10
-	int arctangent(int slope) {
+	s32 arctangent(s32 slope) {
 
-		const unsigned int tangentTable[] = {
+		const u32 tangentTable[] = {
 				 7,	 13,	 19,	 26,	 32,	 38,	 45,	 51,
 				58,	 65,	 71,	 78,	 85,	 92,	 99,	107,
 			 114,	122,	129,	137,	146,	154,	163,	172,
@@ -380,11 +380,11 @@ namespace scbw {
 			slope = -slope;
 		}
 
-		int min = 0, max = 64, angle = 32;
+		s32 min = 0, max = 64, angle = 32;
 
 		do {
 
-			if ((unsigned int)slope <= tangentTable[angle])
+			if ((u32)slope <= tangentTable[angle])
 				max = angle;
 			else
 				min = angle + 1;
@@ -398,14 +398,14 @@ namespace scbw {
 
 	//Identical to function @ 0x00495300
 				//    EDX		[EBP+08]	ECX			EAX
-	int32 getAngle(int32 xStart, int32 yStart, int32 xEnd, int32 yEnd) {
+	s32 getAngle(s32 xStart, s32 yStart, s32 xEnd, s32 yEnd) {
 
-		int32 dx = xEnd - xStart, dy = yEnd - yStart;
+		s32 dx = xEnd - xStart, dy = yEnd - yStart;
 
 		if (dx == 0)
 			return dy > 0 ? 128 : 0;
 
-		int32 angle = arctangent((dy << 8) / dx);
+		s32 angle = arctangent((dy << 8) / dx);
 
 		if (dx < 0) {
 			angle += 192;
@@ -415,12 +415,12 @@ namespace scbw {
 
 	}
 
-	Point32 rotate_point(Point32 anchor, Point32 point, double angle_degrees) {
-		double x1 = point.x - anchor.x;
-		double y1 = point.y - anchor.y;
+	Point32 rotate_point(Point32 anchor, Point32 point, f64 angle_degrees) {
+		f64 x1 = point.x - anchor.x;
+		f64 y1 = point.y - anchor.y;
 		auto radians = angle_degrees / 57.296;
-		double x2 = x1 * cos(radians) - y1 * sin(radians);
-		double y2 = x1 * sin(radians) + y1 * cos(radians);
+		f64 x2 = x1 * cos(radians) - y1 * sin(radians);
+		f64 y2 = x1 * sin(radians) + y1 * cos(radians);
 		Point32 product;
 		product.x = x2 + anchor.x;
 		product.y = y2 + anchor.y;
@@ -428,25 +428,25 @@ namespace scbw {
 	}
 
 
-	double bw_angle_to_normal(int32 bw_angle) {
-		double angle = (double)bw_angle * 1.40625;
+	f64 bw_angle_to_normal(s32 bw_angle) {
+		f64 angle = (f64)bw_angle * 1.40625;
 		return angle;
 	}
-	int32 getPolarX(int32 distance, uint8 angle) {
+	s32 getPolarX(s32 distance, u8 angle) {
 		return distance * angleDistance[angle].x >> 8;
 	}
 
-	int32 getPolarY(int32 distance, uint8 angle) {
+	s32 getPolarY(s32 distance, u8 angle) {
 		return distance * angleDistance[angle].y >> 8;
 	}
 
 	//-------- Player information --------//
 
-	int32 getSupplyRemaining(uint8 playerId, uint8 raceId) {
+	s32 getSupplyRemaining(u8 playerId, u8 raceId) {
 		assert(raceId <= 2);
 		assert(playerId < PLAYER_COUNT);
 
-		int32 supplyProvided;
+		s32 supplyProvided;
 
 		if (isCheatEnabled(CheatFlags::FoodForThought))
 			supplyProvided = raceSupply[raceId].max[playerId];
@@ -457,7 +457,7 @@ namespace scbw {
 
 	}
 
-	bool hasTechResearched(uint8 playerId, uint16 techId) {
+	bool hasTechResearched(u8 playerId, u16 techId) {
 		assert(playerId < PLAYER_COUNT);
 		assert(techId < TechId::None);
 		if (techId < TechId::Restoration)
@@ -467,7 +467,7 @@ namespace scbw {
 
 	}
 
-	bool hasTechAvailable(uint8 playerId, uint16 techId) {
+	bool hasTechAvailable(u8 playerId, u16 techId) {
 		assert(playerId < PLAYER_COUNT);
 		assert(techId < TechId::None);
 		if (techId < TechId::Restoration)
@@ -477,7 +477,7 @@ namespace scbw {
 	}
 
 
-	void setTechResearchState(uint8 playerId, uint16 techId, bool isResearched) {
+	void setTechResearchState(u8 playerId, u16 techId, bool isResearched) {
 		assert(playerId < PLAYER_COUNT);
 		assert(techId < TechId::None);
 
@@ -489,8 +489,8 @@ namespace scbw {
 	}
 
 
-	const uint32 Func_DoWeaponDamage = 0x00479930;
-	void sendGPTP_aise_cmd(CUnit* unit1, CUnit* unit2, uint32 command, uint32 v1, uint32 v2, uint32 v3) {
+	const u32 Func_DoWeaponDamage = 0x00479930;
+	void sendGPTP_aise_cmd(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2, u32 v3) {
 		_asm {
 			PUSHAD
 			MOV EAX, v3
@@ -505,17 +505,17 @@ namespace scbw {
 		}
 	}
 
-	uint32 getFlingyData(uint32 entry, uint32 index) {
+	u32 getFlingyData(u32 entry, u32 index) {
 		return get_aise_value(nullptr, nullptr, AiseId::GetFlingyData, entry, index);
 	}
-	uint32 getSpriteData(uint32 entry, uint32 index) {
+	u32 getSpriteData(u32 entry, u32 index) {
 		return get_aise_value(nullptr, nullptr, AiseId::GetSpriteData, entry, index);
 	}
 
-	uint32 getImageData(uint32 entry, uint32 index) {
+	u32 getImageData(u32 entry, u32 index) {
 		return get_aise_value(nullptr, nullptr, AiseId::GetImageData, entry, index);
 	}
-	uint32 getUnitData(uint32 entry, uint32 index) {
+	u32 getUnitData(u32 entry, u32 index) {
 		return get_aise_value(nullptr, nullptr, AiseId::GetUnitData, entry, index);
 	}
 
@@ -528,9 +528,9 @@ namespace scbw {
 		}
 		return false;
 	}
-	bool isZergEggNew(CUnit* unit, bool allow_larval_eggs, bool allow_larvae, uint16 explicit_unit_id) {
+	bool isZergEggNew(CUnit* unit, bool allow_larval_eggs, bool allow_larvae, u16 explicit_unit_id) {
 
-		uint16 id = UnitId::None;
+		u16 id = UnitId::None;
 
 		if (id != NULL) {
 			id = unit->id;
@@ -561,7 +561,7 @@ namespace scbw {
 		return false;
 	}
 
-	bool isZergEgg(uint16 id, bool allow_normal_eggs, bool allow_larvae) {
+	bool isZergEgg(u16 id, bool allow_normal_eggs, bool allow_larvae) {
 		switch (id) {
 			case UnitId::ZergCocoon:
 				return true;
@@ -576,7 +576,7 @@ namespace scbw {
 		}
 		return false;
 	}
-	bool isConventionalUnitMorphResult(uint16 id) {
+	bool isConventionalUnitMorphResult(u16 id) {
 		switch (id) {
 			case UnitId::ZergIroleth:
 			case UnitId::ZergOthstoleth:
@@ -603,7 +603,7 @@ namespace scbw {
 		return false;
 	}
 
-	bool isAnyMorphMorphResult(uint16 id) {
+	bool isAnyMorphMorphResult(u16 id) {
 		if (isConventionalUnitMorphResult(id)) {
 			return true;
 		}
@@ -616,7 +616,7 @@ namespace scbw {
 		}
 		return false;
 	}
-	bool isConventionalUnitMorphSource(uint16 id, bool allow_larvae, bool allow_high_templar) {
+	bool isConventionalUnitMorphSource(u16 id, bool allow_larvae, bool allow_high_templar) {
 		switch (id) {
 			case UnitId::ZergOvileth:
 			case UnitId::ZergIroleth:
@@ -641,7 +641,7 @@ namespace scbw {
 		}
 		return false;
 	}
-	bool isZergBuildingMorphResult(uint16 id) {
+	bool isZergBuildingMorphResult(u16 id) {
 		switch (id) {
 			case UnitId::ZergSire:
 			case UnitId::ZergHive:
@@ -671,7 +671,7 @@ namespace scbw {
 		}
 		return false;
 	}
-	bool isZergBuildingMorphSource(uint16 id) {
+	bool isZergBuildingMorphSource(u16 id) {
 		switch (id) {
 			case UnitId::ZergHive:
 			case UnitId::ZergLair:
@@ -697,11 +697,11 @@ namespace scbw {
 
 	std::string readSamaseFile(char* name) {
 		const char* data = nullptr;
-		uint32 len = 0;
+		u32 len = 0;
 		auto data_ptr = &data;
 		auto len_ptr = &len;
-		uint32 val = reinterpret_cast<uint32>(name);
-		auto length = scbw::get_aise_value(nullptr, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<int>(data_ptr), reinterpret_cast<int>(len_ptr));
+		u32 val = reinterpret_cast<u32>(name);
+		auto length = scbw::get_aise_value(nullptr, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<s32>(data_ptr), reinterpret_cast<s32>(len_ptr));
 		char* buf = (char*)scbw::get_aise_value(nullptr, nullptr, AiseId::ReadSamaseFile_Ptr, 0, 0);
 		std::string str;
 		if (length == 0) {
@@ -712,34 +712,34 @@ namespace scbw {
 		return str;
 	}
 
-	int get_generic_variable(uint32 id) {
+	s32 get_generic_variable(u32 id) {
 		return get_aise_value(nullptr, nullptr, AiseId::GenericVariable, id, 0);
 	}
-	CUnit* get_generic_rust_unit(CUnit* unit, uint32 id) {
-		uint32 val = get_aise_value(unit, nullptr, AiseId::GenericUnit, id, 0);
+	CUnit* get_generic_rust_unit(CUnit* unit, u32 id) {
+		u32 val = get_aise_value(unit, nullptr, AiseId::GenericUnit, id, 0);
 		return reinterpret_cast<CUnit*>(val);
 	}
-	void set_generic_rust_unit(CUnit* unit, uint32 id, CUnit* targ) {
+	void set_generic_rust_unit(CUnit* unit, u32 id, CUnit* targ) {
 		scbw::sendGPTP_aise_cmd(unit, targ, GptpId::SetGenericUnit, id, 0, 0);
 	}
-	void set_generic_variable(uint32 id, int val) {
+	void set_generic_variable(u32 id, s32 val) {
 		scbw::sendGPTP_aise_cmd(nullptr, nullptr, GptpId::SetGenericVariable, id, val, 0);
 	}
 
-	uint32 get_generic_rust_value(CUnit* u, uint32 val) {
+	u32 get_generic_rust_value(CUnit* u, u32 val) {
 		return get_aise_value(u, nullptr, AiseId::GenericValue, val, 0);
 	}
-	void set_generic_rust_value(CUnit* u, uint32 id, uint32 val) {
+	void set_generic_rust_value(CUnit* u, u32 id, u32 val) {
 		scbw::sendGPTP_aise_cmd(u, nullptr, GptpId::SetGenericValue, id, val, 0);
 	}
-	void setSpriteData(uint32 entry, uint32 index, uint32 value) {
+	void setSpriteData(u32 entry, u32 index, u32 value) {
 		return sendGPTP_aise_cmd(nullptr, nullptr, GptpId::SetSpriteData, entry, index, value);
 	}
 
-	const uint32 Func_CanTargetSpell = 0x00492020;
-	uint32 get_aise_value(CUnit* unit1, CUnit* unit2, uint32 command, uint32 v1, uint32 v2) {
-		uint32 result = 0;
-		uint32 v3 = 0;//pointer
+	const u32 Func_CanTargetSpell = 0x00492020;
+	u32 get_aise_value(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2) {
+		u32 result = 0;
+		u32 v3 = 0;//pointer
 		_asm {
 			PUSHAD
 			MOV ESI, v2//fow_unit_id
@@ -756,8 +756,8 @@ namespace scbw {
 		return result;
 	}
 
-	const uint32 Func_PsiPlacement = 0x00473920;
-	uint8 getUpgradeLevel(uint8 playerId, uint8 upgradeId) {
+	const u32 Func_PsiPlacement = 0x00473920;
+	u8 getUpgradeLevel(u8 playerId, u8 upgradeId) {
 		assert(playerId < PLAYER_COUNT);
 		//assert(upgradeId < UpgradeId::None);
 		assert(upgradeId < 256);
@@ -768,9 +768,9 @@ namespace scbw {
 		/*else if (upgradeId<UpgradeId::None)
 			return UpgradesBw->currentLevel[playerId][upgradeId - UpgradeId::PStructurePlating];*/
 		else {
-			uint32 result = 0;
-			uint32 player_u32 = playerId;
-			uint32 upgrade_u32 = upgradeId;
+			u32 result = 0;
+			u32 player_u32 = playerId;
+			u32 upgrade_u32 = upgradeId;
 			_asm {
 				PUSHAD
 				MOV ESI, upgrade_u32
@@ -787,7 +787,7 @@ namespace scbw {
 	//EBX = max/current upgrade read, ECX - player, EDI - id
 
 
-	uint8 getUpgradeMaxLevel(uint8 playerId, uint8 upgradeId) {
+	u8 getUpgradeMaxLevel(u8 playerId, u8 upgradeId) {
 		assert(playerId < PLAYER_COUNT);
 		//	assert(upgradeId < UpgradeId::None);
 		assert(upgradeId < 256);
@@ -796,9 +796,9 @@ namespace scbw {
 		/*else if (upgradeId<UpgradeId::None)
 			return UpgradesBw->maxLevel[playerId][upgradeId - UpgradeId::PStructurePlating];*/
 		else {
-			uint32 result = 0;
-			uint32 player_u32 = playerId;
-			uint32 upgrade_u32 = upgradeId;
+			u32 result = 0;
+			u32 player_u32 = playerId;
+			u32 upgrade_u32 = upgradeId;
 			_asm {
 				PUSHAD
 				MOV ESI, upgrade_u32
@@ -815,7 +815,7 @@ namespace scbw {
 	}
 
 
-	void setUpgradeLevel(uint8 playerId, uint8 upgradeId, uint8 level) {
+	void setUpgradeLevel(u8 playerId, u8 upgradeId, u8 level) {
 		assert(playerId < PLAYER_COUNT);
 		assert(upgradeId < UpgradeId::None);
 		if (upgradeId < UpgradeId::PrismaticShield)
@@ -823,9 +823,9 @@ namespace scbw {
 		else
 			UpgradesBw->currentLevel[playerId][upgradeId - UpgradeId::PrismaticShield] = level;
 	}
-	const uint32 Func_getLastQueueSlotType = 0x0047B270;
-	uint16 getLastQueueSlotType(CUnit* a1) {
-		static int result;
+	const u32 Func_getLastQueueSlotType = 0x0047B270;
+	u16 getLastQueueSlotType(CUnit* a1) {
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV EDX, a1
@@ -833,11 +833,11 @@ namespace scbw {
 			MOV result, EAX
 			POPAD
 		}
-		return (uint16)result;
+		return (u16)result;
 	}
 	void setOffsetToParentSpecialOverlay(CImage* image) {
 
-		const uint32 Func_updateImagePositionOffset = 0x004D5A00;
+		const u32 Func_updateImagePositionOffset = 0x004D5A00;
 
 		__asm {
 			PUSHAD
@@ -854,18 +854,18 @@ namespace scbw {
 		return false;
 	}
 
-	void adjustAddonX(uint16 addonId, uint16 sourceId, uint16& x) {
+	void adjustAddonX(u16 addonId, u16 sourceId, u16& x) {
 		if (addonId == UnitId::TerranQuarry) {
 			x = 128;
 		}
 	}
-	void adjustAddonY(uint16 addonId, uint16 sourceId, uint16& y) {
+	void adjustAddonY(u16 addonId, u16 sourceId, u16& y) {
 		if (addonId == UnitId::TerranQuarry) {
 			y = 32;
 		}
 	}
 
-	void adjustAddonCoordinates(uint16 addonId, uint16 sourceId, uint16& x, uint16& y) {
+	void adjustAddonCoordinates(u16 addonId, u16 sourceId, u16& x, u16& y) {
 		adjustAddonX(addonId, sourceId, x);
 		adjustAddonY(addonId, sourceId, y);
 	}
@@ -873,10 +873,10 @@ namespace scbw {
 
 	//-------- Map information --------//
 
-	const uint32 Func_GetGroundHeightAtPos = 0x004BD0F0;
-	uint32 getGroundHeightAtPos(int32 x, int32 y) {
+	const u32 Func_GetGroundHeightAtPos = 0x004BD0F0;
+	u32 getGroundHeightAtPos(s32 x, s32 y) {
 
-		static uint32 height;
+		static u32 height;
 
 		__asm {
 			PUSHAD
@@ -892,7 +892,7 @@ namespace scbw {
 
 	//-------- Moving Units --------//
 
-	bool moveUnit(CUnit* unit, int16 x, int16 y) {
+	bool moveUnit(CUnit* unit, s16 x, s16 y) {
 		Point16 targetPos = {x, y};
 		Point16 actualPos;
 		Point16 prevPos = unit->sprite->position;
@@ -912,7 +912,7 @@ namespace scbw {
 
 	}
 
-	const uint32 Func_DisableDialog = 0x00418640;
+	const u32 Func_DisableDialog = 0x00418640;
 	void disableDialog(BinDlg* dialog) {
 
 		__asm {
@@ -926,7 +926,7 @@ namespace scbw {
 
 	;
 
-	const uint32 Func_ShowDialog = 0x004186A0;
+	const u32 Func_ShowDialog = 0x004186A0;
 	void showDialog(BinDlg* dialog) {
 
 		__asm {
@@ -940,7 +940,7 @@ namespace scbw {
 
 	;
 
-	const uint32 Func_HideDialog = 0x00418700;
+	const u32 Func_HideDialog = 0x00418700;
 	void hideDialog(BinDlg* dialog) {
 
 		__asm {
@@ -954,7 +954,7 @@ namespace scbw {
 
 	;
 
-	const uint32 Func_Sub418E00 = 0x00418E00;
+	const u32 Func_Sub418E00 = 0x00418E00;
 	void function_418E00(BinDlg* dialog) {
 
 		__asm {
@@ -968,7 +968,7 @@ namespace scbw {
 
 	;
 
-	const uint32 Func_UpdateDialog = 0x0041C400;
+	const u32 Func_UpdateDialog = 0x0041C400;
 	void updateDialog(BinDlg* dialog) {
 		__asm {
 			PUSHAD
@@ -980,12 +980,12 @@ namespace scbw {
 
 	;
 
-	const uint32 Func_PrepareUnitMoveClearRefs = 0x00493CA0;
+	const u32 Func_PrepareUnitMoveClearRefs = 0x00493CA0;
 	void prepareUnitMove(CUnit* unit, bool hideUnit) {
 
 		assert(unit);
 
-		static bool32 _hideUnit;
+		static b32 _hideUnit;
 
 		_hideUnit = hideUnit ? 1 : 0;
 
@@ -999,14 +999,14 @@ namespace scbw {
 
 	}
 
-	const uint32 Func_CheckUnitCollisionPos = 0x0049D3E0;
-	bool checkUnitCollisionPos(CUnit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea, bool hideErrorMsg, uint32 someFlag) {
+	const u32 Func_CheckUnitCollisionPos = 0x0049D3E0;
+	bool checkUnitCollisionPos(CUnit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea, bool hideErrorMsg, u32 someFlag) {
 		assert(unit);
 		assert(inPos);
 		assert(outPos);
 
-		static uint32 result;
-		static uint32 _hideErrorMsg;
+		static u32 result;
+		static u32 _hideErrorMsg;
 
 		_hideErrorMsg = hideErrorMsg;
 
@@ -1027,8 +1027,8 @@ namespace scbw {
 
 	}
 
-	const uint32 Func_SetUnitPosition = 0x004EB9F0;
-	void setUnitPosition(CUnit* unit, uint16 x, uint16 y) {
+	const u32 Func_SetUnitPosition = 0x004EB9F0;
+	void setUnitPosition(CUnit* unit, u16 x, u16 y) {
 		assert(unit);
 
 		__asm {
@@ -1042,7 +1042,7 @@ namespace scbw {
 
 	}
 
-	const uint32 Func_RefreshRevealUnitAfterMove = 0x00494160;
+	const u32 Func_RefreshRevealUnitAfterMove = 0x00494160;
 	void refreshUnitAfterMove(CUnit* unit) {
 		assert(unit);
 
@@ -1057,8 +1057,8 @@ namespace scbw {
 
 	//-------- Utility functions --------//
 
-	const uint32 Func_CreateUnitAtPos = 0x004CD360; //AKA createUnitXY()
-	CUnit* createUnitAtPos(uint16 unitType, uint16 playerId, uint32 x, uint32 y) {
+	const u32 Func_CreateUnitAtPos = 0x004CD360; //AKA createUnitXY()
+	CUnit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y) {
 
 		if (unitType >= UNIT_TYPE_COUNT)
 			return nullptr;
@@ -1079,7 +1079,7 @@ namespace scbw {
 		return unit;
 	}
 
-	const uint32 Func_Sub4A01F0 = 0x004A01F0;
+	const u32 Func_Sub4A01F0 = 0x004A01F0;
 	void FinishUnit_Pre(CUnit* unit) {
 		__asm {
 			PUSHAD
@@ -1089,7 +1089,7 @@ namespace scbw {
 		}
 	}
 
-	const uint32 Func_AI_TrainingUnit = 0x004A2830;
+	const u32 Func_AI_TrainingUnit = 0x004A2830;
 	void InheritAI2(CUnit* result, CUnit* parent) {
 		__asm {
 			PUSHAD
@@ -1100,7 +1100,7 @@ namespace scbw {
 		}
 	}
 
-	CUnit* createUnitIngame(uint16 unitId, uint8 playerId, uint32 x, uint32 y, CUnit* creator) {
+	CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* creator) {
 		if (*unitCount >= 1700) return nullptr; // prevent crashes, move to create unit later
 		Point16 pos = {x, y};
 		helper::fixTargetLocation(&pos, unitId);
@@ -1116,8 +1116,8 @@ namespace scbw {
 		}
 		return unit;
 	}
-	const uint32 Func_displayLastNetErrForPlayer = 0x0049E530;
-	void displayLastNetErrForPlayer(uint32 playerId) {
+	const u32 Func_displayLastNetErrForPlayer = 0x0049E530;
+	void displayLastNetErrForPlayer(u32 playerId) {
 		__asm {
 			PUSHAD
 			PUSH playerId
@@ -1125,7 +1125,7 @@ namespace scbw {
 			POPAD
 		}
 	}
-	uint32 getUnitOverlayAdjustment(CUnit* const unit) {
+	u32 getUnitOverlayAdjustment(CUnit* const unit) {
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
 			return 1;
 		else if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
@@ -1134,7 +1134,7 @@ namespace scbw {
 			return 0;
 	}
 
-	const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
+	const u32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
 	void makeToHoldPosition(CUnit* unit) {
 
 		__asm {
@@ -1144,7 +1144,7 @@ namespace scbw {
 			POPAD
 		}
 	}
-	void refreshScreen(int left, int top, int right, int bottom) {
+	void refreshScreen(s32 left, s32 top, s32 right, s32 bottom) {
 
 		left >>= 4; right = (right + 15) >> 4;
 		top >>= 4; bottom = (bottom + 15) >> 4;
@@ -1161,7 +1161,7 @@ namespace scbw {
 		left = std::max(left, 0); right = std::min(right, 40 - 1);
 		top = std::max(top, 0); bottom = std::min(bottom, 30 - 1);
 
-		for (int y = top; y <= bottom; ++y)
+		for (s32 y = top; y <= bottom; ++y)
 			memset(&refreshRegions[40 * y + left], 1, right - left + 1);
 
 	}
@@ -1171,7 +1171,7 @@ namespace scbw {
 	}
 
 	/* /!\ Not working like 004DC550	RandBetween /!\ */
-	uint32 randBetween(uint32 min, uint32 max) {
+	u32 randBetween(u32 min, u32 max) {
 		assert(min <= max);
 		return min + ((max - min + 1) * random() >> 15);
 	}
@@ -1179,7 +1179,7 @@ namespace scbw {
 	//similar to 004DC4A0 RandomizeShort, but don't update
 	//the RNG and don't use a parameter among possible
 	//differences
-	uint16 random() {
+	u16 random() {
 		if (*IS_IN_GAME_LOOP) {
 			*lastRandomNumber = 22695477 * (*lastRandomNumber) + 1;
 			return (*lastRandomNumber >> 16) % 32768;	//Make a number between 0 and 32767
@@ -1192,9 +1192,9 @@ namespace scbw {
 		//Logically equivalent to function @ 0x004C36C0
 	void refreshConsole() {
 
-		static uint32* const bCanUpdateCurrentButtonSet = (uint32*)0x0068C1B0;
-		static uint8* const bCanUpdateSelectedUnitPortrait = (uint8*)0x0068AC74;
-		static uint8* const bCanUpdateStatDataDialog = (uint8*)0x0068C1F8;
+		static u32* const bCanUpdateCurrentButtonSet = (u32*)0x0068C1B0;
+		static u8* const bCanUpdateSelectedUnitPortrait = (u8*)0x0068AC74;
+		static u8* const bCanUpdateStatDataDialog = (u8*)0x0068C1F8;
 		static BinDlg** const someDialogUnknown = (BinDlg**)0x0068C1E8;
 		static BinDlg** const someDialogUnknownUser = (BinDlg**)0x0068C1EC;
 
@@ -1206,18 +1206,18 @@ namespace scbw {
 
 	}
 
-	const uint32 Func_MoveScreen = 0x0049C440;
+	const u32 Func_MoveScreen = 0x0049C440;
 	//Player check added based on how others functions test it
 	//Values above or equal to 8 means all players
 	//Equivalent to moveScreenToUnit @ 0x004E6020
-	void MoveScreenToUnit(CUnit* unit, uint32 playerId) {
+	void MoveScreenToUnit(CUnit* unit, u32 playerId) {
 
 		if (playerId >= 8 || playerId == *LOCAL_NATION_ID) {
 
-			int x, y;
+			s32 x, y;
 
-			x = (int16)unit->sprite->position.x;
-			y = (int16)unit->sprite->position.y;
+			x = (s16)unit->sprite->position.x;
+			y = (s16)unit->sprite->position.y;
 
 			if (x < 0)
 				x += 31;
@@ -1239,11 +1239,11 @@ namespace scbw {
 
 	}
 
-	const uint32 Func_minimapPing = 0x004A34C0;
+	const u32 Func_minimapPing = 0x004A34C0;
 	//Player check added based on how others functions test it
 	//Values above or equal to 8 means all players
 	//x and y are coords as gotten from unit->sprite->position
-	void minimapPing(uint32 x, uint32 y, int32 color, uint32 playerId) {
+	void minimapPing(u32 x, u32 y, s32 color, u32 playerId) {
 
 		if (playerId >= 8 || playerId == *LOCAL_NATION_ID)
 			__asm {
@@ -1257,9 +1257,9 @@ namespace scbw {
 
 	}
 
-	const uint32 Func_hasOverlay = 0x0047B720;
-	uint8 hasOverlay(CUnit* unit) {
-		static uint8 result;
+	const u32 Func_hasOverlay = 0x0047B720;
+	u8 hasOverlay(CUnit* unit) {
+		static u8 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -1270,7 +1270,7 @@ namespace scbw {
 		return result;
 	}
 
-	const uint32 Func_ApplyHallucinationStats = 0x004F6180;
+	const u32 Func_ApplyHallucinationStats = 0x004F6180;
 	void ApplyHallucinationStats(CUnit* unit) {
 		__asm {
 			PUSHAD
@@ -1280,8 +1280,8 @@ namespace scbw {
 		}
 	}
 
-	void createUnitFromAbility(int unitId, int count, uint16 playerId, int32 x, int32 y, uint32 removeTimer, CUnit* creator) {
-		for (int i = 0; i < count; i++) {
+	void createUnitFromAbility(s32 unitId, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer, CUnit* creator) {
+		for (s32 i = 0; i < count; i++) {
 			CUnit* unit = scbw::createUnitIngame(unitId, playerId, x, y, creator);
 			if (unit == nullptr) {
 				return;
@@ -1302,7 +1302,7 @@ namespace scbw {
 					if (unit->removeTimer == 0 || unit->removeTimer > removeTimer) {
 						unit->removeTimer = removeTimer;
 					}
-					uint32 range = 6 * 32;
+					u32 range = 6 * 32;
 					scbw::UnitFinder(
 						unit->getX() - range,
 						unit->getY() - range,
@@ -1316,7 +1316,7 @@ namespace scbw {
 							return;
 						}
 						if (target->energy < 200 * 256) {
-							target->energy = std::min((uint16)(target->energy + (uint16)5 * (uint16)256), target->getMaxEnergy());
+							target->energy = std::min((u16)(target->energy + (u16)5 * (u16)256), target->getMaxEnergy());
 							target->sprite->createUnderlay(425);
 						}
 					});
@@ -1335,7 +1335,7 @@ namespace scbw {
 		}
 	}
 
-	void rangeModifiedFire(uint8 weaponId, CUnit* unit, int16 x, int16 y, uint32 offset) {
+	void rangeModifiedFire(u8 weaponId, CUnit* unit, s16 x, s16 y, u32 offset) {
 		auto target_unit = unit->orderTarget.unit;
 		auto target_pos = unit->orderTarget.pt;
 		auto distance = scbw::getDistanceFast(unit->position.x, unit->position.y,
@@ -1359,15 +1359,15 @@ namespace scbw {
 		return true;
 	}
 
-	int getBroodlingCountFromSupply(CUnit* target) {
+	s32 getBroodlingCountFromSupply(CUnit* target) {
 		if (!canSpawnBroodling(target)) return 0;
 		bool ground = !(target->status & UnitStatus::InAir);
 		bool onCreep = scbw::getActiveTileAt(target->getX(), target->getY()).hasCreep;
-		double multiplier = (ground && onCreep) ? 1.5 : 1;
-		return ceil(std::max(((int)units_dat::SupplyRequired[target->id]), 1) * multiplier);
+		f64 multiplier = (ground && onCreep) ? 1.5 : 1;
+		return ceil(std::max(((s32)units_dat::SupplyRequired[target->id]), 1) * multiplier);
 	}
 
-	const uint32 Func_unitDeathSomething_0 = 0x004E6340;
+	const u32 Func_unitDeathSomething_0 = 0x004E6340;
 	void hideAndDisableUnit(CUnit* unit) {
 		__asm {
 			PUSHAD
@@ -1378,8 +1378,8 @@ namespace scbw {
 
 	}
 
-	int dir_saturate(int direction, int value) {
-		int d = direction + value;
+	s32 dir_saturate(s32 direction, s32 value) {
+		s32 d = direction + value;
 		if (d > 255) {
 			return d - 255;
 		}
@@ -1389,8 +1389,8 @@ namespace scbw {
 		return d;
 	}
 
-	uint32 get_sized_overlay(CUnit* unit, uint32 initial) {
-		uint32 overlayImageId;
+	u32 get_sized_overlay(CUnit* unit, u32 initial) {
+		u32 overlayImageId;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
 			overlayImageId = initial + 1;
 		else
@@ -1401,7 +1401,7 @@ namespace scbw {
 		return overlayImageId;
 	}
 
-	bool canUseCliffAdvantage(CUnit* unit, uint8 weapon) {
+	bool canUseCliffAdvantage(CUnit* unit, u8 weapon) {
 		return unit != nullptr
 			&& !(unit->status & UnitStatus::InAir)
 			&& unit->id != UnitId::ProtossPlasmaShell
@@ -1410,7 +1410,7 @@ namespace scbw {
 			&& unit->id != UnitId::TerranHarakan;
 	}
 
-	int32 getCliffAdvantage(CUnit* unit, uint8 weapon) {
+	s32 getCliffAdvantage(CUnit* unit, u8 weapon) {
 		if (unit == nullptr)
 			return 0;
 		if (!canUseCliffAdvantage(unit, weapon))
@@ -1420,12 +1420,12 @@ namespace scbw {
 			return 0;
 		//if (targetUnit->status & UnitStatus::InAir)
 		//	return 0;
-		int32 sourceHeight = scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight;
-		int32 targetHeight = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).groundHeight;
+		s32 sourceHeight = scbw::getActiveTileAt(unit->position.x, unit->position.y).groundHeight;
+		s32 targetHeight = scbw::getActiveTileAt(targetUnit->position.x, targetUnit->position.y).groundHeight;
 		return (sourceHeight - targetHeight) / 2;
 	}
 
-	int32 getCreepAdvantage(CUnit* unit, uint8 weapon) {
+	s32 getCreepAdvantage(CUnit* unit, u8 weapon) {
 		if (unit == nullptr)
 			return 0;
 		if (!canUseCliffAdvantage(unit, weapon) || unit->getRace() != RaceId::Zerg)
@@ -1441,8 +1441,8 @@ namespace scbw {
 	}
 
 	void applyEnsnare(CUnit* unit) { // 004F45E0
-		int32 baseProperty; // eax
-		uint8 overlayPadding; // al
+		s32 baseProperty; // eax
+		u8 overlayPadding; // al
 		CUnit* victim; // ecx
 
 		if (!(unit->ensnareTimer)
@@ -1472,9 +1472,9 @@ namespace scbw {
 		return true;
 	}
 
-	int32 getUpgradeType(CUnit* unit) {
-		int32 race = unit->getRace();
-		double upgType;
+	s32 getUpgradeType(CUnit* unit) {
+		s32 race = unit->getRace();
+		f64 upgType;
 		switch (race) {
 			case RaceId::Zerg:
 				upgType = UpgradeId::ZergMeleeAttacks;
@@ -1486,8 +1486,8 @@ namespace scbw {
 		return upgType;
 	}
 
-	int32 getOverlayOffset(uint16 unitId) {
-		uint32 overlayOffset = 0;
+	s32 getOverlayOffset(u16 unitId) {
+		u32 overlayOffset = 0;
 		if (units_dat::BaseProperty[unitId] & UnitProperty::MediumOverlay) {
 			overlayOffset = 1;
 		} else if (units_dat::BaseProperty[unitId] & UnitProperty::LargeOverlay) {
@@ -1496,11 +1496,11 @@ namespace scbw {
 		return overlayOffset;
 	}
 
-	int32 getFinalDamage(CUnit* unit, uint16 weaponId) {
-		int32 upgType = getUpgradeType(unit);
-		int32 baseDamage = weapons_dat::DamageAmount[weaponId];
-		double bonusDamage = (double)weapons_dat::DamageBonus[weaponId] * (double)scbw::getUpgradeLevel(unit->playerId, upgType);
-		double finalDamage = baseDamage;
+	s32 getFinalDamage(CUnit* unit, u16 weaponId) {
+		s32 upgType = getUpgradeType(unit);
+		s32 baseDamage = weapons_dat::DamageAmount[weaponId];
+		f64 bonusDamage = (f64)weapons_dat::DamageBonus[weaponId] * (f64)scbw::getUpgradeLevel(unit->playerId, upgType);
+		f64 finalDamage = baseDamage;
 		if (bonusDamage) {
 			finalDamage = baseDamage + bonusDamage;
 		}
@@ -1515,7 +1515,7 @@ namespace scbw {
 
 	// Identical to function OrderIsSpell @ 00436930 -- Pr0nogo
 	// We should update the lardcode for HYDRA
-	bool orderIsSpell(int32 orderId) {
+	bool orderIsSpell(s32 orderId) {
 		return orderId == OrderId::Plague
 			|| orderId == OrderId::DarkSwarm
 			//	|| orderId == OrderId::Ensnare				// Land Grab
@@ -1535,18 +1535,18 @@ namespace scbw {
 
 	//Creates the Plasma Shield flickering effect.
 	//Identical to function @ 0x004E6140
-	void createShieldOverlay(CUnit* unit, uint32 attackDirection) {
+	void createShieldOverlay(CUnit* unit, u32 attackDirection) {
 		//const LO_Header* shield_lo = shieldOverlays[unit->sprite->mainGraphic->id];
 		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayShieldPtr, unit->sprite->mainGraphic->id));
-		uint32 frameAngle = (attackDirection - 124) / 8 % 32;
+		u32 frameAngle = (attackDirection - 124) / 8 % 32;
 
 		Point8 offset = shield_lo->getOffset(unit->sprite->mainGraphic->direction, frameAngle);
 
 		unit->sprite->createOverlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
 	}
 
-	const uint32 Func_49B440 = 0x0049B440;
-	void AnimDecloak(CUnit* unit, int sound) {
+	const u32 Func_49B440 = 0x0049B440;
+	void AnimDecloak(CUnit* unit, s32 sound) {
 		__asm {
 			PUSHAD
 			MOV EAX, unit

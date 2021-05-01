@@ -9,7 +9,7 @@ namespace hooks {
 	void CMDRECV_ReaverStop() {
 
 		CUnit* current_unit;
-		static uint32* u32_0066FF60 = (uint32*)0x0066FF60;
+		static u32* u32_0066FF60 = (u32*)0x0066FF60;
 
 		*selectionIndexStart = 0;
 
@@ -114,7 +114,7 @@ namespace hooks {
 	void CMDRECV_CarrierStop() {
 
 		CUnit* current_unit;
-		static uint32* u32_0066FF60 = (uint32*)0x0066FF60;
+		static u32* u32_0066FF60 = (u32*)0x0066FF60;
 
 		*selectionIndexStart = 0;
 
@@ -216,10 +216,10 @@ namespace hooks {
 
 	;
 
-	void CMDRECV_Stop(uint8 bCommandType) {
+	void CMDRECV_Stop(u8 bCommandType) {
 
 		CUnit* current_unit;
-		static uint32* u32_0066FF60 = (uint32*)0x0066FF60;
+		static u32* u32_0066FF60 = (u32*)0x0066FF60;
 
 		*selectionIndexStart = 0;
 
@@ -282,8 +282,8 @@ namespace hooks {
 												helper::function_004754F0(
 													current_unit,
 													UnitId::None,
-													*(uint32*)(0x006D5C24),
-													*(uint32*)(0x006D5C20),
+													*(u32*)(0x006D5C24),
+													*(u32*)(0x006D5C20),
 													OrderId::Stop,
 													0,
 													bCommandType != 0, //true (1) if Queued Order

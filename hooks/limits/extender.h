@@ -6,9 +6,9 @@
 #include "tbl_extender.h"
 #define NO_IDENTIFIER -1
 //
-const int SFX_Entries = 5;
+const s32 SFX_Entries = 5;
 //
-const int SFX_Default_Length = 1144;
+const s32 SFX_Default_Length = 1144;
 
 std::vector<std::string> split_by(std::string line, char delimiter);
 bool starts_with(std::string line, char c);
@@ -19,18 +19,18 @@ static inline void rtrim(std::string& s);
 static inline void trim(std::string& s);
 bool last_char(std::string s, char c);
 class Extender {
-	virtual std::vector<uint32> get_address_list() = 0;
-	virtual std::vector<uint32> get_size_list() = 0;
+	virtual std::vector<u32> get_address_list() = 0;
+	virtual std::vector<u32> get_size_list() = 0;
 public:
 	virtual void extend() = 0;
-	virtual int identifier(std::string str) = 0;
-	void uplink(std::vector<uint32> address_list, uint32 address);
-	int get_file_entry_count(char* name, uint32 entries);
-	void parse_set(char* name, uint32 default_max_limit, uint32 entries);
-	virtual uint32 parse_entry_value(std::string str, int id) = 0;
-	virtual bool is_string_id(int id) = 0;
-	virtual void set_value(int entry, int id, std::string str) = 0;
-	virtual void set_value(int entry, int id, int str) = 0;
+	virtual s32 identifier(std::string str) = 0;
+	void uplink(std::vector<u32> address_list, u32 address);
+	s32 get_file_entry_count(char* name, u32 entries);
+	void parse_set(char* name, u32 default_max_limit, u32 entries);
+	virtual u32 parse_entry_value(std::string str, s32 id) = 0;
+	virtual bool is_string_id(s32 id) = 0;
+	virtual void set_value(s32 entry, s32 id, std::string str) = 0;
+	virtual void set_value(s32 entry, s32 id, s32 str) = 0;
 	virtual void set_extended_data() = 0;
 };
 
@@ -80,4 +80,4 @@ namespace Jmp {
 	};
 }
 
-static uint32 fakeExtFlingyIds[228];
+static u32 fakeExtFlingyIds[228];

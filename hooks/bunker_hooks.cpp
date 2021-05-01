@@ -21,7 +21,7 @@ namespace hooks {
 			|| unit->id == UnitId::ZergLakizilisk
 			|| unit->id == UnitId::ZergKeskathalor
 			) {
-			bool32 resultApplyCooldown;
+			b32 resultApplyCooldown;
 			unit->status |= UnitStatus::HoldingPosition;
 			if (unit->subunit != nullptr)
 				(unit->subunit)->status |= UnitStatus::HoldingPosition;
@@ -46,7 +46,7 @@ namespace hooks {
 	//not checked against original code by UndeadStar
 	void createBunkerAttackThingyHook(CUnit* unit) {
 		CImage* bunkerImage = unit->connectedUnit->sprite->mainGraphic;
-		uint8 frameDirection = (unit->currentDirection1 + 16) / 32 % 8;
+		u8 frameDirection = (unit->currentDirection1 + 16) / 32 % 8;
 		//	const LO_Header *loFile = lo_files->attackOverlays[bunkerImage->id];
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayAttackPtr, bunkerImage->id));
 		Point8 offset = loFile->getOffset(bunkerImage->frameIndex, frameDirection);
@@ -54,8 +54,8 @@ namespace hooks {
 		if (bunkerImage->flags & CImage_Flags::Mirrored) //Is inverted
 			offset.x = -offset.x;
 
-		uint8 frameAngle;
-		uint16 spriteId;
+		u8 frameAngle;
+		u16 spriteId;
 
 		if (unit->id == UnitId::TerranHarakan) {
 			frameAngle = ((unit->currentDirection1 + 8) / 16 % 16) * 16;

@@ -21,7 +21,7 @@ namespace {
 
 	void __declspec(naked) CMDRECV_TrainWrapper() {
 
-		static uint16 wUnitType;
+		static u16 wUnitType;
 
 		__asm {
 			MOV AX, [EAX + 01]

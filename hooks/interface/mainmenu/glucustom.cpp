@@ -11,23 +11,23 @@ namespace {
 	void dlgSetSelected(unsigned __int8 a1, BinDlg* a2);										//0041A600
 
 	//For initSingleplayerCustom
-	bool isMeleeGame(int8 a1, int16 a2, int8 a3);														//004AD850
+	bool isMeleeGame(s8 a1, s16 a2, s8 a3);														//004AD850
 	PLAYER randomizePlayerSlot();																//004A9A30
 
 	//For initGameLoad
 	void* stopMusic();																			//004A5F50
-	FILE loadReplayFile(int32 a1, int32 a2, int32 a3);												//004DF570
-	int32 levelCheatCreate(int8 a1, int32 a2);														//004EE5B0
-	int32 loadGameCreate(int32 a1, int8 a2);															//004EE520
-	int32 gameCreateSomething(int8 a1);																//004EE3D0
-	int32 singleplayerMeleeCreate();																//004EE110
-	int32 getSystemTime(LPSYSTEMTIME* a1);														//0040C7DF
+	FILE loadReplayFile(s32 a1, s32 a2, s32 a3);												//004DF570
+	s32 levelCheatCreate(s8 a1, s32 a2);														//004EE5B0
+	s32 loadGameCreate(s32 a1, s8 a2);															//004EE520
+	s32 gameCreateSomething(s8 a1);																//004EE3D0
+	s32 singleplayerMeleeCreate();																//004EE110
+	s32 getSystemTime(LPSYSTEMTIME* a1);														//0040C7DF
 	void initScreenLayer();																		//0041A030
-	int32 subTwoCheckTwo(void* a1, int a2);														//004EE0F0
+	s32 subTwoCheckTwo(void* a1, s32 a2);														//004EE0F0
 	void loadGameFonts();																		//004DAE50
-	void srand(uint32 a1);																			//0040C7B0
+	void srand(u32 a1);																			//0040C7B0
 	Point32 initPathArray();																	//0042F4F0
-	int32 appAddExit(int32 a1);																		//004F6100
+	s32 appAddExit(s32 a1);																		//004F6100
 	char multiplayerChatSomething();															//0049B500
 	void getPlayerStructs(void* a1);															//004DE9A0
 	PLAYER initStartingRacesAndTypes();															//0049CC40
@@ -35,26 +35,26 @@ namespace {
 	FILE initPlayers();																			//004A9D80
 	void setVisionIndex();																		//004EE180
 	void initAiPlayerNames();																	//004ED2B0
-	int16 loadRaceUI();																			//004EE2D0
+	s16 loadRaceUI();																			//004EE2D0
 	bool hotkeyRemapping();																		//004EEC30
-	int32 gameInit(int32 a1);																		//004EEE00
-	int32 getPlayerColors(int32 a1);																//004DE950
-	int32 randomizePlayerColors();																//0049B060
-	int32 authorizeMap(int32 a1, int32 a2, int32 a3, int32 a4);											//004CC110
-	int8 bigPacketError(int32 a1, int8 a2, int32 a3, int32 a4, int32 a5);									//004BB430
-	int32 loadGameCore(int32 a1);																	//004EED10
-	void chooseTriggerTemplate(int32 a1, int8 a2, int32 a3);											//004ABAF0
-	int32 initPlayerNames();																		//004B2DF0
-	int32 tickCounterInit();																		//004A2BF0
-	int32 CMDRECV_SetReplaySpeed(int32 a1, uint8 a2, uint32 a3);											//004DEB90
+	s32 gameInit(s32 a1);																		//004EEE00
+	s32 getPlayerColors(s32 a1);																//004DE950
+	s32 randomizePlayerColors();																//0049B060
+	s32 authorizeMap(s32 a1, s32 a2, s32 a3, s32 a4);											//004CC110
+	s8 bigPacketError(s32 a1, s8 a2, s32 a3, s32 a4, s32 a5);									//004BB430
+	s32 loadGameCore(s32 a1);																	//004EED10
+	void chooseTriggerTemplate(s32 a1, s8 a2, s32 a3);											//004ABAF0
+	s32 initPlayerNames();																		//004B2DF0
+	s32 tickCounterInit();																		//004A2BF0
+	s32 CMDRECV_SetReplaySpeed(s32 a1, u8 a2, u32 a3);											//004DEB90
 	void copyPlayerStructsToReplay(void* a1, void* a2);											//004DE9D0
-	int32 allocReplayCommands();																	//004CE280
+	s32 allocReplayCommands();																	//004CE280
 	*/
 	//
 	void* loadInitCreditsBIN(char* a1);															// 004D8DF0
-	bool SFileOpenArchive(char* archiveName, uint32 dwPriority, uint32 dwFlags, void* const* handle);	// 004100B2
+	bool SFileOpenArchive(char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle);	// 004100B2
 	bool SFileCloseArchive(void* archive);														// 004100BE
-	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, uint32 dwSearchScope, void** phFile);	// 004100C4
+	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void** phFile);	// 004100C4
 	bool SFileCloseFile(void* hFile);	                                                        // 004100C4
 }
 
@@ -66,10 +66,10 @@ namespace hooks {
 		__int16 v4; // ax
 		char pszRaceStr; // eax
 		unsigned __int8 v6; // al
-		int v7; // ecx
-		int v8; // eax
-		int v9; // [esp+Ch] [ebp-14h]
-		int v10; // [esp+10h] [ebp-10h]
+		s32 v7; // ecx
+		s32 v8; // eax
+		s32 v9; // [esp+Ch] [ebp-14h]
+		s32 v10; // [esp+10h] [ebp-10h]
 		__int16 v11; // [esp+18h] [ebp-8h]
 
 		dlgDropdown = a1;
@@ -94,8 +94,8 @@ namespace hooks {
 				break;
 			v7 = (unsigned __int8)v2->value;
 			++v2;
-			*(int*)(*(int*)&dlgDropdown->childrenDlg + 4 * v6) = v7;
-		} while ((signed int)v2 < (signed int)&singleTypeSelect);
+			*(s32*)(*(s32*)&dlgDropdown->childrenDlg + 4 * v6) = v7;
+		} while ((s32)v2 < (s32)&singleTypeSelect);
 		v8 = dlgDropdown->flags;
 		if (v8 < 0)
 		{
@@ -112,8 +112,8 @@ namespace hooks {
 		}
 	};
 
-	int initSingleplayerCustom(BinDlg** dialog) { // 004AD850 -- https://pastebin.com/raw/SQJXUWtG
-		int eax;							//v1
+	s32 initSingleplayerCustom(BinDlg** dialog) { // 004AD850 -- https://pastebin.com/raw/SQJXUWtG
+		s32 eax;							//v1
 		BinDlg** pDropdown;
 		PLAYER result;
 		unsigned __int8 al;					//v4
@@ -124,7 +124,7 @@ namespace hooks {
 		if (dialog->controlType) {
 			dialog = *(binDlg**)&dialog->parent;
 		}
-		eax = *(int)&dialog->childrenDlg;
+		eax = *(s32)&dialog->childrenDlg;
 		if (eax) {
 			while (eax + 16 != 28) {
 				eax = *eax;
@@ -182,14 +182,14 @@ namespace hooks {
 		return result;
 	};
 
-	int initGameLoad(int a1, char a2) { // 004EF100 -- https://pastebin.com/raw/szn0Z6sp
-		int v2; // ecx
-		int v3; // eax
-		int v5; // esi
+	s32 initGameLoad(s32 a1, char a2) { // 004EF100 -- https://pastebin.com/raw/szn0Z6sp
+		s32 v2; // ecx
+		s32 v3; // eax
+		s32 v5; // esi
 		char* v6; // esi
-		int v7; // edx
-		int* v8; // eax
-		int v9; // ecx
+		s32 v7; // edx
+		s32* v8; // eax
+		s32 v9; // ecx
 		char v10; // [esp+8h] [ebp-4h]
 
 		stopMusic();
@@ -198,12 +198,12 @@ namespace hooks {
 			if (!scenarioChk)
 			{
 				a2 = 0;
-				loadReplayFile((int)CurrentMapFileName, v2, 0);
+				loadReplayFile((s32)CurrentMapFileName, v2, 0);
 			}
 			if (IS_IN_REPLAY)
 			{
-				*(int*)playerForce = *(int*)playerForceSomethingReplay;
-				*(int*)&playerForce[4] = *(int*)&playerForceSomethingReplay[4];
+				*(s32*)playerForce = *(s32*)playerForceSomethingReplay;
+				*(s32*)&playerForce[4] = *(s32*)&playerForceSomethingReplay[4];
 			}
 		}
 		if (!loadGameFileHandle)
@@ -224,14 +224,14 @@ namespace hooks {
 			}
 		}
 		initScreenLayer();
-		auto mouseOverCallback = (int(__stdcall*)(int))subTwoCheckTwo;
+		auto mouseOverCallback = (s32(__stdcall*)(s32))subTwoCheckTwo;
 		loadGameFonts();
 		memset(randomCounts, 0, sizeof(randomCounts));
 		randomCountsTotal = 0;
 		lastRandomNumber = initialSeed;
 		srand(initialSeed);
 		initPathArray();
-		appAddExit((int)initGameLoad(a1, a2));
+		appAddExit((s32)initGameLoad(a1, a2));
 		if (!loadGameFileHandle)
 			multiplayerChatSomething();
 		randomizePlayerSlot();
@@ -264,7 +264,7 @@ namespace hooks {
 		if (!v6 && !campaignIndex)
 		{
 			v6 = CurrentMapFileName;
-			if (!authorizeMap((unsigned int)CurrentMapFileName, (int)&v10, 1, (int)mapArchiveHandle)
+			if (!authorizeMap((u32)CurrentMapFileName, (s32)&v10, 1, (s32)mapArchiveHandle)
 				&& !gameData.bVictoryCondition // 0x75
 				&& !gameData.bStartingUnits // 0x79
 				&& !gameData.bTournamentModeEnabled) // 0x7F
@@ -279,20 +279,20 @@ namespace hooks {
 			}
 		}
 		CHEAT_STATE &= 0x28000200u;
-		if (!loadGameCore((int)v6))
+		if (!loadGameCore((s32)v6))
 			return 0;
 		if (!mapStarted)
 		{
-			if (!chooseTriggerTemplate(v7, (char*)&randomCounts[256], (int)v6))
+			if (!chooseTriggerTemplate(v7, (char*)&randomCounts[256], (s32)v6))
 			{
 				bigPacketError(93, 0, 0, 0, 1);
 				return 0;
 			}
 			if (!mapStarted)
 			{
-				*(int*)playerHasLeft = 0;
+				*(s32*)playerHasLeft = 0;
 				lossType = 0;
-				*(int*)&unkVictoryVariable = 0;
+				*(s32*)&unkVictoryVariable = 0;
 			}
 		}
 		initPlayerNames();
@@ -306,8 +306,8 @@ namespace hooks {
 			copyPlayerStructsToReplay(playerTable, &gameData);
 			v8 = replayData;
 			d__int16_6D5BF0 = 0;
-			v9 = *((int*)replayData + 2);
-			*(int*)replayData = 0;
+			v9 = *((s32*)replayData + 2);
+			*(s32*)replayData = 0;
 			v8[1] = 1;
 			v8[7] = v9;
 			replayVisions = 255;
@@ -326,7 +326,7 @@ namespace hooks {
 	void displayEstablishingShot() { // 004D9200, hooked by X405
 		// This is the original original function which loads the establisihing shots in campaigns:
 		if (!*multiPlayerMode && !(*CHEAT_STATE & CheatFlags::NoGlues) && *campaignIndex) {
-			for (int i = 0; i < 65; i++) {
+			for (s32 i = 0; i < 65; i++) {
 				if (campaignMissions[i].missionIndex == *campaignIndex)
 					loadInitCreditsBIN(campaignMissions[i].missionName);
 			}
@@ -356,7 +356,7 @@ namespace hooks {
 namespace {
 	/*
 	//For raceDropdown
-	const uint32 Func_addItemToListing = 0x0041B760;
+	const u32 Func_addItemToListing = 0x0041B760;
 	char addItemToListing(char pszString, BinDlg* pDlg, __int8 bFlags) {
 		static char result;
 
@@ -371,7 +371,7 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_createDialogDropdown = 0x0041B410;
+	const u32 Func_createDialogDropdown = 0x0041B410;
 	void createDialogDropdown(BinDlg* a1) {
 		__asm {
 			PUSHAD
@@ -381,7 +381,7 @@ namespace {
 		}
 	};
 
-	const uint32 Func_dlgSetSelected = 0x0041A600;
+	const u32 Func_dlgSetSelected = 0x0041A600;
 	void dlgSetSelected(unsigned __int8 a1, BinDlg* a2) {
 		__asm {
 			PUSHAD
@@ -393,7 +393,7 @@ namespace {
 	};
 
 	//For initSingleplayerCustom
-	const uint32 Func_isMeleeGame = 0x004AAFA0;
+	const u32 Func_isMeleeGame = 0x004AAFA0;
 	bool isMeleeGame(char a1, __int16 a2, char a3) {
 		static char a1;
 		static __int16 a2;
@@ -412,7 +412,7 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_randomizePlayerSlot = 0x004A9A30;
+	const u32 Func_randomizePlayerSlot = 0x004A9A30;
 	PLAYER randomizePlayerSlot() {
 		static PLAYER result;
 
@@ -426,7 +426,7 @@ namespace {
 	};
 
 	//For initGameLoad
-	const uint32 Func_stopMusic = 0x004A5F50;
+	const u32 Func_stopMusic = 0x004A5F50;
 	bool stopMusic() {
 		static bool result;
 		__asm {
@@ -438,11 +438,11 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_loadReplayFile = 0x004DF570;
-	FILE loadReplayFile(int a1, int a2, int a3) {
-		static int a1;
-		static int a2;
-		static int a3;
+	const u32 Func_loadReplayFile = 0x004DF570;
+	FILE loadReplayFile(s32 a1, s32 a2, s32 a3) {
+		static s32 a1;
+		static s32 a2;
+		static s32 a3;
 		static FILE result;
 		__asm {
 			PUSHAD
@@ -456,11 +456,11 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_levelCheatCreate = 0x004EE5B0;
-	signed int levelCheatCreate(char a1, int a2) {
+	const u32 Func_levelCheatCreate = 0x004EE5B0;
+	s32 levelCheatCreate(char a1, s32 a2) {
 		static char a1;
-		static int a2;
-		static signed int result;
+		static s32 a2;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV a1, EDI
@@ -472,11 +472,11 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_loadGameCreate = 0x004EE520;
-	signed int loadGameCreate(int a1, char a2) {
-		static int a1;
+	const u32 Func_loadGameCreate = 0x004EE520;
+	s32 loadGameCreate(s32 a1, char a2) {
+		static s32 a1;
 		static char a2;
-		static signed int result;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV a1, EAX
@@ -488,10 +488,10 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_gameCreateSomething = 0x004EE3D0;
-	signed int gameCreateSomething(char a1) {
+	const u32 Func_gameCreateSomething = 0x004EE3D0;
+	s32 gameCreateSomething(char a1) {
 		static char a1;
-		static signed int result;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV a1, EDI
@@ -502,8 +502,8 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_singleplayerMeleeCreate = 0x004EE110;
-	signed int singleplayerMeleeCreate() {
+	const u32 Func_singleplayerMeleeCreate = 0x004EE110;
+	s32 singleplayerMeleeCreate() {
 		__asm {
 			PUSHAD
 			CALL Func_singleplayerMeleeCreate
@@ -511,10 +511,10 @@ namespace {
 		}
 	};
 
-	const uint32 Func_getSystemTime = 0x0040C7DF;
-	int getSystemTime(LPSYSTEMTIME a1) {
+	const u32 Func_getSystemTime = 0x0040C7DF;
+	s32 getSystemTime(LPSYSTEMTIME a1) {
 		static LPSYSTEMTIME a1;
-		static int result;
+		static s32 result;
 		__asm {
 			PUSHAD
 			CALL Func_getSystemTime
@@ -524,7 +524,7 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_initScreenLayer = 0x0041A030;
+	const u32 Func_initScreenLayer = 0x0041A030;
 	void initScreenLayer() {
 		__asm {
 			PUSHAD
@@ -533,11 +533,11 @@ namespace {
 		}
 	};
 
-	const uint32 Func_subTwoCheckTwo = 0x004EE0F0;
-	int subTwoCheckTwo(void a1, int a2) {
+	const u32 Func_subTwoCheckTwo = 0x004EE0F0;
+	s32 subTwoCheckTwo(void a1, s32 a2) {
 		static void a1;
-		static int a2;
-		static int result;
+		static s32 a2;
+		static s32 result;
 		__asm {
 			PUSHAD
 			CALL Func_subTwoCheckTwo
@@ -546,7 +546,7 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_loadGameFonts = 0x004DAE50;
+	const u32 Func_loadGameFonts = 0x004DAE50;
 	void loadGameFonts() {
 		__asm {
 			PUSHAD
@@ -555,9 +555,9 @@ namespace {
 		}
 	};
 
-	const uint32 Func_srand = 0x0040C7B0;
-	void srand(unsigned int a1) {
-		static int a1;
+	const u32 Func_srand = 0x0040C7B0;
+	void srand(u32 a1) {
+		static s32 a1;
 		__asm {
 			PUSHAD
 			CALL Func_srand
@@ -565,7 +565,7 @@ namespace {
 		}
 	};
 
-	const uint32 Func_initPathArray = 0x0042F4F0;
+	const u32 Func_initPathArray = 0x0042F4F0;
 	dwPOINT initPathArray() {
 		static dwPOINT result;
 		__asm {
@@ -577,10 +577,10 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_appAddExit = 0x004F6100;
-	signed int appAddExit(int a1) {
-		static int a1;
-		static signed int result;
+	const u32 Func_appAddExit = 0x004F6100;
+	s32 appAddExit(s32 a1) {
+		static s32 a1;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV a1, EBX
@@ -591,7 +591,7 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_multiplayerChatSomething = 0x0049B500;
+	const u32 Func_multiplayerChatSomething = 0x0049B500;
 	bool multiplayerChatSomething() {
 		static bool result;
 		__asm {
@@ -603,7 +603,7 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_getPlayerStructs = 0x004DE9A0;
+	const u32 Func_getPlayerStructs = 0x004DE9A0;
 	void getPlayerStructs(void a1) {
 		static void a1;
 		__asm {
@@ -614,7 +614,7 @@ namespace {
 		}
 	};
 
-	const uint32 Func_initStartingRacesAndTypes = 0x0049CC40;
+	const u32 Func_initStartingRacesAndTypes = 0x0049CC40;
 	PLAYER initStartingRacesAndTypes() {
 		static PLAYER result;
 		__asm {
@@ -626,7 +626,7 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_initMultiplayerSavePlayers = 0x004A9250;
+	const u32 Func_initMultiplayerSavePlayers = 0x004A9250;
 	char initMultiplayerSavePlayers() {
 		static char result;
 		__asm {
@@ -638,7 +638,7 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_initPlayers = 0x004A9D80;
+	const u32 Func_initPlayers = 0x004A9D80;
 	FILE initPlayers() {
 		static FILE result;
 		__asm {
@@ -650,7 +650,7 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_setVisionIndex = 0x004EE180;
+	const u32 Func_setVisionIndex = 0x004EE180;
 	void setVisionIndex() {
 		__asm {
 			PUSHAD
@@ -659,7 +659,7 @@ namespace {
 		}
 	};
 
-	const uint32 Func_initAiPlayerNames = 0x004ED2B0;
+	const u32 Func_initAiPlayerNames = 0x004ED2B0;
 	void initAiPlayerNames() {
 		__asm {
 			PUSHAD
@@ -668,7 +668,7 @@ namespace {
 		}
 	};
 
-	const uint32 Func_loadRaceUI = 0x004EE2D0;
+	const u32 Func_loadRaceUI = 0x004EE2D0;
 	__int16 loadRaceUI() {
 		static __int16 result;
 		__asm {
@@ -680,7 +680,7 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_hotkeyRemapping = 0x004EEC30;
+	const u32 Func_hotkeyRemapping = 0x004EEC30;
 	bool hotkeyRemapping() {
 		static bool result;
 		__asm {
@@ -691,10 +691,10 @@ namespace {
 		}
 	};
 
-	const uint32 Func_gameInit = 0x004EEE00;
-	signed int gameInit(int a1) {
-		static int a1;
-		static signed int result;
+	const u32 Func_gameInit = 0x004EEE00;
+	s32 gameInit(s32 a1) {
+		static s32 a1;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV a1, ESI
@@ -705,10 +705,10 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_getPlayerColors = 0x004DE950;
-	int getPlayerColors(int a1) {
-		static int a1;
-		static int result;
+	const u32 Func_getPlayerColors = 0x004DE950;
+	s32 getPlayerColors(s32 a1) {
+		static s32 a1;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV a1, EAX
@@ -719,13 +719,13 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_authorizeMap = 0x004CC110;
-	int authorizeMap(int a1, int a2, int a3, int a4) {
-		static int a1;
-		static int a2;
-		static int a3;
-		static int a4;
-		static int result;
+	const u32 Func_authorizeMap = 0x004CC110;
+	s32 authorizeMap(s32 a1, s32 a2, s32 a3, s32 a4) {
+		static s32 a1;
+		static s32 a2;
+		static s32 a3;
+		static s32 a4;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV a1, ESI
@@ -736,13 +736,13 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_bigPacketError = 0x004BB430;
-	char bigPacketError(int a1, char a2, int a3, int a4, int a5) {
-		static int a1;
+	const u32 Func_bigPacketError = 0x004BB430;
+	char bigPacketError(s32 a1, char a2, s32 a3, s32 a4, s32 a5) {
+		static s32 a1;
 		static char a2;
-		static int a3;
-		static int a4;
-		static int a5;
+		static s32 a3;
+		static s32 a4;
+		static s32 a5;
 		static char result;
 		__asm {
 			PUSHAD
@@ -754,10 +754,10 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_loadGameCore = 0x004EED10;
-	signed int loadGameCore(int a1) {
-		static int a1;
-		static signed int result;
+	const u32 Func_loadGameCore = 0x004EED10;
+	s32 loadGameCore(s32 a1) {
+		static s32 a1;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV a1, ESI
@@ -768,11 +768,11 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_chooseTriggerTemplate = 0x004ABAF0;
-	void chooseTriggerTemplate(int a1, char a2, int a3) {
-		static int a1;
+	const u32 Func_chooseTriggerTemplate = 0x004ABAF0;
+	void chooseTriggerTemplate(s32 a1, char a2, s32 a3) {
+		static s32 a1;
 		static char a2;
-		static int a3;
+		static s32 a3;
 		__asm {
 			PUSHAD
 			MOV a1, EDX
@@ -783,9 +783,9 @@ namespace {
 		}
 	};
 
-	const uint32 Func_initPlayerNames = 0x004B2DF0;
-	int initPlayerNames() {
-		const int result;
+	const u32 Func_initPlayerNames = 0x004B2DF0;
+	s32 initPlayerNames() {
+		const s32 result;
 		__asm {
 			PUSHAD
 			CALL Func_initPlayerNames
@@ -795,9 +795,9 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_tickCounterInit = 0x004A2BF0;
-	int tickCounterInit() {
-		static int result;
+	const u32 Func_tickCounterInit = 0x004A2BF0;
+	s32 tickCounterInit() {
+		static s32 result;
 		__asm {
 			PUSHAD
 			CALL Func_tickCounterInit
@@ -807,12 +807,12 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_CMDRECV_SetReplaySpeed = 0x004DEB90;
-	int CMDRECV_SetReplaySpeed(int a1, unsigned __int8 a2, unsigned int a3) {
-		static int a1;
-		static unsigned int8 a2;
-		static unsigned int a3;
-		static int result;
+	const u32 Func_CMDRECV_SetReplaySpeed = 0x004DEB90;
+	s32 CMDRECV_SetReplaySpeed(s32 a1, unsigned __int8 a2, u32 a3) {
+		static s32 a1;
+		static unsigned s8 a2;
+		static u32 a3;
+		static s32 result;
 		__asm {
 			PUSHAD
 			MOV a1, EAX
@@ -825,7 +825,7 @@ namespace {
 		return result;
 	};
 
-	const uint32 Func_copyPlayerStructsToReplay = 0x004DE9D0;
+	const u32 Func_copyPlayerStructsToReplay = 0x004DE9D0;
 	void copyPlayerStructsToReplay(void a1, void a2) {
 		static void a1;
 		static void a2;
@@ -838,9 +838,9 @@ namespace {
 		}
 	};
 
-	const uint32 Func_allocReplayCommands = 0x004CE280;
-	signed int allocReplayCommands() {
-		static signed int result;
+	const u32 Func_allocReplayCommands = 0x004CE280;
+	s32 allocReplayCommands() {
+		static s32 result;
 		__asm {
 			PUSHAD
 			CALL Func_allocReplayCommands
@@ -853,7 +853,7 @@ namespace {
 	// For displayEstablishingShot
 
 	void* loadInitCreditsBIN(char* a1) {
-		int address = 0x4D8DF0;
+		s32 address = 0x4D8DF0;
 		void* result_;
 		__asm {
 			mov eax, a1
@@ -863,9 +863,9 @@ namespace {
 		return result_;
 	}
 
-	const uint32 Func_SFileOpenArchive = 0x004100B2;
-	bool SFileOpenArchive(char* archiveName, uint32 dwPriority, uint32 dwFlags, void* const* handle) {
-		static uint32 result;
+	const u32 Func_SFileOpenArchive = 0x004100B2;
+	bool SFileOpenArchive(char* archiveName, u32 dwPriority, u32 dwFlags, void* const* handle) {
+		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH handle
@@ -879,9 +879,9 @@ namespace {
 		return (bool)result;
 	}
 
-	const uint32 Func_SFileCloseArchive = 0x004100BE;
+	const u32 Func_SFileCloseArchive = 0x004100BE;
 	bool SFileCloseArchive(void* archive) {
-		static uint32 result;
+		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH archive
@@ -892,9 +892,9 @@ namespace {
 		return (bool)result;
 	}
 
-	const uint32 Func_SFileOpenFileEx = 0x004100C4;
-	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, uint32 dwSearchScope, void** phFile) {
-		static uint32 result;
+	const u32 Func_SFileOpenFileEx = 0x004100C4;
+	bool SFileOpenFileEx(void* hMPQ, const char* szFileName, u32 dwSearchScope, void** phFile) {
+		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH phFile
@@ -908,9 +908,9 @@ namespace {
 		return (bool)result;
 	}
 
-	const uint32 Func_SFileCloseFile = 0x4100b8;
+	const u32 Func_SFileCloseFile = 0x4100b8;
 	bool SFileCloseFile(void* hFile) {
-		static uint32 result;
+		static u32 result;
 		__asm {
 			PUSHAD
 			PUSH hFile

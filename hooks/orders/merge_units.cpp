@@ -11,14 +11,14 @@
 
 namespace hooks {
 	//equivalent to 0x004BFA80, but not identical
-	CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, uint32 units_list_length) {
+	CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, u32 units_list_length) {
 		CUnit* nearest_unit = nullptr;	//was ebp-04
-		uint32 best_distance = MAXINT32;
-		for (uint32 i = 0; i < units_list_length; i++) {
+		u32 best_distance = MAXINT32;
+		for (u32 i = 0; i < units_list_length; i++) {
 
 			if (units_list[i] != nullptr) {
 
-				uint32 x_distance, y_distance;
+				u32 x_distance, y_distance;
 
 				x_distance =
 					std::max(unit->sprite->position.x, units_list[i]->sprite->position.x) -
@@ -43,7 +43,7 @@ namespace hooks {
 
 			} //if(units_list[i] != nullptr)
 
-		} //for(int i = units_list_length; i >= 0; i--)
+		} //for(s32 i = units_list_length; i >= 0; i--)
 
 		return nearest_unit;
 
@@ -53,9 +53,9 @@ namespace hooks {
 
 	void orders_CompletingArchonSummon(CUnit* unit) {
 
-		uint32* const bCanUpdateCurrentButtonSet = (uint32*)0x0068C1B0;
-		uint8* const bCanUpdateSelectedUnitPortrait = (uint8*)0x0068AC74;
-		uint8* const bCanUpdateStatDataDialog = (uint8*)0x0068C1F8;
+		u32* const bCanUpdateCurrentButtonSet = (u32*)0x0068C1B0;
+		u8* const bCanUpdateSelectedUnitPortrait = (u8*)0x0068AC74;
+		u8* const bCanUpdateStatDataDialog = (u8*)0x0068C1F8;
 		BinDlg** const someDialogUnknown = (BinDlg**)0x0068C1E8;
 		BinDlg** const someDialogUnknownUser = (BinDlg**)0x0068C1EC;
 
@@ -159,7 +159,7 @@ namespace hooks {
 		} else {
 
 			//946BE
-			uint32 distanceBetweenUnits;
+			u32 distanceBetweenUnits;
 
 			if (unit->status & UnitStatus::IsNormal) {
 				if (unit->isTargetWithinMinRange(targetUnit, (2 * unit->current_speed2) / 256)) {
@@ -203,7 +203,7 @@ namespace hooks {
 						//I'm not sure what that stuff did and if I converted it
 						//properly)
 
-						int32 x, y;
+						s32 x, y;
 
 						if (unit->sprite->position.x > MAXINT16)
 							x = (0xFFFF0000) + unit->sprite->position.x;
@@ -233,15 +233,15 @@ namespace hooks {
 
 						x /= 2; y /= 2;
 
-						if ((uint16)x > MAXINT16)
-							x = 0xFFFF0000 + (uint16)x;
+						if ((u16)x > MAXINT16)
+							x = 0xFFFF0000 + (u16)x;
 						else
-							x = (uint16)x;
+							x = (u16)x;
 
-						if ((uint16)y > MAXINT16)
-							y = 0xFFFF0000 + (uint16)y;
+						if ((u16)y > MAXINT16)
+							y = 0xFFFF0000 + (u16)y;
 						else
-							y = (uint16)y;
+							y = (u16)y;
 
 						helper::delayedSetMoveTarget_xy_Sub4EB960(unit, x, y);
 
@@ -339,7 +339,7 @@ namespace hooks {
 		} else {
 
 			//948EA
-			uint32 distanceBetweenUnits;
+			u32 distanceBetweenUnits;
 
 			if (unit->status & UnitStatus::IsNormal) {
 				if (unit->isTargetWithinMinRange(targetUnit, (2 * unit->current_speed2) / 256)) {
@@ -384,7 +384,7 @@ namespace hooks {
 						//I'm not sure what that stuff did and if I converted it
 						//properly)
 
-						int32 x, y;
+						s32 x, y;
 
 						if (unit->sprite->position.x > MAXINT16)
 							x = (0xFFFF0000) + unit->sprite->position.x;
@@ -414,15 +414,15 @@ namespace hooks {
 
 						x /= 2; y /= 2;
 
-						if ((uint16)x > MAXINT16)
-							x = 0xFFFF0000 + (uint16)x;
+						if ((u16)x > MAXINT16)
+							x = 0xFFFF0000 + (u16)x;
 						else
-							x = (uint16)x;
+							x = (u16)x;
 
-						if ((uint16)y > MAXINT16)
-							y = 0xFFFF0000 + (uint16)y;
+						if ((u16)y > MAXINT16)
+							y = 0xFFFF0000 + (u16)y;
 						else
-							y = (uint16)y;
+							y = (u16)y;
 
 						helper::delayedSetMoveTarget_xy_Sub4EB960(unit, x, y);
 

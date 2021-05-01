@@ -5,27 +5,27 @@ void augurSacrifice(CUnit* target);
 namespace hooks {
 
 	void weaponDamageHook(
-		int32 damage,
+		s32 damage,
 		CUnit* target,
-		uint8 weaponId,
+		u8 weaponId,
 		CUnit* attacker,
-		uint8 attackingPlayerId,
-		int8 direction,
-		uint8 dmgDivisor
+		u8 attackingPlayerId,
+		s8 direction,
+		u8 dmgDivisor
 	);
 
 	struct WeaponDamageData {
-		const int32 damage;
-		int32 finalDamage;
-		int32 shieldReduceAmount;
-		uint8 damageType;
-		uint8 damageDivisor;
-		uint8 weaponId;
-		int8 direction;
+		const s32 damage;
+		s32 finalDamage;
+		s32 shieldReduceAmount;
+		u8 damageType;
+		u8 damageDivisor;
+		u8 weaponId;
+		s8 direction;
 
 		CUnit* target;
 		CUnit* attacker;
-		uint8 attackingPlayerId;
+		u8 attackingPlayerId;
 		bool dontProcPhaseLink;
 		bool ignoreFlatArmor;
 	};
@@ -33,8 +33,8 @@ namespace hooks {
 	void weaponDamage_root(WeaponDamageData& data);
 
 	void applyEnsnare(CUnit* a1);
-	uint16 GetSporesOverlayId(CUnit* target);
-	int32 ApplySpores_hook(CUnit* target); // 004F4480
+	u16 GetSporesOverlayId(CUnit* target);
+	s32 ApplySpores_hook(CUnit* target); // 004F4480
 
 	bool GorgonCondition(CUnit* attacker, CUnit* target);
 

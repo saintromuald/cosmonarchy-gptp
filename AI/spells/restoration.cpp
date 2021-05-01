@@ -8,7 +8,7 @@ namespace AI {
 
 	CUnit* findBestRestorationTarget(CUnit* caster, bool isUnderAttack) {
 
-		int bounds = 32 * 32;
+		s32 bounds = 32 * 32;
 
 		return scbw::UnitFinder::getNearestTarget(
 			caster->getX() - bounds,

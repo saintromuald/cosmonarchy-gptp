@@ -10,7 +10,7 @@ namespace hooks {
 		CUnit* templar_merge_partner;
 		CUnit* templars_stored[SELECTION_ARRAY_LENGTH];
 		CUnit** templars_stored_iterator;
-		int templars_stored_count;
+		s32 templars_stored_count;
 
 		*selectionIndexStart = 0;
 		current_unit = getActivePlayerNextSelection();
@@ -18,7 +18,7 @@ namespace hooks {
 		if (current_unit != nullptr &&
 			current_unit->canUseTech(TechId::DarkArchonMeld, *ACTIVE_NATION_ID) == 1) {
 
-			for (int i = 0; i < SELECTION_ARRAY_LENGTH; i++)
+			for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)
 				templars_stored[i] = nullptr;
 
 			templars_stored_count = 0;
@@ -139,7 +139,7 @@ namespace hooks {
 		CUnit* templar_merge_partner;
 		CUnit* templars_stored[SELECTION_ARRAY_LENGTH];
 		CUnit** templars_stored_iterator;
-		int templars_stored_count;
+		s32 templars_stored_count;
 
 		*selectionIndexStart = 0;
 		current_unit = getActivePlayerNextSelection();
@@ -147,7 +147,7 @@ namespace hooks {
 		if (current_unit != nullptr &&
 			current_unit->canUseTech(TechId::ArchonWarp, *ACTIVE_NATION_ID) == 1) {
 
-			for (int i = 0; i < SELECTION_ARRAY_LENGTH; i++)
+			for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)
 				templars_stored[i] = nullptr;
 
 			templars_stored_count = 0;

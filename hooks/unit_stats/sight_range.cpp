@@ -1,9 +1,9 @@
 #include "sight_range.h"
 #include <SCBW/api.h>
 
-const int DEFAULT_SIGHT_RANGE = 4;
-const int BLIND_SIGHT_RANGE = 2;
-const int MAX_SIGHT_RANGE = 11;
+const s32 DEFAULT_SIGHT_RANGE = 4;
+const s32 BLIND_SIGHT_RANGE = 2;
+const s32 MAX_SIGHT_RANGE = 11;
 
 namespace hooks {
 
@@ -12,8 +12,8 @@ namespace hooks {
 	/// and Hallucination (but not when launching Nukes).
 	/// Note: sight ranges cannot exceed 11, unless extended.
 	/// Equivalent to getUpgradedSightRange @ 004E5B40  
-	uint32 getSightRangeHook(CUnit* unit, bool isForSpellCasting) {
-		uint32 sightRange;
+	u32 getSightRangeHook(CUnit* unit, bool isForSpellCasting) {
+		u32 sightRange;
 
 		//Check if the unit is a constructing building (exclude remorphing buildings)
 		if (unit->status & UnitStatus::GroundedBuilding &&

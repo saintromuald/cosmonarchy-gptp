@@ -40,8 +40,8 @@ namespace {
 
 	void __declspec(naked) queueSlotActiveWrapper() {
 		static CUnit* unit;
-		static uint32 slot;
-		static uint32 result;
+		static u32 slot;
+		static u32 result;
 		__asm {
 			MOV unit, ECX
 			MOV slot, EDX

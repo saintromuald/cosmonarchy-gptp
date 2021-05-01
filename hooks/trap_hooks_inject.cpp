@@ -4,8 +4,8 @@
 
 namespace {
 	void __declspec(naked) unitIsInstallationAsset_Wrapper() {
-		static uint32 id;
-		static uint32 result;
+		static u32 id;
+		static u32 result;
 		__asm {
 			MOV id, EAX
 			PUSHAD
@@ -20,7 +20,7 @@ namespace {
 
 	void __declspec(naked) unitIsFloorTrap_Wrapper() {
 		static CUnit* unit;
-		static uint32 result;
+		static u32 result;
 		__asm {
 			MOV unit, EAX
 			PUSHAD
@@ -35,7 +35,7 @@ namespace {
 
 	void __declspec(naked) disableUnit_Wrapper() {
 		static CUnit* unit;
-		static uint32 result;
+		static u32 result;
 		__asm {
 			MOV unit, EDI
 			PUSHAD
@@ -50,7 +50,7 @@ namespace {
 
 	void __declspec(naked) updateUnitStrengthAndApplyDefaultOrders_Wrapper() {
 		static CUnit* a1;
-		static uint32 result;
+		static u32 result;
 		__asm {
 			MOV a1, EAX
 			PUSHAD

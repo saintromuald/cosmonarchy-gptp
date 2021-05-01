@@ -5,9 +5,9 @@
 namespace {
 
 	void __declspec(naked) getResponseSfx_Wrapper() { // 0048EA20
-		static int32 a1;
-		static int a2;
-		static int result;
+		static s32 a1;
+		static s32 a2;
+		static s32 result;
 		__asm {
 			MOV a1, EAX
 			MOV a2, EDX
@@ -22,8 +22,8 @@ namespace {
 	}
 
 	void __declspec(naked) getRandYesSFX_Wrapper() { // 0048EAB0
-		static int32 a1;
-		static int result;
+		static s32 a1;
+		static s32 result;
 		__asm {
 			MOV a1, ECX
 			PUSHAD

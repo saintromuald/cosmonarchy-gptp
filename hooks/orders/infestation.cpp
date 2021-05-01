@@ -10,8 +10,8 @@ namespace hooks {
 
 	//replace 0x00402210 CC_CanBeInfested
 	bool isInfestableUnitHook(CUnit* unit) {
-		uint32 unitHpTest;
-		uint32 unitMaxHp;
+		u32 unitHpTest;
+		u32 unitMaxHp;
 		bool returnValue;
 		returnValue = (unit->status & UnitStatus::Completed) && (unit->id == UnitId::TerranCommandCenter);
 		if (returnValue) {
@@ -28,8 +28,8 @@ namespace hooks {
 	void orderMorphIntoInfested(CUnit* unitInfested) {
 		bool bErrorReturnToIdle;
 		bool bStopFunction = false;
-		uint16 infestedUnitNewId;
-		uint16 infestationOverlayId;
+		u16 infestedUnitNewId;
+		u16 infestationOverlayId;
 		CUnit* unitInfesting = unitInfested->orderTarget.unit;
 		bErrorReturnToIdle = (unitInfesting == nullptr || !isInfestableUnitHook(unitInfested));
 
@@ -58,7 +58,7 @@ namespace hooks {
 					if (unitInfested->isFactory())
 						unitInfested->rally.unit = unitInfested;
 
-					//original code was *(uint16*)(0x006648AC + 2*unitInfested->id);
+					//original code was *(u16*)(0x006648AC + 2*unitInfested->id);
 					infestedUnitNewId = units_dat::InfestedUnitPartial[unitInfested->id - UnitId::TerranCommandCenter];
 
 					//update number of kills/casualties for endgame score

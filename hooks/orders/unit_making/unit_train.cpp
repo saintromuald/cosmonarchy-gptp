@@ -10,7 +10,7 @@
 #endif
 
 namespace hooks {
-	int isQueueSlotActive(CUnit* unit, uint32 slot) {
+	s32 isQueueSlotActive(CUnit* unit, u32 slot) {
 		//return unit->buildQueue[(slot + unit->buildQueueSlot) % 5] <= UnitId::Spell_DisruptionWeb;
 		return unit->buildQueue[(slot + unit->buildQueueSlot) % 5] < UnitId::None;
 	}
@@ -51,7 +51,7 @@ namespace hooks {
 				if (unit->secondaryOrderState == 2) {
 
 					CUnit* builtUnit = unit->currentBuildUnit;
-					uint32 hpGain;
+					u32 hpGain;
 
 					if (builtUnit != nullptr) {
 
@@ -98,7 +98,7 @@ namespace hooks {
 
 							if (inHangarChild != nullptr) {
 
-								int32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossSteward];
+								s32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossSteward];
 
 								while (inHangarChild != nullptr && inHangarChild->hitPoints >= hpInterceptor)
 									inHangarChild = inHangarChild->interceptor.hangar_link.next;
@@ -170,7 +170,7 @@ namespace hooks {
 					CUnit* builtUnit = unit->currentBuildUnit;
 
 					if (builtUnit != nullptr) {
-						uint32 hpGain = helper::getHPGainForRepair(builtUnit);
+						u32 hpGain = helper::getHPGainForRepair(builtUnit);
 						bool extraBuild = false;
 						if (scbw::get_generic_value(builtUnit, ValueId::Crucible) == 0) {
 							auto r = 256;
@@ -178,7 +178,7 @@ namespace hooks {
 								{UnitId::ProtossCrucible});
 							scbw::UnitFinder unitsInSplash(builtUnit->position.x - r, builtUnit->position.y - r,
 								builtUnit->position.x + r, builtUnit->position.y + r);
-							for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
+							for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++) {
 								auto unit = unitsInSplash.getUnit(i);
 								if (n(unit)) {
 									scbw::set_generic_value(builtUnit, ValueId::Crucible, 5);//6 is ~100/15
@@ -216,13 +216,13 @@ namespace hooks {
 
 						} else { //unit was canceled due to lack of space around the building
 
-							uint32 queueSlot = unit->buildQueueSlot % 5;
+							u32 queueSlot = unit->buildQueueSlot % 5;
 
 							if (unit->buildQueue[queueSlot] == UnitId::None)
 								jump_to_685D8 = true;
 							else {
 
-								uint8 counter = 4;
+								u8 counter = 4;
 
 								if (unit->currentBuildUnit != nullptr)
 									helper::AI_CancelStructure(unit->currentBuildUnit);
@@ -238,9 +238,9 @@ namespace hooks {
 									counter--;
 									unit->buildQueue[unit->buildQueueSlot] = unit->buildQueue[(unit->buildQueueSlot + 1) % 5];
 
-									if (unit->pAI != nullptr && *(uint8*)((uint32)unit->pAI + 8) == 3) {
-										*(uint8*)((uint32)unit->pAI + unit->buildQueueSlot + 9) = *(uint8*)((uint32)unit->pAI + (unit->buildQueueSlot + 1) % 5 + 9);
-										*(uint32*)((uint32)unit->pAI + unit->buildQueueSlot * 4 + 0x18) = *(uint32*)((uint32)unit->pAI + ((unit->buildQueueSlot + 1) % 5) * 4 + 0x18);
+									if (unit->pAI != nullptr && *(u8*)((u32)unit->pAI + 8) == 3) {
+										*(u8*)((u32)unit->pAI + unit->buildQueueSlot + 9) = *(u8*)((u32)unit->pAI + (unit->buildQueueSlot + 1) % 5 + 9);
+										*(u32*)((u32)unit->pAI + unit->buildQueueSlot * 4 + 0x18) = *(u32*)((u32)unit->pAI + ((unit->buildQueueSlot + 1) % 5) * 4 + 0x18);
 									}
 
 
@@ -259,9 +259,9 @@ namespace hooks {
 
 					if (jump_to_685D8) {
 						if (builtUnit != nullptr && builtUnit->id == UnitId::ProtossSolarion) {
-							int interceptors = 12;
+							s32 interceptors = 12;
 
-							uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
+							u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
 							buf[0] = 0x99;//new general command
 							buf[1] = NewGameCommand::CarrierPrebuild;
 							buf[2] = interceptors;
@@ -284,8 +284,8 @@ namespace hooks {
 	}
 
 	char getMaxHangerSpace(CUnit* a1) { // 0x004653D0
-		uint16 id; // ax
-		int32 hangarSpace; // eax
+		u16 id; // ax
+		s32 hangarSpace; // eax
 
 		id = a1->id;
 		if (id != UnitId::ProtossSolarion) {

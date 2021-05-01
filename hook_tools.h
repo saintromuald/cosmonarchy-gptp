@@ -22,11 +22,11 @@
 /// @param  target    The address of the function to jump to.
 /// @param  position  The part of memory where the JMP instruction is injected.
 /// @param  nops      Optional. The number of additional bytes to write NOPs.
-void jmpPatch(const void* target, void* position, unsigned int nops = 0);
-inline void jmpPatch(const void* target, DWORD position, unsigned int nops = 0) {
+void jmpPatch(const void* target, void* position, u32 nops = 0);
+inline void jmpPatch(const void* target, DWORD position, u32 nops = 0) {
 	jmpPatch(target, (void*)position, nops);
 }
-void nops(const uint32 address, uint32 number);
+void nops(const u32 address, u32 number);
 
 /// Injects a CALL to [target] at the [position], optionally overwriting [nops]
 /// bytes with NOPs.
@@ -44,30 +44,30 @@ void nops(const uint32 address, uint32 number);
 /// @param  target    The address of the function to call.
 /// @param  position  The part of memory where the CALL instruction is injected.
 /// @param  nops      Optional. The number of additional bytes to write NOPs.
-void callPatch(const void* target, void* position, unsigned int nops = 0);
-inline void callPatch(const void* target, DWORD position, unsigned int nops = 0) {
+void callPatch(const void* target, void* position, u32 nops = 0);
+inline void callPatch(const void* target, DWORD position, u32 nops = 0) {
 	callPatch(target, (void*)position, nops);
 }
 
 /// Patches the specified address with the given data using memcpy().
 template <typename T>
-void memoryPatch(const uint32 address, const T& data) {
-	memoryPatch(address, (uint8*)&data, sizeof(T));
+void memoryPatch(const u32 address, const T& data) {
+	memoryPatch(address, (u8*)&data, sizeof(T));
 }
 
 /// Inject an array of bytes, using the given size.
-void memoryPatch(void* const address, const uint8* data, const size_t size);
-inline void memoryPatch(const uint32 address, const uint8* data, const size_t size) {
+void memoryPatch(void* const address, const u8* data, const size_t size);
+inline void memoryPatch(const u32 address, const u8* data, const size_t size) {
 	memoryPatch((void*)address, data, size);
 }
 
-void wrapperPatch(const uint8* code, uint32 len, const uint32 position, unsigned int nops = 0);
+void wrapperPatch(const u8* code, u32 len, const u32 position, u32 nops = 0);
 
 class ByteWrapperMemory {
 public:
-	std::vector<std::shared_ptr<uint8[]>> wrapper_memory;
+	std::vector<std::shared_ptr<u8[]>> wrapper_memory;
 
-	uint8* exec_alloc(uint32 len);
+	u8* exec_alloc(u32 len);
 };
 
 extern ByteWrapperMemory wrapperMemory;

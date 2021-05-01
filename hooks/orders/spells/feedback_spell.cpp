@@ -13,8 +13,8 @@ namespace hooks {
 			!(target->status & UnitStatus::IsHallucination)
 			) {
 
-			uint16 techCost;
-			int sightRange = unit->getSightRange(true);
+			u16 techCost;
+			s32 sightRange = unit->getSightRange(true);
 
 			if (
 				helper::ordersSpell_Sub_4926D0(
@@ -27,7 +27,7 @@ namespace hooks {
 				) {
 
 				if (target->status & UnitStatus::IsHallucination) {
-					uint8 overlaySize = scbw::hasOverlay(target);
+					u8 overlaySize = scbw::hasOverlay(target);
 					helper::replaceFeedbackSprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
 					unit->spendUnitEnergy(techCost);
 					target->remove();
@@ -45,7 +45,7 @@ namespace hooks {
 
 						if (!target->isDead()) {
 
-							uint8 overlaySize = scbw::hasOverlay(target);
+							u8 overlaySize = scbw::hasOverlay(target);
 
 							if (target->subunit != nullptr)
 								target->subunit->sprite->createTopOverlay(overlaySize + ImageId::Feedback_Small, 0, 0, 0);
@@ -55,7 +55,7 @@ namespace hooks {
 							unit->orderToIdle();
 
 						} else { //F6E6D
-							uint8 overlaySize = scbw::hasOverlay(target);
+							u8 overlaySize = scbw::hasOverlay(target);
 							helper::replaceFeedbackSprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
 							unit->orderToIdle();
 						}

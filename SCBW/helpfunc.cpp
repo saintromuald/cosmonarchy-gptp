@@ -378,8 +378,8 @@ namespace helpers {
 		const uint32 offset_006BEE64 = 0x006BEE64;
 
 		scbw::UnitFinder unit_finder;
-		int unit_finder_index = 0;
-		int unit_finder_items_count;
+		s32 unit_finder_index = 0;
+		s32 unit_finder_items_count;
 
 		if(unit->mainOrderTimer == 0) {
 
@@ -1118,8 +1118,8 @@ namespace helpers {
 			if((unit->movementFlags & 2) && (unit->flingyMovementType == 0)) {
 
 				uint32 flingyHaltDistance;
-				int xVarComputing;
-				int yVarComputing;
+				s32 xVarComputing;
+				s32 yVarComputing;
 
 				__asm {
 					PUSHAD

@@ -22,8 +22,8 @@ namespace hooks {
 	}
 
 	void orders_ZergBuildSelf(CUnit* building) {
-		const int OPCWAL_PROGRESS_INCREASE = 16;
-		uint16 buildingId;
+		const s32 OPCWAL_PROGRESS_INCREASE = 16;
+		u16 buildingId;
 		bool jump_to_5D56C = false;
 		bool jump_to_5D718 = false;
 		bool jump_to_5D720 = false;
@@ -116,13 +116,13 @@ namespace hooks {
 				}
 				if (building->orderSignal & 1) {
 				}
-				int32 hpAfterMorph;
+				s32 hpAfterMorph;
 				CImage* current_image;
 				building->orderSignal -= 4;
 				if (helper::isValidMorph(buildingId)) {
 					// save hp before some functions modify them
 					hpAfterMorph = building->hitPoints;
-					uint32 save_shields = building->shields;
+					u32 save_shields = building->shields;
 					// update score
 					building->status |= UnitStatus::Completed;
 					helper::incrementUnitScoresEx(building, -1, 0);
@@ -183,7 +183,7 @@ namespace hooks {
 		if (jump_to_5D720) {
 			jump_to_5D720 = false;
 			if (!scbw::isZergBuildingMorphResult(buildingId)) {
-				int32 hpGain = building->buildRepairHpGain;
+				s32 hpGain = building->buildRepairHpGain;
 				if (scbw::isCheatEnabled(CheatFlags::OperationCwal)) {
 					hpGain *= OPCWAL_PROGRESS_INCREASE;
 				}
@@ -195,7 +195,7 @@ namespace hooks {
 	void ZergPlaceBuilding(CUnit* unit) {
 		bool bStopThere = false;
 		if (!(unit->status & UnitStatus::Completed)) {
-			uint16 builtUnitId = unit->buildQueue[unit->buildQueueSlot];
+			u16 builtUnitId = unit->buildQueue[unit->buildQueueSlot];
 			// original code was hardcoded instead of using isValidMorph
 			if (helper::isValidMorph(builtUnitId)) {
 				if (unit->getRace() == RaceId::Zerg) {
@@ -207,8 +207,8 @@ namespace hooks {
 					unit->status |= UnitStatus::Completed;
 					helper::incrementUnitScoresEx(unit, -1, 0);
 					unit->status -= UnitStatus::Completed;
-					uint32 hp = unit->hitPoints;
-					uint32 shield = unit->shields;
+					u32 hp = unit->hitPoints;
+					u32 shield = unit->shields;
 					helper::updateUnitStatsFinishBuilding(unit);
 					helper::updateUnitStrength(unit);
 					unit->hitPoints = hp;
@@ -231,9 +231,9 @@ namespace hooks {
 		}
 
 		if (!bStopThere) {
-			static uint32* const u32_00581E44 = (uint32*)0x00581E44;
-			static uint32* const u32_00581ED4 = (uint32*)0x00581ED4;
-			static uint16* const u16_0066345A = (uint16*)0x0066345A;
+			static u32* const u32_00581E44 = (u32*)0x00581E44;
+			static u32* const u32_00581ED4 = (u32*)0x00581ED4;
+			static u16* const u16_0066345A = (u16*)0x0066345A;
 			helper::refundBuildingCost(unit->id, unit->playerId);
 
 			// possibly related to scores?
@@ -302,13 +302,13 @@ namespace hooks {
 
 //from unhooked
 namespace {
-	int BuildingHelper::getNumberOfUnitType(const CUnit* unit, uint16 unitId, bool ignoreIncomplete);
+	s32 BuildingHelper::getNumberOfUnitType(const CUnit* unit, u16 unitId, bool ignoreIncomplete);
 }
 
 namespace hooks {
 	//Checks if @p unitId is a building that can be morphed from another building.
 	//Note: This hook affects the behavior of CUnit::isRemorphingBuilding().
-	bool isMorphedBuildingHook(uint16 unitId) {
+	bool isMorphedBuildingHook(u16 unitId) {
 		//Default StarCraft behavior
 		if (scbw::isZergBuildingMorphResult(unitId))
 			return true;
@@ -319,9 +319,9 @@ namespace hooks {
 	//@p unit. This hook is used by StarCraft's AI for counting units and buildings.
 	//For example, Greater Spires are counted as Spires, so that the AI would not
 	//try to rebuild another Spire after morphing one into a Greater Spire.
-	int getMorphBuildingTypeCountHook(const CUnit* unit, uint16 unitId, bool ignoreIncomplete) {
+	s32 getMorphBuildingTypeCountHook(const CUnit* unit, u16 unitId, bool ignoreIncomplete) {
 		//Default StarCraft behavior
-		int unitCount = BuildingHelper::getNumberOfUnitType(unit, unitId, ignoreIncomplete);
+		s32 unitCount = BuildingHelper::getNumberOfUnitType(unit, unitId, ignoreIncomplete);
 
 		switch (unitId) {
 			case UnitId::ZergHatchery:

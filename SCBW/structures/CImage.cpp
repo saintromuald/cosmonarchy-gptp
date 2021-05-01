@@ -6,9 +6,9 @@
 
 void CImage::playIscriptAnim(IscriptAnimation::Enum animation) {
 	assert(this);
-	uint32 animation_ = (uint8)animation;
+	u32 animation_ = (u8)animation;
 
-	const uint32 Func_PlayIscriptAnim = 0x004D8470;  //AKA playImageIscript();
+	const u32 Func_PlayIscriptAnim = 0x004D8470;  //AKA playImageIscript();
 	__asm {
 		PUSHAD
 		PUSH animation_
@@ -46,7 +46,7 @@ void CImage::setRemapping(ColorRemapping::Enum remapping) {
 	this->coloringData = colorShift[remapping].data;
 }
 //Identical to function @ 0x004D5A50
-void CImage::initializeData(CSprite* parent, uint16 imageId, int8 x, int8 y) {
+void CImage::initializeData(CSprite* parent, u16 imageId, s8 x, s8 y) {
 	assert(this);
 	this->id = imageId;
 
@@ -72,21 +72,21 @@ void CImage::initializeData(CSprite* parent, uint16 imageId, int8 x, int8 y) {
 	this->wait = 0;
 	/*
 	if (images_dat::RLE_Function[imageId] == PaletteType::RLE_PLAYER_SIDE)
-		*(uint32*)(&this->coloringData) = parent->playerId;
+		*(u32*)(&this->coloringData) = parent->playerId;
 	if (images_dat::RLE_Function[imageId] == PaletteType::RLE_EFFECT)
 		this->coloringData = colorShift[images_dat::Remapping[imageId]].data;*/
 
 	if (scbw::getImageData(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_PLAYER_SIDE)
-		*(uint32*)(&this->coloringData) = parent->playerId;
+		*(u32*)(&this->coloringData) = parent->playerId;
 	if (scbw::getImageData(ImagesDatEntries::DrawFunc, imageId) == PaletteType::RLE_EFFECT)
 		this->coloringData = colorShift[scbw::getImageData(ImagesDatEntries::DrawRemap, imageId)].data;
 }
 
 
 ///same as function 0x004D5EA0, direction is 0-31
-void CImage::setImageDirection(uint8 direction) {
+void CImage::setImageDirection(u8 direction) {
 	assert(this);
-	constexpr uint32 Func_setDir = 0x004D5EA0;
+	constexpr u32 Func_setDir = 0x004D5EA0;
 	__asm {
 		PUSHAD
 		MOV EAX, this

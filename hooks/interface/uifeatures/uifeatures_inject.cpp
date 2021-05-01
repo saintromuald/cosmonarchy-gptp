@@ -2,8 +2,8 @@
 #include "hook_tools.h"
 
 namespace {
-	const uint32 SetFontHandle = 0x0041F610;
-	const uint32 drawUIFeatures_jmp = 0x0048D0AE;
+	const u32 SetFontHandle = 0x0041F610;
+	const u32 drawUIFeatures_jmp = 0x0048D0AE;
 	void _declspec(naked) drawUIFeatures_wrapper() {
 		_asm {
 			PUSHAD
@@ -18,8 +18,8 @@ namespace {
 
 	void _declspec(naked) QueueGameCommand_wrapper() {
 		static const void* a1;
-		static uint32 a2;
-		static uint8 result;
+		static u32 a2;
+		static u8 result;
 		_asm {
 			MOV a1, ECX
 			MOV a2, EDX
@@ -34,16 +34,16 @@ namespace {
 	}
 
 	void __declspec(naked) targetedOrder_Wrapper() {
-		static int16 a1;
-		static int32 a2;
+		static s16 a1;
+		static s32 a2;
 		static CUnit* a3;
-		static int16 a4;
-		static int32 a5;
-		static int32 a6;
-		static int32 a7;
-		static int32 a8;
-		static int32 a9;
-		static int32 a10;
+		static s16 a4;
+		static s32 a5;
+		static s32 a6;
+		static s32 a7;
+		static s32 a8;
+		static s32 a9;
+		static s32 a10;
 
 		__asm {
 			PUSH EBP
@@ -79,9 +79,9 @@ namespace {
 
 	void __declspec(naked) selectUnits_Wrapper() {
 		static CUnit** a1;
-		static int32 a2;
-		static int32 a3;
-		static int32 a4;
+		static s32 a2;
+		static s32 a3;
+		static s32 a4;
 
 		__asm {
 			PUSH EBP

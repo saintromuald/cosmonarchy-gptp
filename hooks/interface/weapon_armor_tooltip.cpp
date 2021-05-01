@@ -14,7 +14,7 @@ char buffer[256];
 
 //Returns the special damage multiplier factor for units that don't use the
 //"Damage Factor" property in weapons.dat.
-uint8 getDamageFactorForTooltip(uint8 weaponId, CUnit* unit) {
+u8 getDamageFactorForTooltip(u8 weaponId, CUnit* unit) {
 
 	//Default StarCraft behavior
 	if (weaponId == WeaponId::FlameThrower
@@ -49,7 +49,7 @@ static std::string formatStringVector(std::vector<std::string> strings) {
 	std::string result = "";
 	if (strings.size() == 0)
 		strings.push_back("None");
-	int i = 0;
+	s32 i = 0;
 	for (const std::string& str : strings) {
 		result += str;
 		if (++i != strings.size()) result += ", ";
@@ -57,7 +57,7 @@ static std::string formatStringVector(std::vector<std::string> strings) {
 	return result;
 }
 
-const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrIndex) {
+const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex) {
 	const bool extended = GetKeyState(VK_SHIFT) & 0x8000 || config.always_show_extended_tooltips;
 
 	// Get game strings
@@ -66,25 +66,25 @@ const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrI
 	const char* perRocketStr = statTxtTblNew->getString(1301);				//"per rocket"
 	const char* typeName = "";
 
-	uint8 damageFactor = getDamageFactorForTooltip(weaponId, unit);
-	uint8 upgradeLevel = scbw::getUpgradeLevel(unit->playerId, weapons_dat::DamageUpgrade[weaponId]);
-	uint8 damageType = weapons_dat::DamageType[weaponId];
-	uint32 baseDamage = weapons_dat::DamageAmount[weaponId];
-	uint32 bonusDamage = weapons_dat::DamageBonus[weaponId] * upgradeLevel;
+	u8 damageFactor = getDamageFactorForTooltip(weaponId, unit);
+	u8 upgradeLevel = scbw::getUpgradeLevel(unit->playerId, weapons_dat::DamageUpgrade[weaponId]);
+	u8 damageType = weapons_dat::DamageType[weaponId];
+	u32 baseDamage = weapons_dat::DamageAmount[weaponId];
+	u32 bonusDamage = weapons_dat::DamageBonus[weaponId] * upgradeLevel;
 
-	float minRange = weapons_dat::MinRange[weaponId] / 32.0;
-	float range = weapons_dat::MaxRange[weaponId] / 32.0;
-	float bonusRange = hooks::getMaxWeaponRangeHook(unit, weaponId) / 32.0 - range;
+	f32 minRange = weapons_dat::MinRange[weaponId] / 32.0;
+	f32 range = weapons_dat::MaxRange[weaponId] / 32.0;
+	f32 bonusRange = hooks::getMaxWeaponRangeHook(unit, weaponId) / 32.0 - range;
 
 	std::string damageModifiers = "";
-	double attackCd = (double)weapons_dat::Cooldown[weaponId] / 24;
-	double attackCdModifier = ((double)hooks::getModifiedWeaponCooldownHook(unit, weaponId) / 24) - attackCd;
+	f64 attackCd = (f64)weapons_dat::Cooldown[weaponId] / 24;
+	f64 attackCdModifier = ((f64)hooks::getModifiedWeaponCooldownHook(unit, weaponId) / 24) - attackCd;
 
-	int splashInner = weapons_dat::InnerSplashRadius[weaponId];
-	int splashMedium = weapons_dat::MediumSplashRadius[weaponId];
-	int splashOuter = weapons_dat::OuterSplashRadius[weaponId];
+	s32 splashInner = weapons_dat::InnerSplashRadius[weaponId];
+	s32 splashMedium = weapons_dat::MediumSplashRadius[weaponId];
+	s32 splashOuter = weapons_dat::OuterSplashRadius[weaponId];
 	bool hasSplash = splashInner || splashMedium || splashOuter;
-	int splashType = weapons_dat::ExplosionType[weaponId];
+	s32 splashType = weapons_dat::ExplosionType[weaponId];
 	std::string splashTypeValue = "";
 
 	bool isSuicideUnit = unit->id == UnitId::ZergSkryling;
@@ -203,8 +203,8 @@ const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrI
 	// DPS
 	if (!isSuicideUnit && extended) {
 		ss.str("");
-		double cd = (attackCd + attackCdModifier);
-		ss << ((double)damageFactor * (baseDamage + bonusDamage) / cd);
+		f64 cd = (attackCd + attackCdModifier);
+		ss << ((f64)damageFactor * (baseDamage + bonusDamage) / cd);
 		text += "\nDPS: " + modifierColor + ss.str() + "\002";
 	}
 
@@ -247,23 +247,23 @@ const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrI
 namespace hooks {
 
 	//Returns the C-string for the tooltip text of the unit's weapon icon.
-	const char* getWeaponTooltipString(uint8 weaponId, CUnit* unit) {
+	const char* getWeaponTooltipString(u8 weaponId, CUnit* unit) {
 		return getDamageTooltipString(weaponId, unit, weapons_dat::Label[weaponId]);
 	}
 
-	static std::string timerToString(int timer) {
+	static std::string timerToString(s32 timer) {
 		std::stringstream ss;
 		ss << round(timer * 0.042 * 8.0) << "s";
 		return ss.str();
 	}
 
-	static std::string aiseTimerToString(int timer) {
+	static std::string aiseTimerToString(s32 timer) {
 		std::stringstream ss;
 		ss << round((timer - 1) / 24.0) << "s";
 		return ss.str();
 	}
 
-	static std::string removeTimerToString(int timer) {
+	static std::string removeTimerToString(s32 timer) {
 		std::stringstream ss;
 		ss << round(timer / 24.0) << "s";
 		return ss.str();
@@ -279,7 +279,7 @@ namespace hooks {
 	// 0  - unlimited stacks		x
 	// 1  - binary true / false
 	// >1 - limited stacks			x/max
-	static void addStatus(std::vector<std::string>& vec, std::string name, int value = -1, int maxValue = 0, int timer = -1, TimerType timerType = TimerType::Vanilla) {
+	static void addStatus(std::vector<std::string>& vec, std::string name, s32 value = -1, s32 maxValue = 0, s32 timer = -1, TimerType timerType = TimerType::Vanilla) {
 		if (timer > 0 || value > 0) {
 			std::string text = name;
 			if (timer > 0 || value > 1 || (value > 0 && maxValue != 1)) {
@@ -311,18 +311,18 @@ namespace hooks {
 	const char* getArmorTooltipString(CUnit* unit) {
 		const bool extended = GetKeyState(VK_SHIFT) & 0x8000 || config.always_show_extended_tooltips;
 
-		const uint16 labelId = upgrades_dat::Label[units_dat::ArmorUpgrade[unit->id]];
+		const u16 labelId = upgrades_dat::Label[units_dat::ArmorUpgrade[unit->id]];
 		const char* armorUpgradeName = statTxtTblNew->getString(labelId);
 		const char* armorStr = statTxtTblNew->getString(778);						//"Armor:"
 
-		const uint8 baseArmor = units_dat::ArmorAmount[unit->id];
-		const uint8 bonusArmor = unit->getArmorBonus();
-		const uint8 unitSize = units_dat::SizeType[unit->id];
+		const u8 baseArmor = units_dat::ArmorAmount[unit->id];
+		const u8 bonusArmor = unit->getArmorBonus();
+		const u8 unitSize = units_dat::SizeType[unit->id];
 		const char* sizeLabel = "Size:";
 		const char* sizeText = "";
 
-		const uint8 transportSpace = units_dat::SpaceRequired[unit->id];
-		const int sightRange = units_dat::SightRange[unit->id];
+		const u8 transportSpace = units_dat::SpaceRequired[unit->id];
+		const s32 sightRange = units_dat::SightRange[unit->id];
 
 		switch (unitSize) {
 			case 1:
@@ -354,7 +354,7 @@ namespace hooks {
 		std::string movementSpeed = ss.str();
 		ss.str("");
 
-		int accel = hooks::getModifiedUnitAccelerationHook(unit);
+		s32 accel = hooks::getModifiedUnitAccelerationHook(unit);
 		ss << accel;
 		std::string acceleration = ss.str();
 		ss.str("");
@@ -401,7 +401,7 @@ namespace hooks {
 		// Aise Value
 		addStatus(statuses, "Energy Decay", scbw::get_generic_value(unit, ValueId::EntropyGauntlets), 1);
 		addStatus(statuses, "Armor Reduction", scbw::get_generic_value(unit, ValueId::ArmorReduce), 0);
-		addStatus(statuses, "Cabeirus Feeders", ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime), 10);
+		addStatus(statuses, "Cabeirus Feeders", ceil((f64)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime), 10);
 		addStatus(statuses, "Reverse Thrust", scbw::get_generic_value(unit, ValueId::ReverseThrust), 1);
 		addStatus(statuses, "Sublime Shepherd", scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd), 0);
 		addStatus(statuses, "Lazarus Agent", scbw::get_generic_value(unit, ValueId::LazarusAgent), 1);
@@ -517,11 +517,11 @@ namespace hooks {
 	const char* getShieldTooltipString(CUnit* unit) {
 		//Default StarCraft behavior
 
-		const uint16 labelId = upgrades_dat::Label[UpgradeId::ProtossPlasmaShields];
+		const u16 labelId = upgrades_dat::Label[UpgradeId::ProtossPlasmaShields];
 		const char* shieldUpgradeName = statTxtTblNew->getString(labelId);
 		const char* shieldStr = statTxtTblNew->getString(779);					 //"Shields:"
 
-		uint8 shieldUpgradeLevel = scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossPlasmaShields);
+		u8 shieldUpgradeLevel = scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossPlasmaShields);
 
 		std::string text = "\004" + std::string(shieldUpgradeName) + "\002";
 		text += "\n" + std::string(shieldStr) + " 0";
@@ -535,7 +535,7 @@ namespace hooks {
 	//Returns the C-string for the tooltip text of the Interceptor icon (Carriers),
 	//Scarab icon (Reavers), Nuclear Missile icon (Nuclear Silos), and Spider Mine
 	//icon (Vultures).
-	const char* getSpecialTooltipString(uint16 iconUnitId, CUnit* unit) {
+	const char* getSpecialTooltipString(u16 iconUnitId, CUnit* unit) {
 		//Default StarCraft behavior
 
 		if (iconUnitId == UnitId::ProtossSteward) {

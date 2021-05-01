@@ -11,7 +11,7 @@
 
 void showAllPsiFields() {
 
-	static const uint32 Func_showAllPsiFields = 0x00493640;
+	static const u32 Func_showAllPsiFields = 0x00493640;
 
 	__asm {
 		PUSHAD
@@ -23,7 +23,7 @@ void showAllPsiFields() {
 
 void hideAllPsiFields() {
 
-	static const uint32 Func_hideAllPsiFields = 0x00494100;
+	static const u32 Func_hideAllPsiFields = 0x00494100;
 
 	__asm {
 		PUSHAD
@@ -104,10 +104,10 @@ void __declspec(naked) hideAllPsiFieldsOnUnselectWrapper() {
 //0x004E3935
 void __declspec(naked) packUnitData_PsiProvider() {
 
-	static const uint32 packUnitData_PsiProvider_Return = 0x004E3961;
+	static const u32 packUnitData_PsiProvider_Return = 0x004E3961;
 
 	static CUnit* unit;
-	static uint16 unitId;
+	static u16 unitId;
 
 	__asm {
 		MOV unitId, CX
@@ -117,7 +117,7 @@ void __declspec(naked) packUnitData_PsiProvider() {
 
 	if (hooks::canMakePsiField(unitId)) {
 		if (unit->building.pylonAura != nullptr)
-			*((uint32*)&unit->building.pylonAura) = (unit->building.pylonAura - spriteTable) / sizeof(CSprite) + 1;
+			*((u32*)&unit->building.pylonAura) = (unit->building.pylonAura - spriteTable) / sizeof(CSprite) + 1;
 	}
 
 	__asm {
@@ -129,10 +129,10 @@ void __declspec(naked) packUnitData_PsiProvider() {
 //0x004E3182
 void __declspec(naked) unpackUnitData_PsiProvider() {
 
-	static const uint32 unpackUnitData_PsiProvider_Return = 0x004E31A3;
+	static const u32 unpackUnitData_PsiProvider_Return = 0x004E31A3;
 
 	static CUnit* unit;
-	static uint16 unitId;
+	static u16 unitId;
 
 	__asm {
 		MOV unitId, CX
@@ -142,7 +142,7 @@ void __declspec(naked) unpackUnitData_PsiProvider() {
 
 	if (hooks::canMakePsiField(unitId))
 		if (unit->building.pylonAura != nullptr)
-			unit->building.pylonAura = &spriteTable[(int)unit->building.pylonAura];
+			unit->building.pylonAura = &spriteTable[(s32)unit->building.pylonAura];
 
 	__asm {
 		POPAD

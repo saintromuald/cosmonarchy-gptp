@@ -1,7 +1,7 @@
 #include "detector.h"
 #include "../hook_tools.h"
 
-extern const uint32 Func_CanDetect;  //Defined in CUnit.cpp
+extern const u32 Func_CanDetect;  //Defined in CUnit.cpp
 
 namespace {
 
@@ -9,7 +9,7 @@ namespace {
 	void __declspec(naked) unitCanDetectWrapper() {
 
 		static CUnit* unit;
-		static uint32 result;
+		static u32 result;
 
 		__asm {
 			MOV unit, EAX

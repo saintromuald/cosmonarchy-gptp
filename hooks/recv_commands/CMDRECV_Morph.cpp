@@ -3,7 +3,7 @@
 #include <SCBW/api.h>
 
 namespace hooks {
-	void CMDRECV_BuildingMorph(uint16 wUnitType) {
+	void CMDRECV_BuildingMorph(u16 wUnitType) {
 
 		CUnit* building;
 		*selectionIndexStart = 0;
@@ -24,7 +24,7 @@ namespace hooks {
 		}
 	}
 
-	void CMDRECV_UnitMorph(uint16 wUnitType) {
+	void CMDRECV_UnitMorph(u16 wUnitType) {
 		CUnit* current_unit;
 		*selectionIndexStart = 0;
 		current_unit = getActivePlayerNextSelection();

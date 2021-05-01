@@ -8,7 +8,7 @@
 // Saving
 template <typename T> // 1-Dimensional Array
 std::ostream& operator<<(std::ostream& stream, T arr[]) {
-	for (int i = 0; i < _countof(arr); i++) {
+	for (s32 i = 0; i < _countof(arr); i++) {
 		stream << arr[i] << "\0";
 	}
 	stream << "\0";
@@ -17,8 +17,8 @@ std::ostream& operator<<(std::ostream& stream, T arr[]) {
 
 template <typename T> // 2-Dimensional Array
 std::ostream& operator<<(std::ostream& stream, T arr[][]) {
-	for (int i = 0; i < _countof(arr); i++) {
-		for (int j = 0; j < _countof(arr[i]); j++) {
+	for (s32 i = 0; i < _countof(arr); i++) {
+		for (s32 j = 0; j < _countof(arr[i]); j++) {
 			stream << arr[i][j] << "\0";
 		}
 		stream << "\0";
@@ -56,7 +56,7 @@ std::ostream& operator<<(std::ostream& stream, T& object) {
 template <typename T> // 1-Dimensional Array
 std::istream& operator>>(std::istream& stream, T const* arr) {
 	std::string str;
-	int i = 0;
+	s32 i = 0;
 	do {
 		stream >> str;
 		arr[i++] = *(T*)&str;
@@ -67,8 +67,8 @@ std::istream& operator>>(std::istream& stream, T const* arr) {
 template <typename T> // 2-Dimensional Array
 std::istream& operator>>(std::istream& stream, T const** arr) {
 	std::string str;
-	int i = 0;
-	int j = 0;
+	s32 i = 0;
+	s32 j = 0;
 	do {
 		do {
 			stream >> str;

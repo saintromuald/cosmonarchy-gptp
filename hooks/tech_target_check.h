@@ -4,7 +4,7 @@
 namespace hooks {
 
 //The hook function injected into StarCraft
-uint16 getTechUseErrorMessageHook(CUnit* target, uint8 castingPlayer, uint16 techId);
+u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayer, u16 techId);
 
 //The injector function that should be called in initialize.cpp
 void injectTechTargetCheckHooks();

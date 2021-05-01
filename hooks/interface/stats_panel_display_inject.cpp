@@ -38,8 +38,8 @@ namespace {
 
 	void __declspec(naked) statsArmorLevel_Wrapper() { // 00425600
 		static BinDlg* dialog;
-		static int32 unused;
-		static uint16 buttonRelated;
+		static s32 unused;
+		static u16 buttonRelated;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -59,8 +59,8 @@ namespace {
 
 	void __declspec(naked) statsWeaponLevel_Wrapper() { // 00425790
 		static BinDlg* dialog;
-		static uint16 buttonRelated;
-		static uint8 weaponId;
+		static u16 buttonRelated;
+		static u8 weaponId;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP

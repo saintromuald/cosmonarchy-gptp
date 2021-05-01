@@ -6,7 +6,7 @@
 namespace AI {
 
 	CUnit* findBestDisruptionWebTarget(CUnit* caster, bool isUnderAttack) {
-		int bounds;
+		s32 bounds;
 		if (isUnderAttack)
 			bounds = 32 * 9;
 		else if (isUmsMode(caster->playerId))

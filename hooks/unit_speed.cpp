@@ -12,15 +12,15 @@
 
 namespace hooks {
 
-	double getSpeedMultiplier(CUnit* unit) {
-		double speed = 1;
+	f64 getSpeedMultiplier(CUnit* unit) {
+		f64 speed = 1;
 
 		// Set additives based on status effects and movespeed upgrades
-		int increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
-		int decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
+		s32 increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
+		s32 decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
 
 		if (decrease > 0) {
-			for (int i = 0; i < decrease; i++) {
+			for (s32 i = 0; i < decrease; i++) {
 				speed *= 0.5;
 			}
 		}
@@ -37,7 +37,7 @@ namespace hooks {
 
 		// Vassal Terminal Surge: increase movespeed when any nearby Simulacrum dies
 		{
-			double stacks = MathUtils::clamp<double>(scbw::get_generic_value(unit, ValueId::TerminalSurge), 0, 10) * 1.5;
+			f64 stacks = MathUtils::clamp<f64>(scbw::get_generic_value(unit, ValueId::TerminalSurge), 0, 10) * 1.5;
 			if (stacks > 0) {
 				speed *= 1.0 + stacks * 0.05;
 			}
@@ -50,7 +50,7 @@ namespace hooks {
 
 		// Southpaw Knockout Drivers: reduces movement speed by 5% per stack
 		if (scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks) > 0) {
-			uint32 knockoutValue = scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks);
+			u32 knockoutValue = scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks);
 			speed *= 1 - 0.05 * knockoutValue;
 		}
 
@@ -71,7 +71,7 @@ namespace hooks {
 			scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
 				unit->position.x + r, unit->position.y + r);
 			bool accelerate = false;
-			for (int i = 0; i < unitsInFinder.getUnitCount(); i++) {
+			for (s32 i = 0; i < unitsInFinder.getUnitCount(); i++) {
 				auto picked_unit = unitsInFinder.getUnit(i);
 				if (n(picked_unit)) {
 					if (scbw::get_generic_timer(picked_unit, ValueId::SwarmingOmenTimer) > 0) {
@@ -105,9 +105,9 @@ namespace hooks {
 			}
 			case UnitId::ZergVorvaling:
 			{
-				// Vorvaling Adrenal Surge: gains double movespeed when moving towards enemies
+				// Vorvaling Adrenal Surge: gains f64 movespeed when moving towards enemies
 				if (unit->id == UnitId::ZergVorvaling) {
-					uint32 range = unit->getSightRange(false) * 32;
+					u32 range = unit->getSightRange(false) * 32;
 					scbw::UnitFinder unitFinder(
 						unit->getX() - range,
 						unit->getY() - range,
@@ -119,12 +119,12 @@ namespace hooks {
 							|| units_dat::BaseProperty[target->id] & UnitProperty::Flyer) {
 							return;
 						}
-						uint16 angle = scbw::getAngle(unit->position.x, unit->position.y,
+						u16 angle = scbw::getAngle(unit->position.x, unit->position.y,
 							target->position.x, target->position.y);
-						uint16 unit_angle = unit->velocityDirection1;
-						int arc = (double)60 / 1.40625;
+						u16 unit_angle = unit->velocityDirection1;
+						s32 arc = (f64)60 / 1.40625;
 						// 120 degrees
-						int delta = unit_angle - angle;
+						s32 delta = unit_angle - angle;
 						delta = abs((delta + 128) % 256 - 128);
 						if (delta <= arc) {
 							unit->_padding_0x132 |= 0x2;
@@ -151,25 +151,25 @@ namespace hooks {
 			case UnitId::ProtossClarion:
 			{
 				// Clarion Harmony Drive: gains increased movement speed based on shields
-				double fraction = (double)unit->shields / ((double)units_dat::MaxShieldPoints[unit->id] * 256);
+				f64 fraction = (f64)unit->shields / ((f64)units_dat::MaxShieldPoints[unit->id] * 256);
 				speed *= 1.0 + fraction;
 				break;
 			}
 			case UnitId::TerranBlackjack:
 			{
 				// Blackjack Wear and Tear: reduce movement speed based on missing health
-				const uint32 health = unit->hitPoints / 256;
-				const uint32 maxHealth = unit->getMaxHpInGame();
-				const double multiplier = MathUtils::map(health, (uint32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
+				const u32 health = unit->hitPoints / 256;
+				const u32 maxHealth = unit->getMaxHpInGame();
+				const f64 multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
 				speed *= multiplier;
 				break;
 			}
 			case UnitId::ProtossGolem:
 			{
 				// Golem Deathless Procession: gains increased movespeed based on missing shields
-				const uint32 health = unit->shields / 256;
-				const uint32 maxHealth = units_dat::MaxShieldPoints[unit->id];
-				const double multiplier = MathUtils::map(health, maxHealth, maxHealth - maxHealth, 1.0, 1.5, true);
+				const u32 health = unit->shields / 256;
+				const u32 maxHealth = units_dat::MaxShieldPoints[unit->id];
+				const f64 multiplier = MathUtils::map(health, maxHealth, maxHealth - maxHealth, 1.0, 1.5, true);
 				speed *= multiplier;
 				break;
 			}
@@ -212,8 +212,8 @@ namespace hooks {
 	///
 	/// @return		The modified speed value.
 	/// Logically equivalent to GetModifiedUnitSpeed @ 0047B5F0  
-	uint32 getModifiedUnitSpeedHook(CUnit* unit, uint32 baseSpeed) {
-		int increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
+	u32 getModifiedUnitSpeedHook(CUnit* unit, u32 baseSpeed) {
+		s32 increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 
 
 		switch (unit->id) {
@@ -227,7 +227,7 @@ namespace hooks {
 			{
 				// Flingy-related code
 				if (increase > 0) {
-					for (int i = 0; i < increase; i++) {
+					for (s32 i = 0; i < increase; i++) {
 						baseSpeed *= 1.5;
 					}
 					if (baseSpeed < 853) {
@@ -244,7 +244,7 @@ namespace hooks {
 	///
 	/// @return		The modified acceleration value.
 	/// Logically equivalent to getModifiedUnitAcceleration @ 0047B8A0 
-	uint32 getModifiedUnitAccelerationHook(CUnit* unit) {
+	u32 getModifiedUnitAccelerationHook(CUnit* unit) {
 		return std::max(scbw::getFlingyData(FlingyDatEntries::Acceleration, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit), 1.0);
 	}
 
@@ -252,7 +252,7 @@ namespace hooks {
 	///
 	/// @return		The modified turning speed value.
 	/// Logically equivalent to getModifiedUnitTurnRadius @ 0047B850 
-	uint32 getModifiedUnitTurnSpeedHook(CUnit* unit) {
+	u32 getModifiedUnitTurnSpeedHook(CUnit* unit) {
 		return std::max(scbw::getFlingyData(FlingyDatEntries::TurnRadius, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit), 1.0);
 	}
 

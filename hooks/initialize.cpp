@@ -118,7 +118,7 @@ namespace
 	{
 		if (!hidePrompt) {
 			//KYSXD W-Mode start
-			int msgboxID = MessageBox(nullptr, "Do you want to play in windowed mode?", PLUGIN_NAME, MB_YESNOCANCEL);
+			s32 msgboxID = MessageBox(nullptr, "Do you want to play in windowed mode?", PLUGIN_NAME, MB_YESNOCANCEL);
 			switch (msgboxID) {
 			case IDYES:
 				loadWMode();
@@ -366,7 +366,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	const u8 nop3[3] = { 0x8d,0x76,0x00 };
 	const u8 b74 = 0x74;
 	u8 swtab[193];
-	int i = 0;
+	s32 i = 0;
 	for (; i <= 64; i++) swtab[i] = 0;
 	for (; i <= 128; i++) swtab[i] = 1;
 	for (; i <= 192; i++) swtab[i] = 2;

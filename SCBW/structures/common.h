@@ -7,13 +7,13 @@
 //V241 for VS2008
 
 struct Point8 {
-	int8 x;
-	int8 y;
+	s8 x;
+	s8 y;
 };
 
 struct Point16 {
-	uint16 x;
-	uint16 y;
+	u16 x;
+	u16 y;
 
 	bool operator ==(const Point16& rhs) const {
 		return x == rhs.x && y == rhs.y;
@@ -24,31 +24,31 @@ struct Point16 {
 };
 
 struct Point32 {
-	int x;
-	int y;
+	s32 x;
+	s32 y;
 };
 
 struct Box16 {
-	int16 left;     // x
-	int16 top;      // y
-	int16 right;    // w
-	int16 bottom;   // h
+	s16 left;     // x
+	s16 top;      // y
+	s16 right;    // w
+	s16 bottom;   // h
 };
 
 struct Box32 {
-	int32 left;
-	int32 top;
-	int32 right;
-	int32 bottom;
+	s32 left;
+	s32 top;
+	s32 right;
+	s32 bottom;
 };
 
 struct Bounds {
-	uint16 left;
-	uint16 top;
-	uint16 right;
-	uint16 bottom;
-	uint16 width;
-	uint16 height;
+	u16 left;
+	u16 top;
+	u16 right;
+	u16 bottom;
+	u16 width;
+	u16 height;
 };
 
 C_ASSERT(sizeof(Point8) == 2);

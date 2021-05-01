@@ -20,12 +20,12 @@ namespace hooks {
 				unit->orderToIdle();
 			else {
 
-				uint16 techEnergyCost = 0;
+				u16 techEnergyCost = 0;
 				bool spellCastSuccess;
 
 				//F69CB
 
-				uint32 unitSightRangeForSpell = unit->getSightRange(true);
+				u32 unitSightRangeForSpell = unit->getSightRange(true);
 
 				unitSightRangeForSpell *= 32;
 
@@ -40,7 +40,7 @@ namespace hooks {
 					else {
 
 						//overlayId = overlaySize (0,1,2) + MinimumSizeImageId
-						uint32 overlayId = scbw::hasOverlay(target) + ImageId::MindControlHit_Small;
+						u32 overlayId = scbw::hasOverlay(target) + ImageId::MindControlHit_Small;
 
 						////F6A08 (direct implementation of 0x00047B720 hasOverlay)
 

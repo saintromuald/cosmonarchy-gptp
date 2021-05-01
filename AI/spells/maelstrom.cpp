@@ -4,7 +4,7 @@
 namespace AI {
 
 	CUnit* findBestMaelstromTarget(CUnit* caster, bool isUnderAttack) {
-		int bounds;
+		s32 bounds;
 		if (isUnderAttack) {
 			bounds = 32 * 9;
 		}
@@ -44,11 +44,11 @@ namespace AI {
 			}
 			if (isTargetAttackingAlly(target, caster)
 				&& !scbw::isZergEggNew(target, true, true)) {
-				const int totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Maelstrom);
+				const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Maelstrom);
 				if (!isUnderAttack && totalEnemyLife < 250) {
 					return false;
 				}
-				const int totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Maelstrom);
+				const s32 totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Maelstrom);
 				if (totalAllyLife * 2 >= totalEnemyLife) {
 					return false;
 				}

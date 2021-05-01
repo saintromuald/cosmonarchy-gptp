@@ -16,13 +16,13 @@ namespace hooks {
 		/*
 		CSprite v2;// eax
 		CUnit* v3;	// edi
-		uint8 v4;		// cl
-		int32 v5;		// eax
-		uint16 v6;		// ax
-		int32 v7;		// eax
-		uint8 v8;		// cl
-		uint8 v9;		// cl
-		uint32* v10;	// edx
+		u8 v4;		// cl
+		s32 v5;		// eax
+		u16 v6;		// ax
+		s32 v7;		// eax
+		u8 v8;		// cl
+		u8 v9;		// cl
+		u32* v10;	// edx
 
 		v2 = *(a2 + 8);
 		if (_unitTemp != nullptr) {

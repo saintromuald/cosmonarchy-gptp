@@ -13,7 +13,7 @@
 #include "hooks\weapons\wpnspellhit.h"
 
 void killAllHangarUnits(CUnit* unit) {
-	uint32 random_value;
+	u32 random_value;
 	while (unit->carrier.inHangarCount != 0) {
 		CUnit* childInside = unit->carrier.inHangarChild;
 		unit->carrier.inHangarChild = childInside->interceptor.hangar_link.prev;
@@ -26,12 +26,12 @@ void killAllHangarUnits(CUnit* unit) {
 		childOutside->interceptor.parent = nullptr;
 		// Kill Stewards only (Plasma Shells will defuse anyway)
 		if (childOutside->id != UnitId::ProtossPlasmaShell) {
-			uint16 randomDeathTimer;
+			u16 randomDeathTimer;
 			// TODO: Remove RNG, make farthest Stewards detonate first
 			// hardcoded RNG management
 			if (*IS_IN_GAME_LOOP) {
-				static uint32* randomnessCounter_0051C6AC = (uint32*)0x0051C6AC;
-				static uint32* randomnessCounter_0051CA18 = (uint32*)0x0051CA18;
+				static u32* randomnessCounter_0051C6AC = (u32*)0x0051C6AC;
+				static u32* randomnessCounter_0051CA18 = (u32*)0x0051CA18;
 				*randomnessCounter_0051C6AC = *randomnessCounter_0051C6AC + 1;
 				*randomnessCounter_0051CA18 = *randomnessCounter_0051CA18 + 1;
 				*lastRandomNumber = (*lastRandomNumber * 0x015A4E35) + 1;
@@ -108,7 +108,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 
 	// Vassal Terminal Surge behavior
 	if (unit->id == UnitId::ProtossVassal) {
-		uint32 range = 5 * 32;
+		u32 range = 5 * 32;
 		scbw::UnitFinder(
 			unit->getX() - range,
 			unit->getY() - range,
@@ -125,7 +125,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 
 	// Apostle Last Breath behavior
 	{
-		uint32 range = 4 * 32;
+		u32 range = 4 * 32;
 		scbw::UnitFinder(
 			unit->getX() - range,
 			unit->getY() - range,
@@ -153,12 +153,12 @@ void unitDestructorSpecialHook(CUnit* unit) {
 
 	// Parasite - spawn broodlings on death
 	if (unit->parasiteFlags != 0) {
-		uint32 supplyCount = scbw::getBroodlingCountFromSupply(unit);
-		uint16 type = UnitId::ZergBroodling;
+		u32 supplyCount = scbw::getBroodlingCountFromSupply(unit);
+		u16 type = UnitId::ZergBroodling;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Flyer) {
 			type = UnitId::ZergBroodlisk;
 		}
-		for (uint32 player = 0; player < PLAYER_COUNT; player++) {
+		for (u32 player = 0; player < PLAYER_COUNT; player++) {
 			if (unit->parasiteFlags & (1 << player) && scbw::get_generic_timer(unit, ValueId::ParasiteArmTimer) <= 1) {
 				scbw::createUnitFromAbility(type, supplyCount, player, unit->position.x, unit->position.y, 720);
 			}
@@ -175,7 +175,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 		coords.top = unit->position.y - 48;
 		coords.right = unit->position.x + 48;
 		helper::IterateUnitsAtLocationTargetProc_Plague(unit, &coords);
-		uint32 range = 48;
+		u32 range = 48;
 		scbw::UnitFinder(
 			unit->getX() - range,
 			unit->getY() - range,

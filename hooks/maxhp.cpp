@@ -38,28 +38,28 @@
 */
 
 namespace hooks {
-	uint32 maxhp(int id, int playerId) {
-		uint32 result = units_dat::MaxHitPoints[id];
+	u32 maxhp(s32 id, s32 playerId) {
+		u32 result = units_dat::MaxHitPoints[id];
 		//if (id==UnitId::firebat && scbw::getUpgradeLevel(playerId, UpgradeId::Heatshield)) {
 		//	result += 15 * 256;
 		//}
 		return result;
 	}
 
-	uint32 maxshields(int id, int playerId) {
-		uint32 result = units_dat::MaxShieldPoints[id];
+	u32 maxshields(s32 id, s32 playerId) {
+		u32 result = units_dat::MaxShieldPoints[id];
 		//if (units_dat::BaseProperty[id] & UnitProperty::RoboticUnit && scbw::getUpgradeLevel(playerId, UpgradeId::Autovitality)) {
 		//	result += result / 2;
 		//}
 		return result;
 	}
 
-	uint32 getTotalHitPointsPlusShields(CUnit* a1) { // 00402710
-		int v1; // eax
-		int v2; // ecx
-		int v3; // eax
+	u32 getTotalHitPointsPlusShields(CUnit* a1) { // 00402710
+		s32 v1; // eax
+		s32 v2; // ecx
+		s32 v3; // eax
 
-		v1 = (uint16)a1->id;
+		v1 = (u16)a1->id;
 		if (units_dat::ShieldsEnabled[v1])
 			v2 = units_dat::MaxShieldPoints[v1];
 		else
@@ -75,12 +75,12 @@ namespace hooks {
 
 	void drawUnitInfo(BinDlg* a1) { // 00426190
 		BinDlg* v1; // ebx
-		int16 v2; // ax
+		s16 v2; // ax
 		const char* v3; // eax
-		uint16 v4; // cx
+		u16 v4; // cx
 		const char* v5; // eax
 		BinDlg* v6; // eax
-		int v7; // [esp-8h] [ebp-10h]
+		s32 v7; // [esp-8h] [ebp-10h]
 		BufferStr* v8; // [esp-8h] [ebp-10h]
 
 		v1 = a1;
@@ -90,16 +90,16 @@ namespace hooks {
 			helper::showControlGroup(v1, -10, -13);
 			*statusScreenFunc = 15;
 		}
-		helper::addTextToDialog((int)v1, -10, 0);
-		helper::addTextToDialog((int)v1, -12, 0);
-		helper::addTextToDialog((int)v1, -13, 0);
+		helper::addTextToDialog((s32)v1, -10, 0);
+		helper::addTextToDialog((s32)v1, -12, 0);
+		helper::addTextToDialog((s32)v1, -13, 0);
 		v2 = (*activePortraitUnit)->id;
-		if ((uint16)v2 >= 0xB0u && (uint16)v2 <= 0xB2u) {
+		if ((u16)v2 >= 0xB0u && (u16)v2 <= 0xB2u) {
 			if (*statTxtTbl > 0x31Bu)
 				v3 = (char*)statTxtTbl + statTxtTbl[796];
 			else
 				v3 = "";
-			v7 = (uint16)(*activePortraitUnit)->building.resource.resourceAmount;
+			v7 = (u16)(*activePortraitUnit)->building.resource.resourceAmount;
 		LABEL_14:
 			sprintf_s(struct_Char->buf, 260, "%s %d", v3, v7);
 			v8 = struct_Char;
@@ -120,9 +120,9 @@ namespace hooks {
 			v5 = "";
 		v8 = (BufferStr*)v5;
 	LABEL_19:
-		helper::addTextToDialog((int)v1, -11, (int)v8);
+		helper::addTextToDialog((s32)v1, -11, (s32)v8);
 		if (units_dat::ShieldsEnabled[(*activePortraitUnit)->id]) {
-			helper::drawShieldUpgrade((int)v1, 0);
+			helper::drawShieldUpgrade((s32)v1, 0);
 		} else {
 			if (v1->controlType)
 				v1 = *(BinDlg**)&v1->parent;
@@ -141,33 +141,33 @@ namespace hooks {
 		}
 	}
 
-	void drawSupplyUnitInfo(int a1) { // 00427540
+	void drawSupplyUnitInfo(s32 a1) { // 00427540
 		BinDlg* v1; // ebx
 		CUnit* v2; // esi
 		GroupFlag v3; // al
-		uint8 v4; // cl
-		int v5; // edx
-		int16 v6; // ax
+		u8 v4; // cl
+		s32 v5; // edx
+		s16 v6; // ax
 		const char* v7; // ecx
-		int16 v8; // ax
+		s16 v8; // ax
 		const char* v9; // esi
-		uint16 v10; // ax
-		int v11; // ecx
+		u16 v10; // ax
+		s32 v11; // ecx
 		const char* v12; // esi
-		int v13; // eax
+		s32 v13; // eax
 		GroupFlag v14; // al
-		int v15; // ecx
-		int16 v16; // ax
+		s32 v15; // ecx
+		s16 v16; // ax
 		const char* v17; // eax
-		uint16 v18; // ax
+		u16 v18; // ax
 		BinDlg* v19; // eax
-		int v20; // [esp+0h] [ebp-8h]
-		uint8 v21; // [esp+7h] [ebp-1h]
-		uint8 v22; // [esp+7h] [ebp-1h]
+		s32 v20; // [esp+0h] [ebp-8h]
+		u8 v21; // [esp+7h] [ebp-1h]
+		u8 v22; // [esp+7h] [ebp-1h]
 
 		v1 = (BinDlg*)a1;
 		v2 = *activePortraitUnit;
-		if (IS_IN_REPLAY || (uint8)(*activePortraitUnit)->playerId == *LOCAL_NATION_ID) {
+		if (IS_IN_REPLAY || (u8)(*activePortraitUnit)->playerId == *LOCAL_NATION_ID) {
 			helper::getSuppliesUsed();
 			if (*statusScreenFunc != 12) {
 				helper::hideOptionalStatusScreenControls(v1);
@@ -175,7 +175,7 @@ namespace hooks {
 				v2 = *activePortraitUnit;
 				*statusScreenFunc = 12;
 			}
-			v3 = units_dat::GroupFlags[(uint16)v2->id];
+			v3 = units_dat::GroupFlags[(u16)v2->id];
 			if (v3.isZerg) {
 				v21 = 0;
 			} else if (v3.isProtoss) {
@@ -218,9 +218,9 @@ namespace hooks {
 			v11 = v20 + 66353;
 			if (v21 == -818) {
 				v12 = 0;
-			} else if ((uint16)v11 < *statTxtTbl) {
-				v11 = (uint16)v11;
-				v12 = (char*)statTxtTbl + statTxtTbl[(uint16)v11 + 1];
+			} else if ((u16)v11 < *statTxtTbl) {
+				v11 = (u16)v11;
+				v12 = (char*)statTxtTbl + statTxtTbl[(u16)v11 + 1];
 			} else {
 				v12 = "";
 			}
@@ -229,7 +229,7 @@ namespace hooks {
 			sprintf_s(unkString_Char, 260, "%s %d", v12, (v13 + 1) / 2);
 			v22 = (*activePortraitUnit)->playerId;
 			v14 = units_dat::GroupFlags[helper::getLastQueueSlotType((*activePortraitUnit))];
-			int race = (*activePortraitUnit)->getRace();
+			s32 race = (*activePortraitUnit)->getRace();
 			if (v14.isZerg) {
 				v15 = raceSupply[RaceId::Zerg].max[v22];
 			} else if (v14.isTerran) {
@@ -240,21 +240,21 @@ namespace hooks {
 				v15 = 0;
 			}
 			v16 = v20 + 823;
-			if ((int16)v20 == -824) {
+			if ((s16)v20 == -824) {
 				v17 = 0;
 			} else if (v16 < *statTxtTbl) {
 				v17 = (char*)statTxtTbl + statTxtTbl[v16 + 1];
 			} else {
 				v17 = "";
 			}
-			sprintf_s(struct_Char2->buf, 260, "%s %d", v17, (unsigned int)(v15 + 1) >> 1);
-			helper::addTextToDialog((int)v1, -10, (int)struct_Char);
-			helper::addTextToDialog((int)v1, -11, (int)"");
-			helper::addTextToDialog((int)v1, -12, (int)unkString_Char);
-			helper::addTextToDialog((int)v1, -13, (int)struct_Char2);
+			sprintf_s(struct_Char2->buf, 260, "%s %d", v17, (u32)(v15 + 1) >> 1);
+			helper::addTextToDialog((s32)v1, -10, (s32)struct_Char);
+			helper::addTextToDialog((s32)v1, -11, (s32)"");
+			helper::addTextToDialog((s32)v1, -12, (s32)unkString_Char);
+			helper::addTextToDialog((s32)v1, -13, (s32)struct_Char2);
 			v18 = (*activePortraitUnit)->id;
 			if (units_dat::ShieldsEnabled[v18]) {
-				helper::drawShieldUpgrade((int)v1, 0);
+				helper::drawShieldUpgrade((s32)v1, 0);
 			} else if (v18 != UnitId::ZergOvileth && v18 != UnitId::Hero_Yggdrasill) {
 				if (v1->controlType)
 					v1 = *(BinDlg**)&v1->parent;
@@ -271,7 +271,7 @@ namespace hooks {
 				}
 				helper::hideDialog(v19);
 			} else {
-				helper::drawArmor((int)v1, v18, 0);
+				helper::drawArmor((s32)v1, v18, 0);
 			}
 		} else {
 		helper::unitStatAct_Standard((void*)a1);
@@ -279,10 +279,10 @@ namespace hooks {
 	}
 
 	bool AI_TargetEnemyProc(CUnit* a1, CUnit* a2) { // 00440A20
-		int8 v2; // dl
-		int8 v3; // bl
-		int v4; // eax
-		int8 result; // eax
+		s8 v2; // dl
+		s8 v3; // bl
+		s32 v4; // eax
+		s8 result; // eax
 
 		result = 0;
 		if (a1 != a2) {
@@ -300,12 +300,12 @@ namespace hooks {
 	void drawBuildingInfo(void* dlg) { // 00427890
 		CUnit* v1; // esi
 		BinDlg* v2; // edi
-		int v3; // edx
-		int v4; // ebx
-		int v5; // eax
-		int v6; // eax
+		s32 v3; // edx
+		s32 v4; // ebx
+		s32 v5; // eax
+		s32 v6; // eax
 		BinDlg* v7; // eax
-		int v8; // eax
+		s32 v8; // eax
 
 		v1 = *activePortraitUnit;
 		selectionGroupHP[0] = (*activePortraitUnit)->hitPoints;
@@ -316,16 +316,16 @@ namespace hooks {
 		*redrawTransportUI = helper::needRedrawUI();
 		helper::genericStatusUpdateDrawnValues();
 		ByteOperations::SetLowWord(v4, v1->id);
-		if ((uint16)v4 >= 0xB0u && (uint16)v4 <= 0xB2u || (int16)v4 == 188)
+		if ((u16)v4 >= 0xB0u && (u16)v4 <= 0xB2u || (s16)v4 == 188)
 			goto LABEL_35;
-		if (!IS_IN_REPLAY && (uint8)v1->id != *LOCAL_NATION_ID)
+		if (!IS_IN_REPLAY && (u8)v1->id != *LOCAL_NATION_ID)
 			goto LABEL_6;
 		if (!(v1->status & 1)) {
-			helper::drawProgressBar((int)v2);
+			helper::drawProgressBar((s32)v2);
 			goto LABEL_32;
 		}
-		if ((int16)v4 == 108) {
-			helper::drawNukeSiloInfo((int)v2);
+		if ((s16)v4 == 108) {
+			helper::drawNukeSiloInfo((s32)v2);
 			goto LABEL_32;
 		}
 		if (helper::unitIsActiveTransport(v1))
@@ -336,20 +336,20 @@ namespace hooks {
 			goto LABEL_32;
 		}
 		if (helper::isConstructingAddon(v1) || helper::isAttemptingProtossBuild(v1)) {
-			helper::drawAddonProgress((int)v2);
+			helper::drawAddonProgress((s32)v2);
 			goto LABEL_32;
 		}
 		if (v1->building.techType != 44) {
-			helper::drawTechProgress((int)v2);
+			helper::drawTechProgress((s32)v2);
 			goto LABEL_32;
 		}
 		if (v1->building.upgradeType != 61) {
 			helper::drawUpgradeProgress(v2);
 			goto LABEL_32;
 		}
-		v4 = (uint16)v4;
-		if (units_dat::SupplyProvided[(uint16)v4]) {
-			drawSupplyUnitInfo((int)v2);
+		v4 = (u16)v4;
+		if (units_dat::SupplyProvided[(u16)v4]) {
+			drawSupplyUnitInfo((s32)v2);
 			goto LABEL_32;
 		}
 		ByteOperations::SetLowByte(v6, helper::unitIsGeyser(v1));
@@ -373,24 +373,24 @@ namespace hooks {
 			helper::showControlGroup(v2, -20, 12);
 			*statusScreenFunc = 3;
 		}
-		helper::drawDisplayButtons((int)v2);
+		helper::drawDisplayButtons((s32)v2);
 		v7 = helper::getControlFromIndex(v2, -21);
 		helper::hideDialog(v7);
 	LABEL_32:
-		helper::setTextStr((int)v2);
-		helper::setUnitStatusStrText((int)v2);
+		helper::setTextStr((s32)v2);
+		helper::setUnitStatusStrText((s32)v2);
 		v8 = helper::unitGetName(*activePortraitUnit);
-		helper::addTextToDialog((int)v2, -5, v8);
+		helper::addTextToDialog((s32)v2, -5, v8);
 	}
 
-	int calcUnitStrength(int a1, uint8 a2) { // 00431270
-		int v2; // ecx
+	s32 calcUnitStrength(s32 a1, u8 a2) { // 00431270
+		s32 v2; // ecx
 		unsigned _int64 v3; // rax
-		int v4; // ebx
-		uint32 v5; // esi
-		int v6; // edi
-		int v7; // eax
-		int totalHits; // [esp+0h] [ebp-4h]
+		s32 v4; // ebx
+		u32 v5; // esi
+		s32 v6; // edi
+		s32 v7; // eax
+		s32 totalHits; // [esp+0h] [ebp-4h]
 
 		if (units_dat::ShieldsEnabled[a1]) {
 			v2 = units_dat::MaxShieldPoints[a1];
@@ -400,16 +400,16 @@ namespace hooks {
 
 		totalHits = v2 + (units_dat::MaxHitPoints[a1] >> 8);
 		if (totalHits) {
-			v4 = (uint8)weapons_dat::DamageFactor[a2];
+			v4 = (u8)weapons_dat::DamageFactor[a2];
 			v5 = weapons_dat::Cooldown[a2];
 			v6 = weapons_dat::DamageAmount[a2];
 			if (a2 == -126) {
 				v7 = 0;
 			} else {
-				v7 = (v6 * v4 << 11) / (int32)v5;
+				v7 = (v6 * v4 << 11) / (s32)v5;
 			}
-			v3 = (unsigned _int64)(sqrt((double)(v6 * v4 * (weapons_dat::MaxRange[a2] / v5)
-				+ ((uint32)(totalHits * v7) >> 8)))
+			v3 = (unsigned _int64)(sqrt((f64)(v6 * v4 * (weapons_dat::MaxRange[a2] / v5)
+				+ ((u32)(totalHits * v7) >> 8)))
 				* 7.58);
 		} else {
 			v3 = 0;
@@ -417,17 +417,17 @@ namespace hooks {
 		return v3;
 	}
 
-	uint32 getUnitStrengthHook(CUnit* a1, int a2, bool a3) { // 00431800
+	u32 getUnitStrengthHook(CUnit* a1, s32 a2, bool a3) { // 00431800
 		CUnit* v3; // edi
-		int v4; // esi
-		int v5; // ebx
-		int v7; // ebx
-		int v8; // esi
-		uint32 v9; // ecx
-		int groundAir; // [esp+10h] [ebp+8h]
+		s32 v4; // esi
+		s32 v5; // ebx
+		s32 v7; // ebx
+		s32 v8; // esi
+		u32 v9; // ecx
+		s32 groundAir; // [esp+10h] [ebp+8h]
 
 		v3 = a1;
-		v4 = (uint16)a1->id;
+		v4 = (u16)a1->id;
 		if (v4 == UnitId::ZergLarva || v4 == UnitId::ZergEgg || v4 == UnitId::ZergCocoon)
 			return 0;
 		if (a1->status & UnitStatus::IsHallucination) {
@@ -449,13 +449,13 @@ namespace hooks {
 
 	bool AI_RestorationRequirementsProc(CUnit* a1, CUnit* a2) { // 004407E0
 		CUnit* v2; // edx
-		int v3; // eax
+		s32 v3; // eax
 		bool result; // eax
 
 		result = 0;
 		if (a1->playerId == a2->playerId) {
 			if (helper::canWeaponTargetUnit(WeaponId::Restoration, a1, a2)) {
-				v3 = units_dat::ShieldsEnabled[(uint16)v2->id] ? v2->shields >> 8 : 0;
+				v3 = units_dat::ShieldsEnabled[(u16)v2->id] ? v2->shields >> 8 : 0;
 				if (v3 + ((v2->hitPoints + 255) >> 8) > 60
 					&& scbw::isDebuffed(v2)) {
 					result = 1;
@@ -469,13 +469,13 @@ namespace hooks {
 		CUnit* v2; // esi
 		CUnit* v3; // edi
 		CSprite* v5; // edx
-		int16 v6; // cx
-		int16 spriteX;
+		s16 v6; // cx
+		s16 spriteX;
 
 		v2 = a1;
 		v3 = a2;
 		if (!helper::AI_TargetUnitIsWorthHitting(a1, a2)
-			|| !units_dat::ShieldsEnabled[(uint16)v2->id]
+			|| !units_dat::ShieldsEnabled[(u16)v2->id]
 			|| !helper::canWeaponTargetUnit(WeaponId::EMP_Shockwave, v2, v3)) {
 			return 0;
 		}
@@ -488,13 +488,13 @@ namespace hooks {
 			160,
 			spriteX,
 			v6,
-			(int(__fastcall*)(int, int))helper::unitShieldsClumpInAreaAccumulatorProc,
-			(int)v3);
+			(s32(__fastcall*)(s32, s32))helper::unitShieldsClumpInAreaAccumulatorProc,
+			(s32)v3);
 		return *tempHPShields >= 200;
 	}
 
-	char attackOverlayAndNotify(CUnit* a1, CUnit* a2, uint8 a3, char a4) { // 00479730
-		int32* v4; // eax
+	char attackOverlayAndNotify(CUnit* a1, CUnit* a2, u8 a3, char a4) { // 00479730
+		s32* v4; // eax
 		CUnit* v5; // ebx
 		char returnValue = 0;
 
@@ -507,7 +507,7 @@ namespace hooks {
 					if (a3 != WeaponId::Irradiate && v5->playerId != a2->playerId)
 						helper::doAttackNotifyEvent(v5);
 				}
-				if (units_dat::ShieldsEnabled[(uint16)v5->id]) {
+				if (units_dat::ShieldsEnabled[(u16)v5->id]) {
 					if (v5->shields >= 256) {
 						*v4 = a3;
 						if (weapons_dat::DamageType[a3]) {
@@ -520,46 +520,46 @@ namespace hooks {
 		return returnValue;
 	}
 
-	void drawImageHPBar(int screenX, int screenY, GrpFrame* pFrame, Box32* grpRect, int colorData) { // 0047A820
-		int v5; // esi
-		int v6; // edi
+	void drawImageHPBar(s32 screenX, s32 screenY, GrpFrame* pFrame, Box32* grpRect, s32 colorData) { // 0047A820
+		s32 v5; // esi
+		s32 v6; // edi
 		char v7; // cl
-		int v8; // eax
-		int v9; // ecx
-		int v10; // eax
+		s32 v8; // eax
+		s32 v9; // ecx
+		s32 v10; // eax
 		unk_61* v11; // ecx
-		int v12; // edx
-		uint8 v13; // dl
-		int v14; // eax
-		int v15; // ecx
-		int v16; // ebx
+		s32 v12; // edx
+		u8 v13; // dl
+		s32 v14; // eax
+		s32 v15; // ecx
+		s32 v16; // ebx
 		unk_62* v17; // eax
-		int v18; // ecx
-		uint16 v19; // di
-		int v20; // ebx
-		uint16 v21; // ax
-		int v22; // ebx
-		int v23; // edi
-		signed int v24; // ecx
-		uint16 v25; // ax
-		int v26; // eax
-		int v27; // ebx
-		int v28; // edx
+		s32 v18; // ecx
+		u16 v19; // di
+		s32 v20; // ebx
+		u16 v21; // ax
+		s32 v22; // ebx
+		s32 v23; // edi
+		s32 v24; // ecx
+		u16 v25; // ax
+		s32 v26; // eax
+		s32 v27; // ebx
+		s32 v28; // edx
 		bool v29; // zf
-		int v30; // eax
+		s32 v30; // eax
 		unk_61* v31; // ecx
-		int v32; // edx
-		int v33; // [esp+Ch] [ebp-1Ch]
-		int v34; // [esp+10h] [ebp-18h]
-		int v35; // [esp+14h] [ebp-14h]
-		int v36; // [esp+18h] [ebp-10h]
-		int v37; // [esp+1Ch] [ebp-Ch]
-		int v38; // [esp+20h] [ebp-8h]
-		int v39; // [esp+24h] [ebp-4h]
+		s32 v32; // edx
+		s32 v33; // [esp+Ch] [ebp-1Ch]
+		s32 v34; // [esp+10h] [ebp-18h]
+		s32 v35; // [esp+14h] [ebp-14h]
+		s32 v36; // [esp+18h] [ebp-10h]
+		s32 v37; // [esp+1Ch] [ebp-Ch]
+		s32 v38; // [esp+20h] [ebp-8h]
+		s32 v39; // [esp+24h] [ebp-4h]
 
 		v37 = screenX;
 		v5 = colorData;
-		v6 = *(uint16*)(colorData + 100);
+		v6 = *(u16*)(colorData + 100);
 		v33 = grpRect->left;
 		v34 = grpRect->top;
 		v7 = units_dat::ShieldsEnabled[v6];
@@ -570,30 +570,30 @@ namespace hooks {
 			v36 = 7;
 			if (v8 <= 7)
 				v36 = v8;
-			v13 = sprites_dat::IsVisible[*(uint16*)(*(int*)(colorData + 12) + 8) + 390];
+			v13 = sprites_dat::IsVisible[*(u16*)(*(s32*)(colorData + 12) + 8) + 390];
 			v14 = units_dat::MaxHitPoints[v6] >> 8;
-			ByteOperations::SetHighByte(colorData, sprites_dat::IsVisible[*(uint16*)(*(int*)(colorData + 12) + 8) + 390]);
+			ByteOperations::SetHighByte(colorData, sprites_dat::IsVisible[*(u16*)(*(s32*)(colorData + 12) + 8) + 390]);
 			if (v14) {
 				v15 = v14;
 			} else {
-				v15 = (*(int*)(v5 + 8) + 255) >> 8;
+				v15 = (*(s32*)(v5 + 8) + 255) >> 8;
 				if (!v15)
 					v15 = 1;
 			}
-			v16 = helper::unk_billions((*(int*)(v5 + 8) + 255) >> 8, v15, (int)&v39, v13);
-			helper::unk_billions2(*(int*)(v5 + 96) >> 8, units_dat::MaxShieldPoints[v6], (int)&colorData, HIBYTE(colorData));
+			v16 = helper::unk_billions((*(s32*)(v5 + 8) + 255) >> 8, v15, (s32)&v39, v13);
+			helper::unk_billions2(*(s32*)(v5 + 96) >> 8, units_dat::MaxShieldPoints[v6], (s32)&colorData, HIBYTE(colorData));
 			v17 = struct_5140E8;
-			if (v16 < (uint8)(*struct_5140E8).anonymous_0) {
+			if (v16 < (u8)(*struct_5140E8).anonymous_0) {
 				do {
-					v18 = (uint8)v17[1].anonymous_0;
+					v18 = (u8)v17[1].anonymous_0;
 					++v17;
 				} while (v16 < v18);
 			}
 			v19 = v38;
 			v20 = v37;
-			helper::hpBarSurfaceBuffer(v37, v38, &v33, v39, (int)v17);
-			helper::hpBarSurfaceBuffer2(colorData, v20, v19, (int)&v33);
-			ByteOperations::SetHighByte(colorData, (uint8)8);
+			helper::hpBarSurfaceBuffer(v37, v38, &v33, v39, (s32)v17);
+			helper::hpBarSurfaceBuffer2(colorData, v20, v19, (s32)&v33);
+			ByteOperations::SetHighByte(colorData, (u8)8);
 		} else {
 			v36 = 5;
 			if (v8 <= 5)
@@ -601,31 +601,31 @@ namespace hooks {
 			if (units_dat::MaxHitPoints[v6] >> 8) {
 				v9 = units_dat::MaxHitPoints[v6] >> 8;
 			} else {
-				v9 = (*(int*)(colorData + 8) + 255) >> 8;
+				v9 = (*(s32*)(colorData + 8) + 255) >> 8;
 				if (!v9)
 					v9 = 1;
 			}
 			v10 = helper::unk_billions(
-				(*(int*)(colorData + 8) + 255) >> 8,
+				(*(s32*)(colorData + 8) + 255) >> 8,
 				v9,
-				(int)&v39,
-				(uint8)sprites_dat::IsVisible[*(uint16*)(*(int*)(colorData + 12) + 8) + 390]);
+				(s32)&v39,
+				(u8)sprites_dat::IsVisible[*(u16*)(*(s32*)(colorData + 12) + 8) + 390]);
 			v11 = struct_5140C4;
-			if (v10 < (uint8)(*struct_5140C4).anonymous_0) {
+			if (v10 < (u8)(*struct_5140C4).anonymous_0) {
 				do {
-					v12 = (uint8)v11[1].anonymous_0;
+					v12 = (u8)v11[1].anonymous_0;
 					++v11;
 				} while (v10 < v12);
 			}
-			helper::renderHPBar(v37, v38, &v33, v39, (int)v11);
+			helper::renderHPBar(v37, v38, &v33, v39, (s32)v11);
 			ByteOperations::SetHighByte(colorData, 6);
 		}
-		v21 = *(int16*)(v5 + 100);
+		v21 = *(s16*)(v5 + 100);
 		v22 = units_dat::BaseProperty[v21] & UnitProperty::Spellcaster;
-		if (v22 && (v23 = (*(int*)(v5 + 220) >> 30) & 1) == 0
-			|| (v23 = (*(int*)(v5 + 220) >> 30) & 1) != 0
+		if (v22 && (v23 = (*(s32*)(v5 + 220) >> 30) & 1) == 0
+			|| (v23 = (*(s32*)(v5 + 220) >> 30) & 1) != 0
 			|| v21 == 40) {
-			if (*(uint8*)(v5 + 76) == *LOCAL_NATION_ID) {
+			if (*(u8*)(v5 + 76) == *LOCAL_NATION_ID) {
 				if (v22) {
 					if (!v23) {
 						v24 = helper::getUnitMaxEnergy((CUnit*)v5) >> 8;
@@ -640,9 +640,9 @@ namespace hooks {
 				v24 = v25;
 			LABEL_32:
 				if (!v22 || v23)
-					v26 = *(uint16*)(v5 + 272);
+					v26 = *(u16*)(v5 + 272);
 				else
-					v26 = *(uint8*)(v5 + 163);
+					v26 = *(u8*)(v5 + 163);
 				v27 = HIBYTE(colorData);
 				v28 = grpRect->bottom - HIBYTE(colorData);
 				v29 = grpRect->bottom == HIBYTE(colorData);
@@ -652,16 +652,16 @@ namespace hooks {
 					v30 = helper::getHpBarDrawSizes(
 						v26,
 						v24,
-						(int)&v39,
-						(uint8)sprites_dat::IsVisible[*(uint16*)(*(int*)(v5 + 12) + 8) + 390]);
+						(s32)&v39,
+						(u8)sprites_dat::IsVisible[*(u16*)(*(s32*)(v5 + 12) + 8) + 390]);
 					v31 = struct_5140D8;
-					if (v30 < (uint8)(*struct_5140D8).anonymous_0) {
+					if (v30 < (u8)(*struct_5140D8).anonymous_0) {
 						do {
-							v32 = (uint8)v31[1].anonymous_0;
+							v32 = (u8)v31[1].anonymous_0;
 							++v31;
 						} while (v30 < v32);
 					}
-					helper::renderHPBar(v37, v38 + v27, &v33, v39, (int)v31);
+					helper::renderHPBar(v37, v38 + v27, &v33, v39, (s32)v31);
 				}
 				return;
 			}
@@ -669,47 +669,47 @@ namespace hooks {
 	}
 
 	void setBuildShieldGain(CUnit* a1) { // 0047B6A0
-		int _type; // edi
-		uint16 v2; // dx
-		int v3; // ecx
-		uint32 v4; // edx
-		uint32 v5; // eax
+		s32 _type; // edi
+		u16 v2; // dx
+		s32 v3; // ecx
+		u32 v4; // edx
+		u32 v5; // eax
 
-		_type = (uint16)a1->id;
+		_type = (u16)a1->id;
 		if (units_dat::ShieldsEnabled[_type]) {
 			if (a1->status & UnitStatus::GroundedBuilding) {
-				v4 = (int32)((unsigned __int64)(1717986919i64 * (units_dat::MaxShieldPoints[_type] << 8)) >> 0x20) >> 2;
+				v4 = (s32)((unsigned __int64)(1717986919i64 * (units_dat::MaxShieldPoints[_type] << 8)) >> 0x20) >> 2;
 				v3 = v4 + (v4 >> 31);
 				a1->shields = v3;
 				v2 = units_dat::TimeCost[_type];
 				if (!v2
-					|| (v5 = (((uint32)units_dat::MaxShieldPoints[_type] << 8) - v3) / v2, (a1->buildRepairHpGain = v5) == 0)) {
+					|| (v5 = (((u32)units_dat::MaxShieldPoints[_type] << 8) - v3) / v2, (a1->buildRepairHpGain = v5) == 0)) {
 					a1->buildRepairHpGain = 1;
 				}
 			}
 		}
 	}
 
-	int getUnitBulletDamage(CUnit* victim, CBullet* bullet) { // 0048ACD0
-		int v2; // edi
+	s32 getUnitBulletDamage(CUnit* victim, CBullet* bullet) { // 0048ACD0
+		s32 v2; // edi
 		CUnit* v3; // esi
-		int v4; // eax
-		int v5; // eax
+		s32 v4; // eax
+		s32 v5; // eax
 		unsigned __int16 v6; // cx
-		int v7; // esi
-		int8 v8; // cl
-		int result; // eax
-		int v10; // eax
-		int unitType; // ecx
-		signed int v12; // eax
-		int v13; // ecx
-		signed int v14; // eax
-		int v15; // eax
+		s32 v7; // esi
+		s8 v8; // cl
+		s32 result; // eax
+		s32 v10; // eax
+		s32 unitType; // ecx
+		s32 v12; // eax
+		s32 v13; // ecx
+		s32 v14; // eax
+		s32 v15; // eax
 
-		v2 = (uint8)bullet->weaponType;
+		v2 = (u8)bullet->weaponType;
 		v3 = victim;
 		if (weapons_dat::ExplosionType[v2] == WeaponEffect::NuclearMissile) {
-			unitType = (uint16)victim->id;
+			unitType = (u16)victim->id;
 			v10 = units_dat::MaxHitPoints[unitType];
 			if (units_dat::ShieldsEnabled[unitType]) {
 				v12 = v10 >> 8;
@@ -733,11 +733,11 @@ namespace hooks {
 				v15 = 500;
 			result = v15 << 8;
 		} else {
-			v5 = (uint8)bullet->weaponType;
+			v5 = (u8)bullet->weaponType;
 			v6 = weapons_dat::DamageUpgrade[v5];
 			v7 = weapons_dat::DamageAmount[v5];
-			v4 = (uint8)bullet->srcPlayer;
-			if (v6 >= (uint16)BwUpgrade::UnusedUpgrade46)
+			v4 = (u8)bullet->srcPlayer;
+			if (v6 >= (u16)BwUpgrade::UnusedUpgrade46)
 				/*v8 = upgradesLevelBW[v4][v6];
 			else
 				v8 = upgradesLevelSC[v4][v6];*/
@@ -746,17 +746,17 @@ namespace hooks {
 		return result;
 	}
 
-	int32 canCastSpell(CUnit* a1) { // 00492140
-		uint8 v1; // al
-		int v2; // ebx
+	s32 canCastSpell(CUnit* a1) { // 00492140
+		u8 v1; // al
+		s32 v2; // ebx
 		CUnit* v3; // esi
-		signed int result; // eax
-		int v5; // eax
-		int v6; // eax
+		s32 result; // eax
+		s32 v5; // eax
+		s32 v6; // eax
 		bool v7; // eax
-		int16 v8; // [esp+8h] [ebp-Ch]
-		int16 v9; // [esp+Ch] [ebp-8h]
-		uint8 v10; // [esp+13h] [ebp-1h]
+		s16 v8; // [esp+8h] [ebp-Ch]
+		s16 v9; // [esp+Ch] [ebp-8h]
+		u8 v10; // [esp+13h] [ebp-1h]
 
 		v1 = a1->mainOrderId;
 		v2 = v1;
@@ -784,7 +784,7 @@ namespace hooks {
 						if (HIBYTE(v3->energy) >= 0x64u)
 							goto LABEL_23;
 					}
-					if (units_dat::ShieldsEnabled[(uint16)v3->id] && (int32)(v3->shields & 0xFFFFFF00) >= 25600)
+					if (units_dat::ShieldsEnabled[(u16)v3->id] && (s32)(v3->shields & 0xFFFFFF00) >= 25600)
 						goto LABEL_23;
 				LABEL_17:
 					result = 1;
@@ -814,9 +814,9 @@ namespace hooks {
 					return 1;
 			} else {
 				ByteOperations::SetLowByte(v6, orders_dat::TechUsed[v2]);
-				if ((uint8)v6 < (uint8)TechId::None) {
-					v6 = (uint8)v6;
-					switch ((uint8)v6) {
+				if ((u8)v6 < (u8)TechId::None) {
+					v6 = (u8)v6;
+					switch ((u8)v6) {
 						case TechId::EMPShockwave:
 						case TechId::ScannerSweep:
 						case TechId::DarkSwarm:
@@ -829,12 +829,12 @@ namespace hooks {
 						case TechId::Maelstrom:
 							break;
 						default:
-							if ((uint8)v6 == TechId::SpiderMines) {
+							if ((u8)v6 == TechId::SpiderMines) {
 								ByteOperations::SetLowByte(v7, helper::getActiveTileFlag(v8, v9, 0x410000, 0));
 							} else {
 								if (!v3 || v3->status & 0x4000000)
 									goto LABEL_17;
-								v7 = (uint16)helper::getTargetUnitAbilityErrorStatString(v3, a1->playerId, v6) == 0;
+								v7 = (u16)helper::getTargetUnitAbilityErrorStatString(v3, a1->playerId, v6) == 0;
 							}
 							if (!v7)
 								goto LABEL_17;
@@ -847,88 +847,88 @@ namespace hooks {
 		return result;
 	}
 
-	int32 modifyUnitShields(int a1, int a2) { // 004C5A20
-		int v3; // eax
-		signed int v4; // ecx
+	s32 modifyUnitShields(s32 a1, s32 a2) { // 004C5A20
+		s32 v3; // eax
+		s32 v4; // ecx
 
 		if (!a1) {
 			helper::SErrSetLastError(87);
 			return 0;
 		}
-		v3 = *(uint16*)(a1 + 100);
+		v3 = *(u16*)(a1 + 100);
 		if (!units_dat::ShieldsEnabled[v3])
 			return 0;
 		v4 = units_dat::MaxShieldPoints[v3];
-		if (v4 >= (int32)(a2 * v4 / 0x64u))
-			v4 = a2 * (uint32)units_dat::MaxShieldPoints[v3] / 0x64;
-		*(int*)(a1 + 96) = v4 << 8;
+		if (v4 >= (s32)(a2 * v4 / 0x64u))
+			v4 = a2 * (u32)units_dat::MaxShieldPoints[v3] / 0x64;
+		*(s32*)(a1 + 96) = v4 << 8;
 		return 1;
 	}
 
-	void compileHealthBar(int a1, int a2) { // 004D6010
-		int v2; // eax
+	void compileHealthBar(s32 a1, s32 a2) { // 004D6010
+		s32 v2; // eax
 		CUnit* v3; // edi
-		uint8 v4; // cl
-		int v5; // eax
-		uint16 v6; // ax
-		int v7; // eax
+		u8 v4; // cl
+		s32 v5; // eax
+		u16 v6; // ax
+		s32 v7; // eax
 		char v8; // cl
 		char v9; // cl
-		int32* v10; // edx
+		s32* v10; // edx
 
-		v2 = *(uint16*)(a2 + 8);
-		v3 = activePlayerSelection->unit[*(uint8*)(a2 + 11)];
+		v2 = *(u16*)(a2 + 8);
+		v3 = activePlayerSelection->unit[*(u8*)(a2 + 11)];
 		v4 = sprites_dat::IsVisible[v2 + 390];
-		*(int8*)(a1 + 15) = sprites_dat::HpBarSize[v2 + 262]
-			+ (imageGrpGraphics[(uint8)orders_dat::Unused3[v2 + 62] + 561]->frames[0].height >> 1)
+		*(s8*)(a1 + 15) = sprites_dat::HpBarSize[v2 + 262]
+			+ (imageGrpGraphics[(u8)orders_dat::Unused3[v2 + 62] + 561]->frames[0].height >> 1)
 			+ 8;
-		*(int8*)(*(int32*)(a1 + 44) + 6) = 0;
-		*(int8*)(*(int32*)(a1 + 44) + 7) = 0;
-		*(int8*)(*(int32*)(a1 + 44) + 8) = v4 - (v4 - 1) % 3;
-		v5 = *(int32*)(a1 + 44);
-		if (*(int8*)(v5 + 8) < 0x13u)
-			*(int8*)(v5 + 8) = 19;
-		*(int8*)(*(int32*)(a1 + 44) + 9) = 0;
+		*(s8*)(*(s32*)(a1 + 44) + 6) = 0;
+		*(s8*)(*(s32*)(a1 + 44) + 7) = 0;
+		*(s8*)(*(s32*)(a1 + 44) + 8) = v4 - (v4 - 1) % 3;
+		v5 = *(s32*)(a1 + 44);
+		if (*(s8*)(v5 + 8) < 0x13u)
+			*(s8*)(v5 + 8) = 19;
+		*(s8*)(*(s32*)(a1 + 44) + 9) = 0;
 		v6 = v3->id;
 		if (units_dat::BaseProperty[v6] & 0x200000 && !(v3->status & 0x40000000)
 			|| v3->status & 0x40000000
 			|| v6 == 40) {
-			*(int8*)(*(int32*)(a1 + 44) + 9) += 6;
+			*(s8*)(*(s32*)(a1 + 44) + 9) += 6;
 		}
-		v7 = *(int32*)(a1 + 44);
-		v8 = *(int8*)(v7 + 9);
+		v7 = *(s32*)(a1 + 44);
+		v8 = *(s8*)(v7 + 9);
 		if (units_dat::ShieldsEnabled[(unsigned __int16)v3->id])
 			v9 = v8 + 7;
 		else
 			v9 = v8 + 5;
-		*(int8*)(v7 + 9) = v9;
-		*(int16*)(*(int32*)(a1 + 44) + 2) = *(unsigned __int8*)(*(int32*)(a1 + 44) + 8);
-		*(int16*)(*(int32*)(a1 + 44) + 4) = *(unsigned __int8*)(*(int32*)(a1 + 44) + 9);
-		*(int32*)(a1 + 60) = a2;
-		*(int16*)(a1 + 12) = 0;
-		v10 = (int32*)(a1 + 36);
+		*(s8*)(v7 + 9) = v9;
+		*(s16*)(*(s32*)(a1 + 44) + 2) = *(unsigned __int8*)(*(s32*)(a1 + 44) + 8);
+		*(s16*)(*(s32*)(a1 + 44) + 4) = *(unsigned __int8*)(*(s32*)(a1 + 44) + 9);
+		*(s32*)(a1 + 60) = a2;
+		*(s16*)(a1 + 12) = 0;
+		v10 = (s32*)(a1 + 36);
 		*v10 = 0;
 		v10[1] = 0;
-		// *(int32*)(a1 + 48) = v3;
+		// *(s32*)(a1 + 48) = v3;
 		helper::updateImageDrawData((CImage*)a1);
-		*(int8*)(a1 + 12) |= 1u;
+		*(s8*)(a1 + 12) |= 1u;
 		helper::playImageIscript((CImage*)a1, 0);
 	}
 
-	int32 AI_FindTransport(CUnit* a1, int a2) { // 004E6EF0
+	s32 AI_FindTransport(CUnit* a1, s32 a2) { // 004E6EF0
 		CUnit* v2; // esi
-		int32 v3; // ecx
-		uint16 v4; // ax
-		int v5; // edi
-		int v6; // eax
+		s32 v3; // ecx
+		u16 v4; // ax
+		s32 v5; // edi
+		s32 v6; // eax
 		char v7; // al
-		int16 v8; // ST16_2
-		uint32 v9; // eax
-		int32 v11; // [esp+8h] [ebp-Ch]
-		uint32 v12; // [esp+Ch] [ebp-8h]
+		s16 v8; // ST16_2
+		u32 v9; // eax
+		s32 v11; // [esp+8h] [ebp-Ch]
+		u32 v12; // [esp+Ch] [ebp-8h]
 
-		*(int32*)a2 = 0;
-		v2 = firstPlayerUnit->unit[(uint8)a1->playerId];
+		*(s32*)a2 = 0;
+		v2 = firstPlayerUnit->unit[(u8)a1->playerId];
 		v11 = 0;
 		v12 = 99999999;
 		if (!v2)
@@ -938,7 +938,7 @@ namespace hooks {
 			if (v3 & 0x40000000)
 				goto LABEL_22;
 			v4 = v2->id;
-			//			if (v4 == 42 && !upgradesLevelSC[(uint8)v2->playerId][24])
+			//			if (v4 == 42 && !upgradesLevelSC[(u8)v2->playerId][24])
 			goto LABEL_22;
 			v5 = v4;
 			if (!units_dat::SpaceProvided[v4] || !(v3 & 1) || !(v3 & 0x20000))
@@ -961,7 +961,7 @@ namespace hooks {
 								v8 == helper::SAI_GetRegionIdFromPxEx(a1->orderTarget.pt.x, a1->orderTarget.pt.y))) {
 							v9 = helper::getUnitDistanceToHalt(v2->sprite->position.y, a1, v2->sprite->position.x);
 							if (v9 < v12) {
-								//								*(int32*)a2 = v2;
+								//								*(s32*)a2 = v2;
 								v12 = v9;
 							}
 						}
@@ -973,13 +973,13 @@ namespace hooks {
 			if (!v2)
 				return v11;
 		}
-		//		*(int32*)a2 = v2;
+		//		*(s32*)a2 = v2;
 		return 1;
 	}
 
-	int32 mapDataTransfer(char a1, int a2, int a3) { // 004EAFE0
-		int v3; // eax
-		int32 result; // eax
+	s32 mapDataTransfer(char a1, s32 a2, s32 a3) { // 004EAFE0
+		s32 v3; // eax
+		s32 result; // eax
 
 		if (!a2 || !a3)
 			return 0;
@@ -1003,8 +1003,8 @@ namespace hooks {
 				result = helper::dataTransfer05(a3, a2);
 				break;
 			case 6u:
-				if (a3 == 3 && (v3 = (int)helper::vectorTransfer(*(int8*)(a2 + 2), *(int8*)(a2 + 1))) != 0) {
-					*(int8*)(v3 + 52) &= 0xFDu;
+				if (a3 == 3 && (v3 = (s32)helper::vectorTransfer(*(s8*)(a2 + 2), *(s8*)(a2 + 1))) != 0) {
+					*(s8*)(v3 + 52) &= 0xFDu;
 					helper::dataTransfer06(v3);
 					result = 1;
 				} else {

@@ -8,20 +8,20 @@
 #include <SCBW/UnitFinder.h>
 
 
-const int ATTACK_PRIORITY_GROUP_SIZE = 16;
-const int ATTACK_PRIORITY_LEVELS = 6;
+const s32 ATTACK_PRIORITY_GROUP_SIZE = 16;
+const s32 ATTACK_PRIORITY_LEVELS = 6;
 
 class AttackPriorityData {
 public:
 	CUnit* findBestTarget(CUnit* attacker) const;
 	CUnit* findRandomTarget() const;
 
-	void addTarget(CUnit* target, uint32 attackPriority);
+	void addTarget(CUnit* target, u32 attackPriority);
 	void reset();
 
 private:
 	CUnit* targets[ATTACK_PRIORITY_LEVELS][ATTACK_PRIORITY_GROUP_SIZE];
-	unsigned int targetCounts[ATTACK_PRIORITY_LEVELS];
+	u32 targetCounts[ATTACK_PRIORITY_LEVELS];
 };
 
 //Global variables (bad practice, but it's faster)
@@ -30,14 +30,14 @@ scbw::UnitFinder attackTargetFinder;
 
 //Helper function declarations
 namespace {
-	bool isTargetPosWithinAttackAngle(int32 x, int32 y, CUnit* unit, uint8 weaponId);
+	bool isTargetPosWithinAttackAngle(s32 x, s32 y, CUnit* unit, u8 weaponId);
 	bool cannotChaseTarget(CUnit* unit, CUnit* target);
 	//Returns the minimum air/ground weapon range of the @p unit, whichever is smaller.
-	uint32 getMinimumRange(CUnit* unit);
+	u32 getMinimumRange(CUnit* unit);
 
 	//Checks whether the @p target should be added to the attack priority group.
 	//Based on function @ 0x00442DA0
-	bool checkAttackableTarget(CUnit* unit, CUnit* target, uint32 seekRange, uint32 minRange = 0) {
+	bool checkAttackableTarget(CUnit* unit, CUnit* target, u32 seekRange, u32 minRange = 0) {
 		//Default StarCraft behavior
 
 		//Don't attack if the target is the unit itself.
@@ -97,7 +97,7 @@ namespace {
 namespace hooks {
 
 	//Calculates the attack priority of the @p target for the @p attacker.
-	uint32 getAttackPriorityHook(CUnit* target, CUnit* attacker) {
+	u32 getAttackPriorityHook(CUnit* target, CUnit* attacker) {
 		//Default StarCraft behavior
 
 		CUnit* actualTarget = target;
@@ -114,7 +114,7 @@ namespace hooks {
 			return 5;
 
 		//Normal units
-		uint32 attackPriority = 4;
+		u32 attackPriority = 4;
 
 		//Workers
 		if (units_dat::BaseProperty[actualTarget->id] & UnitProperty::Worker)
@@ -148,7 +148,7 @@ namespace hooks {
 		//Default StarCraft behavior
 
 		attackPriorityData.reset();
-		int seekRange = unit->getSeekRange() * 32;
+		s32 seekRange = unit->getSeekRange() * 32;
 
 		//Bunker bonus
 		if (unit->status & UnitStatus::InBuilding)
@@ -157,8 +157,8 @@ namespace hooks {
 		else if (unit->pAI)
 			seekRange = std::max(seekRange, units_dat::SightRange[unit->id] * 32);
 
-		int searchRange = seekRange + 64;
-		uint32 minRange = getMinimumRange(unit);
+		s32 searchRange = seekRange + 64;
+		u32 minRange = getMinimumRange(unit);
 		if (unit->id == UnitId::civilian) {
 			if (unit->_padding_0x132 & 0x8) {
 				searchRange = 0;
@@ -183,13 +183,13 @@ namespace hooks {
 
 		attackPriorityData.reset();
 
-		int seekRange = unit->getSeekRange() * 32;
+		s32 seekRange = unit->getSeekRange() * 32;
 
 		//Bunker bonus
 		if (unit->status & UnitStatus::InBuilding)
 			seekRange += 64;
 
-		int searchRange = seekRange + 64;
+		s32 searchRange = seekRange + 64;
 
 		attackTargetFinder.search(
 			unit->getX() - searchRange, unit->getY() - searchRange,
@@ -211,7 +211,7 @@ namespace hooks {
 CUnit* AttackPriorityData::findRandomTarget() const {
 	//Default StarCraft behavior
 
-	int priority = 0;
+	s32 priority = 0;
 	while (targetCounts[priority] == 0) {
 		++priority;
 		if (priority >= countof(targetCounts))
@@ -229,7 +229,7 @@ CUnit* AttackPriorityData::findRandomTarget() const {
 CUnit* AttackPriorityData::findBestTarget(CUnit* attacker) const {
 	//Default StarCraft behavior
 
-	int priority = 0;
+	s32 priority = 0;
 	while (targetCounts[priority] == 0) {
 		++priority;
 		if (priority >= countof(targetCounts))
@@ -244,11 +244,11 @@ CUnit* AttackPriorityData::findBestTarget(CUnit* attacker) const {
 
 	if (attacker->pAI && attacker->id == UnitId::scourge) {
 		//AI-controlled Scourges auto-target units with the most HP + shields
-		uint32 bestTargetLife = bestTarget->getCurrentLifeInGame();
+		u32 bestTargetLife = bestTarget->getCurrentLifeInGame();
 
-		for (unsigned int i = 1; i < targetCounts[priority]; ++i) {
+		for (u32 i = 1; i < targetCounts[priority]; ++i) {
 			CUnit* currentTarget = targets[priority][i];
-			const uint32 currentTargetLife = currentTarget->getCurrentLifeInGame();
+			const u32 currentTargetLife = currentTarget->getCurrentLifeInGame();
 
 			if (currentTargetLife > bestTargetLife) {
 				bestTarget = currentTarget;
@@ -257,13 +257,13 @@ CUnit* AttackPriorityData::findBestTarget(CUnit* attacker) const {
 		}
 	} else {
 		//Find the nearest target (don't use unit box sizes)
-		uint32 bestTargetDistance = scbw::getDistanceFast(
+		u32 bestTargetDistance = scbw::getDistanceFast(
 			attacker->getX(), attacker->getY(),
 			bestTarget->getX(), bestTarget->getY());
 
-		for (unsigned int i = 1; i < targetCounts[priority]; ++i) {
+		for (u32 i = 1; i < targetCounts[priority]; ++i) {
 			CUnit* currentTarget = targets[priority][i];
-			const uint32 currentTargetDistance = scbw::getDistanceFast(
+			const u32 currentTargetDistance = scbw::getDistanceFast(
 				attacker->getX(), attacker->getY(),
 				currentTarget->getX(), currentTarget->getY());
 
@@ -281,7 +281,7 @@ CUnit* AttackPriorityData::findBestTarget(CUnit* attacker) const {
 //-------- The following function definitions should not be touched. --------//
 
 //Identical to function @ 0x00440160
-void AttackPriorityData::addTarget(CUnit* target, uint32 attackPriority) {
+void AttackPriorityData::addTarget(CUnit* target, u32 attackPriority) {
 	assert(target);
 	assert(attackPriority < countof(targetCounts));
 
@@ -292,24 +292,24 @@ void AttackPriorityData::addTarget(CUnit* target, uint32 attackPriority) {
 }
 
 void AttackPriorityData::reset() {
-	for (int i = 0; i < countof(targetCounts); ++i)
+	for (s32 i = 0; i < countof(targetCounts); ++i)
 		targetCounts[i] = 0;
 }
 
 namespace {
 
 	//Identical to function @ 0x00475BE0
-	bool isTargetPosWithinAttackAngle(int32 x, int32 y, CUnit* unit, uint8 weaponId) {
+	bool isTargetPosWithinAttackAngle(s32 x, s32 y, CUnit* unit, u8 weaponId) {
 		assert(unit);
 
-		int32 angle = scbw::getAngle(unit->getX(), unit->getY(), x, y);
+		s32 angle = scbw::getAngle(unit->getX(), unit->getY(), x, y);
 
 		if (unit->id == UnitId::lurker) {
 			unit->currentDirection1 = angle;
 			return true;
 		}
 
-		int32 angleDiff = unit->currentDirection1 - angle;
+		s32 angleDiff = unit->currentDirection1 - angle;
 		if (angleDiff < 0)
 			angleDiff += 128;
 		if (angleDiff > 128)
@@ -317,11 +317,11 @@ namespace {
 		return angleDiff <= weapons_dat::AttackAngle[weaponId];
 	}
 
-	const uint32 Func_CannotChaseTarget = 0x004A1140;
+	const u32 Func_CannotChaseTarget = 0x004A1140;
 	bool cannotChaseTarget(CUnit* unit, CUnit* target) {
 		assert(unit);
 		assert(target);
-		static uint32 result;
+		static u32 result;
 
 		__asm {
 			PUSHAD
@@ -336,15 +336,15 @@ namespace {
 	}
 
 	//Identical to function @ 0x00440520
-	uint32 getMinimumRange(CUnit* unit) {
+	u32 getMinimumRange(CUnit* unit) {
 		if (unit->id == UnitId::ProtossClarion && scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
 			return 0;
 		}
-		uint8 groundWeapon = unit->getGroundWeapon();
+		u8 groundWeapon = unit->getGroundWeapon();
 		if (groundWeapon == WeaponId::None && unit->subunit)
 			groundWeapon = unit->subunit->getGroundWeapon();
 
-		uint8 airWeapon = unit->getAirWeapon();
+		u8 airWeapon = unit->getAirWeapon();
 		if (airWeapon == WeaponId::None && unit->subunit)
 			airWeapon = unit->subunit->getAirWeapon();
 

@@ -11,22 +11,22 @@
 
 namespace graphics {
 
-	uint16 Bitmap::getWidth() const {
+	u16 Bitmap::getWidth() const {
 		assert(this);
 		return this->width;
 	}
 
-	uint16 Bitmap::getHeight() const {
+	u16 Bitmap::getHeight() const {
 		assert(this);
 		return this->height;
 	}
 
-	uint8 gbColorTable[] = {
+	u8 gbColorTable[] = {
 	   0,  0,  0,  1,  2,  3,  4,  5,  8,  0,  0,  0,  0,  0,  9, 10,
 	  11, 12,  0,  0,  0, 13, 14, 15, 16, 17,  0, 18, 19, 20, 21, 23
 	};
 
-	uint8 gbFontColors[24][8] = {
+	u8 gbFontColors[24][8] = {
 	  { 0xC0, 0x9B, 0x9A, 0x95, 0x43, 0x00, 0x00, 0x28 },
 	  { 0x56, 0xA7, 0x6D, 0x65, 0x5C, 0x00, 0x00, 0x8A },
 	  { 0x41, 0xFF, 0x53, 0x97, 0x47, 0x00, 0x00, 0x8A },
@@ -54,11 +54,11 @@ namespace graphics {
 	};
 
 	const HWND* hWndMainSC = (HWND*)0x0051BFB0;
-	const int KOR_CHAR_MAX_WIDTH = 32;
-	const int KOR_CHAR_MAX_HEIGHT = 32;
+	const s32 KOR_CHAR_MAX_WIDTH = 32;
+	const s32 KOR_CHAR_MAX_HEIGHT = 32;
 
 	//Loosely based on writeWindowText() @ 0x0041F2B0
-	void Bitmap::blitKoreanChar(const char* ch, int& x, int& y, uint8 fontSize, uint8 color) {
+	void Bitmap::blitKoreanChar(const char* ch, s32& x, s32& y, u8 fontSize, u8 color) {
 		static HFONT gulim_8pt = nullptr, gulim_9pt = nullptr, gulim_10pt = nullptr, gulim_11pt = nullptr;
 		static HDC bufferDc = nullptr;
 		static HBITMAP bufferBmp = nullptr; //Temporary bitmap to draw the character
@@ -120,7 +120,7 @@ namespace graphics {
 		SelectObject(bufferDc, currentFont);
 
 		char koreanChars[3];
-		*(uint16*)koreanChars = *(uint16*)ch;
+		*(u16*)koreanChars = *(u16*)ch;
 		koreanChars[2] = '\0';
 
 		//Retrieve the size of the rectangular area to draw the character
@@ -134,12 +134,12 @@ namespace graphics {
 		DrawText(bufferDc, koreanChars, strlen(koreanChars), &chRect, 0);
 
 		//Copy pixel data from temporary bitmap into temporary buffer
-		static uint8 bitmapBuffer[KOR_CHAR_MAX_WIDTH * KOR_CHAR_MAX_HEIGHT];
+		static u8 bitmapBuffer[KOR_CHAR_MAX_WIDTH * KOR_CHAR_MAX_HEIGHT];
 		GetBitmapBits(bufferBmp, KOR_CHAR_MAX_WIDTH * chRect.bottom, bitmapBuffer);
 
 		//Copy pixels from temporary buffer into StarCraft's own buffer
-		for (int yOff = 0; yOff < chRect.bottom; ++yOff) {
-			for (int xOff = 0; xOff < chRect.right; ++xOff) {
+		for (s32 yOff = 0; yOff < chRect.bottom; ++yOff) {
+			for (s32 xOff = 0; xOff < chRect.right; ++xOff) {
 				if (bitmapBuffer[xOff + KOR_CHAR_MAX_WIDTH * yOff]) {
 					this->drawDot(x + xOff + 1, y + yOff + 3, gbFontColors[color][0]); //Shadow
 					this->drawDot(x + xOff, y + yOff + 2, gbFontColors[color][1]);
@@ -151,7 +151,7 @@ namespace graphics {
 		x += chRect.right;
 	}
 
-	bool Bitmap::blitString(const char* pszStr, int x, int y, uint8 size) {
+	bool Bitmap::blitString(const char* pszStr, s32 x, s32 y, u8 size) {
 		// verify valid size index
 		if (size > 3 || !pszStr)
 			return false;
@@ -168,13 +168,13 @@ namespace graphics {
 			return false;
 
 		// Reference an unsigned character array
-		const uint8* pbChars = (uint8*)pszStr;
+		const u8* pbChars = (u8*)pszStr;
 
-		uint8 lastColor = 0, color = 0;
-		int Xoffset = x, Yoffset = y;
+		u8 lastColor = 0, color = 0;
+		s32 Xoffset = x, Yoffset = y;
 
 		// Iterate all characters in the message
-		for (int c = 0; pbChars[c]; ++c) {
+		for (s32 c = 0; pbChars[c]; ++c) {
 			// Perform control character and whitespace functions
 			if (pbChars[c] <= ' ') {
 				switch (pbChars[c]) {
@@ -190,7 +190,7 @@ namespace graphics {
 						continue;
 					case 11:      // invisible
 					case 20:
-						color = (uint8)~0;
+						color = (u8)~0;
 						continue;
 					case '\f':    // 12   formfeed
 						break;
@@ -231,22 +231,22 @@ namespace graphics {
 			// If the colour is not "invisible"
 			if (color != ~0) {
 				// begin drawing character process
-				for (int i = 0, pos = 0; pos < fntChr->getHeight() * fntChr->getWidth(); ++i, ++pos) {
+				for (s32 i = 0, pos = 0; pos < fntChr->getHeight() * fntChr->getWidth(); ++i, ++pos) {
 					// font position
 					pos += fntChr->pixelOffset(i);
 
 					// x offset
-					int newX = Xoffset + (fntChr->getX() + pos % fntChr->getWidth());
+					s32 newX = Xoffset + (fntChr->getX() + pos % fntChr->getWidth());
 					if (newX >= this->getWidth()) break;
 					if (newX < 0) continue;
 
 					// y offset
-					int newY = Yoffset + (fntChr->getY() + pos / fntChr->getWidth());
+					s32 newY = Yoffset + (fntChr->getY() + pos / fntChr->getWidth());
 					if (newY >= this->getHeight()) break;
 					if (newY < 0) continue;
 
 					// blit offset
-					int offset = newY * this->getWidth() + newX;
+					s32 offset = newY * this->getWidth() + newX;
 					if (offset >= this->getWidth() * this->getHeight()) break;
 					if (offset < 0) continue;
 
@@ -264,13 +264,13 @@ namespace graphics {
 
 	//-------- Dot and line drawing --------//
 
-	void Bitmap::drawDot(int x, int y, ColorId color) {
+	void Bitmap::drawDot(s32 x, s32 y, ColorId color) {
 		if (x < 0 || x >= this->getWidth()) return;
 		if (y < 0 || y >= this->getHeight()) return;
 		this->drawDotUnsafe(x, y, color);
 	}
 
-	void Bitmap::drawLine(int x1, int y1, int x2, int y2, ColorId color) {
+	void Bitmap::drawLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color) {
 		//If horizontal
 		if (y1 == y2)
 			this->drawHorizontalLine(x1, x2, y1, color);
@@ -286,14 +286,14 @@ namespace graphics {
 		//Use Bresenham's line algorithm
 		//Code taken from http://members.chello.at/~easyfilter/bresenham.html
 		else {
-			const int dx = abs(x2 - x1), sx = x1 < x2 ? 1 : -1;
-			const int dy = -abs(y2 - y1), sy = y1 < y2 ? 1 : -1;
-			int err = dx + dy;
+			const s32 dx = abs(x2 - x1), sx = x1 < x2 ? 1 : -1;
+			const s32 dy = -abs(y2 - y1), sy = y1 < y2 ? 1 : -1;
+			s32 err = dx + dy;
 
-			int x = x1, y = y1;
+			s32 x = x1, y = y1;
 			this->drawDot(x, y, color);
 			while (x != x2 || y != y2) {
-				const int e2 = err * 2;
+				const s32 e2 = err * 2;
 				if (e2 >= dy) {
 					err += dy; x += sx;
 				}
@@ -305,7 +305,7 @@ namespace graphics {
 		}
 	}
 
-	void Bitmap::drawHorizontalLine(int x1, int x2, int y, ColorId color) {
+	void Bitmap::drawHorizontalLine(s32 x1, s32 x2, s32 y, ColorId color) {
 		if (y < 0 || y >= this->getHeight()) return;
 		if (x1 > x2) std::swap(x1, x2);
 		if (x2 < 0 || x1 >= this->getWidth()) return;
@@ -315,7 +315,7 @@ namespace graphics {
 		this->drawHorizontalLineUnsafe(x1, x2, y, color);
 	}
 
-	void Bitmap::drawVerticalLine(int x, int y1, int y2, ColorId color) {
+	void Bitmap::drawVerticalLine(s32 x, s32 y1, s32 y2, ColorId color) {
 		if (x < 0 || x >= this->getWidth()) return;
 		if (y1 > y2) std::swap(y1, y2);
 		if (y2 < 0 || y1 >= this->getHeight()) return;
@@ -328,7 +328,7 @@ namespace graphics {
 
 	//-------- Box drawing --------//
 
-	void Bitmap::drawBox(int left, int top, int right, int bottom, ColorId color) {
+	void Bitmap::drawBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color) {
 		if (left > right) std::swap(left, right);
 		if (right < 0 || left >= this->getWidth()) return;
 
@@ -336,23 +336,23 @@ namespace graphics {
 		if (bottom < 0 || top >= this->getHeight()) return;
 
 		//Draw horizontal part
-		const int xMin = std::max(left, 0);
-		const int xMax = std::min(right, this->getWidth() - 1);
+		const s32 xMin = std::max(left, 0);
+		const s32 xMax = std::min(right, this->getWidth() - 1);
 		if (top >= 0)
 			this->drawHorizontalLineUnsafe(xMin, xMax, top, color);
 		if (bottom < this->getHeight())
 			this->drawHorizontalLineUnsafe(xMin, xMax, bottom, color);
 
 		//Draw vertical part
-		const int yMin = std::max(top, 0);
-		const int yMax = std::min(bottom, this->getHeight() - 1);
+		const s32 yMin = std::max(top, 0);
+		const s32 yMax = std::min(bottom, this->getHeight() - 1);
 		if (left >= 0)
 			this->drawVerticalLineUnsafe(left, yMin, yMax, color);
 		if (right < this->getWidth())
 			this->drawVerticalLineUnsafe(right, yMin, yMax, color);
 	}
 
-	void Bitmap::drawFilledBox(int left, int top, int right, int bottom,
+	void Bitmap::drawFilledBox(s32 left, s32 top, s32 right, s32 bottom,
 		ColorId color) {
 		if (left > right) std::swap(left, right);
 		if (right < 0 || left >= this->getWidth()) return;
@@ -365,40 +365,40 @@ namespace graphics {
 		top = std::max(top, 0);
 		bottom = std::min(bottom, this->getHeight() - 1);
 
-		for (int y = top; y <= bottom; ++y)
+		for (s32 y = top; y <= bottom; ++y)
 			this->drawHorizontalLineUnsafe(left, right, y, color);
 	}
 
 
 	//-------- Circle drawing --------//
 
-	void Bitmap::drawCircle(int x, int y, int radius, ColorId color) {
+	void Bitmap::drawCircle(s32 x, s32 y, s32 radius, ColorId color) {
 		if (radius <= 0) return;
 
 		//Bresenham's circle algorithm
 		//Code taken from http://members.chello.at/easyfilter/bresenham.html  
-		int px = -radius, py = 0, err = 2 - 2 * radius; /* II. Quadrant */
+		s32 px = -radius, py = 0, err = 2 - 2 * radius; /* II. Quadrant */
 		do {
 			this->drawDot(x - px, y + py, color); /*   I. Quadrant */
 			this->drawDot(x - py, y - px, color); /*  II. Quadrant */
 			this->drawDot(x + px, y - py, color); /* III. Quadrant */
 			this->drawDot(x + py, y + px, color); /*  IV. Quadrant */
-			const int r = err;
+			const s32 r = err;
 			if (r <= py) err += ++py * 2 + 1;            /* e_xy+e_y < 0 */
 			if (r > px || err > py) err += ++px * 2 + 1; /* e_xy+e_x > 0 or no 2nd y-step */
 		} while (px < 0);
 	}
 
-	void Bitmap::drawFilledCircle(int x, int y, int radius, ColorId color) {
+	void Bitmap::drawFilledCircle(s32 x, s32 y, s32 radius, ColorId color) {
 		if (radius <= 0) return;
 
 		//Bresenham's circle algorithm, modified
 		//Code taken from http://members.chello.at/easyfilter/bresenham.html  
-		int px = -radius, py = 0, err = 2 - 2 * radius; /* II. Quadrant */
+		s32 px = -radius, py = 0, err = 2 - 2 * radius; /* II. Quadrant */
 		do {
 			this->drawHorizontalLine(x + px, x - px, y + py, color);  //Quadrants 1, 2
 			this->drawHorizontalLine(x + px, x - px, y - py, color);  //Quadrants 3, 4
-			const int r = err;
+			const s32 r = err;
 			if (r <= py) err += ++py * 2 + 1;            /* e_xy+e_y < 0 */
 			if (r > px || err > py) err += ++px * 2 + 1; /* e_xy+e_x > 0 or no 2nd y-step */
 		} while (px < 0);
@@ -406,7 +406,7 @@ namespace graphics {
 
 	//-------- Ellipse drawing --------//
 
-	void Bitmap::drawEllipse(int left, int top, int right, int bottom, ColorId color) {
+	void Bitmap::drawEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color) {
 
 		if (left > right) std::swap(left, right);
 		if (right <= 0 || left >= this->getWidth()) return;
@@ -414,17 +414,17 @@ namespace graphics {
 		if (top > bottom) std::swap(top, bottom);
 		if (bottom <= 0 || top >= this->getHeight()) return;
 
-		int x0 = left;
-		int y0 = bottom;
-		int x1 = right;
-		int y1 = top;
+		s32 x0 = left;
+		s32 y0 = bottom;
+		s32 x1 = right;
+		s32 y1 = top;
 
 		//Bresenham's circle algorithm
 		//Code taken from http://members.chello.at/easyfilter/bresenham.html  
 
-		int a = abs(x1 - x0), b = abs(y1 - y0), b1 = b & 1; /* values of diameter */
-		double dx = 4 * (1.0 - a) * b * b, dy = 4 * (b1 + 1) * a * a; /* error increment */
-		double err = dx + dy + b1 * a * a, e2; /* error of 1.step */
+		s32 a = abs(x1 - x0), b = abs(y1 - y0), b1 = b & 1; /* values of diameter */
+		f64 dx = 4 * (1.0 - a) * b * b, dy = 4 * (b1 + 1) * a * a; /* error increment */
+		f64 err = dx + dy + b1 * a * a, e2; /* error of 1.step */
 
 		if (x0 > x1) {
 			x0 = x1; x1 += a;
@@ -458,20 +458,20 @@ namespace graphics {
 
 	//-------- Dotted line drawing --------//
 
-	void Bitmap::drawDottedLine(int x1, int y1, int x2, int y2, ColorId color) {
+	void Bitmap::drawDottedLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color) {
 
-		int nIgnoreHalf = 0;
+		s32 nIgnoreHalf = 0;
 
-		const int dx = abs(x2 - x1), sx = x1 < x2 ? 1 : -1;
-		const int dy = -abs(y2 - y1), sy = y1 < y2 ? 1 : -1;
-		int err = dx + dy;
+		const s32 dx = abs(x2 - x1), sx = x1 < x2 ? 1 : -1;
+		const s32 dy = -abs(y2 - y1), sy = y1 < y2 ? 1 : -1;
+		s32 err = dx + dy;
 
-		int x = x1, y = y1;
+		s32 x = x1, y = y1;
 		if (nIgnoreHalf % 20 < 5)
 			this->drawDot(x, y, color);
 		nIgnoreHalf++;
 		while (x != x2 || y != y2) {
-			const int e2 = err * 2;
+			const s32 e2 = err * 2;
 			if (e2 >= dy) {
 				err += dy; x += sx;
 			}
@@ -486,9 +486,9 @@ namespace graphics {
 
 	//-------- Dotted Ellipse drawing --------//
 
-	void Bitmap::drawDottedEllipse(int left, int top, int right, int bottom, ColorId color) {
+	void Bitmap::drawDottedEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color) {
 
-		int nIgnoreHalf = 0;
+		s32 nIgnoreHalf = 0;
 
 		if (left > right) std::swap(left, right);
 		if (right <= 0 || left >= this->getWidth()) return;
@@ -496,17 +496,17 @@ namespace graphics {
 		if (top > bottom) std::swap(top, bottom);
 		if (bottom <= 0 || top >= this->getHeight()) return;
 
-		int x0 = left;
-		int y0 = bottom;
-		int x1 = right;
-		int y1 = top;
+		s32 x0 = left;
+		s32 y0 = bottom;
+		s32 x1 = right;
+		s32 y1 = top;
 
 		//Bresenham's circle algorithm
 		//Code taken from http://members.chello.at/easyfilter/bresenham.html  
 
-		int a = abs(x1 - x0), b = abs(y1 - y0), b1 = b & 1; /* values of diameter */
-		double dx = 4 * (1.0 - a) * b * b, dy = 4 * (b1 + 1) * a * a; /* error increment */
-		double err = dx + dy + b1 * a * a, e2; /* error of 1.step */
+		s32 a = abs(x1 - x0), b = abs(y1 - y0), b1 = b & 1; /* values of diameter */
+		f64 dx = 4 * (1.0 - a) * b * b, dy = 4 * (b1 + 1) * a * a; /* error increment */
+		f64 err = dx + dy + b1 * a * a, e2; /* error of 1.step */
 
 		if (x0 > x1) {
 			x0 = x1; x1 += a;
@@ -556,14 +556,14 @@ namespace graphics {
 
 	//-------- Unsafe functions for fast drawing --------//
 
-	void Bitmap::drawDotUnsafe(int x, int y, ColorId color) {
+	void Bitmap::drawDotUnsafe(s32 x, s32 y, ColorId color) {
 		assert(0 <= x && x < this->getWidth());
 		assert(0 <= y && y < this->getHeight());
 
 		this->data[y * this->getWidth() + x] = color;
 	}
 
-	void Bitmap::drawHorizontalLineUnsafe(int x1, int x2, int y, ColorId color) {
+	void Bitmap::drawHorizontalLineUnsafe(s32 x1, s32 x2, s32 y, ColorId color) {
 		assert(0 <= x1 && x1 < this->getWidth());
 		assert(0 <= x2 && x2 < this->getWidth());
 		assert(0 <= y && y < this->getHeight());
@@ -572,25 +572,25 @@ namespace graphics {
 		memset(&this->data[y * this->getWidth() + x1], color, x2 - x1 + 1);
 	}
 
-	void Bitmap::drawVerticalLineUnsafe(int x, int y1, int y2, ColorId color) {
+	void Bitmap::drawVerticalLineUnsafe(s32 x, s32 y1, s32 y2, ColorId color) {
 		assert(0 <= x && x < this->getWidth());
 		assert(0 <= y1 && y1 < this->getHeight());
 		assert(0 <= y2 && y2 < this->getHeight());
 		assert(y1 <= y2);
 
-		for (int y = y1; y <= y2; ++y)
+		for (s32 y = y1; y <= y2; ++y)
 			this->drawDotUnsafe(x, y, color);
 	}
 
 
 	//-------- Line clipping --------//
 
-	int Bitmap::computeOutcode(int x, int y) {
-		const int OUTCODE_INSIDE = 0;  //0000
-		const int OUTCODE_LEFT = 1;  //0001
-		const int OUTCODE_RIGHT = 2;  //0010
-		const int OUTCODE_TOP = 4;  //0100
-		const int OUTCODE_BOTTOM = 8;  //1000
+	s32 Bitmap::computeOutcode(s32 x, s32 y) {
+		const s32 OUTCODE_INSIDE = 0;  //0000
+		const s32 OUTCODE_LEFT = 1;  //0001
+		const s32 OUTCODE_RIGHT = 2;  //0010
+		const s32 OUTCODE_TOP = 4;  //0100
+		const s32 OUTCODE_BOTTOM = 8;  //1000
 
 		if (x < 0) {
 			if (y < 0)
@@ -616,7 +616,7 @@ namespace graphics {
 		}
 	}
 
-	bool Bitmap::isLineTriviallyIgnorable(int x1, int y1, int x2, int y2) {
+	bool Bitmap::isLineTriviallyIgnorable(s32 x1, s32 y1, s32 x2, s32 y2) {
 		return (this->computeOutcode(x1, y1) & this->computeOutcode(x2, y2)) != 0;
 	}
 

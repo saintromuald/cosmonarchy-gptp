@@ -46,7 +46,7 @@ namespace AI {
 		return false;
 	}
 
-	bool isUmsMode(uint8 playerId) {
+	bool isUmsMode(u8 playerId) {
 		assert(playerId < 8);
 		return AIScriptController[playerId].AI_Flags.isUseMapSettings;
 	}
@@ -54,9 +54,9 @@ namespace AI {
 	//-------- isUnitInUnsafeRegion() --------//
 
 	//Internal use only
-	const uint32 Func_GetRegionIdAtPosEx = 0x0049C9F0;
-	uint16 getRegionIdAtPosEx(int32 x, int32 y) {
-		static uint16 result;
+	const u32 Func_GetRegionIdAtPosEx = 0x0049C9F0;
+	u16 getRegionIdAtPosEx(s32 x, s32 y) {
+		static u16 result;
 
 		__asm {
 			PUSHAD
@@ -72,7 +72,7 @@ namespace AI {
 
 	//Based on code @ 0x00440BB0 (not a real independant function)
 	bool isUnitInUnsafeRegion(CUnit* unit) {
-		uint16 currentRegion = getRegionIdAtPosEx(unit->getX(), unit->getY());
+		u16 currentRegion = getRegionIdAtPosEx(unit->getX(), unit->getY());
 		AiCaptain* currentAiCaptain = &AiRegionCaptains[unit->playerId][currentRegion];
 		return currentAiCaptain->captainType == 3
 			|| currentAiCaptain->airTarget
@@ -97,14 +97,14 @@ namespace AI {
 	//In original functions:
 	//0x00695604 would contains weaponId
 	//0x00695798 would contains totalEnemyLife
-	int getTotalEnemyLifeInArea(int x, int y, int searchBounds, CUnit* caster, uint8 weaponId) {
+	s32 getTotalEnemyLifeInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster, u8 weaponId) {
 
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
 			x + searchBounds, y + searchBounds);
 
-		int totalEnemyLife = 0;
+		s32 totalEnemyLife = 0;
 
-		for (int i = 0; i < unitStatTotalFinder.getUnitCount(); ++i) {
+		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i) {
 
 			CUnit* target = unitStatTotalFinder.getUnit(i);
 
@@ -168,14 +168,14 @@ namespace AI {
 
 	//Loop content based on AIAllyUnitHPAccumulatorProc @ 0x00440D60
 	//0x00695798 would contains totalAllyLife
-	int getTotalAllyLifeInArea(int x, int y, int searchBounds, CUnit* caster, uint8 weaponId) {
+	s32 getTotalAllyLifeInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster, u8 weaponId) {
 
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
 			x + searchBounds, y + searchBounds);
 
-		int totalAllyLife = 0;
+		s32 totalAllyLife = 0;
 
-		for (int i = 0; i < unitStatTotalFinder.getUnitCount(); ++i) {
+		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i) {
 
 			CUnit* target = unitStatTotalFinder.getUnit(i);
 
@@ -194,14 +194,14 @@ namespace AI {
 
 	//Loop content based on unitShieldsClumpInAreaAccumulatorProc @ 0x00440A60
 	//0x00695798 would contains totalEnemyShields
-	int getTotalEnemyShieldsInArea(int x, int y, int searchBounds, CUnit* caster) {
+	s32 getTotalEnemyShieldsInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster) {
 
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
 			x + searchBounds, y + searchBounds);
 
-		int totalEnemyShields = 0;
+		s32 totalEnemyShields = 0;
 
-		for (int i = 0; i < unitStatTotalFinder.getUnitCount(); ++i) {
+		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i) {
 
 			CUnit* target = unitStatTotalFinder.getUnit(i);
 
@@ -220,14 +220,14 @@ namespace AI {
 
 	//Loop content based on unitEnergyClumpInAreaAccumulatorProc @ 0x00440AC0
 	//0x00695798 would contains totalEnemyEnergy
-	int getTotalEnemyEnergyInArea(int x, int y, int searchBounds, CUnit* caster) {
+	s32 getTotalEnemyEnergyInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster) {
 
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
 			x + searchBounds, y + searchBounds);
 
-		int totalEnemyEnergy = 0;
+		s32 totalEnemyEnergy = 0;
 
-		for (int i = 0; i < unitStatTotalFinder.getUnitCount(); ++i) {
+		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i) {
 
 			CUnit* target = unitStatTotalFinder.getUnit(i);
 
@@ -248,14 +248,14 @@ namespace AI {
 	//					getEnemyClumpValueProc	@ 0x00440B20
 	//0x00695798 would contains totalNukeTargetValue
 	//Optimized to stop when reaching totalNukeTargetValue == 800 since that's what matter
-	int getTotalEnemyNukeValueInArea(int x, int y, int searchBounds, CUnit* caster) {
+	s32 getTotalEnemyNukeValueInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster) {
 
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
 			x + searchBounds, y + searchBounds);
 
-		int totalNukeTargetValue = 0;
+		s32 totalNukeTargetValue = 0;
 
-		for (int i = 0; i < unitStatTotalFinder.getUnitCount() && totalNukeTargetValue < 800; ++i) {
+		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount() && totalNukeTargetValue < 800; ++i) {
 
 			CUnit* target = unitStatTotalFinder.getUnit(i);
 

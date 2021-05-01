@@ -12,7 +12,7 @@ namespace hooks {
 	//Do the actual unit movement
 	void spells_Recall_ActionOnValidTargetForRecall(CUnit* target, CUnit* caster) {
 
-		static bool32* const bAtLeast1UnitWasRecalled = (bool32*)(0x0063FF50);
+		static b32* const bAtLeast1UnitWasRecalled = (b32*)(0x0063FF50);
 
 		Point16 previous_pos, new_pos;
 
@@ -100,7 +100,7 @@ namespace hooks {
 
 	void orders_Recall(CUnit* unit) {
 
-		static bool32* const bAtLeast1UnitWasRecalled = (bool32*)(0x0063FF50);
+		static b32* const bAtLeast1UnitWasRecalled = (b32*)(0x0063FF50);
 
 		//unit has started casting Recall (== went through the other condition)
 		if (unit->mainOrderState == 1) {
@@ -145,7 +145,7 @@ namespace hooks {
 				unit->energy < techdata_dat::EnergyCost[TechId::Recall] * 256
 				) {
 
-				uint8 raceId;
+				u8 raceId;
 				char* message;
 
 				if (units_dat::GroupFlags[unit->id].isZerg)
@@ -173,7 +173,7 @@ namespace hooks {
 			} else { //945B9
 
 				CThingy* recall_effect_sprite;
-				uint32 random_value;
+				u32 random_value;
 
 				if (!scbw::isCheatEnabled(CheatFlags::TheGathering))
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::Recall] * 256);
@@ -202,8 +202,8 @@ namespace hooks {
 					//hardcoded (not using a function) RNG use, like
 					//the original code do
 
-					static uint32* const u32_0051C654 = (uint32*)0x0051C654;
-					static uint32* const u32_0051CA18 = (uint32*)0x0051CA18;
+					static u32* const u32_0051C654 = (u32*)0x0051C654;
+					static u32* const u32_0051CA18 = (u32*)0x0051CA18;
 
 					*u32_0051C654 = *u32_0051C654 + 1;
 					*u32_0051CA18 = *u32_0051CA18 + 1;

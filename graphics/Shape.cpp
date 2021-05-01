@@ -8,7 +8,7 @@ namespace graphics {
 
 	//-------- Registering shapes --------//
 
-	void Shape::setText(int x, int y, int stringIndex, FontSize fontSize, CoordType coordType) {
+	void Shape::setText(s32 x, s32 y, s32 stringIndex, FontSize fontSize, CoordType coordType) {
 		this->type = TEXT;
 		this->p1.x = x;
 		this->p1.y = y;
@@ -17,7 +17,7 @@ namespace graphics {
 		this->coordType = coordType;
 	}
 
-	void Shape::setDot(int x, int y, ColorId color, CoordType coordType) {
+	void Shape::setDot(s32 x, s32 y, ColorId color, CoordType coordType) {
 		this->type = DOT;
 		this->p1.x = x;
 		this->p1.y = y;
@@ -25,7 +25,7 @@ namespace graphics {
 		this->coordType = coordType;
 	}
 
-	void Shape::setLine(int x1, int y1, int x2, int y2, ColorId color, CoordType coordType) {
+	void Shape::setLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType coordType) {
 		this->type = LINE;
 		this->p1.x = x1;
 		this->p1.y = y1;
@@ -35,7 +35,7 @@ namespace graphics {
 		this->coordType = coordType;
 	}
 
-	void Shape::setBox(int left, int top, int right, int bottom, ColorId color, CoordType coordType) {
+	void Shape::setBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType) {
 		this->type = BOX;
 		this->p1.x = left;
 		this->p1.y = top;
@@ -45,7 +45,7 @@ namespace graphics {
 		this->coordType = coordType;
 	}
 
-	void Shape::setEllipse(int left, int top, int right, int bottom, ColorId color, CoordType coordType) {
+	void Shape::setEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType) {
 		this->type = ELLIPSE;
 		this->p1.x = left;
 		this->p1.y = top;
@@ -55,7 +55,7 @@ namespace graphics {
 		this->coordType = coordType;
 	}
 
-	void Shape::setDottedEllipse(int left, int top, int right, int bottom, ColorId color, CoordType coordType) {
+	void Shape::setDottedEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType) {
 		this->type = DOTTED_ELLIPSE;
 		this->p1.x = left;
 		this->p1.y = top;
@@ -65,7 +65,7 @@ namespace graphics {
 		this->coordType = coordType;
 	}
 
-	void Shape::setDottedLine(int x1, int y1, int x2, int y2, ColorId color, CoordType coordType) {
+	void Shape::setDottedLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType coordType) {
 		this->type = DOTTED_LINE;
 		this->p1.x = x1;
 		this->p1.y = y1;
@@ -75,7 +75,7 @@ namespace graphics {
 		this->coordType = coordType;
 	}
 
-	void Shape::setCircle(int x, int y, int radius, ColorId color, CoordType coordType) {
+	void Shape::setCircle(s32 x, s32 y, s32 radius, ColorId color, CoordType coordType) {
 		this->type = CIRCLE;
 		this->p1.x = x;
 		this->p1.y = y;
@@ -84,7 +84,7 @@ namespace graphics {
 		this->coordType = coordType;
 	};
 
-	void Shape::setFilledBox(int left, int top, int right, int bottom, ColorId color, CoordType coordType) {
+	void Shape::setFilledBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType) {
 		this->type = FILLED_BOX;
 		this->p1.x = left;
 		this->p1.y = top;
@@ -94,7 +94,7 @@ namespace graphics {
 		this->coordType = coordType;
 	};
 
-	void Shape::setFilledCircle(int x, int y, int radius, ColorId color, CoordType coordType) {
+	void Shape::setFilledCircle(s32 x, s32 y, s32 radius, ColorId color, CoordType coordType) {
 		this->type = FILLED_CIRCLE;
 		this->p1.x = x;
 		this->p1.y = y;

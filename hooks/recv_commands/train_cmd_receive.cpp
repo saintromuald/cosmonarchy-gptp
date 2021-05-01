@@ -8,7 +8,7 @@ namespace hooks {
 		current_selection = getActivePlayerNextSelection();
 
 		while (current_selection != nullptr) {
-			uint32 unitToBuild;
+			u32 unitToBuild;
 			//the original code was messy, simplified/optimized version here
 			if (current_selection->id == UnitId::ProtossSolarion)
 				unitToBuild = UnitId::ProtossSteward;
@@ -41,7 +41,7 @@ namespace hooks {
 	}
 
 	//Note: the default function isn't compatible with multiple selection
-	void CMDRECV_Train(uint16 wUnitType) {
+	void CMDRECV_Train(u16 wUnitType) {
 		CUnit* builder;
 		*selectionIndexStart = 0;
 		builder = getActivePlayerNextSelection();

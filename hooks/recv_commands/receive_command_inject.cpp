@@ -6,12 +6,12 @@ namespace {
 
 	void __declspec(naked) receive_commandWrapper() {
 
-		static int x;
-		static int y;
+		static s32 x;
+		static s32 y;
 		static CUnit* unitParam;
-		static uint32 wUnitType;
-		static uint32 bActionOrder;
-		static uint32 bCommandType;
+		static u32 wUnitType;
+		static u32 bActionOrder;
+		static u32 bCommandType;
 
 		__asm {
 
