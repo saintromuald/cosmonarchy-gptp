@@ -24,7 +24,7 @@ namespace hooks {
 		x /= 32;
 		y /= 32;
 
-		//check if the nydus exit can be placed
+		// check if the nydus exit can be placed
 		result_f00473FB0 = helper::function_00473FB0(
 			nydus_canal,
 			nydus_canal->playerId,
