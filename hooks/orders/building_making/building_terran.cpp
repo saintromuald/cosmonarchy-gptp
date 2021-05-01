@@ -410,7 +410,7 @@ namespace hooks {
 						}
 						scbw::refreshConsole();
 						builtUnit->orderComputerCL(OrderId::BuildSelf1);
-						helper::AI_TrainingOverlord(unit, builtUnit);
+						helper::AI_TrainingOverlord(builtUnit, unit);
 						bEndThere = true;
 					}
 				}

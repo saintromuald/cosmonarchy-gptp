@@ -67,7 +67,7 @@ namespace hooks {
 										helper::addOverlayBelowMain(builtUnit->sprite, ImageId::VespeneGeyser, 0, 0, 0);
 									}
 									unit->orderTarget.unit = builtUnit;
-									helper::AI_TrainingOverlord(unit, builtUnit);
+									helper::AI_TrainingOverlord(builtUnit, unit);
 									builtUnit->orderComputerCL(OrderId::BuildSelf2);
 									scbw::playSound(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit);
 									unit->mainOrderState = 3;

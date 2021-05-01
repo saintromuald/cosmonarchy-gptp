@@ -234,7 +234,6 @@ namespace helper {
 
     bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, uint32 distance);	                    // 00401240
     void checkUnstack(CUnit* unit);												                            // 0042D9A0
-    void AI_TrainingOverlord(CUnit* main_unit, CUnit* created_unit);					                    // 00435770
     bool beginBuilding(CUnit* unit);												                        // 00467030
     CUnit* beginGasBuilding(CUnit* unit, uint32 unitId);									                // 004678A0
     void addOverlayBelowMain(CSprite* sprite, uint32 imageId, uint32 unk1, uint32 unk2, uint32 unk3);	    // 00498D70
@@ -287,7 +286,6 @@ namespace helper {
     bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, uint32 distance);	                    // 00401240
     void fixTargetLocation(Point16* coords, uint32 unitId);								                    // 00401FA0
     bool isUnitPositions2Equal(CUnit* unit);											                    // 00402160
-    void AI_TrainingOverlord(CUnit* main_unit, CUnit* created_unit);					                    // 00435770
     bool32 buildingAddon(CUnit* unit, uint32 hpGain, bool32 canBeAborted);				                    // 004679A0
     void prependOrderTargetingNothing(CUnit* unit, COrder* order, uint8 orderId);					        // 00474760
     void addOrderTargetingNothing(CUnit* unit, COrder* order, uint8 orderId);					            // 004749A0

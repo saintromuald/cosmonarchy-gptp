@@ -47,7 +47,7 @@ namespace {
 			POP EAX
 			PUSHAD
 		}
-		hooks::AI_TrainingBroodling(parent, result);
+		hooks::AI_TrainingBroodling(result, parent);
 		__asm {
 			POPAD
 			MOV EAX, result

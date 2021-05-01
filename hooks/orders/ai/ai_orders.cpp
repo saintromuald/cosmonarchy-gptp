@@ -23,7 +23,7 @@ namespace hooks {
 			} else if (result->id == UnitId::ZergOvileth) {
 				helper::AI_TrainingOverlord(result, parent); // replace with hook later
 			} else if (isSuicideUnit) {
-				hooks::AI_TrainingBroodling(parent, result);
+				hooks::AI_TrainingBroodling(result, parent);
 			} else {
 				helper::AI_TrainingNormal(result, parent);
 			}
@@ -142,7 +142,7 @@ namespace hooks {
 	}
 
 	// Hooked to add region null check - Pr0nogo
-	void AI_TrainingBroodling(CUnit* parent, CUnit* result) {						// 0043E280
+	void AI_TrainingBroodling(CUnit* result, CUnit* parent) {						// 0043E280
 		AiCaptain* region; // esi
 		int16 regionType; // ax
 		AiCaptain* playerRegion; // ecx
