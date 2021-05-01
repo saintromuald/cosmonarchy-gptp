@@ -6,9 +6,9 @@ namespace {
 namespace hooks {
 	void ShowHealthBar(CUnit* unit) {
 		if (unit == nullptr) return;
-		RemoveHPBar(unit->sprite->images.head);
+		helper::RemoveHPBar(unit->sprite->images.head);
 		_unitTemp = unit;
-		CreateHealthBar(0, unit->sprite);
+		helper::CreateHealthBar(0, unit->sprite);
 		_unitTemp = nullptr;
 	}
 

@@ -74,7 +74,7 @@ namespace hooks {
 									stringId = 0; //valid target
 							} else
 								if (techId == TechId::Infestation) {
-									if (!isInfestableUnit(target))
+									if (!helper::isInfestableUnit(target))
 										stringId = 870;	//Must target severely damaged Terran Command Center.<0>
 									else
 										stringId = 0; //valid target

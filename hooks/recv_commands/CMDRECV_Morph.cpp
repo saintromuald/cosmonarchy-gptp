@@ -16,7 +16,7 @@ namespace hooks {
 			wUnitType >= UnitId::ZergInfestedCommandCenter &&
 			wUnitType <= 227 &&
 			building->canMakeUnit(wUnitType, *ACTIVE_NATION_ID) == 1 &&
-			HasMoneyCanMake(building, wUnitType) && //start construction if successful
+			helper::HasMoneyCanMake(building, wUnitType) && //start construction if successful
 			building->mainOrderId != OrderId::Morph2
 			) {
 			building->orderComputerCL(OrderId::Morph2);
@@ -49,7 +49,7 @@ namespace hooks {
 			if (
 				bAllowMorph &&
 				current_unit->mainOrderId != OrderId::Morph1 &&
-				HasMoneyCanMake(current_unit, wUnitType) // start construction if successful
+				helper::HasMoneyCanMake(current_unit, wUnitType) // start construction if successful
 				) {
 				current_unit->userActionFlags |= 1;
 				if (current_unit->mainOrderId != OrderId::Die) {
@@ -61,7 +61,7 @@ namespace hooks {
 							if (orders_dat::CanBeInterrupted[current_unit->orderQueueTail->orderId] ||
 								current_unit->orderQueueTail->orderId == OrderId::Morph1
 								)
-								removeOrderFromUnitQueue(current_unit, current_unit->orderQueueTail);
+								helper::removeOrderFromUnitQueue(current_unit, current_unit->orderQueueTail);
 							else
 								bKeepLooping = false;
 					}

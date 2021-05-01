@@ -8,7 +8,7 @@ namespace hooks {
 		int sightRange = unit->getSightRange(true);
 		uint16 techCost;
 		if (
-			ordersSpell_Sub_4926D0(
+			helper::ordersSpell_Sub_4926D0(
 				unit,
 				TechId::Hallucination,
 				&techCost,
@@ -71,10 +71,10 @@ namespace hooks {
 		int16 unitType; // ax
 
 		v3 = source;
-		halUnit = createUnit(source->id, source->sprite->position.x, source->sprite->position.y, player);
+		halUnit = helper::createUnit(source->id, source->sprite->position.x, source->sprite->position.y, player);
 		halUnit2 = halUnit;
 		if (halUnit) {
-			applyHallucinationStats(halUnit);
+			helper::applyHallucinationStats(halUnit);
 			if (halUnit2->status & UnitStatus::IsHallucination) {
 				halTimer = 1350;
 			}
@@ -87,12 +87,12 @@ namespace hooks {
 			}
 			unitType = halUnit2->id;
 			if (unitType == UnitId::ProtossAccantor) { // Originally also ran for Warbringer ID
-				hallucinateScarabs(halUnit2, v3);
+				helper::hallucinateScarabs(halUnit2, v3);
 			}
-			AI_TrainingUnit(halUnit2, halUnit2);
+			helper::AI_TrainingUnit(halUnit2, halUnit2);
 			result = halUnit2;
 		} else {
-			displayLastNetErrorForPlayer(player);
+			helper::displayLastNetErrorForPlayer(player);
 			result = 0;
 		}
 		return result;

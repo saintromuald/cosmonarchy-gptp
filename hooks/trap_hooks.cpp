@@ -34,7 +34,7 @@ namespace hooks {
 			&& pUnit->maelstromTimer == 0) {
 			pUnit->status = unitFlags | UnitStatus::Disabled;
 			for (i = pUnit->sprite->images.head; i; i = i->link.next)
-				playImageIscript(i, IscriptAnimation::AlmostBuilt);
+				helper::playImageIscript(i, IscriptAnimation::AlmostBuilt);
 			unitType = pUnit->id;
 			pUnit->status |= UnitStatus::NoCollide;
 
@@ -85,16 +85,16 @@ namespace hooks {
 		v1 = a1;
 		v2 = units_dat::BaseProperty[(uint16)a1->id];
 		if (v2 & UnitProperty::TwoUnitsIn1Egg) {
-			incrementUnitScores(a1, -1);
+			helper::incrementUnitScores(a1, -1);
 			v1->status |= UnitStatus::Completed;
-			incrementUnitScores(v1, 1);
+			helper::incrementUnitScores(v1, 1);
 		} else {
 			a1->status |= UnitStatus::Completed;
 		}
 
-		incrementUnitScoresEx(v1, 1, 1);
+		helper::incrementUnitScoresEx(v1, 1, 1);
 		if (units_dat::BaseProperty[(uint16)v1->id] & UnitProperty::PermanentCloak) {
-			playSoundFromDirection(v1, 273);
+			helper::playSoundFromDirection(v1, 273);
 		}
 
 		v3 = v1->id;
@@ -120,15 +120,15 @@ namespace hooks {
 				if (v11)
 					v11->link.prev = v1;
 				v10->link.next = v1;
-				refreshUnitVision(v1);
+				helper::refreshUnitVision(v1);
 			} else {
 				*lastScannerSweep = v1;
 				*firstScannerSweep = v1;
-				refreshUnitVision(v1);
+				helper::refreshUnitVision(v1);
 			}
 		} else if (v1->sprite->flags & 0x20) {
 			if (v3 != UnitId::ProtossSteward && v3 != UnitId::ProtossPlasmaShell) {
-				initUnitTrapDoodad(v1);
+				helper::initUnitTrapDoodad(v1);
 			}
 		}
 		v4 = v1->id;/*
@@ -154,11 +154,11 @@ namespace hooks {
 					v8 = v7->orderId;
 					if (!orders_dat::CanBeInterrupted[v8] && v8 != -95)
 						break;
-					removeOrderFromUnitQueue(v7, v1);
+					helper::removeOrderFromUnitQueue(v7, v1);
 				}
-				performAnotherOrder(OrderId::RescuePassive, 0, v1, 228, 0, 0);
+				helper::performAnotherOrder(OrderId::RescuePassive, 0, v1, 228, 0, 0);
 			}
-			orders_Nothing2(v1);
+			helper::orders_Nothing2(v1);
 		} else {
 			if (v5 == 7) { // Neutral
 				v12 = OrderId::Neutral;
@@ -167,7 +167,7 @@ namespace hooks {
 			} else {
 				v12 = units_dat::HumanIdleOrder[v4];
 			}
-			orderComputerClear(v1, v12);
+			helper::orderComputerClear(v1, v12);
 		}
 		v13 = (uint16)v1->id;
 		v14 = units_dat::BaseProperty[v13];
@@ -177,11 +177,11 @@ namespace hooks {
 			v1->building.powerupOrigin.y = v15->position.y;
 			v16 = units_dat::HumanIdleOrder[v13];
 			v1->userActionFlags |= 1u;
-			order(1, v1, v16, 0, 0, 228);
-			orders_Nothing2(v1);
+			helper::order(1, v1, v16, 0, 0, 228);
+			helper::orders_Nothing2(v1);
 		}
-		v1->airStrength = getUnitStrength(v1, v13, 0);
-		result = getUnitStrength(v1, v18, 1);
+		v1->airStrength = helper::getUnitStrength(v1, v13, 0);
+		result = helper::getUnitStrength(v1, v18, 1);
 		v1->groundStrength = result;
 		return result;
 	}

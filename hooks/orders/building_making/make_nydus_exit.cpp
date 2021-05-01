@@ -27,7 +27,7 @@ namespace hooks {
 		y /= 32;
 
 		//check if the nydus exit can be placed
-		result_f00473FB0 = function_00473FB0(
+		result_f00473FB0 = helper::function_00473FB0(
 			nydus_canal,
 			nydus_canal->playerId,
 			x,
@@ -38,7 +38,7 @@ namespace hooks {
 
 		if (result_f00473FB0 != 0) {
 
-			playWorkerErrorSound(nydus_canal, 0x358); //"You can't build there"
+			helper::playWorkerErrorSound(nydus_canal, 0x358); //"You can't build there"
 
 			if (nydus_canal->orderQueueHead != nullptr) {
 				nydus_canal->userActionFlags |= 1;
@@ -52,7 +52,7 @@ namespace hooks {
 		} else { //5DCDB
 
 			CUnit* nydusExit =
-				createUnit(
+				helper::createUnit(
 					UnitId::ZergNydusCanal,
 					nydus_canal->orderTarget.pt.x,
 					nydus_canal->orderTarget.pt.y,
@@ -60,18 +60,18 @@ namespace hooks {
 				);
 
 			if (nydusExit == nullptr) {
-				displayLastNetErrorForPlayer(nydus_canal->playerId);
+				helper::displayLastNetErrorForPlayer(nydus_canal->playerId);
 				nydus_canal->orderToIdle();
 			} else {
 
-				function_004E65E0(nydusExit, 1);
+				helper::function_004E65E0(nydusExit, 1);
 
 				//logically equivalent to a more complex original calculation
 				nydusExit->hitPoints = (10 * units_dat::MaxHitPoints[nydusExit->id]) / 100;
 
 				nydusExit->orderComputerCL(OrderId::ZergBuildSelf);
 				nydusExit->currentButtonSet = UnitId::Buttons_Blank;
-				function_0047D770(nydusExit);
+				helper::function_0047D770(nydusExit);
 				nydus_canal->building.nydusExit = nydusExit;
 				nydusExit->building.nydusExit = nydus_canal;
 				nydus_canal->orderToIdle();

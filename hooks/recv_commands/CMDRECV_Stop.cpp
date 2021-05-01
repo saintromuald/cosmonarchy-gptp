@@ -20,7 +20,7 @@ namespace hooks {
 			*u32_0066FF60 = 0x00;
 
 			if (orders_dat::RequirementsOffset[OrderId::ReaverStop] == 0xFFFF)
-				parseOrdersDatReqs();
+				helper::parseOrdersDatReqs();
 
 			if (current_unit->playerId != *ACTIVE_NATION_ID)
 				*u32_0066FF60 = 0x01;
@@ -67,7 +67,7 @@ namespace hooks {
 											if (orders_dat::RequirementsOffset[OrderId::ReaverStop] == 0)
 												*u32_0066FF60 = 0x17;
 											else
-												if (parseRequirementOpcodes(
+												if (helper::parseRequirementOpcodes(
 													current_unit,
 													OrderId::ReaverStop,
 													*ACTIVE_NATION_ID,
@@ -89,7 +89,7 @@ namespace hooks {
 																if (orders_dat::CanBeInterrupted[current_unit->orderQueueTail->orderId] ||
 																	current_unit->orderQueueTail->orderId == OrderId::ReaverStop
 																	)
-																	removeOrderFromUnitQueue(current_unit, current_unit->orderQueueTail);
+																	helper::removeOrderFromUnitQueue(current_unit, current_unit->orderQueueTail);
 																else
 																	bContinueLoop = false;
 
@@ -125,7 +125,7 @@ namespace hooks {
 			*u32_0066FF60 = 0x00;
 
 			if (orders_dat::RequirementsOffset[OrderId::CarrierStop] == 0xFFFF)
-				parseOrdersDatReqs();
+				helper::parseOrdersDatReqs();
 
 			if (current_unit->playerId != *ACTIVE_NATION_ID)
 				*u32_0066FF60 = 0x01;
@@ -172,7 +172,7 @@ namespace hooks {
 											if (orders_dat::RequirementsOffset[OrderId::CarrierStop] == 0)
 												*u32_0066FF60 = 0x17;
 											else
-												if (parseRequirementOpcodes(
+												if (helper::parseRequirementOpcodes(
 													current_unit,
 													OrderId::CarrierStop,
 													*ACTIVE_NATION_ID,
@@ -194,7 +194,7 @@ namespace hooks {
 																if (orders_dat::CanBeInterrupted[current_unit->orderQueueTail->orderId] ||
 																	current_unit->orderQueueTail->orderId == OrderId::CarrierStop
 																	)
-																	removeOrderFromUnitQueue(current_unit, current_unit->orderQueueTail);
+																	helper::removeOrderFromUnitQueue(current_unit, current_unit->orderQueueTail);
 																else
 																	bContinueLoop = false;
 
@@ -230,7 +230,7 @@ namespace hooks {
 			*u32_0066FF60 = 0x00;
 
 			if (orders_dat::RequirementsOffset[OrderId::Stop] == 0xFFFF)
-				parseOrdersDatReqs();
+				helper::parseOrdersDatReqs();
 
 			if (current_unit->playerId != *ACTIVE_NATION_ID)
 				*u32_0066FF60 = 0x01;
@@ -272,14 +272,14 @@ namespace hooks {
 										if (orders_dat::RequirementsOffset[OrderId::Stop] == 0)
 											*u32_0066FF60 = 0x17;
 										else
-											if (parseRequirementOpcodes(
+											if (helper::parseRequirementOpcodes(
 												current_unit,
 												OrderId::Stop,
 												*ACTIVE_NATION_ID,
 												0x00514CF8,
 												orders_dat::RequirementsOffset[OrderId::Stop]
 											) == 1)
-												function_004754F0(
+												helper::function_004754F0(
 													current_unit,
 													UnitId::None,
 													*(uint32*)(0x006D5C24),

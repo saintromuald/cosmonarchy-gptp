@@ -23,7 +23,7 @@ namespace hooks {
 		*saved_y = y;
 		*saved_order = bActionOrder;
 
-		function_0049A8C0((uint8*)&array_of_data[0], orders_dat::CanBeObstructed[bActionOrder]);
+		helper::function_0049A8C0((uint8*)&array_of_data[0], orders_dat::CanBeObstructed[bActionOrder]);
 
 		if (bActionOrder > OrderId::CTFCOP2 || switch_value[bActionOrder] == 1) {
 
@@ -43,12 +43,12 @@ namespace hooks {
 				if (orders_dat::TechUsed[current_order] != TechId::None)
 					bOrderAllowed = (current_unit->canUseTech(orders_dat::TechUsed[current_order], *ACTIVE_NATION_ID) == 1);
 				else
-					bOrderAllowed = (OrderAllowed(current_unit, current_order, *ACTIVE_NATION_ID) == 1);
+					bOrderAllowed = (helper::OrderAllowed(current_unit, current_order, *ACTIVE_NATION_ID) == 1);
 
 				if (bOrderAllowed) {
 
 					if (current_unit == unitParam) { //target is the caster/ordered unit
-						if (!CanTargetSelf(current_unit, bActionOrder))
+						if (!helper::CanTargetSelf(current_unit, bActionOrder))
 							jump_to_9AD7E = true;
 					}
 
@@ -57,7 +57,7 @@ namespace hooks {
 
 				if (!jump_to_9AD7E) { //9ABC4:
 
-					if (function_0049A410(current_unit, bActionOrder) == 0)
+					if (helper::function_0049A410(current_unit, bActionOrder) == 0)
 						jump_to_9AD7E = true;
 					else
 						if (current_unit->mainOrderId != OrderId::NukeLaunch ||
@@ -97,13 +97,13 @@ namespace hooks {
 										loop_to_9ac0d = false;
 									} else {
 
-										function_004756E0(current_unit, unitParam, *saved_order_3, bCommandType);
+										helper::function_004756E0(current_unit, unitParam, *saved_order_3, bCommandType);
 
 										if (*saved_order_2 == OrderId::Nothing2) {
 											jump_to_9ad74 = true;
 											loop_to_9ac0d = false;
 										} else {
-											function_004756E0(current_unit->subunit, unitParam, *saved_order_2, bCommandType);
+											helper::function_004756E0(current_unit->subunit, unitParam, *saved_order_2, bCommandType);
 											jump_to_9ad74 = true;
 											loop_to_9ac0d = false;
 										}
@@ -195,11 +195,11 @@ namespace hooks {
 								*saved_y = y;
 
 								if (wUnitType == UnitId::None)
-									function_0049A500(current_unit, (uint8*)&array_of_data[0]);
+									helper::function_0049A500(current_unit, (uint8*)&array_of_data[0]);
 								else
 									*saved_unknown_2 = *saved_unknown_1;
 
-								function_004756B0(
+								helper::function_004756B0(
 									current_unit,
 									*saved_order_3,
 									*saved_unknown_2 / 65536,
@@ -210,7 +210,7 @@ namespace hooks {
 								if (*saved_order_2 == OrderId::Nothing2)
 									jump_to_9ad74 = true;
 								else {
-									function_004756B0(
+									helper::function_004756B0(
 										current_unit->subunit,
 										*saved_order_2,
 										*saved_unknown_2 / 65536,

@@ -100,7 +100,7 @@ namespace hooks {
 
 					//If the unit is currently selected, redraw its graphics
 					if (!bStopHere && unit->sprite->flags & CSprite_Flags::Selected) {
-						setAllImageGroupFlagsPal11(unit->sprite);
+						helper::setAllImageGroupFlagsPal11(unit->sprite);
 					}
 		}
 	}
@@ -297,7 +297,7 @@ namespace hooks {
 				} else if (unit->building.resource.resourceAmount < 5000) {
 					unit->building.resource.resourceAmount++;
 					if (unit->id >= UnitId::mineral_field_1 && unit->id <= UnitId::mineral_field_3) {
-						updateMineralPatchImage(unit);
+						helper::updateMineralPatchImage(unit);
 					}
 					scbw::refreshConsole();
 				}
@@ -316,7 +316,7 @@ namespace hooks {
 						unit->shields = maxShields;
 					}
 					if (unit->sprite->flags & CSprite_Flags::Selected) {  // If the unit is currently selected, redraw its graphics
-						setAllImageGroupFlagsPal11(unit->sprite);
+						helper::setAllImageGroupFlagsPal11(unit->sprite);
 					}
 				}
 			}
@@ -337,7 +337,7 @@ namespace hooks {
 			unit->cycleCounter++;
 			if (unit->cycleCounter >= 8) {
 				unit->cycleCounter = 0;
-				RestoreAllUnitStats(unit); // use update_status_effects hook if available
+				helper::RestoreAllUnitStats(unit); // use update_status_effects hook if available
 			}
 		}
 
@@ -412,7 +412,7 @@ namespace hooks {
 						unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					if (distance < 32) {
 						unit->status |= UnitStatus::Invincible;
-						CBullet* bullet = createBulletRet(WeaponId::AuroraLastOrders, unit, unit->position.x, unit->position.y, unit->playerId, unit->currentDirection1);
+						CBullet* bullet = helper::createBulletRet(WeaponId::AuroraLastOrders, unit, unit->position.x, unit->position.y, unit->playerId, unit->currentDirection1);
 						hooks::splash(bullet, WeaponId::AuroraLastOrders, SplashType::FriendlyNew, nullptr);
 						if (bullet) {
 							bullet->time_remaining = 0;
@@ -429,7 +429,7 @@ namespace hooks {
 				if (unit->getRace() == RaceId::Terran) {
 					if (unit->status & UnitStatus::GroundedBuilding
 						|| units_dat::BaseProperty[unit->id] & UnitProperty::FlyingBuilding) {
-						if (unitHpIsInRedZone(unit)) {
+						if (helper::unitHpIsInRedZone(unit)) {
 							unit->damageHp(20, nullptr, unit->lastAttackingPlayer, true);
 						}
 					}
@@ -539,14 +539,14 @@ namespace hooks {
 		CUnit* v17;
 
 		*interceptorFocusedThisFrame = 0;
-		v0 = isSelectedUnitGroupEnabled();
+		v0 = helper::isSelectedUnitGroupEnabled();
 		if (v0) {
 			if (*IS_PLACING_BUILDING) {
-				refreshLayers3And4();
-				refreshPlaceBuildingLocation();
+				helper::refreshLayers3And4();
+				helper::refreshPlaceBuildingLocation();
 			}
 			if (*isTargeting) {
-				cancelTargetOrder();
+				helper::cancelTargetOrder();
 			}
 		}
 		v1 = *firstVisibleUnit;
@@ -571,19 +571,19 @@ namespace hooks {
 			}
 			*secondaryOrderTimerReassignCount = 300;
 		}
-		updateDisruptionWebStatus();
+		helper::updateDisruptionWebStatus();
 		v4 = *firstDyingUnit;
 		if (*firstDyingUnit) {
 			do {
 				v5 = v4->link.next;
 				*activeIscriptEntity = v4;
 				*activeIscriptUnit = v4;
-				progressDyingUnitFrame(v4);
+				helper::progressDyingUnitFrame(v4);
 				if (v4->sprite) {
 					if (*visionUpdated) {
 						v6 = v4->playerId;
 						if (playerTable[v6].type == 2) { // PLAYER_OCCUPIED
-							revealSightAtLocation(
+							helper::revealSightAtLocation(
 								1,
 								playerVision->flags[v6],
 								v4->sprite->position.x,
@@ -591,7 +591,7 @@ namespace hooks {
 								(v4->status >> 2) & 1); // is air unit
 						}
 					}
-					updateVisibility(v4);
+					helper::updateVisibility(v4);
 				}
 				v4 = v5;
 			} while (v5);
@@ -601,7 +601,7 @@ namespace hooks {
 			do {
 				*activeIscriptEntity = v7;
 				*activeIscriptUnit = v7;
-				progressActiveUnitFrame(v7);
+				helper::progressActiveUnitFrame(v7);
 				v7 = v7->link.next;
 			} while (v7);
 			v7 = *firstVisibleUnit;
@@ -613,7 +613,7 @@ namespace hooks {
 					v9 = v8->link.next;
 					*activeIscriptEntity = v8;
 					*activeIscriptUnit = v8;
-					refreshUnitVision(v8);
+					helper::refreshUnitVision(v8);
 					v8 = v9;
 				} while (v9);
 				v7 = *firstVisibleUnit;
@@ -621,7 +621,7 @@ namespace hooks {
 		}
 		if (v7) {
 			do {
-				updateVisibility(v7);
+				helper::updateVisibility(v7);
 				if (v7->status & 0x300 && scbw::get_generic_timer(v7, ValueId::DecloakTimer) == 0) {
 					v10 = v7->secondaryOrderTimer;
 					v7->isCloaked = 0;
@@ -629,7 +629,7 @@ namespace hooks {
 						v7->secondaryOrderTimer = v10 - 1;
 					}
 					else {
-						checkUnitVisibility(v7);
+						helper::checkUnitVisibility(v7);
 						v7->secondaryOrderTimer = 30;
 					}
 				}
@@ -643,7 +643,7 @@ namespace hooks {
 				v12 = v11->link.next;
 				*activeIscriptEntity = v11;
 				*activeIscriptUnit = v11;
-				progressUnitFrame(v11);
+				helper::progressUnitFrame(v11);
 				v11 = v12;
 			} while (v12);
 		}
@@ -656,12 +656,12 @@ namespace hooks {
 				}
 				*activeIscriptEntity = v13;
 				*activeIscriptUnit = v13;
-				unitUpdate(v13);
+				helper::unitUpdate(v13);
 				v13 = v14;
 			} while (v14);
 		}
 		updateBurrowingCloakingUnits();
-		updateUnitPower();
+		helper::updateUnitPower();
 		v15 = (*lurkerSplashListIndex)++ + 1;
 		if (*lurkerSplashListIndex == 32) {
 			v15 = 0;
@@ -675,7 +675,7 @@ namespace hooks {
 				v17 = v16->link.next;
 				*activeIscriptEntity = v16;
 				*activeIscriptUnit = v16;
-				progressUnitFrame(v16);
+				helper::progressUnitFrame(v16);
 				v16 = v17;
 			} while (v17);
 		}
@@ -697,7 +697,7 @@ namespace hooks {
 		if (*firstInvisibleUnit) {
 			while (1) {
 				v2 = v0->burrow_link.next;
-				if (isUnitCloaking(v0)) {
+				if (helper::isUnitCloaking(v0)) {
 					doCloak(v0, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 				}
 				else {
@@ -713,7 +713,7 @@ namespace hooks {
 					v5 = v0->status;
 					if (v5 & 0x100)
 						goto LABEL_13;
-					playSoundFromDirect(v0, 273);
+					helper::playSoundFromDirect(v0, 273);
 				}
 				v1 = 1;
 			LABEL_13:
@@ -739,7 +739,7 @@ namespace hooks {
 
 		v2 = unit;
 		if (!(unit->status & UnitStatus::Burrowed)) {
-			playSoundFromSource(soundId, unit, 1, 0);
+			helper::playSoundFromSource(soundId, unit, 1, 0);
 		}
 		if (!IS_IN_REPLAY && v2->playerId == *LOCAL_NATION_ID)
 		{
@@ -750,16 +750,16 @@ namespace hooks {
 			*ctrlUnderMouseValue = 0;
 		}
 		if (v2->status & UnitStatus::Burrowed) {
-			updateSpriteFlagOnPalette(v2->sprite);
-			showImagesHiddenByCloak(v2->sprite);
+			helper::updateSpriteFlagOnPalette(v2->sprite);
+			helper::showImagesHiddenByCloak(v2->sprite);
 			v2->status &= 0xFFFFFCFF;
 		}
 		else {
-			updateSpriteImagesForCloak(v2->sprite);
+			helper::updateSpriteImagesForCloak(v2->sprite);
 			v2->status = v2->status & 0xFFFFFEFF | UnitStatus::Cloaked;
 			v3 = v2->subunit;
 			if (v3) {
-				updateSpriteImagesForCloak(v3->sprite);
+				helper::updateSpriteImagesForCloak(v3->sprite);
 				v3->status = v3->status & 0xFFFFFEFF | UnitStatus::Cloaked;
 			}
 		}

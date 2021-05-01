@@ -86,13 +86,13 @@ namespace hooks {
 		v1 = a1;
 		*suppliesAvailableTemp = (*activePortraitUnit)->building.resource.resourceAmount;
 		if (*statusScreenFunc != 15) {
-			hideOptionalStatusScreenControls(a1);
-			showControlGroup(v1, -10, -13);
+			helper::hideOptionalStatusScreenControls(a1);
+			helper::showControlGroup(v1, -10, -13);
 			*statusScreenFunc = 15;
 		}
-		addTextToDialog((int)v1, -10, 0);
-		addTextToDialog((int)v1, -12, 0);
-		addTextToDialog((int)v1, -13, 0);
+		helper::addTextToDialog((int)v1, -10, 0);
+		helper::addTextToDialog((int)v1, -12, 0);
+		helper::addTextToDialog((int)v1, -13, 0);
 		v2 = (*activePortraitUnit)->id;
 		if ((uint16)v2 >= 0xB0u && (uint16)v2 <= 0xB2u) {
 			if (*statTxtTbl > 0x31Bu)
@@ -120,9 +120,9 @@ namespace hooks {
 			v5 = "";
 		v8 = (BufferStr*)v5;
 	LABEL_19:
-		addTextToDialog((int)v1, -11, (int)v8);
+		helper::addTextToDialog((int)v1, -11, (int)v8);
 		if (units_dat::ShieldsEnabled[(*activePortraitUnit)->id]) {
-			drawShieldUpgrade((int)v1, 0);
+			helper::drawShieldUpgrade((int)v1, 0);
 		} else {
 			if (v1->controlType)
 				v1 = *(BinDlg**)&v1->parent;
@@ -137,7 +137,7 @@ namespace hooks {
 			LABEL_26:
 				v6 = 0;
 			}
-			hideDialog(v6);
+			helper::hideDialog(v6);
 		}
 	}
 
@@ -168,10 +168,10 @@ namespace hooks {
 		v1 = (BinDlg*)a1;
 		v2 = *activePortraitUnit;
 		if (IS_IN_REPLAY || (uint8)(*activePortraitUnit)->playerId == *LOCAL_NATION_ID) {
-			getSuppliesUsed();
+			helper::getSuppliesUsed();
 			if (*statusScreenFunc != 12) {
-				hideOptionalStatusScreenControls(v1);
-				showControlGroup(v1, -10, -13);
+				helper::hideOptionalStatusScreenControls(v1);
+				helper::showControlGroup(v1, -10, -13);
 				v2 = *activePortraitUnit;
 				*statusScreenFunc = 12;
 			}
@@ -213,7 +213,7 @@ namespace hooks {
 			} else {
 				v9 = "";
 			}
-			v10 = getLastQueueSlotType((*activePortraitUnit));
+			v10 = helper::getLastQueueSlotType((*activePortraitUnit));
 			sprintf_s("", 260, "%s %d", v9, (units_dat::SupplyProvided[v10] + 1) / 2);
 			v11 = v20 + 66353;
 			if (v21 == -818) {
@@ -225,10 +225,10 @@ namespace hooks {
 				v12 = "";
 			}
 			ByteOperations::SetLowByte(v11, v21);
-			v13 = getSuppliesAvailable((*activePortraitUnit)->playerId, v11);
+			v13 = helper::getSuppliesAvailable((*activePortraitUnit)->playerId, v11);
 			sprintf_s(unkString_Char, 260, "%s %d", v12, (v13 + 1) / 2);
 			v22 = (*activePortraitUnit)->playerId;
-			v14 = units_dat::GroupFlags[getLastQueueSlotType((*activePortraitUnit))];
+			v14 = units_dat::GroupFlags[helper::getLastQueueSlotType((*activePortraitUnit))];
 			int race = (*activePortraitUnit)->getRace();
 			if (v14.isZerg) {
 				v15 = raceSupply[RaceId::Zerg].max[v22];
@@ -248,13 +248,13 @@ namespace hooks {
 				v17 = "";
 			}
 			sprintf_s(struct_Char2->buf, 260, "%s %d", v17, (unsigned int)(v15 + 1) >> 1);
-			addTextToDialog((int)v1, -10, (int)struct_Char);
-			addTextToDialog((int)v1, -11, (int)"");
-			addTextToDialog((int)v1, -12, (int)unkString_Char);
-			addTextToDialog((int)v1, -13, (int)struct_Char2);
+			helper::addTextToDialog((int)v1, -10, (int)struct_Char);
+			helper::addTextToDialog((int)v1, -11, (int)"");
+			helper::addTextToDialog((int)v1, -12, (int)unkString_Char);
+			helper::addTextToDialog((int)v1, -13, (int)struct_Char2);
 			v18 = (*activePortraitUnit)->id;
 			if (units_dat::ShieldsEnabled[v18]) {
-				drawShieldUpgrade((int)v1, 0);
+				helper::drawShieldUpgrade((int)v1, 0);
 			} else if (v18 != UnitId::ZergOvileth && v18 != UnitId::Hero_Yggdrasill) {
 				if (v1->controlType)
 					v1 = *(BinDlg**)&v1->parent;
@@ -269,12 +269,12 @@ namespace hooks {
 				LABEL_55:
 					v19 = 0;
 				}
-				hideDialog(v19);
+				helper::hideDialog(v19);
 			} else {
-				drawArmor((int)v1, v18, 0);
+				helper::drawArmor((int)v1, v18, 0);
 			}
 		} else {
-			unitStatAct_Standard((void*)a1);
+		helper::unitStatAct_Standard((void*)a1);
 		}
 	}
 
@@ -289,7 +289,7 @@ namespace hooks {
 			v2 = a2->playerId;
 			v3 = a1->playerId == 11 ? a1->sprite->playerId : a1->playerId;
 			if (!scbw::isAlliedTo(v2, v3)) {
-				ByteOperations::SetLowByte(v4, AI_UnitCanAttack(a1));
+				ByteOperations::SetLowByte(v4, helper::AI_UnitCanAttack(a1));
 				if (v4)
 					result = 1;
 			}
@@ -313,38 +313,38 @@ namespace hooks {
 		v3 = (*activePortraitUnit)->shields >> 8;
 		*userInterfaceEnergy = (*activePortraitUnit)->energy;
 		*userInterfaceShields = v3;
-		*redrawTransportUI = needRedrawUI();
-		genericStatusUpdateDrawnValues();
+		*redrawTransportUI = helper::needRedrawUI();
+		helper::genericStatusUpdateDrawnValues();
 		ByteOperations::SetLowWord(v4, v1->id);
 		if ((uint16)v4 >= 0xB0u && (uint16)v4 <= 0xB2u || (int16)v4 == 188)
 			goto LABEL_35;
 		if (!IS_IN_REPLAY && (uint8)v1->id != *LOCAL_NATION_ID)
 			goto LABEL_6;
 		if (!(v1->status & 1)) {
-			drawProgressBar((int)v2);
+			helper::drawProgressBar((int)v2);
 			goto LABEL_32;
 		}
 		if ((int16)v4 == 108) {
-			drawNukeSiloInfo((int)v2);
+			helper::drawNukeSiloInfo((int)v2);
 			goto LABEL_32;
 		}
-		if (unitIsActiveTransport(v1))
+		if (helper::unitIsActiveTransport(v1))
 			goto LABEL_6;
-		ByteOperations::SetLowByte(v5, isQueueSlotActive(v1, 0));
+		ByteOperations::SetLowByte(v5, helper::isQueueSlotActive(v1, 0));
 		if (v5) {
-			drawTrainingProgress(v2);
+			helper::drawTrainingProgress(v2);
 			goto LABEL_32;
 		}
-		if (isConstructingAddon(v1) || isAttemptingProtossBuild(v1)) {
-			drawAddonProgress((int)v2);
+		if (helper::isConstructingAddon(v1) || helper::isAttemptingProtossBuild(v1)) {
+			helper::drawAddonProgress((int)v2);
 			goto LABEL_32;
 		}
 		if (v1->building.techType != 44) {
-			drawTechProgress((int)v2);
+			helper::drawTechProgress((int)v2);
 			goto LABEL_32;
 		}
 		if (v1->building.upgradeType != 61) {
-			drawUpgradeProgress(v2);
+			helper::drawUpgradeProgress(v2);
 			goto LABEL_32;
 		}
 		v4 = (uint16)v4;
@@ -352,35 +352,35 @@ namespace hooks {
 			drawSupplyUnitInfo((int)v2);
 			goto LABEL_32;
 		}
-		ByteOperations::SetLowByte(v6, unitIsGeyser(v1));
+		ByteOperations::SetLowByte(v6, helper::unitIsGeyser(v1));
 		if (v6) {
 		LABEL_35:
-			drawGasQuantity(v2);
+			helper::drawGasQuantity(v2);
 			goto LABEL_32;
 		}
-		if (units_dat::AirWeapon[getLastQueueSlotType(v1)] == -126
-			&& unitGetGroundWeapon(v1) == -126
+		if (units_dat::AirWeapon[helper::getLastQueueSlotType(v1)] == -126
+			&& helper::unitGetGroundWeapon(v1) == -126
 			&& !units_dat::ShieldsEnabled[v4]) {
 		LABEL_6:
 			if (*statusScreenFunc != 4) {
-				hideOptionalStatusScreenControls(v2);
+				helper::hideOptionalStatusScreenControls(v2);
 				*statusScreenFunc = 4;
 			}
 			goto LABEL_32;
 		}
 		if (*statusScreenFunc != 3) {
-			hideOptionalStatusScreenControls(v2);
-			showControlGroup(v2, -20, 12);
+			helper::hideOptionalStatusScreenControls(v2);
+			helper::showControlGroup(v2, -20, 12);
 			*statusScreenFunc = 3;
 		}
-		drawDisplayButtons((int)v2);
-		v7 = getControlFromIndex(v2, -21);
-		hideDialog(v7);
+		helper::drawDisplayButtons((int)v2);
+		v7 = helper::getControlFromIndex(v2, -21);
+		helper::hideDialog(v7);
 	LABEL_32:
-		setTextStr((int)v2);
-		setUnitStatusStrText((int)v2);
-		v8 = unitGetName(*activePortraitUnit);
-		addTextToDialog((int)v2, -5, v8);
+		helper::setTextStr((int)v2);
+		helper::setUnitStatusStrText((int)v2);
+		v8 = helper::unitGetName(*activePortraitUnit);
+		helper::addTextToDialog((int)v2, -5, v8);
 	}
 
 	int calcUnitStrength(int a1, uint8 a2) { // 00431270
@@ -432,16 +432,16 @@ namespace hooks {
 			return 0;
 		if (a1->status & UnitStatus::IsHallucination) {
 			v5 = getTotalHitPointsPlusShields(a1);
-			if (getCurrentHitPointsPlusShields(v3) < v5)
+			if (helper::getCurrentHitPointsPlusShields(v3) < v5)
 				return 0;
 		}
-		v7 = getBaseStrength(a3, v3);
-		groundAir = getCurrentHitPointsPlusShields(v3);
+		v7 = helper::getBaseStrength(a3, v3);
+		groundAir = helper::getCurrentHitPointsPlusShields(v3);
 		if (units_dat::ShieldsEnabled[v4])
 			v8 = units_dat::MaxShieldPoints[v4];
 		else
 			v8 = 0;
-		v9 = v8 + getMaxHP(v3);
+		v9 = v8 + helper::getMaxHP(v3);
 		if (!v9)
 			v9 = 1;
 		return v7 * groundAir / v9;
@@ -454,7 +454,7 @@ namespace hooks {
 
 		result = 0;
 		if (a1->playerId == a2->playerId) {
-			if (canWeaponTargetUnit(WeaponId::Restoration, a1, a2)) {
+			if (helper::canWeaponTargetUnit(WeaponId::Restoration, a1, a2)) {
 				v3 = units_dat::ShieldsEnabled[(uint16)v2->id] ? v2->shields >> 8 : 0;
 				if (v3 + ((v2->hitPoints + 255) >> 8) > 60
 					&& scbw::isDebuffed(v2)) {
@@ -474,9 +474,9 @@ namespace hooks {
 
 		v2 = a1;
 		v3 = a2;
-		if (!AI_TargetUnitIsWorthHitting(a1, a2)
+		if (!helper::AI_TargetUnitIsWorthHitting(a1, a2)
 			|| !units_dat::ShieldsEnabled[(uint16)v2->id]
-			|| !canWeaponTargetUnit(WeaponId::EMP_Shockwave, v2, v3)) {
+			|| !helper::canWeaponTargetUnit(WeaponId::EMP_Shockwave, v2, v3)) {
 			return 0;
 		}
 		v5 = v2->sprite;
@@ -484,11 +484,11 @@ namespace hooks {
 		spriteX = v5->position.x;
 		*tempHPShields = 0;
 		*tempWeapon = WeaponId::EMP_Shockwave;
-		createSplashWeaponProc(
+		helper::createSplashWeaponProc(
 			160,
 			spriteX,
 			v6,
-			(int(__fastcall*)(int, int))unitShieldsClumpInAreaAccumulatorProc,
+			(int(__fastcall*)(int, int))helper::unitShieldsClumpInAreaAccumulatorProc,
 			(int)v3);
 		return *tempHPShields >= 200;
 	}
@@ -503,15 +503,15 @@ namespace hooks {
 		if (v4) {
 			if (!(v5->status & UnitStatus::Invincible)) {
 				if (a2) {
-					unitWasHit(v5, a2, a3 != WeaponId::Irradiate);
+					helper::unitWasHit(v5, a2, a3 != WeaponId::Irradiate);
 					if (a3 != WeaponId::Irradiate && v5->playerId != a2->playerId)
-						doAttackNotifyEvent(v5);
+						helper::doAttackNotifyEvent(v5);
 				}
 				if (units_dat::ShieldsEnabled[(uint16)v5->id]) {
 					if (v5->shields >= 256) {
 						*v4 = a3;
 						if (weapons_dat::DamageType[a3]) {
-							returnValue = (char)createShieldOverlay(a4, v5);
+							returnValue = (char)helper::createShieldOverlay(a4, v5);
 						}
 					}
 				}
@@ -580,8 +580,8 @@ namespace hooks {
 				if (!v15)
 					v15 = 1;
 			}
-			v16 = unk_billions((*(int*)(v5 + 8) + 255) >> 8, v15, (int)&v39, v13);
-			unk_billions2(*(int*)(v5 + 96) >> 8, units_dat::MaxShieldPoints[v6], (int)&colorData, HIBYTE(colorData));
+			v16 = helper::unk_billions((*(int*)(v5 + 8) + 255) >> 8, v15, (int)&v39, v13);
+			helper::unk_billions2(*(int*)(v5 + 96) >> 8, units_dat::MaxShieldPoints[v6], (int)&colorData, HIBYTE(colorData));
 			v17 = struct_5140E8;
 			if (v16 < (uint8)(*struct_5140E8).anonymous_0) {
 				do {
@@ -591,8 +591,8 @@ namespace hooks {
 			}
 			v19 = v38;
 			v20 = v37;
-			hpBarSurfaceBuffer(v37, v38, &v33, v39, (int)v17);
-			hpBarSurfaceBuffer2(colorData, v20, v19, (int)&v33);
+			helper::hpBarSurfaceBuffer(v37, v38, &v33, v39, (int)v17);
+			helper::hpBarSurfaceBuffer2(colorData, v20, v19, (int)&v33);
 			ByteOperations::SetHighByte(colorData, (uint8)8);
 		} else {
 			v36 = 5;
@@ -605,7 +605,7 @@ namespace hooks {
 				if (!v9)
 					v9 = 1;
 			}
-			v10 = unk_billions(
+			v10 = helper::unk_billions(
 				(*(int*)(colorData + 8) + 255) >> 8,
 				v9,
 				(int)&v39,
@@ -617,7 +617,7 @@ namespace hooks {
 					++v11;
 				} while (v10 < v12);
 			}
-			renderHPBar(v37, v38, &v33, v39, (int)v11);
+			helper::renderHPBar(v37, v38, &v33, v39, (int)v11);
 			ByteOperations::SetHighByte(colorData, 6);
 		}
 		v21 = *(int16*)(v5 + 100);
@@ -628,7 +628,7 @@ namespace hooks {
 			if (*(uint8*)(v5 + 76) == *LOCAL_NATION_ID) {
 				if (v22) {
 					if (!v23) {
-						v24 = getUnitMaxEnergy((CUnit*)v5) >> 8;
+						v24 = helper::getUnitMaxEnergy((CUnit*)v5) >> 8;
 						goto LABEL_32;
 					}
 				} else if (!v23) {
@@ -649,7 +649,7 @@ namespace hooks {
 				v34 = HIBYTE(colorData) + grpRect->top;
 				v36 = v28;
 				if (v28 >= 0 && !v29) {
-					v30 = getHpBarDrawSizes(
+					v30 = helper::getHpBarDrawSizes(
 						v26,
 						v24,
 						(int)&v39,
@@ -661,7 +661,7 @@ namespace hooks {
 							++v31;
 						} while (v30 < v32);
 					}
-					renderHPBar(v37, v38 + v27, &v33, v39, (int)v31);
+					helper::renderHPBar(v37, v38 + v27, &v33, v39, (int)v31);
 				}
 				return;
 			}
@@ -768,7 +768,7 @@ namespace hooks {
 			switch (v1) {
 				case OrderId::MagnaPulse:
 				case OrderId::StasisField:
-					if (v3 && !unitIsFrozen(v3))
+					if (v3 && !helper::unitIsFrozen(v3))
 						goto LABEL_23;
 					goto LABEL_17;
 				case OrderId::CastParasite:
@@ -779,7 +779,7 @@ namespace hooks {
 				case OrderId::EmpShockwave:
 					if (!v3)
 						goto LABEL_23;
-					ByteOperations::SetLowByte(v5, isUnitCasterNotHallucination(v3));
+					ByteOperations::SetLowByte(v5, helper::isUnitCasterNotHallucination(v3));
 					if (v5) {
 						if (HIBYTE(v3->energy) >= 0x64u)
 							goto LABEL_23;
@@ -810,7 +810,7 @@ namespace hooks {
 		} else {
 		LABEL_23:
 			if (orders_dat::UseWeaponTargeting[v2]) {
-				if (!canWeaponTargetUnit(v10, v3, a1))
+				if (!helper::canWeaponTargetUnit(v10, v3, a1))
 					return 1;
 			} else {
 				ByteOperations::SetLowByte(v6, orders_dat::TechUsed[v2]);
@@ -830,11 +830,11 @@ namespace hooks {
 							break;
 						default:
 							if ((uint8)v6 == TechId::SpiderMines) {
-								ByteOperations::SetLowByte(v7, getActiveTileFlag(v8, v9, 0x410000, 0));
+								ByteOperations::SetLowByte(v7, helper::getActiveTileFlag(v8, v9, 0x410000, 0));
 							} else {
 								if (!v3 || v3->status & 0x4000000)
 									goto LABEL_17;
-								v7 = (uint16)getTargetUnitAbilityErrorStatString(v3, a1->playerId, v6) == 0;
+								v7 = (uint16)helper::getTargetUnitAbilityErrorStatString(v3, a1->playerId, v6) == 0;
 							}
 							if (!v7)
 								goto LABEL_17;
@@ -852,7 +852,7 @@ namespace hooks {
 		signed int v4; // ecx
 
 		if (!a1) {
-			SErrSetLastError(87);
+			helper::SErrSetLastError(87);
 			return 0;
 		}
 		v3 = *(uint16*)(a1 + 100);
@@ -910,9 +910,9 @@ namespace hooks {
 		*v10 = 0;
 		v10[1] = 0;
 		// *(int32*)(a1 + 48) = v3;
-		updateImageDrawData((CImage*)a1);
+		helper::updateImageDrawData((CImage*)a1);
 		*(int8*)(a1 + 12) |= 1u;
-		playImageIscript((CImage*)a1, 0);
+		helper::playImageIscript((CImage*)a1, 0);
 	}
 
 	int32 AI_FindTransport(CUnit* a1, int a2) { // 004E6EF0
@@ -953,13 +953,13 @@ namespace hooks {
 			}
 			if ((v2->hitPoints + 255) >> 8 >= 3 * v6 / 4 || units_dat::ShieldsEnabled[v5] && v2->shields >> 8 == units_dat::MaxShieldPoints[v5]) {
 				v11 = 1;
-				if (canEnterTransport(v2, a1)) {
+				if (helper::canEnterTransport(v2, a1)) {
 					v7 = v2->mainOrderId;
 					if (v7 != OrderId::Pickup2 && v7 != OrderId::Unload) {
 						if (v7 != OrderId::MoveUnload
-							|| (v8 = SAI_GetRegionIdFromPxEx(v2->orderTarget.pt.x, v2->orderTarget.pt.y),
-								v8 == SAI_GetRegionIdFromPxEx(a1->orderTarget.pt.x, a1->orderTarget.pt.y))) {
-							v9 = getUnitDistanceToHalt(v2->sprite->position.y, a1, v2->sprite->position.x);
+							|| (v8 = helper::SAI_GetRegionIdFromPxEx(v2->orderTarget.pt.x, v2->orderTarget.pt.y),
+								v8 == helper::SAI_GetRegionIdFromPxEx(a1->orderTarget.pt.x, a1->orderTarget.pt.y))) {
+							v9 = helper::getUnitDistanceToHalt(v2->sprite->position.y, a1, v2->sprite->position.x);
 							if (v9 < v12) {
 								//								*(int32*)a2 = v2;
 								v12 = v9;
@@ -985,27 +985,27 @@ namespace hooks {
 			return 0;
 		switch (*(unsigned __int8*)a2) {
 			case 0u:
-				result = dataTransfer00(a3, a1, a2);
+				result = helper::dataTransfer00(a3, a1, a2);
 				break;
 			case 1u:
-				result = dataTransfer01(a3, a2, a1);
+				result = helper::dataTransfer01(a3, a2, a1);
 				break;
 			case 2u:
-				result = dataTransfer02(a3, a2, a1);
+				result = helper::dataTransfer02(a3, a2, a1);
 				break;
 			case 3u:
-				result = dataTransfer03(a3, a1, a2);
+				result = helper::dataTransfer03(a3, a1, a2);
 				break;
 			case 4u:
-				result = dataTransfer04(a3, a2, a1);
+				result = helper::dataTransfer04(a3, a2, a1);
 				break;
 			case 5u:
-				result = dataTransfer05(a3, a2);
+				result = helper::dataTransfer05(a3, a2);
 				break;
 			case 6u:
-				if (a3 == 3 && (v3 = (int)vectorTransfer(*(int8*)(a2 + 2), *(int8*)(a2 + 1))) != 0) {
+				if (a3 == 3 && (v3 = (int)helper::vectorTransfer(*(int8*)(a2 + 2), *(int8*)(a2 + 1))) != 0) {
 					*(int8*)(v3 + 52) &= 0xFDu;
-					dataTransfer06(v3);
+					helper::dataTransfer06(v3);
 					result = 1;
 				} else {
 					result = 0;

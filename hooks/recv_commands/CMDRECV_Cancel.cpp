@@ -38,7 +38,7 @@ namespace hooks {
 				unit->status & UnitStatus::Completed &&
 				unit->playerId == *ACTIVE_NATION_ID
 				) {
-				CancelAddon_Proc(unit);
+				helper::CancelAddon_Proc(unit);
 				scbw::refreshConsole();
 			}
 		}
@@ -54,7 +54,7 @@ namespace hooks {
 			unit->status & UnitStatus::Completed &&
 			unit->playerId == *ACTIVE_NATION_ID
 			) {
-			CancelUpgrade_Proc(unit);
+			helper::CancelUpgrade_Proc(unit);
 			scbw::refreshConsole();
 		}
 	}
@@ -70,7 +70,7 @@ namespace hooks {
 			unit->status & UnitStatus::Completed &&
 			unit->playerId == *ACTIVE_NATION_ID
 			) {
-			CancelResearch_Proc(unit);
+			helper::CancelResearch_Proc(unit);
 			scbw::refreshConsole();
 		}
 	}
@@ -94,13 +94,13 @@ namespace hooks {
 			unit->playerId == *ACTIVE_NATION_ID
 			) {
 			if (wUnitID == 0xFE) {
-				function_00466E40(unit);
+				helper::function_00466E40(unit);
 				scbw::refreshConsole();
 			} else
 				if (wUnitID == 0xFF)
 					scbw::refreshConsole();
 				else {
-					refundQueueSlot(unit, wUnitID);
+					helper::refundQueueSlot(unit, wUnitID);
 					scbw::refreshConsole();
 				}
 		}
@@ -112,7 +112,7 @@ namespace hooks {
 		current_unit = getActivePlayerNextSelection();
 		while (current_unit != nullptr) {
 			if (current_unit->playerId == *ACTIVE_NATION_ID)
-				AI_CancelStructure(current_unit);
+				helper::AI_CancelStructure(current_unit);
 			current_unit = getActivePlayerNextSelection();
 		}
 	}
@@ -134,7 +134,7 @@ namespace hooks {
 			getActivePlayerNextSelection() == nullptr &&
 			unit->playerId == *ACTIVE_NATION_ID
 			) {
-			AI_CancelStructure(unit);
+			helper::AI_CancelStructure(unit);
 		}
 	}
 }

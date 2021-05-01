@@ -25,7 +25,7 @@ namespace hooks {
 			unit->status |= UnitStatus::HoldingPosition;
 			if (unit->subunit != nullptr)
 				(unit->subunit)->status |= UnitStatus::HoldingPosition;
-			resultApplyCooldown = attackApplyCooldown(unit);
+			resultApplyCooldown = helper::attackApplyCooldown(unit);
 			if (resultApplyCooldown != 0) {
 				if (unit->orderTarget.pt.x != unit->nextTargetWaypoint.x
 					|| unit->orderTarget.pt.y != unit->nextTargetWaypoint.y) {
@@ -35,7 +35,7 @@ namespace hooks {
 			} else {
 				if (unit->mainOrderTimer == 0) {
 					unit->mainOrderTimer = 15;
-					unit->orderTarget.unit = findRandomAttackTarget(unit);
+					unit->orderTarget.unit = helper::findRandomAttackTarget(unit);
 					if (unit->orderTarget.unit != nullptr)
 						unit->orderQueueTimer = 0;
 				} //if(unit->mainOrderTimer == 0)
@@ -66,7 +66,7 @@ namespace hooks {
 		}
 
 		CThingy* bunkerAttackEffect =
-			createThingy(spriteId, offset.x + unit->getX(), offset.y + unit->getY(), unit->playerId);
+			helper::createThingy(spriteId, offset.x + unit->getX(), offset.y + unit->getY(), unit->playerId);
 
 		if (!bunkerAttackEffect)
 			return;
@@ -78,10 +78,10 @@ namespace hooks {
 			image != nullptr;
 			image = image->link.next
 			) {
-			setImageDirection(image, frameAngle);
+			helper::setImageDirection(image, frameAngle);
 		}
 
-		setThingyVisibilityFlags(bunkerAttackEffect);
+		helper::setThingyVisibilityFlags(bunkerAttackEffect);
 
 	}
 }

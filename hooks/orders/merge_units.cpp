@@ -64,7 +64,7 @@ namespace hooks {
 		if (unit->mainOrderState == 0) {
 
 			//93BB2
-			if (advanceRemainingBuildTime_Sub466940(unit)) {
+			if (helper::advanceRemainingBuildTime_Sub466940(unit)) {
 
 				unit->sprite->flags &= ~CSprite_Flags::IscriptCode;	//unset that flag
 
@@ -91,9 +91,9 @@ namespace hooks {
 				unit->status |= UnitStatus::IsBuilding;
 
 				//pathing related
-				function_0046A820(unit);
+				helper::function_0046A820(unit);
 
-				changeUnitButtonSet_Sub4E5D60(unit, unit->id);
+				helper::changeUnitButtonSet_Sub4E5D60(unit, unit->id);
 
 				*bCanUpdateCurrentButtonSet = 1;
 				*bCanUpdateSelectedUnitPortrait = 1;
@@ -101,9 +101,9 @@ namespace hooks {
 				*someDialogUnknown = nullptr;
 				*someDialogUnknownUser = nullptr;
 
-				playMorphingCompleteSound(unit);
+				helper::playMorphingCompleteSound(unit);
 				unit->order(units_dat::HumanIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, 0);
-				actUnitReturnToIdle(unit);
+				helper::actUnitReturnToIdle(unit);
 				if (unit->id == UnitId::ProtossAugur) {
 					unit->status |= UnitStatus::Completed;
 
@@ -126,7 +126,7 @@ namespace hooks {
 			) {	//conditions for merge not ok
 
 			//94838
-			setNextWaypoint_Sub4EB290(unit);
+			helper::setNextWaypoint_Sub4EB290(unit);
 
 			if (
 				unit->moveTarget.pt.x != unit->nextTargetWaypoint.x ||
@@ -164,7 +164,7 @@ namespace hooks {
 			if (unit->status & UnitStatus::IsNormal) {
 				if (unit->isTargetWithinMinRange(targetUnit, (2 * unit->current_speed2) / 256)) {
 					unit->status &= ~UnitStatus::IsNormal; //unset the flag
-					orderImmediate(unit, OrderId::ResetCollision1);
+					helper::orderImmediate(unit, OrderId::ResetCollision1);
 				}
 			}
 
@@ -183,7 +183,7 @@ namespace hooks {
 
 												//unit unmovable			
 				if (unit->mainOrderState != 0 && unit->getMovableState() == 2) {
-					makeToHoldPosition(unit);
+					helper::makeToHoldPosition(unit);
 					unit->orderToIdle();
 				} else {
 
@@ -192,7 +192,7 @@ namespace hooks {
 					unit->mainOrderState = 1;
 
 					if (distanceBetweenUnits > 19)
-						delayedSetMoveTarget_xy_Sub4EB960(
+						helper::delayedSetMoveTarget_xy_Sub4EB960(
 							unit,
 							targetUnit->sprite->position.x,
 							targetUnit->sprite->position.y
@@ -243,7 +243,7 @@ namespace hooks {
 						else
 							y = (uint16)y;
 
-						delayedSetMoveTarget_xy_Sub4EB960(unit, x, y);
+						helper::delayedSetMoveTarget_xy_Sub4EB960(unit, x, y);
 
 					} //if(distanceBetweenUnits <= 19)
 
@@ -253,11 +253,11 @@ namespace hooks {
 			else {
 
 				//9479C:
-				mergeStatusIntoUnit_Sub493180(unit, targetUnit);
-				replaceUnitWithType(unit, UnitId::ProtossMindTyrant);
+				helper::mergeStatusIntoUnit_Sub493180(unit, targetUnit);
+				helper::replaceUnitWithType(unit, UnitId::ProtossMindTyrant);
 
 				//update stuff related to the beginning of merge process I think
-				function_0049B440(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
+				helper::function_0049B440(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 
 				unit->sprite->flags &= ~CSprite_Flags::IscriptCode; //disable the flag if set
 
@@ -273,7 +273,7 @@ namespace hooks {
 				}
 
 				//947E0:
-				changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
+				helper::changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
 				scbw::refreshConsole();
 
 				unit->killCount += targetUnit->killCount;
@@ -284,7 +284,7 @@ namespace hooks {
 				targetUnit->remove();
 
 				unit->status &= ~UnitStatus::IsBuilding; //disable the flag if set
-				function_0046A820(unit); ////pathing related
+				helper::function_0046A820(unit); ////pathing related
 
 				unit->orderComputerCL(OrderId::CompletingArchonSummon);
 
@@ -307,7 +307,7 @@ namespace hooks {
 			) {	//conditions for merge not ok
 
 			//94A3F
-			setNextWaypoint_Sub4EB290(unit);
+			helper::setNextWaypoint_Sub4EB290(unit);
 
 			if (
 				unit->moveTarget.pt.x != unit->nextTargetWaypoint.x ||
@@ -344,7 +344,7 @@ namespace hooks {
 			if (unit->status & UnitStatus::IsNormal) {
 				if (unit->isTargetWithinMinRange(targetUnit, (2 * unit->current_speed2) / 256)) {
 					unit->status &= ~UnitStatus::IsNormal; //unset the flag
-					orderImmediate(unit, OrderId::ResetCollision1);
+					helper::orderImmediate(unit, OrderId::ResetCollision1);
 				}
 			}
 
@@ -363,7 +363,7 @@ namespace hooks {
 
 												//unit unmovable
 				if (unit->mainOrderState != 0 && unit->getMovableState() == 2) {
-					makeToHoldPosition(unit);
+					helper::makeToHoldPosition(unit);
 					unit->orderToIdle();
 				} else {
 
@@ -372,7 +372,7 @@ namespace hooks {
 					unit->mainOrderState = 1;
 
 					if (distanceBetweenUnits > 10)
-						delayedSetMoveTarget_xy_Sub4EB960(
+						helper::delayedSetMoveTarget_xy_Sub4EB960(
 							unit,
 							targetUnit->sprite->position.x,
 							targetUnit->sprite->position.y
@@ -424,7 +424,7 @@ namespace hooks {
 						else
 							y = (uint16)y;
 
-						delayedSetMoveTarget_xy_Sub4EB960(unit, x, y);
+						helper::delayedSetMoveTarget_xy_Sub4EB960(unit, x, y);
 
 					} //if(distanceBetweenUnits <= 19)
 
@@ -434,8 +434,8 @@ namespace hooks {
 			else {
 
 				//949BC:
-				mergeStatusIntoUnit_Sub493180(unit, targetUnit);
-				replaceUnitWithType(unit, UnitId::ProtossArchon);
+				helper::mergeStatusIntoUnit_Sub493180(unit, targetUnit);
+				helper::replaceUnitWithType(unit, UnitId::ProtossArchon);
 
 				unit->sprite->flags &= ~CSprite_Flags::IscriptCode; //disable the flag if set
 
@@ -451,7 +451,7 @@ namespace hooks {
 				}
 
 				//949F0:
-				changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
+				helper::changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
 				scbw::refreshConsole();
 
 				unit->killCount += targetUnit->killCount;
@@ -461,7 +461,7 @@ namespace hooks {
 				targetUnit->remove();
 
 				unit->status &= ~UnitStatus::IsBuilding; //disable the flag if set
-				function_0046A820(unit); ////pathing related
+				helper::function_0046A820(unit); ////pathing related
 
 				unit->orderComputerCL(OrderId::CompletingArchonSummon);
 			}

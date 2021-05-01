@@ -6,7 +6,7 @@ namespace hooks {
 		uint32 switchValue;
 		if (unit->mainOrderState == 0) {
 			//change move target destination to current position
-			setNextWaypoint_Sub4EB290(unit);
+			helper::setNextWaypoint_Sub4EB290(unit);
 			if (
 				unit->nextTargetWaypoint.x != unit->moveTarget.pt.x ||
 				unit->nextTargetWaypoint.y != unit->moveTarget.pt.y
@@ -25,7 +25,7 @@ namespace hooks {
 
 		//try healing current target, return a value depending
 		//on what happened
-		switchValue = doMedicHeal(unit, unit->orderTarget.unit);
+		switchValue = helper::doMedicHeal(unit, unit->orderTarget.unit);
 
 		if (switchValue == 3) //640C6
 			unit->orderTarget.unit = nullptr;
@@ -41,7 +41,7 @@ namespace hooks {
 			if (unit->mainOrderTimer == 0) {
 
 				unit->mainOrderTimer = 15;
-				unit->orderTarget.unit = MedicHeal_TargetAcquire(unit);
+				unit->orderTarget.unit = helper::MedicHeal_TargetAcquire(unit);
 
 				if (unit->orderTarget.unit != nullptr) {
 					unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
@@ -65,7 +65,7 @@ namespace hooks {
 					unit->orderQueueHead == nullptr ||
 					unit->orderQueueHead->orderId != OrderId::MedicHeal2
 					) 	//6413D
-					orderImmediate(unit, OrderId::MedicHeal2); //return to idle after heal
+					helper::orderImmediate(unit, OrderId::MedicHeal2); //return to idle after heal
 
 			}
 
@@ -90,7 +90,7 @@ namespace hooks {
 		Point16 pos;
 
 		//change move target destination to current position
-		setNextWaypoint_Sub4EB290(unit);
+		helper::setNextWaypoint_Sub4EB290(unit);
 
 		if (
 			unit->moveTarget.pt.x != unit->nextTargetWaypoint.x ||
@@ -117,7 +117,7 @@ namespace hooks {
 						)
 						bNotRemovableOrder = true;
 					else
-						removeOrderFromUnitQueue(outHangarChild, outHangarChild->orderQueueTail);
+						helper::removeOrderFromUnitQueue(outHangarChild, outHangarChild->orderQueueTail);
 
 				}
 
@@ -163,7 +163,7 @@ namespace hooks {
 					)
 					bNotRemovableOrder = true;
 				else
-					removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+					helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 
 			}
 
@@ -187,7 +187,7 @@ namespace hooks {
 
 	void orders_Guard(CUnit* unit) {
 
-		unit->mainOrderTimer = (uint8)RandBetween(0, 15, 29);
+		unit->mainOrderTimer = (uint8)helper::RandBetween(0, 15, 29);
 
 		if (playerTable[unit->playerId].type == PlayerType::Computer) {
 
@@ -238,7 +238,7 @@ namespace hooks {
 		//then disable the unit...I think
 		//That's why if it return true, nothing else is done
 		//since has already attacked
-		if (!function_004770E0(unit)) {
+		if (!helper::function_004770E0(unit)) {
 
 			if (unit->mainOrderTimer == 0) {
 
@@ -256,11 +256,11 @@ namespace hooks {
 
 				if (unit->getSeekRange() != 0) {
 
-					CUnit* target = findBestAttackTarget(unit);
+					CUnit* target = helper::findBestAttackTarget(unit);
 
 					if (target != nullptr)
 						//attack target I think, also used by function_004770E0
-						function_00476FC0(unit, target, 0, 1);
+						helper::function_00476FC0(unit, target, 0, 1);
 
 				}
 			}

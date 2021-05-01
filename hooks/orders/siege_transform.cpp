@@ -10,8 +10,8 @@ namespace hooks {
 			if (unit->id == UnitId::TerranPhalanxSiegeMode || unit->id == UnitId::Hero_EdmundDukeSiegeMode) {
 				if (!(unit->subunit->status & UnitStatus::NoBrkCodeStart)) {
 					unit->subunit->orderTo(OrderId::Nothing3, unit);
-					unitSetRetreatPoint(unit->subunit, units_dat::StartDirection[unit->subunit->id]);
-					playSubunitIscript(unit, IscriptAnimation::SpecialState1);
+					helper::unitSetRetreatPoint(unit->subunit, units_dat::StartDirection[unit->subunit->id]);
+					helper::playSubunitIscript(unit, IscriptAnimation::SpecialState1);
 					unit->mainOrderState = 2;
 				}
 			} else {
@@ -22,7 +22,7 @@ namespace hooks {
 
 		if (!bStopThere && unit->mainOrderState == 2) {
 
-			if (getCloserToDestination_sub402BE0(unit->subunit)) {
+			if (helper::getCloserToDestination_sub402BE0(unit->subunit)) {
 
 				CImage* current_image = unit->sprite->images.head;
 
@@ -31,7 +31,7 @@ namespace hooks {
 					current_image = current_image->link.next;
 				}
 
-				playSubunitIscript(unit, IscriptAnimation::SpecialState2);
+				helper::playSubunitIscript(unit, IscriptAnimation::SpecialState2);
 				unit->orderSignal &= ~0x01; //if bit 1 is set, unset it
 				unit->mainOrderState = 3;
 
@@ -54,9 +54,9 @@ namespace hooks {
 					else
 						unitNewId = unit->id;
 
-				replaceUnitWithType(unit, unitNewId);
-				orderReturnToIdle(unit);
-				orderReturnToIdle(unit->subunit);
+				helper::replaceUnitWithType(unit, unitNewId);
+				helper::orderReturnToIdle(unit);
+				helper::orderReturnToIdle(unit->subunit);
 
 			}
 
@@ -75,7 +75,7 @@ namespace hooks {
 			if (unit->id == UnitId::TerranPhalanxTankMode || unit->id == UnitId::Hero_EdmundDukeTankMode) {
 
 				if (unit->movementFlags & MovementFlags::Accelerating)
-					makeToHoldPosition(unit);
+					helper::makeToHoldPosition(unit);
 
 				unit->mainOrderState = 1;
 
@@ -96,13 +96,13 @@ namespace hooks {
 
 					if (!(unit->subunit->status & UnitStatus::NoBrkCodeStart)) {
 
-						unitSetRetreatPoint(unit, units_dat::StartDirection[unit->id]);
+						helper::unitSetRetreatPoint(unit, units_dat::StartDirection[unit->id]);
 						unit->subunit->orderTo(OrderId::Nothing3, unit);
-						unitSetRetreatPoint(unit->subunit, units_dat::StartDirection[unit->subunit->id]);
-						playSubunitIscript(unit, IscriptAnimation::SpecialState1);
+						helper::unitSetRetreatPoint(unit->subunit, units_dat::StartDirection[unit->subunit->id]);
+						helper::playSubunitIscript(unit, IscriptAnimation::SpecialState1);
 						unit->mainOrderState = 2;
 
-						if (checkForCloseUnit_sub464290(unit))
+						if (helper::checkForCloseUnit_sub464290(unit))
 							bStopThere = true;
 
 					}
@@ -114,9 +114,9 @@ namespace hooks {
 
 		if (!bStopThere && unit->mainOrderState == 2) {
 
-			if (getCloserToDestination_sub402BE0(unit)) {
+			if (helper::getCloserToDestination_sub402BE0(unit)) {
 
-				if (getCloserToDestination_sub402BE0(unit->subunit)) {
+				if (helper::getCloserToDestination_sub402BE0(unit->subunit)) {
 
 					uint16 unitNewId = unit->id;
 
@@ -129,7 +129,7 @@ namespace hooks {
 						else
 							unitNewId = unit->id;
 
-					replaceUnitWithType(unit, unitNewId);
+					helper::replaceUnitWithType(unit, unitNewId);
 					unit->mainOrderState = 3;
 
 				}
@@ -149,8 +149,8 @@ namespace hooks {
 					if (!(unit->orderQueueHead->orderId == OrderId::WatchTarget)) {
 
 						unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
-						actUnitReturnToIdle(unit);
-						orderReturnToIdle(unit->subunit);
+						helper::actUnitReturnToIdle(unit);
+						helper::orderReturnToIdle(unit->subunit);
 						bStopThere = true;
 
 					}
@@ -158,8 +158,8 @@ namespace hooks {
 				}
 
 				if (!bStopThere) {
-					orderReturnToIdle(unit);
-					orderReturnToIdle(unit->subunit);
+					helper::orderReturnToIdle(unit);
+					helper::orderReturnToIdle(unit->subunit);
 				}
 
 			}

@@ -32,9 +32,9 @@ namespace hooks {
 					CUnit* builtUnit;
 
 					if (unit->secondaryOrderState == 0)
-						builtUnit = attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 1);
+						builtUnit = helper::attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 1);
 					else
-						builtUnit = attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 0);
+						builtUnit = helper::attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 0);
 
 					unit->currentBuildUnit = builtUnit;
 
@@ -55,13 +55,13 @@ namespace hooks {
 
 					if (builtUnit != nullptr) {
 
-						hpGain = getHPGainForRepair(builtUnit);
+						hpGain = helper::getHPGainForRepair(builtUnit);
 
-						buildingAddon(builtUnit, hpGain, FALSE);
+						helper::buildingAddon(builtUnit, hpGain, FALSE);
 
 						if (builtUnit->status & UnitStatus::Completed) {
 
-							addHangarUnit(unit, builtUnit);
+							helper::addHangarUnit(unit, builtUnit);
 
 							unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 							unit->buildQueueSlot++;
@@ -141,9 +141,9 @@ namespace hooks {
 					CUnit* builtUnit;
 
 					if (unit->secondaryOrderState == 0)
-						builtUnit = attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 1);
+						builtUnit = helper::attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 1);
 					else
-						builtUnit = attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 0);
+						builtUnit = helper::attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 0);
 
 					unit->currentBuildUnit = builtUnit;
 
@@ -170,7 +170,7 @@ namespace hooks {
 					CUnit* builtUnit = unit->currentBuildUnit;
 
 					if (builtUnit != nullptr) {
-						uint32 hpGain = getHPGainForRepair(builtUnit);
+						uint32 hpGain = helper::getHPGainForRepair(builtUnit);
 						bool extraBuild = false;
 						if (scbw::get_generic_value(builtUnit, ValueId::Crucible) == 0) {
 							auto r = 256;
@@ -182,7 +182,7 @@ namespace hooks {
 								auto unit = unitsInSplash.getUnit(i);
 								if (n(unit)) {
 									scbw::set_generic_value(builtUnit, ValueId::Crucible, 5);//6 is ~100/15
-									buildingAddon(builtUnit, hpGain, TRUE);
+									helper::buildingAddon(builtUnit, hpGain, TRUE);
 									if (builtUnit->status & UnitStatus::Completed) {
 										extraBuild = true;
 									}
@@ -192,20 +192,20 @@ namespace hooks {
 						} else {
 							scbw::add_generic_value(builtUnit, ValueId::Crucible, -1);
 						}
-						if (extraBuild || buildingAddon(builtUnit, hpGain, TRUE)) {
+						if (extraBuild || helper::buildingAddon(builtUnit, hpGain, TRUE)) {
 
 							if (builtUnit->status & UnitStatus::Completed) {
 
-								AI_TrainingUnit(unit, builtUnit);
+								helper::AI_TrainingUnit(unit, builtUnit);
 
 								if (builtUnit->id == UnitId::TerranNuclearMissile)
-									hideAndDisableUnit(builtUnit);
+									helper::hideAndDisableUnit(builtUnit);
 								else
-									orderNewUnitToRally(builtUnit, unit);
+									helper::orderNewUnitToRally(builtUnit, unit);
 
 
 
-								function_00432430(unit, unit->buildQueueSlot);
+								helper::function_00432430(unit, unit->buildQueueSlot);
 
 								unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 								unit->buildQueueSlot = (unit->buildQueueSlot + 1) % 5;
@@ -225,11 +225,11 @@ namespace hooks {
 								uint8 counter = 4;
 
 								if (unit->currentBuildUnit != nullptr)
-									AI_CancelStructure(unit->currentBuildUnit);
+									helper::AI_CancelStructure(unit->currentBuildUnit);
 								else {
 
 									if (!units_dat::BaseProperty[unit->buildQueue[unit->buildQueueSlot % 5]] & UnitProperty::Building)
-										refundUnitTrainCost(unit->buildQueue[unit->buildQueueSlot % 5], unit->playerId);
+										helper::refundUnitTrainCost(unit->buildQueue[unit->buildQueueSlot % 5], unit->playerId);
 
 								}
 

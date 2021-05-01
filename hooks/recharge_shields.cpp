@@ -57,7 +57,7 @@ namespace hooks {
 || !(battery->status & UnitStatus::Completed)
 || battery->energy == 0
 || battery->isFrozen()
-|| isHangarUnit(target)
+|| helper::isHangarUnit(target)
 )
 result = 0;
 		else
@@ -110,7 +110,7 @@ result = 0;
 
 				if (unit->mainOrderState == 0) {
 
-					if (orderToMoveToTarget(unit, battery))
+					if (helper::orderToMoveToTarget(unit, battery))
 						unit->mainOrderState = 1;
 
 					bStopThere = true;
@@ -125,7 +125,7 @@ result = 0;
 								bStopThere = true;
 						} else
 							if (movableState == 1) { //unit reached destination
-								makeToHoldPosition(unit);
+								helper::makeToHoldPosition(unit);
 								unit->mainOrderState = 2;
 							} else { //probably movableState == 2 == unit unmovable
 								unit->orderToIdle();
@@ -141,11 +141,11 @@ result = 0;
 					if (battery->secondaryOrderId != OrderId::ShieldBattery)
 						battery->setSecondaryOrder(OrderId::ShieldBattery);
 
-					overlaysCounter = hasOverlay(unit);
+					overlaysCounter = helper::hasOverlay(unit);
 					unit->sprite->createOverlay(ImageId::RechargeShields_Small + overlaysCounter, 0, 0, 0);
 
 					//the order is correct, see OrderId.h description
-					insertFirstOrder(unit, OrderId::Harvest5);
+					helper::insertFirstOrder(unit, OrderId::Harvest5);
 
 					unit->mainOrderState = 3;
 

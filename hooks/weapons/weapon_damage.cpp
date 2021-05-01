@@ -55,7 +55,7 @@ void augurSacrifice(CUnit* target) {
 		});
 		if (nearest != nullptr) {
 			target->orderTarget.unit = nearest;
-			createBullet(WeaponId::AugurFinalHour, target, target->position.x, target->position.y, target->playerId,
+			helper::createBullet(WeaponId::AugurFinalHour, target, target->position.x, target->position.y, target->playerId,
 				scbw::getAngle(target->position.x, target->position.y, nearest->getX(), nearest->getY()));
 			scbw::hideAndDisableUnit(target);
 			target->status |= UnitStatus::Invincible;
@@ -249,8 +249,8 @@ namespace hooks {
 		}
 
 		//Update unit strength data
-		data.target->airStrength = getUnitStrength(data.target, false);
-		data.target->groundStrength = getUnitStrength(data.target, true);
+		data.target->airStrength = helper::getUnitStrength(data.target, false);
+		data.target->groundStrength = helper::getUnitStrength(data.target, true);
 	}
 
 	static void weaponDamage_damageModifiers(WeaponDamageData& data) {
@@ -358,11 +358,11 @@ namespace hooks {
 					if (target->status & UnitStatus::Invincible) {
 						return;
 					}
-					ApplySpores(target);
+					helper::ApplySpores(target);
 					CThingy* thingy = scbw::createThingy(SpriteId::Corrosive_Acid_Hit, target->getX(), target->getY(), 11);
 					if (thingy != nullptr) {
 						thingy->sprite->elevationLevel = target->sprite->elevationLevel + 1;
-						setThingyVisibilityFlags(thingy);
+						helper::setThingyVisibilityFlags(thingy);
 					}
 					//target->damageWith(30 * 256, WeaponId::PsiStorm, unit, unit->playerId);
 				});
@@ -386,13 +386,13 @@ namespace hooks {
 					uint32 haluPlayer = scbw::get_generic_value(data.target, ValueId::HallucinatingSourcePlayer);
 					if (haluPlayer != haluAttacker->playerId && !scbw::isAlliedTo(haluPlayer, haluAttacker->playerId)) return;
 
-					CUnit* hal_unit = createHallucination(haluAttacker, haluPlayer);
+					CUnit* hal_unit = helper::createHallucination(haluAttacker, haluPlayer);
 					if (hal_unit != nullptr) {
 						hal_unit->sprite->createOverlay(ImageId::HallucinationDeath3);
 						scbw::set_generic_unit(haluAttacker, ValueId::HallucinationPointer, hal_unit);
 
-						if (!placeHallucination(hal_unit)) {
-							UnitDestructor(hal_unit);
+						if (!helper::placeHallucination(hal_unit)) {
+							helper::UnitDestructor(hal_unit);
 						}
 					}
 				}
@@ -666,7 +666,7 @@ namespace hooks {
 						}
 						unit->addUnitEnergy(5 * 256);
 						if (show) {
-							addOverlayBelowMain(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+							helper::addOverlayBelowMain(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 						}
 					});
 				}
@@ -695,7 +695,7 @@ namespace hooks {
 					return; // Ally Check
 				}
 				if (units_dat::ShieldsEnabled[unit->id] && unit->shields < units_dat::MaxShieldPoints[unit->id] * 256) { // Shield Check for default behavior
-					addOverlayBelowMain(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+					helper::addOverlayBelowMain(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 				} else { // Return if both checks failed
 					return;
 				}
@@ -839,7 +839,7 @@ namespace hooks {
 				{
 					// Cyclops - Flak Cannon passive
 					auto newAngle = scbw::getAngle(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
-					createBullet(WeaponId::CyclopsFragmentaryShells, data.attacker, data.target->getX(), data.target->getY(), data.attacker->playerId, newAngle);
+					helper::createBullet(WeaponId::CyclopsFragmentaryShells, data.attacker, data.target->getX(), data.target->getY(), data.attacker->playerId, newAngle);
 					break;
 				}
 			}
@@ -916,7 +916,7 @@ namespace hooks {
 		}
 		if (!overlay) {
 			target->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
-			v6 = getCorrosiveSporesImage(target);
+			v6 = helper::getCorrosiveSporesImage(target);
 			targetFinal = target->subunit;
 			if (!targetFinal)
 				targetFinal = target;

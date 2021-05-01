@@ -22,13 +22,13 @@ namespace {
 
 namespace hooks {
 	void drawText(const char* text, int32 x, int32 y, int32 width, int32 height, char color = 2) {
-		GetColorHandle(color);
+		helper::GetColorHandle(color);
 		*printXYAlignment = 0x11;
 		drawTextBox->left = x;
 		drawTextBox->right = x + width;
 		drawTextBox->top = y;
 		drawTextBox->bottom = y + height;
-		BWFXN_PrintXY(text, x, y);
+		helper::BWFXN_PrintXY(text, x, y);
 	}
 
 	std::string numberWithLeadingZero(uint32 n) {
@@ -110,11 +110,11 @@ namespace hooks {
 			goto LABEL_8;
 		if (*scMainState == 4)
 			return v2;
-		if (SNetGetTurnsInTransit(&turns)) {
+		if (helper::SNetGetTurnsInTransit(&turns)) {
 			v2 = LOBYTE(turns) | HIBYTE(v2);
 			if (turns >= 16 - *provider_LatencyCalls)
 				return v2;
-			sendTurn();
+			helper::sendTurn();
 		LABEL_8:
 			_sgdwBytesInCmdQueue = *sgdwBytesInCmdQueue;
 			memcpy((void*)&TurnBuffer[*sgdwBytesInCmdQueue], buffer, len);
@@ -124,8 +124,8 @@ namespace hooks {
 		}
 		v2 = LOBYTE(outOfGame) | HIBYTE(v2);
 		if (!outOfGame) {
-			v5 = SErrGetLastError();
-			v2 = packetErrHandle(v5, 81, "Starcraft\\SWAR\\lang\\net_mgr.cpp", 225, 1) | HIBYTE(v2);
+			v5 = helper::SErrGetLastError();
+			v2 = helper::packetErrHandle(v5, 81, "Starcraft\\SWAR\\lang\\net_mgr.cpp", 225, 1) | HIBYTE(v2);
 		}
 		return v2;
 	}
@@ -143,35 +143,35 @@ namespace hooks {
 				default:
 					if (a3->orderQueueCount < 8u) {
 						if (*COrderCount < 1800) {
-							queueNewOrder((COrder*)a5, a1, a4, a3, a7, a8, a2, (Point32*)a9, (CUnit*)a10);
+							helper::queueNewOrder((COrder*)a5, a1, a4, a3, a7, a8, a2, (Point32*)a9, (CUnit*)a10);
 						} else {
 							uint8 v11 = a3->playerId;
 							if (*statTxtTbl > 0x368u)
-								showStatTxtToPlayer(*statTxtTbl + statTxtTbl[873], v11);
+								helper::showStatTxtToPlayer(*statTxtTbl + statTxtTbl[873], v11);
 							else
-								showStatTxtToPlayer((int32)"", v11);
+								helper::showStatTxtToPlayer((int32)"", v11);
 						}
 					} else {
 						uint8 v10 = a3->playerId;
 						if (*statTxtTbl > 0x366u)
-							showStatTxtToPlayer(*statTxtTbl + statTxtTbl[871], v10);
+							helper::showStatTxtToPlayer(*statTxtTbl + statTxtTbl[871], v10);
 						else
-							showStatTxtToPlayer((int32)"", v10);
+							helper::showStatTxtToPlayer((int32)"", v10);
 					}
 					break;
 			}
 		} else {
 		LABEL_15:
-			setOrderTarget(a7, a1, a4, a5, (int32)a3, (CUnit*)a8, (uint16)a2, (Point32*)a9, (CUnit*)a10);
+			helper::setOrderTarget(a7, a1, a4, a5, (int32)a3, (CUnit*)a8, (uint16)a2, (Point32*)a9, (CUnit*)a10);
 		}
 	}
 
 	int32 selectUnits(CUnit** a1, int32 a2, uint8 a3, int32 a4) {
-		int32 v4 = CUnitToUnitID(*a1);
-		int32 result = selectSingleUnitFromID(v4); // eax
+		int32 v4 = helper::CUnitToUnitID(*a1);
+		int32 result = helper::selectSingleUnitFromID(v4); // eax
 
 		if (a2 != 1 || !IS_KEYCODE_USED[18] || result == 0)
-			result = selectMultipleUnitsFromUnitList(a2, a1, a3, a4);
+			result = helper::selectMultipleUnitsFromUnitList(a2, a1, a3, a4);
 		return result;
 	}
 }

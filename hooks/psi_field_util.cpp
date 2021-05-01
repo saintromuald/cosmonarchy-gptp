@@ -59,7 +59,7 @@ void addPsiField(CUnit* unit) {
 	if (*firstPsiFieldProvider)
 		(*firstPsiFieldProvider)->psi_link.prev = unit;
 	*firstPsiFieldProvider = unit;
-	addPsiFieldSprite(unit);
+	helper::addPsiFieldSprite(unit);
 	*canUpdatePoweredStatus = true;
 }
 
@@ -102,7 +102,7 @@ void updatePsiFieldPosition(CUnit* unit) {
 		//  i->flags |= 1;  //Redraw image
 
 		psiField->setPosition(unit->getX(), unit->getY());
-		refreshSpriteData(psiField);
+		helper::refreshSpriteData(psiField);
 		*canUpdatePoweredStatus = true;
 	}
 }

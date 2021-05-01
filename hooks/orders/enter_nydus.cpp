@@ -104,7 +104,7 @@ namespace hooks {
 		} else { //EA428
 
 			if (unit->mainOrderState == 0) {	//EA464
-				if (orderToMoveToTarget(unit, nydusCanal))
+				if (helper::orderToMoveToTarget(unit, nydusCanal))
 					unit->mainOrderState = 1;
 			} else
 				if (unit->mainOrderState == 1) { //EA43B

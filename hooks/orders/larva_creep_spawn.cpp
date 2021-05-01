@@ -4,7 +4,7 @@
 
 namespace hooks {
 
-	setCreepRelationalData_callback runCreepRandomizerPtr = &runCreepRandomizer;
+	helper::setCreepRelationalData_callback runCreepRandomizerPtr = &runCreepRandomizer;
 
 	//probably create the single larva accompanying
 	//a building at game beginning
@@ -13,25 +13,25 @@ namespace hooks {
 		Point32 coords;
 
 		//look for a location to spawn a larva at
-		if (function_004E8E10(main_building, &coords)) {
+		if (helper::function_004E8E10(main_building, &coords)) {
 
-			CUnit* unit_created = createUnit(UnitId::ZergLarva, coords.x, coords.y, main_building->playerId);
+			CUnit* unit_created = helper::createUnit(UnitId::ZergLarva, coords.x, coords.y, main_building->playerId);
 
 			if (unit_created != nullptr) {
 
 				//update various stuff (set hp, set shield...) not finished on CreateUnit
-				updateUnitStatsFinishBuilding(unit_created);
+				helper::updateUnitStatsFinishBuilding(unit_created);
 
-				updateUnitStrength(unit_created);
+				helper::updateUnitStrength(unit_created);
 
 				unit_created->connectedUnit = main_building;
 
 				//set mainOrderState depending on the collision
 				//state with the connected building			
-				function_004E8DA0(unit_created);
+				helper::function_004E8DA0(unit_created);
 
 				if (main_building->pAI != nullptr)
-					AI_TrainingOverlord(main_building, unit_created);
+					helper::AI_TrainingOverlord(main_building, unit_created);
 
 			} //if(unit_created != nullptr)
 
@@ -91,7 +91,7 @@ namespace hooks {
 			coords.bottom = unit->sprite->position.y + 256;
 
 			//Count existing larvas in LARVA_COUNTER
-			IterateUnitsAtLocationTargetProc_LarvaCount(unit, &coords);
+			helper::IterateUnitsAtLocationTargetProc_LarvaCount(unit, &coords);
 
 			if (*LARVA_COUNTER < 3 && !(unit->status & UnitStatus::InAir)) {
 
@@ -120,28 +120,28 @@ namespace hooks {
 						unit->building.larvaTimer = 12;
 					}
 
-					if (!function_004E8E10(unit, &coords_2))
+					if (!helper::function_004E8E10(unit, &coords_2))
 						unit->building.larvaTimer = 3;
 					else {
 
 						//EA830:
-						CUnit* new_larva = createUnit(UnitId::ZergLarva, coords_2.x, coords_2.y, unit->playerId);
+						CUnit* new_larva = helper::createUnit(UnitId::ZergLarva, coords_2.x, coords_2.y, unit->playerId);
 
 						if (new_larva != nullptr) {
 
 							//update various stuff (set hp, set shield...) not finished on CreateUnit
-							updateUnitStatsFinishBuilding(new_larva);
+							helper::updateUnitStatsFinishBuilding(new_larva);
 
-							updateUnitStrength(new_larva);
+							helper::updateUnitStrength(new_larva);
 
 							new_larva->connectedUnit = unit;
 
 							//set mainOrderState depending on the collision
 							//state with the connected building						
-							function_004E8DA0(new_larva);
+							helper::function_004E8DA0(new_larva);
 
 							if (unit->pAI != nullptr)
-								AI_TrainingOverlord(unit, new_larva);
+								helper::AI_TrainingOverlord(unit, new_larva);
 
 						} //if(new_larva != nullptr)
 
@@ -187,7 +187,7 @@ namespace hooks {
 			//look for a place to spawn creep on
 			//return value == 0 if all potential tiles are already creep, 2 == potential tiles are occupied by another building, 1 == potential tiles are otherwise still available
 			// Replace UnitId::ZergHive with unit->id if giving specific buildings different creep bounding rectangles in getCreepRegion
-			result_00414680 = spreadCreep(unit->id, unit->sprite->position.x, unit->sprite->position.y);
+			result_00414680 = helper::spreadCreep(unit->id, unit->sprite->position.x, unit->sprite->position.y);
 			if (unit->id == UnitId::ZergInfestedCommandCenter) {
 				result_00414680 = 0;
 			}
@@ -299,13 +299,13 @@ namespace hooks {
 			rect->bottom = (y + maxCreepAreaDown) / 32;
 			if (rect->left < 0) {
 				rect->left = 0;
-			} else if (rect->right >= *mapTileBufWidth) {
-				rect->right = *mapTileBufWidth - 1;
+			} else if (rect->right >= *helper::mapTileBufWidth) {
+				rect->right = *helper::mapTileBufWidth - 1;
 			}
 			if (rect->top < 0) {
 				rect->top = 0;
-			} else if (rect->bottom >= *mapTileBufHeight) {
-				rect->bottom = *mapTileBufHeight - 1;
+			} else if (rect->bottom >= *helper::mapTileBufHeight) {
+				rect->bottom = *helper::mapTileBufHeight - 1;
 			}
 			return true;
 		}
@@ -317,13 +317,13 @@ namespace hooks {
 		rect->bottom = rect->top + h - 1;
 		if (rect->left < 0) {
 			rect->left = 0;
-		} else if (rect->right >= *mapTileBufWidth) {
-			rect->right = *mapTileBufWidth - 1;
+		} else if (rect->right >= *helper::mapTileBufWidth) {
+			rect->right = *helper::mapTileBufWidth - 1;
 		}
 		if (rect->top < 0) {
 			rect->top = 0;
-		} else if (rect->bottom >= *mapTileBufHeight) {
-			rect->bottom = *mapTileBufHeight - 1;
+		} else if (rect->bottom >= *helper::mapTileBufHeight) {
+			rect->bottom = *helper::mapTileBufHeight - 1;
 		}
 		return false;
 	}
@@ -359,7 +359,7 @@ namespace hooks {
 	// !!! WARNING !!! Because of the super fun getUnitPointer call in this function, you probably never want to call this function directly
 	bool inCreepArea(int32 x, int32 y) {
 		// Default function:
-		CUnit* unit = getUnitPointer();
+		CUnit* unit = helper::getUnitPointer();
 
 		return (x * x * 100 + y * y * 256) <= 10240000;
 

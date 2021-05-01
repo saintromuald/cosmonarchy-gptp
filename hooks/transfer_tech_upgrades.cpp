@@ -114,7 +114,7 @@ namespace hooks {
 
 		//Stop if the source unit does not exist
 		if (researchTechFunc == NULL || sourceUnit == nullptr)
-			SErrSetLastError(87);
+			helper::SErrSetLastError(87);
 		else {
 
 			bool bBreakMainLoop = false;
@@ -177,7 +177,7 @@ namespace hooks {
 
 		//Stop if the source unit does not exist
 		if (researchUpgradesFunc == NULL || sourceUnit == nullptr)
-			SErrSetLastError(87);	//0x57
+			helper::SErrSetLastError(87);	//0x57
 		else {
 
 			bool bBreakMainLoop = false;

@@ -132,7 +132,7 @@ namespace hooks {
 
 		bool hasGuaranteedHitUnit = guaranteedHit != nullptr;
 		if (hasGuaranteedHitUnit && nathrokorCondition(bullet, bullet->attackTarget.unit)) {
-			weaponBulletShot(guaranteedHit, bullet, 1);
+			helper::weaponBulletShot(guaranteedHit, bullet, 1);
 		}
 		int divisor = 1;
 		if (weaponId == WeaponId::ArchitectDispersiveSalvo) {
@@ -180,7 +180,7 @@ namespace hooks {
 				outer = (int16)(splashBase * (1 + 0.1 * stacks));
 			}
 
-			if (!isUnitDistanceWithin(target, bullet, outer)) continue;
+			if (!helper::isUnitDistanceWithin(target, bullet, outer)) continue;
 
 			// Don't storm a unit that's already being stormed
 			if (bullet->weaponType == WeaponId::PsiStorm) {
@@ -202,8 +202,8 @@ namespace hooks {
 				inner = (int16)(splashBase * (1 + 0.1 * stacks));
 			}
 
-			if (isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet, target)) {
-				weaponBulletShot(target, bullet, divisor); // 100% damage
+			if (helper::isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet, target)) {
+				helper::weaponBulletShot(target, bullet, divisor); // 100% damage
 				continue;
 			}
 
@@ -228,14 +228,14 @@ namespace hooks {
 				radius = 32;
 			}
 
-			if (isUnitDistanceWithin(target, bullet, medium) && nathrokorCondition(bullet, target)) {
-				weaponBulletShot(target, bullet, divisor * 2); // 50% damage
+			if (helper::isUnitDistanceWithin(target, bullet, medium) && nathrokorCondition(bullet, target)) {
+				helper::weaponBulletShot(target, bullet, divisor * 2); // 50% damage
 				continue;
 			}
 
 			// Outer radius
 			if (nathrokorCondition(bullet, target)) {
-				weaponBulletShot(target, bullet, divisor * 4); // 25% damage
+				helper::weaponBulletShot(target, bullet, divisor * 4); // 25% damage
 			}
 		}
 	}
@@ -273,7 +273,7 @@ namespace hooks {
 			if (!scbw::canWeaponTargetUnit(bullet->weaponType, target, target)) continue;
 
 			// We found units in a square around the target, but is the target within the splash radius?
-			if (!isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[bullet->weaponType])) continue;
+			if (!helper::isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[bullet->weaponType])) continue;
 
 			if (bullet->sourceUnit != nullptr) {
 				/*
@@ -302,7 +302,7 @@ namespace hooks {
 					continue;
 				globals.add_lurker_spine_pair(bullet->sourceUnit, target);
 			}
-			weaponBulletShot(target, bullet, 1);
+			helper::weaponBulletShot(target, bullet, 1);
 		}
 	}
 
@@ -336,7 +336,7 @@ namespace hooks {
 		if (bullet->sourceUnit != nullptr && weaponId == WeaponId::Lockdown) {
 			CUnit* mine = scbw::createUnitIngame(UnitId::TerranLobotomyMine, bullet->srcPlayer, bullet->position.x, bullet->position.y);
 			if (mine != nullptr) {
-				turnUnit(mine, bullet->sourceUnit->currentDirection1);
+				helper::turnUnit(mine, bullet->sourceUnit->currentDirection1);
 			}
 		}
 
@@ -378,7 +378,7 @@ namespace hooks {
 		if (bullet->hitFlags & 1) { // Miss ?
 			if (target->pAI == nullptr) return;
 			if (bullet->sourceUnit == nullptr) return;
-			doWeaponHit(target, bullet->sourceUnit, divisor);
+			helper::doWeaponHit(target, bullet->sourceUnit, divisor);
 			return;
 		}
 
@@ -411,7 +411,7 @@ namespace hooks {
 					}
 				}
 			}
-			weaponBulletShot(target, bullet, divisor);
+			helper::weaponBulletShot(target, bullet, divisor);
 		}
 	}
 
@@ -453,8 +453,8 @@ namespace hooks {
 			weaponIdLoop = bullet->weaponType;
 			if (target != bullet->sourceUnit && (target->playerId != bullet->srcPlayer || target == bullet->attackTarget.unit)) {
 				if (scbw::canWeaponTargetUnit(weaponIdLoop, target, target)) {
-					if (isUnitDistanceWithin(target, bullet, weapons_dat::OuterSplashRadius[weaponIdLoop])) {
-						if (isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[weaponIdLoop])
+					if (helper::isUnitDistanceWithin(target, bullet, weapons_dat::OuterSplashRadius[weaponIdLoop])) {
+						if (helper::isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[weaponIdLoop])
 							&& target == bullet->attackTarget.unit) {
 							if (globals.extended_unit_table) {
 								new_unit_table.air_splash_results[0] = target;
@@ -480,12 +480,12 @@ namespace hooks {
 			if (*airSplashListCount == 1) {
 				list = 0;
 			} else {
-				list = RandomizeShort(58) % *airSplashListCount;
+				list = helper::RandomizeShort(58) % *airSplashListCount;
 			}
 			if (globals.extended_unit_table) {
-				weaponBulletShot(target, bullet, (int32)new_unit_table.air_splash_results[list]);
+				helper::weaponBulletShot(target, bullet, (int32)new_unit_table.air_splash_results[list]);
 			} else {
-				weaponBulletShot(target, bullet, (int32)airSplashList[list]);
+				helper::weaponBulletShot(target, bullet, (int32)airSplashList[list]);
 			}
 
 		}
@@ -497,7 +497,7 @@ namespace hooks {
 	void yamatoDamage(CBullet* bullet, uint32 weaponId) {
 		if (bullet->attackTarget.unit == nullptr) return;
 		darkSwarmDamage(bullet->attackTarget.unit->position.x, bullet->attackTarget.unit->position.y, 1, bullet, weaponId);
-		weaponBulletShot(bullet->attackTarget.unit, bullet, 1);
+		helper::weaponBulletShot(bullet->attackTarget.unit, bullet, 1);
 	}
 
 	void parasite(CBullet* bullet, uint32 weaponId) {

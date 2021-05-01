@@ -19,7 +19,7 @@ namespace hooks {
 					unitToBuild = 0; //not translating it as marine as it's an error case
 
 			if (current_selection->canMakeUnit(unitToBuild, *ACTIVE_NATION_ID) == 1 &&
-				HasMoneyCanMake(current_selection, unitToBuild) //add unit to build queue if successful
+				helper::HasMoneyCanMake(current_selection, unitToBuild) //add unit to build queue if successful
 				) {
 				if (current_selection->id == UnitId::ProtossSolarion ||
 					current_selection->id == UnitId::ProtossAccantor
@@ -49,7 +49,7 @@ namespace hooks {
 			if (builder->canMakeUnit(wUnitType, *ACTIVE_NATION_ID) == 1 /*&&
 				wUnitType <= UnitId::Spell_DisruptionWeb*/ //id before buildings id //must be disabled for paladins
 				) {
-				if (HasMoneyCanMake(builder, wUnitType)) //add unit to build queue if successful
+				if (helper::HasMoneyCanMake(builder, wUnitType)) //add unit to build queue if successful
 					builder->setSecondaryOrder(OrderId::Train);
 				scbw::refreshConsole();
 			}

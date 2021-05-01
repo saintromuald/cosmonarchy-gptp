@@ -125,7 +125,7 @@ namespace hooks {
 			if (!TechCapableUnit) {
 				char* message = (char*)statTxtTblNew->getString(864);
 				CUnit* portrait_unit = playersSelections->unit[*ACTIVE_NATION_ID][0];
-				get_statTxt_Str_0(*activePortraitUnit, (*activePortraitUnit)->playerId, message);
+				helper::get_statTxt_Str_0(*activePortraitUnit, (*activePortraitUnit)->playerId, message);
 				return;
 			}
 		}

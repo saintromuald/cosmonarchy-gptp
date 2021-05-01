@@ -75,7 +75,7 @@ namespace hooks {
 		if (target == unit) {
 			return false;
 		}
-		if (!func_dounitscollide(unit, target)) {
+		if (!helper::func_dounitscollide(unit, target)) {
 			return false;
 		}
 		return true;
@@ -121,7 +121,7 @@ namespace hooks {
 				//from Ai_Burrowable
 				//
 				if (nearest != nullptr) {
-					unburrow(unit);
+					helper::unburrow(unit);
 				}
 			}
 
@@ -348,7 +348,7 @@ namespace hooks {
 							}
 						}
 						if (canBurrow) {
-							orderComputerClear(a1, OrderId::Burrow);
+							helper::orderComputerClear(a1, OrderId::Burrow);
 						}
 					}
 				}

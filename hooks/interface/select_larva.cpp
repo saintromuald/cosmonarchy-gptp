@@ -52,7 +52,7 @@ namespace hooks {
 		coords.left = (*activePortraitUnit)->sprite->position.x - 128;
 		coords.top = (*activePortraitUnit)->sprite->position.y - 128;
 
-		units_in_bounds = getAllUnitsInBounds(&coords);
+		units_in_bounds = helper::getAllUnitsInBounds(&coords);
 
 		larvaeCount = getLarvaeUnitsFromListHook(units_in_bounds, new_selection);
 
@@ -64,12 +64,12 @@ namespace hooks {
 			bool bJumpToEnd = false;
 
 			if (larvaeCount == 1 && *IS_HOLDING_ALT != 0) {
-				uint32 unitID = CUnitToUnitID(new_selection[0]);
-				bJumpToEnd = (selectSingleUnitFromID(unitID) != 0);
+				uint32 unitID = helper::CUnitToUnitID(new_selection[0]);
+				bJumpToEnd = (helper::selectSingleUnitFromID(unitID) != 0);
 			}
 
 			if (!bJumpToEnd)
-				selectMultipleUnitsFromUnitList(new_selection, larvaeCount, 1, 1);
+				helper::selectMultipleUnitsFromUnitList(new_selection, larvaeCount, 1, 1);
 		}
 	}
 }

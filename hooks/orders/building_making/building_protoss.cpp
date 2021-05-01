@@ -17,7 +17,7 @@ namespace hooks {
 			unit->status |= UnitStatus::IsGathering;
 
 		if (unit->mainOrderState == 0) {
-			if (function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
+			if (helper::function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
 				unit->mainOrderState = 1;
 		} else
 			if (unit->mainOrderState == 1) {
@@ -34,10 +34,10 @@ namespace hooks {
 				if (distance / 256 > distance_wanted) {
 
 					if (unit->getMovableState() != 0)
-						function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+						helper::function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 				} else { //E4DA9
-					makeToHoldPosition(unit);
+					helper::makeToHoldPosition(unit);
 					unit->mainOrderState = 2;
 				}
 
@@ -54,21 +54,21 @@ namespace hooks {
 						else
 							distance_wanted = 70;
 
-						if (!isDistanceGreaterThanHaltDistance(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, distance_wanted)) {
+						if (!helper::isDistanceGreaterThanHaltDistance(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, distance_wanted)) {
 
 							if (unit->getMovableState() != 0)
-								function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+								helper::function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 						} else {
 
-							if (function_00467030(unit)) {
+							if (helper::function_00467030(unit)) {
 
 								CUnit* builtUnit;
 
 								if (isBuildingAssimilator)
-									builtUnit = function_004678A0(unit, UnitId::ProtossAquifer);
+									builtUnit = helper::function_004678A0(unit, UnitId::ProtossAquifer);
 								else
-									builtUnit = createUnit(
+									builtUnit = helper::createUnit(
 										unit->buildQueue[unit->buildQueueSlot],
 										unit->orderTarget.pt.x,
 										unit->orderTarget.pt.y,
@@ -78,18 +78,18 @@ namespace hooks {
 								unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 
 								if (builtUnit == nullptr) {
-									displayLastNetErrorForPlayer(unit->playerId);
+									helper::displayLastNetErrorForPlayer(unit->playerId);
 									unit->orderToIdle();
 								} else { //E4E63
 
-									replaceSpriteImages(builtUnit->sprite, ImageId::WarpAnchor, 0);
+									helper::replaceSpriteImages(builtUnit->sprite, ImageId::WarpAnchor, 0);
 
 									if (isBuildingAssimilator)
-										addOverlayBelowMain(builtUnit->sprite, ImageId::VespeneGeyser, 0, 0, 0);
+										helper::addOverlayBelowMain(builtUnit->sprite, ImageId::VespeneGeyser, 0, 0, 0);
 
 									unit->orderTarget.unit = builtUnit;
 
-									AI_TrainingOverlord(unit, builtUnit);
+									helper::AI_TrainingOverlord(unit, builtUnit);
 
 									builtUnit->orderComputerCL(OrderId::BuildSelf2);
 
@@ -156,7 +156,7 @@ namespace hooks {
 							current_image->iscriptOffset = *(uint16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x22);
 							current_image->wait = 0;
 							current_image->unknown14 = 0;
-							iscript_OpcodeCases(current_image, (uint32)&current_image->iscriptHeaderOffset, 0, 0);
+							helper::iscript_OpcodeCases(current_image, (uint32)&current_image->iscriptHeaderOffset, 0, 0);
 
 						}
 
@@ -178,14 +178,14 @@ namespace hooks {
 
 						building->orderSignal -= 1;
 
-						replaceSpriteImages(
+						helper::replaceSpriteImages(
 							building->sprite,
 							//					sprites_dat::ImageId[building->sprite->spriteId],
 							scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId),
 							0
 						);
 
-						function_004D8500(building->sprite->mainGraphic);
+						helper::function_004D8500(building->sprite->mainGraphic);
 
 						building->mainOrderState = 2;
 
@@ -200,7 +200,7 @@ namespace hooks {
 
 							building->orderSignal -= 1;
 
-							replaceSpriteImages(
+							helper::replaceSpriteImages(
 								building->sprite,
 								//					sprites_dat::ImageId[building->sprite->spriteId],
 								scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId),
@@ -219,7 +219,7 @@ namespace hooks {
 									current_image->iscriptOffset = *(uint16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x32);
 									current_image->wait = 0;
 									current_image->unknown14 = 0;
-									iscript_OpcodeCases(current_image, (uint32)&current_image->iscriptHeaderOffset, 0, 0);
+									helper::iscript_OpcodeCases(current_image, (uint32)&current_image->iscriptHeaderOffset, 0, 0);
 
 								}
 
@@ -239,9 +239,9 @@ namespace hooks {
 
 								building->orderSignal -= 1;
 
-								updateUnitStatsFinishBuilding(building);
-								updateUnitStrength(building);
-								function_0042D9A0(building);
+								helper::updateUnitStatsFinishBuilding(building);
+								helper::updateUnitStrength(building);
+								helper::function_0042D9A0(building);
 
 								if (building->status & UnitStatus::DoodadStatesThing) {
 
@@ -257,7 +257,7 @@ namespace hooks {
 											current_image->iscriptOffset = *(uint16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x38);
 											current_image->wait = 0;
 											current_image->unknown14 = 0;
-											iscript_OpcodeCases(current_image, (uint32)&current_image->iscriptHeaderOffset, 0, 0);
+											helper::iscript_OpcodeCases(current_image, (uint32)&current_image->iscriptHeaderOffset, 0, 0);
 
 										}
 

@@ -69,14 +69,14 @@ namespace hooks {
 
 		} else { //928CF
 			//scbw::print("State != 2");
-			if (!canCastSpell_0(unit)) {
+			if (!helper::canCastSpell_0(unit)) {
 				char* message = (char*)statTxtTblNew->getString(876); //Invalid Target
 
 				//do the actual transmission corresponding to the message
-				get_statTxt_Str_0(unit, unit->playerId, message);
+				helper::get_statTxt_Str_0(unit, unit->playerId, message);
 
 				//make the unit stop since the order failed
-				setNextWaypoint_Sub4EB290(unit);
+				helper::setNextWaypoint_Sub4EB290(unit);
 				unit->orderToIdle();
 
 			} else { //9291A
@@ -117,7 +117,7 @@ namespace hooks {
 						if (*LOCAL_NATION_ID == unit->playerId &&
 							*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID
 							)
-							setUnitStatTxtErrorMsg(message);
+							helper::setUnitStatTxtErrorMsg(message);
 
 					}
 
@@ -131,9 +131,9 @@ namespace hooks {
 					//mainOrderState
 					//scbw::printf("Order state: %d", unit->mainOrderState);
 					if (unit->mainOrderState == 0)
-						result_00492620 = function_00492620(unit, 1);
+						result_00492620 = helper::function_00492620(unit, 1);
 					else
-						result_00492620 = function_00492620(unit, 0);
+						result_00492620 = helper::function_00492620(unit, 0);
 
 					if (unit->mainOrderState == 0)
 						unit->mainOrderState = 1;
@@ -155,7 +155,7 @@ namespace hooks {
 						if (
 							unit->getSpellCountdown() == 0 &&
 							gcd_condition && //new
-							function_00476640(unit, orderWeaponId) && //is ready to fire weapon (angle,range...) maybe?
+							helper::function_00476640(unit, orderWeaponId) && //is ready to fire weapon (angle,range...) maybe?
 							!(unit->movementFlags & MovementFlags::Accelerating) &&
 							unit->getMovableState() != 0
 							) { //92A38
@@ -219,10 +219,10 @@ namespace hooks {
 								uint32 random_value;
 
 								unit->spendUnitEnergy(spellCost);
-								cooldown = getUpgradedWpnCooldown(unit, orderWeaponId);
+								cooldown = helper::getUpgradedWpnCooldown(unit, orderWeaponId);
 
 								//a complicated way to add between -1 and 2 to the cooldown
-								random_value = RandomizeShort(49);
+								random_value = helper::RandomizeShort(49);
 								cooldown += (((uint8)random_value) & 3) - 1;
 
 								unit->spellCooldown = cooldown;

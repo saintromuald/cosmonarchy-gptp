@@ -20,24 +20,24 @@ void spawnCreeper(CUnit* unit) {
 	int height = mapTileSize->height * 32;
 	if (unit->position.y >= 64 && unit->position.x >= 64 &&
 		unit->position.y < height - 64 && unit->position.x < width - 64) {
-		CUnit* creep_spawned = createUnit(UnitId::BasiliskCreeper,
+		CUnit* creep_spawned = helper::createUnit(UnitId::BasiliskCreeper,
 			unit->position.x, unit->position.y,
 			unit->playerId);
 		if (creep_spawned == nullptr) {
 			//scbw::print("Error: Creeper");
 		} else {
-			updateUnitStatsFinishBuilding(creep_spawned);
-			updateUnitStrength(creep_spawned);
+			helper::updateUnitStatsFinishBuilding(creep_spawned);
+			helper::updateUnitStrength(creep_spawned);
 
 			uint32 tile_x = creep_spawned->sprite->position.x / 32;
 			uint32 tile_y = creep_spawned->sprite->position.y / 32;
 
-			function_004148F0(
+			helper::function_004148F0(
 				tile_x * 32,
 				tile_y * 32,
 				UnitId::ZergNydusCanal
 			); // apply creep
-			function_0047D770(creep_spawned);
+			helper::function_0047D770(creep_spawned);
 
 			creep_spawned->status |= UnitStatus::Invincible;
 			creep_spawned->status |= UnitStatus::NoCollide;
@@ -386,7 +386,7 @@ namespace hooks {
 						unit->orderTarget.unit = nullptr;
 						unit->orderTarget.pt.x = polar_x;
 						unit->orderTarget.pt.y = polar_y;
-						createBullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->playerId,
+						helper::createBullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->playerId,
 							scbw::dir_saturate(unit->currentDirection1, offset_direction));
 						scbw::playSound(80, unit);
 						unit->orderTarget.unit = target_unit;
@@ -582,7 +582,7 @@ namespace hooks {
 					if (targ != nullptr) {
 						unit->orderTarget.unit = targ;
 					}
-					createBullet(WeaponId::PaladinCrusaderMissiles, unit, source_x, source_y, unit->playerId, unit->currentDirection1);
+					helper::createBullet(WeaponId::PaladinCrusaderMissiles, unit, source_x, source_y, unit->playerId, unit->currentDirection1);
 				}
 			}
 		}
@@ -806,8 +806,8 @@ namespace hooks {
 
 		// Permanently Cloaked units recloak after 2 seconds of being out of combat
 		if (scbw::isDecloakable(unit) && scbw::get_generic_timer(unit, ValueId::DecloakTimer) == 1) {
-			checkUnitVisibility(unit);
-			playSoundFromDirection(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
+			helper::checkUnitVisibility(unit);
+			helper::playSoundFromDirection(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
 			scbw::set_generic_timer(unit, ValueId::DecloakTimer, 0);
 		}
 

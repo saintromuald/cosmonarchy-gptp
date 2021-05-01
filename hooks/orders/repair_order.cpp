@@ -44,8 +44,8 @@ namespace hooks {
 					int16 unkRepairInfo = 0;
 					uint32 repairCostMinerals = 0, repairCostGas = 0;
 
-					getRepairInfo(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
-					verifyResources(repairCostMinerals, repairCostGas, unit->playerId);
+					helper::getRepairInfo(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
+					helper::verifyResources(repairCostMinerals, repairCostGas, unit->playerId);
 
 					unit->worker.repairResourceLossTimer = 0;
 					unit->mainOrderState = 1; // continue directly into this case
@@ -55,15 +55,15 @@ namespace hooks {
 					if (!(target->status & UnitStatus::Completed)) {
 						unit->orderTo(OrderId::ConstructingBuilding, target);
 						if (*IS_PLACING_BUILDING) {
-							if (!function_0048DDA0()) {
-								refreshLayers3And4();
-								function_0048E310();
+							if (!helper::function_0048DDA0()) {
+								helper::refreshLayers3And4();
+								helper::function_0048E310();
 							}
 						}
 						bEndThere = true;
 					} else {
-						if (orderToMoveToTarget(unit, target)) {
-							unitOrderMoveToTargetUnit(unit, target);
+						if (helper::orderToMoveToTarget(unit, target)) {
+							helper::unitOrderMoveToTargetUnit(unit, target);
 							unit->mainOrderState = 6; // don't continue directly into this case
 						}
 						bEndThere = true;
@@ -72,15 +72,15 @@ namespace hooks {
 
 				if (!bEndThere && !jump_to_default_switch && unit->mainOrderState == 6) {
 					if (unit->getMovableState() == 0) { // not reached destination
-						function_004EB900(unit, target); // may cause unit to move or become idle
+						helper::function_004EB900(unit, target); // may cause unit to move or become idle
 						bEndThere = true;
 					} else { // reached destination or unmovable
 						if (!(unit->isTargetWithinMinRange(target, 5))) {
 							unit->mainOrderState = 1; // don't continue directly into this case
 							bEndThere = true;
 						} else {
-							function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
-							unitOrderMoveToTargetUnit(unit, target);
+							helper::function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
+							helper::unitOrderMoveToTargetUnit(unit, target);
 							unit->mainOrderState = 7; // don't continue directly into this case
 							jump_to_default_switch = true;
 						}
@@ -92,9 +92,9 @@ namespace hooks {
 						unit->mainOrderState = 1;
 						bEndThere = true;
 					} else {
-						function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
-						unitOrderMoveToTargetUnit(unit, target);
-						if (!isUnitPositions2Equal(unit)) {
+						helper::function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
+						helper::unitOrderMoveToTargetUnit(unit, target);
+						if (!helper::isUnitPositions2Equal(unit)) {
 							int32 angleReturned, currentAngle;
 							uint8 weaponId;
 							angleReturned =
@@ -130,8 +130,8 @@ namespace hooks {
 				}
 
 				if (!bEndThere && !jump_to_default_switch && unit->mainOrderState == 8) {
-					function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
-					unitOrderMoveToTargetUnit(unit, target);
+					helper::function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
+					helper::unitOrderMoveToTargetUnit(unit, target);
 					if (unit->isTargetWithinMinRange(target, 5) && target->mainOrderId != OrderId::Liftoff) {
 						jump_to_default_switch = true;
 					}
@@ -150,7 +150,7 @@ namespace hooks {
 					bool bDoRepair = false;
 					if (unit->worker.repairResourceLossTimer == 0) {
 						unit->worker.repairResourceLossTimer--;
-						bDoRepair = ord_repair_subtract(unit, target);
+						bDoRepair = helper::ord_repair_subtract(unit, target);
 						if (!bDoRepair) {
 							CImage* current_image = unit->sprite->images.head;
 							while (current_image != nullptr) {

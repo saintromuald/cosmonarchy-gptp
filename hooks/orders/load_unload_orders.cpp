@@ -13,7 +13,7 @@ namespace hooks {
 		if (unitToLoad != nullptr &&
 			scbw::canBeEnteredBy(unit, unitToLoad)
 			) {
-			function_00474A70(unit, unitToLoad, OrderId::Pickup2);
+			helper::function_00474A70(unit, unitToLoad, OrderId::Pickup2);
 			prepareForNextOrder(unit);
 		} else
 			if (unit->pAI != nullptr) {
@@ -37,7 +37,7 @@ namespace hooks {
 							bStopLoop = true;
 
 						if (!bStopLoop) {
-							removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+							helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 							bStopLoop = (unit->orderQueueTail == nullptr);
 						}
 
@@ -113,9 +113,9 @@ namespace hooks {
 						if (unit->mainOrderTimer == 0) {
 							unit->mainOrderTimer = 7;
 							if (!unit->isTargetWithinMinRange(unitToLoad, 1))
-								orderToMoveToTarget(unit, unitToLoad);
+								helper::orderToMoveToTarget(unit, unitToLoad);
 							else {
-								makeToHoldPosition(unit);
+								helper::makeToHoldPosition(unit);
 								if (
 									unitToLoad->mainOrderId != OrderId::EnterTransport &&
 									unitToLoad->mainOrderId != OrderId::Pickup4
@@ -124,7 +124,7 @@ namespace hooks {
 								if (unit->pAI != nullptr)
 									unit->mainOrderState = 1;
 								else {
-									function_00474A70(unit, unitToLoad, OrderId::Pickup1);
+									helper::function_00474A70(unit, unitToLoad, OrderId::Pickup1);
 									prepareForNextOrder(unit);
 								}
 							}
@@ -168,7 +168,7 @@ namespace hooks {
 		if (distance <= 0x1000) {
 
 			if (unit->orderQueueHead != nullptr) {
-				unknownSpecialOrder(unit, unit->orderQueueHead, OrderId::Unload, 0, 0, nullptr, UnitId::None);
+				helper::unknownSpecialOrder(unit, unit->orderQueueHead, OrderId::Unload, 0, 0, nullptr, UnitId::None);
 				prepareForNextOrder(unit);
 			} else {
 				unit->performAnotherOrder(OrderId::Unload, 0, 0, nullptr, UnitId::None);
@@ -177,7 +177,7 @@ namespace hooks {
 
 		} else { //E77B4
 
-			SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+			helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 			if (
 				unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
@@ -212,15 +212,15 @@ namespace hooks {
 
 					if (
 						distance <= 0xCA000 &&
-						function_00438E70(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0 &&
-						getFirstLoadedWorker(unit) == 0
+						helper::function_00438E70(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0 &&
+						helper::getFirstLoadedWorker(unit) == 0
 						) {
 
 						int index = 0;
 						bool bStopLoop = false;
 						bool bStopAll = false;
 						bool bIsDistanceGreaterThanHaltDistance =
-							isDistanceGreaterThanHaltDistance(
+							helper::isDistanceGreaterThanHaltDistance(
 								unit,
 								unit->orderTarget.pt.x,
 								unit->orderTarget.pt.y,
@@ -230,14 +230,14 @@ namespace hooks {
 
 						while (!bStopLoop) {
 
-							CUnit* unitToUnload = getLoadedUnitFromIndex(unit, index);
+							CUnit* unitToUnload = helper::getLoadedUnitFromIndex(unit, index);
 
 							if (unitToUnload != nullptr) {
 
 								if (unitToUnload->id == UnitId::ProtossAccantor && bIsDistanceGreaterThanHaltDistance)
 									bStopLoop = true;
 								else
-									if (function_004E76C0(unit, unitToUnload, &pos) == 0) {
+									if (helper::function_004E76C0(unit, unitToUnload, &pos) == 0) {
 										bStopAll = true;
 										bStopLoop = true;
 									}
@@ -255,7 +255,7 @@ namespace hooks {
 						} //while(!bStopLoop)
 
 						if (!bStopAll) {
-							orderImmediate(unit, OrderId::Unload);
+							helper::orderImmediate(unit, OrderId::Unload);
 							prepareForNextOrder(unit);
 						}
 
@@ -291,7 +291,7 @@ namespace hooks {
 
 		} else
 			if (!(unit->status & UnitStatus::InTransport) &&
-				function_00477160(unit, 1, 0, 0) == 0
+				helper::function_00477160(unit, 1, 0, 0) == 0
 				) { //E7BEB
 
 				CUnit* target = unit->orderTarget.unit;
@@ -302,7 +302,7 @@ namespace hooks {
 
 				if (target == nullptr) {
 
-					if (function_004E6EF0(unit, &target) == 0) {
+					if (helper::function_004E6EF0(unit, &target) == 0) {
 						unit->orderToIdle();
 						bEndThere = true;
 					} else
@@ -315,7 +315,7 @@ namespace hooks {
 
 					if (!jump_to_E7C2B) { //E7C1B
 
-						if (!unitIsActiveTransport(target) ||
+						if (!helper::unitIsActiveTransport(target) ||
 							target->orderTarget.unit != unit
 							)
 							jump_to_E7C37 = true;
@@ -338,11 +338,11 @@ namespace hooks {
 
 						if (unit->isTargetWithinMinRange(target, 1)) { //E7C52
 
-							loadUnitProc(target, unit);
+							helper::loadUnitProc(target, unit);
 							target->orderTo(OrderId::MoveUnload, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 							if (target->pAI != nullptr)
-								_doOrder(
+								helper::_doOrder(
 									target,
 									OrderId::Move,
 									target->sprite->position.x,
@@ -353,12 +353,12 @@ namespace hooks {
 
 						} else { //E7C94
 
-							function_00474A70(target, unit, OrderId::Pickup2);
+							helper::function_00474A70(target, unit, OrderId::Pickup2);
 							prepareForNextOrder(target);
 
-							if (function_00438E70(unit, target->sprite->position.x, target->sprite->position.y) != 0) {
-								function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
-								function_004EB900(unit, target);
+							if (helper::function_00438E70(unit, target->sprite->position.x, target->sprite->position.y) != 0) {
+								helper::function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
+								helper::function_004EB900(unit, target);
 							}
 
 						}
@@ -395,7 +395,7 @@ namespace hooks {
 				) {
 
 				if (target->status & UnitStatus::IsBuilding) {
-					function_00474A70(target, unit, OrderId::Pickup2);
+					helper::function_00474A70(target, unit, OrderId::Pickup2);
 					prepareForNextOrder(target);
 				}
 
@@ -409,10 +409,10 @@ namespace hooks {
 				unit->nextTargetWaypoint.y = target->sprite->position.y;
 			}
 
-			function_004EB900(unit, target);
+			helper::function_004EB900(unit, target);
 
 			if (unit->isTargetWithinMinRange(target, 1))
-				loadUnitProc(target, unit);
+				helper::loadUnitProc(target, unit);
 
 		} else {
 			if (unit->orderQueueHead != nullptr) {
@@ -471,7 +471,7 @@ namespace hooks {
 						if (unit->loadedUnit[counter].unitId == unitToUnload->targetOrderSpecial) {
 
 							bFoundUnitToUnload = true;
-							result_E7F70 = unloadUnitProc(unitToUnload);
+							result_E7F70 = helper::unloadUnitProc(unitToUnload);
 
 							if (!(unit->status & UnitStatus::GroundedBuilding))
 								bEndLoop = true;
@@ -507,7 +507,7 @@ namespace hooks {
 						)
 						jump_to_E81AD = true;
 					else
-						function_0043DF30(unit);
+						helper::function_0043DF30(unit);
 			}
 			if (jump_to_E8191) {
 				if (result_E7F70 == 0)
@@ -538,7 +538,7 @@ namespace hooks {
 									orders_dat::CanBeInterrupted[(unit->orderQueueTail)->orderId] ||
 									unit->orderQueueTail->orderId == OrderId::ComputerAI
 									) {
-									removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+									helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 								} else
 									bEndLoop = true;
 
@@ -600,7 +600,7 @@ namespace hooks {
 		v10 = 0;
 		if (v7) {
 			do {
-				v9 = getLoadedUnitFromIndex(a1, v8);
+				v9 = helper::getLoadedUnitFromIndex(a1, v8);
 				if (v9)
 					v10 += units_dat::SpaceRequired[(uint16)v9->id];
 				++v8;

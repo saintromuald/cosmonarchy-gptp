@@ -42,7 +42,7 @@ namespace hooks {
 							}
 						} else
 							if (building->mainOrderState == 5) {
-								function_004E65E0(building, 0);
+								helper::function_004E65E0(building, 0);
 								CImage* current_image = building->sprite->images.head;
 								while (current_image != nullptr) {
 									current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
@@ -69,7 +69,7 @@ namespace hooks {
 				jump_to_switch_1 = true;
 			}
 			if (unit->mainOrderState == 0) {
-				if (orderToMoveToTarget(unit, builtUnit))
+				if (helper::orderToMoveToTarget(unit, builtUnit))
 					unit->mainOrderState = 2;
 			}
 			if (unit->mainOrderState == 2) {
@@ -92,7 +92,7 @@ namespace hooks {
 							unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
 							unit->orderSimple(OrderId::ResetCollision1, false);
 							unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
-							if (function_004EB9C0(unit,
+							if (helper::function_004EB9C0(unit,
 									builtUnit->sprite->position.x,
 									builtUnit->sprite->position.y)
 								)
@@ -149,27 +149,27 @@ namespace hooks {
 						if (y_max > ebp_12)
 							y_max = ebp_12;
 
-						unit->orderTarget.pt.x = RandBetween(ebp_18, ebp_14, 9);
-						unit->orderTarget.pt.y = RandBetween(ebp_16, ebp_12, 9);
+						unit->orderTarget.pt.x = helper::RandBetween(ebp_18, ebp_14, 9);
+						unit->orderTarget.pt.y = helper::RandBetween(ebp_16, ebp_12, 9);
 
-						fixTargetLocation(&unit->orderTarget.pt, unit->id);
+						helper::fixTargetLocation(&unit->orderTarget.pt, unit->id);
 
 						if (
-							function_004F1870(
+							helper::function_004F1870(
 								unit,
 								unit->orderTarget.pt.x - unit->sprite->position.x,
 								unit->orderTarget.pt.y - unit->sprite->position.y
 							) != 0
 							) {
 
-							unit->orderTarget.pt.x = RandBetween(x_min, x_max, 9);
-							unit->orderTarget.pt.y = RandBetween(y_min, y_max, 9);
+							unit->orderTarget.pt.x = helper::RandBetween(x_min, x_max, 9);
+							unit->orderTarget.pt.y = helper::RandBetween(y_min, y_max, 9);
 
-							fixTargetLocation(&unit->orderTarget.pt, unit->id);
+							helper::fixTargetLocation(&unit->orderTarget.pt, unit->id);
 
 						}
 
-						if (function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0)
+						if (helper::function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0)
 						{
 							unit->mainOrderState = 5;
 							jump_to_switch_1 = true;
@@ -181,7 +181,7 @@ namespace hooks {
 							jump_to_switch_1 = true;
 						} else
 							if (unit->mainOrderState == 6) {
-								if (!isDistanceGreaterThanHaltDistance(
+								if (!helper::isDistanceGreaterThanHaltDistance(
 									unit,
 									unit->orderTarget.pt.x,
 									unit->orderTarget.pt.y,
@@ -193,9 +193,9 @@ namespace hooks {
 
 									int32 angle;
 
-									setNextWaypoint_Sub4EB290(unit);
+									helper::setNextWaypoint_Sub4EB290(unit);
 
-									function_00494BB0(
+									helper::function_00494BB0(
 										unit,
 										(unit->orderTarget.unit)->sprite->position.x,
 										(unit->orderTarget.unit)->sprite->position.y
@@ -218,7 +218,7 @@ namespace hooks {
 							} else
 								if (unit->mainOrderState == 7) {
 
-									if (!isUnitPositions2Equal(unit)) {
+									if (!helper::isUnitPositions2Equal(unit)) {
 
 										int32 angle = scbw::getAngle(
 											unit->sprite->position.x,
@@ -236,7 +236,7 @@ namespace hooks {
 											jump_to_switch_1 = true;
 										else { //67E4A
 
-											uint8 rand_value = RandomizeShort(10);
+											uint8 rand_value = helper::RandomizeShort(10);
 											CImage* current_image = unit->sprite->images.head;
 
 											unit->mainOrderTimer = (rand_value & 63) + 30;
@@ -255,7 +255,7 @@ namespace hooks {
 
 									} else {
 
-										uint8 rand_value = RandomizeShort(10);
+										uint8 rand_value = helper::RandomizeShort(10);
 										CImage* current_image = unit->sprite->images.head;
 
 										unit->mainOrderTimer = (rand_value & 63) + 30;
@@ -299,7 +299,7 @@ namespace hooks {
 									if (*CHEAT_STATE & CheatFlags::OperationCwal)
 										hpGain *= 16;
 
-									buildingAddon(builtUnit, hpGain, FALSE);
+									helper::buildingAddon(builtUnit, hpGain, FALSE);
 
 									if (builtUnit->status & UnitStatus::Completed) {
 
@@ -316,7 +316,7 @@ namespace hooks {
 											bool jump_to_67F3C = false;
 
 											builtUnit->connectedUnit = nullptr;
-											playBuildingCompleteSound(unit);
+											helper::playBuildingCompleteSound(unit);
 
 											if (builtUnit->status & UnitStatus::Completed) {
 
@@ -380,7 +380,7 @@ namespace hooks {
 				bool jump_to_67F3C = false;
 
 				builtUnit->connectedUnit = nullptr;
-				playBuildingCompleteSound(builtUnit);
+				helper::playBuildingCompleteSound(builtUnit);
 
 				if (builtUnit->status & UnitStatus::Completed) {
 
@@ -448,13 +448,13 @@ namespace hooks {
 
 				if (
 					!(unit->status & UnitStatus::Unmovable) &&
-					isDistanceGreaterThanHaltDistance(
+					helper::isDistanceGreaterThanHaltDistance(
 						unit,
 						unit->orderTarget.pt.x,
 						unit->orderTarget.pt.y,
 						128
 					) &&
-					function_00467030(unit)
+					helper::function_00467030(unit)
 					) {
 
 					CUnit* builtUnit;
@@ -463,15 +463,15 @@ namespace hooks {
 					unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
 
 					if (unit->orderQueueHead == nullptr) { //680A5
-						function_004749A0(unit, nullptr, OrderId::ResetCollision1);
-						function_004749A0(unit, nullptr, units_dat::ReturnToIdleOrder[unit->id]);
+						helper::function_004749A0(unit, nullptr, OrderId::ResetCollision1);
+						helper::function_004749A0(unit, nullptr, units_dat::ReturnToIdleOrder[unit->id]);
 					} else
-						function_00474760(unit, unit->orderQueueHead, OrderId::ResetCollision1);
+						helper::function_00474760(unit, unit->orderQueueHead, OrderId::ResetCollision1);
 
 					if (unit->buildQueue[unit->buildQueueSlot] == UnitId::TerranReservoir)
-						builtUnit = function_004678A0(unit, UnitId::TerranReservoir);
+						builtUnit = helper::function_004678A0(unit, UnitId::TerranReservoir);
 					else
-						builtUnit = createUnit(
+						builtUnit = helper::createUnit(
 							unit->buildQueue[unit->buildQueueSlot],
 							unit->orderTarget.pt.x,
 							unit->orderTarget.pt.y,
@@ -481,7 +481,7 @@ namespace hooks {
 					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 
 					if (builtUnit == nullptr) {
-						displayLastNetErrorForPlayer(unit->playerId);
+						helper::displayLastNetErrorForPlayer(unit->playerId);
 						unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 						bEndThere = true;
 					} else { //68131
@@ -491,14 +491,14 @@ namespace hooks {
 						unit->orderTarget.unit = builtUnit;
 
 						if (*IS_PLACING_BUILDING) {
-							if (!function_0048DDA0()) {
-								refreshLayers3And4();
-								function_0048E310();
+							if (!helper::function_0048DDA0()) {
+								helper::refreshLayers3And4();
+								helper::function_0048E310();
 							}
 						}
 						scbw::refreshConsole();
 						builtUnit->orderComputerCL(OrderId::BuildSelf1);
-						AI_TrainingOverlord(unit, builtUnit);
+						helper::AI_TrainingOverlord(unit, builtUnit);
 						bEndThere = true;
 					}
 				}
@@ -515,7 +515,7 @@ namespace hooks {
 				unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
 				unit->orderTarget.pt.y = (unit->orderTarget.unit)->sprite->position.y;
 			}
-			bMoveTargetResult = SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+			bMoveTargetResult = helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 			if (
 				(unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
 					unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
@@ -539,7 +539,7 @@ namespace hooks {
 		}*/
 
 		scbw::print("First call");
-		v0 = canBuildOnTileLocation(
+		v0 = helper::canBuildOnTileLocation(
 			*activePortraitUnit,
 			*unk_placementRelated,
 			*placeBuildingX,
@@ -577,7 +577,7 @@ namespace hooks {
 		uint16 addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
 		scbw::adjustAddonCoordinates(source, target, addon_x, addon_y);
 		if (!*isPlacingAddon
-			|| (result = canBuildOnTileLocation(
+			|| (result = helper::canBuildOnTileLocation(
 				*activePortraitUnit,
 				*unk_placementRelated,
 				addon_x,
@@ -600,25 +600,25 @@ namespace hooks {
 			auto y = mouse->y;
 			auto x = mouse->x;
 			auto mouse_pos = Point16{(uint16)mouse->x, (uint16)mouse->y};
-			if (initPlacementBoxPos(&mouse_pos)) {
-				*placeBuildingMessageId = updatePlacementStateForPlacementBox_Func();
-				refreshLayers3And4();
+			if (helper::initPlacementBoxPos(&mouse_pos)) {
+				*placeBuildingMessageId = helper::updatePlacementStateForPlacementBox_Func();
+				helper::refreshLayers3And4();
 				Point16 buildPoint;
 				buildPoint.x = x;
 				buildPoint.y = y;
-				unk_buildingPlacementRelated(1, &buildPoint);
+				helper::unk_buildingPlacementRelated(1, &buildPoint);
 				if (*isPlacingAddon) {
 					auto v4 = *placeBuildingUnitId - UnitId::TerranCommandCenter;
 					Point16 addon_point;
 					addon_point.x = units_dat::AddonPlacement[v4].x;
 					addon_point.y = units_dat::AddonPlacement[v4].y;
 					scbw::adjustAddonCoordinates(*placeBuildingUnitId, 0, addon_point.x, addon_point.y);
-					unk_buildingPlacementRelated(0, &addon_point);
+					helper::unk_buildingPlacementRelated(0, &addon_point);
 				}
-				result = refreshLayers3And4();
+				result = helper::refreshLayers3And4();
 			} else {
-				unk_buildingPlacementRelatedMouse(0, 1);
-				result = unk_buildingPlacementRelatedMouse(0, 0);
+				helper::unk_buildingPlacementRelatedMouse(0, 1);
+				result = helper::unk_buildingPlacementRelatedMouse(0, 0);
 			}
 		}
 		return result;

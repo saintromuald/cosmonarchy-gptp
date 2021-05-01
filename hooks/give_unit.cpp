@@ -14,23 +14,23 @@ namespace hooks {
 			bool isSelected;
 			uint32 selectionIndex = 0;
 
-			function_004A1E50(unit, 0);
+			helper::function_004A1E50(unit, 0);
 
 			if (unit->isRemorphingBuilding()) {
 				unit->status |= UnitStatus::Completed;
 				isMorphing = true;
 			}
 
-			incrementUnitScores(unit, -1);
+			helper::incrementUnitScores(unit, -1);
 
 			if (unit->status & UnitStatus::Completed)
-				incrementUnitScoresEx(unit, 0, -1);
+				helper::incrementUnitScoresEx(unit, 0, -1);
 
 			isSelected = (unit->sprite->flags & CSprite_Flags::Selected) == 1;
 
 			if (isSelected) {
 				selectionIndex = unit->sprite->selectionIndex;
-				DestroyUnitSelection(unit);
+				helper::DestroyUnitSelection(unit);
 			}
 
 			if (unit->player_link.prev != nullptr)
@@ -48,7 +48,7 @@ namespace hooks {
 
 			//maybe "if" not needed?
 			if (isSelected)
-				CreateUnitSelection(unit, selectionIndex);
+				helper::CreateUnitSelection(unit, selectionIndex);
 
 			unit->player_link.prev = nullptr;
 			unit->player_link.next = firstPlayerUnit->unit[playerId];
@@ -58,15 +58,15 @@ namespace hooks {
 
 			firstPlayerUnit->unit[playerId] = unit;
 
-			incrementUnitScores(unit, 1);
+			helper::incrementUnitScores(unit, 1);
 
 			if (unit->status & UnitStatus::Completed)
-				incrementUnitScoresEx(unit, unkScore, 1);
+				helper::incrementUnitScoresEx(unit, unkScore, 1);
 
 			if (isMorphing)
 				unit->status &= ~UnitStatus::Completed;
 
-			function_00476D30(unit);
+			helper::function_00476D30(unit);
 
 			scbw::refreshConsole();
 
@@ -77,19 +77,19 @@ namespace hooks {
 				)
 				*canUpdatePoweredStatus = 1;
 
-			function_00463040(unit);
+			helper::function_00463040(unit);
 
 			if (unit->subunit != nullptr && units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit)
 				GiveUnit(unit->subunit, playerId, unkScore);
 
-			ApplySpeedUpgradeFromUnitType(unit);
+			helper::ApplySpeedUpgradeFromUnitType(unit);
 
 			if (
 				units_dat::BaseProperty[unit->id] & UnitProperty::Worker &&
 				unit->worker.powerup != nullptr &&
 				(unit->worker.powerup)->id == UnitId::Powerup_Flag) {
 				if ((unit->worker.powerup)->playerId == playerId || playerId >= 8)
-					function_004F3B70(unit->worker.powerup); //return the flag to initial position?
+					helper::function_004F3B70(unit->worker.powerup); //return the flag to initial position?
 			}
 		}
 	}

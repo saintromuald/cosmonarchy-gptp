@@ -55,7 +55,7 @@ namespace hooks {
 				}
 
 				//6573E:
-				function_00474A70(unit, target, newOrderId);
+				helper::function_00474A70(unit, target, newOrderId);
 				prepareForNextOrder(unit);
 
 				//restore the "disabled" and "holding position" status if they were lost
@@ -100,7 +100,7 @@ namespace hooks {
 				uint8 newOrderId;
 
 				//give orders to interceptors/scarabs (through outHangarChild)
-				function_00465780(unit);
+				helper::function_00465780(unit);
 
 				if (unit->id == UnitId::ProtossAccantor) {
 					//65A03:
@@ -118,7 +118,7 @@ namespace hooks {
 
 				//65A21:
 
-				function_00474A70(unit, target, newOrderId);
+				helper::function_00474A70(unit, target, newOrderId);
 				prepareForNextOrder(unit);
 
 				//restore the "disabled" and "holding position" status if they were lost
@@ -149,7 +149,7 @@ namespace hooks {
 
 		//perform lots of checks, possibly in an attempt to
 		//auto-select a better target if the turret has choice
-		function_00477510(unit);
+		helper::function_00477510(unit);
 
 		target = unit->orderTarget.unit;
 
@@ -167,7 +167,7 @@ namespace hooks {
 			target == nullptr ||
 			target->status & UnitStatus::Invincible ||
 			target->sprite->flags & CSprite_Flags::Hidden ||
-			unitCantSeeCloakedTarget(unit, target)
+			helper::unitCantSeeCloakedTarget(unit, target)
 			)
 			jump_to_77A45 = true;
 		else {
@@ -226,7 +226,7 @@ namespace hooks {
 						bStopLoop77A70 = true;
 					else
 						//77A94:
-						removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+						helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 				}
 
 				jump_to_77CDA = true;
@@ -237,9 +237,9 @@ namespace hooks {
 
 			if (jump_to_77A9D) { //77A9D
 
-				if (unitCanInfest(unit)) {
+				if (helper::unitCanInfest(unit)) {
 
-					if (isInfestableUnit(target))
+					if (helper::isInfestableUnit(target))
 						jump_to_77AFE = true;
 					else {
 						jump_to_77A45 = true;
@@ -284,7 +284,7 @@ namespace hooks {
 
 			if (jump_to_77AFE) {
 
-				if (!isTargetVisible(unit, target)) {
+				if (!helper::isTargetVisible(unit, target)) {
 					jump_to_77A45 = true;
 					bJumpToEarlierCode = true;
 				} else {
@@ -297,7 +297,7 @@ namespace hooks {
 						unit->id != UnitId::TerranPhalanxTankModeTurret ||
 						current_subunit->pAI == nullptr ||
 						(current_subunit->canUseTech(TechId::TankSiegeMode, unit->playerId) != TRUE) ||
-						!isUnitVisible(unit)
+						!helper::isUnitVisible(unit)
 						)
 						jump_to_77BD7 = true;
 					else {
@@ -305,7 +305,7 @@ namespace hooks {
 						//77B5F:
 						uint32 result_getMaxWpnRange = unit->getMaxWeaponRange(units_dat::GroundWeapon[UnitId::TerranPhalanxSiegeModeTurret]);
 
-						if (!isTargetWithinMinMovementRange(current_subunit, target, result_getMaxWpnRange))
+						if (!helper::isTargetWithinMinMovementRange(current_subunit, target, result_getMaxWpnRange))
 							jump_to_77BD7 = true;
 						else {
 
@@ -313,8 +313,8 @@ namespace hooks {
 							result_getMaxWpnRange = unit->getMaxWeaponRange(units_dat::GroundWeapon[UnitId::TerranPhalanxTankModeTurret]);
 
 							if (
-								isTargetWithinMinMovementRange(current_subunit, target, result_getMaxWpnRange) ||
-								isUnitCritter(target)
+								helper::isTargetWithinMinMovementRange(current_subunit, target, result_getMaxWpnRange) ||
+								helper::isUnitCritter(target)
 								)
 								jump_to_77BD7 = true;
 							else { //77B9D
@@ -342,7 +342,7 @@ namespace hooks {
 
 						if (target != nullptr) {
 
-							if (isTargetVisible(unit, target)) {
+							if (helper::isTargetVisible(unit, target)) {
 
 								if ((unit->subunit)->isSubunit())
 									current_unit = unit->subunit;
@@ -369,7 +369,7 @@ namespace hooks {
 
 										//77C63:
 
-										if (isTargetWithinMinMovementRange
+										if (helper::isTargetWithinMinMovementRange
 										(
 											current_unit,
 											target,
@@ -393,7 +393,7 @@ namespace hooks {
 						if (jump_to_77C78) {
 
 							if ((unit->subunit)->mainOrderId == units_dat::AttackUnitOrder[(unit->subunit)->id] &&
-								getRightClickActionOrder(unit->subunit) != RightClickActions::NoMove_NormalAttack
+								helper::getRightClickActionOrder(unit->subunit) != RightClickActions::NoMove_NormalAttack
 								)
 								jump_to_77CA1 = true;
 							else
@@ -414,7 +414,7 @@ namespace hooks {
 
 							//77CC1
 							if (!((unit->subunit)->movementFlags & MovementFlags::Accelerating))
-								getWeaponBeginIscript(unit, IscriptAnimation::GndAttkRpt);
+								helper::getWeaponBeginIscript(unit, IscriptAnimation::GndAttkRpt);
 
 						}
 
@@ -460,11 +460,11 @@ namespace hooks {
 		bool jump_to_77E99 = false;
 
 		if (unit->pAI != nullptr)
-			unit->orderTarget.unit = findBestAttackTarget(unit); //77D13
+			unit->orderTarget.unit = helper::findBestAttackTarget(unit); //77D13
 		else
 			//perform lots of checks, possibly in an attempt to
 			//auto-select a better target if the unit has choice
-			function_00477510(unit); //77D1F
+			helper::function_00477510(unit); //77D1F
 
 		//77D25:
 		target = unit->orderTarget.unit;
@@ -483,7 +483,7 @@ namespace hooks {
 			target == nullptr ||
 			target->status & UnitStatus::Invincible ||
 			target->sprite->flags & CSprite_Flags::Hidden ||
-			unitCantSeeCloakedTarget(unit, target)
+			helper::unitCantSeeCloakedTarget(unit, target)
 			)
 			jump_to_77E48 = true;
 		else {
@@ -516,8 +516,8 @@ namespace hooks {
 
 			if (jump_to_77DEF) {
 
-				if (unitCanInfest(unit)) {
-					if (isInfestableUnit(target))
+				if (helper::unitCanInfest(unit)) {
+					if (helper::isInfestableUnit(target))
 						jump_to_77E99 = true;
 					else
 						jump_to_77E48 = true;
@@ -570,7 +570,7 @@ namespace hooks {
 			bool jump_to_77EC8 = false;
 			bool jump_to_77ED6 = false;
 
-			if (isUnitInWeaponRange(unit, target)) {
+			if (helper::isUnitInWeaponRange(unit, target)) {
 
 				//77ED6
 				if (unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
@@ -580,7 +580,7 @@ namespace hooks {
 					unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
 				}
 
-				getWeaponBeginIscript(unit, IscriptAnimation::GndAttkRpt);
+				helper::getWeaponBeginIscript(unit, IscriptAnimation::GndAttkRpt);
 
 			} else
 				if (unit->pAI == nullptr)
@@ -621,7 +621,7 @@ namespace hooks {
 				bool bStopThere = false;
 
 				if (unit->mainOrderState == 0) { //78965
-					if (moveToTarget(unit, target))
+					if (helper::moveToTarget(unit, target))
 						unit->mainOrderState = 1;
 					else
 						bStopThere = true;
@@ -640,20 +640,20 @@ namespace hooks {
 							)
 							//maybe trigger the acceleration of the infested
 							//terran, or something else related to distances?
-							function_00495400(unit, target);
+							helper::function_00495400(unit, target);
 
 						else //789BF
 							//may cause the unit to go to idle, or
 							//execute and return the (unused here) 
 							//result of moveToTarget @ 0x004EB720,
 							//or something else
-							function_004EB900(unit, target);
+							helper::function_004EB900(unit, target);
 
 						bStopThere = true;
 
 					} else { //789CC
 
-						setNextWaypoint_Sub4EB290(unit);
+						helper::setNextWaypoint_Sub4EB290(unit);
 
 						if (!unit->isTargetWithinMinRange
 						(
@@ -706,7 +706,7 @@ namespace hooks {
 
 		if (unit->mainOrderState == 0) { //78A5C
 
-			bStopThere = !SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+			bStopThere = !helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 			if (unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
 				unit->orderTarget.pt.y != unit->nextTargetWaypoint.y
@@ -794,16 +794,16 @@ namespace hooks {
 		//probably perform checks to see if the order
 		//can be done, but which exactly I don't know
 
-		if (function_00478370(unit, unit->mainOrderId) &&
+		if (helper::function_00478370(unit, unit->mainOrderId) &&
 			unit->mainOrderTimer == 0
 			) { //78E0B
 
 			unit->mainOrderTimer = 15;
 
 			if (
-				SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y) == SAI_GetRegionIdFromPxEx(unit->orderTarget.pt.x, unit->orderTarget.pt.y)
+				helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y) == helper::SAI_GetRegionIdFromPxEx(unit->orderTarget.pt.x, unit->orderTarget.pt.y)
 				) {
-				makeToHoldPosition(unit);
+				helper::makeToHoldPosition(unit);
 				unit->orderToIdle();
 			} else { //78E65
 
@@ -816,7 +816,7 @@ namespace hooks {
 					) { //78E80
 
 					if (
-						function_004EB9C0(				//return value is actually from 
+						helper::function_004EB9C0(				//return value is actually from 
 							unit,						//SetMoveTarget_xy @ 0x004EB820
 							unit->orderTarget.pt.x,
 							unit->orderTarget.pt.y
@@ -824,14 +824,14 @@ namespace hooks {
 						)
 						jump_to_78EAE = true;
 					else //78E91
-						if (function_00476610(unit, (int32)unit->orderTarget.pt.x, (int32)unit->orderTarget.pt.y))
-							makeToHoldPosition(unit);
+						if (helper::function_00476610(unit, (int32)unit->orderTarget.pt.x, (int32)unit->orderTarget.pt.y))
+							helper::makeToHoldPosition(unit);
 
 				} else
 					jump_to_78EAE = true;
 
 				if (jump_to_78EAE)
-					function_00477820(unit, saved_mainOrderId);	//use attack range, may cause idle,
+					helper::function_00477820(unit, saved_mainOrderId);	//use attack range, may cause idle,
 												//may look for target, and others...
 
 			} //if different regions
@@ -849,7 +849,7 @@ namespace hooks {
 		//if that's the case (not returning 0), stop the "move" 
 		//part that follow to attack the unit met
 		if (
-			function_00478370(unit, unit->mainOrderId) != 0 &&
+			helper::function_00478370(unit, unit->mainOrderId) != 0 &&
 			unit->mainOrderTimer == 0
 			) { //79058
 
@@ -862,7 +862,7 @@ namespace hooks {
 				)
 				//Logically, this function would check one last time if a target is in range,
 				//and attack it if that's the case, else AttackMove end here
-				function_00477820(unit, unit->mainOrderId); //79092
+				helper::function_00477820(unit, unit->mainOrderId); //79092
 			else
 				unit->orderToIdle();
 
@@ -882,23 +882,23 @@ namespace hooks {
 				units_dat::BaseProperty[(unit->orderTarget.unit)->id] & UnitProperty::Building
 				)
 			||
-			!function_00462EA0(unit, 0)	//if unit controlled by AI, do lots of things and
+			!helper::function_00462EA0(unit, 0)	//if unit controlled by AI, do lots of things and
 										//return true after/if validating a final order
 			) { //79C05
 
 				//perform lots of checks, possibly in an attempt to
 				//auto-select a better target if the unit has choice
-			function_00477510(unit);
+			helper::function_00477510(unit);
 
 			//function perform tests to see if attack is possible
 			//and how it should be done and return true if attack
 			//can be done
-			if (function_00478540(unit)) { //79C16
+			if (helper::function_00478540(unit)) { //79C16
 
 				if (unit->pAI != nullptr)
-					AI_AttackUnit(unit);
+					helper::AI_AttackUnit(unit);
 
-				getWeaponBeginIscript(unit, IscriptAnimation::GndAttkRpt);
+				helper::getWeaponBeginIscript(unit, IscriptAnimation::GndAttkRpt);
 
 			}
 

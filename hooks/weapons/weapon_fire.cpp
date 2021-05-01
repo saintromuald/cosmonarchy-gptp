@@ -216,7 +216,7 @@ namespace hooks {
 				else if (weaponId == WeaponId::MinotaurAsterionLaserBattery) {
 					std::set<CUnit*> monoceros;
 					monoceros.insert(unit->orderTarget.unit);
-					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+					helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 					if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
 						scbw::doDeconstructionDamage(unit, weaponId);
 					}
@@ -250,7 +250,7 @@ namespace hooks {
 						unit->orderTarget.unit = newTarget;
 						auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
 							newTarget->getX(), newTarget->getY());
-						createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
+						helper::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
 						if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
 							scbw::doDeconstructionDamage(unit, weaponId, false);
 						}
@@ -309,7 +309,7 @@ namespace hooks {
 					// SalamanderFire missile target positions
 					auto rotate = scbw::get_generic_value(unit, ValueId::SalamanderAtkPos);
 					if (rotate == 1) {
-						createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+						helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 					} else {
 						scbw::rangeModifiedFire(weaponId, unit, x, y, 32 - 32 * rotate);
 					}
@@ -319,7 +319,7 @@ namespace hooks {
 					}
 					scbw::set_generic_value(unit, ValueId::SalamanderAtkPos, rotate);
 				} else if (weaponId == WeaponId::MadrigalFuriaMissiles && unit->orderTarget.unit != nullptr) {
-					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+					helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 					if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
 						scbw::doDeconstructionDamage(unit, weaponId);
 					}
@@ -335,7 +335,7 @@ namespace hooks {
 								unit->orderTarget.unit = target;
 								auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
 									target->getX(), target->getY());
-								createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
+								helper::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
 								if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0) {
 									scbw::doDeconstructionDamage(unit, weaponId, false);
 								}
@@ -353,7 +353,7 @@ namespace hooks {
 						scbw::set_generic_value(unit, ValueId::GuardianMissileLaunchPosX, unit->getX());
 						scbw::set_generic_value(unit, ValueId::GuardianMissileLaunchPosY, unit->getY());
 					}
-					createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+					helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 				}
 			}
 			// Chasmal Colony - Adaptive Amitosis ability
@@ -425,13 +425,13 @@ namespace hooks {
 					bullet->moveTarget.pt = seekTarget->position;
 					bullet->targetPosition = seekTarget->position;
 					bullet->targetPosition2 = seekTarget->position;
-					progressBulletMovement_func(bullet);
+					helper::progressBulletMovement_func(bullet);
 				}
 			} else {
-				progressBulletMovement_func(bullet);
+				helper::progressBulletMovement_func(bullet);
 			}
 		} else {
-			progressBulletMovement_func(bullet);
+			helper::progressBulletMovement_func(bullet);
 		}
 		uint8 time = bullet->time_remaining--;
 		if (bullet->weaponType == WeaponId::AlkajeliskParasiticSpores) {
@@ -480,7 +480,7 @@ namespace hooks {
 								bullet->sourceUnit->orderTarget.unit = target;
 								auto newAngle = scbw::getAngle(bullet->position.x, bullet->position.y,
 									target->getX(), target->getY());
-								auto newBullet = createBulletRet(WeaponId::ArchitectDispersiveSalvo, bullet->sourceUnit,
+								auto newBullet = helper::createBulletRet(WeaponId::ArchitectDispersiveSalvo, bullet->sourceUnit,
 									bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
 								if (newBullet) {
 									newBullet->position = bullet->position;
@@ -612,11 +612,11 @@ namespace hooks {
 				if (bullet->weaponType == WeaponId::PenumbraErebolShockCannon) {
 					//Penumbra Behavior
 					scbw::createThingy(644, bullet->position.x, bullet->position.y, bullet->srcPlayer);
-					weaponBulletShot(collisionTarget, bullet, 2);
+					helper::weaponBulletShot(collisionTarget, bullet, 2);
 				} else {
 					//Kalkaleth Behavior
 //					auto divider = globals.get_multihit_count(bullet);
-					weaponBulletShot(collisionTarget, bullet, 2);
+					helper::weaponBulletShot(collisionTarget, bullet, 2);
 					//					scbw::printf("Hit by bullet: %X", bullet);
 					scbw::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					bullet->moveTarget.unit = bullet->attackTarget.unit;
@@ -647,7 +647,7 @@ namespace hooks {
 			bullet->someUnitType = 228;
 			//			scbw::printf("Hit by bullet: %X", bullet);
 			for (i = v4->images.head; i; i = i->link.next)
-				playImageIscript(i, 1);
+				helper::playImageIscript(i, 1);
 
 
 		}
@@ -665,10 +665,10 @@ namespace hooks {
 		v1 = a1->attackTarget.unit;
 		if (v1) {
 			if (!(a1->hitFlags & 1)) {
-				changeMovePos(a1, v1->sprite->position.y, v1->sprite->position.x);
+				helper::changeMovePos(a1, v1->sprite->position.y, v1->sprite->position.x);
 			}
 		}
-		progressBulletMovement_func(a1);
+		helper::progressBulletMovement_func(a1);
 		if (a1->moveTarget.pt.x == a1->position.x && a1->moveTarget.pt.y == a1->position.y) {
 			v2 = a1->remainingBounces - 1;
 			//
@@ -679,9 +679,9 @@ namespace hooks {
 			a1->remainingBounces = v2;
 			globals.bounce_bullet = a1;
 			//			scbw::print("BounceHit");
-			if (v2 && (v3 = findNextBounceTarget_func(a1), a1->nextBounceUnit = a1->attackTarget.unit, v3)) {
+			if (v2 && (v3 = helper::findNextBounceTarget_func(a1), a1->nextBounceUnit = a1->attackTarget.unit, v3)) {
 				for (i = a1->sprite->images.head; i; i = i->link.next) {
-					playImageIscript(i, IscriptAnimation::SpecialState1);
+					helper::playImageIscript(i, IscriptAnimation::SpecialState1);
 				}
 				//				scbw::print("Bounce");
 				a1->attackTarget.unit = v3;
@@ -703,7 +703,7 @@ namespace hooks {
 				a1->someUnitType = UnitId::None;
 
 				for (j = v6->images.head; j; j = j->link.next) {
-					playImageIscript(j, IscriptAnimation::Death);
+					helper::playImageIscript(j, IscriptAnimation::Death);
 				}
 			}
 		}
@@ -753,23 +753,23 @@ namespace hooks {
 		if (pIterator->sprite->flags & CSprite_Flags::Hidden) {
 			return 0;
 		}
-		if (unitCanSeeCloakedTarget(pIterator, (*bulletBounceMissileSource))) {
+		if (helper::unitCanSeeCloakedTarget(pIterator, (*bulletBounceMissileSource))) {
 			return 0;
 		}
 		if (pSrc->subunit != nullptr
-			&& unitIsSubunit(pSrc->subunit)) {
+			&& helper::unitIsSubunit(pSrc->subunit)) {
 			v5 = pSrc->subunit;
 		} else {
 			v5 = pSrc;
 		}
-		if (!(unitIsCarrier(pSrc))) {
-			if (unitIsReaver(pSrc)) {
+		if (!(helper::unitIsCarrier(pSrc))) {
+			if (helper::unitIsReaver(pSrc)) {
 				if (_pIterator->status & UnitStatus::InAir)
 					return 0;
-				v9 = unitHasPathToUnit(pSrc, _pIterator);
+				v9 = helper::unitHasPathToUnit(pSrc, _pIterator);
 			} else {
-				if (unitCanInfest(pSrc)) {
-					v9 = canBeInfested(v11, _pIterator) != 0; // v11 is not used..?
+				if (helper::unitCanInfest(pSrc)) {
+					v9 = helper::canBeInfested(v11, _pIterator) != 0; // v11 is not used..?
 				} else {
 					/*if (pSrc->id == UnitId::ProtossArbiter && pSrc->pAI) {
 
@@ -843,7 +843,7 @@ namespace hooks {
 		_a1.bottom = (int16)v5 + 96;
 		//		return (CUnit*)iterateUnitsAtLocationTargetProc(&_a1, (int(__fastcall*)(int32, int32))findNextBounceTargetProc, 0);
 		GPTP::logger << (uint32)(*bulletBounceMissileNext) << " " << (uint32)(*bulletBounceMissileSource) << " " << (uint32)(*bulletBounceMissileTarget) << '\n';
-		return (CUnit*)iterateUnitsAtLocationTargetProc(&_a1, (int(__fastcall*)(int32, int32))findNextBounceTargetProc, 0);
+		return (CUnit*)helper::iterateUnitsAtLocationTargetProc(&_a1, (int(__fastcall*)(int32, int32))findNextBounceTargetProc, 0);
 	}
 
 	/*

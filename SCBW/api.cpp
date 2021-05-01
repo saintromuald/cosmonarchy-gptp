@@ -25,7 +25,7 @@ namespace scbw {
 		} else {
 			source->orderTarget.pt = target_pt;
 		}
-		createBullet(weaponId, source, source->sprite->position.x, source->sprite->position.y, playerId,
+		helper::createBullet(weaponId, source, source->sprite->position.x, source->sprite->position.y, playerId,
 			getAngle(source->position.x, source->position.y, source->orderTarget.pt.x, source->orderTarget.pt.y));
 		source->orderTarget.unit = target_unit;
 		source->orderTarget.pt = target_pos;
@@ -45,7 +45,7 @@ namespace scbw {
 
 		//identical code to setUnitPosition() but for some reason, is
 		//using another function to do exactly the same thing
-		function_004EBAE0(u, target.x, target.y);
+		helper::function_004EBAE0(u, target.x, target.y);
 
 		if (!scbw::checkUnitCollisionPos(u, &(u->sprite->position), &new_pos, nullptr, false, 0))
 			//collision detected, cancel the movement
@@ -71,7 +71,7 @@ namespace scbw {
 				recall_effect_sprite = createThingy(spriteAnimation, new_pos.x, new_pos.y, 0);
 				if (recall_effect_sprite != nullptr) {
 					recall_effect_sprite->sprite->elevationLevel = u->sprite->elevationLevel + 1;
-					setThingyVisibilityFlags(recall_effect_sprite);
+					helper::setThingyVisibilityFlags(recall_effect_sprite);
 				}
 
 			}
@@ -134,7 +134,7 @@ namespace scbw {
 		CThingy* thingy = createThingy(spriteId, x, y, playerId);
 		if (thingy != nullptr) {
 			thingy->sprite->elevationLevel = elevationLevel;
-			setThingyVisibilityFlags(thingy);
+			helper::setThingyVisibilityFlags(thingy);
 		}
 		return thingy;
 	}
@@ -1101,13 +1101,13 @@ namespace scbw {
 	CUnit* createUnitIngame(uint16 unitId, uint8 playerId, uint32 x, uint32 y, CUnit* creator) {
 		if (*unitCount >= 1700) return nullptr; // prevent crashes, move to create unit later
 		Point16 pos = {x, y};
-		fixTargetLocation(&pos, unitId);
-		CUnit* unit = createUnit(unitId, pos.x, pos.y, playerId);
+		helper::fixTargetLocation(&pos, unitId);
+		CUnit* unit = helper::createUnit(unitId, pos.x, pos.y, playerId);
 		if (unit == nullptr) {
 			displayLastNetErrForPlayer(playerId);
 		} else {
 			FinishUnit_Pre(unit);
-			updateUnitStrength(unit);
+			helper::updateUnitStrength(unit);
 			if (creator != nullptr && creator->pAI != nullptr) {
 				InheritAI2(unit, creator);
 			}
@@ -1347,7 +1347,7 @@ namespace scbw {
 		unit->orderTarget.unit = nullptr;
 		unit->orderTarget.pt.x = polar_x;
 		unit->orderTarget.pt.y = polar_y;
-		createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+		helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 		unit->orderTarget.unit = target_unit;
 		unit->orderTarget.pt = target_pos;
 	}

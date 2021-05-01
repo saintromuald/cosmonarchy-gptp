@@ -17,7 +17,7 @@ namespace hooks {
 			int sightRange = unit->getSightRange(true);
 
 			if (
-				ordersSpell_Sub_4926D0(
+				helper::ordersSpell_Sub_4926D0(
 					unit,
 					TechId::Feedback,
 					&techCost,
@@ -28,7 +28,7 @@ namespace hooks {
 
 				if (target->status & UnitStatus::IsHallucination) {
 					uint8 overlaySize = scbw::hasOverlay(target);
-					replaceFeedbackSprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
+					helper::replaceFeedbackSprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
 					unit->spendUnitEnergy(techCost);
 					target->remove();
 					unit->orderToIdle();
@@ -56,7 +56,7 @@ namespace hooks {
 
 						} else { //F6E6D
 							uint8 overlaySize = scbw::hasOverlay(target);
-							replaceFeedbackSprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
+							helper::replaceFeedbackSprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
 							unit->orderToIdle();
 						}
 

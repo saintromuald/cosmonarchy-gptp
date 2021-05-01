@@ -21,7 +21,7 @@ namespace hooks {
 
 		//identical code to setUnitPosition() but for some reason, is
 		//using another function to do exactly the same thing
-		function_004EBAE0(target, caster->sprite->position.x, caster->sprite->position.y);
+		helper::function_004EBAE0(target, caster->sprite->position.x, caster->sprite->position.y);
 
 		if (!scbw::checkUnitCollisionPos(target, &(caster->sprite->position), &new_pos, nullptr, false, 0))
 			//collision detected, cancel the movement
@@ -40,10 +40,10 @@ namespace hooks {
 				target->orderComputerCL(units_dat::ReturnToIdleOrder[target->id]);
 
 			//create the Recall animation over the unit
-			recall_effect_sprite = createThingy(SpriteId::Recall_Field, new_pos.x, new_pos.y, 0);
+			recall_effect_sprite = helper::createThingy(SpriteId::Recall_Field, new_pos.x, new_pos.y, 0);
 			if (recall_effect_sprite != nullptr) {
 				recall_effect_sprite->sprite->elevationLevel = target->sprite->elevationLevel + 1;
-				setThingyVisibilityFlags(recall_effect_sprite);
+				helper::setThingyVisibilityFlags(recall_effect_sprite);
 			}
 
 			//disconnect a nuke from a ghost using it
@@ -117,7 +117,7 @@ namespace hooks {
 				*bAtLeast1UnitWasRecalled = 0;
 
 				//apply the recal effect on each valid target found in spell_location
-				IterateUnitsAtLocationTargetProc_RecallTargets(unit, &spell_location);
+				helper::IterateUnitsAtLocationTargetProc_RecallTargets(unit, &spell_location);
 
 				if (*bAtLeast1UnitWasRecalled != 0) {
 
@@ -127,7 +127,7 @@ namespace hooks {
 					//see what sound is used that way.
 					//The compiler may make it back like the original anyway.
 
-					if ((RandomizeShort(0x12) & 1) == 0)
+					if ((helper::RandomizeShort(0x12) & 1) == 0)
 						scbw::playSound(SoundId::Protoss_ARBITER_PAbFol02_WAV, unit);
 					else
 						scbw::playSound(SoundId::Protoss_ARBITER_PAbFol03_WAV, unit);
@@ -166,7 +166,7 @@ namespace hooks {
 					unit->playerId == *LOCAL_NATION_ID &&
 					*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID
 					)
-					setUnitStatTxtErrorMsg(message);
+					helper::setUnitStatTxtErrorMsg(message);
 
 				unit->orderToIdle();
 
@@ -184,7 +184,7 @@ namespace hooks {
 				}
 
 				recall_effect_sprite =
-					createThingy(
+					helper::createThingy(
 						SpriteId::Recall_Field,
 						unit->orderTarget.pt.x,
 						unit->orderTarget.pt.y,
@@ -193,7 +193,7 @@ namespace hooks {
 
 				if (recall_effect_sprite != nullptr) {
 					recall_effect_sprite->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
-					setThingyVisibilityFlags(recall_effect_sprite);
+					helper::setThingyVisibilityFlags(recall_effect_sprite);
 				}
 
 				//94617
@@ -221,7 +221,7 @@ namespace hooks {
 				//The compiler may make it back like the original anyway.
 
 				if ((random_value & 1) == 0)
-					playUnitSFX(
+					helper::playUnitSFX(
 						SoundId::Protoss_ARBITER_PAbFol00_WAV,
 						unit->orderTarget.pt.x,
 						unit->orderTarget.pt.y,
@@ -229,7 +229,7 @@ namespace hooks {
 						0
 					);
 				else
-					playUnitSFX(
+					helper::playUnitSFX(
 						SoundId::Protoss_ARBITER_PAbFol01_WAV,
 						unit->orderTarget.pt.x,
 						unit->orderTarget.pt.y,

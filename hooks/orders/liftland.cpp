@@ -29,7 +29,7 @@ namespace hooks {
 						(unit->orderQueueTail->orderId != OrderId::BuildingLiftoff);
 
 					if (!bLoopBreak)
-						removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+						helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 
 				}
 
@@ -50,7 +50,7 @@ namespace hooks {
 			if (unit->mainOrderId != OrderId::Die) {
 
 				while (unit->orderQueueTail != nullptr && unit->orderQueueTail->orderId == OrderId::BuildingLand)
-					removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+					helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 
 				//6440A:
 				unit->performAnotherOrder(
@@ -72,7 +72,7 @@ namespace hooks {
 			//64450
 			if (unit->mainOrderState == 0) {
 				//plan vertical movement toward ground
-				function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y - unit->sprite->images.tail->verticalOffset);
+				helper::function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y - unit->sprite->images.tail->verticalOffset);
 				unit->mainOrderState = 1;
 			} else
 				if (unit->mainOrderState == 1) {
@@ -99,19 +99,19 @@ namespace hooks {
 						//check for units occupying the landing zone before
 						//the final vertical movement started?
 						uint32 return_00473FB0 =
-							function_00473FB0(unit, unit->playerId, x, y, unit->id, 0, 0, 1, 0);
+							helper::function_00473FB0(unit, unit->playerId, x, y, unit->id, 0, 0, 1, 0);
 
 						if (return_00473FB0 != 0) {
 
 							//64504:
 
 							//probably play "landing sequence interrupted"
-							playBuildingLandSound(unit);
+							helper::playBuildingLandSound(unit);
 
 							if (unit->orderQueueHead != nullptr &&
 								unit->orderQueueHead->orderId != OrderId::PlaceAddon
 								)
-								removeOrderFromUnitQueue(unit, unit->orderQueueHead);
+								helper::removeOrderFromUnitQueue(unit, unit->orderQueueHead);
 
 							unit->orderToIdle();
 
@@ -121,12 +121,12 @@ namespace hooks {
 							//6452B:
 
 							//use a AddFogMask() function after some coordinates calculations
-							function_00469F60(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+							helper::function_00469F60(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 							unit->building.landingTimer = 1;
 
 							//plan movement again after latest updates
-							function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+							helper::function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 							if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW)
 								unit->sprite->images.tail->flags |= CImage_Flags::DontUpdate;
@@ -134,7 +134,7 @@ namespace hooks {
 							unit->status |= UnitStatus::CanNotReceiveOrders;
 
 							unit->flingyTopSpeed = 256;
-							SetUnitMovementSpeed(unit, 256);
+							helper::SetUnitMovementSpeed(unit, 256);
 
 							unit->mainOrderState = 2;
 
@@ -149,7 +149,7 @@ namespace hooks {
 						bool bStopThere = false;
 
 						//64587:
-						if (!isUnitPositions2Equal(unit)) {
+						if (!helper::isUnitPositions2Equal(unit)) {
 
 							int someValue =
 								scbw::getAngle(
@@ -186,47 +186,47 @@ namespace hooks {
 					unit->orderSignal -= 0x10;
 
 					//use a SetFogMask() function after some coordinates preparation
-					function_00469EC0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+					helper::function_00469EC0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 					//recalculate position and update effect on
 					//surroundings?
-					function_0046A560(unit);
+					helper::function_0046A560(unit);
 
 					//toggle pathing-related stuff to prepare
 					//to no longer use pathing
-					function_004634E0(unit);
+					helper::function_004634E0(unit);
 
 					unit->sprite->elevationLevel = 4;
-					setUnitPathing(unit, 0);
+					helper::setUnitPathing(unit, 0);
 					scbw::setUnitPosition(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 					//maybe update orders targetting the unit,
 					//set repulse for units in surroundings,and 
 					//some others things?			
-					function_0046A5A0(unit);
+					helper::function_0046A5A0(unit);
 
 					//maybe the landing unit would get excluded from multi-units selection
 					//if that could happen in normal Starcraft gameplay?That may be what
 					//this function do.
 					if (unit->sprite->flags & CSprite_Flags::Selected && *clientSelectionCount > 1)
-						function_004C3B40(unit);
+						helper::function_004C3B40(unit);
 
 					//64648
 
 					//change the verticalOffset of images besides shadow to 0
-					function_00498150(unit->sprite, 0);
+					helper::function_00498150(unit->sprite, 0);
 
 					if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW)
 						unit->sprite->images.tail->flags &= ~CImage_Flags::DontUpdate;
 
 					//probably what display the landing dust
-					function_004997E0(unit->sprite);
+					helper::function_004997E0(unit->sprite);
 
 					scbw::refreshConsole();
 
 					//crush units that managed to get unmovable there
 					//(tanks in siege, burrowed zerg)
-					function_00464300(unit);
+					helper::function_00464300(unit);
 
 					if (unit->orderQueueHead != nullptr) {
 
@@ -247,7 +247,7 @@ namespace hooks {
 								order = nullptr;
 
 							while (unit->orderQueueTail != order)
-								removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+								helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 
 							//646AF
 							if (unit->orderQueueHead == nullptr)
@@ -259,7 +259,7 @@ namespace hooks {
 							//646C7
 							//this cause the landed building to immediately take off again to
 							//execute the queued move/follow order
-							function_00474760(unit, unit->orderQueueHead, OrderId::BuildingLiftoff);
+							helper::function_00474760(unit, unit->orderQueueHead, OrderId::BuildingLiftoff);
 
 					} //if(unit->orderQueueHead != nullptr)
 
@@ -269,30 +269,30 @@ namespace hooks {
 					//and unknown order assignment?
 					//maybe affect another selected unit depending on
 					//attempt at giving order?
-					function_00463640(unit);
+					helper::function_00463640(unit);
 
-					actUnitReturnToIdle(unit);
+					helper::actUnitReturnToIdle(unit);
 
-					addon = connectAddonCheck(unit);
+					addon = helper::connectAddonCheck(unit);
 					if (addon != nullptr)
-						completeAddon(unit, addon);
+						helper::completeAddon(unit, addon);
 
 					//646EC
 					if (*IS_PLACING_BUILDING) {
 
-						placebuildingProc();
+						helper::placebuildingProc();
 
 						//add the last minute occupation info
 						//of landing building to update an
 						//ongoing attempt to choose a building
 						//or landing location?
-						if (!function_0048DDA0()) {
+						if (!helper::function_0048DDA0()) {
 
-							refreshLayers3And4();
+							helper::refreshLayers3And4();
 
 							//refresh various stuff, including
 							//buttonset, dialogs...
-							function_0048E310();
+							helper::function_0048E310();
 
 						}
 
@@ -314,27 +314,27 @@ namespace hooks {
 
 			//649D5
 			if (unit->building.addon != nullptr)
-				disconnectFromAddOn(unit);
+				helper::disconnectFromAddOn(unit);
 
 			if (unit->isFactory())
 				unit->rally.unit = unit;
 
 			//update globally known position and may
 			//remove repulse tile if no longer needed
-			function_0046A560(unit);
+			helper::function_0046A560(unit);
 
 			//disable GroundedBuilding status and
 			//prepare to enable pathing?
-			function_00463470(unit);
+			helper::function_00463470(unit);
 
 			//64A05
 			unit->sprite->elevationLevel = 12;
-			setUnitPathing(unit, 1);
+			helper::setUnitPathing(unit, 1);
 
 			//maybe update orders targetting the unit,
 			//set repulse for units in surroundings,and 
 			//some others things?
-			function_0046A5A0(unit);
+			helper::function_0046A5A0(unit);
 
 			if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW)
 				unit->sprite->images.tail->flags |= CImage_Flags::DontUpdate;
@@ -355,10 +355,10 @@ namespace hooks {
 			//there may be some under or around an infested
 			//command center, return value unused
 			if (unit->id == UnitId::ZergInfestedCommandCenter)
-				function_0047DF90(unit);
+				helper::function_0047DF90(unit);
 
 			if (*IS_PLACING_BUILDING)
-				placebuildingProc();
+				helper::placebuildingProc();
 
 			unit->mainOrderId = OrderId::Liftoff;
 
@@ -369,7 +369,7 @@ namespace hooks {
 			if (unit->orderQueueHead == nullptr)
 				unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, 0);
 
-			actUnitReturnToIdle(unit);
+			helper::actUnitReturnToIdle(unit);
 
 		}
 	}

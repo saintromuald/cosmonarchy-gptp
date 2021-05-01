@@ -27,10 +27,10 @@ namespace hooks {
 
 		if (bFoundUnitAbleToStimpack) {
 			static uint8 opcode[] = {0x36};	// packet opcode for stimpack is 0x36, no others args
-			QueueGameCommand(&opcode[0], 1);
+			helper::QueueGameCommand(&opcode[0], 1);
 		} else {
 			char* message = (char*)statTxtTblNew->getString(874); //not enough life remaining
-			get_statTxt_Str_0(*activePortraitUnit, *LOCAL_NATION_ID, message);
+			helper::get_statTxt_Str_0(*activePortraitUnit, *LOCAL_NATION_ID, message);
 		}
 	}
 
@@ -38,7 +38,7 @@ namespace hooks {
 	// code used by the AI (no questions about sync between players in that case)
 	void useStimPacksAIHook(CUnit* unit) {
 		if (unit->hitPoints > MIN_HITPOINTS_FOR_STIMPACKS) {
-			scbw::playSound(RandBetween(SoundId::Terran_MARINE_TMaSti00_WAV, SoundId::Terran_MARINE_TMaSti01_WAV, 31), unit);
+			scbw::playSound(helper::RandBetween(SoundId::Terran_MARINE_TMaSti00_WAV, SoundId::Terran_MARINE_TMaSti01_WAV, 31), unit);
 			unit->damageHp(MIN_HITPOINTS_FOR_STIMPACKS, nullptr, -1, true);
 			if (unit->stimTimer < 37) {
 				unit->stimTimer = 37;

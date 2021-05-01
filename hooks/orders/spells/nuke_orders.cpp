@@ -18,8 +18,8 @@ namespace hooks {
 					if (unit->orderQueueHead == nullptr)
 						unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
 
-					actUnitReturnToIdle(unit);
-					changeUnitButtonSet_Sub4E5D60(unit, unit->id);
+					helper::actUnitReturnToIdle(unit);
+					helper::changeUnitButtonSet_Sub4E5D60(unit, unit->id);
 					scbw::refreshConsole();
 
 					while (current_image != nullptr) {
@@ -41,7 +41,7 @@ namespace hooks {
 					}
 
 					//64DD6
-					function_0043DB50(unit);
+					helper::function_0043DB50(unit);
 
 				}
 
@@ -53,7 +53,7 @@ namespace hooks {
 
 			unit->sprite->playIscriptAnim(IscriptAnimation::SpecialState1, true);
 
-			nukeDot = createThingy(
+			nukeDot = helper::createThingy(
 				SpriteId::Nuke_Target_Dot,
 				(unit->connectedUnit)->orderTarget.pt.x,
 				(unit->connectedUnit)->orderTarget.pt.y,
@@ -64,7 +64,7 @@ namespace hooks {
 
 			if (nukeDot != nullptr) {
 				nukeDot->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
-				setThingyVisibilityFlags(nukeDot);
+				helper::setThingyVisibilityFlags(nukeDot);
 			}
 
 			unit->mainOrderState = 6;
@@ -99,7 +99,7 @@ namespace hooks {
 			);
 
 			if (distance / 256 <= sightRange * 3)
-				AI_orderUnitCloaking(unit);
+				helper::AI_orderUnitCloaking(unit);
 
 		}
 
@@ -114,14 +114,14 @@ namespace hooks {
 		if (distance / 256 > sightRange) {
 
 			if (unit->recentOrderTimer == 0)
-				SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+				helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 		} else { //792AE
 
 			int32 direction;
 			bool bEndThere = false;
 
-			setNextWaypoint_Sub4EB290(unit);
+			helper::setNextWaypoint_Sub4EB290(unit);
 
 			if (
 				unit->nextTargetWaypoint.x != unit->position.x ||
@@ -175,8 +175,8 @@ namespace hooks {
 
 					nuke->orderTo(OrderId::NukeLaunch, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					nuke->connectedUnit = unit;
-					setAllOverlayDirectionsGeneric(nuke, 0);
-					showAndEnableUnit(nuke);
+					helper::setAllOverlayDirectionsGeneric(nuke, 0);
+					helper::showAndEnableUnit(nuke);
 
 					unit->connectedUnit = nuke;
 					unit->orderTo(OrderId::NukeTrack, unit->sprite->position.x, unit->sprite->position.y);

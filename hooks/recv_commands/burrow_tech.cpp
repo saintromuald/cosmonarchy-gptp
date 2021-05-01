@@ -11,7 +11,7 @@ namespace hooks {
 				units_dat::BaseProperty[selected_unit->id] & UnitProperty::Burrowable &&
 				selected_unit->canUseTech(TechId::Burrowing, *ACTIVE_NATION_ID) == 1
 				)
-				function_004E97C0(selected_unit);
+				helper::function_004E97C0(selected_unit);
 			selected_unit = getActivePlayerNextSelection();
 		}
 	}
@@ -33,7 +33,7 @@ namespace hooks {
 				else
 					bCommandType = 0;
 
-				function_004754F0(
+				helper::function_004754F0(
 					selected_unit,
 					UnitId::None,
 					*(uint32*)(0x006D5C24),
@@ -71,13 +71,13 @@ namespace hooks {
 						)
 						bStopLoop = true;
 					else
-						removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+						helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 				}
 				unit->performAnotherOrder(OrderId::Unburrow, 0, 0, nullptr, UnitId::None);
 			}
 			//E9846
 			prepareForNextOrder(unit);
-			actUnitReturnToIdle(unit);
+			helper::actUnitReturnToIdle(unit);
 		}
 	}
 }

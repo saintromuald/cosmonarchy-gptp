@@ -24,7 +24,7 @@ namespace BuildingHelper {
 
 		if (unit->secondaryOrderId == OrderId::Train
 			|| unit->secondaryOrderId == OrderId::TrainFighter
-			|| isConstructingAddon(unit))
+			|| helper::isConstructingAddon(unit))
 			return unit->currentBuildUnit;
 
 		return nullptr;

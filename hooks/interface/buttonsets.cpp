@@ -503,10 +503,10 @@ namespace hooks {
 				//59A12:
 
 				//draw buttons
-				function_4591D0();
+				helper::function_4591D0();
 
 				//refresh popup text over button
-				function_459770();
+				helper::function_459770();
 
 				jumpTo59A9F = (*activePortraitUnit == nullptr);
 
@@ -535,10 +535,10 @@ namespace hooks {
 				//59A12:
 
 				//draw buttons
-				function_4591D0();
+				helper::function_4591D0();
 
 				//refresh popup text over button
-				function_459770();
+				helper::function_459770();
 
 				jumpTo59A9F = (*activePortraitUnit == nullptr);
 
@@ -628,7 +628,7 @@ namespace hooks {
 		if (jumpTo59A9F) {
 
 			if (*IS_IN_REPLAY)
-				replayStatBtns(*BUTTONSET_DIALOG);
+				helper::replayStatBtns(*BUTTONSET_DIALOG);
 
 			//59AB3
 
@@ -689,7 +689,7 @@ namespace hooks {
 
 					while (current_button_state == BUTTON_STATE::Invisible && (buttons_count < current_buttonset->buttonsInSet)) {
 
-						current_button_state = req_check((uint32)current_button->reqFunc, (uint8)current_button->reqVar, (uint8)*LOCAL_NATION_ID, *activePortraitUnit);
+						current_button_state = helper::req_check((uint32)current_button->reqFunc, (uint8)current_button->reqVar, (uint8)*LOCAL_NATION_ID, *activePortraitUnit);
 						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Upgrade_Not_At_Max_Level) {
 							// Escalations were here
 						}
@@ -1311,7 +1311,7 @@ namespace hooks {
 							stack_placeholder.buttonState = current_button_state;
 							stack_placeholder.buttonset = current_buttonset;
 
-							fxnInteract(current_dialog, (uint32)&stack_placeholder);
+							helper::fxnInteract(current_dialog, (uint32)&stack_placeholder);
 
 							current_button_state = stack_placeholder.buttonState;
 
@@ -1337,7 +1337,7 @@ namespace hooks {
 
 						//59331
 						if (!jumpto59336 && !jumpto5934E)
-							function_418E00(current_dialog);
+							helper::function_418E00(current_dialog);
 
 						if (!jumpto5934E) {
 							//59336
@@ -1392,8 +1392,8 @@ namespace hooks {
 	//May need a special case using the original array adress and size
 	//when in replay if modified
 	void statbtn_BIN_CustomCtrlID(BinDlg* dialog) {
-		registerUserDialogAction(dialog, (uint32)&Btn_fxnInteractFuncs, sizeof(Btn_fxnInteractFuncs));
-		BINDLG_BlitSurface(dialog);
+		helper::registerUserDialogAction(dialog, (uint32)&Btn_fxnInteractFuncs, sizeof(Btn_fxnInteractFuncs));
+		helper::BINDLG_BlitSurface(dialog);
 	}
 
 	;

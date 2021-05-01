@@ -13,18 +13,18 @@ namespace hooks {
 				orderId == OrderId::PlaceAddon
 				) {
 				if (builder->canMakeUnit(builtUnitId, *ACTIVE_NATION_ID))
-					bReturnValue = (OrderAllowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
+					bReturnValue = (helper::OrderAllowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
 			} else
 				if (
 					orderId == OrderId::Build5 ||		//Build Nydus Exit
 					orderId == OrderId::BuildingLand
 					) {
 					if (builder->id == builtUnitId)
-						bReturnValue = (OrderAllowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
+						bReturnValue = (helper::OrderAllowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
 				} else
 					if (orderId == OrderId::CTFCOP2) {	//Create flag beacon
 						if (*elapsedTimeSeconds <= 600 && builder->id == builtUnitId)
-							bReturnValue = (OrderAllowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
+							bReturnValue = (helper::OrderAllowed(builder, orderId, *ACTIVE_NATION_ID) != 0);
 					}
 		}
 		return bReturnValue;
@@ -39,7 +39,7 @@ namespace hooks {
 		builder = getActivePlayerNextSelection();
 
 		result_function_00473FB0 =
-			function_00473FB0(
+			helper::function_00473FB0(
 				builder,
 				builder->playerId,
 				x,
@@ -51,7 +51,7 @@ namespace hooks {
 				0
 			);
 
-		if (placeBuildingMsg(result_function_00473FB0)) {
+		if (helper::placeBuildingMsg(result_function_00473FB0)) {
 
 			int32 DimensionX, DimensionY;
 
@@ -73,7 +73,7 @@ namespace hooks {
 
 			DimensionY += (y * 32);
 
-			function_0048DE70(builder, orderId, DimensionX, DimensionY, builtUnitId);
+			helper::function_0048DE70(builder, orderId, DimensionX, DimensionY, builtUnitId);
 
 		}
 
@@ -92,7 +92,7 @@ namespace hooks {
 		builder = getActivePlayerNextSelection();
 
 		result_function_00473FB0 =
-			function_00473FB0(
+			helper::function_00473FB0(
 				builder,
 				builder->playerId,
 				x,
@@ -148,7 +148,7 @@ namespace hooks {
 			addonPlaceY = y - addonPlaceY;
 
 			result_function_00473FB0 =
-				function_00473FB0(
+				helper::function_00473FB0(
 					builder,
 					builder->playerId,
 					addonPlaceX,
@@ -162,7 +162,7 @@ namespace hooks {
 
 		}
 
-		if (placeBuildingMsg(result_function_00473FB0)) {
+		if (helper::placeBuildingMsg(result_function_00473FB0)) {
 
 			int32 DimensionX, DimensionY;
 
@@ -188,7 +188,7 @@ namespace hooks {
 
 			DimensionY += addonPlaceY;
 
-			function_0048DE70(builder, orderId, DimensionX, DimensionY, builtUnitId);
+			helper::function_0048DE70(builder, orderId, DimensionX, DimensionY, builtUnitId);
 
 		}
 
@@ -210,9 +210,9 @@ namespace hooks {
 				if (
 					x < mapTileSize->width &&
 					y < mapTileSize->height &&
-					CMDRECV_PlaceBuildingAllowedHelper(builder, orderId, builtUnitId)
+					helper::CMDRECV_PlaceBuildingAllowedHelper(builder, orderId, builtUnitId)
 					)
-					cmdRECV_PlaceBuilding(x, y, orderId, builtUnitId);
+					helper::cmdRECV_PlaceBuilding(x, y, orderId, builtUnitId);
 			}
 		}
 	}

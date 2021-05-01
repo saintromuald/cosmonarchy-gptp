@@ -101,7 +101,7 @@ namespace hooks {
 		//should stop movements/orders/scripts of the unit, give it the status 
 		//DoodadStatesThing, may have an effect on selection, and perform
 		//scbw::refreshConsole() code at the end
-		function_492CC0(target);
+		helper::function_492CC0(target);
 
 	}
 
@@ -136,7 +136,7 @@ namespace hooks {
 				ephemeralBlades = true;
 			}
 			if (ephemeralBlades) {
-				uint32 base_damage = GetUnitBulletDamage(bullet, target);
+				uint32 base_damage = helper::GetUnitBulletDamage(bullet, target);
 				target->damageWith(
 					bullet->weaponType,
 					base_damage,
@@ -146,10 +146,10 @@ namespace hooks {
 					damageDivisor
 				);
 			} else {
-				attackOverlayAndNotify(bullet->sourceUnit, target, bullet->weaponType, bullet->direction1); // no damage, but still ask for retaliation
+				helper::attackOverlayAndNotify(bullet->sourceUnit, target, bullet->weaponType, bullet->direction1); // no damage, but still ask for retaliation
 			}
 		} else {
-			uint32 base_damage = GetUnitBulletDamage(bullet, target);
+			uint32 base_damage = helper::GetUnitBulletDamage(bullet, target);
 			target->damageWith(
 				bullet->weaponType,
 				base_damage,
@@ -212,7 +212,7 @@ namespace hooks {
 					ephemeralBlades = true;
 				}
 				if (ephemeralBlades) {
-					uint32 damage = getUnitDamageBonus(attacker, weaponId);
+					uint32 damage = helper::getUnitDamageBonus(attacker, weaponId);
 					damage = ((uint16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
 					target->damageWith(
 						weaponId,
@@ -223,10 +223,10 @@ namespace hooks {
 						1
 					);
 				} else {
-					attackOverlayAndNotify(attacker, target, weaponId, attacker->currentDirection1); //no damage, but still ask for retaliation
+					helper::attackOverlayAndNotify(attacker, target, weaponId, attacker->currentDirection1); //no damage, but still ask for retaliation
 				}
 			} else {
-				uint32 damage = getUnitDamageBonus(attacker, weaponId);
+				uint32 damage = helper::getUnitDamageBonus(attacker, weaponId);
 				damage = ((uint16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
 				target->damageWith(
 					weaponId,
@@ -250,7 +250,7 @@ namespace hooks {
 		CThingy* emp_sprite = scbw::createThingy(371, x, y, 0);
 		if (emp_sprite != nullptr) {
 			emp_sprite->sprite->elevationLevel = 19; //0x13
-			setThingyVisibilityFlags(emp_sprite);
+			helper::setThingyVisibilityFlags(emp_sprite);
 		}
 		static uint16* const maxBoxRightValue = (uint16*)0x00628450;	//should usually be mapTileSize->width * 32
 		static uint16* const maxBoxBottomValue = (uint16*)0x006284B4;	//should usually be mapTileSize->height * 32
@@ -282,7 +282,7 @@ namespace hooks {
 			}
 
 		//find all units in area of effect and pick the first
-		unitsInAreaOfEffect = getAllUnitsInBounds(&area_of_effect);
+		unitsInAreaOfEffect = helper::getAllUnitsInBounds(&area_of_effect);
 		current_unit = *unitsInAreaOfEffect;
 		while (current_unit != nullptr) {
 			if (current_unit != attacker &&				//EMP doesn't affect the attacker
@@ -298,7 +298,7 @@ namespace hooks {
 						if (current_unit->sprite->flags & CSprite_Flags::Selected &&
 							current_unit->sprite != nullptr
 							) { // Follows original code, though this order of tests doesn't make sense
-							setAllImageGroupFlagsPal11(current_unit->sprite); //redraw the unit
+							helper::setAllImageGroupFlagsPal11(current_unit->sprite); //redraw the unit
 						}
 					}
 			}
@@ -327,10 +327,10 @@ namespace hooks {
 			auto vec = scbw::getClarionLinks(bullet->attackTarget.unit);
 			if (vec.size() != 0) {
 				for (auto unit : vec) {
-					ApplySpores(unit);
+					helper::ApplySpores(unit);
 				}
 			} else {
-				ApplySpores(bullet->attackTarget.unit);
+				helper::ApplySpores(bullet->attackTarget.unit);
 			}
 		}
 	}
@@ -343,7 +343,7 @@ namespace hooks {
 			|| target == nullptr) {
 			return;
 		} else {
-			if (getSpellStatString(target, TechId::Consume, attacker->playerId) != 0) {
+			if (helper::getSpellStatString(target, TechId::Consume, attacker->playerId) != 0) {
 				//char buf[32];
 				//ebx/bl  = player id, arg 1 = 0x10, eax = edi (target)
 				//sprintf(buf,"Spell error: %d",getSpellStatString(target,TechId::Consume,attacker->playerId) );
@@ -353,9 +353,9 @@ namespace hooks {
 
 		if (target != nullptr &&
 			!(target->status & UnitStatus::Invincible) &&
-			getSpellStatString(target, TechId::Consume, attacker->playerId) == 0 //returning a value != 0 means there was an error
+			helper::getSpellStatString(target, TechId::Consume, attacker->playerId) == 0 //returning a value != 0 means there was an error
 			) {
-			incrementUnitDeathScores(target, attacker->playerId);
+			helper::incrementUnitDeathScores(target, attacker->playerId);
 			uint32 power = target->hitPoints;
 			target->remove();
 
@@ -378,16 +378,16 @@ namespace hooks {
 	void EnsnareHit(CUnit* attacker, int x, int y, CBullet* bullet) {
 		Box16 coords;
 		CThingy* ensnare_effect_sprite;
-		ensnare_effect_sprite = createThingy(SpriteId::Ensnare, x, y, 0);
+		ensnare_effect_sprite = helper::createThingy(SpriteId::Ensnare, x, y, 0);
 		if (ensnare_effect_sprite != nullptr) {
 			ensnare_effect_sprite->sprite->elevationLevel = 19; //0x13
-			setThingyVisibilityFlags(ensnare_effect_sprite);
+			helper::setThingyVisibilityFlags(ensnare_effect_sprite);
 		}
 		coords.top = y - 64;
 		coords.right = x + 64;
 		coords.left = x - 64;
 		coords.bottom = y + 64;
-		IterateUnitsAtLocationTargetProc_Ensnare(attacker, &coords);
+		helper::IterateUnitsAtLocationTargetProc_Ensnare(attacker, &coords);
 	}
 
 	int ensnareProc(CUnit* target, CUnit* attacker) {
@@ -395,7 +395,7 @@ namespace hooks {
 			&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)
 			&& target->id != UnitId::ZergInfestedTerran) {
 			if (!(target->status & UnitStatus::Invincible) && !(target->status & UnitStatus::Burrowed))
-				createEnsnareOverlay(target);
+				helper::createEnsnareOverlay(target);
 		}
 		return 0;
 	}
@@ -410,21 +410,21 @@ namespace hooks {
 
 		//adjust location where Dark Swarm will be created
 		//if necessary (by modifying coords)
-		fixTargetLocation(&coords, UnitId::Spell_DarkSwarm);
+		helper::fixTargetLocation(&coords, UnitId::Spell_DarkSwarm);
 
 		//the dark swarm is created for player 11 (neutral), not for the owner
-		dark_swarm_unit = createUnit(UnitId::Spell_DarkSwarm, coords.x, coords.y, 11);
+		dark_swarm_unit = helper::createUnit(UnitId::Spell_DarkSwarm, coords.x, coords.y, 11);
 
 		if (dark_swarm_unit == nullptr) {
-			displayLastNetErrorForPlayer(attackingPlayerId);
+			helper::displayLastNetErrorForPlayer(attackingPlayerId);
 		}
 		else {
 			dark_swarm_unit->status |= UnitStatus::NoCollide;
 			dark_swarm_unit->sprite->elevationLevel = 11;
 
 			//update various stuff (set hp, set shield...) not finished on createUnit
-			updateUnitStatsFinishBuilding(dark_swarm_unit);
-			updateUnitStrength(dark_swarm_unit);
+			helper::updateUnitStatsFinishBuilding(dark_swarm_unit);
+			helper::updateUnitStrength(dark_swarm_unit);
 			if (dark_swarm_unit->removeTimer == 0
 				|| dark_swarm_unit->removeTimer > 900) {
 				dark_swarm_unit->removeTimer = 900;	//0x0384
@@ -445,7 +445,7 @@ namespace hooks {
 		while (broodlings_to_spawn > 0) {
 			bool jump_to_end_of_loop = false; //F4A82
 			//check various conditions before attempting to create a broodling
-			if (function_0042D810(current_x, current_y, UnitId::ZergBroodling)) {
+			if (helper::function_0042D810(current_x, current_y, UnitId::ZergBroodling)) {
 				Point16 inPos, outPos;
 				Box16 moveArea;
 
@@ -474,14 +474,14 @@ namespace hooks {
 				pos.y = current_y;
 
 				//adjust the position to welcome the unit...I think
-				fixTargetLocation(&pos, UnitId::ZergBroodling);
+				helper::fixTargetLocation(&pos, UnitId::ZergBroodling);
 
 				//create the broodling
-				created_broodling = createUnit(UnitId::ZergBroodling, pos.x, pos.y, attacker->playerId);
+				created_broodling = helper::createUnit(UnitId::ZergBroodling, pos.x, pos.y, attacker->playerId);
 				scbw::set_generic_unit(created_broodling, ValueId::BroodlingMother, attacker);
 
 				if (created_broodling == nullptr) {
-					displayLastNetErrorForPlayer(attacker->playerId);
+					helper::displayLastNetErrorForPlayer(attacker->playerId);
 					jump_to_end_of_loop = true;
 				} else { //F4A26
 					scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, created_broodling);
@@ -489,8 +489,8 @@ namespace hooks {
 					uint32 timerBeforeDisappearance;
 
 					//update various stuff (set hp, set shield...) not finished on createUnit
-					updateUnitStatsFinishBuilding(created_broodling);
-					updateUnitStrength(created_broodling);
+					helper::updateUnitStatsFinishBuilding(created_broodling);
+					helper::updateUnitStrength(created_broodling);
 					timerBeforeDisappearance = 720;	//0x708
 					if (created_broodling->removeTimer == 0
 						|| created_broodling->removeTimer > timerBeforeDisappearance
@@ -499,7 +499,7 @@ namespace hooks {
 					}
 
 					if (attacker->pAI != nullptr) {
-						AI_TrainingUnit(attacker, created_broodling);
+						helper::AI_TrainingUnit(attacker, created_broodling);
 					}
 				}
 			}
@@ -519,7 +519,7 @@ namespace hooks {
 		coords.top = y - 64;
 		coords.right = x + 64;
 
-		IterateUnitsAtLocationTargetProc_Plague(attacker, &coords);
+		helper::IterateUnitsAtLocationTargetProc_Plague(attacker, &coords);
 		if (attacker != nullptr) {
 			uint32 range = 64;
 			scbw::UnitFinder(
@@ -544,17 +544,17 @@ namespace hooks {
 	//in an unexpected way, it may not contain the correct value.
 	void MaelstromHit(CUnit* attacker, int x, int y, CBullet* bullet) {
 		Box16 coords;
-		CThingy* maelstrom_effect_sprite = createThingy(SpriteId::Maelstrom_Hit, x, y, 0);
+		CThingy* maelstrom_effect_sprite = helper::createThingy(SpriteId::Maelstrom_Hit, x, y, 0);
 		if (maelstrom_effect_sprite != nullptr) {
 			maelstrom_effect_sprite->sprite->elevationLevel = 17; //0x11
-			setThingyVisibilityFlags(maelstrom_effect_sprite);
+			helper::setThingyVisibilityFlags(maelstrom_effect_sprite);
 		}
 		scbw::playSound(SoundId::Protoss_Darchon_Parahit_wav, attacker);
 		coords.right = x + 48;
 		coords.left = x - 48;
 		coords.top = y - 48;
 		coords.bottom = y + 48;
-		IterateUnitsAtLocationTargetProc_Maelstrom(attacker, &coords);
+		helper::IterateUnitsAtLocationTargetProc_Maelstrom(attacker, &coords);
 	}
 
 	//no bullet because this function is called in another context without bullet
@@ -570,16 +570,16 @@ namespace hooks {
 	//in an unexpected way, it may not contain the correct value.
 	void StasisFieldHit(CUnit* attacker, int x, int y, CBullet* bullet) {
 		Box16 coords;
-		CThingy* stasisfield_effect_sprite = createThingy(SpriteId::Stasis_Field_Hit, x, y, 0);
+		CThingy* stasisfield_effect_sprite = helper::createThingy(SpriteId::Stasis_Field_Hit, x, y, 0);
 		if (stasisfield_effect_sprite != nullptr) {
 			stasisfield_effect_sprite->sprite->elevationLevel = 17; //0x11
-			setThingyVisibilityFlags(stasisfield_effect_sprite);
+			helper::setThingyVisibilityFlags(stasisfield_effect_sprite);
 		}
 		coords.top = y - 48;
 		coords.right = x + 48;
 		coords.left = x - 48;
 		coords.bottom = y + 48;
-		IterateUnitsAtLocationTargetProc_StasisField(attacker, &coords);
+		helper::IterateUnitsAtLocationTargetProc_StasisField(attacker, &coords);
 	}
 
 	//bullet is not normally part of the function, so if the function is called
@@ -592,17 +592,17 @@ namespace hooks {
 
 		//adjust location where Disruption Web will be created
 		//if necessary (by modifying coords)
-		fixTargetLocation(&coords, UnitId::Spell_DisruptionWeb);
-		disruption_web_unit = createUnit(UnitId::Spell_DisruptionWeb, coords.x, coords.y, 11);
+		helper::fixTargetLocation(&coords, UnitId::Spell_DisruptionWeb);
+		disruption_web_unit = helper::createUnit(UnitId::Spell_DisruptionWeb, coords.x, coords.y, 11);
 		if (disruption_web_unit == nullptr) {
-			displayLastNetErrorForPlayer(attackingPlayerId);
+			helper::displayLastNetErrorForPlayer(attackingPlayerId);
 		}
 		else {
 			disruption_web_unit->status |= UnitStatus::NoCollide;
 			disruption_web_unit->sprite->elevationLevel = 11;
 			//update various stuff (set hp, set shield...) not finished on createUnit
-			updateUnitStatsFinishBuilding(disruption_web_unit);
-			updateUnitStrength(disruption_web_unit);
+			helper::updateUnitStatsFinishBuilding(disruption_web_unit);
+			helper::updateUnitStrength(disruption_web_unit);
 			if (disruption_web_unit->removeTimer == 0 ||
 				disruption_web_unit->removeTimer > 360
 				) {
@@ -638,7 +638,7 @@ namespace hooks {
 		if (a2 > v5)
 			v5 = a2;
 		a1->stasisTimer = v5;
-		return function_492CC0_ret(a1);
+		return helper::function_492CC0_ret(a1);
 	}
 
 	void createScanner(CUnit* a1) { // 00464E40
@@ -680,11 +680,11 @@ namespace hooks {
 					LABEL_15:
 						if (v1->orderQueueHead) {
 							v1->userActionFlags |= 1u;
-							orders_Nothing2(v1);
+							helper::orders_Nothing2(v1);
 						} else if (v1->pAI) {
-							orderComputerClear(v1, 0x9Cu);
+							helper::orderComputerClear(v1, 0x9Cu);
 						} else {
-							orderComputerClear(v1, units_dat::ReturnToIdleOrder[(uint16)v1->id]);
+							helper::orderComputerClear(v1, units_dat::ReturnToIdleOrder[(uint16)v1->id]);
 						}
 						return;
 					}
@@ -692,27 +692,27 @@ namespace hooks {
 					v8 = "";
 				}
 				if ((uint8)v1->playerId == *LOCAL_NATION_ID && *ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
-					setUnitStatTxtErrorMsg((int32)v8);
+					helper::setUnitStatTxtErrorMsg((int32)v8);
 				goto LABEL_15;
 			}
 		}
 		v9 = v1->orderTarget.pt.x;
 		a2.y = v1->orderTarget.pt.y;
 		a2.x = v9;
-		fixTargetLocation(&a2, UnitId::Spell_ScannerSweep);
-		v10 = createUnit(0x21u, a2.x, a2.y, (uint8)v1->playerId);
+		helper::fixTargetLocation(&a2, UnitId::Spell_ScannerSweep);
+		v10 = helper::createUnit(0x21u, a2.x, a2.y, (uint8)v1->playerId);
 		v11 = v10;
 		if (v10) {
-			updateUnitStatsFinishBuilding(v10);
-			updateUnitStrength(v11);
-			playSoundFromSource(388, v1, 1, 0);
+			helper::updateUnitStatsFinishBuilding(v10);
+			helper::updateUnitStrength(v11);
+			helper::playSoundFromSource(388, v1, 1, 0);
 			if (!(*CHEAT_STATE & 0x800)) {
 				v1->spendUnitEnergy(techdata_dat::EnergyCost[4] * 256);
 			}
-			toIdle(v1);
+			helper::toIdle(v1);
 		} else {
-			displayLastNetErrorForPlayer(v1->playerId);
-			toIdle(v1);
+			helper::displayLastNetErrorForPlayer(v1->playerId);
+			helper::toIdle(v1);
 		}
 	}
 

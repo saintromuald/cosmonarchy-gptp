@@ -33,7 +33,7 @@ namespace hooks {
 			area_of_effect.bottom = *maxBoxBottomValue;
 		}
 
-		unitsInAreaOfEffect = getAllUnitsInBounds(&area_of_effect);
+		unitsInAreaOfEffect = helper::getAllUnitsInBounds(&area_of_effect);
 		current_unit = *unitsInAreaOfEffect;
 		while (current_unit != nullptr) {
 			if (
@@ -49,7 +49,7 @@ namespace hooks {
 				&& cloaker->isTargetWithinMinRange(current_unit, cloakRadius)							// Check again if unit in range of cloaking
 				) {
 				if (!scbw::get_generic_timer(current_unit, ValueId::DecloakTimer)) {
-					secondaryOrder_Cloak(current_unit);
+					helper::secondaryOrder_Cloak(current_unit);
 				}
 				if (!(current_unit->status & UnitStatus::CloakingForFree)) {
 					current_unit->status |= UnitStatus::CloakingForFree;

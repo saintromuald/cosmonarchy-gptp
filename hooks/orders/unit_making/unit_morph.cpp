@@ -34,10 +34,10 @@ namespace hooks {
 			unit2 = nullptr;
 
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg && !vorvaling) {
-				unit2 = function_0045D910(unit);//zerg dual birth
+				unit2 = helper::function_0045D910(unit);//zerg dual birth
 
 				if (unit2 != nullptr)
-					AI_TrainingUnit(unit, unit2);
+					helper::AI_TrainingUnit(unit, unit2);
 
 			}
 
@@ -45,13 +45,13 @@ namespace hooks {
 				unit->id != UnitId::ZergDroleth &&
 				unit->id != UnitId::ZergOvileth
 				)
-				AI_TrainingUnit(unit, unit);
+				helper::AI_TrainingUnit(unit, unit);
 
-			function_004E65E0(unit, 0);
+			helper::function_004E65E0(unit, 0);
 
 			//update various stuff (set hp, set shield...) not finished on Morph
-			updateUnitStatsFinishBuilding(unit);
-			updateUnitStrength(unit);
+			helper::updateUnitStatsFinishBuilding(unit);
+			helper::updateUnitStrength(unit);
 
 			pos.x = unit->sprite->position.x;
 			pos.y = unit->sprite->position.y;
@@ -66,7 +66,7 @@ namespace hooks {
 
 			}
 
-			fixTargetLocation(&pos, unit->id);
+			helper::fixTargetLocation(&pos, unit->id);
 
 			if (
 				pos.x != unit->sprite->position.x ||
@@ -79,15 +79,15 @@ namespace hooks {
 				) {
 				auto origin = unit->eggOrigin;
 				if (origin == UnitId::ZergLarva) {
-					orderNewUnitToRally(unit, unit->connectedUnit);
+					helper::orderNewUnitToRally(unit, unit->connectedUnit);
 
 					if (unit2 != nullptr)
-						orderNewUnitToRally(unit2, unit->connectedUnit);
+						helper::orderNewUnitToRally(unit2, unit->connectedUnit);
 				}
 
 			}
 
-			actUnitReturnToIdle(unit);
+			helper::actUnitReturnToIdle(unit);
 
 		}
 
@@ -98,13 +98,13 @@ namespace hooks {
 	void orders_Morph1(CUnit* unit) {
 		if (unit->mainOrderState == 0) {
 			if (scbw::isConventionalUnitMorphSource(unit->id, true, true)) {
-				if (!hasSuppliesForUnit(
+				if (!helper::hasSuppliesForUnit(
 					unit->buildQueue[unit->buildQueueSlot],
 					unit->playerId,
 					1
 				))
 				{
-					refundAllQueueSlots(unit);
+					helper::refundAllQueueSlots(unit);
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 				} 
 				else 
@@ -116,7 +116,7 @@ namespace hooks {
 						case UnitId::ZergIroleth:
 							break;
 						default:
-							incrementUnitScoresEx(unit, -1, 0);
+							helper::incrementUnitScoresEx(unit, -1, 0);
 							break;
 					}
 					//					incrementUnitScoresEx(unit, -1, 0);
@@ -159,7 +159,7 @@ namespace hooks {
 					}
 					if (!bStopThere) {
 						if (unit->id == UnitId::ProtossCantavis) {
-							replaceUnitWithType(unit, UnitId::ProtossAugur);
+							helper::replaceUnitWithType(unit, UnitId::ProtossAugur);
 							unit->sprite->flags &= ~CSprite_Flags::IscriptCode;
 							if (unit->sprite->images.head != nullptr) {
 								CImage* current_image = unit->sprite->images.head;
@@ -169,18 +169,18 @@ namespace hooks {
 									current_image = current_image->link.next;
 								} while (current_image != nullptr);
 							}
-							changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
+							helper::changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
 							scbw::refreshConsole();
 							unit->status &= ~UnitStatus::IsBuilding; // disable the flag if set
-							setArchonPathing(unit);
+							helper::setArchonPathing(unit);
 							unit->orderComputerCL(OrderId::CompletingArchonSummon);
 							return;
 						} else {
 							unit->eggOrigin = unit->id;
 							// morph into egg from source unit
-							replaceUnitWithType(unit, eggId);
+							helper::replaceUnitWithType(unit, eggId);
 						}
-						changeUnitButtonSet_Sub4E5D60(unit, unit->id);
+						helper::changeUnitButtonSet_Sub4E5D60(unit, unit->id);
 						unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 						unit->mainOrderState = 1;
 						auto origin = unit->eggOrigin;
@@ -201,7 +201,7 @@ namespace hooks {
 
 			if (unit->mainOrderState == 1) {
 				//advance
-				if (advanceRemainingBuildTime_Sub466940(unit)) {
+				if (helper::advanceRemainingBuildTime_Sub466940(unit)) {
 					auto origin = unit->eggOrigin;
 					auto anim = IscriptAnimation::SpecialState1;
 					/*if (origin == UnitId::ZergLarva) {
@@ -228,20 +228,20 @@ namespace hooks {
 								break;
 						}
 
-						replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
+						helper::replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
 						if (
 							unit->id == UnitId::ZergDroleth ||
 							unit->id == UnitId::ZergOvileth
 							)
-							AI_TrainingUnit(unit, unit);
+							helper::AI_TrainingUnit(unit, unit);
 
-						playMorphingCompleteSound(unit);
+						helper::playMorphingCompleteSound(unit);
 						unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 						if (units_dat::ConstructionGraphic[unit->id] != 0) {
 
 							CImage* current_image;
 
-							function_004E65E0(unit, 1);
+							helper::function_004E65E0(unit, 1);
 
 							current_image = unit->sprite->images.head;
 
@@ -260,12 +260,12 @@ namespace hooks {
 
 							//update various stuff (set hp, set shield...) not finished on Morph
 
-							updateUnitStatsFinishBuilding(unit);
+							helper::updateUnitStatsFinishBuilding(unit);
 
-							updateUnitStrength(unit);
+							helper::updateUnitStrength(unit);
 							auto origin = unit->eggOrigin;
 							if (unit->id == UnitId::ZergEgg && origin == UnitId::ZergLarva)
-								orderNewUnitToRally(unit, unit->connectedUnit);
+								helper::orderNewUnitToRally(unit, unit->connectedUnit);
 
 						}
 
@@ -554,8 +554,8 @@ namespace hooks {
 			//			|| unit->id==UnitId::Hero_Warbringer
 			|| scbw::isLarvalEgg(unit))//just egg previously
 		{
-			if (hasSuppliesForUnit(unit_id, unit->playerId, notify_error)) {
-				CUnit* result = createUnit(unit_id, unit->getX(), unit->getY(), unit->playerId);
+			if (helper::hasSuppliesForUnit(unit_id, unit->playerId, notify_error)) {
+				CUnit* result = helper::createUnit(unit_id, unit->getX(), unit->getY(), unit->playerId);
 				if (result)
 					return result;
 				scbw::displayLastNetErrForPlayer(unit->playerId);

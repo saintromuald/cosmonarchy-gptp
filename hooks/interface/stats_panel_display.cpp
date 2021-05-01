@@ -63,15 +63,15 @@ namespace hooks {
 			uint8 airWeaponMainUnit;	//BL
 			uint8 airWeaponSubunit;	//AL
 
-			uint16 unitId = getLastQueueSlotType(activeUnit);
+			uint16 unitId = helper::getLastQueueSlotType(activeUnit);
 
 			if (units_dat::ArmorUpgrade[unitId] != UpgradeId::GlobalUpgrade60) {
-				StatsArmorLevel(dialog, index);
+				helper::StatsArmorLevel(dialog, index);
 				index++;
 			}
 
 			if (units_dat::ShieldsEnabled[activeUnit->id]) {
-				StatsShieldLevel(dialog, index);
+				helper::StatsShieldLevel(dialog, index);
 				index++;
 			}
 
@@ -121,11 +121,11 @@ namespace hooks {
 
 					if (!bNoGroundWeaponDisplay) {
 						//26D54
-						StatsWeaponLevel(dialog, index, groundWeapon);
+						helper::StatsWeaponLevel(dialog, index, groundWeapon);
 						index++;
 						// Display additional weapons
 						if (activeUnit->id == UnitId::TerranCentaur) {
-							StatsWeaponLevel(dialog, index, WeaponId::CentaurSunchaserMissiles);
+							helper::StatsWeaponLevel(dialog, index, WeaponId::CentaurSunchaserMissiles);
 							index++;
 						}
 					}
@@ -194,7 +194,7 @@ namespace hooks {
 								}	
 							}
 					if (!bNoAirWeaponDisplay) { //26E19
-						StatsWeaponLevel(dialog, index, airWeapon);
+						helper::StatsWeaponLevel(dialog, index, airWeapon);
 						index++;
 					}
 				} //if(!bNoAirWeaponDisplay)
@@ -204,12 +204,12 @@ namespace hooks {
 			if (activeUnit->id == UnitId::ProtossSolarion
 				|| activeUnit->id == UnitId::ProtossAccantor
 				) { // Originally had hardcode for Gantrithor and Warbringer, removed for HYDRA
-				StatHangerCount(dialog, index);
+				helper::StatHangerCount(dialog, index);
 				index++;
 			}
 
 			if (activeUnit->id == UnitId::TerranVulture) { // Originally also had hardcode for Raynor Vulture, removed for HYDRA
-				if (StatSpidermineCount(dialog, index))
+				if (helper::StatSpidermineCount(dialog, index))
 					index++; //don't increase the index if not displaying
 			}
 			if (activeUnit->id == UnitId::ghost) {
@@ -217,9 +217,9 @@ namespace hooks {
 					index++;
 				}
 			}
-			unitId = getLastQueueSlotType(activeUnit);
+			unitId = helper::getLastQueueSlotType(activeUnit);
 			if (unitId == UnitId::TerranNuclearSilo) {
-				StatsNukesCount(dialog, index);
+				helper::StatsNukesCount(dialog, index);
 				index++;
 			}
 		}
@@ -237,7 +237,7 @@ namespace hooks {
 				current_dialog = current_dialog->next;
 			}
 			while (index < 4 && current_dialog != nullptr) {
-				hideDialog(current_dialog);
+				helper::hideDialog(current_dialog);
 				current_dialog = current_dialog->next;
 				index++;
 			}
@@ -261,8 +261,8 @@ namespace hooks {
 			|| !(units_dat::BaseProperty[_type] & UnitProperty::Hero)
 			|| !units_dat::MapStringId[_type])
 		{
-			if (unitGetRace(a2) == RaceId::Terran) {
-				return getStatTxtString((unsigned __int8)(a2->rankIncrease + units_dat::Rank[_type]) + 1302);
+			if (helper::unitGetRace(a2) == RaceId::Terran) {
+				return helper::getStatTxtString((unsigned __int8)(a2->rankIncrease + units_dat::Rank[_type]) + 1302);
 			}
 			return 0;
 		}
@@ -287,7 +287,7 @@ namespace hooks {
 		uint8 v13; // [esp+13h] [ebp-1h]
 
 		v3 = dialog;
-		v13 = getArmorCount(*activePortraitUnit, unused);
+		v13 = helper::getArmorCount(*activePortraitUnit, unused);
 		sprintf_s(statusscreen_infobtn[buttonRelated], 8, "%d ", v13);
 		if (v3->controlType) {
 			v3 = *(BinDlg**)&v3->parent;
@@ -307,8 +307,8 @@ namespace hooks {
 		LABEL_6:
 			v4 = 0;
 		}
-		showDialog(v4);
-		disableDialog(v4);
+		helper::showDialog(v4);
+		helper::disableDialog(v4);
 		v5 = cmdicons_grp;
 		v6 = *v4->user;
 		v7 = *activePortraitUnit;
@@ -341,7 +341,7 @@ namespace hooks {
 		if (!(v12 & UnitStatus::Completed))
 		{
 			v4->flags = v12 | UnitStatus::Completed;
-			updateDialog(v4);
+			helper::updateDialog(v4);
 		}
 		*unkUpgradeCount += v13;
 	}
@@ -383,8 +383,8 @@ namespace hooks {
 		LABEL_9:
 			v6 = 0;
 		}
-		showDialog(v6);
-		disableDialog(v6);
+		helper::showDialog(v6);
+		helper::disableDialog(v6);
 //		v7 = v6->user;
 		v8 = cmdicons_grp;
 		v6->graphic = 12;
@@ -397,7 +397,7 @@ namespace hooks {
 		if (!(v9 & 1))
 		{
 			v6->flags = v9 | 1;
-			updateDialog(v6);
+			helper::updateDialog(v6);
 		}
 		*unkUpgradeCount += v10;
 	}

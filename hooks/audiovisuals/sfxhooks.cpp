@@ -31,7 +31,7 @@ namespace hooks {
 			*lastRandSFX = scbw::getUnitData(UnitsDatEntries::SndWhtFirst, unitId);
 			result = whatStart;
 		} else {
-			rand = whatStart + (randFunc() >> 8) % (whatEnd - whatStart + 1);
+			rand = whatStart + (helper::randFunc() >> 8) % (whatEnd - whatStart + 1);
 			if (rand == *lastRandSFX && ++rand > whatEnd)
 				rand = whatStart;
 			*lastRandSFX = rand;
@@ -45,7 +45,7 @@ namespace hooks {
 		int result; // eax
 
 		if (!(units_dat::GroupFlags[a1].isBuilding) && (v1 = scbw::getUnitData(UnitsDatEntries::SndYesFirst, a1)) != 0)
-			result = randGetSFXBetween((int)scbw::getUnitData(UnitsDatEntries::SndYesLast, a1), (int)v1);
+			result = helper::randGetSFXBetween((int)scbw::getUnitData(UnitsDatEntries::SndYesLast, a1), (int)v1);
 		else
 			result = 0;
 		return result;

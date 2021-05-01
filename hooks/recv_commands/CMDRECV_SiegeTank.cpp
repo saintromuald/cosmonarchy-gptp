@@ -22,7 +22,7 @@ namespace hooks {
 					else
 						bCommandType = 0;
 
-					function_004754F0(
+					helper::function_004754F0(
 						current_selection,
 						UnitId::None,
 						*(uint32*)(0x006D5C24),
@@ -65,7 +65,7 @@ namespace hooks {
 					else
 						bCommandType = 0;
 
-					function_004754F0(
+					helper::function_004754F0(
 						current_selection,
 						UnitId::None,
 						*(uint32*)(0x006D5C24),

@@ -31,7 +31,7 @@ namespace hooks {
 
 				//energy cost is initialized in this function
 				//Corresponding error message is "Invalid Target"
-				spellCastSuccess = ordersSpell_Sub_4926D0(unit, TechId::MindControl, &techEnergyCost, unitSightRangeForSpell, 0x052E);
+				spellCastSuccess = helper::ordersSpell_Sub_4926D0(unit, TechId::MindControl, &techEnergyCost, unitSightRangeForSpell, 0x052E);
 
 				if (spellCastSuccess) {
 
@@ -57,7 +57,7 @@ namespace hooks {
 						else
 							target->sprite->createTopOverlay(overlayId, 0, 0, 0);
 						scbw::sendGPTP_aise_cmd(unit, target, GptpId::SetMindControlLink, 0, 0, 0);
-						MindControlHit(unit, target);
+						helper::MindControlHit(unit, target);
 						//scbw::print("Set...");
 
 						target->orderToIdle();

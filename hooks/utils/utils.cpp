@@ -42,7 +42,7 @@ namespace hooks {
 			dialog->fxnInteract = dlgFunc;
 
 		dialog->onInitDialog0x36.responseAreaBitArray = (uint32*)
-			SMemAlloc(
+			helper::SMemAlloc(
 				dialog->onInitDialog0x36.responseAreaWidth * dialog->onInitDialog0x36.responseAreaHeight,
 				0x00505F98,
 				481, //0x000001E1
@@ -57,7 +57,7 @@ namespace hooks {
 		stack_placeholder.always_zero_here = 0;
 		stack_placeholder.mouseY = mouse->y;
 
-		fxnInteract(dialog, (uint32)&stack_placeholder);
+		helper::fxnInteract(dialog, (uint32)&stack_placeholder);
 
 		dialog->bounds.right += dialog->bounds.left;
 		dialog->bounds.bottom += dialog->bounds.top;
@@ -68,7 +68,7 @@ namespace hooks {
 		stack_placeholder.always_zero_here = 0;
 		stack_placeholder.mouseX = mouse->x;
 
-		fxnInteract(dialog, (uint32)&stack_placeholder);
+		helper::fxnInteract(dialog, (uint32)&stack_placeholder);
 
 		stack_placeholder.mouseX = mouse->x;
 		stack_placeholder.always_14_here = 14;	//0x000E
@@ -76,9 +76,9 @@ namespace hooks {
 		stack_placeholder.always_zero_here = 0;
 		stack_placeholder.mouseY = mouse->y;
 
-		fxnInteract(dialog, (uint32)&stack_placeholder);
+		helper::fxnInteract(dialog, (uint32)&stack_placeholder);
 
-		SetCallbackTimer(dialog, 12, 100, 0);
+		helper::SetCallbackTimer(dialog, 12, 100, 0);
 
 		//equivalent to "if(dialog->flags & BinDlgFlags::VerticalAlignmentBottom) dialog->flags -= BinDlgFlags::VerticalAlignmentBottom;"
 		dialog->flags &= ~BinDlgFlags::VerticalAlignmentBottom;
@@ -144,7 +144,7 @@ namespace hooks {
 					}
 
 				if (!bStopLoop)
-					function_0049A7F0(unit); //remove the unit from playersSelections->unit[playerId][index] among other things
+					helper::function_0049A7F0(unit); //remove the unit from playersSelections->unit[playerId][index] among other things
 
 			}
 

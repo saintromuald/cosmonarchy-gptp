@@ -149,7 +149,7 @@ namespace hooks {
 		}
 
 		unitToLoad->status |= UnitStatus::InTransport;
-		hideAndDisableUnit(unitToLoad);
+		helper::hideAndDisableUnit(unitToLoad);
 		unitToLoad->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
 
 		if (unit->id == UnitId::TerranBunker) {
@@ -255,7 +255,7 @@ namespace hooks {
 				Point16 pos = {0,0};
 
 				//probably check where unit can be spawned
-				if (function_004E76C0(transport, unit, &pos) != 0) {
+				if (helper::function_004E76C0(transport, unit, &pos) != 0) {
 
 					if (transport->id == UnitId::TerranTrojan) {
 						if (transport->getCurrentLifeInGame() <= (transport->getMaxHpInGame() * 0.5)) {
@@ -301,9 +301,9 @@ namespace hooks {
 					if (unit->subunit != nullptr)
 						scbw::setUnitPosition(unit->subunit, pos.x, pos.y);
 
-					IgnoreAllScriptAndGotoIdle(unit);
+					helper::IgnoreAllScriptAndGotoIdle(unit);
 
-					function_004E7E10(unit, 0);
+					helper::function_004E7E10(unit, 0);
 
 					if (unit->pAI == nullptr)
 						unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
@@ -321,12 +321,12 @@ namespace hooks {
 							uint8 weaponId = unit->getGroundWeapon();
 
 							if (weaponId != WeaponId::None)
-								unit->groundWeaponCooldown = getUpgradedWpnCooldown(unit, weaponId);
+								unit->groundWeaponCooldown = helper::getUpgradedWpnCooldown(unit, weaponId);
 
 							weaponId = unit->getAirWeapon();
 
 							if (weaponId != WeaponId::None)
-								unit->airWeaponCooldown = getUpgradedWpnCooldown(unit, weaponId);
+								unit->airWeaponCooldown = helper::getUpgradedWpnCooldown(unit, weaponId);
 
 							unit->spellCooldown = 30;
 

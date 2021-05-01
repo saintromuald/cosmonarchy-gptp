@@ -13,7 +13,7 @@ namespace hooks {
 		bool bIsMorphing;
 		if (!(building->status & UnitStatus::Completed)) {
 			// was hardcoded instead of using isValidMorph in original code
-			bIsMorphing = isValidMorph(building->buildQueue[building->buildQueueSlot]);
+			bIsMorphing = helper::isValidMorph(building->buildQueue[building->buildQueueSlot]);
 		}
 		else {
 			bIsMorphing = false;
@@ -95,7 +95,7 @@ namespace hooks {
 
 			building->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
 			building->mainOrderState = 6;
-			playBuildingCompleteSound(building);
+			helper::playBuildingCompleteSound(building);
 			jump_to_5D56C = true;
 
 			// TODO: Cleanup
@@ -128,17 +128,17 @@ namespace hooks {
 				int32 hpAfterMorph;
 				CImage* current_image;
 				building->orderSignal -= 4;
-				if (isValidMorph(buildingId)) {
+				if (helper::isValidMorph(buildingId)) {
 					//save hp before some functions modify them
 					hpAfterMorph = building->hitPoints;
 					uint32 save_shields = building->shields;
 					//update score
 					building->status |= UnitStatus::Completed;
-					incrementUnitScoresEx(building, -1, 0);
+					helper::incrementUnitScoresEx(building, -1, 0);
 
 					//do the building change
 					building->status -= UnitStatus::Completed;
-					replaceUnitWithType(building, buildingId);
+					helper::replaceUnitWithType(building, buildingId);
 					//newHp = newHpMax - oldHpMax + oldHp
 					hpAfterMorph =
 						units_dat::MaxHitPoints[buildingId] -
@@ -153,17 +153,17 @@ namespace hooks {
 				}
 				// 005D6CD
 				// update various stuff (set hp, set shield...) not finished on Morph
-				updateUnitStatsFinishBuilding(building);
-				updateUnitStrength(building);
+				helper::updateUnitStatsFinishBuilding(building);
+				helper::updateUnitStrength(building);
 				// relate to building placement / taking room around?
-				function_0047D770(building);
+				helper::function_0047D770(building);
 
 				current_image = building->sprite->images.head;
 				while (current_image != nullptr) {
 					current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
 					current_image = current_image->link.next;
 				}
-				updateNewUnitVision(buildingId, building->sprite->position.x, building->sprite->position.y);
+				helper::updateNewUnitVision(buildingId, building->sprite->position.x, building->sprite->position.y);
 			}
 		}
 
@@ -210,20 +210,20 @@ namespace hooks {
 			uint16 builtUnitId = unit->buildQueue[unit->buildQueueSlot];
 
 			// original code was hardcoded instead of using isValidMorph
-			if (isValidMorph(builtUnitId)) {
+			if (helper::isValidMorph(builtUnitId)) {
 				if (unit->getRace() == RaceId::Zerg) {
-					zergPlaceBuildingCntd(unit);
+					helper::zergPlaceBuildingCntd(unit);
 				} else {
 					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 					resources->minerals[unit->playerId] += (units_dat::MineralCost[builtUnitId] * 3) / 4;
 					resources->gas[unit->playerId] += (units_dat::GasCost[builtUnitId] * 3) / 4;
 					unit->status |= UnitStatus::Completed;
-					incrementUnitScoresEx(unit, -1, 0);
+					helper::incrementUnitScoresEx(unit, -1, 0);
 					unit->status -= UnitStatus::Completed;
 					uint32 hp = unit->hitPoints;
 					uint32 shield = unit->shields;
-					updateUnitStatsFinishBuilding(unit);
-					updateUnitStrength(unit);
+					helper::updateUnitStatsFinishBuilding(unit);
+					helper::updateUnitStrength(unit);
 					unit->hitPoints = hp;
 					unit->shields = shield;
 					CImage* anchor = unit->getOverlay(ImageId::WarpAnchor);
@@ -246,22 +246,22 @@ namespace hooks {
 			static uint32* const u32_00581E44 = (uint32*)0x00581E44;
 			static uint32* const u32_00581ED4 = (uint32*)0x00581ED4;
 			static uint16* const u16_0066345A = (uint16*)0x0066345A;
-			refundBuildingCost(unit->id, unit->playerId);
+			helper::refundBuildingCost(unit->id, unit->playerId);
 
 			// possibly related to scores?
 			u32_00581ED4[unit->playerId] = u32_00581ED4[unit->playerId] - *u16_0066345A;
 			u32_00581E44[unit->playerId] = u32_00581E44[unit->playerId] - 1;
 
 			if (unit->id == UnitId::ZergExtractor) {
-				CUnit* drone = createUnit(UnitId::ZergDroleth, unit->getX(), unit->getY(), unit->playerId);
+				CUnit* drone = helper::createUnit(UnitId::ZergDroleth, unit->getX(), unit->getY(), unit->playerId);
 				if (drone == nullptr) {
-					displayLastNetErrorForPlayer(unit->playerId);
+					helper::displayLastNetErrorForPlayer(unit->playerId);
 					unit->remove();
 					bStopThere = true;
 				} else {	// 005DB1E
 					// update various stuff (set hp, set shield...) not finished after createUnit
-					updateUnitStatsFinishBuilding(drone);
-					updateUnitStrength(drone);
+					helper::updateUnitStatsFinishBuilding(drone);
+					helper::updateUnitStrength(drone);
 					drone->setHp(unit->previousHp * 256);
 					unit->remove();
 					bStopThere = true;
@@ -269,21 +269,21 @@ namespace hooks {
 			}
 
 			if (!bStopThere) {	// 005DB45
-				CThingy* thingy = createThingy(SpriteId::Zerg_Building_Spawn_Small, unit->getX(), unit->getY(), 0);
+				CThingy* thingy = helper::createThingy(SpriteId::Zerg_Building_Spawn_Small, unit->getX(), unit->getY(), 0);
 				if (thingy != nullptr) {
 					thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
-					setThingyVisibilityFlags(thingy);
+					helper::setThingyVisibilityFlags(thingy);
 				}
 
 				scbw::playSound(SoundId::Misc_ZBldgPlc_wav_1, unit);
-				replaceUnitWithType(unit, UnitId::ZergDroleth);
+				helper::replaceUnitWithType(unit, UnitId::ZergDroleth);
 
 				//probably AI related
-				function_00433FE0(unit);
+				helper::function_00433FE0(unit);
 
 				//update various stuff (set hp, set shield...) not finished after unit change
-				updateUnitStatsFinishBuilding(unit);
-				updateUnitStrength(unit);
+				helper::updateUnitStatsFinishBuilding(unit);
+				helper::updateUnitStrength(unit);
 
 				if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW &&
 					unit->sprite->images.tail->verticalOffset != 7) {
@@ -291,7 +291,7 @@ namespace hooks {
 					unit->sprite->images.tail->verticalOffset = 7;
 				}
 
-				refreshSpriteData(unit->sprite);
+				helper::refreshSpriteData(unit->sprite);
 				unit->orderComputerCL(OrderId::ResetCollision1);
 				unit->order(
 					units_dat::ReturnToIdleOrder[unit->id],
@@ -304,7 +304,7 @@ namespace hooks {
 				unit->setHp(unit->previousHp * 256);
 
 				// ???
-				function_0047DE40(
+				helper::function_0047DE40(
 					unit->sprite,
 					unit->id,
 					unit->getX(),

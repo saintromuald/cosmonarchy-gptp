@@ -13,29 +13,29 @@ namespace hooks {
 		int32 v4; // edx
 		uint8 conrace; // cl
 
-		getRaceSoundList(1);
+		helper::getRaceSoundList(1);
 		if (consoleIndex) {
 			if (*consoleIndex == 1) {
-				dialogGrpConstruct(
+				helper::dialogGrpConstruct(
 					178,
 					(int)"Starcraft\\SWAR\\lang\\game.cpp",
 					(int)"dlgs\\terran.grp",
-					(int(__fastcall*)(int, int, int, int))loadGraphic);
+					(int(__fastcall*)(int, int, int, int))helper::loadGraphic);
 				*currentMusicId = 4;
 			} else if (*consoleIndex == 2) {
-				dialogGrpConstruct(
+				helper::dialogGrpConstruct(
 					183,
 					(int)"Starcraft\\SWAR\\lang\\game.cpp",
 					(int)"dlgs\\protoss.grp",
-					(int(__fastcall*)(int, int, int, int))loadGraphic);
+					(int(__fastcall*)(int, int, int, int))helper::loadGraphic);
 				*currentMusicId = 7;
 			}
 		} else {
-			dialogGrpConstruct(
+			helper::dialogGrpConstruct(
 				173,
 				(int)"Starcraft\\SWAR\\lang\\game.cpp",
 				(int)"dlgs\\zerg.grp",
-				(int(__fastcall*)(int, int, int, int))loadGraphic);
+				(int(__fastcall*)(int, int, int, int))helper::loadGraphic);
 			*currentMusicId = 1;
 		}
 		v0 = *campaignIndex;
@@ -52,7 +52,7 @@ namespace hooks {
 		}
 		v1 = *consoleRaceSpecific;
 		if (*consoleRaceSpecific == -1) {
-			v2 = randFunc();
+			v2 = helper::randFunc();
 			v3 = v2;
 			v0 = v2 / 3;
 			v1 = v3 % 3;
@@ -87,22 +87,22 @@ namespace hooks {
 			|| v1->status & UnitStatus::IsHallucination) {
 			v10 = 0;
 		} else {
-			if (unitHPbelow33_percent(*activePortraitUnit))
+			if (helper::unitHPbelow33_percent(*activePortraitUnit))
 				v5 = 6;
 			else
-				v5 = unitHPbetween33_66_percent(v4, v1) != 0 ? 3 : 7;
+				v5 = helper::unitHPbetween33_66_percent(v4, v1) != 0 ? 3 : 7;
 			if (units_dat::ShieldsEnabled[v2]) {
-				v7 = getMaxHP(v1);
+				v7 = helper::getMaxHP(v1);
 				v8 = (v1->hitPoints + 255) >> 8;
-				v9 = getLastQueueSlotType(v1);
+				v9 = helper::getLastQueueSlotType(v1);
 				sprintf_s("", 32, "%d/%d %c%d/%d", v1->shields >> 8, units_dat::MaxShieldPoints[v9], v5, v8, v7);
 			} else {
-				v6 = getMaxHP(v1);
+				v6 = helper::getMaxHP(v1);
 				sprintf_s("", 32, "%c%d/%d", v5, (v1->hitPoints + 255) >> 8, v6);
 			}
 			v10 = "";
 		}
-		addTextToDialog(a1, -7, v10);
-		drawEnergy(a1);
+		helper::addTextToDialog(a1, -7, v10);
+		helper::drawEnergy(a1);
 	}
 }

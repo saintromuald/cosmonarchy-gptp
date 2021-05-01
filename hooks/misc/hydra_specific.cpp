@@ -708,8 +708,8 @@ namespace hooks {
 		double aiLoop, unitLoop, imageThingyLoop, tileLoop;
 
 		scbw::setInGameLoopState(1);
-		initializeRandomizerInfo();
-		AI_Loop();
+		helper::initializeRandomizerInfo();
+		helper::AI_Loop();
 		aiLoop = sw.ElapsedMilliseconds();
 		sw.Stop();
 
@@ -720,19 +720,19 @@ namespace hooks {
 		*visionUpdated = v0;
 		sw.Start();
 		if (v0) {
-			updateActiveTileInfo();
-			removeFOWCheat();
+			helper::updateActiveTileInfo();
+			helper::removeFOWCheat();
 		}
 		sw.Stop();
 		tileLoop = sw.ElapsedMilliseconds();
 		sw.Start();
-		updateUnits();
+		helper::updateUnits();
 		sw.Stop();
 		sw.Start();
 		unitLoop = sw.ElapsedMilliseconds();
-		imageDrawingBulletDrawing();
-		updateImages();
-		updateThingys();
+		helper::imageDrawingBulletDrawing();
+		helper::updateImages();
+		helper::updateThingys();
 		sw.Stop();
 		imageThingyLoop = sw.ElapsedMilliseconds();
 		GPTP::logger << "aiLoop: " << aiLoop << ", unitLoop: " << unitLoop << ", " << "tile loop: " << tileLoop << ", thingy/bullet/imageLoop: " << imageThingyLoop << '\n';

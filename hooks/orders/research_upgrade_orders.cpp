@@ -34,7 +34,7 @@ namespace hooks {
 
 				uint8 upgradeLevel;
 
-				playUpgradeCompleteSound();
+				helper::playUpgradeCompleteSound();
 
 				if (unit->building.upgradeType >= UpgradeId::PrismaticShield)
 					upgradeLevel = UpgradesBw->currentLevel[unit->playerId][unit->building.upgradeType - UpgradeId::PrismaticShield];
@@ -43,9 +43,9 @@ namespace hooks {
 
 				if (upgradeLevel < unit->building.upgradeLevel) {
 
-					if (isUnitUpgradeAvailable(unit)) {
-						setUpgradeLevel(unit->playerId, unit->building.upgradeType, unit->building.upgradeLevel);
-						ApplySpeedUpgradeFromUpgradeType(unit, unit->building.upgradeType);
+					if (helper::isUnitUpgradeAvailable(unit)) {
+						helper::setUpgradeLevel(unit->playerId, unit->building.upgradeType, unit->building.upgradeLevel);
+						helper::ApplySpeedUpgradeFromUpgradeType(unit, unit->building.upgradeType);
 					}
 
 				}
@@ -116,7 +116,7 @@ namespace hooks {
 							)
 							bStopLoop = true;
 						else
-							removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+							helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 
 					}
 
@@ -169,7 +169,7 @@ namespace hooks {
 			//54923
 			if (!bStopThere) {
 
-				playResearchCompleteSound();
+				helper::playResearchCompleteSound();
 
 				if (unit->building.techType < TechId::Restoration)
 					TechSc->isResearched[unit->playerId][unit->building.techType] = 1;
@@ -241,7 +241,7 @@ namespace hooks {
 							)
 							bStopLoop = true;
 						else
-							removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+							helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 					}
 
 					unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);

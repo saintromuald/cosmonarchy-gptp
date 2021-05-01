@@ -31,9 +31,9 @@ namespace hooks {
 		}
 		if (_wpn == -126)
 			return 0;
-		_maxRange = getUnitMaxWeaponRange(_unit, _wpn);
+		_maxRange = helper::getUnitMaxWeaponRange(_unit, _wpn);
 
-		ByteOperations::SetLowByte(v8, isTargetWithinMinMovementRange(a2, _maxRange, finalUnit));
+		ByteOperations::SetLowByte(v8, helper::isTargetWithinMinMovementRange(a2, _maxRange, finalUnit));
 		return v8 == 0;
 	}
 
@@ -50,16 +50,16 @@ namespace hooks {
 			return 0;
 		v4 = a1->orderTarget.unit;
 		if (v4)
-			v5 = getDistanceToUnit(a1, v4);
+			v5 = helper::getDistanceToUnit(a1, v4);
 		else
-			v5 = distanceFromDboxCorner(a1, a1->orderTarget.pt.x, a1->orderTarget.pt.y);
+			v5 = helper::distanceFromDboxCorner(a1, a1->orderTarget.pt.x, a1->orderTarget.pt.y);
 		v7 = v5;
 		v6 = weapons_dat::MinRange[a2];
-		if (v6 && v7 < v6 || v7 > getUnitMaxWeaponRange(v2, a2) || v2->pathingFlags & 2)
+		if (v6 && v7 < v6 || v7 > helper::getUnitMaxWeaponRange(v2, a2) || v2->pathingFlags & 2)
 			return 0;
 		v8 = v2->nextTargetWaypoint.x;
 		if ((v8 != v2->position.x || v2->nextTargetWaypoint.y != v2->position.y)
-			&& !isAngleInAttackAngle(v2->nextTargetWaypoint.y, v8, v2, a2)) {
+			&& !helper::isAngleInAttackAngle(v2->nextTargetWaypoint.y, v8, v2, a2)) {
 			v2->orderQueueTimer = 0;
 			return 0;
 		}
@@ -98,11 +98,11 @@ namespace hooks {
 			return 0;
 		v7 = weapons_dat::MinRange[v5];
 		if (v7) {
-			if (isTargetWithinMinRange(v4, v7, v2))
+			if (helper::isTargetWithinMinRange(v4, v7, v2))
 				return 0;
 		}
-		v8 = getUnitMaxWeaponRange(a2, v5);
-		return isTargetWithinMinMovementRange(v2, v8, v4);
+		v8 = helper::getUnitMaxWeaponRange(a2, v5);
+		return helper::isTargetWithinMinMovementRange(v2, v8, v4);
 	}
 
 	char canCastOrderedSpellNow(CUnit* a1) { // 00491DB0
@@ -121,7 +121,7 @@ namespace hooks {
 		if (v2) {
 			v3 = v1->orderTarget.unit;
 			if (v3) {
-				v4 = getUnitMaxWeaponRange(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->mainOrderId]);
+				v4 = helper::getUnitMaxWeaponRange(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->mainOrderId]);
 				if (v1->movementFlags & 2) {
 					if (!(v3->movementFlags & 2))
 						goto LABEL_14;
@@ -130,15 +130,15 @@ namespace hooks {
 						v5 = 256 - v5;
 					if (v5 > 32)
 						LABEL_14:
-					v4 += getFlingyHaltDistance((int)v1) >> 8;
+					v4 += helper::getFlingyHaltDistance((int)v1) >> 8;
 				}
 				//ByteOperations::SetLowByte((UINT32)v2, (UINT8)isTargetWithinMinRange(v1, v4, v3)); // Needs fixing
 			} else {
 				v6 = v1->orderTarget.pt.y;
 				v7 = v1->orderTarget.pt.x;
-				v8 = getUnitMaxWeaponRange(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->mainOrderId]);
-				v9 = (getFlingyHaltDistance((int)v1) >> 8) + v8;
-				v2 = v9 >= getDistanceFast(v1->halt.x, v7 << 8, v1->halt.y, v6 << 8) >> 8;
+				v8 = helper::getUnitMaxWeaponRange(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->mainOrderId]);
+				v9 = (helper::getFlingyHaltDistance((int)v1) >> 8) + v8;
+				v2 = v9 >= helper::getDistanceFast(v1->halt.x, v7 << 8, v1->halt.y, v6 << 8) >> 8;
 			}
 		}
 		return v2;
@@ -161,7 +161,7 @@ namespace hooks {
 		v2 = a1->orderTarget.unit;
 		if (!v2)
 			goto LABEL_22;
-		ByteOperations::SetLowByte(v3, unitCanAttackTarget(v2, a1, 1));
+		ByteOperations::SetLowByte(v3, helper::unitCanAttackTarget(v2, a1, 1));
 		if (!v3)
 			goto LABEL_22;
 		v4 = v1->orderTarget.unit;
@@ -182,12 +182,12 @@ namespace hooks {
 					v6 = 0x82;
 			}
 			if (v6 >= (unsigned __int8)0x82
-				|| (v8 = weapons_dat::MinRange[v6]) != 0 && isTargetWithinMinRange(v5, v8, target)
-				|| (v9 = getUnitMaxWeaponRange(v1, v6), ByteOperations::SetLowByte(v10, (isTargetWithinMinMovementRange(target, v9, v5), !v10)))) {
+				|| (v8 = weapons_dat::MinRange[v6]) != 0 && helper::isTargetWithinMinRange(v5, v8, target)
+				|| (v9 = helper::getUnitMaxWeaponRange(v1, v6), ByteOperations::SetLowByte(v10, (helper::isTargetWithinMinMovementRange(target, v9, v5), !v10)))) {
 			LABEL_23:
-				if (getRightClickActionOrder(v1) == 3)
+				if (helper::getRightClickActionOrder(v1) == 3)
 					LABEL_22 :
-					unknownOrdersFunc((int)v1, v1->orderTarget.pt.x, v1->orderTarget.pt.y);
+					helper::unknownOrdersFunc((int)v1, v1->orderTarget.pt.x, v1->orderTarget.pt.y);
 			}
 		}
 	}
@@ -222,11 +222,11 @@ namespace hooks {
 		if (v2) {
 			a1->orderTarget.pt.x = v2->sprite->position.x;
 			a1->orderTarget.pt.y = v2->sprite->position.y;
-			ByteOperations::SetLowByte(v3, unitCanAttackTarget(v2, a1, 1));
+			ByteOperations::SetLowByte(v3, helper::unitCanAttackTarget(v2, a1, 1));
 			if (!v3) {
 				if (!(v1->status & 0x8000000) && !v1->pAI)
-					prependOrderTargetingGround(6u, v1->orderTarget.pt.x, v1->orderTarget.pt.y, (int)v1);
-				toIdle(v1);
+					helper::prependOrderTargetingGround(6u, v1->orderTarget.pt.x, v1->orderTarget.pt.y, (int)v1);
+				helper::toIdle(v1);
 				return;
 			}
 			v4 = v1->orderTarget.unit;
@@ -249,14 +249,14 @@ namespace hooks {
 						v12 = 0x82;
 				}
 				if (v12 >= (unsigned __int8)0x82
-					|| (v14 = weapons_dat::MinRange[v12]) != 0 && isTargetWithinMinRange(v11, v14, target)
-					|| (v15 = getUnitMaxWeaponRange(v1, v12), ByteOperations::SetLowByte(v16, (isTargetWithinMinMovementRange(target, v15, v11), !v16)))) {
+					|| (v14 = weapons_dat::MinRange[v12]) != 0 && helper::isTargetWithinMinRange(v11, v14, target)
+					|| (v15 = helper::getUnitMaxWeaponRange(v1, v12), ByteOperations::SetLowByte(v16, (helper::isTargetWithinMinMovementRange(target, v15, v11), !v16)))) {
 				LABEL_63:
-					if (!moveTowards(v1->orderTarget.unit, v1))
+					if (!helper::moveTowards(v1->orderTarget.unit, v1))
 						return;
 				} else {
 				LABEL_62:
-					ordersHoldPositionSuicidal(v1);
+					helper::ordersHoldPositionSuicidal(v1);
 				}
 				goto LABEL_42;
 			}
@@ -277,15 +277,15 @@ namespace hooks {
 				}
 				if (v6 < (unsigned __int8)0x82) {
 					v8 = weapons_dat::MinRange[v6];
-					if (!v8 || !isTargetWithinMinRange(v5, v8, target)) {
-						v9 = getUnitMaxWeaponRange(v1, v6);
-						ByteOperations::SetLowByte(v10, isTargetWithinMinMovementRange(target, v9, v5));
+					if (!v8 || !helper::isTargetWithinMinRange(v5, v8, target)) {
+						v9 = helper::getUnitMaxWeaponRange(v1, v6);
+						ByteOperations::SetLowByte(v10, helper::isTargetWithinMinMovementRange(target, v9, v5));
 						if (v10)
 							goto LABEL_64;
 					}
 				}
 			}
-			if (moveToTarget(v1->orderTarget.unit, v1)) {
+			if (helper::moveToTarget(v1->orderTarget.unit, v1)) {
 			LABEL_64:
 				v1->mainOrderState = 1;
 			LABEL_42:
@@ -293,16 +293,16 @@ namespace hooks {
 				if ((v17 == 3 || v17 == 17) && !(v1->movementFlags & 2)) {
 					v18 = v1->orderTarget.pt.y;
 					v19 = v1->orderTarget.pt.x;
-					v20 = getDirectionFromPoints(v18, v1->sprite->position.x, v19, v1->sprite->position.y) - v1->currentDirection1;
+					v20 = helper::getDirectionFromPoints(v18, v1->sprite->position.x, v19, v1->sprite->position.y) - v1->currentDirection1;
 					if (v20 >= 128 || v20 <= -128)
 						v20 = -128;
 					if (abs(v20) >= 32)
-						setSecondaryWaypoint(v1, v19, v18);
+						helper::setSecondaryWaypoint(v1, v19, v18);
 				}
 				return;
 			}
 		} else {
-			setResourceTarget(a1);
+			helper::setResourceTarget(a1);
 			v21 = v1->moveTarget.pt.x;
 			v22 = v1->moveTarget.pt.y;
 			if (v21 != v1->nextTargetWaypoint.x || v22 != v1->nextTargetWaypoint.y) {
@@ -311,11 +311,11 @@ namespace hooks {
 			}
 			if (v1->orderQueueHead) {
 				v1->userActionFlags |= 1u;
-				orders_Nothing2(v1);
+				helper::orders_Nothing2(v1);
 			} else if (v1->pAI) {
-				orderComputerClear(v1, 0x9Cu);
+				helper::orderComputerClear(v1, 0x9Cu);
 			} else {
-				orderComputerClear(v1, units_dat::ReturnToIdleOrder[(unsigned __int16)v1->id]);
+				helper::orderComputerClear(v1, units_dat::ReturnToIdleOrder[(unsigned __int16)v1->id]);
 			}
 		}
 	}
@@ -337,15 +337,15 @@ namespace hooks {
 				return OrderId::Rightclickaction;
 			return OrderId::Move;
 		}
-		if (unitIsActiveTransport(unit) && isOrderValid(OrderId::Pickup2, unit, 0, targetVar, 0))
+		if (helper::unitIsActiveTransport(unit) && helper::isOrderValid(OrderId::Pickup2, unit, 0, targetVar, 0))
 			return OrderId::Pickup2;
-		if (unitIsActiveTransport(targetVar) && canEnterTransport(targetVar, unit))
+		if (helper::unitIsActiveTransport(targetVar) && helper::canEnterTransport(targetVar, unit))
 			return OrderId::EnterTransport;
 		if (targetVar->status & UnitStatus::Burrowed)
 			return OrderId::Move;
 		if (unit->id != UnitId::ZergMatraleth
 			|| targetVar->status & UnitStatus::Invincible
-			|| getUnitAbilityErrorStatString(targetVar, unit->playerId, 12) != 0) {
+			|| helper::getUnitAbilityErrorStatString(targetVar, unit->playerId, 12) != 0) {
 			result = (uint8)(unit->id != UnitId::TerranCleric ? 0 : 0x80) + OrderId::Follow;
 		} else {
 			result = OrderId::InfestMine2;
@@ -360,7 +360,7 @@ namespace hooks {
 		uint8 orderId; // al
 
 		*((int8*)&mapHeightPixels + 2) = 0;
-		result = getActivePlayerFirstSelection();
+		result = helper::getActivePlayerFirstSelection();
 		for (i = result; result; i = result) {
 			unitId = i->id;
 			if (unitId != UnitId::ProtossSolarion) {
@@ -379,9 +379,9 @@ namespace hooks {
 			} else {
 				orderId = OrderId::HoldPosition1;
 			}
-			if (orderAllowed(i, orderId, *ACTIVE_NATION_ID) == 1)
-				targetedOrder(0, UnitId::None, i, 0, 1, *(int8*)(a1 + 1) != 0, orderId, 0, *orderType4Position, *orderType4Target);
-			result = getActivePlayerFirstSelection();
+			if (helper::orderAllowed(i, orderId, *ACTIVE_NATION_ID) == 1)
+				helper::targetedOrder(0, UnitId::None, i, 0, 1, *(int8*)(a1 + 1) != 0, orderId, 0, *orderType4Position, *orderType4Target);
+			result = helper::getActivePlayerFirstSelection();
 		}
 		return result;
 	}
@@ -429,27 +429,27 @@ namespace hooks {
 
 	void updateUnitVisibility(CUnit* unit) {
 		if (*playerVisions & unit->visibilityStatus) {
-			makeSpriteVisible(unit->sprite);
+			helper::makeSpriteVisible(unit->sprite);
 			CUnit* subunit = unit->subunit;
 			if (subunit) {
-				makeSpriteVisible(subunit->sprite);
+				helper::makeSpriteVisible(subunit->sprite);
 			}
 		} else {
 			if (unit->sprite->flags & CSprite_Flags::Selected) {
-				updateBuildingLandUnitSelection(unit->visibilityStatus, unit);
+				helper::updateBuildingLandUnitSelection(unit->visibilityStatus, unit);
 			}
-			removeSelectionCircle(unit->sprite);
-			makeSpriteInvisible(unit->sprite);
+			helper::removeSelectionCircle(unit->sprite);
+			helper::makeSpriteInvisible(unit->sprite);
 			CUnit* subunit = unit->subunit;
 			if (subunit) {
-				makeSpriteInvisible(subunit->sprite);
+				helper::makeSpriteInvisible(subunit->sprite);
 			}
 		}
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
 	void checkUnitVisibilityHook(CUnit* unit) { // 00443390
-		uint32 detectingPlayers = getDetectingPlayers(unit);
+		uint32 detectingPlayers = helper::getDetectingPlayers(unit);
 		if (unit->visibilityStatus != detectingPlayers) {
 			if (unit->visibilityStatus == 0x80000000)
 			{
@@ -460,7 +460,7 @@ namespace hooks {
 
 			uint32 v5 = v6 & ~detectingPlayers;
 			if (v5) {
-				iteratePlayerUnitsSomething(v5, unit);
+				helper::iteratePlayerUnitsSomething(v5, unit);
 			}
 
 			if (*playerVisions & v6) {

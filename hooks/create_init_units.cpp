@@ -47,10 +47,10 @@ namespace hooks {
 		searchBox.right = buildingSizeX / 2 + ((startPositions[playerId].x - (int16)(buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2 - 1;
 
 		//yes, the return value is unused for some reason
-		FindBestUnit(&searchBox, 0x0049D640);
+		helper::FindBestUnit(&searchBox, 0x0049D640);
 
 		created_unit =
-			createUnit(
+			helper::createUnit(
 				buildingId,
 				((startPositions[playerId].x - (buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2,
 				((startPositions[playerId].y - (buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2,
@@ -59,14 +59,14 @@ namespace hooks {
 
 		if (created_unit != nullptr) {
 
-			updateUnitStatsFinishBuilding(created_unit);
+			helper::updateUnitStatsFinishBuilding(created_unit);
 
-			if (function_0049EC30(created_unit) != 0)
-				updateUnitStrength(created_unit);
+			if (helper::function_0049EC30(created_unit) != 0)
+				helper::updateUnitStrength(created_unit);
 
-			if (spreadsCreep(created_unit->id, 1)
+			if (helper::spreadsCreep(created_unit->id, 1)
 				|| units_dat::BaseProperty[created_unit->id] & UnitProperty::CreepBuilding) {
-				function_004148F0(
+				helper::function_004148F0(
 					created_unit->sprite->position.x,
 					created_unit->sprite->position.y,
 					created_unit->id
@@ -219,14 +219,14 @@ namespace hooks {
 							if (horizontal) pos.x += unitWidth;
 							else pos.y -= unitHeight;
 
-							created_unit = createUnit(unitId, pos.x, pos.y, playerId);
+							created_unit = helper::createUnit(unitId, pos.x, pos.y, playerId);
 							scbw::teleport(created_unit, pos);
 
 							if (created_unit != nullptr) {
-								updateUnitStatsFinishBuilding(created_unit);
+								helper::updateUnitStatsFinishBuilding(created_unit);
 
-								if (function_0049EC30(created_unit) != 0)
-									updateUnitStrength(created_unit);
+								if (helper::function_0049EC30(created_unit) != 0)
+									helper::updateUnitStrength(created_unit);
 							}
 						}
 					}
@@ -256,14 +256,14 @@ namespace hooks {
 		else
 			overlordStartY = startPositions[playerId].y - (units_dat::UnitBounds[UnitId::ZergHatchery].bottom + units_dat::UnitBounds[UnitId::ZergHatchery].top + 1);
 
-		created_unit = createUnit(UnitId::ZergOvileth, overlordStartX, overlordStartY, playerId);
+		created_unit = helper::createUnit(UnitId::ZergOvileth, overlordStartX, overlordStartY, playerId);
 
 		if (created_unit != nullptr) {
 
-			updateUnitStatsFinishBuilding(created_unit);
+			helper::updateUnitStatsFinishBuilding(created_unit);
 
-			if (function_0049EC30(created_unit) != 0)
-				updateUnitStrength(created_unit);
+			if (helper::function_0049EC30(created_unit) != 0)
+				helper::updateUnitStrength(created_unit);
 
 		}
 	}
