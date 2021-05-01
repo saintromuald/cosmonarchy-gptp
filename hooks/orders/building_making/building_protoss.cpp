@@ -7,7 +7,7 @@ namespace hooks {
 			unit->status |= UnitStatus::IsGathering;
 		}
 		if (unit->mainOrderState == 0) {
-			if (helper::function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y)) {
+			if (helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y)) {
 				unit->mainOrderState = 1;
 			}
 		} else
@@ -22,7 +22,7 @@ namespace hooks {
 				}
 				if (distance / 256 > distance_wanted) {
 					if (unit->getMovableState() != 0) {
-						helper::function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+						helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					}
 				} else { //E4DA9
 					helper::makeToHoldPosition(unit);
@@ -41,13 +41,13 @@ namespace hooks {
 						}
 						if (!helper::isDistanceGreaterThanHaltDistance(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, distance_wanted)) {
 							if (unit->getMovableState() != 0) {
-								helper::function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+								helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 							}
 						} else {
-							if (helper::function_00467030(unit)) {
+							if (helper::beginBuilding(unit)) {
 								CUnit* builtUnit;
 								if (isBuildingAssimilator) {
-									builtUnit = helper::function_004678A0(unit, UnitId::ProtossAquifer);
+									builtUnit = helper::beginGasBuilding(unit, UnitId::ProtossAquifer);
 								}
 								else {
 									builtUnit = helper::createUnit(
@@ -135,7 +135,7 @@ namespace hooks {
 							scbw::getSpriteData(SpritesDatEntries::ImageId, building->sprite->spriteId),
 							0
 							);
-						helper::function_004D8500(building->sprite->mainGraphic);
+						helper::switchToWarpTexture(building->sprite->mainGraphic);
 						building->mainOrderState = 2;
 					}
 				} else
@@ -171,7 +171,7 @@ namespace hooks {
 								building->orderSignal -= 1;
 								helper::updateUnitStatsFinishBuilding(building);
 								helper::updateUnitStrength(building);
-								helper::function_0042D9A0(building);
+								helper::checkUnstack(building);
 
 								if (building->status & UnitStatus::DoodadStatesThing) {
 									CImage* current_image = building->sprite->images.head;

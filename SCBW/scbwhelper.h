@@ -392,54 +392,53 @@ namespace helper {
 
     char AI_CancelStructure(CUnit* structure);
 
-    bool unitCantSeeCloakedTarget(CUnit* unit, CUnit* target);												//0x00401D60
-    bool unitCanInfest(CUnit* unit);																		//0x00402750
-    void AI_AttackUnit(CUnit* unit);																		//0x0043FFD0
-    CUnit* findBestAttackTarget(CUnit* unit);																//0x00443080
-    bool function_00462EA0(CUnit* unit, uint8 unknownByteValue);												//0x00462EA0
-    void function_00465780(CUnit* unit);																	//0x00465780
-    void removeOrderFromUnitQueue(CUnit* unit, COrder* order);												//0x004742D0
-    void function_00474A70(CUnit* unit, CUnit* target, uint8 orderId);											//0x00474A70
-    bool isTargetWithinMinMovementRange(CUnit* unit, CUnit* target, uint32 range);								//0x004763D0
-    bool function_00476610(CUnit* unit, int x, int y);														//0x00476610
-    bool isUnitInWeaponRange(CUnit* unit, CUnit* target);													//0x00476870
-    void getWeaponBeginIscript(CUnit* unit, IscriptAnimation::Enum anim);									//0x00476ED0
-    void function_00477510(CUnit* unit);																	//0x00477510
-    void function_00477820(CUnit* unit, uint8 orderId);														//0x00477820
-    bool function_00478370(CUnit* unit, uint8 orderId);														//0x00478370
-    bool function_00478540(CUnit* unit);																	//0x00478540
-    bool isUnitCritter(CUnit* unit);																		//0x0047B450
-    void function_00495400(CUnit* unit, CUnit* target);														//0x00495400
+    bool unitCantSeeCloakedTarget(CUnit* unit, CUnit* target);												// 00401D60
+    bool unitCanInfest(CUnit* unit);																		// 00402750
+    void AI_AttackUnit(CUnit* unit);																		// 0043FFD0
+    CUnit* findBestAttackTarget(CUnit* unit);																// 00443080
+    bool function_00462EA0(CUnit* unit, uint8 unknownByteValue);											// 00462EA0
+    void function_00465780(CUnit* unit);																	// 00465780
+    void removeOrderFromUnitQueue(CUnit* unit, COrder* order);												// 004742D0
+    void function_00474A70(CUnit* unit, CUnit* target, uint8 orderId);										// 00474A70
+    bool isTargetWithinMinMovementRange(CUnit* unit, CUnit* target, uint32 range);							// 004763D0
+    bool function_00476610(CUnit* unit, int x, int y);														// 00476610
+    bool isUnitInWeaponRange(CUnit* unit, CUnit* target);													// 00476870
+    void getWeaponBeginIscript(CUnit* unit, IscriptAnimation::Enum anim);									// 00476ED0
+    void function_00477510(CUnit* unit);																	// 00477510
+    void function_00477820(CUnit* unit, uint8 orderId);														// 00477820
+    bool function_00478370(CUnit* unit, uint8 orderId);														// 00478370
+    bool function_00478540(CUnit* unit);																	// 00478540
+    bool isUnitCritter(CUnit* unit);																		// 0047B450
+    void function_00495400(CUnit* unit, CUnit* target);														// 00495400
+                                                                                                               
+    bool isUnitVisible(CUnit* unit);																		// 004E5DB0
+    bool isTargetVisible(CUnit* unit, CUnit* target);														// 004E5E30
+    uint8 getRightClickActionOrder(CUnit* unit);															// 004E5EA0
+    void setNextWaypoint_Sub4EB290(CUnit* unit);															// 004EB290
+    void makeToHoldPosition(CUnit* unit);																	// 004EB5B0
+    bool moveToTarget(CUnit* unit, CUnit* target);															// 004EB720
+    bool SetMoveTarget_xy(CUnit* unit, int x, int y);														// 004EB820
+    bool function_004EB900(CUnit* unit, CUnit* target);														// 004EB900
+    bool changeMovementTargetMoveTarget2(CUnit* unit, int x, int y);										// 004EB9C0
 
-    bool isUnitVisible(CUnit* unit);																		//0x004E5DB0
-    bool isTargetVisible(CUnit* unit, CUnit* target);														//0x004E5E30
-    uint8 getRightClickActionOrder(CUnit* unit);																//0x004E5EA0
-    void setNextWaypoint_Sub4EB290(CUnit* unit);															//0x004EB290
-    void makeToHoldPosition(CUnit* unit);																	//0x004EB5B0
-    bool moveToTarget(CUnit* unit, CUnit* target);															//0x004EB720
-    bool SetMoveTarget_xy(CUnit* unit, int x, int y);														//0x004EB820
-    bool function_004EB900(CUnit* unit, CUnit* target);														//0x004EB900
-    bool function_004EB9C0(CUnit* unit, int x, int y);														//0x004EB9C0
-
-    bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, uint32 distance);	//01240
-    void function_0042D9A0(CUnit* unit);												//2D9A0
-    void AI_TrainingOverlord(CUnit* main_unit, CUnit* created_unit);					//35770
-    bool function_00467030(CUnit* unit);												//67030
-    CUnit* function_004678A0(CUnit* unit, uint32 unitId);									//678A0
-    void addOverlayBelowMain(CSprite* sprite, uint32 imageId, uint32 unk1, uint32 unk2, uint32 unk3);	//98D70
-    void replaceSpriteImages(CSprite* sprite, uint32 imageId, uint32 imageDirection);			//99BB0
-    void displayLastNetErrorForPlayer(uint32 playerId);										//9E530
-    void updateUnitStrength(CUnit* unit);												//9FA40
-    void iscript_OpcodeCases(CImage* image, uint32 offset_, uint32 unk1, uint32 unk2);			//D74C0
-    void function_004D8500(CImage* image);												//D8500
-    bool function_004EB9C0(CUnit* unit, int x, int y);									//EB9C0
-    bool setThingyVisibilityFlags(CThingy* thingy);									//0x004878F0
-    CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);			// 0088210
-    void setUnitStatTxtErrorMsg(char* message);										//0x0048CCB0
-    void playUnitSFX(uint32 soundId, uint16 x, uint16 y, uint32 unk1, uint32 unk2);				//0x0048EC10
-    uint32 RandomizeShort(uint32 unknown_index);											//0x004DC4A0
-    uint32 IterateUnitsAtLocationTargetProc_RecallTargets(CUnit* unit, Box16* coords);	//0x004E8280
-    void function_004EBAE0(CUnit* unit, int32 x, int32 y);								//0x004EBAE0
+    bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, uint32 distance);	                    // 00401240
+    void checkUnstack(CUnit* unit);												                            // 0042D9A0
+    void AI_TrainingOverlord(CUnit* main_unit, CUnit* created_unit);					                    // 00435770
+    bool beginBuilding(CUnit* unit);												                        // 00467030
+    CUnit* beginGasBuilding(CUnit* unit, uint32 unitId);									                // 004678A0
+    void addOverlayBelowMain(CSprite* sprite, uint32 imageId, uint32 unk1, uint32 unk2, uint32 unk3);	    // 00498D70
+    void replaceSpriteImages(CSprite* sprite, uint32 imageId, uint32 imageDirection);			            // 00499BB0
+    void displayLastNetErrorForPlayer(uint32 playerId);										                // 0049E530
+    void updateUnitStrength(CUnit* unit);												                    // 0049FA40
+    void iscript_OpcodeCases(CImage* image, uint32 offset_, uint32 unk1, uint32 unk2);			            // 004D74C0
+    void switchToWarpTexture(CImage* image);												                // 004D8500
+    bool setThingyVisibilityFlags(CThingy* thingy);									                        // 004878F0
+    CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);		    	                // 00488210
+    void setUnitStatTxtErrorMsg(char* message);										                        // 0048CCB0
+    void playUnitSFX(uint32 soundId, uint16 x, uint16 y, uint32 unk1, uint32 unk2);				            // 0048EC10
+    uint32 RandomizeShort(uint32 unknown_index);											                // 004DC4A0
+    uint32 IterateUnitsAtLocationTargetProc_RecallTargets(CUnit* unit, Box16* coords);	                    // 004E8280
+    void function_004EBAE0(CUnit* unit, int32 x, int32 y);								                    // 004EBAE0
 
     //// spider_mine
 
@@ -481,8 +480,6 @@ namespace helper {
     void fixTargetLocation(Point16* coords, uint32 unitId);								// 00401FA0
     bool isUnitPositions2Equal(CUnit* unit);											// 00402160
     void AI_TrainingOverlord(CUnit* main_unit, CUnit* created_unit);					// 00435770
-    bool function_00467030(CUnit* unit);												// 00467030
-    CUnit* function_004678A0(CUnit* unit, uint32 unitId);								// 004678A0
     bool32 buildingAddon(CUnit* unit, uint32 hpGain, bool32 canBeAborted);				// 004679A0
     void function_00474760(CUnit* unit, COrder* order, uint8 orderId);					// 00474760
     void function_004749A0(CUnit* unit, COrder* order, uint8 orderId);					// 004749A0
@@ -496,7 +493,6 @@ namespace helper {
     void function_004E65E0(CUnit* unit, bool32 flag);									// 004E65E0
     bool SetMoveTarget_xy(CUnit* unit, int x, int y);									// 004EB820
     bool orderToMoveToTarget(CUnit* unit, CUnit* target);								// 004EB980
-    bool function_004EB9C0(CUnit* unit, int x, int y);									// 004EB9C0
     bool32 function_004F1870(CUnit* unit, int x, int y);								// 004F1870
 
     // For updatePlacementStateForPlacementBox
@@ -535,7 +531,6 @@ namespace helper {
     void function_00498150(CSprite* sprite, uint8 newVerticalOffset);																	// 00498150
     void function_004997E0(CSprite* sprite);																							// 004997E0
     void function_004C3B40(CUnit* unit);																								// 004C3B40
-    bool function_004EB9C0(CUnit* unit, int x, int y);																					// 004EB9C0
 
     //// create_init_units
 

@@ -2254,15 +2254,15 @@ namespace helper {
 		return (bPreResult != 0);
 	}
 
-	bool function_004EB9C0(CUnit* unit, int x, int y) {
-		const uint32 Func_Sub4EB9C0 = 0x004EB9C0;
+	bool changeMovementTargetMoveTarget2(CUnit* unit, int x, int y) {
+		const uint32 Func_changeMovementTargetMoveTarget2 = 0x004EB9C0;
 		static bool32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EDX, unit
 			MOV ECX, x
 			MOV EAX, y
-			CALL Func_Sub4EB9C0
+			CALL Func_changeMovementTargetMoveTarget2
 			MOV bPreResult, EAX
 			POPAD
 		}
@@ -2285,37 +2285,37 @@ namespace helper {
 		return (bPreResult != 0);
 	}
 
-	void function_0042D9A0(CUnit* unit) {
-		const uint32 Func_Sub42D9A0 = 0x0042D9A0;
+	void checkUnstack(CUnit* unit) {
+		const uint32 Func_checkUnstack = 0x0042D9A0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_Sub42D9A0
+			CALL Func_checkUnstack
 			POPAD
 		}
 	}
 
-	bool function_00467030(CUnit* unit) {
-		const uint32 Func_Sub467030 = 0x00467030;
+	bool beginBuilding(CUnit* unit) {
+		const uint32 Func_beginBuilding = 0x00467030;
 		static bool32 bPreResult;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_Sub467030
+			CALL Func_beginBuilding
 			MOV bPreResult, EAX
 			POPAD
 		}
 		return (bPreResult != 0);
 	}
 
-	CUnit* function_004678A0(CUnit* unit, uint32 unitId) {
-		const uint32 Func_Sub4678A0 = 0x004678A0;
+	CUnit* beginGasBuilding(CUnit* unit, uint32 unitId) {
+		const uint32 Func_beginGasBuilding = 0x004678A0;
 		static CUnit* newUnit;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
 			PUSH unitId
-			CALL Func_Sub4678A0
+			CALL Func_beginGasBuilding
 			MOV newUnit, EAX
 			POPAD
 		}
@@ -2382,12 +2382,12 @@ namespace helper {
 		}
 	}
 
-	void function_004D8500(CImage* image) {
-		const uint32 Func_Sub4D8500 = 0x004D8500;
+	void switchToWarpTexture(CImage* image) {
+		const uint32 Func_switchToWarpTexture = 0x004D8500;
 		__asm {
 			PUSHAD
 			MOV EAX, image
-			CALL Func_Sub4D8500
+			CALL Func_switchToWarpTexture
 			POPAD
 		}
 	}
@@ -2671,16 +2671,6 @@ namespace helper {
 			POPAD
 		}
 		return (char)result;
-	}
-
-	void function_004D8500_copy(CImage* image) {
-		const uint32 Func_Sub4D8500 = 0x004D8500;
-		__asm {
-			PUSHAD
-			MOV EAX, image
-			CALL Func_Sub4D8500
-			POPAD
-		}
 	}
 
 	void iscript_OpcodeCases_copy(CImage* image, uint32 offset_, uint32 unk1, uint32 unk2) {
