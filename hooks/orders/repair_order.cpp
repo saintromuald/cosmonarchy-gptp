@@ -209,7 +209,7 @@ namespace hooks {
 	}
 
 	// Hooked to allow for general Repair and some other shit - Pr0nogo
-	int32 isOrderValid(char orderId, CUnit* unit, int32 unused, CUnit* target, int32 bErrorFlag)
+	int32 isOrderValid(char orderId, CUnit* unit, int32 unused, CUnit* target, int32 bErrorFlag) // 00474D90
 	{
 		uint16 errorStringId;
 		int32 v6;
