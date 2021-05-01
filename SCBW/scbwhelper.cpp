@@ -2709,12 +2709,12 @@ namespace helper {
 		}
 	}
 
-	void function_00433FE0(CUnit* unit) {
-		const uint32 Func_Sub433FE0 = 0x00433FE0;
+	void updateBuildingsAI(CUnit* unit) {
+		const uint32 Func_updateBuildingsAI = 0x00433FE0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_Sub433FE0
+			CALL Func_updateBuildingsAI
 			POPAD
 		}
 	}
@@ -2753,12 +2753,12 @@ namespace helper {
 		}
 	}
 
-	void function_0047D770(CUnit* unit) {
-		const uint32 Func_Sub47D770 = 0x0047D770;
+	void stopCreepDisappearingAtBuilding(CUnit* unit) {
+		const uint32 Func_stopCreepDisappearingAtBuilding = 0x0047D770;
 		__asm {
 			PUSHAD
 			PUSH unit
-			CALL Func_Sub47D770
+			CALL Func_stopCreepDisappearingAtBuilding
 			POPAD
 		}
 	}

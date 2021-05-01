@@ -37,7 +37,7 @@ void spawnCreeper(CUnit* unit) {
 				tile_y * 32,
 				UnitId::ZergNydusCanal
 			); // apply creep
-			helper::function_0047D770(creep_spawned);
+			helper::stopCreepDisappearingAtBuilding(creep_spawned);
 
 			creep_spawned->status |= UnitStatus::Invincible;
 			creep_spawned->status |= UnitStatus::NoCollide;

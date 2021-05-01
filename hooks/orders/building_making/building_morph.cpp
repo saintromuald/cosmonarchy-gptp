@@ -23,83 +23,74 @@ namespace hooks {
 
 	void orders_ZergBuildSelf(CUnit* building) {
 		const int OPCWAL_PROGRESS_INCREASE = 16;
-
 		uint16 buildingId;
 		bool jump_to_5D56C = false;
 		bool jump_to_5D718 = false;
 		bool jump_to_5D720 = false;
-
 		buildingId = building->buildQueue[building->buildQueueSlot];
 
-		if (!scbw::isZergBuildingMorphResult(buildingId))
+		if (!scbw::isZergBuildingMorphResult(buildingId)) {
 			buildingId = building->id;
-
+		}
 		if (building->mainOrderState == 0) {
-			if (building->remainingBuildTime < (units_dat::TimeCost[buildingId] * 3 / 4))
+			if (building->remainingBuildTime < (units_dat::TimeCost[buildingId] * 3 / 4)) {
 				building->mainOrderState = 1;
-
+			}
 			jump_to_5D56C = true;
-
 		} else
-			if (building->mainOrderState > 6)
+			if (building->mainOrderState > 6) {
 				jump_to_5D56C = true;
-
-		if (jump_to_5D56C) { // 005D56C
+			}
+		if (jump_to_5D56C) { // 0045D56C
 			jump_to_5D56C = false;
 			if (building->remainingBuildTime == 0)
 				jump_to_5D720 = true;
 			else
-				if (!scbw::isCheatEnabled(CheatFlags::OperationCwal))
+				if (!scbw::isCheatEnabled(CheatFlags::OperationCwal)) {
 					jump_to_5D718 = true;
+				}
 				else {
-					if (building->remainingBuildTime >= OPCWAL_PROGRESS_INCREASE)
+					if (building->remainingBuildTime >= OPCWAL_PROGRESS_INCREASE) {
 						building->remainingBuildTime -= OPCWAL_PROGRESS_INCREASE;
-					else
+					}
+					else {
 						building->remainingBuildTime = 0;
+					}
 					jump_to_5D720 = true;
 				}
-		} else if (building->mainOrderState == 1) { // 005D5AE
+		} else if (building->mainOrderState == 1) { // 0045D5AE
 			if (building->id == UnitId::ZergExtractor) {
 				CImage* overlay = building->sprite->getOverlay(ImageId::VespeneGeyser2);
-				if (overlay != nullptr)
+				if (overlay != nullptr) {
 					overlay->free();
+				}
 			}
 			building->sprite->playIscriptAnim(IscriptAnimation::SpecialState1, true);
 			building->mainOrderState = 2;
-			//scbw::print("Set order state 2");
 			jump_to_5D56C = true;
-
-		} else if (building->mainOrderState == 2) { // 005D5E2
+		} else if (building->mainOrderState == 2) { // 0045D5E2
 			if (building->remainingBuildTime < units_dat::TimeCost[buildingId] / 2) {
-				//scbw::print("Set order state 3");
 				building->mainOrderState = 3;
 			}
 			jump_to_5D56C = true;
-
-		} else if (building->mainOrderState == 3) { // 005D603
+		} else if (building->mainOrderState == 3) { // 0045D603
 			building->sprite->playIscriptAnim(IscriptAnimation::SpecialState2, true);
 			building->mainOrderState = 4;
-			//scbw::print("Set order state 4");
 			jump_to_5D56C = true;
 
-		} else if (building->mainOrderState == 4) { // 005D618
-
+		} else if (building->mainOrderState == 4) { // 0045D618
 			if (building->remainingBuildTime == 0) {
-				//scbw::print("Set order state 5");								
-
 				building->mainOrderState = 5;
 			}
 			jump_to_5D56C = true;
-
 		} else if (building->mainOrderState == 5) { // 005D62F
-
 			building->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
 			building->mainOrderState = 6;
 			helper::playBuildingCompleteSound(building);
 			jump_to_5D56C = true;
-
 			// TODO: Cleanup
-			/*bool sEnd = false;
+			/*
+			bool sEnd = false;
 			//if (building->orderSignal & 0x1) {
 			building->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
 			sEnd = true;
@@ -113,9 +104,9 @@ namespace hooks {
 				building->mainOrderState = 6;
 				playBuildingCompleteSound(building);
 			}
-			jump_to_5D56C = true;*/
+			jump_to_5D56C = true;
+			*/
 		} else if (building->mainOrderState == 6) { // 005D64B
-
 			bool ordCondition = false;
 			if (building->orderSignal & 0x4) {
 				ordCondition = true;
@@ -129,35 +120,33 @@ namespace hooks {
 				CImage* current_image;
 				building->orderSignal -= 4;
 				if (helper::isValidMorph(buildingId)) {
-					//save hp before some functions modify them
+					// save hp before some functions modify them
 					hpAfterMorph = building->hitPoints;
 					uint32 save_shields = building->shields;
-					//update score
+					// update score
 					building->status |= UnitStatus::Completed;
 					helper::incrementUnitScoresEx(building, -1, 0);
 
-					//do the building change
+					// do the building change
 					building->status -= UnitStatus::Completed;
 					helper::replaceUnitWithType(building, buildingId);
-					//newHp = newHpMax - oldHpMax + oldHp
+					// newHp = newHpMax - oldHpMax + oldHp
 					hpAfterMorph =
 						units_dat::MaxHitPoints[buildingId] -
 						units_dat::MaxHitPoints[building->previousUnitType] +
 						hpAfterMorph;
-					if (hpAfterMorph < 256)
+					if (hpAfterMorph < 256) {
 						hpAfterMorph = 256;
-
+					}
 					building->setHp(hpAfterMorph);
 					building->remainingBuildTime = 0;
-
 				}
-				// 005D6CD
+				// 0045D6CD
 				// update various stuff (set hp, set shield...) not finished on Morph
 				helper::updateUnitStatsFinishBuilding(building);
 				helper::updateUnitStrength(building);
 				// relate to building placement / taking room around?
-				helper::function_0047D770(building);
-
+				helper::stopCreepDisappearingAtBuilding(building);
 				current_image = building->sprite->images.head;
 				while (current_image != nullptr) {
 					current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
@@ -167,20 +156,20 @@ namespace hooks {
 			}
 		}
 
-		if (jump_to_5D56C) { // 005D56C
+		if (jump_to_5D56C) { // 0045D56C
 			jump_to_5D56C = false;
-
 			if (building->remainingBuildTime == 0) {
 				jump_to_5D720 = true;
 			} else
 				if (!scbw::isCheatEnabled(CheatFlags::OperationCwal)) {
 					jump_to_5D718 = true;
 				} else {
-
-					if (building->remainingBuildTime >= OPCWAL_PROGRESS_INCREASE)
+					if (building->remainingBuildTime >= OPCWAL_PROGRESS_INCREASE) {
 						building->remainingBuildTime -= OPCWAL_PROGRESS_INCREASE;
-					else
+					}
+					else {
 						building->remainingBuildTime = 0;
+					}
 					jump_to_5D720 = true;
 				}
 		}
@@ -201,14 +190,12 @@ namespace hooks {
 				building->setHp(building->hitPoints + hpGain);
 			}
 		}
-
-	} //void orders_ZergBuildSelf(CUnit* building)
+	}
 
 	void ZergPlaceBuilding(CUnit* unit) {
 		bool bStopThere = false;
 		if (!(unit->status & UnitStatus::Completed)) {
 			uint16 builtUnitId = unit->buildQueue[unit->buildQueueSlot];
-
 			// original code was hardcoded instead of using isValidMorph
 			if (helper::isValidMorph(builtUnitId)) {
 				if (unit->getRace() == RaceId::Zerg) {
@@ -236,6 +223,7 @@ namespace hooks {
 							anchor->playIscriptAnim(IscriptAnimation::Death);
 						}
 					}
+					// TODO: Why is this commented?
 					//scbw::refreshConsole();
 				}
 				bStopThere = true;
@@ -258,7 +246,7 @@ namespace hooks {
 					helper::displayLastNetErrorForPlayer(unit->playerId);
 					unit->remove();
 					bStopThere = true;
-				} else {	// 005DB1E
+				} else { // 0045DB1E
 					// update various stuff (set hp, set shield...) not finished after createUnit
 					helper::updateUnitStatsFinishBuilding(drone);
 					helper::updateUnitStrength(drone);
@@ -268,19 +256,16 @@ namespace hooks {
 				}
 			}
 
-			if (!bStopThere) {	// 005DB45
+			if (!bStopThere) {	// 0045DB45
 				CThingy* thingy = helper::createThingy(SpriteId::Zerg_Building_Spawn_Small, unit->getX(), unit->getY(), 0);
 				if (thingy != nullptr) {
 					thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
 					helper::setThingyVisibilityFlags(thingy);
 				}
-
 				scbw::playSound(SoundId::Misc_ZBldgPlc_wav_1, unit);
 				helper::replaceUnitWithType(unit, UnitId::ZergDroleth);
-
 				//probably AI related
-				helper::function_00433FE0(unit);
-
+				helper::updateBuildingsAI(unit);
 				//update various stuff (set hp, set shield...) not finished after unit change
 				helper::updateUnitStatsFinishBuilding(unit);
 				helper::updateUnitStrength(unit);
@@ -316,12 +301,9 @@ namespace hooks {
 }
 
 //from unhooked
-
 namespace {
 	int BuildingHelper::getNumberOfUnitType(const CUnit* unit, uint16 unitId, bool ignoreIncomplete);
-} //unnamed namespace
-
-  //-------- Actual hook functions --------//
+}
 
 namespace hooks {
 	//Checks if @p unitId is a building that can be morphed from another building.
@@ -419,4 +401,4 @@ namespace hooks {
 			current_image = current_image->link.next;
 		}
 	}
-} //hooks
+}

@@ -3,26 +3,24 @@
 
 namespace hooks {
 	void orders_Build5(CUnit* nydus_canal) {
-
 		int x, y;
 		uint32 result_f00473FB0;
-
 		x = units_dat::BuildingDimensions[UnitId::ZergNydusCanal].x;
 		y = units_dat::BuildingDimensions[UnitId::ZergNydusCanal].y;
-
-		if (x < 0)
+		if (x < 0) {
 			x++;
-		if (y < 0)
+		}
+		if (y < 0) {
 			y++;
-
+		}
 		x = nydus_canal->orderTarget.pt.x - (x / 2);
 		y = nydus_canal->orderTarget.pt.y - (y / 2);
-
-		if (x < 0)
+		if (x < 0) {
 			x += 31;
-		if (y < 0)
+		}
+		if (y < 0) {
 			y += 31;
-
+		}
 		x /= 32;
 		y /= 32;
 
@@ -35,22 +33,19 @@ namespace hooks {
 			UnitId::ZergNydusCanal,
 			0, 0, 1, 0
 		);
-
 		if (result_f00473FB0 != 0) {
-
-			helper::playWorkerErrorSound(nydus_canal, 0x358); //"You can't build there"
-
+			helper::playWorkerErrorSound(nydus_canal, 0x358); // "You can't build there"
 			if (nydus_canal->orderQueueHead != nullptr) {
 				nydus_canal->userActionFlags |= 1;
 				prepareForNextOrder(nydus_canal);
 			} else
-				if (nydus_canal->pAI != nullptr)
+				if (nydus_canal->pAI != nullptr) {
 					nydus_canal->orderComputerCL(OrderId::ComputerAI);
-				else
+				}
+				else {
 					nydus_canal->orderComputerCL(units_dat::ReturnToIdleOrder[nydus_canal->id]);
-
-		} else { //5DCDB
-
+				}
+		} else { // 0045DCDB
 			CUnit* nydusExit =
 				helper::createUnit(
 					UnitId::ZergNydusCanal,
@@ -58,20 +53,16 @@ namespace hooks {
 					nydus_canal->orderTarget.pt.y,
 					nydus_canal->playerId
 				);
-
 			if (nydusExit == nullptr) {
 				helper::displayLastNetErrorForPlayer(nydus_canal->playerId);
 				nydus_canal->orderToIdle();
 			} else {
-
 				helper::initBuilding(nydusExit, 1);
-
-				//logically equivalent to a more complex original calculation
+				// logically equivalent to a more complex original calculation
 				nydusExit->hitPoints = (10 * units_dat::MaxHitPoints[nydusExit->id]) / 100;
-
 				nydusExit->orderComputerCL(OrderId::ZergBuildSelf);
 				nydusExit->currentButtonSet = UnitId::Buttons_Blank;
-				helper::function_0047D770(nydusExit);
+				helper::stopCreepDisappearingAtBuilding(nydusExit);
 				nydus_canal->building.nydusExit = nydusExit;
 				nydusExit->building.nydusExit = nydus_canal;
 				nydus_canal->orderToIdle();
@@ -79,9 +70,7 @@ namespace hooks {
 		}
 	}
 
-	;
-
 	uint32 adjustFlags(uint32 flags, uint32 player) {
-		return 0xffffffff;//don't check any creep tile flags for nydus placement
+		return 0xffffffff; // don't check any creep tile flags for nydus placement
 	}
 }

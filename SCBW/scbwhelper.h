@@ -271,11 +271,11 @@ namespace helper {
 
     //// building_morph
     void refundBuildingCost(uint16 unitId, uint8 playerId);								                    // 002CE70
-    void function_00433FE0(CUnit* unit);												                    // 0033FE0
+    void updateBuildingsAI(CUnit* unit);												                    // 0033FE0
     bool isValidMorph(uint16 buildingId);												                    // 005CC60
     void updateNewUnitVision(uint32 id, int x, int y);									                    // 005CE90
     void zergPlaceBuildingCntd(CUnit* unit);											                    // 005D410
-    void function_0047D770(CUnit* unit);												                    // 007D770
+    void stopCreepDisappearingAtBuilding(CUnit* unit);												        // 007D770
     void function_0047DE40(CSprite* sprite, uint32 unitId, int x, int y);				                    // 007DE40
     void incrementUnitScoresEx(CUnit* building, int32 unk1, int32 unk2);				                    // 0088D50
     void playBuildingCompleteSound(CUnit* building);									                    // 008F310
