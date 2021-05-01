@@ -4,7 +4,7 @@
 namespace hooks {
 
 void setRallyUnit(CUnit* unit, CUnit* target);			//0x00466B40
-void orderNewUnitToRally(CUnit* unit, CUnit* factory);	//0x00466F50
+void orderNewUnitToRallyHook(CUnit* unit, CUnit* factory);	//0x00466F50
 void setRallyPosition(CUnit* unit, uint16 x, uint16 y);		//0x00466910
 
 void injectRallyHooks();

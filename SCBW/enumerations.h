@@ -564,7 +564,7 @@ namespace SmkFlags {
 
 namespace DialogControlTypes {
 	enum Enum {
-		DialogBox = 0x00000000,
+		DialogBoxDC = 0x00000000, // DialogBox cannot be used, since it's used in winapi
 		DefaultButton = 0x00000001,
 		Button = 0x00000002,
 		OptionButton = 0x00000003,

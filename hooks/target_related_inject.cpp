@@ -64,7 +64,7 @@ namespace {
 			MOV target, EAX
 			PUSHAD
 		}
-		result = hooks::unitCanSeeCloakedTarget(target, unit);
+		result = hooks::unitCanSeeCloakedTargetHook(target, unit);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -126,7 +126,7 @@ namespace {
 			MOV unit, ECX
 			PUSHAD
 		}
-		result = hooks::isUnitCloaking(unit);
+		result = hooks::isUnitCloakingHook(unit);
 		__asm {
 			POPAD
 			MOV EAX, result

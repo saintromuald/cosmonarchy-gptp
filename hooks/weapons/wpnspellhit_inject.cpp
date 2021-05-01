@@ -489,7 +489,7 @@ namespace {
 			PUSHAD
 		}
 
-		hooks::MindControlHit(attacker, target);
+		hooks::MindControlHitHook(attacker, target);
 
 		__asm {
 			POPAD

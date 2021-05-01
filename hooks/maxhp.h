@@ -10,7 +10,7 @@ namespace hooks {
 	bool AI_TargetEnemyProc(CUnit* a1, CUnit* a2);															// 00440A20
 	void drawBuildingInfo(void* dlg);																		// 00427890
 	int calcUnitStrength(int a1, uint8 a2);																	// 00431270
-	uint32 getUnitStrength(CUnit* a1, int a2, bool a3);														// 0043183F
+	uint32 getUnitStrengthHook(CUnit* a1, int a2, bool a3);														// 0043183F
 	bool AI_RestorationRequirementsProc(CUnit* a1, CUnit* a2);												// 004407E0
 	bool AI_EMPShieldRequirementsProc(CUnit* a1, CUnit* a2);												// 004413D0
 	char attackOverlayAndNotify(CUnit* a1, CUnit* a2, uint8 a3, char a4);										// 00479730

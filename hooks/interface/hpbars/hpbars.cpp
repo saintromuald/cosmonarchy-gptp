@@ -1,10 +1,6 @@
 #include "hpbars.h"
 
 namespace {
-	CImage* CreateHealthBar(int a1, CSprite* a2);
-	void RemoveHPBar(CImage* a1);
-	void updateImageDrawData(CImage* result);
-	void playImageIscript(CImage* img, uint8 iscriptAnim);
 }
 
 namespace hooks {
@@ -76,48 +72,4 @@ namespace hooks {
 }
 
 namespace {
-	const uint32 CreateHealthBar_function = 0x004D6420;
-	CImage* CreateHealthBar(int a1, CSprite* a2) {
-		static CImage* result;
-		_asm {
-			PUSHAD
-			MOV ECX, a1
-			MOV EDX, a2
-			CALL CreateHealthBar_function
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 RemoveHPBar_function = 0x004D5030;
-	void RemoveHPBar(CImage* a1) {
-		_asm {
-			PUSHAD
-			MOV ESI, a1
-			CALL RemoveHPBar_function
-			POPAD
-		}
-	}
-
-	const uint32 updateImageDrawData_function = 0x004D57B0;
-	void updateImageDrawData(CImage* result) {
-		_asm {
-			PUSHAD
-			MOV EAX, result
-			CALL updateImageDrawData_function
-			POPAD
-		}
-	}
-
-	const uint32 playImageIscript_function = 0x004D8470;
-	void playImageIscript(CImage* img, uint8 iscriptAnim) {
-		_asm {
-			PUSHAD
-			PUSH iscriptAnim
-			MOV ECX, img
-			CALL updateImageDrawData_function
-			POPAD
-		}
-	}
 }

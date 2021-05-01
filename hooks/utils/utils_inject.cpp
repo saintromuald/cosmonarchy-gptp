@@ -40,7 +40,7 @@ namespace {
 			PUSHAD
 		}
 
-		if (hooks::unit_IsStandardAndMovable(unit))
+		if (hooks::unit_IsStandardAndMovableHook(unit))
 			result = 1;
 		else
 			result = 0;

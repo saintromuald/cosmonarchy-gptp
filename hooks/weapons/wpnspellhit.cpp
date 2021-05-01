@@ -558,7 +558,7 @@ namespace hooks {
 	}
 
 	//no bullet because this function is called in another context without bullet
-	void MindControlHit(CUnit* attacker, CUnit* target) {
+	void MindControlHitHook(CUnit* attacker, CUnit* target) {
 		if (target->status & UnitStatus::IsHallucination)
 			target->remove();
 		else {

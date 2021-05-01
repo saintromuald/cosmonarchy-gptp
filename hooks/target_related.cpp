@@ -386,7 +386,7 @@ namespace hooks {
 		return result;
 	}
 
-	uint32 unitCanSeeCloakedTarget(CUnit* target, CUnit* unit) { // 00401D60, hooked for cloak rewrite - Pr0nogo
+	uint32 unitCanSeeCloakedTargetHook(CUnit* target, CUnit* unit) { // 00401D60, hooked for cloak rewrite - Pr0nogo
 		return target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
 	}
 
@@ -471,7 +471,7 @@ namespace hooks {
 
 	// Hooked to complete the cloak rewrite - Pr0nogo
 	// was __thiscall, does that matter?
-	int32 isUnitCloaking(CUnit* unit) { // 004916E0
+	int32 isUnitCloakingHook(CUnit* unit) { // 004916E0
 		if (unit->isCloaked) {
 			return 0;
 		}

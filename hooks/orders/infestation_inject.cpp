@@ -16,7 +16,7 @@ namespace {
 			MOV unit, EAX
 		}
 
-		result = hooks::unitCanInfest(unit) ? 1 : 0;
+		result = hooks::unitCanInfestHook(unit) ? 1 : 0;
 
 		__asm {
 			POPAD

@@ -1,10 +1,11 @@
 #include "infestation.h"
 #include <SCBW/api.h>
+#include <SCBW\scbwfunc.h>
 
 namespace hooks {
 
 	//replace 0x00402750 canInfest
-	bool unitCanInfest(CUnit* unit) {
+	bool unitCanInfestHook(CUnit* unit) {
 		return (unit->id == UnitId::ZergMatraleth);
 	}
 

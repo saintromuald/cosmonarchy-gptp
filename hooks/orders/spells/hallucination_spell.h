@@ -9,9 +9,3 @@ namespace hooks {
 
 
 } //hooks
-
-namespace {
-	void UnitDestructor(CUnit* unit);
-	bool placeHallucination(CUnit* unit);
-	CUnit* createHallucinationUnit(CUnit* target, uint32 playerId);
-}

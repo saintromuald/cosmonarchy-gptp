@@ -418,7 +418,7 @@ namespace hooks {
 		return v3;
 	}
 
-	uint32 getUnitStrength(CUnit* a1, int a2, bool a3) { // 00431800
+	uint32 getUnitStrengthHook(CUnit* a1, int a2, bool a3) { // 00431800
 		CUnit* v3; // edi
 		int v4; // esi
 		int v5; // ebx
@@ -910,7 +910,7 @@ namespace hooks {
 		v10 = (int32*)(a1 + 36);
 		*v10 = 0;
 		v10[1] = 0;
-		//		*(int32*)(a1 + 48) = v3;
+		// *(int32*)(a1 + 48) = v3;
 		updateImageDrawData((CImage*)a1);
 		*(int8*)(a1 + 12) |= 1u;
 		playImageIscript((CImage*)a1, 0);

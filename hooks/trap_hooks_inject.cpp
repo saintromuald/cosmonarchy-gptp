@@ -55,7 +55,7 @@ namespace {
 			MOV a1, EAX
 			PUSHAD
 		}
-		result = hooks::updateUnitStrengthAndApplyDefaultOrders(a1);
+		result = hooks::updateUnitStrengthAndApplyDefaultOrdersHook(a1);
 		__asm {
 			POPAD
 			MOV EAX, result

@@ -13,7 +13,7 @@ namespace hooks {
 	///
 	/// Identical to sub_466F50 @ 00466F50
 
-	void orderNewUnitToRally(CUnit* unit, CUnit* factory) {
+	void orderNewUnitToRallyHook(CUnit* unit, CUnit* factory) {
 
 		//Do nothing if the rally target is the factory itself or the rally target position is 0
 		if (

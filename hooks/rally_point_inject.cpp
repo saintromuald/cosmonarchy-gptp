@@ -18,7 +18,7 @@ namespace {
 			PUSHAD
 		}
 
-		hooks::orderNewUnitToRally(unit, factory);
+		hooks::orderNewUnitToRallyHook(unit, factory);
 
 		__asm {
 			POPAD

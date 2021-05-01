@@ -225,7 +225,7 @@ namespace hooks {
 		}
 
 		//26E96
-		if (dialog->controlType == DialogControlTypes::DialogBox) {
+		if (dialog->controlType == DialogControlTypes::DialogBoxDC) {
 			current_dialog = dialog;
 		}
 		else {

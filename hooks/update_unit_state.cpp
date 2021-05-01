@@ -105,27 +105,6 @@ namespace hooks {
 		}
 	}
 
-	void updateMineralPatchImage(CUnit* mineralPatch) {
-		IscriptAnimation::Enum anim;
-		if (mineralPatch->building.resource.resourceAmount >= 750)
-			anim = IscriptAnimation::WorkingToIdle;
-		else
-			if (mineralPatch->building.resource.resourceAmount >= 500)
-				anim = IscriptAnimation::AlmostBuilt;
-			else
-				if (mineralPatch->building.resource.resourceAmount >= 250)
-					anim = IscriptAnimation::SpecialState2;
-				else
-					if (mineralPatch->building.resource.resourceAmount >= 50)
-						anim = IscriptAnimation::SpecialState1;
-					else
-						anim = IscriptAnimation::Landing;
-		if (anim != mineralPatch->building.resource.resourceIscript) {
-			mineralPatch->building.resource.resourceIscript = anim;
-			mineralPatch->sprite->playIscriptAnim(anim);
-		}
-	}
-
 	const uint32 Func_SetUnitPathing = 0x00401360;
 	void setUnitPathing(CUnit* unit, uint8 unkPathRelated) {
 		__asm {

@@ -9,7 +9,7 @@ namespace hooks {
 			MOV flingy, ECX
 			PUSHAD
 		}
-		result = hooks::getFlingyHaltDistance(flingy);
+		result = hooks::getFlingyHaltDistanceHook(flingy);
 		__asm {
 			POPAD
 			MOV EAX, result

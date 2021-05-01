@@ -3,7 +3,7 @@
 namespace {
 
 	// 
-	int refundAllQueueSlots(CUnit* a1);																			// 00466E80
+	int refundAllQueueSlotsHook(CUnit* a1);																			// 00466E80
 	int Ai_HasBuildingsNeedingPower(uint32 player);																// 00433410
 	int Ai_CountEconomyUnits(uint32 player, uint32 unit_id);															// 00433470
 	int getSuppliesRemaining(uint8 player, uint16 unit_id);															// 004889D0

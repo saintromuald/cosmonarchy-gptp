@@ -69,12 +69,6 @@ bool isAttemptingProtossBuild(const CUnit* probe) {
 		&& probe->orderTarget.unit != nullptr
 		&& !(probe->orderTarget.unit->status & UnitStatus::Completed);
 }
-bool isConstructingAddon(const CUnit* building) {
-	return building->secondaryOrderId == OrderId::BuildAddon
-		&& building->status & UnitStatus::GroundedBuilding
-		&& building->currentBuildUnit != nullptr
-		&& !(building->currentBuildUnit->status & UnitStatus::Completed);
-}
 
 // For createUnit
 const uint32 Func_unitConstructor = 0x004A06C0;
@@ -559,7 +553,7 @@ namespace hooks {
 		return weapons_dat::FlingyId[weaponId];
 	}
 
-	uint32 getFlingyHaltDistance(CFlingy* flingy) {
+	uint32 getFlingyHaltDistanceHook(CFlingy* flingy) {
 		auto speed = flingy->current_speed2;
 		if (speed == 0 || flingy->flingyMovementType != 0) {
 			return 0;

@@ -1,9 +1,6 @@
 #include "harvest.h"
 #include "../SCBW/api.h"
 
-//Helper functions
-void updateMineralPatchImage(CUnit* mineralPatch);
-void setResourceAmountCarried(CUnit* worker, uint8 amountCarried, uint32 chunkImageId, bool isMineral);
 
 //-------- Actual hooks --------//
 
@@ -161,31 +158,6 @@ namespace hooks {
 	;
 
 } //hooks
-
-//-------- Helper function definitions. Do NOT change this! --------//
-
-//Identical to function @ 0x00468830
-void updateMineralPatchImage(CUnit* mineralPatch) {
-
-	IscriptAnimation::Enum anim;
-
-	if (mineralPatch->building.resource.resourceAmount >= 750)
-		anim = IscriptAnimation::WorkingToIdle;
-	else
-		if (mineralPatch->building.resource.resourceAmount >= 500)
-			anim = IscriptAnimation::AlmostBuilt;
-		else
-			if (mineralPatch->building.resource.resourceAmount >= 250)
-				anim = IscriptAnimation::SpecialState2;
-			else
-				anim = IscriptAnimation::SpecialState1;
-
-	if (anim != mineralPatch->building.resource.resourceIscript) {
-		mineralPatch->building.resource.resourceIscript = anim;
-		mineralPatch->sprite->playIscriptAnim(anim);
-	}
-
-}
 
 void updateImagePositionOffset(CImage* image) {
 

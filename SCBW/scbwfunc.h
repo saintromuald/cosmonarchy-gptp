@@ -39,7 +39,7 @@ void drawNukeSiloInfo(int a1);
 bool unitIsActiveTransport(CUnit* a1);
 bool isQueueSlotActive(CUnit* a1, int a2);
 void drawTrainingProgress(BinDlg* a1);
-bool isConstructingAddon(CUnit* a1);
+bool isConstructingAddon(const CUnit* a1);
 bool isAttemptingProtossBuild(CUnit* a1);
 void drawAddonProgress(int a1);
 void drawTechProgress(int a1);
@@ -130,10 +130,10 @@ int SErrSetLastError(char a1);
 // For compileHealthBar
 
 
-void updateImageDrawData(CImage* a1);
+void updateImageDrawData(CImage* result);
 
 
-void playImageIscript(CImage* a1, char a2);
+void playImageIscript(CImage* img, uint8 iscriptAnim);
 
 // For AI_FindTransport
 
@@ -635,9 +635,6 @@ uint32 get_statTxt_Str_0(CUnit* unit, uint32 playerId, char* message);										
 bool canCastSpell_0(CUnit* unit);																									// 00492140
 uint32 function_00492620(CUnit* unit, bool32 wasMainOrderStateZero);																// 00492620
 
-//// infestation
-
-void refundAllQueueSlots(CUnit* unit);																								// 00466E80
 void incrementUnitDeathScores(CUnit* unit, uint8 player);																			// 00488AF0
 void initializeEmptyUnitsLinkedListRef_Sub49E4E0(CUnit* unit, uint8 playerId);														// 0049E4E0
 void GiveUnitHelper(CUnit* unit, uint32 playerId, int32 unkScore);																	// 0049EFA0
@@ -791,7 +788,9 @@ void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit);																	
 
 // for orders_Hallucination1
 bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index);	// 004926D0
-bool placeHallucination(CUnit* unit);																							// 004F66D0
+
+void UnitDestructor(CUnit* unit);
+bool placeHallucination(CUnit* unit);																					// 004F66D0
 
 // for createHallucination
 void applyHallucinationStats(CUnit* halUnit);																					// 004F6180
@@ -1028,3 +1027,32 @@ bool addPsiFieldSprite(CUnit* unit);
 //// stim_packs
 
 void QueueGameCommand(uint8* params, uint32 param_length);
+
+CThingy* createThingyFunc(uint32 spriteId, int16 x, int16 y, uint32 playerId);
+bool func_dounitscollide(CUnit* first, CUnit* second);
+void unburrow(CUnit* unit);
+
+CImage* CreateHealthBar(int a1, CSprite* a2);
+
+void RemoveHPBar(CImage* a1);
+
+void refundAllQueueSlots(CUnit* unit);
+
+void* SMemAlloc(uint32 amount, uint32 unkFilename, uint32 unkLine, uint32 defaultValue);	//1006A (based on Storm.dll definition)
+void SetCallbackTimer(BinDlg* dialog, uint32 unk1, uint32 unk2, uint32 unk3);			//16090
+void function_0049A7F0(CUnit* unit);											//9A7F0
+
+uint32 fxnInteract(BinDlg* dialog, uint32 data_struct_offset);
+
+void registerUserDialogAction(BinDlg* dialog, uint32 array_of_fxnInteractFunc, uint32 sizeOfArray);	//18100
+void function_418E00(BinDlg* dialog);																//18E00
+void replayStatBtns(BinDlg* dialog);																//27A80
+void function_4591D0();																				//591D0
+void function_459770();																				//59770
+void BINDLG_BlitSurface(BinDlg* dialog);															//C35F0
+
+uint32 fxnInteract(BinDlg* dialog, uint32 data_struct_offset);
+int32 req_check(uint32 reqFunc, uint16 reqVar, uint32 playerId, CUnit* unit);
+
+void updateMineralPatchImage(CUnit* mineralPatch);
+void setResourceAmountCarried(CUnit* worker, uint8 amountCarried, uint32 chunkImageId, bool isMineral);

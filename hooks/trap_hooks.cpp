@@ -62,7 +62,7 @@ namespace hooks {
 		return unitFlags;
 	}
 
-	uint32 updateUnitStrengthAndApplyDefaultOrders(CUnit* a1) { // 0049FA40
+	uint32 updateUnitStrengthAndApplyDefaultOrdersHook(CUnit* a1) { // 0049FA40
 		CUnit* v1; // esi
 		int v2; // ecx
 		int16 v3; // ax

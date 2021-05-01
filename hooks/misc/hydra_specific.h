@@ -10,7 +10,7 @@ namespace hooks {
 	uint16 realAcceleration(CFlingy* flingy, uint32 flingyId);
 	bool is_high_templar_conduit(uint16 unitId);
 	uint32 weapon_flingy(uint32 weaponId, uint8 playerId);
-	uint32 getFlingyHaltDistance(CFlingy* flingy);
+	uint32 getFlingyHaltDistanceHook(CFlingy* flingy);
 	bool is_unused_order(uint8 orderId);
 	void setupSpiderMines(CUnit* unit);
 	uint32 get_mine_id(CUnit* unit);

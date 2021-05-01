@@ -348,7 +348,7 @@ void drawTrainingProgress(BinDlg* a1) {
 	}
 }
 
-bool isConstructingAddon(CUnit* a1) {
+bool isConstructingAddon(const CUnit* a1) {
 	const uint32 Func_isConstructingAddon = 0x004E66B0;
 	static int result;
 	__asm {
@@ -815,8 +815,6 @@ int SErrSetLastError(char a1) {
 	return result;
 }
 
-// For compileHealthBar
-
 void updateImageDrawData(CImage* a1) {
 	const uint32 Func_updateImageDrawData = 0x004D57B0;
 	__asm {
@@ -827,18 +825,41 @@ void updateImageDrawData(CImage* a1) {
 	}
 }
 
-void playImageIscript(CImage* a1, char a2) {
-	const uint32 Func_playImageIscript = 0x004D8470;
-	__asm {
+
+const uint32 CreateHealthBar_function = 0x004D6420;
+CImage* CreateHealthBar(int a1, CSprite* a2) {
+	static CImage* result;
+	_asm {
 		PUSHAD
-		PUSH a2
 		MOV ECX, a1
-		CALL Func_playImageIscript
+		MOV EDX, a2
+		CALL CreateHealthBar_function
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+const uint32 RemoveHPBar_function = 0x004D5030;
+void RemoveHPBar(CImage* a1) {
+	_asm {
+		PUSHAD
+		MOV ESI, a1
+		CALL RemoveHPBar_function
 		POPAD
 	}
 }
 
-// For AI_FindTransport
+const uint32 playImageIscript_function = 0x004D8470;
+void playImageIscript(CImage* img, uint8 iscriptAnim) {
+	_asm {
+		PUSHAD
+		PUSH iscriptAnim
+		MOV ECX, img
+		CALL playImageIscript_function
+		POPAD
+	}
+}
 
 bool canEnterTransport(CUnit* a1, CUnit* a2) {
 	const uint32 Func_canEnterTransport = 0x004E6E00;
@@ -4462,17 +4483,6 @@ void ordersNothing2(CUnit* a1) {
 	}
 }
 
-void orderComputerClear(CUnit* a1, __int8 a2) {
-	const uint32 Func_orderComputerClear = 0x00475310;
-	__asm {
-		PUSHAD
-		MOVZX CL, a2
-		MOV ESI, a1
-		CALL Func_orderComputerClear
-		POPAD
-	}
-}
-
 // for genericRightClickUnitProc2
 
 int32 isOrderValid(char a1, CUnit* a2, int32 a3, CUnit* a4, int32 a5) {
@@ -6938,5 +6948,242 @@ void QueueGameCommand(uint8* params, uint32 param_length) {
 		MOV ECX, params
 		CALL Func_QueueGameCommand
 		POPAD
+	}
+}
+
+
+
+const uint32 Func_CreateThingy = 0x00488210;
+CThingy* createThingyFunc(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
+	static CThingy* thingy;
+	int32 x_ = x;
+	__asm {
+		PUSHAD
+		PUSH playerId
+		MOVSX EDI, y
+		PUSH x_
+		PUSH spriteId
+		CALL Func_CreateThingy
+		MOV thingy, EAX
+		POPAD
+	}
+	return thingy;
+}
+
+const uint32 Func_DoUnitsCollide = 0x00469B60;
+bool func_dounitscollide(CUnit* first, CUnit* second) {
+	static uint32 result = 0;
+	__asm {
+		PUSHAD
+		MOV EAX, first
+		MOV ECX, second
+		CALL Func_DoUnitsCollide
+		MOV result, EAX
+		POPAD
+	}
+	return result;
+}
+
+const uint32 Func_Sub_4E97C0 = 0x004E97C0;
+void unburrow(CUnit* unit) {
+	__asm {
+		PUSHAD
+		MOV EAX, unit
+		CALL Func_Sub_4E97C0
+		POPAD
+	}
+}
+
+const uint32 Func_SMemAlloc = 0x0041006A;
+void* SMemAlloc(uint32 amount, uint32 unkFilename, uint32 unkLine, uint32 defaultValue) {
+
+	static void* pointer_on_allocated_memory;
+
+	__asm {
+		PUSHAD
+		PUSH defaultValue		//probably what to fill the memory with
+		PUSH unkLine			//unknown use, seems to use hardcoded value
+		PUSH unkFilename		//unknown use, seems to use hardcoded adress (of some text?)
+		PUSH amount				//amount of memory to allocate
+		CALL Func_SMemAlloc
+		MOV pointer_on_allocated_memory, EAX
+		POPAD
+	}
+
+	return pointer_on_allocated_memory;
+
+}
+
+;
+
+//Likely to call SMemAlloc!
+const uint32 Func_SetCallbackTimer = 0x00416090;
+void SetCallbackTimer(BinDlg* dialog, uint32 unk1, uint32 unk2, uint32 unk3) {
+
+	__asm {
+		PUSHAD
+		PUSH unk3
+		PUSH unk2
+		MOV EAX, unk1
+		MOV ECX, dialog
+		CALL Func_SetCallbackTimer
+		POPAD
+	}
+
+}
+
+;
+
+const uint32 Func_Sub49A7F0 = 0x0049A7F0;
+void function_0049A7F0(CUnit* unit) {
+
+	__asm {
+		PUSHAD
+		MOV EDI, unit
+		CALL Func_Sub49A7F0
+		POPAD
+	}
+
+}
+
+uint32 fxnInteract(BinDlg* dialog, uint32 data_struct_offset) {
+
+	static uint32 return_value;
+	static uint32 fxnInteract;
+
+	fxnInteract = (uint32)dialog->fxnInteract;
+
+	__asm {
+		PUSHAD
+		MOV ESI, dialog					//possibly useless, but just in case
+		MOV ECX, dialog
+		MOV EDX, data_struct_offset
+		CALL fxnInteract
+		MOV return_value, EAX
+		POPAD
+	}
+
+	return return_value;
+
+}
+
+
+/**** Definitions of helper functions. Do NOT modify anything below! ****/
+
+const uint32 Func_registerUserDialogAction = 0x00418100;
+void registerUserDialogAction(BinDlg* dialog, uint32 array_of_fxnInteractFunc, uint32 sizeOfArray) {
+
+	__asm {
+		PUSHAD
+		MOV EAX, dialog
+		MOV EDI, array_of_fxnInteractFunc
+		MOV ECX, sizeOfArray
+		CALL Func_registerUserDialogAction
+		POPAD
+	}
+
+}
+
+;
+
+const uint32 Func_Sub418E00 = 0x00418E00;
+void function_418E00(BinDlg* dialog) {
+
+	__asm {
+		PUSHAD
+		MOV ESI, dialog
+		CALL Func_Sub418E00
+		POPAD
+	}
+
+}
+
+;
+
+const uint32 Func_ReplayStatBtns = 0x00427A80;
+void replayStatBtns(BinDlg* dialog) {
+	__asm {
+		PUSHAD
+		MOV EBX, dialog
+		CALL Func_ReplayStatBtns
+		POPAD
+	}
+}
+
+;
+
+const uint32 Func_Sub_4591D0 = 0x004591D0;
+void function_4591D0() {
+
+	__asm {
+		PUSHAD
+		CALL Func_Sub_4591D0
+		POPAD
+	}
+
+}
+
+;
+
+const uint32 Func_Sub_459770 = 0x00459770;
+void function_459770() {
+	__asm {
+		PUSHAD
+		CALL Func_Sub_459770
+		POPAD
+	}
+}
+
+;
+
+const uint32 Func_BINDLG_BlitSurface = 0x004C35F0;
+void BINDLG_BlitSurface(BinDlg* dialog) {
+	__asm {
+		PUSHAD
+		MOV ESI, dialog
+		CALL Func_BINDLG_BlitSurface
+		POPAD
+	}
+}
+
+;
+
+//dev info: examples of calls: 429520,428e60,428420,4287D0,4292C0
+int32 req_check(uint32 reqFunc, uint16 reqVar, uint32 playerId, CUnit* unit) {
+
+	static int32 return_value;
+
+	__asm {
+		PUSHAD
+		MOV CX, reqVar
+		MOV EDX, playerId
+		PUSH unit
+		CALL reqFunc
+		MOV return_value, EAX
+		POPAD
+	}
+
+	return return_value;
+
+}
+
+void updateMineralPatchImage(CUnit* mineralPatch) {
+	IscriptAnimation::Enum anim;
+	if (mineralPatch->building.resource.resourceAmount >= 750)
+		anim = IscriptAnimation::WorkingToIdle;
+	else
+		if (mineralPatch->building.resource.resourceAmount >= 500)
+			anim = IscriptAnimation::AlmostBuilt;
+		else
+			if (mineralPatch->building.resource.resourceAmount >= 250)
+				anim = IscriptAnimation::SpecialState2;
+			else
+				if (mineralPatch->building.resource.resourceAmount >= 50)
+					anim = IscriptAnimation::SpecialState1;
+				else
+					anim = IscriptAnimation::Landing;
+	if (anim != mineralPatch->building.resource.resourceIscript) {
+		mineralPatch->building.resource.resourceIscript = anim;
+		mineralPatch->sprite->playIscriptAnim(anim);
 	}
 }

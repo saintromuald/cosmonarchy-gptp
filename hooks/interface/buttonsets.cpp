@@ -3,20 +3,6 @@
 #include "globals.h"
 //Helper functions
 
-namespace {
-
-	void registerUserDialogAction(BinDlg* dialog, uint32 array_of_fxnInteractFunc, uint32 sizeOfArray);	//18100
-	void function_418E00(BinDlg* dialog);																//18E00
-	void replayStatBtns(BinDlg* dialog);																//27A80
-	void function_4591D0();																				//591D0
-	void function_459770();																				//59770
-	void BINDLG_BlitSurface(BinDlg* dialog);															//C35F0
-
-	uint32 fxnInteract(BinDlg* dialog, uint32 data_struct_offset);
-	int32 req_check(uint32 reqFunc, uint16 reqVar, uint32 playerId, CUnit* unit);
-
-} //unnamed namespace
-
   //Main names from Firegraft, comments names from vgce
 namespace ButtonRequirements {
 	enum Enum : uint32 {
@@ -677,7 +663,7 @@ namespace hooks {
 		current_button = current_buttonset->firstButton;
 		current_button_state = BUTTON_STATE::Invisible;
 
-		if (current_dialog->controlType != DialogControlTypes::DialogBox)
+		if (current_dialog->controlType != DialogControlTypes::DialogBoxDC)
 			current_dialog = current_dialog->parent;
 
 		//59203:
@@ -1413,134 +1399,3 @@ namespace hooks {
 	;
 
 } //hooks
-
-;
-
-namespace {
-
-	/**** Definitions of helper functions. Do NOT modify anything below! ****/
-
-	const uint32 Func_registerUserDialogAction = 0x00418100;
-	void registerUserDialogAction(BinDlg* dialog, uint32 array_of_fxnInteractFunc, uint32 sizeOfArray) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, dialog
-			MOV EDI, array_of_fxnInteractFunc
-			MOV ECX, sizeOfArray
-			CALL Func_registerUserDialogAction
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub418E00 = 0x00418E00;
-	void function_418E00(BinDlg* dialog) {
-
-		__asm {
-			PUSHAD
-			MOV ESI, dialog
-			CALL Func_Sub418E00
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_ReplayStatBtns = 0x00427A80;
-	void replayStatBtns(BinDlg* dialog) {
-		__asm {
-			PUSHAD
-			MOV EBX, dialog
-			CALL Func_ReplayStatBtns
-			POPAD
-		}
-	}
-
-	;
-
-	const uint32 Func_Sub_4591D0 = 0x004591D0;
-	void function_4591D0() {
-
-		__asm {
-			PUSHAD
-			CALL Func_Sub_4591D0
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub_459770 = 0x00459770;
-	void function_459770() {
-		__asm {
-			PUSHAD
-			CALL Func_Sub_459770
-			POPAD
-		}
-	}
-
-	;
-
-	const uint32 Func_BINDLG_BlitSurface = 0x004C35F0;
-	void BINDLG_BlitSurface(BinDlg* dialog) {
-		__asm {
-			PUSHAD
-			MOV ESI, dialog
-			CALL Func_BINDLG_BlitSurface
-			POPAD
-		}
-	}
-
-	;
-
-	//dev info: in this context this call 4598D0 statbtn_Btn_Interact
-	uint32 fxnInteract(BinDlg* dialog, uint32 data_struct_offset) {
-
-		static uint32 return_value;
-		static uint32 fxnInteract;
-
-		fxnInteract = (uint32)dialog->fxnInteract;
-
-		__asm {
-			PUSHAD
-			MOV ESI, dialog
-			MOV ECX, dialog
-			MOV EDX, data_struct_offset
-			CALL fxnInteract
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-	//dev info: examples of calls: 429520,428e60,428420,4287D0,4292C0
-	int32 req_check(uint32 reqFunc, uint16 reqVar, uint32 playerId, CUnit* unit) {
-
-		static int32 return_value;
-
-		__asm {
-			PUSHAD
-			MOV CX, reqVar
-			MOV EDX, playerId
-			PUSH unit
-			CALL reqFunc
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-} //unnamed namespace
