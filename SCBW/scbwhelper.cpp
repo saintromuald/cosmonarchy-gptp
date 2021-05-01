@@ -2857,47 +2857,47 @@ namespace helper {
 		return bResult;
 	}
 
-	void function_00474760(CUnit* unit, COrder* order, uint8 orderId) {
-		const uint32 Func_Sub474760 = 0x00474760;
+	void prependOrderTargetingNothing(CUnit* unit, COrder* order, uint8 orderId) {
+		const uint32 Func_prependOrderTargetingNothing = 0x00474760;
 		__asm {
 			PUSHAD
 			MOV ESI, unit
 			MOV EDI, order
 			MOV BL, orderId
-			CALL Func_Sub474760
+			CALL Func_prependOrderTargetingNothing
 			POPAD
 		}
 	}
 
-	void function_004749A0(CUnit* unit, COrder* order, uint8 orderId) {
-		const uint32 Func_Sub4749A0 = 0x004749A0;
+	void addOrderTargetingNothing(CUnit* unit, COrder* order, uint8 orderId) {
+		const uint32 Func_addOrderTargetingNothing = 0x004749A0;
 		__asm {
 			PUSHAD
 			MOV BL, orderId
 			MOV ESI, unit
 			MOV EDI, order
-			CALL Func_Sub4749A0
+			CALL Func_addOrderTargetingNothing
 			POPAD
 		}
 	}
 
-	bool function_0048DDA0() {
-		const uint32 Func_Sub48DDA0 = 0x0048DDA0;
+	bool canStillPlaceBuilding() {
+		const uint32 Func_canStillPlaceBuilding = 0x0048DDA0;
 		bool32 pre_return_value;
 		__asm {
 			PUSHAD
-			CALL Func_Sub48DDA0
+			CALL Func_canStillPlaceBuilding
 			MOV pre_return_value, EAX
 			POPAD
 		}
 		return (pre_return_value != 0);
 	}
 
-	void function_0048E310() {
-		const uint32 Func_Sub48E310 = 0x0048E310;
+	void endBuildingPlacement() {
+		const uint32 Func_endBuildingPlacement = 0x0048E310;
 		__asm {
 			PUSHAD
-			CALL Func_Sub48E310
+			CALL Func_endBuildingPlacement
 			POPAD
 		}
 	}
@@ -2941,13 +2941,13 @@ namespace helper {
 		return (char)result;
 	}
 
-	void function_004E65E0(CUnit* unit, bool32 flag) {
-		const uint32 Func_Sub4E65E0 = 0x004E65E0;
+	void initBuilding(CUnit* unit, bool32 flag) {
+		const uint32 Func_initBuilding = 0x004E65E0;
 		__asm {
 			PUSHAD
 			MOV EDI, unit
 			PUSH flag
-			CALL Func_Sub4E65E0
+			CALL Func_initBuilding
 			POPAD
 		}
 	}
@@ -2966,15 +2966,15 @@ namespace helper {
 		return bPreResult != 0;
 	}
 
-	bool32 function_004F1870(CUnit* unit, int x, int y) {
-		const uint32 Func_Sub4F1870 = 0x004F1870;
+	bool32 unk_terrainCollision2(CUnit* unit, int x, int y) {
+		const uint32 Func_unk_terrainCollision2 = 0x004F1870;
 		static bool32 rValue;
 		__asm {
 			PUSHAD
 			PUSH y
 			PUSH x
 			MOV EAX, unit
-			CALL Func_Sub4F1870
+			CALL Func_unk_terrainCollision2
 			MOV rValue, EAX
 			POPAD
 		}

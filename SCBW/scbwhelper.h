@@ -442,67 +442,67 @@ namespace helper {
 
     //// spider_mine
 
-    CUnit* SpiderMine_AcquireTarget(CUnit* spiderMine);									// 00441270
-    void function_00495400(CUnit* unit, CUnit* target);									// 00495400
-    void function_0049B1E0(CUnit* unit);												// 0049B1E0
-    void function_004E99D0(CUnit* unit);												// 004E99D0
-    void function_004E9A30(CUnit* unit);												// 004E9A30
+    CUnit* SpiderMine_AcquireTarget(CUnit* spiderMine);									                    // 00441270
+    void function_00495400(CUnit* unit, CUnit* target);									                    // 00495400
+    void function_0049B1E0(CUnit* unit);												                    // 0049B1E0
+    void function_004E99D0(CUnit* unit);												                    // 004E99D0
+    void function_004E9A30(CUnit* unit);												                    // 004E9A30
 
     // For orders_PlaceMine
-    int techUseAllowed(CUnit* a1, __int16 a2, int a3);									// 0046DD80
-    unsigned int getDistanceFast(int a1, int a2, int a3, int a4);						// 0040C360
-    int orders_HoldPosSuicidal(CUnit* a1);												// 004EB5B0
-    void fixTargetLocation(unsigned __int16 a1, Point32* a2);							// 00401FA0
-    void turnUnit(CUnit* a1, char a2);													// 00495F20
-    void toIdle(CUnit* a1);																// 004753A0
-    int isUnitMovable(CUnit* a1);														// 00401DC0
-    void orders_Nothing2(CUnit* a1);													// 00475000
-    bool setMoveTargetXY(int a1, int a2, CUnit* a3);									// 004EB820
+    int techUseAllowed(CUnit* a1, __int16 a2, int a3);									                    // 0046DD80
+    unsigned int getDistanceFast(int a1, int a2, int a3, int a4);						                    // 0040C360
+    int orders_HoldPosSuicidal(CUnit* a1);												                    // 004EB5B0
+    void fixTargetLocation(unsigned __int16 a1, Point32* a2);							                    // 00401FA0
+    void turnUnit(CUnit* a1, char a2);													                    // 00495F20
+    void toIdle(CUnit* a1);																                    // 004753A0
+    int isUnitMovable(CUnit* a1);														                    // 00401DC0
+    void orders_Nothing2(CUnit* a1);													                    // 00475000
+    bool setMoveTargetXY(int a1, int a2, CUnit* a3);									                    // 004EB820
 
     //// building_morph
 
-    void refundBuildingCost(uint16 unitId, uint8 playerId);								// 002CE70
-    void function_00433FE0(CUnit* unit);												// 0033FE0
-    bool isValidMorph(uint16 buildingId);												// 005CC60
-    void updateNewUnitVision(uint32 id, int x, int y);									// 005CE90
-    void zergPlaceBuildingCntd(CUnit* unit);											// 005D410
-    void function_0047D770(CUnit* unit);												// 007D770
-    void function_0047DE40(CSprite* sprite, uint32 unitId, int x, int y);				// 007DE40
-    void incrementUnitScoresEx(CUnit* building, int32 unk1, int32 unk2);				// 0088D50
-    void playBuildingCompleteSound(CUnit* building);									// 008F310
-    void refreshSpriteData(CSprite* sprite);											// 00983A0
-    void displayLastNetErrorForPlayer(uint32 playerId);									// 009E530
-    void replaceUnitWithType(CUnit* unit, uint16 newUnitId);							// 009FED0
+    void refundBuildingCost(uint16 unitId, uint8 playerId);								                    // 002CE70
+    void function_00433FE0(CUnit* unit);												                    // 0033FE0
+    bool isValidMorph(uint16 buildingId);												                    // 005CC60
+    void updateNewUnitVision(uint32 id, int x, int y);									                    // 005CE90
+    void zergPlaceBuildingCntd(CUnit* unit);											                    // 005D410
+    void function_0047D770(CUnit* unit);												                    // 007D770
+    void function_0047DE40(CSprite* sprite, uint32 unitId, int x, int y);				                    // 007DE40
+    void incrementUnitScoresEx(CUnit* building, int32 unk1, int32 unk2);				                    // 0088D50
+    void playBuildingCompleteSound(CUnit* building);									                    // 008F310
+    void refreshSpriteData(CSprite* sprite);											                    // 00983A0
+    void displayLastNetErrorForPlayer(uint32 playerId);									                    // 009E530
+    void replaceUnitWithType(CUnit* unit, uint16 newUnitId);							                    // 009FED0
 
     //// building_terran
 
-    bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, uint32 distance);	// 00401240
-    void fixTargetLocation(Point16* coords, uint32 unitId);								// 00401FA0
-    bool isUnitPositions2Equal(CUnit* unit);											// 00402160
-    void AI_TrainingOverlord(CUnit* main_unit, CUnit* created_unit);					// 00435770
-    bool32 buildingAddon(CUnit* unit, uint32 hpGain, bool32 canBeAborted);				// 004679A0
-    void function_00474760(CUnit* unit, COrder* order, uint8 orderId);					// 00474760
-    void function_004749A0(CUnit* unit, COrder* order, uint8 orderId);					// 004749A0
-    bool function_0048DDA0();															// 0048DDA0
-    void function_0048E310();															// 0048E310
-    void playBuildingCompleteSound(CUnit* building);									// 0048F310
-    void function_00494BB0(CUnit* unit, int x, int y);									// 00494BB0
-    void displayLastNetErrorForPlayer(uint32 playerId);									// 0049E530
-    uint32 RandomizeShort(uint32 unknown_index);										// 004DC4A0
-    uint32 RandBetween(uint32 min, uint32 max, uint32 someIndex);						// 004DC550
-    void function_004E65E0(CUnit* unit, bool32 flag);									// 004E65E0
-    bool SetMoveTarget_xy(CUnit* unit, int x, int y);									// 004EB820
-    bool orderToMoveToTarget(CUnit* unit, CUnit* target);								// 004EB980
-    bool32 function_004F1870(CUnit* unit, int x, int y);								// 004F1870
+    bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, uint32 distance);	                    // 00401240
+    void fixTargetLocation(Point16* coords, uint32 unitId);								                    // 00401FA0
+    bool isUnitPositions2Equal(CUnit* unit);											                    // 00402160
+    void AI_TrainingOverlord(CUnit* main_unit, CUnit* created_unit);					                    // 00435770
+    bool32 buildingAddon(CUnit* unit, uint32 hpGain, bool32 canBeAborted);				                    // 004679A0
+    void prependOrderTargetingNothing(CUnit* unit, COrder* order, uint8 orderId);					                    // 00474760
+    void addOrderTargetingNothing(CUnit* unit, COrder* order, uint8 orderId);					                    // 004749A0
+    bool canStillPlaceBuilding();														                    // 0048DDA0
+    void endBuildingPlacement();															                    // 0048E310
+    void playBuildingCompleteSound(CUnit* building);									                    // 0048F310
+    void function_00494BB0(CUnit* unit, int x, int y);									                    // 00494BB0
+    void displayLastNetErrorForPlayer(uint32 playerId);									                    // 0049E530
+    uint32 RandomizeShort(uint32 unknown_index);										                    // 004DC4A0
+    uint32 RandBetween(uint32 min, uint32 max, uint32 someIndex);						                    // 004DC550
+    void initBuilding(CUnit* unit, bool32 flag);									                    // 004E65E0
+    bool SetMoveTarget_xy(CUnit* unit, int x, int y);									                    // 004EB820
+    bool orderToMoveToTarget(CUnit* unit, CUnit* target);								                    // 004EB980
+    bool32 unk_terrainCollision2(CUnit* unit, int x, int y);								                    // 004F1870
 
     // For updatePlacementStateForPlacementBox
     int32 canBuildOnTileLocation(CUnit* a1, int32 player, int32 x_tile, int32 y_tile, int32 unitType,
-    int32 placement_state_entry, int32 check_vision, int32 also_invisible, int32 without_vision);	// 00473FB0
+    int32 placement_state_entry, int32 check_vision, int32 also_invisible, int32 without_vision);	        // 00473FB0
     // For refreshScreen
-    int32 updatePlacementStateForPlacementBox_Func(); // 0048DCE0
-    int32 unk_buildingPlacementRelated(int32 a1, Point16* a2); // 0048D7F0
-    int32 initPlacementBoxPos(Point16* in_out); // 0048D660
-    char unk_buildingPlacementRelatedMouse(int32 a1, int32 a2); // 0048D7B0
+    int32 updatePlacementStateForPlacementBox_Func();                                                       // 0048DCE0
+    int32 unk_buildingPlacementRelated(int32 a1, Point16* a2);                                              // 0048D7F0
+    int32 initPlacementBoxPos(Point16* in_out);                                                             // 0048D660
+    char unk_buildingPlacementRelatedMouse(int32 a1, int32 a2);                                             // 0048D7B0
 
     //// liftland
 
@@ -520,11 +520,8 @@ namespace helper {
     void function_0046A560(CUnit* unit);																								// 0046A560
     void function_0046A5A0(CUnit* unit);																								// 0046A5A0
     uint32 function_00473FB0(CUnit* unit, uint8 playerId, int x, int y, uint16 unitId, uint8 unk1, uint8 unk2, uint8 unk3, uint8 unk4);	// 00473FB0
-    void function_00474760(CUnit* unit, COrder* order, uint8 orderId);																	// 00474760
     void actUnitReturnToIdle(CUnit* unit);																								// 00475420
     bool function_0047DF90(CUnit* unit);																								// 0047DF90
-    bool function_0048DDA0();																											// 0048DDA0
-    void function_0048E310();																											// 0048E310
     void placebuildingProc();																											// 0048E6E0
     void playBuildingLandSound(CUnit* unit);																							// 0048F5A0
     void SetUnitMovementSpeed(CUnit* unit, uint32 newSpeed);																			// 004951C0
