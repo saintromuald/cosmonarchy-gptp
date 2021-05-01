@@ -131,7 +131,9 @@ namespace {
 					exit(0);
 			}//KYSXD W-Mode end
 		} else {
-			if (preferWmode) loadWMode();
+			if (preferWmode) {
+				loadWMode();
+			}
 		}
 	}
 }
@@ -169,7 +171,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x0049F145 + 4, maxunsigned_2, 2);	// flag
 	memoryPatch(0x004E4153 + 4, maxunsigned_2, 2);	// flag
 	memoryPatch(0x004E416E + 4, maxunsigned_2, 2);	// flag
-//	memoryPatch(0x004E426B + 1, maxunsigned_2, 2);	// ctf create flag, this code doesn't run at all because CTF are spell orders now
+	// memoryPatch(0x004E426B + 1, maxunsigned_2, 2);	// ctf create flag, this code doesn't run at all because CTF are spell orders now
 	memoryPatch(0x004E5F68 + 3, maxunsigned_2, 2);
 	memoryPatch(0x004E70E4 + 4, maxunsigned_2, 2);
 	memoryPatch(0x004F3A9C + 4, maxunsigned_2, 2);
@@ -206,26 +208,26 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch(0x0042F134 + 2, &none, sizeof(uint8));
 	memoryPatch(0x0042F13A, &jmp, 1); // JA
 	memoryPatch(0x0043A602 + 2, &none, sizeof(uint8));
-	//	memoryPatch(0x0043A609 + 2, &none, sizeof(uint8));
+	// memoryPatch(0x0043A609 + 2, &none, sizeof(uint8));
 
 	memoryPatch(0x004558A3 + 2, &none, sizeof(uint8));
-	//memoryPatch(0x004558A9 + 2, &none, sizeof(uint8));
+	// memoryPatch(0x004558A9 + 2, &none, sizeof(uint8));
 
 	memoryPatch(0x00455940 + 2, &none, sizeof(uint8));
-	//memoryPatch(0x00455946 + 2, &none, sizeof(uint8));
+	// memoryPatch(0x00455946 + 2, &none, sizeof(uint8));
 
 	memoryPatch(0x00455AF2 + 2, &none, sizeof(uint8));
-	//memoryPatch(0x00455AF8 + 2, &none, sizeof(uint8));
+	// memoryPatch(0x00455AF8 + 2, &none, sizeof(uint8));
 
 	memoryPatch(0x00473A16 + 2, &none, sizeof(uint8));
-	//memoryPatch(0x00473A1C + 2, &none, sizeof(uint8));
+	// memoryPatch(0x00473A1C + 2, &none, sizeof(uint8));
 
 
 	memoryPatch(0x00473BD6 + 2, &none, sizeof(uint8));
-	//memoryPatch(0x00473BE3 + 2, &none, sizeof(uint8));
+	// memoryPatch(0x00473BE3 + 2, &none, sizeof(uint8));
 
 	memoryPatch(0x0047B2C4 + 2, &none, sizeof(uint8));
-	//memoryPatch(0x0047B2CA + 2, &none, sizeof(uint8));
+	// memoryPatch(0x0047B2CA + 2, &none, sizeof(uint8));
 
 	memoryPatch(0x004E3DC4 + 2, &none, sizeof(uint8));
 	memoryPatch(0x004E3DCA, &jmp, 1); // JA
@@ -239,33 +241,34 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	const uint8 jnz = 0x75;
 	memoryPatch(0x004E6E7C, &jnz, sizeof(uint8));
 
-	//	hooks::injectEconomicUnitHooks();
-	//	test for globals
-	//	nops(0x004AAF23, 5);
-	//	const uint8 retn = 0xc3;
-	//	memoryPatch(0x004AAF23 + 5, &retn, 1);
+	// hooks::injectEconomicUnitHooks();
+	// test for globals
+	// nops(0x004AAF23, 5);
+	// const uint8 retn = 0xc3;
+	// memoryPatch(0x004AAF23 + 5, &retn, 1);
 	injectGlobalsHooks();
 	hooks::injectHydraSpecific();
 	hooks::injectLimitHooks();
 	hooks::injectTargetRelatedHooks();
-	//	hooks::unitsDatWrapperPatches();
+	// hooks::unitsDatWrapperPatches();
 
-		//arbiter attack hardcode
+	// arbiter attack hardcode
 
-	/*	nops(0x0043AEE0, 10);
-		nops(0x0043CF89, 4);
-		memoryPatch(0x0043CF8D, &jmp, 1);
-		nops(0x0047681B, 5);
-		memoryPatch(0x00476820, &jmp, 1);
-		nops(0x00476E67, 6);
-		nops(0x00477AB7, 5);
-		memoryPatch(0x00477ABC, &jmp, 1);
-		nops(0x00477E09, 5);
-		nops(0x00478613, 5);
-		nops(0x00478613, 5);
-		nops(0x0048B0A1, 5);
-		memoryPatch(0x0048B0A6, &jmp, 1);
-		*/
+	/*	
+	nops(0x0043AEE0, 10);
+	nops(0x0043CF89, 4);
+	memoryPatch(0x0043CF8D, &jmp, 1);
+	nops(0x0047681B, 5);
+	memoryPatch(0x00476820, &jmp, 1);
+	nops(0x00476E67, 6);
+	nops(0x00477AB7, 5);
+	memoryPatch(0x00477ABC, &jmp, 1);
+	nops(0x00477E09, 5);
+	nops(0x00478613, 5);
+	nops(0x00478613, 5);
+	nops(0x0048B0A1, 5);
+	memoryPatch(0x0048B0A6, &jmp, 1);
+	*/
 	memoryPatch(0x00477AB7 + 4, &none, 1);
 	memoryPatch(0x0043CF89 + 2, &none, 1);
 	memoryPatch(0x0047681B + 4, &none, 1);
@@ -292,7 +295,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	//	hook required
 	//	nops(0x0048EAB0, 5);
 
-		// bengalaas id hardcode
+	// bengalaas id hardcode
 	memoryPatch(0x0043157A + 2, patchLastUnit, 1);
 	memoryPatch(0x00431B3D + 2, patchLastUnit, 1);
 	memoryPatch(0x00437E11 + 2, patchLastUnit, 1);
@@ -469,64 +472,60 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	memoryPatch((void*)(0x0047DC99 + 2), &bFF, sizeof(uint8));
 	memoryPatch((void*)(0x0047DED5 + 3), &bFF, sizeof(uint8));
 	memoryPatch((void*)(0x0047E045 + 3), &bFF, sizeof(uint8));
-	//
 	//FaRTy1billion, end
-	//
 
-	//h
 	hooks::injectGameHooks();
-	//h
 	hooks::injectDrawHook();
 
 	//in order of creation
 
-//	hooks::injectInfestationHooks();
-//	hooks::injectSiegeTransformHooks();
+	// hooks::injectInfestationHooks();
+	// hooks::injectSiegeTransformHooks();
 	hooks::injectButtonSetHooks();
-	//h
+
 	hooks::injectSelectMod();
 	hooks::injectMergeUnitsHooks();
-	//h
+
 	hooks::injectLarvaCreepSpawnHooks();
-	//	hooks::injectLiftLandHooks();
-	//	hooks::injectAttackOrdersHooks();
-	//	hooks::injectStopHoldPosOrdersHooks();
+	// hooks::injectLiftLandHooks();
+	// hooks::injectAttackOrdersHooks();
+	// hooks::injectStopHoldPosOrdersHooks();
 	hooks::injectRecallSpellHooks();
 	hooks::injectEnterNydusHooks();
 	hooks::injectCastOrderHooks();
 	hooks::injectWpnSpellHitHooks();
 	hooks::injectBuildingMorphHooks();
-	hooks::injectMakeNydusExitHook();
+	//hooks::injectMakeNydusExitHook();
 	hooks::injectUnitMorphHooks();
 	hooks::injectWireframeHook();
-	//	hooks::injectDieOrderHook();
+	// hooks::injectDieOrderHook();
 	hooks::injectBuildingTerranHook();
 	hooks::injectBuildingProtossHooks();
 	hooks::injectUnitTrainHooks();
 
 	hooks::injectLoadUnloadProcHooks();
 	hooks::injectLoadUnloadOrdersHooks();
-	//	hooks::injectNukeOrdersHooks();
-	//	hooks::injectBurrowTechHooks();
-	//	hooks::injectResearchUpgradeOrdersHooks();
+	// hooks::injectNukeOrdersHooks();
+	// hooks::injectBurrowTechHooks();
+	// hooks::injectResearchUpgradeOrdersHooks();
 	hooks::injectMedicOrdersHooks();
 	hooks::injectHallucinationSpellHook();
-	//	hooks::injectFeedbackSpellHook();
-	//	hooks::injectBtnsCondHook();
-	//	hooks::injectRecvCmdHook();
+	// hooks::injectFeedbackSpellHook();
+	// hooks::injectBtnsCondHook();
+	// hooks::injectRecvCmdHook();
 	hooks::injectCreateInitUnitsHooks();
-	//	hooks::injectGiveUnitHook();
+	// hooks::injectGiveUnitHook();
 	hooks::injectTrainCmdRecvHooks();
-	//	hooks::injectCMDRECV_SiegeTankHooks();
-	//	hooks::injectCMDRECV_MergeArchonHooks();
+	// hooks::injectCMDRECV_SiegeTankHooks();
+	// hooks::injectCMDRECV_MergeArchonHooks();
 
 	hooks::injectCMDRECV_MorphHooks();
-	//	hooks::injectCMDRECV_StopHooks();
+	// hooks::injectCMDRECV_StopHooks();
 	hooks::injectCMDRECV_CancelHooks();
-	//	hooks::injectSelectLarvaHooks();
+	// hooks::injectSelectLarvaHooks();
 	hooks::injectRepairOrderHook();
 	hooks::injectStatsPanelDisplayHook();
-	//	hooks::injectUtilsHooks();
+	// hooks::injectUtilsHooks();
 	hooks::injectMindControlSpellHook();
 	hooks::injectCMDRECV_BuildHooks();
 
@@ -535,15 +534,15 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectBunkerHooks();
 	hooks::injectCloakNearbyUnits();
 	hooks::injectCloakingTechHooks();
-	//	hooks::injectDetectorHooks();
+	// hooks::injectDetectorHooks();
 	hooks::injectHarvestResource();
-	//	hooks::injectRallyHooks();
+	// hooks::injectRallyHooks();
 	hooks::injectRechargeShieldsHooks();
 	hooks::injectSpiderMineHooks();
 
-	//	hooks::injectStimPacksHooks();
+	// hooks::injectStimPacksHooks();
 	hooks::injectTechTargetCheckHooks();
-	//	hooks::injectTransferTechAndUpgradesHooks();
+	// hooks::injectTransferTechAndUpgradesHooks();
 	hooks::injectUnitSpeedHooks();
 	hooks::injectUpdateStatusEffects();
 	hooks::injectUpdateUnitState();
@@ -553,7 +552,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectUnitDestructorSpecial();
 	hooks::injectWeaponEffectHook();
 	hooks::injectUseTechHooks();
-	//	hooks::injectPsiFieldHooks();
+	// hooks::injectPsiFieldHooks();
 
 	hooks::injectArmorBonusHook();
 	hooks::injectSightRangeHook();
@@ -567,14 +566,14 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer) {
 	hooks::injectMissChanceHooks();
 	hooks::injectBuildTimeHooks();
 	hooks::injectScreenHotkeysHooks();
-	//	hooks::injectHpBarsHooks();
+	// hooks::injectHpBarsHooks();
 	hooks::injectUIFeaturesHooks();
 	hooks::injectTrapHooks();
 
 	hooks::injectLobbyHooks();
 	hooks::injectUnitMovementHooks();
 	hooks::injectNeutralRelatedHooks();
-	//	hooks::injectFileOperationsHooks();
+	// hooks::injectFileOperationsHooks();
 	hooks::injectGlucustomHooks();
 	return TRUE;
 }
