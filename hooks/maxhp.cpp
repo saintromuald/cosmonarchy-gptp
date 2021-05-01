@@ -1,7 +1,6 @@
 #include "maxhp.h"
 #include "SCBW\api.h"
 #include "SCBW\scbwdata.h"
-#include "SCBW\scbwfunc.h"
 #include "hook_tools.h"
 #include "byte_operations_utils.h"
 #include <globals.h>

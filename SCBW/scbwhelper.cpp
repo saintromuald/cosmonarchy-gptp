@@ -1,4 +1,4 @@
-#include "scbwfunc.h"
+#include "scbwhelper.h"
 #include "api.h"
 #include "globals.h"
 #include <cassert>

@@ -1,6 +1,5 @@
 #include "infestation.h"
 #include <SCBW/api.h>
-#include <SCBW\scbwfunc.h>
 
 namespace hooks {
 

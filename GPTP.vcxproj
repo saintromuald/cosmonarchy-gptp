@@ -332,7 +332,7 @@
     <ClCompile Include="hooks\orders\spells\mindcontrol_spell_inject.cpp" />
     <ClCompile Include="hooks\orders\spells\nuke_orders.cpp" />
     <ClCompile Include="hooks\orders\spells\nuke_orders_inject.cpp" />
-    <ClCompile Include="SCBW\scbwfunc.cpp" />
+    <ClCompile Include="SCBW\scbwhelper.cpp" />
     <ClCompile Include="SCBW\structures\Player.cpp" />
     <ClCompile Include="Plugin.cpp" />
     <ClCompile Include="plugin_main.cpp" />
@@ -518,7 +518,7 @@
     <ClInclude Include="lib_src\yaml-cpp\stringsource.h" />
     <ClInclude Include="lib_src\yaml-cpp\tag.h" />
     <ClInclude Include="lib_src\yaml-cpp\token.h" />
-    <ClInclude Include="SCBW\scbwfunc.h" />
+    <ClInclude Include="SCBW\scbwhelper.h" />
     <ClInclude Include="SCBW\stat_txt_spec.h" />
     <ClInclude Include="UnitConstants.h" />
     <ClInclude Include="Utils\captivating_claws.h" />
