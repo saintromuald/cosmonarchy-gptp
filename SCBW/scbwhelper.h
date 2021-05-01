@@ -252,7 +252,6 @@ namespace helper {
     void function_004EBAE0(CUnit* unit, int32 x, int32 y);								                    // 004EBAE0
 
     //// spider_mine
-
     CUnit* SpiderMine_AcquireTarget(CUnit* spiderMine);									                    // 00441270
     void function_00495400(CUnit* unit, CUnit* target);									                    // 00495400
     void function_0049B1E0(CUnit* unit);												                    // 0049B1E0
@@ -271,7 +270,6 @@ namespace helper {
     bool setMoveTargetXY(int a1, int a2, CUnit* a3);									                    // 004EB820
 
     //// building_morph
-
     void refundBuildingCost(uint16 unitId, uint8 playerId);								                    // 002CE70
     void function_00433FE0(CUnit* unit);												                    // 0033FE0
     bool isValidMorph(uint16 buildingId);												                    // 005CC60
@@ -286,7 +284,6 @@ namespace helper {
     void replaceUnitWithType(CUnit* unit, uint16 newUnitId);							                    // 009FED0
 
     //// building_terran
-
     bool isDistanceGreaterThanHaltDistance(CUnit* unit, int x, int y, uint32 distance);	                    // 00401240
     void fixTargetLocation(Point16* coords, uint32 unitId);								                    // 00401FA0
     bool isUnitPositions2Equal(CUnit* unit);											                    // 00402160
@@ -316,7 +313,6 @@ namespace helper {
     char unk_buildingPlacementRelatedMouse(int32 a1, int32 a2);                                             // 0048D7B0
 
     //// liftland
-
     void setUnitPathing(CUnit* unit, uint8 unkPathRelated);																				// 00401360
     bool isUnitPositions2Equal(CUnit* unit);																							// 00402160
     CUnit* connectAddonCheck(CUnit* unit);																								// 004404A0
@@ -341,7 +337,6 @@ namespace helper {
     void function_004C3B40(CUnit* unit);																								// 004C3B40
 
     //// create_init_units
-
     bool32 spreadsCreep(uint32 unitId, bool32 defaultReturn);																			// 00413870
     void function_004148F0(int x, int y, uint32 unitId);																				// 004148F0
     void CreateBuildingLarva(CUnit* main_building);																						// 0049D660
@@ -349,7 +344,6 @@ namespace helper {
     CUnit* FindBestUnit(Box16* coords, uint32 searchProc);																				// 004E8830
 
     //// larva_creep_spawn
-
     CUnit* getUnitPointer();
     uint8 spreadCreep(uint32 unitId, int x, int y);																						// 00414680
     void AI_TrainingOverlord(CUnit* main_building, CUnit* larva);																		// 00435770
@@ -382,13 +376,11 @@ namespace helper {
     char unkSpreadCreep(int32 a1, int32 a2, int16 a3);																					// 00414680
 
     //// burrow_tech
-
     void actUnitReturnToIdle(CUnit* unit);																								// 00475420
     void function_004754F0(CUnit* unit, uint32 unitId, uint32 unk1, uint32 unk2, uint32 orderId, uint32 unk3, uint32 unk4, uint32 unk5);// 004754F0
     void function_004E97C0(CUnit* unit);																								// 004E97C0
 
     //// die_order
-
     void clearUnitSprites(CSprite* unit_sprite, CSprite* subunit_sprite);																// 00496F00
     void function_00497480(CSprite* thingySprite, uint32 visibility_flags);																// 00497480
     void _UnitDestructor(CUnit* unit);																									// 004A0740
@@ -396,7 +388,6 @@ namespace helper {
     void hideAndDisableUnit(CUnit* unit);																								// 004E6340
 
     //// CMDRECV_Cancel
-
     void CancelResearch_Proc(CUnit* unit);																								// 00453E30
     void CancelUpgrade_Proc(CUnit* unit);																								// 00454280
     void refundQueueSlot(CUnit* unit, uint16 slot);																						// 00466A70
@@ -404,7 +395,6 @@ namespace helper {
     void CancelAddon_Proc(CUnit* unit);																									// 004E66E0
 
     //// CMDRECV_Build
-
     bool32 OrderAllowed(CUnit* unit, uint16 order, uint32 nationID);																	// 0046DC20
     bool placeBuildingMsg(uint32 result_function_473FB0);																				// 0048D930
     bool CMDRECV_PlaceBuildingAllowedHelper(CUnit* unit, uint8 orderId, uint16 builtUnitId);											// 0048DBD0
@@ -412,16 +402,13 @@ namespace helper {
     void cmdRECV_PlaceBuilding(int16 x, int16 y, uint8 orderId, uint16 builtUnitId);													// 0048E190
 
     //// CMDRECV_MergeArchon
-
     CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, uint32 units_list_length);												// 004BFA80
 
     //// CMDRECV_Stop
-
     void parseOrdersDatReqs();																											// 0046D450
     int parseRequirementOpcodes(CUnit* unit, uint32 orderId, uint32 playerId, uint32 address, uint32 req_offset);						// 0046D610
 
     //// give_unit
-
     void ApplySpeedUpgradeFromUnitType(CUnit* unit);																					// 00454370
     void function_00463040(CUnit* unit);																								// 00463040
     void function_00476D30(CUnit* unit);																								// 00476D30
@@ -432,7 +419,6 @@ namespace helper {
     void function_004F3B70(CUnit* powerup);																								// 004F3B70
 
     //// cast_order
-
     uint32 getUpgradedWpnCooldown(CUnit* unit, uint8 weaponId);																			// 00475DC0
     bool function_00476640(CUnit* unit, uint32 weaponId);																				// 00476640
     uint32 get_statTxt_Str_0(CUnit* unit, uint32 playerId, char* message);																// 0048EF30
@@ -446,11 +432,9 @@ namespace helper {
     void showAndEnableUnit(CUnit* unit);																								// 004E6490
 
     //// tech_target_check
-
     bool isInfestableUnit(CUnit* unit);																									// 
 
     //// trap_hooks
-
     // For updateUnitStrengthAndApplyDefaultOrders
     void playSoundFromDirection(CUnit* a1, int a2);																						// 0049B5B0
     void refreshUnitVision(CUnit* a1);																									// 004E5F30
@@ -461,11 +445,9 @@ namespace helper {
     uint32 getUnitStrength(CUnit* a1, int a2, bool a3);																					// 00431800
 
     //// make_nydus_exit
-
     void playWorkerErrorSound(CUnit* unit, uint32 errorTextIndex);																		// 0048F6C0
 
     //// research_upgrade_orders
-
     bool isUnitUpgradeAvailable(CUnit* unit);																							// 004033D0
     void ApplySpeedUpgradeFromUpgradeType(CUnit* unit, uint8 upgradeType);																// 00454540
     void playUpgradeCompleteSound();																									// 0048F070
@@ -473,7 +455,6 @@ namespace helper {
     void setUpgradeLevel(uint32 playerId, uint32 upgradeType, uint8 upgradeLevel);														// 004CE770
 
     //// merge_units
-
     bool advanceRemainingBuildTime_Sub466940(CUnit* unit);																				// 00466940
     uint8 function_0046A820(CUnit* unit);																								// 0046A820
     void orderImmediate(CUnit* unit, uint8 order);																						// 00474B40
@@ -484,7 +465,6 @@ namespace helper {
     bool delayedSetMoveTarget_xy_Sub4EB960(CUnit* unit, uint16 x, uint16 y);															// 004EB960
 
     //// nuke_orders
-
     void setAllOverlayDirectionsGeneric(CUnit* unit, uint32 unk);																		// 00401140
     void AI_orderUnitCloaking(CUnit* unit);																								// 0043B970
     uint32 function_0043DB50(CUnit* unit);																								// 0043DB50
@@ -533,7 +513,6 @@ namespace helper {
     CImage* makeSpriteInvisible(CSprite* sprite);												// 
 
     //// receive_command
-
     void function_004756B0(CUnit* unit, uint8 orderId, uint32 unk1, uint32 unk2, uint32 bCommandType);								// 004756B0
     void function_004756E0(CUnit* unit, CUnit* target, uint32 orderId, uint32 bCommandType);										// 004756E0
     uint32 function_0049A410(CUnit* unit, uint8 orderId);																			// 0049A410
@@ -542,13 +521,11 @@ namespace helper {
     void function_0049A8C0(uint8* array_of_data, bool32 bCanBeObstructed);															// 0049A8C0
 
     //// load_unload_proc
-
     void IgnoreAllScriptAndGotoIdle(CUnit* unit);																					// 00476550
     uint32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos);													// 004E76C0
     void function_004E7E10(CUnit* unit, uint32 unk);																				// 004E7E10
 
     //// stats_panel_display
-
     void StatsNukesCount(BinDlg* dialog, uint32 index);																				// 00425310
     void StatHangerCount(BinDlg* dialog, uint32 index);																				// 004253D0
     void StatsShieldLevel(BinDlg* dialog, uint32 index);																			// 00425510
@@ -567,20 +544,17 @@ namespace helper {
     void updateDialog(BinDlg* dialog);																								// 0041C400
 
     //// bunker_hooks
-
     CUnit* findRandomAttackTarget(CUnit* unit);																						// 00442FC0
     bool32 attackApplyCooldown(CUnit* unit);																						// 00478B40
     void setImageDirection(CImage* image, int8 direction);																			// 004D5F80
 
     //// api
-
     void ApplySpores(CUnit* unit);
     void createBullet(uint8 weaponId, CUnit* source, int16 x, int16 y, uint8 attackingPlayer, uint8 direction);
     CBullet* createBulletRet(uint8 weaponId, CUnit* source, int16 x, int16 y, uint8 attackingPlayer, uint8 direction);
     void weaponBulletShot(CUnit* target, CBullet* bullet, uint32 dmgDivisor);
 
     //// unit_morph
-
     uint8 setArchonPathing(CUnit* unit);																							// 0046A820
     bool hasSuppliesForUnit(uint32 unitId, uint32 playerId, bool32 canShowErrorMessage);											// 0042CF70
     CUnit* function_0045D910(CUnit* unit);																							// 0045D910
@@ -588,7 +562,6 @@ namespace helper {
     void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit);																	// 004A2830
 
     //// hallucination_spell
-
     // for orders_Hallucination1
     bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index);	// 004926D0
 
@@ -600,11 +573,9 @@ namespace helper {
     int32 hallucinateScarabs(CUnit* a1, CUnit* a2);																					// 004F65B0
 
     //// feedback_spell
-
     void replaceFeedbackSprite(CUnit* unit, uint32 spriteId);																		// 004F6350
 
     //// weapon_effect
-
     bool isUnitDistanceWithin(CUnit* target, CBullet* bullet, uint32 radius);
     void doWeaponHit(CUnit* target, CUnit* attacker, uint8 dmgDivisor);
     void Ai_UnitWasHit(uint32 main_target_reaction, uint32 dont_call_help, CUnit* attacker, CUnit* target);
@@ -614,11 +585,9 @@ namespace helper {
     int32 splashFunc(CBullet* bullet, CUnit* unit);																					// 0048B570
 
     //// mindcontrol_spell
-
     void MindControlHit(CUnit* attacker, CUnit* target);																			// 004F6910
 
     //// weapon_damage
-
     uint16 getUnitStrength(CUnit* unit, bool useGroundStrength);
     CUnit* createHallucination(CUnit* target, uint32 playerId);
 
@@ -626,20 +595,17 @@ namespace helper {
     uint32 getCorrosiveSporesImage(CUnit* unit);																					// 004F41F0
 
     //// recharge_shields
-
     void insertFirstOrder(CUnit* unit, uint8 orderId);			//0x004749D0
     uint8 hasOverlay(CUnit* unit);								//0x0047B720
     bool isHangarUnit(CUnit* unit);
 
     //// stopholdpos_orders
-
     CUnit* MedicHeal_TargetAcquire(CUnit* medic);																					// 004422A0
     uint32 doMedicHeal(CUnit* unit, CUnit* target);																					// 00463C40
     void function_00476FC0(CUnit* unit, CUnit* target, uint32 unk1, uint32 unk2);													// 00476FC0
     bool32 function_004770E0(CUnit* unit);																							// 004770E0
 
     //// medic_orders
-
     bool32 AI_OrderHeal(CUnit* unit, CUnit* target);																				// 00463530
     void function_4748E0(CUnit* unit, int x, int y, uint8 orderId);																	// 004748E0
     void function_474940(CUnit* unit, CUnit* target, uint8 orderId);																// 00474940
@@ -648,7 +614,6 @@ namespace helper {
     bool32 AI_CastSpellBehaviour(CUnit* unit, uint32 unknown);																		// 004A13C0
 
     //// load_unload_orders
-
     bool32 function_00438E70(CUnit* unit, int x, int y);																			// 00438E70
     void function_0043DF30(CUnit* unit);																							// 0043DF30
     void unknownSpecialOrder(CUnit* unit, COrder* order, uint8 orderId, int16 x, int16 y, CUnit* target, uint16 targetUnitId);		// 00474540
@@ -661,7 +626,6 @@ namespace helper {
     bool32 unloadUnitProc(CUnit* unit);																								// 004E7F70 (Hooked)
 
     //// siege_transform
-
     void unitSetRetreatPoint(CUnit* unit, uint8 angleValue);																		// 004011A0
     bool getCloserToDestination_sub402BE0(CUnit* unit);																				// 00402BE0
     void orderReturnToIdle(CUnit* unit);																							// 00463770
@@ -669,7 +633,6 @@ namespace helper {
     void playSubunitIscript(CUnit* unit, IscriptAnimation::Enum anim);																// 00474380
 
     //// unit_train
-
     uint32 getHPGainForRepair(CUnit* unit);																							// 00402C40
     void refundUnitTrainCost(uint32 unitId, uint8 playerId);																		// 0042CEC0
     void function_00432430(CUnit* unit, uint32 buildQueueSlot);																		// 00432430
@@ -677,7 +640,6 @@ namespace helper {
     CUnit* attemptTrainHatchUnit(CUnit* trainer, uint32 builtUnitID, uint32 flag);													// 00468200
 
     //// weapon_fire
-
     // For progressBulletFlight
     void progressBulletMovement(CBullet* a1);																						// 0048B250
     void doMissileDmg(CBullet* bullet);																								// 0048B770
@@ -708,7 +670,6 @@ namespace helper {
     */
 
     //// wpnspellhit
-
     bool function_0042D810(int x, int y, uint32 unitId);														// 0042D810
     CUnit** getAllUnitsInBounds(Box16* coords);																	// 0042FF80
     void incrementUnitKillCount(CUnit* unit);																	// 004759C0
@@ -732,7 +693,6 @@ namespace helper {
     int32 playSoundFromSource(int32 a1, CUnit* a2, int32 a3, int32 a4);											// 0048ED50
 
     //// selection
-
     bool unitIsOwnedByCurrentPlayer(CUnit* unit); 																// 00401170
     bool isUnitBurrowed(CUnit* unit);																			// 00402A70
     void SC_memcpy_0(uint32 dest, uint32 src, uint32 memsize);													// 00408FD0
@@ -749,11 +709,9 @@ namespace helper {
     void CMDACT_Select(CUnit** unit_list, uint32 unit_list_length); 											// 004C0860
 
     //// cloak_nearby_units
-
     void secondaryOrder_Cloak(CUnit* unit);																		// 00491790
 
     //// update_unit_state
-
     bool unitHpIsInRedZone(CUnit* unit);						// 0x004022C0
     void RestoreAllUnitStats(CUnit* unit);						// 0x00492F70 (hooked by hooks\update_status_effects.cpp)
 
@@ -824,49 +782,39 @@ namespace helper {
     void updateThingys();
 
     //// psi_field_util
-
     bool addPsiFieldSprite(CUnit* unit);
 
-    //// stim_packs
-
+    // stim_packs
     void QueueGameCommand(uint8* params, uint32 param_length);
 
+    // misc
     CThingy* createThingyFunc(uint32 spriteId, int16 x, int16 y, uint32 playerId);
     bool func_dounitscollide(CUnit* first, CUnit* second);
     void unburrow(CUnit* unit);
-
     CImage* CreateHealthBar(int a1, CSprite* a2);
-
     void RemoveHPBar(CImage* a1);
-
     void refundAllQueueSlots(CUnit* unit);
-
     void* SMemAlloc(uint32 amount, uint32 unkFilename, uint32 unkLine, uint32 defaultValue);	//1006A (based on Storm.dll definition)
     void SetCallbackTimer(BinDlg* dialog, uint32 unk1, uint32 unk2, uint32 unk3);			//16090
     void function_0049A7F0(CUnit* unit);											//9A7F0
-
     uint32 fxnInteract(BinDlg* dialog, uint32 data_struct_offset);
-
     void registerUserDialogAction(BinDlg* dialog, uint32 array_of_fxnInteractFunc, uint32 sizeOfArray);	//18100
     void function_418E00(BinDlg* dialog);																//18E00
     void replayStatBtns(BinDlg* dialog);																//27A80
     void function_4591D0();																				//591D0
     void function_459770();																				//59770
     void BINDLG_BlitSurface(BinDlg* dialog);															//C35F0
-
     uint32 fxnInteract(BinDlg* dialog, uint32 data_struct_offset);
     int32 req_check(uint32 reqFunc, uint16 reqVar, uint32 playerId, CUnit* unit);
-
     void updateMineralPatchImage(CUnit* mineralPatch);
-
     int32 canBuildOnTileLocation(CUnit* a1, int32 player, int32 x_tile, int32 y_tile, int32 unitType,
         int32 placement_state_entry, int32 check_vision, int32 also_invisible, int32 without_vision);
-
     void updateImagePositionOffset(CImage* image);
 
     //Identical to function @ 0x004F3AF0
     void setResourceAmountCarried(CUnit* worker, uint8 amountCarried, uint32 chunkImageId, bool isMineral);
 
+    // ai misc
     int Ai_HasBuildingsNeedingPower(uint32 player);
     int Ai_CountEconomyUnits(uint32 player, uint32 unit_id);
     int getSuppliesRemaining(uint8 player, uint16 unit_id);
