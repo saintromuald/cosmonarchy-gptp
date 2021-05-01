@@ -772,6 +772,8 @@ namespace helper {
     void getRepairInfo(CUnit* repairTarget, uint32* repairCostMineral, uint32* repairCostGas, int16* unkRepairInfo);		// 00466D10
     bool verifyResources(uint32 mineralCost, uint32 gasCost, uint32 playerId);												// 00466EE0
     bool ord_repair_subtract(CUnit* worker, CUnit* target);																	// 00466FB0
+    // For isOrderValid
+    bool unitIsResource(CUnit* unit);                                                                                       // 004688E0
 
     //// hydra_specific
     uint8 getHangerTrainCount(CUnit* unit);
@@ -826,4 +828,8 @@ namespace helper {
     int32 AI_AddCostToNeeds(int32 a1, int32 a2, int32 a3);
     int32 AI_AddSpendingRequest(int16 a1, int32 a2, char a3, char a4, void* a5);
     bool isAIAllowedToBuild(int32 a1, int32 a2);
+
+    //// misc
+    int8 SETS(int x);
+    int8 OFSUB(int x, int y);
 }
