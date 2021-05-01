@@ -227,27 +227,30 @@ namespace hooks {
 		{
 		case OrderId::Repair1:
 			errorStringId = 884;
-			if (!target)
+			if (!target) {
 				goto LABEL_25;
-			if (target->getRace() != RaceId::Terran)
-				goto LABEL_25;
+			}
 			v11 = target->id;
 			errorStringId = 883;
-			if (!(units_dat::BaseProperty[v11] & UnitProperty::Mechanical) || !(target->status & UnitStatus::Completed))
+			if (!(target->status & UnitStatus::Completed)) {
 				goto LABEL_25;
+			}
 			v12 = target->hitPoints;
 			v8 = helper::OFSUB(v12, units_dat::MaxHitPoints[v11]);
 			v7 = v12 - units_dat::MaxHitPoints[v11] < 0;
 			goto LABEL_7;
-		case OrderId::MoveToMinerals:
-			if (!target)
+		case OrderId::Harvest1:
+			if (!target) {
 				goto LABEL_8;
+			}
 			errorStringId = unit->getRace() + 893;
-			if (target->id == UnitId::ResourceVespeneGeyser)
+			if (target->id == UnitId::ResourceVespeneGeyser) {
 				goto LABEL_25;
+			}
 			v14 = helper::unitIsResource(target);
-			if (v14)
+			if (v14) {
 				goto LABEL_8;
+			}
 			v15 = units_dat::BaseProperty[v13];
 			errorStringId = 892;
 			if (!(v15 & 0x2000))
