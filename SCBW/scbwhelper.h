@@ -456,7 +456,7 @@ namespace helper {
     void setUpgradeLevel(uint32 playerId, uint32 upgradeType, uint8 upgradeLevel);														// 004CE770
 
     //// merge_units
-    bool advanceRemainingBuildTime_Sub466940(CUnit* unit);																				// 00466940
+    bool advanceRemainingBuildTime(CUnit* unit);																				// 00466940
     uint8 function_0046A820(CUnit* unit);																								// 0046A820
     void orderImmediate(CUnit* unit, uint8 order);																						// 00474B40
     void playMorphingCompleteSound(CUnit* unit);																						// 0048F440

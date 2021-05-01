@@ -4120,13 +4120,13 @@ namespace helper {
 	}
 
 	// return true if remainingBuildTime was 0 when called, remainingBuildTime change affected by cheating
-	bool advanceRemainingBuildTime_Sub466940(CUnit* unit) {
-		uint32 Func_Sub466940 = 0x00466940;
+	bool advanceRemainingBuildTime(CUnit* unit) {
+		uint32 Func_advanceRemainingBuildTime = 0x00466940;
 		static bool32 bTimeWasZero;
 		__asm {
 			PUSHAD
 			MOV ECX, unit
-			CALL Func_Sub466940
+			CALL Func_advanceRemainingBuildTime
 			MOV bTimeWasZero, EAX
 			POPAD
 		}

@@ -177,7 +177,7 @@ namespace hooks {
 		} else
 			if (unit->mainOrderState == 1) {
 				// advance
-				if (helper::advanceRemainingBuildTime_Sub466940(unit)) {
+				if (helper::advanceRemainingBuildTime(unit)) {
 					auto origin = unit->eggOrigin;
 					auto anim = IscriptAnimation::SpecialState1;
 					/*
