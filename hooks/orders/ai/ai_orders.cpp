@@ -23,7 +23,7 @@ namespace hooks {
 			} else if (result->id == UnitId::ZergOvileth) {
 				helper::AI_TrainingOverlord(result, parent); // replace with hook later
 			} else if (isSuicideUnit) {
-				AI_TrainingBroodling(parent, result);
+				hooks::AI_TrainingBroodling(parent, result);
 			} else {
 				helper::AI_TrainingNormal(result, parent);
 			}

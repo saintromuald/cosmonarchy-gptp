@@ -55,34 +55,40 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='HYD FastDebug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'">$(SolutionDir)_Build\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='HYD FastDebug|Win32'">$(SolutionDir)_Build\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'">$(Configuration)\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='HYD FastDebug|Win32'">$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='HYD FastDebug|Win32'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">$(SolutionDir)_Build\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'">
     <SourcePath>$(ProjectDir)\lib_src\;$(VC_SourcePath)</SourcePath>
     <IncludePath>$(ProjectDir)\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <TargetName>HYD-GPTP-Debug</TargetName>
+    <TargetExt>.qdp</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='HYD FastDebug|Win32'">
     <SourcePath>$(ProjectDir)\lib_src\;$(VC_SourcePath)</SourcePath>
     <IncludePath>$(ProjectDir)\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <TargetName>HYD-GPTP-FastDebug</TargetName>
+    <TargetExt>.qdp</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">
     <SourcePath>$(ProjectDir)\lib_src\;$(VC_SourcePath)</SourcePath>
     <IncludePath>$(ProjectDir)\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <TargetName>HYD-GPTP-Release</TargetName>
+    <TargetExt>.qdp</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>HYDRA;WINDOWS_IGNORE_PACKING_MISMATCH;WIN32;_DEBUG;_WINDOWS;_USRDLL;GPTP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>
@@ -95,7 +101,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>version.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(SolutionDir)_Build\HYD-GPTP-Debug.qdp</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(ProjectDir)\Libs\yaml-cpp\include;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(ProjectDir)plugin.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -114,7 +120,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>HYDRA;WINDOWS_IGNORE_PACKING_MISMATCH;WIN32;_WINDOWS;_USRDLL;GPTP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
@@ -128,7 +134,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>version.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(SolutionDir)_Build\HYD-GPTP-FastDebug.qdp</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(ProjectDir)\Libs\yaml-cpp\include;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(ProjectDir)plugin.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -158,10 +164,11 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <MinFilesInUnityFile>10000</MinFilesInUnityFile>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
     </ClCompile>
     <Link>
       <AdditionalDependencies>version.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(SolutionDir)_Build\HYD-GPTP-Release.qdp</OutputFile>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <ModuleDefinitionFile>$(ProjectDir)plugin.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
