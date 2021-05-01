@@ -21,6 +21,7 @@ namespace UnitSize {
 		Small,
 		Medium,
 		Large,
+		Titanic,
 	};
 }
 
@@ -402,11 +403,12 @@ namespace CheatFlags {
 
 namespace DamageType {
 	enum Enum {
-		Independent = 0,
-		Explosive = 1,
-		Concussive = 2,
-		Normal = 3,
-		IgnoreArmor = 4,
+		Independent,
+		Explosive,
+		Concussive,
+		Normal,
+		IgnoreArmor,
+		Chronal,
 	};
 }
 

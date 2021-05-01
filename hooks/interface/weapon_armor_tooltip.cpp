@@ -90,20 +90,25 @@ const char* getDamageTooltipString(uint8 weaponId, CUnit* unit, uint16 entryStrI
 	bool isSuicideUnit = unit->id == UnitId::ZergSkryling;
 
 	switch (damageType) {
+		case DamageType::Concussive:
+			// Teal
+			typeName = "\017Concussive\002";
+			damageModifiers = "\017100\002/\00375\002/\02150\002/\00625\002";
+			break;
 		case DamageType::Normal:
 			// Yellow
 			typeName = "\003Normal\002";
-			damageModifiers = "\017100\002/\003100\002/\021100\002/\00675\002";
+			damageModifiers = "\017100\002/\003100\002/\02175\002/\00650\002";
 			break;
 		case DamageType::Explosive:
 			// Orange
 			typeName = "\021Explosive\002";
-			damageModifiers = "\01750\002/\00375\002/\021100\002/\006100\002";
+			damageModifiers = "\01750\002/\00375\002/\021100\002/\00675\002";
 			break;
-		case DamageType::Concussive:
-			// Teal
-			typeName = "\017Concussive\002";
-			damageModifiers = "\017100\002/\00375\002/\02150\002/\00675\002";
+		case DamageType::Chronal:
+			// DamageType
+			typeName = "\004Chronal\002";
+			damageModifiers = "\017100\002/\003100\002/\021100\002/\006100\002";
 			break;
 		case DamageType::Independent:
 			// White
