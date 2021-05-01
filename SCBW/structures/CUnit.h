@@ -10,14 +10,14 @@
 
 struct CFlingy {
 	/*0x000*/ CLink<CUnit> link;
-	/*0x008*/ int32       value;                ///for unit it's hitpoints
+	/*0x008*/ int32       value;                 ///for unit it's hitpoints
 	/*0x00C*/ CSprite* sprite;
-	/*0x010*/ Target    moveTarget;           ///< The position or unit to move to. It is NOT an order target.
-	/*0x018*/ Point16   nextMovementWaypoint; ///< The next way point in the path the unit is following to get to its destination.
-											  ///< Equal to moveToPos for air units since they don't need to navigate around buildings.
-	/*0x01C*/ Point16   nextTargetWaypoint;   ///< The desired position
-	/*0x020*/ uint8        movementFlags;		  /// Flags specifying movement type, MovementFlags::Enum contains possible explanations
-	/*0x021*/ uint8        currentDirection1;	  /// The current direction the unit is facing
+	/*0x010*/ Target    moveTarget;              ///< The position or unit to move to. It is NOT an order target.
+	/*0x018*/ Point16   nextMovementWaypoint;    ///< The next way point in the path the unit is following to get to its destination.
+											     ///< Equal to moveToPos for air units since they don't need to navigate around buildings.
+	/*0x01C*/ Point16   nextTargetWaypoint;      ///< The desired position
+	/*0x020*/ uint8        movementFlags;		 /// Flags specifying movement type, MovementFlags::Enum contains possible explanations
+	/*0x021*/ uint8        currentDirection1;	 /// The current direction the unit is facing
 	/*0x022*/ uint8        flingyTurnSpeed;      //AKA flingy turn radius
 	/*0x023*/ uint8        velocityDirection1;
 	/*0x024*/ uint16       flingyId;
