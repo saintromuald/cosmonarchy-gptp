@@ -334,6 +334,12 @@ namespace hooks {
 			}
 		}
 
+		if (unit->id == UnitId::ZergOthstoleth) {
+			if (morphUnitId == UnitId::ZergAlaszileth) {
+				return true;
+			}
+		}
+
 		if (unit->id == UnitId::ZergMutalisk) {
 			if (morphUnitId == UnitId::ZergGorgrokor
 				|| morphUnitId == UnitId::ZergVithrilisk
