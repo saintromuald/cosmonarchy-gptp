@@ -327,7 +327,6 @@ namespace hooks {
 						}
 					}
 				}
-
 				if (!jump_to_67F3C) { // 00467F2C
 					if (builtUnit->id >= UnitId::ResourceMineralField &&
 						builtUnit->id <= UnitId::ResourceMineralFieldType3)
@@ -340,7 +339,6 @@ namespace hooks {
 					bEndThere = true;
 				}
 			}
-
 			if (!bEndThere) { // 00467F4C
 				if (!(unit->orderQueueHead == nullptr)) {
 					unit->userActionFlags |= 1;
@@ -356,55 +354,45 @@ namespace hooks {
 		}
 	}
 
-	////Go to build a not yet existing building
+	//// Go to build a not yet existing building
 	void orders_SCVBuild(CUnit* unit) {
-
 		bool bEndThere = false;
-
-		if (unit->pAI != nullptr)
+		if (unit->pAI != nullptr) {
 			unit->status |= UnitStatus::IsGathering;
-
+		}
 		if (unit->mainOrderState == 1) {
-
-			if (
-				unit->sprite->position.x == unit->moveTarget.pt.x &&
-				unit->sprite->position.y == unit->moveTarget.pt.y
-				) {
-
-				if (
-					!(unit->status & UnitStatus::Unmovable) &&
-					helper::isDistanceGreaterThanHaltDistance(
+			if (unit->sprite->position.x == unit->moveTarget.pt.x &&
+				unit->sprite->position.y == unit->moveTarget.pt.y)
+			{
+				if (!(unit->status & UnitStatus::Unmovable)
+					&& helper::isDistanceGreaterThanHaltDistance(
 						unit,
 						unit->orderTarget.pt.x,
 						unit->orderTarget.pt.y,
-						128
-					) &&
-					helper::beginBuilding(unit)
-					) {
-
+						128)
+					&& helper::beginBuilding(unit))
+				{
 					CUnit* builtUnit;
-
 					unit->status &= ~UnitStatus::IsNormal;
 					unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
-
-					if (unit->orderQueueHead == nullptr) { //680A5
+					if (unit->orderQueueHead == nullptr) { // 004680A5
 						helper::addOrderTargetingNothing(unit, nullptr, OrderId::ResetCollision1);
 						helper::addOrderTargetingNothing(unit, nullptr, units_dat::ReturnToIdleOrder[unit->id]);
-					} else
+					}
+					else {
 						helper::prependOrderTargetingNothing(unit, unit->orderQueueHead, OrderId::ResetCollision1);
-
-					if (unit->buildQueue[unit->buildQueueSlot] == UnitId::TerranReservoir)
+					}
+					if (unit->buildQueue[unit->buildQueueSlot] == UnitId::TerranReservoir) {
 						builtUnit = helper::beginGasBuilding(unit, UnitId::TerranReservoir);
-					else
+					}
+					else {
 						builtUnit = helper::createUnit(
 							unit->buildQueue[unit->buildQueueSlot],
 							unit->orderTarget.pt.x,
 							unit->orderTarget.pt.y,
-							unit->playerId
-						);
-
+							unit->playerId);
+					}
 					unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
-
 					if (builtUnit == nullptr) {
 						helper::displayLastNetErrorForPlayer(unit->playerId);
 						unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
@@ -414,7 +402,6 @@ namespace hooks {
 						unit->mainOrderId = OrderId::ConstructingBuilding;
 						unit->mainOrderState = 3;
 						unit->orderTarget.unit = builtUnit;
-
 						if (*IS_PLACING_BUILDING) {
 							if (!helper::canStillPlaceBuilding()) {
 								helper::refreshLayers3And4();
@@ -432,8 +419,7 @@ namespace hooks {
 				}
 			}
 		}
-
-		if (!bEndThere && unit->mainOrderState == 0) { //68188
+		if (!bEndThere && unit->mainOrderState == 0) { // 00468188
 			bool bMoveTargetResult;
 			scbw::refreshConsole();
 			if (unit->orderTarget.unit != nullptr) {
@@ -441,11 +427,10 @@ namespace hooks {
 				unit->orderTarget.pt.y = (unit->orderTarget.unit)->sprite->position.y;
 			}
 			bMoveTargetResult = helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
-			if (
-				(unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
+			if ((unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
 					unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
-				&& !(unit->orderTarget.pt.x == 0 && unit->orderTarget.pt.y == 0)
-				) {
+				&& !(unit->orderTarget.pt.x == 0 && unit->orderTarget.pt.y == 0))
+			{
 				unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
 				unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
 			}
