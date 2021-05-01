@@ -580,6 +580,7 @@ namespace scbw {
 		switch (id) {
 			case UnitId::ZergIroleth:
 			case UnitId::ZergOthstoleth:
+			case UnitId::ZergAlaszileth:
 			case UnitId::ZergVorvaling:
 			case UnitId::ZergNathrokor:
 			case UnitId::ZergBactalisk:
@@ -619,6 +620,7 @@ namespace scbw {
 		switch (id) {
 			case UnitId::ZergOvileth:
 			case UnitId::ZergIroleth:
+			case UnitId::ZergOthstoleth:
 			case UnitId::ZergZergling:
 			case UnitId::ZergHydralisk:
 			case UnitId::ZergMutalisk:
