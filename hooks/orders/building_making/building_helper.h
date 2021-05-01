@@ -12,13 +12,6 @@ namespace BuildingHelper {
 	}
 
 	//Check if @p building is in the process of constructing an add-on.
-	//Identical to function @ 0x004E66B0
-	bool isConstructingAddon(const CUnit* building) {
-		return building->secondaryOrderId == OrderId::BuildAddon
-			&& building->status & UnitStatus::GroundedBuilding
-			&& building->currentBuildUnit != nullptr
-			&& !(building->currentBuildUnit->status & UnitStatus::Completed);
-	}
 
 	//Return the building or add-on that the @p unit is constructing.
 	//Identical to function @ 0x00466A30
@@ -31,7 +24,7 @@ namespace BuildingHelper {
 
 		if (unit->secondaryOrderId == OrderId::Train
 			|| unit->secondaryOrderId == OrderId::TrainFighter
-			|| isConstructingAddon(unit))
+			|| helper::isConstructingAddon(unit))
 			return unit->currentBuildUnit;
 
 		return nullptr;

@@ -19,7 +19,7 @@ namespace hooks {
 	void BroodlingHit(CUnit* attacker, CUnit* target, CBullet* bullet);					// 004F4940
 	void PlagueHit(CUnit* attacker, int x, int y, CBullet* bullet);						// 004F4B30
 	void MaelstromHit(CUnit* attacker, int x, int y, CBullet* bullet);					// 004F6850
-	void MindControlHit(CUnit* attacker, CUnit* target);								// 004F6910
+	void MindControlHitHook(CUnit* attacker, CUnit* target);								// 004F6910
 	void StasisFieldHit(CUnit* attacker, int x, int y, CBullet* bullet);				// 004F6A80
 	void DisruptionWebHit(uint32 attackingPlayerId, int x, int y, CBullet* bullet);		// 004F6AF0
 	CUnit* createDisruptionWeb(uint32 playerId, int x, int y);

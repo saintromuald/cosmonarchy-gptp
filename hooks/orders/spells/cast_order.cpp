@@ -1,23 +1,8 @@
 #include "cast_order.h"
 #include <SCBW/api.h>
 #include "SCBW/stat_txt_spec.h"
-//helper functions def
-
-namespace {
-
-	uint32 getUpgradedWpnCooldown(CUnit* unit, uint8 weaponId);													//0x00475DC0
-	bool function_00476640(CUnit* unit, uint32 weaponId);														//0x00476640
-	void setUnitStatTxtErrorMsg(char* message);																//0x0048CCB0
-	uint32 get_statTxt_Str_0(CUnit* unit, uint32 playerId, char* message);										//0x0048EF30
-	bool canCastSpell_0(CUnit* unit);																		//0x00492140
-	uint32 function_00492620(CUnit* unit, bool32 wasMainOrderStateZero);										//0x00492620
-	uint32 RandomizeShort(uint32 unknown_index);																	//0x004DC4A0
-	void setNextWaypoint_Sub4EB290(CUnit* unit);															//0x004EB290
-
-} //unnamed namespace
 
 namespace hooks {
-
 	void orders_Spell(CUnit* unit) {
 
 		int32 spellCost;
@@ -84,14 +69,14 @@ namespace hooks {
 
 		} else { //928CF
 			//scbw::print("State != 2");
-			if (!canCastSpell_0(unit)) {
+			if (!helper::canCastSpell_0(unit)) {
 				char* message = (char*)statTxtTblNew->getString(876); //Invalid Target
 
 				//do the actual transmission corresponding to the message
-				get_statTxt_Str_0(unit, unit->playerId, message);
+				helper::get_statTxt_Str_0(unit, unit->playerId, message);
 
 				//make the unit stop since the order failed
-				setNextWaypoint_Sub4EB290(unit);
+				helper::setNextWaypoint(unit);
 				unit->orderToIdle();
 
 			} else { //9291A
@@ -132,7 +117,7 @@ namespace hooks {
 						if (*LOCAL_NATION_ID == unit->playerId &&
 							*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID
 							)
-							setUnitStatTxtErrorMsg(message);
+							helper::setUnitStatTxtErrorMsg(message);
 
 					}
 
@@ -146,9 +131,9 @@ namespace hooks {
 					//mainOrderState
 					//scbw::printf("Order state: %d", unit->mainOrderState);
 					if (unit->mainOrderState == 0)
-						result_00492620 = function_00492620(unit, 1);
+						result_00492620 = helper::function_00492620(unit, 1);
 					else
-						result_00492620 = function_00492620(unit, 0);
+						result_00492620 = helper::function_00492620(unit, 0);
 
 					if (unit->mainOrderState == 0)
 						unit->mainOrderState = 1;
@@ -170,7 +155,7 @@ namespace hooks {
 						if (
 							unit->getSpellCountdown() == 0 &&
 							gcd_condition && //new
-							function_00476640(unit, orderWeaponId) && //is ready to fire weapon (angle,range...) maybe?
+							helper::function_00476640(unit, orderWeaponId) && //is ready to fire weapon (angle,range...) maybe?
 							!(unit->movementFlags & MovementFlags::Accelerating) &&
 							unit->getMovableState() != 0
 							) { //92A38
@@ -234,10 +219,10 @@ namespace hooks {
 								uint32 random_value;
 
 								unit->spendUnitEnergy(spellCost);
-								cooldown = getUpgradedWpnCooldown(unit, orderWeaponId);
+								cooldown = helper::getUpgradedWpnCooldown(unit, orderWeaponId);
 
 								//a complicated way to add between -1 and 2 to the cooldown
-								random_value = RandomizeShort(49);
+								random_value = helper::RandomizeShort(49);
 								cooldown += (((uint8)random_value) & 3) - 1;
 
 								unit->spellCooldown = cooldown;
@@ -271,176 +256,10 @@ namespace hooks {
 									AIScriptController[unit->playerId].spellcasterTimer = 1;
 
 							}
-
 						}
-
-					} //if(result_00492620 != 0)
-
-				} //got enough energy
-
-			} //canCastSpell_0(unit)
-
-		} //unit->mainOrderState != 2
-
-	} //void orders_Spell(CUnit* unit)
-
-	;
-
-} //namespace hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_getUpgradedWpnCooldown = 0x00475DC0;
-	uint32 getUpgradedWpnCooldown(CUnit* unit, uint8 weaponId) {
-
-		static uint32 return_value;
-
-		__asm {
-			PUSHAD
-			MOV AL, weaponId
-			MOV ESI, unit
-			CALL Func_getUpgradedWpnCooldown
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-	const uint32 Func_Sub476640 = 0x00476640;
-	bool function_00476640(CUnit* unit, uint32 weaponId) {
-
-		static bool32 pre_result;
-
-		__asm {
-			PUSHAD
-			PUSH weaponId
-			MOV EAX, unit
-			CALL Func_Sub476640
-			MOV pre_result, EAX
-			POPAD
-		}
-
-		return (pre_result != 0);
-
-	}
-
-	;
-
-	const uint32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
-	void setUnitStatTxtErrorMsg(char* message) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, message
-			CALL Func_setUnitStatTxtErrorMsg
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_get_statTxt_Str_0 = 0x0048EF30;
-	uint32 get_statTxt_Str_0(CUnit* unit, uint32 playerId, char* message) {
-
-		static uint32 return_value;
-
-		__asm {
-			PUSHAD
-			MOV EAX, message
-			MOV ECX, playerId
-			MOV EDX, unit
-			CALL Func_get_statTxt_Str_0
-			MOV EAX, return_value
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-	const uint32 Func_canCastSpell_0 = 0x00492140;
-	bool canCastSpell_0(CUnit* unit) {
-
-		static bool32 bPreResult;
-
-		__asm {
-			PUSHAD
-			MOV EDI, unit
-			CALL Func_canCastSpell_0
-			MOV bPreResult, EAX
-			POPAD
-		}
-
-		//0 means "can cast spell"
-		return (bPreResult == 0);
-
-	}
-
-	;
-
-	const uint32 Func_Sub492620 = 0x00492620;
-	uint32 function_00492620(CUnit* unit, bool32 wasMainOrderStateZero) {
-
-		static uint32 return_value;
-
-		__asm {
-			PUSHAD
-			PUSH wasMainOrderStateZero
-			MOV EAX, unit
-			CALL Func_Sub492620
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-	const uint32 Func_RandomizeShort = 0x004DC4A0;
-	uint32 RandomizeShort(uint32 unknown_index) {
-
-		static uint32 return_value;
-
-		__asm {
-			PUSHAD
-			MOV EAX, unknown_index
-			CALL Func_RandomizeShort
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-	//Related to path/movement decision
-	const uint32 Func_sub_4EB290 = 0x004EB290;
-	void setNextWaypoint_Sub4EB290(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_sub_4EB290
-			POPAD
+					}
+				}
+			}
 		}
 	}
-
-
-	;
-
-} //Unnamed namespace
-
-//End of helper functions
+}

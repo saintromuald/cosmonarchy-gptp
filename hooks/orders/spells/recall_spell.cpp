@@ -3,19 +3,6 @@
 #include "SCBW/stat_txt_spec.h"
 
 //helper functions def
-
-namespace {
-
-	bool setThingyVisibilityFlags(CThingy* thingy);									//0x004878F0
-	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);				//0x00488210
-	void setUnitStatTxtErrorMsg(char* message);										//0x0048CCB0
-	void playUnitSFX(uint32 soundId, uint16 x, uint16 y, uint32 unk1, uint32 unk2);				//0x0048EC10
-	uint32 RandomizeShort(uint32 unknown_index);											//0x004DC4A0
-	uint32 IterateUnitsAtLocationTargetProc_RecallTargets(CUnit* unit, Box16* coords);	//0x004E8280
-	void function_004EBAE0(CUnit* unit, int32 x, int32 y);								//0x004EBAE0
-
-} //unnamed namespace
-
 namespace hooks {
 
 	//Originally known as sub_4942D0
@@ -34,7 +21,7 @@ namespace hooks {
 
 		//identical code to setUnitPosition() but for some reason, is
 		//using another function to do exactly the same thing
-		function_004EBAE0(target, caster->sprite->position.x, caster->sprite->position.y);
+		helper::function_004EBAE0(target, caster->sprite->position.x, caster->sprite->position.y);
 
 		if (!scbw::checkUnitCollisionPos(target, &(caster->sprite->position), &new_pos, nullptr, false, 0))
 			//collision detected, cancel the movement
@@ -53,10 +40,10 @@ namespace hooks {
 				target->orderComputerCL(units_dat::ReturnToIdleOrder[target->id]);
 
 			//create the Recall animation over the unit
-			recall_effect_sprite = createThingy(SpriteId::Recall_Field, new_pos.x, new_pos.y, 0);
+			recall_effect_sprite = helper::createThingy(SpriteId::Recall_Field, new_pos.x, new_pos.y, 0);
 			if (recall_effect_sprite != nullptr) {
 				recall_effect_sprite->sprite->elevationLevel = target->sprite->elevationLevel + 1;
-				setThingyVisibilityFlags(recall_effect_sprite);
+				helper::setThingyVisibilityFlags(recall_effect_sprite);
 			}
 
 			//disconnect a nuke from a ghost using it
@@ -130,7 +117,7 @@ namespace hooks {
 				*bAtLeast1UnitWasRecalled = 0;
 
 				//apply the recal effect on each valid target found in spell_location
-				IterateUnitsAtLocationTargetProc_RecallTargets(unit, &spell_location);
+				helper::IterateUnitsAtLocationTargetProc_RecallTargets(unit, &spell_location);
 
 				if (*bAtLeast1UnitWasRecalled != 0) {
 
@@ -140,7 +127,7 @@ namespace hooks {
 					//see what sound is used that way.
 					//The compiler may make it back like the original anyway.
 
-					if ((RandomizeShort(0x12) & 1) == 0)
+					if ((helper::RandomizeShort(0x12) & 1) == 0)
 						scbw::playSound(SoundId::Protoss_ARBITER_PAbFol02_WAV, unit);
 					else
 						scbw::playSound(SoundId::Protoss_ARBITER_PAbFol03_WAV, unit);
@@ -179,7 +166,7 @@ namespace hooks {
 					unit->playerId == *LOCAL_NATION_ID &&
 					*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID
 					)
-					setUnitStatTxtErrorMsg(message);
+					helper::setUnitStatTxtErrorMsg(message);
 
 				unit->orderToIdle();
 
@@ -197,7 +184,7 @@ namespace hooks {
 				}
 
 				recall_effect_sprite =
-					createThingy(
+					helper::createThingy(
 						SpriteId::Recall_Field,
 						unit->orderTarget.pt.x,
 						unit->orderTarget.pt.y,
@@ -206,7 +193,7 @@ namespace hooks {
 
 				if (recall_effect_sprite != nullptr) {
 					recall_effect_sprite->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
-					setThingyVisibilityFlags(recall_effect_sprite);
+					helper::setThingyVisibilityFlags(recall_effect_sprite);
 				}
 
 				//94617
@@ -234,7 +221,7 @@ namespace hooks {
 				//The compiler may make it back like the original anyway.
 
 				if ((random_value & 1) == 0)
-					playUnitSFX(
+					helper::playUnitSFX(
 						SoundId::Protoss_ARBITER_PAbFol00_WAV,
 						unit->orderTarget.pt.x,
 						unit->orderTarget.pt.y,
@@ -242,7 +229,7 @@ namespace hooks {
 						0
 					);
 				else
-					playUnitSFX(
+					helper::playUnitSFX(
 						SoundId::Protoss_ARBITER_PAbFol01_WAV,
 						unit->orderTarget.pt.x,
 						unit->orderTarget.pt.y,
@@ -264,151 +251,3 @@ namespace hooks {
 	;
 
 } //namespace hooks
-
-;
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	//original referenced name was sub_4878F0, but using
-	//the name from bunker_hooks.cpp since it got meaning
-	const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
-	bool setThingyVisibilityFlags(CThingy* thingy) {
-
-		static bool32 bPreResult;
-
-		__asm {
-			PUSHAD
-			MOV ESI, thingy
-			CALL Func_SetThingyVisibilityFlags
-			MOV bPreResult, EAX
-			POPAD
-		}
-
-		return (bPreResult != 0);
-
-	}
-
-	;
-
-	//original referenced name was replaceSprite (but this one is probably
-	//more accurate since it does create something rather than replacing)
-	const uint32 Func_CreateThingy = 0x00488210;
-	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
-
-		static CThingy* thingy;
-		int32 x_ = x;
-
-		__asm {
-			PUSHAD
-			PUSH playerId
-			MOVSX EDI, y
-			PUSH x_
-			PUSH spriteId
-			CALL Func_CreateThingy
-			MOV thingy, EAX
-			POPAD
-		}
-
-		return thingy;
-
-	}
-
-	;
-
-	const uint32 Func_playUnitSFX = 0x0048EC10;
-	void playUnitSFX(uint32 soundId, uint16 x, uint16 y, uint32 unk1, uint32 unk2) {
-
-		static Point16 pos;
-
-		pos.x = x; pos.y = y;
-
-		__asm {
-			PUSHAD
-			PUSH unk2
-			PUSH unk1
-			PUSH pos
-			MOV EBX, soundId
-			CALL Func_playUnitSFX
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_RandomizeShort = 0x004DC4A0;
-	uint32 RandomizeShort(uint32 unknown_index) {
-
-		static uint32 return_value;
-
-		__asm {
-			PUSHAD
-			MOV EAX, unknown_index
-			CALL Func_RandomizeShort
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-	const uint32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
-	//hardcoding the recall targets selection function
-	uint32 IterateUnitsAtLocationTargetProc_RecallTargets(CUnit* unit, Box16* coords) {
-
-		static uint32 return_value;
-
-		__asm {
-			PUSHAD
-			PUSH unit
-			MOV EAX, coords
-			MOV EBX, 0x00494400
-			CALL Func_IterateUnitsAtLocationTargetProc
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-	const uint32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
-	void setUnitStatTxtErrorMsg(char* message) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, message
-			CALL Func_setUnitStatTxtErrorMsg
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub4EBAE0 = 0x004EBAE0;
-	void function_004EBAE0(CUnit* unit, int32 x, int32 y) {
-
-		__asm {
-			PUSHAD
-			MOV EDX, unit
-			MOV EAX, x
-			MOV ECX, y
-			CALL Func_Sub4EBAE0
-			POPAD
-		}
-
-	}
-
-	;
-
-} //Unnamed namespace
-
-//End of helper functions

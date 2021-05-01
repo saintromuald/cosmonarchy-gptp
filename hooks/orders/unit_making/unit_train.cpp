@@ -9,26 +9,6 @@
 #define FALSE 0
 #endif
 
-//helper functions def
-
-namespace {
-
-	uint32 getHPGainForRepair(CUnit* unit);										//02C40
-	void refundUnitTrainCost(uint32 unitId, uint8 playerId);							//2CEC0
-	void function_00432430(CUnit* unit, uint32 buildQueueSlot);					//32430
-	void addHangarUnit(CUnit* main_unit, CUnit* added_unit);					//66300
-	void orderNewUnitToRally(CUnit* unit, CUnit* factory);						//66F50
-	bool32 buildingAddon(CUnit* unit, uint32 hpGain, bool32 canBeAborted);			//679A0
-	CUnit* attemptTrainHatchUnit(CUnit* trainer, uint32 builtUnitID, uint32 flag);	//68200
-	void AI_CancelStructure(CUnit* unit);										//68280
-	void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit);				//A2830
-	void hideAndDisableUnit(CUnit* unit);										//E6340
-
-} //unnamed namespace
-
-
-
-
 namespace hooks {
 	int isQueueSlotActive(CUnit* unit, uint32 slot) {
 		//return unit->buildQueue[(slot + unit->buildQueueSlot) % 5] <= UnitId::Spell_DisruptionWeb;
@@ -52,9 +32,9 @@ namespace hooks {
 					CUnit* builtUnit;
 
 					if (unit->secondaryOrderState == 0)
-						builtUnit = attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 1);
+						builtUnit = helper::attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 1);
 					else
-						builtUnit = attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 0);
+						builtUnit = helper::attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 0);
 
 					unit->currentBuildUnit = builtUnit;
 
@@ -75,13 +55,13 @@ namespace hooks {
 
 					if (builtUnit != nullptr) {
 
-						hpGain = getHPGainForRepair(builtUnit);
+						hpGain = helper::getHPGainForRepair(builtUnit);
 
-						buildingAddon(builtUnit, hpGain, FALSE);
+						helper::buildingAddon(builtUnit, hpGain, FALSE);
 
 						if (builtUnit->status & UnitStatus::Completed) {
 
-							addHangarUnit(unit, builtUnit);
+							helper::addHangarUnit(unit, builtUnit);
 
 							unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 							unit->buildQueueSlot++;
@@ -161,9 +141,9 @@ namespace hooks {
 					CUnit* builtUnit;
 
 					if (unit->secondaryOrderState == 0)
-						builtUnit = attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 1);
+						builtUnit = helper::attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 1);
 					else
-						builtUnit = attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 0);
+						builtUnit = helper::attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 0);
 
 					unit->currentBuildUnit = builtUnit;
 
@@ -190,7 +170,7 @@ namespace hooks {
 					CUnit* builtUnit = unit->currentBuildUnit;
 
 					if (builtUnit != nullptr) {
-						uint32 hpGain = getHPGainForRepair(builtUnit);
+						uint32 hpGain = helper::getHPGainForRepair(builtUnit);
 						bool extraBuild = false;
 						if (scbw::get_generic_value(builtUnit, ValueId::Crucible) == 0) {
 							auto r = 256;
@@ -202,7 +182,7 @@ namespace hooks {
 								auto unit = unitsInSplash.getUnit(i);
 								if (n(unit)) {
 									scbw::set_generic_value(builtUnit, ValueId::Crucible, 5);//6 is ~100/15
-									buildingAddon(builtUnit, hpGain, TRUE);
+									helper::buildingAddon(builtUnit, hpGain, TRUE);
 									if (builtUnit->status & UnitStatus::Completed) {
 										extraBuild = true;
 									}
@@ -212,20 +192,20 @@ namespace hooks {
 						} else {
 							scbw::add_generic_value(builtUnit, ValueId::Crucible, -1);
 						}
-						if (extraBuild || buildingAddon(builtUnit, hpGain, TRUE)) {
+						if (extraBuild || helper::buildingAddon(builtUnit, hpGain, TRUE)) {
 
 							if (builtUnit->status & UnitStatus::Completed) {
 
-								AI_TrainingUnit(unit, builtUnit);
+								helper::AI_TrainingUnit(unit, builtUnit);
 
 								if (builtUnit->id == UnitId::TerranNuclearMissile)
-									hideAndDisableUnit(builtUnit);
+									helper::hideAndDisableUnit(builtUnit);
 								else
-									orderNewUnitToRally(builtUnit, unit);
+									helper::orderNewUnitToRally(builtUnit, unit);
 
 
 
-								function_00432430(unit, unit->buildQueueSlot);
+								helper::function_00432430(unit, unit->buildQueueSlot);
 
 								unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 								unit->buildQueueSlot = (unit->buildQueueSlot + 1) % 5;
@@ -245,11 +225,11 @@ namespace hooks {
 								uint8 counter = 4;
 
 								if (unit->currentBuildUnit != nullptr)
-									AI_CancelStructure(unit->currentBuildUnit);
+									helper::AI_CancelStructure(unit->currentBuildUnit);
 								else {
 
 									if (!units_dat::BaseProperty[unit->buildQueue[unit->buildQueueSlot % 5]] & UnitProperty::Building)
-										refundUnitTrainCost(unit->buildQueue[unit->buildQueueSlot % 5], unit->playerId);
+										helper::refundUnitTrainCost(unit->buildQueue[unit->buildQueueSlot % 5], unit->playerId);
 
 								}
 
@@ -319,150 +299,4 @@ namespace hooks {
 		}
 		return hangarSpace;
 	}
-
-} //namespace hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	//Identical to getHPGainForRepair @ 0x00402C40
-	uint32 getHPGainForRepair(CUnit* unit) {
-
-		if (*CHEAT_STATE & CheatFlags::OperationCwal)
-			return unit->buildRepairHpGain * 16;
-		else
-			return unit->buildRepairHpGain;
-
-	}
-
-	const uint32 Func_refundUnitTrainCost = 0x0042CEC0;
-	void refundUnitTrainCost(uint32 unitId, uint8 playerId) {
-
-		__asm {
-			PUSHAD
-			MOV ECX, unitId
-			MOV AL, playerId
-			CALL Func_refundUnitTrainCost
-			POPAD
-		}
-
-	}
-
-	const uint32 Func_Sub432430 = 0x00432430;
-	void function_00432430(CUnit* unit, uint32 buildQueueSlot) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			MOV ECX, buildQueueSlot
-			CALL Func_Sub432430
-			POPAD
-		}
-
-	}
-
-	const uint32 Func_addHangerUnit = 0x00466300;
-	void addHangarUnit(CUnit* main_unit, CUnit* added_unit) {
-
-		__asm {
-			PUSHAD
-			MOV EDI, main_unit
-			MOV ESI, added_unit
-			CALL Func_addHangerUnit
-			POPAD
-		}
-
-	}
-
-	const uint32 Func_Sub466F50 = 0x00466F50;
-	void orderNewUnitToRally(CUnit* unit, CUnit* factory) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			MOV ECX, factory
-			CALL Func_Sub466F50
-			POPAD
-		}
-
-	}
-
-	const uint32 Func_buildingAddon = 0x004679A0;
-	//if canBeAborted is TRUE, the unit can be aborted because there's
-	//no room around the constructing building
-	bool32 buildingAddon(CUnit* unit, uint32 hpGain, bool32 canBeAborted) {
-
-		static bool32 bResult;
-
-		__asm {
-			PUSHAD
-			MOV EDX, hpGain
-			MOV EAX, unit
-			PUSH canBeAborted
-			CALL Func_buildingAddon
-			MOV bResult, EAX
-			POPAD
-		}
-
-		return bResult;
-
-	}
-
-	const uint32 Func_attemptTrainHatchUnit = 0x00468200;
-	CUnit* attemptTrainHatchUnit(CUnit* trainer, uint32 builtUnitID, uint32 flag) {
-
-		static CUnit* builtUnit;
-
-		__asm {
-			PUSHAD
-			MOV ESI, trainer
-			MOV EDI, builtUnitID
-			PUSH flag
-			CALL Func_attemptTrainHatchUnit
-			MOV builtUnit, EAX
-			POPAD
-		}
-
-		return builtUnit;
-
-	}
-
-	const uint32 Func_AI_CancelStructure = 0x00468280;
-	void AI_CancelStructure(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			CALL Func_AI_CancelStructure
-			POPAD
-		}
-
-	}
-
-	const uint32 Func_AI_TrainingUnit = 0x004A2830;
-	void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit) {
-		__asm {
-			PUSHAD
-			MOV EAX, created_unit
-			MOV ECX, unit_creator
-			CALL Func_AI_TrainingUnit
-			POPAD
-		}
-	}
-
-	const uint32 Func_unitDeathSomething_0 = 0x004E6340;
-	void hideAndDisableUnit(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_unitDeathSomething_0
-			POPAD
-		}
-
-	}
-
-} //Unnamed namespace
-
-//End of helper functions
+}

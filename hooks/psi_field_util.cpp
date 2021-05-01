@@ -45,27 +45,6 @@ bool isValidPsiProviderType(uint16 unitId) {
 
 }
 
-//-------- Add psi field --------//
-
-//AKA createPsiFieldSpriteForUnit()
-//Returns true if successful, false otherwise.
-bool addPsiFieldSprite(CUnit* unit) {
-	if (!unit) return false;
-
-	const uint32 Func_addPsiFieldSprite = 0x00493BF0;
-	static uint32 result;
-
-	__asm {
-		PUSHAD
-		MOV ECX, unit
-		CALL Func_addPsiFieldSprite
-		MOV result, EAX
-		POPAD
-	}
-
-	return result != 0;
-}
-
 //Adds @p unit to the psi provider list and creates the psi field sprite.
 //Based on orders_InitPsiProvider() @ 00493F70
 //But this does not affect the unit's current order.
@@ -80,7 +59,7 @@ void addPsiField(CUnit* unit) {
 	if (*firstPsiFieldProvider)
 		(*firstPsiFieldProvider)->psi_link.prev = unit;
 	*firstPsiFieldProvider = unit;
-	addPsiFieldSprite(unit);
+	helper::addPsiFieldSprite(unit);
 	*canUpdatePoweredStatus = true;
 }
 
@@ -113,18 +92,7 @@ void removePsiField(CUnit* unit) {
 
 //-------- Update psi field position --------//
 
-void refreshSpriteData(CSprite* sprite) {
-	const uint32 Func_refreshSpriteData = 0x004983A0;
-
-	__asm {
-		PUSHAD
-		MOV EAX, sprite
-		CALL Func_refreshSpriteData
-		POPAD
-	}
-}
-
-//Synchronizes the unit's psi field sprite position with the unit.
+// Synchronizes the unit's psi field sprite position with the unit.
 void updatePsiFieldPosition(CUnit* unit) {
 	if (!unit || !unit->sprite || !unit->building.pylonAura) return;
 
@@ -134,7 +102,7 @@ void updatePsiFieldPosition(CUnit* unit) {
 		//  i->flags |= 1;  //Redraw image
 
 		psiField->setPosition(unit->getX(), unit->getY());
-		refreshSpriteData(psiField);
+		helper::refreshSpriteData(psiField);
 		*canUpdatePoweredStatus = true;
 	}
 }

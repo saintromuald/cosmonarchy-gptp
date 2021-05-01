@@ -14,9 +14,9 @@ namespace {
 void fixTargetLocation(Point16* coords, uint32 unitId);							//01FA0
 bool hasSuppliesForUnit(uint32 unitId, uint32 playerId, Bool32 canShowErrorMessage);	//2CF70
 CUnit* function_0045D910(CUnit* unit);											//5D910
-void orderNewUnitToRally(CUnit* unit, CUnit* factory);							//66F50
+void orderNewUnitToRallyHook(CUnit* unit, CUnit* factory);							//66F50
 bool advanceRemainingBuildTime_Sub466940(CUnit* unit);							//66940
-void refundAllQueueSlots(CUnit* unit);											//66E80
+void refundAllQueueSlotsHook(CUnit* unit);											//66E80
 void actUnitReturnToIdle(CUnit* unit);											//75420
 void incrementUnitScoresEx(CUnit* unit, s32 unk1, s32 unk2);					//88D50
 void playMorphingCompleteSound(CUnit* unit);									//8F440
@@ -518,7 +518,7 @@ bool advanceRemainingBuildTime_Sub466940(CUnit* unit) {
 ;
 
 const uint32 Func_RefundAllQueueSlots = 0x00466E80;
-void refundAllQueueSlots(CUnit* unit) {
+void refundAllQueueSlotsHook(CUnit* unit) {
 
   __asm {
     PUSHAD
@@ -532,7 +532,7 @@ void refundAllQueueSlots(CUnit* unit) {
 ;
 
 const uint32 Func_Sub466F50 = 0x00466F50;
-void orderNewUnitToRally(CUnit* unit, CUnit* factory) {
+void orderNewUnitToRallyHook(CUnit* unit, CUnit* factory) {
 
 	__asm {
 		PUSHAD

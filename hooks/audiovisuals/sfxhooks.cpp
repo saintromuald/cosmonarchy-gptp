@@ -4,14 +4,6 @@
 #include <SCBW/scbwdata.h>
 #include <hooks/byte_operations_utils.h>
 
-namespace {
-	// For getResponseSFX
-	int randFunc();
-
-	// For getRandYesSFX
-	int randGetSFXBetween(int a1, int a2);
-}
-
 namespace hooks {
 	int getResponseSfx(int32 unitId, int a2) { // 0048EA20
 		int sound = 0;			//v2
@@ -39,7 +31,7 @@ namespace hooks {
 			*lastRandSFX = scbw::getUnitData(UnitsDatEntries::SndWhtFirst, unitId);
 			result = whatStart;
 		} else {
-			rand = whatStart + (randFunc() >> 8) % (whatEnd - whatStart + 1);
+			rand = whatStart + (helper::randFunc() >> 8) % (whatEnd - whatStart + 1);
 			if (rand == *lastRandSFX && ++rand > whatEnd)
 				rand = whatStart;
 			*lastRandSFX = rand;
@@ -53,39 +45,9 @@ namespace hooks {
 		int result; // eax
 
 		if (!(units_dat::GroupFlags[a1].isBuilding) && (v1 = scbw::getUnitData(UnitsDatEntries::SndYesFirst, a1)) != 0)
-			result = randGetSFXBetween((int)scbw::getUnitData(UnitsDatEntries::SndYesLast, a1), (int)v1);
+			result = helper::randGetSFXBetween((int)scbw::getUnitData(UnitsDatEntries::SndYesLast, a1), (int)v1);
 		else
 			result = 0;
-		return result;
-	}
-}
-
-namespace {
-	// For getResponseSFX
-	const uint32 Func_randFunc = 0x0040C7BD;
-	int randFunc() {
-		static int result;
-		__asm {
-			PUSHAD
-			CALL Func_randFunc
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	// For getRandYesSFX
-	const uint32 Func_randGetSFXBetween = 0x0048E940;
-	int randGetSFXBetween(int a1, int a2) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV EDI, a1
-			MOV ESI, a2
-			CALL Func_randGetSFXBetween
-			MOV result, EAX
-			POPAD
-		}
 		return result;
 	}
 }

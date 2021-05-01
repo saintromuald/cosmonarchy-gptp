@@ -1,24 +1,7 @@
 #include "give_unit.h"
 #include <SCBW/api.h>
 
-//helper functions def
-
-namespace {
-
-	void ApplySpeedUpgradeFromUnitType(CUnit* unit);						//54370
-	void function_00463040(CUnit* unit);									//63040
-	void function_00476D30(CUnit* unit);									//76D30
-	void incrementUnitScores(CUnit* unit, int32 unkScore);					//88BF0
-	void incrementUnitScoresEx(CUnit* unit, int32 unkScore, int32 unk2);		//88D50
-	void function_004A1E50(CUnit* unit, uint32 unk);							//A1E50
-	void CreateUnitSelection(CUnit* unit, uint32 selectionIndex);				//E6180
-	void DestroyUnitSelection(CUnit* unit);									//E6290
-	void function_004F3B70(CUnit* powerup);									//F3B70
-
-} //unnamed namespace
-
 namespace hooks {
-
 	/// used in completeAddon, sub_4678A0 (related to Terran construction),
 	/// GiveAllUnitPropertiesToPlayerAndMakeIdle, itself, sub_4A0080, AI_CreateUnit,
 	/// orders_RescuePassive, orders_InfestMine1
@@ -31,23 +14,23 @@ namespace hooks {
 			bool isSelected;
 			uint32 selectionIndex = 0;
 
-			function_004A1E50(unit, 0);
+			helper::function_004A1E50(unit, 0);
 
 			if (unit->isRemorphingBuilding()) {
 				unit->status |= UnitStatus::Completed;
 				isMorphing = true;
 			}
 
-			incrementUnitScores(unit, -1);
+			helper::incrementUnitScores(unit, -1);
 
 			if (unit->status & UnitStatus::Completed)
-				incrementUnitScoresEx(unit, 0, -1);
+				helper::incrementUnitScoresEx(unit, 0, -1);
 
 			isSelected = (unit->sprite->flags & CSprite_Flags::Selected) == 1;
 
 			if (isSelected) {
 				selectionIndex = unit->sprite->selectionIndex;
-				DestroyUnitSelection(unit);
+				helper::DestroyUnitSelection(unit);
 			}
 
 			if (unit->player_link.prev != nullptr)
@@ -65,7 +48,7 @@ namespace hooks {
 
 			//maybe "if" not needed?
 			if (isSelected)
-				CreateUnitSelection(unit, selectionIndex);
+				helper::CreateUnitSelection(unit, selectionIndex);
 
 			unit->player_link.prev = nullptr;
 			unit->player_link.next = firstPlayerUnit->unit[playerId];
@@ -75,15 +58,15 @@ namespace hooks {
 
 			firstPlayerUnit->unit[playerId] = unit;
 
-			incrementUnitScores(unit, 1);
+			helper::incrementUnitScores(unit, 1);
 
 			if (unit->status & UnitStatus::Completed)
-				incrementUnitScoresEx(unit, unkScore, 1);
+				helper::incrementUnitScoresEx(unit, unkScore, 1);
 
 			if (isMorphing)
 				unit->status &= ~UnitStatus::Completed;
 
-			function_00476D30(unit);
+			helper::function_00476D30(unit);
 
 			scbw::refreshConsole();
 
@@ -94,165 +77,20 @@ namespace hooks {
 				)
 				*canUpdatePoweredStatus = 1;
 
-			function_00463040(unit);
+			helper::function_00463040(unit);
 
 			if (unit->subunit != nullptr && units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit)
 				GiveUnit(unit->subunit, playerId, unkScore);
 
-			ApplySpeedUpgradeFromUnitType(unit);
+			helper::ApplySpeedUpgradeFromUnitType(unit);
 
 			if (
 				units_dat::BaseProperty[unit->id] & UnitProperty::Worker &&
 				unit->worker.powerup != nullptr &&
 				(unit->worker.powerup)->id == UnitId::Powerup_Flag) {
 				if ((unit->worker.powerup)->playerId == playerId || playerId >= 8)
-					function_004F3B70(unit->worker.powerup); //return the flag to initial position?
+					helper::function_004F3B70(unit->worker.powerup); //return the flag to initial position?
 			}
-
-		}
-
-	}
-
-	;
-
-} //namespace hooks
-
-;
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_ApplySpeedUpgradeFromUnitType = 0x00454370;
-	void ApplySpeedUpgradeFromUnitType(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			CALL Func_ApplySpeedUpgradeFromUnitType
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub463040 = 0x00463040;
-	void function_00463040(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub463040
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub476D30 = 0x00476D30;
-	void function_00476D30(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EDI, unit
-			CALL Func_Sub476D30
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_incrementUnitScores = 0x00488BF0;
-	void incrementUnitScores(CUnit* unit, int32 unkScore) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			PUSH unkScore
-			CALL Func_incrementUnitScores
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_incrementUnitScoresEx = 0x00488D50;
-	void incrementUnitScoresEx(CUnit* unit, int32 unkScore, int32 unk2) {
-
-		__asm {
-			PUSHAD
-			MOV EDI, unit
-			MOV ECX, unk2
-			PUSH unkScore
-			CALL Func_incrementUnitScoresEx
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub4A1E50 = 0x004A1E50;
-	void function_004A1E50(CUnit* unit, uint32 unk) {
-
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			MOV EDX, unk
-			CALL Func_Sub4A1E50
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_CreateUnitSelection = 0x004E6180;
-	void CreateUnitSelection(CUnit* unit, uint32 selectionIndex) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			PUSH selectionIndex
-			CALL Func_CreateUnitSelection
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_DestroyUnitSelection = 0x004E6290;
-	void DestroyUnitSelection(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_DestroyUnitSelection
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub4F3B70 = 0x004F3B70;
-	void function_004F3B70(CUnit* powerup) {
-
-		__asm {
-			PUSHAD
-			PUSH powerup
-			CALL Func_Sub4F3B70
-			POPAD
 		}
 	}
-
-	;
-
-} //Unnamed namespace
-
-//End of helper functions
+}

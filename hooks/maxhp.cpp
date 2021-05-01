@@ -37,103 +37,6 @@
 	Line 349375: 004EB0F4   .  8A90 B0476600 MOV DL,BYTE PTR DS:[EAX+6647B0] -- 0x004EAFE0 -- mapDataTransfer -- HOOKED, type error?
 */
 
-namespace {
-
-	// For drawUnitInfo
-	void hideOptionalStatusScreenControls(BinDlg* a1);											// 00457310
-	void showControlGroup(BinDlg* a1, int16 a2, int16 a3);											// 00457250
-	void addTextToDialog(int a1, int16 a2, int a3);												// 004258B0
-	void drawShieldUpgrade(int a1, uint16 a2);														// 00425510
-	void hideDialog(BinDlg* a1);																// 00418700
-
-	// For drawSupplyUnitInfo
-	int getSuppliesUsed();																		// 00424732
-	uint16 getLastQueueSlotType(CUnit* a1);														// 0047B270
-	uint32 getSuppliesAvailable(uint8 a1, int a2);													// 00488900
-	void drawArmor(int a1, int a2, uint16 a3);														// 00425600
-	void unitStatAct_Standard(void* a1);														// 00426F50
-
-	// For AI_TargetEnemyProc
-	bool AI_UnitCanAttack(CUnit* a1);															// 00476180
-
-	// For drawBuildingInfo
-	int needRedrawUI();																			// 00424A10
-	CUnit* genericStatusUpdateDrawnValues();													// 004248F0
-	void drawProgressBar(int a1);																// 004260C0
-	void drawNukeSiloInfo(int a1);																// 00426FF0
-	bool unitIsActiveTransport(CUnit* a1);														// 004E6BA0
-	bool isQueueSlotActive(CUnit* a1, int a2);													// 00401E70
-	void drawTrainingProgress(BinDlg* a1);														// 004268D0
-	bool isConstructingAddon(CUnit* a1);														// 004E66B0
-	bool isAttemptingProtossBuild(CUnit* a1);													// 004E4C40
-	void drawAddonProgress(int a1);																// 00425F30
-	void drawTechProgress(int a1);																// 004266F0
-	void drawUpgradeProgress(BinDlg* a1);														// 00426500
-	bool unitIsGeyser(CUnit* a1);																// 004688B0
-	void drawGasQuantity(BinDlg* a1);															// 00426190
-	int8 unitGetGroundWeapon(CUnit* a1);															// 00475AD0
-	void drawDisplayButtons(int a1);															// 00426C60
-	BinDlg* getControlFromIndex(BinDlg* a1, int16 a2);											// 00418080
-	void setTextStr(int a1);																	// 004263E0
-	void setUnitStatusStrText(int a1);															// 00425B50
-	int unitGetName(CUnit* a1);																	// 0047B5A0
-
-	// For getUnitStrength
-	int getCurrentHitPointsPlusShields(CUnit* a1);												// 004026D0
-	int getBaseStrength(int a1, CUnit* a2);														// 004316D0
-	int getMaxHP(CUnit* a1);																	// 00401400
-
-	// For AI_RestorationRequirementsProc
-	int canWeaponTargetUnit(uint8 a1, CUnit* a2, CUnit* a3);										// 00475CE0
-
-	// For AI_EMPShieldRequirementsProc
-	int32 AI_TargetUnitIsWorthHitting(CUnit* a1, CUnit* a2);										// 00440E30
-	int createSplashWeaponProc(int16 a1, int16 a2, int16 a3, int(__fastcall* a4)(int, int), int a5);	// 004E82E0
-	int unitShieldsClumpInAreaAccumulatorProc(CUnit* a1, CUnit* a2);							// 00440A60
-
-	// For hallucinationHit
-	void unitWasHit(CUnit* a1, CUnit* a2, int a3);												// 004795D0
-	void doAttackNotifyEvent(CUnit* a1);														// 0048F230
-	CImage* createShieldOverlay(int a1, CUnit* a2);												// 004E6140
-
-	// For drawImageHPBar
-	int unk_billions(int a1, int32 a2, int a3, int a4);											// 0047A750
-	int unk_billions2(int a1, int32 a2, int a3, int a4);											// 0047A6E0
-	int hpBarSurfaceBuffer(int a1, int a2, int* a3, int a4, int a5);							// 0047A350
-	int hpBarSurfaceBuffer2(int a1, int a2, uint16 a3, int a4);									// 0047A2C3
-	int renderHPBar(int a1, int a2, int* a3, int a4, int a5);									// 0047A4E0
-	int32 getUnitMaxEnergy(CUnit* a1);															// 00491870
-	int getHpBarDrawSizes(int a1, int32 a2, int a3, int a4);										// 0047A670
-
-	// For canCastSpell
-	bool unitIsFrozen(CUnit* a1);																// 004020B0
-	bool isUnitCasterNotHallucination(CUnit* a1);												// 00401210
-	bool getActiveTileFlag(int16 a1, int16 a2, int a3, int a4);										// 00472F80
-	CUnit* getTargetUnitAbilityErrorStatString(CUnit* a1, char a2, int a3);						// 00491E80
-
-	// For modifyUnitShields
-	int SErrSetLastError(char a1);																// 00410172
-
-	// For compileHealthBar
-	void updateImageDrawData(CImage* a1);														// 004D57B0
-	void playImageIscript(CImage* a1, char a2);													// 004D8470
-
-	// For AI_FindTransport
-	bool canEnterTransport(CUnit* a1, CUnit* a2);												// 004E6E00
-	int16 SAI_GetRegionIdFromPxEx(int32 a1, int32 a2);												// 0049C9F0
-	int32 getUnitDistanceToHalt(int a1, CUnit* a2, int a3);										// 00402140
-
-	// For mapDataTransfer
-	int32 dataTransfer00(int a1, char a2, int a3);												// 00472A00
-	int dataTransfer01(uint32 a1, int a2, uint32 a3);													// 0045A600
-	int32 dataTransfer02(int a1, int a2, char a3);												// 0045A230
-	int32 dataTransfer03(int a1, char a2, int a3);												// 0045A1F0
-	int dataTransfer04(uint32 a1, int a2, int a3);													// 0045A390
-	int32 dataTransfer05(int a1, int a2);															// 0045A190
-	vectorHead* vectorTransfer(char a1, char a2);												// 0045A010
-	int dataTransfer06(int a1);																	// 00472900
-}
-
 namespace hooks {
 	uint32 maxhp(int id, int playerId) {
 		uint32 result = units_dat::MaxHitPoints[id];
@@ -183,13 +86,13 @@ namespace hooks {
 		v1 = a1;
 		*suppliesAvailableTemp = (*activePortraitUnit)->building.resource.resourceAmount;
 		if (*statusScreenFunc != 15) {
-			hideOptionalStatusScreenControls(a1);
-			showControlGroup(v1, -10, -13);
+			helper::hideOptionalStatusScreenControls(a1);
+			helper::showControlGroup(v1, -10, -13);
 			*statusScreenFunc = 15;
 		}
-		addTextToDialog((int)v1, -10, 0);
-		addTextToDialog((int)v1, -12, 0);
-		addTextToDialog((int)v1, -13, 0);
+		helper::addTextToDialog((int)v1, -10, 0);
+		helper::addTextToDialog((int)v1, -12, 0);
+		helper::addTextToDialog((int)v1, -13, 0);
 		v2 = (*activePortraitUnit)->id;
 		if ((uint16)v2 >= 0xB0u && (uint16)v2 <= 0xB2u) {
 			if (*statTxtTbl > 0x31Bu)
@@ -217,9 +120,9 @@ namespace hooks {
 			v5 = "";
 		v8 = (BufferStr*)v5;
 	LABEL_19:
-		addTextToDialog((int)v1, -11, (int)v8);
+		helper::addTextToDialog((int)v1, -11, (int)v8);
 		if (units_dat::ShieldsEnabled[(*activePortraitUnit)->id]) {
-			drawShieldUpgrade((int)v1, 0);
+			helper::drawShieldUpgrade((int)v1, 0);
 		} else {
 			if (v1->controlType)
 				v1 = *(BinDlg**)&v1->parent;
@@ -234,7 +137,7 @@ namespace hooks {
 			LABEL_26:
 				v6 = 0;
 			}
-			hideDialog(v6);
+			helper::hideDialog(v6);
 		}
 	}
 
@@ -265,10 +168,10 @@ namespace hooks {
 		v1 = (BinDlg*)a1;
 		v2 = *activePortraitUnit;
 		if (IS_IN_REPLAY || (uint8)(*activePortraitUnit)->playerId == *LOCAL_NATION_ID) {
-			getSuppliesUsed();
+			helper::getSuppliesUsed();
 			if (*statusScreenFunc != 12) {
-				hideOptionalStatusScreenControls(v1);
-				showControlGroup(v1, -10, -13);
+				helper::hideOptionalStatusScreenControls(v1);
+				helper::showControlGroup(v1, -10, -13);
 				v2 = *activePortraitUnit;
 				*statusScreenFunc = 12;
 			}
@@ -310,7 +213,7 @@ namespace hooks {
 			} else {
 				v9 = "";
 			}
-			v10 = getLastQueueSlotType((*activePortraitUnit));
+			v10 = helper::getLastQueueSlotType((*activePortraitUnit));
 			sprintf_s("", 260, "%s %d", v9, (units_dat::SupplyProvided[v10] + 1) / 2);
 			v11 = v20 + 66353;
 			if (v21 == -818) {
@@ -322,10 +225,10 @@ namespace hooks {
 				v12 = "";
 			}
 			ByteOperations::SetLowByte(v11, v21);
-			v13 = getSuppliesAvailable((*activePortraitUnit)->playerId, v11);
+			v13 = helper::getSuppliesAvailable((*activePortraitUnit)->playerId, v11);
 			sprintf_s(unkString_Char, 260, "%s %d", v12, (v13 + 1) / 2);
 			v22 = (*activePortraitUnit)->playerId;
-			v14 = units_dat::GroupFlags[getLastQueueSlotType((*activePortraitUnit))];
+			v14 = units_dat::GroupFlags[helper::getLastQueueSlotType((*activePortraitUnit))];
 			int race = (*activePortraitUnit)->getRace();
 			if (v14.isZerg) {
 				v15 = raceSupply[RaceId::Zerg].max[v22];
@@ -345,13 +248,13 @@ namespace hooks {
 				v17 = "";
 			}
 			sprintf_s(struct_Char2->buf, 260, "%s %d", v17, (unsigned int)(v15 + 1) >> 1);
-			addTextToDialog((int)v1, -10, (int)struct_Char);
-			addTextToDialog((int)v1, -11, (int)"");
-			addTextToDialog((int)v1, -12, (int)unkString_Char);
-			addTextToDialog((int)v1, -13, (int)struct_Char2);
+			helper::addTextToDialog((int)v1, -10, (int)struct_Char);
+			helper::addTextToDialog((int)v1, -11, (int)"");
+			helper::addTextToDialog((int)v1, -12, (int)unkString_Char);
+			helper::addTextToDialog((int)v1, -13, (int)struct_Char2);
 			v18 = (*activePortraitUnit)->id;
 			if (units_dat::ShieldsEnabled[v18]) {
-				drawShieldUpgrade((int)v1, 0);
+				helper::drawShieldUpgrade((int)v1, 0);
 			} else if (v18 != UnitId::ZergOvileth && v18 != UnitId::Hero_Yggdrasill) {
 				if (v1->controlType)
 					v1 = *(BinDlg**)&v1->parent;
@@ -366,12 +269,12 @@ namespace hooks {
 				LABEL_55:
 					v19 = 0;
 				}
-				hideDialog(v19);
+				helper::hideDialog(v19);
 			} else {
-				drawArmor((int)v1, v18, 0);
+				helper::drawArmor((int)v1, v18, 0);
 			}
 		} else {
-			unitStatAct_Standard((void*)a1);
+		helper::unitStatAct_Standard((void*)a1);
 		}
 	}
 
@@ -386,7 +289,7 @@ namespace hooks {
 			v2 = a2->playerId;
 			v3 = a1->playerId == 11 ? a1->sprite->playerId : a1->playerId;
 			if (!scbw::isAlliedTo(v2, v3)) {
-				ByteOperations::SetLowByte(v4, AI_UnitCanAttack(a1));
+				ByteOperations::SetLowByte(v4, helper::AI_UnitCanAttack(a1));
 				if (v4)
 					result = 1;
 			}
@@ -410,38 +313,38 @@ namespace hooks {
 		v3 = (*activePortraitUnit)->shields >> 8;
 		*userInterfaceEnergy = (*activePortraitUnit)->energy;
 		*userInterfaceShields = v3;
-		*redrawTransportUI = needRedrawUI();
-		genericStatusUpdateDrawnValues();
+		*redrawTransportUI = helper::needRedrawUI();
+		helper::genericStatusUpdateDrawnValues();
 		ByteOperations::SetLowWord(v4, v1->id);
 		if ((uint16)v4 >= 0xB0u && (uint16)v4 <= 0xB2u || (int16)v4 == 188)
 			goto LABEL_35;
 		if (!IS_IN_REPLAY && (uint8)v1->id != *LOCAL_NATION_ID)
 			goto LABEL_6;
 		if (!(v1->status & 1)) {
-			drawProgressBar((int)v2);
+			helper::drawProgressBar((int)v2);
 			goto LABEL_32;
 		}
 		if ((int16)v4 == 108) {
-			drawNukeSiloInfo((int)v2);
+			helper::drawNukeSiloInfo((int)v2);
 			goto LABEL_32;
 		}
-		if (unitIsActiveTransport(v1))
+		if (helper::unitIsActiveTransport(v1))
 			goto LABEL_6;
-		ByteOperations::SetLowByte(v5, isQueueSlotActive(v1, 0));
+		ByteOperations::SetLowByte(v5, helper::isQueueSlotActive(v1, 0));
 		if (v5) {
-			drawTrainingProgress(v2);
+			helper::drawTrainingProgress(v2);
 			goto LABEL_32;
 		}
-		if (isConstructingAddon(v1) || isAttemptingProtossBuild(v1)) {
-			drawAddonProgress((int)v2);
+		if (helper::isConstructingAddon(v1) || helper::isAttemptingProtossBuild(v1)) {
+			helper::drawAddonProgress((int)v2);
 			goto LABEL_32;
 		}
 		if (v1->building.techType != 44) {
-			drawTechProgress((int)v2);
+			helper::drawTechProgress((int)v2);
 			goto LABEL_32;
 		}
 		if (v1->building.upgradeType != 61) {
-			drawUpgradeProgress(v2);
+			helper::drawUpgradeProgress(v2);
 			goto LABEL_32;
 		}
 		v4 = (uint16)v4;
@@ -449,35 +352,35 @@ namespace hooks {
 			drawSupplyUnitInfo((int)v2);
 			goto LABEL_32;
 		}
-		ByteOperations::SetLowByte(v6, unitIsGeyser(v1));
+		ByteOperations::SetLowByte(v6, helper::unitIsGeyser(v1));
 		if (v6) {
 		LABEL_35:
-			drawGasQuantity(v2);
+			helper::drawGasQuantity(v2);
 			goto LABEL_32;
 		}
-		if (units_dat::AirWeapon[getLastQueueSlotType(v1)] == -126
-			&& unitGetGroundWeapon(v1) == -126
+		if (units_dat::AirWeapon[helper::getLastQueueSlotType(v1)] == -126
+			&& helper::unitGetGroundWeapon(v1) == -126
 			&& !units_dat::ShieldsEnabled[v4]) {
 		LABEL_6:
 			if (*statusScreenFunc != 4) {
-				hideOptionalStatusScreenControls(v2);
+				helper::hideOptionalStatusScreenControls(v2);
 				*statusScreenFunc = 4;
 			}
 			goto LABEL_32;
 		}
 		if (*statusScreenFunc != 3) {
-			hideOptionalStatusScreenControls(v2);
-			showControlGroup(v2, -20, 12);
+			helper::hideOptionalStatusScreenControls(v2);
+			helper::showControlGroup(v2, -20, 12);
 			*statusScreenFunc = 3;
 		}
-		drawDisplayButtons((int)v2);
-		v7 = getControlFromIndex(v2, -21);
-		hideDialog(v7);
+		helper::drawDisplayButtons((int)v2);
+		v7 = helper::getControlFromIndex(v2, -21);
+		helper::hideDialog(v7);
 	LABEL_32:
-		setTextStr((int)v2);
-		setUnitStatusStrText((int)v2);
-		v8 = unitGetName(*activePortraitUnit);
-		addTextToDialog((int)v2, -5, v8);
+		helper::setTextStr((int)v2);
+		helper::setUnitStatusStrText((int)v2);
+		v8 = helper::unitGetName(*activePortraitUnit);
+		helper::addTextToDialog((int)v2, -5, v8);
 	}
 
 	int calcUnitStrength(int a1, uint8 a2) { // 00431270
@@ -514,7 +417,7 @@ namespace hooks {
 		return v3;
 	}
 
-	uint32 getUnitStrength(CUnit* a1, int a2, bool a3) { // 00431800
+	uint32 getUnitStrengthHook(CUnit* a1, int a2, bool a3) { // 00431800
 		CUnit* v3; // edi
 		int v4; // esi
 		int v5; // ebx
@@ -529,16 +432,16 @@ namespace hooks {
 			return 0;
 		if (a1->status & UnitStatus::IsHallucination) {
 			v5 = getTotalHitPointsPlusShields(a1);
-			if (getCurrentHitPointsPlusShields(v3) < v5)
+			if (helper::getCurrentHitPointsPlusShields(v3) < v5)
 				return 0;
 		}
-		v7 = getBaseStrength(a3, v3);
-		groundAir = getCurrentHitPointsPlusShields(v3);
+		v7 = helper::getBaseStrength(a3, v3);
+		groundAir = helper::getCurrentHitPointsPlusShields(v3);
 		if (units_dat::ShieldsEnabled[v4])
 			v8 = units_dat::MaxShieldPoints[v4];
 		else
 			v8 = 0;
-		v9 = v8 + getMaxHP(v3);
+		v9 = v8 + helper::getMaxHP(v3);
 		if (!v9)
 			v9 = 1;
 		return v7 * groundAir / v9;
@@ -551,7 +454,7 @@ namespace hooks {
 
 		result = 0;
 		if (a1->playerId == a2->playerId) {
-			if (canWeaponTargetUnit(WeaponId::Restoration, a1, a2)) {
+			if (helper::canWeaponTargetUnit(WeaponId::Restoration, a1, a2)) {
 				v3 = units_dat::ShieldsEnabled[(uint16)v2->id] ? v2->shields >> 8 : 0;
 				if (v3 + ((v2->hitPoints + 255) >> 8) > 60
 					&& scbw::isDebuffed(v2)) {
@@ -571,9 +474,9 @@ namespace hooks {
 
 		v2 = a1;
 		v3 = a2;
-		if (!AI_TargetUnitIsWorthHitting(a1, a2)
+		if (!helper::AI_TargetUnitIsWorthHitting(a1, a2)
 			|| !units_dat::ShieldsEnabled[(uint16)v2->id]
-			|| !canWeaponTargetUnit(WeaponId::EMP_Shockwave, v2, v3)) {
+			|| !helper::canWeaponTargetUnit(WeaponId::EMP_Shockwave, v2, v3)) {
 			return 0;
 		}
 		v5 = v2->sprite;
@@ -581,11 +484,11 @@ namespace hooks {
 		spriteX = v5->position.x;
 		*tempHPShields = 0;
 		*tempWeapon = WeaponId::EMP_Shockwave;
-		createSplashWeaponProc(
+		helper::createSplashWeaponProc(
 			160,
 			spriteX,
 			v6,
-			(int(__fastcall*)(int, int))unitShieldsClumpInAreaAccumulatorProc,
+			(int(__fastcall*)(int, int))helper::unitShieldsClumpInAreaAccumulatorProc,
 			(int)v3);
 		return *tempHPShields >= 200;
 	}
@@ -600,15 +503,15 @@ namespace hooks {
 		if (v4) {
 			if (!(v5->status & UnitStatus::Invincible)) {
 				if (a2) {
-					unitWasHit(v5, a2, a3 != WeaponId::Irradiate);
+					helper::unitWasHit(v5, a2, a3 != WeaponId::Irradiate);
 					if (a3 != WeaponId::Irradiate && v5->playerId != a2->playerId)
-						doAttackNotifyEvent(v5);
+						helper::doAttackNotifyEvent(v5);
 				}
 				if (units_dat::ShieldsEnabled[(uint16)v5->id]) {
 					if (v5->shields >= 256) {
 						*v4 = a3;
 						if (weapons_dat::DamageType[a3]) {
-							returnValue = (char)createShieldOverlay(a4, v5);
+							returnValue = (char)helper::createShieldOverlay(a4, v5);
 						}
 					}
 				}
@@ -677,8 +580,8 @@ namespace hooks {
 				if (!v15)
 					v15 = 1;
 			}
-			v16 = unk_billions((*(int*)(v5 + 8) + 255) >> 8, v15, (int)&v39, v13);
-			unk_billions2(*(int*)(v5 + 96) >> 8, units_dat::MaxShieldPoints[v6], (int)&colorData, HIBYTE(colorData));
+			v16 = helper::unk_billions((*(int*)(v5 + 8) + 255) >> 8, v15, (int)&v39, v13);
+			helper::unk_billions2(*(int*)(v5 + 96) >> 8, units_dat::MaxShieldPoints[v6], (int)&colorData, HIBYTE(colorData));
 			v17 = struct_5140E8;
 			if (v16 < (uint8)(*struct_5140E8).anonymous_0) {
 				do {
@@ -688,8 +591,8 @@ namespace hooks {
 			}
 			v19 = v38;
 			v20 = v37;
-			hpBarSurfaceBuffer(v37, v38, &v33, v39, (int)v17);
-			hpBarSurfaceBuffer2(colorData, v20, v19, (int)&v33);
+			helper::hpBarSurfaceBuffer(v37, v38, &v33, v39, (int)v17);
+			helper::hpBarSurfaceBuffer2(colorData, v20, v19, (int)&v33);
 			ByteOperations::SetHighByte(colorData, (uint8)8);
 		} else {
 			v36 = 5;
@@ -702,7 +605,7 @@ namespace hooks {
 				if (!v9)
 					v9 = 1;
 			}
-			v10 = unk_billions(
+			v10 = helper::unk_billions(
 				(*(int*)(colorData + 8) + 255) >> 8,
 				v9,
 				(int)&v39,
@@ -714,7 +617,7 @@ namespace hooks {
 					++v11;
 				} while (v10 < v12);
 			}
-			renderHPBar(v37, v38, &v33, v39, (int)v11);
+			helper::renderHPBar(v37, v38, &v33, v39, (int)v11);
 			ByteOperations::SetHighByte(colorData, 6);
 		}
 		v21 = *(int16*)(v5 + 100);
@@ -725,7 +628,7 @@ namespace hooks {
 			if (*(uint8*)(v5 + 76) == *LOCAL_NATION_ID) {
 				if (v22) {
 					if (!v23) {
-						v24 = getUnitMaxEnergy((CUnit*)v5) >> 8;
+						v24 = helper::getUnitMaxEnergy((CUnit*)v5) >> 8;
 						goto LABEL_32;
 					}
 				} else if (!v23) {
@@ -746,7 +649,7 @@ namespace hooks {
 				v34 = HIBYTE(colorData) + grpRect->top;
 				v36 = v28;
 				if (v28 >= 0 && !v29) {
-					v30 = getHpBarDrawSizes(
+					v30 = helper::getHpBarDrawSizes(
 						v26,
 						v24,
 						(int)&v39,
@@ -758,7 +661,7 @@ namespace hooks {
 							++v31;
 						} while (v30 < v32);
 					}
-					renderHPBar(v37, v38 + v27, &v33, v39, (int)v31);
+					helper::renderHPBar(v37, v38 + v27, &v33, v39, (int)v31);
 				}
 				return;
 			}
@@ -865,7 +768,7 @@ namespace hooks {
 			switch (v1) {
 				case OrderId::MagnaPulse:
 				case OrderId::StasisField:
-					if (v3 && !unitIsFrozen(v3))
+					if (v3 && !helper::unitIsFrozen(v3))
 						goto LABEL_23;
 					goto LABEL_17;
 				case OrderId::CastParasite:
@@ -876,7 +779,7 @@ namespace hooks {
 				case OrderId::EmpShockwave:
 					if (!v3)
 						goto LABEL_23;
-					ByteOperations::SetLowByte(v5, isUnitCasterNotHallucination(v3));
+					ByteOperations::SetLowByte(v5, helper::isUnitCasterNotHallucination(v3));
 					if (v5) {
 						if (HIBYTE(v3->energy) >= 0x64u)
 							goto LABEL_23;
@@ -907,7 +810,7 @@ namespace hooks {
 		} else {
 		LABEL_23:
 			if (orders_dat::UseWeaponTargeting[v2]) {
-				if (!canWeaponTargetUnit(v10, v3, a1))
+				if (!helper::canWeaponTargetUnit(v10, v3, a1))
 					return 1;
 			} else {
 				ByteOperations::SetLowByte(v6, orders_dat::TechUsed[v2]);
@@ -927,11 +830,11 @@ namespace hooks {
 							break;
 						default:
 							if ((uint8)v6 == TechId::SpiderMines) {
-								ByteOperations::SetLowByte(v7, getActiveTileFlag(v8, v9, 0x410000, 0));
+								ByteOperations::SetLowByte(v7, helper::getActiveTileFlag(v8, v9, 0x410000, 0));
 							} else {
 								if (!v3 || v3->status & 0x4000000)
 									goto LABEL_17;
-								v7 = (uint16)getTargetUnitAbilityErrorStatString(v3, a1->playerId, v6) == 0;
+								v7 = (uint16)helper::getTargetUnitAbilityErrorStatString(v3, a1->playerId, v6) == 0;
 							}
 							if (!v7)
 								goto LABEL_17;
@@ -949,7 +852,7 @@ namespace hooks {
 		signed int v4; // ecx
 
 		if (!a1) {
-			SErrSetLastError(87);
+			helper::SErrSetLastError(87);
 			return 0;
 		}
 		v3 = *(uint16*)(a1 + 100);
@@ -1006,10 +909,10 @@ namespace hooks {
 		v10 = (int32*)(a1 + 36);
 		*v10 = 0;
 		v10[1] = 0;
-		//		*(int32*)(a1 + 48) = v3;
-		updateImageDrawData((CImage*)a1);
+		// *(int32*)(a1 + 48) = v3;
+		helper::updateImageDrawData((CImage*)a1);
 		*(int8*)(a1 + 12) |= 1u;
-		playImageIscript((CImage*)a1, 0);
+		helper::playImageIscript((CImage*)a1, 0);
 	}
 
 	int32 AI_FindTransport(CUnit* a1, int a2) { // 004E6EF0
@@ -1050,13 +953,13 @@ namespace hooks {
 			}
 			if ((v2->hitPoints + 255) >> 8 >= 3 * v6 / 4 || units_dat::ShieldsEnabled[v5] && v2->shields >> 8 == units_dat::MaxShieldPoints[v5]) {
 				v11 = 1;
-				if (canEnterTransport(v2, a1)) {
+				if (helper::canEnterTransport(v2, a1)) {
 					v7 = v2->mainOrderId;
 					if (v7 != OrderId::Pickup2 && v7 != OrderId::Unload) {
 						if (v7 != OrderId::MoveUnload
-							|| (v8 = SAI_GetRegionIdFromPxEx(v2->orderTarget.pt.x, v2->orderTarget.pt.y),
-								v8 == SAI_GetRegionIdFromPxEx(a1->orderTarget.pt.x, a1->orderTarget.pt.y))) {
-							v9 = getUnitDistanceToHalt(v2->sprite->position.y, a1, v2->sprite->position.x);
+							|| (v8 = helper::SAI_GetRegionIdFromPxEx(v2->orderTarget.pt.x, v2->orderTarget.pt.y),
+								v8 == helper::SAI_GetRegionIdFromPxEx(a1->orderTarget.pt.x, a1->orderTarget.pt.y))) {
+							v9 = helper::getUnitDistanceToHalt(v2->sprite->position.y, a1, v2->sprite->position.x);
 							if (v9 < v12) {
 								//								*(int32*)a2 = v2;
 								v12 = v9;
@@ -1082,27 +985,27 @@ namespace hooks {
 			return 0;
 		switch (*(unsigned __int8*)a2) {
 			case 0u:
-				result = dataTransfer00(a3, a1, a2);
+				result = helper::dataTransfer00(a3, a1, a2);
 				break;
 			case 1u:
-				result = dataTransfer01(a3, a2, a1);
+				result = helper::dataTransfer01(a3, a2, a1);
 				break;
 			case 2u:
-				result = dataTransfer02(a3, a2, a1);
+				result = helper::dataTransfer02(a3, a2, a1);
 				break;
 			case 3u:
-				result = dataTransfer03(a3, a1, a2);
+				result = helper::dataTransfer03(a3, a1, a2);
 				break;
 			case 4u:
-				result = dataTransfer04(a3, a2, a1);
+				result = helper::dataTransfer04(a3, a2, a1);
 				break;
 			case 5u:
-				result = dataTransfer05(a3, a2);
+				result = helper::dataTransfer05(a3, a2);
 				break;
 			case 6u:
-				if (a3 == 3 && (v3 = (int)vectorTransfer(*(int8*)(a2 + 2), *(int8*)(a2 + 1))) != 0) {
+				if (a3 == 3 && (v3 = (int)helper::vectorTransfer(*(int8*)(a2 + 2), *(int8*)(a2 + 1))) != 0) {
 					*(int8*)(v3 + 52) &= 0xFDu;
-					dataTransfer06(v3);
+					helper::dataTransfer06(v3);
 					result = 1;
 				} else {
 					result = 0;
@@ -1110,885 +1013,6 @@ namespace hooks {
 				break;
 			default:
 				return 0;
-		}
-		return result;
-	}
-}
-
-namespace { // Helpers
-
-	// For drawUnitInfo
-
-	const uint32 Func_hideOptionalStatusScreenControls = 0x00457310;
-	void hideOptionalStatusScreenControls(BinDlg* a1) {
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_hideOptionalStatusScreenControls
-			POPAD
-		}
-	}
-
-	const uint32 Func_showControlGroup = 0x00457250;
-	void showControlGroup(BinDlg* a1, int16 a2, int16 a3) {
-		__asm {
-			PUSHAD
-			PUSH a3
-			MOV EAX, a1
-			MOVZX CX, a2
-			CALL Func_showControlGroup
-			POPAD
-		}
-	}
-
-	const uint32 Func_addTextToDialog = 0x004258B0;
-	void addTextToDialog(int a1, int16 a2, int a3) {
-		__asm {
-			PUSHAD
-			PUSH a3
-			MOV EAX, a1
-			MOVZX CX, a2
-			CALL Func_addTextToDialog
-			POPAD
-		}
-	}
-
-	const uint32 Func_drawShieldUpgrade = 0x00425510;
-	void drawShieldUpgrade(int a1, uint16 a2) {
-		__asm {
-			PUSHAD
-			PUSH a2
-			MOV EAX, a1
-			CALL Func_drawShieldUpgrade
-			POPAD
-		}
-	}
-
-	const uint32 Func_hideDialog = 0x00418700;
-	void hideDialog(BinDlg* a1) {
-		__asm {
-			PUSHAD
-			MOV ESI, a1
-			CALL Func_hideDialog
-			POPAD
-		}
-	}
-
-	// For drawSupplyUnitInfo
-
-	const uint32 Func_getSuppliesUsed = 0x00424732;
-	int getSuppliesUsed() {
-		static int result;
-		__asm {
-			PUSHAD
-			CALL Func_getSuppliesUsed
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_getLastQueueSlotType = 0x0047B270;
-	uint16 getLastQueueSlotType(CUnit* a1) {
-		static uint32 result;
-		__asm {
-			PUSHAD
-			MOV EDX, a1
-			CALL Func_getLastQueueSlotType
-			MOV result, EAX
-			POPAD
-		}
-		return (uint16)result;
-	}
-
-	const uint32 Func_getSuppliesAvailable = 0x00488900;
-	uint32 getSuppliesAvailable(uint8 a1, int a2) {
-		static uint32 result;
-		__asm {
-			PUSHAD
-			MOVZX AL, a1
-			MOV ECX, a2
-			CALL Func_getSuppliesAvailable
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_drawArmor = 0x00425600;
-	void drawArmor(int a1, int a2, uint16 a3) {
-		__asm {
-			PUSHAD
-			PUSH a3
-			MOV EAX, a1
-			MOV EDX, a2
-			CALL Func_drawArmor
-			POPAD
-		}
-	}
-
-	const uint32 Func_unitStatAct_Standard = 0x00426F50;
-	void unitStatAct_Standard(void* a1) {
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			CALL Func_unitStatAct_Standard
-			POPAD
-		}
-	}
-
-	// For AI_TargetEnemyProc
-
-	const uint32 Func_AI_UnitCanAttack = 0x00476180;
-	bool AI_UnitCanAttack(CUnit* a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			CALL Func_AI_UnitCanAttack
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
-	}
-
-	// For drawBuildingInfo
-
-	const uint32 Func_needRedrawUI = 0x00424A10;
-	int needRedrawUI() {
-		static int result;
-		__asm {
-			PUSHAD
-			CALL Func_needRedrawUI
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_genericStatusUpdateDrawnValues = 0x004248F0;
-	CUnit* genericStatusUpdateDrawnValues() {
-		static CUnit* result;
-		__asm {
-			PUSHAD
-			CALL Func_genericStatusUpdateDrawnValues
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_drawProgressBar = 0x004260C0;
-	void drawProgressBar(int a1) {
-		__asm {
-			PUSHAD
-			MOV EDI, a1
-			CALL Func_drawProgressBar
-			POPAD
-		}
-	}
-
-	const uint32 Func_drawNukeSiloInfo = 0x00426FF0;
-	void drawNukeSiloInfo(int a1) {
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_drawNukeSiloInfo
-			POPAD
-		}
-	}
-
-	const uint32 Func_unitIsActiveTransport = 0x004E6BA0;
-	bool unitIsActiveTransport(CUnit* a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			CALL Func_unitIsActiveTransport
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
-	}
-
-	const uint32 Func_isQueueSlotActive = 0x00401E70;
-	bool isQueueSlotActive(CUnit* a1, int a2) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			MOV EDX, a2
-			CALL Func_isQueueSlotActive
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
-	}
-
-	const uint32 Func_drawTrainingProgress = 0x004268D0;
-	void drawTrainingProgress(BinDlg* a1) {
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_drawTrainingProgress
-			POPAD
-		}
-	}
-
-	const uint32 Func_isConstructingAddon = 0x004E66B0;
-	bool isConstructingAddon(CUnit* a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_isConstructingAddon
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
-	}
-
-	const uint32 Func_isAttemptingProtossBuild = 0x004E4C40;
-	bool isAttemptingProtossBuild(CUnit* a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_isAttemptingProtossBuild
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
-	}
-
-	const uint32 Func_drawAddonProgress = 0x00425F30;
-	void drawAddonProgress(int a1) {
-		__asm {
-			PUSHAD
-			MOV EDI, a1
-			CALL Func_drawAddonProgress
-			POPAD
-		}
-	}
-
-	const uint32 Func_drawTechProgress = 0x004266F0;
-	void drawTechProgress(int a1) {
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_drawTechProgress
-			POPAD
-		}
-	}
-
-	const uint32 Func_drawUpgradeProgress = 0x00426500;
-	void drawUpgradeProgress(BinDlg* a1) {
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_drawUpgradeProgress
-			POPAD
-		}
-	}
-
-	const uint32 Func_unitIsGeyser = 0x004688B0;
-	bool unitIsGeyser(CUnit* a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_unitIsGeyser
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
-	}
-
-	const uint32 Func_drawGasQuantity = 0x00426190;
-	void drawGasQuantity(BinDlg* a1) {
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_drawGasQuantity
-			POPAD
-		}
-	}
-
-	const uint32 Func_unitGetGroundWeapon = 0x00475AD0;
-	int8 unitGetGroundWeapon(CUnit* a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			CALL Func_unitGetGroundWeapon
-			MOV result, EAX
-			POPAD
-		}
-		return (int8)result;
-	}
-
-	const uint32 Func_drawDisplayButtons = 0x00426C60;
-	void drawDisplayButtons(int a1) {
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_drawDisplayButtons
-			POPAD
-		}
-	}
-
-	const uint32 Func_getControlFromIndex = 0x00418080;
-	BinDlg* getControlFromIndex(BinDlg* a1, int16 a2) {
-		static BinDlg* result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOVZX CX, a2
-			CALL Func_getControlFromIndex
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_setTextStr = 0x004263E0;
-	void setTextStr(int a1) {
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_setTextStr
-			POPAD
-		}
-	}
-
-	const uint32 Func_setUnitStatusStrText = 0x00425B50;
-	void setUnitStatusStrText(int a1) {
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_setUnitStatusStrText
-			POPAD
-		}
-	}
-
-	const uint32 Func_unitGetName = 0x0047B5A0;
-	int unitGetName(CUnit* a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			CALL Func_unitGetName
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	// For getUnitStrength
-	const uint32 Func_getCurrentHitPointsPlusShields = 0x004026D0;
-	int getCurrentHitPointsPlusShields(CUnit* a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_getCurrentHitPointsPlusShields
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_getBaseStrength = 0x004316D0;
-	int getBaseStrength(int a1, CUnit* a2) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV EDI, a2
-			CALL Func_getBaseStrength
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_getMaxHP = 0x00401400;
-	int getMaxHP(CUnit* a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_getMaxHP
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	// For AI_RestorationRequirementsProc
-	const uint32 Func_canWeaponTargetUnit = 0x00475CE0;
-	int canWeaponTargetUnit(uint8 a1, CUnit* a2, CUnit* a3) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV AL, a1
-			MOV EDX, a2
-			PUSH a3
-			CALL Func_canWeaponTargetUnit
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	// For AI_EMPShieldRequirementsProc
-
-	const uint32 Func_AI_TargetUnitIsWorthHitting = 0x00440E30;
-	int32 AI_TargetUnitIsWorthHitting(CUnit* a1, CUnit* a2) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			CALL Func_AI_TargetUnitIsWorthHitting
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_createSplashWeaponProc = 0x004E82E0;
-	int createSplashWeaponProc(int16 a1, int16 a2, int16 a3, int(__fastcall* a4)(int, int), int a5) {
-		static int result;
-		__asm {
-			PUSHAD
-			PUSH a5
-			PUSH a4
-			MOV AX, a1
-			MOV DX, a2
-			MOV CX, a3
-			CALL Func_createSplashWeaponProc
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_unitShieldsClumpInAreaAccumulatorProc = 0x00440A60;
-	int unitShieldsClumpInAreaAccumulatorProc(CUnit* a1, CUnit* a2) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			MOV EDX, a2
-			CALL Func_unitShieldsClumpInAreaAccumulatorProc
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	// For hallucinationHit
-	const uint32 Func_unitWasHit = 0x004795D0;
-	void unitWasHit(CUnit* a1, CUnit* a2, int a3) {
-		__asm {
-			PUSHAD
-			PUSH a3
-			PUSH a2
-			MOV EBX, a1
-			CALL Func_unitWasHit
-			POPAD
-		}
-	}
-
-	const uint32 Func_doAttackNotifyEvent = 0x0048F230;
-	void doAttackNotifyEvent(CUnit* a1) {
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_doAttackNotifyEvent
-			POPAD
-		}
-	}
-
-	const uint32 Func_createShieldOverlay = 0x004E6140;
-	CImage* createShieldOverlay(int a1, CUnit* a2) {
-		static CImage* result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			CALL Func_createShieldOverlay
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	// For drawImageHPBar
-	const uint32 Func_unk_billions = 0x0047A750;
-	int unk_billions(int a1, int32 a2, int a3, int a4) {
-		static int result;
-		__asm {
-			PUSHAD
-			PUSH a4
-			MOV EAX, a1
-			MOV ECX, a2
-			MOV EBX, a3
-			CALL Func_unk_billions
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_unk_billions2 = 0x0047A6E0;
-	int unk_billions2(int a1, int32 a2, int a3, int a4) {
-		static int result;
-		__asm {
-			PUSHAD
-			PUSH a4
-			MOV EAX, a1
-			MOV ECX, a2
-			MOV EDI, a3
-			CALL Func_unk_billions2
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_hpBarSurfaceBuffer = 0x0047A350;
-	int hpBarSurfaceBuffer(int a1, int a2, int* a3, int a4, int a5) {
-		static int result;
-		__asm {
-			PUSHAD
-			PUSH a5
-			PUSH a4
-			PUSH a3
-			PUSH a2
-			PUSH a1
-			CALL Func_hpBarSurfaceBuffer
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_hpBarSurfaceBuffer2 = 0x0047A120;
-	int hpBarSurfaceBuffer2(int a1, int a2, uint16 a3, int a4) {
-		static int result;
-		__asm {
-			PUSHAD
-			PUSH a4
-			PUSH a3
-			PUSH a2
-			MOV EAX, a1
-			CALL Func_hpBarSurfaceBuffer2
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_renderHPBar = 0x0047A4E0;
-	int renderHPBar(int a1, int a2, int* a3, int a4, int a5) {
-		static int result;
-		__asm {
-			PUSHAD
-			PUSH a5
-			PUSH a4
-			PUSH a3
-			PUSH a2
-			PUSH a1
-			CALL Func_renderHPBar
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_getUnitMaxEnergy = 0x00491870;
-	int32 getUnitMaxEnergy(CUnit* a1) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_getUnitMaxEnergy
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_getHpBarDrawSizes = 0x0047A670;
-	int getHpBarDrawSizes(int a1, int32 a2, int a3, int a4) {
-		static int result;
-		__asm {
-			PUSHAD
-			PUSH a4
-			MOV EAX, a1
-			MOV ECX, a2
-			MOV EDI, a3
-			CALL Func_getHpBarDrawSizes
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	// For canCastSpell
-	const uint32 Func_unitIsFrozen = 0x004020B0;
-	bool unitIsFrozen(CUnit* a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_unitIsFrozen
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
-	}
-
-	const uint32 Func_isUnitCasterNotHallucination = 0x00401210;
-	bool isUnitCasterNotHallucination(CUnit* a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_isUnitCasterNotHallucination
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
-	}
-
-	const uint32 Func_getActiveTileFlag = 0x00472F80;
-	bool getActiveTileFlag(int16 a1, int16 a2, int a3, int a4) {
-		static int result;
-		__asm {
-			PUSHAD
-			PUSH a4
-			PUSH a3
-			PUSH a2
-			MOVZX AX, a1
-			CALL Func_getActiveTileFlag
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
-	}
-
-	const uint32 Func_getTargetUnitAbilityErrorStatString = 0x00491E80;
-	CUnit* getTargetUnitAbilityErrorStatString(CUnit* a1, char a2, int a3) {
-		static CUnit* result;
-		__asm {
-			PUSHAD
-			PUSH a3
-			MOV EAX, a1
-			MOVZX BL, a2
-			CALL Func_getTargetUnitAbilityErrorStatString
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	// For modifyUnitShields
-	const uint32 Func_SErrSetLastError = 0x00410172;
-	int SErrSetLastError(char a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_SErrSetLastError
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	// For compileHealthBar
-
-	const uint32 Func_updateImageDrawData = 0x004D57B0;
-	void updateImageDrawData(CImage* a1) {
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_updateImageDrawData
-			POPAD
-		}
-	}
-
-	const uint32 Func_playImageIscript = 0x004D8470;
-	void playImageIscript(CImage* a1, char a2) {
-		__asm {
-			PUSHAD
-			PUSH a2
-			MOV ECX, a1
-			CALL Func_playImageIscript
-			POPAD
-		}
-	}
-
-	// For AI_FindTransport
-	const uint32 Func_canEnterTransport = 0x004E6E00;
-	bool canEnterTransport(CUnit* a1, CUnit* a2) {
-		static int result;
-		__asm {
-			PUSHAD
-			PUSH a2
-			MOV EAX, a1
-			CALL Func_canEnterTransport
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
-	}
-
-	const uint32 Func_SAI_GetRegionIdFromPxEx = 0x0049C9F0;
-	int16 SAI_GetRegionIdFromPxEx(int32 a1, int32 a2) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			MOV EDI, a1
-			MOV ECX, a2
-			CALL Func_SAI_GetRegionIdFromPxEx
-			MOV result, EAX
-			POPAD
-		}
-		return (int16)result;
-	}
-
-	const uint32 Func_getUnitDistanceToHalt = 0x00402140;
-	int32 getUnitDistanceToHalt(int a1, CUnit* a2, int a3) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			PUSH a3
-			MOV ECX, a1
-			MOV EAX, a2
-			CALL Func_getUnitDistanceToHalt
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	// For mapDataTransfer
-	const uint32 Func_dataTransfer00 = 0x00472A00;
-	int32 dataTransfer00(int a1, char a2, int a3) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOVZX CL, a2
-			MOV ESI, a3
-			CALL Func_dataTransfer00
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_dataTransfer01 = 0x0045A600;
-	int dataTransfer01(uint32 a1, int a2, uint32 a3) {
-		static int result;
-		__asm {
-			PUSHAD
-			PUSH a3
-			PUSH a2
-			MOV EAX, a1
-			CALL Func_dataTransfer01
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_dataTransfer02 = 0x0045A230;
-	int32 dataTransfer02(int a1, int a2, char a3) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			MOVZX BL, a3
-			CALL Func_dataTransfer02
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_dataTransfer03 = 0x0045A1F0;
-	int32 dataTransfer03(int a1, char a2, int a3) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			PUSH a3
-			MOV EAX, a1
-			MOVZX BL, a2
-			CALL Func_dataTransfer03
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_dataTransfer04 = 0x0045A390;
-	int dataTransfer04(uint32 a1, int a2, int a3) {
-		static int result;
-		__asm {
-			PUSHAD
-			PUSH a3
-			PUSH a2
-			MOV EAX, a1
-			CALL Func_dataTransfer04
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_dataTransfer05 = 0x0045A190;
-	int32 dataTransfer05(int a1, int a2) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV EDI, a2
-			CALL Func_dataTransfer05
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_vectorTransfer = 0x0045A010;
-	vectorHead* vectorTransfer(char a1, char a2) {
-		static vectorHead* result;
-		__asm {
-			PUSHAD
-			PUSH a2
-			MOVZX BL, a1
-			CALL Func_vectorTransfer
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_dataTransfer06 = 0x00472900;
-	int dataTransfer06(int a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_dataTransfer06
-			MOV result, EAX
-			POPAD
 		}
 		return result;
 	}

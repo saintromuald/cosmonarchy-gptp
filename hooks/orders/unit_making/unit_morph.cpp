@@ -7,43 +7,7 @@
 #include "hooks\orders\building_making\building_morph.h"
 #include "hooks\orders\unit_making\unit_morph.h"
 #include "globals.h"
-//helper functions def
 
-
-uint32 Func_Sub46A820 = 0x0046A820;
-uint8 setArchonPathing(CUnit* unit) {
-	static uint8 result;
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_Sub46A820
-		MOV result, AL
-		POPAD
-	}
-	return result;
-	//
-}
-;
-
-namespace {
-
-	void fixTargetLocation(Point16* coords, uint32 unitId);							//01FA0
-	bool hasSuppliesForUnit(uint32 unitId, uint32 playerId, bool32 canShowErrorMessage);	//2CF70
-	CUnit* function_0045D910(CUnit* unit);											//5D910
-	void orderNewUnitToRally(CUnit* unit, CUnit* factory);							//66F50
-	bool advanceRemainingBuildTime_Sub466940(CUnit* unit);							//66940
-	void refundAllQueueSlots(CUnit* unit);											//66E80
-	void actUnitReturnToIdle(CUnit* unit);											//75420
-	void incrementUnitScoresEx(CUnit* unit, int32 unk1, int32 unk2);					//88D50
-	void playMorphingCompleteSound(CUnit* unit);									//8F440
-	void updateUnitStrength(CUnit* unit);											//9FA40
-	void replaceUnitWithType(CUnit* unit, uint16 newUnitId);							//9FED0
-	void function_004A01F0(CUnit* unit);											//A01F0
-	void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit);					//A2830
-	void changeUnitButtonSet_Sub4E5D60(CUnit* unit, uint16 unitId);					//E5D60
-	void function_004E65E0(CUnit* unit, bool32 flag);								//E65E0
-
-} //unnamed namespace
 namespace hooks {
 
 	void orders_ZergBirth(CUnit* unit) {
@@ -70,10 +34,10 @@ namespace hooks {
 			unit2 = nullptr;
 
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg && !vorvaling) {
-				unit2 = function_0045D910(unit);//zerg dual birth
+				unit2 = helper::function_0045D910(unit);//zerg dual birth
 
 				if (unit2 != nullptr)
-					AI_TrainingUnit(unit, unit2);
+					helper::AI_TrainingUnit(unit, unit2);
 
 			}
 
@@ -81,13 +45,13 @@ namespace hooks {
 				unit->id != UnitId::ZergDroleth &&
 				unit->id != UnitId::ZergOvileth
 				)
-				AI_TrainingUnit(unit, unit);
+				helper::AI_TrainingUnit(unit, unit);
 
-			function_004E65E0(unit, 0);
+			helper::initBuilding(unit, 0);
 
 			//update various stuff (set hp, set shield...) not finished on Morph
-			function_004A01F0(unit);
-			updateUnitStrength(unit);
+			helper::updateUnitStatsFinishBuilding(unit);
+			helper::updateUnitStrength(unit);
 
 			pos.x = unit->sprite->position.x;
 			pos.y = unit->sprite->position.y;
@@ -102,7 +66,7 @@ namespace hooks {
 
 			}
 
-			fixTargetLocation(&pos, unit->id);
+			helper::fixTargetLocation(&pos, unit->id);
 
 			if (
 				pos.x != unit->sprite->position.x ||
@@ -115,15 +79,15 @@ namespace hooks {
 				) {
 				auto origin = unit->eggOrigin;
 				if (origin == UnitId::ZergLarva) {
-					orderNewUnitToRally(unit, unit->connectedUnit);
+					helper::orderNewUnitToRally(unit, unit->connectedUnit);
 
 					if (unit2 != nullptr)
-						orderNewUnitToRally(unit2, unit->connectedUnit);
+						helper::orderNewUnitToRally(unit2, unit->connectedUnit);
 				}
 
 			}
 
-			actUnitReturnToIdle(unit);
+			helper::actUnitReturnToIdle(unit);
 
 		}
 
@@ -134,13 +98,13 @@ namespace hooks {
 	void orders_Morph1(CUnit* unit) {
 		if (unit->mainOrderState == 0) {
 			if (scbw::isConventionalUnitMorphSource(unit->id, true, true)) {
-				if (!hasSuppliesForUnit(
+				if (!helper::hasSuppliesForUnit(
 					unit->buildQueue[unit->buildQueueSlot],
 					unit->playerId,
 					1
 				))
 				{
-					refundAllQueueSlots(unit);
+					helper::refundAllQueueSlots(unit);
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 				} 
 				else 
@@ -152,7 +116,7 @@ namespace hooks {
 						case UnitId::ZergIroleth:
 							break;
 						default:
-							incrementUnitScoresEx(unit, -1, 0);
+							helper::incrementUnitScoresEx(unit, -1, 0);
 							break;
 					}
 					//					incrementUnitScoresEx(unit, -1, 0);
@@ -195,7 +159,7 @@ namespace hooks {
 					}
 					if (!bStopThere) {
 						if (unit->id == UnitId::ProtossCantavis) {
-							replaceUnitWithType(unit, UnitId::ProtossAugur);
+							helper::replaceUnitWithType(unit, UnitId::ProtossAugur);
 							unit->sprite->flags &= ~CSprite_Flags::IscriptCode;
 							if (unit->sprite->images.head != nullptr) {
 								CImage* current_image = unit->sprite->images.head;
@@ -205,18 +169,18 @@ namespace hooks {
 									current_image = current_image->link.next;
 								} while (current_image != nullptr);
 							}
-							changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
+							helper::changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
 							scbw::refreshConsole();
-							unit->status &= ~UnitStatus::IsBuilding; //disable the flag if set
-							setArchonPathing(unit);
+							unit->status &= ~UnitStatus::IsBuilding; // disable the flag if set
+							helper::setArchonPathing(unit);
 							unit->orderComputerCL(OrderId::CompletingArchonSummon);
 							return;
 						} else {
 							unit->eggOrigin = unit->id;
-							//morph into egg from source unit
-							replaceUnitWithType(unit, eggId);
+							// morph into egg from source unit
+							helper::replaceUnitWithType(unit, eggId);
 						}
-						changeUnitButtonSet_Sub4E5D60(unit, unit->id);
+						helper::changeUnitButtonSet_Sub4E5D60(unit, unit->id);
 						unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
 						unit->mainOrderState = 1;
 						auto origin = unit->eggOrigin;
@@ -237,7 +201,7 @@ namespace hooks {
 
 			if (unit->mainOrderState == 1) {
 				//advance
-				if (advanceRemainingBuildTime_Sub466940(unit)) {
+				if (helper::advanceRemainingBuildTime_Sub466940(unit)) {
 					auto origin = unit->eggOrigin;
 					auto anim = IscriptAnimation::SpecialState1;
 					/*if (origin == UnitId::ZergLarva) {
@@ -264,20 +228,20 @@ namespace hooks {
 								break;
 						}
 
-						replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
+						helper::replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
 						if (
 							unit->id == UnitId::ZergDroleth ||
 							unit->id == UnitId::ZergOvileth
 							)
-							AI_TrainingUnit(unit, unit);
+							helper::AI_TrainingUnit(unit, unit);
 
-						playMorphingCompleteSound(unit);
+						helper::playMorphingCompleteSound(unit);
 						unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 						if (units_dat::ConstructionGraphic[unit->id] != 0) {
 
 							CImage* current_image;
 
-							function_004E65E0(unit, 1);
+							helper::initBuilding(unit, 1);
 
 							current_image = unit->sprite->images.head;
 
@@ -296,12 +260,12 @@ namespace hooks {
 
 							//update various stuff (set hp, set shield...) not finished on Morph
 
-							function_004A01F0(unit);
+							helper::updateUnitStatsFinishBuilding(unit);
 
-							updateUnitStrength(unit);
+							helper::updateUnitStrength(unit);
 							auto origin = unit->eggOrigin;
 							if (unit->id == UnitId::ZergEgg && origin == UnitId::ZergLarva)
-								orderNewUnitToRally(unit, unit->connectedUnit);
+								helper::orderNewUnitToRally(unit, unit->connectedUnit);
 
 						}
 
@@ -590,8 +554,8 @@ namespace hooks {
 			//			|| unit->id==UnitId::Hero_Warbringer
 			|| scbw::isLarvalEgg(unit))//just egg previously
 		{
-			if (hasSuppliesForUnit(unit_id, unit->playerId, notify_error)) {
-				CUnit* result = scbw::CreateUnit(unit_id, unit->getX(), unit->getY(), unit->playerId);
+			if (helper::hasSuppliesForUnit(unit_id, unit->playerId, notify_error)) {
+				CUnit* result = helper::createUnit(unit_id, unit->getX(), unit->getY(), unit->playerId);
 				if (result)
 					return result;
 				scbw::displayLastNetErrForPlayer(unit->playerId);
@@ -599,253 +563,4 @@ namespace hooks {
 		}
 		return 0;
 	}
-
-
-} //namespace hooks
-
-;
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_fixTargetLocation = 0x00401FA0;
-	void fixTargetLocation(Point16* coords, uint32 unitId) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unitId
-			MOV EDX, coords
-			CALL Func_fixTargetLocation
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_hasSuppliesForUnit = 0x0042CF70;
-	bool hasSuppliesForUnit(uint32 unitId, uint32 playerId, bool32 canShowErrorMessage) {
-
-		static bool32 bPreResult;
-
-		__asm {
-			PUSHAD
-			PUSH canShowErrorMessage
-			PUSH unitId
-			PUSH playerId
-			CALL Func_hasSuppliesForUnit
-			MOV bPreResult, EAX
-			POPAD
-		}
-
-		return (bPreResult != 0);
-
-	}
-
-	;
-
-	const uint32 Func_Sub45D910 = 0x0045D910;
-	CUnit* function_0045D910(CUnit* unit) {
-
-		static CUnit* rValue;
-
-		__asm {
-			PUSHAD
-			PUSH unit
-			CALL Func_Sub45D910
-			MOV rValue, EAX
-			POPAD
-		}
-
-		return rValue;
-
-	}
-
-	;
-
-	uint32 Func_Sub466940 = 0x00466940;
-	//return true if remainingBuildTime was 0 when called,
-	//remainingBuildTime change affected by cheating
-	bool advanceRemainingBuildTime_Sub466940(CUnit* unit) {
-
-		static bool32 bTimeWasZero;
-
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			CALL Func_Sub466940
-			MOV bTimeWasZero, EAX
-			POPAD
-		}
-
-		return (bTimeWasZero != 0);
-
-	}
-
-	;
-
-	const uint32 Func_RefundAllQueueSlots = 0x00466E80;
-	void refundAllQueueSlots(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_RefundAllQueueSlots
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub466F50 = 0x00466F50;
-	void orderNewUnitToRally(CUnit* unit, CUnit* factory) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			MOV ECX, factory
-			CALL Func_Sub466F50
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_ActUnitReturnToIdle = 0x00475420;
-	void actUnitReturnToIdle(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_ActUnitReturnToIdle
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_incrementUnitScoresEx = 0x00488D50;
-	//unk1 is ECX, unk2 is pushed value
-	void incrementUnitScoresEx(CUnit* unit, int32 count, int32 unk2) {
-
-		__asm {
-			PUSHAD
-			MOV EDI, unit
-			MOV ECX, count
-			PUSH unk2
-			CALL Func_incrementUnitScoresEx
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_PlayMorphingCompleteSound = 0x0048F440;
-	void playMorphingCompleteSound(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_PlayMorphingCompleteSound
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_UpdateUnitStrength = 0x0049FA40;
-	void updateUnitStrength(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_UpdateUnitStrength
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_ReplaceUnitWithType = 0x0049FED0;
-	void replaceUnitWithType(CUnit* unit, uint16 newUnitId) {
-		uint32 newUnitId_ = newUnitId;
-
-		__asm {
-			PUSHAD
-			PUSH newUnitId_
-			MOV EAX, unit
-			CALL Func_ReplaceUnitWithType
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub4A01F0 = 0x004A01F0;
-	void function_004A01F0(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub4A01F0
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_AI_TrainingUnit = 0x004A2830;
-	void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit) {
-		__asm {
-			PUSHAD
-			MOV EAX, created_unit
-			MOV ECX, unit_creator
-			CALL Func_AI_TrainingUnit
-			POPAD
-		}
-	}
-
-	;
-
-	const uint32 Func_Sub4E5D60 = 0x004E5D60;
-	void changeUnitButtonSet_Sub4E5D60(CUnit* unit, uint16 buttonSetId) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			MOV CX, buttonSetId
-			CALL Func_Sub4E5D60
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub4E65E0 = 0x004E65E0;
-	void function_004E65E0(CUnit* unit, bool32 flag) {
-
-		__asm {
-			PUSHAD
-			MOV EDI, unit
-			PUSH flag
-			CALL Func_Sub4E65E0
-			POPAD
-		}
-
-	}
-
-	;
-
-} //Unnamed namespace
-
-//End of helper functions
+}

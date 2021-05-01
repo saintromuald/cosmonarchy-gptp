@@ -1,19 +1,6 @@
 #include "research_upgrade_orders.h"
 #include <SCBW/api.h>
 
-//helper functions def
-
-namespace {
-
-	bool isUnitUpgradeAvailable(CUnit* unit);															//033D0
-	void ApplySpeedUpgradeFromUpgradeType(CUnit* unit, uint8 upgradeType);									//54540
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);											//742D0
-	void playUpgradeCompleteSound();																	//8F070
-	void playResearchCompleteSound();																	//8F150
-	void setUpgradeLevel(uint32 playerId, uint32 upgradeType, uint8 upgradeLevel);								//CE770
-
-} //unnamed namespace
-
 namespace hooks {
 
 	void orders_Upgrade(CUnit* unit) {
@@ -47,7 +34,7 @@ namespace hooks {
 
 				uint8 upgradeLevel;
 
-				playUpgradeCompleteSound();
+				helper::playUpgradeCompleteSound();
 
 				if (unit->building.upgradeType >= UpgradeId::PrismaticShield)
 					upgradeLevel = UpgradesBw->currentLevel[unit->playerId][unit->building.upgradeType - UpgradeId::PrismaticShield];
@@ -56,9 +43,9 @@ namespace hooks {
 
 				if (upgradeLevel < unit->building.upgradeLevel) {
 
-					if (isUnitUpgradeAvailable(unit)) {
-						setUpgradeLevel(unit->playerId, unit->building.upgradeType, unit->building.upgradeLevel);
-						ApplySpeedUpgradeFromUpgradeType(unit, unit->building.upgradeType);
+					if (helper::isUnitUpgradeAvailable(unit)) {
+						helper::setUpgradeLevel(unit->playerId, unit->building.upgradeType, unit->building.upgradeLevel);
+						helper::ApplySpeedUpgradeFromUpgradeType(unit, unit->building.upgradeType);
 					}
 
 				}
@@ -129,7 +116,7 @@ namespace hooks {
 							)
 							bStopLoop = true;
 						else
-							removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+							helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 
 					}
 
@@ -182,7 +169,7 @@ namespace hooks {
 			//54923
 			if (!bStopThere) {
 
-				playResearchCompleteSound();
+				helper::playResearchCompleteSound();
 
 				if (unit->building.techType < TechId::Restoration)
 					TechSc->isResearched[unit->playerId][unit->building.techType] = 1;
@@ -254,7 +241,7 @@ namespace hooks {
 							)
 							bStopLoop = true;
 						else
-							removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+							helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 					}
 
 					unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
@@ -270,114 +257,8 @@ namespace hooks {
 					prepareForNextOrder(unit);
 				} else
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
-
 			}
-
 		}
-
 	}
-
-	;
-
-} //namespace hooks
-
-;
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_isUnitUpgradeAvailable = 0x004033D0;
-	bool isUnitUpgradeAvailable(CUnit* unit) {
-
-		static bool32 bPreResult;
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_isUnitUpgradeAvailable
-			MOV bPreResult, EAX
-			POPAD
-		}
-
-		return (bPreResult != 0);
-
-	}
-
-	;
-
-	const uint32 Func_ApplySpeedUpgradeFromUpgradeType = 0x00454540;
-	void ApplySpeedUpgradeFromUpgradeType(CUnit* unit, uint8 upgradeType) {
-
-		__asm {
-			PUSHAD
-			MOV AL, upgradeType
-			PUSH unit
-			CALL Func_ApplySpeedUpgradeFromUpgradeType
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
-
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			MOV EAX, order
-			CALL Func_removeOrderFromUnitQueue
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_playUpgradeCompleteSound = 0x0048F070;
-	void playUpgradeCompleteSound() {
-
-		__asm {
-			PUSHAD
-			CALL Func_playUpgradeCompleteSound
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_playResearchCompleteSound = 0x0048F150;
-	void playResearchCompleteSound() {
-
-		__asm {
-			PUSHAD
-			CALL Func_playResearchCompleteSound
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_setUpgradeLevel = 0x004CE770;
-	void setUpgradeLevel(uint32 playerId, uint32 upgradeType, uint8 upgradeLevel) {
-
-		__asm {
-			PUSHAD
-			MOV DL, upgradeLevel
-			MOV ECX, upgradeType
-			MOV EAX, playerId
-			CALL Func_setUpgradeLevel
-			POPAD
-		}
-
-	}
-
-	;
-
-} //Unnamed namespace
-
-//End of helper functions
+}
+	

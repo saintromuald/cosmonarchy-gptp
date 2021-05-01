@@ -1,25 +1,6 @@
 #include "trap_hooks.h"
 #include "byte_operations_utils.h"
 
-namespace { // helpers
-	// For disableUnit
-
-	void playImageIscript(CImage* a1, char a2); // 004D8470
-
-	// For updateUnitStrengthAndApplyDefaultOrders
-	int16 incrementUnitScores(CUnit* a1, int a2); // 00488BF0
-	void incrementUnitScoresEx(int a1, CUnit* a2, int a3); // 00488D50
-	void playSoundFromDirection(CUnit* a1, int a2); // 0049B5B0
-	void refreshUnitVision(CUnit* a1); // 004E5F30
-	void initUnitTrapDoodad(CUnit* a1); // 004E6490
-	COrder* removeOrderFromUnitQueue(COrder* a1, CUnit* a2); // 004742D0
-	COrder* performAnotherOrder(uint8 a1, int a2, CUnit* a3, int16 a4, Point32* a5, CUnit* a6); // 004745F0
-	void orders_Nothing2(CUnit* a1); // 00475000
-	void orderComputerClear(CUnit* a1, uint8 a2); // 00475310
-	void order(int a1, CUnit* a2, int8 a3, Point32* a4, CUnit* a5, int a6); // 00474810
-	uint32 getUnitStrength(CUnit* a1, int a2, bool a3); // 00431800
-}
-
 namespace hooks {
 	bool unitIsFloorTrap(CUnit* unit) { // 0047B070
 		uint16 id = unit->id;
@@ -53,7 +34,7 @@ namespace hooks {
 			&& pUnit->maelstromTimer == 0) {
 			pUnit->status = unitFlags | UnitStatus::Disabled;
 			for (i = pUnit->sprite->images.head; i; i = i->link.next)
-				playImageIscript(i, IscriptAnimation::AlmostBuilt);
+				helper::playImageIscript(i, IscriptAnimation::AlmostBuilt);
 			unitType = pUnit->id;
 			pUnit->status |= UnitStatus::NoCollide;
 
@@ -81,7 +62,7 @@ namespace hooks {
 		return unitFlags;
 	}
 
-	uint32 updateUnitStrengthAndApplyDefaultOrders(CUnit* a1) { // 0049FA40
+	uint32 updateUnitStrengthAndApplyDefaultOrdersHook(CUnit* a1) { // 0049FA40
 		CUnit* v1; // esi
 		int v2; // ecx
 		int16 v3; // ax
@@ -104,16 +85,16 @@ namespace hooks {
 		v1 = a1;
 		v2 = units_dat::BaseProperty[(uint16)a1->id];
 		if (v2 & UnitProperty::TwoUnitsIn1Egg) {
-			incrementUnitScores(a1, -1);
+			helper::incrementUnitScores(a1, -1);
 			v1->status |= UnitStatus::Completed;
-			incrementUnitScores(v1, 1);
+			helper::incrementUnitScores(v1, 1);
 		} else {
 			a1->status |= UnitStatus::Completed;
 		}
 
-		incrementUnitScoresEx(1, v1, 1);
+		helper::incrementUnitScoresEx(v1, 1, 1);
 		if (units_dat::BaseProperty[(uint16)v1->id] & UnitProperty::PermanentCloak) {
-			playSoundFromDirection(v1, 273);
+			helper::playSoundFromDirection(v1, 273);
 		}
 
 		v3 = v1->id;
@@ -139,15 +120,15 @@ namespace hooks {
 				if (v11)
 					v11->link.prev = v1;
 				v10->link.next = v1;
-				refreshUnitVision(v1);
+				helper::refreshUnitVision(v1);
 			} else {
 				*lastScannerSweep = v1;
 				*firstScannerSweep = v1;
-				refreshUnitVision(v1);
+				helper::refreshUnitVision(v1);
 			}
 		} else if (v1->sprite->flags & 0x20) {
 			if (v3 != UnitId::ProtossSteward && v3 != UnitId::ProtossPlasmaShell) {
-				initUnitTrapDoodad(v1);
+				helper::initUnitTrapDoodad(v1);
 			}
 		}
 		v4 = v1->id;/*
@@ -173,11 +154,11 @@ namespace hooks {
 					v8 = v7->orderId;
 					if (!orders_dat::CanBeInterrupted[v8] && v8 != -95)
 						break;
-					removeOrderFromUnitQueue(v7, v1);
+					helper::removeOrderFromUnitQueue(v7, v1);
 				}
-				performAnotherOrder(OrderId::RescuePassive, 0, v1, 228, 0, 0);
+				helper::performAnotherOrder(OrderId::RescuePassive, 0, v1, 228, 0, 0);
 			}
-			orders_Nothing2(v1);
+			helper::orders_Nothing2(v1);
 		} else {
 			if (v5 == 7) { // Neutral
 				v12 = OrderId::Neutral;
@@ -186,7 +167,7 @@ namespace hooks {
 			} else {
 				v12 = units_dat::HumanIdleOrder[v4];
 			}
-			orderComputerClear(v1, v12);
+			helper::orderComputerClear(v1, v12);
 		}
 		v13 = (uint16)v1->id;
 		v14 = units_dat::BaseProperty[v13];
@@ -196,170 +177,12 @@ namespace hooks {
 			v1->building.powerupOrigin.y = v15->position.y;
 			v16 = units_dat::HumanIdleOrder[v13];
 			v1->userActionFlags |= 1u;
-			order(1, v1, v16, 0, 0, 228);
-			orders_Nothing2(v1);
+			helper::order(1, v1, v16, 0, 0, 228);
+			helper::orders_Nothing2(v1);
 		}
-		v1->airStrength = getUnitStrength(v1, v13, 0);
-		result = getUnitStrength(v1, v18, 1);
+		v1->airStrength = helper::getUnitStrength(v1, v13, 0);
+		result = helper::getUnitStrength(v1, v18, 1);
 		v1->groundStrength = result;
-		return result;
-	}
-}
-
-namespace { // helper wrappers
-	// For disableUnit
-
-	const uint32 Func_playImageIscript = 0x004D8470;
-	void playImageIscript(CImage* a1, char a2) {
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			PUSH a2
-			CALL Func_playImageIscript
-			POPAD
-		}
-	}
-
-	// For updateUnitStrengthAndApplyDefaultOrders
-
-	const uint32 Func_incrementUnitScores = 0x00488BF0;
-	int16 incrementUnitScores(CUnit* a1, int a2) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			PUSH a2
-			CALL Func_incrementUnitScores
-			MOV result, EAX
-			POPAD
-		}
-		return (int16)result;
-	}
-
-
-	const uint32 Func_incrementUnitScoresEx = 0x00488D50;
-	void incrementUnitScoresEx(int a1, CUnit* a2, int a3) {
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			MOV EDI, a2
-			PUSH a3
-			CALL Func_incrementUnitScoresEx
-			POPAD
-		}
-	}
-
-	const uint32 Func_playSoundFromDirection = 0x0049B5B0;
-	void playSoundFromDirection(CUnit* a1, int a2) {
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			CALL Func_playSoundFromDirection
-			POPAD
-		}
-	}
-
-	const uint32 Func_refreshUnitVision = 0x004E5F30;
-	void refreshUnitVision(CUnit* a1) {
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_refreshUnitVision
-			POPAD
-		}
-	}
-
-	const uint32 Func_initUnitTrapDoodad = 0x004E6490;
-	void initUnitTrapDoodad(CUnit* a1) {
-		__asm {
-			PUSHAD
-			MOV EDI, a1
-			CALL Func_initUnitTrapDoodad
-			POPAD
-		}
-	}
-
-	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
-	COrder* removeOrderFromUnitQueue(COrder* a1, CUnit* a2) {
-		static COrder* result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			CALL Func_removeOrderFromUnitQueue
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_performAnotherOrder = 0x004745F0;
-	COrder* performAnotherOrder(uint8 a1, int a2, CUnit* a3, int16 a4, Point32* a5, CUnit* a6) {
-		static COrder* result;
-		__asm {
-			PUSHAD
-			MOVZX BL, a1
-			MOV EDI, a2
-			MOV ESI, a3
-			MOVZX DX, a4
-			PUSH a5
-			PUSH a6
-			CALL Func_performAnotherOrder
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_orders_Nothing2 = 0x00475000;
-	void orders_Nothing2(CUnit* a1) {
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			CALL Func_orders_Nothing2
-			POPAD
-		}
-	}
-
-	const uint32 Func_orderComputerClear = 0x00475310;
-	void orderComputerClear(CUnit* a1, uint8 a2) {
-		__asm {
-			PUSHAD
-			MOV ESI, a1
-			MOVZX CL, a2
-			CALL Func_orderComputerClear
-			POPAD
-		}
-	}
-
-	const uint32 Func_order = 0x00474810;
-	void order(int a1, CUnit* a2, int8 a3, Point32* a4, CUnit* a5, int a6) {
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV EDX, a2
-			MOVZX CL, a3
-			PUSH a4
-			PUSH a5
-			PUSH a6
-			CALL Func_order
-			POPAD
-		}
-	}
-
-	const uint32 Func_getUnitStrength = 0x00431800;
-	uint32 getUnitStrength(CUnit* a1, int a2, bool a3) {
-		static uint32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			PUSH a3
-			CALL Func_getUnitStrength
-			MOV result, EAX
-			POPAD
-		}
 		return result;
 	}
 }

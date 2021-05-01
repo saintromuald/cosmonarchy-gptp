@@ -1,37 +1,12 @@
 #include "selection.h"
 #include <SCBW/api.h>
 
-//Helper functions declaration
-
-namespace {
-
-	bool unitIsOwnedByCurrentPlayer(CUnit* unit); 																//0x00401170
-	bool isUnitBurrowed(CUnit* unit);																			//0x00402A70
-	void SC_memcpy_0(uint32 dest, uint32 src, uint32 memsize);															//0x00408FD0
-	CUnit** getAllUnitsInBounds(Box16* coords);																	//0x0042FF80
-	void function_00468670(CUnit* unit);																		//0x00468670
-	bool unit_isUnselectable(uint16 unitId);																		//00x046ED80
-	void function_0046F040(CUnit* current_unit, CUnit** unit_list, CUnit* clicked_unit, uint32 list_length);		//00x046F040
-	uint32 combineLists_Sub_6F290(CUnit* unit, CUnit** unit_list_1, CUnit** unit_list_2, uint32 list_length);			//0x0046F290
-	void applyNewSelect_Sub_6FA00(CUnit** unit_list, uint32 unit_list_length);										//0x0046FA00
-	uint32 CUnitToUnitID(CUnit* unit);																				//0x0047B1D0
-	bool unit_IsStandardAndMovable(CUnit* unit); 																//0x0047B770
-	void selectBuildingSFX(CUnit* unit);																		//0x0048F910
-	bool32 selectSingleUnitFromID(uint32 unitIndex);																//0x00496D30
-	void CreateNewUnitSelectionsFromList(CUnit** unit_list, uint32 unit_list_length);								//0x0049AE40
-	void CMDACT_Select(CUnit** unit_list, uint32 unit_list_length); 												//0x004C0860
-
-} //unnamed namespace
-
 namespace hooks {
-
 	///
 	/// Function used by Ctrl+Click (select all units of same type)
 	///
 	uint32 SortAllUnits(CUnit* unit, CUnit** unit_list, CUnit** units_in_bounds) {
-
 		const uint32* VISIBILITY_CHECK_0057F0B0 = (uint32*)0x0057F0B0;
-
 		CUnit* current_unit;
 		CUnit* backup_current_unit;
 		uint32 current_index_in_unit_list;
@@ -111,10 +86,10 @@ namespace hooks {
 
 						//6F18C
 
-						if (unit_isUnselectable(current_unit->id))
+						if (helper::unit_isUnselectable(current_unit->id))
 							bDontAddToList = true;
 						else
-							if (!unit_IsStandardAndMovable(current_unit))
+							if (!helper::unit_IsStandardAndMovable(current_unit))
 								bKeepForEmptyListCase = true; //skip the unit for the list, unless it's the only available
 							else
 								if (*IS_IN_REPLAY)
@@ -154,7 +129,7 @@ namespace hooks {
 													else {
 
 														//6F1E8
-														if (!isUnitBurrowed(current_unit)) {
+														if (!helper::isUnitBurrowed(current_unit)) {
 
 															//Only select all detectables OR all undetectables
 															//units.The test exclude current_unit if the
@@ -188,7 +163,7 @@ namespace hooks {
 
 											//0x0046F208 (use of SELECTION_ARRAY_LENGTH)
 											if (current_index_in_unit_list >= SELECTION_ARRAY_LENGTH) //action when unit_list is full
-												function_0046F040(current_unit, unit_list, unit, current_index_in_unit_list);
+												helper::function_0046F040(current_unit, unit_list, unit, current_index_in_unit_list);
 											else {
 												//6F217
 												//Add current_unit to unit_list
@@ -315,7 +290,7 @@ namespace hooks {
 					local_temp_box16_structure.top = *MoveToY;
 					local_temp_box16_structure.right = *MoveToX + 640;
 					local_temp_box16_structure.bottom = *MoveToY + 400;
-					units_in_bounds = getAllUnitsInBounds(&local_temp_box16_structure);
+					units_in_bounds = helper::getAllUnitsInBounds(&local_temp_box16_structure);
 					sorted_list_length = SortAllUnits(clicked_unit, local_temp_array_1, units_in_bounds);
 
 					//reload the previous temporary unit list from before the call to getAllUnitsInBounds
@@ -325,7 +300,7 @@ namespace hooks {
 					if (sorted_list_length != 0) {
 
 						//turn the local array as the newly applied selection
-						applyNewSelect_Sub_6FA00(local_temp_array_1, sorted_list_length);
+						helper::applyNewSelect_Sub_6FA00(local_temp_array_1, sorted_list_length);
 
 						//this is what make the rally point briefly appear when
 						//selecting a building with one.
@@ -335,7 +310,7 @@ namespace hooks {
 							clicked_unit->playerId == *ACTIVE_NATION_ID &&
 							clicked_unit->isFactory()
 							)
-							function_00468670(clicked_unit);
+							helper::function_00468670(clicked_unit);
 
 					}
 
@@ -367,7 +342,7 @@ namespace hooks {
 						local_temp_array_2[i] = activePlayerSelection->unit[i];
 
 					//locate surrounding units for selection
-					units_in_bounds = getAllUnitsInBounds(&local_temp_box16_structure);
+					units_in_bounds = helper::getAllUnitsInBounds(&local_temp_box16_structure);
 					sorted_list_length = SortAllUnits(clicked_unit, local_temp_array_1, units_in_bounds);
 
 					//reload the previous temporary unit list from before the call to getAllUnitsInBounds
@@ -379,10 +354,10 @@ namespace hooks {
 						//6FCD4
 
 						//recombine current selection and newly selectable items in local_temp_array_2
-						uint32 list_remixed_length = combineLists_Sub_6F290(clicked_unit, local_temp_array_1, local_temp_array_2, sorted_list_length);
+						uint32 list_remixed_length = helper::combineLists_Sub_6F290(clicked_unit, local_temp_array_1, local_temp_array_2, sorted_list_length);
 
 						//turn local_temp_array_2 as the newly applied selection
-						applyNewSelect_Sub_6FA00(local_temp_array_2, list_remixed_length);
+						helper::applyNewSelect_Sub_6FA00(local_temp_array_2, list_remixed_length);
 
 					}
 
@@ -410,10 +385,10 @@ namespace hooks {
 
 						if (
 							arrayIndex < SELECTION_ARRAY_LENGTH &&
-							unit_IsStandardAndMovable(local_temp_array_1[0]) &&
-							unitIsOwnedByCurrentPlayer(local_temp_array_1[0]) &&
-							unit_IsStandardAndMovable(clicked_unit) &&
-							unitIsOwnedByCurrentPlayer(clicked_unit)
+							helper::unit_IsStandardAndMovable(local_temp_array_1[0]) &&
+							helper::unitIsOwnedByCurrentPlayer(local_temp_array_1[0]) &&
+							helper::unit_IsStandardAndMovable(clicked_unit) &&
+							helper::unitIsOwnedByCurrentPlayer(clicked_unit)
 							) {
 
 							//new unit is added at end of array, and the index
@@ -422,7 +397,7 @@ namespace hooks {
 							arrayIndex++;
 
 							//turn local_temp_array_1 as the newly applied selection
-							applyNewSelect_Sub_6FA00(local_temp_array_1, arrayIndex);
+							helper::applyNewSelect_Sub_6FA00(local_temp_array_1, arrayIndex);
 
 						}
 
@@ -444,7 +419,7 @@ namespace hooks {
 
 						//Copy the elements on the right of the one to delete one step left
 						//to overwrite the one to delete
-						SC_memcpy_0(
+						helper::SC_memcpy_0(
 							(uint32)&local_temp_array_1[clicked_unit->sprite->selectionIndex],
 							(uint32)&local_temp_array_1[clicked_unit->sprite->selectionIndex + 1],
 							memcpy_size
@@ -464,9 +439,9 @@ namespace hooks {
 								//deselection to fail where simple shift+click would
 								//continue to deselect.
 
-								uint32 unitIndex = CUnitToUnitID(local_temp_array_1[0]);
+								uint32 unitIndex = helper::CUnitToUnitID(local_temp_array_1[0]);
 
-								if (selectSingleUnitFromID(unitIndex) != 0)
+								if (helper::selectSingleUnitFromID(unitIndex) != 0)
 									bUpdateSelection = false;
 
 							}
@@ -477,8 +452,8 @@ namespace hooks {
 
 							//Create a new unit selection (since the clicked unit is unselected)
 							//and choose it as current selection)
-							CreateNewUnitSelectionsFromList(local_temp_array_1, arrayIndex);
-							CMDACT_Select(local_temp_array_1, arrayIndex);
+							helper::CreateNewUnitSelectionsFromList(local_temp_array_1, arrayIndex);
+							helper::CMDACT_Select(local_temp_array_1, arrayIndex);
 
 							//tell the GUI to update stuff
 							*someDialogUnknown = nullptr;
@@ -511,9 +486,9 @@ namespace hooks {
 				//Recall the selection the unit belong to if there's one
 				//In this case, skip the code for a single unit handling
 
-				uint32 temp_unit_index = CUnitToUnitID(clicked_unit);
+				uint32 temp_unit_index = helper::CUnitToUnitID(clicked_unit);
 
-				if (selectSingleUnitFromID(temp_unit_index) != 0)
+				if (helper::selectSingleUnitFromID(temp_unit_index) != 0)
 					bRecreatedSelectionThroughAltClick = true;
 
 			}
@@ -523,13 +498,13 @@ namespace hooks {
 				//6FBD1
 
 				//Create a new selection containing only the clicked unit
-				CreateNewUnitSelectionsFromList(&clicked_unit, 1);
+				helper::CreateNewUnitSelectionsFromList(&clicked_unit, 1);
 
 				//play the sound of the unit (don't need to be a building)
-				selectBuildingSFX(clicked_unit);
+				helper::selectBuildingSFX(clicked_unit);
 
 				//select the unit
-				CMDACT_Select(&clicked_unit, 1);
+				helper::CMDACT_Select(&clicked_unit, 1);
 
 				//tell the GUI to update stuff
 				*bCanUpdateSelectedUnitData = 1;
@@ -549,274 +524,9 @@ namespace hooks {
 			if (clicked_unit->playerId == *ACTIVE_NATION_ID &&
 				clicked_unit->isFactory()
 				)
-				function_00468670(clicked_unit);
-
+			{
+				helper::function_00468670(clicked_unit);
+			}
 		}
-
 	}
-
-
-
-
-} //namespace hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	//Identical to 0x00401170
-	bool unitIsOwnedByCurrentPlayer(CUnit* unit) {
-
-		bool return_value;
-
-		if (*IS_IN_REPLAY != 0 || unit->playerId != *LOCAL_NATION_ID)
-			return_value = false;
-		else
-			return_value = true;
-
-		return return_value;
-
-	}
-
-	;
-
-	//Identical to 0x00402A70
-	bool isUnitBurrowed(CUnit* unit) {
-		return (unit->status & (UnitStatus::CloakingForFree + UnitStatus::Burrowed)) != 0;
-	}
-
-	;
-
-	const uint32 Func_memcpy_0 = 0x00408FD0;
-	void SC_memcpy_0(uint32 dest, uint32 src, uint32 memsize) {
-
-		__asm {
-			PUSHAD
-			PUSH memsize
-			PUSH src
-			PUSH dest
-			CALL Func_memcpy_0
-			ADD ESP, 0x0C
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_GetAllUnitsInBounds = 0x0042FF80;
-	CUnit** getAllUnitsInBounds(Box16* coords) {
-
-		static CUnit** units_in_bounds;
-
-		__asm {
-			PUSHAD
-			MOV EAX, coords
-			CALL Func_GetAllUnitsInBounds
-			MOV units_in_bounds, EAX
-			POPAD
-		}
-
-		return units_in_bounds;
-
-	}
-
-	;
-
-	const uint32 Func_Sub_468670 = 0x00468670;
-	void function_00468670(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub_468670
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Unit_isUnselectable = 0x0046ED80;
-	bool unit_isUnselectable(uint16 unitId) {
-
-		bool32 bHalfReturnValue;
-
-		__asm {
-			PUSHAD
-			XOR EBX, EBX
-			MOV BX, unitId
-			MOV EAX, EBX
-			CALL Func_Unit_isUnselectable
-			MOV bHalfReturnValue, EAX
-			POPAD
-		}
-		return (bHalfReturnValue != 0);
-
-	}
-
-	;
-
-	const uint32 Func_Sub_6F040 = 0x0046F040;
-	void function_0046F040(CUnit* current_unit, CUnit** unit_list, CUnit* clicked_unit, uint32 list_length) {																//
-
-		__asm {
-			PUSHAD
-			PUSH clicked_unit
-			PUSH current_unit
-			MOV ECX, unit_list
-			MOV EAX, list_length
-			CALL Func_Sub_6F040
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub_46F290 = 0x0046F290;
-	uint32 combineLists_Sub_6F290(CUnit* unit, CUnit** unit_list_1, CUnit** unit_list_2, uint32 list_length) {
-
-		uint32 return_value;
-
-		__asm {
-			PUSHAD
-			PUSH unit
-			PUSH list_length
-			PUSH unit_list_1
-			MOV EDI, unit_list_2
-			CALL Func_Sub_46F290
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-	const uint32 Func_Sub_46FA00 = 0x0046FA00;
-	void applyNewSelect_Sub_6FA00(CUnit** unit_list, uint32 unit_list_length) {
-
-		__asm {
-			PUSHAD
-			PUSH 0x01
-			PUSH 0x01
-			MOV EBX, unit_list
-			MOV EDI, unit_list_length
-			CALL Func_Sub_46FA00
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_CUnitToUnitID = 0x0047B1D0;
-	uint32 CUnitToUnitID(CUnit* unit) {
-
-		static uint32 return_value;
-
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			CALL Func_CUnitToUnitID
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-	const uint32 Func_Unit_IsStandardAndMovable = 0x0047B770;
-	bool unit_IsStandardAndMovable(CUnit* unit) {
-
-		bool32 return_value_unconverted;
-
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			CALL Func_Unit_IsStandardAndMovable
-			MOV return_value_unconverted, EAX
-			POPAD
-		}
-
-		if (unit->id == UnitId::UnusedCaveIn) {
-			return false;
-		}
-		return (return_value_unconverted != 0);
-
-	}
-
-	;
-
-	const uint32 Func_SelectBuildingSFX = 0x0048F910;
-	void selectBuildingSFX(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			PUSH unit
-			CALL Func_SelectBuildingSFX
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_SelectSingleUnitFromID = 0x00496D30;
-	bool32 selectSingleUnitFromID(uint32 unitIndex) {
-
-		bool32 bReturnedValue;
-
-		__asm {
-			PUSHAD
-			PUSH unitIndex
-			CALL Func_SelectSingleUnitFromID
-			MOV bReturnedValue, EAX
-			POPAD
-		}
-
-		return bReturnedValue;
-
-	}
-
-	;
-
-	const uint32 Func_CreateNewUnitSelectionsFromList = 0x0049AE40;
-	void CreateNewUnitSelectionsFromList(CUnit** unit_list, uint32 unit_list_length) {
-
-		__asm {
-			PUSHAD
-			PUSH unit_list_length
-			MOV EAX, unit_list
-			CALL Func_CreateNewUnitSelectionsFromList
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_CMDACT_Select = 0x004C0860;
-	void CMDACT_Select(CUnit** unit_list, uint32 unit_list_length) {
-
-		__asm {
-			PUSHAD
-			PUSH unit_list
-			PUSH unit_list_length
-			CALL Func_CMDACT_Select
-			POPAD
-		}
-
-	}
-
-	;
-
-} //unnamed namespace
-
-//End of helper functions
+}

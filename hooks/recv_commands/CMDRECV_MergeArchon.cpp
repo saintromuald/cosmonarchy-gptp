@@ -1,15 +1,6 @@
 #include "CMDRECV_MergeArchon.h"
 #include <SCBW/api.h>
 
-//Helper functions declaration
-
-namespace {
-
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);							//742D0
-	CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, uint32 units_list_length);	//BFA80
-
-} //unnamed namespace
-
 namespace hooks {
 
 	void CMDRECV_MergeDarkArchon() {
@@ -52,7 +43,7 @@ namespace hooks {
 
 				if (templar_stored != nullptr) {
 
-					templar_merge_partner = templarMergePartner(templar_stored, templars_stored_iterator, templars_stored_count);
+					templar_merge_partner = helper::templarMergePartner(templar_stored, templars_stored_iterator, templars_stored_count);
 
 					if (templar_merge_partner != nullptr) {
 
@@ -70,7 +61,7 @@ namespace hooks {
 									if (orders_dat::CanBeInterrupted[templar_stored->orderQueueTail->orderId] ||
 										templar_stored->orderQueueTail->orderId == OrderId::WarpingDarkArchon
 										)
-										removeOrderFromUnitQueue(templar_stored, templar_stored->orderQueueTail);
+										helper::removeOrderFromUnitQueue(templar_stored, templar_stored->orderQueueTail);
 									else
 										bKeepLooping = false;
 
@@ -105,7 +96,7 @@ namespace hooks {
 									if (orders_dat::CanBeInterrupted[templar_merge_partner->orderQueueTail->orderId] ||
 										templar_merge_partner->orderQueueTail->orderId == OrderId::WarpingDarkArchon
 										)
-										removeOrderFromUnitQueue(templar_merge_partner, templar_merge_partner->orderQueueTail);
+										helper::removeOrderFromUnitQueue(templar_merge_partner, templar_merge_partner->orderQueueTail);
 									else
 										bKeepLooping = false;
 
@@ -181,7 +172,7 @@ namespace hooks {
 
 				if (templar_stored != nullptr) {
 
-					templar_merge_partner = templarMergePartner(templar_stored, templars_stored_iterator, templars_stored_count);
+					templar_merge_partner = helper::templarMergePartner(templar_stored, templars_stored_iterator, templars_stored_count);
 
 					if (templar_merge_partner != nullptr) {
 
@@ -199,7 +190,7 @@ namespace hooks {
 									if (orders_dat::CanBeInterrupted[templar_stored->orderQueueTail->orderId] ||
 										templar_stored->orderQueueTail->orderId == OrderId::WarpingArchon
 										)
-										removeOrderFromUnitQueue(templar_stored, templar_stored->orderQueueTail);
+										helper::removeOrderFromUnitQueue(templar_stored, templar_stored->orderQueueTail);
 									else
 										bKeepLooping = false;
 
@@ -234,7 +225,7 @@ namespace hooks {
 									if (orders_dat::CanBeInterrupted[templar_merge_partner->orderQueueTail->orderId] ||
 										templar_merge_partner->orderQueueTail->orderId == OrderId::WarpingArchon
 										)
-										removeOrderFromUnitQueue(templar_merge_partner, templar_merge_partner->orderQueueTail);
+										helper::removeOrderFromUnitQueue(templar_merge_partner, templar_merge_partner->orderQueueTail);
 									else
 										bKeepLooping = false;
 
@@ -267,51 +258,4 @@ namespace hooks {
 		scbw::refreshConsole();
 
 	}
-
-	;
-
-} //namespace hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
-
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			MOV EAX, order
-			CALL Func_removeOrderFromUnitQueue
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_templarMergePartner = 0x004BFA80;
-	CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, uint32 units_list_length) {
-
-		static CUnit* return_value;
-
-		__asm {
-			PUSHAD
-			MOV EAX, units_list_length
-			PUSH units_list
-			PUSH unit
-			CALL Func_templarMergePartner
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-} //unnamed namespace
-
-//End of helper functions
+}

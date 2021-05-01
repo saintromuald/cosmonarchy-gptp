@@ -1,14 +1,7 @@
 #include "enter_nydus.h"
 #include <SCBW/api.h>
 
-//helper functions def
-
-namespace {
-	bool orderToMoveToTarget(CUnit* unit, CUnit* target);	//0x004EB980
-} //unnamed namespace
-
 namespace hooks {
-
 	//Originally known as sub_4E8C20.
 	//Necessary to assign enterNydusCanal order to units that
 	//normally can't use it (without changing this here,
@@ -111,7 +104,7 @@ namespace hooks {
 		} else { //EA428
 
 			if (unit->mainOrderState == 0) {	//EA464
-				if (orderToMoveToTarget(unit, nydusCanal))
+				if (helper::orderToMoveToTarget(unit, nydusCanal))
 					unit->mainOrderState = 1;
 			} else
 				if (unit->mainOrderState == 1) { //EA43B
@@ -125,44 +118,8 @@ namespace hooks {
 							unit->orderToIdle();
 
 				}
-
 			if (unit->mainOrderState == 2) //EA458
 				enterNydusCanal_Effect(unit, nydusCanal);
-
 		}
-
-	} //void orders_EnterNydusCanal(CUnit* unit)
-
-	;
-
-} //namespace hooks
-
-;
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func__moveToTarget = 0x004EB980;
-	bool orderToMoveToTarget(CUnit* unit, CUnit* target) {
-
-		static bool32 bPreResult;
-
-		__asm {
-			PUSHAD
-			MOV EAX, target
-			MOV ECX, unit
-			CALL Func__moveToTarget
-			MOV bPreResult, EAX
-			POPAD
-		}
-
-		return bPreResult != 0;
-
 	}
-
-	;
-
-} //Unnamed namespace
-
-//End of helper functions
+}

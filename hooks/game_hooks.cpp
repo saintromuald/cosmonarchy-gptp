@@ -12,157 +12,32 @@
 #include "globals.h"
 #include "target_related.h"
 
-const int hyperTrigger = 0x006509A0;
-const uint32 Func_Sub4A01F0 = 0x004A01F0;
-void function_004A01F0g(CUnit* unit) {
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_Sub4A01F0
-		POPAD
-	}
-}
-
-const uint32 Func_49B5B0 = 0x0049B5B0;
-void AnimCloak(CUnit* unit, int sound) {
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		MOV ECX, sound
-		CALL Func_49B5B0
-		POPAD
-	}
-}
-
-const uint32 Func_98A10 = 0x00498A10;
-void makeSpriteInvisible(CSprite* sprite) {
-	__asm {
-		PUSHAD
-		MOV EAX, sprite
-		CALL Func_98A10
-		POPAD
-	}
-}
-
-const uint32 Func_UpdateUnitStrength = 0x0049FA40;
-void updateUnitStrengthg(CUnit* unit) {
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_UpdateUnitStrength
-		POPAD
-	}
-}
-
-const uint32 Func_CreateUnit = 0x004A09D0;
-CUnit* CreateUnit(uint32 unitId, int x, int y, uint32 playerId) {
-	static CUnit* unit_created;
-	__asm {
-		PUSHAD
-		PUSH playerId
-		PUSH y
-		MOV ECX, unitId
-		MOV EAX, x
-		CALL Func_CreateUnit
-		MOV unit_created, EAX
-		POPAD
-	}
-	return unit_created;
-}
-
-const uint32 Func_Sub4148F0 = 0x004148F0;
-void function_004148F0_(int x, int y, uint32 unitId) {
-	__asm {
-		PUSHAD
-		PUSH y
-		PUSH x
-		PUSH unitId
-		CALL Func_Sub4148F0
-		POPAD
-	}
-}
-
-const uint32 Func_Sub47D770 = 0x0047D770;
-void func_0047D770(CUnit* unit) {
-	__asm {
-		PUSHAD
-		PUSH unit
-		CALL Func_Sub47D770
-		POPAD
-	}
-}
-
-const uint32 Func_updateNewUnitVision = 0x0045CE90;
-void funcupdateNewUnitVision(CUnit* unit, int x, int y) {
-	static uint32 id = unit->id;
-	__asm {
-		PUSHAD
-		MOV ECX, id
-		PUSH y
-		PUSH x
-		CALL Func_updateNewUnitVision
-		POPAD
-	}
-}
-
-const uint32 Func_ReplaceUnitWithType = 0x0049FED0;
-void replaceUnitWithType(CUnit* unit, uint16 newUnitId) {
-	uint32 newUnitId_ = newUnitId;
-	__asm {
-		PUSHAD
-		PUSH newUnitId_
-		MOV EAX, unit
-		CALL Func_ReplaceUnitWithType
-		POPAD
-	}
-}
-
-const uint32 Func_497ED0 = 0x00497ED0;
-static void makeSpriteVisible(CSprite* sprite) {
-	__asm {
-		PUSHAD
-		MOV EAX, sprite
-		CALL Func_497ED0
-		POPAD
-	}
-
-}
-
-const uint32 Func_498A90 = 0x00498A90;
-void UpdateSpriteImagesForCloak(CSprite* sprite) {
-	__asm {
-		PUSHAD
-		MOV EDI, sprite
-		CALL Func_498A90
-		POPAD
-	}
-
-}
-
+const uint32 hyperTrigger = 0x006509A0;
 const uint32 Func_Irradiate = 0x00454E00;
+
 void spawnCreeper(CUnit* unit) {
 	int width = mapTileSize->width * 32;
 	int height = mapTileSize->height * 32;
 	if (unit->position.y >= 64 && unit->position.x >= 64 &&
 		unit->position.y < height - 64 && unit->position.x < width - 64) {
-		CUnit* creep_spawned = CreateUnit(UnitId::BasiliskCreeper,
+		CUnit* creep_spawned = helper::createUnit(UnitId::BasiliskCreeper,
 			unit->position.x, unit->position.y,
 			unit->playerId);
 		if (creep_spawned == nullptr) {
 			//scbw::print("Error: Creeper");
 		} else {
-			function_004A01F0g(creep_spawned);
-			updateUnitStrengthg(creep_spawned);
+			helper::updateUnitStatsFinishBuilding(creep_spawned);
+			helper::updateUnitStrength(creep_spawned);
 
 			uint32 tile_x = creep_spawned->sprite->position.x / 32;
 			uint32 tile_y = creep_spawned->sprite->position.y / 32;
 
-			function_004148F0_(
+			helper::function_004148F0(
 				tile_x * 32,
 				tile_y * 32,
 				UnitId::ZergNydusCanal
 			); // apply creep
-			func_0047D770(creep_spawned);
+			helper::stopCreepDisappearingAtBuilding(creep_spawned);
 
 			creep_spawned->status |= UnitStatus::Invincible;
 			creep_spawned->status |= UnitStatus::NoCollide;
@@ -511,7 +386,7 @@ namespace hooks {
 						unit->orderTarget.unit = nullptr;
 						unit->orderTarget.pt.x = polar_x;
 						unit->orderTarget.pt.y = polar_y;
-						scbw::createBullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->playerId,
+						helper::createBullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->playerId,
 							scbw::dir_saturate(unit->currentDirection1, offset_direction));
 						scbw::playSound(80, unit);
 						unit->orderTarget.unit = target_unit;
@@ -707,7 +582,7 @@ namespace hooks {
 					if (targ != nullptr) {
 						unit->orderTarget.unit = targ;
 					}
-					scbw::createBullet(WeaponId::PaladinCrusaderMissiles, unit, source_x, source_y, unit->playerId, unit->currentDirection1);
+					helper::createBullet(WeaponId::PaladinCrusaderMissiles, unit, source_x, source_y, unit->playerId, unit->currentDirection1);
 				}
 			}
 		}
@@ -931,8 +806,8 @@ namespace hooks {
 
 		// Permanently Cloaked units recloak after 2 seconds of being out of combat
 		if (scbw::isDecloakable(unit) && scbw::get_generic_timer(unit, ValueId::DecloakTimer) == 1) {
-			checkUnitVisibility(unit);
-			AnimCloak(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
+			helper::checkUnitVisibility(unit);
+			helper::playSoundFromDirection(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
 			scbw::set_generic_timer(unit, ValueId::DecloakTimer, 0);
 		}
 

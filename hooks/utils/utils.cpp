@@ -10,11 +10,7 @@
 
 namespace {
 
-	void* SMemAlloc(uint32 amount, uint32 unkFilename, uint32 unkLine, uint32 defaultValue);	//1006A (based on Storm.dll definition)
-	void SetCallbackTimer(BinDlg* dialog, uint32 unk1, uint32 unk2, uint32 unk3);			//16090
-	void function_0049A7F0(CUnit* unit);											//9A7F0
-
-	uint32 fxnInteract(BinDlg* dialog, uint32 data_struct_offset);
+	
 
 } //unnamed namespace
 
@@ -46,7 +42,7 @@ namespace hooks {
 			dialog->fxnInteract = dlgFunc;
 
 		dialog->onInitDialog0x36.responseAreaBitArray = (uint32*)
-			SMemAlloc(
+			helper::SMemAlloc(
 				dialog->onInitDialog0x36.responseAreaWidth * dialog->onInitDialog0x36.responseAreaHeight,
 				0x00505F98,
 				481, //0x000001E1
@@ -61,7 +57,7 @@ namespace hooks {
 		stack_placeholder.always_zero_here = 0;
 		stack_placeholder.mouseY = mouse->y;
 
-		fxnInteract(dialog, (uint32)&stack_placeholder);
+		helper::fxnInteract(dialog, (uint32)&stack_placeholder);
 
 		dialog->bounds.right += dialog->bounds.left;
 		dialog->bounds.bottom += dialog->bounds.top;
@@ -72,7 +68,7 @@ namespace hooks {
 		stack_placeholder.always_zero_here = 0;
 		stack_placeholder.mouseX = mouse->x;
 
-		fxnInteract(dialog, (uint32)&stack_placeholder);
+		helper::fxnInteract(dialog, (uint32)&stack_placeholder);
 
 		stack_placeholder.mouseX = mouse->x;
 		stack_placeholder.always_14_here = 14;	//0x000E
@@ -80,9 +76,9 @@ namespace hooks {
 		stack_placeholder.always_zero_here = 0;
 		stack_placeholder.mouseY = mouse->y;
 
-		fxnInteract(dialog, (uint32)&stack_placeholder);
+		helper::fxnInteract(dialog, (uint32)&stack_placeholder);
 
-		SetCallbackTimer(dialog, 12, 100, 0);
+		helper::SetCallbackTimer(dialog, 12, 100, 0);
 
 		//equivalent to "if(dialog->flags & BinDlgFlags::VerticalAlignmentBottom) dialog->flags -= BinDlgFlags::VerticalAlignmentBottom;"
 		dialog->flags &= ~BinDlgFlags::VerticalAlignmentBottom;
@@ -92,7 +88,7 @@ namespace hooks {
 	;
 
 	//0047B770
-	bool unit_IsStandardAndMovable(CUnit* unit) {
+	bool unit_IsStandardAndMovableHook(CUnit* unit) {
 
 		bool return_value;
 
@@ -148,7 +144,7 @@ namespace hooks {
 					}
 
 				if (!bStopLoop)
-					function_0049A7F0(unit); //remove the unit from playersSelections->unit[playerId][index] among other things
+					helper::function_0049A7F0(unit); //remove the unit from playersSelections->unit[playerId][index] among other things
 
 			}
 
@@ -163,92 +159,5 @@ namespace hooks {
 	;
 
 } //namespace hooks
-
-;
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	//Risk of memory leaks or memory corruption or stuff if such a thing is
-	//used the wrong way or in the wrong place!
-	const uint32 Func_SMemAlloc = 0x0041006A;
-	void* SMemAlloc(uint32 amount, uint32 unkFilename, uint32 unkLine, uint32 defaultValue) {
-
-		static void* pointer_on_allocated_memory;
-
-		__asm {
-			PUSHAD
-			PUSH defaultValue		//probably what to fill the memory with
-			PUSH unkLine			//unknown use, seems to use hardcoded value
-			PUSH unkFilename		//unknown use, seems to use hardcoded adress (of some text?)
-			PUSH amount				//amount of memory to allocate
-			CALL Func_SMemAlloc
-			MOV pointer_on_allocated_memory, EAX
-			POPAD
-		}
-
-		return pointer_on_allocated_memory;
-
-	}
-
-	;
-
-	//Likely to call SMemAlloc!
-	const uint32 Func_SetCallbackTimer = 0x00416090;
-	void SetCallbackTimer(BinDlg* dialog, uint32 unk1, uint32 unk2, uint32 unk3) {
-
-		__asm {
-			PUSHAD
-			PUSH unk3
-			PUSH unk2
-			MOV EAX, unk1
-			MOV ECX, dialog
-			CALL Func_SetCallbackTimer
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub49A7F0 = 0x0049A7F0;
-	void function_0049A7F0(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EDI, unit
-			CALL Func_Sub49A7F0
-			POPAD
-		}
-
-	}
-
-	;
-
-	uint32 fxnInteract(BinDlg* dialog, uint32 data_struct_offset) {
-
-		static uint32 return_value;
-		static uint32 fxnInteract;
-
-		fxnInteract = (uint32)dialog->fxnInteract;
-
-		__asm {
-			PUSHAD
-			MOV ESI, dialog					//possibly useless, but just in case
-			MOV ECX, dialog
-			MOV EDX, data_struct_offset
-			CALL fxnInteract
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-} //Unnamed namespace
 
 //End of helper functions

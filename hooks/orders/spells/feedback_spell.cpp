@@ -1,15 +1,6 @@
 #include "feedback_spell.h"
 #include <SCBW/api.h>
 
-//helper functions def
-
-namespace {
-	//7B720
-	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index);	//926D0
-	void replaceFeedbackSprite(CUnit* unit, uint32 spriteId);																//F6350
-
-} //unnamed namespace
-
 namespace hooks {
 
 	void orders_Feedback(CUnit* unit) {
@@ -26,7 +17,7 @@ namespace hooks {
 			int sightRange = unit->getSightRange(true);
 
 			if (
-				ordersSpell_Sub_4926D0(
+				helper::ordersSpell_Sub_4926D0(
 					unit,
 					TechId::Feedback,
 					&techCost,
@@ -37,7 +28,7 @@ namespace hooks {
 
 				if (target->status & UnitStatus::IsHallucination) {
 					uint8 overlaySize = scbw::hasOverlay(target);
-					replaceFeedbackSprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
+					helper::replaceFeedbackSprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
 					unit->spendUnitEnergy(techCost);
 					target->remove();
 					unit->orderToIdle();
@@ -65,7 +56,7 @@ namespace hooks {
 
 						} else { //F6E6D
 							uint8 overlaySize = scbw::hasOverlay(target);
-							replaceFeedbackSprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
+							helper::replaceFeedbackSprite(target, overlaySize + SpriteId::Feedback_Hit_Small);
 							unit->orderToIdle();
 						}
 
@@ -86,58 +77,6 @@ namespace hooks {
 					unit->orderComputerCL(OrderId::ComputerAI);
 				else
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
-
 		}
-
 	}
-
-} //namespace hooks
-
-;
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-
-	const uint32 Func_Sub_4926D0 = 0x004926D0;
-	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index) {
-
-		static bool32 bPreResult;
-
-		__asm {
-			PUSHAD
-			PUSH techEnergyCost
-			PUSH sightRange
-			PUSH techId
-			MOV EAX, error_message_index
-			MOV EBX, unit
-			CALL Func_Sub_4926D0
-			MOV bPreResult, EAX
-			POPAD
-		}
-
-		return (bPreResult != 0);
-
-	}
-
-	;
-
-	const uint32 Func_replaceFeedbackSprite = 0x004F6350;
-	void replaceFeedbackSprite(CUnit* unit, uint32 spriteId) {
-
-		__asm {
-			PUSHAD
-			MOV EBX, unit
-			PUSH spriteId
-			CALL Func_replaceFeedbackSprite
-			POPAD
-		}
-
-	}
-
-	;
-
-} //Unnamed namespace
-
-//End of helper functions
+}

@@ -2,45 +2,17 @@
 #include <SCBW/api.h>
 #include "globals.h"
 #include <MathUtils.h>
-//helper functions def
-
-namespace {
-
-	CUnit* MedicHeal_TargetAcquire(CUnit* medic);											//422A0
-	bool32 AI_OrderHeal(CUnit* unit, CUnit* target);										//63530
-	uint32 doMedicHeal(CUnit* unit, CUnit* target);											//63C40
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);								//742D0
-	void function_4748E0(CUnit* unit, int x, int y, uint8 orderId);							//748E0
-	void function_474940(CUnit* unit, CUnit* target, uint8 orderId);							//74940
-	void orderImmediate(CUnit* unit, uint8 order);												//74B40
-	void orderInterrupt(CUnit* unit, CUnit* target, uint16 x, uint16 y, uint32 orderId);				//74C30
-	void actUnitReturnToIdle(CUnit* unit);													//75420
-	void unitOrderMoveToTargetUnit(CUnit* unit, CUnit* target);								//79FE0
-	bool32 AI_CastSpellBehaviour(CUnit* unit, uint32 unknown);									//A13C0
-	void setNextWaypoint_Sub4EB290(CUnit* unit);											//EB290
-	bool moveToTarget(CUnit* unit, CUnit* target);											//EB720
-	bool SetMoveTarget_xy(CUnit* unit, int x, int y);										//EB820
-	bool function_004EB900(CUnit* unit, CUnit* target);										//EB900
-
-} //unnamed namespace
 
 namespace hooks {
-
 	void orders_MedicHeal2(CUnit* unit) {
-
 		if (!(unit->movementFlags & MovementFlags::Accelerating)) {
-
 			CImage* current_image = unit->sprite->images.head;
-
 			while (current_image != nullptr) {
 				current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
 				current_image = current_image->link.next;
 			}
-
 		}
-
-		actUnitReturnToIdle(unit);
-
+		helper::actUnitReturnToIdle(unit);
 	}
 
 	void orders_HealMove(CUnit* unit) {
@@ -49,12 +21,12 @@ namespace hooks {
 		CUnit* oldTarget = unit->orderTarget.unit;
 
 		if (target != nullptr) {
-			if (AI_OrderHeal(unit, target) != 0) {
+			if (helper::AI_OrderHeal(unit, target) != 0) {
 				unit->orderComputerCL(OrderId::MedicHeal1);
 				unit->orderTarget.unit = target;
 				unit->orderTarget.pt.x = target->sprite->position.x;
 				unit->orderTarget.pt.y = target->sprite->position.y;
-				moveToTarget(unit, target);
+				helper::moveToTarget(unit, target);
 				bStopThere = true;
 			} else { //63801
 				unit->orderTarget.pt.x = target->sprite->position.x;
@@ -66,7 +38,7 @@ namespace hooks {
 		if (!bStopThere) { //63817
 
 			if (unit->recentOrderTimer == 0) {
-				if (!SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
+				if (!helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
 					bStopThere = true;
 			}
 
@@ -85,14 +57,14 @@ namespace hooks {
 
 						unit->mainOrderTimer = 15;
 
-						newTarget = MedicHeal_TargetAcquire(unit);
+						newTarget = helper::MedicHeal_TargetAcquire(unit);
 
 						if (newTarget != nullptr) {
 
 							oldPos.x = unit->orderTarget.pt.x;
 							oldPos.y = unit->orderTarget.pt.y;
 
-							orderInterrupt(
+							helper::orderInterrupt(
 								unit,
 								unit->orderTarget.unit,
 								unit->orderTarget.pt.x,
@@ -100,13 +72,13 @@ namespace hooks {
 								OrderId::MedicHeal1
 							);
 
-							moveToTarget(unit, newTarget);
-							unitOrderMoveToTargetUnit(unit, newTarget);
+							helper::moveToTarget(unit, newTarget);
+							helper::unitOrderMoveToTargetUnit(unit, newTarget);
 
 							if (oldTarget != nullptr)
-								function_474940(unit, oldTarget, OrderId::HealMove);
+								helper::function_474940(unit, oldTarget, OrderId::HealMove);
 							else
-								function_4748E0(unit, oldPos.x, oldPos.y, OrderId::HealMove);
+								helper::function_4748E0(unit, oldPos.x, oldPos.y, OrderId::HealMove);
 						}
 
 					}
@@ -123,11 +95,11 @@ namespace hooks {
 
 		bool bStopThere = false;
 
-		if (unit->pAI != nullptr && AI_CastSpellBehaviour(unit, NULL) != 0)
+		if (unit->pAI != nullptr && helper::AI_CastSpellBehaviour(unit, NULL) != 0)
 			bStopThere = true;
 		if (!bStopThere) {
 
-			CUnit* target = MedicHeal_TargetAcquire(unit);
+			CUnit* target = helper::MedicHeal_TargetAcquire(unit);
 
 			if (target != nullptr) {
 
@@ -143,7 +115,7 @@ namespace hooks {
 							unit->orderQueueTail->orderId != OrderId::MedicHeal1)
 							bEndLoop = true;
 						else {
-							removeOrderFromUnitQueue(unit, unit->orderQueueTail);
+							helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 							bEndLoop = (unit->orderQueueTail == nullptr);
 						}
 
@@ -166,7 +138,7 @@ namespace hooks {
 				unit->orderTarget.pt.x = target->sprite->position.x;
 				unit->orderTarget.pt.y = target->sprite->position.y;
 
-				moveToTarget(unit, target);
+				helper::moveToTarget(unit, target);
 
 			} else { //639BD
 
@@ -200,14 +172,14 @@ namespace hooks {
 		auto result = medic->canUseTech(TechId::Healing, medic->playerId);
 		if (result) {
 			auto v4 = target;
-			if (target && AI_OrderHeal(v3, target)) {
+			if (target && helper::AI_OrderHeal(v3, target)) {
 				if (!target->isBeingHealed)
 					goto LABEL_7;
-				auto v5 = MedicHeal_TargetAcquire(v3);
+				auto v5 = helper::MedicHeal_TargetAcquire(v3);
 				auto v6 = v5;
 				if (v5) {
-					unitOrderMoveToTargetUnit(v3, v5);
-					moveToTarget(v6, v3);
+					helper::unitOrderMoveToTargetUnit(v3, v5);
+					helper::moveToTarget(v6, v3);
 					v4 = v6;
 				LABEL_7:
 					if (!medic->isTargetWithinMinRange(v4, 30)) {
@@ -232,9 +204,9 @@ namespace hooks {
 		if (target != nullptr && target->hitPoints < units_dat::MaxHitPoints[target->id]) {
 			reqHeal = true;
 		}
-		doMedicHeal_result = doMedicHeal(unit, target);
+		doMedicHeal_result = helper::doMedicHeal(unit, target);
 		if (doMedicHeal_result == 0) {
-			setNextWaypoint_Sub4EB290(unit);
+			helper::setNextWaypoint(unit);
 			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
@@ -246,11 +218,11 @@ namespace hooks {
 		} else { //641D3
 			if (unit->mainOrderState == 0) {
 				if (target != nullptr &&
-					function_004EB900(unit, target) != 0 &&
+					helper::function_004EB900(unit, target) != 0 &&
 					unit->getMovableState() != 2 //unit not unmovable
 					) {
 					if (unit->isTargetWithinMinRange(target, 30)) {
-						setNextWaypoint_Sub4EB290(unit);
+						helper::setNextWaypoint(unit);
 						unit->mainOrderState = 1;
 					}
 				} else //64216
@@ -266,7 +238,7 @@ namespace hooks {
 						if (unit->orderQueueHead == nullptr ||
 							unit->orderQueueHead->orderId != OrderId::MedicHeal2
 							)
-							orderImmediate(unit, OrderId::MedicHeal2);
+							helper::orderImmediate(unit, OrderId::MedicHeal2);
 					}
 
 					//6425B
@@ -304,209 +276,4 @@ namespace hooks {
 		}
 		return true;
 	}
-
-} //namespace hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_MedicHeal_TargetAcquire = 0x004422A0;
-	CUnit* MedicHeal_TargetAcquire(CUnit* medic) {
-		static CUnit* target;
-		__asm {
-			PUSHAD
-			PUSH medic
-			CALL Func_MedicHeal_TargetAcquire
-			MOV target, EAX
-			POPAD
-		}
-		return target;
-	}
-
-	const uint32 Func_AI_OrderHeal = 0x00463530;
-	bool32 AI_OrderHeal(CUnit* unit, CUnit* target) {
-		static bool32 result;
-		__asm {
-			PUSHAD
-			MOV ESI, target
-			MOV EBX, unit
-			CALL Func_AI_OrderHeal
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_doMedicHeal = 0x00463C40;
-	uint32 doMedicHeal(CUnit* unit, CUnit* target) {
-		static uint32 return_value;
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			PUSH target
-			CALL Func_doMedicHeal
-			MOV return_value, EAX
-			POPAD
-		}
-		return return_value;
-	}
-
-	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			MOV EAX, order
-			CALL Func_removeOrderFromUnitQueue
-			POPAD
-		}
-
-	}
-
-	const uint32 Func_sub4748E0 = 0x004748E0;
-	void function_4748E0(CUnit* unit, int x, int y, uint8 orderId) {
-		__asm {
-			PUSHAD
-			MOV BL, orderId
-			MOV ESI, unit
-			XOR EDI, EDI
-			PUSH y
-			PUSH x
-			CALL Func_sub4748E0
-			POPAD
-		}
-	}
-
-	const uint32 Func_sub474940 = 0x00474940;
-	void function_474940(CUnit* unit, CUnit* target, uint8 orderId) {
-		__asm {
-			PUSHAD
-			MOV BL, orderId
-			MOV ESI, unit
-			MOV EAX, target
-			XOR EDI, EDI
-			CALL Func_sub474940
-			POPAD
-		}
-	}
-
-	const uint32 Func_OrderImmediate = 0x00474B40;
-	void orderImmediate(CUnit* unit, uint8 order) {
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			MOV AL, order
-			CALL Func_OrderImmediate
-			POPAD
-		}
-	}
-
-	const uint32 Func_orderInterrupt = 0x00474C30;
-	void orderInterrupt(CUnit* unit, CUnit* target, uint16 x, uint16 y, uint32 orderId) {
-		static Point16 pos;
-		pos.x = x; pos.y = y;
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			PUSH target
-			PUSH pos
-			PUSH orderId
-			CALL Func_orderInterrupt
-			POPAD
-		}
-	}
-
-	const uint32 Func_ActUnitReturnToIdle = 0x00475420;
-	void actUnitReturnToIdle(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_ActUnitReturnToIdle
-			POPAD
-		}
-	}
-
-	const uint32 Func_unitOrderMoveToTargetUnit = 0x00479FE0;
-	void unitOrderMoveToTargetUnit(CUnit* unit, CUnit* target) {
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			MOV ECX, target
-			CALL Func_unitOrderMoveToTargetUnit
-			POPAD
-		}
-	}
-
-	const uint32 Func_AI_CastSpellBehaviour = 0x004A13C0;
-	bool32 AI_CastSpellBehaviour(CUnit* unit, uint32 unknown) {
-		static bool32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			PUSH unknown
-			CALL Func_AI_CastSpellBehaviour
-			MOV result, EAX
-			POPAD
-		}
-
-		return result;
-
-	}
-
-	//Related to path/movement decision
-	const uint32 Func_sub_4EB290 = 0x004EB290;
-	void setNextWaypoint_Sub4EB290(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_sub_4EB290
-			POPAD
-		}
-	}
-
-	const uint32 Func_moveToTarget = 0x004EB720;
-	bool moveToTarget(CUnit* unit, CUnit* target) {
-		static bool32 bPreResult;
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			MOV EDI, target
-			CALL Func_moveToTarget
-			MOV bPreResult, EAX
-			POPAD
-		}
-		return (bPreResult != 0);
-	}
-
-	const uint32 Func_SetMoveTarget_xy = 0x004EB820;
-	bool SetMoveTarget_xy(CUnit* unit, int x, int y) {
-		static bool32 bPreResult;
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			MOV EBX, x
-			MOV EDI, y
-			CALL Func_SetMoveTarget_xy
-			MOV bPreResult, EAX
-			POPAD
-		}
-		return (bPreResult != 0);
-	}
-
-	const uint32 Func_Sub4EB900 = 0x004EB900;
-	bool function_004EB900(CUnit* unit, CUnit* target) {
-		static bool32 bPreResult;
-		__asm {
-			PUSHAD
-			MOV EAX, target
-			MOV ECX, unit
-			CALL Func_Sub4EB900
-			MOV bPreResult, EAX
-			POPAD
-		}
-		return (bPreResult != 0);
-	}
-} //Unnamed namespace
-
-//End of helper functions
+}

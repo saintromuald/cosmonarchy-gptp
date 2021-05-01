@@ -1,22 +1,7 @@
 #include "receive_command.h"
 #include <SCBW/api.h>
 
-//Helper functions declaration
-
-namespace {
-
-	bool32 OrderAllowed(CUnit* unit, uint16 orderId, uint32 nationID);							//0x0046DC20
-	void function_004756B0(CUnit* unit, uint8 orderId, uint32 unk1, uint32 unk2, uint32 bCommandType);	//0x004756B0
-	void function_004756E0(CUnit* unit, CUnit* target, uint32 orderId, uint32 bCommandType);		//0x004756E0
-	uint32 function_0049A410(CUnit* unit, uint8 orderId);											//0x0049A410
-	bool CanTargetSelf(CUnit* unit, uint8 orderId);											//0x0049A480
-	void function_0049A500(CUnit* unit, uint8* array_of_data);									//0x0049A500
-	void function_0049A8C0(uint8* array_of_data, bool32 bCanBeObstructed);						//0x0049A8C0
-
-} //unnamed namespace
-
 namespace hooks {
-
 	//this function receives the Attack/Attack Move commands and
 	//the spells commands, maybe more
 	void receive_command(int x, int y, CUnit* unitParam, uint32 wUnitType, uint32 bActionOrder, uint32 bCommandType) {
@@ -38,7 +23,7 @@ namespace hooks {
 		*saved_y = y;
 		*saved_order = bActionOrder;
 
-		function_0049A8C0((uint8*)&array_of_data[0], orders_dat::CanBeObstructed[bActionOrder]);
+		helper::function_0049A8C0((uint8*)&array_of_data[0], orders_dat::CanBeObstructed[bActionOrder]);
 
 		if (bActionOrder > OrderId::CTFCOP2 || switch_value[bActionOrder] == 1) {
 
@@ -58,12 +43,12 @@ namespace hooks {
 				if (orders_dat::TechUsed[current_order] != TechId::None)
 					bOrderAllowed = (current_unit->canUseTech(orders_dat::TechUsed[current_order], *ACTIVE_NATION_ID) == 1);
 				else
-					bOrderAllowed = (OrderAllowed(current_unit, current_order, *ACTIVE_NATION_ID) == 1);
+					bOrderAllowed = (helper::OrderAllowed(current_unit, current_order, *ACTIVE_NATION_ID) == 1);
 
 				if (bOrderAllowed) {
 
 					if (current_unit == unitParam) { //target is the caster/ordered unit
-						if (!CanTargetSelf(current_unit, bActionOrder))
+						if (!helper::CanTargetSelf(current_unit, bActionOrder))
 							jump_to_9AD7E = true;
 					}
 
@@ -72,7 +57,7 @@ namespace hooks {
 
 				if (!jump_to_9AD7E) { //9ABC4:
 
-					if (function_0049A410(current_unit, bActionOrder) == 0)
+					if (helper::function_0049A410(current_unit, bActionOrder) == 0)
 						jump_to_9AD7E = true;
 					else
 						if (current_unit->mainOrderId != OrderId::NukeLaunch ||
@@ -112,13 +97,13 @@ namespace hooks {
 										loop_to_9ac0d = false;
 									} else {
 
-										function_004756E0(current_unit, unitParam, *saved_order_3, bCommandType);
+										helper::function_004756E0(current_unit, unitParam, *saved_order_3, bCommandType);
 
 										if (*saved_order_2 == OrderId::Nothing2) {
 											jump_to_9ad74 = true;
 											loop_to_9ac0d = false;
 										} else {
-											function_004756E0(current_unit->subunit, unitParam, *saved_order_2, bCommandType);
+											helper::function_004756E0(current_unit->subunit, unitParam, *saved_order_2, bCommandType);
 											jump_to_9ad74 = true;
 											loop_to_9ac0d = false;
 										}
@@ -210,11 +195,11 @@ namespace hooks {
 								*saved_y = y;
 
 								if (wUnitType == UnitId::None)
-									function_0049A500(current_unit, (uint8*)&array_of_data[0]);
+									helper::function_0049A500(current_unit, (uint8*)&array_of_data[0]);
 								else
 									*saved_unknown_2 = *saved_unknown_1;
 
-								function_004756B0(
+								helper::function_004756B0(
 									current_unit,
 									*saved_order_3,
 									*saved_unknown_2 / 65536,
@@ -225,7 +210,7 @@ namespace hooks {
 								if (*saved_order_2 == OrderId::Nothing2)
 									jump_to_9ad74 = true;
 								else {
-									function_004756B0(
+									helper::function_004756B0(
 										current_unit->subunit,
 										*saved_order_2,
 										*saved_unknown_2 / 65536,
@@ -263,165 +248,7 @@ namespace hooks {
 				//9AB62:
 				current_unit = *saved_unit;
 				current_order = *saved_order;
-
 			}
-
 		}
-
 	}
-
-} //namespace hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_OrderAllowed = 0x0046DC20;
-	bool32 OrderAllowed(CUnit* unit, uint16 orderId, uint32 nationID) {
-
-		static bool32 bResult;
-
-		__asm {
-			PUSHAD
-			MOV BX, orderId
-			MOV EAX, unit
-			PUSH nationID
-			CALL Func_OrderAllowed
-			MOV bResult, EAX
-			POPAD
-		}
-
-		return bResult;
-
-	}
-
-	;
-
-	const uint32 Func_Sub4756B0 = 0x004756B0;
-	void function_004756B0(CUnit* unit, uint8 orderId, uint32 unk1, uint32 unk2, uint32 bCommandType) {
-
-		__asm {
-			PUSHAD
-			MOV DL, orderId
-			MOV ESI, unit
-			PUSH unk1
-			PUSH unk2
-			PUSH bCommandType
-			CALL Func_Sub4756B0
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub4756E0 = 0x004756E0;
-	void function_004756E0(CUnit* unit, CUnit* target, uint32 orderId, uint32 bCommandType) {
-
-		__asm {
-			PUSHAD
-			MOV EDX, target
-			MOV ESI, unit
-			PUSH orderId
-			PUSH bCommandType
-			CALL Func_Sub4756E0
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub49A410 = 0x0049A410;
-	uint32 function_0049A410(CUnit* unit, uint8 orderId) {
-
-		static uint32 result;
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			MOV DL, orderId
-			CALL Func_Sub49A410
-			MOV result, EAX
-			POPAD
-		}
-
-		return result;
-
-	}
-
-	;
-
-	//Logically identical to 0049A480 sub_49A480
-	bool CanTargetSelf(CUnit* unit, uint8 orderId) {
-
-		bool return_value;
-
-		if (
-			unit->status & UnitStatus::GroundedBuilding &&
-			(orderId == OrderId::RallyPoint1 || orderId == OrderId::RallyPoint2)
-			)
-			return_value = true;
-		else
-			if (
-				(unit->id == UnitId::ZergIsthrathaleth || unit->id == UnitId::Hero_UncleanOne) &&
-				orderId == OrderId::DarkSwarm
-				)
-				return_value = true;
-			else
-				if (unit->status & UnitStatus::IsHallucination)
-					return_value = false;
-				else
-					if (
-						unit->id == UnitId::ZergOvileth &&
-						UpgradesSc->currentLevel[unit->playerId][UpgradeId::VentralSacs] == 0
-						)
-						return_value = false;
-					else
-						if (units_dat::SpaceProvided[unit->id] == 0)
-							return_value = false;
-						else
-							if (orderId == OrderId::MoveUnload)
-								return_value = true;
-							else
-								return_value = false;
-
-		return return_value;
-
-	}
-
-	;
-
-	const uint32 Func_Sub49A500 = 0x0049A500;
-	void function_0049A500(CUnit* unit, uint8* array_of_data) {
-
-		__asm {
-			PUSHAD
-			PUSH array_of_data
-			PUSH unit
-			CALL Func_Sub49A500
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub49A8C0 = 0x0049A8C0;
-	void function_0049A8C0(uint8* array_of_data, bool32 bCanBeObstructed) {
-
-		__asm {
-			PUSHAD
-			PUSH bCanBeObstructed
-			MOV EDI, array_of_data
-			CALL Func_Sub49A8C0
-			POPAD
-		}
-
-	}
-
-	;
-
-} //unnamed namespace
-
-//End of helper functions
+}

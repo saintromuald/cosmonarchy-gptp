@@ -6,17 +6,7 @@
 #include "hooks/weapons/wpnspellhit.h"
 #include "globals.h"
 #include "limits/ccmu.h"
-namespace {	// helper declarations
-	bool isUnitDistanceWithin(CUnit* target, CBullet* bullet, uint32 radius);
-	void weaponBulletShot(CUnit* target, CBullet* bullet, uint32 dmgDivisor);
-	void doWeaponHit(CUnit* target, CUnit* attacker, uint8 dmgDivisor);
-	void Ai_UnitWasHit(uint32 main_target_reaction, uint32 dont_call_help, CUnit* attacker, CUnit* target);
-
-	// for airSplash
-	CUnit* findBestUnit(Box16* radius, int32 bullet, int32(__fastcall* func)(int32, int32));					// 004E8830
-	int16 randomizeShort(int32 counts);																		// 004DC4A0
-	int32 splashFunc(CBullet* bullet, CUnit* unit);														// 0048B570
-
+namespace {
 	// SC internal data for Lurker spines
 	struct SpineHitTable {
 		struct {
@@ -27,8 +17,7 @@ namespace {	// helper declarations
 	SpineHitTable* const spineHitTable = (SpineHitTable*)(0x0064DEC8);
 	uint32* const spineHitRow = (uint32*)(0x64EEC8);
 	uint32* const spineHitCol = (uint32*)(0x64DEA8);
-
-}//unnamed namespace
+}
 
 namespace hooks {
 
@@ -143,7 +132,7 @@ namespace hooks {
 
 		bool hasGuaranteedHitUnit = guaranteedHit != nullptr;
 		if (hasGuaranteedHitUnit && nathrokorCondition(bullet, bullet->attackTarget.unit)) {
-			weaponBulletShot(guaranteedHit, bullet, 1);
+			helper::weaponBulletShot(guaranteedHit, bullet, 1);
 		}
 		int divisor = 1;
 		if (weaponId == WeaponId::ArchitectDispersiveSalvo) {
@@ -191,7 +180,7 @@ namespace hooks {
 				outer = (int16)(splashBase * (1 + 0.1 * stacks));
 			}
 
-			if (!isUnitDistanceWithin(target, bullet, outer)) continue;
+			if (!helper::isUnitDistanceWithin(target, bullet, outer)) continue;
 
 			// Don't storm a unit that's already being stormed
 			if (bullet->weaponType == WeaponId::PsiStorm) {
@@ -213,8 +202,8 @@ namespace hooks {
 				inner = (int16)(splashBase * (1 + 0.1 * stacks));
 			}
 
-			if (isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet, target)) {
-				weaponBulletShot(target, bullet, divisor); // 100% damage
+			if (helper::isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet, target)) {
+				helper::weaponBulletShot(target, bullet, divisor); // 100% damage
 				continue;
 			}
 
@@ -239,14 +228,14 @@ namespace hooks {
 				radius = 32;
 			}
 
-			if (isUnitDistanceWithin(target, bullet, medium) && nathrokorCondition(bullet, target)) {
-				weaponBulletShot(target, bullet, divisor * 2); // 50% damage
+			if (helper::isUnitDistanceWithin(target, bullet, medium) && nathrokorCondition(bullet, target)) {
+				helper::weaponBulletShot(target, bullet, divisor * 2); // 50% damage
 				continue;
 			}
 
 			// Outer radius
 			if (nathrokorCondition(bullet, target)) {
-				weaponBulletShot(target, bullet, divisor * 4); // 25% damage
+				helper::weaponBulletShot(target, bullet, divisor * 4); // 25% damage
 			}
 		}
 	}
@@ -284,7 +273,7 @@ namespace hooks {
 			if (!scbw::canWeaponTargetUnit(bullet->weaponType, target, target)) continue;
 
 			// We found units in a square around the target, but is the target within the splash radius?
-			if (!isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[bullet->weaponType])) continue;
+			if (!helper::isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[bullet->weaponType])) continue;
 
 			if (bullet->sourceUnit != nullptr) {
 				/*
@@ -313,7 +302,7 @@ namespace hooks {
 					continue;
 				globals.add_lurker_spine_pair(bullet->sourceUnit, target);
 			}
-			weaponBulletShot(target, bullet, 1);
+			helper::weaponBulletShot(target, bullet, 1);
 		}
 	}
 
@@ -341,24 +330,13 @@ namespace hooks {
 		return false;
 	}
 
-	const uint32 Func_turnUnit = 0x00495F20;
-	void turnUnit(CUnit* a1, char a2) {
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOVZX BL, a2
-			CALL Func_turnUnit
-			POPAD
-		}
-	}
-
 	// clone of 'Normal' damage for reference
 	void normalDamage(CBullet* bullet, uint32 weaponId) {
 		// Create Lobotomy Mines
 		if (bullet->sourceUnit != nullptr && weaponId == WeaponId::Lockdown) {
 			CUnit* mine = scbw::createUnitIngame(UnitId::TerranLobotomyMine, bullet->srcPlayer, bullet->position.x, bullet->position.y);
 			if (mine != nullptr) {
-				turnUnit(mine, bullet->sourceUnit->currentDirection1);
+				helper::turnUnit(mine, bullet->sourceUnit->currentDirection1);
 			}
 		}
 
@@ -383,14 +361,7 @@ namespace hooks {
 		if (weaponId == WeaponId::ArchitectDispersiveSalvo) {
 			divisor = globals.get_divider(bullet);
 		}
-
-		// 
-		else if (weaponId == WeaponId::KalkaliskViscousAcid) {
-			//			divisor = globals.get_multihit_count(bullet);
-			divisor = 1;
-			//			scbw::printf("Get divisor %d, bullet: %X",divisor,bullet);
-		}
-
+		
 		// 
 		else if (weaponId == WeaponId::AcidSpore
 			&& bullet->sourceUnit
@@ -407,7 +378,7 @@ namespace hooks {
 		if (bullet->hitFlags & 1) { // Miss ?
 			if (target->pAI == nullptr) return;
 			if (bullet->sourceUnit == nullptr) return;
-			doWeaponHit(target, bullet->sourceUnit, divisor);
+			helper::doWeaponHit(target, bullet->sourceUnit, divisor);
 			return;
 		}
 
@@ -440,7 +411,7 @@ namespace hooks {
 					}
 				}
 			}
-			weaponBulletShot(target, bullet, divisor);
+			helper::weaponBulletShot(target, bullet, divisor);
 		}
 	}
 
@@ -482,8 +453,8 @@ namespace hooks {
 			weaponIdLoop = bullet->weaponType;
 			if (target != bullet->sourceUnit && (target->playerId != bullet->srcPlayer || target == bullet->attackTarget.unit)) {
 				if (scbw::canWeaponTargetUnit(weaponIdLoop, target, target)) {
-					if (isUnitDistanceWithin(target, bullet, weapons_dat::OuterSplashRadius[weaponIdLoop])) {
-						if (isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[weaponIdLoop])
+					if (helper::isUnitDistanceWithin(target, bullet, weapons_dat::OuterSplashRadius[weaponIdLoop])) {
+						if (helper::isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[weaponIdLoop])
 							&& target == bullet->attackTarget.unit) {
 							if (globals.extended_unit_table) {
 								new_unit_table.air_splash_results[0] = target;
@@ -509,12 +480,12 @@ namespace hooks {
 			if (*airSplashListCount == 1) {
 				list = 0;
 			} else {
-				list = randomizeShort(58) % *airSplashListCount;
+				list = helper::RandomizeShort(58) % *airSplashListCount;
 			}
 			if (globals.extended_unit_table) {
-				weaponBulletShot(target, bullet, (int32)new_unit_table.air_splash_results[list]);
+				helper::weaponBulletShot(target, bullet, (int32)new_unit_table.air_splash_results[list]);
 			} else {
-				weaponBulletShot(target, bullet, (int32)airSplashList[list]);
+				helper::weaponBulletShot(target, bullet, (int32)airSplashList[list]);
 			}
 
 		}
@@ -526,7 +497,7 @@ namespace hooks {
 	void yamatoDamage(CBullet* bullet, uint32 weaponId) {
 		if (bullet->attackTarget.unit == nullptr) return;
 		darkSwarmDamage(bullet->attackTarget.unit->position.x, bullet->attackTarget.unit->position.y, 1, bullet, weaponId);
-		weaponBulletShot(bullet->attackTarget.unit, bullet, 1);
+		helper::weaponBulletShot(bullet->attackTarget.unit, bullet, 1);
 	}
 
 	void parasite(CBullet* bullet, uint32 weaponId) {
@@ -579,119 +550,4 @@ namespace hooks {
 			}
 		}
 	}
-}//hooks
-
-namespace {
-	/*** helper functions that I couldn't find in gptp ***/
-	const uint32 Func_0043F320 = 0x0043F320;
-	void Ai_UnitWasHit(uint32 main_target_reaction, uint32 dont_call_help, CUnit* attacker, CUnit* target) {
-		__asm {
-			PUSHAD
-			PUSH main_target_reaction
-			PUSH dont_call_help
-			MOV ECX, target
-			MOV EDX, attacker
-			CALL Func_0043F320
-			POPAD
-		}
-	}
-
-	// checks if the distance between target and bullet's positions is < radius
-	const uint32 Helper_IsUnitDistanceWithin = 0x0048ADB0;
-	bool isUnitDistanceWithin(CUnit* target, CBullet* bullet, uint32 radius) {
-
-		uint32 result;
-		__asm {
-			PUSHAD
-			PUSH radius;
-			PUSH bullet;
-			MOV ECX, target
-				CALL Helper_IsUnitDistanceWithin
-				MOV result, EAX
-				POPAD
-		}
-		return result;
-	}
-
-	// creates attack overlay & deals damage from the bullet (just calls overlayAndNotify if the weapon deals no damage, or calls target->damageWith if it does
-	const uint32 Helper_WeaponBulletShot = 0x00479AE0;
-	void weaponBulletShot(CUnit* target, CBullet* bullet, uint32 dmgDivisor) {
-
-		if (bullet != nullptr && target != nullptr && bullet->sourceUnit && bullet->weaponType == WeaponId::PariahIconoclastBlades) {
-			if (!globals.was_hit_by_pariah(bullet->sourceUnit, target)) {
-				globals.register_pariah_hit(bullet->sourceUnit, target);
-			} else {
-				return;
-			}
-		}
-		__asm {
-			PUSHAD
-			PUSH dmgDivisor
-			MOV EAX, target
-			MOV EDX, bullet
-			CALL Helper_WeaponBulletShot
-			POPAD
-		}
-	}
-
-	const uint32 Helper_DoWeaponHit = 0x004795D0;
-	void doWeaponHit(CUnit* target, CUnit* attacker, uint8 dmgDivisor) {
-
-		uint32 divisor = dmgDivisor;
-		__asm {
-			PUSHAD
-			PUSH divisor
-			PUSH attacker
-			MOV EBX, target
-			CALL Helper_DoWeaponHit
-			POPAD
-		}
-	}
-
-	// for airSplash
-
-	const uint32 Func_findBestUnit = 0x004E8830;
-	CUnit* findBestUnit(Box16* radius, int32 bullet, int32(__fastcall* func)(int32, int32)) {
-		static CUnit* result;
-		__asm {
-			PUSHAD
-			MOV EAX, radius
-			MOV EBX, bullet
-			MOV EDI, func
-			CALL Func_findBestUnit
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_randomizeShort = 0x004DC4A0;
-	int16 randomizeShort(int32 counts) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, counts
-			CALL Func_randomizeShort
-			MOV result, EAX
-			POPAD
-		}
-		return (int16)result;
-	}
-
-	const uint32 Func_splashFunc = 0x0048B570;
-	int32 splashFunc(CBullet* bullet, CUnit* unit) {
-		static int32 result;
-
-		__asm {
-			PUSHAD
-			MOV EDI, bullet
-			MOV ESI, unit
-			CALL Func_splashFunc
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-}//unnamed namespace
-
+}

@@ -1,25 +1,7 @@
 #include "nuke_orders.h"
 #include <SCBW/api.h>
 
-//helper functions def
-
-namespace {
-
-	void setAllOverlayDirectionsGeneric(CUnit* unit, uint32 unk);						//01140
-	void AI_orderUnitCloaking(CUnit* unit);											//3B970
-	uint32 function_0043DB50(CUnit* unit);												//3DB50
-	void actUnitReturnToIdle(CUnit* unit);											//75420
-	bool setThingyVisibilityFlags(CThingy* thingy);									//878F0
-	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);				//88210
-	void changeUnitButtonSet_Sub4E5D60(CUnit* unit, uint16 unitId);					//E5D60
-	void showAndEnableUnit(CUnit* unit);											//E6490
-	void setNextWaypoint_Sub4EB290(CUnit* unit);									//EB290
-	bool SetMoveTarget_xy(CUnit* unit, int x, int y);								//EB820
-
-} //unnamed namespace
-
 namespace hooks {
-
 	void orders_NukeTrack(CUnit* unit) {
 
 		if (unit->mainOrderState != 0) {
@@ -36,8 +18,8 @@ namespace hooks {
 					if (unit->orderQueueHead == nullptr)
 						unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
 
-					actUnitReturnToIdle(unit);
-					changeUnitButtonSet_Sub4E5D60(unit, unit->id);
+					helper::actUnitReturnToIdle(unit);
+					helper::changeUnitButtonSet_Sub4E5D60(unit, unit->id);
 					scbw::refreshConsole();
 
 					while (current_image != nullptr) {
@@ -59,7 +41,7 @@ namespace hooks {
 					}
 
 					//64DD6
-					function_0043DB50(unit);
+					helper::function_0043DB50(unit);
 
 				}
 
@@ -71,7 +53,7 @@ namespace hooks {
 
 			unit->sprite->playIscriptAnim(IscriptAnimation::SpecialState1, true);
 
-			nukeDot = createThingy(
+			nukeDot = helper::createThingy(
 				SpriteId::Nuke_Target_Dot,
 				(unit->connectedUnit)->orderTarget.pt.x,
 				(unit->connectedUnit)->orderTarget.pt.y,
@@ -82,7 +64,7 @@ namespace hooks {
 
 			if (nukeDot != nullptr) {
 				nukeDot->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
-				setThingyVisibilityFlags(nukeDot);
+				helper::setThingyVisibilityFlags(nukeDot);
 			}
 
 			unit->mainOrderState = 6;
@@ -117,7 +99,7 @@ namespace hooks {
 			);
 
 			if (distance / 256 <= sightRange * 3)
-				AI_orderUnitCloaking(unit);
+				helper::AI_orderUnitCloaking(unit);
 
 		}
 
@@ -132,14 +114,14 @@ namespace hooks {
 		if (distance / 256 > sightRange) {
 
 			if (unit->recentOrderTimer == 0)
-				SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+				helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 		} else { //792AE
 
 			int32 direction;
 			bool bEndThere = false;
 
-			setNextWaypoint_Sub4EB290(unit);
+			helper::setNextWaypoint(unit);
 
 			if (
 				unit->nextTargetWaypoint.x != unit->position.x ||
@@ -193,8 +175,8 @@ namespace hooks {
 
 					nuke->orderTo(OrderId::NukeLaunch, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					nuke->connectedUnit = unit;
-					setAllOverlayDirectionsGeneric(nuke, 0);
-					showAndEnableUnit(nuke);
+					helper::setAllOverlayDirectionsGeneric(nuke, 0);
+					helper::showAndEnableUnit(nuke);
 
 					unit->connectedUnit = nuke;
 					unit->orderTo(OrderId::NukeTrack, unit->sprite->position.x, unit->sprite->position.y);
@@ -212,195 +194,8 @@ namespace hooks {
 						unit->currentButtonSet = UnitId::Buttons_CancelNukeStrike;
 
 					scbw::refreshConsole();
-
 				}
-
 			}
-
-		}
-
-	}
-
-	;
-
-} //namespace hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_setAllOverlayDirectionsGeneric = 0x00401140;
-	void setAllOverlayDirectionsGeneric(CUnit* unit, uint32 unk) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			PUSH unk
-			CALL Func_setAllOverlayDirectionsGeneric
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_AI_orderUnitCloaking = 0x0043B970;
-	void AI_orderUnitCloaking(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			CALL Func_AI_orderUnitCloaking
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub43DB50 = 0x0043DB50;
-	uint32 function_0043DB50(CUnit* unit) {
-
-		static uint32 return_value;
-
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			CALL Func_Sub43DB50
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-	const uint32 Func_ActUnitReturnToIdle = 0x00475420;
-	void actUnitReturnToIdle(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_ActUnitReturnToIdle
-			POPAD
-		}
-
-	}
-
-	;
-
-	//original referenced name was sub_4878F0, but using
-	//the name from bunker_hooks.cpp since it got meaning
-	const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
-	bool setThingyVisibilityFlags(CThingy* thingy) {
-
-		static bool32 bPreResult;
-
-		__asm {
-			PUSHAD
-			MOV ESI, thingy
-			CALL Func_SetThingyVisibilityFlags
-			MOV bPreResult, EAX
-			POPAD
-		}
-
-		return (bPreResult != 0);
-
-	}
-
-	;
-
-	//original referenced name was replaceSprite (but this one is probably
-	//more accurate since it does create something rather than replacing)
-	const uint32 Func_CreateThingy = 0x00488210;
-	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
-
-		static CThingy* thingy;
-		int32 x_ = x;
-
-		__asm {
-			PUSHAD
-			PUSH playerId
-			MOVSX EDI, y
-			PUSH x_
-			PUSH spriteId
-			CALL Func_CreateThingy
-			MOV thingy, EAX
-			POPAD
-		}
-
-		return thingy;
-
-	}
-
-	;
-
-
-	const uint32 Func_Sub4E5D60 = 0x004E5D60;
-	void changeUnitButtonSet_Sub4E5D60(CUnit* unit, uint16 buttonSetId) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			MOV CX, buttonSetId
-			CALL Func_Sub4E5D60
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_InitUnitTrapDoodad = 0x004E6490;
-	void showAndEnableUnit(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EDI, unit
-			CALL Func_InitUnitTrapDoodad
-			POPAD
 		}
 	}
-
-	;
-
-	//Related to path/movement decision
-	const uint32 Func_sub_4EB290 = 0x004EB290;
-	void setNextWaypoint_Sub4EB290(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_sub_4EB290
-			POPAD
-		}
-	}
-
-	;
-
-	const uint32 Func_SetMoveTarget_xy = 0x004EB820;
-	bool SetMoveTarget_xy(CUnit* unit, int x, int y) {
-
-		static bool32 bPreResult;
-
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			MOV EBX, x
-			MOV EDI, y
-			CALL Func_SetMoveTarget_xy
-			MOV bPreResult, EAX
-			POPAD
-		}
-
-		return (bPreResult != 0);
-
-	}
-
-	;
-
-} //Unnamed namespace
-
-//End of helper functions
+}

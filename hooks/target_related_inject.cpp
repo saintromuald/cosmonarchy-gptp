@@ -64,7 +64,7 @@ namespace {
 			MOV target, EAX
 			PUSHAD
 		}
-		result = hooks::unitCanSeeCloakedTarget(target, unit);
+		result = hooks::unitCanSeeCloakedTargetHook(target, unit);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -83,7 +83,7 @@ namespace {
 			MOV unit, ESI
 			PUSHAD
 		}
-		result = hooks::isTargetVisible(target, unit);
+		result = hooks::isTargetVisibleHook(target, unit);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -98,7 +98,7 @@ namespace {
 			MOV unit, ESI
 			PUSHAD
 		}
-		result = hooks::isUnitVisible(unit);
+		result = hooks::isUnitVisibleHook(unit);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -112,7 +112,7 @@ namespace {
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::checkUnitVisibility(unit);
+		hooks::checkUnitVisibilityHook(unit);
 		__asm {
 			POPAD
 			RETN
@@ -126,7 +126,7 @@ namespace {
 			MOV unit, ECX
 			PUSHAD
 		}
-		result = hooks::isUnitCloaking(unit);
+		result = hooks::isUnitCloakingHook(unit);
 		__asm {
 			POPAD
 			MOV EAX, result

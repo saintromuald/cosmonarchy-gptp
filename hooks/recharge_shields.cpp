@@ -3,15 +3,6 @@
 #include "../SCBW/enumerations.h"
 #include "../SCBW/api.h"
 
-//-------- Helper function declarations. Do NOT modify! --------//
-namespace {
-	void insertFirstOrder(CUnit* unit, uint8 orderId);			//0x004749D0
-	uint8 hasOverlay(CUnit* unit);								//0x0047B720
-	void makeToHoldPosition(CUnit* unit);					//0x004EB5B0
-	bool orderToMoveToTarget(CUnit* unit, CUnit* target);	//0x004EB980
-	bool isHangarUnit(CUnit* unit);
-} //unnamed namespace
-
 //This function is called every frame when a unit recharges shields.
 //Equivalent to 004934B0  sub_4934B0
 //Not hooked
@@ -66,7 +57,7 @@ namespace hooks {
 || !(battery->status & UnitStatus::Completed)
 || battery->energy == 0
 || battery->isFrozen()
-|| isHangarUnit(target)
+|| helper::isHangarUnit(target)
 )
 result = 0;
 		else
@@ -119,7 +110,7 @@ result = 0;
 
 				if (unit->mainOrderState == 0) {
 
-					if (orderToMoveToTarget(unit, battery))
+					if (helper::orderToMoveToTarget(unit, battery))
 						unit->mainOrderState = 1;
 
 					bStopThere = true;
@@ -134,7 +125,7 @@ result = 0;
 								bStopThere = true;
 						} else
 							if (movableState == 1) { //unit reached destination
-								makeToHoldPosition(unit);
+								helper::makeToHoldPosition(unit);
 								unit->mainOrderState = 2;
 							} else { //probably movableState == 2 == unit unmovable
 								unit->orderToIdle();
@@ -150,11 +141,11 @@ result = 0;
 					if (battery->secondaryOrderId != OrderId::ShieldBattery)
 						battery->setSecondaryOrder(OrderId::ShieldBattery);
 
-					overlaysCounter = hasOverlay(unit);
+					overlaysCounter = helper::hasOverlay(unit);
 					unit->sprite->createOverlay(ImageId::RechargeShields_Small + overlaysCounter, 0, 0, 0);
 
 					//the order is correct, see OrderId.h description
-					insertFirstOrder(unit, OrderId::Harvest5);
+					helper::insertFirstOrder(unit, OrderId::Harvest5);
 
 					unit->mainOrderState = 3;
 
@@ -183,108 +174,5 @@ result = 0;
 				} //if(!bStopThere && unit->mainOrderState == 3)
 
 			} //if(unit->mainOrderState <= 3)
-
-	} //void orderRechargeShieldsHook(CUnit* unit)
-
-} //hooks
-
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Helper_InsertFirstOrder = 0x004749D0;
-	void insertFirstOrder(CUnit* unit, uint8 orderId) {
-
-		__asm {
-			PUSHAD
-			MOV AL, orderId
-			MOV ECX, unit
-			CALL Helper_InsertFirstOrder
-			POPAD
-		}
-
 	}
-
-	;
-
-	const uint32 Func_hasOverlay = 0x0047B720;
-	/// Return the count of overlays
-	uint8 hasOverlay(CUnit* unit) {
-
-		static uint8 result;
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_hasOverlay
-			MOV result, AL
-			POPAD
-		}
-
-		return result;
-
-	}
-
-	;
-
-	const uint32 Func_Sub4934B0 = 0x004934B0;
-	void function_004934B0(CUnit* unit, CUnit* battery) {
-
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			MOV EBX, battery
-			CALL Func_Sub4934B0
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func__moveToTarget = 0x004EB980;
-	bool orderToMoveToTarget(CUnit* unit, CUnit* target) {
-
-		static bool32 bPreResult;
-
-		__asm {
-			PUSHAD
-			MOV EAX, target
-			MOV ECX, unit
-			CALL Func__moveToTarget
-			MOV bPreResult, EAX
-			POPAD
-		}
-
-		return bPreResult != 0;
-
-	}
-
-	;
-
-	const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
-	void makeToHoldPosition(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			CALL Func_OrdersHoldPositionSuicidal
-			POPAD
-		}
-	}
-
-	;
-
-	//Identical to unitIsHangerUnit @ 0x00401450
-	bool isHangarUnit(CUnit* unit) {
-		if (
-			unit->id == UnitId::ProtossSteward ||
-			unit->id == UnitId::ProtossPlasmaShell
-			)
-			return true;
-		else
-			return false;
-	}
-
-} //unnamed namespace
+}

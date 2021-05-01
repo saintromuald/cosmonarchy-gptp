@@ -9,33 +9,11 @@
 #define MAXINT16    (0xFFFF >> 1)
 #endif
 
-//Helper functions definitions
-
-namespace {
-
-	bool advanceRemainingBuildTime_Sub466940(CUnit* unit);					//0x00466940
-	uint8 function_0046A820(CUnit* unit);										//0x0046A820
-	void orderImmediate(CUnit* unit, uint8 order);								//0x00474B40
-	void actUnitReturnToIdle(CUnit* unit);									//0x00475420
-	void playMorphingCompleteSound(CUnit* unit);							//0x0048F440
-	void mergeStatusIntoUnit_Sub493180(CUnit* unit_dst, CUnit* unit_src);	//0x00493180
-	void function_0049B440(CUnit* unit, uint32 soundId);			 			//0x0049B440
-	void replaceUnitWithType(CUnit* unit, uint16 newUnitId);					//0x0049FED0
-	void changeUnitButtonSet_Sub4E5D60(CUnit* unit, uint16 unitId);			//0x004E5D60
-	void setNextWaypoint_Sub4EB290(CUnit* unit);							//0x004EB290
-	void makeToHoldPosition(CUnit* unit);									//0x004EB5B0
-	bool delayedSetMoveTarget_xy_Sub4EB960(CUnit* unit, uint16 x, uint16 y);		//0x004EB960
-
-} //unnamed namespace
-
 namespace hooks {
-
 	//equivalent to 0x004BFA80, but not identical
 	CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, uint32 units_list_length) {
-
 		CUnit* nearest_unit = nullptr;	//was ebp-04
 		uint32 best_distance = MAXINT32;
-
 		for (uint32 i = 0; i < units_list_length; i++) {
 
 			if (units_list[i] != nullptr) {
@@ -86,7 +64,7 @@ namespace hooks {
 		if (unit->mainOrderState == 0) {
 
 			//93BB2
-			if (advanceRemainingBuildTime_Sub466940(unit)) {
+			if (helper::advanceRemainingBuildTime_Sub466940(unit)) {
 
 				unit->sprite->flags &= ~CSprite_Flags::IscriptCode;	//unset that flag
 
@@ -113,9 +91,9 @@ namespace hooks {
 				unit->status |= UnitStatus::IsBuilding;
 
 				//pathing related
-				function_0046A820(unit);
+				helper::function_0046A820(unit);
 
-				changeUnitButtonSet_Sub4E5D60(unit, unit->id);
+				helper::changeUnitButtonSet_Sub4E5D60(unit, unit->id);
 
 				*bCanUpdateCurrentButtonSet = 1;
 				*bCanUpdateSelectedUnitPortrait = 1;
@@ -123,9 +101,9 @@ namespace hooks {
 				*someDialogUnknown = nullptr;
 				*someDialogUnknownUser = nullptr;
 
-				playMorphingCompleteSound(unit);
+				helper::playMorphingCompleteSound(unit);
 				unit->order(units_dat::HumanIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, 0);
-				actUnitReturnToIdle(unit);
+				helper::actUnitReturnToIdle(unit);
 				if (unit->id == UnitId::ProtossAugur) {
 					unit->status |= UnitStatus::Completed;
 
@@ -148,7 +126,7 @@ namespace hooks {
 			) {	//conditions for merge not ok
 
 			//94838
-			setNextWaypoint_Sub4EB290(unit);
+			helper::setNextWaypoint(unit);
 
 			if (
 				unit->moveTarget.pt.x != unit->nextTargetWaypoint.x ||
@@ -186,7 +164,7 @@ namespace hooks {
 			if (unit->status & UnitStatus::IsNormal) {
 				if (unit->isTargetWithinMinRange(targetUnit, (2 * unit->current_speed2) / 256)) {
 					unit->status &= ~UnitStatus::IsNormal; //unset the flag
-					orderImmediate(unit, OrderId::ResetCollision1);
+					helper::orderImmediate(unit, OrderId::ResetCollision1);
 				}
 			}
 
@@ -205,7 +183,7 @@ namespace hooks {
 
 												//unit unmovable			
 				if (unit->mainOrderState != 0 && unit->getMovableState() == 2) {
-					makeToHoldPosition(unit);
+					helper::makeToHoldPosition(unit);
 					unit->orderToIdle();
 				} else {
 
@@ -214,7 +192,7 @@ namespace hooks {
 					unit->mainOrderState = 1;
 
 					if (distanceBetweenUnits > 19)
-						delayedSetMoveTarget_xy_Sub4EB960(
+						helper::delayedSetMoveTarget_xy_Sub4EB960(
 							unit,
 							targetUnit->sprite->position.x,
 							targetUnit->sprite->position.y
@@ -265,7 +243,7 @@ namespace hooks {
 						else
 							y = (uint16)y;
 
-						delayedSetMoveTarget_xy_Sub4EB960(unit, x, y);
+						helper::delayedSetMoveTarget_xy_Sub4EB960(unit, x, y);
 
 					} //if(distanceBetweenUnits <= 19)
 
@@ -275,11 +253,11 @@ namespace hooks {
 			else {
 
 				//9479C:
-				mergeStatusIntoUnit_Sub493180(unit, targetUnit);
-				replaceUnitWithType(unit, UnitId::ProtossMindTyrant);
+				helper::mergeStatusIntoUnit_Sub493180(unit, targetUnit);
+				helper::replaceUnitWithType(unit, UnitId::ProtossMindTyrant);
 
 				//update stuff related to the beginning of merge process I think
-				function_0049B440(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
+				helper::function_0049B440(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 
 				unit->sprite->flags &= ~CSprite_Flags::IscriptCode; //disable the flag if set
 
@@ -295,7 +273,7 @@ namespace hooks {
 				}
 
 				//947E0:
-				changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
+				helper::changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
 				scbw::refreshConsole();
 
 				unit->killCount += targetUnit->killCount;
@@ -306,7 +284,7 @@ namespace hooks {
 				targetUnit->remove();
 
 				unit->status &= ~UnitStatus::IsBuilding; //disable the flag if set
-				function_0046A820(unit); ////pathing related
+				helper::function_0046A820(unit); ////pathing related
 
 				unit->orderComputerCL(OrderId::CompletingArchonSummon);
 
@@ -329,7 +307,7 @@ namespace hooks {
 			) {	//conditions for merge not ok
 
 			//94A3F
-			setNextWaypoint_Sub4EB290(unit);
+			helper::setNextWaypoint(unit);
 
 			if (
 				unit->moveTarget.pt.x != unit->nextTargetWaypoint.x ||
@@ -366,7 +344,7 @@ namespace hooks {
 			if (unit->status & UnitStatus::IsNormal) {
 				if (unit->isTargetWithinMinRange(targetUnit, (2 * unit->current_speed2) / 256)) {
 					unit->status &= ~UnitStatus::IsNormal; //unset the flag
-					orderImmediate(unit, OrderId::ResetCollision1);
+					helper::orderImmediate(unit, OrderId::ResetCollision1);
 				}
 			}
 
@@ -385,7 +363,7 @@ namespace hooks {
 
 												//unit unmovable
 				if (unit->mainOrderState != 0 && unit->getMovableState() == 2) {
-					makeToHoldPosition(unit);
+					helper::makeToHoldPosition(unit);
 					unit->orderToIdle();
 				} else {
 
@@ -394,7 +372,7 @@ namespace hooks {
 					unit->mainOrderState = 1;
 
 					if (distanceBetweenUnits > 10)
-						delayedSetMoveTarget_xy_Sub4EB960(
+						helper::delayedSetMoveTarget_xy_Sub4EB960(
 							unit,
 							targetUnit->sprite->position.x,
 							targetUnit->sprite->position.y
@@ -446,7 +424,7 @@ namespace hooks {
 						else
 							y = (uint16)y;
 
-						delayedSetMoveTarget_xy_Sub4EB960(unit, x, y);
+						helper::delayedSetMoveTarget_xy_Sub4EB960(unit, x, y);
 
 					} //if(distanceBetweenUnits <= 19)
 
@@ -456,8 +434,8 @@ namespace hooks {
 			else {
 
 				//949BC:
-				mergeStatusIntoUnit_Sub493180(unit, targetUnit);
-				replaceUnitWithType(unit, UnitId::ProtossArchon);
+				helper::mergeStatusIntoUnit_Sub493180(unit, targetUnit);
+				helper::replaceUnitWithType(unit, UnitId::ProtossArchon);
 
 				unit->sprite->flags &= ~CSprite_Flags::IscriptCode; //disable the flag if set
 
@@ -473,7 +451,7 @@ namespace hooks {
 				}
 
 				//949F0:
-				changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
+				helper::changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
 				scbw::refreshConsole();
 
 				unit->killCount += targetUnit->killCount;
@@ -483,222 +461,11 @@ namespace hooks {
 				targetUnit->remove();
 
 				unit->status &= ~UnitStatus::IsBuilding; //disable the flag if set
-				function_0046A820(unit); ////pathing related
+				helper::function_0046A820(unit); ////pathing related
 
 				unit->orderComputerCL(OrderId::CompletingArchonSummon);
-
-
-			} //if(distanceBetweenUnits <= 20)
-
-		} //conditions for merge are ok
-
-	} //void orders_WarpingArchon(CUnit* unit)
-
-} //hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	uint32 Func_Sub466940 = 0x00466940;
-	//return true if remainingBuildTime was 0 when called,
-	//remainingBuildTime change affected by cheating
-	bool advanceRemainingBuildTime_Sub466940(CUnit* unit) {
-
-		static bool32 bTimeWasZero;
-
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			CALL Func_Sub466940
-			MOV bTimeWasZero, EAX
-			POPAD
-		}
-
-		return (bTimeWasZero != 0);
-
-	}
-
-	;
-
-	uint32 Func_Sub46A820 = 0x0046A820;
-	//return value may be useless since it's the exact value of pathingFlags
-	uint8 function_0046A820(CUnit* unit) {
-
-		static uint8 result;
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub46A820
-			MOV result, AL
-			POPAD
-		}
-
-		return result;
-
-	}
-
-	;
-
-	uint32 Func_OrderImmediate = 0x00474B40;
-	void orderImmediate(CUnit* unit, uint8 order) {
-
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			MOV AL, order
-			CALL Func_OrderImmediate
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_ActUnitReturnToIdle = 0x00475420;
-	void actUnitReturnToIdle(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_ActUnitReturnToIdle
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_PlayMorphingCompleteSound = 0x0048F440;
-	void playMorphingCompleteSound(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_PlayMorphingCompleteSound
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub493180 = 0x00493180;
-	//get status (defensiveMatrixHp to acidSporeTime) of unit_src
-	//and give it to unit_dst
-	void mergeStatusIntoUnit_Sub493180(CUnit* unit_dst, CUnit* unit_src) {
-
-		__asm {
-			PUSHAD
-			MOV ECX, unit_src
-			MOV EAX, unit_dst
-			CALL Func_Sub493180
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub49B440 = 0x0049B440;
-	void function_0049B440(CUnit* unit, uint32 soundId) {
-
-		__asm {
-			PUSHAD
-			MOV EBX, soundId
-			MOV EAX, unit
-			CALL Func_Sub49B440
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_ReplaceUnitWithType = 0x0049FED0;
-	void replaceUnitWithType(CUnit* unit, uint16 newUnitId) {
-
-		uint32 newUnitId_ = newUnitId;
-
-		__asm {
-			PUSHAD
-			PUSH newUnitId_
-			MOV EAX, unit
-			CALL Func_ReplaceUnitWithType
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub4E5D60 = 0x004E5D60;
-	void changeUnitButtonSet_Sub4E5D60(CUnit* unit, uint16 buttonSetId) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			MOV CX, buttonSetId
-			CALL Func_Sub4E5D60
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub4EB290 = 0x004EB290;
-	//Related to path/movement decision
-	void setNextWaypoint_Sub4EB290(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub4EB290
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
-	void makeToHoldPosition(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			CALL Func_OrdersHoldPositionSuicidal
-			POPAD
+			}
 		}
 	}
 
-	;
-
-	const uint32 Func_Sub4EB960 = 0x004EB960;
-	//return true if waiting for recentOrderTimer to reach 0 or
-	//if setMoveTarget_xy returned true
-	bool delayedSetMoveTarget_xy_Sub4EB960(CUnit* unit, uint16 x, uint16 y) {
-
-		bool32 bPreResult;
-
-		__asm {
-			PUSHAD
-			MOVSX EDI, y
-			MOVSX EBX, x
-			MOV EAX, unit
-			CALL Func_Sub4EB960
-			MOV bPreResult, EAX
-			POPAD
-		}
-
-		return (bPreResult != 0);
-
-	}
-
-	;
-
-} //Unnamed namespace
-
-//End of helper functions
+}

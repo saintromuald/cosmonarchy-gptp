@@ -1110,7 +1110,7 @@ namespace scbw {
 		scbw::set_generic_value(unit, valueId, rotate);
 		auto X = unit->getX() + offset.x;
 		auto Y = unit->getY() + offset.y;
-		auto bullet = createBulletRet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y,
+		auto bullet = helper::createBulletRet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y,
 			unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
 		return bullet;
 	}
@@ -1182,7 +1182,7 @@ namespace scbw {
 		scbw::set_generic_value(unit, valueId, rotate);
 		auto X = unit->getX() + offset.x;
 		auto Y = unit->getY() + offset.y;
-		createBullet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y,
+		helper::createBullet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y,
 			unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
 	}
 

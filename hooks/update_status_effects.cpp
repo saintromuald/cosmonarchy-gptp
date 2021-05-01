@@ -65,72 +65,6 @@ namespace hooks {
 		}
 	}
 
-	const uint32 Func_CreateThingy = 0x00488210;
-	CThingy* createThingyFunc(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
-		static CThingy* thingy;
-		int32 x_ = x;
-		__asm {
-			PUSHAD
-			PUSH playerId
-			MOVSX EDI, y
-			PUSH x_
-			PUSH spriteId
-			CALL Func_CreateThingy
-			MOV thingy, EAX
-			POPAD
-		}
-		return thingy;
-	}
-
-	const uint32 Func_GetAllUnitsInBounds = 0x0042FF80;
-	CUnit** getAllUnitsInBounds_copy(Box16* coords) {
-		static CUnit** units_in_bounds;
-		__asm {
-			PUSHAD
-			MOV EAX, coords
-			CALL Func_GetAllUnitsInBounds
-			MOV units_in_bounds, EAX
-			POPAD
-		}
-		return units_in_bounds;
-	}
-
-	//Identical to setAllImageGroupFlagsPal11 @ 0x00497430;
-	void setAllImageGroupFlagsPal11(CSprite* sprite) {
-		for (
-			CImage* current_image = sprite->images.head;
-			current_image != nullptr;
-			current_image = current_image->link.next
-			) {
-			if (current_image->paletteType == PaletteType::RLE_HPFLOATDRAW)
-				current_image->flags |= CImage_Flags::Redraw;
-		}
-	}
-
-	const uint32 Func_DoUnitsCollide = 0x00469B60;
-	bool func_dounitscollide(CUnit* first, CUnit* second) {
-		static uint32 result = 0;
-		__asm {
-			PUSHAD
-			MOV EAX, first
-			MOV ECX, second
-			CALL Func_DoUnitsCollide
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_Sub_4E97C0 = 0x004E97C0;
-	void unburrow(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub_4E97C0
-			POPAD
-		}
-	}
-
 	static bool safetyUnburrowCheck(CUnit* unit, CUnit* target) {
 		if (!(target->status & UnitStatus::GroundedBuilding)) {
 			return false;
@@ -141,7 +75,7 @@ namespace hooks {
 		if (target == unit) {
 			return false;
 		}
-		if (!func_dounitscollide(unit, target)) {
+		if (!helper::func_dounitscollide(unit, target)) {
 			return false;
 		}
 		return true;
@@ -187,7 +121,7 @@ namespace hooks {
 				//from Ai_Burrowable
 				//
 				if (nearest != nullptr) {
-					unburrow(unit);
+					helper::unburrow(unit);
 				}
 			}
 
@@ -387,17 +321,6 @@ namespace hooks {
 		}
 	}
 
-	const uint32 Func_orderComputerClear = 0x00475310;
-	void orderComputerClear(CUnit* a1, uint8 a2) {
-		__asm {
-			PUSHAD
-			MOV ESI, a1
-			MOVZX CL, a2
-			CALL Func_orderComputerClear
-			POPAD
-		}
-	}
-
 	void AI_Burrower(CUnit* a1) {
 		if (units_dat::BaseProperty[a1->id] & UnitProperty::Burrowable) {
 			if (!(a1->status & UnitStatus::Burrowed) && a1->id != UnitId::ZergDroleth) {
@@ -425,7 +348,7 @@ namespace hooks {
 							}
 						}
 						if (canBurrow) {
-							orderComputerClear(a1, OrderId::Burrow);
+							helper::orderComputerClear(a1, OrderId::Burrow);
 						}
 					}
 				}

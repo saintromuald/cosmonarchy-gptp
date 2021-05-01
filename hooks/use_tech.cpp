@@ -4,42 +4,6 @@
 #include "hook_tools.h"
 #include "SCBW/stat_txt_spec.h"
 
-const uint32 Func_get_statTxt_Str_0 = 0x0048EF30;
-uint32 get_statTxt_Str_0(CUnit* unit, uint32 playerId, char* message) {
-
-	static uint32 return_value;
-	__asm {
-		PUSHAD
-		MOV EAX, message
-		MOV ECX, playerId
-		MOV EDX, unit
-		CALL Func_get_statTxt_Str_0
-		MOV EAX, return_value
-		POPAD
-	}
-	return return_value;
-}
-;
-//
-//Func_CreateUnit from wpnspell
-const uint32 Func_CreateUnit = 0x004A09D0;
-CUnit* CreateUnit2(uint32 unitId, int x, int y, uint32 playerId) {
-	static CUnit* unit_created;
-	__asm {
-		PUSHAD
-		PUSH playerId
-		PUSH y
-		MOV ECX, unitId
-		MOV EAX, x
-		CALL Func_CreateUnit
-		MOV unit_created, EAX
-		POPAD
-	}
-	return unit_created;
-}
-;
-
-
 extern const uint32 Func_TriTargetOrder = 0x0048CAF0;
 const void IssueTriTargetOrder(uint8 order1, uint8 order2, uint8 order3) {
 	if (order2 == 0) {
@@ -77,8 +41,6 @@ const void IssueTriTargetOrder(uint8 order1, uint8 order2, uint8 order3) {
 	}
 }
 
-
-
 const int techUseFunc = 0x00423660;
 int Ui_CheckEnergyForTechUse(int tech_id) {
 	static int result;
@@ -91,6 +53,7 @@ int Ui_CheckEnergyForTechUse(int tech_id) {
 	}
 	return result;
 }
+
 namespace hooks {
 	void BTNSACT_UseTech(uint16 tech, GrpHead* head) {
 		//replacement for proc 0x00423660
@@ -162,7 +125,7 @@ namespace hooks {
 			if (!TechCapableUnit) {
 				char* message = (char*)statTxtTblNew->getString(864);
 				CUnit* portrait_unit = playersSelections->unit[*ACTIVE_NATION_ID][0];
-				get_statTxt_Str_0(*activePortraitUnit, (*activePortraitUnit)->playerId, message);
+				helper::get_statTxt_Str_0(*activePortraitUnit, (*activePortraitUnit)->playerId, message);
 				return;
 			}
 		}

@@ -7,10 +7,8 @@
 #include "hooks/hydraFinder.h"
 #include "globals.h"
 #include "logger.h"
-namespace {
-	//Helper functions
-	uint16 getUnitStrength(CUnit* unit, bool useGroundStrength);
 
+namespace {
 	/// Definition of damage factors (explosive, concussive, etc.)
 	struct {
 		int32 damageType;
@@ -22,127 +20,6 @@ namespace {
 		{3, 0, 256, 256, 256},			//Normal
 		{4, 0, 256, 256, 256}			//IgnoreArmor
 	};
-
-	CUnit* createHallucination(CUnit* target, uint32 playerId);
-	bool placeHallucination(CUnit* unit);
-	void unitDestructor(CUnit* unit);
-
-	// For updateCorrosiveSpores
-	uint32 getCorrosiveSporesImage(CUnit* unit); // 004F41F0
-
-}
-
-//copied from wpnspellhit and renamed
-const uint32 Func_displayLastNetErrForPlayer = 0x0049E530;
-void displayneterr_49E530(uint32 playerId) {
-	__asm {
-		PUSHAD
-		PUSH playerId
-		CALL Func_displayLastNetErrForPlayer
-		POPAD
-	}
-}
-
-const uint32 Func_UpdateUnitStrength = 0x0049FA40;
-void updateStrength_49FA40(CUnit* unit) {
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_UpdateUnitStrength
-		POPAD
-	}
-}
-
-const uint32 Func_Sub4A01F0 = 0x004A01F0;
-void function_004A01F0_copy(CUnit* unit) {
-	__asm {
-		PUSHAD
-		MOV EAX, unit
-		CALL Func_Sub4A01F0
-		POPAD
-	}
-}
-
-const uint32 Func_497ED0 = 0x00497ED0;
-void makeSpriteVisible(CSprite* sprite) {
-	__asm {
-		PUSHAD
-		MOV EAX, sprite
-		CALL Func_497ED0
-		POPAD
-	}
-}
-
-const uint32 Func_AI_TrainingUnit = 0x004A2830;
-void AI_Train_4A2830(CUnit* unit_creator, CUnit* created_unit) {
-	__asm {
-		PUSHAD
-		MOV EAX, created_unit
-		MOV ECX, unit_creator
-		CALL Func_AI_TrainingUnit
-		POPAD
-	}
-}
-
-const uint32 Func_CreateUnit = 0x004A09D0;
-CUnit* CreateUnit_09D0(uint32 unitId, int x, int y, uint32 playerId) {
-	static CUnit* unit_created;
-	__asm {
-		PUSHAD
-		PUSH playerId
-		PUSH y
-		MOV ECX, unitId
-		MOV EAX, x
-		CALL Func_CreateUnit
-		MOV unit_created, EAX
-		POPAD
-	}
-	return unit_created;
-}
-
-//copied from recall_spell, replace later
-const uint32 Func_CreateThingy = 0x00488210;
-CThingy* function_00488210(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
-	static CThingy* thingy;
-	int32 x_ = x;
-	__asm {
-		PUSHAD
-		PUSH playerId
-		MOVSX EDI, y
-		PUSH x_
-		PUSH spriteId
-		CALL Func_CreateThingy
-		MOV thingy, EAX
-		POPAD
-	}
-	return thingy;
-}
-
-const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
-bool function_004878f0(CThingy* thingy) {
-	static bool32 bPreResult;
-	__asm {
-		PUSHAD
-		MOV ESI, thingy
-		CALL Func_SetThingyVisibilityFlags
-		MOV bPreResult, EAX
-		POPAD
-	}
-	return (bPreResult != 0);
-}
-
-const uint32 Func_Sub498D70 = 0x00498D70;
-void imgul(CSprite* sprite, uint32 imageId, uint32 unk1, uint32 unk2, uint32 unk3) {
-	__asm {
-		PUSHAD
-		MOV EAX, sprite
-		MOV ESI, imageId
-		PUSH unk1
-		PUSH unk2
-		PUSH unk3
-		CALL Func_Sub498D70
-		POPAD
-	}
 }
 
 #include "SCBW\UnitFinder.h"
@@ -178,7 +55,7 @@ void augurSacrifice(CUnit* target) {
 		});
 		if (nearest != nullptr) {
 			target->orderTarget.unit = nearest;
-			scbw::createBullet(WeaponId::AugurFinalHour, target, target->position.x, target->position.y, target->playerId,
+			helper::createBullet(WeaponId::AugurFinalHour, target, target->position.x, target->position.y, target->playerId,
 				scbw::getAngle(target->position.x, target->position.y, nearest->getX(), nearest->getY()));
 			scbw::hideAndDisableUnit(target);
 			target->status |= UnitStatus::Invincible;
@@ -372,8 +249,8 @@ namespace hooks {
 		}
 
 		//Update unit strength data
-		data.target->airStrength = getUnitStrength(data.target, false);
-		data.target->groundStrength = getUnitStrength(data.target, true);
+		data.target->airStrength = helper::getUnitStrength(data.target, false);
+		data.target->groundStrength = helper::getUnitStrength(data.target, true);
 	}
 
 	static void weaponDamage_damageModifiers(WeaponDamageData& data) {
@@ -420,17 +297,6 @@ namespace hooks {
 				};
 				data.finalDamage *= mul;
 				data.finalDamage += (int)scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction;
-				break;
-			}
-			case WeaponId::KalkaliskViscousAcid:
-			{
-				// Kalkalisk behavior
-				int decrement = data.damageDivisor * 256;
-				if (decrement < data.damage) {
-					data.finalDamage = data.finalDamage - decrement + (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction);
-				} else {
-					data.finalDamage = data.finalDamage + (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction);
-				}
 				break;
 			}
 			case WeaponId::DemiurgeGalacticWeaver:
@@ -492,11 +358,11 @@ namespace hooks {
 					if (target->status & UnitStatus::Invincible) {
 						return;
 					}
-					scbw::ApplySpores(target);
+					helper::ApplySpores(target);
 					CThingy* thingy = scbw::createThingy(SpriteId::Corrosive_Acid_Hit, target->getX(), target->getY(), 11);
 					if (thingy != nullptr) {
 						thingy->sprite->elevationLevel = target->sprite->elevationLevel + 1;
-						scbw::setThingyVisibilityFlags(thingy);
+						helper::setThingyVisibilityFlags(thingy);
 					}
 					//target->damageWith(30 * 256, WeaponId::PsiStorm, unit, unit->playerId);
 				});
@@ -520,13 +386,13 @@ namespace hooks {
 					uint32 haluPlayer = scbw::get_generic_value(data.target, ValueId::HallucinatingSourcePlayer);
 					if (haluPlayer != haluAttacker->playerId && !scbw::isAlliedTo(haluPlayer, haluAttacker->playerId)) return;
 
-					CUnit* hal_unit = createHallucination(haluAttacker, haluPlayer);
+					CUnit* hal_unit = helper::createHallucination(haluAttacker, haluPlayer);
 					if (hal_unit != nullptr) {
 						hal_unit->sprite->createOverlay(ImageId::HallucinationDeath3);
 						scbw::set_generic_unit(haluAttacker, ValueId::HallucinationPointer, hal_unit);
 
-						if (!placeHallucination(hal_unit)) {
-							unitDestructor(hal_unit);
+						if (!helper::placeHallucination(hal_unit)) {
+							helper::UnitDestructor(hal_unit);
 						}
 					}
 				}
@@ -797,7 +663,7 @@ namespace hooks {
 						}
 						unit->addUnitEnergy(5 * 256);
 						if (show) {
-							imgul(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+							helper::addOverlayBelowMain(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 						}
 					});
 				}
@@ -826,7 +692,7 @@ namespace hooks {
 					return; // Ally Check
 				}
 				if (units_dat::ShieldsEnabled[unit->id] && unit->shields < units_dat::MaxShieldPoints[unit->id] * 256) { // Shield Check for default behavior
-					imgul(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
+					helper::addOverlayBelowMain(unit->sprite, ImageId::SmallExplosion_Unused, 0, 0, 0);
 				} else { // Return if both checks failed
 					return;
 				}
@@ -970,7 +836,7 @@ namespace hooks {
 				{
 					// Cyclops - Flak Cannon passive
 					auto newAngle = scbw::getAngle(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
-					scbw::createBullet(WeaponId::CyclopsFragmentaryShells, data.attacker, data.target->getX(), data.target->getY(), data.attacker->playerId, newAngle);
+					helper::createBullet(WeaponId::CyclopsFragmentaryShells, data.attacker, data.target->getX(), data.target->getY(), data.attacker->playerId, newAngle);
 					break;
 				}
 			}
@@ -1047,7 +913,7 @@ namespace hooks {
 		}
 		if (!overlay) {
 			target->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
-			v6 = getCorrosiveSporesImage(target);
+			v6 = helper::getCorrosiveSporesImage(target);
 			targetFinal = target->subunit;
 			if (!targetFinal)
 				targetFinal = target;
@@ -1062,77 +928,4 @@ namespace hooks {
 		scbw::set_generic_timer(target, ValueId::CorrosiveTouchTimer, VithriliskCorrosiveTouchTimer);
 		return result;
 	}
-} //hooks
-
-namespace {
-	//Somehow related to AI stuff; details unknown.
-	const uint32 Helper_GetUnitStrength = 0x00431800;
-	uint16 getUnitStrength(CUnit* unit, bool useGroundStrength) {
-		static uint16 strength;
-		static uint32 useGroundStrength_;
-		useGroundStrength_ = useGroundStrength ? 1 : 0;
-		__asm {
-			PUSHAD
-			PUSH useGroundStrength_
-			MOV EAX, unit
-			CALL Helper_GetUnitStrength
-			MOV strength, AX
-			POPAD
-		}
-		return strength;
-	}
-
-	// Hallucination-related
-	// Moved here instead of including an entire other file...
-	const uint32 Func_createHallucination = 0x004F6B90;
-	CUnit* createHallucination(CUnit* target, uint32 playerId) {
-		static CUnit* return_value;
-		__asm {
-			PUSHAD
-			PUSH playerId
-			MOV ECX, target
-			CALL Func_createHallucination
-			MOV return_value, EAX
-			POPAD
-		}
-		return return_value;
-	}
-
-	const uint32 Func_placeHallucination = 0x004F66D0;
-	bool placeHallucination(CUnit* unit) {
-		static bool32 bPreResult;
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_placeHallucination
-			MOV bPreResult, EAX
-			POPAD
-		}
-		return (bPreResult != 0);
-	}
-
-	const uint32 Func_unitDestructor = 0x004A0990;
-	void unitDestructor(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			CALL Func_unitDestructor
-			POPAD
-		}
-	}
-
-	// For updateCorrosiveSpores
-	const uint32 Func_getCorrosiveSporesImage = 0x004F41F0;
-	uint32 getCorrosiveSporesImage(CUnit* unit) {
-		static uint32 result;
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			CALL Func_getCorrosiveSporesImage
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-} //unnamed namespace
+}

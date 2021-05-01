@@ -6,6 +6,7 @@
 #pragma once
 #include "../definitions.h"
 #include "structures.h"
+#include "scbwhelper.h"
 #pragma pack(1)
 
 #define SCBW_DATA(type, name, offset) type const name = (type)offset;

@@ -3,8 +3,8 @@
 
 namespace hooks {
 
-	bool isInfestableUnit(CUnit* unit);
-	bool unitCanInfest(CUnit* unit);
+	bool isInfestableUnitHook(CUnit* unit);
+	bool unitCanInfestHook(CUnit* unit);
 
 	//infestation order used by infestation victim
 	void orderMorphIntoInfested(CUnit* unitInfested);

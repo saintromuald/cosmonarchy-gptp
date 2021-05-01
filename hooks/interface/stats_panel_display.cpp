@@ -2,33 +2,8 @@
 #include <SCBW/api.h>
 #include "SCBW/stat_txt_spec.h"
 #include "hooks/interface/buttonsets.h"
-//Helper functions declaration
-
-namespace {
-
-	void hideDialog(BinDlg* dialog);										// 00418700
-	void StatsNukesCount(BinDlg* dialog, uint32 index);						// 00425310
-	void StatHangerCount(BinDlg* dialog, uint32 index);						// 004253D0
-	void StatsShieldLevel(BinDlg* dialog, uint32 index);					// 00425510
-	void StatsArmorLevel(BinDlg* dialog, uint32 index);						// 00425600
-	void StatsWeaponLevel(BinDlg* dialog, uint32 index, uint32 weaponId);	// 00425790
-	bool StatSpidermineCount(BinDlg* dialog, uint32 index);					// 00426300
-	uint16 getLastQueueSlotType(CUnit* unit);								// 0047B270
-
-	// For getUnitRankString
-	__int8 unitGetRace(CUnit* a1);											// 0047B150
-	char* getStatTxtString(__int16 a1);										// 004C36F0
-
-	// For statsWeaponLevel / statsArmorLevel
-	char getArmorCount(CUnit* unit, int32 a2);								// 00453FC0
-	void showDialog(BinDlg* dialog);										// 004186A0
-	int32 disableDialog(BinDlg* dialog);									// 00418640
-	void updateDialog(BinDlg* dialog);										// 0041C400
-
-} //unnamed namespace
 
 namespace hooks {
-
 	bool StatLobotomyMineCount(BinDlg* dialog, uint32 index) {
 		auto v2 = *activePortraitUnit;
 		auto v3 = dialog;
@@ -88,15 +63,15 @@ namespace hooks {
 			uint8 airWeaponMainUnit;	//BL
 			uint8 airWeaponSubunit;	//AL
 
-			uint16 unitId = getLastQueueSlotType(activeUnit);
+			uint16 unitId = helper::getLastQueueSlotType(activeUnit);
 
 			if (units_dat::ArmorUpgrade[unitId] != UpgradeId::GlobalUpgrade60) {
-				StatsArmorLevel(dialog, index);
+				helper::StatsArmorLevel(dialog, index);
 				index++;
 			}
 
 			if (units_dat::ShieldsEnabled[activeUnit->id]) {
-				StatsShieldLevel(dialog, index);
+				helper::StatsShieldLevel(dialog, index);
 				index++;
 			}
 
@@ -146,11 +121,11 @@ namespace hooks {
 
 					if (!bNoGroundWeaponDisplay) {
 						//26D54
-						StatsWeaponLevel(dialog, index, groundWeapon);
+						helper::StatsWeaponLevel(dialog, index, groundWeapon);
 						index++;
 						// Display additional weapons
 						if (activeUnit->id == UnitId::TerranCentaur) {
-							StatsWeaponLevel(dialog, index, WeaponId::CentaurSunchaserMissiles);
+							helper::StatsWeaponLevel(dialog, index, WeaponId::CentaurSunchaserMissiles);
 							index++;
 						}
 					}
@@ -219,7 +194,7 @@ namespace hooks {
 								}	
 							}
 					if (!bNoAirWeaponDisplay) { //26E19
-						StatsWeaponLevel(dialog, index, airWeapon);
+						helper::StatsWeaponLevel(dialog, index, airWeapon);
 						index++;
 					}
 				} //if(!bNoAirWeaponDisplay)
@@ -229,12 +204,12 @@ namespace hooks {
 			if (activeUnit->id == UnitId::ProtossSolarion
 				|| activeUnit->id == UnitId::ProtossAccantor
 				) { // Originally had hardcode for Gantrithor and Warbringer, removed for HYDRA
-				StatHangerCount(dialog, index);
+				helper::StatHangerCount(dialog, index);
 				index++;
 			}
 
 			if (activeUnit->id == UnitId::TerranVulture) { // Originally also had hardcode for Raynor Vulture, removed for HYDRA
-				if (StatSpidermineCount(dialog, index))
+				if (helper::StatSpidermineCount(dialog, index))
 					index++; //don't increase the index if not displaying
 			}
 			if (activeUnit->id == UnitId::ghost) {
@@ -242,15 +217,15 @@ namespace hooks {
 					index++;
 				}
 			}
-			unitId = getLastQueueSlotType(activeUnit);
+			unitId = helper::getLastQueueSlotType(activeUnit);
 			if (unitId == UnitId::TerranNuclearSilo) {
-				StatsNukesCount(dialog, index);
+				helper::StatsNukesCount(dialog, index);
 				index++;
 			}
 		}
 
 		//26E96
-		if (dialog->controlType == DialogControlTypes::DialogBox) {
+		if (dialog->controlType == DialogControlTypes::DialogBoxDC) {
 			current_dialog = dialog;
 		}
 		else {
@@ -262,7 +237,7 @@ namespace hooks {
 				current_dialog = current_dialog->next;
 			}
 			while (index < 4 && current_dialog != nullptr) {
-				hideDialog(current_dialog);
+				helper::hideDialog(current_dialog);
 				current_dialog = current_dialog->next;
 				index++;
 			}
@@ -286,8 +261,8 @@ namespace hooks {
 			|| !(units_dat::BaseProperty[_type] & UnitProperty::Hero)
 			|| !units_dat::MapStringId[_type])
 		{
-			if (unitGetRace(a2) == RaceId::Terran) {
-				return getStatTxtString((unsigned __int8)(a2->rankIncrease + units_dat::Rank[_type]) + 1302);
+			if (helper::unitGetRace(a2) == RaceId::Terran) {
+				return helper::getStatTxtString((unsigned __int8)(a2->rankIncrease + units_dat::Rank[_type]) + 1302);
 			}
 			return 0;
 		}
@@ -312,7 +287,7 @@ namespace hooks {
 		uint8 v13; // [esp+13h] [ebp-1h]
 
 		v3 = dialog;
-		v13 = getArmorCount(*activePortraitUnit, unused);
+		v13 = helper::getArmorCount(*activePortraitUnit, unused);
 		sprintf_s(statusscreen_infobtn[buttonRelated], 8, "%d ", v13);
 		if (v3->controlType) {
 			v3 = *(BinDlg**)&v3->parent;
@@ -332,8 +307,8 @@ namespace hooks {
 		LABEL_6:
 			v4 = 0;
 		}
-		showDialog(v4);
-		disableDialog(v4);
+		helper::showDialog(v4);
+		helper::disableDialog(v4);
 		v5 = cmdicons_grp;
 		v6 = *v4->user;
 		v7 = *activePortraitUnit;
@@ -366,7 +341,7 @@ namespace hooks {
 		if (!(v12 & UnitStatus::Completed))
 		{
 			v4->flags = v12 | UnitStatus::Completed;
-			updateDialog(v4);
+			helper::updateDialog(v4);
 		}
 		*unkUpgradeCount += v13;
 	}
@@ -408,8 +383,8 @@ namespace hooks {
 		LABEL_9:
 			v6 = 0;
 		}
-		showDialog(v6);
-		disableDialog(v6);
+		helper::showDialog(v6);
+		helper::disableDialog(v6);
 //		v7 = v6->user;
 		v8 = cmdicons_grp;
 		v6->graphic = 12;
@@ -422,194 +397,8 @@ namespace hooks {
 		if (!(v9 & 1))
 		{
 			v6->flags = v9 | 1;
-			updateDialog(v6);
+			helper::updateDialog(v6);
 		}
 		*unkUpgradeCount += v10;
 	}
-	
-
-} //namespace hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_HideDialog = 0x00418700;
-	void hideDialog(BinDlg* dialog) {
-		__asm {
-			PUSHAD
-			MOV ESI, dialog
-			CALL Func_HideDialog
-			POPAD
-		}
-	}
-
-	const uint32 Func_Sub425310 = 0x00425310;
-	void StatsNukesCount(BinDlg* dialog, uint32 index) {
-		__asm {
-			PUSHAD
-			MOV EAX, dialog
-			PUSH index
-			CALL Func_Sub425310
-			POPAD
-		}
-	}
-
-	const uint32 Func_StatHangerCount = 0x004253D0;
-	void StatHangerCount(BinDlg* dialog, uint32 index) {
-		__asm {
-			PUSHAD
-			MOV EBX, dialog
-			PUSH index
-			CALL Func_StatHangerCount
-			POPAD
-		}
-	}
-
-	const uint32 Func_Sub425510 = 0x00425510;
-	void StatsShieldLevel(BinDlg* dialog, uint32 index) {
-		__asm {
-			PUSHAD
-			MOV EAX, dialog
-			PUSH index
-			CALL Func_Sub425510
-			POPAD
-		}
-	}
-
-	const uint32 Func_Sub425600 = 0x00425600;
-	void StatsArmorLevel(BinDlg* dialog, uint32 index) {
-		__asm {
-			PUSHAD
-			MOV EAX, dialog
-			PUSH index
-			CALL Func_Sub425600
-			POPAD
-		}
-	}
-
-	const uint32 Func_Sub425790 = 0x00425790;
-	void StatsWeaponLevel(BinDlg* dialog, uint32 index, uint32 weaponId) {
-		__asm {
-			PUSHAD
-			MOV EAX, dialog
-			PUSH weaponId
-			PUSH index
-			CALL Func_Sub425790
-			POPAD
-		}
-	}
-
-	const uint32 Func_StatSpidermineCount = 0x00426300;
-	bool StatSpidermineCount(BinDlg* dialog, uint32 index) {
-		static bool32 bPreResult;
-		__asm {
-			PUSHAD
-			MOV EAX, dialog
-			PUSH index
-			CALL Func_StatSpidermineCount
-			MOV bPreResult, EAX
-			POPAD
-		}
-		return (bPreResult != 0);
-	}
-
-	//Identical to function at 0x0047B270
-	//EDX = unit
-	//If the unit is currently mutating into
-	//a level 2/3 zerg building, return the
-	//id of the building morphed into, else
-	//return the normal unit id.
-	uint16 getLastQueueSlotType(CUnit* unit) {
-		uint16 unitId;
-		if (unit->status & UnitStatus::Completed) {
-			unitId = unit->id;
-		}
-		else {
-			unitId = unit->buildQueue[unit->buildQueueSlot];
-			if (!(scbw::isZergBuildingMorphResult)) {
-				unitId = unit->id;
-			}
-		}
-		return unitId;
-	}
-
-	// For getUnitRankString
-
-	const uint32 Func_unitGetRace = 0x0047B150;
-	__int8 unitGetRace(CUnit* a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_unitGetRace
-			MOV result, EAX
-			POPAD
-		}
-		return (__int8)result;
-	}
-
-	const uint32 Func_getStatTxtString = 0x004C36F0;
-	char* getStatTxtString(__int16 a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOVZX CX, a1
-			CALL Func_getStatTxtString
-			MOV result, EAX
-			POPAD
-		}
-		return (char*)result;
-	}
-
-	// For statsWeaponLevel / statsArmorLevel
-	const uint32 Func_getArmorCount = 0x00453FC0;
-	char getArmorCount(CUnit* unit, int32 unused) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			MOV EDX, unused
-			MOV EAX, unit
-			CALL Func_getArmorCount
-			MOV result, EAX
-			POPAD
-		}
-		return (char)result;
-	}
-
-	const uint32 Func_showDialog = 0x004186A0;
-	void showDialog(BinDlg* dialog) {
-		__asm {
-			PUSHAD
-			MOV ESI, dialog
-			CALL Func_showDialog
-			POPAD
-		}
-	}
-
-	const uint32 Func_disableDialog = 0x00418640;
-	int32 disableDialog(BinDlg* dialog) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			MOV ESI, dialog
-			CALL Func_disableDialog
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_updateDialog = 0x0041C400;
-	void updateDialog(BinDlg* dialog) {
-		__asm {
-			PUSHAD
-			MOV EAX, dialog
-			CALL Func_updateDialog
-			POPAD
-		}
-	}
-
-} //unnamed namespace
-
-//End of helper functions
+}

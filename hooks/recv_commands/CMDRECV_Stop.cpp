@@ -1,19 +1,7 @@
 #include "CMDRECV_Stop.h"
 #include <SCBW/api.h>
 
-//Helper functions declaration
-
-namespace {
-
-	void parseOrdersDatReqs();																							//6D450
-	int parseRequirementOpcodes(CUnit* unit, uint32 orderId, uint32 playerId, uint32 address, uint32 req_offset);						//6D610
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);															//742D0
-	void function_004754F0(CUnit* unit, uint32 unitId, uint32 unk1, uint32 unk2, uint32 orderId, uint32 unk3, uint32 bCommandType, uint32 unk5);	//754F0
-
-} //unnamed namespace
-
 namespace hooks {
-
 	//The functions seems similar but there are some differences,
 	//like the u16_ offset, the function to perform the order in
 	//CMDRECV_Stop, and the orders id
@@ -32,7 +20,7 @@ namespace hooks {
 			*u32_0066FF60 = 0x00;
 
 			if (orders_dat::RequirementsOffset[OrderId::ReaverStop] == 0xFFFF)
-				parseOrdersDatReqs();
+				helper::parseOrdersDatReqs();
 
 			if (current_unit->playerId != *ACTIVE_NATION_ID)
 				*u32_0066FF60 = 0x01;
@@ -79,7 +67,7 @@ namespace hooks {
 											if (orders_dat::RequirementsOffset[OrderId::ReaverStop] == 0)
 												*u32_0066FF60 = 0x17;
 											else
-												if (parseRequirementOpcodes(
+												if (helper::parseRequirementOpcodes(
 													current_unit,
 													OrderId::ReaverStop,
 													*ACTIVE_NATION_ID,
@@ -101,7 +89,7 @@ namespace hooks {
 																if (orders_dat::CanBeInterrupted[current_unit->orderQueueTail->orderId] ||
 																	current_unit->orderQueueTail->orderId == OrderId::ReaverStop
 																	)
-																	removeOrderFromUnitQueue(current_unit, current_unit->orderQueueTail);
+																	helper::removeOrderFromUnitQueue(current_unit, current_unit->orderQueueTail);
 																else
 																	bContinueLoop = false;
 
@@ -137,7 +125,7 @@ namespace hooks {
 			*u32_0066FF60 = 0x00;
 
 			if (orders_dat::RequirementsOffset[OrderId::CarrierStop] == 0xFFFF)
-				parseOrdersDatReqs();
+				helper::parseOrdersDatReqs();
 
 			if (current_unit->playerId != *ACTIVE_NATION_ID)
 				*u32_0066FF60 = 0x01;
@@ -184,7 +172,7 @@ namespace hooks {
 											if (orders_dat::RequirementsOffset[OrderId::CarrierStop] == 0)
 												*u32_0066FF60 = 0x17;
 											else
-												if (parseRequirementOpcodes(
+												if (helper::parseRequirementOpcodes(
 													current_unit,
 													OrderId::CarrierStop,
 													*ACTIVE_NATION_ID,
@@ -206,7 +194,7 @@ namespace hooks {
 																if (orders_dat::CanBeInterrupted[current_unit->orderQueueTail->orderId] ||
 																	current_unit->orderQueueTail->orderId == OrderId::CarrierStop
 																	)
-																	removeOrderFromUnitQueue(current_unit, current_unit->orderQueueTail);
+																	helper::removeOrderFromUnitQueue(current_unit, current_unit->orderQueueTail);
 																else
 																	bContinueLoop = false;
 
@@ -242,7 +230,7 @@ namespace hooks {
 			*u32_0066FF60 = 0x00;
 
 			if (orders_dat::RequirementsOffset[OrderId::Stop] == 0xFFFF)
-				parseOrdersDatReqs();
+				helper::parseOrdersDatReqs();
 
 			if (current_unit->playerId != *ACTIVE_NATION_ID)
 				*u32_0066FF60 = 0x01;
@@ -284,14 +272,14 @@ namespace hooks {
 										if (orders_dat::RequirementsOffset[OrderId::Stop] == 0)
 											*u32_0066FF60 = 0x17;
 										else
-											if (parseRequirementOpcodes(
+											if (helper::parseRequirementOpcodes(
 												current_unit,
 												OrderId::Stop,
 												*ACTIVE_NATION_ID,
 												0x00514CF8,
 												orders_dat::RequirementsOffset[OrderId::Stop]
 											) == 1)
-												function_004754F0(
+												helper::function_004754F0(
 													current_unit,
 													UnitId::None,
 													*(uint32*)(0x006D5C24),
@@ -301,99 +289,7 @@ namespace hooks {
 													bCommandType != 0, //true (1) if Queued Order
 													1
 												);
-
 			current_unit = getActivePlayerNextSelection();
-
 		}
-
 	}
-
-	;
-
-} //namespace hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_parseOrdersDatReqs = 0x0046D450;
-	void parseOrdersDatReqs() {
-
-		__asm {
-			PUSHAD
-			CALL Func_parseOrdersDatReqs
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_parseRequirementOpcodes = 0x0046D610;
-	int parseRequirementOpcodes(CUnit* unit, uint32 orderId, uint32 playerId, uint32 address, uint32 req_offset) {
-
-		static int return_value;
-
-		__asm {
-			PUSHAD
-			MOV EAX, req_offset
-			MOV ESI, unit
-			PUSH address
-			PUSH playerId
-			PUSH orderId
-			CALL Func_parseRequirementOpcodes
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
-
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			MOV EAX, order
-			CALL Func_removeOrderFromUnitQueue
-			POPAD
-		}
-
-	}
-
-	;
-
-	//Note: this function was made from what was seen in this case of use,
-	//some things are hardcoded because it's hard to tell what is used or
-	//not.
-	//Basically, used elsewhere, the function would be implemented differently
-	const uint32 Func_Sub_4754F0 = 0x004754F0;
-	void function_004754F0(CUnit* unit, uint32 unitId, uint32 unk1, uint32 unk2, uint32 orderId, uint32 unk3, uint32 bCommandType, uint32 unk5) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, 0
-			MOV EDX, 0
-			MOV EBX, unitId
-			MOV ESI, unit
-			PUSH unk1
-			PUSH unk2
-			PUSH unk3
-			PUSH orderId
-			PUSH bCommandType
-			PUSH unk5
-			CALL Func_Sub_4754F0
-			POPAD
-		}
-
-	}
-
-	;
-
-} //unnamed namespace
-
-//End of helper functions
+}

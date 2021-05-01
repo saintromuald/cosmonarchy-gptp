@@ -1,23 +1,10 @@
 #include "recall_spell.h"
 #include <SCBW/api.h>
 
-//helper functions def
-
-namespace {
-	//7B720
-	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index);	//926D0
-	void MindControlHit(CUnit* attacker, CUnit* target);																//F6910
-
-} //unnamed namespace
-
 namespace hooks {
-
 	void ordersCastMindControl(CUnit* unit) {
-
 		CUnit* target = unit->orderTarget.unit;
-
 		if (target == nullptr) {
-
 			if (unit->orderQueueHead != nullptr) {
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
@@ -27,11 +14,8 @@ namespace hooks {
 				else
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 			}
-
 		} else {
-
 			//F69B4
-
 			if (unit->playerId == target->playerId)
 				unit->orderToIdle();
 			else {
@@ -47,7 +31,7 @@ namespace hooks {
 
 				//energy cost is initialized in this function
 				//Corresponding error message is "Invalid Target"
-				spellCastSuccess = ordersSpell_Sub_4926D0(unit, TechId::MindControl, &techEnergyCost, unitSightRangeForSpell, 0x052E);
+				spellCastSuccess = helper::ordersSpell_Sub_4926D0(unit, TechId::MindControl, &techEnergyCost, unitSightRangeForSpell, 0x052E);
 
 				if (spellCastSuccess) {
 
@@ -73,7 +57,7 @@ namespace hooks {
 						else
 							target->sprite->createTopOverlay(overlayId, 0, 0, 0);
 						scbw::sendGPTP_aise_cmd(unit, target, GptpId::SetMindControlLink, 0, 0, 0);
-						MindControlHit(unit, target);
+						helper::MindControlHit(unit, target);
 						//scbw::print("Set...");
 
 						target->orderToIdle();
@@ -97,57 +81,5 @@ namespace hooks {
 			} //if (unit->playerId != target->playerId)
 
 		} //if (target != nullptr)
-
-	} //void ordersCastMindControl(CUnit* unit)
-
-	;
-
-} //namespace hooks
-
-;
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_Sub_4926D0 = 0x004926D0;
-	bool ordersSpell_Sub_4926D0(CUnit* unit, uint32 techId, uint16* techEnergyCost, uint32 sightRange, uint32 error_message_index) {
-
-		static bool32 bPreResult;
-
-		__asm {
-			PUSHAD
-			PUSH techEnergyCost
-			PUSH sightRange
-			PUSH techId
-			MOV EAX, error_message_index
-			MOV EBX, unit
-			CALL Func_Sub_4926D0
-			MOV bPreResult, EAX
-			POPAD
-		}
-
-		return (bPreResult != 0);
-
 	}
-
-	;
-
-	const uint32 Func_MindControl_Hit = 0x004F6910;
-	void MindControlHit(CUnit* attacker, CUnit* target) {
-
-		__asm {
-			PUSHAD
-			MOV ESI, target
-			PUSH attacker
-			CALL Func_MindControl_Hit
-			POPAD
-		}
-
-	}
-
-	;
-
-} //Unnamed namespace
-
-//End of helper functions
+}

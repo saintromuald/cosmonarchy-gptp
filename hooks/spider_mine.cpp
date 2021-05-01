@@ -4,36 +4,6 @@
 #include "logger.h"
 #include "byte_operations_utils.h"
 
-namespace {
-	CUnit* SpiderMine_AcquireTarget(CUnit* spiderMine);					// 00441270
-	void function_00495400(CUnit* unit, CUnit* target);					// 00495400
-	void function_0049B1E0(CUnit* unit);								// 0049B1E0
-	void function_004E99D0(CUnit* unit);								// 004E99D0
-	void burrowGeneric(CUnit* unit);									// 004E9A30
-	void setNextWaypoint_Sub4EB290(CUnit* unit);						// 004EB290
-
-	// For orders_PlaceMine
-	int techUseAllowed(CUnit* a1, __int16 a2, int a3);					// 0046DD80
-	unsigned int getDistanceFast(int a1, int a2, int a3, int a4);		// 0040C360
-	int orders_HoldPosSuicidal(CUnit* a1);								// 004EB5B0
-	void fixTargetLocation(unsigned __int16 a1, Point32* a2);			// 00401FA0
-	CUnit* createUnit(__int16 a1, int a2, int a3, int a4);				// 004A09D0
-	void updateUnitStatsFinishBuilding(CUnit* a1);						// 004A01F0
-	unsigned int updateUnitStrengthAndApplyDefaultOrders(CUnit* a1);	// 0049FA40
-	void turnUnit(CUnit* a1, char a2);									// 00495F20
-	void displayLastNetErrorForPlayer(unsigned __int8 a1);				// 0049E530
-	void toIdle(CUnit* a1);												// 004753A0
-	int isUnitMovable(CUnit* a1);										// 00401DC0
-	void orders_Nothing2(CUnit* a1);									// 00475000
-	void orderComputerClear(CUnit* a1, unsigned __int8 a2);				// 00475310
-	signed int moveToTarget(CUnit* a1, CUnit* a2);						// 004EB720
-	bool setMoveTargetXY(int a1, int a2, CUnit* a3);					// 004EB820
-
-	// For burrowGeneric
-	void toggleUnitPath(CUnit* unit);									// 004E42A0
-	char switchSpriteId(CSprite* sprite, int32 spriteId);				// 00499860
-}
-
 namespace hooks {
 	// Return the best target for the Spider Mine. If there is no suitable target, return nullptr instead.
 	CUnit* findBestTerranMineTarget(CUnit* spiderMine) {
@@ -92,15 +62,16 @@ namespace hooks {
 		if (unit->mainOrderState == 2) {
 			if (!(unit->orderSignal & 4)) {
 				if (!(unit->status & UnitStatus::IsHallucination)) {
-					burrowGeneric(unit); // related to movement
-					function_0049B1E0(unit); // related to cloaking/stealth
+					helper::function_004E9A30(unit); //related to movement
+					helper::function_0049B1E0(unit); //related to cloaking/stealth
 				}
 				unit->mainOrderState = 3;
 			}
 		}
 
 		if (unit->mainOrderState == 3) {
-			CUnit* target = SpiderMine_AcquireTarget(unit);
+			CUnit* target = helper::SpiderMine_AcquireTarget(unit);
+
 			if (target != nullptr) {
 				unit->orderTarget.unit = target;
 				unit->sprite->playIscriptAnim(IscriptAnimation::UnBurrow, true);
@@ -116,8 +87,10 @@ namespace hooks {
 				unit->sprite->elevationLevel = units_dat::Elevation[unit->id];
 				unit->status &= ~UnitStatus::NoCollide;
 				if (unit->orderTarget.unit != nullptr) {
-					// probably trigger movement/acceleration of unit toward the target
-					function_00495400(unit, unit->orderTarget.unit);
+					//probably trigger movement/acceleration of unit
+					//toward the target
+					helper::function_00495400(unit, unit->orderTarget.unit);
+
 					unit->mainOrderState = 5;
 				}
 				else {
@@ -130,14 +103,19 @@ namespace hooks {
 			if (unit->mainOrderState == 5) {
 				bool bIsCompletelyInRange = false;
 				bool bEndThere = false;
-				function_004E99D0(unit); //related to movement, similar to function_004E9A30
+
+				helper::function_004E99D0(unit); //related to movement, similar to function_004E9A30
+
 				if (unit->orderTarget.unit != nullptr) {
-					if (unit->isTargetWithinMinRange(unit->orderTarget.unit, MineSeekRange)) {
-						// probably trigger movement/acceleration of unit toward the target
-						function_00495400(unit, unit->orderTarget.unit);
-						if (unit->isTargetWithinMinRange(unit->orderTarget.unit, MineDetonateRange)) {
-							bIsCompletelyInRange = true; // jump to 00463F22
-						}
+
+					if (unit->isTargetWithinMinRange(unit->orderTarget.unit, SPIDERMINE_SEEKING_RANGE)) {
+
+						//probably trigger movement/acceleration of unit
+						//toward the target
+						helper::function_00495400(unit, unit->orderTarget.unit);
+
+						if (unit->isTargetWithinMinRange(unit->orderTarget.unit, SPIDERMINE_DETONATE_RANGE))
+							bIsCompletelyInRange = true; //jump to 63F22
 						else
 							if (unit->getMovableState() != 2) { // unit not unmovable
 								bEndThere = true;
@@ -145,8 +123,8 @@ namespace hooks {
 					}
 				}
 
-				if (!bEndThere && !bIsCompletelyInRange) { // 00463F14
-					setNextWaypoint_Sub4EB290(unit);
+				if (!bEndThere && !bIsCompletelyInRange) { //63F14
+					helper::setNextWaypoint(unit);
 					unit->mainOrderState = 1;
 				}
 
@@ -196,43 +174,47 @@ namespace hooks {
 
 		v1 = a1;
 		if (a1->mainOrderState) {
-			if (techUseAllowed(a1, 3u, (unsigned __int8)a1->playerId)
+			if (helper::techUseAllowed(a1, 3u, (unsigned __int8)a1->playerId)
 				&& ((v11 = v1->sprite, v1->moveTarget.pt.x != v11->position.x)
 					|| v1->moveTarget.pt.y != v11->position.y
 					|| ((v1->status & UnitStatus::Unmovable) != 0) != 1)) {
-				if ((getDistanceFast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00) <= 0x1400) {
-					orders_HoldPosSuicidal(v1);
+				//scbw::printf("distance %X %X", (getDistanceFast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00),
+				//	0x1400);
+				if ((helper::getDistanceFast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00) <= 0x1400) {
+					//scbw::print("hold");
+					helper::orders_HoldPosSuicidal(v1);
 					v12 = v1->orderTarget.pt.y;
 					a2.x = v1->orderTarget.pt.x;
 					a2.y = v12;
-					fixTargetLocation(0xDu, &a2);
-					v13 = createUnit(0xDu, a2.x, a2.y, (unsigned __int8)v1->playerId);
+					helper::fixTargetLocation(0xDu, &a2);
+					//scbw::printf("create at %d %d, order target is %d %d", a2.x, a2.y,v1->orderTarget.pt.x,v1->orderTarget.pt.y);
+					v13 = helper::createUnit(0xDu, a2.x, a2.y, (unsigned __int8)v1->playerId);
 					v14 = v13;
 					if (v13) {
-						updateUnitStatsFinishBuilding(v13);
-						updateUnitStrengthAndApplyDefaultOrders(v14);
-						turnUnit(v14, v1->currentDirection1);
+						helper::updateUnitStatsFinishBuilding(v13);
+						helper::updateUnitStrengthAndApplyDefaultOrders(v14);
+						helper::turnUnit(v14, v1->currentDirection1);
 						--v1->vulture.spiderMineCount;
 					} else {
-						displayLastNetErrorForPlayer(v1->playerId);
+						helper::displayLastNetErrorForPlayer(v1->playerId);
 					}
-					toIdle(v1);
+					helper::toIdle(v1);
 				} else if (v1->pAI) {
-					if (isUnitMovable(v1))
-						toIdle(v1);
+					if (helper::isUnitMovable(v1))
+						helper::toIdle(v1);
 				}
 			} else if (v1->orderQueueHead) {
 				v1->userActionFlags |= 1u;
-				orders_Nothing2(v1);
+				helper::orders_Nothing2(v1);
 			} else if (v1->pAI) {
-				orderComputerClear(v1, 0x9Cu);
+				helper::orderComputerClear(v1, 0x9Cu);
 			} else {
-				orderComputerClear(v1, units_dat::ReturnToIdleOrder[(unsigned __int16)v1->id]);
+				helper::orderComputerClear(v1, units_dat::ReturnToIdleOrder[(unsigned __int16)v1->id]);
 			}
 		} else {
 			v2 = a1->orderTarget.unit;
 			if (v2) {
-				v3 = moveToTarget(v2, a1);
+				v3 = helper::moveToTarget(v2, a1);
 				v4 = v2->sprite;
 				v5 = v4->position.y;
 				v6 = v4->position.x;
@@ -249,7 +231,7 @@ namespace hooks {
 			} else {
 				v8 = a1->orderTarget.pt.y;
 				v9 = a1->orderTarget.pt.x;
-				ByteOperations::SetLowByte(v10, setMoveTargetXY(v9, v8, a1));
+				ByteOperations::SetLowByte(v10, helper::setMoveTargetXY(v9, v8, a1));
 				if (v9 != v1->nextTargetWaypoint.x || v8 != v1->nextTargetWaypoint.y) {
 					v1->nextTargetWaypoint.x = v9;
 					v1->nextTargetWaypoint.y = v8;
@@ -258,304 +240,5 @@ namespace hooks {
 					v1->mainOrderState = 1;
 			}
 		}
-	}
-
-	// Hooked to try to fix mine burrowing - Pr0nogo
-	char burrowGeneric(CUnit* unit) { // 004E9A30
-		CUnit* unitVar = unit;
-		toggleUnitPath(unit);
-
-		CSprite* unitSprite = unitVar->sprite;
-		char unitPathing = unitVar->pathingFlags;
-		unitVar->movementState = 0;
-		unitVar->pathingFlags = (unitPathing ^ (unitSprite->elevationLevel < 12u)) & 1 ^ unitPathing;
-		unitVar->status |= UnitStatus::CloakingForFree | UnitStatus::Burrowed;
-		unitSprite->flags |= 0x40u; // image is hidden
-
-		CSprite* oldSprite = unitVar->sprite;
-		CSprite* newSprite;
-		if (unitVar->id == UnitId::ZergLakizilisk) {
-			// Warning, tism detected
-			// ByteOperations::SetLowByte(newSprite, switchSpriteId(oldSprite, SpriteId::White_Circle_Invisible));
-			unitVar->sprite->elevationLevel = 1;
-		}
-		else {
-			switchSpriteId(oldSprite, SpriteId::White_Circle_Invisible);
-			newSprite = unitVar->sprite;
-			newSprite->elevationLevel = 1;
-		}
-		return (char)newSprite;
-	}
-}
-
-namespace {
-
-	CUnit* SpiderMine_AcquireTarget(CUnit* spiderMine) {
-		const uint32 Func_SpiderMine_AcquireTarget = 0x00441270;
-		static CUnit* target;
-		__asm {
-			PUSHAD
-			MOV ESI, spiderMine
-			CALL Func_SpiderMine_AcquireTarget
-			MOV target, EAX
-			POPAD
-		}
-		return target;
-	}
-
-	const uint32 Func_Sub495400 = 0x00495400;
-	void function_00495400(CUnit* unit, CUnit* target) {
-		__asm {
-			PUSHAD
-			MOV EDI, unit
-			MOV EAX, target
-			CALL Func_Sub495400
-			POPAD
-		}
-	}
-
-	void function_0049B1E0(CUnit* unit) {
-		const uint32 Func_Sub49B1E0 = 0x0049B1E0;
-		__asm {
-			PUSHAD
-			MOV EDI, unit
-			CALL Func_Sub49B1E0
-			POPAD
-		}
-	}
-
-	void function_004E99D0(CUnit* unit) {
-		const uint32 Func_Sub4E99D0 = 0x004E99D0;
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub4E99D0
-			POPAD
-		}
-	}
-
-	// Related to path/movement decision
-	const uint32 Func_sub_4EB290 = 0x004EB290;
-	void setNextWaypoint_Sub4EB290(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_sub_4EB290
-			POPAD
-		}
-	}
-
-	// For orders_PlaceMine
-	const uint32 Func_techUseAllowed = 0x0046DD80;
-	int techUseAllowed(CUnit* a1, __int16 a2, int a3) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOVZX DI, a2
-			PUSH a3
-			CALL Func_techUseAllowed
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_getDistanceFast = 0x0040C360;
-	unsigned int getDistanceFast(int a1, int a2, int a3, int a4) {
-		static unsigned int result;
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			MOV EDX, a2
-			PUSH a3
-			PUSH a4
-			CALL Func_getDistanceFast
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_orders_HoldPosSuicidal = 0x004EB5B0;
-	int orders_HoldPosSuicidal(CUnit* a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV ESI, a1
-			CALL Func_orders_HoldPosSuicidal
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_fixTargetLocation = 0x00401FA0;
-	void fixTargetLocation(unsigned __int16 a1, Point32* a2) {
-		__asm {
-			PUSHAD
-			MOVZX AX, a1
-			MOV EDX, a2
-			CALL Func_fixTargetLocation
-			POPAD
-		}
-	}
-
-	const uint32 Func_createUnit = 0x004A09D0;
-	CUnit* createUnit(__int16 a1, int a2, int a3, int a4) {
-		static CUnit* result;
-		__asm {
-			PUSHAD
-			MOVZX CX, a1
-			MOV EAX, a2
-			PUSH a3
-			PUSH a4
-			CALL Func_createUnit
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_updateUnitStatsFinishBuilding = 0x004A01F0;
-	void updateUnitStatsFinishBuilding(CUnit* a1) {
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_updateUnitStatsFinishBuilding
-			POPAD
-		}
-	}
-
-	const uint32 Func_updateUnitStrengthAndApplyDefaultOrders = 0x0049FA40;
-	unsigned int updateUnitStrengthAndApplyDefaultOrders(CUnit* a1) {
-		static unsigned int result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_updateUnitStrengthAndApplyDefaultOrders
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_turnUnit = 0x00495F20;
-	void turnUnit(CUnit* a1, char a2) {
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOVZX BL, a2
-			CALL Func_turnUnit
-			POPAD
-		}
-	}
-
-	const uint32 Func_displayLastNetErrorForPlayer = 0x0049E530;
-	void displayLastNetErrorForPlayer(unsigned __int8 a1) {
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_displayLastNetErrorForPlayer
-			POPAD
-		}
-	}
-
-	const uint32 Func_toIdle = 0x004753A0;
-	void toIdle(CUnit* a1) {
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			CALL Func_toIdle
-			POPAD
-		}
-	}
-
-	const uint32 Func_isUnitMovable = 0x00401DC0;
-	int isUnitMovable(CUnit* a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_isUnitMovable
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_orders_Nothing2 = 0x00475000;
-	void orders_Nothing2(CUnit* a1) {
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			CALL Func_orders_Nothing2
-			POPAD
-		}
-	}
-
-	const uint32 Func_orderComputerClear = 0x00475310;
-	void orderComputerClear(CUnit* a1, unsigned __int8 a2) {
-		__asm {
-			PUSHAD
-			MOV ESI, a1
-			MOVZX CL, a2
-			CALL Func_orderComputerClear
-			POPAD
-		}
-	}
-
-	const uint32 Func_moveToTarget = 0x004EB720;
-	signed int moveToTarget(CUnit* a1, CUnit* a2) {
-		static signed int result;
-		__asm {
-			PUSHAD
-			MOV EDI, a1
-			MOV ESI, a2
-			CALL Func_moveToTarget
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_setMoveTargetXY = 0x004EB820;
-	bool setMoveTargetXY(int a1, int a2, CUnit* a3) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV EBX, a1
-			MOV EDI, a2
-			MOV ESI, a3
-			CALL Func_setMoveTargetXY
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
-	}
-
-	// For burrowGeneric
-
-	const uint32 Func_toggleUnitPath = 0x004E42A0;
-	void toggleUnitPath(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			CALL Func_toggleUnitPath
-			POPAD
-		}
-	}
-
-	const uint32 Func_switchSpriteId = 0x00499860;
-	char switchSpriteId(CSprite* sprite, int32 spriteId) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, spriteId
-			MOV ECX, sprite
-			CALL Func_switchSpriteId
-			MOV result, EAX
-			POPAD
-		}
-		return (char)result;
 	}
 }
