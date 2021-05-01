@@ -1,33 +1,12 @@
 #include "stopholdpos_orders.h"
 #include <SCBW/api.h>
 
-//helper functions def
-
-namespace {
-
-	CUnit* MedicHeal_TargetAcquire(CUnit* medic);															//0x004422A0
-	CUnit* findBestAttackTarget(CUnit* unit);																//0x00443080
-	uint32 doMedicHeal(CUnit* unit, CUnit* target);															//0x00463C40
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);												//0x004742D0
-	void orderImmediate(CUnit* unit, uint8 order);																//0x00474B40
-	void function_00476FC0(CUnit* unit, CUnit* target, uint32 unk1, uint32 unk2);									//0x00476FC0
-	bool32 function_004770E0(CUnit* unit);																	//0x004770E0
-	uint32 RandBetween(uint32 min, uint32 max, uint32 someIndex);														//0x004DC550
-	void setNextWaypoint_Sub4EB290(CUnit* unit);															//0x004EB290
-
-} //unnamed namespace
-
 namespace hooks {
-
 	void orders_MedicHoldPosition(CUnit* unit) {
-
 		uint32 switchValue;
-
 		if (unit->mainOrderState == 0) {
-
 			//change move target destination to current position
 			setNextWaypoint_Sub4EB290(unit);
-
 			if (
 				unit->nextTargetWaypoint.x != unit->moveTarget.pt.x ||
 				unit->nextTargetWaypoint.y != unit->moveTarget.pt.y
@@ -35,18 +14,13 @@ namespace hooks {
 				unit->nextTargetWaypoint.x = unit->moveTarget.pt.x;
 				unit->nextTargetWaypoint.y = unit->moveTarget.pt.y;
 			}
-
 			//6407F:
 			unit->status |= UnitStatus::HoldingPosition;
-
 			if (unit->subunit != nullptr)
 				unit->subunit->status |= UnitStatus::HoldingPosition;
-
 			unit->mainOrderState = 1;
 			unit->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
-
 		}
-
 		//640AF
 
 		//try healing current target, return a value depending
@@ -289,185 +263,7 @@ namespace hooks {
 						function_00476FC0(unit, target, 0, 1);
 
 				}
-
 			}
-
-		}
-
-	} //void function_004774A0(CUnit* unit)
-
-	;
-
-} //namespace hooks
-
-;
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_MedicHeal_TargetAcquire = 0x004422A0;
-	CUnit* MedicHeal_TargetAcquire(CUnit* medic) {
-
-		static CUnit* target;
-
-		__asm {
-			PUSHAD
-			PUSH medic
-			CALL Func_MedicHeal_TargetAcquire
-			MOV target, EAX
-			POPAD
-		}
-
-		return target;
-
-	}
-
-	;
-
-	const uint32 Func_Sub443080 = 0x00443080;
-	//named according to attack_priority_inject.cpp
-	CUnit* findBestAttackTarget(CUnit* unit) {
-
-		static CUnit* result;
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub443080
-			MOV result, EAX
-			POPAD
-		}
-
-		return result;
-
-	}
-
-	;
-
-	const uint32 Func_doMedicHeal = 0x00463C40;
-	uint32 doMedicHeal(CUnit* unit, CUnit* target) {
-
-		static uint32 return_value;
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			PUSH target
-			CALL Func_doMedicHeal
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
-
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			MOV EAX, order
-			CALL Func_removeOrderFromUnitQueue
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_OrderImmediate = 0x00474B40;
-	void orderImmediate(CUnit* unit, uint8 order) {
-
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			MOV AL, order
-			CALL Func_OrderImmediate
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub476FC0 = 0x00476FC0;
-	void function_00476FC0(CUnit* unit, CUnit* target, uint32 unk1, uint32 unk2) {
-
-		__asm {
-			PUSHAD
-			PUSH unk1
-			PUSH unk2
-			MOV EAX, target
-			MOV EDI, unit
-			CALL Func_Sub476FC0
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub4770E0 = 0x004770E0;
-	bool32 function_004770E0(CUnit* unit) {
-
-		static bool32 return_value;
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub4770E0
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return (return_value != 0);
-
-	}
-
-	;
-
-	const uint32 Func_RandBetween = 0x004DC550;
-	uint32 RandBetween(uint32 min, uint32 max, uint32 someIndex) {
-
-		static uint32 return_value;
-
-		__asm {
-			PUSHAD
-			PUSH max
-			MOV EAX, someIndex
-			MOV EDX, min
-			CALL Func_RandBetween
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-	//Related to path/movement decision
-	const uint32 Func_sub_4EB290 = 0x004EB290;
-	void setNextWaypoint_Sub4EB290(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_sub_4EB290
-			POPAD
 		}
 	}
-
-
-
-	;
-
-} //Unnamed namespace
-
-//End of helper functions
+}

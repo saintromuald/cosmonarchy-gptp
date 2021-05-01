@@ -1,51 +1,26 @@
 #include "burrow_tech.h"
 #include <SCBW/api.h>
 
-//Helper functions declaration
-
-namespace {
-
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);													//742D0
-	void actUnitReturnToIdle(CUnit* unit);																		//75420
-	void function_004754F0(CUnit* unit, uint32 unitId, uint32 unk1, uint32 unk2, uint32 orderId, uint32 unk3, uint32 unk4, uint32 unk5);	//754F0
-	void function_004E97C0(CUnit* unit);																		//E97C0
-
-} //unnamed namespace
-
 namespace hooks {
-
 	void CMDRECV_Unburrow() {
-
 		CUnit* selected_unit;
-
 		*selectionIndexStart = 0;
 		selected_unit = getActivePlayerNextSelection();
-
 		while (selected_unit != nullptr) {
-
 			if (
 				units_dat::BaseProperty[selected_unit->id] & UnitProperty::Burrowable &&
 				selected_unit->canUseTech(TechId::Burrowing, *ACTIVE_NATION_ID) == 1
 				)
 				function_004E97C0(selected_unit);
-
 			selected_unit = getActivePlayerNextSelection();
-
 		}
-
 	}
 
-	;
-
 	void CMDRECV_Burrow(uint8 bCommandType) {
-
 		CUnit* selected_unit;
-
 		*selectionIndexStart = 0;
 		selected_unit = getActivePlayerNextSelection();
-
 		while (selected_unit != nullptr) {
-
 			if (
 				units_dat::BaseProperty[selected_unit->id] & UnitProperty::Burrowable &&
 				selected_unit->canUseTech(TechId::Burrowing, *ACTIVE_NATION_ID) == 1 &&
@@ -68,18 +43,11 @@ namespace hooks {
 					bCommandType,
 					1
 				);
-
 			}
-
 			selected_unit = getActivePlayerNextSelection();
-
 		}
+	}	
 
-	}
-
-	;
-
-	//was sub_4E97C0
 	void Unburrow_Proc(CUnit* unit) {
 
 		if (unit->mainOrderId == OrderId::Burrow ||
@@ -105,97 +73,11 @@ namespace hooks {
 					else
 						removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 				}
-
 				unit->performAnotherOrder(OrderId::Unburrow, 0, 0, nullptr, UnitId::None);
-
 			}
-
 			//E9846
 			prepareForNextOrder(unit);
 			actUnitReturnToIdle(unit);
-
 		}
-
 	}
-
-	;
-
-} //namespace hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
-
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			MOV EAX, order
-			CALL Func_removeOrderFromUnitQueue
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_ActUnitReturnToIdle = 0x00475420;
-	void actUnitReturnToIdle(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_ActUnitReturnToIdle
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub_4E97C0 = 0x004E97C0;
-	void function_004E97C0(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub_4E97C0
-			POPAD
-		}
-
-	}
-
-	;
-
-	//Note: this function was made from what was seen in this case of use,
-	//some things are hardcoded because it's hard to tell what is used or
-	//not.
-	//Basically, used elsewhere, the function would be implemented differently
-	const uint32 Func_Sub_4754F0 = 0x004754F0;
-	void function_004754F0(CUnit* unit, uint32 unitId, uint32 unk1, uint32 unk2, uint32 orderId, uint32 unk3, uint32 unk4, uint32 unk5) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, 0
-			MOV EDX, 0
-			MOV EBX, unitId
-			MOV ESI, unit
-			PUSH unk1
-			PUSH unk2
-			PUSH unk3
-			PUSH orderId
-			PUSH unk4
-			PUSH unk5
-			CALL Func_Sub_4754F0
-			POPAD
-		}
-
-	}
-
-	;
-
-} //unnamed namespace
-
-//End of helper functions
+}

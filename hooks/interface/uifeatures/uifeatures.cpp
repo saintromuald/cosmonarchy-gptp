@@ -7,36 +7,17 @@
 #include "config.h"
 
 namespace {
-	int32 BWFXN_PrintXY(const char* text, int32 x, int32 y);
-	int32 GetColorHandle(uint8 color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
+	/*
+	struct Action {
+		uint32 frame; // timestamp
+	};
+	*/
+//	std::vector<Action> actions;
+	uint64 totalActions;
 
 	int32* const fonts = (int32*)0x006CE0F4;
 	char* const printXYAlignment = (char*)0x006CE110;
 	Box16* const drawTextBox = (Box16*)0x006CE0C8;
-
-	// For targetedOrder
-	COrder* queueNewOrder(COrder* a1, int16 a2, int16 a3, CUnit* a4, uint8 a5, int32 a6, int16 a7, Point32* a8, CUnit* a9);	//00474B90
-	int32 showStatTxtToPlayer(int32 a1, int32 a2); //0048CF00
-	void setOrderTarget(uint8 a1, int16 a2, int16 a3, int32 a4, int32 a5, CUnit* a6, int32 a7, Point32* a8, CUnit* a9); //00475470
-
-	// For selectUnits
-	uint32 CUnitToUnitID(CUnit* a1); //0047B1D0
-	int32 selectSingleUnitFromID(int32 a1); //00496D30
-	int32 selectMultipleUnitsFromUnitList(int32 a1, CUnit** a2, uint8 a3, int32 a4); //0049AEF0
-	int32 SNetGetTurnsInTransit(uint32* turns);
-	uint8 sendTurn();
-	int32 SErrGetLastError();
-	uint8 packetErrHandle(int32 result, int32 a1, const char* a3, int32 a4, int32 a5);
-}
-
-namespace {
-	//struct Action {
-	//	uint32 frame; // timestamp
-	//};
-	//
-	//std::vector<Action> actions;
-
-	uint64 totalActions;
 }
 
 namespace hooks {
@@ -191,189 +172,6 @@ namespace hooks {
 
 		if (a2 != 1 || !IS_KEYCODE_USED[18] || result == 0)
 			result = selectMultipleUnitsFromUnitList(a2, a1, a3, a4);
-		return result;
-	}
-}
-
-namespace {
-	const uint32 BWFXN_PrintXY_function = 0x004202B0;
-	int32 BWFXN_PrintXY(const char* text, int32 x, int32 y) {
-		static int32 result;
-		_asm {
-			PUSHAD
-			PUSH y
-			MOV EAX, text
-			MOV ESI, x
-			CALL BWFXN_PrintXY_function
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 GetColorHandle_function = 0x0041F610;
-	int32 GetColorHandle(uint8 color) {
-		static int result;
-		_asm {
-			PUSHAD
-			MOV AL, color
-			CALL GetColorHandle_function
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	// For targetedOrder
-
-	const uint32 Func_queueNewOrder = 0x00474B90;
-	COrder* queueNewOrder(COrder* a1, int16 a2, int16 a3, CUnit* a4, uint8 a5, int32 a6, int16 a7, Point32* a8, CUnit* a9) {
-		static COrder* result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV DX, a2
-			MOV CX, a3
-			PUSH a9
-			PUSH a8
-			PUSH a7
-			PUSH a6
-			PUSH a5
-			PUSH a4
-			CALL Func_queueNewOrder
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_showStatTxtToPlayer = 0x0048CF00;
-	int32 showStatTxtToPlayer(int32 a1, int32 a2) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			CALL Func_showStatTxtToPlayer
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_setOrderTarget = 0x00475470;
-	void setOrderTarget(uint8 a1, int16 a2, int16 a3, int32 a4, int32 a5, CUnit* a6, int32 a7, Point32* a8, CUnit* a9) {
-		__asm {
-			PUSHAD
-			MOV CL, a1
-			MOV DX, a2
-			MOV AX, a3
-			MOV EDI, a4
-			PUSH a9
-			PUSH a8
-			PUSH a7
-			PUSH a6
-			PUSH a5
-			CALL Func_setOrderTarget
-			POPAD
-		}
-	}
-
-	// For selectUnits
-
-	const uint32 Func_CUnitToUnitId = 0x0047B1D0;
-	uint32 CUnitToUnitID(CUnit* a1) {
-		static uint32 result;
-		__asm {
-			PUSHAD
-			MOV ESI, a1
-			CALL Func_CUnitToUnitId
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_selectSingleUnitFromID = 0x00496D30;
-	int32 selectSingleUnitFromID(int32 a1) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_selectSingleUnitFromID
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_selectMultipleUnitsFromUnitList = 0x0049AEF0;
-	int32 selectMultipleUnitsFromUnitList(int32 a1, CUnit** a2, uint8 a3, int32 a4) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			PUSH a4
-			PUSH a3
-			PUSH a2
-			PUSH a1
-			CALL Func_selectMultipleUnitsFromUnitList
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 SNetGetTurnsInTransit_function = 0x00410275;
-	int32 SNetGetTurnsInTransit(uint32* turns) {
-		static int32 result;
-		_asm {
-			PUSHAD
-			PUSH turns
-			CALL SNetGetTurnsInTransit_function
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 sendTurn_function = 0x00485A40;
-	uint8 sendTurn() {
-		static uint32 result;
-		_asm {
-			PUSHAD
-			CALL sendTurn_function
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 SErrGetLastError_function = 0x004100FA;
-	int32 SErrGetLastError() {
-		static int32 result;
-		_asm {
-			PUSHAD
-			CALL SErrGetLastError_function
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 packetErrHandle_function = 0x004BB0B0;
-	uint8 packetErrHandle(int32 result_arg, int32 a1, const char* a3, int32 a4, int32 a5) {
-		static uint32 result;
-		_asm {
-			PUSHAD
-			MOV EAX, result_arg
-			PUSH a5
-			PUSH a4
-			PUSH a3
-			PUSH a1
-			CALL packetErrHandle_function
-			MOV result, EAX
-			POPAD
-		}
 		return result;
 	}
 }

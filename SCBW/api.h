@@ -18,8 +18,6 @@ namespace scbw {
 	bool isLarvalEgg(CUnit* unit);
 	bool isZergEggNew(CUnit* unit, bool allow_larval_eggs = true, bool allow_larvae = true, uint16 explicit_unit_id = UnitId::None);
 	bool isZergEgg(uint16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
-	void ApplySpores(CUnit* unit);
-	bool setThingyVisibilityFlags(CThingy* thingy);
 	void artificalBulletFrom(uint8 weaponId, uint8 playerId, CUnit* source, CUnit* target, Point16 target_pt);
 	void artificalBulletFrom(uint8 weaponId, uint8 playerId, CUnit* source, CUnit* target, uint16 x, uint16 y);
 	std::string readSamaseFile(char* name);
@@ -274,8 +272,6 @@ namespace scbw {
 
 	/// @name Utility functions
 	//////////////////////////////////////////////////////////////// @{
-	void createBullet(uint8 weaponId, CUnit* source, int16 x, int16 y, uint8 attackingPlayer, uint8 direction);
-	CBullet* createBulletRet(uint8 weaponId, CUnit* source, int16 x, int16 y, uint8 attackingPlayer, uint8 direction);
 
 	/// Attempts to create a unit at the specified coordinates. If the unit cannot
 	/// be created (e.g. there is no space), this function displays an error message
@@ -287,12 +283,8 @@ namespace scbw {
 	//function used for broodlings and similar stuff
 	CUnit* createUnitIngame(uint16 unitId, uint8 playerId, uint32 x, uint32 y, CUnit* creator = nullptr);
 	//additional function calls
-	void weaponBulletShot(CUnit* target, CBullet* bullet, uint32 dmgDivisor);
-	void fixTargetLocation(Point16* coords, uint32 unitId);
-	CUnit* CreateUnit(uint32 unitId, int x, int y, uint32 playerId);
 	void displayLastNetErrForPlayer(uint32 playerId);
 	void FinishUnit_Pre(CUnit* unit);
-	void updateUnitStrength(CUnit* unit);
 	void displayLastNetErrForPlayer(uint32 playerId);
 	void InheritAI2(CUnit* result, CUnit* parent);
 	/// Calculates the images.dat overlay adjustment for the given unit.

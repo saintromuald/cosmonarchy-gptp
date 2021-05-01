@@ -78,7 +78,7 @@ namespace hooks {
 								unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 
 								if (builtUnit == nullptr) {
-									displayLastNetErrForPlayer(unit->playerId);
+									displayLastNetErrorForPlayer(unit->playerId);
 									unit->orderToIdle();
 								} else { //E4E63
 

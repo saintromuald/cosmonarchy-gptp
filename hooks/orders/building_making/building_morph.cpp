@@ -8,77 +8,8 @@
 #include "hooks\orders\building_making\building_helper.h"
 #include "logger.h"
 
-namespace {
-	void refundBuildingCost(uint16 unitId, uint8 playerId);						// 002CE70
-	void function_00433FE0(CUnit* unit);										// 0033FE0
-	bool isValidMorph(uint16 buildingId);										// 005CC60
-	void updateNewUnitVision(uint32 id, int x, int y);							// 005CE90
-	void zergPlaceBuildingCntd(CUnit* unit);									// 005D410
-	void function_0047D770(CUnit* unit);										// 007D770
-	void function_0047DE40(CSprite* sprite, uint32 unitId, int x, int y);		// 007DE40
-	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);	// 0088210
-	void incrementUnitScoresEx(CUnit* building, int32 unk1, int32 unk2);		// 0088D50
-	void playBuildingCompleteSound(CUnit* building);							// 008F310
-	void refreshSpriteData(CSprite* sprite);									// 00983A0
-	void displayLastNetErrForPlayer(uint32 playerId);							// 009E530
-	void updateUnitStrength(CUnit* unit);										// 009FA40
-	void replaceUnitWithType(CUnit* unit, uint16 newUnitId);					// 009FED0
-	void function_004A01F0(CUnit* unit);										// 00A01F0
-	CUnit* createUnit(uint32 unitId, int x, int y, uint32 playerId);			// 00A09D0
-
-} //unnamed namespace
-
-const uint32 Func_Sub4D8500 = 0x004D8500;
-void function_004D8500_copy(CImage* image) {
-	__asm {
-		PUSHAD
-		MOV EAX, image
-		CALL Func_Sub4D8500
-		POPAD
-	}
-}
-
-const uint32 Func_iscript_OpcodeCases = 0x004D74C0;
-void iscript_OpcodeCases_copy(CImage* image, uint32 offset_, uint32 unk1, uint32 unk2) {
-	__asm {
-		PUSHAD
-		PUSH unk1
-		PUSH unk2
-		PUSH offset_
-		MOV ECX, image
-		CALL Func_iscript_OpcodeCases
-		POPAD
-	}
-}
-
-#include "SCBW/api.h"
 namespace hooks {
-
-	bool isMorphing(CUnit* building) {
-		bool bIsMorphing;
-		if (!(building->status & UnitStatus::Completed))
-			//was hardcoded instead of using isValidMorph in original code
-			bIsMorphing = isValidMorph(building->buildQueue[building->buildQueueSlot]);
-		else
-			bIsMorphing = false;
-
-		return bIsMorphing;
-	};
-
-	const uint32 Func_Sub499BB0 = 0x00499BB0;
-	void replaceSpriteImages_copy(CSprite* sprite, uint32 imageId, uint32 imageDirection) {
-		__asm {
-			PUSHAD
-			PUSH imageDirection
-			PUSH imageId
-			MOV EAX, sprite
-			CALL Func_Sub499BB0
-			POPAD
-		}
-	};
-
 	void orders_ZergBuildSelf(CUnit* building) {
-
 		const int OPCWAL_PROGRESS_INCREASE = 16;
 
 		uint16 buildingId;
@@ -261,43 +192,6 @@ namespace hooks {
 
 	} //void orders_ZergBuildSelf(CUnit* building)
 
-	const uint32 Func_CreateUnit = 0x004A09D0;
-	CUnit* CreateUnit_copy(uint32 unitId, int x, int y, uint32 playerId) {
-		static CUnit* unit_created;
-
-		__asm {
-			PUSHAD
-			PUSH playerId
-			PUSH y
-			MOV ECX, unitId
-			MOV EAX, x
-			CALL Func_CreateUnit
-			MOV unit_created, EAX
-			POPAD
-		}
-		return unit_created;
-	}
-
-	const uint32 Func_Sub4A01F0 = 0x004A01F0;
-	void function_004A01F0_copy(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub4A01F0
-			POPAD
-		}
-	}
-
-	const uint32 Func_UpdateUnitStrength = 0x0049FA40;
-	void updateUnitStrength_copy(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_UpdateUnitStrength
-			POPAD
-		}
-	}
-
 	void ZergPlaceBuilding(CUnit* unit) {
 		bool bStopThere = false;
 		if (!(unit->status & UnitStatus::Completed)) {
@@ -349,7 +243,7 @@ namespace hooks {
 			if (unit->id == UnitId::ZergExtractor) {
 				CUnit* drone = createUnit(UnitId::ZergDroleth, unit->getX(), unit->getY(), unit->playerId);
 				if (drone == nullptr) {
-					displayLastNetErrForPlayer(unit->playerId);
+					displayLastNetErrorForPlayer(unit->playerId);
 					unit->remove();
 					bStopThere = true;
 				} else {	// 005DB1E
@@ -366,7 +260,7 @@ namespace hooks {
 				CThingy* thingy = createThingy(SpriteId::Zerg_Building_Spawn_Small, unit->getX(), unit->getY(), 0);
 				if (thingy != nullptr) {
 					thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
-					scbw::setThingyVisibilityFlags(thingy);
+					setThingyVisibilityFlags(thingy);
 				}
 
 				scbw::playSound(SoundId::Misc_ZBldgPlc_wav_1, unit);
@@ -407,204 +301,9 @@ namespace hooks {
 			}
 		}
 	}
-
-} //namespace hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-#include "SCBW/api.h"
-namespace {
-
-	const uint32 Func_refundBuildingCost = 0x0042CE70;
-	void refundBuildingCost(uint16 unitId, uint8 playerId) {
-		__asm {
-			PUSHAD
-			MOV AX, unitId
-			MOV CL, playerId
-			CALL Func_refundBuildingCost
-			POPAD
-		}
-	}
-
-	const uint32 Func_Sub433FE0 = 0x00433FE0;
-	void function_00433FE0(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub433FE0
-			POPAD
-		}
-	}
-
-	//Identical to isValidMorph @ 0x0045CC60;
-	bool isValidMorph(uint16 buildingId) {
-		bool result;
-		if (scbw::isZergBuildingMorphResult(buildingId))
-			result = true;
-		else
-			result = false;
-		return result;
-	}
-
-	const uint32 Func_updateNewUnitVision = 0x0045CE90;
-	void updateNewUnitVision(uint32 id, int x, int y) {
-		__asm {
-			PUSHAD
-			MOV ECX, id
-			PUSH y
-			PUSH x
-			CALL Func_updateNewUnitVision
-			POPAD
-		}
-	}
-
-	const uint32 Func_ZergPlaceBuildingCntd = 0x0045D410;
-	void zergPlaceBuildingCntd(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_ZergPlaceBuildingCntd
-			POPAD
-		}
-	}
-
-	const uint32 Func_Sub47D770 = 0x0047D770;
-	void function_0047D770(CUnit* unit) {
-		__asm {
-			PUSHAD
-			PUSH unit
-			CALL Func_Sub47D770
-			POPAD
-		}
-	}
-
-	const uint32 Func_Sub47DE40 = 0x0047DE40;
-	void function_0047DE40(CSprite* sprite, uint32 unitId, int x, int y) {
-		__asm {
-			PUSHAD
-			MOV ECX, y
-			MOV EDX, x
-			MOV ESI, sprite
-			PUSH unitId
-			CALL Func_Sub47DE40
-			POPAD
-		}
-	}
-
-	//original referenced name was replaceSprite (but this one is probably
-	//more accurate since it does create something rather than replacing)
-	const uint32 Func_CreateThingy = 0x00488210;
-	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
-		static CThingy* thingy;
-		int32 x_ = x;
-
-		__asm {
-			PUSHAD
-			PUSH playerId
-			MOVSX EDI, y
-			PUSH x_
-			PUSH spriteId
-			CALL Func_CreateThingy
-			MOV thingy, EAX
-			POPAD
-		}
-		return thingy;
-	}
-
-	const uint32 Func_incrementUnitScoresEx = 0x00488D50;
-	//unk1 is ECX, unk2 is pushed value
-	void incrementUnitScoresEx(CUnit* building, int32 unk1, int32 unk2) {
-		__asm {
-			PUSHAD
-			MOV EDI, building
-			MOV ECX, unk1
-			PUSH unk2
-			CALL Func_incrementUnitScoresEx
-			POPAD
-		}
-	}
-
-	const uint32 Func_PlayBuildingCompleteSound = 0x0048F310;
-	void playBuildingCompleteSound(CUnit* building) {
-		__asm {
-			PUSHAD
-			MOV EAX, building
-			CALL Func_PlayBuildingCompleteSound
-			POPAD
-		}
-	}
-
-	const uint32 Func_refreshSpriteData = 0x004983A0;
-	void refreshSpriteData(CSprite* sprite) {
-		__asm {
-			PUSHAD
-			MOV EAX, sprite
-			CALL Func_refreshSpriteData
-			POPAD
-		}
-	}
-
-	const uint32 Func_displayLastNetErrForPlayer = 0x0049E530;
-	void displayLastNetErrForPlayer(uint32 playerId) {
-		__asm {
-			PUSHAD
-			PUSH playerId
-			CALL Func_displayLastNetErrForPlayer
-			POPAD
-		}
-	}
-
-	const uint32 Func_UpdateUnitStrength = 0x0049FA40;
-	void updateUnitStrength(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_UpdateUnitStrength
-			POPAD
-		}
-	}
-
-	const uint32 Func_ReplaceUnitWithType = 0x0049FED0;
-	void replaceUnitWithType(CUnit* unit, uint16 newUnitId) {
-		uint32 newUnitId_ = newUnitId;
-		__asm {
-			PUSHAD
-			PUSH newUnitId_
-			MOV EAX, unit
-			CALL Func_ReplaceUnitWithType
-			POPAD
-		}
-	}
-
-	const uint32 Func_Sub4A01F0 = 0x004A01F0;
-	void function_004A01F0(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub4A01F0
-			POPAD
-		}
-	}
-
-	const uint32 Func_CreateUnit = 0x004A09D0;
-	CUnit* createUnit(uint32 unitId, int x, int y, uint32 playerId) {
-		static CUnit* unit_created;
-		__asm {
-			PUSHAD
-			PUSH playerId
-			PUSH y
-			MOV ECX, unitId
-			MOV EAX, x
-			CALL Func_CreateUnit
-			MOV unit_created, EAX
-			POPAD
-		}
-		return unit_created;
-	}
-
-} //Unnamed namespace
+}
 
 //from unhooked
-//V241 for VS2008
 
 namespace {
 	int BuildingHelper::getNumberOfUnitType(const CUnit* unit, uint16 unitId, bool ignoreIncomplete);

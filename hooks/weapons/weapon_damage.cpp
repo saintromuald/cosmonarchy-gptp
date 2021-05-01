@@ -8,9 +8,6 @@
 #include "globals.h"
 #include "logger.h"
 namespace {
-	//Helper functions
-	uint16 getUnitStrength(CUnit* unit, bool useGroundStrength);
-
 	/// Definition of damage factors (explosive, concussive, etc.)
 	struct {
 		int32 damageType;
@@ -22,14 +19,6 @@ namespace {
 		{3, 0, 256, 256, 256},			//Normal
 		{4, 0, 256, 256, 256}			//IgnoreArmor
 	};
-
-	CUnit* createHallucination(CUnit* target, uint32 playerId);
-	bool placeHallucination(CUnit* unit);
-	void unitDestructor(CUnit* unit);
-
-	// For updateCorrosiveSpores
-	uint32 getCorrosiveSporesImage(CUnit* unit); // 004F41F0
-
 }
 
 //copied from wpnspellhit and renamed
@@ -178,7 +167,7 @@ void augurSacrifice(CUnit* target) {
 		});
 		if (nearest != nullptr) {
 			target->orderTarget.unit = nearest;
-			scbw::createBullet(WeaponId::AugurFinalHour, target, target->position.x, target->position.y, target->playerId,
+			createBullet(WeaponId::AugurFinalHour, target, target->position.x, target->position.y, target->playerId,
 				scbw::getAngle(target->position.x, target->position.y, nearest->getX(), nearest->getY()));
 			scbw::hideAndDisableUnit(target);
 			target->status |= UnitStatus::Invincible;
@@ -492,11 +481,11 @@ namespace hooks {
 					if (target->status & UnitStatus::Invincible) {
 						return;
 					}
-					scbw::ApplySpores(target);
+					ApplySpores(target);
 					CThingy* thingy = scbw::createThingy(SpriteId::Corrosive_Acid_Hit, target->getX(), target->getY(), 11);
 					if (thingy != nullptr) {
 						thingy->sprite->elevationLevel = target->sprite->elevationLevel + 1;
-						scbw::setThingyVisibilityFlags(thingy);
+						setThingyVisibilityFlags(thingy);
 					}
 					//target->damageWith(30 * 256, WeaponId::PsiStorm, unit, unit->playerId);
 				});
@@ -526,7 +515,7 @@ namespace hooks {
 						scbw::set_generic_unit(haluAttacker, ValueId::HallucinationPointer, hal_unit);
 
 						if (!placeHallucination(hal_unit)) {
-							unitDestructor(hal_unit);
+							UnitDestructor(hal_unit);
 						}
 					}
 				}
@@ -973,7 +962,7 @@ namespace hooks {
 				{
 					// Cyclops - Flak Cannon passive
 					auto newAngle = scbw::getAngle(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
-					scbw::createBullet(WeaponId::CyclopsFragmentaryShells, data.attacker, data.target->getX(), data.target->getY(), data.attacker->playerId, newAngle);
+					createBullet(WeaponId::CyclopsFragmentaryShells, data.attacker, data.target->getX(), data.target->getY(), data.attacker->playerId, newAngle);
 					break;
 				}
 			}
@@ -1065,77 +1054,4 @@ namespace hooks {
 		scbw::set_generic_timer(target, ValueId::CorrosiveTouchTimer, VithriliskCorrosiveTouchTimer);
 		return result;
 	}
-} //hooks
-
-namespace {
-	//Somehow related to AI stuff; details unknown.
-	const uint32 Helper_GetUnitStrength = 0x00431800;
-	uint16 getUnitStrength(CUnit* unit, bool useGroundStrength) {
-		static uint16 strength;
-		static uint32 useGroundStrength_;
-		useGroundStrength_ = useGroundStrength ? 1 : 0;
-		__asm {
-			PUSHAD
-			PUSH useGroundStrength_
-			MOV EAX, unit
-			CALL Helper_GetUnitStrength
-			MOV strength, AX
-			POPAD
-		}
-		return strength;
-	}
-
-	// Hallucination-related
-	// Moved here instead of including an entire other file...
-	const uint32 Func_createHallucination = 0x004F6B90;
-	CUnit* createHallucination(CUnit* target, uint32 playerId) {
-		static CUnit* return_value;
-		__asm {
-			PUSHAD
-			PUSH playerId
-			MOV ECX, target
-			CALL Func_createHallucination
-			MOV return_value, EAX
-			POPAD
-		}
-		return return_value;
-	}
-
-	const uint32 Func_placeHallucination = 0x004F66D0;
-	bool placeHallucination(CUnit* unit) {
-		static bool32 bPreResult;
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_placeHallucination
-			MOV bPreResult, EAX
-			POPAD
-		}
-		return (bPreResult != 0);
-	}
-
-	const uint32 Func_unitDestructor = 0x004A0990;
-	void unitDestructor(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			CALL Func_unitDestructor
-			POPAD
-		}
-	}
-
-	// For updateCorrosiveSpores
-	const uint32 Func_getCorrosiveSporesImage = 0x004F41F0;
-	uint32 getCorrosiveSporesImage(CUnit* unit) {
-		static uint32 result;
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			CALL Func_getCorrosiveSporesImage
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-} //unnamed namespace
+}

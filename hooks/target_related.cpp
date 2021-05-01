@@ -5,61 +5,6 @@
 #include <globals.h>
 #include "byte_operations_utils.h"
 
-namespace {
-	// for isUnitTargetOutOfMaxRange
-	unsigned int isTargetVisible(CUnit* a1, CUnit* a2);
-	int getUnitMaxWeaponRange(CUnit* a1, unsigned __int8 a2);
-	bool isTargetWithinMinMovementRange(CUnit* a1, unsigned int a2, CUnit* a3);
-
-	// for isReadyToAttack
-	unsigned int getDistanceToUnit(CUnit* a1, CUnit* a2);
-	unsigned int distanceFromDboxCorner(CUnit* a1, __int16 a2, __int16 a3);
-	bool isAngleInAttackAngle(int a1, int a2, CUnit* a3, unsigned __int8 a4);
-
-	// for canCastOrderedSpellNow
-	int isUnitVisible(CUnit* a1);
-	bool isTargetWithinMinRange(CUnit* a1, unsigned int a2, CUnit* a3);
-	int getFlingyHaltDistance(int a1);
-	unsigned int getDistanceFast(int a1, int a2, int a3, int a4);
-
-	// for ordersWatchTarget
-	bool unitCanAttackTarget(CUnit* a1, CUnit* a2, int a3);
-	char getRightClickActionOrder(CUnit* a1);
-	void unknownOrdersFunc(int a1, __int16 a2, __int16 a3);
-
-	// for ordersStayInRange
-	void prependOrderTargetingGround(__int8 a1, __int16 a2, __int16 a3, int a4);
-	void toIdle(CUnit* a1);
-	signed int moveTowards(CUnit* a1, CUnit* a2);
-	int ordersHoldPositionSuicidal(CUnit* a1);
-	signed int moveToTarget(CUnit* a1, CUnit* a2);
-	int getDirectionFromPoints(int a1, int a2, int a3, int a4);
-	CUnit* setSecondaryWaypoint(CUnit* a1, int a2, int a3);
-	Point32 setResourceTarget(CUnit* a1);
-	void ordersNothing2(CUnit* a1);
-	void orderComputerClear(CUnit* a1, __int8 a2);
-
-	// for genericRightClickUnitProc2
-	bool unitIsActiveTransport(CUnit* unit);													// 004E6BA0
-	int32 isOrderValid(char a1, CUnit* a2, int32 a3, CUnit* a4, int32 a5);						// 00474D90
-	bool canEnterTransport(CUnit* a1, CUnit* a2);												// 004E6E00
-	uint16 getUnitAbilityErrorStatString(CUnit* a1, char a2, int32 a3);							// 00491E80
-
-	// for CMDRECV_HoldPosition
-	CUnit* getActivePlayerFirstSelection();														// 0049A850
-	int32 orderAllowed(CUnit* a1, uint16 a2, int32 a3);											// 0046DC20
-	void targetedOrder(int16 a1, int32 a2, CUnit* a3, int16 a4, int32 a5, int32 a6, char a7, int32 a8, int32 a9, int32 a10);	// 004754F0
-
-	// for checkUnitVisibility
-	uint32 getDetectingPlayers(CUnit* unit);													// 
-	uint32 iteratePlayerUnitsSomething(uint32 aResult, CUnit* unit);							// 
-	void makeSpriteVisible(CSprite* sprite);													// 
-	int32 updateBuildingLandUnitSelection(uint32 unused, CUnit* selection);						// 
-	char removeSelectionCircle(CSprite* sprite);												// 
-	CImage* makeSpriteInvisible(CSprite* sprite);													// 
-
-}
-
 namespace hooks {
 	bool isUnitTargetOutOfMaxRange(CUnit* a1, CUnit* a2) { // 00476430
 		CUnit* _unit; // edi
@@ -70,7 +15,7 @@ namespace hooks {
 		int v8; // eax
 
 		_unit = a1;
-		if (!isTargetVisible(a2, a1))
+		if (!isTargetVisibleHook(a2, a1))
 			return 1;
 		finalUnit = _unit->subunit;
 		if (!finalUnit || !(units_dat::GroupFlags[(unsigned __int16)finalUnit->id].isBuilding))
@@ -135,7 +80,7 @@ namespace hooks {
 			if (!v2)
 				return 1;
 		}
-		if (!isTargetVisible(v2, a2))
+		if (!isTargetVisibleHook(v2, a2))
 			return 0;
 		v4 = a2->subunit;
 		if (!v4 || !(units_dat::GroupFlags[(unsigned __int16)v4->id].isBuilding))
@@ -172,7 +117,7 @@ namespace hooks {
 		unsigned int v9; // ebx
 
 		v1 = a1;
-		v2 = isUnitVisible(a1);
+		v2 = isUnitVisibleHook(a1);
 		if (v2) {
 			v3 = v1->orderTarget.unit;
 			if (v3) {
@@ -222,7 +167,7 @@ namespace hooks {
 		v4 = v1->orderTarget.unit;
 		target = v1->orderTarget.unit;
 		if (v4) {
-			if (!isTargetVisible(v4, v1))
+			if (!isTargetVisibleHook(v4, v1))
 				goto LABEL_23;
 			v5 = v1->subunit;
 			if (!v5 || !(units_dat::GroupFlags[(unsigned __int16)v5->id].isBuilding))
@@ -289,7 +234,7 @@ namespace hooks {
 			if (v1->mainOrderState) {
 				if (!v4)
 					goto LABEL_62;
-				if (!isTargetVisible(v4, v1))
+				if (!isTargetVisibleHook(v4, v1))
 					goto LABEL_63;
 				v11 = v1->subunit;
 				if (!v11 || !(units_dat::GroupFlags[(unsigned __int16)v11->id].isBuilding))
@@ -317,7 +262,7 @@ namespace hooks {
 			}
 			if (!v4)
 				goto LABEL_64;
-			if (isTargetVisible(v4, v1)) {
+			if (isTargetVisibleHook(v4, v1)) {
 				v5 = v1->subunit;
 				if (!v5 || !(units_dat::GroupFlags[(unsigned __int16)v5->id].isBuilding))
 					v5 = v1;
@@ -366,7 +311,7 @@ namespace hooks {
 			}
 			if (v1->orderQueueHead) {
 				v1->userActionFlags |= 1u;
-				ordersNothing2(v1);
+				orders_Nothing2(v1);
 			} else if (v1->pAI) {
 				orderComputerClear(v1, 0x9Cu);
 			} else {
@@ -446,7 +391,7 @@ namespace hooks {
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
-	uint32 isTargetVisible(CUnit* target, CUnit* unit) { // 004E5E30
+	uint32 isTargetVisibleHook(CUnit* target, CUnit* unit) { // 004E5E30
 		int32 playerUnit;
 		playerUnit = 1 << unit->playerId;
 		if (!target) {
@@ -463,7 +408,7 @@ namespace hooks {
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
-	uint32 isUnitVisible(CUnit* unit) { // 004E5DB0
+	uint32 isUnitVisibleHook(CUnit* unit) { // 004E5DB0
 		CUnit* target; // eax
 		int32 playerUnit; // ebx
 		uint32 result; // eax
@@ -503,7 +448,7 @@ namespace hooks {
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
-	void checkUnitVisibility(CUnit* unit) { // 00443390
+	void checkUnitVisibilityHook(CUnit* unit) { // 00443390
 		uint32 detectingPlayers = getDetectingPlayers(unit);
 		if (unit->visibilityStatus != detectingPlayers) {
 			if (unit->visibilityStatus == 0x80000000)
@@ -561,538 +506,5 @@ namespace hooks {
 			*ctrlUnderMouseValue = 0;
 		}
 		return 1;
-	}
-}
-
-namespace {
-	// for isUnitTargetOutOfMaxRange
-	const uint32 Func_isTargetVisible = 0x004E5E30;
-	unsigned int isTargetVisible(CUnit* a1, CUnit* a2) {
-		static unsigned int result;
-
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV ESI, a2
-			CALL Func_isTargetVisible
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	};
-
-	const uint32 Func_getUnitMaxWeaponRange = 0x00475870;
-	int getUnitMaxWeaponRange(CUnit* a1, unsigned __int8 a2) {
-		static int result;
-
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOVZX BL, a2
-			CALL Func_getUnitMaxWeaponRange
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	};
-
-	const uint32 Func_isTargetWithinMinMovementRange = 0x004763D0;
-	bool isTargetWithinMinMovementRange(CUnit* a1, unsigned int a2, CUnit* a3) {
-		static int result;
-		static bool result2;
-
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			MOV EDI, a3
-			CALL Func_isTargetWithinMinMovementRange
-			MOV result, EAX
-			POPAD
-		}
-		return result2 = (bool)result;
-	};
-
-	// for isReadyToAttack
-	const uint32 Func_getDistanceToUnit = 0x00430D30;
-	unsigned int getDistanceToUnit(CUnit* a1, CUnit* a2) {
-		static unsigned int result;
-
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			CALL Func_getDistanceToUnit
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	};
-
-	const uint32 Func_distanceFromDboxCorner = 0x0043E50;
-	unsigned int distanceFromDboxCorner(CUnit* a1, __int16 a2, __int16 a3) {
-		static unsigned int result;
-
-		__asm {
-			PUSHAD
-			PUSH a3
-			PUSH a2
-			PUSH a1
-			CALL Func_distanceFromDboxCorner
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	};
-
-	const uint32 Func_isAngleInAttackAngle = 0x00475BE0;
-	bool isAngleInAttackAngle(int a1, int a2, CUnit* a3, unsigned __int8 a4) {
-		static int result;
-		static bool result2;
-
-		__asm {
-			PUSHAD
-			PUSH a4
-			MOV EAX, a1
-			MOV ECX, a2
-			MOV ESI, a3
-			CALL Func_isAngleInAttackAngle
-			MOV result, EAX
-			POPAD
-		}
-		return result2 = (bool)result;
-	};
-
-	// for canCastOrderedSpellNow
-	const uint32 Func_isUnitVisible = 0x004E5DB0;
-	int isUnitVisible(CUnit* a1) {
-		static int result;
-
-		__asm {
-			PUSHAD
-			MOV ESI, a1
-			CALL Func_isUnitVisible
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	};
-
-	const uint32 Func_isTargetWithinMinRange = 0x00430F10;
-	bool isTargetWithinMinRange(CUnit* a1, unsigned int a2, CUnit* a3) {
-		static int result;
-		static bool result2;
-
-		__asm {
-			PUSHAD
-			PUSH a3
-			PUSH a2
-			PUSH a1
-			CALL Func_isTargetWithinMinRange
-			MOV result, EAX
-			POPAD
-		}
-		return result = (bool)result;
-	};
-
-	const uint32 Func_getFlingyHaltDistaince = 0x00494F90;
-	int getFlingyHaltDistance(int a1) {
-		static int result;
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_getFlingyHaltDistaince
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	};
-
-	const uint32 Func_getDistanceFast = 0x0040C360;
-	unsigned int getDistanceFast(int a1, int a2, int a3, int a4) {
-		static unsigned int result;
-
-		__asm {
-			PUSHAD
-			PUSH a4
-			PUSH a3
-			PUSH a2
-			PUSH a1
-			CALL Func_getDistanceFast
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	};
-
-	// for ordersWatchTarget
-	const uint32 Func_unitCanAttackTarget = 0x00476730;
-	bool unitCanAttackTarget(CUnit* a1, CUnit* a2, int a3) {
-		static int result;
-		static bool result2;
-
-		__asm {
-			PUSHAD
-			PUSH a3
-			MOV EBX, a1
-			MOV ESI, a2
-			CALL Func_unitCanAttackTarget
-			MOV result, EAX
-			POPAD
-		}
-		return result2 = (bool)result;
-	};
-
-	const uint32 Func_getRightClickActionOrder = 0x004E5EA0;
-	char getRightClickActionOrder(CUnit* a1) {
-		static int result;
-		static char result2;
-
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_getRightClickActionOrder
-			MOV result, EAX
-			POPAD
-		}
-		return result2 = (char)result;
-	};
-
-	const uint32 Func_unknownOrdersFunc = 0x00475350;
-	void unknownOrdersFunc(int a1, __int16 a2, __int16 a3) {
-
-		__asm {
-			PUSHAD
-			PUSH a3
-			PUSH a2
-			MOV EAX, a1
-			CALL Func_unknownOrdersFunc
-			POPAD
-		}
-	};
-
-	// for ordersStayInRange
-	const uint32 Func_prependOrderTargetingGround = 0x00474A20;
-	void prependOrderTargetingGround(__int8 a1, __int16 a2, __int16 a3, int a4) {
-
-		__asm {
-			PUSHAD
-			PUSH a4
-			MOVZX CX, a3
-			MOVZX DX, a2
-			MOVZX AL, a1
-			CALL Func_prependOrderTargetingGround
-			POPAD
-		}
-	};
-
-	const uint32 Func_toIdle = 0x004753A0;
-	void toIdle(CUnit* a1) {
-
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_toIdle
-			POPAD
-		}
-	};
-
-	const uint32 Func_moveTowards = 0x004EB900;
-	signed int moveTowards(CUnit* a1, CUnit* a2) {
-		static signed int result;
-
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			CALL Func_moveTowards
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	};
-
-	const uint32 Func_ordersHoldPositionSuicidal = 0x004EB5B0;
-	int ordersHoldPositionSuicidal(CUnit* a1) {
-		static int result;
-
-		__asm {
-			PUSHAD
-			MOV ESI, a1
-			CALL Func_ordersHoldPositionSuicidal
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	};
-
-	const uint32 Func_moveToTarget = 0x004EB720;
-	signed int moveToTarget(CUnit* a1, CUnit* a2) {
-		static signed int result;
-
-		__asm {
-			PUSHAD
-			MOV EDI, a1
-			MOV ESI, a2
-			CALL Func_moveToTarget
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	};
-
-	const uint32 Func_getDirectionFromPoints = 0x00495300;
-	int getDirectionFromPoints(int a1, int a2, int a3, int a4) {
-		static int result;
-		__asm {
-			PUSHAD
-			PUSH a4
-			MOV EAX, a1
-			MOV EDX, a2
-			MOV ECX, a3
-			CALL Func_getDirectionFromPoints
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	};
-
-	const uint32 Func_setSecondaryWaypoint = 0x00494BB0;
-	CUnit* setSecondaryWaypoint(CUnit* a1, int a2, int a3) {
-		static CUnit* result;
-
-		__asm {
-			PUSHAD
-			MOV ECX, a3
-			MOV EDX, a2
-			MOV EAX, a1
-			CALL Func_setSecondaryWaypoint
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	};
-
-	const uint32 Func_setResourceTarget = 0x004EB290;
-	Point32 setResourceTarget(CUnit* a1) {
-		static __int32 result;
-		static Point32 resultPoint;
-
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_setResourceTarget
-			MOV result, EAX
-			POPAD
-		}
-		return resultPoint = *(Point32*)&result;
-	};
-
-	const uint32 Func_ordersNothing2 = 0x00475000;
-	void ordersNothing2(CUnit* a1) {
-
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_ordersNothing2
-			POPAD
-		}
-	};
-
-	const uint32 Func_orderComputerClear = 0x00475310;
-	void orderComputerClear(CUnit* a1, __int8 a2) {
-
-		__asm {
-			PUSHAD
-			MOVZX CL, a2
-			MOV ESI, a1
-			CALL Func_orderComputerClear
-			POPAD
-		}
-	}
-
-	// for genericRightClickUnitProc2
-	const uint32 Func_unitIsActiveTransport = 0x004E6BA0;
-	bool unitIsActiveTransport(CUnit* unit) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			CALL Func_unitIsActiveTransport
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
-	}
-
-	const uint32 Func_isOrderValid = 0x00474D90;
-	int32 isOrderValid(char a1, CUnit* a2, int32 a3, CUnit* a4, int32 a5) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			PUSH a5
-			MOV ESI, a4
-			MOV EDI, a3
-			MOV EBX, a2
-			MOVZX AL, a1
-			CALL Func_isOrderValid
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_canEnterTransport = 0x004E6E00;
-	bool canEnterTransport(CUnit* a1, CUnit* a2) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			PUSH a2
-			MOV EAX, a1
-			CALL Func_canEnterTransport
-			MOV result, EAX
-			POPAD
-		}
-		return (bool)result;
-	}
-
-	const uint32 Func_getUnitAbilityErrorStatString = 0x00491E80;
-	uint16 getUnitAbilityErrorStatString(CUnit* a1, char a2, int32 a3) {
-		static uint32 result;
-		__asm {
-			PUSHAD
-			PUSH a3
-			MOVZX BL, a2
-			MOV EAX, a1
-			CALL Func_getUnitAbilityErrorStatString
-			MOV result, EAX
-			POPAD
-		}
-		return (uint16)result;
-	}
-
-	// for CMDRECV_HoldPosition
-	const uint32 Func_getActivePlayerFirstSelection = 0x0049A850;
-	CUnit* getActivePlayerFirstSelection() {
-		static CUnit* result;
-		__asm {
-			PUSHAD
-			CALL Func_getActivePlayerFirstSelection
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_orderAllowed = 0x0046DC20;
-	int32 orderAllowed(CUnit* a1, uint16 a2, int32 a3) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			PUSH a3
-			MOVZX BX, a2
-			MOV EAX, a1
-			CALL Func_orderAllowed
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_targetedOrder = 0x004754F0;
-	void targetedOrder(int16 a1, int32 a2, CUnit* a3, int16 a4, int32 a5, int32 a6, char a7, int32 a8, int32 a9, int32 a10) {
-		__asm {
-			PUSHAD
-			PUSH a10
-			PUSH a9
-			PUSH a8
-			PUSH a7
-			PUSH a6
-			PUSH a5
-			MOVZX AX, a4
-			MOV ESI, a3
-			MOV EBX, a2
-			MOVZX DX, a1
-			CALL Func_targetedOrder
-			POPAD
-		}
-	}
-
-	// For checkUnitVisibility
-	const uint32 Func_getDetectingPlayers = 0x00441130;
-	uint32 getDetectingPlayers(CUnit* unit) {
-		static uint32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_getDetectingPlayers
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_iteratePlayerUnitsSomething = 0x0049E8A0;
-	uint32 iteratePlayerUnitsSomething(uint32 aResult, CUnit* unit) {
-		static uint32 result;
-		__asm {
-			PUSHAD
-			PUSH unit
-			MOV EAX, aResult
-			CALL Func_iteratePlayerUnitsSomething
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_makeSpriteVisible = 0x00497ED0;
-	void makeSpriteVisible(CSprite* sprite) {
-		__asm {
-			PUSHAD
-			MOV EAX, sprite
-			CALL Func_makeSpriteVisible
-			POPAD
-		}
-	}
-
-	const uint32 Func_updateBuildingLandUnitSelection = 0x004C3B40;
-	int32 updateBuildingLandUnitSelection(uint32 unused, CUnit* selection) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			MOV ECX, unused
-			MOV EDX, selection
-			CALL Func_updateBuildingLandUnitSelection
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_removeSelectionCircle = 0x004975D0;
-	char removeSelectionCircle(CSprite* sprite) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			MOV ECX, sprite
-			CALL Func_removeSelectionCircle
-			MOV result, EAX
-			POPAD
-		}
-		return (char)result;
-	}
-
-	const uint32 Func_makeUndetected = 0x00498A10;
-	CImage* makeSpriteInvisible(CSprite* sprite) {
-		static CImage* result;
-		__asm {
-			PUSHAD
-			MOV EAX, sprite
-			CALL Func_makeUndetected
-			MOV result, EAX
-			POPAD
-		}
-		return result;
 	}
 }

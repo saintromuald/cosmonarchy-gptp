@@ -1,4 +1,5 @@
 #include "api.h"
+#include "scbwdata.h"
 #include <SCBW/UnitFinder.h>
 #include <algorithm>
 #include <cassert>
@@ -13,95 +14,6 @@
 
 namespace scbw {
 
-	const uint32 Func_ApplySpores = 0x004F4480;
-	void ApplySpores(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV EBX, unit
-			CALL Func_ApplySpores
-			POPAD
-		}
-	}
-
-	const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
-	bool setThingyVisibilityFlags(CThingy* thingy) {
-
-		static bool32 bPreResult;
-
-		__asm {
-			PUSHAD
-			MOV ESI, thingy
-			CALL Func_SetThingyVisibilityFlags
-			MOV bPreResult, EAX
-			POPAD
-		}
-
-		return (bPreResult != 0);
-
-	}
-	;
-
-	const uint32 Helper_CreateBullet = 0x0048C260;
-	void createBullet(uint8 weaponId, CUnit* source, int16 x, int16 y, uint8 attackingPlayer, uint8 direction) {
-		static uint32 attackingPlayer_;
-		static uint32 direction_;
-		static int32 x_;
-		static int32 y_;
-
-		attackingPlayer_ = attackingPlayer;
-		direction_ = direction;
-		x_ = x; y_ = y;
-		__asm {
-			PUSHAD
-			PUSH direction_
-			PUSH attackingPlayer_
-			PUSH y_
-			PUSH x_
-			MOV EAX, source
-			MOVZX ECX, weaponId
-			CALL Helper_CreateBullet
-			POPAD
-		}
-	}
-
-	const uint32 Helper_WeaponBulletShot = 0x00479AE0;
-	void weaponBulletShot(CUnit* target, CBullet* bullet, uint32 dmgDivisor) {
-		__asm {
-			PUSHAD
-			PUSH dmgDivisor
-			MOV EAX, target
-			MOV EDX, bullet
-			CALL Helper_WeaponBulletShot
-			POPAD
-		}
-	}
-
-	CBullet* createBulletRet(uint8 weaponId, CUnit* source, int16 x, int16 y, uint8 attackingPlayer, uint8 direction) {
-
-		static uint32 attackingPlayer_;
-		static uint32 direction_;
-		static int32 x_;
-		static int32 y_;
-
-		attackingPlayer_ = attackingPlayer;
-		direction_ = direction;
-		x_ = x; y_ = y;
-		static CBullet* bullet;
-		__asm {
-			PUSHAD
-			PUSH direction_
-			PUSH attackingPlayer_
-			PUSH y_
-			PUSH x_
-			MOV EAX, source
-			MOVZX ECX, weaponId
-			CALL Helper_CreateBullet
-			MOV bullet, EAX
-			POPAD
-		}
-		return bullet;
-
-	}
 	void artificalBulletFrom(uint8 weaponId, uint8 playerId, CUnit* source, CUnit* target, Point16 target_pt) {
 		auto target_unit = source->orderTarget.unit;
 		auto target_pos = source->orderTarget.pt;
@@ -124,19 +36,6 @@ namespace scbw {
 		tgt.y = y;
 		artificalBulletFrom(weaponId, playerId, source, target, tgt);
 	}
-
-	const uint32 Func_Sub4EBAE0 = 0x004EBAE0;
-	void function_004EBAE0(CUnit* unit, int32 x, int32 y) {
-		__asm {
-			PUSHAD
-			MOV EDX, unit
-			MOV EAX, x
-			MOV ECX, y
-			CALL Func_Sub4EBAE0
-			POPAD
-		}
-	}
-	;
 
 	bool teleport(CUnit* u, Point16 target, uint16 spriteAnimation, bool preserveOrder) {
 		Point16 previous_pos, new_pos;
@@ -172,7 +71,7 @@ namespace scbw {
 				recall_effect_sprite = createThingy(spriteAnimation, new_pos.x, new_pos.y, 0);
 				if (recall_effect_sprite != nullptr) {
 					recall_effect_sprite->sprite->elevationLevel = u->sprite->elevationLevel + 1;
-					scbw::setThingyVisibilityFlags(recall_effect_sprite);
+					setThingyVisibilityFlags(recall_effect_sprite);
 				}
 
 			}
@@ -235,7 +134,7 @@ namespace scbw {
 		CThingy* thingy = createThingy(spriteId, x, y, playerId);
 		if (thingy != nullptr) {
 			thingy->sprite->elevationLevel = elevationLevel;
-			scbw::setThingyVisibilityFlags(thingy);
+			setThingyVisibilityFlags(thingy);
 		}
 		return thingy;
 	}
@@ -1178,36 +1077,8 @@ namespace scbw {
 		return unit;
 	}
 
-	const uint32 Func_fixTargetLocation = 0x00401FA0;
-	void fixTargetLocation(Point16* coords, uint32 unitId) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unitId
-			MOV EDX, coords
-			CALL Func_fixTargetLocation
-			POPAD
-		}
-	}
-
-	const uint32 Func_CreateUnit = 0x004A09D0;
-	CUnit* CreateUnit(uint32 unitId, int x, int y, uint32 playerId) {
-		static CUnit* unit_created;
-		__asm {
-			PUSHAD
-			PUSH playerId
-			PUSH y
-			MOV ECX, unitId
-			MOV EAX, x
-			CALL Func_CreateUnit
-			MOV unit_created, EAX
-			POPAD
-		}
-		return unit_created;
-	}
 	const uint32 Func_Sub4A01F0 = 0x004A01F0;
 	void FinishUnit_Pre(CUnit* unit) {
-
 		__asm {
 			PUSHAD
 			MOV EAX, unit
@@ -1215,15 +1086,7 @@ namespace scbw {
 			POPAD
 		}
 	}
-	const uint32 Func_UpdateUnitStrength = 0x0049FA40;
-	void updateUnitStrength(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_UpdateUnitStrength
-			POPAD
-		}
-	}
+
 	const uint32 Func_AI_TrainingUnit = 0x004A2830;
 	void InheritAI2(CUnit* result, CUnit* parent) {
 		__asm {
@@ -1233,12 +1096,13 @@ namespace scbw {
 			CALL Func_AI_TrainingUnit
 			POPAD
 		}
-	};
+	}
+
 	CUnit* createUnitIngame(uint16 unitId, uint8 playerId, uint32 x, uint32 y, CUnit* creator) {
 		if (*unitCount >= 1700) return nullptr; // prevent crashes, move to create unit later
 		Point16 pos = {x, y};
 		fixTargetLocation(&pos, unitId);
-		CUnit* unit = CreateUnit(unitId, pos.x, pos.y, playerId);
+		CUnit* unit = createUnit(unitId, pos.x, pos.y, playerId);
 		if (unit == nullptr) {
 			displayLastNetErrForPlayer(playerId);
 		} else {
@@ -1706,4 +1570,4 @@ namespace scbw {
 			&& !(unit->status & UnitStatus::Burrowed);
 	}
 
-} //scbw
+}

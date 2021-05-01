@@ -2,17 +2,7 @@
 #include "CMDRECV_Morph.h"
 #include <SCBW/api.h>
 
-//Helper functions declaration
-
-namespace {
-
-	bool HasMoneyCanMake(CUnit* builder, uint32 unitToBuild);		//67250
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);	//742D0
-
-} //unnamed namespace
-
 namespace hooks {
-
 	void CMDRECV_BuildingMorph(uint16 wUnitType) {
 
 		CUnit* building;
@@ -32,10 +22,7 @@ namespace hooks {
 			building->orderComputerCL(OrderId::Morph2);
 			scbw::refreshConsole();
 		}
-
 	}
-
-	;
 
 	void CMDRECV_UnitMorph(uint16 wUnitType) {
 		CUnit* current_unit;
@@ -55,23 +42,19 @@ namespace hooks {
 				) {
 
 				bAllowMorph = current_unit->canMakeUnit(wUnitType, *ACTIVE_NATION_ID) == 1;
-			} else {
+			}
+			else {
 				bAllowMorph = false;
 			}
 			if (
 				bAllowMorph &&
 				current_unit->mainOrderId != OrderId::Morph1 &&
-				HasMoneyCanMake(current_unit, wUnitType) //start construction if successful
+				HasMoneyCanMake(current_unit, wUnitType) // start construction if successful
 				) {
-
 				current_unit->userActionFlags |= 1;
-
 				if (current_unit->mainOrderId != OrderId::Die) {
-
 					bool bKeepLooping = true;
-
 					while (bKeepLooping) {
-
 						if (current_unit->orderQueueTail == nullptr)
 							bKeepLooping = false;
 						else
@@ -81,25 +64,13 @@ namespace hooks {
 								removeOrderFromUnitQueue(current_unit, current_unit->orderQueueTail);
 							else
 								bKeepLooping = false;
-
 					}
-
 					current_unit->performAnotherOrder(OrderId::Morph1, 0, 0, nullptr, UnitId::None, 0);
-
 				}
-
 				prepareForNextOrder(current_unit);
-
 			}
-
 			current_unit = getActivePlayerNextSelection();
-
 		}
-
 		scbw::refreshConsole();
-
 	}
-
-	;
-
-} //namespace hooks
+}

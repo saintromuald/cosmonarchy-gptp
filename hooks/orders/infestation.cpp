@@ -1,27 +1,6 @@
 #include "infestation.h"
 #include <SCBW/api.h>
 
-//Helper functions definitions
-
-namespace {
-
-	void disconnectFromAddOn(CUnit* unit);												//0x00464930
-	void refundAllQueueSlots(CUnit* unit);												//0x00466E80
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);							//0x004742D0
-	void actUnitReturnToIdle(CUnit* unit);												//0x00475420
-	void incrementUnitDeathScores(CUnit* unit, uint8 player);								//0x00488AF0
-	void incrementUnitScores(CUnit* unit, int32 unkScore);								//0x00488BF0
-	void incrementUnitScoresEx(CUnit* unit, int32 unkScore, int32 unk2);					//0x00488D50
-	void initializeEmptyUnitsLinkedListRef_Sub49E4E0(CUnit* unit, uint8 playerId);			//0x0049E4E0
-	void GiveUnitHelper(CUnit* unit, uint32 playerId, int32 unkScore);						//0x0049EFA0
-	void changeUnitButtonSet_Sub_4E5D60(CUnit* unit, uint16 unitId);						//0x004E5D60
-	void hideAndDisableUnit(CUnit* unit);												//0x004E6340
-	void showAndEnableUnit(CUnit* unit);												//0x004E6490
-	void setNextWaypoint_Sub4EB290(CUnit* unit);										//0x004EB290
-	void makeToHoldPosition(CUnit* unit);												//0x004EB5B0
-
-} //unnamed namespace
-
 namespace hooks {
 
 	//replace 0x00402750 canInfest
@@ -30,24 +9,19 @@ namespace hooks {
 	}
 
 	//replace 0x00402210 CC_CanBeInfested
-	bool isInfestableUnit(CUnit* unit) {
+	bool isInfestableUnitHook(CUnit* unit) {
 		uint32 unitHpTest;
 		uint32 unitMaxHp;
 		bool returnValue;
-
 		returnValue = (unit->status & UnitStatus::Completed) && (unit->id == UnitId::TerranCommandCenter);
 		if (returnValue) {
 			unitMaxHp = unit->getMaxHpInGame();
 			unitHpTest = unit->getCurrentHpInGame();
-
 			//if HP/maxHP higher or equal than 50%, not damaged enough
 			if (((100 * unitHpTest) / unitMaxHp) >= 50)
 				returnValue = false;
-
 		}
-
 		return returnValue;
-
 	}
 
 	//Based on and replace orders_InfestMine1 (0x004EA4C0)
@@ -57,7 +31,7 @@ namespace hooks {
 		uint16 infestedUnitNewId;
 		uint16 infestationOverlayId;
 		CUnit* unitInfesting = unitInfested->orderTarget.unit;
-		bErrorReturnToIdle = (unitInfesting == nullptr || !isInfestableUnit(unitInfested));
+		bErrorReturnToIdle = (unitInfesting == nullptr || !isInfestableUnitHook(unitInfested));
 
 		if (!bErrorReturnToIdle) {
 			if (unitInfested->mainOrderState == 0) {
@@ -203,7 +177,7 @@ namespace hooks {
 				//not started the infestation logic yet, doing it here
 
 				if (unitInfested != nullptr &&
-					isInfestableUnit(unitInfested) &&
+					isInfestableUnitHook(unitInfested) &&
 					unitInfested->mainOrderId != OrderId::InfestMine1) {
 					hideAndDisableUnit(unitInfesting);								//hide the infesting unit
 					unitInfested->orderTo(OrderId::InfestMine1, unitInfesting);		//order the target to be infested, giving it the infesting unit as order target
@@ -236,232 +210,6 @@ namespace hooks {
 						actUnitReturnToIdle(unitInfesting);
 					}
 				}
-			} //if(!bStopFunction && bBuildTimeReachedZero)
-	} //void orderInfestTarget(CUnit* unitInfesting)
-
-} //hooks
-
-
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_Sub_464930 = 0x00464930;
-	void disconnectFromAddOn(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub_464930
-			POPAD
-		}
-
+			}
 	}
-
-	;
-
-	const uint32 Func_RefundAllQueueSlots = 0x00466E80;
-	void refundAllQueueSlots(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_RefundAllQueueSlots
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
-
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			MOV EAX, order
-			CALL Func_removeOrderFromUnitQueue
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_ActUnitReturnToIdle = 0x00475420;
-	void actUnitReturnToIdle(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_ActUnitReturnToIdle
-			POPAD
-		}
-
-	}
-
-	;
-
-	//Related to path/movement decision
-	const uint32 Func_sub_4EB290 = 0x004EB290;
-	void setNextWaypoint_Sub4EB290(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_sub_4EB290
-			POPAD
-		}
-	}
-
-	;
-
-	const uint32 Func_IncrementUnitDeathScores = 0x00488AF0;
-	void incrementUnitDeathScores(CUnit* unit, uint8 player) {
-
-		__asm {
-			PUSHAD
-			MOV EDI, unit
-			MOVZX EDX, player
-			CALL Func_IncrementUnitDeathScores
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_incrementUnitScores = 0x00488BF0;
-	void incrementUnitScores(CUnit* unit, int32 unkScore) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			PUSH unkScore
-			CALL Func_incrementUnitScores
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_incrementUnitScoresEx = 0x00488D50;
-	void incrementUnitScoresEx(CUnit* unit, int32 unkScore, int32 unk2) {
-
-		__asm {
-			PUSHAD
-			MOV EDI, unit
-			MOV ECX, unk2
-			PUSH unkScore
-			CALL Func_incrementUnitScoresEx
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub_49E4E0 = 0x0049E4E0;
-	void initializeEmptyUnitsLinkedListRef_Sub49E4E0(CUnit* unit, uint8 playerId) {
-
-		__asm {
-
-			PUSHAD
-
-			MOV DL, playerId
-			MOV ECX, unit
-
-			CALL Func_Sub_49E4E0
-
-			POPAD
-
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub_49EFA0 = 0x0049EFA0;
-	void GiveUnitHelper(CUnit* unit, uint32 playerId, int32 unkScore) {
-
-		__asm {
-			PUSHAD
-			PUSH unkScore
-			MOV ECX, unit
-			PUSH playerId
-			CALL Func_Sub_49EFA0
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub_4E5D60 = 0x004E5D60;
-	void changeUnitButtonSet_Sub_4E5D60(CUnit* unit, uint16 buttonSetId) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			MOV CX, buttonSetId
-			CALL Func_Sub_4E5D60
-			POPAD
-		}
-
-	}
-
-	;
-
-	//This is what hide the infesting unit
-	const uint32 Func_unitDeathSomething_0 = 0x004E6340;
-	void hideAndDisableUnit(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_unitDeathSomething_0
-			POPAD
-		}
-
-	}
-
-	;
-
-	//What make the target reappear
-	const uint32 Func_InitUnitTrapDoodad = 0x004E6490;
-	void showAndEnableUnit(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EDI, unit
-			CALL Func_InitUnitTrapDoodad
-			POPAD
-		}
-
-	}
-
-
-	;
-
-	//not related with assigning orders, but only with
-	//destinations of orders
-	const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
-	void makeToHoldPosition(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			CALL Func_OrdersHoldPositionSuicidal
-			POPAD
-		}
-
-	}
-
-	;
-
-} //Unnamed namespace
-
-//End of helper functions
+}

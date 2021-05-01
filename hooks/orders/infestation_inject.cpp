@@ -26,31 +26,22 @@ namespace {
 
 	}
 
-	;
-
 	//Inject with jmpPatch()
 	void __declspec(naked) unitCanBeInfestedWrapper() {
-
 		static CUnit* unit;
 		static uint32 result;
-
 		__asm {
 			PUSHAD
 			MOV EBP, ESP
 			MOV unit, EDX
 		}
-
-		result = hooks::isInfestableUnit(unit) ? 1 : 0;
-
+		result = hooks::isInfestableUnitHook(unit) ? 1 : 0;
 		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
 		}
-
 	}
-
-	;
 
 	//Inject with jmpPatch()
 	void __declspec(naked) unitMorphIntoInfestedOrder() {

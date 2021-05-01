@@ -2,46 +2,22 @@
 #include <SCBW/api.h>
 #include <cassert>
 
-//Helper functions definitions
-
-namespace {
-
-	void unitSetRetreatPoint(CUnit* unit, uint8 angleValue);								//0x004011A0
-	bool getCloserToDestination_sub402BE0(CUnit* unit);									//0x00402BE0
-	void orderReturnToIdle(CUnit* unit);												//0x00463770
-	bool checkForCloseUnit_sub464290(CUnit* unit);										//0x00464290
-	void playSubunitIscript(CUnit* unit, IscriptAnimation::Enum anim);					//0x00474380
-	void actUnitReturnToIdle(CUnit* unit);												//0x00475420
-	void replaceUnitWithType(CUnit* unit, uint16 newUnitId);								//0x0049FED0
-	void makeToHoldPosition(CUnit* unit);												//0x004EB5B0
-
-} //unnamed namespace
-
 namespace hooks {
-
 	//00464AE0
 	void ordersTankMode(CUnit* unit) {
-
 		bool bStopThere = false;
-
 		if (unit->mainOrderState == 0) {
-
 			if (unit->id == UnitId::TerranPhalanxSiegeMode || unit->id == UnitId::Hero_EdmundDukeSiegeMode) {
-
 				if (!(unit->subunit->status & UnitStatus::NoBrkCodeStart)) {
-
 					unit->subunit->orderTo(OrderId::Nothing3, unit);
 					unitSetRetreatPoint(unit->subunit, units_dat::StartDirection[unit->subunit->id]);
 					playSubunitIscript(unit, IscriptAnimation::SpecialState1);
 					unit->mainOrderState = 2;
-
 				}
-
 			} else {
 				bStopThere = true;
 				unit->orderToIdle();
 			}
-
 		} //unit->mainOrderState == 0
 
 		if (!bStopThere && unit->mainOrderState == 2) {
@@ -187,149 +163,6 @@ namespace hooks {
 				}
 
 			}
-
 		} //unit->mainOrderState == 3
-
 	}
-
-} //hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_UnitSetRetreatPoint = 0x004011A0;
-	//angleValue is a guess
-	void unitSetRetreatPoint(CUnit* unit, uint8 angleValue) {
-
-		__asm {
-			PUSHAD
-			MOV AL, angleValue
-			MOV EDX, unit
-			CALL Func_UnitSetRetreatPoint
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub402BE0_GetCloserToDestination = 0x00402BE0;
-	//return true when unit reached nextTargetWaypoint either at call
-	//or after some action inside the function, else return false
-	//At least that's what I think it does (not sure what I called
-	//"action inside the function" is, and how it's used to return
-	//true
-	bool getCloserToDestination_sub402BE0(CUnit* unit) {
-
-		static bool32 bResult;
-
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			CALL Func_Sub402BE0_GetCloserToDestination
-			MOV bResult, EAX
-			POPAD
-		}
-
-		return (bResult == 1);
-
-	}
-
-	;
-
-	const uint32 Func_OrderReturnToIdle = 0x00463770;
-	void orderReturnToIdle(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			CALL Func_OrderReturnToIdle
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub464290_CheckForCloseUnit = 0x00464290;
-	bool checkForCloseUnit_sub464290(CUnit* unit) {
-
-		static bool32 bResult;
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub464290_CheckForCloseUnit
-			MOV bResult, EAX
-			POPAD
-		}
-
-		return (bResult == 1);
-
-	}
-
-	;
-
-	const uint32 Func_PlaySubunitIscript = 0x00474380;
-	void playSubunitIscript(CUnit* unit, IscriptAnimation::Enum anim) {
-
-		uint32 anim_ = anim;
-
-		assert(unit->subunit);
-
-		__asm {
-			PUSHAD
-			MOV EBX, unit
-			PUSH anim_
-			CALL Func_PlaySubunitIscript
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_ActUnitReturnToIdle = 0x00475420;
-	void actUnitReturnToIdle(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_ActUnitReturnToIdle
-			POPAD
-		}
-
-	}
-
-
-	const uint32 Func_ReplaceUnitWithType = 0x0049FED0;
-	void replaceUnitWithType(CUnit* unit, uint16 newUnitId) {
-
-		uint32 newUnitId_ = newUnitId;
-
-		__asm {
-			PUSHAD
-			PUSH newUnitId_
-			MOV EAX, unit
-			CALL Func_ReplaceUnitWithType
-			POPAD
-		}
-
-	}
-
-	const uint32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
-	void makeToHoldPosition(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			CALL Func_OrdersHoldPositionSuicidal
-			POPAD
-		}
-
-	}
-
-} //Unnamed namespace
-
-//End of helper functions
+}

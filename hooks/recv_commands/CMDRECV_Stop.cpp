@@ -1,19 +1,7 @@
 #include "CMDRECV_Stop.h"
 #include <SCBW/api.h>
 
-//Helper functions declaration
-
-namespace {
-
-	void parseOrdersDatReqs();																							//6D450
-	int parseRequirementOpcodes(CUnit* unit, uint32 orderId, uint32 playerId, uint32 address, uint32 req_offset);						//6D610
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order);															//742D0
-	void function_004754F0(CUnit* unit, uint32 unitId, uint32 unk1, uint32 unk2, uint32 orderId, uint32 unk3, uint32 bCommandType, uint32 unk5);	//754F0
-
-} //unnamed namespace
-
 namespace hooks {
-
 	//The functions seems similar but there are some differences,
 	//like the u16_ offset, the function to perform the order in
 	//CMDRECV_Stop, and the orders id
@@ -301,99 +289,7 @@ namespace hooks {
 													bCommandType != 0, //true (1) if Queued Order
 													1
 												);
-
 			current_unit = getActivePlayerNextSelection();
-
 		}
-
 	}
-
-	;
-
-} //namespace hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_parseOrdersDatReqs = 0x0046D450;
-	void parseOrdersDatReqs() {
-
-		__asm {
-			PUSHAD
-			CALL Func_parseOrdersDatReqs
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_parseRequirementOpcodes = 0x0046D610;
-	int parseRequirementOpcodes(CUnit* unit, uint32 orderId, uint32 playerId, uint32 address, uint32 req_offset) {
-
-		static int return_value;
-
-		__asm {
-			PUSHAD
-			MOV EAX, req_offset
-			MOV ESI, unit
-			PUSH address
-			PUSH playerId
-			PUSH orderId
-			CALL Func_parseRequirementOpcodes
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
-	void removeOrderFromUnitQueue(CUnit* unit, COrder* order) {
-
-		__asm {
-			PUSHAD
-			MOV ECX, unit
-			MOV EAX, order
-			CALL Func_removeOrderFromUnitQueue
-			POPAD
-		}
-
-	}
-
-	;
-
-	//Note: this function was made from what was seen in this case of use,
-	//some things are hardcoded because it's hard to tell what is used or
-	//not.
-	//Basically, used elsewhere, the function would be implemented differently
-	const uint32 Func_Sub_4754F0 = 0x004754F0;
-	void function_004754F0(CUnit* unit, uint32 unitId, uint32 unk1, uint32 unk2, uint32 orderId, uint32 unk3, uint32 bCommandType, uint32 unk5) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, 0
-			MOV EDX, 0
-			MOV EBX, unitId
-			MOV ESI, unit
-			PUSH unk1
-			PUSH unk2
-			PUSH unk3
-			PUSH orderId
-			PUSH bCommandType
-			PUSH unk5
-			CALL Func_Sub_4754F0
-			POPAD
-		}
-
-	}
-
-	;
-
-} //unnamed namespace
-
-//End of helper functions
+}

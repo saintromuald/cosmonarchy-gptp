@@ -3,17 +3,10 @@
 #include <SCBW/scbwdata.h>
 #include <SCBW/enumerations.h>
 #include <SCBW/api.h>
-//-------- Helper function declarations. Do NOT modify! --------//
-namespace {
-	bool isInfestableUnit(CUnit* unit);
-} //Unnamed namespace
 
 namespace hooks {
-
 	//Should be equivalent to getSpellStatString @ 0x00491E80
 	uint16 getTechUseErrorMessageHook(CUnit* target, uint8 castingPlayerId, uint16 techId) {
-
-
 		uint16 stringId;
 		if (target->stasisTimer != 0)
 			stringId = 900; //Units in stasis can't be targeted.<0>
@@ -110,29 +103,5 @@ namespace hooks {
 
 		}
 		return stringId;
-
 	}
-
-} //hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-namespace {
-
-	const uint32 Func_IsInfestable = 0x00402210;
-	bool isInfestableUnit(CUnit* unit) {
-
-		static bool32 result;
-
-		__asm {
-			PUSHAD
-			MOV EDX, unit
-			CALL Func_IsInfestable
-			MOV result, EAX
-			POPAD
-		}
-
-		return result != 0;
-
-	}
-
 }

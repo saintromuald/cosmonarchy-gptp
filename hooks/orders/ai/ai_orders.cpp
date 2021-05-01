@@ -6,7 +6,7 @@
 
 #include "logger.h"
 namespace hooks {
-	void AI_TrainingUnit(CUnit* result, CUnit* parent) { // 004A2830
+	void AI_TrainingUnitHook(CUnit* result, CUnit* parent) { // 004A2830
 		bool isSuicideUnit = result->id == UnitId::ZergBroodling || result->id == UnitId::ZergBroodlisk || result->id == UnitId::ProtossSimulacrum;
 		if (result == nullptr) return;
 		if (parent == nullptr) return;
@@ -136,7 +136,7 @@ namespace hooks {
 				silo->building.silo.nuke = nuke2;
 				silo->building.silo.isReady = 1;
 				nuke2->connectedUnit = silo;
-				AI_TrainingUnit(nuke2, silo);
+				AI_TrainingUnitHook(nuke2, silo);
 			}
 		}
 	}

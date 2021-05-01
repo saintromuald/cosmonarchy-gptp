@@ -34,18 +34,8 @@ void AnimCloak(CUnit* unit, int sound) {
 	}
 }
 
-const uint32 Func_98A10 = 0x00498A10;
-void makeSpriteInvisible(CSprite* sprite) {
-	__asm {
-		PUSHAD
-		MOV EAX, sprite
-		CALL Func_98A10
-		POPAD
-	}
-}
-
 const uint32 Func_UpdateUnitStrength = 0x0049FA40;
-void updateUnitStrengthg(CUnit* unit) {
+void updateUnitStrength(CUnit* unit) {
 	__asm {
 		PUSHAD
 		MOV EAX, unit
@@ -152,7 +142,7 @@ void spawnCreeper(CUnit* unit) {
 			//scbw::print("Error: Creeper");
 		} else {
 			function_004A01F0g(creep_spawned);
-			updateUnitStrengthg(creep_spawned);
+			updateUnitStrength(creep_spawned);
 
 			uint32 tile_x = creep_spawned->sprite->position.x / 32;
 			uint32 tile_y = creep_spawned->sprite->position.y / 32;
@@ -511,7 +501,7 @@ namespace hooks {
 						unit->orderTarget.unit = nullptr;
 						unit->orderTarget.pt.x = polar_x;
 						unit->orderTarget.pt.y = polar_y;
-						scbw::createBullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->playerId,
+						createBullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->playerId,
 							scbw::dir_saturate(unit->currentDirection1, offset_direction));
 						scbw::playSound(80, unit);
 						unit->orderTarget.unit = target_unit;
@@ -707,7 +697,7 @@ namespace hooks {
 					if (targ != nullptr) {
 						unit->orderTarget.unit = targ;
 					}
-					scbw::createBullet(WeaponId::PaladinCrusaderMissiles, unit, source_x, source_y, unit->playerId, unit->currentDirection1);
+					createBullet(WeaponId::PaladinCrusaderMissiles, unit, source_x, source_y, unit->playerId, unit->currentDirection1);
 				}
 			}
 		}

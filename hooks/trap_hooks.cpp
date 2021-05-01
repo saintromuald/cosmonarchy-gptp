@@ -1,25 +1,6 @@
 #include "trap_hooks.h"
 #include "byte_operations_utils.h"
 
-namespace { // helpers
-	// For disableUnit
-
-	void playImageIscript(CImage* a1, char a2); // 004D8470
-
-	// For updateUnitStrengthAndApplyDefaultOrders
-	int16 incrementUnitScores(CUnit* a1, int a2); // 00488BF0
-	void incrementUnitScoresEx(int a1, CUnit* a2, int a3); // 00488D50
-	void playSoundFromDirection(CUnit* a1, int a2); // 0049B5B0
-	void refreshUnitVision(CUnit* a1); // 004E5F30
-	void initUnitTrapDoodad(CUnit* a1); // 004E6490
-	COrder* removeOrderFromUnitQueue(COrder* a1, CUnit* a2); // 004742D0
-	COrder* performAnotherOrder(uint8 a1, int a2, CUnit* a3, int16 a4, Point32* a5, CUnit* a6); // 004745F0
-	void orders_Nothing2(CUnit* a1); // 00475000
-	void orderComputerClear(CUnit* a1, uint8 a2); // 00475310
-	void order(int a1, CUnit* a2, int8 a3, Point32* a4, CUnit* a5, int a6); // 00474810
-	uint32 getUnitStrength(CUnit* a1, int a2, bool a3); // 00431800
-}
-
 namespace hooks {
 	bool unitIsFloorTrap(CUnit* unit) { // 0047B070
 		uint16 id = unit->id;
@@ -111,7 +92,7 @@ namespace hooks {
 			a1->status |= UnitStatus::Completed;
 		}
 
-		incrementUnitScoresEx(1, v1, 1);
+		incrementUnitScoresEx(v1, 1, 1);
 		if (units_dat::BaseProperty[(uint16)v1->id] & UnitProperty::PermanentCloak) {
 			playSoundFromDirection(v1, 273);
 		}
@@ -202,164 +183,6 @@ namespace hooks {
 		v1->airStrength = getUnitStrength(v1, v13, 0);
 		result = getUnitStrength(v1, v18, 1);
 		v1->groundStrength = result;
-		return result;
-	}
-}
-
-namespace { // helper wrappers
-	// For disableUnit
-
-	const uint32 Func_playImageIscript = 0x004D8470;
-	void playImageIscript(CImage* a1, char a2) {
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			PUSH a2
-			CALL Func_playImageIscript
-			POPAD
-		}
-	}
-
-	// For updateUnitStrengthAndApplyDefaultOrders
-
-	const uint32 Func_incrementUnitScores = 0x00488BF0;
-	int16 incrementUnitScores(CUnit* a1, int a2) {
-		static int result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			PUSH a2
-			CALL Func_incrementUnitScores
-			MOV result, EAX
-			POPAD
-		}
-		return (int16)result;
-	}
-
-
-	const uint32 Func_incrementUnitScoresEx = 0x00488D50;
-	void incrementUnitScoresEx(int a1, CUnit* a2, int a3) {
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			MOV EDI, a2
-			PUSH a3
-			CALL Func_incrementUnitScoresEx
-			POPAD
-		}
-	}
-
-	const uint32 Func_playSoundFromDirection = 0x0049B5B0;
-	void playSoundFromDirection(CUnit* a1, int a2) {
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			CALL Func_playSoundFromDirection
-			POPAD
-		}
-	}
-
-	const uint32 Func_refreshUnitVision = 0x004E5F30;
-	void refreshUnitVision(CUnit* a1) {
-		__asm {
-			PUSHAD
-			PUSH a1
-			CALL Func_refreshUnitVision
-			POPAD
-		}
-	}
-
-	const uint32 Func_initUnitTrapDoodad = 0x004E6490;
-	void initUnitTrapDoodad(CUnit* a1) {
-		__asm {
-			PUSHAD
-			MOV EDI, a1
-			CALL Func_initUnitTrapDoodad
-			POPAD
-		}
-	}
-
-	const uint32 Func_removeOrderFromUnitQueue = 0x004742D0;
-	COrder* removeOrderFromUnitQueue(COrder* a1, CUnit* a2) {
-		static COrder* result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			CALL Func_removeOrderFromUnitQueue
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_performAnotherOrder = 0x004745F0;
-	COrder* performAnotherOrder(uint8 a1, int a2, CUnit* a3, int16 a4, Point32* a5, CUnit* a6) {
-		static COrder* result;
-		__asm {
-			PUSHAD
-			MOVZX BL, a1
-			MOV EDI, a2
-			MOV ESI, a3
-			MOVZX DX, a4
-			PUSH a5
-			PUSH a6
-			CALL Func_performAnotherOrder
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_orders_Nothing2 = 0x00475000;
-	void orders_Nothing2(CUnit* a1) {
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			CALL Func_orders_Nothing2
-			POPAD
-		}
-	}
-
-	const uint32 Func_orderComputerClear = 0x00475310;
-	void orderComputerClear(CUnit* a1, uint8 a2) {
-		__asm {
-			PUSHAD
-			MOV ESI, a1
-			MOVZX CL, a2
-			CALL Func_orderComputerClear
-			POPAD
-		}
-	}
-
-	const uint32 Func_order = 0x00474810;
-	void order(int a1, CUnit* a2, int8 a3, Point32* a4, CUnit* a5, int a6) {
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV EDX, a2
-			MOVZX CL, a3
-			PUSH a4
-			PUSH a5
-			PUSH a6
-			CALL Func_order
-			POPAD
-		}
-	}
-
-	const uint32 Func_getUnitStrength = 0x00431800;
-	uint32 getUnitStrength(CUnit* a1, int a2, bool a3) {
-		static uint32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			PUSH a3
-			CALL Func_getUnitStrength
-			MOV result, EAX
-			POPAD
-		}
 		return result;
 	}
 }

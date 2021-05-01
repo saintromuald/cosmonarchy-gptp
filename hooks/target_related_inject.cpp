@@ -83,7 +83,7 @@ namespace {
 			MOV unit, ESI
 			PUSHAD
 		}
-		result = hooks::isTargetVisible(target, unit);
+		result = hooks::isTargetVisibleHook(target, unit);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -98,7 +98,7 @@ namespace {
 			MOV unit, ESI
 			PUSHAD
 		}
-		result = hooks::isUnitVisible(unit);
+		result = hooks::isUnitVisibleHook(unit);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -112,7 +112,7 @@ namespace {
 			MOV unit, EAX
 			PUSHAD
 		}
-		hooks::checkUnitVisibility(unit);
+		hooks::checkUnitVisibilityHook(unit);
 		__asm {
 			POPAD
 			RETN

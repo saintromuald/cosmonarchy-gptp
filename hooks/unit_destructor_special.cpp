@@ -189,7 +189,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 	if (scbw::get_generic_value(unit, ValueId::AlkajeliskParasite) == 1) {
 		unit->orderTarget.pt.x = unit->position.x + 1;
 		unit->orderTarget.pt.y = unit->position.y;
-		auto bullet = scbw::createBulletRet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y,
+		auto bullet = createBulletRet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y,
 			scbw::get_generic_value(unit, ValueId::AlkajeliskParasitePlayer), 0);
 		if (bullet != nullptr) {
 			bullet->time_remaining = 255;
@@ -257,7 +257,7 @@ void unitDestructorSpecialHook(CUnit* unit) {
 
 	// Metastasis - Plague spreads when a unit dies
 	if ((unit->newFlags1 & NewFlags1::Metastasis) && unit->plagueTimer > 0) {
-		scbw::createBullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->playerId,
+		createBullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->playerId,
 			unit->currentDirection1);
 		Box16 coords;
 		coords.left = unit->position.x - 48;

@@ -6,15 +6,10 @@
 #include <SCBW/api.h>
 
 namespace {
-
-	typedef int(__stdcall* SErrSetLastErrorFunc)(int);
-	SErrSetLastErrorFunc const SErrSetLastError = (SErrSetLastErrorFunc)0x00410172;
-
 	struct TechTransferData {
 		uint16 unitId;
 		uint16 relatedTech[5]; //Maximum number of tech (use TechId::None to mark a premature end-of-list)
 	};
-
 	const TechTransferData techTransferData[] = {
 		//Terran
 		{UnitId::marine, TechId::Stimpacks, TechId::None},

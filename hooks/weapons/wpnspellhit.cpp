@@ -5,62 +5,21 @@
 #include "logger.h"
 #include "globals.h"
 #include <algorithm>
-//Helper functions definitions
-
-namespace {
-
-	void fixTargetLocation(Point16* coords, uint32 unitId);												//0x00401FA0
-	bool function_0042D810(int x, int y, uint32 unitId);												//0x0042D810
-	CUnit** getAllUnitsInBounds(Box16* coords);															//0x0042FF80
-	void incrementUnitKillCount(CUnit* unit);															//0x004759C0
-	uint32 getUnitDamageBonus(CUnit* unit, uint8 weaponId);												//0x00475EC0
-	void attackOverlayAndNotify(CUnit* attacker, CUnit* target, uint32 weaponType, uint32 direction);	//0x00479730
-	bool setThingyVisibilityFlags(CThingy* thingy);														//0x004878F0
-	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId);							//0x00488210
-	void incrementUnitDeathScores(CUnit* unit, uint8 player);											//0x00488AF0
-	uint32 GetUnitBulletDamage(CBullet* bullet, CUnit* target);											//0x0048ACD0
-	uint32 getSpellStatString(CUnit* target, uint32 techId, uint8 playerId);							//0x00491E80
-	void function_492CC0(CUnit* unit);																	//0x00492CC0
-	uint8 function_492CC0_ret(CUnit* unit);																//0x00492CC0
-	void setAllImageGroupFlagsPal11(CSprite* sprite);													//0x00497430
-	void displayLastNetErrForPlayer(uint32 playerId);													//0x0049E530
-	void updateUnitStrength(CUnit* unit);																//0x0049FA40
-	void function_004A01F0(CUnit* unit);																//0x004A01F0
-	CUnit* CreateUnit(uint32 unitId, int x, int y, uint32 playerId);									//0x004A09D0
-	void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit);										//0x004A2830
-	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(uint32 attackingPlayerId, Box16* coords);		//0x004E8280
-	void IterateUnitsAtLocationTargetProc_Ensnare(CUnit* attacker, Box16* coords);						//0x004E8280
-	void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords);						//0x004E8280
-	void IterateUnitsAtLocationTargetProc_Maelstrom(CUnit* attacker, Box16* coords);						//0x004E8280
-	void IterateUnitsAtLocationTargetProc_StasisField(CUnit* attacker, Box16* coords);					//0x004E8280
-	void createEnsnareOverlay(CUnit* a1);																//0x004F45E0
-
-	// For createScanner
-	void ordersNothing2(CUnit* a1);																		// 00475000
-	void orderComputerClear(CUnit* a1, uint8 a2);														// 00475310
-	int32 setUnitStatTxtErrorMsg(int32 a1);																// 0048CCB0
-	int32 playSoundFromSource(int32 a1, CUnit* a2, int32 a3, int32 a4);									// 0048ED50
-	void toIdle(CUnit* a1);																				// 004753A0
-
-} //unnamed namespace
 
 namespace hooks {
-
-	//no bullet because this function can be called in another context without bullet
+	// no bullet because this function can be called in another context without bullet
 	void IrradiateHit(CUnit* attacker, CUnit* target, uint8 attackingPlayerId) {
 		// no longer handled here
-	};
+	}
 
-	//bullet is not normally part of the function, so if the function is called
-	//in an unexpected way, it may not contain the correct value.
+	// bullet is not normally part of the function, so if the function is called
+	// in an unexpected way, it may not contain the correct value.
 	void OpticalFlareHit(CUnit* target, uint32 attackingPlayerId, CBullet* bullet) {
-		//can take the value 100 (0x64), thus not bool32
+		// can take the value 100 (0x64), thus not bool32
 		static uint32* const u32_0051CE98 = (uint32*)0x0051CE98;
-
 		if (target->status & UnitStatus::IsHallucination)
 			target->remove();
 		else {
-
 			uint32 overlayImageId;
 			CUnit* overlayTargetUnit;
 
@@ -291,7 +250,7 @@ namespace hooks {
 		CThingy* emp_sprite = scbw::createThingy(371, x, y, 0);
 		if (emp_sprite != nullptr) {
 			emp_sprite->sprite->elevationLevel = 19; //0x13
-			scbw::setThingyVisibilityFlags(emp_sprite);
+			setThingyVisibilityFlags(emp_sprite);
 		}
 		static uint16* const maxBoxRightValue = (uint16*)0x00628450;	//should usually be mapTileSize->width * 32
 		static uint16* const maxBoxBottomValue = (uint16*)0x006284B4;	//should usually be mapTileSize->height * 32
@@ -368,10 +327,10 @@ namespace hooks {
 			auto vec = scbw::getClarionLinks(bullet->attackTarget.unit);
 			if (vec.size() != 0) {
 				for (auto unit : vec) {
-					scbw::ApplySpores(unit);
+					ApplySpores(unit);
 				}
 			} else {
-				scbw::ApplySpores(bullet->attackTarget.unit);
+				ApplySpores(bullet->attackTarget.unit);
 			}
 		}
 	}
@@ -454,16 +413,16 @@ namespace hooks {
 		fixTargetLocation(&coords, UnitId::Spell_DarkSwarm);
 
 		//the dark swarm is created for player 11 (neutral), not for the owner
-		dark_swarm_unit = CreateUnit(UnitId::Spell_DarkSwarm, coords.x, coords.y, 11);
+		dark_swarm_unit = createUnit(UnitId::Spell_DarkSwarm, coords.x, coords.y, 11);
 
 		if (dark_swarm_unit == nullptr) {
-			displayLastNetErrForPlayer(attackingPlayerId);
+			displayLastNetErrorForPlayer(attackingPlayerId);
 		}
 		else {
 			dark_swarm_unit->status |= UnitStatus::NoCollide;
 			dark_swarm_unit->sprite->elevationLevel = 11;
 
-			//update various stuff (set hp, set shield...) not finished on CreateUnit
+			//update various stuff (set hp, set shield...) not finished on createUnit
 			function_004A01F0(dark_swarm_unit);
 			updateUnitStrength(dark_swarm_unit);
 			if (dark_swarm_unit->removeTimer == 0
@@ -518,18 +477,18 @@ namespace hooks {
 				fixTargetLocation(&pos, UnitId::ZergBroodling);
 
 				//create the broodling
-				created_broodling = CreateUnit(UnitId::ZergBroodling, pos.x, pos.y, attacker->playerId);
+				created_broodling = createUnit(UnitId::ZergBroodling, pos.x, pos.y, attacker->playerId);
 				scbw::set_generic_unit(created_broodling, ValueId::BroodlingMother, attacker);
 
 				if (created_broodling == nullptr) {
-					displayLastNetErrForPlayer(attacker->playerId);
+					displayLastNetErrorForPlayer(attacker->playerId);
 					jump_to_end_of_loop = true;
 				} else { //F4A26
 					scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, created_broodling);
 
 					uint32 timerBeforeDisappearance;
 
-					//update various stuff (set hp, set shield...) not finished on CreateUnit
+					//update various stuff (set hp, set shield...) not finished on createUnit
 					function_004A01F0(created_broodling);
 					updateUnitStrength(created_broodling);
 					timerBeforeDisappearance = 720;	//0x708
@@ -634,14 +593,14 @@ namespace hooks {
 		//adjust location where Disruption Web will be created
 		//if necessary (by modifying coords)
 		fixTargetLocation(&coords, UnitId::Spell_DisruptionWeb);
-		disruption_web_unit = CreateUnit(UnitId::Spell_DisruptionWeb, coords.x, coords.y, 11);
+		disruption_web_unit = createUnit(UnitId::Spell_DisruptionWeb, coords.x, coords.y, 11);
 		if (disruption_web_unit == nullptr) {
-			displayLastNetErrForPlayer(attackingPlayerId);
+			displayLastNetErrorForPlayer(attackingPlayerId);
 		}
 		else {
 			disruption_web_unit->status |= UnitStatus::NoCollide;
 			disruption_web_unit->sprite->elevationLevel = 11;
-			//update various stuff (set hp, set shield...) not finished on CreateUnit
+			//update various stuff (set hp, set shield...) not finished on createUnit
 			function_004A01F0(disruption_web_unit);
 			updateUnitStrength(disruption_web_unit);
 			if (disruption_web_unit->removeTimer == 0 ||
@@ -721,7 +680,7 @@ namespace hooks {
 					LABEL_15:
 						if (v1->orderQueueHead) {
 							v1->userActionFlags |= 1u;
-							ordersNothing2(v1);
+							orders_Nothing2(v1);
 						} else if (v1->pAI) {
 							orderComputerClear(v1, 0x9Cu);
 						} else {
@@ -741,7 +700,7 @@ namespace hooks {
 		a2.y = v1->orderTarget.pt.y;
 		a2.x = v9;
 		fixTargetLocation(&a2, UnitId::Spell_ScannerSweep);
-		v10 = CreateUnit(0x21u, a2.x, a2.y, (uint8)v1->playerId);
+		v10 = createUnit(0x21u, a2.x, a2.y, (uint8)v1->playerId);
 		v11 = v10;
 		if (v10) {
 			function_004A01F0(v10);
@@ -752,393 +711,9 @@ namespace hooks {
 			}
 			toIdle(v1);
 		} else {
-			displayLastNetErrForPlayer(v1->playerId);
+			displayLastNetErrorForPlayer(v1->playerId);
 			toIdle(v1);
 		}
 	}
 
-} //hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-	const uint32 Func_fixTargetLocation = 0x00401FA0;
-	void fixTargetLocation(Point16* coords, uint32 unitId) {
-		__asm {
-			PUSHAD
-			MOV EAX, unitId
-			MOV EDX, coords
-			CALL Func_fixTargetLocation
-			POPAD
-		}
-	}
-
-	const uint32 Func_Sub42D810 = 0x0042D810;
-	bool function_0042D810(int x, int y, uint32 unitId) {
-		static bool32 bPreReturnValue;
-		__asm {
-			PUSHAD
-			MOV EAX, x
-			MOV EDI, y
-			MOV EBX, unitId
-			CALL Func_Sub42D810
-			MOV bPreReturnValue, EAX
-			POPAD
-		}
-		return (bPreReturnValue != 0);
-	}
-
-	const uint32 Func_GetAllUnitsInBounds = 0x0042FF80;
-	CUnit** getAllUnitsInBounds(Box16* coords) {
-		static CUnit** units_in_bounds;
-		__asm {
-			PUSHAD
-			MOV EAX, coords
-			CALL Func_GetAllUnitsInBounds
-			MOV units_in_bounds, EAX
-			POPAD
-		}
-		return units_in_bounds;
-	}
-
-	const uint32 Func_getUnitDamageBonus = 0x00475EC0;
-	uint32 getUnitDamageBonus(CUnit* unit, uint8 weaponId) {
-		static uint32 damageBonus;
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			MOV DL, weaponId
-			CALL Func_getUnitDamageBonus
-			MOV damageBonus, EAX
-			POPAD
-		}
-		return damageBonus;
-	}
-
-	//identical to incrementUnitKillCount @ 0x004759C0
-	void incrementUnitKillCount(CUnit* unit) {
-		CUnit* temp_unit = unit;
-		if (temp_unit->killCount < 255) {
-			temp_unit->killCount++;
-		}
-		while (
-			temp_unit->id == UnitId::ProtossSteward &&
-			temp_unit->interceptor.parent != nullptr
-			) {
-			temp_unit = temp_unit->interceptor.parent;
-			if (temp_unit->killCount < 255) {
-				temp_unit->killCount++;
-			}
-		}
-	}
-
-	const uint32 Func_attackOverlayAndNotify = 0x00479730;
-	void attackOverlayAndNotify(CUnit* attacker, CUnit* target, uint32 weaponType, uint32 direction) {
-		__asm {
-			PUSHAD
-			MOV ESI, attacker
-			PUSH direction
-			MOV EAX, target
-			PUSH weaponType
-			CALL Func_attackOverlayAndNotify
-			POPAD
-		}
-	}
-
-	//original referenced name was sub_4878F0, but using
-	//the name from bunker_hooks.cpp since it got meaning
-	const uint32 Func_SetThingyVisibilityFlags = 0x004878F0;
-	bool setThingyVisibilityFlags(CThingy* thingy) {
-		static bool32 bPreResult;
-		__asm {
-			PUSHAD
-			MOV ESI, thingy
-			CALL Func_SetThingyVisibilityFlags
-			MOV bPreResult, EAX
-			POPAD
-		}
-		return (bPreResult != 0);
-	}
-
-	//original referenced name was replaceSprite (but this one is probably
-	//more accurate since it does create something rather than replacing)
-	const uint32 Func_CreateThingy = 0x00488210;
-	CThingy* createThingy(uint32 spriteId, int16 x, int16 y, uint32 playerId) {
-		static CThingy* thingy;
-		int32 x_ = x;
-		__asm {
-			PUSHAD
-			PUSH playerId
-			MOVSX EDI, y
-			PUSH x_
-			PUSH spriteId
-			CALL Func_CreateThingy
-			MOV thingy, EAX
-			POPAD
-		}
-		return thingy;
-	}
-
-	const uint32 Func_IncrementUnitDeathScores = 0x00488AF0;
-	void incrementUnitDeathScores(CUnit* unit, uint8 playerId) {
-		__asm {
-			PUSHAD
-			MOV EDI, unit
-			MOVZX EDX, playerId
-			CALL Func_IncrementUnitDeathScores
-			POPAD
-		}
-	}
-
-	const uint32 Func_GetUnitBulletDamage = 0x0048ACD0;
-	uint32 GetUnitBulletDamage(CBullet* bullet, CUnit* target) {
-		static uint32 return_value;
-		__asm {
-			PUSHAD
-			MOV EAX, target
-			MOV EDX, bullet
-			CALL Func_GetUnitBulletDamage
-			MOV return_value, EAX
-			POPAD
-		}
-		return return_value;
-	}
-
-	const uint32 Func_getSpellStatString = 0x00491E80;
-	uint32 getSpellStatString(CUnit* target, uint32 techId, uint8 playerId) {
-		static uint32 return_value;
-		__asm {
-			PUSHAD
-			MOV BL, playerId
-			PUSH techId
-			MOV EAX, target
-			CALL Func_getSpellStatString
-			MOV return_value, EAX
-			POPAD
-		}
-		return return_value;
-	}
-
-	const uint32 Func_Sub492CC0 = 0x00492CC0;
-	void function_492CC0(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub492CC0
-			POPAD
-		}
-	}
-
-	uint8 function_492CC0_ret(CUnit* unit) {
-		uint32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub492CC0
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-	
-	//Identical to setAllImageGroupFlagsPal11 @ 0x00497430;
-	void setAllImageGroupFlagsPal11(CSprite* sprite) {
-		for (
-			CImage* current_image = sprite->images.head;
-			current_image != nullptr;
-			current_image = current_image->link.next
-			) {
-			if (current_image->paletteType == PaletteType::RLE_HPFLOATDRAW) {
-				current_image->flags |= CImage_Flags::Redraw;
-			}
-		}
-	}
-
-	const uint32 Func_Sub4A01F0 = 0x004A01F0;
-	void function_004A01F0(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub4A01F0
-			POPAD
-		}
-	}
-
-	const uint32 Func_CreateUnit = 0x004A09D0;
-	CUnit* CreateUnit(uint32 unitId, int x, int y, uint32 playerId) {
-		static CUnit* unit_created;
-		__asm {
-			PUSHAD
-			PUSH playerId
-			PUSH y
-			MOV ECX, unitId
-			MOV EAX, x
-			CALL Func_CreateUnit
-			MOV unit_created, EAX
-			POPAD
-		}
-		return unit_created;
-	}
-
-	const uint32 Func_displayLastNetErrForPlayer = 0x0049E530;
-	void displayLastNetErrForPlayer(uint32 playerId) {
-		__asm {
-			PUSHAD
-			PUSH playerId
-			CALL Func_displayLastNetErrForPlayer
-			POPAD
-		}
-	}
-
-	const uint32 Func_UpdateUnitStrength = 0x0049FA40;
-	void updateUnitStrength(CUnit* unit) {
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_UpdateUnitStrength
-			POPAD
-		}
-	}
-
-	const uint32 Func_AI_TrainingUnit = 0x004A2830;
-	void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit) {
-		__asm {
-			PUSHAD
-			MOV EAX, created_unit
-			MOV ECX, unit_creator
-			CALL Func_AI_TrainingUnit
-			POPAD
-		}
-	}
-
-	const uint32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
-	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(uint32 attackingPlayerId, Box16* coords) {
-		const uint32 CorrosiveAcidProc_function = 0x004F4670;
-		__asm {
-			PUSHAD
-			PUSH attackingPlayerId
-			MOV EAX, coords
-			MOV EBX, CorrosiveAcidProc_function
-			CALL Func_IterateUnitsAtLocationTargetProc
-			POPAD
-		}
-	}
-
-	void IterateUnitsAtLocationTargetProc_Ensnare(CUnit* attacker, Box16* coords) {
-		const uint32 EnsnareProc_function = 0x004F46C0;
-		__asm {
-			PUSHAD
-			PUSH attacker
-			MOV EAX, coords
-			MOV EBX, EnsnareProc_function
-			CALL Func_IterateUnitsAtLocationTargetProc
-			POPAD
-		}
-	}
-	void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords) {
-		const uint32 PlagueProc_function = 0x004F4AF0;
-		__asm {
-			PUSHAD
-			PUSH attacker
-			MOV EAX, coords
-			MOV EBX, PlagueProc_function
-			CALL Func_IterateUnitsAtLocationTargetProc
-			POPAD
-		}
-	}
-
-	void IterateUnitsAtLocationTargetProc_Maelstrom(CUnit* attacker, Box16* coords) {
-		const uint32 MaelstromProc_function = 0x004F6760;
-		__asm {
-			PUSHAD
-			PUSH attacker
-			MOV EAX, coords
-			MOV EBX, MaelstromProc_function
-			CALL Func_IterateUnitsAtLocationTargetProc
-			POPAD
-		}
-	}
-
-	void IterateUnitsAtLocationTargetProc_StasisField(CUnit* attacker, Box16* coords) {
-		const uint32 StasisFieldProc_function = 0x004F68D0;
-		__asm {
-			PUSHAD
-			PUSH attacker
-			MOV EAX, coords
-			MOV EBX, StasisFieldProc_function
-			CALL Func_IterateUnitsAtLocationTargetProc
-			POPAD
-		}
-	}
-
-	const uint32 Func_createEnsnareOverlay = 0x004F45E0;
-	void createEnsnareOverlay(CUnit* a1) {
-		__asm {
-			PUSHAD
-			MOV EDI, a1
-			CALL Func_createEnsnareOverlay
-			POPAD
-		}
-	}
-
-	// For createScanner
-	const uint32 Func_ordersNothing2 = 0x00475000;
-	void ordersNothing2(CUnit* a1) {
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			CALL Func_ordersNothing2
-			POPAD
-		}
-	}
-
-	const uint32 Func_orderComputerClear = 0x00475310;
-	void orderComputerClear(CUnit* a1, uint8 a2) {
-		__asm {
-			PUSHAD
-			MOV ESI, a1
-			MOVZX CL, a2
-			CALL Func_orderComputerClear
-			POPAD
-		}
-	}
-
-	const uint32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
-	int32 setUnitStatTxtErrorMsg(int32 a1) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, a1
-			CALL Func_setUnitStatTxtErrorMsg
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_playSoundFromSource = 0x0048ED50;
-	int32 playSoundFromSource(int32 a1, CUnit* a2, int32 a3, int32 a4) {
-		static int32 result;
-		__asm {
-			PUSHAD
-			PUSH a4
-			PUSH a3
-			MOV ESI, a2
-			MOV EBX, a1
-			CALL Func_playSoundFromSource
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
-	const uint32 Func_toIdle = 0x004753A0;
-	void toIdle(CUnit* a1) {
-		__asm {
-			PUSHAD
-			MOV ECX, a1
-			CALL Func_toIdle
-			POPAD
-		}
-	}
 }

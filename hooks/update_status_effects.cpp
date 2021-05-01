@@ -387,17 +387,6 @@ namespace hooks {
 		}
 	}
 
-	const uint32 Func_orderComputerClear = 0x00475310;
-	void orderComputerClear(CUnit* a1, uint8 a2) {
-		__asm {
-			PUSHAD
-			MOV ESI, a1
-			MOVZX CL, a2
-			CALL Func_orderComputerClear
-			POPAD
-		}
-	}
-
 	void AI_Burrower(CUnit* a1) {
 		if (units_dat::BaseProperty[a1->id] & UnitProperty::Burrowable) {
 			if (!(a1->status & UnitStatus::Burrowed) && a1->id != UnitId::ZergDroleth) {

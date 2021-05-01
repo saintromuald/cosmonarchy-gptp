@@ -2,20 +2,8 @@
 #include <SCBW/api.h>
 #include "globals.h"
 #include "hooks\limits\ccmu.h"
-//helper functions def
-
-namespace {
-
-	uint32 getUpgradedWpnCooldown(CUnit* unit, uint8 weaponId);							//75DC0
-	void IgnoreAllScriptAndGotoIdle(CUnit* unit);									//76550
-	void hideAndDisableUnit(CUnit* unit);											//E6340
-	uint32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos);		//E76C0
-	void function_004E7E10(CUnit* unit, uint32 unk);									//E7E10
-
-} //unnamed namespace
 
 namespace hooks {
-
 	//initial name was sub_4E78E0
 	//the transport is "unit", the target is "unitToLoad"
 	void loadUnitProc(CUnit* unit, CUnit* unitToLoad) {
@@ -359,98 +347,4 @@ namespace hooks {
 
 	;
 
-} //namespace hooks
-
-;
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_getUpgradedWpnCooldown = 0x00475DC0;
-	uint32 getUpgradedWpnCooldown(CUnit* unit, uint8 weaponId) {
-
-		static uint32 return_value;
-
-		__asm {
-			PUSHAD
-			MOV AL, weaponId
-			MOV ESI, unit
-			CALL Func_getUpgradedWpnCooldown
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-	const uint32 Func_IgnoreAllScriptAndGotoIdle = 0x00476550;
-	void IgnoreAllScriptAndGotoIdle(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			CALL Func_IgnoreAllScriptAndGotoIdle
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_unitDeathSomething_0 = 0x004E6340;
-	void hideAndDisableUnit(CUnit* unit) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_unitDeathSomething_0
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_Sub4E76C0 = 0x004E76C0;
-	uint32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos) {
-
-		static uint32 result;
-
-		__asm {
-			PUSHAD
-			MOV EAX, transport
-			MOV ESI, loaded_unit
-			PUSH pos
-			CALL Func_Sub4E76C0
-			MOV result, EAX
-			POPAD
-		}
-
-		return result;
-
-	}
-
-	;
-
-	const uint32 Func_Sub4E7E10 = 0x004E7E10;
-	void function_004E7E10(CUnit* unit, uint32 unk) {
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			PUSH unk
-			CALL Func_Sub4E7E10
-			POPAD
-		}
-
-	}
-
-	;
-
-} //Unnamed namespace
-
-//End of helper functions
+}

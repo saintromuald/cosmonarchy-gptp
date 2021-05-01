@@ -1,13 +1,6 @@
 #include "stim_packs.h"
 #include "../SCBW/api.h"
 #include "SCBW/stat_txt_spec.h"
-//helper functions def
-namespace {
-
-	uint32 get_statTxt_Str_0(CUnit* unit, uint32 playerId, char* message);	//0x0048EF30
-	uint32 RandBetween(uint32 min, uint32 max, uint32 someIndex);					//0x004DC550
-
-} //unnamed namespace
 
 namespace hooks {
 
@@ -38,7 +31,7 @@ namespace hooks {
 		}
 
 		if (bFoundUnitAbleToStimpack) {
-			static uint8 opcode[] = {0x36};	//packet opcode for stimpack is 0x36, no others args
+			static uint8 opcode[] = {0x36};	// packet opcode for stimpack is 0x36, no others args
 			QueueGameCommand(&opcode[0], 1);
 
 		} else {
@@ -120,83 +113,8 @@ namespace hooks {
 					activePlayerCurrentSelection->stimTimer = 37;
 					activePlayerCurrentSelection->updateSpeed();
 				}
-
-
 			}
-
 			activePlayerCurrentSelection = getActivePlayerNextSelection();
-
 		}
-
 	}
-
-	;
-
-} //hooks
-
-;
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_QueueGameCommand = 0x00485BD0;
-	void QueueGameCommand(uint8* params, uint32 param_length) {
-
-		__asm {
-			PUSHAD
-			MOV EDX, param_length
-			MOV ECX, params
-			CALL Func_QueueGameCommand
-			POPAD
-		}
-
-	}
-
-	;
-
-	const uint32 Func_get_statTxt_Str_0 = 0x0048EF30;
-	uint32 get_statTxt_Str_0(CUnit* unit, uint32 playerId, char* message) {
-
-		static uint32 return_value;
-
-		__asm {
-			PUSHAD
-			MOV EAX, message
-			MOV ECX, playerId
-			MOV EDX, unit
-			CALL Func_get_statTxt_Str_0
-			MOV EAX, return_value
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-	const uint32 Func_RandBetween = 0x004DC550;
-	uint32 RandBetween(uint32 min, uint32 max, uint32 someIndex) {
-
-		static uint32 return_value;
-
-		__asm {
-			PUSHAD
-			PUSH max
-			MOV EAX, someIndex
-			MOV EDX, min
-			CALL Func_RandBetween
-			MOV return_value, EAX
-			POPAD
-		}
-
-		return return_value;
-
-	}
-
-	;
-
-} //Unnamed namespace
-
-//End of helper functions
+}

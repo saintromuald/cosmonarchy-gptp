@@ -1,27 +1,14 @@
 #include "train_cmd_receive.h"
 #include <SCBW/api.h>
 
-//Helper functions declaration
-
-namespace {
-
-	bool HasMoneyCanMake(CUnit* builder, uint32 unitToBuild);	//67250
-
-} //unnamed namespace
-
 namespace hooks {
-
 	void CMDRECV_TrainFighter() {
-
 		CUnit* current_selection;
-
 		*selectionIndexStart = 0;
 		current_selection = getActivePlayerNextSelection();
 
 		while (current_selection != nullptr) {
-
 			uint32 unitToBuild;
-
 			//the original code was messy, simplified/optimized version here
 			if (current_selection->id == UnitId::ProtossSolarion)
 				unitToBuild = UnitId::ProtossSteward;
@@ -36,8 +23,8 @@ namespace hooks {
 				) {
 				if (current_selection->id == UnitId::ProtossSolarion ||
 					current_selection->id == UnitId::ProtossAccantor
-					) {
-
+					)
+				{
 					if (current_selection->secondaryOrderState != 2) {
 						current_selection->secondaryOrderId = OrderId::TrainFighter;
 						current_selection->secondaryOrderPos.y = 0;
@@ -48,27 +35,17 @@ namespace hooks {
 
 				}
 			}
-
 			current_selection = getActivePlayerNextSelection();
-
 		}
-
 		scbw::refreshConsole();
-
 	}
-
-	;
 
 	//Note: the default function isn't compatible with multiple selection
 	void CMDRECV_Train(uint16 wUnitType) {
-
 		CUnit* builder;
-
 		*selectionIndexStart = 0;
 		builder = getActivePlayerNextSelection();
-
 		if (builder != nullptr && getActivePlayerNextSelection() == nullptr) {
-
 			if (builder->canMakeUnit(wUnitType, *ACTIVE_NATION_ID) == 1 /*&&
 				wUnitType <= UnitId::Spell_DisruptionWeb*/ //id before buildings id //must be disabled for paladins
 				) {
@@ -76,37 +53,6 @@ namespace hooks {
 					builder->setSecondaryOrder(OrderId::Train);
 				scbw::refreshConsole();
 			}
-
 		}
-
 	}
-
-	;
-
-} //namespace hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-namespace {
-
-	const uint32 Func_HasMoneyCanMake = 0x00467250;
-	bool HasMoneyCanMake(CUnit* builder, uint32 unitToBuild) {
-
-		static bool32 bPreResult;
-
-		__asm {
-			PUSHAD
-			PUSH unitToBuild
-			MOV EDI, builder
-			CALL Func_HasMoneyCanMake
-			MOV bPreResult, EAX
-			POPAD
-		}
-
-		return (bPreResult != 0);
-
-	}
-
-} //unnamed namespace
-
-//End of helper functions
+}

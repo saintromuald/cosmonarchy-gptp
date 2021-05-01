@@ -4,54 +4,38 @@
 #include "SCBW\structures\CUnit.h"
 #include <SCBW/api.h>
 #include <algorithm>
+
 namespace {
-
 	void __declspec(naked) orders_isMorphingWrapper() {
-
 		static CUnit* building;
 		static bool32 result;
-
 		__asm {
 			MOV building, EAX
 			PUSHAD
 		}
-
 		result = hooks::isMorphing(building) ? 1 : 0;
-
 		__asm {
 			POPAD
 			MOV EAX, result
 			RETN
 		}
-
 	}
 
-	;
-
 	void __declspec(naked) orders_ZergBuildSelfWrapper() {
-
 		static CUnit* building;
-
 		__asm {
 			MOV building, EAX
 			PUSHAD
 		}
-
 		hooks::orders_ZergBuildSelf(building);
-
 		__asm {
 			POPAD
 			RETN
 		}
-
 	}
 
-	;
-
 	void __declspec(naked) ZergPlaceBuildingWrapper() {
-
 		static CUnit* unit;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -59,27 +43,17 @@ namespace {
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::ZergPlaceBuilding(unit);
-
 		__asm {
 			POPAD
 			MOv ESP, EBp
 			POP EBP
 			RETN 4
 		}
-
 	}
-
-	;
-
-}; //unnamed namespace
-
-
-   //V241 for VS2008
+}
 
 namespace {
-
 	//-------- isMorphingBuilding() --------//
 
 	void __declspec(naked) isRemorphingBuildingWrapper() {
@@ -89,9 +63,9 @@ namespace {
 			MOV EBP, ESP
 			MOV unit, EAX
 		}
-
 		if (!(unit->status & UnitStatus::Completed)
-			&& hooks::isMorphedBuildingHook(unit->buildQueue[unit->buildQueueSlot])) {
+			&& hooks::isMorphedBuildingHook(unit->buildQueue[unit->buildQueueSlot]))
+		{
 			__asm {
 				POPAD
 				MOV EAX, 1
@@ -100,7 +74,7 @@ namespace {
 		} else {
 			__asm {
 				POPAD
-				XOR EAX, EAX;//Set EAX to 0
+				XOR EAX, EAX; // Set EAX to 0
 				RETN
 			}
 		}
@@ -116,7 +90,6 @@ namespace {
 			PUSHAD
 			MOV EBP, ESP
 		}
-
 		unit = *activePortraitUnit;
 		if (unit->status & UnitStatus::GroundedBuilding && unit->isFrozen()) {
 			tblErrorMessage = 828;    //<6>Disabled<0>
@@ -124,14 +97,13 @@ namespace {
 			uint16 unitId = unit->buildQueue[unit->buildQueueSlot];
 			if (unit->status & UnitStatus::Completed
 				|| !hooks::isMorphedBuildingHook(unitId))
+			{
 				unitId = unit->id;
-
-			if (unitId == UnitId::gateway || unitId == UnitId::stargate || unitId == UnitId::stargate)
-				tblErrorMessage = 771;  //Morphing<0>, Building<0>, Opening Warp Gate<0>
-			else
+			}
+			else {
 				tblErrorMessage = 774;  //Morphing<0>, Building<0>, Building<0>
+			}
 		}
-
 		__asm {
 			POPAD
 			MOV ECX, unit
@@ -150,13 +122,12 @@ namespace {
 			MOV EBP, ESP
 			MOV buildUnitId, DI
 		}
-
 		if (hooks::isMorphedBuildingHook(buildUnitId)) {
 			__asm {
 				POPAD
 				JMP Hook_AI_MorphBehavior_IsMorphedBuildingYes
 			}
-		} else {  //Code at 0x00435122
+		} else {  // Code at 0x00435122
 			__asm {
 				POPAD
 				POP EDI
@@ -179,12 +150,12 @@ namespace {
 			MOV EBP, ESP
 			MOV unit, ESI
 		}
-
 		buildUnitId = unit->buildQueue[unit->buildQueueSlot];
 		if (unit->status & UnitStatus::Completed
 			|| !hooks::isMorphedBuildingHook(buildUnitId))
+		{
 			buildUnitId = unit->id;
-
+		}
 		__asm {
 			POPAD
 			MOVZX ECX, buildUnitId
@@ -203,11 +174,11 @@ namespace {
 			MOV EBP, ESP
 			MOV unit, EDI
 		}
-
 		buildUnitId = unit->buildQueue[unit->buildQueueSlot];
 		if (!hooks::isMorphedBuildingHook(buildUnitId))
+		{
 			buildUnitId = unit->id;
-
+		}
 		__asm {
 			POPAD
 			MOVZX EBX, buildUnitId
@@ -222,7 +193,6 @@ namespace {
 			MOV EBP, ESP
 			MOV unitId, AX
 		}
-
 		if (hooks::isMorphedBuildingHook(unitId)) {
 			__asm {
 				POPAD
@@ -232,13 +202,13 @@ namespace {
 		} else {
 			__asm {
 				POPAD
-				XOR EAX, EAX;//Set EAX to 0
+				XOR EAX, EAX;
 				RETN
 			}
 		}
 	}
 
-	//This was moved out of the naked function to prevent stack corruption bug
+	// This was moved out of the naked function to prevent stack corruption bug
 	void zergBuildSelf_UpdateBuildTimerAndHp(CUnit* unit, uint16 unitId) {
 		bool isOperationCwalEnabled = scbw::isCheatEnabled(CheatFlags::OperationCwal);
 		if (unit->remainingBuildTime) {
@@ -264,9 +234,7 @@ namespace {
 			MOV unit, EDI
 			MOV unitId, BX
 		}
-
 		zergBuildSelf_UpdateBuildTimerAndHp(unit, unitId);
-
 		__asm {
 			POPAD
 			POP EDI
@@ -287,7 +255,6 @@ namespace {
 			MOV EBP, ESP
 			MOV unit, EBX
 		}
-
 		if (!(unit->status & UnitStatus::Completed)
 			&& hooks::isMorphedBuildingHook(unit->buildQueue[unit->buildQueueSlot])) {
 			//scbw::print("Morph detected");
@@ -311,23 +278,20 @@ namespace {
 
 	//-------- AI_GetWaitBuildUnitCount --------//
 
-	//Inject @ 0x00433286
+	// Inject @ 0x00433286
 	const uint32 Hook_AI_GetWaitBuildUnitCount_Return = 0x004333D3;
 	void __declspec(naked) getMorphBuildingTypeCountWrapper_AI_GetWaitBuildUnitCount() {
 		static CUnit* unit;
 		static uint16 unitId;
 		static bool32 ignoreIncomplete;
 		static uint32 unitCount;
-
 		__asm {
 			PUSHAD
 			MOV ignoreIncomplete, EDX
 			MOV unitId, DI
 			MOV unit, ESI
 		}
-
 		unitCount = hooks::getMorphBuildingTypeCountHook(unit, unitId, ignoreIncomplete != 0);
-
 		__asm {
 			POPAD
 			MOV EAX, unitCount
@@ -343,16 +307,13 @@ namespace {
 		static CUnit* unit;
 		static uint16 unitId;
 		static uint32 unitCount;
-
 		__asm {
 			PUSHAD
 			MOV unitId, DI
 			MOV unit, ESI
 			MOV unitCount, EBX
 		}
-
 		unitCount += hooks::getMorphBuildingTypeCountHook(unit, unitId, false);
-
 		__asm {
 			POPAD
 			MOV EBX, unitCount
@@ -383,7 +344,6 @@ namespace {
 		static CUnit* unit;
 		static uint16 unitId;
 		static uint32 unitCount;
-
 		__asm {
 			PUSHAD
 			MOV EAX, [EBP - 16]
@@ -391,24 +351,19 @@ namespace {
 			MOV unit, ESI
 			MOV unitCount, EBX
 		}
-
 		unitCount += hooks::getMorphBuildingTypeCountHook(unit, unitId, false);
-
 		__asm {
 			POPAD
 			MOV EBX, unitCount
 			JMP Hook_AI_ManageBases_Return
 		}
 	}
-
-} //unnamed namespace
-
+}
 
 extern const uint32 Func_IsRemorphingBuilding;
 namespace hooks {
 
 	void injectBuildingMorphHooks() {
-
 		jmpPatch(orders_isMorphingWrapper, 0x0045CD00, 2);
 		jmpPatch(orders_ZergBuildSelfWrapper, 0x0045D500, 0);
 		jmpPatch(ZergPlaceBuildingWrapper, 0x0045DA40, 1);
