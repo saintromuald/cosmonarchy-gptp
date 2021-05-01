@@ -50,10 +50,10 @@ namespace hooks {
 				) {
 				if (!scbw::get_generic_timer(current_unit, ValueId::DecloakTimer)) {
 					helper::secondaryOrder_Cloak(current_unit);
-				}
-				if (!(current_unit->status & UnitStatus::CloakingForFree)) {
-					current_unit->status |= UnitStatus::CloakingForFree;
-					needsRefresh = true;
+					if (!(current_unit->status & UnitStatus::CloakingForFree)) {
+						current_unit->status |= UnitStatus::CloakingForFree;
+						needsRefresh = true;
+					}
 				}
 			}
 			unitsInAreaOfEffect++;
