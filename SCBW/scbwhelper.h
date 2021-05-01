@@ -55,341 +55,152 @@ namespace helper {
     int unitGetName(CUnit* a1);
 
     // For getUnitStrength
-
     int getCurrentHitPointsPlusShields(CUnit* a1);
-
-
     int getBaseStrength(int a1, CUnit* a2);
-
-
     int getMaxHP(CUnit* a1);
 
     // For AI_RestorationRequirementsProc
-
     int canWeaponTargetUnit(uint8 a1, CUnit* a2, CUnit* a3);
 
     // For AI_EMPShieldRequirementsProc
-
-
     int32 AI_TargetUnitIsWorthHitting(CUnit* a1, CUnit* a2);
-
-
     int createSplashWeaponProc(int16 a1, int16 a2, int16 a3, int(__fastcall* a4)(int, int), int a5);
-
-
     int unitShieldsClumpInAreaAccumulatorProc(CUnit* a1, CUnit* a2);
 
     // For hallucinationHit
-
     void unitWasHit(CUnit* a1, CUnit* a2, int a3);
-
-
     void doAttackNotifyEvent(CUnit* a1);
-
-
     CImage* createShieldOverlay(int a1, CUnit* a2);
 
     // For drawImageHPBar
 
     int unk_billions(int a1, int32 a2, int a3, int a4);
-
-
     int unk_billions2(int a1, int32 a2, int a3, int a4);
-
-
     int hpBarSurfaceBuffer(int a1, int a2, int* a3, int a4, int a5);
-
-
     int hpBarSurfaceBuffer2(int a1, int a2, uint16 a3, int a4);
-
-
     int renderHPBar(int a1, int a2, int* a3, int a4, int a5);
-
-
     int32 getUnitMaxEnergy(CUnit* a1);
-
-
     int getHpBarDrawSizes(int a1, int32 a2, int a3, int a4);
 
     // For canCastSpell
-
     bool unitIsFrozen(CUnit* a1);
-
-
     bool isUnitCasterNotHallucination(CUnit* a1);
-
-
     bool getActiveTileFlag(int16 a1, int16 a2, int a3, int a4);
-
-
     CUnit* getTargetUnitAbilityErrorStatString(CUnit* a1, char a2, int a3);
 
     // For modifyUnitShields
-
     int SErrSetLastError(char a1);
 
     // For compileHealthBar
-
-
     void updateImageDrawData(CImage* result);
-
-
     void playImageIscript(CImage* img, uint8 iscriptAnim);
 
     // For AI_FindTransport
-
     bool canEnterTransport(CUnit* a1, CUnit* a2);
-
-
     int16 SAI_GetRegionIdFromPxEx(int32 a1, int32 a2);
-
-
     int32 getUnitDistanceToHalt(int a1, CUnit* a2, int a3);
 
     // For mapDataTransfer
-
     int32 dataTransfer00(int a1, char a2, int a3);
-
-
     int dataTransfer01(uint32 a1, int a2, uint32 a3);
-
-
     int32 dataTransfer02(int a1, int a2, char a3);
-
-
     int32 dataTransfer03(int a1, char a2, int a3);
-
-
     int dataTransfer04(uint32 a1, int a2, int a3);
-
-
     int32 dataTransfer05(int a1, int a2);
-
-
     vectorHead* vectorTransfer(char a1, char a2);
-
-
     int dataTransfer06(int a1);
 
     // For getRandYesSFX
-
     int randGetSFXBetween(int a1, int a2);
-
-
     int16 SAI_GetRegionIdFromPxEx(int32 x, int32 y);
 
-
     // for AI_TrainUnit
-
     char AI_TrainingWorker(CUnit* result, CUnit* parent);
-
-
     void AI_TrainingOverlord(CUnit* result, CUnit* parent);
-
-
     void AI_TrainingNormal(CUnit* result, CUnit* parent);
-
-
     void AI_OrderToDestination(CUnit* unit, int orderId, int x, int y);
-
-
     void AI_AssignCaptainToSlowestUnit(AiCaptain* region);
 
     // for AI_CreateNuke
-
-
     CUnit* createUnit(int16 unitType, int32 x, int32 y, int32 playerId);
-
-
     void updateUnitStatsFinishBuilding(CUnit* unit);
-
-
     uint32 updateUnitStrengthAndApplyDefaultOrders(CUnit* unit);
-
-
     void hideUnit(CUnit* unit);
 
     // for AI_TrainingBroodling
-
-
     void AI_AssignMilitary(int32 regionType, AiCaptain* region);
-
-
     void AI_AddMilitary(AiCaptain* region, CUnit* unit, int32 always_this_region);
 
     // for AI_AddUnitAi
-
-
     UnitAi* AI_CreateBuildingAi(BuildingAiArray* buildingAI);
-
-
     void orderComputerClear(CUnit* unit, uint8 orderId);
-
-
     CUnit* setSecondaryOrder(CUnit* result, char orderId);
-
-
     void AI_MakeGuard(int32 playerId, CUnit* unit);
-
-
     bool unitIsActiveResourceDepot(CUnit* unit);
-
-
     int32 getPlayerDefaultRefineryUnitType(int32 playerId);
 
     // for AI_UnitWasHit // some of these should probably be methods in api/etc
-
     char AI_CancelStructure(CUnit* structure);
-
-
     CUnit* AI_GetActualTarget(CUnit* attacker, CUnit* target);
-
-
     CUnit* checkArbiterCloakingRange(CUnit* unit, uint16 id);
-
-
     void AI_OrderUnitCloaking(CUnit* unit);
-
-
     void AI_OrderLurkerBurrow(CUnit* unit);
-
-
     bool AI_IsUnderAttack(CUnit* unit, int32 flag);
-
-
     bool unitIsActiveTransport(CUnit* unit);
-
-
     int32 isUnitLoaded(CUnit* unit);
-
-
     int32 AI_TryReturnHome(CUnit* unit, int32 dontIssueOrder);
-
-
     int32 AI_TransportAction(CUnit* unit);
-
-
     int32 AI_AskForHelp(CUnit* self, CUnit* attacker, int32 onlyNearbyGuards);
-
-
     int16 getRegionIdFromUnit(CUnit* unit);
-
-
     int32 getEnemyAirStrengthInRegion(uint16 regionId, int32 player);
-
-
     int32 getEnemyStrengthInRegion(uint16 regionId, int32 player, int32 includeAir);
-
-
     bool unitIsPerformingUnbreakableCode(CUnit* unit);
-
-
     bool AI_CastSpellBehavior(CUnit* unit, bool isAggro);
-
-
     int32 AI_Flee(CUnit* unit, CUnit* enemy);
-
-
     bool unitHasGroundPath(CUnit* unit, int16 x, int16 y);
-
-
     bool AI_HasNoDefenseBuild(int32 player);
-
-
     bool unitCanSeeCloakedTarget(CUnit* target, CUnit* unit);
-
-
     void AI_RespondToCloakedThreat(CUnit* threat, CUnit* unit);
-
-
     bool unitCanAttackTarget(CUnit* target, CUnit* unit, int32 checkDetection);
-
-
     int32 AI_UpdateAttackTarget(CUnit* unit, int32 acceptIfSieged, int32 acceptCritters, int32 mustReach);
-
-
     __int64 AI_PrepareToFlee(CUnit* enemy, CUnit* unit);
 
     // for AI_IterateBuildingAI
-
     uint16 AI_RemoveFromTowns(CUnit* worker);
-
-
     BuildingAi* AI_DeleteBuildingAI(BuildingAi* building, BuildingAiArray* buildingList);
-
-
     int32 AI_GetQueuedCount(CUnit* builder, uint32 unitId);
-
-
     void AI_PrepareGuardAI(uint16 y, uint32 player, uint16 unitId, uint16 x);
 
     // Attack extender
 
     // for AI_TrainAttackForce
-
     int32 AI_AddRegionToMilitary(AiCaptain* region, int32 unitId, int32 priority);
-
-
     uint32 AI_FindUnit(uint32 unitId, uint32 playerId, uint32 type);
-
-
     uint32 AI_AddSpendingRequest(uint16 unitId, uint32 type, uint8 player, char priority, void* value);
-
-
     uint32 AI_AddBaseUnitSpendingRequest(uint32 unitId, uint32 player, AiCaptain* region, char priority);
 
     // for AIRegion_GroupForAttack
-
     uint32 AI_RecalculateRegionStrength(AiCaptain* region);
-
-
     CUnit* AI_TargetEnemyInRegion(AiCaptain* region);
-
-
     int32 AI_MoveMilitaryToDefend(AiCaptain* region);
-
-
     void AI_GetRegionMilitaryTypes(AiCaptain* region, int32* hasGroundMilitary,
     int32* cantAttackGround, int32* cantAttackAir);
-
-
     int32 AI_CanTravelToRegion(AiCaptain* region1, AiCaptain* region2);
-
-
     CUnit* AI_PickAttackTarget_NoBuildings(AiCaptain* region);
-
-
     uint32 AI_MoveMilitaryToOtherRegion(AiCaptain* target, AiCaptain* source, uint32 pullUnitsNearRegion,
     uint32 sendPureSpellcasters, uint32 dontSendFromBunkers);
-
-
     AiTown* AI_IterateTownSomething(AiCaptain* region);
-
-
     uint32 AI_AttackTimerDecrement(uint32 player);
-
-
     int32 AI_HasForcesMovingToAttack(uint32 player);
 
     // for AI_AttackManager
-
     uint16 PopulateRegionsWithOwn(char* regionData, uint32 player);
-
-
     void PopulateRegionsWithEnemy(uint32 player, char* regionData);
-
-
     int32 AI_GetNeighborRegionTypes(char* regionData);
-
-
     void AI_FinishRegionAccessibility(char* regionData);
-
-
     int32 AI_SetAttackGroupingRegion(uint32 airAttack, uint32 alsoVeryNear, uint32 player, char* regionData,
-    int32 x, int32 y, uint32 alwaysOverwriteLastAttack);
-
+        int32 x, int32 y, uint32 alwaysOverwriteLastAttack);
     int16 SAI_GetRegionIdFromPxEx(int32 x, int32 y);
-
     char AI_CancelStructure(CUnit* structure);
 
     bool unitCantSeeCloakedTarget(CUnit* unit, CUnit* target);												// 00401D60
@@ -481,19 +292,19 @@ namespace helper {
     bool isUnitPositions2Equal(CUnit* unit);											                    // 00402160
     void AI_TrainingOverlord(CUnit* main_unit, CUnit* created_unit);					                    // 00435770
     bool32 buildingAddon(CUnit* unit, uint32 hpGain, bool32 canBeAborted);				                    // 004679A0
-    void prependOrderTargetingNothing(CUnit* unit, COrder* order, uint8 orderId);					                    // 00474760
-    void addOrderTargetingNothing(CUnit* unit, COrder* order, uint8 orderId);					                    // 004749A0
+    void prependOrderTargetingNothing(CUnit* unit, COrder* order, uint8 orderId);					        // 00474760
+    void addOrderTargetingNothing(CUnit* unit, COrder* order, uint8 orderId);					            // 004749A0
     bool canStillPlaceBuilding();														                    // 0048DDA0
-    void endBuildingPlacement();															                    // 0048E310
+    void endBuildingPlacement();															                // 0048E310
     void playBuildingCompleteSound(CUnit* building);									                    // 0048F310
     void function_00494BB0(CUnit* unit, int x, int y);									                    // 00494BB0
     void displayLastNetErrorForPlayer(uint32 playerId);									                    // 0049E530
     uint32 RandomizeShort(uint32 unknown_index);										                    // 004DC4A0
     uint32 RandBetween(uint32 min, uint32 max, uint32 someIndex);						                    // 004DC550
-    void initBuilding(CUnit* unit, bool32 flag);									                    // 004E65E0
+    void initBuilding(CUnit* unit, bool32 flag);									                        // 004E65E0
     bool SetMoveTarget_xy(CUnit* unit, int x, int y);									                    // 004EB820
     bool orderToMoveToTarget(CUnit* unit, CUnit* target);								                    // 004EB980
-    bool32 unk_terrainCollision2(CUnit* unit, int x, int y);								                    // 004F1870
+    bool32 unk_terrainCollision2(CUnit* unit, int x, int y);								                // 004F1870
 
     // For updatePlacementStateForPlacementBox
     int32 canBuildOnTileLocation(CUnit* a1, int32 player, int32 x_tile, int32 y_tile, int32 unitType,
