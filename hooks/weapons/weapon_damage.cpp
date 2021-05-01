@@ -299,17 +299,6 @@ namespace hooks {
 				data.finalDamage += (int)scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction;
 				break;
 			}
-			case WeaponId::KalkaliskViscousAcid:
-			{
-				// Kalkalisk behavior
-				int decrement = data.damageDivisor * 256;
-				if (decrement < data.damage) {
-					data.finalDamage = data.finalDamage - decrement + (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction);
-				} else {
-					data.finalDamage = data.finalDamage + (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction);
-				}
-				break;
-			}
 			case WeaponId::DemiurgeGalacticWeaver:
 			{
 				// Demiurge - Worship
