@@ -361,14 +361,7 @@ namespace hooks {
 		if (weaponId == WeaponId::ArchitectDispersiveSalvo) {
 			divisor = globals.get_divider(bullet);
 		}
-
-		// 
-		else if (weaponId == WeaponId::KalkaliskViscousAcid) {
-			//			divisor = globals.get_multihit_count(bullet);
-			divisor = 1;
-			//			scbw::printf("Get divisor %d, bullet: %X",divisor,bullet);
-		}
-
+		
 		// 
 		else if (weaponId == WeaponId::AcidSpore
 			&& bullet->sourceUnit

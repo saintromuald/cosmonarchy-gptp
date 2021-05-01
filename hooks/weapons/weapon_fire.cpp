@@ -568,7 +568,7 @@ namespace hooks {
 				bEnd = true;
 			}
 		} else if (bullet->weaponType == WeaponId::KalkaliskViscousAcid || bullet->weaponType == WeaponId::PenumbraErebolShockCannon) {
-			//for missiles hitting targets on its way.
+			// for missiles hitting targets on its way
 			uint32 range = 128;
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
 				bullet->position.x - range, bullet->position.y - range,
