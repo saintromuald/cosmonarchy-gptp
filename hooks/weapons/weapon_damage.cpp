@@ -111,7 +111,7 @@ namespace hooks {
 		}
 
 		// Demiurge - Gods Made Flesh - target is impervious to damage
-		if (scbw::get_generic_timer(data.target, ValueId::GodsMadeFlesh) > 0) { // Power Overwhelming used to be here :wave_me_dad:
+		if (scbw::get_generic_timer(data.target, ValueId::GodsMadeFleshTimer) > 0) { // Power Overwhelming used to be here :wave_me_dad:
 			data.finalDamage = 0;
 			data.damageType = DamageType::Independent;
 		}
@@ -306,7 +306,7 @@ namespace hooks {
 				if (data.target->getCurrentHpInGame() <= (data.target->getMaxHpInGame() / 2)) {
 					// TODO: implement unit transfer
 					scbw::set_generic_value(data.target, ValueId::WorshipStack, 1);
-					scbw::set_generic_unit(data.target, ValueId::WorshipDemiurge, data.attacker);
+					scbw::set_generic_unit(data.target, ValueId::WorshipDemiurgeUnit, data.attacker);
 					scbw::set_generic_value(data.target, ValueId::WorshipOriginalPlayer, data.target->playerId);
 				}
 			}
@@ -709,12 +709,12 @@ namespace hooks {
 			// Preserve unit and start healing
 			data.finalDamage = 0;
 			data.target->setHp(256);
-			scbw::set_generic_timer(data.target, ValueId::EnthrallingAssaultHeal, 24 * 10);
+			scbw::set_generic_timer(data.target, ValueId::EnthrallingAssaultHealTimer, 24 * 10);
 			// Transfer unit ownership
-			CUnit* akistrokor = scbw::get_generic_unit(data.target, ValueId::AttachedAkistrokor);
+			CUnit* akistrokor = scbw::get_generic_unit(data.target, ValueId::AttachedAkistrokorUnit);
 			data.target->giveTo(akistrokor->playerId);
 			// Housekeeping
-			scbw::set_generic_unit(data.target, ValueId::AttachedAkistrokor, nullptr);
+			scbw::set_generic_unit(data.target, ValueId::AttachedAkistrokorUnit, nullptr);
 			scbw::set_generic_value(data.target, ValueId::InfestedByAkistrokor, 1);
 		}
 

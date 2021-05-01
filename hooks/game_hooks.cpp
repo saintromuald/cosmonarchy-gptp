@@ -927,7 +927,7 @@ namespace hooks {
 		*/
 
 		// Demiurge - Gods Made Flesh - kill unit when the effect ends
-		if (scbw::get_generic_timer(unit, ValueId::GodsMadeFlesh) == 1) {
+		if (scbw::get_generic_timer(unit, ValueId::GodsMadeFleshTimer) == 1) {
 			unit->remove();
 		}
 	}

@@ -420,7 +420,7 @@ namespace hooks {
 		addStatus(statuses, "Protective Instincts", scbw::get_generic_timer(unit, ValueId::ProtectiveInstinctsStatus) > 0, 1);
 		addStatus(statuses, "Deconstructing", scbw::get_generic_value(unit, ValueId::Deconstruction) > 0, 1);
 		addStatus(statuses, "Worshiping", scbw::get_generic_value(unit, ValueId::WorshipStack) > 0, 1);
-		addStatus(statuses, "Godlike", scbw::get_generic_value(unit, ValueId::GodsMadeFlesh) > 0, 1);
+		addStatus(statuses, "Godlike", scbw::get_generic_value(unit, ValueId::GodsMadeFleshTimer) > 0, 1);
 		addStatus(statuses, "Adaptive Amitosis", scbw::get_generic_value(unit, ValueId::AdaptiveAmitosis) > 0, 1);
 		addStatus(statuses, "Cutaneous Barrier", scbw::get_generic_value(unit, ValueId::CutaneousBarrier) > 0, 1);
 		addStatus(statuses, "Infested", scbw::get_generic_value(unit, ValueId::InfestedByAkistrokor) > 0, 1);
