@@ -72,7 +72,7 @@ namespace hooks {
 			//64450
 			if (unit->mainOrderState == 0) {
 				//plan vertical movement toward ground
-				helper::function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y - unit->sprite->images.tail->verticalOffset);
+				helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y - unit->sprite->images.tail->verticalOffset);
 				unit->mainOrderState = 1;
 			} else
 				if (unit->mainOrderState == 1) {
@@ -126,7 +126,7 @@ namespace hooks {
 							unit->building.landingTimer = 1;
 
 							//plan movement again after latest updates
-							helper::function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+							helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 
 							if (unit->sprite->images.tail->paletteType == PaletteType::RLE_SHADOW)
 								unit->sprite->images.tail->flags |= CImage_Flags::DontUpdate;

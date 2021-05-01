@@ -92,7 +92,7 @@ namespace hooks {
 							unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
 							unit->orderSimple(OrderId::ResetCollision1, false);
 							unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
-							if (helper::function_004EB9C0(unit,
+							if (helper::changeMovementTargetMoveTarget2(unit,
 									builtUnit->sprite->position.x,
 									builtUnit->sprite->position.y)
 								)
@@ -169,7 +169,7 @@ namespace hooks {
 
 						}
 
-						if (helper::function_004EB9C0(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0)
+						if (helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0)
 						{
 							unit->mainOrderState = 5;
 							jump_to_switch_1 = true;
@@ -454,7 +454,7 @@ namespace hooks {
 						unit->orderTarget.pt.y,
 						128
 					) &&
-					helper::function_00467030(unit)
+					helper::beginBuilding(unit)
 					) {
 
 					CUnit* builtUnit;
@@ -469,7 +469,7 @@ namespace hooks {
 						helper::function_00474760(unit, unit->orderQueueHead, OrderId::ResetCollision1);
 
 					if (unit->buildQueue[unit->buildQueueSlot] == UnitId::TerranReservoir)
-						builtUnit = helper::function_004678A0(unit, UnitId::TerranReservoir);
+						builtUnit = helper::beginGasBuilding(unit, UnitId::TerranReservoir);
 					else
 						builtUnit = helper::createUnit(
 							unit->buildQueue[unit->buildQueueSlot],

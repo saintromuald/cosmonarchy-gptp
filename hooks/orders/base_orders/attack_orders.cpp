@@ -816,7 +816,7 @@ namespace hooks {
 					) { //78E80
 
 					if (
-						helper::function_004EB9C0(				//return value is actually from 
+						helper::changeMovementTargetMoveTarget2(				//return value is actually from 
 							unit,						//SetMoveTarget_xy @ 0x004EB820
 							unit->orderTarget.pt.x,
 							unit->orderTarget.pt.y
