@@ -477,7 +477,7 @@ namespace hooks {
 						}
 						count++;
 					};
-					globals.add_multihit_empty_bullet(bullet, count);
+					globals.add_multihit_empty_bullet(bullet, count + 1);
 					for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
 						CUnit* target = unitsInSplash.getUnit(i);
 						if (target == nullptr) {
