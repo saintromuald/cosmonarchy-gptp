@@ -478,6 +478,9 @@ namespace hooks {
 					case 2:
 						supply = units_dat::SupplyProvided[UnitId::ZergOthstoleth] - units_dat::SupplyProvided[UnitId::ZergIroleth];
 						break;
+					case 3:
+						supply = units_dat::SupplyProvided[UnitId::ZergAlaszileth] - units_dat::SupplyProvided[UnitId::ZergOthstoleth];
+						break;
 					default:
 						break;
 				}
