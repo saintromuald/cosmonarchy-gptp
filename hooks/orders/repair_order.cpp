@@ -226,53 +226,111 @@ namespace hooks {
 		switch (orderId)
 		{
 		case OrderId::Repair1:
+		{
 			errorStringId = 884;
 			if (!target) {
-				goto LABEL_25;
+				if (bErrorFlag)
+				{
+					*(int16*)bErrorFlag = errorStringId;
+				}
+				return 0;
 			}
 			v11 = target->id;
 			errorStringId = 883;
 			if (!(target->status & UnitStatus::Completed)) {
-				goto LABEL_25;
+				if (bErrorFlag)
+				{
+					*(int16*)bErrorFlag = errorStringId;
+				}
+				return 0;
 			}
 			v12 = target->hitPoints;
 			v8 = helper::OFSUB(v12, units_dat::MaxHitPoints[v11]);
 			v7 = v12 - units_dat::MaxHitPoints[v11] < 0;
-			goto LABEL_7;
+			if (v7 ^ v8)
+			{
+				return 1;
+			}
+			if (bErrorFlag)
+			{
+				*(int16*)bErrorFlag = errorStringId;
+			}
+		}
 		case OrderId::Harvest1:
-			if (!target) {
-				goto LABEL_8;
+		{
+			if (!target)
+			{
+				return 1;
 			}
 			errorStringId = unit->getRace() + 893;
 			if (target->id == UnitId::ResourceVespeneGeyser) {
-				goto LABEL_25;
+				if (bErrorFlag)
+				{
+					*(int16*)bErrorFlag = errorStringId;
+				}
+				return 0;
 			}
 			v14 = helper::unitIsResource(target);
-			if (v14) {
-				goto LABEL_8;
+			if (v14)
+			{
+				return 0;
 			}
 			v15 = units_dat::BaseProperty[v13];
 			errorStringId = 892;
 			if (!(v15 & 0x2000))
-				goto LABEL_25;
+			{
+				if (bErrorFlag)
+				{
+					*(int16*)bErrorFlag = errorStringId;
+				}
+				return 0;
+			}
 			errorStringId = 896;
 			if (unit->playerId != target->playerId)
-				goto LABEL_25;
+			{
+				if (bErrorFlag)
+				{
+					*(int16*)bErrorFlag = errorStringId;
+				}
+				return 0;
+			}
 			return 1;
+		}
 		case OrderId::Pickup2:
+		{
 			errorStringId = 890;
 			if (!target || unit->playerId != target->playerId)
-				goto LABEL_25;
+			{
+				if (bErrorFlag)
+				{
+					*(int16*)bErrorFlag = errorStringId;
+				}
+				return 0;
+			}
 			if (helper::canEnterTransport(unit, target))
-				goto LABEL_8;
+			{
+				return 1;
+			}
 			if (units_dat::SpaceProvided[unit->id] >= units_dat::SpaceRequired[target->id])
+			{
 				errorStringId = 891;
-			goto LABEL_25;
+			}
+			if (bErrorFlag)
+			{
+				*(int16*)bErrorFlag = errorStringId;
+			}
+			return 0;
+		}
 		case OrderId::HealMove:
+		{
 			if (!target)
-				goto LABEL_8;
+			{
+				return 1;
+			}
 			if (!helper::techUseAllowed(unit, TechId::Healing, unit->playerId))
-				goto LABEL_27;
+			{
+				return 0;
+			}
 			errorStringId = 1325;
 			if (!(target->status & 6))
 			{
@@ -282,21 +340,22 @@ namespace hooks {
 					v9 = target->hitPoints;
 					v8 = helper::OFSUB(v9, units_dat::MaxHitPoints[v6]);
 					v7 = v9 - units_dat::MaxHitPoints[v6] < 0;
-				LABEL_7:
 					if (v7 ^ v8)
-						goto LABEL_8;
+					{
+						return 1;
+					}
 				}
 			}
-		LABEL_25:
 			if (bErrorFlag)
+			{
 				*(int16*)bErrorFlag = errorStringId;
-		LABEL_27:
-			result = 0;
-			break;
+			}
+			return 0;
+		}
 		default:
-		LABEL_8:
-			result = 1;
-			break;
+		{
+			return 1;
+		}
 		}
 		return result;
 	}
