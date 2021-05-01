@@ -76,11 +76,7 @@ namespace hooks {
 	void orders_Morph1(CUnit* unit) {
 		if (unit->mainOrderState == 0) {
 			if (scbw::isConventionalUnitMorphSource(unit->id, true, true)) {
-				if (!helper::hasSuppliesForUnit(
-					unit->buildQueue[unit->buildQueueSlot],
-					unit->playerId,
-					1
-				))
+				if (!helper::hasSuppliesForUnit( unit->buildQueue[unit->buildQueueSlot], unit->playerId, 1 ))
 				{
 					helper::refundAllQueueSlots(unit);
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
@@ -137,6 +133,7 @@ namespace hooks {
 							break;
 					}
 					if (!bStopThere) {
+						scbw::set_generic_value(unit, ValueId::PreMorphEnergy, unit->energy);
 						if (unit->id == UnitId::ProtossCantavis) {
 							helper::replaceUnitWithType(unit, UnitId::ProtossAugur);
 							unit->sprite->flags &= ~CSprite_Flags::IscriptCode;
@@ -174,73 +171,72 @@ namespace hooks {
 					}
 				}
 			}
-		} else
-			if (unit->mainOrderState == 1) {
-				// advance
-				if (helper::advanceRemainingBuildTime(unit)) {
-					auto origin = unit->eggOrigin;
-					auto anim = IscriptAnimation::SpecialState1;
-					/*
-					if (origin == UnitId::ZergLarva) {
-						anim = IscriptAnimation::GndAttkInit;
+		} else if (unit->mainOrderState == 1) {
+			// advance
+			if (helper::advanceRemainingBuildTime(unit)) {
+				auto origin = unit->eggOrigin;
+				auto anim = IscriptAnimation::SpecialState1;
+				/*
+				if (origin == UnitId::ZergLarva) {
+					anim = IscriptAnimation::GndAttkInit;
+				}
+				*/
+				unit->sprite->playIscriptAnim(anim, true);
+				unit->mainOrderState = 2;
+			}
+		}
+		else if (unit->mainOrderState == 2) {
+			if (unit->orderSignal & 4) {
+				unit->orderSignal -= 4;
+				auto origin = unit->eggOrigin;
+				switch (origin) {
+					case UnitId::ZergOvileth:
+						scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 1);
+						break;
+					case UnitId::ZergIroleth:
+						scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 2);
+						break;
+					case UnitId::ZergOthstoleth:
+						scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 3);
+						break;
+					default:
+						break;
+				}
+				helper::replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
+				unit->energy = scbw::get_generic_value(unit, ValueId::PreMorphEnergy);
+				if (unit->id == UnitId::ZergDroleth
+					|| unit->id == UnitId::ZergOvileth) {
+					helper::AI_TrainingUnit(unit, unit);
+				}
+				helper::playMorphingCompleteSound(unit);
+				unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
+				if (units_dat::ConstructionGraphic[unit->id] != 0) {
+					CImage* current_image;
+					helper::initBuilding(unit, 1);
+					current_image = unit->sprite->images.head;
+					while (current_image != nullptr) {
+						auto anim = IscriptAnimation::SpecialState1;
+						/*
+						if (origin == UnitId::ZergLarva) {
+							anim = IscriptAnimation::GndAttkInit;
+						}
+						*/
+						current_image->playIscriptAnim(anim);
+						current_image = current_image->link.next;
 					}
-					*/
-					unit->sprite->playIscriptAnim(anim, true);
-					unit->mainOrderState = 2;
+					unit->orderComputerCL(OrderId::ZergBirth);
+				} else { // 0045DF60
+					// update various stuff (set hp, set shield...) not finished on Morph
+					helper::updateUnitStatsFinishBuilding(unit);
+					helper::updateUnitStrength(unit);
+					auto origin = unit->eggOrigin;
+					if (unit->id == UnitId::ZergEgg && origin == UnitId::ZergLarva)
+					{
+						helper::orderNewUnitToRally(unit, unit->connectedUnit);
+					}
 				}
 			}
-			else
-				if (unit->mainOrderState == 2) {
-					if (unit->orderSignal & 4) {
-						unit->orderSignal -= 4;
-						auto origin = unit->eggOrigin;
-						switch (origin) {
-							case UnitId::ZergOvileth:
-								scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 1);
-								break;
-							case UnitId::ZergIroleth:
-								scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 2);
-								break;
-							case UnitId::ZergOthstoleth:
-								scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 3);
-								break;
-							default:
-								break;
-						}
-						helper::replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
-						if (unit->id == UnitId::ZergDroleth
-							|| unit->id == UnitId::ZergOvileth) {
-							helper::AI_TrainingUnit(unit, unit);
-						}
-						helper::playMorphingCompleteSound(unit);
-						unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
-						if (units_dat::ConstructionGraphic[unit->id] != 0) {
-							CImage* current_image;
-							helper::initBuilding(unit, 1);
-							current_image = unit->sprite->images.head;
-							while (current_image != nullptr) {
-								auto anim = IscriptAnimation::SpecialState1;
-								/*
-								if (origin == UnitId::ZergLarva) {
-									anim = IscriptAnimation::GndAttkInit;
-								}
-								*/
-								current_image->playIscriptAnim(anim);
-								current_image = current_image->link.next;
-							}
-							unit->orderComputerCL(OrderId::ZergBirth);
-						} else { // 0045DF60
-							// update various stuff (set hp, set shield...) not finished on Morph
-							helper::updateUnitStatsFinishBuilding(unit);
-							helper::updateUnitStrength(unit);
-							auto origin = unit->eggOrigin;
-							if (unit->id == UnitId::ZergEgg && origin == UnitId::ZergLarva)
-							{
-								helper::orderNewUnitToRally(unit, unit->connectedUnit);
-							}
-						}
-					}
-				}
+		}
 	}
 
 	// Check if @p unit can morph into @p morphUnitId.

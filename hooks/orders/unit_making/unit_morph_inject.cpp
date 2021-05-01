@@ -209,6 +209,7 @@ namespace {
 			unit->remove();
 		} else {
 			changeUnitType(unit, cancelChangeUnitId);
+			unit->energy = scbw::get_generic_value(unit, ValueId::PreMorphEnergy);
 			unit->remainingBuildTime = 0;
 			unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 			/*replaceSpriteImages(unit->sprite,
