@@ -40,9 +40,10 @@ namespace hooks {
 		return aUnitInBound;
 	}
 
+	// Hooked to clean up lardcode - Pr0nogo
+	// Seems to be double-called from Maelstrom, no idea why
 	char disableUnit(CUnit* unit) // 00492CC0
 	{
-		scbw::print("disable");
 		CUnit* subunit = unit->subunit;
 		if (subunit)
 		{
