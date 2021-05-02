@@ -262,6 +262,10 @@ void Globals::unitDeathHook(CUnit* unit) {
 }
 
 void ApplyIrradiate(CUnit* unit, u8 player, u32 time) {
+	if (time == 0)
+	{
+		return;
+	}
 	//if not already irradiated and not burrowed, add the irradiate overlay
 	if (unit->irradiateTimer == 0 && !(unit->status & UnitStatus::Burrowed)) {
 		u32 irradiateImageId = ImageId::IrradiateNew_Small + scbw::getOverlayOffset(unit->id);
@@ -271,7 +275,7 @@ void ApplyIrradiate(CUnit* unit, u8 player, u32 time) {
 		} else {
 			unitWithOverlay = unit;
 		}
-		(unitWithOverlay->sprite)->createTopOverlay(irradiateImageId, 0, 0, 0);
+		unitWithOverlay->sprite->createTopOverlay(irradiateImageId, 0, 0, 0);
 	}
 	unit->irradiatedBy = nullptr;
 	unit->irradiatePlayerId = player;
@@ -451,7 +455,7 @@ void Globals::frameHook() {
 						impact.position.x + impact.radius,
 						impact.position.y + impact.radius
 					).forEachInMatch(unitRangeCount(nullptr, 0, {}), [&](CUnit* unit) {
-						ApplyIrradiate(unit, impact.player, impact.currentTime / 24.0);
+						ApplyIrradiate(unit, impact.player, impact.currentTime * 0.042 * 8.0);
 					});
 					break;
 				}
