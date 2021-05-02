@@ -4,52 +4,52 @@
 namespace
 {
 
-    //note: acid spores management is normally done in
-    //function @ 004F42C0, jumped in at the end of this
-    //one, but the hook merge both
+	//note: acid spores management is normally done in
+	//function @ 004F42C0, jumped in at the end of this
+	//one, but the hook merge both
 
-    //Inject with jmpPatch()
-    void __declspec(naked) updateStatusEffectsWrapper()
-    {
+	//Inject with jmpPatch()
+	void __declspec(naked) updateStatusEffectsWrapper()
+	{
 
-        static CUnit* unit;
+		static CUnit* unit;
 
-        __asm {
-            MOV unit, EAX
-            PUSHAD
-        }
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
 
-        hooks::updateStatusEffects(unit);
+		hooks::updateStatusEffects(unit);
 
-        __asm {
-            POPAD
-            RETN
-        }
-    }
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 
-    void __declspec(naked) AiBurrower_Wrapper()
-    {
-        static CUnit* unit;
-        __asm {
-            MOV unit, EAX
-            PUSHAD
-        }
-        hooks::AI_Burrower(unit);
-        __asm {
-            POPAD
-            RETN
-        }
-    }
+	void __declspec(naked) AiBurrower_Wrapper()
+	{
+		static CUnit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		hooks::AI_Burrower(unit);
+		__asm {
+			POPAD
+			RETN
+		}
+	}
 } //unnamed namespace
 
 namespace hooks
 {
 
-    void injectUpdateStatusEffects()
-    {
-        jmpPatch(updateStatusEffectsWrapper, 0x00492F70, 5);
+	void injectUpdateStatusEffects()
+	{
+		jmpPatch(updateStatusEffectsWrapper, 0x00492F70, 5);
 
-        jmpPatch(AiBurrower_Wrapper, 0x004A1340, 4);
-    }
+		jmpPatch(AiBurrower_Wrapper, 0x004A1340, 4);
+	}
 
 } //hooks

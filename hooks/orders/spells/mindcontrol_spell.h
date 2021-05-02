@@ -4,8 +4,8 @@
 namespace hooks
 {
 
-    void ordersCastMindControl(CUnit* unit);	//004F6950
+	void ordersCastMindControl(CUnit* unit);	//004F6950
 
-    void injectMindControlSpellHook();
+	void injectMindControlSpellHook();
 
 } //hooks

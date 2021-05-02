@@ -13,6 +13,6 @@ extern unk_t* SFXDAT_Unknown;
 
 namespace hooks
 {
-    void sfxExtenderGetCount();
-    void newSfxExtender();
+	void sfxExtenderGetCount();
+	void newSfxExtender();
 }

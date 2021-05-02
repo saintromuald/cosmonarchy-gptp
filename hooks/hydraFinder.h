@@ -6,30 +6,30 @@
 
 namespace CFlags
 {
-    enum
-    {
-        Invincible = 1 << 0,
-        NoAir = 1 << 1,
-        NoGround = 1 << 2,
-        NoMechanical = 1 << 3,
-        NoOrganic = 1 << 4,
-        NoBuilding = 1 << 5,
-        OnlyOrganic = 1 << 6,
-        OnlyMechanic = 1 << 7,
-        Enemy = 1 << 8,
-        Ally = 1 << 9,
-        IncludingSelf = 1 << 10,
-        FrontalArc = 1 << 11,
-        Spellcaster = 1 << 12,
-        HasEnergy = 1 << 13,
-        NotSelf = 1 << 14,
-        Shielded = 1 << 15,
-        Enabled = 1 << 16,
-        Powered = 1 << 17,
-        Completed = 1 << 18,
-        NoTrap = 1 << 19,
-        NoHallucination = 1 << 20,
-    };
+	enum
+	{
+		Invincible = 1 << 0,
+		NoAir = 1 << 1,
+		NoGround = 1 << 2,
+		NoMechanical = 1 << 3,
+		NoOrganic = 1 << 4,
+		NoBuilding = 1 << 5,
+		OnlyOrganic = 1 << 6,
+		OnlyMechanic = 1 << 7,
+		Enemy = 1 << 8,
+		Ally = 1 << 9,
+		IncludingSelf = 1 << 10,
+		FrontalArc = 1 << 11,
+		Spellcaster = 1 << 12,
+		HasEnergy = 1 << 13,
+		NotSelf = 1 << 14,
+		Shielded = 1 << 15,
+		Enabled = 1 << 16,
+		Powered = 1 << 17,
+		Completed = 1 << 18,
+		NoTrap = 1 << 19,
+		NoHallucination = 1 << 20,
+	};
 }
 
 scbw::UnitFinderCallbackMatchInterface unitRangeCount(CUnit* center, u32 context, std::vector<u16> allowedUnitIds);
@@ -41,15 +41,15 @@ u32 hydraUnitCount(CUnit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u1
 template<typename hydraLoop>
 inline void hydraFinderLoop(CUnit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds, hydraLoop l)
 {
-    auto condition = unitRangeCount(unitPtr, flags, unitIds);
-    scbw::UnitFinder unitsInSplash(pos.x - r, pos.y - r,
-        pos.x + r, pos.y + r);
-    for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
-    {
-        auto unit = unitsInSplash.getUnit(i);
-        if (condition(unit))
-        {
-            l(unit);
-        }
-    }
+	auto condition = unitRangeCount(unitPtr, flags, unitIds);
+	scbw::UnitFinder unitsInSplash(pos.x - r, pos.y - r,
+		pos.x + r, pos.y + r);
+	for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
+	{
+		auto unit = unitsInSplash.getUnit(i);
+		if (condition(unit))
+		{
+			l(unit);
+		}
+	}
 }

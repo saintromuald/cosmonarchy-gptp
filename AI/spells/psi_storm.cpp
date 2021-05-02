@@ -6,45 +6,45 @@
 namespace AI
 {
 
-    CUnit* findBestPsiStormTarget(CUnit* caster, bool isUnderAttack)
-    {
+	CUnit* findBestPsiStormTarget(CUnit* caster, bool isUnderAttack)
+	{
 
-        s32 bounds;
+		s32 bounds;
 
-        if (isUnderAttack)
-            bounds = 32 * 9;
-        else if (isUmsMode(caster->playerId))
-            bounds = 32 * 64;
-        else
-            bounds = 32 * 32;
+		if (isUnderAttack)
+			bounds = 32 * 9;
+		else if (isUmsMode(caster->playerId))
+			bounds = 32 * 64;
+		else
+			bounds = 32 * 32;
 
 
-        return scbw::UnitFinder::getNearestTarget(
-            caster->getX() - bounds,
-            caster->getY() - bounds,
-            caster->getX() + bounds,
-            caster->getY() + bounds,
-            caster,
-            [&](CUnit* target)
-        {
+		return scbw::UnitFinder::getNearestTarget(
+			caster->getX() - bounds,
+			caster->getY() - bounds,
+			caster->getX() + bounds,
+			caster->getY() + bounds,
+			caster,
+			[&](CUnit* target)
+		{
 
-            if (!isTargetWorthHitting(target, caster))
-                return false;
+			if (!isTargetWorthHitting(target, caster))
+				return false;
 
-            if (!scbw::canWeaponTargetUnit(WeaponId::PsiStorm, target, caster))
-                return false;
+			if (!scbw::canWeaponTargetUnit(WeaponId::PsiStorm, target, caster))
+				return false;
 
-            const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::PsiStorm);
-            if (!isUnderAttack && totalEnemyLife < 250)
-                return false;
+			const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::PsiStorm);
+			if (!isUnderAttack && totalEnemyLife < 250)
+				return false;
 
-            const s32 totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::PsiStorm);
-            if (totalAllyLife * 2 >= totalEnemyLife)
-                return false;
+			const s32 totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::PsiStorm);
+			if (totalAllyLife * 2 >= totalEnemyLife)
+				return false;
 
-            return true;
+			return true;
 
-        });
-    }
+		});
+	}
 
 } //AI

@@ -7,14 +7,14 @@
 
 struct COrder
 {
-    /*00*/  COrder* prev;
-    /*04*/  COrder* next;
-    /*08*/  u16  orderId;
-    /*0A*/  u16  unitId;
-    /*0C*/  Target  target;
-    /*0C*/			/*target.pt.x*/
-    /*0E*/			/*target.pt.y*/
-    /*10*/			/*target.unit*/
+	/*00*/  COrder* prev;
+	/*04*/  COrder* next;
+	/*08*/  u16  orderId;
+	/*0A*/  u16  unitId;
+	/*0C*/  Target  target;
+	/*0C*/			/*target.pt.x*/
+	/*0E*/			/*target.pt.y*/
+	/*10*/			/*target.unit*/
 };
 
 C_ASSERT(sizeof(COrder) == 20);

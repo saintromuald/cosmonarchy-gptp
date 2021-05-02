@@ -3,8 +3,8 @@
 
 namespace hooks
 {
-    void injectSelectionExtenderHooks()
-    {
+	void injectSelectionExtenderHooks()
+	{
 
-    }
+	}
 }

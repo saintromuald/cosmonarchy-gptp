@@ -20,72 +20,72 @@ static inline void trim(std::string& s);
 bool last_char(std::string s, char c);
 class Extender
 {
-    virtual std::vector<u32> get_address_list() = 0;
-    virtual std::vector<u32> get_size_list() = 0;
+	virtual std::vector<u32> get_address_list() = 0;
+	virtual std::vector<u32> get_size_list() = 0;
 public:
-    virtual void extend() = 0;
-    virtual s32 identifier(std::string str) = 0;
-    void uplink(std::vector<u32> address_list, u32 address);
-    s32 get_file_entry_count(char* name, u32 entries);
-    void parse_set(char* name, u32 default_max_limit, u32 entries);
-    virtual u32 parse_entry_value(std::string str, s32 id) = 0;
-    virtual bool is_string_id(s32 id) = 0;
-    virtual void set_value(s32 entry, s32 id, std::string str) = 0;
-    virtual void set_value(s32 entry, s32 id, s32 str) = 0;
-    virtual void set_extended_data() = 0;
+	virtual void extend() = 0;
+	virtual s32 identifier(std::string str) = 0;
+	void uplink(std::vector<u32> address_list, u32 address);
+	s32 get_file_entry_count(char* name, u32 entries);
+	void parse_set(char* name, u32 default_max_limit, u32 entries);
+	virtual u32 parse_entry_value(std::string str, s32 id) = 0;
+	virtual bool is_string_id(s32 id) = 0;
+	virtual void set_value(s32 entry, s32 id, std::string str) = 0;
+	virtual void set_value(s32 entry, s32 id, s32 str) = 0;
+	virtual void set_extended_data() = 0;
 };
 
 
 namespace hooks
 {
-    void injectLimitHooks();
+	void injectLimitHooks();
 }
 namespace Reg
 {
-    enum
-    {
-        _EAX = 1,
-        _EBX,
-        _ECX,
-        _EDX,
-        _ESI,
-        _EDI,
+	enum
+	{
+		_EAX = 1,
+		_EBX,
+		_ECX,
+		_EDX,
+		_ESI,
+		_EDI,
 
-        L_AX,
-        L_BX,
-        L_CX,
-        L_DX,
-        L_SI,
-        L_DI,
-        __NOP,
-    };
+		L_AX,
+		L_BX,
+		L_CX,
+		L_DX,
+		L_SI,
+		L_DI,
+		__NOP,
+	};
 }
 namespace TblPatchType
 {
-    enum
-    {
-        CmpPatch = 1,
-        PtrWriting,
-        PtrMathWriting,
-        RegisterPointerCmp,
-        RegisterPointerMov,
-        RegisterCmp,
-        RegisterWriting,
-        NopPatch,
-        AddPatch,
-        //DecPatch,
-        JmpPatch,
+	enum
+	{
+		CmpPatch = 1,
+		PtrWriting,
+		PtrMathWriting,
+		RegisterPointerCmp,
+		RegisterPointerMov,
+		RegisterCmp,
+		RegisterWriting,
+		NopPatch,
+		AddPatch,
+		//DecPatch,
+		JmpPatch,
 
 
-    };
+	};
 }
 namespace Jmp
 {
-    enum
-    {
-        JA,
-        JBE,
-    };
+	enum
+	{
+		JA,
+		JBE,
+	};
 }
 
 static u32 fakeExtFlingyIds[228];

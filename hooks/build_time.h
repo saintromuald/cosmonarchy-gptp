@@ -3,7 +3,7 @@
 
 namespace hooks
 {
-    s32 decrementRemainingBuildTime(CUnit* unit);
+	s32 decrementRemainingBuildTime(CUnit* unit);
 
-    void injectBuildTimeHooks();
+	void injectBuildTimeHooks();
 }

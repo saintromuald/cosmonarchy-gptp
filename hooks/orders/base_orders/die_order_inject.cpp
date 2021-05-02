@@ -5,40 +5,40 @@
 namespace
 {
 
-    void __declspec(naked) orders_DieWrapper()
-    {
+	void __declspec(naked) orders_DieWrapper()
+	{
 
-        static CUnit* unit;
+		static CUnit* unit;
 
-        __asm {
-            PUSH EBP
-            MOV EBP, ESP
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
 
-            MOV EAX, [EBP + 0x08]
-            MOV unit, EAX
+			MOV EAX, [EBP + 0x08]
+			MOV unit, EAX
 
-            PUSHAD
-        }
+			PUSHAD
+		}
 
-        hooks::orders_Die(unit);
+		hooks::orders_Die(unit);
 
-        __asm {
-            POPAD
-            POP EBP
-            RETN 4
-        }
+		__asm {
+			POPAD
+			POP EBP
+			RETN 4
+		}
 
 
-    }
+	}
 
 }//unnamed namespace
 
 namespace hooks
 {
 
-    void injectDieOrderHook()
-    {
-        jmpPatch(orders_DieWrapper, 0x00479480, 2);
-    }
+	void injectDieOrderHook()
+	{
+		jmpPatch(orders_DieWrapper, 0x00479480, 2);
+	}
 
 } //hooks

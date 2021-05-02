@@ -4,5 +4,5 @@
 namespace hooks
 {
 
-    void injectPlayerColorHooks();
+	void injectPlayerColorHooks();
 }

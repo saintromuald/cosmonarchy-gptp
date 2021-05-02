@@ -5,5 +5,5 @@
 #include "hook_tools.h"
 namespace hooks
 {
-    void unitsDatWrapperPatches();
+	void unitsDatWrapperPatches();
 }

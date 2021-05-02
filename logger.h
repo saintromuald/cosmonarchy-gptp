@@ -9,41 +9,41 @@
 
 namespace GPTP
 {
-    class GameLogger
-    {
-    public:
-        /// Writes a "game start" message to the log file and resets the internal
-        /// frame timer.
-        bool startGame();
-        /// Writes a "game end" message to the log file.
-        bool endGame();
-        template <typename T>
-        GameLogger& operator<<(const T& t);
-        GameLogger& operator<<(std::ostream& (*func)(std::ostream&));
-    private:
-        bool checkLogFile();
-        bool updateFrame();
-        std::ofstream logFile;
-        s32 lastUpdatedFrame;
-    };
-    extern bool doLogging;
-    extern GameLogger logger;
+	class GameLogger
+	{
+	public:
+		/// Writes a "game start" message to the log file and resets the internal
+		/// frame timer.
+		bool startGame();
+		/// Writes a "game end" message to the log file.
+		bool endGame();
+		template <typename T>
+		GameLogger& operator<<(const T& t);
+		GameLogger& operator<<(std::ostream& (*func)(std::ostream&));
+	private:
+		bool checkLogFile();
+		bool updateFrame();
+		std::ofstream logFile;
+		s32 lastUpdatedFrame;
+	};
+	extern bool doLogging;
+	extern GameLogger logger;
 }
 
 //-------- Template member function definitions --------//
 
 namespace GPTP
 {
-    template <typename T>
-    GameLogger& GameLogger::operator<<(const T& t)
-    {
-        if (doLogging)
-        {
-            if (checkLogFile())
-                if (updateFrame())
-                    logFile << t;
-        }
-        return *this;
-    }
+	template <typename T>
+	GameLogger& GameLogger::operator<<(const T& t)
+	{
+		if (doLogging)
+		{
+			if (checkLogFile())
+				if (updateFrame())
+					logFile << t;
+		}
+		return *this;
+	}
 }
 
