@@ -620,16 +620,6 @@ namespace hooks
                     }
                     break;
                 }
-                case WeaponId::NuclearMissile:
-                {
-                    // Nuclear Missile - Ground Zero
-                    if (data.target->hitPoints > data.finalDamage && irradiateTarget(data.target))
-                    {
-                        hooks::IrradiateHit(data.attacker, data.target->position, data.attacker->playerId);
-                        // Create radiation fields here - thinking a set of 3 or 4, offset in some sort of pattern
-                    }
-                    break;
-                }
                 case WeaponId::SeraphObservance:
                 {
                     // Observance - Science Vessel ability
