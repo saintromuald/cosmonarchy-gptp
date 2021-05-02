@@ -1293,4 +1293,29 @@ LABEL_22:
         }
         return 0;
     }
+
+    // Hooked to help with AI recloaking units after the cloak rewrite - Pr0nogo
+    void AI_orderUnitCloaking(CUnit* unit) // 0043B970
+    {
+        return;
+        /*
+        s32 unitStatus = unit->status;
+        if (!(unitStatus & 0x100))
+        {
+            s8 techId;
+            if (unit->id == UnitId::TerranEidolon)
+            {
+                techId = TechId::PersonnelCloaking;
+            }
+            else if (unit->id == UnitId::TerranWraith)
+            {
+                techId = TechId::CloakingField;
+            }
+            if (helper::techUseAllowed(unit, techId, unit->playerId) == 1)
+            {
+                helper::applyCloakingOrder(unit);
+            }
+        }
+        */
+    }
 }

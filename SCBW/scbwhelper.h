@@ -842,6 +842,7 @@ namespace helper
     s32 AI_AddCostToNeeds(s32 a1, s32 a2, s32 a3);
     s32 AI_AddSpendingRequest(s16 a1, s32 a2, char a3, char a4, void* a5);
     bool isAIAllowedToBuild(s32 a1, s32 a2);
+    void applyCloakingOrder(CUnit* unit);                                                               // 00491B30
 
     //// use_tech
     const void issueTriTargetOrder(u8 order1, u8 order2, u8 order3);                                     // 0048CAF0

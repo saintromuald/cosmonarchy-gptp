@@ -8155,4 +8155,17 @@ namespace helper
         }
         return result;
     }
+
+    // For AI_orderUnitCloaking
+
+    void applyCloakingOrder(CUnit* unit)
+    {
+        const u32 Func_applyCloakingOrder = 0x00491B30;
+        __asm {
+            PUSHAD
+            MOV EAX, unit
+            CALL Func_applyCloakingOrder
+            POPAD
+        }
+    }
 }
