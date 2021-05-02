@@ -381,6 +381,9 @@ SCBW_DATA(s32*,	lastBulletIndex,					0x0064DEA8);
 SCBW_DATA(s32*,	lastInternalErr,					0x0066FF60);
 SCBW_DATA(s16*, ordersRequirementTree,				0x00514CF8);
 
+// For larva_creep_spawn
+SCBW_DATA(s16*, larvaCounter,						0x0067D3F8);
+
 //////////////////////////////////////////////////////////////// @}
 
 /// @name *.DAT File Data

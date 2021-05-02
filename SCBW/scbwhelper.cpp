@@ -6021,19 +6021,6 @@ namespace helper {
 		}
 	}
 
-	u8 function_492CC0_ret(CUnit* unit) {
-		const u32 Func_disableUnit = 0x00492CC0;
-		u32 result;
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_disableUnit
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
 	// Identical to setAllImageGroupFlagsPal11 @ 0x00497430;
 	void setAllImageGroupFlagsPal11(CSprite* sprite) {
 		for (

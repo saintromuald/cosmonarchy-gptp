@@ -23,7 +23,7 @@ namespace hooks {
 	void DisruptionWebHit(u32 attackingPlayerId, s32 x, s32 y, CBullet* bullet);		// 004F6AF0
 	CUnit* createDisruptionWeb(u32 playerId, s32 x, s32 y);
 	s32 ensnareProc(CUnit* target, CUnit* attacker);									// 004F46C0
-	void createScanner(CUnit* a1);														// 00464E40
+	void createScanner(CUnit* unit);													// 00464E40
 	u8 stasisFieldOverlay(CUnit* a1, u8 a2);
 	char disableUnit(CUnit* unit);														// 00492CC0
 	bool maelstromProc(CUnit* target, CUnit* source);									// 004F6760

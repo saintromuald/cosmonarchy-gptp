@@ -683,8 +683,7 @@ namespace helper {
     CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);									        // 00488210
     u32 GetUnitBulletDamage(CBullet* bullet, CUnit* target);													// 0048ACD0
     u32 getSpellStatString(CUnit* target, u32 techId, u8 playerId);									            // 00491E80
-    void disableUnitFunc(CUnit* unit);																			    // 00492CC0
-    u8 function_492CC0_ret(CUnit* unit);																		// 00492CC0
+    void disableUnitFunc(CUnit* unit);																			// 00492CC0
     void setAllImageGroupFlagsPal11(CSprite* sprite);															// 00497430
     void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attackingPlayerId, Box16* coords);				    // 004E8280
     void IterateUnitsAtLocationTargetProc_Ensnare(CUnit* attacker, Box16* coords);								// 004E8280
