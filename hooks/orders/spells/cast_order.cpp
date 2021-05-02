@@ -18,7 +18,6 @@ namespace hooks {
 					pt = unit->orderTarget.unit->position;
 					unit->orderTarget.unit = nullptr;
 				}
-				//scbw::printf("Fire skyfall %d %d -> %d %d",unit->getX(),unit->getY(),pt.x,pt.y);
 				scbw::set_generic_value(unit, ValueId::SkyfallX, unit->orderTarget.pt.x);
 				scbw::set_generic_value(unit, ValueId::SkyfallY, unit->orderTarget.pt.y);
 			}
