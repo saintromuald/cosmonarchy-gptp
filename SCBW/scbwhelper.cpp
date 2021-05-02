@@ -5206,7 +5206,7 @@ namespace helper {
 
 	// for airSplash
 
-	CUnit* findBestUnit(Box16* radius, s32 bullet, s32(__fastcall* func)(s32, s32)) {
+	CUnit* findBestUnit(Box16* radius, s32 bullet, s32(*func)(CUnit*, CBullet*)) {
 		const u32 Func_findBestUnit = 0x004E8830;
 		static CUnit* result;
 		__asm {
@@ -7425,7 +7425,7 @@ namespace helper {
 		__asm {
 			PUSHAD
 			MOV EDX, bullet
-			MOV ECX, unit
+			MOV ECX, target
 			CALL Func_lurkerSplashProc
 			MOV result, EAX
 			POPAD

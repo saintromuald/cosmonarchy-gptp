@@ -586,7 +586,7 @@ namespace helper {
     void Ai_UnitWasHit(u32 main_target_reaction, u32 dont_call_help, CUnit* attacker, CUnit* target);
 
     // for airSplash
-    CUnit* findBestUnit(Box16* radius, s32 bullet, s32(__fastcall* func)(s32, s32));										// 004E8830
+    CUnit* findBestUnit(Box16* radius, s32 bullet, s32(*func)(CUnit*, CBullet*));										// 004E8830
     s32 splashFunc(CBullet* bullet, CUnit* unit);																					// 0048B570
 
     //// mindcontrol_spell

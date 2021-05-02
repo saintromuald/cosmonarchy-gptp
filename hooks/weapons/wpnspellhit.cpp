@@ -62,7 +62,7 @@ namespace hooks {
 		CUnit* v23;
 		CUnit* v27;
 		s16 v31;
-		Box16* coords;
+		Box16 coords;
 
 		weaponId = bullet->weaponType;
 		switch (weapons_dat::ExplosionType[weaponId])
@@ -255,17 +255,16 @@ namespace hooks {
 			}
 			break;
 		case WeaponEffect::SplashAir:
-			outerSplash2 = weapons_dat::OuterSplashRadius[weaponId];
-			bulletSprite2 = bullet->sprite;
-			v12 = bulletSprite2->position.x;
-			LOWORD(bulletSprite2) = bulletSprite2->position.y;
+			bulletSprite = bullet->sprite;
+			bulletX = bulletSprite->position.x;
+			bulletY = bulletSprite->position.y;
+			outerSplash = weapons_dat::OuterSplashRadius[weaponId];
+			coords.x = bulletX - outerSplash;
+			coords.y = bulletY - outerSplash;
+			coords.w = outerSplash + bulletX;
+			coords.h = outerSplash + bulletY;
 			*airSplashListCount = 0;
-			coords.x = v12 - outerSplash2;
-			coords.y = (s16)bulletSprite2 - outerSplash2;
-			coords.w = outerSplash2 + v12;
-			coords.h = outerSplash2 + (s16)bulletSprite2;
-			helper::findBestUnit(&coords, (s32)bullet, (s32(__fastcall*)(s32, s32))AirSplashProc);
-			v10 = *airSplashListCount;
+			helper::findBestUnit(&coords, (s32)bullet, helper::airSplashProc);
 			if (*airSplashListCount)
 			{
 				if (*airSplashListCount == 1)
@@ -274,11 +273,11 @@ namespace hooks {
 				}
 				else
 				{
-					random = helper::RandomizeShort(58) % v10;
+					random = helper::RandomizeShort(58) % *airSplashListCount;
 				}
 				helper::weaponBulletShot(airSplashList[random], bullet, 1);
 			}
-			helper::findBestUnit(&coords, (s32)bullet, (s32(__fastcall*)(s32, s32))AirSplashProc2);
+			helper::findBestUnit(&coords, (s32)bullet, helper::airSplashProc2);
 			break;
 		default:
 			assert(false);
