@@ -361,8 +361,10 @@ namespace hooks {
 				&& scbw::get_generic_value(unit, ValueId::AdaptiveAmitosis) > 0) {
 				auto range = weapons_dat::MaxRange[weaponId];
 				auto a = scbw::UnitFinder::getNearestTarget(
-					unit->getX() - range, unit->getY() - range,
-					unit->getX() + range, unit->getY() + range,
+					unit->getX() - range,
+					unit->getY() - range,
+					unit->getX() + range,
+					unit->getY() + range,
 					unit, [&](CUnit* target) {
 					if (target == unit) {
 						return false;
