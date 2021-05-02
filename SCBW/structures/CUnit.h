@@ -176,6 +176,7 @@ struct CUnit : public CUnitLayout {
 	void setHp(s32 hitPoints);
 	void heal(s32 hitPoints, CUnit* source = nullptr);
 	void healShields(s32 shields, CUnit* source = nullptr);
+	void healEnergy(s32 energy, CUnit* source = nullptr);
 
 	/// Deals damage to this unit, using a specific weapons.dat ID.
 	void damageWith(

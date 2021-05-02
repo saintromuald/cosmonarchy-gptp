@@ -155,8 +155,8 @@ void unitDestructorSpecialHook(CUnit* unit)
 			if (!scbw::isAlliedTo(unit->playerId, target->playerId)) {
 				return;
 			}
-			target->energy += ApostleLastBreathEnergyGain;
-			target->sprite->createUnderlay(425);
+			target->healEnergy(ApostleLastBreathEnergyGain);
+			target->sprite->createUnderlay(ImageId::SmallExplosion_Unused);
 		});
 	}
 

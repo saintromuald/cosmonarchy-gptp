@@ -418,11 +418,19 @@ void CUnit::healShields(s32 shields, CUnit* source) {
 	}
 }
 
-const u32 Func_DoWeaponDamage = 0x00479930; //Note: hooked in hooks/weapons/weapon_damage files
+void CUnit::healEnergy(s32 energy, CUnit* source) {
+	assert(this);
+	if (this->energy == helper::getUnitMaxEnergy(this) * 256) {
+		return;
+	}
+	this->energy = std::min(this->energy + energy, helper::getUnitMaxEnergy(this) * 256);
+}
+
+const u32 Func_DoWeaponDamage = 0x00479930; // Note: hooked in hooks/weapons/weapon_damage files
 void CUnit::damageWith(u8 weaponId, s32 damage, CUnit* attacker, u8 attackingPlayer, s8 direction, u8 damageDivisor) {
 	assert(this);
 	assert(weaponId < WEAPON_TYPE_COUNT);
-	//	assert(damageDivisor != 0);
+//	assert(damageDivisor != 0);
 
 	u32 weaponId_ = weaponId;
 	s32 attackingPlayer_ = attackingPlayer;
