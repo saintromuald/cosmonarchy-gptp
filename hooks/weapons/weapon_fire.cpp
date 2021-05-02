@@ -270,11 +270,6 @@ namespace hooks
                 {
                     std::set<CUnit*> monoceros;
                     monoceros.insert(unit->orderTarget.unit);
-                    helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
-                    if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0)
-                    {
-                        scbw::doDeconstructionDamage(unit, weaponId);
-                    }
                     auto old = unit->orderTarget.unit;
                     for (s32 i = 0; i < 4; i++)
                     {
@@ -311,7 +306,7 @@ namespace hooks
                         auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
                             newTarget->getX(), newTarget->getY());
                         helper::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
-                        if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0)
+                        if (scbw::get_generic_value(unit, ValueId::Deconstruction))
                         {
                             scbw::doDeconstructionDamage(unit, weaponId, false);
                         }

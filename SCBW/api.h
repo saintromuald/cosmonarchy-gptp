@@ -415,4 +415,5 @@ namespace scbw
     void decloakProc(CUnit* unit);
     bool isDecloakable(CUnit* unit);
     bool unitCanNuke(CUnit* unit);
+    bool unitIsTrap(CUnit* unit);
 }

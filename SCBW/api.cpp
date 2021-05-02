@@ -1765,4 +1765,9 @@ namespace scbw
     {
         return (unit->id == UnitId::TerranEidolon || unit->id == UnitId::TerranSeraph);
     }
+
+    bool unitIsTrap(CUnit* unit)
+    {
+        return (unit->id == UnitId::TerranSpiderMine || unit->id == UnitId::TerranLobotomyMine);
+    }
 }

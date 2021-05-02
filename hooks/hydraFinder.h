@@ -27,6 +27,8 @@ namespace CFlags
         Enabled = 1 << 16,
         Powered = 1 << 17,
         Completed = 1 << 18,
+        NoTrap = 1 << 19,
+        NoHallucination = 1 << 20,
     };
 }
 

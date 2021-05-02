@@ -533,7 +533,7 @@ namespace hooks
                 // Cast Lazarus Agent						
                 unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256);
                 auto r = 4 * 32;
-                auto n = unitRangeCount(unit, CFlags::NoBuilding | CFlags::Ally | CFlags::IncludingSelf, {});
+                auto n = unitRangeCount(unit, CFlags::NoBuilding | CFlags::Ally | CFlags::IncludingSelf | CFlags::NoTrap | CFlags::NoHallucination, {});
                 scbw::UnitFinder unitsInSplash(unit->getX() - r, unit->getY() - r,
                     unit->position.x + r, unit->position.y + r);
                 for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)

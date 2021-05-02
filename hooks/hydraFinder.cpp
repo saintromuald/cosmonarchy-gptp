@@ -119,6 +119,20 @@ scbw::UnitFinderCallbackMatchInterface unitRangeCount(CUnit* center, u32 context
                 return false;
             }
         }
+        if (context & CFlags::NoTrap)
+        {
+            if (scbw::unitIsTrap(unit))
+            {
+                return false;
+            }
+        }
+        if (context & CFlags::NoHallucination)
+        {
+            if (unit->status & UnitStatus::IsHallucination)
+            {
+                return false;
+            }
+        }
         if (center)
         {
             if (context & CFlags::FrontalArc)

@@ -635,7 +635,7 @@ namespace hooks
         jmpPatch(stasisFieldOverlayWrapper, 0x004F67B0, 4);
         jmpPatch(disableUnit_Wrapper, 0x00492CC0, 2);
         jmpPatch(maelstromProc_Wrapper, 0x004F6760, 3);
-        //		jmpPatch(iterateUnitsAtLocationTargetProc_Wrapper, 0x004F6760, 0);
-        jmpPatch(CBulletDamage_Wrapper, 0x0048B770, 1);
+//      jmpPatch(iterateUnitsAtLocationTargetProc_Wrapper, 0x004F6760, 0);
+//      jmpPatch(CBulletDamage_Wrapper, 0x0048B770, 1);
     }
 }
