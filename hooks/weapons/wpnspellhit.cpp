@@ -39,7 +39,7 @@ namespace hooks {
 	}
 
 	// Hooked to rework Irradiate - Pr0nogo
-	void __stdcall CBulletDamage(CBullet* bullet) // 0048B770 | 1 nop
+	void __stdcall CBulletDamage(CBullet* bullet) // 0048B770
 	{
 		s32 weaponId;
 		CUnit* target;
@@ -47,29 +47,22 @@ namespace hooks {
 		char bounces;
 		s32 weaponId2;
 		CUnit* bulletSource;
-		s16 outerSplash2;
-		CSprite* bulletSprite2;
-		s16 v12;
-		int random;
+		s32 random;
 		CSprite* bulletSprite;
-		s32(__fastcall * v16)(s32, s32);
 		s16 bulletX;
 		s16 bulletY;
 		s16 outerSplash;
-		CUnit* v20;
-		s16 x;
-		CUnit* v22;
-		CUnit* v23;
-		CUnit* v27;
-		s16 v31;
 		Box16 coords;
 
 		weaponId = bullet->weaponType;
 		switch (weapons_dat::ExplosionType[weaponId])
 		{
 		case WeaponEffect::None:
+		{
 			return;
+		}
 		case WeaponEffect::NormalHit:
+		{
 			target = bullet->attackTarget.unit;
 			if (target)
 			{
@@ -107,9 +100,11 @@ namespace hooks {
 				}
 			}
 			break;
+		}
 		case WeaponEffect::SplashRadial:
 		case WeaponEffect::SplashEnemy:
 		case WeaponEffect::NuclearMissile:
+		{
 			bulletSprite = bullet->sprite;
 			bulletX = bulletSprite->position.x;
 			bulletY = bulletSprite->position.y;
@@ -127,7 +122,9 @@ namespace hooks {
 				helper::findBestUnit(&coords, (s32)bullet, helper::groundSplashProc);
 			}
 			break;
+		}
 		case WeaponEffect::Lockdown:
+		{
 			if (bullet->attackTarget.unit)
 			{
 				if (!helper::unitHasNoMainOrderType(bullet->attackTarget.unit))
@@ -136,7 +133,9 @@ namespace hooks {
 				}
 			}
 			break;
+		}
 		case WeaponEffect::Parasite:
+		{
 			if (bullet->attackTarget.unit)
 			{
 				if (!helper::unitHasNoMainOrderType(bullet->attackTarget.unit))
@@ -151,7 +150,9 @@ namespace hooks {
 				}
 			}
 			break;
+		}
 		case WeaponEffect::Broodlings:
+		{
 			if (bullet->sourceUnit)
 			{
 				{
@@ -163,29 +164,43 @@ namespace hooks {
 				}
 			}
 			break;
+		}
 		case WeaponEffect::EmpShockwave:
+		{
 			EMPShockwaveHit(bullet->sourceUnit, bullet->sprite->position.y, bullet->sprite->position.x, bullet);
 			break;
+		}
 		case WeaponEffect::Irradiate:
+		{
 			helper::playSoundFromSource(SoundId::Terran_VESSEL_TVeIrr00_WAV, nullptr, 1, 0);
 			IrradiateHit(bullet->sourceUnit, bullet->attackTarget.pt, bullet->srcPlayer);
 			break;
+		}
 		case WeaponEffect::Ensnare:
+		{
 			EnsnareHit(bullet->sourceUnit, bullet->sprite->position.x, bullet->sprite->position.y, bullet);
 			break;
+		}
 		case WeaponEffect::Plague:
+		{
 			PlagueHit(bullet->sourceUnit, bullet->moveTarget.pt.x, bullet->moveTarget.pt.y, bullet);
 			break;
+		}
 		case WeaponEffect::StasisField:
+		{
 			if (bullet->moveTarget.pt.x || bullet->moveTarget.pt.y)
 			{
 				StasisFieldHit(bullet->sourceUnit, bullet->moveTarget.pt.x, bullet->moveTarget.pt.y, bullet);
 			}
 			break;
+		}
 		case WeaponEffect::DarkSwarm:
+		{
 			DarkSwarmHit(bullet->moveTarget.pt.x, bullet->moveTarget.pt.y, bullet->srcPlayer, bullet);
 			break;
+		}
 		case WeaponEffect::Consume:
+		{
 			if (bullet->sourceUnit)
 			{
 				if (bullet->attackTarget.unit)
@@ -197,13 +212,17 @@ namespace hooks {
 				}
 			}
 			break;
+		}
 		case WeaponEffect::YamatoGun:
+		{
 			if (bullet->attackTarget.unit)
 			{
 				helper::weaponBulletShot(bullet->attackTarget.unit, bullet, 1);
 			}
 			break;
+		}
 		case WeaponEffect::Restoration:
+		{
 			if (bullet->attackTarget.unit)
 			{
 				if (!helper::unitHasNoMainOrderType(bullet->attackTarget.unit))
@@ -213,10 +232,14 @@ namespace hooks {
 				}
 			}
 			break;
+		}
 		case WeaponEffect::DisruptionWeb:
+		{
 			DisruptionWebHit(bullet->srcPlayer, bullet->moveTarget.pt.x, bullet->moveTarget.pt.y, bullet);
 			break;
+		}
 		case WeaponEffect::CorrosiveAcid:
+		{
 			if (bullet->attackTarget.unit)
 			{
 				if (!(bullet->hitFlags & 1))
@@ -229,7 +252,9 @@ namespace hooks {
 				}
 			}
 			break;
+		}
 		case WeaponEffect::OpticalFlare:
+		{
 			if (bullet->attackTarget.unit)
 			{
 				if (!helper::unitHasNoMainOrderType(bullet->attackTarget.unit))
@@ -238,14 +263,17 @@ namespace hooks {
 				}
 			}
 			break;
+		}
 		case WeaponEffect::Maelstrom:
-			v31 = bullet->moveTarget.pt.x;
-			if (v31 || bullet->moveTarget.pt.y)
+		{
+			if (bullet->moveTarget.pt.x || bullet->moveTarget.pt.y)
 			{
 				MaelstromHit(bullet->sourceUnit, bullet->moveTarget.pt.x, bullet->moveTarget.pt.y, bullet);
 			}
 			break;
+		}
 		case WeaponEffect::SplashAir:
+		{
 			bulletSprite = bullet->sprite;
 			bulletX = bulletSprite->position.x;
 			bulletY = bulletSprite->position.y;
@@ -270,9 +298,12 @@ namespace hooks {
 			}
 			helper::findBestUnit(&coords, (s32)bullet, helper::airSplashProc2);
 			break;
+		}
 		default:
+		{
 			assert(false);
 			break;
+		}
 		}
 	}
 
