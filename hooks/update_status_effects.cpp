@@ -19,8 +19,8 @@ void irradiateProc(CUnit* unit, CUnit* target) {
 	//Check if the unit is within distance, or is inside the same transport
 	if (unit->status & UnitStatus::InTransport
 		|| unit->getDistanceToTarget(target) <= 32) {
-		//			const int32 damage = weapons_dat::DamageAmount[WeaponId::Irradiate] * 256 / weapons_dat::Cooldown[WeaponId::Irradiate];
-		int32 damage = (125 * 256) / 24;
+		//			const s32 damage = weapons_dat::DamageAmount[WeaponId::Irradiate] * 256 / weapons_dat::Cooldown[WeaponId::Irradiate];
+		s32 damage = (125 * 256) / 24;
 		if (unit != nullptr) {
 			if (unit->irradiateTimer == 0) {
 				damage += (125 * 256) % 24;
@@ -45,7 +45,7 @@ namespace hooks {
 			CUnit* transport = irradiatedUnit->connectedUnit;
 
 			if (transport != nullptr) {
-				for (int i = 0; i < units_dat::SpaceProvided[transport->id]; ++i) {
+				for (s32 i = 0; i < units_dat::SpaceProvided[transport->id]; ++i) {
 					CUnit* loadedUnit = transport->getLoadedUnit(i);
 					if (loadedUnit)
 						irradiateProc(irradiatedUnit, loadedUnit);
@@ -83,7 +83,7 @@ namespace hooks {
 
 	void updateStatusEffects(CUnit* unit) {
 		if (unit->subunit != nullptr) {
-			scbw::set_generic_value(unit->subunit, ValueId::TurretParentLink, (uint32)unit);
+			scbw::set_generic_value(unit->subunit, ValueId::TurretParentLink, (u32)unit);
 		}
 
 		// Decrement Stasis Field timer (and remove effect if 0)
@@ -153,7 +153,7 @@ namespace hooks {
 				|| unit->id == UnitId::ZergOthstoleth
 				|| unit->id == UnitId::ProtossPennant)) {
 
-			uint32 radius;
+			u32 radius;
 			if (unit->id == UnitId::TerranQuarry) {
 				radius = 320;
 			} else if (unit->id == UnitId::ZergIroleth || unit->id == UnitId::ZergOthstoleth) {
@@ -182,7 +182,7 @@ namespace hooks {
 
 		// Othstoleth morph speed increase aura
 		if (unit->id == UnitId::ZergOthstoleth) {
-			uint32 radius = 224;
+			u32 radius = 224;
 			scbw::UnitFinder(
 				unit->getX() - radius,
 				unit->getY() - radius,
@@ -281,7 +281,7 @@ namespace hooks {
 			}
 
 			if (!(unit->status & UnitStatus::Invincible)) {
-				int32 damage = (weapons_dat::DamageAmount[WeaponId::Plague] * 256) / 30;
+				s32 damage = (weapons_dat::DamageAmount[WeaponId::Plague] * 256) / 30;
 				if (unit->plagueTimer == 0) {
 					damage += (weapons_dat::DamageAmount[WeaponId::Plague] * 256) % 30;
 				}
@@ -310,7 +310,7 @@ namespace hooks {
 		// Vithrilisk - Corrosive Touch - update overlays
 		if (scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks) != 0) {
 			// Calculate the appropriate overlay ID
-			uint32 acidOverlayId = GetSporesOverlayId(unit);
+			u32 acidOverlayId = GetSporesOverlayId(unit);
 			if (!unit->getOverlay(acidOverlayId)) {
 				unit->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
 				if (unit->subunit != nullptr) {

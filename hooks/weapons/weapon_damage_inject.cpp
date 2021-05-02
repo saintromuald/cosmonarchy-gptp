@@ -1,18 +1,18 @@
 #include "weapon_damage.h"
 #include "../../hook_tools.h"
 
-extern const uint32 Func_DoWeaponDamage; //Defined in CUnit.cpp
+extern const u32 Func_DoWeaponDamage; //Defined in CUnit.cpp
 
 namespace {
 
 	void __declspec(naked) weaponDamageWrapper() {
 		static CUnit* target;
 		static CUnit* attacker;
-		static int32 damage;
-		static int32 direction;
-		static uint32 weaponId;
-		static uint32 damageDivisor;
-		static uint32 attackingPlayerId;
+		static s32 damage;
+		static s32 direction;
+		static u32 weaponId;
+		static u32 damageDivisor;
+		static u32 attackingPlayerId;
 
 		__asm {
 			PUSH EBP
@@ -55,7 +55,7 @@ namespace {
 
 	void __declspec(naked) updateCorrosiveSpores_Wrapper() { // 004F4480
 		static CUnit* target;
-		static uint32 result;
+		static u32 result;
 		__asm {
 			MOV target, EBX
 			PUSHAD

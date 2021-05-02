@@ -73,7 +73,7 @@ namespace hooks {
 					unit->mainOrderState = 2;
 			}
 			if (unit->mainOrderState == 2) {
-				uint32 movableState = unit->getMovableState();
+				u32 movableState = unit->getMovableState();
 				if (movableState == 2) { // unmovable
 					unit->orderToIdle();
 				}
@@ -108,8 +108,8 @@ namespace hooks {
 					}
 				} else
 					if (unit->mainOrderState == 4) {
-						int16 ebp_18, ebp_16, ebp_14, ebp_12, x_min, y_min, x_max, y_max;
-						int32 ebp_08;
+						s16 ebp_18, ebp_16, ebp_14, ebp_12, x_min, y_min, x_max, y_max;
+						s32 ebp_08;
 						ebp_18 = builtUnit->sprite->position.x - builtUnit->sprite->width / 2;
 						ebp_14 = builtUnit->sprite->position.x + builtUnit->sprite->width / 2 - 1;
 						ebp_16 = builtUnit->sprite->position.y - builtUnit->sprite->height / 2;
@@ -180,7 +180,7 @@ namespace hooks {
 									jump_to_switch_1 = true;
 								}
 								else {
-									int32 angle;
+									s32 angle;
 									helper::setNextWaypoint(unit);
 									helper::function_00494BB0(
 										unit,
@@ -201,7 +201,7 @@ namespace hooks {
 							} else
 								if (unit->mainOrderState == 7) {
 									if (!helper::isUnitPositions2Equal(unit)) {
-										int32 angle = scbw::getAngle(
+										s32 angle = scbw::getAngle(
 											unit->sprite->position.x,
 											unit->sprite->position.y,
 											unit->nextTargetWaypoint.x,
@@ -215,7 +215,7 @@ namespace hooks {
 											jump_to_switch_1 = true;
 										}
 										else { // 00467E4A
-											uint8 rand_value = helper::RandomizeShort(10);
+											u8 rand_value = helper::RandomizeShort(10);
 											CImage* current_image = unit->sprite->images.head;
 											unit->mainOrderTimer = (rand_value & 63) + 30;
 											while (current_image != nullptr) {
@@ -226,7 +226,7 @@ namespace hooks {
 											jump_to_switch_1 = true;
 										}
 									} else {
-										uint8 rand_value = helper::RandomizeShort(10);
+										u8 rand_value = helper::RandomizeShort(10);
 										CImage* current_image = unit->sprite->images.head;
 										unit->mainOrderTimer = (rand_value & 63) + 30;
 										while (current_image != nullptr) {
@@ -253,7 +253,7 @@ namespace hooks {
 									}
 
 								if (jump_to_switch_1) {
-									uint32 hpGain = builtUnit->buildRepairHpGain;
+									u32 hpGain = builtUnit->buildRepairHpGain;
 									if (*CHEAT_STATE & CheatFlags::OperationCwal) {
 										hpGain *= 16;
 									}
@@ -440,9 +440,9 @@ namespace hooks {
 		}
 	}
 
-	int32 updatePlacementStateForPlacementBox() { // 0x0048DCE0
-		int32 v0; // esi
-		int32 result; // eax
+	s32 updatePlacementStateForPlacementBox() { // 0x0048DCE0
+		s32 v0; // esi
+		s32 result; // eax
 
 /*		if (*activePortraitUnit == nullptr) {
 			return 0;
@@ -463,10 +463,10 @@ namespace hooks {
 
 		/*
 		if (*isPlacingAddon) {
-					uint32 source = *placeBuildBaseType;
-					uint32 target = *placeBuildingUnitType;
-					uint16 addon_x = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
-					uint16 addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
+					u32 source = *placeBuildBaseType;
+					u32 target = *placeBuildingUnitType;
+					u16 addon_x = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
+					u16 addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
 					scbw::adjustAddonCoordinates(target, source, addon_x, addon_y);
 					result = canBuildOnTileLocation(
 						*activePortraitUnit,
@@ -483,10 +483,10 @@ namespace hooks {
 					result = v0;
 				}
 		*/
-		uint32 source = *placeBuildBaseType;
-		uint32 target = *placeBuildingUnitType;
-		uint16 addon_x = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
-		uint16 addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
+		u32 source = *placeBuildBaseType;
+		u32 target = *placeBuildingUnitType;
+		u16 addon_x = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].x;
+		u16 addon_y = units_dat::AddonPlacement[*placeBuildingUnitType - UnitId::TerranCommandCenter].y;
 		scbw::adjustAddonCoordinates(source, target, addon_x, addon_y);
 		if (!*isPlacingAddon
 			|| (result = helper::canBuildOnTileLocation(
@@ -505,13 +505,13 @@ namespace hooks {
 		return result;
 	}
 
-	char refreshScreen(int32 ecx0) { // 0048DDC0
+	char refreshScreen(s32 ecx0) { // 0048DDC0
 		auto v6 = ecx0;
 		auto result = *IS_PLACING_BUILDING;
 		if (*IS_PLACING_BUILDING) {
 			auto y = mouse->y;
 			auto x = mouse->x;
-			auto mouse_pos = Point16{(uint16)mouse->x, (uint16)mouse->y};
+			auto mouse_pos = Point16{(u16)mouse->x, (u16)mouse->y};
 			if (helper::initPlacementBoxPos(&mouse_pos)) {
 				*placeBuildingMessageId = helper::updatePlacementStateForPlacementBox_Func();
 				helper::refreshLayers3And4();

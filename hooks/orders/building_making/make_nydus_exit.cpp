@@ -3,8 +3,8 @@
 
 namespace hooks {
 	void orders_Build5(CUnit* nydus_canal) {
-		int x, y;
-		uint32 result_f00473FB0;
+		s32 x, y;
+		u32 result_f00473FB0;
 		x = units_dat::BuildingDimensions[UnitId::ZergNydusCanal].x;
 		y = units_dat::BuildingDimensions[UnitId::ZergNydusCanal].y;
 		if (x < 0) {
@@ -70,7 +70,7 @@ namespace hooks {
 		}
 	}
 
-	uint32 adjustFlags(uint32 flags, uint32 player) {
+	u32 adjustFlags(u32 flags, u32 player) {
 		return 0xffffffff; // don't check any creep tile flags for nydus placement
 	}
 }

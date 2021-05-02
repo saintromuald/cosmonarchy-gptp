@@ -6,13 +6,13 @@ namespace hooks {
 	/// GiveAllUnitPropertiesToPlayerAndMakeIdle, itself, sub_4A0080, AI_CreateUnit,
 	/// orders_RescuePassive, orders_InfestMine1
 	/// Changes would affect all those functions and maybe more
-	void GiveUnit(CUnit* unit, uint32 playerId, uint32 unkScore) {
+	void GiveUnit(CUnit* unit, u32 playerId, u32 unkScore) {
 
 		if (unit->playerId != playerId) {
 
 			bool isMorphing = false;
 			bool isSelected;
-			uint32 selectionIndex = 0;
+			u32 selectionIndex = 0;
 
 			helper::function_004A1E50(unit, 0);
 

@@ -84,7 +84,7 @@ namespace hooks {
 				else 
 				{
 					bool bStopThere = false;
-					uint16 eggId;
+					u16 eggId;
 					switch (unit->id) {
 						case UnitId::ZergOvileth:
 						case UnitId::ZergIroleth:
@@ -240,7 +240,7 @@ namespace hooks {
 	}
 
 	// Check if @p unit can morph into @p morphUnitId.
-	bool unitCanMorphHook(CUnit* unit, uint16 morphUnitId) {
+	bool unitCanMorphHook(CUnit* unit, u16 morphUnitId) {
 		// Default StarCraft behavior
 		if (unit->id == UnitId::ZergZergling) {
 			if (morphUnitId == UnitId::ZergVorvaling
@@ -313,7 +313,7 @@ namespace hooks {
 	}
 
 	// Check if @p unitId is an egg unit that can be rallied
-	bool isRallyableEggUnitHook(uint16 unitId) {
+	bool isRallyableEggUnitHook(u16 unitId) {
 		if (scbw::isZergEggNew(nullptr, false, false, unitId)) {
 			return false;
 		}
@@ -321,7 +321,7 @@ namespace hooks {
 	}
 
 	/*
-	uint32 remove_worker_or_building_ai(CUnit* unit, uint8 assert_is_building) {
+	u32 remove_worker_or_building_ai(CUnit* unit, u8 assert_is_building) {
 			BuildingAi* ai;
 			AiTown* town;
 			removeAITownGasReferences(unit);
@@ -370,7 +370,7 @@ namespace hooks {
 
 	// Return the ID of the egg unit to use when morphing @p unitId.
 	// If the unit cannot morph, return UnitId::None.
-	uint16 getUnitMorphEggTypeHook(uint16 unitId, CUnit* unit, uint16 resultId) {
+	u16 getUnitMorphEggTypeHook(u16 unitId, CUnit* unit, u16 resultId) {
 		// Default StarCraft behavior
 		if (units_dat::BaseProperty[unitId] & UnitProperty::Flyer) 
 		{
@@ -385,7 +385,7 @@ namespace hooks {
 
 	// Determine the type (unit ID) of the unit to revert to when cancelling an
 	// @p eggUnit while it is morphing.
-	uint16 getCancelMorphRevertTypeHook(CUnit* eggUnit) {
+	u16 getCancelMorphRevertTypeHook(CUnit* eggUnit) {
 		auto source = eggUnit->eggOrigin;
 		if (eggUnit->getRace() == RaceId::Zerg
 			&& eggUnit->id != UnitId::ZergInfestedTerran) {
@@ -399,7 +399,7 @@ namespace hooks {
 
 	// Determines the vertical (Y) offset by which the @p unit will be shifted to
 	// when it finishes morphing.
-	int16 getUnitVerticalOffsetOnBirth(CUnit* unit) {
+	s16 getUnitVerticalOffsetOnBirth(CUnit* unit) {
 		// No offset, birth offset is handled elsewhere
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg) {
 			return 0;
@@ -408,11 +408,11 @@ namespace hooks {
 		if (unit->previousUnitType == UnitId::ZergCocoon) {
 			return 0;
 		}
-		// Hovering units (?) float 7 pixels above ground
+		// Hovering units (?) f32 7 pixels above ground
 		if (units_dat::MovementFlags[unit->id] == MovementFlags::HoverUnit) {
 			return -7;
 		}
-		// Air units float 42 pixels above ground
+		// Air units f32 42 pixels above ground
 		if (unit->status & UnitStatus::InAir) {
 			return -42;
 		}
@@ -421,9 +421,9 @@ namespace hooks {
 	}
 
 	// Check if @p playerId has enough supplies to build @p unitId.
-	bool hasSuppliesForUnitHook(uint8 playerId, uint16 unitId, bool canShowErrorMessage) {
+	bool hasSuppliesForUnitHook(u8 playerId, u16 unitId, bool canShowErrorMessage) {
 		// Default StarCraft behavior
-		int32 supplyCost = units_dat::SupplyRequired[unitId];
+		s32 supplyCost = units_dat::SupplyRequired[unitId];
 		if (units_dat::BaseProperty[unitId] & UnitProperty::TwoUnitsIn1Egg) {
 			supplyCost *= 2;
 		}
@@ -438,7 +438,7 @@ namespace hooks {
 		}
 		const RaceId::Enum raceId = CUnit::getRace(unitId);
 		assert(raceId <= 2);
-		const uint32 supplyUsed = raceSupply[raceId].used[playerId];
+		const u32 supplyUsed = raceSupply[raceId].used[playerId];
 		// Must construct additional pylons
 		if (supplyUsed + supplyCost > raceSupply[raceId].max[playerId]) {
 			if (canShowErrorMessage) {
@@ -456,7 +456,7 @@ namespace hooks {
 		return true;
 	}
 
-	CUnit* beginTrain(CUnit* unit, uint16 unit_id, bool notify_error) {
+	CUnit* beginTrain(CUnit* unit, u16 unit_id, bool notify_error) {
 		if (unit->status & UnitStatus::GroundedBuilding
 			|| unit->id == UnitId::ProtossSolarion
 			|| unit->id == UnitId::ProtossAccantor

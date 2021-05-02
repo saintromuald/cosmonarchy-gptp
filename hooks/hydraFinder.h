@@ -28,18 +28,18 @@ namespace CFlags {
 	};
 }
 
-scbw::UnitFinderCallbackMatchInterface unitRangeCount(CUnit* center, uint32 context, std::vector<uint16> allowedUnitIds);
+scbw::UnitFinderCallbackMatchInterface unitRangeCount(CUnit* center, u32 context, std::vector<u16> allowedUnitIds);
 
-bool rangeMatch(CUnit* unit, uint32 r, uint32 context, std::vector<uint16> allowedIds);
-CUnit* rangeMatchUnit(CUnit* unit, uint32 r, uint32 context, std::vector<uint16> allowedIds);
-CUnit* rangeMatchPosition(Point32 position, uint32 r, uint32 context, std::vector<uint16> allowedIds);
-uint32 hydraUnitCount(CUnit* unitPtr, Point16 pos, int r, uint32 flags, std::vector<uint16> unitIds);
+bool rangeMatch(CUnit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
+CUnit* rangeMatchUnit(CUnit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
+CUnit* rangeMatchPosition(Point32 position, u32 r, u32 context, std::vector<u16> allowedIds);
+u32 hydraUnitCount(CUnit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds);
 template<typename hydraLoop>
-inline void hydraFinderLoop(CUnit* unitPtr, Point16 pos, int r, uint32 flags, std::vector<uint16> unitIds, hydraLoop l) {
+inline void hydraFinderLoop(CUnit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds, hydraLoop l) {
 	auto condition = unitRangeCount(unitPtr, flags, unitIds);
 	scbw::UnitFinder unitsInSplash(pos.x - r, pos.y - r,
 		pos.x + r, pos.y + r);
-	for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
+	for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++) {
 		auto unit = unitsInSplash.getUnit(i);
 		if (condition(unit)) {
 			l(unit);

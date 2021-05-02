@@ -12,7 +12,7 @@ namespace hooks {
 			}
 		} else
 			if (unit->mainOrderState == 1) {
-				uint32 distance, distance_wanted;
+				u32 distance, distance_wanted;
 				distance = scbw::getDistanceFast(unit->halt.x, unit->halt.y, unit->orderTarget.pt.x * 256, unit->orderTarget.pt.y * 256);
 				if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ProtossAquifer) {
 					distance_wanted = 88;
@@ -31,7 +31,7 @@ namespace hooks {
 			} else
 				if (unit->mainOrderState == 2) {
 					if (!(unit->movementFlags & MovementFlags::Accelerating)) {
-						uint32 distance_wanted;
+						u32 distance_wanted;
 						bool isBuildingAssimilator = (unit->buildQueue[unit->buildQueueSlot] == UnitId::ProtossAquifer);
 						if (isBuildingAssimilator) {
 							distance_wanted = 88;
@@ -109,12 +109,12 @@ namespace hooks {
 					CImage* current_image = building->sprite->images.head;
 					while (current_image != nullptr) {
 						if (current_image->flags & CImage_Flags::Flag04) {
-							const uint32* u32_006D1200 = (uint32*)0x006D1200;
+							const u32* u32_006D1200 = (u32*)0x006D1200;
 							current_image->animation = IscriptAnimation::SpecialState1;
-							current_image->iscriptOffset = *(uint16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x22);
+							current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x22);
 							current_image->wait = 0;
 							current_image->unknown14 = 0;
-							helper::iscript_OpcodeCases(current_image, (uint32)&current_image->iscriptHeaderOffset, 0, 0);
+							helper::iscript_OpcodeCases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
 						}
 						current_image = current_image->link.next;
 					}
@@ -152,12 +152,12 @@ namespace hooks {
 							current_image = building->sprite->images.head;
 							while (current_image != nullptr) {
 								if (current_image->flags & CImage_Flags::Flag04) {
-									const uint32* u32_006D1200 = (uint32*)0x006D1200;
+									const u32* u32_006D1200 = (u32*)0x006D1200;
 									current_image->animation = IscriptAnimation::WarpIn;
-									current_image->iscriptOffset = *(uint16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x32);
+									current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x32);
 									current_image->wait = 0;
 									current_image->unknown14 = 0;
-									helper::iscript_OpcodeCases(current_image, (uint32)&current_image->iscriptHeaderOffset, 0, 0);
+									helper::iscript_OpcodeCases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
 								}
 								current_image = current_image->link.next;
 							}
@@ -177,12 +177,12 @@ namespace hooks {
 									CImage* current_image = building->sprite->images.head;
 									while (current_image != nullptr) {
 										if (current_image->flags & CImage_Flags::Flag04) {
-											const uint32* u32_006D1200 = (uint32*)0x006D1200;
+											const u32* u32_006D1200 = (u32*)0x006D1200;
 											current_image->animation = IscriptAnimation::Disable;
-											current_image->iscriptOffset = *(uint16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x38);
+											current_image->iscriptOffset = *(u16*)(*u32_006D1200 + current_image->iscriptHeaderOffset + 0x38);
 											current_image->wait = 0;
 											current_image->unknown14 = 0;
-											helper::iscript_OpcodeCases(current_image, (uint32)&current_image->iscriptHeaderOffset, 0, 0);
+											helper::iscript_OpcodeCases(current_image, (u32)&current_image->iscriptHeaderOffset, 0, 0);
 										}
 										current_image = current_image->link.next;
 									}
@@ -195,7 +195,7 @@ namespace hooks {
 						}
 
 					if (jump_to_E50EE) {
-						uint32 hpGain, shieldGain;
+						u32 hpGain, shieldGain;
 						if (building->remainingBuildTime != 0) {
 							if (*CHEAT_STATE & CheatFlags::OperationCwal) {
 								if (building->remainingBuildTime > 16) {
@@ -225,7 +225,7 @@ namespace hooks {
 							shieldGain = building->shieldGain;
 						}
 
-						if (building->shields + shieldGain >= (uint32)units_dat::MaxShieldPoints[building->id] * 256) {
+						if (building->shields + shieldGain >= (u32)units_dat::MaxShieldPoints[building->id] * 256) {
 							building->shields = units_dat::MaxShieldPoints[building->id] * 256;
 						}
 						else {

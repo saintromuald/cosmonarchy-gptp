@@ -7,7 +7,7 @@ namespace AI {
 
 	CUnit* findBestEmpShockwaveTarget(CUnit* caster, bool isUnderAttack) {
 
-		int bounds;
+		s32 bounds;
 
 		if (isUnderAttack)
 			bounds = 32 * 9;
@@ -30,7 +30,7 @@ namespace AI {
 			if (!scbw::canWeaponTargetUnit(WeaponId::EMP_Shockwave, target, caster))
 				return false;
 
-			const int totalEnemyShields = getTotalEnemyShieldsInArea(target->getX(), target->getY(), 160, caster);
+			const s32 totalEnemyShields = getTotalEnemyShieldsInArea(target->getX(), target->getY(), 160, caster);
 			if (totalEnemyShields >= 200)
 				return true;
 
@@ -56,7 +56,7 @@ namespace AI {
 			if (!scbw::canWeaponTargetUnit(WeaponId::EMP_Shockwave, target, caster))
 				return false;
 
-			const int totalEnemyEnergy = getTotalEnemyEnergyInArea(target->getX(), target->getY(), 160, caster);
+			const s32 totalEnemyEnergy = getTotalEnemyEnergyInArea(target->getX(), target->getY(), 160, caster);
 			if (totalEnemyEnergy >= 200)
 				return true;
 

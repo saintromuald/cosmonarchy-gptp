@@ -6,13 +6,13 @@
 
 namespace hooks {
 
-	const int RESOURCE_HARVESTED = 8;
+	const s32 RESOURCE_HARVESTED = 8;
 
 	//Harvests minerals/gas from the @p resource and returns the amount that a
 	//worker should carry.
 	//Identical to sub_469650
 
-	bool isGasContainer(uint16 unitId) {
+	bool isGasContainer(u16 unitId) {
 		if (unitId == UnitId::assimilator)
 			return true;
 		if (unitId == UnitId::refinery)
@@ -22,16 +22,16 @@ namespace hooks {
 		return false;
 	}
 
-	uint8 harvestResourceFrom(CUnit* resource, bool isMineral) {
+	u8 harvestResourceFrom(CUnit* resource, bool isMineral) {
 
-		uint8 return_value;
+		u8 return_value;
 
 		if (resource->building.resource.resourceAmount < RESOURCE_HARVESTED) {
 
 			if (isMineral) {
 				//			resource->remove();
 				resource->building.resource.resourceAmount = 2;
-				return_value = (uint8)(resource->building.resource.resourceAmount);
+				return_value = (u8)(resource->building.resource.resourceAmount);
 			} else {
 				resource->building.resource.resourceAmount = 0;
 				return_value = 2;
@@ -59,7 +59,7 @@ namespace hooks {
 
 		return return_value;
 
-	} //uint8 harvestResourceFrom(CUnit* resource, bool isMineral)
+	} //u8 harvestResourceFrom(CUnit* resource, bool isMineral)
 
 	;
 
@@ -68,7 +68,7 @@ namespace hooks {
 
 		if (resource->id >= UnitId::TerranReservoir && resource->id <= UnitId::ResourceMineralFieldType3) {
 
-			uint32 chunkImageId;
+			u32 chunkImageId;
 			bool isMineral = false;
 			bool bEndThere = false;
 
@@ -92,7 +92,7 @@ namespace hooks {
 
 			if (!bEndThere) {
 
-				uint8 resourceAmount = harvestResourceFrom(resource, isMineral);
+				u8 resourceAmount = harvestResourceFrom(resource, isMineral);
 
 				if (resourceAmount < RESOURCE_HARVESTED)
 					chunkImageId += 1;	//Use depleted (smaller) chunk image

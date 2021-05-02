@@ -3,7 +3,7 @@
 #include <SCBW/UnitFinder.h>
 #include <vector>
 
-uint8 GetRaceTownhall(uint8 raceId) {
+u8 GetRaceTownhall(u8 raceId) {
 	if (raceId == RaceId::Zerg)
 		return UnitId::ZergHatchery;
 	else if (raceId == RaceId::Terran)
@@ -14,7 +14,7 @@ uint8 GetRaceTownhall(uint8 raceId) {
 		return UnitId::None;
 }
 
-uint8 GetRaceWorker(uint8 raceId) {
+u8 GetRaceWorker(u8 raceId) {
 	if (raceId == RaceId::Zerg)
 		return UnitId::ZergDroleth;
 	else if (raceId == RaceId::Terran)
@@ -27,9 +27,9 @@ uint8 GetRaceWorker(uint8 raceId) {
 
 namespace hooks {
 
-	void CreateInitialMeleeBuildings(uint8 raceId, uint32 playerId) {
-		uint8 buildingId = GetRaceTownhall(raceId);
-		int32 buildingSizeX, buildingSizeY;
+	void CreateInitialMeleeBuildings(u8 raceId, u32 playerId) {
+		u8 buildingId = GetRaceTownhall(raceId);
+		s32 buildingSizeX, buildingSizeY;
 		Box16 searchBox;
 		CUnit* created_unit;
 
@@ -41,10 +41,10 @@ namespace hooks {
 		if (buildingSizeY < 0)
 			buildingSizeY++;
 
-		searchBox.left = (startPositions[playerId].x - (int16)(buildingSizeX / 2)) & 0x0000FFE0;
-		searchBox.top = (startPositions[playerId].y - (int16)(buildingSizeY / 2)) & 0x0000FFE0;
-		searchBox.bottom = buildingSizeY / 2 + ((startPositions[playerId].y - (int16)(buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2 - 1;
-		searchBox.right = buildingSizeX / 2 + ((startPositions[playerId].x - (int16)(buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2 - 1;
+		searchBox.left = (startPositions[playerId].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0;
+		searchBox.top = (startPositions[playerId].y - (s16)(buildingSizeY / 2)) & 0x0000FFE0;
+		searchBox.bottom = buildingSizeY / 2 + ((startPositions[playerId].y - (s16)(buildingSizeY / 2)) & 0x0000FFE0) + buildingSizeY / 2 - 1;
+		searchBox.right = buildingSizeX / 2 + ((startPositions[playerId].x - (s16)(buildingSizeX / 2)) & 0x0000FFE0) + buildingSizeX / 2 - 1;
 
 		//yes, the return value is unused for some reason
 		helper::FindBestUnit(&searchBox, 0x0049D640);
@@ -80,15 +80,15 @@ namespace hooks {
 
 	;
 
-	double Sign(double x) {
+	f64 Sign(f64 x) {
 		return x < 0.0 ? -1.0 : x > 0.0 ? 1.0 : 0.0;
 	}
 
-	Point16 FindWorkerSpawnPositions(int townhallId, const uint16& startX, const uint16& startY, bool& horizontal) {
+	Point16 FindWorkerSpawnPositions(s32 townhallId, const u16& startX, const u16& startY, bool& horizontal) {
 		std::vector<Point16> positions;
-		int sumX = 0;
-		int sumY = 0;
-		uint32 count = 0;
+		s32 sumX = 0;
+		s32 sumY = 0;
+		u32 count = 0;
 
 		scbw::UnitFinder unitFinder;
 		unitFinder.search(
@@ -97,7 +97,7 @@ namespace hooks {
 			startX + 10 * 32,
 			startY + 10 * 32
 		);
-		uint8 cliffLevel = scbw::getActiveTileAt(startX, startY).groundHeight;
+		u8 cliffLevel = scbw::getActiveTileAt(startX, startY).groundHeight;
 		unitFinder.forEach([&](CUnit* unit) {
 			if ((unit->id == UnitId::ResourceMineralField
 				|| unit->id == UnitId::ResourceMineralFieldType2
@@ -116,16 +116,16 @@ namespace hooks {
 			sumY = 1;
 		}
 
-		double averageX = (double)sumX / count;
-		double averageY = (double)sumY / count;
-		double distance = pow(pow(averageX, 2) + pow(averageY, 2), 0.5);
+		f64 averageX = (f64)sumX / count;
+		f64 averageY = (f64)sumY / count;
+		f64 distance = pow(pow(averageX, 2) + pow(averageY, 2), 0.5);
 
-		double offsetX = averageX / distance;
-		double offsetY = averageY / distance;
+		f64 offsetX = averageX / distance;
+		f64 offsetY = averageY / distance;
 
-		const double distanceMultiplier = 1.4;
-		double width = distanceMultiplier;
-		double height = distanceMultiplier;
+		const f64 distanceMultiplier = 1.4;
+		f64 width = distanceMultiplier;
+		f64 height = distanceMultiplier;
 
 		if (offsetX < 0) {
 			width *= units_dat::UnitBounds[townhallId].left;
@@ -142,10 +142,10 @@ namespace hooks {
 		offsetX = offsetX * width;
 		offsetY = offsetY * height;
 
-		const double diagonalThreshold = 0.5; // 1 - full diagonal, 0 - straight line
+		const f64 diagonalThreshold = 0.5; // 1 - full diagonal, 0 - straight line
 		bool forceHorizontal = false;
-		double max = std::max(abs(offsetX), abs(offsetY));
-		double min = std::min(abs(offsetX), abs(offsetY));
+		f64 max = std::max(abs(offsetX), abs(offsetY));
+		f64 min = std::min(abs(offsetX), abs(offsetY));
 		if (min != 0 && diagonalThreshold != 0) {
 			forceHorizontal = max / min < 1 / diagonalThreshold;
 		}
@@ -161,28 +161,28 @@ namespace hooks {
 			horizontal = false;
 		}
 
-		return Point16{(uint16)(startX + offsetX), (uint16)(startY + offsetY)};
+		return Point16{(u16)(startX + offsetX), (u16)(startY + offsetY)};
 	}
 
 	void CreateInitialMeleeUnits() {
-		uint32 playerId;
-		uint8* raceIdOffset;
+		u32 playerId;
+		u8* raceIdOffset;
 
 		playerId = 8;
-		raceIdOffset = (uint8*)0x0057F009;
+		raceIdOffset = (u8*)0x0057F009;
 
-		while (raceIdOffset != (uint8*)0x0057EEE9) {
+		while (raceIdOffset != (u8*)0x0057EEE9) {
 
 			raceIdOffset -= 0x24;
 			playerId--;
 
 			if (*(raceIdOffset - 1) == 2 || *(raceIdOffset - 1) == 1) {
 				//0 is use map settings,1 is Workers, 2 is Workers + Main Building
-				uint8 startingUnits = (uint8)(*(uint16*)(0x00596871));
+				u8 startingUnits = (u8)(*(u16*)(0x00596871));
 
-				static uint8* victory_conditions = (uint8*)0x0059686D;
-				static uint8* tournament_mode = (uint8*)0x00596877;
-				static uint8* user_select_slots = (uint8*)0x0059BDA8;
+				static u8* victory_conditions = (u8*)0x0059686D;
+				static u8* tournament_mode = (u8*)0x00596877;
+				static u8* user_select_slots = (u8*)0x0059BDA8;
 
 				if (*victory_conditions == 0					// check triggers for conditions
 					&& startingUnits == 0 					// use map units
@@ -202,8 +202,8 @@ namespace hooks {
 
 				if (startingUnits == 1 || startingUnits == 2) {
 
-					uint8 unitId = GetRaceWorker(*raceIdOffset);
-					uint8 townhallId = GetRaceTownhall(*raceIdOffset);
+					u8 unitId = GetRaceWorker(*raceIdOffset);
+					u8 townhallId = GetRaceTownhall(*raceIdOffset);
 					CUnit* created_unit;
 
 					if (unitId != UnitId::None) {
@@ -211,10 +211,10 @@ namespace hooks {
 						bool horizontal = true;
 						Point16 pos = FindWorkerSpawnPositions(townhallId, startPos.x, startPos.y, horizontal);
 
-						for (int i = 0; i < 6; i++) {
-							const int correctionOffset = 1;
-							const int unitWidth = units_dat::UnitBounds[unitId].left + units_dat::UnitBounds[unitId].right + correctionOffset;
-							const int unitHeight = units_dat::UnitBounds[unitId].bottom + units_dat::UnitBounds[unitId].top + correctionOffset;
+						for (s32 i = 0; i < 6; i++) {
+							const s32 correctionOffset = 1;
+							const s32 unitWidth = units_dat::UnitBounds[unitId].left + units_dat::UnitBounds[unitId].right + correctionOffset;
+							const s32 unitHeight = units_dat::UnitBounds[unitId].bottom + units_dat::UnitBounds[unitId].top + correctionOffset;
 
 							if (horizontal) pos.x += unitWidth;
 							else pos.y -= unitHeight;
@@ -239,11 +239,11 @@ namespace hooks {
 
 	;
 
-	void CreateInitialOverlord(uint8 playerId) {
-		static uint16* const maxBoxRightValue = (uint16*)0x00628450;
-		static uint16* const maxBoxBottomValue = (uint16*)0x006284B4;
+	void CreateInitialOverlord(u8 playerId) {
+		static u16* const maxBoxRightValue = (u16*)0x00628450;
+		static u16* const maxBoxBottomValue = (u16*)0x006284B4;
 
-		int overlordStartX, overlordStartY;
+		s32 overlordStartX, overlordStartY;
 		CUnit* created_unit;
 
 		if (startPositions[playerId].x < *maxBoxRightValue / 2)

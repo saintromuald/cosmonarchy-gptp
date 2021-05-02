@@ -5,11 +5,11 @@ namespace hooks {
 	///
 	/// Function used by Ctrl+Click (select all units of same type)
 	///
-	uint32 SortAllUnits(CUnit* unit, CUnit** unit_list, CUnit** units_in_bounds) {
-		const uint32* VISIBILITY_CHECK_0057F0B0 = (uint32*)0x0057F0B0;
+	u32 SortAllUnits(CUnit* unit, CUnit** unit_list, CUnit** units_in_bounds) {
+		const u32* VISIBILITY_CHECK_0057F0B0 = (u32*)0x0057F0B0;
 		CUnit* current_unit;
 		CUnit* backup_current_unit;
-		uint32 current_index_in_unit_list;
+		u32 current_index_in_unit_list;
 
 		bool bStopBigLoop = false;
 
@@ -49,7 +49,7 @@ namespace hooks {
 
 						//6F150
 
-						uint32 index = current_index_in_unit_list;
+						u32 index = current_index_in_unit_list;
 
 						do {
 
@@ -71,7 +71,7 @@ namespace hooks {
 
 					//if the unit sprite is visible, perform additionnal visibility test,
 					//else skip the unit
-					if (current_unit->sprite->visibilityFlags & (uint8)*VISIBILITY_CHECK_0057F0B0) {
+					if (current_unit->sprite->visibilityFlags & (u8)*VISIBILITY_CHECK_0057F0B0) {
 
 						//if the unit is cloaked and visibility status test (detection by detectors
 						//units probably) fail, the unit is skipped
@@ -116,7 +116,7 @@ namespace hooks {
 
 													//equivalent to " unit->status XOR current_unit->status "
 													//keep the flags appearing in only 1 of the variables
-													uint32 mixed_flags =
+													u32 mixed_flags =
 														(~(unit->status) & current_unit->status) |
 														(unit->status & ~(current_unit->status))
 														;
@@ -237,20 +237,20 @@ namespace hooks {
 
 		return current_index_in_unit_list;
 
-	} //uint32 SortAllUnits(CUnit* unit,CUnit** unit_list,CUnit* units_in_bounds)
+	} //u32 SortAllUnits(CUnit* unit,CUnit** unit_list,CUnit* units_in_bounds)
 
 	///
 	/// Function used by Click on unit (possibly with key pressed)
 	///
 	void function_0046FB40(CUnit* clicked_unit) {
 
-		bool32* const IS_DOUBLE_CLICKING = (bool32*)0x0066FF58;
+		b32* const IS_DOUBLE_CLICKING = (b32*)0x0066FF58;
 
-		bool8* const bCanUpdateSelectedUnitData = (bool8*)0x0059723C;
-		bool8* const bCanUpdateSelectedUnitPortrait = (bool8*)0x0068AC74;
-		bool32* const bCanUpdateCurrentButtonSet = (bool32*)0x0068C1B0;
+		b8* const bCanUpdateSelectedUnitData = (b8*)0x0059723C;
+		b8* const bCanUpdateSelectedUnitPortrait = (b8*)0x0068AC74;
+		b32* const bCanUpdateCurrentButtonSet = (b32*)0x0068C1B0;
 		BinDlg** const someDialogUnknown = (BinDlg**)0x0068C1E8; //related to MouseOver?
-		bool8* const bCanUpdateStatDataDialog = (bool8*)0x0068C1F8;
+		b8* const bCanUpdateStatDataDialog = (b8*)0x0068C1F8;
 		BinDlg** const someDialogUnknownUser = (BinDlg**)0x0068C1EC; //related to MouseOver? Usually someDialogUnknown->user if not 0 or -1
 
 		CUnit* local_temp_array_1[SELECTION_ARRAY_LENGTH];	//used instead of an array starting from [EBP-3C]
@@ -262,7 +262,7 @@ namespace hooks {
 			*IS_HOLDING_CTRL ||
 			(*IS_DOUBLE_CLICKING && (clicked_unit->sprite->flags & CSprite_Flags::Selected));
 
-		for (int i = 0; i < SELECTION_ARRAY_LENGTH; i++)
+		for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)
 			local_temp_array_1[i] = nullptr;
 
 		if (
@@ -276,14 +276,14 @@ namespace hooks {
 
 				if (isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit) {
 
-					//Ctrl+click on unit or double-click on already
+					//Ctrl+click on unit or f64-click on already
 					//selected unit without other key
 					// =>	select surrounding units with same type as 
 					//		clicked unit, making them the current 
 					//		selection
 
 					CUnit** units_in_bounds;
-					uint32 sorted_list_length;
+					u32 sorted_list_length;
 
 					//locate surrounding units for selection
 					local_temp_box16_structure.left = *MoveToX;
@@ -323,13 +323,13 @@ namespace hooks {
 
 				if (isHoldingCtrl_OR_isDoubleClickingSelectedClickedUnit) {
 
-					//{Ctrl+Shift+click on unit} OR {Shift+double-click on 
+					//{Ctrl+Shift+click on unit} OR {Shift+f64-click on 
 					//selected unit WHILE having an active selection}
 					// =>	select units same type as clicked unit, adding them to the
 					//		active selection
 
 					CUnit** units_in_bounds;
-					uint32 sorted_list_length;
+					u32 sorted_list_length;
 
 					//prepare to locate surrounding units for selection
 					local_temp_box16_structure.left = *MoveToX;
@@ -338,7 +338,7 @@ namespace hooks {
 					local_temp_box16_structure.bottom = *MoveToY + 400;
 
 					//save existing selection to a temporary array
-					for (int i = 0; i < SELECTION_ARRAY_LENGTH; i++)
+					for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)
 						local_temp_array_2[i] = activePlayerSelection->unit[i];
 
 					//locate surrounding units for selection
@@ -354,7 +354,7 @@ namespace hooks {
 						//6FCD4
 
 						//recombine current selection and newly selectable items in local_temp_array_2
-						uint32 list_remixed_length = helper::combineLists_Sub_6F290(clicked_unit, local_temp_array_1, local_temp_array_2, sorted_list_length);
+						u32 list_remixed_length = helper::combineLists_Sub_6F290(clicked_unit, local_temp_array_1, local_temp_array_2, sorted_list_length);
 
 						//turn local_temp_array_2 as the newly applied selection
 						helper::applyNewSelect_Sub_6FA00(local_temp_array_2, list_remixed_length);
@@ -371,7 +371,7 @@ namespace hooks {
 					//so there's an existing selection at this point)
 					// => add/remove unit from selection
 
-					int arrayIndex;
+					s32 arrayIndex;
 
 					//copy the existing selection into the local array
 					for (arrayIndex = 0; arrayIndex < SELECTION_ARRAY_LENGTH && activePlayerSelection->unit[arrayIndex] != nullptr; arrayIndex++)
@@ -407,7 +407,7 @@ namespace hooks {
 
 						//unit already selected, remove it from selection
 
-						uint32 memcpy_size;
+						u32 memcpy_size;
 						bool bUpdateSelection = true;
 
 						//decrease it so it's equal to the index of last element
@@ -420,8 +420,8 @@ namespace hooks {
 						//Copy the elements on the right of the one to delete one step left
 						//to overwrite the one to delete
 						helper::SC_memcpy_0(
-							(uint32)&local_temp_array_1[clicked_unit->sprite->selectionIndex],
-							(uint32)&local_temp_array_1[clicked_unit->sprite->selectionIndex + 1],
+							(u32)&local_temp_array_1[clicked_unit->sprite->selectionIndex],
+							(u32)&local_temp_array_1[clicked_unit->sprite->selectionIndex + 1],
 							memcpy_size
 						);
 
@@ -439,7 +439,7 @@ namespace hooks {
 								//deselection to fail where simple shift+click would
 								//continue to deselect.
 
-								uint32 unitIndex = helper::CUnitToUnitID(local_temp_array_1[0]);
+								u32 unitIndex = helper::CUnitToUnitID(local_temp_array_1[0]);
 
 								if (helper::selectSingleUnitFromID(unitIndex) != 0)
 									bUpdateSelection = false;
@@ -471,7 +471,7 @@ namespace hooks {
 
 			} //if(*IS_HOLDING_SHIFT)
 
-		} //using double clicks, shift, ctrl...
+		} //using f64 clicks, shift, ctrl...
 
 		else {
 
@@ -486,7 +486,7 @@ namespace hooks {
 				//Recall the selection the unit belong to if there's one
 				//In this case, skip the code for a single unit handling
 
-				uint32 temp_unit_index = helper::CUnitToUnitID(clicked_unit);
+				u32 temp_unit_index = helper::CUnitToUnitID(clicked_unit);
 
 				if (helper::selectSingleUnitFromID(temp_unit_index) != 0)
 					bRecreatedSelectionThroughAltClick = true;

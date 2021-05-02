@@ -3,29 +3,29 @@
 #include <windows.h>
 
 namespace {
-	int moveScreen(int x, int y);
-	void centerviewUnitGroup(uint8 a1);
-	int selectUnitGroup(uint8 a2);
+	s32 moveScreen(s32 x, s32 y);
+	void centerviewUnitGroup(u8 a1);
+	s32 selectUnitGroup(u8 a2);
 }
 
 namespace hooks {
 	void initializeScreenLocations() {
 		for (Point16& point : screen_hotkeys) {
-			point = {(uint16)*MoveToX, (uint16)*MoveToY};
+			point = {(u16)*MoveToX, (u16)*MoveToY};
 		}
 	}
 
-	int saveScreenLocation(int id) {
-		screen_hotkeys[id] = {(uint16)*MoveToX, (uint16)*MoveToY};
+	s32 saveScreenLocation(s32 id) {
+		screen_hotkeys[id] = {(u16)*MoveToX, (u16)*MoveToY};
 		return id;
 	}
 
-	int recallScreenLocation(int id) {
+	s32 recallScreenLocation(s32 id) {
 		Point16& point = screen_hotkeys[id];
 		return moveScreen(point.x, point.y);
 	}
 
-	bool screenLocationSwitchCase(int n) {
+	bool screenLocationSwitchCase(s32 n) {
 		switch (n) {
 			case 169:
 				//saveScreenLocation(0);
@@ -52,8 +52,8 @@ namespace hooks {
 	}
 
 	void handleScreenHotkeys() { // a hacky workaround, checked every frame
-		for (int i = 0; i < 8; i++) {
-			int key = VK_F1 + i;
+		for (s32 i = 0; i < 8; i++) {
+			s32 key = VK_F1 + i;
 			if (GetKeyState(key) & 0x8000) {
 				if (GetKeyState(VK_SHIFT) & 0x8000 || GetKeyState(VK_CONTROL) & 0x8000) {
 					saveScreenLocation(i);
@@ -70,9 +70,9 @@ namespace hooks {
 }
 
 namespace {
-	const uint32 moveScreen_function = 0x0049C440;
-	int moveScreen(int x, int y) {
-		static int result;
+	const u32 moveScreen_function = 0x0049C440;
+	s32 moveScreen(s32 x, s32 y) {
+		static s32 result;
 		_asm {
 			PUSHAD
 			MOV EAX, x
@@ -85,8 +85,8 @@ namespace {
 	}
 
 
-	const uint32 centerviewUnitGroup_function = 0x004967E0;
-	void centerviewUnitGroup(uint8 a1) {
+	const u32 centerviewUnitGroup_function = 0x004967E0;
+	void centerviewUnitGroup(u8 a1) {
 		_asm {
 			PUSHAD
 			PUSH a1
@@ -95,9 +95,9 @@ namespace {
 		}
 	}
 
-	const uint32 selectUnitGroup_function = 0x00496B40;
-	int selectUnitGroup(uint8 a2) {
-		static int result;
+	const u32 selectUnitGroup_function = 0x00496B40;
+	s32 selectUnitGroup(u8 a2) {
+		static s32 result;
 		_asm {
 			PUSHAD
 			PUSH a2

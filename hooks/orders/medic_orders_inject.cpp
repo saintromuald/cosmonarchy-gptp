@@ -87,7 +87,7 @@ namespace {
 	void __declspec(naked) AI_AcquireHealTarget_Wrapper() {
 		static CUnit* a1;
 		static CUnit* a2;
-		static uint32 result;
+		static u32 result;
 		__asm
 		{
 			MOV a1, EBX
@@ -106,7 +106,7 @@ namespace {
 	void __declspec(naked) doMedicHeal_Wrapper() {
 		static CUnit* medic;
 		static CUnit* target;
-		static uint32 result;
+		static u32 result;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP

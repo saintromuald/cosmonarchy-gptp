@@ -1,15 +1,15 @@
 #include "sight_range.h"
 #include <hook_tools.h>
 
-extern const uint32 Func_GetSightRange;	//Defined in CUnit.cpp
+extern const u32 Func_GetSightRange;	//Defined in CUnit.cpp
 
 namespace {
 
 	void __declspec(naked) getSightRangeWrapper() {
 
 		static CUnit* unit;
-		static bool32 isForSpellCasting;
-		static uint32 sightRange;
+		static b32 isForSpellCasting;
+		static u32 sightRange;
 
 		__asm {
 

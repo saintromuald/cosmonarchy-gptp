@@ -4,12 +4,12 @@
 
 namespace {
 	void __declspec(naked) genericRightClickUnitProc2_Wrapper() { // 00455E00
-		static int32 result;
+		static s32 result;
 		static CUnit* unit;
-		static int32 a2;
-		static int16 a3;
+		static s32 a2;
+		static s16 a3;
 		static CUnit* target;
-		static int16 unitID;
+		static s16 unitID;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -37,7 +37,7 @@ namespace {
 
 	void __declspec(naked) CMDRECV_HoldPosition_Wrapper() { // 004C20C0
 		static CUnit* result;
-		static int32 a1;
+		static s32 a1;
 		__asm {
 			MOV a1, EDI
 			PUSHAD
@@ -53,7 +53,7 @@ namespace {
 	void __declspec(naked) unitCanSeeCloakedTarget_Wrapper() { // 00401D60
 		static CUnit* target;
 		static CUnit* unit;
-		static uint32 result;
+		static u32 result;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -75,7 +75,7 @@ namespace {
 	}
 
 	void __declspec(naked) isTargetVisible_Wrapper() { // 004E5E30
-		static uint32 result;
+		static u32 result;
 		static CUnit* target;
 		static CUnit* unit;
 		__asm {
@@ -92,7 +92,7 @@ namespace {
 	}
 
 	void __declspec(naked) isUnitVisible_Wrapper() { // 004E5DB0
-		static uint32 result;
+		static u32 result;
 		static CUnit* unit;
 		__asm {
 			MOV unit, ESI
@@ -120,7 +120,7 @@ namespace {
 	}
 
 	void __declspec(naked) isUnitCloaking_Wrapper() { // 004916E0
-		static int32 result;
+		static s32 result;
 		static CUnit* unit;
 		__asm {
 			MOV unit, ECX

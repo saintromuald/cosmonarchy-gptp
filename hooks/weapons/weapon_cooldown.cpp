@@ -10,9 +10,9 @@ namespace hooks {
 	/// Calculates the unit's weapon cooldown, factoring in upgrades and status effects.
 	///
 	/// @return		The modified cooldown value.
-	uint32 getModifiedWeaponCooldownHook(CUnit* unit, uint8 weaponId) {
+	u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId) {
 
-		uint32 cooldown = weapons_dat::Cooldown[weaponId];
+		u32 cooldown = weapons_dat::Cooldown[weaponId];
 
 		// Devourer - Corrosive Spores: lower attack speed of victim
 		if (scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks) != 0) {
@@ -20,12 +20,12 @@ namespace hooks {
 		}
 
 		// Set modifier based on Stim (increase), Ensnare (decrease), and attackspeed upgrades (increase)
-		int cooldownModifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
+		s32 cooldownModifier = (unit->stimTimer ? 1 : 0) - (unit->ensnareTimer ? 1 : 0)
 			+ (unit->status & UnitStatus::CooldownUpgrade ? 1 : 0);
 
 		// Vassal Terminal Surge behavior
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit) {
-			double stacks = scbw::get_generic_value(unit, ValueId::TerminalSurge);
+			f64 stacks = scbw::get_generic_value(unit, ValueId::TerminalSurge);
 			if (stacks > 0) {
 				cooldown /= 1.0 + 0.05 * stacks;
 			}
@@ -33,23 +33,23 @@ namespace hooks {
 
 		// Madcap Maverick Feeders behavior: increase weapon speed while stationary
 		if (unit->id == UnitId::TerranMadcap) {
-			uint32 stacks = ceil((double)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime);
+			u32 stacks = ceil((f64)scbw::get_generic_value(unit, ValueId::MadcapStacks) / MadcapPassiveDecayTime);
 			if (stacks > 0) {
 				//scbw::printString(std::to_string(stacks) + ", " + std::to_string(scbw::get_generic_value(unit, ValueId::MadcapStacks)));
-				double newCooldown = (double)cooldown * (1.0 - stacks * MadcapAttackSpeedPerStack);
+				f64 newCooldown = (f64)cooldown * (1.0 - stacks * MadcapAttackSpeedPerStack);
 				cooldown = newCooldown;
 			}
 		}
 
 		// Blackjack Wear and Tear: reduce weapon speed based on missing health
 		else if (unit->id == UnitId::TerranBlackjack) {
-			const uint32 health = unit->hitPoints / 256;
-			const uint32 maxHealth = unit->getMaxHpInGame();
-			const double multiplier = MathUtils::map(health, (uint32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
+			const u32 health = unit->hitPoints / 256;
+			const u32 maxHealth = unit->getMaxHpInGame();
+			const f64 multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
 			cooldown /= multiplier;
 		}
 
-		// Kaiser Rampage upgrade: gains double attack speed for 1 second on kill
+		// Kaiser Rampage upgrade: gains f64 attack speed for 1 second on kill
 		if (unit->id == UnitId::ZergUltrakor) {
 			if (scbw::get_generic_timer(unit, ValueId::KaiserRampage) > 0) {
 				cooldown /= 2;
@@ -84,7 +84,7 @@ namespace hooks {
 		} if (unit->stimTimer) { // Fixes aice-related Stimpack issue
 			cooldown += 2;
 		}
-		uint32 adrenalStacks = scbw::get_generic_value(unit, ValueId::AdrenalStacks);
+		u32 adrenalStacks = scbw::get_generic_value(unit, ValueId::AdrenalStacks);
 		if (adrenalStacks) {
 			cooldown -= adrenalStacks / 2;
 		}

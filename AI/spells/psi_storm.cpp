@@ -7,7 +7,7 @@ namespace AI {
 
 	CUnit* findBestPsiStormTarget(CUnit* caster, bool isUnderAttack) {
 
-		int bounds;
+		s32 bounds;
 
 		if (isUnderAttack)
 			bounds = 32 * 9;
@@ -31,11 +31,11 @@ namespace AI {
 			if (!scbw::canWeaponTargetUnit(WeaponId::PsiStorm, target, caster))
 				return false;
 
-			const int totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::PsiStorm);
+			const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::PsiStorm);
 			if (!isUnderAttack && totalEnemyLife < 250)
 				return false;
 
-			const int totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::PsiStorm);
+			const s32 totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::PsiStorm);
 			if (totalAllyLife * 2 >= totalEnemyLife)
 				return false;
 

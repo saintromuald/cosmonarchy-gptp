@@ -16,7 +16,7 @@ namespace hooks {
 		}
 	}
 
-	void CMDRECV_Burrow(uint8 bCommandType) {
+	void CMDRECV_Burrow(u8 bCommandType) {
 		CUnit* selected_unit;
 		*selectionIndexStart = 0;
 		selected_unit = getActivePlayerNextSelection();
@@ -36,8 +36,8 @@ namespace hooks {
 				helper::function_004754F0(
 					selected_unit,
 					UnitId::None,
-					*(uint32*)(0x006D5C24),
-					*(uint32*)(0x006D5C20),
+					*(u32*)(0x006D5C24),
+					*(u32*)(0x006D5C20),
 					OrderId::Burrow,
 					0,
 					bCommandType,

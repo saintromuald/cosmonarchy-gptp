@@ -2,7 +2,7 @@
 #include "../SCBW/structures/CUnit.h"
 
 struct DetectorCheckParam {
-  uint32 visionFlags;
+  u32 visionFlags;
   CUnit* target;
 };
 

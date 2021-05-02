@@ -12,16 +12,16 @@ namespace graphics {
 //All coordinates are relative to screen.
 class Shape {
   public:
-    void setText(int x, int y, int stringIndex, FontSize fontSize, CoordType coordType);
-    void setDot(int x, int y, ColorId color, CoordType coordType);
-    void setLine(int x1, int y1, int x2, int y2, ColorId color, CoordType coordType);
-    void setBox(int left, int top, int right, int bottom, ColorId color, CoordType coordType);
-    void setCircle(int x, int y, int radius, ColorId color, CoordType coordType);
-    void setFilledBox(int left, int top, int right, int bottom, ColorId color, CoordType coordType);
-    void setFilledCircle(int x, int y, int radius, ColorId color, CoordType coordType);
-    void setEllipse(int left, int top, int right, int bottom, ColorId color, CoordType coordType);
-    void setDottedLine(int x1, int y1, int x2, int y2, ColorId color, CoordType coordType);
-    void setDottedEllipse(int left, int top, int right, int bottom, ColorId color, CoordType coordType);
+    void setText(s32 x, s32 y, s32 stringIndex, FontSize fontSize, CoordType coordType);
+    void setDot(s32 x, s32 y, ColorId color, CoordType coordType);
+    void setLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType coordType);
+    void setBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType);
+    void setCircle(s32 x, s32 y, s32 radius, ColorId color, CoordType coordType);
+    void setFilledBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType);
+    void setFilledCircle(s32 x, s32 y, s32 radius, ColorId color, CoordType coordType);
+    void setEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType);
+    void setDottedLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType coordType);
+    void setDottedEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType);
     void draw() const;
 
   private:
@@ -41,10 +41,10 @@ class Shape {
     CoordType coordType;
     Point32 p1;
     Point32 p2;
-    int radius;
+    s32 radius;
     ColorId color;
     FontSize fontSize;
-    int stringIndex;
+    s32 stringIndex;
 };
 
 } //graphics

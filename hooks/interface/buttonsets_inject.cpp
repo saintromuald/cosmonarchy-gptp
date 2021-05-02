@@ -129,11 +129,11 @@ namespace {
 	//Don't replace the entire function
 	//You can (and should) disable this if you're
 	//already using the hooked 4591D0 function.
-	const uint32 Func_Sub_4591ED = 0x004591ED;
-	const uint32 Patch_For_Sub4591D0_Back = 0x004591F4;
+	const u32 Func_Sub_4591ED = 0x004591ED;
+	const u32 Patch_For_Sub4591D0_Back = 0x004591F4;
 	void __declspec(naked) getButtonSetPatch_For_Sub4591D0() {
 
-		static uint32 index;
+		static u32 index;
 		static BUTTON_SET* returnValue;
 
 		__asm {
@@ -164,7 +164,7 @@ namespace {
 } //unnamed namespace
 
 void __declspec(naked) get_stattxt_string_Wrapper() {
-	static uint16 stringId;
+	static u16 stringId;
 	static const char* message;
 	__asm {
 
@@ -204,7 +204,7 @@ void __declspec(naked) get_stattxt_string_Wrapper() {
 	}
 	*/
 
-	for (int i = 0; i < generictoggles; i++) {
+	for (s32 i = 0; i < generictoggles; i++) {
 		if (stringId == string_toggle_on[i]) {
 			if (scbw::get_generic_value(*activePortraitUnit, toggle_values[i]) == 1) {
 				stringId = string_toggle_off[i];

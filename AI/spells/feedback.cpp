@@ -6,7 +6,7 @@
 namespace AI {
 	CUnit* findBestFeedbackTarget(CUnit* caster, bool isUnderAttack) {
 
-		int bounds;
+		s32 bounds;
 
 		if (isUnderAttack)
 			bounds = 32 * 9;

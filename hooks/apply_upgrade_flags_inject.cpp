@@ -26,7 +26,7 @@ namespace {
 	void __declspec(naked) applyUpgradeFlagsToExistingUnitsWrapper() {
 
 		static CUnit* unit;
-		static uint8 upgradeId;
+		static u8 upgradeId;
 
 		__asm {
 

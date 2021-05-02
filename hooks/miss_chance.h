@@ -3,6 +3,6 @@
 
 namespace hooks {
 
-	int canHitTargetCheck(CUnit* a1, CUnit* a2);	// 004765B0
+	s32 canHitTargetCheck(CUnit* a1, CUnit* a2);	// 004765B0
 	void injectMissChanceHooks();
 }

@@ -48,7 +48,7 @@ namespace {
 
 	void __declspec(naked) CMDRECV_StopWrapper() {
 
-		static uint8 bCommandType;
+		static u8 bCommandType;
 
 		__asm {
 			MOV AL, [EDI + 0x01]

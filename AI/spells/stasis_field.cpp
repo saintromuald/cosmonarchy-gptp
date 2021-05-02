@@ -6,7 +6,7 @@
 namespace AI {
 
 	CUnit* findBestStasisFieldTarget(CUnit* caster, bool isUnderAttack) {
-		int bounds;
+		s32 bounds;
 		if (isUnderAttack)
 			bounds = 32 * 9;
 		else if (isUmsMode(caster->playerId))
@@ -41,11 +41,11 @@ namespace AI {
 			if (caster->isTargetEnemy(targetOfTarget))
 				return false;
 
-			const int totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::StasisField);
+			const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::StasisField);
 			if (!isUnderAttack && totalEnemyLife < 250)
 				return false;
 
-			const int totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::StasisField);
+			const s32 totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::StasisField);
 			if (totalAllyLife * 2 >= totalEnemyLife)
 				return false;
 

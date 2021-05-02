@@ -5,11 +5,11 @@
 
 namespace hooks {
 
-	int32 decrementRemainingBuildTime(CUnit* unit) { // 0x00466940
+	s32 decrementRemainingBuildTime(CUnit* unit) { // 0x00466940
 		if (!unit->remainingBuildTime) {
 			return 1;
 		}
-		uint16 multiplier = 1;
+		u16 multiplier = 1;
 		if (scbw::isCheatEnabled(CheatFlags::OperationCwal)) {
 			multiplier = 16;
 		}

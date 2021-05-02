@@ -5,7 +5,7 @@
 
   //Main names from Firegraft, comments names from vgce
 namespace ButtonRequirements {
-	enum Enum : uint32 {
+	enum Enum : u32 {
 		Slow_Down_Replay = 0x004DEB40,																	//BTNSCOND_ReplaySlowDown
 		Speed_Up_Replay = 0x004DEAF0,																	//BTNSCOND_ReplaySpeedUp
 		PlayorPause_Replay = 0x004DEAC0,																//BTNSCOND_ReplayPlayPause
@@ -80,7 +80,7 @@ namespace ButtonRequirements {
 
 //Main names from Firegraft, comments names from vgce
 namespace ButtonActions {
-	enum Enum : uint32 {
+	enum Enum : u32 {
 		Cancel_Infestation = 0x00423180,																//BTNSACT_DoNothing
 		Rally_Point = 0x004244A0,																		//BTNSACT_RallyPoint
 		Select_Larva = 0x00423930,																		//BTNSACT_SelectLarva
@@ -168,7 +168,7 @@ BUTTON_SET* getCustomButtonSet() {
 
 	//For each button in the array until reaching the amount of buttonsInSet, copy the data for
 	//each member of the button structure from the marine to the custom set.
-	for (uint32 i = 0; i < customButtonSet.buttonsInSet; i++) {
+	for (u32 i = 0; i < customButtonSet.buttonsInSet; i++) {
 		customButtonsArray[i].actFunc = buttonSetTable[UnitId::TerranMaverick].firstButton[i].actFunc;
 		customButtonsArray[i].actStringID = buttonSetTable[UnitId::TerranMaverick].firstButton[i].actStringID;
 		customButtonsArray[i].actVar = buttonSetTable[UnitId::TerranMaverick].firstButton[i].actVar;
@@ -195,19 +195,19 @@ namespace hooks {
 	//units are selected
 	void updateButtonSetEx() {
 
-		uint16* const BUTTONSET_CURRENT_BUTTONSETID = (uint16*)0x0068C1C4;
+		u16* const BUTTONSET_CURRENT_BUTTONSETID = (u16*)0x0068C1C4;
 
-		uint8 countWorkers = 0;
-		uint8 countCloakables = 0;
-		uint8 countNotInAirAndZergs = 0;
-		uint8 countBurrowables = 0;
+		u8 countWorkers = 0;
+		u8 countCloakables = 0;
+		u8 countNotInAirAndZergs = 0;
+		u8 countBurrowables = 0;
 
-		uint16 activeButtonSetId;
-		uint16 selectedButtonSetId;
+		u16 activeButtonSetId;
+		u16 selectedButtonSetId;
 
-		uint32 flagsHolder;
+		u32 flagsHolder;
 
-		int unitIndexFromSelection = 0;
+		s32 unitIndexFromSelection = 0;
 
 		CUnit* unitFromSelection;
 
@@ -294,17 +294,17 @@ namespace hooks {
 	void updateButtonSet_Sub458D50() {
 
 		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
-		uint8* const BUTTONSET_SUBUNIT_MAINORDERID = (uint8*)0x0068C1B8;
-		uint16* const BUTTONSET_MAINBUTTONGRAPHIC = (uint16*)0x0068C1BC;
-		uint8* const BUTTONSET_UNIT_MAINORDERID = (uint8*)0x0068C1E4;
+		u8* const BUTTONSET_SUBUNIT_MAINORDERID = (u8*)0x0068C1B8;
+		u16* const BUTTONSET_MAINBUTTONGRAPHIC = (u16*)0x0068C1BC;
+		u8* const BUTTONSET_UNIT_MAINORDERID = (u8*)0x0068C1E4;
 
-		uint8 currentUnitMainOrderId;
-		uint8 currentSubUnitMainOrderId;
+		u8 currentUnitMainOrderId;
+		u8 currentSubUnitMainOrderId;
 
-		uint16 currentUnitButtonIcon;
-		uint16 currentSubUnitButtonIcon;
+		u16 currentUnitButtonIcon;
+		u16 currentSubUnitButtonIcon;
 
-		uint16 usedButtonIcon;
+		u16 usedButtonIcon;
 
 		BinDlg* currentButtonDlg;
 
@@ -379,11 +379,11 @@ namespace hooks {
 	//updateSelectedUnitData (004C38B0)
 	void updateButtonSet() {
 
-		uint16* const BUTTONSET_PORTRAIT_BUTTONSETID = (uint16*)0x0068C14C;
-		uint16* const BUTTONSET_CURRENT_BUTTONSETID = (uint16*)0x0068C1C4;
-		uint16* const BUTTONSET_SPECIAL_BUTTONSETID = (uint16*)0x0068C1C8; //replay, cancel building...
+		u16* const BUTTONSET_PORTRAIT_BUTTONSETID = (u16*)0x0068C14C;
+		u16* const BUTTONSET_CURRENT_BUTTONSETID = (u16*)0x0068C1C4;
+		u16* const BUTTONSET_SPECIAL_BUTTONSETID = (u16*)0x0068C1C8; //replay, cancel building...
 
-		bool8* const bDoingCancellableTargetOrder = (bool8*)0x00641694;
+		b8* const bDoingCancellableTargetOrder = (b8*)0x00641694;
 
 		*BUTTONSET_SPECIAL_BUTTONSETID = UnitId::Buttons_Blank;
 		*BUTTONSET_PORTRAIT_BUTTONSETID = UnitId::Buttons_Blank;
@@ -424,7 +424,7 @@ namespace hooks {
 	//Note: if you use updateButtonSet_Sub4591D0,
 	//you can disable the injection of this
 	//function in the _inject.cpp file.
-	BUTTON_SET* getButtonSet(int index) {
+	BUTTON_SET* getButtonSet(s32 index) {
 		return &(buttonSetTable[index]);
 	}
 
@@ -435,22 +435,22 @@ namespace hooks {
 	void updateCurrentButtonset() {
 
 		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
-		uint16* const BUTTONSET_PORTRAIT_BUTTONSETID = (uint16*)0x0068C14C;
-		uint8* const BUTTONSET_SUBUNIT_MAINORDERID = (uint8*)0x0068C1B8;
-		uint16* const BUTTONSET_CURRENT_BUTTONSETID = (uint16*)0x0068C1C4;
-		uint16* const BUTTONSET_SPECIAL_BUTTONSETID = (uint16*)0x0068C1C8; //replay, cancel building...
-		uint8* const BUTTONSET_UNIT_MAINORDERID = (uint8*)0x0068C1E4;
+		u16* const BUTTONSET_PORTRAIT_BUTTONSETID = (u16*)0x0068C14C;
+		u8* const BUTTONSET_SUBUNIT_MAINORDERID = (u8*)0x0068C1B8;
+		u16* const BUTTONSET_CURRENT_BUTTONSETID = (u16*)0x0068C1C4;
+		u16* const BUTTONSET_SPECIAL_BUTTONSETID = (u16*)0x0068C1C8; //replay, cancel building...
+		u8* const BUTTONSET_UNIT_MAINORDERID = (u8*)0x0068C1E4;
 
-		uint32* const bCanUpdateCurrentButtonSet = (uint32*)0x0068C1B0;
+		u32* const bCanUpdateCurrentButtonSet = (u32*)0x0068C1B0;
 
 		bool jumpTo59A38 = false;
 		bool jumpTo59A9F = false;
 		bool jumpTo59A83 = false;
 		bool jumpTo59A86 = false;
 
-		uint8 mainOrderIdHolderUnit_EBP;
-		uint8 mainOrderIdHolderSubUnit_BL;
-		uint16 CX_Holder;
+		u8 mainOrderIdHolderUnit_EBP;
+		u8 mainOrderIdHolderSubUnit_BL;
+		u16 CX_Holder;
 
 		if (!*bCanUpdateCurrentButtonSet) {
 
@@ -641,23 +641,23 @@ namespace hooks {
 	void updateButtonSet_Sub4591D0() {
 
 		BinDlg** const BUTTONSET_DIALOG = (BinDlg**)0x0068C148;
-		uint16* const BUTTONSET_PORTRAIT_BUTTONSETID = (uint16*)0x0068C14C;
+		u16* const BUTTONSET_PORTRAIT_BUTTONSETID = (u16*)0x0068C14C;
 		auto buttonsetId = *BUTTONSET_PORTRAIT_BUTTONSETID;
 		if (buttonsetId == 215) {
 			buttonsetId = UnitId::Special_StartLocation;
 		}
 		BUTTON_SET* const current_buttonset = getButtonSet(buttonsetId);
-		uint32* const unknown_0066FF60 = (uint32*)0x0066FF60;
+		u32* const unknown_0066FF60 = (u32*)0x0066FF60;
 
 		bool bStopThere = false;
 		bool jumpto59336 = false;
 		bool jumpto5933C = false;
 		bool jumpto5934E = false;
 
-		int32 current_button_state;
+		s32 current_button_state;
 		BUTTON* current_button;
 		BinDlg* current_dialog;	//BinDlg version of the button most of the time
-		uint16 buttons_count = 0;
+		u16 buttons_count = 0;
 
 		current_dialog = *BUTTONSET_DIALOG;
 		current_button = current_buttonset->firstButton;
@@ -689,7 +689,7 @@ namespace hooks {
 
 					while (current_button_state == BUTTON_STATE::Invisible && (buttons_count < current_buttonset->buttonsInSet)) {
 
-						current_button_state = helper::req_check((uint32)current_button->reqFunc, (uint8)current_button->reqVar, (uint8)*LOCAL_NATION_ID, *activePortraitUnit);
+						current_button_state = helper::req_check((u32)current_button->reqFunc, (u8)current_button->reqVar, (u8)*LOCAL_NATION_ID, *activePortraitUnit);
 						if (current_button->reqFunc == (REQ_FUNC*)ButtonRequirements::Upgrade_Not_At_Max_Level) {
 							// Escalations were here
 						}
@@ -1214,7 +1214,7 @@ namespace hooks {
 							}
 
 							if ((*activePortraitUnit)->id != UnitId::ProtossMindTyrant) {
-								for (int i = 0; i < generictoggles; i++) {
+								for (s32 i = 0; i < generictoggles; i++) {
 									if (current_button->actVar == toggle_abilities[i]) {
 										// TODO: Cleanup
 										/*auto vId = toggle_values[i];
@@ -1240,7 +1240,7 @@ namespace hooks {
 							if (current_button->actVar == TechId::RescindMindControl) {
 								if ((*activePortraitUnit)->id == UnitId::ProtossMindTyrant) {
 									bool canCancel = false;
-									for (int i = 0; i < 12; i++) {
+									for (s32 i = 0; i < 12; i++) {
 										CUnit* selU = clientSelectionGroup->unit[i];
 										if (selU != nullptr && selU->id == UnitId::ProtossMindTyrant) {
 											if (scbw::get_aise_value(selU, nullptr, AiseId::SumMindControlCost, 0, 0) > 0) {
@@ -1288,14 +1288,14 @@ namespace hooks {
 
 							//592C2
 							struct {
-								uint32 unknown_value_1;	//[EBP-1C]	[00]
-								uint32 unknown_value_2;	//[EBP-18]	[04]
-								uint32 not_allocated;		//[EBP-14]	[08]
-								uint16 unknown_value_3;	//[EBP-10]	[0C]
-								int16 mouseX;				//[EBP-0E]	[0E]
-								int16 mouseY;				//[EBP-0C]	[10]
-								uint16 not_allocated_2;	//[EBP-0A]	[12]
-								uint32 buttonState;		//[EBP-08]	[14]
+								u32 unknown_value_1;	//[EBP-1C]	[00]
+								u32 unknown_value_2;	//[EBP-18]	[04]
+								u32 not_allocated;		//[EBP-14]	[08]
+								u16 unknown_value_3;	//[EBP-10]	[0C]
+								s16 mouseX;				//[EBP-0E]	[0E]
+								s16 mouseY;				//[EBP-0C]	[10]
+								u16 not_allocated_2;	//[EBP-0A]	[12]
+								u32 buttonState;		//[EBP-08]	[14]
 								BUTTON_SET* buttonset;	//[EBP-04]	[18]
 							} stack_placeholder;
 
@@ -1317,7 +1317,7 @@ namespace hooks {
 							stack_placeholder.buttonState = current_button_state;
 							stack_placeholder.buttonset = current_buttonset;
 
-							helper::fxnInteract(current_dialog, (uint32)&stack_placeholder);
+							helper::fxnInteract(current_dialog, (u32)&stack_placeholder);
 
 							current_button_state = stack_placeholder.buttonState;
 
@@ -1385,7 +1385,7 @@ namespace hooks {
 	  //size is 40 = 4 * 10 = 0x28
 	  //0x004598D0 is statbtn_Btn_Interact
 	  //0x00459890 is statbtn_BIN_ReplayProgressbar
-	const uint32 Btn_fxnInteractFuncs[] =
+	const u32 Btn_fxnInteractFuncs[] =
 	{
 		0x004598D0, 0x004598D0, 0x004598D0,
 		0x004598D0, 0x004598D0, 0x004598D0,
@@ -1398,7 +1398,7 @@ namespace hooks {
 	//May need a special case using the original array adress and size
 	//when in replay if modified
 	void statbtn_BIN_CustomCtrlID(BinDlg* dialog) {
-		helper::registerUserDialogAction(dialog, (uint32)&Btn_fxnInteractFuncs, sizeof(Btn_fxnInteractFuncs));
+		helper::registerUserDialogAction(dialog, (u32)&Btn_fxnInteractFuncs, sizeof(Btn_fxnInteractFuncs));
 		helper::BINDLG_BlitSurface(dialog);
 	}
 

@@ -40,7 +40,7 @@ void hydra_unit_ai(CUnit* unit) {
 	if (unit->id == UnitId::TerranApostle) {
 		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256) &&
 			scbw::get_generic_timer(unit, ValueId::AI_LazarusTimer) == 0) {
-			int count = 0;
+			s32 count = 0;
 			hydraFinderLoop(nullptr, unit->position, 128, CFlags::NoBuilding | CFlags::Ally |
 				CFlags::OnlyOrganic, {}, [&](CUnit* u) {
 				if (scbw::get_generic_value(u, ValueId::LazarusAgent) != 1) {
@@ -56,7 +56,7 @@ void hydra_unit_ai(CUnit* unit) {
 		//mines
 	} else if (unit->id == UnitId::TerranSavant) {
 		if (scbw::get_generic_timer(unit, ValueId::AI_SiphonTimer) == 0 && unit->mainOrderId != OrderId::PowerSiphon) {
-			int count = 0;
+			s32 count = 0;
 			hydraFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::SavantPowerSiphon],
 				CFlags::Ally | CFlags::Spellcaster, {}, [&](CUnit* u) {
 				if (u->energy < u->getMaxEnergy()) {
@@ -75,7 +75,7 @@ void hydra_unit_ai(CUnit* unit) {
 	}
 	/*	else if (unit->id == UnitId::ProtossClarion) {
 			if (scbw::get_generic_timer(unit, ValueId::AI_ClarionTimer) == 0 && unit->mainOrderId!=OrderId::KhaydarinEclipse) {
-				int count = 0;
+				s32 count = 0;
 				hydraFinderLoop(unit, unit->sprite->position, 128,
 					CFlags::Ally | CFlags::Shielded | CFlags::NotSelf, {}, [&](CUnit* u) {
 						count++;
@@ -98,10 +98,10 @@ void hydra_unit_ai(CUnit* unit) {
 			scbw::get_generic_timer(unit, ValueId::AI_QueenTimer) == 0) {
 			hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Parasite],
 				CFlags::NotSelf, {}, [&](CUnit* u) {
-				std::vector<std::pair<CUnit*, uint32>> group;
-				int supply = 0;
+				std::vector<std::pair<CUnit*, u32>> group;
+				s32 supply = 0;
 				hydraFinderLoop(u, u->position, 128, 0, {}, [&](CUnit* u2) {
-					uint32 priority = units_dat::SupplyRequired[u->id] * 100;
+					u32 priority = units_dat::SupplyRequired[u->id] * 100;
 					if (u->status & UnitStatus::InAir) {
 						priority /= 4;
 					}
@@ -159,8 +159,8 @@ void hydra_unit_ai(CUnit* unit) {
 		auto webs = hydraUnitCount(unit, unit->sprite->position, AIWebSeekRange, 0, {UnitId::Spell_DisruptionWeb});
 		auto allies = hydraUnitCount(unit, unit->sprite->position, AICorsairAllySeekRange, CFlags::Ally | CFlags::NotSelf, {});
 		auto enemies = hydraUnitCount(unit, unit->sprite->position, AICorsairEnemySeekRange, CFlags::Enemy, {});
-		auto percentage = (double)(unit->hitPoints + unit->shields) /
-			(double)(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id] * 256);
+		auto percentage = (f64)(unit->hitPoints + unit->shields) /
+			(f64)(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id] * 256);
 		if (web_state == 0) {
 			if (webs == 0 && unit->energy >= AIWebMinEnergy * 256 && percentage >= AICorsairLifePercentage
 				&& allies >= AIWebAllyMinCount && enemies >= AIWebEnemyMinCount) {
@@ -200,7 +200,7 @@ void hydra_unit_ai(CUnit* unit) {
 
 	//				scbw::print("Loop");
 					CUnit* tryTarget = u;
-					int innerCount = 0;
+					s32 innerCount = 0;
 					hydraFinderLoop(u, u->position, weapons_dat::MaxRange[WeaponId::Skyfall] , CFlags::Ally, {},
 						[&](CUnit* internalUnit) {
 						innerCount++;
@@ -212,8 +212,8 @@ void hydra_unit_ai(CUnit* unit) {
 
 						auto distance = scbw::getDistanceFast(source.x, source.y, target.x, target.y);
 						if (distance >= 64) {
-							double fraction = (distance - 64) / distance;
-							uint16 resultX, resultY;
+							f64 fraction = (distance - 64) / distance;
+							u16 resultX, resultY;
 							resultX = MathUtils::lerp(fraction, source.x, target.x, false);
 							resultY = MathUtils::lerp(fraction, source.y, target.y, false);
 							unit->orderTo(OrderId::Skyfall, u->position.x, u->position.y);

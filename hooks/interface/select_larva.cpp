@@ -8,9 +8,9 @@ namespace hooks {
 	/// outputList is an empty list of 12 (SELECTION_ARRAY_LENGTH) 
 	///slots to fill with larvae found in unitList.
 	///
-	uint32 getLarvaeUnitsFromListHook(CUnit** unitList, CUnit** outputList) {
+	u32 getLarvaeUnitsFromListHook(CUnit** unitList, CUnit** outputList) {
 		CUnit* current_unit = *unitList;
-		uint32 current_index = 0;
+		u32 current_index = 0;
 		if (current_unit != nullptr) {
 			bool bStopLoop = false;
 			while (!bStopLoop) {
@@ -45,7 +45,7 @@ namespace hooks {
 		Box16 coords;
 		CUnit** units_in_bounds;
 		CUnit* new_selection[SELECTION_ARRAY_LENGTH];
-		uint32 larvaeCount;
+		u32 larvaeCount;
 
 		coords.right = (*activePortraitUnit)->sprite->position.x + 128;
 		coords.bottom = (*activePortraitUnit)->sprite->position.y + 128;
@@ -64,7 +64,7 @@ namespace hooks {
 			bool bJumpToEnd = false;
 
 			if (larvaeCount == 1 && *IS_HOLDING_ALT != 0) {
-				uint32 unitID = helper::CUnitToUnitID(new_selection[0]);
+				u32 unitID = helper::CUnitToUnitID(new_selection[0]);
 				bJumpToEnd = (helper::selectSingleUnitFromID(unitID) != 0);
 			}
 

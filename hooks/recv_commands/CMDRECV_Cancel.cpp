@@ -76,7 +76,7 @@ namespace hooks {
 	}
 
 	// hooked because the default code didn't allow for multiple selection
-	void CMDRECV_CancelTrain(uint16 wUnitID) {
+	void CMDRECV_CancelTrain(u16 wUnitID) {
 		CUnit* unit;
 
 		*selectionIndexStart = 0;

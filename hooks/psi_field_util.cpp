@@ -14,7 +14,7 @@
 //The following unit types cannot make psi fields
 //  workers, factories, resource containers, ghosts, nydus canals, silos,
 //  hatcheries, and powerups
-bool isValidPsiProviderType(uint16 unitId) {
+bool isValidPsiProviderType(u16 unitId) {
 
 	if (unitId >= UNIT_TYPE_COUNT)
 		return false;
@@ -141,7 +141,7 @@ namespace hooks {
 
 			CUnit* selUnit;
 
-			for (int i = 0; i < SELECTION_ARRAY_LENGTH; i++) {
+			for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++) {
 
 				selUnit = clientSelectionGroup->unit[i];
 

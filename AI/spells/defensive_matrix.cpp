@@ -7,7 +7,7 @@ namespace AI {
 
 	CUnit* findBestDefensiveMatrixTarget(CUnit* caster, bool isUnderAttack) {
 
-		int bounds;
+		s32 bounds;
 
 		if (isUnderAttack)
 			bounds = 32 * 9;

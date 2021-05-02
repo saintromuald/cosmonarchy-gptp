@@ -4,9 +4,9 @@
 
 namespace hooks {
 	void initializeScreenLocations();
-	int saveScreenLocation(int id);
-	int recallScreenLocation(int id);
-	bool screenLocationSwitchCase(int n);
+	s32 saveScreenLocation(s32 id);
+	s32 recallScreenLocation(s32 id);
+	bool screenLocationSwitchCase(s32 n);
 
 	void handleScreenHotkeys();
 

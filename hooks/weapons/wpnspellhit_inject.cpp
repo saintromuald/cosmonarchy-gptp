@@ -9,7 +9,7 @@ namespace {
 
 		static CUnit* attacker;
 		static CUnit* target;
-		static uint8 attackingPlayerId;
+		static u8 attackingPlayerId;
 
 		__asm {
 
@@ -43,7 +43,7 @@ namespace {
 	void __declspec(naked) OpticalFlareHitWrapper() {
 
 		static CUnit* target;
-		static uint32 attackingPlayerId;
+		static u32 attackingPlayerId;
 		static CBullet* bullet;
 
 		__asm {
@@ -99,7 +99,7 @@ namespace {
 	void __declspec(naked) LockdownHitWrapper() {
 
 		static CUnit* target;
-		static uint8 previousLockdownTimer;
+		static u8 previousLockdownTimer;
 		static CBullet* bullet;
 
 		__asm {
@@ -158,7 +158,7 @@ namespace {
 
 		static CBullet* bullet;
 		static CUnit* target;
-		static uint32 hitFlags;
+		static u32 hitFlags;
 
 		__asm {
 
@@ -191,8 +191,8 @@ namespace {
 
 		static CUnit* attacker;
 		static CBullet* bullet;
-		static int x;
-		static int y;
+		static s32 x;
+		static s32 y;
 
 		__asm {
 
@@ -226,9 +226,9 @@ namespace {
 
 	void __declspec(naked) CorrosiveAcidHitWrapper() {
 
-		static int x;
-		static int y;
-		static uint32 playerId;
+		static s32 x;
+		static s32 y;
+		static u32 playerId;
 		static CBullet* bullet;
 
 		__asm {
@@ -287,8 +287,8 @@ namespace {
 	void __declspec(naked) EnsnareHitWrapper() {
 
 		static CUnit* attacker;
-		static int x;
-		static int y;
+		static s32 x;
+		static s32 y;
 		static CBullet* bullet;
 
 		__asm {
@@ -323,9 +323,9 @@ namespace {
 
 	void __declspec(naked) DarkSwarmHitWrapper() {
 
-		static int x;
-		static int y;
-		static uint32 attackingPlayerId;
+		static s32 x;
+		static s32 y;
+		static u32 attackingPlayerId;
 		static CBullet* bullet;
 
 		__asm {
@@ -399,8 +399,8 @@ namespace {
 	void __declspec(naked) PlagueHitWrapper() {
 
 		static CUnit* attacker;
-		static int x;
-		static int y;
+		static s32 x;
+		static s32 y;
 		static CBullet* bullet;
 
 		__asm {
@@ -436,8 +436,8 @@ namespace {
 	void __declspec(naked) MaelstromHitWrapper() {
 
 		static CUnit* attacker;
-		static int x;
-		static int y;
+		static s32 x;
+		static s32 y;
 		static CBullet* bullet;
 
 		__asm {
@@ -504,8 +504,8 @@ namespace {
 	void __declspec(naked) StasisFieldHitWrapper() {
 
 		static CUnit* attacker;
-		static int x;
-		static int y;
+		static s32 x;
+		static s32 y;
 		static CBullet* bullet;
 
 		__asm {
@@ -540,9 +540,9 @@ namespace {
 
 	void __declspec(naked) DisruptionWebHitWrapper() {
 
-		static int x;
-		static int y;
-		static uint32 playerId;
+		static s32 x;
+		static s32 y;
+		static u32 playerId;
 		static CBullet* bullet;
 
 		__asm {
@@ -575,11 +575,11 @@ namespace {
 
 	;
 
-	int __declspec(naked) ensnareProcWrapper() {
+	s32 __declspec(naked) ensnareProcWrapper() {
 
 		static CUnit* target;
 		static CUnit* attacker;
-		static int result;
+		static s32 result;
 
 		__asm {
 			MOV target, ECX
@@ -609,7 +609,7 @@ namespace {
 
 	void __declspec(naked) stasisFieldOverlayWrapper() {
 		static CUnit* unit;
-		static uint32 a2;
+		static u32 a2;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP

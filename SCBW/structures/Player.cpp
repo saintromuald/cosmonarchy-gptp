@@ -10,10 +10,10 @@
 
 graphics::ColorId PLAYER::getColor() {
 	assert(this);
-	return playersColors[(uint8)this->id];
+	return playersColors[(u8)this->id];
 }
 
-graphics::ColorId PLAYER::getColor(uint8 playerId) {
+graphics::ColorId PLAYER::getColor(u8 playerId) {
 	if (playerId < PLAYER_COUNT)
 		return playersColors[playerId];
 	else
@@ -25,7 +25,7 @@ graphics::ColorId PLAYER::getFactionColor() {
 	return getFactionColor(this->id);
 }
 
-graphics::ColorId PLAYER::getFactionColor(uint8 playerId) {
+graphics::ColorId PLAYER::getFactionColor(u8 playerId) {
 
 	//store a playerId until the end where it will properly store a ColorId
 	graphics::ColorId return_value;

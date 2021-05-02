@@ -9,19 +9,19 @@ namespace {/*
 	bool setLastOpenSlotToComputer(char a1); //004DBB70
 
 	// For loadGameCreate
-	signed int loadSave(); // 004CF5F0
-	signed int initSingleplayerHuman(); // 004DBE50
-	signed int createGame(int a1, char a2); // 004D3FC0
-	bool leaveGame(int a1); // 004C3D20
-	char setNetTblError(int a1, int a2, int a3, char a4, int a5); // 004BB300
+	s32 loadSave(); // 004CF5F0
+	s32 initSingleplayerHuman(); // 004DBE50
+	s32 createGame(s32 a1, char a2); // 004D3FC0
+	bool leaveGame(s32 a1); // 004C3D20
+	char setNetTblError(s32 a1, s32 a2, s32 a3, char a4, s32 a5); // 004BB300
 	bool nextLeaveGameMenu(void *a1); // 004DCC50
-	int sStrCopy(char a1, const char *a2, int a3); // 0041008E
-	signed int readMapData(int a1, const char *a2, int *a3, int a4); // 004BF5D0*/
+	s32 sStrCopy(char a1, const char *a2, s32 a3); // 0041008E
+	s32 readMapData(s32 a1, const char *a2, s32 *a3, s32 a4); // 004BF5D0*/
 }
 
 namespace hooks {
-	/*signed int singleplayerMeleeCreate() {
-		signed int v1; // esi
+	/*s32 singleplayerMeleeCreate() {
+		s32 v1; // esi
 
 		if (multiPlayerMode)
 			return 0;
@@ -43,8 +43,8 @@ namespace hooks {
 		return 1;
 	};
 
-	signed int loadGameCreate(int a1, char a2) { //004EE520 --
-		signed int result; // eax
+	s32 loadGameCreate(s32 a1, char a2) { //004EE520 --
+		s32 result; // eax
 		void* v3; // ecx
 
 		if (!loadGameFileHandle)
@@ -52,7 +52,7 @@ namespace hooks {
 		if (loadSave() && initSingleplayerHuman())
 		{
 			isHost = 0;
-			result = createGame((int)&gameData, a2);
+			result = createGame((s32)&gameData, a2);
 		}
 		else
 		{
@@ -75,11 +75,11 @@ namespace hooks {
 		return result;
 	};
 
-	signed int levelCheatCreate(char a1, int a2) { //004EE5B0 -- UNFINISHED
-		signed int result; // eax
+	s32 levelCheatCreate(char a1, s32 a2) { //004EE5B0 -- UNFINISHED
+		s32 result; // eax
 		const char *v3; // eax
 		void *v4; // ecx
-		int v5; // ecx
+		s32 v5; // ecx
 		__int8 *v6; // eax
 		void *v7; // eax
 		void *v8; // ecx
@@ -112,7 +112,7 @@ namespace hooks {
 		if ( !campaignIndex )
 		{
 		sStrCopy(&source, CurrentMapFileName, 0x104u);
-		if ( !readMapData((int)&v21, &source, (int *)&v21, 0) )
+		if ( !readMapData((s32)&v21, &source, (s32 *)&v21, 0) )
 		{
 			if ( !outOfGame )
 			{
@@ -136,10 +136,10 @@ namespace hooks {
 			if ( *v6 == 6 && ++v5 != 1 )
 				*v6 = 5;
 			v6 += 36;
-		} while ( (signed int)v6 < (signed int)&playerStructs[8].nType );
+		} while ( (s32)v6 < (s32)&playerStructs[8].nType );
 		goto LABEL_21;
 		}
-		if ( readMapData((int)&v21, *(const char **)&mapdataTable[4 * campaignIndex], (int *)&v21, 1) )
+		if ( readMapData((s32)&v21, *(const char **)&mapdataTable[4 * campaignIndex], (s32 *)&v21, 1) )
 		{
 		LABEL_21:
 		memset(&a1, 0, 0x8Cu);
@@ -149,7 +149,7 @@ namespace hooks {
 		v14 = 1;
 		v15 = 1;
 		v16 = optionList.speed;
-		v7 = readTemplate((int)"Use Map Settings(1)", a2, &v22, &v22);
+		v7 = readTemplate((s32)"Use Map Settings(1)", a2, &v22, &v22);
 		if ( v7 )
 		{
 			qmemcpy(&v18, v7, 0x20u);
@@ -157,7 +157,7 @@ namespace hooks {
 			if ( sub_4DBE50() )
 			{
 			isHost = 0;
-			result = CreateGame((int)&a1, v20);
+			result = CreateGame((s32)&a1, v20);
 			}
 			else
 			{
@@ -223,7 +223,7 @@ namespace hooks {
 }
 
 namespace {/*
-	const uint32 Func_switchComputerToOpen = 0x004DBBE0;
+	const u32 Func_switchComputerToOpen = 0x004DBBE0;
 	void switchComputerToOpen() {
 		__asm {
 			PUSHAD
@@ -232,7 +232,7 @@ namespace {/*
 		}
 	};
 
-	const uint32 Func_setLastOpenSlotToComputer = 0x004DBB70;
+	const u32 Func_setLastOpenSlotToComputer = 0x004DBB70;
 	bool setLastOpenSlotToComputer(char a1) {
 		static char a1;
 		static bool result;

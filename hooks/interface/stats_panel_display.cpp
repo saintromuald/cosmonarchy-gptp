@@ -4,7 +4,7 @@
 #include "hooks/interface/buttonsets.h"
 
 namespace hooks {
-	bool StatLobotomyMineCount(BinDlg* dialog, uint32 index) {
+	bool StatLobotomyMineCount(BinDlg* dialog, u32 index) {
 		auto v2 = *activePortraitUnit;
 		auto v3 = dialog;
 		// Originally had code for research, removed
@@ -52,18 +52,18 @@ namespace hooks {
 
 		BinDlg* current_dialog;
 		CUnit* activeUnit = *activePortraitUnit;
-		uint32 index = 0;
+		u32 index = 0;
 
 		if (!(activeUnit->status & UnitStatus::IsHallucination) ||
 			(!*IS_IN_REPLAY && activeUnit->playerId != *LOCAL_NATION_ID)
 			) {
 
 			bool bNoAirWeaponDisplay;
-			uint32 airWeapon;			//[EBP-01] then [EBP-05]
-			uint8 airWeaponMainUnit;	//BL
-			uint8 airWeaponSubunit;	//AL
+			u32 airWeapon;			//[EBP-01] then [EBP-05]
+			u8 airWeaponMainUnit;	//BL
+			u8 airWeaponSubunit;	//AL
 
-			uint16 unitId = helper::getLastQueueSlotType(activeUnit);
+			u16 unitId = helper::getLastQueueSlotType(activeUnit);
 
 			if (units_dat::ArmorUpgrade[unitId] != UpgradeId::GlobalUpgrade60) {
 				helper::StatsArmorLevel(dialog, index);
@@ -79,14 +79,14 @@ namespace hooks {
 				|| activeUnit->status & UnitStatus::Burrowed) {
 				bool bNoGroundWeaponDisplay = false;
 
-				uint32 groundWeapon;													//[EBP-05]
-				uint8 groundWeaponMainUnit = units_dat::GroundWeapon[activeUnit->id];	//BL
+				u32 groundWeapon;													//[EBP-05]
+				u8 groundWeaponMainUnit = units_dat::GroundWeapon[activeUnit->id];	//BL
 				if (activeUnit->id == UnitId::TerranMadrigal
 					&& scbw::get_generic_rust_value(activeUnit, ValueId::TempoChange)
 					&& groundWeaponMainUnit == WeaponId::MadrigalFuriaMissiles) {
 					groundWeaponMainUnit = WeaponId::MadrigalImperiosoMissiles;
 				}
-				uint8 groundWeaponSubunit;												//CL
+				u8 groundWeaponSubunit;												//CL
 
 				if (groundWeaponMainUnit == WeaponId::None) {
 					if (activeUnit->subunit == nullptr) {
@@ -163,7 +163,7 @@ namespace hooks {
 						}
 					}
 				if (!bNoAirWeaponDisplay) {
-					uint8 groundWeapon;	//AL
+					u8 groundWeapon;	//AL
 
 					//26DBE
 					if (activeUnit->id == UnitId::ZergLakizilisk && !(activeUnit->status & UnitStatus::Burrowed)) {
@@ -247,7 +247,7 @@ namespace hooks {
 	// Hooked to enable/disable rank display based on new unit definitions -- Pr0nogo
 	char* getUnitRankString(CUnit* a2) { // 0042F370
 		unsigned __int16 _type; // ax
-		int v2; // ecx
+		s32 v2; // ecx
 
 		_type = a2->id;
 		if (units_dat::BaseProperty[_type] & UnitProperty::NeutralAccessories
@@ -273,18 +273,18 @@ namespace hooks {
 	}
 
 	// Hooked to draw new values to icons -- Pr0nogo
-	void statsArmorLevel(BinDlg* dialog, int32 unused, uint16 buttonRelated) { // 00425600
+	void statsArmorLevel(BinDlg* dialog, s32 unused, u16 buttonRelated) { // 00425600
 		BinDlg* v3; // ebx
 		BinDlg* v4; // esi
 		void* v5; // ecx
-		int32 v6; // edx
+		s32 v6; // edx
 		CUnit* v7; // eax
-		uint16 v8; // di
-		uint16 v9; // cx
-		int16 v10; // di
-		uint16 v11; // ax
-		int32 v12; // eax
-		uint8 v13; // [esp+13h] [ebp-1h]
+		u16 v8; // di
+		u16 v9; // cx
+		s16 v10; // di
+		u16 v11; // ax
+		s32 v12; // eax
+		u8 v13; // [esp+13h] [ebp-1h]
 
 		v3 = dialog;
 		v13 = helper::getArmorCount(*activePortraitUnit, unused);
@@ -314,28 +314,28 @@ namespace hooks {
 		v7 = *activePortraitUnit;
 		v4->graphic = 12;
 		// TODO: Fix compiler error
-//		*(int32*)v6 = v5;
+//		*(s32*)v6 = v5;
 		if (v7->status & UnitStatus::Completed
-			|| (v8 = v7->buildQueue[(uint8)v7->buildQueueSlot], !scbw::isZergBuildingMorphResult(v8)))
+			|| (v8 = v7->buildQueue[(u8)v7->buildQueueSlot], !scbw::isZergBuildingMorphResult(v8)))
 		{
 			v9 = v7->id;
 		}
 		else
 		{
-			v9 = v7->buildQueue[(uint8)v7->buildQueueSlot];
+			v9 = v7->buildQueue[(u8)v7->buildQueueSlot];
 		}
-		*(int16*)(v6 + 4) = upgrades_dat::UpgradeIcon[(uint8)units_dat::ArmorUpgrade[v9]];
-		*(int16*)(v6 + 6) = UnitStatus::Completed;
+		*(s16*)(v6 + 4) = upgrades_dat::UpgradeIcon[(u8)units_dat::ArmorUpgrade[v9]];
+		*(s16*)(v6 + 6) = UnitStatus::Completed;
 		if (v7->status & UnitStatus::Completed
-			|| (v10 = v7->buildQueue[(uint8)v7->buildQueueSlot], !scbw::isZergBuildingMorphResult(v8)))
+			|| (v10 = v7->buildQueue[(u8)v7->buildQueueSlot], !scbw::isZergBuildingMorphResult(v8)))
 		{
 			v11 = v7->id;
 		}
 		else
 		{
-			v11 = v7->buildQueue[(uint8)v7->buildQueueSlot];
+			v11 = v7->buildQueue[(u8)v7->buildQueueSlot];
 		}
-		*(int16*)(v6 + 8) = (uint8)units_dat::ArmorUpgrade[v11];
+		*(s16*)(v6 + 8) = (u8)units_dat::ArmorUpgrade[v11];
 		v4->pszText = statusscreen_infobtn[buttonRelated];
 		v12 = v4->flags;
 		if (!(v12 & UnitStatus::Completed))
@@ -346,15 +346,15 @@ namespace hooks {
 		*unkUpgradeCount += v13;
 	}
 
-	void statsWeaponLevel(BinDlg* dialog, uint16 buttonRelated, uint8 weaponId) { // 00425790
+	void statsWeaponLevel(BinDlg* dialog, u16 buttonRelated, u8 weaponId) { // 00425790
 		BinDlg* v3; // ebx
-		int32 v4; // eax
-		uint8 v5; // al
+		s32 v4; // eax
+		u8 v5; // al
 		BinDlg* v6; // esi
-		int32 v7; // eax
+		s32 v7; // eax
 		void* v8; // ecx
-		int32 v9; // eax
-		int16 v10; // [esp+10h] [ebp-4h]
+		s32 v9; // eax
+		s16 v10; // [esp+10h] [ebp-4h]
 
 		v3 = dialog;
 		v4 = (*activePortraitUnit)->playerId;
@@ -388,10 +388,10 @@ namespace hooks {
 //		v7 = v6->user;
 		v8 = cmdicons_grp;
 		v6->graphic = 12;
-//		*(int32*)v7 = v8;
-		*(int16*)(v7 + 4) = weapons_dat::Icon[weaponId];
-		*(int16*)(v7 + 6) = 0;
-		*(int16*)(v7 + 8) = weaponId;
+//		*(s32*)v7 = v8;
+		*(s16*)(v7 + 4) = weapons_dat::Icon[weaponId];
+		*(s16*)(v7 + 6) = 0;
+		*(s16*)(v7 + 8) = weaponId;
 		v9 = v6->flags;
 		v6->pszText = statusscreen_infobtn[buttonRelated];
 		if (!(v9 & 1))

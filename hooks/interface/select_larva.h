@@ -3,7 +3,7 @@
 
 namespace hooks {
 
-	uint32 getLarvaeUnitsFromListHook(CUnit** unitList, CUnit** outputList);	// 00423190
+	u32 getLarvaeUnitsFromListHook(CUnit** unitList, CUnit** outputList);	// 00423190
 	void BTNSACT_SelectLarva();													// 00423930
 
 	void injectSelectLarvaHooks();

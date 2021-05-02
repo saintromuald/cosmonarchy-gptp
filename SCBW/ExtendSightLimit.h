@@ -10,29 +10,29 @@
 #pragma pack(1)
 
 namespace offsets {
-  const uint32 SightStructArrayRef   = 0x00480709; //The pointer to the SightStruct array must be injected here
-  const uint32 InitializeSightValues = 0x0042AD60; //The internal function responsible for setting up the array
+  const u32 SightStructArrayRef   = 0x00480709; //The pointer to the SightStruct array must be injected here
+  const u32 InitializeSightValues = 0x0042AD60; //The internal function responsible for setting up the array
 }
 
 struct SightStruct {
-  uint32 tileSightWidth;
-  uint32 tileSightHeight;
-  uint32 unknown1;
-  uint32 unknown2;
-  uint32 unknown3;
-  uint32 unknown4;
-  uint32 unknown5;
+  u32 tileSightWidth;
+  u32 tileSightHeight;
+  u32 unknown1;
+  u32 unknown2;
+  u32 unknown3;
+  u32 unknown4;
+  u32 unknown5;
 };
 
 C_ASSERT(sizeof(SightStruct) == 28);
 //static_assert(sizeof(SightStruct) == 28, "The size of the SightStruct structure is invalid");
 
 //Sight range varies between 0 and MAX_SIGHT_RANGE, inclusive
-template <unsigned int MAX_SIGHT_RANGE>
+template <u32 MAX_SIGHT_RANGE>
 void setMaxSightRange() {
   static SightStruct sightData[MAX_SIGHT_RANGE + 1] = {};
 
-  for (unsigned int x = 0; x <= MAX_SIGHT_RANGE; ++x) {
+  for (u32 x = 0; x <= MAX_SIGHT_RANGE; ++x) {
     sightData[x].tileSightWidth   = x * 2 + 3;
     sightData[x].tileSightHeight  = x * 2 + 3;
     sightData[x].unknown1 = 3;
@@ -41,8 +41,8 @@ void setMaxSightRange() {
 
   memoryPatch(offsets::SightStructArrayRef, &sightData);
 
-  const uint16 mapTileWidth = mapTileSize->width;
-  const uint32 sightRangeParam = MAX_SIGHT_RANGE + 1;
+  const u16 mapTileWidth = mapTileSize->width;
+  const u32 sightRangeParam = MAX_SIGHT_RANGE + 1;
   __asm {
     PUSHAD
     MOVZX EAX, mapTileWidth

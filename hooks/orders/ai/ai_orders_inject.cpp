@@ -58,7 +58,7 @@ namespace {
 	}
 
 	void __declspec(naked) AI_AddUnitAi_Wrapper() { // 00433DD0
-		static uint8 result;
+		static u8 result;
 		static CUnit* unit;
 		static AiTown* town;
 		__asm {
@@ -74,14 +74,14 @@ namespace {
 		}
 	}
 
-	const uint32 addUnitAiShortJump = 0x00433DED;
+	const u32 addUnitAiShortJump = 0x00433DED;
 	void __declspec(naked) AI_AddUnitAi_FreeWorkerCheck_JmpWrapper() {
 		static WorkerAiArray* free;
 		__asm {
 			MOV free, EDX
 			PUSHAD
 		}
-		if ((uint32)free <= 0x100000) {
+		if ((u32)free <= 0x100000) {
 			scbw::print("Corrupted pointer in AddUnitAi!");
 			__asm {
 				POPAD
@@ -100,11 +100,11 @@ namespace {
 
 	void __declspec(naked) AI_BuildTechUpgrade_Wrapper() { // 00431F90
 		static AiTown* town;
-		static int32 method;
-		static int32 amount;
-		static int32 id;
-		static int32 priority;
-		static int32 need;
+		static s32 method;
+		static s32 amount;
+		static s32 id;
+		static s32 priority;
+		static s32 need;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -135,8 +135,8 @@ namespace {
 	void __declspec(naked) AI_UnitWasHit_Wrapper() { // 0043F320
 		static CUnit* self;
 		static CUnit* attacker;
-		static int32 mainTargetReactions;
-		static int32 dontCallHelp;
+		static s32 mainTargetReactions;
+		static s32 dontCallHelp;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -178,7 +178,7 @@ namespace {
 
 	void __declspec(naked) AI_TrainAttackForce_Wrapper() { // 0043E670
 		static AiCaptain* region;
-		static uint32 result;
+		static u32 result;
 		__asm {
 			MOV region, EAX
 			PUSHAD
@@ -212,10 +212,10 @@ namespace {
 	}
 
 	void __declspec(naked) AI_GetMissingAttackForceUnits_Wrapper() { // 00438050
-		static uint32 result;
+		static u32 result;
 		static AiCaptain* region;
-		static uint32* unitIds;
-		static uint32 isCampaign;
+		static u32* unitIds;
+		static u32 isCampaign;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -240,9 +240,9 @@ namespace {
 	}
 
 	void __declspec(naked) AI_AddToAttack_Wrapper() { // 00447230
-		static uint32 result;
-		static uint32 player;
-		static uint32 unitId;
+		static u32 result;
+		static u32 player;
+		static u32 unitId;
 		__asm {
 			MOV result, EAX
 			MOV player, ECX
@@ -257,12 +257,12 @@ namespace {
 	}
 
 	void __declspec(naked) AI_AttackManager_Wrapper() { // 0043ABB0
-		static uint32 result;
-		static uint32 player;
-		static int32 x;
-		static int32 y;
-		static uint32 alwaysOverwriteLastAttack;
-		static uint32 allowFallbackAirOnly;
+		static u32 result;
+		static u32 player;
+		static s32 x;
+		static s32 y;
+		static u32 alwaysOverwriteLastAttack;
+		static u32 allowFallbackAirOnly;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -291,8 +291,8 @@ namespace {
 	}
 
 	void __declspec(naked) AI_HasUnitsForAttackForce_Wrapper() { // 00437F20
-		static int32 result;
-		static uint32 player;
+		static s32 result;
+		static u32 player;
 		__asm {
 			MOV player, EDX
 			PUSHAD

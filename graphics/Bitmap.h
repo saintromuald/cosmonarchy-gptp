@@ -9,36 +9,36 @@ namespace graphics {
 
 	class Bitmap {
 	public:
-		bool blitString(const char* pszStr, int x, int y, uint8 size);
-		uint16 getWidth() const;
-		uint16 getHeight() const;
+		bool blitString(const char* pszStr, s32 x, s32 y, u8 size);
+		u16 getWidth() const;
+		u16 getHeight() const;
 
-		void drawDot(int x, int y, ColorId color);
-		void drawLine(int x1, int y1, int x2, int y2, ColorId color);
-		void drawBox(int left, int top, int right, int bottom, ColorId color);
-		void drawFilledBox(int left, int top, int right, int bottom, ColorId color);
-		void drawCircle(int x, int y, int radius, ColorId color);
-		void drawFilledCircle(int x, int y, int radius, ColorId color);
-		void drawEllipse(int left, int top, int right, int bottom, ColorId color);
-		void drawDottedLine(int x1, int y1, int x2, int y2, ColorId color);
-		void drawDottedEllipse(int left, int top, int right, int bottom, ColorId color);
+		void drawDot(s32 x, s32 y, ColorId color);
+		void drawLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color);
+		void drawBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color);
+		void drawFilledBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color);
+		void drawCircle(s32 x, s32 y, s32 radius, ColorId color);
+		void drawFilledCircle(s32 x, s32 y, s32 radius, ColorId color);
+		void drawEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color);
+		void drawDottedLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color);
+		void drawDottedEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color);
 
 	private:
-		uint16 width, height;
-		uint8* data;
+		u16 width, height;
+		u8* data;
 
-		void drawHorizontalLine(int x1, int x2, int y, ColorId color);
-		void drawVerticalLine(int x, int y1, int y2, ColorId color);
-		void drawDotUnsafe(int x, int y, ColorId color);
-		void drawHorizontalLineUnsafe(int x1, int x2, int y, ColorId color);
-		void drawVerticalLineUnsafe(int x, int y1, int y2, ColorId color);
+		void drawHorizontalLine(s32 x1, s32 x2, s32 y, ColorId color);
+		void drawVerticalLine(s32 x, s32 y1, s32 y2, ColorId color);
+		void drawDotUnsafe(s32 x, s32 y, ColorId color);
+		void drawHorizontalLineUnsafe(s32 x1, s32 x2, s32 y, ColorId color);
+		void drawVerticalLineUnsafe(s32 x, s32 y1, s32 y2, ColorId color);
 
-		void blitKoreanChar(const char* ch, int& x, int& y, uint8 fontSize, uint8 color);
+		void blitKoreanChar(const char* ch, s32& x, s32& y, u8 fontSize, u8 color);
 
 		//Trivially checks whether the line should be drawn; based on the trivial
 		//check in the Cohen-Sutherland line clipping algorithm.
-		bool isLineTriviallyIgnorable(int x1, int y1, int x2, int y2);
-		int computeOutcode(int x, int y);
+		bool isLineTriviallyIgnorable(s32 x1, s32 y1, s32 x2, s32 y2);
+		s32 computeOutcode(s32 x, s32 y);
 	};
 
 } //graphics

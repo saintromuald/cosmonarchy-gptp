@@ -43,7 +43,7 @@ namespace hooks {
 
 			if (unit->orderSignal & 1) {
 
-				uint16 unitNewId;
+				u16 unitNewId;
 
 				unit->orderSignal -= 1;
 
@@ -118,7 +118,7 @@ namespace hooks {
 
 				if (helper::getCloserToDestination_sub402BE0(unit->subunit)) {
 
-					uint16 unitNewId = unit->id;
+					u16 unitNewId = unit->id;
 
 					//identical to @00463310
 					if (unit->id == UnitId::TerranPhalanxTankMode)

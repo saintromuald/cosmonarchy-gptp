@@ -28,7 +28,7 @@ namespace hooks {
 
 					while (!bStopLoop) {
 
-						uint8 orderId = (uint8)unit->orderQueueTail->orderId;
+						u8 orderId = (u8)unit->orderQueueTail->orderId;
 
 						if (
 							orders_dat::CanBeInterrupted[orderId] == 0 &&
@@ -143,7 +143,7 @@ namespace hooks {
 	//occured during testing
 	void orders_MoveUnload(CUnit* unit) {
 
-		uint32 distance;
+		u32 distance;
 
 		if (
 			unit->mainOrderState == 0 &&
@@ -189,7 +189,7 @@ namespace hooks {
 
 			if (unit->pAI != nullptr) {
 
-				uint32 groundHeightAtPxPos1 =
+				u32 groundHeightAtPxPos1 =
 					scbw::getGroundHeightAtPos(
 						unit->sprite->position.x,
 						unit->sprite->position.y
@@ -216,7 +216,7 @@ namespace hooks {
 						helper::getFirstLoadedWorker(unit) == 0
 						) {
 
-						int index = 0;
+						s32 index = 0;
 						bool bStopLoop = false;
 						bool bStopAll = false;
 						bool bIsDistanceGreaterThanHaltDistance =
@@ -435,7 +435,7 @@ namespace hooks {
 		static CUnit* unitTable_0059CB58 = (CUnit*)(0x0059CB58);
 		static CUnit* unitTable_0059CB64 = (CUnit*)(0x0059CB64);
 		if (globals.extended_unit_table == 1) {
-			const uint32 index_start = reinterpret_cast<uint32>(&new_unit_table.units[0]) - 336;
+			const u32 index_start = reinterpret_cast<u32>(&new_unit_table.units[0]) - 336;
 			unitTable_0059CB58 = (CUnit*)index_start;
 			unitTable_0059CB64 = (CUnit*)(index_start + 12);
 		}
@@ -445,12 +445,12 @@ namespace hooks {
 			unit->mainOrderTimer == 0
 			) {
 
-			int counter = 0;
-			uint32 result_E7F70 = 0;
+			s32 counter = 0;
+			u32 result_E7F70 = 0;
 			bool bEndLoop = false;
 			bool bFoundUnitToUnload = false;
 
-			uint32* loadedUnitOffset;
+			u32* loadedUnitOffset;
 
 			bool jump_to_E8191 = false;
 			bool jump_to_E8195 = false;
@@ -458,7 +458,7 @@ namespace hooks {
 
 			while (!bEndLoop) {
 
-				loadedUnitOffset = (uint32*)&unit->loadedUnit[counter];
+				loadedUnitOffset = (u32*)&unit->loadedUnit[counter];
 
 				if (*loadedUnitOffset != 0 &&
 					unitTable_0059CB64[unit->loadedUnit[counter].index].link.prev != nullptr //sprite check
@@ -566,10 +566,10 @@ namespace hooks {
 
 	bool canEnterTransport(CUnit* a1, CUnit* a2) { // 004E6E00
 		CUnit* v4; // edx
-		uint32 v7; // edi
-		uint32 v8; // esi
+		u32 v7; // edi
+		u32 v8; // esi
 		CUnit* v9; // eax
-		int32 v10; // [esp+4h] [ebp-4h]
+		s32 v10; // [esp+4h] [ebp-4h]
 
 		if (!(a1->status & UnitStatus::Completed)) {
 			return 0;
@@ -594,7 +594,7 @@ namespace hooks {
 				return 0;
 			}
 		}
-		//		&& (unitGetRace(a2) != 1 || units_dat::SpaceRequired[(uint16)v4->id] > 1u) // Original code
+		//		&& (unitGetRace(a2) != 1 || units_dat::SpaceRequired[(u16)v4->id] > 1u) // Original code
 		v7 = units_dat::SpaceProvided[a1->id];
 		v8 = 0;
 		v10 = 0;
@@ -602,11 +602,11 @@ namespace hooks {
 			do {
 				v9 = helper::getLoadedUnitFromIndex(a1, v8);
 				if (v9)
-					v10 += units_dat::SpaceRequired[(uint16)v9->id];
+					v10 += units_dat::SpaceRequired[(u16)v9->id];
 				++v8;
 			} while (v8 < v7);
 			v4 = a2;
 		}
-		return v7 - v10 >= units_dat::SpaceRequired[(uint16)v4->id];
+		return v7 - v10 >= units_dat::SpaceRequired[(u16)v4->id];
 	}
 }

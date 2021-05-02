@@ -4,31 +4,31 @@
 namespace hooks {
 	//this function receives the Attack/Attack Move commands and
 	//the spells commands, maybe more
-	void receive_command(int x, int y, CUnit* unitParam, uint32 wUnitType, uint32 bActionOrder, uint32 bCommandType) {
+	void receive_command(s32 x, s32 y, CUnit* unitParam, u32 wUnitType, u32 bActionOrder, u32 bCommandType) {
 
-		uint8 array_of_data[0x30];
-		uint16* saved_x = (uint16*)&array_of_data[0];					//[EBP-0x30]
-		uint16* saved_y = (uint16*)&array_of_data[2];					//[EBP-0x2E]
-		uint32* saved_unknown_1 = (uint32*)&array_of_data[0];			//[EBP-0x30] 
-		uint32* saved_unknown_2 = (uint32*)&array_of_data[4];			//[EBP-0x2C] 
-		uint32* saved_bCommandType = (uint32*)&array_of_data[0x1C];	//[EBP-0x14]
-		uint32* saved_order = (uint32*)&array_of_data[0x20];			//[EBP-0x10]
-		uint32* saved_order_2 = (uint32*)&array_of_data[0x24];		//[EBP-0x0C]
-		uint32* saved_order_3 = (uint32*)&array_of_data[0x28];		//[EBP-0x08]
+		u8 array_of_data[0x30];
+		u16* saved_x = (u16*)&array_of_data[0];					//[EBP-0x30]
+		u16* saved_y = (u16*)&array_of_data[2];					//[EBP-0x2E]
+		u32* saved_unknown_1 = (u32*)&array_of_data[0];			//[EBP-0x30] 
+		u32* saved_unknown_2 = (u32*)&array_of_data[4];			//[EBP-0x2C] 
+		u32* saved_bCommandType = (u32*)&array_of_data[0x1C];	//[EBP-0x14]
+		u32* saved_order = (u32*)&array_of_data[0x20];			//[EBP-0x10]
+		u32* saved_order_2 = (u32*)&array_of_data[0x24];		//[EBP-0x0C]
+		u32* saved_order_3 = (u32*)&array_of_data[0x28];		//[EBP-0x08]
 		CUnit** saved_unit = (CUnit**)&array_of_data[0x2C];		//[EBP-0x04]
 
-		uint8* switch_value = (uint8*)0x0049ADA0;
+		u8* switch_value = (u8*)0x0049ADA0;
 
 		*saved_x = x;
 		*saved_y = y;
 		*saved_order = bActionOrder;
 
-		helper::function_0049A8C0((uint8*)&array_of_data[0], orders_dat::CanBeObstructed[bActionOrder]);
+		helper::function_0049A8C0((u8*)&array_of_data[0], orders_dat::CanBeObstructed[bActionOrder]);
 
 		if (bActionOrder > OrderId::CTFCOP2 || switch_value[bActionOrder] == 1) {
 
 			CUnit* current_unit;
-			uint32 current_order = bActionOrder;	//EBX
+			u32 current_order = bActionOrder;	//EBX
 
 			*selectionIndexStart = 0;
 			current_unit = getActivePlayerNextSelection();
@@ -195,7 +195,7 @@ namespace hooks {
 								*saved_y = y;
 
 								if (wUnitType == UnitId::None)
-									helper::function_0049A500(current_unit, (uint8*)&array_of_data[0]);
+									helper::function_0049A500(current_unit, (u8*)&array_of_data[0]);
 								else
 									*saved_unknown_2 = *saved_unknown_1;
 

@@ -10,11 +10,11 @@ namespace hooks {
 	/// Note: Seek ranges are measured in matrices (1 matrix = 32 pixels).
 	/// This hook affects the behavior of CUnit::getSeekRange().
 	/// Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
-	uint8 getSeekRangeHook(CUnit* unit) { // seek range is measured in tiles, unfortunately
+	u8 getSeekRangeHook(CUnit* unit) { // seek range is measured in tiles, unfortunately
 
-		uint16 unitId = unit->id;
-		uint32 seekRange;
-		uint8 bonusAmount = 0;
+		u16 unitId = unit->id;
+		u32 seekRange;
+		u8 bonusAmount = 0;
 
 		switch (unitId) {
 			case UnitId::ProtossExemplar:
@@ -73,9 +73,9 @@ namespace hooks {
 	///
 	/// @param	weapon		The weapons.dat ID of the weapon.
 	/// @param	unit			The unit that owns the weapon. Use this to check upgrades.
-	uint32 getMaxWeaponRangeHook(CUnit* unit, uint8 weaponId) {
+	u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId) {
 		//Default StarCraft behavior
-		uint32 bonusAmount = 0;
+		u32 bonusAmount = 0;
 
 		//Give bonus range to units inside Bunkers
 		if (unit->status & UnitStatus::InBuilding) {

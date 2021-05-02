@@ -5,13 +5,13 @@
 
 namespace AI {
 
-	bool32 weaponBehaviourCanHitTargetCheck(CUnit* caster, CUnit* attacker, CUnit* target) {
+	b32 weaponBehaviourCanHitTargetCheck(CUnit* caster, CUnit* attacker, CUnit* target) {
 
-		bool32 returnValue;
+		b32 returnValue;
 
-		const uint32* offset_0x005873F0 = (uint32*)0x005873F0;
+		const u32* offset_0x005873F0 = (u32*)0x005873F0;
 
-		uint8 isUnderDarkSwarmStatus;
+		u8 isUnderDarkSwarmStatus;
 
 		//code equivalent to isUnderDarkSwarm @ 0x00476210, a function different 
 		//from scbw::isUnderDarkSwarm(target) that just seek a nearby 
@@ -26,8 +26,8 @@ namespace AI {
 				!scbw::isUnderDarkSwarm(target)
 				) {
 
-				int32 targetX = target->getX();
-				int32 targetY = target->getY();
+				s32 targetX = target->getX();
+				s32 targetY = target->getY();
 
 				if (targetX < 0)
 					targetX += 31;
@@ -85,14 +85,14 @@ namespace AI {
 					!(targetOfTarget->status & UnitStatus::InAir)
 					) {
 
-					uint8 totGroundWeapon = targetOfTarget->getGroundWeapon();
+					u8 totGroundWeapon = targetOfTarget->getGroundWeapon();
 
 					if (
 						totGroundWeapon != WeaponId::None &&
 						weapons_dat::Behavior[totGroundWeapon] == WeaponBehavior::AppearOnAttacker
 						) {
 
-						uint8 targetGroundWeapon;
+						u8 targetGroundWeapon;
 
 						if (target->subunit->isSubunit())
 							target = target->subunit;
@@ -101,7 +101,7 @@ namespace AI {
 
 						if (targetGroundWeapon != WeaponId::None) {
 
-							uint8 weapon_behavior = weapons_dat::Behavior[targetGroundWeapon];
+							u8 weapon_behavior = weapons_dat::Behavior[targetGroundWeapon];
 
 							if (
 								weapons_dat::Behavior[targetGroundWeapon] == WeaponBehavior::Fly_DoNotFollowTarget ||
@@ -150,7 +150,7 @@ namespace AI {
 		//if (targetOfTarget->status & UnitStatus::InAir)
 		//  return false;
 
-		//uint8 totGroundWeapon = targetOfTarget->getGroundWeapon();
+		//u8 totGroundWeapon = targetOfTarget->getGroundWeapon();
 
 		//if (totGroundWeapon == WeaponId::None)
 		//  return false;
@@ -161,7 +161,7 @@ namespace AI {
 		//if (target->subunit->isSubunit())
 		//  target = target->subunit;
 
-		//uint8 targetGroundWeapon = target->getGroundWeapon();
+		//u8 targetGroundWeapon = target->getGroundWeapon();
 
 		//if (targetGroundWeapon == WeaponId::None)
 		//  return false;
@@ -188,8 +188,8 @@ namespace AI {
 
 		//	if (!(targetOfTarget->status & UnitStatus::InAir || target->status & UnitStatus::InAir))
 		//	{
-		//	  uint32 targGndHeight = scbw::getGroundHeightAtPos(target->getX(), target->getY());
-		//	  uint32 totGndHeight = scbw::getGroundHeightAtPos(targetOfTarget->getX(), targetOfTarget->getY());
+		//	  u32 targGndHeight = scbw::getGroundHeightAtPos(target->getX(), target->getY());
+		//	  u32 totGndHeight = scbw::getGroundHeightAtPos(targetOfTarget->getX(), targetOfTarget->getY());
 		//	  if (targGndHeight < totGndHeight)
 		//		return true;
 		//	}
@@ -204,7 +204,7 @@ namespace AI {
 	//Based on AI_AssignBestDarkSwarmTarget @ 0x00442840
 	CUnit* findBestDarkSwarmTarget(CUnit* caster, bool isUnderAttack) {
 
-		int bounds;
+		s32 bounds;
 		if (isUnderAttack)
 			bounds = 32 * 9;	/*0x120*/
 		else if (isUmsMode(caster->playerId))

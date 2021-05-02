@@ -1,7 +1,7 @@
 #include "hooks\hydraFinder.h"
 
 
-bool rangeMatch(CUnit* unit, uint32 r, uint32 context, std::vector<uint16> allowedIds) {
+bool rangeMatch(CUnit* unit, u32 r, u32 context, std::vector<u16> allowedIds) {
 	scbw::UnitFinder unitsInSplash(unit->getX() - r, unit->getY() - r, unit->getX() + r, unit->getY() + r);
 	auto a = scbw::UnitFinder::getNearestTarget(
 		unit->getX() - r, unit->getY() - r,
@@ -11,12 +11,12 @@ bool rangeMatch(CUnit* unit, uint32 r, uint32 context, std::vector<uint16> allow
 	return a != nullptr;
 }
 
-uint32 hydraUnitCount(CUnit* unitPtr, Point16 pos, int r, uint32 flags, std::vector<uint16> unitIds) {
+u32 hydraUnitCount(CUnit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds) {
 	auto condition = unitRangeCount(unitPtr, flags, unitIds);
 	scbw::UnitFinder unitsInSplash(pos.x - r, pos.y - r,
 		pos.x + r, pos.y + r);
 	auto count = 0;
-	for (int i = 0; i < unitsInSplash.getUnitCount(); i++) {
+	for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++) {
 		auto unit = unitsInSplash.getUnit(i);
 		if (condition(unit)) {
 			count++;
@@ -24,7 +24,7 @@ uint32 hydraUnitCount(CUnit* unitPtr, Point16 pos, int r, uint32 flags, std::vec
 	}
 	return count;
 }
-CUnit* rangeMatchUnit(CUnit* unit, uint32 r, uint32 context, std::vector<uint16> allowedIds) {
+CUnit* rangeMatchUnit(CUnit* unit, u32 r, u32 context, std::vector<u16> allowedIds) {
 	scbw::UnitFinder unitsInSplash(unit->getX() - r, unit->getY() - r, unit->getX() + r, unit->getY() + r);
 	auto a = scbw::UnitFinder::getNearestTarget(
 		unit->getX() - r,
@@ -37,7 +37,7 @@ CUnit* rangeMatchUnit(CUnit* unit, uint32 r, uint32 context, std::vector<uint16>
 	return a;
 }
 
-CUnit* rangeMatchPosition(Point32 position, uint32 r, uint32 context, std::vector<uint16> allowedIds) {
+CUnit* rangeMatchPosition(Point32 position, u32 r, u32 context, std::vector<u16> allowedIds) {
 	scbw::UnitFinder unitsInSplash(position.x - r, position.y - r, position.x + r, position.x + r);
 	auto a = scbw::UnitFinder::getNearestTarget(
 		position.x - r,
@@ -50,7 +50,7 @@ CUnit* rangeMatchPosition(Point32 position, uint32 r, uint32 context, std::vecto
 	return a;
 }
 
-scbw::UnitFinderCallbackMatchInterface unitRangeCount(CUnit* center, uint32 context, std::vector<uint16> allowedUnitIds) {
+scbw::UnitFinderCallbackMatchInterface unitRangeCount(CUnit* center, u32 context, std::vector<u16> allowedUnitIds) {
 	scbw::UnitFinderCallbackMatchInterface callback = [=](CUnit* unit) {
 		if (unit == center && !(context & CFlags::IncludingSelf)) {
 			return false;
@@ -97,12 +97,12 @@ scbw::UnitFinderCallbackMatchInterface unitRangeCount(CUnit* center, uint32 cont
 		}
 		if (center) {
 			if (context & CFlags::FrontalArc) {
-				uint16 angle = scbw::getAngle(center->position.x, center->position.y,
+				u16 angle = scbw::getAngle(center->position.x, center->position.y,
 					unit->position.x, unit->position.y);
-				uint16 unit_angle = center->velocityDirection1;
-				int arc = (double)45 / 1.40625;
+				u16 unit_angle = center->velocityDirection1;
+				s32 arc = (f64)45 / 1.40625;
 				//90 degrees
-				int delta = unit_angle - angle;
+				s32 delta = unit_angle - angle;
 				delta = abs((delta + 128) % 256 - 128);
 				if (delta > arc) {
 					return false;

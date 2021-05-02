@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "types.h"
 #include <fstream>
 
 namespace GPTP {
@@ -21,7 +22,7 @@ namespace GPTP {
 		bool checkLogFile();
 		bool updateFrame();
 		std::ofstream logFile;
-		int lastUpdatedFrame;
+		s32 lastUpdatedFrame;
 	};
 	extern bool doLogging;
 	extern GameLogger logger;

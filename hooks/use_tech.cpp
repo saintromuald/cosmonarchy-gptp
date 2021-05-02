@@ -4,8 +4,8 @@
 #include "hook_tools.h"
 #include "SCBW/stat_txt_spec.h"
 
-extern const uint32 Func_TriTargetOrder = 0x0048CAF0;
-const void IssueTriTargetOrder(uint8 order1, uint8 order2, uint8 order3) {
+extern const u32 Func_TriTargetOrder = 0x0048CAF0;
+const void IssueTriTargetOrder(u8 order1, u8 order2, u8 order3) {
 	if (order2 == 0) {
 		_asm
 		{
@@ -41,9 +41,9 @@ const void IssueTriTargetOrder(uint8 order1, uint8 order2, uint8 order3) {
 	}
 }
 
-const int techUseFunc = 0x00423660;
-int Ui_CheckEnergyForTechUse(int tech_id) {
-	static int result;
+const s32 techUseFunc = 0x00423660;
+s32 Ui_CheckEnergyForTechUse(s32 tech_id) {
+	static s32 result;
 	__asm {
 		PUSHAD
 		MOV EAX, tech_id
@@ -55,7 +55,7 @@ int Ui_CheckEnergyForTechUse(int tech_id) {
 }
 
 namespace hooks {
-	void BTNSACT_UseTech(uint16 tech, GrpHead* head) {
+	void BTNSACT_UseTech(u16 tech, GrpHead* head) {
 		//replacement for proc 0x00423660
 		bool TechCapableUnit = false;
 		/*CUnit* currentClientSelectionUnit;
@@ -66,7 +66,7 @@ namespace hooks {
 		*/
 
 
-		/*		for (int i = 0; i < SELECTION_ARRAY_LENGTH && !TechCapableUnit; i++)
+		/*		for (s32 i = 0; i < SELECTION_ARRAY_LENGTH && !TechCapableUnit; i++)
 				{
 					currentClientSelectionUnit = clientSelectionGroup->unit[i];
 					if (currentClientSelectionUnit != nullptr)
@@ -79,7 +79,7 @@ namespace hooks {
 				}*/
 
 				/*
-			for (int i = 0; i < SELECTION_ARRAY_LENGTH && !TechCapableUnit; i++)
+			for (s32 i = 0; i < SELECTION_ARRAY_LENGTH && !TechCapableUnit; i++)
 			{
 				currentClientSelectionUnit = playersSelections->unit[*ACTIVE_NATION_ID][i];
 				//if still desync, try ACTIVE_PLAYER_ID
@@ -154,7 +154,7 @@ namespace hooks {
 
 			case TechId::EnsnaringBrood:
 			{
-				uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
 				buf[0] = 0x99;//new general command
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
@@ -168,7 +168,7 @@ namespace hooks {
 			/*
 			case TechId::SwarmingOmen:
 			{
-				uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
 				buf[0] = 0x99;//new general command
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
@@ -190,11 +190,11 @@ namespace hooks {
 				//			IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
 							//reverse thrust switch
 				if (firstInList != nullptr) {
-					int action = 1;//on
+					s32 action = 1;//on
 					if (scbw::get_generic_rust_value(firstInList, ValueId::ReverseThrust) == 1) {
 						action = 0;//off
 					}
-					uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
+					u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
 					buf[0] = 0x99;//new general command
 					buf[1] = NewGameCommand::GenericSwitchAbility;
 					buf[2] = action;
@@ -235,19 +235,19 @@ namespace hooks {
 				//0 - deploy
 				//1 - stop
 	/*			if (firstInList != nullptr) {
-					uint8 action = 0;
+					u8 action = 0;
 					if (firstInList->_padding_0x132 & 0x8) {
 						action = 1;
 					}
 					//set medstims
-					uint8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+					u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
 					buf[0] = 0x99;//new general command
 					buf[1] = NewGameCommand::ShamanAction;
 					buf[2] = action;
 					buf[3] = *ACTIVE_PLAYER_ID;
 					scbw::SendCommand(buf, 0xc);
 					//disable nanite field
-					uint8 bufNanite[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+					u8 bufNanite[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
 					bufNanite[0] = 0x99;//new general command
 					bufNanite[1] = NewGameCommand::GenericSwitchAbility;
 					bufNanite[2] = 0;
@@ -259,12 +259,12 @@ namespace hooks {
 			}
 			case TechId::NaniteField:
 			{
-				int action = 1;//on
+				s32 action = 1;//on
 				if (scbw::get_generic_rust_value(firstInList, ValueId::NaniteField) == 1) {
 					action = 0;//off
 				}
 				//set nanite field
-				uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
 				buf[0] = 0x99;//new general command
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
@@ -280,13 +280,13 @@ namespace hooks {
 					zoryusthaleth = false;
 				}
 
-				int action = 1; // on
+				s32 action = 1; // on
 				/*
 				if (zoryusthaleth) {
 					if (scbw::get_generic_rust_value(firstInList, ValueId::Reconstitution) == 1) {
 						action = 0; // off
 					}
-					uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
+					u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
 					buf[0] = 0x99;//new general command
 					buf[1] = NewGameCommand::GenericSwitchAbility;
 					buf[2] = action;
@@ -295,7 +295,7 @@ namespace hooks {
 					scbw::SendCommand(buf, 0xc);
 				} else {
 				*/
-				uint8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0}; // 12
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0}; // 12
 				buf[0] = 0x99; // new general command
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
@@ -310,12 +310,12 @@ namespace hooks {
 						//0 - off (enable splash mode)
 						//1 - on (disable splash mode)
 						if (firstInList != nullptr) {
-							int action = 0;//enable
+							s32 action = 0;//enable
 
 							if (scbw::get_aise_value(firstInList, nullptr, AiseId::SendCyprianValue, 0, 0) == 1) {
 								action = 1;//disable
 							}
-							uint8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+							u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
 							buf[0] = 0x99;//new general command
 							buf[1] = NewGameCommand::CyprianAction;
 							buf[2] = action;
@@ -330,9 +330,9 @@ namespace hooks {
 								scbw::print("Try use Tech38");
 								if (firstInList != nullptr) {
 									if (firstInList->id == 175) {//reliquary
-										uint8 relic_type = 0;
-										uint32 button_number = head->frameCount;
-										uint32 relic = 0;
+										u8 relic_type = 0;
+										u32 button_number = head->frameCount;
+										u32 relic = 0;
 										relic = scbw::get_aise_value(firstInList, nullptr, AiseId::GetRelicByIndex, button_number, 0);
 										char buf[64];
 										sprintf(buf, "Relic id: %d", relic);
@@ -367,11 +367,11 @@ namespace hooks {
 				IssueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
 
 				/*			if (firstInList != nullptr) {
-								int action = 0;//enable
+								s32 action = 0;//enable
 								if (scbw::get_generic_value(firstInList, ValueId::Observance) == 1) {
 									action = 1;//disable
 								}
-								uint8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+								u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
 								buf[0] = 0x99;//new general command
 								buf[1] = NewGameCommand::Observance;
 								buf[2] = action;
@@ -384,22 +384,22 @@ namespace hooks {
 				auto firstInList = clientSelectionGroup->unit[0];
 				if (firstInList != nullptr) {
 					if (firstInList->id == UnitId::ProtossClarion) {
-						int action = 0; // enable
+						s32 action = 0; // enable
 						if (scbw::get_aise_value(firstInList, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
 							action = 1; // disable
 						}
-						uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
+						u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
 						buf[0] = 0x99; // new general command
 						buf[1] = NewGameCommand::PhaseLink;
 						buf[2] = action;
 						buf[3] = *ACTIVE_PLAYER_ID;
 						scbw::SendCommand(buf, 0xc);
 					} else { // exemplar
-						int action = 1;//on
+						s32 action = 1;//on
 						if (scbw::get_generic_rust_value(firstInList, ValueId::ExemplarSwitch) == 1) {
 							action = 0;//off
 						}
-						uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
+						u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
 						buf[0] = 0x99; // new general command
 						buf[1] = NewGameCommand::GenericSwitchAbility;
 						buf[2] = action;
@@ -410,7 +410,7 @@ namespace hooks {
 					}
 				}
 				/*
-				uint8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
 				buf[0] = 0x99;//new general command
 				buf[1] = NewGameCommand::IssueCTFCop2;//used for Phase Link, Khaydarin Eclipse and (in Overlord) Anti-Air Mode
 				buf[2] = *ACTIVE_PLAYER_ID;
@@ -423,13 +423,13 @@ namespace hooks {
 			case TechId::PlanetCracker:
 			{
 				auto firstInList = clientSelectionGroup->unit[0];
-				uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
 				buf[0] = 0x99;//new general command
 				buf[1] = NewGameCommand::IssueCTFCop2;//used for Phase Link, Khaydarin Eclipse, and (in Overlord) Anti-Air Mode
 				buf[2] = *ACTIVE_PLAYER_ID;
 				scbw::SendCommand(buf, 0xc);
 				break;
-				/*uint8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
+				/*u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };//12
 				buf[0] = 0x99;//new general command
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
@@ -441,11 +441,11 @@ namespace hooks {
 			case TechId::UnusedTech40: // sublime shepherd
 			{
 
-				int action = 1;//on
+				s32 action = 1;//on
 				if (scbw::get_generic_rust_value(firstInList, ValueId::SublimeShepherd) == 1) {
 					action = 0;//off
 				}
-				uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
 				buf[0] = 0x99;//new general command
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
@@ -456,7 +456,7 @@ namespace hooks {
 			}
 			case TechId::LazarusAgent:
 			{
-				uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
 				buf[0] = 0x99;//new general command
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
@@ -470,11 +470,11 @@ namespace hooks {
 			case TechId::TempoChange:
 			{
 
-				int action = 1;//on
+				s32 action = 1;//on
 				if (scbw::get_generic_rust_value(firstInList, ValueId::TempoChange) == 1) {
 					action = 0;//off
 				}
-				uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
 				buf[0] = 0x99;//new general command
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
@@ -494,11 +494,11 @@ namespace hooks {
 				break;
 			case TechId::DisruptionWeb:
 			{
-				int action = 1;//on
+				s32 action = 1;//on
 				if (scbw::get_generic_rust_value(firstInList, ValueId::DisruptionWeb) == 1) {
 					action = 0;//off
 				}
-				uint8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
 				buf[0] = 0x99;//new general command
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;

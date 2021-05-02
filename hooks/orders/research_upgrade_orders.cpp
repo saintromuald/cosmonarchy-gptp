@@ -16,7 +16,7 @@ namespace hooks {
 
 			if (unit->building.upgradeResearchTime != 0xFFFF) {
 
-				uint8 upgradeLevel;
+				u8 upgradeLevel;
 
 				if (unit->building.upgradeType >= UpgradeId::PrismaticShield)
 					upgradeLevel = UpgradesBw->currentLevel[unit->playerId][unit->building.upgradeType - UpgradeId::PrismaticShield];
@@ -32,7 +32,7 @@ namespace hooks {
 			//5471D
 			if (!bStopThere) {
 
-				uint8 upgradeLevel;
+				u8 upgradeLevel;
 
 				helper::playUpgradeCompleteSound();
 
@@ -152,7 +152,7 @@ namespace hooks {
 
 			if (unit->building.upgradeResearchTime != 0xFFFF) {
 
-				uint8 bIsResearched;
+				u8 bIsResearched;
 
 				if (unit->building.techType < TechId::Restoration)
 					bIsResearched = TechSc->isResearched[unit->playerId][unit->building.techType];

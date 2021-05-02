@@ -31,7 +31,7 @@ namespace BuildingHelper {
 	}
 
 	//Identical to function @ 0x00466B70
-	int getNumberOfUnitTypeInBuildQueue(const CUnit* unit, uint16 unitId) {
+	s32 getNumberOfUnitTypeInBuildQueue(const CUnit* unit, u16 unitId) {
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker) {
 			if (getConstructRepairTarget(unit) == nullptr
 				&& unit->buildQueue[unit->buildQueueSlot % 5] == unitId
@@ -50,15 +50,15 @@ namespace BuildingHelper {
 			|| unit->mainOrderId == OrderId::ZergBuildSelf)
 			return (unit->buildQueue[unit->buildQueueSlot % 5] == unitId) ? 1 : 0;
 
-		int unitCount = 0;
-		for (int i = 0; i < 5; ++i) {
+		s32 unitCount = 0;
+		for (s32 i = 0; i < 5; ++i) {
 			if (unit->buildQueue[(unit->buildQueueSlot + i) % 5] == unitId)
 				++unitCount;
 		}
 		return unitCount;
 	}
 
-	int getNumberOfUnitType(const CUnit* unit, uint16 unitId, bool ignoreIncomplete) {
+	s32 getNumberOfUnitType(const CUnit* unit, u16 unitId, bool ignoreIncomplete) {
 		if (!ignoreIncomplete || unit->status & UnitStatus::Completed) {
 			if (unit->id == unitId)
 				return 1;

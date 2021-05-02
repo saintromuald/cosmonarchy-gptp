@@ -30,10 +30,10 @@ namespace {
 	//0x00429210
 	void __declspec(naked) cloakingTechWrapper_IsCloaked() {
 
-		static bool32 return_value;
-		static uint32 playerId;
+		static b32 return_value;
+		static u32 playerId;
 		static CUnit* unit;	//unused in original function
-		static uint16 reqVar;	//unused in original function
+		static u16 reqVar;	//unused in original function
 
 		__asm {
 			PUSH EBP
@@ -62,10 +62,10 @@ namespace {
 	//0x004292C0
 	void __declspec(naked) cloakingTechWrapper_CanCloak() {
 
-		static bool32 return_value;
-		static uint32 playerId;
+		static b32 return_value;
+		static u32 playerId;
 		static CUnit* unit;	//unused in original function
-		static uint16 reqVar;	//unused in original function
+		static u16 reqVar;	//unused in original function
 
 		__asm {
 			PUSH EBP
@@ -100,7 +100,7 @@ namespace {
 			return;
 
 		//original code is hardcoded instead of using a function like getCloakingTech
-		const uint16 energyCost = techdata_dat::EnergyCost[hooks::getCloakingTech(unit)] * 256;
+		const u16 energyCost = techdata_dat::EnergyCost[hooks::getCloakingTech(unit)] * 256;
 
 		if (scbw::isCheatEnabled(CheatFlags::TheGathering) || unit->energy >= energyCost) {
 
@@ -141,7 +141,7 @@ namespace {
 	;
 
 
-	const uint32 Func_ApplyCloak = 0x00491B30;
+	const u32 Func_ApplyCloak = 0x00491B30;
 	void applyCloakingOrderFunc(CUnit* unit) {
 		__asm {
 			PUSHAD
@@ -194,7 +194,7 @@ namespace {
 	void __declspec(naked) getCloakingTechWrapper() {
 
 		static CUnit* unit;
-		static uint8 result;
+		static u8 result;
 
 		__asm {
 			MOV unit, EAX
@@ -225,11 +225,11 @@ namespace {
 		}
 	}
 
-	bool32 __cdecl currentUnitSelectionCanCloakWrapper() {
+	b32 __cdecl currentUnitSelectionCanCloakWrapper() {
 
 		RaceId::Enum race;
 
-		for (int i = 0; i < SELECTION_ARRAY_LENGTH; ++i) {
+		for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i) {
 
 			CUnit* unit = clientSelectionGroup->unit[i];
 

@@ -80,7 +80,7 @@ namespace hooks {
 					//6448A
 					if (unit->getMovableState() != 0) {
 
-						int x, y;
+						s32 x, y;
 
 						x = units_dat::BuildingDimensions[unit->id].x;
 						y = units_dat::BuildingDimensions[unit->id].y;
@@ -98,7 +98,7 @@ namespace hooks {
 
 						//check for units occupying the landing zone before
 						//the final vertical movement started?
-						uint32 return_00473FB0 =
+						u32 return_00473FB0 =
 							helper::function_00473FB0(unit, unit->playerId, x, y, unit->id, 0, 0, 1, 0);
 
 						if (return_00473FB0 != 0) {
@@ -151,7 +151,7 @@ namespace hooks {
 						//64587:
 						if (!helper::isUnitPositions2Equal(unit)) {
 
-							int someValue =
+							s32 someValue =
 								scbw::getAngle(
 									unit->sprite->position.x,
 									unit->sprite->position.y,

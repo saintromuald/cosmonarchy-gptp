@@ -11,8 +11,8 @@ namespace hooks {
 		CUnit* finalUnit; // esi
 		unsigned __int8 _wpn; // bl
 		__int16 _id; // ax
-		int _maxRange; // eax
-		int v8; // eax
+		s32 _maxRange; // eax
+		s32 v8; // eax
 
 		_unit = a1;
 		if (!isTargetVisibleHook(a2, a1))
@@ -37,12 +37,12 @@ namespace hooks {
 		return v8 == 0;
 	}
 
-	signed int isReadyToAttack(CUnit* a1, unsigned __int8 a2) { // 00476640
+	s32 isReadyToAttack(CUnit* a1, unsigned __int8 a2) { // 00476640
 		CUnit* v2; // esi
 		CUnit* v4; // ecx
-		unsigned int v5; // eax
-		unsigned int v6; // eax
-		unsigned int v7; // edi
+		u32 v5; // eax
+		u32 v6; // eax
+		u32 v7; // edi
 		__int16 v8; // cx
 
 		v2 = a1;
@@ -71,8 +71,8 @@ namespace hooks {
 		CUnit* v4; // esi
 		unsigned __int8 v5; // bl
 		unsigned __int16 v6; // ax
-		unsigned int v7; // eax
-		int v8; // eax
+		u32 v7; // eax
+		s32 v8; // eax
 
 		v2 = a1;
 		if (!a1) {
@@ -107,14 +107,14 @@ namespace hooks {
 
 	char canCastOrderedSpellNow(CUnit* a1) { // 00491DB0
 		CUnit* v1; // esi
-		unsigned int v2; // eax
+		u32 v2; // eax
 		CUnit* v3; // edi
-		int v4; // ebx
-		int v5; // eax
-		int v6; // edi
-		int v7; // ST14_4
-		int v8; // ebx
-		unsigned int v9; // ebx
+		s32 v4; // ebx
+		s32 v5; // eax
+		s32 v6; // edi
+		s32 v7; // ST14_4
+		s32 v8; // ebx
+		u32 v9; // ebx
 
 		v1 = a1;
 		v2 = isUnitVisibleHook(a1);
@@ -130,14 +130,14 @@ namespace hooks {
 						v5 = 256 - v5;
 					if (v5 > 32)
 						LABEL_14:
-					v4 += helper::getFlingyHaltDistance((int)v1) >> 8;
+					v4 += helper::getFlingyHaltDistance((s32)v1) >> 8;
 				}
 				//ByteOperations::SetLowByte((UINT32)v2, (UINT8)isTargetWithinMinRange(v1, v4, v3)); // Needs fixing
 			} else {
 				v6 = v1->orderTarget.pt.y;
 				v7 = v1->orderTarget.pt.x;
 				v8 = helper::getUnitMaxWeaponRange(v1, orders_dat::OrderWeaponId[(unsigned __int8)v1->mainOrderId]);
-				v9 = (helper::getFlingyHaltDistance((int)v1) >> 8) + v8;
+				v9 = (helper::getFlingyHaltDistance((s32)v1) >> 8) + v8;
 				v2 = v9 >= helper::getDistanceFast(v1->halt.x, v7 << 8, v1->halt.y, v6 << 8) >> 8;
 			}
 		}
@@ -147,14 +147,14 @@ namespace hooks {
 	void ordersWatchTarget(CUnit* a1) { // 0047BAB0
 		CUnit* v1; // esi
 		CUnit* v2; // ebx
-		int v3; // eax
+		s32 v3; // eax
 		CUnit* v4; // ebx
 		CUnit* v5; // edi
 		unsigned __int8 v6; // bl
 		unsigned __int16 v7; // ax
-		unsigned int v8; // eax
-		int v9; // eax
-		int v10; // eax
+		u32 v8; // eax
+		s32 v9; // eax
+		s32 v10; // eax
 		CUnit* target; // [esp+Ch] [ebp-4h]
 
 		v1 = a1;
@@ -187,7 +187,7 @@ namespace hooks {
 			LABEL_23:
 				if (helper::getRightClickActionOrder(v1) == 3)
 					LABEL_22 :
-					helper::unknownOrdersFunc((int)v1, v1->orderTarget.pt.x, v1->orderTarget.pt.y);
+					helper::unknownOrdersFunc((s32)v1, v1->orderTarget.pt.x, v1->orderTarget.pt.y);
 			}
 		}
 	}
@@ -195,26 +195,26 @@ namespace hooks {
 	void ordersStayInRange(CUnit* a1) { // 0047C4F0
 		CUnit* v1; // esi
 		CUnit* v2; // ebx
-		int v3; // eax
+		s32 v3; // eax
 		CUnit* v4; // ebx
 		CUnit* v5; // edi
 		unsigned __int8 v6; // bl
 		unsigned __int16 v7; // ax
-		unsigned int v8; // eax
-		int v9; // eax
-		int v10; // eax
+		u32 v8; // eax
+		s32 v9; // eax
+		s32 v10; // eax
 		CUnit* v11; // edi
 		unsigned __int8 v12; // bl
 		unsigned __int16 v13; // ax
-		unsigned int v14; // eax
-		int v15; // eax
-		int v16; // eax
+		u32 v14; // eax
+		s32 v15; // eax
+		s32 v16; // eax
 		__int16 v17; // ax
-		int v18; // edi
-		int v19; // ebx
+		s32 v18; // edi
+		s32 v19; // ebx
 		char v20; // al
-		int v21; // ecx
-		int v22; // eax
+		s32 v21; // ecx
+		s32 v22; // eax
 		CUnit* target; // [esp+8h] [ebp-4h]
 
 		v1 = a1;
@@ -225,7 +225,7 @@ namespace hooks {
 			ByteOperations::SetLowByte(v3, helper::unitCanAttackTarget(v2, a1, 1));
 			if (!v3) {
 				if (!(v1->status & 0x8000000) && !v1->pAI)
-					helper::prependOrderTargetingGround(6u, v1->orderTarget.pt.x, v1->orderTarget.pt.y, (int)v1);
+					helper::prependOrderTargetingGround(6u, v1->orderTarget.pt.x, v1->orderTarget.pt.y, (s32)v1);
 				helper::toIdle(v1);
 				return;
 			}
@@ -320,8 +320,8 @@ namespace hooks {
 		}
 	}
 
-	int32 genericRightClickUnitProc2(CUnit* unit, int32 a2, int16 a3, CUnit* target, int16 unitID) { // 00455E00
-		int32 result; // eax
+	s32 genericRightClickUnitProc2(CUnit* unit, s32 a2, s16 a3, CUnit* target, s16 unitID) { // 00455E00
+		s32 result; // eax
 		CUnit* targetVar; // esi
 
 		if (unit->status & UnitStatus::GroundedBuilding) {
@@ -346,20 +346,20 @@ namespace hooks {
 		if (unit->id != UnitId::ZergMatraleth
 			|| targetVar->status & UnitStatus::Invincible
 			|| helper::getUnitAbilityErrorStatString(targetVar, unit->playerId, 12) != 0) {
-			result = (uint8)(unit->id != UnitId::TerranCleric ? 0 : 0x80) + OrderId::Follow;
+			result = (u8)(unit->id != UnitId::TerranCleric ? 0 : 0x80) + OrderId::Follow;
 		} else {
 			result = OrderId::InfestMine2;
 		}
 		return result;
 	}
 
-	CUnit* CMDRECV_HoldPosition(int32 a1) { // 004C20C0
+	CUnit* CMDRECV_HoldPosition(s32 a1) { // 004C20C0
 		CUnit* result; // eax
 		CUnit* i; // esi
-		int16 unitId; // ax
-		uint8 orderId; // al
+		s16 unitId; // ax
+		u8 orderId; // al
 
-		*((int8*)&mapHeightPixels + 2) = 0;
+		*((s8*)&mapHeightPixels + 2) = 0;
 		result = helper::getActivePlayerFirstSelection();
 		for (i = result; result; i = result) {
 			unitId = i->id;
@@ -380,27 +380,27 @@ namespace hooks {
 				orderId = OrderId::HoldPosition1;
 			}
 			if (helper::orderAllowed(i, orderId, *ACTIVE_NATION_ID) == 1)
-				helper::targetedOrder(0, UnitId::None, i, 0, 1, *(int8*)(a1 + 1) != 0, orderId, 0, *orderType4Position, *orderType4Target);
+				helper::targetedOrder(0, UnitId::None, i, 0, 1, *(s8*)(a1 + 1) != 0, orderId, 0, *orderType4Position, *orderType4Target);
 			result = helper::getActivePlayerFirstSelection();
 		}
 		return result;
 	}
 
-	uint32 unitCanSeeCloakedTargetHook(CUnit* target, CUnit* unit) { // 00401D60, hooked for cloak rewrite - Pr0nogo
+	u32 unitCanSeeCloakedTargetHook(CUnit* target, CUnit* unit) { // 00401D60, hooked for cloak rewrite - Pr0nogo
 		return target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
-	uint32 isTargetVisibleHook(CUnit* target, CUnit* unit) { // 004E5E30
-		int32 playerUnit;
+	u32 isTargetVisibleHook(CUnit* target, CUnit* unit) { // 004E5E30
+		s32 playerUnit;
 		playerUnit = 1 << unit->playerId;
 		if (!target) {
 			return playerUnit & ~(activeTileArray[unit->orderTarget.pt.x / 32 + mapTileSize->width * (unit->orderTarget.pt.y / 32)]->visibilityFlags);
 		}
 		
-		uint32 result;
+		u32 result;
 		if (target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus)) {
-			result = (uint8)(playerUnit & target->sprite->visibilityFlags);
+			result = (u8)(playerUnit & target->sprite->visibilityFlags);
 		} else {
 			result = 0;
 		}
@@ -408,10 +408,10 @@ namespace hooks {
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
-	uint32 isUnitVisibleHook(CUnit* unit) { // 004E5DB0
+	u32 isUnitVisibleHook(CUnit* unit) { // 004E5DB0
 		CUnit* target; // eax
-		int32 playerUnit; // ebx
-		uint32 result; // eax
+		s32 playerUnit; // ebx
+		u32 result; // eax
 
 		target = unit->orderTarget.unit;
 		playerUnit = 1 << unit->playerId;
@@ -420,7 +420,7 @@ namespace hooks {
 		}
 
 		if (unit->status & 0x300) {
-			result = (uint8)(playerUnit & target->sprite->visibilityFlags);
+			result = (u8)(playerUnit & target->sprite->visibilityFlags);
 		} else {
 			result = 0;
 		}
@@ -449,16 +449,16 @@ namespace hooks {
 
 	// Hooked to help with cloak rewrite - Pr0nogo
 	void checkUnitVisibilityHook(CUnit* unit) { // 00443390
-		uint32 detectingPlayers = helper::getDetectingPlayers(unit);
+		u32 detectingPlayers = helper::getDetectingPlayers(unit);
 		if (unit->visibilityStatus != detectingPlayers) {
 			if (unit->visibilityStatus == 0x80000000)
 			{
-				unit->visibilityStatus = ~(uint8)detectingPlayers;
+				unit->visibilityStatus = ~(u8)detectingPlayers;
 			}
-			uint32 v6 = unit->visibilityStatus ^ detectingPlayers;
+			u32 v6 = unit->visibilityStatus ^ detectingPlayers;
 			unit->visibilityStatus = detectingPlayers;
 
-			uint32 v5 = v6 & ~detectingPlayers;
+			u32 v5 = v6 & ~detectingPlayers;
 			if (v5) {
 				helper::iteratePlayerUnitsSomething(v5, unit);
 			}
@@ -471,12 +471,12 @@ namespace hooks {
 
 	// Hooked to complete the cloak rewrite - Pr0nogo
 	// was __thiscall, does that matter?
-	int32 isUnitCloakingHook(CUnit* unit) { // 004916E0
+	s32 isUnitCloakingHook(CUnit* unit) { // 004916E0
 		if (unit->isCloaked) {
 			return 0;
 		}
 
-		int32 redraw = 0;
+		s32 redraw = 0;
 		if (*firstInvisibleUnit == unit) {
 			*firstInvisibleUnit = unit->burrow_link.next;
 			redraw = 1;
@@ -500,7 +500,7 @@ namespace hooks {
 
 		if (redraw) {
 			*forceButtonRefresh = 1;
-			portraitRedraw[0] = (int8)1;
+			portraitRedraw[0] = (s8)1;
 			*statusScreenRedraw = 1;
 			*ctrlUnderMouse = 0;
 			*ctrlUnderMouseValue = 0;

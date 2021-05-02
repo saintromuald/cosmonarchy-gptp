@@ -36,8 +36,8 @@ namespace hooks {
 			if (!jump_to_676C4) {
 				jump_to_default_switch = ((unit->mainOrderState > 8) || (unit->mainOrderState >= 2 && unit->mainOrderState <= 5));
 				if (!jump_to_default_switch && unit->mainOrderState == 0) {
-					int16 unkRepairInfo = 0;
-					uint32 repairCostMinerals = 0, repairCostGas = 0;
+					s16 unkRepairInfo = 0;
+					u32 repairCostMinerals = 0, repairCostGas = 0;
 
 					helper::getRepairInfo(target, &repairCostMinerals, &repairCostGas, &unkRepairInfo);
 					helper::verifyResources(repairCostMinerals, repairCostGas, unit->playerId);
@@ -90,8 +90,8 @@ namespace hooks {
 						helper::function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
 						helper::unitOrderMoveToTargetUnit(unit, target);
 						if (!helper::isUnitPositions2Equal(unit)) {
-							int32 angleReturned, currentAngle;
-							uint8 weaponId;
+							s32 angleReturned, currentAngle;
+							u8 weaponId;
 							angleReturned =
 								scbw::getAngle(
 									unit->sprite->position.x,
@@ -160,7 +160,7 @@ namespace hooks {
 						bDoRepair = true;
 					}
 					if (bDoRepair) { // //67692
-						uint32 hpGain = target->buildRepairHpGain;
+						u32 hpGain = target->buildRepairHpGain;
 						if (*CHEAT_STATE & CheatFlags::OperationCwal) {
 							hpGain *= 16;
 						}
@@ -191,7 +191,7 @@ namespace hooks {
 					unit->userActionFlags |= 1;
 					prepareForNextOrder(unit);
 				} else { //676FE
-					uint8 orderId;
+					u8 orderId;
 					if (unit->pAI == nullptr) {
 						orderId = units_dat::ReturnToIdleOrder[unit->id];
 					}
@@ -209,70 +209,128 @@ namespace hooks {
 	}
 
 	// Hooked to allow for general Repair and some other shit - Pr0nogo
-	int32 isOrderValid(char orderId, CUnit* unit, int32 unused, CUnit* target, int32 bErrorFlag) // 00474D90
+	s32 isOrderValid(char orderId, CUnit* unit, s32 unused, CUnit* target, s32 bErrorFlag) // 00474D90
 	{
-		uint16 errorStringId;
-		int32 v6;
+		u16 errorStringId;
+		s32 v6;
 		bool v7;
-		uint8 v8;
-		int32 v9;
-		int32 result;
-		int32 v11;
-		int32 v12;
-		uint16 v13;
-		int32 v14;
-		int32 v15;
+		u8 v8;
+		s32 v9;
+		s32 result;
+		s32 v11;
+		s32 v12;
+		u16 v13;
+		s32 v14;
+		s32 v15;
 
 		switch (orderId)
 		{
 		case OrderId::Repair1:
+		{
 			errorStringId = 884;
 			if (!target) {
-				goto LABEL_25;
+				if (bErrorFlag)
+				{
+					*(s16*)bErrorFlag = errorStringId;
+				}
+				return 0;
 			}
 			v11 = target->id;
 			errorStringId = 883;
 			if (!(target->status & UnitStatus::Completed)) {
-				goto LABEL_25;
+				if (bErrorFlag)
+				{
+					*(s16*)bErrorFlag = errorStringId;
+				}
+				return 0;
 			}
 			v12 = target->hitPoints;
 			v8 = helper::OFSUB(v12, units_dat::MaxHitPoints[v11]);
 			v7 = v12 - units_dat::MaxHitPoints[v11] < 0;
-			goto LABEL_7;
+			if (v7 ^ v8)
+			{
+				return 1;
+			}
+			if (bErrorFlag)
+			{
+				*(s16*)bErrorFlag = errorStringId;
+			}
+		}
 		case OrderId::Harvest1:
-			if (!target) {
-				goto LABEL_8;
+		{
+			if (!target)
+			{
+				return 1;
 			}
 			errorStringId = unit->getRace() + 893;
 			if (target->id == UnitId::ResourceVespeneGeyser) {
-				goto LABEL_25;
+				if (bErrorFlag)
+				{
+					*(s16*)bErrorFlag = errorStringId;
+				}
+				return 0;
 			}
 			v14 = helper::unitIsResource(target);
-			if (v14) {
-				goto LABEL_8;
+			if (v14)
+			{
+				return 0;
 			}
 			v15 = units_dat::BaseProperty[v13];
 			errorStringId = 892;
 			if (!(v15 & 0x2000))
-				goto LABEL_25;
+			{
+				if (bErrorFlag)
+				{
+					*(s16*)bErrorFlag = errorStringId;
+				}
+				return 0;
+			}
 			errorStringId = 896;
 			if (unit->playerId != target->playerId)
-				goto LABEL_25;
+			{
+				if (bErrorFlag)
+				{
+					*(s16*)bErrorFlag = errorStringId;
+				}
+				return 0;
+			}
 			return 1;
+		}
 		case OrderId::Pickup2:
+		{
 			errorStringId = 890;
 			if (!target || unit->playerId != target->playerId)
-				goto LABEL_25;
+			{
+				if (bErrorFlag)
+				{
+					*(s16*)bErrorFlag = errorStringId;
+				}
+				return 0;
+			}
 			if (helper::canEnterTransport(unit, target))
-				goto LABEL_8;
+			{
+				return 1;
+			}
 			if (units_dat::SpaceProvided[unit->id] >= units_dat::SpaceRequired[target->id])
+			{
 				errorStringId = 891;
-			goto LABEL_25;
+			}
+			if (bErrorFlag)
+			{
+				*(s16*)bErrorFlag = errorStringId;
+			}
+			return 0;
+		}
 		case OrderId::HealMove:
+		{
 			if (!target)
-				goto LABEL_8;
+			{
+				return 1;
+			}
 			if (!helper::techUseAllowed(unit, TechId::Healing, unit->playerId))
-				goto LABEL_27;
+			{
+				return 0;
+			}
 			errorStringId = 1325;
 			if (!(target->status & 6))
 			{
@@ -282,21 +340,22 @@ namespace hooks {
 					v9 = target->hitPoints;
 					v8 = helper::OFSUB(v9, units_dat::MaxHitPoints[v6]);
 					v7 = v9 - units_dat::MaxHitPoints[v6] < 0;
-				LABEL_7:
 					if (v7 ^ v8)
-						goto LABEL_8;
+					{
+						return 1;
+					}
 				}
 			}
-		LABEL_25:
 			if (bErrorFlag)
-				*(int16*)bErrorFlag = errorStringId;
-		LABEL_27:
-			result = 0;
-			break;
+			{
+				*(s16*)bErrorFlag = errorStringId;
+			}
+			return 0;
+		}
 		default:
-		LABEL_8:
-			result = 1;
-			break;
+		{
+			return 1;
+		}
 		}
 		return result;
 	}

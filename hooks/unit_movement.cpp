@@ -7,8 +7,8 @@ namespace { // helper declarations
 
 namespace hooks {
 
-	int32 unitMovementDormant(CUnit* unit) {     // 0046A8D0
-		int32 flags; // edx
+	s32 unitMovementDormant(CUnit* unit) {     // 0046A8D0
+		s32 flags; // edx
 		CSprite* sprite; // ecx
 
 		flags = unit->status;

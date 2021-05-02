@@ -4,7 +4,7 @@
 namespace hooks {
 
 	//Check if the given unit id can generate psi fields
-	bool canMakePsiField(uint16 unitId) {
+	bool canMakePsiField(u16 unitId) {
 		//Default StarCraft behavior
 		if (unitId == UnitId::pylon)
 			return true;

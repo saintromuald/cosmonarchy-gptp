@@ -32,7 +32,7 @@ namespace {
 	void __declspec(naked) unloadUnitProcWrapper() {
 
 		static CUnit* unit;
-		static uint32 return_value;
+		static u32 return_value;
 
 		__asm {
 			PUSH EBP

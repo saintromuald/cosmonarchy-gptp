@@ -8,9 +8,9 @@
 //Not hooked
 void rechargeShieldsProc(CUnit* target, CUnit* battery) {
 
-	const int32 maxShields = units_dat::MaxShieldPoints[target->id] * 256;
+	const s32 maxShields = units_dat::MaxShieldPoints[target->id] * 256;
 
-	int32 shieldGain = 1280, energySpent = 640;
+	s32 shieldGain = 1280, energySpent = 640;
 
 	if (maxShields - target->shields < shieldGain) {
 
@@ -42,9 +42,9 @@ void rechargeShieldsProc(CUnit* target, CUnit* battery) {
 namespace hooks {
 
 	/// Decides whether the @p target can recharge shields from the @p battery.
-	bool32 unitCanRechargeShieldsHook(CUnit* target, CUnit* battery) {
+	b32 unitCanRechargeShieldsHook(CUnit* target, CUnit* battery) {
 
-		bool32 result;
+		b32 result;
 
 		//Check target conditions
 		if (!scbw::isAlliedTo(target->playerId, battery->playerId)					//Is not owned by the player (NEW: or the player's allies)
@@ -85,7 +85,7 @@ result = 0;
 	//Identical to orders_RechargeShields1 @ 00493DD0
 	void orderRechargeShieldsHook(CUnit* unit) {
 
-		const int BATTERY_RANGE = 0x80; //(128)
+		const s32 BATTERY_RANGE = 0x80; //(128)
 
 		CUnit* battery = unit->orderTarget.unit;
 
@@ -118,7 +118,7 @@ result = 0;
 				} else
 					if (unit->mainOrderState == 1) {
 
-						uint32 movableState = unit->getMovableState();
+						u32 movableState = unit->getMovableState();
 
 						if (movableState == 0) { //not reached destination
 							if (!unit->isTargetWithinMinRange(battery, BATTERY_RANGE))
@@ -136,7 +136,7 @@ result = 0;
 
 				if (!bStopThere && unit->mainOrderState == 2) {
 
-					uint8 overlaysCounter;
+					u8 overlaysCounter;
 
 					if (battery->secondaryOrderId != OrderId::ShieldBattery)
 						battery->setSecondaryOrder(OrderId::ShieldBattery);

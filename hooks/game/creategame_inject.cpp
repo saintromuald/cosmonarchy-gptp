@@ -15,10 +15,10 @@ namespace {
 		}
 	};
 
-	signed int loadGameCreate_Wrapper(int a1, char a2) { //004EE520
-		static int a1;
+	s32 loadGameCreate_Wrapper(s32 a1, char a2) { //004EE520
+		static s32 a1;
 		static char a2;
-		static signed int result;
+		static s32 result;
 		__asm {
 			MOV a1, EAX
 			MOV a2, EDI
@@ -32,10 +32,10 @@ namespace {
 		}
 	};
 
-	signed int levelCheatCreate_Wrapper(char a1, int a2) { //004EE5B0
+	s32 levelCheatCreate_Wrapper(char a1, s32 a2) { //004EE5B0
 		static char a1;
-		static int a2;
-		static signed int result;
+		static s32 a2;
+		static s32 result;
 		__asm {
 			MOV a1, EDI
 			MOV a2, ESI

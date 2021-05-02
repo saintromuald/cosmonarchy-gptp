@@ -144,16 +144,16 @@ namespace hooks {
 
 				if (unit->pAI != nullptr) {
 
-					if (*(uint8*)((uint32)unit->pAI + 8) != 1)
+					if (*(u8*)((u32)unit->pAI + 8) != 1)
 						unit->orderComputerCL(OrderId::ComputerAI);
 					else
-						if (unit->sprite->position.x != *(uint16*)((uint32)unit->pAI + 0x12) ||
-							unit->sprite->position.y != *(uint16*)((uint32)unit->pAI + 0x14)
+						if (unit->sprite->position.x != *(u16*)((u32)unit->pAI + 0x12) ||
+							unit->sprite->position.y != *(u16*)((u32)unit->pAI + 0x14)
 							)
 							unit->orderTo(
 								OrderId::ComputerReturn,
-								*(uint16*)((uint32)unit->pAI + 0x12),
-								*(uint16*)((uint32)unit->pAI + 0x14)
+								*(u16*)((u32)unit->pAI + 0x12),
+								*(u16*)((u32)unit->pAI + 0x14)
 							);
 
 				}
@@ -167,7 +167,7 @@ namespace hooks {
 	//void orders_MedicHoldPosition(CUnit* unit)
 	//in base_orders/stopholdpos_orders.cpp
 
-	uint32 doMedicHeal_Func(CUnit* medic, CUnit* target) { // 00463C40
+	u32 doMedicHeal_Func(CUnit* medic, CUnit* target) { // 00463C40
 		auto v3 = medic;
 		auto result = medic->canUseTech(TechId::Healing, medic->playerId);
 		if (result) {
@@ -185,7 +185,7 @@ namespace hooks {
 					if (!medic->isTargetWithinMinRange(v4, 30)) {
 						return 3;
 					}
-					target->heal(MathUtils::map((int)medic->hitPoints, 0, (int)medic->getMaxHpRaw(), 0, 200), medic);
+					target->heal(MathUtils::map((s32)medic->hitPoints, 0, (s32)medic->getMaxHpRaw(), 0, 200), medic);
 					result = 1;
 					target->isBeingHealed = 1;
 					return result;
@@ -198,7 +198,7 @@ namespace hooks {
 
 	void orders_MedicHeal1(CUnit* unit) {
 		CUnit* target = unit->orderTarget.unit;
-		uint32 doMedicHeal_result = 0;
+		u32 doMedicHeal_result = 0;
 		auto a = unit->hitPoints;
 		bool reqHeal = false;
 		if (target != nullptr && target->hitPoints < units_dat::MaxHitPoints[target->id]) {
@@ -260,9 +260,9 @@ namespace hooks {
 		if (target == nullptr || target == medic || medic->status & UnitStatus::IsHallucination) {
 			return 0;
 		}
-		int type = target->id;
-		int abilityFlags = units_dat::BaseProperty[type];
-		int enemyCheck;
+		s32 type = target->id;
+		s32 abilityFlags = units_dat::BaseProperty[type];
+		s32 enemyCheck;
 		bool result;
 		if	(abilityFlags & UnitProperty::Building
 			|| target->status & UnitStatus::InAir

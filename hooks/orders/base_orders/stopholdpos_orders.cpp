@@ -3,7 +3,7 @@
 
 namespace hooks {
 	void orders_MedicHoldPosition(CUnit* unit) {
-		uint32 switchValue;
+		u32 switchValue;
 		if (unit->mainOrderState == 0) {
 			//change move target destination to current position
 			helper::setNextWaypoint(unit);
@@ -187,12 +187,12 @@ namespace hooks {
 
 	void orders_Guard(CUnit* unit) {
 
-		unit->mainOrderTimer = (uint8)helper::RandBetween(0, 15, 29);
+		unit->mainOrderTimer = (u8)helper::RandBetween(0, 15, 29);
 
 		if (playerTable[unit->playerId].type == PlayerType::Computer) {
 
 			//since details about pAI structure are unknown, have to use this
-			uint8* const pAI_subparameter = (uint8*)(((int)(unit->pAI)) + 8);
+			u8* const pAI_subparameter = (u8*)(((s32)(unit->pAI)) + 8);
 
 			unit->mainOrderId = OrderId::ComputerAI;
 

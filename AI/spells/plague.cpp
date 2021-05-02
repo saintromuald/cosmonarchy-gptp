@@ -7,7 +7,7 @@ namespace AI {
 
 	CUnit* findBestPlagueTarget(CUnit* caster, bool isUnderAttack) {
 
-		int bounds;
+		s32 bounds;
 
 		if (isUnderAttack)
 			bounds = 32 * 9;
@@ -33,11 +33,11 @@ namespace AI {
 			if (units_dat::BaseProperty[target->id] & UnitProperty::Hero)
 				return false;
 
-			const int totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Plague);
+			const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Plague);
 			if (!isUnderAttack && totalEnemyLife < 250)
 				return false;
 
-			const int totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Plague);
+			const s32 totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Plague);
 			if (totalAllyLife * 2 >= totalEnemyLife)
 				return false;
 

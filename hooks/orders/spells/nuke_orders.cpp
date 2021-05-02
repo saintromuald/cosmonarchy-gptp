@@ -77,7 +77,7 @@ namespace hooks {
 
 	void orders_NukeGround(CUnit* unit) {
 
-		uint32 sightRange, distance;
+		u32 sightRange, distance;
 
 		if (
 			unit->nextTargetWaypoint.x != unit->orderTarget.pt.x ||
@@ -118,7 +118,7 @@ namespace hooks {
 
 		} else { //792AE
 
-			int32 direction;
+			s32 direction;
 			bool bEndThere = false;
 
 			helper::setNextWaypoint(unit);

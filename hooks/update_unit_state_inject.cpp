@@ -29,9 +29,9 @@ namespace {
 	}
 
 	void __declspec(naked) incrementUnitScoresEx_Wrapper() { // 00488D50
-		static int count;
+		static s32 count;
 		static CUnit* unit;
-		static int updateMorphMergeUnitScore;
+		static s32 updateMorphMergeUnitScore;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -76,7 +76,7 @@ namespace {
 
 	void __declspec(naked) doCloak_Wrapper() { // 0049B440
 		static CUnit* unit;
-		static int32 soundId;
+		static s32 soundId;
 		__asm {
 			MOV soundId, EBX
 			MOV unit, EAX

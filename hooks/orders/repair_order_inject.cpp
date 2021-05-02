@@ -20,12 +20,12 @@ namespace {
 	}
 
 	void __declspec(naked) isOrderValid_Wrapper() {
-		static int32 result;
+		static s32 result;
 		static char orderId;
 		static CUnit* unit;
-		static int32 unused;
+		static s32 unused;
 		static CUnit* target;
-		static int32 bErrorFlag;
+		static s32 bErrorFlag;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP

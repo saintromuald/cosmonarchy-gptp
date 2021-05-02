@@ -27,9 +27,9 @@ void Globals::aise_save() {
 	stream.write(reinterpret_cast<const char*>(&tbl_extender), sizeof(tbl_extender));
 	stream.write(reinterpret_cast<const char*>(&unitid_extender), sizeof(unitid_extender));
 
-	uint32 impactsSize = persistImpacts.size();
+	u32 impactsSize = persistImpacts.size();
 	stream.write(reinterpret_cast<const char*>(&impactsSize), sizeof(impactsSize));
-	for (int i = 0; i < impactsSize; i++) {
+	for (s32 i = 0; i < impactsSize; i++) {
 		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].position.x), sizeof(persistImpacts[i].position.x));
 		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].position.y), sizeof(persistImpacts[i].position.y));
 		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].elevation), sizeof(persistImpacts[i].elevation));
@@ -46,14 +46,14 @@ void Globals::aise_save() {
 		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].radius), sizeof(persistImpacts[i].radius));
 	}
 
-	uint32 pariahHitCount = pariahHits.size();
-	for (int i = 0; i < pariahHitCount; i++) {
+	u32 pariahHitCount = pariahHits.size();
+	for (s32 i = 0; i < pariahHitCount; i++) {
 		stream.write(reinterpret_cast<const char*>(&pariahHits[i].source), sizeof(pariahHits[i].source));
 		stream.write(reinterpret_cast<const char*>(&pariahHits[i].target), sizeof(pariahHits[i].target));
 	}
 
-	uint32 apostleCount = apostleAgents.size();
-	for (int i = 0; i < apostleCount; i++) {
+	u32 apostleCount = apostleAgents.size();
+	for (s32 i = 0; i < apostleCount; i++) {
 		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].creator), sizeof(apostleAgents[i].creator));
 		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].energy), sizeof(apostleAgents[i].energy));
 		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].playerId), sizeof(apostleAgents[i].playerId));
@@ -63,33 +63,33 @@ void Globals::aise_save() {
 		stream.write(reinterpret_cast<const char*>(&apostleAgents[i].unitId), sizeof(apostleAgents[i].unitId));
 	}
 
-	for (int i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
-		for (int j = 0; j < ATTACK_LIMIT; i++) {
-			stream.write(reinterpret_cast<char*>(&attackers.attacks[i][j]), sizeof(uint16));
+	for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
+		for (s32 j = 0; j < ATTACK_LIMIT; i++) {
+			stream.write(reinterpret_cast<char*>(&attackers.attacks[i][j]), sizeof(u16));
 		}
 	}
 
-	uint32 multihitCount = multihitBullets.size();
+	u32 multihitCount = multihitBullets.size();
 	stream.write(reinterpret_cast<char*>(&multihitCount), sizeof(multihitCount));
-	for (int i = 0; i < multihitCount; i++) {
+	for (s32 i = 0; i < multihitCount; i++) {
 		MultihitBullet bull = multihitBullets[i];
 		stream.write(reinterpret_cast<char*>(&bull.bullet), sizeof(bull.bullet));
 		stream.write(reinterpret_cast<char*>(&bull.divider), sizeof(bull.divider));
-		uint32 alreadyHitCount = bull.already_hit.size();
+		u32 alreadyHitCount = bull.already_hit.size();
 		stream.write(reinterpret_cast<char*>(&alreadyHitCount), sizeof(alreadyHitCount));
-		for (int j = 0; j < alreadyHitCount; j++) {
+		for (s32 j = 0; j < alreadyHitCount; j++) {
 			CUnit* hit = bull.already_hit[j];
 			stream.write(reinterpret_cast<char*>(&hit), sizeof(hit));
 		}
 	}
 
-	uint32 lurkerMapSize = lurkerSpineHits.size();
+	u32 lurkerMapSize = lurkerSpineHits.size();
 	for (auto a : lurkerSpineHits) {
 		CUnit* key = a.first;
 		stream.write(reinterpret_cast<char*>(&key), sizeof(key));
-		uint32 valueCount = a.second.size();
+		u32 valueCount = a.second.size();
 		stream.write(reinterpret_cast<char*>(&valueCount), sizeof(valueCount));
-		for (int b = 0; b < valueCount; b++) {
+		for (s32 b = 0; b < valueCount; b++) {
 			CUnit* value = a.second[b];
 			stream.write(reinterpret_cast<char*>(&value), sizeof(value));
 		}
@@ -108,7 +108,7 @@ void Globals::aise_save() {
 	return;
 	//	return state;
 }
-void Globals::aise_load(const char* ptr, uint32 len) {
+void Globals::aise_load(const char* ptr, u32 len) {
 	if (len == 0 || ptr == 0) {
 		return;//error
 	}
@@ -125,7 +125,7 @@ void Globals::aise_load(const char* ptr, uint32 len) {
 
 	auto impactsSize = 0;
 	stream.read(reinterpret_cast<char*>(&impactsSize), sizeof(impactsSize));
-	for (int i = 0; i < impactsSize; i++) {
+	for (s32 i = 0; i < impactsSize; i++) {
 		// this code was left here only to keep the proper stream offset, TODO: adjust aise to handle the new struct, or port aise side of this feature (if there still is any)
 		PersistImpact impact;
 		stream.read(reinterpret_cast<char*>(&impact.position.x), sizeof(impact.position.x));
@@ -145,18 +145,18 @@ void Globals::aise_load(const char* ptr, uint32 len) {
 		//persistImpacts.push_back(impact);
 	}
 
-	uint32 pariahHitsCount = 0;
+	u32 pariahHitsCount = 0;
 	stream.read(reinterpret_cast<char*>(&pariahHitsCount), sizeof(pariahHitsCount));
-	for (int i = 0; i < pariahHitsCount; i++) {
+	for (s32 i = 0; i < pariahHitsCount; i++) {
 		PariahHit hit;
 		stream.read(reinterpret_cast<char*>(&hit.source), sizeof(hit.source));
 		stream.read(reinterpret_cast<char*>(&hit.target), sizeof(hit.target));
 		pariahHits.push_back(hit);
 	}
 
-	uint32 apostleCount = 0;
+	u32 apostleCount = 0;
 	stream.read(reinterpret_cast<char*>(&apostleCount), sizeof(apostleCount));
-	for (int i = 0; i < pariahHitsCount; i++) {
+	for (s32 i = 0; i < pariahHitsCount; i++) {
 		ApostleAgent agent;
 		stream.read(reinterpret_cast<char*>(&agent.creator), sizeof(agent.creator));
 		stream.read(reinterpret_cast<char*>(&agent.energy), sizeof(agent.energy));
@@ -168,37 +168,37 @@ void Globals::aise_load(const char* ptr, uint32 len) {
 		apostleAgents.push_back(agent);
 	}
 
-	for (int i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
-		for (int j = 0; j < ATTACK_LIMIT; i++) {
-			stream.write(reinterpret_cast<char*>(&attackers.attacks[i][j]), sizeof(uint16));
+	for (s32 i = 0; i < PLAYABLE_PLAYER_COUNT; i++) {
+		for (s32 j = 0; j < ATTACK_LIMIT; i++) {
+			stream.write(reinterpret_cast<char*>(&attackers.attacks[i][j]), sizeof(u16));
 		}
 	}
 
-	//uint32 multihitCount = 0;
+	//u32 multihitCount = 0;
 	//stream.read(reinterpret_cast<char*>(&multihitCount), sizeof(multihitCount));
 	//scbw::printf("Hits: %d", multihitCount);
 	/*
-	for (int i = 0; i < multihitCount; i++) {
+	for (s32 i = 0; i < multihitCount; i++) {
 		MultihitBullet bull;
 		stream.read(reinterpret_cast<char*>(&bull.bullet), sizeof(bull.bullet));
 		stream.read(reinterpret_cast<char*>(&bull.divider), sizeof(bull.divider));
-		uint32 alreadyHitCount = 0;
+		u32 alreadyHitCount = 0;
 		stream.read(reinterpret_cast<char*>(&alreadyHitCount), sizeof(alreadyHitCount));
-		for (int j = 0; j < alreadyHitCount; j++) {
+		for (s32 j = 0; j < alreadyHitCount; j++) {
 			CUnit* hit;
 			stream.read(reinterpret_cast<char*>(&hit), sizeof(hit));
 			bull.already_hit.push_back(hit);
 		}
 		multihitBullets.push_back(bull);
 	}
-	uint32 lurkerMapSize = 0;
+	u32 lurkerMapSize = 0;
 	stream.read(reinterpret_cast<char*>(&lurkerMapSize), sizeof(lurkerMapSize));
-	for (int i = 0; i < lurkerMapSize; i++) {
+	for (s32 i = 0; i < lurkerMapSize; i++) {
 		CUnit* key = nullptr;
 		stream.read(reinterpret_cast<char*>(&key), sizeof(key));
-		uint32 valueCount = 0;
+		u32 valueCount = 0;
 		stream.read(reinterpret_cast<char*>(&valueCount), sizeof(valueCount));
-		for (int j = 0; j < valueCount; j++) {
+		for (s32 j = 0; j < valueCount; j++) {
 			CUnit* value = nullptr;
 			stream.read(reinterpret_cast<char*>(&value), sizeof(value));
 			lurkerSpineHits[key].push_back(value);
@@ -244,7 +244,7 @@ void Globals::unitDeathHook(CUnit* unit) {
 		}
 	}
 
-	for (int i = 0; i < this->apostleAgents.size(); i++) {
+	for (s32 i = 0; i < this->apostleAgents.size(); i++) {
 		if (apostleAgents[i].creator == unit) {
 			apostleAgents[i].creator = nullptr;
 		}
@@ -252,7 +252,7 @@ void Globals::unitDeathHook(CUnit* unit) {
 
 	lurkerSpineHits[unit].clear();
 	for (auto& a : lurkerSpineHits) {
-		for (int b = 0; b < a.second.size(); b++) {
+		for (s32 b = 0; b < a.second.size(); b++) {
 			if (a.second[b] == unit) {
 				a.second.erase(a.second.begin() + b);
 				b--;
@@ -261,10 +261,10 @@ void Globals::unitDeathHook(CUnit* unit) {
 	}
 }
 
-void ApplyIrradiate(CUnit* unit, uint8 player, uint32 time) {
+void ApplyIrradiate(CUnit* unit, u8 player, u32 time) {
 	//if not already irradiated and not burrowed, add the irradiate overlay
 	if (unit->irradiateTimer == 0 && !(unit->status & UnitStatus::Burrowed)) {
-		uint32 irradiateImageId = ImageId::IrradiateNew_Small + scbw::getOverlayOffset(unit->id);
+		u32 irradiateImageId = ImageId::IrradiateNew_Small + scbw::getOverlayOffset(unit->id);
 		CUnit* unitWithOverlay;
 		if (unit->subunit != nullptr) {
 			unitWithOverlay = unit->subunit;
@@ -278,7 +278,7 @@ void ApplyIrradiate(CUnit* unit, uint8 player, uint32 time) {
 	unit->irradiateTimer = time;
 }
 
-void Globals::createGenericPersistImpact(uint8 impactId, uint32 time, Point32 position, uint32 radius, int32 spriteId, uint8 elevation, uint8 player) {
+void Globals::createGenericPersistImpact(u8 impactId, u32 time, Point32 position, u32 radius, s32 spriteId, u8 elevation, u8 player) {
 	PersistImpact impact;
 	impact.impactId = impactId;
 	impact.position = position;
@@ -313,7 +313,7 @@ void Globals::frameHook() {
 					timer--;
 				}
 			}
-			timerVecPair.second.erase(std::remove_if(timerVecPair.second.begin(), timerVecPair.second.end(), [&](int& timer) {
+			timerVecPair.second.erase(std::remove_if(timerVecPair.second.begin(), timerVecPair.second.end(), [&](s32& timer) {
 				if (timer == 0) return true;
 			}), timerVecPair.second.end());
 		}
@@ -328,7 +328,7 @@ void Globals::frameHook() {
 		}
 	}
 
-	for (int i = 0; i < apostleAgents.size(); i++) {
+	for (s32 i = 0; i < apostleAgents.size(); i++) {
 		auto& agent = apostleAgents[i];
 		if (agent.timer > 0) {
 			agent.timer--;
@@ -348,12 +348,12 @@ void Globals::frameHook() {
 		}
 	}
 
-	for (int i = 0; i < persistImpacts.size(); i++) {
+	for (s32 i = 0; i < persistImpacts.size(); i++) {
 		auto& impact = persistImpacts[i];
 		impact.currentTime--;
-		const int framePeriod = 6;
+		const s32 framePeriod = 6;
 		if (impact.currentTime % framePeriod == 1) {
-			const double damageMultiplier = 256.0 * (double)framePeriod / impact.maxTime;
+			const f64 damageMultiplier = 256.0 * (f64)framePeriod / impact.maxTime;
 			switch (impact.impactId) {
 				case ImpactId::SalamanderFire:
 				{
@@ -465,7 +465,7 @@ void Globals::frameHook() {
 }
 
 void Globals::remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly) {
-	for (int i = 0; i < pariahHits.size(); i++) {
+	for (s32 i = 0; i < pariahHits.size(); i++) {
 		if (pariahHits[i].source == unit || (pariahHits[i].target == unit && !sourceOnly)) {
 			pariahHits.erase(pariahHits.begin() + i);
 			i--;
@@ -474,7 +474,7 @@ void Globals::remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly) {
 }
 
 void Globals::remove_multihit_bullet(CBullet* bullet) {
-	for (int i = 0; i < multihitBullets.size(); i++) {
+	for (s32 i = 0; i < multihitBullets.size(); i++) {
 		if (multihitBullets[i].bullet == bullet) {
 			multihitBullets.erase(multihitBullets.begin() + i);
 			i--;
@@ -550,7 +550,7 @@ void Globals::add_incremental_bullet_multihit(CBullet* bullet, CUnit* target) {
 	multihitBullets.push_back(gb);
 }
 
-int Globals::get_divider(CBullet* bullet) {
+s32 Globals::get_divider(CBullet* bullet) {
 	for (auto& a : multihitBullets) {
 		if (a.bullet == bullet && a.divider != 0) {
 			return a.divider;
@@ -559,7 +559,7 @@ int Globals::get_divider(CBullet* bullet) {
 	return 1;
 }
 
-uint32 Globals::get_multihit_count(CBullet* bullet) {
+u32 Globals::get_multihit_count(CBullet* bullet) {
 	for (auto& a : multihitBullets) {
 		if (a.bullet == bullet) {
 			return a.already_hit.size();
@@ -568,7 +568,7 @@ uint32 Globals::get_multihit_count(CBullet* bullet) {
 	return 0;
 }
 
-void Globals::add_multihit_empty_bullet(CBullet* bullet, int divider) {
+void Globals::add_multihit_empty_bullet(CBullet* bullet, s32 divider) {
 	for (auto& a : multihitBullets) {
 		if (a.bullet == bullet) {
 			a.divider = divider;
@@ -579,7 +579,7 @@ void Globals::add_multihit_empty_bullet(CBullet* bullet, int divider) {
 	multihitBullets.push_back(gb);
 }
 
-void Globals::initLazarusAgent(int x, int y, uint8 player, uint32 unitId, uint32 energy, CUnit* unit) {
+void Globals::initLazarusAgent(s32 x, s32 y, u8 player, u32 unitId, u32 energy, CUnit* unit) {
 	ApostleAgent a;
 	a.playerId = player;
 	a.position.x = x;
@@ -629,7 +629,7 @@ void __declspec(naked) Globals_SaveStateWrapper() {
 
 void __declspec(naked) Globals_LoadStateWrapper() {
 	static const char* pointer;
-	static uint32 len;
+	static u32 len;
 	__asm {
 		MOV len, ECX
 		MOV pointer, EAX
@@ -645,13 +645,13 @@ void __declspec(naked) Globals_LoadStateWrapper() {
 void injectGlobalsHooks() {
 	jmpPatch(Globals_SaveStateWrapper, 0x004AAF23);
 	jmpPatch(Globals_LoadStateWrapper, 0x004AAE94);
-	// const uint8 retn = 0xc3;
+	// const u8 retn = 0xc3;
 	// memoryPatch(0x004AAF23 + 5, &retn, 1);
 	// memoryPatch(0x004AAE94 + 5, &retn, 1);
 }
 
 namespace scbw {
-	uint32 get_generic_value(CUnit* u, uint32 id) {
+	u32 get_generic_value(CUnit* u, u32 id) {
 		auto find = globals.unitStructs.find(u);
 		if (find != globals.unitStructs.end()) {
 			return find->second.getGenericValue(id);
@@ -659,15 +659,15 @@ namespace scbw {
 		return 0;
 	}
 
-	void set_generic_value(CUnit* u, uint32 id, uint32 val) {
+	void set_generic_value(CUnit* u, u32 id, u32 val) {
 		globals.unitStructs[u].setGenericValue(id, val);
 	}
 
-	void add_generic_value(CUnit* u, uint32 id, int val) {
+	void add_generic_value(CUnit* u, u32 id, s32 val) {
 		globals.unitStructs[u].addGenericValue(id, val);
 	}
 
-	uint32 get_generic_timer(CUnit* u, uint32 id) {
+	u32 get_generic_timer(CUnit* u, u32 id) {
 		auto find = globals.unitStructs.find(u);
 		if (find != globals.unitStructs.end()) {
 			return find->second.getGenericTimer(id);
@@ -675,11 +675,11 @@ namespace scbw {
 		return 0;
 	}
 
-	void set_generic_timer(CUnit* u, uint32 id, uint32 val) {
+	void set_generic_timer(CUnit* u, u32 id, u32 val) {
 		globals.unitStructs[u].setGenericTimer(id, val);
 	}
 
-	CUnit* get_generic_unit(CUnit* u, uint32 id) {
+	CUnit* get_generic_unit(CUnit* u, u32 id) {
 		auto find = globals.unitStructs.find(u);
 		if (find != globals.unitStructs.end()) {
 			return find->second.getGenericUnit(id);
@@ -687,11 +687,11 @@ namespace scbw {
 		return nullptr;
 	}
 
-	void set_generic_unit(CUnit* u, uint32 id, CUnit* val) {
+	void set_generic_unit(CUnit* u, u32 id, CUnit* val) {
 		globals.unitStructs[u].setGenericUnit(id, val);
 	}
 
-	std::vector<int>& get_generic_value_vector(CUnit* u, uint32 id) {
+	std::vector<s32>& get_generic_value_vector(CUnit* u, u32 id) {
 		auto& find = globals.unitStructs.find(u);
 		if (find == globals.unitStructs.end()) {
 			globals.unitStructs[u] = {};
@@ -699,7 +699,7 @@ namespace scbw {
 		return globals.unitStructs[u].getGenericValueVector(id);
 	}
 
-	std::vector<int>& get_generic_timer_vector(CUnit* u, uint32 id) {
+	std::vector<s32>& get_generic_timer_vector(CUnit* u, u32 id) {
 		auto& find = globals.unitStructs.find(u);
 		if (find == globals.unitStructs.end()) {
 			globals.unitStructs[u] = {};
@@ -707,7 +707,7 @@ namespace scbw {
 		return globals.unitStructs[u].getGenericTimerVector(id);
 	}
 
-	std::vector<CUnit*>& get_generic_unit_vector(CUnit* u, uint32 id) {
+	std::vector<CUnit*>& get_generic_unit_vector(CUnit* u, u32 id) {
 		auto& find = globals.unitStructs.find(u);
 		if (find == globals.unitStructs.end()) {
 			globals.unitStructs[u] = {};
@@ -715,7 +715,7 @@ namespace scbw {
 		return globals.unitStructs[u].getGenericUnitVector(id);
 	}
 
-	std::unordered_map<CUnit*, int>& get_generic_unit_timer_map(CUnit* u, uint32 id) {
+	std::unordered_map<CUnit*, s32>& get_generic_unit_timer_map(CUnit* u, u32 id) {
 		auto& find = globals.unitStructs.find(u);
 		if (find == globals.unitStructs.end()) {
 			globals.unitStructs[u] = {};
@@ -796,7 +796,7 @@ namespace scbw {
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
 
 		// Get overlay info
-		int32 overlayOffset = getOverlayOffset(child->id);
+		s32 overlayOffset = getOverlayOffset(child->id);
 
 		// Inherit Ensnare
 		if (parent->ensnareTimer != 0) {
@@ -980,7 +980,7 @@ namespace scbw {
 			overlayTargetUnit = unit->subunit;
 		else
 			overlayTargetUnit = unit;
-		uint32 overlayImageId = ImageId::RestorationHit_Small + scbw::getOverlayOffset(unit->id);;
+		u32 overlayImageId = ImageId::RestorationHit_Small + scbw::getOverlayOffset(unit->id);;
 		(overlayTargetUnit->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
 
 		//remove status effects and corresponding overlays
@@ -1080,9 +1080,9 @@ namespace scbw {
 		//was hardcoded in original code
 		scbw::refreshConsole();
 	}
-	void applyParasite(CUnit* unit, uint8 playerID, CUnit* queen) {
+	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen) {
 		if (!scbw::canBeParasited(unit)) return;
-		int playerFlag = 1 << playerID;
+		s32 playerFlag = 1 << playerID;
 		if (unit->parasiteFlags != playerFlag) { // <- Prevent restarting arm period
 			scbw::set_generic_timer(unit, ValueId::ParasiteArmTimer, DefaultArmParasiteTimer);
 			unit->sprite->createOverlay(ImageId::ParasiteOverlay, 0, 0, 0);
@@ -1091,14 +1091,14 @@ namespace scbw {
 		unit->parasiteFlags = playerFlag; // Parasite now overwrites other player's parasite
 		scbw::refreshConsole();
 	}
-	CBullet* setMissileSourcePosRet(CUnit* unit, uint32 weaponId, uint32 valueId, int32 rotateCount, uint32 overlayType, uint32 frameset_offset) {
+	CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset) {
 		if (unit->sprite == nullptr || unit->orderTarget.unit == nullptr) {
 			return nullptr;
 		}
 		auto rotate = scbw::get_generic_value(unit, valueId);
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
 			unit->sprite->mainGraphic->id));
-		uint8 frameDirection = unit->sprite->mainGraphic->direction;
+		u8 frameDirection = unit->sprite->mainGraphic->direction;
 		Point8 offset = loFile->getOffset(frameDirection + (17 * frameset_offset), rotate);
 		if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
 			offset.x = -offset.x;
@@ -1147,9 +1147,9 @@ namespace scbw {
 		return queens;
 	}
 
-	void doDeconstructionDamage(CUnit* unit, uint16 weaponId, bool playSound) {
+	void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound) {
 		// Deconstruction - Pazuzu passive
-		double selfDamage = (0.25 * (double)(weapons_dat::DamageAmount[weaponId] * 256.0));
+		f64 selfDamage = (0.25 * (f64)(weapons_dat::DamageAmount[weaponId] * 256.0));
 		auto deconstructionTarget = unit;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit) {
 			deconstructionTarget = (CUnit*)scbw::get_generic_value(unit, ValueId::TurretParentLink);
@@ -1163,14 +1163,14 @@ namespace scbw {
 		}
 	}
 
-	void setMissileSourcePos(CUnit* unit, uint32 weaponId, uint32 valueId, int32 rotateCount, uint32 overlayType, uint32 frameset_offset) {
+	void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset) {
 		if (unit->sprite == nullptr || unit->orderTarget.unit == nullptr) {
 			return;
 		}
 		auto rotate = scbw::get_generic_value(unit, valueId);
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
 			unit->sprite->mainGraphic->id));
-		uint8 frameDirection = unit->sprite->mainGraphic->direction;
+		u8 frameDirection = unit->sprite->mainGraphic->direction;
 		Point8 offset = loFile->getOffset(frameDirection + (17 * frameset_offset), rotate);
 		if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored) {
 			offset.x = -offset.x;
@@ -1186,8 +1186,8 @@ namespace scbw {
 			unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
 	}
 
-	const uint32 Func_RemoveOverlays2 = 0x00492370;
-	void removeoverlays2(uint32 from, uint32 to, CUnit* unit) {
+	const u32 Func_RemoveOverlays2 = 0x00492370;
+	void removeoverlays2(u32 from, u32 to, CUnit* unit) {
 		__asm {
 			PUSHAD
 			MOV EAX, from
@@ -1215,7 +1215,7 @@ namespace scbw {
 		auto& link = scbw::get_generic_unit_vector(unit, ValueId::PhaseLink);
 
 		clearClarionLinks(unit);
-		const int32 radius = 128;
+		const s32 radius = 128;
 		scbw::UnitFinder(
 			unit->getX() - radius,
 			unit->getY() - radius,
@@ -1249,7 +1249,7 @@ namespace scbw {
 		return scbw::get_generic_unit_vector(unit, ValueId::PhaseLinkClarions).size();
 	}
 
-	void phaseLinkDamage(CUnit* unit, int32 damage, hooks::WeaponDamageData& data) {
+	void phaseLinkDamage(CUnit* unit, s32 damage, hooks::WeaponDamageData& data) {
 		hooks::WeaponDamageData newData = {
 			damage,
 			damage,
@@ -1270,17 +1270,17 @@ namespace scbw {
 	void spreadClarionDamage(hooks::WeaponDamageData& data) {
 		CUnit* unit = data.target;
 		auto links = getClarionLinks(unit); // has to be copy
-		int32 damage = data.finalDamage;
+		s32 damage = data.finalDamage;
 		if (links.size() == 0 || unit->shields < 256) {
 			phaseLinkDamage(unit, damage, data);
 		} else {
 			links.erase(std::remove_if(links.begin(), links.end(), [](CUnit* linkUnit) {
 				return linkUnit->shields < 256;
 			}), links.end());
-			int32 divided = damage / links.size();
+			s32 divided = damage / links.size();
 			links.erase(std::find(links.begin(), links.end(), unit));
 			for (CUnit* linkUnit : links) {
-				int32 unitDamage = std::min(divided, linkUnit->shields);
+				s32 unitDamage = std::min(divided, linkUnit->shields);
 				damage -= unitDamage;
 				phaseLinkDamage(linkUnit, unitDamage, data);
 			}

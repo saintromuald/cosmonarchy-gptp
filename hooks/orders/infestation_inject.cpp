@@ -8,7 +8,7 @@ namespace {
 	void __declspec(naked) unitCanInfestWrapper() {
 
 		static CUnit* unit;
-		static uint32 result;
+		static u32 result;
 
 		__asm {
 			PUSHAD
@@ -29,7 +29,7 @@ namespace {
 	//Inject with jmpPatch()
 	void __declspec(naked) unitCanBeInfestedWrapper() {
 		static CUnit* unit;
-		static uint32 result;
+		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EBP, ESP

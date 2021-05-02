@@ -7,9 +7,9 @@ namespace {
 	void __declspec(naked) CMDRECV_PlaceBuildingAllowed_Wrapper() {
 
 		static CUnit* builder;
-		static uint8 orderId;
-		static uint16 builtUnitId;
-		static bool32 bReturnValue;
+		static u8 orderId;
+		static u16 builtUnitId;
+		static b32 bReturnValue;
 
 		__asm {
 			MOV builder, ECX
@@ -32,10 +32,10 @@ namespace {
 
 	void __declspec(naked) cmdRECV_PlaceBuildingNormal_Wrapper() {
 
-		static int16 x;
-		static int16 y;
-		static uint32 orderId;
-		static uint32 builtUnitId;
+		static s16 x;
+		static s16 y;
+		static u32 orderId;
+		static u32 builtUnitId;
 
 		__asm {
 
@@ -73,10 +73,10 @@ namespace {
 
 	void __declspec(naked) cmdRECV_PlaceBuildingAddon_Wrapper() {
 
-		static int16 x;
-		static int16 y;
-		static uint32 orderId;
-		static uint32 builtUnitId;
+		static s16 x;
+		static s16 y;
+		static u32 orderId;
+		static u32 builtUnitId;
 
 		__asm {
 
@@ -114,10 +114,10 @@ namespace {
 
 	void __declspec(naked) CMDRECV_Build_Wrapper() {
 
-		static uint8 orderId;
-		static int16 x;
-		static int16 y;
-		static uint16 builtUnitId;
+		static u8 orderId;
+		static s16 x;
+		static s16 y;
+		static u16 builtUnitId;
 
 		__asm {
 

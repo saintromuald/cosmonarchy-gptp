@@ -4,7 +4,7 @@
 namespace {
 	void __declspec(naked) decrementRemainingBuildTime_Wrapper() { // 0x00466940
 		static CUnit* unit;
-		int result;
+		s32 result;
 		_asm {
 			MOV unit, ECX
 			PUSHAD

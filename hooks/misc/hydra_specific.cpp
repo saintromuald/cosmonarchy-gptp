@@ -50,10 +50,10 @@ namespace ReqOpcode {
 	};
 }
 
-//uint32 parseUnitDatReqs() {
+//u32 parseUnitDatReqs() {
 void parseUnitDatReqs() {
-//	static uint32 result;
-	const uint32 parseUnitFunc = 0x0046e100;
+//	static u32 result;
+	const u32 parseUnitFunc = 0x0046e100;
 	__asm {
 		PUSHAD
 		CALL parseUnitFunc
@@ -71,8 +71,8 @@ bool isAttemptingProtossBuild(const CUnit* probe) {
 }
 
 // For createUnit
-const uint32 Func_unitConstructor = 0x004A06C0;
-CUnit* unitConstructor(int32 x, int32 y, uint16 unitType, int32 playerId, int32 unused) {
+const u32 Func_unitConstructor = 0x004A06C0;
+CUnit* unitConstructor(s32 x, s32 y, u16 unitType, s32 playerId, s32 unused) {
 	static CUnit* result;
 	__asm {
 		PUSHAD
@@ -88,7 +88,7 @@ CUnit* unitConstructor(int32 x, int32 y, uint16 unitType, int32 playerId, int32 
 	return result;
 }
 
-const uint32 Func_CListPushBackUsedUnitEntry = 0x0049DCA0;
+const u32 Func_CListPushBackUsedUnitEntry = 0x0049DCA0;
 CUnit* CListPushBackUsedUnitEntry(CUnit* unit) {
 	static CUnit* result;
 	__asm {
@@ -101,7 +101,7 @@ CUnit* CListPushBackUsedUnitEntry(CUnit* unit) {
 	return result;
 }
 
-const uint32 Func_CListPushBackHiddenUnitEntry = 0x0049DCE0;
+const u32 Func_CListPushBackHiddenUnitEntry = 0x0049DCE0;
 CUnit* CListPushBackHiddenUnitEntry(CUnit* unit) {
 	static CUnit* result;
 	__asm {
@@ -114,7 +114,7 @@ CUnit* CListPushBackHiddenUnitEntry(CUnit* unit) {
 	return result;
 }
 
-const uint32 Func_unitDestructor = 0x004A0990;
+const u32 Func_unitDestructor = 0x004A0990;
 CSprite* unitDestructor(CUnit* unit) {
 	static CSprite* result;
 	__asm {
@@ -127,8 +127,8 @@ CSprite* unitDestructor(CUnit* unit) {
 	return result;
 }
 
-const uint32 Func_getImageAttackFrame = 0x00401DF0;
-void* getImageAttackFrame(void* resultArg, CSprite* sprite, int32 index, uint8 playerId) {
+const u32 Func_getImageAttackFrame = 0x00401DF0;
+void* getImageAttackFrame(void* resultArg, CSprite* sprite, s32 index, u8 playerId) {
 	static void* result;
 	__asm {
 		PUSHAD
@@ -143,7 +143,7 @@ void* getImageAttackFrame(void* resultArg, CSprite* sprite, int32 index, uint8 p
 	return result;
 }
 
-const uint32 Func_setSpriteMainImageOffset = 0x00401E40;
+const u32 Func_setSpriteMainImageOffset = 0x00401E40;
 void setSpriteMainImageOffset(CSprite* sprite, char x, char y) {
 	__asm {
 		PUSHAD
@@ -167,7 +167,7 @@ namespace hooks {
 		for (CImage* image = sprite->images.head; image; image = image->link.next) {
 			if (image->id >= ImageId::FirstMinorDamageOverlay &&
 				image->id <= ImageId::LastMinorDamageOverlay) {
-				int variation = image->id - ImageId::FirstMinorDamageOverlay;
+				s32 variation = image->id - ImageId::FirstMinorDamageOverlay;
 				image->free();
 				if (sprite->mainGraphic->frameIndex >= overlay->frameCount) {
 					scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
@@ -178,18 +178,18 @@ namespace hooks {
 				sprite->createTopOverlay(ImageId::FirstMajorDamageOverlay + variation, offset.x, offset.y, 0);
 			}
 		}
-		std::array<int, 22> results;
+		std::array<s32, 22> results;
 		auto result_pos = results.begin();
 		if (sprite->mainGraphic->frameIndex >= overlay->frameCount) {
 			scbw::printf("CreateDamageOverlay Bug: incorrect frame %d, image id %d",
 				sprite->mainGraphic->frameIndex, sprite->mainGraphic->id);
 			return;
 		}
-		for (int i = 0; i < 22; i++) {
+		for (s32 i = 0; i < 22; i++) {
 			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, i);
 			if (offset.x == 127 && offset.y == 127)
 				continue;
-			uint32 overlay_id = ImageId::FirstMajorDamageOverlay + i;
+			u32 overlay_id = ImageId::FirstMajorDamageOverlay + i;
 			bool found = false;
 			for (CImage* image = sprite->images.head; image; image = image->link.next) {
 				if (image->id == overlay_id) {
@@ -202,14 +202,14 @@ namespace hooks {
 			}
 		}
 		if (result_pos != results.begin()) {
-			int variation = results[scbw::randBetween(0, result_pos - results.begin() - 1)];
+			s32 variation = results[scbw::randBetween(0, result_pos - results.begin() - 1)];
 			Point8 offset = overlay->getOffset(sprite->mainGraphic->frameIndex, variation);
 			sprite->createTopOverlay(ImageId::FirstMinorDamageOverlay + variation, offset.x, offset.y, 0);
 		}
 	}
 
 	// Hooked to enable unit mover when placing buildings
-	int32 isTileBlockedBy(CUnit** unitArray, CUnit* builder, int32 x_tile, int32 y_tile, int8 dontIgnoreReacting, int8 alsoInvisible) { // 00473300
+	s32 isTileBlockedBy(CUnit** unitArray, CUnit* builder, s32 x_tile, s32 y_tile, s8 dontIgnoreReacting, s8 alsoInvisible) { // 00473300
 		CUnit* unitArrayPtr; // edx
 		CUnit* builderVar; // edi
 		CUnit** unitArrayVar; // esi
@@ -261,7 +261,7 @@ namespace hooks {
 		}
 	}
 
-	uint32 checkUnitDatRequirements(uint8 playerId, uint16 unit_id, CUnit* unit) {
+	u32 checkUnitDatRequirements(u8 playerId, u16 unit_id, CUnit* unit) {
 		//
 		//
 		// Warning: This hook don't points to firegraft offsets. Firegraft offsets must be taken into account and added to hook
@@ -269,8 +269,8 @@ namespace hooks {
 		//
 		//
 		auto v3 = unit_id;
-		static uint32* lastError = (uint32*)0x0066FF60;
-		static uint16* reqTable = (uint16*)0x00514178;
+		static u32* lastError = (u32*)0x0066FF60;
+		static u16* reqTable = (u16*)0x00514178;
 		*lastError = 0;
 		if (unit_id >= UnitId::None) {
 			*lastError = 16;
@@ -307,7 +307,7 @@ namespace hooks {
 		if (units_dat::unitsDat43[unit->id] == ReqOpcode::EndOfSublist) {
 			parseUnitDatReqs();
 		}
-		int v7 = (uint16)units_dat::unitsDat43[unit->id];
+		s32 v7 = (u16)units_dat::unitsDat43[unit->id];
 
 		if (units_dat::unitsDat43[unit->id] == 0) {
 		LABEL_93:
@@ -316,7 +316,7 @@ namespace hooks {
 		}
 		auto v26 = 1;
 		auto v25 = 1;
-		int v8 = reqTable[v7];
+		s32 v8 = reqTable[v7];
 		auto v27 = 0;
 		if (v8 == -1)
 			return 1;
@@ -332,7 +332,7 @@ namespace hooks {
 		auto requiredId = 0;
 		/*		while (true)
 				{
-					v8 = (uint16)v8;
+					v8 = (u16)v8;
 					switch (v8)
 					{
 					case ReqOpcode::CurrentUnitIs:
@@ -526,17 +526,17 @@ namespace hooks {
 		return 0;
 	}
 
-	uint32 realTopSpeed(CFlingy* flingy, uint32 flingyId) {
-		uint32 speed = scbw::getFlingyData(FlingyDatEntries::TopSpeed, flingyId);
+	u32 realTopSpeed(CFlingy* flingy, u32 flingyId) {
+		u32 speed = scbw::getFlingyData(FlingyDatEntries::TopSpeed, flingyId);
 		return speed;
 	}
 
-	uint16 realAcceleration(CFlingy* flingy, uint32 flingyId) {
-		uint16 acceleration = scbw::getFlingyData(FlingyDatEntries::Acceleration, flingyId);
+	u16 realAcceleration(CFlingy* flingy, u32 flingyId) {
+		u16 acceleration = scbw::getFlingyData(FlingyDatEntries::Acceleration, flingyId);
 		return acceleration;
 	}
 
-	bool is_high_templar_conduit(uint16 unitId) {
+	bool is_high_templar_conduit(u16 unitId) {
 		switch (unitId) {
 			case UnitId::ProtossArchon:
 			case UnitId::ProtossAugur:
@@ -547,26 +547,26 @@ namespace hooks {
 		return false;
 	}
 
-	uint32 weapon_flingy(uint32 weaponId, uint8 player_id) {
+	u32 weapon_flingy(u32 weaponId, u8 player_id) {
 		globals.flingy_init_bullet_id = weaponId;
 		globals.flingy_init_player_id = player_id;
 		return weapons_dat::FlingyId[weaponId];
 	}
 
-	uint32 getFlingyHaltDistanceHook(CFlingy* flingy) {
+	u32 getFlingyHaltDistanceHook(CFlingy* flingy) {
 		auto speed = flingy->current_speed2;
 		if (speed == 0 || flingy->flingyMovementType != 0) {
 			return 0;
 		}
 		auto flingy_id = flingy->flingyId;
 		if (speed != realTopSpeed(flingy, flingy_id) || flingy->flingyAcceleration != realAcceleration(flingy, flingy_id)) {
-			return speed * speed / (2 * (uint16)flingy->flingyAcceleration);
+			return speed * speed / (2 * (u16)flingy->flingyAcceleration);
 		} else {
 			return scbw::getFlingyData(FlingyDatEntries::HaltDistance, flingy_id);
 		}
 	}
 
-	bool is_unused_order(uint8 orderId) {
+	bool is_unused_order(u8 orderId) {
 		switch (orderId) {
 			case OrderId::GuardianAspect:
 			case OrderId::Skyfall://OrderId::AttackTile
@@ -588,13 +588,13 @@ namespace hooks {
 		}
 	}
 
-	uint32 get_mine_id(CUnit* unit) {
+	u32 get_mine_id(CUnit* unit) {
 		if (unit->id == UnitId::TerranEidolon) {
 			return UnitId::TerranLobotomyMine;
 		}
 		return UnitId::TerranSpiderMine;
 	}
-	uint32 extend_tech_target_check(uint32 orig_result, CUnit* caster, CUnit* target, uint8 techId) {
+	u32 extend_tech_target_check(u32 orig_result, CUnit* caster, CUnit* target, u8 techId) {
 		if (orig_result == 0) { // Valid Target
 			scbw::print("Can cast");
 			if (techId == TechId::Lockdown) {
@@ -606,7 +606,7 @@ namespace hooks {
 
 	//replaces CTFCop2 order
 	void order_PhaseLink(CUnit* unit) {
-		uint32 status = 0;
+		u32 status = 0;
 		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell; // might be changed later if required
 		if (unit->id == UnitId::ProtossClarion) {
 			if (scbw::get_aise_value(unit, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
@@ -685,7 +685,7 @@ namespace hooks {
 		}
 	}
 
-	bool canAttackTarget_EndChunk(CUnit* source, uint32 target_flags) {
+	bool canAttackTarget_EndChunk(CUnit* source, u32 target_flags) {
 		if (source->id == UnitId::ProtossClarion && scbw::get_aise_value(source, nullptr, AiseId::SendClarionValue, 0, 0) == 1) {
 			return false;
 		}
@@ -701,11 +701,11 @@ namespace hooks {
 		return false;
 	}
 
-	int32 gameLoop() { // 004D94B0 - hooked for lag testing - Pr0nogo
+	s32 gameLoop() { // 004D94B0 - hooked for lag testing - Pr0nogo
 		bool v0;
 		win32::Stopwatch sw;
 		sw.Start();
-		double aiLoop, unitLoop, imageThingyLoop, tileLoop;
+		f64 aiLoop, unitLoop, imageThingyLoop, tileLoop;
 
 		scbw::setInGameLoopState(1);
 		helper::initializeRandomizerInfo();
@@ -739,17 +739,17 @@ namespace hooks {
 		return scbw::setInGameLoopState(0);
 	}
 
-	CUnit* createUnit(uint16 unitType, int32 x, int32 y, int32 playerId) { // 004A09D0 - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
-		int32 v4;
-		int32 v5;
+	CUnit* createUnit(u16 unitType, s32 x, s32 y, s32 playerId) { // 004A09D0 - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
+		s32 v4;
+		s32 v5;
 		CUnit* v6;
 		CUnit* v7;
-		uint16 v8;
+		u16 v8;
 		CUnit* v9;
 		CUnit* v10;
 		CUnit* result;
-		int32* pointer;
-		uint32 randomSeed;
+		s32* pointer;
+		u32 randomSeed;
 
 		v5 = x;
 		v4 = unitType;

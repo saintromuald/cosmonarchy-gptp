@@ -3,6 +3,6 @@
 
 namespace hooks {
 
-	int32 unitMovementDormant(CUnit* unit);		// 0046A8D0
+	s32 unitMovementDormant(CUnit* unit);		// 0046A8D0
 	void injectUnitMovementHooks();
 }

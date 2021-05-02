@@ -10,7 +10,7 @@ namespace graphics {
 
 //Based on BWAPI's ColorId.h and ColorId.cpp
 //No strongly typed enum because we're at pre-C++11
-typedef uint8 ColorId;
+typedef u8 ColorId;
 const ColorId RED     = 111;  //Player 1 color					(0x67)
 const ColorId BLUE    = 165;  //Player 2 color					(0xA5)
 const ColorId TEAL    = 159;  //Player 3 color					(0x9F)
@@ -46,25 +46,25 @@ enum CoordType {
 /// called every frame in game_hooks.cpp.
 void resetAllGraphics();
 
-void drawText(int x, int y, const std::string& str,
+void drawText(s32 x, s32 y, const std::string& str,
               FontSize fontSize = FONT_MEDIUM, CoordType ct = ON_SCREEN);
 
-void drawDot(int x, int y, ColorId color, CoordType ct = ON_SCREEN);
+void drawDot(s32 x, s32 y, ColorId color, CoordType ct = ON_SCREEN);
 
-void drawLine(int x1, int y1, int x2, int y2, ColorId color, CoordType ct = ON_SCREEN);
+void drawLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType ct = ON_SCREEN);
 
-void drawBox(int left, int top, int right, int bottom, ColorId color, CoordType ct = ON_SCREEN);
+void drawBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
 
-void drawCircle(int x, int y, int radius, ColorId color, CoordType ct = ON_SCREEN);
+void drawCircle(s32 x, s32 y, s32 radius, ColorId color, CoordType ct = ON_SCREEN);
 
-void drawFilledBox(int left, int top, int right, int bottom, ColorId color, CoordType ct = ON_SCREEN);
+void drawFilledBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
 
-void drawFilledCircle(int x, int y, int radius, ColorId color, CoordType ct = ON_SCREEN);
+void drawFilledCircle(s32 x, s32 y, s32 radius, ColorId color, CoordType ct = ON_SCREEN);
 
-void drawEllipse(int left, int top, int right, int bottom, ColorId color, CoordType ct = ON_SCREEN);
+void drawEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
 
-void drawDottedLine(int x1, int y1, int x2, int y2, ColorId color, CoordType ct = ON_SCREEN);
+void drawDottedLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType ct = ON_SCREEN);
 
-void drawDottedEllipse(int left, int top, int right, int bottom, ColorId color, CoordType ct = ON_SCREEN);
+void drawDottedEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType ct = ON_SCREEN);
 
 } //graphics

@@ -3,4 +3,4 @@
 namespace hooks {
 	void AI_RemoveFromAttack();
 }
-constexpr int ATTACK_LIMIT = 64;
+constexpr s32 ATTACK_LIMIT = 64;

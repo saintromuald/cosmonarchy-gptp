@@ -13,17 +13,17 @@ namespace hooks {
 	/// No more buttons conditions will be hooked, so
 	/// use these for anything you need.
 
-	int32 BTNSCOND_NoNydusExit(CUnit* unit) {
+	s32 BTNSCOND_NoNydusExit(CUnit* unit) {
 		return (unit->building.nydusExit == nullptr) ? BUTTON_ENABLED : BUTTON_HIDDEN;
 	}
 
 	;
 
-	int32 BTNSCOND_Movement(CUnit* unit) {
+	s32 BTNSCOND_Movement(CUnit* unit) {
 
-		int32 return_value = BUTTON_ENABLED;
+		s32 return_value = BUTTON_ENABLED;
 
-		for (int i = 0; return_value == BUTTON_ENABLED && i < SELECTION_ARRAY_LENGTH; i++)
+		for (s32 i = 0; return_value == BUTTON_ENABLED && i < SELECTION_ARRAY_LENGTH; i++)
 			if (clientSelectionGroup->unit[i] != nullptr && clientSelectionGroup->unit[i]->status & UnitStatus::Burrowed)
 				return_value = BUTTON_HIDDEN;
 
@@ -33,11 +33,11 @@ namespace hooks {
 
 	;
 
-	int32 BTNSCOND_HasScarabs(CUnit* unit) {
+	s32 BTNSCOND_HasScarabs(CUnit* unit) {
 
-		int32 return_value = BUTTON_DISABLED;
+		s32 return_value = BUTTON_DISABLED;
 
-		for (int i = 0; return_value == BUTTON_DISABLED && i < SELECTION_ARRAY_LENGTH; i++)
+		for (s32 i = 0; return_value == BUTTON_DISABLED && i < SELECTION_ARRAY_LENGTH; i++)
 			if (clientSelectionGroup->unit[i] != nullptr &&
 				(clientSelectionGroup->unit[i]->id == UnitId::Hero_Warbringer || clientSelectionGroup->unit[i]->id == UnitId::ProtossAccantor) &&
 				clientSelectionGroup->unit[i]->carrier.inHangarCount != 0

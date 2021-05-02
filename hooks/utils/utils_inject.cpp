@@ -33,7 +33,7 @@ namespace {
 	void __declspec(naked) unit_IsStandardAndMovableWrapper() {
 
 		static CUnit* unit;
-		static bool32 result;
+		static b32 result;
 
 		__asm {
 			MOV unit, ECX

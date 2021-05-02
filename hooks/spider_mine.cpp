@@ -8,7 +8,7 @@ namespace hooks {
 	// Return the best target for the Spider Mine. If there is no suitable target, return nullptr instead.
 	CUnit* findBestTerranMineTarget(CUnit* mine) { // 00441270
 		// Default StarCraft behavior
-		int32 range;
+		s32 range;
 		// Don't search for a target if the mine is under a Disruption Web
 		if (mine->status & UnitStatus::CanNotAttack) {
 			return nullptr;
@@ -143,14 +143,14 @@ namespace hooks {
 	void orders_PlaceMine(CUnit* a1) { // 00464FD0
 		CUnit* v1;
 		CUnit* v2;
-		signed int v3;
+		s32 v3;
 		CSprite* v4;
-		int v5;
-		int v6;
+		s32 v5;
+		s32 v6;
 		CUnit* v7;
-		int v8;
-		int v9;
-		int v10;
+		s32 v8;
+		s32 v9;
+		s32 v10;
 		CSprite* v11;
 		__int16 v12;
 		CUnit* v13;

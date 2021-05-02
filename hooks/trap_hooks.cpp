@@ -3,7 +3,7 @@
 
 namespace hooks {
 	bool unitIsFloorTrap(CUnit* unit) { // 0047B070
-		uint16 id = unit->id;
+		u16 id = unit->id;
 		/*switch (id) {
 		case UnitId::Special_FloorGunTrap:
 		case UnitId::Special_FloorMissileTrap:
@@ -13,7 +13,7 @@ namespace hooks {
 		}*/
 		return false;
 	}
-	bool unitIsInstallationAsset(uint16 id) {
+	bool unitIsInstallationAsset(u16 id) {
 		/*
 				//originally:
 				if (id >= UnitId::Special_FloorMissileTrap && id <= UnitId::Special_RightWallFlameTrap) {
@@ -24,10 +24,10 @@ namespace hooks {
 		}
 		return false;
 	}
-	int16 disableUnit(CUnit* pUnit) { // 0047B4B0
-		int unitFlags; // eax
+	s16 disableUnit(CUnit* pUnit) { // 0047B4B0
+		s32 unitFlags; // eax
 		CImage* i; // esi
-		int16 unitType; // ax
+		s16 unitType; // ax
 
 		unitFlags = pUnit->status;
 		if (!(unitFlags & UnitStatus::DoodadStatesThing) && pUnit->lockdownTimer == 0 && pUnit->stasisTimer == 0
@@ -48,12 +48,12 @@ namespace hooks {
 			}
 			/*
 			ByteOperations::SetLowByte(unitFlags, pUnit->id);
-			if ((int16)unitFlags == UnitId::Special_FloorMissileTrap
-			|| (int16)unitFlags == UnitId::Special_FloorGunTrap
-			|| (int16)unitFlags == UnitId::Special_WallMissileTrap
-			|| (int16)unitFlags == UnitId::Special_WallFlameTrap
-			|| (int16)unitFlags == UnitId::Special_RightWallMissileTrap
-			|| (int16)unitFlags == UnitId::Special_RightWallFlameTrap) {
+			if ((s16)unitFlags == UnitId::Special_FloorMissileTrap
+			|| (s16)unitFlags == UnitId::Special_FloorGunTrap
+			|| (s16)unitFlags == UnitId::Special_WallMissileTrap
+			|| (s16)unitFlags == UnitId::Special_WallFlameTrap
+			|| (s16)unitFlags == UnitId::Special_RightWallMissileTrap
+			|| (s16)unitFlags == UnitId::Special_RightWallFlameTrap) {
 			pUnit->status |= UnitStatus::Cloaked | UnitStatus::RequiresDetection;
 				pUnit->visibilityStatus = 0x80000000;
 				ByteOperations::SetLowByte(pUnit->secondaryOrderTimer, 0);
@@ -62,28 +62,28 @@ namespace hooks {
 		return unitFlags;
 	}
 
-	uint32 updateUnitStrengthAndApplyDefaultOrdersHook(CUnit* a1) { // 0049FA40
+	u32 updateUnitStrengthAndApplyDefaultOrdersHook(CUnit* a1) { // 0049FA40
 		CUnit* v1; // esi
-		int v2; // ecx
-		int16 v3; // ax
-		uint16 v4; // cx
-		int8 v5; // al
+		s32 v2; // ecx
+		s16 v3; // ax
+		u16 v4; // cx
+		s8 v5; // al
 		char v6; // al
 		COrder* v7; // eax
-		uint8 v8; // cl
+		u8 v8; // cl
 		CUnit* v9; // eax
 		CUnit* v10; // eax
 		CUnit* v11; // ecx
-		uint8 v12; // cl
-		int v13; // ecx
-		int v14; // eax
+		u8 v12; // cl
+		s32 v13; // ecx
+		s32 v14; // eax
 		CSprite* v15; // eax
-		uint8 v16; // cl
-		uint32 result; // eax
-		int v18; // ecx
+		u8 v16; // cl
+		u32 result; // eax
+		s32 v18; // ecx
 
 		v1 = a1;
-		v2 = units_dat::BaseProperty[(uint16)a1->id];
+		v2 = units_dat::BaseProperty[(u16)a1->id];
 		if (v2 & UnitProperty::TwoUnitsIn1Egg) {
 			helper::incrementUnitScores(a1, -1);
 			v1->status |= UnitStatus::Completed;
@@ -93,7 +93,7 @@ namespace hooks {
 		}
 
 		helper::incrementUnitScoresEx(v1, 1, 1);
-		if (units_dat::BaseProperty[(uint16)v1->id] & UnitProperty::PermanentCloak) {
+		if (units_dat::BaseProperty[(u16)v1->id] & UnitProperty::PermanentCloak) {
 			helper::playSoundFromDirection(v1, 273);
 		}
 
@@ -142,7 +142,7 @@ namespace hooks {
 			v1->visibilityStatus = 0x80000000;
 			ByteOperations::SetLowByte(v1->secondaryOrderTimer, 0);
 		}*/
-		v5 = playerTable[(uint8)v1->playerId].type;
+		v5 = playerTable[(u8)v1->playerId].type;
 		if (v5 == 3) { // Rescue Passive
 			v6 = v1->mainOrderId;
 			v1->userActionFlags |= 1u;
@@ -169,7 +169,7 @@ namespace hooks {
 			}
 			helper::orderComputerClear(v1, v12);
 		}
-		v13 = (uint16)v1->id;
+		v13 = (u16)v1->id;
 		v14 = units_dat::BaseProperty[v13];
 		if (v14 & UnitProperty::NeutralAccessories) {
 			v15 = v1->sprite;

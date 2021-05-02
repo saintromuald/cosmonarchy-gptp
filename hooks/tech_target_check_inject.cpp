@@ -4,14 +4,14 @@
 
 namespace {
 
-	const uint32 Func_GetTechUseErrorMessage = 0x00491E80;
+	const u32 Func_GetTechUseErrorMessage = 0x00491E80;
 
 	void __declspec(naked) getTechUseErrorMessageWrapper() {
 
 		static CUnit* target;
-		static uint8 castingPlayer;
-		static uint16 techId;
-		static uint32 errorMessage;
+		static u8 castingPlayer;
+		static u16 techId;
+		static u32 errorMessage;
 
 		__asm {
 			PUSH EBP

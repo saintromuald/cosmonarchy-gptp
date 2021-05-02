@@ -7,8 +7,8 @@ namespace {
 	void __declspec(naked) GiveUnitWrapper() {
 
 		static CUnit* unit;
-		static uint32 playerId;
-		static uint32 unkScore;
+		static u32 playerId;
+		static u32 unkScore;
 
 		__asm {
 			PUSH EBP

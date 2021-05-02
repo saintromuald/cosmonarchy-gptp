@@ -9,19 +9,19 @@
 namespace {
 	/*
 	struct Action {
-		uint32 frame; // timestamp
+		u32 frame; // timestamp
 	};
 	*/
 //	std::vector<Action> actions;
-	uint64 totalActions;
+	u64 totalActions;
 
-	int32* const fonts = (int32*)0x006CE0F4;
+	s32* const fonts = (s32*)0x006CE0F4;
 	char* const printXYAlignment = (char*)0x006CE110;
 	Box16* const drawTextBox = (Box16*)0x006CE0C8;
 }
 
 namespace hooks {
-	void drawText(const char* text, int32 x, int32 y, int32 width, int32 height, char color = 2) {
+	void drawText(const char* text, s32 x, s32 y, s32 width, s32 height, char color = 2) {
 		helper::GetColorHandle(color);
 		*printXYAlignment = 0x11;
 		drawTextBox->left = x;
@@ -31,7 +31,7 @@ namespace hooks {
 		helper::BWFXN_PrintXY(text, x, y);
 	}
 
-	std::string numberWithLeadingZero(uint32 n) {
+	std::string numberWithLeadingZero(u32 n) {
 		std::string str = std::to_string(n);
 		if (n < 10) {
 			str = std::string("0") + str;
@@ -39,10 +39,10 @@ namespace hooks {
 		return str;
 	}
 
-	std::string getFormattedTime(uint32 seconds) {
-		uint32 sec = seconds % 60;
-		uint32 min = seconds / 60;
-		uint32 hrs = seconds / 60 / 60;
+	std::string getFormattedTime(u32 seconds) {
+		u32 sec = seconds % 60;
+		u32 min = seconds / 60;
+		u32 hrs = seconds / 60 / 60;
 		return numberWithLeadingZero(hrs) + std::string(":") + numberWithLeadingZero(min) + std::string(":") + numberWithLeadingZero(sec);
 	}
 	/*
@@ -67,9 +67,9 @@ namespace hooks {
 		totalActions = 0;
 	}
 
-	uint32 getAPM() {
-		uint32 actionCount = totalActions;//actions.size();
-		double divider = (*elapsedTimeFrames) / 24.0 / 60.0;
+	u32 getAPM() {
+		u32 actionCount = totalActions;//actions.size();
+		f64 divider = (*elapsedTimeFrames) / 24.0 / 60.0;
 
 		return actionCount / divider;
 	}
@@ -85,7 +85,7 @@ namespace hooks {
 	}
 
 	bool isFirstSelectedUnitOfCurrentPlayer(CUnit* unit) {
-		for (int i = 0; i < 12; i++) {
+		for (s32 i = 0; i < 12; i++) {
 			if (CurrentUnitSelection->unit[i] == unit) {
 				return true;
 			} else if (CurrentUnitSelection->unit[i] != nullptr) {
@@ -95,13 +95,13 @@ namespace hooks {
 		return false;
 	}
 
-	uint8 QueueGameCommand(const void* a1, uint32 a2) {
-		uint32 v2; // eax
-		uint32 len; // ebx
+	u8 QueueGameCommand(const void* a1, u32 a2) {
+		u32 v2; // eax
+		u32 len; // ebx
 		const void* buffer; // esi
-		int32 v5; // eax
-		uint32 _sgdwBytesInCmdQueue; // eax
-		uint32 turns; // [esp+8h] [ebp-4h]
+		s32 v5; // eax
+		u32 _sgdwBytesInCmdQueue; // eax
+		u32 turns; // [esp+8h] [ebp-4h]
 
 		len = a2;
 		buffer = a1;
@@ -130,8 +130,8 @@ namespace hooks {
 		return v2;
 	}
 
-	void targetedOrder(int16 a1, int32 a2, CUnit* a3, int16 a4, int32 a5, int32 a6, uint8 a7, int32 a8, int32 a9, int32 a10) {
-		if (a6 && orders_dat::CanBeQueued[(uint8)a7]) {
+	void targetedOrder(s16 a1, s32 a2, CUnit* a3, s16 a4, s32 a5, s32 a6, u8 a7, s32 a8, s32 a9, s32 a10) {
+		if (a6 && orders_dat::CanBeQueued[(u8)a7]) {
 			switch (a3->mainOrderId) {
 				case 2:
 				case 3:
@@ -145,30 +145,30 @@ namespace hooks {
 						if (*COrderCount < 1800) {
 							helper::queueNewOrder((COrder*)a5, a1, a4, a3, a7, a8, a2, (Point32*)a9, (CUnit*)a10);
 						} else {
-							uint8 v11 = a3->playerId;
+							u8 v11 = a3->playerId;
 							if (*statTxtTbl > 0x368u)
 								helper::showStatTxtToPlayer(*statTxtTbl + statTxtTbl[873], v11);
 							else
-								helper::showStatTxtToPlayer((int32)"", v11);
+								helper::showStatTxtToPlayer((s32)"", v11);
 						}
 					} else {
-						uint8 v10 = a3->playerId;
+						u8 v10 = a3->playerId;
 						if (*statTxtTbl > 0x366u)
 							helper::showStatTxtToPlayer(*statTxtTbl + statTxtTbl[871], v10);
 						else
-							helper::showStatTxtToPlayer((int32)"", v10);
+							helper::showStatTxtToPlayer((s32)"", v10);
 					}
 					break;
 			}
 		} else {
 		LABEL_15:
-			helper::setOrderTarget(a7, a1, a4, a5, (int32)a3, (CUnit*)a8, (uint16)a2, (Point32*)a9, (CUnit*)a10);
+			helper::setOrderTarget(a7, a1, a4, a5, (s32)a3, (CUnit*)a8, (u16)a2, (Point32*)a9, (CUnit*)a10);
 		}
 	}
 
-	int32 selectUnits(CUnit** a1, int32 a2, uint8 a3, int32 a4) {
-		int32 v4 = helper::CUnitToUnitID(*a1);
-		int32 result = helper::selectSingleUnitFromID(v4); // eax
+	s32 selectUnits(CUnit** a1, s32 a2, u8 a3, s32 a4) {
+		s32 v4 = helper::CUnitToUnitID(*a1);
+		s32 result = helper::selectSingleUnitFromID(v4); // eax
 
 		if (a2 != 1 || !IS_KEYCODE_USED[18] || result == 0)
 			result = helper::selectMultipleUnitsFromUnitList(a2, a1, a3, a4);

@@ -2,25 +2,25 @@
 #include "fake_unitid_extender.h"
 namespace hooks {
 
-	uint32 get_flingy_ptr_val() {
+	u32 get_flingy_ptr_val() {
 		return scbw::get_aise_value(nullptr, nullptr, AiseId::GetFlingyPtr, 0, 0);
 	}
 
-	const uint32 wrapper1Jmp = 0x00454317 + 7;
-	const uint32 wrapper2Jmp = 0x00463A71 + 7;
-	const uint32 wrapper3Jmp = 0x004683C6 + 7;
-	const uint32 wrapper4Jmp = 0x0047B854 + 7;
-	const uint32 wrapper5Jmp = 0x0047B8A4 + 7;
-	const uint32 wrapper6Jmp = 0x0047B8F4 + 7;
-	const uint32 wrapper7Jmp = 0x0048D756 + 7;
-	const uint32 wrapper8Jmp = 0x0048DA8A + 7;
-	const uint32 wrapper9Jmp = 0x00497148 + 7;
-	const uint32 wrapper10Jmp = 0x0049ED0B + 7;
-	const uint32 wrapper11Jmp = 0x004E9A10 + 7;
+	const u32 wrapper1Jmp = 0x00454317 + 7;
+	const u32 wrapper2Jmp = 0x00463A71 + 7;
+	const u32 wrapper3Jmp = 0x004683C6 + 7;
+	const u32 wrapper4Jmp = 0x0047B854 + 7;
+	const u32 wrapper5Jmp = 0x0047B8A4 + 7;
+	const u32 wrapper6Jmp = 0x0047B8F4 + 7;
+	const u32 wrapper7Jmp = 0x0048D756 + 7;
+	const u32 wrapper8Jmp = 0x0048DA8A + 7;
+	const u32 wrapper9Jmp = 0x00497148 + 7;
+	const u32 wrapper10Jmp = 0x0049ED0B + 7;
+	const u32 wrapper11Jmp = 0x004E9A10 + 7;
 
 	void __declspec(naked) flingyWrapper1() {
-		static uint32 flingyPtr;
-		static uint32 regPtrOffset;
+		static u32 flingyPtr;
+		static u32 regPtrOffset;
 		__asm {
 			MOV regPtrOffset, EAX
 			PUSHAD
@@ -36,8 +36,8 @@ namespace hooks {
 		}
 	}
 	void __declspec(naked) flingyWrapper2() {
-		static uint32 flingyPtr;
-		static uint32 regPtrOffset;
+		static u32 flingyPtr;
+		static u32 regPtrOffset;
 		__asm {
 			MOV regPtrOffset, EDI
 			PUSHAD
@@ -53,8 +53,8 @@ namespace hooks {
 		}
 	}
 	void __declspec(naked) flingyWrapper3() {
-		static uint32 flingyPtr;
-		static uint32 regPtrOffset;
+		static u32 flingyPtr;
+		static u32 regPtrOffset;
 		__asm {
 			MOV regPtrOffset, ECX
 			PUSHAD
@@ -70,8 +70,8 @@ namespace hooks {
 		}
 	}
 	void __declspec(naked) flingyWrapper4() {
-		static uint32 flingyPtr;
-		static uint32 regPtrOffset;
+		static u32 flingyPtr;
+		static u32 regPtrOffset;
 		__asm {
 			MOV regPtrOffset, EAX
 			PUSHAD
@@ -87,8 +87,8 @@ namespace hooks {
 		}
 	}
 	void __declspec(naked) flingyWrapper5() {
-		static uint32 flingyPtr;
-		static uint32 regPtrOffset;
+		static u32 flingyPtr;
+		static u32 regPtrOffset;
 		__asm {
 			MOV regPtrOffset, EAX
 			PUSHAD
@@ -104,8 +104,8 @@ namespace hooks {
 		}
 	}
 	void __declspec(naked) flingyWrapper6() {
-		static uint32 flingyPtr;
-		static uint32 regPtrOffset;
+		static u32 flingyPtr;
+		static u32 regPtrOffset;
 		__asm {
 			MOV regPtrOffset, EAX
 			PUSHAD
@@ -121,8 +121,8 @@ namespace hooks {
 		}
 	}
 	void __declspec(naked) flingyWrapper7() {
-		static uint32 flingyPtr;
-		static uint32 regPtrOffset;
+		static u32 flingyPtr;
+		static u32 regPtrOffset;
 		__asm {
 			MOV regPtrOffset, EAX
 			PUSHAD
@@ -138,8 +138,8 @@ namespace hooks {
 		}
 	}
 	void __declspec(naked) flingyWrapper8() {
-		static uint32 flingyPtr;
-		static uint32 regPtrOffset;
+		static u32 flingyPtr;
+		static u32 regPtrOffset;
 		__asm {
 			MOV regPtrOffset, EAX
 			PUSHAD
@@ -154,11 +154,11 @@ namespace hooks {
 			JMP wrapper8Jmp
 		}
 	}
-	const uint32 f9special = 0x00497157;
+	const u32 f9special = 0x00497157;
 	void __declspec(naked) flingyWrapper9() {
-		static uint32 flingyPtr;
-		static uint32 regPtrOffset;
-		static uint32 f9special = 0x00497148 + 7;
+		static u32 flingyPtr;
+		static u32 regPtrOffset;
+		static u32 f9special = 0x00497148 + 7;
 		__asm {
 			MOV regPtrOffset, EAX
 			PUSHAD
@@ -174,8 +174,8 @@ namespace hooks {
 		}
 	}
 	void __declspec(naked) flingyWrapper10() {
-		/*static uint32 flingyPtr;
-		static uint32 regPtrOffset;
+		/*static u32 flingyPtr;
+		static u32 regPtrOffset;
 		__asm {
 			MOV regPtrOffset, EBX
 			PUSHAD
@@ -190,8 +190,8 @@ namespace hooks {
 			POP EDX
 			JMP wrapper10Jmp
 		}*/
-		static uint32 flingyId;
-		static uint32 unitId;
+		static u32 flingyId;
+		static u32 unitId;
 		__asm {
 			MOV unitId, EBX
 			PUSHAD
@@ -205,8 +205,8 @@ namespace hooks {
 
 	}
 	void __declspec(naked) flingyWrapper11() {
-		static uint32 flingyPtr;
-		static uint32 regPtrOffset;
+		static u32 flingyPtr;
+		static u32 regPtrOffset;
 		__asm {
 			MOV regPtrOffset, EDX
 			PUSHAD

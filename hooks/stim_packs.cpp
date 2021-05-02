@@ -4,7 +4,7 @@
 
 namespace hooks {
 
-	const int MIN_HITPOINTS_FOR_STIMPACKS = 2560;
+	const s32 MIN_HITPOINTS_FOR_STIMPACKS = 2560;
 
 	// Equivalent to original code, only doubt is QueueGameCommand
 	// Local answer when using stimpacks (check units of selection,
@@ -16,7 +16,7 @@ namespace hooks {
 
 		// original code used pointer comparison with clientSelectionGroupEnd
 		// and incrementing a pointer starting at clientSelectionGroup
-		for (int i = 0; i < SELECTION_ARRAY_LENGTH && !bFoundUnitAbleToStimpack; i++) {
+		for (s32 i = 0; i < SELECTION_ARRAY_LENGTH && !bFoundUnitAbleToStimpack; i++) {
 			currentClientSelectionUnit = clientSelectionGroup->unit[i];
 			if (currentClientSelectionUnit != nullptr &&
 				currentClientSelectionUnit->hitPoints > MIN_HITPOINTS_FOR_STIMPACKS)
@@ -26,7 +26,7 @@ namespace hooks {
 		}
 
 		if (bFoundUnitAbleToStimpack) {
-			static uint8 opcode[] = {0x36};	// packet opcode for stimpack is 0x36, no others args
+			static u8 opcode[] = {0x36};	// packet opcode for stimpack is 0x36, no others args
 			helper::QueueGameCommand(&opcode[0], 1);
 		} else {
 			char* message = (char*)statTxtTblNew->getString(874); //not enough life remaining
@@ -59,13 +59,13 @@ namespace hooks {
 			if (activePlayerCurrentSelection->canUseTech(TechId::Stimpacks, *ACTIVE_NATION_ID) == 1 &&
 				activePlayerCurrentSelection->hitPoints > MIN_HITPOINTS_FOR_STIMPACKS)
 			{
-				int random_value;
+				s32 random_value;
 				if (!*IS_IN_GAME_LOOP) {
 					random_value = 0;
 				}
 				else {
-					static uint32* randomnessCounter_0051C68C = (uint32*)0x0051C68C;
-					static uint32* randomnessCounter_0051CA18 = (uint32*)0x0051CA18;
+					static u32* randomnessCounter_0051C68C = (u32*)0x0051C68C;
+					static u32* randomnessCounter_0051CA18 = (u32*)0x0051CA18;
 					*randomnessCounter_0051C68C = (*randomnessCounter_0051C68C) + 1;
 					*randomnessCounter_0051CA18 = (*randomnessCounter_0051CA18) + 1;
 					*lastRandomNumber = ((*lastRandomNumber) * 0x015A4E35) + 1;

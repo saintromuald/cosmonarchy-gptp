@@ -6,8 +6,8 @@
 
 namespace hooks {
 	//Should be equivalent to getSpellStatString @ 0x00491E80
-	uint16 getTechUseErrorMessageHook(CUnit* target, uint8 castingPlayerId, uint16 techId) {
-		uint16 stringId;
+	u16 getTechUseErrorMessageHook(CUnit* target, u8 castingPlayerId, u16 techId) {
+		u16 stringId;
 		if (target->stasisTimer != 0)
 			stringId = 900; //Units in stasis can't be targeted.<0>
 		else

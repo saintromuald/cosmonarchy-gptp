@@ -4,7 +4,7 @@
 namespace { // Wrappers
 
 	void __declspec(naked) initGame_Wrapper() { // 004EE110
-		static int32 result;
+		static s32 result;
 		__asm {
 			PUSHAD
 		}
@@ -17,9 +17,9 @@ namespace { // Wrappers
 	}
 
 	void __declspec(naked) startGame_Wrapper() { // 00472060
-		static int32 result;
+		static s32 result;
 		static void* a1;
-		static int32 a2;
+		static s32 a2;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP

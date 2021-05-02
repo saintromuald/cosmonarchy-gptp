@@ -2,7 +2,7 @@
 #include <SCBW/api.h>
 
 namespace hooks {
-	void CMDRECV_Siege(uint8 bCommandType) {
+	void CMDRECV_Siege(u8 bCommandType) {
 		CUnit* current_selection;
 
 		*selectionIndexStart = 0;
@@ -25,8 +25,8 @@ namespace hooks {
 					helper::function_004754F0(
 						current_selection,
 						UnitId::None,
-						*(uint32*)(0x006D5C24),
-						*(uint32*)(0x006D5C20),
+						*(u32*)(0x006D5C24),
+						*(u32*)(0x006D5C20),
 						OrderId::SiegeMode,
 						0,
 						bCommandType,
@@ -44,7 +44,7 @@ namespace hooks {
 
 	;
 
-	void CMDRECV_Unsiege(uint8 bCommandType) {
+	void CMDRECV_Unsiege(u8 bCommandType) {
 
 		CUnit* current_selection;
 
@@ -68,8 +68,8 @@ namespace hooks {
 					helper::function_004754F0(
 						current_selection,
 						UnitId::None,
-						*(uint32*)(0x006D5C24),
-						*(uint32*)(0x006D5C20),
+						*(u32*)(0x006D5C24),
+						*(u32*)(0x006D5C20),
 						OrderId::TankMode,
 						0,
 						bCommandType,

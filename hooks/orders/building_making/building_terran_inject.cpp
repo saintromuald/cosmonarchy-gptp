@@ -54,7 +54,7 @@ namespace {
 	}
 
 	void __declspec(naked) updatePlacementStateForPlacementBox_Wrapper() { // 0048DCE0
-		static int32 result;
+		static s32 result;
 		__asm {
 			PUSHAD
 		}
@@ -67,7 +67,7 @@ namespace {
 	}
 
 	void __declspec(naked) refreshScreen_Wrapper() { // 0048DDC0
-		static int32 ecx0;
+		static s32 ecx0;
 		static char result;
 		__asm {
 			MOV ecx0, ECX
@@ -81,9 +81,9 @@ namespace {
 		}
 	}
 
-	const uint32 updatePlacementWrapperJmp1 = 0x0048DD49;
+	const u32 updatePlacementWrapperJmp1 = 0x0048DD49;
 	void __declspec(naked) updatePlacementSimpleWrapper() {
-		static uint16 addonOffsetY;
+		static u16 addonOffsetY;
 		__asm {
 			MOVSX EAX, [ECX + 0x6626E2] // y
 			MOV addonOffsetY, AX
@@ -97,9 +97,9 @@ namespace {
 		}
 	}
 
-	const uint32 updatePlacementWrapperJmp2 = 0x0048DD68;
+	const u32 updatePlacementWrapperJmp2 = 0x0048DD68;
 	void __declspec(naked) updatePlacementSimpleWrapper2() {
-		static uint16 addonOffsetX;
+		static u16 addonOffsetX;
 		__asm {
 			MOVSX EAX, [ECX + 0x6626E0] // x
 			MOV addonOffsetX, AX

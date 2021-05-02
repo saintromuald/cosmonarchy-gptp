@@ -8,30 +8,30 @@ namespace hooks {
 	//the transport is "unit", the target is "unitToLoad"
 	void loadUnitProc(CUnit* unit, CUnit* unitToLoad) {
 
-		uint8 unitRaceId;
-		uint32 loaded_index;
-		int counter = 0;
+		u8 unitRaceId;
+		u32 loaded_index;
+		s32 counter = 0;
 		//before CCMU extender change
 //		static const CUnit* unitTable_0059CB58 = (CUnit*)0x0059CB58;
 //		static const CUnit* unitTable_0059CB64 = (CUnit*)0x0059CB64;
 		static CUnit* unitTable_0059CB58 = (CUnit*)0x0059CB58;
 		static CUnit* unitTable_0059CB64 = (CUnit*)0x0059CB64;
 		if (globals.extended_unit_table == 1) {
-			const uint32 index_start = reinterpret_cast<uint32>(&new_unit_table.units[0]) - 336;
+			const u32 index_start = reinterpret_cast<u32>(&new_unit_table.units[0]) - 336;
 			unitTable_0059CB58 = (CUnit*)index_start;
 			unitTable_0059CB64 = (CUnit*)(index_start + 12);
 		}
-		static uint32* u32_0x006BEE84 = (uint32*)(0x006BEE84);
-		static uint32* u32_0x006BEE8C = (uint32*)(0x006BEE8C);
+		static u32* u32_0x006BEE84 = (u32*)(0x006BEE84);
+		static u32* u32_0x006BEE8C = (u32*)(0x006BEE8C);
 
 		if (units_dat::SpaceProvided[unit->id] != 0) {
 
 			bool bEndLoop = false;
-			uint32* loadedUnitOffset;
+			u32* loadedUnitOffset;
 
 			while (!bEndLoop) {
 
-				loadedUnitOffset = (uint32*)&unit->loadedUnit[counter];
+				loadedUnitOffset = (u32*)&unit->loadedUnit[counter];
 
 				if (*loadedUnitOffset == 0)
 					bEndLoop = true;
@@ -89,9 +89,9 @@ namespace hooks {
 
 			if (unitToLoad->pAI != nullptr) {
 
-				uint32* pAI_0x14 = (uint32*)((uint32)unitToLoad->pAI + 0x14);
+				u32* pAI_0x14 = (u32*)((u32)unitToLoad->pAI + 0x14);
 
-				if (*pAI_0x14 == (uint32)unitToLoad)
+				if (*pAI_0x14 == (u32)unitToLoad)
 					*pAI_0x14 = NULL;
 
 			}
@@ -121,7 +121,7 @@ namespace hooks {
 		}
 
 		unitToLoad->connectedUnit = unit;
-		/*int unit_array_length = UNIT_ARRAY_LENGTH;
+		/*s32 unit_array_length = UNIT_ARRAY_LENGTH;
 		if (globals.extended_unit_table == 1) {
 			unit_array_length = NEW_ARRAY_LENGTH;
 		}*/
@@ -140,7 +140,7 @@ namespace hooks {
 		} else if (unit->id == UnitId::ProtossPylon) {
 			// TODO: enable nearby disabled structures, update energy sprite position
 		} else if (unit->id == UnitId::TerranBunker) {
-			for (int i = 0; i < 8; i++) {
+			for (s32 i = 0; i < 8; i++) {
 				CUnit* cargoUnit = unit->getLoadedUnit(i);
 				if (cargoUnit == nullptr) continue;
 				// TODO: disable cargo units
@@ -153,7 +153,7 @@ namespace hooks {
 		unitToLoad->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
 
 		if (unit->id == UnitId::TerranBunker) {
-			for (int i = 0; i < 8; i++) {
+			for (s32 i = 0; i < 8; i++) {
 				CUnit* cargoUnit = unit->getLoadedUnit(i);
 				if (cargoUnit == nullptr) continue;
 				// TODO: Disable cargo units
@@ -168,16 +168,16 @@ namespace hooks {
 
 			if (unitToLoad->path != nullptr) {
 
-				uint32* path_0x4 = (uint32*)((uint32)unitToLoad->path + 4);
+				u32* path_0x4 = (u32*)((u32)unitToLoad->path + 4);
 
-				*path_0x4 = ((uint32)unitToLoad->path - *u32_0x006BEE8C) / 128 + 1;
+				*path_0x4 = ((u32)unitToLoad->path - *u32_0x006BEE8C) / 128 + 1;
 
 				if (*u32_0x006BEE84 == 0)
 					unitToLoad->path = nullptr;
 				else
 					unitToLoad->path = (void*)((*u32_0x006BEE84 - *u32_0x006BEE8C) / 128 + 1);
 
-				*u32_0x006BEE84 = (uint32)unitToLoad->path;
+				*u32_0x006BEE84 = (u32)unitToLoad->path;
 				unitToLoad->path = nullptr;
 
 			}
@@ -203,16 +203,16 @@ namespace hooks {
 
 				if (subUnit->path != nullptr) {
 
-					uint32* path_0x4 = (uint32*)((uint32)subUnit->path + 4);
+					u32* path_0x4 = (u32*)((u32)subUnit->path + 4);
 
-					*path_0x4 = ((uint32)subUnit->path - *u32_0x006BEE8C) / 128 + 1;
+					*path_0x4 = ((u32)subUnit->path - *u32_0x006BEE8C) / 128 + 1;
 
 					if (*u32_0x006BEE84 == 0)
 						subUnit->path = nullptr;
 					else
 						subUnit->path = (void*)((*u32_0x006BEE84 - *u32_0x006BEE8C) / 128 + 1);
 
-					*u32_0x006BEE84 = (uint32)subUnit->path;
+					*u32_0x006BEE84 = (u32)subUnit->path;
 					subUnit->path = nullptr;
 
 				}
@@ -238,9 +238,9 @@ namespace hooks {
 	//the transported unit is "unit", the transport is
 	//accessed through unit->connectedUnit
 	//Has a boolean return value
-	bool32 unloadUnitProc(CUnit* unit) {
+	b32 unloadUnitProc(CUnit* unit) {
 
-		bool32 return_value = 0;
+		b32 return_value = 0;
 
 		if (unit->connectedUnit != nullptr) {
 
@@ -268,15 +268,15 @@ namespace hooks {
 					}
 
 					if ((unit->status & UnitStatus::IsBuilding) == 0) {
-						uint16* coords[2] = {&pos.x, &pos.y};
-						double corrections[2] = {32.0, 32.0};
+						u16* coords[2] = {&pos.x, &pos.y};
+						f64 corrections[2] = {32.0, 32.0};
 
 						if (unit->id == UnitId::TerranBunker) {
 							corrections[0] = 48.0;
 						}
 
-						for (int i = 0; i < 2; i++) {
-							*coords[i] = std::round(((double)*coords[i]) / corrections[i]) * corrections[i];
+						for (s32 i = 0; i < 2; i++) {
+							*coords[i] = std::round(((f64)*coords[i]) / corrections[i]) * corrections[i];
 						}
 
 						if (unit->id == UnitId::ZergCreepColony
@@ -288,7 +288,7 @@ namespace hooks {
 						} else if (unit->id == UnitId::ProtossPylon) {
 							// TODO: enable nearby disabled structures, update energy sprite position
 						} else if (unit->id == UnitId::TerranBunker) {
-							for (int i = 0; i < 8; i++) {
+							for (s32 i = 0; i < 8; i++) {
 								CUnit* cargoUnit = unit->getLoadedUnit(i);
 								if (cargoUnit == nullptr) continue;
 								// TODO: enable and update cargo units and their position
@@ -318,7 +318,7 @@ namespace hooks {
 
 						if (unit->id != UnitId::ProtossAccantor) {
 
-							uint8 weaponId = unit->getGroundWeapon();
+							u8 weaponId = unit->getGroundWeapon();
 
 							if (weaponId != WeaponId::None)
 								unit->groundWeaponCooldown = helper::getUpgradedWpnCooldown(unit, weaponId);

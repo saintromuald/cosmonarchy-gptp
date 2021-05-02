@@ -61,7 +61,7 @@ namespace GPTP {
 
 	bool GameLogger::updateFrame() {
 		if (doLogging) {
-			const int currentFrame = *elapsedTimeFrames;
+			const s32 currentFrame = *elapsedTimeFrames;
 			if (currentFrame > lastUpdatedFrame) {
 				lastUpdatedFrame = currentFrame;
 				logFile << "Frame " << currentFrame << ":\n";

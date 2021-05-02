@@ -47,7 +47,7 @@ public:
     // Return elapsed time interval duration, in milliseconds.
     // Can be called both after Stop() and before it. 
     // (Start() must have been called to initiate time interval measurements).
-    double ElapsedMilliseconds() const noexcept;
+    f64 ElapsedMilliseconds() const noexcept;
 
 
     //
@@ -85,7 +85,7 @@ private:
 
     // Calculate elapsed time in milliseconds,
     // given a start tick and end tick counts.
-    double ElapsedMilliseconds(long long start, long long finish) const noexcept;
+    f64 ElapsedMilliseconds(long long start, long long finish) const noexcept;
 };
 
 
@@ -126,7 +126,7 @@ inline void Stopwatch::Stop() noexcept
 }
 
 
-inline double Stopwatch::ElapsedMilliseconds() const noexcept
+inline f64 Stopwatch::ElapsedMilliseconds() const noexcept
 {
     if (m_running)
     {
@@ -154,7 +154,7 @@ inline long long Stopwatch::Frequency() noexcept
 }
 
 
-inline double Stopwatch::ElapsedMilliseconds(long long start, long long finish) const noexcept
+inline f64 Stopwatch::ElapsedMilliseconds(long long start, long long finish) const noexcept
 {
     _ASSERTE(start >= 0);
     _ASSERTE(finish >= 0);

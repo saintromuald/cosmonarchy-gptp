@@ -4,8 +4,8 @@
 
 namespace {
 	void _declspec(naked) saveScreenLocation_Wrapper() {
-		static int id;
-		static int result;
+		static s32 id;
+		static s32 result;
 		_asm {
 			MOV id, EAX
 			PUSHAD
@@ -19,8 +19,8 @@ namespace {
 	}
 
 	void _declspec(naked) recallScreenLocation_Wrapper() {
-		static int id;
-		static int result;
+		static s32 id;
+		static s32 result;
 		_asm {
 			MOV id, EAX
 			PUSHAD
@@ -33,17 +33,17 @@ namespace {
 		}
 	}
 
-	const uint32 helpMenuCall_jmp = 0x0048478A;
+	const u32 helpMenuCall_jmp = 0x0048478A;
 	void _declspec(naked) helpMenuCall_Wrapper() {
 		_asm {
 			JMP helpMenuCall_jmp
 		}
 	}
 
-	const uint32 screenLocationSwitchCase_jmp = 0x00484796;
-	const uint32 loc_484B24 = 0x00484B24;
+	const u32 screenLocationSwitchCase_jmp = 0x00484796;
+	const u32 loc_484B24 = 0x00484B24;
 	void _declspec(naked) screenLocationSwitchCase_Wrapper() {
-		static int v1;
+		static s32 v1;
 		static bool result;
 		_asm {
 			MOV v1, EDI

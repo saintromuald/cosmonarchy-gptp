@@ -1,30 +1,30 @@
 #include "ccmu.h"
 #include "extender.h"
 #include "globals.h"
-int CCMUExtender::identifier(std::string str) {
+s32 CCMUExtender::identifier(std::string str) {
 	return NO_IDENTIFIER;
 }
-uint32 CCMUExtender::parse_entry_value(std::string str, int id) {
+u32 CCMUExtender::parse_entry_value(std::string str, s32 id) {
 	return std::stoi(str);
 }
-bool CCMUExtender::is_string_id(int id) {
+bool CCMUExtender::is_string_id(s32 id) {
 	return false;
 }
 void CCMUExtender::set_extended_data() {}
-void CCMUExtender::set_value(int entry, int id, std::string str) {}
-void CCMUExtender::set_value(int entry, int id, int val) {}
+void CCMUExtender::set_value(s32 entry, s32 id, std::string str) {}
+void CCMUExtender::set_value(s32 entry, s32 id, s32 val) {}
 void CCMUExtender::extend() {
-	//	const uint32 lim_ext = NEW_ARRAY_LENGTH + 1;
-	const uint32 lim_ext = UNIT_ARRAY_LENGTH + 1;
-	const uint32 index_start = reinterpret_cast<uint32>(&new_unit_table.units[0]) - 336;
-	const uint32 table_start = reinterpret_cast<uint32>(&new_unit_table.units[0]);
-	const uint32 orderingXstart = reinterpret_cast<uint32>(&new_unit_table.orderingX);
-	const uint32 orderingYstart = reinterpret_cast<uint32>(&new_unit_table.orderingY);
-	const uint32 position_search_units_start = reinterpret_cast<uint32>(&new_unit_table.position_search_units);
-	const uint32 position_search_temp_start = reinterpret_cast<uint32>(&new_unit_table.position_search_temp);
-	const uint32 air_splashes_start = reinterpret_cast<uint32>(&new_unit_table.air_splash_results);
-	//	const uint32 table_end = table_start + 336*NEW_ARRAY_LENGTH;
-	const uint32 table_end = table_start + 336 * UNIT_ARRAY_LENGTH;
+	//	const u32 lim_ext = NEW_ARRAY_LENGTH + 1;
+	const u32 lim_ext = UNIT_ARRAY_LENGTH + 1;
+	const u32 index_start = reinterpret_cast<u32>(&new_unit_table.units[0]) - 336;
+	const u32 table_start = reinterpret_cast<u32>(&new_unit_table.units[0]);
+	const u32 orderingXstart = reinterpret_cast<u32>(&new_unit_table.orderingX);
+	const u32 orderingYstart = reinterpret_cast<u32>(&new_unit_table.orderingY);
+	const u32 position_search_units_start = reinterpret_cast<u32>(&new_unit_table.position_search_units);
+	const u32 position_search_temp_start = reinterpret_cast<u32>(&new_unit_table.position_search_temp);
+	const u32 air_splashes_start = reinterpret_cast<u32>(&new_unit_table.air_splash_results);
+	//	const u32 table_end = table_start + 336*NEW_ARRAY_LENGTH;
+	const u32 table_end = table_start + 336 * UNIT_ARRAY_LENGTH;
 	globals.extended_unit_table = 1;
 	memoryPatch(0x00402FD2 + 2, index_start);
 	memoryPatch(0x0042FEE5 + 1, lim_ext);
@@ -88,7 +88,7 @@ void CCMUExtender::extend() {
 	uplink(sprite_offset_list(), table_start + 0xc);
 }
 
-std::vector<uint32> CCMUExtender::orderingY_min18endlist() {
+std::vector<u32> CCMUExtender::orderingY_min18endlist() {
 	return {
 		0x00432879 + 2,
 		0x004627C8 + 2,
@@ -112,7 +112,7 @@ std::vector<uint32> CCMUExtender::orderingY_min18endlist() {
 	};
 }
 
-std::vector<uint32> CCMUExtender::orderingXlist() {
+std::vector<u32> CCMUExtender::orderingXlist() {
 	return {
 		0x004222B8 + 1,
 		0x004222F0 + 3,
@@ -151,7 +151,7 @@ std::vector<uint32> CCMUExtender::orderingXlist() {
 	};
 }
 
-std::vector<uint32> CCMUExtender::orderingXlist_off4() {
+std::vector<u32> CCMUExtender::orderingXlist_off4() {
 	return {
 		0x00422205 + 4,
 		0x00422213 + 4,
@@ -210,7 +210,7 @@ std::vector<uint32> CCMUExtender::orderingXlist_off4() {
 	};
 }
 
-std::vector<uint32> CCMUExtender::orderingYlist_off4() {
+std::vector<u32> CCMUExtender::orderingYlist_off4() {
 	return {
 		0x004221C3 + 3,
 		0x004221EF + 4,
@@ -271,7 +271,7 @@ std::vector<uint32> CCMUExtender::orderingYlist_off4() {
 	};
 }
 
-std::vector<uint32> CCMUExtender::orderingYlist() {
+std::vector<u32> CCMUExtender::orderingYlist() {
 	return {
 		0x00422194 + 1,
 		0x004221D0 + 3,
@@ -308,7 +308,7 @@ std::vector<uint32> CCMUExtender::orderingYlist() {
 	};
 }
 
-std::vector<uint32> CCMUExtender::sprite_offset_list() {
+std::vector<u32> CCMUExtender::sprite_offset_list() {
 	return {
 		0x00424C3E + 2,
 		0x00424E6F + 2,
@@ -344,7 +344,7 @@ std::vector<uint32> CCMUExtender::sprite_offset_list() {
 	};
 }
 
-std::vector<uint32> CCMUExtender::get_size_list() {
+std::vector<u32> CCMUExtender::get_size_list() {
 	return {
 		0x0049E91A + 1,
 		0x004EAB48 + 1,
@@ -442,7 +442,7 @@ std::vector<uint32> CCMUExtender::get_size_list() {
 	};
 }
 
-std::vector<uint32> CCMUExtender::table_start_list() {
+std::vector<u32> CCMUExtender::table_start_list() {
 	return{
 		0x0049E1E0 + 1,
 		0x0049E1FF + 1,
@@ -541,7 +541,7 @@ std::vector<uint32> CCMUExtender::table_start_list() {
 	};
 }
 
-std::vector<uint32> CCMUExtender::table_end_list() {
+std::vector<u32> CCMUExtender::table_end_list() {
 	return {
 		0x0049E999 + 1,
 		0x0049F39B + 2,
@@ -553,7 +553,7 @@ std::vector<uint32> CCMUExtender::table_end_list() {
 	};
 }
 
-std::vector<uint32> CCMUExtender::get_address_list() { //for -1, start
+std::vector<u32> CCMUExtender::get_address_list() { //for -1, start
 	return{
 		0x00402FD2 + 2,
 		0x004035DE + 2,

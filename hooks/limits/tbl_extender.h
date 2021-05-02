@@ -5,12 +5,12 @@
 
 /*class tblExtender {
 public:
-	uint32* buffer;
+	u32* buffer;
 
-	uint32 getStringCount() {
+	u32 getStringCount() {
 		return *buffer;
 	}
-	const char* getString(uint32 index) {
+	const char* getString(u32 index) {
 		if (index == 0) return 0;
 		else if (index <= getStringCount())
 			return (const char*)(buffer)+buffer[index];
@@ -22,6 +22,6 @@ public:
 namespace hooks {
 	void injectTblExtender();
 }
-//static uint32
+//static u32
 static char tblNew[] = "rez\\stat_txt.tblex";
 //extern tblExtender extendedTbl;

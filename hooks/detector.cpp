@@ -29,11 +29,11 @@ namespace hooks {
 			detector != target										// detector shouldn't try to detect itself
 			) {
 
-			uint8 visibilityFlags = (1 << detector->playerId);
+			u8 visibilityFlags = (1 << detector->playerId);
 			//only continue if the target sprite is visible (else it's
 			//not a cloaking issue that hide the unit)
 			if (target->sprite->visibilityFlags & visibilityFlags) {
-				uint32 detectionRange;
+				u32 detectionRange;
 				if (detector->status & UnitStatus::GroundedBuilding) {
 					detectionRange = 224; //0xE0, 32 * 7
 				} else {

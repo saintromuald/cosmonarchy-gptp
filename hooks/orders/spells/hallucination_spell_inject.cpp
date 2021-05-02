@@ -23,7 +23,7 @@ namespace {
 
 	void __declspec(naked) createHallucination_Wrapper() {
 		static CUnit* source;
-		static int player;
+		static s32 player;
 		static CUnit* result;
 		__asm {
 			PUSH EBP

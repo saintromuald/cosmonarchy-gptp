@@ -3,8 +3,8 @@
 
 namespace hooks {
 	bool unitIsFloorTrap(CUnit* unit); // 0047B070
-	int16 disableUnit(CUnit* pUnit); // 0047B4B0
-	uint32 updateUnitStrengthAndApplyDefaultOrdersHook(CUnit* unit); // 0049FA40
-	bool unitIsInstallationAsset(uint16 id);
+	s16 disableUnit(CUnit* pUnit); // 0047B4B0
+	u32 updateUnitStrengthAndApplyDefaultOrdersHook(CUnit* unit); // 0049FA40
+	bool unitIsInstallationAsset(u16 id);
 	void injectTrapHooks();
 }

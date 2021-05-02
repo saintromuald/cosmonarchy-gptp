@@ -7,7 +7,7 @@ namespace {
 
 		static CUnit* target;
 		static CUnit* battery;
-		static bool32 result;
+		static b32 result;
 
 		__asm {
 			MOV battery, EDI

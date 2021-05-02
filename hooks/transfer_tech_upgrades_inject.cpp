@@ -7,8 +7,8 @@ namespace {
 	void __declspec(naked) transferUnitUpgradesToPlayerWrapper() {
 
 		static CUnit* sourceUnit;
-		static uint8 targetPlayerId;
-		static uint32 researchUpgradeFunc;
+		static u8 targetPlayerId;
+		static u32 researchUpgradeFunc;
 
 		__asm {
 
@@ -43,8 +43,8 @@ namespace {
 	void __declspec(naked) transferUnitTechToPlayerWrapper() {
 
 		static CUnit* sourceUnit;
-		static uint8 targetPlayerId;
-		static uint32 researchTechFunc;
+		static u8 targetPlayerId;
+		static u32 researchTechFunc;
 
 		__asm {
 
