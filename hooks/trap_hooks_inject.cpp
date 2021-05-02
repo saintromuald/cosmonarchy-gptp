@@ -33,14 +33,14 @@ namespace {
 		}
 	}
 
-	void __declspec(naked) disableUnit_Wrapper() {
+	void __declspec(naked) disableTrap_Wrapper() {
 		static CUnit* unit;
 		static u32 result;
 		__asm {
 			MOV unit, EDI
 			PUSHAD
 		}
-		result = hooks::disableUnit(unit);
+		result = hooks::disableTrap(unit);
 		__asm {
 			POPAD
 			MOV EAX, result
@@ -69,7 +69,7 @@ namespace hooks {
 		jmpPatch(unitIsInstallationAsset_Wrapper, 0x00401430, 3);
 		jmpPatch(unitIsFloorTrap_Wrapper, 0x0047B070, 3);
 
-		//jmpPatch(disableUnit_Wrapper, 0x0047B4B0, 1); 
+		//jmpPatch(disableTrap_Wrapper, 0x0047B4B0, 1); 
 
 
 		/*

@@ -5,6 +5,25 @@
 
 namespace helper {
 
+	// sign flag
+	s8 SETS(s32 x)
+	{
+		if (sizeof(s32) == 1)
+			return s8(x) < 0;
+		if (sizeof(s32) == 2)
+			return s16(x) < 0;
+		if (sizeof(s32) == 4)
+			return s32(x) < 0;
+		return s64(x) < 0;
+	}
+
+	s8 OFSUB(s32 x, s32 y)
+	{
+		s32 y2 = y;
+		s8 sx = SETS(x);
+		return (sx ^ SETS(y2)) & (sx ^ SETS(x - y2));
+	}
+
 	bool HasMoneyCanMake(CUnit* builder, u32 unitToBuild) {
 		const u32 Func_HasMoneyCanMake = 0x00467250;
 		static b32 bPreResult;
@@ -5891,8 +5910,8 @@ namespace helper {
 		}
 	}
 
-	const u32 Func_Sub42D810 = 0x0042D810;
 	bool function_0042D810(s32 x, s32 y, u32 unitId) {
+		const u32 Func_Sub42D810 = 0x0042D810;
 		static b32 bPreReturnValue;
 		__asm {
 			PUSHAD
@@ -5906,8 +5925,8 @@ namespace helper {
 		return (bPreReturnValue != 0);
 	}
 
-	const u32 Func_GetAllUnitsInBounds = 0x0042FF80;
 	CUnit** getAllUnitsInBounds(Box16* coords) {
+		const u32 Func_GetAllUnitsInBounds = 0x0042FF80;
 		static CUnit** units_in_bounds;
 		__asm {
 			PUSHAD
@@ -5919,8 +5938,8 @@ namespace helper {
 		return units_in_bounds;
 	}
 
-	const u32 Func_getUnitDamageBonus = 0x00475EC0;
 	u32 getUnitDamageBonus(CUnit* unit, u8 weaponId) {
+		const u32 Func_getUnitDamageBonus = 0x00475EC0;
 		static u32 damageBonus;
 		__asm {
 			PUSHAD
@@ -5950,8 +5969,8 @@ namespace helper {
 		}
 	}
 
-	const u32 Func_attackOverlayAndNotify = 0x00479730;
 	void attackOverlayAndNotify(CUnit* attacker, CUnit* target, u32 weaponType, u32 direction) {
+		const u32 Func_attackOverlayAndNotify = 0x00479730;
 		__asm {
 			PUSHAD
 			MOV ESI, attacker
@@ -5963,8 +5982,8 @@ namespace helper {
 		}
 	}
 
-	const u32 Func_GetUnitBulletDamage = 0x0048ACD0;
 	u32 GetUnitBulletDamage(CBullet* bullet, CUnit* target) {
+		const u32 Func_GetUnitBulletDamage = 0x0048ACD0;
 		static u32 return_value;
 		__asm {
 			PUSHAD
@@ -5977,8 +5996,8 @@ namespace helper {
 		return return_value;
 	}
 
-	const u32 Func_getSpellStatString = 0x00491E80;
 	u32 getSpellStatString(CUnit* target, u32 techId, u8 playerId) {
+		const u32 Func_getSpellStatString = 0x00491E80;
 		static u32 return_value;
 		__asm {
 			PUSHAD
@@ -5992,29 +6011,30 @@ namespace helper {
 		return return_value;
 	}
 
-	const u32 Func_Sub492CC0 = 0x00492CC0;
-	void function_492CC0(CUnit* unit) {
+	void disableUnitFunc(CUnit* unit) {
+		const u32 Func_disableUnit = 0x00492CC0;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_Sub492CC0
+			CALL Func_disableUnit
 			POPAD
 		}
 	}
 
 	u8 function_492CC0_ret(CUnit* unit) {
+		const u32 Func_disableUnit = 0x00492CC0;
 		u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, unit
-			CALL Func_Sub492CC0
+			CALL Func_disableUnit
 			MOV result, EAX
 			POPAD
 		}
 		return result;
 	}
 
-	//Identical to setAllImageGroupFlagsPal11 @ 0x00497430;
+	// Identical to setAllImageGroupFlagsPal11 @ 0x00497430;
 	void setAllImageGroupFlagsPal11(CSprite* sprite) {
 		for (
 			CImage* current_image = sprite->images.head;
@@ -6051,6 +6071,7 @@ namespace helper {
 			POPAD
 		}
 	}
+
 	void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords) {
 		const u32 PlagueProc_function = 0x004F4AF0;
 		__asm {
@@ -7362,22 +7383,50 @@ namespace helper {
 		return (bool)result;
 	}
 
-	// sign flag
-	s8 SETS(s32 x)
-	{
-		if (sizeof(s32) == 1)
-			return s8(x) < 0;
-		if (sizeof(s32) == 2)
-			return s16(x) < 0;
-		if (sizeof(s32) == 4)
-			return s32(x) < 0;
-		return s64(x) < 0;
+	void returnAllInterceptors(CUnit* unit) {
+		const u32 Func_returnAllInterceptors = 0x004655F0;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_returnAllInterceptors
+			POPAD
+		}
 	}
 
-	s8 OFSUB(s32 x, s32 y)
-	{
-		s32 y2 = y;
-		s8 sx = SETS(x);
-		return (sx ^ SETS(y2)) & (sx ^ SETS(x - y2));
+	char ignoreAllScriptsAndGoToIdle(CUnit* unit) {
+		const u32 Func_ignoreAllScriptsAndGoToIdle = 0x00476550;
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL Func_ignoreAllScriptsAndGoToIdle
+			MOV result, EAX
+			POPAD
+		}
+		return (char)result;
+	}
+
+	void orders_SelfDestructing(CUnit* unit) {
+		const u32 Func_orders_SelfDestructing = 0x00475710;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_orders_SelfDestructing
+			POPAD
+		}
+	}
+
+	char setMaelstromTimer(CUnit* unit, u8 time) {
+		const u32 Func_setMaelstromTimer = 0x004553F0;
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH time
+			MOV EDI, unit
+			CALL Func_setMaelstromTimer
+			MOV result, EAX
+			POPAD
+		}
+		return (char)result;
 	}
 }

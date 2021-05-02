@@ -7,6 +7,93 @@
 #include <algorithm>
 
 namespace hooks {
+	// Hooked to allow for replacing proc functions - Pr0nogo
+	// Still needs work, lots of weird conversions/casting in this one
+	CUnit* iterateUnitsAtLocationTargetProc(Box16* location, s32(__fastcall* proc)(CUnit*, CUnit*), CUnit* unit) // 004E8280
+	{
+		CUnit** unitsInBounds;
+		CUnit** unitsInBounds2;
+		CUnit* aUnitInBound;
+		s32 index;
+
+		unitsInBounds = helper::getAllUnitsInBounds(location);
+		unitsInBounds2 = unitsInBounds;
+		if (proc || (aUnitInBound = *unitsInBounds) == 0)
+		{
+			aUnitInBound = *unitsInBounds;
+			if (*unitsInBounds)
+			{
+				do
+				{
+					if (proc(aUnitInBound, unit))
+					{
+						break;
+					}
+					aUnitInBound = unitsInBounds2[1];
+					++unitsInBounds2;
+				} while (aUnitInBound);
+			}
+		}
+		index = tempUnitsListArraysCountsListLastIndex[0] - 1;
+		tempUnitsListArraysCountsListLastIndex[0] = index;
+		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[index];
+		return aUnitInBound;
+	}
+
+	char disableUnit(CUnit* unit) // 00492CC0
+	{
+		scbw::print("disable");
+		CUnit* subunit = unit->subunit;
+		if (subunit)
+		{
+			subunit->status |= UnitStatus::Disabled;
+		}
+		helper::setResourceTarget(unit);
+		s16 unitId = unit->id;
+		if (scbw::unitCanNuke(unit))
+		{
+			CUnit* nuke = unit->connectedUnit;
+			if (nuke)
+			{
+				if (nuke->id == UnitId::TerranNuclearMissile)
+				{
+					unit->connectedUnit = 0;
+					nuke->connectedUnit = 0;
+				}
+			}
+		}
+		if (unitId == UnitId::ProtossSolarion)
+		{
+			helper::returnAllInterceptors(unit);
+		}
+		u8 orderId = unit->mainOrderId;
+		if (orderId == OrderId::Repair1 || orderId == OrderId::DroneLand)
+		{
+			unit->mainOrderState = 0;
+		}
+		if (!orders_dat::DisablingKeepsTarget[orderId])
+		{
+			unit->orderTarget.unit = 0;
+		}
+		char result;
+		result = helper::ignoreAllScriptsAndGoToIdle(unit);
+		CSprite* sprite = unit->sprite;
+		if (sprite->flags & 8)
+		{
+			if (*clientSelectionCount > 1u)
+			{
+				result = helper::updateBuildingLandUnitSelection(*(u32*)sprite, unit);
+			}
+		}
+		unit->currentButtonSet = 228;
+		*ctrlUnderMouse = 0;
+		*ctrlUnderMouseValue = 0;
+		*forceButtonRefresh = 1;
+		portraitRedraw[0] = 1;
+		*statusScreenRedraw = 1;
+		return result;
+	}
+
 	// no bullet because this function can be called in another context without bullet
 	void IrradiateHit(CUnit* attacker, CUnit* target, u8 attackingPlayerId) {
 		// no longer handled here
@@ -79,7 +166,7 @@ namespace hooks {
 	//the 3rd case, previousLockdownTimer is set to 131 (0x83)
 	void LockdownHit(CUnit* target, u8 previousLockdownTimer, CBullet* bullet) {
 
-		//add lockdown overlay if no ongoing lockdown already
+		// add lockdown overlay if no ongoing lockdown already
 		if (target->lockdownTimer == 0) {
 			u32 overlayImageId = ImageId::LockdownField_Small + scbw::getOverlayOffset(target->id);
 			CUnit* overlayTargetUnit;
@@ -92,17 +179,18 @@ namespace hooks {
 			(overlayTargetUnit->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
 		}
 
-		//this added to the fact that target->lockdownTimer is set to 0 before
-		//this function probably prevent lockdown to reset the duration of a 
-		//previous lock
+		// this added to the fact that target->lockdownTimer is set to 0 before
+		// this function probably prevent lockdown to reset the duration of a 
+		// previous lock
 		if (previousLockdownTimer > target->lockdownTimer)
+		{
 			target->lockdownTimer = previousLockdownTimer;
+		}
 
-		//should stop movements/orders/scripts of the unit, give it the status 
-		//DoodadStatesThing, may have an effect on selection, and perform
-		//scbw::refreshConsole() code at the end
-		helper::function_492CC0(target);
-
+		// should stop movements/orders/scripts of the unit, give it the status 
+		// DoodadStatesThing, may have an effect on selection, and perform
+		// scbw::refreshConsole() code at the end
+		disableUnit(target);
 	}
 
 	// TODO: Cleanup
@@ -540,8 +628,8 @@ namespace hooks {
 		}
 	}
 
-	//bullet is not normally part of the function, so if the function is called
-	//in an unexpected way, it may not contain the correct value.
+	// bullet is not normally part of the function, so if the function is called
+	// in an unexpected way, it may not contain the correct value.
 	void MaelstromHit(CUnit* attacker, s32 x, s32 y, CBullet* bullet) {
 		Box16 coords;
 		CThingy* maelstrom_effect_sprite = helper::createThingy(SpriteId::Maelstrom_Hit, x, y, 0);
@@ -557,7 +645,33 @@ namespace hooks {
 		helper::IterateUnitsAtLocationTargetProc_Maelstrom(attacker, &coords);
 	}
 
-	//no bullet because this function is called in another context without bullet
+	// Hooked to modify maelstrom timer and conditions; however, this hook is not called yet, we may need to hook iterateUnitsAtLocationTargetProc - 4E8280
+	bool maelstromProc(CUnit* target, CUnit* source) // 004F6760
+	{
+		scbw::print("maelstromProc");
+		s32 unitStatus = target->status;
+		bool result;
+		if (unitStatus & UnitStatus::IsHallucination)
+		{
+			helper::orders_SelfDestructing(target);
+			result = 0;
+		}
+		else
+		{
+			if (target != source && !(unitStatus & UnitStatus::Invincible))
+			{
+				s32 unitProperty = units_dat::BaseProperty[target->id];
+				if (!(unitStatus & UnitStatus::Burrowed))
+				{
+					helper::setMaelstromTimer(target, 16);
+				}
+			}
+			result = 0;
+		}
+		return result;
+	}
+
+	// no bullet because this function is called in another context without bullet
 	void MindControlHitHook(CUnit* attacker, CUnit* target) {
 		if (target->status & UnitStatus::IsHallucination)
 			target->remove();

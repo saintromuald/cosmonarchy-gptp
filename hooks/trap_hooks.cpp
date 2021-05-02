@@ -24,7 +24,7 @@ namespace hooks {
 		}
 		return false;
 	}
-	s16 disableUnit(CUnit* pUnit) { // 0047B4B0
+	s16 disableTrap(CUnit* pUnit) { // 0047B4B0
 		s32 unitFlags; // eax
 		CImage* i; // esi
 		s16 unitType; // ax

@@ -675,18 +675,18 @@ namespace helper {
     */
 
     //// wpnspellhit
-    bool function_0042D810(s32 x, s32 y, u32 unitId);														// 0042D810
+    bool function_0042D810(s32 x, s32 y, u32 unitId);														    // 0042D810
     CUnit** getAllUnitsInBounds(Box16* coords);																	// 0042FF80
     void incrementUnitKillCount(CUnit* unit);																	// 004759C0
-    u32 getUnitDamageBonus(CUnit* unit, u8 weaponId);														// 00475EC0
-    void attackOverlayAndNotify(CUnit* attacker, CUnit* target, u32 weaponType, u32 direction);			// 00479730
-    CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);									// 00488210
+    u32 getUnitDamageBonus(CUnit* unit, u8 weaponId);														    // 00475EC0
+    void attackOverlayAndNotify(CUnit* attacker, CUnit* target, u32 weaponType, u32 direction);			        // 00479730
+    CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);									        // 00488210
     u32 GetUnitBulletDamage(CBullet* bullet, CUnit* target);													// 0048ACD0
-    u32 getSpellStatString(CUnit* target, u32 techId, u8 playerId);									// 00491E80
-    void function_492CC0(CUnit* unit);																			// 00492CC0
+    u32 getSpellStatString(CUnit* target, u32 techId, u8 playerId);									            // 00491E80
+    void disableUnitFunc(CUnit* unit);																			    // 00492CC0
     u8 function_492CC0_ret(CUnit* unit);																		// 00492CC0
     void setAllImageGroupFlagsPal11(CSprite* sprite);															// 00497430
-    void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attackingPlayerId, Box16* coords);				// 004E8280
+    void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attackingPlayerId, Box16* coords);				    // 004E8280
     void IterateUnitsAtLocationTargetProc_Ensnare(CUnit* attacker, Box16* coords);								// 004E8280
     void IterateUnitsAtLocationTargetProc_Plague(CUnit* attacker, Box16* coords);								// 004E8280
     void IterateUnitsAtLocationTargetProc_Maelstrom(CUnit* attacker, Box16* coords);							// 004E8280
@@ -694,31 +694,37 @@ namespace helper {
     void createEnsnareOverlay(CUnit* a1);																		// 004F45E0
 
     // For createScanner
-    s32 setUnitStatTxtErrorMsg(s32 a1);																		// 0048CCB0
-    s32 playSoundFromSource(s32 a1, CUnit* a2, s32 a3, s32 a4);											// 0048ED50
+    s32 setUnitStatTxtErrorMsg(s32 a1);																		    // 0048CCB0
+    s32 playSoundFromSource(s32 a1, CUnit* a2, s32 a3, s32 a4);											        // 0048ED50
+    void returnAllInterceptors(CUnit* unit);                                                                    // 004655F0
+    char ignoreAllScriptsAndGoToIdle(CUnit* unit);                                                              // 00476550
+
+    // For maelstromProc
+    void orders_SelfDestructing(CUnit* unit);                                                                   // 00475710
+    char setMaelstromTimer(CUnit* unit, u8 time);                                                               // 004553F0
 
     //// selection
     bool unitIsOwnedByCurrentPlayer(CUnit* unit); 																// 00401170
     bool isUnitBurrowed(CUnit* unit);																			// 00402A70
-    void SC_memcpy_0(u32 dest, u32 src, u32 memsize);													// 00408FD0
+    void SC_memcpy_0(u32 dest, u32 src, u32 memsize);													        // 00408FD0
     void function_00468670(CUnit* unit);																		// 00468670
-    bool unit_isUnselectable(u16 unitId);																	// x046ED80
-    void function_0046F040(CUnit* current_unit, CUnit** unit_list, CUnit* clicked_unit, u32 list_length);	// x046F040
-    u32 combineLists_Sub_6F290(CUnit* unit, CUnit** unit_list_1, CUnit** unit_list_2, u32 list_length);	// 0046F290
-    void applyNewSelect_Sub_6FA00(CUnit** unit_list, u32 unit_list_length);									// 0046FA00
-    u32 CUnitToUnitID(CUnit* unit);																			// 0047B1D0
+    bool unit_isUnselectable(u16 unitId);																	    // x046ED80
+    void function_0046F040(CUnit* current_unit, CUnit** unit_list, CUnit* clicked_unit, u32 list_length);	    // x046F040
+    u32 combineLists_Sub_6F290(CUnit* unit, CUnit** unit_list_1, CUnit** unit_list_2, u32 list_length);	        // 0046F290
+    void applyNewSelect_Sub_6FA00(CUnit** unit_list, u32 unit_list_length);									    // 0046FA00
+    u32 CUnitToUnitID(CUnit* unit);																			    // 0047B1D0
     bool unit_IsStandardAndMovable(CUnit* unit); 																// 0047B770
     void selectBuildingSFX(CUnit* unit);																		// 0048F910
-    b32 selectSingleUnitFromID(u32 unitIndex);															// 00496D30
-    void CreateNewUnitSelectionsFromList(CUnit** unit_list, u32 unit_list_length);							// 0049AE40
-    void CMDACT_Select(CUnit** unit_list, u32 unit_list_length); 											// 004C0860
+    b32 selectSingleUnitFromID(u32 unitIndex);															        // 00496D30
+    void CreateNewUnitSelectionsFromList(CUnit** unit_list, u32 unit_list_length);							    // 0049AE40
+    void CMDACT_Select(CUnit** unit_list, u32 unit_list_length); 											    // 004C0860
 
     //// cloak_nearby_units
     void secondaryOrder_Cloak(CUnit* unit);																		// 00491790
 
     //// update_unit_state
-    bool unitHpIsInRedZone(CUnit* unit);						// 0x004022C0
-    void RestoreAllUnitStats(CUnit* unit);						// 0x00492F70 (hooked by hooks\update_status_effects.cpp)
+    bool unitHpIsInRedZone(CUnit* unit);						                                                // 0x004022C0
+    void RestoreAllUnitStats(CUnit* unit);						                                                // 0x00492F70 (hooked by hooks\update_status_effects.cpp)
 
     // For updateUnits
     bool isSelectedUnitGroupEnabled();																						// 0049A2C0
@@ -726,7 +732,7 @@ namespace helper {
     void cancelTargetOrder();																								// 0048CA10
     s32 updateDisruptionWebStatus();																						// 004EB2F0
     CUnit* progressDyingUnitFrame(CUnit* unit);																				// 004EB5E0
-    void revealSightAtLocation(s32 sightRange, u32 visionFlags, s32 ptX, s32 ptY, bool isAirUnit);					// 004806F0
+    void revealSightAtLocation(s32 sightRange, u32 visionFlags, s32 ptX, s32 ptY, bool isAirUnit);					        // 004806F0
     void updateVisibility(CUnit* unit);																						// 004EBE10
     void progressActiveUnitFrame(CUnit* unit);																				// 004EBC30
     void checkUnitVisibility(CUnit* unit);																					// 00443390
@@ -736,7 +742,7 @@ namespace helper {
 
     // For updateBurrowingCloakingUnits
     s32 isUnitCloaking(CUnit* unit);																						// 004916E0
-    void playSoundFromDirect(CUnit* unit, s32 soundId);																	// 0049B5B0
+    void playSoundFromDirect(CUnit* unit, s32 soundId);																	    // 0049B5B0
 
     // For doCloak
     void updateSpriteFlagOnPalette(CSprite* sprite);																		// 00497E80
@@ -745,9 +751,9 @@ namespace helper {
 
     //// select_larva
 
-    u32 getLarvaeUnitsFromList(CUnit** unitList, CUnit** outputList);													// 00423190
-    b32 selectSingleUnitFromID(u32 unitIndex);																		// 00496D30
-    void selectMultipleUnitsFromUnitList(CUnit** unitList, u32 unitsCount, b32 unk1, b32 unk2);					// 0049AEF0
+    u32 getLarvaeUnitsFromList(CUnit** unitList, CUnit** outputList);													    // 00423190
+    b32 selectSingleUnitFromID(u32 unitIndex);																		        // 00496D30
+    void selectMultipleUnitsFromUnitList(CUnit** unitList, u32 unitsCount, b32 unk1, b32 unk2);					            // 0049AEF0
 
     //// uifeatures
 
@@ -755,13 +761,13 @@ namespace helper {
     s32 GetColorHandle(u8 color); // Colors: 1 - last color, 2 - 8, 14 - 17, 21 - 25, 27 - 31
 
     // For targetedOrder
-    COrder* queueNewOrder(COrder* a1, s16 a2, s16 a3, CUnit* a4, u8 a5, s32 a6, s16 a7, Point32* a8, CUnit* a9);	// 00474B90
-    s32 showStatTxtToPlayer(s32 a1, s32 a2);																			// 0048CF00
-    void setOrderTarget(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, CUnit* a6, s32 a7, Point32* a8, CUnit* a9);		// 00475470
+    COrder* queueNewOrder(COrder* a1, s16 a2, s16 a3, CUnit* a4, u8 a5, s32 a6, s16 a7, Point32* a8, CUnit* a9);	        // 00474B90
+    s32 showStatTxtToPlayer(s32 a1, s32 a2);																			    // 0048CF00
+    void setOrderTarget(u8 a1, s16 a2, s16 a3, s32 a4, s32 a5, CUnit* a6, s32 a7, Point32* a8, CUnit* a9);		            // 00475470
 
     // For selectUnits
-    s32 selectSingleUnitFromID(s32 a1);																					// 00496D30
-    s32 selectMultipleUnitsFromUnitList(s32 a1, CUnit** a2, u8 a3, s32 a4);										// 0049AEF0
+    s32 selectSingleUnitFromID(s32 a1);																					    // 00496D30
+    s32 selectMultipleUnitsFromUnitList(s32 a1, CUnit** a2, u8 a3, s32 a4);										            // 0049AEF0
     s32 SNetGetTurnsInTransit(u32* turns);
     u8 sendTurn();
     s32 SErrGetLastError();
@@ -769,8 +775,8 @@ namespace helper {
 
     //// repair_order
 
-    void getRepairInfo(CUnit* repairTarget, u32* repairCostMineral, u32* repairCostGas, s16* unkRepairInfo);		// 00466D10
-    bool verifyResources(u32 mineralCost, u32 gasCost, u32 playerId);												// 00466EE0
+    void getRepairInfo(CUnit* repairTarget, u32* repairCostMineral, u32* repairCostGas, s16* unkRepairInfo);		        // 00466D10
+    bool verifyResources(u32 mineralCost, u32 gasCost, u32 playerId);												        // 00466EE0
     bool ord_repair_subtract(CUnit* worker, CUnit* target);																	// 00466FB0
     // For isOrderValid
     bool unitIsResource(CUnit* unit);                                                                                       // 004688E0
