@@ -128,28 +128,25 @@ namespace hooks {
 			}
 			break;
 		case WeaponEffect::Lockdown:
-			v20 = bullet->attackTarget.unit;
-			if (v20)
+			if (bullet->attackTarget.unit)
 			{
 				if (!helper::unitHasNoMainOrderType(bullet->attackTarget.unit))
 				{
-					LockdownHit(v20, LobotomyMineLockdownTime, bullet);
+					LockdownHit(bullet->attackTarget.unit, LobotomyMineLockdownTime, bullet);
 				}
 			}
 			break;
 		case WeaponEffect::Parasite:
-			v22 = bullet->attackTarget.unit;
-			if (v22)
+			if (bullet->attackTarget.unit)
 			{
 				if (!helper::unitHasNoMainOrderType(bullet->attackTarget.unit))
 				{
-					helper::playSoundFromSource(921, v22, 1, 0);
+					helper::playSoundFromSource(921, bullet->attackTarget.unit, 1, 0);
 					bullet->attackTarget.unit->parasiteFlags |= 1 << bullet->srcPlayer;
 					helper::setEventUnitComplete();
-					v23 = bullet->sourceUnit;
-					if (v23)
+					if (bullet->sourceUnit)
 					{
-						helper::Ai_UnitWasHit(0, 0, v23, bullet->attackTarget.unit);
+						helper::Ai_UnitWasHit(0, 0, bullet->sourceUnit, bullet->attackTarget.unit);
 					}
 				}
 			}
@@ -180,9 +177,10 @@ namespace hooks {
 			PlagueHit(bullet->sourceUnit, bullet->moveTarget.pt.x, bullet->moveTarget.pt.y, bullet);
 			break;
 		case WeaponEffect::StasisField:
-			x = bullet->moveTarget.pt.x;
-			if (x || bullet->moveTarget.pt.y)
+			if (bullet->moveTarget.pt.x || bullet->moveTarget.pt.y)
+			{
 				StasisFieldHit(bullet->sourceUnit, bullet->moveTarget.pt.x, bullet->moveTarget.pt.y, bullet);
+			}
 			break;
 		case WeaponEffect::DarkSwarm:
 			DarkSwarmHit(bullet->moveTarget.pt.x, bullet->moveTarget.pt.y, bullet->srcPlayer, bullet);
