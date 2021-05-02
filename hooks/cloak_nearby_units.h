@@ -1,10 +1,11 @@
 #pragma once
 #include <SCBW/structures/CUnit.h>
 
-namespace hooks {
+namespace hooks
+{
 
-	void cloakNearbyUnitsHook(CUnit* unit);	//00491C20
+    void cloakNearbyUnitsHook(CUnit* unit);	//00491C20
 
-	void injectCloakNearbyUnits();
+    void injectCloakNearbyUnits();
 
 } //hooks

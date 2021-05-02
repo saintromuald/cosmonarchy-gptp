@@ -2,52 +2,57 @@
 #include "train_cmd_receive.h"
 #include <hook_tools.h>
 
-namespace {
+namespace
+{
 
-	void __declspec(naked) CMDRECV_TrainFighterWrapper() {
+    void __declspec(naked) CMDRECV_TrainFighterWrapper()
+    {
 
-		__asm PUSHAD
+        __asm PUSHAD
 
-		hooks::CMDRECV_TrainFighter();
+        hooks::CMDRECV_TrainFighter();
 
-		__asm {
-			POPAD
-			RETN
-		}
+        __asm {
+            POPAD
+            RETN
+        }
 
-	}
+    }
 
-	;
+    ;
 
-	void __declspec(naked) CMDRECV_TrainWrapper() {
+    void __declspec(naked) CMDRECV_TrainWrapper()
+    {
 
-		static u16 wUnitType;
+        static u16 wUnitType;
 
-		__asm {
-			MOV AX, [EAX + 01]
-			MOV wUnitType, AX
-			PUSHAD
-		}
+        __asm {
+            MOV AX, [EAX + 01]
+            MOV wUnitType, AX
+            PUSHAD
+        }
 
-		hooks::CMDRECV_Train(wUnitType);
+        hooks::CMDRECV_Train(wUnitType);
 
-		__asm {
-			POPAD
-			RETN
-		}
+        __asm {
+            POPAD
+            RETN
+        }
 
-	}
+    }
 
-	;
+    ;
 
 
 }//unnamed namespace
 
-namespace hooks {
+namespace hooks
+{
 
-	void injectTrainCmdRecvHooks() {
-		jmpPatch(CMDRECV_TrainFighterWrapper, 0x004C1800, 5);
-		jmpPatch(CMDRECV_TrainWrapper, 0x004C1C20, 7);
-	}
+    void injectTrainCmdRecvHooks()
+    {
+        jmpPatch(CMDRECV_TrainFighterWrapper, 0x004C1800, 5);
+        jmpPatch(CMDRECV_TrainWrapper, 0x004C1C20, 7);
+    }
 
 } //hooks

@@ -1,11 +1,12 @@
 #pragma once
 #include "../../SCBW/structures/CUnit.h"
 
-namespace hooks {
+namespace hooks
+{
 
-	u32 getLarvaeUnitsFromListHook(CUnit** unitList, CUnit** outputList);	// 00423190
-	void BTNSACT_SelectLarva();													// 00423930
+    u32 getLarvaeUnitsFromListHook(CUnit** unitList, CUnit** outputList);	// 00423190
+    void BTNSACT_SelectLarva();													// 00423930
 
-	void injectSelectLarvaHooks();
+    void injectSelectLarvaHooks();
 
 }

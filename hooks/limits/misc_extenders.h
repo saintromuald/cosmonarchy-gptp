@@ -17,7 +17,8 @@ extern u8* PORTDAT_IdleUnknown1;
 extern u8* PORTDAT_TalkingUnknown1;
 
 
-namespace hooks {
-	void injectBulletLimits();
-	//	void injectPortdataLimits();
+namespace hooks
+{
+    void injectBulletLimits();
+    //	void injectPortdataLimits();
 }

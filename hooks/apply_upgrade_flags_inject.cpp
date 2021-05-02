@@ -2,65 +2,70 @@
 #include "apply_upgrade_flags.h"
 #include <hook_tools.h>
 
-namespace {
+namespace
+{
 
-	void __declspec(naked) applyUpgradeFlagsToNewUnitWrapper() {
+    void __declspec(naked) applyUpgradeFlagsToNewUnitWrapper()
+    {
 
-		static CUnit* unit;
+        static CUnit* unit;
 
-		__asm {
-			MOV unit, ESI
-			PUSHAD
-		}
+        __asm {
+            MOV unit, ESI
+            PUSHAD
+        }
 
-		hooks::applyUpgradeFlagsToNewUnitHook(unit);
+        hooks::applyUpgradeFlagsToNewUnitHook(unit);
 
-		__asm {
-			POPAD
-			RETN
-		}
-	}
+        __asm {
+            POPAD
+            RETN
+        }
+    }
 
-	;
+    ;
 
-	void __declspec(naked) applyUpgradeFlagsToExistingUnitsWrapper() {
+    void __declspec(naked) applyUpgradeFlagsToExistingUnitsWrapper()
+    {
 
-		static CUnit* unit;
-		static u8 upgradeId;
+        static CUnit* unit;
+        static u8 upgradeId;
 
-		__asm {
+        __asm {
 
-			PUSH EBP
-			MOV EBP, ESP
+            PUSH EBP
+            MOV EBP, ESP
 
-			MOV upgradeId, AL
+            MOV upgradeId, AL
 
-			MOV EAX, [EBP + 0x08]
-			MOV unit, EAX
+            MOV EAX, [EBP + 0x08]
+            MOV unit, EAX
 
-			PUSHAD
+            PUSHAD
 
-		}
+        }
 
-		hooks::applyUpgradeFlagsToExistingUnitsHook(unit, upgradeId);
+        hooks::applyUpgradeFlagsToExistingUnitsHook(unit, upgradeId);
 
-		__asm {
-			POPAD
-			MOV ESP, EBP
-			POP EBP
-			RETN 4
-		}
-	}
+        __asm {
+            POPAD
+            MOV ESP, EBP
+            POP EBP
+            RETN 4
+        }
+    }
 
 } //Unnamed namespace
 
-namespace hooks {
+namespace hooks
+{
 
-	void injectApplyUpgradeFlags() {
-		jmpPatch(applyUpgradeFlagsToNewUnitWrapper, 0x00454370, 2);
-		jmpPatch(applyUpgradeFlagsToExistingUnitsWrapper, 0x00454540, 2);
-	}
+    void injectApplyUpgradeFlags()
+    {
+        jmpPatch(applyUpgradeFlagsToNewUnitWrapper, 0x00454370, 2);
+        jmpPatch(applyUpgradeFlagsToExistingUnitsWrapper, 0x00454540, 2);
+    }
 
-	;
+    ;
 
 } //hooks

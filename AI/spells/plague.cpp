@@ -3,46 +3,49 @@
 
 //V241 for VS2008
 
-namespace AI {
+namespace AI
+{
 
-	CUnit* findBestPlagueTarget(CUnit* caster, bool isUnderAttack) {
+    CUnit* findBestPlagueTarget(CUnit* caster, bool isUnderAttack)
+    {
 
-		s32 bounds;
+        s32 bounds;
 
-		if (isUnderAttack)
-			bounds = 32 * 9;
-		else
-			bounds = 32 * 128;
+        if (isUnderAttack)
+            bounds = 32 * 9;
+        else
+            bounds = 32 * 128;
 
-		return scbw::UnitFinder::getNearestTarget(
-			caster->getX() - bounds,
-			caster->getY() - bounds,
-			caster->getX() + bounds,
-			caster->getY() + bounds,
-			caster,
-			[&](CUnit* target) {
-			if (!isTargetWorthHitting(target, caster))
-				return false;
+        return scbw::UnitFinder::getNearestTarget(
+            caster->getX() - bounds,
+            caster->getY() - bounds,
+            caster->getX() + bounds,
+            caster->getY() + bounds,
+            caster,
+            [&](CUnit* target)
+        {
+            if (!isTargetWorthHitting(target, caster))
+                return false;
 
-			if (!scbw::canWeaponTargetUnit(WeaponId::Plague, target, caster))
-				return false;
+            if (!scbw::canWeaponTargetUnit(WeaponId::Plague, target, caster))
+                return false;
 
-			if (target->plagueTimer)
-				return false;
+            if (target->plagueTimer)
+                return false;
 
-			if (units_dat::BaseProperty[target->id] & UnitProperty::Hero)
-				return false;
+            if (units_dat::BaseProperty[target->id] & UnitProperty::Hero)
+                return false;
 
-			const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Plague);
-			if (!isUnderAttack && totalEnemyLife < 250)
-				return false;
+            const s32 totalEnemyLife = getTotalEnemyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Plague);
+            if (!isUnderAttack && totalEnemyLife < 250)
+                return false;
 
-			const s32 totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Plague);
-			if (totalAllyLife * 2 >= totalEnemyLife)
-				return false;
+            const s32 totalAllyLife = getTotalAllyLifeInArea(target->getX(), target->getY(), 96, caster, WeaponId::Plague);
+            if (totalAllyLife * 2 >= totalEnemyLife)
+                return false;
 
-			return true;
-		});
-	}
+            return true;
+        });
+    }
 
 } //AI

@@ -2,62 +2,67 @@
 #include "CMDRECV_Morph.h"
 #include <hook_tools.h>
 
-namespace {
+namespace
+{
 
-	void __declspec(naked) CMDRECV_BuildingMorphWrapper() {
+    void __declspec(naked) CMDRECV_BuildingMorphWrapper()
+    {
 
-		static u16 wUnitType;
+        static u16 wUnitType;
 
-		__asm {
-			MOV AX, [EAX + 0x01]
-			MOV wUnitType, AX
-			PUSHAD
-		}
+        __asm {
+            MOV AX, [EAX + 0x01]
+            MOV wUnitType, AX
+            PUSHAD
+        }
 
-		hooks::CMDRECV_BuildingMorph(wUnitType);
+        hooks::CMDRECV_BuildingMorph(wUnitType);
 
-		__asm {
-			POPAD
-			RETN
-		}
+        __asm {
+            POPAD
+            RETN
+        }
 
-	}
+    }
 
-	;
+    ;
 
-	void __declspec(naked) CMDRECV_UnitMorphWrapper() {
+    void __declspec(naked) CMDRECV_UnitMorphWrapper()
+    {
 
-		static u16 wUnitType;
+        static u16 wUnitType;
 
-		__asm {
-			PUSH EBP
-			MOV EBP, ESP
-			MOV EAX, [EBP + 0x08]
-			MOV AX, [EAX + 0x01]
-			MOV wUnitType, AX
-			PUSHAD
-		}
+        __asm {
+            PUSH EBP
+            MOV EBP, ESP
+            MOV EAX, [EBP + 0x08]
+            MOV AX, [EAX + 0x01]
+            MOV wUnitType, AX
+            PUSHAD
+        }
 
-		hooks::CMDRECV_UnitMorph(wUnitType);
+        hooks::CMDRECV_UnitMorph(wUnitType);
 
-		__asm {
-			POPAD
-			MOV ESP, EBP
-			POP EBP
-			RETN 4
-		}
+        __asm {
+            POPAD
+            MOV ESP, EBP
+            POP EBP
+            RETN 4
+        }
 
-	}
+    }
 
-	;
+    ;
 
 }//unnamed namespace
 
-namespace hooks {
+namespace hooks
+{
 
-	void injectCMDRECV_MorphHooks() {
-		jmpPatch(CMDRECV_BuildingMorphWrapper, 0x004C1910, 7);
-		jmpPatch(CMDRECV_UnitMorphWrapper, 0x004C1990, 3);
-	}
+    void injectCMDRECV_MorphHooks()
+    {
+        jmpPatch(CMDRECV_BuildingMorphWrapper, 0x004C1910, 7);
+        jmpPatch(CMDRECV_UnitMorphWrapper, 0x004C1990, 3);
+    }
 
 } //hooks

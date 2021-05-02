@@ -6,88 +6,96 @@
 
 //V241 for VS2008
 
-struct Point8 {
-	s8 x;
-	s8 y;
+struct Point8
+{
+    s8 x;
+    s8 y;
 };
 
-struct Point16 {
-	u16 x;
-	u16 y;
+struct Point16
+{
+    u16 x;
+    u16 y;
 
-	bool operator ==(const Point16& rhs) const {
-		return x == rhs.x && y == rhs.y;
-	}
-	bool operator !=(const Point16& rhs) const {
-		return !(*this == rhs);
-	}
+    bool operator ==(const Point16& rhs) const
+    {
+        return x == rhs.x && y == rhs.y;
+    }
+    bool operator !=(const Point16& rhs) const
+    {
+        return !(*this == rhs);
+    }
 };
 
-struct Point32 {
-	s32 x;
-	s32 y;
+struct Point32
+{
+    s32 x;
+    s32 y;
 };
 
-struct Box16 {
-	union
-	{
-		struct
-		{
-			s16 left;     
-			s16 top;      
-			s16 right;    
-			s16 bottom;   
-		};
-		struct
-		{
-			s16 x;     
-			s16 y;      
-			s16 w;    
-			s16 h;   
-		};
-	};
+struct Box16
+{
+    union
+    {
+        struct
+        {
+            s16 left;
+            s16 top;
+            s16 right;
+            s16 bottom;
+        };
+        struct
+        {
+            s16 x;
+            s16 y;
+            s16 w;
+            s16 h;
+        };
+    };
 };
 
-struct Box32 {
-	union
-	{
-		struct
-		{
-			s32 left;     
-			s32 top;      
-			s32 right;    
-			s32 bottom;   
-		};
-		struct
-		{
-			s32 x;     
-			s32 y;      
-			s32 w;    
-			s32 h;   
-		};
-	};
+struct Box32
+{
+    union
+    {
+        struct
+        {
+            s32 left;
+            s32 top;
+            s32 right;
+            s32 bottom;
+        };
+        struct
+        {
+            s32 x;
+            s32 y;
+            s32 w;
+            s32 h;
+        };
+    };
 };
 
-struct Bounds {
-	union
-	{
-		struct
-		{
-			s16 left;     
-			s16 top;      
-			s16 right;    
-			s16 bottom;   
-		};
-		struct
-		{
-			s16 x;     
-			s16 y;      
-			s16 w;    
-			s16 h;   
-		};
-	};
-	u16 width;
-	u16 height;
+struct Bounds
+{
+    union
+    {
+        struct
+        {
+            s16 left;
+            s16 top;
+            s16 right;
+            s16 bottom;
+        };
+        struct
+        {
+            s16 x;
+            s16 y;
+            s16 w;
+            s16 h;
+        };
+    };
+    u16 width;
+    u16 height;
 };
 
 C_ASSERT(sizeof(Point8) == 2);

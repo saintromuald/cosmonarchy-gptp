@@ -2,39 +2,43 @@
 #include "mindcontrol_spell.h"
 #include <hook_tools.h>
 
-namespace {
+namespace
+{
 
-	void __declspec(naked) orders_CastMindControlWrapper() {
+    void __declspec(naked) orders_CastMindControlWrapper()
+    {
 
-		static CUnit* unit;
+        static CUnit* unit;
 
-		__asm {
-			PUSH EBP
-			MOV EBP, ESP
-			MOV EAX, [EBP + 0x08]
-			MOV unit, EAX
-			PUSHAD
-		}
+        __asm {
+            PUSH EBP
+            MOV EBP, ESP
+            MOV EAX, [EBP + 0x08]
+            MOV unit, EAX
+            PUSHAD
+        }
 
-		hooks::ordersCastMindControl(unit);
+        hooks::ordersCastMindControl(unit);
 
-		__asm {
-			POPAD
-			MOV ESP, EBP
-			POP EBP
-			RETN 4
-		}
+        __asm {
+            POPAD
+            MOV ESP, EBP
+            POP EBP
+            RETN 4
+        }
 
-	}
+    }
 
-	;
+    ;
 
 }//unnamed namespace
 
-namespace hooks {
+namespace hooks
+{
 
-	void injectMindControlSpellHook() {
-		jmpPatch(orders_CastMindControlWrapper, 0x004F6950, 0);
-	}
+    void injectMindControlSpellHook()
+    {
+        jmpPatch(orders_CastMindControlWrapper, 0x004F6950, 0);
+    }
 
 } //hooks

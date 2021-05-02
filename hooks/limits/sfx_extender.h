@@ -11,7 +11,8 @@ extern u8* SFXDAT_Type;
 extern u32* SFXDAT_SoundFile;
 extern unk_t* SFXDAT_Unknown;
 
-namespace hooks {
-	void sfxExtenderGetCount();
-	void newSfxExtender();
+namespace hooks
+{
+    void sfxExtenderGetCount();
+    void newSfxExtender();
 }

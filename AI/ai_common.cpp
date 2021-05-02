@@ -5,285 +5,307 @@
 #include <globals.h>
 #include <cassert>
 
-namespace AI {
+namespace AI
+{
+
+    //Equivalent to 00440E30 AI_TargetUnitIsWorthHitting
+    bool isTargetWorthHitting(CUnit* target, CUnit* attacker)
+    {
+
+        //If the target is hidden by the fog-of-war
+        if (!target->sprite->isVisibleTo(attacker->playerId))
+            return false;
+
+        //If the target is not detectable
+        if (target->status & 0x300 && !((1 << attacker->playerId) & target->visibilityStatus) && !target->isVisibleTo(attacker->playerId))
+            return false;
+
+        if (!attacker->isTargetEnemy(target))
+            return false;
+
+        if (target->id == UnitId::scarab
+            || target->id == UnitId::TerranSpiderMine
+            || target->id == UnitId::ProtossSteward
+            || target->id == UnitId::TerranLobotomyMine)
+            return false;
+
+        //Target is a worker inside a gas building
+        if (target->mainOrderId == OrderId::HarvestGas1
+            || target->mainOrderId == OrderId::HarvestGas2
+            || target->mainOrderId == OrderId::HarvestGas3)
+            return false;
+
+        return true;
+
+    }
+
+    bool isTargetAttackingAlly(CUnit* target, CUnit* unit)
+    {
+        if (CUnit* targetOfTarget = target->orderTarget.unit)
+        {
+            if (targetOfTarget->playerId < 8 && !unit->isTargetEnemy(targetOfTarget))
+                return true;
+        }
+
+        return false;
+    }
+
+    bool isUmsMode(u8 playerId)
+    {
+        assert(playerId < 8);
+        return AIScriptController[playerId].AI_Flags.isUseMapSettings;
+    }
+
+    //-------- isUnitInUnsafeRegion() --------//
+
+    //Internal use only
+    const u32 Func_GetRegionIdAtPosEx = 0x0049C9F0;
+    u16 getRegionIdAtPosEx(s32 x, s32 y)
+    {
+        static u16 result;
+
+        __asm {
+            PUSHAD
+            MOV EDI, x
+            MOV ECX, y
+            CALL Func_GetRegionIdAtPosEx
+            MOV result, AX
+            POPAD
+        }
+
+        return result;
+    }
+
+    //Based on code @ 0x00440BB0 (not a real independant function)
+    bool isUnitInUnsafeRegion(CUnit* unit)
+    {
+        u16 currentRegion = getRegionIdAtPosEx(unit->getX(), unit->getY());
+        AiCaptain* currentAiCaptain = &AiRegionCaptains[unit->playerId][currentRegion];
+        return currentAiCaptain->captainType == 3
+            || currentAiCaptain->airTarget
+            || currentAiCaptain->groundTarget
+            || currentAiCaptain->captainFlags & 0x20;
+    }
+
+
+    //-------- Get total unit stats in area --------//
+
+    //00440A60  unitShieldsClumpInAreaAccumulatorProc
+    //00440AC0  unitEnergyClumpInAreaAccumulatorProc
+    //00440B20  getEnemyClumpValueProc
+    //00440CF0  AIEnemyOrganicUnitHPAccumulatorProc
+    //00440D60  AIAllyUnitHPAccumulatorProc
+    //00440DC0  AIEnemyUnitHPAccumulatorProc
+    //00440FF0  FindNearestEnemyAndClumpProc
+
+
+    scbw::UnitFinder unitStatTotalFinder;
+
+    //In original functions:
+    //0x00695604 would contains weaponId
+    //0x00695798 would contains totalEnemyLife
+    s32 getTotalEnemyLifeInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster, u8 weaponId)
+    {
 
-	//Equivalent to 00440E30 AI_TargetUnitIsWorthHitting
-	bool isTargetWorthHitting(CUnit* target, CUnit* attacker) {
+        unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
+            x + searchBounds, y + searchBounds);
 
-		//If the target is hidden by the fog-of-war
-		if (!target->sprite->isVisibleTo(attacker->playerId))
-			return false;
+        s32 totalEnemyLife = 0;
 
-		//If the target is not detectable
-		if (target->status & 0x300 && !((1 << attacker->playerId) & target->visibilityStatus) && !target->isVisibleTo(attacker->playerId))
-			return false;
+        for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i)
+        {
 
-		if (!attacker->isTargetEnemy(target))
-			return false;
-
-		if (target->id == UnitId::scarab
-			|| target->id == UnitId::TerranSpiderMine
-			|| target->id == UnitId::ProtossSteward
-			|| target->id == UnitId::TerranLobotomyMine)
-			return false;
-
-		//Target is a worker inside a gas building
-		if (target->mainOrderId == OrderId::HarvestGas1
-			|| target->mainOrderId == OrderId::HarvestGas2
-			|| target->mainOrderId == OrderId::HarvestGas3)
-			return false;
-
-		return true;
-
-	}
+            CUnit* target = unitStatTotalFinder.getUnit(i);
 
-	bool isTargetAttackingAlly(CUnit* target, CUnit* unit) {
-		if (CUnit* targetOfTarget = target->orderTarget.unit) {
-			if (targetOfTarget->playerId < 8 && !unit->isTargetEnemy(targetOfTarget))
-				return true;
-		}
+            if (
+                (target != caster) &&
+                !(target->status & UnitStatus::Invincible) &&
+                scbw::canWeaponTargetUnit(weaponId, target, caster) &&
+                caster->isTargetEnemy(target)
+                )
+            {
 
-		return false;
-	}
+                //specific to AIEnemyUnitHPAccumulatorProc @ 0x00440DC0
+                if (weaponId == WeaponId::Plague)
+                    totalEnemyLife += target->getCurrentHpInGame();
+                else
+                    //specific to AIEnemyOrganicUnitHPAccumulatorProc @ 0x00440CF0
+                    //used only by Maelstrom
+                    if (weaponId == WeaponId::Maelstrom)
+                    {
 
-	bool isUmsMode(u8 playerId) {
-		assert(playerId < 8);
-		return AIScriptController[playerId].AI_Flags.isUseMapSettings;
-	}
+                        if (
+                            units_dat::BaseProperty[target->id] & UnitProperty::Organic &&
+                            target->maelstromTimer == 0
+                            )
+                            totalEnemyLife += target->getCurrentLifeInGame();
 
-	//-------- isUnitInUnsafeRegion() --------//
+                    }
+                    else
+                        totalEnemyLife += target->getCurrentLifeInGame();
 
-	//Internal use only
-	const u32 Func_GetRegionIdAtPosEx = 0x0049C9F0;
-	u16 getRegionIdAtPosEx(s32 x, s32 y) {
-		static u16 result;
-
-		__asm {
-			PUSHAD
-			MOV EDI, x
-			MOV ECX, y
-			CALL Func_GetRegionIdAtPosEx
-			MOV result, AX
-			POPAD
-		}
-
-		return result;
-	}
-
-	//Based on code @ 0x00440BB0 (not a real independant function)
-	bool isUnitInUnsafeRegion(CUnit* unit) {
-		u16 currentRegion = getRegionIdAtPosEx(unit->getX(), unit->getY());
-		AiCaptain* currentAiCaptain = &AiRegionCaptains[unit->playerId][currentRegion];
-		return currentAiCaptain->captainType == 3
-			|| currentAiCaptain->airTarget
-			|| currentAiCaptain->groundTarget
-			|| currentAiCaptain->captainFlags & 0x20;
-	}
+            }
 
+            //bool bStopChecking = false;
 
-	//-------- Get total unit stats in area --------//
+            //if (target == caster)
+            //  bStopChecking = true;
 
-	//00440A60  unitShieldsClumpInAreaAccumulatorProc
-	//00440AC0  unitEnergyClumpInAreaAccumulatorProc
-	//00440B20  getEnemyClumpValueProc
-	//00440CF0  AIEnemyOrganicUnitHPAccumulatorProc
-	//00440D60  AIAllyUnitHPAccumulatorProc
-	//00440DC0  AIEnemyUnitHPAccumulatorProc
-	//00440FF0  FindNearestEnemyAndClumpProc
+            //if (!bStopChecking && (target->status & UnitStatus::Invincible))
+            //  bStopChecking = true;
 
+            //if (!bStopChecking && !scbw::canWeaponTargetUnit(weaponId, target, caster))
+            //  bStopChecking = true;
 
-	scbw::UnitFinder unitStatTotalFinder;
+            //if (!bStopChecking && !caster->isTargetEnemy(target))
+            //  bStopChecking = true;
 
-	//In original functions:
-	//0x00695604 would contains weaponId
-	//0x00695798 would contains totalEnemyLife
-	s32 getTotalEnemyLifeInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster, u8 weaponId) {
+            //if(!bStopChecking) {
+            //	if (weaponId == WeaponId::Plague)
+            //	  totalEnemyLife += target->getCurrentHpInGame();
+            //	else if (weaponId == WeaponId::Maelstrom) {
+            //	  if (units_dat::BaseProperty[target->id] & UnitProperty::Organic
+            //		  && target->maelstromTimer == 0) {
+            //		totalEnemyLife += target->getCurrentLifeInGame();
+            //	  }
+            //	}
+            //	else
+            //	  totalEnemyLife += target->getCurrentLifeInGame();
+            //}
 
-		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
-			x + searchBounds, y + searchBounds);
+        }
 
-		s32 totalEnemyLife = 0;
+        return totalEnemyLife;
+    }
 
-		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i) {
+    //Loop content based on AIAllyUnitHPAccumulatorProc @ 0x00440D60
+    //0x00695798 would contains totalAllyLife
+    s32 getTotalAllyLifeInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster, u8 weaponId)
+    {
 
-			CUnit* target = unitStatTotalFinder.getUnit(i);
+        unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
+            x + searchBounds, y + searchBounds);
 
-			if (
-				(target != caster) &&
-				!(target->status & UnitStatus::Invincible) &&
-				scbw::canWeaponTargetUnit(weaponId, target, caster) &&
-				caster->isTargetEnemy(target)
-				) {
+        s32 totalAllyLife = 0;
 
-				//specific to AIEnemyUnitHPAccumulatorProc @ 0x00440DC0
-				if (weaponId == WeaponId::Plague)
-					totalEnemyLife += target->getCurrentHpInGame();
-				else
-					//specific to AIEnemyOrganicUnitHPAccumulatorProc @ 0x00440CF0
-					//used only by Maelstrom
-					if (weaponId == WeaponId::Maelstrom) {
+        for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i)
+        {
 
-						if (
-							units_dat::BaseProperty[target->id] & UnitProperty::Organic &&
-							target->maelstromTimer == 0
-							)
-							totalEnemyLife += target->getCurrentLifeInGame();
+            CUnit* target = unitStatTotalFinder.getUnit(i);
 
-					} else
-						totalEnemyLife += target->getCurrentLifeInGame();
+            if (
+                !(target->status & UnitStatus::Invincible) &&
+                scbw::canWeaponTargetUnit(weaponId, target, caster) &&
+                !caster->isTargetEnemy(target)
+                )
+                totalAllyLife += target->getCurrentLifeInGame();
 
-			}
+        }
 
-			//bool bStopChecking = false;
+        return totalAllyLife;
 
-			//if (target == caster)
-			//  bStopChecking = true;
+    }
 
-			//if (!bStopChecking && (target->status & UnitStatus::Invincible))
-			//  bStopChecking = true;
+    //Loop content based on unitShieldsClumpInAreaAccumulatorProc @ 0x00440A60
+    //0x00695798 would contains totalEnemyShields
+    s32 getTotalEnemyShieldsInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster)
+    {
 
-			//if (!bStopChecking && !scbw::canWeaponTargetUnit(weaponId, target, caster))
-			//  bStopChecking = true;
+        unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
+            x + searchBounds, y + searchBounds);
 
-			//if (!bStopChecking && !caster->isTargetEnemy(target))
-			//  bStopChecking = true;
+        s32 totalEnemyShields = 0;
 
-			//if(!bStopChecking) {
-			//	if (weaponId == WeaponId::Plague)
-			//	  totalEnemyLife += target->getCurrentHpInGame();
-			//	else if (weaponId == WeaponId::Maelstrom) {
-			//	  if (units_dat::BaseProperty[target->id] & UnitProperty::Organic
-			//		  && target->maelstromTimer == 0) {
-			//		totalEnemyLife += target->getCurrentLifeInGame();
-			//	  }
-			//	}
-			//	else
-			//	  totalEnemyLife += target->getCurrentLifeInGame();
-			//}
+        for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i)
+        {
 
-		}
+            CUnit* target = unitStatTotalFinder.getUnit(i);
 
-		return totalEnemyLife;
-	}
+            if (
+                !(target->status & UnitStatus::Invincible) &&
+                caster->isTargetEnemy(target) &&
+                units_dat::ShieldsEnabled[target->id]
+                )
+                totalEnemyShields += target->getCurrentShieldsInGame();
 
-	//Loop content based on AIAllyUnitHPAccumulatorProc @ 0x00440D60
-	//0x00695798 would contains totalAllyLife
-	s32 getTotalAllyLifeInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster, u8 weaponId) {
+        }
 
-		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
-			x + searchBounds, y + searchBounds);
+        return totalEnemyShields;
 
-		s32 totalAllyLife = 0;
+    }
 
-		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i) {
+    //Loop content based on unitEnergyClumpInAreaAccumulatorProc @ 0x00440AC0
+    //0x00695798 would contains totalEnemyEnergy
+    s32 getTotalEnemyEnergyInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster)
+    {
 
-			CUnit* target = unitStatTotalFinder.getUnit(i);
+        unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
+            x + searchBounds, y + searchBounds);
 
-			if (
-				!(target->status & UnitStatus::Invincible) &&
-				scbw::canWeaponTargetUnit(weaponId, target, caster) &&
-				!caster->isTargetEnemy(target)
-				)
-				totalAllyLife += target->getCurrentLifeInGame();
+        s32 totalEnemyEnergy = 0;
 
-		}
+        for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i)
+        {
 
-		return totalAllyLife;
+            CUnit* target = unitStatTotalFinder.getUnit(i);
 
-	}
+            if (
+                !(target->status & UnitStatus::Invincible) &&
+                caster->isTargetEnemy(target) &&
+                target->isValidCaster()
+                )
+                totalEnemyEnergy += (&target->energy)[1];	//unitPointer+0xA3 in original code
 
-	//Loop content based on unitShieldsClumpInAreaAccumulatorProc @ 0x00440A60
-	//0x00695798 would contains totalEnemyShields
-	s32 getTotalEnemyShieldsInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster) {
+        }
 
-		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
-			x + searchBounds, y + searchBounds);
+        return totalEnemyEnergy;
 
-		s32 totalEnemyShields = 0;
+    }
 
-		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i) {
+    //Content based on	AI_NukeRequirementsProc @ 0x00441600 and
+    //					getEnemyClumpValueProc	@ 0x00440B20
+    //0x00695798 would contains totalNukeTargetValue
+    //Optimized to stop when reaching totalNukeTargetValue == 800 since that's what matter
+    s32 getTotalEnemyNukeValueInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster)
+    {
 
-			CUnit* target = unitStatTotalFinder.getUnit(i);
+        unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
+            x + searchBounds, y + searchBounds);
 
-			if (
-				!(target->status & UnitStatus::Invincible) &&
-				caster->isTargetEnemy(target) &&
-				units_dat::ShieldsEnabled[target->id]
-				)
-				totalEnemyShields += target->getCurrentShieldsInGame();
+        s32 totalNukeTargetValue = 0;
 
-		}
+        for (s32 i = 0; i < unitStatTotalFinder.getUnitCount() && totalNukeTargetValue < 800; ++i)
+        {
 
-		return totalEnemyShields;
+            CUnit* target = unitStatTotalFinder.getUnit(i);
 
-	}
+            if (
+                !(target->status & UnitStatus::Invincible) &&
+                caster->isTargetEnemy(target)
+                )
+            {
 
-	//Loop content based on unitEnergyClumpInAreaAccumulatorProc @ 0x00440AC0
-	//0x00695798 would contains totalEnemyEnergy
-	s32 getTotalEnemyEnergyInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster) {
+                if ((units_dat::BaseProperty[target->id] & UnitProperty::Worker) ||
+                    (!(target->status & UnitStatus::IsBuilding))
+                    )
+                    totalNukeTargetValue += target->getCurrentLifeInGame();
 
-		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
-			x + searchBounds, y + searchBounds);
+                if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
+                {
 
-		s32 totalEnemyEnergy = 0;
+                    if (target->canDetect() ||
+                        target->id == UnitId::ZergSunkenColony ||
+                        target->id == UnitId::ZergLakizilisk
+                        )
+                        totalNukeTargetValue = 800; //0x0320
 
-		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i) {
+                }
 
-			CUnit* target = unitStatTotalFinder.getUnit(i);
+            }
 
-			if (
-				!(target->status & UnitStatus::Invincible) &&
-				caster->isTargetEnemy(target) &&
-				target->isValidCaster()
-				)
-				totalEnemyEnergy += (&target->energy)[1];	//unitPointer+0xA3 in original code
+        }
 
-		}
-
-		return totalEnemyEnergy;
-
-	}
-
-	//Content based on	AI_NukeRequirementsProc @ 0x00441600 and
-	//					getEnemyClumpValueProc	@ 0x00440B20
-	//0x00695798 would contains totalNukeTargetValue
-	//Optimized to stop when reaching totalNukeTargetValue == 800 since that's what matter
-	s32 getTotalEnemyNukeValueInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster) {
-
-		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
-			x + searchBounds, y + searchBounds);
-
-		s32 totalNukeTargetValue = 0;
-
-		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount() && totalNukeTargetValue < 800; ++i) {
-
-			CUnit* target = unitStatTotalFinder.getUnit(i);
-
-			if (
-				!(target->status & UnitStatus::Invincible) &&
-				caster->isTargetEnemy(target)
-				) {
-
-				if ((units_dat::BaseProperty[target->id] & UnitProperty::Worker) ||
-					(!(target->status & UnitStatus::IsBuilding))
-					)
-					totalNukeTargetValue += target->getCurrentLifeInGame();
-
-				if (units_dat::BaseProperty[target->id] & UnitProperty::Building) {
-
-					if (target->canDetect() ||
-						target->id == UnitId::ZergSunkenColony ||
-						target->id == UnitId::ZergLakizilisk
-						)
-						totalNukeTargetValue = 800; //0x0320
-
-				}
-
-			}
-
-		}
-
-		return totalNukeTargetValue;
-	}
+        return totalNukeTargetValue;
+    }
 
 } //AI

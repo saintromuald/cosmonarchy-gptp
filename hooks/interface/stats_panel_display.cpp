@@ -3,402 +3,469 @@
 #include "SCBW/stat_txt_spec.h"
 #include "hooks/interface/buttonsets.h"
 
-namespace hooks {
-	bool StatLobotomyMineCount(BinDlg* dialog, u32 index) {
-		auto v2 = *activePortraitUnit;
-		auto v3 = dialog;
-		// Originally had code for research, removed
-		sprintf_s(statusscreen_infobtn[index], 8, "%d ", v2->vulture.spiderMineCount);
-		if (v3->controlType) {
-			v3 = v3->parent;
-		}
-		auto v5 = v3->childrenDlg;
-		bool jump = false;
-		if (v5) {
-			while (v5->index != index + 9) {
-				v5 = v5->next;
-				if (!v5) {
-					v5 = nullptr;
-					break;
-				}
-			}
-		} else {
-			v5 = nullptr;
-		}
-		scbw::showDialog(v5);
-		scbw::disableDialog(v5);
-		auto statData = v5->statButtonUser;
-		auto v7 = *cmdicons_grp;
-		v5->graphic = UnitId::TerranLobotomyMine - 1;//or set icon id
-		statData->button_grp = v7;
-		//		statData->grp_frame = UnitId::LobotomyMine;
-		statData->grp_frame = 13;
-		statData->type = 3;
-		//		statData->id = UnitId::LobotomyMine;
-		statData->id = 13;
-		auto v8 = v5->flags;
-		v5->pszText = statusscreen_infobtn[index];
-		if (!(v8 & 1)) {
-			v5->flags = v8 | 1;
-			scbw::updateDialog(v5);
-		}
-		return 1;
-	}
+namespace hooks
+{
+    bool StatLobotomyMineCount(BinDlg* dialog, u32 index)
+    {
+        auto v2 = *activePortraitUnit;
+        auto v3 = dialog;
+        // Originally had code for research, removed
+        sprintf_s(statusscreen_infobtn[index], 8, "%d ", v2->vulture.spiderMineCount);
+        if (v3->controlType)
+        {
+            v3 = v3->parent;
+        }
+        auto v5 = v3->childrenDlg;
+        bool jump = false;
+        if (v5)
+        {
+            while (v5->index != index + 9)
+            {
+                v5 = v5->next;
+                if (!v5)
+                {
+                    v5 = nullptr;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            v5 = nullptr;
+        }
+        scbw::showDialog(v5);
+        scbw::disableDialog(v5);
+        auto statData = v5->statButtonUser;
+        auto v7 = *cmdicons_grp;
+        v5->graphic = UnitId::TerranLobotomyMine - 1;//or set icon id
+        statData->button_grp = v7;
+        //		statData->grp_frame = UnitId::LobotomyMine;
+        statData->grp_frame = 13;
+        statData->type = 3;
+        //		statData->id = UnitId::LobotomyMine;
+        statData->id = 13;
+        auto v8 = v5->flags;
+        v5->pszText = statusscreen_infobtn[index];
+        if (!(v8 & 1))
+        {
+            v5->flags = v8 | 1;
+            scbw::updateDialog(v5);
+        }
+        return 1;
+    }
 
-	//Renamed from sub_426C60
-	//Attempting to be true to the original result
-	//in badly unoptimized code
-	void stats_panel_display(BinDlg* dialog) {
+    //Renamed from sub_426C60
+    //Attempting to be true to the original result
+    //in badly unoptimized code
+    void stats_panel_display(BinDlg* dialog)
+    {
 
-		BinDlg* current_dialog;
-		CUnit* activeUnit = *activePortraitUnit;
-		u32 index = 0;
+        BinDlg* current_dialog;
+        CUnit* activeUnit = *activePortraitUnit;
+        u32 index = 0;
 
-		if (!(activeUnit->status & UnitStatus::IsHallucination) ||
-			(!*IS_IN_REPLAY && activeUnit->playerId != *LOCAL_NATION_ID)
-			) {
+        if (!(activeUnit->status & UnitStatus::IsHallucination) ||
+            (!*IS_IN_REPLAY && activeUnit->playerId != *LOCAL_NATION_ID)
+            )
+        {
 
-			bool bNoAirWeaponDisplay;
-			u32 airWeapon;			//[EBP-01] then [EBP-05]
-			u8 airWeaponMainUnit;	//BL
-			u8 airWeaponSubunit;	//AL
+            bool bNoAirWeaponDisplay;
+            u32 airWeapon;			//[EBP-01] then [EBP-05]
+            u8 airWeaponMainUnit;	//BL
+            u8 airWeaponSubunit;	//AL
 
-			u16 unitId = helper::getLastQueueSlotType(activeUnit);
+            u16 unitId = helper::getLastQueueSlotType(activeUnit);
 
-			if (units_dat::ArmorUpgrade[unitId] != UpgradeId::GlobalUpgrade60) {
-				helper::StatsArmorLevel(dialog, index);
-				index++;
-			}
+            if (units_dat::ArmorUpgrade[unitId] != UpgradeId::GlobalUpgrade60)
+            {
+                helper::StatsArmorLevel(dialog, index);
+                index++;
+            }
 
-			if (units_dat::ShieldsEnabled[activeUnit->id]) {
-				helper::StatsShieldLevel(dialog, index);
-				index++;
-			}
+            if (units_dat::ShieldsEnabled[activeUnit->id])
+            {
+                helper::StatsShieldLevel(dialog, index);
+                index++;
+            }
 
-			if (activeUnit->id != UnitId::ZergLakizilisk
-				|| activeUnit->status & UnitStatus::Burrowed) {
-				bool bNoGroundWeaponDisplay = false;
+            if (activeUnit->id != UnitId::ZergLakizilisk
+                || activeUnit->status & UnitStatus::Burrowed)
+            {
+                bool bNoGroundWeaponDisplay = false;
 
-				u32 groundWeapon;													//[EBP-05]
-				u8 groundWeaponMainUnit = units_dat::GroundWeapon[activeUnit->id];	//BL
-				if (activeUnit->id == UnitId::TerranMadrigal
-					&& scbw::get_generic_rust_value(activeUnit, ValueId::TempoChange)
-					&& groundWeaponMainUnit == WeaponId::MadrigalFuriaMissiles) {
-					groundWeaponMainUnit = WeaponId::MadrigalImperiosoMissiles;
-				}
-				u8 groundWeaponSubunit;												//CL
+                u32 groundWeapon;													//[EBP-05]
+                u8 groundWeaponMainUnit = units_dat::GroundWeapon[activeUnit->id];	//BL
+                if (activeUnit->id == UnitId::TerranMadrigal
+                    && scbw::get_generic_rust_value(activeUnit, ValueId::TempoChange)
+                    && groundWeaponMainUnit == WeaponId::MadrigalFuriaMissiles)
+                {
+                    groundWeaponMainUnit = WeaponId::MadrigalImperiosoMissiles;
+                }
+                u8 groundWeaponSubunit;												//CL
 
-				if (groundWeaponMainUnit == WeaponId::None) {
-					if (activeUnit->subunit == nullptr) {
-						bNoGroundWeaponDisplay = true;
-					}
-					else {
-						groundWeaponSubunit = units_dat::GroundWeapon[activeUnit->subunit->id];
-					}
-				} else {
-					groundWeaponSubunit = groundWeaponMainUnit;
-				}
+                if (groundWeaponMainUnit == WeaponId::None)
+                {
+                    if (activeUnit->subunit == nullptr)
+                    {
+                        bNoGroundWeaponDisplay = true;
+                    }
+                    else
+                    {
+                        groundWeaponSubunit = units_dat::GroundWeapon[activeUnit->subunit->id];
+                    }
+                }
+                else
+                {
+                    groundWeaponSubunit = groundWeaponMainUnit;
+                }
 
-				if (!bNoGroundWeaponDisplay) {
-					if (groundWeaponSubunit == WeaponId::None) {
-						bNoGroundWeaponDisplay = true;			//26D19
-					}
-					else
-						if (activeUnit->id == UnitId::ZergLakizilisk && !(activeUnit->status & UnitStatus::Burrowed)) {
-							groundWeapon = UnitId::None;			//26D2A
-						}
-						else
-							if (groundWeaponMainUnit != WeaponId::None) {
-								groundWeapon = groundWeaponMainUnit;	//26D35
-							}
-							else
-								if (activeUnit->subunit == nullptr) {
-									groundWeapon = WeaponId::None;			//26D41
-								}
-								else {
-									groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id];	//26D51
-								}
+                if (!bNoGroundWeaponDisplay)
+                {
+                    if (groundWeaponSubunit == WeaponId::None)
+                    {
+                        bNoGroundWeaponDisplay = true;			//26D19
+                    }
+                    else
+                        if (activeUnit->id == UnitId::ZergLakizilisk && !(activeUnit->status & UnitStatus::Burrowed))
+                        {
+                            groundWeapon = UnitId::None;			//26D2A
+                        }
+                        else
+                            if (groundWeaponMainUnit != WeaponId::None)
+                            {
+                                groundWeapon = groundWeaponMainUnit;	//26D35
+                            }
+                            else
+                                if (activeUnit->subunit == nullptr)
+                                {
+                                    groundWeapon = WeaponId::None;			//26D41
+                                }
+                                else
+                                {
+                                    groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id];	//26D51
+                                }
 
-					if (!bNoGroundWeaponDisplay) {
-						//26D54
-						helper::StatsWeaponLevel(dialog, index, groundWeapon);
-						index++;
-						// Display additional weapons
-						if (activeUnit->id == UnitId::TerranCentaur) {
-							helper::StatsWeaponLevel(dialog, index, WeaponId::CentaurSunchaserMissiles);
-							index++;
-						}
-					}
-				}
-			}
+                    if (!bNoGroundWeaponDisplay)
+                    {
+                        //26D54
+                        helper::StatsWeaponLevel(dialog, index, groundWeapon);
+                        index++;
+                        // Display additional weapons
+                        if (activeUnit->id == UnitId::TerranCentaur)
+                        {
+                            helper::StatsWeaponLevel(dialog, index, WeaponId::CentaurSunchaserMissiles);
+                            index++;
+                        }
+                    }
+                }
+            }
 
-			//26D67
-			bNoAirWeaponDisplay = false;
-			airWeaponMainUnit = units_dat::AirWeapon[activeUnit->id];
-			if (airWeaponMainUnit != WeaponId::None) {
-				airWeaponSubunit = airWeaponMainUnit;	//26D79
-			}
-			else
-				if (activeUnit->subunit == nullptr) {
-					bNoAirWeaponDisplay = true;				//26D82
-				}
-				else {
-					airWeaponSubunit = units_dat::AirWeapon[activeUnit->subunit->id];	//26D8C
-				}
+            //26D67
+            bNoAirWeaponDisplay = false;
+            airWeaponMainUnit = units_dat::AirWeapon[activeUnit->id];
+            if (airWeaponMainUnit != WeaponId::None)
+            {
+                airWeaponSubunit = airWeaponMainUnit;	//26D79
+            }
+            else
+                if (activeUnit->subunit == nullptr)
+                {
+                    bNoAirWeaponDisplay = true;				//26D82
+                }
+                else
+                {
+                    airWeaponSubunit = units_dat::AirWeapon[activeUnit->subunit->id];	//26D8C
+                }
 
-			if (!bNoAirWeaponDisplay) {
-				if (airWeaponSubunit == WeaponId::None) {
-					bNoAirWeaponDisplay = true;		//26D94
-				}
-				else
-					if (airWeaponMainUnit != WeaponId::None) {
-						airWeapon = airWeaponMainUnit;	//26DA2
-					}
-					else {
-						if (activeUnit->subunit == nullptr) {
-							airWeapon = WeaponId::None;	//26DAF
-						}
-						else {
-							airWeapon = units_dat::AirWeapon[activeUnit->subunit->id];
-						}
-					}
-				if (!bNoAirWeaponDisplay) {
-					u8 groundWeapon;	//AL
+            if (!bNoAirWeaponDisplay)
+            {
+                if (airWeaponSubunit == WeaponId::None)
+                {
+                    bNoAirWeaponDisplay = true;		//26D94
+                }
+                else
+                    if (airWeaponMainUnit != WeaponId::None)
+                    {
+                        airWeapon = airWeaponMainUnit;	//26DA2
+                    }
+                    else
+                    {
+                        if (activeUnit->subunit == nullptr)
+                        {
+                            airWeapon = WeaponId::None;	//26DAF
+                        }
+                        else
+                        {
+                            airWeapon = units_dat::AirWeapon[activeUnit->subunit->id];
+                        }
+                    }
+                if (!bNoAirWeaponDisplay)
+                {
+                    u8 groundWeapon;	//AL
 
-					//26DBE
-					if (activeUnit->id == UnitId::ZergLakizilisk && !(activeUnit->status & UnitStatus::Burrowed)) {
-						groundWeapon = WeaponId::None;
-					}
-					else {
-						groundWeapon = units_dat::GroundWeapon[activeUnit->id];
-						if (groundWeapon == WeaponId::None && activeUnit->subunit != nullptr) {
-							groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id]; //26DE6
-						}
-					}
+                    //26DBE
+                    if (activeUnit->id == UnitId::ZergLakizilisk && !(activeUnit->status & UnitStatus::Burrowed))
+                    {
+                        groundWeapon = WeaponId::None;
+                    }
+                    else
+                    {
+                        groundWeapon = units_dat::GroundWeapon[activeUnit->id];
+                        if (groundWeapon == WeaponId::None && activeUnit->subunit != nullptr)
+                        {
+                            groundWeapon = units_dat::GroundWeapon[activeUnit->subunit->id]; //26DE6
+                        }
+                    }
 
-					//26DF0
-					if (airWeapon == groundWeapon) {
-						bNoAirWeaponDisplay = true;
-					}
-					else
-						if (airWeaponMainUnit != WeaponId::None) {
-							airWeapon = airWeaponMainUnit;	//26DFA
-						}							
-						else
-							if (airWeaponMainUnit == WeaponId::None) { //26DFF
-								if (activeUnit->subunit == nullptr) {
-									airWeapon = WeaponId::None;	//26E06
-								}									
-								else {
-									airWeapon = units_dat::AirWeapon[activeUnit->subunit->id]; //26E16
-								}	
-							}
-					if (!bNoAirWeaponDisplay) { //26E19
-						helper::StatsWeaponLevel(dialog, index, airWeapon);
-						index++;
-					}
-				} //if(!bNoAirWeaponDisplay)
-			} //if(!bNoAirWeaponDisplay)
+                    //26DF0
+                    if (airWeapon == groundWeapon)
+                    {
+                        bNoAirWeaponDisplay = true;
+                    }
+                    else
+                        if (airWeaponMainUnit != WeaponId::None)
+                        {
+                            airWeapon = airWeaponMainUnit;	//26DFA
+                        }
+                        else
+                            if (airWeaponMainUnit == WeaponId::None)
+                            { //26DFF
+                                if (activeUnit->subunit == nullptr)
+                                {
+                                    airWeapon = WeaponId::None;	//26E06
+                                }
+                                else
+                                {
+                                    airWeapon = units_dat::AirWeapon[activeUnit->subunit->id]; //26E16
+                                }
+                            }
+                    if (!bNoAirWeaponDisplay)
+                    { //26E19
+                        helper::StatsWeaponLevel(dialog, index, airWeapon);
+                        index++;
+                    }
+                } //if(!bNoAirWeaponDisplay)
+            } //if(!bNoAirWeaponDisplay)
 
-			//26E31
-			if (activeUnit->id == UnitId::ProtossSolarion
-				|| activeUnit->id == UnitId::ProtossAccantor
-				) { // Originally had hardcode for Gantrithor and Warbringer, removed for HYDRA
-				helper::StatHangerCount(dialog, index);
-				index++;
-			}
+            //26E31
+            if (activeUnit->id == UnitId::ProtossSolarion
+                || activeUnit->id == UnitId::ProtossAccantor
+                )
+            { // Originally had hardcode for Gantrithor and Warbringer, removed for HYDRA
+                helper::StatHangerCount(dialog, index);
+                index++;
+            }
 
-			if (activeUnit->id == UnitId::TerranVulture) { // Originally also had hardcode for Raynor Vulture, removed for HYDRA
-				if (helper::StatSpidermineCount(dialog, index))
-					index++; //don't increase the index if not displaying
-			}
-			if (activeUnit->id == UnitId::ghost) {
-				if (StatLobotomyMineCount(dialog, index)) {
-					index++;
-				}
-			}
-			unitId = helper::getLastQueueSlotType(activeUnit);
-			if (unitId == UnitId::TerranNuclearSilo) {
-				helper::StatsNukesCount(dialog, index);
-				index++;
-			}
-		}
+            if (activeUnit->id == UnitId::TerranVulture)
+            { // Originally also had hardcode for Raynor Vulture, removed for HYDRA
+                if (helper::StatSpidermineCount(dialog, index))
+                    index++; //don't increase the index if not displaying
+            }
+            if (activeUnit->id == UnitId::ghost)
+            {
+                if (StatLobotomyMineCount(dialog, index))
+                {
+                    index++;
+                }
+            }
+            unitId = helper::getLastQueueSlotType(activeUnit);
+            if (unitId == UnitId::TerranNuclearSilo)
+            {
+                helper::StatsNukesCount(dialog, index);
+                index++;
+            }
+        }
 
-		//26E96
-		if (dialog->controlType == DialogControlTypes::DialogBoxDC) {
-			current_dialog = dialog;
-		}
-		else {
-			current_dialog = dialog->parent;
-		}
-		if (current_dialog->childrenDlg != nullptr) {
-			current_dialog = current_dialog->childrenDlg;
-			while (current_dialog != nullptr && current_dialog->index != index + 9) {
-				current_dialog = current_dialog->next;
-			}
-			while (index < 4 && current_dialog != nullptr) {
-				helper::hideDialog(current_dialog);
-				current_dialog = current_dialog->next;
-				index++;
-			}
-		}
-	} //void stats_panel_display(BinDlg* dialog)
+        //26E96
+        if (dialog->controlType == DialogControlTypes::DialogBoxDC)
+        {
+            current_dialog = dialog;
+        }
+        else
+        {
+            current_dialog = dialog->parent;
+        }
+        if (current_dialog->childrenDlg != nullptr)
+        {
+            current_dialog = current_dialog->childrenDlg;
+            while (current_dialog != nullptr && current_dialog->index != index + 9)
+            {
+                current_dialog = current_dialog->next;
+            }
+            while (index < 4 && current_dialog != nullptr)
+            {
+                helper::hideDialog(current_dialog);
+                current_dialog = current_dialog->next;
+                index++;
+            }
+        }
+    } //void stats_panel_display(BinDlg* dialog)
 
-	// Hooked to enable/disable rank display based on new unit definitions -- Pr0nogo
-	char* getUnitRankString(CUnit* a2) { // 0042F370
-		unsigned __int16 _type; // ax
-		s32 v2; // ecx
+    // Hooked to enable/disable rank display based on new unit definitions -- Pr0nogo
+    char* getUnitRankString(CUnit* a2)
+    { // 0042F370
+        unsigned __int16 _type; // ax
+        s32 v2; // ecx
 
-		_type = a2->id;
-		if (units_dat::BaseProperty[_type] & UnitProperty::NeutralAccessories
-			|| _type == UnitId::TerranLobotomyMine
-			|| _type == UnitId::TerranSpiderMine)
-		{
-			return 0;
-		}
-		// Originally had Gantrithor - Tassadar hardcode here, removed for HYDRA
-		if (_type != UnitId::TerranMinotaur && _type != UnitId::Hero_NoradII && _type != UnitId::Hero_Hyperion
-			|| !(units_dat::BaseProperty[_type] & UnitProperty::Hero)
-			|| !units_dat::MapStringId[_type])
-		{
-			if (helper::unitGetRace(a2) == RaceId::Terran) {
-				return helper::getStatTxtString((unsigned __int8)(a2->rankIncrease + units_dat::Rank[_type]) + 1302);
-			}
-			return 0;
-		}
-		if (statTxtTblNew->getString(570)) {
-			return "";
-		}
-		return (char*)statTxtTblNew->getString(571); // "Admiral"
-	}
+        _type = a2->id;
+        if (units_dat::BaseProperty[_type] & UnitProperty::NeutralAccessories
+            || _type == UnitId::TerranLobotomyMine
+            || _type == UnitId::TerranSpiderMine)
+        {
+            return 0;
+        }
+        // Originally had Gantrithor - Tassadar hardcode here, removed for HYDRA
+        if (_type != UnitId::TerranMinotaur && _type != UnitId::Hero_NoradII && _type != UnitId::Hero_Hyperion
+            || !(units_dat::BaseProperty[_type] & UnitProperty::Hero)
+            || !units_dat::MapStringId[_type])
+        {
+            if (helper::unitGetRace(a2) == RaceId::Terran)
+            {
+                return helper::getStatTxtString((unsigned __int8)(a2->rankIncrease + units_dat::Rank[_type]) + 1302);
+            }
+            return 0;
+        }
+        if (statTxtTblNew->getString(570))
+        {
+            return "";
+        }
+        return (char*)statTxtTblNew->getString(571); // "Admiral"
+    }
 
-	// Hooked to draw new values to icons -- Pr0nogo
-	void statsArmorLevel(BinDlg* dialog, s32 unused, u16 buttonRelated) { // 00425600
-		BinDlg* v3; // ebx
-		BinDlg* v4; // esi
-		void* v5; // ecx
-		s32 v6; // edx
-		CUnit* v7; // eax
-		u16 v8; // di
-		u16 v9; // cx
-		s16 v10; // di
-		u16 v11; // ax
-		s32 v12; // eax
-		u8 v13; // [esp+13h] [ebp-1h]
+    // Hooked to draw new values to icons -- Pr0nogo
+    void statsArmorLevel(BinDlg* dialog, s32 unused, u16 buttonRelated)
+    { // 00425600
+        BinDlg* v3; // ebx
+        BinDlg* v4; // esi
+        void* v5; // ecx
+        s32 v6; // edx
+        CUnit* v7; // eax
+        u16 v8; // di
+        u16 v9; // cx
+        s16 v10; // di
+        u16 v11; // ax
+        s32 v12; // eax
+        u8 v13; // [esp+13h] [ebp-1h]
 
-		v3 = dialog;
-		v13 = helper::getArmorCount(*activePortraitUnit, unused);
-		sprintf_s(statusscreen_infobtn[buttonRelated], 8, "%d ", v13);
-		if (v3->controlType) {
-			v3 = *(BinDlg**)&v3->parent;
-		}
-		v4 = *(BinDlg**)&v3->childrenDlg;
-		if (v4)
-		{
-			while (v4->index != buttonRelated + 9)
-			{
-				v4 = v4->next;
-				if (!v4)
-					goto LABEL_6;
-			}
-		}
-		else
-		{
-		LABEL_6:
-			v4 = 0;
-		}
-		helper::showDialog(v4);
-		helper::disableDialog(v4);
-		v5 = cmdicons_grp;
-		v6 = *v4->user;
-		v7 = *activePortraitUnit;
-		v4->graphic = 12;
-		// TODO: Fix compiler error
+        v3 = dialog;
+        v13 = helper::getArmorCount(*activePortraitUnit, unused);
+        sprintf_s(statusscreen_infobtn[buttonRelated], 8, "%d ", v13);
+        if (v3->controlType)
+        {
+            v3 = *(BinDlg**)&v3->parent;
+        }
+        v4 = *(BinDlg**)&v3->childrenDlg;
+        if (v4)
+        {
+            while (v4->index != buttonRelated + 9)
+            {
+                v4 = v4->next;
+                if (!v4)
+                    goto LABEL_6;
+            }
+        }
+        else
+        {
+LABEL_6:
+            v4 = 0;
+        }
+        helper::showDialog(v4);
+        helper::disableDialog(v4);
+        v5 = cmdicons_grp;
+        v6 = *v4->user;
+        v7 = *activePortraitUnit;
+        v4->graphic = 12;
+        // TODO: Fix compiler error
 //		*(s32*)v6 = v5;
-		if (v7->status & UnitStatus::Completed
-			|| (v8 = v7->buildQueue[(u8)v7->buildQueueSlot], !scbw::isZergBuildingMorphResult(v8)))
-		{
-			v9 = v7->id;
-		}
-		else
-		{
-			v9 = v7->buildQueue[(u8)v7->buildQueueSlot];
-		}
-		*(s16*)(v6 + 4) = upgrades_dat::UpgradeIcon[(u8)units_dat::ArmorUpgrade[v9]];
-		*(s16*)(v6 + 6) = UnitStatus::Completed;
-		if (v7->status & UnitStatus::Completed
-			|| (v10 = v7->buildQueue[(u8)v7->buildQueueSlot], !scbw::isZergBuildingMorphResult(v8)))
-		{
-			v11 = v7->id;
-		}
-		else
-		{
-			v11 = v7->buildQueue[(u8)v7->buildQueueSlot];
-		}
-		*(s16*)(v6 + 8) = (u8)units_dat::ArmorUpgrade[v11];
-		v4->pszText = statusscreen_infobtn[buttonRelated];
-		v12 = v4->flags;
-		if (!(v12 & UnitStatus::Completed))
-		{
-			v4->flags = v12 | UnitStatus::Completed;
-			helper::updateDialog(v4);
-		}
-		*unkUpgradeCount += v13;
-	}
+        if (v7->status & UnitStatus::Completed
+            || (v8 = v7->buildQueue[(u8)v7->buildQueueSlot], !scbw::isZergBuildingMorphResult(v8)))
+        {
+            v9 = v7->id;
+        }
+        else
+        {
+            v9 = v7->buildQueue[(u8)v7->buildQueueSlot];
+        }
+        *(s16*)(v6 + 4) = upgrades_dat::UpgradeIcon[(u8)units_dat::ArmorUpgrade[v9]];
+        *(s16*)(v6 + 6) = UnitStatus::Completed;
+        if (v7->status & UnitStatus::Completed
+            || (v10 = v7->buildQueue[(u8)v7->buildQueueSlot], !scbw::isZergBuildingMorphResult(v8)))
+        {
+            v11 = v7->id;
+        }
+        else
+        {
+            v11 = v7->buildQueue[(u8)v7->buildQueueSlot];
+        }
+        *(s16*)(v6 + 8) = (u8)units_dat::ArmorUpgrade[v11];
+        v4->pszText = statusscreen_infobtn[buttonRelated];
+        v12 = v4->flags;
+        if (!(v12 & UnitStatus::Completed))
+        {
+            v4->flags = v12 | UnitStatus::Completed;
+            helper::updateDialog(v4);
+        }
+        *unkUpgradeCount += v13;
+    }
 
-	void statsWeaponLevel(BinDlg* dialog, u16 buttonRelated, u8 weaponId) { // 00425790
-		BinDlg* v3; // ebx
-		s32 v4; // eax
-		u8 v5; // al
-		BinDlg* v6; // esi
-		s32 v7; // eax
-		void* v8; // ecx
-		s32 v9; // eax
-		s16 v10; // [esp+10h] [ebp-4h]
+    void statsWeaponLevel(BinDlg* dialog, u16 buttonRelated, u8 weaponId)
+    { // 00425790
+        BinDlg* v3; // ebx
+        s32 v4; // eax
+        u8 v5; // al
+        BinDlg* v6; // esi
+        s32 v7; // eax
+        void* v8; // ecx
+        s32 v9; // eax
+        s16 v10; // [esp+10h] [ebp-4h]
 
-		v3 = dialog;
-		v4 = (*activePortraitUnit)->playerId;
-		if (weapons_dat::DamageUpgrade[weaponId] >= 0x2Eu) {
-//			v5 = *upgradesLevelBW[v4][weapons_dat::DamageUpgrade[weaponId]];
-		}
-		else {
-//			v5 = *upgradesLevelSC[v4][weapons_dat::DamageUpgrade[weaponId]];
-		}
-		v10 = v5;
-		sprintf_s(statusscreen_infobtn[buttonRelated], 8, "%d ", v5);
-		if (v3->controlType) {
-			v3 = v3->parent;
-		}
-		v6 = v3->childrenDlg;
-		if (v6)	{
-			while (v6->index != buttonRelated + 9)
-			{
-				v6 = v6->next;
-				if (!v6)
-					goto LABEL_9;
-			}
-		}
-		else
-		{
-		LABEL_9:
-			v6 = 0;
-		}
-		helper::showDialog(v6);
-		helper::disableDialog(v6);
-//		v7 = v6->user;
-		v8 = cmdicons_grp;
-		v6->graphic = 12;
-//		*(s32*)v7 = v8;
-		*(s16*)(v7 + 4) = weapons_dat::Icon[weaponId];
-		*(s16*)(v7 + 6) = 0;
-		*(s16*)(v7 + 8) = weaponId;
-		v9 = v6->flags;
-		v6->pszText = statusscreen_infobtn[buttonRelated];
-		if (!(v9 & 1))
-		{
-			v6->flags = v9 | 1;
-			helper::updateDialog(v6);
-		}
-		*unkUpgradeCount += v10;
-	}
+        v3 = dialog;
+        v4 = (*activePortraitUnit)->playerId;
+        if (weapons_dat::DamageUpgrade[weaponId] >= 0x2Eu)
+        {
+            //			v5 = *upgradesLevelBW[v4][weapons_dat::DamageUpgrade[weaponId]];
+        }
+        else
+        {
+            //			v5 = *upgradesLevelSC[v4][weapons_dat::DamageUpgrade[weaponId]];
+        }
+        v10 = v5;
+        sprintf_s(statusscreen_infobtn[buttonRelated], 8, "%d ", v5);
+        if (v3->controlType)
+        {
+            v3 = v3->parent;
+        }
+        v6 = v3->childrenDlg;
+        if (v6)
+        {
+            while (v6->index != buttonRelated + 9)
+            {
+                v6 = v6->next;
+                if (!v6)
+                    goto LABEL_9;
+            }
+        }
+        else
+        {
+LABEL_9:
+            v6 = 0;
+        }
+        helper::showDialog(v6);
+        helper::disableDialog(v6);
+        //		v7 = v6->user;
+        v8 = cmdicons_grp;
+        v6->graphic = 12;
+        //		*(s32*)v7 = v8;
+        *(s16*)(v7 + 4) = weapons_dat::Icon[weaponId];
+        *(s16*)(v7 + 6) = 0;
+        *(s16*)(v7 + 8) = weaponId;
+        v9 = v6->flags;
+        v6->pszText = statusscreen_infobtn[buttonRelated];
+        if (!(v9 & 1))
+        {
+            v6->flags = v9 | 1;
+            helper::updateDialog(v6);
+        }
+        *unkUpgradeCount += v10;
+    }
 }

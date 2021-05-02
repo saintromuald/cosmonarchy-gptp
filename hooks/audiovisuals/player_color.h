@@ -1,7 +1,8 @@
 #pragma once
 #include "SCBW/structures.h"
 
-namespace hooks {
+namespace hooks
+{
 
-	void injectPlayerColorHooks();
+    void injectPlayerColorHooks();
 }

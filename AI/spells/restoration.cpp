@@ -4,57 +4,62 @@
 
 //V241 for VS2008
 
-namespace AI {
+namespace AI
+{
 
-	CUnit* findBestRestorationTarget(CUnit* caster, bool isUnderAttack) {
+    CUnit* findBestRestorationTarget(CUnit* caster, bool isUnderAttack)
+    {
 
-		s32 bounds = 32 * 32;
+        s32 bounds = 32 * 32;
 
-		return scbw::UnitFinder::getNearestTarget(
-			caster->getX() - bounds,
-			caster->getY() - bounds,
-			caster->getX() + bounds,
-			caster->getY() + bounds,
-			caster,
-			[&](CUnit* target) {
+        return scbw::UnitFinder::getNearestTarget(
+            caster->getX() - bounds,
+            caster->getY() - bounds,
+            caster->getX() + bounds,
+            caster->getY() + bounds,
+            caster,
+            [&](CUnit* target)
+        {
 
-			if (target->playerId != caster->playerId)
-				return false;
+            if (target->playerId != caster->playerId)
+                return false;
 
-			if (!scbw::canWeaponTargetUnit(WeaponId::Restoration, target, caster))
-				return false;
+            if (!scbw::canWeaponTargetUnit(WeaponId::Restoration, target, caster))
+                return false;
 
-			if (target->getCurrentLifeInGame() <= 60)
-				return false;
+            if (target->getCurrentLifeInGame() <= 60)
+                return false;
 
-			if (scbw::isDebuffed(target))
-				return true;
+            if (scbw::isDebuffed(target))
+                return true;
 
-			return false;
+            return false;
 
-		});
-	}
+        });
+    }
 
 
-	CUnit* findBestRestorationTargetSituational(CUnit* caster, bool isUnderAttack) {
+    CUnit* findBestRestorationTargetSituational(CUnit* caster, bool isUnderAttack)
+    {
 
-		if (isUnderAttack)
-			return nullptr;
+        if (isUnderAttack)
+            return nullptr;
 
-		return scbw::UnitFinder::getNearestTarget(caster, [&](CUnit* target) {
+        return scbw::UnitFinder::getNearestTarget(caster, [&](CUnit* target)
+        {
 
-			if (target->playerId != caster->playerId)
-				return false;
+            if (target->playerId != caster->playerId)
+                return false;
 
-			if (!(target->parasiteFlags || target->maelstromTimer))
-				return false;
+            if (!(target->parasiteFlags || target->maelstromTimer))
+                return false;
 
-			if (!scbw::canWeaponTargetUnit(WeaponId::Restoration, target, caster))
-				return false;
+            if (!scbw::canWeaponTargetUnit(WeaponId::Restoration, target, caster))
+                return false;
 
-			return true;
+            return true;
 
-		});
-	}
+        });
+    }
 
 } //AI

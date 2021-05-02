@@ -6,543 +6,647 @@
 #include "hooks/weapons/wpnspellhit.h"
 #include "globals.h"
 #include "limits/ccmu.h"
-namespace {
-	// SC internal data for Lurker spines
-	struct SpineHitTable {
-		struct {
-			CUnit* source;
-			CUnit* target;
-		} hits[32][16];
-	};
-	SpineHitTable* const spineHitTable = (SpineHitTable*)(0x0064DEC8);
-	u32* const spineHitRow = (u32*)(0x64EEC8);
-	u32* const spineHitCol = (u32*)(0x64DEA8);
+namespace
+{
+    // SC internal data for Lurker spines
+    struct SpineHitTable
+    {
+        struct
+        {
+            CUnit* source;
+            CUnit* target;
+        } hits[32][16];
+    };
+    SpineHitTable* const spineHitTable = (SpineHitTable*)(0x0064DEC8);
+    u32* const spineHitRow = (u32*)(0x64EEC8);
+    u32* const spineHitCol = (u32*)(0x64DEA8);
 }
 
-namespace hooks {
+namespace hooks
+{
 
-	void darkSwarmDamage(u16 x, u16 y, u16 r, CBullet* bullet, u32 weaponId) {
-		CUnit* dsw = scbw::getDarkSwarm(x, y, r);
-		if (dsw != nullptr) {
-			//scbw::print("Dark swarm detected");
-			u32 damage = (weapons_dat::DamageAmount[weaponId] * 256) +
-				(weapons_dat::DamageBonus[weaponId] * 256 * scbw::getUpgradeLevel(bullet->srcPlayer, weapons_dat::DamageUpgrade[weaponId]));
-			if (bullet->hitFlags & 2) {
-				//hallucination
-				damage /= 2;
-			}
-			if (damage >= dsw->hitPoints) {
-				dsw->remove();
-				//scbw::print("Destroy dark swarm");
-			} else {
-				u32 old = dsw->hitPoints;
-				dsw->hitPoints -= damage;
-				//char buf[64];
-				//sprintf(buf,"Dark swarm hit: %d --> %d",old,dsw->hitPoints);
-				//scbw::print(buf);
-			}
-		}
-	}
+    void darkSwarmDamage(u16 x, u16 y, u16 r, CBullet* bullet, u32 weaponId)
+    {
+        CUnit* dsw = scbw::getDarkSwarm(x, y, r);
+        if (dsw != nullptr)
+        {
+            //scbw::print("Dark swarm detected");
+            u32 damage = (weapons_dat::DamageAmount[weaponId] * 256) +
+                (weapons_dat::DamageBonus[weaponId] * 256 * scbw::getUpgradeLevel(bullet->srcPlayer, weapons_dat::DamageUpgrade[weaponId]));
+            if (bullet->hitFlags & 2)
+            {
+                //hallucination
+                damage /= 2;
+            }
+            if (damage >= dsw->hitPoints)
+            {
+                dsw->remove();
+                //scbw::print("Destroy dark swarm");
+            }
+            else
+            {
+                u32 old = dsw->hitPoints;
+                dsw->hitPoints -= damage;
+                //char buf[64];
+                //sprintf(buf,"Dark swarm hit: %d --> %d",old,dsw->hitPoints);
+                //scbw::print(buf);
+            }
+        }
+    }
 
-	bool nathrokorCondition(CBullet* bullet, CUnit* target) {
-		if (bullet->sourceUnit == nullptr || target == nullptr) {
-			return true;
-		}
-		if (bullet->weaponType == WeaponId::NathrokorPlasmidBreath) {
-			CUnit* nathrokor = bullet->sourceUnit;
-			u16 angle = scbw::getAngle(nathrokor->position.x, nathrokor->position.y,
-				target->position.x, target->position.y);
-			u16 unit_angle = nathrokor->velocityDirection1;
-			s32 arc = (f64)15 / 1.40625;
-			//30 degrees
-			s32 delta = unit_angle - angle;
-			delta = abs((delta + 128) % 256 - 128);
-			if (delta > arc) {
-				return false;
-			} else {
-			}
-		}
-		return true;
-	}
+    bool nathrokorCondition(CBullet* bullet, CUnit* target)
+    {
+        if (bullet->sourceUnit == nullptr || target == nullptr)
+        {
+            return true;
+        }
+        if (bullet->weaponType == WeaponId::NathrokorPlasmidBreath)
+        {
+            CUnit* nathrokor = bullet->sourceUnit;
+            u16 angle = scbw::getAngle(nathrokor->position.x, nathrokor->position.y,
+                target->position.x, target->position.y);
+            u16 unit_angle = nathrokor->velocityDirection1;
+            s32 arc = (f64)15 / 1.40625;
+            //30 degrees
+            s32 delta = unit_angle - angle;
+            delta = abs((delta + 128) % 256 - 128);
+            if (delta > arc)
+            {
+                return false;
+            }
+            else
+            {
+            }
+        }
+        return true;
+    }
 
-	void splash(CBullet* bullet, u32 weaponId, u8 splashType, CUnit* guaranteedHit) {
-		s32 splash = splashType;
-		if (bullet == nullptr)
-			return;
-		if (bullet->sourceUnit != nullptr && bullet->sourceUnit->sprite != nullptr) {
-			if (bullet->sourceUnit->isBlind) {
-				splash = SplashType::Radial;
-			}
+    void splash(CBullet* bullet, u32 weaponId, u8 splashType, CUnit* guaranteedHit)
+    {
+        s32 splash = splashType;
+        if (bullet == nullptr)
+            return;
+        if (bullet->sourceUnit != nullptr && bullet->sourceUnit->sprite != nullptr)
+        {
+            if (bullet->sourceUnit->isBlind)
+            {
+                splash = SplashType::Radial;
+            }
 
-			Point16 hit = bullet->attackTarget.pt;
-			switch (weaponId) {
-				case WeaponId::SalamanderPerditionBarrage:
-				{
-					globals.createGenericPersistImpact(ImpactId::SalamanderFire, 5 * 24, {hit.x, hit.y}, 0.5 * 32, SpriteId::SalamanderImpact, 5, bullet->srcPlayer);
-					break;
-				}
-				case WeaponId::KeskathalorScreamingVenom:
-				{
-					globals.createGenericPersistImpact(ImpactId::CausticDischarge, 5 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::CausticDischarge, 5, bullet->srcPlayer);
-					break;
-				}
-				case WeaponId::IonCannon:
-				{
-					globals.createGenericPersistImpact(ImpactId::IonField, 10 * 24, {hit.x, hit.y}, 3 * 32, SpriteId::IonField, 5, bullet->srcPlayer);
-					break;
-				}
-			}
-			/*
-			if (bullet->sourceUnit->id == WeaponId::IonCannon) {
-				auto hit = bullet->attackTarget.pt;
-				if (bullet->attackTarget.unit != nullptr) {
-					hit = bullet->attackTarget.unit->position;
-				}
-				globals.createIonField(hit.x, hit.y, 11, 5, true);
-			}*/
-		}
+            Point16 hit = bullet->attackTarget.pt;
+            switch (weaponId)
+            {
+                case WeaponId::SalamanderPerditionBarrage:
+                {
+                    globals.createGenericPersistImpact(ImpactId::SalamanderFire, 5 * 24, {hit.x, hit.y}, 0.5 * 32, SpriteId::SalamanderImpact, 5, bullet->srcPlayer);
+                    break;
+                }
+                case WeaponId::KeskathalorScreamingVenom:
+                {
+                    globals.createGenericPersistImpact(ImpactId::CausticDischarge, 5 * 24, {hit.x, hit.y}, 1.5 * 32, SpriteId::CausticDischarge, 5, bullet->srcPlayer);
+                    break;
+                }
+                case WeaponId::IonCannon:
+                {
+                    globals.createGenericPersistImpact(ImpactId::IonField, 10 * 24, {hit.x, hit.y}, 3 * 32, SpriteId::IonField, 5, bullet->srcPlayer);
+                    break;
+                }
+            }
+            /*
+            if (bullet->sourceUnit->id == WeaponId::IonCannon) {
+                auto hit = bullet->attackTarget.pt;
+                if (bullet->attackTarget.unit != nullptr) {
+                    hit = bullet->attackTarget.unit->position;
+                }
+                globals.createIonField(hit.x, hit.y, 11, 5, true);
+            }*/
+        }
 
-		s16 x, y, radius;
-		x = bullet->sprite->position.x;
-		y = bullet->sprite->position.y;
-		radius = weapons_dat::OuterSplashRadius[weaponId];
+        s16 x, y, radius;
+        x = bullet->sprite->position.x;
+        y = bullet->sprite->position.y;
+        radius = weapons_dat::OuterSplashRadius[weaponId];
 
-		// Probing Incisors - Gorgoleth passive
-		if (isChargedGorgolethBullet(bullet, weaponId)) {
-			radius = 45;
-		}
-		// Nathrokor weapon
-		if (weaponId == WeaponId::NathrokorPlasmidBreath) {
-			radius = 32;
-		}
+        // Probing Incisors - Gorgoleth passive
+        if (isChargedGorgolethBullet(bullet, weaponId))
+        {
+            radius = 45;
+        }
+        // Nathrokor weapon
+        if (weaponId == WeaponId::NathrokorPlasmidBreath)
+        {
+            radius = 32;
+        }
 
-		// Get units within the outer splash radius
-		scbw::UnitFinder unitsInSplash(
-			x - radius,
-			y - radius,
-			x + radius,
-			y + radius
-		);
-		darkSwarmDamage(x, y, radius, bullet, weaponId);
+        // Get units within the outer splash radius
+        scbw::UnitFinder unitsInSplash(
+            x - radius,
+            y - radius,
+            x + radius,
+            y + radius
+        );
+        darkSwarmDamage(x, y, radius, bullet, weaponId);
 
-		bool hasGuaranteedHitUnit = guaranteedHit != nullptr;
-		if (hasGuaranteedHitUnit && nathrokorCondition(bullet, bullet->attackTarget.unit)) {
-			helper::weaponBulletShot(guaranteedHit, bullet, 1);
-		}
-		s32 divisor = 1;
-		if (weaponId == WeaponId::ArchitectDispersiveSalvo) {
-			divisor = globals.get_divider(bullet);
-		}
-		for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++) {
-			CUnit* target = unitsInSplash.getUnit(i);
-			if (hasGuaranteedHitUnit && target == guaranteedHit) { // skips target check if hasGuaranteedHitUnit is unset, just for little bit of performance
-				continue; // guaranteed hit unit was already damaged before splash!
-			}
+        bool hasGuaranteedHitUnit = guaranteedHit != nullptr;
+        if (hasGuaranteedHitUnit && nathrokorCondition(bullet, bullet->attackTarget.unit))
+        {
+            helper::weaponBulletShot(guaranteedHit, bullet, 1);
+        }
+        s32 divisor = 1;
+        if (weaponId == WeaponId::ArchitectDispersiveSalvo)
+        {
+            divisor = globals.get_divider(bullet);
+        }
+        for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
+        {
+            CUnit* target = unitsInSplash.getUnit(i);
+            if (hasGuaranteedHitUnit && target == guaranteedHit)
+            { // skips target check if hasGuaranteedHitUnit is unset, just for little bit of performance
+                continue; // guaranteed hit unit was already damaged before splash!
+            }
 
-			// Units can't splash themselves -- except psi storm
-			if (target == bullet->sourceUnit && bullet->weaponType != WeaponId::PsiStorm) continue;
+            // Units can't splash themselves -- except psi storm
+            if (target == bullet->sourceUnit && bullet->weaponType != WeaponId::PsiStorm) continue;
 
-			// Don't hit allied units -- normally just checks target->playerId == bullet->srcPlayer (also checks if type is 'splash enemy' or 'nuclear missile')
-			// if(scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
+            // Don't hit allied units -- normally just checks target->playerId == bullet->srcPlayer (also checks if type is 'splash enemy' or 'nuclear missile')
+            // if(scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
 
-			if (splash == SplashType::Enemy) {
-				if (bullet->srcPlayer == target->playerId && target != bullet->attackTarget.unit) continue;
-			}
+            if (splash == SplashType::Enemy)
+            {
+                if (bullet->srcPlayer == target->playerId && target != bullet->attackTarget.unit) continue;
+            }
 
-			else if (splash == SplashType::FriendlyNew) {
-				if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
-			}
+            else if (splash == SplashType::FriendlyNew)
+            {
+                if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
+            }
 
-			// Can the unit be targeted?
-			if (!scbw::canWeaponTargetUnit(bullet->weaponType, target, target)) continue;
+            // Can the unit be targeted?
+            if (!scbw::canWeaponTargetUnit(bullet->weaponType, target, target)) continue;
 
-			// We found units in a square around the target, but is the target within the splash radius?
-			s16 outer = weapons_dat::OuterSplashRadius[bullet->weaponType];
+            // We found units in a square around the target, but is the target within the splash radius?
+            s16 outer = weapons_dat::OuterSplashRadius[bullet->weaponType];
 
-			// Probing Incisors - Gorgoleth passive
-			if (isChargedGorgolethBullet(bullet, weaponId)) {
-				outer = 45;
-			}
+            // Probing Incisors - Gorgoleth passive
+            if (isChargedGorgolethBullet(bullet, weaponId))
+            {
+                outer = 45;
+            }
 
-			// Nathrokor weapon
-			if (weaponId == WeaponId::NathrokorPlasmidBreath) {
-				outer = 32;
-			}
+            // Nathrokor weapon
+            if (weaponId == WeaponId::NathrokorPlasmidBreath)
+            {
+                outer = 32;
+            }
 
-			if (weaponId == WeaponId::HeraclesJavelinCannons) {
-				const f64 splashBase = weapons_dat::OuterSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
-				outer = (s16)(splashBase * (1 + 0.1 * stacks));
-			}
+            if (weaponId == WeaponId::HeraclesJavelinCannons)
+            {
+                const f64 splashBase = weapons_dat::OuterSplashRadius[WeaponId::HeraclesJavelinCannons];
+                const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
+                outer = (s16)(splashBase * (1 + 0.1 * stacks));
+            }
 
-			if (!helper::isUnitDistanceWithin(target, bullet, outer)) continue;
+            if (!helper::isUnitDistanceWithin(target, bullet, outer)) continue;
 
-			// Don't storm a unit that's already being stormed
-			if (bullet->weaponType == WeaponId::PsiStorm) {
-				if (target->isUnderStorm) continue;
-				target->isUnderStorm = 1;
-			}
+            // Don't storm a unit that's already being stormed
+            if (bullet->weaponType == WeaponId::PsiStorm)
+            {
+                if (target->isUnderStorm) continue;
+                target->isUnderStorm = 1;
+            }
 
-			// Inner radius 
-			s16 inner = weapons_dat::InnerSplashRadius[bullet->weaponType];
+            // Inner radius 
+            s16 inner = weapons_dat::InnerSplashRadius[bullet->weaponType];
 
-			// Probing Incisors - Gorgoleth passive
-			if (isChargedGorgolethBullet(bullet, weaponId)) {
-				inner = 30;
-			}
+            // Probing Incisors - Gorgoleth passive
+            if (isChargedGorgolethBullet(bullet, weaponId))
+            {
+                inner = 30;
+            }
 
-			if (weaponId == WeaponId::HeraclesJavelinCannons) {
-				const f64 splashBase = weapons_dat::InnerSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
-				inner = (s16)(splashBase * (1 + 0.1 * stacks));
-			}
+            if (weaponId == WeaponId::HeraclesJavelinCannons)
+            {
+                const f64 splashBase = weapons_dat::InnerSplashRadius[WeaponId::HeraclesJavelinCannons];
+                const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
+                inner = (s16)(splashBase * (1 + 0.1 * stacks));
+            }
 
-			if (helper::isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet, target)) {
-				helper::weaponBulletShot(target, bullet, divisor); // 100% damage
-				continue;
-			}
+            if (helper::isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet, target))
+            {
+                helper::weaponBulletShot(target, bullet, divisor); // 100% damage
+                continue;
+            }
 
-			// Burrowed units can only be hit by inner radius
-			if (target->status & UnitStatus::Burrowed) continue;
+            // Burrowed units can only be hit by inner radius
+            if (target->status & UnitStatus::Burrowed) continue;
 
-			// Medium radius
-			s16 medium = weapons_dat::MediumSplashRadius[bullet->weaponType];
+            // Medium radius
+            s16 medium = weapons_dat::MediumSplashRadius[bullet->weaponType];
 
-			// Probing Incisors - Gorgoleth passive
-			if (isChargedGorgolethBullet(bullet, weaponId)) {
-				medium = 37;
-			}
+            // Probing Incisors - Gorgoleth passive
+            if (isChargedGorgolethBullet(bullet, weaponId))
+            {
+                medium = 37;
+            }
 
-			if (weaponId == WeaponId::HeraclesJavelinCannons) {
-				const f64 splashBase = weapons_dat::MediumSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
-				medium = (s16)(splashBase * (1 + 0.1 * stacks));
-			}
+            if (weaponId == WeaponId::HeraclesJavelinCannons)
+            {
+                const f64 splashBase = weapons_dat::MediumSplashRadius[WeaponId::HeraclesJavelinCannons];
+                const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
+                medium = (s16)(splashBase * (1 + 0.1 * stacks));
+            }
 
-			if (weaponId == WeaponId::NathrokorPlasmidBreath) {
-				radius = 32;
-			}
+            if (weaponId == WeaponId::NathrokorPlasmidBreath)
+            {
+                radius = 32;
+            }
 
-			if (helper::isUnitDistanceWithin(target, bullet, medium) && nathrokorCondition(bullet, target)) {
-				helper::weaponBulletShot(target, bullet, divisor * 2); // 50% damage
-				continue;
-			}
+            if (helper::isUnitDistanceWithin(target, bullet, medium) && nathrokorCondition(bullet, target))
+            {
+                helper::weaponBulletShot(target, bullet, divisor * 2); // 50% damage
+                continue;
+            }
 
-			// Outer radius
-			if (nathrokorCondition(bullet, target)) {
-				helper::weaponBulletShot(target, bullet, divisor * 4); // 25% damage
-			}
-		}
-	}
+            // Outer radius
+            if (nathrokorCondition(bullet, target))
+            {
+                helper::weaponBulletShot(target, bullet, divisor * 4); // 25% damage
+            }
+        }
+    }
 
-	void lurkerSplash(CBullet* bullet, u32 weaponId, u8 splash) {
-		s16 x, y, r;
-		x = bullet->sprite->position.x;
-		y = bullet->sprite->position.y;
-		r = weapons_dat::OuterSplashRadius[weaponId];
+    void lurkerSplash(CBullet* bullet, u32 weaponId, u8 splash)
+    {
+        s16 x, y, r;
+        x = bullet->sprite->position.x;
+        y = bullet->sprite->position.y;
+        r = weapons_dat::OuterSplashRadius[weaponId];
 
-		// Get units within the outer splash radius
-		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
+        // Get units within the outer splash radius
+        scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
 
-		for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++) {
-			CUnit* target = unitsInSplash.getUnit(i);
+        for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
+        {
+            CUnit* target = unitsInSplash.getUnit(i);
 
-			// Units can't splash themselves
-			if (target == bullet->sourceUnit) continue;
+            // Units can't splash themselves
+            if (target == bullet->sourceUnit) continue;
 
-			// Don't hit allied units -- normally just checks target->playerId == bullet->srcPlayer
-		//     if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
-			if (splash == SplashType::Enemy) {
-				if (bullet->srcPlayer == target->playerId && target != bullet->attackTarget.unit) continue;
-			} else if (splash == SplashType::FriendlyNew) {
-				bool lurkerOverride = false;
-				if (bullet->sourceUnit && (CUnit*)scbw::get_generic_value(bullet->sourceUnit, ValueId::LurkerPickTarget) == target) {
-					lurkerOverride = true;
-				}
-				if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && !lurkerOverride && target != bullet->attackTarget.unit) {
-					continue;
-				}
-			}
+            // Don't hit allied units -- normally just checks target->playerId == bullet->srcPlayer
+        //     if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
+            if (splash == SplashType::Enemy)
+            {
+                if (bullet->srcPlayer == target->playerId && target != bullet->attackTarget.unit) continue;
+            }
+            else if (splash == SplashType::FriendlyNew)
+            {
+                bool lurkerOverride = false;
+                if (bullet->sourceUnit && (CUnit*)scbw::get_generic_value(bullet->sourceUnit, ValueId::LurkerPickTarget) == target)
+                {
+                    lurkerOverride = true;
+                }
+                if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && !lurkerOverride && target != bullet->attackTarget.unit)
+                {
+                    continue;
+                }
+            }
 
-			// Can the unit be targetted?
-			if (!scbw::canWeaponTargetUnit(bullet->weaponType, target, target)) continue;
+            // Can the unit be targetted?
+            if (!scbw::canWeaponTargetUnit(bullet->weaponType, target, target)) continue;
 
-			// We found units in a square around the target, but is the target within the splash radius?
-			if (!helper::isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[bullet->weaponType])) continue;
+            // We found units in a square around the target, but is the target within the splash radius?
+            if (!helper::isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[bullet->weaponType])) continue;
 
-			if (bullet->sourceUnit != nullptr) {
-				/*
-				bool cont = false; // supposed to be a return within the loops, but since we can't it's a bool
-				for (s32 radius = 0; radius < 32 && !cont; radius++) {
-					for (s32 c = 0; c < 16; c++) {
-					if (spineHitTable->hits[radius][c].source == bullet->sourceUnit && spineHitTable->hits[radius][c].target == target) {
-						cont = true; // unit has already been hit
-						break;
-					}
-					}
-				}
-				if (cont) continue;
+            if (bullet->sourceUnit != nullptr)
+            {
+                /*
+                bool cont = false; // supposed to be a return within the loops, but since we can't it's a bool
+                for (s32 radius = 0; radius < 32 && !cont; radius++) {
+                    for (s32 c = 0; c < 16; c++) {
+                    if (spineHitTable->hits[radius][c].source == bullet->sourceUnit && spineHitTable->hits[radius][c].target == target) {
+                        cont = true; // unit has already been hit
+                        break;
+                    }
+                    }
+                }
+                if (cont) continue;
 
-				if (*spineHitCol != 16) {
-					spineHitTable->hits[*spineHitRow][*spineHitCol].source = bullet->sourceUnit;
-					spineHitTable->hits[*spineHitRow][*spineHitCol].target = target;
-					(*spineHitCol)++;
-				}*/
-				bool cont = false;
-				if (globals.spine_pair_exists(bullet->sourceUnit, target)) {
-					cont = true;
-					break;
-				}
-				if (cont)
-					continue;
-				globals.add_lurker_spine_pair(bullet->sourceUnit, target);
-			}
-			helper::weaponBulletShot(target, bullet, 1);
-		}
-	}
+                if (*spineHitCol != 16) {
+                    spineHitTable->hits[*spineHitRow][*spineHitCol].source = bullet->sourceUnit;
+                    spineHitTable->hits[*spineHitRow][*spineHitCol].target = target;
+                    (*spineHitCol)++;
+                }*/
+                bool cont = false;
+                if (globals.spine_pair_exists(bullet->sourceUnit, target))
+                {
+                    cont = true;
+                    break;
+                }
+                if (cont)
+                    continue;
+                globals.add_lurker_spine_pair(bullet->sourceUnit, target);
+            }
+            helper::weaponBulletShot(target, bullet, 1);
+        }
+    }
 
-	bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId) {
-		if (weaponId == WeaponId::GorgrokorSerratedCleavers) {
-			if (bullet != nullptr && bullet->sourceUnit != nullptr && bullet->sourceUnit->id == UnitId::ZergGorgrokor) {
-				//				if (bullet->sourceUnit->energy >= 5 * 256) {
-				return true;
-				//				}
-			}
-		}
-		return false;
-	}
+    bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId)
+    {
+        if (weaponId == WeaponId::GorgrokorSerratedCleavers)
+        {
+            if (bullet != nullptr && bullet->sourceUnit != nullptr && bullet->sourceUnit->id == UnitId::ZergGorgrokor)
+            {
+                //				if (bullet->sourceUnit->energy >= 5 * 256) {
+                return true;
+                //				}
+            }
+        }
+        return false;
+    }
 
-	bool isUnsafeCyprianBullet(CBullet* bullet, u32 weaponId) {
-		if (weaponId == 26) {
-			if (bullet != nullptr) {
-				if (bullet->sourceUnit != nullptr) {
-					if (scbw::get_aise_value(bullet->sourceUnit, nullptr, AiseId::SendCyprianValue, 0, 0) == 1) {
-						return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
+    bool isUnsafeCyprianBullet(CBullet* bullet, u32 weaponId)
+    {
+        if (weaponId == 26)
+        {
+            if (bullet != nullptr)
+            {
+                if (bullet->sourceUnit != nullptr)
+                {
+                    if (scbw::get_aise_value(bullet->sourceUnit, nullptr, AiseId::SendCyprianValue, 0, 0) == 1)
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
-	// clone of 'Normal' damage for reference
-	void normalDamage(CBullet* bullet, u32 weaponId) {
-		// Create Lobotomy Mines
-		if (bullet->sourceUnit != nullptr && weaponId == WeaponId::Lockdown) {
-			CUnit* mine = scbw::createUnitIngame(UnitId::TerranLobotomyMine, bullet->srcPlayer, bullet->position.x, bullet->position.y);
-			if (mine != nullptr) {
-				helper::turnUnit(mine, bullet->sourceUnit->currentDirection1);
-			}
-		}
+    // clone of 'Normal' damage for reference
+    void normalDamage(CBullet* bullet, u32 weaponId)
+    {
+        // Create Lobotomy Mines
+        if (bullet->sourceUnit != nullptr && weaponId == WeaponId::Lockdown)
+        {
+            CUnit* mine = scbw::createUnitIngame(UnitId::TerranLobotomyMine, bullet->srcPlayer, bullet->position.x, bullet->position.y);
+            if (mine != nullptr)
+            {
+                helper::turnUnit(mine, bullet->sourceUnit->currentDirection1);
+            }
+        }
 
-		// 
-		if (isChargedGorgolethBullet(bullet, weaponId)) {
-			//			bullet->sourceUnit->spendUnitEnergy(5 * 256);
-			splash(bullet, weaponId, SplashType::FriendlyNew, bullet->attackTarget.unit);
-			return;
-		}
+        // 
+        if (isChargedGorgolethBullet(bullet, weaponId))
+        {
+            //			bullet->sourceUnit->spendUnitEnergy(5 * 256);
+            splash(bullet, weaponId, SplashType::FriendlyNew, bullet->attackTarget.unit);
+            return;
+        }
 
-		// 
-		CUnit* target = bullet->attackTarget.unit;
-		if (target == nullptr) {
-			return;
-		}
+        // 
+        CUnit* target = bullet->attackTarget.unit;
+        if (target == nullptr)
+        {
+            return;
+        }
 
-		// 
-		darkSwarmDamage(bullet->attackTarget.unit->position.x, bullet->attackTarget.unit->position.y, 1, bullet, weaponId);
+        // 
+        darkSwarmDamage(bullet->attackTarget.unit->position.x, bullet->attackTarget.unit->position.y, 1, bullet, weaponId);
 
-		// 
-		u8 divisor = 1;
-		if (weaponId == WeaponId::ArchitectDispersiveSalvo) {
-			divisor = globals.get_divider(bullet);
-		}
-		
-		// 
-		else if (weaponId == WeaponId::AcidSpore
-			&& bullet->sourceUnit
-			&& bullet->sourceUnit->sprite
-			&& target->sprite) {
-			auto X = scbw::get_generic_value(bullet->sourceUnit, ValueId::GuardianMissileLaunchPosX);
-			auto Y = scbw::get_generic_value(bullet->sourceUnit, ValueId::GuardianMissileLaunchPosY);
-			if (X != 0 && Y != 0) {
-				divisor = scbw::getDistanceFast(X, Y, target->getX(), target->getY()) / (32 * 3);
-			}
-		}
+        // 
+        u8 divisor = 1;
+        if (weaponId == WeaponId::ArchitectDispersiveSalvo)
+        {
+            divisor = globals.get_divider(bullet);
+        }
 
-		// 
-		if (bullet->hitFlags & 1) { // Miss ?
-			if (target->pAI == nullptr) return;
-			if (bullet->sourceUnit == nullptr) return;
-			helper::doWeaponHit(target, bullet->sourceUnit, divisor);
-			return;
-		}
+        // 
+        else if (weaponId == WeaponId::AcidSpore
+            && bullet->sourceUnit
+            && bullet->sourceUnit->sprite
+            && target->sprite)
+        {
+            auto X = scbw::get_generic_value(bullet->sourceUnit, ValueId::GuardianMissileLaunchPosX);
+            auto Y = scbw::get_generic_value(bullet->sourceUnit, ValueId::GuardianMissileLaunchPosY);
+            if (X != 0 && Y != 0)
+            {
+                divisor = scbw::getDistanceFast(X, Y, target->getX(), target->getY()) / (32 * 3);
+            }
+        }
 
-		// 
-		else {
-			if (weapons_dat::Behavior[weaponId] == WeaponBehavior::Bounce) {
-				bool mutalisk = true;
-				bool bounces = true;
-				if (bullet != nullptr && bullet->sourceUnit != nullptr) {
-					if (bullet->sourceUnit->id == 129) {
-						if (bullet->remainingBounces <= 1) {
-							mutalisk = false;
-						} else {
-							bounces = false;
-						}
-					}
-				}
-				if (bounces) {
-					if (mutalisk) {
-						s32 bounceCount = 2;
-						divisor = bounceCount - bullet->remainingBounces;
-						/*
-						for (s32 i = 2 - bullet->remainingBounces; i != 0; i--) {
-							divisor *= 3;
-						}*/
-						//1-3-9  2-1-0 - old
-						//1-2-3  2-1-0 - new
-					} else {
-						divisor *= 3;
-					}
-				}
-			}
-			helper::weaponBulletShot(target, bullet, divisor);
-		}
-	}
+        // 
+        if (bullet->hitFlags & 1)
+        { // Miss ?
+            if (target->pAI == nullptr) return;
+            if (bullet->sourceUnit == nullptr) return;
+            helper::doWeaponHit(target, bullet->sourceUnit, divisor);
+            return;
+        }
 
-	//  case WPNEffect_Splash_Air:
-	void airSplash(CBullet* bullet, u32 weaponId) { // 0048B790
-		CUnit* target = bullet->attackTarget.unit;
-		if (target == nullptr) {
-			return;
-		}
-		s16 radius = weapons_dat::OuterSplashRadius[weaponId];
-		CSprite* bulletSprite = bullet->sprite;
-		s16 posX = bulletSprite->position.x;
-		s16 posY = bulletSprite->position.y;
-		s32 list;
-		Box16* searchRadius;
+        // 
+        else
+        {
+            if (weapons_dat::Behavior[weaponId] == WeaponBehavior::Bounce)
+            {
+                bool mutalisk = true;
+                bool bounces = true;
+                if (bullet != nullptr && bullet->sourceUnit != nullptr)
+                {
+                    if (bullet->sourceUnit->id == 129)
+                    {
+                        if (bullet->remainingBounces <= 1)
+                        {
+                            mutalisk = false;
+                        }
+                        else
+                        {
+                            bounces = false;
+                        }
+                    }
+                }
+                if (bounces)
+                {
+                    if (mutalisk)
+                    {
+                        s32 bounceCount = 2;
+                        divisor = bounceCount - bullet->remainingBounces;
+                        /*
+                        for (s32 i = 2 - bullet->remainingBounces; i != 0; i--) {
+                            divisor *= 3;
+                        }*/
+                        //1-3-9  2-1-0 - old
+                        //1-2-3  2-1-0 - new
+                    }
+                    else
+                    {
+                        divisor *= 3;
+                    }
+                }
+            }
+            helper::weaponBulletShot(target, bullet, divisor);
+        }
+    }
 
-		*airSplashListCount = 0;
-		searchRadius->left = posX - radius;
-		searchRadius->top = posY - radius;
-		searchRadius->right = radius + posX;
-		searchRadius->bottom = radius + posY;
+    //  case WPNEffect_Splash_Air:
+    void airSplash(CBullet* bullet, u32 weaponId)
+    { // 0048B790
+        CUnit* target = bullet->attackTarget.unit;
+        if (target == nullptr)
+        {
+            return;
+        }
+        s16 radius = weapons_dat::OuterSplashRadius[weaponId];
+        CSprite* bulletSprite = bullet->sprite;
+        s16 posX = bulletSprite->position.x;
+        s16 posY = bulletSprite->position.y;
+        s32 list;
+        Box16* searchRadius;
 
-		s16 x, y, r;
-		x = bullet->sprite->position.x;
-		y = bullet->sprite->position.y;
-		r = weapons_dat::OuterSplashRadius[weaponId];
-		// Get units within the outer splash radius
-		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
-		//
-		darkSwarmDamage(x, y, r, bullet, weaponId);
-		//
-		s32 result;
-		for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++) {
-			// airSplashProc
-			s8 weaponIdLoop; // bl
-			s32 listCount; // eax
-			CUnit* target = unitsInSplash.getUnit(i);
+        *airSplashListCount = 0;
+        searchRadius->left = posX - radius;
+        searchRadius->top = posY - radius;
+        searchRadius->right = radius + posX;
+        searchRadius->bottom = radius + posY;
 
-			weaponIdLoop = bullet->weaponType;
-			if (target != bullet->sourceUnit && (target->playerId != bullet->srcPlayer || target == bullet->attackTarget.unit)) {
-				if (scbw::canWeaponTargetUnit(weaponIdLoop, target, target)) {
-					if (helper::isUnitDistanceWithin(target, bullet, weapons_dat::OuterSplashRadius[weaponIdLoop])) {
-						if (helper::isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[weaponIdLoop])
-							&& target == bullet->attackTarget.unit) {
-							if (globals.extended_unit_table) {
-								new_unit_table.air_splash_results[0] = target;
-							} else {
-								airSplashList[0] = target;
-							}
-							result = 1;
-							*airSplashListCount = 1;
-							break;
-						}
-						listCount = *airSplashListCount;
-						if (globals.extended_unit_table) {
-							new_unit_table.air_splash_results[*airSplashListCount] = target;
-						} else {
-							airSplashList[*airSplashListCount] = target;
-						}
-						*airSplashListCount = listCount + 1;
-					}
-				}
-			}
-		}
-		if (airSplashListCount) {
-			if (*airSplashListCount == 1) {
-				list = 0;
-			} else {
-				list = helper::RandomizeShort(58) % *airSplashListCount;
-			}
-			if (globals.extended_unit_table) {
-				helper::weaponBulletShot(target, bullet, (s32)new_unit_table.air_splash_results[list]);
-			} else {
-				helper::weaponBulletShot(target, bullet, (s32)airSplashList[list]);
-			}
+        s16 x, y, r;
+        x = bullet->sprite->position.x;
+        y = bullet->sprite->position.y;
+        r = weapons_dat::OuterSplashRadius[weaponId];
+        // Get units within the outer splash radius
+        scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
+        //
+        darkSwarmDamage(x, y, r, bullet, weaponId);
+        //
+        s32 result;
+        for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
+        {
+            // airSplashProc
+            s8 weaponIdLoop; // bl
+            s32 listCount; // eax
+            CUnit* target = unitsInSplash.getUnit(i);
 
-		}
-		// airSplashProc2
-		splash(bullet, weaponId, SplashType::FriendlyNew);
-	}
+            weaponIdLoop = bullet->weaponType;
+            if (target != bullet->sourceUnit && (target->playerId != bullet->srcPlayer || target == bullet->attackTarget.unit))
+            {
+                if (scbw::canWeaponTargetUnit(weaponIdLoop, target, target))
+                {
+                    if (helper::isUnitDistanceWithin(target, bullet, weapons_dat::OuterSplashRadius[weaponIdLoop]))
+                    {
+                        if (helper::isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[weaponIdLoop])
+                            && target == bullet->attackTarget.unit)
+                        {
+                            if (globals.extended_unit_table)
+                            {
+                                new_unit_table.air_splash_results[0] = target;
+                            }
+                            else
+                            {
+                                airSplashList[0] = target;
+                            }
+                            result = 1;
+                            *airSplashListCount = 1;
+                            break;
+                        }
+                        listCount = *airSplashListCount;
+                        if (globals.extended_unit_table)
+                        {
+                            new_unit_table.air_splash_results[*airSplashListCount] = target;
+                        }
+                        else
+                        {
+                            airSplashList[*airSplashListCount] = target;
+                        }
+                        *airSplashListCount = listCount + 1;
+                    }
+                }
+            }
+        }
+        if (airSplashListCount)
+        {
+            if (*airSplashListCount == 1)
+            {
+                list = 0;
+            }
+            else
+            {
+                list = helper::RandomizeShort(58) % *airSplashListCount;
+            }
+            if (globals.extended_unit_table)
+            {
+                helper::weaponBulletShot(target, bullet, (s32)new_unit_table.air_splash_results[list]);
+            }
+            else
+            {
+                helper::weaponBulletShot(target, bullet, (s32)airSplashList[list]);
+            }
 
-	// clone of 'Yamato' damage for reference
-	void yamatoDamage(CBullet* bullet, u32 weaponId) {
-		if (bullet->attackTarget.unit == nullptr) return;
-		darkSwarmDamage(bullet->attackTarget.unit->position.x, bullet->attackTarget.unit->position.y, 1, bullet, weaponId);
-		helper::weaponBulletShot(bullet->attackTarget.unit, bullet, 1);
-	}
+        }
+        // airSplashProc2
+        splash(bullet, weaponId, SplashType::FriendlyNew);
+    }
 
-	void parasite(CBullet* bullet, u32 weaponId) {
-		if (bullet->sourceUnit == nullptr) return;
-		constexpr u32 radius = 96;
-		scbw::UnitFinder(
-			bullet->position.x - radius / 2,
-			bullet->position.y - radius / 2,
-			bullet->position.x + radius / 2,
-			bullet->position.y + radius / 2
-		).forEach([&](CUnit* unit) {
-			scbw::applyParasite(unit, bullet->sourceUnit->playerId, bullet->sourceUnit);
-		});
-	}
+    // clone of 'Yamato' damage for reference
+    void yamatoDamage(CBullet* bullet, u32 weaponId)
+    {
+        if (bullet->attackTarget.unit == nullptr) return;
+        darkSwarmDamage(bullet->attackTarget.unit->position.x, bullet->attackTarget.unit->position.y, 1, bullet, weaponId);
+        helper::weaponBulletShot(bullet->attackTarget.unit, bullet, 1);
+    }
 
-	void broodlings(CBullet* bullet, u32 weaponId) {
-		if (bullet->sourceUnit == nullptr) return;
-		CUnit* target = bullet->attackTarget.unit;
-		// if (target != nullptr) {
-		//	  if (!target->isDead()) {
-	//			  Ai_UnitWasHit(1, 0, bullet->sourceUnit, target);
-				 // BroodlingHit(bullet->sourceUnit, target,bullet);
-		hooks::BroodlingHit(bullet->sourceUnit, target, bullet);
-		//	  }
-		//  }
-	}
+    void parasite(CBullet* bullet, u32 weaponId)
+    {
+        if (bullet->sourceUnit == nullptr) return;
+        constexpr u32 radius = 96;
+        scbw::UnitFinder(
+            bullet->position.x - radius / 2,
+            bullet->position.y - radius / 2,
+            bullet->position.x + radius / 2,
+            bullet->position.y + radius / 2
+        ).forEach([&](CUnit* unit)
+        {
+            scbw::applyParasite(unit, bullet->sourceUnit->playerId, bullet->sourceUnit);
+        });
+    }
 
-	void lockdown(CBullet* bullet, u32 weaponId) {
-		/*	CUnit* target = bullet->attackTarget.unit;
-			//original code
-			if (target) {
-				if (!target->isDead()) {
-					hooks::LockdownHit(target,0x83,bullet);
-				}
-			}*/
-		auto targPos = bullet->targetPosition;
-		s16 x, y, r;
-		x = bullet->sprite->position.x;
-		y = bullet->sprite->position.y;
-		r = weapons_dat::OuterSplashRadius[WeaponId::LobotomyMineExplosion];
-		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
-		for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++) {
-			CUnit* target = unitsInSplash.getUnit(i);
-			if (!target->isDead()
-				&& !units_dat::GroupFlags[target->id].isBuilding
-				&& !(units_dat::BaseProperty[target->id] & UnitProperty::ResourceContainer)
-				&& target->id != UnitId::TerranSpiderMine
-				&& target->id != UnitId::TerranLobotomyMine) {
-				hooks::LockdownHit(target, 18, bullet);
-			}
-		}
-	}
+    void broodlings(CBullet* bullet, u32 weaponId)
+    {
+        if (bullet->sourceUnit == nullptr) return;
+        CUnit* target = bullet->attackTarget.unit;
+        // if (target != nullptr) {
+        //	  if (!target->isDead()) {
+    //			  Ai_UnitWasHit(1, 0, bullet->sourceUnit, target);
+                 // BroodlingHit(bullet->sourceUnit, target,bullet);
+        hooks::BroodlingHit(bullet->sourceUnit, target, bullet);
+        //	  }
+        //  }
+    }
+
+    void lockdown(CBullet* bullet, u32 weaponId)
+    {
+        /*	CUnit* target = bullet->attackTarget.unit;
+            //original code
+            if (target) {
+                if (!target->isDead()) {
+                    hooks::LockdownHit(target,0x83,bullet);
+                }
+            }*/
+        auto targPos = bullet->targetPosition;
+        s16 x, y, r;
+        x = bullet->sprite->position.x;
+        y = bullet->sprite->position.y;
+        r = weapons_dat::OuterSplashRadius[WeaponId::LobotomyMineExplosion];
+        scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
+        for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
+        {
+            CUnit* target = unitsInSplash.getUnit(i);
+            if (!target->isDead()
+                && !units_dat::GroupFlags[target->id].isBuilding
+                && !(units_dat::BaseProperty[target->id] & UnitProperty::ResourceContainer)
+                && target->id != UnitId::TerranSpiderMine
+                && target->id != UnitId::TerranLobotomyMine)
+            {
+                hooks::LockdownHit(target, 18, bullet);
+            }
+        }
+    }
 }

@@ -3,34 +3,38 @@
 
 extern const u32 Func_GetArmorBonus;	//Defined in CUnit.cpp
 
-namespace {
+namespace
+{
 
-	//Inject with jmpPatch()
-	void __declspec(naked) getArmorBonusWrapper() {
+    //Inject with jmpPatch()
+    void __declspec(naked) getArmorBonusWrapper()
+    {
 
-		static CUnit* unit;
-		static u8 armor;
+        static CUnit* unit;
+        static u8 armor;
 
-		__asm {
-			MOV unit, EAX
-			PUSHAD
-		}
+        __asm {
+            MOV unit, EAX
+            PUSHAD
+        }
 
-		armor = hooks::getArmorBonusHook(unit);
+        armor = hooks::getArmorBonusHook(unit);
 
-		__asm {
-			POPAD
-			MOVZX EAX, armor
-			RETN
-		}
-	}
+        __asm {
+            POPAD
+            MOVZX EAX, armor
+            RETN
+        }
+    }
 
 } //unnamed namespace
 
-namespace hooks {
+namespace hooks
+{
 
-	void injectArmorBonusHook() {
-		jmpPatch(getArmorBonusWrapper, Func_GetArmorBonus, 1);
-	}
+    void injectArmorBonusHook()
+    {
+        jmpPatch(getArmorBonusWrapper, Func_GetArmorBonus, 1);
+    }
 
 } //hooks

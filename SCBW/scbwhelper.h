@@ -1,7 +1,8 @@
 #pragma once
 #include "SCBW\scbwdata.h"
 
-namespace helper {
+namespace helper
+{
     bool HasMoneyCanMake(CUnit* builder, u32 unitToBuild);
 
     // For loadRaceUI
@@ -184,11 +185,11 @@ namespace helper {
     CUnit* AI_TargetEnemyInRegion(AiCaptain* region);
     s32 AI_MoveMilitaryToDefend(AiCaptain* region);
     void AI_GetRegionMilitaryTypes(AiCaptain* region, s32* hasGroundMilitary,
-    s32* cantAttackGround, s32* cantAttackAir);
+        s32* cantAttackGround, s32* cantAttackAir);
     s32 AI_CanTravelToRegion(AiCaptain* region1, AiCaptain* region2);
     CUnit* AI_PickAttackTarget_NoBuildings(AiCaptain* region);
     u32 AI_MoveMilitaryToOtherRegion(AiCaptain* target, AiCaptain* source, u32 pullUnitsNearRegion,
-    u32 sendPureSpellcasters, u32 dontSendFromBunkers);
+        u32 sendPureSpellcasters, u32 dontSendFromBunkers);
     AiTown* AI_IterateTownSomething(AiCaptain* region);
     u32 AI_AttackTimerDecrement(u32 player);
     s32 AI_HasForcesMovingToAttack(u32 player);
@@ -221,7 +222,7 @@ namespace helper {
     bool function_00478540(CUnit* unit);																	// 00478540
     bool isUnitCritter(CUnit* unit);																		// 0047B450
     void moveToCollide(CUnit* unit, CUnit* target);														    // 00495400
-                                                                                                               
+
     bool isUnitVisible(CUnit* unit);																		// 004E5DB0
     bool isTargetVisible(CUnit* unit, CUnit* target);														// 004E5E30
     u8 getRightClickActionOrder(CUnit* unit);															// 004E5EA0
@@ -306,8 +307,8 @@ namespace helper {
 
     // For updatePlacementStateForPlacementBox
     s32 canBuildOnTileLocation(CUnit* a1, s32 player, s32 x_tile, s32 y_tile, s32 unitType,
-    s32 placement_state_entry, s32 check_vision, s32 also_invisible, s32 without_vision);	        // 00473FB0
-    // For refreshScreen
+        s32 placement_state_entry, s32 check_vision, s32 also_invisible, s32 without_vision);	        // 00473FB0
+        // For refreshScreen
     s32 updatePlacementStateForPlacementBox_Func();                                                       // 0048DCE0
     s32 unk_buildingPlacementRelated(s32 a1, Point16* a2);                                              // 0048D7F0
     s32 initPlacementBoxPos(Point16* in_out);                                                             // 0048D660
@@ -665,7 +666,7 @@ namespace helper {
     s32 iterateUnitsAtLocationTargetProc(Box32* a1, s32(__fastcall* a2)(s32, s32), CUnit* a3);								// 004E8280
 
     // For writeBullets
-    /*	
+    /*
     void packBulletData(CBullet* a1, s32 a2); // 0048A9A0
     size_t _lockwrite(const void* a1, size_t a2, size_t a3, FILE* a4); // 00411931
     void* SMemAlloc(s32 a1, char* a2, s32 a3, s32 a4); // 0041006A

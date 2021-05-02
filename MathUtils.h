@@ -1,41 +1,46 @@
 #pragma once
 #include "logger.h"
 
-static struct MathUtils {
-	template<typename T>
-	static T clamp(T value, T min, T max);
+static struct MathUtils
+{
+    template<typename T>
+    static T clamp(T value, T min, T max);
 
-	template<typename T>
-	static f64 normalize(T value, T min, T max, bool doClamp = false);
+    template<typename T>
+    static f64 normalize(T value, T min, T max, bool doClamp = false);
 
-	template<typename T>
-	static T lerp(f64 fraction, T min, T max, bool doClamp = false);
+    template<typename T>
+    static T lerp(f64 fraction, T min, T max, bool doClamp = false);
 
-	template<typename sourceType, typename targetType>
-	static targetType map(sourceType value, sourceType sourceMin, sourceType sourceMax, targetType targetMin, targetType targetMax, bool doClamp = false);
+    template<typename sourceType, typename targetType>
+    static targetType map(sourceType value, sourceType sourceMin, sourceType sourceMax, targetType targetMin, targetType targetMax, bool doClamp = false);
 };
 
 template<typename T>
-T MathUtils::clamp(T value, T min, T max) {
-	if (min > max) return MathUtils::clamp(value, max, min); // With this inversion for misplaced min and max lerp works also for inverted min and max which should be possible
-	return value < min ? min : value > max ? max : value;
+T MathUtils::clamp(T value, T min, T max)
+{
+    if (min > max) return MathUtils::clamp(value, max, min); // With this inversion for misplaced min and max lerp works also for inverted min and max which should be possible
+    return value < min ? min : value > max ? max : value;
 }
 
 template<typename T>
-f64 MathUtils::normalize(T value, T min, T max, bool doClamp) {
-	f64 returnValue = ((f64)value - (f64)min) / ((f64)max - (f64)min);
-	if (doClamp) returnValue = MathUtils::clamp(returnValue, 0.0, 1.0);
-	return returnValue;
+f64 MathUtils::normalize(T value, T min, T max, bool doClamp)
+{
+    f64 returnValue = ((f64)value - (f64)min) / ((f64)max - (f64)min);
+    if (doClamp) returnValue = MathUtils::clamp(returnValue, 0.0, 1.0);
+    return returnValue;
 }
 
 template<typename T>
-T MathUtils::lerp(f64 fraction, T min, T max, bool doClamp) {
-	T returnValue = (fraction * (max - min)) + min;
-	if (doClamp) returnValue = MathUtils::clamp(returnValue, min, max);
-	return returnValue;
+T MathUtils::lerp(f64 fraction, T min, T max, bool doClamp)
+{
+    T returnValue = (fraction * (max - min)) + min;
+    if (doClamp) returnValue = MathUtils::clamp(returnValue, min, max);
+    return returnValue;
 }
 
 template<typename sourceType, typename targetType>
-targetType MathUtils::map(sourceType value, sourceType sourceMin, sourceType sourceMax, targetType targetMin, targetType targetMax, bool doClamp) {
-	return (targetType)MathUtils::lerp(MathUtils::normalize(value, sourceMin, sourceMax, doClamp), targetMin, targetMax);
+targetType MathUtils::map(sourceType value, sourceType sourceMin, sourceType sourceMax, targetType targetMin, targetType targetMax, bool doClamp)
+{
+    return (targetType)MathUtils::lerp(MathUtils::normalize(value, sourceMin, sourceMax, doClamp), targetMin, targetMax);
 }

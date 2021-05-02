@@ -1,10 +1,11 @@
 #pragma once
 #include "../../../SCBW/structures/CUnit.h"
 
-namespace hooks {
+namespace hooks
+{
 
-	void orders_Spell(CUnit* unit);	//00492850
+    void orders_Spell(CUnit* unit);	//00492850
 
-	void injectCastOrderHooks();
+    void injectCastOrderHooks();
 
 } //hooks

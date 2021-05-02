@@ -1,42 +1,46 @@
 #include "spellcasting.h"
 #include <hook_tools.h>
 
-namespace {
+namespace
+{
 
-	void __declspec(naked) AI_spellcasterWrapper() {
+    void __declspec(naked) AI_spellcasterWrapper()
+    {
 
-		static CUnit* unit;
-		static b32 isUnderAttack;
-		static b32 result;
+        static CUnit* unit;
+        static b32 isUnderAttack;
+        static b32 result;
 
-		__asm {
-			PUSH EBP
-			MOV EBP, ESP
-			MOV unit, EAX
-			MOV EAX, [EBP + 0x08]
-			MOV isUnderAttack, EAX
-			PUSHAD
-		}
+        __asm {
+            PUSH EBP
+            MOV EBP, ESP
+            MOV unit, EAX
+            MOV EAX, [EBP + 0x08]
+            MOV isUnderAttack, EAX
+            PUSHAD
+        }
 
-		if (AI::AI_spellcasterHook(unit, isUnderAttack != 0))
-			result = 1;
-		else
-			result = 0;
+        if (AI::AI_spellcasterHook(unit, isUnderAttack != 0))
+            result = 1;
+        else
+            result = 0;
 
-		__asm {
-			POPAD
-			MOV EAX, result
-			POP EBP
-			RETN 4
-		}
-	}
+        __asm {
+            POPAD
+            MOV EAX, result
+            POP EBP
+            RETN 4
+        }
+    }
 
 } //unnamed namespace
 
-namespace hooks {
+namespace hooks
+{
 
-	void injectSpellcasterAI() {
-		jmpPatch(AI_spellcasterWrapper, 0x004A13C0, 2);
-	}
+    void injectSpellcasterAI()
+    {
+        jmpPatch(AI_spellcasterWrapper, 0x004A13C0, 2);
+    }
 
 } //AI

@@ -17,16 +17,20 @@ struct CUnit;
 //From BWAPI/Source/BW/MovementFlags.h
 /** Definition of Flags specifying movement type - used in BW#Unit#movementFlags */
 
-namespace RelicType {
-    enum {
+namespace RelicType
+{
+    enum
+    {
         Weapon,
         Armor,
         Augment,
     };
 }
 
-namespace NewGameCommand {
-    enum {
+namespace NewGameCommand
+{
+    enum
+    {
         ShamanAction = 0x01,
         CyprianAction = 0x02,
         RelicAction = 0x03,
@@ -47,8 +51,10 @@ namespace NewGameCommand {
     };
 }
 
-namespace GptpId {
-    enum {
+namespace GptpId
+{
+    enum
+    {
         NoOpcode,
         AddCyprianSwitch,
         SetCyprianStatus,
@@ -83,8 +89,10 @@ namespace GptpId {
 }
 
 
-namespace AiseId {
-    enum {
+namespace AiseId
+{
+    enum
+    {
         NoOpcodeAise,
         SendCyprianValue,
         RecvEscalationValue,
@@ -120,8 +128,10 @@ namespace AiseId {
 
 
 
-namespace OverlayOffset {
-    enum {
+namespace OverlayOffset
+{
+    enum
+    {
         Orange = 0,
         Green = 25,
         Red = 50,
@@ -129,8 +139,10 @@ namespace OverlayOffset {
     };
 }
 
-namespace ValueId {
-    enum {
+namespace ValueId
+{
+    enum
+    {
         ArmorReduce,
         StarcallerSwitch,
         StarcallerCracking,
@@ -307,8 +319,10 @@ const u32 toggle_values[6] = {ValueId::ReverseThrust, ValueId::SublimeShepherd, 
 const u32 toggle_abilities[6] = {TechId::EMPShockwave, TechId::UnusedTech40, TechId::DisruptionWeb, TechId::TempoChange, TechId::NaniteField, TechId::Reconstitution};
 const u32 generictoggles = 6;
 
-namespace HydraFlags1 {
-    enum {
+namespace HydraFlags1
+{
+    enum
+    {
         BasiliskBurrowed = 1 << 0,
         VorvalingProc = 1 << 1,
         VorvalingEgg = 1 << 2,
@@ -320,8 +334,10 @@ namespace HydraFlags1 {
     };
 }
 
-namespace MovementFlags {
-    enum Enum {
+namespace MovementFlags
+{
+    enum Enum
+    {
 
         OrderedAtLeastOnce = 0x01, /**< @todo investigate more.
         * It get's to 0 after the first move-involved command - sometimes get's to 1 again
@@ -341,7 +357,8 @@ namespace MovementFlags {
 
 //Layout of the CUnit structure
 //Comments marked with ++ added by RavenWolf
-struct CUnitLayout {
+struct CUnitLayout
+{
     /*0x000*/ CLink<CUnit> link;
     /*0x008*/ s32       hitPoints;			  /// Hit points of unit, note that the displayed value in broodwar is ceil(healthPoints/256)
                                               /// Officially called "xLife"
@@ -450,35 +467,42 @@ struct CUnitLayout {
     /*0x0AA*/ u16       shieldGain;			  //< Shield gain on construction (from BWAPI, was unknown)
     /*0x0AC*/ u16       remainingBuildTime;   //Remaining bulding time; also used by powerups (flags) as the timer for returning to their original location.
     /*0x0AE*/ u16       previousHp;           // The HP of the unit before it changed (example Drone->Hatchery, the Drone's HP will be stored here)
-    /*0x0B0*/ struct {
+    /*0x0B0*/ struct
+    {
         u16 index : 11;             // 1-based index in the unit table.
         u16 unitId : 5;
     } loadedUnit[8];				  // officially called "uwTransport[8]"
-    /*0x0C0*/ union {
-        struct {
+    /*0x0C0*/ union
+    {
+        struct
+        {
             /*0x0C0*/     u8 spiderMineCount;
         } vulture;
 
-        struct {
+        struct
+        {
             /*0x0C0*/     CUnit* inHangarChild;      // First child inside the hangar
             /*0x0C4*/     CUnit* outHangarChild;     // First child outside the hangar
             /*0x0C8*/     u8      inHangarCount;      // Number inside the hangar
             /*0x0C9*/     u8      outHangarCount;     // Number outside the hangar
         } carrier; // also applies to reaver
 
-        struct {
+        struct
+        {
             /*0x0C0*/     CUnit* parent;
             /*0x0C4*/     CLink<CUnit> hangar_link;
             /*0x0CC*/     bool    isOutsideHangar;
         } interceptor;  // also applies to scarab
 
-        struct {
+        struct
+        {
             /*0x0C0*/     u32 _unknown_00;
             /*0x0C4*/     u32 _unknown_04;
             /*0x0C8*/     u32 flagSpawnFrame; // flag beacons, the frame that the flag will spawn
         } beacon;
 
-        struct {
+        struct
+        {
             /*0x0C0*/     CUnit* addon;
             /*0x0C4*/     u16     addonBuildType;
             /*0x0C6*/     u16     upgradeResearchTime;
@@ -489,8 +513,10 @@ struct CUnitLayout {
             /*0x0CC*/     u8      creepTimer;
             /*0x0CD*/     u8      upgradeLevel;
             /*0x0CE*/     u16     _padding_0E;
-            /*0x0D0*/     union {
-                struct {
+            /*0x0D0*/     union
+            {
+                struct
+                {
                     /*0x0D0*/         u16       resourceAmount;
                     /*0x0D2*/         u8        resourceIscript;
                     /*0x0D3*/         u8        gatherQueueCount;
@@ -501,7 +527,8 @@ struct CUnitLayout {
                 /*0x0D0*/       CUnit* nydusExit; /** connected nydus canal */
                 /*0x0D0*/       CUnit* ghostNukeMissile;	//confirmed to be CUnit* and not CSprite*
                 /*0x0D0*/       CSprite* pylonAura;
-                struct {
+                struct
+                {
                     /*0x0D0*/         CUnit* nuke;  // attached nuke
                     /*0x0D4*/         bool    isReady;
                 } silo;
@@ -510,7 +537,8 @@ struct CUnitLayout {
             };
         } building;
 
-        struct {
+        struct
+        {
             /*0x0C0*/     CUnit* powerup;
             /*0x0C4*/     Target  targetResource;
             /*0x0CC*/     u16     repairResourceLossTimer;
@@ -530,7 +558,8 @@ struct CUnitLayout {
     /*0x0E8*/ Point16   secondaryOrderPos;	// Unused according to BWAPI
     /*0x0EC*/ CUnit* currentBuildUnit;	// tied to secondary order according to BWAPI
     /*0x0F0*/ CLink<CUnit> burrow_link;
-    /*0x0F8*/ union {
+    /*0x0F8*/ union
+    {
         Target rally;
         CLink<CUnit> psi_link;
     };
@@ -574,7 +603,8 @@ struct CUnitLayout {
     /*0x134*/ void* pAI;
     /*0x138*/ u16       airStrength;
     /*0x13A*/ u16       groundStrength;
-    /*0x13C*/ struct {
+    /*0x13C*/ struct
+    {
         u32 left, right, top, bottom;
     } finderIndex;  // Ordering for unit boundries in unit finder for binary search
     /*0x14C*/ u8        repulseUnknown;

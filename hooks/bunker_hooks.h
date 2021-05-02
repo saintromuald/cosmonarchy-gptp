@@ -1,11 +1,12 @@
 #pragma once
 #include "../SCBW/structures/CUnit.h"
 
-namespace hooks {
+namespace hooks
+{
 
-	void unitAttackFromInsideBunkerHook(CUnit* unit);
-	void createBunkerAttackThingyHook(CUnit* unit);
+    void unitAttackFromInsideBunkerHook(CUnit* unit);
+    void createBunkerAttackThingyHook(CUnit* unit);
 
-	void injectBunkerHooks();
+    void injectBunkerHooks();
 
 } //hooks

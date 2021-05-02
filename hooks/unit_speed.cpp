@@ -10,250 +10,283 @@
 #include "MathUtils.h"
 #include "Utils/captivating_claws.h"
 
-namespace hooks {
+namespace hooks
+{
 
-	f64 getSpeedMultiplier(CUnit* unit) {
-		f64 speed = 1;
+    f64 getSpeedMultiplier(CUnit* unit)
+    {
+        f64 speed = 1;
 
-		// Set additives based on status effects and movespeed upgrades
-		s32 increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
-		s32 decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
+        // Set additives based on status effects and movespeed upgrades
+        s32 increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
+        s32 decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
 
-		if (decrease > 0) {
-			for (s32 i = 0; i < decrease; i++) {
-				speed *= 0.5;
-			}
-		}
+        if (decrease > 0)
+        {
+            for (s32 i = 0; i < decrease; i++)
+            {
+                speed *= 0.5;
+            }
+        }
 
-		// Mind Tyrant Malediction: Apply movespeed slow to non-organic targets
-		if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 1) {
-			speed *= 0.5;
-		}
+        // Mind Tyrant Malediction: Apply movespeed slow to non-organic targets
+        if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 1)
+        {
+            speed *= 0.5;
+        }
 
-		// Lobotomy Mine slow
-		if (scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 1) {
-			speed *= 0.5;
-		}
+        // Lobotomy Mine slow
+        if (scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 1)
+        {
+            speed *= 0.5;
+        }
 
-		// Vassal Terminal Surge: increase movespeed when any nearby Simulacrum dies
-		{
-			f64 stacks = MathUtils::clamp<f64>(scbw::get_generic_value(unit, ValueId::TerminalSurge), 0, 10) * 1.5;
-			if (stacks > 0) {
-				speed *= 1.0 + stacks * 0.05;
-			}
-		}
+        // Vassal Terminal Surge: increase movespeed when any nearby Simulacrum dies
+        {
+            f64 stacks = MathUtils::clamp<f64>(scbw::get_generic_value(unit, ValueId::TerminalSurge), 0, 10) * 1.5;
+            if (stacks > 0)
+            {
+                speed *= 1.0 + stacks * 0.05;
+            }
+        }
 
-		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby allies after kill
-		if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0) {
-			speed *= 1.25;
-		}
+        // Nathrokor Adrenal Frenzy: increase movespeed of all nearby allies after kill
+        if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0)
+        {
+            speed *= 1.25;
+        }
 
-		// Southpaw Knockout Drivers: reduces movement speed by 5% per stack
-		if (scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks) > 0) {
-			u32 knockoutValue = scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks);
-			speed *= 1 - 0.05 * knockoutValue;
-		}
+        // Southpaw Knockout Drivers: reduces movement speed by 5% per stack
+        if (scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks) > 0)
+        {
+            u32 knockoutValue = scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks);
+            speed *= 1 - 0.05 * knockoutValue;
+        }
 
-		// Vorvaling Captivating Claws: reduces movement speed by 25% per unique attacker
-		if (captivatingClawsGetTimer(unit) > 0) {
-			speed *= 1 - 0.25 * captivatingClawsGetStacks(unit);
-		}
+        // Vorvaling Captivating Claws: reduces movement speed by 25% per unique attacker
+        if (captivatingClawsGetTimer(unit) > 0)
+        {
+            speed *= 1 - 0.25 * captivatingClawsGetStacks(unit);
+        }
 
-		// Keskathalor Caustic Discharge: Speed Buff
-		if (scbw::get_generic_timer(unit, ValueId::CausticDischargeSpeed) > 0) {
-			speed *= 1.5;
-		}
+        // Keskathalor Caustic Discharge: Speed Buff
+        if (scbw::get_generic_timer(unit, ValueId::CausticDischargeSpeed) > 0)
+        {
+            speed *= 1.5;
+        }
 
-		// Swarming Omen ability: 125% movement speed when moving towards Zoryusthaleth
-		{
-			auto r = 10 * 32;
-			auto n = unitRangeCount(unit, CFlags::Ally | CFlags::FrontalArc, {UnitId::ZergZoryusthaleth});
-			scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
-				unit->position.x + r, unit->position.y + r);
-			bool accelerate = false;
-			for (s32 i = 0; i < unitsInFinder.getUnitCount(); i++) {
-				auto picked_unit = unitsInFinder.getUnit(i);
-				if (n(picked_unit)) {
-					if (scbw::get_generic_timer(picked_unit, ValueId::SwarmingOmenTimer) > 0) {
-						accelerate = true;
-						scbw::set_generic_timer(unit, ValueId::SwarmingOmenStatus, 25);
-						break;
-					}
-				}
-			}
-			if (accelerate) {
-				speed *= 1.25;
-			}
-		}
+        // Swarming Omen ability: 125% movement speed when moving towards Zoryusthaleth
+        {
+            auto r = 10 * 32;
+            auto n = unitRangeCount(unit, CFlags::Ally | CFlags::FrontalArc, {UnitId::ZergZoryusthaleth});
+            scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
+                unit->position.x + r, unit->position.y + r);
+            bool accelerate = false;
+            for (s32 i = 0; i < unitsInFinder.getUnitCount(); i++)
+            {
+                auto picked_unit = unitsInFinder.getUnit(i);
+                if (n(picked_unit))
+                {
+                    if (scbw::get_generic_timer(picked_unit, ValueId::SwarmingOmenTimer) > 0)
+                    {
+                        accelerate = true;
+                        scbw::set_generic_timer(unit, ValueId::SwarmingOmenStatus, 25);
+                        break;
+                    }
+                }
+            }
+            if (accelerate)
+            {
+                speed *= 1.25;
+            }
+        }
 
-		switch (unit->id) {
-			case UnitId::ZergUltrakor:
-			{
-				// Ultrakor Kaiser Rampage: gains 150% movespeed on kill for 1 second
-				if (scbw::get_generic_timer(unit, ValueId::KaiserRampage) > 0) {
-					speed *= 2;
-				}
-				break;
-			}
-			case UnitId::TerranWyvern:
-			{
-				// Wyvern Reverse Thrust ability: reduce movespeed
-				if (scbw::get_generic_rust_value(unit, ValueId::ReverseThrust) == 1) {
-					speed *= 0.5;
-				}
-				break;
-			}
-			case UnitId::ZergVorvaling:
-			{
-				// Vorvaling Adrenal Surge: gains f64 movespeed when moving towards enemies
-				if (unit->id == UnitId::ZergVorvaling) {
-					u32 range = unit->getSightRange(false) * 32;
-					scbw::UnitFinder unitFinder(
-						unit->getX() - range,
-						unit->getY() - range,
-						unit->getX() + range,
-						unit->getY() + range
-					);
-					unitFinder.forEach([&](CUnit* target) {
-						if (scbw::isAlliedTo(unit->playerId, target->playerId)
-							|| units_dat::BaseProperty[target->id] & UnitProperty::Flyer) {
-							return;
-						}
-						u16 angle = scbw::getAngle(unit->position.x, unit->position.y,
-							target->position.x, target->position.y);
-						u16 unit_angle = unit->velocityDirection1;
-						s32 arc = (f64)60 / 1.40625;
-						// 120 degrees
-						s32 delta = unit_angle - angle;
-						delta = abs((delta + 128) % 256 - 128);
-						if (delta <= arc) {
-							unit->_padding_0x132 |= 0x2;
-						}
-					});
-					if (unit->_padding_0x132 & 0x2) {
-						speed *= 2;
-						unit->_padding_0x132 &= ~0x2;
-					}
-				}
-				break;
-			}
-			case UnitId::TerranVulture:
-			{
-				// Vulture Ion Propulsion: reduce movespeed, gains hover-mover status
-				auto tile = scbw::getActiveTileAt(unit->getX(), unit->getY());
-				if (tile.isUnwalkable || !tile.isWalkable) {
-					if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::IonPropulsion)) {
-						speed *= 0.5;
-					}
-				}
-				break;
-			}
-			case UnitId::ProtossClarion:
-			{
-				// Clarion Harmony Drive: gains increased movement speed based on shields
-				f64 fraction = (f64)unit->shields / ((f64)units_dat::MaxShieldPoints[unit->id] * 256);
-				speed *= 1.0 + fraction;
-				break;
-			}
-			case UnitId::TerranBlackjack:
-			{
-				// Blackjack Wear and Tear: reduce movement speed based on missing health
-				const u32 health = unit->hitPoints / 256;
-				const u32 maxHealth = unit->getMaxHpInGame();
-				const f64 multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
-				speed *= multiplier;
-				break;
-			}
-			case UnitId::ProtossGolem:
-			{
-				// Golem Deathless Procession: gains increased movespeed based on missing shields
-				const u32 health = unit->shields / 256;
-				const u32 maxHealth = units_dat::MaxShieldPoints[unit->id];
-				const f64 multiplier = MathUtils::map(health, maxHealth, maxHealth - maxHealth, 1.0, 1.5, true);
-				speed *= multiplier;
-				break;
-			}
-			case UnitId::ProtossExemplar:
-			{
-				// Khaydarin Eclipse ability: slow Exemplar by 75%
-				if (scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch)) {
-					speed *= 0.25;
-				}
-				break;
-			}
-			// Hardcode ideal movement speeds
-			case UnitId::TerranCyprian:
-			case UnitId::TerranEidolon:
-			case UnitId::ProtossAmaranth:
-			case UnitId::ProtossCabalist:
-			case UnitId::ZergZoryusthaleth:
-			{
-				speed *= 1.2;
-				break;
-			}
-			case UnitId::ProtossZealot:
-			case UnitId::ProtossManifold:
-			{
-				speed *= 1.25;
-				break;
-			}
-			case UnitId::ZergHydralisk:
-			case UnitId::ProtossLegionnaire:
-			{
-				speed *= 1.5;
-				break;
-			}
-		}
+        switch (unit->id)
+        {
+            case UnitId::ZergUltrakor:
+            {
+                // Ultrakor Kaiser Rampage: gains 150% movespeed on kill for 1 second
+                if (scbw::get_generic_timer(unit, ValueId::KaiserRampage) > 0)
+                {
+                    speed *= 2;
+                }
+                break;
+            }
+            case UnitId::TerranWyvern:
+            {
+                // Wyvern Reverse Thrust ability: reduce movespeed
+                if (scbw::get_generic_rust_value(unit, ValueId::ReverseThrust) == 1)
+                {
+                    speed *= 0.5;
+                }
+                break;
+            }
+            case UnitId::ZergVorvaling:
+            {
+                // Vorvaling Adrenal Surge: gains f64 movespeed when moving towards enemies
+                if (unit->id == UnitId::ZergVorvaling)
+                {
+                    u32 range = unit->getSightRange(false) * 32;
+                    scbw::UnitFinder unitFinder(
+                        unit->getX() - range,
+                        unit->getY() - range,
+                        unit->getX() + range,
+                        unit->getY() + range
+                    );
+                    unitFinder.forEach([&](CUnit* target)
+                    {
+                        if (scbw::isAlliedTo(unit->playerId, target->playerId)
+                            || units_dat::BaseProperty[target->id] & UnitProperty::Flyer)
+                        {
+                            return;
+                        }
+                        u16 angle = scbw::getAngle(unit->position.x, unit->position.y,
+                            target->position.x, target->position.y);
+                        u16 unit_angle = unit->velocityDirection1;
+                        s32 arc = (f64)60 / 1.40625;
+                        // 120 degrees
+                        s32 delta = unit_angle - angle;
+                        delta = abs((delta + 128) % 256 - 128);
+                        if (delta <= arc)
+                        {
+                            unit->_padding_0x132 |= 0x2;
+                        }
+                    });
+                    if (unit->_padding_0x132 & 0x2)
+                    {
+                        speed *= 2;
+                        unit->_padding_0x132 &= ~0x2;
+                    }
+                }
+                break;
+            }
+            case UnitId::TerranVulture:
+            {
+                // Vulture Ion Propulsion: reduce movespeed, gains hover-mover status
+                auto tile = scbw::getActiveTileAt(unit->getX(), unit->getY());
+                if (tile.isUnwalkable || !tile.isWalkable)
+                {
+                    if (scbw::getUpgradeLevel(unit->playerId, UpgradeId::IonPropulsion))
+                    {
+                        speed *= 0.5;
+                    }
+                }
+                break;
+            }
+            case UnitId::ProtossClarion:
+            {
+                // Clarion Harmony Drive: gains increased movement speed based on shields
+                f64 fraction = (f64)unit->shields / ((f64)units_dat::MaxShieldPoints[unit->id] * 256);
+                speed *= 1.0 + fraction;
+                break;
+            }
+            case UnitId::TerranBlackjack:
+            {
+                // Blackjack Wear and Tear: reduce movement speed based on missing health
+                const u32 health = unit->hitPoints / 256;
+                const u32 maxHealth = unit->getMaxHpInGame();
+                const f64 multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
+                speed *= multiplier;
+                break;
+            }
+            case UnitId::ProtossGolem:
+            {
+                // Golem Deathless Procession: gains increased movespeed based on missing shields
+                const u32 health = unit->shields / 256;
+                const u32 maxHealth = units_dat::MaxShieldPoints[unit->id];
+                const f64 multiplier = MathUtils::map(health, maxHealth, maxHealth - maxHealth, 1.0, 1.5, true);
+                speed *= multiplier;
+                break;
+            }
+            case UnitId::ProtossExemplar:
+            {
+                // Khaydarin Eclipse ability: slow Exemplar by 75%
+                if (scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch))
+                {
+                    speed *= 0.25;
+                }
+                break;
+            }
+            // Hardcode ideal movement speeds
+            case UnitId::TerranCyprian:
+            case UnitId::TerranEidolon:
+            case UnitId::ProtossAmaranth:
+            case UnitId::ProtossCabalist:
+            case UnitId::ZergZoryusthaleth:
+            {
+                speed *= 1.2;
+                break;
+            }
+            case UnitId::ProtossZealot:
+            case UnitId::ProtossManifold:
+            {
+                speed *= 1.25;
+                break;
+            }
+            case UnitId::ZergHydralisk:
+            case UnitId::ProtossLegionnaire:
+            {
+                speed *= 1.5;
+                break;
+            }
+        }
 
-		return speed;
-	}
+        return speed;
+    }
 
-	/// Calculates the unit's modified movement speed, factoring in upgrades and status effects.
-	///
-	/// @return		The modified speed value.
-	/// Logically equivalent to GetModifiedUnitSpeed @ 0047B5F0  
-	u32 getModifiedUnitSpeedHook(CUnit* unit, u32 baseSpeed) {
-		s32 increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
+    /// Calculates the unit's modified movement speed, factoring in upgrades and status effects.
+    ///
+    /// @return		The modified speed value.
+    /// Logically equivalent to GetModifiedUnitSpeed @ 0047B5F0  
+    u32 getModifiedUnitSpeedHook(CUnit* unit, u32 baseSpeed)
+    {
+        s32 increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 
 
-		switch (unit->id) {
-			case UnitId::ProtossPanoptus:
-			{
-				// Leftover movement speed code
-				baseSpeed = 1707;
-				break;
-			}
-			default:
-			{
-				// Flingy-related code
-				if (increase > 0) {
-					for (s32 i = 0; i < increase; i++) {
-						baseSpeed *= 1.5;
-					}
-					if (baseSpeed < 853) {
-						baseSpeed = 853;
-					}
-				}
-			}
-		}
+        switch (unit->id)
+        {
+            case UnitId::ProtossPanoptus:
+            {
+                // Leftover movement speed code
+                baseSpeed = 1707;
+                break;
+            }
+            default:
+            {
+                // Flingy-related code
+                if (increase > 0)
+                {
+                    for (s32 i = 0; i < increase; i++)
+                    {
+                        baseSpeed *= 1.5;
+                    }
+                    if (baseSpeed < 853)
+                    {
+                        baseSpeed = 853;
+                    }
+                }
+            }
+        }
 
-		return baseSpeed * getSpeedMultiplier(unit);
-	}
+        return baseSpeed * getSpeedMultiplier(unit);
+    }
 
-	/// Calculates the unit's acceleration, factoring in upgrades and status effects.
-	///
-	/// @return		The modified acceleration value.
-	/// Logically equivalent to getModifiedUnitAcceleration @ 0047B8A0 
-	u32 getModifiedUnitAccelerationHook(CUnit* unit) {
-		return std::max(scbw::getFlingyData(FlingyDatEntries::Acceleration, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit), 1.0);
-	}
+    /// Calculates the unit's acceleration, factoring in upgrades and status effects.
+    ///
+    /// @return		The modified acceleration value.
+    /// Logically equivalent to getModifiedUnitAcceleration @ 0047B8A0 
+    u32 getModifiedUnitAccelerationHook(CUnit* unit)
+    {
+        return std::max(scbw::getFlingyData(FlingyDatEntries::Acceleration, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit), 1.0);
+    }
 
-	/// Calculates the unit's turn speed, factoring in upgrades and status effects.
-	///
-	/// @return		The modified turning speed value.
-	/// Logically equivalent to getModifiedUnitTurnRadius @ 0047B850 
-	u32 getModifiedUnitTurnSpeedHook(CUnit* unit) {
-		return std::max(scbw::getFlingyData(FlingyDatEntries::TurnRadius, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit), 1.0);
-	}
+    /// Calculates the unit's turn speed, factoring in upgrades and status effects.
+    ///
+    /// @return		The modified turning speed value.
+    /// Logically equivalent to getModifiedUnitTurnRadius @ 0047B850 
+    u32 getModifiedUnitTurnSpeedHook(CUnit* unit)
+    {
+        return std::max(scbw::getFlingyData(FlingyDatEntries::TurnRadius, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit), 1.0);
+    }
 
 } //hooks

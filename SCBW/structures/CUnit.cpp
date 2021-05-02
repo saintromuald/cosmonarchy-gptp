@@ -11,690 +11,780 @@
 
 extern const u32 Func_CanDetect = 0x00403430; //unitHasNoStatusAilments
 //Behavior can be modified with detector hook
-bool CUnit::canDetect() const {
-	assert(this);
-	static u32 result;
+bool CUnit::canDetect() const
+{
+    assert(this);
+    static u32 result;
 
-	__asm {
-		PUSHAD
-		MOV EAX, this
-		CALL Func_CanDetect
-		MOV result, EAX
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        MOV EAX, this
+        CALL Func_CanDetect
+        MOV result, EAX
+        POPAD
+    }
 
-	return result != 0;
+    return result != 0;
 }
 
-u32 CUnit::getCurrentHpInGame() const {
-	assert(this);
-	return (this->hitPoints + 255) >> 8;
+u32 CUnit::getCurrentHpInGame() const
+{
+    assert(this);
+    return (this->hitPoints + 255) >> 8;
 }
 
-u32 CUnit::getCurrentShieldsInGame() const {
-	assert(this);
-	return this->shields >> 8;
+u32 CUnit::getCurrentShieldsInGame() const
+{
+    assert(this);
+    return this->shields >> 8;
 }
 
 //Identical to function @ 0x004026D0
-u32 CUnit::getCurrentLifeInGame() const {
-	assert(this);
-	if (units_dat::ShieldsEnabled[this->id])
-		return getCurrentHpInGame() + getCurrentShieldsInGame();
-	else
-		return getCurrentHpInGame();
+u32 CUnit::getCurrentLifeInGame() const
+{
+    assert(this);
+    if (units_dat::ShieldsEnabled[this->id])
+        return getCurrentHpInGame() + getCurrentShieldsInGame();
+    else
+        return getCurrentHpInGame();
 };
-s32 CUnit::maxShields() const {
-	assert(this);
-	return units_dat::MaxShieldPoints[this->id];
+s32 CUnit::maxShields() const
+{
+    assert(this);
+    return units_dat::MaxShieldPoints[this->id];
 }
-bool CUnit::shieldsEnabled() const {
-	assert(this);
-	return units_dat::ShieldsEnabled[this->id];
+bool CUnit::shieldsEnabled() const
+{
+    assert(this);
+    return units_dat::ShieldsEnabled[this->id];
 }
-bool CUnit::shieldsEnabledRaw() const {
-	assert(this);
-	return units_dat::ShieldsEnabled[this->id];
+bool CUnit::shieldsEnabledRaw() const
+{
+    assert(this);
+    return units_dat::ShieldsEnabled[this->id];
 }
 
 //Identical to function @ 0x00475AD0
-u8 CUnit::getGroundWeapon() const {
-	assert(this);
-	if (this->id == UnitId::lurker && !(this->status & UnitStatus::Burrowed))
-		return WeaponId::None;
-	else
-		return units_dat::GroundWeapon[this->id];
+u8 CUnit::getGroundWeapon() const
+{
+    assert(this);
+    if (this->id == UnitId::lurker && !(this->status & UnitStatus::Burrowed))
+        return WeaponId::None;
+    else
+        return units_dat::GroundWeapon[this->id];
 }
 
-u8 CUnit::getAirWeapon() const {
-	assert(this);
-	return units_dat::AirWeapon[this->id];
+u8 CUnit::getAirWeapon() const
+{
+    assert(this);
+    return units_dat::AirWeapon[this->id];
 }
 
-u8 CUnit::getArmor() const {
-	assert(this);
-	return units_dat::ArmorAmount[this->id] + this->getArmorBonus();
+u8 CUnit::getArmor() const
+{
+    assert(this);
+    return units_dat::ArmorAmount[this->id] + this->getArmorBonus();
 }
 
 extern const u32 Func_GetArmorBonus = 0x00453FC0;
-u8 CUnit::getArmorBonus() const {
-	assert(this);
+u8 CUnit::getArmorBonus() const
+{
+    assert(this);
 
-	static u8 armorBonus;
-	__asm {
-		PUSHAD
-		MOV EAX, this
-		CALL Func_GetArmorBonus
-		MOV armorBonus, AL
-		POPAD
-	}
+    static u8 armorBonus;
+    __asm {
+        PUSHAD
+        MOV EAX, this
+        CALL Func_GetArmorBonus
+        MOV armorBonus, AL
+        POPAD
+    }
 
-	return armorBonus;
+    return armorBonus;
 }
 
 extern const u32 Func_GetMaxEnergy = 0x00491870;
-u16 CUnit::getMaxEnergy() const {
-	assert(this);
+u16 CUnit::getMaxEnergy() const
+{
+    assert(this);
 
-	static u16 result;
+    static u16 result;
 
-	__asm {
-		PUSHAD
-		MOV EAX, this
-		CALL Func_GetMaxEnergy
-		MOV result, AX
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        MOV EAX, this
+        CALL Func_GetMaxEnergy
+        MOV result, AX
+        POPAD
+    }
 
-	return result;
+    return result;
 }
 
 //Similar to function @ 0x00401400
-u32 CUnit::getMaxHpInGame() const {
-	assert(this);
+u32 CUnit::getMaxHpInGame() const
+{
+    assert(this);
 
-	u32 maxHp = units_dat::MaxHitPoints[this->id];
-	/*if (this->id == UnitId::firebat && scbw::getUpgradeLevel(playerId,UpgradeId::Heatshield)) {
-		maxHp += 15 * 256;
-	}*/
-	if (maxHp == 0) {
-		maxHp = this->getCurrentHpInGame();
-		if (maxHp == 0)
-			maxHp = 1;
-	} else
-		maxHp = maxHp >> 8;
-	return maxHp;
+    u32 maxHp = units_dat::MaxHitPoints[this->id];
+    /*if (this->id == UnitId::firebat && scbw::getUpgradeLevel(playerId,UpgradeId::Heatshield)) {
+        maxHp += 15 * 256;
+    }*/
+    if (maxHp == 0)
+    {
+        maxHp = this->getCurrentHpInGame();
+        if (maxHp == 0)
+            maxHp = 1;
+    }
+    else
+        maxHp = maxHp >> 8;
+    return maxHp;
 }
-u32 CUnit::getMaxHpRaw() const {
-	assert(this);
-	return units_dat::MaxHitPoints[this->id];
+u32 CUnit::getMaxHpRaw() const
+{
+    assert(this);
+    return units_dat::MaxHitPoints[this->id];
 }
-u8 CUnit::getSpellCountdown() const {
-	assert(this);
-	if (this->id == UnitId::TerranWyvern) {
-		return this->groundWeaponCooldown;
-	}
-	return this->spellCooldown;
+u8 CUnit::getSpellCountdown() const
+{
+    assert(this);
+    if (this->id == UnitId::TerranWyvern)
+    {
+        return this->groundWeaponCooldown;
+    }
+    return this->spellCooldown;
 }
 extern const u32 Func_GetMaxWeaponRange = 0x00475870;
-u32 CUnit::getMaxWeaponRange(u8 weaponId) const {
-	assert(this);
-	assert(weaponId < WEAPON_TYPE_COUNT);
+u32 CUnit::getMaxWeaponRange(u8 weaponId) const
+{
+    assert(this);
+    assert(weaponId < WEAPON_TYPE_COUNT);
 
-	static u32 maxWeaponRange;
+    static u32 maxWeaponRange;
 
-	__asm {
-		PUSHAD
-		MOV BL, weaponId
-		MOV EAX, this
-		CALL Func_GetMaxWeaponRange
-		MOV maxWeaponRange, EAX
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        MOV BL, weaponId
+        MOV EAX, this
+        CALL Func_GetMaxWeaponRange
+        MOV maxWeaponRange, EAX
+        POPAD
+    }
 
-	return maxWeaponRange;
+    return maxWeaponRange;
 }
 
-const char* CUnit::getName() const {
-	assert(this);
-	return getName(this->id);
+const char* CUnit::getName() const
+{
+    assert(this);
+    return getName(this->id);
 }
 #include "SCBW/stat_txt_spec.h"
 //Based on function @ 0x0047B090
-const char* CUnit::getName(u16 unitId) {
-	assert(unitId < UNIT_TYPE_COUNT);
+const char* CUnit::getName(u16 unitId)
+{
+    assert(unitId < UNIT_TYPE_COUNT);
 
-	if (units_dat::MapStringId[unitId])
-		return mapStringTbl->getString(units_dat::MapStringId[unitId]);
-	else
-		return statTxtTblNew->getString(unitId + 1);
+    if (units_dat::MapStringId[unitId])
+        return mapStringTbl->getString(units_dat::MapStringId[unitId]);
+    else
+        return statTxtTblNew->getString(unitId + 1);
 }
 
-RaceId::Enum CUnit::getRace() const {
-	assert(this);
-	return getRace(this->id);
+RaceId::Enum CUnit::getRace() const
+{
+    assert(this);
+    return getRace(this->id);
 }
 
 //Based on function at 0x0047B150
-RaceId::Enum CUnit::getRace(u16 unitId) {
-	assert(unitId < UNIT_TYPE_COUNT);
+RaceId::Enum CUnit::getRace(u16 unitId)
+{
+    assert(unitId < UNIT_TYPE_COUNT);
 
-	if (units_dat::GroupFlags[unitId].isZerg)
-		return RaceId::Zerg;
-	else if (units_dat::GroupFlags[unitId].isProtoss)
-		return RaceId::Protoss;
-	else if (units_dat::GroupFlags[unitId].isTerran)
-		return RaceId::Terran;
-	else
-		return RaceId::Neutral;
+    if (units_dat::GroupFlags[unitId].isZerg)
+        return RaceId::Zerg;
+    else if (units_dat::GroupFlags[unitId].isProtoss)
+        return RaceId::Protoss;
+    else if (units_dat::GroupFlags[unitId].isTerran)
+        return RaceId::Terran;
+    else
+        return RaceId::Neutral;
 }
 
 extern const u32 Func_GetSeekRange = 0x00476000;
-u8 CUnit::getSeekRange() const {
-	assert(this);
+u8 CUnit::getSeekRange() const
+{
+    assert(this);
 
-	static u8 seekRange;
+    static u8 seekRange;
 
-	__asm {
-		PUSHAD
-		MOV EDX, this
-		CALL Func_GetSeekRange
-		MOV seekRange, AL
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        MOV EDX, this
+        CALL Func_GetSeekRange
+        MOV seekRange, AL
+        POPAD
+    }
 
-	return seekRange;
+    return seekRange;
 }
 
 extern const u32 Func_GetSightRange = 0x004E5B40;
-u32 CUnit::getSightRange(bool isForSpellCasting) const {
-	assert(this);
+u32 CUnit::getSightRange(bool isForSpellCasting) const
+{
+    assert(this);
 
-	static u32 sightRange;
-	b32 ignoreStatusEffects = (isForSpellCasting ? 0 : 1);
+    static u32 sightRange;
+    b32 ignoreStatusEffects = (isForSpellCasting ? 0 : 1);
 
-	__asm {
-		PUSHAD
-		PUSH ignoreStatusEffects
-		MOV EDX, this
-		CALL Func_GetSightRange
-		MOV sightRange, EAX
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        PUSH ignoreStatusEffects
+        MOV EDX, this
+        CALL Func_GetSightRange
+        MOV sightRange, EAX
+        POPAD
+    }
 
-	return sightRange;
+    return sightRange;
 }
 
 //Similar to function Unit__HasEnergy @ 0x00491480
 //The original function returned 0 when got energy or code
-bool CUnit::hasEnergy(u32 energy) const {
+bool CUnit::hasEnergy(u32 energy) const
+{
 
-	if (
-		scbw::isCheatEnabled(CheatFlags::TheGathering) ||
-		this->energy >= energy
-		)
-		return true;
-	else
-		return false;
+    if (
+        scbw::isCheatEnabled(CheatFlags::TheGathering) ||
+        this->energy >= energy
+        )
+        return true;
+    else
+        return false;
 
 }
 
 //Identical to function Unit__SpendEnergy @ 0x00476180
-bool CUnit::hasWeapon() const {
-	assert(this);
+bool CUnit::hasWeapon() const
+{
+    assert(this);
 
-	if (this->getGroundWeapon() != WeaponId::None
-		|| this->getAirWeapon() != WeaponId::None)
-		return true;
+    if (this->getGroundWeapon() != WeaponId::None
+        || this->getAirWeapon() != WeaponId::None)
+        return true;
 
-	if (this->id == UnitId::carrier || this->id == UnitId::gantrithor) {
-		if ((this->carrier.inHangarCount + this->carrier.outHangarCount) > 0)
-			return true;
-	}
+    if (this->id == UnitId::carrier || this->id == UnitId::gantrithor)
+    {
+        if ((this->carrier.inHangarCount + this->carrier.outHangarCount) > 0)
+            return true;
+    }
 
-	if (this->id == UnitId::reaver || this->id == UnitId::warbringer) {
-		if (this->carrier.inHangarCount > 0)
-			return true;
-	}
+    if (this->id == UnitId::reaver || this->id == UnitId::warbringer)
+    {
+        if (this->carrier.inHangarCount > 0)
+            return true;
+    }
 
-	if (this->subunit) {
-		if (this->subunit->getGroundWeapon() != WeaponId::None
-			|| this->subunit->getAirWeapon() != WeaponId::None)
-			return true;
-	}
+    if (this->subunit)
+    {
+        if (this->subunit->getGroundWeapon() != WeaponId::None
+            || this->subunit->getAirWeapon() != WeaponId::None)
+            return true;
+    }
 
-	return false;
+    return false;
 }
 
 //Identical to function @ 0x004020B0
-bool CUnit::isFrozen() const {
+bool CUnit::isFrozen() const
+{
 
-	assert(this);
+    assert(this);
 
-	return
-		this->status & UnitStatus::DoodadStatesThing ||
-		this->lockdownTimer ||
-		this->stasisTimer ||
-		this->maelstromTimer;
+    return
+        this->status & UnitStatus::DoodadStatesThing ||
+        this->lockdownTimer ||
+        this->stasisTimer ||
+        this->maelstromTimer;
 
 }
 
 extern const u32 Func_IsRemorphingBuilding = 0x0045CD00;
-bool CUnit::isRemorphingBuilding() const {
-	static b32 result;
-	assert(this);
+bool CUnit::isRemorphingBuilding() const
+{
+    static b32 result;
+    assert(this);
 
-	__asm {
-		PUSHAD
-		MOV EAX, this
-		CALL Func_IsRemorphingBuilding
-		MOV result, EAX
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        MOV EAX, this
+        CALL Func_IsRemorphingBuilding
+        MOV result, EAX
+        POPAD
+    }
 
-	return result != 0;
+    return result != 0;
 }
 
 //Identical to function @ 0x00401D40
-bool CUnit::isSubunit() const {
-	return (this && units_dat::BaseProperty[this->id] & UnitProperty::Subunit);
+bool CUnit::isSubunit() const
+{
+    return (this && units_dat::BaseProperty[this->id] & UnitProperty::Subunit);
 }
 
 // Equivalent to function @ 0x0047B2E0 until you change .dat files.
-bool CUnit::isFactory() const {
-	return (this && units_dat::GroupFlags[this->id].isFactory);
+bool CUnit::isFactory() const
+{
+    return (this && units_dat::GroupFlags[this->id].isFactory);
 }
 
 //Identical to function @ 0x00401210
-bool CUnit::isValidCaster() const {
-	assert(this);
-	return units_dat::BaseProperty[this->id] & UnitProperty::Spellcaster
-		&& !(this->status & UnitStatus::IsHallucination);
+bool CUnit::isValidCaster() const
+{
+    assert(this);
+    return units_dat::BaseProperty[this->id] & UnitProperty::Spellcaster
+        && !(this->status & UnitStatus::IsHallucination);
 }
 
 //Identical to function @ 0x00401DC0
 //Returns:	0 - Unit has not reached destination
 //					1 - Unit has reached destination
 //					2 - Unit cannot move
-u32 CUnit::getMovableState() {
-	if (this->moveTarget.pt != this->sprite->position)
-		return 0;
-	else
-		if (!(this->status & UnitStatus::Unmovable))
-			return 1;
-		else
-			return 2;
+u32 CUnit::getMovableState()
+{
+    if (this->moveTarget.pt != this->sprite->position)
+        return 0;
+    else
+        if (!(this->status & UnitStatus::Unmovable))
+            return 1;
+        else
+            return 2;
 }
 
 //-------- Positions and dimensions --------//
 
-u16 CUnit::getX() const {
-	assert(this);
-	assert(this->sprite);
-	return this->sprite->position.x;
+u16 CUnit::getX() const
+{
+    assert(this);
+    assert(this->sprite);
+    return this->sprite->position.x;
 };
 
-u16 CUnit::getY() const {
-	assert(this);
-	assert(this->sprite);
-	return this->sprite->position.y;
+u16 CUnit::getY() const
+{
+    assert(this);
+    assert(this->sprite);
+    return this->sprite->position.y;
 };
 
-u16 CUnit::getTileX() const {
-	assert(this);
-	return this->getX() / 32;
+u16 CUnit::getTileX() const
+{
+    assert(this);
+    return this->getX() / 32;
 };
 
-u16 CUnit::getTileY() const {
-	assert(this);
-	return this->getY() / 32;
+u16 CUnit::getTileY() const
+{
+    assert(this);
+    return this->getY() / 32;
 };
 
-s16 CUnit::getLeft() const {
-	assert(this);
-	return this->getX() - units_dat::UnitBounds[this->id].left;
+s16 CUnit::getLeft() const
+{
+    assert(this);
+    return this->getX() - units_dat::UnitBounds[this->id].left;
 }
 
-s16 CUnit::getRight() const {
-	assert(this);
-	return this->getX() + units_dat::UnitBounds[this->id].right;
+s16 CUnit::getRight() const
+{
+    assert(this);
+    return this->getX() + units_dat::UnitBounds[this->id].right;
 }
 
-s16 CUnit::getTop() const {
-	assert(this);
-	return this->getY() - units_dat::UnitBounds[this->id].top;
+s16 CUnit::getTop() const
+{
+    assert(this);
+    return this->getY() - units_dat::UnitBounds[this->id].top;
 }
 
-s16 CUnit::getBottom() const {
-	assert(this);
-	return this->getY() + units_dat::UnitBounds[this->id].bottom;
+s16 CUnit::getBottom() const
+{
+    assert(this);
+    return this->getY() + units_dat::UnitBounds[this->id].bottom;
 }
 
 //-------- Modifying unit state --------//
 
 const u32 Func_SetUnitHp = 0x00467340;
-void CUnit::setHp(s32 hitPoints) {
-	assert(this);
+void CUnit::setHp(s32 hitPoints)
+{
+    assert(this);
 
-	__asm {
-		PUSHAD
-		MOV EAX, this
-		MOV ECX, hitPoints
-		CALL Func_SetUnitHp
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        MOV EAX, this
+        MOV ECX, hitPoints
+        CALL Func_SetUnitHp
+        POPAD
+    }
 }
 
-void CUnit::heal(s32 hitPoints, CUnit* source) {
-	assert(this);
-	if (this->hitPoints == this->getMaxHpRaw()) { // skip healing if max hp already
-		return;
-	}
+void CUnit::heal(s32 hitPoints, CUnit* source)
+{
+    assert(this);
+    if (this->hitPoints == this->getMaxHpRaw())
+    { // skip healing if max hp already
+        return;
+    }
 
-	// Cohort - Servile Vigor
-	if (id == UnitId::TerranCohort && this != source) {
-		hitPoints *= 2;
-	}
+    // Cohort - Servile Vigor
+    if (id == UnitId::TerranCohort && this != source)
+    {
+        hitPoints *= 2;
+    }
 
-	setHp(std::min((u32)(this->hitPoints) + (u32)(hitPoints), this->getMaxHpRaw()));
+    setHp(std::min((u32)(this->hitPoints) + (u32)(hitPoints), this->getMaxHpRaw()));
 
-	// If heals to full clear debuffs
-	if (this->hitPoints == this->getMaxHpRaw()) {
-		scbw::restoreFunc(this);
-	}
+    // If heals to full clear debuffs
+    if (this->hitPoints == this->getMaxHpRaw())
+    {
+        scbw::restoreFunc(this);
+    }
 }
 
-void CUnit::healShields(s32 shields, CUnit* source) {
-	assert(this);
-	if (this->shields == this->maxShields() * 256) { // skip healing if max shields already
-		return;
-	}
+void CUnit::healShields(s32 shields, CUnit* source)
+{
+    assert(this);
+    if (this->shields == this->maxShields() * 256)
+    { // skip healing if max shields already
+        return;
+    }
 
-	this->shields = std::min(this->shields + shields, this->maxShields() * 256);
+    this->shields = std::min(this->shields + shields, this->maxShields() * 256);
 
-	// If heals to full clear debuffs
-	if (this->shields == this->maxShields() * 256) {
-		scbw::restoreFunc(this);
-	}
+    // If heals to full clear debuffs
+    if (this->shields == this->maxShields() * 256)
+    {
+        scbw::restoreFunc(this);
+    }
 }
 
-void CUnit::healEnergy(s32 energy, CUnit* source) {
-	assert(this);
-	if (this->energy == helper::getUnitMaxEnergy(this) * 256) {
-		return;
-	}
-	this->energy = std::min(this->energy + energy, helper::getUnitMaxEnergy(this) * 256);
+void CUnit::healEnergy(s32 energy, CUnit* source)
+{
+    assert(this);
+    if (this->energy == helper::getUnitMaxEnergy(this) * 256)
+    {
+        return;
+    }
+    this->energy = std::min(this->energy + energy, helper::getUnitMaxEnergy(this) * 256);
 }
 
 const u32 Func_DoWeaponDamage = 0x00479930; // Note: hooked in hooks/weapons/weapon_damage files
-void CUnit::damageWith(u8 weaponId, s32 damage, CUnit* attacker, u8 attackingPlayer, s8 direction, u8 damageDivisor) {
-	assert(this);
-	assert(weaponId < WEAPON_TYPE_COUNT);
-//	assert(damageDivisor != 0);
+void CUnit::damageWith(u8 weaponId, s32 damage, CUnit* attacker, u8 attackingPlayer, s8 direction, u8 damageDivisor)
+{
+    assert(this);
+    assert(weaponId < WEAPON_TYPE_COUNT);
+    //	assert(damageDivisor != 0);
 
-	u32 weaponId_ = weaponId;
-	s32 attackingPlayer_ = attackingPlayer;
-	s32 direction_ = direction;
-	s32 damageDivisor_ = damageDivisor;
-	if (damage < 0) {
-		damage = weapons_dat::DamageAmount[weaponId] * 256;
-	}
+    u32 weaponId_ = weaponId;
+    s32 attackingPlayer_ = attackingPlayer;
+    s32 direction_ = direction;
+    s32 damageDivisor_ = damageDivisor;
+    if (damage < 0)
+    {
+        damage = weapons_dat::DamageAmount[weaponId] * 256;
+    }
 
-	__asm {
-		PUSHAD
-		MOV EDI, this
-		MOV EAX, damage
-		PUSH attackingPlayer_
-		PUSH attacker
-		PUSH direction_
-		PUSH damageDivisor_
-		PUSH weaponId_
-		CALL Func_DoWeaponDamage
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        MOV EDI, this
+        MOV EAX, damage
+        PUSH attackingPlayer_
+        PUSH attacker
+        PUSH direction_
+        PUSH damageDivisor_
+        PUSH weaponId_
+        CALL Func_DoWeaponDamage
+        POPAD
+    }
 }
-void CUnit::damageWithIgnoreFlatArmor(u8 weaponId, s32 damage, CUnit* attacker, u8 attackingPlayer, s8 direction, u8 damageDivisor) {
-	if (damage < 0) {
-		damage = weapons_dat::DamageAmount[weaponId] * 256;
-	}
+void CUnit::damageWithIgnoreFlatArmor(u8 weaponId, s32 damage, CUnit* attacker, u8 attackingPlayer, s8 direction, u8 damageDivisor)
+{
+    if (damage < 0)
+    {
+        damage = weapons_dat::DamageAmount[weaponId] * 256;
+    }
 
-	hooks::WeaponDamageData data = {
-			damage,
-			damage,
-			0,
-			weapons_dat::DamageType[weaponId],
-			damageDivisor,
-			weaponId,
-			direction,
-			this,
-			attacker,
-			attackingPlayer,
-			false,
-			true
-	};
+    hooks::WeaponDamageData data = {
+            damage,
+            damage,
+            0,
+            weapons_dat::DamageType[weaponId],
+            damageDivisor,
+            weaponId,
+            direction,
+            this,
+            attacker,
+            attackingPlayer,
+            false,
+            true
+    };
 
-	hooks::weaponDamage_root(data);
+    hooks::weaponDamage_root(data);
 }
 
 void CUnit::inflictDamage(s32 dmg, CUnit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, s32 direction,
-	bool ignoreDmg128Overflow) {
-	auto damage = dmg;
-	s32 shieldReduceAmount = 0;
-	if (scbw::get_generic_value(this, ValueId::GodsMadeFleshTimer) > 0) {
-		return;
-	}
-	if (units_dat::ShieldsEnabled[this->id]) {
-		shieldReduceAmount = std::min(damage, this->shields);
-		damage -= shieldReduceAmount;
-	}
-	if (shieldReduceAmount == 0 && damage < 128 && !ignoreDmg128Overflow) {
-		damage = 128;
-	}
-	if (shieldReduceAmount != 0) {
-		this->shields -= shieldReduceAmount;
-	}
-	if (shield_overlay && units_dat::ShieldsEnabled[this->id] && this->shields != 0) {
-		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayShieldPtr,
-			this->sprite->mainGraphic->id));
+    bool ignoreDmg128Overflow)
+{
+    auto damage = dmg;
+    s32 shieldReduceAmount = 0;
+    if (scbw::get_generic_value(this, ValueId::GodsMadeFleshTimer) > 0)
+    {
+        return;
+    }
+    if (units_dat::ShieldsEnabled[this->id])
+    {
+        shieldReduceAmount = std::min(damage, this->shields);
+        damage -= shieldReduceAmount;
+    }
+    if (shieldReduceAmount == 0 && damage < 128 && !ignoreDmg128Overflow)
+    {
+        damage = 128;
+    }
+    if (shieldReduceAmount != 0)
+    {
+        this->shields -= shieldReduceAmount;
+    }
+    if (shield_overlay && units_dat::ShieldsEnabled[this->id] && this->shields != 0)
+    {
+        const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayShieldPtr,
+            this->sprite->mainGraphic->id));
 
-		u32 frameAngle = (direction - 124) / 8 % 32;
-		Point8 offset = shield_lo->getOffset(this->sprite->mainGraphic->direction, frameAngle);
-		this->sprite->createOverlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
-	}
-	damageHp(damage, attacker, attackingPlayer, notify);
+        u32 frameAngle = (direction - 124) / 8 % 32;
+        Point8 offset = shield_lo->getOffset(this->sprite->mainGraphic->direction, frameAngle);
+        this->sprite->createOverlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
+    }
+    damageHp(damage, attacker, attackingPlayer, notify);
 }
 
 const u32 Func_DamageUnitHp = 0x004797B0;
-void CUnit::damageHp(s32 damage, CUnit* attacker, s32 attackingPlayer, bool notify) {
-	assert(this);
+void CUnit::damageHp(s32 damage, CUnit* attacker, s32 attackingPlayer, bool notify)
+{
+    assert(this);
 
-	// Logging
-	auto targetId = this->id;
-	auto targetPlayerId = this->playerId;
-	if (attacker != nullptr) {
-		GPTP::logger << "damageHp(damage (" << damage / 256 << "), attackerId (" << attacker->id << "), attackingPlayerId (" << attackingPlayer << "), notify (" << notify
-			<< "), target (" << targetId << "), targetPlayerId (" << targetPlayerId << "))" << std::endl;
-	}
+    // Logging
+    auto targetId = this->id;
+    auto targetPlayerId = this->playerId;
+    if (attacker != nullptr)
+    {
+        GPTP::logger << "damageHp(damage (" << damage / 256 << "), attackerId (" << attacker->id << "), attackingPlayerId (" << attackingPlayer << "), notify (" << notify
+            << "), target (" << targetId << "), targetPlayerId (" << targetPlayerId << "))" << std::endl;
+    }
 
-	u32 notify_ = notify ? 1 : 0;
+    u32 notify_ = notify ? 1 : 0;
 
-	__asm {
-		PUSHAD
-		PUSH notify_
-		PUSH attackingPlayer
-		PUSH attacker
-		MOV EAX, damage
-		MOV ECX, this
-		CALL Func_DamageUnitHp
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        PUSH notify_
+        PUSH attackingPlayer
+        PUSH attacker
+        MOV EAX, damage
+        MOV ECX, this
+        CALL Func_DamageUnitHp
+        POPAD
+    }
 }
 
 //Logically equivalent to function @ 0x00454ED0
-void CUnit::reduceDefensiveMatrixHp(s32 amount) {
+void CUnit::reduceDefensiveMatrixHp(s32 amount)
+{
 
-	assert(this);
+    assert(this);
 
-	if (this->defensiveMatrixHp > amount)
-		this->defensiveMatrixHp -= amount;
-	else {
+    if (this->defensiveMatrixHp > amount)
+        this->defensiveMatrixHp -= amount;
+    else
+    {
 
-		CImage* current_image;
+        CImage* current_image;
 
-		this->defensiveMatrixHp = 0;
-		this->defensiveMatrixTimer = 0;
+        this->defensiveMatrixHp = 0;
+        this->defensiveMatrixTimer = 0;
 
-		this->removeOverlay(ImageId::DefensiveMatrixFront_Small,
-			ImageId::DefensiveMatrixFront_Large);
+        this->removeOverlay(ImageId::DefensiveMatrixFront_Small,
+            ImageId::DefensiveMatrixFront_Large);
 
-		current_image = this->sprite->images.head;
+        current_image = this->sprite->images.head;
 
-		while (current_image != nullptr) {
+        while (current_image != nullptr)
+        {
 
-			if (
-				current_image->id < ImageId::DefensiveMatrixBack_Small ||
-				current_image->id > ImageId::DefensiveMatrixBack_Large
-				)
-				current_image = current_image->link.next;
-			else {
-				current_image->free();
-				current_image = nullptr;	//to exit loop
-			}
+            if (
+                current_image->id < ImageId::DefensiveMatrixBack_Small ||
+                current_image->id > ImageId::DefensiveMatrixBack_Large
+                )
+                current_image = current_image->link.next;
+            else
+            {
+                current_image->free();
+                current_image = nullptr;	//to exit loop
+            }
 
-		}
+        }
 
-	}
+    }
 
-	if (this->defensiveMatrixTimer != 0 && !(this->status & UnitStatus::Burrowed)) {
-		CUnit* unit = this->subunit ? this->subunit : this;
-		//getUnitOverlayAdjustment code was hardcoded into function in original code)
-		unit->sprite->createTopOverlay(scbw::getUnitOverlayAdjustment(unit) + ImageId::DefensiveMatrixHit_Small);
-	}
+    if (this->defensiveMatrixTimer != 0 && !(this->status & UnitStatus::Burrowed))
+    {
+        CUnit* unit = this->subunit ? this->subunit : this;
+        //getUnitOverlayAdjustment code was hardcoded into function in original code)
+        unit->sprite->createTopOverlay(scbw::getUnitOverlayAdjustment(unit) + ImageId::DefensiveMatrixHit_Small);
+    }
 
 }
 
 const u32 Func_RemoveUnit = 0x00475710; //AKA orders_SelfDestructing()
-void CUnit::remove() {
+void CUnit::remove()
+{
 
-	assert(this);
+    assert(this);
 
-	__asm {
-		PUSHAD
-		MOV EAX, this
-		CALL Func_RemoveUnit
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        MOV EAX, this
+        CALL Func_RemoveUnit
+        POPAD
+    }
 
 }
 
 const u32 Func_RemoveLockdown = 0x00454D90;
-void CUnit::removeLockdown() {
+void CUnit::removeLockdown()
+{
 
-	assert(this);
+    assert(this);
 
-	__asm {
-		PUSHAD
-		MOV ESI, this
-		CALL Func_RemoveLockdown
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        MOV ESI, this
+        CALL Func_RemoveLockdown
+        POPAD
+    }
 
 }
 
 const u32 Func_RemoveMaelstrom = 0x00454D20;
-void CUnit::removeMaelstrom() {
+void CUnit::removeMaelstrom()
+{
 
-	assert(this);
+    assert(this);
 
-	__asm {
-		PUSHAD
-		MOV ESI, this
-		CALL Func_RemoveMaelstrom
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        MOV ESI, this
+        CALL Func_RemoveMaelstrom
+        POPAD
+    }
 
 }
 
 const u32 Func_RemoveStasisField = 0x004F62D0;
-void CUnit::removeStasisField() {
+void CUnit::removeStasisField()
+{
 
-	assert(this);
+    assert(this);
 
-	__asm {
-		PUSHAD
-		MOV ESI, this
-		CALL Func_RemoveStasisField
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        MOV ESI, this
+        CALL Func_RemoveStasisField
+        POPAD
+    }
 
 }
 
 const u32 Func_RemoveAcidSpores = 0x004F4160;
-void CUnit::removeAcidSpores() {
+void CUnit::removeAcidSpores()
+{
 
-	assert(this);
+    assert(this);
 
-	__asm {
-		PUSHAD
-		MOV EDX, this
-		CALL Func_RemoveAcidSpores
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        MOV EDX, this
+        CALL Func_RemoveAcidSpores
+        POPAD
+    }
 
 }
 
 ///Identical to Unit__SpendEnergy @ 0x00491460
 ///May underflow if alone
-void CUnit::spendUnitEnergy(u32 energySpent) {
-	if (!(*CHEAT_STATE & CheatFlags::TheGathering)) {
-		if (this->energy > energySpent) {
-			this->energy -= energySpent;
-		} else {
-			this->energy = 0;
-		}
-	}
-	if (scbw::get_generic_timer(this, ValueId::EntropyGauntlets) > 1) {													// TODO: fix entropy gauntlets bug
-		this->inflictDamage(energySpent, scbw::get_generic_unit(this, ValueId::DecaySavant), -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
-	}
+void CUnit::spendUnitEnergy(u32 energySpent)
+{
+    if (!(*CHEAT_STATE & CheatFlags::TheGathering))
+    {
+        if (this->energy > energySpent)
+        {
+            this->energy -= energySpent;
+        }
+        else
+        {
+            this->energy = 0;
+        }
+    }
+    if (scbw::get_generic_timer(this, ValueId::EntropyGauntlets) > 1)
+    {													// TODO: fix entropy gauntlets bug
+        this->inflictDamage(energySpent, scbw::get_generic_unit(this, ValueId::DecaySavant), -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
+    }
 }
-void CUnit::addUnitEnergy(u32 energy) {
-	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, this->getMaxEnergy());
+void CUnit::addUnitEnergy(u32 energy)
+{
+    this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, this->getMaxEnergy());
 }
-void CUnit::addUnitEnergy(u32 energy, u32 energyMax) {
-	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, energyMax);
+void CUnit::addUnitEnergy(u32 energy, u32 energyMax)
+{
+    this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, energyMax);
 }
 
 // Identical to getTotalHitPointsPlusShields @ 00402710
-s32 CUnit::getTotalHitPointsPlusShields() {
-	assert(this);
-	s32 id = this->id;
-	s32 shields = 0;
-	s32 hp = units_dat::MaxHitPoints[id] >> 8;
-	if (units_dat::ShieldsEnabled[id]) {
-		shields = units_dat::MaxShieldPoints[id];
-	}
-	if (!hp) {
-		hp = (this->hitPoints + 255) >> 8;
-		if (!hp) {
-			hp = 1;
-		}
-	}
-	return shields + hp;
+s32 CUnit::getTotalHitPointsPlusShields()
+{
+    assert(this);
+    s32 id = this->id;
+    s32 shields = 0;
+    s32 hp = units_dat::MaxHitPoints[id] >> 8;
+    if (units_dat::ShieldsEnabled[id])
+    {
+        shields = units_dat::MaxShieldPoints[id];
+    }
+    if (!hp)
+    {
+        hp = (this->hitPoints + 255) >> 8;
+        if (!hp)
+        {
+            hp = 1;
+        }
+    }
+    return shields + hp;
 }
 
 // Identical to isAIControllerNotABuilding @ 004381D0
-s32 CUnit::isUnitAINonBuilding() {
-	assert(this);
-	UnitAi* ai = (UnitAi*)this->pAI;
-	MilitaryAi* mai = (MilitaryAi*)ai;
-	s32 result = 1;
-	if (!ai
-		|| ai->type != 4
-		|| mai->parent != this
-		|| units_dat::BaseProperty[this->id] & UnitProperty::Building) {
-		result = 0;
-	}
-	return result;
+s32 CUnit::isUnitAINonBuilding()
+{
+    assert(this);
+    UnitAi* ai = (UnitAi*)this->pAI;
+    MilitaryAi* mai = (MilitaryAi*)ai;
+    s32 result = 1;
+    if (!ai
+        || ai->type != 4
+        || mai->parent != this
+        || units_dat::BaseProperty[this->id] & UnitProperty::Building)
+    {
+        result = 0;
+    }
+    return result;
 }
 
 //-------- Unit orders --------//
@@ -703,525 +793,579 @@ s32 CUnit::isUnitAINonBuilding() {
 //ESI = this
 //EAX = target
 //[ebp+08] = orderId
-void CUnit::orderTo(u8 orderId, CUnit* target) {
-	assert(this);
+void CUnit::orderTo(u8 orderId, CUnit* target)
+{
+    assert(this);
 
-	this->userActionFlags |= 0x1;
-	if (target)
-		this->order(orderId, target->getX(), target->getY(), target, UnitId::None, true);
-	else
-		this->order(orderId, 0, 0, target, UnitId::None, true);
+    this->userActionFlags |= 0x1;
+    if (target)
+        this->order(orderId, target->getX(), target->getY(), target, UnitId::None, true);
+    else
+        this->order(orderId, 0, 0, target, UnitId::None, true);
 
-	prepareForNextOrder(this);
+    prepareForNextOrder(this);
 }
 
 //Logically equivalent to function @ 0x00475260
-void CUnit::orderTo(u8 orderId, u16 x, u16 y) {
-	assert(this);
+void CUnit::orderTo(u8 orderId, u16 x, u16 y)
+{
+    assert(this);
 
-	this->userActionFlags |= 0x1;
-	this->order(orderId, x, y, nullptr, UnitId::None, true);
-	prepareForNextOrder(this);
+    this->userActionFlags |= 0x1;
+    this->order(orderId, x, y, nullptr, UnitId::None, true);
+    prepareForNextOrder(this);
 }
 
 //Logically equivalent to function orderComputer_cl @ 0x00475310
 //used in hooks so not doing assert, mind it if used in mods
-void CUnit::orderComputerCL(u8 orderId) {
-	this->userActionFlags |= 1;
-	this->order(orderId, 0, 0, nullptr, UnitId::None, true);
-	prepareForNextOrder(this);
+void CUnit::orderComputerCL(u8 orderId)
+{
+    this->userActionFlags |= 1;
+    this->order(orderId, 0, 0, nullptr, UnitId::None, true);
+    prepareForNextOrder(this);
 }
 
 //Equivalent to 00474D60 __order function
-void CUnit::orderSimple(u8 orderId, bool stopPreviousOrders) {
-	this->order(orderId, 0, 0, nullptr, UnitId::None, stopPreviousOrders);
+void CUnit::orderSimple(u8 orderId, bool stopPreviousOrders)
+{
+    this->order(orderId, 0, 0, nullptr, UnitId::None, stopPreviousOrders);
 }
 
 //Equivalent to 00474D10 issueQueuedOrderTarget function
-void CUnit::issueQueuedOrderTarget(u8 orderId, CUnit* target, bool stopPreviousOrders) {
-	if (target == nullptr)
-		this->order(orderId, 0, 0, nullptr, UnitId::None, stopPreviousOrders);
-	else
-		this->order(orderId, target->sprite->position.x, target->sprite->position.y, target, UnitId::None, stopPreviousOrders);
+void CUnit::issueQueuedOrderTarget(u8 orderId, CUnit* target, bool stopPreviousOrders)
+{
+    if (target == nullptr)
+        this->order(orderId, 0, 0, nullptr, UnitId::None, stopPreviousOrders);
+    else
+        this->order(orderId, target->sprite->position.x, target->sprite->position.y, target, UnitId::None, stopPreviousOrders);
 }
 
 //Logically equivalent to function toIdle @ 0x004753A0
-void CUnit::orderToIdle() {
+void CUnit::orderToIdle()
+{
 
-	assert(this);
+    assert(this);
 
-	if (this->orderQueueHead) {
-		this->userActionFlags |= 1;
-		prepareForNextOrder(this);
-	} else {
-		if (this->pAI)
-			this->orderTo(OrderId::ComputerAI);
-		else
-			this->orderTo(units_dat::ReturnToIdleOrder[this->id]);
-	}
+    if (this->orderQueueHead)
+    {
+        this->userActionFlags |= 1;
+        prepareForNextOrder(this);
+    }
+    else
+    {
+        if (this->pAI)
+            this->orderTo(OrderId::ComputerAI);
+        else
+            this->orderTo(units_dat::ReturnToIdleOrder[this->id]);
+    }
 
 }
 
 const u32 Func_Order = 0x00474810;
-void CUnit::order(u8 orderId, u16 x, u16 y, CUnit* target, u16 targetUnitId, bool stopPreviousOrders) {
-	assert(this);
-	static Point16 pos;
-	static u32 targetUnitId_;
-	pos.x = x, pos.y = y;
-	targetUnitId_ = targetUnitId;
+void CUnit::order(u8 orderId, u16 x, u16 y, CUnit* target, u16 targetUnitId, bool stopPreviousOrders)
+{
+    assert(this);
+    static Point16 pos;
+    static u32 targetUnitId_;
+    pos.x = x, pos.y = y;
+    targetUnitId_ = targetUnitId;
 
-	__asm {
-		PUSHAD
-		PUSH targetUnitId_
-		PUSH target
-		PUSH pos
-		MOVZX EAX, stopPreviousOrders
-		MOV CL, orderId
-		MOV EDX, this
-		CALL Func_Order
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        PUSH targetUnitId_
+        PUSH target
+        PUSH pos
+        MOVZX EAX, stopPreviousOrders
+        MOV CL, orderId
+        MOV EDX, this
+        CALL Func_Order
+        POPAD
+    }
 }
 
 const u32 Func_PerformAnotherOrder = 0x004745F0;
-void CUnit::performAnotherOrder(u8 orderId, s16 x, s16 y, CUnit* target, u16 targetUnitId, u32 unk) {
+void CUnit::performAnotherOrder(u8 orderId, s16 x, s16 y, CUnit* target, u16 targetUnitId, u32 unk)
+{
 
-	static Point16 pos;
-	pos.x = x; pos.y = y;
+    static Point16 pos;
+    pos.x = x; pos.y = y;
 
-	__asm {
-		PUSHAD
-		PUSH target
-		PUSH pos
-		MOV BL, orderId
-		MOVZX EDX, targetUnitId
-		MOV ESI, this
-		MOV EDI, unk
-		CALL Func_PerformAnotherOrder
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        PUSH target
+        PUSH pos
+        MOV BL, orderId
+        MOVZX EDX, targetUnitId
+        MOV ESI, this
+        MOV EDI, unk
+        CALL Func_PerformAnotherOrder
+        POPAD
+    }
 
 }
 
 //Identical to @ 0x004743D0
-void CUnit::setSecondaryOrder(u8 orderId) {
-	assert(this);
-	if (this->secondaryOrderId == orderId)
-		return;
-	this->secondaryOrderId = orderId;
-	this->secondaryOrderPos.x = 0;
-	this->secondaryOrderPos.y = 0;
-	this->currentBuildUnit = nullptr;
-	this->secondaryOrderState = 0;
+void CUnit::setSecondaryOrder(u8 orderId)
+{
+    assert(this);
+    if (this->secondaryOrderId == orderId)
+        return;
+    this->secondaryOrderId = orderId;
+    this->secondaryOrderPos.x = 0;
+    this->secondaryOrderPos.y = 0;
+    this->currentBuildUnit = nullptr;
+    this->secondaryOrderState = 0;
 }
 
 //-------- Graphics and animations --------//
 
 //Similar to function @ 0x004E5C90
-CImage* CUnit::getOverlay(u16 imageId) const {
-	assert(this);
+CImage* CUnit::getOverlay(u16 imageId) const
+{
+    assert(this);
 
-	CImage* image = this->sprite->getOverlay(imageId);
-	if (!image && this->subunit)
-		image = this->subunit->sprite->getOverlay(imageId);
+    CImage* image = this->sprite->getOverlay(imageId);
+    if (!image && this->subunit)
+        image = this->subunit->sprite->getOverlay(imageId);
 
-	return image;
+    return image;
 }
 
-void CUnit::playIscriptAnim(IscriptAnimation::Enum animation) {
-	assert(this);
-	this->sprite->playIscriptAnim(animation);
+void CUnit::playIscriptAnim(IscriptAnimation::Enum animation)
+{
+    assert(this);
+    this->sprite->playIscriptAnim(animation);
 }
 
-void CUnit::removeOverlay(u32 imageIdStart, u32 imageIdEnd) {
-	assert(this);
+void CUnit::removeOverlay(u32 imageIdStart, u32 imageIdEnd)
+{
+    assert(this);
 
-	this->sprite->removeOverlay(imageIdStart, imageIdEnd);
-	if (this->subunit)
-		this->subunit->sprite->removeOverlay(imageIdStart, imageIdEnd);
+    this->sprite->removeOverlay(imageIdStart, imageIdEnd);
+    if (this->subunit)
+        this->subunit->sprite->removeOverlay(imageIdStart, imageIdEnd);
 }
 
-void CUnit::removeOverlay(u32 imageId) {
-	assert(this);
+void CUnit::removeOverlay(u32 imageId)
+{
+    assert(this);
 
-	this->sprite->removeOverlay(imageId);
-	if (this->subunit)
-		this->subunit->sprite->removeOverlay(imageId);
+    this->sprite->removeOverlay(imageId);
+    if (this->subunit)
+        this->subunit->sprite->removeOverlay(imageId);
 }
 
 // ----------------------------------------------------------------------------//
 // Return the proper ColorId to use an unit color with graphics function
 // ----------------------------------------------------------------------------//
 
-graphics::ColorId CUnit::getFactionColor() {
-	assert(this);
-	return getFactionColor(this);
+graphics::ColorId CUnit::getFactionColor()
+{
+    assert(this);
+    return getFactionColor(this);
 }
 
-graphics::ColorId CUnit::getFactionColor(CUnit* unit) {
+graphics::ColorId CUnit::getFactionColor(CUnit* unit)
+{
 
-	//store a playerId until the end where it will properly store a ColorId
-	graphics::ColorId return_value;
+    //store a playerId until the end where it will properly store a ColorId
+    graphics::ColorId return_value;
 
-	if (unit != nullptr) {
+    if (unit != nullptr)
+    {
 
-		if (unit->sprite != nullptr)
-			// note: using the sprite playerId to preserve recruitable units color
-			return_value = unit->sprite->playerId;
-		else
-			// note: using player color for spriteless units (if that exist)
-			return_value = unit->playerId;
+        if (unit->sprite != nullptr)
+            // note: using the sprite playerId to preserve recruitable units color
+            return_value = unit->sprite->playerId;
+        else
+            // note: using player color for spriteless units (if that exist)
+            return_value = unit->playerId;
 
-		//for normal players, apply colors switching
-		if (unit->playerId < PLAYABLE_PLAYER_COUNT) {
+        //for normal players, apply colors switching
+        if (unit->playerId < PLAYABLE_PLAYER_COUNT)
+        {
 
-			// get the proper playerId in multiplayer game (don't break campaigns/UMS)
-			return_value = factionsColorsOrdering[return_value];
+            // get the proper playerId in multiplayer game (don't break campaigns/UMS)
+            return_value = factionsColorsOrdering[return_value];
 
-			//fix BROWN to GREEN color swap in Desert map
-			if (*CURRENT_TILESET == TilesetType::Desert && return_value == 5)
-				return_value = 8;
+            //fix BROWN to GREEN color swap in Desert map
+            if (*CURRENT_TILESET == TilesetType::Desert && return_value == 5)
+                return_value = 8;
 
-			//fix WHITE to GREEN color swap in Ice map
-			if (*CURRENT_TILESET == TilesetType::Ice && return_value == 6)
-				return_value = 8;
+            //fix WHITE to GREEN color swap in Ice map
+            if (*CURRENT_TILESET == TilesetType::Ice && return_value == 6)
+                return_value = 8;
 
-		}
+        }
 
-		if (return_value < PLAYER_COUNT)
-			return_value = graphics::standardColors[return_value];
-		else
-			return_value = graphics::BLACK; // will return 0/black if abnormal playerId
+        if (return_value < PLAYER_COUNT)
+            return_value = graphics::standardColors[return_value];
+        else
+            return_value = graphics::BLACK; // will return 0/black if abnormal playerId
 
-	} else
-		return_value = graphics::BLACK; // will return 0/black if null pointer is the argument
+    }
+    else
+        return_value = graphics::BLACK; // will return 0/black if null pointer is the argument
 
-	return return_value;
+    return return_value;
 
 }
 
-graphics::ColorId CUnit::getColor() {
-	assert(this);
-	return getColor(this);
+graphics::ColorId CUnit::getColor()
+{
+    assert(this);
+    return getColor(this);
 }
 
-graphics::ColorId CUnit::getColor(CUnit* unit) {
+graphics::ColorId CUnit::getColor(CUnit* unit)
+{
 
-	//getColourID internal function
-	const u32 Func_getColourID = 0x0049B0E0;
+    //getColourID internal function
+    const u32 Func_getColourID = 0x0049B0E0;
 
-	graphics::ColorId return_value;
+    graphics::ColorId return_value;
 
-	if (unit != nullptr) {
+    if (unit != nullptr)
+    {
 
-		if (unit->sprite != nullptr)
-			// note: using the sprite playerId to preserve recruitable units color
-			return_value = unit->sprite->playerId;
-		else
-			// note: using player color for spriteless units (if that exist)
-			return_value = unit->playerId;
+        if (unit->sprite != nullptr)
+            // note: using the sprite playerId to preserve recruitable units color
+            return_value = unit->sprite->playerId;
+        else
+            // note: using player color for spriteless units (if that exist)
+            return_value = unit->playerId;
 
-		if (return_value < PLAYABLE_PLAYER_COUNT) {
+        if (return_value < PLAYABLE_PLAYER_COUNT)
+        {
 
-			__asm {
-				PUSHAD
-				MOV AL, return_value
-				CALL Func_getColourID
-				MOV return_value, AL
-				POPAD
-			}
+            __asm {
+                PUSHAD
+                MOV AL, return_value
+                CALL Func_getColourID
+                MOV return_value, AL
+                POPAD
+            }
 
-			return_value = playersColors[return_value];
+            return_value = playersColors[return_value];
 
-		} else
-			return_value = graphics::BLACK; // will return 0/black if abnormal playerId
+        }
+        else
+            return_value = graphics::BLACK; // will return 0/black if abnormal playerId
 
-	} else
-		return_value = graphics::BLACK; // will return 0/black if unit is nullptr
+    }
+    else
+        return_value = graphics::BLACK; // will return 0/black if unit is nullptr
 
-	return return_value;
+    return return_value;
 
 }
 
 //-------- Distances and terrain --------//
 
-u32 CUnit::getDistanceToTarget(CUnit* target) const {
+u32 CUnit::getDistanceToTarget(CUnit* target) const
+{
 
-	assert(this);
-	assert(target);
+    assert(this);
+    assert(target);
 
-	CUnit* unit = (CUnit*)this;
+    CUnit* unit = (CUnit*)this;
 
-	if (this->isSubunit())
-		unit = this->subunit; // Current unit is a turret, so use it's base instead
+    if (this->isSubunit())
+        unit = this->subunit; // Current unit is a turret, so use it's base instead
 
-	s32 dx = unit->getLeft() - target->getRight() - 1;
-	if (dx < 0) {
-		dx = target->getLeft() - unit->getRight() - 1;
-		if (dx < 0)
-			dx = 0;
-	}
+    s32 dx = unit->getLeft() - target->getRight() - 1;
+    if (dx < 0)
+    {
+        dx = target->getLeft() - unit->getRight() - 1;
+        if (dx < 0)
+            dx = 0;
+    }
 
-	s32 dy = unit->getTop() - target->getBottom() - 1;
-	if (dy < 0) {
-		dy = target->getTop() - unit->getBottom() - 1;
-		if (dy < 0)
-			dy = 0;
-	}
+    s32 dy = unit->getTop() - target->getBottom() - 1;
+    if (dy < 0)
+    {
+        dy = target->getTop() - unit->getBottom() - 1;
+        if (dy < 0)
+            dy = 0;
+    }
 
-	return scbw::getDistanceFast(0, 0, dx, dy);
+    return scbw::getDistanceFast(0, 0, dx, dy);
 }
 
 const u32 Func_HasPathToPos = 0x0049CB60; //AKA unitHasPathToDest()
-bool CUnit::hasPathToPos(u32 x, u32 y) const {
-	assert(this);
-	u32 result;
+bool CUnit::hasPathToPos(u32 x, u32 y) const
+{
+    assert(this);
+    u32 result;
 
-	__asm {
-		PUSHAD
-		PUSH y
-		PUSH x
-		MOV EAX, this
-		CALL Func_HasPathToPos
-		MOV result, EAX
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        PUSH y
+        PUSH x
+        MOV EAX, this
+        CALL Func_HasPathToPos
+        MOV result, EAX
+        POPAD
+    }
 
-	return result != 0;
+    return result != 0;
 }
 
 const u32 Func_HasPathToTarget = 0x0049CBB0; //AKA unitHasPathToUnit()
-bool CUnit::hasPathToUnit(CUnit* target) const {
-	assert(this);
-	assert(target);
-	u32 result;
+bool CUnit::hasPathToUnit(CUnit* target) const
+{
+    assert(this);
+    assert(target);
+    u32 result;
 
-	__asm {
-		PUSHAD
-		MOV EAX, this
-		MOV ECX, target
-		CALL Func_HasPathToTarget
-		MOV result, EAX
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        MOV EAX, this
+        MOV ECX, target
+        CALL Func_HasPathToTarget
+        MOV result, EAX
+        POPAD
+    }
 
-	return result != 0;
+    return result != 0;
 }
 
 const u32 Func_IsTargetWithinMinRange = 0x00430F10;
-bool CUnit::isTargetWithinMinRange(CUnit* target, u32 range) {
+bool CUnit::isTargetWithinMinRange(CUnit* target, u32 range)
+{
 
-	static b32 bPreResult;
+    static b32 bPreResult;
 
-	__asm {
-		PUSHAD
-		PUSH target
-		PUSH range
-		MOV ECX, this
-		CALL Func_IsTargetWithinMinRange
-		MOV bPreResult, EAX
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        PUSH target
+        PUSH range
+        MOV ECX, this
+        CALL Func_IsTargetWithinMinRange
+        MOV bPreResult, EAX
+        POPAD
+    }
 
-	return (bPreResult != 0);
+    return (bPreResult != 0);
 
 }
 
 //-------- DAT Requirements --------//
 
 const u32 Func_CanMakeUnit = 0x0046E1C0;
-s32 CUnit::canMakeUnit(u16 unitId, u8 playerId) const {
-	assert(this);
-	s32 playerId_ = playerId;
-	static s32 result;
+s32 CUnit::canMakeUnit(u16 unitId, u8 playerId) const
+{
+    assert(this);
+    s32 playerId_ = playerId;
+    static s32 result;
 
-	__asm {
-		PUSHAD
-		PUSH playerId_
-		MOV AX, unitId
-		MOV ESI, this
-		CALL Func_CanMakeUnit
-		MOV result, EAX
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        PUSH playerId_
+        MOV AX, unitId
+        MOV ESI, this
+        CALL Func_CanMakeUnit
+        MOV result, EAX
+        POPAD
+    }
 
-	return result;
+    return result;
 }
 
 const u32 Func_CanUseTech = 0x0046DD80;
-s32 CUnit::canUseTech(u8 techId, u8 playerId) const {
-	assert(this);
-	s32 playerId_ = playerId;
-	u32 _techId = techId;
-	static s32 result;
+s32 CUnit::canUseTech(u8 techId, u8 playerId) const
+{
+    assert(this);
+    s32 playerId_ = playerId;
+    u32 _techId = techId;
+    static s32 result;
 
-	__asm {
-		PUSHAD
-		PUSH playerId_
-		MOV EDI, _techId
-		MOV EAX, this
-		CALL Func_CanUseTech
-		MOV result, EAX
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        PUSH playerId_
+        MOV EDI, _techId
+        MOV EAX, this
+        CALL Func_CanUseTech
+        MOV result, EAX
+        POPAD
+    }
 
-	return result;
+    return result;
 }
 
 //-------- Utility methods --------//
 
 const u32 Func_CanUnitAttackTarget = 0x00476730;
-bool CUnit::canAttackTarget(CUnit* target, bool checkVisibility) const {
-	assert(this);
-	assert(target);
+bool CUnit::canAttackTarget(CUnit* target, bool checkVisibility) const
+{
+    assert(this);
+    assert(target);
 
-	u32 _checkVisibility = checkVisibility ? 1 : 0;
-	static u32 result;
+    u32 _checkVisibility = checkVisibility ? 1 : 0;
+    static u32 result;
 
-	__asm {
-		PUSHAD
-		PUSH _checkVisibility
-		MOV EBX, target
-		MOV ESI, this
-		CALL Func_CanUnitAttackTarget
-		MOV result, EAX
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        PUSH _checkVisibility
+        MOV EBX, target
+        MOV ESI, this
+        CALL Func_CanUnitAttackTarget
+        MOV result, EAX
+        POPAD
+    }
 
-	return result != 0;
+    return result != 0;
 }
 
 extern const u32 Func_FireUnitWeapon = 0x00479C90;
-void CUnit::fireWeapon(u8 weaponId) const {
+void CUnit::fireWeapon(u8 weaponId) const
+{
 
-	assert(this);
+    assert(this);
 
-	static u32 weaponId_;
+    static u32 weaponId_;
 
-	weaponId_ = weaponId;
+    weaponId_ = weaponId;
 
-	__asm {
-		PUSHAD
-		PUSH weaponId_
-		MOV ESI, this
-		CALL Func_FireUnitWeapon
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        PUSH weaponId_
+        MOV ESI, this
+        CALL Func_FireUnitWeapon
+        POPAD
+    }
 
 }
 
 
 
-CUnit* CUnit::getFromIndex(u16 index) {
-	if (globals.extended_unit_table == 1) {
-		if (1 <= index && index <= UNIT_ARRAY_LENGTH /* NEW_ARRAY_LENGTH*/) {
-			return (CUnit*)&new_unit_table.units[index - 1];
-		}
-		return nullptr;
-	}
-	if (1 <= index && index <= UNIT_ARRAY_LENGTH)
-		return &unitTable[index - 1];
-	return nullptr;
+CUnit* CUnit::getFromIndex(u16 index)
+{
+    if (globals.extended_unit_table == 1)
+    {
+        if (1 <= index && index <= UNIT_ARRAY_LENGTH /* NEW_ARRAY_LENGTH*/)
+        {
+            return (CUnit*)&new_unit_table.units[index - 1];
+        }
+        return nullptr;
+    }
+    if (1 <= index && index <= UNIT_ARRAY_LENGTH)
+        return &unitTable[index - 1];
+    return nullptr;
 }
 
-u16 CUnit::getIndex() const {
-	if (globals.extended_unit_table == 1) {
-		return this - (CUnit*)&new_unit_table.units[0] + 1;
-	}
-	return this - unitTable + 1;
+u16 CUnit::getIndex() const
+{
+    if (globals.extended_unit_table == 1)
+    {
+        return this - (CUnit*)&new_unit_table.units[0] + 1;
+    }
+    return this - unitTable + 1;
 }
 
-u8 CUnit::getLastOwnerId() const {
-	assert(this);
-	assert(this->sprite);
-	if (this->playerId == 11) //The owner has left the game
-		return this->sprite->playerId;
-	else
-		return this->playerId;
+u8 CUnit::getLastOwnerId() const
+{
+    assert(this);
+    assert(this->sprite);
+    if (this->playerId == 11) //The owner has left the game
+        return this->sprite->playerId;
+    else
+        return this->playerId;
 }
 
-CUnit* CUnit::getLoadedUnit(s32 index) const {
-	assert(0 <= index && index < 8);
+CUnit* CUnit::getLoadedUnit(s32 index) const
+{
+    assert(0 <= index && index < 8);
 
-	CUnit* loadedUnit = CUnit::getFromIndex(this->loadedUnit[index].index);
-	if (loadedUnit && loadedUnit->sprite
-		&& !(loadedUnit->mainOrderId == OrderId::Die && loadedUnit->mainOrderState == 1)
-		&& loadedUnit->targetOrderSpecial == this->loadedUnit[index].unitId)
-		return loadedUnit;
+    CUnit* loadedUnit = CUnit::getFromIndex(this->loadedUnit[index].index);
+    if (loadedUnit && loadedUnit->sprite
+        && !(loadedUnit->mainOrderId == OrderId::Die && loadedUnit->mainOrderState == 1)
+        && loadedUnit->targetOrderSpecial == this->loadedUnit[index].unitId)
+        return loadedUnit;
 
-	return nullptr;
+    return nullptr;
 }
 
 //Logically equivalent to function @ 0x004E6C90
-CUnit* CUnit::getFirstLoadedUnit() const {
-	assert(this);
+CUnit* CUnit::getFirstLoadedUnit() const
+{
+    assert(this);
 
-	for (s32 i = 0; i < units_dat::SpaceProvided[this->id]; ++i) {
-		CUnit* firstLoadedUnit = getLoadedUnit(i);
-		if (firstLoadedUnit)
-			return firstLoadedUnit;
-	}
+    for (s32 i = 0; i < units_dat::SpaceProvided[this->id]; ++i)
+    {
+        CUnit* firstLoadedUnit = getLoadedUnit(i);
+        if (firstLoadedUnit)
+            return firstLoadedUnit;
+    }
 
-	return nullptr;
+    return nullptr;
 }
 
 //Logically equivalent to function @ 0x004E7110
-bool CUnit::hasLoadedUnit() const {
-	assert(this);
+bool CUnit::hasLoadedUnit() const
+{
+    assert(this);
 
-	for (s32 i = 0; i < 8; ++i)
-		if (!getLoadedUnit(i))
-			return true;
+    for (s32 i = 0; i < 8; ++i)
+        if (!getLoadedUnit(i))
+            return true;
 
-	return false;
+    return false;
 }
 
-namespace {
-	typedef u32(__stdcall* GiveUnitToPlayerFunc)(CUnit* unit, u32 playerId);
-	GiveUnitToPlayerFunc const giveUnitToPlayer = (GiveUnitToPlayerFunc)0x004C8040;
+namespace
+{
+    typedef u32(__stdcall* GiveUnitToPlayerFunc)(CUnit* unit, u32 playerId);
+    GiveUnitToPlayerFunc const giveUnitToPlayer = (GiveUnitToPlayerFunc)0x004C8040;
 } //unnamed namespace
 
-bool CUnit::giveTo(u8 playerId) {
-	assert(this);
-	assert(playerId < 12);
+bool CUnit::giveTo(u8 playerId)
+{
+    assert(this);
+    assert(playerId < 12);
 
-	return giveUnitToPlayer(this, playerId) != 0;
+    return giveUnitToPlayer(this, playerId) != 0;
 }
 
 //Identical to function @ 0x00475A50
-bool CUnit::isDead() const {
-	assert(this);
-	return (!this->sprite) || (this->mainOrderId == OrderId::Die);
+bool CUnit::isDead() const
+{
+    assert(this);
+    return (!this->sprite) || (this->mainOrderId == OrderId::Die);
 }
 
 //Probably equivalent to function @ 0x0047B910
-bool CUnit::isTargetEnemy(CUnit* target) const {
-	assert(this);
-	return scbw::isUnitEnemy(this->playerId, target);
+bool CUnit::isTargetEnemy(CUnit* target) const
+{
+    assert(this);
+    return scbw::isUnitEnemy(this->playerId, target);
 }
 
-bool CUnit::isVisibleTo(u8 playerId) const {
-	assert(this);
-	return (this->visibilityStatus & (1 << playerId)) != 0;
+bool CUnit::isVisibleTo(u8 playerId) const
+{
+    assert(this);
+    return (this->visibilityStatus & (1 << playerId)) != 0;
 }
 
 const u32 Func_UpdateSpeed = 0x00454310;
-void CUnit::updateSpeed() {
-	assert(this);
+void CUnit::updateSpeed()
+{
+    assert(this);
 
-	__asm {
-		PUSHAD
-		MOV EAX, this
-		CALL Func_UpdateSpeed
-		POPAD
-	}
+    __asm {
+        PUSHAD
+        MOV EAX, this
+        CALL Func_UpdateSpeed
+        POPAD
+    }
 }
 
-void CUnit::setSupplyProvided(u8 amount) { // overwrites previous supply provided
-	u32 race = this->getRace();
-	u32 previous_supply = scbw::get_generic_value(this, ValueId::SupplyProvided);
-	if (previous_supply)
-		raceSupply[race].provided[this->playerId] -= previous_supply;
-	raceSupply[race].provided[this->playerId] += amount;
-	scbw::set_generic_value(this, ValueId::SupplyProvided, amount);
+void CUnit::setSupplyProvided(u8 amount)
+{ // overwrites previous supply provided
+    u32 race = this->getRace();
+    u32 previous_supply = scbw::get_generic_value(this, ValueId::SupplyProvided);
+    if (previous_supply)
+        raceSupply[race].provided[this->playerId] -= previous_supply;
+    raceSupply[race].provided[this->playerId] += amount;
+    scbw::set_generic_value(this, ValueId::SupplyProvided, amount);
 }
