@@ -5,6 +5,8 @@
 #include "logger.h"
 #include "globals.h"
 #include <algorithm>
+#include <hooks/byte_operations_utils.h>
+#include <cassert>
 
 namespace hooks {
 	// Hooked to allow for replacing proc functions - Pr0nogo
@@ -34,6 +36,254 @@ namespace hooks {
 		tempUnitsListArraysCountsListLastIndex[0] = index;
 		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[index];
 		return aUnitInBound;
+	}
+
+	// Hooked to rework Irradiate - Pr0nogo
+	void __stdcall CBulletDamage(CBullet* bullet) // 0048B770 | 1 nop
+	{
+		s32 weaponId;
+		CUnit* target;
+		u8 divisor;
+		char bounces;
+		s32 weaponId2;
+		CUnit* bulletSource;
+		s16 outerSplash2;
+		CSprite* bulletSprite2;
+		s16 v12;
+		int random;
+		CSprite* bulletSprite;
+		s32(__fastcall * v16)(s32, s32);
+		s16 bulletX;
+		s16 bulletY;
+		s16 outerSplash;
+		CUnit* v20;
+		s16 x;
+		CUnit* v22;
+		CUnit* v23;
+		CUnit* v27;
+		s16 v31;
+		Box16* coords;
+
+		weaponId = bullet->weaponType;
+		switch (weapons_dat::ExplosionType[weaponId])
+		{
+		case WeaponEffect::None:
+			return;
+		case WeaponEffect::NormalHit:
+			target = bullet->attackTarget.unit;
+			if (target)
+			{
+				divisor = 1;
+				if (bullet->hitFlags & 1)
+				{
+					if (target->pAI)
+					{
+						bulletSource = bullet->sourceUnit;
+						if (bulletSource)
+						{
+							helper::unitWasHit(target, bulletSource, 1);
+						}
+					}
+				}
+				else
+				{
+					if (weapons_dat::Behavior[weaponId] == WeaponBehavior::Bounce)
+					{
+						bounces = bullet->remainingBounces;
+						weaponId = 2 - bounces;
+						// TODO: make sane
+						if (bounces != 2)
+						{
+							weaponId2 = weaponId;
+							do
+							{
+								weaponId = 3;
+								divisor *= 3;
+								--weaponId2;
+							} while (weaponId2);
+						}
+					}
+					helper::weaponBulletShot(target, bullet, divisor);
+				}
+			}
+			break;
+		case WeaponEffect::SplashRadial:
+		case WeaponEffect::SplashEnemy:
+		case WeaponEffect::NuclearMissile:
+			bulletSprite = bullet->sprite;
+			bulletX = bulletSprite->position.x;
+			bulletY = bulletSprite->position.y;
+			outerSplash = weapons_dat::OuterSplashRadius[weaponId];
+			coords.x = bulletX - outerSplash;
+			coords.y = bulletY - outerSplash;
+			coords.w = outerSplash + bulletX;
+			coords.h = outerSplash + bulletY;
+			if (weaponId == WeaponId::SubterraneanSpines)
+			{
+				helper::findBestUnit(&coords, (s32)bullet, helper::lurkerSplashProc);
+			}
+			else
+			{
+				helper::findBestUnit(&coords, (s32)bullet, helper::groundSplashProc);
+			}
+			break;
+		case WeaponEffect::Lockdown:
+			v20 = bullet->attackTarget.unit;
+			if (v20)
+			{
+				if (!helper::unitHasNoMainOrderType(bullet->attackTarget.unit))
+				{
+					LockdownHit(v20, LobotomyMineLockdownTime, bullet);
+				}
+			}
+			break;
+		case WeaponEffect::Parasite:
+			v22 = bullet->attackTarget.unit;
+			if (v22)
+			{
+				if (!helper::unitHasNoMainOrderType(bullet->attackTarget.unit))
+				{
+					helper::playSoundFromSource(921, v22, 1, 0);
+					bullet->attackTarget.unit->parasiteFlags |= 1 << bullet->srcPlayer;
+					helper::setEventUnitComplete();
+					v23 = bullet->sourceUnit;
+					if (v23)
+					{
+						helper::Ai_UnitWasHit(0, 0, v23, bullet->attackTarget.unit);
+					}
+				}
+			}
+			break;
+		case WeaponEffect::Broodlings:
+			if (bullet->sourceUnit)
+			{
+				{
+					if (!helper::unitHasNoMainOrderType(bullet->attackTarget.unit))
+					{
+						helper::Ai_UnitWasHit(1, 0, bullet->sourceUnit, bullet->attackTarget.unit);
+						BroodlingHit(bullet->sourceUnit, bullet->attackTarget.unit, bullet);
+					}
+				}
+			}
+			break;
+		case WeaponEffect::EmpShockwave:
+			EMPShockwaveHit(bullet->sourceUnit, bullet->sprite->position.y, bullet->sprite->position.x, bullet);
+			break;
+		case WeaponEffect::Irradiate:
+			v27 = bullet->attackTarget.unit;
+			if (v27)
+			{
+				if (!helper::unitHasNoMainOrderType(bullet->attackTarget.unit))
+				{
+					helper::playSoundFromSource(SoundId::Terran_VESSEL_TVeIrr00_WAV, v27, 1, 0);
+					IrradiateHit(bullet->sourceUnit, bullet->attackTarget.unit, bullet->srcPlayer);
+				}
+			}
+			break;
+		case WeaponEffect::Ensnare:
+			EnsnareHit(bullet->sourceUnit, bullet->sprite->position.x, bullet->sprite->position.y, bullet);
+			break;
+		case WeaponEffect::Plague:
+			PlagueHit(bullet->sourceUnit, bullet->moveTarget.pt.x, bullet->moveTarget.pt.y, bullet);
+			break;
+		case WeaponEffect::StasisField:
+			x = bullet->moveTarget.pt.x;
+			if (x || bullet->moveTarget.pt.y)
+				StasisFieldHit(bullet->sourceUnit, bullet->moveTarget.pt.x, bullet->moveTarget.pt.y, bullet);
+			break;
+		case WeaponEffect::DarkSwarm:
+			DarkSwarmHit(bullet->moveTarget.pt.x, bullet->moveTarget.pt.y, bullet->srcPlayer, bullet);
+			break;
+		case WeaponEffect::Consume:
+			if (bullet->sourceUnit)
+			{
+				if (bullet->attackTarget.unit)
+				{
+					if (!helper::unitHasNoMainOrderType(bullet->attackTarget.unit))
+					{
+						ConsumeHit(bullet->sourceUnit, bullet->attackTarget.unit);
+					}
+				}
+			}
+			break;
+		case WeaponEffect::YamatoGun:
+			if (bullet->attackTarget.unit)
+			{
+				helper::weaponBulletShot(bullet->attackTarget.unit, bullet, 1);
+			}
+			break;
+		case WeaponEffect::Restoration:
+			if (bullet->attackTarget.unit)
+			{
+				if (!helper::unitHasNoMainOrderType(bullet->attackTarget.unit))
+				{
+					helper::playSoundFromSource(SoundId::Terran_Medic_TmedCure_wav, bullet->attackTarget.unit, 1, 0);
+					RestoreHit(bullet->attackTarget.unit, bullet);
+				}
+			}
+			break;
+		case WeaponEffect::DisruptionWeb:
+			DisruptionWebHit(bullet->srcPlayer, bullet->moveTarget.pt.x, bullet->moveTarget.pt.y, bullet);
+			break;
+		case WeaponEffect::CorrosiveAcid:
+			if (bullet->attackTarget.unit)
+			{
+				if (!(bullet->hitFlags & 1))
+				{
+					helper::weaponBulletShot(bullet->attackTarget.unit, bullet, 1);
+					if (!(bullet->hitFlags & 2))
+					{
+						CorrosiveAcidHit(bullet->srcPlayer, bullet->sprite->position.x, bullet->sprite->position.y, bullet);
+					}
+				}
+			}
+			break;
+		case WeaponEffect::OpticalFlare:
+			if (bullet->attackTarget.unit)
+			{
+				if (!helper::unitHasNoMainOrderType(bullet->attackTarget.unit))
+				{
+					OpticalFlareHit(bullet->attackTarget.unit, bullet->srcPlayer, bullet);
+				}
+			}
+			break;
+		case WeaponEffect::Maelstrom:
+			v31 = bullet->moveTarget.pt.x;
+			if (v31 || bullet->moveTarget.pt.y)
+			{
+				MaelstromHit(bullet->sourceUnit, bullet->moveTarget.pt.x, bullet->moveTarget.pt.y, bullet);
+			}
+			break;
+		case WeaponEffect::SplashAir:
+			outerSplash2 = weapons_dat::OuterSplashRadius[weaponId];
+			bulletSprite2 = bullet->sprite;
+			v12 = bulletSprite2->position.x;
+			LOWORD(bulletSprite2) = bulletSprite2->position.y;
+			*airSplashListCount = 0;
+			coords.x = v12 - outerSplash2;
+			coords.y = (s16)bulletSprite2 - outerSplash2;
+			coords.w = outerSplash2 + v12;
+			coords.h = outerSplash2 + (s16)bulletSprite2;
+			helper::findBestUnit(&coords, (s32)bullet, (s32(__fastcall*)(s32, s32))AirSplashProc);
+			v10 = *airSplashListCount;
+			if (*airSplashListCount)
+			{
+				if (*airSplashListCount == 1)
+				{
+					random = 0;
+				}
+				else
+				{
+					random = helper::RandomizeShort(58) % v10;
+				}
+				helper::weaponBulletShot(airSplashList[random], bullet, 1);
+			}
+			helper::findBestUnit(&coords, (s32)bullet, (s32(__fastcall*)(s32, s32))AirSplashProc2);
+			break;
+		default:
+			assert(false);
+			break;
+		}
 	}
 
 	// Hooked to clean up lardcode - Pr0nogo

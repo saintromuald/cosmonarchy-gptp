@@ -702,6 +702,13 @@ namespace helper {
     void orders_SelfDestructing(CUnit* unit);                                                                   // 00475710
     char setMaelstromTimer(CUnit* unit, u8 time);                                                               // 004553F0
 
+    // For CBulletDamage
+    s32 lurkerSplashProc(CUnit* target, CBullet* bullet);                                                       // 0048B680
+    s32 groundSplashProc(CUnit* target, CBullet* bullet);                                                       // 0048B750
+    s32 airSplashProc(CUnit* unit, CBullet* bullet);                                                            // 0048B150
+    bool unitHasNoMainOrderType(CUnit* unit);                                                                   // 00475A50
+    s32 setEventUnitComplete();                                                                                 // 004C36C0
+
     //// selection
     bool unitIsOwnedByCurrentPlayer(CUnit* unit); 																// 00401170
     bool isUnitBurrowed(CUnit* unit);																			// 00402A70

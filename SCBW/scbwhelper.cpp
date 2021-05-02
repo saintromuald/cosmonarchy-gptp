@@ -7416,4 +7416,73 @@ namespace helper {
 		}
 		return (char)result;
 	}
+
+	// For CBulletDamage
+
+	s32 lurkerSplashProc(CUnit* target, CBullet* bullet) {
+		const u32 Func_lurkerSplashProc = 0x0048B680;
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EDX, bullet
+			MOV ECX, unit
+			CALL Func_lurkerSplashProc
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 groundSplashProc(CUnit* target, CBullet* bullet) {
+		const u32 Func_groundSplashProc = 0x0048B750;
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EDX, bullet
+			MOV ECX, target
+			CALL Func_groundSplashProc
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 airSplashProc(CUnit* unit, CBullet* bullet) {
+		const u32 Func_airSplashProc = 0x0048B150;
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EDX, bullet
+			MOV ECX, unit
+			CALL Func_airSplashProc
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	bool unitHasNoMainOrderType(CUnit* unit) {
+		const u32 Func_unitHasNoMainOrderType = 0x00475A50;
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_unitHasNoMainOrderType
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	s32 setEventUnitComplete() {
+		const u32 Func_setEventUnitComplete = 0x004C36C0;
+		static s32 result;
+		__asm {
+			PUSHAD
+			CALL Func_setEventUnitComplete
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

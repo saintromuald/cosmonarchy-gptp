@@ -36,6 +36,7 @@ constexpr s32 ApostleLastBreathEnergyGain = 5 * 256;
 const s32 MineBurrowTime = 60;
 const s32 MineSeekRange = 576;
 const s32 MineDetonateRange = 30;
+const s32 LobotomyMineLockdownTime = 12; // 4 seconds
 
 // Azazel
 constexpr s32 AzazelDefensiveMatrixHeal = 53; // 5 HP per second | 256 * 5 / 24
