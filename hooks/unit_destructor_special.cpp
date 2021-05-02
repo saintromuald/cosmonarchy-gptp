@@ -129,7 +129,8 @@ void unitDestructorSpecialHook(CUnit* unit)
 			unit->getX() + range,
 			unit->getY() + range
 		).forEach([&](CUnit* target) {
-			if (!scbw::isAlliedTo(unit->playerId, target->playerId)) {
+			if (!scbw::isAlliedTo(unit->playerId, target->playerId))
+			{
 				return;
 			}
 			scbw::add_generic_value(target, ValueId::TerminalSurge, 1);
@@ -145,14 +146,17 @@ void unitDestructorSpecialHook(CUnit* unit)
 			unit->getY() - range,
 			unit->getX() + range,
 			unit->getY() + range
-		).forEach([&](CUnit* target) {
+		).forEach([&](CUnit* target)
+			{
 			if (target->id != UnitId::TerranApostle) {
 				return;
 			}
-			if (target == unit) {
+			if (target == unit)
+			{
 				return;
 			}
-			if (!scbw::isAlliedTo(unit->playerId, target->playerId)) {
+			if (!scbw::isAlliedTo(unit->playerId, target->playerId))
+			{
 				return;
 			}
 			target->healEnergy(ApostleLastBreathEnergyGain);
@@ -186,8 +190,7 @@ void unitDestructorSpecialHook(CUnit* unit)
 
 	// Metastasis - Plague spreads when a unit dies
 	if ((unit->newFlags1 & NewFlags1::Metastasis) && unit->plagueTimer > 0) {
-		helper::createBullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->playerId,
-			unit->currentDirection1);
+		helper::createBullet(WeaponId::Plague, unit, unit->position.x, unit->position.y, unit->playerId, unit->currentDirection1);
 		Box16 coords;
 		coords.left = unit->position.x - 48;
 		coords.bottom = unit->position.y + 48;
@@ -200,8 +203,10 @@ void unitDestructorSpecialHook(CUnit* unit)
 			unit->getY() - range,
 			unit->getX() + range,
 			unit->getY() + range
-		).forEach([&](CUnit* target) {
-			if (target->plagueTimer > 0) {
+		).forEach([&](CUnit* target)
+			{
+			if (target->plagueTimer > 0)
+			{
 				target->newFlags1 |= NewFlags1::Metastasis;
 			}
 		});
