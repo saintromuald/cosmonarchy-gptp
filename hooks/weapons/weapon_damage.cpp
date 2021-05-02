@@ -594,7 +594,7 @@ namespace hooks {
 						if (foundUnit == data.target) {
 							return;
 						}
-						foundUnit->heal(ApostleBloodTitheHealing, data.target);
+						foundUnit->heal(data.finalDamage, data.target);
 					});
 					break;
 				}
