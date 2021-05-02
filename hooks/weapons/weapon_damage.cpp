@@ -672,7 +672,8 @@ namespace hooks {
 		}
 
 		// Apostle - Lazarus Agent
-		if (scbw::get_generic_value(data.target, ValueId::LazarusAgent) == 1) {
+		if (scbw::get_generic_value(data.target, ValueId::LazarusAgent) == 1)
+		{
 			globals.initLazarusAgent(data.target->position.x, data.target->position.y,
 				data.target->playerId, data.target->id, data.target->energy,
 				(CUnit*)scbw::get_generic_value(data.target, ValueId::LazarusAgentApostleSrc));

@@ -213,7 +213,7 @@ namespace ValueId {
         StellarEnforcement,
         DisruptionWebDamage,
         CastLazarusAgent,
-        LazarusAgentApostleSrc,
+        LazarusAgentApostleSrc, // unit
         LazarusNoHeal,
         ObservanceOverlayTimer,
         AlkajeliskParasite,

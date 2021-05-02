@@ -251,8 +251,8 @@ namespace hooks {
 		//hooks::ShowHealthBar(unit);
 
 		// Reviving from Lazarus Agent
-		if (scbw::get_generic_value(unit, ValueId::IsReviving) == 1 &&
-			unit->sprite->mainGraphic->animation != IscriptAnimation::Unused1) {
+		if (scbw::get_generic_value(unit, ValueId::IsReviving) == 1
+			&& unit->sprite->mainGraphic->animation != IscriptAnimation::Unused1) {
 			scbw::set_generic_value(unit, ValueId::IsReviving, 0);
 		}
 

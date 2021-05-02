@@ -328,19 +328,23 @@ void Globals::frameHook() {
 		}
 	}
 
-	for (s32 i = 0; i < apostleAgents.size(); i++) {
+	for (s32 i = 0; i < apostleAgents.size(); i++)
+	{
 		auto& agent = apostleAgents[i];
-		if (agent.timer > 0) {
+		if (agent.timer > 0)
+		{
 			agent.timer--;
-		} else {
-			// scbw::printf("Agent Creator: 0x%X", agent.creator);
+		} else
+		{
 			auto revived = scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y, agent.creator);
-			if (revived) {
+			if (revived)
+			{
 				revived->setHp(units_dat::MaxHitPoints[revived->id] / 2);
 				revived->energy = agent.energy;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
 				scbw::set_generic_value(revived, ValueId::LazarusNoHeal, 1);
-				// revived->status |= UnitStatus::Invincible;
+				// TODO: Make reviving units invincible
+//				revived->status |= UnitStatus::Invincible;
 				scbw::set_generic_value(revived, ValueId::IsReviving, 1);
 			}
 			apostleAgents.erase(apostleAgents.begin() + i);
@@ -500,7 +504,8 @@ void Globals::register_pariah_hit(CUnit* source, CUnit* target) {
 
 void Globals::clear_ptr_in_apostle_table(CUnit* ptr) {
 	for (auto& a : apostleAgents) {
-		if (a.creator == ptr) {
+		if (a.creator == ptr)
+		{
 			a.creator = nullptr; // agent values themselves must not be deleted to prevent non-working lazarus agent buffs
 		}
 	}
@@ -588,8 +593,6 @@ void Globals::initLazarusAgent(s32 x, s32 y, u8 player, u32 unitId, u32 energy, 
 	a.unitId = unitId;
 	a.energy = energy;
 	a.creator = unit;
-	//	scbw::printf("Set creator to 0x%X", i.creator);
-	//	scbw::printf("Try push back %d", apostleAgents.size());
 	apostleAgents.push_back(a);
 }
 
