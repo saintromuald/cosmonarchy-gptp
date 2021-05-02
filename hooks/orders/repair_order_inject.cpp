@@ -80,6 +80,6 @@ namespace hooks {
 	void injectRepairOrderHook() {
 		jmpPatch(orders_Repair1Wrapper,		0x004673D0, 1);
 		jmpPatch(isOrderValid_Wrapper,		0x00474D90, 1);
-//		jmpPatch(orderAllowed_Wrapper,		0x0046DC20, 3);
+//		jmpPatch(orderAllowed_Wrapper,		0x0046DC20, 3); // crashes
 	}
 }
