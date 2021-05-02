@@ -29,24 +29,63 @@ struct Point32 {
 };
 
 struct Box16 {
-	s16 left;     // x
-	s16 top;      // y
-	s16 right;    // w
-	s16 bottom;   // h
+	union
+	{
+		struct
+		{
+			s16 left;     
+			s16 top;      
+			s16 right;    
+			s16 bottom;   
+		};
+		struct
+		{
+			s16 x;     
+			s16 y;      
+			s16 w;    
+			s16 h;   
+		};
+	};
 };
 
 struct Box32 {
-	s32 left;
-	s32 top;
-	s32 right;
-	s32 bottom;
+	union
+	{
+		struct
+		{
+			s32 left;     
+			s32 top;      
+			s32 right;    
+			s32 bottom;   
+		};
+		struct
+		{
+			s32 x;     
+			s32 y;      
+			s32 w;    
+			s32 h;   
+		};
+	};
 };
 
 struct Bounds {
-	u16 left;
-	u16 top;
-	u16 right;
-	u16 bottom;
+	union
+	{
+		struct
+		{
+			s16 left;     
+			s16 top;      
+			s16 right;    
+			s16 bottom;   
+		};
+		struct
+		{
+			s16 x;     
+			s16 y;      
+			s16 w;    
+			s16 h;   
+		};
+	};
 	u16 width;
 	u16 height;
 };
