@@ -170,15 +170,8 @@ namespace hooks {
 			EMPShockwaveHit(bullet->sourceUnit, bullet->sprite->position.y, bullet->sprite->position.x, bullet);
 			break;
 		case WeaponEffect::Irradiate:
-			v27 = bullet->attackTarget.unit;
-			if (v27)
-			{
-				if (!helper::unitHasNoMainOrderType(bullet->attackTarget.unit))
-				{
-					helper::playSoundFromSource(SoundId::Terran_VESSEL_TVeIrr00_WAV, v27, 1, 0);
-					IrradiateHit(bullet->sourceUnit, bullet->attackTarget.unit, bullet->srcPlayer);
-				}
-			}
+			helper::playSoundFromSource(SoundId::Terran_VESSEL_TVeIrr00_WAV, nullptr, 1, 0);
+			IrradiateHit(bullet->sourceUnit, bullet->attackTarget.pt, bullet->srcPlayer);
 			break;
 		case WeaponEffect::Ensnare:
 			EnsnareHit(bullet->sourceUnit, bullet->sprite->position.x, bullet->sprite->position.y, bullet);
@@ -341,8 +334,8 @@ namespace hooks {
 	}
 
 	// no bullet because this function can be called in another context without bullet
-	void IrradiateHit(CUnit* attacker, CUnit* target, u8 attackingPlayerId) {
-		// no longer handled here
+	void IrradiateHit(CUnit* attacker, Point16 target, u8 attackingPlayerId) {
+		globals.createGenericPersistImpact(ImpactId::Irradiate, 10 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Medium, 5, attackingPlayerId);
 	}
 
 	// bullet is not normally part of the function, so if the function is called

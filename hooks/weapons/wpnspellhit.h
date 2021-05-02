@@ -4,7 +4,7 @@
 #include <SCBW/structures/CBullet.h>
 #include "SCBW\api.h"
 namespace hooks {
-	//	void IrradiateHit(CUnit* attacker, CUnit* target, u8 attackingPlayerId);		// 00454E00
+	void IrradiateHit(CUnit* attacker, Point16 target, u8 attackingPlayerId);			// 00454E00
 	void OpticalFlareHit(CUnit* target, u32 attackingPlayerId, CBullet* bullet);		// 00455170
 	void RestoreHit(CUnit* target, CBullet* bullet);									// 00455230
 	void LockdownHit(CUnit* target, u8 previousLockdownTimer, CBullet* bullet);			// 00455380

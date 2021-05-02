@@ -7,10 +7,6 @@
 #include <string>
 #include <math.h>
 
-namespace hooks {
-	void IrradiateHit(CUnit* attacker, CUnit* target, u8 attackingPlayerId);
-}
-
 namespace scbw {
 	bool isAnyMorphMorphResult(u16 id);
 	bool isConventionalUnitMorphResult(u16 id);
