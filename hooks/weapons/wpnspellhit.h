@@ -30,6 +30,7 @@ namespace hooks {
 	CUnit* iterateUnitsAtLocationTargetProc(Box16* location,							// 004E8280
 		s32(__fastcall* proc)(CUnit*, CUnit*),
 		CUnit* unit); 
+	void __stdcall CBulletDamage(CBullet* bullet);										// 0048B770
 
 	//The injector function for this hook module.
 	void injectWpnSpellHitHooks();

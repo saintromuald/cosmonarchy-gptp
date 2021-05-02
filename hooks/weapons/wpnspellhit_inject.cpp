@@ -557,6 +557,28 @@ namespace {
 		result = hooks::iterateUnitsAtLocationTargetProc(location, proc, unit);
 		__asm {
 			POPAD
+			MOV EAX, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 4
+		}
+	}
+
+	void __declspec(naked) CBulletDamage_Wrapper() { // 0048B770
+		static CBullet* bullet;
+		__asm {
+			PUSH EBP
+			MOV EBP, ESP
+			MOV unit, EDI
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV bullet, EAX
+			POP EAX
+			PUSHAD
+		}
+		hooks::CBulletDamage(bullet);
+		__asm {
+			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN 4
@@ -589,5 +611,6 @@ namespace hooks {
 		jmpPatch(disableUnit_Wrapper, 0x00492CC0, 2);
 		jmpPatch(maelstromProc_Wrapper, 0x004F6760, 3);
 //		jmpPatch(iterateUnitsAtLocationTargetProc_Wrapper, 0x004F6760, 0);
+//		jmpPatch(CBulletDamage_Wrapper, 0x0048B770, 1);
 	}
 }
