@@ -2,7 +2,7 @@
 #include <SCBW/api.h>
 
 namespace hooks {
-	void orders_Repair1(CUnit* unit) {
+	void orders_Repair1(CUnit* unit) { // 004673D0
 		bool jump_to_676C4 = false; // handle various early invalid cases
 		bool bEndThere = false;
 		CUnit* target = unit->orderTarget.unit;
@@ -212,150 +212,213 @@ namespace hooks {
 	s32 isOrderValid(char orderId, CUnit* unit, s32 unused, CUnit* target, s32 bErrorFlag) // 00474D90
 	{
 		u16 errorStringId;
-		s32 v6;
-		bool v7;
-		u8 v8;
-		s32 v9;
-		s32 result;
-		s32 v11;
-		s32 v12;
-		u16 v13;
-		s32 v14;
-		s32 v15;
+		bool ofsubCompare;
+		u8 ofsubResult;
+		s32 unusedResult;
 
 		switch (orderId)
 		{
-		case OrderId::Repair1:
-		{
-			errorStringId = 884;
-			if (!target) {
-				if (bErrorFlag)
-				{
-					*(s16*)bErrorFlag = errorStringId;
-				}
-				return 0;
-			}
-			v11 = target->id;
-			errorStringId = 883;
-			if (!(target->status & UnitStatus::Completed)) {
-				if (bErrorFlag)
-				{
-					*(s16*)bErrorFlag = errorStringId;
-				}
-				return 0;
-			}
-			v12 = target->hitPoints;
-			v8 = helper::OFSUB(v12, units_dat::MaxHitPoints[v11]);
-			v7 = v12 - units_dat::MaxHitPoints[v11] < 0;
-			if (v7 ^ v8)
+			case OrderId::Repair1:
 			{
-				return 1;
-			}
-			if (bErrorFlag)
-			{
-				*(s16*)bErrorFlag = errorStringId;
-			}
-		}
-		case OrderId::Harvest1:
-		{
-			if (!target)
-			{
-				return 1;
-			}
-			errorStringId = unit->getRace() + 893;
-			if (target->id == UnitId::ResourceVespeneGeyser) {
-				if (bErrorFlag)
-				{
-					*(s16*)bErrorFlag = errorStringId;
-				}
-				return 0;
-			}
-			v14 = helper::unitIsResource(target);
-			if (v14)
-			{
-				return 0;
-			}
-			v15 = units_dat::BaseProperty[v13];
-			errorStringId = 892;
-			if (!(v15 & 0x2000))
-			{
-				if (bErrorFlag)
-				{
-					*(s16*)bErrorFlag = errorStringId;
-				}
-				return 0;
-			}
-			errorStringId = 896;
-			if (unit->playerId != target->playerId)
-			{
-				if (bErrorFlag)
-				{
-					*(s16*)bErrorFlag = errorStringId;
-				}
-				return 0;
-			}
-			return 1;
-		}
-		case OrderId::Pickup2:
-		{
-			errorStringId = 890;
-			if (!target || unit->playerId != target->playerId)
-			{
-				if (bErrorFlag)
-				{
-					*(s16*)bErrorFlag = errorStringId;
-				}
-				return 0;
-			}
-			if (helper::canEnterTransport(unit, target))
-			{
-				return 1;
-			}
-			if (units_dat::SpaceProvided[unit->id] >= units_dat::SpaceRequired[target->id])
-			{
-				errorStringId = 891;
-			}
-			if (bErrorFlag)
-			{
-				*(s16*)bErrorFlag = errorStringId;
-			}
-			return 0;
-		}
-		case OrderId::HealMove:
-		{
-			if (!target)
-			{
-				return 1;
-			}
-			if (!helper::techUseAllowed(unit, TechId::Healing, unit->playerId))
-			{
-				return 0;
-			}
-			errorStringId = 1325;
-			if (!(target->status & 6))
-			{
-				v6 = target->id;
-				if (units_dat::BaseProperty[v6] & 0x10000)
-				{
-					v9 = target->hitPoints;
-					v8 = helper::OFSUB(v9, units_dat::MaxHitPoints[v6]);
-					v7 = v9 - units_dat::MaxHitPoints[v6] < 0;
-					if (v7 ^ v8)
+				errorStringId = 884;
+				if (!target) {
+					if (bErrorFlag)
 					{
-						return 1;
+						*(s16*)bErrorFlag = errorStringId;
+					}
+					return 0;
+				}
+				errorStringId = 883;
+				if (!(target->status & UnitStatus::Completed)) {
+					if (bErrorFlag)
+					{
+						*(s16*)bErrorFlag = errorStringId;
+					}
+					return 0;
+				}
+				ofsubResult = helper::OFSUB(target->hitPoints, units_dat::MaxHitPoints[target->id]);
+				ofsubCompare = target->hitPoints - units_dat::MaxHitPoints[target->id] < 0;
+				if (ofsubCompare ^ ofsubResult)
+				{
+					return 1;
+				}
+				if (bErrorFlag)
+				{
+					*(s16*)bErrorFlag = errorStringId;
+				}
+				return 1;
+			}
+			case OrderId::Harvest1:
+			{
+				if (!target)
+				{
+					return 1;
+				}
+				errorStringId = unit->getRace() + 893;
+				if (target->id == UnitId::ResourceVespeneGeyser) {
+					if (bErrorFlag)
+					{
+						*(s16*)bErrorFlag = errorStringId;
+					}
+					return 0;
+				}
+				if (!helper::unitIsResource(target))
+				{
+					return 0;
+				}
+				errorStringId = 892;
+				if (!(units_dat::BaseProperty[target->id] & UnitProperty::ResourceContainer))
+				{
+					if (bErrorFlag)
+					{
+						*(s16*)bErrorFlag = errorStringId;
+					}
+					return 0;
+				}
+				errorStringId = 896;
+				if (unit->playerId != target->playerId)
+				{
+					if (bErrorFlag)
+					{
+						*(s16*)bErrorFlag = errorStringId;
+					}
+					return 0;
+				}
+				return 1;
+			}
+			case OrderId::Pickup2:
+			{
+				errorStringId = 890;
+				if (!target || unit->playerId != target->playerId)
+				{
+					if (bErrorFlag)
+					{
+						*(s16*)bErrorFlag = errorStringId;
+					}
+					return 0;
+				}
+				if (helper::canEnterTransport(unit, target))
+				{
+					return 1;
+				}
+				if (units_dat::SpaceProvided[unit->id] >= units_dat::SpaceRequired[target->id])
+				{
+					errorStringId = 891;
+				}
+				if (bErrorFlag)
+				{
+					*(s16*)bErrorFlag = errorStringId;
+				}
+				return 0;
+			}
+			case OrderId::HealMove:
+			{
+				if (!target)
+				{
+					return 1;
+				}
+				if (!helper::techUseAllowed(unit, TechId::Healing, unit->playerId))
+				{
+					return 0;
+				}
+				errorStringId = 1325;
+				if (!(target->status & 6)) // GroundedBuilding and InAir
+				{
+					if (units_dat::BaseProperty[target->id] & UnitProperty::Organic)
+					{
+						ofsubResult = helper::OFSUB(target->hitPoints, units_dat::MaxHitPoints[target->id]);
+						ofsubCompare = target->hitPoints - units_dat::MaxHitPoints[target->id] < 0;
+						if (ofsubCompare ^ ofsubResult)
+						{
+							return 1;
+						}
 					}
 				}
+				if (bErrorFlag)
+				{
+					*(s16*)bErrorFlag = errorStringId;
+				}
+				return 0;
 			}
-			if (bErrorFlag)
+			default:
 			{
-				*(s16*)bErrorFlag = errorStringId;
+				return 1;
 			}
-			return 0;
 		}
-		default:
+		return unusedResult;
+	}
+
+	// Hooked to investigate Repair crashes - Pr0nogo
+	s32 orderAllowed(CUnit* unit, u16 orderId, s32 player) // 0046DC20
+	{
+		s32 result;
+		s16 unitId;
+
+		*lastInternalErr = 0;
+		if (orderId < OrderId::None)
 		{
-			return 1;
+			if (orders_dat::RequirementsOffset[orderId] == -1)
+			{
+				helper::parseOrdersDatReqs();
+			}
+			if (player == unit->playerId)
+			{
+				if (orderId == OrderId::RallyPoint1 || orderId == OrderId::RallyPoint2 || unit->status & UnitStatus::Completed)
+				{
+					if (unit->isFrozen())
+					{
+						*lastInternalErr = 10;
+						result = 0;
+					}
+					else if (unit->status & UnitStatus::Burrowed && unit->id != UnitId::ZergLakizilisk && orderId != OrderId::Unburrow)
+					{
+						*lastInternalErr = 11;
+						result = 0;
+					}
+					else
+					{
+						unitId = unit->id;
+						if (unitId == UnitId::TerranMason && unit->mainOrderId == OrderId::ConstructingBuilding && orderId != 1
+							|| (scbw::unitCanNuke(unit) && unit->mainOrderId == OrderId::NukeTrack)
+							|| unitId == UnitId::ProtossArchon && unit->mainOrderId == OrderId::CompletingArchonSummon
+							|| unitId == UnitId::ProtossMindTyrant && unit->mainOrderId == OrderId::CompletingArchonSummon)
+						{
+							*lastInternalErr = 8;
+							result = 0;
+						}
+						else
+						{
+							if (orders_dat::RequirementsOffset[orderId])
+							{
+								result = helper::parseRequirementOpcodes(unit,
+									orderId,
+									player,
+									orders_dat::RequirementsOffset[orderId],
+									(s32)ordersRequirementTree);
+							}
+							else
+							{
+								*lastInternalErr = 23;
+							}
+						}
+					}
+				}
+				else
+				{
+					*lastInternalErr = 20;
+					result = 0;
+				}
+			}
+			else
+			{
+				*lastInternalErr = 1;
+				result = 0;
+			}
 		}
+		else
+		{
+			*lastInternalErr = 15;
+			result = 0;
 		}
 		return result;
 	}

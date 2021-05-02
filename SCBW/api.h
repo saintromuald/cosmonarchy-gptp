@@ -402,5 +402,5 @@ namespace scbw {
 	void createShieldOverlay(CUnit* unit, u32 attackDirection);
 	void decloakProc(CUnit* unit);
 	bool isDecloakable(CUnit* unit);
-
-} //scbw
+	bool unitCanNuke(CUnit* unit);
+}

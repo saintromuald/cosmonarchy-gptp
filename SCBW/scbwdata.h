@@ -370,12 +370,16 @@ SCBW_DATA(s32*,	interceptorFocusedThisFrame,		0x006957D0);
 SCBW_DATA(s8*,	isTargeting,						0x00641694);
 SCBW_DATA(s32*,	orderTimerReassignCount,			0x0059CCA4);
 SCBW_DATA(s32*,	secondaryOrderTimerReassignCount,	0x006283E8);
-SCBW_DATA(CUnit**,	activeIscriptEntity,				0x006D11F4);
-SCBW_DATA(CUnit**,	activeIscriptUnit,					0x006D11FC);
-SCBW_DATA(CUnit**,	firstDyingUnit,						0x0062842C);
-SCBW_DATA(CUnit**,	lurkerSplashList,					0x0064DEC8); // sizeof 400
+SCBW_DATA(CUnit**,	activeIscriptEntity,			0x006D11F4);
+SCBW_DATA(CUnit**,	activeIscriptUnit,				0x006D11FC);
+SCBW_DATA(CUnit**,	firstDyingUnit,					0x0062842C);
+SCBW_DATA(CUnit**,	lurkerSplashList,				0x0064DEC8); // sizeof 400
 SCBW_DATA(s32*,	lurkerSplashListIndex,				0x0064EEC8);
 SCBW_DATA(s32*,	lastBulletIndex,					0x0064DEA8);
+
+// For orderAllowed
+SCBW_DATA(s32*,	lastInternalErr,					0x0066FF60);
+SCBW_DATA(s16*, ordersRequirementTree,				0x00514CF8);
 
 //////////////////////////////////////////////////////////////// @}
 

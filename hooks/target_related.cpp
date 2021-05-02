@@ -366,10 +366,12 @@ namespace hooks {
 			if (unitId != UnitId::ProtossSolarion) {
 				if (unitId != UnitId::ProtossAccantor) {
 					if (unitId != UnitId::ZergMatraleth) {
-						if (unitId != UnitId::ZergSkryling && unitId != UnitId::ZergInfestedTerran)
+						if (unitId != UnitId::ZergSkryling && unitId != UnitId::ZergInfestedTerran) {
 							orderId = unitId != UnitId::TerranCleric ? 107 : 178;
-						else
+						}
+						else {
 							orderId = OrderId::HoldPosition4;
+						}
 					} else {
 						orderId = OrderId::HoldPosition3;
 					}
@@ -380,7 +382,9 @@ namespace hooks {
 				orderId = OrderId::HoldPosition1;
 			}
 			if (helper::orderAllowed(i, orderId, *ACTIVE_NATION_ID) == 1)
+			{
 				helper::targetedOrder(0, UnitId::None, i, 0, 1, *(s8*)(a1 + 1) != 0, orderId, 0, *orderType4Position, *orderType4Target);
+			}
 			result = helper::getActivePlayerFirstSelection();
 		}
 		return result;

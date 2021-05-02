@@ -1572,4 +1572,8 @@ namespace scbw {
 			&& !(unit->status & UnitStatus::Burrowed);
 	}
 
+	// Replacement for isUnitGhost
+	bool unitCanNuke(CUnit* unit) {
+		return (unit->id == UnitId::TerranEidolon || unit->id == UnitId::TerranSeraph);
+	}
 }
