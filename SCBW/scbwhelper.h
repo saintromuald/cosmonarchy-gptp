@@ -706,6 +706,7 @@ namespace helper {
     s32 lurkerSplashProc(CUnit* target, CBullet* bullet);                                                       // 0048B680
     s32 groundSplashProc(CUnit* target, CBullet* bullet);                                                       // 0048B750
     s32 airSplashProc(CUnit* unit, CBullet* bullet);                                                            // 0048B150
+    s32 airSplashProc2(CUnit* unit, CBullet* bullet);                                                           // 0048B730
     bool unitHasNoMainOrderType(CUnit* unit);                                                                   // 00475A50
     s32 setEventUnitComplete();                                                                                 // 004C36C0
 

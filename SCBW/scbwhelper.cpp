@@ -7461,6 +7461,20 @@ namespace helper {
 		return result;
 	}
 
+	s32 airSplashProc2(CUnit* unit, CBullet* bullet) {
+		const u32 Func_airSplashProc2 = 0x0048B730;
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EDX, bullet
+			MOV ECX, unit
+			CALL Func_airSplashProc2
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
 	bool unitHasNoMainOrderType(CUnit* unit) {
 		const u32 Func_unitHasNoMainOrderType = 0x00475A50;
 		static s32 result;
