@@ -8095,4 +8095,64 @@ namespace helper
         }
         return result;
     }
+
+    // For use_tech
+
+    const void issueTriTargetOrder(u8 order1, u8 order2, u8 order3)
+    {
+        const u32 Func_TriTargetOrder = 0x0048CAF0;
+        if (order2 == 0)
+        {
+            _asm
+            {
+                PUSHAD
+                MOV DL, order1
+                MOV CL, DL
+                MOV AL, DL
+                CALL Func_TriTargetOrder
+                POPAD
+            }
+        }
+        else
+        {
+            if (order3 == 0)
+            {
+                _asm
+                {
+                    PUSHAD
+                    MOV CL, order1
+                    MOV DL, order2
+                    MOV AL, CL
+                    CALL Func_TriTargetOrder
+                    POPAD
+                }
+            }
+            else
+            {
+                _asm
+                {
+                    PUSHAD
+                    MOV DL, order1
+                    MOV CL, order2
+                    MOV AL, order3
+                    CALL Func_TriTargetOrder
+                    POPAD
+                }
+            }
+        }
+    }
+
+    s32 checkEnergyForTechUse(s32 tech_id)
+    {
+        const s32 techUseFunc = 0x00423660;
+        static s32 result;
+        __asm {
+            PUSHAD
+            MOV EAX, tech_id
+            CALL techUseFunc
+            MOV result, EAX
+            POPAD
+        }
+        return result;
+    }
 }

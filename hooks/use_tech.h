@@ -5,4 +5,4 @@ namespace hooks
 {
     void BTNSACT_UseTech(u16 tech, GrpHead* head);
     void injectUseTechHooks();
-} //hooks
+}

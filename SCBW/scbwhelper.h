@@ -814,16 +814,16 @@ namespace helper
     CImage* CreateHealthBar(s32 a1, CSprite* a2);
     void RemoveHPBar(CImage* a1);
     void refundAllQueueSlots(CUnit* unit);
-    void* SMemAlloc(u32 amount, u32 unkFilename, u32 unkLine, u32 defaultValue);	//1006A (based on Storm.dll definition)
-    void SetCallbackTimer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3);			//16090
-    void function_0049A7F0(CUnit* unit);											//9A7F0
-    u32 fxnInteract(BinDlg* dialog, u32 data_struct_offset);
-    void registerUserDialogAction(BinDlg* dialog, u32 array_of_fxnInteractFunc, u32 sizeOfArray);	//18100
-    void function_418E00(BinDlg* dialog);																//18E00
-    void replayStatBtns(BinDlg* dialog);																//27A80
-    void function_4591D0();																				//591D0
-    void function_459770();																				//59770
-    void BINDLG_BlitSurface(BinDlg* dialog);															//C35F0
+    void* SMemAlloc(u32 amount, u32 unkFilename, u32 unkLine, u32 defaultValue);	                    // 0041006A (based on Storm.dll definition)
+    void SetCallbackTimer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3);			                    // 00416090
+    void function_0049A7F0(CUnit* unit);											                    // 0049A7F0
+    u32 fxnInteract(BinDlg* dialog, u32 data_struct_offset);                                               
+    void registerUserDialogAction(BinDlg* dialog, u32 array_of_fxnInteractFunc, u32 sizeOfArray);	    // 00418100
+    void function_418E00(BinDlg* dialog);																// 00418E00
+    void replayStatBtns(BinDlg* dialog);																// 00427A80
+    void function_4591D0();																				// 004591D0
+    void function_459770();																				// 00459770
+    void BINDLG_BlitSurface(BinDlg* dialog);															// 004C35F0
     u32 fxnInteract(BinDlg* dialog, u32 data_struct_offset);
     s32 req_check(u32 reqFunc, u16 reqVar, u32 playerId, CUnit* unit);
     void updateMineralPatchImage(CUnit* mineralPatch);
@@ -842,6 +842,10 @@ namespace helper
     s32 AI_AddCostToNeeds(s32 a1, s32 a2, s32 a3);
     s32 AI_AddSpendingRequest(s16 a1, s32 a2, char a3, char a4, void* a5);
     bool isAIAllowedToBuild(s32 a1, s32 a2);
+
+    //// use_tech
+    const void issueTriTargetOrder(u8 order1, u8 order2, u8 order3);                                     // 0048CAF0
+    s32 checkEnergyForTechUse(s32 tech_id);                                                              // 00423660
 
     //// misc
     s8 SETS(s32 x);

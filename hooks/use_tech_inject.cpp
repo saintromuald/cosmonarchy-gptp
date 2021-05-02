@@ -3,7 +3,6 @@
 #include "SCBW/api.h"
 #include "hook_tools.h"
 
-
 void __declspec(naked) UseTechWrapper()
 {
     static u16 id;
@@ -14,7 +13,7 @@ void __declspec(naked) UseTechWrapper()
         MOV grphead, ESI
         PUSHAD
     }
-    //grphead framecount (1-9) is button number in command card
+    // grphead framecount (1-9) is button number in command card
     hooks::BTNSACT_UseTech(id, grphead);
     __asm
     {
@@ -23,13 +22,11 @@ void __declspec(naked) UseTechWrapper()
     }
 }
 
-
 const u32 Hook_Jump_SkipUpgradeOp = 0x0046D5CC;
 const u32 Hook_Jump_UpgradeFunctionality = 0x0046D5BE;
 void __declspec(naked) UpgradeIdComparison_Wrapper()
 {
-
-    //EDX (0xffff), CX (firegraft shift), EAX (1)
+    // EDX (0xffff), CX (firegraft shift), EAX (1)
     static u32 edx_0xffff;
     static u16 opcode;
     static u32 eax_res;
@@ -39,7 +36,6 @@ void __declspec(naked) UpgradeIdComparison_Wrapper()
         MOV eax_res, EAX
         PUSHAD
     }
-    //
     if (opcode < scbw::get_aise_value(nullptr, nullptr, AiseId::UpgradeLength, 0, 0))
     {
         __asm {
@@ -55,7 +51,6 @@ void __declspec(naked) UpgradeIdComparison_Wrapper()
         }
     }
 }
-
 
 namespace hooks
 {

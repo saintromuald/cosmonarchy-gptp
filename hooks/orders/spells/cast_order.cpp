@@ -191,7 +191,7 @@ namespace hooks
                                 if (orderWeaponId <= WeaponId::Maelstrom)
                                 { // Maelstrom is the last spell-related weapon
 
-// array bound to the function
+                                    // array bound to the function
                                     const u8* const array_00492B44 = (u8*)(0x00492B44);
 
                                     // this code would not work for weapons id of NuclearMissile, YamatoGun 
