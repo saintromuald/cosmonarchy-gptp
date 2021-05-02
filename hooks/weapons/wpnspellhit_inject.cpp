@@ -545,7 +545,6 @@ namespace {
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV unit, EDI
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV unit, EAX
@@ -569,7 +568,6 @@ namespace {
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
-			MOV unit, EDI
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV bullet, EAX
