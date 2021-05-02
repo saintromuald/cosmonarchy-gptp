@@ -319,7 +319,8 @@ namespace hooks {
 	// Base buildings built by a drone return the value of "isComplete", which is an argument that is true if the unit status flag has "Completed" set -- the building only spawns creep once it has been built
 	bool spreadsCreep(u16 unitId, bool isComplete)
 	{
-		switch (unitId) {
+		switch (unitId)
+		{
 			case UnitId::ZergHatchery:
 			case UnitId::ZergCreepColony:
 			case UnitId::ZergInfestedCommandCenter:
