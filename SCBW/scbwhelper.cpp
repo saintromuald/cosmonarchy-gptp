@@ -8009,7 +8009,7 @@ namespace helper
 
 	// For CBulletDamage
 
-	s32 lurkerSplashProc(CUnit* target, CBullet* bullet)
+	s32 _fastcall lurkerSplashProc(CUnit* target, CBullet* bullet)
 	{
 		const u32 Func_lurkerSplashProc = 0x0048B680;
 		static s32 result;
@@ -8024,7 +8024,7 @@ namespace helper
 		return result;
 	}
 
-	s32 groundSplashProc(CUnit* target, CBullet* bullet)
+	s32 _fastcall groundSplashProc(CUnit* target, CBullet* bullet)
 	{
 		const u32 Func_groundSplashProc = 0x0048B750;
 		static s32 result;
@@ -8039,7 +8039,7 @@ namespace helper
 		return result;
 	}
 
-	s32 airSplashProc(CUnit* unit, CBullet* bullet)
+	s32 _fastcall airSplashProc(CUnit* unit, CBullet* bullet)
 	{
 		const u32 Func_airSplashProc = 0x0048B150;
 		static s32 result;
@@ -8054,7 +8054,7 @@ namespace helper
 		return result;
 	}
 
-	s32 airSplashProc2(CUnit* unit, CBullet* bullet)
+	s32 _fastcall airSplashProc2(CUnit* unit, CBullet* bullet)
 	{
 		const u32 Func_airSplashProc2 = 0x0048B730;
 		static s32 result;

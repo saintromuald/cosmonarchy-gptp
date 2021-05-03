@@ -704,10 +704,10 @@ namespace helper
 	char setMaelstromTimer(CUnit* unit, u8 time);                                                               // 004553F0
 
 	// For CBulletDamage
-	s32 lurkerSplashProc(CUnit* target, CBullet* bullet);                                                       // 0048B680
-	s32 groundSplashProc(CUnit* target, CBullet* bullet);                                                       // 0048B750
-	s32 airSplashProc(CUnit* unit, CBullet* bullet);                                                            // 0048B150
-	s32 airSplashProc2(CUnit* unit, CBullet* bullet);                                                           // 0048B730
+	s32 _fastcall lurkerSplashProc(CUnit* target, CBullet* bullet);                                                       // 0048B680
+	s32 _fastcall groundSplashProc(CUnit* target, CBullet* bullet);                                                       // 0048B750
+	s32 _fastcall airSplashProc(CUnit* unit, CBullet* bullet);                                                            // 0048B150
+	s32 _fastcall airSplashProc2(CUnit* unit, CBullet* bullet);                                                           // 0048B730
 	bool unitHasNoMainOrderType(CUnit* unit);                                                                   // 00475A50
 	s32 setEventUnitComplete();                                                                                 // 004C36C0
 
