@@ -718,13 +718,8 @@ namespace hooks
 		// Shaman - Medstims ability
 		else if (unit->id == UnitId::TerranShaman)
 		{
-			if (unit->_padding_0x132 & 0x8)
-			{
-				unit->groundWeaponCooldown = 8;
-			}
 			auto timer = scbw::get_generic_timer(unit, ValueId::NaniteFieldTimer);
 			unit->_padding_0x133 = 0;
-			unit->_padding_0x132 = 0;
 			if (timer == 0)
 			{
 				scbw::set_generic_timer(unit, ValueId::NaniteFieldTimer, 24);
