@@ -276,7 +276,6 @@ SCBW_DATA(BufferStr*, struct_Char2, 0x006CAB08);
 SCBW_DATA(char*, unkString_Char, 0x006CA668);
 
 // For drawWireframeShield
-
 SCBW_DATA(char*, charBuffer, 0x0068C208);
 SCBW_DATA(char*, byteShieldStr, 0x0068C20A); // count of 22
 SCBW_DATA(u8*, wireframeConstants, 0x00515280); // count of 40

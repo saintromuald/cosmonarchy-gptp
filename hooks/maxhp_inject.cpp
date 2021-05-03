@@ -581,20 +581,6 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) drawBuildingInfo_Wrapper()
-	{
-		static void* a1;
-		__asm {
-			MOV a1, ECX
-			PUSHAD
-		}
-		hooks::drawBuildingInfo(a1);
-		__asm {
-			POPAD
-			RETN
-		}
-	}
-
 	void __declspec(naked) calcUnitStrength_Wrapper()
 	{
 		static s32 a1;

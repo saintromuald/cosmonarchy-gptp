@@ -3,7 +3,6 @@
 
 namespace
 {
-
 	void __declspec(naked) stats_panel_display_Wrapper()
 	{
 		static BinDlg* dialog;
@@ -20,6 +19,20 @@ namespace
 			MOV ESP, EBP
 			POP EBP
 			RETN 4
+		}
+	}
+
+	void __declspec(naked) drawBuildingInfo_Wrapper()
+	{
+		static BinDlg* dialog;
+		__asm {
+			MOV dialog, ECX
+			PUSHAD
+		}
+		hooks::drawBuildingInfo(dialog);
+		__asm {
+			POPAD
+			RETN
 		}
 	}
 
@@ -88,13 +101,12 @@ namespace
 
 namespace hooks
 {
-
 	void injectStatsPanelDisplayHook()
 	{
-		jmpPatch(stats_panel_display_Wrapper, 0x00426C60, 1);
-		jmpPatch(getUnitRankString_Wrapper, 0x0042F370, 2);
-		//		jmpPatch(statsArmorLevel_Wrapper,			0x00425600, 1);
-		//		jmpPatch(statsWeaponLevel_Wrapper,			0x00425790, 1);
+		jmpPatch(stats_panel_display_Wrapper,	0x00426C60, 1);
+		jmpPatch(getUnitRankString_Wrapper,		0x0042F370, 2);
+//		jmpPatch(drawBuildingInfo_Wrapper,		0x00427890, 3);
+//		jmpPatch(statsArmorLevel_Wrapper,		0x00425600, 1);
+//		jmpPatch(statsWeaponLevel_Wrapper,		0x00425790, 1);
 	}
-
-} //
+}

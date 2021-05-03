@@ -8184,4 +8184,15 @@ namespace helper
 		}
 		return result;
 	}
+
+	// For drawBuildingInfo
+	void drawSupplyUnitInfo(BinDlg* dialog) {
+		const u32 Func_drawSupplyUnitInfo = 0x00427540;
+		__asm {
+			PUSHAD
+			MOV EAX, dialog
+			CALL Func_drawSupplyUnitInfo
+			POPAD
+		}
+	}
 }

@@ -54,6 +54,7 @@ namespace helper
 	void setTextStr(s32 a1);
 	void setUnitStatusStrText(s32 a1);
 	s32 unitGetName(CUnit* a1);
+	void drawSupplyUnitInfo(BinDlg* dialog); // 00427540
 
 	// For getUnitStrength
 	s32 getCurrentHitPointsPlusShields(CUnit* a1);
