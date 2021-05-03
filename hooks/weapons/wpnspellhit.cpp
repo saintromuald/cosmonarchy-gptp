@@ -40,6 +40,46 @@ namespace hooks
 		return aUnitInBound;
 	}
 
+	// Hooked to resolve CBulletDamage crashes - Pr0nogo
+	CUnit* findBestUnit(Box16* coords, CBullet* bullet, s32(__fastcall* func)(CUnit*, CBullet*)) // 004E8830
+	{
+		CUnit** targetsFound;
+		CUnit** targetsFound2;
+		CUnit* iterate;
+		CUnit* result;
+		s32 temp;
+		s32 v8;
+		s32 v9;
+
+		targetsFound = helper::findAllUnits(coords);
+		targetsFound2 = targetsFound;
+		if (func && (iterate = *targetsFound) != 0)
+		{
+			while (!func(iterate, bullet))
+			{
+				iterate = targetsFound2[1];
+				++targetsFound2;
+				if (!iterate)
+				{
+					temp = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
+					*tempUnitsListCurrentArrayCount = temp;
+					return 0;
+				}
+			}
+			v8 = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
+			result = *targetsFound2;
+			*tempUnitsListCurrentArrayCount = v8;
+		}
+		else
+		{
+			v9 = tempUnitsListArraysCountsListLastIndex[0] - 1;
+			tempUnitsListArraysCountsListLastIndex[0] = v9;
+			*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[v9];
+			result = *targetsFound2;
+		}
+		return result;
+	}
+
 	// Hooked to rework Irradiate - Pr0nogo
 	void __stdcall CBulletDamage(CBullet* bullet) // 0048B770
 	{
@@ -118,11 +158,11 @@ namespace hooks
 				coords.h = outerSplash + bulletY;
 				if (weaponId == WeaponId::SubterraneanSpines)
 				{
-					helper::findBestUnit(&coords, (s32)bullet, helper::lurkerSplashProc);
+					findBestUnit(&coords, bullet, helper::lurkerSplashProc);
 				}
 				else
 				{
-					helper::findBestUnit(&coords, (s32)bullet, helper::groundSplashProc);
+					findBestUnit(&coords, bullet, helper::groundSplashProc);
 				}
 				break;
 			}
@@ -286,7 +326,7 @@ namespace hooks
 				coords.w = outerSplash + bulletX;
 				coords.h = outerSplash + bulletY;
 				*airSplashListCount = 0;
-				helper::findBestUnit(&coords, (s32)bullet, helper::airSplashProc);
+				findBestUnit(&coords, bullet, helper::airSplashProc);
 				if (*airSplashListCount)
 				{
 					if (*airSplashListCount == 1)
@@ -299,7 +339,7 @@ namespace hooks
 					}
 					helper::weaponBulletShot(airSplashList[random], bullet, 1);
 				}
-				helper::findBestUnit(&coords, (s32)bullet, helper::airSplashProc2);
+				findBestUnit(&coords, bullet, helper::airSplashProc2);
 				break;
 			}
 			default:
@@ -1074,8 +1114,8 @@ namespace hooks
 		CUnit* v1; // esi
 		u16 v2; // ax
 		bool v3; // zf
-		GroupFlag v4; // al
-		u8 v5; // al
+		GroupFlag targetsFound2; // al
+		u8 iterate; // al
 		s16 v6; // cx
 		s16 v7; // ax
 		const char* v8; // eax
@@ -1093,21 +1133,21 @@ namespace hooks
 			//			a2 = (Point32)(v1->energy < v2);		// check this out
 			if (!v3)
 			{
-				v4 = units_dat::GroupFlags[(u16)v1->id];
-				if (v4.isZerg)
+				targetsFound2 = units_dat::GroupFlags[(u16)v1->id];
+				if (targetsFound2.isZerg)
 				{
-					v5 = 0;
+					iterate = 0;
 				}
-				else if (v4.isTerran)
+				else if (targetsFound2.isTerran)
 				{
-					v5 = 1;
+					iterate = 1;
 				}
 				else
 				{
-					v5 = (v4.isProtoss) != 0 ? 2 : 4;
+					iterate = (targetsFound2.isProtoss) != 0 ? 2 : 4;
 				}
-				v6 = v5 + 864;
-				v7 = v5 + 863;
+				v6 = iterate + 864;
+				v7 = iterate + 863;
 				if (!v6)
 				{
 					goto LABEL_15;

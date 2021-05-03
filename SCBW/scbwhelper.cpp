@@ -8168,4 +8168,20 @@ namespace helper
 			POPAD
 		}
 	}
+
+	// For findBestUnit
+
+	CUnit** findAllUnits(Box16* coords)
+	{
+		const u32 Func_findAllUnits = 0x004308A0;
+		static CUnit** result;
+		__asm {
+			PUSHAD
+			PUSH coords
+			CALL Func_findAllUnits
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

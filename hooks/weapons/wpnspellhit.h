@@ -32,6 +32,9 @@ namespace hooks
 		s32(__fastcall* proc)(CUnit*, CUnit*),
 		CUnit* unit);
 	void __stdcall CBulletDamage(CBullet* bullet);										// 0048B770
+	CUnit* findBestUnit(Box16* coords,													 // 004E8830
+		CBullet* bullet,
+		s32(__fastcall* func)(CUnit*, CBullet*));
 
 	//The injector function for this hook module.
 	void injectWpnSpellHitHooks();
