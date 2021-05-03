@@ -525,7 +525,7 @@ void Globals::frameHook()
 						impact.position.y + impact.radius
 					).forEachInMatch(unitRangeCount(nullptr, 0, {}), [&](CUnit* unit)
 					{
-						ApplyIrradiate(unit, impact.player, impact.currentTime * 0.042 * 8.0);
+						ApplyIrradiate(unit, impact.player, 15);
 					});
 					break;
 				}

@@ -13,7 +13,6 @@ namespace SplashType
 
 namespace hooks
 {
-
 	void splash(CBullet* bullet, u32 weaponId, u8 splashType, CUnit* guaranteedHit = nullptr);
 	void lurkerSplash(CBullet* bullet, u32 weaponId, u8 splash);
 
@@ -21,6 +20,7 @@ namespace hooks
 	void normalDamage(CBullet* bullet, u32 weaponId);
 	void yamatoDamage(CBullet* bullet, u32 weaponId);
 	void airSplash(CBullet* bullet, u32 weaponId);
+	void nuke(CBullet* bullet, u32 weaponId);
 
 	// HYDRA-specific
 	bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId);
