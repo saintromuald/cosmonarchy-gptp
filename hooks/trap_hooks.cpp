@@ -106,7 +106,7 @@ namespace hooks
 		helper::incrementUnitScoresEx(v1, 1, 1);
 		if (units_dat::BaseProperty[(u16)v1->id] & UnitProperty::PermanentCloak)
 		{
-			helper::playSoundFromDirection(v1, 273);
+			helper::AnimCloak(v1, 273);
 		}
 
 		v3 = v1->id;

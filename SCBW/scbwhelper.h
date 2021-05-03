@@ -438,7 +438,7 @@ namespace helper
 
 	//// trap_hooks
 	// For updateUnitStrengthAndApplyDefaultOrders
-	void playSoundFromDirection(CUnit* a1, s32 a2);																						// 0049B5B0
+	void AnimCloak(CUnit* a1, s32 a2);																						// 0049B5B0
 	void refreshUnitVision(CUnit* a1);																									// 004E5F30
 	void initUnitTrapDoodad(CUnit* a1);																									// 004E6490
 	COrder* removeOrderFromUnitQueue(COrder* a1, CUnit* a2);																			// 004742D0

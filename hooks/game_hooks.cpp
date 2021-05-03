@@ -958,8 +958,7 @@ namespace hooks
 		// Permanently Cloaked units recloak after 2 seconds of being out of combat
 		if (scbw::isDecloakable(unit) && scbw::get_generic_timer(unit, ValueId::DecloakTimer) == 1)
 		{
-			helper::checkUnitVisibility(unit);
-			helper::playSoundFromDirection(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
+			helper::AnimCloak(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
 			scbw::set_generic_timer(unit, ValueId::DecloakTimer, 0);
 		}
 

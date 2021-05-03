@@ -4293,7 +4293,7 @@ namespace helper
 
 	// For updateUnitStrengthAndApplyDefaultOrders
 
-	void playSoundFromDirection(CUnit* a1, s32 a2)
+	void AnimCloak(CUnit* a1, s32 a2)
 	{
 		const u32 Func_playSoundFromDirection = 0x0049B5B0;
 		__asm {
