@@ -82,17 +82,7 @@ namespace hooks
 						}
 					}
 					else
-						if (unit->id == UnitId::corsair && scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb))
-						{
-							unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
-							if (unit->energy == 0)
-							{
-								scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 0);
-							}
-						}
-
-						else
-						{ //EB526
+						{ // 004EB526
 							if (unit == nullptr)
 							{
 								return;
@@ -102,7 +92,7 @@ namespace hooks
 								&& unit->mainOrderId == OrderId::CompletingArchonSummon
 								&& unit->mainOrderState == 0)
 							{
-								maxEnergy = 12800;  //50 * 256; Identical to energy amount on spawn
+								maxEnergy = 12800; // 50 * 256; Identical to energy amount on spawn
 							}
 							else
 							{
