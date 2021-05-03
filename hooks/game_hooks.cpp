@@ -903,7 +903,8 @@ namespace hooks
 		}
 
 		// Southpaw - Knockout Drivers behavior
-		if (scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) == 1)
+		if (scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks)
+			&& scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) < 2)
 		{
 			scbw::set_generic_value(unit, ValueId::KnockoutDriversStacks, 0);
 			unit->updateSpeed();

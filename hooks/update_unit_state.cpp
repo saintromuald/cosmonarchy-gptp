@@ -58,7 +58,7 @@ namespace hooks
 					bStopHere = true;
 				}
 				if (!bStopHere)
-				{ // the function prevent energy consumption if THE GATHERING enabled
+				{ // the function prevents energy consumption if THE GATHERING is enabled
 					unit->spendUnitEnergy(cloakingEnergyCost);
 				}
 			}
