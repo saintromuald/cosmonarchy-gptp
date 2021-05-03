@@ -156,7 +156,7 @@ namespace helper
 		return (u16)result;
 	}
 
-	void addTextToDialog(s32 a1, s16 a2, const char* a3)
+	void addTextToDialog(BinDlg* a1, s16 a2, const char* a3)
 	{
 		const u32 Func_addTextToDialog = 0x004258B0;
 		static s32 _a3 = (s32)a3;
@@ -170,7 +170,7 @@ namespace helper
 		}
 	}
 
-	void drawEnergy(s32 a1)
+	void drawEnergy(BinDlg* a1)
 	{
 		const u32 Func_drawEnergy = 0x00425A30;
 		__asm {
@@ -201,19 +201,6 @@ namespace helper
 			MOV EAX, a1
 			MOVZX CX, a2
 			CALL Func_showControlGroup
-			POPAD
-		}
-	}
-
-	void addTextToDialog(s32 a1, s16 a2, s32 a3)
-	{
-		const u32 Func_addTextToDialog = 0x004258B0;
-		__asm {
-			PUSHAD
-			PUSH a3
-			MOV EAX, a1
-			MOVZX CX, a2
-			CALL Func_addTextToDialog
 			POPAD
 		}
 	}
@@ -339,7 +326,7 @@ namespace helper
 		return result;
 	}
 
-	void drawProgressBar(s32 a1)
+	void drawProgressBar(BinDlg* a1)
 	{
 		const u32 Func_drawProgressBar = 0x004260C0;
 		__asm {
@@ -350,7 +337,7 @@ namespace helper
 		}
 	}
 
-	void drawNukeSiloInfo(s32 a1)
+	void drawNukeSiloInfo(BinDlg* a1)
 	{
 		const u32 Func_drawNukeSiloInfo = 0x00426FF0;
 		__asm {
@@ -427,7 +414,7 @@ namespace helper
 		return (bool)result;
 	}
 
-	void drawAddonProgress(s32 a1)
+	void drawAddonProgress(BinDlg* a1)
 	{
 		const u32 Func_drawAddonProgress = 0x00425F30;
 		__asm {
@@ -438,7 +425,7 @@ namespace helper
 		}
 	}
 
-	void drawTechProgress(s32 a1)
+	void drawTechProgress(BinDlg* a1)
 	{
 		const u32 Func_drawTechProgress = 0x004266F0;
 		__asm {
@@ -499,7 +486,7 @@ namespace helper
 		return (s8)result;
 	}
 
-	void drawDisplayButtons(s32 a1)
+	void drawDisplayButtons(BinDlg* a1)
 	{
 		const u32 Func_drawDisplayButtons = 0x00426C60;
 		__asm {
@@ -525,7 +512,7 @@ namespace helper
 		return result;
 	}
 
-	void setTextStr(s32 a1)
+	void setTextStr(BinDlg* a1)
 	{
 		const u32 Func_setTextStr = 0x004263E0;
 		__asm {
@@ -536,7 +523,7 @@ namespace helper
 		}
 	}
 
-	void setUnitStatusStrText(s32 a1)
+	void setUnitStatusStrText(BinDlg* a1)
 	{
 		const u32 Func_setUnitStatusStrText = 0x00425B50;
 		__asm {
@@ -8194,5 +8181,19 @@ namespace helper
 			CALL Func_drawSupplyUnitInfo
 			POPAD
 		}
+	}
+
+	// For getUnitName
+	const char* getUnitNameStatString(u16 unitId) {
+		const u32 Func_getUnitNameStatString = 0x0047B090;
+		static const char* result;
+		__asm {
+			PUSHAD
+			MOVZX CX, unitId
+			CALL Func_getUnitNameStatString
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }

@@ -97,6 +97,22 @@ namespace
 		}
 	}
 
+	void __declspec(naked) getUnitName_Wrapper() // 0047B5A0
+	{
+		static const char* result;
+		static CUnit* unit;
+		__asm {
+			MOV unit, ECX
+			PUSHAD
+		}
+		result = hooks::getUnitName(unit);
+		__asm {
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 }
 
 namespace hooks
@@ -108,5 +124,6 @@ namespace hooks
 //		jmpPatch(drawBuildingInfo_Wrapper,		0x00427890, 3);
 //		jmpPatch(statsArmorLevel_Wrapper,		0x00425600, 1);
 //		jmpPatch(statsWeaponLevel_Wrapper,		0x00425790, 1);
+		jmpPatch(getUnitName_Wrapper,			0x0047B5A0, 2);
 	}
 }

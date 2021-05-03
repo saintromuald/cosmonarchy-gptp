@@ -10,6 +10,7 @@ namespace hooks
 	void drawBuildingInfo(BinDlg* dlg);												// 00427890
 	void statsArmorLevel(BinDlg* dialog, s32 unused, u16 buttonRelated);			// 00425600
 	void statsWeaponLevel(BinDlg* dialog, u16 buttonRelated, u8 weaponId);			// 00425790
+	const char* getUnitName(CUnit* unit);											// 0047B5A0
 
 	void injectStatsPanelDisplayHook();
 

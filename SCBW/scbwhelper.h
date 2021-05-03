@@ -15,11 +15,10 @@ namespace helper
 	bool unitHPbetween33_66_percent(s32 a1, CUnit* a2);
 	s32 getMaxHP(CUnit* a1);
 	u16 getLastQueueSlotType(CUnit* a1);
-	void addTextToDialog(s32 a1, s16 a2, const char* a3);
-	void drawEnergy(s32 a1);
+	void addTextToDialog(BinDlg* a1, s16 a2, const char* a3);
+	void drawEnergy(BinDlg* a1);
 	void hideOptionalStatusScreenControls(BinDlg* a1);
 	void showControlGroup(BinDlg* a1, s16 a2, s16 a3);
-	void addTextToDialog(s32 a1, s16 a2, s32 a3);
 	void drawShieldUpgrade(s32 a1, u16 a2);
 	void hideDialog(BinDlg* a1);
 
@@ -36,25 +35,28 @@ namespace helper
 	// For drawBuildingInfo
 	s32 needRedrawUI();
 	CUnit* genericStatusUpdateDrawnValues();
-	void drawProgressBar(s32 a1);
-	void drawNukeSiloInfo(s32 a1);
+	void drawProgressBar(BinDlg* a1);
+	void drawNukeSiloInfo(BinDlg* a1);
 	bool unitIsActiveTransport(CUnit* a1);
 	bool isQueueSlotActive(CUnit* a1, s32 a2);
 	void drawTrainingProgress(BinDlg* a1);
 	bool isConstructingAddon(const CUnit* a1);
 	bool isAttemptingProtossBuild(CUnit* a1);
-	void drawAddonProgress(s32 a1);
-	void drawTechProgress(s32 a1);
+	void drawAddonProgress(BinDlg* a1);
+	void drawTechProgress(BinDlg* a1);
 	void drawUpgradeProgress(BinDlg* a1);
 	bool unitIsGeyser(CUnit* a1);
 	void drawGasQuantity(BinDlg* a1);
 	s8 unitGetGroundWeapon(CUnit* a1);
-	void drawDisplayButtons(s32 a1);
+	void drawDisplayButtons(BinDlg* a1);
 	BinDlg* getControlFromIndex(BinDlg* a1, s16 a2);
-	void setTextStr(s32 a1);
-	void setUnitStatusStrText(s32 a1);
+	void setTextStr(BinDlg* a1);
+	void setUnitStatusStrText(BinDlg* a1);
 	s32 unitGetName(CUnit* a1);
 	void drawSupplyUnitInfo(BinDlg* dialog); // 00427540
+
+	// For getUnitName
+	const char* getUnitNameStatString(u16 unitId); // 0047B090
 
 	// For getUnitStrength
 	s32 getCurrentHitPointsPlusShields(CUnit* a1);

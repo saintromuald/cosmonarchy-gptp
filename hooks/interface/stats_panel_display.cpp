@@ -346,12 +346,12 @@ namespace hooks
 		}
 		if (!(activeUnit->status & UnitStatus::Completed))
 		{
-			helper::drawProgressBar((s32)dlg);
+			helper::drawProgressBar(dlg);
 			goto LABEL_32;
 		}
 		if (unitId == UnitId::TerranNuclearSilo)
 		{
-			helper::drawNukeSiloInfo((s32)dlg);
+			helper::drawNukeSiloInfo(dlg);
 			goto LABEL_32;
 		}
 		if (helper::unitIsActiveTransport(activeUnit))
@@ -363,12 +363,12 @@ namespace hooks
 		}
 		if (helper::isConstructingAddon(activeUnit) || helper::isAttemptingProtossBuild(activeUnit))
 		{
-			helper::drawAddonProgress((s32)dlg);
+			helper::drawAddonProgress(dlg);
 			goto LABEL_32;
 		}
 		if (activeUnit->building.techType != 44)
 		{
-			helper::drawTechProgress((s32)dlg);
+			helper::drawTechProgress(dlg);
 			goto LABEL_32;
 		}
 		if (activeUnit->building.upgradeType != 61)
@@ -405,14 +405,14 @@ namespace hooks
 			helper::showControlGroup(dlg, -20, 12);
 			*statusScreenFunc = 3;
 		}
-		helper::drawDisplayButtons((s32)dlg);
+		helper::drawDisplayButtons(dlg);
 		BinDlg* control = helper::getControlFromIndex(dlg, -21);
 		helper::hideDialog(control);
 	LABEL_32:
-		helper::setTextStr((s32)dlg);
-		helper::setUnitStatusStrText((s32)dlg);
-		s32 unitName = helper::unitGetName(*activePortraitUnit);
-		helper::addTextToDialog((s32)dlg, -5, unitName);
+		helper::setTextStr(dlg);
+		helper::setUnitStatusStrText(dlg);
+		const char* unitName = getUnitName(*activePortraitUnit);
+		helper::addTextToDialog(dlg, -5, unitName);
 	}
 
 	// Hooked to draw new values to icons -- Pr0nogo
@@ -550,5 +550,20 @@ LABEL_9:
 			helper::updateDialog(v6);
 		}
 		*unkUpgradeCount += v10;
+	}
+
+	// Hooked to change the name of new building morphs - Pr0nogo
+	const char* getUnitName(CUnit* unit)
+	{
+		u16 queue = unit->buildQueue[unit->buildQueueSlot];
+		if (unit->status & UnitStatus::Completed
+			|| !scbw::isZergBuildingMorphResult(queue)) // Fixes lardcode
+		{
+			return helper::getUnitNameStatString(unit->id);
+		}
+		else
+		{
+			return helper::getUnitNameStatString(queue);
+		}
 	}
 }

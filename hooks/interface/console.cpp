@@ -81,7 +81,7 @@ namespace hooks
 		return v0;
 	}
 
-	void setTextStr(s32 a1)
+	void setTextStr(BinDlg* a1)
 	{ // 004263E0
 		CUnit* v1; // esi
 		u16 v2; // edi

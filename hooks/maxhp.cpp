@@ -97,9 +97,9 @@ namespace hooks
 			helper::showControlGroup(v1, -10, -13);
 			*statusScreenFunc = 15;
 		}
-		helper::addTextToDialog((s32)v1, -10, 0);
-		helper::addTextToDialog((s32)v1, -12, 0);
-		helper::addTextToDialog((s32)v1, -13, 0);
+		helper::addTextToDialog(v1, -10, 0);
+		helper::addTextToDialog(v1, -12, 0);
+		helper::addTextToDialog(v1, -13, 0);
 		v2 = (*activePortraitUnit)->id;
 		if ((u16)v2 >= 0xB0u && (u16)v2 <= 0xB2u)
 		{
@@ -129,7 +129,7 @@ LABEL_14:
 			v5 = "";
 		v8 = (BufferStr*)v5;
 LABEL_19:
-		helper::addTextToDialog((s32)v1, -11, (s32)v8);
+		helper::addTextToDialog(v1, -11, (const char*)v8);
 		if (units_dat::ShieldsEnabled[(*activePortraitUnit)->id])
 		{
 			helper::drawShieldUpgrade((s32)v1, 0);
@@ -184,7 +184,7 @@ LABEL_26:
 
 		v1 = (BinDlg*)a1;
 		v2 = *activePortraitUnit;
-		if (IS_IN_REPLAY || (u8)(*activePortraitUnit)->playerId == *LOCAL_NATION_ID)
+		if (IS_IN_REPLAY || (*activePortraitUnit)->playerId == *LOCAL_NATION_ID)
 		{
 			helper::getSuppliesUsed();
 			if (*statusScreenFunc != 12)
@@ -307,10 +307,10 @@ LABEL_26:
 				v17 = "";
 			}
 			sprintf_s(struct_Char2->buf, 260, "%s %d", v17, (u32)(v15 + 1) >> 1);
-			helper::addTextToDialog((s32)v1, -10, (s32)struct_Char);
-			helper::addTextToDialog((s32)v1, -11, (s32)"");
-			helper::addTextToDialog((s32)v1, -12, (s32)unkString_Char);
-			helper::addTextToDialog((s32)v1, -13, (s32)struct_Char2);
+			helper::addTextToDialog(v1, -10, (const char*)struct_Char);
+			helper::addTextToDialog(v1, -11, "");
+			helper::addTextToDialog(v1, -12, (const char*)unkString_Char);
+			helper::addTextToDialog(v1, -13, (const char*)struct_Char2);
 			v18 = (*activePortraitUnit)->id;
 			if (units_dat::ShieldsEnabled[v18])
 			{

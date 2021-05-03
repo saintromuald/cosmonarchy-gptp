@@ -19,7 +19,7 @@ namespace
 
 	void __declspec(naked) setTextStr_Wrapper()
 	{ // 004263E0
-		static s32 a1;
+		static BinDlg* a1;
 
 		__asm {
 			PUSH EBP
