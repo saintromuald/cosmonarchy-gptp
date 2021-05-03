@@ -276,8 +276,7 @@ namespace hooks
 			u32 overlayImageId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
 			if (!unit->getOverlay(overlayImageId) && scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 0)
 			{
-				unit->sprite->createTopOverlay(overlayImageId,
-					0, 0, 0);
+				unit->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
 				scbw::set_generic_value(unit, ValueId::HierophantOverlay, 1);
 			}
 		}
