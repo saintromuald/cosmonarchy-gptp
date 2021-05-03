@@ -48,8 +48,8 @@ namespace hooks
 		CUnit* iterate;
 		CUnit* result;
 		s32 temp;
-		s32 v8;
-		s32 v9;
+		s32 tempArray;
+		s32 tempIndex;
 
 		targetsFound = helper::findAllUnits(coords);
 		targetsFound2 = targetsFound;
@@ -66,15 +66,15 @@ namespace hooks
 					return 0;
 				}
 			}
-			v8 = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
+			tempArray = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
 			result = *targetsFound2;
-			*tempUnitsListCurrentArrayCount = v8;
+			*tempUnitsListCurrentArrayCount = tempArray;
 		}
 		else
 		{
-			v9 = tempUnitsListArraysCountsListLastIndex[0] - 1;
-			tempUnitsListArraysCountsListLastIndex[0] = v9;
-			*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[v9];
+			tempIndex = tempUnitsListArraysCountsListLastIndex[0] - 1;
+			tempUnitsListArraysCountsListLastIndex[0] = tempIndex;
+			*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsList[tempIndex];
 			result = *targetsFound2;
 		}
 		return result;
