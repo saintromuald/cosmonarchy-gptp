@@ -44,6 +44,9 @@ constexpr s32 AzazelDefensiveMatrixHeal = 53; // 5 HP per second | 256 * 5 / 24
 // Treasury
 constexpr s32 TreasuryIncrease = 4;
 
+// Demiurge
+constexpr s32 GodsMadeFleshEnergyDrain = 100;
+
 // Lanifect
 constexpr s32 AIWebSeekRange = 96;
 constexpr s32 AICorsairAllySeekRange = 128;

@@ -264,9 +264,8 @@ namespace hooks
 				scbw::SendCommand(buf, 0xc);
 				break;
 			}
-			case TechId::UnusedTech40: // sublime shepherd
+			case TechId::SublimeShepherd:
 			{
-
 				s32 action = 1; // on
 				if (scbw::get_generic_rust_value(firstInList, ValueId::SublimeShepherd) == 1)
 				{
@@ -290,7 +289,6 @@ namespace hooks
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = ValueId::CastLazarusAgent;
 				scbw::SendCommand(buf, 0xc);
-				// in gameplay sense it is not used as switch ability, but it uses switch ability framework to not bother with rust
 				break;
 			}
 			case TechId::TempoChange:

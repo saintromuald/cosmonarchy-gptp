@@ -307,6 +307,7 @@ namespace ValueId
 		AttachedAkistrokorUnit,
 		PreMorphEnergy,
 		GodsMadeFleshCast,
+		GodsMadeFleshActive,
 	};
 }
 #include "SCBW\enumerations\TechId.h"

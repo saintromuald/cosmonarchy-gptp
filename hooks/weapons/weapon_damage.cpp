@@ -307,13 +307,13 @@ namespace hooks
 
 	static void weaponDamage_damageModifiers(WeaponDamageData& data)
 	{
-		// Dark Swarm - Defiler Ability
+		// Isthrathaleth Dark Swarm
 		if (scbw::isUnderDarkSwarm(data.target) && weapons_dat::MaxRange[data.weaponId] > 32 && (data.damageDivisor == 1 || data.weaponId == WeaponId::AcidSpore) && data.weaponId != WeaponId::SubterraneanSpines)
 		{
 			data.damageType = DamageType::Independent;
 		}
 
-		switch (data.weaponId) // Damage Modifier Calc
+		switch (data.weaponId)
 		{
 			case WeaponId::DemiurgeGalacticWeaver:
 			{
@@ -371,7 +371,7 @@ namespace hooks
 					} break;
 				};
 				data.finalDamage *= mul;
-				data.finalDamage += (s32)scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction;
+				data.finalDamage += (s32)scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction;				
 			} break;
 			default:
 			{
