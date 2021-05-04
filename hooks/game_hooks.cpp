@@ -1093,7 +1093,8 @@ namespace hooks
 		}
 
 		// Demiurge - Gods Made Flesh - return units to original owner
-		if (scbw::get_generic_unit(unit, ValueId::WorshipDemiurgeUnit) == nullptr) {
+		if (scbw::get_generic_value(unit, ValueId::WorshipStack)
+			&& scbw::get_generic_unit(unit, ValueId::WorshipDemiurgeUnit) == nullptr) {
 			scbw::set_generic_value(unit, ValueId::WorshipStack, 0);
 			unit->giveTo(scbw::get_generic_value(unit, ValueId::WorshipOriginalPlayer));
 		}

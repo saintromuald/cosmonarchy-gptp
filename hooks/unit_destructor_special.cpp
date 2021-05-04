@@ -167,6 +167,10 @@ void unitDestructorSpecialHook(CUnit* unit)
 		}
 		break;
 	}
+	default:
+	{
+		break;
+	}
 	}
 
 	// These require the unit to be completed
@@ -270,6 +274,10 @@ void unitDestructorSpecialHook(CUnit* unit)
 		case UnitId::ZergExtractor:
 		{
 			freeResourceContainer(unit);
+			break;
+		}
+		default:
+		{
 			break;
 		}
 		}

@@ -354,9 +354,9 @@ namespace hooks
 			case WeaponId::DemiurgeGalacticWeaver:
 			{
 				// Demiurge - Worship
-				if (data.target->getCurrentHpInGame() <= (data.target->getMaxHpInGame() / 2))
+				if (data.target->playerId != data.attacker->playerId
+					&& data.target->getCurrentHpInGame() <= (data.target->getMaxHpInGame() / 2))
 				{
-					// TODO: implement unit transfer
 					scbw::set_generic_value(data.target, ValueId::WorshipStack, 1);
 					scbw::set_generic_unit(data.target, ValueId::WorshipDemiurgeUnit, data.attacker);
 					scbw::set_generic_value(data.target, ValueId::WorshipOriginalPlayer, data.target->playerId);
