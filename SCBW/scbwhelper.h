@@ -18,7 +18,7 @@ namespace helper
 	void addTextToDialog(BinDlg* a1, s16 a2, const char* a3);
 	void drawEnergy(BinDlg* a1);
 	void hideOptionalStatusScreenControls(BinDlg* a1);
-	void showControlGroup(BinDlg* a1, s16 a2, s16 a3);
+	void showControlGroup(BinDlg* dialog, s16 firstId, s16 lastId);
 	void drawShieldUpgrade(s32 a1, u16 a2);
 	void hideDialog(BinDlg* a1);
 
@@ -38,8 +38,8 @@ namespace helper
 	void drawProgressBar(BinDlg* a1);
 	void drawNukeSiloInfo(BinDlg* a1);
 	bool unitIsActiveTransport(CUnit* a1);
-	bool isQueueSlotActive(CUnit* a1, s32 a2);
-	void drawTrainingProgress(BinDlg* a1);
+	bool isQueueSlotActive(CUnit* unit, s32 slot);
+	void drawTrainingProgress(BinDlg* dialog);
 	bool isConstructingAddon(const CUnit* a1);
 	bool isAttemptingProtossBuild(CUnit* a1);
 	void drawAddonProgress(BinDlg* a1);

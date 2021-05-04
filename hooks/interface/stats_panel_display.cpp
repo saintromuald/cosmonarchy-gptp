@@ -323,7 +323,7 @@ namespace hooks
 
 	// TODO: Fix progress bar drawing during addon construction, unit training
 	// Hooked to draw armor icons to buildings - Pr0nogo
-	void drawBuildingInfo(BinDlg* dlg) // 00427890
+	void drawBuildingInfo(BinDlg* dialog) // 00427890
 	{
 		CUnit* activeUnit = *activePortraitUnit;
 		selectionGroupHP[0] = (*activePortraitUnit)->hitPoints;
@@ -334,57 +334,68 @@ namespace hooks
 		helper::genericStatusUpdateDrawnValues();
 		s32 unitId = activeUnit->id;
 		if (unitId == UnitId::ResourceMineralField 
-			||unitId == UnitId::ResourceMineralFieldType2
+			|| unitId == UnitId::ResourceMineralFieldType2
 			|| unitId == UnitId::ResourceMineralFieldType3
 			|| unitId == UnitId::ResourceVespeneGeyser)
 		{
 			goto LABEL_35;
 		}
-		if (!IS_IN_REPLAY && (u8)activeUnit->id != *LOCAL_NATION_ID)
+		if (!IS_IN_REPLAY && activeUnit->playerId != *LOCAL_NATION_ID)
 		{
 			goto LABEL_6;
 		}
 		if (!(activeUnit->status & UnitStatus::Completed))
 		{
-			helper::drawProgressBar(dlg);
+			scbw::print("drawProgressBar");
+			helper::drawProgressBar(dialog);
 			goto LABEL_32;
 		}
 		if (unitId == UnitId::TerranNuclearSilo)
 		{
-			helper::drawNukeSiloInfo(dlg);
+			scbw::print("drawNukeSiloInfo");
+			helper::drawNukeSiloInfo(dialog);
 			goto LABEL_32;
 		}
 		if (helper::unitIsActiveTransport(activeUnit))
+		{
+			scbw::print("unitIsActiveTransport");
 			goto LABEL_6;
+		}
 		if (helper::isQueueSlotActive(activeUnit, 0))
 		{
-			helper::drawTrainingProgress(dlg);
+			scbw::print("drawTrainingProgress");
+			helper::drawTrainingProgress(dialog);
 			goto LABEL_32;
 		}
 		if (helper::isConstructingAddon(activeUnit) || helper::isAttemptingProtossBuild(activeUnit))
 		{
-			helper::drawAddonProgress(dlg);
+			scbw::print("drawAddonProgress");
+			helper::drawAddonProgress(dialog);
 			goto LABEL_32;
 		}
 		if (activeUnit->building.techType != 44)
 		{
-			helper::drawTechProgress(dlg);
+			scbw::print("drawTechProgress");
+			helper::drawTechProgress(dialog);
 			goto LABEL_32;
 		}
 		if (activeUnit->building.upgradeType != 61)
 		{
-			helper::drawUpgradeProgress(dlg);
+			scbw::print("drawUpgradeProgress");
+			helper::drawUpgradeProgress(dialog);
 			goto LABEL_32;
 		}
 		if (units_dat::SupplyProvided[unitId])
 		{
-			helper::drawSupplyUnitInfo(dlg);
+			scbw::print("drawSupplyUnitInfo");
+			helper::drawSupplyUnitInfo(dialog);
 			goto LABEL_32;
 		}
 		if (helper::unitIsGeyser(activeUnit))
 		{
 		LABEL_35:
-			helper::drawGasQuantity(dlg);
+			scbw::print("drawGasQuantity");
+			helper::drawGasQuantity(dialog);
 			goto LABEL_32;
 		}
 		if (units_dat::AirWeapon[helper::getLastQueueSlotType(activeUnit)] == -126
@@ -394,25 +405,23 @@ namespace hooks
 		LABEL_6:
 			if (*statusScreenFunc != 4)
 			{
-				helper::hideOptionalStatusScreenControls(dlg);
+				helper::hideOptionalStatusScreenControls(dialog);
 				*statusScreenFunc = 4;
 			}
 			goto LABEL_32;
 		}
 		if (*statusScreenFunc != 3)
 		{
-			helper::hideOptionalStatusScreenControls(dlg);
-			helper::showControlGroup(dlg, -20, 12);
+			helper::hideOptionalStatusScreenControls(dialog);
+			helper::showControlGroup(dialog, -20, 12);
 			*statusScreenFunc = 3;
 		}
-		helper::drawDisplayButtons(dlg);
-		BinDlg* control = helper::getControlFromIndex(dlg, -21);
-		helper::hideDialog(control);
+		helper::drawDisplayButtons(dialog);
+		helper::hideDialog(helper::getControlFromIndex(dialog, -21));
 	LABEL_32:
-		helper::setTextStr(dlg);
-		helper::setUnitStatusStrText(dlg);
-		const char* unitName = getUnitName(*activePortraitUnit);
-		helper::addTextToDialog(dlg, -5, unitName);
+		helper::setTextStr(dialog);
+		helper::setUnitStatusStrText(dialog);
+		helper::addTextToDialog(dialog, -5, getUnitName(*activePortraitUnit));
 	}
 
 	// Hooked to draw new values to icons -- Pr0nogo

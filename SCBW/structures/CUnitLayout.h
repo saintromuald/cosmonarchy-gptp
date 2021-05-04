@@ -426,8 +426,8 @@ struct CUnitLayout
 	/*0x074*/ COrder* orderQueueHead;
 	/*0x078*/ COrder* orderQueueTail;
 	/*0x07C*/ CUnit* autoTargetUnit;			//The auto-acquired target (Note: This field is actually used for different targets internally, especially by the AI)
-	/*0x080*/ CUnit* connectedUnit;				// ++Larva store a reference to the hatchery/Lair/Hive who created it
-												// ++units inside transports store a reference to the transport
+	/*0x080*/ CUnit* connectedUnit;				// larva store a reference to the structure who created it
+												// units inside transports store a reference to the transport
 												// addons store a reference to its parent building (but not the other way around)
 	/*0x084*/ u8        orderQueueCount;
 	/*0x085*/ u8        orderQueueTimer;		// Cycles down from from 8 to 0 (inclusive). See also 0x122.

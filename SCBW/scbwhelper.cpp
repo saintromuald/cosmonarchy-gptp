@@ -192,14 +192,14 @@ namespace helper
 		}
 	}
 
-	void showControlGroup(BinDlg* a1, s16 a2, s16 a3)
+	void showControlGroup(BinDlg* dialog, s16 firstId, s16 lastId)
 	{
 		const u32 Func_showControlGroup = 0x00457250;
 		__asm {
 			PUSHAD
-			PUSH a3
-			MOV EAX, a1
-			MOVZX CX, a2
+			PUSH lastId
+			MOVZX CX, firstId
+			MOV EAX, dialog
 			CALL Func_showControlGroup
 			POPAD
 		}
@@ -355,19 +355,19 @@ namespace helper
 		bool result = false;
 		if (!(unit->status & UnitStatus::IsHallucination))
 		{
-			result = true;
+			result = units_dat::SpaceProvided[unit->id] != 0;
 		}
 		return result;
 	}
 
-	bool isQueueSlotActive(CUnit* a1, s32 a2)
+	bool isQueueSlotActive(CUnit* unit, s32 slot)
 	{
 		const u32 Func_isQueueSlotActive = 0x00401E70;
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV ECX, a1
-			MOV EDX, a2
+			MOV ECX, unit
+			MOV EDX, slot
 			CALL Func_isQueueSlotActive
 			MOV result, EAX
 			POPAD
@@ -375,12 +375,12 @@ namespace helper
 		return (bool)result;
 	}
 
-	void drawTrainingProgress(BinDlg* a1)
+	void drawTrainingProgress(BinDlg* dialog)
 	{
 		const u32 Func_drawTrainingProgress = 0x004268D0;
 		__asm {
 			PUSHAD
-			PUSH a1
+			PUSH dialog
 			CALL Func_drawTrainingProgress
 			POPAD
 		}
