@@ -313,22 +313,6 @@ namespace hooks
 			data.damageType = DamageType::Independent;
 		}
 
-		switch (data.weaponId)
-		{
-			case WeaponId::DemiurgeGalacticWeaver:
-			{
-				// Demiurge - Worship
-				if (data.target->playerId != data.attacker->playerId
-					&& data.target->getCurrentHpInGame() <= (data.target->getMaxHpInGame() / 2))
-				{
-					scbw::set_generic_value(data.target, ValueId::WorshipStack, 1);
-					scbw::set_generic_unit(data.target, ValueId::WorshipDemiurgeUnit, data.attacker);
-					scbw::set_generic_value(data.target, ValueId::WorshipOriginalPlayer, data.target->playerId);
-					data.target->giveTo(data.attacker->playerId);
-				}
-			} break;
-		}
-
 		switch (data.weaponId) // Damage Divisor Calc
 		{
 			case WeaponId::ArchitectDispersiveSalvo:
@@ -510,6 +494,18 @@ namespace hooks
 
 			switch (data.weaponId)
 			{
+				case WeaponId::DemiurgeGalacticWeaver:
+				{
+					// Demiurge - Worship
+					if (data.target->playerId != data.attacker->playerId
+						&& data.target->getCurrentHpInGame() <= (data.target->getMaxHpInGame() / 2))
+					{
+						scbw::set_generic_value(data.target, ValueId::WorshipStack, 1);
+						scbw::set_generic_unit(data.target, ValueId::WorshipDemiurgeUnit, data.attacker);
+						scbw::set_generic_value(data.target, ValueId::WorshipOriginalPlayer, data.target->playerId);
+						data.target->giveTo(data.attacker->playerId);
+					}
+				} break;
 				case WeaponId::Irradiate:
 				{
 					// Seraph - Irradiate Spread
