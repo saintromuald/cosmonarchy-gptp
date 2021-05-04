@@ -7,54 +7,53 @@ namespace hooks
 {
 	bool StatLobotomyMineCount(BinDlg* dialog, u32 index)
 	{
-		auto v2 = *activePortraitUnit;
-		auto v3 = dialog;
+		auto activeUnit = *activePortraitUnit;
 		// Originally had code for research, removed
-		sprintf_s(statusscreen_infobtn[index], 8, "%d ", v2->vulture.spiderMineCount);
-		if (v3->controlType)
+		sprintf_s(statusscreen_infobtn[index], 8, "%d ", activeUnit->vulture.spiderMineCount);
+		if (dialog->controlType)
 		{
-			v3 = v3->parent;
+			dialog = dialog->parent;
 		}
-		auto v5 = v3->childrenDlg;
+		auto childDialog = dialog->childrenDlg;
 		bool jump = false;
-		if (v5)
+		if (childDialog)
 		{
-			while (v5->index != index + 9)
+			while (childDialog->index != index + 9)
 			{
-				v5 = v5->next;
-				if (!v5)
+				childDialog = childDialog->next;
+				if (!childDialog)
 				{
-					v5 = nullptr;
+					childDialog = nullptr;
 					break;
 				}
 			}
 		}
 		else
 		{
-			v5 = nullptr;
+			childDialog = nullptr;
 		}
-		scbw::showDialog(v5);
-		scbw::disableDialog(v5);
-		auto statData = v5->statButtonUser;
+		scbw::showDialog(childDialog);
+		scbw::disableDialog(childDialog);
+		auto statData = childDialog->statButtonUser;
 		auto v7 = *cmdicons_grp;
-		v5->graphic = UnitId::TerranLobotomyMine - 1;//or set icon id
+		childDialog->graphic = UnitId::TerranLobotomyMine - 1; // or set icon id
 		statData->button_grp = v7;
-		//		statData->grp_frame = UnitId::LobotomyMine;
+//		statData->grp_frame = UnitId::LobotomyMine;
 		statData->grp_frame = 13;
 		statData->type = 3;
-		//		statData->id = UnitId::LobotomyMine;
+//		statData->id = UnitId::LobotomyMine;
 		statData->id = 13;
-		auto v8 = v5->flags;
-		v5->pszText = statusscreen_infobtn[index];
+		auto v8 = childDialog->flags;
+		childDialog->pszText = statusscreen_infobtn[index];
 		if (!(v8 & 1))
 		{
-			v5->flags = v8 | 1;
-			scbw::updateDialog(v5);
+			childDialog->flags = v8 | 1;
+			scbw::updateDialog(childDialog);
 		}
 		return 1;
 	}
 
-	// Attempting to be true to the original result in badly unoptimized code
+	// Attempting to be true to the original result in unoptimized code
 	void stats_panel_display(BinDlg* dialog)
 	{
 		BinDlg* current_dialog;
@@ -291,26 +290,22 @@ namespace hooks
 	}
 
 	// Hooked to enable/disable rank display based on new unit definitions -- Pr0nogo
-	char* getUnitRankString(CUnit* a2)
-	{ // 0042F370
-		unsigned __int16 _type; // ax
-		s32 v2; // ecx
-
-		_type = a2->id;
-		if (units_dat::BaseProperty[_type] & UnitProperty::NeutralAccessories
-			|| _type == UnitId::TerranLobotomyMine
-			|| _type == UnitId::TerranSpiderMine)
+	char* getUnitRankString(CUnit* unit) // 0042F370
+	{
+		u16 unitId = unit->id;
+		if (units_dat::BaseProperty[unitId] & UnitProperty::NeutralAccessories
+			|| scbw::unitIsTrap(unit))
 		{
 			return 0;
 		}
 		// Originally had Gantrithor - Tassadar hardcode here, removed for HYDRA
-		if (_type != UnitId::TerranMinotaur && _type != UnitId::Hero_NoradII && _type != UnitId::Hero_Hyperion
-			|| !(units_dat::BaseProperty[_type] & UnitProperty::Hero)
-			|| !units_dat::MapStringId[_type])
+		if (unitId != UnitId::TerranMinotaur
+			|| !(units_dat::BaseProperty[unitId] & UnitProperty::Hero)
+			|| !units_dat::MapStringId[unitId])
 		{
-			if (helper::unitGetRace(a2) == RaceId::Terran)
+			if (helper::unitGetRace(unit) == RaceId::Terran)
 			{
-				return helper::getStatTxtString((unsigned __int8)(a2->rankIncrease + units_dat::Rank[_type]) + 1302);
+				return helper::getStatTxtString((unit->rankIncrease + units_dat::Rank[unitId]) + 1302);
 			}
 			return 0;
 		}
