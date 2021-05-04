@@ -98,79 +98,74 @@ void unitDestructorSpecialHook(CUnit* unit)
 	// These do not require the unit to be completed
 	switch (unit->id)
 	{
-	case UnitId::TerranEidolon:
-	case UnitId::TerranSeraph:
-	{
-		if (unit->building.ghostNukeMissile != nullptr)
+		case UnitId::TerranEidolon:
+		case UnitId::TerranSeraph:
 		{
-			(unit->building.ghostNukeMissile)->sprite->playIscriptAnim(IscriptAnimation::Death, true);
-			unit->building.ghostNukeMissile = nullptr;
-		}
-		break;
-	}
-	case UnitId::TerranNuclearMissile:
-	{
-		if (unit->connectedUnit != nullptr && unit->connectedUnit->id == UnitId::TerranNuclearSilo)
+			if (unit->building.ghostNukeMissile != nullptr)
+			{
+				(unit->building.ghostNukeMissile)->sprite->playIscriptAnim(IscriptAnimation::Death, true);
+				unit->building.ghostNukeMissile = nullptr;
+			}
+		} break;
+		case UnitId::TerranNuclearMissile:
 		{
-			(unit->connectedUnit)->building.silo.nuke = nullptr;
-			(unit->connectedUnit)->building.silo.isReady = false;
-		}
-		break;
-	}
-	case UnitId::TerranNuclearSilo:
-	{
-		if (unit->building.silo.nuke != nullptr)
+			if (unit->connectedUnit != nullptr && unit->connectedUnit->id == UnitId::TerranNuclearSilo)
+			{
+				(unit->connectedUnit)->building.silo.nuke = nullptr;
+				(unit->connectedUnit)->building.silo.isReady = false;
+			}
+		} break;
+		case UnitId::TerranNuclearSilo:
 		{
-			(unit->building.silo.nuke)->remove();
-			unit->building.silo.nuke = nullptr;
-		}
-		break;
-	}
-	case UnitId::ProtossPylon:
-	{
-		// code from hooks::removePsiField(CUnit* unit)
-		// copied because the content is hardcoded here
-		if (unit->building.pylonAura != nullptr)
+			if (unit->building.silo.nuke != nullptr)
+			{
+				(unit->building.silo.nuke)->remove();
+				unit->building.silo.nuke = nullptr;
+			}
+		} break;
+		case UnitId::ProtossPylon:
 		{
-			unit->building.pylonAura->free();	// should be equivalent to SpriteDestructor @ 00497B40
-			unit->building.pylonAura = nullptr;
-		}
+			// code from hooks::removePsiField(CUnit* unit)
+			// copied because the content is hardcoded here
+			if (unit->building.pylonAura != nullptr)
+			{
+				unit->building.pylonAura->free();	// should be equivalent to SpriteDestructor @ 00497B40
+				unit->building.pylonAura = nullptr;
+			}
 
-		// begin hardcoding removeFromPsiProviderList @ 00493100 to avoid use of a helper
-		if (unit->psi_link.prev != nullptr)  // untie the previous pylon from current pylon (tie it to next)
-		{
-			(unit->psi_link.prev)->psi_link.next = unit->psi_link.next;
-		}
-		if (unit->psi_link.next != nullptr)  // untie the next pylon from current pylon (tie it to previous)
-		{
-			(unit->psi_link.next)->psi_link.prev = unit->psi_link.prev;
-		}
+			// begin hardcoding removeFromPsiProviderList @ 00493100 to avoid use of a helper
+			if (unit->psi_link.prev != nullptr)  // untie the previous pylon from current pylon (tie it to next)
+			{
+				(unit->psi_link.prev)->psi_link.next = unit->psi_link.next;
+			}
+			if (unit->psi_link.next != nullptr)  // untie the next pylon from current pylon (tie it to previous)
+			{
+				(unit->psi_link.next)->psi_link.prev = unit->psi_link.prev;
+			}
 
-		if (unit == *firstPsiFieldProvider)
+			if (unit == *firstPsiFieldProvider)
+			{
+				*firstPsiFieldProvider = unit->psi_link.next;
+			}
+			unit->psi_link.prev = nullptr;
+			unit->psi_link.next = nullptr;
+			// end hardcoding removeFromPsiProviderList @ 00493100 to avoid use of a helper
+			*canUpdatePoweredStatus = true;
+		} break;
+		case UnitId::ZergNydusCanal:
 		{
-			*firstPsiFieldProvider = unit->psi_link.next;
+			CUnit* nydusExit = unit->building.nydusExit;
+			if (nydusExit != nullptr)
+			{
+				unit->building.nydusExit = nullptr;
+				nydusExit->building.nydusExit = nullptr;
+				nydusExit->remove();
+			}
+			break;
 		}
-		unit->psi_link.prev = nullptr;
-		unit->psi_link.next = nullptr;
-		// end hardcoding removeFromPsiProviderList @ 00493100 to avoid use of a helper
-		*canUpdatePoweredStatus = true;
-		break;
-	}
-	case UnitId::ZergNydusCanal:
-	{
-		CUnit* nydusExit = unit->building.nydusExit;
-		if (nydusExit != nullptr)
+		default:
 		{
-			unit->building.nydusExit = nullptr;
-			nydusExit->building.nydusExit = nullptr;
-			nydusExit->remove();
 		}
-		break;
-	}
-	default:
-	{
-		break;
-	}
 	}
 
 	// These require the unit to be completed
@@ -178,109 +173,101 @@ void unitDestructorSpecialHook(CUnit* unit)
 	{
 		switch (unit->id)
 		{
-		case UnitId::TerranAspirant:
-		{
-			globals.createGenericPersistImpact(ImpactId::Criticality, 5 * 24, { unit->getX(), unit->getY() }, 1.25 * 32, SpriteId::Criticality, 5, unit->playerId);
-			break;
-		}
-		case UnitId::ProtossClarion:
-		{
-			// Phase Link
-			scbw::clearClarionLinks(unit);
-			break;
-		}
-		case UnitId::ProtossVassal:
-		{
-			// Terminal Surge
-			u32 range = 5 * 32;
-			scbw::UnitFinder(
-				unit->getX() - range,
-				unit->getY() - range,
-				unit->getX() + range,
-				unit->getY() + range
-			).forEach([&](CUnit* target)
-				{
-					if (!scbw::isAlliedTo(unit->playerId, target->playerId))
+			case UnitId::TerranAspirant:
+			{
+				globals.createGenericPersistImpact(ImpactId::Criticality, 5 * 24, { unit->getX(), unit->getY() }, 1.25 * 32, SpriteId::Criticality, 5, unit->playerId);
+			} break;
+			case UnitId::ProtossClarion:
+			{
+				// Phase Link
+				scbw::clearClarionLinks(unit);
+			} break;
+			case UnitId::ProtossVassal:
+			{
+				// Terminal Surge
+				u32 range = 5 * 32;
+				scbw::UnitFinder(
+					unit->getX() - range,
+					unit->getY() - range,
+					unit->getX() + range,
+					unit->getY() + range
+				).forEach([&](CUnit* target)
 					{
-						return;
-					}
-					scbw::add_generic_value(target, ValueId::TerminalSurge, 1);
-					target->updateSpeed();
-				});
-			break;
-		}
-		case UnitId::ProtossLanifect:
-		{
-			auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
-			if (web != nullptr)
+						if (!scbw::isAlliedTo(unit->playerId, target->playerId))
+						{
+							return;
+						}
+						scbw::add_generic_value(target, ValueId::TerminalSurge, 1);
+						target->updateSpeed();
+					});
+			} break;
+			case UnitId::ProtossLanifect:
 			{
-				web->removeTimer = 1;
-			}
-			break;
-		}
-		case UnitId::ProtossAccantor:
-		case UnitId::ProtossSolarion:
-		{
-			killAllHangarUnits(unit);
-			break;
-		}
-		case UnitId::ProtossPlasmaShell:
-		case UnitId::ProtossSteward:
-		{
-			if (unit->interceptor.parent != nullptr)
-			{
-				if (unit->interceptor.hangar_link.next != nullptr) // untie the next interceptor/scarab from current interceptor/scarab (tie it to previous)
+				auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
+				if (web != nullptr)
 				{
-					(unit->interceptor.hangar_link.next)->interceptor.hangar_link.prev = unit->interceptor.hangar_link.prev;
+					web->removeTimer = 1;
 				}
-				else
+			} break;
+			case UnitId::ProtossAccantor:
+			case UnitId::ProtossSolarion:
+			{
+				killAllHangarUnits(unit);				
+			} break;
+			case UnitId::ProtossPlasmaShell:
+			case UnitId::ProtossSteward:
+			{
+				if (unit->interceptor.parent != nullptr)
 				{
-					if (unit->interceptor.isOutsideHangar)
+					if (unit->interceptor.hangar_link.next != nullptr) // untie the next interceptor/scarab from current interceptor/scarab (tie it to previous)
 					{
-						unit->interceptor.parent->carrier.outHangarChild = unit->interceptor.hangar_link.prev;
+						(unit->interceptor.hangar_link.next)->interceptor.hangar_link.prev = unit->interceptor.hangar_link.prev;
 					}
 					else
 					{
-						unit->interceptor.parent->carrier.inHangarChild = unit->interceptor.hangar_link.prev;
+						if (unit->interceptor.isOutsideHangar)
+						{
+							unit->interceptor.parent->carrier.outHangarChild = unit->interceptor.hangar_link.prev;
+						}
+						else
+						{
+							unit->interceptor.parent->carrier.inHangarChild = unit->interceptor.hangar_link.prev;
+						}
 					}
-				}
-				if (unit->interceptor.isOutsideHangar)
-				{
-					unit->interceptor.parent->carrier.outHangarCount--;
+					if (unit->interceptor.isOutsideHangar)
+					{
+						unit->interceptor.parent->carrier.outHangarCount--;
+					}
+					else
+					{
+						unit->interceptor.parent->carrier.inHangarCount--;
+					}
+
+					if (unit->interceptor.hangar_link.prev != nullptr)  // untie the previous interceptor/scarab from current interceptor/scarab (tie it to next)
+					{
+						(unit->interceptor.hangar_link.prev)->interceptor.hangar_link.next = unit->interceptor.hangar_link.next;
+					}
 				}
 				else
 				{
-					unit->interceptor.parent->carrier.inHangarCount--;
+					unit->interceptor.hangar_link.prev = nullptr;
+					unit->interceptor.hangar_link.next = nullptr;
 				}
-
-				if (unit->interceptor.hangar_link.prev != nullptr)  // untie the previous interceptor/scarab from current interceptor/scarab (tie it to next)
-				{
-					(unit->interceptor.hangar_link.prev)->interceptor.hangar_link.next = unit->interceptor.hangar_link.next;
-				}
-			}
-			else
+			} break;
+			case UnitId::ResourceMineralField:
+			case UnitId::ResourceMineralFieldType2:
+			case UnitId::ResourceMineralFieldType3:
+			case UnitId::ResourceVespeneGeyser:
+			case UnitId::TerranReservoir:
+			case UnitId::ProtossAquifer:
+			case UnitId::ZergExtractor:
 			{
-				unit->interceptor.hangar_link.prev = nullptr;
-				unit->interceptor.hangar_link.next = nullptr;
+				freeResourceContainer(unit);
+			} break;
+			default:
+			{
 			}
-			break;
-		}
-		case UnitId::ResourceMineralField:
-		case UnitId::ResourceMineralFieldType2:
-		case UnitId::ResourceMineralFieldType3:
-		case UnitId::ResourceVespeneGeyser:
-		case UnitId::TerranReservoir:
-		case UnitId::ProtossAquifer:
-		case UnitId::ZergExtractor:
-		{
-			freeResourceContainer(unit);
-			break;
-		}
-		default:
-		{
-			break;
-		}
-		}
+			}
 	}
 
 	// Alkajelisk Parasitic Spores behavior
