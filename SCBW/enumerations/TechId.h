@@ -5,140 +5,139 @@
 //General use
 namespace TechId {
 enum Enum {
-	Stimpacks				= 0x00,
-	Lockdown				= 0x01,
-	EMPShockwave			= 0x02,
-	SpiderMines				= 0x03,
-	ScannerSweep			= 0x04, // (default)
-	TankSiegeMode			= 0x05,
-	DefensiveMatrix			= 0x06, // (default)
-	Irradiate				= 0x07,
-	YamatoGun				= 0x08,
-	CloakingField			= 0x09,
-	PersonnelCloaking		= 0x0A,
-	Burrowing				= 0x0B,
-	Infestation				= 0x0C, // (default)
-	SpawnBroodlings			= 0x0D,
-	DarkSwarm				= 0x0E, // (default)
-	Plague					= 0x0F,
-	Consume					= 0x10,
-	Ensnare					= 0x11,
-	Parasite				= 0x12, // (default)
-	PsionicStorm			= 0x13,
-	Hallucination			= 0x14,
-	Recall					= 0x15,
-	StasisField				= 0x16,
-	ArchonWarp				= 0x17, // (default)
-	Restoration				= 0x18,
-	DisruptionWeb			= 0x19,
-	UnusedTech26			= 0x1A, // (unused)
-	MindControl				= 0x1B,
-	DarkArchonMeld			= 0x1C, // (default)
-	Feedback				= 0x1D, // (default)
-	OpticalFlare			= 0x1E,
-	Maelstrom				= 0x1F,
-	LurkerAspect			= 0x20,
-	UnusedTech33			= 0x21, // (default; possibly liftoff)
-	Healing					= 0x22, // (default)
-	UnusedTech35			= 0x23, // (unused)
-	UnusedTech36			= 0x24, // (unused)
-	UnusedTech37			= 0x25, // (unused)
-	UnusedTech38			= 0x26, // (unused)
-	UnusedTech39			= 0x27, // (unused)
-	UnusedTech40			= 0x28, // (unused)
-	UnusedTech41			= 0x29, // (unused)
-	UnusedTech42			= 0x2A, // (unused)
-	UnusedTech43			= 0x2B, // (unused)
-	None					= 0x2C,
-	NuclearStrike			= 0x2D, //based on bwapi/BWMemoryEdit/Enums/TechType.cs
-	UnknownLastEntry		= 0x2E,	//based on bwapi/BWMemoryEdit/Enums/TechType.cs
+	Stimpacks				=  0,
+	Lockdown				=  1,
+	EMPShockwave			=  2,
+	SpiderMines				=  3,
+	ScannerSweep			=  4, // (default)
+	TankSiegeMode			=  5,
+	DefensiveMatrix			=  6, // (default)
+	Irradiate				=  7,
+	YamatoGun				=  8,
+	CloakingField			=  9,
+	PersonnelCloaking		= 10,
+	Burrowing				= 11,
+	Infestation				= 12, // (default)
+	SpawnBroodlings			= 13,
+	DarkSwarm				= 14, // (default)
+	Plague					= 15,
+	Consume					= 16,
+	Ensnare					= 17,
+	Parasite				= 18, // (default)
+	PsionicStorm			= 19,
+	Hallucination			= 20,
+	Recall					= 21,
+	StasisField				= 22,
+	ArchonWarp				= 23, // (default)
+	Restoration				= 24,
+	DisruptionWeb			= 25,
+	UnusedTech26			= 26, // (unused)
+	MindControl				= 27,
+	DarkArchonMeld			= 28, // (default)
+	Feedback				= 29, // (default)
+	OpticalFlare			= 30,
+	Maelstrom				= 31,
+	LurkerAspect			= 32,
+	UnusedTech33			= 33, // (default; possibly liftoff)
+	Healing					= 34, // (default)
+	UnusedTech35			= 35, // (unused)
+	UnusedTech36			= 36, // (unused)
+	UnusedTech37			= 37, // (unused)
+	UnusedTech38			= 38, // (unused)
+	UnusedTech39			= 39, // (unused)
+	UnusedTech40			= 40, // (unused)
+	UnusedTech41			= 41, // (unused)
+	UnusedTech42			= 42, // (unused)
+	UnusedTech43			= 43, // (unused)
+	None					= 44,
+	NuclearStrike			= 45, //based on bwapi/BWMemoryEdit/Enums/TechType.cs
+	UnknownLastEntry		= 46,	//based on bwapi/BWMemoryEdit/Enums/TechType.cs
 
 	// HYDRA \\
 
 //Terran
-	LobotomyMine			= 1,
-	ReverseThrust			= 2,  // Wyvern fire while moving switch
-	LandGrab				= 17, // Wyvern target ground ability
+	LobotomyMine			=  1, // Eidolon lay trap ability
+	ReverseThrust			=  2, // unused
+	LandGrab				= 17, // General target ground ability
 	AdministerMedstims		= 24, // Shaman organic heal ability
 	LazarusAgent			= 32, // Apostle ability
 	TempoChange				= 36, // Madrigal weapon switch ability
 	Skyfall					= 37, // Paladin missile salvo ability
 	NaniteField				= 38, // Shaman mech repair ability
-	Observance				= 39, // Science Vessel armor reduction ability
+	Observance				= 39, // Seraph armor reduction ability
 	SublimeShepherd			= 40, // Azazel cloud cover ability
 	PowerTransfer			= 41, // Savant energy transfer ability
 
 //Protoss
 	PlanetCracker			= 29, // Star Sovereign damage ability
-	PhaseLink				= 33, // Clarion shield damage distribution ability
-	RescindMindControl		= 26, // Dark Archon option
+	PhaseLink				= 33, // unused
+	RescindMindControl		= 26, // Mind Tyrant option
+	GodsMadeFlesh			= 42, // Demiurge immortality ability
 
 //Zerg
-	EnsnaringBrood			= 13, // Queen disruptive enchantment ability
-	Reconstitution			= 26, // Zoryusthaleth corpse-recycling toggle
-	EssenceDrain			= 35, // Gorgoleth energy steal ability
-	SwarmingOmen			= 42, // Zoryusthaleth movement speed beacon ability
+	EnsnaringBrood			= 13, // Matraleth disruptive enchantment ability
+	Reconstitution			= 26, // unused
+	EssenceDrain			= 35, // unused
 
-
-	//extended
-	//ChasmalColonySwitch = 47,	// Chasmal Colony - Adaptive Barrier / Adrenal Secretion
+	// extended
+	// ChasmalColonySwitch = 47,	// Chasmal Colony - Adaptive Barrier / Adrenal Secretion
 };
 }
 
 
-//For use with techdata_dat::AvailableSC[] and techdata_dat::ResearchedBw[]
+// For use with techdata_dat::AvailableSC[] and techdata_dat::ResearchedBw[]
 namespace ScTech {
 enum Enum {
-	Stimpacks         = 0,
-	Lockdown          = 1,
-	EMPShockwave      = 2,
-	SpiderMines       = 3,
-	ScannerSweep      = 4, // (default)
-	TankSiegeMode     = 5,
-	DefensiveMatrix   = 6, // (default)
-	Irradiate         = 7,
-	YamatoGun         = 8,
-	CloakingField     = 9,
+	Stimpacks         =  0,
+	Lockdown          =  1,
+	EMPShockwave      =  2,
+	SpiderMines       =  3,
+	ScannerSweep      =  4,	// (default)
+	TankSiegeMode     =  5,
+	DefensiveMatrix   =  6,	// (default)
+	Irradiate         =  7,
+	YamatoGun         =  8,
+	CloakingField     =  9,
 	PersonnelCloaking = 10,
 	Burrowing         = 11,
-	Infestation       = 12, // (default)
+	Infestation       = 12,	// (default)
 	SpawnBroodlings   = 13,
-	DarkSwarm         = 14, // (default)
+	DarkSwarm         = 14,	// (default)
 	Plague            = 15,
 	Consume           = 16,
 	Ensnare           = 17,
-	Parasite          = 18, // (default)
+	Parasite          = 18,	// (default)
 	PsionicStorm      = 19,
 	Hallucination     = 20,
 	Recall            = 21,
 	StasisField       = 22,
-	ArchonWarp        = 23, // (default)
+	ArchonWarp        = 23,	// (default)
 };
 }
 
 //For use with techdata_dat::AvailableBW[] and techdata_dat::ResearchedBw[]
 namespace BwTech {
 enum Enum {
-	Restoration       = 0,
-	DisruptionWeb     = 1,
-	UnusedTech26      = 2, // (unused)
-	MindControl       = 3,
-	DarkArchonMeld    = 4, // (default)
-	Feedback          = 5, // (default)
-	OpticalFlare      = 6,
-	Maelstrom         = 7,
-	LurkerAspect      = 8,
-	UnusedTech33      = 9, // (default; possibly liftoff)
-	Healing           = 10, // (default)
-	UnusedTech35      = 11, // (unused)
-	UnusedTech36      = 12, // (unused)
-	UnusedTech37      = 13, // (unused)
-	UnusedTech38      = 14, // (unused)
-	UnusedTech39      = 15, // (unused)
-	UnusedTech40      = 16, // (unused)
-	UnusedTech41      = 17, // (unused)
-	UnusedTech42      = 18, // (unused)
-	UnusedTech43      = 19, // (unused)
+	Restoration       =  0,
+	DisruptionWeb     =  1,
+	UnusedTech26      =  2,	// (unused)
+	MindControl       =  3,
+	DarkArchonMeld    =  4,	// (default)
+	Feedback          =  5,	// (default)
+	OpticalFlare      =  6,
+	Maelstrom         =  7,
+	LurkerAspect      =  8,
+	UnusedTech33      =  9,	// (default; possibly liftoff)
+	Healing           = 10,	// (default)
+	UnusedTech35      = 11,	// (unused)
+	UnusedTech36      = 12,	// (unused)
+	UnusedTech37      = 13,	// (unused)
+	UnusedTech38      = 14,	// (unused)
+	UnusedTech39      = 15,	// (unused)
+	UnusedTech40      = 16,	// (unused)
+	UnusedTech41      = 17,	// (unused)
+	UnusedTech42      = 18,	// (unused)
+	UnusedTech43      = 19,	// (unused)
 };
 }
 

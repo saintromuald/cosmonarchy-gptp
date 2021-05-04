@@ -92,14 +92,13 @@ namespace hooks
 			}
 			case TechId::EnsnaringBrood:
 			{
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
-				buf[0] = 0x99;//new general command
+				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
+				buf[0] = 0x99; // new general command
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = ValueId::EnsnaringBroodAbility;
 				scbw::SendCommand(buf, 0xc);
-				// in gameplay sense it is not used as switch ability, but it uses switch ability framework to not bother with rust
 				break;
 			}
 			case TechId::Parasite:
@@ -112,17 +111,17 @@ namespace hooks
 				helper::issueTriTargetOrder(OrderId::InfestMine3, OrderId::Move, OrderId::InfestMine2);
 				break;
 			}
-			case TechId::EMPShockwave:
+			case TechId::ReverseThrust:
 			{
 				if (firstInList != nullptr)
 				{
-					s32 action = 1;//on
+					s32 action = 1; //on
 					if (scbw::get_generic_rust_value(firstInList, ValueId::ReverseThrust) == 1)
 					{
-						action = 0;//off
+						action = 0; //off
 					}
-					u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
-					buf[0] = 0x99;//new general command
+					u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
+					buf[0] = 0x99; // new general command
 					buf[1] = NewGameCommand::GenericSwitchAbility;
 					buf[2] = action;
 					buf[3] = *ACTIVE_PLAYER_ID;
@@ -189,7 +188,7 @@ namespace hooks
 				scbw::SendCommand(buf, 0xc);
 				break;
 			}
-			case TechId::Reconstitution: // rescind mind control
+			case TechId::RescindMindControl:
 			{
 				s32 action = 1; // on
 				u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0}; // 12
@@ -201,9 +200,20 @@ namespace hooks
 				scbw::SendCommand(buf, 0xc);
 				break;
 			}
-			case TechId::UnusedTech39: // observance
+			case TechId::Observance:
 			{
 				helper::issueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
+				break;
+			}
+			case TechId::GodsMadeFlesh:
+			{
+				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
+				buf[0] = 0x99; // new general command
+				buf[1] = NewGameCommand::GenericSwitchAbility;
+				buf[2] = 1;
+				buf[3] = *ACTIVE_PLAYER_ID;
+				buf[4] = ValueId::GodsMadeFleshCast;
+				scbw::SendCommand(buf, 0xc);
 				break;
 			}
 			case TechId::PhaseLink: // and Khaydarin Eclipse

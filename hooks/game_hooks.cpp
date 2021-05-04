@@ -1082,12 +1082,21 @@ namespace hooks
 			unit->remove();
 		}
 
-		// Demiurge - Gods Made Flesh - initial cast
-		/*
-		if (conditional) { // corpse linked Demiurge casts the ability
-			// unit finder?
+		// Demiurge - Gods Made Flesh - remove effect from caster
+		if (scbw::get_generic_value(unit, ValueId::GodsMadeFleshCast) && unit->energy == 0) {
+			scbw::set_generic_value(unit, ValueId::GodsMadeFleshCast, 0);
 		}
-		*/
+
+		// Demiurge - Gods Made Flesh - apply effect to linked units
+		if (scbw::get_generic_value(scbw::get_generic_unit(unit, ValueId::WorshipDemiurgeUnit), ValueId::GodsMadeFleshCast)) {
+			scbw::set_generic_timer(unit, ValueId::GodsMadeFleshTimer, 3);
+		}
+
+		// Demiurge - Gods Made Flesh - return units to original owner
+		if (scbw::get_generic_unit(unit, ValueId::WorshipDemiurgeUnit) == nullptr) {
+			scbw::set_generic_value(unit, ValueId::WorshipStack, 0);
+			unit->giveTo(scbw::get_generic_value(unit, ValueId::WorshipOriginalPlayer));
+		}
 
 		// Demiurge - Gods Made Flesh - kill unit when the effect ends
 		if (scbw::get_generic_timer(unit, ValueId::GodsMadeFleshTimer) == 1)

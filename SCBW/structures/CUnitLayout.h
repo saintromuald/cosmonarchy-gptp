@@ -306,6 +306,7 @@ namespace ValueId
 		EnthrallingAssaultHealTimer,
 		AttachedAkistrokorUnit,
 		PreMorphEnergy,
+		GodsMadeFleshCast,
 	};
 }
 #include "SCBW\enumerations\TechId.h"
@@ -420,7 +421,7 @@ struct CUnitLayout
 
 	/*0x064*/ u16       id;						// Unit ID in units.dat
 	/*0x066*/ u8       _unknown_0x066;			// HYDRA - mineral regen cooldown
-	u8	   _unknown_0x067;						// HYDRA - warp relay warp in
+			  u8	   _unknown_0x067;			// HYDRA - warp relay warp in
 	/*0x068*/ CLink<CUnit> player_link;
 	/*0x070*/ CUnit* subunit;
 	/*0x074*/ COrder* orderQueueHead;

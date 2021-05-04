@@ -93,22 +93,185 @@ void freeResourceContainer(CUnit* resource)
 	}
 }
 
-// Hooked down there instead of a specific inject.cpp
 void unitDestructorSpecialHook(CUnit* unit)
 {
-	// Aspirant Criticality behavior
-	if (unit->id == UnitId::TerranAspirant && unit->status & UnitStatus::Completed)
+	// These do not require the unit to be completed
+	switch (unit->id)
 	{
-		globals.createGenericPersistImpact(ImpactId::Criticality, 5 * 24, {unit->getX(), unit->getY()}, 1.25 * 32, SpriteId::Criticality, 5, unit->playerId);
+	case UnitId::TerranEidolon:
+	case UnitId::TerranSeraph:
+	{
+		if (unit->building.ghostNukeMissile != nullptr)
+		{
+			(unit->building.ghostNukeMissile)->sprite->playIscriptAnim(IscriptAnimation::Death, true);
+			unit->building.ghostNukeMissile = nullptr;
+		}
+		break;
+	}
+	case UnitId::TerranNuclearMissile:
+	{
+		if (unit->connectedUnit != nullptr && unit->connectedUnit->id == UnitId::TerranNuclearSilo)
+		{
+			(unit->connectedUnit)->building.silo.nuke = nullptr;
+			(unit->connectedUnit)->building.silo.isReady = false;
+		}
+		break;
+	}
+	case UnitId::TerranNuclearSilo:
+	{
+		if (unit->building.silo.nuke != nullptr)
+		{
+			(unit->building.silo.nuke)->remove();
+			unit->building.silo.nuke = nullptr;
+		}
+		break;
+	}
+	case UnitId::ProtossPylon:
+	{
+		// code from hooks::removePsiField(CUnit* unit)
+		// copied because the content is hardcoded here
+		if (unit->building.pylonAura != nullptr)
+		{
+			unit->building.pylonAura->free();	// should be equivalent to SpriteDestructor @ 00497B40
+			unit->building.pylonAura = nullptr;
+		}
+
+		// begin hardcoding removeFromPsiProviderList @ 00493100 to avoid use of a helper
+		if (unit->psi_link.prev != nullptr)  // untie the previous pylon from current pylon (tie it to next)
+		{
+			(unit->psi_link.prev)->psi_link.next = unit->psi_link.next;
+		}
+		if (unit->psi_link.next != nullptr)  // untie the next pylon from current pylon (tie it to previous)
+		{
+			(unit->psi_link.next)->psi_link.prev = unit->psi_link.prev;
+		}
+
+		if (unit == *firstPsiFieldProvider)
+		{
+			*firstPsiFieldProvider = unit->psi_link.next;
+		}
+		unit->psi_link.prev = nullptr;
+		unit->psi_link.next = nullptr;
+		// end hardcoding removeFromPsiProviderList @ 00493100 to avoid use of a helper
+		*canUpdatePoweredStatus = true;
+		break;
+	}
+	case UnitId::ZergNydusCanal:
+	{
+		CUnit* nydusExit = unit->building.nydusExit;
+		if (nydusExit != nullptr)
+		{
+			unit->building.nydusExit = nullptr;
+			nydusExit->building.nydusExit = nullptr;
+			nydusExit->remove();
+		}
+		break;
+	}
 	}
 
-	// Remove Disruption Fields
-	if (unit->id == UnitId::ProtossLanifect)
+	// These require the unit to be completed
+	if (unit->status & UnitStatus::Completed)
 	{
-		auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
-		if (web != nullptr)
+		switch (unit->id)
 		{
-			web->removeTimer = 5 * 24;
+		case UnitId::TerranAspirant:
+		{
+			globals.createGenericPersistImpact(ImpactId::Criticality, 5 * 24, { unit->getX(), unit->getY() }, 1.25 * 32, SpriteId::Criticality, 5, unit->playerId);
+			break;
+		}
+		case UnitId::ProtossClarion:
+		{
+			// Phase Link
+			scbw::clearClarionLinks(unit);
+			break;
+		}
+		case UnitId::ProtossVassal:
+		{
+			// Terminal Surge
+			u32 range = 5 * 32;
+			scbw::UnitFinder(
+				unit->getX() - range,
+				unit->getY() - range,
+				unit->getX() + range,
+				unit->getY() + range
+			).forEach([&](CUnit* target)
+				{
+					if (!scbw::isAlliedTo(unit->playerId, target->playerId))
+					{
+						return;
+					}
+					scbw::add_generic_value(target, ValueId::TerminalSurge, 1);
+					target->updateSpeed();
+				});
+			break;
+		}
+		case UnitId::ProtossLanifect:
+		{
+			auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
+			if (web != nullptr)
+			{
+				web->removeTimer = 1;
+			}
+			break;
+		}
+		case UnitId::ProtossAccantor:
+		case UnitId::ProtossSolarion:
+		{
+			killAllHangarUnits(unit);
+			break;
+		}
+		case UnitId::ProtossPlasmaShell:
+		case UnitId::ProtossSteward:
+		{
+			if (unit->interceptor.parent != nullptr)
+			{
+				if (unit->interceptor.hangar_link.next != nullptr) // untie the next interceptor/scarab from current interceptor/scarab (tie it to previous)
+				{
+					(unit->interceptor.hangar_link.next)->interceptor.hangar_link.prev = unit->interceptor.hangar_link.prev;
+				}
+				else
+				{
+					if (unit->interceptor.isOutsideHangar)
+					{
+						unit->interceptor.parent->carrier.outHangarChild = unit->interceptor.hangar_link.prev;
+					}
+					else
+					{
+						unit->interceptor.parent->carrier.inHangarChild = unit->interceptor.hangar_link.prev;
+					}
+				}
+				if (unit->interceptor.isOutsideHangar)
+				{
+					unit->interceptor.parent->carrier.outHangarCount--;
+				}
+				else
+				{
+					unit->interceptor.parent->carrier.inHangarCount--;
+				}
+
+				if (unit->interceptor.hangar_link.prev != nullptr)  // untie the previous interceptor/scarab from current interceptor/scarab (tie it to next)
+				{
+					(unit->interceptor.hangar_link.prev)->interceptor.hangar_link.next = unit->interceptor.hangar_link.next;
+				}
+			}
+			else
+			{
+				unit->interceptor.hangar_link.prev = nullptr;
+				unit->interceptor.hangar_link.next = nullptr;
+			}
+			break;
+		}
+		case UnitId::ResourceMineralField:
+		case UnitId::ResourceMineralFieldType2:
+		case UnitId::ResourceMineralFieldType3:
+		case UnitId::ResourceVespeneGeyser:
+		case UnitId::TerranReservoir:
+		case UnitId::ProtossAquifer:
+		case UnitId::ZergExtractor:
+		{
+			freeResourceContainer(unit);
+			break;
+		}
 		}
 	}
 
@@ -123,26 +286,6 @@ void unitDestructorSpecialHook(CUnit* unit)
 		{
 			bullet->time_remaining = 255;
 		}
-	}
-
-	// Vassal Terminal Surge behavior
-	if (unit->id == UnitId::ProtossVassal)
-	{
-		u32 range = 5 * 32;
-		scbw::UnitFinder(
-			unit->getX() - range,
-			unit->getY() - range,
-			unit->getX() + range,
-			unit->getY() + range
-		).forEach([&](CUnit* target)
-		{
-			if (!scbw::isAlliedTo(unit->playerId, target->playerId))
-			{
-				return;
-			}
-			scbw::add_generic_value(target, ValueId::TerminalSurge, 1);
-			target->updateSpeed();
-		});
 	}
 
 	// Apostle Last Breath behavior
@@ -170,12 +313,6 @@ void unitDestructorSpecialHook(CUnit* unit)
 			target->healEnergy(ApostleLastBreathEnergyGain);
 			target->sprite->createUnderlay(ImageId::SmallExplosion_Unused);
 		});
-	}
-
-	// Clarion Phase Link behavior
-	if (unit->id == UnitId::ProtossClarion)
-	{
-		scbw::clearClarionLinks(unit);
 	}
 
 	// Parasite - spawn broodlings on death
@@ -222,157 +359,10 @@ void unitDestructorSpecialHook(CUnit* unit)
 		// add finder later to trace plague flag
 	}
 
-	// Destroy Stewards and Plasma Shells
-	if (unit->id == UnitId::ProtossSolarion
-		|| unit->id == UnitId::ProtossAccantor)
-	{
-		killAllHangarUnits(unit);
-	}
-
-	// Destroy nuclear missiles mid-launch
-	else
-		if (unit->id == UnitId::TerranEidolon
-			|| unit->id == UnitId::TerranSeraph)
-		{
-			if (unit->building.ghostNukeMissile != nullptr)
-			{
-				(unit->building.ghostNukeMissile)->sprite->playIscriptAnim(IscriptAnimation::Death, true);
-				unit->building.ghostNukeMissile = nullptr;
-			}
-		}
-		else
-
-			// Is a harvestable mineral patch or gas building
-			if ((unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3)
-				|| ((unit->id == UnitId::TerranReservoir || unit->id == UnitId::ProtossAquifer || unit->id == UnitId::ZergExtractor)
-					&& unit->status & UnitStatus::Completed)) // this is equivalent to function unit_isGeyserUnit @ 004688B0
-			{
-				freeResourceContainer(unit);
-			}
-			else
-
-				if (unit->id >= UnitId::TerranNuclearMissile && unit->id <= UnitId::ProtossPylon)
-				{
-					// In original code, this part is handled by an internal id_based array and a
-					// switch-like system to execute the code corresponding to the unit
-					// If the id were within the previous test, the resource units would go through
-					// those tests
-
-					// Is a scarab or interceptor
-					if (unit->id == UnitId::ProtossPlasmaShell || unit->id == UnitId::ProtossSteward)
-					{
-						if (unit->status & UnitStatus::Completed)
-						{
-							// following code is equivalent to a jump to function 004652A0 with unit as parameter in EAX
-							if (unit->interceptor.parent != nullptr)
-							{
-								if (unit->interceptor.hangar_link.next != nullptr) // untie the next interceptor/scarab from current interceptor/scarab (tie it to previous)
-								{
-									(unit->interceptor.hangar_link.next)->interceptor.hangar_link.prev = unit->interceptor.hangar_link.prev;
-								}
-								else
-								{
-									if (unit->interceptor.isOutsideHangar)
-									{
-										unit->interceptor.parent->carrier.outHangarChild = unit->interceptor.hangar_link.prev;
-									}
-									else
-									{
-										unit->interceptor.parent->carrier.inHangarChild = unit->interceptor.hangar_link.prev;
-									}
-								}
-								if (unit->interceptor.isOutsideHangar)
-								{
-									unit->interceptor.parent->carrier.outHangarCount--;
-								}
-								else
-								{
-									unit->interceptor.parent->carrier.inHangarCount--;
-								}
-
-								if (unit->interceptor.hangar_link.prev != nullptr)  // untie the previous interceptor/scarab from current interceptor/scarab (tie it to next)
-								{
-									(unit->interceptor.hangar_link.prev)->interceptor.hangar_link.next = unit->interceptor.hangar_link.next;
-								}
-
-							}
-							else
-							{
-								unit->interceptor.hangar_link.prev = nullptr;
-								unit->interceptor.hangar_link.next = nullptr;
-							}
-						}
-					}
-					else
-						//Is a Nuclear Silo
-						if (unit->id == UnitId::TerranNuclearSilo)
-						{
-							if (unit->building.silo.nuke != nullptr)
-							{
-								(unit->building.silo.nuke)->remove();
-								unit->building.silo.nuke = nullptr;
-							}
-						}
-						else
-							// Is a Nuclear Missile
-							if (unit->id == UnitId::TerranNuclearMissile)
-							{
-								if (unit->connectedUnit != nullptr && unit->connectedUnit->id == UnitId::TerranNuclearSilo)
-								{
-									(unit->connectedUnit)->building.silo.nuke = nullptr;
-									(unit->connectedUnit)->building.silo.isReady = false;
-								}
-							}
-							else
-
-								// Is a Protoss Pylon
-								if (unit->id == UnitId::ProtossPylon)
-								{
-									// code from hooks::removePsiField(CUnit* unit)
-									// copied because the content is hardcoded here
-									if (unit->building.pylonAura != nullptr)
-									{
-										unit->building.pylonAura->free();	// should be equivalent to SpriteDestructor @ 00497B40
-										unit->building.pylonAura = nullptr;
-									}
-
-									// begin hardcoding removeFromPsiProviderList @ 00493100 to avoid use of a helper
-									if (unit->psi_link.prev != nullptr)  // untie the previous pylon from current pylon (tie it to next)
-									{
-										(unit->psi_link.prev)->psi_link.next = unit->psi_link.next;
-									}
-									if (unit->psi_link.next != nullptr)  // untie the next pylon from current pylon (tie it to previous)
-									{
-										(unit->psi_link.next)->psi_link.prev = unit->psi_link.prev;
-									}
-
-									if (unit == *firstPsiFieldProvider)
-									{
-										*firstPsiFieldProvider = unit->psi_link.next;
-									}
-									unit->psi_link.prev = nullptr;
-									unit->psi_link.next = nullptr;
-									// end hardcoding removeFromPsiProviderList @ 00493100 to avoid use of a helper
-									*canUpdatePoweredStatus = true;
-
-								}
-								else
-									// Is a Nydus Canal
-									if (unit->id == UnitId::ZergNydusCanal)
-									{
-										CUnit* nydusExit = unit->building.nydusExit;
-										if (nydusExit != nullptr)
-										{
-											unit->building.nydusExit = nullptr;
-											nydusExit->building.nydusExit = nullptr;
-											nydusExit->remove();
-										}
-									}
-
-					globals.remove_unit_from_pariah_table(unit, false);
-					globals.clear_ptr_in_apostle_table(unit);
-					globals.unitDeathHook(unit);
-				}
+	// Globals memory management
+	globals.remove_unit_from_pariah_table(unit, false);
+	globals.clear_ptr_in_apostle_table(unit);
+	globals.unitDeathHook(unit);
 }
 
 //-------- Actual hooking --------//

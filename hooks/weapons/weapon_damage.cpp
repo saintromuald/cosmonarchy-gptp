@@ -360,6 +360,7 @@ namespace hooks
 					scbw::set_generic_value(data.target, ValueId::WorshipStack, 1);
 					scbw::set_generic_unit(data.target, ValueId::WorshipDemiurgeUnit, data.attacker);
 					scbw::set_generic_value(data.target, ValueId::WorshipOriginalPlayer, data.target->playerId);
+					data.target->giveTo(data.attacker->playerId);
 				}
 			}
 			default:

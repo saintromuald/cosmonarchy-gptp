@@ -399,7 +399,9 @@ namespace hooks
 			goto LABEL_32;
 		}
 		if (units_dat::AirWeapon[helper::getLastQueueSlotType(activeUnit)] == -126
-			&& helper::unitGetGroundWeapon(activeUnit) == -126
+			&& units_dat::GroundWeapon[helper::getLastQueueSlotType(activeUnit)] == -126
+			&& units_dat::AirWeapon[activeUnit->id]
+			&& units_dat::GroundWeapon[activeUnit->id]
 			&& !units_dat::ShieldsEnabled[unitId])
 		{
 		LABEL_6:
