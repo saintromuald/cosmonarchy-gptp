@@ -5,7 +5,6 @@
 
 namespace hooks
 {
-	//initial name was sub_4E78E0
 	//the transport is "unit", the target is "unitToLoad"
 	void loadUnitProc(CUnit* unit, CUnit* unitToLoad)
 	{
@@ -13,11 +12,11 @@ namespace hooks
 		u8 unitRaceId;
 		u32 loaded_index;
 		s32 counter = 0;
-		//before CCMU extender change
+		// Old pointers
 //		static const CUnit* unitTable_0059CB58 = (CUnit*)0x0059CB58;
 //		static const CUnit* unitTable_0059CB64 = (CUnit*)0x0059CB64;
-		static CUnit* unitTable_0059CB58 = (CUnit*)0x0059CB58;
-		static CUnit* unitTable_0059CB64 = (CUnit*)0x0059CB64;
+		static const CUnit* unitTable_0059CB58 = (CUnit*)0x0059CB58;
+		static const CUnit* unitTable_0059CB64 = (CUnit*)0x0059CB64;
 		if (globals.extended_unit_table == 1)
 		{
 			const u32 index_start = reinterpret_cast<u32>(&new_unit_table.units[0]) - 336;
@@ -29,74 +28,53 @@ namespace hooks
 
 		if (units_dat::SpaceProvided[unit->id] != 0)
 		{
-
-			bool bEndLoop = false;
-			u32* loadedUnitOffset;
-
-			while (!bEndLoop)
+			for (;;)
 			{
+				u32* loadedUnitOffset = (u32*)&unit->loadedUnit[counter];
 
-				loadedUnitOffset = (u32*)&unit->loadedUnit[counter];
-
-				if (*loadedUnitOffset == 0)
-					bEndLoop = true;
-				else
+				if (*loadedUnitOffset == 0 ||
+					unitTable_0059CB64[unit->loadedUnit[counter].index].link.prev == nullptr)
 				{
-
-					if (unitTable_0059CB64[unit->loadedUnit[counter].index].link.prev == nullptr)
-						bEndLoop = true;
-					else
-					{
-
-						CUnit* current_loaded_unit = (CUnit*)&(unitTable_0059CB58[unit->loadedUnit[counter].index]);
-
-						if (
-							current_loaded_unit->mainOrderId == OrderId::Die &&
-							current_loaded_unit->mainOrderState == 1
-							)
-							bEndLoop = true;
-						else
-						{
-
-							if (current_loaded_unit->targetOrderSpecial != unit->loadedUnit[counter].unitId)
-								bEndLoop = true;
-							else
-							{
-
-								counter++;
-
-								if (counter >= units_dat::SpaceProvided[unit->id])
-									bEndLoop = true;
-
-							}
-
-						}
-
-					}
-
+					break;
 				}
 
+				CUnit* current_loaded_unit = (CUnit*)&(unitTable_0059CB58[unit->loadedUnit[counter].index]);
+				if ((current_loaded_unit->mainOrderId == OrderId::Die && current_loaded_unit->mainOrderState == 1) ||
+					current_loaded_unit->targetOrderSpecial != unit->loadedUnit[counter].unitId)
+				{
+					break;
+				}
+
+				counter++;
+				if (counter >= units_dat::SpaceProvided[unit->id])
+				{
+					break;
+				}
 			}
-
 		}
-
-		//E7952
+		
+		// E7952
 		if (units_dat::GroupFlags[unit->id].isZerg)
+		{
 			unitRaceId = RaceId::Zerg;
+		}
+		else if (units_dat::GroupFlags[unit->id].isProtoss)
+		{
+			unitRaceId = RaceId::Protoss;
+		}
+		else if (units_dat::GroupFlags[unit->id].isTerran)
+		{
+			unitRaceId = RaceId::Terran;
+		}
 		else
-			if (units_dat::GroupFlags[unit->id].isProtoss)
-				unitRaceId = RaceId::Protoss;
-			else
-				if (units_dat::GroupFlags[unit->id].isTerran)
-					unitRaceId = RaceId::Terran;
-				else
-					unitRaceId = RaceId::Neutral;
+		{
+			unitRaceId = RaceId::Neutral;
+		}
 
 		scbw::playSound(SoundId::Misc_ZOvTra00_wav + unitRaceId, unit);
 
 		if (unitToLoad->id == UnitId::TerranMason)
 		{
-
 			if (unitToLoad->pAI != nullptr)
 			{
 
@@ -106,20 +84,20 @@ namespace hooks
 					*pAI_0x14 = NULL;
 
 			}
-
 		}
-		//new - CCMU extender
+
+		// CCMU extender
 		auto new_table = unitTable;
 		if (globals.extended_unit_table == 1)
 		{
 			new_table = (CUnit*)&new_unit_table.units[0];
 		}
-		//
-		//e79a3
-		__asm {
+
+		__asm
+		{
 			PUSHAD
 			MOV ECX, unitToLoad
-			//			SUB ECX, unitTable
+//			SUB ECX, unitTable
 			SUB ECX, new_table
 			MOV EAX, 0x86186187
 			MUL ECX
@@ -133,10 +111,15 @@ namespace hooks
 		}
 
 		unitToLoad->connectedUnit = unit;
-		/*s32 unit_array_length = UNIT_ARRAY_LENGTH;
-		if (globals.extended_unit_table == 1) {
+
+		/*
+		s32 unit_array_length = UNIT_ARRAY_LENGTH;
+		if (globals.extended_unit_table == 1)
+		{
 			unit_array_length = NEW_ARRAY_LENGTH;
-		}*/
+		}
+		*/
+
 		if (loaded_index < UNIT_ARRAY_LENGTH)
 		{
 			unit->loadedUnit[counter].index = loaded_index;
@@ -150,7 +133,8 @@ namespace hooks
 
 		if (unit->id == UnitId::ZergCreepColony
 			|| unit->id == UnitId::ZergSunkenColony
-			|| unit->id == UnitId::ZergSporeColony)
+			|| unit->id == UnitId::ZergSporeColony
+			|| unit->id == UnitId::ZergLarvalColony)
 		{
 			// TODO: inform creep about missing colony?
 		}
@@ -207,18 +191,20 @@ namespace hooks
 
 			}
 
-			//E7A81
+			// E7A81
 			unitToLoad->movementState = 0;
 
 			if (unitToLoad->sprite->elevationLevel < 12)
+			{
 				unitToLoad->pathingFlags |= 1;
+			}
 			else
+			{
 				unitToLoad->pathingFlags &= ~1;
+			}
 
-			if (
-				unitToLoad->subunit != nullptr &&
-				units_dat::BaseProperty[unitToLoad->subunit->id] & UnitProperty::Subunit
-				)
+			if (unitToLoad->subunit != nullptr &&
+				units_dat::BaseProperty[unitToLoad->subunit->id] & UnitProperty::Subunit)
 			{
 
 				CUnit* subUnit = unitToLoad->subunit;
@@ -244,18 +230,22 @@ namespace hooks
 
 				}
 
-				//E7B25
+				// E7B25
 				subUnit->movementState = 0;
 
 				if (subUnit->sprite->elevationLevel < 12)
+				{
 					subUnit->pathingFlags |= 1;
+				}
 				else
+				{
 					subUnit->pathingFlags &= ~1;
-
+				}
 			}
-			else //E7B51
+			else // E7B51
+			{
 				scbw::setUnitPosition(unitToLoad, unit->sprite->position.x, unit->sprite->position.y);
-
+			}
 		}
 
 	}
@@ -348,23 +338,29 @@ namespace hooks
 					scbw::setUnitPosition(unit, pos.x, pos.y);
 
 					if (unit->subunit != nullptr)
+					{
 						scbw::setUnitPosition(unit->subunit, pos.x, pos.y);
+					}
 
 					helper::IgnoreAllScriptAndGotoIdle(unit);
 
 					helper::function_004E7E10(unit, 0);
 
 					if (unit->pAI == nullptr)
+					{
 						unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+					}
 					else
+					{
 						unit->orderComputerCL(OrderId::ComputerAI);
+					}
 
 					scbw::refreshConsole();
 
 					return_value = 1;
 
 					if (transport->status & UnitStatus::GroundedBuilding)
-					{ //E806B
+					{ // E806B
 
 						if (unit->id != UnitId::ProtossAccantor)
 						{
