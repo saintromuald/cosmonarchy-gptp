@@ -3,8 +3,8 @@
 
 namespace BuildingHelper
 {
-	//Check if @p unit is warping in a Protoss building.
-	//Identical to function @ 0x004E4C40
+	// Check if @p unit is warping in a Protoss building.
+	// Identical to function @ 0x004E4C40
 	bool isWarpingInProtossBuilding(const CUnit* probe)
 	{
 		return probe->mainOrderId == OrderId::BuildProtoss1
@@ -13,27 +13,28 @@ namespace BuildingHelper
 			&& !(probe->orderTarget.unit->status & UnitStatus::Completed);
 	}
 
-	//Check if @p building is in the process of constructing an add-on.
-
-	//Return the building or add-on that the @p unit is constructing.
-	//Identical to function @ 0x00466A30
+	// Check if @p building is in the process of constructing an add-on.
+	// Return the building or add-on that the @p unit is constructing.
+	// Identical to function @ 0x00466A30
 	CUnit* getConstructRepairTarget(const CUnit* unit)
 	{
 		if (unit->mainOrderId == OrderId::BuildTerran
 			|| unit->mainOrderId == OrderId::Repair1
 			|| unit->mainOrderId == OrderId::ConstructingBuilding
 			|| isWarpingInProtossBuilding(unit))
+		{
 			return unit->orderTarget.unit;
-
+		}
 		if (unit->secondaryOrderId == OrderId::Train
 			|| unit->secondaryOrderId == OrderId::TrainFighter
 			|| helper::isConstructingAddon(unit))
+		{
 			return unit->currentBuildUnit;
-
+		}
 		return nullptr;
 	}
 
-	//Identical to function @ 0x00466B70
+	// Identical to function @ 0x00466B70
 	s32 getNumberOfUnitTypeInBuildQueue(const CUnit* unit, u16 unitId)
 	{
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
@@ -45,9 +46,13 @@ namespace BuildingHelper
 					|| unit->mainOrderId == OrderId::DroneLand
 					|| unit->mainOrderId == OrderId::DroneBuild
 					|| unit->mainOrderId == OrderId::DroneStartBuild))
+			{
 				return 1;
+			}
 			else
+			{
 				return 0;
+			}
 		}
 
 		if (scbw::isZergEgg(unit->id, true, false)
@@ -69,12 +74,14 @@ namespace BuildingHelper
 		if (!ignoreIncomplete || unit->status & UnitStatus::Completed)
 		{
 			if (unit->id == unitId)
+			{
 				return 1;
-
+			}
 			if (!ignoreIncomplete)
+			{
 				return getNumberOfUnitTypeInBuildQueue(unit, unitId);
+			}
 		}
-
 		return 0;
 	}
 }

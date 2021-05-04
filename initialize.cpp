@@ -463,6 +463,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	memoryPatch((void*)(0x0047E045 + 3), &bFF, sizeof(u8));
 	// FaRTy1billion, end
 
+	// injection
 	hooks::injectGameHooks();
 	hooks::injectDrawHook();
 
@@ -483,9 +484,9 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::injectWpnSpellHitHooks();
 	hooks::injectBuildingMorphHooks();
 //	hooks::injectMakeNydusExitHook();
-	hooks::injectUnitMorphHooks();
+//	hooks::injectUnitMorphHooks();
 	hooks::injectWireframeHook();
-//	hooks::injectDieOrderHook();
+	hooks::injectDieOrderHook();
 	hooks::injectBuildingTerranHook();
 	hooks::injectBuildingProtossHooks();
 	hooks::injectUnitTrainHooks();
@@ -515,7 +516,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 //	hooks::injectUtilsHooks();
 	hooks::injectMindControlSpellHook();
 	hooks::injectCMDRECV_BuildHooks();
-
+	
 	hooks::injectApplyUpgradeFlags();
 	hooks::injectAttackPriorityHooks();
 	hooks::injectBunkerHooks();
@@ -562,5 +563,6 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::injectNeutralRelatedHooks();
 //	hooks::injectFileOperationsHooks();
 	hooks::injectGlucustomHooks();
+	
 	return TRUE;
 }

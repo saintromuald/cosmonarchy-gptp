@@ -382,7 +382,9 @@ namespace hooks
 	{
 		//Default StarCraft behavior
 		if (scbw::isZergBuildingMorphResult(unitId))
+		{
 			return true;
+		}
 		return false;
 	}
 

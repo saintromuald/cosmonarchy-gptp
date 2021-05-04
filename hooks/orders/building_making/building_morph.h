@@ -11,4 +11,4 @@ namespace hooks
 	s32 getMorphBuildingTypeCountHook(const CUnit* unit, u16 unitId, bool ignoreIncomplete);
 	void injectBuildingMorphHooks();
 	void SetSpecialState1(CSprite* sprite);
-} //hooks
+}

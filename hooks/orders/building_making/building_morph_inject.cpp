@@ -88,43 +88,6 @@ namespace
 		}
 	}
 
-	//-------- UnitStatAct_ProgressBarIconText --------//
-
-	const u32 Hook_IsMorphedBuilding_ConsoleProgressBarTextBack = 0x00426B74;
-	void __declspec(naked) isMorphedBuildingWrapper_ConsoleProgressBarText()
-	{
-		static const CUnit* unit;
-		static u16 tblErrorMessage;
-		__asm {
-			PUSHAD
-			MOV EBP, ESP
-		}
-		unit = *activePortraitUnit;
-		if (unit->status & UnitStatus::GroundedBuilding && unit->isFrozen())
-		{
-			tblErrorMessage = 828;    //<6>Disabled<0>
-		}
-		else
-		{
-			u16 unitId = unit->buildQueue[unit->buildQueueSlot];
-			if (unit->status & UnitStatus::Completed
-				|| !hooks::isMorphedBuildingHook(unitId))
-			{
-				unitId = unit->id;
-			}
-			else
-			{
-				tblErrorMessage = 774;  //Morphing<0>, Building<0>, Building<0>
-			}
-		}
-		__asm {
-			POPAD
-			MOV ECX, unit
-			MOVZX EDX, tblErrorMessage
-			JMP Hook_IsMorphedBuilding_ConsoleProgressBarTextBack
-		}
-	}
-
 	//-------- AI_MorphBehavior() --------//
 
 	const u32 Hook_AI_MorphBehavior_IsMorphedBuildingYes = 0x0043508B;
@@ -333,7 +296,7 @@ namespace
 
 	//-------- AI_GetUnitCount --------//
 
-	//Inject @ 0x004334D9
+	// Inject @ 0x004334D9
 	const u32 Hook_AI_GetUnitCount_Return = 0x00433588;
 	void __declspec(naked) getMorphBuildingTypeCountWrapper_AI_GetUnitCount()
 	{
@@ -356,7 +319,7 @@ namespace
 
 	//-------- AI_ManageBases --------//
 
-	//Inject @ 0x00436439
+	// Inject @ 0x00436439
 
 	const u32 Hook_MorphSpecialStateContinue = 0x0045D2B1;
 	void __declspec(naked) MorphSpecialStateSetup_Wrapper()
@@ -398,26 +361,21 @@ namespace
 extern const u32 Func_IsRemorphingBuilding;
 namespace hooks
 {
-
 	void injectBuildingMorphHooks()
 	{
 		jmpPatch(orders_isMorphingWrapper, 0x0045CD00, 2);
 		jmpPatch(orders_ZergBuildSelfWrapper, 0x0045D500, 0);
 		jmpPatch(ZergPlaceBuildingWrapper, 0x0045DA40, 1);
 		jmpPatch(isRemorphingBuildingWrapper, Func_IsRemorphingBuilding);
-		jmpPatch(isMorphedBuildingWrapper_ConsoleProgressBarText, 0x00426AA2);
 		jmpPatch(isMorphedBuildingWrapper_AI_MorphBehavior, 0x0043505F);
 		jmpPatch(isMorphedBuildingWrapper_ConsoleWireFrameUpdate, 0x00456911);
 		jmpPatch(isMorphedBuildingWrapper_ZergBuildSelf_GetType, 0x0045D505);
 		callPatch(isMorphedBuildingWrapper_ZergBuildSelf_Complete, 0x0045D65D);
 		jmpPatch(isMorphedBuildingWrapper_ZergBuildSelf_SetTimer, 0x0045D56C);
 		jmpPatch(isMorphedBuildingWrapper_CancelZergBuilding, 0x0045DA4A);
-
 		jmpPatch(getMorphBuildingTypeCountWrapper_AI_GetWaitBuildUnitCount, 0x00433286);
 		jmpPatch(getMorphBuildingTypeCountWrapper_AI_GetUnitCount, 0x004334D9);
 		jmpPatch(getMorphBuildingTypeCountWrapper_AI_ManageBases, 0x00436439);
-
 		jmpPatch(MorphSpecialStateSetup_Wrapper, 0x0045D2A1);
 	}
-
-}; //hooks
+}

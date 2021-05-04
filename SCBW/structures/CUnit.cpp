@@ -203,13 +203,21 @@ RaceId::Enum CUnit::getRace(u16 unitId)
 	assert(unitId < UNIT_TYPE_COUNT);
 
 	if (units_dat::GroupFlags[unitId].isZerg)
+	{
 		return RaceId::Zerg;
+	}
 	else if (units_dat::GroupFlags[unitId].isProtoss)
+	{
 		return RaceId::Protoss;
+	}
 	else if (units_dat::GroupFlags[unitId].isTerran)
+	{
 		return RaceId::Terran;
+	}
 	else
+	{
 		return RaceId::Neutral;
+	}
 }
 
 extern const u32 Func_GetSeekRange = 0x00476000;
