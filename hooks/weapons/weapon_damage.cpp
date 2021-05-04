@@ -182,9 +182,13 @@ namespace hooks
 		{
 			s32 d_matrix_reduceAmount;
 			if (data.target->defensiveMatrixHp > data.finalDamage)
+			{
 				d_matrix_reduceAmount = data.finalDamage;
+			}
 			else
+			{
 				d_matrix_reduceAmount = data.target->defensiveMatrixHp;
+			}
 			data.finalDamage -= d_matrix_reduceAmount;
 			data.target->reduceDefensiveMatrixHp(d_matrix_reduceAmount);
 		}
@@ -247,13 +251,14 @@ namespace hooks
 		if (data.attacker != nullptr)
 		{
 			switch (data.attacker->id)
-			case UnitId::TerranHarakan:
 			{
-				if (units_dat::BaseProperty[data.target->id] & UnitProperty::Building)
+				case UnitId::TerranHarakan:
 				{
-					damage_factor = 256;
-				}
-				break;
+					if (units_dat::BaseProperty[data.target->id] & UnitProperty::Building)
+					{
+						damage_factor = 256;
+					}
+				} break;
 			}
 		}
 
@@ -308,49 +313,8 @@ namespace hooks
 			data.damageType = DamageType::Independent;
 		}
 
-		switch (data.weaponId)
+		switch (data.weaponId) // Damage Modifier Calc
 		{
-			case WeaponId::ArchitectDispersiveSalvo:
-			{
-				// Reactive Payload - Architect behavior
-				f64 div = 1.0;
-				if (data.damageDivisor != 0)
-				{
-					div = (f64)data.damageDivisor;
-				}
-				s32 dmg = ((f64)data.finalDamage / div);
-				data.finalDamage = dmg + scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks * VithriliskCorrosiveTouchArmorReduction);
-				break;
-			}
-			case WeaponId::AcidSpore:
-			{
-				// Searing Acid - Guardian behavior
-				data.finalDamage += (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction) + (data.damageDivisor * 10 * 256);
-				break;
-			}
-			case WeaponId::GlaveWurm:
-			{
-				// Lithe Organelle - Mutalisk bounce damage
-				f64 mul = 1.0;
-				switch (data.damageDivisor)
-				{
-					case 0:
-						mul = 1.0;
-						break;
-					case 1:
-						mul = 1.0 / 3.0; // glave wurm 1st bounce
-						break;
-					case 2:
-						mul = 1.0 / 6.0;
-						break;
-					default:
-						mul = 1.0 / 9.0; // glave wurm 4th bounce
-						break;
-				};
-				data.finalDamage *= mul;
-				data.finalDamage += (s32)scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction;
-				break;
-			}
 			case WeaponId::DemiurgeGalacticWeaver:
 			{
 				// Demiurge - Worship
@@ -362,7 +326,53 @@ namespace hooks
 					scbw::set_generic_value(data.target, ValueId::WorshipOriginalPlayer, data.target->playerId);
 					data.target->giveTo(data.attacker->playerId);
 				}
-			}
+			} break;
+		}
+
+		switch (data.weaponId) // Damage Divisor Calc
+		{
+			case WeaponId::ArchitectDispersiveSalvo:
+			{
+				// Reactive Payload - Architect behavior
+				f64 div = 1.0;
+				if (data.damageDivisor != 0)
+				{
+					div = (f64)data.damageDivisor;
+				}
+				s32 dmg = ((f64)data.finalDamage / div);
+				data.finalDamage = dmg + scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks * VithriliskCorrosiveTouchArmorReduction);
+			} break;
+			case WeaponId::AcidSpore:
+			{
+				// Searing Acid - Guardian behavior
+				data.finalDamage += (scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction) + (data.damageDivisor * 10 * 256);
+			} break;
+			case WeaponId::GlaveWurm:
+			{
+				// Lithe Organelle - Mutalisk bounce damage
+				f64 mul = 1.0;
+				switch (data.damageDivisor)
+				{
+					case 0:
+					{
+						mul = 1.0;
+					} break;
+					case 1:
+					{
+						mul = 1.0 / 3.0; // glave wurm 1st bounce
+					} break;
+					case 2:
+					{
+						mul = 1.0 / 6.0;
+					} break;
+					default:
+					{
+						mul = 1.0 / 9.0; // glave wurm 4th bounce
+					} break;
+				};
+				data.finalDamage *= mul;
+				data.finalDamage += (s32)scbw::get_generic_value(data.target, ValueId::CorrosiveTouchStacks) * VithriliskCorrosiveTouchArmorReduction;
+			} break;
 			default:
 			{
 				u32 divisor = data.damageDivisor;
@@ -384,8 +394,7 @@ namespace hooks
 				f32 damageIncrease = floor(missingFactor / QuazaliskPassiveFactor);
 				//scbw::printString("Damage Increase: " + std::to_string(damageIncrease));
 				data.finalDamage += damageIncrease * HealthMultiplier;
-				break;
-			}
+			} break;
 			case WeaponId::AlmaksaliskPiercingSpines:
 			{
 				// Almaksalisk - Flanking Spines
@@ -393,8 +402,7 @@ namespace hooks
 				{
 					data.damageType = DamageType::IgnoreArmor;
 				}
-				break;
-			}
+			} break;
 		}
 	}
 
@@ -497,8 +505,7 @@ namespace hooks
 					{
 						scbw::set_generic_timer(data.target, ValueId::SimulacrumCloneTimer, 5 * 24);
 					}
-					break;
-				}
+				} break;
 			}
 
 			switch (data.weaponId)
@@ -510,15 +517,13 @@ namespace hooks
 					{
 						ApplyIrradiate(data.target, data.attackingPlayerId, data.attacker->irradiateTimer);
 					}
-					break;
-				}
+				} break;
 				case WeaponId::KonviliskSowingSpines:
 				{
 					// Fertile Spines - Konvilisk behavior
 					/*if (data.target->getCurrentHpInGame() < (data.target->getMaxHpInGame() / 2))*/
 					scbw::applyParasite(data.target, data.attacker->playerId, data.attacker);
-					break;
-				}
+				} break;
 				case WeaponId::PazuzuJupiterDriver:
 				{
 					// Deconstruction - Pazuzu behavior - apply stack
@@ -540,8 +545,7 @@ namespace hooks
 							data.target->sprite->createOverlay(1332 + overlayOffset);
 						}
 					}
-					break;
-				}
+				} break;
 				case WeaponId::SavantDiscoidRailgun:
 				{
 					// Savant Entropy Gauntlets behavior - Apply timer and overlay
@@ -567,8 +571,7 @@ namespace hooks
 							data.target->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
 						}
 					}
-					break;
-				}
+				} break;
 				case WeaponId::Claws:
 				{
 					// Adrenal Glands - Zergling behavior
@@ -577,8 +580,7 @@ namespace hooks
 						scbw::add_generic_value(data.attacker, ValueId::AdrenalStacks, 1);
 					}
 					scbw::set_generic_timer(data.attacker, ValueId::AdrenalTimer, 49); //49 is 2 seconds (48) + 1
-					break;
-				}
+				} break;
 				case WeaponId::SouthpawUppercutLaser:
 				{
 					// Knockout Drivers - Southpaw behavior
@@ -588,29 +590,25 @@ namespace hooks
 					}
 					scbw::set_generic_timer(data.target, ValueId::KnockoutDriversTimer, 49); //49 is 2 seconds (48) + 1
 					data.target->updateSpeed();
-					break;
-				}
+				} break;
 				case WeaponId::MadrigalImperiosoMissiles:
 				{
 					// Dirge - Madrigal behavior
 					scbw::sendGPTP_aise_cmd(data.target, nullptr, GptpId::DirgeImpale, 24, 0, 0);
 					scbw::set_generic_rust_unit(data.target, ValueId::DirgeAttacker, data.attacker);
-					break;
-				}
+				} break;
 				case WeaponId::VorvalingClaws:
 				{
 					// Captivating Claws - Vorvaling behavior
 					captivatingClawsApply(data.attacker, data.target);
-					break;
-				}
+				} break;
 				case WeaponId::EcclesiastAstralBlaster:
 				{
 					// Astral Blessing - Ecclesiast behavior
 					scbw::add_generic_value(data.target, ValueId::EcclesiastStack, 1);
 					scbw::set_generic_timer(data.target, ValueId::EcclesiastTimer, (24 * 5) + 1);
 					scbw::set_generic_value(data.target, ValueId::EcclesiastPlayer, data.attacker->playerId);
-					break;
-				}
+				} break;
 				case WeaponId::SubterraneanTentacle:
 				case WeaponId::SeekerSpores:
 				{
@@ -619,8 +617,7 @@ namespace hooks
 						// data.damage /= 2; // TODO: Fix compiler error
 						scbw::set_generic_value(data.attacker, ValueId::Amitosis, 0);
 					}
-					break;
-				}
+				} break;
 				case WeaponId::SeraphObservance:
 				{
 					// Observance - Science Vessel ability
@@ -638,8 +635,7 @@ namespace hooks
 						}
 						scbw::add_generic_value(data.target, ValueId::ObservanceRend, 1);
 					}
-					break;
-				}
+				} break;
 				case WeaponId::GorgrokorSerratedCleavers:
 				{
 					// Essence Drain - Gorgoleth Energy Steal
@@ -649,8 +645,7 @@ namespace hooks
 						data.target->energy -= energy;
 						data.attacker->energy += energy;
 					}
-					break;
-				}
+				} break;
 				case WeaponId::MagisterNeutronCannon:
 				{
 					// Stellar Enforcement - Magister behavior
@@ -658,8 +653,7 @@ namespace hooks
 					{
 						scbw::add_generic_value(data.target, ValueId::StellarEnforcement, 1);
 					}
-					break;
-				}
+				} break;
 				case WeaponId::ApostleCharonRifle:
 				{
 					// Blood Tithe - Apostle behavior
@@ -681,8 +675,7 @@ namespace hooks
 						}
 						foundUnit->heal(data.finalDamage, data.target);
 					});
-					break;
-				}
+				} break;
 			}
 		}
 	}
@@ -697,15 +690,13 @@ namespace hooks
 				// Ultrakor Saber Siphon passive
 				lifesteal *= 0.5;
 				data.attacker->heal(lifesteal, data.attacker);
-				break;
-			}
+			} break;
 			case WeaponId::WendigoFusionSaw:
 			{
 				// Wendigo Automedicus passive (HP component)
 				lifesteal *= 0.25;
 				data.attacker->heal(lifesteal, data.attacker);
-				break;
-			}
+			} break;
 			case WeaponId::AmaranthPsiCleaver:
 			{
 				// Eternal Service - Amaranth behavior
@@ -713,8 +704,7 @@ namespace hooks
 				const s32 maxHp = data.attacker->getMaxHpInGame();
 				lifesteal *= MathUtils::map(hp, maxHp / 4, maxHp, 0.5, 0.2, true);
 				data.attacker->healShields(lifesteal, data.attacker);
-				break;
-			}
+			} break;
 		}
 	}
 
@@ -842,8 +832,7 @@ namespace hooks
 					u32 value = 50 * 256;
 					unit->healShields(value, data.target);
 				});
-				break;
-			}
+			} break;
 			case UnitId::ProtossAurora:
 			{
 				// Last Orders - Aurora behavior
@@ -892,13 +881,12 @@ namespace hooks
 						data.target->status |= UnitStatus::CanNotReceiveOrders;
 					}
 				}
-				break;
-			}
+			} break;
 			case UnitId::ProtossAugur:
 			{
 				// Augur - Death behavior
 				augurSacrifice(data.target);
-			}
+			} break;
 		}
 
 		if (data.attacker != nullptr)
@@ -911,15 +899,13 @@ namespace hooks
 					// Alkajelisk - Parasite
 					scbw::set_generic_value(data.target, ValueId::AlkajeliskParasite, 1);
 					scbw::set_generic_value(data.target, ValueId::AlkajeliskParasitePlayer, data.attacker->playerId);
-					break;
-				}
+				} break;
 				case WeaponId::KaiserBlades:
 				{
 					// Kaiser Rampage - Ultralisk behavior
 					scbw::set_generic_timer(data.attacker, ValueId::KaiserRampage, 1 + (2 * 24));
 					data.attacker->updateSpeed();
-					break;
-				}
+				} break;
 				case WeaponId::NathrokorPlasmidBreath:
 				{
 					// Adrenal Frenzy - Nathrokor behavior
@@ -940,8 +926,7 @@ namespace hooks
 						scbw::set_generic_timer(unit, ValueId::NathrokorTimer, (4 * 24) + 1);
 						unit->updateSpeed();
 					});
-					break;
-				}
+				} break;
 				case WeaponId::ToxicSpores:
 				case WeaponId::BroodliskSwarmingSpores:
 				{
@@ -951,15 +936,13 @@ namespace hooks
 					scbw::createUnitFromAbility(type, supplyCount, data.attacker->playerId,
 						data.target->position.x, data.target->position.y, data.attacker->removeTimer,
 						scbw::getSourceQueens(data.attacker)[0]);
-					break;
-				}
+				} break;
 				case WeaponId::CyclopsFlakCannons:
 				{
 					// Cyclops - Flak Cannon passive
 					auto newAngle = scbw::getAngle(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
 					helper::createBullet(WeaponId::CyclopsFragmentaryShells, data.attacker, data.target->getX(), data.target->getY(), data.attacker->playerId, newAngle);
-					break;
-				}
+				} break;
 			}
 		}
 	}
