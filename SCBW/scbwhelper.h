@@ -527,7 +527,7 @@ namespace helper
 
 	//// load_unload_proc
 	void IgnoreAllScriptAndGotoIdle(CUnit* unit);																						// 00476550
-	u32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos);															// 004E76C0
+	u32 canUnload(CUnit* transport, CUnit* loaded_unit, Point16* pos);																	// 004E76C0
 	void function_004E7E10(CUnit* unit, u32 unk);																						// 004E7E10
 
 	//// stats_panel_display

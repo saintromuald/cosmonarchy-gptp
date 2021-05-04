@@ -12,9 +12,8 @@ namespace hooks
 	void orders_Pickup1(CUnit* unit)
 	{
 		CUnit* unitToLoad = unit->orderTarget.unit;
-		if (unitToLoad != nullptr &&
-			scbw::canBeEnteredBy(unit, unitToLoad)
-			)
+		if (unitToLoad != nullptr
+			&& scbw::canBeEnteredBy(unit, unitToLoad))
 		{
 			helper::function_00474A70(unit, unitToLoad, OrderId::Pickup2);
 			prepareForNextOrder(unit);
@@ -22,56 +21,38 @@ namespace hooks
 		else
 			if (unit->pAI != nullptr)
 			{
-
 				Point16 pos = {0,0};
-
 				unit->userActionFlags |= 1;
-
 				if (unit->mainOrderId != OrderId::Die)
 				{
-
 					bool bStopLoop = (unit->orderQueueTail == nullptr);
-
 					while (!bStopLoop)
 					{
-
 						u8 orderId = (u8)unit->orderQueueTail->orderId;
-
-						if (
-							orders_dat::CanBeInterrupted[orderId] == 0 &&
-							orderId != OrderId::ComputerAI
-							)
+						if (orders_dat::CanBeInterrupted[orderId] == 0
+							&& orderId != OrderId::ComputerAI)
+						{
 							bStopLoop = true;
+						}
 
 						if (!bStopLoop)
 						{
 							helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 							bStopLoop = (unit->orderQueueTail == nullptr);
 						}
-
 					}
-
 					unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
-
 				}
-
 				prepareForNextOrder(unit);
-
 			}
-
 	}
-
-	;
 
 	//unit is a non-mobile transport (bunker)
 	void orders_Pickup3_0(CUnit* unit)
 	{
-
 		CUnit* unitToLoad = unit->orderTarget.unit;
-
 		if (unitToLoad == nullptr)
 		{
-
 			if (unit->orderQueueHead != nullptr)
 			{
 				unit->userActionFlags |= 1;
@@ -80,36 +61,32 @@ namespace hooks
 			else
 			{
 				if (unit->pAI != nullptr)
+				{
 					unit->orderComputerCL(OrderId::ComputerAI);
+				}
 				else
+				{
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+				}
 			}
-
 		}
 		else
-		{ //E73F4
-
+		{ // 004E73F4
 			if (scbw::canBeEnteredBy(unit, unitToLoad))
+			{
 				unitToLoad->orderTo(OrderId::EnterTransport, unit);
-
+			}
 			unit->orderToIdle();
-
 		}
-
 	}
 
-	;
-
-	//unit is a transport (overlord,shuttle,dropship)
-	//this is used after orders_Pickup1
+	// unit is a transport (overlord,shuttle,dropship)
+	// this is used after orders_Pickup1
 	void orders_Pickup2(CUnit* unit)
 	{
-
 		CUnit* unitToLoad = unit->orderTarget.unit;
-
 		if (unitToLoad == nullptr)
 		{
-
 			if (unit->orderQueueHead != nullptr)
 			{
 				unit->userActionFlags |= 1;
@@ -118,19 +95,20 @@ namespace hooks
 			else
 			{
 				if (unit->pAI != nullptr)
+				{
 					unit->orderComputerCL(OrderId::ComputerAI);
+				}
 				else
+				{
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+				}
 			}
-
 		}
 		else
-		{ //E761F
-			if (
-				unitToLoad->pAI == nullptr ||
-				unitToLoad->mainOrderId == OrderId::Pickup4
-				)
-			{ //E762F
+		{ // 004E761F
+			if (unitToLoad->pAI == nullptr
+				|| unitToLoad->mainOrderId == OrderId::Pickup4)
+			{ // 004E762F
 				if (unit->mainOrderState == 0)
 				{
 					if (scbw::canBeEnteredBy(unit, unitToLoad))
@@ -139,17 +117,21 @@ namespace hooks
 						{
 							unit->mainOrderTimer = 7;
 							if (!unit->isTargetWithinMinRange(unitToLoad, 1))
+							{
 								helper::orderToMoveToTarget(unit, unitToLoad);
+							}
 							else
 							{
 								helper::makeToHoldPosition(unit);
-								if (
-									unitToLoad->mainOrderId != OrderId::EnterTransport &&
-									unitToLoad->mainOrderId != OrderId::Pickup4
-									)
+								if (unitToLoad->mainOrderId != OrderId::EnterTransport
+									&& unitToLoad->mainOrderId != OrderId::Pickup4)
+								{
 									unitToLoad->orderTo(OrderId::EnterTransport, unit);
+								}
 								if (unit->pAI != nullptr)
+								{
 									unit->mainOrderState = 1;
+								}
 								else
 								{
 									helper::function_00474A70(unit, unitToLoad, OrderId::Pickup1);
@@ -159,27 +141,27 @@ namespace hooks
 						}
 					}
 					else
+					{
 						unit->orderToIdle();
+					}
 				}
 			}
-			else //E7642
+			else // 004E7642
+			{
 				unit->orderToIdle();
+			}
 		}
 	}
 
-	//unit is a transport (overlord,shuttle,dropship)
-	//a big part of the code could not be tested
-	//since different ground height test never
-	//occured during testing
+	// unit is a transport (overlord,shuttle,dropship)
+	// a big part of the code could not be tested
+	// since different ground height test never
+	// occured during testing
 	void orders_MoveUnload(CUnit* unit)
 	{
-
 		u32 distance;
-
-		if (
-			unit->mainOrderState == 0 &&
-			unit->orderTarget.unit != nullptr
-			)
+		if (unit->mainOrderState == 0 &&
+			unit->orderTarget.unit != nullptr)
 		{
 			unit->mainOrderState = 1;
 			unit->orderTarget.pt.x = (unit->orderTarget.unit)->sprite->position.x;
@@ -187,19 +169,11 @@ namespace hooks
 			unit->orderTarget.unit = nullptr;
 		}
 
-		//E7739
-		distance = scbw::getDistanceFast(
-			unit->orderTarget.pt.x * 256,
-			unit->orderTarget.pt.y * 256,
-			unit->halt.x,
-			unit->halt.y
-		);
-
+		// 004E7739
+		distance = scbw::getDistanceFast(unit->orderTarget.pt.x * 256, unit->orderTarget.pt.y * 256, unit->halt.x, unit->halt.y);
 		distance &= 0xFFFFFF00;
-
 		if (distance <= 0x1000)
 		{
-
 			if (unit->orderQueueHead != nullptr)
 			{
 				helper::unknownSpecialOrder(unit, unit->orderQueueHead, OrderId::Unload, 0, 0, nullptr, UnitId::None);
@@ -210,150 +184,96 @@ namespace hooks
 				unit->performAnotherOrder(OrderId::Unload, 0, 0, nullptr, UnitId::None);
 				prepareForNextOrder(unit);
 			}
-
 		}
 		else
-		{ //E77B4
-
+		{ // 004E77B4
 			helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
-
-			if (
-				unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
-				unit->orderTarget.pt.y != unit->nextTargetWaypoint.y
-				)
+			if (unit->orderTarget.pt.x != unit->nextTargetWaypoint.x
+				|| unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
 			{
 				unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
 				unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
 			}
-
 			if (unit->pAI != nullptr)
 			{
-
-				u32 groundHeightAtPxPos1 =
-					scbw::getGroundHeightAtPos(
-						unit->sprite->position.x,
-						unit->sprite->position.y
-					);
-
-				if (groundHeightAtPxPos1 !=
-					scbw::getGroundHeightAtPos(
-						unit->orderTarget.pt.x,
-						unit->orderTarget.pt.y
-					))
+				u32 groundHeightAtPxPos1 = scbw::getGroundHeightAtPos(unit->sprite->position.x, unit->sprite->position.y);
+				if (groundHeightAtPxPos1 != scbw::getGroundHeightAtPos(unit->orderTarget.pt.x, unit->orderTarget.pt.y))
 				{
-
-					distance = scbw::getDistanceFast(
-						unit->orderTarget.pt.x * 256,
-						unit->orderTarget.pt.y * 256,
-						unit->halt.x,
-						unit->halt.y
-					);
-
+					distance = scbw::getDistanceFast(unit->orderTarget.pt.x * 256, unit->orderTarget.pt.y * 256, unit->halt.x, unit->halt.y);
 					distance &= 0xFFFFFF00;
-
-					if (
-						distance <= 0xCA000 &&
-						helper::function_00438E70(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0 &&
-						helper::getFirstLoadedWorker(unit) == 0
-						)
+					if (distance <= 0xCA000
+						&& helper::function_00438E70(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0
+						&& helper::getFirstLoadedWorker(unit) == 0)
 					{
 
 						s32 index = 0;
 						bool bStopLoop = false;
 						bool bStopAll = false;
-						bool bIsDistanceGreaterThanHaltDistance =
-							helper::isDistanceGreaterThanHaltDistance(
-								unit,
-								unit->orderTarget.pt.x,
-								unit->orderTarget.pt.y,
-								512
-							);
-						Point16 pos = {0,0}; //unsure about this start value
-
+						bool bIsDistanceGreaterThanHaltDistance = helper::isDistanceGreaterThanHaltDistance(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, 512);
+						Point16 pos = {0,0}; // unsure about this start value
 						while (!bStopLoop)
 						{
-
 							CUnit* unitToUnload = helper::getLoadedUnitFromIndex(unit, index);
-
 							if (unitToUnload != nullptr)
 							{
-
 								if (unitToUnload->id == UnitId::ProtossAccantor && bIsDistanceGreaterThanHaltDistance)
+								{
 									bStopLoop = true;
+								}
 								else
-									if (helper::function_004E76C0(unit, unitToUnload, &pos) == 0)
+									if (helper::canUnload(unit, unitToUnload, &pos) == 0)
 									{
 										bStopAll = true;
 										bStopLoop = true;
 									}
-
-
-
 							}
-
-							//E78BC
+							// 004E78BC
 							if (!bStopAll)
 							{
 								index++;
 								bStopLoop = (index < 8);
 							}
-
-						} //while(!bStopLoop)
-
+						}
 						if (!bStopAll)
 						{
 							helper::orderImmediate(unit, OrderId::Unload);
 							prepareForNextOrder(unit);
 						}
-
 					}
-
 				}
-
 			}
-
 		}
+	}
 
-	} //void orders_MoveUnload(CUnit* unit)
-
-	;
-
-	//unit is an unit to pick up by transport
-	//COULD NOT BE TESTED (tried bunker and all
-	//and nothing called this function)
+	// unit is an unit to pick up by transport
+	// COULD NOT BE TESTED (tried bunker and all
+	// and nothing called this function)
 	void orders_Pickup4_0(CUnit* unit)
 	{
-
-		//		WRITE_TO_LOG("orders_Pickup4_0 START");
-
 		if (unit->playerId == 11)
 		{
-
 			unit->userActionFlags |= 1;
-
 			if (unit->status & UnitStatus::InTransport)
+			{
 				unit->order(OrderId::Nothing2, 0, 0, nullptr, UnitId::None, 1);
+			}
 			else
+			{
 				unit->order(units_dat::ReturnToIdleOrder[unit->id], 0, 0, nullptr, UnitId::None, 1);
-
+			}
 			prepareForNextOrder(unit);
-
 		}
 		else
-			if (!(unit->status & UnitStatus::InTransport) &&
-				helper::function_00477160(unit, 1, 0, 0) == 0
-				)
-			{ //E7BEB
-
+			if (!(unit->status & UnitStatus::InTransport)
+				&& helper::function_00477160(unit, 1, 0, 0) == 0)
+			{ // 004E7BEB
 				CUnit* target = unit->orderTarget.unit;
 				bool jump_to_E7C2B = false;
 				bool jump_to_E7C37 = false;
 				bool jump_to_E7C44 = false;
 				bool bEndThere = false;
-
 				if (target == nullptr)
 				{
-
 					if (helper::function_004E6EF0(unit, &target) == 0)
 					{
 						unit->orderToIdle();
@@ -361,126 +281,103 @@ namespace hooks
 					}
 					else
 						if (target != nullptr)
+						{
 							jump_to_E7C2B = true;
-
+						}
 				}
-
 				if (!bEndThere)
 				{
-
 					if (!jump_to_E7C2B)
-					{ //E7C1B
-
-						if (!helper::unitIsActiveTransport(target) ||
-							target->orderTarget.unit != unit
-							)
+					{ // 004E7C1B
+						if (!helper::unitIsActiveTransport(target)
+							|| target->orderTarget.unit != unit)
+						{
 							jump_to_E7C37 = true;
+						}
 						else
+						{
 							jump_to_E7C2B = true;
-
+						}
 					}
-
 					if (jump_to_E7C2B)
 					{
 						if (scbw::canBeEnteredBy(target, unit))
+						{
 							jump_to_E7C44 = true;
+						}
 						else
+						{
 							jump_to_E7C37 = true;
+						}
 					}
-
 					if (jump_to_E7C37)
+					{
 						unit->orderTarget.unit = nullptr;
-
+					}
 					if (jump_to_E7C44)
 					{
-
 						if (unit->isTargetWithinMinRange(target, 1))
-						{ //E7C52
-
+						{ // 004E7C52
 							helper::loadUnitProc(target, unit);
 							target->orderTo(OrderId::MoveUnload, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
-
 							if (target->pAI != nullptr)
+							{
 								helper::_doOrder(
 									target,
 									OrderId::Move,
 									target->sprite->position.x,
 									target->sprite->position.y,
-									false
-								);
-
-
+									false);
+							}
 						}
 						else
-						{ //E7C94
-
+						{ // 004E7C94
 							helper::function_00474A70(target, unit, OrderId::Pickup2);
 							prepareForNextOrder(target);
-
 							if (helper::function_00438E70(unit, target->sprite->position.x, target->sprite->position.y) != 0)
 							{
 								helper::function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
 								helper::function_004EB900(unit, target);
 							}
-
 						}
-
 					}
-
 				}
-
 			}
-
-		//		WRITE_TO_LOG("orders_Pickup4_0 END");
-
 	}
-
-	;
 
 	//unit is an unit aiming to enter a transport
 	void orders_EnterTransport(CUnit* unit)
 	{
-
 		CUnit* target = unit->orderTarget.unit;
+		if (target != nullptr
+			&& !(target->status & UnitStatus::IsHallucination)
+			&& (target->id != UnitId::ZergOvileth
+				|| UpgradesSc->currentLevel[unit->playerId][UpgradeId::VentralSacs] != 0)
+			&& units_dat::SpaceProvided[target->id] != 0
+			&& scbw::canBeEnteredBy(target, unit))
+		{ // 004E7D51
 
-		if (
-			target != nullptr &&
-			!(target->status & UnitStatus::IsHallucination) &&
-			(target->id != UnitId::ZergOvileth ||
-				UpgradesSc->currentLevel[unit->playerId][UpgradeId::VentralSacs] != 0) &&
-			units_dat::SpaceProvided[target->id] != 0 &&
-			scbw::canBeEnteredBy(target, unit)
-			)
-		{ //E7D51
-
-			if (
-				unit->mainOrderState == 0 &&
-				target->mainOrderId != OrderId::Pickup2
-				)
+			if (unit->mainOrderState == 0
+				&& target->mainOrderId != OrderId::Pickup2)
 			{
-
 				if (target->status & UnitStatus::IsBuilding)
 				{
 					helper::function_00474A70(target, unit, OrderId::Pickup2);
 					prepareForNextOrder(target);
 				}
-
 				unit->mainOrderState = 1;
-
 			}
-
 			if (target->sprite->position.x != unit->nextTargetWaypoint.x ||
 				target->sprite->position.y != unit->nextTargetWaypoint.y)
 			{
 				unit->nextTargetWaypoint.x = target->sprite->position.x;
 				unit->nextTargetWaypoint.y = target->sprite->position.y;
 			}
-
 			helper::function_004EB900(unit, target);
-
 			if (unit->isTargetWithinMinRange(target, 1))
+			{
 				helper::loadUnitProc(target, unit);
-
+			}
 		}
 		else
 		{
@@ -491,19 +388,18 @@ namespace hooks
 			}
 			else
 				if (unit->pAI != nullptr)
+				{
 					unit->orderComputerCL(OrderId::ComputerAI);
+				}
 				else
+				{
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
-
+				}
 		}
-
 	}
-
-	;
 
 	void orders_Unload(CUnit* unit)
 	{
-
 		static CUnit* unitTable_0059CB58 = (CUnit*)(0x0059CB58);
 		static CUnit* unitTable_0059CB64 = (CUnit*)(0x0059CB64);
 		if (globals.extended_unit_table == 1)
@@ -512,96 +408,85 @@ namespace hooks
 			unitTable_0059CB58 = (CUnit*)index_start;
 			unitTable_0059CB64 = (CUnit*)(index_start + 12);
 		}
-
-		if (
-			unit->status & UnitStatus::GroundedBuilding ||
-			unit->mainOrderTimer == 0
-			)
+		if (unit->status & UnitStatus::GroundedBuilding
+			|| unit->mainOrderTimer == 0)
 		{
-
 			s32 counter = 0;
 			u32 result_E7F70 = 0;
 			bool bEndLoop = false;
 			bool bFoundUnitToUnload = false;
-
 			u32* loadedUnitOffset;
-
 			bool jump_to_E8191 = false;
 			bool jump_to_E8195 = false;
 			bool jump_to_E81AD = false;
-
 			while (!bEndLoop)
 			{
-
 				loadedUnitOffset = (u32*)&unit->loadedUnit[counter];
-
-				if (*loadedUnitOffset != 0 &&
-					unitTable_0059CB64[unit->loadedUnit[counter].index].link.prev != nullptr //sprite check
-					)
+				if (*loadedUnitOffset != 0
+					&& unitTable_0059CB64[unit->loadedUnit[counter].index].link.prev != nullptr) // sprite check
 				{
-
 					CUnit* unitToUnload = &(unitTable_0059CB58[unit->loadedUnit[counter].index]);
-
 					if (unitToUnload->mainOrderId != 0 || unitToUnload->mainOrderState != 1)
 					{
-
 						if (unit->loadedUnit[counter].unitId == unitToUnload->targetOrderSpecial)
 						{
-
 							bFoundUnitToUnload = true;
 							result_E7F70 = helper::unloadUnitProc(unitToUnload);
-
 							if (!(unit->status & UnitStatus::GroundedBuilding))
+							{
 								bEndLoop = true;
-
+							}
 						}
-
 					}
-
 				}
 
 				if (!bEndLoop)
 				{
-
 					counter++;
-
 					if (counter >= 8)
+					{
 						bEndLoop = true;
-
+					}
 				}
-
-			} //while(!bEndLoop)
+			}
 
 			if (!bFoundUnitToUnload)
+			{
 				jump_to_E8191 = true;
+			}
 
 			if (!jump_to_E8191)
 			{
-
 				if (result_E7F70 != 0)
+				{
 					jump_to_E8195 = true;
+				}
 				else
-					if (
-						unit->pAI == nullptr ||
-						unit->status & UnitStatus::GroundedBuilding
-						)
+					if (unit->pAI == nullptr
+						|| unit->status & UnitStatus::GroundedBuilding)
+					{
 						jump_to_E81AD = true;
+					}
 					else
+					{
 						helper::function_0043DF30(unit);
+					}
 			}
 			if (jump_to_E8191)
 			{
 				if (result_E7F70 == 0)
+				{
 					jump_to_E81AD = true;
+				}
 				else
+				{
 					jump_to_E8195 = true;
+				}
 			}
 			if (jump_to_E8195)
 			{
-				if (
-					unit->status & UnitStatus::GroundedBuilding ||
-					!unit->hasLoadedUnit()
-					)
+				if (unit->status & UnitStatus::GroundedBuilding
+					|| !unit->hasLoadedUnit())
 					jump_to_E81AD = true;
 			}
 			if (jump_to_E81AD)
@@ -613,103 +498,103 @@ namespace hooks
 				}
 				else
 					if (unit->pAI != nullptr)
-					{ //E81DE
+					{ // 004E81DE
 						unit->userActionFlags |= 1;
 						if (unit->mainOrderId == OrderId::Die)
+						{
 							prepareForNextOrder(unit);
+						}
 						else
 						{
 							bEndLoop = (unit->orderQueueTail == nullptr);
 							while (!bEndLoop)
 							{
-								if (
-									orders_dat::CanBeInterrupted[(unit->orderQueueTail)->orderId] ||
-									unit->orderQueueTail->orderId == OrderId::ComputerAI
-									)
+								if (orders_dat::CanBeInterrupted[(unit->orderQueueTail)->orderId]
+									|| unit->orderQueueTail->orderId == OrderId::ComputerAI)
 								{
 									helper::removeOrderFromUnitQueue(unit, unit->orderQueueTail);
 								}
 								else
+								{
 									bEndLoop = true;
-
+								}
 								if (!bEndLoop)
+								{
 									bEndLoop = (unit->orderQueueTail == nullptr);
+								}
 							}
 							unit->performAnotherOrder(OrderId::ComputerAI, 0, 0, nullptr, UnitId::None);
 							prepareForNextOrder(unit);
 						}
 					}
 					else
-					{ //E823A
+					{ // 004E823A
 						unit->userActionFlags |= 1;
-						unit->order(
-							units_dat::ReturnToIdleOrder[unit->id],
+						unit->order(units_dat::ReturnToIdleOrder[unit->id],
 							0,
 							0,
 							nullptr,
 							UnitId::None,
-							true
-						);
+							true);
 						prepareForNextOrder(unit);
 					}
 			}
 		}
 	}
 
-	bool canEnterTransport(CUnit* a1, CUnit* a2)
+	bool canEnterTransport(CUnit* transport, CUnit* unit)
 	{ // 004E6E00
-		CUnit* v4; // edx
-		u32 v7; // edi
-		u32 v8; // esi
-		CUnit* v9; // eax
-		s32 v10; // [esp+4h] [ebp-4h]
-
-		if (!(a1->status & UnitStatus::Completed))
+		if (!(transport->status & UnitStatus::Completed))
 		{
 			return 0;
 		}
-		if (a1->status & UnitStatus::DoodadStatesThing)
+		if (transport->status & UnitStatus::DoodadStatesThing)
 		{
 			return 0;
 		}
-		if (a1->lockdownTimer || a1->stasisTimer || a1->maelstromTimer)
+		if (transport->isFrozen())
 		{
 			return 0;
 		}
-		v4 = a2;
-		if (a2->status & UnitStatus::Burrowed
-			//		|| a2->playerId != v3->playerId // Original code
-			)
+		if (unit->status & UnitStatus::Burrowed) // originally also checked for playerIds being the same
 		{
 			return 0;
 		}
-		if (!(scbw::isAlliedTo(a1->playerId, a2->playerId)))
+		if (!(scbw::isAlliedTo(transport->playerId, unit->playerId)))
 		{
 			return 0;
 		}
-		if (units_dat::BaseProperty[a1->id] & UnitProperty::Building)
+		if (units_dat::BaseProperty[transport->id] & UnitProperty::Building)
 		{
-			if (!(units_dat::BaseProperty[a2->id] & UnitProperty::Organic))
+			if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic))
 			{
 				return 0;
 			}
 		}
-		//		&& (unitGetRace(a2) != 1 || units_dat::SpaceRequired[(u16)v4->id] > 1u) // Original code
-		v7 = units_dat::SpaceProvided[a1->id];
-		v8 = 0;
-		v10 = 0;
-		if (v7)
+		/* TODO: Limit transport space to 8 slots
+		else
+			if (conditional)
+			{
+				return 0;
+			}
+		*/
+		u32 spaceProvided = units_dat::SpaceProvided[transport->id];
+		u32 index = 0;
+		s32 spaceRequired = 0;
+		CUnit* loadedUnit;
+		if (spaceProvided)
 		{
 			do
 			{
-				v9 = helper::getLoadedUnitFromIndex(a1, v8);
-				if (v9)
-					v10 += units_dat::SpaceRequired[(u16)v9->id];
-				++v8;
-			}
-			while (v8 < v7);
-			v4 = a2;
+				loadedUnit = helper::getLoadedUnitFromIndex(transport, index);
+				if (loadedUnit)
+				{
+					spaceRequired += units_dat::SpaceRequired[loadedUnit->id];
+				}
+				++index;
+			} while (index < spaceProvided);
+			unit = unit;
 		}
-		return v7 - v10 >= units_dat::SpaceRequired[(u16)v4->id];
+		return spaceProvided - spaceRequired >= units_dat::SpaceRequired[unit->id];
 	}
 }

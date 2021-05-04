@@ -286,7 +286,7 @@ namespace hooks
 				Point16 pos = {0,0};
 
 				//probably check where unit can be spawned
-				if (helper::function_004E76C0(transport, unit, &pos) != 0)
+				if (helper::canUnload(transport, unit, &pos) != 0)
 				{
 
 					if (transport->id == UnitId::TerranTrojan)

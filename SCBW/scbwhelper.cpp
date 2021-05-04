@@ -5119,16 +5119,16 @@ namespace helper
 		}
 	}
 
-	u32 function_004E76C0(CUnit* transport, CUnit* loaded_unit, Point16* pos)
+	u32 canUnload(CUnit* transport, CUnit* loaded_unit, Point16* pos)
 	{
-		const u32 Func_Sub4E76C0 = 0x004E76C0;
+		const u32 Func_canUnload = 0x004E76C0;
 		static u32 result;
 		__asm {
 			PUSHAD
 			MOV EAX, transport
 			MOV ESI, loaded_unit
 			PUSH pos
-			CALL Func_Sub4E76C0
+			CALL Func_canUnload
 			MOV result, EAX
 			POPAD
 		}
