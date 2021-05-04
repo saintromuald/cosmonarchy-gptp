@@ -451,6 +451,7 @@ namespace hooks
 		addStatus(statuses, "Repentent Chorus", scbw::get_generic_value(unit, ValueId::RepententChorus), 0);
 		addStatus(statuses, "Stellar Enforcement", scbw::get_generic_value(unit, ValueId::StellarEnforcement), 1);
 		addStatus(statuses, "Terminal Surge", scbw::get_generic_value(unit, ValueId::TerminalSurge), 0);
+		addStatus(statuses, "Godlike", scbw::get_generic_value(unit, ValueId::GodsMadeFleshTimer), 1);
 
 		// Aise Value - Gimmicked
 		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 0, 1);
@@ -460,7 +461,6 @@ namespace hooks
 		addStatus(statuses, "Protective Instincts", scbw::get_generic_timer(unit, ValueId::ProtectiveInstinctsStatus) > 0, 1);
 		addStatus(statuses, "Deconstructing", scbw::get_generic_value(unit, ValueId::Deconstruction) > 0, 1);
 		addStatus(statuses, "Worshiping", scbw::get_generic_value(unit, ValueId::WorshipStack) > 0, 1);
-		addStatus(statuses, "Godlike", scbw::get_generic_value(unit, ValueId::GodsMadeFleshTimer) > 0, 1);
 		addStatus(statuses, "Making Gods from Flesh", scbw::get_generic_value(unit, ValueId::GodsMadeFleshActive) > 0, 1);
 		addStatus(statuses, "Adaptive Amitosis", scbw::get_generic_value(unit, ValueId::AdaptiveAmitosis) > 0, 1);
 		addStatus(statuses, "Cutaneous Barrier", scbw::get_generic_value(unit, ValueId::CutaneousBarrier) > 0, 1);
