@@ -110,8 +110,7 @@ namespace hooks
 				{
 					speed *= 2;
 				}
-				break;
-			}
+			} break;
 			case UnitId::TerranWyvern:
 			{
 				// Wyvern Reverse Thrust ability: reduce movespeed
@@ -119,8 +118,7 @@ namespace hooks
 				{
 					speed *= 0.5;
 				}
-				break;
-			}
+			} break;
 			case UnitId::ZergVorvaling:
 			{
 				// Vorvaling Adrenal Surge: gains f64 movespeed when moving towards enemies
@@ -158,8 +156,7 @@ namespace hooks
 						unit->_padding_0x132 &= ~0x2;
 					}
 				}
-				break;
-			}
+			} break;
 			case UnitId::TerranVulture:
 			{
 				// Vulture Ion Propulsion: reduce movespeed, gains hover-mover status
@@ -171,15 +168,13 @@ namespace hooks
 						speed *= 0.5;
 					}
 				}
-				break;
-			}
+			} break;
 			case UnitId::ProtossClarion:
 			{
 				// Clarion Harmony Drive: gains increased movement speed based on shields
 				f64 fraction = (f64)unit->shields / ((f64)units_dat::MaxShieldPoints[unit->id] * 256);
 				speed *= 1.0 + fraction;
-				break;
-			}
+			} break;
 			case UnitId::TerranBlackjack:
 			{
 				// Blackjack Wear and Tear: reduce movement speed based on missing health
@@ -187,8 +182,7 @@ namespace hooks
 				const u32 maxHealth = unit->getMaxHpInGame();
 				const f64 multiplier = MathUtils::map(health, (u32)0, maxHealth, 0.66, 1.0, true); // nice casting tbh
 				speed *= multiplier;
-				break;
-			}
+			} break;
 			case UnitId::ProtossGolem:
 			{
 				// Golem Deathless Procession: gains increased movespeed based on missing shields
@@ -196,8 +190,7 @@ namespace hooks
 				const u32 maxHealth = units_dat::MaxShieldPoints[unit->id];
 				const f64 multiplier = MathUtils::map(health, maxHealth, maxHealth - maxHealth, 1.0, 1.5, true);
 				speed *= multiplier;
-				break;
-			}
+			} break;
 			case UnitId::ProtossExemplar:
 			{
 				// Khaydarin Eclipse ability: slow Exemplar by 75%
@@ -205,8 +198,7 @@ namespace hooks
 				{
 					speed *= 0.25;
 				}
-				break;
-			}
+			} break;
 			// Hardcode ideal movement speeds
 			case UnitId::TerranCyprian:
 			case UnitId::TerranEidolon:
@@ -215,20 +207,17 @@ namespace hooks
 			case UnitId::ZergZoryusthaleth:
 			{
 				speed *= 1.2;
-				break;
-			}
+			} break;
 			case UnitId::ProtossZealot:
 			case UnitId::ProtossManifold:
 			{
 				speed *= 1.25;
-				break;
-			}
+			} break;
 			case UnitId::ZergHydralisk:
 			case UnitId::ProtossLegionnaire:
 			{
 				speed *= 1.5;
-				break;
-			}
+			} break;
 		}
 
 		return speed;
@@ -249,8 +238,7 @@ namespace hooks
 			{
 				// Leftover movement speed code
 				baseSpeed = 1707;
-				break;
-			}
+			} break;
 			default:
 			{
 				// Flingy-related code
