@@ -650,8 +650,8 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) isTileBlockedBy_Wrapper()
-	{ // 00473300
+	void __declspec(naked) isTileBlockedBy_Wrapper() // 00473300
+	{
 		static s32 result;
 		static CUnit** unitArray;
 		static CUnit* builder;
@@ -687,8 +687,8 @@ namespace hooks
 		}
 	}
 
-	void __declspec(naked) createUnit_Wrapper()
-	{ // 004A09D0
+	void __declspec(naked) createUnit_Wrapper() // 004A09D0
+	{
 		static CUnit* result;
 		static u16 unitType;
 		static s32 x;
@@ -698,10 +698,10 @@ namespace hooks
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
-			MOV EAX, [EBP + 0x08]
-			MOV y, EAX
 			MOV EAX, [EBP + 0xC]
 			MOV playerId, EAX
+			MOV EAX, [EBP + 0x08]
+			MOV y, EAX
 			POP EAX
 			MOV x, EAX
 			MOV unitType, CX
@@ -713,13 +713,14 @@ namespace hooks
 			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
-			RETN 0x8
+			RETN 8
 		}
 	}
 
 	void injectHydraSpecific()
 	{
-		// jmpPatch(checkUnitDatRequirements_Wrapper, 0x0046E1C0, 1); // must be finished first (and add Firegraft offsets)
+		// must be finished first (and add Firegraft offsets)
+//		jmpPatch(checkUnitDatRequirements_Wrapper, 0x0046E1C0, 1);
 
 		flingySpeedPatches();
 		desyncTesting();
@@ -732,15 +733,15 @@ namespace hooks
 		clarionWrappers();
 		createBuildingAiWorkaround();
 		damageOverlayDebug();
-		//		lobotomyMineTargetingPatches();
+//		lobotomyMineTargetingPatches();
 
-				// add later: disable WarpIn functionality, make it useless
+		// add later: disable WarpIn functionality, make it useless
 		archonHardcodePatches();
 
 		// Hook patches!
 //      jmpPatch(gameLoop_Wrapper, 0x004D94B0, 3);
 //      jmpPatch(isTileBlockedBy_Wrapper, 0x00473300, 0);
-//		jmpPatch(createUnit_Wrapper, 0x004A09D0, 1);
+		jmpPatch(createUnit_Wrapper, 0x004A09D0, 1);
 	}
 }
 

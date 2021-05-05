@@ -23,7 +23,7 @@ namespace hooks
 	s32 isTileBlockedBy(CUnit** unitArray, CUnit* builder, s32 x_tile, s32 y_tile,
 		s8 dontIgnoreReacting, s8 alsoInvisible);													// 00473300
 	s32 gameLoop();																					// 004D94B0
-	CUnit* createUnit(u16 unitType, s32 x, s32 y, s32 playerId);								// 004A09D0
+	CUnit* createUnit(u16 unitType, s32 x, s32 y, s32 playerId);									// 004A09D0
 }
 
 namespace hooks
