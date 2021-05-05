@@ -308,6 +308,10 @@ namespace ValueId
 		PreMorphEnergy,
 		GodsMadeFleshCast,
 		GodsMadeFleshActive,
+			
+		DiscoveredAttacksDebuffValue,
+		DiscoveredAttacksStackValue,
+		DiscoveredAttacksSirenUnit,
 	};
 }
 #include "SCBW\enumerations\TechId.h"

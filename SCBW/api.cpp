@@ -492,12 +492,14 @@ namespace scbw
 		assert(playerId < PLAYER_COUNT);
 
 		s32 supplyProvided;
-
 		if (isCheatEnabled(CheatFlags::FoodForThought))
+		{
 			supplyProvided = raceSupply[raceId].max[playerId];
+		}
 		else
+		{
 			supplyProvided = std::min(raceSupply[raceId].max[playerId], raceSupply[raceId].provided[playerId]);
-
+		}
 		return supplyProvided - raceSupply[raceId].used[playerId];
 
 	}
@@ -507,10 +509,13 @@ namespace scbw
 		assert(playerId < PLAYER_COUNT);
 		assert(techId < TechId::None);
 		if (techId < TechId::Restoration)
+		{
 			return TechSc->isResearched[playerId][techId] != 0;
+		}
 		else
+		{
 			return TechBw->isResearched[playerId][techId - TechId::Restoration] != 0;
-
+		}
 	}
 
 	bool hasTechAvailable(u8 playerId, u16 techId)
@@ -518,9 +523,13 @@ namespace scbw
 		assert(playerId < PLAYER_COUNT);
 		assert(techId < TechId::None);
 		if (techId < TechId::Restoration)
+		{
 			return TechSc->isEnabled[playerId][techId] != 0;
+		}
 		else
+		{
 			return TechBw->isEnabled[playerId][techId - TechId::Restoration] != 0;
+		}
 	}
 
 
@@ -530,10 +539,13 @@ namespace scbw
 		assert(techId < TechId::None);
 
 		if (techId < TechId::Restoration)
+		{
 			TechSc->isResearched[playerId][techId] = isResearched;
+		}
 		else
+		{
 			TechBw->isResearched[playerId][techId - TechId::Restoration] = isResearched;
-
+		}
 	}
 
 

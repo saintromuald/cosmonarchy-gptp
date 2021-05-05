@@ -1408,20 +1408,6 @@ namespace hooks
 						// Form switch/mode change?
 						if (current_button->actFunc == (ACT_FUNC*)ButtonActions::Use_Technology)
 						{
-							if (current_button->actVar == TechId::Restoration)
-							{
-								if ((*activePortraitUnit)->_padding_0x132 & 0x8)
-								{
-									current_button->actStringID = 1052;
-									current_button->iconID = 236;
-								}
-								else
-								{
-									current_button->actStringID = 1248;
-									current_button->iconID = 365;
-								}
-							}
-
 							if ((*activePortraitUnit)->id != UnitId::ProtossMindTyrant)
 							{
 								for (s32 i = 0; i < generictoggles; i++)
@@ -1429,7 +1415,8 @@ namespace hooks
 									if (current_button->actVar == toggle_abilities[i])
 									{
 										// TODO: Cleanup
-										/*auto vId = toggle_values[i];
+										/*
+										auto vId = toggle_values[i];
 										if (vId == ValueId::TempoChange) {
 											if (scbw::get_generic_value(*activePortraitUnit, toggle_values[i]) == 1) {
 												current_button->iconID = button_toggle_off[i];
@@ -1438,7 +1425,8 @@ namespace hooks
 												current_button->iconID = button_toggle_on[i];
 											}
 										}
-										else {*/
+										else {
+										*/
 										if (scbw::get_generic_rust_value(*activePortraitUnit, toggle_values[i]) == 1)
 										{
 											current_button->iconID = button_toggle_off[i];
