@@ -539,6 +539,7 @@ namespace hooks
 		}
 	}
 
+	/*
 	// Hooked to enable unit mover for human players - Pr0nogo
 	s32 updateBuildingPlacementState_Units(s32 yTile, CUnit* builder, s32 xTile, u8 player, u16 unitId, s32 sizeWidthHeight,s32 placementStateEntry,
 		char bDontIgnoreReacting, char bAlsoInvisible, s32 withoutVision) // 00473720
@@ -547,13 +548,13 @@ namespace hooks
 		s16 v15;
 		s32 sizeWH;
 		s32 v17;
-		s32 v18;
+		Point16 v18;
 		s32 v20;
 		s32 v21;
 		u8 v22;
 		u8 v24;
 		s16 a1;
-		s16 v28;
+		Point16 v28;
 		s32 v32;
 		s32 v37;
 
@@ -564,24 +565,27 @@ namespace hooks
 		{
 			humanVisionSomething = 1 << player;
 		}
-		s64 dimensions = units_dat::BuildingDimensions[unitId].x;
-		v14 = 32 * xTile + ((dimensions - HIDWORD(dimensions)) >> 1);
-		LOWORD(dimensions) = 32 * yTile + units_dat::BuildingDimensions[unitId].y / 2;
+		Point32 dimensions;
+		dimensions.x = units_dat::BuildingDimensions[unitId].x;
+		dimensions.y = 32 * yTile + units_dat::BuildingDimensions[unitId].y / 2;
+		v14 = 32 * xTile + dimensions.x;
 		a1 = v14 - units_dat::UnitBounds[unitId].x;
-		v28 = dimensions - units_dat::UnitBounds[unitId].y;
-		v15 = dimensions + units_dat::UnitBounds[unitId].h;
-		LOWORD(v29) = v14 + units_dat::UnitBounds[unitId].w;
-		HIWORD(v29) = v15;
+		v28 = dimensions.x - units_dat::UnitBounds[unitId].y;
+		v15 = dimensions.x + units_dat::UnitBounds[unitId].h;
+		v28.x = v14 + units_dat::UnitBounds[unitId].w;
+		v28.y = v15;
 		CUnit** allUnitsInBounds = helper::getAllUnitsInBounds((Box16*)&a1);
 		s32 iterateOffset = 0;
 		s16 xTileIterate;
 		s32 yTileIterate = yTile;
-		if (SHIWORD(sizeWidthHeight) > 0)
+		if (sizeWidthHeight > 0) // SHIWORD(sizeWidthHeight)
 		{
 			sizeWH = (s16)sizeWidthHeight;
 			v17 = 0;
-			v18 = 4 * (mapTileSize->width - (s16)sizeWidthHeight);
-			v29 = 4 * (mapTileSize->width - (s16)sizeWidthHeight);
+			v18.x = mapTileSize->width;
+			v18.y = sizeWidthHeight;
+			v28.x = mapTileSize->width;
+			v28.y = sizeWidthHeight;
 			do
 			{
 				v32 = 0;
@@ -594,9 +598,9 @@ namespace hooks
 					do
 					{
 						v22 = 0;
-						if (!buildingPlacementState[v20 + v21] && (withoutVision || !(humanVisionSomething & *activeTile)))
+						if (!buildingPlacementState[v20 + v21] && (withoutVision || !(humanVisionSomething & (*activeTile)->visibilityFlags)))
 						{
-							if (*activeTile & 0x8000000 && helper::doesBuildingBlock(builder, xTileIterate, yTileIterate))
+							if ((*activeTile)->isWalkable & 0x8000000 && helper::doesBuildingBlock(builder, xTileIterate, yTileIterate))
 							{
 								v22 = 4;
 							}
@@ -620,17 +624,18 @@ namespace hooks
 						sizeWH = (s16)sizeWidthHeight;
 						++xTileIterate;
 					} while ((u16)v32 < (s32)(s16)sizeWidthHeight);
-					v18 = v29;
+					v18 = v28;
 				}
-				activeTile = (s32*)((char*)activeTile + v18);
+				activeTile = (s32*)((char*)activeTile + v18.x);
 				v17 = iterateOffset + 1;
 				iterateOffset = v17;
 				++yTileIterate;
-			} while ((u16)v17 < (s32)SHIWORD(sizeWidthHeight));
+			} while ((u16)v17 < (s32)sizeWidthHeight); // SHIWORD(sizeWidthHeight)
 		}
 		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
 		return result;
 	}
+	*/
 
 	s32 updatePlacementStateForPlacementBox()
 	{ // 0x0048DCE0
