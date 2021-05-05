@@ -139,7 +139,8 @@ namespace OverlayOffset
 	};
 }
 
-#define UnitExtArraySize(x, y) (sizeof(UnitExt##y##) / sizeof(x.##y##[0]))
+// this value shouldn't be smaller than count of variables in unit ext arrays
+#define UNITEXT_ARRAY_SIZE 256
 struct UnitExt
 {
 	u32 ExemplarSwitch;				// should be removed
@@ -234,10 +235,9 @@ struct UnitExt
 	u32 GodsMadeFleshCast;
 	u32 GodsMadeFleshActive;
 
-	const size_t TimerCount = sizeof(UnitExtTimers) / sizeof(u32);
-	union UnitExtTimers
+	union
 	{
-		u32 Timers[];
+		u32 Timers[UNITEXT_ARRAY_SIZE];
 		struct
 		{
 			u32 PhaseRushTimerArray[8]; // unused
@@ -291,11 +291,10 @@ struct UnitExt
 			u32 AI_CorsairDweb_Timer;
 		};
 	};
-
-	const size_t UnitCount = sizeof(UnitExtUnits) / sizeof(u32);
-	union UnitExtUnits
+	
+	union
 	{
-		CUnit* Units[];
+		CUnit* Units[UNITEXT_ARRAY_SIZE];
 		struct
 		{
 			CUnit* BroodlingMother;			// is this still really used?
@@ -312,10 +311,9 @@ struct UnitExt
 		};
 	};
 
-	const size_t UnitVectorCount = sizeof(UnitExtUnitVectors) / sizeof(std::vector<CUnit*>);
-	union UnitExtUnitVectors
+	union
 	{
-		std::vector<CUnit*> Units[];
+		std::vector<CUnit*> UnitVectors[UNITEXT_ARRAY_SIZE];
 		struct
 		{
 			std::vector<CUnit*> CaptivatingClawsUnitVector;
@@ -324,27 +322,23 @@ struct UnitExt
 		};
 	};
 
-	const size_t TimerVectorCount = sizeof(UnitExtTimerVectors) / sizeof(std::vector<CUnit*>);
-	union UnitExtTimerVectors
+	union
 	{
-		std::vector<u32> TimerVectors[];
+		std::vector<u32> TimerVectors[0/*UNITEXT_ARRAY_SIZE*/];
 		struct
 		{
 			//std::vector<u32> Unused;
 		};
 	};
 
-	const size_t UnitTimerMapsCount = sizeof(UnitExtUnitTimerMaps) / sizeof(std::unordered_map<CUnit*, u32>);
-	union UnitExtUnitTimerMaps
+	union
 	{
-		std::unordered_map<CUnit*, u32> UnitTimerMaps[];
+		std::unordered_map<CUnit*, u32> UnitTimerMaps[UNITEXT_ARRAY_SIZE];
 		struct
 		{
 			u32 CaptivatingClawsTimer;
 		};
 	};
-
-	// Unit -> Timer map for captivating claws is missing
 };
 
 namespace ValueId // TODO: rename to RustId

@@ -249,26 +249,27 @@ void Globals::unitDeathHook(CUnit* unit)
 	unitExt.erase(unit);
 	for (auto& a : unitExt)
 	{ // set dead unit pointers to nullptr and erase them from unit vectors
-		for (auto& unitPair : a.second.genericUnits)
+		UnitExt* ext = &a.second;
+		for (int i = 0; i < UNITEXT_ARRAY_SIZE; ++i)
 		{
-			if (unitPair.second == unit)
+			if (ext->Units[i] == unit)
 			{
-				unitPair.second = nullptr;
+				ext->Units[i] = nullptr;
 			}
 		}
 
-		for (auto& unitVecPair : a.second.genericUnitVectors)
+		for (int i = 0; i < UNITEXT_ARRAY_SIZE; ++i)
 		{
-			auto& vec = unitVecPair.second;
+			auto& vec = ext->UnitVectors[i];
 			vec.erase(std::remove_if(vec.begin(), vec.end(), [&](CUnit* vecUnit)
 			{
 				return vecUnit == unit;
 			}), vec.end());
 		}
 
-		for (auto& unitMapPair : a.second.genericUnitTimerMap)
+		for (int i = 0; i < UNITEXT_ARRAY_SIZE; ++i)
 		{
-			auto& map = unitMapPair.second;
+			auto& map = ext->UnitTimerMaps[i];
 			map.erase(unit);
 		}
 	}
@@ -351,30 +352,30 @@ void Globals::frameHook()
 	for (auto& unitStruct : unitExt)
 	{
 		UnitExt* unitExt = &unitStruct.second;
-		for (int i = 0; i < UnitExtArraySize(unitStruct.second, Timers); ++i)
+		for (int i = 0; i < UNITEXT_ARRAY_SIZE; ++i)
 		{
 			if (unitExt->Timers[i] > 0)
 			{
-				unitExt->Timers[i].second--;
+				unitExt->Timers[i]--;
 			}
 		}
-		for (auto& timerVecPair : unitStruct.second.genericTimerVectors)
+		for (int i = 0; i < UNITEXT_ARRAY_SIZE; ++i)
 		{
-			for (auto& timer : timerVecPair.second)
+			for (auto& timer : unitExt->TimerVectors[i])
 			{
 				if (timer > 0)
 				{
 					timer--;
 				}
 			}
-			timerVecPair.second.erase(std::remove_if(timerVecPair.second.begin(), timerVecPair.second.end(), [&](s32& timer)
+			unitExt->TimerVectors[i].erase(std::remove_if(unitExt->TimerVectors[i].begin(), unitExt->TimerVectors[i].end(), [&](s32& timer)
 			{
 				if (timer == 0) return true;
-			}), timerVecPair.second.end());
+			}), unitExt->TimerVectors[i].end());
 		}
-		for (auto& timerVecPair : unitStruct.second.genericUnitTimerMap)
+		for (int i = 0; i < UNITEXT_ARRAY_SIZE; ++i)
 		{
-			for (auto& timer : timerVecPair.second)
+			for (auto& timer : unitExt->UnitTimerMaps[i])
 			{
 				if (timer.second > 0)
 				{
@@ -382,7 +383,7 @@ void Globals::frameHook()
 				}
 				else
 				{
-					timerVecPair.second.erase(timer.first);
+					unitExt->UnitTimerMaps[i].erase(timer.first);
 				}
 			}
 		}
