@@ -1565,7 +1565,7 @@ namespace scbw
 		std::unordered_set<CUnit*> links = {};
 		if (unit->id == UnitId::ProtossClarion)
 		{
-			auto link = unitExt->PhaseLink
+			auto link = unitExt->PhaseLink;
 			links.insert(link.begin(), link.end());
 		}
 		auto& clarions = unitExt->PhaseLinkClarions;
