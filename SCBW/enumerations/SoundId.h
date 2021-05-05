@@ -1157,6 +1157,7 @@ namespace SoundId
 			AugurDeath03 = 1237,
 			AugurDeath04 = 1238,
 			Simulacrum_Clone_01 = 1332,
+			LakiziliskProjectileReturn = 1392,
 	};
 }
 

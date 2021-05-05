@@ -6593,16 +6593,16 @@ namespace helper
 		return result;
 	}
 
-	s32 playSoundFromSource(s32 a1, CUnit* a2, s32 a3, s32 a4)
+	s32 playSoundFromSource(s32 soundId, CUnit* unit, s32 bPlay, s32 minVolume)
 	{
 		const u32 Func_playSoundFromSource = 0x0048ED50;
 		static s32 result;
 		__asm {
 			PUSHAD
-			PUSH a4
-			PUSH a3
-			MOV ESI, a2
-			MOV EBX, a1
+			PUSH minVolume
+			PUSH bPlay
+			MOV ESI, unit
+			MOV EBX, soundId
 			CALL Func_playSoundFromSource
 			MOV result, EAX
 			POPAD

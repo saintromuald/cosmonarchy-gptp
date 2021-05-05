@@ -653,6 +653,11 @@ namespace hooks
 			} break;
 			case UnitId::ZergLakizilisk:
 			{
+				// Lakizilisk - play sound on attack, hardcoded here to facilitate a different sound on return
+				if (unit->orderSignal & 0x20) {
+					unit->orderSignal &= ~0x20;
+					helper::playSoundFromSource(SoundId::Bullet_ZLrkFir1_wav, unit, 1, 0);
+				}
 				// Lakizilisk - Seismic Spines
 				if (unit->sprite != nullptr && unit->mainOrderId != OrderId::Die
 					&& scbw::get_generic_timer(unit, ValueId::LurkerETA) == 1)
@@ -665,6 +670,7 @@ namespace hooks
 					unit->position = pos;
 					unit->sprite->position = pos;
 					scbw::artificalBulletFrom(WeaponId::SubterraneanSpines, unit->playerId, unit, nullptr, spr_position);
+					helper::playSoundFromSource(SoundId::LakiziliskProjectileReturn, unit, 1, 0);
 					unit->position = position;
 					unit->sprite->position = spr_position;
 					auto spineCount = 0;

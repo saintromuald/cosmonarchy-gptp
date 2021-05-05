@@ -698,7 +698,7 @@ namespace helper
 
 	// For createScanner
 	s32 setUnitStatTxtErrorMsg(s32 a1);																		    // 0048CCB0
-	s32 playSoundFromSource(s32 a1, CUnit* a2, s32 a3, s32 a4);											        // 0048ED50
+	s32 playSoundFromSource(s32 soundId, CUnit* unit, s32 bPlay, s32 minVolume);								// 0048ED50
 	void returnAllInterceptors(CUnit* unit);                                                                    // 004655F0
 	char ignoreAllScriptsAndGoToIdle(CUnit* unit);                                                              // 00476550
 
