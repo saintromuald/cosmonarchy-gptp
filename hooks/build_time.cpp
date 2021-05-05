@@ -8,6 +8,8 @@ namespace hooks
 
 	s32 decrementRemainingBuildTime(CUnit* unit)
 	{ // 0x00466940
+		UnitExt* unitExt = &globals.unitExt[unit];
+
 		if (!unit->remainingBuildTime)
 		{
 			return 1;
@@ -17,7 +19,7 @@ namespace hooks
 		{
 			multiplier = 16;
 		}
-		if (scbw::get_generic_timer(unit, ValueId::EggBoostTimer) % 2 == 1)
+		if (unitExt->EggBoostTimer % 2 == 1)
 		{
 			multiplier *= 2;
 		}

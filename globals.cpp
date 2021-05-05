@@ -507,8 +507,8 @@ void Globals::frameHook()
 						UnitExt* unitExt = &globals.unitExt[unit];
 						if (unitExt->HallucinatingTimer < impact.currentTime)
 						{
-							unitExt->HallucinatingSourcePlayer = impact.player);
-							unitExt->HallucinatingTimer = impact.currentTime);
+							unitExt->HallucinatingSourcePlayer = impact.player;
+							unitExt->HallucinatingTimer = impact.currentTime;
 
 							scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit);
 							if (unit->subunit != nullptr)
@@ -897,7 +897,7 @@ namespace scbw
 		// Reset Malediction
 		if (unitExt->MaledictionSlow > 0)
 		{
-			unitExt->MaledictionSlow = 4 * 24);
+			unitExt->MaledictionSlow = 4 * 24;
 		}
 
 		// Reset Observance
@@ -907,7 +907,7 @@ namespace scbw
 		}
 
 		// Reset Knockout Drivers
-		if (unitExt->KnockoutDriversTimer = > 0)
+		if (unitExt->KnockoutDriversTimer > 0)
 		{
 			unitExt->KnockoutDriversTimer = 2 * 24;
 		}
@@ -945,7 +945,7 @@ namespace scbw
 		// Reset Devourer Corrosive Spores
 		if (unitExt->CorrosiveTouchTimer > 0)
 		{
-			unitExt->CorrosiveTouchTimer = VithriliskCorrosiveTouchTimer);
+			unitExt->CorrosiveTouchTimer = VithriliskCorrosiveTouchTimer;
 		}
 
 		// Reset Irradiate
@@ -1377,8 +1377,8 @@ namespace scbw
 
 		CUnit* queens[2] = {nullptr};
 		if (unit == nullptr) return queens; // <- prevents crash from incubators, but does not fix the issue
-		queens[0] = unitExt->BroodlingMother
-		queens[1] = unitExt->ParasiteSource
+		queens[0] = unitExt->BroodlingMother;
+		queens[1] = unitExt->ParasiteSource;
 		return queens;
 	}
 
