@@ -783,96 +783,6 @@ void injectGlobalsHooks()
 
 namespace scbw
 {
-	u32 get_generic_value(CUnit* u, u32 id)
-	{
-		auto find = globals.unitExt.find(u);
-		if (find != globals.unitExt.end())
-		{
-			return find->second.getGenericValue(id);
-		}
-		return 0;
-	}
-
-	void set_generic_value(CUnit* u, u32 id, u32 val)
-	{
-		globals.unitExt[u].setGenericValue(id, val);
-	}
-
-	void add_generic_value(CUnit* u, u32 id, s32 val)
-	{
-		globals.unitExt[u].addGenericValue(id, val);
-	}
-
-	u32 get_generic_timer(CUnit* u, u32 id)
-	{
-		auto find = globals.unitExt.find(u);
-		if (find != globals.unitExt.end())
-		{
-			return find->second.getGenericTimer(id);
-		}
-		return 0;
-	}
-
-	void set_generic_timer(CUnit* u, u32 id, u32 val)
-	{
-		globals.unitExt[u].setGenericTimer(id, val);
-	}
-
-	CUnit* get_generic_unit(CUnit* u, u32 id)
-	{
-		auto find = globals.unitExt.find(u);
-		if (find != globals.unitExt.end())
-		{
-			return find->second.getGenericUnit(id);
-		}
-		return nullptr;
-	}
-
-	void set_generic_unit(CUnit* u, u32 id, CUnit* val)
-	{
-		globals.unitExt[u].setGenericUnit(id, val);
-	}
-
-	std::vector<s32>& get_generic_value_vector(CUnit* u, u32 id)
-	{
-		auto& find = globals.unitExt.find(u);
-		if (find == globals.unitExt.end())
-		{
-			globals.unitExt[u] = {};
-		}
-		return globals.unitExt[u].getGenericValueVector(id);
-	}
-
-	std::vector<s32>& get_generic_timer_vector(CUnit* u, u32 id)
-	{
-		auto& find = globals.unitExt.find(u);
-		if (find == globals.unitExt.end())
-		{
-			globals.unitExt[u] = {};
-		}
-		return globals.unitExt[u].getGenericTimerVector(id);
-	}
-
-	std::vector<CUnit*>& get_generic_unit_vector(CUnit* u, u32 id)
-	{
-		auto& find = globals.unitExt.find(u);
-		if (find == globals.unitExt.end())
-		{
-			globals.unitExt[u] = {};
-		}
-		return globals.unitExt[u].getGenericUnitVector(id);
-	}
-
-	std::unordered_map<CUnit*, s32>& get_generic_unit_timer_map(CUnit* u, u32 id)
-	{
-		auto& find = globals.unitExt.find(u);
-		if (find == globals.unitExt.end())
-		{
-			globals.unitExt[u] = {};
-		}
-		return globals.unitExt[u].getGenericUnitTimerMap(id);
-	}
-
 	void refreshDebuffs(CUnit* unit)
 	{
 		UnitExt* unitExt = &globals.unitExt[unit];
@@ -1084,7 +994,7 @@ namespace scbw
 		// Inherit Deconstruction
 		if (parentExt->Deconstruction)
 		{
-			child->Deconstruction = parentExt->Deconstruction;
+			childExt->Deconstruction = parentExt->Deconstruction;
 			CSprite* sprite = child->sprite;
 			if (child->subunit != nullptr)
 			{
@@ -1324,13 +1234,14 @@ namespace scbw
 		scbw::refreshConsole();
 	}
 
-	CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset)
+	// TODO: merge with setMissileSourcePos, no reason to have duplicate code that differs only by having a return
+	CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32* unitExtVariable, s32 rotateCount, u32 overlayType, u32 frameset_offset)
 	{
 		if (unit->sprite == nullptr || unit->orderTarget.unit == nullptr)
 		{
 			return nullptr;
 		}
-		auto rotate = scbw::get_generic_value(unit, valueId);
+		auto rotate = *unitExtVariable;
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
 			unit->sprite->mainGraphic->id));
 		u8 frameDirection = unit->sprite->mainGraphic->direction;
@@ -1344,7 +1255,7 @@ namespace scbw
 		{
 			rotate = 0;
 		}
-		scbw::set_generic_value(unit, valueId, rotate);
+		*unitExtVariable = rotate;
 		auto X = unit->getX() + offset.x;
 		auto Y = unit->getY() + offset.y;
 		auto bullet = helper::createBulletRet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y,
@@ -1404,13 +1315,13 @@ namespace scbw
 		}
 	}
 
-	void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset)
+	void setMissileSourcePos(CUnit* unit, u32 weaponId, u32* unitExtVariable, s32 rotateCount, u32 overlayType, u32 frameset_offset)
 	{
 		if (unit->sprite == nullptr || unit->orderTarget.unit == nullptr)
 		{
 			return;
 		}
-		auto rotate = scbw::get_generic_value(unit, valueId);
+		auto rotate = *unitExtVariable;
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
 			unit->sprite->mainGraphic->id));
 		u8 frameDirection = unit->sprite->mainGraphic->direction;
@@ -1424,7 +1335,7 @@ namespace scbw
 		{
 			rotate = 0;
 		}
-		scbw::set_generic_value(unit, valueId, rotate);
+		*unitExtVariable = rotate;
 		auto X = unit->getX() + offset.x;
 		auto Y = unit->getY() + offset.y;
 		helper::createBullet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y,

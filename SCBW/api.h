@@ -392,8 +392,8 @@ namespace scbw
 	s32 getCliffAdvantage(CUnit* unit, u8 weapon = NULL);
 	s32 getCreepAdvantage(CUnit* unit, u8 weapon = NULL);
 	void setOffsetToParentSpecialOverlay(CImage* image);
-	void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset = 0);
-	CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset = 0);
+	void setMissileSourcePos(CUnit* unit, u32 weaponId, u32* unitExtVariable, s32 rotateCount, u32 overlayType, u32 frameset_offset = 0);
+	CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32* unitExtVariable, s32 rotateCount, u32 overlayType, u32 frameset_offset = 0);
 	bool isSlowed(CUnit* unit);
 	bool isStunned(CUnit* unit);
 	void hideAndDisableUnit(CUnit* unit);

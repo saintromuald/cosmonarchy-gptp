@@ -89,6 +89,7 @@ namespace hooks
 	//This also affects CUnit::fireWeapon().
 	void fireWeaponHook(CUnit* unit, u8 wId)
 	{
+		UnitExt* unitExt = &globals.unitExt[unit];
 		if (unit == nullptr)
 		{
 			return;
@@ -328,12 +329,12 @@ namespace hooks
 				if (weaponId == WeaponId::EmpyreanPlasmaBarrage)
 				{
 					// Empyrean missile spawn positions
-					scbw::setMissileSourcePos(unit, weaponId, ValueId::EmpyreanMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, &unitExt->EmpyreanMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::CentaurSunchaserMissiles)
 				{
 					// Centaur missile spawn positions
-					scbw::setMissileSourcePos(unit, weaponId, ValueId::CentaurMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, &unitExt->CentaurMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::PhobosArgosLaserBatteries)
 				{
@@ -347,38 +348,38 @@ namespace hooks
 						}
 					}
 					// Phobos laser spawn positions
-					scbw::setMissileSourcePos(unit, weaponId, ValueId::PhobosLaserPos, 4, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, &unitExt->PhobosLaserPos, 4, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::KalkaliskViscousAcid)
 				{
 					// Kalkaleth missile spawn position
-					auto bullet = scbw::setMissileSourcePosRet(unit, weaponId, ValueId::KalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+					auto bullet = scbw::setMissileSourcePosRet(unit, weaponId, &unitExt->KalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 					globals.remove_multihit_bullet(bullet);
 				}
 				else if (weaponId == WeaponId::KeskathalorScreamingVenom)
 				{
 					// Keskathalor missile spawn position
-					scbw::setMissileSourcePos(unit, weaponId, ValueId::KeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, &unitExt->KeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::StarSovereignCelestialCannon)
 				{
 					// Star Sovereign laser spawn position
-					scbw::setMissileSourcePos(unit, weaponId, ValueId::SovereignCannonPos, 2, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, &unitExt->SovereignCannonPos, 2, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::PenumbraErebolShockCannon)
 				{
 					// Penumbra laser spawn position
-					scbw::setMissileSourcePos(unit, weaponId, ValueId::PenumbraLaserPos, 1, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, &unitExt->PenumbraLaserPos, 1, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::BurstLasers)
 				{
 					// Wraith laser spawn position
-					scbw::setMissileSourcePos(unit, weaponId, ValueId::WraithLaserPos, 3, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, &unitExt->WraithLaserPos, 3, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::IonCannon)
 				{
 					// Ion Cannon projectile spawn position
-					scbw::setMissileSourcePos(unit, weaponId, ValueId::IonCannonProjectilePos, 1,
+					scbw::setMissileSourcePos(unit, weaponId, &unitExt->IonCannonProjectilePos, 1,
 						ImagesDatEntries::OverlaySpecialPtr, 1); // 1 is frameset offset
 				}
 				else if (weaponId == WeaponId::SirenCharybdalRifle)
