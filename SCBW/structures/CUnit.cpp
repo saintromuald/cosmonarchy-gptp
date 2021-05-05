@@ -545,9 +545,10 @@ void CUnit::damageWithIgnoreFlatArmor(u8 weaponId, s32 damage, CUnit* attacker, 
 void CUnit::inflictDamage(s32 dmg, CUnit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, s32 direction,
 	bool ignoreDmg128Overflow)
 {
+	UnitExt* unitExt = &globals.unitExt[this];
 	auto damage = dmg;
 	s32 shieldReduceAmount = 0;
-	if (scbw::get_generic_value(this, ValueId::GodsMadeFleshTimer) > 0)
+	if (unitExt->GodsMadeFleshTimer)
 	{
 		return;
 	}
@@ -731,6 +732,7 @@ void CUnit::removeAcidSpores()
 ///May underflow if alone
 void CUnit::spendUnitEnergy(u32 energySpent)
 {
+	UnitExt* unitExt = &globals.unitExt[this];
 	if (!(*CHEAT_STATE & CheatFlags::TheGathering))
 	{
 		if (this->energy > energySpent)
@@ -742,9 +744,10 @@ void CUnit::spendUnitEnergy(u32 energySpent)
 			this->energy = 0;
 		}
 	}
-	if (scbw::get_generic_timer(this, ValueId::EntropyGauntlets) > 1)
-	{													// TODO: fix entropy gauntlets bug
-		this->inflictDamage(energySpent, scbw::get_generic_unit(this, ValueId::DecaySavant), -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
+	// TODO: fix entropy gauntlets bug
+	if (unitExt->EntropyGauntlets > 1)
+	{
+		this->inflictDamage(energySpent, unitExt->DecaySavant, -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
 	}
 }
 void CUnit::addUnitEnergy(u32 energy)
@@ -1368,12 +1371,14 @@ void CUnit::updateSpeed()
 	}
 }
 
-void CUnit::setSupplyProvided(u8 amount)
-{ // overwrites previous supply provided
+void CUnit::setSupplyProvided(u8 amount) // overwrites previous supply provided
+{
+	UnitExt* unitExt = &globals.unitExt[this];
+
 	u32 race = this->getRace();
-	u32 previous_supply = scbw::get_generic_value(this, ValueId::SupplyProvided);
+	u32 previous_supply = unitExt->SupplyProvided;
 	if (previous_supply)
 		raceSupply[race].provided[this->playerId] -= previous_supply;
 	raceSupply[race].provided[this->playerId] += amount;
-	scbw::set_generic_value(this, ValueId::SupplyProvided, amount);
+	unitExt->SupplyProvided = amount;
 }

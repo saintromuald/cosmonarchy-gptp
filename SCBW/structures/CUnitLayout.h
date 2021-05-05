@@ -234,6 +234,9 @@ struct UnitExt
 	u32 PreMorphEnergy;
 	u32 GodsMadeFleshCast;
 	u32 GodsMadeFleshActive;
+	u32 LazarusAgentApostleSrc;
+	u32 LurkerPickTarget;
+	u32 TurretParentLink;
 
 	union
 	{
@@ -303,11 +306,8 @@ struct UnitExt
 			CUnit* HallucinationPointer;
 			CUnit* DirgeAttacker;
 			CUnit* DecaySavant;
-			CUnit* LazarusAgentApostleSrc;
 			CUnit* WorshipDemiurgeUnit;
-			CUnit* TurretParentLink;
 			CUnit* AttachedAkistrokorUnit;
-			CUnit* LurkerPickTarget;
 		};
 	};
 
@@ -357,6 +357,7 @@ namespace ValueId // TODO: rename to RustId
 		Reconstitution,
 		NaniteField,
 		DirgeAttacker,
+		RescindMindControl,
 	};
 }
 #include "SCBW\enumerations\TechId.h"

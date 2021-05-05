@@ -87,6 +87,8 @@ namespace hooks
 
 	void orders_Morph1(CUnit* unit)
 	{
+		UnitExt* unitExt = &globals.unitExt[unit];
+
 		if (unit->mainOrderState == 0)
 		{
 			if (scbw::isConventionalUnitMorphSource(unit->id, true, true))
@@ -155,7 +157,7 @@ namespace hooks
 					}
 					if (!bStopThere)
 					{
-						scbw::set_generic_value(unit, ValueId::PreMorphEnergy, unit->energy);
+						unitExt->PreMorphEnergy = unit->energy;
 						if (unit->id == UnitId::ProtossCantavis)
 						{
 							helper::replaceUnitWithType(unit, UnitId::ProtossAugur);
@@ -230,19 +232,23 @@ namespace hooks
 				switch (origin)
 				{
 					case UnitId::ZergOvileth:
-						scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 1);
-						break;
+					{
+						unitExt->OverlordSupplyGimmick = 1;
+					} break;
 					case UnitId::ZergIroleth:
-						scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 2);
-						break;
+					{
+						unitExt->OverlordSupplyGimmick = 2;
+					} break;
 					case UnitId::ZergOthstoleth:
-						scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 3);
-						break;
+					{
+						unitExt->OverlordSupplyGimmick = 3;
+					} break;
 					default:
-						break;
+					{
+					}
 				}
 				helper::replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
-				unit->energy = scbw::get_generic_value(unit, ValueId::PreMorphEnergy);
+				unit->energy = unitExt->PreMorphEnergy;
 				if (unit->id == UnitId::ZergDroleth
 					|| unit->id == UnitId::ZergOvileth)
 				{

@@ -594,7 +594,8 @@ namespace hooks
 
 				// create the broodling
 				created_broodling = helper::createUnit(UnitId::ZergBroodling, pos.x, pos.y, attacker->playerId);
-				scbw::set_generic_unit(created_broodling, ValueId::BroodlingMother, attacker);
+				UnitExt* broodlingExt = &globals.unitExt[created_broodling];
+				broodlingExt->BroodlingMother = attacker;
 
 				if (created_broodling == nullptr)
 				{
@@ -642,6 +643,7 @@ namespace hooks
 		helper::IterateUnitsAtLocationTargetProc_Plague(attacker, &coords);
 		if (attacker != nullptr)
 		{
+			UnitExt* attackerExt = &globals.unitExt[attacker];
 			u32 range = 64;
 			scbw::UnitFinder(
 				x - range,
@@ -655,7 +657,7 @@ namespace hooks
 					unit->newFlags1 |= NewFlags1::Metastasis;
 				}
 				if (attacker != nullptr
-					&& scbw::get_generic_timer(attacker, ValueId::EnsnaringBroodTimer) > 0
+					&& attackerExt->EnsnaringBroodTimer > 0
 					&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building))
 				{
 					scbw::applyEnsnare(unit);

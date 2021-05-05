@@ -668,6 +668,8 @@ LABEL_18:
 	//replaces CTFCop2 order
 	void order_PhaseLink(CUnit* unit)
 	{
+		UnitExt* unitExt = &globals.unitExt[unit];
+
 		u32 status = 0;
 		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell; // might be changed later if required
 		if (unit->id == UnitId::ProtossClarion)
@@ -687,32 +689,32 @@ LABEL_18:
 		}
 		else if (unit->id == UnitId::ProtossStarSovereign)
 		{
-			auto order_state = scbw::get_generic_value(unit, ValueId::ProtossSwitchOrderState);
+			auto order_state = unitExt->ProtossSwitchOrderState;
 			if (order_state == 0)
 			{
 				if (unit->movementFlags & MovementFlags::Accelerating)
 				{
 					scbw::makeToHoldPosition(unit);
 				}
-				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 1);
+				unitExt->ProtossSwitchOrderState = 1;
 			}
 			else if (order_state == 1)
 			{
 				if (!(unit->movementFlags & MovementFlags::Accelerating))
 				{
-					scbw::set_generic_timer(unit, ValueId::PlanetCrackerDelay, 24);
+					unitExt->PlanetCrackerDelay = 24;
 					unit->status |= UnitStatus::CanNotReceiveOrders;
 					unit->status |= UnitStatus::CanNotAttack;
-					scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 2);
+					unitExt->ProtossSwitchOrderState = 2;
 				}
 			}
 			else if (order_state == 2)
 			{
-				if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerDelay) == 0)
+				if (unitExt->PlanetCrackerDelay == 0)
 				{
 					unit->playIscriptAnim(anim);
-					scbw::set_generic_timer(unit, ValueId::PlanetCrackerChannel, 121);
-					scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 3);
+					unitExt->PlanetCrackerChannel = 121;
+					unitExt->ProtossSwitchOrderState = 3;
 				}
 			}
 			else if (order_state == 3)
@@ -722,37 +724,37 @@ LABEL_18:
 					unit->orderSignal &= ~0x4;
 					unit->status &= ~UnitStatus::CanNotReceiveOrders;
 					unit->status &= ~UnitStatus::CanNotAttack;
-					scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 0);
+					unitExt->ProtossSwitchOrderState = 0;
 					unit->orderToIdle();
 				}
 			}
 			return;
 		}
 
-		auto order_state = scbw::get_generic_value(unit, ValueId::ProtossSwitchOrderState);
+		auto order_state = unitExt->ProtossSwitchOrderState;
 		if (order_state == 0)
 		{
 			if (unit->movementFlags & MovementFlags::Accelerating)
 			{
 				scbw::makeToHoldPosition(unit);
 			}
-			scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 1);
+			unitExt->ProtossSwitchOrderState = 1;
 		}
 		else if (order_state == 1)
 		{
 			if (!(unit->movementFlags & MovementFlags::Accelerating))
 			{
 				unit->playIscriptAnim(anim);
-				scbw::set_generic_timer(unit, ValueId::SwitchModeGimmickTimer, 5);
-				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 2);
+				unitExt->SwitchModeGimmickTimer = 5;
+				unitExt->ProtossSwitchOrderState = 2;
 			}
 		}
 		else if (order_state == 2)
 		{
-			if (scbw::get_generic_timer(unit, ValueId::SwitchModeGimmickTimer) == 0)
+			if (unitExt->SwitchModeGimmickTimer == 0)
 			{
 				unit->orderSignal &= ~0x4;
-				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 0);
+				unitExt->ProtossSwitchOrderState = 0;
 				if (unit->id == UnitId::ProtossClarion)
 				{
 					if (status == 0)
@@ -778,7 +780,7 @@ LABEL_18:
 					}
 				}
 				unit->updateSpeed();
-				unit->orderToIdle();//do next queued order
+				unit->orderToIdle(); // do next queued order
 			}
 		}
 	}

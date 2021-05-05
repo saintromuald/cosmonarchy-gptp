@@ -4,18 +4,21 @@
 
 u32 captivatingClawsGetStacks(CUnit* target)
 {
-	return std::min(scbw::get_generic_unit_vector(target, ValueId::CaptivatingClawsUnitVector).size(), (u32)4);
+	UnitExt* unitExt = &globals.unitExt[target];
+	return std::min(unitExt->CaptivatingClawsUnitVector.size(), (u32)4);
 }
 
 u32 captivatingClawsGetTimer(CUnit* target)
 {
-	return scbw::get_generic_timer(target, ValueId::CaptivatingClawsTimer);
+	UnitExt* unitExt = &globals.unitExt[target];
+	return unitExt->CaptivatingClawsTimer;
 }
 
 void captivatingClawsApply(CUnit* source, CUnit* target)
 {
-	scbw::set_generic_timer(target, ValueId::CaptivatingClawsTimer, 1 * 24 + 1);
-	auto& vec = scbw::get_generic_unit_vector(target, ValueId::CaptivatingClawsUnitVector);
+	UnitExt* unitExt = &globals.unitExt[target];
+	unitExt->CaptivatingClawsTimer = 1 * 24 + 1;
+	auto& vec = unitExt->CaptivatingClawsUnitVector;
 	auto find = std::find(vec.begin(), vec.end(), source);
 	if (find == vec.end())
 	{

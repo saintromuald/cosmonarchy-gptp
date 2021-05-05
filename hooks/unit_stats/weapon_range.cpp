@@ -11,8 +11,10 @@ namespace hooks
 	/// Note: Seek ranges are measured in matrices (1 matrix = 32 pixels).
 	/// This hook affects the behavior of CUnit::getSeekRange().
 	/// Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
-	u8 getSeekRangeHook(CUnit* unit)
-	{ // seek range is measured in tiles, unfortunately
+	u8 getSeekRangeHook(CUnit* unit) // seek range is measured in tiles, unfortunately
+	{
+		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* orderUnitExt = &globals.unitExt[unit->orderTarget.unit];
 
 		u16 unitId = unit->id;
 		u32 seekRange;
@@ -41,11 +43,11 @@ namespace hooks
 		}
 
 		// Repentant Chorus - Barghest Behavior
-		bonusAmount += scbw::get_generic_value(unit, ValueId::RepententChorus) / 4;
+		bonusAmount += unitExt->RepententChorus / 4;
 
 		// Stellar Enforcement - Magister behavior
 		if (unit->orderTarget.unit != nullptr
-			&& scbw::get_generic_value(unit->orderTarget.unit, ValueId::StellarEnforcement))
+			&& orderUnitExt->StellarEnforcement)
 		{
 			bonusAmount += 2;
 		}
@@ -83,9 +85,10 @@ namespace hooks
 	/// @param	unit			The unit that owns the weapon. Use this to check upgrades.
 	u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId)
 	{
-		//Default StarCraft behavior
-		u32 bonusAmount = 0;
+		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* orderUnitExt = &globals.unitExt[unit->orderTarget.unit];
 
+		u32 bonusAmount = 0;
 		//Give bonus range to units inside Bunkers
 		if (unit->status & UnitStatus::InBuilding)
 		{
@@ -117,12 +120,12 @@ namespace hooks
 		// Repentent Chorus - Barghest behavior
 		if (unit->id == UnitId::ProtossBarghest)
 		{
-			bonusAmount += scbw::get_generic_value(unit, ValueId::RepententChorus) * 8;
+			bonusAmount += unitExt->RepententChorus * 8;
 		}
 
 		// Stellar Enforcement - Magister behavior
 		if (unit->orderTarget.unit != nullptr
-			&& scbw::get_generic_value(unit->orderTarget.unit, ValueId::StellarEnforcement)
+			&& orderUnitExt->StellarEnforcement
 			&& weapons_dat::MaxRange[unit->getGroundWeapon()] > 32)
 		{
 			bonusAmount += 64;

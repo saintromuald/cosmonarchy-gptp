@@ -6,6 +6,8 @@
 #include "globals.h"
 void hydra_unit_ai(CUnit* unit)
 {
+	UnitExt* unitExt = &globals.unitExt[unit];
+
 	/*
 	Apostle Lazarus Agent: If 5 or more organic allies (that don't have the buff) are nearby, cast the spell. **DONE**
 					AI should also try to position Apostles near organics, but not sure if that's feasible.
@@ -38,24 +40,26 @@ void hydra_unit_ai(CUnit* unit)
 	Arbiter Recall: "Offensive" cast when the Arbiter is added to an attack and a group of 6 or more units are within 160px of
 					one another. Attempt to group as many units as possible during the channel.
 	*/
+
 	if (unit->id == UnitId::TerranApostle)
 	{
 		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256) &&
-			scbw::get_generic_timer(unit, ValueId::AI_LazarusTimer) == 0)
+			unitExt->AI_LazarusTimer == 0)
 		{
 			s32 count = 0;
 			hydraFinderLoop(nullptr, unit->position, 128, CFlags::NoBuilding | CFlags::Ally |
 				CFlags::OnlyOrganic, {}, [&](CUnit* u)
 			{
-				if (scbw::get_generic_value(u, ValueId::LazarusAgent) != 1)
+				UnitExt* uExt = &globals.unitExt[unit];
+				if (uExt->LazarusAgent != 1)
 				{
 					count++;
 				}
 			});
 			if (count >= 5)
 			{
-				scbw::set_generic_value(unit, ValueId::CastLazarusAgent, 1);
-				scbw::set_generic_timer(unit, ValueId::AI_LazarusTimer, 24);
+				unitExt->CastLazarusAgent = 1;
+				unitExt->AI_LazarusTimer = 24;
 			}
 		}
 	}
@@ -65,7 +69,7 @@ void hydra_unit_ai(CUnit* unit)
 	}
 	else if (unit->id == UnitId::TerranSavant)
 	{
-		if (scbw::get_generic_timer(unit, ValueId::AI_SiphonTimer) == 0 && unit->mainOrderId != OrderId::PowerSiphon)
+		if (unitExt->AI_SiphonTimer == 0 && unit->mainOrderId != OrderId::PowerSiphon)
 		{
 			s32 count = 0;
 			hydraFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::SavantPowerSiphon],
@@ -83,35 +87,16 @@ void hydra_unit_ai(CUnit* unit)
 				if (enemy != nullptr)
 				{
 					unit->orderTo(OrderId::PowerSiphon, enemy);
-					scbw::set_generic_timer(unit, ValueId::AI_SiphonTimer, 3 * 32);
+					unitExt->AI_SiphonTimer = 3 * 32;
 				}
 			}
 		}
 	}
-	/*	else if (unit->id == UnitId::ProtossClarion) {
-			if (scbw::get_generic_timer(unit, ValueId::AI_ClarionTimer) == 0 && unit->mainOrderId!=OrderId::KhaydarinEclipse) {
-				s32 count = 0;
-				hydraFinderLoop(unit, unit->sprite->position, 128,
-					CFlags::Ally | CFlags::Shielded | CFlags::NotSelf, {}, [&](CUnit* u) {
-						count++;
-					});
-				auto clarionVal = scbw::get_generic_value(unit, nullptr, AiseId::SendClarionValue, 0, 0);
-				if (count >= 2 && clarionVal == 0) {
-					scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::SetPhaseLinkStatus, 1, 0, 0);
-					scbw::set_generic_timer(unit, ValueId::AI_ClarionTimer, 96);
-				}
-				else if (count < 2 && clarionVal == 1) {
-					scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::SetPhaseLinkStatus, 0, 0, 0);
-					scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::ClearClarionLinks, 0, 0, 0);
-					scbw::set_generic_timer(unit, ValueId::AI_ClarionTimer, 96);
-				}
-			}
-		}*/
 	else if (unit->id == UnitId::ZergMatraleth)
 	{
 		if (unit->mainOrderId != OrderId::CastParasite &&
 			unit->energy >= techdata_dat::EnergyCost[TechId::Parasite] * 256 &&
-			scbw::get_generic_timer(unit, ValueId::AI_QueenTimer) == 0)
+			unitExt->AI_QueenTimer == 0)
 		{
 			hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Parasite],
 				CFlags::NotSelf, {}, [&](CUnit* u)
@@ -144,13 +129,13 @@ void hydra_unit_ai(CUnit* unit)
 				if (supply >= 5)
 				{
 					unit->orderTo(OrderId::CastParasite, group[0].first);
-					scbw::set_generic_timer(unit, ValueId::AI_QueenTimer, 75);
+					unitExt->AI_QueenTimer = 75;
 					return;
 				}
 			});
 		}
 	}
-	else if (unit->id == UnitId::ProtossStarSovereign && scbw::get_generic_timer(unit, ValueId::AI_GriefOfAllGodsTimer) == 0)
+	else if (unit->id == UnitId::ProtossStarSovereign && unitExt->AI_GriefOfAllGodsTimer == 0)
 	{
 		auto enemyUnitsHealth = 0;
 		auto alliedUnitsHealth = 0;
@@ -175,7 +160,7 @@ void hydra_unit_ai(CUnit* unit)
 		if (!alliedBuildings && enemyUnitsHealth >= 2000 && alliedUnitsHealth < 2000 && (unit->hitPoints + unit->shields) * 2 >=
 			(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id]))
 		{
-			scbw::set_generic_timer(unit, ValueId::AI_GriefOfAllGodsTimer, 612);
+			unitExt->AI_GriefOfAllGodsTimer = 612;
 			unit->orderComputerCL(OrderId::KhaydarinEclipse);
 			unit->orderTarget.pt = unit->sprite->position;
 			unit->mainOrderState = 0;
@@ -184,11 +169,11 @@ void hydra_unit_ai(CUnit* unit)
 	else if (unit->id == UnitId::ProtossLanifect)
 	{
 		auto web_state = scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb);
-		if (scbw::get_generic_value(unit, ValueId::ExecutingCorsairMoveOrder) != 0)
+		if (unitExt->ExecutingCorsairMoveOrder != 0)
 		{
 			if (unit->mainOrderId != OrderId::Move)
 			{
-				scbw::set_generic_value(unit, ValueId::ExecutingCorsairMoveOrder, 0);
+				unitExt->ExecutingCorsairMoveOrder = 0;
 			}
 		}
 		auto webs = hydraUnitCount(unit, unit->sprite->position, AIWebSeekRange, 0, {UnitId::Spell_DisruptionWeb});
@@ -217,7 +202,7 @@ void hydra_unit_ai(CUnit* unit)
 				{
 					unit->orderTo(OrderId::Move, mostSignificant->position.x, mostSignificant->position.y);
 					scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 1);
-					scbw::set_generic_timer(unit, ValueId::AI_CorsairDweb_Timer, AIWebTimer);
+					unitExt->AI_CorsairDweb_Timer = AIWebTimer;
 				}
 			}
 		}
@@ -225,10 +210,10 @@ void hydra_unit_ai(CUnit* unit)
 		{
 			if (!(allies >= AIWebAllyMinCount && enemies >= AIWebEnemyMinCount))
 			{
-				if (scbw::get_generic_timer(unit, ValueId::AI_CorsairDweb_Timer) == 0)
+				if (unitExt->AI_CorsairDweb_Timer == 0)
 				{
 					scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 0);
-					scbw::set_generic_value(unit, ValueId::ExecutingCorsairMoveOrder, 0);
+					unitExt->ExecutingCorsairMoveOrder = 0;
 					if (unit->mainOrderId == OrderId::Move)
 					{
 						unit->orderTo(OrderId::Stop);

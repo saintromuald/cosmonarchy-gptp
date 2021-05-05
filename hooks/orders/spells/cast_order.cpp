@@ -6,6 +6,7 @@ namespace hooks
 {
 	void orders_Spell(CUnit* unit)
 	{
+		UnitExt* unitExt = &globals.unitExt[unit];
 		s32 spellCost;
 		u8 orderWeaponId = orders_dat::OrderWeaponId[unit->mainOrderId];
 		CUnit* target = unit->orderTarget.unit;
@@ -15,16 +16,16 @@ namespace hooks
 			if (unit->orderSignal & 0x20)
 			{
 				unit->orderSignal &= ~0x20;
-				scbw::set_generic_timer(unit, ValueId::SkyfallTimer, 3);
-				scbw::set_generic_value(unit, ValueId::SkyfallStacks, 0);
+				unitExt->SkyfallTimer = 3;
+				unitExt->SkyfallStacks = 0;
 				auto pt = unit->orderTarget.pt;
 				if (unit->orderTarget.unit != nullptr)
 				{
 					pt = unit->orderTarget.unit->position;
 					unit->orderTarget.unit = nullptr;
 				}
-				scbw::set_generic_value(unit, ValueId::SkyfallX, unit->orderTarget.pt.x);
-				scbw::set_generic_value(unit, ValueId::SkyfallY, unit->orderTarget.pt.y);
+				unitExt->SkyfallX = unit->orderTarget.pt.x;
+				unitExt->SkyfallY = unit->orderTarget.pt.y;
 			}
 		}
 
@@ -35,13 +36,13 @@ namespace hooks
 				unit->orderSignal &= ~0x40;
 				if (scbw::get_generic_rust_value(unit, ValueId::ReverseThrust) == 1)
 				{
-					scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabOn, 1);
-					scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabX, unit->orderTarget.pt.x);
-					scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabY, unit->orderTarget.pt.y);
+					unitExt->WyvernReverseLandgrabOn = 1;
+					unitExt->WyvernReverseLandgrabX = unit->orderTarget.pt.x;
+					unitExt->WyvernReverseLandgrabY = unit->orderTarget.pt.y;
 				}
 				else
 				{
-					scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabOn, 0);
+					unitExt->WyvernReverseLandgrabOn = 0;
 				}
 			}
 			if (unit->orderSignal & 0x80)

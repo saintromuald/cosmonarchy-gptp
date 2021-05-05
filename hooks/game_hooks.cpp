@@ -210,7 +210,6 @@ namespace hooks
 {
 	void firstFrame();
 	void tickUnit(CUnit* unit);
-	UnitExt* unitExt = &globals.unitExt[unit];
 
 	/// This hook is called every frame
 	bool nextFrame()
@@ -236,6 +235,7 @@ namespace hooks
 			// Reset Treasury Stacks, before unit loop
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
 			{
+				UnitExt* unitExt = &globals.unitExt[unit];
 				s32 supply = unitExt->SupplyProvided;
 				s32 stacks = unitExt->TreasuryStacks;
 				unitExt->TreasuryStacks = 0;
@@ -282,6 +282,7 @@ namespace hooks
 
 	void tickUnit(CUnit* unit)
 	{
+		UnitExt* unitExt = &globals.unitExt[unit];
 		globals.unitFrameHook(unit);
 		//hooks::ShowHealthBar(unit);
 
@@ -1080,7 +1081,7 @@ namespace hooks
 		}
 
 		{
-			UnitExt* demiurge = unitExt->WorshipDemiurgeUnit;
+			UnitExt* demiurge = &globals.unitExt[unitExt->WorshipDemiurgeUnit];
 			// Demiurge - Gods Made Flesh - apply effect to linked units
 			if (demiurge->GodsMadeFleshActive)
 			{

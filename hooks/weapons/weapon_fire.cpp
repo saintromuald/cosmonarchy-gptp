@@ -137,23 +137,23 @@ namespace hooks
 			// Wyvern Land Grab ability
 			if (unit->id == UnitId::TerranWyvern
 				&& unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell
-				&& scbw::get_generic_value(unit, ValueId::WyvernReverseLandgrabOn) == 1)
+				&& unitExt->WyvernReverseLandgrabOn == 1)
 			{
 				good = false;
 			}
 			// Lurker Seismic Spines behavior
 			if (weaponId == WeaponId::SubterraneanSpines)
 			{
-				scbw::set_generic_timer(unit, ValueId::LurkerETA, 17);
+				unitExt->LurkerETA = 17;
 				auto range = weapons_dat::MaxRange[weaponId] + 16;
 				s32 angle = scbw::getAngle(unit->getX(), unit->getY(), unit->orderTarget.unit->getX(), unit->orderTarget.unit->getY());
 				s32 targ_x = unit->getX() + scbw::getPolarX(range, angle);
 				s32 targ_y = unit->getY() + scbw::getPolarY(range, angle);
-				scbw::set_generic_value(unit, ValueId::SpineX, targ_x);
-				scbw::set_generic_value(unit, ValueId::SpineY, targ_y);
+				unitExt->SpineX = targ_x;
+				unitExt->SpineY = targ_y;
 				if (unit->orderTarget.unit != nullptr)
 				{
-					scbw::set_generic_value(unit, ValueId::LurkerPickTarget, (u32)unit->orderTarget.unit);
+					unitExt->LurkerPickTarget = (u32)unit->orderTarget.unit;
 				}
 				globals.clear_lakizilisk(unit);
 			}
@@ -307,7 +307,7 @@ namespace hooks
 						auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
 							newTarget->getX(), newTarget->getY());
 						helper::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
-						if (scbw::get_generic_value(unit, ValueId::Deconstruction))
+						if (unitExt->Deconstruction)
 						{
 							scbw::doDeconstructionDamage(unit, weaponId, false);
 						}
@@ -317,11 +317,11 @@ namespace hooks
 				// Titan Reactors - Heracles behavior - Refresh timer on attack and add stack
 				if (weaponId == WeaponId::HeraclesJavelinCannons)
 				{
-					scbw::set_generic_timer(unit, ValueId::NemeanReactorsTimer, 24 * 5);
-					s32 stacks = scbw::get_generic_value(unit, ValueId::NemeanReactorsStack);
+					unitExt->NemeanReactorsTimer = 24 * 5;
+					s32 stacks = unitExt->NemeanReactorsStack;
 					if (stacks < 5)
 					{
-						scbw::set_generic_value(unit, ValueId::NemeanReactorsStack, stacks + 1);
+						unitExt->NemeanReactorsStack = stacks++;
 						scbw::playSound(1372, unit);
 					}
 				}
@@ -339,12 +339,12 @@ namespace hooks
 				else if (weaponId == WeaponId::PhobosArgosLaserBatteries)
 				{
 					// Phobos - Argent Capacitors passive
-					if (unit->id == UnitId::TerranPhobos && scbw::get_generic_value(unit, ValueId::PhobosDischarge) == 0)
+					if (unit->id == UnitId::TerranPhobos && unitExt->PhobosDischarge == 0)
 					{
 						unit->addUnitEnergy(5 * 256);
 						if (unit->energy == unit->getMaxEnergy())
 						{
-							scbw::set_generic_value(unit, ValueId::PhobosDischarge, 1);
+							unitExt->PhobosDischarge = 1;
 						}
 					}
 					// Phobos laser spawn positions
@@ -389,7 +389,7 @@ namespace hooks
 				else if (weaponId == WeaponId::SalamanderPerditionBarrage)
 				{
 					// SalamanderFire missile target positions
-					auto rotate = scbw::get_generic_value(unit, ValueId::SalamanderAtkPos);
+					auto rotate = unitExt->SalamanderAtkPos;
 					if (rotate == 1)
 					{
 						helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
@@ -403,12 +403,12 @@ namespace hooks
 					{
 						rotate = 0;
 					}
-					scbw::set_generic_value(unit, ValueId::SalamanderAtkPos, rotate);
+					unitExt->SalamanderAtkPos = rotate;
 				}
 				else if (weaponId == WeaponId::MadrigalFuriaMissiles && unit->orderTarget.unit != nullptr)
 				{
 					helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
-					if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0)
+					if (unitExt->Deconstruction)
 					{
 						scbw::doDeconstructionDamage(unit, weaponId);
 					}
@@ -428,7 +428,7 @@ namespace hooks
 								auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
 									target->getX(), target->getY());
 								helper::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
-								if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0)
+								if (unitExt->Deconstruction)
 								{
 									scbw::doDeconstructionDamage(unit, weaponId, false);
 								}
@@ -442,20 +442,20 @@ namespace hooks
 					// Madcap - Maverick Feeders passive
 					if (unit->id == UnitId::TerranMadcap)
 					{
-						s32 stacks = scbw::get_generic_value(unit, ValueId::MadcapStacks);
-						scbw::set_generic_value(unit, ValueId::MadcapStacks, MathUtils::clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime));
+						s32 stacks = unitExt->MadcapStacks;
+						unitExt->MadcapStacks = MathUtils::clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime);
 					}
 					if (weaponId == WeaponId::AcidSpore && unit->sprite)
 					{
-						scbw::set_generic_value(unit, ValueId::GuardianMissileLaunchPosX, unit->getX());
-						scbw::set_generic_value(unit, ValueId::GuardianMissileLaunchPosY, unit->getY());
+						unitExt->GuardianMissileLaunchPosX = unit->getX();
+						unitExt->GuardianMissileLaunchPosY = unit->getY();
 					}
 					helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 				}
 			}
 			// Chasmal Colony - Adaptive Amitosis ability
 			if (unit->orderTarget.unit != nullptr
-				&& scbw::get_generic_value(unit, ValueId::AdaptiveAmitosis) > 0)
+				&& unitExt->AdaptiveAmitosis)
 			{
 				auto range = weapons_dat::MaxRange[weaponId];
 				auto a = scbw::UnitFinder::getNearestTarget(
@@ -483,7 +483,7 @@ namespace hooks
 					auto old = unit->orderTarget;
 					unit->orderTarget.unit = a;
 					unit->orderTarget.pt = a->sprite->position;
-					scbw::set_generic_value(unit->orderTarget.unit, ValueId::Amitosis, 1);
+					unitExt->AdaptiveAmitosis = 1;
 					// TODO: verify that this will work with all weapon types
 					const u32 Iscript_UseWeapon = 0x00479C30;
 					__asm {
@@ -498,7 +498,7 @@ namespace hooks
 			}
 		}
 		// Deconstruction - Pazuzu passive
-		if (scbw::get_generic_value(unit, ValueId::Deconstruction) > 0)
+		if (unitExt->Deconstruction)
 		{
 			scbw::doDeconstructionDamage(unit, weaponId);
 		}

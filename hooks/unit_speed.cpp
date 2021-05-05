@@ -15,8 +15,9 @@ namespace hooks
 
 	f64 getSpeedMultiplier(CUnit* unit)
 	{
-		f64 speed = 1;
+		UnitExt* unitExt = &globals.unitExt[unit];
 
+		f64 speed = 1;
 		// Set additives based on status effects and movespeed upgrades
 		s32 increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 		s32 decrease = (unit->ensnareTimer ? 1 : 0) + (unit->unusedTimer ? 1 : 0);
@@ -30,20 +31,20 @@ namespace hooks
 		}
 
 		// Mind Tyrant Malediction: Apply movespeed slow to non-organic targets
-		if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 1)
+		if (unitExt->MaledictionSlow > 1)
 		{
 			speed *= 0.5;
 		}
 
 		// Lobotomy Mine slow
-		if (scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 1)
+		if (unitExt->LobotomySlow > 1)
 		{
 			speed *= 0.5;
 		}
 
 		// Vassal Terminal Surge: increase movespeed when any nearby Simulacrum dies
 		{
-			f64 stacks = MathUtils::clamp<f64>(scbw::get_generic_value(unit, ValueId::TerminalSurge), 0, 10) * 1.5;
+			f64 stacks = MathUtils::clamp<f64>(unitExt->TerminalSurge, 0, 10) * 1.5;
 			if (stacks > 0)
 			{
 				speed *= 1.0 + stacks * 0.05;
@@ -51,15 +52,15 @@ namespace hooks
 		}
 
 		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby allies after kill
-		if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) > 0)
+		if (unitExt->NathrokorTimer)
 		{
 			speed *= 1.25;
 		}
 
 		// Southpaw Knockout Drivers: reduces movement speed by 5% per stack
-		if (scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks) > 0)
+		if (unitExt->KnockoutDriversStacks)
 		{
-			u32 knockoutValue = scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks);
+			u32 knockoutValue = unitExt->KnockoutDriversStacks;
 			speed *= 1 - 0.05 * knockoutValue;
 		}
 
@@ -70,7 +71,7 @@ namespace hooks
 		}
 
 		// Keskathalor Caustic Discharge: Speed Buff
-		if (scbw::get_generic_timer(unit, ValueId::CausticDischargeSpeed) > 0)
+		if (unitExt->CausticDischargeSpeed > 0)
 		{
 			speed *= 1.5;
 		}
@@ -87,10 +88,11 @@ namespace hooks
 				auto picked_unit = unitsInFinder.getUnit(i);
 				if (n(picked_unit))
 				{
-					if (scbw::get_generic_timer(picked_unit, ValueId::SwarmingOmenTimer) > 0)
+					UnitExt* pickedExt = &globals.unitExt[picked_unit];
+					if (pickedExt->SwarmingOmenTimer)
 					{
 						accelerate = true;
-						scbw::set_generic_timer(unit, ValueId::SwarmingOmenStatus, 25);
+						unitExt->SwarmingOmenStatus = 25;
 						break;
 					}
 				}
@@ -106,7 +108,7 @@ namespace hooks
 			case UnitId::ZergUltrakor:
 			{
 				// Ultrakor Kaiser Rampage: gains 150% movespeed on kill for 1 second
-				if (scbw::get_generic_timer(unit, ValueId::KaiserRampage) > 0)
+				if (unitExt->KaiserRampage)
 				{
 					speed *= 2;
 				}

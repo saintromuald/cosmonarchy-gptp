@@ -77,6 +77,8 @@ namespace hooks
 
 	void splash(CBullet* bullet, u32 weaponId, u8 splashType, CUnit* guaranteedHit)
 	{
+		UnitExt* bulletSourceExt = &globals.unitExt[bullet->sourceUnit];
+
 		s32 splash = splashType;
 		if (bullet == nullptr)
 			return;
@@ -188,7 +190,7 @@ namespace hooks
 			if (weaponId == WeaponId::HeraclesJavelinCannons)
 			{
 				const f64 splashBase = weapons_dat::OuterSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
+				const u32 stacks = bulletSourceExt->NemeanReactorsStack;
 				outer = (s16)(splashBase * (1 + 0.1 * stacks));
 			}
 
@@ -213,7 +215,7 @@ namespace hooks
 			if (weaponId == WeaponId::HeraclesJavelinCannons)
 			{
 				const f64 splashBase = weapons_dat::InnerSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
+				const u32 stacks = bulletSourceExt->NemeanReactorsStack;
 				inner = (s16)(splashBase * (1 + 0.1 * stacks));
 			}
 
@@ -238,7 +240,7 @@ namespace hooks
 			if (weaponId == WeaponId::HeraclesJavelinCannons)
 			{
 				const f64 splashBase = weapons_dat::MediumSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
+				const u32 stacks = bulletSourceExt->NemeanReactorsStack;
 				medium = (s16)(splashBase * (1 + 0.1 * stacks));
 			}
 
@@ -263,6 +265,8 @@ namespace hooks
 
 	void lurkerSplash(CBullet* bullet, u32 weaponId, u8 splash)
 	{
+		UnitExt* bulletSourceExt = &globals.unitExt[bullet->sourceUnit];
+
 		s16 x, y, r;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;
@@ -287,7 +291,7 @@ namespace hooks
 			else if (splash == SplashType::FriendlyNew)
 			{
 				bool lurkerOverride = false;
-				if (bullet->sourceUnit && (CUnit*)scbw::get_generic_value(bullet->sourceUnit, ValueId::LurkerPickTarget) == target)
+				if (bullet->sourceUnit && (CUnit*)bulletSourceExt->LurkerPickTarget == target)
 				{
 					lurkerOverride = true;
 				}
@@ -355,6 +359,8 @@ namespace hooks
 	// clone of 'Normal' damage for reference
 	void normalDamage(CBullet* bullet, u32 weaponId)
 	{
+		UnitExt* bulletSourceExt = &globals.unitExt[bullet->sourceUnit];
+
 		// Create Lobotomy Mines
 		if (bullet->sourceUnit != nullptr && weaponId == WeaponId::Lockdown)
 		{
@@ -390,8 +396,8 @@ namespace hooks
 			&& bullet->sourceUnit->sprite
 			&& target->sprite)
 		{
-			auto X = scbw::get_generic_value(bullet->sourceUnit, ValueId::GuardianMissileLaunchPosX);
-			auto Y = scbw::get_generic_value(bullet->sourceUnit, ValueId::GuardianMissileLaunchPosY);
+			auto X = bulletSourceExt->GuardianMissileLaunchPosX;
+			auto Y = bulletSourceExt->GuardianMissileLaunchPosY;
 			if (X != 0 && Y != 0)
 			{
 				divisor = scbw::getDistanceFast(X, Y, target->getX(), target->getY()) / (32 * 3);
