@@ -15,7 +15,7 @@ namespace hooks
 
 	f64 getSpeedMultiplier(CUnit* unit)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		f64 speed = 1;
 		// Set additives based on status effects and movespeed upgrades
@@ -88,7 +88,7 @@ namespace hooks
 				auto picked_unit = unitsInFinder.getUnit(i);
 				if (n(picked_unit))
 				{
-					UnitExt* pickedExt = &globals.unitExt[picked_unit];
+					UnitExt* pickedExt = globals.GetUnitExt(picked_unit);
 					if (pickedExt->SwarmingOmenTimer)
 					{
 						accelerate = true;

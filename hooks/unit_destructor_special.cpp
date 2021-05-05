@@ -95,7 +95,7 @@ void freeResourceContainer(CUnit* resource)
 
 void unitDestructorSpecialHook(CUnit* unit)
 {
-	UnitExt* unitExt = &globals.unitExt[unit];
+	UnitExt* unitExt = globals.GetUnitExt(unit);
 
 	// These do not require the unit to be completed
 	switch (unit->id)
@@ -195,7 +195,7 @@ void unitDestructorSpecialHook(CUnit* unit)
 					unit->getY() + range
 				).forEach([&](CUnit* target)
 					{
-						UnitExt* targetExt = &globals.unitExt[target];
+						UnitExt* targetExt = globals.GetUnitExt(target);
 						if (!scbw::isAlliedTo(unit->playerId, target->playerId))
 						{
 							return;

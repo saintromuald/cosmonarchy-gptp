@@ -6,7 +6,7 @@
 #include "globals.h"
 void hydra_unit_ai(CUnit* unit)
 {
-	UnitExt* unitExt = &globals.unitExt[unit];
+	UnitExt* unitExt = globals.GetUnitExt(unit);
 
 	/*
 	Apostle Lazarus Agent: If 5 or more organic allies (that don't have the buff) are nearby, cast the spell. **DONE**
@@ -50,7 +50,7 @@ void hydra_unit_ai(CUnit* unit)
 			hydraFinderLoop(nullptr, unit->position, 128, CFlags::NoBuilding | CFlags::Ally |
 				CFlags::OnlyOrganic, {}, [&](CUnit* u)
 			{
-				UnitExt* uExt = &globals.unitExt[unit];
+				UnitExt* uExt = globals.GetUnitExt(u);
 				if (uExt->LazarusAgent != 1)
 				{
 					count++;

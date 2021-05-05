@@ -121,8 +121,20 @@ public:
 	std::vector<ApostleAgent> apostleAgents;
 	std::unordered_map<CUnit*, std::vector<CUnit*>> lurkerSpineHits;
 	std::unordered_map<CUnit*, UnitExt> unitExt;
-	AttackExtender attackers;
 
+	inline UnitExt* GetUnitExt(CUnit* unit)
+	{
+		auto it = unitExt.find(unit);
+		if (it != unitExt.end())
+		{
+			UnitExt ext;
+			auto pair = std::pair<CUnit*, UnitExt>(unit, ext);
+			unitExt.emplace(unit, ext);
+		}
+		return &unitExt[unit];
+	}
+
+	AttackExtender attackers;
 	ApostleAgent test;
 
 	//non-serializable data (exists only temporarily in memory in wrapper/hook flow)

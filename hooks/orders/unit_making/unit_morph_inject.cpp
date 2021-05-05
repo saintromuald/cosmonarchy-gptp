@@ -175,7 +175,7 @@ namespace
 
 	void __fastcall cancelUnitWrapper(CUnit* unit)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		if (unit->isDead())
 		{

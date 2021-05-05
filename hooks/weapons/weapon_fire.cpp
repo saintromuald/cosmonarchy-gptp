@@ -89,7 +89,7 @@ namespace hooks
 	//This also affects CUnit::fireWeapon().
 	void fireWeaponHook(CUnit* unit, u8 wId)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 		if (unit == nullptr)
 		{
 			return;

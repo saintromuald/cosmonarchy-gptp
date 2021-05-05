@@ -668,7 +668,7 @@ LABEL_18:
 	//replaces CTFCop2 order
 	void order_PhaseLink(CUnit* unit)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		u32 status = 0;
 		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell; // might be changed later if required

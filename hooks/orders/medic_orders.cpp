@@ -304,7 +304,7 @@ LABEL_7:
 
 	bool AI_AcquireHealTarget(CUnit* medic, CUnit* target)
 	{
-		UnitExt* unitExt = &globals.unitExt[target];
+		UnitExt* targetExt = globals.GetUnitExt(target);
 		if (target == nullptr || target == medic || medic->status & UnitStatus::IsHallucination)
 		{
 			return 0;
@@ -320,7 +320,7 @@ LABEL_7:
 			|| medic->playerId >= 8
 			|| target->hitPoints >= units_dat::MaxHitPoints[type]
 			|| target->isFrozen()
-			|| unitExt->LazarusNoHeal == 1)
+			|| targetExt->LazarusNoHeal == 1)
 		{
 			return 0;
 		}

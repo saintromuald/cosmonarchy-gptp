@@ -77,7 +77,7 @@ namespace hooks
 
 	void splash(CBullet* bullet, u32 weaponId, u8 splashType, CUnit* guaranteedHit)
 	{
-		UnitExt* bulletSourceExt = &globals.unitExt[bullet->sourceUnit];
+		UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
 
 		s32 splash = splashType;
 		if (bullet == nullptr)
@@ -265,7 +265,7 @@ namespace hooks
 
 	void lurkerSplash(CBullet* bullet, u32 weaponId, u8 splash)
 	{
-		UnitExt* bulletSourceExt = &globals.unitExt[bullet->sourceUnit];
+		UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
 
 		s16 x, y, r;
 		x = bullet->sprite->position.x;
@@ -359,7 +359,7 @@ namespace hooks
 	// clone of 'Normal' damage for reference
 	void normalDamage(CBullet* bullet, u32 weaponId)
 	{
-		UnitExt* bulletSourceExt = &globals.unitExt[bullet->sourceUnit];
+		UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
 
 		// Create Lobotomy Mines
 		if (bullet->sourceUnit != nullptr && weaponId == WeaponId::Lockdown)

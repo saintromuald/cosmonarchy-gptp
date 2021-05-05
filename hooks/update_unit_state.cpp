@@ -16,7 +16,7 @@ namespace hooks
 
 	void updateUnitEnergy(CUnit* unit)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		// was hardcoded instead of function calling in original code
 		if (unit->isValidCaster()
@@ -127,7 +127,7 @@ namespace hooks
 	/// Identical to function @ 0x004EC290
 	void updateUnitStateHook(CUnit* unit)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		if (unit->pAI != nullptr)
 		{
@@ -527,7 +527,7 @@ namespace hooks
 
 	void incrementUnitScoresEx(s32 count, CUnit* unit, s32 increment_scores) // 0x00488D50
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		if (unit->status & UnitStatus::IsHallucination)
 		{
@@ -760,7 +760,7 @@ namespace hooks
 		}
 		if (v7)
 		{
-			UnitExt* unitExt = &globals.unitExt[v7];
+			UnitExt* unitExt = globals.GetUnitExt(v7);
 			do
 			{
 				helper::updateVisibility(v7);

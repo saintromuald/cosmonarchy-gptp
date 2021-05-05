@@ -217,7 +217,7 @@ void __declspec(naked) get_stattxt_string_Wrapper()
 	{
 		if (stringId == string_toggle_on[i])
 		{
-			if (scbw::get_generic_value(*activePortraitUnit, toggle_values[i]) == 1)
+			if (scbw::get_generic_rust_value(*activePortraitUnit, toggle_values[i]))
 			{
 				stringId = string_toggle_off[i];
 			}

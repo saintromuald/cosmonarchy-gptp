@@ -8,7 +8,7 @@ namespace hooks
 
 	s32 decrementRemainingBuildTime(CUnit* unit)
 	{ // 0x00466940
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		if (!unit->remainingBuildTime)
 		{

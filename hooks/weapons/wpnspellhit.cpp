@@ -594,7 +594,7 @@ namespace hooks
 
 				// create the broodling
 				created_broodling = helper::createUnit(UnitId::ZergBroodling, pos.x, pos.y, attacker->playerId);
-				UnitExt* broodlingExt = &globals.unitExt[created_broodling];
+				UnitExt* broodlingExt = globals.GetUnitExt(created_broodling);
 				broodlingExt->BroodlingMother = attacker;
 
 				if (created_broodling == nullptr)
@@ -643,7 +643,7 @@ namespace hooks
 		helper::IterateUnitsAtLocationTargetProc_Plague(attacker, &coords);
 		if (attacker != nullptr)
 		{
-			UnitExt* attackerExt = &globals.unitExt[attacker];
+			UnitExt* attackerExt = globals.GetUnitExt(attacker);
 			u32 range = 64;
 			scbw::UnitFinder(
 				x - range,

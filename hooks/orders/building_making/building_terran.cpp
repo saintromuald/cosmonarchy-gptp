@@ -539,6 +539,7 @@ namespace hooks
 		}
 	}
 
+	/*
 	// Hooked to enable unit mover for human players - Pr0nogo
 	s32 updateBuildingPlacementState_Units(s32 yTile, CUnit* builder, s32 xTile, u8 player, u16 unitId, s32 sizeWidthHeight,s32 placementStateEntry,
 		char bDontIgnoreReacting, char bAlsoInvisible, s32 withoutVision) // 00473720
@@ -631,6 +632,7 @@ namespace hooks
 		*tempUnitsListCurrentArrayCount = tempUnitsListArraysCountsListLastIndex[tempUnitsListArraysCountsListLastIndex[0]--];
 		return result;
 	}
+	*/
 
 	s32 updatePlacementStateForPlacementBox()
 	{ // 0x0048DCE0

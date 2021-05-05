@@ -1744,7 +1744,7 @@ namespace scbw
 	{
 		if (isDecloakable(unit))
 		{
-			UnitExt* unitExt = &globals.unitExt[unit];
+			UnitExt* unitExt = globals.GetUnitExt(unit);
 			if (unitExt->DecloakTimer == 0)
 			{
 				unit->visibilityStatus = 0xff;

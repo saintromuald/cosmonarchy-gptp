@@ -13,7 +13,7 @@ namespace hooks
 	/// @return		The modified cooldown value.
 	u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		u32 cooldown = weapons_dat::Cooldown[weaponId];
 

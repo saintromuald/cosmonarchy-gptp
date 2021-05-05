@@ -156,7 +156,7 @@ namespace hooks
 				if (unit->secondaryOrderState == 2)
 				{
 					CUnit* builtUnit = unit->currentBuildUnit;
-					UnitExt* builtUnitExt = &globals.unitExt[builtUnit];
+					UnitExt* builtUnitExt = globals.GetUnitExt(builtUnit);
 
 					if (builtUnit != nullptr)
 					{

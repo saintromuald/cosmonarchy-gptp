@@ -349,7 +349,7 @@ void Globals::createGenericPersistImpact(u8 impactId, u32 time, Point32 position
 
 void Globals::frameHook()
 {
-
+	/*
 	for (auto& unitStruct : unitExt)
 	{
 		UnitExt* unitExt = &unitStruct.second;
@@ -402,14 +402,14 @@ void Globals::frameHook()
 			auto revived = scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y, agent.creator);
 			if (revived)
 			{
-				UnitExt* unitExt = &globals.unitExt[revived];
+				UnitExt* revivedExt = globals.GetUnitExt(revived);
 				revived->setHp(units_dat::MaxHitPoints[revived->id] / 2);
 				revived->energy = agent.energy;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
-				unitExt->LazarusNoHeal = 1;
+				revivedExt->LazarusNoHeal = 1;
 				// TODO: Make reviving units invincible
 //				revived->status |= UnitStatus::Invincible;
-				unitExt->IsReviving = 1;
+				revivedExt->IsReviving = 1;
 			}
 			apostleAgents.erase(apostleAgents.begin() + i);
 			i--;
@@ -474,7 +474,7 @@ void Globals::frameHook()
 						impact.position.y + impact.radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit)
 					{
-						UnitExt* unitExt = &globals.unitExt[unit];
+						UnitExt* unitExt = globals.GetUnitExt(unit);
 						unit->damageWithIgnoreFlatArmor(WeaponId::KeskathalorCausticDischarge, weapons_dat::DamageAmount[WeaponId::KeskathalorCausticDischarge] * damageMultiplier);
 						unitExt->CausticDischargeSpeed = 5 * 24 + 1;
 					});
@@ -489,7 +489,7 @@ void Globals::frameHook()
 						impact.position.y + impact.radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit)
 					{
-						UnitExt* unitExt = &globals.unitExt[unit];
+						UnitExt* unitExt = globals.GetUnitExt(unit);
 						unit->damageWithIgnoreFlatArmor(WeaponId::IonField, weapons_dat::DamageAmount[WeaponId::IonField] * damageMultiplier);
 						unitExt->IonFieldSpeed = 2 * 24 + 1;
 					});
@@ -504,7 +504,7 @@ void Globals::frameHook()
 						impact.position.y + impact.radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::Enemy, {}), [&](CUnit* unit)
 					{
-						UnitExt* unitExt = &globals.unitExt[unit];
+						UnitExt* unitExt = globals.GetUnitExt(unit);
 						if (unitExt->HallucinatingTimer < impact.currentTime)
 						{
 							unitExt->HallucinatingSourcePlayer = impact.player;
@@ -548,7 +548,7 @@ void Globals::frameHook()
 			persistImpacts.erase(persistImpacts.begin() + i);
 			i--;
 		}
-	}
+	}*/
 }
 
 void Globals::remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly)
@@ -785,7 +785,7 @@ namespace scbw
 {
 	void refreshDebuffs(CUnit* unit)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		// NOTE: classic period formula is (([real seconds / 0.042) / 8)
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
@@ -870,8 +870,8 @@ namespace scbw
 
 	void inheritDebuffs(CUnit* parent, CUnit* child)
 	{
-		UnitExt* parentExt = &globals.unitExt[parent];
-		UnitExt* childExt = &globals.unitExt[child];
+		UnitExt* parentExt = globals.GetUnitExt(parent);
+		UnitExt* childExt = globals.GetUnitExt(child);
 
 		// NOTE: classic period formula is (([real seconds / 0.042) / 8)
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
@@ -998,7 +998,7 @@ namespace scbw
 			CSprite* sprite = child->sprite;
 			if (child->subunit != nullptr)
 			{
-				UnitExt* subunitExt = &globals.unitExt[child->subunit];
+				UnitExt* subunitExt = globals.GetUnitExt(child->subunit);
 				subunitExt->Deconstruction = parentExt->Deconstruction;
 				sprite = child->subunit->sprite;
 			}
@@ -1073,7 +1073,7 @@ namespace scbw
 
 	bool isDebuffed(CUnit* unit)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 		return unitExt->MaledictionSlow
 			|| unitExt->KnockoutDriversTimer
 			|| unitExt->LobotomySlow
@@ -1094,7 +1094,7 @@ namespace scbw
 
 	void restoreFunc(CUnit* unit)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		CUnit* overlayTargetUnit = unit;
 		if (unit->subunit != nullptr)
@@ -1206,7 +1206,7 @@ namespace scbw
 		unit->removeOverlay(ImageId::DeconstructionSmall, ImageId::DeconstructionLarge);
 		if (unit->subunit)
 		{
-			UnitExt* subunitExt = &globals.unitExt[unit->subunit];
+			UnitExt* subunitExt = globals.GetUnitExt(unit->subunit);
 			subunitExt->Deconstruction = 0;
 			unit->subunit->removeOverlay(ImageId::DeconstructionSmall, ImageId::DeconstructionLarge);
 		}
@@ -1217,7 +1217,7 @@ namespace scbw
 
 	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		if (!scbw::canBeParasited(unit))
 		{
@@ -1265,7 +1265,7 @@ namespace scbw
 
 	bool isSlowed(CUnit* unit)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		if (unit->ensnareTimer || unit->unusedTimer)
 		{
@@ -1284,7 +1284,7 @@ namespace scbw
 
 	CUnit** getSourceQueens(CUnit* unit)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		CUnit* queens[2] = {nullptr};
 		if (unit == nullptr) return queens; // <- prevents crash from incubators, but does not fix the issue
@@ -1295,7 +1295,7 @@ namespace scbw
 
 	void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		// Deconstruction - Pazuzu passive
 		f64 selfDamage = (0.25 * (f64)(weapons_dat::DamageAmount[weaponId] * 256.0));
@@ -1357,7 +1357,7 @@ namespace scbw
 
 	void clearClarionLinks(CUnit* unit)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		auto& vec = unitExt->PhaseLink;
 		for (CUnit* vecUnit : vec)
@@ -1374,7 +1374,7 @@ namespace scbw
 
 	void placeClarionLinks(CUnit* unit)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		bool isClarion = unit->id == UnitId::ProtossClarion;
 		auto& link = unitExt->PhaseLink;
@@ -1419,7 +1419,7 @@ namespace scbw
 
 	bool hasClarionLinks(CUnit* unit)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 		return unitExt->PhaseLinkClarions.size();
 	}
 
@@ -1471,7 +1471,7 @@ namespace scbw
 
 	std::vector<CUnit*> getClarionLinks(CUnit* unit)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		std::unordered_set<CUnit*> links = {};
 		if (unit->id == UnitId::ProtossClarion)
@@ -1482,7 +1482,7 @@ namespace scbw
 		auto& clarions = unitExt->PhaseLinkClarions;
 		for (CUnit* clarion : clarions)
 		{
-			UnitExt* clarionExt = &globals.unitExt[clarion];
+			UnitExt* clarionExt = globals.GetUnitExt(clarion);
 			auto link = clarionExt->PhaseLink;
 			links.insert(link.begin(), link.end());
 		}

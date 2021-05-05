@@ -324,10 +324,10 @@ struct UnitExt
 
 	union
 	{
-		std::vector<u32> TimerVectors[0/*UNITEXT_ARRAY_SIZE*/];
+		std::vector<u32> TimerVectors[UNITEXT_ARRAY_SIZE];
 		struct
 		{
-			//std::vector<u32> Unused;
+			std::vector<u32> Unused;
 		};
 	};
 
@@ -339,6 +339,10 @@ struct UnitExt
 			u32 CaptivatingClawsTimer;
 		};
 	};
+
+	// have to be here, because of some C++ nonsense, probably related to use of unions?
+	UnitExt() {}
+	~UnitExt() {} 
 };
 
 namespace ValueId // TODO: rename to RustId

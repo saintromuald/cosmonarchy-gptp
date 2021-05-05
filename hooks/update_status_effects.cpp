@@ -101,8 +101,8 @@ namespace hooks
 
 	void updateStatusEffects(CUnit* unit)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
-		UnitExt* subunitExt = &globals.unitExt[unit->subunit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+		UnitExt* subunitExt = globals.GetUnitExt(unit->subunit);
 
 		if (unit->subunit != nullptr)
 		{

@@ -13,8 +13,8 @@ namespace hooks
 	/// Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
 	u8 getSeekRangeHook(CUnit* unit) // seek range is measured in tiles, unfortunately
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
-		UnitExt* orderUnitExt = &globals.unitExt[unit->orderTarget.unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+		UnitExt* orderUnitExt = globals.GetUnitExt(unit->orderTarget.unit);
 
 		u16 unitId = unit->id;
 		u32 seekRange;
@@ -85,8 +85,8 @@ namespace hooks
 	/// @param	unit			The unit that owns the weapon. Use this to check upgrades.
 	u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
-		UnitExt* orderUnitExt = &globals.unitExt[unit->orderTarget.unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+		UnitExt* orderUnitExt = globals.GetUnitExt(unit->orderTarget.unit);
 
 		u32 bonusAmount = 0;
 		//Give bonus range to units inside Bunkers

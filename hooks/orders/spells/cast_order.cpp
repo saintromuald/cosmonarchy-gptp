@@ -6,7 +6,7 @@ namespace hooks
 {
 	void orders_Spell(CUnit* unit)
 	{
-		UnitExt* unitExt = &globals.unitExt[unit];
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 		s32 spellCost;
 		u8 orderWeaponId = orders_dat::OrderWeaponId[unit->mainOrderId];
 		CUnit* target = unit->orderTarget.unit;

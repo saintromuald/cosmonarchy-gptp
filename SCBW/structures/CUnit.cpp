@@ -545,7 +545,7 @@ void CUnit::damageWithIgnoreFlatArmor(u8 weaponId, s32 damage, CUnit* attacker, 
 void CUnit::inflictDamage(s32 dmg, CUnit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, s32 direction,
 	bool ignoreDmg128Overflow)
 {
-	UnitExt* unitExt = &globals.unitExt[this];
+	UnitExt* unitExt = globals.GetUnitExt(this);
 	auto damage = dmg;
 	s32 shieldReduceAmount = 0;
 	if (unitExt->GodsMadeFleshTimer)
@@ -732,7 +732,7 @@ void CUnit::removeAcidSpores()
 ///May underflow if alone
 void CUnit::spendUnitEnergy(u32 energySpent)
 {
-	UnitExt* unitExt = &globals.unitExt[this];
+	UnitExt* unitExt = globals.GetUnitExt(this);
 	if (!(*CHEAT_STATE & CheatFlags::TheGathering))
 	{
 		if (this->energy > energySpent)
@@ -1373,7 +1373,7 @@ void CUnit::updateSpeed()
 
 void CUnit::setSupplyProvided(u8 amount) // overwrites previous supply provided
 {
-	UnitExt* unitExt = &globals.unitExt[this];
+	UnitExt* unitExt = globals.GetUnitExt(this);
 
 	u32 race = this->getRace();
 	u32 previous_supply = unitExt->SupplyProvided;
