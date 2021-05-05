@@ -997,7 +997,7 @@ namespace scbw
 		{
 			scbw::set_generic_timer(child, ValueId::ObservanceTimerDebuff, scbw::get_generic_timer(parent, ValueId::ObservanceTimerDebuff));
 			scbw::set_generic_timer(child, ValueId::ObservanceTimerPeriod, scbw::get_generic_timer(parent, ValueId::ObservanceTimerPeriod));
-			scbw::set_generic_timer(child, ValueId::ObservanceRend, scbw::get_generic_timer(parent, ValueId::ObservanceRend));
+			scbw::set_generic_value(child, ValueId::ObservanceRend, scbw::get_generic_value(parent, ValueId::ObservanceRend));
 		}
 
 		// Inherit Knockout Drivers

@@ -8196,4 +8196,38 @@ namespace helper
 		}
 		return result;
 	}
+
+	// For updateBuildingPlacementState_Units
+	bool doesBuildingBlock(CUnit* unit, s32 xTile, s32 yTile) {
+		const u32 Func_doesBuildingBlock = 0x00473410;
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV ECX, yTile
+			MOV EDX, xTile
+			MOV EAX, unit
+			CALL Func_doesBuildingBlock
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	s32 isTileBlockedBy(CUnit** array, CUnit* builder, s32 xTile, s32 yTile, char bDontIgnoreReacting, char bAlsoInvisible) {
+		const u32 Func_isTileBlockedBy = 0x00473300;
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH bAlsoInvisible
+			PUSH bDontIgnoreReacting
+			PUSH yTile
+			PUSH xTile
+			PUSH builder
+			MOV EAX, array
+			CALL Func_isTileBlockedBy
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

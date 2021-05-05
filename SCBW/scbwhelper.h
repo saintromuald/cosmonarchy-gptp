@@ -308,6 +308,11 @@ namespace helper
 	bool orderToMoveToTarget(CUnit* unit, CUnit* target);								                    // 004EB980
 	b32 unk_terrainCollision2(CUnit* unit, s32 x, s32 y);													// 004F1870
 
+	// For updatePlacementState_Units
+	bool doesBuildingBlock(CUnit* unit, s32 xTile, s32 yTile);												// 00473410
+	s32 isTileBlockedBy(CUnit** array, CUnit* builder, s32 xTile, s32 yTile,								// 00473300
+		char bDontIgnoreReacting, char bAlsoInvisible);
+
 	// For updatePlacementStateForPlacementBox
 	s32 canBuildOnTileLocation(CUnit* a1, s32 player, s32 x_tile, s32 y_tile, s32 unitType,
 		s32 placement_state_entry, s32 check_vision, s32 also_invisible, s32 without_vision);				// 00473FB0
