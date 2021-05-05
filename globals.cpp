@@ -232,7 +232,7 @@ void Globals::reset()
 	multihitBullets.clear();
 	apostleAgents.clear();
 	lurkerSpineHits.clear();
-	unitStructs.clear();
+	unitExt.clear();
 }
 
 void Globals::unitFrameHook(CUnit* unit)
@@ -246,8 +246,8 @@ void Globals::unitFrameHook(CUnit* unit)
 
 void Globals::unitDeathHook(CUnit* unit)
 {
-	unitStructs.erase(unit);
-	for (auto& a : unitStructs)
+	unitExt.erase(unit);
+	for (auto& a : unitExt)
 	{ // set dead unit pointers to nullptr and erase them from unit vectors
 		for (auto& unitPair : a.second.genericUnits)
 		{
@@ -348,13 +348,14 @@ void Globals::createGenericPersistImpact(u8 impactId, u32 time, Point32 position
 
 void Globals::frameHook()
 {
-	for (auto& unitStruct : unitStructs)
+	for (auto& unitStruct : unitExt)
 	{
-		for (auto& timerPair : unitStruct.second.genericTimers)
+		UnitExt* unitExt = &unitStruct.second;
+		for (int i = 0; i < UnitExtArraySize(unitStruct.second, Timers); ++i)
 		{
-			if (timerPair.second > 0)
+			if (unitExt->Timers[i] > 0)
 			{
-				timerPair.second--;
+				unitExt->Timers[i].second--;
 			}
 		}
 		for (auto& timerVecPair : unitStruct.second.genericTimerVectors)
@@ -778,8 +779,8 @@ namespace scbw
 {
 	u32 get_generic_value(CUnit* u, u32 id)
 	{
-		auto find = globals.unitStructs.find(u);
-		if (find != globals.unitStructs.end())
+		auto find = globals.unitExt.find(u);
+		if (find != globals.unitExt.end())
 		{
 			return find->second.getGenericValue(id);
 		}
@@ -788,18 +789,18 @@ namespace scbw
 
 	void set_generic_value(CUnit* u, u32 id, u32 val)
 	{
-		globals.unitStructs[u].setGenericValue(id, val);
+		globals.unitExt[u].setGenericValue(id, val);
 	}
 
 	void add_generic_value(CUnit* u, u32 id, s32 val)
 	{
-		globals.unitStructs[u].addGenericValue(id, val);
+		globals.unitExt[u].addGenericValue(id, val);
 	}
 
 	u32 get_generic_timer(CUnit* u, u32 id)
 	{
-		auto find = globals.unitStructs.find(u);
-		if (find != globals.unitStructs.end())
+		auto find = globals.unitExt.find(u);
+		if (find != globals.unitExt.end())
 		{
 			return find->second.getGenericTimer(id);
 		}
@@ -808,13 +809,13 @@ namespace scbw
 
 	void set_generic_timer(CUnit* u, u32 id, u32 val)
 	{
-		globals.unitStructs[u].setGenericTimer(id, val);
+		globals.unitExt[u].setGenericTimer(id, val);
 	}
 
 	CUnit* get_generic_unit(CUnit* u, u32 id)
 	{
-		auto find = globals.unitStructs.find(u);
-		if (find != globals.unitStructs.end())
+		auto find = globals.unitExt.find(u);
+		if (find != globals.unitExt.end())
 		{
 			return find->second.getGenericUnit(id);
 		}
@@ -823,47 +824,47 @@ namespace scbw
 
 	void set_generic_unit(CUnit* u, u32 id, CUnit* val)
 	{
-		globals.unitStructs[u].setGenericUnit(id, val);
+		globals.unitExt[u].setGenericUnit(id, val);
 	}
 
 	std::vector<s32>& get_generic_value_vector(CUnit* u, u32 id)
 	{
-		auto& find = globals.unitStructs.find(u);
-		if (find == globals.unitStructs.end())
+		auto& find = globals.unitExt.find(u);
+		if (find == globals.unitExt.end())
 		{
-			globals.unitStructs[u] = {};
+			globals.unitExt[u] = {};
 		}
-		return globals.unitStructs[u].getGenericValueVector(id);
+		return globals.unitExt[u].getGenericValueVector(id);
 	}
 
 	std::vector<s32>& get_generic_timer_vector(CUnit* u, u32 id)
 	{
-		auto& find = globals.unitStructs.find(u);
-		if (find == globals.unitStructs.end())
+		auto& find = globals.unitExt.find(u);
+		if (find == globals.unitExt.end())
 		{
-			globals.unitStructs[u] = {};
+			globals.unitExt[u] = {};
 		}
-		return globals.unitStructs[u].getGenericTimerVector(id);
+		return globals.unitExt[u].getGenericTimerVector(id);
 	}
 
 	std::vector<CUnit*>& get_generic_unit_vector(CUnit* u, u32 id)
 	{
-		auto& find = globals.unitStructs.find(u);
-		if (find == globals.unitStructs.end())
+		auto& find = globals.unitExt.find(u);
+		if (find == globals.unitExt.end())
 		{
-			globals.unitStructs[u] = {};
+			globals.unitExt[u] = {};
 		}
-		return globals.unitStructs[u].getGenericUnitVector(id);
+		return globals.unitExt[u].getGenericUnitVector(id);
 	}
 
 	std::unordered_map<CUnit*, s32>& get_generic_unit_timer_map(CUnit* u, u32 id)
 	{
-		auto& find = globals.unitStructs.find(u);
-		if (find == globals.unitStructs.end())
+		auto& find = globals.unitExt.find(u);
+		if (find == globals.unitExt.end())
 		{
-			globals.unitStructs[u] = {};
+			globals.unitExt[u] = {};
 		}
-		return globals.unitStructs[u].getGenericUnitTimerMap(id);
+		return globals.unitExt[u].getGenericUnitTimerMap(id);
 	}
 
 	void refreshDebuffs(CUnit* unit)
