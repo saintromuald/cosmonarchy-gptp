@@ -63,33 +63,27 @@ namespace hooks
 			case TechId::ScannerSweep:
 			{
 				helper::issueTriTargetOrder(OrderId::PlaceScanner, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::SpiderMines:
 			{
 				helper::issueTriTargetOrder(OrderId::PlaceMine, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::YamatoGun:
 			{
 				helper::issueTriTargetOrder(OrderId::FireYamatoGun1, OrderId::FireYamatoGun2, 0);
-				break;
-			}
+			} break;
 			case TechId::Lockdown:
 			{
 				helper::issueTriTargetOrder(OrderId::MagnaPulse, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::Recall:
 			{
 				helper::issueTriTargetOrder(OrderId::Teleport, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::DefensiveMatrix:
 			{
 				helper::issueTriTargetOrder(OrderId::DefensiveMatrix, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::EnsnaringBrood:
 			{
 				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};
@@ -99,18 +93,15 @@ namespace hooks
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = ValueId::EnsnaringBroodAbility;
 				scbw::SendCommand(buf, 0xc);
-				break;
-			}
+			} break;
 			case TechId::Parasite:
 			{
 				helper::issueTriTargetOrder(OrderId::CastParasite, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::Infestation:
 			{
 				helper::issueTriTargetOrder(OrderId::InfestMine3, OrderId::Move, OrderId::InfestMine2);
-				break;
-			}
+			} break;
 			case TechId::ReverseThrust:
 			{
 				if (firstInList != nullptr)
@@ -128,49 +119,43 @@ namespace hooks
 					buf[4] = ValueId::ReverseThrust;
 					scbw::SendCommand(buf, 0xc);
 				}
-				break;
-			}
+			} break;
 			case TechId::Irradiate:
 			{
 				helper::issueTriTargetOrder(OrderId::Irradiate, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::Ensnare:
 			{
 				helper::issueTriTargetOrder(OrderId::CTFCOPInit, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::StasisField:
 			{
 				helper::issueTriTargetOrder(OrderId::StasisField, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::DarkSwarm:
 			{
 				helper::issueTriTargetOrder(OrderId::DarkSwarm, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::Plague:
 			{
 				helper::issueTriTargetOrder(OrderId::Plague, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::Consume:
 			{
 				helper::issueTriTargetOrder(OrderId::Consume, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::PsionicStorm:
 			{
 				helper::issueTriTargetOrder(OrderId::PsiStorm, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::Hallucination:
 			{
 				helper::issueTriTargetOrder(OrderId::Hallucination1, 0, 0);
-				break;
-			}
-			// case TechId::Restoration: was here
+			} break;
+			case TechId::TertiaryEyes:
+			{
+				helper::issueTriTargetOrder(OrderId::Restoration, 0, 0);
+			} break;
 			case TechId::NaniteField:
 			{
 				s32 action = 1; // on
@@ -186,25 +171,22 @@ namespace hooks
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = ValueId::NaniteField;
 				scbw::SendCommand(buf, 0xc);
-				break;
-			}
+			} break;
 			case TechId::RescindMindControl:
 			{
 				s32 action = 1; // on
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0}; // 12
+				u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 }; // 12
 				buf[0] = 0x99; // new general command
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = ValueId::RescindMindControl;
 				scbw::SendCommand(buf, 0xc);
-				break;
-			}
+			} break;
 			case TechId::Observance:
 			{
 				helper::issueTriTargetOrder(OrderId::EmpShockwave, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::GodsMadeFlesh:
 			{
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0 };
@@ -214,8 +196,7 @@ namespace hooks
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = ValueId::GodsMadeFleshCast;
 				scbw::SendCommand(buf, 0xc);
-				break;
-			}
+			} break;
 			case TechId::PhaseLink: // and Khaydarin Eclipse
 			{
 				auto firstInList = clientSelectionGroup->unit[0];
@@ -252,8 +233,7 @@ namespace hooks
 						break;
 					}
 				}
-				break;
-			}
+			} break;
 			case TechId::PlanetCracker:
 			{
 				auto firstInList = clientSelectionGroup->unit[0];
@@ -262,8 +242,7 @@ namespace hooks
 				buf[1] = NewGameCommand::IssueCTFCop2; // used for Phase Link, Khaydarin Eclipse, and (in Overlord) Anti-Air Mode
 				buf[2] = *ACTIVE_PLAYER_ID;
 				scbw::SendCommand(buf, 0xc);
-				break;
-			}
+			} break;
 			case TechId::SublimeShepherd:
 			{
 				s32 action = 1; // on
@@ -278,8 +257,7 @@ namespace hooks
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = ValueId::SublimeShepherd;
 				scbw::SendCommand(buf, 0xc);
-				break;
-			}
+			} break;
 			case TechId::LazarusAgent:
 			{
 				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
@@ -289,8 +267,7 @@ namespace hooks
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = ValueId::CastLazarusAgent;
 				scbw::SendCommand(buf, 0xc);
-				break;
-			}
+			} break;
 			case TechId::TempoChange:
 			{
 				s32 action = 1; // on
@@ -305,23 +282,19 @@ namespace hooks
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = ValueId::TempoChange;
 				scbw::SendCommand(buf, 0xc);
-				break;
-			}
+			} break;
 			case TechId::Skyfall:
 			{
 				helper::issueTriTargetOrder(OrderId::Skyfall, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::EssenceDrain:
 			{
 				helper::issueTriTargetOrder(OrderId::CTFCOP1, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::PowerTransfer:
 			{
 				helper::issueTriTargetOrder(OrderId::Hover, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::DisruptionWeb:
 			{
 				s32 action = 1; // on
@@ -336,26 +309,21 @@ namespace hooks
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = ValueId::DisruptionWeb;
 				scbw::SendCommand(buf, 0xc);
-				break;
-			}
+			} break;
 			case TechId::MindControl:
 			{
 				helper::issueTriTargetOrder(OrderId::CastMindControl, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::OpticalFlare:
 			{
 				helper::issueTriTargetOrder(OrderId::CastOpticalFlare, 0, 0);
-				break;
-			}
+			} break;
 			case TechId::Maelstrom:
 			{
 				helper::issueTriTargetOrder(OrderId::CastMaelstrom, 0, 0);
-				break;
-			}
+			} break;
 			default:
 			{
-				break;
 			}
 		};
 	}

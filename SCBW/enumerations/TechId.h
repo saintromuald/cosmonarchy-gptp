@@ -59,7 +59,7 @@ enum Enum {
 	LobotomyMine			=  1, // Eidolon lay trap ability
 	ReverseThrust			=  2, // unused
 	LandGrab				= 17, // General target ground ability
-	AdministerMedstims		= 24, // Shaman organic heal ability
+	TertiaryEyes			= 24, // Siren specialist linking ability
 	LazarusAgent			= 32, // Apostle ability
 	TempoChange				= 36, // Madrigal weapon switch ability
 	Skyfall					= 37, // Paladin missile salvo ability
