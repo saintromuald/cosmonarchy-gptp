@@ -27,7 +27,7 @@ void spawnCreeper(CUnit* unit)
 			unit->playerId);
 		if (creep_spawned == nullptr)
 		{
-			//scbw::print("Error: Creeper");
+//			scbw::print("Error: Creeper");
 		}
 		else
 		{
@@ -52,8 +52,8 @@ void spawnCreeper(CUnit* unit)
 			creep_spawned->sprite->images.head->flags |= 0x40;
 			creep_spawned->sprite->images.tail->flags |= 0x20;
 			creep_spawned->sprite->images.tail->flags |= 0x40;
-			//unit->connectedUnit = creep_spawned;
-			//scbw::print("Burrow basilisk");
+//			unit->connectedUnit = creep_spawned;
+//			scbw::print("Burrow basilisk");
 			__asm {
 				PUSHAD
 				MOV EDI, creep_spawned
@@ -210,11 +210,11 @@ namespace hooks
 {
 	void firstFrame();
 	void tickUnit(CUnit* unit);
+	UnitExt* unitExt = &globals.unitExt[unit];
 
 	/// This hook is called every frame
 	bool nextFrame()
 	{
-
 		if (!scbw::isGamePaused())
 		{ // If the game is not paused
 
@@ -236,9 +236,9 @@ namespace hooks
 			// Reset Treasury Stacks, before unit loop
 			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
 			{
-				s32 supply = scbw::get_generic_value(unit, ValueId::SupplyProvided);
-				s32 stacks = scbw::get_generic_value(unit, ValueId::TreasuryStacks);
-				scbw::set_generic_value(unit, ValueId::TreasuryStacks, 0);
+				s32 supply = unitExt->SupplyProvided;
+				s32 stacks = unitExt->TreasuryStacks;
+				unitExt->TreasuryStacks = 0;
 				unit->setSupplyProvided(supply - stacks * TreasuryIncrease);
 			}
 
@@ -290,13 +290,13 @@ namespace hooks
 			case UnitId::ZergZoryusthaleth:
 			{
 				// Zoryusthaleth - Swarming Omen
-				if (!(scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer))
+				if (!unitExt->SwarmingOmenTimer
 					&& unit->getCurrentHpInGame() < unit->getMaxHpInGame() / 2)
 				{
-					scbw::set_generic_timer(unit, ValueId::SwarmingOmenTimer, 15 * 24);
+					unitExt->SwarmingOmenTimer = 15 * 24;
 				}
 				// Zoryusthaleth - Reconstitution
-				if (scbw::get_generic_timer(unit, ValueId::ReconstitutionCooldown) == 0)
+				if (unitExt->ReconstitutionCooldown == 0)
 				{
 					auto radius = 128;
 					std::vector<CThingy*> corpseList = CorpseFinder::findCorpses(
@@ -333,7 +333,7 @@ namespace hooks
 						scbw::createAndInitThingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
 						corpse->sprite->flags |= CSprite_Flags::Flag04;
 						corpse->sprite->playIscriptAnim(IscriptAnimation::Death);
-						scbw::set_generic_timer(unit, ValueId::ReconstitutionCooldown, 1 * 24);
+						unitExt->ReconstitutionCooldown = 1 * 24;
 						break;
 					}
 				}
@@ -342,7 +342,7 @@ namespace hooks
 			case UnitId::ZergEgg:
 			{
 				// Gimmick to allow the Ultrakor morph cancellation animation to play correctly
-				if (scbw::get_generic_timer(unit, ValueId::UltrakorCancelGimmick))
+				if (unitExt->UltrakorCancelGimmick)
 				{
 					if (unit->sprite->mainGraphic->animation != IscriptAnimation::CastSpell)
 					{
@@ -370,11 +370,11 @@ namespace hooks
 			case UnitId::ProtossStarSovereign:
 			{
 				// Star Sovereign Intervention Missiles behavior + Grief of All Gods
-				if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerChannel) == 1)
+				if (unitExt->PlanetCrackerChannel == 1)
 				{
 					globals.createGenericPersistImpact(ImpactId::GriefOfAllGods, 360, { unit->position.x, unit->position.y }, 8 * 32, -1, unit->sprite->elevationLevel, unit->playerId);
 				}
-				if (scbw::get_generic_timer(unit, ValueId::StarcallerInterceptionMissiles) == 0)
+				if (unitExt->StarcallerInterceptionMissiles == 0)
 				{
 					auto r = 5 * 32;
 					auto n = unitRangeCount(unit, CFlags::Enemy | CFlags::FrontalArc, {});
@@ -392,9 +392,7 @@ namespace hooks
 					}
 					if (enemiesDetected)
 					{
-						scbw::set_generic_timer(unit, ValueId::StarcallerInterceptionMissiles,
-							weapons_dat::Cooldown[WeaponId::StarSovereignInterventionMissiles]);
-
+						unitExt->StarcallerInterceptionMissiles = weapons_dat::Cooldown[WeaponId::StarSovereignInterventionMissiles];
 						for (s32 arc = 0; arc < 6; arc++)
 						{
 							const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlaySpecialPtr,
@@ -504,8 +502,8 @@ namespace hooks
 						if (n(picked_unit))
 						{
 							// Apply Lazarus Agent
-							scbw::set_generic_value(picked_unit, ValueId::LazarusAgent, 1);
-							scbw::set_generic_value(picked_unit, ValueId::LazarusAgentApostleSrc, (u32)unit);
+							unitExt->LazarusAgent = 1;
+							unitExt->LazarusAgentApostleSrc = (u32)unit;
 							picked_unit->sprite->createTopOverlay(1265);
 						}
 					}
@@ -514,7 +512,7 @@ namespace hooks
 			case UnitId::ProtossLanifect:
 			{
 				// Disruption Field - Lanifect ability
-				auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
+				auto web = unitExt->AttachedDisruptionWeb;
 				if (scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb))
 				{
 					if (web == nullptr)
@@ -527,7 +525,7 @@ namespace hooks
 						}
 						else
 						{
-							scbw::set_generic_unit(unit, ValueId::AttachedDisruptionWeb, web);
+							unitExt->AttachedDisruptionWeb = web;
 						}
 					}
 					else
@@ -545,7 +543,7 @@ namespace hooks
 				}
 				if (scbw::get_generic_rust_value(unit, ValueId::DisruptionWebDamage))
 				{
-					scbw::set_generic_value(unit, ValueId::DisruptionWebDamage, 0);
+					unitExt->DisruptionWebDamage = 0;
 					unit->inflictDamage(techdata_dat::EnergyCost[TechId::DisruptionWeb] * 256, unit, unit->playerId, false, true);
 				}
 			} break;
@@ -554,9 +552,9 @@ namespace hooks
 				// Madcap Cabeirus Feeders - subtract stacks while moving
 				if (unit->movementFlags & MovementFlags::Accelerating || unit->movementFlags & MovementFlags::Moving)
 				{
-					if (scbw::get_generic_value(unit, ValueId::MadcapStacks) > 0)
+					if (unitExt->MadcapStacks > 0)
 					{
-						scbw::add_generic_value(unit, ValueId::MadcapStacks, -1);
+						unitExt->MadcapStacks--;
 					}
 				}
 			} break;
@@ -584,21 +582,20 @@ namespace hooks
 			case UnitId::TerranPaladin:
 			{
 				// Paladin - Skyfall
-				if (scbw::get_generic_timer(unit, ValueId::SkyfallTimer) == 1
-					&& scbw::get_generic_timer(unit, ValueId::SkyfallTimer) == 1
+				if (unitExt->SkyfallTimer == 1
 					&& !unit->isFrozen())
 				{
-					u8 missile = scbw::get_generic_value(unit, ValueId::SkyfallStacks);
-					scbw::add_generic_value(unit, ValueId::SkyfallStacks, 1);
+					u8 missile = unitExt->SkyfallStacks;
+					unitExt->SkyfallStacks++;
 					if (missile == 20)
 					{
-						scbw::set_generic_value(unit, ValueId::SkyfallStacks, 0);
+						unitExt->SkyfallStacks = 0;
 					}
 					else
 					{
-						scbw::set_generic_timer(unit, ValueId::SkyfallTimer, 2 + 1);
-						u32 tgt_x = scbw::get_generic_value(unit, ValueId::SkyfallX);
-						u32 tgt_y = scbw::get_generic_value(unit, ValueId::SkyfallY);
+						unitExt->SkyfallTimer = 2 + 1;
+						u32 tgt_x = unitExt->SkyfallX;
+						u32 tgt_y = unitExt->SkyfallY;
 
 						auto column = missile / 4;
 						auto row = missile % 4;
@@ -660,13 +657,13 @@ namespace hooks
 				}
 				// Lakizilisk - Seismic Spines
 				if (unit->sprite != nullptr && unit->mainOrderId != OrderId::Die
-					&& scbw::get_generic_timer(unit, ValueId::LurkerETA) == 1)
+					&& unitExt->LurkerETA == 1)
 				{
 					auto position = unit->position; // new target
 					auto spr_position = unit->sprite->position;
 					Point16 pos;
-					pos.x = scbw::get_generic_value(unit, ValueId::SpineX);
-					pos.y = scbw::get_generic_value(unit, ValueId::SpineY);
+					pos.x = unitExt->SpineX;
+					pos.y = unitExt->SpineY;
 					unit->position = pos;
 					unit->sprite->position = pos;
 					scbw::artificalBulletFrom(WeaponId::SubterraneanSpines, unit->playerId, unit, nullptr, spr_position);
@@ -680,11 +677,11 @@ namespace hooks
 			case UnitId::TerranShaman:
 			{
 				// Shaman - Nanite Field
-				auto timer = scbw::get_generic_timer(unit, ValueId::NaniteFieldTimer);
+				auto timer = unitExt->NaniteFieldTimer;
 				unit->_padding_0x133 = 0;
 				if (timer == 0)
 				{
-					scbw::set_generic_timer(unit, ValueId::NaniteFieldTimer, 24);
+					unitExt->NaniteFieldTimer = 24;
 					unit->sprite->playIscriptAnim(IscriptAnimation::CastSpell);
 					scbw::UnitFinder(
 						unit->getX() - 128,
@@ -700,7 +697,7 @@ namespace hooks
 			case UnitId::ProtossBarghest:
 			{
 				// Barghest - Repentent Chorus
-				scbw::set_generic_value(unit, ValueId::RepententChorus, hydraUnitCount(unit, unit->position, 5 * 32, CFlags::Ally | CFlags::NotSelf, { UnitId::ProtossBarghest }));
+				unitExt->RepententChorus = hydraUnitCount(unit, unit->position, 5 * 32, CFlags::Ally | CFlags::NotSelf, { UnitId::ProtossBarghest });
 			} break;
 			case UnitId::TerranCentaur:
 			{
@@ -745,13 +742,13 @@ namespace hooks
 							return;
 						}
 
-						u32 stacks = scbw::get_generic_value(target, ValueId::TreasuryStacks);
+						u32 stacks = unitExt->TreasuryStacks;
 						if (*elapsedTimeFrames % 36 == 0 && stacks == 0)
 						{
 							target->sprite->createUnderlay(ImageId::TreasurySupplyOverlay, 0, 0, 0);
 						}
-						scbw::add_generic_value(target, ValueId::TreasuryStacks, 1);
-						s32 supply = scbw::get_generic_value(target, ValueId::SupplyProvided);
+						unitExt->TreasuryStacks++;
+						s32 supply = unitExt->SupplyProvided;
 						target->setSupplyProvided(supply + TreasuryIncrease);
 					});
 				}
@@ -785,7 +782,7 @@ namespace hooks
 							{
 								target->removeOverlay(ImageId::EnsnaringBroodOverlay);
 							}
-							scbw::set_generic_timer(target, ValueId::EnsnaringBroodTimer, 12 * 24);
+							unitExt->EnsnaringBroodTimer = 12 * 24;
 							target->sprite->createTopOverlay(ImageId::EnsnaringBroodOverlay);
 						});
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::EnsnaringBrood] * 256);
@@ -814,23 +811,24 @@ namespace hooks
 			case UnitId::ProtossMindTyrant:
 			{
 				// Rescind Mind Control
-				if (scbw::get_generic_value(unit, ValueId::RescindMindControl) == 1)
+				if (unitExt->RescindMindControl == 1)
 				{
 					scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
-					scbw::set_generic_value(unit, ValueId::RescindMindControl, 0);
+					unitExt->RescindMindControl = 0;
 				}
 			} break;
 			case UnitId::ProtossDemiurge:
 			{
-				// Demiurge - Gods Made Flesh - remove effect from caster
+				// Demiurge - Gods Made Flesh - initial cast
 				if (scbw::get_generic_rust_value(unit, ValueId::GodsMadeFleshCast))
 				{
 					scbw::set_generic_rust_value(unit, ValueId::GodsMadeFleshCast, 0);
-					scbw::set_generic_value(unit, ValueId::GodsMadeFleshActive, 1);
+					unitExt->GodsMadeFleshActive = 1;
 				}
-				if (scbw::get_generic_value(unit, ValueId::GodsMadeFleshActive) && unit->energy == 0)
+				// Demiurge - Gods Made Flesh - remove effect from caster
+				if (unitExt->GodsMadeFleshActive && unit->energy == 0)
 				{
-					scbw::set_generic_value(unit, ValueId::GodsMadeFleshActive, 0);
+					unitExt->GodsMadeFleshActive = 0;
 				}
 			} break;
 			default:
@@ -861,25 +859,25 @@ namespace hooks
 		*/
 
 		// Apostle - Lazarus Agent revive
-		if (scbw::get_generic_value(unit, ValueId::LazarusNoHeal) == 1)
+		if (unitExt->LazarusNoHeal)
 		{
 			if (unit->sprite && unit->sprite->mainGraphic
 				&& unit->sprite->mainGraphic->animation != IscriptAnimation::Unused1)
 			{
-				//clear revival no-heal flag
-				scbw::set_generic_value(unit, ValueId::LazarusNoHeal, 0);
+				// clear revival no-heal flag
+				unitExt->LazarusNoHeal = 0;
 			}
 		}
 
 		// Reviving from Lazarus Agent
-		if (scbw::get_generic_value(unit, ValueId::IsReviving) == 1
+		if (unitExt->IsReviving
 			&& unit->sprite->mainGraphic->animation != IscriptAnimation::Unused1)
 		{
-			scbw::set_generic_value(unit, ValueId::IsReviving, 0);
+			unitExt->IsReviving = 0;
 		}
 
 		// Savant - Entropy Gauntlets: remove overlay at end of effect
-		if (scbw::get_generic_timer(unit, ValueId::EntropyGauntlets) == 1)
+		if (unitExt->EntropyGauntlets == 1)
 		{
 			u32 overlayOffset = scbw::getOverlayOffset(unit->id);
 			u32 overlayImageId = ImageId::EntropyGauntletsOverlaySmall - overlayOffset;
@@ -890,7 +888,7 @@ namespace hooks
 		}
 
 		{ // Seraph - Observence
-			auto timer = scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff);
+			auto timer = unitExt->ObservanceTimerDebuff;
 			if (timer > 1)
 			{
 				const auto range = 192;
@@ -913,22 +911,22 @@ namespace hooks
 				if (!seraphs.empty())
 				{
 					// Seraph - Observance period
-					scbw::set_generic_timer(unit, ValueId::ObservanceTimerDebuff, (5 * 24) + 1);
+					unitExt->ObservanceTimerDebuff = (5 * 24) + 1;
 
 					// Seraph - Observance ability
-					if (scbw::get_generic_timer(unit, ValueId::ObservanceTimerPeriod) == 1)
+					if (unitExt->ObservanceTimerPeriod == 1)
 					{
-						scbw::set_generic_timer(unit, ValueId::ObservanceTimerPeriod, (5 * 24) + 1);
-						scbw::add_generic_value(unit, ValueId::ObservanceRend, 1);
+						unitExt->ObservanceTimerPeriod = (5 * 24) + 1;
+						unitExt->ObservanceRend = 1;
 					}
 
 					// Seraph - Observance persistant overlay creation
 					for (auto seraph : seraphs)
 					{
-						if (scbw::get_generic_timer(seraph, ValueId::ObservanceOverlayTimer) == 0)
+						if (unitExt->ObservanceOverlayTimer == 0)
 						{
 							seraph->sprite->createOverlay(ImageId::SeraphRedOverlay);
-							scbw::set_generic_timer(seraph, ValueId::ObservanceOverlayTimer, 18);
+							unitExt->ObservanceOverlayTimer = 18;
 						}
 					}
 				}
@@ -940,22 +938,22 @@ namespace hooks
 		}
 
 		// Vithrilisk - Corrosive Touch Clear
-		if (scbw::get_generic_timer(unit, ValueId::CorrosiveTouchTimer) == 1)
+		if (unitExt->CorrosiveTouchTimer == 1)
 		{
-			scbw::set_generic_value(unit, ValueId::CorrosiveTouchStacks, 0);
+			unitExt->CorrosiveTouchStacks = 0;
 			unit->removeOverlay(ImageId::AcidSpores_1_Overlay_Small, ImageId::AcidSpores_6_9_Overlay_Large);
 		}
 
 		// Zergling - Adrenal Glands
-		if (scbw::get_generic_timer(unit, ValueId::AdrenalTimer) == 1)
+		if (unitExt->AdrenalTimer == 1)
 		{
-			scbw::set_generic_value(unit, ValueId::AdrenalStacks, 0);
+			unitExt->AdrenalStacks = 0;
 		}
 
 		// Vorvaling - Captivating Claws
-		if (scbw::get_generic_timer(unit, ValueId::CaptivatingClawsTimer) == 1)
+		if (unitExt->CaptivatingClawsTimer == 1)
 		{
-			scbw::get_generic_unit_vector(unit, ValueId::CaptivatingClawsUnitVector) = {};
+			unitExt->CaptivatingClawsUnitVector = {};
 		}
 
 		// Game Rule -  Workers do not provide collision while harvesting, moving to harvest, or moving to return resources
@@ -975,7 +973,7 @@ namespace hooks
 		}
 
 		// Hallucinating Visual Effect
-		u32 hallucinatingTimer = scbw::get_generic_timer(unit, ValueId::HallucinatingTimer);
+		u32 hallucinatingTimer = unitExt->HallucinatingTimer;
 		if (unit != nullptr && unit->sprite != nullptr)
 		{
 			if (hallucinatingTimer % 24 == 1)
@@ -994,56 +992,56 @@ namespace hooks
 		}
 
 		// Southpaw - Knockout Drivers behavior
-		if (scbw::get_generic_value(unit, ValueId::KnockoutDriversStacks)
-			&& scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) < 2)
+		if (unitExt->KnockoutDriversStacks
+			&& unitExt->KnockoutDriversTimer < 2)
 		{
-			scbw::set_generic_value(unit, ValueId::KnockoutDriversStacks, 0);
+			unitExt->KnockoutDriversStacks = 0;
 			unit->updateSpeed();
 		}
 
 		// Permanently Cloaked units recloak after 2 seconds of being out of combat
-		if (scbw::isDecloakable(unit) && scbw::get_generic_timer(unit, ValueId::DecloakTimer) == 1)
+		if (scbw::isDecloakable(unit) && unitExt->DecloakTimer == 1)
 		{
 			helper::AnimCloak(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
-			scbw::set_generic_timer(unit, ValueId::DecloakTimer, 0);
+			unitExt->DecloakTimer = 0;
 		}
 
 		// Remove all Nemean Reactors stacks after not attacking for 5 seconds
-		if (scbw::get_generic_timer(unit, ValueId::NemeanReactorsTimer) == 1)
+		if (unitExt->NemeanReactorsTimer == 1)
 		{
-			scbw::set_generic_value(unit, ValueId::NemeanReactorsStack, 0);
+			unitExt->NemeanReactorsStack = 0;
 			// remove overlay later
 		}
 
 		// Apply Ecclesiast - Astral Blessing stacks and period
-		if (scbw::get_generic_timer(unit, ValueId::EcclesiastTimer) == 1)
+		if (unitExt->EcclesiastTimer == 1)
 		{
-			scbw::set_generic_value(unit, ValueId::EcclesiastStack, 0);
+			unitExt->EcclesiastStack = 0;
 		}
 
 		// Update flingy speed when Adrenal Frenzy period expires
-		if (scbw::get_generic_timer(unit, ValueId::NathrokorTimer) == 1)
+		if (unitExt->NathrokorTimer == 1)
 		{
-			scbw::set_generic_timer(unit, ValueId::NathrokorTimer, 0);
+			unitExt->NathrokorTimer = 0;
 			unit->updateSpeed();
 		}
 
 		// Autovitality - Simulacrum behavior
-		if (scbw::get_generic_timer(unit, ValueId::SimulacrumCloneTimer) == 1)
+		if (unitExt->SimulacrumCloneTimer == 1)
 		{
 			scbw::createUnitFromAbility(UnitId::ProtossSimulacrum, 1, unit->playerId, unit->position.x, unit->position.y, 0, unit);
 		}
 
 		// Remove Ensnaring Brood overlay
-		if (scbw::get_generic_timer(unit, ValueId::EnsnaringBroodTimer) == 1)
+		if (unitExt->EnsnaringBroodTimer == 1)
 		{
 			unit->removeOverlay(ImageId::EnsnaringBroodOverlay);
 		}
 
 		// Remove Swarming Omen overlay
-		if (scbw::get_generic_timer(unit, ValueId::SwarmingOmenTimer) == 1)
+		if (unitExt->SwarmingOmenTimer == 1)
 		{
-			//			unit->removeOverlay();
+//			unit->removeOverlay();
 		}
 
 		// TODO: Finish
@@ -1051,14 +1049,14 @@ namespace hooks
 		/*
 		if (conditional)
 		{
-			scbw::set_generic_timer(unit, ValueId::ControlledDemolition, 10*24);
+			unitExt->ControlledDemolition = 10*24;
 			s32 overlayOffset = scbw::getOverlayOffset(unit->id);
 		//	unit->sprite->createOverlay(ImageId::ControlledDemolitionOverlay_Small + overlayOffset);
 		}
 		*/
 
 		// Controlled Demolition - destroy structure
-		if (scbw::get_generic_timer(unit, ValueId::ControlledDemolitionTimer) == 1)
+		if (unitExt->ControlledDemolitionTimer == 1)
 		{
 			// Do we need more than this for the sake of calculating score screen counts and etc?
 			unit->remove();
@@ -1068,35 +1066,38 @@ namespace hooks
 		/*
 		if (conditional)
 		{
-			scbw::set_generic_timer(unit, ValueId::EmergencyDetonation, (u32)(0.5 * scbw::get_generic_timer(unit, ValueId::ControlledDemolition)));
+			unitExt->EmergencyDetonationTimer = (u32)(0.5 * unitExt->ControlledDemolitionTimer);
 			s32 overlayOffset = scbw::getOverlayOffset(unit->id);
 		//	unit->sprite->createOverlay(ImageId::EmergencyDetonationOverlay_Small + overlayOffset);
 		}
 		*/
 
 		// Emergency Detonation - destroy structure
-		if (scbw::get_generic_timer(unit, ValueId::EmergencyDetonationTimer) == 1)
+		if (unitExt->EmergencyDetonationTimer == 1)
 		{
 			//scbw::createBullet(WeaponId::EmergencyDetonation, unit, unit->position.x, unit->position.y, unit->playerId);
 			unit->remove();
 		}
 
-		// Demiurge - Gods Made Flesh - apply effect to linked units
-		if (scbw::get_generic_value(scbw::get_generic_unit(unit, ValueId::WorshipDemiurgeUnit), ValueId::GodsMadeFleshActive))
 		{
-			scbw::set_generic_timer(unit, ValueId::GodsMadeFleshTimer, 3);
-		}
+			UnitExt* demiurge = unitExt->WorshipDemiurgeUnit;
+			// Demiurge - Gods Made Flesh - apply effect to linked units
+			if (demiurge->GodsMadeFleshActive)
+			{
+				unitExt->GodsMadeFleshTimer = 3;
+			}
 
-		// Demiurge - Gods Made Flesh - return units to original owner
-		if (scbw::get_generic_value(unit, ValueId::WorshipStack)
-			&& scbw::get_generic_unit(unit, ValueId::WorshipDemiurgeUnit) == nullptr)
-		{
-			scbw::set_generic_value(unit, ValueId::WorshipStack, 0);
-			unit->giveTo(scbw::get_generic_value(unit, ValueId::WorshipOriginalPlayer));
+			// Demiurge - Gods Made Flesh - return units to original owner
+			if (unitExt->WorshipStack
+				&& demiurge == nullptr)
+			{
+				unitExt->WorshipStack = 0;
+				unit->giveTo(unitExt->WorshipOriginalPlayer);
+			}
 		}
 
 		// Demiurge - Gods Made Flesh - kill unit when the effect ends
-		if (scbw::get_generic_timer(unit, ValueId::GodsMadeFleshTimer) == 1)
+		if (unitExt->GodsMadeFleshTimer == 1)
 		{
 			unit->remove();
 		}
