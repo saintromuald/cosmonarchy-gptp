@@ -325,11 +325,14 @@ namespace hooks
 			case WeaponId::SubterraneanTentacle:
 			case WeaponId::SeekerSpores:
 			{
-				UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
-				if (attackerExt->values[ValueAmitosis] == 1)
+				if (data.attacker)
 				{
-					data.finalDamage /= 2;
-					attackerExt->values[ValueAmitosis] = 0;
+					UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
+					if (attackerExt->values[ValueAmitosis] == 1)
+					{
+						data.finalDamage /= 2;
+						attackerExt->values[ValueAmitosis] = 0;
+					}
 				}
 			} break;
 		}
