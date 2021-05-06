@@ -351,24 +351,24 @@ void Globals::frameHook()
 		UnitExt* ext = &unitExt[j];
 		for (int i = 0; i < TimerCount; ++i)
 		{
-			if (unitExt->timers[i] > 0)
+			if (ext->timers[i] > 0)
 			{
-				unitExt->timers[i]--;
+				ext->timers[i]--;
 			}
 		}
 		for (int i = 0; i < TimerVectorCount; ++i)
 		{
-			for (auto& timer : unitExt->timerVectors[i])
+			for (auto& timer : ext->timerVectors[i])
 			{
 				if (timer > 0)
 				{
 					timer--;
 				}
 			}
-			unitExt->timerVectors[i].erase(std::remove_if(unitExt->timerVectors[i].begin(), unitExt->timerVectors[i].end(), [&](u32& timer)
+			ext->timerVectors[i].erase(std::remove_if(ext->timerVectors[i].begin(), ext->timerVectors[i].end(), [&](u32& timer)
 			{
 				if (timer == 0) return true;
-			}), unitExt->timerVectors[i].end());
+			}), ext->timerVectors[i].end());
 		}
 	}
 
