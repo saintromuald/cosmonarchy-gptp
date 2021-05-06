@@ -289,7 +289,7 @@ namespace
 			MOV irradiated, EDX
 			PUSHAD
 		}
-		result == hooks::irradiateUnitDamageProc(target, irradiated);
+		result = hooks::irradiateUnitDamageProc(target, irradiated);
 		__asm
 		{
 			POPAD
