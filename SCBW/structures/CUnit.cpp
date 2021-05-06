@@ -1261,7 +1261,9 @@ CUnit* CUnit::getFromIndex(u16 index)
 		return nullptr;
 	}
 	if (1 <= index && index <= UNIT_ARRAY_LENGTH)
+	{
 		return &unitTable[index - 1];
+	}
 	return nullptr;
 }
 
@@ -1278,10 +1280,14 @@ u8 CUnit::getLastOwnerId() const
 {
 	assert(this);
 	assert(this->sprite);
-	if (this->playerId == 11) //The owner has left the game
+	if (this->playerId == 11) // The owner has left the game
+	{
 		return this->sprite->playerId;
+	}
 	else
+	{
 		return this->playerId;
+	}
 }
 
 CUnit* CUnit::getLoadedUnit(s32 index) const
@@ -1292,8 +1298,9 @@ CUnit* CUnit::getLoadedUnit(s32 index) const
 	if (loadedUnit && loadedUnit->sprite
 		&& !(loadedUnit->mainOrderId == OrderId::Die && loadedUnit->mainOrderState == 1)
 		&& loadedUnit->targetOrderSpecial == this->loadedUnit[index].unitId)
+	{
 		return loadedUnit;
-
+	}
 	return nullptr;
 }
 

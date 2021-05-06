@@ -883,12 +883,16 @@ namespace hooks
 			u32 overlayOffset = scbw::getOverlayOffset(unit->id);
 			u32 overlayImageId = ImageId::EntropyGauntletsOverlaySmall - overlayOffset;
 			if (unit->subunit != nullptr)
+			{
 				unit->subunit->sprite->removeOverlay(overlayImageId);
+			}
 			else
+			{
 				unit->sprite->removeOverlay(overlayImageId);
+			}
 		}
 
-		{ // Seraph - Observence
+		{ // Seraph - Observance
 			auto timer = unitExt->timers[TimerObservanceDebuff];
 			if (timer > 1)
 			{
