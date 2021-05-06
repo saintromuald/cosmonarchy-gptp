@@ -247,7 +247,8 @@ namespace
 	//	(void*)0x0048B969,	// 6 - Parasite
 	//	(void*)0x0048B9C8,	// 7 - Broodlings
 
-	const void* WeaponEffects_SwitchTable[] = {
+	const void* WeaponEffects_SwitchTable[] =
+	{
 	  (void*)0x0048BBF6,		//  0 - None
 	  normalWrapper,			//  1 - Normal
 	  radialSplashWrapper,		//  2 - Splash (Radial)
@@ -277,7 +278,26 @@ namespace
 	  // Add more !
 	};
 
-} //unnamed namespace
+	void __declspec(naked) irradiateUnitDamageProc_Wrapper() // 00455530
+	{
+		static s32 result;
+		static CUnit* target;
+		static CUnit* irradiated;
+		__asm
+		{
+			MOV target, ECX
+			MOV irradiated, EDX
+			PUSHAD
+		}
+		result == hooks::irradiateUnitDamageProc(target, irradiated);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+}
 
 namespace hooks
 {
@@ -288,5 +308,6 @@ namespace hooks
 		*(u32*)data = (u32)WeaponEffects_SwitchTable;
 		memoryPatch(Addr_WeaponsDatEffectCount, maxID);
 		memoryPatch(Addr_WeaponsDatEffectSwitch, data, 4); // load pointer to address table
+		jmpPatch(irradiateUnitDamageProc_Wrapper, 0x00455530, 3);
 	}
-} //hooks
+}
