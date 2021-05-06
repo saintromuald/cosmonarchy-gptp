@@ -24,14 +24,14 @@ namespace hooks
 		{
 			case UnitId::ProtossExemplar:
 			{
-				if (scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch))
+				if (scbw::get_generic_rust_value(unit, RustId::ExemplarSwitch))
 				{
 					bonusAmount += 6;
 				}
 			}
 			case UnitId::TerranMadrigal:
 			{
-				if (scbw::get_generic_rust_value(unit, ValueId::TempoChange))
+				if (scbw::get_generic_rust_value(unit, RustId::TempoChange))
 				{
 					bonusAmount += 4;
 				}
@@ -43,11 +43,11 @@ namespace hooks
 		}
 
 		// Repentant Chorus - Barghest Behavior
-		bonusAmount += unitExt->RepententChorus / 4;
+		bonusAmount += unitExt->values[ValueRepententChorus] / 4;
 
 		// Stellar Enforcement - Magister behavior
 		if (unit->orderTarget.unit != nullptr
-			&& orderUnitExt->StellarEnforcement)
+			&& orderUnitExt->values[ValueStellarEnforcement])
 		{
 			bonusAmount += 2;
 		}
@@ -99,14 +99,14 @@ namespace hooks
 		{
 			case UnitId::ProtossExemplar:
 			{
-				if (scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch))
+				if (scbw::get_generic_rust_value(unit, RustId::ExemplarSwitch))
 				{
 					bonusAmount += 6 * 32;
 				}
 			}
 			case UnitId::TerranMadrigal:
 			{
-				if (scbw::get_generic_rust_value(unit, ValueId::TempoChange))
+				if (scbw::get_generic_rust_value(unit, RustId::TempoChange))
 				{
 					bonusAmount += 4 * 32;
 				}
@@ -120,12 +120,12 @@ namespace hooks
 		// Repentent Chorus - Barghest behavior
 		if (unit->id == UnitId::ProtossBarghest)
 		{
-			bonusAmount += unitExt->RepententChorus * 8;
+			bonusAmount += unitExt->values[ValueRepententChorus] * 8;
 		}
 
 		// Stellar Enforcement - Magister behavior
 		if (unit->orderTarget.unit != nullptr
-			&& orderUnitExt->StellarEnforcement
+			&& orderUnitExt->values[ValueStellarEnforcement]
 			&& weapons_dat::MaxRange[unit->getGroundWeapon()] > 32)
 		{
 			bonusAmount += 64;

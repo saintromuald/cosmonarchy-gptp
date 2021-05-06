@@ -18,9 +18,9 @@ namespace hooks
 		u32 cooldown = weapons_dat::Cooldown[weaponId];
 
 		// Devourer - Corrosive Spores: lower attack speed of victim
-		if (unitExt->CorrosiveTouchStacks != 0)
+		if (unitExt->values[ValueCorrosiveTouchStacks] != 0)
 		{
-			cooldown *= 1 + unitExt->CorrosiveTouchStacks * VithriliskCorrosiveTouchCooldownIncrease;
+			cooldown *= 1 + unitExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchCooldownIncrease;
 		}
 
 		// Set modifier based on Stim (increase), Ensnare (decrease), and attackspeed upgrades (increase)
@@ -30,7 +30,7 @@ namespace hooks
 		// Vassal Terminal Surge behavior
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit)
 		{
-			f64 stacks = unitExt->TerminalSurge;
+			f64 stacks = unitExt->values[ValueTerminalSurge];
 			if (stacks > 0)
 			{
 				cooldown /= 1.0 + 0.05 * stacks;
@@ -40,10 +40,10 @@ namespace hooks
 		// Madcap Maverick Feeders behavior: increase weapon speed while stationary
 		if (unit->id == UnitId::TerranMadcap)
 		{
-			u32 stacks = ceil((f64)unitExt->MadcapStacks / MadcapPassiveDecayTime);
+			u32 stacks = ceil((f64)unitExt->values[ValueMadcapStacks] / MadcapPassiveDecayTime);
 			if (stacks > 0)
 			{
-				//scbw::printString(std::to_string(stacks) + ", " + std::to_string(scbw::get_generic_value(unit, ValueId::MadcapStacks)));
+				//scbw::printString(std::to_string(stacks) + ", " + std::to_string(scbw::get_generic_value(unit, RustId::MadcapStacks)));
 				f64 newCooldown = (f64)cooldown * (1.0 - stacks * MadcapAttackSpeedPerStack);
 				cooldown = newCooldown;
 			}
@@ -61,7 +61,7 @@ namespace hooks
 		// Kaiser Rampage upgrade: gains f64 attack speed for 1 second on kill
 		if (unit->id == UnitId::ZergUltrakor)
 		{
-			if (unitExt->KaiserRampage > 0)
+			if (unitExt->timers[TimerKaiserRampage] > 0)
 			{
 				cooldown /= 2;
 			}
@@ -70,7 +70,7 @@ namespace hooks
 		// Phobos Argent Capacitors behavior
 		if (unit->id == UnitId::TerranPhobos)
 		{
-			if (unitExt->PhobosDischarge > 0)
+			if (unitExt->values[ValuePhobosDischarge] > 0)
 			{
 				cooldown /= 2;
 			}
@@ -84,7 +84,7 @@ namespace hooks
 		}
 
 		// Ion Cannon Ion Field: Attack Speed Buff
-		if (unitExt->CausticDischargeSpeed > 0)
+		if (unitExt->timers[TimerCausticDischargeSpeed] > 0)
 		{
 			cooldown /= 1.5;
 		}
@@ -104,7 +104,7 @@ namespace hooks
 		{ // Fixes aice-related Stimpack issue
 			cooldown += 2;
 		}
-		u32 adrenalStacks = unitExt->AdrenalStacks;
+		u32 adrenalStacks = unitExt->values[ValueAdrenalStacks];
 		if (adrenalStacks)
 		{
 			cooldown -= adrenalStacks / 2;

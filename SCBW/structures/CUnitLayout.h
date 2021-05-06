@@ -139,7 +139,7 @@ namespace OverlayOffset
 	};
 }
 
-enum
+enum ExtValueId
 {
 	ValueExemplarSwitch,			// should be removed
 	ValueReverseThrust,				// should be removed
@@ -238,7 +238,7 @@ enum
 	ValueCount,
 };
 
-enum
+enum ExtTimerId
 {
 	TimerAdrenaline,				  // unused
 	TimerKaiserRampage,
@@ -293,7 +293,7 @@ enum
 	TimerCount,
 };
 
-enum
+enum ExtUnitId
 {
 	UnitBroodlingMother,			// is this still really used?
 	UnitAttachedDisruptionWeb,
@@ -307,7 +307,7 @@ enum
 	UnitCount,
 };
 
-enum
+enum ExtUnitVectorId
 {
 	UnitVectorCaptivatingClaws,
 	UnitVectorPhaseLinkClarions,
@@ -316,7 +316,7 @@ enum
 	UnitVectorCount,
 };
 
-enum
+enum ExtTimerVectorId
 {
 	TimerVectorPhaseRushTimerArray, // unused, was size 8
 
@@ -332,7 +332,7 @@ struct UnitExt
 	std::vector<u32>		timerVectors[TimerVectorCount];
 };
 
-namespace ValueId // TODO: rename to RustId
+namespace RustId
 {
 	enum
 	{
@@ -352,13 +352,13 @@ namespace ValueId // TODO: rename to RustId
 	};
 }
 #include "SCBW\enumerations\TechId.h"
-//const u32 first_generic_toggle_ability = ValueId::ReverseThrust;
-//const u32 last_generic_toggle_ability = ValueId::DisruptionWeb;
+//const u32 first_generic_toggle_ability = RustId::ReverseThrust;
+//const u32 last_generic_toggle_ability = RustId::DisruptionWeb;
 const u32 string_toggle_on[6] = {1703, 1807, 1265, 1232, 1383, 328};
 const u32 string_toggle_off[6] = {1113, 1114, 1270, 1233, 1248, 330};
 const u32 button_toggle_on[6] = {374, 319, 369, 374, 366, 296};
 const u32 button_toggle_off[6] = {375, 236, 236, 375, 365, 236};
-const u32 toggle_values[6] = {ValueId::ReverseThrust, ValueId::SublimeShepherd, ValueId::DisruptionWeb, ValueId::TempoChange, ValueId::NaniteField, ValueId::Reconstitution};
+const u32 toggle_values[6] = {RustId::ReverseThrust, RustId::SublimeShepherd, RustId::DisruptionWeb, RustId::TempoChange, RustId::NaniteField, RustId::Reconstitution};
 const u32 toggle_abilities[6] = {TechId::EMPShockwave, TechId::UnusedTech40, TechId::DisruptionWeb, TechId::TempoChange, TechId::NaniteField, TechId::Reconstitution};
 const u32 generictoggles = 6;
 

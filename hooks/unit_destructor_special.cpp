@@ -278,7 +278,7 @@ void unitDestructorSpecialHook(CUnit* unit)
 	{
 		unit->orderTarget.pt.x = unit->position.x + 1;
 		unit->orderTarget.pt.y = unit->position.y;
-		auto bullet = helper::createBulletRet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y, unitExt->values[ValueAlkajeliskParasitePlayer], 0);
+		auto bullet = helper::createBullet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y, unitExt->values[ValueAlkajeliskParasitePlayer], 0);
 		if (bullet != nullptr)
 		{
 			bullet->time_remaining = 255;

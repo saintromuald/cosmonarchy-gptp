@@ -5359,32 +5359,6 @@ namespace helper
 		}
 	}
 
-	CBullet* createBulletRet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction)
-	{
-		const u32 Helper_CreateBullet = 0x0048C260;
-		static u32 attackingPlayer_;
-		static u32 direction_;
-		static s32 x_;
-		static s32 y_;
-		attackingPlayer_ = attackingPlayer;
-		direction_ = direction;
-		x_ = x; y_ = y;
-		static CBullet* bullet;
-		__asm {
-			PUSHAD
-			PUSH direction_
-			PUSH attackingPlayer_
-			PUSH y_
-			PUSH x_
-			MOV EAX, source
-			MOVZX ECX, weaponId
-			CALL Helper_CreateBullet
-			MOV bullet, EAX
-			POPAD
-		}
-		return bullet;
-	}
-
 	// creates attack overlay & deals damage from the bullet (just calls overlayAndNotify if the weapon deals no damage, or calls target->damageWith if it does
 	void weaponBulletShot(CUnit* target, CBullet* bullet, u32 dmgDivisor)
 	{
@@ -6141,7 +6115,7 @@ namespace helper
 		return builtUnit;
 	}
 
-	void createBullet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction)
+	CBullet* createBullet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction)
 	{
 		const u32 Helper_CreateBullet = 0x0048C260;
 		static u32 attackingPlayer_;
@@ -6201,6 +6175,7 @@ namespace helper
 				y_ = source->sprite->position.y - 48;
 			}
 		}
+		static CBullet* bullet;
 		__asm {
 			PUSHAD
 			PUSH direction_
@@ -6210,8 +6185,10 @@ namespace helper
 			MOV EAX, source
 			MOVZX ECX, weaponId
 			CALL Helper_CreateBullet
+			MOV bullet, EAX
 			POPAD
 		}
+		return bullet;
 	}
 
 	// For progressBulletMovement

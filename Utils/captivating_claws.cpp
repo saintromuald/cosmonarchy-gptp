@@ -5,20 +5,20 @@
 u32 captivatingClawsGetStacks(CUnit* target)
 {
 	UnitExt* targetExt = globals.GetUnitExt(target);
-	return std::min(targetExt->CaptivatingClawsUnitVector.size(), (u32)4);
+	return std::min(targetExt->unitVectors[UnitVectorCaptivatingClaws].size(), (u32)4);
 }
 
 u32 captivatingClawsGetTimer(CUnit* target)
 {
 	UnitExt* targetExt = globals.GetUnitExt(target);
-	return targetExt->CaptivatingClawsTimer;
+	return targetExt->timers[TimerCaptivatingClaws];
 }
 
 void captivatingClawsApply(CUnit* source, CUnit* target)
 {
 	UnitExt* targetExt = globals.GetUnitExt(target);
-	targetExt->CaptivatingClawsTimer = 1 * 24 + 1;
-	auto& vec = targetExt->CaptivatingClawsUnitVector;
+	targetExt->timers[TimerCaptivatingClaws] = 1 * 24 + 1;
+	auto& vec = targetExt->unitVectors[UnitVectorCaptivatingClaws];
 	auto find = std::find(vec.begin(), vec.end(), source);
 	if (find == vec.end())
 	{

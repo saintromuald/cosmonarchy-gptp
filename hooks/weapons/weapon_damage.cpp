@@ -35,9 +35,9 @@ bool irradiateTarget(CUnit* unit)
 void augurSacrifice(CUnit* target)
 {
 	UnitExt* targetExt = globals.GetUnitExt(target);
-	if (targetExt->AugurSafetyCheck == 0)
+	if (targetExt->values[ValueAugurSafetyCheck] == 0)
 	{
-		targetExt->AugurSafetyCheck = 1;
+		targetExt->values[ValueAugurSafetyCheck] = 1;
 		const s32 radius = 6 * 32;
 		CUnit* nearest = scbw::UnitFinder::getNearestTarget(
 			target->getX() - radius,
@@ -132,7 +132,7 @@ namespace hooks
 		}
 
 		// Demiurge - Gods Made Flesh - target is impervious to damage
-		if (targetExt->GodsMadeFleshTimer > 0)
+		if (targetExt->timers[TimerGodsMadeFlesh] > 0)
 		{ // Power Overwhelming used to be here :wave_me_dad:
 			data.finalDamage = 0;
 			data.damageType = DamageType::Independent;
@@ -246,7 +246,7 @@ namespace hooks
 				}
 			}
 			data.finalDamage -= std::min(data.finalDamage, armorTotal);
-			auto rend = 256 * targetExt->ObservanceRend;
+			auto rend = 256 * targetExt->values[ValueObservanceRend];
 			data.finalDamage += rend;
 		}
 
@@ -331,12 +331,12 @@ namespace hooks
 					div = (f64)data.damageDivisor;
 				}
 				s32 dmg = ((f64)data.finalDamage / div);
-				data.finalDamage = dmg + targetExt->CorrosiveTouchStacks * VithriliskCorrosiveTouchArmorReduction;
+				data.finalDamage = dmg + targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 			} break;
 			case WeaponId::AcidSpore:
 			{
 				// Searing Acid - Guardian behavior
-				data.finalDamage += (targetExt->CorrosiveTouchStacks * VithriliskCorrosiveTouchArmorReduction) + (data.damageDivisor * 10 * 256);
+				data.finalDamage += (targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction) + (data.damageDivisor * 10 * 256);
 			} break;
 			case WeaponId::GlaveWurm:
 			{
@@ -362,7 +362,7 @@ namespace hooks
 					} break;
 				};
 				data.finalDamage *= mul;
-				data.finalDamage += (s32)targetExt->CorrosiveTouchStacks * VithriliskCorrosiveTouchArmorReduction;
+				data.finalDamage += (s32)targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction;
 			} break;
 			default:
 			{
@@ -372,7 +372,7 @@ namespace hooks
 					divisor = 1;
 					scbw::printf("Incorrect weapon hit %d", data.weaponId);
 				}
-				data.finalDamage = data.finalDamage / divisor + (targetExt->CorrosiveTouchStacks * VithriliskCorrosiveTouchArmorReduction);
+				data.finalDamage = data.finalDamage / divisor + (targetExt->values[ValueCorrosiveTouchStacks]* VithriliskCorrosiveTouchArmorReduction);
 			}
 		}
 
@@ -405,7 +405,7 @@ namespace hooks
 		if (data.attacker != nullptr)
 		{
 			// Vithrilisk - Critical Mass (procced by any attack now)
-			if (targetExt->CorrosiveTouchStacks)
+			if (targetExt->values[ValueCorrosiveTouchStacks])
 			{
 				s32 range = 160;
 				scbw::UnitFinder(
@@ -441,7 +441,7 @@ namespace hooks
 			}
 
 			// Cantavis - Hallucinating
-			if (targetExt->HallucinatingTimer >= 1)
+			if (targetExt->timers[TimerHallucinating] >= 1)
 			{
 				CUnit* haluAttacker = data.attacker;
 				if ((haluAttacker->id == UnitId::ProtossSteward
@@ -451,10 +451,10 @@ namespace hooks
 					haluAttacker = data.attacker->interceptor.parent;
 				}
 				UnitExt* haluAttackerExt = globals.GetUnitExt(haluAttacker);
-				if (haluAttackerExt->HallucinationPointer == nullptr
+				if (haluAttackerExt->units[UnitHallucinationPointer] == nullptr
 					&& !(haluAttacker->status & UnitStatus::IsHallucination))
 				{
-					u32 haluPlayer = targetExt->HallucinatingSourcePlayer;
+					u32 haluPlayer = targetExt->values[ValueHallucinatingSourcePlayer];
 					if (haluPlayer != haluAttacker->playerId && !scbw::isAlliedTo(haluPlayer, haluAttacker->playerId))
 					{
 						return;
@@ -463,7 +463,7 @@ namespace hooks
 					if (hal_unit != nullptr)
 					{
 						hal_unit->sprite->createOverlay(ImageId::HallucinationDeath3);
-						haluAttackerExt->HallucinationPointer = hal_unit;
+						haluAttackerExt->units[UnitHallucinationPointer] = hal_unit;
 
 						if (!helper::placeHallucination(hal_unit))
 						{
@@ -480,7 +480,7 @@ namespace hooks
 			}
 
 			// Ensnaring Brood - Queen enchantment ability
-			if (attackerExt->EnsnaringBroodTimer > 0
+			if (attackerExt->timers[TimerEnsnaringBrood] > 0
 				&& !(units_dat::BaseProperty[data.target->id] & UnitProperty::Building))
 			{
 				applyEnsnare(data.target);
@@ -492,9 +492,9 @@ namespace hooks
 				{
 					// Autovitality - Simulacrum behavior
 					if (!scbw::isAlliedTo(data.target->playerId, data.attacker->playerId)
-						&& targetExt->SimulacrumCloneTimer == 0)
+						&& targetExt->timers[TimerSimulacrumClone] == 0)
 					{
-						targetExt->SimulacrumCloneTimer = 5 * 24;
+						targetExt->timers[TimerSimulacrumClone] = 5 * 24;
 					}
 				} break;
 			}
@@ -507,9 +507,9 @@ namespace hooks
 					if (data.target->playerId != data.attacker->playerId
 						&& data.target->getCurrentHpInGame() <= (data.target->getMaxHpInGame() / 2))
 					{
-						targetExt->WorshipStack = 1;
-						targetExt->WorshipDemiurgeUnit = data.attacker;
-						targetExt->WorshipOriginalPlayer = data.target->playerId;
+						targetExt->values[ValueWorshipStack] = 1;
+						targetExt->units[UnitWorshipDemiurge] = data.attacker;
+						targetExt->values[ValueWorshipOriginalPlayer] = data.target->playerId;
 						data.target->giveTo(data.attacker->playerId);
 					}
 				} break;
@@ -531,17 +531,17 @@ namespace hooks
 				{
 					// Deconstruction - Pazuzu behavior - apply stack
 					if (!(scbw::unitIsPacifist(data.target))
-						&& targetExt->Deconstruction == 0)
+						&& targetExt->values[ValueDeconstruction] == 0)
 					{
 
-						targetExt->Deconstruction = 1;
-						targetExt->DeconstructionPlayer = data.attacker->playerId;
+						targetExt->values[ValueDeconstruction] = 1;
+						targetExt->values[ValueDeconstructionPlayer] = data.attacker->playerId;
 						s32 overlayOffset = scbw::getOverlayOffset(data.target->id);
 						if (data.target->subunit != nullptr)
 						{
 							UnitExt* subunitExt = globals.GetUnitExt(data.target->subunit);
-							subunitExt->Deconstruction = 1;
-							subunitExt->DeconstructionPlayer = data.attacker->playerId;
+							subunitExt->values[ValueDeconstruction] = 1;
+							subunitExt->values[ValueDeconstructionPlayer] = data.attacker->playerId;
 							data.target->subunit->sprite->createOverlay(1332 + overlayOffset);
 						}
 						else
@@ -555,8 +555,8 @@ namespace hooks
 					// Savant Entropy Gauntlets behavior - Apply timer and overlay
 					if (units_dat::BaseProperty[data.target->id] & UnitProperty::Spellcaster)
 					{
-						targetExt->EntropyGauntlets = (5 * 24) + 1;
-						targetExt->DecaySavant = data.attacker;
+						targetExt->timers[TimerEntropyGauntlets] = (5 * 24) + 1;
+						targetExt->units[UnitDecaySavant] = data.attacker;
 						u32 overlayImageId = ImageId::EntropyGauntletsOverlaySmall + scbw::getOverlayOffset(data.target->id);
 						if (data.target->subunit != nullptr)
 						{
@@ -573,27 +573,27 @@ namespace hooks
 				case WeaponId::Claws:
 				{
 					// Adrenal Glands - Zergling behavior
-					if (attackerExt->AdrenalStacks < 4)
+					if (attackerExt->values[ValueAdrenalStacks] < 4)
 					{
-						attackerExt->AdrenalStacks++;
+						attackerExt->values[ValueAdrenalStacks]++;
 					}
-					attackerExt->AdrenalTimer = 49; // 49 is 2 seconds (48) + 1
+					attackerExt->timers[TimerAdrenal] = 49; // 49 is 2 seconds (48) + 1
 				} break;
 				case WeaponId::SouthpawUppercutLaser:
 				{
 					// Knockout Drivers - Southpaw behavior
-					if (targetExt->KnockoutDriversStacks < 20)
+					if (targetExt->values[ValueKnockoutDriversStacks] < 20)
 					{
-						targetExt->KnockoutDriversStacks = 1;
+						targetExt->values[ValueKnockoutDriversStacks] = 1;
 					}
-					targetExt->KnockoutDriversTimer = 49; // 49 is 2 seconds (48) + 1
+					targetExt->timers[TimerKnockoutDrivers] = 49; // 49 is 2 seconds (48) + 1
 					data.target->updateSpeed();
 				} break;
 				case WeaponId::MadrigalImperiosoMissiles:
 				{
 					// Dirge - Madrigal behavior
 					scbw::sendGPTP_aise_cmd(data.target, nullptr, GptpId::DirgeImpale, 24, 0, 0);
-					scbw::set_generic_rust_unit(data.target, ValueId::DirgeAttacker, data.attacker);
+					scbw::set_generic_rust_unit(data.target, RustId::DirgeAttacker, data.attacker);
 				} break;
 				case WeaponId::VorvalingClaws:
 				{
@@ -603,17 +603,17 @@ namespace hooks
 				case WeaponId::EcclesiastAstralBlaster:
 				{
 					// Astral Blessing - Ecclesiast behavior
-					targetExt->EcclesiastStack = 1;
-					targetExt->EcclesiastTimer =(24 * 5) + 1;
-					targetExt->EcclesiastPlayer = data.attacker->playerId;
+					targetExt->values[ValueEcclesiastStack] = 1;
+					targetExt->timers[TimerEcclesiast] =(24 * 5) + 1;
+					targetExt->values[ValueEcclesiastPlayer] = data.attacker->playerId;
 				} break;
 				case WeaponId::SubterraneanTentacle:
 				case WeaponId::SeekerSpores:
 				{
-					if (attackerExt->Amitosis == 1)
+					if (attackerExt->values[ValueAmitosis] == 1)
 					{
-						// data.damage /= 2; // TODO: Fix compiler error
-						attackerExt->Amitosis = 0;
+						//data.damage /= 2; // TODO: use data.finalDamage, all modifiers should in weaponDamage_damageModifiers
+						attackerExt->values[ValueAmitosis] = 0;
 					}
 				} break;
 				case WeaponId::SeraphObservance:
@@ -622,16 +622,16 @@ namespace hooks
 					if (data.weaponId == WeaponId::SeraphObservance
 						&& (!scbw::isAlliedTo(data.attacker->playerId, data.target->playerId)))
 					{
-						attackerExt->ObservanceOverlayTimer = 2;
-						targetExt->ObservanceTimerDebuff = 1 + (5 * 24);
-						targetExt->ObservanceTimerPeriod = 1 + (5 * 24);
-						s32 rend = targetExt->ObservanceRend;
+						attackerExt->timers[TimerObservanceOverlay] = 2;
+						targetExt->timers[TimerObservanceDebuff] = 1 + (5 * 24);
+						targetExt->timers[TimerObservancePeriod] = 1 + (5 * 24);
+						s32 rend = targetExt->values[ValueObservanceRend];
 						if (rend == 0)
 						{
 							s32 overlay = ImageId::ObservanceOverlaySmall - scbw::getOverlayOffset(data.target->id);
 							data.target->sprite->createOverlay(overlay);
 						}
-						targetExt->ObservanceRend = 1;
+						targetExt->values[ValueObservanceRend] = 1;
 					}
 				} break;
 				case WeaponId::GorgrokorSerratedCleavers:
@@ -647,9 +647,9 @@ namespace hooks
 				case WeaponId::MagisterNeutronCannon:
 				{
 					// Stellar Enforcement - Magister behavior
-					if (!targetExt->StellarEnforcement)
+					if (!targetExt->values[ValueStellarEnforcement])
 					{
-						targetExt->StellarEnforcement++;
+						targetExt->values[ValueStellarEnforcement]++;
 					}
 				} break;
 				case WeaponId::ApostleCharonRifle:
@@ -758,18 +758,18 @@ namespace hooks
 		}
 
 		// Apostle - Lazarus Agent
-		if (targetExt->LazarusAgent == 1)
+		if (targetExt->values[ValueLazarusAgent] == 1)
 		{
 			globals.initLazarusAgent(data.target->position.x, data.target->position.y,
 				data.target->playerId, data.target->id, data.target->energy,
-				(CUnit*)targetExt->LazarusAgentApostleSrc);
+				(CUnit*)targetExt->values[ValueLazarusAgentApostleSrc]);
 		}
 
 		// Ecclesiast - Astral Blessing proc
-		if (targetExt->EcclesiastStack)
+		if (targetExt->values[ValueEcclesiastStack])
 		{
-			s32 stacks = targetExt->EcclesiastStack;
-			s32 player = targetExt->EcclesiastPlayer;
+			s32 stacks = targetExt->values[ValueEcclesiastStack];
+			s32 player = targetExt->values[ValueEcclesiastPlayer];
 			const s32 range = 64;
 			scbw::UnitFinder(
 				data.target->getX() - range,
@@ -799,18 +799,18 @@ namespace hooks
 		}
 
 		// Akistrokor - Enthralling Assault
-		if (targetExt->EnthrallingTalons > 0)
+		if (targetExt->values[ValueEnthrallingTalons] > 0)
 		{
 			// Preserve unit and start healing
 			data.finalDamage = 0;
 			data.target->setHp(256);
-			targetExt->EnthrallingAssaultHealTimer = 24 * 10;
+			targetExt->timers[TimerEnthrallingAssaultHeal] = 24 * 10;
 			// Transfer unit ownership
-			CUnit* akistrokor = targetExt->AttachedAkistrokorUnit;
+			CUnit* akistrokor = targetExt->units[UnitAttachedAkistrokor];
 			data.target->giveTo(akistrokor->playerId);
 			// Housekeeping
-			targetExt->AttachedAkistrokorUnit = nullptr;
-			targetExt->InfestedByAkistrokor = 1;
+			targetExt->units[UnitAttachedAkistrokor] = nullptr;
+			targetExt->values[ValueInfestedByAkistrokor] = 1;
 		}
 
 		switch (data.target->id)
@@ -836,9 +836,9 @@ namespace hooks
 			case UnitId::ProtossAurora:
 			{
 				// Last Orders - Aurora behavior
-				if (targetExt->LastOrdersInit == 0)
+				if (targetExt->values[ValueLastOrdersInit] == 0)
 				{
-					targetExt->LastOrdersInit = 1;
+					targetExt->values[ValueLastOrdersInit] = 1;
 					CUnit* nearest = scbw::UnitFinder(
 						data.target->getX() - 288,
 						data.target->getY() - 288,
@@ -896,13 +896,13 @@ namespace hooks
 				case WeaponId::AlkajeliskParasiticSpores:
 				{
 					// Alkajelisk - Parasite
-					targetExt->AlkajeliskParasite = 1;
-					targetExt->AlkajeliskParasitePlayer = data.attacker->playerId;
+					targetExt->values[ValueAlkajeliskParasite] = 1;
+					targetExt->values[ValueAlkajeliskParasitePlayer] = data.attacker->playerId;
 				} break;
 				case WeaponId::KaiserBlades:
 				{
 					// Kaiser Rampage - Ultralisk behavior
-					attackerExt->KaiserRampage = 1 + (2 * 24);
+					attackerExt->timers[TimerKaiserRampage] = 1 + (2 * 24);
 					data.attacker->updateSpeed();
 				} break;
 				case WeaponId::NathrokorPlasmidBreath:
@@ -922,7 +922,7 @@ namespace hooks
 						{
 							return;
 						}
-						targetExt->NathrokorTimer = (4 * 24) + 1;
+						targetExt->timers[TimerNathrokor] = (4 * 24) + 1;
 						unit->updateSpeed();
 					});
 				} break;
@@ -997,7 +997,7 @@ namespace hooks
 	u16 GetSporesOverlayId(CUnit* target)
 	{
 		UnitExt* targetExt = globals.GetUnitExt(target);
-		auto stacks = targetExt->CorrosiveTouchStacks;
+		auto stacks = targetExt->values[ValueCorrosiveTouchStacks];
 		auto overlayMultiplier = 0;
 		if (stacks > 18) overlayMultiplier++;
 		if (stacks > 35) overlayMultiplier++;
@@ -1023,7 +1023,7 @@ namespace hooks
 		CSprite* spriteFinal;
 
 		UnitExt* targetExt = globals.GetUnitExt(target);
-		targetExt->CorrosiveTouchStacks++;
+		targetExt->values[ValueCorrosiveTouchStacks]++;
 		image = target->getOverlay(GetSporesOverlayId(target));
 		if (image)
 		{
@@ -1044,7 +1044,7 @@ namespace hooks
 		acidTimeMax = 99999;
 		result = 0;
 
-		targetExt->CorrosiveTouchTimer = VithriliskCorrosiveTouchTimer;
+		targetExt->timers[TimerCorrosiveTouch] = VithriliskCorrosiveTouchTimer;
 		return result;
 	}
 }

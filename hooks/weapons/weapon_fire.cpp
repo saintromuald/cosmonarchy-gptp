@@ -137,23 +137,23 @@ namespace hooks
 			// Wyvern Land Grab ability
 			if (unit->id == UnitId::TerranWyvern
 				&& unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell
-				&& unitExt->WyvernReverseLandgrabOn == 1)
+				&& unitExt->values[ValueWyvernReverseLandgrabOn] == 1)
 			{
 				good = false;
 			}
 			// Lurker Seismic Spines behavior
 			if (weaponId == WeaponId::SubterraneanSpines)
 			{
-				unitExt->LurkerETA = 17;
+				unitExt->timers[TimerLurkerETA] = 17;
 				auto range = weapons_dat::MaxRange[weaponId] + 16;
 				s32 angle = scbw::getAngle(unit->getX(), unit->getY(), unit->orderTarget.unit->getX(), unit->orderTarget.unit->getY());
 				s32 targ_x = unit->getX() + scbw::getPolarX(range, angle);
 				s32 targ_y = unit->getY() + scbw::getPolarY(range, angle);
-				unitExt->SpineX = targ_x;
-				unitExt->SpineY = targ_y;
+				unitExt->values[ValueSpineX] = targ_x;
+				unitExt->values[ValueSpineY] = targ_y;
 				if (unit->orderTarget.unit != nullptr)
 				{
-					unitExt->LurkerPickTarget = (u32)unit->orderTarget.unit;
+					unitExt->values[ValueLurkerPickTarget] = (u32)unit->orderTarget.unit;
 				}
 				globals.clear_lakizilisk(unit);
 			}
@@ -161,7 +161,7 @@ namespace hooks
 			{
 				// Madrigal Tempo Change weapon switch
 				if (weaponId == WeaponId::MadrigalFuriaMissiles
-					&& scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 1)
+					&& scbw::get_generic_rust_value(unit, RustId::TempoChange) == 1)
 				{
 					weaponId = WeaponId::MadrigalImperiosoMissiles;
 				}
@@ -307,7 +307,7 @@ namespace hooks
 						auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
 							newTarget->getX(), newTarget->getY());
 						helper::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
-						if (unitExt->Deconstruction)
+						if (unitExt->values[ValueDeconstruction])
 						{
 							scbw::doDeconstructionDamage(unit, weaponId, false);
 						}
@@ -317,11 +317,11 @@ namespace hooks
 				// Titan Reactors - Heracles behavior - Refresh timer on attack and add stack
 				if (weaponId == WeaponId::HeraclesJavelinCannons)
 				{
-					unitExt->NemeanReactorsTimer = 24 * 5;
-					s32 stacks = unitExt->NemeanReactorsStack;
+					unitExt->timers[TimerNemeanReactors] = 24 * 5;
+					s32 stacks = unitExt->values[ValueNemeanReactorsStack];
 					if (stacks < 5)
 					{
-						unitExt->NemeanReactorsStack = stacks++;
+						unitExt->values[ValueNemeanReactorsStack] = stacks++;
 						scbw::playSound(1372, unit);
 					}
 				}
@@ -329,57 +329,57 @@ namespace hooks
 				if (weaponId == WeaponId::EmpyreanPlasmaBarrage)
 				{
 					// Empyrean missile spawn positions
-					scbw::setMissileSourcePos(unit, weaponId, &unitExt->EmpyreanMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, ValueEmpyreanMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::CentaurSunchaserMissiles)
 				{
 					// Centaur missile spawn positions
-					scbw::setMissileSourcePos(unit, weaponId, &unitExt->CentaurMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, ValueCentaurMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::PhobosArgosLaserBatteries)
 				{
 					// Phobos - Argent Capacitors passive
-					if (unit->id == UnitId::TerranPhobos && unitExt->PhobosDischarge == 0)
+					if (unit->id == UnitId::TerranPhobos && unitExt->values[ValuePhobosDischarge] == 0)
 					{
 						unit->addUnitEnergy(5 * 256);
 						if (unit->energy == unit->getMaxEnergy())
 						{
-							unitExt->PhobosDischarge = 1;
+							unitExt->values[ValuePhobosDischarge] = 1;
 						}
 					}
 					// Phobos laser spawn positions
-					scbw::setMissileSourcePos(unit, weaponId, &unitExt->PhobosLaserPos, 4, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, ValuePhobosLaserPos, 4, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::KalkaliskViscousAcid)
 				{
 					// Kalkaleth missile spawn position
-					auto bullet = scbw::setMissileSourcePosRet(unit, weaponId, &unitExt->KalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
+					auto bullet = scbw::setMissileSourcePos(unit, weaponId, ValueKalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 					globals.remove_multihit_bullet(bullet);
 				}
 				else if (weaponId == WeaponId::KeskathalorScreamingVenom)
 				{
 					// Keskathalor missile spawn position
-					scbw::setMissileSourcePos(unit, weaponId, &unitExt->KeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, ValueKeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::StarSovereignCelestialCannon)
 				{
 					// Star Sovereign laser spawn position
-					scbw::setMissileSourcePos(unit, weaponId, &unitExt->SovereignCannonPos, 2, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, ValueSovereignCannonPos, 2, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::PenumbraErebolShockCannon)
 				{
 					// Penumbra laser spawn position
-					scbw::setMissileSourcePos(unit, weaponId, &unitExt->PenumbraLaserPos, 1, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, ValuePenumbraLaserPos, 1, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::BurstLasers)
 				{
 					// Wraith laser spawn position
-					scbw::setMissileSourcePos(unit, weaponId, &unitExt->WraithLaserPos, 3, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, ValueWraithLaserPos, 3, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::IonCannon)
 				{
 					// Ion Cannon projectile spawn position
-					scbw::setMissileSourcePos(unit, weaponId, &unitExt->IonCannonProjectilePos, 1,
+					scbw::setMissileSourcePos(unit, weaponId, ValueIonCannonProjectilePos, 1,
 						ImagesDatEntries::OverlaySpecialPtr, 1); // 1 is frameset offset
 				}
 				else if (weaponId == WeaponId::SirenCharybdalRifle)
@@ -389,7 +389,7 @@ namespace hooks
 				else if (weaponId == WeaponId::SalamanderPerditionBarrage)
 				{
 					// SalamanderFire missile target positions
-					auto rotate = unitExt->SalamanderAtkPos;
+					auto rotate = unitExt->values[ValueSalamanderAtkPos];
 					if (rotate == 1)
 					{
 						helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
@@ -403,12 +403,12 @@ namespace hooks
 					{
 						rotate = 0;
 					}
-					unitExt->SalamanderAtkPos = rotate;
+					unitExt->values[ValueSalamanderAtkPos] = rotate;
 				}
 				else if (weaponId == WeaponId::MadrigalFuriaMissiles && unit->orderTarget.unit != nullptr)
 				{
 					helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
-					if (unitExt->Deconstruction)
+					if (unitExt->values[ValueDeconstruction])
 					{
 						scbw::doDeconstructionDamage(unit, weaponId);
 					}
@@ -428,7 +428,7 @@ namespace hooks
 								auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
 									target->getX(), target->getY());
 								helper::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
-								if (unitExt->Deconstruction)
+								if (unitExt->values[ValueDeconstruction])
 								{
 									scbw::doDeconstructionDamage(unit, weaponId, false);
 								}
@@ -442,20 +442,20 @@ namespace hooks
 					// Madcap - Maverick Feeders passive
 					if (unit->id == UnitId::TerranMadcap)
 					{
-						s32 stacks = unitExt->MadcapStacks;
-						unitExt->MadcapStacks = MathUtils::clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime);
+						s32 stacks = unitExt->values[ValueMadcapStacks];
+						unitExt->values[ValueMadcapStacks] = MathUtils::clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime);
 					}
 					if (weaponId == WeaponId::AcidSpore && unit->sprite)
 					{
-						unitExt->GuardianMissileLaunchPosX = unit->getX();
-						unitExt->GuardianMissileLaunchPosY = unit->getY();
+						unitExt->values[ValueGuardianMissileLaunchPosX] = unit->getX();
+						unitExt->values[ValueGuardianMissileLaunchPosY] = unit->getY();
 					}
 					helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 				}
 			}
 			// Chasmal Colony - Adaptive Amitosis ability
 			if (unit->orderTarget.unit != nullptr
-				&& unitExt->AdaptiveAmitosis)
+				&& unitExt->values[ValueAdaptiveAmitosis])
 			{
 				auto range = weapons_dat::MaxRange[weaponId];
 				auto a = scbw::UnitFinder::getNearestTarget(
@@ -483,7 +483,7 @@ namespace hooks
 					auto old = unit->orderTarget;
 					unit->orderTarget.unit = a;
 					unit->orderTarget.pt = a->sprite->position;
-					unitExt->AdaptiveAmitosis = 1;
+					unitExt->values[ValueAdaptiveAmitosis] = 1;
 					// TODO: verify that this will work with all weapon types
 					const u32 Iscript_UseWeapon = 0x00479C30;
 					__asm {
@@ -498,7 +498,7 @@ namespace hooks
 			}
 		}
 		// Deconstruction - Pazuzu passive
-		if (unitExt->Deconstruction)
+		if (unitExt->values[ValueDeconstruction])
 		{
 			scbw::doDeconstructionDamage(unit, weaponId);
 		}
@@ -620,7 +620,7 @@ namespace hooks
 						}
 						bullet->sourceUnit->orderTarget.unit = target;
 						auto newAngle = scbw::getAngle(bullet->position.x, bullet->position.y, target->getX(), target->getY());
-						auto newBullet = helper::createBulletRet(WeaponId::ArchitectDispersiveSalvo,
+						auto newBullet = helper::createBullet(WeaponId::ArchitectDispersiveSalvo,
 							bullet->sourceUnit, bullet->position.x, bullet->position.y, bullet->srcPlayer, newAngle);
 						if (newBullet)
 						{

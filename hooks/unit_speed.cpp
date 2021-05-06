@@ -116,7 +116,7 @@ namespace hooks
 			case UnitId::TerranWyvern:
 			{
 				// Wyvern Reverse Thrust ability: reduce movespeed
-				if (scbw::get_generic_rust_value(unit, ValueId::ReverseThrust) == 1)
+				if (scbw::get_generic_rust_value(unit, RustId::ReverseThrust) == 1)
 				{
 					speed *= 0.5;
 				}
@@ -196,7 +196,7 @@ namespace hooks
 			case UnitId::ProtossExemplar:
 			{
 				// Khaydarin Eclipse ability: slow Exemplar by 75%
-				if (scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch))
+				if (scbw::get_generic_rust_value(unit, RustId::ExemplarSwitch))
 				{
 					speed *= 0.25;
 				}

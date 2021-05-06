@@ -353,7 +353,7 @@ namespace hooks
 			} break;
 			case UnitId::TerranAzazel:
 			{
-				if (scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd) == 1)
+				if (scbw::get_generic_rust_value(unit, RustId::SublimeShepherd) == 1)
 				{
 					if (!unit->getOverlay(1267))
 					{
@@ -488,9 +488,9 @@ namespace hooks
 			case UnitId::TerranApostle:
 			{
 				// Apostle - Lazarus Agent cast
-				if (scbw::get_generic_rust_value(unit, ValueId::CastLazarusAgent) == 1)
+				if (scbw::get_generic_rust_value(unit, RustId::CastLazarusAgent) == 1)
 				{
-					scbw::set_generic_rust_value(unit, ValueId::CastLazarusAgent, 0);
+					scbw::set_generic_rust_value(unit, RustId::CastLazarusAgent, 0);
 					// Cast Lazarus Agent						
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256);
 					auto r = 4 * 32;
@@ -514,7 +514,7 @@ namespace hooks
 			{
 				// Disruption Field - Lanifect ability
 				auto web = unitExt->units[UnitAttachedDisruptionWeb];
-				if (scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb))
+				if (scbw::get_generic_rust_value(unit, RustId::DisruptionWeb))
 				{
 					if (web == nullptr)
 					{
@@ -522,7 +522,7 @@ namespace hooks
 						if (web == nullptr)
 						{
 							//CCMU case
-							scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 0);
+							scbw::set_generic_rust_value(unit, RustId::DisruptionWeb, 0);
 						}
 						else
 						{
@@ -542,7 +542,7 @@ namespace hooks
 						web->remove();
 					}
 				}
-				if (scbw::get_generic_rust_value(unit, ValueId::DisruptionWebDamage))
+				if (scbw::get_generic_rust_value(unit, RustId::DisruptionWebDamage))
 				{
 					unitExt->values[ValueDisruptionWebDamage] = 0;
 					unit->inflictDamage(techdata_dat::EnergyCost[TechId::DisruptionWeb] * 256, unit, unit->playerId, false, true);
@@ -757,11 +757,11 @@ namespace hooks
 			case UnitId::ZergMatraleth:
 			{
 				// Matraleth - Ensnaring Brood
-				if (scbw::get_generic_rust_value(unit, ValueId::EnsnaringBroodAbility) == 1)
+				if (scbw::get_generic_rust_value(unit, RustId::EnsnaringBroodAbility) == 1)
 				{
 					Point16 pos = unit->position;
 					s32 radius = 6 * 32;
-					scbw::set_generic_rust_value(unit, ValueId::EnsnaringBroodAbility, 0);
+					scbw::set_generic_rust_value(unit, RustId::EnsnaringBroodAbility, 0);
 					scbw::UnitFinder(
 						pos.x - radius,
 						pos.y - radius,
@@ -821,9 +821,9 @@ namespace hooks
 			case UnitId::ProtossDemiurge:
 			{
 				// Demiurge - Gods Made Flesh - initial cast
-				if (scbw::get_generic_rust_value(unit, ValueId::GodsMadeFleshCast))
+				if (scbw::get_generic_rust_value(unit, RustId::GodsMadeFleshCast))
 				{
-					scbw::set_generic_rust_value(unit, ValueId::GodsMadeFleshCast, 0);
+					scbw::set_generic_rust_value(unit, RustId::GodsMadeFleshCast, 0);
 					unitExt->values[ValueGodsMadeFleshActive] = 1;
 				}
 				// Demiurge - Gods Made Flesh - remove effect from caster

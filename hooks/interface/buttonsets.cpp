@@ -964,13 +964,13 @@ namespace hooks
 								}
 								if ((*activePortraitUnit)->id == UnitId::TerranMadrigal &&  // Madrigal Furia Salvo passive
 									current_button->iconID == IconId::GeminiMissiles &&
-									scbw::get_generic_rust_value((*activePortraitUnit), ValueId::TempoChange) == 0)
+									scbw::get_generic_rust_value((*activePortraitUnit), RustId::TempoChange) == 0)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								if ((*activePortraitUnit)->id == UnitId::TerranMadrigal &&  // Madrigal Shrike Payload passive
 									current_button->iconID == IconId::Fusion_Cutter_Harvest &&
-									scbw::get_generic_rust_value((*activePortraitUnit), ValueId::TempoChange) > 0)
+									scbw::get_generic_rust_value((*activePortraitUnit), RustId::TempoChange) > 0)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
@@ -1430,7 +1430,7 @@ namespace hooks
 									{
 										// TODO: Cleanup
 										/*auto vId = toggle_values[i];
-										if (vId == ValueId::TempoChange) {
+										if (vId == RustId::TempoChange) {
 											if (scbw::get_generic_value(*activePortraitUnit, toggle_values[i]) == 1) {
 												current_button->iconID = button_toggle_off[i];
 											}

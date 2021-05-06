@@ -1228,35 +1228,6 @@ namespace scbw
 		scbw::refreshConsole();
 	}
 
-	// TODO: merge with setMissileSourcePos, no reason to have duplicate code that differs only by having a return
-	CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32* unitExtVariable, s32 rotateCount, u32 overlayType, u32 frameset_offset)
-	{
-		if (unit->sprite == nullptr || unit->orderTarget.unit == nullptr)
-		{
-			return nullptr;
-		}
-		auto rotate = *unitExtVariable;
-		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
-			unit->sprite->mainGraphic->id));
-		u8 frameDirection = unit->sprite->mainGraphic->direction;
-		Point8 offset = loFile->getOffset(frameDirection + (17 * frameset_offset), rotate);
-		if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored)
-		{
-			offset.x = -offset.x;
-		}
-		rotate++;
-		if (rotate > rotateCount - 1)
-		{
-			rotate = 0;
-		}
-		*unitExtVariable = rotate;
-		auto X = unit->getX() + offset.x;
-		auto Y = unit->getY() + offset.y;
-		auto bullet = helper::createBulletRet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y,
-			unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
-		return bullet;
-	}
-
 	bool isSlowed(CUnit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
@@ -1309,13 +1280,14 @@ namespace scbw
 		}
 	}
 
-	void setMissileSourcePos(CUnit* unit, u32 weaponId, u32* unitExtVariable, s32 rotateCount, u32 overlayType, u32 frameset_offset)
+	CBullet* setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset)
 	{
 		if (unit->sprite == nullptr || unit->orderTarget.unit == nullptr)
 		{
-			return;
+			return nullptr;
 		}
-		auto rotate = *unitExtVariable;
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+		auto rotate = unitExt->values[valueId];
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
 			unit->sprite->mainGraphic->id));
 		u8 frameDirection = unit->sprite->mainGraphic->direction;
@@ -1329,10 +1301,10 @@ namespace scbw
 		{
 			rotate = 0;
 		}
-		*unitExtVariable = rotate;
+		unitExt->values[valueId] = rotate;
 		auto X = unit->getX() + offset.x;
 		auto Y = unit->getY() + offset.y;
-		helper::createBullet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y,
+		return helper::createBullet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y,
 			unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
 	}
 

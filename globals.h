@@ -198,7 +198,7 @@ namespace hooks
 
 namespace scbw
 {
-	CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset);
+	CBullet* setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset);
 	bool isSlowed(CUnit* unit);
 	void refreshDebuffs(CUnit* unit);
 	void inheritDebuffs(CUnit* parent, CUnit* child);
@@ -206,7 +206,6 @@ namespace scbw
 	void restoreFunc(CUnit* unit);
 	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen);
 	void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound);
-	void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset);
 	CUnit** getSourceQueens(CUnit* unit);
 
 	void clearClarionLinks(CUnit* unit);

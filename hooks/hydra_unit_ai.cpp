@@ -168,7 +168,7 @@ void hydra_unit_ai(CUnit* unit)
 	}
 	else if (unit->id == UnitId::ProtossLanifect)
 	{
-		auto web_state = scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb);
+		auto web_state = scbw::get_generic_rust_value(unit, RustId::DisruptionWeb);
 		if (unitExt->values[ValueExecutingCorsairMoveOrder] != 0)
 		{
 			if (unit->mainOrderId != OrderId::Move)
@@ -201,7 +201,7 @@ void hydra_unit_ai(CUnit* unit)
 				if (mostSignificant != nullptr)
 				{
 					unit->orderTo(OrderId::Move, mostSignificant->position.x, mostSignificant->position.y);
-					scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 1);
+					scbw::set_generic_rust_value(unit, RustId::DisruptionWeb, 1);
 					unitExt->timers[TimerAI_CorsairDweb] = AIWebTimer;
 				}
 			}
@@ -212,7 +212,7 @@ void hydra_unit_ai(CUnit* unit)
 			{
 				if (unitExt->timers[TimerAI_CorsairDweb] == 0)
 				{
-					scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 0);
+					scbw::set_generic_rust_value(unit, RustId::DisruptionWeb, 0);
 					unitExt->values[ValueExecutingCorsairMoveOrder] = 0;
 					if (unit->mainOrderId == OrderId::Move)
 					{
@@ -223,7 +223,7 @@ void hydra_unit_ai(CUnit* unit)
 		}
 	}
 	/*	else if (unit->id == UnitId::TerranPaladin) {
-			if (unit->mainOrderId != OrderId::Skyfall && scbw::get_generic_timer(unit,ValueId::AI_PaladinTimer)) {
+			if (unit->mainOrderId != OrderId::Skyfall && scbw::get_generic_timer(unit,RustId::AI_PaladinTimer)) {
 				bool skyfallCondition = false;
 				hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Skyfall],
 					CFlags::Enemy, {}, [&](CUnit* u) {
@@ -247,7 +247,7 @@ void hydra_unit_ai(CUnit* unit)
 							resultX = MathUtils::lerp(fraction, source.x, target.x, false);
 							resultY = MathUtils::lerp(fraction, source.y, target.y, false);
 							unit->orderTo(OrderId::Skyfall, u->position.x, u->position.y);
-							scbw::set_generic_timer(unit, ValueId::AI_PaladinTimer, 50);
+							scbw::set_generic_timer(unit, RustId::AI_PaladinTimer, 50);
 						}
 					}
 				});

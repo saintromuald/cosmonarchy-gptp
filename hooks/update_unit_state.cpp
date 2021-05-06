@@ -57,12 +57,12 @@ namespace hooks
 					}
 				}
 				else
-					if (unit->id == UnitId::TerranAzazel && scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd) == 1)
+					if (unit->id == UnitId::TerranAzazel && scbw::get_generic_rust_value(unit, RustId::SublimeShepherd) == 1)
 					{
 						unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
 						if (unit->energy == 0)
 						{
-							scbw::set_generic_rust_value(unit, ValueId::SublimeShepherd, 0);
+							scbw::set_generic_rust_value(unit, RustId::SublimeShepherd, 0);
 						}
 					}
 					else
@@ -494,7 +494,7 @@ namespace hooks
 					if (distance < 32)
 					{
 						unit->status |= UnitStatus::Invincible;
-						CBullet* bullet = helper::createBulletRet(WeaponId::AuroraLastOrders, unit, unit->position.x, unit->position.y, unit->playerId, unit->currentDirection1);
+						CBullet* bullet = helper::createBullet(WeaponId::AuroraLastOrders, unit, unit->position.x, unit->position.y, unit->playerId, unit->currentDirection1);
 						hooks::splash(bullet, WeaponId::AuroraLastOrders, SplashType::FriendlyNew, nullptr);
 						if (bullet)
 						{
