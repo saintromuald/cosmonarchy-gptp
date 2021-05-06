@@ -522,7 +522,7 @@ namespace hooks
 						web = hooks::createDisruptionWeb(unit->playerId, unit->getX(), unit->getY());
 						if (web == nullptr)
 						{
-							//CCMU case
+							// CCMU case
 							scbw::set_generic_rust_value(unit, RustId::DisruptionWeb, 0);
 						}
 						else
@@ -532,7 +532,7 @@ namespace hooks
 					}
 					else
 					{
-						//web attached
+						// web attached
 						scbw::moveUnit(web, unit->getX(), unit->getY());
 					}
 				}
@@ -815,10 +815,10 @@ namespace hooks
 			case UnitId::ProtossMindTyrant:
 			{
 				// Rescind Mind Control
-				if (unitExt->values[ValueRescindMindControl] == 1)
+				if (scbw::get_generic_rust_value(unit, RustId::RescindMindControl) == 1)
 				{
 					scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
-					unitExt->values[ValueRescindMindControl] = 0;
+					scbw::set_generic_rust_value(unit, RustId::RescindMindControl, 0);
 				}
 			} break;
 			case UnitId::ProtossDemiurge:
