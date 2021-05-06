@@ -10,18 +10,18 @@
 
 namespace
 {
-	/// Definition of damage factors (explosive, concussive, etc.)
+	/// Definition of damage factors
 	struct
 	{
 		s32 damageType;
-		s32 unitSizeFactor[5];	 //Order: {independent, small, medium, large}
+		s32 unitSizeFactor[5];	 // Order: {independent, small, medium, large, titanic}
 	} const damageFactor[] = {
-		{0, 0, 0,	0,	 0,   0},			//Independent
-		{1, 0, 128, 192, 256, 192},			//Explosive
-		{2, 0, 256, 192, 128, 64},			//Concussive
-		{3, 0, 256, 256, 192, 128},			//Normal
-		{4, 0, 256, 256, 256, 256},			//IgnoreArmor
-		{5, 0, 256, 256, 256, 256},			//Chronal
+		{0, 0, 0,	0,	 0,   0},			// Independent
+		{1, 0, 128, 192, 256, 192},			// Explosive
+		{2, 0, 256, 192, 128, 64},			// Concussive
+		{3, 0, 256, 256, 192, 128},			// Normal
+		{4, 0, 256, 256, 256, 256},			// IgnoreArmor
+		{5, 0, 256, 256, 256, 256},			// Chronal
 	};
 }
 
@@ -133,7 +133,7 @@ namespace hooks
 
 		// Demiurge - Gods Made Flesh - target is impervious to damage
 		if (targetExt->timers[TimerGodsMadeFlesh] > 0)
-		{ // Power Overwhelming used to be here :wave_me_dad:
+		{
 			data.finalDamage = 0;
 			data.damageType = DamageType::Independent;
 		}
@@ -315,7 +315,9 @@ namespace hooks
 		UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
 
 		// Isthrathaleth Dark Swarm
-		if (scbw::isUnderDarkSwarm(data.target) && weapons_dat::MaxRange[data.weaponId] > 32 && (data.damageDivisor == 1 || data.weaponId == WeaponId::AcidSpore) && data.weaponId != WeaponId::SubterraneanSpines)
+		if (scbw::isUnderDarkSwarm(data.target) && weapons_dat::MaxRange[data.weaponId] > 32
+			&& (data.damageDivisor == 1 || data.weaponId == WeaponId::AcidSpore)
+			&& data.weaponId != WeaponId::SubterraneanSpines)
 		{
 			data.damageType = DamageType::Independent;
 		}
@@ -383,7 +385,6 @@ namespace hooks
 				// Quazilisk - Melting Points
 				f32 missingFactor = 1 - ((f32)data.target->hitPoints / data.target->getMaxHpRaw());
 				f32 damageIncrease = floor(missingFactor / QuazaliskPassiveFactor);
-//				scbw::printString("Damage Increase: " + std::to_string(damageIncrease));
 				data.finalDamage += damageIncrease * HealthMultiplier;
 			} break;
 			case WeaponId::AlmaksaliskPiercingSpines:
@@ -430,7 +431,6 @@ namespace hooks
 						thingy->sprite->elevationLevel = target->sprite->elevationLevel + 1;
 						helper::setThingyVisibilityFlags(thingy);
 					}
-					//target->damageWith(30 * 256, WeaponId::PsiStorm, unit, unit->playerId);
 				});
 			}
 
@@ -524,7 +524,6 @@ namespace hooks
 				case WeaponId::KonviliskSowingSpines:
 				{
 					// Fertile Spines - Konvilisk behavior
-					/*if (data.target->getCurrentHpInGame() < (data.target->getMaxHpInGame() / 2))*/
 					scbw::applyParasite(data.target, data.attacker->playerId, data.attacker);
 				} break;
 				case WeaponId::PazuzuJupiterDriver:
@@ -533,7 +532,6 @@ namespace hooks
 					if (!(scbw::unitIsPacifist(data.target))
 						&& targetExt->values[ValueDeconstruction] == 0)
 					{
-
 						targetExt->values[ValueDeconstruction] = 1;
 						targetExt->values[ValueDeconstructionPlayer] = data.attacker->playerId;
 						s32 overlayOffset = scbw::getOverlayOffset(data.target->id);
@@ -575,7 +573,7 @@ namespace hooks
 					// Adrenal Glands - Zergling behavior
 					if (attackerExt->values[ValueAdrenalStacks] < 4)
 					{
-						attackerExt->values[ValueAdrenalStacks]++;
+						attackerExt->values[ValueAdrenalStacks] += 1;
 					}
 					attackerExt->timers[TimerAdrenal] = 49; // 49 is 2 seconds (48) + 1
 				} break;
@@ -584,7 +582,7 @@ namespace hooks
 					// Knockout Drivers - Southpaw behavior
 					if (targetExt->values[ValueKnockoutDriversStacks] < 20)
 					{
-						targetExt->values[ValueKnockoutDriversStacks] = 1;
+						targetExt->values[ValueKnockoutDriversStacks] += 1;
 					}
 					targetExt->timers[TimerKnockoutDrivers] = 49; // 49 is 2 seconds (48) + 1
 					data.target->updateSpeed();
@@ -603,8 +601,8 @@ namespace hooks
 				case WeaponId::EcclesiastAstralBlaster:
 				{
 					// Astral Blessing - Ecclesiast behavior
-					targetExt->values[ValueEcclesiastStack] = 1;
-					targetExt->timers[TimerEcclesiast] =(24 * 5) + 1;
+					targetExt->values[ValueEcclesiastStack] += 1;
+					targetExt->timers[TimerEcclesiast] = (24 * 5) + 1;
 					targetExt->values[ValueEcclesiastPlayer] = data.attacker->playerId;
 				} break;
 				case WeaponId::SubterraneanTentacle:
@@ -631,7 +629,7 @@ namespace hooks
 							s32 overlay = ImageId::ObservanceOverlaySmall - scbw::getOverlayOffset(data.target->id);
 							data.target->sprite->createOverlay(overlay);
 						}
-						targetExt->values[ValueObservanceRend] = 1;
+						targetExt->values[ValueObservanceRend] += 1;
 					}
 				} break;
 				case WeaponId::GorgrokorSerratedCleavers:
@@ -649,7 +647,7 @@ namespace hooks
 					// Stellar Enforcement - Magister behavior
 					if (!targetExt->values[ValueStellarEnforcement])
 					{
-						targetExt->values[ValueStellarEnforcement]++;
+						targetExt->values[ValueStellarEnforcement] == 1;
 					}
 				} break;
 				case WeaponId::ApostleCharonRifle:
