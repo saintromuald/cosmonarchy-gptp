@@ -572,7 +572,7 @@ namespace hooks
 					{
 						targetExt->timers[TimerEntropyGauntlets] = (5 * 24) + 1;
 						targetExt->units[UnitDecaySavant] = data.attacker;
-						u32 overlayImageId = ImageId::EntropyGauntletsOverlaySmall - scbw::getOverlayOffset(data.target->id);
+						u32 overlayImageId = ImageId::EntropyGauntletsOverlaySmall + scbw::getOverlayOffset(data.target->id);
 						if (data.target->subunit != nullptr)
 						{
 							data.target->subunit->sprite->removeOverlay(overlayImageId);

@@ -237,6 +237,7 @@ enum ExtValueId
 	ValueAlaszilethRegenBoost,
 	ValueKelvinMunitionsSlow,
 	ValueDiscoveredAttacksDebuff,
+	ValueLarvaType,
 
 	ValueCount,
 };

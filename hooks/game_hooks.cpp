@@ -222,7 +222,7 @@ namespace hooks
 			hooks::updatePsiFieldProviders();
 			*(s32*)hyperTrigger = 0; // Single frame hypertriggers
 
-			//This block is executed once every game
+			// This block is executed once every game
 			if (*elapsedTimeFrames == 0)
 			{
 				firstFrame();
@@ -835,6 +835,16 @@ namespace hooks
 					unitExt->values[ValueGodsMadeFleshActive] = 0;
 				}
 			} break;
+			case UnitId::ZergLarva:
+			{
+				// Set Larva type
+				if (unit->connectedUnit != nullptr
+					&& unit->connectedUnit->id == UnitId::ZergOcsalColony
+					&& unitExt->values[ValueLarvaType] == 0)
+				{
+					unitExt->values[ValueLarvaType] = 1;
+				}
+			}
 			default:
 			{
 			}

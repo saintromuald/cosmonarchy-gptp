@@ -108,6 +108,7 @@ namespace scbw
 		}
 		return result;
 	}
+
 	const u32 Func_CreateFlingy = 0x00496460;
 	CFlingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y)
 	{
@@ -156,8 +157,6 @@ namespace scbw
 		return thingy;
 	}
 
-	;
-
 	const u32 Func_SendCommand = 0x00485BD0;
 	void SendCommand(u8* params, u32 param_length)
 	{
@@ -171,6 +170,7 @@ namespace scbw
 		}
 
 	}
+
 	//-------- Output functions --------//
 
 	const u32 Func_PlaySound = 0x0048ED50;
@@ -1787,6 +1787,8 @@ namespace scbw
 	{
 		switch (id)
 		{
+			case UnitId::ZergDroleth:
+			case UnitId::ZergOvileth:
 			case UnitId::SharedCohort:
 //			case UnitId::SharedTarasque:
 //			case UnitId::SharedAnticthon:
