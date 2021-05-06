@@ -1414,7 +1414,8 @@ namespace scbw
 		{
 			link.push_back(target);
 			target->sprite->createOverlay(ImageId::PhaseLinkSmall + scbw::getOverlayOffset(target->id), 0, 0, 0);
-			unitExt->unitVectors[UnitVectorPhaseLinkClarions].push_back(unit);
+			UnitExt* targetExt = globals.GetUnitExt(target);
+			targetExt->unitVectors[UnitVectorPhaseLinkClarions].push_back(unit);
 		});
 	}
 
