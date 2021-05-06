@@ -89,7 +89,6 @@ namespace hooks
 					{
 						unit->building.larvaTimer = 37 / LarvalColonyMultiplier;
 					}
-
 					// if failed to find a spawn point for larva set the timer before retry to 3
 					if (unit->id == UnitId::ZergLair && unit->mainOrderId != OrderId::Morph2
 						|| unit->id == UnitId::ZergHive && unit->mainOrderId == OrderId::Morph2)
@@ -143,7 +142,8 @@ namespace hooks
 			|| unit->id == UnitId::ZergHive
 			|| unit->id == UnitId::ZergSire
 			|| (unit->id == UnitId::ZergInfestedCommandCenter && !(unit->status & UnitStatus::InAir))
-			|| unit->id == UnitId::ZergLarvalColony)
+			|| unit->id == UnitId::ZergLarvalColony
+			|| unit->id == UnitId::ZergOcsalColony)
 		{
 			secondaryOrd_SpawningLarva(unit);
 		}
@@ -251,7 +251,8 @@ namespace hooks
 					|| unit->id == UnitId::ZergHive
 					|| unit->id == UnitId::ZergSire
 					|| (unit->id == UnitId::ZergInfestedCommandCenter && !(unit->status & UnitStatus::InAir))
-					|| unit->id == UnitId::ZergLarvalColony;
+					|| unit->id == UnitId::ZergLarvalColony
+					|| unit->id == UnitId::ZergOcsalColony;
 
 				u8 orderId;
 				if (isZergMainBuilding)
@@ -283,7 +284,6 @@ namespace hooks
 		const static s32 maxCreepAreaRight = 320; // 10 tiles
 		const static s32 maxCreepAreaUp = 200; // 6.25 tiles
 		const static s32 maxCreepAreaDown = 200; // 6.25 tiles
-
 		if (spreadsCreep(unitId, defRetVal))
 		{
 			rect->left = (x - maxCreepAreaLeft) / 32;
@@ -342,19 +342,24 @@ namespace hooks
 			case UnitId::ZergHatchery:
 			case UnitId::ZergCreepColony:
 			case UnitId::ZergInfestedCommandCenter:
+			{
 				return isComplete;
-
+			}
 			case UnitId::ZergSire:
 			case UnitId::ZergHive:
 			case UnitId::ZergLair:
 			case UnitId::ZergSporeColony:
 			case UnitId::ZergSunkenColony:
 			case UnitId::ZergLarvalColony:
+			case UnitId::ZergOcsalColony:
 			case UnitId::BasiliskCreeper:
+			{
 				return true;
-
+			}
 			default:
+			{
 				return false;
+			}
 		}
 	}
 
@@ -368,8 +373,8 @@ namespace hooks
 
 		// TODO: Cleanup
 		// Per-unit function example
-/*		CUnit* unit = getUnitPointer();
-		*/
+//		CUnit* unit = getUnitPointer();
+		
 		/*
 		switch (deathTable[214].player[11]) {
 		case 180:

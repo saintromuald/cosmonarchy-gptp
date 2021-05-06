@@ -560,6 +560,7 @@ enum Enum {
 	ZergIrolIris									= 224,		// Zerg Gas Sac Type 1
 	ZergSire										= 227,		// Terran Gas Tank Type 2
 	ZergLarvalColony								= 216,		// Young Chrysalis
+	ZergOcsalColony									= 223,		// 
 
 	};
 }
