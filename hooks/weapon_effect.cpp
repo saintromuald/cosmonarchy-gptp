@@ -571,24 +571,9 @@ namespace hooks
 
 	void nuke(CBullet* bullet, u32 weaponId)
 	{
-		Point32 Offsets[] =
-		{
+		Point32 pos = { bullet->position.x, bullet->position.y } ;
 
-											 { 0, -6 * 32 },
-					   { -3 * 32, -3 * 32 }, { 0, -3 * 32 }, { +3 * 32, -3 * 32 },
-			{ -6 * 32,	0 }, { -3 * 32,	0 }, { 0,		0 }, { +3 * 32,	0 }, { +6 * 32,	0 },
-					   { -3 * 32, +3 * 32 }, { 0, +3 * 32 }, { +3 * 32, +3 * 32 },
-											 { 0, +6 * 32 },
-		};
-
-		for (int i = 0; i < ARRAY_SIZE(Offsets); ++i)
-		{
-			Point32 pos = { bullet->position.x, bullet->position.y } ;
-			pos.x += Offsets[i].x;
-			pos.y += Offsets[i].y;
-
-			globals.createGenericPersistImpact(ImpactId::Irradiate, 30 * 24, pos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, bullet->srcPlayer);
-		}
+		globals.createGenericPersistImpact(ImpactId::GroundZero, 24, pos, 0, -1, 5, bullet->srcPlayer);
 
 		splash(bullet, weaponId, SplashType::Radial);
 	}

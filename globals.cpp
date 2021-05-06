@@ -518,6 +518,32 @@ void Globals::frameHook()
 					});
 					break;
 				}
+				case ImpactId::GroundZero:
+				{
+					int stage = (impact.maxTime - impact.currentTime) / framePeriod;
+
+					switch (stage)
+					{
+						case 0:
+						{
+							globals.createGenericPersistImpact(ImpactId::Irradiate, 30 * 24, impact.position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, impact.player);
+						} break;
+						case 1:
+						case 2:
+						{
+							float d = stage * 2 * 32;
+							int count = stage * 8;
+
+							Point32 newPos = impact.position;
+							newPos.x += d;
+							for (int j = 0; j < count; ++j)
+							{
+								newPos = scbw::rotate_point(impact.position, newPos, (360.0 / count));
+								globals.createGenericPersistImpact(ImpactId::Irradiate, 30 * 24, newPos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, impact.player);
+							}
+						} break;
+					}
+				}
 			}
 		}
 		if (impact.currentTime <= 0)

@@ -34,6 +34,7 @@ namespace ImpactId
 		CausticDischarge,
 		Irradiate,
 		Hallucination,
+		GroundZero,
 	};
 }
 
