@@ -343,44 +343,29 @@ void Globals::createGenericPersistImpact(u8 impactId, u32 time, Point32 position
 
 void Globals::frameHook()
 {
-	/*
 	for (auto& unitStruct : unitExt)
 	{
 		UnitExt* unitExt = &unitStruct.second;
-		for (int i = 0; i < UNITEXT_ARRAY_SIZE; ++i)
+		for (int i = 0; i < TimerCount; ++i)
 		{
-			if (unitExt->Timers[i] > 0)
+			if (unitExt->timers[i] > 0)
 			{
-				unitExt->Timers[i]--;
+				unitExt->timers[i]--;
 			}
 		}
-		for (int i = 0; i < UNITEXT_ARRAY_SIZE; ++i)
+		for (int i = 0; i < TimerVectorCount; ++i)
 		{
-			for (auto& timer : unitExt->TimerVectors[i])
+			for (auto& timer : unitExt->timerVectors[i])
 			{
 				if (timer > 0)
 				{
 					timer--;
 				}
 			}
-			unitExt->TimerVectors[i].erase(std::remove_if(unitExt->TimerVectors[i].begin(), unitExt->TimerVectors[i].end(), [&](s32& timer)
+			unitExt->timerVectors[i].erase(std::remove_if(unitExt->timerVectors[i].begin(), unitExt->timerVectors[i].end(), [&](u32& timer)
 			{
 				if (timer == 0) return true;
-			}), unitExt->TimerVectors[i].end());
-		}
-		for (int i = 0; i < UNITEXT_ARRAY_SIZE; ++i)
-		{
-			for (auto& timer : unitExt->UnitTimerMaps[i])
-			{
-				if (timer.second > 0)
-				{
-					timer.second--;
-				}
-				else
-				{
-					unitExt->UnitTimerMaps[i].erase(timer.first);
-				}
-			}
+			}), unitExt->timerVectors[i].end());
 		}
 	}
 
@@ -400,10 +385,10 @@ void Globals::frameHook()
 				revived->setHp(units_dat::MaxHitPoints[revived->id] / 2);
 				revived->energy = agent.energy;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
-				revivedExt->LazarusNoHeal = 1;
+				revivedExt->values[ValueLazarusNoHeal] = 1;
 				// TODO: Make reviving units invincible
 //				revived->status |= UnitStatus::Invincible;
-				revivedExt->IsReviving = 1;
+				revivedExt->values[ValueIsReviving] = 1;
 			}
 			apostleAgents.erase(apostleAgents.begin() + i);
 			i--;
@@ -470,7 +455,7 @@ void Globals::frameHook()
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
 						unit->damageWithIgnoreFlatArmor(WeaponId::KeskathalorCausticDischarge, weapons_dat::DamageAmount[WeaponId::KeskathalorCausticDischarge] * damageMultiplier);
-						unitExt->CausticDischargeSpeed = 5 * 24 + 1;
+						unitExt->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
 					});
 					break;
 				}
@@ -485,7 +470,7 @@ void Globals::frameHook()
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
 						unit->damageWithIgnoreFlatArmor(WeaponId::IonField, weapons_dat::DamageAmount[WeaponId::IonField] * damageMultiplier);
-						unitExt->IonFieldSpeed = 2 * 24 + 1;
+						unitExt->timers[TimerIonFieldSpeed] = 2 * 24 + 1;
 					});
 					break;
 				}
@@ -499,10 +484,10 @@ void Globals::frameHook()
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::Enemy, {}), [&](CUnit* unit)
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
-						if (unitExt->HallucinatingTimer < impact.currentTime)
+						if (unitExt->timers[TimerHallucinating] < impact.currentTime)
 						{
-							unitExt->HallucinatingSourcePlayer = impact.player;
-							unitExt->HallucinatingTimer = impact.currentTime;
+							unitExt->values[ValueHallucinatingSourcePlayer] = impact.player;
+							unitExt->timers[TimerHallucinating] = impact.currentTime;
 
 							scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit);
 							if (unit->subunit != nullptr)
@@ -542,7 +527,7 @@ void Globals::frameHook()
 			persistImpacts.erase(persistImpacts.begin() + i);
 			i--;
 		}
-	}*/
+	}
 }
 
 void Globals::remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly)
