@@ -326,7 +326,7 @@ namespace hooks
 		*(u32*)data = (u32)WeaponEffects_SwitchTable;
 		memoryPatch(Addr_WeaponsDatEffectCount, maxID);
 		memoryPatch(Addr_WeaponsDatEffectSwitch, data, 4); // load pointer to address table
-		jmpPatch(irradiateUnitDamageProc_Wrapper, 0x00455530, 3);
-		jmpPatch(irradiateDamageLoop_Wrapper, 0x004555C0, 1);
+//		jmpPatch(irradiateUnitDamageProc_Wrapper, 0x00455530, 3);
+//		jmpPatch(irradiateDamageLoop_Wrapper, 0x004555C0, 1);
 	}
 }

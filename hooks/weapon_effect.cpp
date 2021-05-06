@@ -690,10 +690,12 @@ namespace hooks
 			v7 = posX + 160;
 			v6 = posY - 160;
 			v8 = posY + 160;
+			/*
 			result = (CUnit*)helper::iterateUnitsAtLocationTargetProc(
 				(Box16*)&a1,
 				(s32(__fastcall*)(s32, s32))irradiateUnitDamageProc,
 				unit);
+			*/
 		}
 		return result;
 	}
