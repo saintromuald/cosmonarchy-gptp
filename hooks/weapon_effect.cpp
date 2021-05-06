@@ -89,7 +89,7 @@ namespace hooks
 				splash = SplashType::Radial;
 			}
 
-			Point16 hit = bullet->attackTarget.pt;
+			Point16 hit = bullet->position;
 			switch (weaponId)
 			{
 				case WeaponId::SalamanderPerditionBarrage:
