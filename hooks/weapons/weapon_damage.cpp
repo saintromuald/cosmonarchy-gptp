@@ -530,14 +530,6 @@ namespace hooks
 						data.target->giveTo(data.attacker->playerId);
 					}
 				} break;
-				case WeaponId::Irradiate:
-				{
-					// Seraph - Irradiate Spread
-					if (data.attacker->irradiateTimer)
-					{
-						ApplyIrradiate(data.target, data.attackingPlayerId, data.attacker->irradiateTimer);
-					}
-				} break;
 				case WeaponId::KonviliskSowingSpines:
 				{
 					// Fertile Spines - Konvilisk behavior
