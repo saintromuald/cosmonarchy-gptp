@@ -162,7 +162,7 @@ namespace hooks
 					{
 						u32 hpGain = helper::getHPGainForRepair(builtUnit);
 						bool extraBuild = false;
-						if (builtUnitExt->Crucible == 0)
+						if (builtUnitExt->values[ValueCrucible] == 0)
 						{
 							auto r = 256;
 							auto n = unitRangeCount(nullptr, CFlags::Ally | CFlags::Powered | CFlags::Completed,
@@ -174,7 +174,7 @@ namespace hooks
 								auto unit = unitsInSplash.getUnit(i);
 								if (n(unit))
 								{
-									builtUnitExt->Crucible = 5; // 6 is ~100/15
+									builtUnitExt->values[ValueCrucible] = 5; // 6 is ~100/15
 									helper::buildingAddon(builtUnit, hpGain, TRUE);
 									if (builtUnit->status & UnitStatus::Completed)
 									{
@@ -186,7 +186,7 @@ namespace hooks
 						}
 						else
 						{
-							builtUnitExt->Crucible--;
+							builtUnitExt->values[ValueCrucible]--;
 						}
 						if (extraBuild || helper::buildingAddon(builtUnit, hpGain, TRUE))
 						{

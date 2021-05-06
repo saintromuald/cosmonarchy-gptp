@@ -98,13 +98,13 @@ namespace
 			if (!scbw::isCheatEnabled(CheatFlags::TheGathering))
 			{
 				bool spend = true;
-				if (unitExt->AICloakGimmick == 1)
+				if (unitExt->values[ValueAICloakGimmick] == 1)
 				{
 					spend = false;
 				}
 				if (unit->pAI != nullptr)
 				{
-					unitExt->AICloakGimmick = 1;
+					unitExt->values[ValueAICloakGimmick] = 1;
 				}
 				if (spend)
 				{
@@ -118,7 +118,7 @@ namespace
 			}
 			else if (unit->pAI != nullptr)
 			{
-				unitExt->AICloakGimmick = 0;
+				unitExt->values[ValueAICloakGimmick] = 0;
 			}
 		}
 	}

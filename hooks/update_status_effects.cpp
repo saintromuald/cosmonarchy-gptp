@@ -106,7 +106,7 @@ namespace hooks
 
 		if (unit->subunit != nullptr)
 		{
-			subunitExt->TurretParentLink = (u32)unit;
+			subunitExt->values[ValueTurretParentLink] = (u32)unit;
 		}
 
 		// Decrement Stasis Field timer (and remove effect if 0)
@@ -219,7 +219,7 @@ namespace hooks
 				}
 				if (units_dat::BaseProperty[target->id] & UnitProperty::ResourceContainer)
 				{
-					unitExt->MineralSpecialRegenTimer = 24;
+					unitExt->timers[TimerMineralSpecialRegen] = 24;
 				}
 			});
 		}
@@ -245,7 +245,7 @@ namespace hooks
 				}
 				if (scbw::isAlliedTo(target->playerId, unit->playerId) && scbw::isZergEggNew(target, true, false))
 				{
-					unitExt->EggBoostTimer = 24;
+					unitExt->timers[TimerEggBoost] = 24;
 				}
 			});
 		}
@@ -255,10 +255,10 @@ namespace hooks
 		{
 			if (!(unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)))
 			{
-				if (unitExt->SomaticImplants == 1)
+				if (unitExt->values[ValueSomaticImplants] == 1)
 				{
 					unit->updateSpeed();
-					unitExt->SomaticImplants = 0;
+					unitExt->values[ValueSomaticImplants] = 0;
 				}
 			}
 		}
@@ -385,7 +385,7 @@ namespace hooks
 		}
 
 		// Vithrilisk - Corrosive Touch - update overlays
-		if (unitExt->CorrosiveTouchStacks != 0)
+		if (unitExt->values[ValueCorrosiveTouchStacks] != 0)
 		{
 			// Calculate the appropriate overlay ID
 			u32 acidOverlayId = GetSporesOverlayId(unit);

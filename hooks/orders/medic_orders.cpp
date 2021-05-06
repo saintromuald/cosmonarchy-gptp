@@ -320,7 +320,7 @@ LABEL_7:
 			|| medic->playerId >= 8
 			|| target->hitPoints >= units_dat::MaxHitPoints[type]
 			|| target->isFrozen()
-			|| targetExt->LazarusNoHeal == 1)
+			|| targetExt->values[ValueLazarusNoHeal] == 1)
 		{
 			return 0;
 		}

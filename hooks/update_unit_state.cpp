@@ -42,7 +42,7 @@ namespace hooks
 				}
 			}
 			else
-				if (unitExt->GodsMadeFleshActive)
+				if (unitExt->values[ValueGodsMadeFleshActive])
 				{
 					unit->spendUnitEnergy(GodsMadeFleshEnergyDrain);
 				}
@@ -83,13 +83,13 @@ namespace hooks
 								maxEnergy = unit->getMaxEnergy();
 							}
 							bool phobosCondition = false;
-							if (unit->id == UnitId::TerranPhobos && unitExt->PhobosDischarge > 0)
+							if (unit->id == UnitId::TerranPhobos && unitExt->values[ValuePhobosDischarge] > 0)
 							{
 								unit->spendUnitEnergy(426); // (200 * 256) / (5 * 24)  ~ 426.66
 								if (unit->energy < 426)
 								{
 									unit->energy = 0;
-									unitExt->PhobosDischarge = 0;
+									unitExt->values[ValuePhobosDischarge] = 0;
 								}
 								phobosCondition = true;
 							}
@@ -153,7 +153,7 @@ namespace hooks
 		}
 
 		// Wyvern Reverse Thrust - fire while moving
-		if (unit->id == UnitId::TerranWyvern && unit->groundWeaponCooldown == 0 && unitExt->ReverseThrust)
+		if (unit->id == UnitId::TerranWyvern && unit->groundWeaponCooldown == 0 && unitExt->values[ValueReverseThrust])
 		{
 			bool can_free_fire = true;
 			if (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::Attack2)
@@ -173,10 +173,10 @@ namespace hooks
 
 				unit->groundWeaponCooldown = weapons_dat::Cooldown[WeaponId::WyvernJacksonCannon];
 				bool seek_unit = true;
-				if (unitExt->WyvernReverseLandgrabOn == 1)
+				if (unitExt->values[ValueWyvernReverseLandgrabOn] == 1)
 				{
-					auto targ_x = unitExt->WyvernReverseLandgrabX;
-					auto targ_y = unitExt->WyvernReverseLandgrabY;
+					auto targ_x = unitExt->values[ValueWyvernReverseLandgrabX];
+					auto targ_y = unitExt->values[ValueWyvernReverseLandgrabY];
 					auto direction = scbw::getAngle(x, y, targ_x, targ_y);
 					if (scbw::getDistanceFast(unit->position.x, unit->position.y, targ_x, targ_y) <= range)
 					{
@@ -185,7 +185,7 @@ namespace hooks
 					}
 					else
 					{
-						unitExt->WyvernReverseLandgrabOn = 0;
+						unitExt->values[ValueWyvernReverseLandgrabOn] = 0;
 					}
 				}
 
@@ -263,11 +263,11 @@ namespace hooks
 			if (!unit->getOverlay(overlayImageId) && scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 0)
 			{
 				unit->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
-				unitExt->HierophantOverlay = 1;
+				unitExt->values[ValueHierophantOverlay] = 1;
 			}
 		}
 
-		if (unitExt->HierophantOverlay == 1)
+		if (unitExt->values[ValueHierophantOverlay] == 1)
 		{
 			auto overlayId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
 			auto overlay = unit->getOverlay(overlayId);
@@ -282,7 +282,7 @@ namespace hooks
 				{
 					unit->sprite->createTopOverlay(maliceId, 0, 0, 0);
 				}
-				unitExt->HierophantOverlay = 0;
+				unitExt->values[ValueHierophantOverlay] = 0;
 			}
 		}
 
@@ -292,7 +292,7 @@ namespace hooks
 			unit->_unknown_0x08C &= ~0x2;
 			u32 maliceId = ImageId::Malice_Small + scbw::getOverlayOffset(unit->id);
 			u32 cowardiceId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
-			unitExt->HierophantOverlay = 0;
+			unitExt->values[ValueHierophantOverlay] = 0;
 			if (unit->getOverlay(maliceId))
 			{
 				unit->removeOverlay(maliceId);
@@ -328,7 +328,7 @@ namespace hooks
 				if (unit->unusedTimer > 0)
 				{
 					unit->_unknown_0x066 = 72;
-					if (unitExt->MineralSpecialRegenTimer)
+					if (unitExt->timers[TimerMineralSpecialRegen])
 					{
 						unit->_unknown_0x066 = 36;
 					}
@@ -336,7 +336,7 @@ namespace hooks
 				else
 				{
 					unit->_unknown_0x066 = 36;
-					if (unitExt->MineralSpecialRegenTimer)
+					if (unitExt->timers[TimerMineralSpecialRegen])
 					{
 						unit->_unknown_0x066 = 18;
 					}
@@ -345,7 +345,7 @@ namespace hooks
 				// Actual resource regeneration
 				bool update_image = true;
 				if (unit->building.resource.resourceAmount < 5000
-					&& (unit->id == UnitId::ResourceVespeneGeyser || unitExt->MineralSpecialRegenTimer))
+					&& (unit->id == UnitId::ResourceVespeneGeyser || unitExt->timers[TimerMineralSpecialRegen]))
 				{
 					unit->building.resource.resourceAmount++;
 					scbw::refreshConsole();
@@ -473,7 +473,7 @@ namespace hooks
 				}
 			}
 			// Akistrokor - Enthralling Assault HP regeneration
-			if (unitExt->EnthrallingAssaultHealTimer > 0)
+			if (unitExt->timers[TimerEnthrallingAssaultHeal] > 0)
 			{
 				tickHeal += AkistrokorEnthrallingAssaultHeal;
 			}
@@ -487,7 +487,7 @@ namespace hooks
 			// Last Orders - Aurora passive
 			if (unit->id == UnitId::ProtossAurora)
 			{
-				if (unitExt->LastOrdersInit == 1)
+				if (unitExt->values[ValueLastOrdersInit] == 1)
 				{
 					auto distance = scbw::getDistanceFast(unit->position.x, unit->position.y,
 						unit->orderTarget.pt.x, unit->orderTarget.pt.y);
@@ -561,13 +561,13 @@ namespace hooks
 
 		if (*elapsedTimeFrames > 0)
 		{
-			u32 supply_new = unitExt->SupplyProvided;
+			u32 supply_new = unitExt->values[ValueSupplyProvided];
 			if (supply_new)
 			{
 				supply = supply_new;
 			}
-			unitExt->SupplyProvided = supply;
-			auto supply_overlord_modifier = unitExt->OverlordSupplyGimmick;
+			unitExt->values[ValueSupplyProvided] = supply;
+			auto supply_overlord_modifier = unitExt->values[ValueOverlordSupply];
 			if (supply_overlord_modifier > 0)
 			{
 				switch (supply_overlord_modifier)
@@ -590,7 +590,7 @@ namespace hooks
 				{
 					supply = units_dat::SupplyProvided[unit->id];
 				}
-			unitExt->OverlordSupplyGimmick = 0;
+			unitExt->values[ValueOverlordSupply] = 0;
 		}
 		if (race <= RaceId::Protoss)
 		{
@@ -764,7 +764,7 @@ namespace hooks
 			do
 			{
 				helper::updateVisibility(v7);
-				if (v7->status & 0x300 && unitExt->DecloakTimer == 0)
+				if (v7->status & 0x300 && unitExt->timers[TimerDecloak] == 0)
 				{
 					v10 = v7->secondaryOrderTimer;
 					v7->isCloaked = 0;

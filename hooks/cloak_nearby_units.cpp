@@ -56,7 +56,7 @@ namespace hooks
 				&& scbw::isAlliedTo(current_unit->playerId, cloaker->playerId)							// (or allied to Cloaker owner)
 				&& cloaker->isTargetWithinMinRange(current_unit, cloakRadius))							// Check again if unit in range of cloaking
 			{
-				if (unitExt->DecloakTimer)
+				if (!unitExt->timers[TimerDecloak])
 				{
 					helper::secondaryOrder_Cloak(current_unit);
 					if (!(current_unit->status & UnitStatus::CloakingForFree))

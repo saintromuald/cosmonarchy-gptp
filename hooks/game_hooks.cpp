@@ -343,7 +343,7 @@ namespace hooks
 			case UnitId::ZergEgg:
 			{
 				// Gimmick to allow the Ultrakor morph cancellation animation to play correctly
-				if (unitExt->timers[TimerUltrakorCancelGimmick])
+				if (unitExt->timers[TimerUltrakorCancel])
 				{
 					if (unit->sprite->mainGraphic->animation != IscriptAnimation::CastSpell)
 					{

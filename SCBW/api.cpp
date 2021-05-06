@@ -1745,12 +1745,12 @@ namespace scbw
 		if (isDecloakable(unit))
 		{
 			UnitExt* unitExt = globals.GetUnitExt(unit);
-			if (unitExt->DecloakTimer == 0)
+			if (unitExt->timers[TimerDecloak] == 0)
 			{
 				unit->visibilityStatus = 0xff;
 				AnimDecloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 			}
-			unitExt->DecloakTimer = 48 + 1;
+			unitExt->timers[TimerDecloak] = 48 + 1;
 		}
 	}
 

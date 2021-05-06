@@ -249,7 +249,7 @@ namespace
 		else
 		{
 			changeUnitType(unit, cancelChangeUnitId);
-			unit->energy = unitExt->PreMorphEnergy;
+			unit->energy = unitExt->values[ValuePreMorphEnergy];
 			unit->remainingBuildTime = 0;
 			unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 			
@@ -273,7 +273,7 @@ namespace
 			else if (unit->id == UnitId::ZergUltrakor)
 			{
 				unit->playIscriptAnim(IscriptAnimation::CastSpell);
-				unitExt->UltrakorCancelGimmick = 4;
+				unitExt->timers[TimerUltrakorCancel] = 4;
 			}
 			else
 			{

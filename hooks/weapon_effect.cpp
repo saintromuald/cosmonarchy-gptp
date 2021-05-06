@@ -190,7 +190,7 @@ namespace hooks
 			if (weaponId == WeaponId::HeraclesJavelinCannons)
 			{
 				const f64 splashBase = weapons_dat::OuterSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = bulletSourceExt->NemeanReactorsStack;
+				const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
 				outer = (s16)(splashBase * (1 + 0.1 * stacks));
 			}
 
@@ -215,7 +215,7 @@ namespace hooks
 			if (weaponId == WeaponId::HeraclesJavelinCannons)
 			{
 				const f64 splashBase = weapons_dat::InnerSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = bulletSourceExt->NemeanReactorsStack;
+				const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
 				inner = (s16)(splashBase * (1 + 0.1 * stacks));
 			}
 
@@ -240,7 +240,7 @@ namespace hooks
 			if (weaponId == WeaponId::HeraclesJavelinCannons)
 			{
 				const f64 splashBase = weapons_dat::MediumSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = bulletSourceExt->NemeanReactorsStack;
+				const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
 				medium = (s16)(splashBase * (1 + 0.1 * stacks));
 			}
 
@@ -291,7 +291,7 @@ namespace hooks
 			else if (splash == SplashType::FriendlyNew)
 			{
 				bool lurkerOverride = false;
-				if (bullet->sourceUnit && (CUnit*)bulletSourceExt->LurkerPickTarget == target)
+				if (bullet->sourceUnit && (CUnit*)bulletSourceExt->values[ValueLurkerPickTarget] == target)
 				{
 					lurkerOverride = true;
 				}
@@ -396,8 +396,8 @@ namespace hooks
 			&& bullet->sourceUnit->sprite
 			&& target->sprite)
 		{
-			auto X = bulletSourceExt->GuardianMissileLaunchPosX;
-			auto Y = bulletSourceExt->GuardianMissileLaunchPosY;
+			auto X = bulletSourceExt->values[ValueGuardianMissileLaunchPosX];
+			auto Y = bulletSourceExt->values[ValueGuardianMissileLaunchPosY];
 			if (X != 0 && Y != 0)
 			{
 				divisor = scbw::getDistanceFast(X, Y, target->getX(), target->getY()) / (32 * 3);

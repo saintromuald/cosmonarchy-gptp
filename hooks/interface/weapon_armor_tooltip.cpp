@@ -418,64 +418,87 @@ namespace hooks
 		}
 
 		// Aise Timer + Value
-		addStatus(statuses, "Knockout Drivers", unitExt->KnockoutDriversStacks, 20, unitExt->KnockoutDriversTimer, TimerType::Aise);
-		addStatus(statuses, "Adrenal Glands", unitExt->AdrenalStacks, 4, unitExt->AdrenalTimer, TimerType::Aise);
-		addStatus(statuses, "Astral Blessing", unitExt->EcclesiastStack, 0, unitExt->EcclesiastTimer, TimerType::Aise);
-		addStatus(statuses, "Captivating Claws", captivatingClawsGetStacks(unit), 4, captivatingClawsGetTimer(unit), TimerType::Aise);
-		addStatus(statuses, "Swarming Omen Aura", unitExt->SwarmingOmenAbility, 1, unitExt->SwarmingOmenTimer, TimerType::Aise);
-		addStatus(statuses, "Nemean Reactors", unitExt->NemeanReactorsStack, 5, unitExt->NemeanReactorsTimer, TimerType::Aise);
-		addStatus(statuses, "Observance", unitExt->ObservanceRend, 0, unitExt->ObservanceTimerDebuff, TimerType::Aise);
-		addStatus(statuses, "Corrosive Spores", unitExt->CorrosiveTouchStacks, 0, unitExt->CorrosiveTouchTimer, TimerType::Aise);
+		addStatus(statuses, "Knockout Drivers", unitExt->values[ValueKnockoutDriversStacks], 20,
+			unitExt->timers[TimerKnockoutDrivers], TimerType::Aise);
+		addStatus(statuses, "Adrenal Glands", unitExt->values[ValueAdrenalStacks], 4,
+			unitExt->timers[TimerAdrenal], TimerType::Aise);
+		addStatus(statuses, "Astral Blessing", unitExt->values[ValueEcclesiastStack], 0,
+			unitExt->timers[TimerEcclesiast], TimerType::Aise);
+		addStatus(statuses, "Captivating Claws", captivatingClawsGetStacks(unit), 4,
+			captivatingClawsGetTimer(unit), TimerType::Aise);
+		addStatus(statuses, "Swarming Omen Aura", unitExt->values[ValueSwarmingOmenAbility], 1,
+			unitExt->timers[TimerSwarmingOmen], TimerType::Aise);
+		addStatus(statuses, "Nemean Reactors", unitExt->values[ValueNemeanReactorsStack], 5,
+			unitExt->timers[TimerNemeanReactors], TimerType::Aise);
+		addStatus(statuses, "Observance", unitExt->values[ValueObservanceRend], 0,
+			unitExt->timers[TimerObservanceDebuff], TimerType::Aise);
+		addStatus(statuses, "Corrosive Spores", unitExt->values[ValueCorrosiveTouchStacks], 0,
+			unitExt->timers[TimerCorrosiveTouch], TimerType::Aise);
 
 		// Aise Timer
-		addStatus(statuses, "Malediction", -1, 1, unitExt->MaledictionSlow, TimerType::Aise);
-		addStatus(statuses, "Ensnaring Brood", -1, 1, unitExt->EnsnaringBroodTimer, TimerType::Aise);
-		addStatus(statuses, "Lobotomy Slow", -1, 1, unitExt->LobotomySlow, TimerType::Aise);
-		addStatus(statuses, "Kaiser Rampage", -1, 1, unitExt->KaiserRampage, TimerType::Aise);
-		addStatus(statuses, "Hallucinating", -1, 1, unitExt->HallucinatingTimer, TimerType::Aise);
-//		addStatus(statuses, "Ectomorphic Accelerant", 0,  -1, unitExt->EggBoostTimer, TimerType::Aise)); // currently can't read tooltips from  eggs
-//		addStatus(statuses, "Endomorphic Accelerant", 0,  -1, unitExt->MineralSpecialRegenTimer, TimerType::Aise)); // nor mineral fields
-		addStatus(statuses, "Adrenaline Packs", -1, 1, unitExt->Adrenaline, TimerType::Aise);
-		addStatus(statuses, "Adrenal Frenzy", -1, 1, unitExt->NathrokorTimer, TimerType::Aise);
-		addStatus(statuses, "Controlled Demolition", -1, 1, unitExt->ControlledDemolitionTimer, TimerType::Aise);
-		addStatus(statuses, "Emergency Detonation", -1, 1, unitExt->EmergencyDetonationTimer, TimerType::Aise);
-		addStatus(statuses, "Binding Grip", -1, 1, unitExt->BindingGripTimer, TimerType::Aise);
-		addStatus(statuses, "Autovitality", -1, 1, unitExt->SimulacrumCloneTimer, TimerType::Aise);
-		addStatus(statuses, "Caustic Discharge", -1, 1, unitExt->CausticDischargeSpeed, TimerType::Aise);
-		addStatus(statuses, "Ion Field", -1, 1, unitExt->IonFieldSpeed, TimerType::Aise);
+		addStatus(statuses, "Malediction", -1, 1,
+			unitExt->timers[TimerMaledictionSlow], TimerType::Aise);
+		addStatus(statuses, "Ensnaring Brood", -1, 1,
+			unitExt->timers[TimerEnsnaringBrood], TimerType::Aise);
+		addStatus(statuses, "Lobotomy Slow", -1, 1,
+			unitExt->timers[TimerLobotomySlow], TimerType::Aise);
+		addStatus(statuses, "Kaiser Rampage", -1, 1,
+			unitExt->timers[TimerKaiserRampage], TimerType::Aise);
+		addStatus(statuses, "Hallucinating", -1, 1,
+			unitExt->timers[TimerHallucinating], TimerType::Aise);
+		//addStatus(statuses, "Ectomorphic Accelerant", 0, -1,
+		//	unitExt->EggBoostTimer, TimerType::Aise)); // currently can't read tooltips from  eggs
+		//addStatus(statuses, "Endomorphic Accelerant", 0, -1,
+		//	unitExt->MineralSpecialRegenTimer, TimerType::Aise)); // nor mineral fields
+		addStatus(statuses, "Adrenaline Packs", -1, 1,
+			unitExt->timers[TimerAdrenaline], TimerType::Aise);
+		addStatus(statuses, "Adrenal Frenzy", -1, 1,
+			unitExt->timers[TimerNathrokor], TimerType::Aise);
+		addStatus(statuses, "Controlled Demolition", -1, 1,
+			unitExt->timers[TimerControlledDemolition], TimerType::Aise);
+		addStatus(statuses, "Emergency Detonation", -1, 1,
+			unitExt->timers[TimerEmergencyDetonation], TimerType::Aise);
+		addStatus(statuses, "Binding Grip", -1, 1,
+			unitExt->timers[TimerBindingGrip], TimerType::Aise);
+		addStatus(statuses, "Autovitality", -1, 1,
+			unitExt->timers[TimerSimulacrumClone], TimerType::Aise);
+		addStatus(statuses, "Caustic Discharge", -1, 1,
+			unitExt->timers[TimerCausticDischargeSpeed], TimerType::Aise);
+		addStatus(statuses, "Ion Field", -1, 1,
+			unitExt->timers[TimerIonFieldSpeed], TimerType::Aise);
 
 		// Aise Value
-		addStatus(statuses, "Energy Decay", unitExt->EntropyGauntlets, 1);
-		addStatus(statuses, "Armor Reduction", unitExt->ArmorReduce, 0);
-		addStatus(statuses, "Cabeirus Feeders", ceil((f64)unitExt->MadcapStacks / MadcapPassiveDecayTime), 10);
-		addStatus(statuses, "Reverse Thrust", unitExt->ReverseThrust, 1);
-		addStatus(statuses, "Sublime Shepherd", unitExt->SublimeShepherd, 0);
-		addStatus(statuses, "Lazarus Agent", unitExt->LazarusAgent, 1);
-		addStatus(statuses, "Expanded Storage", unitExt->TreasuryStacks, 0); // currently only works for Ovileth and its morphs
-		addStatus(statuses, "Reconstitution", unitExt->Reconstitution, 1);
-		addStatus(statuses, "Repentent Chorus", unitExt->RepententChorus, 0);
-		addStatus(statuses, "Stellar Enforcement", unitExt->StellarEnforcement, 1);
-		addStatus(statuses, "Terminal Surge", unitExt->TerminalSurge, 0);
-		addStatus(statuses, "Godlike", unitExt->GodsMadeFleshTimer, 1);
+		addStatus(statuses, "Armor Reduction", unitExt->values[ValueArmorReduce], 0);
+		addStatus(statuses, "Cabeirus Feeders", ceil((f64)unitExt->values[ValueMadcapStacks] / MadcapPassiveDecayTime), 10);
+		addStatus(statuses, "Reverse Thrust", unitExt->values[ValueReverseThrust], 1);
+		addStatus(statuses, "Sublime Shepherd", unitExt->values[ValueSublimeShepherd], 0);
+		addStatus(statuses, "Lazarus Agent", unitExt->values[ValueLazarusAgent], 1);
+		addStatus(statuses, "Expanded Storage", unitExt->values[ValueTreasuryStacks], 0); // currently only works for Ovileth and its morphs
+		addStatus(statuses, "Reconstitution", unitExt->values[ValueReconstitution], 1);
+		addStatus(statuses, "Repentent Chorus", unitExt->values[ValueRepententChorus], 0);
+		addStatus(statuses, "Stellar Enforcement", unitExt->values[ValueStellarEnforcement], 1);
+		addStatus(statuses, "Terminal Surge", unitExt->values[ValueTerminalSurge], 0);
 
 		// Aise Value - Gimmicked
 		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 0, 1);
 		addStatus(statuses, "Dirge", scbw::get_generic_rust_value(unit, ValueId::TempoChange) == 1, 1);
-		addStatus(statuses, "Observing", unitExt->ObservanceOverlayTimer > 0, 1);
-		addStatus(statuses, "Swarming Omen", unitExt->SwarmingOmenStatus > 0, 1);
-		addStatus(statuses, "Protective Instincts", unitExt->ProtectiveInstinctsStatus > 0, 1);
-		addStatus(statuses, "Deconstructing", unitExt->Deconstruction > 0, 1);
-		addStatus(statuses, "Worshiping", unitExt->WorshipStack > 0, 1);
-		addStatus(statuses, "Making Gods from Flesh", unitExt->GodsMadeFleshActive > 0, 1);
-		addStatus(statuses, "Adaptive Amitosis", unitExt->AdaptiveAmitosis > 0, 1);
-		addStatus(statuses, "Cutaneous Barrier", unitExt->CutaneousBarrier > 0, 1);
-		addStatus(statuses, "Infested", unitExt->InfestedByAkistrokor > 0, 1);
-		addStatus(statuses, "Enthralling Assault", unitExt->EnthrallingTalons > 0, 1);
+		addStatus(statuses, "Observing", unitExt->timers[TimerObservanceOverlay] > 0, 1);
+		addStatus(statuses, "Swarming Omen", unitExt->values[ValueSwarmingOmenStatus] > 0, 1);
+		addStatus(statuses, "Protective Instincts", unitExt->values[ValueProtectiveInstinctsStatus] > 0, 1);
+		addStatus(statuses, "Deconstructing", unitExt->values[ValueDeconstruction] > 0, 1);
+		addStatus(statuses, "Worshiping", unitExt->values[ValueWorshipStack] > 0, 1);
+		addStatus(statuses, "Making Gods from Flesh", unitExt->values[ValueGodsMadeFleshActive] > 0, 1);
+		addStatus(statuses, "Adaptive Amitosis", unitExt->values[ValueAdaptiveAmitosis] > 0, 1);
+		addStatus(statuses, "Cutaneous Barrier", unitExt->values[ValueCutaneousBarrier] > 0, 1);
+		addStatus(statuses, "Infested", unitExt->values[ValueInfestedByAkistrokor] > 0, 1);
+		addStatus(statuses, "Enthralling Assault", unitExt->values[ValueEnthrallingTalons] > 0, 1);
 		addStatus(statuses, "Phase Link", scbw::hasClarionLinks(unit), 1);
 		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0, 1); // for caster
 		bool malice = scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0);
-		addStatus(statuses, "Cowardice", unitExt->HierophantOverlay || malice, 1);
+		addStatus(statuses, "Cowardice", unitExt->values[ValueHierophantOverlay] || malice, 1);
 		addStatus(statuses, "Malice", malice, 1);
+		addStatus(statuses, "Energy Decay", unitExt->timers[TimerEntropyGauntlets], 1);
+		addStatus(statuses, "Godlike", unitExt->timers[TimerGodsMadeFlesh], 1);
 
 		// Vanilla Timer + Value
 		addStatus(statuses, "Defensive Matrix", unit->defensiveMatrixHp / 256, 200, unit->defensiveMatrixTimer);

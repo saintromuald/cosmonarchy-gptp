@@ -200,13 +200,13 @@ void unitDestructorSpecialHook(CUnit* unit)
 						{
 							return;
 						}
-						targetExt->TerminalSurge++;
+						targetExt->values[ValueTerminalSurge]++;
 						target->updateSpeed();
 					});
 			} break;
 			case UnitId::ProtossLanifect:
 			{
-				auto web = unitExt->AttachedDisruptionWeb;
+				auto web = unitExt->units[UnitAttachedDisruptionWeb];
 				if (web != nullptr)
 				{
 					web->removeTimer = 1;
@@ -274,11 +274,11 @@ void unitDestructorSpecialHook(CUnit* unit)
 	}
 
 	// Alkajelisk Parasitic Spores behavior
-	if (unitExt->AlkajeliskParasite == 1)
+	if (unitExt->values[ValueAlkajeliskParasite] == 1)
 	{
 		unit->orderTarget.pt.x = unit->position.x + 1;
 		unit->orderTarget.pt.y = unit->position.y;
-		auto bullet = helper::createBulletRet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y, unitExt->AlkajeliskParasitePlayer, 0);
+		auto bullet = helper::createBulletRet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y, unitExt->values[ValueAlkajeliskParasitePlayer], 0);
 		if (bullet != nullptr)
 		{
 			bullet->time_remaining = 255;
@@ -323,7 +323,7 @@ void unitDestructorSpecialHook(CUnit* unit)
 		}
 		for (u32 player = 0; player < PLAYER_COUNT; player++)
 		{
-			if (unit->parasiteFlags & (1 << player) && unitExt->ParasiteArmTimer <= 1)
+			if (unit->parasiteFlags & (1 << player) && unitExt->timers[TimerParasiteArm] <= 1)
 			{
 				scbw::createUnitFromAbility(type, supplyCount, player, unit->position.x, unit->position.y, 720);
 			}

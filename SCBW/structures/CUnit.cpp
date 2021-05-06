@@ -548,7 +548,7 @@ void CUnit::inflictDamage(s32 dmg, CUnit* attacker, s32 attackingPlayer, bool no
 	UnitExt* unitExt = globals.GetUnitExt(this);
 	auto damage = dmg;
 	s32 shieldReduceAmount = 0;
-	if (unitExt->GodsMadeFleshTimer)
+	if (unitExt->timers[TimerGodsMadeFlesh])
 	{
 		return;
 	}
@@ -745,9 +745,9 @@ void CUnit::spendUnitEnergy(u32 energySpent)
 		}
 	}
 	// TODO: fix entropy gauntlets bug
-	if (unitExt->EntropyGauntlets > 1)
+	if (unitExt->timers[TimerEntropyGauntlets] > 1)
 	{
-		this->inflictDamage(energySpent, unitExt->DecaySavant, -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
+		this->inflictDamage(energySpent, unitExt->units[UnitDecaySavant], -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
 	}
 }
 void CUnit::addUnitEnergy(u32 energy)
@@ -1376,9 +1376,9 @@ void CUnit::setSupplyProvided(u8 amount) // overwrites previous supply provided
 	UnitExt* unitExt = globals.GetUnitExt(this);
 
 	u32 race = this->getRace();
-	u32 previous_supply = unitExt->SupplyProvided;
+	u32 previous_supply = unitExt->values[ValueSupplyProvided];
 	if (previous_supply)
 		raceSupply[race].provided[this->playerId] -= previous_supply;
 	raceSupply[race].provided[this->playerId] += amount;
-	unitExt->SupplyProvided = amount;
+	unitExt->values[ValueSupplyProvided] = amount;
 }

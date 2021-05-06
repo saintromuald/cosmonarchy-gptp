@@ -31,20 +31,20 @@ namespace hooks
 		}
 
 		// Mind Tyrant Malediction: Apply movespeed slow to non-organic targets
-		if (unitExt->MaledictionSlow > 1)
+		if (unitExt->timers[TimerMaledictionSlow] > 1)
 		{
 			speed *= 0.5;
 		}
 
 		// Lobotomy Mine slow
-		if (unitExt->LobotomySlow > 1)
+		if (unitExt->timers[TimerLobotomySlow] > 1)
 		{
 			speed *= 0.5;
 		}
 
 		// Vassal Terminal Surge: increase movespeed when any nearby Simulacrum dies
 		{
-			f64 stacks = MathUtils::clamp<f64>(unitExt->TerminalSurge, 0, 10) * 1.5;
+			f64 stacks = MathUtils::clamp<f64>(unitExt->values[ValueTerminalSurge], 0, 10) * 1.5;
 			if (stacks > 0)
 			{
 				speed *= 1.0 + stacks * 0.05;
@@ -52,15 +52,15 @@ namespace hooks
 		}
 
 		// Nathrokor Adrenal Frenzy: increase movespeed of all nearby allies after kill
-		if (unitExt->NathrokorTimer)
+		if (unitExt->timers[TimerNathrokor])
 		{
 			speed *= 1.25;
 		}
 
 		// Southpaw Knockout Drivers: reduces movement speed by 5% per stack
-		if (unitExt->KnockoutDriversStacks)
+		if (unitExt->values[ValueKnockoutDriversStacks])
 		{
-			u32 knockoutValue = unitExt->KnockoutDriversStacks;
+			u32 knockoutValue = unitExt->values[ValueKnockoutDriversStacks];
 			speed *= 1 - 0.05 * knockoutValue;
 		}
 
@@ -71,7 +71,7 @@ namespace hooks
 		}
 
 		// Keskathalor Caustic Discharge: Speed Buff
-		if (unitExt->CausticDischargeSpeed > 0)
+		if (unitExt->timers[TimerCausticDischargeSpeed] > 0)
 		{
 			speed *= 1.5;
 		}
@@ -89,10 +89,10 @@ namespace hooks
 				if (n(picked_unit))
 				{
 					UnitExt* pickedExt = globals.GetUnitExt(picked_unit);
-					if (pickedExt->SwarmingOmenTimer)
+					if (pickedExt->timers[TimerSwarmingOmen])
 					{
 						accelerate = true;
-						unitExt->SwarmingOmenStatus = 25;
+						unitExt->values[ValueSwarmingOmenStatus]= 25;
 						break;
 					}
 				}
@@ -108,7 +108,7 @@ namespace hooks
 			case UnitId::ZergUltrakor:
 			{
 				// Ultrakor Kaiser Rampage: gains 150% movespeed on kill for 1 second
-				if (unitExt->KaiserRampage)
+				if (unitExt->timers[TimerKaiserRampage])
 				{
 					speed *= 2;
 				}

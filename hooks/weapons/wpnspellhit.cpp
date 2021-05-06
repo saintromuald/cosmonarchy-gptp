@@ -595,7 +595,7 @@ namespace hooks
 				// create the broodling
 				created_broodling = helper::createUnit(UnitId::ZergBroodling, pos.x, pos.y, attacker->playerId);
 				UnitExt* broodlingExt = globals.GetUnitExt(created_broodling);
-				broodlingExt->BroodlingMother = attacker;
+				broodlingExt->units[UnitBroodlingMother] = attacker;
 
 				if (created_broodling == nullptr)
 				{
@@ -657,7 +657,7 @@ namespace hooks
 					unit->newFlags1 |= NewFlags1::Metastasis;
 				}
 				if (attacker != nullptr
-					&& attackerExt->EnsnaringBroodTimer > 0
+					&& attackerExt->timers[TimerEnsnaringBrood] > 0
 					&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Building))
 				{
 					scbw::applyEnsnare(unit);
