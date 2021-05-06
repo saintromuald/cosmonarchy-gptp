@@ -1787,6 +1787,8 @@ namespace scbw
 	{
 		switch (id)
 		{
+			case UnitId::ZergDroleth:
+			case UnitId::ZergOvileth:
 			case UnitId::SharedCohort:
 //			case UnitId::SharedTarasque:
 //			case UnitId::SharedAnticthon:

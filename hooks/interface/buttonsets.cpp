@@ -625,16 +625,17 @@ namespace hooks
 		// Treasury
 		if (buttonsetId == 215)
 		{
-			buttonsetId = UnitId::Special_StartLocation;
+			buttonsetId = UnitId::Special_StartLocation; // Treasury
 		}
 		// Larva		
 		if (buttonsetId == 35)
 		{
-			if ((*activePortraitUnit)->connectedUnit->id == UnitId::ZergOcsalColony)
+			UnitExt* larvaExt = globals.GetUnitExt(*activePortraitUnit);
+			if (larvaExt->values[ValueLarvaType] == 1)
 			{
-				buttonsetId = UnitId::Special_RightUpperLevelDoor;
+				buttonsetId = UnitId::Special_RightUpperLevelDoor; // Ocsal Larva
 			}
-		}		
+		}
 		BUTTON_SET* const current_buttonset = getButtonSet(buttonsetId);
 		u32* const unknown_0066FF60 = (u32*)0x0066FF60;
 		bool bStopThere = false;
