@@ -503,8 +503,9 @@ namespace hooks
 						if (n(picked_unit))
 						{
 							// Apply Lazarus Agent
-							unitExt->values[ValueLazarusAgent] = 1;
-							unitExt->values[ValueLazarusAgentApostleSrc] = (u32)unit; // TODO: port as a unit
+							UnitExt* pickedUnitExt = globals.GetUnitExt(picked_unit);
+							pickedUnitExt->values[ValueLazarusAgent] = 1;
+							pickedUnitExt->values[ValueLazarusAgentApostleSrc] = (u32)unit; // TODO: port as a unit
 							picked_unit->sprite->createTopOverlay(1265);
 						}
 					}

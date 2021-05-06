@@ -572,7 +572,7 @@ namespace hooks
 					{
 						targetExt->timers[TimerEntropyGauntlets] = (5 * 24) + 1;
 						targetExt->units[UnitDecaySavant] = data.attacker;
-						u32 overlayImageId = ImageId::EntropyGauntletsOverlaySmall + scbw::getOverlayOffset(data.target->id);
+						u32 overlayImageId = ImageId::EntropyGauntletsOverlaySmall - scbw::getOverlayOffset(data.target->id);
 						if (data.target->subunit != nullptr)
 						{
 							data.target->subunit->sprite->removeOverlay(overlayImageId);
@@ -642,7 +642,7 @@ namespace hooks
 				} break;
 				case WeaponId::GorgrokorSerratedCleavers:
 				{
-					// Essence Drain - Gorgoleth Energy Steal
+					// Essence Drain - Gorgrokor Energy Steal
 					if (units_dat::BaseProperty[data.target->id] & UnitProperty::Spellcaster)
 					{
 						u16 energy = std::min(data.target->energy, (u16)(data.finalDamage + data.shieldReduceAmount));
@@ -655,7 +655,7 @@ namespace hooks
 					// Stellar Enforcement - Magister behavior
 					if (!targetExt->values[ValueStellarEnforcement])
 					{
-						targetExt->values[ValueStellarEnforcement] == 1;
+						targetExt->values[ValueStellarEnforcement] = 1;
 					}
 				} break;
 				case WeaponId::ApostleCharonRifle:
