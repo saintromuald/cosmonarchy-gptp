@@ -795,7 +795,7 @@ namespace hooks
 				if (bullet->weaponType == WeaponId::ClaymoreHarpoonRailgun)
 				{
 					// Claymore - Kelvin Munitions - Slow targets
-					if (!(scbw::get_generic_value(collisionTarget, ValueId::KelvinMunitionsSlowValue))
+					if (!(scbw::get_generic_value(collisionTarget, ValueId::KelvinMunitionsSlowValue)))
 					{
 						scbw::set_generic_value(collisionTarget, ValueId::KelvinMunitionsSlowValue, 1);
 					}
