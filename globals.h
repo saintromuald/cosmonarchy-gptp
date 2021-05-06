@@ -128,7 +128,10 @@ public:
 		if (it != unitExt.end())
 		{
 			UnitExt ext;
-			auto pair = std::pair<CUnit*, UnitExt>(unit, ext);
+			std::pair<CUnit*, UnitExt> pair;
+
+			pair.first = unit;
+			pair.second = ext;
 			unitExt.emplace(unit, ext);
 		}
 		return &unitExt[unit];

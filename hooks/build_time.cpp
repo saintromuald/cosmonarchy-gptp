@@ -19,7 +19,7 @@ namespace hooks
 		{
 			multiplier = 16;
 		}
-		if (unitExt->EggBoostTimer % 2 == 1)
+		if (unitExt->timers[TimerEggBoost] % 2 == 1)
 		{
 			multiplier *= 2;
 		}

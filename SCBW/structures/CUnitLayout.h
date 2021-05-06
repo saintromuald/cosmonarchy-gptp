@@ -139,210 +139,197 @@ namespace OverlayOffset
 	};
 }
 
-// this value shouldn't be smaller than count of variables in unit ext arrays
-#define UNITEXT_ARRAY_SIZE 256
+enum
+{
+	ValueExemplarSwitch,			// should be removed
+	ValueReverseThrust,				// should be removed
+	ValueArmorReduce,				// unused
+	ValueStarcallerSwitch,			// unused
+	ValueStarcallerCracking,		// unused
+	ValueWarpingIn,					// unused
+	ValueMalediction,				// unused
+	ValueWyvernSlow,				// unused
+	ValueWyvernReverseLandgrabOn,	// unused
+	ValueLandGrabStart,				// unused
+	ValueUpgradeBoost,				// unused
+	ValueRemainingBuildTimeCopy,	// unused
+	ValueIonCannonSprite,			// unused
+	ValueAmitosis,
+	ValueSomaticImplants,
+	ValueSublimeShepherd,
+	ValueWyvernReverseLandgrabX,
+	ValueWyvernReverseLandgrabY,
+	ValueObservanceRend,
+	ValueSpineX,
+	ValueSpineY,
+	ValueAdrenalStacks,
+	ValueLastOrdersInit,
+	ValueKnockoutDriversStacks,
+	ValueHallucinatingSourcePlayer,
+	ValueTempoChange,
+	ValueTreasuryStacks,
+	ValueSupplyProvided,
+	ValueSkyfallStacks,
+	ValueSkyfallX,
+	ValueSkyfallY,
+	ValueCorrosiveTouchStacks,
+	ValueKalkalethMissilePos,
+	ValueTerminalSurge,
+	ValueEmpyreanMissilePos,
+	ValueProtossSwitchOrderState,
+	ValueOverlordSupplyGimmick,
+	ValueMadcapStacks,
+	ValuePhobosDischarge,
+	ValueSalamanderAtkPos,
+	ValueNaniteField,
+	ValuePhobosLaserPos,
+	ValuePhobosMissilePos,
+	ValueCentaurMissilePos,
+	ValueLazarusAgent,
+	ValueRepententChorus,
+	ValueStellarEnforcement,
+	ValueDisruptionWebDamage,
+	ValueCastLazarusAgent,
+	ValueLazarusNoHeal,
+	ValueAlkajeliskParasite,
+	ValueAlkajeliskParasitePlayer,
+	ValuePegasusLaserPos,
+	ValuePegasusMissilePos,
+	ValueGuardianMissileLaunchPosX,
+	ValueGuardianMissileLaunchPosY,
+	ValueSovereignCannonPos,
+	ValueAICloakGimmick,
+	ValueCrucible,
+	ValueKeskathalorMissilePos,
+	ValueEcclesiastStack,
+	ValueEcclesiastPlayer,
+	ValueAugurSafetyCheck,
+	ValuePenumbraLaserPos,
+	ValueClarionSFX,
+	ValueWraithLaserPos,
+	ValueHierophantOverlay,
+	ValueExecutingCorsairMoveOrder,
+	ValueEnsnaringBroodAbility,
+	ValueCutaneousBarrier,
+	ValueIonCannonProjectilePos,
+	ValueSwarmingOmenAbility,
+	ValueReconstitution,
+	ValueSimulacrumClone,
+	ValueIsReviving,
+	ValueSwarmingOmenStatus,
+	ValueProtectiveInstinctsStatus,
+	ValueNemeanReactorsStack,
+	ValueDeconstruction,
+	ValueDeconstructionPlayer,
+	ValueRescindMindControl,
+	ValueWorshipStack,
+	ValueWorshipOriginalPlayer,
+	ValueChasmalColonyArteries,
+	ValueAdaptiveAmitosis,
+	ValueEnthrallingTalons,
+	ValueInfestedByAkistrokor,
+	ValuePreMorphEnergy,
+	ValueGodsMadeFleshCast,
+	ValueGodsMadeFleshActive,
+	ValueLazarusAgentApostleSrc,
+	ValueLurkerPickTarget,
+	ValueTurretParentLink,
+
+	ValueCount,
+};
+
+enum
+{
+	TimerAdrenaline,				  // unused
+	TimerKaiserRampage,
+	TimerMaledictionSlow,
+	TimerObservanceDebuff,
+	TimerObservancePeriod,
+	TimerLurkerETA,
+	TimerEntropyGauntlets,
+	TimerLobotomySlow,
+	TimerPlanetCrackerChannel,
+	TimerPlanetCrackerDelay,
+	TimerStarcallerInterceptionMissiles,
+	TimerUltrakorCancelGimmick,
+	TimerCausticDischargeSpeed,
+	TimerIonFieldSpeed,
+	TimerReconstitutionCooldown,
+	TimerEnthrallingAssaultHeal,
+	TimerBindingGrip,
+	TimerGodsMadeFlesh,
+	TimerControlledDemolition,
+	TimerEmergencyDetonation,
+	TimerNemeanReactors,
+	TimerSwarmingOmen,
+	TimerSimulacrumClone,
+	TimerEnsnaringBrood,
+	TimerNewMedstim,
+	TimerAugurGimmick,
+	TimerEcclesiast,
+	TimerObservanceOverlay,
+	TimerNathrokor,
+	TimerNaniteField,
+	TimerCorrosiveTouch,
+	TimerSkyfall,
+	TimerEggBoost,
+	TimerHallucinating,
+	TimerKnockoutDrivers,
+	TimerDecloak,
+	TimerMineralSpecialRegen,
+	TimerAdrenal,
+	TimerParasiteArm,
+	TimerSwitchModeGimmick,
+	TimerCaptivatingClaws,
+		
+	TimerAI_Lazarus,
+	TimerAI_Siphon,
+	TimerAI_Clarion,
+	TimerAI_Queen,
+	TimerAI_Paladin,
+	TimerAI_GriefOfAllGods,
+	TimerAI_CorsairDweb,
+		
+	TimerCount,
+};
+
+enum
+{
+	UnitBroodlingMother,			// is this still really used?
+	UnitAttachedDisruptionWeb,
+	UnitParasiteSource,
+	UnitHallucinationPointer,
+	UnitDirgeAttacker,
+	UnitDecaySavant,
+	UnitWorshipDemiurge,
+	UnitAttachedAkistrokor,
+
+	UnitCount,
+};
+
+enum
+{
+	UnitVectorCaptivatingClaws,
+	UnitVectorPhaseLinkClarions,
+	UnitVectorPhaseLink,
+
+	UnitVectorCount,
+};
+
+enum
+{
+	TimerVectorPhaseRushTimerArray, // unused, was size 8
+
+	TimerVectorCount,
+};
+
 struct UnitExt
 {
-	u32 ExemplarSwitch;				// should be removed
-	u32 ReverseThrust;				// should be removed
-	u32 ArmorReduce;				// unused
-	u32 StarcallerSwitch;			// unused
-	u32 StarcallerCracking;			// unused
-	u32 WarpingIn;					// unused
-	u32 Malediction;				// unused
-	u32 WyvernSlow;					// unused
-	u32 WyvernReverseLandgrabOn;	// unused
-	u32 LandGrabStart;				// unused
-	u32 UpgradeBoost;				// unused
-	u32 RemainingBuildTimeCopy;		// unused
-	u32 IonCannonSprite;			// unused
-	u32 Amitosis;
-	u32 SomaticImplants;
-	u32 SublimeShepherd;
-	u32 WyvernReverseLandgrabX;
-	u32 WyvernReverseLandgrabY;
-	u32 ObservanceRend;
-	u32 SpineX;
-	u32 SpineY;
-	u32 AdrenalStacks;
-	u32 LastOrdersInit;
-	u32 KnockoutDriversStacks;
-	u32 HallucinatingSourcePlayer;
-	u32 TempoChange;
-	u32 TreasuryStacks;
-	u32 SupplyProvided;
-	u32 SkyfallStacks;
-	u32 SkyfallX;
-	u32 SkyfallY;
-	u32 CorrosiveTouchStacks;
-	u32 KalkalethMissilePos;
-	u32 TerminalSurge;
-	u32 EmpyreanMissilePos;
-	u32 ProtossSwitchOrderState;
-	u32 OverlordSupplyGimmick;
-	u32 MadcapStacks;
-	u32 PhobosDischarge;
-	u32 SalamanderAtkPos;
-	u32 NaniteField;
-	u32 PhobosLaserPos;
-	u32 PhobosMissilePos;
-	u32 CentaurMissilePos;
-	u32 LazarusAgent;
-	u32 NathrokorTimer;
-	u32 RepententChorus;
-	u32 StellarEnforcement;
-	u32 DisruptionWebDamage;
-	u32 CastLazarusAgent;
-	u32 LazarusNoHeal;
-	u32 AlkajeliskParasite;
-	u32 AlkajeliskParasitePlayer;
-	u32 PegasusLaserPos;
-	u32 PegasusMissilePos;
-	u32 GuardianMissileLaunchPosX;
-	u32 GuardianMissileLaunchPosY;
-	u32 SovereignCannonPos;
-	u32 AICloakGimmick;
-	u32 Crucible;
-	u32 KeskathalorMissilePos;
-	u32 EcclesiastStack;
-	u32 EcclesiastPlayer;
-	u32 AugurSafetyCheck;
-	u32 PenumbraLaserPos;
-	u32 ClarionSFX;
-	u32 WraithLaserPos;
-	u32 HierophantOverlay;
-	u32 ExecutingCorsairMoveOrder;
-	u32 EnsnaringBroodAbility;
-	u32 CutaneousBarrier;
-	u32 IonCannonProjectilePos;
-	u32 SwarmingOmenAbility;
-	u32 Reconstitution;
-	u32 SimulacrumClone;
-	u32 IsReviving;
-	u32 SwarmingOmenStatus;
-	u32 ProtectiveInstinctsStatus;
-	u32 NemeanReactorsStack;
-	u32 Deconstruction;
-	u32 DeconstructionPlayer;
-	u32 RescindMindControl;
-	u32 WorshipStack;
-	u32 WorshipOriginalPlayer;
-	u32 ChasmalColonyArteries;
-	u32 AdaptiveAmitosis;
-	u32 EnthrallingTalons;
-	u32 InfestedByAkistrokor;
-	u32 PreMorphEnergy;
-	u32 GodsMadeFleshCast;
-	u32 GodsMadeFleshActive;
-	u32 LazarusAgentApostleSrc;
-	u32 LurkerPickTarget;
-	u32 TurretParentLink;
-
-	union
-	{
-		u32 Timers[UNITEXT_ARRAY_SIZE];
-		struct
-		{
-			u32 PhaseRushTimerArray[8]; // unused
-			u32 Adrenaline;				// unused
-			u32 KaiserRampage;
-			u32 MaledictionSlow;
-			u32 ObservanceTimerDebuff;
-			u32 ObservanceTimerPeriod;
-			u32 LurkerETA;
-			u32 EntropyGauntlets;
-			u32 LobotomySlow;
-			u32 PlanetCrackerChannel;
-			u32 PlanetCrackerDelay;
-			u32 StarcallerInterceptionMissiles;
-			u32 UltrakorCancelGimmick;
-			u32 CausticDischargeSpeed;
-			u32 IonFieldSpeed;
-			u32 ReconstitutionCooldown;
-			u32 EnthrallingAssaultHealTimer;
-			u32 BindingGripTimer;
-			u32 GodsMadeFleshTimer;
-			u32 ControlledDemolitionTimer;
-			u32 EmergencyDetonationTimer;
-			u32 NemeanReactorsTimer;
-			u32 SwarmingOmenTimer;
-			u32 SimulacrumCloneTimer;
-			u32 EnsnaringBroodTimer;
-			u32 NewMedstimTimer;
-			u32 AugurGimmickTimer;
-			u32 EcclesiastTimer;
-			u32 ObservanceOverlayTimer;
-			u32 NathrokorTimer;
-			u32 NaniteFieldTimer;
-			u32 CorrosiveTouchTimer;
-			u32 SkyfallTimer;
-			u32 EggBoostTimer;
-			u32 HallucinatingTimer;
-			u32 KnockoutDriversTimer;
-			u32 DecloakTimer;
-			u32 MineralSpecialRegenTimer;
-			u32 AdrenalTimer;
-			u32 ParasiteArmTimer;
-			u32 SwitchModeGimmickTimer;
-
-			u32 AI_LazarusTimer;
-			u32 AI_SiphonTimer;
-			u32 AI_ClarionTimer;
-			u32 AI_QueenTimer;
-			u32 AI_PaladinTimer;
-			u32 AI_GriefOfAllGodsTimer;
-			u32 AI_CorsairDweb_Timer;
-		};
-	};
-	
-	union
-	{
-		CUnit* Units[UNITEXT_ARRAY_SIZE];
-		struct
-		{
-			CUnit* BroodlingMother;			// is this still really used?
-			CUnit* AttachedDisruptionWeb;
-			CUnit* ParasiteSource;
-			CUnit* HallucinationPointer;
-			CUnit* DirgeAttacker;
-			CUnit* DecaySavant;
-			CUnit* WorshipDemiurgeUnit;
-			CUnit* AttachedAkistrokorUnit;
-		};
-	};
-
-	union
-	{
-		std::vector<CUnit*> UnitVectors[UNITEXT_ARRAY_SIZE];
-		struct
-		{
-			std::vector<CUnit*> CaptivatingClawsUnitVector;
-			std::vector<CUnit*> PhaseLinkClarions;
-			std::vector<CUnit*> PhaseLink;
-		};
-	};
-
-	union
-	{
-		std::vector<u32> TimerVectors[UNITEXT_ARRAY_SIZE];
-		struct
-		{
-			std::vector<u32> Unused;
-		};
-	};
-
-	union
-	{
-		std::unordered_map<CUnit*, u32> UnitTimerMaps[UNITEXT_ARRAY_SIZE];
-		struct
-		{
-			u32 CaptivatingClawsTimer;
-		};
-	};
-
-	// have to be here, because of some C++ nonsense, probably related to use of unions?
-	UnitExt() {}
-	~UnitExt() {} 
+	u32						values[ValueCount];
+	u32						timers[TimerCount];
+	CUnit*					units[UnitCount];
+	std::vector<CUnit*>		unitVectors[UnitVectorCount];
+	std::vector<u32>		timerVectors[TimerVectorCount];
 };
 
 namespace ValueId // TODO: rename to RustId

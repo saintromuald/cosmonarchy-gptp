@@ -16,16 +16,16 @@ namespace hooks
 			if (unit->orderSignal & 0x20)
 			{
 				unit->orderSignal &= ~0x20;
-				unitExt->SkyfallTimer = 3;
-				unitExt->SkyfallStacks = 0;
+				unitExt->timers[TimerSkyfall] = 3;
+				unitExt->values[ValueSkyfallStacks] = 0;
 				auto pt = unit->orderTarget.pt;
 				if (unit->orderTarget.unit != nullptr)
 				{
 					pt = unit->orderTarget.unit->position;
 					unit->orderTarget.unit = nullptr;
 				}
-				unitExt->SkyfallX = unit->orderTarget.pt.x;
-				unitExt->SkyfallY = unit->orderTarget.pt.y;
+				unitExt->values[ValueSkyfallX] = unit->orderTarget.pt.x;
+				unitExt->values[ValueSkyfallY] = unit->orderTarget.pt.y;
 			}
 		}
 
@@ -36,13 +36,13 @@ namespace hooks
 				unit->orderSignal &= ~0x40;
 				if (scbw::get_generic_rust_value(unit, ValueId::ReverseThrust) == 1)
 				{
-					unitExt->WyvernReverseLandgrabOn = 1;
-					unitExt->WyvernReverseLandgrabX = unit->orderTarget.pt.x;
-					unitExt->WyvernReverseLandgrabY = unit->orderTarget.pt.y;
+					unitExt->values[ValueWyvernReverseLandgrabOn] = 1;
+					unitExt->values[ValueWyvernReverseLandgrabX] = unit->orderTarget.pt.x;
+					unitExt->values[ValueWyvernReverseLandgrabY] = unit->orderTarget.pt.y;
 				}
 				else
 				{
-					unitExt->WyvernReverseLandgrabOn = 0;
+					unitExt->values[ValueWyvernReverseLandgrabOn] = 0;
 				}
 			}
 			if (unit->orderSignal & 0x80)

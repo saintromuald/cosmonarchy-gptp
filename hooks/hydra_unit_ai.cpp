@@ -44,22 +44,22 @@ void hydra_unit_ai(CUnit* unit)
 	if (unit->id == UnitId::TerranApostle)
 	{
 		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256) &&
-			unitExt->AI_LazarusTimer == 0)
+			unitExt->timers[TimerAI_Lazarus] == 0)
 		{
 			s32 count = 0;
 			hydraFinderLoop(nullptr, unit->position, 128, CFlags::NoBuilding | CFlags::Ally |
 				CFlags::OnlyOrganic, {}, [&](CUnit* u)
 			{
 				UnitExt* uExt = globals.GetUnitExt(u);
-				if (uExt->LazarusAgent != 1)
+				if (uExt->values[ValueLazarusAgent] != 1)
 				{
 					count++;
 				}
 			});
 			if (count >= 5)
 			{
-				unitExt->CastLazarusAgent = 1;
-				unitExt->AI_LazarusTimer = 24;
+				unitExt->values[ValueCastLazarusAgent] = 1;
+				unitExt->timers[TimerAI_Lazarus] = 24;
 			}
 		}
 	}
@@ -69,7 +69,7 @@ void hydra_unit_ai(CUnit* unit)
 	}
 	else if (unit->id == UnitId::TerranSavant)
 	{
-		if (unitExt->AI_SiphonTimer == 0 && unit->mainOrderId != OrderId::PowerSiphon)
+		if (unitExt->timers[TimerAI_Siphon] == 0 && unit->mainOrderId != OrderId::PowerSiphon)
 		{
 			s32 count = 0;
 			hydraFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::SavantPowerSiphon],
@@ -87,7 +87,7 @@ void hydra_unit_ai(CUnit* unit)
 				if (enemy != nullptr)
 				{
 					unit->orderTo(OrderId::PowerSiphon, enemy);
-					unitExt->AI_SiphonTimer = 3 * 32;
+					unitExt->timers[TimerAI_Siphon] = 3 * 32;
 				}
 			}
 		}
@@ -96,7 +96,7 @@ void hydra_unit_ai(CUnit* unit)
 	{
 		if (unit->mainOrderId != OrderId::CastParasite &&
 			unit->energy >= techdata_dat::EnergyCost[TechId::Parasite] * 256 &&
-			unitExt->AI_QueenTimer == 0)
+			unitExt->timers[TimerAI_Queen] == 0)
 		{
 			hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Parasite],
 				CFlags::NotSelf, {}, [&](CUnit* u)
@@ -129,13 +129,13 @@ void hydra_unit_ai(CUnit* unit)
 				if (supply >= 5)
 				{
 					unit->orderTo(OrderId::CastParasite, group[0].first);
-					unitExt->AI_QueenTimer = 75;
+					unitExt->timers[TimerAI_Queen] = 75;
 					return;
 				}
 			});
 		}
 	}
-	else if (unit->id == UnitId::ProtossStarSovereign && unitExt->AI_GriefOfAllGodsTimer == 0)
+	else if (unit->id == UnitId::ProtossStarSovereign && unitExt->timers[TimerAI_GriefOfAllGods] == 0)
 	{
 		auto enemyUnitsHealth = 0;
 		auto alliedUnitsHealth = 0;
@@ -160,7 +160,7 @@ void hydra_unit_ai(CUnit* unit)
 		if (!alliedBuildings && enemyUnitsHealth >= 2000 && alliedUnitsHealth < 2000 && (unit->hitPoints + unit->shields) * 2 >=
 			(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id]))
 		{
-			unitExt->AI_GriefOfAllGodsTimer = 612;
+			unitExt->timers[TimerAI_GriefOfAllGods] = 612;
 			unit->orderComputerCL(OrderId::KhaydarinEclipse);
 			unit->orderTarget.pt = unit->sprite->position;
 			unit->mainOrderState = 0;
@@ -169,11 +169,11 @@ void hydra_unit_ai(CUnit* unit)
 	else if (unit->id == UnitId::ProtossLanifect)
 	{
 		auto web_state = scbw::get_generic_rust_value(unit, ValueId::DisruptionWeb);
-		if (unitExt->ExecutingCorsairMoveOrder != 0)
+		if (unitExt->values[ValueExecutingCorsairMoveOrder] != 0)
 		{
 			if (unit->mainOrderId != OrderId::Move)
 			{
-				unitExt->ExecutingCorsairMoveOrder = 0;
+				unitExt->values[ValueExecutingCorsairMoveOrder] = 0;
 			}
 		}
 		auto webs = hydraUnitCount(unit, unit->sprite->position, AIWebSeekRange, 0, {UnitId::Spell_DisruptionWeb});
@@ -202,7 +202,7 @@ void hydra_unit_ai(CUnit* unit)
 				{
 					unit->orderTo(OrderId::Move, mostSignificant->position.x, mostSignificant->position.y);
 					scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 1);
-					unitExt->AI_CorsairDweb_Timer = AIWebTimer;
+					unitExt->timers[TimerAI_CorsairDweb] = AIWebTimer;
 				}
 			}
 		}
@@ -210,10 +210,10 @@ void hydra_unit_ai(CUnit* unit)
 		{
 			if (!(allies >= AIWebAllyMinCount && enemies >= AIWebEnemyMinCount))
 			{
-				if (unitExt->AI_CorsairDweb_Timer == 0)
+				if (unitExt->timers[TimerAI_CorsairDweb] == 0)
 				{
 					scbw::set_generic_rust_value(unit, ValueId::DisruptionWeb, 0);
-					unitExt->ExecutingCorsairMoveOrder = 0;
+					unitExt->values[ValueExecutingCorsairMoveOrder] = 0;
 					if (unit->mainOrderId == OrderId::Move)
 					{
 						unit->orderTo(OrderId::Stop);

@@ -250,27 +250,21 @@ void Globals::unitDeathHook(CUnit* unit)
 	for (auto& a : unitExt)
 	{ // set dead unit pointers to nullptr and erase them from unit vectors
 		UnitExt* ext = &a.second;
-		for (int i = 0; i < UNITEXT_ARRAY_SIZE; ++i)
+		for (int i = 0; i < UnitCount; ++i)
 		{
-			if (ext->Units[i] == unit)
+			if (ext->units[i] == unit)
 			{
-				ext->Units[i] = nullptr;
+				ext->units[i] = nullptr;
 			}
 		}
 
-		for (int i = 0; i < UNITEXT_ARRAY_SIZE; ++i)
+		for (int i = 0; i < UnitVectorCount; ++i)
 		{
-			auto& vec = ext->UnitVectors[i];
+			auto& vec = ext->unitVectors[i];
 			vec.erase(std::remove_if(vec.begin(), vec.end(), [&](CUnit* vecUnit)
 			{
 				return vecUnit == unit;
 			}), vec.end());
-		}
-
-		for (int i = 0; i < UNITEXT_ARRAY_SIZE; ++i)
-		{
-			auto& map = ext->UnitTimerMaps[i];
-			map.erase(unit);
 		}
 	}
 
@@ -805,39 +799,39 @@ namespace scbw
 		}
 
 		// Reset Malediction
-		if (unitExt->MaledictionSlow > 0)
+		if (unitExt->timers[TimerMaledictionSlow] > 0)
 		{
-			unitExt->MaledictionSlow = 4 * 24;
+			unitExt->timers[TimerMaledictionSlow] = 4 * 24;
 		}
 
 		// Reset Observance
-		if (unitExt->ObservanceTimerDebuff > 0)
+		if (unitExt->timers[TimerObservanceDebuff] > 0)
 		{
-			unitExt->ObservanceTimerDebuff = 5 * 24;
+			unitExt->timers[TimerObservanceDebuff] = 5 * 24;
 		}
 
 		// Reset Knockout Drivers
-		if (unitExt->KnockoutDriversTimer > 0)
+		if (unitExt->timers[TimerKnockoutDrivers] > 0)
 		{
-			unitExt->KnockoutDriversTimer = 2 * 24;
+			unitExt->timers[TimerKnockoutDrivers] = 2 * 24;
 		}
 
 		// Reset Hallucination
-		if (unitExt->HallucinatingTimer > 0)
+		if (unitExt->timers[TimerHallucinating] > 0)
 		{
-			unitExt->HallucinatingTimer = 20 * 24;
+			unitExt->timers[TimerHallucinating] = 20 * 24;
 		}
 
 		// Reset Captivating Claws
-		if (unitExt->CaptivatingClawsTimer > 0)
+		if (unitExt->timers[TimerCaptivatingClaws] > 0)
 		{
-			unitExt->CaptivatingClawsTimer = 1 * 24;
+			unitExt->timers[TimerCaptivatingClaws] = 1 * 24;
 		}
 
 		// Reset Lobotomy Mine slow
-		if (unitExt->LobotomySlow > 0)
+		if (unitExt->timers[TimerLobotomySlow] > 0)
 		{
-			unitExt->LobotomySlow = 4 * 24;
+			unitExt->timers[TimerLobotomySlow] = 4 * 24;
 		}
 
 		// Reset Lockdown
@@ -853,9 +847,9 @@ namespace scbw
 		}
 
 		// Reset Devourer Corrosive Spores
-		if (unitExt->CorrosiveTouchTimer > 0)
+		if (unitExt->timers[TimerCorrosiveTouch] > 0)
 		{
-			unitExt->CorrosiveTouchTimer = VithriliskCorrosiveTouchTimer;
+			unitExt->timers[TimerCorrosiveTouch] = VithriliskCorrosiveTouchTimer;
 		}
 
 		// Reset Irradiate
@@ -901,56 +895,56 @@ namespace scbw
 		}
 
 		// Inherit Parasite
-		if (parentExt->ParasiteSource != nullptr)
+		if (parentExt->units[UnitParasiteSource] != nullptr)
 		{
-			childExt->ParasiteSource = parentExt->ParasiteSource;
+			childExt->units[UnitParasiteSource] = parentExt->units[UnitParasiteSource];
 		}
 
 		// Inherit armor rend (generic)
-		if (parentExt->ArmorReduce > 0)
+		if (parentExt->values[ValueArmorReduce] > 0)
 		{
-			childExt->ArmorReduce = parentExt->ArmorReduce;
+			childExt->values[ValueArmorReduce] = parentExt->values[ValueArmorReduce];
 		}
 
 		// Inherit Malediction
-		if (parentExt->MaledictionSlow > 0)
+		if (parentExt->timers[TimerMaledictionSlow] > 0)
 		{
-			childExt->MaledictionSlow = parentExt->MaledictionSlow;
+			childExt->timers[TimerMaledictionSlow] = parentExt->timers[TimerMaledictionSlow];
 		}
 
 		// Inherit Observance
-		if (parentExt->ObservanceTimerDebuff > 0)
+		if (parentExt->timers[TimerObservanceDebuff] > 0)
 		{
-			childExt->ObservanceTimerDebuff = parentExt->ObservanceTimerDebuff;
-			childExt->ObservanceTimerPeriod = parentExt->ObservanceTimerPeriod;
-			childExt->ObservanceRend = parentExt->ObservanceRend;
+			childExt->timers[TimerObservanceDebuff] = parentExt->timers[TimerObservanceDebuff];
+			childExt->timers[TimerObservancePeriod] = parentExt->timers[TimerObservancePeriod];
+			childExt->values[ValueObservanceRend] = parentExt->values[ValueObservanceRend];
 		}
 
 		// Inherit Knockout Drivers
-		if (parentExt->KnockoutDriversTimer > 0)
+		if (parentExt->timers[TimerKnockoutDrivers] > 0)
 		{
-			childExt->KnockoutDriversTimer = parentExt->KnockoutDriversTimer;
+			childExt->timers[TimerKnockoutDrivers] = parentExt->timers[TimerKnockoutDrivers];
 		}
 
 		// Inherit Hallucination
-		if (parentExt->HallucinatingTimer > 0)
+		if (parentExt->timers[TimerHallucinating]  > 0)
 		{
-			childExt->HallucinatingTimer = parentExt->HallucinatingTimer;
+			childExt->timers[TimerHallucinating] = parentExt->timers[TimerHallucinating];
 		}
 
 		// Inherit Captivating Claws
-		if (auto timer = parentExt->CaptivatingClawsTimer)
+		if (auto timer = parentExt->timers[TimerCaptivatingClaws])
 		{
-			childExt->CaptivatingClawsTimer = timer;
-			auto& parentVec = parentExt->CaptivatingClawsUnitVector;
-			auto& childVec = childExt->CaptivatingClawsUnitVector;
+			childExt->timers[TimerCaptivatingClaws] = timer;
+			auto& parentVec = parentExt->unitVectors[UnitVectorCaptivatingClaws];
+			auto& childVec = childExt->unitVectors[UnitVectorCaptivatingClaws];
 			childVec = parentVec;
 		}
 
 		// Inherit Lobotomy Mine slow
-		if (parentExt->LobotomySlow)
+		if (parentExt->timers[TimerLobotomySlow])
 		{
-			childExt->LobotomySlow = parentExt->LobotomySlow;
+			childExt->timers[TimerLobotomySlow] = parentExt->timers[TimerLobotomySlow];
 		}
 
 		// Inherit Lockdown
@@ -966,10 +960,10 @@ namespace scbw
 		}
 
 		// Inherit Devourer Corrosive Spores
-		if (parentExt->CorrosiveTouchTimer)
+		if (parentExt->timers[TimerCorrosiveTouch])
 		{
-			childExt->CorrosiveTouchStacks = parentExt->CorrosiveTouchStacks;
-			childExt->CorrosiveTouchTimer = parentExt->CorrosiveTouchTimer;
+			childExt->values[ValueCorrosiveTouchStacks] = parentExt->values[ValueCorrosiveTouchStacks];
+			childExt->timers[TimerCorrosiveTouch] = parentExt->timers[TimerCorrosiveTouch];
 		}
 
 		// Inherit Irradiate
@@ -992,14 +986,14 @@ namespace scbw
 		}
 
 		// Inherit Deconstruction
-		if (parentExt->Deconstruction)
+		if (parentExt->values[ValueDeconstruction])
 		{
-			childExt->Deconstruction = parentExt->Deconstruction;
+			childExt->values[ValueDeconstruction] = parentExt->values[ValueDeconstruction];
 			CSprite* sprite = child->sprite;
 			if (child->subunit != nullptr)
 			{
 				UnitExt* subunitExt = globals.GetUnitExt(child->subunit);
-				subunitExt->Deconstruction = parentExt->Deconstruction;
+				subunitExt->values[ValueDeconstruction] = parentExt->values[ValueDeconstruction];
 				sprite = child->subunit->sprite;
 			}
 			if (!(sprite->getOverlay(ImageId::DeconstructionSmall + overlayOffset)))
@@ -1009,9 +1003,9 @@ namespace scbw
 		}
 
 		// Inherit Entropy Gauntlets
-		if (parentExt->EntropyGauntlets)
+		if (parentExt->timers[TimerEntropyGauntlets])
 		{
-			childExt->EntropyGauntlets = parentExt->EntropyGauntlets;
+			childExt->timers[TimerEntropyGauntlets] = parentExt->timers[TimerEntropyGauntlets];
 			if (!(child->sprite->getOverlay(ImageId::EntropyGauntletsOverlaySmall + overlayOffset)))
 			{
 				child->sprite->createOverlay(ImageId::EntropyGauntletsOverlaySmall + overlayOffset);
@@ -1019,9 +1013,9 @@ namespace scbw
 		}
 
 		// Inherit Sublime Shepherd
-		if (parentExt->SublimeShepherd)
+		if (parentExt->values[ValueSublimeShepherd])
 		{
-			childExt->SublimeShepherd = parentExt->SublimeShepherd;
+			childExt->values[ValueSublimeShepherd] = parentExt->values[ValueSublimeShepherd];
 		}
 
 		// TODO: Implement
@@ -1029,42 +1023,42 @@ namespace scbw
 		// Inherit Malice
 
 		// Inherit Terminal Surge
-		if (parentExt->TerminalSurge)
+		if (parentExt->values[ValueTerminalSurge])
 		{
-			childExt->TerminalSurge = parentExt->TerminalSurge;
+			childExt->values[ValueTerminalSurge] = parentExt->values[ValueTerminalSurge];
 		}
 
 		// Inherit Astral Blessing
-		if (parentExt->EcclesiastTimer)
+		if (parentExt->timers[TimerEcclesiast])
 		{
-			childExt->EcclesiastStack = parentExt->EcclesiastStack;
-			childExt->EcclesiastPlayer = parentExt->EcclesiastPlayer;
-			childExt->EcclesiastTimer = parentExt->EcclesiastTimer;
+			childExt->values[ValueEcclesiastStack] = parentExt->values[ValueEcclesiastStack];
+			childExt->values[ValueEcclesiastPlayer] = parentExt->values[ValueEcclesiastPlayer];
+			childExt->timers[TimerEcclesiast] = parentExt->timers[TimerEcclesiast];
 		}
 
 		// Inherit Stellar Enforcement
-		if (parentExt->StellarEnforcement)
+		if (parentExt->values[ValueStellarEnforcement])
 		{
-			childExt->StellarEnforcement = parentExt->StellarEnforcement;
+			childExt->values[ValueStellarEnforcement] = parentExt->values[ValueStellarEnforcement];
 		}
 
 		// Inherit Adrenal Frenzy
-		if (parentExt->NathrokorTimer)
+		if (parentExt->timers[TimerNathrokor])
 		{
-			childExt->NathrokorTimer = parentExt->NathrokorTimer;
+			childExt->timers[TimerNathrokor] = parentExt->timers[TimerNathrokor];
 		}
 
 		// Inherit Swarming Omen
-		if (parentExt->SwarmingOmenTimer)
+		if (parentExt->timers[TimerSwarmingOmen])
 		{
-			childExt->SwarmingOmenStatus = parentExt->SwarmingOmenStatus;
-			childExt->SwarmingOmenTimer = parentExt->SwarmingOmenTimer;
+			childExt->values[ValueSwarmingOmenStatus] = parentExt->values[ValueSwarmingOmenStatus];
+			childExt->timers[TimerSwarmingOmen] = parentExt->timers[TimerSwarmingOmen];
 		}
 
 		// Inherit Kaiser Rampage
-		if (parentExt->KaiserRampage)
+		if (parentExt->timers[TimerKaiserRampage])
 		{
-			childExt->KaiserRampage = parentExt->KaiserRampage;
+			childExt->timers[TimerKaiserRampage] = parentExt->timers[TimerKaiserRampage];
 		}
 
 		//was hardcoded in original code
@@ -1074,13 +1068,13 @@ namespace scbw
 	bool isDebuffed(CUnit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
-		return unitExt->MaledictionSlow
-			|| unitExt->KnockoutDriversTimer
-			|| unitExt->LobotomySlow
-			|| unitExt->ObservanceTimerPeriod
-			|| unitExt->CorrosiveTouchTimer
-			|| unitExt->EntropyGauntlets
-			|| unitExt->ArmorReduce
+		return unitExt->timers[TimerMaledictionSlow]
+			|| unitExt->timers[TimerKnockoutDrivers]
+			|| unitExt->timers[TimerLobotomySlow]
+			|| unitExt->timers[TimerObservancePeriod]
+			|| unitExt->timers[TimerCorrosiveTouch]
+			|| unitExt->timers[TimerEntropyGauntlets]
+			|| unitExt->values[ValueArmorReduce]
 			|| captivatingClawsGetTimer(unit) > 0
 			|| unit->irradiateTimer != 0
 			|| unit->ensnareTimer != 0
@@ -1108,12 +1102,12 @@ namespace scbw
 		//timers set to 0 twice reflect the original code
 
 		// Remove Parasite
-		if (unitExt->ParasiteArmTimer)
+		if (unitExt->timers[TimerParasiteArm])
 		{
-			unitExt->ParasiteArmTimer = 0;
+			unitExt->timers[TimerParasiteArm] = 0;
 			unit->removeOverlay(ImageId::ParasiteOverlay);
 		}
-		unitExt->ParasiteSource = nullptr;
+		unitExt->units[UnitParasiteSource] = nullptr;
 
 		// Remove default flags
 		unit->parasiteFlags = 0;
@@ -1147,49 +1141,49 @@ namespace scbw
 		}
 
 		// Remove armor rend (generic)
-		unitExt->ArmorReduce = 0;
+		unitExt->values[ValueArmorReduce] = 0;
 
 		// Remove Entropy Gauntlets
-		if (unitExt->EntropyGauntlets)
+		if (unitExt->timers[TimerEntropyGauntlets])
 		{
-			unitExt->EntropyGauntlets = 1;
+			unitExt->timers[TimerEntropyGauntlets] = 1;
 		}
 
 		// Remove Malediction
-		if (unitExt->MaledictionSlow)
+		if (unitExt->timers[TimerMaledictionSlow])
 		{
-			unitExt->MaledictionSlow = 1;
+			unitExt->timers[TimerMaledictionSlow] = 1;
 		}
 
 		// Remove Observance
-		if (unitExt->ObservanceTimerDebuff)
+		if (unitExt->timers[TimerObservanceDebuff])
 		{
-			unitExt->ObservanceTimerDebuff = 1;
+			unitExt->timers[TimerObservanceDebuff] = 1;
 		}
 
 		// Remove Knockout Drivers
-		if (unitExt->KnockoutDriversTimer)
+		if (unitExt->timers[TimerKnockoutDrivers])
 		{
-			unitExt->KnockoutDriversTimer = 1;
+			unitExt->timers[TimerKnockoutDrivers] = 1;
 		}
 
 		// Remove Hallucination
-		if (unitExt->HallucinatingTimer)
+		if (unitExt->timers[TimerHallucinating])
 		{
-			unitExt->HallucinatingTimer = 1;
+			unitExt->timers[TimerHallucinating] = 1;
 		}
 
 		// Remove Captivating Claws
-		if (unitExt->CaptivatingClawsTimer)
+		if (unitExt->timers[TimerCaptivatingClaws])
 		{
-			unitExt->CaptivatingClawsTimer = 1;
-			unitExt->CaptivatingClawsUnitVector = {};
+			unitExt->timers[TimerCaptivatingClaws] = 1;
+			unitExt->unitVectors[UnitVectorCaptivatingClaws] = {};
 		}
 
 		// Remove Lobotomy Mine slow
-		if (unitExt->LobotomySlow)
+		if (unitExt->timers[TimerLobotomySlow])
 		{
-			unitExt->LobotomySlow = 1;
+			unitExt->timers[TimerLobotomySlow] = 1;
 		}
 
 		// Remove Lockdown
@@ -1202,12 +1196,12 @@ namespace scbw
 		unit->removeAcidSpores();
 
 		// Remove Deconstruction
-		unitExt->Deconstruction = 0;
+		unitExt->values[ValueDeconstruction] = 0;
 		unit->removeOverlay(ImageId::DeconstructionSmall, ImageId::DeconstructionLarge);
 		if (unit->subunit)
 		{
 			UnitExt* subunitExt = globals.GetUnitExt(unit->subunit);
-			subunitExt->Deconstruction = 0;
+			subunitExt->values[ValueDeconstruction] = 0;
 			unit->subunit->removeOverlay(ImageId::DeconstructionSmall, ImageId::DeconstructionLarge);
 		}
 
@@ -1226,10 +1220,10 @@ namespace scbw
 		s32 playerFlag = 1 << playerID;
 		if (unit->parasiteFlags != playerFlag)
 		{ // <- Prevent restarting arm period
-			unitExt->ParasiteArmTimer = DefaultArmParasiteTimer;
+			unitExt->timers[TimerParasiteArm] = DefaultArmParasiteTimer;
 			unit->sprite->createOverlay(ImageId::ParasiteOverlay, 0, 0, 0);
 		}
-		unitExt->ParasiteSource = queen;
+		unitExt->units[UnitParasiteSource] = queen; // TODO: remove?
 		unit->parasiteFlags = playerFlag; // Parasite now overwrites other player's parasite
 		scbw::refreshConsole();
 	}
@@ -1271,25 +1265,25 @@ namespace scbw
 		{
 			return true;
 		}
-		if (unitExt->MaledictionSlow > 1)
+		if (unitExt->timers[TimerMaledictionSlow] > 1)
 		{
 			return true;
 		}
-		if (unitExt->LobotomySlow > 1)
+		if (unitExt->timers[TimerLobotomySlow] > 1)
 		{
 			return true;
 		}
 		return false;
 	}
 
-	CUnit** getSourceQueens(CUnit* unit)
+	CUnit** getSourceQueens(CUnit* unit) // TODO: remove?
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		CUnit* queens[2] = {nullptr};
 		if (unit == nullptr) return queens; // <- prevents crash from incubators, but does not fix the issue
-		queens[0] = unitExt->BroodlingMother;
-		queens[1] = unitExt->ParasiteSource;
+		queens[0] = unitExt->units[UnitBroodlingMother];
+		queens[1] = unitExt->units[UnitParasiteSource];
 		return queens;
 	}
 
@@ -1302,7 +1296,7 @@ namespace scbw
 		auto deconstructionTarget = unit;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit)
 		{
-			deconstructionTarget = (CUnit*)unitExt->TurretParentLink;
+			deconstructionTarget = (CUnit*)unitExt->values[ValueTurretParentLink]; // TODO: port as unit
 			if (deconstructionTarget == nullptr)
 			{
 				return;
@@ -1359,10 +1353,10 @@ namespace scbw
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
-		auto& vec = unitExt->PhaseLink;
+		auto& vec = unitExt->unitVectors[UnitVectorPhaseLink];
 		for (CUnit* vecUnit : vec)
 		{
-			auto& clarionVec = unitExt->PhaseLinkClarions;
+			auto& clarionVec = unitExt->unitVectors[UnitVectorPhaseLinkClarions];
 			auto it = std::find(clarionVec.begin(), clarionVec.end(), unit);
 			if (it != clarionVec.end())
 			{
@@ -1377,7 +1371,7 @@ namespace scbw
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		bool isClarion = unit->id == UnitId::ProtossClarion;
-		auto& link = unitExt->PhaseLink;
+		auto& link = unitExt->unitVectors[UnitVectorPhaseLink];
 
 		clearClarionLinks(unit);
 		const s32 radius = 128;
@@ -1413,14 +1407,14 @@ namespace scbw
 		{
 			link.push_back(target);
 			target->sprite->createOverlay(ImageId::PhaseLinkSmall + scbw::getOverlayOffset(target->id), 0, 0, 0);
-			unitExt->PhaseLinkClarions.push_back(unit);
+			unitExt->unitVectors[UnitVectorPhaseLinkClarions].push_back(unit);
 		});
 	}
 
 	bool hasClarionLinks(CUnit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
-		return unitExt->PhaseLinkClarions.size();
+		return unitExt->unitVectors[UnitVectorPhaseLinkClarions].size();
 	}
 
 	void phaseLinkDamage(CUnit* unit, s32 damage, hooks::WeaponDamageData& data)
@@ -1476,14 +1470,14 @@ namespace scbw
 		std::unordered_set<CUnit*> links = {};
 		if (unit->id == UnitId::ProtossClarion)
 		{
-			auto link = unitExt->PhaseLink;
+			auto link = unitExt->unitVectors[UnitVectorPhaseLink];
 			links.insert(link.begin(), link.end());
 		}
-		auto& clarions = unitExt->PhaseLinkClarions;
+		auto& clarions = unitExt->unitVectors[UnitVectorPhaseLinkClarions];
 		for (CUnit* clarion : clarions)
 		{
 			UnitExt* clarionExt = globals.GetUnitExt(clarion);
-			auto link = clarionExt->PhaseLink;
+			auto link = clarionExt->unitVectors[UnitVectorPhaseLink];
 			links.insert(link.begin(), link.end());
 		}
 		return std::vector<CUnit*>(links.begin(), links.end());

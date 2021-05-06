@@ -689,32 +689,32 @@ LABEL_18:
 		}
 		else if (unit->id == UnitId::ProtossStarSovereign)
 		{
-			auto order_state = unitExt->ProtossSwitchOrderState;
+			auto order_state = unitExt->values[ValueProtossSwitchOrderState];
 			if (order_state == 0)
 			{
 				if (unit->movementFlags & MovementFlags::Accelerating)
 				{
 					scbw::makeToHoldPosition(unit);
 				}
-				unitExt->ProtossSwitchOrderState = 1;
+				unitExt->values[ValueProtossSwitchOrderState] = 1;
 			}
 			else if (order_state == 1)
 			{
 				if (!(unit->movementFlags & MovementFlags::Accelerating))
 				{
-					unitExt->PlanetCrackerDelay = 24;
+					unitExt->timers[TimerPlanetCrackerDelay] = 24;
 					unit->status |= UnitStatus::CanNotReceiveOrders;
 					unit->status |= UnitStatus::CanNotAttack;
-					unitExt->ProtossSwitchOrderState = 2;
+					unitExt->values[ValueProtossSwitchOrderState] = 2;
 				}
 			}
 			else if (order_state == 2)
 			{
-				if (unitExt->PlanetCrackerDelay == 0)
+				if (unitExt->timers[TimerPlanetCrackerDelay] == 0)
 				{
 					unit->playIscriptAnim(anim);
-					unitExt->PlanetCrackerChannel = 121;
-					unitExt->ProtossSwitchOrderState = 3;
+					unitExt->timers[TimerPlanetCrackerChannel] = 121;
+					unitExt->values[ValueProtossSwitchOrderState] = 3;
 				}
 			}
 			else if (order_state == 3)
@@ -724,37 +724,37 @@ LABEL_18:
 					unit->orderSignal &= ~0x4;
 					unit->status &= ~UnitStatus::CanNotReceiveOrders;
 					unit->status &= ~UnitStatus::CanNotAttack;
-					unitExt->ProtossSwitchOrderState = 0;
+					unitExt->values[ValueProtossSwitchOrderState] = 0;
 					unit->orderToIdle();
 				}
 			}
 			return;
 		}
 
-		auto order_state = unitExt->ProtossSwitchOrderState;
+		auto order_state = unitExt->values[ValueProtossSwitchOrderState];
 		if (order_state == 0)
 		{
 			if (unit->movementFlags & MovementFlags::Accelerating)
 			{
 				scbw::makeToHoldPosition(unit);
 			}
-			unitExt->ProtossSwitchOrderState = 1;
+			unitExt->values[ValueProtossSwitchOrderState] = 1;
 		}
 		else if (order_state == 1)
 		{
 			if (!(unit->movementFlags & MovementFlags::Accelerating))
 			{
 				unit->playIscriptAnim(anim);
-				unitExt->SwitchModeGimmickTimer = 5;
-				unitExt->ProtossSwitchOrderState = 2;
+				unitExt->timers[TimerSwitchModeGimmick] = 5;
+				unitExt->values[ValueProtossSwitchOrderState] = 2;
 			}
 		}
 		else if (order_state == 2)
 		{
-			if (unitExt->SwitchModeGimmickTimer == 0)
+			if (unitExt->timers[TimerSwitchModeGimmick] == 0)
 			{
 				unit->orderSignal &= ~0x4;
-				unitExt->ProtossSwitchOrderState = 0;
+				unitExt->values[ValueProtossSwitchOrderState] = 0;
 				if (unit->id == UnitId::ProtossClarion)
 				{
 					if (status == 0)
