@@ -778,7 +778,7 @@ namespace hooks
 			);
 			if (collisionTarget != nullptr)
 			{
-				UnitExt* unitExt = globals.GetUnitExt(collisionTarget);
+				UnitExt* collisionTargetExt = globals.GetUnitExt(collisionTarget);
 				if (bullet->weaponType == WeaponId::PenumbraErebolShockCannon
 					|| bullet->weaponType == WeaponId::ClaymoreHarpoonRailgun)
 				{
@@ -797,9 +797,9 @@ namespace hooks
 				if (bullet->weaponType == WeaponId::ClaymoreHarpoonRailgun)
 				{
 					// Claymore - Kelvin Munitions - Slow targets
-					if (!unitExt->values[ValueKelvinMunitionsSlow])
+					if (!collisionTargetExt->values[ValueKelvinMunitionsSlow])
 					{
-						unitExt->values[ValueKelvinMunitionsSlow] = 1;
+						collisionTargetExt->values[ValueKelvinMunitionsSlow] = 1;
 					}
 				}
 				else

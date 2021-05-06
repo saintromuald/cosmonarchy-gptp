@@ -104,7 +104,7 @@ namespace hooks
 		}
 
 		// Claymore - Kelvin Munitions - slow affected targets
-		if (scbw::get_generic_value(unit, ValueId::KelvinMunitionsSlowValue))
+		if (unitExt->values[ValueKelvinMunitionsSlow])
 		{
 			speed *= 0.333;
 		}

@@ -1117,10 +1117,10 @@ namespace hooks
 
 		// Siren - Discovered Attacks - clear links on Siren death
 		// We probably need to use a unit vector for handling this behavior
-		if (scbw::get_generic_value(unit, ValueId::DiscoveredAttacksDebuffValue)
-			&& scbw::get_generic_unit(unit, ValueId::DiscoveredAttacksSirenUnit) == nullptr)
+		if (unitExt->values[ValueDiscoveredAttacksDebuff]
+			&& unitExt->units[UnitDiscoveredAttacksSiren] == nullptr)
 		{
-			scbw::set_generic_value(unit, ValueId::DiscoveredAttacksDebuffValue, 0);
+			unitExt->values[ValueDiscoveredAttacksDebuff] = 0;
 		}
 	}
 

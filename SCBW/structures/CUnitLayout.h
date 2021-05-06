@@ -236,6 +236,7 @@ enum ExtValueId
 	ValueTurretParentLink,
 	ValueAlaszilethRegenBoost,
 	ValueKelvinMunitionsSlow,
+	ValueDiscoveredAttacksDebuff,
 
 	ValueCount,
 };
@@ -305,6 +306,7 @@ enum ExtUnitId
 	UnitDecaySavant,
 	UnitWorshipDemiurge,
 	UnitAttachedAkistrokor,
+	UnitDiscoveredAttacksSiren,
 
 	UnitCount,
 };
