@@ -232,7 +232,10 @@ void Globals::reset()
 	multihitBullets.clear();
 	apostleAgents.clear();
 	lurkerSpineHits.clear();
-	unitExt.clear();
+	for (int j = 0; j < UNIT_ARRAY_LENGTH; ++j)
+	{ 
+		unitExt[j] = {};
+	}
 }
 
 void Globals::unitFrameHook(CUnit* unit)
@@ -246,10 +249,9 @@ void Globals::unitFrameHook(CUnit* unit)
 
 void Globals::unitDeathHook(CUnit* unit)
 {
-	unitExt.erase(unit);
-	for (auto& a : unitExt)
+	for (int j = 0; j < UNIT_ARRAY_LENGTH; ++j)
 	{ // set dead unit pointers to nullptr and erase them from unit vectors
-		UnitExt* ext = &a.second;
+		UnitExt* ext = &unitExt[j];
 		for (int i = 0; i < UnitCount; ++i)
 		{
 			if (ext->units[i] == unit)
@@ -343,9 +345,9 @@ void Globals::createGenericPersistImpact(u8 impactId, u32 time, Point32 position
 
 void Globals::frameHook()
 {
-	for (auto& unitStruct : unitExt)
+	for (int j = 0; j < UNIT_ARRAY_LENGTH; ++j)
 	{
-		UnitExt* unitExt = &unitStruct.second;
+		UnitExt* ext = &unitExt[j];
 		for (int i = 0; i < TimerCount; ++i)
 		{
 			if (unitExt->timers[i] > 0)
@@ -369,7 +371,7 @@ void Globals::frameHook()
 		}
 	}
 
-	for (s32 i = 0; i < apostleAgents.size(); i++)
+	for (s32 i = 0; i < apostleAgents.size(); ++i)
 	{
 		auto& agent = apostleAgents[i];
 		if (agent.timer > 0)

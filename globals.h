@@ -120,17 +120,11 @@ public:
 	std::vector<MultihitBullet> multihitBullets;
 	std::vector<ApostleAgent> apostleAgents;
 	std::unordered_map<CUnit*, std::vector<CUnit*>> lurkerSpineHits;
-	std::unordered_map<CUnit*, UnitExt> unitExt;
+	UnitExt unitExt[UNIT_ARRAY_LENGTH];
 
 	inline UnitExt* GetUnitExt(CUnit* unit)
 	{
-		auto it = unitExt.find(unit);
-		if (it != unitExt.end())
-		{
-			UnitExt ext;
-			unitExt.emplace(unit, ext);
-		}
-		return &unitExt[unit];
+		return &unitExt[unit->getIndex()];
 	}
 
 	AttackExtender attackers;

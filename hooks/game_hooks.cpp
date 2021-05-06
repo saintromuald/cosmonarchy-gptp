@@ -1084,17 +1084,17 @@ namespace hooks
 			unit->remove();
 		}
 
-		{
-			UnitExt* demiurge = globals.GetUnitExt(unitExt->units[UnitWorshipDemiurge]);
+		if (unitExt->units[UnitWorshipDemiurge]) {
+			UnitExt* demiurgeExt = globals.GetUnitExt(unitExt->units[UnitWorshipDemiurge]);
 			// Demiurge - Gods Made Flesh - apply effect to linked units
-			if (demiurge->values[ValueGodsMadeFleshActive])
+			if (demiurgeExt->values[ValueGodsMadeFleshActive])
 			{
 				unitExt->timers[TimerGodsMadeFlesh] = 3;
 			}
 
 			// Demiurge - Gods Made Flesh - return units to original owner
 			if (unitExt->values[ValueWorshipStack]
-				&& demiurge == nullptr)
+				&& demiurgeExt == nullptr)
 			{
 				unitExt->values[ValueWorshipStack] = 0;
 				unit->giveTo(unitExt->values[ValueWorshipOriginalPlayer]);

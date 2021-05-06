@@ -41,67 +41,64 @@ namespace hooks
 					unit->spendUnitEnergy(cloakingEnergyCost);
 				}
 			}
+			else if (unitExt->values[ValueGodsMadeFleshActive])
+			{
+				unit->spendUnitEnergy(GodsMadeFleshEnergyDrain);
+			}
+			else if (unit->id == UnitId::ProtossMindTyrant && scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0)
+			{
+				auto sum = scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) / 2;
+				unit->spendUnitEnergy(std::min(unit->energy, (u16)(16 * sum)));
+				if (unit->energy == 0)
+				{
+					scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
+				}
+			}
+			else if (unit->id == UnitId::TerranAzazel && scbw::get_generic_rust_value(unit, RustId::SublimeShepherd) == 1)
+			{
+				unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
+				if (unit->energy == 0)
+				{
+					scbw::set_generic_rust_value(unit, RustId::SublimeShepherd, 0);
+				}
+			}
 			else
-				if (unitExt->values[ValueGodsMadeFleshActive])
+			{ // 004EB526
+				if (unit == nullptr)
 				{
-					unit->spendUnitEnergy(GodsMadeFleshEnergyDrain);
+					return;
+				}
+				s32 maxEnergy;
+				if (unit->id == UnitId::ProtossMindTyrant
+					&& unit->mainOrderId == OrderId::CompletingArchonSummon
+					&& unit->mainOrderState == 0)
+				{
+					maxEnergy = 12800; // 50 * 256; Identical to energy amount on spawn
 				}
 				else
-				if (unit->id == UnitId::ProtossMindTyrant && scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0)
 				{
-					auto sum = scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) / 2;
-					unit->spendUnitEnergy(std::min(unit->energy, (u16)(16 * sum)));
-					if (unit->energy == 0)
+					maxEnergy = unit->getMaxEnergy();
+				}
+				bool phobosCondition = false;
+				if (unit->id == UnitId::TerranPhobos && unitExt->values[ValuePhobosDischarge] > 0)
+				{
+					unit->spendUnitEnergy(426); // (200 * 256) / (5 * 24)  ~ 426.66
+					if (unit->energy < 426)
 					{
-						scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
+						unit->energy = 0;
+						unitExt->values[ValuePhobosDischarge] = 0;
 					}
+					phobosCondition = true;
+				}
+				if (unit->energy == maxEnergy && !phobosCondition)
+				{
+					bStopHere = true;
 				}
 				else
-					if (unit->id == UnitId::TerranAzazel && scbw::get_generic_rust_value(unit, RustId::SublimeShepherd) == 1)
-					{
-						unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
-						if (unit->energy == 0)
-						{
-							scbw::set_generic_rust_value(unit, RustId::SublimeShepherd, 0);
-						}
-					}
-					else
-						{ // 004EB526
-							if (unit == nullptr)
-							{
-								return;
-							}
-							s32 maxEnergy;
-							if (unit->id == UnitId::ProtossMindTyrant
-								&& unit->mainOrderId == OrderId::CompletingArchonSummon
-								&& unit->mainOrderState == 0)
-							{
-								maxEnergy = 12800; // 50 * 256; Identical to energy amount on spawn
-							}
-							else
-							{
-								maxEnergy = unit->getMaxEnergy();
-							}
-							bool phobosCondition = false;
-							if (unit->id == UnitId::TerranPhobos && unitExt->values[ValuePhobosDischarge] > 0)
-							{
-								unit->spendUnitEnergy(426); // (200 * 256) / (5 * 24)  ~ 426.66
-								if (unit->energy < 426)
-								{
-									unit->energy = 0;
-									unitExt->values[ValuePhobosDischarge] = 0;
-								}
-								phobosCondition = true;
-							}
-							if (unit->energy == maxEnergy && !phobosCondition)
-							{
-								bStopHere = true;
-							}
-							else
-							{
-								unit->addUnitEnergy(8, maxEnergy);
-							}
-						}
+				{
+					unit->addUnitEnergy(8, maxEnergy);
+				}
+			}
 
 			//If the unit is currently selected, redraw its graphics
 			if (!bStopHere && unit->sprite->flags & CSprite_Flags::Selected)

@@ -497,8 +497,8 @@ namespace hooks
 		bool malice = scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0);
 		addStatus(statuses, "Cowardice", unitExt->values[ValueHierophantOverlay] || malice, 1);
 		addStatus(statuses, "Malice", malice, 1);
-		addStatus(statuses, "Energy Decay", unitExt->timers[TimerEntropyGauntlets], 1);
-		addStatus(statuses, "Godlike", unitExt->timers[TimerGodsMadeFlesh], 1);
+		addStatus(statuses, "Energy Decay", unitExt->timers[TimerEntropyGauntlets] > 0, 1);
+		addStatus(statuses, "Godlike", unitExt->timers[TimerGodsMadeFlesh] > 0, 1);
 
 		// Vanilla Timer + Value
 		addStatus(statuses, "Defensive Matrix", unit->defensiveMatrixHp / 256, 200, unit->defensiveMatrixTimer);
