@@ -930,6 +930,10 @@ namespace hooks
 					// Seraph - Observance persistant overlay creation
 					for (auto seraph : seraphs)
 					{
+						if (!seraph)
+						{
+							continue;
+						}
 						UnitExt* seraphExt = globals.GetUnitExt(seraph);
 						if (seraphExt->timers[TimerObservanceOverlay] == 0)
 						{

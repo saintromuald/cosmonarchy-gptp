@@ -77,13 +77,13 @@ namespace hooks
 
 	void splash(CBullet* bullet, u32 weaponId, u8 splashType, CUnit* guaranteedHit)
 	{
-		UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
-
 		s32 splash = splashType;
 		if (bullet == nullptr)
 			return;
 		if (bullet->sourceUnit != nullptr && bullet->sourceUnit->sprite != nullptr)
 		{
+			UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
+
 			if (bullet->sourceUnit->isBlind)
 			{
 				splash = SplashType::Radial;
@@ -189,9 +189,14 @@ namespace hooks
 
 			if (weaponId == WeaponId::HeraclesJavelinCannons)
 			{
-				const f64 splashBase = weapons_dat::OuterSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
-				outer = (s16)(splashBase * (1 + 0.1 * stacks));
+				if (bullet->sourceUnit)
+				{
+					UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
+
+					const f64 splashBase = weapons_dat::OuterSplashRadius[WeaponId::HeraclesJavelinCannons];
+					const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
+					outer = (s16)(splashBase * (1 + 0.1 * stacks));
+				}
 			}
 
 			if (!helper::isUnitDistanceWithin(target, bullet, outer)) continue;
@@ -214,9 +219,14 @@ namespace hooks
 
 			if (weaponId == WeaponId::HeraclesJavelinCannons)
 			{
-				const f64 splashBase = weapons_dat::InnerSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
-				inner = (s16)(splashBase * (1 + 0.1 * stacks));
+				if (bullet->sourceUnit)
+				{
+					UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
+
+					const f64 splashBase = weapons_dat::InnerSplashRadius[WeaponId::HeraclesJavelinCannons];
+					const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
+					inner = (s16)(splashBase * (1 + 0.1 * stacks));
+				}
 			}
 
 			if (helper::isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet, target))
@@ -239,9 +249,14 @@ namespace hooks
 
 			if (weaponId == WeaponId::HeraclesJavelinCannons)
 			{
-				const f64 splashBase = weapons_dat::MediumSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
-				medium = (s16)(splashBase * (1 + 0.1 * stacks));
+				if (bullet->sourceUnit)
+				{
+					UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
+
+					const f64 splashBase = weapons_dat::MediumSplashRadius[WeaponId::HeraclesJavelinCannons];
+					const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
+					medium = (s16)(splashBase * (1 + 0.1 * stacks));
+				}
 			}
 
 			if (weaponId == WeaponId::NathrokorPlasmidBreath)
@@ -265,8 +280,6 @@ namespace hooks
 
 	void lurkerSplash(CBullet* bullet, u32 weaponId, u8 splash)
 	{
-		UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
-
 		s16 x, y, r;
 		x = bullet->sprite->position.x;
 		y = bullet->sprite->position.y;
@@ -291,10 +304,15 @@ namespace hooks
 			else if (splash == SplashType::FriendlyNew)
 			{
 				bool lurkerOverride = false;
-				if (bullet->sourceUnit && (CUnit*)bulletSourceExt->values[ValueLurkerPickTarget] == target)
+				if (bullet->sourceUnit)
 				{
-					lurkerOverride = true;
+					UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
+					if ((CUnit*)bulletSourceExt->values[ValueLurkerPickTarget] == target)
+					{
+						lurkerOverride = true;
+					}
 				}
+					
 				if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && !lurkerOverride && target != bullet->attackTarget.unit)
 				{
 					continue;
@@ -359,8 +377,6 @@ namespace hooks
 	// clone of 'Normal' damage for reference
 	void normalDamage(CBullet* bullet, u32 weaponId)
 	{
-		UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
-
 		// Create Lobotomy Mines
 		if (bullet->sourceUnit != nullptr && weaponId == WeaponId::Lockdown)
 		{
@@ -396,6 +412,7 @@ namespace hooks
 			&& bullet->sourceUnit->sprite
 			&& target->sprite)
 		{
+			UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
 			auto X = bulletSourceExt->values[ValueGuardianMissileLaunchPosX];
 			auto Y = bulletSourceExt->values[ValueGuardianMissileLaunchPosY];
 			if (X != 0 && Y != 0)

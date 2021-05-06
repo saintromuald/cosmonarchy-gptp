@@ -304,11 +304,11 @@ LABEL_7:
 
 	bool AI_AcquireHealTarget(CUnit* medic, CUnit* target)
 	{
-		UnitExt* targetExt = globals.GetUnitExt(target);
 		if (target == nullptr || target == medic || medic->status & UnitStatus::IsHallucination)
 		{
 			return 0;
 		}
+		UnitExt* targetExt = globals.GetUnitExt(target);
 		s32 type = target->id;
 		s32 abilityFlags = units_dat::BaseProperty[type];
 		s32 enemyCheck;

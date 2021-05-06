@@ -269,6 +269,7 @@ void Globals::unitDeathHook(CUnit* unit)
 			}), vec.end());
 		}
 	}
+	*globals.GetUnitExt(unit) = {};
 
 	for (s32 i = 0; i < this->apostleAgents.size(); i++)
 	{
@@ -1435,6 +1436,10 @@ namespace scbw
 		auto& clarions = unitExt->unitVectors[UnitVectorPhaseLinkClarions];
 		for (CUnit* clarion : clarions)
 		{
+			if (!clarion)
+			{
+				continue;
+			}
 			UnitExt* clarionExt = globals.GetUnitExt(clarion);
 			auto link = clarionExt->unitVectors[UnitVectorPhaseLink];
 			links.insert(link.begin(), link.end());

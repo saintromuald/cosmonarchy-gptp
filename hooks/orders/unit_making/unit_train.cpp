@@ -156,10 +156,10 @@ namespace hooks
 				if (unit->secondaryOrderState == 2)
 				{
 					CUnit* builtUnit = unit->currentBuildUnit;
-					UnitExt* builtUnitExt = globals.GetUnitExt(builtUnit);
 
 					if (builtUnit != nullptr)
 					{
+						UnitExt* builtUnitExt = globals.GetUnitExt(builtUnit);
 						u32 hpGain = helper::getHPGainForRepair(builtUnit);
 						bool extraBuild = false;
 						if (builtUnitExt->values[ValueCrucible] == 0)
