@@ -312,6 +312,7 @@ namespace ValueId
 		DiscoveredAttacksDebuffValue,
 		DiscoveredAttacksStackValue,
 		DiscoveredAttacksSirenUnit,
+		KelvinMunitionsSlowValue,
 	};
 }
 #include "SCBW\enumerations\TechId.h"

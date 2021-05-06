@@ -1134,6 +1134,12 @@ namespace scbw
 			scbw::set_generic_value(child, ValueId::KaiserRampage, scbw::get_generic_timer(parent, ValueId::KaiserRampage));
 		}
 
+		// Inherit Kelvin Munitions
+		if (scbw::get_generic_value(parent, ValueId::KelvinMunitionsSlowValue))
+		{
+			scbw::set_generic_value(child, ValueId::KelvinMunitionsSlowValue, scbw::get_generic_value(parent, ValueId::KelvinMunitionsSlowValue));
+		}
+
 		//was hardcoded in original code
 		scbw::refreshConsole();
 	}
@@ -1147,6 +1153,7 @@ namespace scbw
 			|| scbw::get_generic_timer(unit, ValueId::CorrosiveTouchTimer) > 0
 			|| scbw::get_generic_value(unit, ValueId::EntropyGauntlets) > 0
 			|| scbw::get_generic_value(unit, ValueId::ArmorReduce) > 0
+			|| scbw::get_generic_value(unit, ValueId::KelvinMunitionsSlowValue) > 0
 			|| captivatingClawsGetTimer(unit) > 0
 			|| unit->irradiateTimer != 0
 			|| unit->ensnareTimer != 0
@@ -1274,9 +1281,16 @@ namespace scbw
 			unit->subunit->removeOverlay(ImageId::DeconstructionSmall, ImageId::DeconstructionLarge);
 		}
 
+		// Remove Kelvin Munitions
+		if (scbw::get_generic_value(unit, ValueId::KelvinMunitionsSlowValue))
+		{
+			scbw::set_generic_value(unit, ValueId::KelvinMunitionsSlowValue, 0);
+		}
+
 		//was hardcoded in original code
 		scbw::refreshConsole();
 	}
+
 	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen)
 	{
 		if (!scbw::canBeParasited(unit)) return;
@@ -1290,6 +1304,7 @@ namespace scbw
 		unit->parasiteFlags = playerFlag; // Parasite now overwrites other player's parasite
 		scbw::refreshConsole();
 	}
+
 	CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset)
 	{
 		if (unit->sprite == nullptr || unit->orderTarget.unit == nullptr)
@@ -1332,18 +1347,11 @@ namespace scbw
 		{
 			return true;
 		}
-		if (unit->id == UnitId::TerranWyvern && get_generic_rust_value(unit, ValueId::ReverseThrust) == 1)
+		if (get_generic_value(unit, ValueId::KelvinMunitionsSlowValue))
 		{
 			return true;
 		}
-		if (unit->id == UnitId::TerranCyprian)
-		{
-			if (scbw::get_generic_value(unit, AiseId::SendCyprianValue) == 1)
-			{
-				return true;
-			}
-		}
-		if (unit->id == UnitId::ProtossExemplar && scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch))
+		if (unit->id == UnitId::TerranWyvern && get_generic_rust_value(unit, ValueId::ReverseThrust) == 1)
 		{
 			return true;
 		}

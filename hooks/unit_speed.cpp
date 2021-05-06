@@ -101,6 +101,12 @@ namespace hooks
 			}
 		}
 
+		// Claymore - Kelvin Munitions - slow affected targets
+		if (scbw::get_generic_value(unit, ValueId::KelvinMunitionsSlowValue))
+		{
+			speed *= 0.333;
+		}
+
 		switch (unit->id)
 		{
 			case UnitId::ZergUltrakor:

@@ -727,9 +727,11 @@ namespace hooks
 				bEnd = true;
 			}
 		}
-		else if (bullet->weaponType == WeaponId::KalkaliskViscousAcid || bullet->weaponType == WeaponId::PenumbraErebolShockCannon)
+		// for missiles hitting targets on its way
+		else if (bullet->weaponType == WeaponId::KalkaliskViscousAcid
+			|| bullet->weaponType == WeaponId::PenumbraErebolShockCannon
+			|| bullet->weaponType == WeaponId::ClaymoreHarpoonRailgun)
 		{
-			// for missiles hitting targets on its way
 			u32 range = 128;
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
 				bullet->position.x - range, bullet->position.y - range,
@@ -775,7 +777,8 @@ namespace hooks
 			);
 			if (collisionTarget != nullptr)
 			{
-				if (bullet->weaponType == WeaponId::PenumbraErebolShockCannon)
+				if (bullet->weaponType == WeaponId::PenumbraErebolShockCannon
+					|| bullet->weaponType == WeaponId::ClaymoreHarpoonRailgun)
 				{
 					globals.add_bullet_multihit(bullet, collisionTarget);
 				}
@@ -785,16 +788,23 @@ namespace hooks
 				}
 				if (bullet->weaponType == WeaponId::PenumbraErebolShockCannon)
 				{
-					//Penumbra Behavior
+					// Penumbra behavior
 					scbw::createThingy(644, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					helper::weaponBulletShot(collisionTarget, bullet, 2);
 				}
+				if (bullet->weaponType == WeaponId::ClaymoreHarpoonRailgun)
+				{
+					// Claymore - Kelvin Munitions - Slow targets
+					if (!(scbw::get_generic_value(collisionTarget, ValueId::KelvinMunitionsSlowValue))
+					{
+						scbw::set_generic_value(collisionTarget, ValueId::KelvinMunitionsSlowValue, 1);
+					}
+				}
 				else
 				{
-					//Kalkaleth Behavior
+					// Kalkalisk behavior
 //					auto divider = globals.get_multihit_count(bullet);
 					helper::weaponBulletShot(collisionTarget, bullet, 2);
-					//					scbw::printf("Hit by bullet: %X", bullet);
 					scbw::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					bullet->moveTarget.unit = bullet->attackTarget.unit;
 					if (bullet->moveTarget.unit != nullptr)
