@@ -245,8 +245,6 @@ namespace hooks
 				}
 			}
 			data.finalDamage -= std::min(data.finalDamage, armorTotal);
-			auto rend = 256 * targetExt->values[ValueObservanceRend];
-			data.finalDamage += rend;
 		}
 
 		// Apply damage type/unit size factor
@@ -336,6 +334,9 @@ namespace hooks
 				}
 			} break;
 		}
+
+		// Observance Armor Rend
+		data.finalDamage += 256 * targetExt->values[ValueObservanceRend];
 
 		switch (data.weaponId) // Damage Divisor Calc
 		{
