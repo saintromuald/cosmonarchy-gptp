@@ -318,6 +318,20 @@ namespace hooks
 			data.damageType = DamageType::Independent;
 		}
 
+		switch (data.weaponId) // Damage Calc
+		{
+			case WeaponId::SubterraneanTentacle:
+			case WeaponId::SeekerSpores:
+			{
+				UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
+				if (attackerExt->values[ValueAmitosis] == 1)
+				{
+					data.finalDamage /= 2;
+					attackerExt->values[ValueAmitosis] = 0;
+				}
+			} break;
+		}
+
 		switch (data.weaponId) // Damage Divisor Calc
 		{
 			case WeaponId::ArchitectDispersiveSalvo:
@@ -605,15 +619,6 @@ namespace hooks
 					targetExt->values[ValueEcclesiastStack] = 1;
 					targetExt->timers[TimerEcclesiast] =(24 * 5) + 1;
 					targetExt->values[ValueEcclesiastPlayer] = data.attacker->playerId;
-				} break;
-				case WeaponId::SubterraneanTentacle:
-				case WeaponId::SeekerSpores:
-				{
-					if (attackerExt->values[ValueAmitosis] == 1)
-					{
-						//data.damage /= 2; // TODO: use data.finalDamage, all modifiers should in weaponDamage_damageModifiers
-						attackerExt->values[ValueAmitosis] = 0;
-					}
 				} break;
 				case WeaponId::SeraphObservance:
 				{
