@@ -123,7 +123,6 @@ namespace hooks
 	void weaponDamage_root(WeaponDamageData& data)
 	{
 		UnitExt* targetExt = globals.GetUnitExt(data.target);
-		UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
 
 		// The unit must neither be already dead nor invincible
 		if (data.target == nullptr || data.target->hitPoints == 0 || data.target->status & UnitStatus::Invincible)
@@ -312,7 +311,6 @@ namespace hooks
 	static void weaponDamage_damageModifiers(WeaponDamageData& data)
 	{
 		UnitExt* targetExt = globals.GetUnitExt(data.target);
-		UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
 
 		// Isthrathaleth Dark Swarm
 		if (scbw::isUnderDarkSwarm(data.target) && weapons_dat::MaxRange[data.weaponId] > 32 && (data.damageDivisor == 1 || data.weaponId == WeaponId::AcidSpore) && data.weaponId != WeaponId::SubterraneanSpines)
@@ -400,10 +398,11 @@ namespace hooks
 	static void weaponDamage_behaviors(WeaponDamageData& data)
 	{
 		UnitExt* targetExt = globals.GetUnitExt(data.target);
-		UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
 
 		if (data.attacker != nullptr)
 		{
+			UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
+
 			// Vithrilisk - Critical Mass (procced by any attack now)
 			if (targetExt->values[ValueCorrosiveTouchStacks])
 			{
@@ -709,7 +708,6 @@ namespace hooks
 	static void weaponDamage_fatal(WeaponDamageData& data)
 	{
 		UnitExt* targetExt = globals.GetUnitExt(data.target);
-		UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
 
 		switch (data.weaponId)
 		{
@@ -890,6 +888,7 @@ namespace hooks
 
 		if (data.attacker != nullptr)
 		{
+			UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
 			switch (data.weaponId)
 			{
 				case WeaponId::AlkajeliskPlasmidSpores:
