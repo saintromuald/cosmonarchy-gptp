@@ -308,6 +308,7 @@ LABEL_7:
 		{
 			return 0;
 		}
+		UnitExt* targetExt = globals.GetUnitExt(target);
 		s32 type = target->id;
 		s32 abilityFlags = units_dat::BaseProperty[type];
 		s32 enemyCheck;
@@ -319,7 +320,7 @@ LABEL_7:
 			|| medic->playerId >= 8
 			|| target->hitPoints >= units_dat::MaxHitPoints[type]
 			|| target->isFrozen()
-			|| scbw::get_generic_value(target, ValueId::LazarusNoHeal) == 1)
+			|| targetExt->values[ValueLazarusNoHeal] == 1)
 		{
 			return 0;
 		}

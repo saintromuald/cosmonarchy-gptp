@@ -668,6 +668,8 @@ LABEL_18:
 	//replaces CTFCop2 order
 	void order_PhaseLink(CUnit* unit)
 	{
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+
 		u32 status = 0;
 		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell; // might be changed later if required
 		if (unit->id == UnitId::ProtossClarion)
@@ -683,36 +685,36 @@ LABEL_18:
 		}
 		else if (unit->id == UnitId::ProtossExemplar)
 		{
-			status = scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch);
+			status = scbw::get_generic_rust_value(unit, RustId::ExemplarSwitch);
 		}
 		else if (unit->id == UnitId::ProtossStarSovereign)
 		{
-			auto order_state = scbw::get_generic_value(unit, ValueId::ProtossSwitchOrderState);
+			auto order_state = unitExt->values[ValueProtossSwitchOrderState];
 			if (order_state == 0)
 			{
 				if (unit->movementFlags & MovementFlags::Accelerating)
 				{
 					scbw::makeToHoldPosition(unit);
 				}
-				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 1);
+				unitExt->values[ValueProtossSwitchOrderState] = 1;
 			}
 			else if (order_state == 1)
 			{
 				if (!(unit->movementFlags & MovementFlags::Accelerating))
 				{
-					scbw::set_generic_timer(unit, ValueId::PlanetCrackerDelay, 24);
+					unitExt->timers[TimerPlanetCrackerDelay] = 24;
 					unit->status |= UnitStatus::CanNotReceiveOrders;
 					unit->status |= UnitStatus::CanNotAttack;
-					scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 2);
+					unitExt->values[ValueProtossSwitchOrderState] = 2;
 				}
 			}
 			else if (order_state == 2)
 			{
-				if (scbw::get_generic_timer(unit, ValueId::PlanetCrackerDelay) == 0)
+				if (unitExt->timers[TimerPlanetCrackerDelay] == 0)
 				{
 					unit->playIscriptAnim(anim);
-					scbw::set_generic_timer(unit, ValueId::PlanetCrackerChannel, 121);
-					scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 3);
+					unitExt->timers[TimerPlanetCrackerChannel] = 121;
+					unitExt->values[ValueProtossSwitchOrderState] = 3;
 				}
 			}
 			else if (order_state == 3)
@@ -722,37 +724,37 @@ LABEL_18:
 					unit->orderSignal &= ~0x4;
 					unit->status &= ~UnitStatus::CanNotReceiveOrders;
 					unit->status &= ~UnitStatus::CanNotAttack;
-					scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 0);
+					unitExt->values[ValueProtossSwitchOrderState] = 0;
 					unit->orderToIdle();
 				}
 			}
 			return;
 		}
 
-		auto order_state = scbw::get_generic_value(unit, ValueId::ProtossSwitchOrderState);
+		auto order_state = unitExt->values[ValueProtossSwitchOrderState];
 		if (order_state == 0)
 		{
 			if (unit->movementFlags & MovementFlags::Accelerating)
 			{
 				scbw::makeToHoldPosition(unit);
 			}
-			scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 1);
+			unitExt->values[ValueProtossSwitchOrderState] = 1;
 		}
 		else if (order_state == 1)
 		{
 			if (!(unit->movementFlags & MovementFlags::Accelerating))
 			{
 				unit->playIscriptAnim(anim);
-				scbw::set_generic_timer(unit, ValueId::SwitchModeGimmickTimer, 5);
-				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 2);
+				unitExt->timers[TimerSwitchModeGimmick] = 5;
+				unitExt->values[ValueProtossSwitchOrderState] = 2;
 			}
 		}
 		else if (order_state == 2)
 		{
-			if (scbw::get_generic_timer(unit, ValueId::SwitchModeGimmickTimer) == 0)
+			if (unitExt->timers[TimerSwitchModeGimmick] == 0)
 			{
 				unit->orderSignal &= ~0x4;
-				scbw::set_generic_value(unit, ValueId::ProtossSwitchOrderState, 0);
+				unitExt->values[ValueProtossSwitchOrderState] = 0;
 				if (unit->id == UnitId::ProtossClarion)
 				{
 					if (status == 0)
@@ -770,15 +772,15 @@ LABEL_18:
 				{
 					if (status == 0)
 					{
-						scbw::set_generic_rust_value(unit, ValueId::ExemplarSwitch, 1);
+						scbw::set_generic_rust_value(unit, RustId::ExemplarSwitch, 1);
 					}
 					else
 					{
-						scbw::set_generic_rust_value(unit, ValueId::ExemplarSwitch, 0);
+						scbw::set_generic_rust_value(unit, RustId::ExemplarSwitch, 0);
 					}
 				}
 				unit->updateSpeed();
-				unit->orderToIdle();//do next queued order
+				unit->orderToIdle(); // do next queued order
 			}
 		}
 	}
@@ -846,21 +848,12 @@ LABEL_18:
 		return scbw::setInGameLoopState(0);
 	}
 
-	CUnit* createUnit(u16 unitType, s32 x, s32 y, s32 playerId)
-	{ // 004A09D0 - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
-		s32 v4;
-		s32 v5;
-		CUnit* v6;
-		CUnit* v7;
-		u16 v8;
-		CUnit* v9;
-		CUnit* v10;
+	CUnit* createUnit(u16 unitType, s32 x, s32 y, s32 playerId)  // 004A09D0 - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
+	{
 		CUnit* result;
 		s32* pointer;
-		u32 randomSeed;
 
-		v5 = x;
-		v4 = unitType;
+		u32 randomSeed;
 		if (IS_IN_GAME_LOOP)
 		{
 			++randomCounts[14];
@@ -872,40 +865,40 @@ LABEL_18:
 		{
 			randomSeed = 0;
 		}
-		v6 = unitConstructor(x, y, unitType, playerId, randomSeed);
-		v7 = v6;
-		if (!v6)
+		CUnit* unitConstructorResult = unitConstructor(x, y, unitType, playerId, randomSeed);
+		CUnit* unitConstructorResult2 = unitConstructorResult;
+		if (!unitConstructorResult)
 		{
 			return 0;
 		}
-		if (v6->status & UnitStatus::GroundedBuilding)
+		if (unitConstructorResult->status & UnitStatus::GroundedBuilding)
 		{
-			CListPushBackUsedUnitEntry(v6);
+			CListPushBackUsedUnitEntry(unitConstructorResult);
 		}
 		else
 		{
-			CListPushBackHiddenUnitEntry(v6);
+			CListPushBackHiddenUnitEntry(unitConstructorResult);
 		}
-		if (v4 > UnitId::Spell_DisruptionWeb
-			|| (v8 = units_dat::SubUnit[v4], v8 == UnitId::None))
+		if (unitType > UnitId::Spell_DisruptionWeb
+			|| units_dat::SubUnit[unitType] == UnitId::None)
 		{
-			v7->subunit = 0;
-			result = v7;
+			unitConstructorResult2->subunit = 0;
+			result = unitConstructorResult2;
 		}
 		else
 		{
-			v9 = unitConstructor(v5, y, v8, playerId, randomSeed);
-			v10 = v9;
-			if (!v9)
+			CUnit* unitConstructorResult3 = unitConstructor(x, y, units_dat::SubUnit[unitType], playerId, randomSeed);
+			CUnit* unitConstructorResult4 = unitConstructorResult3;
+			if (!unitConstructorResult3)
 			{
-				unitDestructor(v7);
+				unitDestructor(unitConstructorResult2);
 				return 0;
 			}
-			v7->subunit = v9;
-			v9->subunit = v7;
-			getImageAttackFrame(pointer, v7->sprite, 0, 2u);
-			setSpriteMainImageOffset(v10->sprite, *pointer, randomSeed);
-			result = v7;
+			unitConstructorResult2->subunit = unitConstructorResult3;
+			unitConstructorResult3->subunit = unitConstructorResult2;
+			getImageAttackFrame(pointer, unitConstructorResult2->sprite, 0, 2u);
+			setSpriteMainImageOffset(unitConstructorResult4->sprite, *pointer, randomSeed);
+			result = unitConstructorResult2;
 		}
 		return result;
 	}

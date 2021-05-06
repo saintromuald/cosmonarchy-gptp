@@ -8,7 +8,6 @@ const u32 Addr_WeaponsDatEffectSwitch = 0x0048B790 + 3;
 
 namespace
 {
-
 	void __declspec(naked) friendlySplashWrapper()
 	{
 		static CBullet* bullet;
@@ -16,7 +15,6 @@ namespace
 		__asm {
 			MOV bullet, EBX
 			MOV weaponId, ECX
-			;//MOV effect, EAX -- or weapons_dat::ExplosionType[weaponId]
 		}
 		if (weaponId == WeaponId::SubterraneanSpines)
 		{
@@ -145,6 +143,7 @@ namespace
 			RETN 4
 		}
 	}
+
 	void __declspec(naked) broodlingsWrapper()
 	{
 		static CBullet* bullet;
@@ -163,6 +162,7 @@ namespace
 			RETN 4
 		}
 	}
+
 	void __declspec(naked) lockdownWrapper()
 	{
 		static CBullet* bullet;
@@ -181,6 +181,7 @@ namespace
 			RETN 4
 		}
 	}
+
 	void __declspec(naked) airSplashWrapper()
 	{
 		static CBullet* bullet;

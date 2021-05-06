@@ -33,7 +33,7 @@ namespace
 			PUSHAD
 		}
 
-		hooks::function_00468420(unit);
+		hooks::orderTrain(unit);
 
 		__asm {
 			POPAD

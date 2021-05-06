@@ -16,6 +16,8 @@ namespace hooks
 
 	void updateUnitEnergy(CUnit* unit)
 	{
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+
 		// was hardcoded instead of function calling in original code
 		if (unit->isValidCaster()
 			&& (unit->status & UnitStatus::Completed))
@@ -25,7 +27,7 @@ namespace hooks
 			if (unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)		// If the unit is cloaked
 				&& !(unit->status & UnitStatus::CloakingForFree))							// and must consume energy to stay cloaked (i.e. not under a Didact)
 			{
-				u16 cloakingEnergyCost;
+				u16 cloakingEnergyCost = 25*256;
 				if (!(unit->hasEnergy(cloakingEnergyCost)))
 				{
 					if (unit->secondaryOrderId == OrderId::Cloak)
@@ -39,67 +41,64 @@ namespace hooks
 					unit->spendUnitEnergy(cloakingEnergyCost);
 				}
 			}
+			else if (unitExt->values[ValueGodsMadeFleshActive])
+			{
+				unit->spendUnitEnergy(GodsMadeFleshEnergyDrain);
+			}
+			else if (unit->id == UnitId::ProtossMindTyrant && scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0)
+			{
+				auto sum = scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) / 2;
+				unit->spendUnitEnergy(std::min(unit->energy, (u16)(16 * sum)));
+				if (unit->energy == 0)
+				{
+					scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
+				}
+			}
+			else if (unit->id == UnitId::TerranAzazel && scbw::get_generic_rust_value(unit, RustId::SublimeShepherd) == 1)
+			{
+				unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
+				if (unit->energy == 0)
+				{
+					scbw::set_generic_rust_value(unit, RustId::SublimeShepherd, 0);
+				}
+			}
 			else
-				if (scbw::get_generic_value(unit, ValueId::GodsMadeFleshActive))
+			{ // 004EB526
+				if (unit == nullptr)
 				{
-					unit->spendUnitEnergy(GodsMadeFleshEnergyDrain);
+					return;
+				}
+				s32 maxEnergy;
+				if (unit->id == UnitId::ProtossMindTyrant
+					&& unit->mainOrderId == OrderId::CompletingArchonSummon
+					&& unit->mainOrderState == 0)
+				{
+					maxEnergy = 12800; // 50 * 256; Identical to energy amount on spawn
 				}
 				else
-				if (unit->id == UnitId::ProtossMindTyrant && scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0)
 				{
-					auto sum = scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) / 2;
-					unit->spendUnitEnergy(std::min(unit->energy, (u16)(16 * sum)));
-					if (unit->energy == 0)
+					maxEnergy = unit->getMaxEnergy();
+				}
+				bool phobosCondition = false;
+				if (unit->id == UnitId::TerranPhobos && unitExt->values[ValuePhobosDischarge] > 0)
+				{
+					unit->spendUnitEnergy(426); // (200 * 256) / (5 * 24)  ~ 426.66
+					if (unit->energy < 426)
 					{
-						scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
+						unit->energy = 0;
+						unitExt->values[ValuePhobosDischarge] = 0;
 					}
+					phobosCondition = true;
+				}
+				if (unit->energy == maxEnergy && !phobosCondition)
+				{
+					bStopHere = true;
 				}
 				else
-					if (unit->id == UnitId::TerranAzazel && scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd) == 1)
-					{
-						unit->spendUnitEnergy(std::min(unit->energy, (u16)13));
-						if (unit->energy == 0)
-						{
-							scbw::set_generic_rust_value(unit, ValueId::SublimeShepherd, 0);
-						}
-					}
-					else
-						{ // 004EB526
-							if (unit == nullptr)
-							{
-								return;
-							}
-							s32 maxEnergy;
-							if (unit->id == UnitId::ProtossMindTyrant
-								&& unit->mainOrderId == OrderId::CompletingArchonSummon
-								&& unit->mainOrderState == 0)
-							{
-								maxEnergy = 12800; // 50 * 256; Identical to energy amount on spawn
-							}
-							else
-							{
-								maxEnergy = unit->getMaxEnergy();
-							}
-							bool phobosCondition = false;
-							if (unit->id == UnitId::TerranPhobos && scbw::get_generic_value(unit, ValueId::PhobosDischarge) > 0)
-							{
-								unit->spendUnitEnergy(426); // (200 * 256) / (5 * 24)  ~ 426.66
-								if (unit->energy < 426)
-								{
-									unit->energy = 0;
-									scbw::set_generic_value(unit, ValueId::PhobosDischarge, 0);
-								}
-								phobosCondition = true;
-							}
-							if (unit->energy == maxEnergy && !phobosCondition)
-							{
-								bStopHere = true;
-							}
-							else
-							{
-								unit->addUnitEnergy(8, maxEnergy);
-							}
-						}
+				{
+					unit->addUnitEnergy(8, maxEnergy);
+				}
+			}
 
 			//If the unit is currently selected, redraw its graphics
 			if (!bStopHere && unit->sprite->flags & CSprite_Flags::Selected)
@@ -125,6 +124,8 @@ namespace hooks
 	/// Identical to function @ 0x004EC290
 	void updateUnitStateHook(CUnit* unit)
 	{
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+
 		if (unit->pAI != nullptr)
 		{
 			hydra_unit_ai(unit);
@@ -149,7 +150,7 @@ namespace hooks
 		}
 
 		// Wyvern Reverse Thrust - fire while moving
-		if (unit->id == UnitId::TerranWyvern && unit->groundWeaponCooldown == 0 && scbw::get_generic_value(unit, ValueId::ReverseThrust))
+		if (unit->id == UnitId::TerranWyvern && unit->groundWeaponCooldown == 0 && unitExt->values[ValueReverseThrust])
 		{
 			bool can_free_fire = true;
 			if (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::Attack2)
@@ -169,10 +170,10 @@ namespace hooks
 
 				unit->groundWeaponCooldown = weapons_dat::Cooldown[WeaponId::WyvernJacksonCannon];
 				bool seek_unit = true;
-				if (scbw::get_generic_value(unit, ValueId::WyvernReverseLandgrabOn) == 1)
+				if (unitExt->values[ValueWyvernReverseLandgrabOn] == 1)
 				{
-					auto targ_x = scbw::get_generic_value(unit, ValueId::WyvernReverseLandgrabX);
-					auto targ_y = scbw::get_generic_value(unit, ValueId::WyvernReverseLandgrabY);
+					auto targ_x = unitExt->values[ValueWyvernReverseLandgrabX];
+					auto targ_y = unitExt->values[ValueWyvernReverseLandgrabY];
 					auto direction = scbw::getAngle(x, y, targ_x, targ_y);
 					if (scbw::getDistanceFast(unit->position.x, unit->position.y, targ_x, targ_y) <= range)
 					{
@@ -181,7 +182,7 @@ namespace hooks
 					}
 					else
 					{
-						scbw::set_generic_value(unit, ValueId::WyvernReverseLandgrabOn, 0);
+						unitExt->values[ValueWyvernReverseLandgrabOn] = 0;
 					}
 				}
 
@@ -259,11 +260,11 @@ namespace hooks
 			if (!unit->getOverlay(overlayImageId) && scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0) == 0)
 			{
 				unit->sprite->createTopOverlay(overlayImageId, 0, 0, 0);
-				scbw::set_generic_value(unit, ValueId::HierophantOverlay, 1);
+				unitExt->values[ValueHierophantOverlay] = 1;
 			}
 		}
 
-		if (scbw::get_generic_value(unit, ValueId::HierophantOverlay) == 1)
+		if (unitExt->values[ValueHierophantOverlay] == 1)
 		{
 			auto overlayId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
 			auto overlay = unit->getOverlay(overlayId);
@@ -278,7 +279,7 @@ namespace hooks
 				{
 					unit->sprite->createTopOverlay(maliceId, 0, 0, 0);
 				}
-				scbw::set_generic_value(unit, ValueId::HierophantOverlay, 0);
+				unitExt->values[ValueHierophantOverlay] = 0;
 			}
 		}
 
@@ -288,7 +289,7 @@ namespace hooks
 			unit->_unknown_0x08C &= ~0x2;
 			u32 maliceId = ImageId::Malice_Small + scbw::getOverlayOffset(unit->id);
 			u32 cowardiceId = ImageId::Cowardice_Small + scbw::getOverlayOffset(unit->id);
-			scbw::set_generic_value(unit, ValueId::HierophantOverlay, 0);
+			unitExt->values[ValueHierophantOverlay] = 0;
 			if (unit->getOverlay(maliceId))
 			{
 				unit->removeOverlay(maliceId);
@@ -324,7 +325,7 @@ namespace hooks
 				if (unit->unusedTimer > 0)
 				{
 					unit->_unknown_0x066 = 72;
-					if (scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer) > 0)
+					if (unitExt->timers[TimerMineralSpecialRegen])
 					{
 						unit->_unknown_0x066 = 36;
 					}
@@ -332,7 +333,7 @@ namespace hooks
 				else
 				{
 					unit->_unknown_0x066 = 36;
-					if (scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer) > 0)
+					if (unitExt->timers[TimerMineralSpecialRegen])
 					{
 						unit->_unknown_0x066 = 18;
 					}
@@ -341,8 +342,7 @@ namespace hooks
 				// Actual resource regeneration
 				bool update_image = true;
 				if (unit->building.resource.resourceAmount < 5000
-					&& (unit->id == UnitId::ResourceVespeneGeyser
-						|| scbw::get_generic_timer(unit, ValueId::MineralSpecialRegenTimer) > 0))
+					&& (unit->id == UnitId::ResourceVespeneGeyser || unitExt->timers[TimerMineralSpecialRegen]))
 				{
 					unit->building.resource.resourceAmount++;
 					scbw::refreshConsole();
@@ -451,47 +451,57 @@ namespace hooks
 				unit->hitPoints > 0 &&
 				unit->hitPoints / 256 != unit->getMaxHpInGame())
 			{
-				unit->setHp(unit->hitPoints + 4);
+				s32 regen = 4;
+				if (unitExt->values[ValueAlaszilethRegenBoost] > 0)
+				{
+					regen *= 3;
+				}
+				if (unit->id == UnitId::SharedCohort)
+				{
+					regen *= 2;
+				}
+				unit->setHp(unit->hitPoints + regen);
 			}
 
-			// Deliberate healing start
-			s32 tickHeal = 0;
-			// Azazel Innervating Matrices - heal over time
-			if (unit->defensiveMatrixHp != 0)
+			// Deliberate healing
 			{
-				if (unit->hitPoints > 0
-					&& unit->hitPoints / 256 != unit->getMaxHpInGame())
+				s32 tickHeal = 0;
+				// Azazel Innervating Matrices - heal over time
+				if (unit->defensiveMatrixHp != 0)
 				{
-					auto caster = scbw::get_aise_value(unit, nullptr, AiseId::GetMatrixCasterPlayer, 0, 0);
-					if (caster < 8)
+					if (unit->hitPoints > 0
+						&& unit->hitPoints / 256 != unit->getMaxHpInGame())
 					{
-						tickHeal += AzazelDefensiveMatrixHeal;
+						auto caster = scbw::get_aise_value(unit, nullptr, AiseId::GetMatrixCasterPlayer, 0, 0);
+						if (caster < 8)
+						{
+							tickHeal += AzazelDefensiveMatrixHeal;
+						}
 					}
 				}
-			}
-			// Akistrokor - Enthralling Assault HP regeneration
-			if (scbw::get_generic_timer(unit, ValueId::EnthrallingAssaultHealTimer) > 0)
-			{
-				tickHeal += AkistrokorEnthrallingAssaultHeal;
-			}
+				// Akistrokor - Enthralling Assault HP regeneration
+				if (unitExt->timers[TimerEnthrallingAssaultHeal] > 0)
+				{
+					tickHeal += AkistrokorEnthrallingAssaultHeal;
+				}
 
-			if (tickHeal)
-			{
-				unit->heal(tickHeal);
+				if (tickHeal)
+				{
+					unit->heal(tickHeal);
+				}
 			}
-			// Deliberate healing end
 
 			// Last Orders - Aurora passive
 			if (unit->id == UnitId::ProtossAurora)
 			{
-				if (scbw::get_generic_value(unit, ValueId::LastOrdersInit) == 1)
+				if (unitExt->values[ValueLastOrdersInit] == 1)
 				{
 					auto distance = scbw::getDistanceFast(unit->position.x, unit->position.y,
 						unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					if (distance < 32)
 					{
 						unit->status |= UnitStatus::Invincible;
-						CBullet* bullet = helper::createBulletRet(WeaponId::AuroraLastOrders, unit, unit->position.x, unit->position.y, unit->playerId, unit->currentDirection1);
+						CBullet* bullet = helper::createBullet(WeaponId::AuroraLastOrders, unit, unit->position.x, unit->position.y, unit->playerId, unit->currentDirection1);
 						hooks::splash(bullet, WeaponId::AuroraLastOrders, SplashType::FriendlyNew, nullptr);
 						if (bullet)
 						{
@@ -522,8 +532,10 @@ namespace hooks
 		}
 	};
 
-	void incrementUnitScoresEx(s32 count, CUnit* unit, s32 increment_scores)
-	{ // 0x00488D50
+	void incrementUnitScoresEx(s32 count, CUnit* unit, s32 increment_scores) // 0x00488D50
+	{
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+
 		if (unit->status & UnitStatus::IsHallucination)
 		{
 			return;
@@ -556,13 +568,13 @@ namespace hooks
 
 		if (*elapsedTimeFrames > 0)
 		{
-			u32 supply_new = scbw::get_generic_value(unit, ValueId::SupplyProvided);
+			u32 supply_new = unitExt->values[ValueSupplyProvided];
 			if (supply_new)
 			{
 				supply = supply_new;
 			}
-			scbw::set_generic_value(unit, ValueId::SupplyProvided, supply);
-			auto supply_overlord_modifier = scbw::get_generic_value(unit, ValueId::OverlordSupplyGimmick);
+			unitExt->values[ValueSupplyProvided] = supply;
+			auto supply_overlord_modifier = unitExt->values[ValueOverlordSupply];
 			if (supply_overlord_modifier > 0)
 			{
 				switch (supply_overlord_modifier)
@@ -585,7 +597,7 @@ namespace hooks
 				{
 					supply = units_dat::SupplyProvided[unit->id];
 				}
-			scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 0);
+			unitExt->values[ValueOverlordSupply] = 0;
 		}
 		if (race <= RaceId::Protoss)
 		{
@@ -755,10 +767,11 @@ namespace hooks
 		}
 		if (v7)
 		{
+			UnitExt* unitExt = globals.GetUnitExt(v7);
 			do
 			{
 				helper::updateVisibility(v7);
-				if (v7->status & 0x300 && scbw::get_generic_timer(v7, ValueId::DecloakTimer) == 0)
+				if (v7->status & 0x300 && unitExt->timers[TimerDecloak] == 0)
 				{
 					v10 = v7->secondaryOrderTimer;
 					v7->isCloaked = 0;

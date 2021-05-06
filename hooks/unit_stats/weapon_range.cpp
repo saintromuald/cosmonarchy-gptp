@@ -11,8 +11,9 @@ namespace hooks
 	/// Note: Seek ranges are measured in matrices (1 matrix = 32 pixels).
 	/// This hook affects the behavior of CUnit::getSeekRange().
 	/// Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
-	u8 getSeekRangeHook(CUnit* unit)
-	{ // seek range is measured in tiles, unfortunately
+	u8 getSeekRangeHook(CUnit* unit) // seek range is measured in tiles, unfortunately
+	{
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		u16 unitId = unit->id;
 		u32 seekRange;
@@ -22,14 +23,14 @@ namespace hooks
 		{
 			case UnitId::ProtossExemplar:
 			{
-				if (scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch))
+				if (scbw::get_generic_rust_value(unit, RustId::ExemplarSwitch))
 				{
 					bonusAmount += 6;
 				}
 			}
 			case UnitId::TerranMadrigal:
 			{
-				if (scbw::get_generic_rust_value(unit, ValueId::TempoChange))
+				if (scbw::get_generic_rust_value(unit, RustId::TempoChange))
 				{
 					bonusAmount += 4;
 				}
@@ -41,13 +42,17 @@ namespace hooks
 		}
 
 		// Repentant Chorus - Barghest Behavior
-		bonusAmount += scbw::get_generic_value(unit, ValueId::RepententChorus) / 4;
+		bonusAmount += unitExt->values[ValueRepententChorus] / 4;
 
 		// Stellar Enforcement - Magister behavior
-		if (unit->orderTarget.unit != nullptr
-			&& scbw::get_generic_value(unit->orderTarget.unit, ValueId::StellarEnforcement))
+		if (unit->orderTarget.unit != nullptr)
 		{
-			bonusAmount += 2;
+			UnitExt* orderUnitExt = globals.GetUnitExt(unit->orderTarget.unit);
+
+			if (orderUnitExt->values[ValueStellarEnforcement])
+			{
+				bonusAmount += 2;
+			}
 		}
 
 		// Ignore bonus range for melee units
@@ -83,9 +88,9 @@ namespace hooks
 	/// @param	unit			The unit that owns the weapon. Use this to check upgrades.
 	u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId)
 	{
-		//Default StarCraft behavior
-		u32 bonusAmount = 0;
+		UnitExt* unitExt = globals.GetUnitExt(unit);
 
+		u32 bonusAmount = 0;
 		//Give bonus range to units inside Bunkers
 		if (unit->status & UnitStatus::InBuilding)
 		{
@@ -96,14 +101,14 @@ namespace hooks
 		{
 			case UnitId::ProtossExemplar:
 			{
-				if (scbw::get_generic_rust_value(unit, ValueId::ExemplarSwitch))
+				if (scbw::get_generic_rust_value(unit, RustId::ExemplarSwitch))
 				{
 					bonusAmount += 6 * 32;
 				}
 			}
 			case UnitId::TerranMadrigal:
 			{
-				if (scbw::get_generic_rust_value(unit, ValueId::TempoChange))
+				if (scbw::get_generic_rust_value(unit, RustId::TempoChange))
 				{
 					bonusAmount += 4 * 32;
 				}
@@ -117,15 +122,18 @@ namespace hooks
 		// Repentent Chorus - Barghest behavior
 		if (unit->id == UnitId::ProtossBarghest)
 		{
-			bonusAmount += scbw::get_generic_value(unit, ValueId::RepententChorus) * 8;
+			bonusAmount += unitExt->values[ValueRepententChorus] * 8;
 		}
 
 		// Stellar Enforcement - Magister behavior
 		if (unit->orderTarget.unit != nullptr
-			&& scbw::get_generic_value(unit->orderTarget.unit, ValueId::StellarEnforcement)
 			&& weapons_dat::MaxRange[unit->getGroundWeapon()] > 32)
 		{
-			bonusAmount += 64;
+			UnitExt* orderUnitExt = globals.GetUnitExt(unit->orderTarget.unit);
+			if (orderUnitExt->values[ValueStellarEnforcement])
+			{
+				bonusAmount += 64;
+			}
 		}
 
 		// Height advantage

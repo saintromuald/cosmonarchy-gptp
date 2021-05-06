@@ -377,7 +377,7 @@ struct CUnit : public CUnitLayout
 	static CUnit* getFromIndex(u16 index);
 
 	/// Returns the index of this unit in the unit table. First unit == index 1.
-	u16 getIndex() const;
+	inline u16 getIndex() const;
 
 	/// Returns the ID of the last player to own this unit. This is usually the
 	/// same as CUnit::playerId, but if the unit belongs to a defeated player,

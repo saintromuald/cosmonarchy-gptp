@@ -175,24 +175,35 @@ namespace
 
 	void __fastcall cancelUnitWrapper(CUnit* unit)
 	{
-		//Default StarCraft behavior
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+
 		if (unit->isDead())
+		{
 			return;
+		}
 
 		if (unit->status & UnitStatus::Completed)
+		{
 			return;
+		}
 
 		if (unit->id == UnitId::ZergNydusCanal && unit->building.nydusExit != nullptr)
+		{
 			return;
+		}
 
-		//Don't bother if unit is not morphed yet
+		// Don't bother if unit is not morphed yet
 		if (scbw::isConventionalUnitMorphSource(unit->id, false, false))
 		{
 			return;
 		}
-		//Don't bother if unit has finished morphing
+
+		// Don't bother if unit has finished morphing
 		if (scbw::isConventionalUnitMorphResult(unit->id))
+		{
 			return;
+		}
+
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
 			if (unit->getRace() == RaceId::Zerg)
@@ -207,18 +218,22 @@ namespace
 		{
 			u16 refundUnitId;
 			if (scbw::isZergEggNew(unit, true, false))
+			{
 				refundUnitId = unit->buildQueue[unit->buildQueueSlot % 5];
+			}
 			else
+			{
 				refundUnitId = unit->id;
+			}
 			resources->minerals[unit->playerId] += units_dat::MineralCost[refundUnitId];
 			resources->gas[unit->playerId] += units_dat::GasCost[refundUnitId];
 		}
 
 		u16 cancelChangeUnitId = hooks::getCancelMorphRevertTypeHook(unit);
-		//		scbw::printf("Revert unit id: %d", cancelChangeUnitId);
+//		scbw::printf("Revert unit id: %d", cancelChangeUnitId);
 		if (cancelChangeUnitId == UnitId::None)
 		{
-			//scbw::print("Remove the unit");
+//			scbw::print("Remove the unit");
 			if (unit->id == UnitId::TerranNuclearMissile)
 			{
 				CUnit* silo = unit->connectedUnit;
@@ -234,16 +249,16 @@ namespace
 		else
 		{
 			changeUnitType(unit, cancelChangeUnitId);
-			unit->energy = scbw::get_generic_value(unit, ValueId::PreMorphEnergy);
+			unit->energy = unitExt->values[ValuePreMorphEnergy];
 			unit->remainingBuildTime = 0;
 			unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
-			/*replaceSpriteImages(unit->sprite,
-				sprites_dat::ImageId[flingy_dat::SpriteID[units_dat::Graphic[unit->previousUnitType]]], 0);*/
-				//			auto index = units_dat::Graphic[unit->previousUnitType];
+			
+//			replaceSpriteImages(unit->sprite, sprites_dat::ImageId[flingy_dat::SpriteID[units_dat::Graphic[unit->previousUnitType]]], 0);			
+//			auto index = units_dat::Graphic[unit->previousUnitType];
 			auto index = scbw::getUnitData(UnitsDatEntries::Flingy, unit->previousUnitType);
-			//			replaceSpriteImages(unit->sprite, sprites_dat::ImageId[scbw::getFlingyData(FlingyDatEntries::SpriteId, index)], 0);
+//			replaceSpriteImages(unit->sprite, sprites_dat::ImageId[scbw::getFlingyData(FlingyDatEntries::SpriteId, index)], 0);
 			auto fl_sId = scbw::getFlingyData(FlingyDatEntries::SpriteId, index);
-			//scbw::getSpriteData(SpritesDatEntries::ImageId,building->sprite->spriteId),
+//			scbw::getSpriteData(SpritesDatEntries::ImageId,building->sprite->spriteId),
 			replaceSpriteImages(unit->sprite, scbw::getSpriteData(SpritesDatEntries::ImageId, fl_sId), 0);
 			unit->orderSignal &= ~0x4;
 			if (unit->id == UnitId::ZergZergling
@@ -258,13 +273,12 @@ namespace
 			else if (unit->id == UnitId::ZergUltrakor)
 			{
 				unit->playIscriptAnim(IscriptAnimation::CastSpell);
-				scbw::set_generic_timer(unit, ValueId::UltrakorCancelGimmick, 4);
+				unitExt->timers[TimerUltrakorCancel] = 4;
 			}
 			else
 			{
 				unit->playIscriptAnim(IscriptAnimation::SpecialState2);
 			}
-
 			unit->orderTo(OrderId::ZergBirth);
 		}
 	}
@@ -275,7 +289,9 @@ namespace
 	{
 		u16 unitId = unit->id;
 		if (scbw::isZergEggNew(unit, true, false) || unit->isRemorphingBuilding())
+		{
 			unitId = unit->buildQueue[unit->buildQueueSlot];
+		}
 		return 100 * (units_dat::TimeCost[unitId] - unit->remainingBuildTime) / units_dat::TimeCost[unitId];
 	}
 

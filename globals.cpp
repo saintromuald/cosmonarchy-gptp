@@ -232,7 +232,10 @@ void Globals::reset()
 	multihitBullets.clear();
 	apostleAgents.clear();
 	lurkerSpineHits.clear();
-	unitStructs.clear();
+	for (int j = 0; j < UNIT_ARRAY_LENGTH; ++j)
+	{ 
+		unitExt[j] = {};
+	}
 }
 
 void Globals::unitFrameHook(CUnit* unit)
@@ -246,32 +249,27 @@ void Globals::unitFrameHook(CUnit* unit)
 
 void Globals::unitDeathHook(CUnit* unit)
 {
-	unitStructs.erase(unit);
-	for (auto& a : unitStructs)
+	for (int j = 0; j < UNIT_ARRAY_LENGTH; ++j)
 	{ // set dead unit pointers to nullptr and erase them from unit vectors
-		for (auto& unitPair : a.second.genericUnits)
+		UnitExt* ext = &unitExt[j];
+		for (int i = 0; i < UnitCount; ++i)
 		{
-			if (unitPair.second == unit)
+			if (ext->units[i] == unit)
 			{
-				unitPair.second = nullptr;
+				ext->units[i] = nullptr;
 			}
 		}
 
-		for (auto& unitVecPair : a.second.genericUnitVectors)
+		for (int i = 0; i < UnitVectorCount; ++i)
 		{
-			auto& vec = unitVecPair.second;
+			auto& vec = ext->unitVectors[i];
 			vec.erase(std::remove_if(vec.begin(), vec.end(), [&](CUnit* vecUnit)
 			{
 				return vecUnit == unit;
 			}), vec.end());
 		}
-
-		for (auto& unitMapPair : a.second.genericUnitTimerMap)
-		{
-			auto& map = unitMapPair.second;
-			map.erase(unit);
-		}
 	}
+	*globals.GetUnitExt(unit) = {};
 
 	for (s32 i = 0; i < this->apostleAgents.size(); i++)
 	{
@@ -348,46 +346,33 @@ void Globals::createGenericPersistImpact(u8 impactId, u32 time, Point32 position
 
 void Globals::frameHook()
 {
-	for (auto& unitStruct : unitStructs)
+	for (int j = 0; j < UNIT_ARRAY_LENGTH; ++j)
 	{
-		for (auto& timerPair : unitStruct.second.genericTimers)
+		UnitExt* ext = &unitExt[j];
+		for (int i = 0; i < TimerCount; ++i)
 		{
-			if (timerPair.second > 0)
+			if (ext->timers[i] > 0)
 			{
-				timerPair.second--;
+				ext->timers[i]--;
 			}
 		}
-		for (auto& timerVecPair : unitStruct.second.genericTimerVectors)
+		for (int i = 0; i < TimerVectorCount; ++i)
 		{
-			for (auto& timer : timerVecPair.second)
+			for (auto& timer : ext->timerVectors[i])
 			{
 				if (timer > 0)
 				{
 					timer--;
 				}
 			}
-			timerVecPair.second.erase(std::remove_if(timerVecPair.second.begin(), timerVecPair.second.end(), [&](s32& timer)
+			ext->timerVectors[i].erase(std::remove_if(ext->timerVectors[i].begin(), ext->timerVectors[i].end(), [&](u32& timer)
 			{
 				if (timer == 0) return true;
-			}), timerVecPair.second.end());
-		}
-		for (auto& timerVecPair : unitStruct.second.genericUnitTimerMap)
-		{
-			for (auto& timer : timerVecPair.second)
-			{
-				if (timer.second > 0)
-				{
-					timer.second--;
-				}
-				else
-				{
-					timerVecPair.second.erase(timer.first);
-				}
-			}
+			}), ext->timerVectors[i].end());
 		}
 	}
 
-	for (s32 i = 0; i < apostleAgents.size(); i++)
+	for (s32 i = 0; i < apostleAgents.size(); ++i)
 	{
 		auto& agent = apostleAgents[i];
 		if (agent.timer > 0)
@@ -399,13 +384,14 @@ void Globals::frameHook()
 			auto revived = scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y, agent.creator);
 			if (revived)
 			{
+				UnitExt* revivedExt = globals.GetUnitExt(revived);
 				revived->setHp(units_dat::MaxHitPoints[revived->id] / 2);
 				revived->energy = agent.energy;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
-				scbw::set_generic_value(revived, ValueId::LazarusNoHeal, 1);
+				revivedExt->values[ValueLazarusNoHeal] = 1;
 				// TODO: Make reviving units invincible
 //				revived->status |= UnitStatus::Invincible;
-				scbw::set_generic_value(revived, ValueId::IsReviving, 1);
+				revivedExt->values[ValueIsReviving] = 1;
 			}
 			apostleAgents.erase(apostleAgents.begin() + i);
 			i--;
@@ -470,8 +456,9 @@ void Globals::frameHook()
 						impact.position.y + impact.radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit)
 					{
+						UnitExt* unitExt = globals.GetUnitExt(unit);
 						unit->damageWithIgnoreFlatArmor(WeaponId::KeskathalorCausticDischarge, weapons_dat::DamageAmount[WeaponId::KeskathalorCausticDischarge] * damageMultiplier);
-						scbw::set_generic_timer(unit, ValueId::CausticDischargeSpeed, 5 * 24 + 1);
+						unitExt->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
 					});
 					break;
 				}
@@ -484,8 +471,9 @@ void Globals::frameHook()
 						impact.position.y + impact.radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit)
 					{
+						UnitExt* unitExt = globals.GetUnitExt(unit);
 						unit->damageWithIgnoreFlatArmor(WeaponId::IonField, weapons_dat::DamageAmount[WeaponId::IonField] * damageMultiplier);
-						scbw::set_generic_timer(unit, ValueId::IonFieldSpeed, 2 * 24 + 1);
+						unitExt->timers[TimerIonFieldSpeed] = 2 * 24 + 1;
 					});
 					break;
 				}
@@ -498,10 +486,11 @@ void Globals::frameHook()
 						impact.position.y + impact.radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::Enemy, {}), [&](CUnit* unit)
 					{
-						if (scbw::get_generic_timer(unit, ValueId::HallucinatingTimer) < impact.currentTime)
+						UnitExt* unitExt = globals.GetUnitExt(unit);
+						if (unitExt->timers[TimerHallucinating] < impact.currentTime)
 						{
-							scbw::set_generic_value(unit, ValueId::HallucinatingSourcePlayer, impact.player);
-							scbw::set_generic_timer(unit, ValueId::HallucinatingTimer, impact.currentTime);
+							unitExt->values[ValueHallucinatingSourcePlayer] = impact.player;
+							unitExt->timers[TimerHallucinating] = impact.currentTime;
 
 							scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit);
 							if (unit->subunit != nullptr)
@@ -776,98 +765,10 @@ void injectGlobalsHooks()
 
 namespace scbw
 {
-	u32 get_generic_value(CUnit* u, u32 id)
-	{
-		auto find = globals.unitStructs.find(u);
-		if (find != globals.unitStructs.end())
-		{
-			return find->second.getGenericValue(id);
-		}
-		return 0;
-	}
-
-	void set_generic_value(CUnit* u, u32 id, u32 val)
-	{
-		globals.unitStructs[u].setGenericValue(id, val);
-	}
-
-	void add_generic_value(CUnit* u, u32 id, s32 val)
-	{
-		globals.unitStructs[u].addGenericValue(id, val);
-	}
-
-	u32 get_generic_timer(CUnit* u, u32 id)
-	{
-		auto find = globals.unitStructs.find(u);
-		if (find != globals.unitStructs.end())
-		{
-			return find->second.getGenericTimer(id);
-		}
-		return 0;
-	}
-
-	void set_generic_timer(CUnit* u, u32 id, u32 val)
-	{
-		globals.unitStructs[u].setGenericTimer(id, val);
-	}
-
-	CUnit* get_generic_unit(CUnit* u, u32 id)
-	{
-		auto find = globals.unitStructs.find(u);
-		if (find != globals.unitStructs.end())
-		{
-			return find->second.getGenericUnit(id);
-		}
-		return nullptr;
-	}
-
-	void set_generic_unit(CUnit* u, u32 id, CUnit* val)
-	{
-		globals.unitStructs[u].setGenericUnit(id, val);
-	}
-
-	std::vector<s32>& get_generic_value_vector(CUnit* u, u32 id)
-	{
-		auto& find = globals.unitStructs.find(u);
-		if (find == globals.unitStructs.end())
-		{
-			globals.unitStructs[u] = {};
-		}
-		return globals.unitStructs[u].getGenericValueVector(id);
-	}
-
-	std::vector<s32>& get_generic_timer_vector(CUnit* u, u32 id)
-	{
-		auto& find = globals.unitStructs.find(u);
-		if (find == globals.unitStructs.end())
-		{
-			globals.unitStructs[u] = {};
-		}
-		return globals.unitStructs[u].getGenericTimerVector(id);
-	}
-
-	std::vector<CUnit*>& get_generic_unit_vector(CUnit* u, u32 id)
-	{
-		auto& find = globals.unitStructs.find(u);
-		if (find == globals.unitStructs.end())
-		{
-			globals.unitStructs[u] = {};
-		}
-		return globals.unitStructs[u].getGenericUnitVector(id);
-	}
-
-	std::unordered_map<CUnit*, s32>& get_generic_unit_timer_map(CUnit* u, u32 id)
-	{
-		auto& find = globals.unitStructs.find(u);
-		if (find == globals.unitStructs.end())
-		{
-			globals.unitStructs[u] = {};
-		}
-		return globals.unitStructs[u].getGenericUnitTimerMap(id);
-	}
-
 	void refreshDebuffs(CUnit* unit)
 	{
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+
 		// NOTE: classic period formula is (([real seconds / 0.042) / 8)
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
 
@@ -886,53 +787,57 @@ namespace scbw
 		}
 
 		// Reset Malediction
-		if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 0)
+		if (unitExt->timers[TimerMaledictionSlow] > 0)
 		{
-			scbw::set_generic_timer(unit, ValueId::MaledictionSlow, 4 * 24);
+			unitExt->timers[TimerMaledictionSlow] = 4 * 24;
 		}
 
 		// Reset Observance
-		if (scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) > 0)
+		if (unitExt->timers[TimerObservanceDebuff] > 0)
 		{
-			scbw::set_generic_timer(unit, ValueId::ObservanceTimerDebuff, 5 * 24);
+			unitExt->timers[TimerObservanceDebuff] = 5 * 24;
 		}
 
 		// Reset Knockout Drivers
-		if (scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) > 0)
+		if (unitExt->timers[TimerKnockoutDrivers] > 0)
 		{
-			scbw::set_generic_timer(unit, ValueId::KnockoutDriversTimer, 2 * 24);
+			unitExt->timers[TimerKnockoutDrivers] = 2 * 24;
 		}
 
 		// Reset Hallucination
-		if (scbw::get_generic_timer(unit, ValueId::HallucinatingTimer) > 0)
+		if (unitExt->timers[TimerHallucinating] > 0)
 		{
-			scbw::set_generic_timer(unit, ValueId::HallucinatingTimer, 20 * 24);
+			unitExt->timers[TimerHallucinating] = 20 * 24;
 		}
 
 		// Reset Captivating Claws
-		if (get_generic_timer(unit, ValueId::CaptivatingClawsTimer) > 0)
+		if (unitExt->timers[TimerCaptivatingClaws] > 0)
 		{
-			set_generic_timer(unit, ValueId::CaptivatingClawsTimer, 1 * 24);
+			unitExt->timers[TimerCaptivatingClaws] = 1 * 24;
 		}
 
 		// Reset Lobotomy Mine slow
-		if (scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0)
+		if (unitExt->timers[TimerLobotomySlow] > 0)
 		{
-			scbw::set_generic_timer(unit, ValueId::LobotomySlow, 6 * 24);
+			unitExt->timers[TimerLobotomySlow] = 4 * 24;
 		}
 
 		// Reset Lockdown
 		if (unit->lockdownTimer != 0)
+		{
 			unit->lockdownTimer = 18;
+		}
 
 		// Reset Maelstrom
 		if (unit->maelstromTimer != 0)
-			unit->maelstromTimer = 12;
+		{
+			unit->maelstromTimer = 18;
+		}
 
 		// Reset Devourer Corrosive Spores
-		if (scbw::get_generic_timer(unit, ValueId::CorrosiveTouchTimer) > 0)
+		if (unitExt->timers[TimerCorrosiveTouch] > 0)
 		{
-			scbw::set_generic_timer(unit, ValueId::CorrosiveTouchTimer, VithriliskCorrosiveTouchTimer);
+			unitExt->timers[TimerCorrosiveTouch] = VithriliskCorrosiveTouchTimer;
 		}
 
 		// Reset Irradiate
@@ -947,6 +852,9 @@ namespace scbw
 
 	void inheritDebuffs(CUnit* parent, CUnit* child)
 	{
+		UnitExt* parentExt = globals.GetUnitExt(parent);
+		UnitExt* childExt = globals.GetUnitExt(child);
+
 		// NOTE: classic period formula is (([real seconds / 0.042) / 8)
 		// e.g. (([15] / 0.042) / 8) = 44.642, rounded up to 45
 
@@ -975,71 +883,75 @@ namespace scbw
 		}
 
 		// Inherit Parasite
-		if (scbw::get_generic_unit(parent, ValueId::ParasiteSource) != nullptr)
+		if (parentExt->units[UnitParasiteSource] != nullptr)
 		{
-			scbw::set_generic_unit(child, ValueId::ParasiteSource, scbw::get_generic_unit(parent, ValueId::ParasiteSource));
+			childExt->units[UnitParasiteSource] = parentExt->units[UnitParasiteSource];
 		}
 
 		// Inherit armor rend (generic)
-		if (scbw::get_generic_value(parent, ValueId::ArmorReduce) > 0)
+		if (parentExt->values[ValueArmorReduce] > 0)
 		{
-			scbw::set_generic_value(child, ValueId::ArmorReduce, scbw::get_generic_value(parent, ValueId::ArmorReduce));
+			childExt->values[ValueArmorReduce] = parentExt->values[ValueArmorReduce];
 		}
 
 		// Inherit Malediction
-		if (scbw::get_generic_timer(parent, ValueId::MaledictionSlow) > 0)
+		if (parentExt->timers[TimerMaledictionSlow] > 0)
 		{
-			scbw::set_generic_timer(child, ValueId::MaledictionSlow, scbw::get_generic_timer(parent, ValueId::MaledictionSlow));
+			childExt->timers[TimerMaledictionSlow] = parentExt->timers[TimerMaledictionSlow];
 		}
 
 		// Inherit Observance
-		if (scbw::get_generic_timer(parent, ValueId::ObservanceTimerDebuff) > 0)
+		if (parentExt->timers[TimerObservanceDebuff] > 0)
 		{
-			scbw::set_generic_timer(child, ValueId::ObservanceTimerDebuff, scbw::get_generic_timer(parent, ValueId::ObservanceTimerDebuff));
-			scbw::set_generic_timer(child, ValueId::ObservanceTimerPeriod, scbw::get_generic_timer(parent, ValueId::ObservanceTimerPeriod));
-			scbw::set_generic_value(child, ValueId::ObservanceRend, scbw::get_generic_value(parent, ValueId::ObservanceRend));
+			childExt->timers[TimerObservanceDebuff] = parentExt->timers[TimerObservanceDebuff];
+			childExt->timers[TimerObservancePeriod] = parentExt->timers[TimerObservancePeriod];
+			childExt->values[ValueObservanceRend] = parentExt->values[ValueObservanceRend];
 		}
 
 		// Inherit Knockout Drivers
-		if (scbw::get_generic_timer(parent, ValueId::KnockoutDriversTimer) > 0)
+		if (parentExt->timers[TimerKnockoutDrivers] > 0)
 		{
-			scbw::set_generic_timer(child, ValueId::KnockoutDriversTimer, scbw::get_generic_timer(parent, ValueId::KnockoutDriversTimer));
+			childExt->timers[TimerKnockoutDrivers] = parentExt->timers[TimerKnockoutDrivers];
 		}
 
 		// Inherit Hallucination
-		if (scbw::get_generic_timer(parent, ValueId::HallucinatingTimer) > 0)
+		if (parentExt->timers[TimerHallucinating]  > 0)
 		{
-			scbw::set_generic_timer(child, ValueId::HallucinatingTimer, scbw::get_generic_timer(parent, ValueId::HallucinatingTimer));
+			childExt->timers[TimerHallucinating] = parentExt->timers[TimerHallucinating];
 		}
 
 		// Inherit Captivating Claws
-		if (auto timer = scbw::get_generic_timer(parent, ValueId::CaptivatingClawsTimer))
+		if (auto timer = parentExt->timers[TimerCaptivatingClaws])
 		{
-			scbw::set_generic_timer(child, ValueId::CaptivatingClawsTimer, timer);
-			auto& parentVec = scbw::get_generic_unit_vector(parent, ValueId::CaptivatingClawsUnitVector);
-			auto& childVec = scbw::get_generic_unit_vector(child, ValueId::CaptivatingClawsUnitVector);
+			childExt->timers[TimerCaptivatingClaws] = timer;
+			auto& parentVec = parentExt->unitVectors[UnitVectorCaptivatingClaws];
+			auto& childVec = childExt->unitVectors[UnitVectorCaptivatingClaws];
 			childVec = parentVec;
 		}
 
 		// Inherit Lobotomy Mine slow
-		if (scbw::get_generic_timer(parent, ValueId::LobotomySlow) > 0)
+		if (parentExt->timers[TimerLobotomySlow])
 		{
-			scbw::set_generic_timer(child, ValueId::LobotomySlow, scbw::get_generic_timer(parent, ValueId::LobotomySlow));
+			childExt->timers[TimerLobotomySlow] = parentExt->timers[TimerLobotomySlow];
 		}
 
 		// Inherit Lockdown
 		if (parent->lockdownTimer != 0)
+		{
 			child->lockdownTimer = parent->lockdownTimer;
+		}
 
 		// Inherit Maelstrom
 		if (parent->maelstromTimer != 0)
+		{
 			child->maelstromTimer = parent->maelstromTimer;
+		}
 
 		// Inherit Devourer Corrosive Spores
-		if (scbw::get_generic_timer(parent, ValueId::CorrosiveTouchTimer) != 0)
+		if (parentExt->timers[TimerCorrosiveTouch])
 		{
-			scbw::set_generic_value(child, ValueId::CorrosiveTouchStacks, scbw::get_generic_value(parent, ValueId::CorrosiveTouchStacks));
-			scbw::set_generic_timer(child, ValueId::CorrosiveTouchTimer, scbw::get_generic_timer(parent, ValueId::CorrosiveTouchTimer));
+			childExt->values[ValueCorrosiveTouchStacks] = parentExt->values[ValueCorrosiveTouchStacks];
+			childExt->timers[TimerCorrosiveTouch] = parentExt->timers[TimerCorrosiveTouch];
 		}
 
 		// Inherit Irradiate
@@ -1062,23 +974,26 @@ namespace scbw
 		}
 
 		// Inherit Deconstruction
-		if (scbw::get_generic_value(parent, ValueId::Deconstruction) > 0)
+		if (parentExt->values[ValueDeconstruction])
 		{
-			scbw::set_generic_value(child, ValueId::Deconstruction, scbw::get_generic_value(parent, ValueId::Deconstruction));
+			childExt->values[ValueDeconstruction] = parentExt->values[ValueDeconstruction];
+			CSprite* sprite = child->sprite;
 			if (child->subunit != nullptr)
 			{
-				scbw::set_generic_value(child->subunit, ValueId::Deconstruction, scbw::get_generic_value(parent, ValueId::Deconstruction));
+				UnitExt* subunitExt = globals.GetUnitExt(child->subunit);
+				subunitExt->values[ValueDeconstruction] = parentExt->values[ValueDeconstruction];
+				sprite = child->subunit->sprite;
 			}
-			if (!(child->sprite->getOverlay(ImageId::DeconstructionSmall + overlayOffset)))
+			if (!(sprite->getOverlay(ImageId::DeconstructionSmall + overlayOffset)))
 			{
-				child->sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
+				sprite->createOverlay(ImageId::DeconstructionSmall + overlayOffset);
 			}
 		}
 
 		// Inherit Entropy Gauntlets
-		if (scbw::get_generic_timer(parent, ValueId::EntropyGauntlets) > 0)
+		if (parentExt->timers[TimerEntropyGauntlets])
 		{
-			scbw::set_generic_timer(child, ValueId::EntropyGauntlets, scbw::get_generic_timer(parent, ValueId::EntropyGauntlets));
+			childExt->timers[TimerEntropyGauntlets] = parentExt->timers[TimerEntropyGauntlets];
 			if (!(child->sprite->getOverlay(ImageId::EntropyGauntletsOverlaySmall + overlayOffset)))
 			{
 				child->sprite->createOverlay(ImageId::EntropyGauntletsOverlaySmall + overlayOffset);
@@ -1086,9 +1001,9 @@ namespace scbw
 		}
 
 		// Inherit Sublime Shepherd
-		if (scbw::get_generic_value(parent, ValueId::SublimeShepherd) > 0)
+		if (parentExt->values[ValueSublimeShepherd])
 		{
-			scbw::set_generic_value(child, ValueId::SublimeShepherd, scbw::get_generic_value(parent, ValueId::SublimeShepherd));
+			childExt->values[ValueSublimeShepherd] = parentExt->values[ValueSublimeShepherd];
 		}
 
 		// TODO: Implement
@@ -1096,48 +1011,48 @@ namespace scbw
 		// Inherit Malice
 
 		// Inherit Terminal Surge
-		if (scbw::get_generic_value(parent, ValueId::TerminalSurge) > 0)
+		if (parentExt->values[ValueTerminalSurge])
 		{
-			scbw::set_generic_value(child, ValueId::TerminalSurge, scbw::get_generic_value(parent, ValueId::TerminalSurge));
+			childExt->values[ValueTerminalSurge] = parentExt->values[ValueTerminalSurge];
 		}
 
 		// Inherit Astral Blessing
-		if (scbw::get_generic_timer(parent, ValueId::EcclesiastTimer) > 0)
+		if (parentExt->timers[TimerEcclesiast])
 		{
-			scbw::set_generic_value(child, ValueId::EcclesiastStack, scbw::get_generic_value(parent, ValueId::EcclesiastStack));
-			scbw::set_generic_value(child, ValueId::EcclesiastPlayer, scbw::get_generic_value(parent, ValueId::EcclesiastPlayer));
-			scbw::set_generic_timer(child, ValueId::EcclesiastTimer, scbw::get_generic_timer(parent, ValueId::EcclesiastTimer));
+			childExt->values[ValueEcclesiastStack] = parentExt->values[ValueEcclesiastStack];
+			childExt->values[ValueEcclesiastPlayer] = parentExt->values[ValueEcclesiastPlayer];
+			childExt->timers[TimerEcclesiast] = parentExt->timers[TimerEcclesiast];
 		}
 
 		// Inherit Stellar Enforcement
-		if (scbw::get_generic_value(parent, ValueId::StellarEnforcement) > 0)
+		if (parentExt->values[ValueStellarEnforcement])
 		{
-			scbw::set_generic_value(child, ValueId::StellarEnforcement, get_generic_value(parent, ValueId::StellarEnforcement));
+			childExt->values[ValueStellarEnforcement] = parentExt->values[ValueStellarEnforcement];
 		}
 
 		// Inherit Adrenal Frenzy
-		if (scbw::get_generic_timer(parent, ValueId::NathrokorTimer) > 0)
+		if (parentExt->timers[TimerNathrokor])
 		{
-			scbw::set_generic_timer(child, ValueId::NathrokorTimer, scbw::get_generic_timer(parent, ValueId::NathrokorTimer));
+			childExt->timers[TimerNathrokor] = parentExt->timers[TimerNathrokor];
 		}
 
 		// Inherit Swarming Omen
-		if (scbw::get_generic_timer(parent, ValueId::SwarmingOmenTimer) > 0)
+		if (parentExt->timers[TimerSwarmingOmen])
 		{
-			scbw::set_generic_value(child, ValueId::SwarmingOmenStatus, scbw::get_generic_value(parent, ValueId::SwarmingOmenStatus));
-			scbw::set_generic_timer(child, ValueId::SwarmingOmenTimer, scbw::get_generic_timer(parent, ValueId::SwarmingOmenTimer));
+			childExt->values[ValueSwarmingOmenStatus] = parentExt->values[ValueSwarmingOmenStatus];
+			childExt->timers[TimerSwarmingOmen] = parentExt->timers[TimerSwarmingOmen];
 		}
 
 		// Inherit Kaiser Rampage
-		if (scbw::get_generic_timer(parent, ValueId::KaiserRampage) > 0)
+		if (parentExt->timers[TimerKaiserRampage])
 		{
-			scbw::set_generic_value(child, ValueId::KaiserRampage, scbw::get_generic_timer(parent, ValueId::KaiserRampage));
+			childExt->timers[TimerKaiserRampage] = parentExt->timers[TimerKaiserRampage];
 		}
 
 		// Inherit Kelvin Munitions
-		if (scbw::get_generic_value(parent, ValueId::KelvinMunitionsSlowValue))
+		if (parentExt->values[ValueKelvinMunitionsSlow])
 		{
-			scbw::set_generic_value(child, ValueId::KelvinMunitionsSlowValue, scbw::get_generic_value(parent, ValueId::KelvinMunitionsSlowValue));
+			childExt->values[ValueKelvinMunitionsSlow] = parentExt->values[ValueKelvinMunitionsSlow];
 		}
 
 		//was hardcoded in original code
@@ -1146,14 +1061,15 @@ namespace scbw
 
 	bool isDebuffed(CUnit* unit)
 	{
-		return scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 0
-			|| scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) > 0
-			|| scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0
-			|| scbw::get_generic_timer(unit, ValueId::ObservanceTimerPeriod) > 0
-			|| scbw::get_generic_timer(unit, ValueId::CorrosiveTouchTimer) > 0
-			|| scbw::get_generic_value(unit, ValueId::EntropyGauntlets) > 0
-			|| scbw::get_generic_value(unit, ValueId::ArmorReduce) > 0
-			|| scbw::get_generic_value(unit, ValueId::KelvinMunitionsSlowValue) > 0
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+		return unitExt->timers[TimerMaledictionSlow]
+			|| unitExt->timers[TimerKnockoutDrivers]
+			|| unitExt->timers[TimerLobotomySlow]
+			|| unitExt->timers[TimerObservancePeriod]
+			|| unitExt->timers[TimerCorrosiveTouch]
+			|| unitExt->timers[TimerEntropyGauntlets]
+			|| unitExt->values[ValueArmorReduce]
+			|| unitExt->values[ValueKelvinMunitionsSlow]
 			|| captivatingClawsGetTimer(unit) > 0
 			|| unit->irradiateTimer != 0
 			|| unit->ensnareTimer != 0
@@ -1167,11 +1083,13 @@ namespace scbw
 
 	void restoreFunc(CUnit* unit)
 	{
-		CUnit* overlayTargetUnit;
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+
+		CUnit* overlayTargetUnit = unit;
 		if (unit->subunit != nullptr)
+		{
 			overlayTargetUnit = unit->subunit;
-		else
-			overlayTargetUnit = unit;
+		}
 		u32 overlayImageId = ImageId::RestorationHit_Small + scbw::getOverlayOffset(unit->id);;
 		(overlayTargetUnit->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
 
@@ -1179,12 +1097,12 @@ namespace scbw
 		//timers set to 0 twice reflect the original code
 
 		// Remove Parasite
-		if (scbw::get_generic_timer(unit, ValueId::ParasiteArmTimer) > 0)
+		if (unitExt->timers[TimerParasiteArm])
 		{
-			scbw::set_generic_timer(unit, ValueId::ParasiteArmTimer, 0);
+			unitExt->timers[TimerParasiteArm] = 0;
 			unit->removeOverlay(ImageId::ParasiteOverlay);
 		}
-		scbw::set_generic_unit(unit, ValueId::ParasiteSource, nullptr);
+		unitExt->units[UnitParasiteSource] = nullptr;
 
 		// Remove default flags
 		unit->parasiteFlags = 0;
@@ -1218,49 +1136,49 @@ namespace scbw
 		}
 
 		// Remove armor rend (generic)
-		scbw::set_generic_value(unit, ValueId::ArmorReduce, 0);
+		unitExt->values[ValueArmorReduce] = 0;
 
 		// Remove Entropy Gauntlets
-		if (scbw::get_generic_timer(unit, ValueId::EntropyGauntlets) > 0)
+		if (unitExt->timers[TimerEntropyGauntlets])
 		{
-			scbw::set_generic_timer(unit, ValueId::EntropyGauntlets, 1);
+			unitExt->timers[TimerEntropyGauntlets] = 1;
 		}
 
 		// Remove Malediction
-		if (scbw::get_generic_timer(unit, ValueId::MaledictionSlow) > 0)
+		if (unitExt->timers[TimerMaledictionSlow])
 		{
-			scbw::set_generic_timer(unit, ValueId::MaledictionSlow, 1);
+			unitExt->timers[TimerMaledictionSlow] = 1;
 		}
 
 		// Remove Observance
-		if (scbw::get_generic_timer(unit, ValueId::ObservanceTimerDebuff) > 0)
+		if (unitExt->timers[TimerObservanceDebuff])
 		{
-			scbw::set_generic_timer(unit, ValueId::ObservanceTimerDebuff, 1);
+			unitExt->timers[TimerObservanceDebuff] = 1;
 		}
 
 		// Remove Knockout Drivers
-		if (scbw::get_generic_timer(unit, ValueId::KnockoutDriversTimer) > 0)
+		if (unitExt->timers[TimerKnockoutDrivers])
 		{
-			scbw::set_generic_timer(unit, ValueId::KnockoutDriversTimer, 1);
+			unitExt->timers[TimerKnockoutDrivers] = 1;
 		}
 
 		// Remove Hallucination
-		if (scbw::get_generic_timer(unit, ValueId::HallucinatingTimer) > 0)
+		if (unitExt->timers[TimerHallucinating])
 		{
-			scbw::set_generic_timer(unit, ValueId::HallucinatingTimer, 1);
+			unitExt->timers[TimerHallucinating] = 1;
 		}
 
 		// Remove Captivating Claws
-		if (scbw::get_generic_timer(unit, ValueId::CaptivatingClawsTimer) > 0)
+		if (unitExt->timers[TimerCaptivatingClaws])
 		{
-			scbw::set_generic_timer(unit, ValueId::CaptivatingClawsTimer, 0);
-			scbw::get_generic_unit_vector(unit, ValueId::CaptivatingClawsUnitVector) = {};
+			unitExt->timers[TimerCaptivatingClaws] = 1;
+			unitExt->unitVectors[UnitVectorCaptivatingClaws] = {};
 		}
 
 		// Remove Lobotomy Mine slow
-		if (scbw::get_generic_timer(unit, ValueId::LobotomySlow) > 0)
+		if (unitExt->timers[TimerLobotomySlow])
 		{
-			scbw::set_generic_timer(unit, ValueId::LobotomySlow, 1);
+			unitExt->timers[TimerLobotomySlow] = 1;
 		}
 
 		// Remove Lockdown
@@ -1273,18 +1191,19 @@ namespace scbw
 		unit->removeAcidSpores();
 
 		// Remove Deconstruction
-		scbw::set_generic_value(unit, ValueId::Deconstruction, 0);
+		unitExt->values[ValueDeconstruction] = 0;
 		unit->removeOverlay(ImageId::DeconstructionSmall, ImageId::DeconstructionLarge);
 		if (unit->subunit)
 		{
-			scbw::set_generic_value(unit->subunit, ValueId::Deconstruction, 0);
+			UnitExt* subunitExt = globals.GetUnitExt(unit->subunit);
+			subunitExt->values[ValueDeconstruction] = 0;
 			unit->subunit->removeOverlay(ImageId::DeconstructionSmall, ImageId::DeconstructionLarge);
 		}
 
 		// Remove Kelvin Munitions
-		if (scbw::get_generic_value(unit, ValueId::KelvinMunitionsSlowValue))
+		if (unitExt->values[ValueKelvinMunitionsSlow])
 		{
-			scbw::set_generic_value(unit, ValueId::KelvinMunitionsSlowValue, 0);
+			unitExt->values[ValueKelvinMunitionsSlow] = 0;
 		}
 
 		//was hardcoded in original code
@@ -1293,61 +1212,28 @@ namespace scbw
 
 	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen)
 	{
-		if (!scbw::canBeParasited(unit)) return;
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+
+		if (!scbw::canBeParasited(unit))
+		{
+			return;
+		}
 		s32 playerFlag = 1 << playerID;
 		if (unit->parasiteFlags != playerFlag)
 		{ // <- Prevent restarting arm period
-			scbw::set_generic_timer(unit, ValueId::ParasiteArmTimer, DefaultArmParasiteTimer);
+			unitExt->timers[TimerParasiteArm] = DefaultArmParasiteTimer;
 			unit->sprite->createOverlay(ImageId::ParasiteOverlay, 0, 0, 0);
 		}
-		scbw::set_generic_unit(unit, ValueId::ParasiteSource, queen);
+		unitExt->units[UnitParasiteSource] = queen; // TODO: remove?
 		unit->parasiteFlags = playerFlag; // Parasite now overwrites other player's parasite
 		scbw::refreshConsole();
 	}
 
-	CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset)
-	{
-		if (unit->sprite == nullptr || unit->orderTarget.unit == nullptr)
-		{
-			return nullptr;
-		}
-		auto rotate = scbw::get_generic_value(unit, valueId);
-		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
-			unit->sprite->mainGraphic->id));
-		u8 frameDirection = unit->sprite->mainGraphic->direction;
-		Point8 offset = loFile->getOffset(frameDirection + (17 * frameset_offset), rotate);
-		if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored)
-		{
-			offset.x = -offset.x;
-		}
-		rotate++;
-		if (rotate > rotateCount - 1)
-		{
-			rotate = 0;
-		}
-		scbw::set_generic_value(unit, valueId, rotate);
-		auto X = unit->getX() + offset.x;
-		auto Y = unit->getY() + offset.y;
-		auto bullet = helper::createBulletRet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y,
-			unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
-		return bullet;
-	}
-
 	bool isSlowed(CUnit* unit)
 	{
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+
 		if (unit->ensnareTimer || unit->unusedTimer)
-		{
-			return true;
-		}
-		if (get_generic_timer(unit, ValueId::MaledictionSlow) > 1)
-		{
-			return true;
-		}
-		if (get_generic_timer(unit, ValueId::LobotomySlow) > 1)
-		{
-			return true;
-		}
-		if (get_generic_value(unit, ValueId::KelvinMunitionsSlowValue))
 		{
 			return true;
 		}
@@ -1355,26 +1241,42 @@ namespace scbw
 		{
 			return true;
 		}
+		if (unitExt->timers[TimerMaledictionSlow] > 1)
+		{
+			return true;
+		}
+		if (unitExt->timers[TimerLobotomySlow] > 1)
+		{
+			return true;
+		}
+		if (unitExt->values[ValueKelvinMunitionsSlow])
+		{
+			return true;
+		}
 		return false;
 	}
 
-	CUnit** getSourceQueens(CUnit* unit)
+	CUnit** getSourceQueens(CUnit* unit) // TODO: remove?
 	{
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+
 		CUnit* queens[2] = {nullptr};
 		if (unit == nullptr) return queens; // <- prevents crash from incubators, but does not fix the issue
-		queens[0] = scbw::get_generic_unit(unit, ValueId::BroodlingMother);
-		queens[1] = scbw::get_generic_unit(unit, ValueId::ParasiteSource);
+		queens[0] = unitExt->units[UnitBroodlingMother];
+		queens[1] = unitExt->units[UnitParasiteSource];
 		return queens;
 	}
 
 	void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound)
 	{
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+
 		// Deconstruction - Pazuzu passive
 		f64 selfDamage = (0.25 * (f64)(weapons_dat::DamageAmount[weaponId] * 256.0));
 		auto deconstructionTarget = unit;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit)
 		{
-			deconstructionTarget = (CUnit*)scbw::get_generic_value(unit, ValueId::TurretParentLink);
+			deconstructionTarget = (CUnit*)unitExt->values[ValueTurretParentLink]; // TODO: port as unit
 			if (deconstructionTarget == nullptr)
 			{
 				return;
@@ -1387,13 +1289,14 @@ namespace scbw
 		}
 	}
 
-	void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset)
+	CBullet* setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset)
 	{
 		if (unit->sprite == nullptr || unit->orderTarget.unit == nullptr)
 		{
-			return;
+			return nullptr;
 		}
-		auto rotate = scbw::get_generic_value(unit, valueId);
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+		auto rotate = unitExt->values[valueId];
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
 			unit->sprite->mainGraphic->id));
 		u8 frameDirection = unit->sprite->mainGraphic->direction;
@@ -1407,10 +1310,10 @@ namespace scbw
 		{
 			rotate = 0;
 		}
-		scbw::set_generic_value(unit, valueId, rotate);
+		unitExt->values[valueId] = rotate;
 		auto X = unit->getX() + offset.x;
 		auto Y = unit->getY() + offset.y;
-		helper::createBullet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y,
+		return helper::createBullet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y,
 			unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
 	}
 
@@ -1429,10 +1332,12 @@ namespace scbw
 
 	void clearClarionLinks(CUnit* unit)
 	{
-		auto& vec = scbw::get_generic_unit_vector(unit, ValueId::PhaseLink);
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+
+		auto& vec = unitExt->unitVectors[UnitVectorPhaseLink];
 		for (CUnit* vecUnit : vec)
 		{
-			auto& clarionVec = scbw::get_generic_unit_vector(vecUnit, ValueId::PhaseLinkClarions);
+			auto& clarionVec = unitExt->unitVectors[UnitVectorPhaseLinkClarions];
 			auto it = std::find(clarionVec.begin(), clarionVec.end(), unit);
 			if (it != clarionVec.end())
 			{
@@ -1444,8 +1349,10 @@ namespace scbw
 
 	void placeClarionLinks(CUnit* unit)
 	{
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+
 		bool isClarion = unit->id == UnitId::ProtossClarion;
-		auto& link = scbw::get_generic_unit_vector(unit, ValueId::PhaseLink);
+		auto& link = unitExt->unitVectors[UnitVectorPhaseLink];
 
 		clearClarionLinks(unit);
 		const s32 radius = 128;
@@ -1481,13 +1388,14 @@ namespace scbw
 		{
 			link.push_back(target);
 			target->sprite->createOverlay(ImageId::PhaseLinkSmall + scbw::getOverlayOffset(target->id), 0, 0, 0);
-			scbw::get_generic_unit_vector(target, ValueId::PhaseLinkClarions).push_back(unit);
+			unitExt->unitVectors[UnitVectorPhaseLinkClarions].push_back(unit);
 		});
 	}
 
 	bool hasClarionLinks(CUnit* unit)
 	{
-		return scbw::get_generic_unit_vector(unit, ValueId::PhaseLinkClarions).size();
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+		return unitExt->unitVectors[UnitVectorPhaseLinkClarions].size();
 	}
 
 	void phaseLinkDamage(CUnit* unit, s32 damage, hooks::WeaponDamageData& data)
@@ -1538,16 +1446,23 @@ namespace scbw
 
 	std::vector<CUnit*> getClarionLinks(CUnit* unit)
 	{
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+
 		std::unordered_set<CUnit*> links = {};
 		if (unit->id == UnitId::ProtossClarion)
 		{
-			auto link = scbw::get_generic_unit_vector(unit, ValueId::PhaseLink);
+			auto link = unitExt->unitVectors[UnitVectorPhaseLink];
 			links.insert(link.begin(), link.end());
 		}
-		auto& clarions = scbw::get_generic_unit_vector(unit, ValueId::PhaseLinkClarions);
+		auto& clarions = unitExt->unitVectors[UnitVectorPhaseLinkClarions];
 		for (CUnit* clarion : clarions)
 		{
-			auto link = scbw::get_generic_unit_vector(clarion, ValueId::PhaseLink);
+			if (!clarion)
+			{
+				continue;
+			}
+			UnitExt* clarionExt = globals.GetUnitExt(clarion);
+			auto link = clarionExt->unitVectors[UnitVectorPhaseLink];
 			links.insert(link.begin(), link.end());
 		}
 		return std::vector<CUnit*>(links.begin(), links.end());

@@ -82,12 +82,14 @@ namespace hooks
 			return;
 		if (bullet->sourceUnit != nullptr && bullet->sourceUnit->sprite != nullptr)
 		{
+			UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
+
 			if (bullet->sourceUnit->isBlind)
 			{
 				splash = SplashType::Radial;
 			}
 
-			Point16 hit = bullet->attackTarget.pt;
+			Point16 hit = bullet->position;
 			switch (weaponId)
 			{
 				case WeaponId::SalamanderPerditionBarrage:
@@ -187,9 +189,14 @@ namespace hooks
 
 			if (weaponId == WeaponId::HeraclesJavelinCannons)
 			{
-				const f64 splashBase = weapons_dat::OuterSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
-				outer = (s16)(splashBase * (1 + 0.1 * stacks));
+				if (bullet->sourceUnit)
+				{
+					UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
+
+					const f64 splashBase = weapons_dat::OuterSplashRadius[WeaponId::HeraclesJavelinCannons];
+					const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
+					outer = (s16)(splashBase * (1 + 0.1 * stacks));
+				}
 			}
 
 			if (!helper::isUnitDistanceWithin(target, bullet, outer)) continue;
@@ -212,9 +219,14 @@ namespace hooks
 
 			if (weaponId == WeaponId::HeraclesJavelinCannons)
 			{
-				const f64 splashBase = weapons_dat::InnerSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
-				inner = (s16)(splashBase * (1 + 0.1 * stacks));
+				if (bullet->sourceUnit)
+				{
+					UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
+
+					const f64 splashBase = weapons_dat::InnerSplashRadius[WeaponId::HeraclesJavelinCannons];
+					const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
+					inner = (s16)(splashBase * (1 + 0.1 * stacks));
+				}
 			}
 
 			if (helper::isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet, target))
@@ -237,9 +249,14 @@ namespace hooks
 
 			if (weaponId == WeaponId::HeraclesJavelinCannons)
 			{
-				const f64 splashBase = weapons_dat::MediumSplashRadius[WeaponId::HeraclesJavelinCannons];
-				const u32 stacks = scbw::get_generic_value(bullet->sourceUnit, ValueId::NemeanReactorsStack);
-				medium = (s16)(splashBase * (1 + 0.1 * stacks));
+				if (bullet->sourceUnit)
+				{
+					UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
+
+					const f64 splashBase = weapons_dat::MediumSplashRadius[WeaponId::HeraclesJavelinCannons];
+					const u32 stacks = bulletSourceExt->values[ValueNemeanReactorsStack];
+					medium = (s16)(splashBase * (1 + 0.1 * stacks));
+				}
 			}
 
 			if (weaponId == WeaponId::NathrokorPlasmidBreath)
@@ -287,10 +304,15 @@ namespace hooks
 			else if (splash == SplashType::FriendlyNew)
 			{
 				bool lurkerOverride = false;
-				if (bullet->sourceUnit && (CUnit*)scbw::get_generic_value(bullet->sourceUnit, ValueId::LurkerPickTarget) == target)
+				if (bullet->sourceUnit)
 				{
-					lurkerOverride = true;
+					UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
+					if ((CUnit*)bulletSourceExt->values[ValueLurkerPickTarget] == target)
+					{
+						lurkerOverride = true;
+					}
 				}
+					
 				if (scbw::isUnitEnemy(bullet->srcPlayer, target) == false && !lurkerOverride && target != bullet->attackTarget.unit)
 				{
 					continue;
@@ -390,8 +412,9 @@ namespace hooks
 			&& bullet->sourceUnit->sprite
 			&& target->sprite)
 		{
-			auto X = scbw::get_generic_value(bullet->sourceUnit, ValueId::GuardianMissileLaunchPosX);
-			auto Y = scbw::get_generic_value(bullet->sourceUnit, ValueId::GuardianMissileLaunchPosY);
+			UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
+			auto X = bulletSourceExt->values[ValueGuardianMissileLaunchPosX];
+			auto Y = bulletSourceExt->values[ValueGuardianMissileLaunchPosY];
 			if (X != 0 && Y != 0)
 			{
 				divisor = scbw::getDistanceFast(X, Y, target->getX(), target->getY()) / (32 * 3);

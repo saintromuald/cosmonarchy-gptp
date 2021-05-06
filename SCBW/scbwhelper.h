@@ -560,8 +560,7 @@ namespace helper
 
 	//// api
 	void ApplySpores(CUnit* unit);
-	void createBullet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
-	CBullet* createBulletRet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
+	CBullet* createBullet(u8 weaponId, CUnit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
 	void weaponBulletShot(CUnit* target, CBullet* bullet, u32 dmgDivisor);
 
 	//// unit_morph

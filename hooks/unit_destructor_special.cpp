@@ -95,6 +95,8 @@ void freeResourceContainer(CUnit* resource)
 
 void unitDestructorSpecialHook(CUnit* unit)
 {
+	UnitExt* unitExt = globals.GetUnitExt(unit);
+
 	// These do not require the unit to be completed
 	switch (unit->id)
 	{
@@ -193,17 +195,18 @@ void unitDestructorSpecialHook(CUnit* unit)
 					unit->getY() + range
 				).forEach([&](CUnit* target)
 					{
+						UnitExt* targetExt = globals.GetUnitExt(target);
 						if (!scbw::isAlliedTo(unit->playerId, target->playerId))
 						{
 							return;
 						}
-						scbw::add_generic_value(target, ValueId::TerminalSurge, 1);
+						targetExt->values[ValueTerminalSurge]++;
 						target->updateSpeed();
 					});
 			} break;
 			case UnitId::ProtossLanifect:
 			{
-				auto web = scbw::get_generic_unit(unit, ValueId::AttachedDisruptionWeb);
+				auto web = unitExt->units[UnitAttachedDisruptionWeb];
 				if (web != nullptr)
 				{
 					web->removeTimer = 1;
@@ -271,12 +274,11 @@ void unitDestructorSpecialHook(CUnit* unit)
 	}
 
 	// Alkajelisk Parasitic Spores behavior
-	if (scbw::get_generic_value(unit, ValueId::AlkajeliskParasite) == 1)
+	if (unitExt->values[ValueAlkajeliskParasite] == 1)
 	{
 		unit->orderTarget.pt.x = unit->position.x + 1;
 		unit->orderTarget.pt.y = unit->position.y;
-		auto bullet = helper::createBulletRet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y,
-			scbw::get_generic_value(unit, ValueId::AlkajeliskParasitePlayer), 0);
+		auto bullet = helper::createBullet(WeaponId::AlkajeliskParasiticSpores, unit, unit->position.x, unit->position.y, unitExt->values[ValueAlkajeliskParasitePlayer], 0);
 		if (bullet != nullptr)
 		{
 			bullet->time_remaining = 255;
@@ -321,7 +323,7 @@ void unitDestructorSpecialHook(CUnit* unit)
 		}
 		for (u32 player = 0; player < PLAYER_COUNT; player++)
 		{
-			if (unit->parasiteFlags & (1 << player) && scbw::get_generic_timer(unit, ValueId::ParasiteArmTimer) <= 1)
+			if (unit->parasiteFlags & (1 << player) && unitExt->timers[TimerParasiteArm] <= 1)
 			{
 				scbw::createUnitFromAbility(type, supplyCount, player, unit->position.x, unit->position.y, 720);
 			}

@@ -6,6 +6,7 @@
 #include <sstream>
 #include <ostream>
 #include <istream>
+#include <assert.h>
 #include "SCBW\api.h"
 #include "hooks\limits\attack_extender.h"
 
@@ -98,110 +99,7 @@ public:
 		}
 	}
 };
-struct CustomUnitStruct
-{
-	std::unordered_map<u32, s32> genericValues;
-	std::unordered_map<u32, s32> genericTimers;
-	std::unordered_map<u32, CUnit*> genericUnits;
-	std::unordered_map<u32, std::vector<s32>> genericValueVectors;
-	std::unordered_map<u32, std::vector<s32>> genericTimerVectors;
-	std::unordered_map<u32, std::vector<CUnit*>> genericUnitVectors;
-	std::unordered_map<u32, std::unordered_map<CUnit*, s32>>	genericUnitTimerMap;
 
-	void setGenericValue(u32 variable, uint32_t value)
-	{
-		genericValues[variable] = value;
-	}
-	void addGenericValue(u32 variable, uint32_t value)
-	{
-		genericValues[variable] += value;
-	}
-	void setGenericTimer(u32 variable, uint32_t value)
-	{
-		genericTimers[variable] = value;
-	}
-	void setGenericUnit(u32 variable, CUnit* unit)
-	{
-		genericUnits[variable] = unit;
-	}
-
-	uint32_t getGenericValue(u32 variable)
-	{
-		auto it = genericValues.find(variable);
-		if (it != genericValues.end())
-		{
-			return it->second;
-		}
-		return 0;
-	}
-
-	uint32_t getGenericTimer(u32 variable)
-	{
-		auto it = genericTimers.find(variable);
-		if (it != genericTimers.end())
-		{
-			return it->second;
-		}
-		return 0;
-	}
-
-	CUnit* getGenericUnit(u32 variable)
-	{
-		auto it = genericUnits.find(variable);
-		if (it != genericUnits.end())
-		{
-			return it->second;
-		}
-		return nullptr;
-	}
-
-	std::vector<s32>& getGenericValueVector(u32 variable)
-	{
-		auto it = genericValueVectors.find(variable);
-		if (it != genericValueVectors.end())
-		{
-			return it->second;
-		}
-		genericValueVectors[variable] = {};
-		return genericValueVectors[variable];
-	}
-
-	std::vector<s32>& getGenericTimerVector(u32 variable)
-	{
-		auto it = genericTimerVectors.find(variable);
-		if (it != genericTimerVectors.end())
-		{
-			return it->second;
-		}
-		genericTimerVectors[variable] = {};
-		return genericTimerVectors[variable];
-	}
-
-	std::vector<CUnit*>& getGenericUnitVector(u32 variable)
-	{
-		auto it = genericUnitVectors.find(variable);
-		if (it != genericUnitVectors.end())
-		{
-			return it->second;
-		}
-		genericUnitVectors[variable] = {};
-		return genericUnitVectors[variable];
-	}
-
-	std::unordered_map<CUnit*, s32>& getGenericUnitTimerMap(u32 variable)
-	{
-		if (!genericUnitTimerMap.empty())
-		{
-			auto it = genericUnitTimerMap.find(variable);
-			if (it != genericUnitTimerMap.end())
-			{
-				return it->second;
-			}
-		}
-		genericUnitTimerMap[variable] = {};
-		return genericUnitTimerMap[variable];
-	}
-};
 class Globals
 {
 	std::string output;
@@ -223,9 +121,15 @@ public:
 	std::vector<MultihitBullet> multihitBullets;
 	std::vector<ApostleAgent> apostleAgents;
 	std::unordered_map<CUnit*, std::vector<CUnit*>> lurkerSpineHits;
-	std::unordered_map<CUnit*, CustomUnitStruct> unitStructs;
-	AttackExtender attackers;
+	UnitExt unitExt[UNIT_ARRAY_LENGTH];
 
+	inline UnitExt* GetUnitExt(CUnit* unit)
+	{
+		assert(unit);
+		return &unitExt[unit->getIndex()];
+	}
+
+	AttackExtender attackers;
 	ApostleAgent test;
 
 	//non-serializable data (exists only temporarily in memory in wrapper/hook flow)
@@ -286,18 +190,7 @@ namespace hooks
 
 namespace scbw
 {
-	CUnit* get_generic_unit(CUnit* unit, u32 id);
-	u32 get_generic_value(CUnit* u, u32 val);
-	u32 get_generic_timer(CUnit* u, u32 val);
-	void set_generic_unit(CUnit* unit, u32 id, CUnit* targ);
-	void set_generic_value(CUnit* u, u32 id, u32 val);
-	void set_generic_timer(CUnit* u, u32 id, u32 val);
-	void add_generic_value(CUnit* u, u32 id, s32 val);
-	std::vector<s32>& get_generic_value_vector(CUnit* u, u32 id);
-	std::vector<s32>& get_generic_timer_vector(CUnit* u, u32 id);
-	std::vector<CUnit*>& get_generic_unit_vector(CUnit* u, u32 id);
-	std::unordered_map<CUnit*, s32>& get_generic_unit_timer_map(CUnit* u, u32 id);
-	CBullet* setMissileSourcePosRet(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset);
+	CBullet* setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset);
 	bool isSlowed(CUnit* unit);
 	void refreshDebuffs(CUnit* unit);
 	void inheritDebuffs(CUnit* parent, CUnit* child);
@@ -305,7 +198,6 @@ namespace scbw
 	void restoreFunc(CUnit* unit);
 	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen);
 	void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound);
-	void setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset);
 	CUnit** getSourceQueens(CUnit* unit);
 
 	void clearClarionLinks(CUnit* unit);

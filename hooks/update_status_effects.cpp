@@ -39,7 +39,6 @@ void irradiateProc(CUnit* unit, CUnit* target)
 
 namespace hooks
 {
-
 	void doIrradiateDamage(CUnit* irradiatedUnit)
 	{
 		//No splash if burrowed
@@ -102,9 +101,12 @@ namespace hooks
 
 	void updateStatusEffects(CUnit* unit)
 	{
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+
 		if (unit->subunit != nullptr)
 		{
-			scbw::set_generic_value(unit->subunit, ValueId::TurretParentLink, (u32)unit);
+			UnitExt* subunitExt = globals.GetUnitExt(unit->subunit);
+			subunitExt->values[ValueTurretParentLink] = (u32)unit;
 		}
 
 		// Decrement Stasis Field timer (and remove effect if 0)
@@ -158,7 +160,7 @@ namespace hooks
 		// Azazel - Sublime Shepherd ability
 		if (unit->id == UnitId::TerranAzazel)
 		{
-			if (scbw::get_generic_rust_value(unit, ValueId::SublimeShepherd) == 1)
+			if (scbw::get_generic_rust_value(unit, RustId::SublimeShepherd) == 1)
 			{
 				scbw::UnitFinder(
 					unit->getX() - 96,
@@ -217,7 +219,7 @@ namespace hooks
 				}
 				if (units_dat::BaseProperty[target->id] & UnitProperty::ResourceContainer)
 				{
-					scbw::set_generic_timer(target, ValueId::MineralSpecialRegenTimer, 24);
+					unitExt->timers[TimerMineralSpecialRegen] = 24;
 				}
 			});
 		}
@@ -243,7 +245,7 @@ namespace hooks
 				}
 				if (scbw::isAlliedTo(target->playerId, unit->playerId) && scbw::isZergEggNew(target, true, false))
 				{
-					scbw::set_generic_timer(target, ValueId::EggBoostTimer, 24);
+					unitExt->timers[TimerEggBoost] = 24;
 				}
 			});
 		}
@@ -253,10 +255,10 @@ namespace hooks
 		{
 			if (!(unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)))
 			{
-				if (scbw::get_generic_value(unit, ValueId::SomaticImplants) == 1)
+				if (unitExt->values[ValueSomaticImplants] == 1)
 				{
 					unit->updateSpeed();
-					scbw::set_generic_value(unit, ValueId::SomaticImplants, 0);
+					unitExt->values[ValueSomaticImplants] = 0;
 				}
 			}
 		}
@@ -383,7 +385,7 @@ namespace hooks
 		}
 
 		// Vithrilisk - Corrosive Touch - update overlays
-		if (scbw::get_generic_value(unit, ValueId::CorrosiveTouchStacks) != 0)
+		if (unitExt->values[ValueCorrosiveTouchStacks] != 0)
 		{
 			// Calculate the appropriate overlay ID
 			u32 acidOverlayId = GetSporesOverlayId(unit);

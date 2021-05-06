@@ -545,9 +545,10 @@ void CUnit::damageWithIgnoreFlatArmor(u8 weaponId, s32 damage, CUnit* attacker, 
 void CUnit::inflictDamage(s32 dmg, CUnit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, s32 direction,
 	bool ignoreDmg128Overflow)
 {
+	UnitExt* unitExt = globals.GetUnitExt(this);
 	auto damage = dmg;
 	s32 shieldReduceAmount = 0;
-	if (scbw::get_generic_value(this, ValueId::GodsMadeFleshTimer) > 0)
+	if (unitExt->timers[TimerGodsMadeFlesh])
 	{
 		return;
 	}
@@ -731,6 +732,7 @@ void CUnit::removeAcidSpores()
 ///May underflow if alone
 void CUnit::spendUnitEnergy(u32 energySpent)
 {
+	UnitExt* unitExt = globals.GetUnitExt(this);
 	if (!(*CHEAT_STATE & CheatFlags::TheGathering))
 	{
 		if (this->energy > energySpent)
@@ -742,9 +744,10 @@ void CUnit::spendUnitEnergy(u32 energySpent)
 			this->energy = 0;
 		}
 	}
-	if (scbw::get_generic_timer(this, ValueId::EntropyGauntlets) > 1)
-	{													// TODO: fix entropy gauntlets bug
-		this->inflictDamage(energySpent, scbw::get_generic_unit(this, ValueId::DecaySavant), -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
+	// TODO: fix entropy gauntlets bug
+	if (unitExt->timers[TimerEntropyGauntlets] > 1)
+	{
+		this->inflictDamage(energySpent, unitExt->units[UnitDecaySavant], -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
 	}
 }
 void CUnit::addUnitEnergy(u32 energy)
@@ -1258,12 +1261,15 @@ CUnit* CUnit::getFromIndex(u16 index)
 		return nullptr;
 	}
 	if (1 <= index && index <= UNIT_ARRAY_LENGTH)
+	{
 		return &unitTable[index - 1];
+	}
 	return nullptr;
 }
 
 u16 CUnit::getIndex() const
 {
+	assert(this);
 	if (globals.extended_unit_table == 1)
 	{
 		return this - (CUnit*)&new_unit_table.units[0] + 1;
@@ -1275,10 +1281,14 @@ u8 CUnit::getLastOwnerId() const
 {
 	assert(this);
 	assert(this->sprite);
-	if (this->playerId == 11) //The owner has left the game
+	if (this->playerId == 11) // The owner has left the game
+	{
 		return this->sprite->playerId;
+	}
 	else
+	{
 		return this->playerId;
+	}
 }
 
 CUnit* CUnit::getLoadedUnit(s32 index) const
@@ -1289,8 +1299,9 @@ CUnit* CUnit::getLoadedUnit(s32 index) const
 	if (loadedUnit && loadedUnit->sprite
 		&& !(loadedUnit->mainOrderId == OrderId::Die && loadedUnit->mainOrderState == 1)
 		&& loadedUnit->targetOrderSpecial == this->loadedUnit[index].unitId)
+	{
 		return loadedUnit;
-
+	}
 	return nullptr;
 }
 
@@ -1368,12 +1379,14 @@ void CUnit::updateSpeed()
 	}
 }
 
-void CUnit::setSupplyProvided(u8 amount)
-{ // overwrites previous supply provided
+void CUnit::setSupplyProvided(u8 amount) // overwrites previous supply provided
+{
+	UnitExt* unitExt = globals.GetUnitExt(this);
+
 	u32 race = this->getRace();
-	u32 previous_supply = scbw::get_generic_value(this, ValueId::SupplyProvided);
+	u32 previous_supply = unitExt->values[ValueSupplyProvided];
 	if (previous_supply)
 		raceSupply[race].provided[this->playerId] -= previous_supply;
 	raceSupply[race].provided[this->playerId] += amount;
-	scbw::set_generic_value(this, ValueId::SupplyProvided, amount);
+	unitExt->values[ValueSupplyProvided] = amount;
 }

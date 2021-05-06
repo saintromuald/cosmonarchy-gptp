@@ -4,6 +4,8 @@
 
 #include "Target.h"
 #include "CList.h"
+#include <vector>
+#include <unordered_map>
 
 #pragma pack(1)
 
@@ -126,8 +128,6 @@ namespace AiseId
 	};
 }
 
-
-
 namespace OverlayOffset
 {
 	enum
@@ -139,190 +139,228 @@ namespace OverlayOffset
 	};
 }
 
-namespace ValueId
+enum ExtValueId
+{
+	ValueExemplarSwitch,			// should be removed
+	ValueReverseThrust,				// should be removed
+	ValueArmorReduce,				// unused
+	ValueStarcallerSwitch,			// unused
+	ValueStarcallerCracking,		// unused
+	ValueWarpingIn,					// unused
+	ValueMalediction,				// unused
+	ValueWyvernSlow,				// unused
+	ValueWyvernReverseLandgrabOn,	// unused
+	ValueLandGrabStart,				// unused
+	ValueUpgradeBoost,				// unused
+	ValueRemainingBuildTimeCopy,	// unused
+	ValueIonCannonSprite,			// unused
+	ValueAmitosis,
+	ValueSomaticImplants,
+	ValueSublimeShepherd,
+	ValueWyvernReverseLandgrabX,
+	ValueWyvernReverseLandgrabY,
+	ValueObservanceRend,
+	ValueSpineX,
+	ValueSpineY,
+	ValueAdrenalStacks,
+	ValueLastOrdersInit,
+	ValueKnockoutDriversStacks,
+	ValueHallucinatingSourcePlayer,
+	ValueTempoChange,
+	ValueTreasuryStacks,
+	ValueSupplyProvided,
+	ValueSkyfallStacks,
+	ValueSkyfallX,
+	ValueSkyfallY,
+	ValueCorrosiveTouchStacks,
+	ValueKalkalethMissilePos,
+	ValueTerminalSurge,
+	ValueEmpyreanMissilePos,
+	ValueProtossSwitchOrderState,
+	ValueOverlordSupply,
+	ValueMadcapStacks,
+	ValuePhobosDischarge,
+	ValueSalamanderAtkPos,
+	ValueNaniteField,
+	ValuePhobosLaserPos,
+	ValuePhobosMissilePos,
+	ValueCentaurMissilePos,
+	ValueLazarusAgent,
+	ValueRepententChorus,
+	ValueStellarEnforcement,
+	ValueDisruptionWebDamage,
+	ValueCastLazarusAgent,
+	ValueLazarusNoHeal,
+	ValueAlkajeliskParasite,
+	ValueAlkajeliskParasitePlayer,
+	ValuePegasusLaserPos,
+	ValuePegasusMissilePos,
+	ValueGuardianMissileLaunchPosX,
+	ValueGuardianMissileLaunchPosY,
+	ValueSovereignCannonPos,
+	ValueAICloakGimmick,
+	ValueCrucible,
+	ValueKeskathalorMissilePos,
+	ValueEcclesiastStack,
+	ValueEcclesiastPlayer,
+	ValueAugurSafetyCheck,
+	ValuePenumbraLaserPos,
+	ValueClarionSFX,
+	ValueWraithLaserPos,
+	ValueHierophantOverlay,
+	ValueExecutingCorsairMoveOrder,
+	ValueEnsnaringBroodAbility,
+	ValueCutaneousBarrier,
+	ValueIonCannonProjectilePos,
+	ValueSwarmingOmenAbility,
+	ValueReconstitution,
+	ValueSimulacrumClone,
+	ValueIsReviving,
+	ValueSwarmingOmenStatus,
+	ValueProtectiveInstinctsStatus,
+	ValueNemeanReactorsStack,
+	ValueDeconstruction,
+	ValueDeconstructionPlayer,
+	ValueRescindMindControl,
+	ValueWorshipStack,
+	ValueWorshipOriginalPlayer,
+	ValueChasmalColonyArteries,
+	ValueAdaptiveAmitosis,
+	ValueEnthrallingTalons,
+	ValueInfestedByAkistrokor,
+	ValuePreMorphEnergy,
+	ValueGodsMadeFleshCast,
+	ValueGodsMadeFleshActive,
+	ValueLazarusAgentApostleSrc,
+	ValueLurkerPickTarget,
+	ValueTurretParentLink,
+	ValueAlaszilethRegenBoost,
+	ValueKelvinMunitionsSlow,
+
+	ValueCount,
+};
+
+enum ExtTimerId
+{
+	TimerAdrenaline,				  // unused
+	TimerKaiserRampage,
+	TimerMaledictionSlow,
+	TimerObservanceDebuff,
+	TimerObservancePeriod,
+	TimerLurkerETA,
+	TimerEntropyGauntlets,
+	TimerLobotomySlow,
+	TimerPlanetCrackerChannel,
+	TimerPlanetCrackerDelay,
+	TimerStarcallerInterceptionMissiles,
+	TimerUltrakorCancel,
+	TimerCausticDischargeSpeed,
+	TimerIonFieldSpeed,
+	TimerReconstitutionCooldown,
+	TimerEnthrallingAssaultHeal,
+	TimerBindingGrip,
+	TimerGodsMadeFlesh,
+	TimerControlledDemolition,
+	TimerEmergencyDetonation,
+	TimerNemeanReactors,
+	TimerSwarmingOmen,
+	TimerSimulacrumClone,
+	TimerEnsnaringBrood,
+	TimerNewMedstim,
+	TimerAugurGimmick,
+	TimerEcclesiast,
+	TimerObservanceOverlay,
+	TimerNathrokor,
+	TimerNaniteField,
+	TimerCorrosiveTouch,
+	TimerSkyfall,
+	TimerEggBoost,
+	TimerHallucinating,
+	TimerKnockoutDrivers,
+	TimerDecloak,
+	TimerMineralSpecialRegen,
+	TimerAdrenal,
+	TimerParasiteArm,
+	TimerSwitchModeGimmick,
+	TimerCaptivatingClaws,
+		
+	TimerAI_Lazarus,
+	TimerAI_Siphon,
+	TimerAI_Clarion,
+	TimerAI_Queen,
+	TimerAI_Paladin,
+	TimerAI_GriefOfAllGods,
+	TimerAI_CorsairDweb,
+		
+	TimerCount,
+};
+
+enum ExtUnitId
+{
+	UnitBroodlingMother,			// is this still really used?
+	UnitAttachedDisruptionWeb,
+	UnitParasiteSource,
+	UnitHallucinationPointer,
+	UnitDirgeAttacker,
+	UnitDecaySavant,
+	UnitWorshipDemiurge,
+	UnitAttachedAkistrokor,
+
+	UnitCount,
+};
+
+enum ExtUnitVectorId
+{
+	UnitVectorCaptivatingClaws,
+	UnitVectorPhaseLinkClarions,
+	UnitVectorPhaseLink,
+
+	UnitVectorCount,
+};
+
+enum ExtTimerVectorId
+{
+	TimerVectorPhaseRushTimerArray, // unused, was size 8
+
+	TimerVectorCount,
+};
+
+struct UnitExt
+{
+	u32						values[ValueCount];
+	u32						timers[TimerCount];
+	CUnit*					units[UnitCount];
+	std::vector<CUnit*>		unitVectors[UnitVectorCount];
+	std::vector<u32>		timerVectors[TimerVectorCount];
+};
+
+namespace RustId
 {
 	enum
 	{
-		ArmorReduce,
-		StarcallerSwitch,
-		StarcallerCracking,
-		ExemplarSwitch,
-		AttachedDisruptionWeb,
-		WarpingIn,
-		Adrenaline,
-		KaiserRampage,
-		Amitosis,
-		SomaticImplants,
-		Malediction,
-		MaledictionSlow,
-		WyvernSlow,
 		ReverseThrust,
+		ExemplarSwitch,
 		SublimeShepherd,
-		DisruptionWeb,
-		WyvernReverseLandgrabOn,
-		WyvernReverseLandgrabX,
-		WyvernReverseLandgrabY,
-		LandGrabStart,
-		ObservanceTimerDebuff,
-		ObservanceTimerPeriod,
-		ObservanceRend,
-		UpgradeBoost,
-		DecloakTimer,
-		LurkerETA,
-		SpineX,
-		SpineY,
-		MineralSpecialRegenTimer,
-		AdrenalStacks,
-		AdrenalTimer,
-		ParasiteArmTimer,
-
-		LastOrdersInit,
-		BroodlingMother,
-		ParasiteSource,
-		KnockoutDriversStacks,
-		KnockoutDriversTimer,
-
-		HallucinatingSourcePlayer,
-		HallucinatingTimer,
-		HallucinationPointer,
-
-		TempoChange,
-		DirgeAttacker,
-		EggBoostTimer,
-		RemainingBuildTimeCopy,
-		TreasuryStacks,
-		SupplyProvided,
-
-		SkyfallTimer,
-		SkyfallStacks,
-		SkyfallX,
-		SkyfallY,
-
-		CaptivatingClawsUnitVector,
-		CaptivatingClawsTimer,
-		CorrosiveTouchStacks,
-		CorrosiveTouchTimer,
-
-		EntropyGauntlets,
-		KalkalethMissilePos,
-		DecaySavant,
-		TerminalSurge,
-		LobotomySlow,
-		EmpyreanMissilePos,
-		ProtossSwitchOrderState,
-		OverlordSupplyGimmick,
-		MadcapStacks,
-		PhobosDischarge,
-		SalamanderAtkPos,
-		NaniteField,
-		NaniteFieldTimer,
-		PhobosLaserPos,
-		PhobosMissilePos,
-		CentaurMissilePos,
-		LazarusAgent,
-		NathrokorTimer,
-		RepententChorus,
-		StellarEnforcement,
-		DisruptionWebDamage,
 		CastLazarusAgent,
-		LazarusAgentApostleSrc, // unit
-		LazarusNoHeal,
-		ObservanceOverlayTimer,
-		AlkajeliskParasite,
-		AlkajeliskParasitePlayer,
-		PegasusLaserPos,
-		PegasusMissilePos,
-		GuardianMissileLaunchPosX,
-		GuardianMissileLaunchPosY,
-		SovereignCannonPos,
-		AICloakGimmick,
-		Crucible,
-		KeskathalorMissilePos,
-		// TODO: Make sure anything above this follows correct naming conventions
-		EcclesiastStack,
-		EcclesiastTimer,
-		EcclesiastPlayer,
-
-		AugurSafetyCheck,
-		PlanetCrackerChannel,
-		PlanetCrackerDelay,
-		StarcallerInterceptionMissiles,
-		AugurGimmickTimer,
-		PenumbraLaserPos,
-		ClarionSFX,
-		SwitchModeGimmickTimer,
-
-		AI_LazarusTimer,
-		AI_SiphonTimer,
-		AI_ClarionTimer,
-		AI_QueenTimer,
-		AI_PaladinTimer,
-		AI_GriefOfAllGodsTimer,
-
-		WraithLaserPos,
-		HierophantOverlay,
-		PhaseRushTimerArrayStart = 108, // should probably replace with unit vector
-		PhaseRushTimerArrayEnd = 115,
-		NewMedstimTimer,
-		LurkerPickTarget,
-		IonCannonSprite,
-		SimulacrumCloneTimer,
-		ExecutingCorsairMoveOrder,
-		AI_CorsairDweb_Timer,
-		EnsnaringBroodTimer,
+		DisruptionWeb,
+		DisruptionWebDamage,
 		EnsnaringBroodAbility,
-		CutaneousBarrier,
-		IonCannonProjectilePos,
-		UltrakorCancelGimmick,
-		SwarmingOmenTimer,
-		SwarmingOmenAbility,
-		Reconstitution,
-		SimulacrumClone,
-		IsReviving,
-		SwarmingOmenStatus,
-		ProtectiveInstinctsStatus,
-		NemeanReactorsStack,
-		NemeanReactorsTimer,
-		Deconstruction,
-		DeconstructionPlayer,
-		RescindMindControl,
-		ControlledDemolitionTimer,
-		EmergencyDetonationTimer,
-		WorshipStack,
-		WorshipOriginalPlayer,
-		GodsMadeFleshTimer,
-		ChasmalColonyArteries,
-		AdaptiveAmitosis,
-		EnthrallingTalons,
-		InfestedByAkistrokor,
-		WorshipDemiurgeUnit,
-		TurretParentLink,
-		BindingGripTimer,
-		PhaseLinkClarions,
-		PhaseLink,
-		CausticDischargeSpeed,
-		IonFieldSpeed,
-		ReconstitutionCooldown,
-		EnthrallingAssaultHealTimer,
-		AttachedAkistrokorUnit,
-		PreMorphEnergy,
 		GodsMadeFleshCast,
-		GodsMadeFleshActive,
-			
-		DiscoveredAttacksDebuffValue,
-		DiscoveredAttacksStackValue,
-		DiscoveredAttacksSirenUnit,
-		KelvinMunitionsSlowValue,
+		TempoChange,
+		Reconstitution,
+		NaniteField,
+		DirgeAttacker,
+		RescindMindControl,
 	};
 }
 #include "SCBW\enumerations\TechId.h"
-//const u32 first_generic_toggle_ability = ValueId::ReverseThrust;
-//const u32 last_generic_toggle_ability = ValueId::DisruptionWeb;
+//const u32 first_generic_toggle_ability = RustId::ReverseThrust;
+//const u32 last_generic_toggle_ability = RustId::DisruptionWeb;
 const u32 string_toggle_on[6] = {1703, 1807, 1265, 1232, 1383, 328};
 const u32 string_toggle_off[6] = {1113, 1114, 1270, 1233, 1248, 330};
 const u32 button_toggle_on[6] = {374, 319, 369, 374, 366, 296};
 const u32 button_toggle_off[6] = {375, 236, 236, 375, 365, 236};
-const u32 toggle_values[6] = {ValueId::ReverseThrust, ValueId::SublimeShepherd, ValueId::DisruptionWeb, ValueId::TempoChange, ValueId::NaniteField, ValueId::Reconstitution};
+const u32 toggle_values[6] = {RustId::ReverseThrust, RustId::SublimeShepherd, RustId::DisruptionWeb, RustId::TempoChange, RustId::NaniteField, RustId::Reconstitution};
 const u32 toggle_abilities[6] = {TechId::EMPShockwave, TechId::UnusedTech40, TechId::DisruptionWeb, TechId::TempoChange, TechId::NaniteField, TechId::Reconstitution};
 const u32 generictoggles = 6;
 
@@ -364,7 +402,7 @@ struct CUnitLayout
 	/*0x000*/ CLink<CUnit> link;
 	/*0x008*/ s32       hitPoints;				// Hit points of unit, note that the displayed value in broodwar is ceil(healthPoints/256)
 												// Officially called "xLife"
-	/*0x00C*/ CSprite* sprite;
+	/*0x00C*/ CSprite*	sprite;
 	/*0x010*/ Target    moveTarget;				// The position or unit to move to. It is NOT an order target.
 	/*0x018*/ Point16   nextMovementWaypoint;	// The next way point in the path the unit is following to get to its destination.
 												// Equal to moveToPos for air units since they don't need to navigate around buildings.
@@ -426,14 +464,14 @@ struct CUnitLayout
 												// BW shows this value/256
 
 	/*0x064*/ u16       id;						// Unit ID in units.dat
-	/*0x066*/ u8       _unknown_0x066;			// HYDRA - mineral regen cooldown
-			  u8	   _unknown_0x067;			// HYDRA - warp relay warp in
+	/*0x066*/ u8		_unknown_0x066;			// HYDRA - mineral regen cooldown
+			  u8		_unknown_0x067;			// HYDRA - warp relay warp in
 	/*0x068*/ CLink<CUnit> player_link;
-	/*0x070*/ CUnit* subunit;
-	/*0x074*/ COrder* orderQueueHead;
-	/*0x078*/ COrder* orderQueueTail;
-	/*0x07C*/ CUnit* autoTargetUnit;			//The auto-acquired target (Note: This field is actually used for different targets internally, especially by the AI)
-	/*0x080*/ CUnit* connectedUnit;				// larva store a reference to the structure who created it
+	/*0x070*/ CUnit*	subunit;
+	/*0x074*/ COrder*	orderQueueHead;
+	/*0x078*/ COrder*	orderQueueTail;
+	/*0x07C*/ CUnit*	autoTargetUnit;			//The auto-acquired target (Note: This field is actually used for different targets internally, especially by the AI)
+	/*0x080*/ CUnit*	connectedUnit;			// larva store a reference to the structure who created it
 												// units inside transports store a reference to the transport
 												// addons store a reference to its parent building (but not the other way around)
 	/*0x084*/ u8        orderQueueCount;
@@ -570,7 +608,7 @@ struct CUnitLayout
 	/*0x104*/ u8        pathingCollisionInterval;	// unknown
 	/*0x105*/ u8        pathingFlags;				// 0x01 = uses pathing; 0x02 = ?; 0x04 = ?
 	/*0x106*/ u8        unused_0x106;
-	/*0x107*/ b8     isBeingHealed;					// 1 if a medic is cleric healing this unit
+	/*0x107*/ b8		isBeingHealed;				// 1 if a medic is cleric healing this unit
 	/*0x108*/ Box16     contourBounds;				// A rect that specifies the closest contour (collision) points
 
 	/*0x110*/ u16       removeTimer;				// Hallucination, Dark Swarm, Disruption Web, Broodling (but not Scanner Sweep according to BWAPI)
@@ -583,7 +621,7 @@ struct CUnitLayout
 	/*0x119*/ u8        stasisTimer;
 	/*0x11A*/ u8        plagueTimer;
 	/*0x11B*/ u8        isUnderStorm;				// Used to tell if a unit is under psi storm	(is "stormTimer" in BWAPI)
-	/*0x11C*/ CUnit* irradiatedBy;
+	/*0x11C*/ CUnit*	irradiatedBy;
 	/*0x120*/ u8        irradiatePlayerId;
 	/*0x121*/ u8        parasiteFlags;				// Each bit corrisponds to the player who has parasited this unit*/
 	/*0x122*/ u8        cycleCounter;				// counts/cycles up from 0 to 7 (inclusive). See also 0x85.
@@ -593,7 +631,7 @@ struct CUnitLayout
 	/*0x126*/ u8        corrosiveSporeCountUnused;  // replaced with generic_value
 	/*0x127*/ u8        corrosiveSporeTimeUnused[9];// replaced with generic_timer
 	/*0x130*/ u16       offsetIndex3by3;			// Cycles between 0-12 for each bullet fired by this unit (if it uses a "Attack 3x3 area" weapon)
-	/*0x132*/ u8       _padding_0x132;				// HYDRA - different flags
+	/*0x132*/ u8		_padding_0x132;				// HYDRA - different flags
 													// 0x1 - burrowed basilisk flag
 													// 0x2 - vorvaling proc flag
 													// 0x4 - vorvaling egg flag (unused?)
@@ -602,16 +640,16 @@ struct CUnitLayout
 													// 0x20 - update console - new parasite 
 													// 0x40 - warp flash
 	/*-133-*/ u8        _padding_0x133;				// shaman timer
-	/*0x134*/ void* pAI;
+	/*0x134*/ void*		pAI;
 	/*0x138*/ u16       airStrength;
 	/*0x13A*/ u16       groundStrength;
 	/*0x13C*/ struct
 	{
 		u32 left, right, top, bottom;
-	} finderIndex;							// Ordering for unit boundries in unit finder for binary search
+	} finderIndex;									// Ordering for unit boundries in unit finder for binary search
 	/*0x14C*/ u8        repulseUnknown;
-	/*0x14D*/ u8        repulseAngle;       // updated only when air unit is being pushed
-	/*0x14E*/ Point8    driftPos;           // (mapsizex / 1.5 max)
+	/*0x14D*/ u8        repulseAngle;				// updated only when air unit is being pushed
+	/*0x14E*/ Point8    driftPos;					// (mapsizex / 1.5 max)
 };
 C_ASSERT(sizeof(CUnitLayout) == 336);
 #pragma pack()
