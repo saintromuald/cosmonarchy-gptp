@@ -14,7 +14,6 @@ namespace hooks
 	u8 getSeekRangeHook(CUnit* unit) // seek range is measured in tiles, unfortunately
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
-		UnitExt* orderUnitExt = globals.GetUnitExt(unit->orderTarget.unit);
 
 		u16 unitId = unit->id;
 		u32 seekRange;
@@ -46,10 +45,14 @@ namespace hooks
 		bonusAmount += unitExt->values[ValueRepententChorus] / 4;
 
 		// Stellar Enforcement - Magister behavior
-		if (unit->orderTarget.unit != nullptr
-			&& orderUnitExt->values[ValueStellarEnforcement])
+		if (unit->orderTarget.unit != nullptr)
 		{
-			bonusAmount += 2;
+			UnitExt* orderUnitExt = globals.GetUnitExt(unit->orderTarget.unit);
+
+			if (orderUnitExt->values[ValueStellarEnforcement])
+			{
+				bonusAmount += 2;
+			}
 		}
 
 		// Ignore bonus range for melee units
@@ -86,7 +89,6 @@ namespace hooks
 	u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
-		UnitExt* orderUnitExt = globals.GetUnitExt(unit->orderTarget.unit);
 
 		u32 bonusAmount = 0;
 		//Give bonus range to units inside Bunkers
@@ -125,10 +127,13 @@ namespace hooks
 
 		// Stellar Enforcement - Magister behavior
 		if (unit->orderTarget.unit != nullptr
-			&& orderUnitExt->values[ValueStellarEnforcement]
 			&& weapons_dat::MaxRange[unit->getGroundWeapon()] > 32)
 		{
-			bonusAmount += 64;
+			UnitExt* orderUnitExt = globals.GetUnitExt(unit->orderTarget.unit);
+			if (orderUnitExt->values[ValueStellarEnforcement])
+			{
+				bonusAmount += 64;
+			}
 		}
 
 		// Height advantage

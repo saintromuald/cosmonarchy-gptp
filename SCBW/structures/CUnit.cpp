@@ -1269,6 +1269,7 @@ CUnit* CUnit::getFromIndex(u16 index)
 
 u16 CUnit::getIndex() const
 {
+	assert(this);
 	if (globals.extended_unit_table == 1)
 	{
 		return this - (CUnit*)&new_unit_table.units[0] + 1;

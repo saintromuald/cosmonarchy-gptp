@@ -102,10 +102,10 @@ namespace hooks
 	void updateStatusEffects(CUnit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
-		UnitExt* subunitExt = globals.GetUnitExt(unit->subunit);
 
 		if (unit->subunit != nullptr)
 		{
+			UnitExt* subunitExt = globals.GetUnitExt(unit->subunit);
 			subunitExt->values[ValueTurretParentLink] = (u32)unit;
 		}
 

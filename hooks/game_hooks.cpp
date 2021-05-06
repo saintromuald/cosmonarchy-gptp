@@ -323,14 +323,14 @@ namespace hooks
 							unit->getX() + radius,
 							unit->getY() + radius
 						).forEach([&](CUnit* target)
+						{
+							if (!(scbw::isAlliedTo(target->playerId, unit->playerId)))
 							{
-								if (!(scbw::isAlliedTo(target->playerId, unit->playerId)))
-								{
-									return;
-								}
-								target->heal(ZoryusthalethReconstitutionHealing, unit);
-								//scbw::createAndInitThingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
-							});
+								return;
+							}
+							target->heal(ZoryusthalethReconstitutionHealing, unit);
+							//scbw::createAndInitThingy(SpriteId::ReconstitutionHeal, target->position.x, target->position.y);
+						});
 						scbw::createAndInitThingy(SpriteId::ReconstitutionConsumption, corpse->sprite->position.x, corpse->sprite->position.y);
 						corpse->sprite->flags |= CSprite_Flags::Flag04;
 						corpse->sprite->playIscriptAnim(IscriptAnimation::Death);
@@ -748,8 +748,9 @@ namespace hooks
 						{
 							target->sprite->createUnderlay(ImageId::TreasurySupplyOverlay, 0, 0, 0);
 						}
-						unitExt->values[ValueTreasuryStacks]++;
-						s32 supply = unitExt->values[ValueSupplyProvided];
+						UnitExt* targetExt = globals.GetUnitExt(target);
+						targetExt->values[ValueTreasuryStacks]++;
+						s32 supply = targetExt->values[ValueSupplyProvided];
 						target->setSupplyProvided(supply + TreasuryIncrease);
 					});
 				}
@@ -768,24 +769,25 @@ namespace hooks
 						pos.x + radius,
 						pos.y + radius
 					).forEach([&](CUnit* target)
+					{
+						if (!(scbw::isAlliedTo(target->playerId, unit->playerId)))
 						{
-							if (!(scbw::isAlliedTo(target->playerId, unit->playerId)))
-							{
-								return;
-							}
-							if (units_dat::BaseProperty[target->id] & UnitProperty::Building
-								|| !(target->status & UnitStatus::Completed))
-							{
-								return;
-							}
-							// Overlays
-							if (target->getOverlay(ImageId::EnsnaringBroodOverlay))
-							{
-								target->removeOverlay(ImageId::EnsnaringBroodOverlay);
-							}
-							unitExt->timers[TimerEnsnaringBrood] = 12 * 24;
-							target->sprite->createTopOverlay(ImageId::EnsnaringBroodOverlay);
-						});
+							return;
+						}
+						if (units_dat::BaseProperty[target->id] & UnitProperty::Building
+							|| !(target->status & UnitStatus::Completed))
+						{
+							return;
+						}
+						// Overlays
+						if (target->getOverlay(ImageId::EnsnaringBroodOverlay))
+						{
+							target->removeOverlay(ImageId::EnsnaringBroodOverlay);
+						}
+						UnitExt* targetExt = globals.GetUnitExt(target);
+						targetExt->timers[TimerEnsnaringBrood] = 12 * 24;
+						target->sprite->createTopOverlay(ImageId::EnsnaringBroodOverlay);
+					});
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::EnsnaringBrood] * 256);
 				}
 			} break;
@@ -922,16 +924,17 @@ namespace hooks
 					if (unitExt->timers[TimerObservancePeriod] == 1)
 					{
 						unitExt->timers[TimerObservancePeriod] = (5 * 24) + 1;
-						unitExt->values[ValueObservanceRend] = 1;
+						unitExt->values[ValueObservanceRend] += 1;
 					}
 
 					// Seraph - Observance persistant overlay creation
 					for (auto seraph : seraphs)
 					{
-						if (unitExt->timers[TimerObservanceOverlay] == 0)
+						UnitExt* seraphExt = globals.GetUnitExt(seraph);
+						if (seraphExt->timers[TimerObservanceOverlay] == 0)
 						{
 							seraph->sprite->createOverlay(ImageId::SeraphRedOverlay);
-							unitExt->timers[TimerObservanceOverlay] = 18;
+							seraphExt->timers[TimerObservanceOverlay] = 18;
 						}
 					}
 				}

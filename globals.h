@@ -6,6 +6,7 @@
 #include <sstream>
 #include <ostream>
 #include <istream>
+#include <assert.h>
 #include "SCBW\api.h"
 #include "hooks\limits\attack_extender.h"
 
@@ -124,6 +125,7 @@ public:
 
 	inline UnitExt* GetUnitExt(CUnit* unit)
 	{
+		assert(unit);
 		return &unitExt[unit->getIndex()];
 	}
 
