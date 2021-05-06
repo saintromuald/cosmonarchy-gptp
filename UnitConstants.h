@@ -58,7 +58,7 @@ constexpr s32 AIWebEnemyMinCount = 2;
 constexpr s32 AIWebTimer = 3 * 24;
 
 // Star Sovereign
-constexpr s32 AIStarsovereignAbilSeekRange = 10 * 32;
+constexpr s32 AIStarsovereignAbilSeekRange = 6 * 32;
 constexpr s32 AIStarsovereignAbilMinEnemyHealth = 2000;
 constexpr s32 AIStarsovereignAbilMaxAllyHealth = 2000;
 constexpr f64 AIStarsovereignAbilLifePercentage = 0.5;
