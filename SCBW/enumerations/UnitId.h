@@ -432,8 +432,12 @@ enum Enum {
 	//HYDRA\\
 
 // Unused
+//	Bengalaas										= 90,		// Bengalaas
+//	TerranAcademy									= 112,		// Terran Academy
 //	TerranPhysicsLab								= 118,		// Physics Lab | Currently cannot set dat requirements because of firegraft being a good program
+//	TerranArmory									= 123,		// Terran Armory
 //	CrashedBattlecruiser							= 126,		// Norad II Crashed Battlecruiser
+//	InfestedCommandCenter							= 130,		// Infested Command Center
 //	MatureChrysalis									= 150,		// Mature Chrysalis
 //	IndependentJumpGate								= 185,		// Independent Jump Gate
 
