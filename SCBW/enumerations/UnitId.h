@@ -431,14 +431,28 @@ enum Enum {
  
 	//HYDRA\\
 
-//Unused
-//	TerranPhysicsLab								= 118,		// Physics Lab
-//	TerranBioticBase								= 126,		// Norad II Crashed Battlecruiser
-//	TerranTinkerersTower							= 150,		// Mature Chrysalis
-//	TerranGuildhall									= 185,		// Independent Jump Gate
-//	TerranQuantumInstitute							= 223,		// Protoss Gas Orb Type 2
+// Unused
+//	TerranPhysicsLab								= 118,		// Physics Lab | Currently cannot set dat requirements because of firegraft being a good program
+//	CrashedBattlecruiser							= 126,		// Norad II Crashed Battlecruiser
+//	MatureChrysalis									= 150,		// Mature Chrysalis
+//	IndependentJumpGate								= 185,		// Independent Jump Gate
 
-//Terran-Unit
+// Need IDs for
+//	SharedStriga									= x,		// 
+//	SharedLuminary									= x,		// 
+//	SharedTarasque									= x,		// 
+//	SharedAnticthon									= x,		// 
+//	SharedEmpress									= x,		// 
+//	SharedAnthelion									= x,		// 
+//	TerranBioticBase								= x,		// 
+//	TerranTinkerersTower							= x,		// 
+//	ProtossProstrationStage							= x,		// 
+
+// Shared-Unit
+	SharedCohort									= 50,		// Infested Terran
+	SharedAspirant									= 194,		// Zerg Beacon
+
+// Terran-Unit
 	TerranApostle									= 10,		// Gui Montag
 	TerranShaman									= 15,		// Civilian
 	TerranMadcap									= 18,		// Alan Schezar Turret
@@ -450,7 +464,6 @@ enum Enum {
 	TerranMadrigal									= 27,		// Mengsk Battlecruiser
 	TerranCentaur									= 28,		// Hyperion
 	TerranPazuzu									= 49,		// Matriarch Queen
-	TerranCohort									= 50,		// Infested Terran
 	TerranPenumbra									= 53,		// Hunter Killer
 	TerranCyclops									= 55,		// Kukulza Mutalisk
 	TerranHeracles									= 77,		// Fenix Zealot
@@ -460,12 +473,11 @@ enum Enum {
 	TerranSiren										= 151,		// Cerebrate
 	TerranPaladin									= 186,		// Ruins
 	TerranSavant									= 187,		// Kyadarin Crystal Formation
-	TerranAspirant									= 194,		// Zerg Beacon
 	TerranBlackjack									= 195,		// Terran Beacon
 	TerranClaymore									= 196,		// Protoss Beacon
 	TerranLobotomyMine								= 209,		// Floor Gun Trap
 
-//Terran-Building
+// Terran-Building
 	TerranMedbay									= 119,		// Starbase / Terran Unused 1
 	TerranMunitionsBay								= 121,		// Repair Bay / Terran Unused 2
 	TerranIonCannon									= 127,		// Ion Cannon
@@ -478,7 +490,7 @@ enum Enum {
 	TerranNaniteAssembly							= 203,		// Floor Missile Trap	
 	TerranTreasury									= 215,		// Flag
 
-//Protoss-Unit
+// Protoss-Unit
 	ProtossManifold									= 16,		// Sarah Kerrigan
 	ProtossArchitect								= 17,		// Alan Schezar
 	ProtossStarSovereign							= 21,		// Tom Kazansky
@@ -504,7 +516,7 @@ enum Enum {
 	ProtossAugur									= 102,		// Gerard DuGalle
 	ProtossBarghest									= 104,		// Infested Duran
 
-//Protoss-Building
+// Protoss-Building
 	ProtossAutomatonRegister						= 158,		// Unused Protoss 1				| Idol requirement
 	ProtossAncestralEffigy							= 161,		// Unused Protoss 2				| Atreus requirement
 	ProtossArgosy									= 168,		// Stasis Chamber				| Advanced Stellar production
@@ -520,7 +532,7 @@ enum Enum {
 	ProtossSanctumOfSorrow							= 225,		// Zerg Gas Sac Type 2			| Pariah and Augur requirement
 	ProtossGrandLibrary								= 226,		// Terran Gas Tank Type 1		| Advanced Templar production
 
-//Zerg-Unit
+// Zerg-Unit
 	ZergAlmaksalisk									= 29,		// Norad II
 	ZergAlkajelisk									= 48,		// Torrasque
 	ZergKalkalisk									= 51,		// Infested Kerrigan
@@ -538,10 +550,10 @@ enum Enum {
 	ZergAkistrokor									= 218,		// Data Disc
 	ZergIroleth										= 222,		// Protoss Gas Orb Type 1
 
-//Zerg-Misc
+// Zerg-Misc
 	BasiliskCreeper									= 180,		// Cave-in
 
-//Zerg-Building
+// Zerg-Building
 	ZergKonvilNest									= 145,		// Unused Zerg 1
 	ZergKalkathBloom								= 147,		// Overmind (With Shell)
 	ZergGorgrokApiary								= 148,		// Overmind
@@ -560,7 +572,6 @@ enum Enum {
 	ZergIrolIris									= 224,		// Zerg Gas Sac Type 1
 	ZergSire										= 227,		// Terran Gas Tank Type 2
 	ZergLarvalColony								= 216,		// Young Chrysalis
-	ZergOcsalColony									= 223,		// 
-
+	ZergOcsalColony									= 223,		// Protoss Gas Orb Type 2
 	};
 }

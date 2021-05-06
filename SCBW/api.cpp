@@ -1781,4 +1781,24 @@ namespace scbw
 	{
 		return (unit->id == UnitId::TerranSpiderMine || unit->id == UnitId::TerranLobotomyMine);
 	}
+
+	bool isSharedLarvaMorph(u16 id)
+	{
+		switch (id)
+		{
+			case UnitId::SharedCohort:
+//			case UnitId::SharedTarasque:
+//			case UnitId::SharedAnticthon:
+//			case UnitId::SharedCharlatan:
+//			case UnitId::SharedEmpress:
+//			case UnitId::SharedAnthelion:
+			{
+				return true;
+			}
+			default:
+			{
+				return false;
+			}
+		}
+	}
 }

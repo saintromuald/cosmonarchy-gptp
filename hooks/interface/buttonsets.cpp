@@ -969,12 +969,12 @@ namespace hooks
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranCohort &&  // Cohort Servile Vigor passive 
+								if ((*activePortraitUnit)->id == UnitId::SharedCohort &&  // Cohort Servile Vigor passive 
 									current_button->iconID == IconId::TerranInfantryArmor)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::TerranAspirant &&  // Aspirant Criticality passive 
+								if ((*activePortraitUnit)->id == UnitId::SharedAspirant &&  // Aspirant Criticality passive 
 									current_button->iconID == IconId::ScarabDamage)
 								{
 									current_button_state = BUTTON_STATE::Enabled;

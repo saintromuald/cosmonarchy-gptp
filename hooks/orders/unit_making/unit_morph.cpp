@@ -105,17 +105,21 @@ namespace hooks
 						case UnitId::ZergOvileth:
 						case UnitId::ZergIroleth:
 						case UnitId::ZergOthstoleth:
+						{
 							break;
+						}
 						default:
+						{
 							helper::incrementUnitScoresEx(unit, -1, 0);
-							break;
+						} break;
 					}
-					//					incrementUnitScoresEx(unit, -1, 0);
-										//was unit->status = unit->status & ~UnitStatus::Completed
-										//in original code
+//					incrementUnitScoresEx(unit, -1, 0);
+					// was unit->status = unit->status & ~UnitStatus::Completed
+					// in original code
 					if (unit->status & UnitStatus::Completed)
+					{
 						unit->status -= UnitStatus::Completed;
-
+					}
 					switch (unit->id)
 					{
 						case UnitId::ZergLarva:
@@ -126,16 +130,18 @@ namespace hooks
 						case UnitId::ZergZoryusthaleth:
 						case UnitId::ZergUltrakor:
 						case UnitId::ZergQuazilisk:
+						{
 							eggId = UnitId::ZergEgg;
-							break;
+						} break;
 						case UnitId::ZergNathrokor:
 						case UnitId::ZergMutalisk:
 						case UnitId::ZergGorgrokor:
 						case UnitId::ZergOvileth:
 						case UnitId::ZergIroleth:
 						case UnitId::ZergOthstoleth:
+						{
 							eggId = UnitId::ZergCocoon;
-							break;
+						} break;
 						case UnitId::ZergMatraleth:
 							if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergKonvilisk)
 							{
@@ -150,8 +156,7 @@ namespace hooks
 							if (unit->id != UnitId::ProtossCantavis)
 							{
 								bStopThere = true;
-							}
-							break;
+							} break;
 					}
 					if (!bStopThere)
 					{
@@ -165,7 +170,6 @@ namespace hooks
 								CImage* current_image = unit->sprite->images.head;
 								do
 								{
-
 									current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 									current_image = current_image->link.next;
 								}
@@ -212,11 +216,6 @@ namespace hooks
 			{
 				auto origin = unit->eggOrigin;
 				auto anim = IscriptAnimation::SpecialState1;
-				/*
-				if (origin == UnitId::ZergLarva) {
-					anim = IscriptAnimation::GndAttkInit;
-				}
-				*/
 				unit->sprite->playIscriptAnim(anim, true);
 				unit->mainOrderState = 2;
 			}
@@ -230,16 +229,20 @@ namespace hooks
 				switch (origin)
 				{
 					case UnitId::ZergOvileth:
+					{
 						scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 1);
-						break;
+					} break;
 					case UnitId::ZergIroleth:
+					{
 						scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 2);
-						break;
+					} break;
 					case UnitId::ZergOthstoleth:
+					{
 						scbw::set_generic_value(unit, ValueId::OverlordSupplyGimmick, 3);
-						break;
+					} break;
 					default:
-						break;
+					{
+					} break;
 				}
 				helper::replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
 				unit->energy = scbw::get_generic_value(unit, ValueId::PreMorphEnergy);
@@ -258,11 +261,6 @@ namespace hooks
 					while (current_image != nullptr)
 					{
 						auto anim = IscriptAnimation::SpecialState1;
-						/*
-						if (origin == UnitId::ZergLarva) {
-							anim = IscriptAnimation::GndAttkInit;
-						}
-						*/
 						current_image->playIscriptAnim(anim);
 						current_image = current_image->link.next;
 					}
@@ -270,7 +268,6 @@ namespace hooks
 				}
 				else
 				{ // 0045DF60
-							 // update various stuff (set hp, set shield...) not finished on Morph
 					helper::updateUnitStatsFinishBuilding(unit);
 					helper::updateUnitStrength(unit);
 					auto origin = unit->eggOrigin;
@@ -366,10 +363,23 @@ namespace hooks
 		}
 		if (unit->id == UnitId::ZergLarva)
 		{
-			if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1)
+			if (unit->connectedUnit->id == UnitId::ZergOcsalColony
+				&& scbw::isSharedLarvaMorph(morphUnitId))
 			{
-				return true;
+				if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1)
+				{
+					return true;
+				}
 			}
+			else
+				if (unit->connectedUnit->id != UnitId::ZergOcsalColony
+					&& !scbw::isSharedLarvaMorph(morphUnitId))
+				{
+					if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1)
+					{
+						return true;
+					}
+				}
 		}
 		if (unit->id == UnitId::ProtossCantavis)
 		{

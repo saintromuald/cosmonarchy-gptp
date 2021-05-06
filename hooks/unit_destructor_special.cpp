@@ -173,7 +173,7 @@ void unitDestructorSpecialHook(CUnit* unit)
 	{
 		switch (unit->id)
 		{
-			case UnitId::TerranAspirant:
+			case UnitId::SharedAspirant:
 			{
 				globals.createGenericPersistImpact(ImpactId::Criticality, 5 * 24, { unit->getX(), unit->getY() }, 1.25 * 32, SpriteId::Criticality, 5, unit->playerId);
 			} break;

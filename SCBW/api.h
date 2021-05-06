@@ -416,4 +416,5 @@ namespace scbw
 	bool isDecloakable(CUnit* unit);
 	bool unitCanNuke(CUnit* unit);
 	bool unitIsTrap(CUnit* unit);
+	bool isSharedLarvaMorph(u16 id);
 }

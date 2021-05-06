@@ -447,7 +447,7 @@ void CUnit::heal(s32 hitPoints, CUnit* source)
 	}
 
 	// Cohort - Servile Vigor
-	if (id == UnitId::TerranCohort && this != source)
+	if (id == UnitId::SharedCohort && this != source)
 	{
 		hitPoints *= 2;
 	}
