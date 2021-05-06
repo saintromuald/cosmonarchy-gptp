@@ -123,7 +123,6 @@ namespace hooks
 	void weaponDamage_root(WeaponDamageData& data)
 	{
 		UnitExt* targetExt = globals.GetUnitExt(data.target);
-		UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
 
 		// The unit must neither be already dead nor invincible
 		if (data.target == nullptr || data.target->hitPoints == 0 || data.target->status & UnitStatus::Invincible)
@@ -312,7 +311,6 @@ namespace hooks
 	static void weaponDamage_damageModifiers(WeaponDamageData& data)
 	{
 		UnitExt* targetExt = globals.GetUnitExt(data.target);
-		UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
 
 		// Isthrathaleth Dark Swarm
 		if (scbw::isUnderDarkSwarm(data.target) && weapons_dat::MaxRange[data.weaponId] > 32
@@ -320,6 +318,20 @@ namespace hooks
 			&& data.weaponId != WeaponId::SubterraneanSpines)
 		{
 			data.damageType = DamageType::Independent;
+		}
+
+		switch (data.weaponId) // Damage Calc
+		{
+			case WeaponId::SubterraneanTentacle:
+			case WeaponId::SeekerSpores:
+			{
+				UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
+				if (attackerExt->values[ValueAmitosis] == 1)
+				{
+					data.finalDamage /= 2;
+					attackerExt->values[ValueAmitosis] = 0;
+				}
+			} break;
 		}
 
 		switch (data.weaponId) // Damage Divisor Calc
@@ -401,10 +413,11 @@ namespace hooks
 	static void weaponDamage_behaviors(WeaponDamageData& data)
 	{
 		UnitExt* targetExt = globals.GetUnitExt(data.target);
-		UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
 
 		if (data.attacker != nullptr)
 		{
+			UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
+
 			// Vithrilisk - Critical Mass (procced by any attack now)
 			if (targetExt->values[ValueCorrosiveTouchStacks])
 			{
@@ -605,15 +618,6 @@ namespace hooks
 					targetExt->timers[TimerEcclesiast] = (24 * 5) + 1;
 					targetExt->values[ValueEcclesiastPlayer] = data.attacker->playerId;
 				} break;
-				case WeaponId::SubterraneanTentacle:
-				case WeaponId::SeekerSpores:
-				{
-					if (attackerExt->values[ValueAmitosis] == 1)
-					{
-						//data.damage /= 2; // TODO: use data.finalDamage, all modifiers should in weaponDamage_damageModifiers
-						attackerExt->values[ValueAmitosis] = 0;
-					}
-				} break;
 				case WeaponId::SeraphObservance:
 				{
 					// Observance - Science Vessel ability
@@ -707,7 +711,6 @@ namespace hooks
 	static void weaponDamage_fatal(WeaponDamageData& data)
 	{
 		UnitExt* targetExt = globals.GetUnitExt(data.target);
-		UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
 
 		switch (data.weaponId)
 		{
@@ -888,6 +891,7 @@ namespace hooks
 
 		if (data.attacker != nullptr)
 		{
+			UnitExt* attackerExt = globals.GetUnitExt(data.attacker);
 			switch (data.weaponId)
 			{
 				case WeaponId::AlkajeliskPlasmidSpores:
