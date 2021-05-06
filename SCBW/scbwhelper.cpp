@@ -8207,4 +8207,22 @@ namespace helper
 		}
 		return result;
 	}
+
+	// For irradiateDamageLoop
+	s32 iterateLoadedUnits(CUnit* unit, s32 (__fastcall* func)(s32, s32), s32 a3)
+	{
+		const u32 Func_iterateLoadedUnits = 0x004E6D00;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH a3
+			PUSH func
+			MOV EAX, unit
+			CALL Func_iterateLoadedUnits
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

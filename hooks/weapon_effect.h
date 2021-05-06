@@ -29,5 +29,6 @@ namespace hooks
 	void parasite(CBullet* bullet, u32 weaponId);
 	void broodlings(CBullet* bullet, u32 weaponId);
 	void lockdown(CBullet* bullet, u32 weaponId);
+	CUnit* irradiateDamageLoop(CUnit* unit);						// 004555C0
 
 } //hooks

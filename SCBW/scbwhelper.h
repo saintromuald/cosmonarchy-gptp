@@ -597,6 +597,9 @@ namespace helper
 	CUnit* findBestUnit(Box16* radius, s32 bullet, s32(*func)(CUnit*, CBullet*));													// 004E8830
 	s32 splashFunc(CBullet* bullet, CUnit* unit);																					// 0048B570
 
+	// For iterateLoadedUnits
+	s32 iterateLoadedUnits(CUnit* unit, s32(__fastcall* func)(s32, s32), s32 a3);													// 004E6D00
+
 	//// mindcontrol_spell
 	void MindControlHit(CUnit* attacker, CUnit* target);																			// 004F6910
 

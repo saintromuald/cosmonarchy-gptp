@@ -641,17 +641,60 @@ namespace hooks
 	}
 
 	s32 irradiateUnitDamageProc(CUnit* target, CUnit* irradiated)
-	{		
-		if (!(units_dat::BaseProperty[target->id] & UnitProperty::Building)
-			&& target->id != UnitId::ZergLarva
-			&& target->id != UnitId::ZergEgg
-			&& target->id != UnitId::ZergLurkerEgg
-			&& (!(target->status & UnitStatus::Burrowed) || target == irradiated)
-			&& (target->status & UnitStatus::InTransport || helper::isTargetWithinMinRange(irradiated, 32u, target)) )
+	{
+		scbw::print("damage");
+		if ((!(target->status & UnitStatus::Burrowed)
+			|| target == irradiated) && (target->status & UnitStatus::InTransport
+			|| helper::isTargetWithinMinRange(irradiated, 32u, target)))
 		{
 			weaponDamageHook((weapons_dat::DamageAmount[WeaponId::Irradiate] << 8) / weapons_dat::Cooldown[WeaponId::Irradiate],
-				target, WeaponId::Irradiate, irradiated->irradiatedBy, irradiated->irradiatePlayerId, 0, 1 );
+				target, WeaponId::Irradiate, irradiated->irradiatedBy, irradiated->irradiatePlayerId, 0, 1);
 		}
 		return 0;
+	}
+
+	// Hooked to help with Irradiate rework - Pr0nogo
+	CUnit* irradiateDamageLoop(CUnit* unit) // 004555C0
+	{
+		s32 unitStatus;
+		CUnit* result;
+		CSprite* unitSprite;
+		u16 posX;
+		u16 posY;
+		u16 a1;
+		u16 v6;
+		u16 v7;
+		u16 v8;
+
+		unitStatus = unit->status;
+		if (unitStatus & UnitStatus::Burrowed)
+		{
+			return (CUnit*)irradiateUnitDamageProc(unit, unit);
+		}
+		if (unitStatus & UnitStatus::InTransport)
+		{
+			result = unit->connectedUnit;
+			if (result)
+			{
+				result = (CUnit*)helper::iterateLoadedUnits(result,
+					(s32(__fastcall*)(s32, s32))irradiateUnitDamageProc,
+					(s32)unit);
+			}
+		}
+		else
+		{
+			unitSprite = unit->sprite;
+			posY = unitSprite->position.y;
+			posX = unitSprite->position.x;
+			a1 = posX - 160;
+			v7 = posX + 160;
+			v6 = posY - 160;
+			v8 = posY + 160;
+			result = (CUnit*)helper::iterateUnitsAtLocationTargetProc(
+				(Box16*)&a1,
+				(s32(__fastcall*)(s32, s32))irradiateUnitDamageProc,
+				unit);
+		}
+		return result;
 	}
 }

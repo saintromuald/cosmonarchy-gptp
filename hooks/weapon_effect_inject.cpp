@@ -297,6 +297,24 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) irradiateDamageLoop_Wrapper() // 004555C0
+	{
+		static CUnit* result;
+		static CUnit* unit;
+		__asm
+		{
+			MOV unit, ECX
+			PUSHAD
+		}
+		result = hooks::irradiateDamageLoop(unit);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
 }
 
 namespace hooks
@@ -309,5 +327,6 @@ namespace hooks
 		memoryPatch(Addr_WeaponsDatEffectCount, maxID);
 		memoryPatch(Addr_WeaponsDatEffectSwitch, data, 4); // load pointer to address table
 		jmpPatch(irradiateUnitDamageProc_Wrapper, 0x00455530, 3);
+		jmpPatch(irradiateDamageLoop_Wrapper, 0x004555C0, 1);
 	}
 }
