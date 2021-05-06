@@ -741,7 +741,7 @@ namespace hooks
 		// Hook patches!
 //      jmpPatch(gameLoop_Wrapper, 0x004D94B0, 3);
 //      jmpPatch(isTileBlockedBy_Wrapper, 0x00473300, 0);
-		jmpPatch(createUnit_Wrapper, 0x004A09D0, 1);
+//		jmpPatch(createUnit_Wrapper, 0x004A09D0, 1);
 	}
 }
 
