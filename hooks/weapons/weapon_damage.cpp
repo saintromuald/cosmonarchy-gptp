@@ -924,7 +924,8 @@ namespace hooks
 						{
 							return;
 						}
-						targetExt->timers[TimerNathrokor] = (4 * 24) + 1;
+						UnitExt* forEachExt = globals.GetUnitExt(unit);
+						forEachExt->timers[TimerNathrokor] = (4 * 24) + 1;
 						unit->updateSpeed();
 					});
 				} break;
@@ -948,18 +949,18 @@ namespace hooks
 		}
 	}
 
-	void applyEnsnare(CUnit* a1)
-	{ // 004F45E0
-		s32 baseProperty; // eax
-		u8 overlayPadding; // al
-		CUnit* victim; // ecx
+	void applyEnsnare(CUnit* unit) // 004F45E0
+	{
+		s32 baseProperty;
+		u8 overlayPadding;
+		CUnit* victim;
 
-		if (!(a1->ensnareTimer)
-			&& !(a1->status & UnitStatus::Burrowed))
+		if (!(unit->ensnareTimer)
+			&& !(unit->status & UnitStatus::Burrowed))
 		{
 			// Calculate overlay ID offset based on units_dat flags
 			overlayPadding = 0;
-			baseProperty = units_dat::BaseProperty[a1->id];
+			baseProperty = units_dat::BaseProperty[unit->id];
 			if (baseProperty & UnitProperty::MediumOverlay)
 			{
 				overlayPadding = 1;
@@ -968,17 +969,17 @@ namespace hooks
 			{
 				overlayPadding = 2;
 			}
-			victim = a1;
-			if (a1->subunit != nullptr)
+			victim = unit;
+			if (unit->subunit != nullptr)
 			{
-				victim = a1->subunit;
+				victim = unit->subunit;
 			}
 			// Create overlay
 			victim->sprite->createOverlay(ImageId::EnsnareOverlay_Small + overlayPadding);
 		}
 		// Apply effect
-		a1->ensnareTimer = 37;
-		a1->updateSpeed();
+		unit->ensnareTimer = 37;
+		unit->updateSpeed();
 	}
 
 	bool GorgonCondition(CUnit* attacker, CUnit* target)
@@ -1001,26 +1002,35 @@ namespace hooks
 		UnitExt* targetExt = globals.GetUnitExt(target);
 		auto stacks = targetExt->values[ValueCorrosiveTouchStacks];
 		auto overlayMultiplier = 0;
-		if (stacks > 18) overlayMultiplier++;
-		if (stacks > 35) overlayMultiplier++;
-		if (stacks > 50) overlayMultiplier++;
+		if (stacks > 18)
+		{
+			overlayMultiplier++;
+		}
+		if (stacks > 35)
+		{
+			overlayMultiplier++;
+		}
+		if (stacks > 50)
+		{
+			overlayMultiplier++;
+		}
 		return overlayMultiplier + 4 * scbw::getOverlayOffset(target->id) + ImageId::AcidSpores_1_Overlay_Small;
 	}
 
 	// TODO: Refactor
 	// Hooked to change Corrosive Spores timer - Pr0nogo
-	s32 ApplySpores_hook(CUnit* target)
-	{ // 004F4480
-		u8 sporeCount; // al
-		u32 overlayMultiplier; // eax
-		u8 overlayOffset; // cl
-		s32 overlay; // eax
-		s32 v6; // eax
-		CUnit* targetFinal; // ecx
-		u32 result_sub_1; // esi
-		u32 acidTimeMax; // edx
-		u32 result; // eax
-		u32 v11_acidSporeTime; // ecx
+	s32 ApplySpores_hook(CUnit* target) // 004F4480
+	{
+		u8 sporeCount;
+		u32 overlayMultiplier;
+		u8 overlayOffset;
+		s32 overlay;
+		s32 v6;
+		CUnit* targetFinal;
+		u32 result_sub_1;
+		u32 acidTimeMax;
+		u32 result;
+		u32 v11_acidSporeTime;
 		CImage* image;
 		CSprite* spriteFinal;
 
