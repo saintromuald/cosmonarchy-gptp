@@ -12,12 +12,10 @@
 
 char buffer[256];
 
-//Returns the special damage multiplier factor for units that don't use the
-//"Damage Factor" property in weapons.dat.
+// Returns the special damage multiplier factor for units that don't use the
+// "Damage Factor" property in weapons.dat.
 u8 getDamageFactorForTooltip(u8 weaponId, CUnit* unit)
 {
-
-	//Default StarCraft behavior
 	if (weaponId == WeaponId::FlameThrower
 		|| weaponId == WeaponId::CohortGaussPistols
 		|| weaponId == WeaponId::PsiBlades
@@ -33,12 +31,10 @@ u8 getDamageFactorForTooltip(u8 weaponId, CUnit* unit)
 	{
 		return 2;
 	}
-
 	if (weaponId == WeaponId::HaloRockets)
 	{
 		return 1;
 	}
-
 	return weapons_dat::DamageFactor[weaponId];
 }
 
@@ -52,12 +48,17 @@ static std::string formatStringVector(std::vector<std::string> strings)
 {
 	std::string result = "";
 	if (strings.size() == 0)
+	{
 		strings.push_back("None");
+	}
 	s32 i = 0;
 	for (const std::string& str : strings)
 	{
 		result += str;
-		if (++i != strings.size()) result += ", ";
+		if (++i != strings.size())
+		{
+			result += ", ";
+		}
 	}
 	return result;
 }
@@ -98,77 +99,102 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex)
 	switch (damageType)
 	{
 		case DamageType::Concussive:
+		{
 			// Teal
 			typeName = "\017Concussive\002";
 			damageModifiers = "\017100\002/\00375\002/\02150\002/\00625\002";
-			break;
+		} break;
 		case DamageType::Normal:
+		{
 			// Yellow
 			typeName = "\003Normal\002";
 			damageModifiers = "\017100\002/\003100\002/\02175\002/\00650\002";
-			break;
+		} break;
 		case DamageType::Explosive:
+		{
 			// Orange
 			typeName = "\021Explosive\002";
 			damageModifiers = "\01750\002/\00375\002/\021100\002/\00675\002";
-			break;
+		} break;
 		case DamageType::Chronal:
-			// DamageType
+		{
+			// White
 			typeName = "\004Chronal\002";
 			damageModifiers = "\017100\002/\003100\002/\021100\002/\006100\002";
-			break;
+		} break;
 		case DamageType::Independent:
+		{
 			// White
 			typeName = "\004Independent\002";
-			break;
+		} break;
 		case DamageType::IgnoreArmor:
+		{
 			// White
 			typeName = "\004Ignores Armor\002";
-			break;
+		} break;
 		default:
+		{
 			typeName = "None";
-			break;
+		} break;
 	};
 
 	switch (splashType)
 	{
 		case WeaponEffect::SplashRadial:
+		{
 			// Red
 			splashTypeValue = "\006Unsafe\002";
-			break;
+		} break;
 		case WeaponEffect::SplashEnemy:
+		{
 			// Green
 			splashTypeValue = "\007Safe\002";
-			break;
+		} break;
 		case WeaponEffect::Unknown_Crash:
+		{
 			// Green
-			splashTypeValue = "\007Ally Safe\002";
-			break;
+			splashTypeValue = "\007Ally Safe\002"; 
+		} break;
 		case WeaponEffect::SplashAir:
-			// Yellow
+		{	// Yellow
 			splashTypeValue = "\003Air Only\002";
-			break;
+		} break;
 		default:
+		{
 			// White
 			splashTypeValue = "\004Normal Hit\002";
-			break;
+		} break;
 	};
 
 	std::vector<std::string> targetFlags;
 	if (weapons_dat::TargetFlags[weaponId].ground)
+	{
 		targetFlags.push_back("Ground");
+	}
 	if (weapons_dat::TargetFlags[weaponId].air)
+	{
 		targetFlags.push_back("Air");
+	}
 	if (weapons_dat::TargetFlags[weaponId].mechanical || weapons_dat::TargetFlags[weaponId].orgOrMech)
+	{
 		targetFlags.push_back("Mechanical");
+	}
 	if (weapons_dat::TargetFlags[weaponId].organic || weapons_dat::TargetFlags[weaponId].orgOrMech)
+	{
 		targetFlags.push_back("Organic");
+	}
 	if (weapons_dat::TargetFlags[weaponId].nonBuilding)
+	{
 		targetFlags.push_back("Not Building");
+	}
 	if (weapons_dat::TargetFlags[weaponId].nonRobotic)
+	{
 		targetFlags.push_back("Not Robotic");
+	}
 	if (weapons_dat::TargetFlags[weaponId].terrain)
+	{
 		targetFlags.push_back("Terrain");
+	}
 
 	std::string targetFlagsText = formatStringVector(targetFlags);
 
@@ -188,7 +214,10 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex)
 		if (bonusDamage > 0) text += "+" + std::to_string(damageFactor * bonusDamage);
 	}
 
-	if (!extended && weaponId == WeaponId::HaloRockets) text += " " + std::string(perRocketStr);
+	if (!extended && weaponId == WeaponId::HaloRockets)
+	{
+		text += " " + std::string(perRocketStr);
+	}
 
 	// Cooldown
 	std::string modifierColor = attackCdModifier > 0 ? "\006" : attackCdModifier < 0 ? "\007" : "\002";
@@ -232,10 +261,16 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex)
 			ss << minRange << "-";
 		}
 		ss << range;
-		if (bonusRange > 0) ss << "+" << bonusRange;
+		if (bonusRange > 0)
+		{
+			ss << "+" << bonusRange;
+		}
 		text += ss.str();
 	}
-	else text += "Melee";
+	else
+	{
+		text += "Melee";
+	}
 
 	// Target
 	text += "\nTargets: " + targetFlagsText;
@@ -267,7 +302,7 @@ const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex)
 namespace hooks
 {
 
-	//Returns the C-string for the tooltip text of the unit's weapon icon.
+	// Returns the C-string for the tooltip text of the unit's weapon icon.
 	const char* getWeaponTooltipString(u8 weaponId, CUnit* unit)
 	{
 		return getDamageTooltipString(weaponId, unit, weapons_dat::Label[weaponId]);
@@ -354,7 +389,7 @@ namespace hooks
 
 		const u16 labelId = upgrades_dat::Label[units_dat::ArmorUpgrade[unit->id]];
 		const char* armorUpgradeName = statTxtTblNew->getString(labelId);
-		const char* armorStr = statTxtTblNew->getString(778);						//"Armor:"
+		const char* armorStr = statTxtTblNew->getString(778); // "Armor:"
 
 		const u8 baseArmor = units_dat::ArmorAmount[unit->id];
 		const u8 bonusArmor = unit->getArmorBonus();
@@ -368,25 +403,30 @@ namespace hooks
 		switch (unitSize)
 		{
 			case 1:
+			{
 				// Teal
 				sizeText = "\017Small\002";
-				break;
+			} break;
 			case 2:
+			{
 				// Yellow
 				sizeText = "\003Medium\002";
-				break;
+			} break;
 			case 3:
+			{
 				// Orange
 				sizeText = "\021Large\002";
-				break;
+			} break;
 			case 4:
+			{
 				// Red
 				sizeText = "\006Titanic\002";
-				break;
+			} break;
 			default:
+			{
 				// White
 				sizeText = "\004Unknown\002";
-				break;
+			} break;
 		}
 
 		std::stringstream ss;
@@ -537,28 +577,50 @@ namespace hooks
 
 		std::vector<std::string> flags;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
+		{
 			flags.push_back("Structure");
+		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::ProducesUnits)
+		{
 			flags.push_back("Factory");
+		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Addon)
+		{
 			flags.push_back("Addon");
+		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
+		{
 			flags.push_back("Worker");
+		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Hero)
+		{
 			flags.push_back("Hero");
+		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Invincible)
+		{
 			flags.push_back("Invincible");
+		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic)
+		{
 			flags.push_back("Organic");
+		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Mechanical)
+		{
 			flags.push_back("Mechanical");
+		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::RoboticUnit)
+		{
 			flags.push_back("Robotic");
+		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Detector)
+		{
 			flags.push_back("Detector");
+		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::CreepBuilding
 			|| (unit->id == UnitId::ZergBactalisk && unit->status & UnitStatus::Burrowed))
+		{
 			flags.push_back("Spreads Creep");
+		}
 
 		std::string flag = formatStringVector(flags);
 
@@ -569,11 +631,27 @@ namespace hooks
 		text += "\nPlane: " + plane;
 		text += "\nMove Speed: " + movementSpeed;
 		text += "\nStatus: " + status;
-		if (extended) text += "\nFlags: " + flag;
-		if (extended && accel != 1) text += "\nAcceleration: " + acceleration;
-		if (extended) text += "\nTurn Rate: " + turnRate;
-		if (extended) text += "\nSight Range: " + std::to_string(sightRange);
-		if (extended && transportSpace != 255) text += "\nTransport Space: " + std::to_string(transportSpace);
+
+		if (extended)
+		{
+			text += "\nFlags: " + flag;
+		}
+		if (extended && accel != 1)
+		{
+			text += "\nAcceleration: " + acceleration;
+		}
+		if (extended)
+		{
+			text += "\nTurn Rate: " + turnRate;
+		}
+		if (extended)
+		{
+			text += "\nSight Range: " + std::to_string(sightRange);
+		}
+		if (extended && transportSpace != 255)
+		{
+			text += "\nTransport Space: " + std::to_string(transportSpace);
+		}
 
 		if (!extended)
 		{
@@ -585,15 +663,12 @@ namespace hooks
 		return buffer;
 	}
 
-
-	//Returns the C-string for the tooltip text of the plasma shield icon.
+	// Returns the C-string for the tooltip text of the plasma shield icon.
 	const char* getShieldTooltipString(CUnit* unit)
 	{
-		//Default StarCraft behavior
-
 		const u16 labelId = upgrades_dat::Label[UpgradeId::ProtossPlasmaShields];
 		const char* shieldUpgradeName = statTxtTblNew->getString(labelId);
-		const char* shieldStr = statTxtTblNew->getString(779);					 //"Shields:"
+		const char* shieldStr = statTxtTblNew->getString(779); // "Shields:"
 
 		u8 shieldUpgradeLevel = scbw::getUpgradeLevel(unit->playerId, UpgradeId::ProtossPlasmaShields);
 
@@ -606,13 +681,11 @@ namespace hooks
 		return buffer;
 	}
 
-	//Returns the C-string for the tooltip text of the Interceptor icon (Carriers),
-	//Scarab icon (Reavers), Nuclear Missile icon (Nuclear Silos), and Spider Mine
-	//icon (Vultures).
+	// Returns the C-string for the tooltip text of the Interceptor icon (Carriers),
+	// Scarab icon (Reavers), Nuclear Missile icon (Nuclear Silos), and Spider Mine
+	// icon (Vultures).
 	const char* getSpecialTooltipString(u16 iconUnitId, CUnit* unit)
 	{
-		//Default StarCraft behavior
-
 		if (iconUnitId == UnitId::ProtossSteward)
 		{
 			return getDamageTooltipString(WeaponId::PulseCannon, unit, 791);				// "Interceptors"
@@ -636,7 +709,5 @@ namespace hooks
 
 		// Should never reach here
 		return "";
-
 	}
-
-} //hooks
+}
