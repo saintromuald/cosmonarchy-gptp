@@ -142,7 +142,7 @@ void hydra_unit_ai(CUnit* unit)
 	{
 		auto enemyUnitsHealth = 0;
 		auto alliedUnitsHealth = 0;
-		bool alliedBuildings = false;
+		bool alliedTownHalls = false;
 		hydraFinderLoop(unit, unit->sprite->position, AIStarsovereignAbilSeekRange,
 			CFlags::NotSelf | CFlags::NoAir, {}, [&](CUnit* u)
 		{
@@ -152,15 +152,15 @@ void hydra_unit_ai(CUnit* unit)
 			}
 			if (scbw::isAlliedTo(unit->playerId, u->playerId))
 			{
-				if (units_dat::BaseProperty[u->id] & UnitProperty::Building)
+				if (units_dat::BaseProperty[u->id] & UnitProperty::ResourceDepot)
 				{
-					alliedBuildings = true;
+					alliedTownHalls = true;
 					return;
 				}
 				alliedUnitsHealth += (u->hitPoints + u->shields) / 256;
 			}
 		});
-		if (!alliedBuildings && enemyUnitsHealth >= 2000
+		if (!alliedTownHalls && enemyUnitsHealth >= 2000
 			&& alliedUnitsHealth < 2000
 			&& (unit->hitPoints + unit->shields) * 2 >=	(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id]))
 		{
