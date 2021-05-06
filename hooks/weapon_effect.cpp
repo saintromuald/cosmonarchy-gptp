@@ -4,6 +4,7 @@
 #include <SCBW/api.h>
 #include "hooks/weapons/wpnspellhit.h"
 #include "globals.h"
+#include "weapons/weapon_damage.h"
 #include "limits/ccmu.h"
 
 namespace
@@ -637,5 +638,20 @@ namespace hooks
 				hooks::LockdownHit(target, LobotomyMineLockdownTime, bullet);
 			}
 		}
+	}
+
+	s32 irradiateUnitDamageProc(CUnit* target, CUnit* irradiated)
+	{		
+		if (!(units_dat::BaseProperty[target->id] & UnitProperty::Building)
+			&& target->id != UnitId::ZergLarva
+			&& target->id != UnitId::ZergEgg
+			&& target->id != UnitId::ZergLurkerEgg
+			&& (!(target->status & UnitStatus::Burrowed) || target == irradiated)
+			&& (target->status & UnitStatus::InTransport || helper::isTargetWithinMinRange(irradiated, 32u, target)) )
+		{
+			weaponDamageHook((weapons_dat::DamageAmount[WeaponId::Irradiate] << 8) / weapons_dat::Cooldown[WeaponId::Irradiate],
+				target, WeaponId::Irradiate, irradiated->irradiatedBy, irradiated->irradiatePlayerId, 0, 1 );
+		}
+		return 0;
 	}
 }
