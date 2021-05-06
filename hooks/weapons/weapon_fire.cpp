@@ -778,6 +778,7 @@ namespace hooks
 			);
 			if (collisionTarget != nullptr)
 			{
+				UnitExt* unitExt = globals.GetUnitExt(collisionTarget);
 				if (bullet->weaponType == WeaponId::PenumbraErebolShockCannon
 					|| bullet->weaponType == WeaponId::ClaymoreHarpoonRailgun)
 				{
@@ -790,15 +791,15 @@ namespace hooks
 				if (bullet->weaponType == WeaponId::PenumbraErebolShockCannon)
 				{
 					// Penumbra behavior
-					scbw::createThingy(644, bullet->position.x, bullet->position.y, bullet->srcPlayer);
+					scbw::createThingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					helper::weaponBulletShot(collisionTarget, bullet, 2);
 				}
 				if (bullet->weaponType == WeaponId::ClaymoreHarpoonRailgun)
 				{
 					// Claymore - Kelvin Munitions - Slow targets
-					if (!(scbw::get_generic_value(collisionTarget, ValueId::KelvinMunitionsSlowValue)))
+					if (!unitExt->values[ValueKelvinMunitionsSlow])
 					{
-						scbw::set_generic_value(collisionTarget, ValueId::KelvinMunitionsSlowValue, 1);
+						unitExt->values[ValueKelvinMunitionsSlow] = 1;
 					}
 				}
 				else
