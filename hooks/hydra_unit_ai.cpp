@@ -43,8 +43,7 @@ void hydra_unit_ai(CUnit* unit)
 
 	if (unit->id == UnitId::TerranApostle)
 	{
-		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256) &&
-			unitExt->timers[TimerAI_Lazarus] == 0)
+		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256) && unitExt->timers[TimerAI_Lazarus] == 0)			
 		{
 			s32 count = 0;
 			hydraFinderLoop(nullptr, unit->position, 128, CFlags::NoBuilding | CFlags::Ally |
@@ -63,10 +62,12 @@ void hydra_unit_ai(CUnit* unit)
 			}
 		}
 	}
+
 	else if (unit->id == UnitId::TerranEidolon)
 	{
 		//mines
 	}
+
 	else if (unit->id == UnitId::TerranSavant)
 	{
 		if (unitExt->timers[TimerAI_Siphon] == 0 && unit->mainOrderId != OrderId::PowerSiphon)
@@ -82,7 +83,7 @@ void hydra_unit_ai(CUnit* unit)
 			});
 			if (count >= 2)
 			{
-				//Savant Power Siphon: If 2 or more allied specialists are nearby, target an enemy specialist within 7 range.
+				// Savant Power Siphon: If 2 or more allied specialists are nearby, target an enemy specialist within 7 range.
 				auto enemy = rangeMatchUnit(unit, 7 * 32, CFlags::Enemy | CFlags::Spellcaster | CFlags::HasEnergy, {});
 				if (enemy != nullptr)
 				{
@@ -92,11 +93,12 @@ void hydra_unit_ai(CUnit* unit)
 			}
 		}
 	}
+
 	else if (unit->id == UnitId::ZergMatraleth)
 	{
-		if (unit->mainOrderId != OrderId::CastParasite &&
-			unit->energy >= techdata_dat::EnergyCost[TechId::Parasite] * 256 &&
-			unitExt->timers[TimerAI_Queen] == 0)
+		if (unit->mainOrderId != OrderId::CastParasite
+			&& unit->energy >= techdata_dat::EnergyCost[TechId::Parasite] * 256
+			&& unitExt->timers[TimerAI_Queen] == 0)
 		{
 			hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Parasite],
 				CFlags::NotSelf, {}, [&](CUnit* u)
@@ -125,7 +127,7 @@ void hydra_unit_ai(CUnit* unit)
 				{
 					return left.second > right.second;
 				});
-				supply /= 2;//true supply is x2 supply
+				supply /= 2;
 				if (supply >= 5)
 				{
 					unit->orderTo(OrderId::CastParasite, group[0].first);
@@ -135,6 +137,7 @@ void hydra_unit_ai(CUnit* unit)
 			});
 		}
 	}
+
 	else if (unit->id == UnitId::ProtossStarSovereign && unitExt->timers[TimerAI_GriefOfAllGods] == 0)
 	{
 		auto enemyUnitsHealth = 0;
@@ -157,8 +160,9 @@ void hydra_unit_ai(CUnit* unit)
 				alliedUnitsHealth += (u->hitPoints + u->shields) / 256;
 			}
 		});
-		if (!alliedBuildings && enemyUnitsHealth >= 2000 && alliedUnitsHealth < 2000 && (unit->hitPoints + unit->shields) * 2 >=
-			(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id]))
+		if (!alliedBuildings && enemyUnitsHealth >= 2000
+			&& alliedUnitsHealth < 2000
+			&& (unit->hitPoints + unit->shields) * 2 >=	(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id]))
 		{
 			unitExt->timers[TimerAI_GriefOfAllGods] = 612;
 			unit->orderComputerCL(OrderId::KhaydarinEclipse);
@@ -166,6 +170,7 @@ void hydra_unit_ai(CUnit* unit)
 			unit->mainOrderState = 0;
 		}
 	}
+
 	else if (unit->id == UnitId::ProtossLanifect)
 	{
 		auto web_state = scbw::get_generic_rust_value(unit, RustId::DisruptionWeb);
@@ -183,7 +188,8 @@ void hydra_unit_ai(CUnit* unit)
 			(f64)(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id] * 256);
 		if (web_state == 0)
 		{
-			if (webs == 0 && unit->energy >= AIWebMinEnergy * 256 && percentage >= AICorsairLifePercentage
+			if (webs == 0 && unit->energy >= AIWebMinEnergy * 256
+				&& percentage >= AICorsairLifePercentage
 				&& allies >= AIWebAllyMinCount && enemies >= AIWebEnemyMinCount)
 			{
 				CUnit* mostSignificant = nullptr;
@@ -222,6 +228,7 @@ void hydra_unit_ai(CUnit* unit)
 			}
 		}
 	}
+
 	/*	else if (unit->id == UnitId::TerranPaladin) {
 			if (unit->mainOrderId != OrderId::Skyfall && scbw::get_generic_timer(unit,RustId::AI_PaladinTimer)) {
 				bool skyfallCondition = false;

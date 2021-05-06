@@ -451,35 +451,45 @@ namespace hooks
 				unit->hitPoints > 0 &&
 				unit->hitPoints / 256 != unit->getMaxHpInGame())
 			{
-				unit->setHp(unit->hitPoints + 4);
+				s32 regen = 4;
+				if (unitExt->values[ValueAlaszilethRegenBoost] > 0)
+				{
+					regen *= 3;
+				}
+				if (unit->id == UnitId::SharedCohort)
+				{
+					regen *= 2;
+				}
+				unit->setHp(unit->hitPoints + regen);
 			}
 
-			// Deliberate healing start
-			s32 tickHeal = 0;
-			// Azazel Innervating Matrices - heal over time
-			if (unit->defensiveMatrixHp != 0)
+			// Deliberate healing
 			{
-				if (unit->hitPoints > 0
-					&& unit->hitPoints / 256 != unit->getMaxHpInGame())
+				s32 tickHeal = 0;
+				// Azazel Innervating Matrices - heal over time
+				if (unit->defensiveMatrixHp != 0)
 				{
-					auto caster = scbw::get_aise_value(unit, nullptr, AiseId::GetMatrixCasterPlayer, 0, 0);
-					if (caster < 8)
+					if (unit->hitPoints > 0
+						&& unit->hitPoints / 256 != unit->getMaxHpInGame())
 					{
-						tickHeal += AzazelDefensiveMatrixHeal;
+						auto caster = scbw::get_aise_value(unit, nullptr, AiseId::GetMatrixCasterPlayer, 0, 0);
+						if (caster < 8)
+						{
+							tickHeal += AzazelDefensiveMatrixHeal;
+						}
 					}
 				}
-			}
-			// Akistrokor - Enthralling Assault HP regeneration
-			if (unitExt->timers[TimerEnthrallingAssaultHeal] > 0)
-			{
-				tickHeal += AkistrokorEnthrallingAssaultHeal;
-			}
+				// Akistrokor - Enthralling Assault HP regeneration
+				if (unitExt->timers[TimerEnthrallingAssaultHeal] > 0)
+				{
+					tickHeal += AkistrokorEnthrallingAssaultHeal;
+				}
 
-			if (tickHeal)
-			{
-				unit->heal(tickHeal);
+				if (tickHeal)
+				{
+					unit->heal(tickHeal);
+				}
 			}
-			// Deliberate healing end
 
 			// Last Orders - Aurora passive
 			if (unit->id == UnitId::ProtossAurora)

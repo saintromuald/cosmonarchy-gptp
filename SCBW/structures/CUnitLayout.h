@@ -234,7 +234,7 @@ enum ExtValueId
 	ValueLazarusAgentApostleSrc,
 	ValueLurkerPickTarget,
 	ValueTurretParentLink,
-
+	ValueAlaszilethRegenBoost,
 	ValueCount,
 };
 
