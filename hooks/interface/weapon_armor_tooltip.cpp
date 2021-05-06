@@ -9,7 +9,6 @@
 #include <Windows.h>
 #include <Utils/captivating_claws.h>
 
-
 char buffer[256];
 
 // Returns the special damage multiplier factor for units that don't use the
