@@ -1049,10 +1049,17 @@ namespace hooks
 			unit->updateSpeed();
 		}
 
-		// Permanently Cloaked units recloak after 2 seconds of being out of combat
-		if (scbw::isDecloakable(unit) && unitExt->timers[TimerDecloak] == 1)
+		// Cloaked units recloak after 2 seconds of being out of combat
+		if (unitExt->timers[TimerDecloak] == 1)
 		{
-			helper::AnimCloak(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
+			if (scbw::isDecloakable(unit) && units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak)
+			{
+				helper::AnimCloak(unit, SoundId::Terran_PHOENIX_TPhClo00_WAV);
+			}
+			else
+			{
+				helper::updateVisibility(unit); // didact cloak needs special handling
+			}
 			unitExt->timers[TimerDecloak] = 0;
 		}
 
