@@ -400,70 +400,87 @@ namespace hooks
 		switch (unitId)
 		{
 			case UnitId::ZergHatchery:
+			{
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLair, ignoreIncomplete);
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergHive, ignoreIncomplete);
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
-				break;
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete); 
+			} break;
 
 			case UnitId::ZergLair:
+			{
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergHive, ignoreIncomplete);
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
-				break;
+			} break;
 
 			case UnitId::ZergHive:
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete);
-				break;
+			{
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSire, ignoreIncomplete); 
+			} break;
 
 			case UnitId::ZergCreepColony:
+			{
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSunkenColony, ignoreIncomplete);
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSporeColony, ignoreIncomplete);
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLarvalColony, ignoreIncomplete);
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergOcsalColony, ignoreIncomplete);
-				break;
+			} break;
 
 			case UnitId::ZergIrolIris:
+			{
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergOthstolOviform, ignoreIncomplete);
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlazilArbor, ignoreIncomplete);
-				break;
+			} break;
 
 			case UnitId::ZergOthstolOviform:
+			{
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlazilArbor, ignoreIncomplete);
-				break;
+			} break;
 
 			case UnitId::ZergSpawningPool:
+			{
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergVorvalPond, ignoreIncomplete);
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergNathrokLake, ignoreIncomplete);
-				break;
+			} break;
 
 			case UnitId::ZergHydralDen:
+			{
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergBactalDen, ignoreIncomplete);
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLakizDen, ignoreIncomplete);
-				break;
+			} break;
 
 			case UnitId::ZergMutalSpire:
+			{
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGorgrokApiary, ignoreIncomplete);
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergVithrilHaunt, ignoreIncomplete);
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergGeszithRoost, ignoreIncomplete);
-				break;
+			} break;
 
 			case UnitId::ZergQuazilQuay:
+			{
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKalkathBloom, ignoreIncomplete);
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlmakAntre, ignoreIncomplete);
-				break;
+			} break;
 
 			case UnitId::ZergMatralNest:
+			{
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAkisNest, ignoreIncomplete);
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKonvilNest, ignoreIncomplete);
-				break;
+			} break;
 
 			case UnitId::ZergUltrakCavern:
+			{
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergAlkajChasm, ignoreIncomplete);
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergKeskathGrotto, ignoreIncomplete);
-				break;
+			} break;
 
 			case UnitId::ZergZoryusShroud:
-				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergIsthrathMound, ignoreIncomplete);
-				break;
+			{
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergIsthrathMound, ignoreIncomplete); 
+			} break;
+			
+			default:
+			{
+			}
 		}
 		return unitCount;
 	}
