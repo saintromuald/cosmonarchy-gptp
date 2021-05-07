@@ -968,10 +968,6 @@ namespace hooks
 				}
 				else
 				{
-					/*if (pSrc->id == UnitId::ProtossArbiter && pSrc->pAI) {
-
-						return 0;
-					}*/
 					if (_pIterator->status & UnitStatus::InAir)
 					{
 						v9 = units_dat::AirWeapon[(u16)posY->id] != -126;
