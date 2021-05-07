@@ -371,7 +371,7 @@ namespace hooks
 			{
 				if (unit->shields != maxShields && unit->id != UnitId::scarab && unitExt->combatTimer > 2 * 24)
 				{
-					unit->shields += 10;
+					unit->shields += 11;
 					if (unit->shields > maxShields)
 					{
 						unit->shields = maxShields;
@@ -452,14 +452,10 @@ namespace hooks
 				unit->hitPoints / 256 != unit->getMaxHpInGame() && 
 				unitExt->combatTimer > 2 * 24)
 			{
-				s32 regen = 4;
+				s32 regen = 11; // 1 HP per second
 				if (unitExt->values[ValueAlaszilethRegenBoost] > 0)
 				{
 					regen *= 3;
-				}
-				if (unit->id == UnitId::SharedCohort)
-				{
-					regen *= 2;
 				}
 				unit->setHp(unit->hitPoints + regen);
 			}

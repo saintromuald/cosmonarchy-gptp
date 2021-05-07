@@ -9,19 +9,7 @@ namespace hooks
 	/// Checks whether the unit can attack from inside a bunker.
 	void unitAttackFromInsideBunkerHook(CUnit* unit)
 	{
-		if (unit->id == UnitId::TerranMaverick
-			|| unit->id == UnitId::TerranHarakan
-			|| unit->id == UnitId::TerranCyprian
-			|| unit->id == UnitId::TerranMadcap
-			|| unit->id == UnitId::TerranApostle
-			|| unit->id == UnitId::TerranEidolon
-			|| unit->id == UnitId::TerranSavant
-			|| unit->id == UnitId::ProtossEcclesiast
-			|| unit->id == UnitId::ZergQuazilisk
-			|| unit->id == UnitId::ZergHydralisk
-			|| unit->id == UnitId::ZergBactalisk
-			|| unit->id == UnitId::ZergLakizilisk
-			|| unit->id == UnitId::ZergKeskathalor)
+		if (scbw::unitIsRangedAttacker(unit))
 		{
 			b32 resultApplyCooldown;
 			unit->status |= UnitStatus::HoldingPosition;

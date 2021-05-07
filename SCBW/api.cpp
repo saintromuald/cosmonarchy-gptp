@@ -1814,4 +1814,53 @@ namespace scbw
 			}
 		}
 	}
+
+	bool unitIsRangedAttacker(CUnit* unit)
+	{
+		u16 id = unit->id;
+		// Would be nice to somehow avoid ID hardcode
+		switch (id)
+		{
+			// Prohibited IDs
+			case UnitId::ZergAkistrokor:
+			case UnitId::ZergUltrakor:
+			{
+				return false;
+			} break;
+			// Allowed IDs
+			case UnitId::TerranHarakan:
+			{
+				return true;
+			} break;
+			default:
+			{
+			}
+		}
+
+		u16 groundWeaponId = units_dat::GroundWeapon[id];
+		if (unit->subunit)
+		{
+			groundWeaponId = units_dat::GroundWeapon[unit->subunit->id];
+		}
+		if (groundWeaponId != WeaponId::None)
+		{
+			if (weapons_dat::MaxRange[groundWeaponId] > 32)
+			{
+				return true;
+			}
+		}
+		u16 airWeaponId = units_dat::AirWeapon[id];
+		if (unit->subunit)
+		{
+			airWeaponId = units_dat::AirWeapon[unit->subunit->id];
+		}
+		if (airWeaponId != WeaponId::None)
+		{
+			if (weapons_dat::MaxRange[airWeaponId] > 32)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }
