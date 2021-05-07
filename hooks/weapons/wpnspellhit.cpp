@@ -304,6 +304,7 @@ namespace hooks
 				{
 					u32 damage = helper::getUnitDamageBonus(attacker, weaponId);
 					damage = ((u16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
+					scbw::doDeconstructionDamage(attacker, damage);
 					target->damageWith(
 						weaponId,
 						damage,
@@ -321,6 +322,7 @@ namespace hooks
 			{
 				u32 damage = helper::getUnitDamageBonus(attacker, weaponId);
 				damage = ((u16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
+				scbw::doDeconstructionDamage(attacker, damage);
 				target->damageWith(
 					weaponId,
 					damage,
@@ -328,6 +330,13 @@ namespace hooks
 					attacker->playerId,
 					attacker->currentDirection1,
 					1);
+			}
+
+			// Cloaked Units - Decloak
+			// Cabalist uses silent strike, so the check has to be in weapon damage
+			if (attacker->id != UnitId::ProtossCabalist)
+			{
+				scbw::decloakProc(attacker);
 			}
 		}
 	}
