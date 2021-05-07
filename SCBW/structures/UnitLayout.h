@@ -235,7 +235,7 @@ enum ExtValueId
 	ValueLurkerPickTarget,
 	ValueTurretParentLink,
 	ValueKelvinMunitionsSlow,
-	ValueDiscoveredAttacksDebuff,
+	ValueTertiaryEyes,
 	ValueLarvaType,
 
 	ValueCount,
@@ -307,7 +307,7 @@ enum ExtUnitId
 	UnitDecaySavant,
 	UnitWorshipDemiurge,
 	UnitAttachedAkistrokor,
-	UnitDiscoveredAttacksSiren,
+	UnitTertiaryEyesSiren,
 
 	UnitCount,
 };
@@ -354,6 +354,7 @@ namespace RustId
 		DirgeAttacker,
 		CastRescindMindControl,
 		CastEnthrallingAssault,
+		CastTertiaryEyes,
 	};
 }
 #include "SCBW\enumerations\TechId.h"

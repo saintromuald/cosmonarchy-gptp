@@ -869,6 +869,15 @@ namespace hooks
 					scbw::decloakProc(unit);
 				}
 			} break;
+			case UnitId::TerranSiren:
+			{
+				if (scbw::get_generic_rust_value(unit, RustId::CastTertiaryEyes))
+				{
+					UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
+					targetExt->values[ValueTertiaryEyes] = 1;
+					targetExt->units[UnitTertiaryEyesSiren] = unit;
+				}
+			}
 			default:
 			{
 			}
