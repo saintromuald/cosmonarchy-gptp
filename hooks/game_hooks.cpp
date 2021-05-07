@@ -896,6 +896,7 @@ namespace hooks
 							{
 								return;
 							}
+
 							// Overlays
 							/*
 							if (unit->getOverlay(ImageId::TertiaryEyesOverlay))
