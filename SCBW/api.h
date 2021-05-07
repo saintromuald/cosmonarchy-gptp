@@ -394,7 +394,6 @@ namespace scbw
 	s32 getCreepAdvantage(Unit* unit, u8 weapon = NULL);
 	void setOffsetToParentSpecialOverlay(Image* image);
 	bool isSlowed(Unit* unit);
-	bool isStunned(Unit* unit);
 	void hideAndDisableUnit(Unit* unit);
 	void restoreFunc(Unit* unit);
 	void refreshDebuffs(Unit* unit);

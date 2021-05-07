@@ -957,15 +957,6 @@ namespace scbw
 		}
 	}
 
-	bool isStunned(Unit* unit)
-	{
-		if (unit->maelstromTimer || unit->stasisTimer || unit->lockdownTimer || unit->status & UnitStatus::DoodadStatesThing)
-		{
-			return true;
-		}
-		return false;
-	}
-
 	void adjustAddonX(u16 addonId, u16 sourceId, u16& x)
 	{
 		if (addonId == UnitId::TerranQuarry)
