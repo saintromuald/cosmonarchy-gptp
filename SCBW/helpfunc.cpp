@@ -2,37 +2,37 @@
 
 namespace helpers {
 
-	const uint32 Func_FixTargetLocation =						0x00401FA0;
-	const uint32 Func_HideDialog =								0x00418700;
-	const uint32 Func_Sub_42D9A0_IsVisible =					0x0042D9A0;
-	const uint32 Func_SetRepulseAngle =						0x00453300;
-	const uint32 Func_RemoveRepulseTile =						0x004533D0;
-	const uint32 Func_ApplySpeedUpgradeFromUnitType =			0x00454370;
-	const uint32 Func_Sub_463040_AI_PlaceGuard =				0x00463040;
-	const uint32 Func_Sub_469EC0_SortLeftRight =				0x00469EC0;
-	const uint32 Func_Sub_469F60_SortLeftRight =				0x00469F60;
-	const uint32 Func_SortUnit =								0x0046A300;
-	const uint32 Func_UpdateUnitOrderFinder =					0x0046A3A0;
-	const uint32 Func_Sub_476D30_DoWeaponIscript =				0x00476D30;
-	const uint32 Func_Sub_47CB90_NameTooLongToBePutHere =		0x0047CB90;
-	const uint32 Func_IncrementUnitScores =					0x00488BF0;
-	const uint32 Func_IncrementUnitScoresEx =					0x00488D50;
-	const uint32 Func_ClearUnitTarget =						0x0048AAC0;
-	const uint32 Func_PlayBuildingLiftoffSound =				0x0048F8A0;
-	const uint32 Func_GetFlingyHaltDistance =					0x00494F90;
-	const uint32 Func_Sub_497480_GetSpriteUnderlay =			0x00497480;
-	const uint32 Func_Sub_49A7F0_CompareUnitRank =				0x0049A7F0;
-	const uint32 Func_Sub_49DE50_AirTrainingProc =				0x0049DE50;
-	const uint32 Func_Sub_49DEA0_AirTrainingProc =				0x0049DEA0;
-	const uint32 Func_Sub_49EFA0_ReadUnitsArray =				0x0049EFA0;
-	const uint32 Func_Sub_49F7A0_ResetOrdersUnitsDAT =			0x0049F7A0;
-	const uint32 Func_Sub_4A1E50_Orders_AIPatrol =				0x004A1E50;
-	const uint32 Func_ToggleUnitPath =							0x004E42A0;
-	const uint32 Func_Sub_4E5F30_GetRightClickActionOrder =	0x004E5F30;
-	const uint32 Func_CreateUnitSelection =					0x004E6180;
-	const uint32 Func_DestroyUnitSelection =					0x004E6290;
-	const uint32 Func_Sub_4EBE10_RefreshSprite =				0x004EBE10;
-	const uint32 Func_Sub_4F3B70_DestroyPowerupImageOverlay =	0x004F3B70;
+	const u32 Func_FixTargetLocation =						0x00401FA0;
+	const u32 Func_HideDialog =								0x00418700;
+	const u32 Func_Sub_42D9A0_IsVisible =					0x0042D9A0;
+	const u32 Func_SetRepulseAngle =						0x00453300;
+	const u32 Func_RemoveRepulseTile =						0x004533D0;
+	const u32 Func_ApplySpeedUpgradeFromUnitType =			0x00454370;
+	const u32 Func_Sub_463040_AI_PlaceGuard =				0x00463040;
+	const u32 Func_Sub_469EC0_SortLeftRight =				0x00469EC0;
+	const u32 Func_Sub_469F60_SortLeftRight =				0x00469F60;
+	const u32 Func_SortUnit =								0x0046A300;
+	const u32 Func_UpdateUnitOrderFinder =					0x0046A3A0;
+	const u32 Func_Sub_476D30_DoWeaponIscript =				0x00476D30;
+	const u32 Func_Sub_47CB90_NameTooLongToBePutHere =		0x0047CB90;
+	const u32 Func_IncrementUnitScores =					0x00488BF0;
+	const u32 Func_IncrementUnitScoresEx =					0x00488D50;
+	const u32 Func_ClearUnitTarget =						0x0048AAC0;
+	const u32 Func_PlayBuildingLiftoffSound =				0x0048F8A0;
+	const u32 Func_GetFlingyHaltDistance =					0x00494F90;
+	const u32 Func_Sub_497480_GetSpriteUnderlay =			0x00497480;
+	const u32 Func_Sub_49A7F0_CompareUnitRank =				0x0049A7F0;
+	const u32 Func_Sub_49DE50_AirTrainingProc =				0x0049DE50;
+	const u32 Func_Sub_49DEA0_AirTrainingProc =				0x0049DEA0;
+	const u32 Func_Sub_49EFA0_ReadUnitsArray =				0x0049EFA0;
+	const u32 Func_Sub_49F7A0_ResetOrdersUnitsDAT =			0x0049F7A0;
+	const u32 Func_Sub_4A1E50_Orders_AIPatrol =				0x004A1E50;
+	const u32 Func_ToggleUnitPath =							0x004E42A0;
+	const u32 Func_Sub_4E5F30_GetRightClickActionOrder =	0x004E5F30;
+	const u32 Func_CreateUnitSelection =					0x004E6180;
+	const u32 Func_DestroyUnitSelection =					0x004E6290;
+	const u32 Func_Sub_4EBE10_RefreshSprite =				0x004EBE10;
+	const u32 Func_Sub_4F3B70_DestroyPowerupImageOverlay =	0x004F3B70;
 
 	//464930
 	void disconnectAddOn_Sub464930(Unit* unit) {
