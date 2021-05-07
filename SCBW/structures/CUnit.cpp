@@ -307,15 +307,12 @@ bool CUnit::hasWeapon() const
 //Identical to function @ 0x004020B0
 bool CUnit::isFrozen() const
 {
-
 	assert(this);
-
 	return
-		this->status & UnitStatus::DoodadStatesThing ||
-		this->lockdownTimer ||
-		this->stasisTimer ||
-		this->maelstromTimer;
-
+		this->status & UnitStatus::DoodadStatesThing
+		|| this->lockdownTimer
+		|| this->stasisTimer
+		|| this->maelstromTimer;
 }
 
 extern const u32 Func_IsRemorphingBuilding = 0x0045CD00;

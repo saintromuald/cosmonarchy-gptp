@@ -190,9 +190,10 @@ struct CorpseFinder
 					case SpriteId::Corpse_ProtossBuildingSmall:
 					case SpriteId::Corpse_ZergBuildingLarge:
 					case SpriteId::Corpse_ZergBuildingSmall:
+					{
 						corpsesX.push_back(ls);
 						corpsesY.push_back(ls);
-						break;
+					} break;
 				}
 			}
 		}
@@ -519,7 +520,7 @@ namespace hooks
 			case UnitId::ProtossLanifect:
 			{
 				// Disruption Field - Lanifect ability
-				auto web = unitExt->units[UnitAttachedDisruptionWeb];
+				CUnit* web = unitExt->units[UnitAttachedDisruptionWeb];
 				if (scbw::get_generic_rust_value(unit, RustId::DisruptionWeb))
 				{
 					if (web == nullptr)
@@ -536,12 +537,18 @@ namespace hooks
 						}
 					}
 					else
-					{
-						// web attached
-						web->position = unit->sprite->position;
-						web->sprite->position = unit->sprite->position;
-						scbw::decloakProc(unit);
-					}
+						if (unit->isFrozen())
+						{
+							scbw::set_generic_rust_value(unit, RustId::DisruptionWeb, 0);
+							web->remove();
+						}
+						else
+						{
+							// web attached
+							web->position = unit->sprite->position;
+							web->sprite->position = unit->sprite->position;
+							scbw::decloakProc(unit);
+						}
 				}
 				else
 				{
