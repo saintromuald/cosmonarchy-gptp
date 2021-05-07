@@ -249,7 +249,7 @@ namespace hooks
 					if (bullet->orderSignal & 0x80)
 					{
 						bullet->orderSignal &= ~0x80;
-						globals.force_remove_multihit_bullet(bullet);
+						globals.remove_multihit_bullet(bullet);
 					}
 				}
 			}

@@ -356,7 +356,7 @@ namespace hooks
 				{
 					// Kalkaleth missile spawn position
 					auto bullet = scbw::setMissileSourcePos(unit, weaponId, ValueKalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
-					globals.force_remove_multihit_bullet(bullet);
+					globals.remove_multihit_bullet(bullet);
 				}
 				else if (weaponId == WeaponId::KeskathalorScreamingVenom)
 				{
@@ -885,7 +885,7 @@ namespace hooks
 				//				scbw::print("NoJump");
 				if (a1->weaponType == WeaponId::GladiusPlasmaFlurry)
 				{
-					globals.force_remove_multihit_bullet(a1);
+					globals.remove_multihit_bullet(a1);
 				}
 				v5 = a1->attackTarget.unit;
 				a1->behaviourTypeInternal = 5;
@@ -1125,6 +1125,7 @@ namespace hooks
 				*bulletCount -= 1;
 			}
 		}
+		globals.remove_multihit_bullet(bullet);
 		return bullet;
 	}
 
