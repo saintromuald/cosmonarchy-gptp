@@ -384,7 +384,7 @@ void Globals::frameHook()
 			if (revived)
 			{
 				UnitExt* revivedExt = globals.GetUnitExt(revived);
-				revived->setHp(units_dat::MaxHitPoints[revived->id] / 2);
+				revived->setHp(ApostleLazarusAgentHeal * agent.stacks);
 				revived->energy = agent.energy;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
 				revivedExt->values[ValueLazarusNoHeal] = 1;
@@ -708,7 +708,7 @@ void Globals::add_multihit_empty_bullet(CBullet* bullet, s32 divider)
 	multihitBullets.push_back(gb);
 }
 
-void Globals::initLazarusAgent(s32 x, s32 y, u8 player, u32 unitId, u32 energy, CUnit* unit)
+void Globals::initLazarusAgent(s32 x, s32 y, u8 player, u32 unitId, u32 energy, u32 stacks, CUnit* unit)
 {
 	ApostleAgent a;
 	a.playerId = player;
@@ -717,6 +717,7 @@ void Globals::initLazarusAgent(s32 x, s32 y, u8 player, u32 unitId, u32 energy, 
 	a.timer = 48;
 	a.unitId = unitId;
 	a.energy = energy;
+	a.stacks = stacks;
 	a.creator = unit;
 	apostleAgents.push_back(a);
 }

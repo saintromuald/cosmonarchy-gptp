@@ -79,6 +79,7 @@ public:
 	u32 unitId;
 	u8 playerId;
 	u32 energy;
+	u32 stacks;
 	CUnit* creator;
 };
 
@@ -166,7 +167,7 @@ public:
 	void add_multihit_empty_bullet(CBullet* bullet, s32 divider);
 	void add_bullet_multihit(CBullet* bullet, CUnit* target);
 	void add_incremental_bullet_multihit(CBullet* bullet, CUnit* target);
-	void initLazarusAgent(s32 x, s32 y, u8 player, u32 unitId, u32 energy, CUnit* unit);
+	void initLazarusAgent(s32 x, s32 y, u8 player, u32 unitId, u32 energy, u32 stacks, CUnit* unit);
 	void clear_ptr_in_apostle_table(CUnit* unit);
 	void remove_multihit_bullet(CBullet* bullet);
 	s32 get_divider(CBullet* bullet);
