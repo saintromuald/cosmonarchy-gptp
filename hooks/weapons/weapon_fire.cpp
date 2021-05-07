@@ -630,7 +630,7 @@ namespace hooks
 				}
 			}
 		}
-		if (time == 0 || bullet->moveTarget.pt.x == bullet->position.x && bullet->moveTarget.pt.y == bullet->position.y)
+		if (time == 0 || (bullet->moveTarget.pt.x == bullet->position.x && bullet->moveTarget.pt.y == bullet->position.y))
 		{
 			bEnd = true;
 		}
@@ -819,6 +819,10 @@ namespace hooks
 			target = bullet->attackTarget.unit;
 			bullet->behaviourTypeInternal = 5;
 
+			if (bullet->weaponType == WeaponId::ArchitectDispersiveSalvo)
+			{
+				globals.remove_multihit_bullet(bullet);
+			}
 			if (target != nullptr)
 			{
 				bullet->attackTarget.pt.x = target->sprite->position.x;
