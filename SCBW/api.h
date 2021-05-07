@@ -415,5 +415,5 @@ namespace scbw
 	bool unitCanNuke(CUnit* unit);
 	bool unitIsTrap(CUnit* unit);
 	bool isSharedLarvaMorph(u16 id);
-	bool unitIsRangedAttacker(u16 id);
+	bool unitIsRangedAttacker(CUnit* unit);
 }
