@@ -1182,12 +1182,14 @@ namespace hooks
 				&& demiurgeExt == nullptr)
 			{
 				unitExt->values[ValueWorshipStack] = 0;
+				unitExt->timers[TimerGodsMadeFlesh] = 0;
 				unit->giveTo(unitExt->values[ValueWorshipOriginalPlayer]);
 			}
 		}
 
 		// Demiurge - Gods Made Flesh - kill unit when the effect ends
-		if (unitExt->timers[TimerGodsMadeFlesh] == 1)
+		if (unitExt->timers[TimerGodsMadeFlesh] == 1
+			&& unitExt->units[UnitWorshipDemiurge])
 		{
 			unit->remove();
 		}
