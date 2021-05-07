@@ -738,6 +738,7 @@ namespace scbw
 			case UnitId::ZergOthstolOviform:
 			case UnitId::ZergAlazilArbor:
 			case UnitId::ZergLarvalColony:
+			case UnitId::ZergOcsalColony:
 			case UnitId::ZergSporeColony:
 			case UnitId::ZergSunkenColony:
 			case UnitId::ZergVorvalPond:

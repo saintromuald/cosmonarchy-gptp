@@ -418,6 +418,7 @@ namespace hooks
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSunkenColony, ignoreIncomplete);
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergSporeColony, ignoreIncomplete);
 				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergLarvalColony, ignoreIncomplete);
+				unitCount += BuildingHelper::getNumberOfUnitType(unit, UnitId::ZergOcsalColony, ignoreIncomplete);
 				break;
 
 			case UnitId::ZergIrolIris:
