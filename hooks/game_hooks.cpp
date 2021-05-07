@@ -893,6 +893,7 @@ namespace hooks
 			}
 		}
 
+		/*
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Addon)
 		{
 			if (unit->connectedUnit != nullptr
@@ -906,6 +907,7 @@ namespace hooks
 				unit->sprite->playIscriptAnim(IscriptAnimation::WorkingToIdle);
 			}
 		}
+		*/
 
 		// Warp Flash overlay: begin 3 seconds before the graphic finishes warping in
 		/*
