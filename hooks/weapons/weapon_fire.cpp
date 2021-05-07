@@ -330,7 +330,7 @@ namespace hooks
 				// Tertiary Eyes - Siren behavior
 				else if (weaponId == WeaponId::SirenCharybdalRifle)
 				{
-					fireMultiple(unit, unitExt, weaponId, 1 + unitExt->unitVectors[UnitVectorTertiaryEyesSiren].size(), Flags::Enemy);
+					fireMultiple(unit, unitExt, weaponId, 1 + unitExt->unitVectors[UnitVectorTertiaryEyes].size(), Flags::Enemy);
 				}
 				// Titan Reactors - Heracles behavior - Refresh timer on attack and add stack
 				if (weaponId == WeaponId::HeraclesJavelinCannons)

@@ -906,10 +906,18 @@ namespace hooks
 								pickedUnit->removeOverlay(ImageId::TertiaryEyesOverlay);
 							}
 							*/
-							auto& vec = unitExt->unitVectors[UnitVectorTertiaryEyesSiren];
-							if (std::find(vec.begin(), vec.end(), unit) == vec.end())
+
+							auto& victims = unitExt->unitVectors[UnitVectorTertiaryEyes];
+							if (std::find(victims.begin(), victims.end(), unit) == victims.end())
 							{
-								vec.push_back(unit);
+								victims.push_back(pickedUnit);
+							}
+
+							UnitExt* pickedExt = globals.GetUnitExt(pickedUnit);
+							auto& sources = pickedExt->unitVectors[UnitVectorTertiaryEyesSirens];
+							if (std::find(sources.begin(), sources.end(), unit) == sources.end())
+							{
+								sources.push_back(unit);
 							}
 						});
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::TertiaryEyes] * 256);

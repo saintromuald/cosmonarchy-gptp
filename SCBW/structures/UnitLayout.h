@@ -315,7 +315,8 @@ enum ExtUnitVectorId
 	UnitVectorCaptivatingClaws,
 	UnitVectorPhaseLinkClarions,
 	UnitVectorPhaseLink,
-	UnitVectorTertiaryEyesSiren,
+	UnitVectorTertiaryEyes,
+	UnitVectorTertiaryEyesSirens,
 
 	UnitVectorCount,
 };
