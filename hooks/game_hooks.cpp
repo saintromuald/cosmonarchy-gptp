@@ -899,7 +899,7 @@ namespace hooks
 							*/
 							UnitExt* pickedExt = globals.GetUnitExt(pickedUnit);
 							auto& vec = pickedExt->unitVectors[UnitVectorTertiaryEyesSiren];
-							if (std::find(vec.begin(), vec.end(), unit) != vec.end())
+							if (std::find(vec.begin(), vec.end(), unit) == vec.end())
 							{
 								vec.push_back(unit);
 							}
