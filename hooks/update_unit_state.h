@@ -1,5 +1,5 @@
 #pragma once
-#include <SCBW/structures/CUnit.h>
+#include <SCBW/structures/Unit.h>
 
 namespace hooks {
 	void updateUnitEnergy(CUnit* unit);			// 004EB4B0

@@ -2,7 +2,7 @@
 #pragma once
 #include "../SCBW/UnitFinder.h"
 #pragma once
-#include "../SCBW/structures/CUnit.h"
+#include "../SCBW/structures/Unit.h"
 #include "../SCBW/api.h"
 
 namespace AI

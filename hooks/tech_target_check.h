@@ -1,5 +1,5 @@
 //Header file for the Tech Target Check hook module.
-#include <SCBW/structures/CUnit.h>
+#include <SCBW/structures/Unit.h>
 
 namespace hooks {
 

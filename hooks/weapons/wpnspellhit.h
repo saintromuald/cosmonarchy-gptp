@@ -1,7 +1,7 @@
 //The header file for the Weapon/Spell hit hook module.
 #pragma once
-#include <SCBW/structures/CUnit.h>
-#include <SCBW/structures/CBullet.h>
+#include <SCBW/structures/Unit.h>
+#include <SCBW/structures/Bullet.h>
 #include "SCBW\api.h"
 namespace hooks
 {

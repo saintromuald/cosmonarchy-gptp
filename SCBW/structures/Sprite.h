@@ -1,8 +1,8 @@
-//Based on BWAPI's BW/CSprite.h
+//Based on BWAPI's BW/Sprite.h
 
 #pragma once
 #include "common.h"
-#include "CList.h"
+#include "List.h"
 #include "../enumerations.h"
 #pragma pack(1)
 
@@ -79,9 +79,9 @@ struct CSprite
 	/*0x0D*/ u8        elevationLevel;
 	/*0x0E*/ u8        flags;				// Use CSprite_Flags
 	/*0x0F*/ u8        selectionTimer;
-	/*0x10*/ u16       index;				//u32->u16 based on BWAPI/Source/BW/CSprite.h
-	/*0x12*/ u8		   width;		//based on BWAPI/Source/BW/CSprite.h
-	/*0x13*/ u8		   height;		//based on BWAPI/Source/BW/CSprite.h
+	/*0x10*/ u16       index;				//u32->u16 based on BWAPI/Source/BW/Sprite.h
+	/*0x12*/ u8		   width;		//based on BWAPI/Source/BW/Sprite.h
+	/*0x13*/ u8		   height;		//based on BWAPI/Source/BW/Sprite.h
 	/*0x14*/ Point16   position;
 	/*0x18*/ CImage* mainGraphic;    // officially "pImagePrimary"
 	/*0x1C*/ CList<CImage> images;      // officially "pImageHead" and "pImageTail"

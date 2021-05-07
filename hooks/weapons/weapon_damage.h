@@ -1,5 +1,5 @@
 #pragma once
-#include "../../SCBW/structures/CUnit.h"
+#include "../../SCBW/structures/Unit.h"
 
 void augurSacrifice(CUnit* target);
 namespace hooks {

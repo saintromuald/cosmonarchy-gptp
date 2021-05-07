@@ -1,4 +1,4 @@
-//Based on BWAPI's BW/CBullet.h
+//Based on BWAPI's BW/Bullet.h
 
 #pragma once
 #include "Target.h"

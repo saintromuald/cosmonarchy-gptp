@@ -1,6 +1,6 @@
 //Header file for the Transfer Tech & Upgrades hook module.
 #pragma once
-#include <SCBW/structures/CUnit.h>
+#include <SCBW/structures/Unit.h>
 
 namespace hooks {
 

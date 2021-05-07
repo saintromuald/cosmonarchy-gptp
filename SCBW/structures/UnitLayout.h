@@ -1,9 +1,9 @@
 //This header file contains the binary layout of the CUnit structure.
-//For the member functions, see CUnit.h
-//Based on BWAPI's BW/CUnit.h
+//For the member functions, see Unit.h
+//Based on BWAPI's BW/Unit.h
 
 #include "Target.h"
-#include "CList.h"
+#include "List.h"
 #include <vector>
 #include <unordered_map>
 

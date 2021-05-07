@@ -18,11 +18,11 @@ const s32 WEAPON_TYPE_COUNT = 130;
 const s32 FLINGY_TYPE_COUNT = 209;
 const s32 IMAGE_TYPE_COUNT = 999;
 const s32 SOUND_TYPE_COUNT = 1144;
-#include "structures/CUnit.h"
-#include "structures/CBullet.h"
-#include "structures/CSprite.h"
-#include "structures/CImage.h"
-#include "structures/COrder.h"
+#include "structures/Unit.h"
+#include "structures/Bullet.h"
+#include "structures/Sprite.h"
+#include "structures/Image.h"
+#include "structures/Order.h"
 #include "structures/Layer.h"
 #include "structures/Player.h" //made into external file to have .cpp
 
@@ -172,7 +172,7 @@ struct UNITDEATHS {
 struct UNITSCORES_I {
 	u32        player[12];
 };
-//Based on http://code.google.com/p/bwapi/source/browse/branches/bwapi4/bwapi/BWAPI/Source/BW/CImage.h
+//Based on http://code.google.com/p/bwapi/source/browse/branches/bwapi4/bwapi/BWAPI/Source/BW/Image.h
 
 struct TEXT {
 	char  textdisplay[218][13];  //[last is text at bottom; ex: "Cheat enabled."]

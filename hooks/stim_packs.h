@@ -1,5 +1,5 @@
 #pragma once
-#include "../SCBW/structures/CUnit.h"
+#include "../SCBW/structures/Unit.h"
 
 namespace hooks {
 	void CMDACT_Stimpack();					//004234D0

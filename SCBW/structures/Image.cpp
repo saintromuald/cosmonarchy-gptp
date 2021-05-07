@@ -1,5 +1,5 @@
-#include "CImage.h"
-#include "CSprite.h"
+#include "Image.h"
+#include "Sprite.h"
 #include <SCBW/api.h>
 #include <SCBW/scbwdata.h>
 #include <cassert>

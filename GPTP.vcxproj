@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Slow Build|Win32">
+      <Configuration>Slow Build</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="HYD Debug|Win32">
       <Configuration>HYD Debug</Configuration>
       <Platform>Win32</Platform>
@@ -28,6 +32,13 @@
     <PlatformToolset>v142</PlatformToolset>
     <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Slow Build|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v142</PlatformToolset>
+    <EnableUnitySupport>false</EnableUnitySupport>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
@@ -46,6 +57,9 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Slow Build|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -62,8 +76,11 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='HYD FastDebug|Win32'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">$(SolutionDir)_Build\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Slow Build|Win32'">$(SolutionDir)_Build\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">_tmp\$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Slow Build|Win32'">_tmp\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Slow Build|Win32'">false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'">
     <SourcePath>$(ProjectDir)\lib_src\;$(VC_SourcePath)</SourcePath>
@@ -78,6 +95,12 @@
     <TargetExt>.qdp</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">
+    <SourcePath>$(ProjectDir)\lib_src\;$(VC_SourcePath)</SourcePath>
+    <IncludePath>$(ProjectDir)\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <TargetName>HYD-GPTP-Release</TargetName>
+    <TargetExt>.qdp</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Slow Build|Win32'">
     <SourcePath>$(ProjectDir)\lib_src\;$(VC_SourcePath)</SourcePath>
     <IncludePath>$(ProjectDir)\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <TargetName>HYD-GPTP-Release</TargetName>
@@ -149,6 +172,42 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>HYDRA;WINDOWS_IGNORE_PACKING_MISMATCH;WIN32;NDEBUG;_WINDOWS;_USRDLL;GPTP_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <MinFilesInUnityFile>10000</MinFilesInUnityFile>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <ModuleDefinitionFile>$(ProjectDir)plugin.def</ModuleDefinitionFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalLibraryDirectories>$(ProjectDir)\Libs\yaml-cpp\include;</AdditionalLibraryDirectories>
+    </Link>
+    <PostBuildEvent>
+      <Command>"$(ProjectDir)post_build_hyd_release.bat"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Slow Build|Win32'">
     <ClCompile>
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
@@ -379,7 +438,9 @@
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='HYD FastDebug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Slow Build|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Slow Build|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
     </ClCompile>
     <ClCompile Include="SCBW\api.cpp" />
     <ClCompile Include="hooks\apply_upgrade_flags.cpp" />
@@ -391,13 +452,13 @@
     <ClCompile Include="graphics\Bitmap.cpp" />
     <ClCompile Include="hooks\bunker_hooks.cpp" />
     <ClCompile Include="hooks\bunker_hooks_inject.cpp" />
-    <ClCompile Include="SCBW\structures\CImage.cpp" />
+    <ClCompile Include="SCBW\structures\Image.cpp" />
     <ClCompile Include="hooks\cloak_nearby_units.cpp" />
     <ClCompile Include="hooks\cloak_nearby_units_inject.cpp" />
     <ClCompile Include="hooks\cloak_tech.cpp" />
     <ClCompile Include="hooks\cloak_tech_inject.cpp" />
-    <ClCompile Include="SCBW\structures\CSprite.cpp" />
-    <ClCompile Include="SCBW\structures\CUnit.cpp" />
+    <ClCompile Include="SCBW\structures\Sprite.cpp" />
+    <ClCompile Include="SCBW\structures\Unit.cpp" />
     <ClCompile Include="AI\spells\dark_swarm.cpp" />
     <ClCompile Include="AI\spells\defensive_matrix.cpp" />
     <ClCompile Include="hooks\detector.cpp" />
@@ -431,7 +492,9 @@
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='HYD FastDebug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Slow Build|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='HYD Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Slow Build|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
     </ClCompile>
     <ClCompile Include="hooks\psi_field_inject.cpp" />
     <ClCompile Include="hooks\psi_field_util.cpp" />
@@ -645,16 +708,16 @@
     <ClInclude Include="hooks\attack_priority.h" />
     <ClInclude Include="graphics\Bitmap.h" />
     <ClInclude Include="hooks\bunker_hooks.h" />
-    <ClInclude Include="SCBW\structures\CBullet.h" />
-    <ClInclude Include="SCBW\structures\CImage.h" />
-    <ClInclude Include="SCBW\structures\CList.h" />
+    <ClInclude Include="SCBW\structures\Bullet.h" />
+    <ClInclude Include="SCBW\structures\Image.h" />
+    <ClInclude Include="SCBW\structures\List.h" />
     <ClInclude Include="hooks\cloak_nearby_units.h" />
     <ClInclude Include="hooks\cloak_tech.h" />
     <ClInclude Include="SCBW\structures\common.h" />
-    <ClInclude Include="SCBW\structures\COrder.h" />
-    <ClInclude Include="SCBW\structures\CSprite.h" />
-    <ClInclude Include="SCBW\structures\CUnit.h" />
-    <ClInclude Include="SCBW\structures\CUnitLayout.h" />
+    <ClInclude Include="SCBW\structures\Order.h" />
+    <ClInclude Include="SCBW\structures\Sprite.h" />
+    <ClInclude Include="SCBW\structures\Unit.h" />
+    <ClInclude Include="SCBW\structures\UnitLayout.h" />
     <ClInclude Include="AI\spells\defensive_matrix.h" />
     <ClInclude Include="hooks\detector.h" />
     <ClInclude Include="graphics\draw_hook.h" />

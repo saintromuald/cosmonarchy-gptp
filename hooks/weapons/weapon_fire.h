@@ -1,6 +1,6 @@
 //Header file for the Weapon Fire hook module.
-#include <SCBW/structures/CUnit.h>
-#include <SCBW/structures/CBullet.h>
+#include <SCBW/structures/Unit.h>
+#include <SCBW/structures/Bullet.h>
 namespace hooks {
 
 	void fireWeaponHook(CUnit* unit, u8 weaponId);
