@@ -282,6 +282,7 @@ namespace hooks
 
 	void MeleeAttackHit(CUnit* attacker)
 	{
+		UnitExt* attackerExt = globals.GetUnitExt(attacker);
 		CUnit* target = attacker->orderTarget.unit;
 		if (target != nullptr)
 		{
@@ -304,7 +305,10 @@ namespace hooks
 				{
 					u32 damage = helper::getUnitDamageBonus(attacker, weaponId);
 					damage = ((u16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
-					scbw::doDeconstructionDamage(attacker, damage);
+					if (attackerExt->values[ValueDeconstruction])
+					{
+						scbw::doDeconstructionDamage(attacker, weaponId);
+					}
 					target->damageWith(
 						weaponId,
 						damage,
@@ -322,7 +326,10 @@ namespace hooks
 			{
 				u32 damage = helper::getUnitDamageBonus(attacker, weaponId);
 				damage = ((u16)damage + weapons_dat::DamageAmount[weaponId]) * 256;
-				scbw::doDeconstructionDamage(attacker, damage);
+				if (attackerExt->values[ValueDeconstruction])
+				{
+					scbw::doDeconstructionDamage(attacker, weaponId);
+				}
 				target->damageWith(
 					weaponId,
 					damage,
