@@ -520,7 +520,7 @@ namespace hooks
 			case UnitId::ProtossLanifect:
 			{
 				// Disruption Field - Lanifect ability
-				CUnit* web = unitExt->units[UnitAttachedDisruptionWeb];
+				Unit* web = unitExt->units[UnitAttachedDisruptionWeb];
 				if (scbw::get_generic_rust_value(unit, RustId::DisruptionWeb))
 				{
 					if (web == nullptr)
