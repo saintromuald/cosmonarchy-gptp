@@ -896,8 +896,7 @@ namespace hooks
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Addon)
 		{
 			if (unit->connectedUnit != nullptr
-//				&& unit->connectedUnit->buildQueue[0] != UnitId::None
-				&& scbw::isStandardTerranUnit(unit->connectedUnit->buildQueue[0]))
+				&& scbw::isStandardTerranUnit(unit->connectedUnit->buildQueue[unit->connectedUnit->buildQueueSlot]))
 			{
 				scbw::print("u");
 				scbw::playWorkAnimation(unit);
