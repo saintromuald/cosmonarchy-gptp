@@ -780,14 +780,14 @@ namespace hooks
 				{
 					globals.add_bullet_multihit(bullet, collisionTarget);
 				}
-				else
+				else if (bullet->weaponType == WeaponId::KalkaliskViscousAcid)
 				{
 					globals.add_incremental_bullet_multihit(bullet, collisionTarget);
 				}
 				if (bullet->weaponType == WeaponId::PenumbraErebolShockCannon)
 				{
 					// Penumbra behavior
-					scbw::createThingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
+					scbw::createAndInitThingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					helper::weaponBulletShot(collisionTarget, bullet, 2);
 				}
 				if (bullet->weaponType == WeaponId::ClaymoreHarpoonRailgun)
