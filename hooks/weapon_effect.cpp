@@ -141,7 +141,7 @@ namespace hooks
 		{
 			helper::weaponBulletShot(guaranteedHit, bullet, 1);
 		}
-		s32 divisor = 1;
+		u8 divisor = 1;
 		if (weaponId == WeaponId::ArchitectDispersiveSalvo)
 		{
 			divisor = globals.get_divider(bullet);

@@ -706,6 +706,7 @@ void Globals::add_multihit_empty_bullet(CBullet* bullet, s32 divider)
 		if (a.bullet == bullet)
 		{
 			a.divider = divider;
+			a.already_hit = {};
 			return;
 		}
 	}

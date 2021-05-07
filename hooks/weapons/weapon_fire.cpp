@@ -816,10 +816,6 @@ namespace hooks
 
 		if (bEnd)
 		{
-			if (/*bullet->weaponType == WeaponId::ViscousAcid || */bullet->weaponType == WeaponId::ArchitectDispersiveSalvo)
-			{
-				globals.remove_multihit_bullet(bullet);
-			}
 			target = bullet->attackTarget.unit;
 			bullet->behaviourTypeInternal = 5;
 
