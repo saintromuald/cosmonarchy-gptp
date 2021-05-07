@@ -85,7 +85,7 @@ namespace
 namespace hooks
 {
 
-	static void fireMultiple(Unit* attacker, UnitExt* attackerExt, u32 weaponId, u32 maxTargets)
+	static void fireMultiple(Unit* attacker, UnitExt* attackerExt, u32 weaponId, u32 maxTargets, u32 flags)
 	{
 		std::set<Unit*> targets;
 		targets.insert(attacker->orderTarget.unit);
@@ -93,7 +93,7 @@ namespace hooks
 		for (s32 i = 0; i < maxTargets; i++)
 		{
 			auto range = hooks::getMaxWeaponRangeHook(attacker, weaponId);
-			auto filter = unitRangeCount(attacker, CFlags::Enemy | CFlags::FrontalArc, {});
+			auto filter = unitRangeCount(attacker, flags, {});
 			auto newTarget = scbw::UnitFinder::getNearestTarget(
 				attacker->getX() - range,
 				attacker->getY() - range,
@@ -116,13 +116,17 @@ namespace hooks
 			targets.insert(newTarget);
 			attacker->orderTarget.unit = newTarget;
 			auto newAngle = scbw::getAngle(attacker->getX(), attacker->getY(), newTarget->getX(), newTarget->getY());
-			s16 posX = attacker->getX();
-			s16 posY = attacker->getY();
-			// Hitscan case
-			if (weaponId == WeaponId::SirenCharybdalRifle)
+			s32 posX;
+			s32 posY;
+			if (weapons_dat::Behavior[weaponId] & WeaponBehavior::AppearOnTargetUnit)
 			{
 				posX = newTarget->getX();
 				posY = newTarget->getY();
+			}
+			else
+			{
+				posX = attacker->getX();
+				posY = attacker->getY();
 			}
 			helper::createBullet(weaponId, attacker, posX, posY, attacker->playerId, newAngle);
 			if (attackerExt->values[ValueDeconstruction])
@@ -321,12 +325,12 @@ namespace hooks
 				// Monoceros Targeting - Battlecruiser behavior
 				else if (weaponId == WeaponId::MinotaurAsterionLaserBattery)
 				{
-					fireMultiple(unit, unitExt, weaponId, 5);
+					fireMultiple(unit, unitExt, weaponId, 5, Flags::Enemy | Flags::FrontalArc);
 				}
 				// Tertiary Eyes - Siren behavior
 				else if (weaponId == WeaponId::SirenCharybdalRifle)
 				{
-					fireMultiple(unit, unitExt, weaponId, 1 + unitExt->unitVectors[UnitVectorTertiaryEyesSiren].size());
+					fireMultiple(unit, unitExt, weaponId, 1 + unitExt->unitVectors[UnitVectorTertiaryEyesSiren].size(), Flags::Enemy);
 				}
 				// Titan Reactors - Heracles behavior - Refresh timer on attack and add stack
 				if (weaponId == WeaponId::HeraclesJavelinCannons)

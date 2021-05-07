@@ -418,7 +418,7 @@ void Globals::frameHook()
 						effects[i].position.y - effects[i].radius,
 						effects[i].position.x + effects[i].radius,
 						effects[i].position.y + effects[i].radius
-					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](Unit* unit)
+					).forEachInMatch(unitRangeCount(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
 						unit->damageWithIgnoreFlatArmor(WeaponId::SalamanderIncendiaryPayload, weapons_dat::DamageAmount[WeaponId::SalamanderIncendiaryPayload] * damageMultiplier);
 					});
@@ -431,7 +431,7 @@ void Globals::frameHook()
 						effects[i].position.y - effects[i].radius,
 						effects[i].position.x + effects[i].radius,
 						effects[i].position.y + effects[i].radius
-					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](Unit* unit)
+					).forEachInMatch(unitRangeCount(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
 						unit->damageWithIgnoreFlatArmor(WeaponId::StarSovereignGriefOfAllGods, weapons_dat::DamageAmount[WeaponId::StarSovereignGriefOfAllGods] * damageMultiplier);
 					});
@@ -444,7 +444,7 @@ void Globals::frameHook()
 						effects[i].position.y - effects[i].radius,
 						effects[i].position.x + effects[i].radius,
 						effects[i].position.y + effects[i].radius
-					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](Unit* unit)
+					).forEachInMatch(unitRangeCount(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
 						unit->damageWithIgnoreFlatArmor(WeaponId::AspirantCriticality, weapons_dat::DamageAmount[WeaponId::AspirantCriticality] * damageMultiplier);
 					});
@@ -457,7 +457,7 @@ void Globals::frameHook()
 						effects[i].position.y - effects[i].radius,
 						effects[i].position.x + effects[i].radius,
 						effects[i].position.y + effects[i].radius
-					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](Unit* unit)
+					).forEachInMatch(unitRangeCount(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
 						unit->damageWithIgnoreFlatArmor(WeaponId::KeskathalorCausticDischarge, weapons_dat::DamageAmount[WeaponId::KeskathalorCausticDischarge] * damageMultiplier);
@@ -472,7 +472,7 @@ void Globals::frameHook()
 						effects[i].position.y - effects[i].radius,
 						effects[i].position.x + effects[i].radius,
 						effects[i].position.y + effects[i].radius
-					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](Unit* unit)
+					).forEachInMatch(unitRangeCount(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
 						unit->damageWithIgnoreFlatArmor(WeaponId::IonField, weapons_dat::DamageAmount[WeaponId::IonField] * damageMultiplier);
@@ -487,7 +487,7 @@ void Globals::frameHook()
 						effects[i].position.y - effects[i].radius,
 						effects[i].position.x + effects[i].radius,
 						effects[i].position.y + effects[i].radius
-					).forEachInMatch(unitRangeCount(nullptr, CFlags::Enemy, {}), [&](Unit* unit)
+					).forEachInMatch(unitRangeCount(nullptr, Flags::Enemy, {}), [&](Unit* unit)
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
 						if (unitExt->timers[TimerHallucinating] < effects[i].currentTime)

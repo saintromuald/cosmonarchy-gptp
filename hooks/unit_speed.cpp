@@ -79,7 +79,7 @@ namespace hooks
 		// Swarming Omen ability: 125% movement speed when moving towards Zoryusthaleth
 		{
 			auto r = 10 * 32;
-			auto n = unitRangeCount(unit, CFlags::Ally | CFlags::FrontalArc, {UnitId::ZergZoryusthaleth});
+			auto n = unitRangeCount(unit, Flags::Ally | Flags::FrontalArc, {UnitId::ZergZoryusthaleth});
 			scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
 				unit->position.x + r, unit->position.y + r);
 			bool accelerate = false;

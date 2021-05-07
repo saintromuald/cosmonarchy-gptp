@@ -60,41 +60,41 @@ scbw::UnitFinderCallbackMatchInterface unitRangeCount(Unit* center, u32 context,
 {
 	scbw::UnitFinderCallbackMatchInterface callback = [=](Unit* unit)
 	{
-		if (unit == center && !(context & CFlags::IncludingSelf))
+		if (unit == center && !(context & Flags::IncludingSelf))
 		{
 			return false;
 		}
-		if (unit == center && context & CFlags::NotSelf)
+		if (unit == center && context & Flags::NotSelf)
 		{
 			return false;
 		}
-		if (unit->status & UnitStatus::Invincible && !(context & CFlags::Invincible))
+		if (unit->status & UnitStatus::Invincible && !(context & Flags::Invincible))
 		{
 			return false;
 		}
-		if (unit->status & UnitStatus::InAir && context & CFlags::NoAir)
+		if (unit->status & UnitStatus::InAir && context & Flags::NoAir)
 		{
 			return false;
 		}
-		if (!(unit->status & UnitStatus::InAir) && context & CFlags::NoGround)
+		if (!(unit->status & UnitStatus::InAir) && context & Flags::NoGround)
 		{
 			return false;
 		}
-		if (context & CFlags::Spellcaster)
+		if (context & Flags::Spellcaster)
 		{
 			if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster))
 			{
 				return false;
 			}
 		}
-		if (context & CFlags::HasEnergy)
+		if (context & Flags::HasEnergy)
 		{
 			if (unit->energy < 256)
 			{
 				return false;
 			}
 		}
-		if (context & CFlags::Shielded)
+		if (context & Flags::Shielded)
 		{
 			if (!units_dat::ShieldsEnabled[unit->id])
 			{
@@ -105,28 +105,28 @@ scbw::UnitFinderCallbackMatchInterface unitRangeCount(Unit* center, u32 context,
 				return false;
 			}
 		}
-		if (context & CFlags::Powered)
+		if (context & Flags::Powered)
 		{
 			if (unit->status & UnitStatus::DoodadStatesThing)
 			{
 				return false;
 			}
 		}
-		if (context & CFlags::Completed)
+		if (context & Flags::Completed)
 		{
 			if (!(unit->status & UnitStatus::Completed))
 			{
 				return false;
 			}
 		}
-		if (context & CFlags::NoTrap)
+		if (context & Flags::NoTrap)
 		{
 			if (scbw::unitIsTrap(unit))
 			{
 				return false;
 			}
 		}
-		if (context & CFlags::NoHallucination)
+		if (context & Flags::NoHallucination)
 		{
 			if (unit->status & UnitStatus::IsHallucination)
 			{
@@ -135,7 +135,7 @@ scbw::UnitFinderCallbackMatchInterface unitRangeCount(Unit* center, u32 context,
 		}
 		if (center)
 		{
-			if (context & CFlags::FrontalArc)
+			if (context & Flags::FrontalArc)
 			{
 				u16 angle = scbw::getAngle(center->position.x, center->position.y,
 					unit->position.x, unit->position.y);
@@ -149,11 +149,11 @@ scbw::UnitFinderCallbackMatchInterface unitRangeCount(Unit* center, u32 context,
 					return false;
 				}
 			}
-			if (scbw::isAlliedTo(unit->playerId, center->playerId) && context & CFlags::Enemy)
+			if (scbw::isAlliedTo(unit->playerId, center->playerId) && context & Flags::Enemy)
 			{
 				return false;
 			}
-			if (!scbw::isAlliedTo(unit->playerId, center->playerId) && context & CFlags::Ally)
+			if (!scbw::isAlliedTo(unit->playerId, center->playerId) && context & Flags::Ally)
 			{
 				return false;
 			}
@@ -174,17 +174,17 @@ scbw::UnitFinderCallbackMatchInterface unitRangeCount(Unit* center, u32 context,
 				return false;
 			}
 		}
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic && context & CFlags::NoOrganic)
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic && context & Flags::NoOrganic)
 			return false;
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic) && context & CFlags::OnlyOrganic)
+		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic) && context & Flags::OnlyOrganic)
 			return false;
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Mechanical && context & CFlags::NoMechanical)
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Mechanical && context & Flags::NoMechanical)
 			return false;
-		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Mechanical) && context & CFlags::OnlyMechanic)
+		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Mechanical) && context & Flags::OnlyMechanic)
 			return false;
-		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building && context & CFlags::NoBuilding)
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building && context & Flags::NoBuilding)
 			return false;
-		if (!(scbw::isEnabled(unit)) && context & CFlags::Enabled)
+		if (!(scbw::isEnabled(unit)) && context & Flags::Enabled)
 		{
 			return false;
 		}

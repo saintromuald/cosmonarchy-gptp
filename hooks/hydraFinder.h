@@ -4,7 +4,7 @@
 #include "SCBW\UnitFinder.h"
 #include <vector>
 
-namespace CFlags
+namespace Flags
 {
 	enum
 	{

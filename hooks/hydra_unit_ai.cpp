@@ -47,8 +47,8 @@ void hydra_unit_ai(Unit* unit)
 		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256) && unitExt->timers[TimerAI_Lazarus] == 0)			
 		{
 			s32 count = 0;
-			hydraFinderLoop(nullptr, unit->position, 128, CFlags::NoBuilding | CFlags::Ally |
-				CFlags::OnlyOrganic, {}, [&](Unit* u)
+			hydraFinderLoop(nullptr, unit->position, 128, Flags::NoBuilding | Flags::Ally |
+				Flags::OnlyOrganic, {}, [&](Unit* u)
 			{
 				UnitExt* uExt = globals.GetUnitExt(u);
 				if (uExt->values[ValueLazarusAgent] != 1)
@@ -75,7 +75,7 @@ void hydra_unit_ai(Unit* unit)
 		{
 			s32 count = 0;
 			hydraFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::SavantPowerSiphon],
-				CFlags::Ally | CFlags::Spellcaster, {}, [&](Unit* u)
+				Flags::Ally | Flags::Spellcaster, {}, [&](Unit* u)
 			{
 				if (u->energy < u->getMaxEnergy())
 				{
@@ -85,7 +85,7 @@ void hydra_unit_ai(Unit* unit)
 			if (count >= 2)
 			{
 				// Savant Power Siphon: If 2 or more allied specialists are nearby, target an enemy specialist within 7 range.
-				auto enemy = rangeMatchUnit(unit, 7 * 32, CFlags::Enemy | CFlags::Spellcaster | CFlags::HasEnergy, {});
+				auto enemy = rangeMatchUnit(unit, 7 * 32, Flags::Enemy | Flags::Spellcaster | Flags::HasEnergy, {});
 				if (enemy != nullptr)
 				{
 					unit->orderTo(OrderId::PowerSiphon, enemy);
@@ -102,7 +102,7 @@ void hydra_unit_ai(Unit* unit)
 			&& unitExt->timers[TimerAI_Queen] == 0)
 		{
 			hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Parasite],
-				CFlags::NotSelf, {}, [&](Unit* u)
+				Flags::NotSelf, {}, [&](Unit* u)
 			{
 				std::vector<std::pair<Unit*, u32>> group;
 				s32 supply = 0;
@@ -145,7 +145,7 @@ void hydra_unit_ai(Unit* unit)
 		auto alliedUnitsHealth = 0;
 		bool alliedTownHalls = false;
 		hydraFinderLoop(unit, unit->sprite->position, AIStarsovereignAbilSeekRange,
-			CFlags::NotSelf | CFlags::NoAir, {}, [&](Unit* u)
+			Flags::NotSelf | Flags::NoAir, {}, [&](Unit* u)
 		{
 			if (!scbw::isAlliedTo(unit->playerId, u->playerId))
 			{
@@ -183,8 +183,8 @@ void hydra_unit_ai(Unit* unit)
 			}
 		}
 		auto webs = hydraUnitCount(unit, unit->sprite->position, AIWebSeekRange, 0, {UnitId::Spell_DisruptionWeb});
-		auto allies = hydraUnitCount(unit, unit->sprite->position, AICorsairAllySeekRange, CFlags::Ally | CFlags::NotSelf, {});
-		auto enemies = hydraUnitCount(unit, unit->sprite->position, AICorsairEnemySeekRange, CFlags::Enemy, {});
+		auto allies = hydraUnitCount(unit, unit->sprite->position, AICorsairAllySeekRange, Flags::Ally | Flags::NotSelf, {});
+		auto enemies = hydraUnitCount(unit, unit->sprite->position, AICorsairEnemySeekRange, Flags::Enemy, {});
 		auto percentage = (f64)(unit->hitPoints + unit->shields) /
 			(f64)(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id] * 256);
 		if (web_state == 0)
@@ -195,10 +195,10 @@ void hydra_unit_ai(Unit* unit)
 			{
 				Unit* mostSignificant = nullptr;
 				auto maxSignificance = 0;
-				hydraFinderLoop(unit, unit->sprite->position, 128, CFlags::Enemy, {}, [&](Unit* u)
+				hydraFinderLoop(unit, unit->sprite->position, 128, Flags::Enemy, {}, [&](Unit* u)
 				{
 					auto significance = hydraUnitCount(u, u->position, AICorsairEnemySeekRange / 2,
-						CFlags::NotSelf | CFlags::Ally, {});
+						Flags::NotSelf | Flags::Ally, {});
 					if (significance > maxSignificance)
 					{
 						maxSignificance = significance;
