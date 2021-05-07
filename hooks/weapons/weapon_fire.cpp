@@ -147,9 +147,8 @@ namespace hooks
 		{
 			return;
 		}
-		//Default StarCraft behavior
 		u8 weaponId = wId;
-		//Retrieve the spawning position for the bullet.
+		// Retrieve the spawning position for the bullet.
 		s32 x, y;
 		u8 behavior = weapons_dat::Behavior[weaponId];
 		if (weaponId == WeaponId::SavantPowerSiphon)
