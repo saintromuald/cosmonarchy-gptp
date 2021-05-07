@@ -490,6 +490,7 @@ namespace hooks
 				// Apostle - Lazarus Agent cast
 				if (scbw::get_generic_rust_value(unit, RustId::CastLazarusAgent) == 1)
 				{
+					scbw::decloakProc(unit);
 					scbw::set_generic_rust_value(unit, RustId::CastLazarusAgent, 0);
 					// Cast Lazarus Agent						
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256);
@@ -534,6 +535,7 @@ namespace hooks
 					{
 						// web attached
 						scbw::moveUnit(web, unit->getX(), unit->getY());
+						scbw::decloakProc(unit);
 					}
 				}
 				else
@@ -826,6 +828,7 @@ namespace hooks
 				// Demiurge - Gods Made Flesh - initial cast
 				if (scbw::get_generic_rust_value(unit, RustId::GodsMadeFleshCast))
 				{
+					scbw::decloakProc(unit);
 					scbw::set_generic_rust_value(unit, RustId::GodsMadeFleshCast, 0);
 					unitExt->values[ValueGodsMadeFleshActive] = 1;
 				}

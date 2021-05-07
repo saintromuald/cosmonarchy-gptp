@@ -71,6 +71,7 @@ namespace hooks
 			unitRaceId = RaceId::Neutral;
 		}
 
+		scbw::decloakProc(unit);
 		scbw::playSound(SoundId::Misc_ZOvTra00_wav + unitRaceId, unit);
 
 		if (unitToLoad->id == UnitId::TerranMason)
@@ -335,6 +336,7 @@ namespace hooks
 							}
 						}
 					}
+					scbw::decloakProc(unit->connectedUnit);
 					scbw::setUnitPosition(unit, pos.x, pos.y);
 
 					if (unit->subunit != nullptr)

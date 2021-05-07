@@ -116,6 +116,7 @@ namespace hooks
 			//execute the recall effect when timer reach 0
 			if (unit->mainOrderTimer == 0)
 			{
+				scbw::decloakProc(unit);
 				unit->status &= ~UnitStatus::CanNotReceiveOrders;
 				Box16 spell_location;
 
