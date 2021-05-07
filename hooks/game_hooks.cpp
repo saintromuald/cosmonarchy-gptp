@@ -897,7 +897,7 @@ namespace hooks
 							}
 							*/
 							UnitExt* pickedExt = globals.GetUnitExt(pickedUnit);
-							pickedExt->unitVectors[UnitVectorTertiaryEyesSiren].push_back(unit); // should be vector to allow for multiple sirens to be linked to a single specialist
+							pickedExt->unitVectors[UnitVectorTertiaryEyesSiren].push_back(unit);
 						});
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::TertiaryEyes] * 256);
 				}
