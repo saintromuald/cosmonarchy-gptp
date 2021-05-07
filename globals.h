@@ -198,7 +198,7 @@ namespace scbw
 	bool isDebuffed(CUnit* unit);
 	void restoreFunc(CUnit* unit);
 	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen);
-	void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound);
+	void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound = true);
 	CUnit** getSourceQueens(CUnit* unit);
 
 	void clearClarionLinks(CUnit* unit);

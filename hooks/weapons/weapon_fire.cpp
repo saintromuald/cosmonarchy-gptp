@@ -409,11 +409,6 @@ namespace hooks
 				}
 				else if (weaponId == WeaponId::MadrigalFuriaMissiles && unit->orderTarget.unit != nullptr)
 				{
-					helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
-					if (unitExt->values[ValueDeconstruction])
-					{
-						scbw::doDeconstructionDamage(unit, weaponId);
-					}
 					auto old = unit->orderTarget.unit;
 					auto range = weapons_dat::MaxRange[weaponId];
 					auto count = 0;
@@ -507,11 +502,11 @@ namespace hooks
 	}
 
 	void progressBulletFlight(CBullet* bullet)
-	{ //		
-		CBullet* v1; // esi
-		CUnit* target; // eax
-		CSprite* v4; // edx
-		CImage* i; // esi
+	{
+		CBullet* v1;
+		CUnit* target;
+		CSprite* v4;
+		CImage* i;
 
 		if (bullet->weaponType == WeaponId::AlkajeliskParasiticSpores)
 		{

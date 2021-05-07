@@ -407,7 +407,6 @@ namespace scbw
 	s32 getFinalDamage(CUnit* unit, u16 weaponId);
 	bool unitIsPacifist(CUnit* unit);
 	bool orderIsSpell(s32 orderId);
-	void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound = true);
 	bool canBeParasited(CUnit* unit);
 	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen);
 	void createShieldOverlay(CUnit* unit, u32 attackDirection);
