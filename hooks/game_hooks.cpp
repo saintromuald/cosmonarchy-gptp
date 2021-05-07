@@ -855,11 +855,16 @@ namespace hooks
 			case UnitId::ZergLarva:
 			{
 				// Set Larva type
-				if (unit->connectedUnit != nullptr
-					&& unit->connectedUnit->id == UnitId::ZergOcsalColony
-					&& unitExt->values[ValueLarvaType] == 0)
+				if (unit->connectedUnit != nullptr && unitExt->values[ValueLarvaType] == LarvaStandard)
 				{
-					unitExt->values[ValueLarvaType] = 1;
+					if (unit->connectedUnit->id == UnitId::ZergOcsalColony)
+					{
+						unitExt->values[ValueLarvaType] = LarvaOcsal;
+					}
+					if (unit->connectedUnit->id == UnitId::ZergSire)
+					{
+						unitExt->values[ValueLarvaType] = LarvaSire; // Eventually should spawn 2x unit per egg
+					}
 				}
 			} break;
 			case UnitId::TerranMaverick:
@@ -892,9 +897,13 @@ namespace hooks
 							}
 							// Overlays
 							/*
-							if (pickedUnit->getOverlay(ImageId::EnsnaringBroodOverlay))
+							if (unit->getOverlay(ImageId::TertiaryEyesOverlay))
 							{
-								pickedUnit->removeOverlay(ImageId::EnsnaringBroodOverlay);
+								unit->removeOverlay(ImageId::TertiaryEyesOverlay);
+							}
+							if (pickedUnit->getOverlay(ImageId::TertiaryEyesOverlay))
+							{
+								pickedUnit->removeOverlay(ImageId::TertiaryEyesOverlay);
 							}
 							*/
 							auto& vec = unitExt->unitVectors[UnitVectorTertiaryEyesSiren];
