@@ -163,6 +163,7 @@ namespace hooks
 				if (acquired)
 				{
 					helper::unitOrderMoveToTargetUnit(cleric, acquired);
+					helper::moveToTarget(acquired2, cleric);
 					auto acquired3 = acquired2;
 					if (!cleric->isTargetWithinMinRange(acquired3, 30))
 					{
