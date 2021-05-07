@@ -1814,4 +1814,25 @@ namespace scbw
 			}
 		}
 	}
+
+	bool unitIsRangedAttacker(u16 id)
+	{
+		u16 groundWeaponId = units_dat::GroundWeapon[id];
+		if (groundWeaponId != WeaponId::None)
+		{
+			if (weapons_dat::MaxRange[groundWeaponId] > 32)
+			{
+				return true;
+			}
+		}
+		u16 airWeaponId = units_dat::AirWeapon[id];
+		if (airWeaponId != WeaponId::None)
+		{
+			if (weapons_dat::MaxRange[airWeaponId] > 32)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }

@@ -447,18 +447,14 @@ namespace hooks
 			}
 
 			// HP regeneration
-			if (units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP &&
-				unit->hitPoints > 0 &&
-				unit->hitPoints / 256 != unit->getMaxHpInGame())
+			if (units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP
+				&& unit->hitPoints > 0
+				&& unit->hitPoints / 256 != unit->getMaxHpInGame())
 			{
-				s32 regen = 4;
+				s32 regen = 11; // 1 HP per second
 				if (unitExt->values[ValueAlaszilethRegenBoost] > 0)
 				{
 					regen *= 3;
-				}
-				if (unit->id == UnitId::SharedCohort)
-				{
-					regen *= 2;
 				}
 				unit->setHp(unit->hitPoints + regen);
 			}
