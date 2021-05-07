@@ -557,6 +557,7 @@ namespace hooks
 						web->remove();
 					}
 				}
+				// Savant Entropy Gauntlets case
 				if (scbw::get_generic_rust_value(unit, RustId::DisruptionWebDamage))
 				{
 					unitExt->values[ValueDisruptionWebDamage] = 0;
@@ -873,9 +874,32 @@ namespace hooks
 			{
 				if (scbw::get_generic_rust_value(unit, RustId::CastTertiaryEyes))
 				{
-					UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
-					targetExt->values[ValueTertiaryEyes] = 1;
-					targetExt->units[UnitTertiaryEyesSiren] = unit;
+					Point16 pos = unit->position;
+					s32 radius = 6 * 32;
+					scbw::set_generic_rust_value(unit, RustId::CastTertiaryEyes, 0);
+					scbw::UnitFinder(
+						pos.x - radius,
+						pos.y - radius,
+						pos.x + radius,
+						pos.y + radius
+					).forEach([&](Unit* pickedUnit)
+						{
+							if (units_dat::BaseProperty[pickedUnit->id] & UnitProperty::Spellcaster
+								|| !(pickedUnit->status & UnitStatus::Completed))
+							{
+								return;
+							}
+							// Overlays
+							/*
+							if (pickedUnit->getOverlay(ImageId::EnsnaringBroodOverlay))
+							{
+								pickedUnit->removeOverlay(ImageId::EnsnaringBroodOverlay);
+							}
+							*/
+							UnitExt* pickedExt = globals.GetUnitExt(pickedUnit);
+							pickedExt->values[ValueTertiaryEyes] = 1; // might be redundant, might be necessary for status
+							pickedExt->units[UnitTertiaryEyesSiren] = unit; // should be vector to allow for multiple sirens to be linked to a single specialist
+						});
 				}
 			}
 			default:
@@ -1209,10 +1233,10 @@ namespace hooks
 
 		// Siren - Discovered Attacks - clear links on Siren death
 		// We probably need to use a unit vector for handling this behavior
-		if (unitExt->values[ValueDiscoveredAttacksDebuff]
-			&& unitExt->units[UnitDiscoveredAttacksSiren] == nullptr)
+		if (unitExt->values[ValueTertiaryEyes]
+			&& unitExt->units[UnitTertiaryEyesSiren] == nullptr)
 		{
-			unitExt->values[ValueDiscoveredAttacksDebuff] = 0;
+			unitExt->values[ValueTertiaryEyes] = 0;
 		}
 	}
 

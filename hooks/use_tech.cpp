@@ -154,15 +154,13 @@ namespace hooks
 			} break;
 			case TechId::TertiaryEyes:
 			{
-				s32 action = 1; // on
 				u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 }; // 12
 				buf[0] = 0x99; // new general command
 				buf[1] = NewGameCommand::GenericSwitchAbility;
-				buf[2] = action;
+				buf[2] = 1;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::CastTertiaryEyes;
 				scbw::SendCommand(buf, 0xc);
-//				helper::issueTriTargetOrder(OrderId::Restoration, 0, 0);
 			} break;
 			case TechId::RescindMindControl:
 			{
