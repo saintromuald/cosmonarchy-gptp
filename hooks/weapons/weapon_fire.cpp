@@ -504,7 +504,7 @@ namespace hooks
 	{
 		Bullet* v1;
 		Unit* target;
-		Sprite* v4;
+		Sprite* bulletSprite;
 		Image* i;
 
 		if (bullet->weaponType == WeaponId::AlkajeliskParasiticSpores)
@@ -828,12 +828,12 @@ namespace hooks
 			{
 				bullet->attackTarget.unit = 0;
 			}
-			v4 = bullet->sprite;
+			bulletSprite = bullet->sprite;
 			bullet->orderSignal |= 0x80;//new
 			bullet->unknown_0x4E = 0;
 			bullet->someUnitType = 228;
 			//			scbw::printf("Hit by bullet: %X", bullet);
-			for (i = v4->images.head; i; i = i->link.next)
+			for (i = bulletSprite->images.head; i; i = i->link.next)
 				helper::playImageIscript(i, 1);
 
 
@@ -843,11 +843,11 @@ namespace hooks
 	void bulletBehaviour_Bounce(Bullet* a1)
 	{ // 0048B2D0
 		Unit* v1; // eax
-		char v2; // al
-		Unit* v3; // ebx
+		char nextBounce; // al
+		Unit* target; // ebx
 		Image* i; // esi
-		Unit* v5; // eax
-		Sprite* v6; // edx
+		Unit* posY; // eax
+		Sprite* posX; // edx
 		Image* j; // esi
 
 		v1 = a1->attackTarget.unit;
@@ -861,24 +861,24 @@ namespace hooks
 		helper::progressBulletMovement_func(a1);
 		if (a1->moveTarget.pt.x == a1->position.x && a1->moveTarget.pt.y == a1->position.y)
 		{
-			v2 = a1->remainingBounces - 1;
+			nextBounce = a1->remainingBounces - 1;
 			//
 			if (a1->weaponType == WeaponId::GladiusPlasmaFlurry)
 			{
-				v2 = 1;
+				nextBounce = 1;
 			}
 			//
-			a1->remainingBounces = v2;
+			a1->remainingBounces = nextBounce;
 			globals.bounce_bullet = a1;
 			//			scbw::print("BounceHit");
-			if (v2 && (v3 = helper::findNextBounceTarget_func(a1), a1->nextBounceUnit = a1->attackTarget.unit, v3))
+			if (nextBounce && (target = helper::findNextBounceTarget_func(a1), a1->nextBounceUnit = a1->attackTarget.unit, target))
 			{
 				for (i = a1->sprite->images.head; i; i = i->link.next)
 				{
 					helper::playImageIscript(i, IscriptAnimation::SpecialState1);
 				}
 				//				scbw::print("Bounce");
-				a1->attackTarget.unit = v3;
+				a1->attackTarget.unit = target;
 			}
 			else
 			{
@@ -887,22 +887,22 @@ namespace hooks
 				{
 					globals.force_remove_multihit_bullet(a1);
 				}
-				v5 = a1->attackTarget.unit;
+				posY = a1->attackTarget.unit;
 				a1->behaviourTypeInternal = 5;
-				if (v5)
+				if (posY)
 				{
-					a1->attackTarget.pt.x = v5->sprite->position.x;
-					a1->attackTarget.pt.y = v5->sprite->position.y;
+					a1->attackTarget.pt.x = posY->sprite->position.x;
+					a1->attackTarget.pt.y = posY->sprite->position.y;
 				}
 				else
 				{
 					a1->attackTarget.unit = 0;
 				}
-				v6 = a1->sprite;
+				posX = a1->sprite;
 				a1->unknown_0x4E = 0; // Was lowbyte
 				a1->someUnitType = UnitId::None;
 
-				for (j = v6->images.head; j; j = j->link.next)
+				for (j = posX->images.head; j; j = j->link.next)
 				{
 					helper::playImageIscript(j, IscriptAnimation::Death);
 				}
@@ -915,9 +915,9 @@ namespace hooks
 		Unit* pSrc; // esi
 		s32 nSrcStatus; // eax
 		Unit* _pIterator; // edi
-		s32 v4; // eax
-		Unit* v5; // ebx
-		s32 v6; // eax
+		s32 bulletSprite; // eax
+		Unit* posY; // ebx
+		s32 posX; // eax
 		s32 v7; // eax
 		s32 v8; // eax
 		bool v9; // eax
@@ -965,11 +965,11 @@ namespace hooks
 		if (pSrc->subunit != nullptr
 			&& helper::unitIsSubunit(pSrc->subunit))
 		{
-			v5 = pSrc->subunit;
+			posY = pSrc->subunit;
 		}
 		else
 		{
-			v5 = pSrc;
+			posY = pSrc;
 		}
 		if (!(helper::unitIsCarrier(pSrc)))
 		{
@@ -993,11 +993,11 @@ namespace hooks
 					}*/
 					if (_pIterator->status & UnitStatus::InAir)
 					{
-						v9 = units_dat::AirWeapon[(u16)v5->id] != -126;
+						v9 = units_dat::AirWeapon[(u16)posY->id] != -126;
 					}
 					else
 					{
-						v9 = units_dat::GroundWeapon[(u16)v5->id] != -126;
+						v9 = units_dat::GroundWeapon[(u16)posY->id] != -126;
 					}
 				}
 			}
@@ -1047,34 +1047,26 @@ namespace hooks
 		//		scbw::print("Gladius code end");
 		return *bulletBounceMissileNext != _pIterator;
 	}
-	Unit* findNextBounceTarget(Bullet* a1)
-	{ // 0048B1E0
-		Unit* v2; // edx
-		Unit* v3; // ecx
-		Sprite* v4; // eax
-		u16 v5;
-		u16 v6;
-		Box32 _a1; // [esp+0h] [ebp-8h]
-
-		if (!a1->sourceUnit)
+	Unit* findNextBounceTarget(Bullet* bullet) // 0048B1E0
+	{
+		if (!bullet->sourceUnit)
 		{
 			return 0;
 		}
-		v2 = a1->nextBounceUnit;
-		*bulletBounceMissileSource = a1->sourceUnit;
-		v3 = a1->attackTarget.unit;
-		v4 = a1->sprite;
-		*bulletBounceMissileTarget = v3;
-		v5 = v4->position.y;
-		v6 = v4->position.x;
-		*bulletBounceMissileNext = v2;
-		_a1.left = (s16)v6 - 96;
-		_a1.top = (s16)v6 + 96;
-		_a1.right = (s16)v5 - 96;
-		_a1.bottom = (s16)v5 + 96;
-		//		return (Unit*)iterateUnitsAtLocationTargetProc(&_a1, (s32(__fastcall*)(s32, s32))findNextBounceTargetProc, 0);
-		GPTP::logger << (u32)(*bulletBounceMissileNext) << " " << (u32)(*bulletBounceMissileSource) << " " << (u32)(*bulletBounceMissileTarget) << '\n';
-		return (Unit*)helper::iterateUnitsAtLocationTargetProc(&_a1, (s32(__fastcall*)(s32, s32))findNextBounceTargetProc, 0);
+		Unit* nextBounce = bullet->nextBounceUnit;
+		*bulletBounceMissileSource = bullet->sourceUnit;
+		Unit* target = bullet->attackTarget.unit;
+		Sprite* bulletSprite = bullet->sprite;
+		*bulletBounceMissileTarget = target;
+		u16 posY = bulletSprite->position.x;
+		u16 posX = bulletSprite->position.y;
+		*bulletBounceMissileNext = nextBounce;
+		Box32 coords;
+		coords.left = (s16)posX - 96;
+		coords.top = (s16)posX + 96;
+		coords.right = (s16)posY - 96;
+		coords.bottom = (s16)posY + 96;
+		return (Unit*)helper::iterateUnitsAtLocationTargetProc(&coords, (s32(__fastcall*)(s32, s32))findNextBounceTargetProc, 0);
 	}
 
 	// Hooked to resolve issues with multihit bullets - Pr0nogo
@@ -1101,7 +1093,7 @@ namespace hooks
 			}
 			bullet->previous = 0;
 			bullet->next = 0;
-			Bullet* v2 = *firstFreeBullet;
+			Bullet* nextBounce = *firstFreeBullet;
 			if (*firstFreeBullet)
 			{
 				if (*lastFreeBullet == *firstFreeBullet)
@@ -1109,13 +1101,13 @@ namespace hooks
 					*lastFreeBullet = bullet;
 				}
 				bullet->previous = *firstFreeBullet;
-				bullet->next = v2->next;
-				Bullet* v3 = v2->next;
-				if (v3)
+				bullet->next = nextBounce->next;
+				Bullet* target = nextBounce->next;
+				if (target)
 				{
-					v3->previous = bullet;
+					target->previous = bullet;
 				}
-				v2->next = bullet;
+				nextBounce->next = bullet;
 				*bulletCount -= 1;
 			}
 			else
@@ -1131,11 +1123,11 @@ namespace hooks
 	/*
 	s32 writeBullets(FILE* hFile) {
 		s32 v1; // edi
-		Bullet* v2; // esi
-		Bullet* v3; // eax
-		s32 v4; // edx
-		s32 v5; // ecx
-		s32 v6; // esi
+		Bullet* nextBounce; // esi
+		Bullet* target; // eax
+		s32 bulletSprite; // edx
+		s32 posY; // ecx
+		s32 posX; // esi
 		size_t v7; // eax
 		s16* v8; // eax
 		u16 v9; // dx
@@ -1150,26 +1142,26 @@ namespace hooks
 		s16* v19; // [esp+Ch] [ebp-8h]
 		s32 data; // [esp+10h] [ebp-4h]
 
-		v2 = bulletTable;
+		nextBounce = bulletTable;
 		v1 = 100;
 		do {
-			packBulletData(v2, 1);
-			++v2;
+			packBulletData(nextBounce, 1);
+			++nextBounce;
 			--v1;
 		} while (v1);
-		v4 = 0;
+		bulletSprite = 0;
 		data = 0;
-		v3 = (Bullet*)((char*)bulletTable + 12);
-		v5 = 100;
+		target = (Bullet*)((char*)bulletTable + 12);
+		posY = 100;
 		do {
-			if (v3->previous)
-				++v4;
-			++v3;
-			--v5;
-		} while (v5);
-		data = v4;
+			if (target->previous)
+				++bulletSprite;
+			++target;
+			--posY;
+		} while (posY);
+		data = bulletSprite;
 		v7 = _lockwrite(&data, 2u, 1u, hFile);
-		v6 = v7 == 1;
+		posX = v7 == 1;
 		if (v7 == 1) {
 			if ((s16)data) {
 				v12 = 114 * (unsigned __int16)data;
@@ -1195,7 +1187,7 @@ namespace hooks
 					++v9;
 					++v10;
 				} while (v9 < 0x64u);
-				v6 = compressWrite(v11, v12, hFile);
+				posX = compressWrite(v11, v12, hFile);
 				SMemFree(v11, "Starcraft\\SWAR\\lang\\Bullet.cpp", 1299, 0);
 			}
 		}
@@ -1206,6 +1198,6 @@ namespace hooks
 			v14 = v16 + 1;
 			--v15;
 		} while (v15);
-		return v6;
+		return posX;
 	}*/
 }
