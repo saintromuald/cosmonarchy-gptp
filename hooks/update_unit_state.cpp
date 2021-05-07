@@ -393,9 +393,6 @@ namespace hooks
 			}
 		}
 
-		// Clear the healing flag every frame
-		unit->isBeingHealed = 0;
-
 		// Update unit status effects (stim, maelstrom, plague, etc.)
 		if (unit->status & UnitStatus::Completed || !(unit->sprite->flags & CSprite_Flags::Hidden))
 		{

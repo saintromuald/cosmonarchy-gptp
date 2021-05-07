@@ -199,8 +199,6 @@ namespace hooks
 			auto v4 = target;
 			if (target && helper::AI_OrderHeal(v3, target))
 			{
-				if (!target->isBeingHealed)
-					goto LABEL_7;
 				auto v5 = helper::MedicHeal_TargetAcquire(v3);
 				auto v6 = v5;
 				if (v5)
@@ -208,14 +206,13 @@ namespace hooks
 					helper::unitOrderMoveToTargetUnit(v3, v5);
 					helper::moveToTarget(v6, v3);
 					v4 = v6;
-LABEL_7:
 					if (!medic->isTargetWithinMinRange(v4, 30))
 					{
 						return 3;
 					}
-					target->heal(MathUtils::map((s32)medic->hitPoints, 0, (s32)medic->getMaxHpRaw(), 0, 200), medic);
+					scbw::decloakProc(medic);
+					target->heal(MathUtils::map((s32)medic->hitPoints, 0, (s32)medic->getMaxHpRaw(), 11, 107), medic);
 					result = 1;
-					target->isBeingHealed = 1;
 					return result;
 				}
 			}
@@ -243,11 +240,10 @@ LABEL_7:
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
+			else if (unit->pAI != nullptr)
+				unit->orderComputerCL(OrderId::ComputerAI);
 			else
-				if (unit->pAI != nullptr)
-					unit->orderComputerCL(OrderId::ComputerAI);
-				else
-					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
 		}
 		else
 		{ //641D3

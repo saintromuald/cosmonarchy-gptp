@@ -359,6 +359,7 @@ namespace hooks
 			{
 				if (scbw::get_generic_rust_value(unit, RustId::SublimeShepherd) == 1)
 				{
+					scbw::decloakProc(unit);
 					if (!unit->getOverlay(1267))
 					{
 						unit->sprite->createTopOverlay(1267);
@@ -767,6 +768,7 @@ namespace hooks
 				// Matraleth - Ensnaring Brood
 				if (scbw::get_generic_rust_value(unit, RustId::EnsnaringBroodAbility) == 1)
 				{
+					scbw::decloakProc(unit);
 					Point16 pos = unit->position;
 					s32 radius = 6 * 32;
 					scbw::set_generic_rust_value(unit, RustId::EnsnaringBroodAbility, 0);
