@@ -734,7 +734,7 @@ namespace hooks
 						{
 							return;
 						}
-						if (scbw::isStunned(unit))
+						if (unit->isFrozen())
 						{
 							return;
 						}
@@ -983,7 +983,7 @@ namespace hooks
 		{
 			if (attacker->id == UnitId::TerranGorgon)
 			{
-				if (scbw::isStunned(target) || scbw::isSlowed(target))
+				if (target->isFrozen() || scbw::isSlowed(target))
 				{
 					return true;
 				}

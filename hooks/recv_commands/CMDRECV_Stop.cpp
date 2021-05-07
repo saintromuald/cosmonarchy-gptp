@@ -31,12 +31,10 @@ namespace hooks
 				if (!(current_unit->status & UnitStatus::Completed))
 					*u32_0066FF60 = 0x14;
 				else
-					if (current_unit->status & UnitStatus::DoodadStatesThing ||
-						current_unit->lockdownTimer != 0 ||
-						current_unit->stasisTimer != 0 ||
-						current_unit->maelstromTimer != 0
-						)
+					if (current_unit->isFrozen())
+					{
 						*u32_0066FF60 = 0x0A;
+					}
 					else
 						if (current_unit->status & UnitStatus::Burrowed &&
 							current_unit->id != UnitId::ZergLakizilisk
@@ -141,12 +139,10 @@ namespace hooks
 				if (!(current_unit->status & UnitStatus::Completed))
 					*u32_0066FF60 = 0x14;
 				else
-					if (current_unit->status & UnitStatus::DoodadStatesThing ||
-						current_unit->lockdownTimer != 0 ||
-						current_unit->stasisTimer != 0 ||
-						current_unit->maelstromTimer != 0
-						)
+					if (current_unit->isFrozen())
+					{
 						*u32_0066FF60 = 0x0A;
+					}
 					else
 						if (current_unit->status & UnitStatus::Burrowed &&
 							current_unit->id != UnitId::ZergLakizilisk
@@ -251,12 +247,10 @@ namespace hooks
 				if (!(current_unit->status & UnitStatus::Completed))
 					*u32_0066FF60 = 0x14;
 				else
-					if (current_unit->status & UnitStatus::DoodadStatesThing ||
-						current_unit->lockdownTimer != 0 ||
-						current_unit->stasisTimer != 0 ||
-						current_unit->maelstromTimer != 0
-						)
+					if (current_unit->isFrozen())
+					{
 						*u32_0066FF60 = 0x0A;
+					}
 					else
 						if (current_unit->status & UnitStatus::Burrowed &&
 							current_unit->id != UnitId::ZergLakizilisk
