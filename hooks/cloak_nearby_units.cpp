@@ -59,11 +59,11 @@ namespace hooks
 				if (!unitExt->timers[TimerDecloak])
 				{
 					helper::secondaryOrder_Cloak(current_unit);
-					if (!(current_unit->status & UnitStatus::CloakingForFree))
-					{
-						current_unit->status |= UnitStatus::CloakingForFree;
-						needsRefresh = true;
-					}
+				}
+				if (!(current_unit->status & UnitStatus::CloakingForFree))
+				{
+					current_unit->status |= UnitStatus::CloakingForFree;
+					needsRefresh = true;
 				}
 			}
 			unitsInAreaOfEffect++;
