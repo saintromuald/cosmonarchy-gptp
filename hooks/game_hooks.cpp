@@ -538,7 +538,11 @@ namespace hooks
 					else
 					{
 						// web attached
-						scbw::moveUnit(web, unit->getX(), unit->getY());
+						web->position = unit->position;
+						//if (web->sprite)
+						//{
+						//	web->sprite->position = unit->sprite->position;
+						//}
 						scbw::decloakProc(unit);
 					}
 				}

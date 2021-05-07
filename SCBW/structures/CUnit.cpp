@@ -363,11 +363,10 @@ u32 CUnit::getMovableState()
 {
 	if (this->moveTarget.pt != this->sprite->position)
 		return 0;
+	else if (!(this->status & UnitStatus::Unmovable))
+		return 1;
 	else
-		if (!(this->status & UnitStatus::Unmovable))
-			return 1;
-		else
-			return 2;
+		return 2;
 }
 
 //-------- Positions and dimensions --------//
