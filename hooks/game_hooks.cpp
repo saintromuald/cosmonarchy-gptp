@@ -863,7 +863,7 @@ namespace hooks
 					}
 					if (unit->connectedUnit->id == UnitId::ZergSire)
 					{
-						unitExt->values[ValueLarvaType] = LarvaSire;
+						unitExt->values[ValueLarvaType] = LarvaSire; // Eventually should spawn 2x unit per egg
 					}
 				}
 			} break;
