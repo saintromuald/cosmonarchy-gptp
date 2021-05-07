@@ -106,10 +106,10 @@ namespace hooks
 			{
 				if (firstInList != nullptr)
 				{
-					s32 action = 1; //on
+					s32 action = 1; // on
 					if (scbw::get_generic_rust_value(firstInList, RustId::ReverseThrust) == 1)
 					{
-						action = 0; //off
+						action = 0; // off
 					}
 					u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
 					buf[0] = 0x99; // new general command

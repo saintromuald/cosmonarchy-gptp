@@ -1763,6 +1763,16 @@ namespace scbw
 				AnimDecloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 			}
 			unitExt->timers[TimerDecloak] = 48 + 1;
+			if (unit->subunit)
+			{
+				UnitExt* subunitExt = globals.GetUnitExt(unit->subunit);
+				if (subunitExt->timers[TimerDecloak] == 0)
+				{
+					unit->subunit->visibilityStatus = 0xff;
+					AnimDecloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
+				}
+				subunitExt->timers[TimerDecloak] = 48 + 1;
+			}
 		}
 	}
 
