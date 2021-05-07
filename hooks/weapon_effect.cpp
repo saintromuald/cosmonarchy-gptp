@@ -141,11 +141,6 @@ namespace hooks
 		{
 			helper::weaponBulletShot(guaranteedHit, bullet, 1);
 		}
-		u8 divisor = 1;
-		if (weaponId == WeaponId::ArchitectDispersiveSalvo)
-		{
-			divisor = globals.get_divider(bullet);
-		}
 		for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
 		{
 			CUnit* target = unitsInSplash.getUnit(i);
@@ -232,7 +227,7 @@ namespace hooks
 
 			if (helper::isUnitDistanceWithin(target, bullet, inner) && nathrokorCondition(bullet, target))
 			{
-				helper::weaponBulletShot(target, bullet, divisor); // 100% damage
+				helper::weaponBulletShot(target, bullet, 1); // 100% damage
 				continue;
 			}
 
@@ -267,14 +262,14 @@ namespace hooks
 
 			if (helper::isUnitDistanceWithin(target, bullet, medium) && nathrokorCondition(bullet, target))
 			{
-				helper::weaponBulletShot(target, bullet, divisor * 2); // 50% damage
+				helper::weaponBulletShot(target, bullet, 2); // 50% damage
 				continue;
 			}
 
 			// Outer radius
 			if (nathrokorCondition(bullet, target))
 			{
-				helper::weaponBulletShot(target, bullet, divisor * 4); // 25% damage
+				helper::weaponBulletShot(target, bullet, 4); // 25% damage
 			}
 		}
 	}
@@ -406,6 +401,7 @@ namespace hooks
 		if (weaponId == WeaponId::ArchitectDispersiveSalvo)
 		{
 			divisor = globals.get_divider(bullet);
+			globals.remove_multihit_bullet(bullet);
 		}
 
 		else if (weaponId == WeaponId::AcidSpore
