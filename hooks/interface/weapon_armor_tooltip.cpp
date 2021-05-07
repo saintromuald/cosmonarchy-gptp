@@ -517,8 +517,8 @@ namespace hooks
 		addStatus(statuses, "Repentent Chorus", unitExt->values[ValueRepententChorus], 0);
 		addStatus(statuses, "Stellar Enforcement", unitExt->values[ValueStellarEnforcement], 1);
 		addStatus(statuses, "Terminal Surge", unitExt->values[ValueTerminalSurge], 0);
-		addStatus(statuses, "Tertiary Eyes (Caster)", unitExt->unitVectors[UnitVectorTertiaryEyes].size(), 0);
-		addStatus(statuses, "Tertiary Eye (Linked)", unitExt->unitVectors[UnitVectorTertiaryEyesSirens].size(), 0);
+		addStatus(statuses, "Tertiary Eyes [Caster]", unitExt->unitVectors[UnitVectorTertiaryEyes].size(), 0);
+		addStatus(statuses, "Tertiary Eye [Linked]", unitExt->unitVectors[UnitVectorTertiaryEyesSirens].size(), 0);
 
 		// Aise Value - Gimmicked
 		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0, 1);
