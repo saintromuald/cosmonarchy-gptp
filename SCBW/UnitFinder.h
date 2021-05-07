@@ -12,12 +12,11 @@ namespace scbw {
 	using UnitFinderCallbackMatchInterface = std::function<bool(CUnit*)>;
 	using UnitFinderCallbackScoreInterface = std::function<s32(CUnit*)>;
 
-	/// The UnitFinder class is used to efficiently search for units in a certain
+	/// The UnitFinder struct is used to efficiently search for units in a certain
 	/// area using StarCraft's internal data structures.
 
-	class UnitFinder {
-	public:
-		/// Default constructor.
+	struct UnitFinder {
+			/// Default constructor.
 		UnitFinder();
 
 		/// Constructs and searches for all units within the given bounds.
@@ -80,8 +79,7 @@ namespace scbw {
 		/// This does not use unit collision boxes for calculating distances.
 		static CUnit* getNearestTarget(CUnit* sourceUnit, UnitFinderCallbackMatchInterface match);
 
-	private:
-		//This function is meant to be used by other getNearest() functions.
+			//This function is meant to be used by other getNearest() functions.
 		//Do NOT use this function in the game code!
 		static CUnit* getNearest(s32 x, s32 y,
 			s32 boundsLeft, s32 boundsTop, s32 boundsRight, s32 boundsBottom,

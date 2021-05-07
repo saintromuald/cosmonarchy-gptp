@@ -36,7 +36,7 @@ struct CSprite
 
 	/// AKA SpriteDestructor() @ 0x00497B40
 	/// Removes the sprite from the linked list of valid images. This is different
-	/// from a class destructor, since CSprite objects are stored in a static
+	/// from a struct destructor, since CSprite objects are stored in a static
 	/// array and never truly destroyed.
 	void free();
 

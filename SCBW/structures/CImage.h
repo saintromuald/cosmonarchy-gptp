@@ -75,7 +75,7 @@ struct CImage
 
 	/// AKA ImageDestructor() @ 0x004D4CE0
 	/// Removes the image from the linked list of valid images. This is different
-	/// from a class destructor, since CImage objects are stored in a static array
+	/// from a struct destructor, since CImage objects are stored in a static array
 	/// and never truly destroyed.
 	void free();
 

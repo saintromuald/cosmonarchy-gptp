@@ -25,9 +25,8 @@ namespace win32
 // It's a convenient wrapper around the Win32 high-resolution timer APIs
 // QueryPerformanceCounter() and QueryPerformanceFrequency().
 //------------------------------------------------------------------------------
-class Stopwatch
+struct Stopwatch
 {
-public:
     // Initialize the stopwatch to a safe initial state
     Stopwatch() noexcept;
 
@@ -53,7 +52,6 @@ public:
     //
     // Ban copy
     //
-private:
     Stopwatch(const Stopwatch&) = delete;
     Stopwatch& operator=(const Stopwatch&) = delete;
 
@@ -61,7 +59,6 @@ private:
     //
     // *** IMPLEMENTATION ***
     //
-private:
     bool m_running;                 // is the timer running?
     long long m_start;              // start tick count
     long long m_finish;             // end tick count

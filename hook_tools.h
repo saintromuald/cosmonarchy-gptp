@@ -67,9 +67,8 @@ inline void memoryPatch(const u32 address, const u8* data, const size_t size)
 
 void wrapperPatch(const u8* code, u32 len, const u32 position, u32 nops = 0);
 
-class ByteWrapperMemory
+struct ByteWrapperMemory
 {
-public:
 	std::vector<std::shared_ptr<u8[]>> wrapper_memory;
 
 	u8* exec_alloc(u32 len);

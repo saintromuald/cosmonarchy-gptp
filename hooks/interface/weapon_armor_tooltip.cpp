@@ -328,7 +328,7 @@ namespace hooks
 		return ss.str();
 	}
 
-	enum class TimerType
+	enum struct TimerType
 	{
 		Vanilla = 0,
 		Aise,

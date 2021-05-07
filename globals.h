@@ -10,7 +10,7 @@
 #include "SCBW\api.h"
 #include "hooks\limits\attack_extender.h"
 
-class Globals;
+struct Globals;
 
 struct SaveState
 {
@@ -51,29 +51,25 @@ struct PersistImpact
 	CThingy* thingy;
 };
 
-class PariahHit
+struct PariahHit
 {
-public:
 	CUnit* source;
 	CUnit* target;
 };
 
-class MultihitBullet
+struct MultihitBullet
 {
-public:
 	CBullet* bullet;
 	s32 divider;
+	u32 refCount;
 	std::vector<CUnit*> already_hit;
-	MultihitBullet()
-	{
-		divider = 0;
-	}
-	MultihitBullet(CBullet* bullet, std::vector<CUnit*> already_hit, u32 divider) : bullet(bullet), already_hit(already_hit), divider(divider) {}
+
+	MultihitBullet() : bullet(0), already_hit({}), divider(0), refCount(0) {}
+	MultihitBullet(CBullet* bullet, std::vector<CUnit*> already_hit, u32 divider) : bullet(bullet), already_hit(already_hit), divider(divider), refCount(0) {}
 };
 
-class ApostleAgent
+struct ApostleAgent
 {
-public:
 	Point32 position;
 	u32 timer;
 	u32 unitId;
@@ -84,9 +80,8 @@ public:
 };
 
 
-class AttackExtender
+struct AttackExtender
 {
-public:
 	//	std::vector<std::vector<u16>> attacks;
 	u16 attacks[PLAYABLE_PLAYER_COUNT][ATTACK_LIMIT];
 	AttackExtender()
@@ -102,10 +97,9 @@ public:
 	}
 };
 
-class Globals
+struct Globals
 {
 	std::string output;
-public:
 	//debugging data
 /*	f64 unitSpeedDbg;
 	f64 weaponDamageDbg;

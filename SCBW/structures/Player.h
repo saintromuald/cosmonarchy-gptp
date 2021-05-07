@@ -1,7 +1,7 @@
 #pragma once
 #include "common.h"
 
-//Not like the advanced BWAPI class
+//Not like the advanced BWAPI struct
 struct PLAYER
 {
 

@@ -11,16 +11,14 @@
 const s32 ATTACK_PRIORITY_GROUP_SIZE = 16;
 const s32 ATTACK_PRIORITY_LEVELS = 6;
 
-class AttackPriorityData
+struct AttackPriorityData
 {
-public:
 	CUnit* findBestTarget(CUnit* attacker) const;
 	CUnit* findRandomTarget() const;
 
 	void addTarget(CUnit* target, u32 attackPriority);
 	void reset();
 
-private:
 	CUnit* targets[ATTACK_PRIORITY_LEVELS][ATTACK_PRIORITY_GROUP_SIZE];
 	u32 targetCounts[ATTACK_PRIORITY_LEVELS];
 };

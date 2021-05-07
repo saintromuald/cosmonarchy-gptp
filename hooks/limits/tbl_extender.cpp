@@ -726,7 +726,7 @@ namespace hooks
 f:  e9 fc ff ff ff          jmp    10 <_main+0x10>
 							*/
 							//unsafe!	
-							//probably must be handled with class extender to delete the allocated memory on exit
+							//probably must be handled with struct extender to delete the allocated memory on exit
 							//u8* const byte_wrapper = new u8[20];
 							// SET WRAPPER STUFF
 							// MODIFY WRAPPER

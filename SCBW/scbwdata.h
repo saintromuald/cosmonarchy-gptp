@@ -651,7 +651,7 @@ SCBW_DATA(u32*, tempUnitsListArraysCountsList, 0x006BEE70);
 
 // Font & Drawing
 namespace graphics {
-	class Font; class Bitmap;
+	struct Font; struct Bitmap;
 }
 SCBW_DATA(graphics::Font**, fontBase, 0x006CE0F4);
 SCBW_DATA(graphics::Bitmap*, gameScreenBuffer, 0x006CEFF0);

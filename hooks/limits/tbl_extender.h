@@ -3,8 +3,7 @@
 
 
 
-/*class tblExtender {
-public:
+/*struct tblExtender {
 	u32* buffer;
 
 	u32 getStringCount() {

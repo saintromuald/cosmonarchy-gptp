@@ -7,12 +7,11 @@
 
 namespace graphics {
 
-//Speed-efficient non-virtual class for storing shapes that will be drawn.
+//Speed-efficient non-virtual struct for storing shapes that will be drawn.
 //All shape setter methods merely copy data and contain no actual logic.
 //All coordinates are relative to screen.
-class Shape {
-  public:
-    void setText(s32 x, s32 y, s32 stringIndex, FontSize fontSize, CoordType coordType);
+struct Shape {
+      void setText(s32 x, s32 y, s32 stringIndex, FontSize fontSize, CoordType coordType);
     void setDot(s32 x, s32 y, ColorId color, CoordType coordType);
     void setLine(s32 x1, s32 y1, s32 x2, s32 y2, ColorId color, CoordType coordType);
     void setBox(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType);
@@ -24,8 +23,7 @@ class Shape {
     void setDottedEllipse(s32 left, s32 top, s32 right, s32 bottom, ColorId color, CoordType coordType);
     void draw() const;
 
-  private:
-    enum ShapeType {
+      enum ShapeType {
       NONE,
       TEXT,
       DOT,

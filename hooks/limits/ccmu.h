@@ -16,7 +16,6 @@ struct CCMUExtender : public Extender
 	std::vector<u32> orderingYlist();
 	std::vector<u32> orderingYlist_off4();
 	std::vector<u32> orderingY_min18endlist();
-public:
 	CUnitLayout units[UNIT_ARRAY_LENGTH];
 	UnitFinderData orderingX[UNIT_ARRAY_LENGTH * 2];
 	UnitFinderData orderingY[UNIT_ARRAY_LENGTH * 2];

@@ -4,7 +4,7 @@
 //V241 for VS2008
 
 
-namespace graphics { class Bitmap; }
+namespace graphics { struct Bitmap; }
 struct bounds;
 
 struct Layer {

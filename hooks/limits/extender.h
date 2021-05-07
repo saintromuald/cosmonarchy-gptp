@@ -18,11 +18,10 @@ static inline void ltrim(std::string& s);
 static inline void rtrim(std::string& s);
 static inline void trim(std::string& s);
 bool last_char(std::string s, char c);
-class Extender
+struct Extender
 {
 	virtual std::vector<u32> get_address_list() = 0;
 	virtual std::vector<u32> get_size_list() = 0;
-public:
 	virtual void extend() = 0;
 	virtual s32 identifier(std::string str) = 0;
 	void uplink(std::vector<u32> address_list, u32 address);

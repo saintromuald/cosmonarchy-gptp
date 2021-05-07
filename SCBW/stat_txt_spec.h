@@ -1,9 +1,8 @@
 #pragma once
 #include "globals.h"
 
-class StatTxtStringTbl
+struct StatTxtStringTbl
 {
-public:
 	u16 getStringCount() const
 	{
 		return *buffer;
@@ -31,7 +30,6 @@ public:
 				return (const char*)0x00501B7D;
 		}
 	}
-private:
 	union
 	{
 		u16* buffer;

@@ -777,8 +777,7 @@ struct _uavail {
 	u8 available[PLAYER_COUNT][UNIT_TYPE_COUNT];
 };
 
-class StringTbl {
-public:
+struct StringTbl {
 	/// Returns the number of string entries in the TBL file.
 	u16 getStringCount() const {
 		return *buffer;
@@ -798,7 +797,6 @@ public:
 		}
 	}
 
-private:
 	u16* buffer;
 };
 

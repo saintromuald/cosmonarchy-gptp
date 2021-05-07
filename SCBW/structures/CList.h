@@ -9,17 +9,15 @@
 //V241 for VS2008
 
 template <class T>
-class CLink
+struct CLink
 {
-public:
 	T* prev;
 	T* next;
 };
 
 template <class T>
-class CList
+struct CList
 {
-public:
 	T* head;
 	T* tail;
 
@@ -50,9 +48,8 @@ public:
 
 //CList whose head and tail are placed separately in memory.
 template <class T, CLink<T> T::* link>
-class CListExtern
+struct CListExtern
 {
-public:
 	T*& head;
 	T*& tail;
 	CListExtern(T** head, T** tail) : head(*head), tail(*tail) {};

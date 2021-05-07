@@ -112,9 +112,8 @@ void shamanProc(CUnit* shaman, u32 heal, CUnit* target)
 #include "limits/sfx_extender.h"
 #include "hooks/weapons/wpnspellhit.h"
 #include "globals.h"
-class CorpseFinder
+struct CorpseFinder
 {
-private:
 	static bool sortCompareXPos(CThingy* a, CThingy* b)
 	{
 		return a->sprite->position.x > b->sprite->position.x;
@@ -135,7 +134,6 @@ private:
 		return thingy->sprite->position.y < value;
 	}
 
-public:
 	static std::vector<CThingy*> corpsesX;
 	static std::vector<CThingy*> corpsesY;
 

@@ -3,9 +3,8 @@
 #define NOMINMAX
 #include "MPQDraftPlugin.h"
 
-class Plugin : public IMPQDraftPlugin
+struct Plugin : public IMPQDraftPlugin
 {
-public:
 	//Methods from IMPQDraftPlugin
 	BOOL WINAPI Identify(LPDWORD lpdwPluginID);
 	BOOL WINAPI GetPluginName(LPSTR lpszPluginName, DWORD nNameBufferLength);

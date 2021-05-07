@@ -9,10 +9,9 @@
 
 namespace GPTP
 {
-	class GameLogger
+	struct GameLogger
 	{
-	public:
-		/// Writes a "game start" message to the log file and resets the internal
+			/// Writes a "game start" message to the log file and resets the internal
 		/// frame timer.
 		bool startGame();
 		/// Writes a "game end" message to the log file.
@@ -20,8 +19,7 @@ namespace GPTP
 		template <typename T>
 		GameLogger& operator<<(const T& t);
 		GameLogger& operator<<(std::ostream& (*func)(std::ostream&));
-	private:
-		bool checkLogFile();
+			bool checkLogFile();
 		bool updateFrame();
 		std::ofstream logFile;
 		s32 lastUpdatedFrame;
