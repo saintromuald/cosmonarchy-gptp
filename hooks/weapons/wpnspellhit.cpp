@@ -220,16 +220,9 @@ namespace hooks
 		u32 base_damage = helper::GetUnitBulletDamage(bullet, target);
 		if (bullet->hitFlags & 2)
 		{
-			// bullet doing no damage (shot from hallucination)
 			if (bullet->sourceUnit != nullptr)
 			{
-				target->damageWith(
-					bullet->weaponId,
-					base_damage,
-					bullet->sourceUnit,
-					bullet->srcPlayer,
-					bullet->direction1,
-					damageDivisor);
+				target->damageWith(bullet->weaponId, base_damage, bullet->sourceUnit, bullet->srcPlayer, bullet->direction1, damageDivisor);
 			}
 			else
 			{
@@ -238,13 +231,7 @@ namespace hooks
 		}
 		else
 		{
-			target->damageWith(
-				bullet->weaponId,
-				base_damage,
-				bullet->sourceUnit,
-				bullet->srcPlayer,
-				bullet->direction1,
-				damageDivisor);
+			target->damageWith(bullet->weaponId, base_damage, bullet->sourceUnit, bullet->srcPlayer, bullet->direction1, damageDivisor);
 		}
 	}
 
