@@ -670,6 +670,8 @@ LABEL_18:
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
+		scbw::decloakProc(unit);
+
 		u32 status = 0;
 		IscriptAnimation::Enum anim = IscriptAnimation::CastSpell; // might be changed later if required
 		if (unit->id == UnitId::ProtossClarion)
