@@ -64,8 +64,8 @@ struct MultihitBullet
 	u32 refCount;
 	std::vector<CUnit*> already_hit;
 
-	MultihitBullet() : bullet(0), already_hit({}), divider(0), refCount(0) {}
-	MultihitBullet(CBullet* bullet, std::vector<CUnit*> already_hit, u32 divider) : bullet(bullet), already_hit(already_hit), divider(divider), refCount(0) {}
+	MultihitBullet() : bullet(0), already_hit({}), divider(0), refCount(1) {}
+	MultihitBullet(CBullet* bullet, std::vector<CUnit*> already_hit, u32 divider) : bullet(bullet), already_hit(already_hit), divider(divider), refCount(1) {}
 };
 
 struct ApostleAgent
@@ -164,6 +164,7 @@ struct Globals
 	void initLazarusAgent(s32 x, s32 y, u8 player, u32 unitId, u32 energy, u32 stacks, CUnit* unit);
 	void clear_ptr_in_apostle_table(CUnit* unit);
 	void remove_multihit_bullet(CBullet* bullet);
+	void force_remove_multihit_bullet(CBullet* bullet);
 	s32 get_divider(CBullet* bullet);
 	void clear_lakizilisk(CUnit* lurker);
 	void add_lurker_spine_pair(CUnit* lurker, CUnit* target);

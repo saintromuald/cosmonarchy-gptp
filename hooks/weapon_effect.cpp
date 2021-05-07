@@ -401,6 +401,7 @@ namespace hooks
 		if (weaponId == WeaponId::ArchitectDispersiveSalvo)
 		{
 			divisor = globals.get_divider(bullet);
+			globals.remove_multihit_bullet(bullet);
 		}
 
 		else if (weaponId == WeaponId::AcidSpore

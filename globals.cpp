@@ -580,6 +580,21 @@ void Globals::remove_multihit_bullet(CBullet* bullet)
 	{
 		if (multihitBullets[i].bullet == bullet)
 		{
+			if (--multihitBullets[i].refCount == 0)
+			{
+				multihitBullets.erase(multihitBullets.begin() + i);
+				i--;
+			}
+		}
+	}
+}
+
+void Globals::force_remove_multihit_bullet(CBullet* bullet)
+{
+	for (s32 i = 0; i < multihitBullets.size(); i++)
+	{
+		if (multihitBullets[i].bullet == bullet)
+		{
 			multihitBullets.erase(multihitBullets.begin() + i);
 			i--;
 		}
@@ -705,8 +720,8 @@ void Globals::add_multihit_empty_bullet(CBullet* bullet, s32 divider)
 	{
 		if (a.bullet == bullet)
 		{
+			++a.refCount;
 			a.divider = divider;
-			a.already_hit = {};
 			return;
 		}
 	}
