@@ -116,7 +116,15 @@ namespace hooks
 			targets.insert(newTarget);
 			attacker->orderTarget.unit = newTarget;
 			auto newAngle = scbw::getAngle(attacker->getX(), attacker->getY(), newTarget->getX(), newTarget->getY());
-			helper::createBullet(weaponId, attacker, attacker->getX(), attacker->getY(), attacker->playerId, newAngle);
+			s16 posX = attacker->getX();
+			s16 posY = attacker->getY();
+			// Hitscan case
+			if (weaponId == WeaponId::SirenCharybdalRifle)
+			{
+				posX = newTarget->getX();
+				posY = newTarget->getY();
+			}
+			helper::createBullet(weaponId, attacker, posX, posY, attacker->playerId, newAngle);
 			if (attackerExt->values[ValueDeconstruction])
 			{
 				scbw::doDeconstructionDamage(attacker, weaponId, false);
@@ -387,10 +395,6 @@ namespace hooks
 					// Ion Cannon projectile spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueIonCannonProjectilePos, 1,
 						ImagesDatEntries::OverlaySpecialPtr, 1); // 1 is frameset offset
-				}
-				else if (weaponId == WeaponId::SirenCharybdalRifle)
-				{
-					// TODO: Implement multi-unit targeting without inlining Adaptive Amitosis behavior
 				}
 				else if (weaponId == WeaponId::SalamanderPerditionBarrage)
 				{
