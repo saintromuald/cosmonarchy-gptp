@@ -153,19 +153,16 @@ namespace hooks
 
 	u32 doMedicHeal_Func(CUnit* cleric, CUnit* target) // 00463C40
 	{
-		auto result = cleric->canUseTech(TechId::Healing, cleric->playerId);
-		if (result)
+		if (cleric->canUseTech(TechId::Healing, cleric->playerId))
 		{
 			if (target && helper::AI_OrderHeal(cleric, target))
 			{
 				auto acquired = helper::MedicHeal_TargetAcquire(cleric);
-				auto acquired2 = acquired;
 				if (acquired)
 				{
 					helper::unitOrderMoveToTargetUnit(cleric, acquired);
-					helper::moveToTarget(acquired2, cleric);
-					auto acquired3 = acquired2;
-					if (!cleric->isTargetWithinMinRange(acquired3, 30))
+					helper::moveToTarget(cleric, acquired);
+					if (!cleric->isTargetWithinMinRange(acquired, 30))
 					{
 						return 3;
 					}
@@ -174,9 +171,8 @@ namespace hooks
 					return 1;
 				}
 			}
-			result = 0;
 		}
-		return result;
+		return 0;
 	}
 
 	void orders_MedicHeal1(CUnit* unit)
@@ -185,6 +181,10 @@ namespace hooks
 		u32 doMedicHeal_result = 0;
 		auto a = unit->hitPoints;
 		bool reqHeal = false;
+		if (!target)
+		{
+			return;
+		}
 		if (target != nullptr && target->hitPoints < units_dat::MaxHitPoints[target->id])
 		{
 			reqHeal = true;
