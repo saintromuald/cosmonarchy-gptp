@@ -897,8 +897,7 @@ namespace hooks
 								pickedUnit->removeOverlay(ImageId::EnsnaringBroodOverlay);
 							}
 							*/
-							UnitExt* pickedExt = globals.GetUnitExt(pickedUnit);
-							auto& vec = pickedExt->unitVectors[UnitVectorTertiaryEyesSiren];
+							auto& vec = unitExt->unitVectors[UnitVectorTertiaryEyesSiren];
 							if (std::find(vec.begin(), vec.end(), unit) == vec.end())
 							{
 								vec.push_back(unit);
