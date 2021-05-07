@@ -208,46 +208,46 @@ namespace helper
 	char AI_CancelStructure(Unit* structure);
 
 	bool unitCantSeeCloakedTarget(Unit* unit, Unit* target);												// 00401D60
-	bool unitCanInfest(Unit* unit);																		// 00402750
-	void AI_AttackUnit(Unit* unit);																		// 0043FFD0
-	Unit* findBestAttackTarget(Unit* unit);																// 00443080
+	bool unitCanInfest(Unit* unit);																			// 00402750
+	void AI_AttackUnit(Unit* unit);																			// 0043FFD0
+	Unit* findBestAttackTarget(Unit* unit);																	// 00443080
 	bool function_00462EA0(Unit* unit, u8 unknownByteValue);												// 00462EA0
-	void function_00465780(Unit* unit);																	// 00465780
+	void function_00465780(Unit* unit);																		// 00465780
 	void removeOrderFromUnitQueue(Unit* unit, Order* order);												// 004742D0
 	void function_00474A70(Unit* unit, Unit* target, u8 orderId);											// 00474A70
 	bool isTargetWithinMinMovementRange(Unit* unit, Unit* target, u32 range);								// 004763D0
 	bool function_00476610(Unit* unit, s32 x, s32 y);														// 00476610
-	bool isUnitInWeaponRange(Unit* unit, Unit* target);													// 00476870
+	bool isUnitInWeaponRange(Unit* unit, Unit* target);														// 00476870
 	void getWeaponBeginIscript(Unit* unit, IscriptAnimation::Enum anim);									// 00476ED0
-	void function_00477510(Unit* unit);																	// 00477510
-	void function_00477820(Unit* unit, u8 orderId);														// 00477820
-	bool function_00478370(Unit* unit, u8 orderId);														// 00478370
-	bool function_00478540(Unit* unit);																	// 00478540
-	bool isUnitCritter(Unit* unit);																		// 0047B450
+	void function_00477510(Unit* unit);																		// 00477510
+	void function_00477820(Unit* unit, u8 orderId);															// 00477820
+	bool function_00478370(Unit* unit, u8 orderId);															// 00478370
+	bool function_00478540(Unit* unit);																		// 00478540
+	bool isUnitCritter(Unit* unit);																			// 0047B450
 	void moveToCollide(Unit* unit, Unit* target);														    // 00495400
 
-	bool isUnitVisible(Unit* unit);																		// 004E5DB0
-	bool isTargetVisible(Unit* unit, Unit* target);														// 004E5E30
+	bool isUnitVisible(Unit* unit);																			// 004E5DB0
+	bool isTargetVisible(Unit* unit, Unit* target);															// 004E5E30
 	u8 getRightClickActionOrder(Unit* unit);																// 004E5EA0
 	void setNextWaypoint(Unit* unit);															            // 004EB290
 	void makeToHoldPosition(Unit* unit);																	// 004EB5B0
-	bool moveToTarget(Unit* unit, Unit* target);															// 004EB720
+	bool moveToTarget(Unit* target, Unit* unit);															// 004EB720
 	bool SetMoveTarget_xy(Unit* unit, s32 x, s32 y);														// 004EB820
-	s32 moveTowards(Unit* unit, Unit* target);															// 004EB900
-	bool changeMovementTargetMoveTarget2(Unit* unit, s32 x, s32 y);										// 004EB9C0
+	s32 moveTowards(Unit* unit, Unit* target);																// 004EB900
+	bool changeMovementTargetMoveTarget2(Unit* unit, s32 x, s32 y);											// 004EB9C0
 
-	bool isDistanceGreaterThanHaltDistance(Unit* unit, s32 x, s32 y, u32 distance);	                    // 00401240
+	bool isDistanceGreaterThanHaltDistance(Unit* unit, s32 x, s32 y, u32 distance);							// 00401240
 	void checkUnstack(Unit* unit);												                            // 0042D9A0
-	bool beginBuilding(Unit* unit);												                        // 00467030
-	Unit* beginGasBuilding(Unit* unit, u32 unitId);														// 004678A0
+	bool beginBuilding(Unit* unit);																			// 00467030
+	Unit* beginGasBuilding(Unit* unit, u32 unitId);															// 004678A0
 	void addOverlayBelowMain(Sprite* sprite, u32 imageId, u32 unk1, u32 unk2, u32 unk3);					// 00498D70
 	void replaceSpriteImages(Sprite* sprite, u32 imageId, u32 imageDirection);								// 00499BB0
 	void displayLastNetErrorForPlayer(u32 playerId);										                // 0049E530
 	void updateUnitStrength(Unit* unit);												                    // 0049FA40
 	void iscript_OpcodeCases(Image* image, u32 offset_, u32 unk1, u32 unk2);								// 004D74C0
-	void switchToWarpTexture(Image* image);												                // 004D8500
+	void switchToWarpTexture(Image* image);																	// 004D8500
 	bool setThingyVisibilityFlags(Thingy* thingy);									                        // 004878F0
-	Thingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);		    							// 00488210
+	Thingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);		    								// 00488210
 	void setUnitStatTxtErrorMsg(char* message);										                        // 0048CCB0
 	void playUnitSFX(u32 soundId, u16 x, u16 y, u32 unk1, u32 unk2);										// 0048EC10
 	u32 RandomizeShort(u32 unknown_index);																	// 004DC4A0

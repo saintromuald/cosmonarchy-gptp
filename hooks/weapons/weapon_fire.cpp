@@ -1077,6 +1077,57 @@ namespace hooks
 		return (Unit*)helper::iterateUnitsAtLocationTargetProc(&_a1, (s32(__fastcall*)(s32, s32))findNextBounceTargetProc, 0);
 	}
 
+	// Hooked to resolve issues with multihit bullets - Pr0nogo
+	Bullet* deleteBullet (Bullet* bullet) // 0048A560
+	{
+		if (!bullet->sprite)
+		{
+			if (*firstBullet == bullet)
+			{
+				*firstBullet = bullet->next;
+			}
+			if (*lastBullet == bullet)
+			{
+				*lastBullet = bullet->previous;
+			}
+			if (bullet->previous)
+			{
+				bullet->previous->next = bullet->next;
+			}
+			Bullet* v1 = bullet->next;
+			if (v1)
+			{
+				v1->previous = bullet->previous;
+			}
+			bullet->previous = 0;
+			bullet->next = 0;
+			Bullet* v2 = *firstFreeBullet;
+			if (*firstFreeBullet)
+			{
+				if (*lastFreeBullet == *firstFreeBullet)
+				{
+					*lastFreeBullet = bullet;
+				}
+				bullet->previous = *firstFreeBullet;
+				bullet->next = v2->next;
+				Bullet* v3 = v2->next;
+				if (v3)
+				{
+					v3->previous = bullet;
+				}
+				v2->next = bullet;
+				*bulletCount -= 1;
+			}
+			else
+			{
+				*lastFreeBullet = bullet;
+				*firstFreeBullet = bullet;
+				*bulletCount -= 1;
+			}
+		}
+		return bullet;
+	}
+
 	/*
 	s32 writeBullets(FILE* hFile) {
 		s32 v1; // edi

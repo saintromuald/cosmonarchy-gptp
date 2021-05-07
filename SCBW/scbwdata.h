@@ -18,12 +18,16 @@
 SCBW_DATA(Unit**, firstVisibleUnit, 0x00628430);
 /// Includes units in transports/bunkers, workers inside gas buildings, nukes in
 /// silos, queens inside command centers, and units in production.
-SCBW_DATA(Unit**, firstHiddenUnit, 0x006283EC);
-SCBW_DATA(Unit**, lastHiddenUnit, 0x00628428);
-SCBW_DATA(Unit**, firstScannerSweep, 0x006283F4);
-SCBW_DATA(Unit**, lastScannerSweep, 0x00628434);
-SCBW_DATA(Unit**, firstPsiFieldProvider, 0x0063FF54);
-SCBW_DATA(Bullet**, firstBullet, 0x0064DEC4);
+SCBW_DATA(Unit**,		firstHiddenUnit,		0x006283EC);
+SCBW_DATA(Unit**,		lastHiddenUnit,			0x00628428);
+SCBW_DATA(Unit**,		firstScannerSweep,		0x006283F4);
+SCBW_DATA(Unit**,		lastScannerSweep,		0x00628434);
+SCBW_DATA(Unit**,		firstPsiFieldProvider,	0x0063FF54);
+SCBW_DATA(Bullet**,		firstBullet,			0x0064DEC4);
+SCBW_DATA(Bullet**,		lastBullet,				0x0064DEAC);
+SCBW_DATA(Bullet**,		firstFreeBullet,		0x0064EED8);
+SCBW_DATA(Bullet**,		lastFreeBullet,			0x0064EEDC);
+SCBW_DATA(u32*,			bulletCount,			0x0064DEBC);
 
 struct Units12 {
 	Unit* unit[12];

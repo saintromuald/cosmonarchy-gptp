@@ -3,31 +3,23 @@
 
 namespace
 {
-
 	void __declspec(naked) orders_MedicHeal2Wrapper()
 	{
-
 		static Unit* unit;
-
 		__asm {
 			MOV unit, EDI
 			PUSHAD
 		}
-
 		hooks::orders_MedicHeal2(unit);
-
 		__asm {
 			POPAD
 			RETN
 		}
-
 	}
 
 	void __declspec(naked) orders_HealMoveWrapper()
 	{
-
 		static Unit* unit;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -35,58 +27,45 @@ namespace
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::orders_HealMove(unit);
-
 		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN 4
 		}
-
 	}
 
 	void __declspec(naked) orders_MedicWrapper()
 	{
-
 		static Unit* unit;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::orders_Medic(unit);
-
 		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN
 		}
-
 	}
 
 	void __declspec(naked) orders_MedicHeal1Wrapper()
 	{
-
 		static Unit* unit;
-
 		__asm {
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::orders_MedicHeal1(unit);
-
 		__asm {
 			POPAD
 			RETN
 		}
-
 	}
 
 	void __declspec(naked) AI_AcquireHealTarget_Wrapper()
@@ -114,7 +93,8 @@ namespace
 		static Unit* medic;
 		static Unit* target;
 		static u32 result;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -125,16 +105,17 @@ namespace
 			PUSHAD
 		}
 		result = hooks::doMedicHeal_Func(medic, target);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
 			RETN 4
 		}
-
 	}
-}//unnamed namespace
+
+}
 
 namespace hooks
 {

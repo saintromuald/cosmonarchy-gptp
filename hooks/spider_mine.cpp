@@ -178,7 +178,7 @@ namespace hooks
 	void orders_PlaceMine(Unit* unit) // 00464FD0
 	{
 		Unit* v1;
-		Unit* v2;
+		Unit* target;
 		s32 v3;
 		Sprite* v4;
 		s32 v5;
@@ -244,11 +244,11 @@ namespace hooks
 		}
 		else
 		{
-			v2 = unit->orderTarget.unit;
-			if (v2)
+			target = unit->orderTarget.unit;
+			if (target)
 			{
-				v3 = helper::moveToTarget(v2, unit);
-				v4 = v2->sprite;
+				v3 = helper::moveToTarget(target, unit);
+				v4 = target->sprite;
 				v5 = v4->position.y;
 				v6 = v4->position.x;
 				if (v6 != v1->nextTargetWaypoint.x || v5 != v1->nextTargetWaypoint.y)

@@ -2375,7 +2375,7 @@ namespace helper
 		}
 	}
 
-	bool moveToTarget(Unit* unit, Unit* target)
+	bool moveToTarget(Unit* target, Unit* unit)
 	{
 		const u32 Func_moveToTarget = 0x004EB720;
 		static b32 bPreResult;

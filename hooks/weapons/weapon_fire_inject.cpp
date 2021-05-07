@@ -89,6 +89,25 @@ namespace
 			RETN
 		}
 	}
+
+	void __declspec(naked) deleteBullet_Wrapper()
+	{
+		static Bullet* result;
+		static Bullet* bullet;
+		__asm
+		{
+			MOV bullet, EAX
+			PUSHAD
+		}
+		result = hooks::deleteBullet(bullet);
+		__asm
+		{
+			POPAD
+			MOV EAX, result
+			RETN
+		}
+	}
+
 	/*
 	void __declspec(naked) writeBullets_Wrapper() {
 		static FILE* a1;
@@ -117,10 +136,11 @@ namespace hooks
 
 	void injectWeaponFireHooks()
 	{
-		jmpPatch(fireWeaponWrapper, Func_FireUnitWeapon, 0);
-		jmpPatch(progressBulletFlight_Wrapper, 0x0048B3B0, 3);
-		jmpPatch(bulletBehaviour_Bounce_Wrapper, 0x0048B2D0, 0);
-		jmpPatch(findNextBounceTargetProc_Wrapper, 0x0048AFD0, 3);//proc
-	//	jmpPatch(findNextBounceTarget_Wrapper, 0x0048B1E0, 1);
+		jmpPatch(fireWeaponWrapper,					Func_FireUnitWeapon, 0);
+		jmpPatch(progressBulletFlight_Wrapper,		0x0048B3B0, 3);
+		jmpPatch(bulletBehaviour_Bounce_Wrapper,	0x0048B2D0, 0);
+		jmpPatch(findNextBounceTargetProc_Wrapper,	0x0048AFD0, 3);
+		jmpPatch(deleteBullet_Wrapper,				0x0048A560, 0);
+	//	jmpPatch(findNextBounceTarget_Wrapper,		0x0048B1E0, 1);
 	}
 } //hooks

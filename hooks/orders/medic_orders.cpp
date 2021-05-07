@@ -33,7 +33,7 @@ namespace hooks
 				unit->orderTarget.unit = target;
 				unit->orderTarget.pt.x = target->sprite->position.x;
 				unit->orderTarget.pt.y = target->sprite->position.y;
-				helper::moveToTarget(unit, target);
+				helper::moveToTarget(target, unit);
 				bStopThere = true;
 			}
 			else
@@ -73,7 +73,7 @@ namespace hooks
 							oldPos.y = unit->orderTarget.pt.y;
 							helper::orderInterrupt(unit, unit->orderTarget.unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y, OrderId::MedicHeal1);
 
-							helper::moveToTarget(unit, newTarget);
+							helper::moveToTarget(newTarget, unit);
 							helper::unitOrderMoveToTargetUnit(unit, newTarget);
 							if (oldTarget != nullptr)
 							{
@@ -127,7 +127,7 @@ namespace hooks
 				unit->orderTarget.unit = target;
 				unit->orderTarget.pt.x = target->sprite->position.x;
 				unit->orderTarget.pt.y = target->sprite->position.y;
-				helper::moveToTarget(unit, target);
+				helper::moveToTarget(target, unit);
 			}
 			else
 			{ // 004639BD
@@ -157,11 +157,11 @@ namespace hooks
 		{
 			if (target && helper::AI_OrderHeal(cleric, target))
 			{
-				auto acquired = helper::MedicHeal_TargetAcquire(cleric);
+				Unit* acquired = helper::MedicHeal_TargetAcquire(cleric);
 				if (acquired)
 				{
 					helper::unitOrderMoveToTargetUnit(cleric, acquired);
-					helper::moveToTarget(cleric, acquired);
+					helper::moveToTarget(acquired, cleric);
 					if (!cleric->isTargetWithinMinRange(acquired, 30))
 					{
 						return 3;
@@ -178,18 +178,16 @@ namespace hooks
 	void orders_MedicHeal1(Unit* unit)
 	{
 		Unit* target = unit->orderTarget.unit;
-		u32 doMedicHeal_result = 0;
-		auto a = unit->hitPoints;
-		bool reqHeal = false;
-		if (!target)
+		if (target == nullptr)
 		{
 			return;
 		}
-		if (target != nullptr && target->hitPoints < units_dat::MaxHitPoints[target->id])
+		bool reqHeal = false;
+		if (target->hitPoints < units_dat::MaxHitPoints[target->id])
 		{
 			reqHeal = true;
 		}
-		doMedicHeal_result = doMedicHeal_Func(unit, target);
+		u32 doMedicHeal_result = doMedicHeal_Func(unit, target);
 		if (doMedicHeal_result == 0)
 		{
 			helper::setNextWaypoint(unit);
@@ -213,8 +211,7 @@ namespace hooks
 			{
 				if (target != nullptr
 					&& helper::moveTowards(target, unit) != 0
-					&& unit->getMovableState() != 2 // unit not unmovable
-					)
+					&& unit->getMovableState() != 2) // unit not unmovable
 				{
 					if (unit->isTargetWithinMinRange(target, 30))
 					{
