@@ -510,9 +510,10 @@ namespace hooks
 						{
 							// Apply Lazarus Agent
 							UnitExt* pickedUnitExt = globals.GetUnitExt(picked_unit);
-							pickedUnitExt->values[ValueLazarusAgent] = 1;
+							pickedUnitExt->values[ValueLazarusAgent] += 1;
 							pickedUnitExt->values[ValueLazarusAgentApostleSrc] = (u32)unit; // TODO: port as a unit
-							picked_unit->sprite->createTopOverlay(1265);
+							picked_unit->sprite->createTopOverlay(ImageId::LazarusAgentCast);
+//							scbw::playSound(SoundId::LazarusAgentCast, unit);
 						}
 					}
 				}
@@ -893,6 +894,7 @@ namespace hooks
 			}
 		}
 
+		/*
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Addon)
 		{
 			if (unit->connectedUnit != nullptr
@@ -906,6 +908,7 @@ namespace hooks
 				unit->sprite->playIscriptAnim(IscriptAnimation::WorkingToIdle);
 			}
 		}
+		*/
 
 		// Warp Flash overlay: begin 3 seconds before the graphic finishes warping in
 		/*

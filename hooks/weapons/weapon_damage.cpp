@@ -754,10 +754,10 @@ namespace hooks
 		}
 
 		// Apostle - Lazarus Agent
-		if (targetExt->values[ValueLazarusAgent] == 1)
+		if (targetExt->values[ValueLazarusAgent])
 		{
 			globals.initLazarusAgent(data.target->position.x, data.target->position.y,
-				data.target->playerId, data.target->id, data.target->energy,
+				data.target->playerId, data.target->id, data.target->energy, targetExt->values[ValueLazarusAgent],
 				(CUnit*)targetExt->values[ValueLazarusAgentApostleSrc]);
 		}
 

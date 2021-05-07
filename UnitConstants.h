@@ -34,6 +34,7 @@ constexpr s32 MadcapMaxStacks = 10;
 constexpr f64 MadcapAttackSpeedPerStack = 0.05;
 
 // Apostle
+constexpr s32 ApostleLazarusAgentHeal = 25 * 256;
 constexpr s32 ApostleBloodTitheHealing = 5 * 256;
 constexpr s32 ApostleLastBreathEnergyGain = 5 * 256;
 
