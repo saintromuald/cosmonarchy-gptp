@@ -730,6 +730,7 @@ namespace hooks
 	// no bullet because this function is called in another context without bullet
 	void MindControlHitHook(CUnit* attacker, CUnit* target)
 	{
+		scbw::decloakProc(attacker);
 		if (target->status & UnitStatus::IsHallucination)
 		{
 			target->remove();

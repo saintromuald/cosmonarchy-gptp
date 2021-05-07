@@ -79,6 +79,7 @@ namespace hooks
 			}
 
 			unit->mainOrderState = 6;
+			scbw::decloakProc(unit);
 
 		}
 

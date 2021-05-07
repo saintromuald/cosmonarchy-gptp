@@ -232,7 +232,7 @@ void Globals::reset()
 	multihitBullets.clear();
 	apostleAgents.clear();
 	lurkerSpineHits.clear();
-	for (int j = 0; j < UNIT_ARRAY_LENGTH; ++j)
+	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j)
 	{ 
 		unitExt[j] = {};
 		// this should set combat timer to highest u32,
@@ -243,11 +243,11 @@ void Globals::reset()
 
 void Globals::unitDeathHook(CUnit* unit)
 {
-	for (int j = 0; j < UNIT_ARRAY_LENGTH; ++j)
+	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j)
 	{ // set dead unit pointers to nullptr and erase them from unit vectors
 		UnitExt* ext = &unitExt[j];
 
-		for (int i = 0; i < UnitCount; ++i)
+		for (u32 i = 0; i < UnitCount; ++i)
 		{
 			if (ext->units[i] == unit)
 			{
@@ -255,7 +255,7 @@ void Globals::unitDeathHook(CUnit* unit)
 			}
 		}
 
-		for (int i = 0; i < UnitVectorCount; ++i)
+		for (u32 i = 0; i < UnitVectorCount; ++i)
 		{
 			auto& vec = ext->unitVectors[i];
 			vec.erase(std::remove_if(vec.begin(), vec.end(), [&](CUnit* vecUnit)
@@ -341,21 +341,21 @@ void Globals::createGenericPersistImpact(u8 impactId, u32 time, Point32 position
 
 void Globals::frameHook()
 {
-	for (int j = 0; j < UNIT_ARRAY_LENGTH; ++j)
+	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j)
 	{
 		UnitExt* ext = &unitExt[j];
 		if (ext->combatTimer != -1) // don't increment past max value of u32
 		{
 			++ext->combatTimer;
 		}
-		for (int i = 0; i < TimerCount; ++i)
+		for (u32 i = 0; i < TimerCount; ++i)
 		{
 			if (ext->timers[i] > 0)
 			{
 				ext->timers[i]--;
 			}
 		}
-		for (int i = 0; i < TimerVectorCount; ++i)
+		for (u32 i = 0; i < TimerVectorCount; ++i)
 		{
 			for (auto& timer : ext->timerVectors[i])
 			{
@@ -399,21 +399,20 @@ void Globals::frameHook()
 
 	for (s32 i = 0; i < persistImpacts.size(); i++)
 	{
-		auto& impact = persistImpacts[i];
-		impact.currentTime--;
+		persistImpacts[i].currentTime--;
 		const s32 framePeriod = 6;
-		if (impact.currentTime % framePeriod == 1)
+		if (persistImpacts[i].currentTime % framePeriod == 1)
 		{
-			const f64 damageMultiplier = 256.0 * (f64)framePeriod / impact.maxTime;
-			switch (impact.impactId)
+			const f64 damageMultiplier = 256.0 * (f64)framePeriod / persistImpacts[i].maxTime;
+			switch (persistImpacts[i].impactId)
 			{
 				case ImpactId::SalamanderFire:
 				{
 					scbw::UnitFinder(
-						impact.position.x - impact.radius,
-						impact.position.y - impact.radius,
-						impact.position.x + impact.radius,
-						impact.position.y + impact.radius
+						persistImpacts[i].position.x - persistImpacts[i].radius,
+						persistImpacts[i].position.y - persistImpacts[i].radius,
+						persistImpacts[i].position.x + persistImpacts[i].radius,
+						persistImpacts[i].position.y + persistImpacts[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit)
 					{
 						unit->damageWithIgnoreFlatArmor(WeaponId::SalamanderIncendiaryPayload, weapons_dat::DamageAmount[WeaponId::SalamanderIncendiaryPayload] * damageMultiplier);
@@ -423,10 +422,10 @@ void Globals::frameHook()
 				case ImpactId::GriefOfAllGods:
 				{
 					scbw::UnitFinder(
-						impact.position.x - impact.radius,
-						impact.position.y - impact.radius,
-						impact.position.x + impact.radius,
-						impact.position.y + impact.radius
+						persistImpacts[i].position.x - persistImpacts[i].radius,
+						persistImpacts[i].position.y - persistImpacts[i].radius,
+						persistImpacts[i].position.x + persistImpacts[i].radius,
+						persistImpacts[i].position.y + persistImpacts[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit)
 					{
 						unit->damageWithIgnoreFlatArmor(WeaponId::StarSovereignGriefOfAllGods, weapons_dat::DamageAmount[WeaponId::StarSovereignGriefOfAllGods] * damageMultiplier);
@@ -436,10 +435,10 @@ void Globals::frameHook()
 				case ImpactId::Criticality:
 				{
 					scbw::UnitFinder(
-						impact.position.x - impact.radius,
-						impact.position.y - impact.radius,
-						impact.position.x + impact.radius,
-						impact.position.y + impact.radius
+						persistImpacts[i].position.x - persistImpacts[i].radius,
+						persistImpacts[i].position.y - persistImpacts[i].radius,
+						persistImpacts[i].position.x + persistImpacts[i].radius,
+						persistImpacts[i].position.y + persistImpacts[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit)
 					{
 						unit->damageWithIgnoreFlatArmor(WeaponId::AspirantCriticality, weapons_dat::DamageAmount[WeaponId::AspirantCriticality] * damageMultiplier);
@@ -449,10 +448,10 @@ void Globals::frameHook()
 				case ImpactId::CausticDischarge:
 				{
 					scbw::UnitFinder(
-						impact.position.x - impact.radius,
-						impact.position.y - impact.radius,
-						impact.position.x + impact.radius,
-						impact.position.y + impact.radius
+						persistImpacts[i].position.x - persistImpacts[i].radius,
+						persistImpacts[i].position.y - persistImpacts[i].radius,
+						persistImpacts[i].position.x + persistImpacts[i].radius,
+						persistImpacts[i].position.y + persistImpacts[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit)
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
@@ -464,10 +463,10 @@ void Globals::frameHook()
 				case ImpactId::IonField:
 				{
 					scbw::UnitFinder(
-						impact.position.x - impact.radius,
-						impact.position.y - impact.radius,
-						impact.position.x + impact.radius,
-						impact.position.y + impact.radius
+						persistImpacts[i].position.x - persistImpacts[i].radius,
+						persistImpacts[i].position.y - persistImpacts[i].radius,
+						persistImpacts[i].position.x + persistImpacts[i].radius,
+						persistImpacts[i].position.y + persistImpacts[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit)
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
@@ -479,17 +478,17 @@ void Globals::frameHook()
 				case ImpactId::Hallucination:
 				{
 					scbw::UnitFinder(
-						impact.position.x - impact.radius,
-						impact.position.y - impact.radius,
-						impact.position.x + impact.radius,
-						impact.position.y + impact.radius
+						persistImpacts[i].position.x - persistImpacts[i].radius,
+						persistImpacts[i].position.y - persistImpacts[i].radius,
+						persistImpacts[i].position.x + persistImpacts[i].radius,
+						persistImpacts[i].position.y + persistImpacts[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::Enemy, {}), [&](CUnit* unit)
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
-						if (unitExt->timers[TimerHallucinating] < impact.currentTime)
+						if (unitExt->timers[TimerHallucinating] < persistImpacts[i].currentTime)
 						{
-							unitExt->values[ValueHallucinatingSourcePlayer] = impact.player;
-							unitExt->timers[TimerHallucinating] = impact.currentTime;
+							unitExt->values[ValueHallucinatingSourcePlayer] = persistImpacts[i].player;
+							unitExt->timers[TimerHallucinating] = persistImpacts[i].currentTime;
 
 							scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit);
 							if (unit->subunit != nullptr)
@@ -507,49 +506,49 @@ void Globals::frameHook()
 				case ImpactId::Irradiate:
 				{
 					scbw::UnitFinder(
-						impact.position.x - impact.radius,
-						impact.position.y - impact.radius,
-						impact.position.x + impact.radius,
-						impact.position.y + impact.radius
+						persistImpacts[i].position.x - persistImpacts[i].radius,
+						persistImpacts[i].position.y - persistImpacts[i].radius,
+						persistImpacts[i].position.x + persistImpacts[i].radius,
+						persistImpacts[i].position.y + persistImpacts[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, 0, {}), [&](CUnit* unit)
 					{
-						ApplyIrradiate(unit, impact.player, 15);
+						ApplyIrradiate(unit, persistImpacts[i].player, 15);
 					});
 					break;
 				}
 				case ImpactId::GroundZero:
 				{
-					int stage = (impact.maxTime - impact.currentTime) / framePeriod;
+					u32 stage = (persistImpacts[i].maxTime - persistImpacts[i].currentTime) / framePeriod;
 
 					switch (stage)
 					{
 						case 0:
 						{
-							globals.createGenericPersistImpact(ImpactId::Irradiate, 30 * 24, impact.position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, impact.player);
+							globals.createGenericPersistImpact(ImpactId::Irradiate, 30 * 24, persistImpacts[i].position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, persistImpacts[i].player);
 						} break;
 						case 1:
 						case 2:
 						{
-							float d = stage * 2 * 32;
-							int count = stage * 8;
+							f32 d = stage * 2 * 32;
+							u32 count = stage * 8;
 
-							Point32 newPos = impact.position;
+							Point32 newPos = persistImpacts[i].position;
 							newPos.x += d;
-							for (int j = 0; j < count; ++j)
+							for (u32 j = 0; j < count; ++j)
 							{
-								newPos = scbw::rotate_point(impact.position, newPos, (360.0 / count));
-								globals.createGenericPersistImpact(ImpactId::Irradiate, 30 * 24, newPos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, impact.player);
+								newPos = scbw::rotate_point(persistImpacts[i].position, newPos, (360.0 / count));
+								globals.createGenericPersistImpact(ImpactId::Irradiate, 30 * 24, newPos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, persistImpacts[i].player);
 							}
 						} break;
 					}
 				}
 			}
 		}
-		if (impact.currentTime <= 0)
+		if (persistImpacts[i].currentTime <= 0)
 		{
-			if (impact.thingy && impact.thingy->sprite)
+			if (persistImpacts[i].thingy && persistImpacts[i].thingy->sprite)
 			{
-				impact.thingy->sprite->playIscriptAnim(IscriptAnimation::Death);
+				persistImpacts[i].thingy->sprite->playIscriptAnim(IscriptAnimation::Death);
 			}
 
 			persistImpacts.erase(persistImpacts.begin() + i);
