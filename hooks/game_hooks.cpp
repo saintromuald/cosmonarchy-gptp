@@ -855,7 +855,7 @@ namespace hooks
 			case UnitId::ZergLarva:
 			{
 				// Set Larva type
-				if (unit->connectedUnit != nullptr && unitExt->values[ValueLarvaType] == 0)
+				if (unit->connectedUnit != nullptr && unitExt->values[ValueLarvaType] == LarvaStandard)
 				{
 					if (unit->connectedUnit->id == UnitId::ZergOcsalColony)
 					{
