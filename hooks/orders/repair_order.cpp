@@ -88,7 +88,7 @@ namespace hooks
 				{
 					if (unit->getMovableState() == 0)
 					{ // not reached destination
-						helper::function_004EB900(unit, target); // may cause unit to move or become idle
+						helper::moveTowards(unit, target); // may cause unit to move or become idle
 						bEndThere = true;
 					}
 					else

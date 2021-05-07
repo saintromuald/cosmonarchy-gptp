@@ -1829,6 +1829,8 @@ namespace scbw
 			} break;
 			// Allowed IDs
 			case UnitId::TerranHarakan:
+			case UnitId::TerranPhalanxTankMode:
+			case UnitId::TerranPhalanxSiegeMode:
 			{
 				return true;
 			} break;

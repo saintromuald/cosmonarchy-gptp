@@ -10,7 +10,6 @@
 
 namespace hooks
 {
-
 	/// This function regenerates energy for spellcasters and drains energy for cloaking units.
 	/// Equivalent to function sub_4EB4B0 @ 0x004EB4B0
 
@@ -27,7 +26,7 @@ namespace hooks
 			if (unit->status & (UnitStatus::Cloaked + UnitStatus::RequiresDetection)		// If the unit is cloaked
 				&& !(unit->status & UnitStatus::CloakingForFree))							// and must consume energy to stay cloaked (i.e. not under a Didact)
 			{
-				u16 cloakingEnergyCost = 25*256;
+				u16 cloakingEnergyCost = 0;
 				if (!(unit->hasEnergy(cloakingEnergyCost)))
 				{
 					if (unit->secondaryOrderId == OrderId::Cloak)

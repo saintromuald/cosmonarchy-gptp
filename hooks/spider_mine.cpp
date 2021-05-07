@@ -6,10 +6,9 @@
 
 namespace hooks
 {
-	// Return the best target for the Spider Mine. If there is no suitable target, return nullptr instead.
-	CUnit* findBestTerranMineTarget(CUnit* mine)
-	{ // 00441270
-// Default StarCraft behavior
+	// Return the best target for the mine. If there is no suitable target, return nullptr instead.
+	CUnit* findBestTerranMineTarget(CUnit* mine) // 00441270
+	{
 		s32 range;
 		// Don't search for a target if the mine is under a Disruption Web
 		if (mine->status & UnitStatus::CanNotAttack)
@@ -25,22 +24,30 @@ namespace hooks
 		{
 			// Don't attack friendly or allied units
 			if (!mine->isTargetEnemy(target))
+			{
 				return false;
+			}
 			// Don't attack invincible units
 			if (target->status & UnitStatus::Invincible)
+			{
 				return false;
+			}
 			// Don't attack air units / buildings
 			if (target->status & (UnitStatus::InAir | UnitStatus::GroundedBuilding))
+			{
 				return false;
+			}
 			// Don't attack hovering units
 			if (units_dat::MovementFlags[target->id] == MovementFlags::HoverUnit)
+			{
 				return false;
+			}
 			return true;
 		});
 	}
 
-	void orders_TerranMine(CUnit* unit)
-	{ // 00463DF0
+	void orders_TerranMine(CUnit* unit) // 00463DF0
+	{
 		if (unit->mainOrderState == 0)
 		{
 			unit->groundWeaponCooldown = MineBurrowTime;
@@ -63,8 +70,8 @@ namespace hooks
 			{
 				if (!(unit->status & UnitStatus::IsHallucination))
 				{
-					helper::function_004E9A30(unit); //related to movement
-					helper::instantCloak(unit); //related to cloaking/stealth
+					helper::function_004E9A30(unit); // related to movement
+					helper::instantCloak(unit); // related to cloaking/stealth
 				}
 				unit->mainOrderState = 3;
 			}
@@ -116,28 +123,28 @@ namespace hooks
 				{
 					if (unit->isTargetWithinMinRange(unit->orderTarget.unit, MineSeekRange))
 					{
-						//probably trigger movement/acceleration of unit
-						//toward the target
+						// probably trigger movement/acceleration of unit
+						// toward the target
 						helper::moveToCollide(unit, unit->orderTarget.unit);
 						if (unit->isTargetWithinMinRange(unit->orderTarget.unit, MineDetonateRange))
 						{
 							bIsCompletelyInRange = true; // jump to 00463F22
 						}
 						else
-							if (unit->getMovableState() != 2)
-							{ // unit not unmovable
+							if (unit->getMovableState() != 2) // unit not unmovable
+							{
 								bEndThere = true;
 							}
 					}
 				}
-				if (!bEndThere && !bIsCompletelyInRange)
-				{ //63F14
+				if (!bEndThere && !bIsCompletelyInRange) // 00463F14
+				{
 					helper::setNextWaypoint(unit);
 					unit->mainOrderState = 1;
 				}
 
-				if (bIsCompletelyInRange)
-				{ // 00463F22
+				if (bIsCompletelyInRange) // 00463F22
+				{
 					CImage* current_image;
 					unit->orderTarget.unit = nullptr;
 					unit->orderTarget.pt.x = unit->sprite->position.x;
@@ -168,8 +175,8 @@ namespace hooks
 		}
 	}
 
-	void orders_PlaceMine(CUnit* a1)
-	{ // 00464FD0
+	void orders_PlaceMine(CUnit* unit) // 00464FD0
+	{
 		CUnit* v1;
 		CUnit* v2;
 		s32 v3;
@@ -185,25 +192,21 @@ namespace hooks
 		CUnit* v13;
 		CUnit* v14;
 		Point32 a2;
-		v1 = a1;
-		if (a1->mainOrderState)
+		v1 = unit;
+		if (unit->mainOrderState)
 		{
-			if (helper::techUseAllowed(a1, 3u, (unsigned __int8)a1->playerId)
+			if (helper::techUseAllowed(unit, 3u, unit->playerId)
 				&& ((v11 = v1->sprite, v1->moveTarget.pt.x != v11->position.x)
 					|| v1->moveTarget.pt.y != v11->position.y
 					|| ((v1->status & UnitStatus::Unmovable) != 0) != 1))
 			{
-				//scbw::printf("distance %X %X", (getDistanceFast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00),
-				//	0x1400);
 				if ((helper::getDistanceFast(v1->halt.x, v1->orderTarget.pt.x << 8, v1->halt.y, v1->orderTarget.pt.y << 8) & 0xFFFFFF00) <= 0x1400)
 				{
-					//scbw::print("hold");
 					helper::orders_HoldPosSuicidal(v1);
 					v12 = v1->orderTarget.pt.y;
 					a2.x = v1->orderTarget.pt.x;
 					a2.y = v12;
 					helper::fixTargetLocation(0xDu, &a2);
-					//scbw::printf("create at %d %d, order target is %d %d", a2.x, a2.y,v1->orderTarget.pt.x,v1->orderTarget.pt.y);
 					v13 = helper::createUnit(0xDu, a2.x, a2.y, (unsigned __int8)v1->playerId);
 					v14 = v13;
 					if (v13)
@@ -241,10 +244,10 @@ namespace hooks
 		}
 		else
 		{
-			v2 = a1->orderTarget.unit;
+			v2 = unit->orderTarget.unit;
 			if (v2)
 			{
-				v3 = helper::moveToTarget(v2, a1);
+				v3 = helper::moveToTarget(v2, unit);
 				v4 = v2->sprite;
 				v5 = v4->position.y;
 				v6 = v4->position.x;
@@ -263,16 +266,18 @@ namespace hooks
 			}
 			else
 			{
-				v8 = a1->orderTarget.pt.y;
-				v9 = a1->orderTarget.pt.x;
-				ByteOperations::SetLowByte(v10, helper::setMoveTargetXY(v9, v8, a1));
+				v8 = unit->orderTarget.pt.y;
+				v9 = unit->orderTarget.pt.x;
+				ByteOperations::SetLowByte(v10, helper::setMoveTargetXY(v9, v8, unit));
 				if (v9 != v1->nextTargetWaypoint.x || v8 != v1->nextTargetWaypoint.y)
 				{
 					v1->nextTargetWaypoint.x = v9;
 					v1->nextTargetWaypoint.y = v8;
 				}
 				if (v10)
+				{
 					v1->mainOrderState = 1;
+				}
 			}
 		}
 	}

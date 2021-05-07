@@ -233,7 +233,7 @@ namespace helper
 	void makeToHoldPosition(CUnit* unit);																	// 004EB5B0
 	bool moveToTarget(CUnit* unit, CUnit* target);															// 004EB720
 	bool SetMoveTarget_xy(CUnit* unit, s32 x, s32 y);														// 004EB820
-	bool function_004EB900(CUnit* unit, CUnit* target);														// 004EB900
+	s32 moveTowards(CUnit* unit, CUnit* target);															// 004EB900
 	bool changeMovementTargetMoveTarget2(CUnit* unit, s32 x, s32 y);										// 004EB9C0
 
 	bool isDistanceGreaterThanHaltDistance(CUnit* unit, s32 x, s32 y, u32 distance);	                    // 00401240
@@ -499,7 +499,6 @@ namespace helper
 
 	// for ordersStayInRange
 	void prependOrderTargetingGround(__int8 a1, __int16 a2, __int16 a3, s32 a4);
-	s32 moveTowards(CUnit* a1, CUnit* a2);
 	s32 ordersHoldPositionSuicidal(CUnit* a1);
 	s32 getDirectionFromPoints(s32 a1, s32 a2, s32 a3, s32 a4);
 	CUnit* setSecondaryWaypoint(CUnit* a1, s32 a2, s32 a3);

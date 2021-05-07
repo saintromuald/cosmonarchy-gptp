@@ -2418,21 +2418,6 @@ namespace helper
 		}
 	}
 
-	bool function_004EB900(CUnit* unit, CUnit* target)
-	{
-		const u32 Func_Sub4EB900 = 0x004EB900;
-		static b32 bPreResult;
-		__asm {
-			PUSHAD
-			MOV EAX, target
-			MOV ECX, unit
-			CALL Func_Sub4EB900
-			MOV bPreResult, EAX
-			POPAD
-		}
-		return (bPreResult != 0);
-	}
-
 	bool changeMovementTargetMoveTarget2(CUnit* unit, s32 x, s32 y)
 	{
 		const u32 Func_changeMovementTargetMoveTarget2 = 0x004EB9C0;
@@ -4745,14 +4730,14 @@ namespace helper
 		}
 	}
 
-	s32 moveTowards(CUnit* a1, CUnit* a2)
+	s32 moveTowards(CUnit* unit, CUnit* target)
 	{
 		const u32 Func_moveTowards = 0x004EB900;
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
+			MOV EAX, unit
+			MOV ECX, target
 			CALL Func_moveTowards
 			MOV result, EAX
 			POPAD
