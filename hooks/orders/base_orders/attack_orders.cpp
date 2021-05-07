@@ -10,125 +10,130 @@
 
 namespace hooks
 {
-
 	void orders_ReaverAttack1(Unit* unit)
 	{
-
 		Unit* target = unit->orderTarget.unit;
-
 		if (target == nullptr)
 		{
-
 			if (unit->orderQueueHead != nullptr)
 			{
-				//656A2:
+				// 004656A2:
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else
 			{
-				//656B2:
+				// 004656B2:
 				if (unit->pAI != nullptr)
+				{
 					unit->orderComputerCL(OrderId::ComputerAI);
+				}
 				else
-					//656C6:
+				{
+					// 004656C6
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+				}
 			}
-
 		}
 		else
 		{
-
-			//656D8:
+			// 004656D8:
 			if (!unit->canAttackTarget(target, true))
+			{
 				unit->orderTo(OrderId::Move, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+			}
 			else
 			{
-
-				//656F7:
+				// 004656F7:
 				u32 status_saved = (unit->status & UnitStatus::HoldingPosition) + (unit->status & UnitStatus::Disabled);
 				u8 newOrderId;
 
 				if (unit->id == UnitId::ProtossAccantor)
 				{
-					//65720:
+					// 00465720:
 					if (unit->mainOrderId == OrderId::ReaverHold)
+					{
 						newOrderId = OrderId::ReaverHold;
+					}
 					else
+					{
 						newOrderId = OrderId::ReaverFight;
+					}
 				}
 				else
 				{
-					//65730
+					// 00465730
 					if (unit->mainOrderId == OrderId::HoldPosition1)
+					{
 						newOrderId = OrderId::HoldPosition1;
+					}
 					else
+					{
 						newOrderId = OrderId::CarrierFight;
+					}
 				}
 
-				//6573E:
+				// 0046573E:
 				helper::function_00474A70(unit, target, newOrderId);
 				prepareForNextOrder(unit);
 
-				//restore the "disabled" and "holding position" status if they were lost
+				// restore the "disabled" and "holding position" status if they were lost
 				unit->status &= ~(UnitStatus::Disabled + UnitStatus::HoldingPosition);
 				unit->status = status_saved | unit->status;
-
 			}
-
 		}
-
-	} //void orders_ReaverAttack1(Unit* unit)
-
-	;
+	}
 
 	void orders_CarrierAttack1(Unit* unit)
 	{
-
 		Unit* target = unit->orderTarget.unit;
-
 		if (target == nullptr)
 		{
-
 			if (unit->orderQueueHead != nullptr)
 			{
-				//65966:
+				// 00465966:
 				unit->userActionFlags |= 1;
 				prepareForNextOrder(unit);
 			}
 			else
 			{
-				//65981
+				// 00465981
 				if (unit->pAI != nullptr)
+				{
 					unit->orderComputerCL(OrderId::ComputerAI);
-				else //65998
+				}
+				else // 00465998
+				{
 					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+				}
 			}
-
 		}
 		else
 		{
-
-			//659AD:
+			// 004659AD:
 			if (!unit->canAttackTarget(target, true))
+			{
 				unit->orderTo(OrderId::Move, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+			}
 			else
 			{
-
-				//659CF
+				// 004659CF
 				u32 status_saved = (unit->status & UnitStatus::Disabled) + (unit->status & UnitStatus::HoldingPosition);
 				u8 newOrderId;
-
-				//give orders to interceptors/scarabs (through outHangarChild)
+				// give orders to Stewards and Plasma Shells (through outHangarChild)
 				helper::function_00465780(unit);
 
 				if (unit->id == UnitId::ProtossAccantor)
 				{
-					//65A03:
+					// 00465A03:
 					if (unit->mainOrderId == OrderId::ReaverHold)
+					{
 						newOrderId = OrderId::ReaverHold;
+					}
 					else
+					{
 						newOrderId = OrderId::ReaverFight;
+					}
 				}
 				else
 				{
