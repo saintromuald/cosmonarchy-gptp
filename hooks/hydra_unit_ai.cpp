@@ -58,7 +58,7 @@ void hydra_unit_ai(CUnit* unit)
 			});
 			if (count >= 5)
 			{
-				unitExt->values[ValueCastLazarusAgent] = 1;
+				scbw::set_generic_rust_value(unit, RustId::CastLazarusAgent, 1);
 				unitExt->timers[TimerAI_Lazarus] = 24;
 			}
 		}
@@ -66,7 +66,7 @@ void hydra_unit_ai(CUnit* unit)
 
 	else if (unit->id == UnitId::TerranEidolon)
 	{
-		//mines
+		// mines
 	}
 
 	else if (unit->id == UnitId::TerranSavant)
