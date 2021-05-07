@@ -23,7 +23,7 @@ struct SaveState
 		len = 0;
 	}
 };
-namespace ImpactId
+namespace EffectId
 {
 	enum
 	{
@@ -38,9 +38,9 @@ namespace ImpactId
 	};
 }
 
-struct PersistImpact
+struct Effect
 {
-	u8 impactId;
+	u8 effectId;
 	Point32 position;
 	u32 radius;
 	u32 currentTime;
@@ -112,7 +112,7 @@ struct Globals
 	bool tbl_extender;
 	bool unitid_extender;
 
-	std::vector<PersistImpact> persistImpacts;
+	std::vector<Effect> effects;
 	std::vector<PariahHit> pariahHits;
 	std::vector<MultihitBullet> multihitBullets;
 	std::vector<ApostleAgent> apostleAgents;
@@ -154,7 +154,7 @@ struct Globals
 	bool was_hit_by_pariah(Unit* source, Unit* target);
 
 	void register_pariah_hit(Unit* source, Unit* target);
-	void createGenericPersistImpact(u8 impactId, u32 time, Point32 position, u32 radius, s32 spriteId, u8 elevation, u8 player);
+	void createEffect(u8 impactId, u32 time, Point32 position, u32 radius, s32 spriteId, u8 elevation, u8 player);
 	bool was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target);
 	bool multihit_bullet_is_set(Bullet* bullet);
 	u32 get_multihit_count(Bullet* bullet);

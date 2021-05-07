@@ -51,7 +51,7 @@ namespace hooks
 			}
 			
 			scbw::decloakProc(unit);
-			globals.createGenericPersistImpact(ImpactId::Hallucination, 20 * 24, {hit.x, hit.y}, 1.5 * 32, -1, 5, unit->playerId); // TODO: Add Hallucination area sprite
+			globals.createEffect(EffectId::Hallucination, 20 * 24, {hit.x, hit.y}, 1.5 * 32, -1, 5, unit->playerId); // TODO: Add Hallucination area sprite
 			if (!(*CHEAT_STATE & CheatFlags::TheGathering))
 			{
 				unit->spendUnitEnergy(techCost);

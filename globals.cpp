@@ -29,24 +29,24 @@ void Globals::aise_save()
 	stream.write(reinterpret_cast<const char*>(&tbl_extender), sizeof(tbl_extender));
 	stream.write(reinterpret_cast<const char*>(&unitid_extender), sizeof(unitid_extender));
 
-	u32 impactsSize = persistImpacts.size();
-	stream.write(reinterpret_cast<const char*>(&impactsSize), sizeof(impactsSize));
-	for (s32 i = 0; i < impactsSize; i++)
+	u32 effectsSize = effects.size();
+	stream.write(reinterpret_cast<const char*>(&effectsSize), sizeof(effectsSize));
+	for (s32 i = 0; i < effectsSize; i++)
 	{
-		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].position.x), sizeof(persistImpacts[i].position.x));
-		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].position.y), sizeof(persistImpacts[i].position.y));
-		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].elevation), sizeof(persistImpacts[i].elevation));
-		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].currentTime), sizeof(persistImpacts[i].currentTime));
-		stream.write(reinterpret_cast<const char*>(&persistImpacts[i].currentTime), sizeof(persistImpacts[i].currentTime));
+		stream.write(reinterpret_cast<const char*>(&effects[i].position.x), sizeof(effects[i].position.x));
+		stream.write(reinterpret_cast<const char*>(&effects[i].position.y), sizeof(effects[i].position.y));
+		stream.write(reinterpret_cast<const char*>(&effects[i].elevation), sizeof(effects[i].elevation));
+		stream.write(reinterpret_cast<const char*>(&effects[i].currentTime), sizeof(effects[i].currentTime));
+		stream.write(reinterpret_cast<const char*>(&effects[i].currentTime), sizeof(effects[i].currentTime));
 
-		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].position.x), sizeof(persistImpacts[i].position.x));
-		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].position.y), sizeof(persistImpacts[i].position.y));
-		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].elevation), sizeof(persistImpacts[i].elevation));
-		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].period), sizeof(persistImpacts[i].period));
-		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].time), sizeof(persistImpacts[i].time));
-		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].impactId), sizeof(persistImpacts[i].impactId));
-		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].spriteId), sizeof(persistImpacts[i].spriteId));
-		//stream.write(reinterpret_cast<const char*>(&persistImpacts[i].radius), sizeof(persistImpacts[i].radius));
+		//stream.write(reinterpret_cast<const char*>(&effects[i].position.x), sizeof(effects[i].position.x));
+		//stream.write(reinterpret_cast<const char*>(&effects[i].position.y), sizeof(effects[i].position.y));
+		//stream.write(reinterpret_cast<const char*>(&effects[i].elevation), sizeof(effects[i].elevation));
+		//stream.write(reinterpret_cast<const char*>(&effects[i].period), sizeof(effects[i].period));
+		//stream.write(reinterpret_cast<const char*>(&effects[i].time), sizeof(effects[i].time));
+		//stream.write(reinterpret_cast<const char*>(&effects[i].effectId), sizeof(effects[i].effectId));
+		//stream.write(reinterpret_cast<const char*>(&effects[i].spriteId), sizeof(effects[i].spriteId));
+		//stream.write(reinterpret_cast<const char*>(&effects[i].radius), sizeof(effects[i].radius));
 	}
 
 	u32 pariahHitCount = pariahHits.size();
@@ -142,22 +142,22 @@ void Globals::aise_load(const char* ptr, u32 len)
 	for (s32 i = 0; i < impactsSize; i++)
 	{
 		// this code was left here only to keep the proper stream offset, TODO: adjust aise to handle the new struct, or port aise side of this feature (if there still is any)
-		PersistImpact impact;
-		stream.read(reinterpret_cast<char*>(&impact.position.x), sizeof(impact.position.x));
-		stream.read(reinterpret_cast<char*>(&impact.position.y), sizeof(impact.position.y));
-		stream.read(reinterpret_cast<char*>(&impact.elevation), sizeof(impact.elevation));
-		stream.read(reinterpret_cast<char*>(&impact.currentTime), sizeof(impact.currentTime));
-		stream.read(reinterpret_cast<char*>(&impact.currentTime), sizeof(impact.currentTime));
+		Effect effect;
+		stream.read(reinterpret_cast<char*>(&effect.position.x), sizeof(effect.position.x));
+		stream.read(reinterpret_cast<char*>(&effect.position.y), sizeof(effect.position.y));
+		stream.read(reinterpret_cast<char*>(&effect.elevation), sizeof(effect.elevation));
+		stream.read(reinterpret_cast<char*>(&effect.currentTime), sizeof(effect.currentTime));
+		stream.read(reinterpret_cast<char*>(&effect.currentTime), sizeof(effect.currentTime));
 
-		//stream.read(reinterpret_cast<char*>(&impact.position.x), sizeof(impact.position.x));
-		//stream.read(reinterpret_cast<char*>(&impact.position.y), sizeof(impact.position.y));
-		//stream.read(reinterpret_cast<char*>(&impact.elevation), sizeof(impact.elevation));
-		//stream.read(reinterpret_cast<char*>(&impact.period), sizeof(impact.period));
-		//stream.read(reinterpret_cast<char*>(&impact.time), sizeof(impact.time));
-		//stream.read(reinterpret_cast<char*>(&impact.impactId), sizeof(impact.impactId));
-		//stream.read(reinterpret_cast<char*>(&impact.spriteId), sizeof(impact.spriteId));
-		//stream.read(reinterpret_cast<char*>(&impact.radius), sizeof(impact.radius));
-		//persistImpacts.push_back(impact);
+		//stream.read(reinterpret_cast<char*>(&effect.position.x), sizeof(effect.position.x));
+		//stream.read(reinterpret_cast<char*>(&effect.position.y), sizeof(effect.position.y));
+		//stream.read(reinterpret_cast<char*>(&effect.elevation), sizeof(effect.elevation));
+		//stream.read(reinterpret_cast<char*>(&effect.period), sizeof(effect.period));
+		//stream.read(reinterpret_cast<char*>(&effect.time), sizeof(effect.time));
+		//stream.read(reinterpret_cast<char*>(&effect.effectId), sizeof(effect.effectId));
+		//stream.read(reinterpret_cast<char*>(&effect.spriteId), sizeof(effect.spriteId));
+		//stream.read(reinterpret_cast<char*>(&effect.radius), sizeof(effect.radius));
+		//effects.push_back(effect);
 	}
 
 	u32 pariahHitsCount = 0;
@@ -235,7 +235,7 @@ static void ClearUnitExt(int index)
 
 void Globals::reset()
 {
-	persistImpacts.clear();
+	effects.clear();
 	pariahHits.clear();
 	multihitBullets.clear();
 	apostleAgents.clear();
@@ -319,29 +319,29 @@ void ApplyIrradiate(Unit* unit, u8 player, u32 time)
 	unit->irradiateTimer = time;
 }
 
-void Globals::createGenericPersistImpact(u8 impactId, u32 time, Point32 position, u32 radius, s32 spriteId, u8 elevation, u8 player)
+void Globals::createEffect(u8 impactId, u32 time, Point32 position, u32 radius, s32 spriteId, u8 elevation, u8 player)
 {
-	PersistImpact impact;
-	impact.impactId = impactId;
-	impact.position = position;
-	impact.radius = radius;
-	impact.currentTime = time;
-	impact.maxTime = time;
-	impact.spriteId = spriteId;
-	impact.elevation = elevation;
-	impact.player = player;
-	impact.thingy = nullptr;
+	Effect effect;
+	effect.effectId = impactId;
+	effect.position = position;
+	effect.radius = radius;
+	effect.currentTime = time;
+	effect.maxTime = time;
+	effect.spriteId = spriteId;
+	effect.elevation = elevation;
+	effect.player = player;
+	effect.thingy = nullptr;
 
-	if (impact.spriteId >= 0)
+	if (effect.spriteId >= 0)
 	{
-		Thingy* thingy = scbw::createAndInitThingy(impact.spriteId, impact.position.x, impact.position.y);
+		Thingy* thingy = scbw::createAndInitThingy(effect.spriteId, effect.position.x, effect.position.y);
 		if (thingy == nullptr)
 		{
 			return;
 		}
-		impact.thingy = thingy;
+		effect.thingy = thingy;
 	}
-	persistImpacts.push_back(impact);
+	effects.push_back(effect);
 }
 
 void Globals::frameHook()
@@ -402,61 +402,61 @@ void Globals::frameHook()
 		}
 	}
 
-	for (s32 i = 0; i < persistImpacts.size(); i++)
+	for (s32 i = 0; i < effects.size(); i++)
 	{
-		persistImpacts[i].currentTime--;
+		effects[i].currentTime--;
 		const s32 framePeriod = 6;
-		if (persistImpacts[i].currentTime % framePeriod == 1)
+		if (effects[i].currentTime % framePeriod == 1)
 		{
-			const f64 damageMultiplier = 256.0 * (f64)framePeriod / persistImpacts[i].maxTime;
-			switch (persistImpacts[i].impactId)
+			const f64 damageMultiplier = 256.0 * (f64)framePeriod / effects[i].maxTime;
+			switch (effects[i].effectId)
 			{
-				case ImpactId::SalamanderFire:
+				case EffectId::SalamanderFire:
 				{
 					scbw::UnitFinder(
-						persistImpacts[i].position.x - persistImpacts[i].radius,
-						persistImpacts[i].position.y - persistImpacts[i].radius,
-						persistImpacts[i].position.x + persistImpacts[i].radius,
-						persistImpacts[i].position.y + persistImpacts[i].radius
+						effects[i].position.x - effects[i].radius,
+						effects[i].position.y - effects[i].radius,
+						effects[i].position.x + effects[i].radius,
+						effects[i].position.y + effects[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](Unit* unit)
 					{
 						unit->damageWithIgnoreFlatArmor(WeaponId::SalamanderIncendiaryPayload, weapons_dat::DamageAmount[WeaponId::SalamanderIncendiaryPayload] * damageMultiplier);
 					});
 					break;
 				}
-				case ImpactId::GriefOfAllGods:
+				case EffectId::GriefOfAllGods:
 				{
 					scbw::UnitFinder(
-						persistImpacts[i].position.x - persistImpacts[i].radius,
-						persistImpacts[i].position.y - persistImpacts[i].radius,
-						persistImpacts[i].position.x + persistImpacts[i].radius,
-						persistImpacts[i].position.y + persistImpacts[i].radius
+						effects[i].position.x - effects[i].radius,
+						effects[i].position.y - effects[i].radius,
+						effects[i].position.x + effects[i].radius,
+						effects[i].position.y + effects[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](Unit* unit)
 					{
 						unit->damageWithIgnoreFlatArmor(WeaponId::StarSovereignGriefOfAllGods, weapons_dat::DamageAmount[WeaponId::StarSovereignGriefOfAllGods] * damageMultiplier);
 					});
 					break;
 				}
-				case ImpactId::Criticality:
+				case EffectId::Criticality:
 				{
 					scbw::UnitFinder(
-						persistImpacts[i].position.x - persistImpacts[i].radius,
-						persistImpacts[i].position.y - persistImpacts[i].radius,
-						persistImpacts[i].position.x + persistImpacts[i].radius,
-						persistImpacts[i].position.y + persistImpacts[i].radius
+						effects[i].position.x - effects[i].radius,
+						effects[i].position.y - effects[i].radius,
+						effects[i].position.x + effects[i].radius,
+						effects[i].position.y + effects[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](Unit* unit)
 					{
 						unit->damageWithIgnoreFlatArmor(WeaponId::AspirantCriticality, weapons_dat::DamageAmount[WeaponId::AspirantCriticality] * damageMultiplier);
 					});
 					break;
 				}
-				case ImpactId::CausticDischarge:
+				case EffectId::CausticDischarge:
 				{
 					scbw::UnitFinder(
-						persistImpacts[i].position.x - persistImpacts[i].radius,
-						persistImpacts[i].position.y - persistImpacts[i].radius,
-						persistImpacts[i].position.x + persistImpacts[i].radius,
-						persistImpacts[i].position.y + persistImpacts[i].radius
+						effects[i].position.x - effects[i].radius,
+						effects[i].position.y - effects[i].radius,
+						effects[i].position.x + effects[i].radius,
+						effects[i].position.y + effects[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](Unit* unit)
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
@@ -465,13 +465,13 @@ void Globals::frameHook()
 					});
 					break;
 				}
-				case ImpactId::IonField:
+				case EffectId::IonField:
 				{
 					scbw::UnitFinder(
-						persistImpacts[i].position.x - persistImpacts[i].radius,
-						persistImpacts[i].position.y - persistImpacts[i].radius,
-						persistImpacts[i].position.x + persistImpacts[i].radius,
-						persistImpacts[i].position.y + persistImpacts[i].radius
+						effects[i].position.x - effects[i].radius,
+						effects[i].position.y - effects[i].radius,
+						effects[i].position.x + effects[i].radius,
+						effects[i].position.y + effects[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](Unit* unit)
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
@@ -480,20 +480,20 @@ void Globals::frameHook()
 					});
 					break;
 				}
-				case ImpactId::Hallucination:
+				case EffectId::Hallucination:
 				{
 					scbw::UnitFinder(
-						persistImpacts[i].position.x - persistImpacts[i].radius,
-						persistImpacts[i].position.y - persistImpacts[i].radius,
-						persistImpacts[i].position.x + persistImpacts[i].radius,
-						persistImpacts[i].position.y + persistImpacts[i].radius
+						effects[i].position.x - effects[i].radius,
+						effects[i].position.y - effects[i].radius,
+						effects[i].position.x + effects[i].radius,
+						effects[i].position.y + effects[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, CFlags::Enemy, {}), [&](Unit* unit)
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
-						if (unitExt->timers[TimerHallucinating] < persistImpacts[i].currentTime)
+						if (unitExt->timers[TimerHallucinating] < effects[i].currentTime)
 						{
-							unitExt->values[ValueHallucinatingSourcePlayer] = persistImpacts[i].player;
-							unitExt->timers[TimerHallucinating] = persistImpacts[i].currentTime;
+							unitExt->values[ValueHallucinatingSourcePlayer] = effects[i].player;
+							unitExt->timers[TimerHallucinating] = effects[i].currentTime;
 
 							scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit);
 							if (unit->subunit != nullptr)
@@ -508,28 +508,28 @@ void Globals::frameHook()
 					});
 					break;
 				}
-				case ImpactId::Irradiate:
+				case EffectId::Irradiate:
 				{
 					scbw::UnitFinder(
-						persistImpacts[i].position.x - persistImpacts[i].radius,
-						persistImpacts[i].position.y - persistImpacts[i].radius,
-						persistImpacts[i].position.x + persistImpacts[i].radius,
-						persistImpacts[i].position.y + persistImpacts[i].radius
+						effects[i].position.x - effects[i].radius,
+						effects[i].position.y - effects[i].radius,
+						effects[i].position.x + effects[i].radius,
+						effects[i].position.y + effects[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, 0, {}), [&](Unit* unit)
 					{
-						ApplyIrradiate(unit, persistImpacts[i].player, 15);
+						ApplyIrradiate(unit, effects[i].player, 15);
 					});
 					break;
 				}
-				case ImpactId::GroundZero:
+				case EffectId::GroundZero:
 				{
-					u32 stage = (persistImpacts[i].maxTime - persistImpacts[i].currentTime) / framePeriod;
+					u32 stage = (effects[i].maxTime - effects[i].currentTime) / framePeriod;
 
 					switch (stage)
 					{
 						case 0:
 						{
-							globals.createGenericPersistImpact(ImpactId::Irradiate, 30 * 24, persistImpacts[i].position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, persistImpacts[i].player);
+							globals.createEffect(EffectId::Irradiate, 30 * 24, effects[i].position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effects[i].player);
 						} break;
 						case 1:
 						case 2:
@@ -537,26 +537,26 @@ void Globals::frameHook()
 							f32 d = stage * 2 * 32;
 							u32 count = stage * 8;
 
-							Point32 newPos = persistImpacts[i].position;
+							Point32 newPos = effects[i].position;
 							newPos.x += d;
 							for (u32 j = 0; j < count; ++j)
 							{
-								newPos = scbw::rotate_point(persistImpacts[i].position, newPos, (360.0 / count));
-								globals.createGenericPersistImpact(ImpactId::Irradiate, 30 * 24, newPos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, persistImpacts[i].player);
+								newPos = scbw::rotate_point(effects[i].position, newPos, (360.0 / count));
+								globals.createEffect(EffectId::Irradiate, 30 * 24, newPos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effects[i].player);
 							}
 						} break;
 					}
 				}
 			}
 		}
-		if (persistImpacts[i].currentTime <= 0)
+		if (effects[i].currentTime <= 0)
 		{
-			if (persistImpacts[i].thingy && persistImpacts[i].thingy->sprite)
+			if (effects[i].thingy && effects[i].thingy->sprite)
 			{
-				persistImpacts[i].thingy->sprite->playIscriptAnim(IscriptAnimation::Death);
+				effects[i].thingy->sprite->playIscriptAnim(IscriptAnimation::Death);
 			}
 
-			persistImpacts.erase(persistImpacts.begin() + i);
+			effects.erase(effects.begin() + i);
 			i--;
 		}
 	}

@@ -377,7 +377,7 @@ namespace hooks
 				// Star Sovereign Intervention Missiles behavior + Grief of All Gods
 				if (unitExt->timers[TimerPlanetCrackerChannel] == 1)
 				{
-					globals.createGenericPersistImpact(ImpactId::GriefOfAllGods, 360, { unit->position.x, unit->position.y }, 8 * 32, -1, unit->sprite->elevationLevel, unit->playerId);
+					globals.createEffect(EffectId::GriefOfAllGods, 360, { unit->position.x, unit->position.y }, 8 * 32, -1, unit->sprite->elevationLevel, unit->playerId);
 				}
 				if (unitExt->timers[TimerStarcallerInterceptionMissiles] == 0)
 				{
