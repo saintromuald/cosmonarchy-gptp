@@ -532,7 +532,7 @@ namespace hooks
 		addStatus(statuses, "Infested", unitExt->values[ValueInfestedByAkistrokor] > 0, 1);
 		addStatus(statuses, "Enthralling Assault", unitExt->values[ValueEnthrallingTalons] > 0, 1);
 		addStatus(statuses, "Kelvin Munitions", unitExt->values[ValueKelvinMunitionsSlow] > 0, 1);
-		addStatus(statuses, "Dermal Accelerant", unitExt->values[ValueAlaszilethRegenBoost] > 0, 1);
+		addStatus(statuses, "Dermal Accelerant", unitExt->timers[TimerAlaszilethRegenBoost] > 0, 1);
 
 		addStatus(statuses, "Phase Link", scbw::hasClarionLinks(unit), 1);
 		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0, 1); // for caster

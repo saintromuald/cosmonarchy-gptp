@@ -234,7 +234,6 @@ enum ExtValueId
 	ValueLazarusAgentApostleSrc,
 	ValueLurkerPickTarget,
 	ValueTurretParentLink,
-	ValueAlaszilethRegenBoost,
 	ValueKelvinMunitionsSlow,
 	ValueDiscoveredAttacksDebuff,
 	ValueLarvaType,
@@ -285,6 +284,7 @@ enum ExtTimerId
 	TimerParasiteArm,
 	TimerSwitchModeGimmick,
 	TimerCaptivatingClaws,
+	TimerAlaszilethRegenBoost,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,

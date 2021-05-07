@@ -861,35 +861,9 @@ namespace hooks
 					unitExt->values[ValueLarvaType] = 1;
 				}
 			} break;
-			case UnitId::ZergAlaszileth:
-			{
-				// Alaszileth - Dermal Accelerant
-				Point16 pos = unit->position;
-				s32 radius = 7 * 32;
-				scbw::UnitFinder(
-					pos.x - radius,
-					pos.y - radius,
-					pos.x + radius,
-					pos.y + radius
-				).forEach([&](Unit* foundUnit)
-					{
-						if (!(scbw::isAlliedTo(foundUnit->playerId, unit->playerId)))
-						{
-							return;
-						}
-						if (!(units_dat::BaseProperty[foundUnit->id] & UnitProperty::RegeneratesHP))
-						{
-							return;
-						}
-						UnitExt* foundUnitExt = globals.GetUnitExt(foundUnit);
-						if (!foundUnitExt->values[ValueAlaszilethRegenBoost])
-						{
-							foundUnitExt->values[ValueAlaszilethRegenBoost] = 1;
-						}
-					});
-			} break;
 			case UnitId::TerranMaverick:
 			{
+				// Decloak on Stimpack activation
 				if (unit->stimTimer == StimpackTimer)
 				{
 					scbw::decloakProc(unit);
@@ -901,6 +875,7 @@ namespace hooks
 		}
 
 		/*
+		// Play addon work animations when related units are being trained by parent structure
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Addon)
 		{
 			if (unit->connectedUnit != nullptr
@@ -969,6 +944,29 @@ namespace hooks
 			{
 				unit->sprite->removeOverlay(overlayImageId);
 			}
+		}
+
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP) {
+			// Alaszileth - Dermal Accelerant
+			Point16 pos = unit->position;
+			s32 radius = 7 * 32;
+			scbw::UnitFinder(
+				pos.x - radius,
+				pos.y - radius,
+				pos.x + radius,
+				pos.y + radius
+			).forEach([&](Unit* foundUnit)
+				{
+					if (!(scbw::isAlliedTo(foundUnit->playerId, unit->playerId)))
+					{
+						return;
+					}
+					if (foundUnit->id != UnitId::ZergAlaszileth)
+					{
+						return;
+					}
+					unitExt->timers[TimerAlaszilethRegenBoost] = 2;
+				});
 		}
 
 		{ // Seraph - Observance

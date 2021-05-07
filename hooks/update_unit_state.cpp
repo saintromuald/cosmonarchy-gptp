@@ -340,16 +340,16 @@ namespace hooks
 
 				// Actual resource regeneration
 				bool update_image = true;
-				if (unit->building.resource.resourceAmount < 5000
+				if (unit->building.resource.resourceAmount < 9999
 					&& (unit->id == UnitId::ResourceVespeneGeyser || unitExt->timers[TimerMineralSpecialRegen]))
 				{
 					unit->building.resource.resourceAmount++;
 					scbw::refreshConsole();
 				}
-				else if (unit->building.resource.resourceAmount < 5000)
+				else if (unit->building.resource.resourceAmount < 9999)
 				{
 					unit->building.resource.resourceAmount++;
-					if (unit->id >= UnitId::mineral_field_1 && unit->id <= UnitId::mineral_field_3)
+					if (unit->id >= UnitId::ResourceMineralField && unit->id <= UnitId::ResourceMineralFieldType3)
 					{
 						helper::updateMineralPatchImage(unit);
 					}
@@ -368,7 +368,7 @@ namespace hooks
 			}
 			else
 			{
-				if (unit->shields != maxShields && unit->id != UnitId::scarab && unitExt->combatTimer > 2 * 24)
+				if (unit->shields != maxShields && unit->id != UnitId::ProtossPlasmaShell && unitExt->combatTimer > 2 * 24)
 				{
 					unit->shields += 11;
 					if (unit->shields > maxShields)
@@ -376,14 +376,14 @@ namespace hooks
 						unit->shields = maxShields;
 					}
 					if (unit->sprite->flags & CSprite_Flags::Selected)
-					{  // If the unit is currently selected, redraw its graphics
+					{	// If the unit is currently selected, redraw its graphics
 						helper::setAllImageGroupFlagsPal11(unit->sprite);
 					}
 				}
 			}
 		}
 
-		// Supposedly, allows Zerglings to attack after unburrowing without delay.
+		// supposedly, allows Zerglings to attack after unburrowing without delay
 		if (unit->id == UnitId::ZergZergling)
 		{
 			if (unit->groundWeaponCooldown == 0)
@@ -392,7 +392,7 @@ namespace hooks
 			}
 		}
 
-		// Update unit status effects (stim, maelstrom, plague, etc.)
+		// update unit status effects (stim, maelstrom, plague, etc.)
 		if (unit->status & UnitStatus::Completed || !(unit->sprite->flags & CSprite_Flags::Hidden))
 		{
 			unit->cycleCounter++;
@@ -403,15 +403,15 @@ namespace hooks
 			}
 		}
 
-		// Only for fully-constructed units and buildings
+		// only for fully-constructed units and buildings
 		if (unit->status & UnitStatus::Completed)
 		{
 			bool bStopHere = false;
 
-			// Remove units with timed lives
+			// remove units with timed lives
 			if (unit->removeTimer != 0)
 			{
-				unit->removeTimer--;
+				unit->removeTimer -= 1;
 				if (unit->removeTimer == 0)
 				{
 					unit->remove();
@@ -419,16 +419,15 @@ namespace hooks
 				}
 			}
 
-			// Update unit energy (energy regen/drain)
+			// update unit energy (energy regen/drain)
 			updateUnitEnergy(unit);
 
-			// Recent order timer
 			if (unit->recentOrderTimer != 0)
 			{
 				unit->recentOrderTimer--;
 			}
 
-			// Self-destruct timer
+			// Augur - Final Hour
 			if (unit->id == UnitId::ProtossAugur && unit->shields == 0)
 			{
 				augurSacrifice(unit);
@@ -449,7 +448,7 @@ namespace hooks
 				unitExt->combatTimer > 2 * 24)
 			{
 				s32 regen = 11; // 1 HP per second
-				if (unitExt->values[ValueAlaszilethRegenBoost] > 0)
+				if (unitExt->timers[TimerAlaszilethRegenBoost] > 0)
 				{
 					regen *= 3;
 				}
@@ -472,6 +471,7 @@ namespace hooks
 						}
 					}
 				}
+
 				// Akistrokor - Enthralling Assault HP regeneration
 				if (unitExt->timers[TimerEnthrallingAssaultHeal] > 0)
 				{
