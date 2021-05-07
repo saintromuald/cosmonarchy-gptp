@@ -744,10 +744,12 @@ void Unit::spendUnitEnergy(u32 energySpent)
 		this->inflictDamage(energySpent, unitExt->units[UnitDecaySavant], -1, false, true, 0, true); // bugged if energySpent > this->energy; will damage for more than it should
 	}
 }
+
 void Unit::addUnitEnergy(u32 energy)
 {
 	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, this->getMaxEnergy());
 }
+
 void Unit::addUnitEnergy(u32 energy, u32 energyMax)
 {
 	this->energy = MathUtils::clamp<u32>(this->energy + energy, 0, energyMax);
