@@ -154,7 +154,6 @@ public:
 	void refreshDebuggingInfo();
 	void reset();
 	void frameHook();
-	void unitFrameHook(CUnit* unit);
 	void unitDeathHook(CUnit* unit);
 	void remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly);
 	bool was_hit_by_pariah(CUnit* source, CUnit* target);

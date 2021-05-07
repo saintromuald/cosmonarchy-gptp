@@ -283,7 +283,11 @@ namespace hooks
 	void tickUnit(CUnit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
-		globals.unitFrameHook(unit);
+		if (unit->id == UnitId::ProtossPariah && unit->orderSignal & 0x20)
+		{
+			unit->orderSignal &= ~0x20;
+			globals.remove_unit_from_pariah_table(unit, true);
+		}
 		//hooks::ShowHealthBar(unit);
 
 		switch (unit->id)

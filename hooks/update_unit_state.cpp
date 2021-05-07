@@ -369,9 +369,9 @@ namespace hooks
 			}
 			else
 			{
-				if (unit->shields != maxShields && unit->id != UnitId::scarab)
+				if (unit->shields != maxShields && unit->id != UnitId::scarab && unitExt->combatTimer > 2 * 24)
 				{
-					unit->shields += 7;
+					unit->shields += 10;
 					if (unit->shields > maxShields)
 					{
 						unit->shields = maxShields;
@@ -449,7 +449,8 @@ namespace hooks
 			// HP regeneration
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::RegeneratesHP &&
 				unit->hitPoints > 0 &&
-				unit->hitPoints / 256 != unit->getMaxHpInGame())
+				unit->hitPoints / 256 != unit->getMaxHpInGame() && 
+				unitExt->combatTimer > 2 * 24)
 			{
 				s32 regen = 4;
 				if (unitExt->values[ValueAlaszilethRegenBoost] > 0)

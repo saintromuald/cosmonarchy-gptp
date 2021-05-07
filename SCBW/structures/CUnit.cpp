@@ -593,6 +593,9 @@ void CUnit::damageHp(s32 damage, CUnit* attacker, s32 attackingPlayer, bool noti
 
 	u32 notify_ = notify ? 1 : 0;
 
+	UnitExt* unitExt = globals.GetUnitExt(this);
+	unitExt->combatTimer = 0;
+
 	__asm {
 		PUSHAD
 		PUSH notify_

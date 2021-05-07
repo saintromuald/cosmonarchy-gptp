@@ -330,6 +330,8 @@ enum ExtTimerVectorId
 
 struct UnitExt
 {
+	u32						combatTimer;
+
 	u32						values[ValueCount];
 	u32						timers[TimerCount];
 	CUnit*					units[UnitCount];

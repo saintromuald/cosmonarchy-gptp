@@ -235,15 +235,9 @@ void Globals::reset()
 	for (int j = 0; j < UNIT_ARRAY_LENGTH; ++j)
 	{ 
 		unitExt[j] = {};
-	}
-}
-
-void Globals::unitFrameHook(CUnit* unit)
-{
-	if (unit->id == UnitId::ProtossPariah && unit->orderSignal & 0x20)
-	{
-		unit->orderSignal &= ~0x20;
-		remove_unit_from_pariah_table(unit, true);
+		// this should set combat timer to highest u32,
+		// meaning every unit will start being out of combat
+		unitExt[j].combatTimer = -1;
 	}
 }
 
@@ -252,6 +246,7 @@ void Globals::unitDeathHook(CUnit* unit)
 	for (int j = 0; j < UNIT_ARRAY_LENGTH; ++j)
 	{ // set dead unit pointers to nullptr and erase them from unit vectors
 		UnitExt* ext = &unitExt[j];
+
 		for (int i = 0; i < UnitCount; ++i)
 		{
 			if (ext->units[i] == unit)
@@ -349,6 +344,10 @@ void Globals::frameHook()
 	for (int j = 0; j < UNIT_ARRAY_LENGTH; ++j)
 	{
 		UnitExt* ext = &unitExt[j];
+		if (ext->combatTimer != -1) // don't increment past max value of u32
+		{
+			++ext->combatTimer;
+		}
 		for (int i = 0; i < TimerCount; ++i)
 		{
 			if (ext->timers[i] > 0)
