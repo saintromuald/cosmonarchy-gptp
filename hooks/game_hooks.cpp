@@ -884,7 +884,7 @@ namespace hooks
 						pos.y + radius
 					).forEach([&](Unit* pickedUnit)
 						{
-							if (units_dat::BaseProperty[pickedUnit->id] & UnitProperty::Spellcaster
+							if (!(units_dat::BaseProperty[pickedUnit->id] & UnitProperty::Spellcaster)
 								|| !(pickedUnit->status & UnitStatus::Completed))
 							{
 								return;
@@ -899,8 +899,9 @@ namespace hooks
 							UnitExt* pickedExt = globals.GetUnitExt(pickedUnit);
 							pickedExt->unitVectors[UnitVectorTertiaryEyesSiren].push_back(unit); // should be vector to allow for multiple sirens to be linked to a single specialist
 						});
+					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::TertiaryEyes] * 256);
 				}
-			}
+			} break;
 			default:
 			{
 			}
