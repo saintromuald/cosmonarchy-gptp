@@ -44,7 +44,8 @@ namespace hooks
 	// code used by the AI (no questions about sync between players in that case)
 	void useStimPacksAIHook(CUnit* unit)
 	{
-		if (unit->hitPoints > MIN_HITPOINTS_FOR_STIMPACKS)
+		if (unit->hitPoints > MIN_HITPOINTS_FOR_STIMPACKS + StimpackOffset
+			&& unit->stimTimer == 0)
 		{
 			scbw::playSound(helper::RandBetween(SoundId::Terran_MARINE_TMaSti00_WAV, SoundId::Terran_MARINE_TMaSti01_WAV, 31), unit);
 			unit->damageHp(MIN_HITPOINTS_FOR_STIMPACKS, nullptr, -1, true);
@@ -67,8 +68,8 @@ namespace hooks
 		activePlayerCurrentSelection = getActivePlayerNextSelection();
 		while (activePlayerCurrentSelection != nullptr)
 		{
-			if (activePlayerCurrentSelection->canUseTech(TechId::Stimpacks, *ACTIVE_NATION_ID) == 1 &&
-				activePlayerCurrentSelection->hitPoints > MIN_HITPOINTS_FOR_STIMPACKS)
+			if (activePlayerCurrentSelection->canUseTech(TechId::Stimpacks, *ACTIVE_NATION_ID) == 1
+				&& activePlayerCurrentSelection->hitPoints > MIN_HITPOINTS_FOR_STIMPACKS)
 			{
 				s32 random_value;
 				if (!*IS_IN_GAME_LOOP)

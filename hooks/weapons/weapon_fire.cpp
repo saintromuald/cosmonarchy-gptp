@@ -409,6 +409,11 @@ namespace hooks
 				}
 				else if (weaponId == WeaponId::MadrigalFuriaMissiles && unit->orderTarget.unit != nullptr)
 				{
+					helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
+					if (unitExt->values[ValueDeconstruction])
+					{
+						scbw::doDeconstructionDamage(unit, weaponId);
+					}
 					auto old = unit->orderTarget.unit;
 					auto range = weapons_dat::MaxRange[weaponId];
 					auto count = 0;

@@ -109,12 +109,11 @@ namespace hooks
 		}
 	}
 
-	//generic unit training function
+	// generic unit training function
 	void orderTrain(CUnit* unit)
 	{
 		if (!(unit->status & UnitStatus::DoodadStatesThing)
-			&& !(unit->isFrozen())
-			&& (!units_dat::GroupFlags[unit->id].isZerg ||	unit->id == UnitId::ZergInfestedCommandCenter))
+			&& !(unit->isFrozen()))
 		{
 			bool jump_to_685D8 = false;
 			if (unit->secondaryOrderState <= 1)
@@ -142,13 +141,7 @@ namespace hooks
 					}
 					else
 					{
-						CImage* current_image = unit->sprite->images.head;
-						unit->secondaryOrderState = 2;
-						while (current_image != nullptr)
-						{
-							current_image->playIscriptAnim(IscriptAnimation::IsWorking);
-							current_image = current_image->link.next;
-						}
+						scbw::playWorkAnimation(unit);
 					}
 				}
 			}
@@ -156,7 +149,6 @@ namespace hooks
 				if (unit->secondaryOrderState == 2)
 				{
 					CUnit* builtUnit = unit->currentBuildUnit;
-
 					if (builtUnit != nullptr)
 					{
 						UnitExt* builtUnitExt = globals.GetUnitExt(builtUnit);
@@ -207,11 +199,9 @@ namespace hooks
 								jump_to_685D8 = true;
 							}
 						}
-						else
-						{ //unit was canceled due to lack of space around the building
-
+						else // unit was canceled due to lack of space around the building
+						{
 							u32 queueSlot = unit->buildQueueSlot % 5;
-
 							if (unit->buildQueue[queueSlot] == UnitId::None)
 							{
 								jump_to_685D8 = true;

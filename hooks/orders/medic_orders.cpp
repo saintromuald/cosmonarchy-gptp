@@ -189,7 +189,7 @@ namespace hooks
 		{
 			reqHeal = true;
 		}
-		doMedicHeal_result = helper::doMedicHeal(unit, target);
+		doMedicHeal_result = doMedicHeal_Func(unit, target);
 		if (doMedicHeal_result == 0)
 		{
 			helper::setNextWaypoint(unit);
@@ -212,7 +212,7 @@ namespace hooks
 			if (unit->mainOrderState == 0)
 			{
 				if (target != nullptr
-					&& helper::moveTowards(unit, target) != 0
+					&& helper::moveTowards(target, unit) != 0
 					&& unit->getMovableState() != 2 // unit not unmovable
 					)
 				{

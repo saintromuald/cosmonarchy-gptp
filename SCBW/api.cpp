@@ -1865,4 +1865,33 @@ namespace scbw
 		}
 		return false;
 	}
+
+	void playWorkAnimation(CUnit* unit)
+	{
+		CImage* current_image = unit->sprite->images.head;
+		unit->secondaryOrderState = 2;
+		while (current_image != nullptr)
+		{
+			current_image->playIscriptAnim(IscriptAnimation::IsWorking);
+			current_image = current_image->link.next;
+		}
+	}
+
+	bool isStandardTerranUnit(u16 id)
+	{
+		return id == UnitId::TerranMason
+			|| id == UnitId::TerranMaverick
+			|| id == UnitId::TerranHarakan
+			|| id == UnitId::TerranCyprian
+			|| id == UnitId::TerranVulture
+			|| id == UnitId::TerranSouthpaw
+			|| id == UnitId::TerranCyclops
+			|| id == UnitId::TerranWendigo
+			|| id == UnitId::TerranWraith
+			|| id == UnitId::TerranGorgon
+			|| id == UnitId::TerranTrojan
+			|| id == UnitId::TerranBlackjack
+			|| id == UnitId::SharedCohort
+			|| id == UnitId::SharedAspirant;
+	}
 }

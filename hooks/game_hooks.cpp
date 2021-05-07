@@ -881,8 +881,30 @@ namespace hooks
 						}
 					});
 			} break;
+			case UnitId::TerranMaverick:
+			{
+				if (unit->stimTimer == StimpackTimer)
+				{
+					scbw::decloakProc(unit);
+				}
+			} break;
 			default:
 			{
+			}
+		}
+
+		if (units_dat::BaseProperty[unit->id] & UnitProperty::Addon)
+		{
+			if (unit->connectedUnit != nullptr
+//				&& unit->connectedUnit->buildQueue[0] != UnitId::None
+				&& scbw::isStandardTerranUnit(unit->connectedUnit->buildQueue[0]))
+			{
+				scbw::print("u");
+				scbw::playWorkAnimation(unit);
+			}
+			else
+			{
+				unit->sprite->playIscriptAnim(IscriptAnimation::WorkingToIdle);
 			}
 		}
 

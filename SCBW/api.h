@@ -416,4 +416,6 @@ namespace scbw
 	bool unitIsTrap(CUnit* unit);
 	bool isSharedLarvaMorph(u16 id);
 	bool unitIsRangedAttacker(CUnit* unit);
+	void playWorkAnimation(CUnit* unit);
+	bool isStandardTerranUnit(u16 id);
 }
