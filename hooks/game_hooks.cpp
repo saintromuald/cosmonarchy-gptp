@@ -578,7 +578,8 @@ namespace hooks
 			case UnitId::ProtossLegionnaire:
 			{
 				// Legionnaire - Blade Vortex
-				if (unit->orderTarget.unit != nullptr && (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::AttackUnit))
+				if (unit->orderTarget.unit != nullptr
+					&& (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::AttackUnit))
 				{
 					auto target = unit->orderTarget.unit;
 					auto distance = unit->getDistanceToTarget(target);
@@ -889,9 +890,9 @@ namespace hooks
 						pos.y + radius
 					).forEach([&](Unit* pickedUnit)
 						{
-							if (!(units_dat::BaseProperty[pickedUnit->id] & UnitProperty::Spellcaster) ||
-								!(pickedUnit->status & UnitStatus::Completed) ||
-								unit == pickedUnit)
+							if (!(units_dat::BaseProperty[pickedUnit->id] & UnitProperty::Spellcaster)
+								|| !(pickedUnit->status & UnitStatus::Completed)
+								|| unit == pickedUnit)
 							{
 								return;
 							}
