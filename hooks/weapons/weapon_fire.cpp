@@ -580,7 +580,7 @@ namespace hooks
 					auto r = 3 * 32;
 					scbw::UnitFinder unitsInSplash(bullet->position.x - r, bullet->position.y - r,
 						bullet->position.x + r, bullet->position.y + r);
-					s32 count = 0;
+					s32 count = 1;
 					for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
 					{
 						CUnit* target = unitsInSplash.getUnit(i);
@@ -598,7 +598,7 @@ namespace hooks
 						}
 						count++;
 					};
-					globals.add_multihit_empty_bullet(bullet, count + 1);
+					globals.add_multihit_empty_bullet(bullet, count);
 					for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
 					{
 						CUnit* target = unitsInSplash.getUnit(i);
@@ -621,7 +621,7 @@ namespace hooks
 						if (newBullet)
 						{
 							newBullet->position = bullet->position;
-							globals.add_multihit_empty_bullet(newBullet, count + 1);
+							globals.add_multihit_empty_bullet(newBullet, count);
 						}
 					};
 					bullet->sourceUnit->orderTarget.unit = old;

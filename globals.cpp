@@ -225,6 +225,14 @@ void Globals::aise_load(const char* ptr, u32 len)
 	}*/
 }
 
+static void ClearUnitExt(int index)
+{
+	globals.unitExt[index] = {};
+	// this should set combat timer to highest u32,
+	// meaning every unit will start being out of combat
+	globals.unitExt[index].combatTimer = -1;
+}
+
 void Globals::reset()
 {
 	persistImpacts.clear();
@@ -234,10 +242,7 @@ void Globals::reset()
 	lurkerSpineHits.clear();
 	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j)
 	{ 
-		unitExt[j] = {};
-		// this should set combat timer to highest u32,
-		// meaning every unit will start being out of combat
-		unitExt[j].combatTimer = -1;
+		ClearUnitExt(j);
 	}
 }
 
@@ -264,7 +269,7 @@ void Globals::unitDeathHook(CUnit* unit)
 			}), vec.end());
 		}
 	}
-	*globals.GetUnitExt(unit) = {};
+	ClearUnitExt(unit->getIndex());
 
 	for (s32 i = 0; i < this->apostleAgents.size(); i++)
 	{
