@@ -106,7 +106,7 @@ namespace hooks
 		// Claymore - Kelvin Munitions - slow affected targets
 		if (unitExt->values[ValueKelvinMunitionsSlow])
 		{
-			speed *= 0.333;
+			speed *= 0.666;
 		}
 
 		switch (unit->id)

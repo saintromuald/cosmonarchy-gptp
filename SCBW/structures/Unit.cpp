@@ -489,26 +489,21 @@ void Unit::damageWith(u8 weaponId, s32 damage, Unit* attacker, u8 attackingPlaye
 {
 	assert(this);
 	assert(weaponId < WEAPON_TYPE_COUNT);
-	//	assert(damageDivisor != 0);
-
-	u32 weaponId_ = weaponId;
-	s32 attackingPlayer_ = attackingPlayer;
-	s32 direction_ = direction;
-	s32 damageDivisor_ = damageDivisor;
+//	assert(damageDivisor != 0);
 	if (damage < 0)
 	{
 		damage = weapons_dat::DamageAmount[weaponId] * 256;
 	}
-
-	__asm {
+	__asm
+	{
 		PUSHAD
 		MOV EDI, this
 		MOV EAX, damage
-		PUSH attackingPlayer_
+		PUSH attackingPlayer
 		PUSH attacker
-		PUSH direction_
-		PUSH damageDivisor_
-		PUSH weaponId_
+		PUSH direction
+		PUSH damageDivisor
+		PUSH weaponId
 		CALL Func_DoWeaponDamage
 		POPAD
 	}

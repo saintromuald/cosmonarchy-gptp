@@ -11,6 +11,7 @@
 #include "globals.h"
 #include "hooks/unit_stats/weapon_range.h"
 #include "weapon_damage.h"
+#include "wpnspellhit.h"
 #include <set>
 //-------- Helper function declarations. Do NOT modify! ---------//
 
@@ -785,17 +786,20 @@ namespace hooks
 				{
 					globals.add_incremental_bullet_multihit(bullet, collisionTarget);
 				}
-				if (bullet->weaponId == WeaponId::PenumbraErebolShockCannon
-					|| bullet->weaponId == WeaponId::ClaymoreHarpoonRailgun)
+				if (bullet->weaponId == WeaponId::PenumbraErebolShockCannon)
 				{
-					// Penumbra and Claymore behavior
+					// Penumbra - Shroud Piercer - pierce targets
 					scbw::createAndInitThingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
-					helper::weaponBulletShot(collisionTarget, bullet, 2);
+					hooks::WeaponBulletHit(bullet, collisionTarget, 2);
 				}
 				if (bullet->weaponId == WeaponId::ClaymoreHarpoonRailgun)
 				{
-					UnitExt* collisionTargetExt = globals.GetUnitExt(collisionTarget);
+					// Claymore - Kelvin Munitions - pierce targets
+					scbw::createAndInitThingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
+					hooks::WeaponBulletHit(bullet, collisionTarget, 3);
+
 					// Claymore - Kelvin Munitions - Slow targets
+					UnitExt* collisionTargetExt = globals.GetUnitExt(collisionTarget);
 					if (!collisionTargetExt->values[ValueKelvinMunitionsSlow])
 					{
 						collisionTargetExt->values[ValueKelvinMunitionsSlow] = 1;
