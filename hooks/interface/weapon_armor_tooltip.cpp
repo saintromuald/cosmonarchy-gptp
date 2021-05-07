@@ -517,6 +517,7 @@ namespace hooks
 		addStatus(statuses, "Repentent Chorus", unitExt->values[ValueRepententChorus], 0);
 		addStatus(statuses, "Stellar Enforcement", unitExt->values[ValueStellarEnforcement], 1);
 		addStatus(statuses, "Terminal Surge", unitExt->values[ValueTerminalSurge], 0);
+		addStatus(statuses, "Tertiary Eyes", unitExt->unitVectors[UnitVectorTertiaryEyesSiren].size(), 0);
 
 		// Aise Value - Gimmicked
 		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0, 1);
@@ -533,7 +534,6 @@ namespace hooks
 		addStatus(statuses, "Enthralling Assault", unitExt->values[ValueEnthrallingTalons] > 0, 1);
 		addStatus(statuses, "Kelvin Munitions", unitExt->values[ValueKelvinMunitionsSlow] > 0, 1);
 		addStatus(statuses, "Dermal Accelerant", unitExt->timers[TimerAlaszilethRegenBoost] > 0, 1);
-		addStatus(statuses, "Tertiary Eyes", unitExt->values[ValueTertiaryEyes] > 0, 1);
 
 		addStatus(statuses, "Phase Link", scbw::hasClarionLinks(unit), 1);
 		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0, 1); // for caster

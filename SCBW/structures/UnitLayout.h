@@ -235,7 +235,6 @@ enum ExtValueId
 	ValueLurkerPickTarget,
 	ValueTurretParentLink,
 	ValueKelvinMunitionsSlow,
-	ValueTertiaryEyes,
 	ValueLarvaType,
 
 	ValueCount,
@@ -307,7 +306,6 @@ enum ExtUnitId
 	UnitDecaySavant,
 	UnitWorshipDemiurge,
 	UnitAttachedAkistrokor,
-	UnitTertiaryEyesSiren,
 
 	UnitCount,
 };
@@ -317,6 +315,7 @@ enum ExtUnitVectorId
 	UnitVectorCaptivatingClaws,
 	UnitVectorPhaseLinkClarions,
 	UnitVectorPhaseLink,
+	UnitVectorTertiaryEyesSiren,
 
 	UnitVectorCount,
 };

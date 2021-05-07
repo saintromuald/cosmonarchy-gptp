@@ -897,8 +897,7 @@ namespace hooks
 							}
 							*/
 							UnitExt* pickedExt = globals.GetUnitExt(pickedUnit);
-							pickedExt->values[ValueTertiaryEyes] = 1; // might be redundant, might be necessary for status
-							pickedExt->units[UnitTertiaryEyesSiren] = unit; // should be vector to allow for multiple sirens to be linked to a single specialist
+							pickedExt->unitVectors[UnitVectorTertiaryEyesSiren].push_back(unit); // should be vector to allow for multiple sirens to be linked to a single specialist
 						});
 				}
 			}
@@ -1229,14 +1228,6 @@ namespace hooks
 			&& unitExt->units[UnitWorshipDemiurge])
 		{
 			unit->remove();
-		}
-
-		// Siren - Discovered Attacks - clear links on Siren death
-		// We probably need to use a unit vector for handling this behavior
-		if (unitExt->values[ValueTertiaryEyes]
-			&& unitExt->units[UnitTertiaryEyesSiren] == nullptr)
-		{
-			unitExt->values[ValueTertiaryEyes] = 0;
 		}
 	}
 

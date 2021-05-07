@@ -84,6 +84,46 @@ namespace
 namespace hooks
 {
 
+	static void fireMultiple(Unit* attacker, UnitExt* attackerExt, u32 weaponId, u32 maxTargets)
+	{
+		std::set<Unit*> targets;
+		targets.insert(attacker->orderTarget.unit);
+		auto old = attacker->orderTarget.unit;
+		for (s32 i = 0; i < maxTargets; i++)
+		{
+			auto range = hooks::getMaxWeaponRangeHook(attacker, weaponId);
+			auto filter = unitRangeCount(attacker, CFlags::Enemy | CFlags::FrontalArc, {});
+			auto newTarget = scbw::UnitFinder::getNearestTarget(
+				attacker->getX() - range,
+				attacker->getY() - range,
+				attacker->getX() + range,
+				attacker->getY() + range,
+				attacker,
+				[&](Unit* target)
+			{
+				if (target == attacker || targets.find(target) != targets.end() || scbw::isAlliedTo(attacker->playerId, target->playerId) ||
+					!attacker->canAttackTarget(target) || !filter(target))
+				{
+					return false;
+				}
+				return true;
+			});
+			if (targets.size() >= maxTargets || newTarget == nullptr)
+			{
+				break;
+			}
+			targets.insert(newTarget);
+			attacker->orderTarget.unit = newTarget;
+			auto newAngle = scbw::getAngle(attacker->getX(), attacker->getY(), newTarget->getX(), newTarget->getY());
+			helper::createBullet(weaponId, attacker, attacker->getX(), attacker->getY(), attacker->playerId, newAngle);
+			if (attackerExt->values[ValueDeconstruction])
+			{
+				scbw::doDeconstructionDamage(attacker, weaponId, false);
+			}
+		}
+		attacker->orderTarget.unit = old;
+	}
+
 	//Fires a weapon from the @p unit.
 	//This hook affects the following iscript opcodes: attackwith, attack, castspell
 	//This also affects Unit::fireWeapon().
@@ -172,7 +212,8 @@ namespace hooks
 				{
 					u32 energy = 0;
 					u32 range = weapons_dat::OuterSplashRadius[WeaponId::SavantPowerSiphon];
-					scbw::UnitFinder unitFinder_collect(x - range,
+					scbw::UnitFinder unitFinder_collect(
+						x - range,
 						y - range,
 						x + range,
 						y + range);
@@ -271,50 +312,12 @@ namespace hooks
 				// Monoceros Targeting - Battlecruiser behavior
 				else if (weaponId == WeaponId::MinotaurAsterionLaserBattery)
 				{
-					std::set<Unit*> monoceros;
-					monoceros.insert(unit->orderTarget.unit);
-					auto old = unit->orderTarget.unit;
-					for (s32 i = 0; i < 4; i++)
-					{
-						auto range = hooks::getMaxWeaponRangeHook(unit, WeaponId::MinotaurAsterionLaserBattery) + 32;
-						auto n = unitRangeCount(unit, CFlags::Enemy | CFlags::FrontalArc, {});
-						auto newTarget = scbw::UnitFinder::getNearestTarget(
-							unit->getX() - range,
-							unit->getY() - range,
-							unit->getX() + range,
-							unit->getY() + range,
-							unit,
-							[&](Unit* target)
-						{
-							if (target == unit
-								|| monoceros.find(target) != monoceros.end()
-								|| scbw::isAlliedTo(target->playerId, unit->playerId)
-								|| !unit->canAttackTarget(target)
-								|| !n(target))
-							{
-								return false;
-							}
-							return true;
-						});
-						if (monoceros.size() >= 5)
-						{
-							break;
-						}
-						if (newTarget == nullptr)
-						{
-							break;
-						}
-						monoceros.insert(newTarget);
-						unit->orderTarget.unit = newTarget;
-						auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
-							newTarget->getX(), newTarget->getY());
-						helper::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
-						if (unitExt->values[ValueDeconstruction])
-						{
-							scbw::doDeconstructionDamage(unit, weaponId, false);
-						}
-					}
-					unit->orderTarget.unit = old;
+					fireMultiple(unit, unitExt, weaponId, 5);
+				}
+				// Tertiary Eyes - Siren behavior
+				else if (weaponId == WeaponId::SirenCharybdalRifle)
+				{
+					fireMultiple(unit, unitExt, weaponId, 1 + unitExt->unitVectors[UnitVectorTertiaryEyesSiren].size());
 				}
 				// Titan Reactors - Heracles behavior - Refresh timer on attack and add stack
 				if (weaponId == WeaponId::HeraclesJavelinCannons)
