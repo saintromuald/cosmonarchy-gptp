@@ -47,7 +47,7 @@ namespace hooks
 			}
 	}
 
-	//unit is a non-mobile transport (bunker)
+	// unit is a non-mobile transport (bunker)
 	void orders_Pickup3_0(CUnit* unit)
 	{
 		CUnit* unitToLoad = unit->orderTarget.unit;
@@ -153,10 +153,8 @@ namespace hooks
 		}
 	}
 
-	// unit is a transport (overlord,shuttle,dropship)
-	// a big part of the code could not be tested
-	// since different ground height test never
-	// occured during testing
+	// unit is a transport
+	// a big part of the code could not be tested since different ground height test never occured during testing
 	void orders_MoveUnload(CUnit* unit)
 	{
 		u32 distance;
@@ -205,7 +203,6 @@ namespace hooks
 						&& helper::function_00438E70(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0
 						&& helper::getFirstLoadedWorker(unit) == 0)
 					{
-
 						s32 index = 0;
 						bool bStopLoop = false;
 						bool bStopAll = false;
@@ -245,9 +242,8 @@ namespace hooks
 		}
 	}
 
-	// unit is an unit to pick up by transport
-	// COULD NOT BE TESTED (tried bunker and all
-	// and nothing called this function)
+	// unit is a unit to pick up by transport
+	// COULD NOT BE TESTED (tried bunker and all and nothing called this function)
 	void orders_Pickup4_0(CUnit* unit)
 	{
 		if (unit->playerId == 11)
@@ -337,7 +333,7 @@ namespace hooks
 							if (helper::function_00438E70(unit, target->sprite->position.x, target->sprite->position.y) != 0)
 							{
 								helper::function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
-								helper::function_004EB900(unit, target);
+								helper::moveTowards(unit, target);
 							}
 						}
 					}
@@ -345,14 +341,12 @@ namespace hooks
 			}
 	}
 
-	//unit is an unit aiming to enter a transport
+	// unit is a unit aiming to enter a transport
 	void orders_EnterTransport(CUnit* unit)
 	{
 		CUnit* target = unit->orderTarget.unit;
 		if (target != nullptr
 			&& !(target->status & UnitStatus::IsHallucination)
-			&& (target->id != UnitId::ZergOvileth
-				|| UpgradesSc->currentLevel[unit->playerId][UpgradeId::VentralSacs] != 0)
 			&& units_dat::SpaceProvided[target->id] != 0
 			&& scbw::canBeEnteredBy(target, unit))
 		{ // 004E7D51
@@ -373,7 +367,7 @@ namespace hooks
 				unit->nextTargetWaypoint.x = target->sprite->position.x;
 				unit->nextTargetWaypoint.y = target->sprite->position.y;
 			}
-			helper::function_004EB900(unit, target);
+			helper::moveTowards(unit, target);
 			if (unit->isTargetWithinMinRange(target, 1))
 			{
 				helper::loadUnitProc(target, unit);
@@ -563,13 +557,6 @@ namespace hooks
 		if (!(scbw::isAlliedTo(transport->playerId, unit->playerId)))
 		{
 			return 0;
-		}
-		if (units_dat::BaseProperty[transport->id] & UnitProperty::Building)
-		{
-			if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic))
-			{
-				return 0;
-			}
 		}
 		/* TODO: Limit transport space to 8 slots
 		else

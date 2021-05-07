@@ -20,6 +20,9 @@
 // General
 constexpr s32 HealthMultiplier = 256;
 
+// Cleric
+constexpr s32 ClericHealValue = 107; // roughly 10 HP per second
+
 // Shaman
 constexpr s32 ShamanHeal = 2;
 

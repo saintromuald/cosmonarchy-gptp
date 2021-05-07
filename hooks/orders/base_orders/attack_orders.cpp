@@ -692,153 +692,125 @@ namespace hooks
 		{ //78928
 
 			if (!unit->canAttackTarget(target, true))
+			{
 				unit->orderTo(OrderId::Move, target->sprite->position.x, target->sprite->position.y);
+			}
 			else
-			{//7894D
+			{ // 0047894D
 
 				bool bStopThere = false;
-
 				if (unit->mainOrderState == 0)
-				{ //78965
+				{ // 00478965
 					if (helper::moveToTarget(unit, target))
+					{
 						unit->mainOrderState = 1;
+					}
 					else
+					{
 						bStopThere = true;
-				} //if(unit->mainOrderState == 0)
+					}
+				}
 
 				if (!bStopThere && unit->mainOrderState == 1)
-				{ //78975
+				{ // 00478975
 
-					if (
-						!unit->isTargetWithinMinRange(target, 4) &&
-						unit->getMovableState() != 2
-						)
-					{ //78998
+					if (!unit->isTargetWithinMinRange(target, 4)
+						&& unit->getMovableState() != 2)
+					{ // 00478998
 
-						if (
-							unit->isTargetWithinMinRange(target, 256) &&
-							target->movementFlags & MovementFlags::Accelerating
-							)
-							//maybe trigger the acceleration of the infested
-							//terran, or something else related to distances?
+						if (unit->isTargetWithinMinRange(target, 256)
+							&& target->movementFlags & MovementFlags::Accelerating)							
+						{
+							// maybe trigger the acceleration of the infested terran, or something else related to distances?
 							helper::moveToCollide(unit, target);
+						}
 
-						else //789BF
-							//may cause the unit to go to idle, or
-							//execute and return the (unused here) 
-							//result of moveToTarget @ 0x004EB720,
-							//or something else
-							helper::function_004EB900(unit, target);
+						else // 004789BF
+						{
+							helper::moveTowards(unit, target);
+						}
 
 						bStopThere = true;
 
 					}
 					else
-					{ //789CC
+					{ // 004789CC
 
 						helper::setNextWaypoint(unit);
-
-						if (!unit->isTargetWithinMinRange
-						(
-							target,
-							weapons_dat::OuterSplashRadius[WeaponId::Suicide_InfestedTerran]
-						)
-							)
+						if (!unit->isTargetWithinMinRange(target, weapons_dat::OuterSplashRadius[WeaponId::Suicide_InfestedTerran]))
 						{
 							unit->orderToIdle();
 							bStopThere = true;
 						}
 						else
-						{ //789F4
-
+						{ // 004789F4
 							unit->orderTarget.unit = unit;
 							CImage* current_image = unit->sprite->images.head;
-
 							while (current_image != nullptr)
 							{
 								current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 								current_image = current_image->link.next;
 							}
-
-							//78A11:
+							// 00478A11:
 							unit->status |= UnitStatus::CanNotReceiveOrders;
 							unit->mainOrderState = 2;
-
-						} //if(isTargetWithinMinRange)
-
-					} //if target reachable
-
-				} //if(unit->mainOrderState == 1)
+						}
+					}
+				}
 
 				if (!bStopThere && unit->mainOrderState == 2)
-				{ //78A1E
-
+				{ // 00478A1E
 					if (unit->orderSignal & 1)
 					{
 						unit->status |= UnitStatus::IsSelfDestructing;
-						unit->remove(); //orders_SelfDestructing
+						unit->remove(); // orders_SelfDestructing
 					}
-
 				}
-
-			} //if(unit->canAttackTarget(target,true))
-
-		} //if(target != nullptr)
-
-	} //void orders_SapUnit(CUnit* unit)
-
-	;
+			}
+		}
+	}
 
 	void orders_SapLocation(CUnit* unit)
 	{
-
 		bool bStopThere = false;
-
 		if (unit->mainOrderState == 0)
-		{ //78A5C
-
+		{ // 00478A5C
 			bStopThere = !helper::SetMoveTarget_xy(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
-
-			if (unit->orderTarget.pt.x != unit->nextTargetWaypoint.x ||
-				unit->orderTarget.pt.y != unit->nextTargetWaypoint.y
-				)
+			if (unit->orderTarget.pt.x != unit->nextTargetWaypoint.x
+				|| unit->orderTarget.pt.y != unit->nextTargetWaypoint.y)
 			{
 				unit->nextTargetWaypoint.x = unit->orderTarget.pt.x;
 				unit->nextTargetWaypoint.y = unit->orderTarget.pt.y;
 			}
-
 			if (!bStopThere)
+			{
 				unit->mainOrderState = 1;
-
-		} //if(unit->mainOrderState == 0)
+			}
+		}
 
 		if (!bStopThere && unit->mainOrderState == 1)
-		{ //78A89
+		{ // 00478A89
 
-			if (unit->sprite->position.x != unit->moveTarget.pt.x ||
-				unit->sprite->position.y != unit->moveTarget.pt.y
-				)
+			if (unit->sprite->position.x != unit->moveTarget.pt.x
+				|| unit->sprite->position.y != unit->moveTarget.pt.y)
+			{
 				bStopThere = true;
+			}
 			else
-			{ //78AA0
-
+			{ // 00478AA0
 				if (unit->status & UnitStatus::Unmovable)
-				{ //78AB8
-
+				{ // 00478AB8
 					u32 distance =
 						scbw::getDistanceFast(
 							unit->orderTarget.pt.x * 256,
 							unit->orderTarget.pt.y * 256,
 							unit->halt.x,
-							unit->halt.y
-						);
-
+							unit->halt.y);
 					if ((distance / 256) > weapons_dat::OuterSplashRadius[WeaponId::Suicide_InfestedTerran])
 					{
 						unit->orderToIdle();
 						bStopThere = true;
 					}
-
 				}
 
 				/*The original code set EAX to 0 or 1 depending on Unmovable status,
@@ -849,42 +821,30 @@ namespace hooks
 				*/
 
 				if (!bStopThere)
-				{ //78AF3
-
+				{ // 00478AF3
 					CImage* current_image = unit->sprite->images.head;
-
 					unit->orderTarget.unit = unit;
-
 					while (current_image != nullptr)
 					{
 						current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 						current_image = current_image->link.next;
 					}
-
-					//78B10
+					// 00478B10
 					unit->status |= UnitStatus::CanNotReceiveOrders;
 					unit->mainOrderState = 2;
-
 				}
-
-			}	//if unit reached target
-
-		} //if(unit->mainOrderState == 1)
+			}
+		}
 
 		if (!bStopThere && unit->mainOrderState == 2)
-		{ //78B1E
-
+		{ // 00478B1E
 			if (unit->orderSignal & 1)
 			{
 				unit->status |= UnitStatus::IsSelfDestructing;
 				unit->remove(); //orders_SelfDestructing
 			}
-
-		} //if(unit->mainOrderState == 2)
-
-	} //void orders_SapLocation(CUnit* unit)
-
-	;
+		}
+	}
 
 	void orders_AttackMoveEP(CUnit* unit)
 	{

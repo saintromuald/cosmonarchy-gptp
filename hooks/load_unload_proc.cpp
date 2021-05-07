@@ -5,10 +5,9 @@
 
 namespace hooks
 {
-	//the transport is "unit", the target is "unitToLoad"
+	// the transport is "unit", the target is "unitToLoad"
 	void loadUnitProc(CUnit* unit, CUnit* unitToLoad)
 	{
-
 		u8 unitRaceId;
 		u32 loaded_index;
 		s32 counter = 0;
@@ -31,7 +30,6 @@ namespace hooks
 			for (;;)
 			{
 				u32* loadedUnitOffset = (u32*)&unit->loadedUnit[counter];
-
 				if (*loadedUnitOffset == 0 ||
 					unitTable_0059CB64[unit->loadedUnit[counter].index].link.prev == nullptr)
 				{
@@ -53,7 +51,7 @@ namespace hooks
 			}
 		}
 		
-		// E7952
+		// 004E7952
 		if (units_dat::GroupFlags[unit->id].isZerg)
 		{
 			unitRaceId = RaceId::Zerg;
@@ -73,17 +71,15 @@ namespace hooks
 
 		scbw::decloakProc(unit);
 		scbw::playSound(SoundId::Misc_ZOvTra00_wav + unitRaceId, unit);
-
 		if (unitToLoad->id == UnitId::TerranMason)
 		{
 			if (unitToLoad->pAI != nullptr)
 			{
-
 				u32* pAI_0x14 = (u32*)((u32)unitToLoad->pAI + 0x14);
-
 				if (*pAI_0x14 == (u32)unitToLoad)
+				{
 					*pAI_0x14 = NULL;
-
+				}
 			}
 		}
 
@@ -150,10 +146,9 @@ namespace hooks
 				CUnit* cargoUnit = unit->getLoadedUnit(i);
 				if (cargoUnit == nullptr) continue;
 				// TODO: disable cargo units
-				//scbw::setUnitPosition(cargoUnit, pos.x, pos.y); // <- does not work
+//				scbw::setUnitPosition(cargoUnit, pos.x, pos.y); // <- does not work
 			}
 		}
-
 		unitToLoad->status |= UnitStatus::InTransport;
 		helper::hideAndDisableUnit(unitToLoad);
 		unitToLoad->sprite->playIscriptAnim(IscriptAnimation::WalkingToIdle, true);
@@ -169,32 +164,27 @@ namespace hooks
 		}
 
 		scbw::refreshConsole();
-
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
-
 			unitToLoad->status = (unitToLoad->status & ~UnitStatus::IsBuilding) | UnitStatus::InBuilding;
-
 			if (unitToLoad->path != nullptr)
 			{
-
 				u32* path_0x4 = (u32*)((u32)unitToLoad->path + 4);
-
 				*path_0x4 = ((u32)unitToLoad->path - *u32_0x006BEE8C) / 128 + 1;
-
 				if (*u32_0x006BEE84 == 0)
+				{
 					unitToLoad->path = nullptr;
+				}
 				else
+				{
 					unitToLoad->path = (void*)((*u32_0x006BEE84 - *u32_0x006BEE8C) / 128 + 1);
-
+				}
 				*u32_0x006BEE84 = (u32)unitToLoad->path;
 				unitToLoad->path = nullptr;
-
 			}
 
-			// E7A81
+			// 004E7A81
 			unitToLoad->movementState = 0;
-
 			if (unitToLoad->sprite->elevationLevel < 12)
 			{
 				unitToLoad->pathingFlags |= 1;
@@ -203,37 +193,30 @@ namespace hooks
 			{
 				unitToLoad->pathingFlags &= ~1;
 			}
-
-			if (unitToLoad->subunit != nullptr &&
-				units_dat::BaseProperty[unitToLoad->subunit->id] & UnitProperty::Subunit)
+			if (unitToLoad->subunit != nullptr
+				&& units_dat::BaseProperty[unitToLoad->subunit->id] & UnitProperty::Subunit)
 			{
-
 				CUnit* subUnit = unitToLoad->subunit;
-
 				scbw::setUnitPosition(subUnit, unit->sprite->position.x, unit->sprite->position.y);
-
 				subUnit->status = (subUnit->status & ~UnitStatus::IsBuilding) | UnitStatus::InBuilding;
-
 				if (subUnit->path != nullptr)
 				{
-
 					u32* path_0x4 = (u32*)((u32)subUnit->path + 4);
-
 					*path_0x4 = ((u32)subUnit->path - *u32_0x006BEE8C) / 128 + 1;
-
 					if (*u32_0x006BEE84 == 0)
+					{
 						subUnit->path = nullptr;
+					}
 					else
+					{
 						subUnit->path = (void*)((*u32_0x006BEE84 - *u32_0x006BEE8C) / 128 + 1);
-
+					}
 					*u32_0x006BEE84 = (u32)subUnit->path;
 					subUnit->path = nullptr;
-
 				}
 
-				// E7B25
+				// 004E7B25
 				subUnit->movementState = 0;
-
 				if (subUnit->sprite->elevationLevel < 12)
 				{
 					subUnit->pathingFlags |= 1;
@@ -243,43 +226,32 @@ namespace hooks
 					subUnit->pathingFlags &= ~1;
 				}
 			}
-			else // E7B51
+			else // 004E7B51
 			{
 				scbw::setUnitPosition(unitToLoad, unit->sprite->position.x, unit->sprite->position.y);
 			}
 		}
-
 	}
 
-	;
-
-	//initial name was sub_4E7F70
-	//the transported unit is "unit", the transport is
-	//accessed through unit->connectedUnit
-	//Has a boolean return value
+	// the transported unit is "unit", the transport is accessed through unit->connectedUnit
+	// Has a boolean return value
 	b32 unloadUnitProc(CUnit* unit)
 	{
-
 		b32 return_value = 0;
-
 		if (unit->connectedUnit != nullptr)
 		{
-
 			CUnit* transport = unit->connectedUnit;
-
 			if ((transport->mainOrderTimer == 0 || transport->status & UnitStatus::GroundedBuilding)
 				&& !(transport->status & UnitStatus::DoodadStatesThing)
 				&& transport->lockdownTimer == 0
 				&& transport->stasisTimer == 0
 				&& transport->maelstromTimer == 0)
-			{ //E7FDC
+			{ // 004E7FDC
 
 				Point16 pos = {0,0};
-
-				//probably check where unit can be spawned
+				// probably check where unit can be spawned
 				if (helper::canUnload(transport, unit, &pos) != 0)
 				{
-
 					if (transport->id == UnitId::TerranTrojan)
 					{
 						if (transport->getCurrentLifeInGame() <= (transport->getMaxHpInGame() * 0.5))
@@ -332,22 +304,19 @@ namespace hooks
 								CUnit* cargoUnit = unit->getLoadedUnit(i);
 								if (cargoUnit == nullptr) continue;
 								// TODO: enable and update cargo units and their position
-								//scbw::setUnitPosition(cargoUnit, pos.x, pos.y); // <- does not work
+//								scbw::setUnitPosition(cargoUnit, pos.x, pos.y); // <- does not work
 							}
 						}
 					}
 					scbw::decloakProc(unit->connectedUnit);
 					scbw::setUnitPosition(unit, pos.x, pos.y);
-
 					if (unit->subunit != nullptr)
 					{
 						scbw::setUnitPosition(unit->subunit, pos.x, pos.y);
 					}
 
 					helper::IgnoreAllScriptAndGotoIdle(unit);
-
 					helper::function_004E7E10(unit, 0);
-
 					if (unit->pAI == nullptr)
 					{
 						unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
@@ -358,43 +327,31 @@ namespace hooks
 					}
 
 					scbw::refreshConsole();
-
 					return_value = 1;
-
 					if (transport->status & UnitStatus::GroundedBuilding)
-					{ // E806B
-
+					{ // 004E806B
 						if (unit->id != UnitId::ProtossAccantor)
 						{
-
 							u8 weaponId = unit->getGroundWeapon();
-
 							if (weaponId != WeaponId::None)
+							{
 								unit->groundWeaponCooldown = helper::getUpgradedWpnCooldown(unit, weaponId);
-
+							}
 							weaponId = unit->getAirWeapon();
-
 							if (weaponId != WeaponId::None)
+							{
 								unit->airWeaponCooldown = helper::getUpgradedWpnCooldown(unit, weaponId);
-
+							}
 							unit->spellCooldown = 30;
-
 						}
 						else
+						{
 							unit->mainOrderTimer = 30;
-
+						}
 					}
-
 				}
-
 			}
-
 		}
-
 		return return_value;
-
 	}
-
-	;
-
 }

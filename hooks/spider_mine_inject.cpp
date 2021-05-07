@@ -34,7 +34,7 @@ namespace
 
 	}
 
-	void __declspec(naked) orders_PlaceMine_Wrapper()
+	void __declspec(naked) orders_PlaceMine_Wrapper() // 00464FD0
 	{
 		static CUnit* a1;
 		__asm {
@@ -48,8 +48,8 @@ namespace
 		}
 	}
 
-	void __declspec(naked) burrowGeneric_Wrapper()
-	{ // 004E9A30
+	void __declspec(naked) burrowGeneric_Wrapper() // 004E9A30
+	{
 		static CUnit* unit;
 		__asm {
 			MOV unit, EAX
@@ -67,9 +67,9 @@ namespace hooks
 {
 	void injectSpiderMineHooks()
 	{
-		jmpPatch(findBestTerranMineTarget_Wrapper, 0x00441270, 1);
-		jmpPatch(orders_TerranMine_Wrapper, 0x00463DF0, 2);
-		//		jmpPatch(orders_PlaceMine_Wrapper,			0x00464FD0, 1);
-		//		jmpPatch(burrowGeneric_Wrapper,				0x004E9A30, 3);
+		jmpPatch(findBestTerranMineTarget_Wrapper,	0x00441270, 1);
+		jmpPatch(orders_TerranMine_Wrapper,			0x00463DF0, 2);
+//		jmpPatch(orders_PlaceMine_Wrapper,			0x00464FD0, 1);
+//		jmpPatch(burrowGeneric_Wrapper,				0x004E9A30, 3);
 	}
 }
