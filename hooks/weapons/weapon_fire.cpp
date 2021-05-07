@@ -416,24 +416,18 @@ namespace hooks
 					}
 					auto old = unit->orderTarget.unit;
 					auto range = weapons_dat::MaxRange[weaponId];
-					auto count = 0;
 					scbw::UnitFinder unitsInSplash(unit->getX() - range, unit->getY() - range, unit->getX() + range, unit->getY() + range);
 					for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
 					{
 						CUnit* target = unitsInSplash.getUnit(i);
-						if (madrigalFuriaMatch(unit, target))
+						if (target != nullptr && madrigalFuriaMatch(unit, target) && target != old)
 						{
-							count++;
-							if (target != nullptr)
+							unit->orderTarget.unit = target;
+							auto newAngle = scbw::getAngle(unit->getX(), unit->getY(), target->getX(), target->getY());
+							helper::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
+							if (unitExt->values[ValueDeconstruction])
 							{
-								unit->orderTarget.unit = target;
-								auto newAngle = scbw::getAngle(unit->getX(), unit->getY(),
-									target->getX(), target->getY());
-								helper::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
-								if (unitExt->values[ValueDeconstruction])
-								{
-									scbw::doDeconstructionDamage(unit, weaponId, false);
-								}
+								scbw::doDeconstructionDamage(unit, weaponId, false);
 							}
 						}
 					};
