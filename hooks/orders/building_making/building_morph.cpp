@@ -368,7 +368,7 @@ namespace hooks
 	}
 }
 
-//from unhooked
+// from unhooked
 namespace
 {
 	s32 BuildingHelper::getNumberOfUnitType(const Unit* unit, u16 unitId, bool ignoreIncomplete);
@@ -376,8 +376,8 @@ namespace
 
 namespace hooks
 {
-	//Checks if @p unitId is a building that can be morphed from another building.
-	//Note: This hook affects the behavior of Unit::isRemorphingBuilding().
+	// Checks if @p unitId is a building that can be morphed from another building.
+	// Note: This hook affects the behavior of Unit::isRemorphingBuilding().
 	bool isMorphedBuildingHook(u16 unitId)
 	{
 		//Default StarCraft behavior
@@ -388,10 +388,10 @@ namespace hooks
 		return false;
 	}
 
-	//Determines the number of units which have @p unitId and are being built by the
-	//@p unit. This hook is used by StarCraft's AI for counting units and buildings.
-	//For example, Greater Spires are counted as Spires, so that the AI would not
-	//try to rebuild another Spire after morphing one into a Greater Spire.
+	// Determines the number of units which have @p unitId and are being built by the
+	// @p unit. This hook is used by StarCraft's AI for counting units and buildings.
+	// For example, Greater Spires are counted as Spires, so that the AI would not
+	// try to rebuild another Spire after morphing one into a Greater Spire.
 	s32 getMorphBuildingTypeCountHook(const Unit* unit, u16 unitId, bool ignoreIncomplete)
 	{
 		//Default StarCraft behavior
