@@ -855,11 +855,16 @@ namespace hooks
 			case UnitId::ZergLarva:
 			{
 				// Set Larva type
-				if (unit->connectedUnit != nullptr
-					&& unit->connectedUnit->id == UnitId::ZergOcsalColony
-					&& unitExt->values[ValueLarvaType] == 0)
+				if (unit->connectedUnit != nullptr && unitExt->values[ValueLarvaType] == 0)
 				{
-					unitExt->values[ValueLarvaType] = 1;
+					if (unit->connectedUnit->id == UnitId::ZergOcsalColony)
+					{
+						unitExt->values[ValueLarvaType] = LarvaOcsal;
+					}
+					if (unit->connectedUnit->id == UnitId::ZergSire)
+					{
+						unitExt->values[ValueLarvaType] = LarvaSire;
+					}
 				}
 			} break;
 			case UnitId::TerranMaverick:
@@ -892,9 +897,13 @@ namespace hooks
 							}
 							// Overlays
 							/*
-							if (pickedUnit->getOverlay(ImageId::EnsnaringBroodOverlay))
+							if (unit->getOverlay(ImageId::TertiaryEyesOverlay))
 							{
-								pickedUnit->removeOverlay(ImageId::EnsnaringBroodOverlay);
+								unit->removeOverlay(ImageId::TertiaryEyesOverlay);
+							}
+							if (pickedUnit->getOverlay(ImageId::TertiaryEyesOverlay))
+							{
+								pickedUnit->removeOverlay(ImageId::TertiaryEyesOverlay);
 							}
 							*/
 							UnitExt* pickedExt = globals.GetUnitExt(pickedUnit);

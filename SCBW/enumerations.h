@@ -641,3 +641,10 @@ namespace ReqOpcodes {
 		EndOfSublist = 0x0FFFF,
 	};
 }
+
+enum LarvaType
+	{
+	LarvaStandard,
+	LarvaOcsal,
+	LarvaSire,
+	};
