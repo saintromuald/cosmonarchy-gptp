@@ -8,7 +8,7 @@ namespace
 	void __declspec(naked) orders_MedicHoldPositionWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, ESI
@@ -29,7 +29,7 @@ namespace
 	void __declspec(naked) orders_ReaverStopWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP
@@ -55,7 +55,7 @@ namespace
 	void __declspec(naked) orders_GuardWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, ESI
@@ -76,7 +76,7 @@ namespace
 	void __declspec(naked) function_004774A0_Wrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EAX

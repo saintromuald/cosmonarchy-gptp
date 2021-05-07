@@ -6,7 +6,7 @@
 namespace hooks
 {
 
-	s32 decrementRemainingBuildTime(CUnit* unit)
+	s32 decrementRemainingBuildTime(Unit* unit)
 	{ // 0x00466940
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 

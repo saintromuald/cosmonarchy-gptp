@@ -3,10 +3,10 @@
 
 namespace hooks
 {
-	void ShowHealthBar(CUnit* unit);
-	void compileHealthBar(CImage* a1, CSprite* a2);
+	void ShowHealthBar(Unit* unit);
+	void compileHealthBar(Image* a1, Sprite* a2);
 
 	void injectHpBarsHooks();
 
-	extern CUnit* _unitTemp;
+	extern Unit* _unitTemp;
 }

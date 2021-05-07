@@ -7,7 +7,7 @@ namespace
 
 	void __declspec(naked) orders_TerranBuildSelfWrapper()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			MOV unit, EAX
 			PUSHAD
@@ -21,7 +21,7 @@ namespace
 
 	void __declspec(naked) orders_SCVBuild2Wrapper()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -39,7 +39,7 @@ namespace
 
 	void __declspec(naked) orders_SCVBuildWrapper()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP

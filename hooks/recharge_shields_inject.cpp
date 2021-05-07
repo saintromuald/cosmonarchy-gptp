@@ -7,8 +7,8 @@ namespace
 	void __declspec(naked) unitCanRechargeShieldsWrapper()
 	{
 
-		static CUnit* target;
-		static CUnit* battery;
+		static Unit* target;
+		static Unit* battery;
 		static b32 result;
 
 		__asm {
@@ -31,7 +31,7 @@ namespace
 	void __declspec(naked) orderRechargeShieldsWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EDI

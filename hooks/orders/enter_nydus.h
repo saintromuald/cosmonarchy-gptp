@@ -4,9 +4,9 @@
 namespace hooks
 {
 
-	bool canEnterNydusCanal(CUnit* unit, CUnit* nydusCanal);		//004E8C20
-	void enterNydusCanal_Effect(CUnit* unit, CUnit* nydusCanal);	//004EA180
-	void orders_EnterNydusCanal(CUnit* unit);						//004EA3E0
+	bool canEnterNydusCanal(Unit* unit, Unit* nydusCanal);		//004E8C20
+	void enterNydusCanal_Effect(Unit* unit, Unit* nydusCanal);	//004EA180
+	void orders_EnterNydusCanal(Unit* unit);						//004EA3E0
 
 	void injectEnterNydusHooks();
 

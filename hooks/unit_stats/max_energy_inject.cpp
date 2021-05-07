@@ -1,7 +1,7 @@
 #include "max_energy.h"
 #include <hook_tools.h>
 
-extern const u32 Func_GetMaxEnergy; //Defined in CUnit.cpp
+extern const u32 Func_GetMaxEnergy; //Defined in Unit.cpp
 
 namespace
 {
@@ -10,7 +10,7 @@ namespace
 	void __declspec(naked) getUnitMaxEnergyWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 		static u16 maxEnergy;
 
 		__asm {

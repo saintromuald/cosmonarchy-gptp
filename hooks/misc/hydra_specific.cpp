@@ -66,7 +66,7 @@ void parseUnitDatReqs()
 	//	return result;
 }
 
-bool isAttemptingProtossBuild(const CUnit* probe)
+bool isAttemptingProtossBuild(const Unit* probe)
 {
 	return probe->mainOrderId == OrderId::BuildProtoss1
 		&& probe->status & UnitStatus::GroundedBuilding
@@ -76,9 +76,9 @@ bool isAttemptingProtossBuild(const CUnit* probe)
 
 // For createUnit
 const u32 Func_unitConstructor = 0x004A06C0;
-CUnit* unitConstructor(s32 x, s32 y, u16 unitType, s32 playerId, s32 unused)
+Unit* unitConstructor(s32 x, s32 y, u16 unitType, s32 playerId, s32 unused)
 {
-	static CUnit* result;
+	static Unit* result;
 	__asm {
 		PUSHAD
 		PUSH unused
@@ -94,9 +94,9 @@ CUnit* unitConstructor(s32 x, s32 y, u16 unitType, s32 playerId, s32 unused)
 }
 
 const u32 Func_CListPushBackUsedUnitEntry = 0x0049DCA0;
-CUnit* CListPushBackUsedUnitEntry(CUnit* unit)
+Unit* CListPushBackUsedUnitEntry(Unit* unit)
 {
-	static CUnit* result;
+	static Unit* result;
 	__asm {
 		PUSHAD
 		MOV EAX, unit
@@ -108,9 +108,9 @@ CUnit* CListPushBackUsedUnitEntry(CUnit* unit)
 }
 
 const u32 Func_CListPushBackHiddenUnitEntry = 0x0049DCE0;
-CUnit* CListPushBackHiddenUnitEntry(CUnit* unit)
+Unit* CListPushBackHiddenUnitEntry(Unit* unit)
 {
-	static CUnit* result;
+	static Unit* result;
 	__asm {
 		PUSHAD
 		MOV EAX, result
@@ -122,9 +122,9 @@ CUnit* CListPushBackHiddenUnitEntry(CUnit* unit)
 }
 
 const u32 Func_unitDestructor = 0x004A0990;
-CSprite* unitDestructor(CUnit* unit)
+Sprite* unitDestructor(Unit* unit)
 {
-	static CSprite* result;
+	static Sprite* result;
 	__asm {
 		PUSHAD
 		MOV ECX, unit
@@ -136,7 +136,7 @@ CSprite* unitDestructor(CUnit* unit)
 }
 
 const u32 Func_getImageAttackFrame = 0x00401DF0;
-void* getImageAttackFrame(void* resultArg, CSprite* sprite, s32 index, u8 playerId)
+void* getImageAttackFrame(void* resultArg, Sprite* sprite, s32 index, u8 playerId)
 {
 	static void* result;
 	__asm {
@@ -153,7 +153,7 @@ void* getImageAttackFrame(void* resultArg, CSprite* sprite, s32 index, u8 player
 }
 
 const u32 Func_setSpriteMainImageOffset = 0x00401E40;
-void setSpriteMainImageOffset(CSprite* sprite, char x, char y)
+void setSpriteMainImageOffset(Sprite* sprite, char x, char y)
 {
 	__asm {
 		PUSHAD
@@ -169,14 +169,14 @@ void setSpriteMainImageOffset(CSprite* sprite, char x, char y)
 namespace hooks
 {
 
-	void createDamageOverlay(CSprite* sprite)
+	void createDamageOverlay(Sprite* sprite)
 	{
 		if (sprite->mainGraphic == nullptr)
 			return;
 		const LO_Header* overlay = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayDamagePtr, sprite->mainGraphic->id));
 		if (overlay == nullptr)
 			return;//return if there's no overlay defined
-		for (CImage* image = sprite->images.head; image; image = image->link.next)
+		for (Image* image = sprite->images.head; image; image = image->link.next)
 		{
 			if (image->id >= ImageId::FirstMinorDamageOverlay &&
 				image->id <= ImageId::LastMinorDamageOverlay)
@@ -208,7 +208,7 @@ namespace hooks
 				continue;
 			u32 overlay_id = ImageId::FirstMajorDamageOverlay + i;
 			bool found = false;
-			for (CImage* image = sprite->images.head; image; image = image->link.next)
+			for (Image* image = sprite->images.head; image; image = image->link.next)
 			{
 				if (image->id == overlay_id)
 				{
@@ -230,11 +230,11 @@ namespace hooks
 	}
 
 	// Hooked to enable unit mover when placing buildings
-	s32 isTileBlockedBy(CUnit** unitArray, CUnit* builder, s32 x_tile, s32 y_tile, s8 dontIgnoreReacting, s8 alsoInvisible)
+	s32 isTileBlockedBy(Unit** unitArray, Unit* builder, s32 x_tile, s32 y_tile, s8 dontIgnoreReacting, s8 alsoInvisible)
 	{ // 00473300
-		CUnit* unitArrayPtr; // edx
-		CUnit* builderVar; // edi
-		CUnit** unitArrayVar; // esi
+		Unit* unitArrayPtr; // edx
+		Unit* builderVar; // edi
+		Unit** unitArrayVar; // esi
 		DWORD unitStatus; // eax
 		BOOL needsDetection; // eax
 
@@ -291,7 +291,7 @@ namespace hooks
 		}
 	}
 
-	u32 checkUnitDatRequirements(u8 playerId, u16 unit_id, CUnit* unit)
+	u32 checkUnitDatRequirements(u8 playerId, u16 unit_id, Unit* unit)
 	{
 		//
 		//
@@ -368,7 +368,7 @@ LABEL_18:
 		auto v14 = 0;
 		auto v17 = 0;
 		auto v18 = 0;
-		CUnit* v12 = 0;
+		Unit* v12 = 0;
 		auto requiredId = 0;
 		/*		while (true)
 				{
@@ -566,13 +566,13 @@ LABEL_18:
 		return 0;
 	}
 
-	u32 realTopSpeed(CFlingy* flingy, u32 flingyId)
+	u32 realTopSpeed(Flingy* flingy, u32 flingyId)
 	{
 		u32 speed = scbw::getFlingyData(FlingyDatEntries::TopSpeed, flingyId);
 		return speed;
 	}
 
-	u16 realAcceleration(CFlingy* flingy, u32 flingyId)
+	u16 realAcceleration(Flingy* flingy, u32 flingyId)
 	{
 		u16 acceleration = scbw::getFlingyData(FlingyDatEntries::Acceleration, flingyId);
 		return acceleration;
@@ -598,7 +598,7 @@ LABEL_18:
 		return weapons_dat::FlingyId[weaponId];
 	}
 
-	u32 getFlingyHaltDistanceHook(CFlingy* flingy)
+	u32 getFlingyHaltDistanceHook(Flingy* flingy)
 	{
 		auto speed = flingy->current_speed2;
 		if (speed == 0 || flingy->flingyMovementType != 0)
@@ -632,7 +632,7 @@ LABEL_18:
 		return false;
 	}
 
-	void setupSpiderMines(CUnit* unit)
+	void setupSpiderMines(Unit* unit)
 	{
 		if (unit->id == UnitId::TerranVulture)
 		{
@@ -644,7 +644,7 @@ LABEL_18:
 		}
 	}
 
-	u32 get_mine_id(CUnit* unit)
+	u32 get_mine_id(Unit* unit)
 	{
 		if (unit->id == UnitId::TerranEidolon)
 		{
@@ -652,7 +652,7 @@ LABEL_18:
 		}
 		return UnitId::TerranSpiderMine;
 	}
-	u32 extend_tech_target_check(u32 orig_result, CUnit* caster, CUnit* target, u8 techId)
+	u32 extend_tech_target_check(u32 orig_result, Unit* caster, Unit* target, u8 techId)
 	{
 		if (orig_result == 0)
 		{ // Valid Target
@@ -666,7 +666,7 @@ LABEL_18:
 	}
 
 	//replaces CTFCop2 order
-	void order_PhaseLink(CUnit* unit)
+	void order_PhaseLink(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -787,7 +787,7 @@ LABEL_18:
 		}
 	}
 
-	bool canAttackTarget_EndChunk(CUnit* source, u32 target_flags)
+	bool canAttackTarget_EndChunk(Unit* source, u32 target_flags)
 	{
 		if (source->id == UnitId::ProtossClarion && scbw::get_aise_value(source, nullptr, AiseId::SendClarionValue, 0, 0) == 1)
 		{
@@ -850,9 +850,9 @@ LABEL_18:
 		return scbw::setInGameLoopState(0);
 	}
 
-	CUnit* createUnit(u16 unitType, s32 x, s32 y, s32 playerId)  // 004A09D0 - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
+	Unit* createUnit(u16 unitType, s32 x, s32 y, s32 playerId)  // 004A09D0 - hooked to add ccmu cases (protect against garbage pointers) - Pr0nogo
 	{
-		CUnit* result;
+		Unit* result;
 		s32* pointer;
 
 		u32 randomSeed;
@@ -867,8 +867,8 @@ LABEL_18:
 		{
 			randomSeed = 0;
 		}
-		CUnit* unitConstructorResult = unitConstructor(x, y, unitType, playerId, randomSeed);
-		CUnit* unitConstructorResult2 = unitConstructorResult;
+		Unit* unitConstructorResult = unitConstructor(x, y, unitType, playerId, randomSeed);
+		Unit* unitConstructorResult2 = unitConstructorResult;
 		if (!unitConstructorResult)
 		{
 			return 0;
@@ -889,8 +889,8 @@ LABEL_18:
 		}
 		else
 		{
-			CUnit* unitConstructorResult3 = unitConstructor(x, y, units_dat::SubUnit[unitType], playerId, randomSeed);
-			CUnit* unitConstructorResult4 = unitConstructorResult3;
+			Unit* unitConstructorResult3 = unitConstructor(x, y, units_dat::SubUnit[unitType], playerId, randomSeed);
+			Unit* unitConstructorResult4 = unitConstructorResult3;
 			if (!unitConstructorResult3)
 			{
 				unitDestructor(unitConstructorResult2);

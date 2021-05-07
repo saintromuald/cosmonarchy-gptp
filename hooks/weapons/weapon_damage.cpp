@@ -27,24 +27,24 @@ namespace
 
 #include "SCBW\UnitFinder.h"
 
-bool irradiateTarget(CUnit* unit)
+bool irradiateTarget(Unit* unit)
 {
 	return true; // Originally prohibited targeting eggs
 }
 
-void augurSacrifice(CUnit* target)
+void augurSacrifice(Unit* target)
 {
 	UnitExt* targetExt = globals.GetUnitExt(target);
 	if (targetExt->values[ValueAugurSafetyCheck] == 0)
 	{
 		targetExt->values[ValueAugurSafetyCheck] = 1;
 		const s32 radius = 6 * 32;
-		CUnit* nearest = scbw::UnitFinder::getNearestTarget(
+		Unit* nearest = scbw::UnitFinder::getNearestTarget(
 			target->getX() - radius,
 			target->getY() - radius,
 			target->getX() + radius,
 			target->getY() + radius,
-			target, [&](CUnit* unit)
+			target, [&](Unit* unit)
 		{
 			// Don't attack friendly / allied units
 			if (unit->sprite == nullptr)
@@ -92,12 +92,12 @@ namespace hooks
 	static void weaponDamage_behaviors(WeaponDamageData& data);
 	static void weaponDamage_fatal(WeaponDamageData& data);
 
-	/// Hooks into the CUnit::damageWith() function.
+	/// Hooks into the Unit::damageWith() function.
 	void weaponDamageHook(
 		s32 damage,
-		CUnit* target,
+		Unit* target,
 		u8 weaponId,
-		CUnit* attacker,
+		Unit* attacker,
 		u8 attackingPlayerId,
 		s8 direction,
 		u8 damageDivisor
@@ -430,7 +430,7 @@ namespace hooks
 					data.target->getY() - 96,
 					data.target->getX() + 96,
 					data.target->getY() + 96
-				).forEach([&](CUnit* target)
+				).forEach([&](Unit* target)
 				{
 					if (target->status & UnitStatus::Burrowed)
 					{
@@ -441,7 +441,7 @@ namespace hooks
 						return;
 					}
 					helper::ApplySpores(target);
-					CThingy* thingy = scbw::createThingy(SpriteId::Corrosive_Acid_Hit, target->getX(), target->getY(), 11);
+					Thingy* thingy = scbw::createThingy(SpriteId::Corrosive_Acid_Hit, target->getX(), target->getY(), 11);
 					if (thingy != nullptr)
 					{
 						thingy->sprite->elevationLevel = target->sprite->elevationLevel + 1;
@@ -459,7 +459,7 @@ namespace hooks
 			// Cantavis - Hallucinating
 			if (targetExt->timers[TimerHallucinating] >= 1)
 			{
-				CUnit* haluAttacker = data.attacker;
+				Unit* haluAttacker = data.attacker;
 				if ((haluAttacker->id == UnitId::ProtossSteward
 					|| haluAttacker->id == UnitId::ProtossPlasmaShell)
 					&& data.attacker->interceptor.parent != nullptr)
@@ -475,7 +475,7 @@ namespace hooks
 					{
 						return;
 					}
-					CUnit* hal_unit = helper::createHallucination(haluAttacker, haluPlayer);
+					Unit* hal_unit = helper::createHallucination(haluAttacker, haluPlayer);
 					if (hal_unit != nullptr)
 					{
 						hal_unit->sprite->createOverlay(ImageId::HallucinationDeath3);
@@ -658,7 +658,7 @@ namespace hooks
 						data.target->getY() - range,
 						data.target->getX() + range,
 						data.target->getY() + range
-					).forEach([&data](CUnit* foundUnit)
+					).forEach([&data](Unit* foundUnit)
 					{
 						if (foundUnit->playerId != data.attacker->playerId && !scbw::isAlliedTo(data.attacker->playerId, foundUnit->playerId))
 						{
@@ -728,7 +728,7 @@ namespace hooks
 						data.target->getY() - 288,
 						data.target->getX() + 288,
 						data.target->getY() + 288
-					).forEach([&](CUnit* unit)
+					).forEach([&](Unit* unit)
 					{
 						if (unit->id != UnitId::ProtossCantavis)
 						{
@@ -758,7 +758,7 @@ namespace hooks
 		{
 			globals.initLazarusAgent(data.target->position.x, data.target->position.y,
 				data.target->playerId, data.target->id, data.target->energy, targetExt->values[ValueLazarusAgent],
-				(CUnit*)targetExt->values[ValueLazarusAgentApostleSrc]);
+				(Unit*)targetExt->values[ValueLazarusAgentApostleSrc]);
 		}
 
 		// Ecclesiast - Astral Blessing proc
@@ -772,7 +772,7 @@ namespace hooks
 				data.target->getY() - range,
 				data.target->getX() + range,
 				data.target->getY() + range
-			).forEach([&](CUnit* unit)
+			).forEach([&](Unit* unit)
 			{
 				if (player != unit->playerId && !scbw::isAlliedTo(player, unit->playerId))
 				{
@@ -802,7 +802,7 @@ namespace hooks
 			data.target->setHp(256);
 			targetExt->timers[TimerEnthrallingAssaultHeal] = 24 * 10;
 			// Transfer unit ownership
-			CUnit* akistrokor = targetExt->units[UnitAttachedAkistrokor];
+			Unit* akistrokor = targetExt->units[UnitAttachedAkistrokor];
 			data.target->giveTo(akistrokor->playerId);
 			// Housekeeping
 			targetExt->units[UnitAttachedAkistrokor] = nullptr;
@@ -819,7 +819,7 @@ namespace hooks
 					data.target->getY() - 96,
 					data.target->getX() + 96,
 					data.target->getY() + 96
-				).forEach([&](CUnit* unit)
+				).forEach([&](Unit* unit)
 				{
 					if (!units_dat::ShieldsEnabled[unit->id])
 					{
@@ -835,13 +835,13 @@ namespace hooks
 				if (targetExt->values[ValueLastOrdersInit] == 0)
 				{
 					targetExt->values[ValueLastOrdersInit] = 1;
-					CUnit* nearest = scbw::UnitFinder(
+					Unit* nearest = scbw::UnitFinder(
 						data.target->getX() - 288,
 						data.target->getY() - 288,
 						data.target->getX() + 288,
 						data.target->getY() + 288
 					).getNearestTarget(data.target,
-						[&](CUnit* unit)
+						[&](Unit* unit)
 					{
 						//Don't attack friendly / allied units
 						if (unit->playerId == data.target->playerId)
@@ -912,7 +912,7 @@ namespace hooks
 						data.attacker->getY() - range,
 						data.attacker->getX() + range,
 						data.attacker->getY() + range
-					).forEach([&](CUnit* unit)
+					).forEach([&](Unit* unit)
 					{
 						if (unit == nullptr
 							|| (player != unit->playerId && !scbw::isAlliedTo(player, unit->playerId)))
@@ -944,11 +944,11 @@ namespace hooks
 		}
 	}
 
-	void applyEnsnare(CUnit* unit) // 004F45E0
+	void applyEnsnare(Unit* unit) // 004F45E0
 	{
 		s32 baseProperty;
 		u8 overlayPadding;
-		CUnit* victim;
+		Unit* victim;
 
 		if (!(unit->ensnareTimer)
 			&& !(unit->status & UnitStatus::Burrowed))
@@ -977,7 +977,7 @@ namespace hooks
 		unit->updateSpeed();
 	}
 
-	bool GorgonCondition(CUnit* attacker, CUnit* target)
+	bool GorgonCondition(Unit* attacker, Unit* target)
 	{
 		if (attacker != nullptr && target != nullptr)
 		{
@@ -992,7 +992,7 @@ namespace hooks
 		return false;
 	}
 
-	u16 GetSporesOverlayId(CUnit* target)
+	u16 GetSporesOverlayId(Unit* target)
 	{
 		UnitExt* targetExt = globals.GetUnitExt(target);
 		auto stacks = targetExt->values[ValueCorrosiveTouchStacks];
@@ -1014,20 +1014,20 @@ namespace hooks
 
 	// TODO: Refactor
 	// Hooked to change Corrosive Spores timer - Pr0nogo
-	s32 ApplySpores_hook(CUnit* target) // 004F4480
+	s32 ApplySpores_hook(Unit* target) // 004F4480
 	{
 		u8 sporeCount;
 		u32 overlayMultiplier;
 		u8 overlayOffset;
 		s32 overlay;
 		s32 v6;
-		CUnit* targetFinal;
+		Unit* targetFinal;
 		u32 result_sub_1;
 		u32 acidTimeMax;
 		u32 result;
 		u32 v11_acidSporeTime;
-		CImage* image;
-		CSprite* spriteFinal;
+		Image* image;
+		Sprite* spriteFinal;
 
 		UnitExt* targetExt = globals.GetUnitExt(target);
 		targetExt->values[ValueCorrosiveTouchStacks]++;

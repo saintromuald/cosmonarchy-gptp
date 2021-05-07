@@ -13,7 +13,7 @@ namespace hooks
 	/// This function regenerates energy for spellcasters and drains energy for cloaking units.
 	/// Equivalent to function sub_4EB4B0 @ 0x004EB4B0
 
-	void updateUnitEnergy(CUnit* unit)
+	void updateUnitEnergy(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -108,7 +108,7 @@ namespace hooks
 	}
 
 	const u32 Func_SetUnitPathing = 0x00401360;
-	void setUnitPathing(CUnit* unit, u8 unkPathRelated)
+	void setUnitPathing(Unit* unit, u8 unkPathRelated)
 	{
 		__asm {
 			PUSHAD
@@ -121,7 +121,7 @@ namespace hooks
 
 	/// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
 	/// Identical to function @ 0x004EC290
-	void updateUnitStateHook(CUnit* unit)
+	void updateUnitStateHook(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -190,7 +190,7 @@ namespace hooks
 					auto a = scbw::UnitFinder::getNearestTarget(
 						unit->getX() - range, unit->getY() - range,
 						unit->getX() + range, unit->getY() + range,
-						unit, [&](CUnit* target)
+						unit, [&](Unit* target)
 					{
 						if (target == unit)
 						{
@@ -224,7 +224,7 @@ namespace hooks
 		// Accantor Plasma Shells have shields equal to the Accantor that launches them
 		if (unit->id == UnitId::ProtossAccantor)
 		{
-			CUnit* scarab = unit->carrier.inHangarChild;
+			Unit* scarab = unit->carrier.inHangarChild;
 			while (scarab != nullptr)
 			{
 				if (scarab->id == UnitId::ProtossPlasmaShell)
@@ -494,7 +494,7 @@ namespace hooks
 					if (distance < 32)
 					{
 						unit->status |= UnitStatus::Invincible;
-						CBullet* bullet = helper::createBullet(WeaponId::AuroraLastOrders, unit, unit->position.x, unit->position.y, unit->playerId, unit->currentDirection1);
+						Bullet* bullet = helper::createBullet(WeaponId::AuroraLastOrders, unit, unit->position.x, unit->position.y, unit->playerId, unit->currentDirection1);
 						hooks::splash(bullet, WeaponId::AuroraLastOrders, SplashType::FriendlyNew, nullptr);
 						if (bullet)
 						{
@@ -525,7 +525,7 @@ namespace hooks
 		}
 	};
 
-	void incrementUnitScoresEx(s32 count, CUnit* unit, s32 increment_scores) // 0x00488D50
+	void incrementUnitScoresEx(s32 count, Unit* unit, s32 increment_scores) // 0x00488D50
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -637,23 +637,23 @@ namespace hooks
 	void updateUnits()
 	{ // 004ED000
 		s32 v0;
-		CUnit* v1;
+		Unit* v1;
 		char v2;
 		char i;
-		CUnit* v4;
-		CUnit* v5;
+		Unit* v4;
+		Unit* v5;
 		s32 v6;
-		CUnit* v7;
-		CUnit* v8;
-		CUnit* v9;
+		Unit* v7;
+		Unit* v8;
+		Unit* v9;
 		char v10;
-		CUnit* v11;
-		CUnit* v12;
-		CUnit* v13;
-		CUnit* v14;
+		Unit* v11;
+		Unit* v12;
+		Unit* v13;
+		Unit* v14;
 		s32 v15;
-		CUnit* v16;
-		CUnit* v17;
+		Unit* v16;
+		Unit* v17;
 
 		*interceptorFocusedThisFrame = 0;
 		v0 = helper::isSelectedUnitGroupEnabled();
@@ -843,9 +843,9 @@ namespace hooks
 	// Hooked to help with the cloak rewrite - Pr0nogo
 	void updateBurrowingCloakingUnits()
 	{ // 00492EB0
-		CUnit* v0;
+		Unit* v0;
 		s32 v1;
-		CUnit* v2;
+		Unit* v2;
 		s32 v3;
 		s32 v4;
 		s32 v5;
@@ -899,10 +899,10 @@ LABEL_13:
 	}
 
 	// Hooked for cloak rewrite animations - Pr0nogo
-	void doCloak(CUnit* unit, s32 soundId)
+	void doCloak(Unit* unit, s32 soundId)
 	{ // 0049B440
-		CUnit* v2;
-		CUnit* v3;
+		Unit* v2;
+		Unit* v3;
 
 		v2 = unit;
 		if (!(unit->status & UnitStatus::Burrowed))

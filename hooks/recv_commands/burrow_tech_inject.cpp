@@ -50,7 +50,7 @@ namespace
 	void __declspec(naked) Unburrow_ProcWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP

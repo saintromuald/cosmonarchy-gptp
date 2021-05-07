@@ -7,10 +7,10 @@ namespace
 	void __declspec(naked) genericRightClickUnitProc2_Wrapper()
 	{ // 00455E00
 		static s32 result;
-		static CUnit* unit;
+		static Unit* unit;
 		static s32 a2;
 		static s16 a3;
-		static CUnit* target;
+		static Unit* target;
 		static s16 unitID;
 		__asm {
 			PUSH EBP
@@ -39,7 +39,7 @@ namespace
 
 	void __declspec(naked) CMDRECV_HoldPosition_Wrapper()
 	{ // 004C20C0
-		static CUnit* result;
+		static Unit* result;
 		static s32 a1;
 		__asm {
 			MOV a1, EDI
@@ -55,8 +55,8 @@ namespace
 
 	void __declspec(naked) unitCanSeeCloakedTarget_Wrapper()
 	{ // 00401D60
-		static CUnit* target;
-		static CUnit* unit;
+		static Unit* target;
+		static Unit* unit;
 		static u32 result;
 		__asm {
 			PUSH EBP
@@ -81,8 +81,8 @@ namespace
 	void __declspec(naked) isTargetVisible_Wrapper()
 	{ // 004E5E30
 		static u32 result;
-		static CUnit* target;
-		static CUnit* unit;
+		static Unit* target;
+		static Unit* unit;
 		__asm {
 			MOV target, EAX
 			MOV unit, ESI
@@ -99,7 +99,7 @@ namespace
 	void __declspec(naked) isUnitVisible_Wrapper()
 	{ // 004E5DB0
 		static u32 result;
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			MOV unit, ESI
 			PUSHAD
@@ -114,7 +114,7 @@ namespace
 
 	void __declspec(naked) checkUnitVisibility_Wrapper()
 	{ // 00443390
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			MOV unit, EAX
 			PUSHAD
@@ -129,7 +129,7 @@ namespace
 	void __declspec(naked) isUnitCloaking_Wrapper()
 	{ // 004916E0
 		static s32 result;
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			MOV unit, ECX
 			PUSHAD

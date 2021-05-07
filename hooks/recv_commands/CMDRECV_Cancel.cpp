@@ -6,7 +6,7 @@ namespace hooks
 	// hooked to allow non-ghosts units to cancel nukes
 	void CMDRECV_CancelNuke()
 	{
-		CUnit* current_unit;
+		Unit* current_unit;
 		*selectionIndexStart = 0;
 		current_unit = getActivePlayerNextSelection();
 		while (current_unit != nullptr)
@@ -16,7 +16,7 @@ namespace hooks
 				|| current_unit->id == UnitId::TerranSeraph
 				)
 			{
-				CUnit* nuke = current_unit->connectedUnit;
+				Unit* nuke = current_unit->connectedUnit;
 				if (nuke != nullptr && nuke->id == UnitId::TerranNuclearMissile)
 				{
 					current_unit->connectedUnit = nullptr;
@@ -30,7 +30,7 @@ namespace hooks
 	// hooked because the default code didn't allow for multiple selection
 	void CMDRECV_CancelAddon()
 	{
-		CUnit* unit;
+		Unit* unit;
 		*selectionIndexStart = 0;
 		unit = getActivePlayerNextSelection();
 		if (unit != nullptr &&
@@ -39,7 +39,7 @@ namespace hooks
 			unit->status & UnitStatus::GroundedBuilding
 			)
 		{
-			CUnit* addon = unit->currentBuildUnit;
+			Unit* addon = unit->currentBuildUnit;
 			if (addon != nullptr &&
 				!(addon->status & UnitStatus::Completed) &&
 				unit->status & UnitStatus::Completed &&
@@ -55,7 +55,7 @@ namespace hooks
 	// hooked because the default code didn't allow for multiple selection
 	void CMDRECV_CancelUpgrade()
 	{
-		CUnit* unit;
+		Unit* unit;
 		*selectionIndexStart = 0;
 		unit = getActivePlayerNextSelection();
 		if (unit != nullptr &&
@@ -72,7 +72,7 @@ namespace hooks
 	// hooked because the default code didn't allow for multiple selection
 	void CMDRECV_CancelResearch()
 	{
-		CUnit* unit;
+		Unit* unit;
 		*selectionIndexStart = 0;
 		unit = getActivePlayerNextSelection();
 		if (unit != nullptr &&
@@ -90,7 +90,7 @@ namespace hooks
 	// hooked because the default code didn't allow for multiple selection
 	void CMDRECV_CancelTrain(u16 wUnitID)
 	{
-		CUnit* unit;
+		Unit* unit;
 
 		*selectionIndexStart = 0;
 		unit = getActivePlayerNextSelection();
@@ -125,7 +125,7 @@ namespace hooks
 
 	void CMDRECV_CancelUnitMorph()
 	{
-		CUnit* current_unit;
+		Unit* current_unit;
 		*selectionIndexStart = 0;
 		current_unit = getActivePlayerNextSelection();
 		while (current_unit != nullptr)
@@ -140,7 +140,7 @@ namespace hooks
 	// hooked because the default code didn't allow for multiple selection
 	void CMDRECV_CancelConstruction()
 	{
-		CUnit* unit;
+		Unit* unit;
 		*selectionIndexStart = 0;
 		unit = getActivePlayerNextSelection();
 		if (unit != nullptr)

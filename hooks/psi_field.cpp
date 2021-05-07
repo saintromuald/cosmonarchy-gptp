@@ -14,7 +14,7 @@ namespace hooks
 	}
 
 	//Actual state check whether a unit can generate a psi field
-	bool isReadyToMakePsiField(CUnit* unit)
+	bool isReadyToMakePsiField(Unit* unit)
 	{
 		//Default StarCraft behavior
 

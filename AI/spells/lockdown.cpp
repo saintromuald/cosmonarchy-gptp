@@ -6,7 +6,7 @@
 namespace AI
 {
 
-	CUnit* findBestLockdownTarget(CUnit* caster, bool isUnderAttack)
+	Unit* findBestLockdownTarget(Unit* caster, bool isUnderAttack)
 	{
 
 		s32 bounds;
@@ -24,7 +24,7 @@ namespace AI
 			caster->getX() + bounds,
 			caster->getY() + bounds,
 			caster,
-			[&](CUnit* target)
+			[&](Unit* target)
 		{
 
 			if (!isTargetWorthHitting(target, caster))

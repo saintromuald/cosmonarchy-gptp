@@ -10,7 +10,7 @@ namespace {
 	//-------- CMDRECV_UnitMorph --------//
 
 	const uint32 Func_AddUnitToBuildQueue = 0x00467250;
-	bool addUnitToBuildQueue(CUnit* unit, u16 unitId) {
+	bool addUnitToBuildQueue(Unit* unit, u16 unitId) {
 
 		static uint32 result;
 		static uint32 unitId_;
@@ -33,7 +33,7 @@ namespace {
 	void __stdcall unitMorphWrapper_CMDRECV_UnitMorph(u8 *commandData) {
 		const u16 morphUnitId = *((u16*)&commandData[1]);
 		*selectionIndexStart = 0;
-		while (CUnit* unit = getActivePlayerNextSelection()) {
+		while (Unit* unit = getActivePlayerNextSelection()) {
 			if (hooks::unitCanMorphHook(unit, morphUnitId)
 				&& unit->mainOrderId != OrderId::Morph1
 				&& addUnitToBuildQueue(unit, morphUnitId))
@@ -47,7 +47,7 @@ namespace {
 
 	//-------- BTNSCOND_CanBuildUnit --------//
 
-	s32 __fastcall unitMorphWrapper_BTNSCOND_CanBuildUnit(u16 buildUnitId, s32 playerId, CUnit* unit) {
+	s32 __fastcall unitMorphWrapper_BTNSCOND_CanBuildUnit(u16 buildUnitId, s32 playerId, Unit* unit) {
 
 		if (*clientSelectionCount <= 1
 			|| hooks::getUnitMorphEggTypeHook(unit->id, unit, unit->buildQueue[0]) != UnitId::None)
@@ -61,7 +61,7 @@ namespace {
 	const uint32 Hook_Orders_Morph1_Check_Success = 0x0045DFCA;
 	void __declspec(naked) unitMorphWrapper_Orders_Morph1_Check() {
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSHAD
@@ -89,7 +89,7 @@ namespace {
 	const uint32 Hook_Orders_Morph1_EggType_Return = 0x0045E048;
 	void __declspec(naked) unitMorphWrapper_Orders_Morph1_EggType() {
 
-		static CUnit* unit;
+		static Unit* unit;
 		static uint32 morphEggType;
 
 		__asm {
@@ -119,11 +119,11 @@ namespace {
 
 	//-------- cancelBuild --------//
 
-	typedef void(__stdcall *CancelZergBuildingFunc)(CUnit*);
+	typedef void(__stdcall *CancelZergBuildingFunc)(Unit*);
 	CancelZergBuildingFunc cancelZergBuilding = (CancelZergBuildingFunc)0x0045DA40;
 
 	const uint32 Func_ChangeUnitType = 0x0049FED0;
-	void changeUnitType(CUnit* unit, u16 newUnitId) {
+	void changeUnitType(Unit* unit, u16 newUnitId) {
 
 		static uint32 newUnitId_ = newUnitId;
 
@@ -140,7 +140,7 @@ namespace {
 	}
 
 	const uint32 Func_ReplaceSpriteImages = 0x00499BB0;
-	void replaceSpriteImages(CSprite *sprite, u16 imageId, u8 imageDirection) {
+	void replaceSpriteImages(Sprite *sprite, u16 imageId, u8 imageDirection) {
 
 		static uint32 imageId_;
 		static uint32 imageDirection_;
@@ -161,7 +161,7 @@ namespace {
 
 	//-------- cancelUnit --------//
 
-	void __fastcall cancelUnitWrapper(CUnit* unit) {
+	void __fastcall cancelUnitWrapper(Unit* unit) {
 		//Default StarCraft behavior
 		if (unit->isDead())
 			return;
@@ -203,7 +203,7 @@ namespace {
 		if (cancelChangeUnitId == UnitId::None) {
 			//scbw::printText("Remove the unit");
 			if (unit->id == UnitId::nuclear_missile) {
-				CUnit* silo = unit->connectedUnit;
+				Unit* silo = unit->connectedUnit;
 				if (silo) {
 					silo->building.silo.nuke = nullptr;
 					silo->mainOrderState = 0;
@@ -239,7 +239,7 @@ namespace {
 
 	//-------- getRemainingBuildTimePct --------//
 
-	s32 getRemainingBuildTimePctHook(CUnit* unit) {
+	s32 getRemainingBuildTimePctHook(Unit* unit) {
 		u16 unitId = unit->id;
 		if (scbw::isZergEgg(unitId,true,false) || unit->isRemorphingBuilding())
 			unitId = unit->buildQueue[unit->buildQueueSlot];
@@ -250,7 +250,7 @@ namespace {
 	//Inject @ 0x004669E0
 	void __declspec(naked) getRemainingBuildTimePctWrapper() {
 
-		static CUnit* unit;
+		static Unit* unit;
 		static s32 percentage;
 
 		__asm {
@@ -275,7 +275,7 @@ namespace {
 	const uint32 Hook_GetUnitVerticalOffsetOnBirth_Return = 0x0045DE2C;
 	void __declspec(naked) getUnitVerticalOffsetOnBirthWrapper() {
 
-		static CUnit* unit;
+		static Unit* unit;
 		static s16 yOffset;
 
 		__asm {
@@ -298,7 +298,7 @@ namespace {
 	const uint32 Hook_IsRallyableEggUnit_No = 0x0045DE8B;
 	void __declspec(naked) isRallyableEggUnitWrapper() {
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			POP ESI
@@ -330,7 +330,7 @@ namespace {
 
 void __declspec(naked) orders_ZergBirthWrapper() {
 
-	static CUnit* unit;
+	static Unit* unit;
 
 	__asm {
 		PUSH EBP
@@ -354,7 +354,7 @@ void __declspec(naked) orders_ZergBirthWrapper() {
 
 void __declspec(naked) orders_Morph1Wrapper() {
 
-	static CUnit* unit;
+	static Unit* unit;
 
 	__asm {
 		PUSH EBP

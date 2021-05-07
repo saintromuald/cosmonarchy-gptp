@@ -5,8 +5,8 @@ namespace
 {
 
 	/*	void __declspec(naked) AI_TrainingUnit_Wrapper() { // 004A2830
-			static CUnit* result;
-			static CUnit* parent;
+			static Unit* result;
+			static Unit* parent;
 			__asm {
 				MOV result, EAX
 				MOV parent, ECX

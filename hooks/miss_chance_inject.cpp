@@ -5,8 +5,8 @@ namespace
 {
 	s32 __declspec(naked) canHitTargetCheck_Wrapper()
 	{ // 004765B0
-		static CUnit* a1;
-		static CUnit* a2;
+		static Unit* a1;
+		static Unit* a2;
 		static s32 result;
 		__asm {
 			PUSHAD

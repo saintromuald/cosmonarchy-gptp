@@ -11,10 +11,10 @@
 namespace hooks
 {
 
-	void orders_ReaverAttack1(CUnit* unit)
+	void orders_ReaverAttack1(Unit* unit)
 	{
 
-		CUnit* target = unit->orderTarget.unit;
+		Unit* target = unit->orderTarget.unit;
 
 		if (target == nullptr)
 		{
@@ -78,14 +78,14 @@ namespace hooks
 
 		}
 
-	} //void orders_ReaverAttack1(CUnit* unit)
+	} //void orders_ReaverAttack1(Unit* unit)
 
 	;
 
-	void orders_CarrierAttack1(CUnit* unit)
+	void orders_CarrierAttack1(Unit* unit)
 	{
 
-		CUnit* target = unit->orderTarget.unit;
+		Unit* target = unit->orderTarget.unit;
 
 		if (target == nullptr)
 		{
@@ -152,15 +152,15 @@ namespace hooks
 
 		}
 
-	} //void orders_CarrierAttack1(CUnit* unit)
+	} //void orders_CarrierAttack1(Unit* unit)
 
 	;
 
-	void orders_TurretAttack(CUnit* unit)
+	void orders_TurretAttack(Unit* unit)
 	{
 
-		CUnit* target;
-		CUnit* current_unit;
+		Unit* target;
+		Unit* current_unit;
 		u8 current_unit_weaponId;
 
 		bool jump_to_77A45 = false;
@@ -332,7 +332,7 @@ namespace hooks
 				{
 
 					//77B0E
-					CUnit* current_subunit = unit->subunit;
+					Unit* current_subunit = unit->subunit;
 					bool jump_to_77BD7 = false;
 
 					if (
@@ -502,15 +502,15 @@ namespace hooks
 		}
 		while (bJumpToEarlierCode);
 
-	} //void orders_TurretAttack(CUnit* unit)
+	} //void orders_TurretAttack(Unit* unit)
 
 
 	;
 
-	void orders_AttackFixedRange(CUnit* unit)
+	void orders_AttackFixedRange(Unit* unit)
 	{
 
-		CUnit* target;
+		Unit* target;
 
 		bool jump_to_77E48 = false;
 		bool jump_to_77E99 = false;
@@ -546,7 +546,7 @@ namespace hooks
 		else
 		{
 
-			CUnit* current_unit;
+			Unit* current_unit;
 			bool jump_to_77DEF = false;
 
 			//77DB4:
@@ -660,14 +660,14 @@ namespace hooks
 
 		}
 
-	} //void orders_AttackFixedRange(CUnit* unit)
+	} //void orders_AttackFixedRange(Unit* unit)
 
 	;
 
-	void orders_SapUnit(CUnit* unit)
+	void orders_SapUnit(Unit* unit)
 	{
 
-		CUnit* target = unit->orderTarget.unit;
+		Unit* target = unit->orderTarget.unit;
 
 		if (target == nullptr)
 		{ //788EB
@@ -745,7 +745,7 @@ namespace hooks
 						else
 						{ // 004789F4
 							unit->orderTarget.unit = unit;
-							CImage* current_image = unit->sprite->images.head;
+							Image* current_image = unit->sprite->images.head;
 							while (current_image != nullptr)
 							{
 								current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
@@ -770,7 +770,7 @@ namespace hooks
 		}
 	}
 
-	void orders_SapLocation(CUnit* unit)
+	void orders_SapLocation(Unit* unit)
 	{
 		bool bStopThere = false;
 		if (unit->mainOrderState == 0)
@@ -822,7 +822,7 @@ namespace hooks
 
 				if (!bStopThere)
 				{ // 00478AF3
-					CImage* current_image = unit->sprite->images.head;
+					Image* current_image = unit->sprite->images.head;
 					unit->orderTarget.unit = unit;
 					while (current_image != nullptr)
 					{
@@ -846,7 +846,7 @@ namespace hooks
 		}
 	}
 
-	void orders_AttackMoveEP(CUnit* unit)
+	void orders_AttackMoveEP(Unit* unit)
 	{
 
 		u8 saved_mainOrderId = unit->mainOrderId; //[EBP-0x14]
@@ -905,11 +905,11 @@ namespace hooks
 
 		} //if order timer is at 0 and others order checks
 
-	} //void orders_AttackMoveEP(CUnit* unit)
+	} //void orders_AttackMoveEP(Unit* unit)
 
 	;
 
-	void orders_AttackMove(CUnit* unit)
+	void orders_AttackMove(Unit* unit)
 	{
 
 		//function_00478370:
@@ -937,11 +937,11 @@ namespace hooks
 
 		}
 
-	} //void orders_AttackMove(CUnit* unit)
+	} //void orders_AttackMove(Unit* unit)
 
 	;
 
-	void orders_AttackUnit(CUnit* unit)
+	void orders_AttackUnit(Unit* unit)
 	{
 
 		if (
@@ -976,7 +976,7 @@ namespace hooks
 
 		}
 
-	} //void orders_AttackUnit(CUnit* unit)
+	} //void orders_AttackUnit(Unit* unit)
 
 	;
 

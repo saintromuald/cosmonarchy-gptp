@@ -6,7 +6,7 @@
 void __declspec(naked) unitTransformIntoTankModeOrder()
 {
 
-	static CUnit* unitTransforming;
+	static Unit* unitTransforming;
 
 	__asm {
 		PUSHAD
@@ -27,7 +27,7 @@ void __declspec(naked) unitTransformIntoTankModeOrder()
 void __declspec(naked) unitTransformIntoSiegeModeOrder()
 {
 
-	static CUnit* unitTransforming;
+	static Unit* unitTransforming;
 
 	__asm {
 		PUSHAD

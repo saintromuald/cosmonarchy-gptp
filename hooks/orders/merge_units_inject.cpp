@@ -8,11 +8,11 @@ namespace
 	void __declspec(naked) templarMergePartnerWrapper()
 	{
 
-		static CUnit* unit;				//2nd push
-		static CUnit** units_list;		//1st push
+		static Unit* unit;				//2nd push
+		static Unit** units_list;		//1st push
 		static u32 units_list_length;	//eax
 
-		static CUnit* nearestPartner;
+		static Unit* nearestPartner;
 
 		__asm {
 			PUSH EBP
@@ -42,7 +42,7 @@ namespace
 	void __declspec(naked) orders_CompletingArchonSummonWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP
@@ -67,7 +67,7 @@ namespace
 	void __declspec(naked) orders_WarpingDarkArchonWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EAX
@@ -87,7 +87,7 @@ namespace
 	void __declspec(naked) orders_WarpingArchonWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EAX

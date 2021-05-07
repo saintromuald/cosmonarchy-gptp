@@ -6,7 +6,7 @@
 namespace AI
 {
 
-	CUnit* findBestDisruptionWebTarget(CUnit* caster, bool isUnderAttack)
+	Unit* findBestDisruptionWebTarget(Unit* caster, bool isUnderAttack)
 	{
 		s32 bounds;
 		if (isUnderAttack)
@@ -22,11 +22,11 @@ namespace AI
 			caster->getX() + bounds,
 			caster->getY() + bounds,
 			caster,
-			[&](CUnit* target)
+			[&](Unit* target)
 		{
 			if (!isTargetWorthHitting(target, caster))
 				return false;
-			CUnit* targetOfTarget;
+			Unit* targetOfTarget;
 			if (target->id == UnitId::bunker && target->hasLoadedUnit())
 				targetOfTarget = target->getFirstLoadedUnit()->orderTarget.unit;
 			else

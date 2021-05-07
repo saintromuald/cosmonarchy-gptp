@@ -3,29 +3,29 @@
 
 namespace AI {
 
-CUnit* findBestLockdownTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestNukeLaunchTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestDefensiveMatrixTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestEmpShockwaveTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestIrradiateTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestYamatoGunTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestOpticalFlareTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestRestorationTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestRestorationTargetSituational(CUnit* caster, bool isUnderAttack);
+Unit* findBestLockdownTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestNukeLaunchTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestDefensiveMatrixTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestEmpShockwaveTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestIrradiateTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestYamatoGunTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestOpticalFlareTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestRestorationTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestRestorationTargetSituational(Unit* caster, bool isUnderAttack);
 
-CUnit* findBestParasiteTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestEnsnareTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestSpawnBroodlingsTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestDarkSwarmTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestPlagueTarget(CUnit* caster, bool isUnderAttack);
+Unit* findBestParasiteTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestEnsnareTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestSpawnBroodlingsTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestDarkSwarmTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestPlagueTarget(Unit* caster, bool isUnderAttack);
 
-CUnit* findBestPsiStormTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestHallucinationTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestStasisFieldTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestRecallTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestDisruptionWebTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestFeedbackTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestMaelstromTarget(CUnit* caster, bool isUnderAttack);
-CUnit* findBestMindControlTarget(CUnit* caster, bool isUnderAttack);
+Unit* findBestPsiStormTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestHallucinationTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestStasisFieldTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestRecallTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestDisruptionWebTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestFeedbackTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestMaelstromTarget(Unit* caster, bool isUnderAttack);
+Unit* findBestMindControlTarget(Unit* caster, bool isUnderAttack);
 
 } //AI

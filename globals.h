@@ -48,24 +48,24 @@ struct PersistImpact
 	u8 elevation;
 	u8 player;
 	u32 maxTime;
-	CThingy* thingy;
+	Thingy* thingy;
 };
 
 struct PariahHit
 {
-	CUnit* source;
-	CUnit* target;
+	Unit* source;
+	Unit* target;
 };
 
 struct MultihitBullet
 {
-	CBullet* bullet;
+	Bullet* bullet;
 	s32 divider;
 	u32 refCount;
-	std::vector<CUnit*> already_hit;
+	std::vector<Unit*> already_hit;
 
 	MultihitBullet() : bullet(0), already_hit({}), divider(0), refCount(1) {}
-	MultihitBullet(CBullet* bullet, std::vector<CUnit*> already_hit, u32 divider) : bullet(bullet), already_hit(already_hit), divider(divider), refCount(1) {}
+	MultihitBullet(Bullet* bullet, std::vector<Unit*> already_hit, u32 divider) : bullet(bullet), already_hit(already_hit), divider(divider), refCount(1) {}
 };
 
 struct ApostleAgent
@@ -76,7 +76,7 @@ struct ApostleAgent
 	u8 playerId;
 	u32 energy;
 	u32 stacks;
-	CUnit* creator;
+	Unit* creator;
 };
 
 
@@ -116,10 +116,10 @@ struct Globals
 	std::vector<PariahHit> pariahHits;
 	std::vector<MultihitBullet> multihitBullets;
 	std::vector<ApostleAgent> apostleAgents;
-	std::unordered_map<CUnit*, std::vector<CUnit*>> lurkerSpineHits;
+	std::unordered_map<Unit*, std::vector<Unit*>> lurkerSpineHits;
 	UnitExt unitExt[UNIT_ARRAY_LENGTH];
 
-	inline UnitExt* GetUnitExt(CUnit* unit)
+	inline UnitExt* GetUnitExt(Unit* unit)
 	{
 		assert(unit);
 		return &unitExt[unit->getIndex()];
@@ -131,7 +131,7 @@ struct Globals
 	//non-serializable data (exists only temporarily in memory in wrapper/hook flow)
 	s32 flingy_init_bullet_id;
 	u8 flingy_init_player_id;
-	CBullet* bounce_bullet;
+	Bullet* bounce_bullet;
 	//	SaveState aise_save();
 	void aise_save();
 	void aise_load(const char* ptr, u32 len);
@@ -149,30 +149,30 @@ struct Globals
 	void refreshDebuggingInfo();
 	void reset();
 	void frameHook();
-	void unitDeathHook(CUnit* unit);
-	void remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly);
-	bool was_hit_by_pariah(CUnit* source, CUnit* target);
+	void unitDeathHook(Unit* unit);
+	void remove_unit_from_pariah_table(Unit* unit, bool sourceOnly);
+	bool was_hit_by_pariah(Unit* source, Unit* target);
 
-	void register_pariah_hit(CUnit* source, CUnit* target);
+	void register_pariah_hit(Unit* source, Unit* target);
 	void createGenericPersistImpact(u8 impactId, u32 time, Point32 position, u32 radius, s32 spriteId, u8 elevation, u8 player);
-	bool was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target);
-	bool multihit_bullet_is_set(CBullet* bullet);
-	u32 get_multihit_count(CBullet* bullet);
-	void add_multihit_empty_bullet(CBullet* bullet, s32 divider);
-	void add_bullet_multihit(CBullet* bullet, CUnit* target);
-	void add_incremental_bullet_multihit(CBullet* bullet, CUnit* target);
-	void initLazarusAgent(s32 x, s32 y, u8 player, u32 unitId, u32 energy, u32 stacks, CUnit* unit);
-	void clear_ptr_in_apostle_table(CUnit* unit);
-	void remove_multihit_bullet(CBullet* bullet);
-	void force_remove_multihit_bullet(CBullet* bullet);
-	s32 get_divider(CBullet* bullet);
-	void clear_lakizilisk(CUnit* lurker);
-	void add_lurker_spine_pair(CUnit* lurker, CUnit* target);
-	bool spine_pair_exists(CUnit* lurker, CUnit* target);
+	bool was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target);
+	bool multihit_bullet_is_set(Bullet* bullet);
+	u32 get_multihit_count(Bullet* bullet);
+	void add_multihit_empty_bullet(Bullet* bullet, s32 divider);
+	void add_bullet_multihit(Bullet* bullet, Unit* target);
+	void add_incremental_bullet_multihit(Bullet* bullet, Unit* target);
+	void initLazarusAgent(s32 x, s32 y, u8 player, u32 unitId, u32 energy, u32 stacks, Unit* unit);
+	void clear_ptr_in_apostle_table(Unit* unit);
+	void remove_multihit_bullet(Bullet* bullet);
+	void force_remove_multihit_bullet(Bullet* bullet);
+	s32 get_divider(Bullet* bullet);
+	void clear_lakizilisk(Unit* lurker);
+	void add_lurker_spine_pair(Unit* lurker, Unit* target);
+	bool spine_pair_exists(Unit* lurker, Unit* target);
 
 };
 
-void ApplyIrradiate(CUnit* unit, u8 player, u32 time);
+void ApplyIrradiate(Unit* unit, u8 player, u32 time);
 
 void injectGlobalsHooks();
 
@@ -186,19 +186,19 @@ namespace hooks
 
 namespace scbw
 {
-	CBullet* setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset);
-	bool isSlowed(CUnit* unit);
-	void refreshDebuffs(CUnit* unit);
-	void inheritDebuffs(CUnit* parent, CUnit* child);
-	bool isDebuffed(CUnit* unit);
-	void restoreFunc(CUnit* unit);
-	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen);
-	void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound = true);
-	CUnit** getSourceQueens(CUnit* unit);
+	Bullet* setMissileSourcePos(Unit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset);
+	bool isSlowed(Unit* unit);
+	void refreshDebuffs(Unit* unit);
+	void inheritDebuffs(Unit* parent, Unit* child);
+	bool isDebuffed(Unit* unit);
+	void restoreFunc(Unit* unit);
+	void applyParasite(Unit* unit, u8 playerID, Unit* queen);
+	void doDeconstructionDamage(Unit* unit, u16 weaponId, bool playSound = true);
+	Unit** getSourceQueens(Unit* unit);
 
-	void clearClarionLinks(CUnit* unit);
-	void placeClarionLinks(CUnit* unit);
-	bool hasClarionLinks(CUnit* unit);
-	std::vector<CUnit*> getClarionLinks(CUnit* unit);
+	void clearClarionLinks(Unit* unit);
+	void placeClarionLinks(Unit* unit);
+	bool hasClarionLinks(Unit* unit);
+	std::vector<Unit*> getClarionLinks(Unit* unit);
 	void spreadClarionDamage(hooks::WeaponDamageData& data);
 }

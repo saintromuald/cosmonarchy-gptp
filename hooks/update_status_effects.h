@@ -3,9 +3,9 @@
 
 namespace hooks {
 
-void updateStatusEffects(CUnit* unit);
+void updateStatusEffects(Unit* unit);
 
-void AI_Burrower(CUnit* a1);
+void AI_Burrower(Unit* a1);
 void injectUpdateStatusEffects();
 
 } //hooks

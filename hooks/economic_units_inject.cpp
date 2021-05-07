@@ -81,7 +81,7 @@ namespace hooks
 		static u8 race;
 		static u16 unit_id;//not in original function
 		static u32 cmp_id;
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			MOV race, AL
 			MOV unit, EBX
@@ -199,7 +199,7 @@ namespace hooks
 	void __declspec(naked) Ai_TryProgressSpendingQueue_WorkerJmpWrapper()
 	{
 		static u16 unit_id;
-		static CUnit* worker;
+		static Unit* worker;
 		__asm {
 			MOV worker, EDI
 			PUSH EAX
@@ -296,7 +296,7 @@ namespace hooks
 	}
 	void __declspec(naked) orders_isGeyserTopUnitHookWrapper()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 result;
 		__asm {
 			MOV unit, EAX

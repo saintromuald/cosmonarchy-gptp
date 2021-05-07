@@ -4,14 +4,14 @@
 namespace hooks
 {
 
-	bool isInfestableUnitHook(CUnit* unit);
-	bool unitCanInfestHook(CUnit* unit);
+	bool isInfestableUnitHook(Unit* unit);
+	bool unitCanInfestHook(Unit* unit);
 
 	//infestation order used by infestation victim
-	void orderMorphIntoInfested(CUnit* unitInfested);
+	void orderMorphIntoInfested(Unit* unitInfested);
 
 	//infestation order used by the unit that infest
-	void orderInfestTarget(CUnit* unitInfesting);
+	void orderInfestTarget(Unit* unitInfesting);
 
 	//The injector function that should be called in initialize.cpp
 	void injectInfestationHooks();

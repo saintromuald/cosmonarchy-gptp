@@ -15,18 +15,18 @@
 //////////////////////////////////////////////////////////////// @{
 
 /// The first nodes in StarCraft's internal linked lists (taken from BWAPI's Offsets.h)
-SCBW_DATA(CUnit**, firstVisibleUnit, 0x00628430);
+SCBW_DATA(Unit**, firstVisibleUnit, 0x00628430);
 /// Includes units in transports/bunkers, workers inside gas buildings, nukes in
 /// silos, queens inside command centers, and units in production.
-SCBW_DATA(CUnit**, firstHiddenUnit, 0x006283EC);
-SCBW_DATA(CUnit**, lastHiddenUnit, 0x00628428);
-SCBW_DATA(CUnit**, firstScannerSweep, 0x006283F4);
-SCBW_DATA(CUnit**, lastScannerSweep, 0x00628434);
-SCBW_DATA(CUnit**, firstPsiFieldProvider, 0x0063FF54);
-SCBW_DATA(CBullet**, firstBullet, 0x0064DEC4);
+SCBW_DATA(Unit**, firstHiddenUnit, 0x006283EC);
+SCBW_DATA(Unit**, lastHiddenUnit, 0x00628428);
+SCBW_DATA(Unit**, firstScannerSweep, 0x006283F4);
+SCBW_DATA(Unit**, lastScannerSweep, 0x00628434);
+SCBW_DATA(Unit**, firstPsiFieldProvider, 0x0063FF54);
+SCBW_DATA(Bullet**, firstBullet, 0x0064DEC4);
 
 struct Units12 {
-	CUnit* unit[12];
+	Unit* unit[12];
 };
 SCBW_DATA(Units12*, firstPlayerUnit, 0x006283F8);  //Indexed by player Id
 
@@ -35,12 +35,12 @@ SCBW_DATA(Units12*, firstPlayerUnit, 0x006283F8);  //Indexed by player Id
 /// @name Structure tables
 //////////////////////////////////////////////////////////////// @{
 
-SCBW_DATA(CUnit*, unitTable, 0x0059CCA8);
+SCBW_DATA(Unit*, unitTable, 0x0059CCA8);
 SCBW_DATA(u32*, unitCount, 0x006283F0);
-SCBW_DATA(CBullet*, bulletTable, 0x0064B2E8);
+SCBW_DATA(Bullet*, bulletTable, 0x0064B2E8);
 SCBW_DATA(UNITDEATHS*, deathTable, 0x0058A364);
 SCBW_DATA(UNITDEATHS*, unit_deaths, deathTable);
-SCBW_DATA(CSprite*, spriteTable, 0x00629D98);
+SCBW_DATA(Sprite*, spriteTable, 0x00629D98);
 
 SCBW_DATA(UNITSCORES_I*, unitCountTable, 0x00584DE4);
 SCBW_DATA(UNITSCORES_I*, completed_unit_counts, unitCountTable);
@@ -49,7 +49,7 @@ SCBW_DATA(UNITSCORES_I*, completed_unit_counts, unitCountTable);
 SCBW_DATA(UNITSCORES_I*, allUnitCountTable, 0x00582324);
 SCBW_DATA(UNITSCORES_I*, all_unit_counts, unitCountTable);
 
-SCBW_DATA(CThingy**, first_lone_sprite, 0x00654874);
+SCBW_DATA(Thingy**, first_lone_sprite, 0x00654874);
 
 //From locations.cpp
 SCBW_DATA(const MapSize*, mapTileSize, 0x0057F1D4);
@@ -107,10 +107,10 @@ SCBW_DATA(const char*, StringEmpty, 0x00501B7D);
 
 /// Units that are selected by the current player (or the player viewing the replay).
 struct UnitsSel {
-	CUnit* unit[SELECTION_ARRAY_LENGTH];
+	Unit* unit[SELECTION_ARRAY_LENGTH];
 };
 SCBW_DATA(const UnitsSel*, clientSelectionGroup, 0x00597208);
-SCBW_DATA(CUnit*, clientSelectionGroupEnd, 0x00597238);
+SCBW_DATA(Unit*, clientSelectionGroupEnd, 0x00597238);
 SCBW_DATA(const u8*, clientSelectionCount, 0x0059723D);
 
 /// Screen position relative to the map
@@ -146,7 +146,7 @@ struct SupplyData {
 	u32 used[PLAYER_COUNT];
 	u32 max[PLAYER_COUNT];
 };
-SCBW_DATA(SupplyData*, raceSupply, 0x00582144);  //Array; Use CUnit::getRace() to get the index.
+SCBW_DATA(SupplyData*, raceSupply, 0x00582144);  //Array; Use Unit::getRace() to get the index.
 
 SCBW_DATA(const u32*, elapsedTimeFrames, 0x0057F23C);  //Elapsed game time in frames
 SCBW_DATA(const u32*, CountdownTimer, 0x0058D6F4);  //Countdown Timer (in seconds) (From BWAPI Offsets.h)
@@ -303,13 +303,13 @@ SCBW_DATA(char*, upgradesLevelSC, 0x0058D2B0);
 SCBW_DATA(char*, upgradesLevelBW, 0x0058F2FE);
 
 // For findNextBounceTargetProc
-SCBW_DATA(CUnit**, bulletBounceMissileSource, 0x0064EECC);
-SCBW_DATA(CUnit**, bulletBounceMissileTarget, 0x0064EED0);
-SCBW_DATA(CUnit**, bulletBounceMissileNext, 0x0064EED4);
+SCBW_DATA(Unit**, bulletBounceMissileSource, 0x0064EECC);
+SCBW_DATA(Unit**, bulletBounceMissileTarget, 0x0064EED0);
+SCBW_DATA(Unit**, bulletBounceMissileNext, 0x0064EED4);
 
 // For setUnderDisruptionWeb
 SCBW_DATA(void**, unkArray_59CB64, 0x0059CB64);	// size of 252
-SCBW_DATA(CUnit*, unitReference, 0x0059CB58);
+SCBW_DATA(Unit*, unitReference, 0x0059CB58);
 
 // For startGame
 SCBW_DATA(s8*, gameState, 0x0066FBFA);
@@ -322,7 +322,7 @@ SCBW_DATA(s32*, isInGame, 0x006D5BC8);
 SCBW_DATA(s32*, countdownTimeRemaining, 0x0059CC78);
 
 // For airSplash
-SCBW_DATA(CUnit**, airSplashList, 0x0064EEE0);	// size of 1700
+SCBW_DATA(Unit**, airSplashList, 0x0064EEE0);	// size of 1700
 SCBW_DATA(s32*, airSplashListCount, 0x0046DEB4);
 SCBW_DATA(s32*, isInGroundSplashProc, 0x0064DEB8);
 
@@ -357,7 +357,7 @@ SCBW_DATA(CampaignMission*, campaignMissions, 0x004FFF60);
 SCBW_DATA(s16*, unkUpgradeCount, 0x006CA940);
 
 // For isUnitCloaked
-SCBW_DATA(CUnit**,	firstInvisibleUnit,		0x0063FF5C);
+SCBW_DATA(Unit**,	firstInvisibleUnit,		0x0063FF5C);
 SCBW_DATA(s32*,	forceButtonRefresh,		0x0068C1B0);
 SCBW_DATA(s8*,	portraitRedraw,			0x0068AC74); // sizeof 4
 SCBW_DATA(s8*,	statusScreenRedraw,		0x0068C1F8);
@@ -369,10 +369,10 @@ SCBW_DATA(s32*,	interceptorFocusedThisFrame,		0x006957D0);
 SCBW_DATA(s8*,	isTargeting,						0x00641694);
 SCBW_DATA(s32*,	orderTimerReassignCount,			0x0059CCA4);
 SCBW_DATA(s32*,	secondaryOrderTimerReassignCount,	0x006283E8);
-SCBW_DATA(CUnit**,	activeIscriptEntity,			0x006D11F4);
-SCBW_DATA(CUnit**,	activeIscriptUnit,				0x006D11FC);
-SCBW_DATA(CUnit**,	firstDyingUnit,					0x0062842C);
-SCBW_DATA(CUnit**,	lurkerSplashList,				0x0064DEC8); // sizeof 400
+SCBW_DATA(Unit**,	activeIscriptEntity,			0x006D11F4);
+SCBW_DATA(Unit**,	activeIscriptUnit,				0x006D11FC);
+SCBW_DATA(Unit**,	firstDyingUnit,					0x0062842C);
+SCBW_DATA(Unit**,	lurkerSplashList,				0x0064DEC8); // sizeof 400
 SCBW_DATA(s32*,	lurkerSplashListIndex,				0x0064EEC8);
 SCBW_DATA(s32*,	lastBulletIndex,					0x0064DEA8);
 
@@ -614,20 +614,20 @@ namespace images_dat {
 //Helper functions for several hooks
 SCBW_DATA(u8*, selectionIndexStart, 0x006284B6);
 SCBW_DATA(const UnitsSel*, activePlayerSelection, 0x006284B8);
-typedef CUnit* (__cdecl* GetActivePlayerNextSelectionFunc)();
+typedef Unit* (__cdecl* GetActivePlayerNextSelectionFunc)();
 SCBW_DATA(GetActivePlayerNextSelectionFunc, getActivePlayerNextSelection, 0x0049A850);
 
 /// Selections of all players
 struct PlayersSel {
-	CUnit* unit[PLAYABLE_PLAYER_COUNT][SELECTION_ARRAY_LENGTH];
+	Unit* unit[PLAYABLE_PLAYER_COUNT][SELECTION_ARRAY_LENGTH];
 };
 SCBW_DATA(const PlayersSel*, playersSelections, 0x006284E8);
 struct PlayerSel {
-	CUnit* unit[SELECTION_ARRAY_LENGTH];
+	Unit* unit[SELECTION_ARRAY_LENGTH];
 };
 SCBW_DATA(const PlayerSel*, CurrentUnitSelection, 0x006284B8);
 
-typedef void(__fastcall* PrepareForNextOrderFunc)(CUnit*);
+typedef void(__fastcall* PrepareForNextOrderFunc)(Unit*);
 SCBW_DATA(PrepareForNextOrderFunc, prepareForNextOrder, 0x00475000);
 
 //Contains various info on the tiles.
@@ -644,7 +644,7 @@ SCBW_DATA(const u32*, unitOrderingCount, 0x0066FF74);
 SCBW_DATA(const Point32*, angleDistance, 0x00512D28);
 SCBW_DATA(u16*, megatileCount, 0x005998E0);
 //Used internally by Starcraft to manage temporary units lists
-SCBW_DATA(CUnit***, tempUnitsListsArray, 0x006BB938);
+SCBW_DATA(Unit***, tempUnitsListsArray, 0x006BB938);
 SCBW_DATA(u32*, tempUnitsListCurrentArrayCount, 0x006BEE64);
 SCBW_DATA(u32*, tempUnitsListArraysCountsListLastIndex, 0x006BEE6C);
 SCBW_DATA(u32*, tempUnitsListArraysCountsList, 0x006BEE70);
@@ -673,12 +673,12 @@ SCBW_DATA(s32*, factionsColorsOrdering, 0x0057F21C);
 ///Max index is PLAYER_COUNT-1
 SCBW_DATA(u8*, playersColors, 0x00581DD6);
 
-const CListExtern<CImage, &CImage::link> unusedImages(0x0057EB68, 0x0057EB70);
-SCBW_DATA(CList<CSprite>*, unusedSprites, 0x0063FE30);
+const ListExtern<Image, &Image::link> unusedImages(0x0057EB68, 0x0057EB70);
+SCBW_DATA(List<Sprite>*, unusedSprites, 0x0063FE30);
 
 struct SpriteTileData {
-	CSprite* tails[256];
-	CSprite* heads[256];
+	Sprite* tails[256];
+	Sprite* heads[256];
 };
 SCBW_DATA(SpriteTileData*, spritesOnTileRow, 0x00629288);
 
@@ -703,7 +703,7 @@ struct PlayerFlags {
 SCBW_DATA(PlayerFlags<u8>*, playerAlliance, 0x0058D634);  //See scbw::isAlliedTo()
 SCBW_DATA(PlayerFlags<u32>*, playerVision, 0x0057F1EC);
 
-SCBW_DATA(CUnit* const*, activePortraitUnit, 0x00597248);
+SCBW_DATA(Unit* const*, activePortraitUnit, 0x00597248);
 
 SCBW_DATA(AI_Main*, AIScriptController, 0x0068FEE8);
 SCBW_DATA(AiCaptain* const*, AiRegionCaptains, 0x0069A604);

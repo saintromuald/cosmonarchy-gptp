@@ -6,7 +6,7 @@
 namespace AI
 {
 
-	CUnit* findBestStasisFieldTarget(CUnit* caster, bool isUnderAttack)
+	Unit* findBestStasisFieldTarget(Unit* caster, bool isUnderAttack)
 	{
 		s32 bounds;
 		if (isUnderAttack)
@@ -22,7 +22,7 @@ namespace AI
 			caster->getX() + bounds,
 			caster->getY() + bounds,
 			caster,
-			[&](CUnit* target)
+			[&](Unit* target)
 		{
 
 			if (!isTargetWorthHitting(target, caster))
@@ -34,7 +34,7 @@ namespace AI
 			if (units_dat::BaseProperty[target->id] & UnitProperty::Building)
 				return false;
 
-			CUnit* targetOfTarget = target->orderTarget.unit;
+			Unit* targetOfTarget = target->orderTarget.unit;
 			if (!targetOfTarget)
 				return false;
 

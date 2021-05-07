@@ -5,8 +5,8 @@ namespace
 {
 	void _declspec(naked) compileHealthBar_Wrapper()
 	{
-		static CImage* a1;
-		static CSprite* a2;
+		static Image* a1;
+		static Sprite* a2;
 		_asm {
 			MOV a1, ESI
 			PUSH EAX

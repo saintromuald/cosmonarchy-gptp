@@ -7,7 +7,7 @@
 namespace hooks
 {
 	/// Checks whether the unit can attack from inside a bunker.
-	void unitAttackFromInsideBunkerHook(CUnit* unit)
+	void unitAttackFromInsideBunkerHook(Unit* unit)
 	{
 		if (scbw::unitIsRangedAttacker(unit))
 		{
@@ -43,9 +43,9 @@ namespace hooks
 	}
 
 	//not checked against original code by UndeadStar
-	void createBunkerAttackThingyHook(CUnit* unit)
+	void createBunkerAttackThingyHook(Unit* unit)
 	{
-		CImage* bunkerImage = unit->connectedUnit->sprite->mainGraphic;
+		Image* bunkerImage = unit->connectedUnit->sprite->mainGraphic;
 		u8 frameDirection = (unit->currentDirection1 + 16) / 32 % 8;
 //		const LO_Header *loFile = lo_files->attackOverlays[bunkerImage->id];
 		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayAttackPtr, bunkerImage->id));
@@ -71,14 +71,14 @@ namespace hooks
 
 		scbw::decloakProc(unit->connectedUnit);
 
-		CThingy* bunkerAttackEffect = helper::createThingy(spriteId, offset.x + unit->getX(), offset.y + unit->getY(), unit->playerId);
+		Thingy* bunkerAttackEffect = helper::createThingy(spriteId, offset.x + unit->getX(), offset.y + unit->getY(), unit->playerId);
 		if (!bunkerAttackEffect)
 		{
 			return;
 		}
 
 		bunkerAttackEffect->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
-		for (CImage* image = bunkerAttackEffect->sprite->images.head;
+		for (Image* image = bunkerAttackEffect->sprite->images.head;
 			image != nullptr;
 			image = image->link.next)
 		{

@@ -13,7 +13,7 @@ namespace hooks
 	/// and Hallucination (but not when launching Nukes).
 	/// Note: sight ranges cannot exceed 11, unless extended.
 	/// Equivalent to getUpgradedSightRange @ 004E5B40  
-	u32 getSightRangeHook(CUnit* unit, bool isForSpellCasting)
+	u32 getSightRangeHook(Unit* unit, bool isForSpellCasting)
 	{
 		u32 sightRange;
 

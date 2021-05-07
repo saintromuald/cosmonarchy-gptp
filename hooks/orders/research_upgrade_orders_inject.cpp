@@ -8,7 +8,7 @@ namespace
 	void __declspec(naked) orders_UpgradeWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP
@@ -33,7 +33,7 @@ namespace
 	void __declspec(naked) orders_ResearchTechWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP

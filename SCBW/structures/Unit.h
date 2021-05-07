@@ -1,5 +1,5 @@
-//This header file contains member function declarations for CUnit.
-//For the structure layout, see CUnitLayout.h
+//This header file contains member function declarations for Unit.
+//For the structure layout, see UnitLayout.h
 
 #pragma once
 #include <algorithm>
@@ -8,11 +8,11 @@
 #include <SCBW/enumerations.h>
 #include "../../graphics/graphics.h"
 
-struct CFlingy
+struct Flingy
 {
-	/*0x000*/ CLink<CUnit> link;
+	/*0x000*/ Link<Unit> link;
 	/*0x008*/ s32       value;                 ///for unit it's hitpoints
-	/*0x00C*/ CSprite* sprite;
+	/*0x00C*/ Sprite* sprite;
 	/*0x010*/ Target    moveTarget;              ///< The position or unit to move to. It is NOT an order target.
 	/*0x018*/ Point16   nextMovementWaypoint;    ///< The next way point in the path the unit is following to get to its destination.
 												 ///< Equal to moveToPos for air units since they don't need to navigate around buildings.
@@ -36,8 +36,8 @@ struct CFlingy
 };
 
 
-//Wrapper structure that provides methods for the CUnit structure.
-struct CUnit : public CUnitLayout
+//Wrapper structure that provides methods for the Unit structure.
+struct Unit : public UnitLayout
 {
 
 	/// @name Unit Stats and Properties
@@ -176,15 +176,15 @@ struct CUnit : public CUnitLayout
 	/// Sets the unit's HP, and also updates burning / bleeding graphics and unit
 	/// strength data (used by the AI). HP is guaranteed not to overflow.
 	void setHp(s32 hitPoints);
-	void heal(s32 hitPoints, CUnit* source = nullptr);
-	void healShields(s32 shields, CUnit* source = nullptr);
-	void healEnergy(s32 energy, CUnit* source = nullptr);
+	void heal(s32 hitPoints, Unit* source = nullptr);
+	void healShields(s32 shields, Unit* source = nullptr);
+	void healEnergy(s32 energy, Unit* source = nullptr);
 
 	/// Deals damage to this unit, using a specific weapons.dat ID.
 	void damageWith(
 		u8 weaponId,              ///< weapons.dat ID to use.
 		s32 damage = -1,			 ///< Amount of damage dealt to this unit. -1 = inherit from weaponId
-		CUnit* attacker = nullptr,   ///< Attacking unit (for increasing kill count)
+		Unit* attacker = nullptr,   ///< Attacking unit (for increasing kill count)
 		u8 attackingPlayer = -1,  ///< Attacking player (for increasing kill score)
 		s8 direction = 0,          ///< Attacked direction (for shield flicker overlays)
 		u8 damageDivisor = 1      ///< Damage divisor (for splash damage / glave wurm calculations)
@@ -194,18 +194,18 @@ struct CUnit : public CUnitLayout
 	void damageWithIgnoreFlatArmor(
 		u8 weaponId,              ///< weapons.dat ID to use.
 		s32 damage = -1,			 ///< Amount of damage dealt to this unit. -1 = inherit from weaponId
-		CUnit* attacker = nullptr,   ///< Attacking unit (for increasing kill count)
+		Unit* attacker = nullptr,   ///< Attacking unit (for increasing kill count)
 		u8 attackingPlayer = -1,  ///< Attacking player (for increasing kill score)
 		s8 direction = 0,          ///< Attacked direction (for shield flicker overlays)
 		u8 damageDivisor = 1      ///< Damage divisor (for splash damage / glave wurm calculations)
 	);
 
 	/// Deals damage directly to unit HP, killing it if possible.
-	void damageHp(s32 damage, CUnit* attacker = nullptr,
+	void damageHp(s32 damage, Unit* attacker = nullptr,
 		s32 attackingPlayer = -1, bool notify = true);
 
 	/// Deals damage to shields and hp
-	void inflictDamage(s32 damage, CUnit* attacker = nullptr,
+	void inflictDamage(s32 damage, Unit* attacker = nullptr,
 		s32 attackingPlayer = -1, bool notify = true, bool shield_overlay = false, s32 direction = 0, bool ignoreDmg128Overflow = false);
 
 
@@ -241,7 +241,7 @@ struct CUnit : public CUnitLayout
 	//////////////////////////////////////////////////////////////// @{
 
 	/// Issue the @p order to the unit, using the given @p target unit.
-	void orderTo(u8 orderId, CUnit* target = nullptr);
+	void orderTo(u8 orderId, Unit* target = nullptr);
 
 	/// Issue the @p order to the unit, using the given position as the target.
 	void orderTo(u8 orderId, u16 x, u16 y);
@@ -253,16 +253,16 @@ struct CUnit : public CUnitLayout
 	void orderSimple(u8 orderId, bool stopPreviousOrders);
 
 	//  Issue the @p order to the unit, using the given @p target unit and specify if previous orders should be stopped
-	void issueQueuedOrderTarget(u8 orderId, CUnit* target, bool stopPreviousOrders);
+	void issueQueuedOrderTarget(u8 orderId, Unit* target, bool stopPreviousOrders);
 
 	/// Causes the unit to become idle.
 	void orderToIdle();
 
 	/// Issues a new order to the unit.
-	void order(u8 orderId, u16 x, u16 y, CUnit* target, u16 targetUnitId, bool stopPreviousOrders);
+	void order(u8 orderId, u16 x, u16 y, Unit* target, u16 targetUnitId, bool stopPreviousOrders);
 
 	/// Probably add the @p order to the orders queue
-	void performAnotherOrder(u8 orderId, s16 x, s16 y, CUnit* target, u16 targetUnitId, u32 unk = NULL);
+	void performAnotherOrder(u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId, u32 unk = NULL);
 
 	/// Used by several hooks, details not completely understood.
 	void setSecondaryOrder(u8 orderId);
@@ -270,13 +270,13 @@ struct CUnit : public CUnitLayout
 	//////////////////////////////////////////////////////////////// @}
 
 	/// @name Graphics and Animations
-	/// Note: See CSprite::createOverlay() and CSprite::createTopOverlay() for
+	/// Note: See Sprite::createOverlay() and Sprite::createTopOverlay() for
 	///       creating image overlays.
 	//////////////////////////////////////////////////////////////// @{
 
 	/// Returns the overlay image of this unit's sprite (or its subunit's sprite)
 	/// that matches the @p imageId. If the image cannot be found, returns nullptr.
-	CImage* getOverlay(u16 imageId) const;
+	Image* getOverlay(u16 imageId) const;
 	s32 maxShields() const;
 	bool shieldsEnabled() const;
 	bool shieldsEnabledRaw() const;
@@ -295,13 +295,13 @@ struct CUnit : public CUnitLayout
 	graphics::ColorId getFactionColor();
 
 	/// Get the faction (brood,tribe,squad...) color of an unit
-	static graphics::ColorId getFactionColor(CUnit* unit);
+	static graphics::ColorId getFactionColor(Unit* unit);
 
 	/// Get the (possibly non-standard) color of current unit
 	graphics::ColorId getColor();
 
 	/// Get the (possibly non-standard) color of an unit
-	static graphics::ColorId getColor(CUnit* unit);
+	static graphics::ColorId getColor(Unit* unit);
 
 	//////////////////////////////////////////////////////////////// @}
 
@@ -311,7 +311,7 @@ struct CUnit : public CUnitLayout
 	/// Returns the distance between this unit and the @p target, taking unit
 	/// collision size in units.dat into account.
 	/// Internally, this function uses scbw::getDistanceFast().
-	u32 getDistanceToTarget(CUnit* target) const;
+	u32 getDistanceToTarget(Unit* target) const;
 
 	/// Checks whether this unit can reach the target position. This checks only
 	/// for terrain, and does not consider obstacles (units and buildings).
@@ -319,10 +319,10 @@ struct CUnit : public CUnitLayout
 
 	/// Checks whether this unit can reach the @p target unit. This checks only
 	/// for terrain, and does not consider obstacles (units and buildings).
-	bool hasPathToUnit(CUnit* target) const;
+	bool hasPathToUnit(Unit* target) const;
 
 	///  Checks whether the @p target unit is within the @p range from the unit.
-	bool isTargetWithinMinRange(CUnit* target, u32 range);
+	bool isTargetWithinMinRange(Unit* target, u32 range);
 
 	//////////////////////////////////////////////////////////////// @}
 
@@ -363,10 +363,10 @@ struct CUnit : public CUnitLayout
 	/// * Reavers (and Warbringers) return true only if they have a ground path
 	///   to the @p target unit.
 	/// * AI-controlled Arbiters (not including Danimoths) always return false.
-	bool canAttackTarget(CUnit* target, bool checkVisibility = true) const;
+	bool canAttackTarget(Unit* target, bool checkVisibility = true) const;
 
 	/// Makes the unit use the specified weapon to attack its current target unit
-	/// stored in the CUnit::orderTarget.unit member. This does not affect the
+	/// stored in the Unit::orderTarget.unit member. This does not affect the
 	/// unit's weapon cooldown. The spawned weapon sprite obeys the weapon
 	/// behavior properties in weapons.dat.
 	/// Note: This function is affected by the Fire Weapon hook module.
@@ -374,24 +374,24 @@ struct CUnit : public CUnitLayout
 
 	/// Retrieves the unit pointer by @p index from the unit table (first unit is
 	/// indexed at 1). If invalid, returns nullptr instead.
-	static CUnit* getFromIndex(u16 index);
+	static Unit* getFromIndex(u16 index);
 
 	/// Returns the index of this unit in the unit table. First unit == index 1.
 	inline u16 getIndex() const;
 
 	/// Returns the ID of the last player to own this unit. This is usually the
-	/// same as CUnit::playerId, but if the unit belongs to a defeated player,
+	/// same as Unit::playerId, but if the unit belongs to a defeated player,
 	/// this returns the correct player ID (instead of 11).
-	/// @deprecated   Will be removed in v2.42. Use CUnit::isTargetEnemy().
+	/// @deprecated   Will be removed in v2.42. Use Unit::isTargetEnemy().
 	u8 getLastOwnerId() const;
 
 	/// Returns the loaded unit at @p index (value between 0-7). If no unit is
 	/// loaded at the slot, returns nullptr instead.
-	CUnit* getLoadedUnit(s32 index) const;
+	Unit* getLoadedUnit(s32 index) const;
 
 	/// Returns the first unit loaded in this unit. If this unit is not a
 	/// transport, or has no units inside, this function returns nullptr instead.
-	CUnit* getFirstLoadedUnit() const;
+	Unit* getFirstLoadedUnit() const;
 
 	/// Checks if this unit has other units loaded inside.
 	bool hasLoadedUnit() const;
@@ -407,7 +407,7 @@ struct CUnit : public CUnitLayout
 
 	/// Checks whether the @p target unit is an enemy of this unit.
 	/// Internally, this calls scbw::isUnitEnemy().
-	bool isTargetEnemy(CUnit* target) const;
+	bool isTargetEnemy(Unit* target) const;
 
 	/// Checks whether this unit can be seen by @playerId (i.e. not covered by the
 	/// fog-of-war and is detectable).
@@ -424,9 +424,9 @@ struct CUnit : public CUnitLayout
 
 	void setSupplyProvided(u8 amount);
 	s32 getTotalHitPointsPlusShields();
-	s32 CUnit::isUnitAINonBuilding();
+	s32 Unit::isUnitAINonBuilding();
 };
 
-C_ASSERT(sizeof(CFlingy) == 0x4c);
-C_ASSERT(sizeof(CUnit) == sizeof(CUnitLayout));
-//static_assert(sizeof(CUnit) == sizeof(CUnitLayout), "The size of the CUnit structure is invalid");
+C_ASSERT(sizeof(Flingy) == 0x4c);
+C_ASSERT(sizeof(Unit) == sizeof(UnitLayout));
+//static_assert(sizeof(Unit) == sizeof(UnitLayout), "The size of the Unit structure is invalid");

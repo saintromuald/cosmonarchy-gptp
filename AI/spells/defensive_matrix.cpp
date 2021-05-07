@@ -6,7 +6,7 @@
 namespace AI
 {
 
-	CUnit* findBestDefensiveMatrixTarget(CUnit* caster, bool isUnderAttack)
+	Unit* findBestDefensiveMatrixTarget(Unit* caster, bool isUnderAttack)
 	{
 
 		s32 bounds;
@@ -22,7 +22,7 @@ namespace AI
 			caster->getX() + bounds,
 			caster->getY() + bounds,
 			caster,
-			[&](CUnit* target)
+			[&](Unit* target)
 		{
 			if (target->defensiveMatrixHp)
 				return false;
@@ -36,7 +36,7 @@ namespace AI
 				return false;
 			if (target->status & UnitStatus::Invincible)
 				return false;
-			if (scbw::getTechUseErrorMessage((CUnit*)target, caster->playerId, TechId::DefensiveMatrix) != 0)
+			if (scbw::getTechUseErrorMessage((Unit*)target, caster->playerId, TechId::DefensiveMatrix) != 0)
 				return false;
 			return true;
 		});

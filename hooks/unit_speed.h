@@ -3,9 +3,9 @@
 
 namespace hooks {
 
-u32 getModifiedUnitSpeedHook(CUnit* unit, u32 baseSpeed);
-u32 getModifiedUnitAccelerationHook(CUnit* unit);
-u32 getModifiedUnitTurnSpeedHook(CUnit* unit);
+u32 getModifiedUnitSpeedHook(Unit* unit, u32 baseSpeed);
+u32 getModifiedUnitAccelerationHook(Unit* unit);
+u32 getModifiedUnitTurnSpeedHook(Unit* unit);
 
 void injectUnitSpeedHooks();
 

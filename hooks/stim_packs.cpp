@@ -13,7 +13,7 @@ namespace hooks
 	// players of the attempt if no unit can do the stimpack action)
 	void CMDACT_Stimpack()
 	{
-		CUnit* currentClientSelectionUnit;
+		Unit* currentClientSelectionUnit;
 		bool bFoundUnitAbleToStimpack = false;
 
 		// original code used pointer comparison with clientSelectionGroupEnd
@@ -42,7 +42,7 @@ namespace hooks
 
 	// Identical to StimpackSFXRand @ 004554A0
 	// code used by the AI (no questions about sync between players in that case)
-	void useStimPacksAIHook(CUnit* unit)
+	void useStimPacksAIHook(Unit* unit)
 	{
 		if (unit->hitPoints > MIN_HITPOINTS_FOR_STIMPACKS + StimpackOffset
 			&& unit->stimTimer == 0)
@@ -63,7 +63,7 @@ namespace hooks
 	// each valid stimpack user
 	void CMDRECV_StimPack()
 	{
-		CUnit* activePlayerCurrentSelection;
+		Unit* activePlayerCurrentSelection;
 		*selectionIndexStart = 0;
 		activePlayerCurrentSelection = getActivePlayerNextSelection();
 		while (activePlayerCurrentSelection != nullptr)

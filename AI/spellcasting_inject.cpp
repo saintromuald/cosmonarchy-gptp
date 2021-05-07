@@ -7,7 +7,7 @@ namespace
 	void __declspec(naked) AI_spellcasterWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 		static b32 isUnderAttack;
 		static b32 result;
 

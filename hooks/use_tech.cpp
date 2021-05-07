@@ -10,7 +10,7 @@ namespace hooks
 	{
 		// replacement for proc 0x00423660
 		bool TechCapableUnit = false;
-		CUnit* firstInList = playersSelections->unit[*ACTIVE_NATION_ID][0];
+		Unit* firstInList = playersSelections->unit[*ACTIVE_NATION_ID][0];
 		if (firstInList != nullptr)
 		{
 			// initial check for energy-based switch abilities
@@ -53,7 +53,7 @@ namespace hooks
 			if (!TechCapableUnit)
 			{
 				char* message = (char*)statTxtTblNew->getString(864);
-				CUnit* portrait_unit = playersSelections->unit[*ACTIVE_NATION_ID][0];
+				Unit* portrait_unit = playersSelections->unit[*ACTIVE_NATION_ID][0];
 				helper::get_statTxt_Str_0(*activePortraitUnit, (*activePortraitUnit)->playerId, message);
 				return;
 			}

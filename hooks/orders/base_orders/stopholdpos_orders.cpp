@@ -3,7 +3,7 @@
 
 namespace hooks
 {
-	void orders_MedicHoldPosition(CUnit* unit)
+	void orders_MedicHoldPosition(Unit* unit)
 	{
 		u32 switchValue;
 		if (unit->mainOrderState == 0)
@@ -64,7 +64,7 @@ namespace hooks
 			if (!(unit->orderSignal & 1))
 			{
 
-				CImage* current_image = unit->sprite->images.head;
+				Image* current_image = unit->sprite->images.head;
 
 				while (current_image != nullptr)
 				{
@@ -92,14 +92,14 @@ namespace hooks
 
 		}
 
-	} //void orders_MedicHoldPosition(CUnit* unit)
+	} //void orders_MedicHoldPosition(Unit* unit)
 
 	;
 
-	void orders_ReaverStop(CUnit* unit)
+	void orders_ReaverStop(Unit* unit)
 	{
 
-		CUnit* outHangarChild = unit->carrier.outHangarChild;
+		Unit* outHangarChild = unit->carrier.outHangarChild;
 		Point16 pos;
 
 		//change move target destination to current position
@@ -203,11 +203,11 @@ namespace hooks
 		//655DB
 		prepareForNextOrder(unit);
 
-	} //void orders_ReaverStop(CUnit* unit)
+	} //void orders_ReaverStop(Unit* unit)
 
 	;
 
-	void orders_Guard(CUnit* unit)
+	void orders_Guard(Unit* unit)
 	{
 
 		unit->mainOrderTimer = (u8)helper::RandBetween(0, 15, 29);
@@ -235,14 +235,14 @@ namespace hooks
 		else
 			unit->mainOrderId = OrderId::PlayerGuard;
 
-	} //void orders_Guard(CUnit* unit)
+	} //void orders_Guard(Unit* unit)
 
 	;
 
 	//NOT HOOKED (since most of the action happen in another function)
 	//Just here to show that the true code is in function_004774A0, though
 	//a few things happen before
-	void orders_TurretGuard(CUnit* unit)
+	void orders_TurretGuard(Unit* unit)
 	{
 
 		if (
@@ -256,12 +256,12 @@ namespace hooks
 
 		function_004774A0(unit);
 
-	} //void orders_TurretGuard(CUnit* unit)
+	} //void orders_TurretGuard(Unit* unit)
 
 	;
 
 	//Guard related function, may be a poorly identified official guard order
-	void function_004774A0(CUnit* unit)
+	void function_004774A0(Unit* unit)
 	{
 
 		//if unit->autoTargetUnit != nullptr, attack this target
@@ -291,7 +291,7 @@ namespace hooks
 				if (unit->getSeekRange() != 0)
 				{
 
-					CUnit* target = helper::findBestAttackTarget(unit);
+					Unit* target = helper::findBestAttackTarget(unit);
 
 					if (target != nullptr)
 						//attack target I think, also used by function_004770E0

@@ -5,7 +5,7 @@ namespace hooks
 {
 	void CMDRECV_Siege(u8 bCommandType)
 	{
-		CUnit* current_selection;
+		Unit* current_selection;
 
 		*selectionIndexStart = 0;
 		current_selection = getActivePlayerNextSelection();
@@ -52,7 +52,7 @@ namespace hooks
 	void CMDRECV_Unsiege(u8 bCommandType)
 	{
 
-		CUnit* current_selection;
+		Unit* current_selection;
 
 		*selectionIndexStart = 0;
 		current_selection = getActivePlayerNextSelection();

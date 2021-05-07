@@ -11,7 +11,7 @@ namespace hooks
 	//the unit, the special case being that zerg morphing
 	//buildings show the wireframe of the new building
 	//before construction is complete
-	u16 statdata_UnitWireframeUpdate_Fragment(CUnit* unit)
+	u16 statdata_UnitWireframeUpdate_Fragment(Unit* unit)
 	{
 
 		u16 unitId;
@@ -40,7 +40,7 @@ namespace hooks
 
 		return unitId;
 	}
-	u16 getLastQueueSlotType(CUnit* unit)
+	u16 getLastQueueSlotType(Unit* unit)
 	{
 		u16 unitId;
 		if (unit->status & UnitStatus::Completed)
@@ -54,7 +54,7 @@ namespace hooks
 		return unitId;
 	};
 
-	u8 wireframeShields(CUnit* unit)
+	u8 wireframeShields(Unit* unit)
 	{
 		auto eax = unit->id;
 		u8 al = 0;

@@ -13,22 +13,22 @@ namespace SplashType
 
 namespace hooks
 {
-	void splash(CBullet* bullet, u32 weaponId, u8 splashType, CUnit* guaranteedHit = nullptr);
-	void lurkerSplash(CBullet* bullet, u32 weaponId, u8 splash);
+	void splash(Bullet* bullet, u32 weaponId, u8 splashType, Unit* guaranteedHit = nullptr);
+	void lurkerSplash(Bullet* bullet, u32 weaponId, u8 splash);
 
 	void injectWeaponEffectHook();
-	void normalDamage(CBullet* bullet, u32 weaponId);
-	void yamatoDamage(CBullet* bullet, u32 weaponId);
-	void airSplash(CBullet* bullet, u32 weaponId);
-	void nuke(CBullet* bullet, u32 weaponId);
-	s32 irradiateUnitDamageProc(CUnit* target, CUnit* irradiated);
+	void normalDamage(Bullet* bullet, u32 weaponId);
+	void yamatoDamage(Bullet* bullet, u32 weaponId);
+	void airSplash(Bullet* bullet, u32 weaponId);
+	void nuke(Bullet* bullet, u32 weaponId);
+	s32 irradiateUnitDamageProc(Unit* target, Unit* irradiated);
 
 	// HYDRA-specific
-	bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId);
-	bool isUnsafeCyprianBullet(CBullet* bullet, u32 weaponId);
-	void parasite(CBullet* bullet, u32 weaponId);
-	void broodlings(CBullet* bullet, u32 weaponId);
-	void lockdown(CBullet* bullet, u32 weaponId);
-	CUnit* irradiateDamageLoop(CUnit* unit);						// 004555C0
+	bool isChargedGorgolethBullet(Bullet* bullet, u32 weaponId);
+	bool isUnsafeCyprianBullet(Bullet* bullet, u32 weaponId);
+	void parasite(Bullet* bullet, u32 weaponId);
+	void broodlings(Bullet* bullet, u32 weaponId);
+	void lockdown(Bullet* bullet, u32 weaponId);
+	Unit* irradiateDamageLoop(Unit* unit);						// 004555C0
 
 } //hooks

@@ -5,7 +5,7 @@
 
 namespace AI
 {
-	CUnit* findBestFeedbackTarget(CUnit* caster, bool isUnderAttack)
+	Unit* findBestFeedbackTarget(Unit* caster, bool isUnderAttack)
 	{
 
 		s32 bounds;
@@ -23,7 +23,7 @@ namespace AI
 			caster->getX() + bounds,
 			caster->getY() + bounds,
 			caster,
-			[&](CUnit* target)
+			[&](Unit* target)
 		{
 			if (!isTargetWorthHitting(target, caster))
 				return false;

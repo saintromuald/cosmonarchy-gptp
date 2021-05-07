@@ -3,11 +3,11 @@
 
 namespace hooks
 {
-	void orders_Repair1(CUnit* unit)
+	void orders_Repair1(Unit* unit)
 	{ // 004673D0
 		bool jump_to_676C4 = false; // handle various early invalid cases
 		bool bEndThere = false;
-		CUnit* target = unit->orderTarget.unit;
+		Unit* target = unit->orderTarget.unit;
 		if (target == nullptr)
 		{
 			jump_to_676C4 = true;
@@ -170,7 +170,7 @@ namespace hooks
 					}
 					else
 					{
-						CImage* current_image = unit->sprite->images.head;
+						Image* current_image = unit->sprite->images.head;
 						while (current_image != nullptr)
 						{
 							current_image->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
@@ -190,7 +190,7 @@ namespace hooks
 						bDoRepair = helper::ord_repair_subtract(unit, target);
 						if (!bDoRepair)
 						{
-							CImage* current_image = unit->sprite->images.head;
+							Image* current_image = unit->sprite->images.head;
 							while (current_image != nullptr)
 							{
 								current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
@@ -233,7 +233,7 @@ namespace hooks
 
 			if (!bEndThere)
 			{ //jump_to_676C4 CASE
-				CImage* current_image = unit->sprite->images.head;
+				Image* current_image = unit->sprite->images.head;
 				while (current_image != nullptr)
 				{
 					current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
@@ -267,7 +267,7 @@ namespace hooks
 	}
 
 	// Hooked to allow for general Repair and some other shit - Pr0nogo
-	s32 isOrderValid(char orderId, CUnit* unit, s32 unused, CUnit* target, s32 bErrorFlag) // 00474D90
+	s32 isOrderValid(char orderId, Unit* unit, s32 unused, Unit* target, s32 bErrorFlag) // 00474D90
 	{
 		u16 errorStringId;
 		bool ofsubCompare;
@@ -410,7 +410,7 @@ namespace hooks
 	}
 
 	// Hooked to investigate Repair crashes - Pr0nogo
-	s32 orderAllowed(CUnit* unit, u16 orderId, s32 player) // 0046DC20
+	s32 orderAllowed(Unit* unit, u16 orderId, s32 player) // 0046DC20
 	{
 		s32 result;
 		s16 unitId;

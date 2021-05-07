@@ -32,7 +32,7 @@ namespace
 	{
 		static b32 return_value;
 		static u32 playerId;
-		static CUnit* unit;	// unused in original function
+		static Unit* unit;	// unused in original function
 		static u16 reqVar;	// unused in original function
 		__asm {
 			PUSH EBP
@@ -58,7 +58,7 @@ namespace
 	{
 		static b32 return_value;
 		static u32 playerId;
-		static CUnit* unit;	// unused in original function
+		static Unit* unit;	// unused in original function
 		static u16 reqVar;	// unused in original function
 		__asm {
 			PUSH EBP
@@ -82,7 +82,7 @@ namespace
 	//-------- Actual cloak orders --------//
 
 	//equivalent to 00491B30 ApplyCloakingOrder, not injected
-	void applyCloakingOrderHook(CUnit* unit)
+	void applyCloakingOrderHook(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 		if (unit->status & UnitStatus::RequiresDetection)
@@ -126,7 +126,7 @@ namespace
 	void __cdecl cloakingTechWrapper_CMDRECV_Cloak()
 	{
 		*selectionIndexStart = 0;
-		while (CUnit* unit = getActivePlayerNextSelection())
+		while (Unit* unit = getActivePlayerNextSelection())
 		{
 			if (unit->canUseTech(hooks::getCloakingTech(unit), *ACTIVE_NATION_ID) == 1)
 				applyCloakingOrderHook(unit);
@@ -134,7 +134,7 @@ namespace
 	}
 
 	const u32 Func_ApplyCloak = 0x00491B30;
-	void applyCloakingOrderFunc(CUnit* unit)
+	void applyCloakingOrderFunc(Unit* unit)
 	{
 		__asm {
 			PUSHAD
@@ -146,7 +146,7 @@ namespace
 
 	void __declspec(naked) cloakingTechWrapper_AI_cloakUnit()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			MOV unit, ESI
 			PUSHAD
@@ -169,7 +169,7 @@ namespace
 	void __cdecl cloakingTechWrapper_CMDRECV_Decloak()
 	{
 		*selectionIndexStart = 0;
-		while (CUnit* unit = getActivePlayerNextSelection())
+		while (Unit* unit = getActivePlayerNextSelection())
 		{
 			if (unit->canUseTech(hooks::getCloakingTech(unit), *ACTIVE_NATION_ID) == 1)
 				unit->setSecondaryOrder(OrderId::Decloak);
@@ -180,7 +180,7 @@ namespace
 
 	void __declspec(naked) getCloakingTechWrapper()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		static u8 result;
 		__asm {
 			MOV unit, EAX
@@ -196,7 +196,7 @@ namespace
 
 	void __declspec(naked) cloakingTech_ApplyCloakingOrder()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			MOV unit, EAX
 			PUSHAD
@@ -213,7 +213,7 @@ namespace
 		RaceId::Enum race;
 		for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; ++i)
 		{
-			CUnit* unit = clientSelectionGroup->unit[i];
+			Unit* unit = clientSelectionGroup->unit[i];
 			if (unit != nullptr)
 			{
 				if (scbw::isCheatEnabled(CheatFlags::TheGathering)

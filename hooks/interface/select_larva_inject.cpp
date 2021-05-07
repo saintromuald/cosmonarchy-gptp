@@ -5,8 +5,8 @@ namespace
 {
 	void __declspec(naked) getLarvaeUnitsFromList_Wrapper()
 	{
-		static CUnit** unitList;
-		static CUnit** outputList;
+		static Unit** unitList;
+		static Unit** outputList;
 		static u32 larvaeCount;
 		__asm {
 			MOV unitList, EDX

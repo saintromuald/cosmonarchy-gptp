@@ -16,12 +16,12 @@ struct CCMUExtender : public Extender
 	std::vector<u32> orderingYlist();
 	std::vector<u32> orderingYlist_off4();
 	std::vector<u32> orderingY_min18endlist();
-	CUnitLayout units[UNIT_ARRAY_LENGTH];
+	UnitLayout units[UNIT_ARRAY_LENGTH];
 	UnitFinderData orderingX[UNIT_ARRAY_LENGTH * 2];
 	UnitFinderData orderingY[UNIT_ARRAY_LENGTH * 2];
-	CUnit* position_search_units[UNIT_ARRAY_LENGTH + 1];
+	Unit* position_search_units[UNIT_ARRAY_LENGTH + 1];
 	u32 position_search_temp[UNIT_ARRAY_LENGTH + 1];
-	CUnit* air_splash_results[UNIT_ARRAY_LENGTH];
+	Unit* air_splash_results[UNIT_ARRAY_LENGTH];
 
 	virtual void extend();
 	virtual s32 identifier(std::string str);

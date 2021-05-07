@@ -10,9 +10,9 @@
 // ~ Veeq7
 
 // Notes:
-// - It's pretty annoying that project has to recompile most files after chaning this one. that was the case with CUnit already,
+// - It's pretty annoying that project has to recompile most files after chaning this one. that was the case with Unit already,
 //		but we might want to limit the include scope for this one
-// - Maybe we should also move aise enums in here, I don't think it ever made sense for it to be in CUnit, since it's included everywhere.
+// - Maybe we should also move aise enums in here, I don't think it ever made sense for it to be in Unit, since it's included everywhere.
 
 // Constants
 // Note: I would recommend having unit name as first segment of any related variable name.

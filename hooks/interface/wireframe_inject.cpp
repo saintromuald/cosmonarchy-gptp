@@ -9,7 +9,7 @@ namespace
 
 		static const u32 JUMPBACK_POINT_WIREFRAME = 0x00456955;
 
-		static CUnit* unit;
+		static Unit* unit;
 		static u16 unitId;
 
 		__asm {
@@ -30,7 +30,7 @@ namespace
 	void __declspec(naked) wireframeShields_Wrapper()
 	{
 		//
-		static CUnit* unit;
+		static Unit* unit;
 		static u8 result;
 		__asm {
 			MOV unit, EDX

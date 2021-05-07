@@ -729,7 +729,7 @@ namespace hooks
 	void CCMUExtender()
 	{
 		new_unit_table.extend();
-		//plugin code transfer notice: CCMU Extender also require CUnit.cpp (index), weapon_effect and load_unload_orders/load_unload_proc (0059cb58)
+		//plugin code transfer notice: CCMU Extender also require Unit.cpp (index), weapon_effect and load_unload_orders/load_unload_proc (0059cb58)
 		//changes
 	}
 	void injectCCMUHooks()

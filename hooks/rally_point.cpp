@@ -14,7 +14,7 @@ namespace hooks
 	///
 	/// Identical to sub_466F50 @ 00466F50
 
-	void orderNewUnitToRallyHook(CUnit* unit, CUnit* factory)
+	void orderNewUnitToRallyHook(Unit* unit, Unit* factory)
 	{
 
 		//Do nothing if the rally target is the factory itself or the rally target position is 0
@@ -39,7 +39,7 @@ namespace hooks
 	;
 
 	/// Called when the player sets the rally point on the ground.
-	void setRallyPosition(CUnit* unit, u16 x, u16 y)
+	void setRallyPosition(Unit* unit, u16 x, u16 y)
 	{
 		unit->rally.unit = nullptr;
 		unit->rally.pt.x = x;
@@ -49,7 +49,7 @@ namespace hooks
 	;
 
 	/// Called when the player sets the rally point on a unit.
-	void setRallyUnit(CUnit* unit, CUnit* target)
+	void setRallyUnit(Unit* unit, Unit* target)
 	{
 
 		if (target == nullptr)

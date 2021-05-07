@@ -1,4 +1,4 @@
-//This header file contains the binary layout of the CUnit structure.
+//This header file contains the binary layout of the Unit structure.
 //For the member functions, see Unit.h
 //Based on BWAPI's BW/Unit.h
 
@@ -9,10 +9,10 @@
 
 #pragma pack(1)
 
-struct CImage;
-struct CSprite;
-struct COrder;
-struct CUnit;
+struct Image;
+struct Sprite;
+struct Order;
+struct Unit;
 
 //
 
@@ -334,8 +334,8 @@ struct UnitExt
 
 	u32						values[ValueCount];
 	u32						timers[TimerCount];
-	CUnit*					units[UnitCount];
-	std::vector<CUnit*>		unitVectors[UnitVectorCount];
+	Unit*					units[UnitCount];
+	std::vector<Unit*>		unitVectors[UnitVectorCount];
 	std::vector<u32>		timerVectors[TimerVectorCount];
 };
 
@@ -400,14 +400,14 @@ namespace MovementFlags
 	};
 }
 
-//Layout of the CUnit structure
+//Layout of the Unit structure
 //Comments marked with ++ added by RavenWolf
-struct CUnitLayout
+struct UnitLayout
 {
-	/*0x000*/ CLink<CUnit> link;
+	/*0x000*/ Link<Unit> link;
 	/*0x008*/ s32       hitPoints;				// Hit points of unit, note that the displayed value in broodwar is ceil(healthPoints/256)
 												// Officially called "xLife"
-	/*0x00C*/ CSprite*	sprite;
+	/*0x00C*/ Sprite*	sprite;
 	/*0x010*/ Target    moveTarget;				// The position or unit to move to. It is NOT an order target.
 	/*0x018*/ Point16   nextMovementWaypoint;	// The next way point in the path the unit is following to get to its destination.
 												// Equal to moveToPos for air units since they don't need to navigate around buildings.
@@ -471,12 +471,12 @@ struct CUnitLayout
 	/*0x064*/ u16       id;						// Unit ID in units.dat
 	/*0x066*/ u8		_unknown_0x066;			// HYDRA - mineral regen cooldown
 			  u8		_unknown_0x067;			// HYDRA - warp relay warp in
-	/*0x068*/ CLink<CUnit> player_link;
-	/*0x070*/ CUnit*	subunit;
-	/*0x074*/ COrder*	orderQueueHead;
-	/*0x078*/ COrder*	orderQueueTail;
-	/*0x07C*/ CUnit*	autoTargetUnit;			//The auto-acquired target (Note: This field is actually used for different targets internally, especially by the AI)
-	/*0x080*/ CUnit*	connectedUnit;			// larva store a reference to the structure who created it
+	/*0x068*/ Link<Unit> player_link;
+	/*0x070*/ Unit*	subunit;
+	/*0x074*/ Order*	orderQueueHead;
+	/*0x078*/ Order*	orderQueueTail;
+	/*0x07C*/ Unit*	autoTargetUnit;			//The auto-acquired target (Note: This field is actually used for different targets internally, especially by the AI)
+	/*0x080*/ Unit*	connectedUnit;			// larva store a reference to the structure who created it
 												// units inside transports store a reference to the transport
 												// addons store a reference to its parent building (but not the other way around)
 	/*0x084*/ u8        orderQueueCount;
@@ -527,16 +527,16 @@ struct CUnitLayout
 
 		struct
 		{
-			/*0x0C0*/     CUnit* inHangarChild;			// First child inside the hangar
-			/*0x0C4*/     CUnit* outHangarChild;		// First child outside the hangar
+			/*0x0C0*/     Unit* inHangarChild;			// First child inside the hangar
+			/*0x0C4*/     Unit* outHangarChild;		// First child outside the hangar
 			/*0x0C8*/     u8      inHangarCount;		// Number inside the hangar
 			/*0x0C9*/     u8      outHangarCount;		// Number outside the hangar
 		} carrier; // also applies to reaver
 
 		struct
 		{
-			/*0x0C0*/     CUnit* parent;
-			/*0x0C4*/     CLink<CUnit> hangar_link;
+			/*0x0C0*/     Unit* parent;
+			/*0x0C4*/     Link<Unit> hangar_link;
 			/*0x0CC*/     bool    isOutsideHangar;
 		} interceptor;  // also applies to scarab
 
@@ -549,7 +549,7 @@ struct CUnitLayout
 
 		struct
 		{
-			/*0x0C0*/     CUnit* addon;
+			/*0x0C0*/     Unit* addon;
 			/*0x0C4*/     u16     addonBuildType;
 			/*0x0C6*/     u16     upgradeResearchTime;
 			/*0x0C8*/     u8      techType;
@@ -566,16 +566,16 @@ struct CUnitLayout
 					/*0x0D0*/         u16       resourceAmount;
 					/*0x0D2*/         u8        resourceIscript;
 					/*0x0D3*/         u8        gatherQueueCount;
-					/*0x0D4*/         CUnit* nextGatherer;   // pointer to the next worker unit waiting in line to gather
+					/*0x0D4*/         Unit* nextGatherer;   // pointer to the next worker unit waiting in line to gather
 					/*0x0D8*/         u8        resourceGroup;
 					/*0x0D9*/         u8        resourceBelongsToAI;
 				} resource;  // When the unit is resource container
-				/*0x0D0*/       CUnit* nydusExit; // connected nydus canal
-				/*0x0D0*/       CUnit* ghostNukeMissile;	// confirmed to be CUnit* and not CSprite*
-				/*0x0D0*/       CSprite* pylonAura;
+				/*0x0D0*/       Unit* nydusExit; // connected nydus canal
+				/*0x0D0*/       Unit* ghostNukeMissile;	// confirmed to be Unit* and not Sprite*
+				/*0x0D0*/       Sprite* pylonAura;
 				struct
 				{
-					/*0x0D0*/         CUnit* nuke;  // attached nuke
+					/*0x0D0*/         Unit* nuke;  // attached nuke
 					/*0x0D4*/         bool    isReady;
 				} silo;
 				/*0x0D0*/       Box16     hatcheryHarvestValue; // wtf???
@@ -585,13 +585,13 @@ struct CUnitLayout
 
 		struct
 		{
-			/*0x0C0*/     CUnit* powerup;
+			/*0x0C0*/     Unit* powerup;
 			/*0x0C4*/     Target  targetResource;
 			/*0x0CC*/     u16     repairResourceLossTimer;
 			/*0x0CE*/     bool    isCarryingSomething;
 			/*0x0CF*/     u8      resourceCarryAmount;
-			/*0x0D0*/     CUnit* harvestTarget;
-			/*0x0D4*/     CLink<CUnit> harvest_link;  // When there is a gather conflict
+			/*0x0D0*/     Unit* harvestTarget;
+			/*0x0D4*/     Link<Unit> harvest_link;  // When there is a gather conflict
 		} worker;
 	};
 
@@ -602,12 +602,12 @@ struct CUnitLayout
 	/*0x0E3*/ u8        recentOrderTimer;		// Counts down from 15 to 0 when most orders are given, or when the unit moves after reaching a patrol location
 	/*0x0E4*/ s32       visibilityStatus;		// Flags specifying which players can detect this unit (cloaked/burrowed)
 	/*0x0E8*/ Point16   secondaryOrderPos;		// Unused according to BWAPI
-	/*0x0EC*/ CUnit* currentBuildUnit;			// tied to secondary order according to BWAPI
-	/*0x0F0*/ CLink<CUnit> burrow_link;
+	/*0x0EC*/ Unit* currentBuildUnit;			// tied to secondary order according to BWAPI
+	/*0x0F0*/ Link<Unit> burrow_link;
 	/*0x0F8*/ union
 	{
 		Target rally;
-		CLink<CUnit> psi_link;
+		Link<Unit> psi_link;
 	};
 	/*0x100*/ void* path;							// use BW::Path* in BWAPI
 	/*0x104*/ u8        pathingCollisionInterval;	// unknown
@@ -626,7 +626,7 @@ struct CUnitLayout
 	/*0x119*/ u8        stasisTimer;
 	/*0x11A*/ u8        plagueTimer;
 	/*0x11B*/ u8        isUnderStorm;				// Used to tell if a unit is under psi storm	(is "stormTimer" in BWAPI)
-	/*0x11C*/ CUnit*	irradiatedBy;
+	/*0x11C*/ Unit*	irradiatedBy;
 	/*0x120*/ u8        irradiatePlayerId;
 	/*0x121*/ u8        parasiteFlags;				// Each bit corrisponds to the player who has parasited this unit*/
 	/*0x122*/ u8        cycleCounter;				// counts/cycles up from 0 to 7 (inclusive). See also 0x85.
@@ -656,5 +656,5 @@ struct CUnitLayout
 	/*0x14D*/ u8        repulseAngle;				// updated only when air unit is being pushed
 	/*0x14E*/ Point8    driftPos;					// (mapsizex / 1.5 max)
 };
-C_ASSERT(sizeof(CUnitLayout) == 336);
+C_ASSERT(sizeof(UnitLayout) == 336);
 #pragma pack()

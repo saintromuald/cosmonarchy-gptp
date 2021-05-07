@@ -13,7 +13,7 @@
 namespace hooks
 {
 
-	f64 getSpeedMultiplier(CUnit* unit)
+	f64 getSpeedMultiplier(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -139,7 +139,7 @@ namespace hooks
 						unit->getX() + range,
 						unit->getY() + range
 					);
-					unitFinder.forEach([&](CUnit* target)
+					unitFinder.forEach([&](Unit* target)
 					{
 						if (scbw::isAlliedTo(unit->playerId, target->playerId)
 							|| units_dat::BaseProperty[target->id] & UnitProperty::Flyer)
@@ -235,7 +235,7 @@ namespace hooks
 	///
 	/// @return		The modified speed value.
 	/// Logically equivalent to GetModifiedUnitSpeed @ 0047B5F0  
-	u32 getModifiedUnitSpeedHook(CUnit* unit, u32 baseSpeed)
+	u32 getModifiedUnitSpeedHook(Unit* unit, u32 baseSpeed)
 	{
 		s32 increase = (unit->stimTimer ? 1 : 0) + (unit->status & UnitStatus::SpeedUpgrade ? 1 : 0);
 
@@ -271,7 +271,7 @@ namespace hooks
 	///
 	/// @return		The modified acceleration value.
 	/// Logically equivalent to getModifiedUnitAcceleration @ 0047B8A0 
-	u32 getModifiedUnitAccelerationHook(CUnit* unit)
+	u32 getModifiedUnitAccelerationHook(Unit* unit)
 	{
 		return std::max(scbw::getFlingyData(FlingyDatEntries::Acceleration, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit), 1.0);
 	}
@@ -280,7 +280,7 @@ namespace hooks
 	///
 	/// @return		The modified turning speed value.
 	/// Logically equivalent to getModifiedUnitTurnRadius @ 0047B850 
-	u32 getModifiedUnitTurnSpeedHook(CUnit* unit)
+	u32 getModifiedUnitTurnSpeedHook(Unit* unit)
 	{
 		return std::max(scbw::getFlingyData(FlingyDatEntries::TurnRadius, scbw::getUnitData(UnitsDatEntries::Flingy, unit->id)) * getSpeedMultiplier(unit), 1.0);
 	}

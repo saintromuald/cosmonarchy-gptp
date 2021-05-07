@@ -5,13 +5,13 @@ namespace hooks
 {
 
 	//replace 0x00402750 canInfest
-	bool unitCanInfestHook(CUnit* unit)
+	bool unitCanInfestHook(Unit* unit)
 	{
 		return (unit->id == UnitId::ZergMatraleth);
 	}
 
 	//replace 0x00402210 CC_CanBeInfested
-	bool isInfestableUnitHook(CUnit* unit)
+	bool isInfestableUnitHook(Unit* unit)
 	{
 		u32 unitHpTest;
 		u32 unitMaxHp;
@@ -29,13 +29,13 @@ namespace hooks
 	}
 
 	//Based on and replace orders_InfestMine1 (0x004EA4C0)
-	void orderMorphIntoInfested(CUnit* unitInfested)
+	void orderMorphIntoInfested(Unit* unitInfested)
 	{
 		bool bErrorReturnToIdle;
 		bool bStopFunction = false;
 		u16 infestedUnitNewId;
 		u16 infestationOverlayId;
-		CUnit* unitInfesting = unitInfested->orderTarget.unit;
+		Unit* unitInfesting = unitInfested->orderTarget.unit;
 		bErrorReturnToIdle = (unitInfesting == nullptr || !isInfestableUnitHook(unitInfested));
 
 		if (!bErrorReturnToIdle)
@@ -111,7 +111,7 @@ namespace hooks
 
 					if (unitInfested->status & UnitStatus::GroundedBuilding)
 					{
-						CImage* current_image = unitInfested->sprite->images.head;
+						Image* current_image = unitInfested->sprite->images.head;
 
 						while (current_image != nullptr)
 						{
@@ -145,9 +145,9 @@ namespace hooks
 	}
 
 	//Based on and replace 004EA290 orders_InfestMine4
-	void orderInfestTarget(CUnit* unitInfesting)
+	void orderInfestTarget(Unit* unitInfesting)
 	{
-		CUnit* unitInfested = unitInfesting->orderTarget.unit;
+		Unit* unitInfested = unitInfesting->orderTarget.unit;
 		bool bBuildTimeReachedZero = false;
 		bool bStopFunction = false;
 		bool bReturnToIdle = false;

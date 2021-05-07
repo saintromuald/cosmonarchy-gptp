@@ -6,8 +6,8 @@ namespace
 
 	void __declspec(naked) AI_TrainingUnit_Wrapper()
 	{ // 004A2830
-		static CUnit* result;
-		static CUnit* parent;
+		static Unit* result;
+		static Unit* parent;
 		__asm {
 			MOV result, EAX
 			MOV parent, ECX
@@ -22,8 +22,8 @@ namespace
 
 	void __declspec(naked) AI_CreateNuke_Wrapper()
 	{ // 0045B7A0
-		static CUnit* silo;
-		static CUnit* result;
+		static Unit* silo;
+		static Unit* result;
 		__asm {
 			MOV silo, EDI
 			MOV result, EAX
@@ -38,8 +38,8 @@ namespace
 
 	void __declspec(naked) AI_TrainingBroodling_Wrapper()
 	{ // 0043E280
-		static CUnit* parent;
-		static CUnit* result;
+		static Unit* parent;
+		static Unit* result;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -64,7 +64,7 @@ namespace
 	void __declspec(naked) AI_AddUnitAi_Wrapper()
 	{ // 00433DD0
 		static u8 result;
-		static CUnit* unit;
+		static Unit* unit;
 		static AiTown* town;
 		__asm {
 			MOV unit, EBX
@@ -144,8 +144,8 @@ namespace
 
 	void __declspec(naked) AI_UnitWasHit_Wrapper()
 	{ // 0043F320
-		static CUnit* self;
-		static CUnit* attacker;
+		static Unit* self;
+		static Unit* attacker;
 		static s32 mainTargetReactions;
 		static s32 dontCallHelp;
 		__asm {
@@ -172,8 +172,8 @@ namespace
 
 	void __declspec(naked) AI_IterateBuildingAI_Wrapper()
 	{ // 00435770
-		static CUnit* result;
-		static CUnit* parent;
+		static Unit* result;
+		static Unit* parent;
 		__asm {
 			MOV result, EAX
 			MOV parent, ECX
@@ -325,7 +325,7 @@ namespace
 
 	void __declspec(naked) AI_orderUnitCloaking_Wrapper() // 0043B970
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			MOV unit, ESI
 			PUSHAD

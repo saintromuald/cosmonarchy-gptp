@@ -6,7 +6,7 @@
 namespace AI
 {
 
-	b32 weaponBehaviourCanHitTargetCheck(CUnit* caster, CUnit* attacker, CUnit* target)
+	b32 weaponBehaviourCanHitTargetCheck(Unit* caster, Unit* attacker, Unit* target)
 	{
 
 		b32 returnValue;
@@ -73,7 +73,7 @@ namespace AI
 
 	}
 
-	bool DarkSwarmTargetFinderMatch(CUnit* caster, CUnit* target)
+	bool DarkSwarmTargetFinderMatch(Unit* caster, Unit* target)
 	{
 
 		bool bReturnValue;
@@ -81,7 +81,7 @@ namespace AI
 		if (isTargetWorthHitting(target, caster))
 		{
 
-			CUnit* targetOfTarget = target->orderTarget.unit;
+			Unit* targetOfTarget = target->orderTarget.unit;
 
 			if (targetOfTarget != nullptr)
 			{
@@ -147,7 +147,7 @@ namespace AI
 
 		return bReturnValue;
 
-		//CUnit* targetOfTarget;
+		//Unit* targetOfTarget;
 
 		//if (!isTargetWorthHitting(target, caster))
 		//  return false;
@@ -218,7 +218,7 @@ namespace AI
 	}
 
 	//Based on AI_AssignBestDarkSwarmTarget @ 0x00442840
-	CUnit* findBestDarkSwarmTarget(CUnit* caster, bool isUnderAttack)
+	Unit* findBestDarkSwarmTarget(Unit* caster, bool isUnderAttack)
 	{
 
 		s32 bounds;
@@ -230,13 +230,13 @@ namespace AI
 			bounds = 32 * 32;	/*0x400*/
 
 		  //Based on AI_BestUnit @ 0x004E8740 and canHitUnit @ 0x00441870
-		CUnit* result = scbw::UnitFinder::getNearestTarget(
+		Unit* result = scbw::UnitFinder::getNearestTarget(
 			caster->getX() - bounds,
 			caster->getY() - bounds,
 			caster->getX() + bounds,
 			caster->getY() + bounds,
 			caster,
-			[&](CUnit* target)
+			[&](Unit* target)
 		{
 			return DarkSwarmTargetFinderMatch(caster, target);
 		});

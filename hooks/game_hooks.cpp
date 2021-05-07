@@ -15,14 +15,14 @@
 const u32 hyperTrigger = 0x006509A0;
 const u32 Func_Irradiate = 0x00454E00;
 
-void spawnCreeper(CUnit* unit)
+void spawnCreeper(Unit* unit)
 {
 	s32 width = mapTileSize->width * 32;
 	s32 height = mapTileSize->height * 32;
 	if (unit->position.y >= 64 && unit->position.x >= 64 &&
 		unit->position.y < height - 64 && unit->position.x < width - 64)
 	{
-		CUnit* creep_spawned = helper::createUnit(UnitId::BasiliskCreeper,
+		Unit* creep_spawned = helper::createUnit(UnitId::BasiliskCreeper,
 			unit->position.x, unit->position.y,
 			unit->playerId);
 		if (creep_spawned == nullptr)
@@ -67,7 +67,7 @@ void spawnCreeper(CUnit* unit)
 }
 
 #include "SCBW\UnitFinder.h"
-void shamanProc(CUnit* shaman, u32 heal, CUnit* target)
+void shamanProc(Unit* shaman, u32 heal, Unit* target)
 {
 	if (target->playerId != shaman->playerId)
 	{
@@ -94,7 +94,7 @@ void shamanProc(CUnit* shaman, u32 heal, CUnit* target)
 	{
 		reqHeal = true;
 		u32 overlayImageId = ImageId::NaniteField;
-		CUnit* tgt = nullptr;
+		Unit* tgt = nullptr;
 		if (target->subunit != nullptr)
 		{
 			tgt = target->subunit;
@@ -114,42 +114,42 @@ void shamanProc(CUnit* shaman, u32 heal, CUnit* target)
 #include "globals.h"
 struct CorpseFinder
 {
-	static bool sortCompareXPos(CThingy* a, CThingy* b)
+	static bool sortCompareXPos(Thingy* a, Thingy* b)
 	{
 		return a->sprite->position.x > b->sprite->position.x;
 	}
 
-	static bool sortCompareYPos(CThingy* a, CThingy* b)
+	static bool sortCompareYPos(Thingy* a, Thingy* b)
 	{
 		return a->sprite->position.y > b->sprite->position.y;
 	}
 
-	static bool lowerboundCompareXPos(CThingy* thingy, s32 value)
+	static bool lowerboundCompareXPos(Thingy* thingy, s32 value)
 	{
 		return thingy->sprite->position.x < value;
 	}
 
-	static bool lowerboundCompareYPos(CThingy* thingy, s32 value)
+	static bool lowerboundCompareYPos(Thingy* thingy, s32 value)
 	{
 		return thingy->sprite->position.y < value;
 	}
 
-	static std::vector<CThingy*> corpsesX;
-	static std::vector<CThingy*> corpsesY;
+	static std::vector<Thingy*> corpsesX;
+	static std::vector<Thingy*> corpsesY;
 
-	static std::vector<CThingy*> findCorpses(s32 left, s32 top, s32 right, s32 bottom)
+	static std::vector<Thingy*> findCorpses(s32 left, s32 top, s32 right, s32 bottom)
 	{
 		auto foundCorpsesXStart = std::lower_bound(corpsesX.begin(), corpsesX.end(), left, lowerboundCompareXPos);
 		auto foundCorpsesXEnd = std::lower_bound(foundCorpsesXStart, corpsesX.end(), right, lowerboundCompareXPos);
-		auto foundCorpsesX = std::vector<CThingy*>(foundCorpsesXStart, foundCorpsesXEnd);
+		auto foundCorpsesX = std::vector<Thingy*>(foundCorpsesXStart, foundCorpsesXEnd);
 		std::sort(foundCorpsesX.begin(), foundCorpsesX.end());
 
 		auto foundCorpsesYStart = std::lower_bound(corpsesY.begin(), corpsesY.end(), top, lowerboundCompareYPos);
 		auto foundCorpsesYEnd = std::lower_bound(foundCorpsesYStart, corpsesY.end(), bottom, lowerboundCompareYPos);
-		auto foundCorpsesY = std::vector<CThingy*>(foundCorpsesYStart, foundCorpsesYEnd);
+		auto foundCorpsesY = std::vector<Thingy*>(foundCorpsesYStart, foundCorpsesYEnd);
 		std::sort(foundCorpsesY.begin(), foundCorpsesY.end());
 
-		std::vector<CThingy*> foundCorpses(foundCorpsesX.size());
+		std::vector<Thingy*> foundCorpses(foundCorpsesX.size());
 		auto it = std::set_intersection(foundCorpsesX.begin(), foundCorpsesX.end(), foundCorpsesY.begin(), foundCorpsesY.end(), foundCorpses.begin());
 		foundCorpses.resize(it - foundCorpses.begin());
 		return foundCorpses;
@@ -159,7 +159,7 @@ struct CorpseFinder
 	{
 		corpsesX.clear();
 		corpsesY.clear();
-		for (CThingy* ls = *first_lone_sprite; ls; ls = ls->next)
+		for (Thingy* ls = *first_lone_sprite; ls; ls = ls->next)
 		{
 			if (ls->sprite)
 			{
@@ -201,13 +201,13 @@ struct CorpseFinder
 	}
 };
 
-std::vector<CThingy*> CorpseFinder::corpsesX;
-std::vector<CThingy*> CorpseFinder::corpsesY;
+std::vector<Thingy*> CorpseFinder::corpsesX;
+std::vector<Thingy*> CorpseFinder::corpsesY;
 
 namespace hooks
 {
 	void firstFrame();
-	void tickUnit(CUnit* unit);
+	void tickUnit(Unit* unit);
 
 	/// This hook is called every frame
 	bool nextFrame()
@@ -231,7 +231,7 @@ namespace hooks
 			globals.frameHook();
 
 			// Reset Treasury Stacks, before unit loop
-			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
+			for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
 			{
 				UnitExt* unitExt = globals.GetUnitExt(unit);
 				s32 supply = unitExt->values[ValueSupplyProvided];
@@ -241,7 +241,7 @@ namespace hooks
 			}
 
 			// Loop through bullets
-			for (CBullet* bullet = *firstBullet; bullet; bullet = bullet->next)
+			for (Bullet* bullet = *firstBullet; bullet; bullet = bullet->next)
 			{
 				if (bullet->weaponType == WeaponId::KalkaliskViscousAcid)
 				{
@@ -257,7 +257,7 @@ namespace hooks
 			CorpseFinder::findCorpses();
 
 			// Loop through all visible units in the game.
-			for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
+			for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
 			{
 				tickUnit(unit);
 			}
@@ -278,7 +278,7 @@ namespace hooks
 		}
 	}
 
-	void tickUnit(CUnit* unit)
+	void tickUnit(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 		if (unit->id == UnitId::ProtossPariah && unit->orderSignal & 0x20)
@@ -302,7 +302,7 @@ namespace hooks
 				if (unitExt->timers[TimerReconstitutionCooldown] == 0)
 				{
 					auto radius = 128;
-					std::vector<CThingy*> corpseList = CorpseFinder::findCorpses(
+					std::vector<Thingy*> corpseList = CorpseFinder::findCorpses(
 						unit->position.x - radius,
 						unit->position.y - radius,
 						unit->position.x + radius,
@@ -324,7 +324,7 @@ namespace hooks
 							unit->getY() - radius,
 							unit->getX() + radius,
 							unit->getY() + radius
-						).forEach([&](CUnit* target)
+						).forEach([&](Unit* target)
 						{
 							if (!(scbw::isAlliedTo(target->playerId, unit->playerId)))
 							{
@@ -632,7 +632,7 @@ namespace hooks
 							missile_target.x + range,
 							missile_target.y + range,
 							unit,
-							[&](CUnit* target)
+							[&](Unit* target)
 							{
 								if (target == unit)
 								{
@@ -697,7 +697,7 @@ namespace hooks
 						unit->getY() - 128,
 						unit->getX() + 128,
 						unit->getY() + 128
-					).forEach([&](CUnit* target)
+					).forEach([&](Unit* target)
 						{
 							shamanProc(unit, ShamanHeal, target);
 						});
@@ -736,7 +736,7 @@ namespace hooks
 					pos.y - radius,
 					pos.x + radius,
 					pos.y + radius
-				).forEach([&](CUnit* target)
+				).forEach([&](Unit* target)
 					{
 						if (units_dat::SupplyProvided[target->id] == 0)
 						{
@@ -777,7 +777,7 @@ namespace hooks
 						pos.y - radius,
 						pos.x + radius,
 						pos.y + radius
-					).forEach([&](CUnit* target)
+					).forEach([&](Unit* target)
 					{
 						if (!(scbw::isAlliedTo(target->playerId, unit->playerId)))
 						{
@@ -864,7 +864,7 @@ namespace hooks
 					pos.y - radius,
 					pos.x + radius,
 					pos.y + radius
-				).forEach([&](CUnit* foundUnit)
+				).forEach([&](Unit* foundUnit)
 					{
 						if (!(scbw::isAlliedTo(foundUnit->playerId, unit->playerId)))
 						{
@@ -974,7 +974,7 @@ namespace hooks
 					unit->getY() - range,
 					unit->getX() + range,
 					unit->getY() + range
-				).filter([&](CUnit* target)
+				).filter([&](Unit* target)
 				{
 					if (unit->playerId == target->playerId
 						|| scbw::isAlliedTo(unit->playerId, target->playerId)
@@ -1060,7 +1060,7 @@ namespace hooks
 		{
 			if (hallucinatingTimer % 24 == 1)
 			{
-				CSprite* sprite;
+				Sprite* sprite;
 				if (unit->subunit != nullptr)
 				{
 					sprite = unit->subunit->sprite;

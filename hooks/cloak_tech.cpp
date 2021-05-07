@@ -6,7 +6,7 @@ namespace hooks
 
 	//Returns the tech ID used by this unit for the cloaking spell.
 	//For the cloaking energy consumption, see energy_regeneration.cpp
-	u8 getCloakingTech(CUnit* unit)
+	u8 getCloakingTech(Unit* unit)
 	{
 		//Default StarCraft behavior
 
@@ -32,11 +32,11 @@ namespace hooks
 #define FALSE 0
 #endif
 
-	b32 BTNSCOND_IsCloaked(CUnit* unit, u32 playerId, u16 reqVar)
+	b32 BTNSCOND_IsCloaked(Unit* unit, u32 playerId, u16 reqVar)
 	{
 
 		b32 bReturnValue = TRUE;
-		CUnit* unit_from_selection;
+		Unit* unit_from_selection;
 
 
 		for (s32 i = 0; i < SELECTION_ARRAY_LENGTH && (bReturnValue == TRUE); i++)
@@ -72,13 +72,13 @@ namespace hooks
 
 		return bReturnValue;
 
-	} //b32 BTNSCOND_IsCloaked(CUnit* unit, u32 playerId, u16 reqVar)
+	} //b32 BTNSCOND_IsCloaked(Unit* unit, u32 playerId, u16 reqVar)
 
-	b32 BTNSCOND_CanCloak(CUnit* unit, u32 playerId, u16 reqVar)
+	b32 BTNSCOND_CanCloak(Unit* unit, u32 playerId, u16 reqVar)
 	{
 
 		b32 bReturnValue = FALSE;
-		CUnit* unit_from_selection;
+		Unit* unit_from_selection;
 
 		for (s32 i = 0; i < SELECTION_ARRAY_LENGTH && (bReturnValue == FALSE); i++)
 		{
@@ -105,6 +105,6 @@ namespace hooks
 
 		return bReturnValue;
 
-	} //b32 BTNSCOND_CanCloak(CUnit* unit, u32 playerId, u16 reqVar)
+	} //b32 BTNSCOND_CanCloak(Unit* unit, u32 playerId, u16 reqVar)
 
 } //hooks

@@ -3,7 +3,7 @@
 
 namespace hooks
 {
-	bool unitIsFloorTrap(CUnit* unit)
+	bool unitIsFloorTrap(Unit* unit)
 	{ // 0047B070
 		u16 id = unit->id;
 		/*switch (id) {
@@ -28,10 +28,10 @@ namespace hooks
 		}
 		return false;
 	}
-	s16 disableTrap(CUnit* pUnit)
+	s16 disableTrap(Unit* pUnit)
 	{ // 0047B4B0
 		s32 unitFlags; // eax
-		CImage* i; // esi
+		Image* i; // esi
 		s16 unitType; // ax
 
 		unitFlags = pUnit->status;
@@ -69,23 +69,23 @@ namespace hooks
 		return unitFlags;
 	}
 
-	u32 updateUnitStrengthAndApplyDefaultOrdersHook(CUnit* a1)
+	u32 updateUnitStrengthAndApplyDefaultOrdersHook(Unit* a1)
 	{ // 0049FA40
-		CUnit* v1; // esi
+		Unit* v1; // esi
 		s32 v2; // ecx
 		s16 v3; // ax
 		u16 v4; // cx
 		s8 v5; // al
 		char v6; // al
-		COrder* v7; // eax
+		Order* v7; // eax
 		u8 v8; // cl
-		CUnit* v9; // eax
-		CUnit* v10; // eax
-		CUnit* v11; // ecx
+		Unit* v9; // eax
+		Unit* v10; // eax
+		Unit* v11; // ecx
 		u8 v12; // cl
 		s32 v13; // ecx
 		s32 v14; // eax
-		CSprite* v15; // eax
+		Sprite* v15; // eax
 		u8 v16; // cl
 		u32 result; // eax
 		s32 v18; // ecx

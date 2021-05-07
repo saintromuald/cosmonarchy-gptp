@@ -6,9 +6,9 @@ namespace hooks
 {
 
 	/// Determines whether this unit can detect cloaked/burrowed units.
-	/// This affects CUnit::canDetect().
+	/// This affects Unit::canDetect().
 	/// This overrides the EXE edit settings for Detectors in FireGraft.
-	bool unitCanDetectHook(CUnit* unit)
+	bool unitCanDetectHook(Unit* unit)
 	{
 		return (
 			units_dat::BaseProperty[unit->id] & UnitProperty::Detector &&
@@ -25,9 +25,9 @@ namespace hooks
 	//(assuming target is cloaked).
 	//Used in a IterateUnitsAtLocation function (thus the special structure)
 	//Part of a bigger logic, probably should not be touched
-	void getCloakedTargetVisibility(CUnit* detector, DetectorCheckParam* param)
+	void getCloakedTargetVisibility(Unit* detector, DetectorCheckParam* param)
 	{
-		CUnit* target = param->target;
+		Unit* target = param->target;
 		if (detector->canDetect() &&								// detector must be in a state to detect
 			detector != target										// detector shouldn't try to detect itself
 			)

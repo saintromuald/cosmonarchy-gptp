@@ -4,10 +4,10 @@
 namespace hooks
 {
 
-	void function_0049D660(CUnit* main_building);					//0x0049D660
-	bool function_004E8C80(CUnit* unit, CUnit* main_building);		//0x004E8C80
-	void secondaryOrd_SpawningLarva(CUnit* unit);					//0x004EA780
-	void secondaryOrd_SpreadCreepSpawningLarva(CUnit* unit);		//0x004EA880
+	void function_0049D660(Unit* main_building);					//0x0049D660
+	bool function_004E8C80(Unit* unit, Unit* main_building);		//0x004E8C80
+	void secondaryOrd_SpawningLarva(Unit* unit);					//0x004EA780
+	void secondaryOrd_SpreadCreepSpawningLarva(Unit* unit);		//0x004EA880
 
 	//u8 spreadCreep(u16 unitId, s32 x, s32 y); // 0x00414680
 	bool getCreepRegion(Box32* rect, u16 unitId, s32 x, s32 y, bool isComplete); // 0x00413DB0

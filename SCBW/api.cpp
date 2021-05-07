@@ -15,7 +15,7 @@
 namespace scbw
 {
 
-	void artificalBulletFrom(u8 weaponId, u8 playerId, CUnit* source, CUnit* target, Point16 target_pt)
+	void artificalBulletFrom(u8 weaponId, u8 playerId, Unit* source, Unit* target, Point16 target_pt)
 	{
 		auto target_unit = source->orderTarget.unit;
 		auto target_pos = source->orderTarget.pt;
@@ -35,7 +35,7 @@ namespace scbw
 		source->orderTarget.unit = target_unit;
 		source->orderTarget.pt = target_pos;
 	}
-	void artificalBulletFrom(u8 weaponId, u8 playerId, CUnit* source, CUnit* target, u16 x, u16 y)
+	void artificalBulletFrom(u8 weaponId, u8 playerId, Unit* source, Unit* target, u16 x, u16 y)
 	{
 		Point16 tgt;
 		tgt.x = x;
@@ -43,7 +43,7 @@ namespace scbw
 		artificalBulletFrom(weaponId, playerId, source, target, tgt);
 	}
 
-	bool teleport(CUnit* u, Point16 target, u16 spriteAnimation, bool preserveOrder)
+	bool teleport(Unit* u, Point16 target, u16 spriteAnimation, bool preserveOrder)
 	{
 		Point16 previous_pos, new_pos;
 		bool result = false;
@@ -60,7 +60,7 @@ namespace scbw
 		else
 		{
 			result = true;
-			CThingy* recall_effect_sprite;
+			Thingy* recall_effect_sprite;
 
 			//finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
 			scbw::prepareUnitMove(u, false);
@@ -110,9 +110,9 @@ namespace scbw
 	}
 
 	const u32 Func_CreateFlingy = 0x00496460;
-	CFlingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y)
+	Flingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y)
 	{
-		static CFlingy* flingy;
+		static Flingy* flingy;
 		__asm {
 			PUSHAD
 			MOV EAX, playerId
@@ -128,10 +128,10 @@ namespace scbw
 
 
 	const u32 Func_CreateThingy = 0x00488210;
-	CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId)
+	Thingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId)
 	{
 
-		static CThingy* thingy;
+		static Thingy* thingy;
 		s32 x_ = x;
 		__asm {
 			PUSHAD
@@ -146,9 +146,9 @@ namespace scbw
 		return thingy;
 	}
 
-	CThingy* createAndInitThingy(u32 spriteId, s16 x, s16 y, u32 playerId, s32 elevationLevel)
+	Thingy* createAndInitThingy(u32 spriteId, s16 x, s16 y, u32 playerId, s32 elevationLevel)
 	{
-		CThingy* thingy = createThingy(spriteId, x, y, playerId);
+		Thingy* thingy = createThingy(spriteId, x, y, playerId);
 		if (thingy != nullptr)
 		{
 			thingy->sprite->elevationLevel = elevationLevel;
@@ -174,7 +174,7 @@ namespace scbw
 	//-------- Output functions --------//
 
 	const u32 Func_PlaySound = 0x0048ED50;
-	void playSound(u32 sfxId, CUnit* sourceUnit)
+	void playSound(u32 sfxId, Unit* sourceUnit)
 	{
 
 		__asm {
@@ -256,7 +256,7 @@ namespace scbw
 	//-------- Unit checks --------//
 
 	const u32 Func_CanBeEnteredBy = 0x004E6E00; //AKA CanEnterTransport()
-	bool canBeEnteredBy(CUnit* transport, CUnit* unit)
+	bool canBeEnteredBy(Unit* transport, Unit* unit)
 	{
 
 		static u32 result;
@@ -275,7 +275,7 @@ namespace scbw
 	}
 
 	//Identical to function @ 0x00475CE0
-	bool canWeaponTargetUnit(u8 weaponId, CUnit* target, CUnit* attacker)
+	bool canWeaponTargetUnit(u8 weaponId, Unit* target, Unit* attacker)
 	{
 
 		if (weaponId >= WEAPON_TYPE_COUNT)
@@ -316,34 +316,34 @@ namespace scbw
 
 	}
 
-	bool isUnderDarkSwarm(CUnit* unit)
+	bool isUnderDarkSwarm(Unit* unit)
 	{
 		return getDarkSwarm(unit) != nullptr;
 	}
 
-	bool IsDarkswarm(CUnit* unit)
+	bool IsDarkswarm(Unit* unit)
 	{
 		return unit->id == UnitId::Spell_DarkSwarm;
 	}
 
-	CUnit* getDarkSwarm(CUnit* unit)
+	Unit* getDarkSwarm(Unit* unit)
 	{
 		static UnitFinder darkSwarmFinder;
 		darkSwarmFinder.search(unit->getLeft(), unit->getTop(), unit->getRight(), unit->getBottom());
 
-		CUnit* darkSwarm = darkSwarmFinder.getFirst(IsDarkswarm);
+		Unit* darkSwarm = darkSwarmFinder.getFirst(IsDarkswarm);
 		return darkSwarm;
 	}
 
-	CUnit* getDarkSwarm(u16 x, u16 y, u16 radius)
+	Unit* getDarkSwarm(u16 x, u16 y, u16 radius)
 	{
 		UnitFinder darkSwarmFinder;
 		darkSwarmFinder.search(x - radius, y - radius, x + radius, y + radius);
-		CUnit* darkSwarm = darkSwarmFinder.getFirst(IsDarkswarm);
+		Unit* darkSwarm = darkSwarmFinder.getFirst(IsDarkswarm);
 		return darkSwarm;
 	}
 
-	u16 getTechUseErrorMessage(CUnit* target, u8 castingPlayer, u16 techId)
+	u16 getTechUseErrorMessage(Unit* target, u8 castingPlayer, u16 techId)
 	{
 
 		static u32 techId_;
@@ -550,7 +550,7 @@ namespace scbw
 
 
 	const u32 Func_DoWeaponDamage = 0x00479930;
-	void sendGPTP_aise_cmd(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2, u32 v3)
+	void sendGPTP_aise_cmd(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2, u32 v3)
 	{
 		_asm {
 			PUSHAD
@@ -584,7 +584,7 @@ namespace scbw
 		return get_aise_value(nullptr, nullptr, AiseId::GetUnitData, entry, index);
 	}
 
-	bool isLarvalEgg(CUnit* unit)
+	bool isLarvalEgg(Unit* unit)
 	{
 		if (unit->id == UnitId::ZergEgg)
 		{
@@ -596,7 +596,7 @@ namespace scbw
 		}
 		return false;
 	}
-	bool isZergEggNew(CUnit* unit, bool allow_larval_eggs, bool allow_larvae, u16 explicit_unit_id)
+	bool isZergEggNew(Unit* unit, bool allow_larval_eggs, bool allow_larvae, u16 explicit_unit_id)
 	{
 
 		u16 id = UnitId::None;
@@ -793,7 +793,7 @@ namespace scbw
 		auto data_ptr = &data;
 		auto len_ptr = &len;
 		u32 val = reinterpret_cast<u32>(name);
-		auto length = scbw::get_aise_value(nullptr, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<s32>(data_ptr), reinterpret_cast<s32>(len_ptr));
+		auto length = scbw::get_aise_value(nullptr, reinterpret_cast<Unit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<s32>(data_ptr), reinterpret_cast<s32>(len_ptr));
 		char* buf = (char*)scbw::get_aise_value(nullptr, nullptr, AiseId::ReadSamaseFile_Ptr, 0, 0);
 		std::string str;
 		if (length == 0)
@@ -811,12 +811,12 @@ namespace scbw
 	{
 		return get_aise_value(nullptr, nullptr, AiseId::GenericVariable, id, 0);
 	}
-	CUnit* get_generic_rust_unit(CUnit* unit, u32 id)
+	Unit* get_generic_rust_unit(Unit* unit, u32 id)
 	{
 		u32 val = get_aise_value(unit, nullptr, AiseId::GenericUnit, id, 0);
-		return reinterpret_cast<CUnit*>(val);
+		return reinterpret_cast<Unit*>(val);
 	}
-	void set_generic_rust_unit(CUnit* unit, u32 id, CUnit* targ)
+	void set_generic_rust_unit(Unit* unit, u32 id, Unit* targ)
 	{
 		scbw::sendGPTP_aise_cmd(unit, targ, GptpId::SetGenericUnit, id, 0, 0);
 	}
@@ -825,11 +825,11 @@ namespace scbw
 		scbw::sendGPTP_aise_cmd(nullptr, nullptr, GptpId::SetGenericVariable, id, val, 0);
 	}
 
-	u32 get_generic_rust_value(CUnit* u, u32 val)
+	u32 get_generic_rust_value(Unit* u, u32 val)
 	{
 		return get_aise_value(u, nullptr, AiseId::GenericValue, val, 0);
 	}
-	void set_generic_rust_value(CUnit* u, u32 id, u32 val)
+	void set_generic_rust_value(Unit* u, u32 id, u32 val)
 	{
 		scbw::sendGPTP_aise_cmd(u, nullptr, GptpId::SetGenericValue, id, val, 0);
 	}
@@ -839,7 +839,7 @@ namespace scbw
 	}
 
 	const u32 Func_CanTargetSpell = 0x00492020;
-	u32 get_aise_value(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2)
+	u32 get_aise_value(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2)
 	{
 		u32 result = 0;
 		u32 v3 = 0;//pointer
@@ -932,7 +932,7 @@ namespace scbw
 			UpgradesBw->currentLevel[playerId][upgradeId - UpgradeId::PrismaticShield] = level;
 	}
 	const u32 Func_getLastQueueSlotType = 0x0047B270;
-	u16 getLastQueueSlotType(CUnit* a1)
+	u16 getLastQueueSlotType(Unit* a1)
 	{
 		static s32 result;
 		__asm {
@@ -944,7 +944,7 @@ namespace scbw
 		}
 		return (u16)result;
 	}
-	void setOffsetToParentSpecialOverlay(CImage* image)
+	void setOffsetToParentSpecialOverlay(Image* image)
 	{
 
 		const u32 Func_updateImagePositionOffset = 0x004D5A00;
@@ -957,7 +957,7 @@ namespace scbw
 		}
 	}
 
-	bool isStunned(CUnit* unit)
+	bool isStunned(Unit* unit)
 	{
 		if (unit->maelstromTimer || unit->stasisTimer || unit->lockdownTimer || unit->status & UnitStatus::DoodadStatesThing)
 		{
@@ -1010,7 +1010,7 @@ namespace scbw
 
 	//-------- Moving Units --------//
 
-	bool moveUnit(CUnit* unit, s16 x, s16 y)
+	bool moveUnit(Unit* unit, s16 x, s16 y)
 	{
 		Point16 targetPos = {x, y};
 		Point16 actualPos;
@@ -1108,7 +1108,7 @@ namespace scbw
 	;
 
 	const u32 Func_PrepareUnitMoveClearRefs = 0x00493CA0;
-	void prepareUnitMove(CUnit* unit, bool hideUnit)
+	void prepareUnitMove(Unit* unit, bool hideUnit)
 	{
 
 		assert(unit);
@@ -1128,7 +1128,7 @@ namespace scbw
 	}
 
 	const u32 Func_CheckUnitCollisionPos = 0x0049D3E0;
-	bool checkUnitCollisionPos(CUnit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea, bool hideErrorMsg, u32 someFlag)
+	bool checkUnitCollisionPos(Unit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea, bool hideErrorMsg, u32 someFlag)
 	{
 		assert(unit);
 		assert(inPos);
@@ -1157,7 +1157,7 @@ namespace scbw
 	}
 
 	const u32 Func_SetUnitPosition = 0x004EB9F0;
-	void setUnitPosition(CUnit* unit, u16 x, u16 y)
+	void setUnitPosition(Unit* unit, u16 x, u16 y)
 	{
 		assert(unit);
 
@@ -1173,7 +1173,7 @@ namespace scbw
 	}
 
 	const u32 Func_RefreshRevealUnitAfterMove = 0x00494160;
-	void refreshUnitAfterMove(CUnit* unit)
+	void refreshUnitAfterMove(Unit* unit)
 	{
 		assert(unit);
 
@@ -1189,13 +1189,13 @@ namespace scbw
 	//-------- Utility functions --------//
 
 	const u32 Func_CreateUnitAtPos = 0x004CD360; //AKA createUnitXY()
-	CUnit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y)
+	Unit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y)
 	{
 
 		if (unitType >= UNIT_TYPE_COUNT)
 			return nullptr;
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSHAD
@@ -1212,7 +1212,7 @@ namespace scbw
 	}
 
 	const u32 Func_Sub4A01F0 = 0x004A01F0;
-	void FinishUnit_Pre(CUnit* unit)
+	void FinishUnit_Pre(Unit* unit)
 	{
 		__asm {
 			PUSHAD
@@ -1223,7 +1223,7 @@ namespace scbw
 	}
 
 	const u32 Func_AI_TrainingUnit = 0x004A2830;
-	void InheritAI2(CUnit* result, CUnit* parent)
+	void InheritAI2(Unit* result, Unit* parent)
 	{
 		__asm {
 			PUSHAD
@@ -1234,12 +1234,12 @@ namespace scbw
 		}
 	}
 
-	CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* creator)
+	Unit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, Unit* creator)
 	{
 		if (*unitCount >= 1700) return nullptr; // prevent crashes, move to create unit later
 		Point16 pos = {x, y};
 		helper::fixTargetLocation(&pos, unitId);
-		CUnit* unit = helper::createUnit(unitId, pos.x, pos.y, playerId);
+		Unit* unit = helper::createUnit(unitId, pos.x, pos.y, playerId);
 		if (unit == nullptr)
 		{
 			displayLastNetErrForPlayer(playerId);
@@ -1265,7 +1265,7 @@ namespace scbw
 			POPAD
 		}
 	}
-	u32 getUnitOverlayAdjustment(CUnit* const unit)
+	u32 getUnitOverlayAdjustment(Unit* const unit)
 	{
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
 			return 1;
@@ -1276,7 +1276,7 @@ namespace scbw
 	}
 
 	const u32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
-	void makeToHoldPosition(CUnit* unit)
+	void makeToHoldPosition(Unit* unit)
 	{
 
 		__asm {
@@ -1359,7 +1359,7 @@ namespace scbw
 	//Player check added based on how others functions test it
 	//Values above or equal to 8 means all players
 	//Equivalent to moveScreenToUnit @ 0x004E6020
-	void MoveScreenToUnit(CUnit* unit, u32 playerId)
+	void MoveScreenToUnit(Unit* unit, u32 playerId)
 	{
 
 		if (playerId >= 8 || playerId == *LOCAL_NATION_ID)
@@ -1410,7 +1410,7 @@ namespace scbw
 	}
 
 	const u32 Func_hasOverlay = 0x0047B720;
-	u8 hasOverlay(CUnit* unit)
+	u8 hasOverlay(Unit* unit)
 	{
 		static u8 result;
 		__asm {
@@ -1424,7 +1424,7 @@ namespace scbw
 	}
 
 	const u32 Func_ApplyHallucinationStats = 0x004F6180;
-	void ApplyHallucinationStats(CUnit* unit)
+	void ApplyHallucinationStats(Unit* unit)
 	{
 		__asm {
 			PUSHAD
@@ -1434,11 +1434,11 @@ namespace scbw
 		}
 	}
 
-	void createUnitFromAbility(s32 unitId, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer, CUnit* creator)
+	void createUnitFromAbility(s32 unitId, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer, Unit* creator)
 	{
 		for (s32 i = 0; i < count; i++)
 		{
-			CUnit* unit = scbw::createUnitIngame(unitId, playerId, x, y, creator);
+			Unit* unit = scbw::createUnitIngame(unitId, playerId, x, y, creator);
 			if (unit == nullptr)
 			{
 				return;
@@ -1469,7 +1469,7 @@ namespace scbw
 						unit->getY() - range,
 						unit->getX() + range,
 						unit->getY() + range
-					).forEach([&](CUnit* target)
+					).forEach([&](Unit* target)
 					{
 						if (target->id != UnitId::ZergMatraleth)
 						{
@@ -1501,7 +1501,7 @@ namespace scbw
 		}
 	}
 
-	void rangeModifiedFire(u8 weaponId, CUnit* unit, s16 x, s16 y, u32 offset)
+	void rangeModifiedFire(u8 weaponId, Unit* unit, s16 x, s16 y, u32 offset)
 	{
 		auto target_unit = unit->orderTarget.unit;
 		auto target_pos = unit->orderTarget.pt;
@@ -1522,13 +1522,13 @@ namespace scbw
 		unit->orderTarget.pt = target_pos;
 	}
 
-	bool canSpawnBroodling(CUnit* target)
+	bool canSpawnBroodling(Unit* target)
 	{
 		if (units_dat::GroupFlags[target->id].isBuilding) return false;
 		return true;
 	}
 
-	s32 getBroodlingCountFromSupply(CUnit* target)
+	s32 getBroodlingCountFromSupply(Unit* target)
 	{
 		if (!canSpawnBroodling(target)) return 0;
 		bool ground = !(target->status & UnitStatus::InAir);
@@ -1538,7 +1538,7 @@ namespace scbw
 	}
 
 	const u32 Func_unitDeathSomething_0 = 0x004E6340;
-	void hideAndDisableUnit(CUnit* unit)
+	void hideAndDisableUnit(Unit* unit)
 	{
 		__asm {
 			PUSHAD
@@ -1563,7 +1563,7 @@ namespace scbw
 		return d;
 	}
 
-	u32 get_sized_overlay(CUnit* unit, u32 initial)
+	u32 get_sized_overlay(Unit* unit, u32 initial)
 	{
 		u32 overlayImageId;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
@@ -1576,7 +1576,7 @@ namespace scbw
 		return overlayImageId;
 	}
 
-	bool canUseCliffAdvantage(CUnit* unit, u8 weapon)
+	bool canUseCliffAdvantage(Unit* unit, u8 weapon)
 	{
 		return unit != nullptr
 			&& !(unit->status & UnitStatus::InAir)
@@ -1586,13 +1586,13 @@ namespace scbw
 			&& unit->id != UnitId::TerranHarakan;
 	}
 
-	s32 getCliffAdvantage(CUnit* unit, u8 weapon)
+	s32 getCliffAdvantage(Unit* unit, u8 weapon)
 	{
 		if (unit == nullptr)
 			return 0;
 		if (!canUseCliffAdvantage(unit, weapon))
 			return 0;
-		CUnit* targetUnit = unit->orderTarget.unit;
+		Unit* targetUnit = unit->orderTarget.unit;
 		if (targetUnit == nullptr)
 			return 0;
 		//if (targetUnit->status & UnitStatus::InAir)
@@ -1602,13 +1602,13 @@ namespace scbw
 		return (sourceHeight - targetHeight) / 2;
 	}
 
-	s32 getCreepAdvantage(CUnit* unit, u8 weapon)
+	s32 getCreepAdvantage(Unit* unit, u8 weapon)
 	{
 		if (unit == nullptr)
 			return 0;
 		if (!canUseCliffAdvantage(unit, weapon) || unit->getRace() != RaceId::Zerg)
 			return 0;
-		CUnit* targetUnit = unit->orderTarget.unit;
+		Unit* targetUnit = unit->orderTarget.unit;
 		if (targetUnit == nullptr)
 			return 0;
 		//if (targetUnit->status & UnitStatus::InAir)
@@ -1618,11 +1618,11 @@ namespace scbw
 		return (sourceCreep && !targetCreep) ? 1 : 0;
 	}
 
-	void applyEnsnare(CUnit* unit)
+	void applyEnsnare(Unit* unit)
 	{ // 004F45E0
 		s32 baseProperty; // eax
 		u8 overlayPadding; // al
-		CUnit* victim; // ecx
+		Unit* victim; // ecx
 
 		if (!(unit->ensnareTimer)
 			&& !(unit->status & UnitStatus::Burrowed))
@@ -1643,7 +1643,7 @@ namespace scbw
 		unit->updateSpeed();
 	}
 
-	bool isEnabled(CUnit* unit)
+	bool isEnabled(Unit* unit)
 	{
 		if (unit->lockdownTimer
 			|| unit->maelstromTimer
@@ -1655,7 +1655,7 @@ namespace scbw
 		return true;
 	}
 
-	s32 getUpgradeType(CUnit* unit)
+	s32 getUpgradeType(Unit* unit)
 	{
 		s32 race = unit->getRace();
 		f64 upgType;
@@ -1685,7 +1685,7 @@ namespace scbw
 		return overlayOffset;
 	}
 
-	s32 getFinalDamage(CUnit* unit, u16 weaponId)
+	s32 getFinalDamage(Unit* unit, u16 weaponId)
 	{
 		s32 upgType = getUpgradeType(unit);
 		s32 baseDamage = weapons_dat::DamageAmount[weaponId];
@@ -1699,7 +1699,7 @@ namespace scbw
 	}
 
 	// I may need to make this function more flexible later -- Pr0nogo
-	bool unitIsPacifist(CUnit* unit)
+	bool unitIsPacifist(Unit* unit)
 	{
 		return !((unit->hasWeapon())
 			|| unit->id == UnitId::ZergLakizilisk); // LAME
@@ -1721,7 +1721,7 @@ namespace scbw
 			|| orderId == OrderId::FireYamatoGun1;
 	}
 
-	bool canBeParasited(CUnit* unit)
+	bool canBeParasited(Unit* unit)
 	{
 		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Building)
 			&& !(unit->status & UnitStatus::Burrowed);
@@ -1729,7 +1729,7 @@ namespace scbw
 
 	//Creates the Plasma Shield flickering effect.
 	//Identical to function @ 0x004E6140
-	void createShieldOverlay(CUnit* unit, u32 attackDirection)
+	void createShieldOverlay(Unit* unit, u32 attackDirection)
 	{
 		//const LO_Header* shield_lo = shieldOverlays[unit->sprite->mainGraphic->id];
 		const LO_Header* shield_lo = reinterpret_cast<LO_Header*>(scbw::getImageData(ImagesDatEntries::OverlayShieldPtr, unit->sprite->mainGraphic->id));
@@ -1741,7 +1741,7 @@ namespace scbw
 	}
 
 	const u32 Func_49B440 = 0x0049B440;
-	void AnimDecloak(CUnit* unit, s32 sound)
+	void AnimDecloak(Unit* unit, s32 sound)
 	{
 		__asm {
 			PUSHAD
@@ -1752,7 +1752,7 @@ namespace scbw
 		}
 	}
 
-	void decloakProc(CUnit* unit)
+	void decloakProc(Unit* unit)
 	{
 		if (isDecloakable(unit))
 		{
@@ -1776,19 +1776,19 @@ namespace scbw
 		}
 	}
 
-	bool isDecloakable(CUnit* unit)
+	bool isDecloakable(Unit* unit)
 	{
 		return (units_dat::BaseProperty[unit->id] & UnitProperty::PermanentCloak || unit->status & UnitStatus::CloakingForFree)
 			&& !(unit->status & UnitStatus::Burrowed);
 	}
 
 	// Replacement for isUnitGhost
-	bool unitCanNuke(CUnit* unit)
+	bool unitCanNuke(Unit* unit)
 	{
 		return (unit->id == UnitId::TerranEidolon || unit->id == UnitId::TerranSeraph);
 	}
 
-	bool unitIsTrap(CUnit* unit)
+	bool unitIsTrap(Unit* unit)
 	{
 		return (unit->id == UnitId::TerranSpiderMine || unit->id == UnitId::TerranLobotomyMine);
 	}
@@ -1815,7 +1815,7 @@ namespace scbw
 		}
 	}
 
-	bool unitIsRangedAttacker(CUnit* unit)
+	bool unitIsRangedAttacker(Unit* unit)
 	{
 		u16 id = unit->id;
 		// Would be nice to somehow avoid ID hardcode
@@ -1866,9 +1866,9 @@ namespace scbw
 		return false;
 	}
 
-	void playWorkAnimation(CUnit* unit)
+	void playWorkAnimation(Unit* unit)
 	{
-		CImage* current_image = unit->sprite->images.head;
+		Image* current_image = unit->sprite->images.head;
 		unit->secondaryOrderState = 2;
 		while (current_image != nullptr)
 		{

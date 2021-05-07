@@ -87,7 +87,7 @@ void Globals::aise_save()
 		stream.write(reinterpret_cast<char*>(&alreadyHitCount), sizeof(alreadyHitCount));
 		for (s32 j = 0; j < alreadyHitCount; j++)
 		{
-			CUnit* hit = bull.already_hit[j];
+			Unit* hit = bull.already_hit[j];
 			stream.write(reinterpret_cast<char*>(&hit), sizeof(hit));
 		}
 	}
@@ -95,13 +95,13 @@ void Globals::aise_save()
 	u32 lurkerMapSize = lurkerSpineHits.size();
 	for (auto a : lurkerSpineHits)
 	{
-		CUnit* key = a.first;
+		Unit* key = a.first;
 		stream.write(reinterpret_cast<char*>(&key), sizeof(key));
 		u32 valueCount = a.second.size();
 		stream.write(reinterpret_cast<char*>(&valueCount), sizeof(valueCount));
 		for (s32 b = 0; b < valueCount; b++)
 		{
-			CUnit* value = a.second[b];
+			Unit* value = a.second[b];
 			stream.write(reinterpret_cast<char*>(&value), sizeof(value));
 		}
 	}
@@ -204,7 +204,7 @@ void Globals::aise_load(const char* ptr, u32 len)
 		u32 alreadyHitCount = 0;
 		stream.read(reinterpret_cast<char*>(&alreadyHitCount), sizeof(alreadyHitCount));
 		for (s32 j = 0; j < alreadyHitCount; j++) {
-			CUnit* hit;
+			Unit* hit;
 			stream.read(reinterpret_cast<char*>(&hit), sizeof(hit));
 			bull.already_hit.push_back(hit);
 		}
@@ -213,12 +213,12 @@ void Globals::aise_load(const char* ptr, u32 len)
 	u32 lurkerMapSize = 0;
 	stream.read(reinterpret_cast<char*>(&lurkerMapSize), sizeof(lurkerMapSize));
 	for (s32 i = 0; i < lurkerMapSize; i++) {
-		CUnit* key = nullptr;
+		Unit* key = nullptr;
 		stream.read(reinterpret_cast<char*>(&key), sizeof(key));
 		u32 valueCount = 0;
 		stream.read(reinterpret_cast<char*>(&valueCount), sizeof(valueCount));
 		for (s32 j = 0; j < valueCount; j++) {
-			CUnit* value = nullptr;
+			Unit* value = nullptr;
 			stream.read(reinterpret_cast<char*>(&value), sizeof(value));
 			lurkerSpineHits[key].push_back(value);
 		}
@@ -246,7 +246,7 @@ void Globals::reset()
 	}
 }
 
-void Globals::unitDeathHook(CUnit* unit)
+void Globals::unitDeathHook(Unit* unit)
 {
 	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j)
 	{ // set dead unit pointers to nullptr and erase them from unit vectors
@@ -263,7 +263,7 @@ void Globals::unitDeathHook(CUnit* unit)
 		for (u32 i = 0; i < UnitVectorCount; ++i)
 		{
 			auto& vec = ext->unitVectors[i];
-			vec.erase(std::remove_if(vec.begin(), vec.end(), [&](CUnit* vecUnit)
+			vec.erase(std::remove_if(vec.begin(), vec.end(), [&](Unit* vecUnit)
 			{
 				return vecUnit == unit;
 			}), vec.end());
@@ -293,7 +293,7 @@ void Globals::unitDeathHook(CUnit* unit)
 	}
 }
 
-void ApplyIrradiate(CUnit* unit, u8 player, u32 time)
+void ApplyIrradiate(Unit* unit, u8 player, u32 time)
 {
 	if (time == 0)
 	{
@@ -303,7 +303,7 @@ void ApplyIrradiate(CUnit* unit, u8 player, u32 time)
 	if (unit->irradiateTimer == 0 && !(unit->status & UnitStatus::Burrowed))
 	{
 		u32 irradiateImageId = ImageId::IrradiateNew_Small + scbw::getOverlayOffset(unit->id);
-		CUnit* unitWithOverlay;
+		Unit* unitWithOverlay;
 		if (unit->subunit != nullptr)
 		{
 			unitWithOverlay = unit->subunit;
@@ -334,7 +334,7 @@ void Globals::createGenericPersistImpact(u8 impactId, u32 time, Point32 position
 
 	if (impact.spriteId >= 0)
 	{
-		CThingy* thingy = scbw::createAndInitThingy(impact.spriteId, impact.position.x, impact.position.y);
+		Thingy* thingy = scbw::createAndInitThingy(impact.spriteId, impact.position.x, impact.position.y);
 		if (thingy == nullptr)
 		{
 			return;
@@ -418,7 +418,7 @@ void Globals::frameHook()
 						persistImpacts[i].position.y - persistImpacts[i].radius,
 						persistImpacts[i].position.x + persistImpacts[i].radius,
 						persistImpacts[i].position.y + persistImpacts[i].radius
-					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit)
+					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](Unit* unit)
 					{
 						unit->damageWithIgnoreFlatArmor(WeaponId::SalamanderIncendiaryPayload, weapons_dat::DamageAmount[WeaponId::SalamanderIncendiaryPayload] * damageMultiplier);
 					});
@@ -431,7 +431,7 @@ void Globals::frameHook()
 						persistImpacts[i].position.y - persistImpacts[i].radius,
 						persistImpacts[i].position.x + persistImpacts[i].radius,
 						persistImpacts[i].position.y + persistImpacts[i].radius
-					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit)
+					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](Unit* unit)
 					{
 						unit->damageWithIgnoreFlatArmor(WeaponId::StarSovereignGriefOfAllGods, weapons_dat::DamageAmount[WeaponId::StarSovereignGriefOfAllGods] * damageMultiplier);
 					});
@@ -444,7 +444,7 @@ void Globals::frameHook()
 						persistImpacts[i].position.y - persistImpacts[i].radius,
 						persistImpacts[i].position.x + persistImpacts[i].radius,
 						persistImpacts[i].position.y + persistImpacts[i].radius
-					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit)
+					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](Unit* unit)
 					{
 						unit->damageWithIgnoreFlatArmor(WeaponId::AspirantCriticality, weapons_dat::DamageAmount[WeaponId::AspirantCriticality] * damageMultiplier);
 					});
@@ -457,7 +457,7 @@ void Globals::frameHook()
 						persistImpacts[i].position.y - persistImpacts[i].radius,
 						persistImpacts[i].position.x + persistImpacts[i].radius,
 						persistImpacts[i].position.y + persistImpacts[i].radius
-					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit)
+					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](Unit* unit)
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
 						unit->damageWithIgnoreFlatArmor(WeaponId::KeskathalorCausticDischarge, weapons_dat::DamageAmount[WeaponId::KeskathalorCausticDischarge] * damageMultiplier);
@@ -472,7 +472,7 @@ void Globals::frameHook()
 						persistImpacts[i].position.y - persistImpacts[i].radius,
 						persistImpacts[i].position.x + persistImpacts[i].radius,
 						persistImpacts[i].position.y + persistImpacts[i].radius
-					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](CUnit* unit)
+					).forEachInMatch(unitRangeCount(nullptr, CFlags::NoAir, {}), [&](Unit* unit)
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
 						unit->damageWithIgnoreFlatArmor(WeaponId::IonField, weapons_dat::DamageAmount[WeaponId::IonField] * damageMultiplier);
@@ -487,7 +487,7 @@ void Globals::frameHook()
 						persistImpacts[i].position.y - persistImpacts[i].radius,
 						persistImpacts[i].position.x + persistImpacts[i].radius,
 						persistImpacts[i].position.y + persistImpacts[i].radius
-					).forEachInMatch(unitRangeCount(nullptr, CFlags::Enemy, {}), [&](CUnit* unit)
+					).forEachInMatch(unitRangeCount(nullptr, CFlags::Enemy, {}), [&](Unit* unit)
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
 						if (unitExt->timers[TimerHallucinating] < persistImpacts[i].currentTime)
@@ -515,7 +515,7 @@ void Globals::frameHook()
 						persistImpacts[i].position.y - persistImpacts[i].radius,
 						persistImpacts[i].position.x + persistImpacts[i].radius,
 						persistImpacts[i].position.y + persistImpacts[i].radius
-					).forEachInMatch(unitRangeCount(nullptr, 0, {}), [&](CUnit* unit)
+					).forEachInMatch(unitRangeCount(nullptr, 0, {}), [&](Unit* unit)
 					{
 						ApplyIrradiate(unit, persistImpacts[i].player, 15);
 					});
@@ -562,7 +562,7 @@ void Globals::frameHook()
 	}
 }
 
-void Globals::remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly)
+void Globals::remove_unit_from_pariah_table(Unit* unit, bool sourceOnly)
 {
 	for (s32 i = 0; i < pariahHits.size(); i++)
 	{
@@ -574,7 +574,7 @@ void Globals::remove_unit_from_pariah_table(CUnit* unit, bool sourceOnly)
 	}
 }
 
-void Globals::remove_multihit_bullet(CBullet* bullet)
+void Globals::remove_multihit_bullet(Bullet* bullet)
 {
 	for (s32 i = 0; i < multihitBullets.size(); i++)
 	{
@@ -589,7 +589,7 @@ void Globals::remove_multihit_bullet(CBullet* bullet)
 	}
 }
 
-void Globals::force_remove_multihit_bullet(CBullet* bullet)
+void Globals::force_remove_multihit_bullet(Bullet* bullet)
 {
 	for (s32 i = 0; i < multihitBullets.size(); i++)
 	{
@@ -601,7 +601,7 @@ void Globals::force_remove_multihit_bullet(CBullet* bullet)
 	}
 }
 
-bool Globals::was_hit_by_pariah(CUnit* source, CUnit* target)
+bool Globals::was_hit_by_pariah(Unit* source, Unit* target)
 {
 	for (auto a : pariahHits)
 	{
@@ -613,7 +613,7 @@ bool Globals::was_hit_by_pariah(CUnit* source, CUnit* target)
 	return false;
 }
 
-void Globals::register_pariah_hit(CUnit* source, CUnit* target)
+void Globals::register_pariah_hit(Unit* source, Unit* target)
 {
 	PariahHit hit;
 	hit.source = source;
@@ -621,7 +621,7 @@ void Globals::register_pariah_hit(CUnit* source, CUnit* target)
 	pariahHits.push_back(hit);
 }
 
-void Globals::clear_ptr_in_apostle_table(CUnit* ptr)
+void Globals::clear_ptr_in_apostle_table(Unit* ptr)
 {
 	for (auto& a : apostleAgents)
 	{
@@ -632,7 +632,7 @@ void Globals::clear_ptr_in_apostle_table(CUnit* ptr)
 	}
 }
 
-bool Globals::was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target)
+bool Globals::was_already_hit_by_multihit_bullet(Bullet* bullet, Unit* target)
 {
 	for (auto& a : multihitBullets)
 	{
@@ -650,7 +650,7 @@ bool Globals::was_already_hit_by_multihit_bullet(CBullet* bullet, CUnit* target)
 	return false;
 }
 
-bool Globals::multihit_bullet_is_set(CBullet* bullet)
+bool Globals::multihit_bullet_is_set(Bullet* bullet)
 {
 	for (auto& a : multihitBullets)
 	{
@@ -662,7 +662,7 @@ bool Globals::multihit_bullet_is_set(CBullet* bullet)
 	return false;
 }
 
-void Globals::add_bullet_multihit(CBullet* bullet, CUnit* target)
+void Globals::add_bullet_multihit(Bullet* bullet, Unit* target)
 {
 	for (auto& a : multihitBullets)
 	{
@@ -676,7 +676,7 @@ void Globals::add_bullet_multihit(CBullet* bullet, CUnit* target)
 	multihitBullets.push_back(gb);
 }
 
-void Globals::add_incremental_bullet_multihit(CBullet* bullet, CUnit* target)
+void Globals::add_incremental_bullet_multihit(Bullet* bullet, Unit* target)
 {
 	for (auto& a : multihitBullets)
 	{
@@ -690,7 +690,7 @@ void Globals::add_incremental_bullet_multihit(CBullet* bullet, CUnit* target)
 	multihitBullets.push_back(gb);
 }
 
-s32 Globals::get_divider(CBullet* bullet)
+s32 Globals::get_divider(Bullet* bullet)
 {
 	for (auto& a : multihitBullets)
 	{
@@ -702,7 +702,7 @@ s32 Globals::get_divider(CBullet* bullet)
 	return 1;
 }
 
-u32 Globals::get_multihit_count(CBullet* bullet)
+u32 Globals::get_multihit_count(Bullet* bullet)
 {
 	for (auto& a : multihitBullets)
 	{
@@ -714,7 +714,7 @@ u32 Globals::get_multihit_count(CBullet* bullet)
 	return 0;
 }
 
-void Globals::add_multihit_empty_bullet(CBullet* bullet, s32 divider)
+void Globals::add_multihit_empty_bullet(Bullet* bullet, s32 divider)
 {
 	for (auto& a : multihitBullets)
 	{
@@ -729,7 +729,7 @@ void Globals::add_multihit_empty_bullet(CBullet* bullet, s32 divider)
 	multihitBullets.push_back(gb);
 }
 
-void Globals::initLazarusAgent(s32 x, s32 y, u8 player, u32 unitId, u32 energy, u32 stacks, CUnit* unit)
+void Globals::initLazarusAgent(s32 x, s32 y, u8 player, u32 unitId, u32 energy, u32 stacks, Unit* unit)
 {
 	ApostleAgent a;
 	a.playerId = player;
@@ -743,17 +743,17 @@ void Globals::initLazarusAgent(s32 x, s32 y, u8 player, u32 unitId, u32 energy, 
 	apostleAgents.push_back(a);
 }
 
-void Globals::clear_lakizilisk(CUnit* lurker)
+void Globals::clear_lakizilisk(Unit* lurker)
 {
 	lurkerSpineHits[lurker].clear();
 }
 
-void Globals::add_lurker_spine_pair(CUnit* lurker, CUnit* target)
+void Globals::add_lurker_spine_pair(Unit* lurker, Unit* target)
 {
 	lurkerSpineHits[lurker].push_back(target);
 }
 
-bool Globals::spine_pair_exists(CUnit* lurker, CUnit* target)
+bool Globals::spine_pair_exists(Unit* lurker, Unit* target)
 {
 	for (auto a : lurkerSpineHits)
 	{
@@ -811,7 +811,7 @@ void injectGlobalsHooks()
 
 namespace scbw
 {
-	void refreshDebuffs(CUnit* unit)
+	void refreshDebuffs(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -896,7 +896,7 @@ namespace scbw
 		scbw::refreshConsole();
 	}
 
-	void inheritDebuffs(CUnit* parent, CUnit* child)
+	void inheritDebuffs(Unit* parent, Unit* child)
 	{
 		UnitExt* parentExt = globals.GetUnitExt(parent);
 		UnitExt* childExt = globals.GetUnitExt(child);
@@ -1023,7 +1023,7 @@ namespace scbw
 		if (parentExt->values[ValueDeconstruction])
 		{
 			childExt->values[ValueDeconstruction] = parentExt->values[ValueDeconstruction];
-			CSprite* sprite = child->sprite;
+			Sprite* sprite = child->sprite;
 			if (child->subunit != nullptr)
 			{
 				UnitExt* subunitExt = globals.GetUnitExt(child->subunit);
@@ -1105,7 +1105,7 @@ namespace scbw
 		scbw::refreshConsole();
 	}
 
-	bool isDebuffed(CUnit* unit)
+	bool isDebuffed(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 		return unitExt->timers[TimerMaledictionSlow]
@@ -1127,11 +1127,11 @@ namespace scbw
 		// TODO: cowardice, malice + also add them to status tooltip
 	}
 
-	void restoreFunc(CUnit* unit)
+	void restoreFunc(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
-		CUnit* overlayTargetUnit = unit;
+		Unit* overlayTargetUnit = unit;
 		if (unit->subunit != nullptr)
 		{
 			overlayTargetUnit = unit->subunit;
@@ -1256,7 +1256,7 @@ namespace scbw
 		scbw::refreshConsole();
 	}
 
-	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen)
+	void applyParasite(Unit* unit, u8 playerID, Unit* queen)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -1275,7 +1275,7 @@ namespace scbw
 		scbw::refreshConsole();
 	}
 
-	bool isSlowed(CUnit* unit)
+	bool isSlowed(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -1302,18 +1302,18 @@ namespace scbw
 		return false;
 	}
 
-	CUnit** getSourceQueens(CUnit* unit) // TODO: remove?
+	Unit** getSourceQueens(Unit* unit) // TODO: remove?
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
-		CUnit* queens[2] = {nullptr};
+		Unit* queens[2] = {nullptr};
 		if (unit == nullptr) return queens; // <- prevents crash from incubators, but does not fix the issue
 		queens[0] = unitExt->units[UnitBroodlingMother];
 		queens[1] = unitExt->units[UnitParasiteSource];
 		return queens;
 	}
 
-	void doDeconstructionDamage(CUnit* unit, u16 weaponId, bool playSound)
+	void doDeconstructionDamage(Unit* unit, u16 weaponId, bool playSound)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -1322,7 +1322,7 @@ namespace scbw
 		auto deconstructionTarget = unit;
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Subunit)
 		{
-			deconstructionTarget = (CUnit*)unitExt->values[ValueTurretParentLink]; // TODO: port as unit
+			deconstructionTarget = (Unit*)unitExt->values[ValueTurretParentLink]; // TODO: port as unit
 			if (deconstructionTarget == nullptr)
 			{
 				return;
@@ -1335,7 +1335,7 @@ namespace scbw
 		}
 	}
 
-	CBullet* setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset)
+	Bullet* setMissileSourcePos(Unit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset)
 	{
 		if (unit->sprite == nullptr || unit->orderTarget.unit == nullptr)
 		{
@@ -1364,7 +1364,7 @@ namespace scbw
 	}
 
 	const u32 Func_RemoveOverlays2 = 0x00492370;
-	void removeoverlays2(u32 from, u32 to, CUnit* unit)
+	void removeoverlays2(u32 from, u32 to, Unit* unit)
 	{
 		__asm {
 			PUSHAD
@@ -1376,12 +1376,12 @@ namespace scbw
 		}
 	}
 
-	void clearClarionLinks(CUnit* unit)
+	void clearClarionLinks(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		auto& vec = unitExt->unitVectors[UnitVectorPhaseLink];
-		for (CUnit* vecUnit : vec)
+		for (Unit* vecUnit : vec)
 		{
 			auto& clarionVec = unitExt->unitVectors[UnitVectorPhaseLinkClarions];
 			auto it = std::find(clarionVec.begin(), clarionVec.end(), unit);
@@ -1393,7 +1393,7 @@ namespace scbw
 		vec.clear();
 	}
 
-	void placeClarionLinks(CUnit* unit)
+	void placeClarionLinks(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -1407,7 +1407,7 @@ namespace scbw
 			unit->getY() - radius,
 			unit->getX() + radius,
 			unit->getY() + radius
-		).filter([&](CUnit* target)
+		).filter([&](Unit* target)
 		{
 			if (!scbw::isAlliedTo(unit->playerId, target->playerId))
 			{
@@ -1430,7 +1430,7 @@ namespace scbw
 				return false;
 			}
 			return true;
-		}).forEach([&](CUnit* target)
+		}).forEach([&](Unit* target)
 		{
 			link.push_back(target);
 			target->sprite->createOverlay(ImageId::PhaseLinkSmall + scbw::getOverlayOffset(target->id), 0, 0, 0);
@@ -1439,13 +1439,13 @@ namespace scbw
 		});
 	}
 
-	bool hasClarionLinks(CUnit* unit)
+	bool hasClarionLinks(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 		return unitExt->unitVectors[UnitVectorPhaseLinkClarions].size();
 	}
 
-	void phaseLinkDamage(CUnit* unit, s32 damage, hooks::WeaponDamageData& data)
+	void phaseLinkDamage(Unit* unit, s32 damage, hooks::WeaponDamageData& data)
 	{
 		hooks::WeaponDamageData newData = {
 			damage,
@@ -1466,7 +1466,7 @@ namespace scbw
 
 	void spreadClarionDamage(hooks::WeaponDamageData& data)
 	{
-		CUnit* unit = data.target;
+		Unit* unit = data.target;
 		auto links = getClarionLinks(unit); // has to be copy
 		s32 damage = data.finalDamage;
 		if (links.size() == 0 || unit->shields < 256)
@@ -1475,13 +1475,13 @@ namespace scbw
 		}
 		else
 		{
-			links.erase(std::remove_if(links.begin(), links.end(), [](CUnit* linkUnit)
+			links.erase(std::remove_if(links.begin(), links.end(), [](Unit* linkUnit)
 			{
 				return linkUnit->shields < 256;
 			}), links.end());
 			s32 divided = damage / links.size();
 			links.erase(std::find(links.begin(), links.end(), unit));
-			for (CUnit* linkUnit : links)
+			for (Unit* linkUnit : links)
 			{
 				s32 unitDamage = std::min(divided, linkUnit->shields);
 				damage -= unitDamage;
@@ -1491,18 +1491,18 @@ namespace scbw
 		}
 	}
 
-	std::vector<CUnit*> getClarionLinks(CUnit* unit)
+	std::vector<Unit*> getClarionLinks(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
-		std::unordered_set<CUnit*> links = {};
+		std::unordered_set<Unit*> links = {};
 		if (unit->id == UnitId::ProtossClarion)
 		{
 			auto link = unitExt->unitVectors[UnitVectorPhaseLink];
 			links.insert(link.begin(), link.end());
 		}
 		auto& clarions = unitExt->unitVectors[UnitVectorPhaseLinkClarions];
-		for (CUnit* clarion : clarions)
+		for (Unit* clarion : clarions)
 		{
 			if (!clarion)
 			{
@@ -1512,6 +1512,6 @@ namespace scbw
 			auto link = clarionExt->unitVectors[UnitVectorPhaseLink];
 			links.insert(link.begin(), link.end());
 		}
-		return std::vector<CUnit*>(links.begin(), links.end());
+		return std::vector<Unit*>(links.begin(), links.end());
 	}
 }

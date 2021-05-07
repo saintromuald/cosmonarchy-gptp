@@ -10,12 +10,12 @@
 
 namespace hooks
 {
-	void orders_ZergBirth(CUnit* unit)
+	void orders_ZergBirth(Unit* unit)
 	{
 		if (unit->orderSignal & 4)
 		{
 			bool bTwinEggOrCocoon = true;
-			CUnit* unit2;
+			Unit* unit2;
 			Point16 pos;
 
 			unit->orderSignal -= 4;
@@ -85,7 +85,7 @@ namespace hooks
 		}
 	}
 
-	void orders_Morph1(CUnit* unit)
+	void orders_Morph1(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -169,7 +169,7 @@ namespace hooks
 							unit->sprite->flags &= ~CSprite_Flags::IscriptCode;
 							if (unit->sprite->images.head != nullptr)
 							{
-								CImage* current_image = unit->sprite->images.head;
+								Image* current_image = unit->sprite->images.head;
 								do
 								{
 									current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
@@ -257,7 +257,7 @@ namespace hooks
 				unit->buildQueue[unit->buildQueueSlot] = UnitId::None;
 				if (units_dat::ConstructionGraphic[unit->id] != 0)
 				{
-					CImage* current_image;
+					Image* current_image;
 					helper::initBuilding(unit, 1);
 					current_image = unit->sprite->images.head;
 					while (current_image != nullptr)
@@ -283,7 +283,7 @@ namespace hooks
 	}
 
 	// Check if @p unit can morph into @p morphUnitId.
-	bool unitCanMorphHook(CUnit* unit, u16 morphUnitId)
+	bool unitCanMorphHook(Unit* unit, u16 morphUnitId)
 	{
 		// Default StarCraft behavior
 		if (unit->id == UnitId::ZergZergling)
@@ -404,7 +404,7 @@ namespace hooks
 	}
 
 	/*
-	u32 remove_worker_or_building_ai(CUnit* unit, u8 assert_is_building) {
+	u32 remove_worker_or_building_ai(Unit* unit, u8 assert_is_building) {
 			BuildingAi* ai;
 			AiTown* town;
 			removeAITownGasReferences(unit);
@@ -453,7 +453,7 @@ namespace hooks
 
 		// Return the ID of the egg unit to use when morphing @p unitId.
 		// If the unit cannot morph, return UnitId::None.
-	u16 getUnitMorphEggTypeHook(u16 unitId, CUnit* unit, u16 resultId)
+	u16 getUnitMorphEggTypeHook(u16 unitId, Unit* unit, u16 resultId)
 	{
 		// Default StarCraft behavior
 		if (units_dat::BaseProperty[unitId] & UnitProperty::Flyer)
@@ -469,7 +469,7 @@ namespace hooks
 
 	// Determine the type (unit ID) of the unit to revert to when cancelling an
 	// @p eggUnit while it is morphing.
-	u16 getCancelMorphRevertTypeHook(CUnit* eggUnit)
+	u16 getCancelMorphRevertTypeHook(Unit* eggUnit)
 	{
 		auto source = eggUnit->eggOrigin;
 		if (eggUnit->getRace() == RaceId::Zerg
@@ -486,7 +486,7 @@ namespace hooks
 
 	// Determines the vertical (Y) offset by which the @p unit will be shifted to
 	// when it finishes morphing.
-	s16 getUnitVerticalOffsetOnBirth(CUnit* unit)
+	s16 getUnitVerticalOffsetOnBirth(Unit* unit)
 	{
 		// No offset, birth offset is handled elsewhere
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg)
@@ -532,7 +532,7 @@ namespace hooks
 		{
 			return true;
 		}
-		const RaceId::Enum raceId = CUnit::getRace(unitId);
+		const RaceId::Enum raceId = Unit::getRace(unitId);
 		assert(raceId <= 2);
 		const u32 supplyUsed = raceSupply[raceId].used[playerId];
 		// Must construct additional pylons
@@ -556,7 +556,7 @@ namespace hooks
 		return true;
 	}
 
-	CUnit* beginTrain(CUnit* unit, u16 unit_id, bool notify_error)
+	Unit* beginTrain(Unit* unit, u16 unit_id, bool notify_error)
 	{
 		if (unit->status & UnitStatus::GroundedBuilding
 			|| unit->id == UnitId::ProtossSolarion
@@ -565,7 +565,7 @@ namespace hooks
 		{
 			if (helper::hasSuppliesForUnit(unit_id, unit->playerId, notify_error))
 			{
-				CUnit* result = helper::createUnit(unit_id, unit->getX(), unit->getY(), unit->playerId);
+				Unit* result = helper::createUnit(unit_id, unit->getX(), unit->getY(), unit->playerId);
 				if (result)
 				{
 					return result;

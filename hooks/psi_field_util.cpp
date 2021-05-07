@@ -20,15 +20,15 @@ bool isValidPsiProviderType(u16 unitId)
 	if (unitId >= UNIT_TYPE_COUNT)
 		return false;
 
-	//Uses memory space of CUnit::building for other purposes
+	//Uses memory space of Unit::building for other purposes
 	if (units_dat::BaseProperty[unitId] & (UnitProperty::Worker | UnitProperty::ResourceContainer | UnitProperty::NPCOrAccessories))
 		return false;
 
-	//CUnit::rally shares memory space with CUnit::psi_link
+	//Unit::rally shares memory space with Unit::psi_link
 	if (units_dat::GroupFlags[unitId].isFactory)
 		return false;
 
-	//Uses memory space of CUnit::building for other purposes
+	//Uses memory space of Unit::building for other purposes
 	if (unitId == UnitId::ghost ||
 		unitId == UnitId::sarah_kerrigan ||
 		unitId == UnitId::Hero_AlexeiStukov ||
@@ -49,7 +49,7 @@ bool isValidPsiProviderType(u16 unitId)
 //Adds @p unit to the psi provider list and creates the psi field sprite.
 //Based on orders_InitPsiProvider() @ 00493F70
 //But this does not affect the unit's current order.
-void addPsiField(CUnit* unit)
+void addPsiField(Unit* unit)
 {
 	if (!unit) return;
 
@@ -69,7 +69,7 @@ void addPsiField(CUnit* unit)
 //-------- Remove psi field --------//
 
 //Identical to function @ 0x00493100
-void removeFromPsiProviderList(CUnit* psiProvider)
+void removeFromPsiProviderList(Unit* psiProvider)
 {
 	if (psiProvider->psi_link.prev)
 		psiProvider->psi_link.prev->psi_link.next = psiProvider->psi_link.next;
@@ -84,7 +84,7 @@ void removeFromPsiProviderList(CUnit* psiProvider)
 }
 
 //Removes @p unit from the psi provider list and destroys the psi field sprite.
-void removePsiField(CUnit* unit)
+void removePsiField(Unit* unit)
 {
 	if (unit->building.pylonAura)
 	{
@@ -98,14 +98,14 @@ void removePsiField(CUnit* unit)
 //-------- Update psi field position --------//
 
 // Synchronizes the unit's psi field sprite position with the unit.
-void updatePsiFieldPosition(CUnit* unit)
+void updatePsiFieldPosition(Unit* unit)
 {
 	if (!unit || !unit->sprite || !unit->building.pylonAura) return;
 
-	CSprite* psiField = unit->building.pylonAura;
+	Sprite* psiField = unit->building.pylonAura;
 	if (unit->sprite->position != psiField->position)
 	{
-		//for (CImage *i = psiField->imageHead; i; i = i->link.next)
+		//for (Image *i = psiField->imageHead; i; i = i->link.next)
 		//  i->flags |= 1;  //Redraw image
 
 		psiField->setPosition(unit->getX(), unit->getY());
@@ -125,7 +125,7 @@ namespace hooks
 	void updatePsiFieldProviders()
 	{
 
-		for (CUnit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
+		for (Unit* unit = *firstVisibleUnit; unit; unit = unit->link.next)
 		{
 
 			if (hooks::canMakePsiField(unit->id))
@@ -153,7 +153,7 @@ namespace hooks
 		if (!(*IS_PLACING_BUILDING))
 		{
 
-			CUnit* selUnit;
+			Unit* selUnit;
 
 			for (s32 i = 0; i < SELECTION_ARRAY_LENGTH; i++)
 			{

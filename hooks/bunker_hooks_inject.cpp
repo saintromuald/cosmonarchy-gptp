@@ -8,7 +8,7 @@ namespace
 	void __declspec(naked) unitCanAttackInsideBunkerWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EAX
@@ -29,7 +29,7 @@ namespace
 	void __declspec(naked) createBunkerAttackThingyWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EAX

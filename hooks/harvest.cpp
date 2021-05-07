@@ -24,7 +24,7 @@ namespace hooks
 		return false;
 	}
 
-	u8 harvestResourceFrom(CUnit* resource, bool isMineral)
+	u8 harvestResourceFrom(Unit* resource, bool isMineral)
 	{
 
 		u8 return_value;
@@ -71,12 +71,12 @@ namespace hooks
 
 		return return_value;
 
-	} //u8 harvestResourceFrom(CUnit* resource, bool isMineral)
+	} //u8 harvestResourceFrom(Unit* resource, bool isMineral)
 
 	;
 
 	//Transfers a set amount of resources from a resource patch to a worker.
-	void transferResourceToWorkerHook(CUnit* worker, CUnit* resource)
+	void transferResourceToWorkerHook(Unit* worker, Unit* resource)
 	{
 
 		if (resource->id >= UnitId::TerranReservoir && resource->id <= UnitId::ResourceMineralFieldType3)
@@ -179,7 +179,7 @@ namespace hooks
 
 		}
 
-	} //void transferResourceToWorkerHook(CUnit* worker, CUnit* resource)
+	} //void transferResourceToWorkerHook(Unit* worker, Unit* resource)
 
 	;
 

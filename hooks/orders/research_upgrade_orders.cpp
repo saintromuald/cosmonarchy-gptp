@@ -4,11 +4,11 @@
 namespace hooks
 {
 
-	void orders_Upgrade(CUnit* unit)
+	void orders_Upgrade(Unit* unit)
 	{
 
 		bool bStopThere = false;
-		CImage* current_image;
+		Image* current_image;
 
 		if (unit->status & UnitStatus::GroundedBuilding &&
 			unit->building.upgradeType != UpgradeId::None
@@ -158,7 +158,7 @@ namespace hooks
 
 	;
 
-	void orders_ResearchTech(CUnit* unit)
+	void orders_ResearchTech(Unit* unit)
 	{
 
 		bool bStopThere = false;
@@ -205,7 +205,7 @@ namespace hooks
 		if (!bStopThere)
 		{
 
-			CImage* current_image;
+			Image* current_image;
 
 			current_image = unit->sprite->images.head;
 

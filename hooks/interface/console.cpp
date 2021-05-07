@@ -83,7 +83,7 @@ namespace hooks
 
 	void setTextStr(BinDlg* a1)
 	{ // 004263E0
-		CUnit* v1; // esi
+		Unit* v1; // esi
 		u16 v2; // edi
 		s32 v3; // eax
 		s32 v4; // ecx

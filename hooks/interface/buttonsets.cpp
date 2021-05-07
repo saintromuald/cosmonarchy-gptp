@@ -198,7 +198,7 @@ namespace hooks
 		u16 selectedButtonSetId;
 		u32 flagsHolder;
 		s32 unitIndexFromSelection = 0;
-		CUnit* unitFromSelection;
+		Unit* unitFromSelection;
 		activeButtonSetId = (*activePortraitUnit)->currentButtonSet;
 		do
 		{ //count units to know if will be using special group buttonset (peons, cloakables...)
@@ -1375,7 +1375,7 @@ namespace hooks
 									bool canCancel = false;
 									for (s32 i = 0; i < 12; i++)
 									{
-										CUnit* selU = clientSelectionGroup->unit[i];
+										Unit* selU = clientSelectionGroup->unit[i];
 										if (selU != nullptr && selU->id == UnitId::ProtossMindTyrant)
 										{
 											if (scbw::get_aise_value(selU, nullptr, AiseId::SumMindControlCost, 0, 0) > 0)

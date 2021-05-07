@@ -6,7 +6,7 @@
 namespace AI
 {
 
-	CUnit* findBestPlagueTarget(CUnit* caster, bool isUnderAttack)
+	Unit* findBestPlagueTarget(Unit* caster, bool isUnderAttack)
 	{
 
 		s32 bounds;
@@ -22,7 +22,7 @@ namespace AI
 			caster->getX() + bounds,
 			caster->getY() + bounds,
 			caster,
-			[&](CUnit* target)
+			[&](Unit* target)
 		{
 			if (!isTargetWorthHitting(target, caster))
 				return false;

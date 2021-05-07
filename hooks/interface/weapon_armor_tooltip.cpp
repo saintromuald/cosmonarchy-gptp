@@ -13,7 +13,7 @@ char buffer[256];
 
 // Returns the special damage multiplier factor for units that don't use the
 // "Damage Factor" property in weapons.dat.
-u8 getDamageFactorForTooltip(u8 weaponId, CUnit* unit)
+u8 getDamageFactorForTooltip(u8 weaponId, Unit* unit)
 {
 	if (weaponId == WeaponId::FlameThrower
 		|| weaponId == WeaponId::CohortGaussPistols
@@ -62,7 +62,7 @@ static std::string formatStringVector(std::vector<std::string> strings)
 	return result;
 }
 
-const char* getDamageTooltipString(u8 weaponId, CUnit* unit, u16 entryStrIndex)
+const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 {
 	const bool extended = GetKeyState(VK_SHIFT) & 0x8000 || config.always_show_extended_tooltips;
 
@@ -302,7 +302,7 @@ namespace hooks
 {
 
 	// Returns the C-string for the tooltip text of the unit's weapon icon.
-	const char* getWeaponTooltipString(u8 weaponId, CUnit* unit)
+	const char* getWeaponTooltipString(u8 weaponId, Unit* unit)
 	{
 		return getDamageTooltipString(weaponId, unit, weapons_dat::Label[weaponId]);
 	}
@@ -380,7 +380,7 @@ namespace hooks
 		}
 	}
 
-	const char* getArmorTooltipString(CUnit* unit)
+	const char* getArmorTooltipString(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -563,7 +563,7 @@ namespace hooks
 		addStatus(statuses, "Sieged", unit->id == UnitId::TerranPhalanxSiegeMode, 1);
 		if (scbw::isUnderDarkSwarm(unit))
 		{
-			CUnit* darkSwarm = scbw::getDarkSwarm(unit);
+			Unit* darkSwarm = scbw::getDarkSwarm(unit);
 			addStatus(statuses, "Under Dark Swarm", darkSwarm->hitPoints / 256, 1, darkSwarm->removeTimer, TimerType::RemoveTimer);
 		}
 
@@ -664,7 +664,7 @@ namespace hooks
 	}
 
 	// Returns the C-string for the tooltip text of the plasma shield icon.
-	const char* getShieldTooltipString(CUnit* unit)
+	const char* getShieldTooltipString(Unit* unit)
 	{
 		const u16 labelId = upgrades_dat::Label[UpgradeId::ProtossPlasmaShields];
 		const char* shieldUpgradeName = statTxtTblNew->getString(labelId);
@@ -684,7 +684,7 @@ namespace hooks
 	// Returns the C-string for the tooltip text of the Interceptor icon (Carriers),
 	// Scarab icon (Reavers), Nuclear Missile icon (Nuclear Silos), and Spider Mine
 	// icon (Vultures).
-	const char* getSpecialTooltipString(u16 iconUnitId, CUnit* unit)
+	const char* getSpecialTooltipString(u16 iconUnitId, Unit* unit)
 	{
 		if (iconUnitId == UnitId::ProtossSteward)
 		{

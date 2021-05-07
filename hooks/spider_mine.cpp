@@ -7,7 +7,7 @@
 namespace hooks
 {
 	// Return the best target for the mine. If there is no suitable target, return nullptr instead.
-	CUnit* findBestTerranMineTarget(CUnit* mine) // 00441270
+	Unit* findBestTerranMineTarget(Unit* mine) // 00441270
 	{
 		s32 range;
 		// Don't search for a target if the mine is under a Disruption Web
@@ -20,7 +20,7 @@ namespace hooks
 			scbw::UnitFinder::getNearestTarget(
 				mine->getX() - range, mine->getY() - range,
 				mine->getX() + range, mine->getY() + range,
-				mine, [&](CUnit* target)
+				mine, [&](Unit* target)
 		{
 			// Don't attack friendly or allied units
 			if (!mine->isTargetEnemy(target))
@@ -46,7 +46,7 @@ namespace hooks
 		});
 	}
 
-	void orders_TerranMine(CUnit* unit) // 00463DF0
+	void orders_TerranMine(Unit* unit) // 00463DF0
 	{
 		if (unit->mainOrderState == 0)
 		{
@@ -79,7 +79,7 @@ namespace hooks
 
 		if (unit->mainOrderState == 3)
 		{
-			CUnit* target = helper::SpiderMine_AcquireTarget(unit);
+			Unit* target = helper::SpiderMine_AcquireTarget(unit);
 
 			if (target != nullptr)
 			{
@@ -145,7 +145,7 @@ namespace hooks
 
 				if (bIsCompletelyInRange) // 00463F22
 				{
-					CImage* current_image;
+					Image* current_image;
 					unit->orderTarget.unit = nullptr;
 					unit->orderTarget.pt.x = unit->sprite->position.x;
 					unit->orderTarget.pt.y = unit->sprite->position.y;
@@ -175,22 +175,22 @@ namespace hooks
 		}
 	}
 
-	void orders_PlaceMine(CUnit* unit) // 00464FD0
+	void orders_PlaceMine(Unit* unit) // 00464FD0
 	{
-		CUnit* v1;
-		CUnit* v2;
+		Unit* v1;
+		Unit* v2;
 		s32 v3;
-		CSprite* v4;
+		Sprite* v4;
 		s32 v5;
 		s32 v6;
-		CUnit* v7;
+		Unit* v7;
 		s32 v8;
 		s32 v9;
 		s32 v10;
-		CSprite* v11;
+		Sprite* v11;
 		__int16 v12;
-		CUnit* v13;
-		CUnit* v14;
+		Unit* v13;
+		Unit* v14;
 		Point32 a2;
 		v1 = unit;
 		if (unit->mainOrderState)
@@ -283,20 +283,20 @@ namespace hooks
 	}
 
 	// Hooked to try to fix mine burrowing - Pr0nogo
-	char burrowGeneric(CUnit* unit)
+	char burrowGeneric(Unit* unit)
 	{ // 004E9A30
-		CUnit* unitVar = unit;
+		Unit* unitVar = unit;
 		helper::toggleUnitPath(unit);
 
-		CSprite* unitSprite = unitVar->sprite;
+		Sprite* unitSprite = unitVar->sprite;
 		char unitPathing = unitVar->pathingFlags;
 		unitVar->movementState = 0;
 		unitVar->pathingFlags = (unitPathing ^ (unitSprite->elevationLevel < 12u)) & 1 ^ unitPathing;
 		unitVar->status |= UnitStatus::CloakingForFree | UnitStatus::Burrowed;
 		unitSprite->flags |= 0x40u; // image is hidden
 
-		CSprite* oldSprite = unitVar->sprite;
-		CSprite* newSprite;
+		Sprite* oldSprite = unitVar->sprite;
+		Sprite* newSprite;
 		if (unitVar->id == UnitId::ZergLakizilisk)
 		{
 			// Warning, tism detected

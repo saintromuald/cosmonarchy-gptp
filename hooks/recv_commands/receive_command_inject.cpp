@@ -10,7 +10,7 @@ namespace
 
 		static s32 x;
 		static s32 y;
-		static CUnit* unitParam;
+		static Unit* unitParam;
 		static u32 wUnitType;
 		static u32 bActionOrder;
 		static u32 bCommandType;

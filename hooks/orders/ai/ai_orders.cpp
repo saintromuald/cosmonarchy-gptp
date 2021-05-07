@@ -7,7 +7,7 @@
 #include "logger.h"
 namespace hooks
 {
-	void AI_TrainingUnit(CUnit* result, CUnit* parent)
+	void AI_TrainingUnit(Unit* result, Unit* parent)
 	{ // 004A2830
 		bool isSuicideUnit = result->id == UnitId::ZergBroodling || result->id == UnitId::ZergBroodlisk || result->id == UnitId::ProtossSimulacrum;
 		if (result == nullptr) return;
@@ -93,13 +93,13 @@ namespace hooks
 		}
 	}*/
 
-	/*	void AI_AddMilitary(AiCaptain* region, CUnit* unit, s32 alwaysThisRegion) {		// 0043DA20
+	/*	void AI_AddMilitary(AiCaptain* region, Unit* unit, s32 alwaysThisRegion) {		// 0043DA20
 		// alwaysThisRegion acts as a bool, not sure why IDA thinks it's s32
 		// I assumed medicAI was UnitAI* but IDA tries to assign town values to it later
 		// Looking at the aise version of this hook didn't help as it's more akin to a rewrite: https://pastebin.com/raw/8xNTUCuv
 			AiCaptain* regionNew; // esi
 			UnitAi* medicAI; // eax
-			CUnit* medic; // edx
+			Unit* medic; // edx
 			UnitAi* nextAI; // ecx
 			bool previousBool; // zf
 			AiTown* AItown; // ecx
@@ -142,11 +142,11 @@ namespace hooks
 		}*/
 
 		// Hooked to rule out AI crashes - Pr0nogo
-	void AI_CreateNuke(CUnit* silo, CUnit* result)
+	void AI_CreateNuke(Unit* silo, Unit* result)
 	{								// 0045B7A0
 // originally had 3 args, but last one was unused
-		CUnit* nuke; // eax
-		CUnit* nuke2; // esi
+		Unit* nuke; // eax
+		Unit* nuke2; // esi
 
 		if (silo->id == UnitId::TerranNuclearSilo && !*(s32*)&silo->building.silo.isReady)
 		{
@@ -166,7 +166,7 @@ namespace hooks
 	}
 
 	// Hooked to add region null check - Pr0nogo
-	void AI_TrainingBroodling(CUnit* result, CUnit* parent)
+	void AI_TrainingBroodling(Unit* result, Unit* parent)
 	{						// 0043E280
 		AiCaptain* region; // esi
 		s16 regionType; // ax
@@ -206,9 +206,9 @@ namespace hooks
 	}
 
 	// Hooked to investigate crashes - Pr0nogo
-/*	void AI_TrainingNormal(CUnit* a1, CUnit* a2) {									// 00435DB0
+/*	void AI_TrainingNormal(Unit* a1, Unit* a2) {									// 00435DB0
 		s16 v2; // dx
-		CUnit* v3; // esi
+		Unit* v3; // esi
 		s16 regionId; // ax
 		UnitAi* v5; // ebx
 		UnitAi* v6; // eax
@@ -288,7 +288,7 @@ namespace hooks
 	}*/
 
 	// Hooked because iquare told me to - Pr0nogo
-	char AI_AddUnitAi(CUnit* unit, AiTown* town)
+	char AI_AddUnitAi(Unit* unit, AiTown* town)
 	{ // 00433DD0
 		UnitAi* unitAI;
 		WorkerAi* unitAIWorker;
@@ -485,11 +485,11 @@ namespace hooks
 	}
 
 	// Hooked to modify AI behavior such as cancelling structures, withdrawing hurt high-value targets, etc -- Pr0nogo
-	void AI_UnitWasHit(CUnit* self, CUnit* attacker, s32 mainTargetReactions, s32 dontCallHelp)
+	void AI_UnitWasHit(Unit* self, Unit* attacker, s32 mainTargetReactions, s32 dontCallHelp)
 	{ // 0043F320
 		BuildingAi* selfBuildingAi; // eax
 		s32 quartTotalHP; // edi
-		CUnit* target; // eax
+		Unit* target; // eax
 		s32 v11; // eax
 		UnitAi* v12; // esi
 		s32 v13; // eax
@@ -506,19 +506,19 @@ namespace hooks
 		s32 v24; // eax
 		s32 v25; // esi
 		s32 v26; // esi
-		CUnit* v27; // esi
+		Unit* v27; // esi
 		u16 v29; // ax
 		__int64 v33; // rax
-		CUnit* v34; // esi
+		Unit* v34; // esi
 		s32 v35; // eax
-		CUnit* v36; // esi
-		CUnit* v37; // eax
+		Unit* v36; // esi
+		Unit* v37; // eax
 		s32 v38; // eax
 		s32 v39; // [esp+Ch] [ebp-14h]
 		s32 v40; // [esp+Ch] [ebp-14h]
 		s32 v41; // [esp+14h] [ebp-Ch]
 		s32 v42; // [esp+14h] [ebp-Ch]
-		CUnit* realTarget; // [esp+1Ch] [ebp-4h]
+		Unit* realTarget; // [esp+1Ch] [ebp-4h]
 		s32 v44; // [esp+2Ch] [ebp+Ch]
 		MilitaryAi* militaryAi;
 
@@ -741,7 +741,7 @@ LABEL_126:
 																}
 																else
 																{
-																	//																	orderInterrupt(self, 6u, (Point32*)v33, (CUnit*)HIDWORD(v33)); // point32 was dwPosition, I think that's the same thing
+																	//																	orderInterrupt(self, 6u, (Point32*)v33, (Unit*)HIDWORD(v33)); // point32 was dwPosition, I think that's the same thing
 																}
 															}
 														}
@@ -765,18 +765,18 @@ LABEL_126:
 
 	// Hooked to change guard assignments for structures based on AI personality -- Pr0nogo
 	// TODO: Cleanup and make changes
-	void AI_IterateBuildingAI(CUnit* result, CUnit* parent)
+	void AI_IterateBuildingAI(Unit* result, Unit* parent)
 	{ // 00435770
 		UnitAi* parentAI; // eax
 		AiTown* parentTown; // esi
 		BuildingAi* removeBuilding; // eax
 		AiTown* removeBuildingTown; // edi
-		CUnit* workerUnit; // esi
-		CUnit* workerTarget; // ecx
+		Unit* workerUnit; // esi
+		Unit* workerTarget; // ecx
 		s32 queueCount; // eax
 		s32 queueCount2;
 		BuildingAi* j; // esi
-		CUnit* builderUnit; // ecx
+		Unit* builderUnit; // ecx
 		u32 i; // [esp+8h] [ebp-4h]
 		WorkerAi* worker;
 		BuildingAi* building;
@@ -924,7 +924,7 @@ LABEL_126:
 	void AI_GroupingForAttack(AiCaptain* region)
 	{ // 0043EEC0
 		AiCaptain* regionVar; // esi
-		CUnit* attackTarget; // eax
+		Unit* attackTarget; // eax
 		AiCaptain* targetRegion; // esi
 		u32 missingUnits; // eax
 		u32 attackUnit; // ecx
@@ -1000,7 +1000,7 @@ LABEL_14:
 		u16* v4; // ecx
 		u32 i; // edi
 		u32 v6; // eax
-		CUnit* v7; // esi
+		Unit* v7; // esi
 		s8 v8; // bl
 		u32 v9; // ecx
 		u32 v10; // edx // was unitIDs, not sure what it should be here
@@ -1010,7 +1010,7 @@ LABEL_14:
 		UnitAi* v14; // ecx
 		u32 v15; // esi
 		u32 v16; // ecx
-		CUnit* v18; // [esp+8h] [ebp-4h]
+		Unit* v18; // [esp+8h] [ebp-4h]
 		MilitaryAi* military;
 
 		v4 = AIScriptController[(u8)region->playerId].attackers;
@@ -1214,7 +1214,7 @@ LABEL_12:
 		u16* v2; // eax
 		u16 v3; // cx
 		u32 i; // edi
-		CUnit* v5; // edx
+		Unit* v5; // edx
 		u32 v6; // eax
 		u8 v7; // bl
 		u32 v8; // ecx
@@ -1295,7 +1295,7 @@ LABEL_22:
 	}
 
 	// Hooked to help with AI recloaking units after the cloak rewrite - Pr0nogo
-	void AI_orderUnitCloaking(CUnit* unit) // 0043B970
+	void AI_orderUnitCloaking(Unit* unit) // 0043B970
 	{
 		return;
 		/*

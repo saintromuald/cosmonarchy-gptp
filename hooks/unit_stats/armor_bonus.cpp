@@ -6,7 +6,7 @@ namespace hooks
 
 	/// Returns the bonus armor for this unit.
 	///Should be equivalent to getArmorCount @ 00453FC0  
-	u8 getArmorBonusHook(CUnit* unit)
+	u8 getArmorBonusHook(Unit* unit)
 	{
 
 		u8 armorUpg = 0;

@@ -7,7 +7,7 @@ namespace
 	void __declspec(naked) orders_NukeTrackWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP
@@ -32,7 +32,7 @@ namespace
 	void __declspec(naked) orders_NukeGroundWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP

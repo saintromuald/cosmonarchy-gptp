@@ -2,6 +2,6 @@
 #include "SCBW/scbwdata.h"
 #include "SCBW/api.h"
 
-u32 captivatingClawsGetStacks(CUnit* target);
-u32 captivatingClawsGetTimer(CUnit* target);
-void captivatingClawsApply(CUnit* source, CUnit* target);
+u32 captivatingClawsGetStacks(Unit* target);
+u32 captivatingClawsGetTimer(Unit* target);
+void captivatingClawsApply(Unit* source, Unit* target);

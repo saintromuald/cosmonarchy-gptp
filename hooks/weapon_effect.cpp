@@ -14,8 +14,8 @@ namespace
 	{
 		struct
 		{
-			CUnit* source;
-			CUnit* target;
+			Unit* source;
+			Unit* target;
 		} hits[32][16];
 	};
 	SpineHitTable* const spineHitTable = (SpineHitTable*)(0x0064DEC8);
@@ -26,9 +26,9 @@ namespace
 namespace hooks
 {
 
-	void darkSwarmDamage(u16 x, u16 y, u16 r, CBullet* bullet, u32 weaponId)
+	void darkSwarmDamage(u16 x, u16 y, u16 r, Bullet* bullet, u32 weaponId)
 	{
-		CUnit* dsw = scbw::getDarkSwarm(x, y, r);
+		Unit* dsw = scbw::getDarkSwarm(x, y, r);
 		if (dsw != nullptr)
 		{
 			u32 damage = (weapons_dat::DamageAmount[weaponId] * 256) +
@@ -49,7 +49,7 @@ namespace hooks
 		}
 	}
 
-	bool nathrokorCondition(CBullet* bullet, CUnit* target)
+	bool nathrokorCondition(Bullet* bullet, Unit* target)
 	{
 		if (bullet->sourceUnit == nullptr || target == nullptr)
 		{
@@ -57,7 +57,7 @@ namespace hooks
 		}
 		if (bullet->weaponType == WeaponId::NathrokorPlasmidBreath)
 		{
-			CUnit* nathrokor = bullet->sourceUnit;
+			Unit* nathrokor = bullet->sourceUnit;
 			u16 angle = scbw::getAngle(nathrokor->position.x, nathrokor->position.y,
 				target->position.x, target->position.y);
 			u16 unit_angle = nathrokor->velocityDirection1;
@@ -76,7 +76,7 @@ namespace hooks
 		return true;
 	}
 
-	void splash(CBullet* bullet, u32 weaponId, u8 splashType, CUnit* guaranteedHit)
+	void splash(Bullet* bullet, u32 weaponId, u8 splashType, Unit* guaranteedHit)
 	{
 		s32 splash = splashType;
 		if (bullet == nullptr)
@@ -143,7 +143,7 @@ namespace hooks
 		}
 		for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
 		{
-			CUnit* target = unitsInSplash.getUnit(i);
+			Unit* target = unitsInSplash.getUnit(i);
 			if (hasGuaranteedHitUnit && target == guaranteedHit)
 			{ // skips target check if hasGuaranteedHitUnit is unset, just for little bit of performance
 				continue; // guaranteed hit unit was already damaged before splash!
@@ -274,7 +274,7 @@ namespace hooks
 		}
 	}
 
-	void lurkerSplash(CBullet* bullet, u32 weaponId, u8 splash)
+	void lurkerSplash(Bullet* bullet, u32 weaponId, u8 splash)
 	{
 		s16 x, y, r;
 		x = bullet->sprite->position.x;
@@ -286,7 +286,7 @@ namespace hooks
 
 		for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
 		{
-			CUnit* target = unitsInSplash.getUnit(i);
+			Unit* target = unitsInSplash.getUnit(i);
 
 			// Units can't splash themselves
 			if (target == bullet->sourceUnit) continue;
@@ -303,7 +303,7 @@ namespace hooks
 				if (bullet->sourceUnit)
 				{
 					UnitExt* bulletSourceExt = globals.GetUnitExt(bullet->sourceUnit);
-					if ((CUnit*)bulletSourceExt->values[ValueLurkerPickTarget] == target)
+					if ((Unit*)bulletSourceExt->values[ValueLurkerPickTarget] == target)
 					{
 						lurkerOverride = true;
 					}
@@ -340,7 +340,7 @@ namespace hooks
 		}
 	}
 
-	bool isChargedGorgolethBullet(CBullet* bullet, u32 weaponId)
+	bool isChargedGorgolethBullet(Bullet* bullet, u32 weaponId)
 	{
 		if (weaponId == WeaponId::GorgrokorSerratedCleavers)
 		{
@@ -352,7 +352,7 @@ namespace hooks
 		return false;
 	}
 
-	bool isUnsafeCyprianBullet(CBullet* bullet, u32 weaponId)
+	bool isUnsafeCyprianBullet(Bullet* bullet, u32 weaponId)
 	{
 		if (weaponId == 26)
 		{
@@ -371,12 +371,12 @@ namespace hooks
 	}
 
 	// clone of 'Normal' damage for reference
-	void normalDamage(CBullet* bullet, u32 weaponId)
+	void normalDamage(Bullet* bullet, u32 weaponId)
 	{
 		// Create Lobotomy Mines
 		if (bullet->sourceUnit != nullptr && weaponId == WeaponId::Lockdown)
 		{
-			CUnit* mine = scbw::createUnitIngame(UnitId::TerranLobotomyMine, bullet->srcPlayer, bullet->position.x, bullet->position.y);
+			Unit* mine = scbw::createUnitIngame(UnitId::TerranLobotomyMine, bullet->srcPlayer, bullet->position.x, bullet->position.y);
 			if (mine != nullptr)
 			{
 				helper::turnUnit(mine, bullet->sourceUnit->currentDirection1);
@@ -389,7 +389,7 @@ namespace hooks
 			return;
 		}
 
-		CUnit* target = bullet->attackTarget.unit;
+		Unit* target = bullet->attackTarget.unit;
 		if (target == nullptr)
 		{
 			return;
@@ -470,15 +470,15 @@ namespace hooks
 	}
 
 	//  case WPNEffect_Splash_Air:
-	void airSplash(CBullet* bullet, u32 weaponId) // 0048B790
+	void airSplash(Bullet* bullet, u32 weaponId) // 0048B790
 	{
-		CUnit* target = bullet->attackTarget.unit;
+		Unit* target = bullet->attackTarget.unit;
 		if (target == nullptr)
 		{
 			return;
 		}
 		s16 radius = weapons_dat::OuterSplashRadius[weaponId];
-		CSprite* bulletSprite = bullet->sprite;
+		Sprite* bulletSprite = bullet->sprite;
 		s16 posX = bulletSprite->position.x;
 		s16 posY = bulletSprite->position.y;
 		s32 list;
@@ -505,7 +505,7 @@ namespace hooks
 			// airSplashProc
 			s8 weaponIdLoop;
 			s32 listCount;
-			CUnit* target = unitsInSplash.getUnit(i);
+			Unit* target = unitsInSplash.getUnit(i);
 
 			weaponIdLoop = bullet->weaponType;
 			if (target != bullet->sourceUnit && (target->playerId != bullet->srcPlayer || target == bullet->attackTarget.unit))
@@ -566,7 +566,7 @@ namespace hooks
 		splash(bullet, weaponId, SplashType::FriendlyNew);
 	}
 
-	void nuke(CBullet* bullet, u32 weaponId)
+	void nuke(Bullet* bullet, u32 weaponId)
 	{
 		Point32 pos = { bullet->position.x, bullet->position.y } ;
 
@@ -576,7 +576,7 @@ namespace hooks
 	}
 
 	// clone of 'Yamato' damage for reference
-	void yamatoDamage(CBullet* bullet, u32 weaponId)
+	void yamatoDamage(Bullet* bullet, u32 weaponId)
 	{
 		if (bullet->attackTarget.unit == nullptr)
 		{
@@ -586,7 +586,7 @@ namespace hooks
 		helper::weaponBulletShot(bullet->attackTarget.unit, bullet, 1);
 	}
 
-	void parasite(CBullet* bullet, u32 weaponId)
+	void parasite(Bullet* bullet, u32 weaponId)
 	{
 		if (bullet->sourceUnit == nullptr)
 		{
@@ -598,23 +598,23 @@ namespace hooks
 			bullet->position.y - radius / 2,
 			bullet->position.x + radius / 2,
 			bullet->position.y + radius / 2
-		).forEach([&](CUnit* unit)
+		).forEach([&](Unit* unit)
 		{
 			scbw::applyParasite(unit, bullet->sourceUnit->playerId, bullet->sourceUnit);
 		});
 	}
 
-	void broodlings(CBullet* bullet, u32 weaponId)
+	void broodlings(Bullet* bullet, u32 weaponId)
 	{
 		if (bullet->sourceUnit == nullptr)
 		{
 			return;
 		}
-		CUnit* target = bullet->attackTarget.unit;
+		Unit* target = bullet->attackTarget.unit;
 		hooks::BroodlingHit(bullet->sourceUnit, target, bullet);
 	}
 
-	void lockdown(CBullet* bullet, u32 weaponId)
+	void lockdown(Bullet* bullet, u32 weaponId)
 	{
 		auto targPos = bullet->targetPosition;
 		s16 x, y, r;
@@ -624,7 +624,7 @@ namespace hooks
 		scbw::UnitFinder unitsInSplash(x - r, y - r, x + r, y + r);
 		for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
 		{
-			CUnit* target = unitsInSplash.getUnit(i);
+			Unit* target = unitsInSplash.getUnit(i);
 			if (!target->isDead()
 				&& !units_dat::GroupFlags[target->id].isBuilding
 				&& !(units_dat::BaseProperty[target->id] & UnitProperty::ResourceContainer)
@@ -636,7 +636,7 @@ namespace hooks
 		}
 	}
 
-	s32 irradiateUnitDamageProc(CUnit* target, CUnit* irradiated)
+	s32 irradiateUnitDamageProc(Unit* target, Unit* irradiated)
 	{
 		scbw::print("damage");
 		if ((!(target->status & UnitStatus::Burrowed)
@@ -650,11 +650,11 @@ namespace hooks
 	}
 
 	// Hooked to help with Irradiate rework - Pr0nogo
-	CUnit* irradiateDamageLoop(CUnit* unit) // 004555C0
+	Unit* irradiateDamageLoop(Unit* unit) // 004555C0
 	{
 		s32 unitStatus;
-		CUnit* result;
-		CSprite* unitSprite;
+		Unit* result;
+		Sprite* unitSprite;
 		u16 posX;
 		u16 posY;
 		u16 a1;
@@ -665,14 +665,14 @@ namespace hooks
 		unitStatus = unit->status;
 		if (unitStatus & UnitStatus::Burrowed)
 		{
-			return (CUnit*)irradiateUnitDamageProc(unit, unit);
+			return (Unit*)irradiateUnitDamageProc(unit, unit);
 		}
 		if (unitStatus & UnitStatus::InTransport)
 		{
 			result = unit->connectedUnit;
 			if (result)
 			{
-				result = (CUnit*)helper::iterateLoadedUnits(result,
+				result = (Unit*)helper::iterateLoadedUnits(result,
 					(s32(__fastcall*)(s32, s32))irradiateUnitDamageProc,
 					(s32)unit);
 			}
@@ -687,7 +687,7 @@ namespace hooks
 			v6 = posY - 160;
 			v8 = posY + 160;
 			/*
-			result = (CUnit*)helper::iterateUnitsAtLocationTargetProc(
+			result = (Unit*)helper::iterateUnitsAtLocationTargetProc(
 				(Box16*)&a1,
 				(s32(__fastcall*)(s32, s32))irradiateUnitDamageProc,
 				unit);

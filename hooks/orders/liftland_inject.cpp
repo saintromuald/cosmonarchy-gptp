@@ -8,7 +8,7 @@ namespace
 	void __declspec(naked) orders_BuildingLandWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP
@@ -34,7 +34,7 @@ namespace
 	void __declspec(naked) orders_BuildingLiftoffWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP

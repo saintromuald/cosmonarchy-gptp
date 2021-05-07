@@ -3,9 +3,9 @@
 
 namespace hooks
 {
-	void ordersCastMindControl(CUnit* unit)
+	void ordersCastMindControl(Unit* unit)
 	{
-		CUnit* target = unit->orderTarget.unit;
+		Unit* target = unit->orderTarget.unit;
 		if (target == nullptr)
 		{
 			if (unit->orderQueueHead != nullptr)

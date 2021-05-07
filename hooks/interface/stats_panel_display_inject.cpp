@@ -38,7 +38,7 @@ namespace
 
 	void __declspec(naked) getUnitRankString_Wrapper()
 	{ // 0042F370
-		static CUnit* a1;
+		static Unit* a1;
 		static char* result;
 		__asm {
 			MOV a1, ESI
@@ -100,7 +100,7 @@ namespace
 	void __declspec(naked) getUnitName_Wrapper() // 0047B5A0
 	{
 		static const char* result;
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			MOV unit, ECX
 			PUSHAD

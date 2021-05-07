@@ -57,7 +57,7 @@ namespace hooks
 		return result;
 	}
 
-	u32 getTotalHitPointsPlusShields(CUnit* a1)
+	u32 getTotalHitPointsPlusShields(Unit* a1)
 	{ // 00402710
 		s32 v1; // eax
 		s32 v2; // ecx
@@ -160,7 +160,7 @@ LABEL_26:
 	void drawSupplyUnitInfo(s32 a1)
 	{ // 00427540
 		BinDlg* v1; // ebx
-		CUnit* v2; // esi
+		Unit* v2; // esi
 		GroupFlag v3; // al
 		u8 v4; // cl
 		s32 v5; // edx
@@ -348,7 +348,7 @@ LABEL_55:
 		}
 	}
 
-	bool AI_TargetEnemyProc(CUnit* a1, CUnit* a2)
+	bool AI_TargetEnemyProc(Unit* a1, Unit* a2)
 	{ // 00440A20
 		s8 v2; // dl
 		s8 v3; // bl
@@ -414,9 +414,9 @@ LABEL_55:
 		return v3;
 	}
 
-	u32 getUnitStrengthHook(CUnit* a1, s32 a2, bool a3)
+	u32 getUnitStrengthHook(Unit* a1, s32 a2, bool a3)
 	{ // 00431800
-		CUnit* v3; // edi
+		Unit* v3; // edi
 		s32 v4; // esi
 		s32 v5; // ebx
 		s32 v7; // ebx
@@ -446,9 +446,9 @@ LABEL_55:
 		return v7 * groundAir / v9;
 	}
 
-	bool AI_RestorationRequirementsProc(CUnit* a1, CUnit* a2)
+	bool AI_RestorationRequirementsProc(Unit* a1, Unit* a2)
 	{ // 004407E0
-		CUnit* v2; // edx
+		Unit* v2; // edx
 		s32 v3; // eax
 		bool result; // eax
 
@@ -468,11 +468,11 @@ LABEL_55:
 		return result;
 	}
 
-	bool AI_EMPShieldRequirementsProc(CUnit* a1, CUnit* a2)
+	bool AI_EMPShieldRequirementsProc(Unit* a1, Unit* a2)
 	{ // 004413D0
-		CUnit* v2; // esi
-		CUnit* v3; // edi
-		CSprite* v5; // edx
+		Unit* v2; // esi
+		Unit* v3; // edi
+		Sprite* v5; // edx
 		s16 v6; // cx
 		s16 spriteX;
 
@@ -498,10 +498,10 @@ LABEL_55:
 		return *tempHPShields >= 200;
 	}
 
-	char attackOverlayAndNotify(CUnit* a1, CUnit* a2, u8 a3, char a4)
+	char attackOverlayAndNotify(Unit* a1, Unit* a2, u8 a3, char a4)
 	{ // 00479730
 		s32* v4; // eax
-		CUnit* v5; // ebx
+		Unit* v5; // ebx
 		char returnValue = 0;
 
 		v5 = a1;
@@ -660,7 +660,7 @@ LABEL_55:
 				{
 					if (!v23)
 					{
-						v24 = helper::getUnitMaxEnergy((CUnit*)v5) >> 8;
+						v24 = helper::getUnitMaxEnergy((Unit*)v5) >> 8;
 						goto LABEL_32;
 					}
 				}
@@ -706,7 +706,7 @@ LABEL_32:
 		}
 	}
 
-	void setBuildShieldGain(CUnit* a1)
+	void setBuildShieldGain(Unit* a1)
 	{ // 0047B6A0
 		s32 _type; // edi
 		u16 v2; // dx
@@ -732,10 +732,10 @@ LABEL_32:
 		}
 	}
 
-	s32 getUnitBulletDamage(CUnit* victim, CBullet* bullet)
+	s32 getUnitBulletDamage(Unit* victim, Bullet* bullet)
 	{ // 0048ACD0
 		s32 v2; // edi
-		CUnit* v3; // esi
+		Unit* v3; // esi
 		s32 v4; // eax
 		s32 v5; // eax
 		unsigned __int16 v6; // cx
@@ -797,11 +797,11 @@ LABEL_32:
 		return result;
 	}
 
-	s32 canCastSpell(CUnit* a1)
+	s32 canCastSpell(Unit* a1)
 	{ // 00492140
 		u8 v1; // al
 		s32 v2; // ebx
-		CUnit* v3; // esi
+		Unit* v3; // esi
 		s32 result; // eax
 		s32 v5; // eax
 		s32 v6; // eax
@@ -935,7 +935,7 @@ LABEL_23:
 	void compileHealthBar(s32 a1, s32 a2)
 	{ // 004D6010
 		s32 v2; // eax
-		CUnit* v3; // edi
+		Unit* v3; // edi
 		u8 v4; // cl
 		s32 v5; // eax
 		u16 v6; // ax
@@ -979,14 +979,14 @@ LABEL_23:
 		*v10 = 0;
 		v10[1] = 0;
 		// *(s32*)(a1 + 48) = v3;
-		helper::updateImageDrawData((CImage*)a1);
+		helper::updateImageDrawData((Image*)a1);
 		*(s8*)(a1 + 12) |= 1u;
-		helper::playImageIscript((CImage*)a1, 0);
+		helper::playImageIscript((Image*)a1, 0);
 	}
 
-	s32 AI_FindTransport(CUnit* a1, s32 a2)
+	s32 AI_FindTransport(Unit* a1, s32 a2)
 	{ // 004E6EF0
-		CUnit* v2; // esi
+		Unit* v2; // esi
 		s32 v3; // ecx
 		u16 v4; // ax
 		s32 v5; // edi

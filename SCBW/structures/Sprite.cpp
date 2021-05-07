@@ -5,29 +5,29 @@
 #include <cassert>
 
 //Functionally identical to playSpriteIscript() (offset 0x00499D00)
-void CSprite::playIscriptAnim(IscriptAnimation::Enum animation, bool bReplaceCurrentScript)
+void Sprite::playIscriptAnim(IscriptAnimation::Enum animation, bool bReplaceCurrentScript)
 {
 
 	assert(this);
 
 	if (bReplaceCurrentScript || !(this->flags & CSprite_Flags::IscriptCode))
-		for (CImage* img = this->images.head; img != nullptr; img = img->link.next)
+		for (Image* img = this->images.head; img != nullptr; img = img->link.next)
 			img->playIscriptAnim(animation);
 
 }
 
 //Equivalent to SpriteDestructor @ 0x00497B40
-void CSprite::free()
+void Sprite::free()
 {
 
 	assert(this);
 
-	CImage* image = this->images.head;
+	Image* image = this->images.head;
 	s32 sprite_row_position;
 
 	while (image != nullptr)
 	{
-		CImage* nextImage = image->link.next;
+		Image* nextImage = image->link.next;
 		image->free();
 		image = nextImage;
 	}
@@ -61,12 +61,12 @@ void CSprite::free()
 	this->link.next = nullptr;
 
 	//perform identically to original code
-	unusedSprites->insertAfterHead<&CSprite::link>(this);
+	unusedSprites->insertAfterHead<&Sprite::link>(this);
 
 }
 
 
-void CSprite::setPosition(u16 x, u16 y)
+void Sprite::setPosition(u16 x, u16 y)
 {
 	assert(this);
 	if (this->position.x == x && this->position.y == y) return;
@@ -79,7 +79,7 @@ void CSprite::setPosition(u16 x, u16 y)
 
 	if (oldTileY != newTileY)
 	{
-		const CListExtern<CSprite, &CSprite::link>
+		const ListExtern<Sprite, &Sprite::link>
 			spritesOnOldTileRow(spritesOnTileRow->heads[oldTileY],
 				spritesOnTileRow->tails[oldTileY]),
 			spritesOnNewTileRow(spritesOnTileRow->heads[newTileY],
@@ -89,14 +89,14 @@ void CSprite::setPosition(u16 x, u16 y)
 		spritesOnNewTileRow.insertAfterHead(this);
 	}
 
-	for (CImage* i = this->images.head; i; i = i->link.next)
+	for (Image* i = this->images.head; i; i = i->link.next)
 		i->flags |= CImage_Flags::Redraw;
 }
 
 
 //-------- Create overlay --------//
 
-void createUpdateImageSomething(CImage* image)
+void createUpdateImageSomething(Image* image)
 {
 	const u32 Func_createUpdateImageSomething = 0x004D66B0;
 
@@ -108,7 +108,7 @@ void createUpdateImageSomething(CImage* image)
 	}
 }
 
-void updateImageDirection(CImage* image, u32 direction)
+void updateImageDirection(Image* image, u32 direction)
 {
 	const u32 Func_updateImageDirection = 0x004D5EA0;
 
@@ -124,23 +124,23 @@ void updateImageDirection(CImage* image, u32 direction)
 //-------- Create overlay --------//
 
 //Identical to function @ 0x00498E00
-CImage* CSprite::createOverlay(u32 imageId, s8 x, s8 y, u32 direction)
+Image* Sprite::createOverlay(u32 imageId, s8 x, s8 y, u32 direction)
 {
 	assert(this);
 	if (unusedImages.head == nullptr)
 	{
 		return nullptr;
 	}
-	CImage* overlay = unusedImages.popHead();
+	Image* overlay = unusedImages.popHead();
 
 	if (overlay)
 	{
 		if (this->images.head)
-			this->images.insertBefore<&CImage::link>(overlay, this->mainGraphic);
+			this->images.insertBefore<&Image::link>(overlay, this->mainGraphic);
 		else
 		{
 			this->mainGraphic = overlay;
-			this->images.insertAfterHead<&CImage::link>(overlay);
+			this->images.insertAfterHead<&Image::link>(overlay);
 		}
 
 		overlay->initializeData(this, imageId, x, y);
@@ -150,23 +150,23 @@ CImage* CSprite::createOverlay(u32 imageId, s8 x, s8 y, u32 direction)
 	return overlay;
 }
 
-CImage* CSprite::createUnderlay(u32 imageId, s8 x, s8 y, u32 direction)
+Image* Sprite::createUnderlay(u32 imageId, s8 x, s8 y, u32 direction)
 {
 	assert(this);
 	if (unusedImages.head == nullptr)
 	{
 		return nullptr;
 	}
-	CImage* underlay = unusedImages.popHead();
+	Image* underlay = unusedImages.popHead();
 
 	if (underlay)
 	{
 		if (this->images.head)
-			this->images.insertAfter<&CImage::link>(underlay, this->mainGraphic);
+			this->images.insertAfter<&Image::link>(underlay, this->mainGraphic);
 		else
 		{
 			this->mainGraphic = underlay;
-			this->images.insertBeforeHead<&CImage::link>(underlay);
+			this->images.insertBeforeHead<&Image::link>(underlay);
 		}
 
 		underlay->initializeData(this, imageId, x, y);
@@ -177,23 +177,23 @@ CImage* CSprite::createUnderlay(u32 imageId, s8 x, s8 y, u32 direction)
 }
 
 //Identical to function @ 0x00498EA0
-CImage* CSprite::createTopOverlay(u32 imageId, s8 x, s8 y, u32 direction)
+Image* Sprite::createTopOverlay(u32 imageId, s8 x, s8 y, u32 direction)
 {
 	assert(this);
 	if (unusedImages.head == nullptr)
 	{
 		return nullptr;
 	}
-	CImage* overlay = unusedImages.popHead();
+	Image* overlay = unusedImages.popHead();
 
 	if (overlay)
 	{
 		if (this->images.head)
-			this->images.insertBeforeHead<&CImage::link>(overlay);
+			this->images.insertBeforeHead<&Image::link>(overlay);
 		else
 		{
 			this->mainGraphic = overlay;
-			this->images.insertAfterHead<&CImage::link>(overlay);
+			this->images.insertAfterHead<&Image::link>(overlay);
 		}
 
 		overlay->initializeData(this, imageId, x, y);
@@ -202,23 +202,23 @@ CImage* CSprite::createTopOverlay(u32 imageId, s8 x, s8 y, u32 direction)
 	}
 	return overlay;
 }
-CImage* CSprite::createTopUnderlay(u32 imageId, s8 x, s8 y, u32 direction)
+Image* Sprite::createTopUnderlay(u32 imageId, s8 x, s8 y, u32 direction)
 {
 	assert(this);
 	if (unusedImages.head == nullptr)
 	{
 		return nullptr;
 	}
-	CImage* underlay = unusedImages.popHead();
+	Image* underlay = unusedImages.popHead();
 
 	if (underlay)
 	{
 		if (this->images.head)
-			this->images.insertAfterHead<&CImage::link>(underlay);
+			this->images.insertAfterHead<&Image::link>(underlay);
 		else
 		{
 			this->mainGraphic = underlay;
-			this->images.insertBeforeHead<&CImage::link>(underlay);
+			this->images.insertBeforeHead<&Image::link>(underlay);
 		}
 
 		underlay->initializeData(this, imageId, x, y);
@@ -232,12 +232,12 @@ CImage* CSprite::createTopUnderlay(u32 imageId, s8 x, s8 y, u32 direction)
 //-------- Remove overlay --------//
 
 //Based on function @ 0x004E5CF0
-void CSprite::removeOverlay(u32 imageIdStart, u32 imageIdEnd)
+void Sprite::removeOverlay(u32 imageIdStart, u32 imageIdEnd)
 {
 	assert(this);
 	assert(imageIdStart <= imageIdEnd);
 
-	for (CImage* image = this->images.head; image; image = image->link.next)
+	for (Image* image = this->images.head; image; image = image->link.next)
 	{
 		if (imageIdStart <= image->id && image->id <= imageIdEnd)
 		{
@@ -247,11 +247,11 @@ void CSprite::removeOverlay(u32 imageIdStart, u32 imageIdEnd)
 	}
 }
 
-void CSprite::removeOverlay(u32 imageId)
+void Sprite::removeOverlay(u32 imageId)
 {
 	assert(this);
 
-	for (CImage* image = this->images.head; image; image = image->link.next)
+	for (Image* image = this->images.head; image; image = image->link.next)
 	{
 		if (image->id == imageId)
 		{
@@ -260,11 +260,11 @@ void CSprite::removeOverlay(u32 imageId)
 		}
 	}
 }
-void CSprite::playForOverlay(u32 imageId, u8 anim)
+void Sprite::playForOverlay(u32 imageId, u8 anim)
 {
 	assert(this);
 
-	for (CImage* image = this->images.head; image; image = image->link.next)
+	for (Image* image = this->images.head; image; image = image->link.next)
 	{
 		if (image->id == imageId)
 		{
@@ -276,11 +276,11 @@ void CSprite::playForOverlay(u32 imageId, u8 anim)
 //-------- Get overlay --------//
 
 //Identical to function @ 0x00497460
-CImage* CSprite::getOverlay(u16 imageId) const
+Image* Sprite::getOverlay(u16 imageId) const
 {
 	assert(this);
 
-	for (CImage* image = this->images.head; image; image = image->link.next)
+	for (Image* image = this->images.head; image; image = image->link.next)
 		if (image->id == imageId)
 			return image;
 
@@ -289,7 +289,7 @@ CImage* CSprite::getOverlay(u16 imageId) const
 
 //-------- Other --------//
 
-bool CSprite::isVisibleTo(u8 playerId) const
+bool Sprite::isVisibleTo(u8 playerId) const
 {
 	assert(this);
 	return (this->visibilityFlags & (1 << playerId)) != 0;

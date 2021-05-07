@@ -21,7 +21,7 @@ namespace
 
 	void __declspec(naked) useStimPacksAIWrapper()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			MOV unit, EAX
 			PUSHAD

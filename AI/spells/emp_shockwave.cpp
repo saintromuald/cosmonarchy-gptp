@@ -6,7 +6,7 @@
 namespace AI
 {
 
-	CUnit* findBestEmpShockwaveTarget(CUnit* caster, bool isUnderAttack)
+	Unit* findBestEmpShockwaveTarget(Unit* caster, bool isUnderAttack)
 	{
 
 		s32 bounds;
@@ -16,13 +16,13 @@ namespace AI
 		else
 			bounds = 32 * 64;
 
-		CUnit* result = scbw::UnitFinder::getNearestTarget(
+		Unit* result = scbw::UnitFinder::getNearestTarget(
 			caster->getX() - bounds,
 			caster->getY() - bounds,
 			caster->getX() + bounds,
 			caster->getY() + bounds,
 			caster,
-			[&](CUnit* target)
+			[&](Unit* target)
 		{
 			if (!isTargetWorthHitting(target, caster))
 				return false;
@@ -49,7 +49,7 @@ namespace AI
 			caster->getX() + bounds,
 			caster->getY() + bounds,
 			caster,
-			[&](CUnit* target)
+			[&](Unit* target)
 		{
 			if (!isTargetWorthHitting(target, caster))
 				return false;

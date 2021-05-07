@@ -7,7 +7,7 @@ namespace
 	void __declspec(naked) secondaryOrd_TrainFighterWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EAX
@@ -26,7 +26,7 @@ namespace
 	void __declspec(naked) function_00468420Wrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EAX
@@ -43,7 +43,7 @@ namespace
 
 	void __declspec(naked) queueSlotActiveWrapper()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 slot;
 		static u32 result;
 		__asm {
@@ -61,7 +61,7 @@ namespace
 
 	void __declspec(naked) getMaxHangarSpace_Wrapper()
 	{
-		static CUnit* a1;
+		static Unit* a1;
 		static char result;
 		__asm {
 			MOV a1, ECX

@@ -1,15 +1,15 @@
 #include "weapon_damage.h"
 #include "../../hook_tools.h"
 
-extern const u32 Func_DoWeaponDamage; //Defined in CUnit.cpp
+extern const u32 Func_DoWeaponDamage; //Defined in Unit.cpp
 
 namespace
 {
 
 	void __declspec(naked) weaponDamageWrapper()
 	{
-		static CUnit* target;
-		static CUnit* attacker;
+		static Unit* target;
+		static Unit* attacker;
 		static s32 damage;
 		static s32 direction;
 		static u32 weaponId;
@@ -44,7 +44,7 @@ namespace
 
 	void __declspec(naked) applyEnsnare_Wrapper()
 	{
-		static CUnit* a1;
+		static Unit* a1;
 		__asm {
 			MOV a1, EDI
 			PUSHAD
@@ -58,7 +58,7 @@ namespace
 
 	void __declspec(naked) updateCorrosiveSpores_Wrapper()
 	{ // 004F4480
-		static CUnit* target;
+		static Unit* target;
 		static u32 result;
 		__asm {
 			MOV target, EBX

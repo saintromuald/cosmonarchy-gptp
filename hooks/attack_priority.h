@@ -3,9 +3,9 @@
 namespace hooks
 {
 
-	u32 getAttackPriorityHook(CUnit* target, CUnit* attacker);
-	CUnit* findBestAttackTargetHook(CUnit* unit);
-	CUnit* findRandomAttackTargetHook(CUnit* unit);
+	u32 getAttackPriorityHook(Unit* target, Unit* attacker);
+	Unit* findBestAttackTargetHook(Unit* unit);
+	Unit* findRandomAttackTargetHook(Unit* unit);
 
 	void injectAttackPriorityHooks();
 

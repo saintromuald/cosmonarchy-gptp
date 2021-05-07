@@ -6,11 +6,11 @@ namespace hooks
 	///
 	/// Function used by Ctrl+Click (select all units of same type)
 	///
-	u32 SortAllUnits(CUnit* unit, CUnit** unit_list, CUnit** units_in_bounds)
+	u32 SortAllUnits(Unit* unit, Unit** unit_list, Unit** units_in_bounds)
 	{
 		const u32* VISIBILITY_CHECK_0057F0B0 = (u32*)0x0057F0B0;
-		CUnit* current_unit;
-		CUnit* backup_current_unit;
+		Unit* current_unit;
+		Unit* backup_current_unit;
 		u32 current_index_in_unit_list;
 
 		bool bStopBigLoop = false;
@@ -266,12 +266,12 @@ namespace hooks
 
 		return current_index_in_unit_list;
 
-	} //u32 SortAllUnits(CUnit* unit,CUnit** unit_list,CUnit* units_in_bounds)
+	} //u32 SortAllUnits(Unit* unit,Unit** unit_list,Unit* units_in_bounds)
 
 	///
 	/// Function used by Click on unit (possibly with key pressed)
 	///
-	void function_0046FB40(CUnit* clicked_unit)
+	void function_0046FB40(Unit* clicked_unit)
 	{
 
 		b32* const IS_DOUBLE_CLICKING = (b32*)0x0066FF58;
@@ -283,8 +283,8 @@ namespace hooks
 		b8* const bCanUpdateStatDataDialog = (b8*)0x0068C1F8;
 		BinDlg** const someDialogUnknownUser = (BinDlg**)0x0068C1EC; //related to MouseOver? Usually someDialogUnknown->user if not 0 or -1
 
-		CUnit* local_temp_array_1[SELECTION_ARRAY_LENGTH];	//used instead of an array starting from [EBP-3C]
-		CUnit* local_temp_array_2[SELECTION_ARRAY_LENGTH];	//used instead of an array starting from [EBP-6C]
+		Unit* local_temp_array_1[SELECTION_ARRAY_LENGTH];	//used instead of an array starting from [EBP-3C]
+		Unit* local_temp_array_2[SELECTION_ARRAY_LENGTH];	//used instead of an array starting from [EBP-6C]
 
 		Box16 local_temp_box16_structure;	//used instead of using from [EBP-0C] to [EBP-06]
 
@@ -315,7 +315,7 @@ namespace hooks
 					//		clicked unit, making them the current 
 					//		selection
 
-					CUnit** units_in_bounds;
+					Unit** units_in_bounds;
 					u32 sorted_list_length;
 
 					//locate surrounding units for selection
@@ -364,7 +364,7 @@ namespace hooks
 					// =>	select units same type as clicked unit, adding them to the
 					//		active selection
 
-					CUnit** units_in_bounds;
+					Unit** units_in_bounds;
 					u32 sorted_list_length;
 
 					//prepare to locate surrounding units for selection

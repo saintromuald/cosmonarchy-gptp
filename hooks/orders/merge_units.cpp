@@ -12,9 +12,9 @@
 namespace hooks
 {
 	//equivalent to 0x004BFA80, but not identical
-	CUnit* templarMergePartner(CUnit* unit, CUnit** units_list, u32 units_list_length)
+	Unit* templarMergePartner(Unit* unit, Unit** units_list, u32 units_list_length)
 	{
-		CUnit* nearest_unit = nullptr;	//was ebp-04
+		Unit* nearest_unit = nullptr;	//was ebp-04
 		u32 best_distance = MAXINT32;
 		for (u32 i = 0; i < units_list_length; i++)
 		{
@@ -39,7 +39,7 @@ namespace hooks
 				if ((x_distance + y_distance) < best_distance)
 				{
 
-					CUnit* new_nearest_unit = units_list[i];
+					Unit* new_nearest_unit = units_list[i];
 					units_list[i] = nearest_unit;
 					nearest_unit = new_nearest_unit;
 					best_distance = x_distance + y_distance;
@@ -56,7 +56,7 @@ namespace hooks
 
 	;
 
-	void orders_CompletingArchonSummon(CUnit* unit)
+	void orders_CompletingArchonSummon(Unit* unit)
 	{
 
 		u32* const bCanUpdateCurrentButtonSet = (u32*)0x0068C1B0;
@@ -79,7 +79,7 @@ namespace hooks
 				if (unit->sprite->images.head != nullptr)
 				{
 
-					CImage* current_image = unit->sprite->images.head;
+					Image* current_image = unit->sprite->images.head;
 
 					do
 					{
@@ -128,10 +128,10 @@ namespace hooks
 
 	;
 
-	void orders_WarpingDarkArchon(CUnit* unit)
+	void orders_WarpingDarkArchon(Unit* unit)
 	{
 
-		CUnit* targetUnit = unit->orderTarget.unit;
+		Unit* targetUnit = unit->orderTarget.unit;
 
 		if (
 			targetUnit == nullptr ||
@@ -294,7 +294,7 @@ namespace hooks
 				if (unit->sprite->images.head != nullptr)
 				{
 
-					CImage* current_image = unit->sprite->images.head;
+					Image* current_image = unit->sprite->images.head;
 
 					do
 					{
@@ -325,14 +325,14 @@ namespace hooks
 
 		} //conditions for merge are ok
 
-	} //void orders_WarpingDarkArchon(CUnit* unit)
+	} //void orders_WarpingDarkArchon(Unit* unit)
 
 	;
 
-	void orders_WarpingArchon(CUnit* unit)
+	void orders_WarpingArchon(Unit* unit)
 	{
 
-		CUnit* targetUnit = unit->orderTarget.unit;
+		Unit* targetUnit = unit->orderTarget.unit;
 		if (
 			targetUnit == nullptr ||
 			unit->playerId != targetUnit->playerId ||
@@ -491,7 +491,7 @@ namespace hooks
 				if (unit->sprite->images.head != nullptr)
 				{
 
-					CImage* current_image = unit->sprite->images.head;
+					Image* current_image = unit->sprite->images.head;
 
 					do
 					{

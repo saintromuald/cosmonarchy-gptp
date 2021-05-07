@@ -8,7 +8,7 @@ namespace
 	void __declspec(naked) transferUnitUpgradesToPlayerWrapper()
 	{
 
-		static CUnit* sourceUnit;
+		static Unit* sourceUnit;
 		static u8 targetPlayerId;
 		static u32 researchUpgradeFunc;
 
@@ -45,7 +45,7 @@ namespace
 	void __declspec(naked) transferUnitTechToPlayerWrapper()
 	{
 
-		static CUnit* sourceUnit;
+		static Unit* sourceUnit;
 		static u8 targetPlayerId;
 		static u32 researchTechFunc;
 

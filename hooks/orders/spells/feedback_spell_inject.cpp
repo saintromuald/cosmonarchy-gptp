@@ -8,7 +8,7 @@ namespace
 	void __declspec(naked) orders_FeedbackWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP

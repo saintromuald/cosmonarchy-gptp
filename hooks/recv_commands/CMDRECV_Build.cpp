@@ -3,7 +3,7 @@
 
 namespace hooks
 {
-	bool CMDRECV_PlaceBuildingAllowed(CUnit* builder, u8 orderId, u16 builtUnitId)
+	bool CMDRECV_PlaceBuildingAllowed(Unit* builder, u8 orderId, u16 builtUnitId)
 	{
 		bool bReturnValue = false;
 		if (orderId >= OrderId::DroneStartBuild && orderId <= OrderId::CTFCOP2)
@@ -41,7 +41,7 @@ namespace hooks
 	void cmdRECV_PlaceBuildingNormal(s16 x, s16 y, u32 orderId, u32 builtUnitId)
 	{
 
-		CUnit* builder;
+		Unit* builder;
 		u32 result_function_00473FB0;
 
 		*selectionIndexStart = 0;
@@ -94,7 +94,7 @@ namespace hooks
 	void cmdRECV_PlaceBuildingAddon(s16 x, s16 y, u32 orderId, u32 builtUnitId)
 	{
 
-		CUnit* builder;
+		Unit* builder;
 		u32 result_function_00473FB0;
 
 		u16 addonPlaceX = 0, addonPlaceY = 0;
@@ -212,7 +212,7 @@ namespace hooks
 	void CMDRECV_Build(u8 orderId, s16 x, s16 y, u16 builtUnitId)
 	{
 
-		CUnit* builder;
+		Unit* builder;
 
 		*selectionIndexStart = 0;
 		builder = getActivePlayerNextSelection();

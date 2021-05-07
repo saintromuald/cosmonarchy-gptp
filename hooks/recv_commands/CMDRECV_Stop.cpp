@@ -10,7 +10,7 @@ namespace hooks
 	void CMDRECV_ReaverStop()
 	{
 
-		CUnit* current_unit;
+		Unit* current_unit;
 		static u32* u32_0066FF60 = (u32*)0x0066FF60;
 
 		*selectionIndexStart = 0;
@@ -120,7 +120,7 @@ namespace hooks
 	void CMDRECV_CarrierStop()
 	{
 
-		CUnit* current_unit;
+		Unit* current_unit;
 		static u32* u32_0066FF60 = (u32*)0x0066FF60;
 
 		*selectionIndexStart = 0;
@@ -230,7 +230,7 @@ namespace hooks
 	void CMDRECV_Stop(u8 bCommandType)
 	{
 
-		CUnit* current_unit;
+		Unit* current_unit;
 		static u32* u32_0066FF60 = (u32*)0x0066FF60;
 
 		*selectionIndexStart = 0;

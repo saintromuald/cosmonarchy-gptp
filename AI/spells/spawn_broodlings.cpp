@@ -6,7 +6,7 @@
 namespace AI
 {
 
-	CUnit* findBestSpawnBroodlingsTarget(CUnit* caster, bool isUnderAttack)
+	Unit* findBestSpawnBroodlingsTarget(Unit* caster, bool isUnderAttack)
 	{
 
 		s32 bounds;
@@ -19,7 +19,7 @@ namespace AI
 		return scbw::UnitFinder::getNearestTarget(
 			caster->getX() - bounds, caster->getY() - bounds,
 			caster->getX() + bounds, caster->getY() + bounds,
-			caster, [&](CUnit* target)
+			caster, [&](Unit* target)
 		{
 
 			if (!isTargetWorthHitting(target, caster))

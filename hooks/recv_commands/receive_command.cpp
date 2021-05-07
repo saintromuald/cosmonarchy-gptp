@@ -5,7 +5,7 @@ namespace hooks
 {
 	//this function receives the Attack/Attack Move commands and
 	//the spells commands, maybe more
-	void receive_command(s32 x, s32 y, CUnit* unitParam, u32 wUnitType, u32 bActionOrder, u32 bCommandType)
+	void receive_command(s32 x, s32 y, Unit* unitParam, u32 wUnitType, u32 bActionOrder, u32 bCommandType)
 	{
 
 		u8 array_of_data[0x30];
@@ -17,7 +17,7 @@ namespace hooks
 		u32* saved_order = (u32*)&array_of_data[0x20];			//[EBP-0x10]
 		u32* saved_order_2 = (u32*)&array_of_data[0x24];		//[EBP-0x0C]
 		u32* saved_order_3 = (u32*)&array_of_data[0x28];		//[EBP-0x08]
-		CUnit** saved_unit = (CUnit**)&array_of_data[0x2C];		//[EBP-0x04]
+		Unit** saved_unit = (Unit**)&array_of_data[0x2C];		//[EBP-0x04]
 
 		u8* switch_value = (u8*)0x0049ADA0;
 
@@ -30,7 +30,7 @@ namespace hooks
 		if (bActionOrder > OrderId::CTFCOP2 || switch_value[bActionOrder] == 1)
 		{
 
-			CUnit* current_unit;
+			Unit* current_unit;
 			u32 current_order = bActionOrder;	//EBX
 
 			*selectionIndexStart = 0;
@@ -187,7 +187,7 @@ namespace hooks
 									if (*saved_order_3 == OrderId::RallyPoint1)
 									{
 
-										CUnit* target = unitParam;
+										Unit* target = unitParam;
 
 										if (target == nullptr)
 											target = current_unit;

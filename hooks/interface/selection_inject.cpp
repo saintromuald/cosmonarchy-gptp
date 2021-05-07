@@ -6,7 +6,7 @@ namespace
 	const u32 Func_function_0046F3A0 = 0x0046F3A0;
 	void __declspec(naked) function_0046FB40_Wrapper()
 	{
-		static CUnit* clicked_unit;
+		static Unit* clicked_unit;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -42,9 +42,9 @@ namespace
 
 	void __declspec(naked) SortAllUnits_Wrapper()
 	{
-		static CUnit* unit;
-		static CUnit** unit_list;
-		static CUnit** units_in_bounds;
+		static Unit* unit;
+		static Unit** unit_list;
+		static Unit** units_in_bounds;
 		static u32 result;
 		__asm {
 			PUSH EBP

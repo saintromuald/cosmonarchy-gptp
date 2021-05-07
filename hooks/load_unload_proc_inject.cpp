@@ -7,8 +7,8 @@ namespace
 	void __declspec(naked) loadUnitProcWrapper()
 	{
 
-		static CUnit* unit;
-		static CUnit* unitToLoad;
+		static Unit* unit;
+		static Unit* unitToLoad;
 
 		__asm {
 			PUSH EBP
@@ -34,7 +34,7 @@ namespace
 	void __declspec(naked) unloadUnitProcWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 return_value;
 
 		__asm {

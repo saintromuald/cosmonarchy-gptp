@@ -6,18 +6,18 @@
 
 //V241 for VS2008
 
-struct CUnit;
-struct CSprite;
+struct Unit;
+struct Sprite;
 
 // See Unit.h and compare this entire structure with the first part of the unit structure
 // I'm not sure how much of it is the same so I didn't bother updating this.
-struct CBullet
+struct Bullet
 {
-	// v-- POSSIBLE SHARED CBullet/CUnit STRUCTURE BEGIN
-	/*0x00*/ CBullet* previous;
-	/*0x04*/ CBullet* next;
+	// v-- POSSIBLE SHARED Bullet/Unit STRUCTURE BEGIN
+	/*0x00*/ Bullet* previous;
+	/*0x04*/ Bullet* next;
 	/*0x08*/ u32          exists; //usually holds 1 (exists?)
-	/*0x0C*/ CSprite* sprite; // sprite pointer
+	/*0x0C*/ Sprite* sprite; // sprite pointer
 	/*0x10*/ Target       moveTarget; //address? animation related? changes a during the same bullet
 	/*0x18*/ Point16      targetPosition;
 	/*0x1C*/ Point16      targetPosition2; //usually same as targetPosition
@@ -52,18 +52,18 @@ struct CBullet
 	/*0x52*/ u16          unknown_0x52;
 	/*0x54*/ s32          unknown_0x54; // usually holds 0
 	/*0x58*/ Target       attackTarget;
-	// ^-- POSSIBLE SHARED CBullet/CUnit STRUCTURE END
+	// ^-- POSSIBLE SHARED Bullet/Unit STRUCTURE END
 
 	/*0x60*/ u8           weaponType;
 	/*0x61*/ u8           time_remaining;
 	/*0x62*/ u8           hitFlags;           // 0x01 = miss target; 0x02 = no damage (hallucination)
 	/*0x63*/ u8           remainingBounces;   // Bounce count for mutalisk weapon (official name: ubChain)
-	/*0x64*/ CUnit* sourceUnit;
-	/*0x68*/ CUnit* nextBounceUnit;     // Next unit for bounce, temporary
+	/*0x64*/ Unit* sourceUnit;
+	/*0x68*/ Unit* nextBounceUnit;     // Next unit for bounce, temporary
 	/*0x6C*/ u32          cyclicMissileIndex; // some sort of cyclic burst counter (used by valkyries, goliath air attack)
 };
 
-C_ASSERT(sizeof(CBullet) == 112);
-//static_assert(sizeof(CBullet) == 112, "The size of the CBullet structure is invalid");
+C_ASSERT(sizeof(Bullet) == 112);
+//static_assert(sizeof(Bullet) == 112, "The size of the Bullet structure is invalid");
 
 #pragma pack()

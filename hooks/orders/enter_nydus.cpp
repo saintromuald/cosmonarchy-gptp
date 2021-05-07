@@ -8,11 +8,11 @@ namespace hooks
 	//normally can't use it (without changing this here,
 	//changing identical tests in order function is useless
 	//since the unit won't even use that function)
-	bool canEnterNydusCanal(CUnit* unit, CUnit* nydusCanal)
+	bool canEnterNydusCanal(Unit* unit, Unit* nydusCanal)
 	{
 
 		bool bReturnValue;
-		CUnit* const nydusExit = nydusCanal->building.nydusExit;
+		Unit* const nydusExit = nydusCanal->building.nydusExit;
 
 		bReturnValue =
 			(nydusCanal->status & UnitStatus::Completed)
@@ -25,7 +25,7 @@ namespace hooks
 
 		return bReturnValue;
 
-	} //bool canEnterNydusCanal(CUnit* unit, CUnit* nydusCanal)
+	} //bool canEnterNydusCanal(Unit* unit, Unit* nydusCanal)
 
 	;
 
@@ -33,7 +33,7 @@ namespace hooks
 	//Perform the Nydus Canal teleport effect on an
 	//unit that validated the conditions within the
 	//orders_EnterNydusCanal function
-	void enterNydusCanal_Effect(CUnit* unit, CUnit* nydusCanal)
+	void enterNydusCanal_Effect(Unit* unit, Unit* nydusCanal)
 	{
 
 		Point16 oldPos, aimedPos, finalPos;
@@ -78,14 +78,14 @@ namespace hooks
 			scbw::refreshUnitAfterMove(unit);
 		}
 
-	} //void enterNydusCanal_Effect(CUnit* unit, CUnit* nydusCanal)
+	} //void enterNydusCanal_Effect(Unit* unit, Unit* nydusCanal)
 
 	;
 
-	void orders_EnterNydusCanal(CUnit* unit)
+	void orders_EnterNydusCanal(Unit* unit)
 	{
 
-		CUnit* nydusCanal;
+		Unit* nydusCanal;
 
 		nydusCanal = unit->orderTarget.unit;
 

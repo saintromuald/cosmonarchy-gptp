@@ -4,7 +4,7 @@
 namespace hooks
 {
 
-	void orders_BuildingLand(CUnit* unit)
+	void orders_BuildingLand(Unit* unit)
 	{
 
 		Target unitTarget;
@@ -199,7 +199,7 @@ namespace hooks
 			if ((unit->getMovableState() != 0) && (unit->orderSignal & 0x10))
 			{
 
-				CUnit* addon;
+				Unit* addon;
 
 				unit->orderSignal -= 0x10;
 
@@ -261,7 +261,7 @@ namespace hooks
 						bGotMoveOrder = false;
 
 						//6468F
-						COrder* order = unit->orderQueueHead;
+						Order* order = unit->orderQueueHead;
 
 						if (order->orderId != OrderId::PlaceAddon)
 							order = nullptr;
@@ -324,11 +324,11 @@ namespace hooks
 
 		} //if(unit->mainOrderState == 3)
 
-	}  //void orders_BuildingLand(CUnit* unit)
+	}  //void orders_BuildingLand(Unit* unit)
 
 	;
 
-	void orders_BuildingLiftoff(CUnit* unit)
+	void orders_BuildingLiftoff(Unit* unit)
 	{
 
 		if ((unit->status & UnitStatus::GroundedBuilding) &&

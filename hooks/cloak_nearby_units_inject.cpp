@@ -4,7 +4,7 @@
 void __declspec(naked) cloakNearbyUnitsWrapper()
 {
 
-	static CUnit* unit;
+	static Unit* unit;
 
 	__asm {
 		PUSH EBP

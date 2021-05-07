@@ -92,7 +92,7 @@ namespace hooks
 	;
 
 	//0047B770
-	bool unit_IsStandardAndMovableHook(CUnit* unit)
+	bool unit_IsStandardAndMovableHook(Unit* unit)
 	{
 
 		bool return_value;
@@ -116,15 +116,15 @@ namespace hooks
 
 		return return_value;
 
-	} //bool unit_IsStandardAndMovable(CUnit* unit)
+	} //bool unit_IsStandardAndMovable(Unit* unit)
 
 	;
 
 	//0049A850
-	CUnit* getActivePlayerFirstSelection()
+	Unit* getActivePlayerFirstSelection()
 	{
 
-		CUnit* unit;
+		Unit* unit;
 
 		if (*selectionIndexStart >= 12)
 			unit = nullptr;

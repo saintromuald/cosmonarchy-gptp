@@ -8,7 +8,7 @@ namespace
 	void __declspec(naked) function_0049D660_Wrapper()
 	{
 
-		static CUnit* main_building;
+		static Unit* main_building;
 
 		__asm {
 			PUSH EBP
@@ -35,8 +35,8 @@ namespace
 	void __declspec(naked) function_004E8C80_Wrapper()
 	{
 
-		static CUnit* main_building;
-		static CUnit* unit;
+		static Unit* main_building;
+		static Unit* unit;
 		static bool bResult;
 
 		__asm {
@@ -68,7 +68,7 @@ namespace
 	void __declspec(naked) secondaryOrd_SpawningLarva_Wrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP
@@ -95,7 +95,7 @@ namespace
 	void __declspec(naked) secondaryOrd_SpreadCreepSpawningLarva_Wrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EAX

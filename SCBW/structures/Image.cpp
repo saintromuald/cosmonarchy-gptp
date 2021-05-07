@@ -4,7 +4,7 @@
 #include <SCBW/scbwdata.h>
 #include <cassert>
 
-void CImage::playIscriptAnim(IscriptAnimation::Enum animation)
+void Image::playIscriptAnim(IscriptAnimation::Enum animation)
 {
 	assert(this);
 	u32 animation_ = (u8)animation;
@@ -20,7 +20,7 @@ void CImage::playIscriptAnim(IscriptAnimation::Enum animation)
 }
 
 //should be equivalent to ImageDestructor @ 0x004D4CE0 with ESI = sprite
-void CImage::free()
+void Image::free()
 {
 
 	assert(this);
@@ -33,7 +33,7 @@ void CImage::free()
 		);	//should be equivalent to a call to refreshImage @ 0x004970A0 with EAX = this
 
 			//perform identically to original code
-	this->parentSprite->images.unlink<&CImage::link>(this);
+	this->parentSprite->images.unlink<&Image::link>(this);
 
 	this->grpOffset = nullptr;
 
@@ -43,13 +43,13 @@ void CImage::free()
 }
 
 //Loosely based on code at @ 0x004D5A50
-void CImage::setRemapping(ColorRemapping::Enum remapping)
+void Image::setRemapping(ColorRemapping::Enum remapping)
 {
 	assert(this);
 	this->coloringData = colorShift[remapping].data;
 }
 //Identical to function @ 0x004D5A50
-void CImage::initializeData(CSprite* parent, u16 imageId, s8 x, s8 y)
+void Image::initializeData(Sprite* parent, u16 imageId, s8 x, s8 y)
 {
 	assert(this);
 	this->id = imageId;
@@ -88,7 +88,7 @@ void CImage::initializeData(CSprite* parent, u16 imageId, s8 x, s8 y)
 
 
 ///same as function 0x004D5EA0, direction is 0-31
-void CImage::setImageDirection(u8 direction)
+void Image::setImageDirection(u8 direction)
 {
 	assert(this);
 	constexpr u32 Func_setDir = 0x004D5EA0;
@@ -101,7 +101,7 @@ void CImage::setImageDirection(u8 direction)
 	}
 }
 
-GrpFrame* CImage::getCurrentFrame() const
+GrpFrame* Image::getCurrentFrame() const
 {
 	assert(this);
 	return &this->grpOffset->frames[this->frameIndex];

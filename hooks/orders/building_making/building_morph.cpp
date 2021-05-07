@@ -10,7 +10,7 @@
 
 namespace hooks
 {
-	bool isMorphing(CUnit* building)
+	bool isMorphing(Unit* building)
 	{
 		bool bIsMorphing;
 		if (!(building->status & UnitStatus::Completed))
@@ -25,7 +25,7 @@ namespace hooks
 		return bIsMorphing;
 	}
 
-	void orders_ZergBuildSelf(CUnit* building)
+	void orders_ZergBuildSelf(Unit* building)
 	{
 		const s32 OPCWAL_PROGRESS_INCREASE = 16;
 		u16 buildingId;
@@ -78,7 +78,7 @@ namespace hooks
 		{ // 0045D5AE
 			if (building->id == UnitId::ZergExtractor)
 			{
-				CImage* overlay = building->sprite->getOverlay(ImageId::VespeneGeyser2);
+				Image* overlay = building->sprite->getOverlay(ImageId::VespeneGeyser2);
 				if (overlay != nullptr)
 				{
 					overlay->free();
@@ -152,7 +152,7 @@ namespace hooks
 				{
 				}
 				s32 hpAfterMorph;
-				CImage* current_image;
+				Image* current_image;
 				building->orderSignal -= 4;
 				if (helper::isValidMorph(buildingId))
 				{
@@ -242,7 +242,7 @@ namespace hooks
 		}
 	}
 
-	void ZergPlaceBuilding(CUnit* unit)
+	void ZergPlaceBuilding(Unit* unit)
 	{
 		bool bStopThere = false;
 		if (!(unit->status & UnitStatus::Completed))
@@ -269,7 +269,7 @@ namespace hooks
 					helper::updateUnitStrength(unit);
 					unit->hitPoints = hp;
 					unit->shields = shield;
-					CImage* anchor = unit->getOverlay(ImageId::WarpAnchor);
+					Image* anchor = unit->getOverlay(ImageId::WarpAnchor);
 					if (anchor != nullptr)
 					{
 						anchor->playIscriptAnim(IscriptAnimation::Death);
@@ -303,7 +303,7 @@ namespace hooks
 
 			if (unit->id == UnitId::ZergExtractor)
 			{
-				CUnit* drone = helper::createUnit(UnitId::ZergDroleth, unit->getX(), unit->getY(), unit->playerId);
+				Unit* drone = helper::createUnit(UnitId::ZergDroleth, unit->getX(), unit->getY(), unit->playerId);
 				if (drone == nullptr)
 				{
 					helper::displayLastNetErrorForPlayer(unit->playerId);
@@ -323,7 +323,7 @@ namespace hooks
 
 			if (!bStopThere)
 			{	// 0045DB45
-				CThingy* thingy = helper::createThingy(SpriteId::Zerg_Building_Spawn_Small, unit->getX(), unit->getY(), 0);
+				Thingy* thingy = helper::createThingy(SpriteId::Zerg_Building_Spawn_Small, unit->getX(), unit->getY(), 0);
 				if (thingy != nullptr)
 				{
 					thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
@@ -371,13 +371,13 @@ namespace hooks
 //from unhooked
 namespace
 {
-	s32 BuildingHelper::getNumberOfUnitType(const CUnit* unit, u16 unitId, bool ignoreIncomplete);
+	s32 BuildingHelper::getNumberOfUnitType(const Unit* unit, u16 unitId, bool ignoreIncomplete);
 }
 
 namespace hooks
 {
 	//Checks if @p unitId is a building that can be morphed from another building.
-	//Note: This hook affects the behavior of CUnit::isRemorphingBuilding().
+	//Note: This hook affects the behavior of Unit::isRemorphingBuilding().
 	bool isMorphedBuildingHook(u16 unitId)
 	{
 		//Default StarCraft behavior
@@ -392,7 +392,7 @@ namespace hooks
 	//@p unit. This hook is used by StarCraft's AI for counting units and buildings.
 	//For example, Greater Spires are counted as Spires, so that the AI would not
 	//try to rebuild another Spire after morphing one into a Greater Spire.
-	s32 getMorphBuildingTypeCountHook(const CUnit* unit, u16 unitId, bool ignoreIncomplete)
+	s32 getMorphBuildingTypeCountHook(const Unit* unit, u16 unitId, bool ignoreIncomplete)
 	{
 		//Default StarCraft behavior
 		s32 unitCount = BuildingHelper::getNumberOfUnitType(unit, unitId, ignoreIncomplete);
@@ -467,9 +467,9 @@ namespace hooks
 		return unitCount;
 	}
 
-	void SetSpecialState1(CSprite* sprite)
+	void SetSpecialState1(Sprite* sprite)
 	{
-		CImage* current_image = sprite->images.head;
+		Image* current_image = sprite->images.head;
 		while (current_image != nullptr)
 		{
 			if (current_image->id != ImageId::StargateOverlay)

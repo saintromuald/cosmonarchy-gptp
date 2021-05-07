@@ -36,7 +36,7 @@ void hideAllPsiFields()
 }
 
 //If @p unit is a psi provider, make all psi field graphics visible.
-void showAllPsiFieldsOnSelect(CUnit* unit)
+void showAllPsiFieldsOnSelect(Unit* unit)
 {
 
 	if (!scbw::isInReplay() && unit->playerId == *LOCAL_NATION_ID)
@@ -50,7 +50,7 @@ void showAllPsiFieldsOnSelect(CUnit* unit)
 }
 
 //If @p unit is a psi provider, make all psi field graphics invisible.
-void hideAllPsiFieldsOnUnselect(CUnit* unit)
+void hideAllPsiFieldsOnUnselect(Unit* unit)
 {
 
 	if (!scbw::isInReplay() && unit->playerId == *LOCAL_NATION_ID)
@@ -67,7 +67,7 @@ void hideAllPsiFieldsOnUnselect(CUnit* unit)
 void __declspec(naked) showAllPsiFieldsOnSelectWrapper()
 {
 
-	static CUnit* unit;
+	static Unit* unit;
 
 	__asm {
 		MOV unit, EDI
@@ -91,7 +91,7 @@ void __declspec(naked) showAllPsiFieldsOnSelectWrapper()
 void __declspec(naked) hideAllPsiFieldsOnUnselectWrapper()
 {
 
-	static CUnit* unit;
+	static Unit* unit;
 
 	__asm {
 		MOV unit, ESI
@@ -117,7 +117,7 @@ void __declspec(naked) packUnitData_PsiProvider()
 
 	static const u32 packUnitData_PsiProvider_Return = 0x004E3961;
 
-	static CUnit* unit;
+	static Unit* unit;
 	static u16 unitId;
 
 	__asm {
@@ -129,7 +129,7 @@ void __declspec(naked) packUnitData_PsiProvider()
 	if (hooks::canMakePsiField(unitId))
 	{
 		if (unit->building.pylonAura != nullptr)
-			*((u32*)&unit->building.pylonAura) = (unit->building.pylonAura - spriteTable) / sizeof(CSprite) + 1;
+			*((u32*)&unit->building.pylonAura) = (unit->building.pylonAura - spriteTable) / sizeof(Sprite) + 1;
 	}
 
 	__asm {
@@ -144,7 +144,7 @@ void __declspec(naked) unpackUnitData_PsiProvider()
 
 	static const u32 unpackUnitData_PsiProvider_Return = 0x004E31A3;
 
-	static CUnit* unit;
+	static Unit* unit;
 	static u16 unitId;
 
 	__asm {

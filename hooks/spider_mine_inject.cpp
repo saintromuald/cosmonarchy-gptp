@@ -5,8 +5,8 @@ namespace
 {
 	void __declspec(naked) findBestTerranMineTarget_Wrapper()
 	{
-		static CUnit* mine;
-		static CUnit* target;
+		static Unit* mine;
+		static Unit* target;
 		__asm {
 			MOV mine, ESI
 			PUSHAD
@@ -21,7 +21,7 @@ namespace
 
 	void __declspec(naked) orders_TerranMine_Wrapper()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			MOV unit, EAX
 			PUSHAD
@@ -36,7 +36,7 @@ namespace
 
 	void __declspec(naked) orders_PlaceMine_Wrapper() // 00464FD0
 	{
-		static CUnit* a1;
+		static Unit* a1;
 		__asm {
 			MOV a1, EAX
 			PUSHAD
@@ -50,7 +50,7 @@ namespace
 
 	void __declspec(naked) burrowGeneric_Wrapper() // 004E9A30
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			MOV unit, EAX
 			PUSHAD

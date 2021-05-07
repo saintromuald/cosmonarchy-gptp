@@ -8,7 +8,7 @@ namespace hooks
 	void __declspec(naked) getMaxHpWrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EAX
@@ -27,7 +27,7 @@ namespace hooks
 	void __declspec(naked) isOnYellowHealthWrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EAX
@@ -46,7 +46,7 @@ namespace hooks
 	void _declspec(naked) isOnBurningHealthWrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EAX
@@ -65,7 +65,7 @@ namespace hooks
 	void _declspec(naked) getMaxHealthWrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EAX
@@ -84,7 +84,7 @@ namespace hooks
 	void _declspec(naked) ssDrawHpEnergyWrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EDI
@@ -103,7 +103,7 @@ namespace hooks
 	void _declspec(naked) calculateBaseStrengthWrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, ECX
@@ -122,7 +122,7 @@ namespace hooks
 	void _declspec(naked) aiRepairSomethingWrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EAX
@@ -141,7 +141,7 @@ namespace hooks
 	void _declspec(naked) aiStimIfNeededWrapper()
 	{
 		static u16 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, CX
@@ -160,7 +160,7 @@ namespace hooks
 	void _declspec(naked) unkWireRandomDraw56730_Wrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EAX
@@ -179,7 +179,7 @@ namespace hooks
 	void _declspec(naked) unkWireRandomDraw567C0_Wrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EAX
@@ -198,7 +198,7 @@ namespace hooks
 	void _declspec(naked) doMedicWrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, ECX
@@ -217,7 +217,7 @@ namespace hooks
 	void _declspec(naked) getRepairInfoWrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EAX
@@ -236,7 +236,7 @@ namespace hooks
 	void _declspec(naked) setHpWrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EAX
@@ -255,7 +255,7 @@ namespace hooks
 	void _declspec(naked) DrawImage_HpBar_Wrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EDI
@@ -274,7 +274,7 @@ namespace hooks
 	void _declspec(naked) DrawImage_HpBar_Wrapper2()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EDI
@@ -293,7 +293,7 @@ namespace hooks
 	void _declspec(naked) setBuildHpWrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EAX
@@ -312,7 +312,7 @@ namespace hooks
 	void _declspec(naked) orderFollowWrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, ECX
@@ -331,7 +331,7 @@ namespace hooks
 	void _declspec(naked) getUnitBulletDamageWrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, ECX
@@ -350,7 +350,7 @@ namespace hooks
 	void _declspec(naked) showFinishedUnitWrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, ECX
@@ -369,7 +369,7 @@ namespace hooks
 	void _declspec(naked) transformUnit_Main_Wrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EDX
@@ -388,7 +388,7 @@ namespace hooks
 	void _declspec(naked) transformUnit_Main_Wrapper2()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EDX
@@ -407,7 +407,7 @@ namespace hooks
 	void _declspec(naked) unk_ai_subunit_Destructor_Wrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EAX
@@ -426,7 +426,7 @@ namespace hooks
 	void _declspec(naked) updateUnitStatsFinishBuilding_Wrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EAX
@@ -445,7 +445,7 @@ namespace hooks
 	void _declspec(naked) modifyUnitHp_Wrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EAX
@@ -464,7 +464,7 @@ namespace hooks
 	void _declspec(naked) updateUnitDamageOverlay_Wrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EAX
@@ -483,7 +483,7 @@ namespace hooks
 	void _declspec(naked) ai_findTransport_Wrapper()
 	{
 		static u16 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, AX
@@ -502,7 +502,7 @@ namespace hooks
 	void _declspec(naked) ConvertToHallucination_Wrapper()
 	{
 		static u32 id;
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 hp;
 		__asm {
 			MOV id, EDX
@@ -519,7 +519,7 @@ namespace hooks
 
 	void __declspec(naked) getTotalHitPointsPlusShields_Wrapper()
 	{
-		static CUnit* a1;
+		static Unit* a1;
 		static u32 result;
 		__asm {
 			MOV a1, EDX
@@ -565,8 +565,8 @@ namespace hooks
 
 	void __declspec(naked) AI_TargetEnemyProc_Wrapper()
 	{
-		static CUnit* a1;
-		static CUnit* a2;
+		static Unit* a1;
+		static Unit* a2;
 		static bool result;
 		__asm {
 			MOV a1, ECX
@@ -609,7 +609,7 @@ namespace hooks
 
 	void __declspec(naked) getUnitStrength_Wrapper()
 	{
-		static CUnit* a1;
+		static Unit* a1;
 		static s32 a2;
 		static bool a3;
 		static s32 result;
@@ -637,8 +637,8 @@ namespace hooks
 
 	void __declspec(naked) AI_RestorationRequirementsProc_Wrapper()
 	{
-		static CUnit* a1;
-		static CUnit* a2;
+		static Unit* a1;
+		static Unit* a2;
 		static bool result;
 		__asm {
 			MOV a1, ECX
@@ -655,8 +655,8 @@ namespace hooks
 
 	void __declspec(naked) AI_EMPShieldRequirementsProc_Wrapper()
 	{
-		static CUnit* a1;
-		static CUnit* a2;
+		static Unit* a1;
+		static Unit* a2;
 		static bool result;
 		__asm {
 			MOV a1, ECX
@@ -673,8 +673,8 @@ namespace hooks
 
 	void __declspec(naked) attackOverlayAndNotify_Wrapper()
 	{
-		static CUnit* a1;
-		static CUnit* a2;
+		static Unit* a1;
+		static Unit* a2;
 		static u8 a3;
 		static char a4;
 		static char result;
@@ -736,7 +736,7 @@ namespace hooks
 
 	void __declspec(naked) setBuildShieldGain_Wrapper()
 	{
-		static CUnit* a1;
+		static Unit* a1;
 		__asm {
 			MOV a1, EBX
 			PUSHAD
@@ -750,8 +750,8 @@ namespace hooks
 
 	void __declspec(naked) getUnitBulletDamage_Wrapper()
 	{
-		static CUnit* victim;
-		static CBullet* bullet;
+		static Unit* victim;
+		static Bullet* bullet;
 		static s32 result;
 		__asm {
 			MOV victim, EAX
@@ -768,7 +768,7 @@ namespace hooks
 
 	void __declspec(naked) canCastSpell_Wrapper()
 	{
-		static CUnit* a1;
+		static Unit* a1;
 		static s32 result;
 		__asm {
 			MOV a1, EDI
@@ -835,7 +835,7 @@ namespace hooks
 
 	void __declspec(naked) AI_FindTransport_Wrapper()
 	{
-		static CUnit* a1;
+		static Unit* a1;
 		static s32 a2;
 		static s32 result;
 		__asm {

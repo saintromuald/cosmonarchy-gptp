@@ -3,15 +3,15 @@
 
 struct DetectorCheckParam {
   u32 visionFlags;
-  CUnit* target;
+  Unit* target;
 };
 
 C_ASSERT(sizeof(DetectorCheckParam) == 8);
 
 namespace hooks {
 
-bool unitCanDetectHook(CUnit* unit);
-void getCloakedTargetVisibility(CUnit* detector, DetectorCheckParam* param);
+bool unitCanDetectHook(Unit* unit);
+void getCloakedTargetVisibility(Unit* detector, DetectorCheckParam* param);
 
 void injectDetectorHooks();
 

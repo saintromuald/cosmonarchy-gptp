@@ -8,7 +8,7 @@ namespace
 	void __declspec(naked) orders_SpellWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP

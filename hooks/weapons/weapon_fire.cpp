@@ -14,7 +14,7 @@
 #include <set>
 //-------- Helper function declarations. Do NOT modify! ---------//
 
-static bool madrigalFuriaMatch(CUnit* madrigal, CUnit* unit)
+static bool madrigalFuriaMatch(Unit* madrigal, Unit* unit)
 {
 	if (unit == madrigal)
 	{
@@ -35,7 +35,7 @@ static bool madrigalFuriaMatch(CUnit* madrigal, CUnit* unit)
 	return true;
 }
 
-static bool alkajSporeMatch(CBullet* bullet, CUnit* unit)
+static bool alkajSporeMatch(Bullet* bullet, Unit* unit)
 {
 	if (unit->status & UnitStatus::Invincible)
 	{
@@ -48,7 +48,7 @@ static bool alkajSporeMatch(CBullet* bullet, CUnit* unit)
 	return true;
 }
 
-bool powerSiphonDistributeMatch(CUnit* savant, CUnit* unit)
+bool powerSiphonDistributeMatch(Unit* savant, Unit* unit)
 {
 	if (!savant)
 	{
@@ -75,7 +75,7 @@ bool powerSiphonDistributeMatch(CUnit* savant, CUnit* unit)
 
 namespace
 {
-	typedef void(__stdcall* GetWeaponHitPosFunc)(CUnit* unit, s32* x, s32* y);
+	typedef void(__stdcall* GetWeaponHitPosFunc)(Unit* unit, s32* x, s32* y);
 	GetWeaponHitPosFunc const getWeaponHitPos = (GetWeaponHitPosFunc)0x004762C0;
 }
 
@@ -86,8 +86,8 @@ namespace hooks
 
 	//Fires a weapon from the @p unit.
 	//This hook affects the following iscript opcodes: attackwith, attack, castspell
-	//This also affects CUnit::fireWeapon().
-	void fireWeaponHook(CUnit* unit, u8 wId)
+	//This also affects Unit::fireWeapon().
+	void fireWeaponHook(Unit* unit, u8 wId)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 		if (unit == nullptr)
@@ -176,7 +176,7 @@ namespace hooks
 						y - range,
 						x + range,
 						y + range);
-					unitFinder_collect.forEach([&](CUnit* target)
+					unitFinder_collect.forEach([&](Unit* target)
 					{
 						constexpr u32 ENERGY_PROC_MAX = 50 * 256;
 						if (energy == ENERGY_PROC_MAX)
@@ -216,7 +216,7 @@ namespace hooks
 						unit->getX() + range,
 						unit->getY() + range
 					);
-					u32 matchCount = unitFinder_distribute.getMatchUnitCount([&](CUnit* target)
+					u32 matchCount = unitFinder_distribute.getMatchUnitCount([&](Unit* target)
 					{
 						return powerSiphonDistributeMatch(unit, target);
 					});
@@ -224,7 +224,7 @@ namespace hooks
 					{
 						u32 perEach = energy / matchCount;
 						u32 extra = energy % matchCount;
-						CUnit* unitFirst = unitFinder_distribute.getFirst([&](CUnit* target)
+						Unit* unitFirst = unitFinder_distribute.getFirst([&](Unit* target)
 						{
 							return powerSiphonDistributeMatch(unit, target);
 						});
@@ -233,10 +233,10 @@ namespace hooks
 							unitFirst->addUnitEnergy(extra);
 						}
 						u32 unspent = 0;
-						unitFinder_distribute.forEachInMatch([&](CUnit* target)
+						unitFinder_distribute.forEachInMatch([&](Unit* target)
 						{
 							return powerSiphonDistributeMatch(unit, target);
-						}, [&](CUnit* u)
+						}, [&](Unit* u)
 						{
 							u->addUnitEnergy(unspent);
 							energy -= unspent;
@@ -257,7 +257,7 @@ namespace hooks
 						});
 						if (energy > 0)
 						{
-							CUnit* unitNew = unitFinder_distribute.getFirst([&](CUnit* target)
+							Unit* unitNew = unitFinder_distribute.getFirst([&](Unit* target)
 							{
 								return powerSiphonDistributeMatch(unit, target);
 							});
@@ -271,7 +271,7 @@ namespace hooks
 				// Monoceros Targeting - Battlecruiser behavior
 				else if (weaponId == WeaponId::MinotaurAsterionLaserBattery)
 				{
-					std::set<CUnit*> monoceros;
+					std::set<Unit*> monoceros;
 					monoceros.insert(unit->orderTarget.unit);
 					auto old = unit->orderTarget.unit;
 					for (s32 i = 0; i < 4; i++)
@@ -284,7 +284,7 @@ namespace hooks
 							unit->getX() + range,
 							unit->getY() + range,
 							unit,
-							[&](CUnit* target)
+							[&](Unit* target)
 						{
 							if (target == unit
 								|| monoceros.find(target) != monoceros.end()
@@ -419,7 +419,7 @@ namespace hooks
 					scbw::UnitFinder unitsInSplash(unit->getX() - range, unit->getY() - range, unit->getX() + range, unit->getY() + range);
 					for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
 					{
-						CUnit* target = unitsInSplash.getUnit(i);
+						Unit* target = unitsInSplash.getUnit(i);
 						if (target != nullptr && madrigalFuriaMatch(unit, target) && target != old)
 						{
 							unit->orderTarget.unit = target;
@@ -459,7 +459,7 @@ namespace hooks
 					unit->getY() - range,
 					unit->getX() + range,
 					unit->getY() + range,
-					unit, [&](CUnit* target)
+					unit, [&](Unit* target)
 				{
 					if (target == unit)
 					{
@@ -500,12 +500,12 @@ namespace hooks
 		}
 	}
 
-	void progressBulletFlight(CBullet* bullet)
+	void progressBulletFlight(Bullet* bullet)
 	{
-		CBullet* v1;
-		CUnit* target;
-		CSprite* v4;
-		CImage* i;
+		Bullet* v1;
+		Unit* target;
+		Sprite* v4;
+		Image* i;
 
 		if (bullet->weaponType == WeaponId::AlkajeliskParasiticSpores)
 		{
@@ -518,7 +518,7 @@ namespace hooks
 					bullet->position.x + range,
 					bullet->position.y + range,
 					bullet,
-					[&](CUnit* unit)
+					[&](Unit* unit)
 				{
 					return alkajSporeMatch(bullet, unit);
 				}
@@ -567,7 +567,7 @@ namespace hooks
 		if (bullet->weaponType == WeaponId::ArchitectDispersiveSalvo && bullet->sourceUnit && bullet->attackTarget.unit &&
 			bullet->attackTarget.unit->sprite && bullet->sourceUnit->sprite)
 		{
-			CUnit* targ = bullet->attackTarget.unit;
+			Unit* targ = bullet->attackTarget.unit;
 			if (scbw::getDistanceFast(bullet->position.x, bullet->position.y, targ->getX(), targ->getY()) < 3 * 32)
 			{
 				if (!globals.multihit_bullet_is_set(bullet))
@@ -583,7 +583,7 @@ namespace hooks
 					s32 count = 1;
 					for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
 					{
-						CUnit* target = unitsInSplash.getUnit(i);
+						Unit* target = unitsInSplash.getUnit(i);
 						if (target == nullptr)
 						{
 							continue;
@@ -601,7 +601,7 @@ namespace hooks
 					globals.add_multihit_empty_bullet(bullet, count);
 					for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
 					{
-						CUnit* target = unitsInSplash.getUnit(i);
+						Unit* target = unitsInSplash.getUnit(i);
 						if (target == nullptr)
 						{
 							continue;
@@ -642,7 +642,7 @@ namespace hooks
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
 				bullet->position.x - range, bullet->position.y - range,
 				bullet->position.x + range, bullet->position.y + range,
-				bullet, [&](CUnit* unit)
+				bullet, [&](Unit* unit)
 			{
 				if (!(unit->status & UnitStatus::InAir))
 				{
@@ -688,7 +688,7 @@ namespace hooks
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
 				bullet->position.x - range, bullet->position.y - range,
 				bullet->position.x + range, bullet->position.y + range,
-				bullet, [&](CUnit* unit)
+				bullet, [&](Unit* unit)
 			{
 				if (unit->status & UnitStatus::Invincible)
 				{
@@ -733,7 +733,7 @@ namespace hooks
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
 				bullet->position.x - range, bullet->position.y - range,
 				bullet->position.x + range, bullet->position.y + range,
-				bullet, [&](CUnit* unit)
+				bullet, [&](Unit* unit)
 			{
 				if (unit->status & UnitStatus::Invincible)
 				{
@@ -840,15 +840,15 @@ namespace hooks
 		}
 	}
 
-	void bulletBehaviour_Bounce(CBullet* a1)
+	void bulletBehaviour_Bounce(Bullet* a1)
 	{ // 0048B2D0
-		CUnit* v1; // eax
+		Unit* v1; // eax
 		char v2; // al
-		CUnit* v3; // ebx
-		CImage* i; // esi
-		CUnit* v5; // eax
-		CSprite* v6; // edx
-		CImage* j; // esi
+		Unit* v3; // ebx
+		Image* i; // esi
+		Unit* v5; // eax
+		Sprite* v6; // edx
+		Image* j; // esi
 
 		v1 = a1->attackTarget.unit;
 		if (v1)
@@ -910,19 +910,19 @@ namespace hooks
 		}
 	}
 
-	bool findNextBounceTargetProc(CUnit* pIterator)
+	bool findNextBounceTargetProc(Unit* pIterator)
 	{ // 0048AFD0
-		CUnit* pSrc; // esi
+		Unit* pSrc; // esi
 		s32 nSrcStatus; // eax
-		CUnit* _pIterator; // edi
+		Unit* _pIterator; // edi
 		s32 v4; // eax
-		CUnit* v5; // ebx
+		Unit* v5; // ebx
 		s32 v6; // eax
 		s32 v7; // eax
 		s32 v8; // eax
 		bool v9; // eax
 		s32 v10; // eax
-		CUnit* v11; // ecx
+		Unit* v11; // ecx
 		s32 v13; // eax
 		s8 v14; // cl
 
@@ -1047,11 +1047,11 @@ namespace hooks
 		//		scbw::print("Gladius code end");
 		return *bulletBounceMissileNext != _pIterator;
 	}
-	CUnit* findNextBounceTarget(CBullet* a1)
+	Unit* findNextBounceTarget(Bullet* a1)
 	{ // 0048B1E0
-		CUnit* v2; // edx
-		CUnit* v3; // ecx
-		CSprite* v4; // eax
+		Unit* v2; // edx
+		Unit* v3; // ecx
+		Sprite* v4; // eax
 		u16 v5;
 		u16 v6;
 		Box32 _a1; // [esp+0h] [ebp-8h]
@@ -1072,29 +1072,29 @@ namespace hooks
 		_a1.top = (s16)v6 + 96;
 		_a1.right = (s16)v5 - 96;
 		_a1.bottom = (s16)v5 + 96;
-		//		return (CUnit*)iterateUnitsAtLocationTargetProc(&_a1, (s32(__fastcall*)(s32, s32))findNextBounceTargetProc, 0);
+		//		return (Unit*)iterateUnitsAtLocationTargetProc(&_a1, (s32(__fastcall*)(s32, s32))findNextBounceTargetProc, 0);
 		GPTP::logger << (u32)(*bulletBounceMissileNext) << " " << (u32)(*bulletBounceMissileSource) << " " << (u32)(*bulletBounceMissileTarget) << '\n';
-		return (CUnit*)helper::iterateUnitsAtLocationTargetProc(&_a1, (s32(__fastcall*)(s32, s32))findNextBounceTargetProc, 0);
+		return (Unit*)helper::iterateUnitsAtLocationTargetProc(&_a1, (s32(__fastcall*)(s32, s32))findNextBounceTargetProc, 0);
 	}
 
 	/*
 	s32 writeBullets(FILE* hFile) {
 		s32 v1; // edi
-		CBullet* v2; // esi
-		CBullet* v3; // eax
+		Bullet* v2; // esi
+		Bullet* v3; // eax
 		s32 v4; // edx
 		s32 v5; // ecx
 		s32 v6; // esi
 		size_t v7; // eax
 		s16* v8; // eax
 		u16 v9; // dx
-		CBullet* v10; // ebx
+		Bullet* v10; // ebx
 		void* v11; // edi
 		u32 v12; // esi
 		s16* v13; // eax
-		CBullet* v14; // ecx
+		Bullet* v14; // ecx
 		s32 v15; // edi
-		CBullet* v16; // ecx
+		Bullet* v16; // ecx
 		s32 v18; // [esp+8h] [ebp-Ch]
 		s16* v19; // [esp+Ch] [ebp-8h]
 		s32 data; // [esp+10h] [ebp-4h]
@@ -1108,7 +1108,7 @@ namespace hooks
 		} while (v1);
 		v4 = 0;
 		data = 0;
-		v3 = (CBullet*)((char*)bulletTable + 12);
+		v3 = (Bullet*)((char*)bulletTable + 12);
 		v5 = 100;
 		do {
 			if (v3->previous)
@@ -1123,7 +1123,7 @@ namespace hooks
 			if ((s16)data) {
 				v12 = 114 * (unsigned __int16)data;
 				v18 = 114 * (unsigned __int16)data;
-				v8 = SMemAlloc(114 * (unsigned __int16)data, "Starcraft\\SWAR\\lang\\CBullet.cpp", 1276, 8);
+				v8 = SMemAlloc(114 * (unsigned __int16)data, "Starcraft\\SWAR\\lang\\Bullet.cpp", 1276, 8);
 				v11 = v8;
 				v19 = v8;
 				data = 0;
@@ -1145,7 +1145,7 @@ namespace hooks
 					++v10;
 				} while (v9 < 0x64u);
 				v6 = compressWrite(v11, v12, hFile);
-				SMemFree(v11, "Starcraft\\SWAR\\lang\\CBullet.cpp", 1299, 0);
+				SMemFree(v11, "Starcraft\\SWAR\\lang\\Bullet.cpp", 1299, 0);
 			}
 		}
 		v14 = bulletTable;

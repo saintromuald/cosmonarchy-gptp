@@ -5,7 +5,7 @@ namespace BuildingHelper
 {
 	// Check if @p unit is warping in a Protoss building.
 	// Identical to function @ 0x004E4C40
-	bool isWarpingInProtossBuilding(const CUnit* probe)
+	bool isWarpingInProtossBuilding(const Unit* probe)
 	{
 		return probe->mainOrderId == OrderId::BuildProtoss1
 			&& probe->status & UnitStatus::GroundedBuilding
@@ -16,7 +16,7 @@ namespace BuildingHelper
 	// Check if @p building is in the process of constructing an add-on.
 	// Return the building or add-on that the @p unit is constructing.
 	// Identical to function @ 0x00466A30
-	CUnit* getConstructRepairTarget(const CUnit* unit)
+	Unit* getConstructRepairTarget(const Unit* unit)
 	{
 		if (unit->mainOrderId == OrderId::BuildTerran
 			|| unit->mainOrderId == OrderId::Repair1
@@ -35,7 +35,7 @@ namespace BuildingHelper
 	}
 
 	// Identical to function @ 0x00466B70
-	s32 getNumberOfUnitTypeInBuildQueue(const CUnit* unit, u16 unitId)
+	s32 getNumberOfUnitTypeInBuildQueue(const Unit* unit, u16 unitId)
 	{
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Worker)
 		{
@@ -69,7 +69,7 @@ namespace BuildingHelper
 		return unitCount;
 	}
 
-	s32 getNumberOfUnitType(const CUnit* unit, u16 unitId, bool ignoreIncomplete)
+	s32 getNumberOfUnitType(const Unit* unit, u16 unitId, bool ignoreIncomplete)
 	{
 		if (!ignoreIncomplete || unit->status & UnitStatus::Completed)
 		{

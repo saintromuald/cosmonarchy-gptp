@@ -5,7 +5,7 @@ namespace hooks
 {
 	void CMDRECV_Unburrow()
 	{
-		CUnit* selected_unit;
+		Unit* selected_unit;
 		*selectionIndexStart = 0;
 		selected_unit = getActivePlayerNextSelection();
 		while (selected_unit != nullptr)
@@ -21,7 +21,7 @@ namespace hooks
 
 	void CMDRECV_Burrow(u8 bCommandType)
 	{
-		CUnit* selected_unit;
+		Unit* selected_unit;
 		*selectionIndexStart = 0;
 		selected_unit = getActivePlayerNextSelection();
 		while (selected_unit != nullptr)
@@ -54,7 +54,7 @@ namespace hooks
 		}
 	}
 
-	void Unburrow_Proc(CUnit* unit)
+	void Unburrow_Proc(Unit* unit)
 	{
 
 		if (unit->mainOrderId == OrderId::Burrow ||

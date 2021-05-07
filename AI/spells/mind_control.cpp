@@ -6,7 +6,7 @@
 namespace AI
 {
 
-	CUnit* findBestMindControlTarget(CUnit* caster, bool isUnderAttack)
+	Unit* findBestMindControlTarget(Unit* caster, bool isUnderAttack)
 	{
 
 		s32 bounds = 32 * 32;
@@ -17,7 +17,7 @@ namespace AI
 			caster->getX() + bounds,
 			caster->getY() + bounds,
 			caster,
-			[&](CUnit* target)
+			[&](Unit* target)
 		{
 
 			if (!isTargetWorthHitting(target, caster))

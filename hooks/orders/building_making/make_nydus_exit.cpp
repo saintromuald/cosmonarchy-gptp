@@ -3,7 +3,7 @@
 
 namespace hooks
 {
-	void orders_Build5(CUnit* nydus_canal)
+	void orders_Build5(Unit* nydus_canal)
 	{
 		s32 x, y;
 		u32 result_f00473FB0;
@@ -59,7 +59,7 @@ namespace hooks
 		}
 		else
 		{ // 0045DCDB
-			CUnit* nydusExit =
+			Unit* nydusExit =
 				helper::createUnit(
 					UnitId::ZergNydusCanal,
 					nydus_canal->orderTarget.pt.x,

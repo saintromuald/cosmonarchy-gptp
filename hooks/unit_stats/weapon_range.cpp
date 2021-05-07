@@ -9,9 +9,9 @@ namespace hooks
 
 	/// Returns the modified seek range (AKA target acquisition range) for the unit.
 	/// Note: Seek ranges are measured in matrices (1 matrix = 32 pixels).
-	/// This hook affects the behavior of CUnit::getSeekRange().
+	/// This hook affects the behavior of Unit::getSeekRange().
 	/// Equivalent to GetTargetAckRangeUpgrade @ 0x00476000  
-	u8 getSeekRangeHook(CUnit* unit) // seek range is measured in tiles, unfortunately
+	u8 getSeekRangeHook(Unit* unit) // seek range is measured in tiles, unfortunately
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -81,12 +81,12 @@ namespace hooks
 
 	/// Returns the modified max range for the weapon, which is assumed to be
 	/// attached to the given unit.
-	/// This hook affects the behavior of CUnit::getMaxWeaponRange().
+	/// This hook affects the behavior of Unit::getMaxWeaponRange().
 	/// Note: Weapon ranges are measured in pixels.
 	///
 	/// @param	weapon		The weapons.dat ID of the weapon.
 	/// @param	unit			The unit that owns the weapon. Use this to check upgrades.
-	u32 getMaxWeaponRangeHook(CUnit* unit, u8 weaponId)
+	u32 getMaxWeaponRangeHook(Unit* unit, u8 weaponId)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 

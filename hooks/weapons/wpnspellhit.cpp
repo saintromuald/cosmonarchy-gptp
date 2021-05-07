@@ -12,11 +12,11 @@ namespace hooks
 {
 	// Hooked to allow for replacing proc functions - Pr0nogo
 	// Still needs work, lots of weird conversions/casting in this one
-	CUnit* iterateUnitsAtLocationTargetProc(Box16* location, s32(__fastcall* proc)(CUnit*, CUnit*), CUnit* unit) // 004E8280
+	Unit* iterateUnitsAtLocationTargetProc(Box16* location, s32(__fastcall* proc)(Unit*, Unit*), Unit* unit) // 004E8280
 	{
-		CUnit** unitsInBounds = helper::getAllUnitsInBounds(location);
-		CUnit** unitsInBounds2 = unitsInBounds;
-		CUnit* aUnitInBound;
+		Unit** unitsInBounds = helper::getAllUnitsInBounds(location);
+		Unit** unitsInBounds2 = unitsInBounds;
+		Unit* aUnitInBound;
 		if (proc || (aUnitInBound = *unitsInBounds) == 0)
 		{
 			aUnitInBound = *unitsInBounds;
@@ -42,9 +42,9 @@ namespace hooks
 
 	// Hooked to clean up lardcode - Pr0nogo
 	// Seems to be double-called from Maelstrom, no idea why
-	char disableUnit(CUnit* unit) // 00492CC0
+	char disableUnit(Unit* unit) // 00492CC0
 	{
-		CUnit* subunit = unit->subunit;
+		Unit* subunit = unit->subunit;
 		if (subunit)
 		{
 			subunit->status |= UnitStatus::Disabled;
@@ -53,7 +53,7 @@ namespace hooks
 		s16 unitId = unit->id;
 		if (scbw::unitCanNuke(unit))
 		{
-			CUnit* nuke = unit->connectedUnit;
+			Unit* nuke = unit->connectedUnit;
 			if (nuke)
 			{
 				if (nuke->id == UnitId::TerranNuclearMissile)
@@ -78,7 +78,7 @@ namespace hooks
 		}
 		char result;
 		result = helper::ignoreAllScriptsAndGoToIdle(unit);
-		CSprite* sprite = unit->sprite;
+		Sprite* sprite = unit->sprite;
 		if (sprite->flags & 8)
 		{
 			if (*clientSelectionCount > 1u)
@@ -96,14 +96,14 @@ namespace hooks
 	}
 
 	// no bullet because this function can be called in another context without bullet
-	void IrradiateHit(CUnit* attacker, Point16 target, u8 attackingPlayerId)
+	void IrradiateHit(Unit* attacker, Point16 target, u8 attackingPlayerId)
 	{
 		globals.createGenericPersistImpact(ImpactId::Irradiate, 30 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attackingPlayerId);
 	}
 
 	// bullet is not normally part of the function, so if the function is called
 	// in an unexpected way, it may not contain the correct value.
-	void OpticalFlareHit(CUnit* target, u32 attackingPlayerId, CBullet* bullet)
+	void OpticalFlareHit(Unit* target, u32 attackingPlayerId, Bullet* bullet)
 	{
 		if (target->status & UnitStatus::IsHallucination)
 		{
@@ -119,7 +119,7 @@ namespace hooks
 
 			// create impact overlay
 			u32 overlayImageId = ImageId::OpticalFlareHit_Small + scbw::getOverlayOffset(target->id);
-			CUnit* overlayTargetUnit;
+			Unit* overlayTargetUnit;
 			if (target->subunit != nullptr)
 			{
 				overlayTargetUnit = target->subunit;
@@ -140,7 +140,7 @@ namespace hooks
 
 	// bullet is not normally part of the function, so if the function is called
 	// in an unexpected way, it may not contain the correct value.
-	void RestoreHit(CUnit* target, CBullet* bullet)
+	void RestoreHit(Unit* target, Bullet* bullet)
 	{
 		if (target->status & UnitStatus::IsHallucination)
 		{
@@ -159,14 +159,14 @@ namespace hooks
 	// the timer is reset before this call 2 times out of 3 (with
 	// previousLockdownTimer holding the pre-reset value), and
 	// the 3rd case, previousLockdownTimer is set to 131 (0x83)
-	void LockdownHit(CUnit* target, u8 previousLockdownTimer, CBullet* bullet)
+	void LockdownHit(Unit* target, u8 previousLockdownTimer, Bullet* bullet)
 	{
 
 		// add lockdown overlay if no ongoing lockdown already
 		if (target->lockdownTimer == 0)
 		{
 			u32 overlayImageId = ImageId::LockdownField_Small + scbw::getOverlayOffset(target->id);
-			CUnit* overlayTargetUnit;
+			Unit* overlayTargetUnit;
 			if (target->subunit != nullptr)
 			{
 				overlayTargetUnit = target->subunit;
@@ -195,9 +195,9 @@ namespace hooks
 	// TODO: Cleanup
 	// was called "Shot" instead of "Hit", changed due to the context
 	/*
-	CUnit* swarmSearch(CUnit* hitunit){
+	Unit* swarmSearch(Unit* hitunit){
 		scbw::print("Loop...");
-		for (CUnit *unit = *firstVisibleUnit; unit; unit = unit->link.next) {
+		for (Unit *unit = *firstVisibleUnit; unit; unit = unit->link.next) {
 			if(unit->id==UnitId::Spell_DarkSwarm){
 				scbw::print("dark swarm detected in the loop!");
 				char buf[64];
@@ -215,7 +215,7 @@ namespace hooks
 		return nullptr;
 	}*/
 
-	void WeaponBulletHit(CBullet* bullet, CUnit* target, u32 damageDivisor)
+	void WeaponBulletHit(Bullet* bullet, Unit* target, u32 damageDivisor)
 	{
 		u32 base_damage = helper::GetUnitBulletDamage(bullet, target);
 		if (bullet->hitFlags & 2)
@@ -248,16 +248,16 @@ namespace hooks
 		}
 	}
 
-	u16 GetUnitWidth(CUnit* unit)
+	u16 GetUnitWidth(Unit* unit)
 	{
 		return unit->getRight() - unit->getLeft();
 	}
-	u16 GetUnitHeight(CUnit* unit)
+	u16 GetUnitHeight(Unit* unit)
 	{
 		return unit->getBottom() - unit->getTop();
 	}
 
-	bool IsInRange(CUnit* source, CUnit* target, u32 range)
+	bool IsInRange(Unit* source, Unit* target, u32 range)
 	{
 		u16 sourceX = source->position.x;
 		u16 sourceY = source->position.y;
@@ -280,10 +280,10 @@ namespace hooks
 		}
 	}
 
-	void MeleeAttackHit(CUnit* attacker)
+	void MeleeAttackHit(Unit* attacker)
 	{
 		UnitExt* attackerExt = globals.GetUnitExt(attacker);
-		CUnit* target = attacker->orderTarget.unit;
+		Unit* target = attacker->orderTarget.unit;
 		if (target != nullptr)
 		{
 			u8 weaponId;
@@ -351,12 +351,12 @@ namespace hooks
 	// bullet is not normally part of the function, so if the function is called
 	// in an unexpected way, it may not contain the correct value.
 	// /...
-	// In the original code, the parameters are gotten from CBullet as:
+	// In the original code, the parameters are gotten from Bullet as:
 	// attacker from bullet->sourceUnit
 	// x and y from bullet->sprite->position
-	void EMPShockwaveHit(CUnit* attacker, s32 x, s32 y, CBullet* bullet)
+	void EMPShockwaveHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
-		CThingy* emp_sprite = scbw::createThingy(371, x, y, 0);
+		Thingy* emp_sprite = scbw::createThingy(371, x, y, 0);
 		if (emp_sprite != nullptr)
 		{
 			emp_sprite->sprite->elevationLevel = 19; // 0x13
@@ -365,8 +365,8 @@ namespace hooks
 		static u16* const maxBoxRightValue = (u16*)0x00628450;	// should usually be mapTileSize->width * 32
 		static u16* const maxBoxBottomValue = (u16*)0x006284B4;	// should usually be mapTileSize->height * 32
 		Box16 area_of_effect;
-		CUnit** unitsInAreaOfEffect;
-		CUnit* current_unit;
+		Unit** unitsInAreaOfEffect;
+		Unit* current_unit;
 
 		// define the base area of effect
 		area_of_effect.left = (u16)x - weapons_dat::InnerSplashRadius[WeaponId::EMP_Shockwave];
@@ -428,7 +428,7 @@ namespace hooks
 	}
 
 	// bullet is not normally part of the function, so if the function is called in an unexpected way, it may not contain the correct value
-	void CorrosiveAcidHit(u32 attackingPlayerId, s32 x, s32 y, CBullet* bullet)
+	void CorrosiveAcidHit(u32 attackingPlayerId, s32 x, s32 y, Bullet* bullet)
 	{
 		Box16 coords;
 
@@ -457,7 +457,7 @@ namespace hooks
 	}
 
 	// no bullet because the code normally calling this function lose the easily available information (and getting it the hard way seems overkill)
-	void ConsumeHit(CUnit* attacker, CUnit* target)
+	void ConsumeHit(Unit* attacker, Unit* target)
 	{
 		if (attacker == nullptr
 			|| target == nullptr)
@@ -492,9 +492,9 @@ namespace hooks
 
 	// bullet is not normally part of the function, so if the function is called
 	// in an unexpected way, it may not contain the correct value.
-	void EnsnareHit(CUnit* attacker, s32 x, s32 y, CBullet* bullet)
+	void EnsnareHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
-		CThingy* ensnare_effect_sprite = helper::createThingy(SpriteId::Ensnare, x, y, 0);
+		Thingy* ensnare_effect_sprite = helper::createThingy(SpriteId::Ensnare, x, y, 0);
 		if (ensnare_effect_sprite != nullptr)
 		{
 			ensnare_effect_sprite->sprite->elevationLevel = 19; // 0x13
@@ -508,7 +508,7 @@ namespace hooks
 		helper::IterateUnitsAtLocationTargetProc_Ensnare(attacker, &coords);
 	}
 
-	s32 ensnareProc(CUnit* target, CUnit* attacker)
+	s32 ensnareProc(Unit* target, Unit* attacker)
 	{
 		if (target != attacker
 			&& !(units_dat::BaseProperty[target->id] & UnitProperty::Building)
@@ -524,10 +524,10 @@ namespace hooks
 
 	// bullet is not normally part of the function, so if the function is called
 	// in an unexpected way, it may not contain the correct value.
-	void DarkSwarmHit(s32 x, s32 y, u32 attackingPlayerId, CBullet* bullet)
+	void DarkSwarmHit(s32 x, s32 y, u32 attackingPlayerId, Bullet* bullet)
 	{
 		Point16 coords;
-		CUnit* dark_swarm_unit;
+		Unit* dark_swarm_unit;
 		coords.x = x;
 		coords.y = y;
 
@@ -560,7 +560,7 @@ namespace hooks
 
 	//bullet is not normally part of the function, so if the function is called
 	//in an unexpected way, it may not contain the correct value.
-	void BroodlingHit(CUnit* attacker, CUnit* target, CBullet* bullet)
+	void BroodlingHit(Unit* attacker, Unit* target, Bullet* bullet)
 	{
 		u32 broodlings_to_spawn = 3;
 		ActiveTile tile = scbw::getActiveTileAt(bullet->sprite->position.x, bullet->sprite->position.y);
@@ -601,7 +601,7 @@ namespace hooks
 			if (!jump_to_end_of_loop)
 			{ // 004F49E2
 				Point16 pos;
-				CUnit* created_broodling;
+				Unit* created_broodling;
 				pos.x = current_x;
 				pos.y = current_y;
 
@@ -648,7 +648,7 @@ namespace hooks
 
 	// bullet is not normally part of the function, so if the function is called
 	// in an unexpected way, it may not contain the correct value.
-	void PlagueHit(CUnit* attacker, s32 x, s32 y, CBullet* bullet)
+	void PlagueHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
 		Box16 coords;
 		coords.left = x - 64;
@@ -666,7 +666,7 @@ namespace hooks
 				y - range,
 				x + range,
 				y + range
-			).forEach([&](CUnit* unit)
+			).forEach([&](Unit* unit)
 			{
 				if (unit->plagueTimer > 0)
 				{
@@ -684,9 +684,9 @@ namespace hooks
 
 	// bullet is not normally part of the function, so if the function is called
 	// in an unexpected way, it may not contain the correct value.
-	void MaelstromHit(CUnit* attacker, s32 x, s32 y, CBullet* bullet)
+	void MaelstromHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
-		CThingy* maelstrom_effect_sprite = helper::createThingy(SpriteId::Maelstrom_Hit, x, y, 0);
+		Thingy* maelstrom_effect_sprite = helper::createThingy(SpriteId::Maelstrom_Hit, x, y, 0);
 		if (maelstrom_effect_sprite != nullptr)
 		{
 			maelstrom_effect_sprite->sprite->elevationLevel = 17; // 0x11
@@ -702,7 +702,7 @@ namespace hooks
 	}
 
 	// Hooked to modify maelstrom timer and conditions; however, this hook is not called yet, we may need to hook iterateUnitsAtLocationTargetProc - 4E8280
-	bool maelstromProc(CUnit* target, CUnit* source) // 004F6760
+	bool maelstromProc(Unit* target, Unit* source) // 004F6760
 	{
 		scbw::print("maelstromProc");
 		s32 unitStatus = target->status;
@@ -728,7 +728,7 @@ namespace hooks
 	}
 
 	// no bullet because this function is called in another context without bullet
-	void MindControlHitHook(CUnit* attacker, CUnit* target)
+	void MindControlHitHook(Unit* attacker, Unit* target)
 	{
 		scbw::decloakProc(attacker);
 		if (target->status & UnitStatus::IsHallucination)
@@ -743,9 +743,9 @@ namespace hooks
 
 	// bullet is not normally part of the function, so if the function is called
 	// in an unexpected way, it may not contain the correct value.
-	void StasisFieldHit(CUnit* attacker, s32 x, s32 y, CBullet* bullet)
+	void StasisFieldHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
-		CThingy* stasisfield_effect_sprite = helper::createThingy(SpriteId::Stasis_Field_Hit, x, y, 0);
+		Thingy* stasisfield_effect_sprite = helper::createThingy(SpriteId::Stasis_Field_Hit, x, y, 0);
 		if (stasisfield_effect_sprite != nullptr)
 		{
 			stasisfield_effect_sprite->sprite->elevationLevel = 17; // 0x11
@@ -761,10 +761,10 @@ namespace hooks
 
 	// bullet is not normally part of the function, so if the function is called
 	// in an unexpected way, it may not contain the correct value.
-	CUnit* createDisruptionWeb(u32 attackingPlayerId, s32 x, s32 y)
+	Unit* createDisruptionWeb(u32 attackingPlayerId, s32 x, s32 y)
 	{
 		Point16 coords;
-		CUnit* disruption_web_unit;
+		Unit* disruption_web_unit;
 		coords.x = x;
 		coords.y = y;
 
@@ -791,16 +791,16 @@ namespace hooks
 		return disruption_web_unit;
 	}
 
-	void DisruptionWebHit(u32 attackingPlayerId, s32 x, s32 y, CBullet* bullet)
+	void DisruptionWebHit(u32 attackingPlayerId, s32 x, s32 y, Bullet* bullet)
 	{
 		auto unit = createDisruptionWeb(attackingPlayerId, x, y);
 	}
 
-	u8 stasisFieldOverlay(CUnit* unit, u8 timer)
+	u8 stasisFieldOverlay(Unit* unit, u8 timer)
 	{
 		if (!unit->stasisTimer)
 		{
-			CUnit* finalUnit = unit->subunit;
+			Unit* finalUnit = unit->subunit;
 			if (!finalUnit)
 			{
 				finalUnit = unit;
@@ -818,9 +818,9 @@ namespace hooks
 		return disableUnit(unit);
 	}
 
-	void createScanner(CUnit* unit) // 00464E40
+	void createScanner(Unit* unit) // 00464E40
 	{
-		CUnit* v1; // esi
+		Unit* v1; // esi
 		u16 v2; // ax
 		bool v3; // zf
 		GroupFlag targetsFound2; // al
@@ -829,8 +829,8 @@ namespace hooks
 		s16 v7; // ax
 		const char* v8; // eax
 		s16 v9; // cx
-		CUnit* v10; // eax
-		CUnit* v11; // ebx
+		Unit* v10; // eax
+		Unit* v11; // ebx
 		s16 v12; // ax
 		Point16 a2; // [esp+4h] [ebp-4h]
 

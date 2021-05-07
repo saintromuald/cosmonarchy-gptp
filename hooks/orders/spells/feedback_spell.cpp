@@ -4,10 +4,10 @@
 namespace hooks
 {
 
-	void orders_Feedback(CUnit* unit)
+	void orders_Feedback(Unit* unit)
 	{
 
-		CUnit* target = unit->orderTarget.unit;
+		Unit* target = unit->orderTarget.unit;
 
 		if (
 			target != nullptr &&

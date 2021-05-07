@@ -7,7 +7,7 @@
 namespace AI
 {
 
-	CUnit* findBestRestorationTarget(CUnit* caster, bool isUnderAttack)
+	Unit* findBestRestorationTarget(Unit* caster, bool isUnderAttack)
 	{
 
 		s32 bounds = 32 * 32;
@@ -18,7 +18,7 @@ namespace AI
 			caster->getX() + bounds,
 			caster->getY() + bounds,
 			caster,
-			[&](CUnit* target)
+			[&](Unit* target)
 		{
 
 			if (target->playerId != caster->playerId)
@@ -39,13 +39,13 @@ namespace AI
 	}
 
 
-	CUnit* findBestRestorationTargetSituational(CUnit* caster, bool isUnderAttack)
+	Unit* findBestRestorationTargetSituational(Unit* caster, bool isUnderAttack)
 	{
 
 		if (isUnderAttack)
 			return nullptr;
 
-		return scbw::UnitFinder::getNearestTarget(caster, [&](CUnit* target)
+		return scbw::UnitFinder::getNearestTarget(caster, [&](Unit* target)
 		{
 
 			if (target->playerId != caster->playerId)

@@ -57,7 +57,7 @@ namespace hooks
 	void stats_panel_display(BinDlg* dialog)
 	{
 		BinDlg* current_dialog;
-		CUnit* activeUnit = *activePortraitUnit;
+		Unit* activeUnit = *activePortraitUnit;
 		u32 index = 0;
 
 		if (!(activeUnit->status & UnitStatus::IsHallucination)
@@ -290,7 +290,7 @@ namespace hooks
 	}
 
 	// Hooked to enable/disable rank display based on new unit definitions -- Pr0nogo
-	char* getUnitRankString(CUnit* unit) // 0042F370
+	char* getUnitRankString(Unit* unit) // 0042F370
 	{
 		u16 unitId = unit->id;
 		if (units_dat::BaseProperty[unitId] & UnitProperty::NeutralAccessories
@@ -320,7 +320,7 @@ namespace hooks
 	// Hooked to draw armor icons to buildings - Pr0nogo
 	void drawBuildingInfo(BinDlg* dialog) // 00427890
 	{
-		CUnit* activeUnit = *activePortraitUnit;
+		Unit* activeUnit = *activePortraitUnit;
 		selectionGroupHP[0] = (*activePortraitUnit)->hitPoints;
 		s32 shields = (*activePortraitUnit)->shields >> 8;
 		*userInterfaceEnergy = (*activePortraitUnit)->energy;
@@ -428,7 +428,7 @@ namespace hooks
 		BinDlg* v4;
 		void* v5;
 		s32 v6;
-		CUnit* v7;
+		Unit* v7;
 		u16 v8;
 		u16 v9;
 		s16 v10;
@@ -559,7 +559,7 @@ LABEL_9:
 	}
 
 	// Hooked to change the name of new building morphs - Pr0nogo
-	const char* getUnitName(CUnit* unit)
+	const char* getUnitName(Unit* unit)
 	{
 		u16 queue = unit->buildQueue[unit->buildQueueSlot];
 		if (unit->status & UnitStatus::Completed

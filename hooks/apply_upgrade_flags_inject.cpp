@@ -8,7 +8,7 @@ namespace
 	void __declspec(naked) applyUpgradeFlagsToNewUnitWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, ESI
@@ -28,7 +28,7 @@ namespace
 	void __declspec(naked) applyUpgradeFlagsToExistingUnitsWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 		static u8 upgradeId;
 
 		__asm {

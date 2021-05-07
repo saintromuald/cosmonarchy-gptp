@@ -5,7 +5,7 @@
 
 namespace AI
 {
-	CUnit* findBestHallucinationTarget(CUnit* caster, bool isUnderAttack)
+	Unit* findBestHallucinationTarget(Unit* caster, bool isUnderAttack)
 	{
 		if (isUnderAttack)
 		{
@@ -18,7 +18,7 @@ namespace AI
 			caster->getX() + bounds,
 			caster->getY() + bounds,
 			caster,
-			[&](CUnit* target)
+			[&](Unit* target)
 		{
 			if (target->playerId != caster->playerId)
 			{
@@ -28,7 +28,7 @@ namespace AI
 			{
 				return false;
 			}
-			if (scbw::getTechUseErrorMessage((CUnit*)target, caster->playerId, TechId::Hallucination) != 0)
+			if (scbw::getTechUseErrorMessage((Unit*)target, caster->playerId, TechId::Hallucination) != 0)
 			{
 				return false;
 			}

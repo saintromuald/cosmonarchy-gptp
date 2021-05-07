@@ -4,7 +4,7 @@
 namespace AI
 {
 
-	CUnit* findBestMaelstromTarget(CUnit* caster, bool isUnderAttack)
+	Unit* findBestMaelstromTarget(Unit* caster, bool isUnderAttack)
 	{
 		s32 bounds;
 		if (isUnderAttack)
@@ -26,7 +26,7 @@ namespace AI
 			caster->getX() + bounds,
 			caster->getY() + bounds,
 			caster,
-			[&](CUnit* target)
+			[&](Unit* target)
 		{
 			if (!isTargetWorthHitting(target, caster))
 			{

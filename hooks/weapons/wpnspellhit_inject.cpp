@@ -9,8 +9,8 @@ namespace
 	void __declspec(naked) IrradiateHitWrapper()
 	{
 
-		static CUnit* attacker;
-		static CUnit* target;
+		static Unit* attacker;
+		static Unit* target;
 		static u8 attackingPlayerId;
 
 		__asm {
@@ -45,9 +45,9 @@ namespace
 	void __declspec(naked) OpticalFlareHitWrapper()
 	{
 
-		static CUnit* target;
+		static Unit* target;
 		static u32 attackingPlayerId;
-		static CBullet* bullet;
+		static Bullet* bullet;
 
 		__asm {
 
@@ -80,8 +80,8 @@ namespace
 	void __declspec(naked) RestoreHitWrapper()
 	{
 
-		static CUnit* target;
-		static CBullet* bullet;
+		static Unit* target;
+		static Bullet* bullet;
 
 		__asm {
 			MOV bullet, EAX
@@ -103,9 +103,9 @@ namespace
 	void __declspec(naked) LockdownHitWrapper()
 	{
 
-		static CUnit* target;
+		static Unit* target;
 		static u8 previousLockdownTimer;
-		static CBullet* bullet;
+		static Bullet* bullet;
 
 		__asm {
 
@@ -138,7 +138,7 @@ namespace
 	void __declspec(naked) MeleeAttackHitWrapper()
 	{
 
-		static CUnit* attacker;
+		static Unit* attacker;
 
 		__asm {
 			PUSH EBP
@@ -163,8 +163,8 @@ namespace
 	void __declspec(naked) WeaponBulletHitWrapper()
 	{
 
-		static CBullet* bullet;
-		static CUnit* target;
+		static Bullet* bullet;
+		static Unit* target;
 		static u32 hitFlags;
 
 		__asm {
@@ -197,8 +197,8 @@ namespace
 	void __declspec(naked) EMPShockwaveHitWrapper()
 	{
 
-		static CUnit* attacker;
-		static CBullet* bullet;
+		static Unit* attacker;
+		static Bullet* bullet;
 		static s32 x;
 		static s32 y;
 
@@ -237,7 +237,7 @@ namespace
 		static s32 x;
 		static s32 y;
 		static u32 playerId;
-		static CBullet* bullet;
+		static Bullet* bullet;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -259,8 +259,8 @@ namespace
 
 	void __declspec(naked) ConsumeHitWrapper()
 	{
-		static CUnit* attacker;
-		static CUnit* target;
+		static Unit* attacker;
+		static Unit* target;
 		__asm {
 			MOV target, EAX
 			MOV attacker, ESI
@@ -275,10 +275,10 @@ namespace
 
 	void __declspec(naked) EnsnareHitWrapper()
 	{
-		static CUnit* attacker;
+		static Unit* attacker;
 		static s32 x;
 		static s32 y;
-		static CBullet* bullet;
+		static Bullet* bullet;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -303,7 +303,7 @@ namespace
 		static s32 x;
 		static s32 y;
 		static u32 attackingPlayerId;
-		static CBullet* bullet;
+		static Bullet* bullet;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -326,9 +326,9 @@ namespace
 
 	void __declspec(naked) BroodlingHitWrapper()
 	{
-		static CUnit* attacker;
-		static CUnit* target;
-		static CBullet* bullet;
+		static Unit* attacker;
+		static Unit* target;
+		static Bullet* bullet;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -350,10 +350,10 @@ namespace
 
 	void __declspec(naked) PlagueHitWrapper()
 	{
-		static CUnit* attacker;
+		static Unit* attacker;
 		static s32 x;
 		static s32 y;
-		static CBullet* bullet;
+		static Bullet* bullet;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -375,10 +375,10 @@ namespace
 
 	void __declspec(naked) MaelstromHitWrapper()
 	{
-		static CUnit* attacker;
+		static Unit* attacker;
 		static s32 x;
 		static s32 y;
-		static CBullet* bullet;
+		static Bullet* bullet;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -401,8 +401,8 @@ namespace
 
 	void __declspec(naked) MindControlHitWrapper()
 	{
-		static CUnit* attacker;
-		static CUnit* target;
+		static Unit* attacker;
+		static Unit* target;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -421,10 +421,10 @@ namespace
 
 	void __declspec(naked) StasisFieldHitWrapper()
 	{
-		static CUnit* attacker;
+		static Unit* attacker;
 		static s32 x;
 		static s32 y;
-		static CBullet* bullet;
+		static Bullet* bullet;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -449,7 +449,7 @@ namespace
 		static s32 x;
 		static s32 y;
 		static u32 playerId;
-		static CBullet* bullet;
+		static Bullet* bullet;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -471,8 +471,8 @@ namespace
 	s32 __declspec(naked) ensnareProcWrapper()
 	{
 
-		static CUnit* target;
-		static CUnit* attacker;
+		static Unit* target;
+		static Unit* attacker;
 		static s32 result;
 
 		__asm {
@@ -490,7 +490,7 @@ namespace
 
 	void __declspec(naked) createScannerWrapper()
 	{
-		static CUnit* a1;
+		static Unit* a1;
 		__asm {
 			MOV a1, EAX
 			PUSHAD
@@ -504,7 +504,7 @@ namespace
 
 	void __declspec(naked) stasisFieldOverlayWrapper()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 a2;
 		__asm {
 			PUSH EBP
@@ -529,7 +529,7 @@ namespace
 	void __declspec(naked) disableUnit_Wrapper()
 	{ // 00492CC0
 		static char result;
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			MOV unit, EAX
 			PUSHAD
@@ -545,8 +545,8 @@ namespace
 	void __declspec(naked) maelstromProc_Wrapper()
 	{ // 004F6760
 		static bool result;
-		static CUnit* target;
-		static CUnit* source;
+		static Unit* target;
+		static Unit* source;
 		__asm {
 			MOV source, EDX
 			MOV target, ECX
@@ -562,10 +562,10 @@ namespace
 
 	void __declspec(naked) iterateUnitsAtLocationTargetProc_Wrapper()
 	{ // 004E8280
-		static CUnit* result;
+		static Unit* result;
 		static Box16* location;
-		static s32(__fastcall * proc)(CUnit*, CUnit*);
-		static CUnit* unit;
+		static s32(__fastcall * proc)(Unit*, Unit*);
+		static Unit* unit;
 		__asm
 		{
 			PUSH EBP

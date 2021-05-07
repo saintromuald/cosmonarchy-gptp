@@ -7,7 +7,7 @@ namespace hooks
 	void CMDRECV_BuildingMorph(u16 wUnitType)
 	{
 
-		CUnit* building;
+		Unit* building;
 		*selectionIndexStart = 0;
 		building = getActivePlayerNextSelection();
 		if (
@@ -29,7 +29,7 @@ namespace hooks
 
 	void CMDRECV_UnitMorph(u16 wUnitType)
 	{
-		CUnit* current_unit;
+		Unit* current_unit;
 		*selectionIndexStart = 0;
 		current_unit = getActivePlayerNextSelection();
 		while (current_unit != nullptr)

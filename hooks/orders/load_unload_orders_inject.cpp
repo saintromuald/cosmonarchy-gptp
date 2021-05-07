@@ -7,7 +7,7 @@ namespace
 	void __declspec(naked) orders_Pickup1Wrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP
@@ -30,7 +30,7 @@ namespace
 	void __declspec(naked) orders_Pickup3_0Wrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EDI
@@ -49,7 +49,7 @@ namespace
 	void __declspec(naked) orders_Pickup2Wrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EDI
@@ -68,7 +68,7 @@ namespace
 	void __declspec(naked) orders_MoveUnloadWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP
@@ -92,7 +92,7 @@ namespace
 	void __declspec(naked) orders_Pickup4_0Wrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP
@@ -115,7 +115,7 @@ namespace
 	void __declspec(naked) orders_EnterTransportWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EAX
@@ -133,7 +133,7 @@ namespace
 
 	void __declspec(naked) orders_UnloadWrapper()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -151,8 +151,8 @@ namespace
 
 	void __declspec(naked) canEnterTransport_Wrapper()
 	{
-		static CUnit* transport;
-		static CUnit* unit;
+		static Unit* transport;
+		static Unit* unit;
 		static bool result;
 		__asm {
 			PUSH EBP

@@ -8,8 +8,8 @@ namespace
 	void __declspec(naked) spells_Recall_ActionOnValidTargetForRecallWrapper()
 	{
 
-		static CUnit* target;
-		static CUnit* caster;
+		static Unit* target;
+		static Unit* caster;
 
 		__asm {
 			PUSH EBP
@@ -36,8 +36,8 @@ namespace
 	void __declspec(naked) spells_Recall_ActionOnTargetInRangeWrapper()
 	{
 
-		static CUnit* target;
-		static CUnit* caster;
+		static Unit* target;
+		static Unit* caster;
 
 		__asm {
 			MOV target, ECX
@@ -60,7 +60,7 @@ namespace
 	void __declspec(naked) orders_RecallWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP

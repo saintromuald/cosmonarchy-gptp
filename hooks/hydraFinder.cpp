@@ -1,7 +1,7 @@
 #include "hooks\hydraFinder.h"
 
 
-bool rangeMatch(CUnit* unit, u32 r, u32 context, std::vector<u16> allowedIds)
+bool rangeMatch(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds)
 {
 	scbw::UnitFinder unitsInSplash(unit->getX() - r, unit->getY() - r, unit->getX() + r, unit->getY() + r);
 	auto a = scbw::UnitFinder::getNearestTarget(
@@ -12,7 +12,7 @@ bool rangeMatch(CUnit* unit, u32 r, u32 context, std::vector<u16> allowedIds)
 	return a != nullptr;
 }
 
-u32 hydraUnitCount(CUnit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds)
+u32 hydraUnitCount(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds)
 {
 	auto condition = unitRangeCount(unitPtr, flags, unitIds);
 	scbw::UnitFinder unitsInSplash(pos.x - r, pos.y - r,
@@ -28,7 +28,7 @@ u32 hydraUnitCount(CUnit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u1
 	}
 	return count;
 }
-CUnit* rangeMatchUnit(CUnit* unit, u32 r, u32 context, std::vector<u16> allowedIds)
+Unit* rangeMatchUnit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds)
 {
 	scbw::UnitFinder unitsInSplash(unit->getX() - r, unit->getY() - r, unit->getX() + r, unit->getY() + r);
 	auto a = scbw::UnitFinder::getNearestTarget(
@@ -42,7 +42,7 @@ CUnit* rangeMatchUnit(CUnit* unit, u32 r, u32 context, std::vector<u16> allowedI
 	return a;
 }
 
-CUnit* rangeMatchPosition(Point32 position, u32 r, u32 context, std::vector<u16> allowedIds)
+Unit* rangeMatchPosition(Point32 position, u32 r, u32 context, std::vector<u16> allowedIds)
 {
 	scbw::UnitFinder unitsInSplash(position.x - r, position.y - r, position.x + r, position.x + r);
 	auto a = scbw::UnitFinder::getNearestTarget(
@@ -56,9 +56,9 @@ CUnit* rangeMatchPosition(Point32 position, u32 r, u32 context, std::vector<u16>
 	return a;
 }
 
-scbw::UnitFinderCallbackMatchInterface unitRangeCount(CUnit* center, u32 context, std::vector<u16> allowedUnitIds)
+scbw::UnitFinderCallbackMatchInterface unitRangeCount(Unit* center, u32 context, std::vector<u16> allowedUnitIds)
 {
-	scbw::UnitFinderCallbackMatchInterface callback = [=](CUnit* unit)
+	scbw::UnitFinderCallbackMatchInterface callback = [=](Unit* unit)
 	{
 		if (unit == center && !(context & CFlags::IncludingSelf))
 		{

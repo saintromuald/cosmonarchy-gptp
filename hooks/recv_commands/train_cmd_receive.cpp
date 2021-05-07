@@ -5,7 +5,7 @@ namespace hooks
 {
 	void CMDRECV_TrainFighter()
 	{
-		CUnit* current_selection;
+		Unit* current_selection;
 		*selectionIndexStart = 0;
 		current_selection = getActivePlayerNextSelection();
 
@@ -48,7 +48,7 @@ namespace hooks
 	//Note: the default function isn't compatible with multiple selection
 	void CMDRECV_Train(u16 wUnitType)
 	{
-		CUnit* builder;
+		Unit* builder;
 		*selectionIndexStart = 0;
 		builder = getActivePlayerNextSelection();
 		if (builder != nullptr && getActivePlayerNextSelection() == nullptr)

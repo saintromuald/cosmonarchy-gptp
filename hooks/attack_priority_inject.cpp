@@ -9,7 +9,7 @@ namespace
 	void __declspec(naked) getAttackPriorityWrapper()
 	{
 
-		static CUnit* target, * attacker;
+		static Unit* target, * attacker;
 		static u32 result;
 
 		__asm {
@@ -33,8 +33,8 @@ namespace
 	void __declspec(naked) findBestAttackTargetWrapper()
 	{
 
-		static CUnit* unit;
-		static CUnit* target;
+		static Unit* unit;
+		static Unit* target;
 
 		__asm {
 			PUSH EBP
@@ -60,8 +60,8 @@ namespace
 	void __declspec(naked) findRandomAttackTargetWrapper()
 	{
 
-		static CUnit* unit;
-		static CUnit* target;
+		static Unit* unit;
+		static Unit* target;
 
 		__asm {
 			PUSH EBP

@@ -1,14 +1,14 @@
 #pragma once
 #include "../../SCBW/structures/Unit.h"
 
-void augurSacrifice(CUnit* target);
+void augurSacrifice(Unit* target);
 namespace hooks {
 
 	void weaponDamageHook(
 		s32 damage,
-		CUnit* target,
+		Unit* target,
 		u8 weaponId,
-		CUnit* attacker,
+		Unit* attacker,
 		u8 attackingPlayerId,
 		s8 direction,
 		u8 dmgDivisor
@@ -23,8 +23,8 @@ namespace hooks {
 		u8 weaponId;
 		s8 direction;
 
-		CUnit* target;
-		CUnit* attacker;
+		Unit* target;
+		Unit* attacker;
 		u8 attackingPlayerId;
 		bool dontProcPhaseLink;
 		bool ignoreFlatArmor;
@@ -32,11 +32,11 @@ namespace hooks {
 
 	void weaponDamage_root(WeaponDamageData& data);
 
-	void applyEnsnare(CUnit* a1);
-	u16 GetSporesOverlayId(CUnit* target);
-	s32 ApplySpores_hook(CUnit* target); // 004F4480
+	void applyEnsnare(Unit* a1);
+	u16 GetSporesOverlayId(Unit* target);
+	s32 ApplySpores_hook(Unit* target); // 004F4480
 
-	bool GorgonCondition(CUnit* attacker, CUnit* target);
+	bool GorgonCondition(Unit* attacker, Unit* target);
 
 	void injectWeaponDamageHook();
 

@@ -8,8 +8,8 @@ namespace
 	void __declspec(naked) canEnterNydusCanalWrapper()
 	{
 
-		static CUnit* unit;
-		static CUnit* nydusCanal;
+		static Unit* unit;
+		static Unit* nydusCanal;
 		static b32 bReturnValue;
 
 		__asm {
@@ -36,8 +36,8 @@ namespace
 	void __declspec(naked) enterNydusCanal_EffectWrapper()
 	{
 
-		static CUnit* unit;
-		static CUnit* nydusCanal;
+		static Unit* unit;
+		static Unit* nydusCanal;
 
 		__asm {
 			PUSH EBP
@@ -63,7 +63,7 @@ namespace
 	void __declspec(naked) orders_EnterNydusCanalWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EAX

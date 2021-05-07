@@ -3,7 +3,7 @@
 
 namespace hooks
 {
-	void orders_NukeTrack(CUnit* unit)
+	void orders_NukeTrack(Unit* unit)
 	{
 
 		if (unit->mainOrderState != 0)
@@ -18,7 +18,7 @@ namespace hooks
 					)
 				{ //64D3F
 
-					CImage* current_image = unit->sprite->images.head;
+					Image* current_image = unit->sprite->images.head;
 
 					if (unit->orderQueueHead == nullptr)
 						unit->orderSimple(units_dat::ReturnToIdleOrder[unit->id], false);
@@ -59,7 +59,7 @@ namespace hooks
 		else
 		{ //64DE3
 
-			CThingy* nukeDot;
+			Thingy* nukeDot;
 
 			unit->sprite->playIscriptAnim(IscriptAnimation::SpecialState1, true);
 
@@ -70,7 +70,7 @@ namespace hooks
 				unit->playerId
 			);
 
-			unit->building.ghostNukeMissile = (CUnit*)nukeDot;
+			unit->building.ghostNukeMissile = (Unit*)nukeDot;
 
 			if (nukeDot != nullptr)
 			{
@@ -87,7 +87,7 @@ namespace hooks
 
 	;
 
-	void orders_NukeGround(CUnit* unit)
+	void orders_NukeGround(Unit* unit)
 	{
 
 		u32 sightRange, distance;
@@ -166,7 +166,7 @@ namespace hooks
 			{
 
 				bool bLoopEnd = false;
-				CUnit* current_unit = firstPlayerUnit->unit[unit->playerId];
+				Unit* current_unit = firstPlayerUnit->unit[unit->playerId];
 
 				while (!bLoopEnd)
 				{
@@ -188,7 +188,7 @@ namespace hooks
 				else
 				{ //79333
 
-					CUnit* nuke = current_unit->building.silo.nuke;
+					Unit* nuke = current_unit->building.silo.nuke;
 
 					current_unit->building.silo.nuke = nullptr;
 					current_unit->building.silo.isReady = false;

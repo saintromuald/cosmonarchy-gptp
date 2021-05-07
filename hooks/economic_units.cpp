@@ -46,7 +46,7 @@ namespace hooks
 		return id;
 	}
 
-	bool unit_is_correct_townhall(u32 unit_id, u32 cmp_id, CUnit* unit)
+	bool unit_is_correct_townhall(u32 unit_id, u32 cmp_id, Unit* unit)
 	{
 		//unit is unused. this is function is supposed to be used for custom faction workers
 		switch (unit_id)
@@ -79,7 +79,7 @@ namespace hooks
 		return false;
 	}
 
-	bool is_terran_supply(u16 unit_id, CUnit* worker)
+	bool is_terran_supply(u16 unit_id, Unit* worker)
 	{
 		//worker is not used originally in regards of supply, but may be required for custom race support
 		if (unit_id == UnitId::TerranSupplyDepot)
@@ -362,7 +362,7 @@ namespace hooks
 		return false;
 	}
 
-	u32 orders_isGeyserTopUnitHook(CUnit* unit)
+	u32 orders_isGeyserTopUnitHook(Unit* unit)
 	{
 		if (unit->status & UnitStatus::Completed)
 		{

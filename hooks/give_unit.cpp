@@ -7,7 +7,7 @@ namespace hooks
 	/// GiveAllUnitPropertiesToPlayerAndMakeIdle, itself, sub_4A0080, AI_CreateUnit,
 	/// orders_RescuePassive, orders_InfestMine1
 	/// Changes would affect all those functions and maybe more
-	void GiveUnit(CUnit* unit, u32 playerId, u32 unkScore)
+	void GiveUnit(Unit* unit, u32 playerId, u32 unkScore)
 	{
 
 		if (unit->playerId != playerId)

@@ -222,11 +222,11 @@ struct DOODAD {
 	/*14*/  u16 miniTile[16]; /** MegaTile References (VF4/VX4) */
 };	//size 34
 
-struct CThingy {
-	/*00*/  CThingy* prev;
-	/*04*/  CThingy* next;
+struct Thingy {
+	/*00*/  Thingy* prev;
+	/*04*/  Thingy* next;
 	/*08*/  u32     unitType;
-	/*0C*/  CSprite* sprite;
+	/*0C*/  Sprite* sprite;
 };
 
 struct CHKUnit {
@@ -265,8 +265,8 @@ struct LOCATION {
 //---- Taken from buttons.cpp ----//
 
 typedef u32 ButtonState;
-typedef ButtonState(__fastcall* REQ_FUNC)(u32, u32, CUnit*);
-//(u32 reqVar, u32 playerId, CUnit* selected);
+typedef ButtonState(__fastcall* REQ_FUNC)(u32, u32, Unit*);
+//(u32 reqVar, u32 playerId, Unit* selected);
 typedef void(__fastcall* ACT_FUNC)(u32, u32);
 //(u32 actVar, u32 shiftClick);
 
@@ -456,7 +456,7 @@ struct BinDlg {
 
 	union {
 		/*0x26*/  u32* user;
-		/*0x26*/  CUnit* unitUser;
+		/*0x26*/  Unit* unitUser;
 		/*0x26*/  BinDlg* dlgUser;
 		/*0x26*/  BUTTON* buttonUser;
 		StatusScreenState* statButtonUser;//iquare
@@ -586,16 +586,16 @@ struct AiCaptain { //AiRegion
 	/*1A*/  u16 enemyGroundStrength;
 	/*1C*/  u32 airTarget;
 	/*20*/  u32 groundTarget;
-	/*24*/  CUnit* slowestUnit;
-	/*28*/  CUnit* followTarget;
-	/*2C*/  CUnit* mainMedic;
+	/*24*/  Unit* slowestUnit;
+	/*28*/  Unit* followTarget;
+	/*2C*/  Unit* mainMedic;
 	/*30*/  void* town;
 };
 C_ASSERT(sizeof(AiCaptain) == 52);
 //static_assert(sizeof(AiCaptain) == 52, "The size of the AiCaptain structure is invalid");
 
 struct UnitAi {
-	CLink<UnitAi>	link;				// 0x0, 0x4
+	Link<UnitAi>	link;				// 0x0, 0x4
 	u8 type;							// 0x8
 };
 C_ASSERT(sizeof(UnitAi) == 9);
@@ -618,11 +618,11 @@ struct pathing {
 C_ASSERT(sizeof(pathing) == 0x97a20);
 
 struct GuardAi {
-	CLink<GuardAi>	link;				// 0x0, 0x4
+	Link<GuardAi>	link;				// 0x0, 0x4
 	u8 type;							// 0x8
 	u8 timesDied;					// 0x9
 	u8 unkA[2];						// 0xA
-	CUnit* parent;						// 0xC
+	Unit* parent;						// 0xC
 	u16 id;							// 0x10
 	Point16 home;						// 0x12
 	Point16 unkPos;						// 0x16
@@ -633,34 +633,34 @@ C_ASSERT(sizeof(GuardAi) == 32); // 0x20
 
 struct AiTown; // declaring this here to avoid compiler errors
 struct WorkerAi {
-	CLink<WorkerAi>	link;				// 0x0, 0x4
+	Link<WorkerAi>	link;				// 0x0, 0x4
 	u8 type;							// 0x8
 	u8 target_resource;				// 0x9
 	u8 reassign_count;				// 0xA
 	u8 waitTimer;					// 0xB
 	u32 last_update_second;			// 0xC
-	CUnit* parent;						// 0x10
+	Unit* parent;						// 0x10
 	AiTown* town;						// 0x14
 };
 C_ASSERT(sizeof(WorkerAi) == 24); // 0x18
 
 struct BuildingAi {
-	CLink<BuildingAi>	link;			// 0x0, 0x4
+	Link<BuildingAi>	link;			// 0x0, 0x4
 	u8 type;							// 0x8
 	u8 trainQueueTypes[5];			// 0x9
 	u8 unkE[2];						// 0xE
-	CUnit* parent;						// 0x10
+	Unit* parent;						// 0x10
 	AiTown* town;						// 0x14
 	void* trainQueueValues[5];			// 0x18
 };
 C_ASSERT(sizeof(BuildingAi) == 44); // 0x2C
 
 struct MilitaryAi {
-	CLink<MilitaryAi>	link;			// 0x0, 0x4
+	Link<MilitaryAi>	link;			// 0x0, 0x4
 	u8 type;							// 0x8
 	u8 padding1;						// 0x9
 	u16 padding2;					// 0xA
-	CUnit* parent;						// 0xC
+	Unit* parent;						// 0xC
 	AiCaptain* region;					// 0x10
 };
 C_ASSERT(sizeof(MilitaryAi) == 20); // 0x14
@@ -682,7 +682,7 @@ struct TownReq {
 };
 
 struct AiTown {
-	CLink<AiTown> link;							//	0x0 and 0x4
+	Link<AiTown> link;							//	0x0 and 0x4
 	WorkerAiArray* free_workers;				//	0x8
 	WorkerAi* workers;							//	0xC
 	BuildingAiArray* free_buildings;			//	0x10
@@ -696,10 +696,10 @@ struct AiTown {
 	u8 in_battle;							//	0x1e
 	u8 unk1f;								//	0x1f
 	Point16 position;							//	0x20
-	CUnit* main_building;						//	0x24
-	CUnit* building_scv;						//	0x28
-	CUnit* mineral;								//	0x2c
-	CUnit* gas_buildings[3];					//	0x30
+	Unit* main_building;						//	0x24
+	Unit* building_scv;						//	0x28
+	Unit* mineral;								//	0x2c
+	Unit* gas_buildings[3];					//	0x30
 	TownReq town_units[0x64];					//	0x3c
 };
 C_ASSERT(sizeof(AiTown) == 0x1cc);
@@ -765,7 +765,7 @@ struct AI_Main {
 	/*3A0*/  u32 AI_DefenseUse_GA[10];
 	/*3C8*/  u32 AI_DefenseUse_AA[10];
 	u8 unit_build_limits[0xe4];		// 0x3f0
-	CUnit* mainMedic;					// 0x4d4
+	Unit* mainMedic;					// 0x4d4
 	u8 unk4d8[0x10];
 };
 

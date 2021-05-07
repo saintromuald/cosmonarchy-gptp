@@ -16,14 +16,14 @@
 
 namespace helpers {
 
-	void disconnectAddOn_Sub464930(CUnit* unit);										//00464930  sub_464930
-	void removeUnitRefsFromTarget(CUnit* unit, CUnit* target);							//0049E590  sub_49E590
-	void readUnitsArray_Sub49EFA0(CUnit *unit, u8 playerId_param, uint32 unknown_param);	//0049EFA0  sub_49EFA0
-	void ordersRescuePassive(CUnit* unit);												//004A1EF0  orders_RescuePassive
-	void changeUnitButtonSet(CUnit *unit, u16 buttonSetId);								//004E5D60  sub_4E5D60 
-	void hideAndDisableUnit(CUnit *unit);												//004E6340  unitDeathSomething_0
-	void showAndEnableUnit(CUnit *unit);												//004E6490  initUnitTrapDoodad
-	void setNextWaypoint_Sub4EB290(CUnit *unit);										//004EB290  sub_4EB290
+	void disconnectAddOn_Sub464930(Unit* unit);										//00464930  sub_464930
+	void removeUnitRefsFromTarget(Unit* unit, Unit* target);							//0049E590  sub_49E590
+	void readUnitsArray_Sub49EFA0(Unit *unit, u8 playerId_param, uint32 unknown_param);	//0049EFA0  sub_49EFA0
+	void ordersRescuePassive(Unit* unit);												//004A1EF0  orders_RescuePassive
+	void changeUnitButtonSet(Unit *unit, u16 buttonSetId);								//004E5D60  sub_4E5D60 
+	void hideAndDisableUnit(Unit *unit);												//004E6340  unitDeathSomething_0
+	void showAndEnableUnit(Unit *unit);												//004E6490  initUnitTrapDoodad
+	void setNextWaypoint_Sub4EB290(Unit *unit);										//004EB290  sub_4EB290
 
 }
 
@@ -32,7 +32,7 @@ namespace {
 //Originally 00464930  sub_464930
 void __declspec(naked) disconnectAddOn_Sub464930Wrapper() {
 
-	static CUnit* unit;
+	static Unit* unit;
 
 	__asm {
 		PUSHAD
@@ -48,8 +48,8 @@ void __declspec(naked) disconnectAddOn_Sub464930Wrapper() {
 //Originally 0049E590  sub_49E590
 void __declspec(naked) removeUnitRefsFromTargetWrapper() {
 
-	static CUnit* unit;
-	static CUnit* target;
+	static Unit* unit;
+	static Unit* target;
 
 	__asm {
 
@@ -80,7 +80,7 @@ void __declspec(naked) removeUnitRefsFromTargetWrapper() {
 //Originally 0049EFA0  sub_49EFA0
 void __declspec(naked) readUnitsArray_Sub49EFA0Wrapper() {
 
-	static CUnit* unit;
+	static Unit* unit;
 	static u8 playerId;
 	static uint32 unknown_param;
 
@@ -115,7 +115,7 @@ void __declspec(naked) readUnitsArray_Sub49EFA0Wrapper() {
 //Originally 004A1EF0 orders_RescuePassive
 void __declspec(naked) ordersRescuePassive() {
 
-	static CUnit* unit;
+	static Unit* unit;
 
 	__asm {
 		PUSHAD
@@ -135,7 +135,7 @@ void __declspec(naked) ordersRescuePassive() {
 //Originally 004E5D60 sub_4E5D60
 void __declspec(naked) changeUnitButtonSetWrapper() {
 
-	static CUnit* unit;
+	static Unit* unit;
 	static u16 buttonSetId;
 
 	__asm {
@@ -152,7 +152,7 @@ void __declspec(naked) changeUnitButtonSetWrapper() {
 //Originally 004E6340 unitDeathSomething_0
 void __declspec(naked) unitDeathSomething0Wrapper() {
 
-	static CUnit* unit;
+	static Unit* unit;
 
 	__asm {
 		PUSHAD
@@ -169,7 +169,7 @@ void __declspec(naked) unitDeathSomething0Wrapper() {
 //Originally 004E6490 initUnitTrapDoodad
 void __declspec(naked) showAndEnableUnitWrapper() {
 
-	static CUnit *unit;
+	static Unit *unit;
 
 	__asm {
 		PUSHAD
@@ -188,7 +188,7 @@ void __declspec(naked) showAndEnableUnitWrapper() {
 //Originally 004EB290  sub_4EB290
 void __declspec(naked) setNextWaypoint_Sub4EB290Wrapper() {
 
-	static CUnit* unit;
+	static Unit* unit;
 
 	__asm {
 		PUSHAD

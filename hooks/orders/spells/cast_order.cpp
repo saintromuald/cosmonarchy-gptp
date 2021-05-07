@@ -4,12 +4,12 @@
 
 namespace hooks
 {
-	void orders_Spell(CUnit* unit)
+	void orders_Spell(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 		s32 spellCost;
 		u8 orderWeaponId = orders_dat::OrderWeaponId[unit->mainOrderId];
-		CUnit* target = unit->orderTarget.unit;
+		Unit* target = unit->orderTarget.unit;
 
 		if (unit->id == UnitId::TerranPaladin)
 		{
@@ -251,7 +251,7 @@ namespace hooks
 								unit->movementFlags |= MovementFlags::StartingAttack;
 								if (unit->sprite->images.head != nullptr)
 								{
-									CImage* current_image = unit->sprite->images.head;
+									Image* current_image = unit->sprite->images.head;
 									IscriptAnimation::Enum anim = (IscriptAnimation::Enum)orders_dat::OrderIscriptAnim[unit->mainOrderId];
 									if (techUsed == TechId::Lockdown && unit->vulture.spiderMineCount > 0)
 									{

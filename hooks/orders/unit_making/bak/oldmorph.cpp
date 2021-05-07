@@ -13,29 +13,29 @@ namespace {
 
 void fixTargetLocation(Point16* coords, uint32 unitId);							//01FA0
 bool hasSuppliesForUnit(uint32 unitId, uint32 playerId, Bool32 canShowErrorMessage);	//2CF70
-CUnit* function_0045D910(CUnit* unit);											//5D910
-void orderNewUnitToRallyHook(CUnit* unit, CUnit* factory);							//66F50
-bool advanceRemainingBuildTime_Sub466940(CUnit* unit);							//66940
-void refundAllQueueSlotsHook(CUnit* unit);											//66E80
-void actUnitReturnToIdle(CUnit* unit);											//75420
-void incrementUnitScoresEx(CUnit* unit, s32 unk1, s32 unk2);					//88D50
-void playMorphingCompleteSound(CUnit* unit);									//8F440
-void updateUnitStrength(CUnit* unit);											//9FA40
-void replaceUnitWithType(CUnit* unit, u16 newUnitId);							//9FED0
-void function_004A01F0(CUnit* unit);											//A01F0
-void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit);					//A2830
-void changeUnitButtonSet_Sub4E5D60(CUnit* unit, u16 unitId);					//E5D60
-void function_004E65E0(CUnit* unit, Bool32 flag);								//E65E0
+Unit* function_0045D910(Unit* unit);											//5D910
+void orderNewUnitToRallyHook(Unit* unit, Unit* factory);							//66F50
+bool advanceRemainingBuildTime_Sub466940(Unit* unit);							//66940
+void refundAllQueueSlotsHook(Unit* unit);											//66E80
+void actUnitReturnToIdle(Unit* unit);											//75420
+void incrementUnitScoresEx(Unit* unit, s32 unk1, s32 unk2);					//88D50
+void playMorphingCompleteSound(Unit* unit);									//8F440
+void updateUnitStrength(Unit* unit);											//9FA40
+void replaceUnitWithType(Unit* unit, u16 newUnitId);							//9FED0
+void function_004A01F0(Unit* unit);											//A01F0
+void AI_TrainingUnit(Unit* unit_creator, Unit* created_unit);					//A2830
+void changeUnitButtonSet_Sub4E5D60(Unit* unit, u16 unitId);					//E5D60
+void function_004E65E0(Unit* unit, Bool32 flag);								//E65E0
 
 } //unnamed namespace
 
 namespace hooks {
 
-void orders_ZergBirth(CUnit* unit) {
+void orders_ZergBirth(Unit* unit) {
 
 	if(unit->orderSignal & 4) {
 		bool bTwinEggOrCocoon = true;
-		CUnit* unit2;
+		Unit* unit2;
 		Point16 pos;
 
 		unit->orderSignal -= 4;
@@ -116,7 +116,7 @@ void orders_ZergBirth(CUnit* unit) {
 
 ;
 
-void orders_Morph1(CUnit* unit) {
+void orders_Morph1(Unit* unit) {
 
 	if(unit->mainOrderState == 0) {
 
@@ -220,7 +220,7 @@ void orders_Morph1(CUnit* unit) {
 
 			if(units_dat::ConstructionGraphic[unit->id] != 0) {
 
-				CImage* current_image;
+				Image* current_image;
 
 				function_004E65E0(unit,1);
 
@@ -254,7 +254,7 @@ void orders_Morph1(CUnit* unit) {
 ;
 
 //Check if @p unit can morph into @p morphUnitId.
-bool unitCanMorphHook(CUnit* unit, u16 morphUnitId) {
+bool unitCanMorphHook(Unit* unit, u16 morphUnitId) {
 	//Default StarCraft behavior
 
 	if (unit->id == UnitId::hydralisk) {
@@ -310,7 +310,7 @@ bool isRallyableEggUnitHook(u16 unitId) {
 
 //Return the ID of the egg unit to use when morphing @p unitId.
 //If the unit cannot morph, return UnitId::None.
-u16 getUnitMorphEggTypeHook(u16 unitId, CUnit* unit, u16 resultId) {
+u16 getUnitMorphEggTypeHook(u16 unitId, Unit* unit, u16 resultId) {
 	//Default StarCraft behavior
 	if (unitId == UnitId::larva)
 		return UnitId::egg;
@@ -338,7 +338,7 @@ u16 getUnitMorphEggTypeHook(u16 unitId, CUnit* unit, u16 resultId) {
 
 //Determine the type (unit ID) of the unit to revert to when cancelling an
 //@p eggUnit while it is morphing.
-u16 getCancelMorphRevertTypeHook(CUnit* eggUnit) {
+u16 getCancelMorphRevertTypeHook(Unit* eggUnit) {
 	//Default StarCraft behavior
 
 	if (eggUnit->id == UnitId::cocoon || eggUnit->id==179)
@@ -371,7 +371,7 @@ u16 getCancelMorphRevertTypeHook(CUnit* eggUnit) {
 
 //Determines the vertical (Y) offset by which the @p unit will be shifted to
 //when it finishes morphing.
-s16 getUnitVerticalOffsetOnBirth(CUnit* unit) {
+s16 getUnitVerticalOffsetOnBirth(Unit* unit) {
 	//Default StarCraft behavior
 
 	//No offset, birth offset is handled elsewhere
@@ -411,7 +411,7 @@ bool hasSuppliesForUnitHook(u8 playerId, u16 unitId, bool canShowErrorMessage) {
 	if (supplyCost == 0 || units_dat::BaseProperty[unitId] & UnitProperty::MorphFromOtherUnit)
 		return true;
 
-	const RaceId::Enum raceId = CUnit::getRace(unitId);
+	const RaceId::Enum raceId = Unit::getRace(unitId);
 	assert(raceId <= 2);
 	const uint32 supplyUsed = raceSupply[raceId].used[playerId];
 
@@ -478,9 +478,9 @@ bool hasSuppliesForUnit(uint32 unitId, uint32 playerId, Bool32 canShowErrorMessa
 ;
 
 const uint32 Func_Sub45D910 = 0x0045D910;
-CUnit* function_0045D910(CUnit* unit) {
+Unit* function_0045D910(Unit* unit) {
 
-	static CUnit* rValue;
+	static Unit* rValue;
 
 	__asm {
 		PUSHAD
@@ -499,7 +499,7 @@ CUnit* function_0045D910(CUnit* unit) {
 uint32 Func_Sub466940 = 0x00466940;
 //return true if remainingBuildTime was 0 when called,
 //remainingBuildTime change affected by cheating
-bool advanceRemainingBuildTime_Sub466940(CUnit* unit) {
+bool advanceRemainingBuildTime_Sub466940(Unit* unit) {
 
 	static Bool32 bTimeWasZero;
 
@@ -518,7 +518,7 @@ bool advanceRemainingBuildTime_Sub466940(CUnit* unit) {
 ;
 
 const uint32 Func_RefundAllQueueSlots = 0x00466E80;
-void refundAllQueueSlotsHook(CUnit* unit) {
+void refundAllQueueSlotsHook(Unit* unit) {
 
   __asm {
     PUSHAD
@@ -532,7 +532,7 @@ void refundAllQueueSlotsHook(CUnit* unit) {
 ;
 
 const uint32 Func_Sub466F50 = 0x00466F50;
-void orderNewUnitToRallyHook(CUnit* unit, CUnit* factory) {
+void orderNewUnitToRallyHook(Unit* unit, Unit* factory) {
 
 	__asm {
 		PUSHAD
@@ -547,7 +547,7 @@ void orderNewUnitToRallyHook(CUnit* unit, CUnit* factory) {
 ;
 
 const uint32 Func_ActUnitReturnToIdle = 0x00475420;
-void actUnitReturnToIdle(CUnit* unit) {
+void actUnitReturnToIdle(Unit* unit) {
 
   __asm {
     PUSHAD
@@ -562,7 +562,7 @@ void actUnitReturnToIdle(CUnit* unit) {
 
 const uint32 Func_incrementUnitScoresEx = 0x00488D50;
 //unk1 is ECX, unk2 is pushed value
-void incrementUnitScoresEx(CUnit* unit, s32 unk1, s32 unk2) {
+void incrementUnitScoresEx(Unit* unit, s32 unk1, s32 unk2) {
 
 	__asm {
 		PUSHAD
@@ -578,7 +578,7 @@ void incrementUnitScoresEx(CUnit* unit, s32 unk1, s32 unk2) {
 ;
 
 const uint32 Func_PlayMorphingCompleteSound = 0x0048F440;
-void playMorphingCompleteSound(CUnit* unit) {
+void playMorphingCompleteSound(Unit* unit) {
 
 	__asm {
 		PUSHAD
@@ -592,7 +592,7 @@ void playMorphingCompleteSound(CUnit* unit) {
 ;
 
 const uint32 Func_UpdateUnitStrength = 0x0049FA40;
-void updateUnitStrength(CUnit* unit) {
+void updateUnitStrength(Unit* unit) {
 
 	__asm {
 		PUSHAD
@@ -606,7 +606,7 @@ void updateUnitStrength(CUnit* unit) {
 ;
 
 const uint32 Func_ReplaceUnitWithType = 0x0049FED0;
-void replaceUnitWithType(CUnit* unit, u16 newUnitId) {
+void replaceUnitWithType(Unit* unit, u16 newUnitId) {
 	uint32 newUnitId_ = newUnitId;
 
   __asm {
@@ -622,7 +622,7 @@ void replaceUnitWithType(CUnit* unit, u16 newUnitId) {
 ;
 
 const uint32 Func_Sub4A01F0 = 0x004A01F0;
-void function_004A01F0(CUnit* unit) {
+void function_004A01F0(Unit* unit) {
 
 	__asm {
 		PUSHAD
@@ -636,7 +636,7 @@ void function_004A01F0(CUnit* unit) {
 ;
 
 const uint32 Func_AI_TrainingUnit = 0x004A2830;
-void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit) {
+void AI_TrainingUnit(Unit* unit_creator, Unit* created_unit) {
 	__asm {
 		PUSHAD
 		MOV EAX, created_unit
@@ -649,7 +649,7 @@ void AI_TrainingUnit(CUnit* unit_creator, CUnit* created_unit) {
 ;
 
 const uint32 Func_Sub4E5D60 = 0x004E5D60;
-void changeUnitButtonSet_Sub4E5D60(CUnit* unit, u16 buttonSetId) {
+void changeUnitButtonSet_Sub4E5D60(Unit* unit, u16 buttonSetId) {
 
 	__asm {
 		PUSHAD
@@ -664,7 +664,7 @@ void changeUnitButtonSet_Sub4E5D60(CUnit* unit, u16 buttonSetId) {
 ;
 
 const uint32 Func_Sub4E65E0 = 0x004E65E0;
-void function_004E65E0(CUnit* unit, Bool32 flag) {
+void function_004E65E0(Unit* unit, Bool32 flag) {
 
 	__asm {
 		PUSHAD

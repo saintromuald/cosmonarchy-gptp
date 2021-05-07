@@ -9,9 +9,9 @@ namespace hooks
 {
 	// unit is a transport (overlord, shuttle, dropship)
 	// this is the initial pickup order
-	void orders_Pickup1(CUnit* unit)
+	void orders_Pickup1(Unit* unit)
 	{
-		CUnit* unitToLoad = unit->orderTarget.unit;
+		Unit* unitToLoad = unit->orderTarget.unit;
 		if (unitToLoad != nullptr
 			&& scbw::canBeEnteredBy(unit, unitToLoad))
 		{
@@ -48,9 +48,9 @@ namespace hooks
 	}
 
 	// unit is a non-mobile transport (bunker)
-	void orders_Pickup3_0(CUnit* unit)
+	void orders_Pickup3_0(Unit* unit)
 	{
-		CUnit* unitToLoad = unit->orderTarget.unit;
+		Unit* unitToLoad = unit->orderTarget.unit;
 		if (unitToLoad == nullptr)
 		{
 			if (unit->orderQueueHead != nullptr)
@@ -82,9 +82,9 @@ namespace hooks
 
 	// unit is a transport (overlord,shuttle,dropship)
 	// this is used after orders_Pickup1
-	void orders_Pickup2(CUnit* unit)
+	void orders_Pickup2(Unit* unit)
 	{
-		CUnit* unitToLoad = unit->orderTarget.unit;
+		Unit* unitToLoad = unit->orderTarget.unit;
 		if (unitToLoad == nullptr)
 		{
 			if (unit->orderQueueHead != nullptr)
@@ -155,7 +155,7 @@ namespace hooks
 
 	// unit is a transport
 	// a big part of the code could not be tested since different ground height test never occured during testing
-	void orders_MoveUnload(CUnit* unit)
+	void orders_MoveUnload(Unit* unit)
 	{
 		u32 distance;
 		if (unit->mainOrderState == 0 &&
@@ -210,7 +210,7 @@ namespace hooks
 						Point16 pos = {0,0}; // unsure about this start value
 						while (!bStopLoop)
 						{
-							CUnit* unitToUnload = helper::getLoadedUnitFromIndex(unit, index);
+							Unit* unitToUnload = helper::getLoadedUnitFromIndex(unit, index);
 							if (unitToUnload != nullptr)
 							{
 								if (unitToUnload->id == UnitId::ProtossAccantor && bIsDistanceGreaterThanHaltDistance)
@@ -244,7 +244,7 @@ namespace hooks
 
 	// unit is a unit to pick up by transport
 	// COULD NOT BE TESTED (tried bunker and all and nothing called this function)
-	void orders_Pickup4_0(CUnit* unit)
+	void orders_Pickup4_0(Unit* unit)
 	{
 		if (unit->playerId == 11)
 		{
@@ -263,7 +263,7 @@ namespace hooks
 			if (!(unit->status & UnitStatus::InTransport)
 				&& helper::function_00477160(unit, 1, 0, 0) == 0)
 			{ // 004E7BEB
-				CUnit* target = unit->orderTarget.unit;
+				Unit* target = unit->orderTarget.unit;
 				bool jump_to_E7C2B = false;
 				bool jump_to_E7C37 = false;
 				bool jump_to_E7C44 = false;
@@ -342,9 +342,9 @@ namespace hooks
 	}
 
 	// unit is a unit aiming to enter a transport
-	void orders_EnterTransport(CUnit* unit)
+	void orders_EnterTransport(Unit* unit)
 	{
-		CUnit* target = unit->orderTarget.unit;
+		Unit* target = unit->orderTarget.unit;
 		if (target != nullptr
 			&& !(target->status & UnitStatus::IsHallucination)
 			&& units_dat::SpaceProvided[target->id] != 0
@@ -392,15 +392,15 @@ namespace hooks
 		}
 	}
 
-	void orders_Unload(CUnit* unit)
+	void orders_Unload(Unit* unit)
 	{
-		static CUnit* unitTable_0059CB58 = (CUnit*)(0x0059CB58);
-		static CUnit* unitTable_0059CB64 = (CUnit*)(0x0059CB64);
+		static Unit* unitTable_0059CB58 = (Unit*)(0x0059CB58);
+		static Unit* unitTable_0059CB64 = (Unit*)(0x0059CB64);
 		if (globals.extended_unit_table == 1)
 		{
 			const u32 index_start = reinterpret_cast<u32>(&new_unit_table.units[0]) - 336;
-			unitTable_0059CB58 = (CUnit*)index_start;
-			unitTable_0059CB64 = (CUnit*)(index_start + 12);
+			unitTable_0059CB58 = (Unit*)index_start;
+			unitTable_0059CB64 = (Unit*)(index_start + 12);
 		}
 		if (unit->status & UnitStatus::GroundedBuilding
 			|| unit->mainOrderTimer == 0)
@@ -419,7 +419,7 @@ namespace hooks
 				if (*loadedUnitOffset != 0
 					&& unitTable_0059CB64[unit->loadedUnit[counter].index].link.prev != nullptr) // sprite check
 				{
-					CUnit* unitToUnload = &(unitTable_0059CB58[unit->loadedUnit[counter].index]);
+					Unit* unitToUnload = &(unitTable_0059CB58[unit->loadedUnit[counter].index]);
 					if (unitToUnload->mainOrderId != 0 || unitToUnload->mainOrderState != 1)
 					{
 						if (unit->loadedUnit[counter].unitId == unitToUnload->targetOrderSpecial)
@@ -536,7 +536,7 @@ namespace hooks
 		}
 	}
 
-	bool canEnterTransport(CUnit* transport, CUnit* unit)
+	bool canEnterTransport(Unit* transport, Unit* unit)
 	{ // 004E6E00
 		if (!(transport->status & UnitStatus::Completed))
 		{
@@ -568,7 +568,7 @@ namespace hooks
 		u32 spaceProvided = units_dat::SpaceProvided[transport->id];
 		u32 index = 0;
 		s32 spaceRequired = 0;
-		CUnit* loadedUnit;
+		Unit* loadedUnit;
 		if (spaceProvided)
 		{
 			do

@@ -9,10 +9,10 @@ namespace
 namespace hooks
 {
 
-	s32 unitMovementDormant(CUnit* unit)
+	s32 unitMovementDormant(Unit* unit)
 	{     // 0046A8D0
 		s32 flags; // edx
-		CSprite* sprite; // ecx
+		Sprite* sprite; // ecx
 
 		flags = unit->status;
 		/*      if (!(flags & UnitStatus::IgnoreTileCollision) || !(flags & UnitStatus::IsNormal)) {

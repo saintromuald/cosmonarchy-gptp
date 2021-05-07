@@ -5,7 +5,7 @@
 namespace hooks
 {
 
-	void orders_Hallucination1(CUnit* unit)
+	void orders_Hallucination1(Unit* unit)
 	{
 		s32 sightRange = unit->getSightRange(true);
 		u16 techCost;
@@ -27,7 +27,7 @@ namespace hooks
 
 				counter--;
 
-				CUnit* hal_unit = hallucinationHelpers::createHallucinationUnit(unit->orderTarget.unit,unit->playerId);
+				Unit* hal_unit = hallucinationHelpers::createHallucinationUnit(unit->orderTarget.unit,unit->playerId);
 
 				if(hal_unit == nullptr)
 					counter = 0;
@@ -40,7 +40,7 @@ namespace hooks
 			*/
 
 			Point32 hit;
-			if (CUnit* target = unit->orderTarget.unit)
+			if (Unit* target = unit->orderTarget.unit)
 			{
 				hit = {target->getX(), target->getY()};
 			}
@@ -74,12 +74,12 @@ namespace hooks
 	}
 
 	// Hooked to rule out AI issues -- Pr0nogo
-	CUnit* createHallucination(CUnit* source, s32 player)
+	Unit* createHallucination(Unit* source, s32 player)
 	{
-		CUnit* halUnit; // eax
-		CUnit* v3; // edi
-		CUnit* halUnit2; // esi
-		CUnit* result; // eax
+		Unit* halUnit; // eax
+		Unit* v3; // edi
+		Unit* halUnit2; // esi
+		Unit* result; // eax
 		u16 halTimer; // cx
 		u16 currentHalTimer; // ax
 		s16 unitType; // ax

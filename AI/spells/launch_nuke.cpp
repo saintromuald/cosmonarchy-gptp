@@ -6,10 +6,10 @@
 namespace AI
 {
 
-	CUnit* findBestNukeLaunchTarget(CUnit* caster, bool isUnderAttack)
+	Unit* findBestNukeLaunchTarget(Unit* caster, bool isUnderAttack)
 	{
 		return scbw::UnitFinder::getNearestTarget(caster,
-			[&](CUnit* target)
+			[&](Unit* target)
 		{
 
 			if ((target->status & (UnitStatus::Cloaked | UnitStatus::RequiresDetection))

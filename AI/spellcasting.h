@@ -3,7 +3,7 @@
 
 namespace AI {
 
-bool AI_spellcasterHook(CUnit* unit, bool isUnitBeingAttacked);
+bool AI_spellcasterHook(Unit* unit, bool isUnitBeingAttacked);
 
 } //AI
 

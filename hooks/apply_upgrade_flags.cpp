@@ -8,7 +8,7 @@
 namespace
 {
 
-	bool upgradeRestrictionProc(CUnit* unit, u8 upgradeId, u32 Func_UpgradeRestrictionProc);
+	bool upgradeRestrictionProc(Unit* unit, u8 upgradeId, u32 Func_UpgradeRestrictionProc);
 
 } //unnamed namespace
 
@@ -17,7 +17,7 @@ namespace hooks
 
 	//This hook function is called when creating a new unit.
 	//Equivalent to ApplySpeedUpgradeFromUnitType @ 00454370
-	void applyUpgradeFlagsToNewUnitHook(CUnit* unit)
+	void applyUpgradeFlagsToNewUnitHook(Unit* unit)
 	{
 
 		b8 bSpeedUpgrade = 0, bCooldownUpgrade = 0;
@@ -44,7 +44,7 @@ namespace hooks
 	//This function is called when an upgrade is finished, or when transferring a
 	//unit's ownership from one player to another (via triggers or Mind Control).
 	//Should be equivalent or identical to ApplySpeedUpgradeFromUpgradeType @ 00454540
-	void applyUpgradeFlagsToExistingUnitsHook(CUnit* unit, u8 upgradeId)
+	void applyUpgradeFlagsToExistingUnitsHook(Unit* unit, u8 upgradeId)
 	{
 
 		const u32 UnitUpgradeRestrictionProc = 0x00453DC0;
@@ -68,7 +68,7 @@ namespace hooks
 namespace
 {
 
-	bool upgradeRestrictionProc(CUnit* unit, u8 upgradeId, u32 Func_UpgradeRestrictionProc)
+	bool upgradeRestrictionProc(Unit* unit, u8 upgradeId, u32 Func_UpgradeRestrictionProc)
 	{
 		static u32 bPreResult;
 		__asm {

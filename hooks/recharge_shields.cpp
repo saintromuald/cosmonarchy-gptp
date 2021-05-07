@@ -6,7 +6,7 @@
 //This function is called every frame when a unit recharges shields.
 //Equivalent to 004934B0  sub_4934B0
 //Not hooked
-void rechargeShieldsProc(CUnit* target, CUnit* battery)
+void rechargeShieldsProc(Unit* target, Unit* battery)
 {
 
 	const s32 maxShields = units_dat::MaxShieldPoints[target->id] * 256;
@@ -46,7 +46,7 @@ namespace hooks
 {
 
 	/// Decides whether the @p target can recharge shields from the @p battery.
-	b32 unitCanRechargeShieldsHook(CUnit* target, CUnit* battery)
+	b32 unitCanRechargeShieldsHook(Unit* target, Unit* battery)
 	{
 
 		b32 result;
@@ -89,12 +89,12 @@ result = 0;
 
 	//The order process run by a unit when recharging shields
 	//Identical to orders_RechargeShields1 @ 00493DD0
-	void orderRechargeShieldsHook(CUnit* unit)
+	void orderRechargeShieldsHook(Unit* unit)
 	{
 
 		const s32 BATTERY_RANGE = 0x80; //(128)
 
-		CUnit* battery = unit->orderTarget.unit;
+		Unit* battery = unit->orderTarget.unit;
 
 		//Skip if the Shield Battery does not exist, has no energy, or is disabled
 		//isFrozen code was hardcoded rather than function call in original code

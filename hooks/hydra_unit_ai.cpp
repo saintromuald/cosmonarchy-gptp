@@ -4,7 +4,7 @@
 #include "UnitConstants.h"
 #include "MathUtils.h"
 #include "globals.h"
-void hydra_unit_ai(CUnit* unit)
+void hydra_unit_ai(Unit* unit)
 {
 	UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -48,7 +48,7 @@ void hydra_unit_ai(CUnit* unit)
 		{
 			s32 count = 0;
 			hydraFinderLoop(nullptr, unit->position, 128, CFlags::NoBuilding | CFlags::Ally |
-				CFlags::OnlyOrganic, {}, [&](CUnit* u)
+				CFlags::OnlyOrganic, {}, [&](Unit* u)
 			{
 				UnitExt* uExt = globals.GetUnitExt(u);
 				if (uExt->values[ValueLazarusAgent] != 1)
@@ -75,7 +75,7 @@ void hydra_unit_ai(CUnit* unit)
 		{
 			s32 count = 0;
 			hydraFinderLoop(unit, unit->position, weapons_dat::OuterSplashRadius[WeaponId::SavantPowerSiphon],
-				CFlags::Ally | CFlags::Spellcaster, {}, [&](CUnit* u)
+				CFlags::Ally | CFlags::Spellcaster, {}, [&](Unit* u)
 			{
 				if (u->energy < u->getMaxEnergy())
 				{
@@ -102,11 +102,11 @@ void hydra_unit_ai(CUnit* unit)
 			&& unitExt->timers[TimerAI_Queen] == 0)
 		{
 			hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Parasite],
-				CFlags::NotSelf, {}, [&](CUnit* u)
+				CFlags::NotSelf, {}, [&](Unit* u)
 			{
-				std::vector<std::pair<CUnit*, u32>> group;
+				std::vector<std::pair<Unit*, u32>> group;
 				s32 supply = 0;
-				hydraFinderLoop(u, u->position, 128, 0, {}, [&](CUnit* u2)
+				hydraFinderLoop(u, u->position, 128, 0, {}, [&](Unit* u2)
 				{
 					u32 priority = units_dat::SupplyRequired[u->id] * 100;
 					if (u->status & UnitStatus::InAir)
@@ -145,7 +145,7 @@ void hydra_unit_ai(CUnit* unit)
 		auto alliedUnitsHealth = 0;
 		bool alliedTownHalls = false;
 		hydraFinderLoop(unit, unit->sprite->position, AIStarsovereignAbilSeekRange,
-			CFlags::NotSelf | CFlags::NoAir, {}, [&](CUnit* u)
+			CFlags::NotSelf | CFlags::NoAir, {}, [&](Unit* u)
 		{
 			if (!scbw::isAlliedTo(unit->playerId, u->playerId))
 			{
@@ -193,9 +193,9 @@ void hydra_unit_ai(CUnit* unit)
 				&& percentage >= AICorsairLifePercentage
 				&& allies >= AIWebAllyMinCount && enemies >= AIWebEnemyMinCount)
 			{
-				CUnit* mostSignificant = nullptr;
+				Unit* mostSignificant = nullptr;
 				auto maxSignificance = 0;
-				hydraFinderLoop(unit, unit->sprite->position, 128, CFlags::Enemy, {}, [&](CUnit* u)
+				hydraFinderLoop(unit, unit->sprite->position, 128, CFlags::Enemy, {}, [&](Unit* u)
 				{
 					auto significance = hydraUnitCount(u, u->position, AICorsairEnemySeekRange / 2,
 						CFlags::NotSelf | CFlags::Ally, {});
@@ -234,13 +234,13 @@ void hydra_unit_ai(CUnit* unit)
 			if (unit->mainOrderId != OrderId::Skyfall && scbw::get_generic_timer(unit,RustId::AI_PaladinTimer)) {
 				bool skyfallCondition = false;
 				hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Skyfall],
-					CFlags::Enemy, {}, [&](CUnit* u) {
+					CFlags::Enemy, {}, [&](Unit* u) {
 
 	//				scbw::print("Loop");
-					CUnit* tryTarget = u;
+					Unit* tryTarget = u;
 					s32 innerCount = 0;
 					hydraFinderLoop(u, u->position, weapons_dat::MaxRange[WeaponId::Skyfall] , CFlags::Ally, {},
-						[&](CUnit* internalUnit) {
+						[&](Unit* internalUnit) {
 						innerCount++;
 					});
 					//scbw::printf("Count is %d", innerCount);

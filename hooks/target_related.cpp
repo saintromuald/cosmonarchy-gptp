@@ -7,10 +7,10 @@
 
 namespace hooks
 {
-	bool isUnitTargetOutOfMaxRange(CUnit* a1, CUnit* a2)
+	bool isUnitTargetOutOfMaxRange(Unit* a1, Unit* a2)
 	{ // 00476430
-		CUnit* _unit; // edi
-		CUnit* finalUnit; // esi
+		Unit* _unit; // edi
+		Unit* finalUnit; // esi
 		unsigned __int8 _wpn; // bl
 		__int16 _id; // ax
 		s32 _maxRange; // eax
@@ -42,10 +42,10 @@ namespace hooks
 		return v8 == 0;
 	}
 
-	s32 isReadyToAttack(CUnit* a1, unsigned __int8 a2)
+	s32 isReadyToAttack(Unit* a1, unsigned __int8 a2)
 	{ // 00476640
-		CUnit* v2; // esi
-		CUnit* v4; // ecx
+		Unit* v2; // esi
+		Unit* v4; // ecx
 		u32 v5; // eax
 		u32 v6; // eax
 		u32 v7; // edi
@@ -73,10 +73,10 @@ namespace hooks
 		return 1;
 	}
 
-	bool isUnitInWeaponRange(CUnit* a1, CUnit* a2)
+	bool isUnitInWeaponRange(Unit* a1, Unit* a2)
 	{ // 00476870
-		CUnit* v2; // edi
-		CUnit* v4; // esi
+		Unit* v2; // edi
+		Unit* v4; // esi
 		unsigned __int8 v5; // bl
 		unsigned __int16 v6; // ax
 		u32 v7; // eax
@@ -118,11 +118,11 @@ namespace hooks
 		return helper::isTargetWithinMinMovementRange(v2, v8, v4);
 	}
 
-	char canCastOrderedSpellNow(CUnit* a1)
+	char canCastOrderedSpellNow(Unit* a1)
 	{ // 00491DB0
-		CUnit* v1; // esi
+		Unit* v1; // esi
 		u32 v2; // eax
-		CUnit* v3; // edi
+		Unit* v3; // edi
 		s32 v4; // ebx
 		s32 v5; // eax
 		s32 v6; // edi
@@ -163,19 +163,19 @@ namespace hooks
 		return v2;
 	}
 
-	void ordersWatchTarget(CUnit* a1)
+	void ordersWatchTarget(Unit* a1)
 	{ // 0047BAB0
-		CUnit* v1; // esi
-		CUnit* v2; // ebx
+		Unit* v1; // esi
+		Unit* v2; // ebx
 		s32 v3; // eax
-		CUnit* v4; // ebx
-		CUnit* v5; // edi
+		Unit* v4; // ebx
+		Unit* v5; // edi
 		unsigned __int8 v6; // bl
 		unsigned __int16 v7; // ax
 		u32 v8; // eax
 		s32 v9; // eax
 		s32 v10; // eax
-		CUnit* target; // [esp+Ch] [ebp-4h]
+		Unit* target; // [esp+Ch] [ebp-4h]
 
 		v1 = a1;
 		v2 = a1->orderTarget.unit;
@@ -217,19 +217,19 @@ LABEL_23:
 		}
 	}
 
-	void ordersStayInRange(CUnit* a1)
+	void ordersStayInRange(Unit* a1)
 	{ // 0047C4F0
-		CUnit* v1; // esi
-		CUnit* v2; // ebx
+		Unit* v1; // esi
+		Unit* v2; // ebx
 		s32 v3; // eax
-		CUnit* v4; // ebx
-		CUnit* v5; // edi
+		Unit* v4; // ebx
+		Unit* v5; // edi
 		unsigned __int8 v6; // bl
 		unsigned __int16 v7; // ax
 		u32 v8; // eax
 		s32 v9; // eax
 		s32 v10; // eax
-		CUnit* v11; // edi
+		Unit* v11; // edi
 		unsigned __int8 v12; // bl
 		unsigned __int16 v13; // ax
 		u32 v14; // eax
@@ -241,7 +241,7 @@ LABEL_23:
 		char v20; // al
 		s32 v21; // ecx
 		s32 v22; // eax
-		CUnit* target; // [esp+8h] [ebp-4h]
+		Unit* target; // [esp+8h] [ebp-4h]
 
 		v1 = a1;
 		v2 = a1->orderTarget.unit;
@@ -371,10 +371,10 @@ LABEL_42:
 		}
 	}
 
-	s32 genericRightClickUnitProc2(CUnit* unit, s32 a2, s16 a3, CUnit* target, s16 unitID)
+	s32 genericRightClickUnitProc2(Unit* unit, s32 a2, s16 a3, Unit* target, s16 unitID)
 	{ // 00455E00
 		s32 result; // eax
-		CUnit* targetVar; // esi
+		Unit* targetVar; // esi
 
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
@@ -410,10 +410,10 @@ LABEL_42:
 		return result;
 	}
 
-	CUnit* CMDRECV_HoldPosition(s32 a1)
+	Unit* CMDRECV_HoldPosition(s32 a1)
 	{ // 004C20C0
-		CUnit* result; // eax
-		CUnit* i; // esi
+		Unit* result; // eax
+		Unit* i; // esi
 		s16 unitId; // ax
 		u8 orderId; // al
 
@@ -460,13 +460,13 @@ LABEL_42:
 		return result;
 	}
 
-	u32 unitCanSeeCloakedTargetHook(CUnit* target, CUnit* unit)
+	u32 unitCanSeeCloakedTargetHook(Unit* target, Unit* unit)
 	{ // 00401D60, hooked for cloak rewrite - Pr0nogo
 		return target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
-	u32 isTargetVisibleHook(CUnit* target, CUnit* unit)
+	u32 isTargetVisibleHook(Unit* target, Unit* unit)
 	{ // 004E5E30
 		s32 playerUnit;
 		playerUnit = 1 << unit->playerId;
@@ -488,9 +488,9 @@ LABEL_42:
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
-	u32 isUnitVisibleHook(CUnit* unit)
+	u32 isUnitVisibleHook(Unit* unit)
 	{ // 004E5DB0
-		CUnit* target; // eax
+		Unit* target; // eax
 		s32 playerUnit; // ebx
 		u32 result; // eax
 
@@ -512,12 +512,12 @@ LABEL_42:
 		return result;
 	}
 
-	void updateUnitVisibility(CUnit* unit)
+	void updateUnitVisibility(Unit* unit)
 	{
 		if (*playerVisions & unit->visibilityStatus)
 		{
 			helper::makeSpriteVisible(unit->sprite);
-			CUnit* subunit = unit->subunit;
+			Unit* subunit = unit->subunit;
 			if (subunit)
 			{
 				helper::makeSpriteVisible(subunit->sprite);
@@ -531,7 +531,7 @@ LABEL_42:
 			}
 			helper::removeSelectionCircle(unit->sprite);
 			helper::makeSpriteInvisible(unit->sprite);
-			CUnit* subunit = unit->subunit;
+			Unit* subunit = unit->subunit;
 			if (subunit)
 			{
 				helper::makeSpriteInvisible(subunit->sprite);
@@ -540,7 +540,7 @@ LABEL_42:
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
-	void checkUnitVisibilityHook(CUnit* unit)
+	void checkUnitVisibilityHook(Unit* unit)
 	{ // 00443390
 		u32 detectingPlayers = helper::getDetectingPlayers(unit);
 		if (unit->visibilityStatus != detectingPlayers)
@@ -567,7 +567,7 @@ LABEL_42:
 
 	// Hooked to complete the cloak rewrite - Pr0nogo
 	// was __thiscall, does that matter?
-	s32 isUnitCloakingHook(CUnit* unit)
+	s32 isUnitCloakingHook(Unit* unit)
 	{ // 004916E0
 		if (unit->isCloaked)
 		{
@@ -581,14 +581,14 @@ LABEL_42:
 			redraw = 1;
 		}
 
-		CUnit* previousInvisibleUnit = unit->burrow_link.prev;
+		Unit* previousInvisibleUnit = unit->burrow_link.prev;
 		if (previousInvisibleUnit)
 		{
 			previousInvisibleUnit->burrow_link.next = unit->burrow_link.next;
 			redraw = 1;
 		}
 
-		CUnit* nextInvisibleUnit = unit->burrow_link.next;
+		Unit* nextInvisibleUnit = unit->burrow_link.next;
 		if (nextInvisibleUnit)
 		{
 			nextInvisibleUnit->burrow_link.prev = unit->burrow_link.prev;

@@ -11,7 +11,7 @@
 
 namespace hooks
 {
-	void orders_TerranBuildSelf(CUnit* building)
+	void orders_TerranBuildSelf(Unit* building)
 	{
 		if (building->mainOrderState == 0)
 		{
@@ -21,7 +21,7 @@ namespace hooks
 		else
 			if (building->mainOrderState == 1)
 			{
-				CImage* current_image = building->sprite->images.head;
+				Image* current_image = building->sprite->images.head;
 				while (current_image != nullptr)
 				{
 					current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
@@ -38,7 +38,7 @@ namespace hooks
 				else
 					if (building->mainOrderState == 3)
 					{
-						CImage* current_image = building->sprite->images.head;
+						Image* current_image = building->sprite->images.head;
 						while (current_image != nullptr)
 						{
 							current_image->playIscriptAnim(IscriptAnimation::SpecialState2);
@@ -58,7 +58,7 @@ namespace hooks
 							if (building->mainOrderState == 5)
 							{
 								helper::initBuilding(building, 0);
-								CImage* current_image = building->sprite->images.head;
+								Image* current_image = building->sprite->images.head;
 								while (current_image != nullptr)
 								{
 									current_image->playIscriptAnim(IscriptAnimation::AlmostBuilt);
@@ -77,9 +77,9 @@ namespace hooks
 	}
 
 	// Go to build on an existing building
-	void orders_SCVBuild2(CUnit* unit)
+	void orders_SCVBuild2(Unit* unit)
 	{
-		CUnit* builtUnit = unit->orderTarget.unit;
+		Unit* builtUnit = unit->orderTarget.unit;
 		if (builtUnit != nullptr && !(builtUnit->status & UnitStatus::Completed))
 		{
 			bool jump_to_switch_1 = false;
@@ -263,7 +263,7 @@ namespace hooks
 										else
 										{ // 00467E4A
 											u8 rand_value = helper::RandomizeShort(10);
-											CImage* current_image = unit->sprite->images.head;
+											Image* current_image = unit->sprite->images.head;
 											unit->mainOrderTimer = (rand_value & 63) + 30;
 											while (current_image != nullptr)
 											{
@@ -277,7 +277,7 @@ namespace hooks
 									else
 									{
 										u8 rand_value = helper::RandomizeShort(10);
-										CImage* current_image = unit->sprite->images.head;
+										Image* current_image = unit->sprite->images.head;
 										unit->mainOrderTimer = (rand_value & 63) + 30;
 										while (current_image != nullptr)
 										{
@@ -297,7 +297,7 @@ namespace hooks
 										}
 										else
 										{
-											CImage* current_image = unit->sprite->images.head;
+											Image* current_image = unit->sprite->images.head;
 											while (current_image != nullptr)
 											{
 												current_image->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
@@ -318,7 +318,7 @@ namespace hooks
 				helper::buildingAddon(builtUnit, hpGain, FALSE);
 				if (builtUnit->status & UnitStatus::Completed)
 				{
-					CImage* current_image = unit->sprite->images.head;
+					Image* current_image = unit->sprite->images.head;
 					bool bEndThere = false;
 					while (current_image != nullptr)
 					{
@@ -379,7 +379,7 @@ namespace hooks
 		}
 		else
 		{ // 00467ED0
-			CImage* current_image = unit->sprite->images.head;
+			Image* current_image = unit->sprite->images.head;
 			bool bEndThere = false;
 			while (current_image != nullptr)
 			{
@@ -438,7 +438,7 @@ namespace hooks
 	}
 
 	//// Go to build a not yet existing building
-	void orders_SCVBuild(CUnit* unit)
+	void orders_SCVBuild(Unit* unit)
 	{
 		bool bEndThere = false;
 		if (unit->pAI != nullptr)
@@ -458,7 +458,7 @@ namespace hooks
 						128)
 					&& helper::beginBuilding(unit))
 				{
-					CUnit* builtUnit;
+					Unit* builtUnit;
 					unit->status &= ~UnitStatus::IsNormal;
 					unit->sprite->elevationLevel = units_dat::Elevation[unit->id] + 1;
 					if (unit->orderQueueHead == nullptr)
@@ -541,7 +541,7 @@ namespace hooks
 
 	/*
 	// Hooked to enable unit mover for human players - Pr0nogo
-	s32 updateBuildingPlacementState_Units(s32 yTile, CUnit* builder, s32 xTile, u8 player, u16 unitId, s32 sizeWidthHeight,s32 placementStateEntry,
+	s32 updateBuildingPlacementState_Units(s32 yTile, Unit* builder, s32 xTile, u8 player, u16 unitId, s32 sizeWidthHeight,s32 placementStateEntry,
 		char bDontIgnoreReacting, char bAlsoInvisible, s32 withoutVision) // 00473720
 	{
 		s32 v14;
@@ -574,7 +574,7 @@ namespace hooks
 		v15 = dimensions.x + units_dat::UnitBounds[unitId].h;
 		v28.x = v14 + units_dat::UnitBounds[unitId].w;
 		v28.y = v15;
-		CUnit** allUnitsInBounds = helper::getAllUnitsInBounds((Box16*)&a1);
+		Unit** allUnitsInBounds = helper::getAllUnitsInBounds((Box16*)&a1);
 		s32 iterateOffset = 0;
 		s16 xTileIterate;
 		s32 yTileIterate = yTile;

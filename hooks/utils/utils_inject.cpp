@@ -35,7 +35,7 @@ namespace
 	void __declspec(naked) unit_IsStandardAndMovableWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 		static b32 result;
 
 		__asm {
@@ -61,7 +61,7 @@ namespace
 	void __declspec(naked) getActivePlayerFirstSelectionWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm PUSHAD
 

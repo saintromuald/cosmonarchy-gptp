@@ -11,12 +11,12 @@
 
 namespace hooks
 {
-	s32 isQueueSlotActive(CUnit* unit, u32 slot)
+	s32 isQueueSlotActive(Unit* unit, u32 slot)
 	{
 		return unit->buildQueue[(slot + unit->buildQueueSlot) % 5] < UnitId::None;
 	}
 
-	void secondaryOrd_TrainFighter(CUnit* unit)
+	void secondaryOrd_TrainFighter(Unit* unit)
 	{
 		if (unit->id == UnitId::ProtossSolarion
 			|| unit->id == UnitId::ProtossAccantor)
@@ -30,7 +30,7 @@ namespace hooks
 				}
 				else
 				{
-					CUnit* builtUnit;
+					Unit* builtUnit;
 					if (unit->secondaryOrderState == 0)
 					{
 						builtUnit = helper::attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 1);
@@ -54,7 +54,7 @@ namespace hooks
 			else
 				if (unit->secondaryOrderState == 2)
 				{
-					CUnit* builtUnit = unit->currentBuildUnit;
+					Unit* builtUnit = unit->currentBuildUnit;
 					u32 hpGain;
 					if (builtUnit != nullptr)
 					{
@@ -91,7 +91,7 @@ namespace hooks
 						}
 						else
 						{
-							CUnit* inHangarChild = unit->carrier.inHangarChild;
+							Unit* inHangarChild = unit->carrier.inHangarChild;
 							if (inHangarChild != nullptr)
 							{
 								s32 hpInterceptor = units_dat::MaxHitPoints[UnitId::ProtossSteward];
@@ -110,7 +110,7 @@ namespace hooks
 	}
 
 	// generic unit training function
-	void orderTrain(CUnit* unit)
+	void orderTrain(Unit* unit)
 	{
 		if (!(unit->status & UnitStatus::DoodadStatesThing)
 			&& !(unit->isFrozen()))
@@ -125,7 +125,7 @@ namespace hooks
 				}
 				else
 				{
-					CUnit* builtUnit;
+					Unit* builtUnit;
 					if (unit->secondaryOrderState == 0)
 					{
 						builtUnit = helper::attemptTrainHatchUnit(unit, unit->buildQueue[unit->buildQueueSlot], 1);
@@ -148,7 +148,7 @@ namespace hooks
 			else
 				if (unit->secondaryOrderState == 2)
 				{
-					CUnit* builtUnit = unit->currentBuildUnit;
+					Unit* builtUnit = unit->currentBuildUnit;
 					if (builtUnit != nullptr)
 					{
 						UnitExt* builtUnitExt = globals.GetUnitExt(builtUnit);
@@ -261,7 +261,7 @@ namespace hooks
 		}
 	}
 
-	char getMaxHangerSpace(CUnit* a1)
+	char getMaxHangerSpace(Unit* a1)
 	{ // 0x004653D0
 		u16 id; // ax
 		s32 hangarSpace; // eax

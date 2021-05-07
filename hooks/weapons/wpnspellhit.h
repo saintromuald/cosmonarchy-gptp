@@ -5,32 +5,32 @@
 #include "SCBW\api.h"
 namespace hooks
 {
-	void IrradiateHit(CUnit* attacker, Point16 target, u8 attackingPlayerId);			// 00454E00
-	void OpticalFlareHit(CUnit* target, u32 attackingPlayerId, CBullet* bullet);		// 00455170
-	void RestoreHit(CUnit* target, CBullet* bullet);									// 00455230
-	void LockdownHit(CUnit* target, u8 previousLockdownTimer, CBullet* bullet);			// 00455380
-	void WeaponBulletHit(CBullet* bullet, CUnit* target, u32 damageDivisor);			// 00479AE0
-	void MeleeAttackHit(CUnit* attacker);												// 00479B40
-	void EMPShockwaveHit(CUnit* attacker, s32 x, s32 y, CBullet* bullet);				// 00492BA0
-	void CorrosiveAcidHit(u32 attackingPlayerId, s32 x, s32 y, CBullet* bullet);		// 004F4770
-	void ConsumeHit(CUnit* attacker, CUnit* target);									// 004F47B0
-	void EnsnareHit(CUnit* attacker, s32 x, s32 y, CBullet* bullet);					// 004F4830
-	void DarkSwarmHit(s32 x, s32 y, u32 attackingPlayerId, CBullet* bullet);			// 004F48A0
-	void BroodlingHit(CUnit* attacker, CUnit* target, CBullet* bullet);					// 004F4940
-	void PlagueHit(CUnit* attacker, s32 x, s32 y, CBullet* bullet);						// 004F4B30
-	void MaelstromHit(CUnit* attacker, s32 x, s32 y, CBullet* bullet);					// 004F6850
-	void MindControlHitHook(CUnit* attacker, CUnit* target);							// 004F6910
-	void StasisFieldHit(CUnit* attacker, s32 x, s32 y, CBullet* bullet);				// 004F6A80
-	void DisruptionWebHit(u32 attackingPlayerId, s32 x, s32 y, CBullet* bullet);		// 004F6AF0
-	CUnit* createDisruptionWeb(u32 playerId, s32 x, s32 y);
-	s32 ensnareProc(CUnit* target, CUnit* attacker);									// 004F46C0
-	void createScanner(CUnit* unit);													// 00464E40
-	u8 stasisFieldOverlay(CUnit* a1, u8 a2);
-	char disableUnit(CUnit* unit);														// 00492CC0
-	bool maelstromProc(CUnit* target, CUnit* source);									// 004F6760
-	CUnit* iterateUnitsAtLocationTargetProc(Box16* location,							// 004E8280
-		s32(__fastcall* proc)(CUnit*, CUnit*),
-		CUnit* unit);
+	void IrradiateHit(Unit* attacker, Point16 target, u8 attackingPlayerId);			// 00454E00
+	void OpticalFlareHit(Unit* target, u32 attackingPlayerId, Bullet* bullet);		// 00455170
+	void RestoreHit(Unit* target, Bullet* bullet);									// 00455230
+	void LockdownHit(Unit* target, u8 previousLockdownTimer, Bullet* bullet);			// 00455380
+	void WeaponBulletHit(Bullet* bullet, Unit* target, u32 damageDivisor);			// 00479AE0
+	void MeleeAttackHit(Unit* attacker);												// 00479B40
+	void EMPShockwaveHit(Unit* attacker, s32 x, s32 y, Bullet* bullet);				// 00492BA0
+	void CorrosiveAcidHit(u32 attackingPlayerId, s32 x, s32 y, Bullet* bullet);		// 004F4770
+	void ConsumeHit(Unit* attacker, Unit* target);									// 004F47B0
+	void EnsnareHit(Unit* attacker, s32 x, s32 y, Bullet* bullet);					// 004F4830
+	void DarkSwarmHit(s32 x, s32 y, u32 attackingPlayerId, Bullet* bullet);			// 004F48A0
+	void BroodlingHit(Unit* attacker, Unit* target, Bullet* bullet);					// 004F4940
+	void PlagueHit(Unit* attacker, s32 x, s32 y, Bullet* bullet);						// 004F4B30
+	void MaelstromHit(Unit* attacker, s32 x, s32 y, Bullet* bullet);					// 004F6850
+	void MindControlHitHook(Unit* attacker, Unit* target);							// 004F6910
+	void StasisFieldHit(Unit* attacker, s32 x, s32 y, Bullet* bullet);				// 004F6A80
+	void DisruptionWebHit(u32 attackingPlayerId, s32 x, s32 y, Bullet* bullet);		// 004F6AF0
+	Unit* createDisruptionWeb(u32 playerId, s32 x, s32 y);
+	s32 ensnareProc(Unit* target, Unit* attacker);									// 004F46C0
+	void createScanner(Unit* unit);													// 00464E40
+	u8 stasisFieldOverlay(Unit* a1, u8 a2);
+	char disableUnit(Unit* unit);														// 00492CC0
+	bool maelstromProc(Unit* target, Unit* source);									// 004F6760
+	Unit* iterateUnitsAtLocationTargetProc(Box16* location,							// 004E8280
+		s32(__fastcall* proc)(Unit*, Unit*),
+		Unit* unit);
 
 	//The injector function for this hook module.
 	void injectWpnSpellHitHooks();

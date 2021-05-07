@@ -4,8 +4,8 @@
 void __declspec(naked) transferResourceToWorkerWrapper()
 {
 
-	static CUnit* worker;
-	static CUnit* resource;
+	static Unit* worker;
+	static Unit* resource;
 
 	__asm {
 		PUSH EBP

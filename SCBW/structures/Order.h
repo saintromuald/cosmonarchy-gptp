@@ -5,10 +5,10 @@
 
 //V241 for VS2008
 
-struct COrder
+struct Order
 {
-	/*00*/  COrder* prev;
-	/*04*/  COrder* next;
+	/*00*/  Order* prev;
+	/*04*/  Order* next;
 	/*08*/  u16  orderId;
 	/*0A*/  u16  unitId;
 	/*0C*/  Target  target;
@@ -17,7 +17,7 @@ struct COrder
 	/*10*/			/*target.unit*/
 };
 
-C_ASSERT(sizeof(COrder) == 20);
-//static_assert(sizeof(COrder) == 20, "The size of the COrder structure is invalid");
+C_ASSERT(sizeof(Order) == 20);
+//static_assert(sizeof(Order) == 20, "The size of the Order structure is invalid");
 
 #pragma pack()

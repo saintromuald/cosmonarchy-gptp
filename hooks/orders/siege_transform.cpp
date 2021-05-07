@@ -4,7 +4,7 @@
 
 namespace hooks
 {
-	void ordersTankMode(CUnit* unit) // 00464AE0
+	void ordersTankMode(Unit* unit) // 00464AE0
 	{
 		bool bStopThere = false;
 		if (unit->mainOrderState == 0)
@@ -31,7 +31,7 @@ namespace hooks
 		{
 			if (helper::getCloserToDestination_sub402BE0(unit->subunit))
 			{
-				CImage* current_image = unit->sprite->images.head;
+				Image* current_image = unit->sprite->images.head;
 				while (current_image != nullptr)
 				{
 					current_image->playIscriptAnim(IscriptAnimation::SpecialState2);
@@ -64,7 +64,7 @@ namespace hooks
 		}
 	}
 	
-	void ordersSiegeMode(CUnit* unit) // 00464BD0
+	void ordersSiegeMode(Unit* unit) // 00464BD0
 	{
 		bool bStopThere = false;
 		if (unit->mainOrderState == 0)

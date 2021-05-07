@@ -40,7 +40,7 @@ namespace
 	{
 		static s16 a1;
 		static s32 a2;
-		static CUnit* a3;
+		static Unit* a3;
 		static s16 a4;
 		static s32 a5;
 		static s32 a6;
@@ -83,7 +83,7 @@ namespace
 
 	void __declspec(naked) selectUnits_Wrapper()
 	{
-		static CUnit** a1;
+		static Unit** a1;
 		static s32 a2;
 		static s32 a3;
 		static s32 a4;

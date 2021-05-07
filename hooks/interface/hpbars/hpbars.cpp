@@ -6,7 +6,7 @@ namespace
 
 namespace hooks
 {
-	void ShowHealthBar(CUnit* unit)
+	void ShowHealthBar(Unit* unit)
 	{
 		if (unit == nullptr) return;
 		helper::RemoveHPBar(unit->sprite->images.head);
@@ -15,11 +15,11 @@ namespace hooks
 		_unitTemp = nullptr;
 	}
 
-	void compileHealthBar(CImage* a1, CSprite* a2)
+	void compileHealthBar(Image* a1, Sprite* a2)
 	{
 		/*
-		CSprite v2;// eax
-		CUnit* v3;	// edi
+		Sprite v2;// eax
+		Unit* v3;	// edi
 		u8 v4;		// cl
 		s32 v5;		// eax
 		u16 v6;		// ax
@@ -72,7 +72,7 @@ namespace hooks
 	*/
 	}
 
-	CUnit* _unitTemp;
+	Unit* _unitTemp;
 }
 
 namespace

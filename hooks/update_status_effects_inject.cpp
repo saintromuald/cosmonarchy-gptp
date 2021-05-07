@@ -12,7 +12,7 @@ namespace
 	void __declspec(naked) updateStatusEffectsWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EAX
@@ -29,7 +29,7 @@ namespace
 
 	void __declspec(naked) AiBurrower_Wrapper()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			MOV unit, EAX
 			PUSHAD

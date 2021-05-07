@@ -6,18 +6,18 @@
 namespace
 {
 
-	bool canCastSpellOrder(CUnit* unit, u8 techId, u8 orderId);
-	bool aiCastSpellOrder(CUnit* unit, CUnit* target, u8 orderId, u8 aiActionFlag = 1);
+	bool canCastSpellOrder(Unit* unit, u8 techId, u8 orderId);
+	bool aiCastSpellOrder(Unit* unit, Unit* target, u8 orderId, u8 aiActionFlag = 1);
 	u16 getOrderEnergyCost(u8 orderId);
 	bool isNukeTimerReady(u8 playerId);
-	CUnit* getLoadedSilo(CUnit* ghost, b32 checkNukeAvailableForGhost = 1);
+	Unit* getLoadedSilo(Unit* ghost, b32 checkNukeAvailableForGhost = 1);
 
 } //unnamed namespace
 
 namespace AI
 {
 	//Attempts make the @p unit cast a spell.
-	bool AI_spellcasterHook(CUnit* unit, bool isUnitBeingAttacked)
+	bool AI_spellcasterHook(Unit* unit, bool isUnitBeingAttacked)
 	{
 		if (!isUnitBeingAttacked
 			&& AIScriptController[unit->playerId].spellcasterTimer != 0)
@@ -32,7 +32,7 @@ namespace AI
 				// Yamato Cannon
 				if (canCastSpellOrder(unit, TechId::YamatoGun, OrderId::FireYamatoGun1))
 				{
-					CUnit* target = findBestYamatoGunTarget(unit, isUnitBeingAttacked);
+					Unit* target = findBestYamatoGunTarget(unit, isUnitBeingAttacked);
 					if (unit->mainOrderId == OrderId::FireYamatoGun1
 						&& unit->orderTarget.unit == target)
 					{
@@ -48,7 +48,7 @@ namespace AI
 				// Lobotomy Mine
 				if (canCastSpellOrder(unit, TechId::Lockdown, OrderId::MagnaPulse) && unit->vulture.spiderMineCount > 0)
 				{
-					CUnit* target = findBestLockdownTarget(unit, isUnitBeingAttacked);
+					Unit* target = findBestLockdownTarget(unit, isUnitBeingAttacked);
 					if (unit->mainOrderId == OrderId::MagnaPulse
 						&& unit->orderTarget.unit == target)
 					{
@@ -63,12 +63,12 @@ namespace AI
 				// Launch Nuclear Missile
 				if (isNukeTimerReady(unit->playerId))
 				{
-					CUnit* silo = getLoadedSilo(unit);
+					Unit* silo = getLoadedSilo(unit);
 					if (!silo)
 					{
 						return false;
 					}
-					CUnit* target = findBestNukeLaunchTarget(unit, isUnitBeingAttacked);
+					Unit* target = findBestNukeLaunchTarget(unit, isUnitBeingAttacked);
 					if (aiCastSpellOrder(unit, target, OrderId::NukePaint))
 					{
 						silo->building.silo.nuke->connectedUnit = unit;
@@ -81,7 +81,7 @@ namespace AI
 				// Defensive Matrix
 				if (canCastSpellOrder(unit, TechId::DefensiveMatrix, OrderId::DefensiveMatrix))
 				{
-					CUnit* target = findBestDefensiveMatrixTarget(unit, isUnitBeingAttacked);
+					Unit* target = findBestDefensiveMatrixTarget(unit, isUnitBeingAttacked);
 					if (unit->mainOrderId == OrderId::DefensiveMatrix
 						&& unit->orderTarget.unit == target)
 					{
@@ -97,7 +97,7 @@ namespace AI
 				// Irradiate
 				if (canCastSpellOrder(unit, TechId::Irradiate, OrderId::Irradiate))
 				{
-					CUnit* target = findBestIrradiateTarget(unit, isUnitBeingAttacked);
+					Unit* target = findBestIrradiateTarget(unit, isUnitBeingAttacked);
 					if (unit->mainOrderId == OrderId::Irradiate
 						&& unit->orderTarget.unit == target)
 					{
@@ -113,12 +113,12 @@ namespace AI
 				// Launch Nuclear Missile
 				if (isNukeTimerReady(unit->playerId))
 				{
-					CUnit* silo = getLoadedSilo(unit);
+					Unit* silo = getLoadedSilo(unit);
 					if (!silo)
 					{
 						return false;
 					}
-					CUnit* target = findBestNukeLaunchTarget(unit, isUnitBeingAttacked);
+					Unit* target = findBestNukeLaunchTarget(unit, isUnitBeingAttacked);
 					if (aiCastSpellOrder(unit, target, OrderId::NukePaint))
 					{
 						silo->building.silo.nuke->connectedUnit = unit;
@@ -133,7 +133,7 @@ namespace AI
 				{
 					if (canCastSpellOrder(unit, TechId::Parasite, OrderId::CastParasite))
 					{
-						CUnit* target = findBestParasiteTarget(unit, isUnitBeingAttacked);
+						Unit* target = findBestParasiteTarget(unit, isUnitBeingAttacked);
 
 						if (unit->mainOrderId == OrderId::CastParasite
 							&& unit->orderTarget.unit == target)
@@ -152,7 +152,7 @@ namespace AI
 				// Plague
 				if (canCastSpellOrder(unit, TechId::Plague, OrderId::Plague))
 				{
-					CUnit* target = findBestPlagueTarget(unit, isUnitBeingAttacked);
+					Unit* target = findBestPlagueTarget(unit, isUnitBeingAttacked);
 
 					if (unit->mainOrderId == OrderId::Plague
 						&& unit->orderTarget.unit == target)
@@ -166,7 +166,7 @@ namespace AI
 				// Dark Swarm
 				if (canCastSpellOrder(unit, TechId::DarkSwarm, OrderId::DarkSwarm))
 				{
-					CUnit* target = findBestDarkSwarmTarget(unit, isUnitBeingAttacked);
+					Unit* target = findBestDarkSwarmTarget(unit, isUnitBeingAttacked);
 					if (unit->mainOrderId == OrderId::DarkSwarm
 						&& unit->orderTarget.unit == target)
 					{
@@ -182,7 +182,7 @@ namespace AI
 				// Psionic Storm
 				if (canCastSpellOrder(unit, TechId::PsionicStorm, OrderId::PsiStorm))
 				{
-					CUnit* target = findBestPsiStormTarget(unit, isUnitBeingAttacked);
+					Unit* target = findBestPsiStormTarget(unit, isUnitBeingAttacked);
 					if (unit->mainOrderId == OrderId::PsiStorm
 						&& unit->orderTarget.unit == target)
 					{
@@ -198,7 +198,7 @@ namespace AI
 				if (unit->getMaxEnergy() == unit->energy
 					&& canCastSpellOrder(unit, TechId::Hallucination, OrderId::Hallucination1))
 				{
-					CUnit* target = findBestHallucinationTarget(unit, isUnitBeingAttacked);
+					Unit* target = findBestHallucinationTarget(unit, isUnitBeingAttacked);
 					if (unit->mainOrderId == OrderId::Hallucination1
 						&& unit->orderTarget.unit == target)
 					{
@@ -214,7 +214,7 @@ namespace AI
 				// Stasis Field
 				if (canCastSpellOrder(unit, TechId::StasisField, OrderId::StasisField))
 				{
-					CUnit* target = findBestStasisFieldTarget(unit, isUnitBeingAttacked);
+					Unit* target = findBestStasisFieldTarget(unit, isUnitBeingAttacked);
 					if (unit->mainOrderId == OrderId::StasisField
 						&& unit->orderTarget.unit == target)
 					{
@@ -229,7 +229,7 @@ namespace AI
 				// Recall
 				if (canCastSpellOrder(unit, TechId::Recall, OrderId::Teleport))
 				{
-					CUnit* target = findBestRecallTarget(unit, isUnitBeingAttacked);
+					Unit* target = findBestRecallTarget(unit, isUnitBeingAttacked);
 					if (unit->mainOrderId == OrderId::Teleport
 						&& unit->orderTarget.unit == target)
 					{
@@ -245,7 +245,7 @@ namespace AI
 				// Mind Control
 				if (canCastSpellOrder(unit, TechId::MindControl, OrderId::CastMindControl))
 				{
-					CUnit* target = findBestMindControlTarget(unit, isUnitBeingAttacked);
+					Unit* target = findBestMindControlTarget(unit, isUnitBeingAttacked);
 					if (unit->mainOrderId == OrderId::CastMindControl
 						&& unit->orderTarget.unit == target)
 					{
@@ -265,7 +265,7 @@ namespace AI
 				if ((unit->energy >= energyReserve || scbw::isCheatEnabled(CheatFlags::TheGathering))
 					&& unit->canUseTech(TechId::Maelstrom, unit->playerId) != 1)
 				{
-					CUnit* target = findBestMaelstromTarget(unit, isUnitBeingAttacked);
+					Unit* target = findBestMaelstromTarget(unit, isUnitBeingAttacked);
 					if (unit->mainOrderId == OrderId::CastMaelstrom
 						&& unit->orderTarget.unit == target)
 					{
@@ -288,7 +288,7 @@ namespace
 {
 
 	//Logically equivalent to function @ 0x004A11E0
-	bool canCastSpellOrder(CUnit* unit, u8 techId, u8 orderId)
+	bool canCastSpellOrder(Unit* unit, u8 techId, u8 orderId)
 	{
 		u16 energyCost = 0;
 		if (orders_dat::TechUsed[orderId] < TechId::None)
@@ -304,7 +304,7 @@ namespace
 	}
 
 	//Logically equivalent to function @ 0x004A1290
-	bool aiCastSpellOrder(CUnit* unit, CUnit* target, u8 orderId, u8 aiActionFlag)
+	bool aiCastSpellOrder(Unit* unit, Unit* target, u8 orderId, u8 aiActionFlag)
 	{
 		if (!target || target->aiActionFlags & aiActionFlag)
 			return false;
@@ -336,12 +336,12 @@ namespace
 	//checkNukeAvailableForGhost is 1 by default
 	//if checkNukeAvailableForGhost is 0, only check for a loaded silo
 	//without checking if the nuke is already linked to another ghost
-	CUnit* getLoadedSilo(CUnit* ghost, b32 checkNukeAvailableForGhost)
+	Unit* getLoadedSilo(Unit* ghost, b32 checkNukeAvailableForGhost)
 	{
 
-		CUnit* return_value = nullptr;
+		Unit* return_value = nullptr;
 
-		CUnit* current_unit = firstPlayerUnit->unit[ghost->playerId];
+		Unit* current_unit = firstPlayerUnit->unit[ghost->playerId];
 
 		while (current_unit != nullptr && return_value == nullptr)
 		{
@@ -354,7 +354,7 @@ namespace
 				if (!checkNukeAvailableForGhost)
 				{
 
-					CUnit* nuke = current_unit->building.silo.nuke;
+					Unit* nuke = current_unit->building.silo.nuke;
 
 					if (nuke->connectedUnit == nullptr ||
 						nuke->connectedUnit == ghost ||
@@ -375,11 +375,11 @@ namespace
 		return return_value;
 
 
-		//for (CUnit* unit = firstPlayerUnit->unit[ghost->playerId];
+		//for (Unit* unit = firstPlayerUnit->unit[ghost->playerId];
 		//     unit; unit = unit->player_link.next)
 		//{
 		//  if (unit->id == UnitId::nuclear_silo && unit->building.silo.isReady) {
-		//    CUnit* nuke = unit->building.silo.nuke;
+		//    Unit* nuke = unit->building.silo.nuke;
 		//    if (!nuke->connectedUnit
 		//        || nuke->connectedUnit == ghost
 		//        || nuke->connectedUnit->id == UnitId::nuclear_silo)

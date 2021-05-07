@@ -12,12 +12,12 @@
 #include "globals.h"
 #include "hooks\weapons\wpnspellhit.h"
 
-void killAllHangarUnits(CUnit* unit)
+void killAllHangarUnits(Unit* unit)
 {
 	u32 random_value;
 	while (unit->carrier.inHangarCount != 0)
 	{
-		CUnit* childInside = unit->carrier.inHangarChild;
+		Unit* childInside = unit->carrier.inHangarChild;
 		unit->carrier.inHangarChild = childInside->interceptor.hangar_link.prev;
 		childInside->interceptor.parent = nullptr;
 		childInside->remove();
@@ -25,7 +25,7 @@ void killAllHangarUnits(CUnit* unit)
 	}
 	while (unit->carrier.outHangarCount != 0)
 	{
-		CUnit* childOutside = unit->carrier.outHangarChild;
+		Unit* childOutside = unit->carrier.outHangarChild;
 		childOutside->interceptor.parent = nullptr;
 		// Kill Stewards only (Plasma Shells will defuse anyway)
 		if (childOutside->id != UnitId::ProtossPlasmaShell)
@@ -66,11 +66,11 @@ void killAllHangarUnits(CUnit* unit)
 
 // Identical to 00468770 sub_468770
 // Not hooked but used by hooked unitDestructorSpecialHook
-void freeResourceContainer(CUnit* resource)
+void freeResourceContainer(Unit* resource)
 {
 	resource->building.resource.gatherQueueCount = 0;
-	CUnit* worker = resource->building.resource.nextGatherer;
-	CUnit* nextWorker;
+	Unit* worker = resource->building.resource.nextGatherer;
+	Unit* nextWorker;
 	while (worker != nullptr)
 	{
 		if (worker->worker.harvest_link.prev != nullptr) // untie the previous worker from current worker (tie it to next)
@@ -93,7 +93,7 @@ void freeResourceContainer(CUnit* resource)
 	}
 }
 
-void unitDestructorSpecialHook(CUnit* unit)
+void unitDestructorSpecialHook(Unit* unit)
 {
 	UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -127,7 +127,7 @@ void unitDestructorSpecialHook(CUnit* unit)
 		} break;
 		case UnitId::ProtossPylon:
 		{
-			// code from hooks::removePsiField(CUnit* unit)
+			// code from hooks::removePsiField(Unit* unit)
 			// copied because the content is hardcoded here
 			if (unit->building.pylonAura != nullptr)
 			{
@@ -156,7 +156,7 @@ void unitDestructorSpecialHook(CUnit* unit)
 		} break;
 		case UnitId::ZergNydusCanal:
 		{
-			CUnit* nydusExit = unit->building.nydusExit;
+			Unit* nydusExit = unit->building.nydusExit;
 			if (nydusExit != nullptr)
 			{
 				unit->building.nydusExit = nullptr;
@@ -193,7 +193,7 @@ void unitDestructorSpecialHook(CUnit* unit)
 					unit->getY() - range,
 					unit->getX() + range,
 					unit->getY() + range
-				).forEach([&](CUnit* target)
+				).forEach([&](Unit* target)
 					{
 						UnitExt* targetExt = globals.GetUnitExt(target);
 						if (!scbw::isAlliedTo(unit->playerId, target->playerId))
@@ -293,7 +293,7 @@ void unitDestructorSpecialHook(CUnit* unit)
 			unit->getY() - range,
 			unit->getX() + range,
 			unit->getY() + range
-		).forEach([&](CUnit* target)
+		).forEach([&](Unit* target)
 		{
 			if (target->id != UnitId::TerranApostle)
 			{
@@ -346,7 +346,7 @@ void unitDestructorSpecialHook(CUnit* unit)
 			unit->getY() - range,
 			unit->getX() + range,
 			unit->getY() + range
-		).forEach([&](CUnit* target)
+		).forEach([&](Unit* target)
 		{
 			if (target->plagueTimer > 0)
 			{
@@ -367,7 +367,7 @@ void unitDestructorSpecialHook(CUnit* unit)
 void __declspec(naked) unitDestructorSpecialWrapper()
 {
 
-	static CUnit* unit;
+	static Unit* unit;
 
 	__asm {
 		MOV unit, EAX

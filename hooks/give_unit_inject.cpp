@@ -8,7 +8,7 @@ namespace
 	void __declspec(naked) GiveUnitWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 playerId;
 		static u32 unkScore;
 

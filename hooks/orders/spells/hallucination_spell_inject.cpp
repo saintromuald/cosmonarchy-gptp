@@ -7,7 +7,7 @@ namespace
 
 	void __declspec(naked) orders_Hallucination1Wrapper()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -25,9 +25,9 @@ namespace
 
 	void __declspec(naked) createHallucination_Wrapper()
 	{
-		static CUnit* source;
+		static Unit* source;
 		static s32 player;
-		static CUnit* result;
+		static Unit* result;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP

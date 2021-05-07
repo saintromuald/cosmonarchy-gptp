@@ -8,7 +8,7 @@ namespace
 	void __declspec(naked) getSeekRangeWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 		static u8 seekRange;
 
 		__asm {
@@ -30,7 +30,7 @@ namespace
 	void __declspec(naked) getMaxWeaponRangeWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 		static u8 weaponId;
 		static u32 maxWeaponRange;
 
@@ -52,7 +52,7 @@ namespace
 
 } //unnamed namespace
 
-//Defined in SCBW/structures/CUnit.cpp
+//Defined in SCBW/structures/Unit.cpp
 extern const u32 Func_GetMaxWeaponRange;
 extern const u32 Func_GetSeekRange;
 

@@ -4,7 +4,7 @@
 namespace hooks
 {
 
-	void orders_Die(CUnit* unit)
+	void orders_Die(Unit* unit)
 	{
 		bool jump_to_795AB = false;
 		if (unit->userActionFlags & 4)
@@ -41,7 +41,7 @@ namespace hooks
 				}
 				else
 				{
-					CThingy* hallucination_smoke;
+					Thingy* hallucination_smoke;
 					scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal01_WAV, unit);
 					hallucination_smoke =
 						helper::createThingy(

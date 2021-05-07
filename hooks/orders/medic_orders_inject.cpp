@@ -7,7 +7,7 @@ namespace
 	void __declspec(naked) orders_MedicHeal2Wrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EDI
@@ -26,7 +26,7 @@ namespace
 	void __declspec(naked) orders_HealMoveWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP
@@ -50,7 +50,7 @@ namespace
 	void __declspec(naked) orders_MedicWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP
@@ -73,7 +73,7 @@ namespace
 	void __declspec(naked) orders_MedicHeal1Wrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EAX
@@ -91,8 +91,8 @@ namespace
 
 	void __declspec(naked) AI_AcquireHealTarget_Wrapper()
 	{
-		static CUnit* a1;
-		static CUnit* a2;
+		static Unit* a1;
+		static Unit* a2;
 		static u32 result;
 		__asm
 		{
@@ -111,8 +111,8 @@ namespace
 
 	void __declspec(naked) doMedicHeal_Wrapper()
 	{
-		static CUnit* medic;
-		static CUnit* target;
+		static Unit* medic;
+		static Unit* target;
 		static u32 result;
 		__asm {
 			PUSH EBP

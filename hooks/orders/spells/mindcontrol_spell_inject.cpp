@@ -8,7 +8,7 @@ namespace
 	void __declspec(naked) orders_CastMindControlWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP

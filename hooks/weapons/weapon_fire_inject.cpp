@@ -8,7 +8,7 @@ namespace
 	void __declspec(naked) fireWeaponWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 		static u8 weaponId;
 
 		__asm {
@@ -32,7 +32,7 @@ namespace
 
 	void __declspec(naked) progressBulletFlight_Wrapper()
 	{
-		static CBullet* bullet;
+		static Bullet* bullet;
 		__asm {
 			MOV bullet, EAX
 			PUSHAD
@@ -46,7 +46,7 @@ namespace
 
 	void __declspec(naked) bulletBehaviour_Bounce_Wrapper()
 	{
-		static CBullet* a1;
+		static Bullet* a1;
 		__asm {
 			MOV a1, EDI
 			PUSHAD
@@ -60,7 +60,7 @@ namespace
 
 	void __declspec(naked) findNextBounceTargetProc_Wrapper()
 	{
-		static CUnit* pIterator;
+		static Unit* pIterator;
 		static bool result;
 		__asm {
 			MOV pIterator, ECX
@@ -76,8 +76,8 @@ namespace
 
 	void __declspec(naked) findNextBounceTarget_Wrapper()
 	{
-		static CBullet* a1;
-		static CUnit* result;
+		static Bullet* a1;
+		static Unit* result;
 		__asm {
 			MOV a1, EAX
 			PUSHAD

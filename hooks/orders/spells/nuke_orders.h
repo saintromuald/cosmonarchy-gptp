@@ -4,8 +4,8 @@
 namespace hooks
 {
 
-	void orders_NukeTrack(CUnit* unit);	//00464D10
-	void orders_NukeGround(CUnit* unit);//00479200
+	void orders_NukeTrack(Unit* unit);	//00464D10
+	void orders_NukeGround(Unit* unit);//00479200
 
 	void injectNukeOrdersHooks();
 

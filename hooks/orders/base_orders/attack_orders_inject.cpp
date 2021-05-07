@@ -8,7 +8,7 @@ namespace
 	void __declspec(naked) orders_ReaverAttack1Wrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EAX
@@ -29,7 +29,7 @@ namespace
 	void __declspec(naked) orders_CarrierAttack1Wrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP
@@ -54,7 +54,7 @@ namespace
 	void __declspec(naked) orders_TurretAttackWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP
@@ -79,7 +79,7 @@ namespace
 	void __declspec(naked) orders_AttackFixedRangeWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP
@@ -104,7 +104,7 @@ namespace
 	void __declspec(naked) orders_SapUnitWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EAX
@@ -125,7 +125,7 @@ namespace
 	void __declspec(naked) orders_SapLocationWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EAX
@@ -146,7 +146,7 @@ namespace
 	void __declspec(naked) orders_AttackMoveEPWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP
@@ -171,7 +171,7 @@ namespace
 	void __declspec(naked) orders_AttackMoveWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, ESI
@@ -192,7 +192,7 @@ namespace
 	void __declspec(naked) orders_AttackUnitWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, ESI

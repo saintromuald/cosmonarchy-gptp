@@ -9,7 +9,7 @@ namespace AI
 {
 
 	//Equivalent to 00440E30 AI_TargetUnitIsWorthHitting
-	bool isTargetWorthHitting(CUnit* target, CUnit* attacker)
+	bool isTargetWorthHitting(Unit* target, Unit* attacker)
 	{
 
 		//If the target is hidden by the fog-of-war
@@ -39,9 +39,9 @@ namespace AI
 
 	}
 
-	bool isTargetAttackingAlly(CUnit* target, CUnit* unit)
+	bool isTargetAttackingAlly(Unit* target, Unit* unit)
 	{
-		if (CUnit* targetOfTarget = target->orderTarget.unit)
+		if (Unit* targetOfTarget = target->orderTarget.unit)
 		{
 			if (targetOfTarget->playerId < 8 && !unit->isTargetEnemy(targetOfTarget))
 				return true;
@@ -77,7 +77,7 @@ namespace AI
 	}
 
 	//Based on code @ 0x00440BB0 (not a real independant function)
-	bool isUnitInUnsafeRegion(CUnit* unit)
+	bool isUnitInUnsafeRegion(Unit* unit)
 	{
 		u16 currentRegion = getRegionIdAtPosEx(unit->getX(), unit->getY());
 		AiCaptain* currentAiCaptain = &AiRegionCaptains[unit->playerId][currentRegion];
@@ -104,7 +104,7 @@ namespace AI
 	//In original functions:
 	//0x00695604 would contains weaponId
 	//0x00695798 would contains totalEnemyLife
-	s32 getTotalEnemyLifeInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster, u8 weaponId)
+	s32 getTotalEnemyLifeInArea(s32 x, s32 y, s32 searchBounds, Unit* caster, u8 weaponId)
 	{
 
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
@@ -115,7 +115,7 @@ namespace AI
 		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i)
 		{
 
-			CUnit* target = unitStatTotalFinder.getUnit(i);
+			Unit* target = unitStatTotalFinder.getUnit(i);
 
 			if (
 				(target != caster) &&
@@ -180,7 +180,7 @@ namespace AI
 
 	//Loop content based on AIAllyUnitHPAccumulatorProc @ 0x00440D60
 	//0x00695798 would contains totalAllyLife
-	s32 getTotalAllyLifeInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster, u8 weaponId)
+	s32 getTotalAllyLifeInArea(s32 x, s32 y, s32 searchBounds, Unit* caster, u8 weaponId)
 	{
 
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
@@ -191,7 +191,7 @@ namespace AI
 		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i)
 		{
 
-			CUnit* target = unitStatTotalFinder.getUnit(i);
+			Unit* target = unitStatTotalFinder.getUnit(i);
 
 			if (
 				!(target->status & UnitStatus::Invincible) &&
@@ -208,7 +208,7 @@ namespace AI
 
 	//Loop content based on unitShieldsClumpInAreaAccumulatorProc @ 0x00440A60
 	//0x00695798 would contains totalEnemyShields
-	s32 getTotalEnemyShieldsInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster)
+	s32 getTotalEnemyShieldsInArea(s32 x, s32 y, s32 searchBounds, Unit* caster)
 	{
 
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
@@ -219,7 +219,7 @@ namespace AI
 		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i)
 		{
 
-			CUnit* target = unitStatTotalFinder.getUnit(i);
+			Unit* target = unitStatTotalFinder.getUnit(i);
 
 			if (
 				!(target->status & UnitStatus::Invincible) &&
@@ -236,7 +236,7 @@ namespace AI
 
 	//Loop content based on unitEnergyClumpInAreaAccumulatorProc @ 0x00440AC0
 	//0x00695798 would contains totalEnemyEnergy
-	s32 getTotalEnemyEnergyInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster)
+	s32 getTotalEnemyEnergyInArea(s32 x, s32 y, s32 searchBounds, Unit* caster)
 	{
 
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
@@ -247,7 +247,7 @@ namespace AI
 		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount(); ++i)
 		{
 
-			CUnit* target = unitStatTotalFinder.getUnit(i);
+			Unit* target = unitStatTotalFinder.getUnit(i);
 
 			if (
 				!(target->status & UnitStatus::Invincible) &&
@@ -266,7 +266,7 @@ namespace AI
 	//					getEnemyClumpValueProc	@ 0x00440B20
 	//0x00695798 would contains totalNukeTargetValue
 	//Optimized to stop when reaching totalNukeTargetValue == 800 since that's what matter
-	s32 getTotalEnemyNukeValueInArea(s32 x, s32 y, s32 searchBounds, CUnit* caster)
+	s32 getTotalEnemyNukeValueInArea(s32 x, s32 y, s32 searchBounds, Unit* caster)
 	{
 
 		unitStatTotalFinder.search(x - searchBounds, y - searchBounds,
@@ -277,7 +277,7 @@ namespace AI
 		for (s32 i = 0; i < unitStatTotalFinder.getUnitCount() && totalNukeTargetValue < 800; ++i)
 		{
 
-			CUnit* target = unitStatTotalFinder.getUnit(i);
+			Unit* target = unitStatTotalFinder.getUnit(i);
 
 			if (
 				!(target->status & UnitStatus::Invincible) &&

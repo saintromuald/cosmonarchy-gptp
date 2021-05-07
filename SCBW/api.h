@@ -14,16 +14,16 @@ namespace scbw
 	bool isConventionalUnitMorphSource(u16 id, bool allow_larvae = false, bool allow_high_templar = false);
 	bool isZergBuildingMorphResult(u16 id);
 	bool isZergBuildingMorphSource(u16 id);
-	bool isLarvalEgg(CUnit* unit);
-	bool isZergEggNew(CUnit* unit, bool allow_larval_eggs = true, bool allow_larvae = true, u16 explicit_unit_id = UnitId::None);
+	bool isLarvalEgg(Unit* unit);
+	bool isZergEggNew(Unit* unit, bool allow_larval_eggs = true, bool allow_larvae = true, u16 explicit_unit_id = UnitId::None);
 	bool isZergEgg(u16 id, bool allow_normal_eggs = true, bool allow_larvae = true);
-	void artificalBulletFrom(u8 weaponId, u8 playerId, CUnit* source, CUnit* target, Point16 target_pt);
-	void artificalBulletFrom(u8 weaponId, u8 playerId, CUnit* source, CUnit* target, u16 x, u16 y);
+	void artificalBulletFrom(u8 weaponId, u8 playerId, Unit* source, Unit* target, Point16 target_pt);
+	void artificalBulletFrom(u8 weaponId, u8 playerId, Unit* source, Unit* target, u16 x, u16 y);
 	std::string readSamaseFile(char* name);
-	bool teleport(CUnit* u, Point16 target, u16 spriteAnimation = 0, bool preserveOrder = false);
-	CFlingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y);
-	CThingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);
-	CThingy* createAndInitThingy(u32 spriteId, s16 x, s16 y, u32 playerId = 11, s32 elevationLevel = 11);
+	bool teleport(Unit* u, Point16 target, u16 spriteAnimation = 0, bool preserveOrder = false);
+	Flingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y);
+	Thingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);
+	Thingy* createAndInitThingy(u32 spriteId, s16 x, s16 y, u32 playerId = 11, s32 elevationLevel = 11);
 	Point32 rotate_point(Point32 anchor, Point32 point, f64 angle_degrees);
 
 	void SendCommand(u8* params, u32 param_length);
@@ -32,7 +32,7 @@ namespace scbw
 
 	/// Plays the given sound from sfxdata.dat. If @p sourceUnit is provided, it is
 	/// used as the source of the sound.
-	void playSound(u32 sfxId, CUnit* sourceUnit = nullptr);
+	void playSound(u32 sfxId, Unit* sourceUnit = nullptr);
 	/// Prints text to the screen, optionally using the given text color.
 	void printString(std::string text, u32 color = GameTextColor::White);
 	void print(const char* text, u32 color = GameTextColor::White);
@@ -48,7 +48,7 @@ namespace scbw
 
 	//////////////////////////////////////////////////////////////// @}
 
-	u8 hasOverlay(CUnit* unit);
+	u8 hasOverlay(Unit* unit);
 
 	void disableDialog(BinDlg* dialog);															//18640
 	void showDialog(BinDlg* dialog);															//186A0
@@ -66,7 +66,7 @@ namespace scbw
 	/// status effects. Note that this function is affected by the EXE edits
 	/// "change bunker size check to organic flag check" and
 	/// "remove bunker size check" in FireGraft.
-	bool canBeEnteredBy(CUnit* transport, CUnit* unit);
+	bool canBeEnteredBy(Unit* transport, Unit* unit);
 
 	/// Checks weapons.dat targeting flags to see if the @p target can be hit by the
 	/// @p weapon.
@@ -75,18 +75,18 @@ namespace scbw
 	/// @param  target    If nullptr is passed, the function checks whether the
 	///                   weapon can target a position on the ground. If @p target
 	///                   is invincible, the function returns false.
-	bool canWeaponTargetUnit(u8 weaponId, CUnit* target = nullptr,
-		CUnit* attacker = nullptr);
+	bool canWeaponTargetUnit(u8 weaponId, Unit* target = nullptr,
+		Unit* attacker = nullptr);
 
 	/// Checks if @p unit is under a Dark Swarm. This does NOT check whether the
 	/// unit is a ground unit or a building.
-	bool isUnderDarkSwarm(CUnit* unit);
-	CUnit* getDarkSwarm(CUnit* unit);
-	CUnit* getDarkSwarm(u16 x, u16 y, u16 radius);
+	bool isUnderDarkSwarm(Unit* unit);
+	Unit* getDarkSwarm(Unit* unit);
+	Unit* getDarkSwarm(u16 x, u16 y, u16 radius);
 	//Checks if the @p target can be targeted by player @p castingPlayer with
 	//tech/spell @p techId
 	//If yes, return 0, else return error message id in stat_txt.tbl to use
-	u16 getTechUseErrorMessage(CUnit* target, u8 castingPlayer, u16 techId);
+	u16 getTechUseErrorMessage(Unit* target, u8 castingPlayer, u16 techId);
 
 	//////////////////////////////////////////////////////////////// @}
 
@@ -161,8 +161,8 @@ namespace scbw
 
 	/// Checks whether the @p unit is recognized by @p playerId as an enemy.
 	/// This will work even when the owner of the @p unit has left the game.
-	/// @see CUnit::isTargetEnemy().
-	inline bool isUnitEnemy(u8 playerId, CUnit* unit)
+	/// @see Unit::isTargetEnemy().
+	inline bool isUnitEnemy(u8 playerId, Unit* unit)
 	{
 		//Identical to function @ 0x0047B740
 		u8 unitOwner = unit->playerId;
@@ -171,7 +171,7 @@ namespace scbw
 		return 0 == playerAlliance[playerId].flags[unitOwner];
 	}
 
-	u32 get_sized_overlay(CUnit* unit, u32 initial);
+	u32 get_sized_overlay(Unit* unit, u32 initial);
 	/// Returns the amount of remaining supply (total available - total used) for
 	/// the @p playerId, using @p raceId to determine the appropriate race to use.
 	/// This is affected by the "Food For Thought" cheat flag.
@@ -181,25 +181,25 @@ namespace scbw
 	u32 getSpriteData(u32 entry, u32 index);
 	u32 getImageData(u32 entry, u32 index);
 	u32 getUnitData(u32 entry, u32 index);
-	//CUnit* get_generic_unit(CUnit* unit, u32 id);
-	u32 get_generic_rust_value(CUnit* u, u32 val);
-	//u32 get_generic_value(CUnit* u, u32 val);
+	//Unit* get_generic_unit(Unit* unit, u32 id);
+	u32 get_generic_rust_value(Unit* u, u32 val);
+	//u32 get_generic_value(Unit* u, u32 val);
 	void setSpriteData(u32 entry, u32 index, u32 value);
 	s32 get_generic_variable(u32 val);
-	//u32 get_generic_timer(CUnit* u, u32 val);
-	u32 get_aise_value(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2);
-	/*void set_generic_unit(CUnit* unit, u32 id, CUnit* targ);
-	void set_generic_value(CUnit* u, u32 id, u32 val);*/
-	void set_generic_rust_value(CUnit* u, u32 id, u32 val);
+	//u32 get_generic_timer(Unit* u, u32 val);
+	u32 get_aise_value(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2);
+	/*void set_generic_unit(Unit* unit, u32 id, Unit* targ);
+	void set_generic_value(Unit* u, u32 id, u32 val);*/
+	void set_generic_rust_value(Unit* u, u32 id, u32 val);
 	void set_generic_variable(u32 id, s32 val);
-	void set_generic_rust_unit(CUnit* unit, u32 id, CUnit* targ);
-	CUnit* get_generic_rust_unit(CUnit* unit, u32 id);
-	/*void set_generic_timer(CUnit* u, u32 id, u32 val);
+	void set_generic_rust_unit(Unit* unit, u32 id, Unit* targ);
+	Unit* get_generic_rust_unit(Unit* unit, u32 id);
+	/*void set_generic_timer(Unit* u, u32 id, u32 val);
 
-	void add_generic_value(CUnit* u, u32 id, s32 val);*/
-	void makeToHoldPosition(CUnit* unit);
+	void add_generic_value(Unit* u, u32 id, s32 val);*/
+	void makeToHoldPosition(Unit* unit);
 
-	void sendGPTP_aise_cmd(CUnit* unit1, CUnit* unit2, u32 command, u32 v1, u32 v2, u32 v3);
+	void sendGPTP_aise_cmd(Unit* unit1, Unit* unit2, u32 command, u32 v1, u32 v2, u32 v3);
 	/// Checks whether the @p playerId has the @p techId researched.
 	/// Note: This uses TechId::Enum, instead of ScTech::Enum and BwTech::Enum.
 	bool hasTechResearched(u8 playerId, u16 techId);
@@ -212,7 +212,7 @@ namespace scbw
 
 	u8 getUpgradeMaxLevel(u8 playerId, u8 upgradeId);
 	bool hasTechAvailable(u8 playerId, u16 techId);
-	//u32 techUseAllowed(CUnit* unit, u16 techId, u32 playerId);
+	//u32 techUseAllowed(Unit* unit, u16 techId, u32 playerId);
 	/// Sets the player's tech research state for @p techId to @p isResearched.
 	/// Note: This uses TechId::Enum, instead of ScTech::Enum and BwTech::Enum.
 	void setTechResearchState(u8 playerId, u16 techId, bool isResearched);
@@ -253,11 +253,11 @@ namespace scbw
 	/// Attempts to move the unit to @p (x, y), or to a nearby position if possible.
 	///
 	/// @return true if successful, false otherwise.
-	bool moveUnit(CUnit* unit, s16 x, s16 y);
+	bool moveUnit(Unit* unit, s16 x, s16 y);
 
 	/// Removes various references to the @p unit.
 	/// Details not understood. See the source for moveUnit().
-	void prepareUnitMove(CUnit* unit, bool hideUnit = false);
+	void prepareUnitMove(Unit* unit, bool hideUnit = false);
 
 	/// Checks whether the given unit overlaps other units, and if so, whether it
 	/// can be moved to an unoccupied nearby position. The resulting position is
@@ -265,16 +265,16 @@ namespace scbw
 	///
 	/// @return True if the unit does not collide with other units, or can be moved
 	///         to a nearby non-colliding position.
-	bool checkUnitCollisionPos(CUnit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea = nullptr, bool hideErrorMsg = false, u32 someFlag = 0);
+	bool checkUnitCollisionPos(Unit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea = nullptr, bool hideErrorMsg = false, u32 someFlag = 0);
 
 	/// Moves the unit's position to @p (x, y). If the unit is a ground unit and the
 	/// the target position is on unwalkable terrain, this function moves the unit
 	/// to the nearest walkable tile instead.
-	void setUnitPosition(CUnit* unit, u16 x, u16 y);
+	void setUnitPosition(Unit* unit, u16 x, u16 y);
 
 	/// Updates pathing data and various information related to the @p unit.
 	/// Details not understood.  See the source for moveUnit().
-	void refreshUnitAfterMove(CUnit* unit);
+	void refreshUnitAfterMove(Unit* unit);
 
 	//////////////////////////////////////////////////////////////// @}
 
@@ -287,18 +287,18 @@ namespace scbw
 	/// pre-placed units in UMS maps.
 	///
 	/// @return           The created unit or nullptr if the unit cannot be created.
-	CUnit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y);
+	Unit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y);
 	//function used for broodlings and similar stuff
-	CUnit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, CUnit* creator = nullptr);
+	Unit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, Unit* creator = nullptr);
 	//additional function calls
 	void displayLastNetErrForPlayer(u32 playerId);
-	void FinishUnit_Pre(CUnit* unit);
+	void FinishUnit_Pre(Unit* unit);
 	void displayLastNetErrForPlayer(u32 playerId);
-	void InheritAI2(CUnit* result, CUnit* parent);
+	void InheritAI2(Unit* result, Unit* parent);
 	/// Calculates the images.dat overlay adjustment for the given unit.
 	/// This piece of code is used throughout StarCraft.exe for various status
 	/// effects, such as Ensnare, Plague, and Defensive Matrix.
-	u32 getUnitOverlayAdjustment(CUnit* const unit);
+	u32 getUnitOverlayAdjustment(Unit* const unit);
 
 	/// Refreshes the screen position within the given rectangle area in pixels.
 	void refreshScreen(s32 left, s32 top, s32 right, s32 bottom);
@@ -327,13 +327,13 @@ namespace scbw
 	void refreshConsole();
 
 	// Moves the camera/screen to the unit
-	void MoveScreenToUnit(CUnit* unit, u32 playerId = 8);
+	void MoveScreenToUnit(Unit* unit, u32 playerId = 8);
 
 	// Creates a minimap ping at x,y (relative pos)
 	void minimapPing(u32 x, u32 y, s32 color, u32 playerId = 8);
 
 	// Functionally identical to the [playfram] opcode in iscript.bin.
-	inline void playFrame(CImage* image, u16 frameset)
+	inline void playFrame(Image* image, u16 frameset)
 	{
 		if (image->frameSet != frameset)
 		{
@@ -381,41 +381,41 @@ namespace scbw
 
 	//////////////////////////////////////////////////////////////// @}
 
-	CBullet* setMissileSourcePos(CUnit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset = 0);
-	void rangeModifiedFire(u8 weaponId, CUnit* unit, s16 x, s16 y, u32 offset);
-	bool canSpawnBroodling(CUnit* target);
-	s32 getBroodlingCountFromSupply(CUnit* target);
-	void createUnitFromAbility(s32 unitId, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, CUnit* creator = nullptr);
-	CUnit** getSourceQueens(CUnit* unit);
-	u16 getLastQueueSlotType(CUnit* a1);
+	Bullet* setMissileSourcePos(Unit* unit, u32 weaponId, u32 valueId, s32 rotateCount, u32 overlayType, u32 frameset_offset = 0);
+	void rangeModifiedFire(u8 weaponId, Unit* unit, s16 x, s16 y, u32 offset);
+	bool canSpawnBroodling(Unit* target);
+	s32 getBroodlingCountFromSupply(Unit* target);
+	void createUnitFromAbility(s32 unitId, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer = 1800, Unit* creator = nullptr);
+	Unit** getSourceQueens(Unit* unit);
+	u16 getLastQueueSlotType(Unit* a1);
 	s32 dir_saturate(s32 direction, s32 value);
-	bool canUseCliffAdvantage(CUnit* unit, u8 weapon = NULL);
-	s32 getCliffAdvantage(CUnit* unit, u8 weapon = NULL);
-	s32 getCreepAdvantage(CUnit* unit, u8 weapon = NULL);
-	void setOffsetToParentSpecialOverlay(CImage* image);
-	bool isSlowed(CUnit* unit);
-	bool isStunned(CUnit* unit);
-	void hideAndDisableUnit(CUnit* unit);
-	void restoreFunc(CUnit* unit);
-	void refreshDebuffs(CUnit* unit);
-	void inheritDebuffs(CUnit* parent, CUnit* child);
-	void applyEnsnare(CUnit* unit);
-	bool isEnabled(CUnit* unit);
-	bool isDebuffed(CUnit* unit);
-	s32 getUpgradeType(CUnit* unit);
+	bool canUseCliffAdvantage(Unit* unit, u8 weapon = NULL);
+	s32 getCliffAdvantage(Unit* unit, u8 weapon = NULL);
+	s32 getCreepAdvantage(Unit* unit, u8 weapon = NULL);
+	void setOffsetToParentSpecialOverlay(Image* image);
+	bool isSlowed(Unit* unit);
+	bool isStunned(Unit* unit);
+	void hideAndDisableUnit(Unit* unit);
+	void restoreFunc(Unit* unit);
+	void refreshDebuffs(Unit* unit);
+	void inheritDebuffs(Unit* parent, Unit* child);
+	void applyEnsnare(Unit* unit);
+	bool isEnabled(Unit* unit);
+	bool isDebuffed(Unit* unit);
+	s32 getUpgradeType(Unit* unit);
 	s32 getOverlayOffset(u16 unitId);
-	s32 getFinalDamage(CUnit* unit, u16 weaponId);
-	bool unitIsPacifist(CUnit* unit);
+	s32 getFinalDamage(Unit* unit, u16 weaponId);
+	bool unitIsPacifist(Unit* unit);
 	bool orderIsSpell(s32 orderId);
-	bool canBeParasited(CUnit* unit);
-	void applyParasite(CUnit* unit, u8 playerID, CUnit* queen);
-	void createShieldOverlay(CUnit* unit, u32 attackDirection);
-	void decloakProc(CUnit* unit);
-	bool isDecloakable(CUnit* unit);
-	bool unitCanNuke(CUnit* unit);
-	bool unitIsTrap(CUnit* unit);
+	bool canBeParasited(Unit* unit);
+	void applyParasite(Unit* unit, u8 playerID, Unit* queen);
+	void createShieldOverlay(Unit* unit, u32 attackDirection);
+	void decloakProc(Unit* unit);
+	bool isDecloakable(Unit* unit);
+	bool unitCanNuke(Unit* unit);
+	bool unitIsTrap(Unit* unit);
 	bool isSharedLarvaMorph(u16 id);
-	bool unitIsRangedAttacker(CUnit* unit);
-	void playWorkAnimation(CUnit* unit);
+	bool unitIsRangedAttacker(Unit* unit);
+	void playWorkAnimation(Unit* unit);
 	bool isStandardTerranUnit(u16 id);
 }

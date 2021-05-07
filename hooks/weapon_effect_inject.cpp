@@ -10,7 +10,7 @@ namespace
 {
 	void __declspec(naked) friendlySplashWrapper()
 	{
-		static CBullet* bullet;
+		static Bullet* bullet;
 		static u32 weaponId;
 		__asm {
 			MOV bullet, EBX
@@ -37,7 +37,7 @@ namespace
 
 	void __declspec(naked) enemySplashWrapper()
 	{
-		static CBullet* bullet;
+		static Bullet* bullet;
 		static u32 weaponId;
 		__asm {
 			MOV bullet, EBX
@@ -63,7 +63,7 @@ namespace
 
 	void __declspec(naked) radialSplashWrapper()
 	{
-		static CBullet* bullet;
+		static Bullet* bullet;
 		static u32 weaponId;
 		__asm {
 			MOV bullet, EBX
@@ -89,7 +89,7 @@ namespace
 
 	void __declspec(naked) normalWrapper()
 	{
-		static CBullet* bullet;
+		static Bullet* bullet;
 		static u32 weaponId;
 		__asm {
 			MOV bullet, EBX
@@ -108,7 +108,7 @@ namespace
 
 	void __declspec(naked) yamatoWrapper()
 	{
-		static CBullet* bullet;
+		static Bullet* bullet;
 		static u32 weaponId;
 		__asm {
 			MOV bullet, EBX
@@ -127,7 +127,7 @@ namespace
 
 	void __declspec(naked) parasiteWrapper()
 	{
-		static CBullet* bullet;
+		static Bullet* bullet;
 		static u32 weaponId;
 		__asm {
 			MOV bullet, EBX
@@ -146,7 +146,7 @@ namespace
 
 	void __declspec(naked) broodlingsWrapper()
 	{
-		static CBullet* bullet;
+		static Bullet* bullet;
 		static u32 weaponId;
 		__asm {
 			MOV bullet, EBX
@@ -165,7 +165,7 @@ namespace
 
 	void __declspec(naked) lockdownWrapper()
 	{
-		static CBullet* bullet;
+		static Bullet* bullet;
 		static u32 weaponId;
 		__asm {
 			MOV bullet, EBX
@@ -184,7 +184,7 @@ namespace
 
 	void __declspec(naked) airSplashWrapper()
 	{
-		static CBullet* bullet;
+		static Bullet* bullet;
 		static u32 weaponId;
 		__asm {
 			MOV bullet, EBX
@@ -203,7 +203,7 @@ namespace
 
 	void __declspec(naked) irradiateWrapper()
 	{
-		static CBullet* bullet;
+		static Bullet* bullet;
 		static u32 weaponId;
 		__asm {
 			MOV bullet, EBX
@@ -222,7 +222,7 @@ namespace
 
 	void __declspec(naked) nukeWrapper()
 	{
-		static CBullet* bullet;
+		static Bullet* bullet;
 		static u32 weaponId;
 		__asm {
 			MOV bullet, EBX
@@ -281,8 +281,8 @@ namespace
 	void __declspec(naked) irradiateUnitDamageProc_Wrapper() // 00455530
 	{
 		static s32 result;
-		static CUnit* target;
-		static CUnit* irradiated;
+		static Unit* target;
+		static Unit* irradiated;
 		__asm
 		{
 			MOV target, ECX
@@ -300,8 +300,8 @@ namespace
 
 	void __declspec(naked) irradiateDamageLoop_Wrapper() // 004555C0
 	{
-		static CUnit* result;
-		static CUnit* unit;
+		static Unit* result;
+		static Unit* unit;
 		__asm
 		{
 			MOV unit, ECX

@@ -11,8 +11,8 @@ namespace
 	void __declspec(naked) orderNewUnitToRallyWrapper()
 	{
 
-		static CUnit* unit;
-		static CUnit* factory;
+		static Unit* unit;
+		static Unit* factory;
 
 		__asm {
 			MOV unit, EAX
@@ -34,7 +34,7 @@ namespace
 	void __declspec(naked) setRallyPositionWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 		static u16 x;
 		static u16 y;
 
@@ -70,8 +70,8 @@ namespace
 	void __declspec(naked) setRallyUnitWrapper()
 	{
 
-		static CUnit* unit;
-		static CUnit* target;
+		static Unit* unit;
+		static Unit* target;
 
 		__asm {
 			MOV unit, ECX
@@ -104,7 +104,7 @@ namespace
 
 		static const u32 Hook_SetRallyGenericJmpBack1 = 0x00456384;
 
-		static CUnit* unit;
+		static Unit* unit;
 		static u16 x;
 		static u16 y;
 
@@ -135,7 +135,7 @@ namespace
 
 		static const u32 Hook_SetRallyGenericJmpBack2 = 0x0049AD77;
 
-		static CUnit* unit;
+		static Unit* unit;
 		static u16 x;
 		static u16 y;
 
@@ -167,8 +167,8 @@ namespace
 
 		static const u32 Hook_SetRallyGenericJmpBack1 = 0x00456384;
 
-		static CUnit* unit;
-		static CUnit* target;
+		static Unit* unit;
+		static Unit* target;
 
 		__asm {
 			MOV unit, EDI
@@ -197,8 +197,8 @@ namespace
 
 		static const u32 Hook_SetRallyGenericJmpBack2 = 0x0049AD77;
 
-		static CUnit* unit;
-		static CUnit* target;
+		static Unit* unit;
+		static Unit* target;
 
 		__asm {
 			MOV unit, ESI

@@ -5,7 +5,7 @@ namespace
 {
 	void __declspec(naked) orders_Repair1Wrapper()
 	{ // 004673D0
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -25,9 +25,9 @@ namespace
 	{ // 00474D90
 		static s32 result;
 		static char orderId;
-		static CUnit* unit;
+		static Unit* unit;
 		static s32 unused;
-		static CUnit* target;
+		static Unit* target;
 		static s32 bErrorFlag;
 		__asm {
 			PUSH EBP
@@ -55,7 +55,7 @@ namespace
 	void __declspec() orderAllowed_Wrapper()
 	{ // 0046DC20
 		static s32 result;
-		static CUnit* unit;
+		static Unit* unit;
 		static u16 orderId;
 		static s32 player;
 		__asm {

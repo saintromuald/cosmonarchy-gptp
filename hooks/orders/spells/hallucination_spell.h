@@ -4,8 +4,8 @@
 namespace hooks
 {
 
-	void orders_Hallucination1(CUnit* unit);				// 004F6C40
-	CUnit* createHallucination(CUnit* source, s32 player);	// 004F6B90
+	void orders_Hallucination1(Unit* unit);				// 004F6C40
+	Unit* createHallucination(Unit* source, s32 player);	// 004F6B90
 	void injectHallucinationSpellHook();
 
 

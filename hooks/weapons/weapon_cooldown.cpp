@@ -11,7 +11,7 @@ namespace hooks
 	/// Calculates the unit's weapon cooldown, factoring in upgrades and status effects.
 	///
 	/// @return		The modified cooldown value.
-	u32 getModifiedWeaponCooldownHook(CUnit* unit, u8 weaponId)
+	u32 getModifiedWeaponCooldownHook(Unit* unit, u8 weaponId)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 

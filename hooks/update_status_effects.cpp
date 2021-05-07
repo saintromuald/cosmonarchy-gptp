@@ -5,7 +5,7 @@
 #include "hooks/weapons/weapon_damage.h"
 #include "globals.h"
 
-void irradiateProc(CUnit* unit, CUnit* target)
+void irradiateProc(Unit* unit, Unit* target)
 {
 	//Damage organic units only
 	if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic))
@@ -39,7 +39,7 @@ void irradiateProc(CUnit* unit, CUnit* target)
 
 namespace hooks
 {
-	void doIrradiateDamage(CUnit* irradiatedUnit)
+	void doIrradiateDamage(Unit* irradiatedUnit)
 	{
 		//No splash if burrowed
 		if (irradiatedUnit->status & UnitStatus::Burrowed)
@@ -51,13 +51,13 @@ namespace hooks
 		else if (irradiatedUnit->status & UnitStatus::InTransport)
 		{
 
-			CUnit* transport = irradiatedUnit->connectedUnit;
+			Unit* transport = irradiatedUnit->connectedUnit;
 
 			if (transport != nullptr)
 			{
 				for (s32 i = 0; i < units_dat::SpaceProvided[transport->id]; ++i)
 				{
-					CUnit* loadedUnit = transport->getLoadedUnit(i);
+					Unit* loadedUnit = transport->getLoadedUnit(i);
 					if (loadedUnit)
 						irradiateProc(irradiatedUnit, loadedUnit);
 				}
@@ -71,14 +71,14 @@ namespace hooks
 				irradiatedUnit->getY() - 160,
 				irradiatedUnit->getX() + 160,
 				irradiatedUnit->getY() + 160);
-			unitFinder.forEach([&](CUnit* target)
+			unitFinder.forEach([&](Unit* target)
 			{
 				irradiateProc(irradiatedUnit, target);
 			});
 		}
 	}
 
-	static bool safetyUnburrowCheck(CUnit* unit, CUnit* target)
+	static bool safetyUnburrowCheck(Unit* unit, Unit* target)
 	{
 		if (!(target->status & UnitStatus::GroundedBuilding))
 		{
@@ -99,7 +99,7 @@ namespace hooks
 		return true;
 	}
 
-	void updateStatusEffects(CUnit* unit)
+	void updateStatusEffects(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
@@ -137,12 +137,12 @@ namespace hooks
 			auto tile = scbw::getActiveTileAt(unit->position.x, unit->position.y);
 			if (tile.currentlyOccupied)
 			{
-				CUnit* nearest = scbw::UnitFinder::getNearestTarget(
+				Unit* nearest = scbw::UnitFinder::getNearestTarget(
 					unit->getLeft() - 32,
 					unit->getTop() - 32,
 					unit->getRight() + 32,
 					unit->getBottom() + 32,
-					unit, [&](CUnit* target)
+					unit, [&](Unit* target)
 				{
 					return safetyUnburrowCheck(unit, target);
 				});
@@ -167,7 +167,7 @@ namespace hooks
 					unit->getY() - 96,
 					unit->getX() + 96,
 					unit->getY() + 96
-				).forEach([&](CUnit* target)
+				).forEach([&](Unit* target)
 				{
 					if (target == unit)
 					{
@@ -207,7 +207,7 @@ namespace hooks
 				unit->getY() - radius,
 				unit->getX() + radius,
 				unit->getY() + radius
-			).forEach([&](CUnit* target)
+			).forEach([&](Unit* target)
 			{
 				if (unit == target)
 				{
@@ -233,7 +233,7 @@ namespace hooks
 				unit->getY() - radius,
 				unit->getX() + radius,
 				unit->getY() + radius
-			).forEach([&](CUnit* target)
+			).forEach([&](Unit* target)
 			{
 				if (unit == target)
 				{
@@ -401,7 +401,7 @@ namespace hooks
 		}
 	}
 
-	void AI_Burrower(CUnit* a1)
+	void AI_Burrower(Unit* a1)
 	{
 		if (units_dat::BaseProperty[a1->id] & UnitProperty::Burrowable)
 		{
@@ -419,13 +419,13 @@ namespace hooks
 						auto tile = scbw::getActiveTileAt(a1->position.x, a1->position.y);
 						if (tile.currentlyOccupied)
 						{
-							CUnit* nearest = scbw::UnitFinder::getNearestTarget(
+							Unit* nearest = scbw::UnitFinder::getNearestTarget(
 								a1->getLeft() - 32,
 								a1->getTop() - 32,
 								a1->getRight() + 32,
 								a1->getBottom() + 32,
 								a1,
-								[&](CUnit* target)
+								[&](Unit* target)
 							{
 								return safetyUnburrowCheck(a1, target);
 							}

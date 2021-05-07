@@ -10,7 +10,7 @@ namespace
 	void __declspec(naked) getTechUseErrorMessageWrapper()
 	{
 
-		static CUnit* target;
+		static Unit* target;
 		static u8 castingPlayer;
 		static u16 techId;
 		static u32 errorMessage;

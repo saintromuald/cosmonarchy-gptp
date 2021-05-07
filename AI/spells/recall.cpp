@@ -6,14 +6,14 @@
 namespace AI
 {
 
-	CUnit* findBestRecallTarget(CUnit* caster, bool isUnderAttack)
+	Unit* findBestRecallTarget(Unit* caster, bool isUnderAttack)
 	{
 
 		if (isUnitInUnsafeRegion(caster))
 			return nullptr;
 
 		return scbw::UnitFinder::getNearestTarget(caster,
-			[&](CUnit* target)
+			[&](Unit* target)
 		{
 
 			if (target->playerId != caster->playerId && !scbw::isAlliedTo(target->playerId, caster->playerId))

@@ -7,7 +7,7 @@ namespace
 	void __declspec(naked) getModifiedWeaponCooldownWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 		static u8 weaponId;
 		static u32 cooldown;
 

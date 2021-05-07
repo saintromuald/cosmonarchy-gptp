@@ -8,7 +8,7 @@ namespace
 	void __declspec(naked) CMDRECV_PlaceBuildingAllowed_Wrapper()
 	{
 
-		static CUnit* builder;
+		static Unit* builder;
 		static u8 orderId;
 		static u16 builtUnitId;
 		static b32 bReturnValue;

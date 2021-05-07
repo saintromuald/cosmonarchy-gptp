@@ -6,9 +6,9 @@
 namespace AI
 {
 
-	CUnit* findBestYamatoGunTarget(CUnit* caster, bool isUnderAttack)
+	Unit* findBestYamatoGunTarget(Unit* caster, bool isUnderAttack)
 	{
-		auto match = [&](CUnit* target)
+		auto match = [&](Unit* target)
 		{
 			if (!isTargetWorthHitting(target, caster))
 				return false;

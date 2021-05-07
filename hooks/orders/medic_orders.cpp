@@ -5,11 +5,11 @@
 
 namespace hooks
 {
-	void orders_MedicHeal2(CUnit* unit)
+	void orders_MedicHeal2(Unit* unit)
 	{
 		if (!(unit->movementFlags & MovementFlags::Accelerating))
 		{
-			CImage* current_image = unit->sprite->images.head;
+			Image* current_image = unit->sprite->images.head;
 			while (current_image != nullptr)
 			{
 				current_image->playIscriptAnim(IscriptAnimation::WalkingToIdle);
@@ -19,11 +19,11 @@ namespace hooks
 		helper::actUnitReturnToIdle(unit);
 	}
 
-	void orders_HealMove(CUnit* unit)
+	void orders_HealMove(Unit* unit)
 	{
 		bool bStopThere = false;
-		CUnit* target = unit->orderTarget.unit;
-		CUnit* oldTarget = unit->orderTarget.unit;
+		Unit* target = unit->orderTarget.unit;
+		Unit* oldTarget = unit->orderTarget.unit;
 
 		if (target != nullptr)
 		{
@@ -63,7 +63,7 @@ namespace hooks
 				else
 					if (unit->mainOrderTimer == 0)
 					{
-						CUnit* newTarget;
+						Unit* newTarget;
 						Point16 oldPos;
 						unit->mainOrderTimer = 15;
 						newTarget = helper::MedicHeal_TargetAcquire(unit);
@@ -90,7 +90,7 @@ namespace hooks
 	}
 
 	// Idle/AI order probably
-	void orders_Medic(CUnit* unit)
+	void orders_Medic(Unit* unit)
 	{
 		bool bStopThere = false;
 		if (unit->pAI != nullptr && helper::AI_CastSpellBehaviour(unit, NULL) != 0)
@@ -99,7 +99,7 @@ namespace hooks
 		}
 		if (!bStopThere)
 		{
-			CUnit* target = helper::MedicHeal_TargetAcquire(unit);
+			Unit* target = helper::MedicHeal_TargetAcquire(unit);
 			if (target != nullptr)
 			{
 				unit->userActionFlags |= 1;
@@ -148,10 +148,10 @@ namespace hooks
 		}
 	}
 
-	// void orders_MedicHoldPosition(CUnit* unit)
+	// void orders_MedicHoldPosition(Unit* unit)
 	// in base_orders/stopholdpos_orders.cpp
 
-	u32 doMedicHeal_Func(CUnit* cleric, CUnit* target) // 00463C40
+	u32 doMedicHeal_Func(Unit* cleric, Unit* target) // 00463C40
 	{
 		if (cleric->canUseTech(TechId::Healing, cleric->playerId))
 		{
@@ -175,9 +175,9 @@ namespace hooks
 		return 0;
 	}
 
-	void orders_MedicHeal1(CUnit* unit)
+	void orders_MedicHeal1(Unit* unit)
 	{
-		CUnit* target = unit->orderTarget.unit;
+		Unit* target = unit->orderTarget.unit;
 		u32 doMedicHeal_result = 0;
 		auto a = unit->hitPoints;
 		bool reqHeal = false;
@@ -233,7 +233,7 @@ namespace hooks
 				{
 					if (!(unit->orderSignal & 1))
 					{
-						CImage* current_image = unit->sprite->images.head;
+						Image* current_image = unit->sprite->images.head;
 						while (current_image != nullptr)
 						{
 							current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
@@ -263,7 +263,7 @@ namespace hooks
 		}
 	}
 
-	bool AI_AcquireHealTarget(CUnit* medic, CUnit* target)
+	bool AI_AcquireHealTarget(Unit* medic, Unit* target)
 	{
 		if (target == nullptr || target == medic || medic->status & UnitStatus::IsHallucination)
 		{

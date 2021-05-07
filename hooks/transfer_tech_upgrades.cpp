@@ -87,7 +87,7 @@ namespace hooks
 {
 
 	//summon a function passed as parameter, having the same variables layout for both upgrade and tech related functions.
-	bool researchHelper(u32 researchTechFunc, CUnit* sourceUnit, u32 techId, u32 relativeVariable, u32 destPlayerId)
+	bool researchHelper(u32 researchTechFunc, Unit* sourceUnit, u32 techId, u32 relativeVariable, u32 destPlayerId)
 	{
 
 		static u32 bPreResult;
@@ -105,13 +105,13 @@ namespace hooks
 
 		return (bPreResult != 0);
 
-	} //bool researchHelper(u32 researchTechFunc, CUnit* sourceUnit, u32 techId, u32 relativeVariable, u32 destPlayerId)
+	} //bool researchHelper(u32 researchTechFunc, Unit* sourceUnit, u32 techId, u32 relativeVariable, u32 destPlayerId)
 
 	;
 
 	//Transfers all tech related to the @p source unit to @p targetPlayerId.
 	//Originally researchAllTechsFromUnit @ 004E2C00
-	void transferUnitTechToPlayerHook(CUnit* sourceUnit, u8 targetPlayerId, u32 researchTechFunc)
+	void transferUnitTechToPlayerHook(Unit* sourceUnit, u8 targetPlayerId, u32 researchTechFunc)
 	{
 
 		const TechTransferData* techDataArrayPosBegin = &techTransferData[0];								//original was (TechTransferData*) 0x005011CA;
@@ -175,13 +175,13 @@ namespace hooks
 
 		} //if (researchTechFunc != nullptr && sourceUnit != nullptr)
 
-	} //void transferUnitTechToPlayerHook(CUnit* sourceUnit, u8 targetPlayerId, u32 researchTechFunc)
+	} //void transferUnitTechToPlayerHook(Unit* sourceUnit, u8 targetPlayerId, u32 researchTechFunc)
 
 	;
 
 	//Transfers all upgrades related to the @p source unit to @p targetPlayerId.
 	//Originally upgradeAllUpgradesFromUnit @ 004E2B50
-	void transferUnitUpgradesToPlayerHook(CUnit* sourceUnit, u8 targetPlayerId, u32 researchUpgradesFunc)
+	void transferUnitUpgradesToPlayerHook(Unit* sourceUnit, u8 targetPlayerId, u32 researchUpgradesFunc)
 	{
 
 		const UpgradeTransferData* upgradeDataArrayPosBegin = &upgradeTransferData[0];									//original was (UpgradeTransferData*) 0x005012E2;

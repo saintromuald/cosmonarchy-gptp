@@ -35,7 +35,7 @@ namespace hooks
 		u8 buildingId = GetRaceTownhall(raceId);
 		s32 buildingSizeX, buildingSizeY;
 		Box16 searchBox;
-		CUnit* created_unit;
+		Unit* created_unit;
 
 		buildingSizeX = units_dat::BuildingDimensions[buildingId].x;
 		buildingSizeY = units_dat::BuildingDimensions[buildingId].y;
@@ -106,7 +106,7 @@ namespace hooks
 			startY + 10 * 32
 		);
 		u8 cliffLevel = scbw::getActiveTileAt(startX, startY).groundHeight;
-		unitFinder.forEach([&](CUnit* unit)
+		unitFinder.forEach([&](Unit* unit)
 		{
 			if ((unit->id == UnitId::ResourceMineralField
 				|| unit->id == UnitId::ResourceMineralFieldType2
@@ -231,7 +231,7 @@ namespace hooks
 
 					u8 unitId = GetRaceWorker(*raceIdOffset);
 					u8 townhallId = GetRaceTownhall(*raceIdOffset);
-					CUnit* created_unit;
+					Unit* created_unit;
 
 					if (unitId != UnitId::None)
 					{
@@ -275,7 +275,7 @@ namespace hooks
 		static u16* const maxBoxBottomValue = (u16*)0x006284B4;
 
 		s32 overlordStartX, overlordStartY;
-		CUnit* created_unit;
+		Unit* created_unit;
 
 		if (startPositions[playerId].x < *maxBoxRightValue / 2)
 			overlordStartX = startPositions[playerId].x + units_dat::UnitBounds[UnitId::ZergHatchery].right + units_dat::UnitBounds[UnitId::ZergHatchery].left + 1;

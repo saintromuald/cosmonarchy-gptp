@@ -3,7 +3,7 @@
 
 namespace hooks
 {
-	void orders_ProbeBuild(CUnit* unit)
+	void orders_ProbeBuild(Unit* unit)
 	{
 		if (unit->pAI != nullptr)
 		{
@@ -68,7 +68,7 @@ namespace hooks
 						{
 							if (helper::beginBuilding(unit))
 							{
-								CUnit* builtUnit;
+								Unit* builtUnit;
 								if (isBuildingAssimilator)
 								{
 									builtUnit = helper::beginGasBuilding(unit, UnitId::ProtossAquifer);
@@ -111,8 +111,8 @@ namespace hooks
 				else
 					if (unit->mainOrderState == 3)
 					{
-						CUnit* target = unit->orderTarget.unit;
-						CImage* current_image;
+						Unit* target = unit->orderTarget.unit;
+						Image* current_image;
 						if (target == nullptr ||
 							target->id != UnitId::ProtossAquifer ||
 							unit->orderQueueHead != nullptr
@@ -132,7 +132,7 @@ namespace hooks
 	}
 
 	// Protoss building self-building
-	void orders_BuildSelf2(CUnit* building)
+	void orders_BuildSelf2(Unit* building)
 	{
 		bool jump_to_E50EE = false;
 		if (building->mainOrderState > 3)
@@ -144,7 +144,7 @@ namespace hooks
 			{
 				if (building->remainingBuildTime == 0)
 				{
-					CImage* current_image = building->sprite->images.head;
+					Image* current_image = building->sprite->images.head;
 					while (current_image != nullptr)
 					{
 						if (current_image->flags & CImage_Flags::Flag04)
@@ -188,7 +188,7 @@ namespace hooks
 					{
 						if (building->orderSignal & 1)
 						{
-							CImage* current_image;
+							Image* current_image;
 							building->orderSignal -= 1;
 							helper::replaceSpriteImages(
 								building->sprite,
@@ -227,7 +227,7 @@ namespace hooks
 
 								if (building->status & UnitStatus::DoodadStatesThing)
 								{
-									CImage* current_image = building->sprite->images.head;
+									Image* current_image = building->sprite->images.head;
 									while (current_image != nullptr)
 									{
 										if (current_image->flags & CImage_Flags::Flag04)

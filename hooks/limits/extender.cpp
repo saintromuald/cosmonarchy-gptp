@@ -53,7 +53,7 @@ s32 Extender::get_file_entry_count(char* name, u32 entries)
 	auto len_ptr = &len;
 	u32 val = reinterpret_cast<u32>(name);
 	//GPTP::logger << "log1...\n";
-	auto length = scbw::get_aise_value(nullptr, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<s32>(data_ptr), reinterpret_cast<s32>(len_ptr));
+	auto length = scbw::get_aise_value(nullptr, reinterpret_cast<Unit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<s32>(data_ptr), reinterpret_cast<s32>(len_ptr));
 	char* buf = (char*)scbw::get_aise_value(nullptr, nullptr, AiseId::ReadSamaseFile_Ptr, 0, 0);
 	//GPTP::logger << "log2...\n";
 
@@ -138,7 +138,7 @@ void Extender::parse_set(char* name, u32 default_max_limit, u32 entries)
 	auto len_ptr = &len;
 	u32 val = reinterpret_cast<u32>(name);
 	//GPTP::logger << "log1...\n";
-	auto length = scbw::get_aise_value(nullptr, reinterpret_cast<CUnit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<s32>(data_ptr), reinterpret_cast<s32>(len_ptr));
+	auto length = scbw::get_aise_value(nullptr, reinterpret_cast<Unit*>(name), AiseId::ReadSamaseFile, reinterpret_cast<s32>(data_ptr), reinterpret_cast<s32>(len_ptr));
 	char* buf = (char*)scbw::get_aise_value(nullptr, nullptr, AiseId::ReadSamaseFile_Ptr, 0, 0);
 	//GPTP::logger << "log2...\n";
 	GPTP::logger << "Read samase file2: " << (u32)buf << " " << length << '\n';

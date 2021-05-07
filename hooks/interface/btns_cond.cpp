@@ -14,14 +14,14 @@ namespace hooks
 	/// No more buttons conditions will be hooked, so
 	/// use these for anything you need.
 
-	s32 BTNSCOND_NoNydusExit(CUnit* unit)
+	s32 BTNSCOND_NoNydusExit(Unit* unit)
 	{
 		return (unit->building.nydusExit == nullptr) ? BUTTON_ENABLED : BUTTON_HIDDEN;
 	}
 
 	;
 
-	s32 BTNSCOND_Movement(CUnit* unit)
+	s32 BTNSCOND_Movement(Unit* unit)
 	{
 
 		s32 return_value = BUTTON_ENABLED;
@@ -36,7 +36,7 @@ namespace hooks
 
 	;
 
-	s32 BTNSCOND_HasScarabs(CUnit* unit)
+	s32 BTNSCOND_HasScarabs(Unit* unit)
 	{
 
 		s32 return_value = BUTTON_DISABLED;

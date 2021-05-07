@@ -8,7 +8,7 @@
 
 //V241 for VS2008
 
-struct CImage;
+struct Image;
 
 //note: the flag number is chosen according to the value used in 
 //<< flag operations, that's why it start with 0.
@@ -27,7 +27,7 @@ namespace CSprite_Flags
 	};
 }
 
-struct CSprite
+struct Sprite
 {
 	//Utility method definitions added by pastelmind
 
@@ -36,7 +36,7 @@ struct CSprite
 
 	/// AKA SpriteDestructor() @ 0x00497B40
 	/// Removes the sprite from the linked list of valid images. This is different
-	/// from a struct destructor, since CSprite objects are stored in a static
+	/// from a struct destructor, since Sprite objects are stored in a static
 	/// array and never truly destroyed.
 	void free();
 
@@ -45,12 +45,12 @@ struct CSprite
 	void setPosition(u16 x, u16 y);
 
 	/// Creates an image overlay over the main image of this sprite.
-	CImage* createOverlay(u32 imageId, s8 x = 0, s8 y = 0, u32 direction = 0);
-	CImage* createUnderlay(u32 imageId, s8 x = 0, s8 y = 0, u32 direction = 0);
+	Image* createOverlay(u32 imageId, s8 x = 0, s8 y = 0, u32 direction = 0);
+	Image* createUnderlay(u32 imageId, s8 x = 0, s8 y = 0, u32 direction = 0);
 
 	/// Creates an image overlay on top of all other images of this sprite.
-	CImage* createTopOverlay(u32 imageId, s8 x = 0, s8 y = 0, u32 direction = 0);
-	CImage* createTopUnderlay(u32 imageId, s8 x = 0, s8 y = 0, u32 direction = 0);
+	Image* createTopOverlay(u32 imageId, s8 x = 0, s8 y = 0, u32 direction = 0);
+	Image* createTopUnderlay(u32 imageId, s8 x = 0, s8 y = 0, u32 direction = 0);
 
 	void playForOverlay(u32 imageId, u8 anim);
 	/// Removes the first image overlay with an ID value between @p imageIdStart
@@ -62,7 +62,7 @@ struct CSprite
 
 	/// Returns the overlay image of this sprite that has the given @p imageId.
 	/// If the image cannot be found, returns nullptr.
-	CImage* getOverlay(u16 imageId) const;
+	Image* getOverlay(u16 imageId) const;
 
 	/// Checks whether this sprite is visible to @p playerId (i.e. not covered by
 	/// the fog of war). This does NOT check detectability.
@@ -71,7 +71,7 @@ struct CSprite
 	////////////////////////////////////////////////////////////////
 	//Actual data structure
 
-	/*0x00*/ CLink<CSprite> link;
+	/*0x00*/ Link<Sprite> link;
 	/*0x08*/ u16       spriteId;
 	/*0x0A*/ u8        playerId;          // officially "creator"
 	/*0x0B*/ u8        selectionIndex;    // 0 <= selectionIndex <= 11. Index in the selection area at bottom of screen.
@@ -83,8 +83,8 @@ struct CSprite
 	/*0x12*/ u8		   width;		//based on BWAPI/Source/BW/Sprite.h
 	/*0x13*/ u8		   height;		//based on BWAPI/Source/BW/Sprite.h
 	/*0x14*/ Point16   position;
-	/*0x18*/ CImage* mainGraphic;    // officially "pImagePrimary"
-	/*0x1C*/ CList<CImage> images;      // officially "pImageHead" and "pImageTail"
+	/*0x18*/ Image* mainGraphic;    // officially "pImagePrimary"
+	/*0x1C*/ List<Image> images;      // officially "pImageHead" and "pImageTail"
 
 	////////////////////////////////////////////////////////////////////
 	// Official Broodwar methods (from beta), ignore these
@@ -94,7 +94,7 @@ struct CSprite
 	*/
 };
 
-C_ASSERT(sizeof(CSprite) == 36);
-//static_assert(sizeof(CSprite) == 36, "The size of the CSprite structure is invalid");
+C_ASSERT(sizeof(Sprite) == 36);
+//static_assert(sizeof(Sprite) == 36, "The size of the Sprite structure is invalid");
 
 #pragma pack()

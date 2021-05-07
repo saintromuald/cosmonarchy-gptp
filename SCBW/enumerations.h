@@ -227,7 +227,7 @@ namespace UnitProperty {
 	};
 }
 
-//Based on BWAPI; For use with the CUnit::status member
+//Based on BWAPI; For use with the Unit::status member
 namespace UnitStatus {
 	enum Enum : u32 {
 		Completed = 0x00000001,

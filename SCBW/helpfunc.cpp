@@ -35,11 +35,11 @@ namespace helpers {
 	const uint32 Func_Sub_4F3B70_DestroyPowerupImageOverlay =	0x004F3B70;
 
 	//464930
-	void disconnectAddOn_Sub464930(CUnit* unit) {
+	void disconnectAddOn_Sub464930(Unit* unit) {
 
-		CUnit* addon_unit;
-		CUnit** offset_006D11FC = (CUnit**)0x006D11FC;
-		CUnit* offset_006D11FC_backup;
+		Unit* addon_unit;
+		Unit** offset_006D11FC = (Unit**)0x006D11FC;
+		Unit* offset_006D11FC_backup;
 
 		__asm {
 			PUSHAD
@@ -65,7 +65,7 @@ namespace helpers {
 
 		if(unit->building.addon->sprite->images.head != nullptr) {
 
-			CImage* current_image = unit->building.addon->sprite->images.head;
+			Image* current_image = unit->building.addon->sprite->images.head;
 
 			do {
 
@@ -78,10 +78,10 @@ namespace helpers {
 
 		*offset_006D11FC = offset_006D11FC_backup;
 
-	} //void disconnectAddOn_Sub464930(CUnit* unit)
+	} //void disconnectAddOn_Sub464930(Unit* unit)
 
 	//49E590
-	void removeUnitRefsFromTarget(CUnit* unit, CUnit* target) {
+	void removeUnitRefsFromTarget(Unit* unit, Unit* target) {
 
 		if(unit == target->currentBuildUnit)
 			target->currentBuildUnit = nullptr;
@@ -140,7 +140,7 @@ namespace helpers {
 
 		if(target->orderQueueHead != nullptr) {
 
-			COrder* current_order = target->orderQueueHead;
+			Order* current_order = target->orderQueueHead;
 
 			while(current_order != nullptr) {
 
@@ -155,13 +155,13 @@ namespace helpers {
 
 		}
 
-	} //void RemoveUnitRefsFromTarget(CUnit* unit, CUnit* target)
+	} //void RemoveUnitRefsFromTarget(Unit* unit, Unit* target)
 
 
 
 
 	//49EFA0
-	void readUnitsArray_Sub49EFA0(CUnit* unit, u8 playerId_param, uint32 unknown_param) {
+	void readUnitsArray_Sub49EFA0(Unit* unit, u8 playerId_param, uint32 unknown_param) {
 
 		if(playerId_param != unit->playerId) {
 
@@ -369,10 +369,10 @@ namespace helpers {
 
 		} //if(playerId_param != unit->playerId) {
 	
-	} //void readUnitsArray_Sub49EFA0(CUnit* unit, u8 playerId_param, uint32 unknown_param)
+	} //void readUnitsArray_Sub49EFA0(Unit* unit, u8 playerId_param, uint32 unknown_param)
 
 	//4A1EF0
-	void ordersRescuePassive(CUnit* unit) {
+	void ordersRescuePassive(Unit* unit) {
 
 		const uint32 offset_006BEE6C = 0x006BEE6C;
 		const uint32 offset_006BEE64 = 0x006BEE64;
@@ -414,7 +414,7 @@ namespace helpers {
 				}
 				if(!jump_to_A2105) {
 
-					CUnit* unit_found = unit_finder.getUnit(unit_finder_index);
+					Unit* unit_found = unit_finder.getUnit(unit_finder_index);
 					bool jump_to_A204A = false;
 					bool jump_to_A2052;
 					bool jump_to_A20B2 = false;
@@ -450,7 +450,7 @@ namespace helpers {
 
 					if(!jump_to_A2052 && !jump_to_A20B2) {
 
-						CUnit* localFirstPlayerUnit = firstPlayerUnit->unit[unit->playerId];
+						Unit* localFirstPlayerUnit = firstPlayerUnit->unit[unit->playerId];
 
 						do {
 
@@ -564,7 +564,7 @@ namespace helpers {
 
 	}
 	//4E5D60
-	void changeUnitButtonSet(CUnit *unit, u16 buttonSetId) {
+	void changeUnitButtonSet(Unit *unit, u16 buttonSetId) {
 
 	if( (unit->status & UnitStatus::DoodadStatesThing) || //original is "MOV EDX,unit->status";"test DH, 04";jne 
 		unit->lockdownTimer != 0 ||
@@ -587,13 +587,13 @@ namespace helpers {
 
 
 	//4E6340
-	void hideAndDisableUnit(CUnit *unit) {
+	void hideAndDisableUnit(Unit *unit) {
 
 		if( !(unit->sprite->flags & CSprite_Flags::Hidden) ) {
 
 			if(*firstVisibleUnit != nullptr) {
 
-				CUnit* current_unit = firstVisibleUnit[0];
+				Unit* current_unit = firstVisibleUnit[0];
 
 				removeUnitRefsFromTarget(unit, current_unit); //49E590
 
@@ -613,7 +613,7 @@ namespace helpers {
 
 				dialog_structure = (BinDlg**)0x0068AC98;
 
-				if( (*dialog_structure != nullptr) && ((CUnit*)((*dialog_structure)->user) == unit) ) {
+				if( (*dialog_structure != nullptr) && ((Unit*)((*dialog_structure)->user) == unit) ) {
 
 						(*dialog_structure)->user = nullptr;
 						(*dialog_structure)->graphic = 0xFFFF;
@@ -706,7 +706,7 @@ namespace helpers {
 
 				if( *firstHiddenUnit != nullptr) {
 
-					CUnit** unknownUnitStorage = (CUnit**)0x00628428;
+					Unit** unknownUnitStorage = (Unit**)0x00628428;
 
 					if(*firstHiddenUnit == *unknownUnitStorage)
 						*unknownUnitStorage = unit;
@@ -722,7 +722,7 @@ namespace helpers {
 				}
 				else {
 
-					CUnit** unknownUnitStorage = (CUnit**)0x00628428;
+					Unit** unknownUnitStorage = (Unit**)0x00628428;
 					*unknownUnitStorage = unit;
 					*firstHiddenUnit = unit;
 
@@ -748,7 +748,7 @@ namespace helpers {
 
 				if(unit->subunit != nullptr) {
 
-					CUnit* currentSubUnit = unit->subunit;
+					Unit* currentSubUnit = unit->subunit;
 
 					if (units_dat::BaseProperty[currentSubUnit->id] & UnitProperty::Subunit) {
 
@@ -927,11 +927,11 @@ namespace helpers {
 
 		}
 	*/
-	} //void hideAndDisableUnit(CUnit *unit)
+	} //void hideAndDisableUnit(Unit *unit)
 
 
 	//4E6490
-	void showAndEnableUnit(CUnit *unit) {
+	void showAndEnableUnit(Unit *unit) {
 
 		if(unit->sprite->flags & CSprite_Flags::Hidden) {
 
@@ -1024,7 +1024,7 @@ namespace helpers {
 
 			if(unit->subunit != nullptr) {
 
-				CUnit* subunit = unit->subunit;
+				Unit* subunit = unit->subunit;
 
 				if(units_dat::BaseProperty[unit->subunit->id] & UnitProperty::Subunit) {
 
@@ -1069,7 +1069,7 @@ namespace helpers {
 
 			if( *firstVisibleUnit == nullptr) {
 
-				CUnit** unknown_memory_area = (CUnit**)0x0059CC9C;
+				Unit** unknown_memory_area = (Unit**)0x0059CC9C;
 
 				*unknown_memory_area = unit;
 				*firstVisibleUnit = unit;
@@ -1077,7 +1077,7 @@ namespace helpers {
 			}
 			else {
 
-				CUnit** unknown_memory_area = (CUnit**)0x0059CC9C;
+				Unit** unknown_memory_area = (Unit**)0x0059CC9C;
 
 				if(*firstVisibleUnit == *unknown_memory_area)
 					*unknown_memory_area = unit;
@@ -1095,9 +1095,9 @@ namespace helpers {
 
 		} //if(unit->sprite->flags & CSprite_Flags::Hidden)
 
-	} //void showAndEnableUnit(CUnit *unit)
+	} //void showAndEnableUnit(Unit *unit)
 	//4EB290
-	void setNextWaypoint_Sub4EB290(CUnit* unit) {
+	void setNextWaypoint_Sub4EB290(Unit* unit) {
 
 		if(unit->pathingFlags & 2)
 			unit->pathingFlags |= 4;
@@ -1187,6 +1187,6 @@ namespace helpers {
 
 		unit->recentOrderTimer = 15;
 
-	} //setNextWaypoint_Sub4EB290(CUnit* unit)
+	} //setNextWaypoint_Sub4EB290(Unit* unit)
 
 } //namespace helpers

@@ -7,7 +7,7 @@ namespace
 	void __declspec(naked) orders_ProbeBuildWrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			MOV unit, EDI
@@ -28,7 +28,7 @@ namespace
 	void __declspec(naked) orders_BuildSelf2Wrapper()
 	{
 
-		static CUnit* unit;
+		static Unit* unit;
 
 		__asm {
 			PUSH EBP

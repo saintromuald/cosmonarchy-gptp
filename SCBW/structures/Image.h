@@ -10,11 +10,11 @@
 //Additions from bwapi/bwapi/BWMemoryEdit/Enums/RLE.cs
 //Additions from bwapi/bwapi/BWAPI/Source/BW/Image.h
 
-struct CSprite;
+struct Sprite;
 struct GrpHead;
 struct GrpFrame;
 
-/// Used by CImage.paletteType
+/// Used by Image.paletteType
 namespace PaletteType
 {
 	enum Enum : u8
@@ -65,7 +65,7 @@ namespace CImage_Flags
 	};
 }
 
-struct CImage
+struct Image
 {
 	//Utility method definitions added by pastelmind
 
@@ -75,7 +75,7 @@ struct CImage
 
 	/// AKA ImageDestructor() @ 0x004D4CE0
 	/// Removes the image from the linked list of valid images. This is different
-	/// from a struct destructor, since CImage objects are stored in a static array
+	/// from a struct destructor, since Image objects are stored in a static array
 	/// and never truly destroyed.
 	void free();
 
@@ -84,7 +84,7 @@ struct CImage
 
 	/// Resets most of the data member values. This is meant to be used in other
 	/// functions, and should not be used by modders.
-	void initializeData(CSprite* parent, u16 imageId, s8 x, s8 y);
+	void initializeData(Sprite* parent, u16 imageId, s8 x, s8 y);
 
 	void setImageDirection(u8 direction);
 
@@ -94,7 +94,7 @@ struct CImage
 	////////////////////////////////////////////////////////////////
 	//Actual data structure
 
-	/*0x00*/  CLink<CImage>				link;
+	/*0x00*/  Link<Image>				link;
 	/*0x08*/  u16						id;
 
 
@@ -119,10 +119,10 @@ struct CImage
 	/*0x30*/  void* coloringData;				//?
 	/*0x34*/  void* renderFunction;				// renderFunction(this->screenPosition.x, this->screenPosition.y, this->getCurrentFrame(), &rctDraw, (s32)this->coloringData)
 	/*0x38*/  void* updateFunction;
-	/*0x3C*/  CSprite* parentSprite;
+	/*0x3C*/  Sprite* parentSprite;
 };
 
-C_ASSERT(sizeof(CImage) == 64); /*0x40*/
-//static_assert(sizeof(CImage) == 64, "The size of the CImage structure is invalid");
+C_ASSERT(sizeof(Image) == 64); /*0x40*/
+//static_assert(sizeof(Image) == 64, "The size of the Image structure is invalid");
 
 #pragma pack()

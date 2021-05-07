@@ -5,7 +5,7 @@ namespace hooks
 
 	void __declspec(naked) getFlingyHaltDistanceHookWrapper()
 	{
-		static CFlingy* flingy;
+		static Flingy* flingy;
 		static u32 result;
 		__asm {
 			MOV flingy, ECX
@@ -25,7 +25,7 @@ namespace hooks
 		static u32 topSpeed;
 		static u32 flingy_id;
 		static u16 acceleration;
-		static CFlingy* flingy;
+		static Flingy* flingy;
 		__asm {
 			PUSH EBX
 			XOR EBX, EBX
@@ -132,7 +132,7 @@ namespace hooks
 	const u32 jmp_004A0682 = 0x004A0682;
 	void __declspec(naked) lobotomyMineJmpWrapper()
 	{
-		CUnit* unit;
+		Unit* unit;
 		__asm {
 			MOV unit, ESI
 			PUSHAD
@@ -148,7 +148,7 @@ namespace hooks
 	const u32 jmp_0046512B = 0x0046512B;
 	void orders_PlaceMine_JmpWrapper()
 	{
-		CUnit* unit;
+		Unit* unit;
 		u32 result;
 		__asm {
 			MOV unit, ESI
@@ -165,7 +165,7 @@ namespace hooks
 	const u32 jmp_0046514A = 0x0046514A;
 	void orders_PlaceMine_JmpWrapper2()
 	{
-		CUnit* unit;
+		Unit* unit;
 		u32 result;
 		__asm {
 			MOV unit, ESI
@@ -202,10 +202,10 @@ namespace hooks
 	const u32 jmp_004920E3 = 0x004920E3;
 	void __declspec(naked) getOrderTargetErrorString_JmpWrapper()
 	{
-		static CUnit* caster;
+		static Unit* caster;
 		static u8 playerId;
 		static u32 techId;
-		static CUnit* target;
+		static Unit* target;
 		static u32 func_result;
 		static u32 extended_result;
 		__asm {
@@ -228,10 +228,10 @@ namespace hooks
 	const u32 jmp_004922E1 = 0x004922E1;
 	void __declspec(naked) ShouldStopOrderedSpell_JmpWrapper()
 	{
-		static CUnit* caster;
+		static Unit* caster;
 		static u8 playerId;
 		static u32 techId;
-		static CUnit* target;
+		static Unit* target;
 		static u32 func_result;
 		static u32 extended_result;
 		__asm {
@@ -308,7 +308,7 @@ namespace hooks
 	const u32 progressOrder_jmp = 0x004EC6F1;
 	void __declspec(naked) PhaseLinkOrder_Wrapper()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			MOV unit, ESI
 			PUSHAD
@@ -326,7 +326,7 @@ namespace hooks
 	void __declspec(naked) canAttackTarget_Tail_Wrapper()
 	{
 		static u32 target_flags;
-		static CUnit* source;
+		static Unit* source;
 		static u32 result;
 		__asm {
 			PUSH EAX
@@ -348,7 +348,7 @@ namespace hooks
 	}
 	void __declspec(naked) getGroundWeaponHookWrapper()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		static u32 result;
 		__asm {
 			MOV unit, ECX
@@ -398,7 +398,7 @@ namespace hooks
 	{
 		static u32 result;
 		static u32 unit_id;
-		static CUnit* parent;
+		static Unit* parent;
 		static u32 playerId;
 		__asm {
 			PUSH EBP
@@ -613,7 +613,7 @@ namespace hooks
 
 	void __declspec(naked) createDamageOverlay_Wrapper()
 	{
-		static CSprite* sprite;
+		static Sprite* sprite;
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
@@ -653,8 +653,8 @@ namespace hooks
 	void __declspec(naked) isTileBlockedBy_Wrapper() // 00473300
 	{
 		static s32 result;
-		static CUnit** unitArray;
-		static CUnit* builder;
+		static Unit** unitArray;
+		static Unit* builder;
 		static s32 tile_x;
 		static s32 tile_y;
 		static s8 dontIgnoreReacting;
@@ -689,7 +689,7 @@ namespace hooks
 
 	void __declspec(naked) createUnit_Wrapper() // 004A09D0
 	{
-		static CUnit* result;
+		static Unit* result;
 		static u16 unitType;
 		static s32 x;
 		static s32 y;

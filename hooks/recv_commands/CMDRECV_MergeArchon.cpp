@@ -7,11 +7,11 @@ namespace hooks
 	void CMDRECV_MergeDarkArchon()
 	{
 
-		CUnit* current_unit;
-		CUnit* templar_stored;
-		CUnit* templar_merge_partner;
-		CUnit* templars_stored[SELECTION_ARRAY_LENGTH];
-		CUnit** templars_stored_iterator;
+		Unit* current_unit;
+		Unit* templar_stored;
+		Unit* templar_merge_partner;
+		Unit* templars_stored[SELECTION_ARRAY_LENGTH];
+		Unit** templars_stored_iterator;
 		s32 templars_stored_count;
 
 		*selectionIndexStart = 0;
@@ -147,11 +147,11 @@ namespace hooks
 	void CMDRECV_MergeArchon()
 	{
 
-		CUnit* current_unit;
-		CUnit* templar_stored;
-		CUnit* templar_merge_partner;
-		CUnit* templars_stored[SELECTION_ARRAY_LENGTH];
-		CUnit** templars_stored_iterator;
+		Unit* current_unit;
+		Unit* templar_stored;
+		Unit* templar_merge_partner;
+		Unit* templars_stored[SELECTION_ARRAY_LENGTH];
+		Unit** templars_stored_iterator;
 		s32 templars_stored_count;
 
 		*selectionIndexStart = 0;

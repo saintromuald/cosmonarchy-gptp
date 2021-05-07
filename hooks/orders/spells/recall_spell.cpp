@@ -11,7 +11,7 @@ namespace hooks
 	//by IterateUnitsAtLocationTargetProc_RecallTargets
 	//that was validated throug spells_Recall_ActionOnTargetInRange
 	//Do the actual unit movement
-	void spells_Recall_ActionOnValidTargetForRecall(CUnit* target, CUnit* caster)
+	void spells_Recall_ActionOnValidTargetForRecall(Unit* target, Unit* caster)
 	{
 
 		static b32* const bAtLeast1UnitWasRecalled = (b32*)(0x0063FF50);
@@ -30,7 +30,7 @@ namespace hooks
 			scbw::setUnitPosition(target, previous_pos.x, previous_pos.y);
 		else
 		{
-			CThingy* recall_effect_sprite;
+			Thingy* recall_effect_sprite;
 
 			//finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
 			scbw::prepareUnitMove(target, false);
@@ -75,7 +75,7 @@ namespace hooks
 
 		}
 
-	} //void spells_Recall_ActionOnValidTargetForRecall(CUnit* target, CUnit* caster)
+	} //void spells_Recall_ActionOnValidTargetForRecall(Unit* target, Unit* caster)
 
 	;
 
@@ -85,7 +85,7 @@ namespace hooks
 	//to choose if the unit can have the Recall effect
 	//cast on it or no, and if yes, calling another function
 	//to do the Recall effect.
-	void spells_Recall_ActionOnTargetInRange(CUnit* target, CUnit* caster)
+	void spells_Recall_ActionOnTargetInRange(Unit* target, Unit* caster)
 	{
 
 		if (
@@ -105,7 +105,7 @@ namespace hooks
 
 	;
 
-	void orders_Recall(CUnit* unit)
+	void orders_Recall(Unit* unit)
 	{
 
 		static b32* const bAtLeast1UnitWasRecalled = (b32*)(0x0063FF50);
@@ -189,7 +189,7 @@ namespace hooks
 			else
 			{ //945B9
 
-				CThingy* recall_effect_sprite;
+				Thingy* recall_effect_sprite;
 				u32 random_value;
 
 				if (!scbw::isCheatEnabled(CheatFlags::TheGathering))
@@ -267,7 +267,7 @@ namespace hooks
 
 		}
 
-	} //void orders_Recall(CUnit* unit)
+	} //void orders_Recall(Unit* unit)
 
 	;
 

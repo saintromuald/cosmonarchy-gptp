@@ -10,7 +10,7 @@ namespace
 	void __declspec(naked) orders_Build5Wrapper()
 	{
 
-		static CUnit* nydus_canal;
+		static Unit* nydus_canal;
 
 		__asm {
 			PUSH EBP

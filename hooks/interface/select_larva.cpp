@@ -9,9 +9,9 @@ namespace hooks
 	/// outputList is an empty list of 12 (SELECTION_ARRAY_LENGTH) 
 	///slots to fill with larvae found in unitList.
 	///
-	u32 getLarvaeUnitsFromListHook(CUnit** unitList, CUnit** outputList)
+	u32 getLarvaeUnitsFromListHook(Unit** unitList, Unit** outputList)
 	{
-		CUnit* current_unit = *unitList;
+		Unit* current_unit = *unitList;
 		u32 current_index = 0;
 		if (current_unit != nullptr)
 		{
@@ -50,8 +50,8 @@ namespace hooks
 	{
 
 		Box16 coords;
-		CUnit** units_in_bounds;
-		CUnit* new_selection[SELECTION_ARRAY_LENGTH];
+		Unit** units_in_bounds;
+		Unit* new_selection[SELECTION_ARRAY_LENGTH];
 		u32 larvaeCount;
 
 		coords.right = (*activePortraitUnit)->sprite->position.x + 128;

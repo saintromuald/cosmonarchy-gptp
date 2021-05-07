@@ -95,7 +95,7 @@ namespace hooks
 		//drawText(apm.c_str(), 10, 15, 100, 15, 7);
 	}
 
-	bool isFirstSelectedUnitOfCurrentPlayer(CUnit* unit)
+	bool isFirstSelectedUnitOfCurrentPlayer(Unit* unit)
 	{
 		for (s32 i = 0; i < 12; i++)
 		{
@@ -149,7 +149,7 @@ LABEL_8:
 		return v2;
 	}
 
-	void targetedOrder(s16 a1, s32 a2, CUnit* a3, s16 a4, s32 a5, s32 a6, u8 a7, s32 a8, s32 a9, s32 a10)
+	void targetedOrder(s16 a1, s32 a2, Unit* a3, s16 a4, s32 a5, s32 a6, u8 a7, s32 a8, s32 a9, s32 a10)
 	{
 		if (a6 && orders_dat::CanBeQueued[(u8)a7])
 		{
@@ -167,7 +167,7 @@ LABEL_8:
 					{
 						if (*COrderCount < 1800)
 						{
-							helper::queueNewOrder((COrder*)a5, a1, a4, a3, a7, a8, a2, (Point32*)a9, (CUnit*)a10);
+							helper::queueNewOrder((Order*)a5, a1, a4, a3, a7, a8, a2, (Point32*)a9, (Unit*)a10);
 						}
 						else
 						{
@@ -192,11 +192,11 @@ LABEL_8:
 		else
 		{
 LABEL_15:
-			helper::setOrderTarget(a7, a1, a4, a5, (s32)a3, (CUnit*)a8, (u16)a2, (Point32*)a9, (CUnit*)a10);
+			helper::setOrderTarget(a7, a1, a4, a5, (s32)a3, (Unit*)a8, (u16)a2, (Point32*)a9, (Unit*)a10);
 		}
 	}
 
-	s32 selectUnits(CUnit** a1, s32 a2, u8 a3, s32 a4)
+	s32 selectUnits(Unit** a1, s32 a2, u8 a3, s32 a4)
 	{
 		s32 v4 = helper::CUnitToUnitID(*a1);
 		s32 result = helper::selectSingleUnitFromID(v4); // eax

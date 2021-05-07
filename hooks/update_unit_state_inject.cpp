@@ -5,7 +5,7 @@ namespace
 {
 	void __declspec(naked) updateUnitEnergyWrapper()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			MOV unit, ESI
 			PUSHAD
@@ -19,7 +19,7 @@ namespace
 
 	void __declspec(naked) updateUnitStateWrapper()
 	{
-		static CUnit* unit;
+		static Unit* unit;
 		__asm {
 			MOV unit, EAX
 			PUSHAD
@@ -34,7 +34,7 @@ namespace
 	void __declspec(naked) incrementUnitScoresEx_Wrapper()
 	{ // 00488D50
 		static s32 count;
-		static CUnit* unit;
+		static Unit* unit;
 		static s32 updateMorphMergeUnitScore;
 		__asm {
 			PUSH EBP
@@ -82,7 +82,7 @@ namespace
 
 	void __declspec(naked) doCloak_Wrapper()
 	{ // 0049B440
-		static CUnit* unit;
+		static Unit* unit;
 		static s32 soundId;
 		__asm {
 			MOV soundId, EBX

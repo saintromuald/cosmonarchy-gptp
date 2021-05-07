@@ -5,13 +5,13 @@
 namespace hooks
 {
 	helper::setCreepRelationalData_callback runCreepRandomizerPtr = &runCreepRandomizer;
-	void function_0049D660(CUnit* main_building)
+	void function_0049D660(Unit* main_building)
 	{
 		Point32 coords;
 		// look for a location to spawn a larva at
 		if (helper::function_004E8E10(main_building, &coords))
 		{
-			CUnit* unit_created = helper::createUnit(UnitId::ZergLarva, coords.x, coords.y, main_building->playerId);
+			Unit* unit_created = helper::createUnit(UnitId::ZergLarva, coords.x, coords.y, main_building->playerId);
 			if (unit_created != nullptr)
 			{
 				helper::updateUnitStatsFinishBuilding(unit_created);
@@ -29,7 +29,7 @@ namespace hooks
 	}
 
 	// filter for larva in internal game searches, use the limit of 3 larvas
-	bool function_004E8C80(CUnit* unit, CUnit* main_building)
+	bool function_004E8C80(Unit* unit, Unit* main_building)
 	{
 		// while bReturnValue == false, the calling function keep calling,
 		// so it return true only when max amount of larvas was counted,
@@ -61,7 +61,7 @@ namespace hooks
 		return bReturnValue;
 	}
 
-	void secondaryOrd_SpawningLarva(CUnit* unit)
+	void secondaryOrd_SpawningLarva(Unit* unit)
 	{
 		if (unit->orderQueueTimer == 0 && unit->playerId != 11)
 		{
@@ -113,7 +113,7 @@ namespace hooks
 					else
 					{
 						// 004EA830:
-						CUnit* new_larva = helper::createUnit(UnitId::ZergLarva, coords_2.x, coords_2.y, unit->playerId);
+						Unit* new_larva = helper::createUnit(UnitId::ZergLarva, coords_2.x, coords_2.y, unit->playerId);
 						if (new_larva != nullptr)
 						{
 							// update various stats (set hp, set shield...) not finished on CreateUnit
@@ -135,7 +135,7 @@ namespace hooks
 		}
 	}
 
-	void secondaryOrd_SpreadCreepSpawningLarva(CUnit* unit)
+	void secondaryOrd_SpreadCreepSpawningLarva(Unit* unit)
 	{
 		if (unit->id == UnitId::ZergHatchery
 			|| unit->id == UnitId::ZergLair
@@ -368,12 +368,12 @@ namespace hooks
 	bool inCreepArea(s32 x, s32 y)
 	{
 		// Default function:
-		CUnit* unit = helper::getUnitPointer();
+		Unit* unit = helper::getUnitPointer();
 		return (x * x * 100 + y * y * 256) <= 10240000;
 
 		// TODO: Cleanup
 		// Per-unit function example
-//		CUnit* unit = getUnitPointer();
+//		Unit* unit = getUnitPointer();
 		
 		/*
 		switch (deathTable[214].player[11]) {

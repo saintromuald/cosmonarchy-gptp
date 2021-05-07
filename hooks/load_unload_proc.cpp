@@ -6,21 +6,21 @@
 namespace hooks
 {
 	// the transport is "unit", the target is "unitToLoad"
-	void loadUnitProc(CUnit* unit, CUnit* unitToLoad)
+	void loadUnitProc(Unit* unit, Unit* unitToLoad)
 	{
 		u8 unitRaceId;
 		u32 loaded_index;
 		s32 counter = 0;
 		// Old pointers
-//		static const CUnit* unitTable_0059CB58 = (CUnit*)0x0059CB58;
-//		static const CUnit* unitTable_0059CB64 = (CUnit*)0x0059CB64;
-		static const CUnit* unitTable_0059CB58 = (CUnit*)0x0059CB58;
-		static const CUnit* unitTable_0059CB64 = (CUnit*)0x0059CB64;
+//		static const Unit* unitTable_0059CB58 = (Unit*)0x0059CB58;
+//		static const Unit* unitTable_0059CB64 = (Unit*)0x0059CB64;
+		static const Unit* unitTable_0059CB58 = (Unit*)0x0059CB58;
+		static const Unit* unitTable_0059CB64 = (Unit*)0x0059CB64;
 		if (globals.extended_unit_table == 1)
 		{
 			const u32 index_start = reinterpret_cast<u32>(&new_unit_table.units[0]) - 336;
-			unitTable_0059CB58 = (CUnit*)index_start;
-			unitTable_0059CB64 = (CUnit*)(index_start + 12);
+			unitTable_0059CB58 = (Unit*)index_start;
+			unitTable_0059CB64 = (Unit*)(index_start + 12);
 		}
 		static u32* u32_0x006BEE84 = (u32*)(0x006BEE84);
 		static u32* u32_0x006BEE8C = (u32*)(0x006BEE8C);
@@ -36,7 +36,7 @@ namespace hooks
 					break;
 				}
 
-				CUnit* current_loaded_unit = (CUnit*)&(unitTable_0059CB58[unit->loadedUnit[counter].index]);
+				Unit* current_loaded_unit = (Unit*)&(unitTable_0059CB58[unit->loadedUnit[counter].index]);
 				if ((current_loaded_unit->mainOrderId == OrderId::Die && current_loaded_unit->mainOrderState == 1) ||
 					current_loaded_unit->targetOrderSpecial != unit->loadedUnit[counter].unitId)
 				{
@@ -87,7 +87,7 @@ namespace hooks
 		auto new_table = unitTable;
 		if (globals.extended_unit_table == 1)
 		{
-			new_table = (CUnit*)&new_unit_table.units[0];
+			new_table = (Unit*)&new_unit_table.units[0];
 		}
 
 		__asm
@@ -143,7 +143,7 @@ namespace hooks
 		{
 			for (s32 i = 0; i < 8; i++)
 			{
-				CUnit* cargoUnit = unit->getLoadedUnit(i);
+				Unit* cargoUnit = unit->getLoadedUnit(i);
 				if (cargoUnit == nullptr) continue;
 				// TODO: disable cargo units
 //				scbw::setUnitPosition(cargoUnit, pos.x, pos.y); // <- does not work
@@ -157,7 +157,7 @@ namespace hooks
 		{
 			for (s32 i = 0; i < 8; i++)
 			{
-				CUnit* cargoUnit = unit->getLoadedUnit(i);
+				Unit* cargoUnit = unit->getLoadedUnit(i);
 				if (cargoUnit == nullptr) continue;
 				// TODO: Disable cargo units
 			}
@@ -196,7 +196,7 @@ namespace hooks
 			if (unitToLoad->subunit != nullptr
 				&& units_dat::BaseProperty[unitToLoad->subunit->id] & UnitProperty::Subunit)
 			{
-				CUnit* subUnit = unitToLoad->subunit;
+				Unit* subUnit = unitToLoad->subunit;
 				scbw::setUnitPosition(subUnit, unit->sprite->position.x, unit->sprite->position.y);
 				subUnit->status = (subUnit->status & ~UnitStatus::IsBuilding) | UnitStatus::InBuilding;
 				if (subUnit->path != nullptr)
@@ -235,12 +235,12 @@ namespace hooks
 
 	// the transported unit is "unit", the transport is accessed through unit->connectedUnit
 	// Has a boolean return value
-	b32 unloadUnitProc(CUnit* unit)
+	b32 unloadUnitProc(Unit* unit)
 	{
 		b32 return_value = 0;
 		if (unit->connectedUnit != nullptr)
 		{
-			CUnit* transport = unit->connectedUnit;
+			Unit* transport = unit->connectedUnit;
 			if ((transport->mainOrderTimer == 0 || transport->status & UnitStatus::GroundedBuilding)
 				&& !(transport->status & UnitStatus::DoodadStatesThing)
 				&& transport->lockdownTimer == 0
@@ -301,7 +301,7 @@ namespace hooks
 						{
 							for (s32 i = 0; i < 8; i++)
 							{
-								CUnit* cargoUnit = unit->getLoadedUnit(i);
+								Unit* cargoUnit = unit->getLoadedUnit(i);
 								if (cargoUnit == nullptr) continue;
 								// TODO: enable and update cargo units and their position
 //								scbw::setUnitPosition(cargoUnit, pos.x, pos.y); // <- does not work
