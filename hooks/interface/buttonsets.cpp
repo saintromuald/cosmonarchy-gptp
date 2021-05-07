@@ -890,13 +890,13 @@ namespace hooks
 								}
 								if ((*activePortraitUnit)->id == UnitId::TerranMadrigal &&  // Madrigal Furia Salvo passive
 									current_button->iconID == IconId::GeminiMissiles &&
-									scbw::get_generic_rust_value((*activePortraitUnit), RustId::TempoChange) == 0)
+									scbw::get_generic_rust_value((*activePortraitUnit), RustId::ToggleTempoChange) == 0)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								if ((*activePortraitUnit)->id == UnitId::TerranMadrigal &&  // Madrigal Shrike Payload passive
 									current_button->iconID == IconId::Fusion_Cutter_Harvest &&
-									scbw::get_generic_rust_value((*activePortraitUnit), RustId::TempoChange) > 0)
+									scbw::get_generic_rust_value((*activePortraitUnit), RustId::ToggleTempoChange) > 0)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}

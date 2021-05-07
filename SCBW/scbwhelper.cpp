@@ -5348,7 +5348,7 @@ namespace helper
 	void weaponBulletShot(Unit* target, Bullet* bullet, u32 dmgDivisor)
 	{
 		const u32 Helper_WeaponBulletShot = 0x00479AE0;
-		if (bullet != nullptr && target != nullptr && bullet->sourceUnit && bullet->weaponType == WeaponId::PariahIconoclastBlades)
+		if (bullet != nullptr && target != nullptr && bullet->sourceUnit && bullet->weaponId == WeaponId::PariahIconoclastBlades)
 		{
 			if (!globals.was_hit_by_pariah(bullet->sourceUnit, target))
 			{

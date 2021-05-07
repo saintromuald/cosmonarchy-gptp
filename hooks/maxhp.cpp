@@ -749,7 +749,7 @@ LABEL_32:
 		s32 v14; // eax
 		s32 v15; // eax
 
-		v2 = (u8)bullet->weaponType;
+		v2 = (u8)bullet->weaponId;
 		v3 = victim;
 		if (weapons_dat::ExplosionType[v2] == WeaponEffect::NuclearMissile)
 		{
@@ -784,7 +784,7 @@ LABEL_32:
 		}
 		else
 		{
-			v5 = (u8)bullet->weaponType;
+			v5 = (u8)bullet->weaponId;
 			v6 = weapons_dat::DamageUpgrade[v5];
 			v7 = weapons_dat::DamageAmount[v5];
 			v4 = (u8)bullet->srcPlayer;

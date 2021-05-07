@@ -1267,7 +1267,7 @@ namespace scbw
 		{
 			return true;
 		}
-		if (unit->id == UnitId::TerranWyvern && get_generic_rust_value(unit, RustId::ReverseThrust) == 1)
+		if (unit->id == UnitId::TerranWyvern && get_generic_rust_value(unit, RustId::ToggleReverseThrust) == 1)
 		{
 			return true;
 		}

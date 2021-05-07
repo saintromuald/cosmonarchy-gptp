@@ -665,7 +665,7 @@ LABEL_18:
 		return orig_result;
 	}
 
-	//replaces CTFCop2 order
+	// replaces CTFCop2 order
 	void order_PhaseLink(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
@@ -684,10 +684,6 @@ LABEL_18:
 			{
 				status = 0;//enable clarion
 			}
-		}
-		else if (unit->id == UnitId::ProtossExemplar)
-		{
-			status = scbw::get_generic_rust_value(unit, RustId::ExemplarSwitch);
 		}
 		else if (unit->id == UnitId::ProtossStarSovereign)
 		{
@@ -768,17 +764,6 @@ LABEL_18:
 						// TODO: is placing needed?
 						scbw::placeClarionLinks(unit);
 						scbw::clearClarionLinks(unit);
-					}
-				}
-				else if (unit->id == UnitId::ProtossExemplar)
-				{
-					if (status == 0)
-					{
-						scbw::set_generic_rust_value(unit, RustId::ExemplarSwitch, 1);
-					}
-					else
-					{
-						scbw::set_generic_rust_value(unit, RustId::ExemplarSwitch, 0);
 					}
 				}
 				unit->updateSpeed();

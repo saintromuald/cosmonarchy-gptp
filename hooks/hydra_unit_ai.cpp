@@ -174,7 +174,7 @@ void hydra_unit_ai(Unit* unit)
 
 	else if (unit->id == UnitId::ProtossLanifect)
 	{
-		auto web_state = scbw::get_generic_rust_value(unit, RustId::DisruptionWeb);
+		auto web_state = scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionWeb);
 		if (unitExt->values[ValueExecutingCorsairMoveOrder] != 0)
 		{
 			if (unit->mainOrderId != OrderId::Move)
@@ -208,7 +208,7 @@ void hydra_unit_ai(Unit* unit)
 				if (mostSignificant != nullptr)
 				{
 					unit->orderTo(OrderId::Move, mostSignificant->position.x, mostSignificant->position.y);
-					scbw::set_generic_rust_value(unit, RustId::DisruptionWeb, 1);
+					scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionWeb, 1);
 					unitExt->timers[TimerAI_CorsairDweb] = AIWebTimer;
 				}
 			}
@@ -219,7 +219,7 @@ void hydra_unit_ai(Unit* unit)
 			{
 				if (unitExt->timers[TimerAI_CorsairDweb] == 0)
 				{
-					scbw::set_generic_rust_value(unit, RustId::DisruptionWeb, 0);
+					scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionWeb, 0);
 					unitExt->values[ValueExecutingCorsairMoveOrder] = 0;
 					if (unit->mainOrderId == OrderId::Move)
 					{

@@ -15,13 +15,13 @@ namespace hooks
 		{
 			// initial check for energy-based switch abilities
 			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel &&
-				scbw::get_generic_rust_value(firstInList, RustId::SublimeShepherd) == 1)
+				scbw::get_generic_rust_value(firstInList, RustId::ToggleSublimeShepherd) == 1)
 			{
 				TechCapableUnit = true;
 
 			}
 			if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossLanifect &&
-				scbw::get_generic_rust_value(firstInList, RustId::DisruptionWeb) == 1)
+				scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionWeb) == 1)
 			{
 				TechCapableUnit = true;
 
@@ -41,7 +41,7 @@ namespace hooks
 			if (firstInList != nullptr)
 			{
 				if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranAzazel &&
-					scbw::get_generic_rust_value(firstInList, RustId::SublimeShepherd) == 1)
+					scbw::get_generic_rust_value(firstInList, RustId::ToggleSublimeShepherd) == 1)
 				{
 					TechCapableUnit = true;
 				}
@@ -91,7 +91,7 @@ namespace hooks
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
 				buf[3] = *ACTIVE_PLAYER_ID;
-				buf[4] = RustId::EnsnaringBroodAbility;
+				buf[4] = RustId::CastEnsnaringBrood;
 				scbw::SendCommand(buf, 0xc);
 			} break;
 			case TechId::Parasite:
@@ -107,7 +107,7 @@ namespace hooks
 				if (firstInList != nullptr)
 				{
 					s32 action = 1; // on
-					if (scbw::get_generic_rust_value(firstInList, RustId::ReverseThrust) == 1)
+					if (scbw::get_generic_rust_value(firstInList, RustId::ToggleReverseThrust) == 1)
 					{
 						action = 0; // off
 					}
@@ -116,7 +116,7 @@ namespace hooks
 					buf[1] = NewGameCommand::GenericSwitchAbility;
 					buf[2] = action;
 					buf[3] = *ACTIVE_PLAYER_ID;
-					buf[4] = RustId::ReverseThrust;
+					buf[4] = RustId::ToggleReverseThrust;
 					scbw::SendCommand(buf, 0xc);
 				}
 			} break;
@@ -156,22 +156,6 @@ namespace hooks
 			{
 				helper::issueTriTargetOrder(OrderId::Restoration, 0, 0);
 			} break;
-			case TechId::NaniteField:
-			{
-				s32 action = 1; // on
-				if (scbw::get_generic_rust_value(firstInList, RustId::NaniteField) == 1)
-				{
-					action = 0; // off
-				}
-				// set nanite field
-				u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0};//12
-				buf[0] = 0x99; // new general command
-				buf[1] = NewGameCommand::GenericSwitchAbility;
-				buf[2] = action;
-				buf[3] = *ACTIVE_PLAYER_ID;
-				buf[4] = RustId::NaniteField;
-				scbw::SendCommand(buf, 0xc);
-			} break;
 			case TechId::RescindMindControl:
 			{
 				s32 action = 1; // on
@@ -180,7 +164,7 @@ namespace hooks
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
-				buf[4] = RustId::RescindMindControl;
+				buf[4] = RustId::CastRescindMindControl;
 				scbw::SendCommand(buf, 0xc);
 			} break;
 			case TechId::Observance:
@@ -194,10 +178,10 @@ namespace hooks
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = 1;
 				buf[3] = *ACTIVE_PLAYER_ID;
-				buf[4] = RustId::GodsMadeFleshCast;
+				buf[4] = RustId::CastGodsMadeFlesh;
 				scbw::SendCommand(buf, 0xc);
 			} break;
-			case TechId::PhaseLink: // and Khaydarin Eclipse
+			case TechId::PhaseLink:
 			{
 				auto firstInList = clientSelectionGroup->unit[0];
 				if (firstInList != nullptr)
@@ -216,22 +200,6 @@ namespace hooks
 						buf[3] = *ACTIVE_PLAYER_ID;
 						scbw::SendCommand(buf, 0xc);
 					}
-					else
-					{ // exemplar
-						s32 action = 1;//on
-						if (scbw::get_generic_rust_value(firstInList, RustId::ExemplarSwitch) == 1)
-						{
-							action = 0;//off
-						}
-						u8 buf[0xc] = {0x0,0x0,0x0,0x0,  0x0,0x0,0x0,0x0,    0x0,0x0,0x0,0x0}; // 12
-						buf[0] = 0x99; // new general command
-						buf[1] = NewGameCommand::GenericSwitchAbility;
-						buf[2] = action;
-						buf[3] = *ACTIVE_PLAYER_ID;
-						buf[4] = RustId::ExemplarSwitch;
-						scbw::SendCommand(buf, 0xc);
-						break;
-					}
 				}
 			} break;
 			case TechId::PlanetCracker:
@@ -246,7 +214,7 @@ namespace hooks
 			case TechId::SublimeShepherd:
 			{
 				s32 action = 1; // on
-				if (scbw::get_generic_rust_value(firstInList, RustId::SublimeShepherd) == 1)
+				if (scbw::get_generic_rust_value(firstInList, RustId::ToggleSublimeShepherd) == 1)
 				{
 					action = 0; // off
 				}
@@ -255,7 +223,7 @@ namespace hooks
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
-				buf[4] = RustId::SublimeShepherd;
+				buf[4] = RustId::ToggleSublimeShepherd;
 				scbw::SendCommand(buf, 0xc);
 			} break;
 			case TechId::LazarusAgent:
@@ -271,7 +239,7 @@ namespace hooks
 			case TechId::TempoChange:
 			{
 				s32 action = 1; // on
-				if (scbw::get_generic_rust_value(firstInList, RustId::TempoChange) == 1)
+				if (scbw::get_generic_rust_value(firstInList, RustId::ToggleTempoChange) == 1)
 				{
 					action = 0; // off
 				}
@@ -280,7 +248,7 @@ namespace hooks
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
-				buf[4] = RustId::TempoChange;
+				buf[4] = RustId::ToggleTempoChange;
 				scbw::SendCommand(buf, 0xc);
 			} break;
 			case TechId::Skyfall:
@@ -298,7 +266,7 @@ namespace hooks
 			case TechId::DisruptionWeb:
 			{
 				s32 action = 1; // on
-				if (scbw::get_generic_rust_value(firstInList, RustId::DisruptionWeb) == 1)
+				if (scbw::get_generic_rust_value(firstInList, RustId::ToggleDisruptionWeb) == 1)
 				{
 					action = 0; // off
 				}
@@ -307,7 +275,7 @@ namespace hooks
 				buf[1] = NewGameCommand::GenericSwitchAbility;
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
-				buf[4] = RustId::DisruptionWeb;
+				buf[4] = RustId::ToggleDisruptionWeb;
 				scbw::SendCommand(buf, 0xc);
 			} break;
 			case TechId::MindControl:

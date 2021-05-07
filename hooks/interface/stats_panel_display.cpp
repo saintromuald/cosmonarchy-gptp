@@ -85,7 +85,7 @@ namespace hooks
 				u32 groundWeapon;
 				u8 groundWeaponMainUnit = units_dat::GroundWeapon[activeUnit->id];
 				if (activeUnit->id == UnitId::TerranMadrigal
-					&& scbw::get_generic_rust_value(activeUnit, RustId::TempoChange)
+					&& scbw::get_generic_rust_value(activeUnit, RustId::ToggleTempoChange)
 					&& groundWeaponMainUnit == WeaponId::MadrigalFuriaMissiles)
 				{
 					groundWeaponMainUnit = WeaponId::MadrigalImperiosoMissiles;

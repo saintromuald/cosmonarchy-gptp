@@ -343,19 +343,17 @@ namespace RustId
 {
 	enum
 	{
-		ReverseThrust,
-		ExemplarSwitch,
-		SublimeShepherd,
+		ToggleReverseThrust,
+		ToggleSublimeShepherd,
 		CastLazarusAgent,
-		DisruptionWeb,
+		ToggleDisruptionWeb,
 		DisruptionWebDamage,
-		EnsnaringBroodAbility,
-		GodsMadeFleshCast,
-		TempoChange,
-		Reconstitution,
-		NaniteField,
+		CastEnsnaringBrood,
+		CastGodsMadeFlesh,
+		ToggleTempoChange,
 		DirgeAttacker,
-		RescindMindControl,
+		CastRescindMindControl,
+		CastEnthrallingAssault,
 	};
 }
 #include "SCBW\enumerations\TechId.h"
@@ -365,8 +363,8 @@ const u32 string_toggle_on[6] = {1703, 1807, 1265, 1232, 1383, 328};
 const u32 string_toggle_off[6] = {1113, 1114, 1270, 1233, 1248, 330};
 const u32 button_toggle_on[6] = {374, 319, 369, 374, 366, 296};
 const u32 button_toggle_off[6] = {375, 236, 236, 375, 365, 236};
-const u32 toggle_values[6] = {RustId::ReverseThrust, RustId::SublimeShepherd, RustId::DisruptionWeb, RustId::TempoChange, RustId::NaniteField, RustId::Reconstitution};
-const u32 toggle_abilities[6] = {TechId::EMPShockwave, TechId::UnusedTech40, TechId::DisruptionWeb, TechId::TempoChange, TechId::NaniteField, TechId::Reconstitution};
+const u32 toggle_values[6] = {RustId::ToggleReverseThrust, RustId::ToggleSublimeShepherd, RustId::ToggleDisruptionWeb, RustId::ToggleTempoChange};
+const u32 toggle_abilities[6] = {TechId::EMPShockwave, TechId::UnusedTech40, TechId::DisruptionWeb, TechId::TempoChange};
 const u32 generictoggles = 6;
 
 namespace HydraFlags1

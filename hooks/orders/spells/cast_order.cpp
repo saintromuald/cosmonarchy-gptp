@@ -34,7 +34,7 @@ namespace hooks
 			if (unit->orderSignal & 0x40)
 			{
 				unit->orderSignal &= ~0x40;
-				if (scbw::get_generic_rust_value(unit, RustId::ReverseThrust) == 1)
+				if (scbw::get_generic_rust_value(unit, RustId::ToggleReverseThrust) == 1)
 				{
 					unitExt->values[ValueWyvernReverseLandgrabOn] = 1;
 					unitExt->values[ValueWyvernReverseLandgrabX] = unit->orderTarget.pt.x;

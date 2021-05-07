@@ -519,8 +519,8 @@ namespace hooks
 		addStatus(statuses, "Terminal Surge", unitExt->values[ValueTerminalSurge], 0);
 
 		// Aise Value - Gimmicked
-		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, RustId::TempoChange) == 0, 1);
-		addStatus(statuses, "Dirge", scbw::get_generic_rust_value(unit, RustId::TempoChange) == 1, 1);
+		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0, 1);
+		addStatus(statuses, "Dirge", scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 1, 1);
 		addStatus(statuses, "Observing", unitExt->timers[TimerObservanceOverlay] > 0, 1);
 		addStatus(statuses, "Swarming Omen", unitExt->values[ValueSwarmingOmenStatus] > 0, 1);
 		addStatus(statuses, "Protective Instincts", unitExt->values[ValueProtectiveInstinctsStatus] > 0, 1);

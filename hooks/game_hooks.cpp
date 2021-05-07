@@ -244,7 +244,7 @@ namespace hooks
 			// Loop through bullets
 			for (Bullet* bullet = *firstBullet; bullet; bullet = bullet->next)
 			{
-				if (bullet->weaponType == WeaponId::KalkaliskViscousAcid)
+				if (bullet->weaponId == WeaponId::KalkaliskViscousAcid)
 				{
 					if (bullet->orderSignal & 0x80)
 					{
@@ -356,7 +356,7 @@ namespace hooks
 			} break;
 			case UnitId::TerranAzazel:
 			{
-				if (scbw::get_generic_rust_value(unit, RustId::SublimeShepherd) == 1)
+				if (scbw::get_generic_rust_value(unit, RustId::ToggleSublimeShepherd) == 1)
 				{
 					scbw::decloakProc(unit);
 					if (!unit->getOverlay(1267))
@@ -521,7 +521,7 @@ namespace hooks
 			{
 				// Disruption Field - Lanifect ability
 				Unit* web = unitExt->units[UnitAttachedDisruptionWeb];
-				if (scbw::get_generic_rust_value(unit, RustId::DisruptionWeb))
+				if (scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionWeb))
 				{
 					if (web == nullptr)
 					{
@@ -529,7 +529,7 @@ namespace hooks
 						if (web == nullptr)
 						{
 							// CCMU case
-							scbw::set_generic_rust_value(unit, RustId::DisruptionWeb, 0);
+							scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionWeb, 0);
 						}
 						else
 						{
@@ -539,7 +539,7 @@ namespace hooks
 					else
 						if (unit->isFrozen())
 						{
-							scbw::set_generic_rust_value(unit, RustId::DisruptionWeb, 0);
+							scbw::set_generic_rust_value(unit, RustId::ToggleDisruptionWeb, 0);
 							web->remove();
 						}
 						else
@@ -773,12 +773,12 @@ namespace hooks
 			case UnitId::ZergMatraleth:
 			{
 				// Matraleth - Ensnaring Brood
-				if (scbw::get_generic_rust_value(unit, RustId::EnsnaringBroodAbility) == 1)
+				if (scbw::get_generic_rust_value(unit, RustId::CastEnsnaringBrood) == 1)
 				{
 					scbw::decloakProc(unit);
 					Point16 pos = unit->position;
 					s32 radius = 6 * 32;
-					scbw::set_generic_rust_value(unit, RustId::EnsnaringBroodAbility, 0);
+					scbw::set_generic_rust_value(unit, RustId::CastEnsnaringBrood, 0);
 					scbw::UnitFinder(
 						pos.x - radius,
 						pos.y - radius,
@@ -830,19 +830,19 @@ namespace hooks
 			case UnitId::ProtossMindTyrant:
 			{
 				// Rescind Mind Control
-				if (scbw::get_generic_rust_value(unit, RustId::RescindMindControl) == 1)
+				if (scbw::get_generic_rust_value(unit, RustId::CastRescindMindControl) == 1)
 				{
 					scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
-					scbw::set_generic_rust_value(unit, RustId::RescindMindControl, 0);
+					scbw::set_generic_rust_value(unit, RustId::CastRescindMindControl, 0);
 				}
 			} break;
 			case UnitId::ProtossDemiurge:
 			{
 				// Demiurge - Gods Made Flesh - initial cast
-				if (scbw::get_generic_rust_value(unit, RustId::GodsMadeFleshCast))
+				if (scbw::get_generic_rust_value(unit, RustId::CastGodsMadeFlesh))
 				{
 					scbw::decloakProc(unit);
-					scbw::set_generic_rust_value(unit, RustId::GodsMadeFleshCast, 0);
+					scbw::set_generic_rust_value(unit, RustId::CastGodsMadeFlesh, 0);
 					unitExt->values[ValueGodsMadeFleshActive] = 1;
 				}
 				// Demiurge - Gods Made Flesh - remove effect from caster

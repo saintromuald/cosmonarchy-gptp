@@ -224,7 +224,7 @@ namespace hooks
 			if (bullet->sourceUnit != nullptr)
 			{
 				target->damageWith(
-					bullet->weaponType,
+					bullet->weaponId,
 					base_damage,
 					bullet->sourceUnit,
 					bullet->srcPlayer,
@@ -233,13 +233,13 @@ namespace hooks
 			}
 			else
 			{
-				helper::attackOverlayAndNotify(bullet->sourceUnit, target, bullet->weaponType, bullet->direction1); // no damage, but still ask for retaliation
+				helper::attackOverlayAndNotify(bullet->sourceUnit, target, bullet->weaponId, bullet->direction1); // no damage, but still ask for retaliation
 			}
 		}
 		else
 		{
 			target->damageWith(
-				bullet->weaponType,
+				bullet->weaponId,
 				base_damage,
 				bullet->sourceUnit,
 				bullet->srcPlayer,

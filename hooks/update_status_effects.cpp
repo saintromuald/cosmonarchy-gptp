@@ -160,7 +160,7 @@ namespace hooks
 		// Azazel - Sublime Shepherd ability
 		if (unit->id == UnitId::TerranAzazel)
 		{
-			if (scbw::get_generic_rust_value(unit, RustId::SublimeShepherd) == 1)
+			if (scbw::get_generic_rust_value(unit, RustId::ToggleSublimeShepherd) == 1)
 			{
 				scbw::UnitFinder(
 					unit->getX() - 96,

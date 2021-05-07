@@ -163,7 +163,7 @@ namespace hooks
 			{
 				// Madrigal Tempo Change weapon switch
 				if (weaponId == WeaponId::MadrigalFuriaMissiles
-					&& scbw::get_generic_rust_value(unit, RustId::TempoChange) == 1)
+					&& scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 1)
 				{
 					weaponId = WeaponId::MadrigalImperiosoMissiles;
 				}
@@ -507,7 +507,7 @@ namespace hooks
 		Sprite* bulletSprite;
 		Image* i;
 
-		if (bullet->weaponType == WeaponId::AlkajeliskParasiticSpores)
+		if (bullet->weaponId == WeaponId::AlkajeliskParasiticSpores)
 		{
 			if (bullet->attackTarget.unit == nullptr)
 			{
@@ -544,7 +544,7 @@ namespace hooks
 			helper::progressBulletMovement_func(bullet);
 		}
 		u8 time = bullet->time_remaining--;
-		if (bullet->weaponType == WeaponId::AlkajeliskParasiticSpores)
+		if (bullet->weaponId == WeaponId::AlkajeliskParasiticSpores)
 		{
 			if (bullet->time_remaining < 135 && bullet->attackTarget.unit == nullptr)
 			{ //135 is 255 - 5*24
@@ -554,8 +554,8 @@ namespace hooks
 		bool bEnd = false;
 
 		// Accelerate missiles over time
-		if (bullet->weaponType == WeaponId::EmpyreanPlasmaBarrage
-			|| bullet->weaponType == WeaponId::AntiMatterMissiles)
+		if (bullet->weaponId == WeaponId::EmpyreanPlasmaBarrage
+			|| bullet->weaponId == WeaponId::AntiMatterMissiles)
 		{
 			u8 time_current = 255 - time;
 			if (time_current == 8)
@@ -564,7 +564,7 @@ namespace hooks
 				bullet->flingyAcceleration *= 2;
 			}
 		}
-		if (bullet->weaponType == WeaponId::ArchitectDispersiveSalvo && bullet->sourceUnit && bullet->attackTarget.unit &&
+		if (bullet->weaponId == WeaponId::ArchitectDispersiveSalvo && bullet->sourceUnit && bullet->attackTarget.unit &&
 			bullet->attackTarget.unit->sprite && bullet->sourceUnit->sprite)
 		{
 			Unit* targ = bullet->attackTarget.unit;
@@ -636,7 +636,7 @@ namespace hooks
 		}
 
 		// Empyrean missile interception
-		else if (bullet->weaponType == WeaponId::EmpyreanPlasmaBarrage)
+		else if (bullet->weaponId == WeaponId::EmpyreanPlasmaBarrage)
 		{
 			u32 range = 128;
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
@@ -682,7 +682,7 @@ namespace hooks
 				bEnd = true;
 			}
 		}
-		else if (bullet->weaponType == WeaponId::StarSovereignInterventionMissiles)
+		else if (bullet->weaponId == WeaponId::StarSovereignInterventionMissiles)
 		{
 			u32 range = 128;
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
@@ -725,9 +725,9 @@ namespace hooks
 			}
 		}
 		// for missiles hitting targets on its way
-		else if (bullet->weaponType == WeaponId::KalkaliskViscousAcid
-			|| bullet->weaponType == WeaponId::PenumbraErebolShockCannon
-			|| bullet->weaponType == WeaponId::ClaymoreHarpoonRailgun)
+		else if (bullet->weaponId == WeaponId::KalkaliskViscousAcid
+			|| bullet->weaponId == WeaponId::PenumbraErebolShockCannon
+			|| bullet->weaponId == WeaponId::ClaymoreHarpoonRailgun)
 		{
 			u32 range = 128;
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
@@ -768,30 +768,30 @@ namespace hooks
 				{
 					return false;
 				}
-
 				return true;
 			}
 			);
 			if (collisionTarget != nullptr)
 			{
-				UnitExt* collisionTargetExt = globals.GetUnitExt(collisionTarget);
-				if (bullet->weaponType == WeaponId::PenumbraErebolShockCannon
-					|| bullet->weaponType == WeaponId::ClaymoreHarpoonRailgun)
+				if (bullet->weaponId == WeaponId::PenumbraErebolShockCannon
+					|| bullet->weaponId == WeaponId::ClaymoreHarpoonRailgun)
 				{
 					globals.add_bullet_multihit(bullet, collisionTarget);
 				}
-				else if (bullet->weaponType == WeaponId::KalkaliskViscousAcid)
+				else if (bullet->weaponId == WeaponId::KalkaliskViscousAcid)
 				{
 					globals.add_incremental_bullet_multihit(bullet, collisionTarget);
 				}
-				if (bullet->weaponType == WeaponId::PenumbraErebolShockCannon)
+				if (bullet->weaponId == WeaponId::PenumbraErebolShockCannon
+					|| bullet->weaponId == WeaponId::ClaymoreHarpoonRailgun)
 				{
-					// Penumbra behavior
+					// Penumbra and Claymore behavior
 					scbw::createAndInitThingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					helper::weaponBulletShot(collisionTarget, bullet, 2);
 				}
-				if (bullet->weaponType == WeaponId::ClaymoreHarpoonRailgun)
+				if (bullet->weaponId == WeaponId::ClaymoreHarpoonRailgun)
 				{
+					UnitExt* collisionTargetExt = globals.GetUnitExt(collisionTarget);
 					// Claymore - Kelvin Munitions - Slow targets
 					if (!collisionTargetExt->values[ValueKelvinMunitionsSlow])
 					{
@@ -861,7 +861,7 @@ namespace hooks
 		{
 			nextBounce = bullet->remainingBounces - 1;
 			//
-			if (bullet->weaponType == WeaponId::GladiusPlasmaFlurry)
+			if (bullet->weaponId == WeaponId::GladiusPlasmaFlurry)
 			{
 				nextBounce = 1;
 			}
@@ -878,7 +878,7 @@ namespace hooks
 			}
 			else
 			{
-				if (bullet->weaponType == WeaponId::GladiusPlasmaFlurry)
+				if (bullet->weaponId == WeaponId::GladiusPlasmaFlurry)
 				{
 					globals.remove_multihit_bullet(bullet);
 				}
@@ -995,7 +995,7 @@ namespace hooks
 		}
 
 		// Gladius Binding Plasma behavior
-		if (globals.bounce_bullet->weaponType == WeaponId::GladiusPlasmaFlurry)
+		if (globals.bounce_bullet->weaponId == WeaponId::GladiusPlasmaFlurry)
 		{
 			if (pIterator != nullptr && *bulletBounceMissileNext != nullptr
 				&& (*bulletBounceMissileNext)->sprite != nullptr

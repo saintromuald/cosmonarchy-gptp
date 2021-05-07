@@ -21,16 +21,9 @@ namespace hooks
 
 		switch (unitId)
 		{
-			case UnitId::ProtossExemplar:
-			{
-				if (scbw::get_generic_rust_value(unit, RustId::ExemplarSwitch))
-				{
-					bonusAmount += 6;
-				}
-			}
 			case UnitId::TerranMadrigal:
 			{
-				if (scbw::get_generic_rust_value(unit, RustId::TempoChange))
+				if (scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange))
 				{
 					bonusAmount += 4;
 				}
@@ -99,16 +92,9 @@ namespace hooks
 
 		switch (unit->id)
 		{
-			case UnitId::ProtossExemplar:
-			{
-				if (scbw::get_generic_rust_value(unit, RustId::ExemplarSwitch))
-				{
-					bonusAmount += 6 * 32;
-				}
-			}
 			case UnitId::TerranMadrigal:
 			{
-				if (scbw::get_generic_rust_value(unit, RustId::TempoChange))
+				if (scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange))
 				{
 					bonusAmount += 4 * 32;
 				}

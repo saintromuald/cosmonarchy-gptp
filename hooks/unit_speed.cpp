@@ -122,7 +122,7 @@ namespace hooks
 			case UnitId::TerranWyvern:
 			{
 				// Wyvern Reverse Thrust ability: reduce movespeed
-				if (scbw::get_generic_rust_value(unit, RustId::ReverseThrust) == 1)
+				if (scbw::get_generic_rust_value(unit, RustId::ToggleReverseThrust) == 1)
 				{
 					speed *= 0.5;
 				}
@@ -198,14 +198,6 @@ namespace hooks
 				const u32 maxHealth = units_dat::MaxShieldPoints[unit->id];
 				const f64 multiplier = MathUtils::map(health, maxHealth, maxHealth - maxHealth, 1.0, 1.5, true);
 				speed *= multiplier;
-			} break;
-			case UnitId::ProtossExemplar:
-			{
-				// Khaydarin Eclipse ability: slow Exemplar by 75%
-				if (scbw::get_generic_rust_value(unit, RustId::ExemplarSwitch))
-				{
-					speed *= 0.25;
-				}
 			} break;
 			// Hardcode ideal movement speeds
 			case UnitId::TerranCyprian:

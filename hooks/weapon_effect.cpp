@@ -55,7 +55,7 @@ namespace hooks
 		{
 			return true;
 		}
-		if (bullet->weaponType == WeaponId::NathrokorPlasmidBreath)
+		if (bullet->weaponId == WeaponId::NathrokorPlasmidBreath)
 		{
 			Unit* nathrokor = bullet->sourceUnit;
 			u16 angle = scbw::getAngle(nathrokor->position.x, nathrokor->position.y,
@@ -150,7 +150,7 @@ namespace hooks
 			}
 
 			// Units can't splash themselves -- except psi storm
-			if (target == bullet->sourceUnit && bullet->weaponType != WeaponId::PsiStorm) continue;
+			if (target == bullet->sourceUnit && bullet->weaponId != WeaponId::PsiStorm) continue;
 
 			// Don't hit allied units -- normally just checks target->playerId == bullet->srcPlayer (also checks if type is 'splash enemy' or 'nuclear missile')
 			// if(scbw::isUnitEnemy(bullet->srcPlayer, target) == false && target != bullet->attackTarget.unit) continue;
@@ -166,10 +166,10 @@ namespace hooks
 			}
 
 			// Can the unit be targeted?
-			if (!scbw::canWeaponTargetUnit(bullet->weaponType, target, target)) continue;
+			if (!scbw::canWeaponTargetUnit(bullet->weaponId, target, target)) continue;
 
 			// We found units in a square around the target, but is the target within the splash radius?
-			s16 outer = weapons_dat::OuterSplashRadius[bullet->weaponType];
+			s16 outer = weapons_dat::OuterSplashRadius[bullet->weaponId];
 
 			// Probing Incisors - Gorgoleth passive
 			if (isChargedGorgolethBullet(bullet, weaponId))
@@ -198,14 +198,14 @@ namespace hooks
 			if (!helper::isUnitDistanceWithin(target, bullet, outer)) continue;
 
 			// Don't storm a unit that's already being stormed
-			if (bullet->weaponType == WeaponId::PsiStorm)
+			if (bullet->weaponId == WeaponId::PsiStorm)
 			{
 				if (target->isUnderStorm) continue;
 				target->isUnderStorm = 1;
 			}
 
 			// Inner radius 
-			s16 inner = weapons_dat::InnerSplashRadius[bullet->weaponType];
+			s16 inner = weapons_dat::InnerSplashRadius[bullet->weaponId];
 
 			// Probing Incisors - Gorgoleth passive
 			if (isChargedGorgolethBullet(bullet, weaponId))
@@ -235,7 +235,7 @@ namespace hooks
 			if (target->status & UnitStatus::Burrowed) continue;
 
 			// Medium radius
-			s16 medium = weapons_dat::MediumSplashRadius[bullet->weaponType];
+			s16 medium = weapons_dat::MediumSplashRadius[bullet->weaponId];
 
 			// Probing Incisors - Gorgoleth passive
 			if (isChargedGorgolethBullet(bullet, weaponId))
@@ -316,10 +316,10 @@ namespace hooks
 			}
 
 			// Can the unit be targetted?
-			if (!scbw::canWeaponTargetUnit(bullet->weaponType, target, target)) continue;
+			if (!scbw::canWeaponTargetUnit(bullet->weaponId, target, target)) continue;
 
 			// We found units in a square around the target, but is the target within the splash radius?
-			if (!helper::isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[bullet->weaponType]))
+			if (!helper::isUnitDistanceWithin(target, bullet, weapons_dat::InnerSplashRadius[bullet->weaponId]))
 			{
 				continue;
 			}
@@ -506,7 +506,7 @@ namespace hooks
 			s32 listCount;
 			Unit* target = unitsInSplash.getUnit(i);
 
-			weaponIdLoop = bullet->weaponType;
+			weaponIdLoop = bullet->weaponId;
 			if (target != bullet->sourceUnit && (target->playerId != bullet->srcPlayer || target == bullet->attackTarget.unit))
 			{
 				if (scbw::canWeaponTargetUnit(weaponIdLoop, target, target))
