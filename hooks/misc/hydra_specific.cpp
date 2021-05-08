@@ -761,7 +761,6 @@ LABEL_18:
 					}
 					else
 					{
-						// TODO: is placing needed?
 						scbw::placeClarionLinks(unit);
 						scbw::clearClarionLinks(unit);
 					}

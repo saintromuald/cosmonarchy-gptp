@@ -1410,21 +1410,20 @@ namespace scbw
 		auto& vec = unitExt->unitVectors[UnitVectorPhaseLink];
 		for (Unit* vecUnit : vec)
 		{
-			auto& clarionVec = unitExt->unitVectors[UnitVectorPhaseLinkClarions];
-			auto it = std::find(clarionVec.begin(), clarionVec.end(), unit);
-			if (it != clarionVec.end())
+			auto& clarions = unitExt->unitVectors[UnitVectorPhaseLinkClarions];
+			auto it = std::find(clarions.begin(), clarions.end(), unit);
+			if (it != clarions.end())
 			{
-				clarionVec.erase(it);
+				clarions.erase(it);
 			}
 		}
 		vec.clear();
+		unitExt->unitVectors[UnitVectorPhaseLinkClarions].clear();
 	}
 
 	void placeClarionLinks(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
-
-		bool isClarion = unit->id == UnitId::ProtossClarion;
 		auto& link = unitExt->unitVectors[UnitVectorPhaseLink];
 
 		clearClarionLinks(unit);
@@ -1459,10 +1458,19 @@ namespace scbw
 			return true;
 		}).forEach([&](Unit* target)
 		{
-			link.push_back(target);
 			target->sprite->createOverlay(ImageId::PhaseLinkSmall + scbw::getOverlayOffset(target->id), 0, 0, 0);
+
+			auto it = std::find(link.begin(), link.end(), target);
+			if (it == link.end()) {
+				link.push_back(target);
+			}
+
 			UnitExt* targetExt = globals.GetUnitExt(target);
-			targetExt->unitVectors[UnitVectorPhaseLinkClarions].push_back(unit);
+			auto& vec = targetExt->unitVectors[UnitVectorPhaseLinkClarions];
+			it = std::find(vec.begin(), vec.end(), unit);
+			if (it == vec.end()) {
+				vec.push_back(unit);
+			}
 		});
 	}
 
@@ -1506,6 +1514,10 @@ namespace scbw
 			{
 				return linkUnit->shields < 256;
 			}), links.end());
+			if (!links.size())
+			{
+				return;
+			}
 			s32 divided = damage / links.size();
 			auto it = std::find(links.begin(), links.end(), unit);
 			if (it != links.end())
@@ -1532,6 +1544,7 @@ namespace scbw
 			auto link = unitExt->unitVectors[UnitVectorPhaseLink];
 			links.insert(link.begin(), link.end());
 		}
+		/*
 		auto& clarions = unitExt->unitVectors[UnitVectorPhaseLinkClarions];
 		for (Unit* clarion : clarions)
 		{
@@ -1543,6 +1556,7 @@ namespace scbw
 			auto link = clarionExt->unitVectors[UnitVectorPhaseLink];
 			links.insert(link.begin(), link.end());
 		}
+		*/
 		return std::vector<Unit*>(links.begin(), links.end());
 	}
 }
