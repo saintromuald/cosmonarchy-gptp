@@ -548,7 +548,6 @@
     <ClInclude Include="AIScripter\AIParser.h" />
     <ClInclude Include="config.h" />
     <ClInclude Include="config_utility.h" />
-    <ClInclude Include="globals_serialization.h" />
     <ClInclude Include="hooks\audiovisuals\player_color.h" />
     <ClInclude Include="hooks\build_time.h" />
     <ClInclude Include="globals.h" />
