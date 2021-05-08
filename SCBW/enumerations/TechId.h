@@ -55,6 +55,9 @@ enum Enum {
 
 	// HYDRA \\
 
+//Shared
+	CancelNewAbiliity		= 26, // For Mind Control, Land Grab
+
 //Terran
 	LobotomyMine			=  1, // Eidolon lay trap ability
 	ReverseThrust			=  2, // unused
@@ -71,7 +74,6 @@ enum Enum {
 //Protoss
 	PlanetCracker			= 29, // Star Sovereign damage ability
 	PhaseLink				= 33, // unused
-	RescindMindControl		= 26, // Mind Tyrant option
 	GodsMadeFlesh			= 42, // Demiurge immortality ability
 
 //Zerg

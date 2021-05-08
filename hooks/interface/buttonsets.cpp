@@ -1376,11 +1376,12 @@ namespace hooks
 								}
 							}
 
-							if (current_button->actVar == TechId::RescindMindControl)
+							// Cancel new abilities!
+							if (current_button->actVar == TechId::CancelNewAbiliity)
 							{
+								bool canCancel = false;
 								if ((*activePortraitUnit)->id == UnitId::ProtossMindTyrant)
 								{
-									bool canCancel = false;
 									for (s32 i = 0; i < 12; i++)
 									{
 										Unit* selU = clientSelectionGroup->unit[i];
@@ -1392,17 +1393,25 @@ namespace hooks
 											}
 										}
 									}
-									if (!canCancel)
+								}
+								else if ((*activePortraitUnit)->id == UnitId::TerranWyvern)
+								{
+									UnitExt* activeExt = globals.GetUnitExt(*activePortraitUnit);
+									if (!activeExt->values[ValueWyvernFreeFire])
 									{
-										current_button_state = BUTTON_STATE::Invisible;
+										canCancel = true;
 									}
+								}
+								if (!canCancel)
+								{
+									current_button_state = BUTTON_STATE::Invisible;
 								}
 							}
 						}
 						if (current_button_state == BUTTON_STATE::Invisible)
 						{
 							buttons_count++;
-							current_button++;	//select next button (advance by sizeof(BUTTON))
+							current_button++; // select next button (advance by sizeof(BUTTON))
 						}
 					}
 				}

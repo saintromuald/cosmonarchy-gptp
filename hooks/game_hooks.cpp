@@ -827,10 +827,10 @@ namespace hooks
 			case UnitId::ProtossMindTyrant:
 			{
 				// Rescind Mind Control
-				if (scbw::get_generic_rust_value(unit, RustId::CastRescindMindControl) == 1)
+				if (scbw::get_generic_rust_value(unit, RustId::CancelMindControl) == 1)
 				{
 					scbw::sendGPTP_aise_cmd(unit, nullptr, GptpId::FreeMindControlled, 0, 0, 0);
-					scbw::set_generic_rust_value(unit, RustId::CastRescindMindControl, 0);
+					scbw::set_generic_rust_value(unit, RustId::CancelMindControl, 0);
 				}
 			} break;
 			case UnitId::ProtossDemiurge:
@@ -920,6 +920,15 @@ namespace hooks
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::TertiaryEyes] * 256);
 				}
 			} break;
+			case UnitId::TerranWyvern:
+			{
+				if (scbw::get_generic_rust_value(unit, RustId::CancelLandGrab))
+				{
+					scbw::set_generic_rust_value(unit, RustId::CancelLandGrab, 0);
+					unitExt->values[ValueWyvernReverseLandGrabOn] = 0;
+					unitExt->values[ValueWyvernFreeFire] = 1;
+				}
+			}
 			default:
 			{
 			}

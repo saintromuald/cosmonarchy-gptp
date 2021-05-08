@@ -141,15 +141,13 @@ namespace OverlayOffset
 
 enum ExtValueId
 {
-	ValueExemplarSwitch,			// should be removed
-	ValueReverseThrust,				// should be removed
 	ValueArmorReduce,				// unused
 	ValueStarcallerSwitch,			// unused
 	ValueStarcallerCracking,		// unused
 	ValueWarpingIn,					// unused
 	ValueMalediction,				// unused
 	ValueWyvernSlow,				// unused
-	ValueWyvernReverseLandgrabOn,	// unused
+	ValueWyvernReverseLandGrabOn,
 	ValueLandGrabStart,				// unused
 	ValueUpgradeBoost,				// unused
 	ValueRemainingBuildTimeCopy,	// unused
@@ -157,8 +155,8 @@ enum ExtValueId
 	ValueAmitosis,
 	ValueSomaticImplants,
 	ValueSublimeShepherd,
-	ValueWyvernReverseLandgrabX,
-	ValueWyvernReverseLandgrabY,
+	ValueWyvernReverseLandGrabX,
+	ValueWyvernReverseLandGrabY,
 	ValueObservanceRend,
 	ValueSpineX,
 	ValueSpineY,
@@ -236,6 +234,7 @@ enum ExtValueId
 	ValueKelvinMunitionsSlow,
 	ValueLarvaType,
 	ValueRaceSupplyType,
+	ValueWyvernFreeFire,
 
 	ValueCount,
 };
@@ -283,6 +282,8 @@ enum ExtTimerId
 	TimerSwitchModeGimmick,
 	TimerCaptivatingClaws,
 	TimerAlaszilethRegenBoost,
+	TimerWyvernWeapon,
+	TimerWyvernLandGrab,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,
@@ -353,9 +354,10 @@ namespace RustId
 		CastGodsMadeFlesh,
 		ToggleTempoChange,
 		DirgeAttacker,
-		CastRescindMindControl,
+		CancelMindControl,
 		CastEnthrallingAssault,
 		CastTertiaryEyes,
+		CancelLandGrab,
 	};
 }
 #include "SCBW\enumerations\TechId.h"

@@ -507,7 +507,6 @@ namespace hooks
 		// Aise Value
 		addStatus(statuses, "Armor Reduction", unitExt->values[ValueArmorReduce], 0);
 		addStatus(statuses, "Cabeirus Feeders", ceil((f64)unitExt->values[ValueMadcapStacks] / MadcapPassiveDecayTime), 10);
-		addStatus(statuses, "Reverse Thrust", unitExt->values[ValueReverseThrust], 1);
 		addStatus(statuses, "Sublime Shepherd", unitExt->values[ValueSublimeShepherd], 0);
 		addStatus(statuses, "Lazarus Agent", unitExt->values[ValueLazarusAgent], 0);
 		addStatus(statuses, "Expanded Storage", unitExt->values[ValueTreasuryStacks], 0); // currently only works for Ovileth and its morphs

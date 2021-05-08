@@ -150,76 +150,71 @@ namespace hooks
 		}
 
 		// Wyvern Reverse Thrust - fire while moving
-		if (unit->id == UnitId::TerranWyvern && unit->groundWeaponCooldown == 0 /*&& unitExt->values[ValueReverseThrust]*/)
+		if (unit->id == UnitId::TerranWyvern && unit->groundWeaponCooldown == 0)
 		{
-			bool can_free_fire = true;
-			/*if (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::Attack2)
+			unitExt->values[ValueWyvernFreeFire] = 1;
+		}
+
+		if (unitExt->values[ValueWyvernFreeFire])
+		{
+			auto range = weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon];
+			s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernJacksonCannon];
+			auto x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
+			auto y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1);
+
+			unit->groundWeaponCooldown = weapons_dat::Cooldown[WeaponId::WyvernJacksonCannon];
+			bool seek_unit = true;
+			if (unitExt->values[ValueWyvernReverseLandGrabOn] == 1)
 			{
-				if (unit->orderTarget.unit != nullptr)
+				auto targ_x = unitExt->values[ValueWyvernReverseLandGrabX];
+				auto targ_y = unitExt->values[ValueWyvernReverseLandGrabY];
+				auto direction = scbw::getAngle(x, y, targ_x, targ_y);
+				if (scbw::getDistanceFast(unit->position.x, unit->position.y, targ_x, targ_y) <= range
+					&& unitExt->timers[TimerWyvernWeapon] == 0 && unitExt->timers[TimerWyvernLandGrab] == 0)
 				{
-					can_free_fire = false;
+					seek_unit = false;
+					scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, nullptr, targ_x, targ_y);
+					unitExt->timers[TimerWyvernLandGrab] = 30;
+					unitExt->values[ValueWyvernFreeFire] = 0;
 				}
-			}*/
+				else
+				{
+					unitExt->values[ValueWyvernReverseLandGrabOn] = 0;
+				}
+			}
 
-			if (can_free_fire)
+			if (seek_unit)
 			{
-				auto range = weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon];
-				s32 forwardOffset = weapons_dat::ForwardOffset[WeaponId::WyvernJacksonCannon];
-				auto x = unit->getX() + scbw::getPolarX(forwardOffset, unit->currentDirection1);
-				auto y = unit->getY() + scbw::getPolarY(forwardOffset, unit->currentDirection1);
-
-				unit->groundWeaponCooldown = weapons_dat::Cooldown[WeaponId::WyvernJacksonCannon];
-				bool seek_unit = true;
-				scbw::printf("CanFreeFire %d",unitExt->values[ValueWyvernReverseLandgrabOn]);
-				if (unitExt->values[ValueWyvernReverseLandgrabOn] == 1)
+				auto a = scbw::UnitFinder::getNearestTarget(
+					unit->getX() - range, unit->getY() - range,
+					unit->getX() + range, unit->getY() + range,
+					unit, [&](Unit* target)
 				{
-					auto targ_x = unitExt->values[ValueWyvernReverseLandgrabX];
-					auto targ_y = unitExt->values[ValueWyvernReverseLandgrabY];
-					auto direction = scbw::getAngle(x, y, targ_x, targ_y);
-					if (scbw::getDistanceFast(unit->position.x, unit->position.y, targ_x, targ_y) <= range)
+					if (target == unit)
 					{
-						seek_unit = false;
-						scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, nullptr, targ_x, targ_y);
+						return false;
 					}
-					else
+					if (target->status & UnitStatus::InAir)
 					{
-						unitExt->values[ValueWyvernReverseLandgrabOn] = 0;
+						return false;
 					}
-				}
-
-				if (seek_unit)
+					if (scbw::isAlliedTo(unit->playerId, target->playerId))
+					{
+						return false;
+					}
+					if (scbw::getDistanceFast(target->sprite->position.x, target->sprite->position.y,
+						unit->sprite->position.x, unit->sprite->position.y) > weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon])
+					{
+						return false;
+					}
+					return true;
+				});
+				if (a != nullptr && unitExt->timers[TimerWyvernWeapon] == 0 && unitExt->timers[TimerWyvernLandGrab] == 0)
 				{
-					auto a = scbw::UnitFinder::getNearestTarget(
-						unit->getX() - range, unit->getY() - range,
-						unit->getX() + range, unit->getY() + range,
-						unit, [&](Unit* target)
-					{
-						if (target == unit)
-						{
-							return false;
-						}
-						if (target->status & UnitStatus::InAir)
-						{
-							return false;
-						}
-						if (scbw::isAlliedTo(unit->playerId, target->playerId))
-						{
-							return false;
-						}
-						if (scbw::getDistanceFast(target->sprite->position.x, target->sprite->position.y,
-							unit->sprite->position.x, unit->sprite->position.y) > weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon])
-						{
-							return false;
-						}
-						return true;
-					});
-					if (a != nullptr)
-					{
-						auto direction = scbw::getAngle(x, y, a->getX(), a->getY());
-						scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, a, a->position);
-					}
+					auto direction = scbw::getAngle(x, y, a->getX(), a->getY());
+					scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, a, a->position);
+					unitExt->timers[TimerWyvernWeapon] = 30;
 				}
-				unit->updateSpeed();
 			}
 		}
 

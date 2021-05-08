@@ -192,7 +192,7 @@ namespace hooks
 			// Wyvern Land Grab ability
 			if (unit->id == UnitId::TerranWyvern
 				&& unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell
-				&& unitExt->values[ValueWyvernReverseLandgrabOn] == 1)
+				&& unitExt->values[ValueWyvernReverseLandGrabOn] == 1)
 			{
 				good = false;
 			}

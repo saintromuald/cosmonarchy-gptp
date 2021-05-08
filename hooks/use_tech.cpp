@@ -162,16 +162,30 @@ namespace hooks
 				buf[4] = RustId::CastTertiaryEyes;
 				scbw::SendCommand(buf, 0xc);
 			} break;
-			case TechId::RescindMindControl:
+			case TechId::CancelNewAbiliity:
 			{
-				s32 action = 1; // on
-				u8 buf[0xc] = { 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0 }; // 12
-				buf[0] = 0x99; // new general command
-				buf[1] = NewGameCommand::GenericSwitchAbility;
-				buf[2] = action;
-				buf[3] = *ACTIVE_PLAYER_ID;
-				buf[4] = RustId::CastRescindMindControl;
-				scbw::SendCommand(buf, 0xc);
+				if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::ProtossMindTyrant)
+				{
+					s32 action = 1; // on
+					u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0}; // 12
+					buf[0] = 0x99; // new general command
+					buf[1] = NewGameCommand::GenericSwitchAbility;
+					buf[2] = action;
+					buf[3] = *ACTIVE_PLAYER_ID;
+					buf[4] = RustId::CancelMindControl;
+					scbw::SendCommand(buf, 0xc);
+				}
+				else if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranWyvern)
+				{
+					s32 action = 1; // on
+					u8 buf[0xc] = {0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0, 0x0,0x0,0x0,0x0}; // 12
+					buf[0] = 0x99; // new general command
+					buf[1] = NewGameCommand::GenericSwitchAbility;
+					buf[2] = action;
+					buf[3] = *ACTIVE_PLAYER_ID;
+					buf[4] = RustId::CancelLandGrab;
+					scbw::SendCommand(buf, 0xc);
+				}
 			} break;
 			case TechId::Observance:
 			{
