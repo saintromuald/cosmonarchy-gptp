@@ -1242,10 +1242,7 @@ namespace scbw
 		{
 			FinishUnit_Pre(unit);
 			helper::updateUnitStrength(unit);
-			if (creator != nullptr && creator->pAI != nullptr)
-			{
-				InheritAI2(unit, creator);
-			}
+			InheritAI2(unit, creator);
 		}
 		return unit;
 	}

@@ -7,20 +7,17 @@
 #include "logger.h"
 namespace hooks
 {
-	void AI_TrainingUnit(Unit* result, Unit* parent)
-	{ // 004A2830
+	void AI_TrainingUnit(Unit* result, Unit* parent) // 004A2830
+	{
 		bool isSuicideUnit = result->id == UnitId::ZergBroodling || result->id == UnitId::ZergBroodlisk || result->id == UnitId::ProtossSimulacrum;
 		if (result == nullptr) return;
 		if (parent == nullptr)
 		{
-			if (isSuicideUnit)
-			{
-				parent = result;
-			}
-			else
+			if (!isSuicideUnit)
 			{
 				return;
 			}
+			parent = result;
 		}
 		if (result == parent && !isSuicideUnit && !(units_dat::BaseProperty[result->id] & UnitProperty::Worker)) return;
 		if (playerTable[parent->playerId].type == PlayerType::Computer)
