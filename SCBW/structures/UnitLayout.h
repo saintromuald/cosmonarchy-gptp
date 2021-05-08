@@ -611,7 +611,7 @@ struct UnitLayout
 		Target rally;
 		Link<Unit> psi_link;
 	};
-	/*0x100*/ void* path;							// use BW::Path* in BWAPI
+	/*0x100*/ void*		path;						// use BW::Path* in BWAPI
 	/*0x104*/ u8        pathingCollisionInterval;	// unknown
 	/*0x105*/ u8        pathingFlags;				// 0x01 = uses pathing; 0x02 = ?; 0x04 = ?
 	/*0x106*/ u8        unused_0x106;
