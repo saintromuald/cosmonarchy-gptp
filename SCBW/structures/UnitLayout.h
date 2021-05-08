@@ -307,6 +307,7 @@ enum ExtUnitId
 	UnitWorshipDemiurge,
 	UnitAttachedTarget,
 	UnitAttachedAkistrokor,
+	UnitMindController,
 
 	UnitCount,
 };

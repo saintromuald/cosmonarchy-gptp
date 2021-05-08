@@ -365,7 +365,8 @@ namespace hooks
 		}
 		if (unit->id == UnitId::ZergLarva)
 		{
-			if (unit->connectedUnit->id == UnitId::ZergOcsalColony
+			UnitExt* unitExt = globals.GetUnitExt(unit);
+			if (unitExt->values[ValueLarvaType] = LarvaOcsal
 				&& scbw::isSharedLarvaMorph(morphUnitId))
 			{
 				if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1)
@@ -374,7 +375,8 @@ namespace hooks
 				}
 			}
 			else
-				if (unit->connectedUnit->id != UnitId::ZergOcsalColony
+				if ((unitExt->values[ValueLarvaType] == LarvaStandard
+					|| unitExt->values[ValueLarvaType] == LarvaSire)
 					&& !scbw::isSharedLarvaMorph(morphUnitId))
 				{
 					if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1)
@@ -481,7 +483,7 @@ namespace hooks
 				return source;
 			}
 		}
-		return UnitId::None;  //Default (no revert for larvae)
+		return UnitId::None;  // Default (no revert for larvae)
 	}
 
 	// Determines the vertical (Y) offset by which the @p unit will be shifted to

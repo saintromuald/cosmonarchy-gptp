@@ -8210,4 +8210,41 @@ namespace helper
 		}
 		return result;
 	}
+
+	// For moveToTarget
+	s32 isPointAtUnitBorder(s32 unused, Unit* other, Unit* self, s32 position_xy)
+	{
+		const u32 Func_isPointAtUnitBorder = 0x0042DA90;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH position_xy
+			PUSH self
+			MOV EDX, other
+			MOV ECX, unused
+			CALL Func_isPointAtUnitBorder
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	// Returns 1 if unfindable
+	s32 AI_PrepareMovingTo(Unit* unit, s32 x, s32 y)
+	{
+		const u32 Func_AI_PrepareMovingTo = 0x004E7420;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH y
+			PUSH x
+			PUSH unit
+			CALL Func_AI_PrepareMovingTo
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

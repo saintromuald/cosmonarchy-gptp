@@ -213,7 +213,8 @@ namespace hooks
 			}
 		}
 		return nullptr;
-	}*/
+	}
+	*/
 
 	void WeaponBulletHit(Bullet* bullet, Unit* target, u32 damageDivisor)
 	{
@@ -724,7 +725,9 @@ namespace hooks
 		}
 		else
 		{
+			UnitExt* targetExt = globals.GetUnitExt(target);
 			target->giveTo(attacker->playerId);
+			targetExt->units[UnitMindController] = attacker;
 		}
 	}
 

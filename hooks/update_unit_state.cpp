@@ -222,7 +222,10 @@ namespace hooks
 			}
 		}
 
-		// Accantor Plasma Shells have shields equal to the Accantor that launches them
+		// Clear Cleric healing field
+		unit->isBeingHealed = 0;
+
+		// Accantor Plasma Shells get shields equal to the Accantor that launches them
 		if (unit->id == UnitId::ProtossAccantor)
 		{
 			Unit* scarab = unit->carrier.inHangarChild;

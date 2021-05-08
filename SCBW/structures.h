@@ -24,9 +24,27 @@ const s32 SOUND_TYPE_COUNT = 1144;
 #include "structures/Image.h"
 #include "structures/Order.h"
 #include "structures/Layer.h"
-#include "structures/Player.h" //made into external file to have .cpp
+#include "structures/Player.h" // made into external file to have .cpp
 
 #pragma pack(1)
+
+struct unitPath
+{
+	s32		start;
+	s32		next;
+	s32		finish;
+	s32		timeStarted;
+	s32		unitIndex;
+	s8		isCalculating;
+	s8		field_19;
+	s8		field_1A;
+	s8		pathCount;
+	s8		numAreas;
+	s8		curAreas;
+	s8		numSegments;
+	s8		curSegments;
+	s32		steps[24];
+};
 
 struct CampaignMission {
 	char* missionName;
@@ -591,6 +609,7 @@ struct AiCaptain { //AiRegion
 	/*2C*/  Unit* mainMedic;
 	/*30*/  void* town;
 };
+
 C_ASSERT(sizeof(AiCaptain) == 52);
 //static_assert(sizeof(AiCaptain) == 52, "The size of the AiCaptain structure is invalid");
 
@@ -717,6 +736,7 @@ struct SpendingRequest {
 	u16 id;
 	void* val;
 };
+
 struct AI_Main {
 	u32 mineralCollection;
 	u32 gasCollection;

@@ -576,6 +576,14 @@ namespace hooks
 						}
 					}
 				} break;
+				case WeaponId::CharlatanFerventBlaster:
+				{
+					// Charlatan - Leading the Blind passive
+					if (!scbw::isAlliedTo(data.attacker->playerId, data.target->playerId))
+					{
+						scbw::applyNewHallucination(data.target, data.attacker->playerId, HallucinationTimer);
+					}
+				} break;
 				case WeaponId::Claws:
 				{
 					// Adrenal Glands - Zergling behavior
@@ -940,6 +948,13 @@ namespace hooks
 					auto newAngle = scbw::getAngle(data.attacker->getX(), data.attacker->getY(), data.target->getX(), data.target->getY());
 					helper::createBullet(WeaponId::CyclopsFragmentaryShells, data.attacker, data.target->getX(), data.target->getY(), data.attacker->playerId, newAngle);
 				} break;
+			}
+
+			if (attackerExt->units[UnitMindController] != nullptr)
+			{
+				Unit* mindController = attackerExt->units[UnitMindController];
+				mindController->addUnitEnergy(MindControlEnergyGain);
+				mindController->sprite->createUnderlay(ImageId::SmallExplosion_Unused);
 			}
 		}
 	}

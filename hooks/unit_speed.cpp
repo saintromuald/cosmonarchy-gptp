@@ -218,6 +218,10 @@ namespace hooks
 			{
 				speed *= 1.5;
 			} break;
+			case UnitId::TerranClaymore:
+			{
+				speed *= 0.9;
+			} break;
 		}
 
 		return speed;

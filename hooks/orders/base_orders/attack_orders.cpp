@@ -665,7 +665,7 @@ namespace hooks
 				bool bStopThere = false;
 				if (unit->mainOrderState == 0)
 				{ // 00478965
-					if (helper::moveToTarget(unit, target))
+					if (helper::moveToTarget(target, unit))
 					{
 						unit->mainOrderState = 1;
 					}

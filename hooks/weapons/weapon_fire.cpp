@@ -803,7 +803,7 @@ namespace hooks
 				{
 					// Claymore - Kelvin Munitions - pierce targets
 					scbw::createAndInitThingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
-					hooks::WeaponBulletHit(bullet, collisionTarget, 3);
+					hooks::WeaponBulletHit(bullet, collisionTarget, 2);
 
 					// Claymore - Kelvin Munitions - Slow targets
 					UnitExt* collisionTargetExt = globals.GetUnitExt(collisionTarget);

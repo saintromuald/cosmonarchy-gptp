@@ -492,18 +492,7 @@ void Globals::frameHook()
 						UnitExt* unitExt = globals.GetUnitExt(unit);
 						if (unitExt->timers[TimerHallucinating] < effects[i].currentTime)
 						{
-							unitExt->values[ValueHallucinatingSourcePlayer] = effects[i].player;
-							unitExt->timers[TimerHallucinating] = effects[i].currentTime;
-
-							scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit);
-							if (unit->subunit != nullptr)
-							{
-								unit->subunit->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
-							}
-							else
-							{
-								unit->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
-							}
+							scbw::applyNewHallucination(unit, effects[i].player, effects[i].currentTime);
 						}
 					});
 					break;

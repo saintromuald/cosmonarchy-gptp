@@ -690,8 +690,8 @@ namespace SpriteId
 		ProtossLegionnaire = 680,
 		TerranScrapyard = 681,
 		TerranBlackjack = 682,
-		TerranCohort = 683,
-		TerranAspirant = 684,
+		SharedCohort = 683,
+		SharedAspirant = 684,
 		AspirantRemnants = 685,
 		Criticality = 686,
 		ZergAkistrokor = 687,
@@ -707,6 +707,10 @@ namespace SpriteId
 		IrradiateNew_Small = 697,
 		IrradiateNew_Medium = 698,
 		IrradiateNew_Large = 699,
+		ProtossDemiurge = 700,
+		TerranSiren = 701,
+		SharedCharlatan = 702,
+		CanisterRifleImpactBlue = 703,
 
 		// CORPSE \\
 
