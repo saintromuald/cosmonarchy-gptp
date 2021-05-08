@@ -29,6 +29,7 @@ namespace Flags
 		Completed = 1 << 18,
 		NoTrap = 1 << 19,
 		NoHallucination = 1 << 20,
+		Combatant = 1 << 21,
 	};
 }
 
