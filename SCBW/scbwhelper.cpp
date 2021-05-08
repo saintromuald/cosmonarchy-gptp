@@ -3290,6 +3290,7 @@ namespace helper
 		}
 		return (char)result;
 	}
+
 	void setUnitPathing(Unit* unit, u8 unkPathRelated)
 	{
 		const u32 Func_SetUnitPathing = 0x00401360;
