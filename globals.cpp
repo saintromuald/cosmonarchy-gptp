@@ -471,7 +471,7 @@ void Globals::frameHook()
 						effects[i].position.y + effects[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
-						unit->damageWithIgnoreFlatArmor(WeaponId::SalamanderIncendiaryPayload, weapons_dat::DamageAmount[WeaponId::SalamanderIncendiaryPayload] * damageMultiplier);
+						unit->damageWithCustom(20 * damageMultiplier, DamageType::Concussive, nullptr, effects[i].player, 0, 1, true);
 					});
 					break;
 				}
@@ -484,7 +484,7 @@ void Globals::frameHook()
 						effects[i].position.y + effects[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
-						unit->damageWithIgnoreFlatArmor(WeaponId::StarSovereignGriefOfAllGods, weapons_dat::DamageAmount[WeaponId::StarSovereignGriefOfAllGods] * damageMultiplier);
+						unit->damageWithCustom(2500 * damageMultiplier, DamageType::Chronal, nullptr, effects[i].player, 0, 1, true);
 					});
 					break;
 				}
@@ -497,7 +497,7 @@ void Globals::frameHook()
 						effects[i].position.y + effects[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
-						unit->damageWithIgnoreFlatArmor(WeaponId::AspirantCriticality, weapons_dat::DamageAmount[WeaponId::AspirantCriticality] * damageMultiplier);
+						unit->damageWithCustom(30 * damageMultiplier, DamageType::Explosive, nullptr, effects[i].player, 0, 1, true);
 					});
 					break;
 				}
@@ -511,7 +511,7 @@ void Globals::frameHook()
 					).forEachInMatch(unitRangeCount(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
-						unit->damageWithIgnoreFlatArmor(WeaponId::KeskathalorCausticDischarge, weapons_dat::DamageAmount[WeaponId::KeskathalorCausticDischarge] * damageMultiplier);
+						unit->damageWithCustom(30 * damageMultiplier, DamageType::Normal, nullptr, effects[i].player, 0, 1, true);
 						unitExt->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
 					});
 					break;
@@ -526,7 +526,7 @@ void Globals::frameHook()
 					).forEachInMatch(unitRangeCount(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
-						unit->damageWithIgnoreFlatArmor(WeaponId::IonField, weapons_dat::DamageAmount[WeaponId::IonField] * damageMultiplier);
+						unit->damageWithCustom(100 * damageMultiplier, DamageType::Chronal, nullptr, effects[i].player, 0, 1, true);
 						unitExt->timers[TimerIonFieldSpeed] = 2 * 24 + 1;
 					});
 					break;
@@ -846,7 +846,7 @@ namespace scbw
 		if (unit->ensnareTimer != 0)
 		{
 			unit->ensnareTimer = 37;
-			//specific update following ensnare removal
+			// specific update following ensnare removal
 			unit->updateSpeed();
 		}
 

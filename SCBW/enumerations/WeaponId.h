@@ -135,6 +135,7 @@ namespace WeaponId {
 		GaussRifle12_Unused = 0x80,
 		GaussRifle13_Unused = 0x81,
 		None = 0x82,
+		Custom = 0x83,							// Used internally, not actually a weapons.dat entry
 
 		// HYDRA \\
 

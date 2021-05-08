@@ -508,29 +508,29 @@ void Unit::damageWith(u8 weaponId, s32 damage, Unit* attacker, u8 attackingPlaye
 		POPAD
 	}
 }
-void Unit::damageWithIgnoreFlatArmor(u8 weaponId, s32 damage, Unit* attacker, u8 attackingPlayer, s8 direction, u8 damageDivisor)
+
+void Unit::damageWithCustom(
+	s32 damage,
+	u8 damageType,
+	Unit* attacker,
+	u8 attackingPlayerId,
+	s8 direction,
+	u8 damageDivisor,
+	bool ignoreFlatArmor
+)
 {
-	if (damage < 0)
-	{
-		damage = weapons_dat::DamageAmount[weaponId] * 256;
-	}
+	assert(this);
 
-	hooks::WeaponDamageData data = {
-			damage,
-			damage,
-			0,
-			weapons_dat::DamageType[weaponId],
-			damageDivisor,
-			weaponId,
-			direction,
-			this,
-			attacker,
-			attackingPlayer,
-			false,
-			true
-	};
-
-	hooks::weaponDamage_root(data);
+	hooks::weaponDamageCustom(
+		damage,
+		this,
+		damageType,
+		attacker,
+		attackingPlayerId,
+		direction,
+		damageDivisor,
+		ignoreFlatArmor
+	);
 }
 
 void Unit::inflictDamage(s32 dmg, Unit* attacker, s32 attackingPlayer, bool notify, bool shield_overlay, s32 direction,

@@ -190,14 +190,14 @@ struct Unit : public UnitLayout
 		u8 damageDivisor = 1      ///< Damage divisor (for splash damage / glave wurm calculations)
 	);
 
-	/// Deals damage to this unit, using a specific weapons.dat ID. Ignores flat armor
-	void damageWithIgnoreFlatArmor(
-		u8 weaponId,              ///< weapons.dat ID to use.
-		s32 damage = -1,			 ///< Amount of damage dealt to this unit. -1 = inherit from weaponId
-		Unit* attacker = nullptr,   ///< Attacking unit (for increasing kill count)
-		u8 attackingPlayer = -1,  ///< Attacking player (for increasing kill score)
-		s8 direction = 0,          ///< Attacked direction (for shield flicker overlays)
-		u8 damageDivisor = 1      ///< Damage divisor (for splash damage / glave wurm calculations)
+	void Unit::damageWithCustom(
+		s32 damage,
+		u8 damageType,
+		Unit* attacker,
+		u8 attackingPlayerId,
+		s8 direction,
+		u8 damageDivisor,
+		bool ignoreFlatArmor
 	);
 
 	/// Deals damage directly to unit HP, killing it if possible.

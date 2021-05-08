@@ -11,7 +11,18 @@ namespace hooks {
 		Unit* attacker,
 		u8 attackingPlayerId,
 		s8 direction,
-		u8 dmgDivisor
+		u8 damageDivisor
+	);
+
+	void weaponDamageCustom(
+		s32 damage,
+		Unit* target,
+		u8 damageType,
+		Unit* attacker,
+		u8 attackingPlayerId,
+		s8 direction,
+		u8 damageDivisor,
+		bool ignoreFlatArmor
 	);
 
 	struct WeaponDamageData {

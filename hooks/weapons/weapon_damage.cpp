@@ -103,7 +103,8 @@ namespace hooks
 		u8 damageDivisor
 	)
 	{
-		WeaponDamageData data = {
+		WeaponDamageData data =
+		{
 			damage,
 			damage,
 			0,
@@ -116,6 +117,35 @@ namespace hooks
 			attackingPlayerId,
 			false,
 			false
+		};
+		weaponDamage_root(data);
+	}
+
+	void weaponDamageCustom(
+		s32 damage,
+		Unit* target,
+		u8 damageType,
+		Unit* attacker,
+		u8 attackingPlayerId,
+		s8 direction,
+		u8 damageDivisor,
+		bool ignoreFlatArmor
+	)
+	{
+		WeaponDamageData data =
+		{
+			damage,
+			damage,
+			0,
+			damageType,
+			damageDivisor,
+			WeaponId::Custom,
+			direction,
+			target,
+			attacker,
+			attackingPlayerId,
+			false,
+			ignoreFlatArmor
 		};
 		weaponDamage_root(data);
 	}
