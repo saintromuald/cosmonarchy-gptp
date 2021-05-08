@@ -581,7 +581,7 @@ namespace hooks
 					// Charlatan - Leading the Blind passive
 					if (!scbw::isAlliedTo(data.attacker->playerId, data.target->playerId))
 					{
-						scbw::applyNewHallucination(data.target, data.attacker->playerId, HallucinationTimer);
+						scbw::applyNewHallucination(data.target, data.attacker->playerId, CharlatanHallucinationTimer);
 					}
 				} break;
 				case WeaponId::Claws:

@@ -1280,7 +1280,10 @@ namespace scbw
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		Unit* queens[2] = {nullptr};
-		if (unit == nullptr) return queens; // <- prevents crash from incubators, but does not fix the issue
+		if (unit == nullptr)
+		{
+			return queens; // <- prevents crash from incubators, but does not fix the issue
+		}
 		queens[0] = unitExt->units[UnitBroodlingMother];
 		queens[1] = unitExt->units[UnitParasiteSource];
 		return queens;

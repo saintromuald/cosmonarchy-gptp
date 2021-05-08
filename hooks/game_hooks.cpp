@@ -558,12 +558,6 @@ namespace hooks
 						web->remove();
 					}
 				}
-				// Savant Entropy Gauntlets case
-				if (scbw::get_generic_rust_value(unit, RustId::DisruptionWebDamage))
-				{
-					unitExt->values[ValueDisruptionWebDamage] = 0;
-					unit->inflictDamage(techdata_dat::EnergyCost[TechId::DisruptionWeb] * 256, unit, unit->playerId, false, true);
-				}
 			} break;
 			case UnitId::TerranMadcap:
 			{
