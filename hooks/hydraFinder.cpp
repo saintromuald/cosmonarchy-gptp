@@ -199,7 +199,7 @@ scbw::UnitFinderCallbackMatchInterface unitRangeCount(Unit* center, u32 context,
 			return false;
 		}
 		if (context & Flags::Combatant
-			&& (unit->hasWeapon()|| units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster)
+			&& (unit->hasWeapon() || units_dat::BaseProperty[unit->id] & UnitProperty::Spellcaster)
 			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Worker))
 		{
 			return false;
