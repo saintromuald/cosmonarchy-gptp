@@ -406,7 +406,7 @@ namespace DamageType {
 		Independent,
 		Explosive,
 		Concussive,
-		Normal,
+		Impact,
 		IgnoreArmor,
 		Chronal,
 	};
