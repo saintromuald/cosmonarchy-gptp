@@ -288,14 +288,8 @@ namespace scbw
 	/// pre-placed units in UMS maps.
 	///
 	/// @return           The created unit or nullptr if the unit cannot be created.
-	Unit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y);
 	//function used for broodlings and similar stuff
 	Unit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, Unit* creator = nullptr);
-	//additional function calls
-	void displayLastNetErrForPlayer(u32 playerId);
-	void FinishUnit_Pre(Unit* unit);
-	void displayLastNetErrForPlayer(u32 playerId);
-	void InheritAI2(Unit* result, Unit* parent);
 	/// Calculates the images.dat overlay adjustment for the given unit.
 	/// This piece of code is used throughout StarCraft.exe for various status
 	/// effects, such as Ensnare, Plague, and Defensive Matrix.

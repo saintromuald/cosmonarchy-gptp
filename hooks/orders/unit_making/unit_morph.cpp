@@ -572,7 +572,7 @@ namespace hooks
 				{
 					return result;
 				}
-				scbw::displayLastNetErrForPlayer(unit->playerId);
+				helper::displayLastNetErrorForPlayer(unit->playerId);
 			}
 		}
 		return 0;
