@@ -1235,6 +1235,10 @@ namespace scbw
 		{
 			FinishUnit_Pre(unit);
 			helper::updateUnitStrength(unit);
+			if (!creator)
+			{
+				creator = unit;
+			}
 			InheritAI2(unit, creator);
 		}
 		return unit;
