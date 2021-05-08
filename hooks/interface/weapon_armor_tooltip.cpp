@@ -489,8 +489,6 @@ namespace hooks
 		//	unitExt->EggBoostTimer, TimerType::Aise)); // currently can't read tooltips from  eggs
 		//addStatus(statuses, "Endomorphic Accelerant", 0, -1,
 		//	unitExt->MineralSpecialRegenTimer, TimerType::Aise)); // nor mineral fields
-		addStatus(statuses, "Adrenaline Packs", -1, 1,
-			unitExt->timers[TimerAdrenaline], TimerType::Aise);
 		addStatus(statuses, "Adrenal Frenzy", -1, 1,
 			unitExt->timers[TimerNathrokor], TimerType::Aise);
 		addStatus(statuses, "Controlled Demolition", -1, 1,

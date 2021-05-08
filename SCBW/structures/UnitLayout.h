@@ -188,7 +188,6 @@ enum ExtValueId
 	ValueLazarusAgent,
 	ValueRepententChorus,
 	ValueStellarEnforcement,
-	ValueDisruptionWebDamage,
 	ValueCastLazarusAgent,
 	ValueLazarusNoHeal,
 	ValueAlkajeliskParasite,
@@ -243,7 +242,6 @@ enum ExtValueId
 
 enum ExtTimerId
 {
-	TimerAdrenaline,				  // unused
 	TimerKaiserRampage,
 	TimerMaledictionSlow,
 	TimerObservanceDebuff,
