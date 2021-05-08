@@ -1192,10 +1192,6 @@ namespace scbw
 		{
 			helper::updateUnitStatsFinishBuilding(unit);
 			helper::updateUnitStrength(unit);
-			if (!creator)
-			{
-				creator = unit;
-			}
 			helper::AI_TrainingUnit(unit, creator);
 		}
 		return unit;

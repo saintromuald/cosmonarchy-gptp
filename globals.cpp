@@ -436,7 +436,7 @@ void Globals::frameHook()
 		}
 		else
 		{
-			auto revived = scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y, agent.creator);
+			auto revived = scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y);
 			if (revived)
 			{
 				UnitExt* revivedExt = globals.GetUnitExt(revived);
