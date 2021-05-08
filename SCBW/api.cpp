@@ -1175,55 +1175,12 @@ namespace scbw
 
 	//-------- Utility functions --------//
 
-	const u32 Func_CreateUnitAtPos = 0x004CD360; //AKA createUnitXY()
-	Unit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y)
-	{
-
-		if (unitType >= UNIT_TYPE_COUNT)
-			return nullptr;
-
-		static Unit* unit;
-
-		__asm {
-			PUSHAD
-			MOV CX, unitType
-			MOV AX, playerId
-			PUSH y
-			PUSH x
-			CALL Func_CreateUnitAtPos
-			MOV unit, EAX
-			POPAD
-		}
-
-		return unit;
-	}
-
-	const u32 Func_Sub4A01F0 = 0x004A01F0;
-	void FinishUnit_Pre(Unit* unit)
-	{
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_Sub4A01F0
-			POPAD
-		}
-	}
-
-	const u32 Func_AI_TrainingUnit = 0x004A2830;
-	void InheritAI2(Unit* result, Unit* parent)
-	{
-		__asm {
-			PUSHAD
-			MOV ECX, parent
-			MOV EAX, result
-			CALL Func_AI_TrainingUnit
-			POPAD
-		}
-	}
-
 	Unit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, Unit* creator)
 	{
-		if (*unitCount >= 1700) return nullptr; // prevent crashes, move to create unit later
+		if (*unitCount >= 1700)
+		{
+			return nullptr; // prevent crashes, move to create unit later
+		}
 		Point16 pos = {x, y};
 		helper::fixTargetLocation(&pos, unitId);
 		Unit* unit = helper::createUnit(unitId, pos.x, pos.y, playerId);
@@ -1233,9 +1190,9 @@ namespace scbw
 		}
 		else
 		{
-			FinishUnit_Pre(unit);
+			helper::updateUnitStatsFinishBuilding(unit);
 			helper::updateUnitStrength(unit);
-			InheritAI2(unit, creator);
+			helper::AI_TrainingUnit(unit, creator);
 		}
 		return unit;
 	}

@@ -8248,4 +8248,25 @@ namespace helper
 		}
 		return result;
 	}
+
+	Unit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y)
+	{
+		const u32 Func_CreateUnitAtPos = 0x004CD360; // AKA createUnitXY()
+		if (unitType >= UNIT_TYPE_COUNT)
+		{
+			return nullptr;
+		}
+		static Unit* unit;
+		__asm {
+			PUSHAD
+			MOV CX, unitType
+			MOV AX, playerId
+			PUSH y
+			PUSH x
+			CALL Func_CreateUnitAtPos
+			MOV unit, EAX
+			POPAD
+		}
+		return unit;
+	}
 }
