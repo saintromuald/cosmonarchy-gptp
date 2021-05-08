@@ -359,8 +359,8 @@ namespace FlingyId
 		ProtossLegionnaire = 349,
 		TerranScrapyard = 350,
 		TerranBlackjack = 351,
-		TerranCohort = 352,
-		TerranAspirant = 353,
+		SharedCohort = 352,
+		SharedAspirant = 353,
 		AspirantCriticality = 354,
 		ZergAkistrokor = 355,
 		ZergKonvilisk = 356,
@@ -372,5 +372,9 @@ namespace FlingyId
 		IrradiateNew_Small = 362,
 		IrradiateNew_Medium = 363,
 		IrradiateNew_Large = 364,
+		ProtossDemiurge = 365,
+		TerranSiren = 366,
+		SharedCharlatan = 367,
+		CanisterRifleHitBlue = 368,
 	};
 }
