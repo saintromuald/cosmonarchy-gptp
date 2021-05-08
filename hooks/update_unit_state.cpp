@@ -7,6 +7,7 @@
 #include "hooks/hydra_unit_ai.h"
 #include "globals.h"
 #include "SCBW\UnitFinder.h"
+#include "hooks/weapons/weapon_cooldown.h"
 
 namespace hooks
 {
@@ -174,7 +175,7 @@ namespace hooks
 				{
 					seek_unit = false;
 					scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, nullptr, targ_x, targ_y);
-					unitExt->timers[TimerWyvernLandGrab] = 30;
+					unitExt->timers[TimerWyvernLandGrab] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::WyvernJacksonCannon);
 					unitExt->values[ValueWyvernFreeFire] = 0;
 				}
 				else
@@ -213,7 +214,7 @@ namespace hooks
 				{
 					auto direction = scbw::getAngle(x, y, a->getX(), a->getY());
 					scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, a, a->position);
-					unitExt->timers[TimerWyvernWeapon] = 30;
+					unitExt->timers[TimerWyvernWeapon] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::WyvernJacksonCannon);
 				}
 			}
 		}
