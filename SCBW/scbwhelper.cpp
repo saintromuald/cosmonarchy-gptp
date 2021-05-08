@@ -3267,7 +3267,7 @@ namespace helper
 		static s32 result;
 		__asm {
 			PUSHAD
-			//			MOV ECX, a1
+//			MOV ECX, a1
 			MOV EDX, in_out
 			CALL Func_initPlacementBoxPos
 			MOV result, EAX

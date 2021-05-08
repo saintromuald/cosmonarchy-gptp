@@ -47,8 +47,7 @@ void hydra_unit_ai(Unit* unit)
 		if (unit->hasEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256) && unitExt->timers[TimerAI_Lazarus] == 0)			
 		{
 			s32 count = 0;
-			hydraFinderLoop(nullptr, unit->position, 128, Flags::NoBuilding | Flags::Ally |
-				Flags::OnlyOrganic, {}, [&](Unit* u)
+			hydraFinderLoop(nullptr, unit->position, 128, Flags::NoBuilding | Flags::Ally, {}, [&](Unit* u)
 			{
 				UnitExt* uExt = globals.GetUnitExt(u);
 				if (uExt->values[ValueLazarusAgent] != 1)
