@@ -127,17 +127,18 @@ u32 Unit::getMaxHpInGame() const
 	assert(this);
 
 	u32 maxHp = units_dat::MaxHitPoints[this->id];
-	/*if (this->id == UnitId::firebat && scbw::getUpgradeLevel(playerId,UpgradeId::Heatshield)) {
-		maxHp += 15 * 256;
-	}*/
 	if (maxHp == 0)
 	{
 		maxHp = this->getCurrentHpInGame();
 		if (maxHp == 0)
+		{
 			maxHp = 1;
+		}
 	}
 	else
+	{
 		maxHp = maxHp >> 8;
+	}
 	return maxHp;
 }
 u32 Unit::getMaxHpRaw() const
@@ -161,7 +162,6 @@ u32 Unit::getMaxWeaponRange(u8 weaponId) const
 	assert(weaponId < WEAPON_TYPE_COUNT);
 
 	static u32 maxWeaponRange;
-
 	__asm {
 		PUSHAD
 		MOV BL, weaponId
@@ -170,7 +170,6 @@ u32 Unit::getMaxWeaponRange(u8 weaponId) const
 		MOV maxWeaponRange, EAX
 		POPAD
 	}
-
 	return maxWeaponRange;
 }
 
@@ -186,9 +185,13 @@ const char* Unit::getName(u16 unitId)
 	assert(unitId < UNIT_TYPE_COUNT);
 
 	if (units_dat::MapStringId[unitId])
+	{
 		return mapStringTbl->getString(units_dat::MapStringId[unitId]);
+	}
 	else
+	{
 		return statTxtTblNew->getString(unitId + 1);
+	}
 }
 
 RaceId::Enum Unit::getRace() const
