@@ -174,6 +174,12 @@ namespace hooks
 			}
 		}
 
+		// Hallucinations take double damage
+		if (data.target->status & UnitStatus::IsHallucination)
+		{
+			data.finalDamage *= 2;
+		}
+
 		// Minimum amount of damage that can be dealt
 		if (data.finalDamage < 128)
 		{
