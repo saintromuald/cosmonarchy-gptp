@@ -112,6 +112,7 @@ void shamanProc(Unit* shaman, u32 heal, Unit* target)
 #include "limits/sfx_extender.h"
 #include "hooks/weapons/weapon_spellhit.h"
 #include "globals.h"
+
 struct CorpseFinder
 {
 	static bool sortCompareXPos(Thingy* a, Thingy* b)

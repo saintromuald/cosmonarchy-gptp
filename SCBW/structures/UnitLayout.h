@@ -236,6 +236,7 @@ enum ExtValueId
 	ValueTurretParentLink,
 	ValueKelvinMunitionsSlow,
 	ValueLarvaType,
+	ValueRaceSupplyType,
 
 	ValueCount,
 };
