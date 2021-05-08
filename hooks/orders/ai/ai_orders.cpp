@@ -143,11 +143,10 @@ namespace hooks
 		}*/
 
 		// Hooked to rule out AI crashes - Pr0nogo
-	void AI_CreateNuke(Unit* silo, Unit* result)
-	{								// 0045B7A0
-// originally had 3 args, but last one was unused
-		Unit* nuke; // eax
-		Unit* nuke2; // esi
+	void AI_CreateNuke(Unit* silo, Unit* result)	// 0045B7A0
+	{												// originally had 3 args, but last one was unused
+		Unit* nuke;
+		Unit* nuke2;
 
 		if (silo->id == UnitId::TerranNuclearSilo && !*(s32*)&silo->building.silo.isReady)
 		{
@@ -168,7 +167,7 @@ namespace hooks
 
 	// Hooked to add region null check - Pr0nogo
 	void AI_TrainingBroodling(Unit* result, Unit* parent) // 0043E280
-	{ 
+	{
 		AiCaptain* region;
 		s16 regionType;
 		AiCaptain* playerRegion;

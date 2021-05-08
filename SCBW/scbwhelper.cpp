@@ -5426,13 +5426,13 @@ namespace helper
 		}
 	}
 
-	void AI_TrainingUnit(Unit* unit_creator, Unit* created_unit)
+	void AI_TrainingUnit(Unit* unit, Unit* creator)
 	{
 		const u32 Func_AI_TrainingUnit = 0x004A2830;
 		__asm {
 			PUSHAD
-			MOV EAX, created_unit
-			MOV ECX, unit_creator
+			MOV EAX, unit
+			MOV ECX, creator
 			CALL Func_AI_TrainingUnit
 			POPAD
 		}
