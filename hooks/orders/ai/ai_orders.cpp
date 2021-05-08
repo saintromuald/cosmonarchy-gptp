@@ -9,11 +9,14 @@ namespace hooks
 {
 	void AI_TrainingUnit(Unit* result, Unit* parent) // 004A2830
 	{
-		if (playerTable[parent->playerId].type != PlayerType::Computer)
+		if (result == nullptr)
 		{
 			return;
 		}
-		if (result == nullptr) return;
+		if (playerTable[result->playerId].type != PlayerType::Computer)
+		{
+			return;
+		}
 		if (parent == nullptr
 			|| result->id == UnitId::ZergBroodling
 			|| result->id == UnitId::ZergBroodlisk
