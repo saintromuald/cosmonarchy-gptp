@@ -1071,7 +1071,7 @@ namespace hooks
 		u8 sporeCount;
 		u32 overlayMultiplier;
 		u8 overlayOffset;
-		s32 overlay;
+		s32 overlay = 0;
 		s32 v6;
 		Unit* targetFinal;
 		u32 result_sub_1;
