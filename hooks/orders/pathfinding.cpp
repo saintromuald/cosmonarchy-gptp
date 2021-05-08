@@ -7,54 +7,75 @@ namespace hooks
     // Hooked to resolve contextual order issues - Pr0nogo
     s32 moveToTarget(Unit* target, Unit* unit) // 004EB720
     {
-        Unit* v2;
-        Sprite* v3;
-        s16 v4;
+        Unit* orderTargetUnit = unit->orderTarget.unit;
+        if (orderTargetUnit == nullptr
+            || target == nullptr
+            || unit == nullptr)
+        {
+            return 0;
+        }
+        Sprite* orderTargetSprite = orderTargetUnit->sprite;
+        s16 orderTargetX = unit->orderTarget.pt.x;
+        s16 orderTargetY = unit->orderTarget.pt.y;
         s32 result;
-        unitPath* v6;
-        s32 v7;
-        Sprite* v8;
-        s32 v9;
-        char v10;
-        Point16 v11;
-        Order* v12;
-        s32 v13;
 
-        v2 = unit->orderTarget.unit;
-        if (target == v2
-            && ((v3 = v2->sprite, v4 = unit->orderTarget.pt.x, v4 == v3->position.x) && (v4 = unit->orderTarget.pt.y, v4 == v3->position.y)
-                || helper::isPointAtUnitBorder(v4, v2, unit, *(s32*)&unit->orderTarget)))
+        bool debugBool = false;
+        if (target != nullptr)
+        {
+            if (target == orderTargetUnit)
+            {
+                scbw::print("target == orderTargetUnit");
+                bool debugBool = true;
+            }
+            else
+                if ((orderTargetX == orderTargetSprite->position.x) && (orderTargetY == orderTargetSprite->position.y))
+                {
+                    scbw::print("targetX = spriteX && targetY = spriteY");
+                    bool debugBool = true;
+                }
+                else
+                    if (helper::isPointAtUnitBorder(orderTargetY, orderTargetUnit, unit, *(s32*)&unit->orderTarget))
+                    {
+                        scbw::print("isPointAtUnitBorder == true");
+                        bool debugBool = true;
+                    }
+            else if (unit->pAI && unit->mainOrderId != 96 && helper::AI_PrepareMovingTo(unit, target->sprite->position.x, target->sprite->position.y))
+            {
+                scbw::print("AI");
+                result = 0;
+            }
+        }
+
+        if (debugBool)
         {
             unit->status &= 0xFFF7FFFF;
             result = 1;
         }
-        else if (unit->pAI && unit->mainOrderId != 96 && helper::AI_PrepareMovingTo(unit, target->sprite->position.x, target->sprite->position.y))
-        {
-            result = 0;
-        }
+
         else
         {
-            v6 = (unitPath*)unit->path;
-            if (v6)
-                v6->isCalculating |= 1u;
-            v8 = target->sprite;
-            v9 = v8->position.x;
-            v7 = v8->position.y;
-            if (v9 != unit->orderTarget.pt.x || v7 != unit->orderTarget.pt.y || target != unit->orderTarget.unit)
+            unitPath* pathVar = (unitPath*)unit->path;
+            if (pathVar)
             {
-                unit->orderTarget.pt.y = v7;
-                v10 = unit->movementFlags & 0xFB;
-                unit->orderTarget.pt.x = v9;
-                v11 = unit->orderTarget.pt;
-                unit->orderTarget.unit = target;
-                unit->movementFlags = v10 | 1;
-                unit->nextTargetWaypoint = v11;
+                pathVar->isCalculating |= 1u;
             }
-            v12 = unit->orderQueueHead;
-            v13 = unit->status & 0xFFF7FFFF;
+            Sprite* targetSprite = target->sprite;
+            s16 targetSpriteX = targetSprite->position.x;
+            s16 targetSpriteY = targetSprite->position.y;
+            if (targetSpriteX != unit->orderTarget.pt.x || targetSpriteY != unit->orderTarget.pt.y || target != unit->orderTarget.unit)
+            {
+                unit->orderTarget.pt.y = targetSpriteY;
+                unit->orderTarget.pt.x = targetSpriteX;
+                char movementFlagsVar = unit->movementFlags & 0xFB;
+                Point16 targetPoint = unit->orderTarget.pt;
+                unit->orderTarget.unit = target;
+                unit->movementFlags = movementFlagsVar | 1;
+                unit->nextTargetWaypoint = targetPoint;
+            }
+            Order* unitOrder = unit->orderQueueHead;
             unit->recentOrderTimer = 15;
-            unit->status = v13;
-            if (!v12 || orders_dat::ButtonIcon[v12->orderId])
+            unit->status = unit->status & 0xFFF7FFFF;
+            if (!unitOrder || orders_dat::ButtonIcon[unitOrder->orderId])
             {
                 unit->movementFlags &= 0xDFu;
                 result = 1;

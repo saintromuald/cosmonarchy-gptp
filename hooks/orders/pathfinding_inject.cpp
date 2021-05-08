@@ -29,6 +29,6 @@ namespace hooks
 {
 	void injectPathfindingHooks()
 	{
-		jmpPatch(moveToTarget_Wrapper, 0x004EB720, 0);
+//		jmpPatch(moveToTarget_Wrapper, 0x004EB720, 0);
 	}
 }
