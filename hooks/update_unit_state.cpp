@@ -121,6 +121,12 @@ namespace hooks
 		}
 	}
 
+	static bool wyvernCanFireAt(Unit* unit, Unit* target)
+	{
+		return scbw::canWeaponTargetUnit(WeaponId::WyvernJacksonCannon, target, unit)
+			&& scbw::getDistanceFast(target->sprite->position.x, target->sprite->position.y, unit->sprite->position.x, unit->sprite->position.y) <= weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon];
+	}
+
 	/// Updates unit timers, regenerates hp and shields, and burns down Terran buildings.
 	/// Identical to function @ 0x004EC290
 	void updateUnitStateHook(Unit* unit)
@@ -179,8 +185,16 @@ namespace hooks
 
 			if (seek_unit)
 			{
-				Unit* target = unit->orderTarget.unit;
-				if (!target)
+				if (unit->orderTarget.unit)
+				{
+					Unit* newTarget = unit->orderTarget.unit;
+					if (wyvernCanFireAt(unit, newTarget))
+					{
+						unitExt->units[UnitWyvernTargetLock] = newTarget;
+					}
+				}
+				Unit* target = unitExt->units[UnitWyvernTargetLock];
+				if (!target || !wyvernCanFireAt(unit, target))
 				{
 					target = scbw::UnitFinder::getNearestTarget(
 						unit->getX() - range, unit->getY() - range,
@@ -195,12 +209,7 @@ namespace hooks
 						{
 							return false;
 						}
-						if (!scbw::canWeaponTargetUnit(WeaponId::WyvernJacksonCannon, target, unit))
-						{
-							return false;
-						}
-						if (scbw::getDistanceFast(target->sprite->position.x, target->sprite->position.y,
-							unit->sprite->position.x, unit->sprite->position.y) > weapons_dat::MaxRange[WeaponId::WyvernJacksonCannon])
+						if (!wyvernCanFireAt(unit, target))
 						{
 							return false;
 						}
@@ -208,7 +217,7 @@ namespace hooks
 					});	
 				}
 				
-				if (target != nullptr)
+				if (target)
 				{
 					auto direction = scbw::getAngle(x, y, target->getX(), target->getY());
 					scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, target, target->position);

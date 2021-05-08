@@ -306,6 +306,7 @@ enum ExtUnitId
 	UnitAttachedTarget,
 	UnitAttachedAkistrokor,
 	UnitMindController,
+	UnitWyvernTargetLock,
 
 	UnitCount,
 };
