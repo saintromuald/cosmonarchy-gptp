@@ -173,6 +173,8 @@ namespace hooks
 				auto direction = scbw::getAngle(x, y, targ_x, targ_y);
 				if (scbw::getDistanceFast(unit->position.x, unit->position.y, targ_x, targ_y) <= range)
 				{
+					u32 sound = scbw::randBetween(SoundId::WyvernAttack01, SoundId::WyvernAttack02);
+					scbw::playSound(sound, unit);
 					scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, nullptr, targ_x, targ_y);
 					unitExt->timers[TimerWyvernAttackCooldown] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::WyvernJacksonCannon);
 					seek_unit = false;
@@ -220,6 +222,8 @@ namespace hooks
 				if (target)
 				{
 					auto direction = scbw::getAngle(x, y, target->getX(), target->getY());
+					u32 sound = scbw::randBetween(SoundId::WyvernAttack01, SoundId::WyvernAttack02);
+					scbw::playSound(sound, unit);
 					scbw::artificalBulletFrom(WeaponId::WyvernJacksonCannon, unit->playerId, unit, target, target->position);
 					unitExt->timers[TimerWyvernAttackCooldown] = hooks::getModifiedWeaponCooldownHook(unit, WeaponId::WyvernJacksonCannon);
 				}
