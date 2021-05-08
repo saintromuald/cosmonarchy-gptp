@@ -150,16 +150,16 @@ namespace hooks
 		}
 
 		// Wyvern Reverse Thrust - fire while moving
-		if (unit->id == UnitId::TerranWyvern && unit->groundWeaponCooldown == 0 && unitExt->values[ValueReverseThrust])
+		if (unit->id == UnitId::TerranWyvern && unit->groundWeaponCooldown == 0 /*&& unitExt->values[ValueReverseThrust]*/)
 		{
 			bool can_free_fire = true;
-			if (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::Attack2)
+			/*if (unit->mainOrderId == OrderId::Attack1 || unit->mainOrderId == OrderId::Attack2)
 			{
 				if (unit->orderTarget.unit != nullptr)
 				{
 					can_free_fire = false;
 				}
-			}
+			}*/
 
 			if (can_free_fire)
 			{
@@ -170,6 +170,7 @@ namespace hooks
 
 				unit->groundWeaponCooldown = weapons_dat::Cooldown[WeaponId::WyvernJacksonCannon];
 				bool seek_unit = true;
+				scbw::printf("CanFreeFire %d",unitExt->values[ValueWyvernReverseLandgrabOn]);
 				if (unitExt->values[ValueWyvernReverseLandgrabOn] == 1)
 				{
 					auto targ_x = unitExt->values[ValueWyvernReverseLandgrabX];
