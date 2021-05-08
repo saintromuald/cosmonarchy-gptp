@@ -356,8 +356,9 @@ namespace hooks
 				data.finalDamage += (targetExt->values[ValueCorrosiveTouchStacks] * VithriliskCorrosiveTouchArmorReduction) + (data.damageDivisor * 10 * 256);
 			} break;
 			case WeaponId::GlaveWurm:
+			case WeaponId::CharlatanFerventBlaster:
 			{
-				// Lithe Organelle - Mutalisk bounce damage
+				// Lithe Organelle - bounce damage
 				f64 mul = 1.0;
 				switch (data.damageDivisor)
 				{
