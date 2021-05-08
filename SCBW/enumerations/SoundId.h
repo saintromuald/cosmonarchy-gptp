@@ -1151,26 +1151,25 @@ namespace SoundId
 
 
 		// HYDRA \\
-			
-			AugurDeath01 = 1235,
-			AugurDeath02 = 1236,
-			AugurDeath03 = 1237,
-			AugurDeath04 = 1238,
-			Simulacrum_Clone_01 = 1332,
-			LakiziliskProjectileReturn = 1392,
+
+		WyvernAttack01 = 1118,
+		WyvernAttack02 = 1119,
+		AugurDeath01 = 1235,
+		AugurDeath02 = 1236,
+		AugurDeath03 = 1237,
+		AugurDeath04 = 1238,
+		Simulacrum_Clone_01 = 1332,
+		LakiziliskProjectileReturn = 1392,
+
 	};
 }
 
 namespace DeathSoundId
 {
-
 	//Based on IScript.bin playsnd in death sequence
 	//First and last id
 	//Can be used with this kind of format:
-	//	u16 rand_value =	scbw::randBetween(
-	//							DeathSoundId::deathSoundIdList[unit->id][0],
-	//							DeathSoundId::deathSoundIdList[unit->id][1]
-	//						);
+	//	u16 rand_value = scbw::randBetween(DeathSoundId::deathSoundIdList[unit->id][0], DeathSoundId::deathSoundIdList[unit->id][1]);
 	//	scbw::playSound(rand_value);
 	const u16 deathSoundIdList[UnitId::None + 1][2] = {
 
