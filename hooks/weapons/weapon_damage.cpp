@@ -941,6 +941,13 @@ namespace hooks
 					helper::createBullet(WeaponId::CyclopsFragmentaryShells, data.attacker, data.target->getX(), data.target->getY(), data.attacker->playerId, newAngle);
 				} break;
 			}
+
+			if (attackerExt->units[UnitMindController] != nullptr)
+			{
+				Unit* mindController = attackerExt->units[UnitMindController];
+				mindController->addUnitEnergy(MindControlEnergyGain);
+				mindController->sprite->createUnderlay(ImageId::SmallExplosion_Unused);
+			}
 		}
 	}
 
