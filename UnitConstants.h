@@ -17,11 +17,18 @@
 // Constants
 // Note: I would recommend having unit name as first segment of any related variable name.
 
+// COMMON / SHARED \\
+
 // General
 constexpr s32 HealthMultiplier = 256;
 constexpr s32 StimpackOffset = 5 * 256;
 constexpr s32 StimpackTimer = 37;
 constexpr s32 MindControlEnergyGain = 5 * 256;
+
+// Charlatan
+constexpr s32 CharlatanHallucinationTimer = 3 * 24;
+
+// TERRAN \\
 
 // Cleric
 constexpr s32 ClericHealValue = 107; // roughly 10 HP per second
@@ -52,8 +59,10 @@ constexpr s32 AzazelDefensiveMatrixHeal = 53; // 5 HP per second | 256 * 5 / 24
 // Treasury
 constexpr s32 TreasuryIncrease = 4;
 
+// PROTOSS \\
+
 // Cantavis
-constexpr s32 HallucinationTimer = 10 * 24;
+constexpr s32 CantavisHallucinationTimer = 10 * 24;
 
 // Demiurge
 constexpr s32 GodsMadeFleshEnergyDrain = 100;
@@ -77,6 +86,8 @@ constexpr s32 AIStarsovereignAbilMinEnemyHealth = 2000;
 constexpr s32 AIStarsovereignAbilMaxAllyHealth = 2000;
 constexpr f64 AIStarsovereignAbilLifePercentage = 0.5;
 constexpr s32 AIStarsovereignAbilTimer = 612;
+
+// ZERG \\
 
 // Quazilisk
 constexpr f64 QuazaliskPassiveFactor = 0.1;
