@@ -77,7 +77,7 @@ enum Enum {
 //Zerg
 	EnsnaringBrood			= 13, // Matraleth disruptive enchantment ability
 	Reconstitution			= 26, // unused
-	EssenceDrain			= 35, // unused
+	EntrallingAssault		= 35, // Akistrokor infestation ability
 
 	// extended
 	// ChasmalColonySwitch = 47,	// Chasmal Colony - Adaptive Barrier / Adrenal Secretion

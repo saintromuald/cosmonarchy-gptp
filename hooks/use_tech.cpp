@@ -261,7 +261,7 @@ namespace hooks
 			{
 				helper::issueTriTargetOrder(OrderId::Skyfall, 0, 0);
 			} break;
-			case TechId::EssenceDrain:
+			case TechId::EntrallingAssault:
 			{
 				helper::issueTriTargetOrder(OrderId::CTFCOP1, 0, 0);
 			} break;
