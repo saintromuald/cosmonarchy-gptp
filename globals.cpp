@@ -1507,7 +1507,11 @@ namespace scbw
 				return linkUnit->shields < 256;
 			}), links.end());
 			s32 divided = damage / links.size();
-			links.erase(std::find(links.begin(), links.end(), unit));
+			auto it = std::find(links.begin(), links.end(), unit);
+			if (it != links.end())
+			{
+				links.erase(it);
+			}
 			for (Unit* linkUnit : links)
 			{
 				s32 unitDamage = std::min(divided, linkUnit->shields);
