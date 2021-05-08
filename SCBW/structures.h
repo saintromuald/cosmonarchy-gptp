@@ -46,28 +46,33 @@ struct unitPath
 	s32		steps[24];
 };
 
-struct CampaignMission {
+struct CampaignMission
+{
 	char* missionName;
 	s32 missionIndex;
 };
 
-struct chkStruct {
+struct chkStruct
+{
 	u8 section[4];
 	u32 function;
 	u32 flags;
 };
 
-struct scenarioFormat {
+struct scenarioFormat
+{
 	chkStruct* chkStruct;
 	u32 chkStructCount;
 };
 
-struct vectorHead {
+struct vectorHead
+{
 	u32 next;
 	u32 prev;
 };
 
-struct unk_61 {
+struct unk_61
+{
 	u8 anonymous_0;
 	u8 anonymous_1;
 	u8 anonymous_2;
@@ -76,7 +81,8 @@ struct unk_61 {
 	u8 anonymous_5;
 };
 
-struct unk_62 {
+struct unk_62
+{
 	u8 anonymous_0;
 	u8 anonymous_1;
 	u8 anonymous_2;
@@ -87,17 +93,20 @@ struct unk_62 {
 	u8 anonymous_7;
 };
 
-struct bStringMap {
+struct bStringMap
+{
 	u8		value;				// 0x0
 	u8		id;					// 0x1
 };
 
-struct wStringMap {
+struct wStringMap
+{
 	u16		tblstring;			// 0x0
 	u16		index;				// 0x2
 };
 
-struct dlgEvent {
+struct dlgEvent
+{
 	u32		user;				// 0x0
 	u16		field_4;			// 0x4
 	u16		field_6;			// 0x6
@@ -108,7 +117,8 @@ struct dlgEvent {
 	u16		field_12;			// 0x12
 };
 
-struct GameData { // taken from IDA and from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
+struct GameData // taken from IDA and from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
+{ 
 	u32		saveTime;					// 0x0
 	char	gameName[0x18];				// 0x4
 	u32		saveTimestamp;				// 0x1C
@@ -147,7 +157,8 @@ struct GameData { // taken from IDA and from https://gist.githubusercontent.com/
 };
 C_ASSERT(sizeof(GameData) == 0x8C);
 
-struct ReplayData { // taken from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
+struct ReplayData // taken from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
+{ 
 	u32		replayDataStart;			// 0x0
 	u32		boolUnk;					// 0x4
 	u32		replayFrameBegin;			// 0x8
@@ -158,14 +169,16 @@ struct ReplayData { // taken from https://gist.githubusercontent.com/neivv/d56ba
 };
 C_ASSERT(sizeof(ReplayData) == 0x20);
 
-struct ReplayFrame { // taken from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
+struct ReplayFrame // taken from https://gist.githubusercontent.com/neivv/d56baedfdfa0145575825e160b64adb7/raw/1bfc4e2113966eac0749f7f02de3fa9a091fb84b/nuottei.txt
+{
 	u32		frame;						// 0x0
 	u8		dataLength;					// 0x4
 	u8		storm;						// 0x5 | { byte storm_player, byte cmd[...] }[...]
 };
 C_ASSERT(sizeof(ReplayFrame) == 0x6);
 
-struct Options { // taken from IDA
+struct Options // taken from IDA
+{
 	u32		speed;						// 0x0
 	u32		mouseScroll;				// 0x4
 	u32		keyboardScroll;				// 0x8
@@ -180,19 +193,23 @@ struct Options { // taken from IDA
 };
 C_ASSERT(sizeof(Options) == 0x2C);
 
-struct PlayerName {
+struct PlayerName
+{
 	char	playerName[0x19];			// 0x0
 };
 
-struct UNITDEATHS {
+struct UNITDEATHS
+{
 	u32        player[12];
 };
-struct UNITSCORES_I {
+struct UNITSCORES_I
+{
 	u32        player[12];
 };
 //Based on http://code.google.com/p/bwapi/source/browse/branches/bwapi4/bwapi/BWAPI/Source/BW/Image.h
 
-struct TEXT {
+struct TEXT
+{
 	char  textdisplay[218][13];  //[last is text at bottom; ex: "Cheat enabled."]
 	unk_t   unknown1;
 	unk_t   unknown2;
@@ -201,7 +218,8 @@ struct TEXT {
 	u8    timer[13];
 };
 
-struct TILE {
+struct TILE
+{
 	/*00*/  u16 index;
 	/*02*/  u8 buildability; /**< 8th bit should sign not buildable. */
 	/*03*/  u8 groundHeight; /**< Ground Height(4 lower bits) - Deprecated? Some values are incorrect. */
@@ -219,7 +237,8 @@ struct TILE {
 	/*14*/  u16 miniTile[16]; /** MegaTile References (VF4/VX4) */
 };
 
-struct DOODAD {
+struct DOODAD
+{
 	/*00*/  u16 index;
 	/*02*/ u8 buildability; /**< 8th bit should sign not buildable. */
 	/*03*/  u8 groundHeightAndOverlayFlags; /**< Ground Height(4 lower bits) - Deprecated? Some values are incorrect.
@@ -240,14 +259,16 @@ struct DOODAD {
 	/*14*/  u16 miniTile[16]; /** MegaTile References (VF4/VX4) */
 };	//size 34
 
-struct Thingy {
+struct Thingy
+{
 	/*00*/  Thingy* prev;
 	/*04*/  Thingy* next;
 	/*08*/  u32     unitType;
 	/*0C*/  Sprite* sprite;
 };
 
-struct CHKUnit {
+struct CHKUnit
+{
 	/*00*/	u32	 id;
 	/*04*/	u16	 x;
 	/*06*/	u16	 y;
@@ -269,12 +290,14 @@ struct CHKUnit {
 
 //---- Taken from locations.cpp ----//
 
-struct MapSize {
+struct MapSize
+{
 	u16   width;
 	u16   height;
 };
 
-struct LOCATION {
+struct LOCATION
+{
 	Box32 dimensions;
 	u16   stringId;
 	u16   flags;
@@ -288,7 +311,8 @@ typedef ButtonState(__fastcall* REQ_FUNC)(u32, u32, Unit*);
 typedef void(__fastcall* ACT_FUNC)(u32, u32);
 //(u32 actVar, u32 shiftClick);
 
-struct BUTTON {
+struct BUTTON
+{
 	/*00*/  u16       position;
 	/*02*/  u16       iconID;
 	/*04*/  REQ_FUNC* reqFunc;
@@ -299,21 +323,24 @@ struct BUTTON {
 	/*12*/  u16       actStringID;
 };
 
-struct StatusScreenState {
+struct StatusScreenState
+{
 	GrpHead* button_grp;
 	u16 grp_frame;//0x4
 	u16 type;//0x6
 	u8 id;//0x8	
 };
 
-struct BUTTON_SET {
+struct BUTTON_SET
+{
 	u32     buttonsInSet;
 	BUTTON* firstButton;
 	u32     connectedUnit;
 };
 
 //---- Taken from triggers.h ----//
-struct CONDITION {
+struct CONDITION
+{
 	u32        location;
 	u32        player;
 	u32        number;
@@ -326,7 +353,8 @@ struct CONDITION {
 
 typedef b32(__fastcall* ConditionPointer)(CONDITION*);
 
-struct ACTION {
+struct ACTION
+{
 	u32        location;
 	u32        string;
 	u32        wavString;
@@ -342,7 +370,8 @@ struct ACTION {
 typedef b32(__fastcall* ActionPointer)(ACTION*);
 
 //GRP frame header
-struct GrpFrame {
+struct GrpFrame
+{
 	s8  x;
 	s8  y;
 	s8  width;
@@ -354,7 +383,8 @@ C_ASSERT(sizeof(GrpFrame) == 8);
 //static_assert(sizeof(GrpFrame) == 8, "The size of the GrpFrame structure is invalid");
 
 //GRP file header
-struct GrpHead {
+struct GrpHead
+{
 	u16 frameCount;
 	s16 width;
 	s16 height;
@@ -365,7 +395,8 @@ C_ASSERT(sizeof(GrpHead) == 14);
 //static_assert(sizeof(GrpHead) == 14, "The size of the GrpHead structure is invalid");
 
 //LO* file header
-struct LO_Header {
+struct LO_Header
+{
 	u32 frameCount;
 	u32 overlayCount;
 	u32 frameOffsets[1];
@@ -381,7 +412,8 @@ C_ASSERT(sizeof(LO_Header) == 12);
 
 
 //Image Remapping Data
-struct ColorShiftData {
+struct ColorShiftData
+{
 	u32 index;
 	void* data;
 	char name[12];
@@ -393,7 +425,8 @@ C_ASSERT(sizeof(ColorShiftData) == 20);
 //-------- Flag structures --------//
 
 //Based on BWAPI's Offsets.h
-struct ActiveTile {
+struct ActiveTile
+{
 	/*00*/  u8 visibilityFlags;//0xff
 	/*01*/  u8 exploredFlags;//0xff00
 	/*02*/  u8 isWalkable : 1; // Set on tiles that can be walked on
@@ -415,7 +448,8 @@ struct ActiveTile {
 C_ASSERT(sizeof(ActiveTile) == 4);
 //static_assert(sizeof(ActiveTile) == 4, "The size of the ActiveTile structure is invalid");
 
-struct GroupFlag {
+struct GroupFlag
+{
 	u8 isZerg : 1;	/*0x01*/
 	u8 isTerran : 1;	/*0x02*/
 	u8 isProtoss : 1;	/*0x04*/
@@ -429,7 +463,8 @@ struct GroupFlag {
 C_ASSERT(sizeof(GroupFlag) == 1);
 //static_assert(sizeof(GroupFlag) == 1, "The size of the GroupFlag structure is invalid");
 
-struct TargetFlag {
+struct TargetFlag
+{
 	u16 air : 1;
 	u16 ground : 1;
 	u16 mechanical : 1;
@@ -446,7 +481,8 @@ C_ASSERT(sizeof(TargetFlag) == 2);
 
 //-------- End of flag structures --------//
 
-struct UnitFinderData {
+struct UnitFinderData
+{
 	s32 unitIndex;
 	s32 position;
 	bool operator < (const UnitFinderData& rhs) const {
@@ -461,7 +497,8 @@ C_ASSERT(sizeof(UnitFinderData) == 8);
 //as Dialog Structure
 //That structure is variable depending on the content
 
-struct BinDlg {
+struct BinDlg
+{
 	/*0x00*/  BinDlg*	next;
 	/*0x04*/  Bounds	bounds;			//0x4 left,0x6 top,0x8 right,0xA bottom,0xC width,0xE height
 	/*0x10*/  u8*	buffer;
@@ -472,7 +509,8 @@ struct BinDlg {
 	/*0x22*/  u16    controlType;	//use DialogControlTypes::Enum
 	/*0x24*/  u16    graphic;
 
-	union {
+	union
+	{
 		/*0x26*/  u32* user;
 		/*0x26*/  Unit* unitUser;
 		/*0x26*/  BinDlg* dlgUser;
@@ -486,34 +524,40 @@ struct BinDlg {
 	/*0x32*/  BinDlg* parent;
 
 	union {
-		struct {
+		struct
+		{
 			/*0x36*/  Box16   responseArea;
 			/*0x3E*/  BinDlg* unk_3e;
 		}initialVersion0x36;
-		struct {
+		struct
+		{
 			/*0x36*/  s16     responseAreaWidth;		//guess
 			/*0x38*/  s16     responseAreaHeight;		//guess
 			/*0x3A*/  u32* responseAreaBitArray;	//set with a memory allocation function, bit array is a guess
 			/*0x3E*/  u32* unk3e;					//unverified filler
 		}onInitDialog0x36;
-		struct {
+		struct
+		{
 			/*0x36*/  void* unkFunc36;				//should be a function
 			/*0x3A*/  u16     scrollMinValue;			//guess to be confirmed if used
 			/*0x3C*/  u16     scrollMaxValue;			//guess to be confirmed if used
 			/*0x3E*/  u16     scrollCurrentValue;		//guess to be confirmed if used
 			/*0x40*/  u16     unk40;					//unverified filler
 		}scrollDialog0x36;							//probably for scrollbar involving dialogs?
-		struct {
+		struct
+		{
 			/*0x36*/  BinDlg* unkDlg36;
 			/*0x3A*/  u32     unk3a;					//unverified filler
 			/*0x3E*/  u32     unk3e;					//unverified filler
 		}dialogOn0x36;								//for when 0x36 is clearly BinDlg* but the rest is unknown
-		struct {
+		struct
+		{
 			/*0x36*/  b32  unkBool32_36;				//based on the value only being compared to 0
 			/*0x3A*/  u32     unk3a;					//unverified filler
 			/*0x3E*/  u32     unk3e;					//unverified filler
 		}checkBox0x36;								//not completely sure
-		struct {
+		struct
+		{
 			/*0x36*/  u8      unkFlags36;				//"flag" because of possible unkFlags36 |= 1
 			/*0x37*/  unk_t     unk37[3];					//unverified filler
 			/*0x3A*/  u8** unk3aArrayCharPtr;		//seen in a different context so may be wrong and belong to another category
@@ -528,18 +572,21 @@ struct BinDlg {
 	};
 
 	union {
-		struct {
+		struct
+		{
 			/*0x46*/  Point16 textPos;
 			/*0x4A*/  u16     responseAreaWidth;
 			/*0x4C*/  u16     responseAreaHeight;
 			/*0x4E*/  unk_t     unk_4e[8];
 		}initialVersion0x46;
-		struct {
+		struct
+		{
 			/*0x46*/  Point16 textPos;					//unverified filler
 			/*0x4A*/  u32     unk4a;
 			/*0x4E*/  unk_t     unk_4e[8];				//unverified filler
 		}onInitDialog0x46;
-		struct {
+		struct
+		{
 			/*0x46*/  u8	  unk46;
 			/*0x47*/  u8      unk47;					//unverified filler
 			/*0x48*/  u8      unk48;
@@ -558,7 +605,8 @@ struct BinDlg {
 C_ASSERT(sizeof(BinDlg) == 86); //0x56
 //static_assert(sizeof(BinDlg) == 86, "The size of the BinDlg structure is invalid");
 
-struct SMK_Structure {
+struct SMK_Structure
+{
 	/*0x00*/ u32		smkOverlayOffset;
 	/*0x04*/ u16		flags;				//use SmkFlags::Enum
 	/*0x06*/ u32		internalUse1;
@@ -572,7 +620,8 @@ struct SMK_Structure {
 C_ASSERT(sizeof(SMK_Structure) == 30); //0x1E
 //static_assert(sizeof(SMK_Structure) == 30, "The size of the SMK_Structure structure is invalid");
 
-struct GuiOverlay {
+struct GuiOverlay
+{
 	/*0x00*/  unk_t     unk_0[6];
 	/*0x06*/  u16     overlayType;
 	/*0x08*/  u16     id;
@@ -584,7 +633,8 @@ C_ASSERT(sizeof(GuiOverlay) == 44); //0x2C
 
 //-------- AI related stuff --------//
 
-struct AiCaptain { //AiRegion
+struct AiCaptain // AiRegion
+{
 	/*00*/  u16 region;
 	/*02*/  u16 targetRegion;
 	/*04*/  u8  playerId;
@@ -613,13 +663,15 @@ struct AiCaptain { //AiRegion
 C_ASSERT(sizeof(AiCaptain) == 52);
 //static_assert(sizeof(AiCaptain) == 52, "The size of the AiCaptain structure is invalid");
 
-struct UnitAi {
+struct UnitAi
+{
 	Link<UnitAi>	link;				// 0x0, 0x4
 	u8 type;							// 0x8
 };
 C_ASSERT(sizeof(UnitAi) == 9);
 
-struct Region {
+struct Region
+{
 	u16 accessabilityFlags;
 	u16 group;
 	u8 _dc4[0x14];
@@ -627,7 +679,8 @@ struct Region {
 	u8 _dc20[0x20];
 };
 
-struct pathing {
+struct pathing
+{
 	u16 regionCount;
 	u8 _dc2[0x449fa];
 	Region regions[5000];
@@ -636,7 +689,8 @@ struct pathing {
 
 C_ASSERT(sizeof(pathing) == 0x97a20);
 
-struct GuardAi {
+struct GuardAi
+{
 	Link<GuardAi>	link;				// 0x0, 0x4
 	u8 type;							// 0x8
 	u8 timesDied;					// 0x9
@@ -651,7 +705,8 @@ struct GuardAi {
 C_ASSERT(sizeof(GuardAi) == 32); // 0x20
 
 struct AiTown; // declaring this here to avoid compiler errors
-struct WorkerAi {
+struct WorkerAi
+{
 	Link<WorkerAi>	link;				// 0x0, 0x4
 	u8 type;							// 0x8
 	u8 target_resource;				// 0x9
@@ -663,7 +718,8 @@ struct WorkerAi {
 };
 C_ASSERT(sizeof(WorkerAi) == 24); // 0x18
 
-struct BuildingAi {
+struct BuildingAi
+{
 	Link<BuildingAi>	link;			// 0x0, 0x4
 	u8 type;							// 0x8
 	u8 trainQueueTypes[5];			// 0x9
@@ -674,7 +730,8 @@ struct BuildingAi {
 };
 C_ASSERT(sizeof(BuildingAi) == 44); // 0x2C
 
-struct MilitaryAi {
+struct MilitaryAi
+{
 	Link<MilitaryAi>	link;			// 0x0, 0x4
 	u8 type;							// 0x8
 	u8 padding1;						// 0x9
@@ -684,23 +741,27 @@ struct MilitaryAi {
 };
 C_ASSERT(sizeof(MilitaryAi) == 20); // 0x14
 
-struct WorkerAiArray {
+struct WorkerAiArray
+{
 	WorkerAi worker_ais[1000];
 	WorkerAi* first_free_worker;
 };
 
-struct BuildingAiArray {
+struct BuildingAiArray
+{
 	BuildingAi building_ais[1000];
 	BuildingAi* first_free_building;
 };
 
-struct TownReq {
+struct TownReq
+{
 	u8 flags_and_count;
 	u8 priority;
 	u16 id;
 };
 
-struct AiTown {
+struct AiTown
+{
 	Link<AiTown> link;							//	0x0 and 0x4
 	WorkerAiArray* free_workers;				//	0x8
 	WorkerAi* workers;							//	0xC
@@ -723,21 +784,24 @@ struct AiTown {
 };
 C_ASSERT(sizeof(AiTown) == 0x1cc);
 
-struct AiSpendingRequest {
+struct AiSpendingRequest
+{
 	u8 priority;
 	u8 type;
 	u16 id;
 	void* val;
 };
 
-struct SpendingRequest {
+struct SpendingRequest
+{
 	u8 priority;
 	u8 ty;
 	u16 id;
 	void* val;
 };
 
-struct AI_Main {
+struct AI_Main
+{
 	u32 mineralCollection;
 	u32 gasCollection;
 	u32 supplyCollection;
@@ -750,7 +814,8 @@ struct AI_Main {
 	u16 AI_NukeRate;
 	u16 AI_Attacks;
 	u16 AI_LastNukeTime;
-	struct {
+	struct
+	{
 		u16 isSecureFinished : 1;	/*0001*/
 		u16 isTownStarted : 1;		/*0002*/
 		u16 isDefaultBuildOff : 1;	/*0004*/
@@ -793,26 +858,32 @@ C_ASSERT(sizeof(AI_Main) == 1256); /*0x4E8*/
 //static_assert(sizeof(AI_Main) == 1256, "The size of the AI_Main structure is invalid");
 
 // From BWAPI Offsets.h, used in scbwdata.h by UnitAvailability
-struct _uavail {
+struct _uavail
+{
 	u8 available[PLAYER_COUNT][UNIT_TYPE_COUNT];
 };
 
-struct StringTbl {
+struct StringTbl
+{
 	/// Returns the number of string entries in the TBL file.
-	u16 getStringCount() const {
+	u16 getStringCount() const
+	{
 		return *buffer;
 	}
 
 	/// Returns the string at @p index in the TBL file.
 	/// If the @p index is 0, returns nullptr.
 	/// If the @p index is out of bounds, returns an empty string.
-	const char* getString(u16 index) const {
+	const char* getString(u16 index) const
+	{
 		//Based on function @ 0x004C36F0
 		if (index == 0) return nullptr;
-		else if (index <= getStringCount()) {
+		else if (index <= getStringCount())
+		{
 			return (const char*)(buffer)+buffer[index];
 		}
-		else {
+		else
+		{
 			return (const char*)0x00501B7D;	//StringEmpty in scbwdata.h, SC default empty string
 		}
 	}
