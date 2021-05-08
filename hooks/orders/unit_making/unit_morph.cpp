@@ -36,7 +36,7 @@ namespace hooks
 				unit2 = helper::zergDualBirth(unit); // zerg dual birth
 				if (unit2 != nullptr)
 				{
-					helper::AI_TrainingUnit(unit, unit2);
+					helper::AI_TrainingUnit(unit2, unit);
 				}
 			}
 			if (unit->id != UnitId::ZergDroleth &&

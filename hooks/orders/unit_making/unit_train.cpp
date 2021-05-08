@@ -184,7 +184,7 @@ namespace hooks
 						{
 							if (builtUnit->status & UnitStatus::Completed)
 							{
-								helper::AI_TrainingUnit(unit, builtUnit);
+								helper::AI_TrainingUnit(builtUnit, unit);
 								if (builtUnit->id == UnitId::TerranNuclearMissile)
 								{
 									helper::hideAndDisableUnit(builtUnit);
