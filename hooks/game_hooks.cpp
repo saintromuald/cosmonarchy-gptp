@@ -926,7 +926,6 @@ namespace hooks
 				{
 					scbw::set_generic_rust_value(unit, RustId::CancelLandGrab, 0);
 					unitExt->values[ValueWyvernReverseLandGrabOn] = 0;
-					unit->playIscriptAnim(IscriptAnimation::GndAttkToIdle);
 				}
 			}
 			default:
