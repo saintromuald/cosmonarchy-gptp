@@ -23,6 +23,7 @@ struct SaveState
 		len = 0;
 	}
 };
+
 namespace EffectId
 {
 	enum
@@ -44,10 +45,10 @@ struct Effect
 	Point32 position;
 	u32 radius;
 	u32 currentTime;
+	u32 maxTime;
 	s32 spriteId;
 	u8 elevation;
 	u8 player;
-	u32 maxTime;
 	Thingy* thingy;
 };
 
@@ -77,7 +78,6 @@ struct ApostleAgent
 	u32 stacks;
 	Unit* creator;
 };
-
 
 struct AttackExtender
 {
@@ -174,7 +174,6 @@ void ApplyIrradiate(Unit* unit, u8 player, u32 time);
 
 void injectGlobalsHooks();
 
-static SaveState saveState;
 extern Globals globals;
 
 namespace hooks

@@ -10,15 +10,16 @@ Globals globals;
 
 void Globals::refreshDebuggingInfo()
 {
-	/*	unitSpeedDbg = 0;
-		weaponDamageDbg = 0;
-		gameHookDbg = 0;
-		updateUnitStateDbg = 0;
-		updateStatusEffectsDbg = 0;*/
+	/*	
+	unitSpeedDbg = 0;
+	weaponDamageDbg = 0;
+	gameHookDbg = 0;
+	updateUnitStateDbg = 0;
+	updateStatusEffectsDbg = 0;
+	*/
 }
 
-//SaveState Globals::aise_save() {
-
+static SaveState saveState;
 
 void Globals::aise_save()
 {
@@ -33,20 +34,17 @@ void Globals::aise_save()
 	stream.write(reinterpret_cast<const char*>(&effectsSize), sizeof(effectsSize));
 	for (s32 i = 0; i < effectsSize; i++)
 	{
+		stream.write(reinterpret_cast<const char*>(&effects[i].effectId), sizeof(effects[i].effectId));
 		stream.write(reinterpret_cast<const char*>(&effects[i].position.x), sizeof(effects[i].position.x));
 		stream.write(reinterpret_cast<const char*>(&effects[i].position.y), sizeof(effects[i].position.y));
+		stream.write(reinterpret_cast<const char*>(&effects[i].radius), sizeof(effects[i].radius));
+		stream.write(reinterpret_cast<const char*>(&effects[i].currentTime), sizeof(effects[i].currentTime));
+		stream.write(reinterpret_cast<const char*>(&effects[i].maxTime), sizeof(effects[i].maxTime));;
 		stream.write(reinterpret_cast<const char*>(&effects[i].elevation), sizeof(effects[i].elevation));
-		stream.write(reinterpret_cast<const char*>(&effects[i].currentTime), sizeof(effects[i].currentTime));
-		stream.write(reinterpret_cast<const char*>(&effects[i].currentTime), sizeof(effects[i].currentTime));
-
-		//stream.write(reinterpret_cast<const char*>(&effects[i].position.x), sizeof(effects[i].position.x));
-		//stream.write(reinterpret_cast<const char*>(&effects[i].position.y), sizeof(effects[i].position.y));
-		//stream.write(reinterpret_cast<const char*>(&effects[i].elevation), sizeof(effects[i].elevation));
-		//stream.write(reinterpret_cast<const char*>(&effects[i].period), sizeof(effects[i].period));
-		//stream.write(reinterpret_cast<const char*>(&effects[i].time), sizeof(effects[i].time));
-		//stream.write(reinterpret_cast<const char*>(&effects[i].effectId), sizeof(effects[i].effectId));
-		//stream.write(reinterpret_cast<const char*>(&effects[i].spriteId), sizeof(effects[i].spriteId));
-		//stream.write(reinterpret_cast<const char*>(&effects[i].radius), sizeof(effects[i].radius));
+		stream.write(reinterpret_cast<const char*>(&effects[i].spriteId), sizeof(effects[i].spriteId));
+		stream.write(reinterpret_cast<const char*>(&effects[i].player), sizeof(effects[i].player));
+		// should find a way on how to serialize thingy, since pointers won't match after save / load
+		//stream.write(reinterpret_cast<const char*>(&effects[i].thingy), sizeof(effects[i].thingy));
 	}
 
 	u32 pariahHitCount = pariahHits.size();
@@ -106,25 +104,53 @@ void Globals::aise_save()
 		}
 	}
 
-	//
+	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i)
+	{ 
+		stream.write(reinterpret_cast<char*>(&unitExt[i].combatTimer), sizeof(unitExt[i].combatTimer));
+		stream.write(reinterpret_cast<char*>(&unitExt[i].values), sizeof(unitExt[i].values));
+		stream.write(reinterpret_cast<char*>(&unitExt[i].timers), sizeof(unitExt[i].timers));
+		stream.write(reinterpret_cast<char*>(&unitExt[i].units), sizeof(unitExt[i].units));
+
+		for (auto vec : unitExt[i].timerVectors)
+		{
+			auto vecSize = vec.size();
+			stream.write(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
+			for (auto elem : vec)
+			{
+				stream.write(reinterpret_cast<char*>(&elem), sizeof(elem));
+			}
+		}
+
+		for (auto vec : unitExt[i].unitVectors)
+		{
+			auto vecSize = vec.size();
+			stream.write(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
+			for (auto elem : vec)
+			{
+				stream.write(reinterpret_cast<char*>(&elem), sizeof(elem));
+			}
+		}
+	}
+
 	output = stream.rdbuf()->str();
 	if (output.length() == 0)
 	{
-		//		return state;
+		// return state;
 		return;
-		//error
+		// error
 	}
 
 	saveState.ptr = output.c_str();
 	saveState.len = output.size();
 	return;
-	//	return state;
+	// return state;
 }
+
 void Globals::aise_load(const char* ptr, u32 len)
 {
 	if (len == 0 || ptr == 0)
 	{
-		return;//error
+		return; // error
 	}
 
 	//scbw::print("Load....");
@@ -141,23 +167,19 @@ void Globals::aise_load(const char* ptr, u32 len)
 	stream.read(reinterpret_cast<char*>(&impactsSize), sizeof(impactsSize));
 	for (s32 i = 0; i < impactsSize; i++)
 	{
-		// this code was left here only to keep the proper stream offset, TODO: adjust aise to handle the new struct, or port aise side of this feature (if there still is any)
-		Effect effect;
+		Effect effect = {};
+		stream.read(reinterpret_cast<char*>(&effect.effectId), sizeof(effect.effectId));
 		stream.read(reinterpret_cast<char*>(&effect.position.x), sizeof(effect.position.x));
 		stream.read(reinterpret_cast<char*>(&effect.position.y), sizeof(effect.position.y));
+		stream.read(reinterpret_cast<char*>(&effect.radius), sizeof(effect.radius));
+		stream.read(reinterpret_cast<char*>(&effect.currentTime), sizeof(effect.currentTime));
+		stream.read(reinterpret_cast<char*>(&effect.maxTime), sizeof(effect.maxTime));
 		stream.read(reinterpret_cast<char*>(&effect.elevation), sizeof(effect.elevation));
-		stream.read(reinterpret_cast<char*>(&effect.currentTime), sizeof(effect.currentTime));
-		stream.read(reinterpret_cast<char*>(&effect.currentTime), sizeof(effect.currentTime));
-
-		//stream.read(reinterpret_cast<char*>(&effect.position.x), sizeof(effect.position.x));
-		//stream.read(reinterpret_cast<char*>(&effect.position.y), sizeof(effect.position.y));
-		//stream.read(reinterpret_cast<char*>(&effect.elevation), sizeof(effect.elevation));
-		//stream.read(reinterpret_cast<char*>(&effect.period), sizeof(effect.period));
-		//stream.read(reinterpret_cast<char*>(&effect.time), sizeof(effect.time));
-		//stream.read(reinterpret_cast<char*>(&effect.effectId), sizeof(effect.effectId));
-		//stream.read(reinterpret_cast<char*>(&effect.spriteId), sizeof(effect.spriteId));
-		//stream.read(reinterpret_cast<char*>(&effect.radius), sizeof(effect.radius));
-		//effects.push_back(effect);
+		stream.read(reinterpret_cast<char*>(&effect.spriteId), sizeof(effect.spriteId));
+		stream.read(reinterpret_cast<char*>(&effect.player), sizeof(effect.player));
+		// should find a way on how to serialize thingy, since pointers won't match after save / load
+		//stream.read(reinterpret_cast<char*>(&effect.thingy), sizeof(effect.thingy));
+		effects.push_back(effect);
 	}
 
 	u32 pariahHitsCount = 0;
@@ -210,6 +232,7 @@ void Globals::aise_load(const char* ptr, u32 len)
 		}
 		multihitBullets.push_back(bull);
 	}
+
 	u32 lurkerMapSize = 0;
 	stream.read(reinterpret_cast<char*>(&lurkerMapSize), sizeof(lurkerMapSize));
 	for (s32 i = 0; i < lurkerMapSize; i++) {
@@ -223,6 +246,34 @@ void Globals::aise_load(const char* ptr, u32 len)
 			lurkerSpineHits[key].push_back(value);
 		}
 	}*/
+
+	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i)
+	{ 
+		stream.read(reinterpret_cast<char*>(&unitExt[i].combatTimer), sizeof(unitExt[i].combatTimer));
+		stream.read(reinterpret_cast<char*>(&unitExt[i].values), sizeof(unitExt[i].values));
+		stream.read(reinterpret_cast<char*>(&unitExt[i].timers), sizeof(unitExt[i].timers));
+		stream.read(reinterpret_cast<char*>(&unitExt[i].units), sizeof(unitExt[i].units));
+
+		for (auto vec : unitExt[i].timerVectors)
+		{
+			auto vecSize = vec.size();
+			stream.read(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
+			for (auto elem : vec)
+			{
+				stream.read(reinterpret_cast<char*>(&elem), sizeof(elem));
+			}
+		}
+
+		for (auto vec : unitExt[i].unitVectors)
+		{
+			auto vecSize = vec.size();
+			stream.read(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
+			for (auto elem : vec)
+			{
+				stream.read(reinterpret_cast<char*>(&elem), sizeof(elem));
+			}
+		}
+	}
 }
 
 static void ClearUnitExt(int index)
@@ -240,9 +291,9 @@ void Globals::reset()
 	multihitBullets.clear();
 	apostleAgents.clear();
 	lurkerSpineHits.clear();
-	for (u32 j = 0; j < UNIT_ARRAY_LENGTH; ++j)
+	for (u32 i = 0; i < UNIT_ARRAY_LENGTH; ++i)
 	{ 
-		ClearUnitExt(j);
+		ClearUnitExt(i);
 	}
 }
 
