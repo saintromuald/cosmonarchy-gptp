@@ -979,7 +979,7 @@ namespace hooks
 			{
 				u32 currentAnim = unit->sprite->mainGraphic->animation;
 				if (currentAnim != IscriptAnimation::GndAttkInit
-					|| currentAnim != IscriptAnimation::GndAttkRpt)
+					&& currentAnim != IscriptAnimation::GndAttkRpt)
 				{
 					unit->sprite->playIscriptAnim(IscriptAnimation::GndAttkInit);
 				}
