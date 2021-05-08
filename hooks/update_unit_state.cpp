@@ -187,7 +187,7 @@ namespace hooks
 
 			if (seek_unit)
 			{
-				if (unit->orderTarget.unit)
+				if (unit->orderTarget.unit && unit->mainOrderId != OrderId::Follow)
 				{
 					Unit* newTarget = unit->orderTarget.unit;
 					if (wyvernCanFireAt(unit, newTarget))
