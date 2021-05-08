@@ -36,7 +36,10 @@ namespace hooks
 			// not sure if this check was needed,
 			// would be hard to test
 		}
-		else if (result->id == UnitId::ZergOvileth)
+		else if (result->id == UnitId::ZergOvileth
+			|| result->id == UnitId::ZergIroleth
+			|| result->id == UnitId::ZergOthstoleth
+			|| result->id == UnitId::ZergAlaszileth)
 		{
 			helper::AI_TrainingOverlord(result, parent); // replace with hook later
 		}
