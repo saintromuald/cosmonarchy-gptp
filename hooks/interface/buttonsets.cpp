@@ -1397,7 +1397,7 @@ namespace hooks
 								else if ((*activePortraitUnit)->id == UnitId::TerranWyvern)
 								{
 									UnitExt* activeExt = globals.GetUnitExt(*activePortraitUnit);
-									if (!activeExt->values[ValueWyvernFreeFire])
+									if (activeExt->values[ValueWyvernLandGrabOn])
 									{
 										canCancel = true;
 									}

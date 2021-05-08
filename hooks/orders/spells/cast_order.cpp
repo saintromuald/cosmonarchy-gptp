@@ -31,9 +31,9 @@ namespace hooks
 
 		if (unit->id == UnitId::TerranWyvern)
 		{
-			unitExt->values[ValueWyvernReverseLandGrabOn] = 1;
-			unitExt->values[ValueWyvernReverseLandGrabX] = unit->orderTarget.pt.x;
-			unitExt->values[ValueWyvernReverseLandGrabY] = unit->orderTarget.pt.y;
+			unitExt->values[ValueWyvernLandGrabOn] = 1;
+			unitExt->values[ValueWyvernLandGrabX] = unit->orderTarget.pt.x;
+			unitExt->values[ValueWyvernLandGrabY] = unit->orderTarget.pt.y;
 		}
 		if (unit->mainOrderState == 2)
 		{

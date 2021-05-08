@@ -188,14 +188,6 @@ namespace hooks
 
 		if (weapons_dat::FlingyId[weaponId] != 0)
 		{
-			bool good = true;
-			// Wyvern Land Grab ability
-			if (unit->id == UnitId::TerranWyvern
-				&& unit->sprite->mainGraphic->animation == IscriptAnimation::CastSpell
-				&& unitExt->values[ValueWyvernReverseLandGrabOn] == 1)
-			{
-				good = false;
-			}
 			// Lurker Seismic Spines behavior
 			if (weaponId == WeaponId::SubterraneanSpines)
 			{
@@ -212,7 +204,7 @@ namespace hooks
 				}
 				globals.clear_lakizilisk(unit);
 			}
-			if (good)
+			if (unit->id != UnitId::TerranWyvern)
 			{
 				// Madrigal Tempo Change weapon switch
 				if (weaponId == WeaponId::MadrigalFuriaMissiles

@@ -925,8 +925,7 @@ namespace hooks
 				if (scbw::get_generic_rust_value(unit, RustId::CancelLandGrab))
 				{
 					scbw::set_generic_rust_value(unit, RustId::CancelLandGrab, 0);
-					unitExt->values[ValueWyvernReverseLandGrabOn] = 0;
-					unitExt->values[ValueWyvernFreeFire] = 1;
+					unitExt->values[ValueWyvernLandGrabOn] = 0;
 				}
 			}
 			default:

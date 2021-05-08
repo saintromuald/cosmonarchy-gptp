@@ -147,7 +147,7 @@ enum ExtValueId
 	ValueWarpingIn,					// unused
 	ValueMalediction,				// unused
 	ValueWyvernSlow,				// unused
-	ValueWyvernReverseLandGrabOn,
+	ValueWyvernLandGrabOn,
 	ValueLandGrabStart,				// unused
 	ValueUpgradeBoost,				// unused
 	ValueRemainingBuildTimeCopy,	// unused
@@ -155,8 +155,8 @@ enum ExtValueId
 	ValueAmitosis,
 	ValueSomaticImplants,
 	ValueSublimeShepherd,
-	ValueWyvernReverseLandGrabX,
-	ValueWyvernReverseLandGrabY,
+	ValueWyvernLandGrabX,
+	ValueWyvernLandGrabY,
 	ValueObservanceRend,
 	ValueSpineX,
 	ValueSpineY,
@@ -234,7 +234,6 @@ enum ExtValueId
 	ValueKelvinMunitionsSlow,
 	ValueLarvaType,
 	ValueRaceSupplyType,
-	ValueWyvernFreeFire,
 
 	ValueCount,
 };
@@ -282,8 +281,7 @@ enum ExtTimerId
 	TimerSwitchModeGimmick,
 	TimerCaptivatingClaws,
 	TimerAlaszilethRegenBoost,
-	TimerWyvernWeapon,
-	TimerWyvernLandGrab,
+	TimerWyvernAttackCooldown,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,
