@@ -9,42 +9,43 @@ namespace hooks
 {
 	void AI_TrainingUnit(Unit* result, Unit* parent) // 004A2830
 	{
-		bool isSuicideUnit = result->id == UnitId::ZergBroodling || result->id == UnitId::ZergBroodlisk || result->id == UnitId::ProtossSimulacrum;
-		if (result == nullptr) return;
-		if (parent == nullptr)
+		if (playerTable[parent->playerId].type != PlayerType::Computer)
 		{
-			if (!isSuicideUnit)
-			{
-				return;
-			}
-			parent = result;
+			return;
 		}
-		if (result == parent && !isSuicideUnit && !(units_dat::BaseProperty[result->id] & UnitProperty::Worker)) return;
-		if (playerTable[parent->playerId].type == PlayerType::Computer)
+		if (result == nullptr) return;
+		if (parent == nullptr
+			|| result->id == UnitId::ZergBroodling
+			|| result->id == UnitId::ZergBroodlisk
+			|| result->id == UnitId::ProtossSimulacrum)
+		{
+			hooks::AI_TrainingBroodling(result, result);
+			return;
+		}
+
+		if (units_dat::BaseProperty[result->id] & UnitProperty::Worker)
+		{
+			helper::AI_TrainingWorker(result, parent);
+		}
+		else if (result == parent)
+		{
+			// do nothing for non worker units if that's the case,
+			// not sure if this check was needed,
+			// would be hard to test
+		}
+		else if (result->id == UnitId::ZergOvileth)
+		{
+			helper::AI_TrainingOverlord(result, parent); // replace with hook later
+		}
+		else
 		{
 			if (playerTable[result->playerId].type == PlayerType::Computer
 				&& result->id == UnitId::TerranCleric)
 			{
 				if (!(AIScriptController[result->playerId].mainMedic))
 					AIScriptController[result->playerId].mainMedic = result;
-
 			}
-			if (units_dat::BaseProperty[result->id] & UnitProperty::Worker)
-			{
-				helper::AI_TrainingWorker(result, parent);
-			}
-			else if (result->id == UnitId::ZergOvileth)
-			{
-				helper::AI_TrainingOverlord(result, parent); // replace with hook later
-			}
-			else if (isSuicideUnit)
-			{
-				hooks::AI_TrainingBroodling(result, parent);
-			}
-			else
-			{
-				helper::AI_TrainingNormal(result, parent);
-			}
+			helper::AI_TrainingNormal(result, parent);
 		}
 	}
 
