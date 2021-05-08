@@ -55,8 +55,10 @@ namespace scbw
 		helper::function_004EBAE0(u, target.x, target.y);
 
 		if (!scbw::checkUnitCollisionPos(u, &(u->sprite->position), &new_pos, nullptr, false, 0))
+		{
 			//collision detected, cancel the movement
 			scbw::setUnitPosition(u, previous_pos.x, previous_pos.y);
+		}
 		else
 		{
 			result = true;

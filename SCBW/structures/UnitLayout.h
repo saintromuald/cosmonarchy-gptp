@@ -305,7 +305,7 @@ enum ExtUnitId
 	UnitDirgeAttacker,
 	UnitDecaySavant,
 	UnitWorshipDemiurge,
-	UnitAttachedAkistrokor,
+	UnitAttachedTarget,
 
 	UnitCount,
 };

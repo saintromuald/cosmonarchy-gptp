@@ -969,6 +969,23 @@ namespace hooks
 		}
 		*/
 
+		// Attachement - Generic behavior
+		if (Unit* target = unitExt->units[UnitAttachedTarget])
+		{
+			scbw::teleport(unit, target->position);
+
+			// Akistrokor - Attack Animation
+			if (unit->id == UnitId::ZergAkistrokor)
+			{
+				u32 currentAnim = unit->sprite->mainGraphic->animation;
+				if (currentAnim != IscriptAnimation::GndAttkInit
+					|| currentAnim != IscriptAnimation::GndAttkRpt)
+				{
+					unit->sprite->playIscriptAnim(IscriptAnimation::GndAttkInit);
+				}
+			}
+		}
+
 		// Apostle - Lazarus Agent revive
 		if (unitExt->values[ValueLazarusNoHeal])
 		{
