@@ -175,15 +175,25 @@ scbw::UnitFinderCallbackMatchInterface unitRangeCount(Unit* center, u32 context,
 			}
 		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Organic && context & Flags::NoOrganic)
+		{
 			return false;
+		}
 		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Organic) && context & Flags::OnlyOrganic)
+		{
 			return false;
+		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Mechanical && context & Flags::NoMechanical)
+		{
 			return false;
+		}
 		if (!(units_dat::BaseProperty[unit->id] & UnitProperty::Mechanical) && context & Flags::OnlyMechanic)
+		{
 			return false;
+		}
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Building && context & Flags::NoBuilding)
+		{
 			return false;
+		}
 		if (!(scbw::isEnabled(unit)) && context & Flags::Enabled)
 		{
 			return false;
