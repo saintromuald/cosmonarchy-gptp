@@ -1186,7 +1186,7 @@ namespace scbw
 		Unit* unit = helper::createUnit(unitId, pos.x, pos.y, playerId);
 		if (unit == nullptr)
 		{
-			displayLastNetErrForPlayer(playerId);
+			helper::displayLastNetErrorForPlayer(playerId);
 		}
 		else
 		{
@@ -1200,24 +1200,21 @@ namespace scbw
 		}
 		return unit;
 	}
-	const u32 Func_displayLastNetErrForPlayer = 0x0049E530;
-	void displayLastNetErrForPlayer(u32 playerId)
-	{
-		__asm {
-			PUSHAD
-			PUSH playerId
-			CALL Func_displayLastNetErrForPlayer
-			POPAD
-		}
-	}
+
 	u32 getUnitOverlayAdjustment(Unit* const unit)
 	{
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::MediumOverlay)
+		{
 			return 1;
+		}
 		else if (units_dat::BaseProperty[unit->id] & UnitProperty::LargeOverlay)
+		{
 			return 2;
+		}
 		else
+		{
 			return 0;
+		}
 	}
 
 	const u32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
