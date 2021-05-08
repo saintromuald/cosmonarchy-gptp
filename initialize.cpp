@@ -85,7 +85,7 @@
 #include "hooks/orders/unit_making/unit_train.h"
 #include "hooks/utils/utils.h"
 #include "hooks/interface/wireframe.h"
-#include "hooks/weapons/wpnspellhit.h"
+#include "hooks/weapons/weapon_spellhit.h"
 #include "hooks/weapon_effect.h"
 #include "hooks/use_tech.h"
 #include "hooks/limits/ccmu.h"

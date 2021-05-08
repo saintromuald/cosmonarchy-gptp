@@ -2,7 +2,7 @@
 #include <SCBW/UnitFinder.h>
 #include <SCBW/enumerations.h>
 #include <SCBW/api.h>
-#include "hooks/weapons/wpnspellhit.h"
+#include "hooks/weapons/weapon_spellhit.h"
 #include "globals.h"
 #include "weapons/weapon_damage.h"
 #include "limits/ccmu.h"

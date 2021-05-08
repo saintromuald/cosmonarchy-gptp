@@ -11,8 +11,9 @@
 #include "globals.h"
 #include "hooks/unit_stats/weapon_range.h"
 #include "weapon_damage.h"
-#include "wpnspellhit.h"
+#include "weapon_spellhit.h"
 #include <set>
+
 //-------- Helper function declarations. Do NOT modify! ---------//
 
 static bool madrigalFuriaMatch(Unit* madrigal, Unit* unit)

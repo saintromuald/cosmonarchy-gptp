@@ -1,5 +1,5 @@
 #include "weapon_effect.h"
-#include "weapons\wpnspellhit.h"
+#include "weapons\weapon_spellhit.h"
 #include "../hook_tools.h"
 #include "SCBW/enumerations.h"
 

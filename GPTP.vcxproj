@@ -432,8 +432,8 @@
     <ClCompile Include="hooks\utils\utils_inject.cpp" />
     <ClCompile Include="hooks\interface\wireframe.cpp" />
     <ClCompile Include="hooks\interface\wireframe_inject.cpp" />
-    <ClCompile Include="hooks\weapons\wpnspellhit.cpp" />
-    <ClCompile Include="hooks\weapons\wpnspellhit_inject.cpp" />
+    <ClCompile Include="hooks\weapons\weapon_spellhit.cpp" />
+    <ClCompile Include="hooks\weapons\weapon_spellhit_inject.cpp" />
     <ClCompile Include="AI\ai_common.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='HYD Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='HYD FastDebug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
@@ -703,7 +703,7 @@
     <ClInclude Include="hooks\orders\unit_making\unit_train.h" />
     <ClInclude Include="hooks\utils\utils.h" />
     <ClInclude Include="hooks\interface\wireframe.h" />
-    <ClInclude Include="hooks\weapons\wpnspellhit.h" />
+    <ClInclude Include="hooks\weapons\weapon_spellhit.h" />
     <ClInclude Include="AI\ai_common.h" />
     <ClInclude Include="SCBW\api.h" />
     <ClInclude Include="hooks\apply_upgrade_flags.h" />

@@ -4,13 +4,12 @@
 #include "unit_destructor_special.h"
 #include "../SCBW/api.h"
 #include "../hook_tools.h"
-#include "hooks/weapons/wpnspellhit.h"
+#include "hooks/weapons/weapon_spellhit.h"
 #include "logger.h"
 //Identical to 00466170  sub_466170
 //Not hooked but used by hooked unitDestructorSpecialHook
 #include <SCBW/UnitFinder.h>
 #include "globals.h"
-#include "hooks\weapons\wpnspellhit.h"
 
 void killAllHangarUnits(Unit* unit)
 {

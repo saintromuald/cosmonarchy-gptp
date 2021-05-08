@@ -1,5 +1,5 @@
 //The source file for the Weapon/Spell Hit hook module.
-#include "wpnspellhit.h"
+#include "weapon_spellhit.h"
 #include <SCBW/api.h>
 #include <SCBW/UnitFinder.h>
 #include "logger.h"
