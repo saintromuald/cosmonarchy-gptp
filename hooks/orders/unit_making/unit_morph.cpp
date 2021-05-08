@@ -367,7 +367,7 @@ namespace hooks
 		{
 			UnitExt* unitExt = globals.GetUnitExt(unit);
 			if (unitExt->values[ValueLarvaType] = LarvaOcsal
-				&& scbw::isSharedLarvaMorph(morphUnitId))
+				&& (scbw::isSharedLarvaMorph(morphUnitId) || scbw::isEssentialLarvaMorph(morphUnitId)))
 			{
 				if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1)
 				{
@@ -377,7 +377,7 @@ namespace hooks
 			else
 				if ((unitExt->values[ValueLarvaType] == LarvaStandard
 					|| unitExt->values[ValueLarvaType] == LarvaSire)
-					&& !scbw::isSharedLarvaMorph(morphUnitId))
+					&& (!scbw::isSharedLarvaMorph(morphUnitId) || scbw::isEssentialLarvaMorph(morphUnitId)))
 				{
 					if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1)
 					{

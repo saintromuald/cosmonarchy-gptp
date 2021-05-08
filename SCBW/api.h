@@ -414,6 +414,7 @@ namespace scbw
 	bool unitCanNuke(Unit* unit);
 	bool unitIsTrap(Unit* unit);
 	bool isSharedLarvaMorph(u16 id);
+	bool isEssentialLarvaMorph(u16 id);
 	bool unitIsRangedAttacker(Unit* unit);
 	void playWorkAnimation(Unit* unit);
 	bool isStandardTerranUnit(u16 id);

@@ -1791,8 +1791,6 @@ namespace scbw
 	{
 		switch (id)
 		{
-			case UnitId::ZergDroleth:
-			case UnitId::ZergOvileth:
 			case UnitId::SharedCohort:
 //			case UnitId::SharedTarasque:
 //			case UnitId::SharedAnticthon:
@@ -1801,7 +1799,23 @@ namespace scbw
 //			case UnitId::SharedAnthelion:
 			{
 				return true;
+			} break;
+			default:
+			{
+				return false;
 			}
+		}
+	}
+
+	bool isEssentialLarvaMorph(u16 id)
+	{
+		switch (id)
+		{
+			case UnitId::ZergDroleth:
+			case UnitId::ZergOvileth:
+			{
+				return true;
+			} break;
 			default:
 			{
 				return false;
