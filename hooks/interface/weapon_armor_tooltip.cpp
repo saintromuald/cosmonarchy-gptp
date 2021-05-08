@@ -103,10 +103,10 @@ const char* getDamageTooltipString(u8 weaponId, Unit* unit, u16 entryStrIndex)
 			typeName = "\017Concussive\002";
 			damageModifiers = "\017100\002/\00375\002/\02150\002/\00625\002";
 		} break;
-		case DamageType::Normal:
+		case DamageType::Impact:
 		{
 			// Yellow
-			typeName = "\003Normal\002";
+			typeName = "\003Impact\002";
 			damageModifiers = "\017100\002/\003100\002/\02175\002/\00650\002";
 		} break;
 		case DamageType::Explosive:
@@ -404,7 +404,7 @@ namespace hooks
 			case 1:
 			{
 				// Teal
-				sizeText = "\017Small\002";
+				sizeText = "\017Light\002";
 			} break;
 			case 2:
 			{
@@ -414,7 +414,7 @@ namespace hooks
 			case 3:
 			{
 				// Orange
-				sizeText = "\021Large\002";
+				sizeText = "\021Heavy\002";
 			} break;
 			case 4:
 			{

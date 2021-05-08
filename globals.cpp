@@ -511,7 +511,7 @@ void Globals::frameHook()
 					).forEachInMatch(unitRangeCount(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
 						UnitExt* unitExt = globals.GetUnitExt(unit);
-						unit->damageWithCustom(30 * damageMultiplier, DamageType::Normal, nullptr, effects[i].player, 0, 1, true);
+						unit->damageWithCustom(30 * damageMultiplier, DamageType::Impact, nullptr, effects[i].player, 0, 1, true);
 						unitExt->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
 					});
 					break;

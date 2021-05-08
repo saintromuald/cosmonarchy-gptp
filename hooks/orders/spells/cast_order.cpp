@@ -35,6 +35,7 @@ namespace hooks
 			unitExt->values[ValueWyvernReverseLandGrabX] = unit->orderTarget.pt.x;
 			unitExt->values[ValueWyvernReverseLandGrabY] = unit->orderTarget.pt.y;
 		}
+
 		if (unit->mainOrderState == 2)
 		{
 			if (unit->orderSignal & 2)
