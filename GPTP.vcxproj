@@ -304,6 +304,8 @@
     <ClCompile Include="hooks\orders\building_making\building_protoss_inject.cpp" />
     <ClCompile Include="hooks\orders\building_making\building_terran.cpp" />
     <ClCompile Include="hooks\orders\building_making\building_terran_inject.cpp" />
+    <ClCompile Include="hooks\orders\pathfinding.cpp" />
+    <ClCompile Include="hooks\orders\pathfinding_inject.cpp" />
     <ClCompile Include="hooks\recv_commands\burrow_tech.cpp" />
     <ClCompile Include="hooks\recv_commands\burrow_tech_inject.cpp" />
     <ClCompile Include="hooks\interface\buttonsets.cpp" />
@@ -564,6 +566,7 @@
     <ClInclude Include="hooks\limits\misc_extenders.h" />
     <ClInclude Include="hooks\neutral_related.h" />
     <ClInclude Include="hooks\orders\building_making\building_helper.h" />
+    <ClInclude Include="hooks\orders\pathfinding.h" />
     <ClInclude Include="hooks\trap_hooks.h" />
     <ClInclude Include="hooks\unit_movement.h" />
     <ClInclude Include="include\yaml-cpp\anchor.h" />

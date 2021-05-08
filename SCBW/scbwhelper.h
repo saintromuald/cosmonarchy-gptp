@@ -860,6 +860,10 @@ namespace helper
 	const void issueTriTargetOrder(u8 order1, u8 order2, u8 order3);										// 0048CAF0
 	s32 checkEnergyForTechUse(s32 tech_id);																	// 00423660
 
+	//// pathfinding
+	s32 isPointAtUnitBorder(s32 unused, Unit* other, Unit* self, s32 position_xy);							// 004EB720
+	s32 AI_PrepareMovingTo(Unit* unit, s32 x, s32 y);														// 004E7420
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);
