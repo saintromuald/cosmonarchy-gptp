@@ -50,8 +50,7 @@ namespace scbw
 		previous_pos.x = u->sprite->position.x;
 		previous_pos.y = u->sprite->position.y;
 
-		//identical code to setUnitPosition() but for some reason, is
-		//using another function to do exactly the same thing
+		// identical code to setUnitPosition() but for some reason, is using another function to do exactly the same thing
 		helper::function_004EBAE0(u, target.x, target.y);
 
 		if (!scbw::checkUnitCollisionPos(u, &(u->sprite->position), &new_pos, nullptr, false, 0))
@@ -64,7 +63,7 @@ namespace scbw
 			result = true;
 			Thingy* recall_effect_sprite;
 
-			//finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
+			// finish the teleporting (and cut the recalled unit from a possible unit targeted by an order)
 			scbw::prepareUnitMove(u, false);
 			if (!preserveOrder)
 			{
@@ -73,11 +72,13 @@ namespace scbw
 			scbw::setUnitPosition(u, new_pos.x, new_pos.y);
 			scbw::refreshUnitAfterMove(u);
 
-			//stop some currently active orders
+			// stop some currently active orders
 			if (u->id != UnitId::ZergCocoon && !preserveOrder)
+			{
 				u->orderComputerCL(units_dat::ReturnToIdleOrder[u->id]);
+			}
 
-			//create the Recall animation over the unit
+			// create the Recall animation over the unit
 			if (spriteAnimation)
 			{
 				recall_effect_sprite = createThingy(spriteAnimation, new_pos.x, new_pos.y, 0);
@@ -89,19 +90,11 @@ namespace scbw
 
 			}
 
-			//disconnect a nuke from a ghost using it
-			if (
-				u->id == UnitId::TerranEidolon ||
-				u->id == UnitId::Hero_SarahKerrigan ||
-				u->id == UnitId::Hero_AlexeiStukov ||
-				u->id == UnitId::Hero_SamirDuran ||
-				u->id == UnitId::Hero_InfestedDuran
-				)
+			// disconnect a nuke from a ghost using it
+			if (scbw::unitCanNuke(u))
 			{
-				if (
-					u->connectedUnit != nullptr &&
-					u->connectedUnit->id == UnitId::TerranNuclearMissile
-					)
+				if (u->connectedUnit != nullptr
+					&& u->connectedUnit->id == UnitId::TerranNuclearMissile)
 				{
 					(u->connectedUnit)->connectedUnit = nullptr;
 					u->connectedUnit = nullptr;

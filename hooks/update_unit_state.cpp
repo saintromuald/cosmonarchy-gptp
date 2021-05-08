@@ -109,18 +109,6 @@ namespace hooks
 		}
 	}
 
-	const u32 Func_SetUnitPathing = 0x00401360;
-	void setUnitPathing(Unit* unit, u8 unkPathRelated)
-	{
-		__asm {
-			PUSHAD
-			MOV AL, unkPathRelated
-			MOV ECX, unit
-			CALL Func_SetUnitPathing
-			POPAD
-		}
-	}
-
 	static bool wyvernCanFireAt(Unit* unit, Unit* target)
 	{
 		return scbw::canWeaponTargetUnit(WeaponId::WyvernJacksonCannon, target, unit)
