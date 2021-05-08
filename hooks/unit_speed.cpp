@@ -220,7 +220,7 @@ namespace hooks
 			} break;
 			case UnitId::TerranClaymore:
 			{
-				speed *= 0.8;
+				speed *= 0.9;
 			} break;
 		}
 
