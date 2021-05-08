@@ -1,5 +1,6 @@
 #include "CMDRECV_Stop.h"
 #include <SCBW/api.h>
+#include <globals.h>
 
 namespace hooks
 {
@@ -239,63 +240,75 @@ namespace hooks
 			*u32_0066FF60 = 0x00;
 
 			if (orders_dat::RequirementsOffset[OrderId::Stop] == 0xFFFF)
+			{
 				helper::parseOrdersDatReqs();
+			}
 
 			if (current_unit->playerId != *ACTIVE_NATION_ID)
+			{
 				*u32_0066FF60 = 0x01;
-			else
-				if (!(current_unit->status & UnitStatus::Completed))
-					*u32_0066FF60 = 0x14;
-				else
-					if (current_unit->isFrozen())
-					{
-						*u32_0066FF60 = 0x0A;
-					}
-					else
-						if (current_unit->status & UnitStatus::Burrowed &&
-							current_unit->id != UnitId::ZergLakizilisk
-							)
-							*u32_0066FF60 = 0x0B;
-						else
-							if ((current_unit->id == UnitId::TerranEidolon ||
-								current_unit->id == UnitId::Hero_SarahKerrigan ||
-								current_unit->id == UnitId::Hero_AlexeiStukov ||
-								current_unit->id == UnitId::Hero_SamirDuran ||
-								current_unit->id == UnitId::Hero_InfestedDuran) &&
-								current_unit->mainOrderId == OrderId::NukeTrack
-								)
-								*u32_0066FF60 = 0x08;
-							else
-								if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur) &&
-									current_unit->mainOrderId == OrderId::CompletingArchonSummon
-									)
-									*u32_0066FF60 = 0x08;
-								else
-									if (current_unit->id == UnitId::ProtossMindTyrant &&
-										current_unit->mainOrderId == OrderId::CompletingArchonSummon
-										)
-										*u32_0066FF60 = 0x08;
-									else
-										if (orders_dat::RequirementsOffset[OrderId::Stop] == 0)
-											*u32_0066FF60 = 0x17;
-										else
-											if (helper::parseRequirementOpcodes(
-												current_unit,
-												OrderId::Stop,
-												*ACTIVE_NATION_ID,
-												0x00514CF8,
-												orders_dat::RequirementsOffset[OrderId::Stop]
-											) == 1)
-												helper::function_004754F0(
-													current_unit,
-													UnitId::None,
-													*(u32*)(0x006D5C24),
-													*(u32*)(0x006D5C20),
-													OrderId::Stop,
-													0,
-													bCommandType != 0, //true (1) if Queued Order
-													1
-												);
+			}
+			else if (!(current_unit->status & UnitStatus::Completed))
+			{
+				*u32_0066FF60 = 0x14;
+			}
+			else if (current_unit->isFrozen())
+			{
+				*u32_0066FF60 = 0x0A;
+			}
+			else if (current_unit->status & UnitStatus::Burrowed && current_unit->id != UnitId::ZergLakizilisk)
+			{
+				*u32_0066FF60 = 0x0B;
+			}
+			else if ((current_unit->id == UnitId::TerranEidolon ||
+				current_unit->id == UnitId::Hero_SarahKerrigan ||
+				current_unit->id == UnitId::Hero_AlexeiStukov ||
+				current_unit->id == UnitId::Hero_SamirDuran ||
+				current_unit->id == UnitId::Hero_InfestedDuran) &&
+				current_unit->mainOrderId == OrderId::NukeTrack)
+			{
+				*u32_0066FF60 = 0x08;
+			}
+			else if ((current_unit->id == UnitId::ProtossArchon || current_unit->id == UnitId::ProtossAugur) &&
+				current_unit->mainOrderId == OrderId::CompletingArchonSummon)
+			{
+				*u32_0066FF60 = 0x08;
+			}
+			else if (current_unit->id == UnitId::ProtossMindTyrant &&
+				current_unit->mainOrderId == OrderId::CompletingArchonSummon)
+			{
+				*u32_0066FF60 = 0x08;
+			}
+			else if (orders_dat::RequirementsOffset[OrderId::Stop] == 0)
+			{
+				*u32_0066FF60 = 0x17;
+			}
+			else if (helper::parseRequirementOpcodes(
+				current_unit,
+				OrderId::Stop,
+				*ACTIVE_NATION_ID,
+				0x00514CF8,
+				orders_dat::RequirementsOffset[OrderId::Stop]
+			) == 1)
+			{
+				helper::function_004754F0(
+					current_unit,
+					UnitId::None,
+					*(u32*)(0x006D5C24),
+					*(u32*)(0x006D5C20),
+					OrderId::Stop,
+					0,
+					bCommandType != 0, //true (1) if Queued Order
+					1
+				);
+			}
+
+			if (current_unit->id == UnitId::TerranWyvern)
+			{
+				UnitExt* unitExt = globals.GetUnitExt(current_unit);
+				unitExt->units[UnitWyvernTargetLock] = nullptr;
+			}
+							
 			current_unit = getActivePlayerNextSelection();
 		}
 	}
