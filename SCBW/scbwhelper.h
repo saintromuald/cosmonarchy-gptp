@@ -561,6 +561,7 @@ namespace helper
 	void ApplySpores(Unit* unit);
 	Bullet* createBullet(u8 weaponId, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
 	void weaponBulletShot(Unit* target, Bullet* bullet, u32 dmgDivisor);
+	Unit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y);																// 004CD360
 
 	//// unit_morph
 	u8 setArchonPathing(Unit* unit);																								// 0046A820
