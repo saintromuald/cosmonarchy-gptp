@@ -969,7 +969,17 @@ namespace hooks
 		}
 		*/
 
-		// Attachement - Generic behavior
+		// Correct vanilla timers - THIS IS TEMPORARY!
+		if (unit->defensiveMatrixTimer > AzazelDefensiveMatrixTimer)
+		{
+			unit->defensiveMatrixTimer = AzazelDefensiveMatrixTimer;
+		}
+		if (unit->stasisTimer > DidactStasisFieldTimer)
+		{
+			unit->stasisTimer = DidactStasisFieldTimer;
+		}
+
+		// Attachment - Generic behavior
 		if (Unit* target = unitExt->units[UnitAttachedTarget])
 		{
 			scbw::teleport(unit, target->position);

@@ -564,7 +564,7 @@ BOOL WINAPI Plugin::InitializePlugin(IMPQDraftServer* lpMPQDraftServer)
 	hooks::injectNeutralRelatedHooks();
 //	hooks::injectFileOperationsHooks();
 	hooks::injectGlucustomHooks();
-	hooks::injectPathfindingHooks();
+//	hooks::injectPathfindingHooks();
 
 	return TRUE;
 }

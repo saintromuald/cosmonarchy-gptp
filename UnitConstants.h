@@ -46,6 +46,7 @@ const s32 MineDetonateRange = 30;
 const s32 LobotomyMineLockdownTime = 12; // 4 seconds
 
 // Azazel
+constexpr s32 AzazelDefensiveMatrixTimer = 90; // roughly 30 seconds
 constexpr s32 AzazelDefensiveMatrixHeal = 53; // 5 HP per second | 256 * 5 / 24
 
 // Treasury
@@ -66,6 +67,9 @@ constexpr s32 AIWebMinEnergy = 30;
 constexpr s32 AIWebAllyMinCount = 3;
 constexpr s32 AIWebEnemyMinCount = 2;
 constexpr s32 AIWebTimer = 3 * 24;
+
+// Didact
+constexpr s32 DidactStasisFieldTimer = 35; // roughly 12 seconds
 
 // Star Sovereign
 constexpr s32 AIStarsovereignAbilSeekRange = 6 * 32;
