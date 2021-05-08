@@ -4736,8 +4736,8 @@ namespace helper
 		static s32 result;
 		__asm {
 			PUSHAD
-			MOV EAX, unit
-			MOV ECX, target
+			MOV ECX, unit
+			MOV EAX, target
 			CALL Func_moveTowards
 			MOV result, EAX
 			POPAD

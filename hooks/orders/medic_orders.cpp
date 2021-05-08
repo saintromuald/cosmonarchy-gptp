@@ -210,7 +210,7 @@ namespace hooks
 			if (unit->mainOrderState == 0)
 			{
 				if (target != nullptr
-					&& helper::moveTowards(target, unit) != 0
+					&& helper::moveTowards(unit, target) != 0
 					&& unit->getMovableState() != 2) // unit not unmovable
 				{
 					if (unit->isTargetWithinMinRange(target, 30))
