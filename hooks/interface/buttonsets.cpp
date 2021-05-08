@@ -826,6 +826,24 @@ namespace hooks
 							{
 								current_button_state = BUTTON_STATE::Disabled;
 
+								// SHARED \\
+								
+								if ((*activePortraitUnit)->id == UnitId::SharedCohort &&  // Cohort Servile Vigor passive 
+									current_button->iconID == IconId::TerranInfantryArmor)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::SharedCharlatan && // Charlatan Leading the Blind passive
+									current_button->iconID == IconId::DemiurgePassiveWorship)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+								if ((*activePortraitUnit)->id == UnitId::SharedAspirant &&  // Aspirant Criticality passive 
+									current_button->iconID == IconId::ScarabDamage)
+								{
+									current_button_state = BUTTON_STATE::Enabled;
+								}
+
 								// TERRAN \\
 
 								if ((*activePortraitUnit)->id == UnitId::TerranHarakan && // Harakan Apollyoid Adhesive passive
@@ -970,16 +988,6 @@ namespace hooks
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
-								if ((*activePortraitUnit)->id == UnitId::SharedCohort &&  // Cohort Servile Vigor passive 
-									current_button->iconID == IconId::TerranInfantryArmor)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
-								if ((*activePortraitUnit)->id == UnitId::SharedAspirant &&  // Aspirant Criticality passive 
-									current_button->iconID == IconId::ScarabDamage)
-								{
-									current_button_state = BUTTON_STATE::Enabled;
-								}
 								if ((*activePortraitUnit)->id == UnitId::TerranClaymore &&  // Claymore Kelvin Munitions passive 
 									current_button->iconID == IconId::Fusion_Cutter_Harvest)
 								{
@@ -1109,7 +1117,7 @@ namespace hooks
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossDemiurge &&  // Demiurge Worship passive 
-									current_button->iconID == IconId::OcularImplants)
+									current_button->iconID == IconId::DemiurgePassiveWorship)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}
@@ -1129,7 +1137,7 @@ namespace hooks
 									current_button_state = BUTTON_STATE::Enabled;
 								}
 								if ((*activePortraitUnit)->id == UnitId::ProtossDidact &&  // Didact Shroud of Adun passive
-									current_button->iconID == IconId::PhotonCannon_Weapon)
+									current_button->iconID == IconId::DidactPassiveShroudOfAdun)
 								{
 									current_button_state = BUTTON_STATE::Enabled;
 								}

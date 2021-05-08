@@ -395,6 +395,16 @@ namespace IconId
 		/*0182*/	Play_Replay,
 		/*0183*/	Pause_Replay,
 		/*0184*/	Speed_Up_Replay,
-		/*0185*/	Slow_Down_Replay
+		/*0185*/	Slow_Down_Replay,
+
+		// Extended / HYDRA \\
+
+		MadcapDanaanAutogun,
+		AtreusDauntlessDisruptionCannon,
+		DemiurgePassiveWorship,
+		UnusedTaunt,
+		UnusedGhost,
+		DidactPassiveShroudOfAdun,
+		PaladinActiveSkyfall,
 	};
 }
