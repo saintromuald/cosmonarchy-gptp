@@ -138,6 +138,13 @@ namespace WeaponId {
 
 		// HYDRA \\
 
+		// Shared \\
+
+		CohortGaussPistols = 20,				// Cohort weapon
+		AspirantPotentiumCannon = 69,			// Aspirant weapon
+		AspirantCriticality = 85,				// Aspirant behavior
+		CharlatanFerventBlaster = 101,			// Charlatan weapon
+
 		// Terran \\
 			
 		HeraclesJavelinCannons = 1,				// Heracles weapon
@@ -150,7 +157,6 @@ namespace WeaponId {
 		SalamanderPerditionBarrage = 17,		// SalamanderFire weapon
 		GorgonArtificeBattery = 18,				// Gorgon weapon
 		MinotaurAsterionLaserBattery = 19,		// Minotaur weapon
-		CohortGaussPistols = 20,				// Cohort weapon
 		MadrigalFuriaMissiles = 21,				// Madrigal weapon 1
 		MadrigalImperiosoMissiles = 22,			// Madrigal weapon 2
 		CentaurArtaxCannon = 23,				// Centaur weapon 1
@@ -158,8 +164,6 @@ namespace WeaponId {
 		CyprianTwinRailguns = 26,				// Cyprian weapon
 		PenumbraErebolShockCannon = 39,			// Penumbra weapon
 		PazuzuJupiterDriver = 51,				// Pazuzu weapon
-		AspirantPotentiumCannon = 69,			// Aspirant weapon
-		AspirantCriticality = 85,				// Aspirant behavior
 		SavantDiscoidRailgun = 88,				// Savant weapon
 		LobotomyMineExplosion = 89,				// Lobotomy Mine weapon
 		CyclopsFlakCannons = 93,				// Cyclops weapon
@@ -173,7 +177,6 @@ namespace WeaponId {
 		SalamanderIncendiaryPayload = 124,		// SalamanderFire behavior damage
 		WyvernJacksonCannon = 125,				// Wyvern weapon + Wyvern ability targeting
 		PaladinSkyfall = 126,					// Paladin ability targeting
-		SirenTertiaryEyes = 127,				// Siren ability targeting
 		IonCannon = 129,						// Ion Cannon weapon
 		IonField = 57,							// Ion Cannon behavior
 
@@ -222,5 +225,6 @@ namespace WeaponId {
 		QuaziliskAcridBarbs = 102,				// Quazilisk weapon
 		AlmaksaliskPiercingSpines = 110,		// Almaksalisk weapon
 		KalkaliskViscousAcid = 117,				// Kalkalisk weapon
+		AkistrokorEnthrallingAssault = 127,		// Akistrokor ability targeting
 	};
 }

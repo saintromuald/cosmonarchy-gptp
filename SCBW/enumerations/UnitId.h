@@ -432,7 +432,6 @@ enum Enum {
 	//HYDRA\\
 
 // Unused
-//	Bengalaas										= 90,		// Bengalaas
 //	TerranAcademy									= 112,		// Terran Academy
 //	TerranPhysicsLab								= 118,		// Physics Lab | Currently cannot set dat requirements because of firegraft being a good program
 //	TerranArmory									= 123,		// Terran Armory
@@ -440,6 +439,10 @@ enum Enum {
 //	InfestedCommandCenter							= 130,		// Infested Command Center
 //	MatureChrysalis									= 150,		// Mature Chrysalis
 //	IndependentJumpGate								= 185,		// Independent Jump Gate
+
+// Soon to be unused
+//	DisruptionWeb									= 105,		// Disruption Web
+//	DarkSwarm										= 202,		// Dark Swarm
 
 // Need IDs for
 //	SharedStriga									= x,		// 
@@ -454,6 +457,7 @@ enum Enum {
 
 // Shared-Unit
 	SharedCohort									= 50,		// Infested Terran
+	SharedCharlatan									= 90,		// Bengalaas
 	SharedAspirant									= 194,		// Zerg Beacon
 
 // Terran-Unit

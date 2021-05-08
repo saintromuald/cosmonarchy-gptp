@@ -417,4 +417,5 @@ namespace scbw
 	bool unitIsRangedAttacker(Unit* unit);
 	void playWorkAnimation(Unit* unit);
 	bool isStandardTerranUnit(u16 id);
+	void applyNewHallucination(Unit* unit, u8 playerId, u32 time);
 }

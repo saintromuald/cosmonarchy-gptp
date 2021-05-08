@@ -51,6 +51,9 @@ constexpr s32 AzazelDefensiveMatrixHeal = 53; // 5 HP per second | 256 * 5 / 24
 // Treasury
 constexpr s32 TreasuryIncrease = 4;
 
+// Cantavis
+constexpr s32 HallucinationTimer = 10 * 24;
+
 // Demiurge
 constexpr s32 GodsMadeFleshEnergyDrain = 100;
 

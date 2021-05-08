@@ -1888,4 +1888,33 @@ namespace scbw
 			|| id == UnitId::SharedCohort
 			|| id == UnitId::SharedAspirant;
 	}
+
+	void applyNewHallucination(Unit* unit, u8 playerId, u32 time)
+	{
+		UnitExt* unitExt = globals.GetUnitExt(unit);
+
+		// Sounds
+		if (!unitExt->values[TimerHallucinating])
+		{
+			scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit);
+		}
+		else
+		{
+			scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal01_WAV, unit);
+		}
+
+		// Overlays
+		if (unit->subunit != nullptr)
+		{
+			unit->subunit->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
+		}
+		else
+		{
+			unit->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
+		}
+		
+		// Values
+		unitExt->values[ValueHallucinatingSourcePlayer] = playerId;
+		unitExt->timers[TimerHallucinating] = time;
+	}
 }

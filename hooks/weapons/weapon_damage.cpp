@@ -576,6 +576,14 @@ namespace hooks
 						}
 					}
 				} break;
+				case WeaponId::CharlatanFerventBlaster:
+				{
+					// Charlatan - Leading the Blind passive
+					if (!scbw::isAlliedTo(data.attacker->playerId, data.target->playerId))
+					{
+						scbw::applyNewHallucination(data.target, data.attacker->playerId, HallucinationTimer);
+					}
+				} break;
 				case WeaponId::Claws:
 				{
 					// Adrenal Glands - Zergling behavior
