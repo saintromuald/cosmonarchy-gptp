@@ -31,25 +31,9 @@ namespace hooks
 
 		if (unit->id == UnitId::TerranWyvern)
 		{
-			if (unit->orderSignal & 0x40)
-			{
-				unit->orderSignal &= ~0x40;
-				if (scbw::get_generic_rust_value(unit, RustId::ToggleReverseThrust) == 1)
-				{
-					unitExt->values[ValueWyvernReverseLandgrabOn] = 1;
-					unitExt->values[ValueWyvernReverseLandgrabX] = unit->orderTarget.pt.x;
-					unitExt->values[ValueWyvernReverseLandgrabY] = unit->orderTarget.pt.y;
-				}
-				else
-				{
-					unitExt->values[ValueWyvernReverseLandgrabOn] = 0;
-				}
-			}
-			if (unit->orderSignal & 0x80)
-			{
-				unit->orderSignal &= ~0x80;
-				unit->orderTo(OrderId::CTFCOPInit, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
-			}
+			unitExt->values[ValueWyvernReverseLandgrabOn] = 1;
+			unitExt->values[ValueWyvernReverseLandgrabX] = unit->orderTarget.pt.x;
+			unitExt->values[ValueWyvernReverseLandgrabY] = unit->orderTarget.pt.y;
 		}
 		if (unit->mainOrderState == 2)
 		{
