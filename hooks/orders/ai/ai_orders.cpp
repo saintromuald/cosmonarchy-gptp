@@ -167,12 +167,12 @@ namespace hooks
 	}
 
 	// Hooked to add region null check - Pr0nogo
-	void AI_TrainingBroodling(Unit* result, Unit* parent)
-	{						// 0043E280
-		AiCaptain* region; // esi
-		s16 regionType; // ax
-		AiCaptain* playerRegion; // ecx
-		s32 regionId; // esi
+	void AI_TrainingBroodling(Unit* result, Unit* parent) // 0043E280
+	{ 
+		AiCaptain* region;
+		s16 regionType;
+		AiCaptain* playerRegion;
+		s32 regionId;
 		s32 pX, pY;
 		if (result->sprite != nullptr)
 		{
