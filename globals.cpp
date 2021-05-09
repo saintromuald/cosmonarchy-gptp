@@ -1539,12 +1539,6 @@ namespace scbw
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
 		std::unordered_set<Unit*> links = {};
-		if (unit->id == UnitId::ProtossClarion)
-		{
-			auto link = unitExt->unitVectors[UnitVectorPhaseLink];
-			links.insert(link.begin(), link.end());
-		}
-		/*
 		auto& clarions = unitExt->unitVectors[UnitVectorPhaseLinkClarions];
 		for (Unit* clarion : clarions)
 		{
@@ -1556,7 +1550,6 @@ namespace scbw
 			auto link = clarionExt->unitVectors[UnitVectorPhaseLink];
 			links.insert(link.begin(), link.end());
 		}
-		*/
 		return std::vector<Unit*>(links.begin(), links.end());
 	}
 }
