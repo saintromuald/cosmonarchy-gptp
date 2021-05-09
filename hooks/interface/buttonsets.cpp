@@ -621,21 +621,14 @@ namespace hooks
 		u16* const BUTTONSET_PORTRAIT_BUTTONSETID = (u16*)0x0068C14C;
 		auto buttonsetId = *BUTTONSET_PORTRAIT_BUTTONSETID;
 		BinDlg* current_dialog = *BUTTONSET_DIALOG;
+
 		// Custom buttonset overrides
 		// Treasury
 		if (buttonsetId == 215)
 		{
 			buttonsetId = UnitId::Special_StartLocation; // Treasury
 		}
-		// Larva		
-		if (buttonsetId == 35)
-		{
-			UnitExt* larvaExt = globals.GetUnitExt(*activePortraitUnit);
-			if (larvaExt->values[ValueLarvaType] == 1)
-			{
-				buttonsetId = UnitId::Special_RightUpperLevelDoor; // Ocsal Larva
-			}
-		}
+
 		BUTTON_SET* const current_buttonset = getButtonSet(buttonsetId);
 		u32* const unknown_0066FF60 = (u32*)0x0066FF60;
 		bool bStopThere = false;
