@@ -462,19 +462,6 @@ void Globals::frameHook()
 			const f64 damageMultiplier = 256.0 * (f64)framePeriod / effects[i].maxTime;
 			switch (effects[i].effectId)
 			{
-				case EffectId::SalamanderFire:
-				{
-					scbw::UnitFinder(
-						effects[i].position.x - effects[i].radius,
-						effects[i].position.y - effects[i].radius,
-						effects[i].position.x + effects[i].radius,
-						effects[i].position.y + effects[i].radius
-					).forEachInMatch(unitRangeCount(nullptr, Flags::NoAir, {}), [&](Unit* unit)
-					{
-						unit->damageWithCustom(20 * damageMultiplier, DamageType::Concussive, nullptr, effects[i].player, 0, 1, true);
-					});
-					break;
-				}
 				case EffectId::GriefOfAllGods:
 				{
 					scbw::UnitFinder(
@@ -488,6 +475,23 @@ void Globals::frameHook()
 					});
 					break;
 				}
+				case EffectId::SalamanderFire:
+				{
+					scbw::UnitFinder(
+						effects[i].position.x - effects[i].radius,
+						effects[i].position.y - effects[i].radius,
+						effects[i].position.x + effects[i].radius,
+						effects[i].position.y + effects[i].radius
+					).forEachInMatch(unitRangeCount(nullptr, Flags::NoAir, {}), [&](Unit* unit)
+					{
+						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
+						{
+							return;
+						}
+						unit->damageWithCustom(20 * damageMultiplier, DamageType::Concussive, nullptr, effects[i].player, 0, 1, true);
+					});
+					break;
+				}
 				case EffectId::Criticality:
 				{
 					scbw::UnitFinder(
@@ -497,6 +501,10 @@ void Globals::frameHook()
 						effects[i].position.y + effects[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
+						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
+						{
+							return;
+						}
 						unit->damageWithCustom(30 * damageMultiplier, DamageType::Explosive, nullptr, effects[i].player, 0, 1, true);
 					});
 					break;
@@ -510,6 +518,10 @@ void Globals::frameHook()
 						effects[i].position.y + effects[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
+						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
+						{
+							return;
+						}
 						UnitExt* unitExt = globals.GetUnitExt(unit);
 						unit->damageWithCustom(30 * damageMultiplier, DamageType::Impact, nullptr, effects[i].player, 0, 1, true);
 						unitExt->timers[TimerCausticDischargeSpeed] = 5 * 24 + 1;
@@ -525,6 +537,10 @@ void Globals::frameHook()
 						effects[i].position.y + effects[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, Flags::NoAir, {}), [&](Unit* unit)
 					{
+						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
+						{
+							return;
+						}
 						UnitExt* unitExt = globals.GetUnitExt(unit);
 						unit->damageWithCustom(100 * damageMultiplier, DamageType::Chronal, nullptr, effects[i].player, 0, 1, true);
 						unitExt->timers[TimerIonFieldSpeed] = 2 * 24 + 1;
@@ -540,6 +556,10 @@ void Globals::frameHook()
 						effects[i].position.y + effects[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, Flags::Enemy, {}), [&](Unit* unit)
 					{
+						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
+						{
+							return;
+						}
 						UnitExt* unitExt = globals.GetUnitExt(unit);
 						if (unitExt->timers[TimerHallucinating] < effects[i].currentTime)
 						{
@@ -557,6 +577,10 @@ void Globals::frameHook()
 						effects[i].position.y + effects[i].radius
 					).forEachInMatch(unitRangeCount(nullptr, 0, {}), [&](Unit* unit)
 					{
+						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
+						{
+							return;
+						}
 						ApplyIrradiate(unit, effects[i].player, 15);
 					});
 					break;
