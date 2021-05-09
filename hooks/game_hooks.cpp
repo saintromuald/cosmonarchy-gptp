@@ -848,21 +848,6 @@ namespace hooks
 					unitExt->values[ValueGodsMadeFleshActive] = 0;
 				}
 			} break;
-			case UnitId::ZergLarva:
-			{
-				// Set Larva type
-				if (unit->connectedUnit != nullptr && unitExt->values[ValueLarvaType] == LarvaStandard)
-				{
-					if (unit->connectedUnit->id == UnitId::ZergOcsalColony)
-					{
-						unitExt->values[ValueLarvaType] = LarvaOcsal;
-					}
-					if (unit->connectedUnit->id == UnitId::ZergSire)
-					{
-						unitExt->values[ValueLarvaType] = LarvaSire; // Eventually should spawn 2x unit per egg
-					}
-				}
-			} break;
 			case UnitId::TerranMaverick:
 			{
 				// Decloak on Stimpack activation

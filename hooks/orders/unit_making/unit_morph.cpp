@@ -365,25 +365,10 @@ namespace hooks
 		}
 		if (unit->id == UnitId::ZergLarva)
 		{
-			UnitExt* unitExt = globals.GetUnitExt(unit);
-			if (unitExt->values[ValueLarvaType] = LarvaOcsal
-				&& (scbw::isSharedLarvaMorph(morphUnitId) || scbw::isEssentialLarvaMorph(morphUnitId)))
+			if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1)
 			{
-				if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1)
-				{
-					return true;
-				}
+				return true;
 			}
-			else
-				if ((unitExt->values[ValueLarvaType] == LarvaStandard
-					|| unitExt->values[ValueLarvaType] == LarvaSire)
-					&& (!scbw::isSharedLarvaMorph(morphUnitId) || scbw::isEssentialLarvaMorph(morphUnitId)))
-				{
-					if (unit->canMakeUnit(morphUnitId, *ACTIVE_NATION_ID) == 1)
-					{
-						return true;
-					}
-				}
 		}
 		if (unit->id == UnitId::ProtossCantavis)
 		{
