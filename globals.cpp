@@ -1538,7 +1538,7 @@ namespace scbw
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 
-		std::unordered_set<Unit*> links = {};
+		std::vector<Unit*> links = {};
 		auto& clarions = unitExt->unitVectors[UnitVectorPhaseLinkClarions];
 		for (Unit* clarion : clarions)
 		{
@@ -1548,8 +1548,8 @@ namespace scbw
 			}
 			UnitExt* clarionExt = globals.GetUnitExt(clarion);
 			auto link = clarionExt->unitVectors[UnitVectorPhaseLink];
-			links.insert(link.begin(), link.end());
+			links.insert(links.end(), link.begin(), link.end());
 		}
-		return std::vector<Unit*>(links.begin(), links.end());
+		return links;
 	}
 }
