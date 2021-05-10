@@ -178,15 +178,6 @@ namespace hooks
 	void orders_MedicHeal1(Unit* unit)
 	{
 		Unit* target = unit->orderTarget.unit;
-		if (target == nullptr)
-		{
-			return;
-		}
-		bool reqHeal = false;
-		if (target->hitPoints < units_dat::MaxHitPoints[target->id])
-		{
-			reqHeal = true;
-		}
 		u32 doMedicHeal_result = doMedicHeal_Func(unit, target);
 		if (doMedicHeal_result == 0)
 		{
