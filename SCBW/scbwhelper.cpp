@@ -2628,23 +2628,6 @@ namespace helper
 		return return_value;
 	}
 
-	// hardcodes the recall targets selection function
-	u32 IterateUnitsAtLocationTargetProc_RecallTargets(Unit* unit, Box16* coords)
-	{
-		const u32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
-		static u32 return_value;
-		__asm {
-			PUSHAD
-			PUSH unit
-			MOV EAX, coords
-			MOV EBX, 0x00494400
-			CALL Func_IterateUnitsAtLocationTargetProc
-			MOV return_value, EAX
-			POPAD
-		}
-		return return_value;
-	}
-
 	void setUnitStatTxtErrorMsg(char* message)
 	{
 		const u32 Func_setUnitStatTxtErrorMsg = 0x0048CCB0;
@@ -3637,23 +3620,6 @@ namespace helper
 			MOV EDX, unitId
 			CALL Func_Sub414680
 			MOV return_value, AL
-			POPAD
-		}
-		return return_value;
-	}
-
-	// hardcoding the larva count function, keeping the return value though it's unused here
-	u32 IterateUnitsAtLocationTargetProc_LarvaCount(Unit* unit, Box16* coords)
-	{
-		const u32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
-		static u32 return_value;
-		__asm {
-			PUSHAD
-			PUSH unit
-			MOV EAX, coords
-			MOV EBX, 0x004E8C80
-			CALL Func_IterateUnitsAtLocationTargetProc
-			MOV return_value, EAX
 			POPAD
 		}
 		return return_value;
@@ -6283,24 +6249,6 @@ namespace helper
 		return result;
 	}
 
-	// For findNextBounceTarget
-
-	s32 iterateUnitsAtLocationTargetProc(Box32* a1, s32(__fastcall* a2)(s32, s32), Unit* a3)
-	{
-		const u32 Func_iterateUnitsAtLocationTargetProc = 0x004E8280;
-		static s32 result;
-		__asm {
-			PUSHAD
-			PUSH a3
-			MOV EBX, a2
-			MOV EAX, a1
-			CALL Func_iterateUnitsAtLocationTargetProc
-			MOV result, EAX
-			POPAD
-		}
-		return result;
-	}
-
 	//for progressBullet
 
 	void doMissileDmg(Bullet* bullet)
@@ -6439,11 +6387,9 @@ namespace helper
 	// Identical to setAllImageGroupFlagsPal11 @ 0x00497430;
 	void setAllImageGroupFlagsPal11(Sprite* sprite)
 	{
-		for (
-			Image* current_image = sprite->images.head;
+		for (Image* current_image = sprite->images.head;
 			current_image != nullptr;
-			current_image = current_image->link.next
-			)
+			current_image = current_image->link.next)
 		{
 			if (current_image->paletteType == PaletteType::RLE_HPFLOATDRAW)
 			{
@@ -6451,9 +6397,58 @@ namespace helper
 			}
 		}
 	}
-
+	
 	const u32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
-	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attackingPlayerId, Box16* coords)
+	s32 iterateUnitsAtLocationTargetProc(Box32 * a1, s32(__fastcall * a2)(s32, s32), Unit * a3)
+	{
+		static s32 result;
+		__asm {
+			PUSHAD
+			PUSH a3
+			MOV EBX, a2
+			MOV EAX, a1
+			CALL Func_IterateUnitsAtLocationTargetProc
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	// hardcoding the larva count function, keeping the return value though it's unused here
+	u32 IterateUnitsAtLocationTargetProc_LarvaCount(Unit * unit, Box16 * coords)
+	{
+		const u32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
+		static u32 return_value;
+		__asm {
+			PUSHAD
+			PUSH unit
+			MOV EAX, coords
+			MOV EBX, 0x004E8C80
+			CALL Func_IterateUnitsAtLocationTargetProc
+			MOV return_value, EAX
+			POPAD
+		}
+		return return_value;
+	}
+
+	// hardcodes the recall targets selection function
+	u32 IterateUnitsAtLocationTargetProc_RecallTargets(Unit * unit, Box16 * coords)
+	{
+		const u32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
+		static u32 return_value;
+		__asm {
+			PUSHAD
+			PUSH unit
+			MOV EAX, coords
+			MOV EBX, 0x00494400
+			CALL Func_IterateUnitsAtLocationTargetProc
+			MOV return_value, EAX
+			POPAD
+		}
+		return return_value;
+	}
+
+	void IterateUnitsAtLocationTargetProc_CorrosiveAcid(u32 attackingPlayerId, Box16 * coords)
 	{
 		const u32 CorrosiveAcidProc_function = 0x004F4670;
 		__asm {
@@ -6466,7 +6461,7 @@ namespace helper
 		}
 	}
 
-	void IterateUnitsAtLocationTargetProc_Ensnare(Unit* attacker, Box16* coords)
+	void IterateUnitsAtLocationTargetProc_Ensnare(Unit * attacker, Box16 * coords)
 	{
 		const u32 EnsnareProc_function = 0x004F46C0;
 		__asm {
@@ -6479,7 +6474,7 @@ namespace helper
 		}
 	}
 
-	void IterateUnitsAtLocationTargetProc_Plague(Unit* attacker, Box16* coords)
+	void IterateUnitsAtLocationTargetProc_Plague(Unit * attacker, Box16 * coords)
 	{
 		const u32 PlagueProc_function = 0x004F4AF0;
 		__asm {
@@ -6492,7 +6487,7 @@ namespace helper
 		}
 	}
 
-	void IterateUnitsAtLocationTargetProc_Maelstrom(Unit* attacker, Box16* coords)
+	void IterateUnitsAtLocationTargetProc_Maelstrom(Unit * attacker, Box16 * coords)
 	{
 		const u32 MaelstromProc_function = 0x004F6760;
 		__asm {
@@ -6505,7 +6500,7 @@ namespace helper
 		}
 	}
 
-	void IterateUnitsAtLocationTargetProc_StasisField(Unit* attacker, Box16* coords)
+	void IterateUnitsAtLocationTargetProc_StasisField(Unit * attacker, Box16 * coords)
 	{
 		const u32 StasisFieldProc_function = 0x004F68D0;
 		__asm {
@@ -6516,7 +6511,7 @@ namespace helper
 			CALL Func_IterateUnitsAtLocationTargetProc
 			POPAD
 		}
-	}
+	}	
 
 	void createEnsnareOverlay(Unit* a1)
 	{
