@@ -15,7 +15,6 @@ namespace hooks
 		if (unit->orderSignal & 4)
 		{
 			bool bTwinEggOrCocoon = true;
-			Unit* unit2;
 			Point16 pos;
 
 			unit->orderSignal -= 4;
@@ -30,11 +29,11 @@ namespace hooks
 			{
 				bTwinEggOrCocoon = false;
 			}
-			unit2 = nullptr;
+			Unit* unit2 = nullptr;
 			if (units_dat::BaseProperty[unit->id] & UnitProperty::TwoUnitsIn1Egg && !vorvaling)
 			{
 				unit2 = helper::zergDualBirth(unit); // zerg dual birth
-				if (unit2 != nullptr)
+				if (unit2)
 				{
 					helper::AI_TrainingUnit(unit2, unit);
 				}
@@ -57,11 +56,10 @@ namespace hooks
 				{
 					pos.y -= 7;
 				}
-				else
-					if (unit->status & UnitStatus::InAir)
-					{
-						pos.y -= 42;
-					}
+				else if (unit->status & UnitStatus::InAir)
+				{
+					pos.y -= 42;
+				}
 			}
 			helper::fixTargetLocation(&pos, unit->id);
 			if (pos.x != unit->sprite->position.x ||
@@ -71,8 +69,7 @@ namespace hooks
 			}
 			if (!scbw::isZergEggNew(unit, true, false, unit->previousUnitType))
 			{
-				auto origin = unit->eggOrigin;
-				if (origin == UnitId::ZergLarva)
+				if (unit->eggOrigin == UnitId::ZergLarva)
 				{
 					helper::orderNewUnitToRally(unit, unit->connectedUnit);
 					if (unit2 != nullptr)
@@ -100,7 +97,6 @@ namespace hooks
 				}
 				else
 				{
-					bool bStopThere = false;
 					u16 eggId;
 					switch (unit->id)
 					{
@@ -145,6 +141,7 @@ namespace hooks
 							eggId = UnitId::ZergCocoon;
 						} break;
 						case UnitId::ZergMatraleth:
+						{
 							if (unit->buildQueue[unit->buildQueueSlot] == UnitId::ZergKonvilisk)
 							{
 								eggId = UnitId::ZergEgg;
@@ -153,60 +150,61 @@ namespace hooks
 							{
 								eggId = UnitId::ZergCocoon;
 							}
-							break;
+						} break;
 						default:
+						{
 							if (unit->id != UnitId::ProtossCantavis)
 							{
-								bStopThere = true;
-							} break;
-					}
-					if (!bStopThere)
-					{
-						unitExt->values[ValuePreMorphEnergy] = unit->energy;
-						if (unit->id == UnitId::ProtossCantavis)
-						{
-							helper::replaceUnitWithType(unit, UnitId::ProtossAugur);
-							unit->sprite->flags &= ~CSprite_Flags::IscriptCode;
-							if (unit->sprite->images.head != nullptr)
-							{
-								Image* current_image = unit->sprite->images.head;
-								do
-								{
-									current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
-									current_image = current_image->link.next;
-								}
-								while (current_image != nullptr);
+								return;
 							}
-							helper::changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
-							scbw::refreshConsole();
-							unit->status &= ~UnitStatus::IsBuilding; // disable the flag if set
-							helper::setArchonPathing(unit);
-							unit->orderComputerClear(OrderId::CompletingArchonSummon);
-							return;
-						}
-						else
+						}  break;
+							
+					}
+
+					unitExt->values[ValuePreMorphEnergy] = unit->energy;
+					if (unit->id == UnitId::ProtossCantavis)
+					{
+						helper::replaceUnitWithType(unit, UnitId::ProtossAugur);
+						unit->sprite->flags &= ~CSprite_Flags::IscriptCode;
+						if (unit->sprite->images.head != nullptr)
 						{
-							unit->eggOrigin = unit->id;
-							// morph into egg from source unit
-							helper::replaceUnitWithType(unit, eggId);
+							Image* current_image = unit->sprite->images.head;
+							do
+							{
+								current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
+								current_image = current_image->link.next;
+							}
+							while (current_image != nullptr);
 						}
-						helper::changeUnitButtonSet_Sub4E5D60(unit, unit->id);
-						unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
-						unit->mainOrderState = 1;
-						auto origin = unit->eggOrigin;
-						if (origin == UnitId::ZergZergling)
-						{
-							unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
-						}
-						else if (origin == UnitId::ZergUltrakor
-							|| origin == UnitId::ZergOvileth)
-						{ // Iroleth uses air cocoon
-							unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
-						}
-						else if (origin == UnitId::ZergLarva)
-						{
-							unit->sprite->playIscriptAnim(IscriptAnimation::Walking, true);
-						}
+						helper::changeUnitButtonSet_Sub4E5D60(unit, UnitId::None);
+						scbw::refreshConsole();
+						unit->status &= ~UnitStatus::IsBuilding; // disable the flag if set
+						helper::setArchonPathing(unit);
+						unit->orderComputerClear(OrderId::CompletingArchonSummon);
+						return;
+					}
+					else
+					{
+						unit->eggOrigin = unit->id;
+						// morph into egg from source unit
+						helper::replaceUnitWithType(unit, eggId);
+					}
+					helper::changeUnitButtonSet_Sub4E5D60(unit, unit->id);
+					unit->remainingBuildTime = units_dat::TimeCost[unit->buildQueue[unit->buildQueueSlot]];
+					unit->mainOrderState = 1;
+					auto origin = unit->eggOrigin;
+					if (origin == UnitId::ZergZergling)
+					{
+						unit->sprite->playIscriptAnim(IscriptAnimation::Unused1, true);
+					}
+					else if (origin == UnitId::ZergUltrakor
+						|| origin == UnitId::ZergOvileth)
+					{ // Iroleth uses air cocoon
+						unit->sprite->playIscriptAnim(IscriptAnimation::AlmostBuilt, true);
+					}
+					else if (origin == UnitId::ZergLarva)
+					{
+						unit->sprite->playIscriptAnim(IscriptAnimation::Walking, true);
 					}
 				}
 			}
@@ -242,9 +240,6 @@ namespace hooks
 					{
 						unitExt->values[ValueOverlordSupply] = 3;
 					} break;
-					default:
-					{
-					}
 				}
 				helper::replaceUnitWithType(unit, unit->buildQueue[unit->buildQueueSlot]);
 				unit->energy = unitExt->values[ValuePreMorphEnergy];
@@ -272,8 +267,7 @@ namespace hooks
 				{ // 0045DF60
 					helper::updateUnitStatsFinishBuilding(unit);
 					helper::updateUnitStrength(unit);
-					auto origin = unit->eggOrigin;
-					if (unit->id == UnitId::ZergEgg && origin == UnitId::ZergLarva)
+					if (unit->id == UnitId::ZergEgg && unit->eggOrigin == UnitId::ZergLarva)
 					{
 						helper::orderNewUnitToRally(unit, unit->connectedUnit);
 					}
