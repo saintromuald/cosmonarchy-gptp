@@ -1379,7 +1379,7 @@ namespace scbw
 				return;
 			}
 		}
-		hooks::weaponDamageHook(selfDamage, deconstructionTarget, 0, deconstructionTarget, deconstructionTarget->playerId, deconstructionTarget->playerId, 1);
+		hooks::weaponDamageHook(selfDamage, deconstructionTarget, weaponId, deconstructionTarget, deconstructionTarget->playerId, 0, 1);
 		if (playSound)
 		{
 			helper::playSoundFromSource(1372, unit, 1, 0);
