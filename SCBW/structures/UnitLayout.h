@@ -234,6 +234,7 @@ enum ExtValueId
 	ValueKelvinMunitionsSlow,
 	ValueLarvaType,
 	ValueRaceSupplyType,
+	ValueExemplarMissilePos,
 
 	ValueCount,
 };

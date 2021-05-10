@@ -1394,8 +1394,7 @@ namespace scbw
 		}
 		UnitExt* unitExt = globals.GetUnitExt(unit);
 		auto rotate = unitExt->values[valueId];
-		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType,
-			unit->sprite->mainGraphic->id));
+		const LO_Header* loFile = reinterpret_cast<LO_Header*>(scbw::getImageData(overlayType, unit->sprite->mainGraphic->id));
 		u8 frameDirection = unit->sprite->mainGraphic->direction;
 		Point8 offset = loFile->getOffset(frameDirection + (17 * frameset_offset), rotate);
 		if (unit->sprite->mainGraphic->flags & CImage_Flags::Mirrored)
@@ -1410,8 +1409,7 @@ namespace scbw
 		unitExt->values[valueId] = rotate;
 		auto X = unit->getX() + offset.x;
 		auto Y = unit->getY() + offset.y;
-		return helper::createBullet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y,
-			unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
+		return helper::createBullet(weaponId, unit, X, Y, unit->playerId, scbw::getAngle(X, Y, unit->orderTarget.unit->position.x, unit->orderTarget.unit->position.y));
 	}
 
 	const u32 Func_RemoveOverlays2 = 0x00492370;
