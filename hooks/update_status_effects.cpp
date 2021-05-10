@@ -32,7 +32,7 @@ void irradiateProc(Unit* unit, Unit* target)
 				//scbw::print("Add additional damage");
 			}
 		}
-		target->damageWithCustom(50.0 * 256.0 / 18.0, DamageType::Concussive, unit->irradiatedBy, unit->irradiatePlayerId, 0, 1, true);
+		target->damageWithCustom(50.0 * 256.0 / 15.5, DamageType::Concussive, unit->irradiatedBy, unit->irradiatePlayerId, 0, 1, true);
 	}
 }
 	
@@ -66,11 +66,12 @@ namespace hooks
 		//Find and iterate nearby units
 		else
 		{
-			scbw::UnitFinder unitFinder(irradiatedUnit->getX() - 160,
+			scbw::UnitFinder(
+				irradiatedUnit->getX() - 160,
 				irradiatedUnit->getY() - 160,
 				irradiatedUnit->getX() + 160,
-				irradiatedUnit->getY() + 160);
-			unitFinder.forEach([&](Unit* target)
+				irradiatedUnit->getY() + 160
+			).forEach([&](Unit* target)
 			{
 				irradiateProc(irradiatedUnit, target);
 			});
