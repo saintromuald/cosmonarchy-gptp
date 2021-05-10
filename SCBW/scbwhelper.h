@@ -561,6 +561,7 @@ namespace helper
 	Bullet* createBullet(u8 weaponId, Unit* source, s16 x, s16 y, u8 attackingPlayer, u8 direction);
 	void weaponBulletShot(Unit* target, Bullet* bullet, u32 dmgDivisor);
 	Unit* createUnitAtPos(u16 unitType, u16 playerId, u32 x, u32 y);																// 004CD360
+	Flingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y);																	// 00496460
 
 	//// unit_morph
 	u8 setArchonPathing(Unit* unit);																								// 0046A820
@@ -629,14 +630,14 @@ namespace helper
 	b32 AI_CastSpellBehaviour(Unit* unit, u32 unknown);																				// 004A13C0
 
 	//// load_unload_orders
-	b32 function_00438E70(Unit* unit, s32 x, s32 y);																				// 00438E70
+	b32 Ai_AreOnConnectedRegions(Unit* unit, s32 x, s32 y);																			// 00438E70
 	void function_0043DF30(Unit* unit);																								// 0043DF30
 	void unknownSpecialOrder(Unit* unit, Order* order, u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId);					// 00474540
 	void _doOrder(Unit* unit, u32 orderId, s32 x, s32 y, bool stopPreviousOrders);													// 00474C70
-	b32 function_00477160(Unit* unit, u32 unk1, u32 unk2, u32 unk3);																// 00477160
+	b32 Ai_UpdateAttackTarget(Unit* unit, u32 unk1, u32 unk2, u32 unk3);															// 00477160
 	Unit* getLoadedUnitFromIndex(Unit* transport, s32 index);																		// 004E6C40
 	b32 getFirstLoadedWorker(Unit* transport);																						// 004E6D90
-	b32 function_004E6EF0(Unit* unit, Unit** unitTargetOffset);																		// 004E6EF0
+	b32 Ai_FindTransport(Unit* unit, Unit** unitTargetOffset);																		// 004E6EF0
 	void loadUnitProc(Unit* unit, Unit* unitToLoad);																				// 004E78E0	(Hooked)
 	b32 unloadUnitProc(Unit* unit);																									// 004E7F70 (Hooked)
 

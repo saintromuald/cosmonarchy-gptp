@@ -84,7 +84,7 @@ namespace hooks
 						unit->spendUnitEnergy(techEnergyCost);
 					}
 					//F6A5E
-					scbw::playSound(SoundId::Protoss_Darchon_mind_wav, target);
+					helper::playSoundFromSource(SoundId::Protoss_Darchon_mind_wav, target, 1, 0);
 
 					unit->orderToIdle();
 

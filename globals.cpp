@@ -1382,7 +1382,7 @@ namespace scbw
 		hooks::weaponDamageHook(selfDamage, deconstructionTarget, 0, deconstructionTarget, deconstructionTarget->playerId, deconstructionTarget->playerId, 1);
 		if (playSound)
 		{
-			scbw::playSound(1372, unit);
+			helper::playSoundFromSource(1372, unit, 1, 0);
 		}
 	}
 

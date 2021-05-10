@@ -332,7 +332,7 @@ namespace hooks
 					if (stacks < 5)
 					{
 						unitExt->values[ValueNemeanReactorsStack] = stacks++;
-						scbw::playSound(1372, unit);
+						helper::playSoundFromSource(1372, unit, 1, 0);
 					}
 				}
 				// Missile spawn positions
@@ -810,7 +810,7 @@ namespace hooks
 					// Kalkalisk behavior
 //					auto divider = globals.get_multihit_count(bullet);
 					helper::weaponBulletShot(collisionTarget, bullet, 2);
-					scbw::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
+					helper::createThingy(SpriteId::Glave_Wurm_Seeker_Spores_Hit, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					bullet->moveTarget.unit = bullet->attackTarget.unit;
 					if (bullet->moveTarget.unit != nullptr)
 					{

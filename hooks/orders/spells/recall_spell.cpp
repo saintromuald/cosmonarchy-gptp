@@ -140,9 +140,13 @@ namespace hooks
 					//The compiler may make it back like the original anyway.
 
 					if ((helper::RandomizeShort(0x12) & 1) == 0)
-						scbw::playSound(SoundId::Protoss_ARBITER_PAbFol02_WAV, unit);
+					{
+						helper::playSoundFromSource(SoundId::Protoss_ARBITER_PAbFol02_WAV, unit, 1, 0);
+					}
 					else
-						scbw::playSound(SoundId::Protoss_ARBITER_PAbFol03_WAV, unit);
+					{
+						helper::playSoundFromSource(SoundId::Protoss_ARBITER_PAbFol03_WAV, unit, 1, 0);
+					}
 
 				}
 

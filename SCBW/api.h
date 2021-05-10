@@ -21,18 +21,12 @@ namespace scbw
 	void artificalBulletFrom(u8 weaponId, u8 playerId, Unit* source, Unit* target, u16 x, u16 y);
 	std::string readSamaseFile(char* name);
 	bool teleport(Unit* u, Point16 target, u16 spriteAnimation = 0, bool preserveOrder = false);
-	Flingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y);
-	Thingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId);
 	Thingy* createAndInitThingy(u32 spriteId, s16 x, s16 y, u32 playerId = 11, s32 elevationLevel = 11);
 	Point32 rotate_point(Point32 anchor, Point32 point, f64 angle_degrees);
 
-	void SendCommand(u8* params, u32 param_length);
 	/// @name Output functions
 	//////////////////////////////////////////////////////////////// @{
-
-	/// Plays the given sound from sfxdata.dat. If @p sourceUnit is provided, it is
-	/// used as the source of the sound.
-	void playSound(u32 sfxId, Unit* sourceUnit = nullptr);
+		
 	/// Prints text to the screen, optionally using the given text color.
 	void printString(std::string text, u32 color = GameTextColor::White);
 	void print(const char* text, u32 color = GameTextColor::White);

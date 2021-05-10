@@ -92,7 +92,7 @@ namespace hooks
 				buf[2] = 1;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::CastEnsnaringBrood;
-				scbw::SendCommand(buf, 0xc);
+				helper::QueueGameCommand(buf, 0xc);
 			} break;
 			case TechId::Parasite:
 			{
@@ -117,7 +117,7 @@ namespace hooks
 					buf[2] = action;
 					buf[3] = *ACTIVE_PLAYER_ID;
 					buf[4] = RustId::ToggleReverseThrust;
-					scbw::SendCommand(buf, 0xc);
+					helper::QueueGameCommand(buf, 0xc);
 				}
 			} break;
 			case TechId::Irradiate:
@@ -160,7 +160,7 @@ namespace hooks
 				buf[2] = 1;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::CastTertiaryEyes;
-				scbw::SendCommand(buf, 0xc);
+				helper::QueueGameCommand(buf, 0xc);
 			} break;
 			case TechId::CancelNewAbiliity:
 			{
@@ -173,7 +173,7 @@ namespace hooks
 					buf[2] = action;
 					buf[3] = *ACTIVE_PLAYER_ID;
 					buf[4] = RustId::CancelMindControl;
-					scbw::SendCommand(buf, 0xc);
+					helper::QueueGameCommand(buf, 0xc);
 				}
 				else if (playersSelections->unit[*ACTIVE_NATION_ID][0]->id == UnitId::TerranWyvern)
 				{
@@ -184,7 +184,7 @@ namespace hooks
 					buf[2] = action;
 					buf[3] = *ACTIVE_PLAYER_ID;
 					buf[4] = RustId::CancelLandGrab;
-					scbw::SendCommand(buf, 0xc);
+					helper::QueueGameCommand(buf, 0xc);
 				}
 			} break;
 			case TechId::Observance:
@@ -199,7 +199,7 @@ namespace hooks
 				buf[2] = 1;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::CastGodsMadeFlesh;
-				scbw::SendCommand(buf, 0xc);
+				helper::QueueGameCommand(buf, 0xc);
 			} break;
 			case TechId::PhaseLink:
 			{
@@ -218,7 +218,7 @@ namespace hooks
 						buf[1] = NewGameCommand::PhaseLink;
 						buf[2] = action;
 						buf[3] = *ACTIVE_PLAYER_ID;
-						scbw::SendCommand(buf, 0xc);
+						helper::QueueGameCommand(buf, 0xc);
 					}
 				}
 			} break;
@@ -229,7 +229,7 @@ namespace hooks
 				buf[0] = 0x99; // new general command
 				buf[1] = NewGameCommand::IssueCTFCop2; // used for Phase Link, Khaydarin Eclipse, and (in Overlord) Anti-Air Mode
 				buf[2] = *ACTIVE_PLAYER_ID;
-				scbw::SendCommand(buf, 0xc);
+				helper::QueueGameCommand(buf, 0xc);
 			} break;
 			case TechId::SublimeShepherd:
 			{
@@ -244,7 +244,7 @@ namespace hooks
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::ToggleSublimeShepherd;
-				scbw::SendCommand(buf, 0xc);
+				helper::QueueGameCommand(buf, 0xc);
 			} break;
 			case TechId::LazarusAgent:
 			{
@@ -254,7 +254,7 @@ namespace hooks
 				buf[2] = 1;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::CastLazarusAgent;
-				scbw::SendCommand(buf, 0xc);
+				helper::QueueGameCommand(buf, 0xc);
 			} break;
 			case TechId::TempoChange:
 			{
@@ -269,7 +269,7 @@ namespace hooks
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::ToggleTempoChange;
-				scbw::SendCommand(buf, 0xc);
+				helper::QueueGameCommand(buf, 0xc);
 			} break;
 			case TechId::Skyfall:
 			{
@@ -296,7 +296,7 @@ namespace hooks
 				buf[2] = action;
 				buf[3] = *ACTIVE_PLAYER_ID;
 				buf[4] = RustId::ToggleDisruptionWeb;
-				scbw::SendCommand(buf, 0xc);
+				helper::QueueGameCommand(buf, 0xc);
 			} break;
 			case TechId::MindControl:
 			{

@@ -47,7 +47,7 @@ namespace hooks
 		if (unit->hitPoints > MIN_HITPOINTS_FOR_STIMPACKS + StimpackOffset
 			&& unit->stimTimer == 0)
 		{
-			scbw::playSound(helper::RandBetween(SoundId::Terran_MARINE_TMaSti00_WAV, SoundId::Terran_MARINE_TMaSti01_WAV, 31), unit);
+			helper::playSoundFromSource(helper::RandBetween(SoundId::Terran_MARINE_TMaSti00_WAV, SoundId::Terran_MARINE_TMaSti01_WAV, 31), unit, 1, 0);
 			unit->damageHp(MIN_HITPOINTS_FOR_STIMPACKS, nullptr, -1, true);
 			if (unit->stimTimer < 37)
 			{
@@ -87,7 +87,7 @@ namespace hooks
 				}
 				// if used random, should give a value between 0 and 1
 				random_value = (random_value + random_value) / 32768;
-				scbw::playSound(SoundId::Terran_MARINE_TMaSti00_WAV + random_value, activePlayerCurrentSelection);
+				helper::playSoundFromSource(SoundId::Terran_MARINE_TMaSti00_WAV + random_value, activePlayerCurrentSelection, 1, 0);
 				activePlayerCurrentSelection->damageHp(MIN_HITPOINTS_FOR_STIMPACKS, nullptr, -1, true);
 				if (activePlayerCurrentSelection->stimTimer < 37)
 				{

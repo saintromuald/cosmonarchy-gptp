@@ -200,7 +200,7 @@ namespace hooks
 					distance = scbw::getDistanceFast(unit->orderTarget.pt.x * 256, unit->orderTarget.pt.y * 256, unit->halt.x, unit->halt.y);
 					distance &= 0xFFFFFF00;
 					if (distance <= 0xCA000
-						&& helper::function_00438E70(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0
+						&& helper::Ai_AreOnConnectedRegions(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y) != 0
 						&& helper::getFirstLoadedWorker(unit) == 0)
 					{
 						s32 index = 0;
@@ -261,7 +261,7 @@ namespace hooks
 		}
 		else
 			if (!(unit->status & UnitStatus::InTransport)
-				&& helper::function_00477160(unit, 1, 0, 0) == 0)
+				&& helper::Ai_UpdateAttackTarget(unit, 1, 0, 0) == 0)
 			{ // 004E7BEB
 				Unit* target = unit->orderTarget.unit;
 				bool jump_to_E7C2B = false;
@@ -270,7 +270,7 @@ namespace hooks
 				bool bEndThere = false;
 				if (target == nullptr)
 				{
-					if (helper::function_004E6EF0(unit, &target) == 0)
+					if (helper::Ai_FindTransport(unit, &target) == 0)
 					{
 						unit->orderToIdle();
 						bEndThere = true;
@@ -285,8 +285,9 @@ namespace hooks
 				{
 					if (!jump_to_E7C2B)
 					{ // 004E7C1B
-						if (!helper::unitIsActiveTransport(target)
-							|| target->orderTarget.unit != unit)
+						if (target != nullptr
+							&& (!helper::unitIsActiveTransport(target)
+							|| target->orderTarget.unit != unit))
 						{
 							jump_to_E7C37 = true;
 						}
@@ -312,28 +313,26 @@ namespace hooks
 					}
 					if (jump_to_E7C44)
 					{
-						if (unit->isTargetWithinMinRange(target, 1))
-						{ // 004E7C52
-							helper::loadUnitProc(target, unit);
-							target->orderTo(OrderId::MoveUnload, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
-							if (target->pAI != nullptr)
-							{
-								helper::_doOrder(
-									target,
-									OrderId::Move,
-									target->sprite->position.x,
-									target->sprite->position.y,
-									false);
+						if (target != nullptr)
+						{
+							if (unit->isTargetWithinMinRange(target, 1))
+							{ // 004E7C52
+								helper::loadUnitProc(target, unit);
+								target->orderTo(OrderId::MoveUnload, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
+								if (target->pAI != nullptr)
+								{
+									helper::_doOrder(target, OrderId::Move, target->sprite->position.x, target->sprite->position.y, false);
+								}
 							}
-						}
-						else
-						{ // 004E7C94
-							helper::prependOrderTargetingUnit(target, unit, OrderId::Pickup2);
-							prepareForNextOrder(target);
-							if (helper::function_00438E70(unit, target->sprite->position.x, target->sprite->position.y) != 0)
-							{
-								helper::function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
-								helper::moveTowards(unit, target);
+							else
+							{ // 004E7C94
+								helper::prependOrderTargetingUnit(target, unit, OrderId::Pickup2);
+								prepareForNextOrder(target);
+								if (helper::Ai_AreOnConnectedRegions(unit, target->sprite->position.x, target->sprite->position.y) != 0)
+								{
+									helper::function_00494BB0(unit, target->sprite->position.x, target->sprite->position.y);
+									helper::moveTowards(unit, target);
+								}
 							}
 						}
 					}

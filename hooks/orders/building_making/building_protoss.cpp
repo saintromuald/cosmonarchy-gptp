@@ -98,7 +98,7 @@ namespace hooks
 									unit->orderTarget.unit = builtUnit;
 									helper::AI_TrainingOverlord(builtUnit, unit);
 									builtUnit->orderComputerCL(OrderId::BuildSelf2);
-									scbw::playSound(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit);
+									helper::playSoundFromSource(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit, 1, 0);
 									unit->mainOrderState = 3;
 								}
 							}
@@ -158,7 +158,7 @@ namespace hooks
 						}
 						current_image = current_image->link.next;
 					}
-					scbw::playSound(SoundId::Protoss_SHUTTLE_pshBld03_wav, building);
+					helper::playSoundFromSource(SoundId::Protoss_SHUTTLE_pshBld03_wav, building, 1, 0);
 					building->mainOrderState = 1;
 					jump_to_E50EE = true;
 				}

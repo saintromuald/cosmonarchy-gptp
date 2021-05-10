@@ -182,41 +182,33 @@ namespace hooks
 							current_unit = current_unit->player_link.next;
 
 				}
-
 				if (current_unit == nullptr)
+				{
 					unit->orderToIdle();
+				}
 				else
-				{ //79333
-
+				{ // 00479333
 					Unit* nuke = current_unit->building.silo.nuke;
-
 					current_unit->building.silo.nuke = nullptr;
 					current_unit->building.silo.isReady = false;
-
-					scbw::playSound(SoundId::Terran_GHOST_TGhLas00_wav, unit);
-
+					helper::playSoundFromSource(SoundId::Terran_GHOST_TGhLas00_wav, unit, 1, 0);
 					nuke->orderTo(OrderId::NukeLaunch, unit->orderTarget.pt.x, unit->orderTarget.pt.y);
 					nuke->connectedUnit = unit;
 					helper::setAllOverlayDirectionsGeneric(nuke, 0);
 					helper::showAndEnableUnit(nuke);
-
 					unit->connectedUnit = nuke;
 					unit->orderTo(OrderId::NukeTrack, unit->sprite->position.x, unit->sprite->position.y);
-
-					if (
-						unit->status & UnitStatus::DoodadStatesThing ||
-						unit->lockdownTimer != 0 ||
-						unit->stasisTimer != 0 ||
-						unit->maelstromTimer != 0
-						)
-					{ //793C4
-
+					if (unit->isFrozen())
+					{ // 004793C4
 						if (units_dat::BaseProperty[unit->id] & UnitProperty::Building)
+						{
 							unit->currentButtonSet = UnitId::Buttons_CancelNukeStrike;
+						}
 					}
 					else
+					{
 						unit->currentButtonSet = UnitId::Buttons_CancelNukeStrike;
-
+					}
 					scbw::refreshConsole();
 				}
 			}

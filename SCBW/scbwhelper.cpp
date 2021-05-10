@@ -5809,16 +5809,16 @@ namespace helper
 		return result;
 	}
 
-	b32 function_00438E70(Unit* unit, s32 x, s32 y)
+	b32 Ai_AreOnConnectedRegions(Unit* unit, s32 x, s32 y)
 	{
-		const u32 Func_sub_438E70 = 0x00438E70;
+		const u32 Func_Ai_AreOnConnectedRegions = 0x00438E70;
 		static b32 result;
 		__asm {
 			PUSHAD
 			PUSH y
 			PUSH x
 			MOV EAX, unit
-			CALL Func_sub_438E70
+			CALL Func_Ai_AreOnConnectedRegions
 			MOV result, EAX
 			POPAD
 		}
@@ -5870,16 +5870,16 @@ namespace helper
 		}
 	}
 
-	b32 function_00477160(Unit* unit, u32 unk1, u32 unk2, u32 unk3)
+	b32 Ai_UpdateAttackTarget(Unit* unit, u32 unk1, u32 unk2, u32 unk3)
 	{
-		const u32 Func_Sub477160 = 0x00477160;
+		const u32 Func_Ai_UpdateAttackTarget = 0x00477160;
 		__asm {
 			PUSHAD
 			PUSH unk1
 			PUSH unk2
 			PUSH unk3
 			MOV ECX, unit
-			CALL Func_Sub477160
+			CALL Func_Ai_UpdateAttackTarget
 			POPAD
 		}
 	}
@@ -5913,15 +5913,15 @@ namespace helper
 		return return_value;
 	}
 
-	b32 function_004E6EF0(Unit* unit, Unit** unitTargetOffset)
+	b32 Ai_FindTransport(Unit* unit, Unit** unitTargetOffset)
 	{
-		const u32 Func_Sub4E6EF0 = 0x004E6EF0;
+		const u32 Func_Ai_FindTransport = 0x004E6EF0;
 		b32 result;
 		__asm {
 			PUSHAD
 			PUSH unitTargetOffset
 			MOV EBX, unit
-			CALL Func_Sub4E6EF0
+			CALL Func_Ai_FindTransport
 			MOV result, EAX
 			POPAD
 		}
@@ -8216,5 +8216,23 @@ namespace helper
 			POPAD
 		}
 		return unit;
+	}
+
+	// more from api.cpp
+	Flingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y)
+	{
+		const u32 Func_CreateFlingy = 0x00496460;
+		static Flingy* flingy;
+		__asm {
+			PUSHAD
+			MOV EAX, playerId
+			MOV ECX, x
+			MOV EDX, y
+			PUSH flingyId
+			CALL Func_CreateFlingy
+			MOV flingy, EAX
+			POPAD
+		}
+		return flingy;
 	}
 }

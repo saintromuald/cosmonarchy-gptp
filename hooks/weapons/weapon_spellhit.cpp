@@ -115,7 +115,7 @@ namespace hooks
 			target->isBlind |= (u8)(1 << attackingPlayerId);
 
 			// playing the impact sound
-			scbw::playSound(SoundId::Terran_Medic_Miopia1_wav, target);
+			helper::playSoundFromSource(SoundId::Terran_Medic_Miopia1_wav, target, 1, 0);
 
 			// create impact overlay
 			u32 overlayImageId = ImageId::OpticalFlareHit_Small + scbw::getOverlayOffset(target->id);
@@ -344,7 +344,7 @@ namespace hooks
 	// x and y from bullet->sprite->position
 	void EMPShockwaveHit(Unit* attacker, s32 x, s32 y, Bullet* bullet)
 	{
-		Thingy* emp_sprite = scbw::createThingy(371, x, y, 0);
+		Thingy* emp_sprite = helper::createThingy(371, x, y, 0);
 		if (emp_sprite != nullptr)
 		{
 			emp_sprite->sprite->elevationLevel = 19; // 0x13
@@ -608,7 +608,7 @@ namespace hooks
 				}
 				else
 				{ // 004F4A26
-					scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, created_broodling);
+					helper::playSoundFromSource(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, created_broodling, 1, 0);
 					u32 timerBeforeDisappearance;
 
 					// update various stuff (set hp, set shield...) not finished on createUnit
@@ -680,7 +680,7 @@ namespace hooks
 			maelstrom_effect_sprite->sprite->elevationLevel = 17; // 0x11
 			helper::setThingyVisibilityFlags(maelstrom_effect_sprite);
 		}
-		scbw::playSound(SoundId::Protoss_Darchon_Parahit_wav, attacker);
+		helper::playSoundFromSource(SoundId::Protoss_Darchon_Parahit_wav, attacker, 1, 0);
 		Box16 coords;
 		coords.right = x + 48;
 		coords.left = x - 48;

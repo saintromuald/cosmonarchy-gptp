@@ -81,7 +81,7 @@ namespace scbw
 			// create the Recall animation over the unit
 			if (spriteAnimation)
 			{
-				recall_effect_sprite = createThingy(spriteAnimation, new_pos.x, new_pos.y, 0);
+				recall_effect_sprite = helper::createThingy(spriteAnimation, new_pos.x, new_pos.y, 0);
 				if (recall_effect_sprite != nullptr)
 				{
 					recall_effect_sprite->sprite->elevationLevel = u->sprite->elevationLevel + 1;
@@ -90,7 +90,7 @@ namespace scbw
 
 			}
 
-			// disconnect a nuke from a ghost using it
+			// disconnect a nuke from a unit using it
 			if (scbw::unitCanNuke(u))
 			{
 				if (u->connectedUnit != nullptr
@@ -104,83 +104,15 @@ namespace scbw
 		return result;
 	}
 
-	const u32 Func_CreateFlingy = 0x00496460;
-	Flingy* createFlingy(u32 flingyId, u32 playerId, u32 x, u32 y)
-	{
-		static Flingy* flingy;
-		__asm {
-			PUSHAD
-			MOV EAX, playerId
-			MOV ECX, x
-			MOV EDX, y
-			PUSH flingyId
-			CALL Func_CreateFlingy
-			MOV flingy, EAX
-			POPAD
-		}
-		return flingy;
-	}
-
-
-	const u32 Func_CreateThingy = 0x00488210;
-	Thingy* createThingy(u32 spriteId, s16 x, s16 y, u32 playerId)
-	{
-
-		static Thingy* thingy;
-		s32 x_ = x;
-		__asm {
-			PUSHAD
-			PUSH playerId
-			MOVSX EDI, y
-			PUSH x_
-			PUSH spriteId
-			CALL Func_CreateThingy
-			MOV thingy, EAX
-			POPAD
-		}
-		return thingy;
-	}
-
 	Thingy* createAndInitThingy(u32 spriteId, s16 x, s16 y, u32 playerId, s32 elevationLevel)
 	{
-		Thingy* thingy = createThingy(spriteId, x, y, playerId);
+		Thingy* thingy = helper::createThingy(spriteId, x, y, playerId);
 		if (thingy != nullptr)
 		{
 			thingy->sprite->elevationLevel = elevationLevel;
 			helper::setThingyVisibilityFlags(thingy);
 		}
 		return thingy;
-	}
-
-	const u32 Func_SendCommand = 0x00485BD0;
-	void SendCommand(u8* params, u32 param_length)
-	{
-
-		__asm {
-			PUSHAD
-			MOV EDX, param_length
-			MOV ECX, params
-			CALL Func_SendCommand
-			POPAD
-		}
-
-	}
-
-	//-------- Output functions --------//
-
-	const u32 Func_PlaySound = 0x0048ED50;
-	void playSound(u32 sfxId, Unit* sourceUnit)
-	{
-
-		__asm {
-			PUSHAD
-			PUSH 0
-			PUSH 1
-			MOV ESI, sourceUnit
-			MOV EBX, sfxId
-			CALL Func_PlaySound
-			POPAD
-		}
 	}
 
 	void printString(std::string text, u32 color)
@@ -1396,7 +1328,7 @@ namespace scbw
 				case UnitId::ZergBroodling:
 				case UnitId::ZergBroodlisk:
 				{
-					scbw::playSound(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit);
+					helper::playSoundFromSource(SoundId::Zerg_BROODLING_ZBrRdy00_WAV, unit, 1, 0);
 					if (unit->removeTimer == 0 || unit->removeTimer > removeTimer)
 					{
 						unit->removeTimer = removeTimer;
@@ -1433,7 +1365,7 @@ namespace scbw
 						unit->shields = std::max(256, creator->shields);
 						scbw::inheritDebuffs(creator, unit);
 					}
-					scbw::playSound(SoundId::Simulacrum_Clone_01, unit);
+					helper::playSoundFromSource(SoundId::Simulacrum_Clone_01, unit, 1, 0);
 				}
 			}
 		}
@@ -1818,11 +1750,11 @@ namespace scbw
 		// Sounds
 		if (!unitExt->values[TimerHallucinating])
 		{
-			scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit);
+			helper::playSoundFromSource(SoundId::Protoss_TEMPLAR_PTeHal00_WAV, unit, 1, 0);
 		}
 		else
 		{
-			scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal01_WAV, unit);
+			helper::playSoundFromSource(SoundId::Protoss_TEMPLAR_PTeHal01_WAV, unit, 1, 0);
 		}
 
 		// Overlays

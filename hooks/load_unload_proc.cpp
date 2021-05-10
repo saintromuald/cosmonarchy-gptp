@@ -70,7 +70,7 @@ namespace hooks
 		}
 
 		scbw::decloakProc(unit);
-		scbw::playSound(SoundId::Misc_ZOvTra00_wav + unitRaceId, unit);
+		helper::playSoundFromSource(SoundId::Misc_ZOvTra00_wav + unitRaceId, unit, 1, 0);
 		if (unitToLoad->id == UnitId::TerranMason)
 		{
 			if (unitToLoad->pAI != nullptr)
@@ -94,7 +94,6 @@ namespace hooks
 		{
 			PUSHAD
 			MOV ECX, unitToLoad
-//			SUB ECX, unitTable
 			SUB ECX, new_table
 			MOV EAX, 0x86186187
 			MUL ECX

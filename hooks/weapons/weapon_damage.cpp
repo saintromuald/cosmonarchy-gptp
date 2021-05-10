@@ -72,8 +72,8 @@ void augurSacrifice(Unit* target)
 				scbw::getAngle(target->position.x, target->position.y, nearest->getX(), nearest->getY()));
 			scbw::hideAndDisableUnit(target);
 			target->status |= UnitStatus::Invincible;
-			scbw::createThingy(SpriteId::AugurDeathExplosion, target->getX(), target->getY(), target->playerId);
-			scbw::playSound(scbw::randBetween(SoundId::AugurDeath01, SoundId::AugurDeath04), target);
+			helper::createThingy(SpriteId::AugurDeathExplosion, target->getX(), target->getY(), target->playerId);
+			helper::playSoundFromSource(scbw::randBetween(SoundId::AugurDeath01, SoundId::AugurDeath04), target, 1, 0);
 			target->removeTimer = 5 * 32;
 			target->userActionFlags |= 0x4;
 			return;
@@ -478,7 +478,7 @@ namespace hooks
 						return;
 					}
 					helper::ApplySpores(target);
-					Thingy* thingy = scbw::createThingy(SpriteId::Corrosive_Acid_Hit, target->getX(), target->getY(), 11);
+					Thingy* thingy = helper::createThingy(SpriteId::Corrosive_Acid_Hit, target->getX(), target->getY(), 11);
 					if (thingy != nullptr)
 					{
 						thingy->sprite->elevationLevel = target->sprite->elevationLevel + 1;

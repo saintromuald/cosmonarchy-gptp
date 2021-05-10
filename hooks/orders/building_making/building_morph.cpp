@@ -329,7 +329,7 @@ namespace hooks
 					thingy->sprite->elevationLevel = unit->sprite->elevationLevel + 1;
 					helper::setThingyVisibilityFlags(thingy);
 				}
-				scbw::playSound(SoundId::Misc_ZBldgPlc_wav_1, unit);
+				helper::playSoundFromSource(SoundId::Misc_ZBldgPlc_wav_1, unit, 1, 0);
 				helper::replaceUnitWithType(unit, UnitId::ZergDroleth);
 				//probably AI related
 				helper::updateBuildingsAI(unit);

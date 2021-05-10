@@ -42,7 +42,7 @@ namespace hooks
 				else
 				{
 					Thingy* hallucination_smoke;
-					scbw::playSound(SoundId::Protoss_TEMPLAR_PTeHal01_WAV, unit);
+					helper::playSoundFromSource(SoundId::Protoss_TEMPLAR_PTeHal01_WAV, unit, 1, 0);
 					hallucination_smoke =
 						helper::createThingy(
 							SpriteId::Hallucination_Death1,

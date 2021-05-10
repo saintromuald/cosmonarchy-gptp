@@ -204,6 +204,7 @@ namespace hooks
 			case UnitId::TerranEidolon:
 			case UnitId::ProtossAmaranth:
 			case UnitId::ProtossCabalist:
+			case UnitId::ZergZergling:
 			case UnitId::ZergZoryusthaleth:
 			{
 				speed *= 1.2;

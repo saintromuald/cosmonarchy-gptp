@@ -422,7 +422,7 @@ namespace hooks
 							unit->orderTarget.pt.y = polar_y;
 							helper::createBullet(WeaponId::StarSovereignInterventionMissiles, unit, X, Y, unit->playerId,
 								scbw::dir_saturate(unit->currentDirection1, offset_direction));
-							scbw::playSound(80, unit);
+							helper::playSoundFromSource(80, unit, 1, 0);
 							unit->orderTarget.unit = target_unit;
 							unit->orderTarget.pt = target_pos;
 						}
@@ -436,54 +436,54 @@ namespace hooks
 				if (unit->orderSignal & 8)
 				{
 					unit->orderSignal &= ~8;
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 32, Y + 32, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 32, Y + 32, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 32, Y - 32, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 32, Y - 32, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 32, Y + 32, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 32, Y + 32, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 32, Y - 32, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 32, Y - 32, player);
 				}
 				else if (unit->orderSignal & 16)
 				{
 					unit->orderSignal &= ~16;
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y + 80, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 80, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y - 80, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y - 80, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y + 80, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 80, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 80, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 80, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 0, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 0, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 0, Y - 144, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 0, Y + 144, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y + 144, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 144, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y - 144, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 144, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y + 0, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 0, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 0, Y + 80, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 0, Y + 80, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y + 80, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 80, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y - 80, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y - 80, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y + 80, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 80, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 80, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 80, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 0, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 0, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 0, Y - 144, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 0, Y + 144, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y + 144, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 144, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y - 144, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 144, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 80, Y + 0, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 80, Y + 0, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 0, Y + 80, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 0, Y + 80, player);
 				}
 				else if (unit->orderSignal & 32)
 				{
 					unit->orderSignal &= ~32;
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y + 144, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 144, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 144, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 144, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 208, Y + 144, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 208, Y + 144, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 208, Y - 144, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 208, Y - 144, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 208, Y - 0, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 208, Y - 0, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 0, Y - 208, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 0, Y + 208, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y + 208, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 208, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 208, player);
-					scbw::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 208, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y + 144, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 144, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 144, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 144, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 208, Y + 144, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 208, Y + 144, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 208, Y - 144, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 208, Y - 144, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 208, Y - 0, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 208, Y - 0, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 0, Y - 208, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 0, Y + 208, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y + 208, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y + 208, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X + 144, Y - 208, player);
+					helper::createThingy(SpriteId::PlanetCrackerBlastLoop, X - 144, Y - 208, player);
 				}
 				else if (unit->orderSignal & 64)
 				{
@@ -513,7 +513,7 @@ namespace hooks
 							pickedUnitExt->values[ValueLazarusAgent] += 1;
 							pickedUnitExt->values[ValueLazarusAgentApostleSrc] = (u32)unit; // TODO: port as a unit
 							picked_unit->sprite->createTopOverlay(ImageId::LazarusAgentCast);
-//							scbw::playSound(SoundId::LazarusAgentCast, unit);
+//							helper::playSoundFromSource(SoundId::LazarusAgentCast, unit);
 						}
 					}
 				}
