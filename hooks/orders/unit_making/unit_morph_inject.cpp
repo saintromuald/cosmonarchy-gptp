@@ -320,61 +320,55 @@ namespace
 
 	//-------- orders_zergBirth --------//
 
-	//Inject @ 0x0045DE00
+	// Inject @ 0x0045DE00
 	const u32 Hook_GetUnitVerticalOffsetOnBirth_Return = 0x0045DE2C;
 	void __declspec(naked) getUnitVerticalOffsetOnBirthWrapper()
 	{
-
 		static Unit* unit;
 		static s16 yOffset;
-
 		__asm {
 			PUSHAD
 			MOV unit, EDI
 		}
-
 		yOffset = hooks::getUnitVerticalOffsetOnBirth(unit);
-
 		__asm {
 			POPAD
 			MOVSX EAX, yOffset
 			JMP Hook_GetUnitVerticalOffsetOnBirth_Return
 		}
-
 	}
 
-	//Inject @ 0x0045DE57
+	// Inject @ 0x0045DE57
 	const u32 Hook_IsRallyableEggUnit_Yes = 0x0045DE6C;
 	const u32 Hook_IsRallyableEggUnit_No = 0x0045DE8B;
 	void __declspec(naked) isRallyableEggUnitWrapper()
 	{
-
 		static Unit* unit;
-
-		__asm {
+		__asm
+		{
 			POP ESI
 			POP EBX
 			PUSHAD
 			MOV unit, EDI
 		}
-
 		if (hooks::isRallyableEggUnitHook(unit->previousUnitType))
 		{
-			__asm {
+			__asm
+			{
 				POPAD
 				JMP Hook_IsRallyableEggUnit_Yes
 			}
 		}
 		else
 		{
-			__asm {
+			__asm
+			{
 				POPAD
 				JMP Hook_IsRallyableEggUnit_No
 			}
 		}
 	}
-
-} //unnamed namespace
+}
 
 
 
