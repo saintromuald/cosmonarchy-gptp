@@ -39,7 +39,7 @@ namespace hooks
 				}
 			}
 			if (unit->id != UnitId::ZergDroleth &&
-				unit->id != UnitId::ZergOvileth)
+				unit->id != UnitId::ZergOvileth) // TODO: investigate if the conditional is needed or if it should have other ovileth morphs in it
 			{
 				helper::AI_TrainingUnit(unit, unit);
 			}
