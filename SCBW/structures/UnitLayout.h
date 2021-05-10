@@ -235,6 +235,7 @@ enum ExtValueId
 	ValueLarvaType,
 	ValueRaceSupplyType,
 	ValueExemplarMissilePos,
+	ValueClaymoreMissilePos,
 
 	ValueCount,
 };
