@@ -7,12 +7,6 @@
 
 void irradiateProc(Unit* unit, Unit* target)
 {
-	//Damage organic units only
-	if (!(units_dat::BaseProperty[target->id] & UnitProperty::Organic))
-	{
-		return;
-	}
-
 	//Irradiate splash damage does not affect burrowed units
 	if (target != unit && target->status & UnitStatus::Burrowed)
 	{

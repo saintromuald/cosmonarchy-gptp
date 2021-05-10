@@ -6399,9 +6399,9 @@ namespace helper
 	}
 	
 	const u32 Func_IterateUnitsAtLocationTargetProc = 0x004E8280;
-	s32 iterateUnitsAtLocationTargetProc(Box32 * a1, s32(__fastcall * a2)(s32, s32), Unit * a3)
+	Unit* iterateUnitsAtLocationTargetProc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3)
 	{
-		static s32 result;
+		static Unit* result;
 		__asm {
 			PUSHAD
 			PUSH a3
@@ -8138,10 +8138,10 @@ namespace helper
 	}
 
 	// For irradiateDamageLoop
-	s32 iterateLoadedUnits(Unit* unit, s32 (__fastcall* func)(s32, s32), s32 a3)
+	Unit* iterateLoadedUnits(Unit* unit, Unit* (__fastcall* func)(Unit*, Unit*), Unit* a3)
 	{
 		const u32 Func_iterateLoadedUnits = 0x004E6D00;
-		static s32 result;
+		static Unit* result;
 		__asm
 		{
 			PUSHAD

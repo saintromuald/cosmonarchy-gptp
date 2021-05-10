@@ -598,7 +598,7 @@ namespace helper
 	s32 splashFunc(Bullet* bullet, Unit* unit);																					// 0048B570
 
 	// For iterateLoadedUnits
-	s32 iterateLoadedUnits(Unit* unit, s32(__fastcall* func)(s32, s32), s32 a3);													// 004E6D00
+	Unit* iterateLoadedUnits(Unit* unit, Unit*(__fastcall* func)(Unit*, Unit*), Unit* a3);										// 004E6D00
 
 	//// mindcontrol_spell
 	void MindControlHit(Unit* attacker, Unit* target);																			// 004F6910
@@ -673,7 +673,7 @@ namespace helper
 	s32 canBeInfested(Unit* a1, Unit* a2);																							// 00402210
 
 	// For findNextBounceTarget
-	s32 iterateUnitsAtLocationTargetProc(Box32* a1, s32(__fastcall* a2)(s32, s32), Unit* a3);										// 004E8280
+	Unit* iterateUnitsAtLocationTargetProc(Box16* a1, Unit*(__fastcall* a2)(Unit*, Unit*), Unit* a3);										// 004E8280
 
 	// For writeBullets
 	/*

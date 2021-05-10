@@ -1041,12 +1041,12 @@ namespace hooks
 		u16 posY = bulletSprite->position.x;
 		u16 posX = bulletSprite->position.y;
 		*bulletBounceMissileNext = nextBounce;
-		Box32 coords;
-		coords.left = (s16)posX - 96;
-		coords.top = (s16)posX + 96;
-		coords.right = (s16)posY - 96;
-		coords.bottom = (s16)posY + 96;
-		return (Unit*)helper::iterateUnitsAtLocationTargetProc(&coords, (s32(__fastcall*)(s32, s32))findNextBounceTargetProc, 0);
+		Box16 coords;
+		coords.left = posX - 96;
+		coords.top = posX + 96;
+		coords.right = posY - 96;
+		coords.bottom = posY + 96;
+		//return (Unit*)helper::iterateUnitsAtLocationTargetProc(&coords, findNextBounceTargetProc, 0);
 	}
 
 	// Hooked to resolve issues with multihit bullets - Pr0nogo

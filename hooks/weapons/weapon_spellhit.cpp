@@ -12,7 +12,7 @@ namespace hooks
 {
 	// Hooked to allow for replacing proc functions - Pr0nogo
 	// Still needs work, lots of weird conversions/casting in this one
-	Unit* iterateUnitsAtLocationTargetProc(Box16* location, s32(__fastcall* proc)(Unit*, Unit*), Unit* unit) // 004E8280
+	Unit* iterateUnitsAtLocationTargetProc(Box16* location, Unit*(__fastcall* proc)(Unit*, Unit*), Unit* unit) // 004E8280
 	{
 		Unit** unitsInBounds = helper::getAllUnitsInBounds(location);
 		Unit** unitsInBounds2 = unitsInBounds;
@@ -95,7 +95,6 @@ namespace hooks
 		return result;
 	}
 
-	// no bullet because this function can be called in another context without bullet
 	void IrradiateHit(Unit* attacker, Point16 target, u8 attackingPlayerId)
 	{
 		globals.createEffect(EffectId::Irradiate, 30 * 24, {target.x, target.y}, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, attackingPlayerId);

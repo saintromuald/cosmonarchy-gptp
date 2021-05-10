@@ -564,7 +564,7 @@ namespace
 	{ // 004E8280
 		static Unit* result;
 		static Box16* location;
-		static s32(__fastcall * proc)(Unit*, Unit*);
+		static Unit*(__fastcall *proc)(Unit*, Unit*);
 		static Unit* unit;
 		__asm
 		{

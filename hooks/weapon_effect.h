@@ -21,7 +21,6 @@ namespace hooks
 	void yamatoDamage(Bullet* bullet, u32 weaponId);
 	void airSplash(Bullet* bullet, u32 weaponId);
 	void nuke(Bullet* bullet, u32 weaponId);
-	s32 irradiateUnitDamageProc(Unit* target, Unit* irradiated);
 
 	// HYDRA-specific
 	bool isChargedGorgolethBullet(Bullet* bullet, u32 weaponId);
@@ -29,6 +28,5 @@ namespace hooks
 	void parasite(Bullet* bullet, u32 weaponId);
 	void broodlings(Bullet* bullet, u32 weaponId);
 	void lockdown(Bullet* bullet, u32 weaponId);
-	Unit* irradiateDamageLoop(Unit* unit);						// 004555C0
 
 } //hooks

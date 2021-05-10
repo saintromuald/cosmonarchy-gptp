@@ -29,7 +29,7 @@ namespace hooks
 	char disableUnit(Unit* unit);														// 00492CC0
 	bool maelstromProc(Unit* target, Unit* source);									// 004F6760
 	Unit* iterateUnitsAtLocationTargetProc(Box16* location,							// 004E8280
-		s32(__fastcall* proc)(Unit*, Unit*),
+		Unit*(__fastcall* proc)(Unit*, Unit*),
 		Unit* unit);
 
 	//The injector function for this hook module.
