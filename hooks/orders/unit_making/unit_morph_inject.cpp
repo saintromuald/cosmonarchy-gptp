@@ -7,19 +7,16 @@
 
 namespace
 {
-
 	//-------- CMDRECV_UnitMorph --------//
 
 	const u32 Func_AddUnitToBuildQueue = 0x00467250;
 	bool addUnitToBuildQueue(Unit* unit, u16 unitId)
 	{
-
 		static u32 result;
 		static u32 unitId_;
-
 		unitId_ = unitId;
-
-		__asm {
+		__asm
+		{
 			PUSHAD
 			PUSH unitId_
 			MOV EDI, unit
@@ -27,9 +24,7 @@ namespace
 			MOV result, EAX
 			POPAD
 		}
-
 		return result != 0;
-
 	}
 
 	void __stdcall unitMorphWrapper_CMDRECV_UnitMorph(u8* commandData)
@@ -46,19 +41,18 @@ namespace
 			}
 		}
 		scbw::refreshConsole();
-
 	}
 
 	//-------- BTNSCOND_CanBuildUnit --------//
 
 	s32 __fastcall unitMorphWrapper_BTNSCOND_CanBuildUnit(u16 buildUnitId, s32 playerId, Unit* unit)
 	{
-
 		if (*clientSelectionCount <= 1
 			|| hooks::getUnitMorphEggTypeHook(unit->id, unit, unit->buildQueue[0]) != UnitId::None)
+		{
 			return unit->canMakeUnit(buildUnitId, playerId);
+		}
 		return 0;
-
 	}
 
 	//-------- Orders_Morph1 --------//
@@ -66,24 +60,25 @@ namespace
 	const u32 Hook_Orders_Morph1_Check_Success = 0x0045DFCA;
 	void __declspec(naked) unitMorphWrapper_Orders_Morph1_Check()
 	{
-
 		static Unit* unit;
-
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EBP, ESP
 			MOV unit, ESI
 		}
 		if (hooks::getUnitMorphEggTypeHook(unit->id, unit, unit->buildQueue[0]) != UnitId::None)
 		{
-			__asm {
+			__asm
+			{
 				POPAD
 				JMP Hook_Orders_Morph1_Check_Success
 			}
 		}
 		else
 		{
-			__asm {
+			__asm
+			{
 				POPAD
 				POP EDI
 				POP ESI
@@ -97,20 +92,19 @@ namespace
 	const u32 Hook_Orders_Morph1_EggType_Return = 0x0045E048;
 	void __declspec(naked) unitMorphWrapper_Orders_Morph1_EggType()
 	{
-
 		static Unit* unit;
 		static u32 morphEggType;
-
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EBP, ESP
 			MOV unit, ESI
 		}
-
 		unit->status &= ~(UnitStatus::Completed);
 		morphEggType = hooks::getUnitMorphEggTypeHook(unit->id, unit, unit->buildQueue[0]);
 		assert(scbw::isZergEggNew(unit, true, false, morphEggType));
-		__asm {
+		__asm
+		{
 			POPAD
 			PUSH morphEggType
 			JMP Hook_Orders_Morph1_EggType_Return
@@ -122,9 +116,13 @@ namespace
 	b32 __stdcall hasSuppliesForUnitWrapper(u8 playerId, u16 unitId, b32 canShowErrorMessage)
 	{
 		if (hooks::hasSuppliesForUnitHook(playerId, unitId, canShowErrorMessage != 0))
+		{
 			return 1;
+		}
 		else
+		{
 			return 0;
+		}
 	}
 
 	//-------- cancelBuild --------//
@@ -295,143 +293,116 @@ namespace
 		return 100 * (units_dat::TimeCost[unitId] - unit->remainingBuildTime) / units_dat::TimeCost[unitId];
 	}
 
-	//Inject @ 0x004669E0
+	// Inject @ 0x004669E0
 	void __declspec(naked) getRemainingBuildTimePctWrapper()
 	{
-
 		static Unit* unit;
 		static s32 percentage;
-
 		__asm {
 			PUSHAD
 			MOV unit, ESI
 			MOV EBP, ESP
 		}
-
 		percentage = getRemainingBuildTimePctHook(unit);
-
 		__asm {
 			POPAD
 			MOV EAX, percentage
 			RETN
 		}
-
 	}
 
 	//-------- orders_zergBirth --------//
 
-	//Inject @ 0x0045DE00
+	// Inject @ 0x0045DE00
 	const u32 Hook_GetUnitVerticalOffsetOnBirth_Return = 0x0045DE2C;
 	void __declspec(naked) getUnitVerticalOffsetOnBirthWrapper()
 	{
-
 		static Unit* unit;
 		static s16 yOffset;
-
 		__asm {
 			PUSHAD
 			MOV unit, EDI
 		}
-
 		yOffset = hooks::getUnitVerticalOffsetOnBirth(unit);
-
 		__asm {
 			POPAD
 			MOVSX EAX, yOffset
 			JMP Hook_GetUnitVerticalOffsetOnBirth_Return
 		}
-
 	}
 
-	//Inject @ 0x0045DE57
+	// Inject @ 0x0045DE57
 	const u32 Hook_IsRallyableEggUnit_Yes = 0x0045DE6C;
 	const u32 Hook_IsRallyableEggUnit_No = 0x0045DE8B;
 	void __declspec(naked) isRallyableEggUnitWrapper()
 	{
-
 		static Unit* unit;
-
-		__asm {
+		__asm
+		{
 			POP ESI
 			POP EBX
 			PUSHAD
 			MOV unit, EDI
 		}
-
 		if (hooks::isRallyableEggUnitHook(unit->previousUnitType))
 		{
-			__asm {
+			__asm
+			{
 				POPAD
 				JMP Hook_IsRallyableEggUnit_Yes
 			}
 		}
 		else
 		{
-			__asm {
+			__asm
+			{
 				POPAD
 				JMP Hook_IsRallyableEggUnit_No
 			}
 		}
 	}
-
-} //unnamed namespace
-
-
-
+}
 
 namespace
 {
-
 	void __declspec(naked) orders_ZergBirthWrapper()
 	{
-
 		static Unit* unit;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::orders_ZergBirth(unit);
-
 		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) orders_Morph1Wrapper()
 	{
-
 		static Unit* unit;
-
 		__asm {
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::orders_Morph1(unit);
-
 		__asm {
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN
 		}
-
 	}
-	;
 
-	/*void __declspec(naked) RemoveWorkerOrBuildingAiWrapper() {
+	/*
+	void __declspec(naked) RemoveWorkerOrBuildingAiWrapper() {
 		static Unit* unit;
 		static u32 assert_is_building;
 		static u32 result;
@@ -449,8 +420,7 @@ namespace
 			RETN
 		}
 	}
-	;*/
-
+	*/
 
 	const u32 Jmp_IsEgg = 0x00434CF1;
 	const u32 Jmp_IsNotEgg = 0x00434CD6;
@@ -475,33 +445,35 @@ namespace
 				JMP Jmp_IsNotEgg
 			}
 		}
-
 	}
+
 	const u32 Jmp_UnitAi_IsEgg = 0x00433E74;
 	const u32 Jmp_UnitAi_IsNotEgg = 0x00433E6A;
 	void __declspec(naked) addUnitAiEggJmpWrapper()
 	{
 		static Unit* unit;
-		__asm {
+		__asm
+		{
 			MOV unit, EBX
 			PUSHAD
 		}
 		if (scbw::isLarvalEgg(unit))
 		{
-			__asm {
+			__asm
+			{
 				POPAD
 				JMP Jmp_UnitAi_IsEgg
 			}
 		}
 		else
 		{
-			__asm {
+			__asm
+			{
 				POPAD
 				JMP Jmp_UnitAi_IsNotEgg
 			}
 		}
 	}
-
 
 	void __declspec(naked) beginTrainWrapper()
 	{
@@ -509,7 +481,8 @@ namespace
 		static Unit* unit;
 		static Unit* result;
 		static u16 unit_id;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, ESI
@@ -521,7 +494,8 @@ namespace
 			PUSHAD
 		}
 		result = hooks::beginTrain(unit, unit_id, notify_error);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -535,20 +509,23 @@ namespace
 	void __declspec(naked) detachUnitTask_EggJmpWrapper()
 	{
 		static Unit* unit;
-		__asm {
+		__asm
+		{
 			MOV unit, EDI
 			PUSHAD
 		}
 		if (scbw::isLarvalEgg(unit))
 		{
-			__asm {
+			__asm
+			{
 				POPAD
 				JMP Jmp_UnitTask_IsEgg
 			}
 		}
 		else
 		{
-			__asm {
+			__asm
+			{
 				POPAD
 				JMP Jmp_UnitTask_IsEgg
 			}
@@ -560,33 +537,32 @@ namespace
 	void __declspec(naked) prepSuicide_EggJmpWrapper()
 	{
 		static Unit* unit;
-		__asm {
+		__asm
+		{
 			MOV unit, ESI
 			PUSHAD
 		}
 		if (scbw::isLarvalEgg(unit))
 		{
-			__asm {
+			__asm
+			{
 				POPAD
 				JMP Jmp_PrepSuicide_IsEgg
 			}
 		}
 		else
 		{
-			__asm {
+			__asm
+			{
 				POPAD
 				JMP Jmp_PrepSuicide_IsEgg
 			}
 		}
 	}
-
-
-}; //unnamed namespace
-
+}
 
 namespace hooks
 {
-
 	void injectUnitMorphHooks()
 	{
 		jmpPatch(orders_ZergBirthWrapper, 0x0045DD60, 1);
@@ -600,34 +576,15 @@ namespace hooks
 		jmpPatch(getRemainingBuildTimePctWrapper, 0x004669E0);	//004669E0  sub_4669E0 EXACT
 		jmpPatch(getUnitVerticalOffsetOnBirthWrapper, 0x0045DE00);	//0045DD60  orders_ZergBirth within
 		jmpPatch(isRallyableEggUnitWrapper, 0x0045DE57);	//0045DD60  orders_ZergBirth within
-
-		//												
+		
 		jmpPatch(beginTrainWrapper, 0x00468200);
 		jmpPatch(detachUnitTask_EggJmpWrapper, 0x00434CD0, 1);
 		jmpPatch(prepSuicide_EggJmpWrapper, 0x0043D20C, 1);
-		//has unfinished disabled bugged hook in aise
+		// has unfinished disabled bugged hook in aise
 
-		/*
-		Egg unitid hardcode
-
-//
-// Probably related
-/
-00488AF0 = IncrementKillScores(), edi Unit *killed, edx killing_player
-// IDA calls it "incrementUnitDeathScores"
-0x00488B90  |.  66:3D 2400    CMP AX,24
-
-004A2130 = AiScript_SwitchRescue(), edx player
-0x004A21CA  |.  66:3D 2400    |CMP AX,24
-
-
-		*/
-		//
 		jmpPatch(deleteBuildingWorkerAiEggJmpWrapper, 0x00434CD0, 1);
 		jmpPatch(addUnitAiEggJmpWrapper, 0x00433E64, 1);
-		//
 
-//		jmpPatch(RemoveWorkerOrBuildingAiWrapper, 0x00434C90); //00434C90 //failed hook, causes crashes
+//		jmpPatch(RemoveWorkerOrBuildingAiWrapper, 0x00434C90); // 00434C90 - failed hook, causes crashes
 	}
-
-}; //hooks
+}
