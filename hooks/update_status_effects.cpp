@@ -27,10 +27,10 @@ void irradiateProc(Unit* unit, Unit* target)
 				//scbw::print("Add additional damage");
 			}
 		}
-		target->damageWith(WeaponId::Irradiate, damage, unit->irradiatedBy, unit->irradiatePlayerId);
+		target->damageWithCustom(50.0 * 256.0 / 12.0, DamageType::Concussive, unit->irradiatedBy, unit->irradiatePlayerId, 0, 1, true);
 	}
 }
-
+	
 namespace hooks
 {
 	void doIrradiateDamage(Unit* irradiatedUnit)
