@@ -162,7 +162,11 @@ namespace hooks
 		{
 			if (target && helper::AI_OrderHeal(cleric, target))
 			{
-				Unit* acquired = helper::MedicHeal_TargetAcquire(cleric);
+				Unit* acquired = target;
+				if (!target)
+				{
+					acquired = helper::MedicHeal_TargetAcquire(cleric);
+				}
 				if (acquired)
 				{
 					helper::unitOrderMoveToTargetUnit(cleric, acquired);
