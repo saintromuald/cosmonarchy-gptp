@@ -12,7 +12,8 @@ namespace hooks
 			&& nydusExit != nullptr
 			&& (nydusExit->status & UnitStatus::Completed)
 			&& (unit->playerId == nydusCanal->playerId
-				|| scbw::isAlliedTo(unit->playerId, nydusCanal->playerId));
+				|| scbw::isAlliedTo(unit->playerId, nydusCanal->playerId))
+			&& !(units_dat::BaseProperty[unit->id] & UnitProperty::Flyer);
 	}
 
 	// Perform the Nydus Canal teleport effect on an unit that validated the conditions within the orders_EnterNydusCanal function
@@ -65,7 +66,8 @@ namespace hooks
 			|| !(nydusCanal->status & UnitStatus::Completed)
 			|| nydusCanal->building.nydusExit == nullptr
 			|| !((nydusCanal->building.nydusExit)->status & UnitStatus::Completed)
-			|| (!scbw::isAlliedTo(unit->playerId, nydusCanal->playerId)))
+			|| (!scbw::isAlliedTo(unit->playerId, nydusCanal->playerId))
+			|| units_dat::BaseProperty[unit->id] & UnitProperty::Flyer)
 		{ // 004EA478
 			if (unit->orderQueueHead != nullptr)
 			{
