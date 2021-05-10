@@ -316,7 +316,7 @@ namespace hooks
 		}
 
 		// Deal damage, except for Independent damage, which always deals 0
-		if (data.damageType != DamageType::Independent && data.target->defensiveMatrixHp == 0 && canDamage)
+		if (data.damageType != DamageType::Independent && data.target->hitPoints != 0 && data.target->defensiveMatrixHp == 0 && canDamage )
 		{
 			data.target->damageHp(data.finalDamage, data.attacker, data.attackingPlayerId, data.weaponId != WeaponId::Irradiate); // Prevent Seraphs from being continuously revealed to the irradiated target
 		}
