@@ -143,12 +143,11 @@ namespace hooks
 					{
 						unit->orderComputerClear(OrderId::ComputerAI);
 					}
-					else
-						if (unit->sprite->position.x != *(u16*)((u32)unit->pAI + 0x12)
-							|| unit->sprite->position.y != *(u16*)((u32)unit->pAI + 0x14))
-						{
-							unit->orderTo(OrderId::ComputerReturn, *(u16*)((u32)unit->pAI + 0x12), *(u16*)((u32)unit->pAI + 0x14));
-						}
+					else if (unit->sprite->position.x != *(u16*)((u32)unit->pAI + 0x12)
+						|| unit->sprite->position.y != *(u16*)((u32)unit->pAI + 0x14))
+					{
+						unit->orderTo(OrderId::ComputerReturn, *(u16*)((u32)unit->pAI + 0x12), *(u16*)((u32)unit->pAI + 0x14));
+					}
 				}
 			}
 		}
