@@ -163,7 +163,7 @@ namespace hooks
 			if (target && helper::AI_OrderHeal(cleric, target))
 			{
 				Unit* acquired = target;
-				if (!target)
+				if (!acquired)
 				{
 					acquired = helper::MedicHeal_TargetAcquire(cleric);
 				}
