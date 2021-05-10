@@ -184,8 +184,8 @@ namespace hooks
 			}
 		}
 
-		if (!data.dontProcPhaseLink)
-		{ // damage from phase link was already calculated
+		if (!data.dontProcPhaseLink) // damage from phase link was already calculated
+		{
 			weaponDamage_damageModifiers(data);
 		}
 
@@ -270,7 +270,7 @@ namespace hooks
 					u16 angle = scbw::getAngle(data.target->position.x, data.target->position.y,
 						data.attacker->position.x, data.attacker->position.y);
 					u16 unit_angle = data.target->velocityDirection1;
-					s32 arc = (f64)45 / 1.40625;	//90 degrees
+					s32 arc = (f64)45 / 1.40625; // 90 degrees
 					s32 delta = unit_angle - angle;
 					delta = abs((delta + 128) % 256 - 128);
 					if (delta <= arc)
@@ -307,11 +307,11 @@ namespace hooks
 
 		weaponDamage_behaviors(data);
 		if (data.attacker != nullptr)
-		{ // lifesteal 
+		{
 			weaponDamage_lifesteal(data);
 		}
 		if (data.finalDamage >= data.target->hitPoints)
-		{ // <- keep this as hitPoints, because the damage is already calculated to include armor, shields and damage factor calculations
+		{
 			weaponDamage_fatal(data);
 		}
 
