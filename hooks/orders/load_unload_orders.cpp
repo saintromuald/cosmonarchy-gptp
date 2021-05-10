@@ -15,7 +15,7 @@ namespace hooks
 		if (unitToLoad != nullptr
 			&& scbw::canBeEnteredBy(unit, unitToLoad))
 		{
-			helper::function_00474A70(unit, unitToLoad, OrderId::Pickup2);
+			helper::prependOrderTargetingUnit(unit, unitToLoad, OrderId::Pickup2);
 			prepareForNextOrder(unit);
 		}
 		else
@@ -134,7 +134,7 @@ namespace hooks
 								}
 								else
 								{
-									helper::function_00474A70(unit, unitToLoad, OrderId::Pickup1);
+									helper::prependOrderTargetingUnit(unit, unitToLoad, OrderId::Pickup1);
 									prepareForNextOrder(unit);
 								}
 							}
@@ -328,7 +328,7 @@ namespace hooks
 						}
 						else
 						{ // 004E7C94
-							helper::function_00474A70(target, unit, OrderId::Pickup2);
+							helper::prependOrderTargetingUnit(target, unit, OrderId::Pickup2);
 							prepareForNextOrder(target);
 							if (helper::function_00438E70(unit, target->sprite->position.x, target->sprite->position.y) != 0)
 							{
@@ -356,7 +356,7 @@ namespace hooks
 			{
 				if (target->status & UnitStatus::IsBuilding)
 				{
-					helper::function_00474A70(target, unit, OrderId::Pickup2);
+					helper::prependOrderTargetingUnit(target, unit, OrderId::Pickup2);
 					prepareForNextOrder(target);
 				}
 				unit->mainOrderState = 1;

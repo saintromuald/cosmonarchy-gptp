@@ -214,7 +214,7 @@ namespace helper
 	bool function_00462EA0(Unit* unit, u8 unknownByteValue);												// 00462EA0
 	void function_00465780(Unit* unit);																		// 00465780
 	void removeOrderFromUnitQueue(Unit* unit, Order* order);												// 004742D0
-	void function_00474A70(Unit* unit, Unit* target, u8 orderId);											// 00474A70
+	void prependOrderTargetingUnit(Unit* unit, Unit* target, u8 orderId);									// 00474A70
 	bool isTargetWithinMinMovementRange(Unit* unit, Unit* target, u32 range);								// 004763D0
 	bool function_00476610(Unit* unit, s32 x, s32 y);														// 00476610
 	bool isUnitInWeaponRange(Unit* unit, Unit* target);														// 00476870

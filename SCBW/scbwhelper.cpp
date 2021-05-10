@@ -2145,15 +2145,15 @@ namespace helper
 		}
 	}
 
-	void function_00474A70(Unit* unit, Unit* target, u8 orderId)
+	void prependOrderTargetingUnit(Unit* unit, Unit* target, u8 orderId)
 	{
-		const u32 Func_Sub474A70 = 0x00474A70;
+		const u32 Func_prependOrderTargetingUnit = 0x00474A70;
 		__asm {
 			PUSHAD
 			MOV CL, orderId
 			MOV EDX, unit
 			MOV EAX, target
-			CALL Func_Sub474A70
+			CALL Func_prependOrderTargetingUnit
 			POPAD
 		}
 	}
