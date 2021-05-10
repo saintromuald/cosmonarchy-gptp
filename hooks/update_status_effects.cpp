@@ -7,6 +7,11 @@
 
 void irradiateProc(Unit* unit, Unit* target)
 {
+	if (!unit)
+	{
+		return;
+	}
+
 	//Irradiate splash damage does not affect burrowed units
 	if (target != unit && target->status & UnitStatus::Burrowed)
 	{
@@ -27,7 +32,7 @@ void irradiateProc(Unit* unit, Unit* target)
 				//scbw::print("Add additional damage");
 			}
 		}
-		target->damageWithCustom(50.0 * 256.0 / 12.0, DamageType::Concussive, unit->irradiatedBy, unit->irradiatePlayerId, 0, 1, true);
+		target->damageWithCustom(50.0 * 256.0 / 18.0, DamageType::Concussive, unit->irradiatedBy, unit->irradiatePlayerId, 0, 1, true);
 	}
 }
 	
