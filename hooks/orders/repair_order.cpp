@@ -296,11 +296,9 @@ namespace hooks
 					}
 					return 0;
 				}
-				ofsubResult = helper::OFSUB(target->hitPoints, units_dat::MaxHitPoints[target->id]);
-				ofsubCompare = target->hitPoints - units_dat::MaxHitPoints[target->id] < 0;
-				if (ofsubCompare ^ ofsubResult)
+				if (target->hitPoints >= units_dat::MaxHitPoints[target->id])
 				{
-					return 1;
+					return 0;
 				}
 				if (bErrorFlag)
 				{
@@ -383,23 +381,16 @@ namespace hooks
 					return 0;
 				}
 				errorStringId = 1325;
-				if (!(target->status & 6)) // GroundedBuilding and InAir
+				if (!(target->status & 6) // GroundedBuilding and InAir
+					|| target->hitPoints >= units_dat::MaxHitPoints[target->id])
 				{
-					if (units_dat::BaseProperty[target->id] & UnitProperty::Organic)
-					{
-						ofsubResult = helper::OFSUB(target->hitPoints, units_dat::MaxHitPoints[target->id]);
-						ofsubCompare = target->hitPoints - units_dat::MaxHitPoints[target->id] < 0;
-						if (ofsubCompare ^ ofsubResult)
-						{
-							return 1;
-						}
-					}
+					return 0;
 				}
 				if (bErrorFlag)
 				{
 					*(s16*)bErrorFlag = errorStringId;
 				}
-				return 0;
+				return 1;
 			}
 			default:
 			{
