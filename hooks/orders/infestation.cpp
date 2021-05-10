@@ -90,7 +90,7 @@ namespace hooks
 
 					//I don't really know, advanced internal mechanics, just have to work with it
 					helper::GiveUnitHelper(unitInfested, unitInfesting->playerId, 1);
-					helper::initializeEmptyUnitsLinkedListRef_Sub49E4E0(unitInfested, unitInfesting->playerId);
+					helper::initializeEmptyUnitsLinkedListRef(unitInfested, unitInfesting->playerId);
 
 					//Related to infestation process, don't use unitInfested->setSecondaryOrder
 					//because here it is supposed to perform all actions even if 

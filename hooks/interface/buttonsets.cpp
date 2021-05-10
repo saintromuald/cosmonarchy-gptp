@@ -504,7 +504,7 @@ namespace hooks
 			{
 				// 00459A12:
 				// draw buttons
-				helper::function_4591D0();
+				helper::updateCommandCard();
 				// refresh popup text over button
 				helper::function_459770();
 				jumpTo59A9F = (*activePortraitUnit == nullptr);
@@ -531,7 +531,7 @@ namespace hooks
 			{
 				// 00459A12:
 				//draw buttons
-				helper::function_4591D0();
+				helper::updateCommandCard();
 				//refresh popup text over button
 				helper::function_459770();
 				jumpTo59A9F = (*activePortraitUnit == nullptr);
@@ -1479,7 +1479,7 @@ namespace hooks
 						// 00459331
 						if (!jumpto59336 && !jumpto5934E)
 						{
-							helper::function_418E00(current_dialog);
+							helper::enableControl(current_dialog);
 						}
 						if (!jumpto5934E)
 						{

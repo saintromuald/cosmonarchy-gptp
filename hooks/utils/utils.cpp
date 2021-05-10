@@ -153,7 +153,7 @@ namespace hooks
 					}
 
 				if (!bStopLoop)
-					helper::function_0049A7F0(unit); //remove the unit from playersSelections->unit[playerId][index] among other things
+					helper::removeFromSelections(unit); //remove the unit from playersSelections->unit[playerId][index] among other things
 
 			}
 

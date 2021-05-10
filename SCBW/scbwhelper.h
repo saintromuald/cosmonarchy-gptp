@@ -258,18 +258,17 @@ namespace helper
 	Unit* SpiderMine_AcquireTarget(Unit* spiderMine);									                    // 00441270
 	void instantCloak(Unit* unit);												                            // 0049B1E0
 	void unburrowGeneric(Unit* unit);												                        // 004E99D0
-	void function_004E9A30(Unit* unit);												                    // 004E9A30
+	void function_004E9A30(Unit* unit);																		// 004E9A30
 
 	// For orders_PlaceMine
 	s32 techUseAllowed(Unit* a1, __int16 a2, s32 a3);									                    // 0046DD80
 	u32 getDistanceFast(s32 a1, s32 a2, s32 a3, s32 a4);													// 0040C360
 	s32 orders_HoldPosSuicidal(Unit* a1);												                    // 004EB5B0
-	void fixTargetLocation(unsigned __int16 a1, Point32* a2);							                    // 00401FA0
 	void turnUnit(Unit* a1, char a2);													                    // 00495F20
 	void toIdle(Unit* a1);																                    // 004753A0
 	s32 isUnitMovable(Unit* a1);														                    // 00401DC0
-	void orders_Nothing2(Unit* a1);													                    // 00475000
-	bool setMoveTargetXY(s32 a1, s32 a2, Unit* a3);									                    // 004EB820
+	void orders_Nothing2(Unit* a1);																			// 00475000
+	bool setMoveTargetXY(s32 a1, s32 a2, Unit* a3);															// 004EB820
 
 	// For burrowGeneric
 	void toggleUnitPath(Unit* unit);									                                    // 004E42A0
@@ -277,15 +276,15 @@ namespace helper
 
 	//// building_morph
 	void refundBuildingCost(u16 unitId, u8 playerId);														// 002CE70
-	void updateBuildingsAI(Unit* unit);												                    // 0033FE0
+	void updateBuildingsAI(Unit* unit);																		// 0033FE0
 	bool isValidMorph(u16 buildingId);																		// 005CC60
 	void updateNewUnitVision(u32 id, s32 x, s32 y);															// 005CE90
-	void zergPlaceBuildingCntd(Unit* unit);											                    // 005D410
+	void zergPlaceBuildingCntd(Unit* unit);																	// 005D410
 	void stopCreepDisappearingAtBuilding(Unit* unit);												        // 007D770
 	void function_0047DE40(Sprite* sprite, u32 unitId, s32 x, s32 y);										// 007DE40
-	void incrementUnitScoresEx(Unit* building, s32 unk1, s32 unk2);										// 0088D50
-	void playBuildingCompleteSound(Unit* building);									                    // 008F310
-	void refreshSpriteData(Sprite* sprite);											                    // 00983A0
+	void incrementUnitScoresEx(Unit* building, s32 unk1, s32 unk2);											// 0088D50
+	void playBuildingCompleteSound(Unit* building);															// 008F310
+	void refreshSpriteData(Sprite* sprite);																	// 00983A0
 	void displayLastNetErrorForPlayer(u32 playerId);									                    // 009E530
 	void replaceUnitWithType(Unit* unit, u16 newUnitId);													// 009FED0
 
@@ -419,10 +418,10 @@ namespace helper
 	s32 parseRequirementOpcodes(Unit* unit, u32 orderId, u32 playerId, u32 address, u32 req_offset);									// 0046D610
 
 	//// give_unit
-	void ApplySpeedUpgradeFromUnitType(Unit* unit);																					// 00454370
-	void function_00463040(Unit* unit);																								// 00463040
-	void function_00476D30(Unit* unit);																								// 00476D30
-	void incrementUnitScores(Unit* unit, s32 unkScore);																				// 00488BF0
+	void ApplySpeedUpgradeFromUnitType(Unit* unit);																						// 00454370
+	void function_00463040(Unit* unit);																									// 00463040
+	void function_00476D30(Unit* unit);																									// 00476D30
+	void incrementUnitScores(Unit* unit, s32 unkScore);																					// 00488BF0
 	void function_004A1E50(Unit* unit, u32 unk);																						// 004A1E50
 	void CreateUnitSelection(Unit* unit, u32 selectionIndex);																			// 004E6180
 	void DestroyUnitSelection(Unit* unit);																								// 004E6290
@@ -431,15 +430,15 @@ namespace helper
 	//// cast_order
 	u32 getUpgradedWpnCooldown(Unit* unit, u8 weaponId);																				// 00475DC0
 	bool function_00476640(Unit* unit, u32 weaponId);																					// 00476640
-	u32 get_statTxt_Str_0(Unit* unit, u32 playerId, char* message);																	// 0048EF30
+	u32 get_statTxt_Str_0(Unit* unit, u32 playerId, char* message);																		// 0048EF30
 	bool canCastSpell_0(Unit* unit);																									// 00492140
 	u32 function_00492620(Unit* unit, b32 wasMainOrderStateZero);																		// 00492620
 
 	void incrementUnitDeathScores(Unit* unit, u8 player);																				// 00488AF0
-	void initializeEmptyUnitsLinkedListRef_Sub49E4E0(Unit* unit, u8 playerId);															// 0049E4E0
+	void initializeEmptyUnitsLinkedListRef(Unit* unit, u8 playerId);																	// 0049E4E0
 	void GiveUnitHelper(Unit* unit, u32 playerId, s32 unkScore);																		// 0049EFA0
 	void changeUnitButtonSet_Sub_4E5D60(Unit* unit, u16 unitId);																		// 004E5D60
-	void showAndEnableUnit(Unit* unit);																								// 004E6490
+	void showAndEnableUnit(Unit* unit);																									// 004E6490
 
 	//// tech_target_check
 	bool isInfestableUnit(Unit* unit);																									// 00402210
@@ -449,10 +448,10 @@ namespace helper
 	void AnimCloak(Unit* a1, s32 a2);																									// 0049B5B0
 	void refreshUnitVision(Unit* a1);																									// 004E5F30
 	void initUnitTrapDoodad(Unit* a1);																									// 004E6490
-	Order* removeOrderFromUnitQueue(Order* a1, Unit* a2);																			// 004742D0
-	Order* performAnotherOrder(u8 a1, s32 a2, Unit* a3, s16 a4, Point32* a5, Unit* a6);												// 004745F0
-	void order(s32 a1, Unit* a2, s8 a3, Point32* a4, Unit* a5, s32 a6);																// 00474810
-	u32 getUnitStrength(Unit* a1, s32 a2, bool a3);																					// 00431800
+	Order* removeOrderFromUnitQueue(Order* a1, Unit* a2);																				// 004742D0
+	Order* performAnotherOrder(u8 a1, s32 a2, Unit* a3, s16 a4, Point32* a5, Unit* a6);													// 004745F0
+	void order(s32 a1, Unit* a2, s8 a3, Point32* a4, Unit* a5, s32 a6);																	// 00474810
+	u32 getUnitStrength(Unit* a1, s32 a2, bool a3);																						// 00431800
 
 	//// make_nydus_exit
 	void playWorkerErrorSound(Unit* unit, u32 errorTextIndex);																			// 0048F6C0
@@ -616,44 +615,44 @@ namespace helper
 	bool isHangarUnit(Unit* unit);
 
 	//// stopholdpos_orders
-	Unit* MedicHeal_TargetAcquire(Unit* medic);																					// 004422A0
-	u32 doMedicHeal(Unit* unit, Unit* target);																					// 00463C40
+	Unit* MedicHeal_TargetAcquire(Unit* medic);																						// 004422A0
+	u32 doMedicHeal(Unit* unit, Unit* target);																						// 00463C40
 	void function_00476FC0(Unit* unit, Unit* target, u32 unk1, u32 unk2);															// 00476FC0
 	b32 function_004770E0(Unit* unit);																								// 004770E0
 
 	//// medic_orders
-	b32 AI_OrderHeal(Unit* unit, Unit* target);																					// 00463530
-	void function_4748E0(Unit* unit, s32 x, s32 y, u8 orderId);																	// 004748E0
-	void function_474940(Unit* unit, Unit* target, u8 orderId);																	// 00474940
+	b32 AI_OrderHeal(Unit* unit, Unit* target);																						// 00463530
+	void function_4748E0(Unit* unit, s32 x, s32 y, u8 orderId);																		// 004748E0
+	void function_474940(Unit* unit, Unit* target, u8 orderId);																		// 00474940
 	void orderInterrupt(Unit* unit, Unit* target, u16 x, u16 y, u32 orderId);														// 00474C30
 	void unitOrderMoveToTargetUnit(Unit* unit, Unit* target);																		// 00479FE0
-	b32 AI_CastSpellBehaviour(Unit* unit, u32 unknown);																			// 004A13C0
+	b32 AI_CastSpellBehaviour(Unit* unit, u32 unknown);																				// 004A13C0
 
 	//// load_unload_orders
 	b32 function_00438E70(Unit* unit, s32 x, s32 y);																				// 00438E70
-	void function_0043DF30(Unit* unit);																							// 0043DF30
-	void unknownSpecialOrder(Unit* unit, Order* order, u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId);				// 00474540
+	void function_0043DF30(Unit* unit);																								// 0043DF30
+	void unknownSpecialOrder(Unit* unit, Order* order, u8 orderId, s16 x, s16 y, Unit* target, u16 targetUnitId);					// 00474540
 	void _doOrder(Unit* unit, u32 orderId, s32 x, s32 y, bool stopPreviousOrders);													// 00474C70
 	b32 function_00477160(Unit* unit, u32 unk1, u32 unk2, u32 unk3);																// 00477160
 	Unit* getLoadedUnitFromIndex(Unit* transport, s32 index);																		// 004E6C40
 	b32 getFirstLoadedWorker(Unit* transport);																						// 004E6D90
-	b32 function_004E6EF0(Unit* unit, Unit** unitTargetOffset);																	// 004E6EF0
+	b32 function_004E6EF0(Unit* unit, Unit** unitTargetOffset);																		// 004E6EF0
 	void loadUnitProc(Unit* unit, Unit* unitToLoad);																				// 004E78E0	(Hooked)
-	b32 unloadUnitProc(Unit* unit);																								// 004E7F70 (Hooked)
+	b32 unloadUnitProc(Unit* unit);																									// 004E7F70 (Hooked)
 
 	//// siege_transform
 	void unitSetRetreatPoint(Unit* unit, u8 angleValue);																			// 004011A0
 	bool getCloserToDestination_sub402BE0(Unit* unit);																				// 00402BE0
-	void orderReturnToIdle(Unit* unit);																							// 00463770
-	bool checkForCloseUnit_sub464290(Unit* unit);																					// 00464290
+	void orderReturnToIdle(Unit* unit);																								// 00463770
+	bool checkForCloseUnit(Unit* unit);																								// 00464290
 	void playSubunitIscript(Unit* unit, IscriptAnimation::Enum anim);																// 00474380
 
 	//// unit_train
-	u32 getHPGainForRepair(Unit* unit);																							// 00402C40
+	u32 getHPGainForRepair(Unit* unit);																								// 00402C40
 	void refundUnitTrainCost(u32 unitId, u8 playerId);																				// 0042CEC0
-	void function_00432430(Unit* unit, u32 buildQueueSlot);																		// 00432430
-	void addHangarUnit(Unit* main_unit, Unit* added_unit);																		// 00466300
-	Unit* attemptTrainHatchUnit(Unit* trainer, u32 builtUnitID, u32 flag);														// 00468200
+	void function_00432430(Unit* unit, u32 buildQueueSlot);																			// 00432430
+	void addHangarUnit(Unit* main_unit, Unit* added_unit);																			// 00466300
+	Unit* attemptTrainHatchUnit(Unit* trainer, u32 builtUnitID, u32 flag);															// 00468200
 
 	//// weapon_fire
 	// For progressBulletFlight
@@ -661,7 +660,7 @@ namespace helper
 	void doMissileDmg(Bullet* bullet);																								// 0048B770
 
 	// For bulletBehavior_Bounce
-	Bullet* changeMovePos(Bullet* a1, s32 a2, s32 a3);																			// 00495240
+	Bullet* changeMovePos(Bullet* a1, s32 a2, s32 a3);																				// 00495240
 	void progressBulletMovement_func(Bullet* a1);																					// 0048B250
 	Unit* findNextBounceTarget_func(Bullet* a1);																					// 0048B1E0
 
@@ -669,8 +668,8 @@ namespace helper
 	bool unitIsSubunit(Unit* a1);																									// 00401D40
 	bool unitIsCarrier(Unit* a1);																									// 00401470
 	bool unitIsReaver(Unit* a1);																									// 00401490
-	bool unitHasPathToUnit(Unit* a1, Unit* a2);																					// 0049CBB0
-	s32 canBeInfested(Unit* a1, Unit* a2);																						// 00402210
+	bool unitHasPathToUnit(Unit* a1, Unit* a2);																						// 0049CBB0
+	s32 canBeInfested(Unit* a1, Unit* a2);																							// 00402210
 
 	// For findNextBounceTarget
 	s32 iterateUnitsAtLocationTargetProc(Box32* a1, s32(__fastcall* a2)(s32, s32), Unit* a3);										// 004E8280
@@ -829,12 +828,12 @@ namespace helper
 	void refundAllQueueSlots(Unit* unit);
 	void* SMemAlloc(u32 amount, u32 unkFilename, u32 unkLine, u32 defaultValue);	                    // 0041006A (based on Storm.dll definition)
 	void SetCallbackTimer(BinDlg* dialog, u32 unk1, u32 unk2, u32 unk3);			                    // 00416090
-	void function_0049A7F0(Unit* unit);											                    // 0049A7F0
+	void removeFromSelections(Unit* unit);																// 0049A7F0
 	u32 fxnInteract(BinDlg* dialog, u32 data_struct_offset);
 	void registerUserDialogAction(BinDlg* dialog, u32 array_of_fxnInteractFunc, u32 sizeOfArray);	    // 00418100
-	void function_418E00(BinDlg* dialog);																// 00418E00
+	void enableControl(BinDlg* dialog);																	// 00418E00
 	void replayStatBtns(BinDlg* dialog);																// 00427A80
-	void function_4591D0();																				// 004591D0
+	void updateCommandCard();																			// 004591D0
 	void function_459770();																				// 00459770
 	void BINDLG_BlitSurface(BinDlg* dialog);															// 004C35F0
 	u32 fxnInteract(BinDlg* dialog, u32 data_struct_offset);

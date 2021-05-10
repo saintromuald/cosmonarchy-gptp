@@ -97,7 +97,7 @@ namespace hooks
 						helper::unitSetRetreatPoint(unit->subunit, units_dat::StartDirection[unit->subunit->id]);
 						helper::playSubunitIscript(unit, IscriptAnimation::SpecialState1);
 						unit->mainOrderState = 2;
-						if (helper::checkForCloseUnit_sub464290(unit))
+						if (helper::checkForCloseUnit(unit))
 						{
 							bStopThere = true;
 						}

@@ -191,7 +191,7 @@ namespace hooks
 		__int16 v12;
 		Unit* v13;
 		Unit* v14;
-		Point32 a2;
+		Point16 a2;
 		v1 = unit;
 		if (unit->mainOrderState)
 		{
@@ -206,7 +206,7 @@ namespace hooks
 					v12 = v1->orderTarget.pt.y;
 					a2.x = v1->orderTarget.pt.x;
 					a2.y = v12;
-					helper::fixTargetLocation(0xDu, &a2);
+					helper::fixTargetLocation(&a2, 0xDu);
 					v13 = helper::createUnit(0xDu, a2.x, a2.y, (unsigned __int8)v1->playerId);
 					v14 = v13;
 					if (v13)
@@ -214,7 +214,7 @@ namespace hooks
 						helper::updateUnitStatsFinishBuilding(v13);
 						helper::updateUnitStrengthAndApplyDefaultOrders(v14);
 						helper::turnUnit(v14, v1->currentDirection1);
-						--v1->vulture.spiderMineCount;
+						v1->vulture.spiderMineCount -= 1;
 					}
 					else
 					{
