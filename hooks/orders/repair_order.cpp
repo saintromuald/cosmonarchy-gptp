@@ -382,15 +382,15 @@ namespace hooks
 				}
 				errorStringId = 1325;
 				if (!(target->status & 6) // GroundedBuilding and InAir
-					|| target->hitPoints >= units_dat::MaxHitPoints[target->id])
+					&& target->hitPoints < units_dat::MaxHitPoints[target->id])
 				{
-					return 0;
+					return 1;
 				}
 				if (bErrorFlag)
 				{
 					*(s16*)bErrorFlag = errorStringId;
 				}
-				return 1;
+				return 0;
 			}
 			default:
 			{
