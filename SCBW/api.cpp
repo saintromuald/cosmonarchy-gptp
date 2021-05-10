@@ -75,7 +75,7 @@ namespace scbw
 			// stop some currently active orders
 			if (u->id != UnitId::ZergCocoon && !preserveOrder)
 			{
-				u->orderComputerCL(units_dat::ReturnToIdleOrder[u->id]);
+				u->orderComputerClear(units_dat::ReturnToIdleOrder[u->id]);
 			}
 
 			// create the Recall animation over the unit
@@ -451,39 +451,38 @@ namespace scbw
 		}
 		return false;
 	}
+
 	bool isZergEggNew(Unit* unit, bool allow_larval_eggs, bool allow_larvae, u16 explicit_unit_id)
 	{
-
 		u16 id = UnitId::None;
-
 		if (id != NULL)
 		{
 			id = unit->id;
 		}
-
 		else
 		{
 			id = explicit_unit_id;
 		}
-
 		switch (id)
 		{
 			case UnitId::ZergEgg:
-				if (unit
-					&& !allow_larval_eggs
-					&& unit->eggOrigin == UnitId::ZergLarva)
+			{
+				if (unit && !allow_larval_eggs && unit->eggOrigin == UnitId::ZergLarva)
 				{
 					return false;
 				}
 				return true;
+			}
 			case UnitId::ZergCocoon:
+			{
 				return true;
+			}
 			default:
-				break;
+			{
+			} break;
 		}
 
-		if (allow_larvae
-			&& id == UnitId::ZergLarva)
+		if (allow_larvae && id == UnitId::ZergLarva)
 		{
 			return true;
 		}
@@ -495,9 +494,12 @@ namespace scbw
 		switch (id)
 		{
 			case UnitId::ZergCocoon:
-				return true;
+			{
+				return true; 
+			}
 			default:
-				break;
+			{
+			} break;
 		}
 		if (id == UnitId::ZergLarva && allow_larvae)
 		{

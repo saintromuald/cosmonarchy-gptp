@@ -40,7 +40,7 @@ namespace hooks
 
 			//stop some currently active orders
 			if (target->id != UnitId::ZergCocoon)
-				target->orderComputerCL(units_dat::ReturnToIdleOrder[target->id]);
+				target->orderComputerClear(units_dat::ReturnToIdleOrder[target->id]);
 
 			//create the Recall animation over the unit
 			recall_effect_sprite = helper::createThingy(SpriteId::Recall_Field, new_pos.x, new_pos.y, 0);

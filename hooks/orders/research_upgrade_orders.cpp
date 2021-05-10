@@ -148,7 +148,7 @@ namespace hooks
 					prepareForNextOrder(unit);
 				}
 				else //54896
-					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
 
 			}
 
@@ -285,7 +285,7 @@ namespace hooks
 					prepareForNextOrder(unit);
 				}
 				else
-					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 		}
 	}

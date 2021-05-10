@@ -64,11 +64,11 @@ namespace hooks
 			}
 			else if (unit->pAI != nullptr)
 			{
-				unit->orderComputerCL(OrderId::ComputerAI);
+				unit->orderComputerClear(OrderId::ComputerAI);
 			}
 			else
 			{
-				unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+				unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
 			}
 		}
 	}

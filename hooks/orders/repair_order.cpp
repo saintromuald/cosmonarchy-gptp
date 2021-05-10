@@ -255,7 +255,7 @@ namespace hooks
 					{
 						orderId = OrderId::ComputerAI;
 					}
-					unit->orderComputerCL(orderId);
+					unit->orderComputerClear(orderId);
 				}
 				//6771B
 				if (target != nullptr && !(target->status & UnitStatus::InTransport))

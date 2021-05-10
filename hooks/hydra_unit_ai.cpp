@@ -165,7 +165,7 @@ void hydra_unit_ai(Unit* unit)
 			&& (unit->hitPoints + unit->shields) * 2 >=	(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id]))
 		{
 			unitExt->timers[TimerAI_GriefOfAllGods] = 612;
-			unit->orderComputerCL(OrderId::KhaydarinEclipse);
+			unit->orderComputerClear(OrderId::KhaydarinEclipse);
 			unit->orderTarget.pt = unit->sprite->position;
 			unit->mainOrderState = 0;
 		}

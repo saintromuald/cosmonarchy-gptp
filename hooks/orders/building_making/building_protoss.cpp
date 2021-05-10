@@ -97,7 +97,7 @@ namespace hooks
 									}
 									unit->orderTarget.unit = builtUnit;
 									helper::AI_TrainingOverlord(builtUnit, unit);
-									builtUnit->orderComputerCL(OrderId::BuildSelf2);
+									builtUnit->orderComputerClear(OrderId::BuildSelf2);
 									helper::playSoundFromSource(SoundId::Protoss_SHUTTLE_pshBld00_wav, unit, 1, 0);
 									unit->mainOrderState = 3;
 								}

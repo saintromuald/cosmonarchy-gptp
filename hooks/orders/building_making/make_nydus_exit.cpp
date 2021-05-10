@@ -50,11 +50,11 @@ namespace hooks
 			else
 				if (nydus_canal->pAI != nullptr)
 				{
-					nydus_canal->orderComputerCL(OrderId::ComputerAI);
+					nydus_canal->orderComputerClear(OrderId::ComputerAI);
 				}
 				else
 				{
-					nydus_canal->orderComputerCL(units_dat::ReturnToIdleOrder[nydus_canal->id]);
+					nydus_canal->orderComputerClear(units_dat::ReturnToIdleOrder[nydus_canal->id]);
 				}
 		}
 		else
@@ -76,7 +76,7 @@ namespace hooks
 				helper::initBuilding(nydusExit, 1);
 				// logically equivalent to a more complex original calculation
 				nydusExit->hitPoints = (10 * units_dat::MaxHitPoints[nydusExit->id]) / 100;
-				nydusExit->orderComputerCL(OrderId::ZergBuildSelf);
+				nydusExit->orderComputerClear(OrderId::ZergBuildSelf);
 				nydusExit->currentButtonSet = UnitId::Buttons_Blank;
 				helper::stopCreepDisappearingAtBuilding(nydusExit);
 				nydus_canal->building.nydusExit = nydusExit;

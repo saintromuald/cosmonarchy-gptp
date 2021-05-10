@@ -22,7 +22,7 @@ namespace hooks
 			building->mainOrderId != OrderId::Morph2
 			)
 		{
-			building->orderComputerCL(OrderId::Morph2);
+			building->orderComputerClear(OrderId::Morph2);
 			scbw::refreshConsole();
 		}
 	}

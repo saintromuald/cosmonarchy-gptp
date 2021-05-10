@@ -318,11 +318,11 @@ namespace hooks
 					helper::function_004E7E10(unit, 0);
 					if (unit->pAI == nullptr)
 					{
-						unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+						unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
 					}
 					else
 					{
-						unit->orderComputerCL(OrderId::ComputerAI);
+						unit->orderComputerClear(OrderId::ComputerAI);
 					}
 
 					scbw::refreshConsole();

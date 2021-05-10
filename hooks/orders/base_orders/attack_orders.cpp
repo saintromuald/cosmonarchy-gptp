@@ -26,12 +26,12 @@ namespace hooks
 				// 004656B2:
 				if (unit->pAI != nullptr)
 				{
-					unit->orderComputerCL(OrderId::ComputerAI);
+					unit->orderComputerClear(OrderId::ComputerAI);
 				}
 				else
 				{
 					// 004656C6
-					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 			}
 		}
@@ -100,11 +100,11 @@ namespace hooks
 				// 00465981
 				if (unit->pAI != nullptr)
 				{
-					unit->orderComputerCL(OrderId::ComputerAI);
+					unit->orderComputerClear(OrderId::ComputerAI);
 				}
 				else // 00465998
 				{
-					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 			}
 		}
@@ -352,11 +352,11 @@ namespace hooks
 							}
 							else
 							{ // 00477B9D
-								unit->orderComputerCL(OrderId::Nothing2);
+								unit->orderComputerClear(OrderId::Nothing2);
 
 								// this orderId is hardcoded, not calculated 
 								unit->orderSimple(units_dat::AttackUnitOrder[UnitId::TerranPhalanxSiegeModeTurret], false);
-								current_subunit->orderComputerCL(OrderId::SiegeMode);
+								current_subunit->orderComputerClear(OrderId::SiegeMode);
 
 								// this orderId is hardcoded, not calculated
 								current_subunit->issueQueuedOrderTarget(units_dat::AttackUnitOrder[UnitId::TerranPhalanxSiegeMode], target, false);
@@ -436,7 +436,7 @@ namespace hooks
 							}
 							else
 							{
-								unit->orderComputerCL(OrderId::TurretGuard); // 00477C93
+								unit->orderComputerClear(OrderId::TurretGuard); // 00477C93
 							}
 						}
 
@@ -594,11 +594,11 @@ namespace hooks
 			else
 				if (unit->pAI != nullptr) // 00477E6B
 				{
-					unit->orderComputerCL(OrderId::ComputerAI);
+					unit->orderComputerClear(OrderId::ComputerAI);
 				}
 				else // 00477E83
 				{
-					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
 				}
 		}
 
@@ -645,9 +645,9 @@ namespace hooks
 			{
 
 				if (unit->pAI != nullptr)
-					unit->orderComputerCL(OrderId::ComputerAI);
+					unit->orderComputerClear(OrderId::ComputerAI);
 				else
-					unit->orderComputerCL(units_dat::ReturnToIdleOrder[unit->id]);
+					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
 
 			} //if(unit->orderQueueHead == nullptr)
 

@@ -828,7 +828,7 @@ void Unit::orderTo(u8 orderId, u16 x, u16 y)
 
 //Logically equivalent to function orderComputer_cl @ 0x00475310
 //used in hooks so not doing assert, mind it if used in mods
-void Unit::orderComputerCL(u8 orderId)
+void Unit::orderComputerClear(u8 orderId)
 {
 	this->userActionFlags |= 1;
 	this->order(orderId, 0, 0, nullptr, UnitId::None, true);

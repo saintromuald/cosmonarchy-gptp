@@ -345,7 +345,7 @@ namespace hooks
 				}
 
 				helper::refreshSpriteData(unit->sprite);
-				unit->orderComputerCL(OrderId::ResetCollision1);
+				unit->orderComputerClear(OrderId::ResetCollision1);
 				unit->order(
 					units_dat::ReturnToIdleOrder[unit->id],
 					0,
