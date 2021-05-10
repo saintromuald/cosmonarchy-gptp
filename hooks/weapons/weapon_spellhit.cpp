@@ -676,7 +676,7 @@ namespace hooks
 		Thingy* maelstrom_effect_sprite = helper::createThingy(SpriteId::Maelstrom_Hit, x, y, 0);
 		if (maelstrom_effect_sprite != nullptr)
 		{
-			maelstrom_effect_sprite->sprite->elevationLevel = 17; // 0x11
+			maelstrom_effect_sprite->sprite->elevationLevel = 17;
 			helper::setThingyVisibilityFlags(maelstrom_effect_sprite);
 		}
 		helper::playSoundFromSource(SoundId::Protoss_Darchon_Parahit_wav, attacker, 1, 0);
@@ -689,15 +689,13 @@ namespace hooks
 	}
 
 	// Hooked to modify maelstrom timer and conditions; however, this hook is not called yet, we may need to hook iterateUnitsAtLocationTargetProc - 4E8280
-	bool maelstromProc(Unit* target, Unit* source) // 004F6760
+	bool maelstromProc(Unit* target, Unit* source) // 004F6760, always returns 0
 	{
 		scbw::print("maelstromProc");
 		s32 unitStatus = target->status;
-		bool result;
 		if (unitStatus & UnitStatus::IsHallucination)
 		{
 			helper::orders_SelfDestructing(target);
-			result = 0;
 		}
 		else
 		{
@@ -706,12 +704,11 @@ namespace hooks
 				s32 unitProperty = units_dat::BaseProperty[target->id];
 				if (!(unitStatus & UnitStatus::Burrowed))
 				{
-					helper::setMaelstromTimer(target, 16);
+					helper::setMaelstromTimer(target, MindTyrantMaelstromTimer);
 				}
 			}
-			result = 0;
 		}
-		return result;
+		return 0;
 	}
 
 	// no bullet because this function is called in another context without bullet
