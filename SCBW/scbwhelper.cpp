@@ -4457,14 +4457,14 @@ namespace helper
 		}
 	}
 
-	void function_0049B440(Unit* unit, u32 soundId)
+	void animDecloak(Unit* unit, u32 soundId)
 	{
-		const u32 Func_Sub49B440 = 0x0049B440;
+		const u32 Func_animDecloak = 0x0049B440;
 		__asm {
 			PUSHAD
 			MOV EBX, soundId
 			MOV EAX, unit
-			CALL Func_Sub49B440
+			CALL Func_animDecloak
 			POPAD
 		}
 	}

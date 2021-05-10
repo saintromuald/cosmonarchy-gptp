@@ -144,103 +144,55 @@ namespace scbw
 		print(buf, color);
 	}
 
-	const u32 Func_PrintText = 0x0048CD30;
-	void print(const char* text, u32 color)
-	{
-
-		if (!text)
-			return;
-
-		DWORD gtc = GetTickCount() + 7000;
-
-		__asm {
-			PUSHAD
-			PUSH 0;//unknown
-			MOV eax, text
-				PUSH gtc
-				PUSH color
-				CALL Func_PrintText
-				POPAD
-		}
-
-	}
-
-	const u32 Func_ShowErrorMessageWithSfx = 0x0048EE30;
-	void showErrorMessageWithSfx(u32 playerId, u32 statTxtId, u32 sfxId)
-	{
-
-		__asm {
-			PUSHAD
-			MOV ESI, sfxId
-			MOV EDI, statTxtId
-			MOV EBX, playerId
-			CALL Func_ShowErrorMessageWithSfx
-			POPAD
-		}
-
-	}
-
 	//-------- Unit checks --------//
 
-	const u32 Func_CanBeEnteredBy = 0x004E6E00; //AKA CanEnterTransport()
-	bool canBeEnteredBy(Unit* transport, Unit* unit)
-	{
-
-		static u32 result;
-
-		__asm {
-			PUSHAD
-			MOV EAX, transport
-			PUSH unit
-			CALL Func_CanBeEnteredBy
-			MOV result, EAX
-			POPAD
-		}
-
-		return result != 0;
-
-	}
-
-	//Identical to function @ 0x00475CE0
+	// Identical to function @ 0x00475CE0
 	bool canWeaponTargetUnit(u8 weaponId, Unit* target, Unit* attacker)
 	{
-
 		if (weaponId >= WEAPON_TYPE_COUNT)
+		{
 			return false;
-
+		}
 		if (!target)
+		{
 			return weapons_dat::TargetFlags[weaponId].terrain;
-
-
+		}
 		if (target->status & UnitStatus::Invincible)
+		{
 			return false;
+		}
 
 		const TargetFlag tf = weapons_dat::TargetFlags[weaponId];
 		const u32 targetProps = units_dat::BaseProperty[target->id];
-
 		if ((target->status & UnitStatus::InAir) ? !tf.air : !tf.ground)
+		{
 			return false;
-
+		}
 		if (tf.mechanical && !(targetProps & UnitProperty::Mechanical))
+		{
 			return false;
-
+		}
 		if (tf.organic && !(targetProps & UnitProperty::Organic))
+		{
 			return false;
-
+		}
 		if (tf.nonBuilding && (targetProps & UnitProperty::Building))
+		{
 			return false;
-
+		}
 		if (tf.nonRobotic && (targetProps & UnitProperty::RoboticUnit))
+		{
 			return false;
-
+		}
 		if (tf.orgOrMech && !(targetProps & (UnitProperty::Organic | UnitProperty::Mechanical)))
+		{
 			return false;
-
+		}
 		if (tf.playerOwned && target->playerId != attacker->playerId)
+		{
 			return false;
-
+		}
 		return true;
-
 	}
 
 	bool isUnderDarkSwarm(Unit* unit)
@@ -268,30 +220,6 @@ namespace scbw
 		darkSwarmFinder.search(x - radius, y - radius, x + radius, y + radius);
 		Unit* darkSwarm = darkSwarmFinder.getFirst(IsDarkswarm);
 		return darkSwarm;
-	}
-
-	u16 getTechUseErrorMessage(Unit* target, u8 castingPlayer, u16 techId)
-	{
-
-		static u32 techId_;
-		static u16 errorMessage;
-
-		const u32 Func_GetTechUseErrorMessage = 0x00491E80;
-
-		techId_ = techId;
-
-		__asm {
-			PUSHAD
-			PUSH techId_
-			MOV BL, castingPlayer
-			MOV EAX, target
-			CALL Func_GetTechUseErrorMessage
-			MOV errorMessage, AX
-			POPAD
-		}
-
-		return errorMessage;
-
 	}
 
 	//-------- Graphics and geometry --------//
@@ -859,31 +787,6 @@ namespace scbw
 		else
 			UpgradesBw->currentLevel[playerId][upgradeId - UpgradeId::PrismaticShield] = level;
 	}
-	const u32 Func_getLastQueueSlotType = 0x0047B270;
-	u16 getLastQueueSlotType(Unit* a1)
-	{
-		static s32 result;
-		__asm {
-			PUSHAD
-			MOV EDX, a1
-			CALL Func_getLastQueueSlotType
-			MOV result, EAX
-			POPAD
-		}
-		return (u16)result;
-	}
-	void setOffsetToParentSpecialOverlay(Image* image)
-	{
-
-		const u32 Func_updateImagePositionOffset = 0x004D5A00;
-
-		__asm {
-			PUSHAD
-			MOV ECX, image
-			CALL Func_updateImagePositionOffset
-			POPAD
-		}
-	}
 
 	void adjustAddonX(u16 addonId, u16 sourceId, u16& x)
 	{
@@ -906,27 +809,6 @@ namespace scbw
 		adjustAddonY(addonId, sourceId, y);
 	}
 
-
-	//-------- Map information --------//
-
-	const u32 Func_GetGroundHeightAtPos = 0x004BD0F0;
-	u32 getGroundHeightAtPos(s32 x, s32 y)
-	{
-
-		static u32 height;
-
-		__asm {
-			PUSHAD
-			MOV EAX, y
-			MOV ECX, x
-			CALL Func_GetGroundHeightAtPos
-			MOV height, EAX
-			POPAD
-		}
-
-		return height;
-	}
-
 	//-------- Moving Units --------//
 
 	bool moveUnit(Unit* unit, s16 x, s16 y)
@@ -935,7 +817,7 @@ namespace scbw
 		Point16 actualPos;
 		Point16 prevPos = unit->sprite->position;
 
-		//Based on the code for Recall/Nydus Canal/Move Unit trigger
+		// Based on the code for Recall/Nydus Canal/Move Unit trigger
 		setUnitPosition(unit, x, y);
 
 		if (checkUnitCollisionPos(unit, &targetPos, &actualPos))
@@ -950,159 +832,6 @@ namespace scbw
 			setUnitPosition(unit, prevPos.x, prevPos.y);
 			return false;
 		}
-
-	}
-
-	const u32 Func_DisableDialog = 0x00418640;
-	void disableDialog(BinDlg* dialog)
-	{
-
-		__asm {
-			PUSHAD
-			MOV ESI, dialog
-			CALL Func_DisableDialog
-			POPAD
-		}
-
-	}
-
-	;
-
-	const u32 Func_ShowDialog = 0x004186A0;
-	void showDialog(BinDlg* dialog)
-	{
-
-		__asm {
-			PUSHAD
-			MOV ESI, dialog
-			CALL Func_ShowDialog
-			POPAD
-		}
-
-	}
-
-	;
-
-	const u32 Func_HideDialog = 0x00418700;
-	void hideDialog(BinDlg* dialog)
-	{
-
-		__asm {
-			PUSHAD
-			MOV ESI, dialog
-			CALL Func_HideDialog
-			POPAD
-		}
-
-	}
-
-	;
-
-	const u32 Func_Sub418E00 = 0x00418E00;
-	void function_418E00(BinDlg* dialog)
-	{
-
-		__asm {
-			PUSHAD
-			MOV ESI, dialog
-			CALL Func_Sub418E00
-			POPAD
-		}
-
-	}
-
-	;
-
-	const u32 Func_UpdateDialog = 0x0041C400;
-	void updateDialog(BinDlg* dialog)
-	{
-		__asm {
-			PUSHAD
-			MOV EAX, dialog
-			CALL Func_UpdateDialog
-			POPAD
-		}
-	}
-
-	;
-
-	const u32 Func_PrepareUnitMoveClearRefs = 0x00493CA0;
-	void prepareUnitMove(Unit* unit, bool hideUnit)
-	{
-
-		assert(unit);
-
-		static b32 _hideUnit;
-
-		_hideUnit = hideUnit ? 1 : 0;
-
-		__asm {
-			PUSHAD
-			PUSH _hideUnit
-			MOV EDI, unit
-			CALL Func_PrepareUnitMoveClearRefs
-			POPAD
-		}
-
-	}
-
-	const u32 Func_CheckUnitCollisionPos = 0x0049D3E0;
-	bool checkUnitCollisionPos(Unit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea, bool hideErrorMsg, u32 someFlag)
-	{
-		assert(unit);
-		assert(inPos);
-		assert(outPos);
-
-		static u32 result;
-		static u32 _hideErrorMsg;
-
-		_hideErrorMsg = hideErrorMsg;
-
-		__asm {
-			PUSHAD
-			PUSH someFlag;
-			PUSH _hideErrorMsg
-				PUSH outPos
-				PUSH inPos
-				PUSH unit
-				MOV EAX, moveArea
-				CALL Func_CheckUnitCollisionPos
-				MOV result, EAX
-				POPAD
-		}
-
-		return result != 0;
-
-	}
-
-	const u32 Func_SetUnitPosition = 0x004EB9F0;
-	void setUnitPosition(Unit* unit, u16 x, u16 y)
-	{
-		assert(unit);
-
-		__asm {
-			PUSHAD
-			MOV CX, y
-			MOV AX, x
-			MOV EDX, unit
-			CALL Func_SetUnitPosition
-			POPAD
-		}
-
-	}
-
-	const u32 Func_RefreshRevealUnitAfterMove = 0x00494160;
-	void refreshUnitAfterMove(Unit* unit)
-	{
-		assert(unit);
-
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_RefreshRevealUnitAfterMove
-			POPAD
-		}
-
 	}
 
 	//-------- Utility functions --------//
@@ -1145,17 +874,6 @@ namespace scbw
 		}
 	}
 
-	const u32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
-	void makeToHoldPosition(Unit* unit)
-	{
-
-		__asm {
-			PUSHAD
-			MOV ESI, unit
-			CALL Func_OrdersHoldPositionSuicidal
-			POPAD
-		}
-	}
 	void refreshScreen(s32 left, s32 top, s32 right, s32 bottom)
 	{
 
@@ -1210,7 +928,6 @@ namespace scbw
 		//Logically equivalent to function @ 0x004C36C0
 	void refreshConsole()
 	{
-
 		static u32* const bCanUpdateCurrentButtonSet = (u32*)0x0068C1B0;
 		static u8* const bCanUpdateSelectedUnitPortrait = (u8*)0x0068AC74;
 		static u8* const bCanUpdateStatDataDialog = (u8*)0x0068C1F8;
@@ -1222,86 +939,6 @@ namespace scbw
 		*bCanUpdateStatDataDialog = 1;
 		*someDialogUnknown = nullptr;
 		*someDialogUnknownUser = nullptr;
-
-	}
-
-	const u32 Func_MoveScreen = 0x0049C440;
-	//Player check added based on how others functions test it
-	//Values above or equal to 8 means all players
-	//Equivalent to moveScreenToUnit @ 0x004E6020
-	void MoveScreenToUnit(Unit* unit, u32 playerId)
-	{
-
-		if (playerId >= 8 || playerId == *LOCAL_NATION_ID)
-		{
-
-			s32 x, y;
-
-			x = (s16)unit->sprite->position.x;
-			y = (s16)unit->sprite->position.y;
-
-			if (x < 0)
-				x += 31;
-			if (y < 0)
-				y += 31;
-
-			x = ((x / 32) - 10) * 32;
-			y = ((y / 32) - 6) * 32;
-
-			__asm {
-				PUSHAD
-				MOV ECX, y
-				MOV EAX, x
-				CALL Func_MoveScreen
-				POPAD
-			}
-
-		}
-
-	}
-
-	const u32 Func_minimapPing = 0x004A34C0;
-	//Player check added based on how others functions test it
-	//Values above or equal to 8 means all players
-	//x and y are coords as gotten from unit->sprite->position
-	void minimapPing(u32 x, u32 y, s32 color, u32 playerId)
-	{
-
-		if (playerId >= 8 || playerId == *LOCAL_NATION_ID)
-			__asm {
-			PUSHAD
-			PUSH color
-			PUSH y
-			PUSH x
-			CALL Func_minimapPing
-			POPAD
-		}
-
-	}
-
-	const u32 Func_hasOverlay = 0x0047B720;
-	u8 hasOverlay(Unit* unit)
-	{
-		static u8 result;
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_hasOverlay
-			MOV result, AL
-			POPAD
-		}
-		return result;
-	}
-
-	const u32 Func_ApplyHallucinationStats = 0x004F6180;
-	void ApplyHallucinationStats(Unit* unit)
-	{
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_ApplyHallucinationStats
-			POPAD
-		}
 	}
 
 	void createUnitFromAbility(s32 unitId, s32 count, u16 playerId, s32 x, s32 y, u32 removeTimer, Unit* creator)
@@ -1317,7 +954,7 @@ namespace scbw
 			{
 				if (creator->status & UnitStatus::IsHallucination)
 				{
-					ApplyHallucinationStats(unit);
+					helper::applyHallucinationStats(unit);
 					unit->status |= UnitStatus::IsHallucination;
 					unit->removeTimer = 1350;
 					unit->sprite->createOverlay(ImageId::HallucinationDeath3);
@@ -1405,18 +1042,6 @@ namespace scbw
 		bool onCreep = scbw::getActiveTileAt(target->getX(), target->getY()).hasCreep;
 		f64 multiplier = (ground && onCreep) ? 1.5 : 1;
 		return ceil(std::max(((s32)units_dat::SupplyRequired[target->id]), 1) * multiplier);
-	}
-
-	const u32 Func_unitDeathSomething_0 = 0x004E6340;
-	void hideAndDisableUnit(Unit* unit)
-	{
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			CALL Func_unitDeathSomething_0
-			POPAD
-		}
-
 	}
 
 	s32 dir_saturate(s32 direction, s32 value)
@@ -1610,18 +1235,6 @@ namespace scbw
 		unit->sprite->createOverlay(ImageId::ShieldOverlay, offset.x, offset.y, frameAngle);
 	}
 
-	const u32 Func_49B440 = 0x0049B440;
-	void AnimDecloak(Unit* unit, s32 sound)
-	{
-		__asm {
-			PUSHAD
-			MOV EAX, unit
-			MOV EBX, sound
-			CALL Func_49B440
-			POPAD
-		}
-	}
-
 	void decloakProc(Unit* unit)
 	{
 		if (isDecloakable(unit))
@@ -1630,7 +1243,7 @@ namespace scbw
 			if (unitExt->timers[TimerDecloak] == 0)
 			{
 				unit->visibilityStatus = 0xff;
-				AnimDecloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
+				helper::animDecloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 			}
 			unitExt->timers[TimerDecloak] = 48 + 1;
 			if (unit->subunit)
@@ -1639,7 +1252,7 @@ namespace scbw
 				if (subunitExt->timers[TimerDecloak] == 0)
 				{
 					unit->subunit->visibilityStatus = 0xff;
-					AnimDecloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
+					helper::animDecloak(unit, SoundId::Terran_PHOENIX_TPhClo01_WAV);
 				}
 				subunitExt->timers[TimerDecloak] = 48 + 1;
 			}
@@ -1770,5 +1383,324 @@ namespace scbw
 		// Values
 		unitExt->values[ValueHallucinatingSourcePlayer] = playerId;
 		unitExt->timers[TimerHallucinating] = time;
+	}
+
+	bool canBeEnteredBy(Unit* transport, Unit* unit)
+	{
+		const u32 Func_CanBeEnteredBy = 0x004E6E00; // AKA CanEnterTransport()
+		static u32 result;
+		__asm {
+			PUSHAD
+			MOV EAX, transport
+			PUSH unit
+			CALL Func_CanBeEnteredBy
+			MOV result, EAX
+			POPAD
+		}
+		return result != 0;
+	}
+
+	void print(const char* text, u32 color)
+	{
+		const u32 Func_PrintText = 0x0048CD30;
+		if (!text)
+		{
+			return;
+		}
+		DWORD gtc = GetTickCount() + 7000;
+		__asm {
+			PUSHAD
+			PUSH 0;//unknown
+			MOV eax, text
+				PUSH gtc
+				PUSH color
+				CALL Func_PrintText
+				POPAD
+		}
+	}
+
+	void showErrorMessageWithSfx(u32 playerId, u32 statTxtId, u32 sfxId)
+	{
+		const u32 Func_ShowErrorMessageWithSfx = 0x0048EE30;
+		__asm {
+			PUSHAD
+			MOV ESI, sfxId
+			MOV EDI, statTxtId
+			MOV EBX, playerId
+			CALL Func_ShowErrorMessageWithSfx
+			POPAD
+		}
+	}
+
+	u16 getTechUseErrorMessage(Unit* target, u8 castingPlayer, u16 techId)
+	{
+		const u32 Func_GetTechUseErrorMessage = 0x00491E80;
+		static u32 techId_;
+		static u16 errorMessage;
+		techId_ = techId;
+		__asm {
+			PUSHAD
+			PUSH techId_
+			MOV BL, castingPlayer
+			MOV EAX, target
+			CALL Func_GetTechUseErrorMessage
+			MOV errorMessage, AX
+			POPAD
+		}
+		return errorMessage;
+	}
+
+	u16 getLastQueueSlotType(Unit* a1)
+	{
+		const u32 Func_getLastQueueSlotType = 0x0047B270;
+		static s32 result;
+		__asm {
+			PUSHAD
+			MOV EDX, a1
+			CALL Func_getLastQueueSlotType
+			MOV result, EAX
+			POPAD
+		}
+		return (u16)result;
+	}
+
+	void setOffsetToParentSpecialOverlay(Image* image)
+	{
+		const u32 Func_updateImagePositionOffset = 0x004D5A00;
+		__asm {
+			PUSHAD
+			MOV ECX, image
+			CALL Func_updateImagePositionOffset
+			POPAD
+		}
+	}
+
+	u32 getGroundHeightAtPos(s32 x, s32 y)
+	{
+		const u32 Func_GetGroundHeightAtPos = 0x004BD0F0;
+		static u32 height;
+		__asm {
+			PUSHAD
+			MOV EAX, y
+			MOV ECX, x
+			CALL Func_GetGroundHeightAtPos
+			MOV height, EAX
+			POPAD
+		}
+		return height;
+	}
+
+	void disableDialog(BinDlg* dialog)
+	{
+		const u32 Func_DisableDialog = 0x00418640;
+		__asm
+		{
+			PUSHAD
+			MOV ESI, dialog
+			CALL Func_DisableDialog
+			POPAD
+		}
+	}
+
+	void showDialog(BinDlg* dialog)
+	{
+		const u32 Func_ShowDialog = 0x004186A0;
+		__asm
+		{
+			PUSHAD
+			MOV ESI, dialog
+			CALL Func_ShowDialog
+			POPAD
+		}
+	}
+
+	void hideDialog(BinDlg* dialog)
+	{
+		const u32 Func_HideDialog = 0x00418700;
+		__asm
+		{
+			PUSHAD
+			MOV ESI, dialog
+			CALL Func_HideDialog
+			POPAD
+		}
+	}
+
+	void function_418E00(BinDlg* dialog)
+	{
+		const u32 Func_Sub418E00 = 0x00418E00;
+		__asm
+		{
+			PUSHAD
+			MOV ESI, dialog
+			CALL Func_Sub418E00
+			POPAD
+		}
+	}
+
+	void updateDialog(BinDlg* dialog)
+	{
+		const u32 Func_UpdateDialog = 0x0041C400;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, dialog
+			CALL Func_UpdateDialog
+			POPAD
+		}
+	}
+
+	void prepareUnitMove(Unit* unit, bool hideUnit)
+	{
+		const u32 Func_PrepareUnitMoveClearRefs = 0x00493CA0;
+		assert(unit);
+		static b32 _hideUnit;
+		_hideUnit = hideUnit ? 1 : 0;
+		__asm
+		{
+			PUSHAD
+			PUSH _hideUnit
+			MOV EDI, unit
+			CALL Func_PrepareUnitMoveClearRefs
+			POPAD
+		}
+	}
+
+	bool checkUnitCollisionPos(Unit* unit, const Point16* inPos, Point16* outPos, Box16* moveArea, bool hideErrorMsg, u32 someFlag)
+	{
+		const u32 Func_CheckUnitCollisionPos = 0x0049D3E0;
+		assert(unit);
+		assert(inPos);
+		assert(outPos);
+		static u32 result;
+		static u32 _hideErrorMsg;
+		_hideErrorMsg = hideErrorMsg;
+		__asm {
+			PUSHAD
+			PUSH someFlag;
+			PUSH _hideErrorMsg
+				PUSH outPos
+				PUSH inPos
+				PUSH unit
+				MOV EAX, moveArea
+				CALL Func_CheckUnitCollisionPos
+				MOV result, EAX
+				POPAD
+		}
+		return result != 0;
+	}
+
+	void setUnitPosition(Unit* unit, u16 x, u16 y)
+	{
+		const u32 Func_SetUnitPosition = 0x004EB9F0;
+		assert(unit);
+		__asm {
+			PUSHAD
+			MOV CX, y
+			MOV AX, x
+			MOV EDX, unit
+			CALL Func_SetUnitPosition
+			POPAD
+		}
+	}
+
+	void refreshUnitAfterMove(Unit* unit)
+	{
+		const u32 Func_RefreshRevealUnitAfterMove = 0x00494160;
+		assert(unit);
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_RefreshRevealUnitAfterMove
+			POPAD
+		}
+	}
+
+	void makeToHoldPosition(Unit* unit)
+	{
+		const u32 Func_OrdersHoldPositionSuicidal = 0x004EB5B0;
+		__asm {
+			PUSHAD
+			MOV ESI, unit
+			CALL Func_OrdersHoldPositionSuicidal
+			POPAD
+		}
+	}
+
+	// Player check added based on how others functions test it
+	// Values above or equal to 8 means all players
+	// Equivalent to moveScreenToUnit @ 0x004E6020
+	void MoveScreenToUnit(Unit* unit, u32 playerId)
+	{
+		const u32 Func_MoveScreen = 0x0049C440;
+		if (playerId >= 8 || playerId == *LOCAL_NATION_ID)
+		{
+			s32 x, y;
+			x = (s16)unit->sprite->position.x;
+			y = (s16)unit->sprite->position.y;
+			if (x < 0)
+			{
+				x += 31;
+			}
+			if (y < 0)
+			{
+				y += 31;
+			}
+			x = ((x / 32) - 10) * 32;
+			y = ((y / 32) - 6) * 32;
+			__asm {
+				PUSHAD
+				MOV ECX, y
+				MOV EAX, x
+				CALL Func_MoveScreen
+				POPAD
+			}
+		}
+	}
+
+	// Player check added based on how others functions test it
+	// Values above or equal to 8 means all players
+	// x and y are coords as gotten from unit->sprite->position
+	void minimapPing(u32 x, u32 y, s32 color, u32 playerId)
+	{
+		const u32 Func_minimapPing = 0x004A34C0;
+		if (playerId >= 8 || playerId == *LOCAL_NATION_ID)
+		{
+			__asm
+			{
+				PUSHAD
+				PUSH color
+				PUSH y
+				PUSH x
+				CALL Func_minimapPing
+				POPAD
+			}
+		}
+	}
+
+	u8 hasOverlay(Unit* unit)
+	{
+		const u32 Func_hasOverlay = 0x0047B720;
+		static u8 result;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_hasOverlay
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	void hideAndDisableUnit(Unit* unit)
+	{
+		const u32 Func_unitDeathSomething_0 = 0x004E6340;
+		__asm {
+			PUSHAD
+			MOV EAX, unit
+			CALL Func_unitDeathSomething_0
+			POPAD
+		}
 	}
 }

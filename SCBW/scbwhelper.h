@@ -464,13 +464,13 @@ namespace helper
 	void setUpgradeLevel(u32 playerId, u32 upgradeType, u8 upgradeLevel);																// 004CE770
 
 	//// merge_units
-	bool advanceRemainingBuildTime(Unit* unit);																						// 00466940
+	bool advanceRemainingBuildTime(Unit* unit);																							// 00466940
 	u8 function_0046A820(Unit* unit);																									// 0046A820
 	void orderImmediate(Unit* unit, u8 order);																							// 00474B40
-	void playMorphingCompleteSound(Unit* unit);																						// 0048F440
-	void mergeStatusIntoUnit_Sub493180(Unit* unit_dst, Unit* unit_src);																// 00493180
-	void function_0049B440(Unit* unit, u32 soundId);			 																		// 0049B440
-	void changeUnitButtonSet_Sub4E5D60(Unit* unit, u16 unitId);																		// 004E5D60
+	void playMorphingCompleteSound(Unit* unit);																							// 0048F440
+	void mergeStatusIntoUnit_Sub493180(Unit* unit_dst, Unit* unit_src);																	// 00493180
+	void animDecloak(Unit* unit, u32 soundId);			 																				// 0049B440
+	void changeUnitButtonSet_Sub4E5D60(Unit* unit, u16 unitId);																			// 004E5D60
 	bool delayedSetMoveTarget_xy_Sub4EB960(Unit* unit, u16 x, u16 y);																	// 004EB960
 
 	//// nuke_orders
