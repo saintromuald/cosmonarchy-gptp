@@ -477,9 +477,6 @@ namespace scbw
 			{
 				return true;
 			}
-			default:
-			{
-			} break;
 		}
 
 		if (allow_larvae && id == UnitId::ZergLarva)
