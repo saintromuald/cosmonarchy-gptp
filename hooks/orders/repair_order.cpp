@@ -403,7 +403,7 @@ namespace hooks
 	// Hooked to investigate Repair crashes - Pr0nogo
 	s32 orderAllowed(Unit* unit, u16 orderId, s32 player) // 0046DC20
 	{
-		s32 result;
+		s32 result = 0;
 		s16 unitId;
 
 		*lastInternalErr = 0;
