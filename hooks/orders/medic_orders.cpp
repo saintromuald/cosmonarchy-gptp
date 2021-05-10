@@ -27,6 +27,12 @@ namespace hooks
 
 		if (target != nullptr)
 		{
+			if (target->id == UnitId::ZergNydusCanal && target->building.nydusExit)
+			{
+				unit->orderTo(OrderId::Enternyduscanal, target);
+				return;
+			}
+
 			if (helper::AI_OrderHeal(unit, target) != 0)
 			{
 				unit->orderComputerCL(OrderId::MedicHeal1);
