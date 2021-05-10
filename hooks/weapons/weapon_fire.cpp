@@ -382,8 +382,7 @@ namespace hooks
 				else if (weaponId == WeaponId::IonCannon)
 				{
 					// Ion Cannon projectile spawn position
-					scbw::setMissileSourcePos(unit, weaponId, ValueIonCannonProjectilePos, 1,
-						ImagesDatEntries::OverlaySpecialPtr, 1); // 1 is frameset offset
+					scbw::setMissileSourcePos(unit, weaponId, ValueIonCannonProjectilePos, 1, ImagesDatEntries::OverlaySpecialPtr, 1);
 				}
 				else if (weaponId == WeaponId::KalkaliskViscousAcid)
 				{
