@@ -239,7 +239,6 @@ void hydra_unit_ai(Unit* unit)
 	}
 	else if (unit->id == UnitId::TerranMadrigal)
 	{
-
 		u32 furiaDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalFuriaMissiles] / weapons_dat::Cooldown[WeaponId::MadrigalFuriaMissiles]);
 		furiaDamagePotential *= hydraUnitCount(unit, unit->position, 5 * 32, Flags::Enemy, {});
 		if (unit->orderTarget.unit)
@@ -258,36 +257,37 @@ void hydra_unit_ai(Unit* unit)
 			scbw::set_generic_rust_value(unit, RustId::ToggleTempoChange, 1);
 		}
 	}
+	/*	
+	else if (unit->id == UnitId::TerranPaladin) {
+		if (unit->mainOrderId != OrderId::Skyfall && scbw::get_generic_timer(unit,RustId::AI_PaladinTimer)) {
+			bool skyfallCondition = false;
+			hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Skyfall],
+				CFlags::Enemy, {}, [&](Unit* u) {
 
-	/*	else if (unit->id == UnitId::TerranPaladin) {
-			if (unit->mainOrderId != OrderId::Skyfall && scbw::get_generic_timer(unit,RustId::AI_PaladinTimer)) {
-				bool skyfallCondition = false;
-				hydraFinderLoop(unit, unit->sprite->position, weapons_dat::MaxRange[WeaponId::Skyfall],
-					CFlags::Enemy, {}, [&](Unit* u) {
-
-	//				scbw::print("Loop");
-					Unit* tryTarget = u;
-					s32 innerCount = 0;
-					hydraFinderLoop(u, u->position, weapons_dat::MaxRange[WeaponId::Skyfall] , CFlags::Ally, {},
-						[&](Unit* internalUnit) {
-						innerCount++;
-					});
-					//scbw::printf("Count is %d", innerCount);
-					if (innerCount >= 6) {
-						Point16 source = unit->position;
-						Point16 target = u->position;
-
-						auto distance = scbw::getDistanceFast(source.x, source.y, target.x, target.y);
-						if (distance >= 64) {
-							f64 fraction = (distance - 64) / distance;
-							u16 resultX, resultY;
-							resultX = MathUtils::lerp(fraction, source.x, target.x, false);
-							resultY = MathUtils::lerp(fraction, source.y, target.y, false);
-							unit->orderTo(OrderId::Skyfall, u->position.x, u->position.y);
-							scbw::set_generic_timer(unit, RustId::AI_PaladinTimer, 50);
-						}
-					}
+				// scbw::print("Loop");
+				Unit* tryTarget = u;
+				s32 innerCount = 0;
+				hydraFinderLoop(u, u->position, weapons_dat::MaxRange[WeaponId::Skyfall] , CFlags::Ally, {},
+					[&](Unit* internalUnit) {
+					innerCount++;
 				});
-			}
-		}*/
+				// scbw::printf("Count is %d", innerCount);
+				if (innerCount >= 6) {
+					Point16 source = unit->position;
+					Point16 target = u->position;
+
+					auto distance = scbw::getDistanceFast(source.x, source.y, target.x, target.y);
+					if (distance >= 64) {
+						f64 fraction = (distance - 64) / distance;
+						u16 resultX, resultY;
+						resultX = MathUtils::lerp(fraction, source.x, target.x, false);
+						resultY = MathUtils::lerp(fraction, source.y, target.y, false);
+						unit->orderTo(OrderId::Skyfall, u->position.x, u->position.y);
+						scbw::set_generic_timer(unit, RustId::AI_PaladinTimer, 50);
+					}
+				}
+			});
+		}
+	}
+	*/
 }
