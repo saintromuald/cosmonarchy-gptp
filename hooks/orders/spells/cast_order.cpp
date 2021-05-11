@@ -5,7 +5,7 @@
 namespace hooks
 {
 	// Hooked to change order conditions and actions for Hallucination - Pr0nogo
-	s32 spellOrder(s32 defaultOrderString, Unit* caster, u16 techId, s32 range, s32* energyCost) // 004926D0
+	s32 spellOrder(s32 defaultOrderString, Unit* caster, u16 techId, s32 range, u16* energyCost) // 004926D0
 	{		
 		u16 v6;
 		char v7;
@@ -20,44 +20,48 @@ namespace hooks
 
 		Unit* orderTarget = caster->orderTarget.unit;
 		v16 = defaultOrderString;
-		if (orderTarget)
+		if (techId == TechId::Hallucination || (orderTarget && helper::getOrderTargetErrorString(techId, orderTarget, 228, caster, orderTarget->sprite->position.x, orderTarget->sprite->position.y, (s16*)&v16)))
 		{
-			if (helper::getOrderTargetErrorString(techId, orderTarget, 228, caster, orderTarget->sprite->position.x, orderTarget->sprite->position.y, (s16*)&v16))
+			v7 = *CHEAT_STATE;
+			v6 = techdata_dat::EnergyCost[techId] << 8;
+			*energyCost = v6;
+			if ((v7 & 8 || caster->energy >= v6))
 			{
-				v7 = *CHEAT_STATE;
-				v6 = techdata_dat::EnergyCost[techId] << 8;
-				*energyCost = v6;
-				if (v7 & 8 || caster->energy >= v6)
+				if (orderTarget)
 				{
 					return helper::spellOrder_MoveTowardsTarget(caster, range);
 				}
-				v8 = units_dat::GroupFlags[caster->id];
-				v9 = caster->playerId;
-				if (v8.isZerg)
-				{
-					v10 = 0;
-				}
-				else if (v8.isTerran)
-				{
-					v10 = 1;
-				}
 				else
 				{
-					v10 = (v8.isProtoss) != 0 ? 2 : 4;
+					return 1;
 				}
-				v11 = helper::getStatTxtString(v10 + 864);
-				if (v11)
-				{
-					if (v12 == *LOCAL_NATION_ID && ACTIVE_PLAYER_ID == LOCAL_HUMAN_ID)
-					{
-						helper::setUnitStatTxtErrorMsg((s32)v11);
-					}
-				}
-				helper::toIdle(caster);
-				return 0;
 			}
-			defaultOrderString = v16;
+			v8 = units_dat::GroupFlags[caster->id];
+			v9 = caster->playerId;
+			if (v8.isZerg)
+			{
+				v10 = 0;
+			}
+			else if (v8.isTerran)
+			{
+				v10 = 1;
+			}
+			else
+			{
+				v10 = (v8.isProtoss) != 0 ? 2 : 4;
+			}
+			v11 = helper::getStatTxtString(v10 + 864);
+			if (v11)
+			{
+				if (/*v12 == *LOCAL_NATION_ID && */*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
+				{
+					helper::setUnitStatTxtErrorMsg((s32)v11);
+				}
+			}
+			helper::toIdle(caster);
+			return 0;
 		}
+		defaultOrderString = v16;
 		v14 = defaultOrderString - 1;
 		if ((s16)defaultOrderString)
 		{
@@ -128,21 +132,16 @@ namespace hooks
 						if (!(target->status & UnitStatus::Invincible))
 						{
 						LABEL_20:
+
 							if (fowUnitId == UnitId::None)
 							{
-								if (techId == TechId::Hallucination)
-								{
-									v10 = 0;
-								}
-								else
-								{
-									v10 = (u32)helper::getTargetUnitAbilityErrorStatString(target, caster->playerId, techId);
-								}
+								v10 = (u32)helper::getTargetUnitAbilityErrorStatString(target, caster->playerId, techId);
 							}
 							else
 							{
 								v10 = helper::canTargetSpellOnFOWUnit((s32)techId, fowUnitId);
 							}
+							
 							if (v10)
 							{
 								if (error)

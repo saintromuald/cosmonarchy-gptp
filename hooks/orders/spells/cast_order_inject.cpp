@@ -31,7 +31,7 @@ namespace
 		static Unit* caster;
 		static u16 techId;
 		static s32 range;
-		static s32* energyCost;
+		static u16* energyCost;
 		__asm
 		{
 			PUSH EBP
@@ -39,7 +39,7 @@ namespace
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV techId, AX
-			MOV EAX, [EBP + 0xC]
+			MOV EAX, [EBP + 0x0C]
 			MOV range, EAX
 			MOV EAX, [EBP + 0x10]
 			MOV energyCost, EAX
@@ -55,7 +55,7 @@ namespace
 			MOV EAX, result
 			MOV ESP, EBP
 			POP EBP
-			RETN 0xC
+			RETN 0x0C
 		}
 	}
 
@@ -105,7 +105,7 @@ namespace hooks
 	void injectCastOrderHooks()
 	{
 		jmpPatch(orders_Spell_Wrapper,		0x00492850, 1);
-//		jmpPatch(spellOrder_Wrapper,		0x004926D0, 0);
+		jmpPatch(spellOrder_Wrapper,		0x004926D0, 0);
 		jmpPatch(canTargetSpell_Wrapper,	0x00492020, 1);
 	}
 }
