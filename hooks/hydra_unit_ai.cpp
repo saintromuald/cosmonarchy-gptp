@@ -109,14 +109,14 @@ void hydra_unit_ai(Unit* unit)
 
 	else if (unit->id == UnitId::TerranMadrigal)
 	{
-		u32 furiaDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalFuriaMissiles] / weapons_dat::Cooldown[WeaponId::MadrigalFuriaMissiles]);
+		u32 furiaDamagePotential = weapons_dat::DamageAmount[WeaponId::MadrigalFuriaMissiles] / weapons_dat::Cooldown[WeaponId::MadrigalFuriaMissiles];
 		furiaDamagePotential *= hydraUnitCount(unit, unit->position, 5 * 32, Flags::Enemy, {});
 		if (unit->orderTarget.unit)
 		{
 			UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
 			furiaDamagePotential += targetExt->values[ValueDirgeStacks] * MadrigalDirgeDamage * 256;
 		}
-		u32 dirgeDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalDirge] / weapons_dat::Cooldown[WeaponId::MadrigalDirge]) + (MadrigalDirgeDamage * 256);
+		u32 dirgeDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalDirge] + MadrigalDirgeDamage * 256) / weapons_dat::Cooldown[WeaponId::MadrigalDirge];
 
 		if (furiaDamagePotential > dirgeDamagePotential)
 		{
