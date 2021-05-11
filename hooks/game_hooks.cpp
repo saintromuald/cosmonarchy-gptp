@@ -915,10 +915,10 @@ namespace hooks
 			}
 		}
 
+		// Madrigal - Dirge
 		if (unitExt->timers[TimerDirgeFuse] == 1)
 		{
-			//unit->sprite->createTopOverlay(ImageId::ArcliteShockCannonHit, unit->getX(), unit->getY());
-			//scbw::createAndInitThingy(SpriteId::Arclite_Shock_Cannon_Hit, unit->getX(), unit->getY());
+			unit->sprite->createTopOverlay(ImageId::ArcliteShockCannon_Damageless, unit->getX(), unit->getY());
 			const u32 radius = 2 * 32;
 			scbw::UnitFinder(
 				unit->getX() - radius,
