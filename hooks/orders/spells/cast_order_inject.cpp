@@ -83,9 +83,9 @@ namespace
 			MOV EAX, [EBP + 0x14]
 			MOV error, EAX
 			POP EAX
-			MOV SI, fowUnitId
-			MOV EDI, target
-			MOV DX, techId
+			MOV fowUnitId, SI
+			MOV target, EDI
+			MOV techId, DX
 			PUSHAD
 		}
 		result = hooks::canTargetSpell(techId, target, fowUnitId, caster, x, y, error);
@@ -95,7 +95,7 @@ namespace
 			MOV AL, result
 			MOV ESP, EBP
 			POP EBP
-			RETN 0x14
+			RETN 0x10
 		}
 	}
 }
@@ -105,7 +105,7 @@ namespace hooks
 	void injectCastOrderHooks()
 	{
 		jmpPatch(orders_Spell_Wrapper,		0x00492850, 1);
-		jmpPatch(spellOrder_Wrapper,		0x004926D0, 0);
+//		jmpPatch(spellOrder_Wrapper,		0x004926D0, 0);
 		jmpPatch(canTargetSpell_Wrapper,	0x00492020, 1);
 	}
 }

@@ -3,62 +3,48 @@
 
 namespace
 {
-
 	void __declspec(naked) orders_ProbeBuildWrapper()
 	{
-
 		static Unit* unit;
-
-		__asm {
+		__asm
+		{
 			MOV unit, EDI
 			PUSHAD
 		}
-
 		hooks::orders_ProbeBuild(unit);
-
-		__asm {
+		__asm
+		{
 			POPAD
 			RETN
 		}
-
 	}
-
-	;
 
 	void __declspec(naked) orders_BuildSelf2Wrapper()
 	{
-
 		static Unit* unit;
-
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			MOV unit, EAX
 			PUSHAD
 		}
-
 		hooks::orders_BuildSelf2(unit);
-
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV ESP, EBP
 			POP EBP
 			RETN
 		}
-
 	}
-
-	;
-
-}; //unnamed namespace
+}
 
 namespace hooks
 {
-
 	void injectBuildingProtossHooks()
 	{
-		jmpPatch(orders_ProbeBuildWrapper, 0x004E4D00, 1);
-		jmpPatch(orders_BuildSelf2Wrapper, 0x004E4F40, 0);
+		jmpPatch(orders_ProbeBuildWrapper,	0x004E4D00, 1);
+		jmpPatch(orders_BuildSelf2Wrapper,	0x004E4F40, 0);
 	}
-
-}; //hooks
+}
