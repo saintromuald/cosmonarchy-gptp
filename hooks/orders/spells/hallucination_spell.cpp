@@ -9,35 +9,15 @@ namespace hooks
 	{
 		s32 sightRange = unit->getSightRange(true);
 		u16 techCost;
-		if (
-			helper::ordersSpell_Sub_4926D0(
+		if (helper::ordersSpell_Sub_4926D0(
 				unit,
 				TechId::Hallucination,
 				&techCost,
 				sightRange * 32,
 				0x899 // Invalid Target
-			)
-			)
+			))
 		{
 			s32 counter = 1;
-
-			// TODO: cleanup
-			/*
-			while(counter > 0) {
-
-				counter--;
-
-				Unit* hal_unit = hallucinationHelpers::createHallucinationUnit(unit->orderTarget.unit,unit->playerId);
-
-				if(hal_unit == nullptr)
-					counter = 0;
-				else
-				if(!hallucinationHelpers::function_004F66D0(hal_unit)) {
-					counter = 0;
-					hallucinationHelpers::UnitDestructor(hal_unit);
-				}
-			}
-			*/
 
 			Point32 hit;
 			if (Unit* target = unit->orderTarget.unit)
@@ -51,6 +31,7 @@ namespace hooks
 			}
 			
 			scbw::decloakProc(unit);
+			
 			globals.createEffect(EffectId::Hallucination, 20 * 24, {hit.x, hit.y}, 1.5 * 32, -1, 5, unit->playerId); // TODO: Add Hallucination area sprite
 			if (!(*CHEAT_STATE & CheatFlags::TheGathering))
 			{
