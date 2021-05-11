@@ -680,18 +680,22 @@ namespace hooks
 			helper::setThingyVisibilityFlags(maelstrom_effect_sprite);
 		}
 		helper::playSoundFromSource(SoundId::Protoss_Darchon_Parahit_wav, attacker, 1, 0);
-		Box16 coords;
-		coords.right = x + 48;
-		coords.left = x - 48;
-		coords.top = y - 48;
-		coords.bottom = y + 48;
-		helper::IterateUnitsAtLocationTargetProc_Maelstrom(attacker, &coords);
+
+		const u32 radius = 48;
+		scbw::UnitFinder(
+			x - radius,
+			y - radius,
+			x + radius,
+			y + radius
+		).forEach([attacker](Unit* unit)
+		{
+			maelstromProc(unit, attacker);
+		});
 	}
 
 	// Hooked to modify maelstrom timer and conditions; however, this hook is not called yet, we may need to hook iterateUnitsAtLocationTargetProc - 4E8280
 	bool maelstromProc(Unit* target, Unit* source) // 004F6760, always returns 0
 	{
-		scbw::print("maelstromProc");
 		s32 unitStatus = target->status;
 		if (unitStatus & UnitStatus::IsHallucination)
 		{
