@@ -921,9 +921,11 @@ namespace hooks
 			scbw::dirgeFuse(unit, unitExt);
 		}
 
-		if (unitExt->timers[TimerSignify])
+		if (unitExt->timers[TimerSignify] == 1)
 		{
 			unitExt->values[ValueSignifyStacks] = 0;
+			unit->removeOverlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
+			unit->removeOverlay(ImageId::Malice_Small, ImageId::Malice_Large);
 		}
 
 		if (unit->isFrozen())

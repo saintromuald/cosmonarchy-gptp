@@ -476,6 +476,17 @@ namespace hooks
 		addStatus(statuses, "Dirge Fuse", unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage, 0,
 			unitExt->timers[TimerDirgeFuse], TimerType::Aise);
 
+		if (unitExt->values[ValueSignifyStacks] < 5)
+		{
+			addStatus(statuses, "Cowardice", unitExt->values[ValueSignifyStacks], 5,
+				unitExt->timers[TimerSignify], TimerType::Aise);
+		}
+		else
+		{
+			addStatus(statuses, "Malice", unitExt->values[ValueSignifyStacks], 1,
+				unitExt->timers[TimerSignify], TimerType::Aise);
+		}
+
 		// Aise Timer
 		addStatus(statuses, "Malediction", -1, 1,
 			unitExt->timers[TimerMaledictionSlow], TimerType::Aise);
@@ -537,9 +548,6 @@ namespace hooks
 
 		addStatus(statuses, "Phase Link", scbw::hasClarionLinks(unit), 1);
 		addStatus(statuses, "Mind Controlling", scbw::get_aise_value(unit, nullptr, AiseId::SumMindControlCost, 0, 0) > 0, 1); // for caster
-		bool malice = scbw::get_aise_value(unit, nullptr, AiseId::HasMalice, 0, 0);
-		addStatus(statuses, "Cowardice", unitExt->values[ValueHierophantOverlay] || malice, 1);
-		addStatus(statuses, "Malice", malice, 1);
 		addStatus(statuses, "Energy Decay", unitExt->timers[TimerEntropyGauntlets] > 0, 1);
 		addStatus(statuses, "Godlike", unitExt->timers[TimerGodsMadeFlesh] > 0, 1);
 

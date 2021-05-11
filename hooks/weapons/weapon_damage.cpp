@@ -653,7 +653,19 @@ namespace hooks
 					targetExt->values[ValueSignifyStacks]++;
 					targetExt->values[ValueSignifySourcePlayer] = data.attackingPlayerId;
 					targetExt->timers[TimerSignify] = 3 * 24 + 1;
-					//data.target->sprite->createTopOverlay(ImageId::HierophantSignify);
+
+					const u32 cowardiceId = ImageId::Cowardice_Small + scbw::getOverlayOffset(data.target->id);
+					const u32 maliceId = ImageId::Malice_Small + scbw::getOverlayOffset(data.target->id);
+
+					if (targetExt->values[ValueSignifyStacks] < 5 && !data.target->getOverlay(cowardiceId))
+					{
+						data.target->sprite->createTopOverlay(cowardiceId);
+					}
+					else if (!data.target->getOverlay(maliceId))
+					{
+						data.target->removeOverlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
+						data.target->sprite->createTopOverlay(maliceId);
+					}
 				} break;
 				case WeaponId::VorvalingClaws:
 				{

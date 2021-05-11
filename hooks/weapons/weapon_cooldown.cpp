@@ -89,6 +89,12 @@ namespace hooks
 			cooldown /= 1.5;
 		}
 
+		// Hierophant Signify: Malice
+		if (unitExt->values[ValueSignifyStacks] >= 5)
+		{
+			cooldown *= 0.6666;
+		}
+
 		if (cooldownModifier > 0)
 		{	// Lame hardcode for attackspeed upgrades
 			cooldown /= 2;

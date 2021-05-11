@@ -109,6 +109,37 @@ namespace hooks
 			speed *= 0.666;
 		}
 
+		// Hierophant Signify: Cowardice
+		if (unitExt->values[ValueSignifyStacks])
+		{
+			auto match = hydraFinderMatch(unit, Flags::Enemy, {});
+
+			const u32 radius = 11 * 32;
+			Unit* enemyUnit = scbw::UnitFinder::getNearestTarget(
+				unit->getX() - radius,
+				unit->getY() - radius,
+				unit->getX() + radius,
+				unit->getY() + radius,
+				unit,
+				[&](Unit* target)
+			{
+				s32 angle = scbw::getAngle(target->getX(), target->getY(), unit->getX(), unit->getY());
+				u32 diff = abs(angle - unit->currentDirection1);
+
+				if (!match(target) && diff > 45)
+				{
+					return false;
+				}
+
+				return true;
+			});
+
+			if (enemyUnit)
+			{
+				speed *= 0.5;
+			}
+		}
+
 		switch (unit->id)
 		{
 			case UnitId::ZergUltrakor:
