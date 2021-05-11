@@ -643,7 +643,7 @@ namespace hooks
 				case WeaponId::MadrigalImperiosoMissiles:
 				{
 					// Dirge - Madrigal behavior
-					targetExt->timers[TimerDirgeFuse] = 24 + 1;
+					targetExt->timers[TimerDirgeFuse] = 48 + 1;
 					targetExt->values[ValueDirgeStacks]++;
 					targetExt->values[ValueDirgeSourcePlayer] = data.attackingPlayerId;
 					targetExt->units[UnitDirgeSource] = data.attacker;
