@@ -50,10 +50,19 @@ constexpr s32 ApostleLastBreathEnergyGain = 5 * 256;
 const s32 MineBurrowTime = 60;
 const s32 MineSeekRange = 576;
 const s32 MineDetonateRange = 30;
-const s32 LobotomyMineLockdownTime = 12; // 4 seconds
+const s32 LobotomyMineLockdownTimer = 12; // 4 seconds
+
+// Southpaw
+constexpr s32 SouthpawKnockoutDriversTimer = 24 * 2 + 1;
+
+// Madrigal
+const s32 MadrigalDirgeTimer = 24 + 1;
 
 // Wyvern
 const s32 WyvernBaseAttackCooldown = 30;
+
+// Seraph
+constexpr s32 SeraphObservanceDebuffTimer = 5 * 24 + 1;
 
 // Azazel
 constexpr s32 AzazelDefensiveMatrixTimer = 90; // roughly 30 seconds
@@ -64,8 +73,11 @@ constexpr s32 TreasuryIncrease = 4;
 
 // PROTOSS \\
 
+// Ecclesiast
+constexpr s32 EcclesiastAstralBlessingTimer = 5 * 24 + 1;
+
 // Cantavis
-constexpr s32 CantavisHallucinationTimer = 10 * 24;
+constexpr s32 CantavisHallucinationTimer = 10 * 24 + 1;
 
 // Mind Tyrant
 constexpr s32 MindTyrantMaelstromTimer = 16; // 5 seconds
@@ -94,6 +106,12 @@ constexpr f64 AIStarsovereignAbilLifePercentage = 0.5;
 constexpr s32 AIStarsovereignAbilTimer = 612;
 
 // ZERG \\
+
+// Zergling
+constexpr s32 ZerglingAdrenalGlandsTimer = 24 * 2 + 1;
+
+// Vorvaling
+constexpr s32 VorvalingCaptivatingClawsTimer = 24 + 1;
 
 // Quazilisk
 constexpr f64 QuazaliskPassiveFactor = 0.1;

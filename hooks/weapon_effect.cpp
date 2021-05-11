@@ -629,7 +629,7 @@ namespace hooks
 				&& target->id != UnitId::TerranSpiderMine
 				&& target->id != UnitId::TerranLobotomyMine)
 			{
-				hooks::LockdownHit(target, LobotomyMineLockdownTime, bullet);
+				hooks::LockdownHit(target, LobotomyMineLockdownTimer, bullet);
 			}
 		}
 	}

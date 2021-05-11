@@ -880,40 +880,34 @@ namespace scbw
 			unit->plagueTimer = 30;
 		}
 
-		// Reset Malediction
-		if (unitExt->timers[TimerMaledictionSlow] > 0)
-		{
-			unitExt->timers[TimerMaledictionSlow] = 4 * 24;
-		}
-
 		// Reset Observance
 		if (unitExt->timers[TimerObservanceDebuff] > 0)
 		{
-			unitExt->timers[TimerObservanceDebuff] = 5 * 24;
+			unitExt->timers[TimerObservanceDebuff] = SeraphObservanceDebuffTimer;
 		}
 
 		// Reset Knockout Drivers
 		if (unitExt->timers[TimerKnockoutDrivers] > 0)
 		{
-			unitExt->timers[TimerKnockoutDrivers] = 2 * 24;
+			unitExt->timers[TimerKnockoutDrivers] = SouthpawKnockoutDriversTimer;
 		}
 
 		// Reset Hallucination
 		if (unitExt->timers[TimerHallucinating] > 0)
 		{
-			unitExt->timers[TimerHallucinating] = 20 * 24;
+			unitExt->timers[TimerHallucinating] = CantavisHallucinationTimer;
 		}
 
 		// Reset Captivating Claws
 		if (unitExt->timers[TimerCaptivatingClaws] > 0)
 		{
-			unitExt->timers[TimerCaptivatingClaws] = 1 * 24;
+			unitExt->timers[TimerCaptivatingClaws] = VorvalingCaptivatingClawsTimer;
 		}
 
 		// Reset Lobotomy Mine slow
 		if (unitExt->timers[TimerLobotomySlow] > 0)
 		{
-			unitExt->timers[TimerLobotomySlow] = 4 * 24;
+			unitExt->timers[TimerLobotomySlow] = LobotomyMineLockdownTimer;
 		}
 
 		// Reset Lockdown
@@ -938,6 +932,12 @@ namespace scbw
 		if (unit->irradiateTimer != 0)
 		{
 			unit->irradiateTimer = 10;
+		}
+
+		// Reset Dirge
+		if (unitExt->timers[TimerDirgeFuse])
+		{
+			unitExt->timers[TimerDirgeFuse] = MadrigalDirgeTimer;
 		}
 
 		//was hardcoded in original code
@@ -986,12 +986,6 @@ namespace scbw
 		if (parentExt->values[ValueArmorReduce] > 0)
 		{
 			childExt->values[ValueArmorReduce] = parentExt->values[ValueArmorReduce];
-		}
-
-		// Inherit Malediction
-		if (parentExt->timers[TimerMaledictionSlow] > 0)
-		{
-			childExt->timers[TimerMaledictionSlow] = parentExt->timers[TimerMaledictionSlow];
 		}
 
 		// Inherit Observance
@@ -1149,7 +1143,13 @@ namespace scbw
 			childExt->values[ValueKelvinMunitionsSlow] = parentExt->values[ValueKelvinMunitionsSlow];
 		}
 
-		//was hardcoded in original code
+		// Inherit Dirge
+		if (parentExt->timers[TimerDirgeFuse])
+		{
+			childExt->timers[TimerDirgeFuse] = parentExt->timers[TimerDirgeFuse];
+			childExt->values[ValueDirgeStacks] = parentExt->values[ValueDirgeStacks];
+		}
+
 		scbw::refreshConsole();
 	}
 
@@ -1187,8 +1187,7 @@ namespace scbw
 		u32 overlayImageId = ImageId::RestorationHit_Small + scbw::getOverlayOffset(unit->id);;
 		(overlayTargetUnit->sprite)->createTopOverlay(overlayImageId, 0, 0, 0);
 
-		//remove status effects and corresponding overlays
-		//timers set to 0 twice reflect the original code
+		// remove status effects and corresponding overlays
 
 		// Remove Parasite
 		if (unitExt->timers[TimerParasiteArm])
@@ -1300,7 +1299,13 @@ namespace scbw
 			unitExt->values[ValueKelvinMunitionsSlow] = 0;
 		}
 
-		//was hardcoded in original code
+		// Remove Dirge
+		if (unitExt->timers[TimerDirgeFuse])
+		{
+			unitExt->timers[TimerDirgeFuse] = 0;
+			unitExt->values[ValueDirgeStacks] = 0;
+		}
+
 		scbw::refreshConsole();
 	}
 

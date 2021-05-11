@@ -628,7 +628,7 @@ namespace hooks
 					{
 						attackerExt->values[ValueAdrenalStacks] += 1;
 					}
-					attackerExt->timers[TimerAdrenal] = 49; // 49 is 2 seconds (48) + 1
+					attackerExt->timers[TimerAdrenal] = ZerglingAdrenalGlandsTimer;
 				} break;
 				case WeaponId::SouthpawUppercutLaser:
 				{
@@ -637,14 +637,14 @@ namespace hooks
 					{
 						targetExt->values[ValueKnockoutDriversStacks] += 1;
 					}
-					targetExt->timers[TimerKnockoutDrivers] = 49; // 49 is 2 seconds (48) + 1
+					targetExt->timers[TimerKnockoutDrivers] = SouthpawKnockoutDriversTimer;
 					data.target->updateSpeed();
 				} break;
 				case WeaponId::MadrigalImperiosoMissiles:
 				{
 					// Dirge - Madrigal behavior
-					targetExt->timers[TimerDirgeFuse] = 24 + 1;
-					targetExt->values[ValueDirgeStacks]++;
+					targetExt->timers[TimerDirgeFuse] = targetExt->timers[TimerDirgeFuse] = MadrigalDirgeTimer + 1;
+					targetExt->values[ValueDirgeStacks] += 1;
 					targetExt->values[ValueDirgeSourcePlayer] = data.attackingPlayerId;
 					targetExt->units[UnitDirgeSource] = data.attacker;
 				} break;
@@ -657,7 +657,7 @@ namespace hooks
 				{
 					// Astral Blessing - Ecclesiast behavior
 					targetExt->values[ValueEcclesiastStack] += 1;
-					targetExt->timers[TimerEcclesiast] = (24 * 5) + 1;
+					targetExt->timers[TimerEcclesiast] = EcclesiastAstralBlessingTimer;
 					targetExt->values[ValueEcclesiastPlayer] = data.attacker->playerId;
 				} break;
 				case WeaponId::SeraphObservance:
