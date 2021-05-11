@@ -4,18 +4,11 @@
 
 namespace hooks
 {
-
 	void orders_Hallucination1(Unit* unit)
 	{
 		s32 sightRange = unit->getSightRange(true);
 		u16 techCost;
-		if (helper::ordersSpell_Sub_4926D0(
-				unit,
-				TechId::Hallucination,
-				&techCost,
-				sightRange * 32,
-				0x899 // Invalid Target
-			))
+		if (helper::ordersSpell_Sub_4926D0(unit, TechId::Hallucination, &techCost, sightRange * 32, 0x899))
 		{
 			s32 counter = 1;
 

@@ -8218,7 +8218,8 @@ namespace helper
 	{
 		const u32 Func_CreateFlingy = 0x00496460;
 		static Flingy* flingy;
-		__asm {
+		__asm
+		{
 			PUSHAD
 			MOV EAX, playerId
 			MOV ECX, x
@@ -8229,5 +8230,43 @@ namespace helper
 			POPAD
 		}
 		return flingy;
+	}
+
+	// For spellOrder
+	bool getOrderTargetErrorString(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, s16* a7)
+	{
+		const u32 Func_getOrderTargetErrorString = 0x00492020;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH a7
+			PUSH a6
+			PUSH a5
+			PUSH a4
+			MOVZX SI, a3
+			MOV EDI, a2
+			MOVZX DX, a1
+			CALL Func_getOrderTargetErrorString
+			MOV result, EAX
+			POPAD
+		}
+		return (bool)result;
+	}
+
+	s32 spellOrder_MoveTowardsTarget(Unit* caster, u32 range)
+	{
+		const u32 Func_spellOrder_MoveTowardsTarget = 0x00492450;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, range
+			MOV ECX, caster
+			CALL Func_spellOrder_MoveTowardsTarget
+			MOV result, EAX
+			POPAD
+		}
+		return result;
 	}
 }

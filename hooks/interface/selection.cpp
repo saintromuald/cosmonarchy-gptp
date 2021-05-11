@@ -68,8 +68,6 @@ namespace hooks
 				{
 					// 0046F161
 					// if the unit sprite is visible, perform additionnal visibility test, else skip the unit
-
-					/*
 					if (current_unit->sprite->visibilityFlags & (u8)*VISIBILITY_CHECK_0057F0B0)
 					{
 						// if the unit is cloaked and visibility status test (detection by detectors units probably) fail, the unit is skipped
@@ -85,7 +83,6 @@ namespace hooks
 					{
 						bDontAddToList = true;
 					}
-					*/
 
 					bDontAddToList = false;
 					if (!bDontAddToList)
@@ -95,71 +92,67 @@ namespace hooks
 						{
 							bDontAddToList = true;
 						}
+						else if (!helper::unit_IsStandardAndMovable(current_unit))
+						{
+							bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
+						}
+						else if (*IS_IN_REPLAY)
+						{
+							bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
+						}
+						else if (current_unit->playerId != *LOCAL_NATION_ID)
+						{
+							bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
+						}
 						else
-							if (!helper::unit_IsStandardAndMovable(current_unit))
+						{
+							// 0046F1C5
+							if (unit != nullptr)
 							{
-								bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
-							}
-							else
-								if (*IS_IN_REPLAY)
+								// all units should belong to the same player (the one owning the clicked unit)
+								if (unit->playerId != current_unit->playerId)
 								{
-									bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
+									bDontAddToList = true;
+								}
+								// select only units with same Id
+								else if (unit->id != current_unit->id)
+								{
+									bDontAddToList = true;
 								}
 								else
-									if (current_unit->playerId != *LOCAL_NATION_ID)
-									{
-										bKeepForEmptyListCase = true; // skip the unit for the list, unless it's the only available
-									}
-									else
-									{
-										// 0046F1C5
-										if (unit != nullptr)
-										{
-											// all units should belong to the same player (the one owning the clicked unit)
-											if (unit->playerId != current_unit->playerId)
-											{
-												bDontAddToList = true;
-											}
-											else
-												// select only units with same Id
-												if (unit->id != current_unit->id)
-												{
-													bDontAddToList = true;
-												}
-												else
-												{
-													// 0046F1D9
-													// equivalent to "unit->status XOR current_unit->status"
-													// keep the flags appearing in only 1 of the variables
-													u32 mixed_flags = (~(unit->status) & current_unit->status) | (unit->status & ~(current_unit->status));
+								{
+									// 0046F1D9
+									// equivalent to "unit->status XOR current_unit->status"
+									// keep the flags appearing in only 1 of the variables
+									u32 mixed_flags = (~(unit->status) & current_unit->status) | (unit->status & ~(current_unit->status));
 
-													// Only select all burrowed OR all unburrowed
-													// units.The test exclude current_unit if the
-													// burrowed state differ from the one of unit.
-													if (mixed_flags & UnitStatus::Burrowed)
-													{
-														bDontAddToList = true;
-													}
-												}
-										}
-
-										if (!bDontAddToList)
-										{
-											// 0046F203
-											// 0x0046F208 (use of SELECTION_ARRAY_LENGTH)
-											if (current_index_in_unit_list >= SELECTION_ARRAY_LENGTH) //action when unit_list is full
-											{
-												helper::function_0046F040(current_unit, unit_list, unit, current_index_in_unit_list);
-											}
-											else
-											{
-												// 0046F217
-												// Add current_unit to unit_list
-												unit_list[current_index_in_unit_list] = current_unit;
-												current_index_in_unit_list++;
-											}
-										}
+									// Only select all burrowed OR all unburrowed
+									// units.The test exclude current_unit if the
+									// burrowed state differ from the one of unit.
+									if (mixed_flags & UnitStatus::Burrowed)
+									{
+										bDontAddToList = true;
 									}
+								}
+							}
+
+							if (!bDontAddToList)
+							{
+								// 0046F203
+								// 0x0046F208 (use of SELECTION_ARRAY_LENGTH)
+								if (current_index_in_unit_list >= SELECTION_ARRAY_LENGTH) //action when unit_list is full
+								{
+									helper::function_0046F040(current_unit, unit_list, unit, current_index_in_unit_list);
+								}
+								else
+								{
+									// 0046F217
+									// Add current_unit to unit_list
+									unit_list[current_index_in_unit_list] = current_unit;
+									current_index_in_unit_list++;
+								}
+							}
+						}
 					}
 				}
 			}

@@ -3,33 +3,28 @@
 
 void __declspec(naked) cloakNearbyUnitsWrapper()
 {
-
 	static Unit* unit;
-
-	__asm {
+	__asm
+	{
 		PUSH EBP
 		MOV EBP, ESP
 		MOV unit, EDI
 		PUSHAD
 	}
-
 	hooks::cloakNearbyUnitsHook(unit);
-
-	__asm {
+	__asm
+	{
 		POPAD
 		MOV ESP, EBP
 		POP EBP
 		RETN
 	}
-
 }
 
 namespace hooks
 {
-
 	void injectCloakNearbyUnits()
 	{
 		jmpPatch(cloakNearbyUnitsWrapper, 0x00491C20, 1);
 	}
-
-} //hooks
+}

@@ -54,7 +54,8 @@ namespace hooks
 				&& current_unit->id != UnitId::ResourceVespeneGeyser									//
 				&& current_unit->mainOrderId != OrderId::Warpin											// Don't cloak units doing order WarpIn
 				&& scbw::isAlliedTo(current_unit->playerId, cloaker->playerId)							// (or allied to Cloaker owner)
-				&& cloaker->isTargetWithinMinRange(current_unit, cloakRadius))							// Check again if unit in range of cloaking
+				&& cloaker->isTargetWithinMinRange(current_unit, cloakRadius)							// Check again if unit in range of cloaking
+				&& !current_unit->isFrozen())
 			{
 				if (!unitExt->timers[TimerDecloak])
 				{

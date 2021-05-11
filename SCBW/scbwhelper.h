@@ -434,6 +434,10 @@ namespace helper
 	bool canCastSpell_0(Unit* unit);																									// 00492140
 	u32 function_00492620(Unit* unit, b32 wasMainOrderStateZero);																		// 00492620
 
+	// For spellOrder
+	bool getOrderTargetErrorString(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, s16* a7);										// 00492020
+	s32 spellOrder_MoveTowardsTarget(Unit* caster, u32 range);																			// 00492450
+
 	void incrementUnitDeathScores(Unit* unit, u8 player);																				// 00488AF0
 	void initializeEmptyUnitsLinkedListRef(Unit* unit, u8 playerId);																	// 0049E4E0
 	void GiveUnitHelper(Unit* unit, u32 playerId, s32 unkScore);																		// 0049EFA0
