@@ -20,31 +20,31 @@
 // COMMON / SHARED \\
 
 // General
-constexpr s32 HealthMultiplier = 256;
-constexpr s32 StimpackOffset = 5 * 256;
-constexpr s32 StimpackTimer = 37;
-constexpr s32 MindControlEnergyGain = 5 * 256;
+const s32 HealthMultiplier = 256;
+const s32 StimpackOffset = 5 * 256;
+const s32 StimpackTimer = 37;
+const s32 MindControlEnergyGain = 5 * 256;
 
 // Charlatan
-constexpr s32 CharlatanHallucinationTimer = 3 * 24;
+const s32 CharlatanHallucinationTimer = 3 * 24;
 
 // TERRAN \\
 
 // Cleric
-constexpr s32 ClericHealValue = 107; // roughly 10 HP per second
+const s32 ClericHealValue = 107; // roughly 10 HP per second
 
 // Shaman
-constexpr s32 ShamanHeal = 2;
+const s32 ShamanHeal = 2;
 
 // Madcap
-constexpr s32 MadcapPassiveDecayTime = 0.5 * 24;
-constexpr s32 MadcapMaxStacks = 10;
-constexpr f64 MadcapAttackSpeedPerStack = 0.05;
+const s32 MadcapPassiveDecayTime = 0.5 * 24;
+const s32 MadcapMaxStacks = 10;
+const f64 MadcapAttackSpeedPerStack = 0.05;
 
 // Apostle
-constexpr s32 ApostleLazarusAgentHeal = 25 * 256;
-constexpr s32 ApostleBloodTitheHealing = 5 * 256;
-constexpr s32 ApostleLastBreathEnergyGain = 5 * 256;
+const s32 ApostleLazarusAgentHeal = 25 * 256;
+const s32 ApostleBloodTitheHealing = 5 * 256;
+const s32 ApostleLastBreathEnergyGain = 5 * 256;
 
 // Mines
 const s32 MineBurrowTime = 60;
@@ -53,82 +53,83 @@ const s32 MineDetonateRange = 30;
 const s32 LobotomyMineLockdownTimer = 12; // 4 seconds
 
 // Southpaw
-constexpr s32 SouthpawKnockoutDriversTimer = 24 * 2 + 1;
+const s32 SouthpawKnockoutDriversTimer = 24 * 2 + 1;
 
 // Madrigal
 const s32 MadrigalDirgeTimer = 48 + 1;
+const s32 MadrigalDirgeDamage = 20;
 
 // Wyvern
 const s32 WyvernBaseAttackCooldown = 30;
 
 // Seraph
-constexpr s32 SeraphObservanceDebuffTimer = 5 * 24 + 1;
+const s32 SeraphObservanceDebuffTimer = 5 * 24 + 1;
 
 // Azazel
-constexpr s32 AzazelDefensiveMatrixTimer = 90; // roughly 30 seconds
-constexpr s32 AzazelDefensiveMatrixHeal = 53; // 5 HP per second | 256 * 5 / 24
+const s32 AzazelDefensiveMatrixTimer = 90; // roughly 30 seconds
+const s32 AzazelDefensiveMatrixHeal = 53; // 5 HP per second | 256 * 5 / 24
 
 // Treasury
-constexpr s32 TreasuryIncrease = 4;
+const s32 TreasuryIncrease = 4;
 
 // PROTOSS \\
 
 // Ecclesiast
-constexpr s32 EcclesiastAstralBlessingTimer = 5 * 24 + 1;
+const s32 EcclesiastAstralBlessingTimer = 5 * 24 + 1;
 
 // Cantavis
-constexpr s32 CantavisHallucinationTimer = 10 * 24 + 1;
+const s32 CantavisHallucinationTimer = 10 * 24 + 1;
 
 // Mind Tyrant
-constexpr s32 MindTyrantMaelstromTimer = 16; // 5 seconds
+const s32 MindTyrantMaelstromTimer = 16; // 5 seconds
 
 // Demiurge
-constexpr s32 GodsMadeFleshEnergyDrain = 100;
+const s32 GodsMadeFleshEnergyDrain = 100;
 
 // Lanifect
-constexpr s32 AIWebSeekRange = 96;
-constexpr s32 AICorsairAllySeekRange = 128;
-constexpr s32 AICorsairEnemySeekRange = 128;
-constexpr f64 AICorsairLifePercentage = 0.5;
-constexpr s32 AIWebMinEnergy = 30;
-constexpr s32 AIWebAllyMinCount = 3;
-constexpr s32 AIWebEnemyMinCount = 2;
-constexpr s32 AIWebTimer = 3 * 24;
+const s32 AIWebSeekRange = 96;
+const s32 AICorsairAllySeekRange = 128;
+const s32 AICorsairEnemySeekRange = 128;
+const f64 AICorsairLifePercentage = 0.5;
+const s32 AIWebMinEnergy = 30;
+const s32 AIWebAllyMinCount = 3;
+const s32 AIWebEnemyMinCount = 2;
+const s32 AIWebTimer = 3 * 24;
 
 // Didact
-constexpr s32 DidactStasisFieldTimer = 35; // roughly 12 seconds
+const s32 DidactStasisFieldTimer = 35; // roughly 12 seconds
 
 // Star Sovereign
-constexpr s32 AIStarsovereignAbilSeekRange = 6 * 32;
-constexpr s32 AIStarsovereignAbilMinEnemyHealth = 2000;
-constexpr s32 AIStarsovereignAbilMaxAllyHealth = 2000;
-constexpr f64 AIStarsovereignAbilLifePercentage = 0.5;
-constexpr s32 AIStarsovereignAbilTimer = 612;
+const s32 AIStarsovereignAbilSeekRange = 6 * 32;
+const s32 AIStarsovereignAbilMinEnemyHealth = 2000;
+const s32 AIStarsovereignAbilMaxAllyHealth = 2000;
+const f64 AIStarsovereignAbilLifePercentage = 0.5;
+const s32 AIStarsovereignAbilTimer = 612;
 
 // ZERG \\
 
 // Zergling
-constexpr s32 ZerglingAdrenalGlandsTimer = 24 * 2 + 1;
+const s32 ZerglingAdrenalGlandsTimer = 24 * 2 + 1;
 
 // Vorvaling
-constexpr s32 VorvalingCaptivatingClawsTimer = 24 + 1;
+const s32 VorvalingCaptivatingClawsTimer = 24 + 1;
 
 // Quazilisk
-constexpr f64 QuazaliskPassiveFactor = 0.1;
+const f64 QuazaliskPassiveFactor = 0.1;
 
 // Vithrilisk
-constexpr s32 VithriliskCorrosiveTouchTimer = 10 * 24 + 1;
-constexpr f64 VithriliskCorrosiveTouchCooldownIncrease = 0.02;
-constexpr f64 VithriliskCorrosiveTouchArmorReduction = 0.2 * 256;
+const s32 VithriliskCorrosiveTouchTimer = 10 * 24 + 1;
+const f64 VithriliskCorrosiveTouchCooldownIncrease = 0.02;
+const f64 VithriliskCorrosiveTouchArmorReduction = 0.2 * 256;
 
 // Zoryusthaleth
-constexpr s32 ZoryusthalethReconstitutionHealing = 5 * 256;
+const s32 ZoryusthalethReconstitutionHealing = 5 * 256;
 
 // Matraleth
-constexpr s32 DefaultArmParasiteTimer = 2 * 24 + 1;
+const s32 DefaultArmParasiteTimer = 2 * 24 + 1;
 
 // Akistrokor
-constexpr s32 AkistrokorEnthrallingAssaultHeal = 256 * 20 / 24; // 20 HP per second
+const s32 AkistrokorEnthrallingAssaultHeal = 256 * 20 / 24; // 20 HP per second
 
 // Larval Colony
-constexpr f64 LarvalColonyMultiplier = 0.75;
+const f64 LarvalColonyMultiplier = 0.75;

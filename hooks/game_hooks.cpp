@@ -918,19 +918,7 @@ namespace hooks
 		// Madrigal - Dirge
 		if (unitExt->timers[TimerDirgeFuse] == 1)
 		{
-			unit->sprite->createTopOverlay(ImageId::ArcliteShockCannon_Damageless, unit->getX(), unit->getY());
-			const u32 radius = 2 * 32;
-			scbw::UnitFinder(
-				unit->getX() - radius,
-				unit->getY() - radius,
-				unit->getX() + radius,
-				unit->getY() + radius
-			).forEachInMatch(hydraFinderMatch(unit, Flags::IncludingSelf, {}),
-				[&unitExt](Unit* target)
-			{
-				target->damageWithCustom(unitExt->values[ValueDirgeStacks] * 20 * 256, DamageType::Explosive, unitExt->units[UnitDirgeSource], unitExt->values[ValueDirgeSourcePlayer], 0, 1, false);
-			});
-			unitExt->values[ValueDirgeStacks] = 0;
+			scbw::dirgeFuse(unit, unitExt);
 		}
 
 		/*

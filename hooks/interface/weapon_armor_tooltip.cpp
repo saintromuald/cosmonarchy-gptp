@@ -473,6 +473,8 @@ namespace hooks
 			unitExt->timers[TimerObservanceDebuff], TimerType::Aise);
 		addStatus(statuses, "Corrosive Spores", unitExt->values[ValueCorrosiveTouchStacks], 0,
 			unitExt->timers[TimerCorrosiveTouch], TimerType::Aise);
+		addStatus(statuses, "Dirge Fuse", unitExt->values[ValueDirgeStacks] * MadrigalDirgeDamage, 0,
+			unitExt->timers[TimerDirgeFuse], TimerType::Aise);
 
 		// Aise Timer
 		addStatus(statuses, "Malediction", -1, 1,
@@ -518,8 +520,8 @@ namespace hooks
 		addStatus(statuses, "Tertiary Eye [Linked]", unitExt->unitVectors[UnitVectorTertiaryEyesSirens].size(), 0);
 
 		// Aise Value - Gimmicked
-		addStatus(statuses, "Furia Salvo", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0, 1);
-		addStatus(statuses, "Dirge", scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 1, 1);
+		addStatus(statuses, "Tempo Up", unit->id == UnitId::TerranMadrigal && scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 0, 1);
+		addStatus(statuses, "Tempo Down", scbw::get_generic_rust_value(unit, RustId::ToggleTempoChange) == 1, 1);
 		addStatus(statuses, "Observing", unitExt->timers[TimerObservanceOverlay] > 0, 1);
 		addStatus(statuses, "Swarming Omen", unitExt->values[ValueSwarmingOmenStatus] > 0, 1);
 		addStatus(statuses, "Protective Instincts", unitExt->values[ValueProtectiveInstinctsStatus] > 0, 1);
