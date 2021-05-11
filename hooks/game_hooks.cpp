@@ -921,6 +921,11 @@ namespace hooks
 			scbw::dirgeFuse(unit, unitExt);
 		}
 
+		if (unit->isFrozen())
+		{
+			scbw::decloakProc(unit);
+		}
+
 		/*
 		// Play addon work animations when related units are being trained by parent structure
 		if (units_dat::BaseProperty[unit->id] & UnitProperty::Addon)
