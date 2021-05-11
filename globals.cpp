@@ -558,9 +558,10 @@ void Globals::frameHook()
 						effects[i].position.y - effects[i].radius,
 						effects[i].position.x + effects[i].radius,
 						effects[i].position.y + effects[i].radius
-					).forEachInMatch(hydraFinderMatch(nullptr, Flags::Enemy, {}), [&](Unit* unit)
+					).forEachInMatch(hydraFinderMatch(nullptr, 0, {}), [&](Unit* unit)
 					{
-						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius)
+						if (scbw::getDistanceFast(effects[i].position.x, effects[i].position.y, unit->getX(), unit->getY()) > effects[i].radius
+							|| scbw::isAlliedTo(effects[i].player, unit->playerId))
 						{
 							return;
 						}
