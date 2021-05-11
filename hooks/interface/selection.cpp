@@ -129,13 +129,9 @@ namespace hooks
 												else
 												{
 													// 0046F1D9
-
 													// equivalent to " unit->status XOR current_unit->status "
 													// keep the flags appearing in only 1 of the variables
-													u32 mixed_flags =
-														(~(unit->status) & current_unit->status) |
-														(unit->status & ~(current_unit->status))
-														;
+													u32 mixed_flags = (~(unit->status) & current_unit->status) | (unit->status & ~(current_unit->status));
 
 													// Only select all burrowed OR all unburrowed
 													// units.The test exclude current_unit if the
@@ -143,32 +139,6 @@ namespace hooks
 													if (mixed_flags & UnitStatus::Burrowed)
 													{
 														bDontAddToList = true;
-													}
-													else
-													{
-														// 0046F1E8
-														if (!helper::isUnitBurrowed(current_unit))
-														{
-															// Only select all detectables OR all undetectables
-															// units.The test exclude current_unit if the
-															// detectable state differ from the one of unit.
-															if (mixed_flags & UnitStatus::RequiresDetection)
-															{
-																//bDontAddToList = true;
-															}
-														}
-
-														if (!bDontAddToList)
-														{
-															// 0046F1F8
-															// Only select hallucinations OR non-hallucinations
-															// units.The test exclude current_unit if the
-															// hallucination state differ from the one of unit.
-															if (mixed_flags & UnitStatus::IsHallucination)
-															{
-																//bDontAddToList = true;
-															}
-														}
 													}
 												}
 										}
