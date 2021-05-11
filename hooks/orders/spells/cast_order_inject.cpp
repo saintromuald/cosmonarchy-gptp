@@ -4,7 +4,7 @@
 
 namespace
 {
-	void __declspec(naked) orders_SpellWrapper()
+	void __declspec(naked) orders_Spell_Wrapper()
 	{
 		static Unit* unit;
 		__asm
@@ -104,7 +104,7 @@ namespace hooks
 {
 	void injectCastOrderHooks()
 	{
-		jmpPatch(orders_SpellWrapper,		0x00492850, 1);
+		jmpPatch(orders_Spell_Wrapper,		0x00492850, 1);
 		jmpPatch(spellOrder_Wrapper,		0x004926D0, 0);
 		jmpPatch(canTargetSpell_Wrapper,	0x00492020, 1);
 	}

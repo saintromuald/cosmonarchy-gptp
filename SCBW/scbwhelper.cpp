@@ -8272,14 +8272,14 @@ namespace helper
 
 	s16 canTargetSpellOnFOWUnit(s32 techId, s16 unitId)
 	{
-		const u32 Func_getSpecialOrderErrorStatsString = 0x004914B0;
+		const u32 Func_canTargetSpellOnFOWUnit = 0x004914B0;
 		static s32 result;
 		__asm
 		{
 			PUSHAD
 			PUSH unitId
 			MOV EAX, techId
-			CALL Func_getSpecialOrderErrorStatsString
+			CALL Func_canTargetSpellOnFOWUnit
 			MOV result, EAX
 			POPAD
 		}
