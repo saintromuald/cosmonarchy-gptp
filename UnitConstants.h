@@ -56,7 +56,7 @@ const s32 LobotomyMineLockdownTimer = 12; // 4 seconds
 constexpr s32 SouthpawKnockoutDriversTimer = 24 * 2 + 1;
 
 // Madrigal
-const s32 MadrigalDirgeTimer = 24 + 1;
+const s32 MadrigalDirgeTimer = 48 + 1;
 
 // Wyvern
 const s32 WyvernBaseAttackCooldown = 30;
