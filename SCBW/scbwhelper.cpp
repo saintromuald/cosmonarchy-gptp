@@ -8269,4 +8269,20 @@ namespace helper
 		}
 		return result;
 	}
+
+	s16 canTargetSpellOnFOWUnit(s32 techId, s16 unitId)
+	{
+		const u32 Func_getSpecialOrderErrorStatsString = 0x004914B0;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH unitId
+			MOV EAX, techId
+			CALL Func_getSpecialOrderErrorStatsString
+			MOV result, EAX
+			POPAD
+		}
+		return (s16)result;
+	}
 }

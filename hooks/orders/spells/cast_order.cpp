@@ -98,6 +98,88 @@ namespace hooks
 		return result;
 	}
 
+	// Same as above
+	bool canTargetSpell(u16 techId, Unit* target, s16 fowUnitId, Unit* caster, s16 x, s16 y, s16* error) // 00492020
+	{
+		bool v9;
+		s16 v10;
+
+		switch (techId)
+		{
+			case OrderId::Guard:
+			case OrderId::TurretGuard:
+			case OrderId::AttackMove:
+			case OrderId::InfestMine1:
+			case OrderId::Powerup1:
+			case OrderId::TowerAttack:
+			case OrderId::StayinRange:
+			case OrderId::TurretAttack:
+			case OrderId::DroneStartBuild:
+			case OrderId::BuildProtoss1:
+			{
+				return 1;
+			}
+			default:
+			{
+				if (techId != OrderId::PlayerGuard)
+				{
+					if (target)
+					{
+						if (!(target->status & UnitStatus::Invincible))
+						{
+						LABEL_20:
+							if (fowUnitId == UnitId::None)
+							{
+								v10 = (u32)helper::getTargetUnitAbilityErrorStatString(target, caster->playerId, techId);
+							}
+							else
+							{
+								v10 = helper::canTargetSpellOnFOWUnit(techId, fowUnitId);
+							}
+							if (v10)
+							{
+								if (error)
+								{
+									*error = v10;
+								}
+							}
+							return v10 == 0;
+						}
+						v9 = fowUnitId < UnitId::None;
+					}
+					else
+					{
+						v9 = fowUnitId < UnitId::None;
+						if (fowUnitId == UnitId::None)
+						{
+							if (error)
+							{
+								*error = 878; // Must target units.<0>
+							}
+							return 0;
+						}
+					}
+					if (!v9 || !(~(units_dat::BaseProperty[fowUnitId] >> 29) & 1))
+					{
+						if (error)
+							*error = 876; // Invalid target.<0>
+						return 0;
+					}
+					goto LABEL_20;
+				}
+				if (helper::getActiveTileFlag(y, x, 0x410000, 0))
+				{
+					return 1;
+				}
+				if (error)
+				{
+					*error = 902; // Must target passable terrain.
+				}
+				return 0;
+			}
+		}
+	}
+
 	void orders_Spell(Unit* unit)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
