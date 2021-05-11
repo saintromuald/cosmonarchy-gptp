@@ -279,7 +279,7 @@ namespace hooks
 			{
 				helper::issueTriTargetOrder(OrderId::CTFCOP1, 0, 0);
 			} break;
-			case TechId::PowerTransfer:
+			case TechId::PowerSiphon:
 			{
 				helper::issueTriTargetOrder(OrderId::Hover, 0, 0);
 			} break;

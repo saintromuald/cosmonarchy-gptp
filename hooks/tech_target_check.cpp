@@ -13,7 +13,7 @@ namespace hooks
 		if (target->stasisTimer != 0)
 			stringId = 900; //Units in stasis can't be targeted.<0>
 		else
-			if (techId != TechId::PowerTransfer && techId != TechId::PowerTransfer && (techId < TechId::DefensiveMatrix || techId > TechId::OpticalFlare))
+			if (techId != TechId::PowerSiphon && techId != TechId::PowerSiphon && (techId < TechId::DefensiveMatrix || techId > TechId::OpticalFlare))
 				stringId = 876; //Invalid target.<0>
 			else
 			{
@@ -112,7 +112,7 @@ namespace hooks
 											stringId = 0; //valid target
 
 									}
-									else if (techId == TechId::PowerTransfer)
+									else if (techId == TechId::PowerSiphon)
 									{
 										stringId = 0;
 									}

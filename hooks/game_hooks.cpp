@@ -912,7 +912,7 @@ namespace hooks
 					scbw::set_generic_rust_value(unit, RustId::CancelLandGrab, 0);
 					unitExt->values[ValueWyvernLandGrabOn] = 0;
 				}
-			}
+			} break;
 		}
 
 		// Madrigal - Dirge
@@ -989,7 +989,8 @@ namespace hooks
 			{
 				u32 currentAnim = unit->sprite->mainGraphic->animation;
 				if (currentAnim != IscriptAnimation::GndAttkInit
-					&& currentAnim != IscriptAnimation::GndAttkRpt)
+					&& currentAnim != IscriptAnimation::GndAttkRpt
+					&& currentAnim != IscriptAnimation::CastSpell)
 				{
 					unit->sprite->playIscriptAnim(IscriptAnimation::GndAttkInit);
 				}

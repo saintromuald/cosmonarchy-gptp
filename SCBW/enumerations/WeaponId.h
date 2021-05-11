@@ -203,6 +203,7 @@ namespace WeaponId {
 		AtreusDauntlessDisruptorCannon = 98,	// Atreus weapon
 		AmaranthPsiCleaver = 99,				// Amaranth weapon
 		DemiurgeGalacticWeaver = 106,			// Demiurge weapon
+		CantavisHallucinationCast = 107,		// Cantavis ability targeting
 		IdolPrismaticBlaster = 112,				// Idol weapon
 		GolemBloodlessAssault = 113,			// Golem weapon
 		BarghestRayOfAgony = 114,				// Barghest weapon

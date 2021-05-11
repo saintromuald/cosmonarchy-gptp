@@ -409,9 +409,10 @@ namespace hooks
 					scbw::setMissileSourcePos(unit, weaponId, ValueKeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
 				}
 				// Missile spawn positions end
+
 				else if (weaponId == WeaponId::SalamanderPerditionBarrage)
 				{
-					// SalamanderFire missile target positions
+					// Salamander missile target positions
 					auto rotate = unitExt->values[ValueSalamanderAtkPos];
 					if (rotate == 1)
 					{
@@ -428,6 +429,7 @@ namespace hooks
 					}
 					unitExt->values[ValueSalamanderAtkPos] = rotate;
 				}
+
 				// Madrigal Furia Salvo
 				else if (weaponId == WeaponId::MadrigalFuriaMissiles && unit->orderTarget.unit != nullptr)
 				{
@@ -502,6 +504,14 @@ namespace hooks
 		{
 			scbw::doDeconstructionDamage(unit, weaponId);
 		}
+
+		// Akistrokor - Enthralling Assault ability
+		if (weaponId == WeaponId::AkistrokorEnthrallingAssault && unit->orderTarget.unit != nullptr)
+		{
+			UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
+			unitExt->units[UnitAttachedTarget] = unit->orderTarget.unit;
+			targetExt->units[UnitAttachedAkistrokor] = unit;
+		}
 	}
 
 	void progressBulletFlight(Bullet* bullet)
@@ -515,7 +525,7 @@ namespace hooks
 		{
 			if (bullet->attackTarget.unit == nullptr)
 			{
-				u32 range = 8 * 32;//seek range
+				u32 range = AlkajeliskParasiticSporesSeekRange; // seek range
 				auto seekTarget = scbw::UnitFinder::getNearestTarget(
 					bullet->position.x - range,
 					bullet->position.y - range,
@@ -550,16 +560,15 @@ namespace hooks
 		u8 time = bullet->time_remaining--;
 		if (bullet->weaponId == WeaponId::AlkajeliskParasiticSpores)
 		{
-			if (bullet->time_remaining < 135 && bullet->attackTarget.unit == nullptr)
-			{ //135 is 255 - 5*24
+			if (bullet->time_remaining < AlkajeliskParasiticSporesTimer && bullet->attackTarget.unit == nullptr)
+			{
 				time = 0;
 			}
 		}
 		bool bEnd = false;
 
 		// Accelerate missiles over time
-		if (bullet->weaponId == WeaponId::EmpyreanPlasmaBarrage
-			|| bullet->weaponId == WeaponId::AntiMatterMissiles)
+		if (bullet->weaponId == WeaponId::EmpyreanPlasmaBarrage)
 		{
 			u8 time_current = 255 - time;
 			if (time_current == 8)
@@ -568,6 +577,7 @@ namespace hooks
 				bullet->flingyAcceleration *= 2;
 			}
 		}
+
 		if (bullet->weaponId == WeaponId::ArchitectDispersiveSalvo && bullet->sourceUnit && bullet->attackTarget.unit &&
 			bullet->attackTarget.unit->sprite && bullet->sourceUnit->sprite)
 		{
@@ -686,6 +696,8 @@ namespace hooks
 				bEnd = true;
 			}
 		}
+
+		// Star Sovereign Intervention
 		else if (bullet->weaponId == WeaponId::StarSovereignInterventionMissiles)
 		{
 			u32 range = 128;
@@ -729,7 +741,7 @@ namespace hooks
 			}
 		}
 
-		// for missiles hitting targets on its way
+		// for missiles hitting targets mid-flight
 		else if (scbw::weaponPiercesTargets(bullet->weaponId))
 		{
 			u32 range;

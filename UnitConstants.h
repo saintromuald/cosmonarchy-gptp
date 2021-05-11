@@ -134,5 +134,9 @@ const s32 MatralethAIEnsnaringBroodTimer = 75;
 // Akistrokor
 const s32 AkistrokorEnthrallingAssaultHeal = 256 * 20 / 24; // 20 HP per second
 
+// Alkajelisk
+const s32 AlkajeliskParasiticSporesTimer = 135; // 135 is 255 - 5 * 24
+const s32 AlkajeliskParasiticSporesSeekRange = 8 * 32;
+
 // Larval Colony
 const f64 LarvalColonyMultiplier = 0.75;

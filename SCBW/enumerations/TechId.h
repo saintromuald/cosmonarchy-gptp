@@ -69,7 +69,7 @@ enum Enum {
 	NaniteField				= 38, // Shaman mech repair ability
 	Observance				= 39, // Seraph armor reduction ability
 	SublimeShepherd			= 40, // Azazel cloud cover ability
-	PowerTransfer			= 41, // Savant energy transfer ability
+	PowerSiphon				= 41, // Savant energy transfer ability
 
 //Protoss
 	PlanetCracker			= 29, // Star Sovereign damage ability
