@@ -1,5 +1,6 @@
 #include "CMDRECV_Cancel.h"
 #include <SCBW/api.h>
+#include "hooks\orders\building_making\building_morph.h"
 
 namespace hooks
 {
@@ -136,7 +137,6 @@ namespace hooks
 		}
 	}
 
-#include "hooks\orders\building_making\building_morph.h"
 	// hooked because the default code didn't allow for multiple selection
 	void CMDRECV_CancelConstruction()
 	{
