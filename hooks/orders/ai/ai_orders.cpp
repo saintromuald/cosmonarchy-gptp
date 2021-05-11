@@ -20,7 +20,8 @@ namespace hooks
 		if (parent == nullptr
 			|| result->id == UnitId::ZergBroodling
 			|| result->id == UnitId::ZergBroodlisk
-			|| result->id == UnitId::ProtossSimulacrum)
+			|| result->id == UnitId::ProtossSimulacrum
+			|| result->status & UnitStatus::IsHallucination)
 		{
 			hooks::AI_TrainingBroodling(result, result);
 			return;
