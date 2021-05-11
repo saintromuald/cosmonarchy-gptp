@@ -5,7 +5,7 @@
 namespace hooks
 {
 	// Hooked to change order conditions and actions for Hallucination - Pr0nogo
-	s32 spellOrder(s32 defaultOrderString, Unit* caster, u16 techId, s32 range, s32 energyCost) // 004926D0
+	s32 spellOrder(s32 defaultOrderString, Unit* caster, u16 techId, s32 range, s32* energyCost) // 004926D0
 	{		
 		u16 v6;
 		char v7;
@@ -26,7 +26,7 @@ namespace hooks
 			{
 				v7 = *CHEAT_STATE;
 				v6 = techdata_dat::EnergyCost[techId] << 8;
-				*(s16*)energyCost = v6;
+				*energyCost = v6;
 				if (v7 & 8 || caster->energy >= v6)
 				{
 					return helper::spellOrder_MoveTowardsTarget(caster, range);

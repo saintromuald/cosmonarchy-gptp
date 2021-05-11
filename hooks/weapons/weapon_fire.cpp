@@ -85,17 +85,42 @@ namespace
 
 namespace hooks
 {
+	static void launchMissile(Unit* attacker, UnitExt* attackerExt, Unit* target, u8 weaponId)
+	{
+		s32 posX;
+		s32 posY;
+		if (weapons_dat::Behavior[weaponId] & WeaponBehavior::AppearOnTargetUnit)
+		{
+			posX = target->getX();
+			posY = target->getY();
+		}
+		else
+		{
+			posX = attacker->getX();
+			posY = attacker->getY();
+		}
+		auto newAngle = scbw::getAngle(attacker->getX(), attacker->getY(), target->getX(), target->getY());
+		helper::createBullet(weaponId, attacker, posX, posY, attacker->playerId, newAngle);
+		if (attackerExt->values[ValueDeconstruction])
+		{
+			scbw::doDeconstructionDamage(attacker, weaponId, false);
+		}
+	}
 
 	static void fireMultiple(Unit* attacker, UnitExt* attackerExt, u32 weaponId, u32 maxTargets, u32 flags)
 	{
-		std::set<Unit*> targets;
-		targets.insert(attacker->orderTarget.unit);
-		auto old = attacker->orderTarget.unit;
+		std::unordered_set<Unit*> targets;
+		if (attacker->orderTarget.unit)
+		{
+			targets.insert(attacker->orderTarget.unit);
+			launchMissile(attacker, attackerExt, attacker->orderTarget.unit, weaponId);
+		}
+		Unit* old = attacker->orderTarget.unit;
 		for (s32 i = 0; i < maxTargets || maxTargets <= 0; i++)
 		{
-			auto range = hooks::getMaxWeaponRangeHook(attacker, weaponId);
+			u32 range = hooks::getMaxWeaponRangeHook(attacker, weaponId);
 			auto filter = hydraFinderMatch(attacker, flags, {});
-			auto newTarget = scbw::UnitFinder::getNearestTarget(
+			Unit* newTarget = scbw::UnitFinder::getNearestTarget(
 				attacker->getX() - range,
 				attacker->getY() - range,
 				attacker->getX() + range,
@@ -103,37 +128,23 @@ namespace hooks
 				attacker,
 				[&](Unit* target)
 			{
-				if (target == attacker || targets.find(target) != targets.end() || scbw::isAlliedTo(attacker->playerId, target->playerId) ||
-					!attacker->canAttackTarget(target) || !filter(target))
+				if (target == attacker
+					|| targets.find(target) != targets.end()
+					|| scbw::isAlliedTo(attacker->playerId, target->playerId)
+					|| !attacker->canAttackTarget(target)
+					|| !filter(target))
 				{
 					return false;
 				}
 				return true;
 			});
-			if ((targets.size() >= maxTargets && maxTargets > 0) || newTarget == nullptr)
+			if ((targets.size() >= maxTargets && maxTargets > 0) || !newTarget)
 			{
 				break;
 			}
+			launchMissile(attacker, attackerExt, newTarget, weaponId);
 			targets.insert(newTarget);
 			attacker->orderTarget.unit = newTarget;
-			auto newAngle = scbw::getAngle(attacker->getX(), attacker->getY(), newTarget->getX(), newTarget->getY());
-			s32 posX;
-			s32 posY;
-			if (weapons_dat::Behavior[weaponId] & WeaponBehavior::AppearOnTargetUnit)
-			{
-				posX = newTarget->getX();
-				posY = newTarget->getY();
-			}
-			else
-			{
-				posX = attacker->getX();
-				posY = attacker->getY();
-			}
-			helper::createBullet(weaponId, attacker, posX, posY, attacker->playerId, newAngle);
-			if (attackerExt->values[ValueDeconstruction])
-			{
-				scbw::doDeconstructionDamage(attacker, weaponId, false);
-			}
 		}
 		attacker->orderTarget.unit = old;
 	}

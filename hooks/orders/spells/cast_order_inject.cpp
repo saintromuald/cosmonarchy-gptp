@@ -29,9 +29,9 @@ namespace
 		static s32 result;
 		static s32 defaultOrderString;
 		static Unit* caster;
-		static u16 techId;
+		static u32 techId;
 		static s32 range;
-		static s32 energyCost;
+		static s32* energyCost;
 		__asm
 		{
 			PUSH EAX
@@ -63,6 +63,6 @@ namespace hooks
 	void injectCastOrderHooks()
 	{
 		jmpPatch(orders_SpellWrapper,	0x00492850, 1);
-		jmpPatch(spellOrder_Wrapper,	0x004926D0, 0);
+		//jmpPatch(spellOrder_Wrapper,	0x004926D0, 0);
 	}
 }
