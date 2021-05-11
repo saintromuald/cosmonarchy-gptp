@@ -321,8 +321,8 @@ enum ExtUnitId
 enum ExtUnitVectorId
 {
 	UnitVectorCaptivatingClaws,
-	UnitVectorPhaseLinkClarions,
 	UnitVectorPhaseLink,
+	UnitVectorPhaseLinkClarions,
 	UnitVectorTertiaryEyes,
 	UnitVectorTertiaryEyesSirens,
 
@@ -351,31 +351,29 @@ namespace RustId
 {
 	enum
 	{
-		ToggleReverseThrust,
-		ToggleSublimeShepherd,
 		CastLazarusAgent,
-		ToggleDisruptionWeb,
-		DisruptionWebDamage,
 		CastEnsnaringBrood,
 		CastGodsMadeFlesh,
-		ToggleTempoChange,
-		DirgeAttacker,
-		CancelMindControl,
 		CastEnthrallingAssault,
 		CastTertiaryEyes,
+		CancelMindControl,
 		CancelLandGrab,
+		ToggleReverseThrust,
+		ToggleSublimeShepherd,
+		ToggleDisruptionWeb,
+		DisruptionWebDamage,
+		ToggleTempoChange,
+		DirgeAttacker,
 	};
 }
 #include "SCBW\enumerations\TechId.h"
-//const u32 first_generic_toggle_ability = RustId::ReverseThrust;
-//const u32 last_generic_toggle_ability = RustId::DisruptionWeb;
-const u32 string_toggle_on[6] = {1703, 1807, 1265, 1232, 1383, 328};
-const u32 string_toggle_off[6] = {1113, 1114, 1270, 1233, 1248, 330};
-const u32 button_toggle_on[6] = {374, 319, 369, 374, 366, 296};
-const u32 button_toggle_off[6] = {375, 236, 236, 375, 365, 236};
-const u32 toggle_values[6] = {RustId::ToggleReverseThrust, RustId::ToggleSublimeShepherd, RustId::ToggleDisruptionWeb, RustId::ToggleTempoChange};
-const u32 toggle_abilities[6] = {TechId::EMPShockwave, TechId::UnusedTech40, TechId::DisruptionWeb, TechId::TempoChange};
-const u32 generictoggles = 6;
+const u32 string_toggle_on[] = {1703, 1807, 1265, 1232};
+const u32 string_toggle_off[] = {1113, 1114, 1270, 1233};
+const u32 button_toggle_on[] = {374, 319, 369, 374};
+const u32 button_toggle_off[] = {375, 236, 236, 375};
+const u32 toggle_values[] = {RustId::ToggleReverseThrust, RustId::ToggleSublimeShepherd, RustId::ToggleDisruptionWeb, RustId::ToggleTempoChange};
+const u32 toggle_abilities[] = {TechId::EMPShockwave, TechId::UnusedTech40, TechId::DisruptionWeb, TechId::TempoChange};
+const u32 generictoggles = 4;
 
 namespace HydraFlags1
 {
