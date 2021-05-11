@@ -643,8 +643,9 @@ namespace hooks
 				case WeaponId::MadrigalImperiosoMissiles:
 				{
 					// Dirge - Madrigal behavior
-					scbw::sendGPTP_aise_cmd(data.target, nullptr, GptpId::DirgeImpale, 24, 0, 0);
-					scbw::set_generic_rust_unit(data.target, RustId::DirgeAttacker, data.attacker);
+					targetExt->timers[TimerDirgeFuse] = 24 + 1;
+					targetExt->values[ValueDirgeSourcePlayer] = data.attackingPlayerId;
+					targetExt->units[UnitDirgeSource] = data.attacker;
 				} break;
 				case WeaponId::VorvalingClaws:
 				{

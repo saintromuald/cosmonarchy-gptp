@@ -33,7 +33,7 @@ namespace Flags
 	};
 }
 
-scbw::UnitFinderCallbackMatchInterface unitRangeCount(Unit* center, u32 context, std::vector<u16> allowedUnitIds);
+scbw::UnitFinderCallbackMatchInterface hydraFinderMatch(Unit* center, u32 context, std::vector<u16> allowedUnitIds);
 
 bool rangeMatch(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
 Unit* rangeMatchUnit(Unit* unit, u32 r, u32 context, std::vector<u16> allowedIds);
@@ -42,7 +42,7 @@ u32 hydraUnitCount(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16
 template<typename hydraLoop>
 inline void hydraFinderLoop(Unit* unitPtr, Point16 pos, s32 r, u32 flags, std::vector<u16> unitIds, hydraLoop l)
 {
-	auto condition = unitRangeCount(unitPtr, flags, unitIds);
+	auto condition = hydraFinderMatch(unitPtr, flags, unitIds);
 	scbw::UnitFinder unitsInSplash(pos.x - r, pos.y - r,
 		pos.x + r, pos.y + r);
 	for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
