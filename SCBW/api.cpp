@@ -1723,7 +1723,7 @@ namespace scbw
 
 	void dirgeFuse(Unit* unit, UnitExt* unitExt)
 	{
-		helper::createThingy(SpriteId::ArcliteShockCannon_Damageless, unit->getX(), unit->getY(), 11);
+		unit->sprite->createTopOverlay(ImageId::ArcliteShockCannon_Damageless);
 		const u32 radius = 2 * 32;
 		scbw::UnitFinder(
 			unit->getX() - radius,
