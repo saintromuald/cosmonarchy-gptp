@@ -1395,6 +1395,15 @@ namespace hooks
 										canCancel = true;
 									}
 								}
+								else if ((*activePortraitUnit)->id == UnitId::ZergAkistrokor)
+								{
+									UnitExt* activeExt = globals.GetUnitExt(*activePortraitUnit);
+									if (activeExt->units[UnitAttachedTarget])
+									{
+										canCancel = true;
+									}
+								}
+
 								if (!canCancel)
 								{
 									current_button_state = BUTTON_STATE::Invisible;
