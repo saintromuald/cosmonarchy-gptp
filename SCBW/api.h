@@ -407,4 +407,5 @@ namespace scbw
 	bool isStandardTerranUnit(u16 id);
 	void applyNewHallucination(Unit* unit, u8 playerId, u32 time);
 	bool weaponPiercesTargets(u16 weaponId);
+	void dirgeFuse(Unit* unit, UnitExt* unitExt);
 }

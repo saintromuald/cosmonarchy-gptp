@@ -1,6 +1,7 @@
 #include "api.h"
 #include "scbwdata.h"
 #include <SCBW/UnitFinder.h>
+#include <hooks/hydraFinder.h>
 #include <algorithm>
 #include <cassert>
 #include <utility>
@@ -1718,5 +1719,22 @@ namespace scbw
 				return false;
 			}
 		}
+	}
+
+	void dirgeFuse(Unit* unit, UnitExt* unitExt)
+	{
+		unit->sprite->createTopOverlay(ImageId::ArcliteShockCannon_Damageless, unit->getX(), unit->getY());
+		const u32 radius = 2 * 32;
+		scbw::UnitFinder(
+			unit->getX() - radius,
+			unit->getY() - radius,
+			unit->getX() + radius,
+			unit->getY() + radius
+		).forEachInMatch(hydraFinderMatch(unit, Flags::IncludingSelf, {}),
+			[&unitExt](Unit* target)
+		{
+			target->damageWithCustom(unitExt->values[ValueDirgeStacks] * 20 * 256, DamageType::Explosive, unitExt->units[UnitDirgeSource], unitExt->values[ValueDirgeSourcePlayer], 0, 1, false);
+		});
+		unitExt->values[ValueDirgeStacks] = 0;
 	}
 }

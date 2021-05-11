@@ -266,10 +266,7 @@ void unitDestructorSpecialHook(Unit* unit)
 			{
 				freeResourceContainer(unit);
 			} break;
-			default:
-			{
-			}
-			}
+		}
 	}
 
 	// Alkajelisk Parasitic Spores behavior
@@ -282,6 +279,12 @@ void unitDestructorSpecialHook(Unit* unit)
 		{
 			bullet->time_remaining = 255;
 		}
+	}
+
+	// Madrigal - Dirge
+	if (unitExt->timers[TimerDirgeFuse])
+	{
+		scbw::dirgeFuse(unit, unitExt);
 	}
 
 	// Apostle Last Breath behavior
