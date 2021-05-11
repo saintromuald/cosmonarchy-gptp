@@ -62,12 +62,10 @@ void hydra_unit_ai(Unit* unit)
 			}
 		}
 	}
-
 	else if (unit->id == UnitId::TerranEidolon)
 	{
 		// mines
 	}
-
 	else if (unit->id == UnitId::TerranSavant)
 	{
 		if (unitExt->timers[TimerAI_Siphon] == 0 && unit->mainOrderId != OrderId::PowerSiphon)
@@ -93,7 +91,6 @@ void hydra_unit_ai(Unit* unit)
 			}
 		}
 	}
-
 	else if (unit->id == UnitId::ZergMatraleth)
 	{
 		if (unit->mainOrderId != OrderId::CastParasite
@@ -137,7 +134,6 @@ void hydra_unit_ai(Unit* unit)
 			});
 		}
 	}
-
 	else if (unit->id == UnitId::ProtossStarSovereign && unitExt->timers[TimerAI_GriefOfAllGods] == 0)
 	{
 		auto enemyUnitsHealth = 0;
@@ -170,7 +166,6 @@ void hydra_unit_ai(Unit* unit)
 			unit->mainOrderState = 0;
 		}
 	}
-
 	else if (unit->id == UnitId::ProtossLanifect)
 	{
 		auto web_state = scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionWeb);
@@ -181,10 +176,10 @@ void hydra_unit_ai(Unit* unit)
 				unitExt->values[ValueExecutingCorsairMoveOrder] = 0;
 			}
 		}
-		auto webs = hydraUnitCount(unit, unit->sprite->position, AIWebSeekRange, 0, {UnitId::Spell_DisruptionWeb});
-		auto allies = hydraUnitCount(unit, unit->sprite->position, AICorsairAllySeekRange, Flags::Ally | Flags::NotSelf | Flags::Combatant, {});
-		auto enemies = hydraUnitCount(unit, unit->sprite->position, AICorsairEnemySeekRange, Flags::Enemy | Flags::Combatant, {});
-		auto percentage = (f64)(unit->hitPoints + unit->shields) / (f64)(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id] * 256);
+		u32 webs = hydraUnitCount(unit, unit->sprite->position, AIWebSeekRange, 0, {UnitId::Spell_DisruptionWeb});
+		u32 allies = hydraUnitCount(unit, unit->sprite->position, AICorsairAllySeekRange, Flags::Ally | Flags::NotSelf | Flags::Combatant, {});
+		u32 enemies = hydraUnitCount(unit, unit->sprite->position, AICorsairEnemySeekRange, Flags::Enemy | Flags::Combatant, {});
+		f64 percentage = (f64)(unit->hitPoints + unit->shields) / (f64)(units_dat::MaxHitPoints[unit->id] + units_dat::MaxShieldPoints[unit->id] * 256.0);
 		if (web_state == 0)
 		{
 			if (webs == 0 && unit->energy >= AIWebMinEnergy * 256
@@ -225,6 +220,27 @@ void hydra_unit_ai(Unit* unit)
 					}
 				}
 			}
+		}
+	}
+	else if (unit->id == UnitId::TerranMadrigal)
+	{
+
+		u32 furiaDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalFuriaMissiles] / weapons_dat::Cooldown[WeaponId::MadrigalFuriaMissiles]);
+		furiaDamagePotential *= hydraUnitCount(unit, unit->position, 5 * 32, Flags::Enemy, {});
+		if (unit->orderTarget.unit)
+		{
+			UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
+			furiaDamagePotential += targetExt->values[ValueDirgeStacks] * MadrigalDirgeDamage * 256;
+		}
+		u32 dirgeDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalDirge] / weapons_dat::Cooldown[WeaponId::MadrigalDirge]) + (MadrigalDirgeDamage * 256);
+
+		if (furiaDamagePotential > dirgeDamagePotential)
+		{
+			scbw::set_generic_rust_value(unit, RustId::ToggleTempoChange, 0);
+		}
+		else
+		{
+			scbw::set_generic_rust_value(unit, RustId::ToggleTempoChange, 1);
 		}
 	}
 
