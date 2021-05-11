@@ -982,18 +982,27 @@ namespace hooks
 		// Attachment - Generic behavior
 		if (Unit* target = unitExt->units[UnitAttachedTarget])
 		{
-			scbw::teleport(unit, target->position);
-
-			// Akistrokor - Attack Animation
-			if (unit->id == UnitId::ZergAkistrokor)
+			if (true) // TODO: add cancel check
 			{
-				u32 currentAnim = unit->sprite->mainGraphic->animation;
-				if (currentAnim != IscriptAnimation::GndAttkInit
-					&& currentAnim != IscriptAnimation::GndAttkRpt
-					&& currentAnim != IscriptAnimation::CastSpell)
+				scbw::setUnitPosition(unit, target->getX(), target->getY());
+				unit->currentDirection1 = target->currentDirection1;
+
+				// Akistrokor - Attack Animation
+				if (unit->id == UnitId::ZergAkistrokor)
 				{
-					unit->sprite->playIscriptAnim(IscriptAnimation::GndAttkInit);
+					u32 currentAnim = unit->sprite->mainGraphic->animation;
+					if (currentAnim != IscriptAnimation::GndAttkInit
+						&& currentAnim != IscriptAnimation::GndAttkRpt
+						&& currentAnim != IscriptAnimation::CastSpell
+						&& !(unit->status & UnitStatus::NoBrkCodeStart))
+					{
+						//unit->sprite->playIscriptAnim(IscriptAnimation::GndAttkInit, true);
+					}
 				}
+			}
+			else
+			{
+				unitExt->units[UnitAttachedTarget] = nullptr;
 			}
 		}
 
