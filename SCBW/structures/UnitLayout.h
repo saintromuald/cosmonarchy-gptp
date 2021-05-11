@@ -632,7 +632,7 @@ struct UnitLayout
 	/*0x119*/ u8        stasisTimer;
 	/*0x11A*/ u8        plagueTimer;
 	/*0x11B*/ u8        isUnderStorm;				// Used to tell if a unit is under psi storm	(is "stormTimer" in BWAPI)
-	/*0x11C*/ Unit*	irradiatedBy;
+	/*0x11C*/ Unit*		irradiatedBy;
 	/*0x120*/ u8        irradiatePlayerId;
 	/*0x121*/ u8        parasiteFlags;				// Each bit corrisponds to the player who has parasited this unit*/
 	/*0x122*/ u8        cycleCounter;				// counts/cycles up from 0 to 7 (inclusive). See also 0x85.

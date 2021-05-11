@@ -587,13 +587,14 @@ void Globals::frameHook()
 				}
 				case EffectId::GroundZero:
 				{
-					u32 stage = (effects[i].maxTime - effects[i].currentTime) / framePeriod;
+					const u32 delta = effects[i].maxTime - effects[i].currentTime;
+					const u32 stage = delta / framePeriod;
 
 					switch (stage)
 					{
 						case 0:
 						{
-							globals.createEffect(EffectId::Irradiate, 30 * 24, effects[i].position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effects[i].player);
+							globals.createEffect(EffectId::Irradiate, 20 * 24 - delta, effects[i].position, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effects[i].player);
 						} break;
 						case 1:
 						case 2:
@@ -606,7 +607,7 @@ void Globals::frameHook()
 							for (u32 j = 0; j < count; ++j)
 							{
 								newPos = scbw::rotate_point(effects[i].position, newPos, (360.0 / count));
-								globals.createEffect(EffectId::Irradiate, 30 * 24, newPos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effects[i].player);
+								globals.createEffect(EffectId::Irradiate, 20 * 24 - delta, newPos, 1.5 * 32, SpriteId::IrradiateNew_Large, 5, effects[i].player);
 							}
 						} break;
 					}
