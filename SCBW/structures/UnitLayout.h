@@ -236,6 +236,7 @@ enum ExtValueId
 	ValueRaceSupplyType,
 	ValueExemplarMissilePos,
 	ValueClaymoreMissilePos,
+	ValueDirgeSourcePlayer,
 
 	ValueCount,
 };
@@ -284,6 +285,7 @@ enum ExtTimerId
 	TimerCaptivatingClaws,
 	TimerAlaszilethRegenBoost,
 	TimerWyvernAttackCooldown,
+	TimerDirgeFuse,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,
@@ -302,13 +304,13 @@ enum ExtUnitId
 	UnitAttachedDisruptionWeb,
 	UnitParasiteSource,
 	UnitHallucinationPointer,
-	UnitDirgeAttacker,
 	UnitDecaySavant,
 	UnitWorshipDemiurge,
 	UnitAttachedTarget,
 	UnitAttachedAkistrokor,
 	UnitMindController,
 	UnitWyvernTargetLock,
+	UnitDirgeSource,
 
 	UnitCount,
 };

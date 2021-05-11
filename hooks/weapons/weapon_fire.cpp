@@ -94,7 +94,7 @@ namespace hooks
 		for (s32 i = 0; i < maxTargets; i++)
 		{
 			auto range = hooks::getMaxWeaponRangeHook(attacker, weaponId);
-			auto filter = unitRangeCount(attacker, flags, {});
+			auto filter = hydraFinderMatch(attacker, flags, {});
 			auto newTarget = scbw::UnitFinder::getNearestTarget(
 				attacker->getX() - range,
 				attacker->getY() - range,

@@ -383,7 +383,7 @@ namespace hooks
 				if (unitExt->timers[TimerStarcallerInterceptionMissiles] == 0)
 				{
 					auto r = 5 * 32;
-					auto n = unitRangeCount(unit, Flags::Enemy | Flags::FrontalArc, {});
+					auto n = hydraFinderMatch(unit, Flags::Enemy | Flags::FrontalArc, {});
 					scbw::UnitFinder unitsInFinder(unit->getX() - r, unit->getY() - r,
 						unit->position.x + r, unit->position.y + r);
 					bool enemiesDetected = false;
@@ -500,7 +500,7 @@ namespace hooks
 					// Cast Lazarus Agent						
 					unit->spendUnitEnergy(techdata_dat::EnergyCost[TechId::LazarusAgent] * 256);
 					auto r = 4 * 32;
-					auto n = unitRangeCount(unit, Flags::NoBuilding | Flags::Ally | Flags::IncludingSelf | Flags::NoTrap | Flags::NoHallucination, {});
+					auto n = hydraFinderMatch(unit, Flags::NoBuilding | Flags::Ally | Flags::IncludingSelf | Flags::NoTrap | Flags::NoHallucination, {});
 					scbw::UnitFinder unitsInSplash(unit->getX() - r, unit->getY() - r,
 						unit->position.x + r, unit->position.y + r);
 					for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
@@ -913,9 +913,23 @@ namespace hooks
 					unitExt->values[ValueWyvernLandGrabOn] = 0;
 				}
 			}
-			default:
+		}
+
+		if (unitExt->timers[TimerDirgeFuse] == 1)
+		{
+			//unit->sprite->createTopOverlay(ImageId::ArcliteShockCannonHit, unit->getX(), unit->getY());
+			//scbw::createAndInitThingy(SpriteId::Arclite_Shock_Cannon_Hit, unit->getX(), unit->getY());
+			const u32 radius = 2 * 32;
+			scbw::UnitFinder(
+				unit->getX() - radius,
+				unit->getY() - radius,
+				unit->getX() + radius,
+				unit->getY() + radius
+			).forEachInMatch(hydraFinderMatch(unit, Flags::IncludingSelf, {}),
+				[&unitExt](Unit* target)
 			{
-			}
+				target->damageWithCustom(20 * 256, DamageType::Explosive, unitExt->units[UnitDirgeSource], unitExt->values[ValueDirgeSourcePlayer], 0, 1, false);
+			});
 		}
 
 		/*
