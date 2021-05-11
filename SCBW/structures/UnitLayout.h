@@ -238,6 +238,8 @@ enum ExtValueId
 	ValueClaymoreMissilePos,
 	ValueDirgeSourcePlayer,
 	ValueDirgeStacks,
+	ValueSignifyStacks,
+	ValueSignifySourcePlayer,
 
 	ValueCount,
 };
@@ -287,6 +289,7 @@ enum ExtTimerId
 	TimerAlaszilethRegenBoost,
 	TimerWyvernAttackCooldown,
 	TimerDirgeFuse,
+	TimerSignify,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,

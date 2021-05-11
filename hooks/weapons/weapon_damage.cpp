@@ -648,6 +648,13 @@ namespace hooks
 					targetExt->values[ValueDirgeSourcePlayer] = data.attackingPlayerId;
 					targetExt->units[UnitDirgeSource] = data.attacker;
 				} break;
+				case WeaponId::HierophantPhaseSignifier:
+				{
+					targetExt->values[ValueSignifyStacks]++;
+					targetExt->values[ValueSignifySourcePlayer] = data.attackingPlayerId;
+					targetExt->timers[TimerSignify] = 3 * 24 + 1;
+					//data.target->sprite->createTopOverlay(ImageId::HierophantSignify);
+				} break;
 				case WeaponId::VorvalingClaws:
 				{
 					// Captivating Claws - Vorvaling behavior

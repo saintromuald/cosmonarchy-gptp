@@ -921,6 +921,11 @@ namespace hooks
 			scbw::dirgeFuse(unit, unitExt);
 		}
 
+		if (unitExt->timers[TimerSignify])
+		{
+			unitExt->values[ValueSignifyStacks] = 0;
+		}
+
 		if (unit->isFrozen())
 		{
 			scbw::decloakProc(unit);
