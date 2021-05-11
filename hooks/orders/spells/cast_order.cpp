@@ -130,7 +130,14 @@ namespace hooks
 						LABEL_20:
 							if (fowUnitId == UnitId::None)
 							{
-								v10 = (u32)helper::getTargetUnitAbilityErrorStatString(target, caster->playerId, techId);
+								if (techId == TechId::Hallucination)
+								{
+									v10 = 0;
+								}
+								else
+								{
+									v10 = (u32)helper::getTargetUnitAbilityErrorStatString(target, caster->playerId, techId);
+								}
 							}
 							else
 							{
