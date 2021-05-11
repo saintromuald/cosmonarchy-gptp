@@ -34,9 +34,11 @@ namespace
 		static s32 energyCost;
 		__asm
 		{
+			PUSH EBP
+			MOV EBP, ESP
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
-			MOV techId, EAX
+			MOV techId, AX
 			MOV EAX, [EBP + 0xC]
 			MOV range, EAX
 			MOV EAX, [EBP + 0x10]
@@ -56,13 +58,54 @@ namespace
 			RETN 0xC
 		}
 	}
+
+	void __declspec(naked) canTargetSpell_Wrapper() // 00492020
+	{
+		static bool result;
+		static u16 techId;
+		static Unit* target;
+		static s16 fowUnitId;
+		static Unit* caster;
+		static s16 x;
+		static s16 y;
+		static s16* error;
+		__asm
+		{
+			PUSH EBP
+			MOV EBP, ESP
+			PUSH EAX
+			MOV EAX, [EBP + 0x08]
+			MOV caster, EAX
+			MOV EAX, [EBP + 0xC]
+			MOV x, AX
+			MOV EAX, [EBP + 0x10]
+			MOV y, AX
+			MOV EAX, [EBP + 0x14]
+			MOV error, EAX
+			POP EAX
+			MOV SI, fowUnitId
+			MOV EDI, target
+			MOV DX, techId
+			PUSHAD
+		}
+		result = hooks::canTargetSpell(techId, target, fowUnitId, caster, x, y, error);
+		__asm
+		{
+			POPAD
+			MOV AL, result
+			MOV ESP, EBP
+			POP EBP
+			RETN 0x14
+		}
+	}
 }
 
 namespace hooks
 {
 	void injectCastOrderHooks()
 	{
-		jmpPatch(orders_SpellWrapper,	0x00492850, 1);
-		jmpPatch(spellOrder_Wrapper,	0x004926D0, 0);
+		jmpPatch(orders_SpellWrapper,		0x00492850, 1);
+		jmpPatch(spellOrder_Wrapper,		0x004926D0, 0);
+		jmpPatch(canTargetSpell_Wrapper,	0x00492020, 1);
 	}
 }
