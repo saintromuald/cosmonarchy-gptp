@@ -1702,4 +1702,21 @@ namespace scbw
 			POPAD
 		}
 	}
+
+	bool weaponPiercesTargets(u16 weaponId)
+	{
+		switch (weaponId)
+		{
+			case WeaponId::KalkaliskViscousAcid:
+			case WeaponId::PenumbraErebolShockCannon:
+			case WeaponId::ClaymoreHarpoonRailgun:
+			{
+				return true;
+			}
+			default:
+			{
+				return false;
+			}
+		}
+	}
 }

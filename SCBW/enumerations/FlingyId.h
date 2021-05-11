@@ -376,5 +376,7 @@ namespace FlingyId
 		TerranSiren = 366,
 		SharedCharlatan = 367,
 		CanisterRifleHitBlue = 368,
+		ProtossExemplar = 369,
+		ArcliteShockCannon_Damageless = 370,
 	};
 }

@@ -711,6 +711,8 @@ namespace SpriteId
 		TerranSiren = 701,
 		SharedCharlatan = 702,
 		CanisterRifleImpactBlue = 703,
+		ProtossExemplar = 704,
+		ArcliteShockCannon_Damageless = 705,
 
 		// CORPSE \\
 

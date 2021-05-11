@@ -1054,6 +1054,9 @@ enum Enum {
 	Charlatan							= 1377,
 	Charlatan_Shadow					= 1378,
 	CanisterRifleImpactBlue				= 1379,
+	Exemplar							= 1380,
+	Exemplar_Shadow						= 1381,
+	ArcliteShockCannon_Damageless		= 1382,
 
 	FirstMinorDamageOverlay				= 450,
 	LastMinorDamageOverlay			    = 471,

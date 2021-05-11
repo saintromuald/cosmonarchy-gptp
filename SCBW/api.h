@@ -406,4 +406,5 @@ namespace scbw
 	void playWorkAnimation(Unit* unit);
 	bool isStandardTerranUnit(u16 id);
 	void applyNewHallucination(Unit* unit, u8 playerId, u32 time);
+	bool weaponPiercesTargets(u16 weaponId);
 }

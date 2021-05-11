@@ -454,6 +454,8 @@ enum Enum {
 //	TerranBioticBase								= x,		// 
 //	TerranTinkerersTower							= x,		// 
 //	ProtossProstrationStage							= x,		// 
+//	ZergSkithrokor									= x,		// 
+//	ZergSkithrokScab								= x,		// 
 
 // Shared-Unit
 	SharedCohort									= 50,		// Infested Terran

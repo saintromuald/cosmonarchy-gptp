@@ -742,12 +742,29 @@ namespace hooks
 				bEnd = true;
 			}
 		}
+
 		// for missiles hitting targets on its way
-		else if (bullet->weaponId == WeaponId::KalkaliskViscousAcid
-			|| bullet->weaponId == WeaponId::PenumbraErebolShockCannon
-			|| bullet->weaponId == WeaponId::ClaymoreHarpoonRailgun)
+		else if (scbw::weaponPiercesTargets(bullet->weaponId))
 		{
-			u32 range = 128;
+			u32 range;
+			switch (bullet->weaponId)
+			{
+				case WeaponId::KalkaliskViscousAcid:
+				{
+					range = 96;
+				} break;
+				case WeaponId::PenumbraErebolShockCannon:
+				{
+					range = 128;
+				} break;
+				case WeaponId::ClaymoreHarpoonRailgun:
+				{
+					range = 160;
+				} break;
+				default:
+				{
+				}
+			}
 			auto collisionTarget = scbw::UnitFinder::getNearestTarget(
 				bullet->position.x - range, bullet->position.y - range,
 				bullet->position.x + range, bullet->position.y + range,
@@ -806,7 +823,7 @@ namespace hooks
 					scbw::createAndInitThingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
 					hooks::WeaponBulletHit(bullet, collisionTarget, 2);
 				}
-				if (bullet->weaponId == WeaponId::ClaymoreHarpoonRailgun)
+				else if (bullet->weaponId == WeaponId::ClaymoreHarpoonRailgun)
 				{
 					// Claymore - Kelvin Munitions - pierce targets
 					scbw::createAndInitThingy(SpriteId::BurstLasersImpactDamageless, bullet->position.x, bullet->position.y, bullet->srcPlayer);
@@ -819,8 +836,7 @@ namespace hooks
 						collisionTargetExt->values[ValueKelvinMunitionsSlow] = 1;
 					}
 				}
-				else
-				{
+				else if (bullet->weaponId == WeaponId::KalkaliskViscousAcid) {
 					// Kalkalisk behavior
 //					auto divider = globals.get_multihit_count(bullet);
 					helper::weaponBulletShot(collisionTarget, bullet, 2);
