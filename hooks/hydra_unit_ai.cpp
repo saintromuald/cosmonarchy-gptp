@@ -108,7 +108,6 @@ void hydra_unit_ai(Unit* unit)
 			}
 		}
 	}
-
 	else if (unit->id == UnitId::TerranMadrigal)
 	{
 		f32 furiaDamagePotential = hooks::getCurrentDPS(unit, WeaponId::MadrigalFuriaMissiles);
@@ -188,7 +187,6 @@ void hydra_unit_ai(Unit* unit)
 			}
 		}
 	}
-
 	else if (unit->id == UnitId::ProtossLanifect)
 	{
 		auto web_state = scbw::get_generic_rust_value(unit, RustId::ToggleDisruptionWeb);
@@ -245,7 +243,6 @@ void hydra_unit_ai(Unit* unit)
 			}
 		}
 	}
-		
 	else if (unit->id == UnitId::ProtossStarSovereign && unitExt->timers[TimerAI_GriefOfAllGods] == 0)
 	{
 		auto enemyUnitsHealth = 0;
