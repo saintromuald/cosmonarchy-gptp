@@ -9,35 +9,50 @@ void hydra_unit_ai(Unit* unit)
 	UnitExt* unitExt = globals.GetUnitExt(unit);
 
 	/* DONE
-	Apostle Lazarus Agent: If 5 or more organic allies (that don't have the buff) are nearby, cast the spell. **DONE**
-					AI should also try to position Apostles near organics, but not sure if that's feasible.
-	Savant Power Siphon: If 2 or more allied specialists are nearby, target an enemy specialist within 7 range. **DONE**
-	Clarion Phase Link: While 4 or more allied shielded units are within 128px of the Clarion, toggle the ability on. **DONE**
-	Matraleth Parasite: When 5 or more supply's worth of units (of any owner) are within 128px
-					of each other, target the group.	**DONE**
-	Star Sovereign Grief of All Gods: When at least 2000 HP+shields worth of enemy units are within 192px of the Star Sovereign
-					and there are no allied town halls and less than 2000 HP+shields worth of allied units within the same radius,
-					and the Star Sovereign has more than 50% of HP+shields combined, channel the ability and attempt to protect the
-					Star Sovereign with low-cost/low-HP units.	**DONE**
+	Apostle Lazarus Agent: If 5 or more organic allies (that don't have the buff) are nearby,
+	cast the spell. **DONE**
+	AI should also try to position Apostles near organics.
+
+	Savant Power Siphon: If 2 or more allied specialists are nearby,
+	target an enemy specialist within 7 range. **DONE**
+
+	Matraleth Parasite: When 5 or more supply's worth of units (of any owner) are within 128px of each other,
+	target the group. **DONE**
+
+	Star Sovereign Grief of All Gods: When at least 2000 HP+shields worth of enemy units are within 192px of the Star Sovereign,
+	and there are no allied town halls and less than 2000 HP+shields worth of allied units within the same radius,
+	and the Star Sovereign has more than 50% of HP+shields combined,
+	channel the ability. **DONE**
+	Attempt to protect the Star Sovereign with low-cost/low-HP units.
+
 	Lanifect Disruption Field:
-					When there are at least 3 allies within 128px, and there are at least 2 enemies within 128px, and there are no
-					activated Disruption Fields within 96px, and the Lanifect is above 50% total HP and shields, and the Lanifect has
-					at least 30 energy,
-					move towards the most significant enemy threat within 128px (in terms of enemy unit count). Recheck conditions
-					to disable the behavior (besides HP/shields and energy checks). **DONE**
+	When there are at least 3 allies within 128px, and there are at least 2 enemies within 128px,
+	and there are no activated Disruption Fields within 96px,
+	and the Lanifect is above 50% total HP and shields,
+	move towards the most significant enemy threat within 128px (in terms of enemy unit count).
+	Recheck conditions to disable the behavior (besides HP/shield checks). **DONE**
 	*/
+
 	/* TODO
 	Eidolon Lobotomy Mine: I think all mines should be reworked in terms of how the AI places them,
 					I would suggest dropping them in positions where enemy ground units
 					have been spotted/attacked/killed within the last few minutes.
 					That way it's like they're responding to ground paths taken by enemies.
 					Vulture Spider Mines could be done in similar ways.
+
+	Madrigal Tempo Change: When 3 or more hostiles within 4 weapon range,
+	switch to Tempo Up (Furia);
+	else, switch to Tempo Down (Imperioso)
+
 	Paladin Skyfall: If 6 or more enemies are within 64px of each other while being within range,
 					target terrain between the Paladin and the target group, 64px away from the group.
+
 	Science Vessel Observance: If 3 or more enemies are within 96px of each other, and the Vessel has more than 50% HP, target
 					the group and stay within range while attempting to avoid damage.
+
 	Azazel Sublime Shepherd: Toggle while 2 or more allied units are within 96px of the Azazel, and stay within 96px of as many
 					allies as possible.
+
 	Didact Recall: "Offensive" cast when the Didact is added to an attack and a group of 6 or more units are within 160px of
 					one another. Attempt to group as many units as possible during the channel.
 	*/
