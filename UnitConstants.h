@@ -67,6 +67,9 @@ constexpr s32 TreasuryIncrease = 4;
 // Cantavis
 constexpr s32 CantavisHallucinationTimer = 10 * 24;
 
+// Mind Tyrant
+constexpr s32 MindTyrantMaelstromTimer = 16; // 5 seconds
+
 // Demiurge
 constexpr s32 GodsMadeFleshEnergyDrain = 100;
 

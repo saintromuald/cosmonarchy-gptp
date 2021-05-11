@@ -980,6 +980,10 @@ namespace hooks
 		{
 			unit->stasisTimer = DidactStasisFieldTimer;
 		}
+		if (unit->maelstromTimer > MindTyrantMaelstromTimer)
+		{
+			unit->maelstromTimer = MindTyrantMaelstromTimer;
+		}
 
 		// Attachment - Generic behavior
 		if (Unit* target = unitExt->units[UnitAttachedTarget])

@@ -621,13 +621,16 @@ LABEL_18:
 		switch (orderId)
 		{
 			case OrderId::GuardianAspect:
-			case OrderId::Skyfall://OrderId::AttackTile
+			case OrderId::Skyfall: // OrderId::AttackTile
 			case OrderId::Hover:
 			case OrderId::Warpin:
 			case OrderId::CTFCOP2:
-				return true;
+			{
+				return true; 
+			}
 			default:
-				break;
+			{
+			} break;
 		}
 		return false;
 	}

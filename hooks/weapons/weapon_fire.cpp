@@ -138,9 +138,9 @@ namespace hooks
 		attacker->orderTarget.unit = old;
 	}
 
-	//Fires a weapon from the @p unit.
-	//This hook affects the following iscript opcodes: attackwith, attack, castspell
-	//This also affects Unit::fireWeapon().
+	// Fires a weapon from the @p unit.
+	// This hook affects the following iscript opcodes: attackwith, attack, castspell
+	// This also affects Unit::fireWeapon().
 	void fireWeaponHook(Unit* unit, u8 wId)
 	{
 		UnitExt* unitExt = globals.GetUnitExt(unit);
@@ -204,6 +204,7 @@ namespace hooks
 				}
 				globals.clear_lakizilisk(unit);
 			}
+
 			if (unit->id != UnitId::TerranWyvern)
 			{
 				// Madrigal Tempo Change weapon switch
@@ -212,6 +213,7 @@ namespace hooks
 				{
 					weaponId = WeaponId::MadrigalImperiosoMissiles;
 				}
+
 				// Savant Power Siphon ability
 				if (weaponId == WeaponId::SavantPowerSiphon)
 				{
@@ -314,16 +316,19 @@ namespace hooks
 						}
 					}
 				}
+
 				// Monoceros Targeting - Battlecruiser behavior
 				else if (weaponId == WeaponId::MinotaurAsterionLaserBattery)
 				{
 					fireMultiple(unit, unitExt, weaponId, 5, Flags::Enemy | Flags::FrontalArc);
 				}
+
 				// Tertiary Eyes - Siren behavior
 				else if (weaponId == WeaponId::SirenCharybdalRifle)
 				{
 					fireMultiple(unit, unitExt, weaponId, 1 + unitExt->unitVectors[UnitVectorTertiaryEyes].size(), Flags::Enemy);
 				}
+
 				// Titan Reactors - Heracles behavior - Refresh timer on attack and add stack
 				if (weaponId == WeaponId::HeraclesJavelinCannons)
 				{
@@ -347,23 +352,23 @@ namespace hooks
 				}
 				else if (weaponId == WeaponId::StarSovereignCelestialCannon)
 				{
-					// Star Sovereign laser spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueSovereignCannonPos, 2, ImagesDatEntries::OverlayAttackPtr);
 				}
-				else if (weaponId == WeaponId::CentaurSunchaserMissiles)
+				else if (weaponId == WeaponId::ClaymoreHarpoonRailgun)
 				{
-					// Centaur missile spawn positions
-					scbw::setMissileSourcePos(unit, weaponId, ValueCentaurMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
+					scbw::setMissileSourcePos(unit, weaponId, ValueClaymoreMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::PenumbraErebolShockCannon)
 				{
-					// Penumbra laser spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValuePenumbraLaserPos, 1, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::BurstLasers)
 				{
-					// Wraith laser spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueWraithLaserPos, 3, ImagesDatEntries::OverlayAttackPtr);
+				}
+				else if (weaponId == WeaponId::CentaurSunchaserMissiles)
+				{
+					scbw::setMissileSourcePos(unit, weaponId, ValueCentaurMissilePos, 4, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::PhobosArgosLaserBatteries)
 				{
@@ -376,23 +381,20 @@ namespace hooks
 							unitExt->values[ValuePhobosDischarge] = 1;
 						}
 					}
-					// Phobos laser spawn positions
+
 					scbw::setMissileSourcePos(unit, weaponId, ValuePhobosLaserPos, 4, ImagesDatEntries::OverlayAttackPtr);
 				}
 				else if (weaponId == WeaponId::IonCannon)
 				{
-					// Ion Cannon projectile spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueIonCannonProjectilePos, 1, ImagesDatEntries::OverlaySpecialPtr, 1);
 				}
 				else if (weaponId == WeaponId::KalkaliskViscousAcid)
 				{
-					// Kalkaleth missile spawn position
 					auto bullet = scbw::setMissileSourcePos(unit, weaponId, ValueKalkalethMissilePos, 1, ImagesDatEntries::OverlayAttackPtr);
 					globals.remove_multihit_bullet(bullet);
 				}
 				else if (weaponId == WeaponId::KeskathalorScreamingVenom)
 				{
-					// Keskathalor missile spawn position
 					scbw::setMissileSourcePos(unit, weaponId, ValueKeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
 				}
 				// Missile spawn positions end
@@ -416,6 +418,8 @@ namespace hooks
 					}
 					unitExt->values[ValueSalamanderAtkPos] = rotate;
 				}
+
+				// Madrigal Furia Salvo
 				else if (weaponId == WeaponId::MadrigalFuriaMissiles && unit->orderTarget.unit != nullptr)
 				{
 					helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
@@ -442,6 +446,7 @@ namespace hooks
 					};
 					unit->orderTarget.unit = old;
 				}
+
 				else
 				{
 					// Madcap - Maverick Feeders passive
@@ -450,6 +455,8 @@ namespace hooks
 						s32 stacks = unitExt->values[ValueMadcapStacks];
 						unitExt->values[ValueMadcapStacks] = MathUtils::clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime);
 					}
+
+					// Geszithalor 
 					if (weaponId == WeaponId::AcidSpore && unit->sprite)
 					{
 						unitExt->values[ValueGuardianMissileLaunchPosX] = unit->getX();
@@ -458,6 +465,7 @@ namespace hooks
 					helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 				}
 			}
+
 			// Chasmal Colony - Adaptive Amitosis ability
 			if (unit->orderTarget.unit != nullptr
 				&& unitExt->values[ValueAdaptiveAmitosis])
@@ -502,6 +510,7 @@ namespace hooks
 				}
 			}
 		}
+
 		// Deconstruction - Pazuzu passive
 		if (unitExt->values[ValueDeconstruction])
 		{

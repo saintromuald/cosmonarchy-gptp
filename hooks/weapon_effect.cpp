@@ -25,7 +25,6 @@ namespace
 
 namespace hooks
 {
-
 	void darkSwarmDamage(u16 x, u16 y, u16 r, Bullet* bullet, u32 weaponId)
 	{
 		Unit* dsw = scbw::getDarkSwarm(x, y, r);
