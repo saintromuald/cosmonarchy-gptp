@@ -134,7 +134,7 @@ namespace hooks
 							}
 							else
 							{
-								v10 = helper::canTargetSpellOnFOWUnit(techId, fowUnitId);
+								v10 = helper::canTargetSpellOnFOWUnit((s32)techId, fowUnitId);
 							}
 							if (v10)
 							{
