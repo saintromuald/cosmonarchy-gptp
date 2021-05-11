@@ -165,12 +165,12 @@ namespace WeaponId {
 		CyprianTwinRailguns = 26,				// Cyprian weapon
 		PenumbraErebolShockCannon = 39,			// Penumbra weapon
 		PazuzuJupiterDriver = 51,				// Pazuzu weapon
+		SavantPowerSiphon = 57,					// Savant ability targeting
 		SavantDiscoidRailgun = 88,				// Savant weapon
 		LobotomyMineExplosion = 89,				// Lobotomy Mine weapon
 		CyclopsFlakCannons = 93,				// Cyclops weapon
 		PhobosArgosLaserBatteries = 94,			// Phobos weapon
 		SirenCharybdalRifle = 96,				// Siren weapon
-		SavantPowerSiphon = 101,				// Savant ability targeting
 		CyclopsFragmentaryShells = 116,			// Cyclops behavior damage
 		ClaymoreHarpoonRailgun = 120,			// Claymore weapon
 		SeraphObservance = 122,					// Seraph ability targeting
