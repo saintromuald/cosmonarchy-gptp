@@ -24,8 +24,9 @@ namespace hooks
 			}
 			
 			scbw::decloakProc(unit);
-			
-			globals.createEffect(EffectId::Hallucination, 20 * 24, {hit.x, hit.y}, 1.5 * 32, -1, 5, unit->playerId); // TODO: Add Hallucination area sprite
+
+			helper::createBullet(WeaponId::CantavisHallucinationCast, unit, unit->getX(), unit->getY(), unit->playerId, unit->currentDirection1);
+
 			if (!(*CHEAT_STATE & CheatFlags::TheGathering))
 			{
 				unit->spendUnitEnergy(techCost);

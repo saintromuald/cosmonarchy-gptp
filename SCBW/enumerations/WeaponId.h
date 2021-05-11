@@ -137,7 +137,6 @@ namespace WeaponId {
 		None = 0x82,
 		// Internal entries, not real IDs
 		Custom = 0x83,
-		HallucinationSpell = 0x84,
 
 		// HYDRA \\
 

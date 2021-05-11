@@ -107,6 +107,11 @@ namespace hooks
 					globals.createEffect(EffectId::IonField, 10 * 24, {hit.x, hit.y}, 3 * 32, SpriteId::IonField, 5, bullet->srcPlayer);
 					break;
 				}
+				case WeaponId::CantavisHallucinationCast:
+				{
+					globals.createEffect(EffectId::Hallucination, 20 * 24, {hit.x, hit.y}, 1.5 * 32, -1, 5, bullet->srcPlayer);
+					break;
+				}
 			}
 		}
 
