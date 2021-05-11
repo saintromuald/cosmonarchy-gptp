@@ -91,7 +91,7 @@ namespace hooks
 		std::set<Unit*> targets;
 		targets.insert(attacker->orderTarget.unit);
 		auto old = attacker->orderTarget.unit;
-		for (s32 i = 0; i < maxTargets; i++)
+		for (s32 i = 0; i < maxTargets || maxTargets <= 0; i++)
 		{
 			auto range = hooks::getMaxWeaponRangeHook(attacker, weaponId);
 			auto filter = hydraFinderMatch(attacker, flags, {});
@@ -110,7 +110,7 @@ namespace hooks
 				}
 				return true;
 			});
-			if (targets.size() >= maxTargets || newTarget == nullptr)
+			if ((targets.size() >= maxTargets && maxTargets > 0) || newTarget == nullptr)
 			{
 				break;
 			}
@@ -398,7 +398,6 @@ namespace hooks
 					scbw::setMissileSourcePos(unit, weaponId, ValueKeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
 				}
 				// Missile spawn positions end
-
 				else if (weaponId == WeaponId::SalamanderPerditionBarrage)
 				{
 					// SalamanderFire missile target positions
@@ -418,38 +417,10 @@ namespace hooks
 					}
 					unitExt->values[ValueSalamanderAtkPos] = rotate;
 				}
-
 				// Madrigal Furia Salvo
 				else if (weaponId == WeaponId::MadrigalFuriaMissiles && unit->orderTarget.unit != nullptr)
 				{
-					helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
-					if (unitExt->values[ValueDeconstruction])
-					{
-						scbw::doDeconstructionDamage(unit, weaponId);
-					}
-					auto old = unit->orderTarget.unit;
-					auto range = weapons_dat::MaxRange[weaponId];
-					scbw::UnitFinder unitsInSplash(
-						unit->getX() - range,
-						unit->getY() - range,
-						unit->getX() + range,
-						unit->getY() + range
-					);
-					for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
-					{
-						Unit* target = unitsInSplash.getUnit(i);
-						if (target != nullptr && madrigalFuriaMatch(unit, target) && target != old)
-						{
-							unit->orderTarget.unit = target;
-							auto newAngle = scbw::getAngle(unit->getX(), unit->getY(), target->getX(), target->getY());
-							helper::createBullet(weaponId, unit, unit->getX(), unit->getY(), unit->playerId, newAngle);
-							if (unitExt->values[ValueDeconstruction])
-							{
-								scbw::doDeconstructionDamage(unit, weaponId, false);
-							}
-						}
-					};
-					unit->orderTarget.unit = old;
+					fireMultiple(unit, unitExt, WeaponId::MadrigalFuriaMissiles, 0, Flags::Enemy); 
 				}
 				else
 				{
