@@ -291,10 +291,12 @@ enum ExtTimerId
 	TimerAI_Lazarus,
 	TimerAI_Siphon,
 	TimerAI_Clarion,
-	TimerAI_Queen,
-	TimerAI_Paladin,
+	TimerAI_Parasite,
+	TimerAI_Skyfall,
 	TimerAI_GriefOfAllGods,
-	TimerAI_CorsairDweb,
+	TimerAI_DisruptionField,
+	TimerAI_MadrigalTempoChangeTimer,
+	TimerAI_EnsnaringBrood,
 		
 	TimerCount,
 };

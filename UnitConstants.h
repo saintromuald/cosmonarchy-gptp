@@ -45,6 +45,7 @@ const f64 MadcapAttackSpeedPerStack = 0.05;
 const s32 ApostleLazarusAgentHeal = 25 * 256;
 const s32 ApostleBloodTitheHealing = 5 * 256;
 const s32 ApostleLastBreathEnergyGain = 5 * 256;
+const s32 ApostleAILastBreathTimer = 24;
 
 // Mines
 const s32 MineBurrowTime = 60;
@@ -127,6 +128,8 @@ const s32 ZoryusthalethReconstitutionHealing = 5 * 256;
 
 // Matraleth
 const s32 DefaultArmParasiteTimer = 2 * 24 + 1;
+const s32 MatralethAIParasiteTimer = 75;
+const s32 MatralethAIEnsnaringBroodTimer = 75;
 
 // Akistrokor
 const s32 AkistrokorEnthrallingAssaultHeal = 256 * 20 / 24; // 20 HP per second
