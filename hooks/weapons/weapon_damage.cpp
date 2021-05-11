@@ -661,7 +661,7 @@ namespace hooks
 					{
 						data.target->sprite->createTopOverlay(cowardiceId);
 					}
-					else if (!data.target->getOverlay(maliceId))
+					else if (targetExt->values[ValueSignifyStacks] >= 5 && !data.target->getOverlay(maliceId))
 					{
 						data.target->removeOverlay(ImageId::Cowardice_Small, ImageId::Cowardice_Large);
 						data.target->sprite->createTopOverlay(maliceId);
