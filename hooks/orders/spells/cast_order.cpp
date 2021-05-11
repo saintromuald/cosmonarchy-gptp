@@ -25,9 +25,16 @@ namespace hooks
 			v7 = *CHEAT_STATE;
 			v6 = techdata_dat::EnergyCost[techId] << 8;
 			*energyCost = v6;
-			if (v7 & 8 || caster->energy >= v6)
+			if ((v7 & 8 || caster->energy >= v6))
 			{
-				return helper::spellOrder_MoveTowardsTarget(caster, range);
+				if (orderTarget)
+				{
+					return helper::spellOrder_MoveTowardsTarget(caster, range);
+				}
+				else
+				{
+					return 1;
+				}
 			}
 			v8 = units_dat::GroupFlags[caster->id];
 			v9 = caster->playerId;
@@ -46,7 +53,7 @@ namespace hooks
 			v11 = helper::getStatTxtString(v10 + 864);
 			if (v11)
 			{
-				if (v12 == *LOCAL_NATION_ID && ACTIVE_PLAYER_ID == LOCAL_HUMAN_ID)
+				if (/*v12 == *LOCAL_NATION_ID && */*ACTIVE_PLAYER_ID == *LOCAL_HUMAN_ID)
 				{
 					helper::setUnitStatTxtErrorMsg((s32)v11);
 				}
