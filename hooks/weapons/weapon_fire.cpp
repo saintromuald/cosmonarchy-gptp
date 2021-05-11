@@ -429,7 +429,12 @@ namespace hooks
 					}
 					auto old = unit->orderTarget.unit;
 					auto range = weapons_dat::MaxRange[weaponId];
-					scbw::UnitFinder unitsInSplash(unit->getX() - range, unit->getY() - range, unit->getX() + range, unit->getY() + range);
+					scbw::UnitFinder unitsInSplash(
+						unit->getX() - range,
+						unit->getY() - range,
+						unit->getX() + range,
+						unit->getY() + range
+					);
 					for (s32 i = 0; i < unitsInSplash.getUnitCount(); i++)
 					{
 						Unit* target = unitsInSplash.getUnit(i);
@@ -446,7 +451,6 @@ namespace hooks
 					};
 					unit->orderTarget.unit = old;
 				}
-
 				else
 				{
 					// Madcap - Maverick Feeders passive
