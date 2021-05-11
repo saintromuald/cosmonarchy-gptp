@@ -31,7 +31,7 @@ namespace
 		static Unit* caster;
 		static u16 techId;
 		static s32 range;
-		static s32 energyCost;
+		static s32* energyCost;
 		__asm
 		{
 			PUSH EBP
