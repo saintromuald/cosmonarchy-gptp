@@ -928,8 +928,9 @@ namespace hooks
 			).forEachInMatch(hydraFinderMatch(unit, Flags::IncludingSelf, {}),
 				[&unitExt](Unit* target)
 			{
-				target->damageWithCustom(20 * 256, DamageType::Explosive, unitExt->units[UnitDirgeSource], unitExt->values[ValueDirgeSourcePlayer], 0, 1, false);
+				target->damageWithCustom(unitExt->values[ValueDirgeStacks] * 20 * 256, DamageType::Explosive, unitExt->units[UnitDirgeSource], unitExt->values[ValueDirgeSourcePlayer], 0, 1, false);
 			});
+			unitExt->values[ValueDirgeStacks] = 0;
 		}
 
 		/*

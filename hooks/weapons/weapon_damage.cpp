@@ -644,6 +644,7 @@ namespace hooks
 				{
 					// Dirge - Madrigal behavior
 					targetExt->timers[TimerDirgeFuse] = 24 + 1;
+					targetExt->values[ValueDirgeStacks]++;
 					targetExt->values[ValueDirgeSourcePlayer] = data.attackingPlayerId;
 					targetExt->units[UnitDirgeSource] = data.attacker;
 				} break;

@@ -237,6 +237,7 @@ enum ExtValueId
 	ValueExemplarMissilePos,
 	ValueClaymoreMissilePos,
 	ValueDirgeSourcePlayer,
+	ValueDirgeStacks,
 
 	ValueCount,
 };
