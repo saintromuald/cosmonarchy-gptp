@@ -121,4 +121,9 @@ namespace hooks
 		return cooldown;
 	}
 
+	f32 getCurrentDPS(Unit* unit, u8 weaponId)
+	{
+		return weapons_dat::DamageAmount[weaponId] / (getModifiedWeaponCooldownHook(unit, weaponId) / 24.0f);
+	}
+
 } //hooks

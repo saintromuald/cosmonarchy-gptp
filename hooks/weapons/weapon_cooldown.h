@@ -3,8 +3,9 @@
 
 namespace hooks {
 
-u32 getModifiedWeaponCooldownHook(Unit* unit, u8 weaponId);
+	u32 getModifiedWeaponCooldownHook(Unit* unit, u8 weaponId);
+	f32 getCurrentDPS(Unit* unit, u8 weaponId);
 
-void injectWeaponCooldownHook();
+	void injectWeaponCooldownHook();
 
 } //hooks

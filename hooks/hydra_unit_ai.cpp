@@ -4,6 +4,8 @@
 #include "UnitConstants.h"
 #include "MathUtils.h"
 #include "globals.h"
+#include "hooks/weapons/weapon_cooldown.h"
+
 void hydra_unit_ai(Unit* unit)
 {
 	UnitExt* unitExt = globals.GetUnitExt(unit);
@@ -109,14 +111,14 @@ void hydra_unit_ai(Unit* unit)
 
 	else if (unit->id == UnitId::TerranMadrigal)
 	{
-		u32 furiaDamagePotential = weapons_dat::DamageAmount[WeaponId::MadrigalFuriaMissiles] / weapons_dat::Cooldown[WeaponId::MadrigalFuriaMissiles];
+		f32 furiaDamagePotential = hooks::getCurrentDPS(unit, WeaponId::MadrigalFuriaMissiles);
 		furiaDamagePotential *= hydraUnitCount(unit, unit->position, 5 * 32, Flags::Enemy, {});
 		if (unit->orderTarget.unit)
 		{
 			UnitExt* targetExt = globals.GetUnitExt(unit->orderTarget.unit);
-			furiaDamagePotential += targetExt->values[ValueDirgeStacks] * MadrigalDirgeDamage * 256;
+			furiaDamagePotential += (f32)targetExt->values[ValueDirgeStacks] * MadrigalDirgeDamage;
 		}
-		u32 dirgeDamagePotential = (weapons_dat::DamageAmount[WeaponId::MadrigalDirge] + MadrigalDirgeDamage * 256) / weapons_dat::Cooldown[WeaponId::MadrigalDirge];
+		f32 dirgeDamagePotential = hooks::getCurrentDPS(unit, WeaponId::MadrigalDirge);
 
 		if (furiaDamagePotential > dirgeDamagePotential)
 		{
@@ -127,7 +129,6 @@ void hydra_unit_ai(Unit* unit)
 			scbw::set_generic_rust_value(unit, RustId::ToggleTempoChange, 1);
 		}
 	}
-
 	else if (unit->id == UnitId::ZergMatraleth)
 	{
 		if (unit->mainOrderId != OrderId::CastParasite && unit->energy >= techdata_dat::EnergyCost[TechId::Parasite] * 256 && unitExt->timers[TimerAI_Parasite] == 0)
