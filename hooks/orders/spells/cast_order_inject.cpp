@@ -76,7 +76,7 @@ namespace
 			PUSH EAX
 			MOV EAX, [EBP + 0x08]
 			MOV caster, EAX
-			MOV EAX, [EBP + 0xC]
+			MOV EAX, [EBP + 0x0C]
 			MOV x, AX
 			MOV EAX, [EBP + 0x10]
 			MOV y, AX
@@ -95,7 +95,7 @@ namespace
 			MOV AL, result
 			MOV ESP, EBP
 			POP EBP
-			RETN 0x14
+			RETN 0x10
 		}
 	}
 }
