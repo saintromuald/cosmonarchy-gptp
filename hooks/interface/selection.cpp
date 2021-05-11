@@ -129,7 +129,7 @@ namespace hooks
 												else
 												{
 													// 0046F1D9
-													// equivalent to " unit->status XOR current_unit->status "
+													// equivalent to "unit->status XOR current_unit->status"
 													// keep the flags appearing in only 1 of the variables
 													u32 mixed_flags = (~(unit->status) & current_unit->status) | (unit->status & ~(current_unit->status));
 
