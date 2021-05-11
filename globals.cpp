@@ -441,6 +441,10 @@ void Globals::frameHook()
 			{
 				UnitExt* revivedExt = globals.GetUnitExt(revived);
 				revived->setHp(ApostleLazarusAgentHeal * agent.stacks);
+				if (units_dat::ShieldsEnabled[revived->id])
+				{
+					revived->shields = 0;
+				}
 				revived->energy = agent.energy;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
 				revivedExt->values[ValueLazarusNoHeal] = 1;
