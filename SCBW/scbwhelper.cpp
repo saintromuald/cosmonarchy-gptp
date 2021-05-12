@@ -8285,4 +8285,67 @@ namespace helper
 		}
 		return (s16)result;
 	}
+
+	bool hasGroundWeaponGraphic(int a1)
+	{
+		const u32 Func_hasGroundWeaponGraphic = 0x00475A10;
+		static bool result;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, a1
+			CALL Func_hasGroundWeaponGraphic
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	bool sub_476C50(Unit* a1, Unit* a2)
+	{
+		const u32 Func_sub_476C50 = 0x00476C50;
+		static bool result;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, a1
+			MOV ESI, a2
+			CALL Func_sub_476C50
+			MOV result, AL
+			POPAD
+		}
+		return result;
+	}
+
+	s32 sub_4EB900(Unit* a1, Unit* a2)
+	{
+		const u32 Func_sub_4EB900 = 0x004EB900;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			MOV EAX, a1
+			MOV ECX, a2
+			CALL Func_sub_4EB900
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
+
+	s32 sub_477F10(Unit* a1, Unit* a2)
+	{
+		const u32 Func_sub_477F10 = 0x00477F10;
+		static s32 result;
+		__asm
+		{
+			PUSHAD
+			PUSH a2
+			MOV EAX, a1
+			CALL Func_sub_477F10
+			MOV result, EAX
+			POPAD
+		}
+		return result;
+	}
 }

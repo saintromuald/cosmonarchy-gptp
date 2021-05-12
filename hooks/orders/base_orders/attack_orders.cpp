@@ -914,8 +914,8 @@ namespace hooks
 			)
 		{ //79C05
 
-		 //perform lots of checks, possibly in an attempt to
-		 //auto-select a better target if the unit has choice
+			//perform lots of checks, possibly in an attempt to
+			//auto-select a better target if the unit has choice
 			helper::function_00477510(unit);
 
 			//function perform tests to see if attack is possible

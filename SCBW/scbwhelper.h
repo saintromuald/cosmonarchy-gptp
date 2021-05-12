@@ -872,6 +872,12 @@ namespace helper
 	s32 isPointAtUnitBorder(s32 unused, Unit* other, Unit* self, s32 position_xy);							// 004EB720
 	s32 AI_PrepareMovingTo(Unit* unit, s32 x, s32 y);														// 004E7420
 
+	// order attack behavior
+	bool hasGroundWeaponGraphic(int a1);
+	bool sub_476C50(Unit* a1, Unit* a2);
+	s32 sub_4EB900(Unit* a1, Unit* a2);
+	s32 sub_477F10(Unit* a1, Unit* a2);
+
 	//// misc
 	s8 SETS(s32 x);
 	s8 OFSUB(s32 x, s32 y);

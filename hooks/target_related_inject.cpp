@@ -167,6 +167,22 @@ namespace
 			RETN 4
 		}
 	}
+
+	void __declspec(naked) OrderAttackBehaviour_Wrapper() // 00478540
+	{
+		static bool result;
+		static Unit* unit;
+		__asm {
+			MOV unit, EAX
+			PUSHAD
+		}
+		result = 0;
+		//result = hooks::OrderAttackBehaviour(unit);
+		__asm {
+			POPAD
+			MOVZX EAX, result
+		}
+	}
 }
 
 namespace hooks
@@ -186,6 +202,7 @@ namespace hooks
 		jmpPatch(checkUnitVisibility_Wrapper, 0x00443390, 3);
 		//		jmpPatch(isUnitCloaking_Wrapper,				0x004916E0, 0);
 		jmpPatch(unitCanAttackTarget_Wrapper, 0x00476730, 5);
+		//jmpPatch(OrderAttackBehaviour_Wrapper, 0x00478540, 0);
 	}
 	void injectTargetRelatedHooks()
 	{

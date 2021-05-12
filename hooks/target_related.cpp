@@ -674,4 +674,254 @@ LABEL_42:
 
 		return units_dat::GroundWeapon[unitWithWeapon->id] != -126;
 	}
+
+	s32 OrderAttackBehaviour(Unit *a1)
+	{
+		s32 result;
+		Unit *v1;
+		Unit *v2;
+		DWORD v3;
+		s32 v4;
+		Unit *v5;
+		s32 v6;
+		s32 v7;
+		BOOL v8;
+		Unit *v9;
+		s32 v10;
+		Unit *v11;
+		s16 v13;
+		s16 v14;
+		Unit *v15;
+		Unit *v16;
+		u8 v17;
+		u16 v18;
+		u32 v19;
+		s32 v20;
+		s32 v21;
+		s32 v22;
+		DWORD v23;
+		Unit *v24;
+		bool v25;
+		Unit *target;
+		Unit *targeta;
+
+		v2 = a1;
+		v3 = a1->status;
+		v1 = v2->orderTarget.unit;
+		if (v3 & 0x400)
+		{
+			goto LABEL_23;
+		}
+		if (v2->lockdownTimer)
+		{
+			goto LABEL_23;
+		}
+		if (v2->stasisTimer)
+		{
+			goto LABEL_23;
+		}
+		if (v2->maelstromTimer)
+		{
+			goto LABEL_23;
+		}
+		if (!v1)
+		{
+			goto LABEL_23;
+		}
+		target = (Unit *)v1->status;
+		if (v1->status & UnitStatus::Invincible)
+		{
+			goto LABEL_23;
+		}
+		if ( v1->sprite->flags & 0x20 )
+		{
+			goto LABEL_23;
+		}
+		if (helper::unitCanSeeCloakedTarget(v1, v2))
+		{
+			goto LABEL_23;
+		}
+		v5 = v2->subunit;
+		if (!helper::unitIsSubunit(v2->subunit))
+		{
+			v5 = v2;
+		}
+		if (helper::unitIsCarrier(v2))
+		{
+			goto LABEL_34;
+		}
+		if (helper::unitIsReaver(v2))
+		{
+			if ( !((unsigned __int8)target & 4) )
+			{
+				v8 = helper::unitHasPathToUnit(v2, v1);
+				goto LABEL_22;
+			}
+LABEL_23:
+			v11 = v2->orderTarget.unit;
+			if ( !v11 || v2->status & UnitStatus::HoldingPosition )
+			{
+				helper::setResourceTarget(v2);
+				if (v2->orderQueueHead)
+				{
+					v2->userActionFlags |= 1u;
+					helper::orders_Nothing2(v2);
+					result = 0;
+				}
+				else
+				{
+					if (v2->pAI)
+					{
+						v2->orderComputerClear(OrderId::ComputerAI);// computer AI
+					}
+					else
+					{
+						v2->orderComputerClear(units_dat::ReturnToIdleOrder[v2->id]);
+					}
+					result = 0;
+				}
+			}
+			else
+			{
+				if ( !v2->pAI )
+				{
+					helper::prependOrderTargetingGround(6u, v11->sprite->position.x, v11->sprite->position.y, (int)v2);
+				}
+				helper::toIdle(v2);
+				result = 0;
+			}
+			return result;
+		}
+		if (helper::unitCanInfest(v2))
+		{
+			v8 = helper::canBeInfested(v9, v1) != 0;
+		}
+		else
+		{
+			if (v2->id == UnitId::ProtossDidact && v2->pAI)
+			{
+				goto LABEL_23;
+			}
+			if ((unsigned __int8)target & 4 )
+			{
+				v8 = units_dat::AirWeapon[v5->id] != -126;
+			}
+			else
+			{
+				v8 = units_dat::GroundWeapon[v5->id] != -126;
+			}
+		}
+LABEL_22:
+		if (!v8)
+		{
+			goto LABEL_23;
+		}
+LABEL_34:
+		v15 = v2->orderTarget.unit;
+		v14 = v15->sprite->position.x;
+		v2->orderTarget.pt.x = v14;
+		v13 = v15->sprite->position.y;
+		v2->orderTarget.pt.y = v13;
+		targeta = v15;
+		if (v14 != v2->nextTargetWaypoint.x || v13 != v2->nextTargetWaypoint.y)
+		{
+			v2->nextTargetWaypoint.x = v14;
+			v2->nextTargetWaypoint.y = v13;
+		}
+		if (!v2->mainOrderState)
+		{
+			if (!v15)
+			{
+				goto LABEL_76;
+			}
+			if (helper::isTargetVisible(v15, v2))
+			{
+				v16 = v2->subunit;
+				if (!v16 || !(units_dat::BaseProperty[v16->id] & UnitProperty::Subunit))
+				{
+					v16 = v2;
+				}
+				if (v15->status & UnitStatus::InAir)
+				{
+					v17 = units_dat::AirWeapon[v16->id];
+				}
+				else
+				{
+					v18 = v16->id;
+					if (v18 != UnitId::ZergLakizilisk || v16->status & UnitStatus::Burrowed)
+					{
+						v17 = units_dat::GroundWeapon[v18];
+					}
+					else
+					{
+						v17 = -126;
+					}
+				}
+				if (v17 < WeaponId::None)
+				{
+					v19 = weapons_dat::MinRange[v17];
+					if (!v19 || !helper::isTargetWithinMinRange(v16, v19, targeta))
+					{
+						v20 = helper::getUnitMaxWeaponRange(v2, v17);
+						v21 = helper::isTargetWithinMinMovementRange(targeta, v20, v16);
+						if ( v21 )
+						{
+							goto LABEL_76;
+						}
+					}
+				}
+			}
+			if (!helper::moveToTarget(v2->orderTarget.unit, v2))
+			{
+				return 0;
+			}
+LABEL_76:
+			v2->mainOrderState = 1;
+			return 1;
+		}
+		v22 = isUnitTargetOutOfMaxRange(v2, v15);
+		if (v22)
+		{
+			if (v2->pAI)
+			{
+				if (helper::sub_476C50(v2->orderTarget.unit, v2) || helper::isUnitMovable(v2) == 2)
+				{
+					if (helper::AI_UpdateAttackTarget(v2, 0, 1, 0))
+					{
+						return 0;
+					}
+					goto LABEL_65;
+				}
+			}
+			else
+			{
+				v23 = v2->status;
+				if (v23 & 0x8000000 && !(v23 & 0xC) && v2->orderTarget.unit->status & 4 || helper::isUnitMovable(v2) == 2)
+				{
+LABEL_65:
+					helper::makeToHoldPosition(v2);
+					helper::toIdle(v2);
+					return 0;
+				}
+			}
+			v25 = helper::hasGroundWeaponGraphic((int)v2) == 0;
+			v24 = v2->orderTarget.unit;
+			if (!v25)
+			{
+				helper::sub_4EB900(v24, v2);
+				return 0;
+			}
+			helper::sub_477F10(v24, v2);
+			return 0;
+		}
+		if (v2->id == UnitId::ZergSkryling)
+		{
+			helper::sub_477F10(v2->orderTarget.unit, v2);
+		}
+		else
+		{
+			helper::setResourceTarget(v2);
+		}
+		return 1;
+	}
 }
