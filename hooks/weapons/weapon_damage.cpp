@@ -568,6 +568,7 @@ namespace hooks
 						targetExt->units[UnitWorshipDemiurge] = data.attacker;
 						targetExt->values[ValueWorshipOriginalPlayer] = data.target->playerId;
 						data.target->giveTo(data.attacker->playerId);
+						helper::playSoundFromSource(SoundId::DemiurgeWorship01, data.target, 1, 0);
 					}
 				} break;
 				case WeaponId::KonviliskSowingSpines:
