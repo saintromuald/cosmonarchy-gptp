@@ -163,7 +163,6 @@ enum ExtValueId
 	ValueAdrenalStacks,
 	ValueLastOrdersInit,
 	ValueKnockoutDriversStacks,
-	ValueHallucinatingSourcePlayer,
 	ValueTempoChange,
 	ValueTreasuryStacks,
 	ValueSupplyProvided,

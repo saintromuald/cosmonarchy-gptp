@@ -508,12 +508,11 @@ namespace hooks
 				if (haluAttackerExt->units[UnitHallucinationPointer] == nullptr
 					&& !(haluAttacker->status & UnitStatus::IsHallucination))
 				{
-					u32 haluPlayer = targetExt->values[ValueHallucinatingSourcePlayer];
-					if (haluPlayer != haluAttacker->playerId && !scbw::isAlliedTo(haluPlayer, haluAttacker->playerId))
+					if (scbw::isAlliedTo(haluAttacker->playerId, data.target->playerId))
 					{
 						return;
 					}
-					Unit* hal_unit = helper::createHallucination(haluAttacker, haluPlayer);
+					Unit* hal_unit = helper::createHallucination(haluAttacker, haluAttacker->playerId);
 					if (hal_unit != nullptr)
 					{
 						hal_unit->sprite->createOverlay(ImageId::HallucinationDeath3);

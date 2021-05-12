@@ -1380,8 +1380,7 @@ namespace scbw
 			unit->sprite->createOverlay(ImageId::HallucinationHit, 0, 0, 0);
 		}
 		
-		// Values
-		unitExt->values[ValueHallucinatingSourcePlayer] = playerId;
+		// Value
 		unitExt->timers[TimerHallucinating] = time;
 	}
 
