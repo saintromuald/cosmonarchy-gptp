@@ -411,8 +411,7 @@ namespace hooks
 					scbw::setMissileSourcePos(unit, weaponId, ValueKeskathalorMissilePos, 2, ImagesDatEntries::OverlayAttackPtr);
 				}
 				// Missile spawn positions end
-
-				if (weaponId == WeaponId::SalamanderPerditionBarrage)
+				else if (weaponId == WeaponId::SalamanderPerditionBarrage)
 				{
 					// Salamander missile target positions
 					auto rotate = unitExt->values[ValueSalamanderAtkPos];
