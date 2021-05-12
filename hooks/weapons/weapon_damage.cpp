@@ -652,9 +652,12 @@ namespace hooks
 				case WeaponId::HierophantPhaseSignifier:
 				{
 					targetExt->values[ValueSignifyStacks]++;
-					targetExt->values[ValueSignifySourcePlayer] = data.attackingPlayerId;
 					targetExt->timers[TimerSignify] = 3 * 24 + 1;
-
+					auto& vec = targetExt->valueVectors[ValueVectorSignifySourcePlayer];
+					if (std::find(vec.begin(), vec.end(), data.attackingPlayerId) == vec.end())
+					{
+						vec.push_back(data.attackingPlayerId);
+					}
 					const u32 cowardiceId = ImageId::Cowardice_Small + scbw::getOverlayOffset(data.target->id);
 					const u32 maliceId = ImageId::Malice_Small + scbw::getOverlayOffset(data.target->id);
 

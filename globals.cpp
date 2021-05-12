@@ -111,6 +111,16 @@ void Globals::aise_save()
 		stream.write(reinterpret_cast<char*>(&unitExt[i].timers), sizeof(unitExt[i].timers));
 		stream.write(reinterpret_cast<char*>(&unitExt[i].units), sizeof(unitExt[i].units));
 
+		for (auto vec : unitExt[i].valueVectors)
+		{
+			auto vecSize = vec.size();
+			stream.write(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
+			for (auto elem : vec)
+			{
+				stream.write(reinterpret_cast<char*>(&elem), sizeof(elem));
+			}
+		}
+
 		for (auto vec : unitExt[i].timerVectors)
 		{
 			auto vecSize = vec.size();
@@ -253,6 +263,16 @@ void Globals::aise_load(const char* ptr, u32 len)
 		stream.read(reinterpret_cast<char*>(&unitExt[i].values), sizeof(unitExt[i].values));
 		stream.read(reinterpret_cast<char*>(&unitExt[i].timers), sizeof(unitExt[i].timers));
 		stream.read(reinterpret_cast<char*>(&unitExt[i].units), sizeof(unitExt[i].units));
+
+		for (auto vec : unitExt[i].valueVectors)
+		{
+			auto vecSize = vec.size();
+			stream.read(reinterpret_cast<char*>(&vecSize), sizeof(vecSize));
+			for (auto elem : vec)
+			{
+				stream.read(reinterpret_cast<char*>(&elem), sizeof(elem));
+			}
+		}
 
 		for (auto vec : unitExt[i].timerVectors)
 		{

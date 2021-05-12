@@ -118,7 +118,7 @@ namespace hooks
 			f32 unitVecX = sin(scbw::bw_angle_to_normal(unit->currentDirection1) * 3.14159f / 180.0f);
 			f32 unitVecY = -cos(scbw::bw_angle_to_normal(unit->currentDirection1) * 3.14159f / 180.0f);
 
-			const u32 radius = 11 * 32;
+			const u32 radius = 6 * 32;
 			Unit* enemyUnit = scbw::UnitFinder::getNearestTarget(
 				unit->getX() - radius,
 				unit->getY() - radius,
@@ -127,8 +127,20 @@ namespace hooks
 				unit,
 				[&](Unit* enemy)
 			{
-				UnitExt* targetExt = globals.GetUnitExt(enemy);
-				if (!match(enemy) || !scbw::isAlliedTo(targetExt->values[ValueSignifySourcePlayer], enemy->playerId))
+				if (!match(enemy))
+				{
+					return false;
+				}
+				bool validPlayer = false;
+				for (auto player : unitExt->valueVectors[ValueVectorSignifySourcePlayer])
+				{
+					if (scbw::isAlliedTo(player, enemy->playerId))
+					{
+						validPlayer = true;
+						break;
+					}
+				}
+				if(!validPlayer)
 				{
 					return false;
 				}

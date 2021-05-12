@@ -238,7 +238,6 @@ enum ExtValueId
 	ValueDirgeSourcePlayer,
 	ValueDirgeStacks,
 	ValueSignifyStacks,
-	ValueSignifySourcePlayer,
 
 	ValueCount,
 };
@@ -320,6 +319,13 @@ enum ExtUnitId
 	UnitCount,
 };
 
+enum ExtValueVectorId
+{
+	ValueVectorSignifySourcePlayer,
+
+	ValueVectorCount,
+};
+
 enum ExtUnitVectorId
 {
 	UnitVectorCaptivatingClaws,
@@ -345,6 +351,7 @@ struct UnitExt
 	u32						values[ValueCount];
 	u32						timers[TimerCount];
 	Unit*					units[UnitCount];
+	std::vector<u32>		valueVectors[ValueVectorCount];
 	std::vector<Unit*>		unitVectors[UnitVectorCount];
 	std::vector<u32>		timerVectors[TimerVectorCount];
 };
