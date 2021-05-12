@@ -1018,7 +1018,8 @@ namespace hooks
 
 		// Reviving from Lazarus Agent
 		if (unitExt->values[ValueIsReviving]
-			&& unit->sprite->mainGraphic->animation != IscriptAnimation::Unused1)
+			&& unit->sprite->mainGraphic->animation == IscriptAnimation::Unused1
+			&& !(unit->status & UnitStatus::NoBrkCodeStart))
 		{
 			unit->status &= ~(UnitStatus::Invincible);
 			unitExt->values[ValueIsReviving] = 0;

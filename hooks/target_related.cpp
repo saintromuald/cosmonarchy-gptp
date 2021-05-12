@@ -7,18 +7,20 @@
 
 namespace hooks
 {
-	bool isUnitTargetOutOfMaxRange(Unit* a1, Unit* a2)
-	{ // 00476430
-		Unit* _unit; // edi
-		Unit* finalUnit; // esi
-		unsigned __int8 _wpn; // bl
-		__int16 _id; // ax
-		s32 _maxRange; // eax
-		s32 v8; // eax
+	bool isUnitTargetOutOfMaxRange(Unit* a1, Unit* a2) // 00476430
+	{
+		Unit* _unit;
+		Unit* finalUnit;
+		unsigned __int8 _wpn;
+		__int16 _id;
+		s32 _maxRange;
+		s32 v8;
 
 		_unit = a1;
 		if (!isTargetVisibleHook(a2, a1))
+		{
 			return 1;
+		}
 		finalUnit = _unit->subunit;
 		if (!finalUnit || !(units_dat::GroupFlags[(unsigned __int16)finalUnit->id].isBuilding))
 			finalUnit = _unit;
@@ -30,14 +32,20 @@ namespace hooks
 		{
 			_id = finalUnit->id;
 			if (_id != UnitId::ZergLakizilisk || finalUnit->status & 0x10)
+			{
 				_wpn = units_dat::GroundWeapon[_id];
+			}
 			else
+			{
 				_wpn = -126;
+			}
 		}
 		if (_wpn == -126)
+		{
 			return 0;
-		_maxRange = helper::getUnitMaxWeaponRange(_unit, _wpn);
+		}
 
+		_maxRange = helper::getUnitMaxWeaponRange(_unit, _wpn);
 		ByteOperations::SetLowByte(v8, helper::isTargetWithinMinMovementRange(a2, _maxRange, finalUnit));
 		return v8 == 0;
 	}
@@ -371,10 +379,10 @@ LABEL_42:
 		}
 	}
 
-	s32 genericRightClickUnitProc2(Unit* unit, s32 a2, s16 a3, Unit* target, s16 unitID)
-	{ // 00455E00
-		s32 result; // eax
-		Unit* targetVar; // esi
+	s32 genericRightClickUnitProc2(Unit* unit, s32 a2, s16 a3, Unit* target, s16 unitID) // 00455E00
+	{
+		s32 result;
+		Unit* targetVar;
 
 		if (unit->status & UnitStatus::GroundedBuilding)
 		{
@@ -410,12 +418,12 @@ LABEL_42:
 		return result;
 	}
 
-	Unit* CMDRECV_HoldPosition(s32 a1)
-	{ // 004C20C0
-		Unit* result; // eax
-		Unit* i; // esi
-		s16 unitId; // ax
-		u8 orderId; // al
+	Unit* CMDRECV_HoldPosition(s32 a1) // 004C20C0
+	{
+		Unit* result;
+		Unit* i;
+		s16 unitId;
+		u8 orderId;
 
 		*((s8*)&mapHeightPixels + 2) = 0;
 		result = helper::getActivePlayerFirstSelection();
@@ -460,14 +468,14 @@ LABEL_42:
 		return result;
 	}
 
-	u32 unitCanSeeCloakedTargetHook(Unit* target, Unit* unit)
-	{ // 00401D60, hooked for cloak rewrite - Pr0nogo
+	u32 unitCanSeeCloakedTargetHook(Unit* target, Unit* unit) // 00401D60, hooked for cloak rewrite - Pr0nogo
+	{
 		return target->status & 0x300 && !((1 << unit->playerId) & target->visibilityStatus);
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
-	u32 isTargetVisibleHook(Unit* target, Unit* unit)
-	{ // 004E5E30
+	u32 isTargetVisibleHook(Unit* target, Unit* unit) // 004E5E30
+	{
 		s32 playerUnit;
 		playerUnit = 1 << unit->playerId;
 		if (!target)
@@ -488,11 +496,11 @@ LABEL_42:
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
-	u32 isUnitVisibleHook(Unit* unit)
-	{ // 004E5DB0
-		Unit* target; // eax
-		s32 playerUnit; // ebx
-		u32 result; // eax
+	u32 isUnitVisibleHook(Unit* unit) // 004E5DB0
+	{
+		Unit* target;
+		s32 playerUnit;
+		u32 result;
 
 		target = unit->orderTarget.unit;
 		playerUnit = 1 << unit->playerId;
@@ -540,8 +548,8 @@ LABEL_42:
 	}
 
 	// Hooked to help with cloak rewrite - Pr0nogo
-	void checkUnitVisibilityHook(Unit* unit)
-	{ // 00443390
+	void checkUnitVisibilityHook(Unit* unit) // 00443390
+	{
 		u32 detectingPlayers = helper::getDetectingPlayers(unit);
 		if (unit->visibilityStatus != detectingPlayers)
 		{
@@ -566,9 +574,8 @@ LABEL_42:
 	}
 
 	// Hooked to complete the cloak rewrite - Pr0nogo
-	// was __thiscall, does that matter?
-	s32 isUnitCloakingHook(Unit* unit)
-	{ // 004916E0
+	s32 isUnitCloakingHook(Unit* unit) // 004916E0
+	{
 		if (unit->isCloaked)
 		{
 			return 0;
@@ -612,10 +619,7 @@ LABEL_42:
 
 	bool unitCanAttackTarget(Unit* target, Unit* unit, int a3)
 	{
-		if (unit->status & 0x400 // disabled
-			|| unit->lockdownTimer
-			|| unit->stasisTimer
-			|| unit->maelstromTimer
+		if (unit->isFrozen()
 			|| !target
 			|| target->status & UnitStatus::Invincible
 			|| target->sprite->flags & 0x20
@@ -675,7 +679,7 @@ LABEL_42:
 		return units_dat::GroundWeapon[unitWithWeapon->id] != -126;
 	}
 
-	s32 OrderAttackBehaviour(Unit *a1)
+	s32 OrderAttackBehaviour(Unit* unit) // 00478540
 	{
 		s32 result;
 		Unit *v1;
@@ -705,22 +709,10 @@ LABEL_42:
 		Unit *target;
 		Unit *targeta;
 
-		v2 = a1;
-		v3 = a1->status;
+		v2 = unit;
+		v3 = unit->status;
 		v1 = v2->orderTarget.unit;
-		if (v3 & 0x400)
-		{
-			goto LABEL_23;
-		}
-		if (v2->lockdownTimer)
-		{
-			goto LABEL_23;
-		}
-		if (v2->stasisTimer)
-		{
-			goto LABEL_23;
-		}
-		if (v2->maelstromTimer)
+		if (unit->isFrozen())
 		{
 			goto LABEL_23;
 		}
@@ -728,7 +720,7 @@ LABEL_42:
 		{
 			goto LABEL_23;
 		}
-		target = (Unit *)v1->status;
+		target = (Unit*)v1->status;
 		if (v1->status & UnitStatus::Invincible)
 		{
 			goto LABEL_23;
@@ -746,13 +738,13 @@ LABEL_42:
 		{
 			v5 = v2;
 		}
-		if (helper::unitIsCarrier(v2))
+		if (v2->id == UnitId::ProtossSolarion)
 		{
 			goto LABEL_34;
 		}
-		if (helper::unitIsReaver(v2))
+		if (v2->id == UnitId::ProtossAccantor)
 		{
-			if ( !((unsigned __int8)target & 4) )
+			if (!(target->status & UnitStatus::InAir))
 			{
 				v8 = helper::unitHasPathToUnit(v2, v1);
 				goto LABEL_22;
@@ -772,7 +764,7 @@ LABEL_23:
 				{
 					if (v2->pAI)
 					{
-						v2->orderComputerClear(OrderId::ComputerAI);// computer AI
+						v2->orderComputerClear(OrderId::ComputerAI);
 					}
 					else
 					{
@@ -798,11 +790,7 @@ LABEL_23:
 		}
 		else
 		{
-			if (v2->id == UnitId::ProtossDidact && v2->pAI)
-			{
-				goto LABEL_23;
-			}
-			if ((unsigned __int8)target & 4 || (units_dat::SizeType[target->id] == UnitSize::Titanic && units_dat::AirWeapon[v5->id] != -126))
+			if (target->status & UnitStatus::InAir || (units_dat::SizeType[target->id] == UnitSize::Titanic && units_dat::AirWeapon[v5->id] != -126))
 			{
 				v8 = units_dat::AirWeapon[v5->id] != -126;
 			}
@@ -879,12 +867,11 @@ LABEL_76:
 			v2->mainOrderState = 1;
 			return 1;
 		}
-		v22 = isUnitTargetOutOfMaxRange(v2, v15);
-		if (v22)
+		if (helper::isUnitTargetOutOfMaxRange(v2, v15))
 		{
 			if (v2->pAI)
 			{
-				if (helper::sub_476C50(v2->orderTarget.unit, v2) || helper::isUnitMovable(v2) == 2)
+				if (helper::isUnreachable(v2->orderTarget.unit, v2) || helper::isUnitMovable(v2) == 2)
 				{
 					if (helper::AI_UpdateAttackTarget(v2, 0, 1, 0))
 					{
@@ -904,19 +891,19 @@ LABEL_65:
 					return 0;
 				}
 			}
-			v25 = helper::hasGroundWeaponGraphic((int)v2) == 0;
+			v25 = helper::hasGroundWeaponGraphic(v2) == 0;
 			v24 = v2->orderTarget.unit;
 			if (!v25)
 			{
-				helper::sub_4EB900(v24, v2);
+				helper::moveTowards(v2, v24);
 				return 0;
 			}
-			helper::sub_477F10(v24, v2);
+			helper::moveForMeleeRange(v24, v2);
 			return 0;
 		}
 		if (v2->id == UnitId::ZergSkryling)
 		{
-			helper::sub_477F10(v2->orderTarget.unit, v2);
+			helper::moveForMeleeRange(v2->orderTarget.unit, v2);
 		}
 		else
 		{

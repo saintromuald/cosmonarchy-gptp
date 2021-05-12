@@ -151,7 +151,7 @@ namespace hooks
 				helper::prependOrderTargetingUnit(unit, target, newOrderId);
 				prepareForNextOrder(unit);
 
-				//restore the "disabled" and "holding position" status if they were lost
+				// restore the "disabled" and "holding position" status if they were lost
 				unit->status &= ~(UnitStatus::Disabled + UnitStatus::HoldingPosition);
 				unit->status = status_saved | unit->status;
 			}
@@ -631,10 +631,8 @@ namespace hooks
 	void orders_SapUnit(Unit* unit)
 	{
 		Unit* target = unit->orderTarget.unit;
-
 		if (target == nullptr)
-		{ //788EB
-
+		{ // 004788EB
 			if (unit->orderQueueHead != nullptr)
 			{
 				unit->userActionFlags |= 1;
@@ -642,25 +640,24 @@ namespace hooks
 			}
 			else
 			{
-
 				if (unit->pAI != nullptr)
+				{
 					unit->orderComputerClear(OrderId::ComputerAI);
+				}
 				else
+				{
 					unit->orderComputerClear(units_dat::ReturnToIdleOrder[unit->id]);
-
-			} //if(unit->orderQueueHead == nullptr)
-
+				}
+			}
 		}
 		else
-		{ //78928
-
+		{ // 00478928
 			if (!unit->canAttackTarget(target, true))
 			{
 				unit->orderTo(OrderId::Move, target->sprite->position.x, target->sprite->position.y);
 			}
 			else
 			{ // 0047894D
-
 				bool bStopThere = false;
 				if (unit->mainOrderState == 0)
 				{ // 00478965
@@ -676,29 +673,24 @@ namespace hooks
 
 				if (!bStopThere && unit->mainOrderState == 1)
 				{ // 00478975
-
 					if (!unit->isTargetWithinMinRange(target, 4)
 						&& unit->getMovableState() != 2)
 					{ // 00478998
-
 						if (unit->isTargetWithinMinRange(target, 256)
 							&& target->movementFlags & MovementFlags::Accelerating)							
 						{
 							// maybe trigger the acceleration of the infested terran, or something else related to distances?
 							helper::moveToCollide(unit, target);
 						}
-
 						else // 004789BF
 						{
 							helper::moveTowards(unit, target);
 						}
-
 						bStopThere = true;
-
 					}
+
 					else
 					{ // 004789CC
-
 						helper::setNextWaypoint(unit);
 						if (!unit->isTargetWithinMinRange(target, weapons_dat::OuterSplashRadius[WeaponId::Suicide_InfestedTerran]))
 						{
@@ -714,7 +706,7 @@ namespace hooks
 								current_image->playIscriptAnim(IscriptAnimation::SpecialState1);
 								current_image = current_image->link.next;
 							}
-							// 00478A11:
+							// 00478A11
 							unit->status |= UnitStatus::CanNotReceiveOrders;
 							unit->mainOrderState = 2;
 						}
@@ -811,134 +803,92 @@ namespace hooks
 
 	void orders_AttackMoveEP(Unit* unit)
 	{
-
 		u8 saved_mainOrderId = unit->mainOrderId; //[EBP-0x14]
-
-		//function_00478370:
-		//probably perform checks to see if the order
-		//can be done, but which exactly I don't know
-
-		if (helper::function_00478370(unit, unit->mainOrderId) &&
-			unit->mainOrderTimer == 0
-			)
-		{ //78E0B
-
+		// function_00478370:
+		// probably perform checks to see if the order can be done
+		if (helper::function_00478370(unit, unit->mainOrderId)
+			&& unit->mainOrderTimer == 0)
+		{ // 00478E0B
 			unit->mainOrderTimer = 15;
-
-			if (
-				helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y) == helper::SAI_GetRegionIdFromPxEx(unit->orderTarget.pt.x, unit->orderTarget.pt.y)
-				)
+			if (helper::SAI_GetRegionIdFromPxEx(unit->sprite->position.x, unit->sprite->position.y) == helper::SAI_GetRegionIdFromPxEx(unit->orderTarget.pt.x, unit->orderTarget.pt.y))
 			{
 				helper::makeToHoldPosition(unit);
 				unit->orderToIdle();
 			}
 			else
-			{ //78E65
-
+			{ // 00478E65
 				bool jump_to_78EAE = false;
+				if (unit->getMovableState() != 0
+					&& (unit->orderTarget.pt.x != unit->sprite->position.x || unit->orderTarget.pt.y != unit->sprite->position.y))
+				{ // 00478E80
 
-				if (
-					unit->getMovableState() != 0 &&
-					(unit->orderTarget.pt.x != unit->sprite->position.x ||
-						unit->orderTarget.pt.y != unit->sprite->position.y)
-					)
-				{ //78E80
-
-					if (
-						helper::changeMovementTargetMoveTarget2(				//return value is actually from 
-							unit,						//SetMoveTarget_xy @ 0x004EB820
-							unit->orderTarget.pt.x,
-							unit->orderTarget.pt.y
-						)
-						)
+					if (helper::changeMovementTargetMoveTarget2(unit, unit->orderTarget.pt.x, unit->orderTarget.pt.y))
+					{
 						jump_to_78EAE = true;
-					else //78E91
-						if (helper::function_00476610(unit, (s32)unit->orderTarget.pt.x, (s32)unit->orderTarget.pt.y))
+					}
+					// 00478E91
+					else if (helper::function_00476610(unit, (s32)unit->orderTarget.pt.x, (s32)unit->orderTarget.pt.y))
+						{
 							helper::makeToHoldPosition(unit);
-
+						}
 				}
 				else
+				{
 					jump_to_78EAE = true;
+				}
 
 				if (jump_to_78EAE)
-					helper::function_00477820(unit, saved_mainOrderId);	//use attack range, may cause idle,
-												//may look for target, and others...
-
-			} //if different regions
-
-		} //if order timer is at 0 and others order checks
-
-	} //void orders_AttackMoveEP(Unit* unit)
-
-	;
+				{
+					helper::function_00477820(unit, saved_mainOrderId);
+				}
+			}
+		}
+	}
 
 	void orders_AttackMove(Unit* unit)
 	{
-
-		//function_00478370:
-		//Logically, would check if a target is in range, and
-		//if that's the case (not returning 0), stop the "move" 
-		//part that follow to attack the unit met
-		if (
-			helper::function_00478370(unit, unit->mainOrderId) != 0 &&
-			unit->mainOrderTimer == 0
-			)
-		{ //79058
-
+		// function_00478370:
+		// Logically, would check if a target is in range, and
+		// if that's the case (not returning 0), stop the "move" 
+		// part that follow to attack the unit met
+		if (helper::function_00478370(unit, unit->mainOrderId) != 0
+			&& unit->mainOrderTimer == 0)
+		{ // 00479058
 			unit->mainOrderTimer = 15;
-
-			if (
-				unit->moveTarget.pt.x != unit->sprite->position.x ||
-				unit->moveTarget.pt.y != unit->sprite->position.y
-				/*|| (unit->status & UnitStatus::Unmovable) + 1 == 0)*/ //impossible code yet in original
-				)
-				//Logically, this function would check one last time if a target is in range,
-				//and attack it if that's the case, else AttackMove end here
-				helper::function_00477820(unit, unit->mainOrderId); //79092
+			if (unit->moveTarget.pt.x != unit->sprite->position.x
+				|| unit->moveTarget.pt.y != unit->sprite->position.y)
+			{ // Logically, this function would check one last time if a target is in range, and attack it if that's the case, else AttackMove end here
+				helper::function_00477820(unit, unit->mainOrderId); // 00479092
+			}
 			else
+			{
 				unit->orderToIdle();
-
+			}
 		}
-
-	} //void orders_AttackMove(Unit* unit)
-
-	;
+	}
 
 	void orders_AttackUnit(Unit* unit)
 	{
-
-		if ( playerTable[unit->playerId].type != PlayerType::Computer
+		if (playerTable[unit->playerId].type != PlayerType::Computer
 			|| (unit->orderTarget.unit != nullptr && units_dat::BaseProperty[(unit->orderTarget.unit)->id] & UnitProperty::Building)
-			|| !helper::function_00462EA0(unit, 0)	//if unit controlled by AI, do lots of things and
-										//return true after/if validating a final order
-			)
-		{ //79C05
+			|| !helper::function_00462EA0(unit, 0))
+		{ // 00479C05
 
-			//perform lots of checks, possibly in an attempt to
-			//auto-select a better target if the unit has choice
+			// perform lots of checks, possibly in an attempt to
+			// auto-select a better target if the unit has choice
 			helper::function_00477510(unit);
 
-			//function perform tests to see if attack is possible
-			//and how it should be done and return true if attack
-			//can be done
+			// function perform tests to see if attack is possible
+			// and how it should be done and return true if attack
+			// can be done
 			if (helper::function_00478540(unit))
-			{ //79C16
-
+			{ // 00479C16
 				if (unit->pAI != nullptr)
+				{
 					helper::AI_AttackUnit(unit);
-
+				}
 				helper::getWeaponBeginIscript(unit, IscriptAnimation::GndAttkRpt);
-
 			}
-
 		}
-
-	} //void orders_AttackUnit(Unit* unit)
-
-	;
-
-} //namespace hooks
-
-//-------- Helper function definitions. Do NOT modify! --------//
-
-//End of helper functions
+	}
+}

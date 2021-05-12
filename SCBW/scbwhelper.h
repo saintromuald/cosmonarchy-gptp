@@ -873,10 +873,10 @@ namespace helper
 	s32 AI_PrepareMovingTo(Unit* unit, s32 x, s32 y);														// 004E7420
 
 	// order attack behavior
-	bool hasGroundWeaponGraphic(int a1);
-	bool sub_476C50(Unit* a1, Unit* a2);
-	s32 sub_4EB900(Unit* a1, Unit* a2);
-	s32 sub_477F10(Unit* a1, Unit* a2);
+	bool hasGroundWeaponGraphic(Unit* unit);
+	bool isUnreachable(Unit* target, Unit* unit);
+	bool isUnitTargetOutOfMaxRange(Unit* unit, Unit* target);												// 00476430
+	s32 moveForMeleeRange(Unit* target, Unit* unit);
 
 	//// misc
 	s8 SETS(s32 x);

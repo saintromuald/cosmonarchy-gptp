@@ -8286,14 +8286,14 @@ namespace helper
 		return (s16)result;
 	}
 
-	bool hasGroundWeaponGraphic(int a1)
+	bool hasGroundWeaponGraphic(Unit* unit)
 	{
 		const u32 Func_hasGroundWeaponGraphic = 0x00475A10;
 		static bool result;
 		__asm
 		{
 			PUSHAD
-			MOV EAX, a1
+			MOV EAX, unit
 			CALL Func_hasGroundWeaponGraphic
 			MOV result, AL
 			POPAD
@@ -8301,48 +8301,48 @@ namespace helper
 		return result;
 	}
 
-	bool sub_476C50(Unit* a1, Unit* a2)
+	bool isUnitTargetOutOfMaxRange(Unit* unit, Unit* target)
 	{
-		const u32 Func_sub_476C50 = 0x00476C50;
+		const u32 Func_isUnitTargetOutOfMaxRange = 0x00476430;
 		static bool result;
 		__asm
 		{
 			PUSHAD
-			MOV EAX, a1
-			MOV ESI, a2
-			CALL Func_sub_476C50
+			PUSH target
+			MOV EAX, unit
+			CALL Func_isUnitTargetOutOfMaxRange
 			MOV result, AL
 			POPAD
 		}
 		return result;
 	}
 
-	s32 sub_4EB900(Unit* a1, Unit* a2)
+	bool isUnreachable(Unit* target, Unit* unit)
 	{
-		const u32 Func_sub_4EB900 = 0x004EB900;
-		static s32 result;
+		const u32 Func_isUnreachable = 0x00476C50;
+		static bool result;
 		__asm
 		{
 			PUSHAD
-			MOV EAX, a1
-			MOV ECX, a2
-			CALL Func_sub_4EB900
-			MOV result, EAX
+			MOV EAX, target
+			MOV ESI, unit
+			CALL Func_isUnreachable
+			MOV result, AL
 			POPAD
 		}
 		return result;
 	}
 
-	s32 sub_477F10(Unit* a1, Unit* a2)
+	s32 moveForMeleeRange(Unit* target, Unit* unit)
 	{
-		const u32 Func_sub_477F10 = 0x00477F10;
+		const u32 Func_moveForMeleeRange = 0x00477F10;
 		static s32 result;
 		__asm
 		{
 			PUSHAD
-			PUSH a2
-			MOV EAX, a1
-			CALL Func_sub_477F10
+			PUSH unit
+			MOV EAX, target
+			CALL Func_moveForMeleeRange
 			MOV result, EAX
 			POPAD
 		}
