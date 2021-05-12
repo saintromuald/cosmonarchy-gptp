@@ -802,7 +802,7 @@ LABEL_23:
 			{
 				goto LABEL_23;
 			}
-			if ((unsigned __int8)target & 4 )
+			if ((unsigned __int8)target & 4 || (units_dat::SizeType[target->id] == UnitSize::Titanic && units_dat::AirWeapon[v5->id] != -126))
 			{
 				v8 = units_dat::AirWeapon[v5->id] != -126;
 			}
@@ -841,7 +841,7 @@ LABEL_34:
 				{
 					v16 = v2;
 				}
-				if (v15->status & UnitStatus::InAir)
+				if (v15->status & UnitStatus::InAir || (units_dat::SizeType[v15->id] == UnitSize::Titanic && units_dat::AirWeapon[v16->id] != -126))
 				{
 					v17 = units_dat::AirWeapon[v16->id];
 				}
@@ -864,7 +864,7 @@ LABEL_34:
 					{
 						v20 = helper::getUnitMaxWeaponRange(v2, v17);
 						v21 = helper::isTargetWithinMinMovementRange(targeta, v20, v16);
-						if ( v21 )
+						if (v21)
 						{
 							goto LABEL_76;
 						}
