@@ -68,7 +68,7 @@ namespace
 		static Unit* caster;
 		static s16 x;
 		static s16 y;
-		static s16* error;
+		static u16* error;
 		__asm
 		{
 			PUSH EBP

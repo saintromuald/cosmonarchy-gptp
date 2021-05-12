@@ -16,11 +16,11 @@ namespace hooks
 		u8 v12; // not written to
 		s16 v14;
 		char* v15;
-		s32 v16;
+		u16 v16;
 
 		Unit* orderTarget = caster->orderTarget.unit;
 		v16 = defaultOrderString;
-		if (techId == TechId::Hallucination || (orderTarget && helper::getOrderTargetErrorString(techId, orderTarget, 228, caster, orderTarget->sprite->position.x, orderTarget->sprite->position.y, (s16*)&v16)))
+		if (techId == TechId::Hallucination || (orderTarget && hooks::canTargetSpell(techId, orderTarget, 228, caster, orderTarget->sprite->position.x, orderTarget->sprite->position.y, &v16)))
 		{
 			v7 = *CHEAT_STATE;
 			v6 = techdata_dat::EnergyCost[techId] << 8;
@@ -103,7 +103,7 @@ namespace hooks
 	}
 
 	// Same as above
-	bool canTargetSpell(u16 techId, Unit* target, s16 fowUnitId, Unit* caster, s16 x, s16 y, s16* error) // 00492020
+	bool canTargetSpell(u16 techId, Unit* target, s16 fowUnitId, Unit* caster, s16 x, s16 y, u16* error) // 00492020
 	{
 		bool v9;
 		s16 v10;

@@ -8233,7 +8233,7 @@ namespace helper
 	}
 
 	// For spellOrder
-	bool getOrderTargetErrorString(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, s16* a7)
+	bool getOrderTargetErrorString(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, u16* a7)
 	{
 		const u32 Func_getOrderTargetErrorString = 0x00492020;
 		static s32 result;

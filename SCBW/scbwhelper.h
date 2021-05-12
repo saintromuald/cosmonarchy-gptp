@@ -435,7 +435,7 @@ namespace helper
 	u32 function_00492620(Unit* unit, b32 wasMainOrderStateZero);																		// 00492620
 
 	// For spellOrder
-	bool getOrderTargetErrorString(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, s16* a7);										// 00492020
+	bool getOrderTargetErrorString(u16 a1, Unit* a2, s16 a3, Unit* a4, s16 a5, s16 a6, u16* a7);										// 00492020
 	s32 spellOrder_MoveTowardsTarget(Unit* caster, u32 range);																			// 00492450
 
 	// For canTargetSpell
