@@ -1057,6 +1057,7 @@ enum Enum {
 	Exemplar							= 1380,
 	Exemplar_Shadow						= 1381,
 	ArcliteShockCannon_Damageless		= 1382,
+	ProtossHallucinationEffect			= 1385,
 
 	FirstMinorDamageOverlay				= 450,
 	LastMinorDamageOverlay			    = 471,

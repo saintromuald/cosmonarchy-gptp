@@ -378,5 +378,6 @@ namespace FlingyId
 		CanisterRifleHitBlue = 368,
 		ProtossExemplar = 369,
 		ArcliteShockCannon_Damageless = 370,
+		ProtossHallucinationEffect = 373,
 	};
 }

@@ -713,6 +713,7 @@ namespace SpriteId
 		CanisterRifleImpactBlue = 703,
 		ProtossExemplar = 704,
 		ArcliteShockCannon_Damageless = 705,
+		ProtossHallucinationEffect = 708,
 
 		// CORPSE \\
 
