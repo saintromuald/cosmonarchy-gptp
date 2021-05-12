@@ -836,7 +836,7 @@ namespace scbw
 
 	//-------- Utility functions --------//
 
-	Unit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, Unit* creator)
+	Unit* createUnitIngame(u16 unitId, u8 playerId, u32 x, u32 y, Unit* creator, bool initAI)
 	{
 		if (*unitCount >= 1700)
 		{
@@ -853,7 +853,10 @@ namespace scbw
 		{
 			helper::updateUnitStatsFinishBuilding(unit);
 			helper::updateUnitStrength(unit);
-			helper::AI_TrainingUnit(unit, creator);
+			if (initAI)
+			{
+				helper::AI_TrainingUnit(unit, creator);
+			}
 		}
 		return unit;
 	}

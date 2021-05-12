@@ -456,19 +456,18 @@ void Globals::frameHook()
 		}
 		else
 		{
-			auto revived = scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y);
+			auto revived = scbw::createUnitIngame(agent.unitId, agent.playerId, agent.position.x, agent.position.y, nullptr, false);
 			if (revived)
 			{
 				UnitExt* revivedExt = globals.GetUnitExt(revived);
 				revived->setHp(ApostleLazarusAgentHeal * agent.stacks);
-				if (units_dat::ShieldsEnabled[revived->id])
-				{
-					revived->shields = 0;
-				}
+				revived->shields = 0;
 				revived->energy = agent.energy;
-				revived->playIscriptAnim(IscriptAnimation::Unused1);
-				revivedExt->values[ValueIsReviving] = 1;
 				revived->status |= UnitStatus::Invincible;
+				revived->playIscriptAnim(IscriptAnimation::Unused1);
+				revivedExt->values[ValueReviveStarted] = 1;
+				revivedExt->values[TimerRevive] = 3;
+				revivedExt->units[UnitReviveParent] = agent.creator;
 			}
 			apostleAgents.erase(apostleAgents.begin() + i);
 			i--;

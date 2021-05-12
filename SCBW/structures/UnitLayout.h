@@ -210,7 +210,6 @@ enum ExtValueId
 	ValueSwarmingOmenAbility,
 	ValueReconstitution,
 	ValueSimulacrumClone,
-	ValueIsReviving,
 	ValueSwarmingOmenStatus,
 	ValueProtectiveInstinctsStatus,
 	ValueNemeanReactorsStack,
@@ -237,6 +236,7 @@ enum ExtValueId
 	ValueDirgeSourcePlayer,
 	ValueDirgeStacks,
 	ValueSignifyStacks,
+	ValueReviveStarted,
 
 	ValueCount,
 };
@@ -287,6 +287,7 @@ enum ExtTimerId
 	TimerWyvernAttackCooldown,
 	TimerDirgeFuse,
 	TimerSignify,
+	TimerRevive,
 		
 	TimerAI_Lazarus,
 	TimerAI_Siphon,
@@ -314,6 +315,7 @@ enum ExtUnitId
 	UnitMindController,
 	UnitWyvernTargetLock,
 	UnitDirgeSource,
+	UnitReviveParent,
 
 	UnitCount,
 };

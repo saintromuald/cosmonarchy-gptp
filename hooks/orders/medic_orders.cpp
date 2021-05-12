@@ -278,7 +278,7 @@ namespace hooks
 			|| medic->playerId >= 8
 			|| target->hitPoints >= units_dat::MaxHitPoints[type]
 			|| target->isFrozen()
-			|| targetExt->values[ValueIsReviving] == 1)
+			|| targetExt->values[TimerRevive])
 		{
 			return 0;
 		}

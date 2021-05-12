@@ -11,6 +11,7 @@
 #include "hooks/hydraFinder.h"
 #include "globals.h"
 #include "target_related.h"
+#include "hooks/orders/ai/ai_orders.h"
 
 const u32 hyperTrigger = 0x006509A0;
 const u32 Func_Irradiate = 0x00454E00;
@@ -1017,12 +1018,14 @@ namespace hooks
 		}
 
 		// Reviving from Lazarus Agent
-		if (unitExt->values[ValueIsReviving]
-			&& unit->sprite->mainGraphic->animation == IscriptAnimation::Unused1
+		if (!unitExt->timers[TimerRevive]
+			&& unitExt->values[ValueReviveStarted]
 			&& !(unit->status & UnitStatus::NoBrkCodeStart))
 		{
 			unit->status &= ~(UnitStatus::Invincible);
-			unitExt->values[ValueIsReviving] = 0;
+			unitExt->timers[TimerRevive] = 0;
+			unitExt->values[ValueReviveStarted] = 0;
+			hooks::AI_TrainingUnit(unit, unitExt->units[UnitReviveParent]);
 		}
 
 		// Savant - Entropy Gauntlets: remove overlay at end of effect

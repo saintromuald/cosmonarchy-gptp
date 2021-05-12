@@ -220,7 +220,7 @@ namespace hooks
 		jmpPatch(checkUnitVisibility_Wrapper, 0x00443390, 3);
 //		jmpPatch(isUnitCloaking_Wrapper,				0x004916E0, 0);
 		jmpPatch(unitCanAttackTarget_Wrapper, 0x00476730, 5);
-		jmpPatch(OrderAttackBehaviour_Wrapper, 0x00478540, 0);
+		//jmpPatch(OrderAttackBehaviour_Wrapper, 0x00478540, 0);
 	}
 	void injectTargetRelatedHooks()
 	{
