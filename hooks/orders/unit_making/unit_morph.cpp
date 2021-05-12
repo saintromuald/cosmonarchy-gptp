@@ -79,6 +79,7 @@ namespace hooks
 				}
 			}
 			helper::actUnitReturnToIdle(unit);
+			unit->connectedUnit = nullptr;
 		}
 	}
 
