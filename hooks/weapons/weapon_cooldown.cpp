@@ -92,7 +92,7 @@ namespace hooks
 		// Hierophant Signify: Malice
 		if (unitExt->values[ValueSignifyStacks] >= 5)
 		{
-			cooldown *= 0.6666;
+			cooldown /= 0.6666;
 		}
 
 		if (cooldownModifier > 0)
