@@ -328,18 +328,6 @@ namespace hooks
 					}
 				}
 
-				// Monoceros Targeting - Battlecruiser behavior
-				else if (weaponId == WeaponId::MinotaurAsterionLaserBattery)
-				{
-					fireMultiple(unit, unitExt, weaponId, 5, Flags::Enemy | Flags::FrontalArc);
-				}
-
-				// Tertiary Eyes - Siren behavior
-				else if (weaponId == WeaponId::SirenCharybdalRifle)
-				{
-					fireMultiple(unit, unitExt, weaponId, 1 + unitExt->unitVectors[UnitVectorTertiaryEyes].size(), Flags::Enemy);
-				}
-
 				// Titan Reactors - Heracles behavior - Refresh timer on attack and add stack
 				if (weaponId == WeaponId::HeraclesJavelinCannons)
 				{
@@ -350,6 +338,20 @@ namespace hooks
 						unitExt->values[ValueNemeanReactorsStack] = stacks++;
 						helper::playSoundFromSource(1372, unit, 1, 0);
 					}
+				}
+
+				// Madcap - Maverick Feeders passive
+				if (unit->id == UnitId::TerranMadcap)
+				{
+					s32 stacks = unitExt->values[ValueMadcapStacks];
+					unitExt->values[ValueMadcapStacks] = MathUtils::clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime);
+				}
+
+				// Geszithalor 
+				if (weaponId == WeaponId::AcidSpore && unit->sprite)
+				{
+					unitExt->values[ValueGuardianMissileLaunchPosX] = unit->getX();
+					unitExt->values[ValueGuardianMissileLaunchPosY] = unit->getY();
 				}
 
 				// Missile spawn positions start
@@ -410,7 +412,7 @@ namespace hooks
 				}
 				// Missile spawn positions end
 
-				else if (weaponId == WeaponId::SalamanderPerditionBarrage)
+				if (weaponId == WeaponId::SalamanderPerditionBarrage)
 				{
 					// Salamander missile target positions
 					auto rotate = unitExt->values[ValueSalamanderAtkPos];
@@ -429,7 +431,16 @@ namespace hooks
 					}
 					unitExt->values[ValueSalamanderAtkPos] = rotate;
 				}
-
+				// Monoceros Targeting - Battlecruiser behavior
+				else if (weaponId == WeaponId::MinotaurAsterionLaserBattery)
+				{
+					fireMultiple(unit, unitExt, weaponId, 5, Flags::Enemy | Flags::FrontalArc);
+				}
+				// Tertiary Eyes - Siren behavior
+				else if (weaponId == WeaponId::SirenCharybdalRifle)
+				{
+					fireMultiple(unit, unitExt, weaponId, 1 + unitExt->unitVectors[UnitVectorTertiaryEyes].size(), Flags::Enemy);
+				}
 				// Madrigal Furia Salvo
 				else if (weaponId == WeaponId::MadrigalFuriaMissiles && unit->orderTarget.unit != nullptr)
 				{
@@ -437,19 +448,6 @@ namespace hooks
 				}
 				else
 				{
-					// Madcap - Maverick Feeders passive
-					if (unit->id == UnitId::TerranMadcap)
-					{
-						s32 stacks = unitExt->values[ValueMadcapStacks];
-						unitExt->values[ValueMadcapStacks] = MathUtils::clamp(stacks + MadcapPassiveDecayTime, 0, MadcapMaxStacks * MadcapPassiveDecayTime);
-					}
-
-					// Geszithalor 
-					if (weaponId == WeaponId::AcidSpore && unit->sprite)
-					{
-						unitExt->values[ValueGuardianMissileLaunchPosX] = unit->getX();
-						unitExt->values[ValueGuardianMissileLaunchPosY] = unit->getY();
-					}
 					helper::createBullet(weaponId, unit, x, y, unit->playerId, unit->currentDirection1);
 				}
 			}
