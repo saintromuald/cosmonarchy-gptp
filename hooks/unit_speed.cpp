@@ -158,6 +158,11 @@ namespace hooks
 				}
 				return true;
 			});
+
+			if (enemyUnit)
+			{
+				speed *= 0.5;
+			}
 		}
 
 		switch (unit->id)
