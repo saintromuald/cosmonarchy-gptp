@@ -1025,7 +1025,14 @@ namespace hooks
 			unit->status &= ~(UnitStatus::Invincible);
 			unitExt->timers[TimerRevive] = 0;
 			unitExt->values[ValueReviveStarted] = 0;
-			hooks::AI_TrainingUnit(unit, unitExt->units[UnitReviveParent]);
+			if (unitExt->units[UnitReviveParent])
+			{
+				helper::AI_TrainingUnit(unit, unitExt->units[UnitReviveParent]);
+			}
+			else
+			{
+				hooks::AI_TrainingBroodling(unit, unit);
+			}
 		}
 
 		// Savant - Entropy Gauntlets: remove overlay at end of effect
