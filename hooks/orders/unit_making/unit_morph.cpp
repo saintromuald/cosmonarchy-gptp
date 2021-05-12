@@ -263,8 +263,8 @@ namespace hooks
 					}
 					unit->orderComputerClear(OrderId::ZergBirth);
 				}
-				else
-				{ // 0045DF60
+				else // 0045DF60
+				{
 					helper::updateUnitStatsFinishBuilding(unit);
 					helper::updateUnitStrength(unit);
 					if (unit->id == UnitId::ZergEgg && unit->eggOrigin == UnitId::ZergLarva)

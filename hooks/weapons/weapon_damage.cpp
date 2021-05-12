@@ -336,7 +336,7 @@ namespace hooks
 			scbw::createShieldOverlay(data.target, data.direction);
 		}
 
-		//Update unit strength data
+		// Update unit strength data
 		data.target->airStrength = helper::getUnitStrength(data.target, false);
 		data.target->groundStrength = helper::getUnitStrength(data.target, true);
 	}
