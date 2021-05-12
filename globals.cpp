@@ -1463,12 +1463,13 @@ namespace scbw
 		auto& vec = unitExt->unitVectors[UnitVectorPhaseLink];
 		for (Unit* vecUnit : vec)
 		{
-			auto& clarions = unitExt->unitVectors[UnitVectorPhaseLinkClarions];
-			auto it = std::find(clarions.begin(), clarions.end(), unit);
-			if (it != clarions.end())
+			UnitExt* vecUnitExt = globals.GetUnitExt(vecUnit);
+			auto& clarions = vecUnitExt->unitVectors[UnitVectorPhaseLinkClarions];
+			clarions.erase(std::remove_if(clarions.begin(), clarions.end(),
+			[&](Unit* target)
 			{
-				clarions.erase(it);
-			}
+				return target == unit;
+			}), clarions.end());
 		}
 		vec.clear();
 		unitExt->unitVectors[UnitVectorPhaseLinkClarions].clear();
