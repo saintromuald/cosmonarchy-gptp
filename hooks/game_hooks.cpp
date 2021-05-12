@@ -841,6 +841,7 @@ namespace hooks
 					scbw::decloakProc(unit);
 					scbw::set_generic_rust_value(unit, RustId::CastGodsMadeFlesh, 0);
 					unitExt->values[ValueGodsMadeFleshActive] = 1;
+					helper::playSoundFromSource(scbw::randBetween(SoundId::DemiurgeGodsMadeFleshCast01, SoundId::DemiurgeGodsMadeFleshCast02), unit, 1, 0);
 				}
 				// Demiurge - Gods Made Flesh - remove effect from caster
 				if (unitExt->values[ValueGodsMadeFleshActive] && unit->energy == 0)

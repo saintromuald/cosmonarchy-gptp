@@ -1160,6 +1160,8 @@ namespace SoundId
 		AugurDeath04 = 1238,
 		Simulacrum_Clone_01 = 1332,
 		LakiziliskProjectileReturn = 1392,
+		DemiurgeGodsMadeFleshCast01 = 1407,
+		DemiurgeGodsMadeFleshCast02 = 1408,
 
 	};
 }
