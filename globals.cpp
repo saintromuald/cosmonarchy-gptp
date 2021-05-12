@@ -460,8 +460,10 @@ void Globals::frameHook()
 			if (revived)
 			{
 				UnitExt* revivedExt = globals.GetUnitExt(revived);
-				revived->setHp(ApostleLazarusAgentHeal * agent.stacks);
-				revived->shields = 0;
+				u32 heal = ApostleLazarusAgentHeal * agent.stacks;
+				revived->setHp(1);
+				revived->heal(heal);
+				revived->shields = std::max(heal - revived->hitPoints, 0u);
 				revived->energy = agent.energy;
 				revived->status |= UnitStatus::Invincible;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
