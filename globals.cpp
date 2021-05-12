@@ -447,10 +447,8 @@ void Globals::frameHook()
 				}
 				revived->energy = agent.energy;
 				revived->playIscriptAnim(IscriptAnimation::Unused1);
-				revivedExt->values[ValueLazarusNoHeal] = 1;
-				// TODO: Make reviving units invincible
-//				revived->status |= UnitStatus::Invincible;
 				revivedExt->values[ValueIsReviving] = 1;
+				revived->status |= UnitStatus::Invincible;
 			}
 			apostleAgents.erase(apostleAgents.begin() + i);
 			i--;

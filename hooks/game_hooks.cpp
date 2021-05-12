@@ -1013,21 +1013,11 @@ namespace hooks
 			}
 		}
 
-		// Apostle - Lazarus Agent revive
-		if (unitExt->values[ValueLazarusNoHeal])
-		{
-			if (unit->sprite && unit->sprite->mainGraphic
-				&& unit->sprite->mainGraphic->animation != IscriptAnimation::Unused1)
-			{
-				// clear revival no-heal flag
-				unitExt->values[ValueLazarusNoHeal] = 0;
-			}
-		}
-
 		// Reviving from Lazarus Agent
 		if (unitExt->values[ValueIsReviving]
 			&& unit->sprite->mainGraphic->animation != IscriptAnimation::Unused1)
 		{
+			unit->status &= ~(UnitStatus::Invincible);
 			unitExt->values[ValueIsReviving] = 0;
 		}
 

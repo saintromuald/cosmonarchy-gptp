@@ -167,6 +167,7 @@ namespace hooks
 			data.damageType = DamageType::Independent;
 		}
 
+		// TODO: remove this
 		bool canDamage = true; // debug only!
 		// Ai_ReactToHit crash - null town
 		if (data.target->pAI != nullptr)

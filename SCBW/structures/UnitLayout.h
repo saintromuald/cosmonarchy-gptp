@@ -187,7 +187,6 @@ enum ExtValueId
 	ValueRepententChorus,
 	ValueStellarEnforcement,
 	ValueCastLazarusAgent,
-	ValueLazarusNoHeal,
 	ValueAlkajeliskParasite,
 	ValueAlkajeliskParasitePlayer,
 	ValuePegasusLaserPos,
