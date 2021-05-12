@@ -583,9 +583,13 @@ void Globals::frameHook()
 							return;
 						}
 						UnitExt* unitExt = globals.GetUnitExt(unit);
-						if (unitExt->timers[TimerHallucinating] < effects[i].currentTime)
+						if (!unitExt->timers[TimerHallucinating])
 						{
 							scbw::applyNewHallucination(unit, effects[i].player, effects[i].currentTime);
+						}
+						else
+						{
+							unitExt->timers[TimerHallucinating] = effects[i].currentTime;
 						}
 					});
 					break;
