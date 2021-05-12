@@ -12,7 +12,8 @@ namespace
 		static s16 a3;
 		static Unit* target;
 		static s16 unitID;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -28,7 +29,8 @@ namespace
 			PUSHAD
 		}
 		result = hooks::genericRightClickUnitProc2(unit, a2, a3, target, unitID);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -41,12 +43,14 @@ namespace
 	{
 		static Unit* result;
 		static s32 a1;
-		__asm {
+		__asm
+		{
 			MOV a1, EDI
 			PUSHAD
 		}
 		result = hooks::CMDRECV_HoldPosition(a1);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			RETN
@@ -58,7 +62,8 @@ namespace
 		static Unit* target;
 		static Unit* unit;
 		static u32 result;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			MOV EBP, ESP
 			PUSH EAX
@@ -69,7 +74,8 @@ namespace
 			PUSHAD
 		}
 		result = hooks::unitCanSeeCloakedTargetHook(target, unit);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			MOV ESP, EBP
@@ -83,13 +89,15 @@ namespace
 		static u32 result;
 		static Unit* target;
 		static Unit* unit;
-		__asm {
+		__asm
+		{
 			MOV target, EAX
 			MOV unit, ESI
 			PUSHAD
 		}
 		result = hooks::isTargetVisibleHook(target, unit);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			RETN
@@ -100,12 +108,14 @@ namespace
 	{
 		static u32 result;
 		static Unit* unit;
-		__asm {
+		__asm
+		{
 			MOV unit, ESI
 			PUSHAD
 		}
 		result = hooks::isUnitVisibleHook(unit);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			RETN
@@ -115,12 +125,14 @@ namespace
 	void __declspec(naked) checkUnitVisibility_Wrapper() // 00443390
 	{
 		static Unit* unit;
-		__asm {
+		__asm
+		{
 			MOV unit, EAX
 			PUSHAD
 		}
 		hooks::checkUnitVisibilityHook(unit);
-		__asm {
+		__asm
+		{
 			POPAD
 			RETN
 		}
@@ -130,12 +142,14 @@ namespace
 	{
 		static s32 result;
 		static Unit* unit;
-		__asm {
+		__asm
+		{
 			MOV unit, ECX
 			PUSHAD
 		}
 		result = hooks::isUnitCloakingHook(unit);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV EAX, result
 			RETN
@@ -148,7 +162,8 @@ namespace
 		static Unit* target;
 		static Unit* unit;
 		static u32 a3;
-		__asm {
+		__asm
+		{
 			PUSH EBP
 			PUSH EAX
 			MOV EBP, ESP
@@ -161,7 +176,8 @@ namespace
 			PUSHAD
 		}
 		result = hooks::unitCanAttackTarget(target, unit, a3);
-		__asm {
+		__asm
+		{
 			POPAD
 			MOV AL, result
 			RETN 4
@@ -172,15 +188,17 @@ namespace
 	{
 		static bool result;
 		static Unit* unit;
-		__asm {
+		__asm
+		{
 			MOV unit, EAX
 			PUSHAD
 		}
-		result = 0;
-		//result = hooks::OrderAttackBehaviour(unit);
-		__asm {
+		result = hooks::OrderAttackBehaviour(unit);
+		__asm
+		{
 			POPAD
-			MOVZX EAX, result
+			MOV AL, result
+			RETN
 		}
 	}
 }
@@ -194,15 +212,15 @@ namespace hooks
 		nops(0x004EB176, 8);
 		nops(0x004EB316, 2);
 
-		//		jmpPatch(genericRightClickUnitProc2_Wrapper,	0x00455E00, 1);
-		//		jmpPatch(genericRightClickUnitProc2_Wrapper,	0x004C20C0, 0);
-		//		jmpPatch(unitCanSeeCloakedTarget_Wrapper,		0x00401D60, 4);
-		//		jmpPatch(isTargetVisible_Wrapper,				0x004E5E30, 4);
-		//		jmpPatch(isUnitVisible_Wrapper,					0x004E5DB0, 1);
+//		jmpPatch(genericRightClickUnitProc2_Wrapper,	0x00455E00, 1);
+//		jmpPatch(genericRightClickUnitProc2_Wrapper,	0x004C20C0, 0);
+//		jmpPatch(unitCanSeeCloakedTarget_Wrapper,		0x00401D60, 4);
+//		jmpPatch(isTargetVisible_Wrapper,				0x004E5E30, 4);
+//		jmpPatch(isUnitVisible_Wrapper,					0x004E5DB0, 1);
 		jmpPatch(checkUnitVisibility_Wrapper, 0x00443390, 3);
-		//		jmpPatch(isUnitCloaking_Wrapper,				0x004916E0, 0);
+//		jmpPatch(isUnitCloaking_Wrapper,				0x004916E0, 0);
 		jmpPatch(unitCanAttackTarget_Wrapper, 0x00476730, 5);
-		//jmpPatch(OrderAttackBehaviour_Wrapper, 0x00478540, 0);
+		jmpPatch(OrderAttackBehaviour_Wrapper, 0x00478540, 0);
 	}
 	void injectTargetRelatedHooks()
 	{
