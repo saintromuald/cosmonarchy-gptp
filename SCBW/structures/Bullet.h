@@ -14,10 +14,10 @@ struct Sprite;
 struct Bullet
 {
 	// v-- POSSIBLE SHARED Bullet/Unit STRUCTURE BEGIN
-	/*0x00*/ Bullet* previous;
-	/*0x04*/ Bullet* next;
+	/*0x00*/ Bullet*      previous;
+	/*0x04*/ Bullet*      next;
 	/*0x08*/ u32          exists; //usually holds 1 (exists?)
-	/*0x0C*/ Sprite* sprite; // sprite pointer
+	/*0x0C*/ Sprite*      sprite; // sprite pointer
 	/*0x10*/ Target       moveTarget; //address? animation related? changes a during the same bullet
 	/*0x18*/ Point16      targetPosition;
 	/*0x1C*/ Point16      targetPosition2; //usually same as targetPosition

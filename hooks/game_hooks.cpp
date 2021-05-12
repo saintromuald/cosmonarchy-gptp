@@ -921,6 +921,7 @@ namespace hooks
 			scbw::dirgeFuse(unit, unitExt);
 		}
 
+		// Hierophant Signify Reset
 		if (unitExt->timers[TimerSignify] == 1)
 		{
 			unitExt->values[ValueSignifyStacks] = 0;
