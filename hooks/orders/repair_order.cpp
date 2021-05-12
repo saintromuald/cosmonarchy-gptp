@@ -298,11 +298,11 @@ namespace hooks
 				}
 				if (target->hitPoints >= units_dat::MaxHitPoints[target->id])
 				{
+					if (bErrorFlag)
+					{
+						*(s16*)bErrorFlag = errorStringId;
+					}
 					return 0;
-				}
-				if (bErrorFlag)
-				{
-					*(s16*)bErrorFlag = errorStringId;
 				}
 				return 1;
 			}
