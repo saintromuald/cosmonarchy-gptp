@@ -1218,8 +1218,7 @@ namespace scbw
 
 	bool canBeParasited(Unit* unit)
 	{
-		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Building)
-			&& !(unit->status & UnitStatus::Burrowed);
+		return !(units_dat::BaseProperty[unit->id] & UnitProperty::Building);
 	}
 
 	//Creates the Plasma Shield flickering effect.
